@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN" "/home/users/braun/Oxygene/dtd/mapping.dtd">
+
+<!-- fichier de mapping pour topologie
+       TP_Solid n'est pas integre au mapping  -->
+
+       
+<mapping>
+
+  <class name="spatial.toporoot.TP_Object" key-generator="MAX" identity="id">
+    <map-to table="TP_OBJECT" />
+    <field name="classtype" type="string" required="true">
+      <sql name="CLASSTYPE" />
+    </field>
+    <field name="id" type="integer">
+      <sql name="TP_ObjectID" />
+    </field>
+    <field name="feature" type="geoschema.featroot.FT_Feature"  lazy="true">
+        <sql name="FT_FEATUREID" many-key="TP_OBJECTID"  />
+    </field>
+  </class>
+  
+  <class name="spatial.topoprim.TP_Node" extends="spatial.toporoot.TP_Object">
+    <map-to table="TP_NODE" />
+    <field name="container" type="spatial.topoprim.TP_Face">
+      <sql name="container" />
+    </field>
+    <field name="entrant" type="spatial.topoprim.TP_Edge" collection="collection" lazy="true">
+      <sql many-key="endNodeID" />
+    </field> 
+    <field name="sortant" type="spatial.topoprim.TP_Edge" collection="collection" lazy="true">
+      <sql many-key="startNodeID" />
+    </field>        
+  </class>
+  
+  <class name="spatial.topoprim.TP_Edge" extends="spatial.toporoot.TP_Object">
+    <map-to table="TP_EDGE" />
+    <field name="startnode" type="spatial.topoprim.TP_Node">
+      <sql name="startNodeID" />
+    </field>
+    <field name="endnode" type="spatial.topoprim.TP_Node">
+      <sql name="endNodeID" />
+    </field>        
+    <field name="leftface" type="spatial.topoprim.TP_Face">
+      <sql name="leftFaceID" />
+    </field> 
+    <field name="rightface" type="spatial.topoprim.TP_Face">
+      <sql name="rightFaceID" />
+    </field>             
+  </class>
+  
+  <class name="spatial.topoprim.TP_Face" extends="spatial.toporoot.TP_Object">
+    <map-to table="TP_FACE" />
+    <field name="isolated" type="spatial.topoprim.TP_Node" collection="collection" lazy="true">
+      <sql many-key="container" />
+    </field>
+    <field name="left" type="spatial.topoprim.TP_Edge" collection="collection" lazy="true">
+      <sql many-key="leftFaceID" />
+    </field>          
+    <field name="right" type="spatial.topoprim.TP_Edge" collection="collection" lazy="true">
+      <sql many-key="rightFaceID" />      
+    </field>    
+  </class>
+  
+</mapping>  
+  

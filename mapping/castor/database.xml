@@ -1,0 +1,25 @@
+<!DOCTYPE databases PUBLIC "-//EXOLAB/Castor JDO Configuration DTD Version 1.0//EN"
+                             "http://oxygene.ign.fr/dtd/jdo-conf.dtd">
+                             
+<!-- Parametres pour la connection à la base de données -->
+
+<database name="cogit" engine="oracle">
+    <driver class-name="oracle.jdbc.driver.OracleDriver"
+            url="jdbc:oracle:thin:@HOSTNAME:1521:SID">
+	<param name="user" value="USERNAME" />
+      	<param name="password" value="PASSWORD" />
+    </driver>
+    
+    <!--data-source class-name="oracle.jdbc.pool.OracleConnectionCacheImpl">
+         <params URL="jdbc:oracle:thin:@HOSTNAME:1521:SID" user="USERNAME" password="PASSWORD"/>
+    </data-source-->
+    
+    
+    <!-- fichiers de mapping a utiliser -->
+    <mapping href="dico.xml" />
+    <mapping href="feature.xml" />
+    <mapping href="topo.xml" />
+    <mapping href="mapping.xml" />     
+    <mapping href="result.xml" />
+
+</database>

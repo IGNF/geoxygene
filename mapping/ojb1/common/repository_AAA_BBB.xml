@@ -1,0 +1,94 @@
+<!-- MAPPING DE LA CLAASE MERE ABSTRAITE ClasseMere  -->
+<!-- L'interet de faire apparaitre ce mapping 
+  est de generer des ID uniques pour toutes les classes filles AAA et BBB -->
+<!-- Essayez les tests en activant ou en commentant le mapping de cette classe et observez les ID -->
+<class-descriptor class="fr.ign.cogit.geoxygene.example.relations.ClasseMere"  >
+    <extent-class class-ref="fr.ign.cogit.geoxygene.example.relations.AAA" />
+    <extent-class class-ref="fr.ign.cogit.geoxygene.example.relations.BBB" />  
+</class-descriptor>     
+
+
+<!-- POUR LA CLASSE AAA -->
+<class-descriptor class="fr.ign.cogit.geoxygene.example.relations.AAA" table="AAA" >
+    <!-- IDENTIFIANT NECESSAIRE AU MAPPING -->
+    <field-descriptor name="id" column="ID" jdbc-type="INTEGER" primarykey="true" autoincrement="true"  />
+
+    <!-- RELATION 1-1 BIDIRECTIONNELLE -->
+    <!-- ceci est la cle etrangere - on la simule comme un attribut non present dans le code avec un acces "anonymous" -->
+    <field-descriptor name="objetBBB_bi11ID" column="OBJETBBB_BI11" jdbc-type="INTEGER" access="anonymous" />      
+    <!-- ceci reference l'objet Java grace a la cle etrangere -->
+    <reference-descriptor name="objetBBB_bi11" class-ref="fr.ign.cogit.geoxygene.example.relations.BBB"  >
+        <foreignkey field-ref="objetBBB_bi11ID" />
+    </reference-descriptor>              
+
+    <!-- RELATION 1-N BIDIRECTIONNELLE -->
+    <!-- on peut commenter cette relation pour ameliorer les perf de chargement 
+    		mais il faut imperativement charger BBB pour que cette relation soit renseignee. -->    
+    <!--collection-descriptor name="liste_objetsBBB_bi1N" element-class-ref="fr.ign.cogit.geoxygene.example.relations.BBB" -->
+    	<!-- cle etrangere pour cette relation sur AAA dans BBB -->
+        <!--inverse-foreignkey field-ref="objetAAA_bi1nID" /-->
+    <!--/collection-descriptor-->   
+
+    <!-- RELATION N-M BIDIRECTIONNELLE -->
+    <collection-descriptor name="liste_objetsBBB_biNM" element-class-ref="fr.ign.cogit.geoxygene.example.relations.BBB" indirection-table="RELATION_BI_NN_AAA_BBB"  >
+        <fk-pointing-to-this-class column="OBJET_AAA" />
+        <fk-pointing-to-element-class column="OBJET_BBB" />        
+    </collection-descriptor>              
+        
+    <!-- RELATION 1-1 MONODIRECTIONNELLE  -->
+    <!-- ceci est la cle etrangere - on la simule comme un attribut non present dans le code avec un acces "anonymous"  -->
+    <field-descriptor name="objetBBB_mono11ID" column="OBJETBBB_MONO11" jdbc-type="INTEGER"  access="anonymous" />   
+    <!-- ceci reference l'objet Java grace a la cle etrangere -->       
+    <reference-descriptor name="objetBBB_mono11" class-ref="fr.ign.cogit.geoxygene.example.relations.BBB"  >
+        <foreignkey field-ref="objetBBB_mono11ID" />
+    </reference-descriptor>              
+
+    <!-- RELATION 1-N MONODIRECTIONNELLE  -->
+    <collection-descriptor name="liste_objetsBBB_mono1N" element-class-ref="fr.ign.cogit.geoxygene.example.relations.BBB" >
+    	<!-- cle etrangere pour cette relation sur AAA dans BBB -->
+        <inverse-foreignkey field-ref="objetAAA_mono1NID" />  
+    </collection-descriptor>   
+
+    <!-- RELATION N-M MONODIRECTIONNELLE -->
+    <collection-descriptor name="liste_objetsBBB_monoNM" element-class-ref="fr.ign.cogit.geoxygene.example.relations.BBB" indirection-table="RELATION_MONO_NN_AAA_BBB"  >
+        <fk-pointing-to-this-class column="OBJET_AAA" />
+        <fk-pointing-to-element-class column="OBJET_BBB" />        
+    </collection-descriptor>              
+
+    <!-- BIDON pour les test -->
+    <field-descriptor name="nom" column="NOM" jdbc-type="VARCHAR" />
+    
+</class-descriptor>            
+
+
+
+<!-- POUR LA CLASSE BBB -->
+<!-- AU NIVEAU DU MAPPING ET DES TABLES, ON FAIT COMME SI LES RELATIONS ETAIENT TOUTES MONODIRECTIONNELLES;
+     LA RELATION INVERSE EST INSTANCIEE AU CHARGEMENT PAR LE CODE JAVA.
+     C'EST POUR CELA QUE LA CLASSE EST QUASI VIDE;
+     AVANTAGE : GAIN DE TEMPS TRES NET AU CHARGEMENT
+     ATTENTION INCONVENIENT : SI ON NE CHARGE PAS LA CLASSE AAA (ON NE CHARGE QUE BBB), ALORS CES
+          RELATIONS BIDIRECTIONNELLES NE SONT PAS INSTANCIEES !
+          
+     POUR LA RELATION 1-N BIDIRECTIONNELLE, IL EST PLUS FUTE DE LA MAPPER DE CE COTE CAR CELA AMELIORE LES PERFORMANCES AU CHARGEMENT
+     (EVITE DES JOINTURES INUTILES). 
+ -->
+<class-descriptor class="fr.ign.cogit.geoxygene.example.relations.BBB"  table="BBB" >
+    <!-- IDENTIFIANT NECESSAIRE AU MAPPING -->
+    <field-descriptor name="id" column="ID" jdbc-type="INTEGER" primarykey="true" autoincrement="true"  />
+    
+    <!-- RELATION 1-N BIDIRECTIONNELLE -->
+    <!-- cle etrangere pour cette relation sur AAA dans BBB - on la simule comme un attribut non present dans le code avec un acces "anonymous" -->    
+    <field-descriptor name="objetAAA_bi1NID" column="OBJETAAA_BI1N" jdbc-type="INTEGER"  access="anonymous"/>
+    <reference-descriptor name="objetAAA_bi1N" class-ref="fr.ign.cogit.geoxygene.example.relations.AAA"  >
+        <foreignkey field-ref="objetAAA_bi1NID" />  
+    </reference-descriptor>              
+
+    <!-- RELATION 1-N MONODIRECTIONNELLE -->
+    <field-descriptor name="objetAAA_mono1NID" column="OBJETAAA_MONO1N" jdbc-type="INTEGER"  access="anonymous"/>
+
+    <!-- BIDON pour les test -->
+    <field-descriptor name="nom" column="NOM" jdbc-type="VARCHAR" />
+
+</class-descriptor>            
+

@@ -1,0 +1,147 @@
+<!DOCTYPE databases PUBLIC "-//EXOLAB/Castor JDO Configuration DTD Version 1.0//EN"
+                            "/home/users/braun/Oxygene/dtd/mapping.dtd">
+
+<!-- Fichier de mapping pour les classes FT_Result (Result_Point, Result_Curve, Result_Surface).
+    Ces classes ne sont volontairement pas mappees avec le programme "Chargeur". -->
+
+<mapping>
+
+    <class name="geoschema.feature.Result_Point" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="RESULT_POINT"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>        
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry[3]"  dirty="ignore"/>
+    </field>        
+    <field name="double1" type="double">
+        <sql name="DOUBLE1" type="numeric"/>
+    </field>
+    <field name="double2" type="double">
+        <sql name="DOUBLE2" type="numeric"/>
+    </field>
+    <field name="double3" type="double">
+        <sql name="DOUBLE3" type="numeric"/>
+    </field>
+    <field name="int1" type="integer">
+        <sql name="INT1" type="integer"/>
+    </field>
+    <field name="int2" type="integer">
+        <sql name="INT2" type="integer"/>
+    </field>
+    <field name="int3" type="integer">
+        <sql name="INT3" type="integer"/>
+    </field> 
+    <field name="string1" type="string">
+        <sql name="STRING1" type="varchar"/>
+    </field>
+    <field name="string2" type="string">
+        <sql name="STRING2" type="varchar"/>
+    </field>
+    <field name="string3" type="string">
+        <sql name="STRING3" type="varchar"/>
+    </field>
+    <field name="boolean1" type="boolean">
+        <sql name="BOOLEAN1" type="bit"/>
+    </field>
+    <field name="boolean2" type="boolean">
+        <sql name="BOOLEAN2" type="bit"/>
+    </field>
+    <field name="boolean3" type="boolean">
+        <sql name="BOOLEAN3" type="bit"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Result_Curve" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="RESULT_CURVE"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>        
+    <!--field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry[3]"  dirty="ignore"/>
+    </field-->        
+    <field name="double1" type="double">
+        <sql name="DOUBLE1" type="numeric"/>
+    </field>
+    <field name="double2" type="double">
+        <sql name="DOUBLE2" type="numeric"/>
+    </field>
+    <field name="double3" type="double">
+        <sql name="DOUBLE3" type="numeric"/>
+    </field>
+    <field name="int1" type="integer">
+        <sql name="INT1" type="integer"/>
+    </field>
+    <field name="int2" type="integer">
+        <sql name="INT2" type="integer"/>
+    </field>
+    <field name="int3" type="integer">
+        <sql name="INT3" type="integer"/>
+    </field> 
+    <field name="string1" type="string">
+        <sql name="STRING1" type="varchar"/>
+    </field>
+    <field name="string2" type="string">
+        <sql name="STRING2" type="varchar"/>
+    </field>
+    <field name="string3" type="string">
+        <sql name="STRING3" type="varchar"/>
+    </field>
+    <field name="boolean1" type="boolean">
+        <sql name="BOOLEAN1" type="bit"/>
+    </field>
+    <field name="boolean2" type="boolean">
+        <sql name="BOOLEAN2" type="bit"/>
+    </field>
+    <field name="boolean3" type="boolean">
+        <sql name="BOOLEAN3" type="bit"/>
+    </field>    
+    </class>
+
+    <class name="geoschema.feature.Result_Surface" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="RESULT_SURFACE"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>        
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry[3]" dirty="ignore"/>
+    </field>        
+    <field name="double1" type="double">
+        <sql name="DOUBLE1" type="numeric"/>
+    </field>
+    <field name="double2" type="double">
+        <sql name="DOUBLE2" type="numeric"/>
+    </field>
+    <field name="double3" type="double">
+        <sql name="DOUBLE3" type="numeric"/>
+    </field>
+    <field name="int1" type="integer">
+        <sql name="INT1" type="integer"/>
+    </field>
+    <field name="int2" type="integer">
+        <sql name="INT2" type="integer"/>
+    </field>
+    <field name="int3" type="integer">
+        <sql name="INT3" type="integer"/>
+    </field> 
+    <field name="string1" type="string">
+        <sql name="STRING1" type="varchar"/>
+    </field>
+    <field name="string2" type="string">
+        <sql name="STRING2" type="varchar"/>
+    </field>
+    <field name="string3" type="string">
+        <sql name="STRING3" type="varchar"/>
+    </field>
+    <field name="boolean1" type="boolean">
+        <sql name="BOOLEAN1" type="bit"/>
+    </field>
+    <field name="boolean2" type="boolean">
+        <sql name="BOOLEAN2" type="bit"/>
+    </field>
+    <field name="boolean3" type="boolean">
+        <sql name="BOOLEAN3" type="bit"/>
+    </field>
+    </class>
+    
+</mapping>

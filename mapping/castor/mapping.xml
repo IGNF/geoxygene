@@ -1,0 +1,735 @@
+<!DOCTYPE databases PUBLIC "-//EXOLAB/Castor JDO Configuration DTD Version 1.0//EN"
+                            "http://oxygene.ign.fr/dtd/mapping.dtd">
+
+<!-- fichier de mapping des classes geographiques genere automatiquement par le chargeur de la plate-forme GeOxygene -->
+
+<mapping>
+
+    <class name="geoschema.feature.Am_hydro_lin" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="AM_HYDRO_LIN"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Am_hydro_pct" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="AM_HYDRO_PCT"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Am_hydro_surf" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="AM_HYDRO_SURF"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Autre_voie_com" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="AUTRE_VOIE_COM"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="top_gue" type="string">
+        <sql name="TOP_GUE" type="varchar"/>
+    </field>
+    <field name="pos_sol" type="string">
+        <sql name="POS_SOL" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Batiment_lin" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="BATIMENT_LIN"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Batiment_pct" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="BATIMENT_PCT"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Batiment_surf" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="BATIMENT_SURF"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Cascade_pct" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="CASCADE_PCT"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Cimetiere" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="CIMETIERE"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Commune" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="COMMUNE"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="c_l_region" type="string">
+        <sql name="C_L_REGION" type="varchar"/>
+    </field>
+    <field name="nom_region" type="string">
+        <sql name="NOM_REGION" type="varchar"/>
+    </field>
+    <field name="c_l_dept" type="string">
+        <sql name="C_L_DEPT" type="varchar"/>
+    </field>
+    <field name="nom_dept" type="string">
+        <sql name="NOM_DEPT" type="varchar"/>
+    </field>
+    <field name="insee_dept" type="string">
+        <sql name="INSEE_DEPT" type="varchar"/>
+    </field>
+    <field name="c_l_arr" type="string">
+        <sql name="C_L_ARR" type="varchar"/>
+    </field>
+    <field name="insee_arr" type="double">
+        <sql name="INSEE_ARR" type="numeric"/>
+    </field>
+    <field name="nom_comm" type="string">
+        <sql name="NOM_COMM" type="varchar"/>
+    </field>
+    <field name="insee_comm" type="double">
+        <sql name="INSEE_COMM" type="numeric"/>
+    </field>
+    <field name="population" type="double">
+        <sql name="POPULATION" type="numeric"/>
+    </field>
+    <field name="constit" type="string">
+        <sql name="CONSTIT" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Enceinte" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="ENCEINTE"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="nature" type="string">
+        <sql name="NATURE" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Eq_elec_surf" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="EQ_ELEC_SURF"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Eq_protec_lin" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="EQ_PROTEC_LIN"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Eq_sport_lin" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="EQ_SPORT_LIN"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Eq_sport_surf" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="EQ_SPORT_SURF"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Eq_voie_com_lin" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="EQ_VOIE_COM_LIN"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Eq_voie_com_pct" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="EQ_VOIE_COM_PCT"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Eq_voie_com_surf" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="EQ_VOIE_COM_SURF"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Gare" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="GARE"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="transport" type="string">
+        <sql name="TRANSPORT" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Gr" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="GR"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="numero" type="string">
+        <sql name="NUMERO" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Laisse" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="LAISSE"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="nature" type="string">
+        <sql name="NATURE" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Ligne_elec" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="LIGNE_ELEC"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="voltage" type="string">
+        <sql name="VOLTAGE" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Ligne_indefinie" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="LIGNE_INDEFINIE"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Ligne_iso" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="LIGNE_ISO"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="altitude" type="double">
+        <sql name="ALTITUDE" type="numeric"/>
+    </field>
+    <field name="nat_bathy" type="string">
+        <sql name="NAT_BATHY" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Limite_adm" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="LIMITE_ADM"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Noeud_com_pct" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="NOEUD_COM_PCT"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Noeud_com_surf" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="NOEUD_COM_SURF"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Occ_sol_lin" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="OCC_SOL_LIN"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Occ_sol_pct" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="OCC_SOL_PCT"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Occ_sol_surf" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="OCC_SOL_SURF"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Parc_naturel" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="PARC_NATUREL"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="nature" type="string">
+        <sql name="NATURE" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Piste_aerodrome" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="PISTE_AERODROME"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="revetement" type="string">
+        <sql name="REVETEMENT" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Point_cote" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="POINT_COTE"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="altitude" type="double">
+        <sql name="ALTITUDE" type="numeric"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Portique" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="PORTIQUE"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Pylone" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="PYLONE"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Res_hydro_lin" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="RES_HYDRO_LIN"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="num_bdt" type="string">
+        <sql name="NUM_BDT" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="pos_sol" type="string">
+        <sql name="POS_SOL" type="varchar"/>
+    </field>
+    <field name="etat_canal" type="string">
+        <sql name="ETAT_CANAL" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Res_hydro_pct" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="RES_HYDRO_PCT"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Res_hydro_surf" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="RES_HYDRO_SURF"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="num_bdt" type="string">
+        <sql name="NUM_BDT" type="varchar"/>
+    </field>
+    <field name="top_s_hyd" type="string">
+        <sql name="TOP_S_HYD" type="varchar"/>
+    </field>
+    <field name="pos_sol" type="string">
+        <sql name="POS_SOL" type="varchar"/>
+    </field>
+    <field name="etat_canal" type="string">
+        <sql name="ETAT_CANAL" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Res_mat_prem" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="RES_MAT_PREM"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Toponyme" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="TOPONYME"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="importance" type="string">
+        <sql name="IMPORTANCE" type="varchar"/>
+    </field>
+    <field name="designatio" type="string">
+        <sql name="DESIGNATIO" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Troncon_route" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="TRONCON_ROUTE"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="dept" type="string">
+        <sql name="DEPT" type="varchar"/>
+    </field>
+    <field name="num_route" type="string">
+        <sql name="NUM_ROUTE" type="varchar"/>
+    </field>
+    <field name="categorie" type="string">
+        <sql name="CATEGORIE" type="varchar"/>
+    </field>
+    <field name="nom_route" type="string">
+        <sql name="NOM_ROUTE" type="varchar"/>
+    </field>
+    <field name="etat_chau" type="string">
+        <sql name="ETAT_CHAU" type="varchar"/>
+    </field>
+    <field name="importance" type="string">
+        <sql name="IMPORTANCE" type="varchar"/>
+    </field>
+    <field name="nb_voies" type="string">
+        <sql name="NB_VOIES" type="varchar"/>
+    </field>
+    <field name="normalisee" type="string">
+        <sql name="NORMALISEE" type="varchar"/>
+    </field>
+    <field name="pos_sol" type="string">
+        <sql name="POS_SOL" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Troncon_voie_ferree" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="TRONCON_VOIE_FERREE"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="type_" type="string">
+        <sql name="TYPE_" type="varchar"/>
+    </field>
+    <field name="energie" type="string">
+        <sql name="ENERGIE" type="varchar"/>
+    </field>
+    <field name="etat" type="string">
+        <sql name="ETAT" type="varchar"/>
+    </field>
+    <field name="largeur" type="string">
+        <sql name="LARGEUR" type="varchar"/>
+    </field>
+    <field name="nb_voies" type="string">
+        <sql name="NB_VOIES" type="varchar"/>
+    </field>
+    <field name="pos_sol" type="string">
+        <sql name="POS_SOL" type="varchar"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+    <class name="geoschema.feature.Zone_marine" extends="geoschema.featroot.FT_Feature" identity="id">
+        <map-to table="ZONE_MARINE"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>
+    <field name="toponyme" type="string">
+        <sql name="TOPONYME" type="varchar"/>
+    </field>
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry"  dirty="ignore"/>
+    </field>
+    </class>
+
+</mapping>

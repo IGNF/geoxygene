@@ -1,0 +1,126 @@
+GeOxygene, version 1.0
+
+GeOxygene aims at providing an open framework compliant with OGC/ISO specifications for 
+the development and deployment of geographic (GIS) applications. It is a open source 
+contribution of the COGIT laboratory at the Institut Géographique National (the French 
+National Mapping Agency).
+ 
+Homepage: http://oxygene-project.sourceforge.net 
+  
+Copyright (C) 2005 Institut Géographique National
+
+
+NOTE ABOUT LIBRARIES INCLUDED IN THIS DISTRIBUTION:
+
+
+0) Apache License
+
+This product includes software developed by The Apache Software Foundation 
+(http://www.apache.org/). The Apache License v2.0 file is provided with the 
+GeOxygene distribution (see file APACHE-LICENSE-2.0).
+
+
+1) BATIK 
+
+Batik is a Java(tm) technology based toolkit for applications or applets that want 
+to use images in the Scalable Vector Graphics (SVG) format for various purposes, 
+such as viewing, generation or manipulation.
+Website: http://xml.apache.org/batik/
+Batik is a part of the APACHE XML project, released under the Apache License v2.0:
+http://www.apache.org/licenses/
+
+The file "batik-all.jar" of the GeOxygene distribution is single jar file 
+containing all "batik-xxx.jar" files of the batik 1.5 distribution, plus
+the "pdf-transcoder.jar" file of this distribution, stemming from the 
+Apache Fop project (http://xml.apache.org/fop) slightly modified with 
+two classes from the Apache Avalon project (http://avalon.apache.org).
+
+
+2) JTS 
+
+The Java Topology Suite (JTS) is an API of 2D spatial predicates and functions,
+which conforms to the Simple Features Specification for SQL published by the OGC.
+Website: http://www.vividsolutions.com/jts/jtshome.htm
+JTS is released under the LGPL license:
+http://www.gnu.org/copyleft/lesser.html
+
+The  file "jts.jar" of the GeOxygene distribution is the version 1.4 of JTS distribution.
+
+
+3) GEOTOOLS 1.0 LITE PROJECT
+
+GeoTools 1 aimed to provide a toolkit of resources to enable the creation 
+of interactive geographic visualization clients. 
+Website: http://sourceforge.net/projects/geotools/
+The second generation of GeoTools has been fundamentally redesigned 
+to take advantage of the full power of the Java platform: it is the Geotools2 project.
+Website: http://www.geotools.org/
+Geotools 1 is released under the LGPL license:
+http://www.gnu.org/copyleft/lesser.html
+
+The file "geotools1-cogit.jar" of the Geoxygene distribution contains :
+- some slight modifications of the Geotools 0.8 source code. 
+Feel free to ask for source code of these modifications.
+- realization of a single jar file with the following jar files of Geotools distribution (0.8) :
+	* Geotools 0.8 itself, modified
+	* collections.jar, support.jar, JimiCore.jar
+
+
+4) OJB 
+
+ObJectRelationalBridge (OJB) is an Object/Relational mapping tool that allows 
+transparent persistence for Java Objects against relational databases.
+Website: http://db.apache.org/ojb/
+OJB is a part of the APACHE DB project, released under the Apache License v2.0:
+http://www.apache.org/licenses/
+
+The file "ojb-1.0.rc6.jar" of the Geoxygene distribution contains :
+- a slight modification of OJB source code, v1.0 rc6 (JDBCTypeHelper class) that allows
+the use of PostGIS. Feel free to ask for source code of this modification.
+- realization of a single jar file with the following jar files of OJB distribution (1.0 rc6) :
+	* OJB itself, slightly modified
+	* antlr-2.7.2.jar  (http://www.antlr.org/) 
+	* commons-beanutils.jar (http://jakarta.apache.org/commons/)
+	* commons-collections.jar (http://jakarta.apache.org/commons/)
+	* commons-dbcp-1.1.jar (http://jakarta.apache.org/commons/)
+	* commons-lang-2.0.jar (http://jakarta.apache.org/commons/)
+	* commons-logging.jar (http://jakarta.apache.org/commons/)
+	* commons-pool-1.1.jar (http://jakarta.apache.org/commons/)
+	* jcs.jar (http://jakarta.apache.org/jcs/)
+	* log4j-1.2.8.jar (http://logging.apache.org/log4j/docs/)
+	* xercesImpl.jar (http://xml.apache.org/)
+	* xml-apis.jar (http://xml.apache.org/)
+
+
+5) POSTGRESQL 
+
+PostgreSQL is a highly-scalable, SQL compliant, open source object-relational 
+database management system.
+Website: http://www.postgresql.org/
+PostgreSQL is released under the BSD license:
+http://www.postgresql.org/about/licence
+
+The file "pg74.1jdbc3.jar" of the Geoxygene distribution is the JDBC driver 
+of PostgreSQL  v7.4 for JDBC 3.
+http://jdbc.postgresql.org/
+
+
+6) POSTGIS
+
+PostGIS adds support for geographic objects to the PostgreSQL 
+object-relational database.
+Website: http://postgis.refractions.net/
+
+PostGIS is released under the LGPL license:
+http://www.gnu.org/copyleft/lesser.html
+
+The file "postgis.jar" of the Geoxygene distribution allows the access 
+to PostGIS database from Java code and is included in the PostGIS distribution.
+
+
+7) ORACLE 
+
+The distribution of Oracle libraries is not allowed.
+In order to compile Geoxygene you will need :
+- a JDBC driver
+- the "SDOAPI" library that allows the access to "Oracle spatial" database from Java code 

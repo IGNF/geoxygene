@@ -1,0 +1,293 @@
+<!DOCTYPE databases PUBLIC "-//EXOLAB/Castor JDO Configuration DTD Version 1.0//EN" 
+                            "/home/users/braun/Oxygene/dtd/mapping.dtd">
+
+<!-- Mapping pour le dictionnaire des données -->
+
+<mapping>
+	<!-- Mapping de la classe GF_FeatureType -->
+	<class name="dico.GF_FeatureType" identity="id" key-generator="MAX">
+	    	<description>
+			Feature type = classe géographique.
+		</description>	
+		<map-to table="GF_FEATURETYPE"/>
+		<field name="id" type="integer">
+			<sql name="GF_FeatureTypeID" type="integer"/>
+        	</field>
+		<field name="typeName" type="string">
+			<sql name="typeName" type="varchar"/>
+		</field>
+		<field name="definition" type="string">
+			<sql name="definition" type="varchar"/>
+		</field>
+		<field name="isAbstract" type="boolean">
+			<sql name="isAbstract" type="bit"/>
+		</field>
+                <!-- lien 1-N avec les attributs -->
+                <field name="attribute" type="dico.GF_AttributeType" collection="arraylist">
+			<sql many-key="GF_FeatureTypeID"/>
+		</field>
+                <!-- lien 1-N avec les operations -->
+                <field name="operation" type="dico.GF_Operation" collection="arraylist">
+			<sql many-key="GF_FeatureTypeID"/>
+		</field>
+                <!-- lien 1-N avec les roles -->
+                <field name="role" type="dico.GF_AssociationRole" collection="arraylist">
+			<sql many-key="GF_FeatureTypeID"/>
+		</field>
+                <!-- lien 1-N avec les relations d'héritage, pour la généralisation -->
+                <field name="generalization" type="dico.GF_InheritanceRelation" collection="arraylist">
+			<sql many-key="subType"/>
+		</field>
+                <!-- lien 1-N avec les relations d'héritage, pour la spécialisation -->
+                <field name="specialization" type="dico.GF_InheritanceRelation" collection="arraylist">
+			<sql many-key="superType"/>
+		</field>
+                <!-- lien 1-N avec les contraintes -->
+                <field name="constraint" type="dico.GF_Constraint" collection="arraylist">
+			<sql many-key="GF_FeatureTypeID"/>
+		</field>
+                <!-- lien N-N avec les associations -->
+                <field name="memberOf" type="dico.GF_AssociationType" collection="arraylist">
+			<sql many-key="GF_FeatureTypeID" name="GF_AssociationTypeID" many-table="GF_Association_Feature"/>
+		</field>
+	</class>
+        
+        <!-- Mapping de la classe GF_AssociationType -->
+	<class name="dico.GF_AssociationType" identity="id" key-generator="MAX">
+	    	<description>
+			Association entre feature types.
+		</description>	
+		<map-to table="GF_ASSOCIATIONTYPE"/>
+                <!-- champs hérités de GF_FeatureType -->
+		<field name="id" type="integer">
+			<sql name="GF_AssociationTypeID" type="integer"/>
+        	</field>
+		<field name="typeName" type="string">
+			<sql name="typeName" type="varchar"/>
+		</field>
+		<field name="definition" type="string">
+			<sql name="definition" type="varchar"/>
+		</field>
+		<field name="isAbstract" type="boolean">
+			<sql name="isAbstract" type="bit"/>
+		</field>
+                <!-- champ propre à cette classe -->
+                <field name="typeAssociation" type="string">
+			<sql name="associationType" type="varchar"/>
+		</field>
+                <!-- lien 1-N avec les attributs -->
+                <field name="attribute" type="dico.GF_AttributeType" collection="arraylist">
+			<sql many-key="GF_AssociationTypeID"/>
+		</field>
+                <!-- lien 1-N avec les operations -->
+                <field name="operation" type="dico.GF_Operation" collection="arraylist">
+			<sql many-key="GF_AssociationTypeID"/>
+		</field>
+                <!-- lien 1-N avec les roles -->
+                <field name="role" type="dico.GF_AssociationRole" collection="arraylist">
+			<sql many-key="GF_AssociationTypeID"/>
+		</field>
+                <!-- lien 1-N avec les relations d'héritage, pour la généralisation -->
+                <field name="generalization" type="dico.GF_InheritanceRelation" collection="arraylist">
+			<sql many-key="subType"/>
+		</field>
+                <!-- lien 1-N avec les relations d'héritage, pour la spécialisation -->
+                <field name="specialization" type="dico.GF_InheritanceRelation" collection="arraylist">
+			<sql many-key="superType"/>
+		</field>
+                <!-- lien 1-N avec les contraintes -->
+                <field name="constraint" type="dico.GF_Constraint" collection="arraylist">
+			<sql many-key="GF_AssociationTypeID"/>
+		</field>
+                <!-- lien N-N avec les feature types -->
+                <field name="linkBetween" type="dico.GF_FeatureType" collection="arraylist">
+			<sql many-key="GF_AssociationTypeID" name="GF_FeatureTypeID" many-table="GF_Association_Feature"/>
+		</field>
+	</class>
+        
+        <!-- Mapping de la classe GF_InheritanceRelation -->
+        <class name="dico.GF_InheritanceRelation" identity="id" key-generator="MAX">
+	    	<description>
+			Relation d'héritage (spécialisation ou généralisation).
+		</description>	
+		<map-to table="GF_INHERITANCERELATION"/>
+		<field name="id" type="integer">
+			<sql name="GF_InheritanceRelationID" type="integer"/>
+        	</field>
+		<field name="name" type="string">
+			<sql name="name" type="varchar"/>
+		</field>
+		<field name="description" type="string">
+			<sql name="description" type="varchar"/>
+		</field>
+		<field name="uniqueInstance" type="boolean">
+			<sql name="uniqueInstance" type="bit"/>
+		</field>
+                <!-- clés étrangères sur GF_FeatureType -->
+       		<field name="subType" type="dico.GF_FeatureType">
+			<sql name="subType"/>
+        	</field>
+                <field name="superType" type="dico.GF_FeatureType">
+			<sql name="superType"/>
+        	</field>        
+	</class>
+        
+        <!-- Mapping de la classe GF_AttributeType -->
+        <class name="dico.GF_AttributeType" identity="id" key-generator="MAX">
+	    	<description>
+			Attribut d'un feature type ou d'une association.
+		</description>	
+		<map-to table="GF_ATTRIBUTETYPE"/>
+                <!-- identifiant hérité de GF_PropertyType -->
+		<field name="id" type="integer">
+			<sql name="GF_AttributeTypeID" type="integer"/>
+        	</field>
+                <!-- clé étrangère sur GF_FeatureType -->
+       		<field name="featureType" type="dico.GF_FeatureType">
+			<sql name="GF_FeatureTypeID"/>
+        	</field>
+                <!-- clé étrangère sur GF_AssociationType -->
+       		<field name="associationType" type="dico.GF_AssociationType">
+			<sql name="GF_AssociationTypeID"/>
+        	</field>
+                <!-- champs hérités de GF_PropertyType -->
+		<field name="memberName" type="string">
+			<sql name="memberName" type="varchar"/>
+		</field>
+		<field name="definition" type="string">
+			<sql name="definition" type="varchar"/>
+		</field>
+                <!-- champs propres à cette classe -->
+		<field name="valueType" type="string">
+			<sql name="valueType" type="varchar"/>
+		</field>
+		<field name="domainOfValues" type="string">
+			<sql name="domainOfValues" type="varchar"/>
+		</field>
+		<field name="cardMin" type="integer">
+			<sql name="cardMin" type="integer"/>
+		</field>
+		<field name="cardMax" type="integer">
+			<sql name="cardMax" type="integer"/>
+		</field>
+                <!-- clé étrangère sur GF_AttributeType -->
+                <field name="characterize" type="dico.GF_AttributeType">
+			<sql name="characterizeID"/>
+		</field>
+                <!-- lien 1-N avec les contraintes -->
+                <field name="constraint" type="dico.GF_Constraint" collection="arraylist">
+			<sql many-key="GF_AttributeTypeID"/>
+		</field>         
+	</class>
+        
+        <!-- Mapping de la classe GF_Operation -->
+       <class name="dico.GF_Operation" identity="id" key-generator="MAX">
+	    	<description>
+			Operation sur un feature type ou une association.
+		</description>	
+		<map-to table="GF_OPERATION"/>
+                <!-- identifiant hérité de GF_PropertyType -->
+		<field name="id" type="integer">
+			<sql name="GF_OperationID" type="integer"/>
+        	</field>
+                <!-- clé étrangère sur GF_FeatureType -->
+       		<field name="featureType" type="dico.GF_FeatureType">
+			<sql name="GF_FeatureTypeID"/>
+        	</field>
+                <!-- clé étrangère sur GF_AssociationType -->
+       		<field name="associationType" type="dico.GF_AssociationType">
+			<sql name="GF_AssociationTypeID"/>
+        	</field>
+                <!-- champs hérités de GF_PropertyType -->
+		<field name="memberName" type="string">
+			<sql name="memberName" type="varchar"/>
+		</field>
+		<field name="definition" type="string">
+			<sql name="definition" type="varchar"/>
+		</field>
+                <!-- champ propre à cette classe -->
+		<field name="signature" type="string">
+			<sql name="signature" type="varchar"/>
+		</field>
+                <!-- lien 1-N avec les contraintes -->
+                <field name="constraint" type="dico.GF_Constraint" collection="arraylist">
+			<sql many-key="GF_OperationID"/>
+		</field>
+	</class>
+        
+        <!-- Mapping de la classe GF_AssociationRole -->
+        <class name="dico.GF_AssociationRole" identity="id" key-generator="MAX">
+	    	<description>
+			Rôle d'une association (=les extrémités du lien).
+		</description>	
+		<map-to table="GF_ASSOCIATIONROLE"/>
+                <!-- identifiant hérité de GF_PropertyType -->
+		<field name="id" type="integer">
+			<sql name="GF_AssociationRoleID" type="integer"/>
+        	</field>
+                <!-- clé étrangère sur GF_FeatureType -->
+       		<field name="featureType" type="dico.GF_FeatureType">
+			<sql name="GF_FeatureTypeID"/>
+        	</field>
+                <!-- clé étrangère sur GF_AssociationType -->
+       		<field name="associationType" type="dico.GF_AssociationType">
+			<sql name="GF_AssociationTypeID"/>
+        	</field>
+                <!-- champs hérités de GF_PropertyType -->
+		<field name="memberName" type="string">
+			<sql name="memberName" type="varchar"/>
+		</field>
+		<field name="definition" type="string">
+			<sql name="definition" type="varchar"/>
+		</field>
+                <!-- champs propres à cette classe -->
+		<field name="valueType" type="string">
+			<sql name="valueType" type="varchar"/>
+		</field>
+		<field name="cardMin" type="integer">
+			<sql name="cardMin" type="integer"/>
+		</field>
+		<field name="cardMax" type="integer">
+			<sql name="cardMax" type="integer"/>
+		</field>
+                <!-- lien 1-N avec les contraintes -->
+                <field name="constraint" type="dico.GF_Constraint" collection="arraylist">
+			<sql many-key="GF_AssociationRoleID"/>
+		</field>
+	</class>
+        
+       <!-- Mapping de la classe GF_Constraint -->
+       <class name="dico.GF_Constraint" identity="id" key-generator="MAX">
+	    	<description>
+			Contrainte sur un feature type, ou une association, ou une propriete.
+		</description>	
+		<map-to table="GF_CONSTRAINT"/>
+ 		<field name="id" type="integer">
+			<sql name="GF_ConstraintID" type="integer"/>
+        	</field>
+               	<field name="description" type="string">
+			<sql name="description" type="varchar"/>
+		</field>
+                <!-- clé étrangère sur GF_FeatureType -->
+       		<field name="featureType" type="dico.GF_FeatureType">
+			<sql name="GF_FeatureTypeID"/>
+        	</field>
+                <!-- clé étrangère sur GF_AssociationType -->
+       		<field name="associationType" type="dico.GF_AssociationType">
+			<sql name="GF_AssociationTypeID"/>
+        	</field>
+                <!-- clé étrangère sur GF_AttributeType -->
+       		<field name="attributeType" type="dico.GF_AttributeType">
+			<sql name="GF_AttributeTypeID"/>
+        	</field>
+                <!-- clé étrangère sur GF_Operation -->
+       		<field name="operation" type="dico.GF_Operation">
+			<sql name="GF_OperationID"/>
+        	</field>
+                <!-- clé étrangère sur GF_AssociationRole -->
+       		<field name="associationRole" type="dico.GF_AssociationRole">
+			<sql name="GF_AssociationRoleID"/>
+        	</field>
+	</class>
+
+</mapping>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN" "http://oxygene.ign.fr/dtd/mapping.dtd">
+<mapping>
+  <class name="exemple.casdecole.ClasseMere" key-generator="MAX" identity="id">
+    <map-to table="MERE" />
+    <field name="classtype" type="string" required="true">
+      <sql name="CLASSTYPE" />
+      <bind-xml name="classtype" />
+    </field>
+    <field name="id" type="integer">
+      <sql name="ID" />
+      <bind-xml name="id" />
+    </field>
+    <field name="field0" type="integer">
+      <sql name="FIELD0" />
+      <bind-xml name="field0" />
+    </field>
+    <field name="field1" type="string">
+      <sql name="FIELD1" />
+      <bind-xml name="field1" />
+    </field>
+    <field name="field2" type="boolean">
+      <sql name="FIELD2" />
+      <bind-xml name="field2" />
+    </field>
+    <field name="lien_11" type="exemple.casdecole.AutreMere">
+      <sql name="AUTRE_MERE_ID" />
+      <bind-xml name="lien_11" />
+    </field>
+    <field name="lien_nm" collection="arraylist" type="exemple.casdecole.AutreFille">
+      <sql many-table="LIEN_NM" many-key="CL_MERE_ID" name="AUTRE_FILLE_ID" />
+      <bind-xml name="lien_nm" />
+    </field>
+  </class>
+  <class name="exemple.casdecole.ClasseFille2" extends="exemple.casdecole.ClasseMere">
+    <map-to table="FILLE2" />
+    <field name="field4" type="integer" direct="true">
+      <sql name="FIELD4" />
+      <bind-xml name="field4" />
+    </field>
+    <field name="lien_1n" collection="arraylist" type="exemple.casdecole.Depend">
+      <sql many-key="FILLE2_ID" />
+      <bind-xml name="lien_1n" />
+    </field>
+  </class>
+  <class name="exemple.casdecole.ClasseFille1" extends="exemple.casdecole.ClasseMere">
+    <map-to table="FILLE1" />
+    <field name="field3" type="double" direct="true">
+      <sql name="FIELD3" />
+      <bind-xml name="field3" />
+    </field>
+  </class>
+  <class name="exemple.casdecole.AutreMere" key-generator="MAX" identity="id">
+    <map-to table="AUTRE_MERE" />
+    <field name="id" type="integer">
+      <sql name="ID" />
+      <bind-xml name="id" />
+    </field>
+    <field name="lien_11" type="exemple.casdecole.ClasseMere">
+      <sql name="CL_MERE_ID" />
+      <bind-xml name="lien_11" />
+    </field>
+  </class>
+  <class name="exemple.casdecole.AutreFille" extends="exemple.casdecole.AutreMere">
+    <map-to table="AUTRE_FILLE" />
+    <cache-type type="count-limited" capacity="50" />
+    <field name="field0" type="integer">
+      <sql name="FIELD0" />
+      <bind-xml name="field0" />
+    </field>
+    <field name="lien_nm" collection="arraylist" type="exemple.casdecole.ClasseMere">
+      <sql many-table="LIEN_NM" name="CL_MERE_ID" many-key="AUTRE_FILLE_ID" />
+      <bind-xml name="lien_nm" />
+    </field>
+  </class>
+  <class name="exemple.casdecole.Depend" key-generator="MAX" depends="exemple.casdecole.ClasseFille2" identity="id">
+    <map-to table="DEPEND" />
+    <field name="id" type="integer">
+      <sql name="ID" />
+      <bind-xml name="id" />
+    </field>
+    <field name="lien_1n" type="exemple.casdecole.ClasseFille2">
+      <sql name="FILLE2_ID" />
+      <bind-xml name="lien_1n" />
+    </field>
+  </class>
+</mapping>
+

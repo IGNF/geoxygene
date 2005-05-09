@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- build.xml of GeOxygene - generated on February 27, 2005 by Thierry Badard -->
+
+<project default="compile" name="geoxygene" basedir=".">
+
+  <description>
+    GeOxygene aims at providing an open framework compliant with OGC/ISO specifications 
+    for the development and deployment of geographic (GIS) applications. It is a open 
+    source contribution of the COGIT laboratory at the Institut Geographique National 
+    (the French National Mapping Agency).
+    
+    GeOxygene is released under the GNU Lesser General Public License (LGPL) terms and 
+    conditions. Please, see file LICENSE for further details.
+    
+    Authors: Thierry Badard and Arnaud Braun.
+  </description>
+
+  <property file="${user.home}/build.properties"/>
+  <property file="build.properties"/>
+  
+  <path id="compilation-classpath">
+    <fileset dir="${lib.dir}">
+      <include name="**/*.jar"/>
+      <include name="**/*.zip"/>
+    </fileset>
+    <pathelement path="${classes.dir}"/>
+    <pathelement location="${j2ee.libdir}/j2ee.jar"/>
+  </path>
+
+  <target name="init" description="o Initializes the build process">
+    <mkdir dir="${classes.dir}"/>
+    <mkdir dir="${javadoc.dir}"/>
+    <mkdir dir="${dist.dir}"/>
+    <!-- <mkdir dir="${data.dir}"/> -->
+  </target>
+  
+  <target name="clean" description="o Cleans up the generated directories">
+    <delete failonerror="false" dir="${classes.dir}"/>
+    <delete failonerror="false" dir="${dist.dir}"/>
+    <delete failonerror="false" dir="${javadoc.dir}"/>
+  </target>
+  
+  <target name="compile" description="o Compiles the code" depends="init">
+    <javac destdir="${classes.dir}" deprecation="true" debug="true" optimize="false" excludes="**/package.html">
+      <src>
+        <pathelement location="${src.dir}">
+        </pathelement>
+      </src>
+      <classpath refid="compilation-classpath"/>
+    </javac>
+  </target>
+  
+  <target name="jar" description="o Creates the jar" depends="compile">
+    <jar jarfile="${dist.dir}/${dist-filename-prefix}.jar" basedir="${classes.dir}"/>
+  </target>
+  
+  <target name="javadoc" description="o Generates javadoc" depends="compile">
+    <javadoc Locale="fr_FR" destdir="${javadoc.dir}" access="package" use="true"
+             notree="false" nonavbar="false" noindex="false"
+             splitindex="true" author="true" version="true"
+             nodeprecatedlist="false" nodeprecated="false"
+             packagenames="fr.*"
+             sourcepath="${src.dir}"
+             windowtitle="${javadoc.title}"
+             doctitle="${javadoc.title}">
+      <classpath refid="compilation-classpath"/>
+    </javadoc>
+  </target>
+  
+  <target name="dist" description="o Creates the distribution" depends="jar, javadoc">
+    <!-- <zip destfile="${dist.dir}/${dist-filename-prefix}-javadoc.zip" basedir="${javadoc.dir}"/> -->
+    <!-- <zip destfile="${dist.dir}/${dist-filename-prefix}-javadoc.zip" basedir="." includes="${javadoc.dir}/**"/> -->
+    <zip destfile="${dist.dir}/${dist-filename-prefix}-javadoc.zip">
+      <zipfileset dir="${javadoc.dir}" prefix="${dist-filename-prefix}/${javadoc.dir}"></zipfileset>
+    </zip>
+    <zip destfile="${dist.dir}/${dist-filename-prefix}-src.zip">
+      <zipfileset dir="${src.dir}" prefix="${dist-filename-prefix}/${src.dir}"></zipfileset>
+      <zipfileset file="./build.*" prefix="${dist-filename-prefix}"></zipfileset>
+      <zipfileset file="${apache-license.file}" prefix="${dist-filename-prefix}"></zipfileset>
+      <zipfileset file="${install.file}" prefix="${dist-filename-prefix}"></zipfileset>
+      <zipfileset file="${license.file}" prefix="${dist-filename-prefix}"></zipfileset>
+      <zipfileset file="${news.file}" prefix="${dist-filename-prefix}"></zipfileset>
+      <zipfileset file="${notice.file}" prefix="${dist-filename-prefix}"></zipfileset>
+      <zipfileset file="${readme.file}" prefix="${dist-filename-prefix}"></zipfileset>
+      <zipfileset file="${todo.file}" prefix="${dist-filename-prefix}"></zipfileset>
+      <zipfileset dir="${lib.dir}" prefix="${dist-filename-prefix}/${lib.dir}"></zipfileset>
+      <zipfileset dir="${mapping.dir}" prefix="${dist-filename-prefix}/${mapping.dir}"></zipfileset>
+      <zipfileset dir="${sql.dir}" prefix="${dist-filename-prefix}/${sql.dir}"></zipfileset>
+      <zipfileset dir="${data.dir}" prefix="${dist-filename-prefix}/${data.dir}"></zipfileset>
+    </zip>
+  </target>
+  
+  <target name="clean-dist" description="o Cleans and creates the distribution" depends="clean, dist">
+  </target>  
+  
+</project>

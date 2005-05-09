@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN" "http://oxygene.ign.fr/dtd/mapping.dtd">
+
+<!-- fichier de mapping pour FT_Feature  -->
+
+<mapping>
+
+  <class name="geoschema.featroot.FT_Feature" key-generator="MAX" identity="id">
+    <map-to table="FT_FEATURE" /> 
+    <field name="classtype" type="string" required="true">
+      <sql name="CLASSTYPE" />
+    </field>
+    <field name="id" type="integer">
+      <sql name="COGITID" />
+    </field>
+    <field name="topo" type="spatial.toporoot.TP_Object"  >
+        <sql name="TP_OBJECTID" many-key="FT_FEATUREID" />
+    </field>
+    <field name="objettrait" type="geoschema.featroot.FT_Feature" collection="collection" lazy="true">
+        <sql name="OBJET_TRAIT_ID" many-key="OBJET_GEO_ID" many-table="GEO_TRAIT" />
+    </field>
+    <field name="objetgeo" type="geoschema.featroot.FT_Feature" collection="collection" lazy="true">
+        <sql name="OBJET_GEO_ID" many-key="OBJET_TRAIT_ID" many-table="GEO_TRAIT" />
+    </field>    
+    <field name="dalle_id" type="integer" direct="true">
+      <sql name="dalle_id" type="integer"/>
+    </field>    
+  </class>
+  
+  <class name="geoschema.featroot.FT_Dalle" key-generator="MAX" identity="id">
+        <map-to table="DALLAGE"/>
+    <field name="id" type="integer">
+        <sql name="COGITID" type="integer"/>
+    </field>        
+    <field name="geom" type="GM_Object">
+        <sql name="GEOM" type="sdo_geometry[2]"  dirty="ignore"/>
+    </field>
+  </class>       
+    
+</mapping>
+  

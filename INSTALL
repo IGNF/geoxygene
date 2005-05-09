@@ -1,0 +1,23 @@
+GeOxygene, version 1.0.
+
+Basic installation instructions:
+-------------------------------
+
+In order to build GeOxygene from sources, please follow basic instructions detailled above 
+
+0. You MUST have a Java SDK installed ;-)
+
+1. You MUST have the j2ee.jar library stemming from J2EE in you CLASSPATH or copy it into the /lib 
+   sub directory of the project.
+
+2. You MUST have Oracle JDBC driver and SDO API libraries in your CLASSPATH or copy these libraries 
+   into the /lib sub directory of the project.
+   
+3. You can compile the project from prompt with Apache Ant (see http://ant.apache.org), just by 
+   typing : ant
+
+More Ant targets are available by typing: ant -p. Please refer to the Ant user guide for 
+detailed instructions on how to use Ant.
+
+If you want to build GeOxygene from Eclipse or another IDE, please refer to the GeOxygene User 
+Guide, available at http://oxygene-project.sourceforge.net.
