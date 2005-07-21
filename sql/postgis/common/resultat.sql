@@ -32,7 +32,7 @@
 SELECT DropGeometrycolumn ('','resultat','geom');
 DROP TABLE RESULTAT ;
 CREATE TABLE RESULTAT (
-        GID    	    INTEGER  PRIMARY KEY,
+        COGITID    	    INTEGER  PRIMARY KEY,
         DOUBLE1     DOUBLE PRECISION,
         INT1        INTEGER,
         STRING1     VARCHAR(255),

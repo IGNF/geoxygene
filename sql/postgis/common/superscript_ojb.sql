@@ -24,18 +24,11 @@
 --  
 --
 
--- Creation de tables necessaires au fonctionnement de GeOxygene avec Oracle et OJB.
--- Script a appliquer avant toute d'utilisation de GeOxygene avec Oracle et OJB.
+-- Creation de tables necessaires au fonctionnement de GeOxygene avec OJB.
+-- Script a appliquer avant toute d'utilisation de GeOxygene avec OJB.
 
 
---------------------------------------------------------------------------
--- Creation de la table utilisee pour les requetes spatiales -------------
---------------------------------------------------------------------------
-DROP TABLE TEMP_REQUETE;
-CREATE TABLE TEMP_REQUETE (
-	GID NUMBER PRIMARY KEY,
-	GEOM MDSYS.SDO_GEOMETRY
-);
+
 
 
 --------------------------------------------------------------------------
