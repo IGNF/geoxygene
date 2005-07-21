@@ -2,7 +2,7 @@
 
 <class-descriptor class="fr.ign.cogit.geoxygene.example.Resultat" table="RESULTAT"  >
   <field-descriptor name="id" column="COGITID" jdbc-type="INTEGER" primarykey="true" autoincrement="true" />
-  <field-descriptor name="geom" column="GEOM" jdbc-type="STRUCT" conversion="fr.ign.cogit.geoxygene.datatools.ojb.GeomGeOxygene2Oracle"/>
+  <field-descriptor name="geom" column="GEOM" jdbc-type="STRUCT" conversion="fr.ign.cogit.geoxygene.datatools.ojb.GeomGeOxygene2Dbms"/>
   <field-descriptor name="double1" column="DOUBLE1" jdbc-type="DOUBLE" />   
   <field-descriptor name="int1" column="INT1" jdbc-type="INTEGER" />     
   <field-descriptor name="string1" column="STRING1" jdbc-type="VARCHAR" />  

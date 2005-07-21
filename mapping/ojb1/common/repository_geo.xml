@@ -25,6 +25,6 @@
   <field-descriptor name="num_route" column="NUM_ROUTE" jdbc-type="VARCHAR" />
   <field-descriptor name="class_adm" column="CLASS_ADM" jdbc-type="VARCHAR" />
   <field-descriptor name="gest_route" column="GEST_ROUTE" jdbc-type="VARCHAR" />
-  <field-descriptor name="geom" column="GEOM" jdbc-type="STRUCT" conversion="fr.ign.cogit.geoxygene.datatools.ojb.GeomGeOxygene2Oracle" />
+  <field-descriptor name="geom" column="GEOM" jdbc-type="STRUCT" conversion="fr.ign.cogit.geoxygene.datatools.ojb.GeomGeOxygene2Dbms" />
 </class-descriptor>
 
