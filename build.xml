@@ -2,7 +2,7 @@
 
 <!-- build.xml of GeOxygene - generated on February 27, 2005 by Thierry Badard -->
 
-<project default="compile" name="geoxygene" basedir=".">
+<project default="compile-without-oracle" name="geoxygene" basedir=".">
 
   <description>
     GeOxygene aims at providing an open framework compliant with OGC/ISO specifications 
@@ -50,6 +50,20 @@
       <classpath refid="compilation-classpath"/>
     </javac>
   </target>
+  
+  <target name="compile-without-oracle" description="o Compiles the code without Oracle libs" depends="init">
+    <javac destdir="${classes.dir}" 
+    		deprecation="true"
+    		debug="true" 
+    		optimize="false" 
+    		excludes="**/package.html,fr/ign/cogit/geoxygene/datatools/oracle/**">
+      <src>
+        <pathelement location="${src.dir}">
+        </pathelement>
+      </src>
+      <classpath refid="compilation-classpath"/>
+    </javac>
+  </target>  
   
   <target name="jar" description="o Creates the jar" depends="compile">
     <jar jarfile="${dist.dir}/${dist-filename-prefix}.jar" basedir="${classes.dir}"/>
