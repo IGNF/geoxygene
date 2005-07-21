@@ -32,7 +32,7 @@ import java.util.List;
 
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.datatools.Metadata;
-import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbOracle;
+import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
@@ -46,7 +46,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * (java -Xmx512M exemple.FirstExample) .
  *
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
  * 
  */
 
@@ -69,7 +69,7 @@ public class TestGeodatabase {
     public TestGeodatabase() {        
         
         //  iniatilsation de la Geodatabase
-        db = new GeodatabaseOjbOracle();     // OJB et Oracle
+		db = GeodatabaseOjbFactory.newInstance();		
         
         try {
                 tronconClass = Class.forName(nomClasse);

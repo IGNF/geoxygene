@@ -29,7 +29,7 @@ package fr.ign.cogit.geoxygene.example.tutorial;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
-import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbOracle;
+import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 
 
 /**
@@ -56,7 +56,7 @@ public class TestMyClass {
     public TestMyClass() {
         // SGBD = oracle ; mappeur = OJB
         // initialise la connection au SGBD et le mapping
-        db = new GeodatabaseOjbOracle() ;
+		db = GeodatabaseOjbFactory.newInstance();
     }
      
      

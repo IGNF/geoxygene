@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
-import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbOracle;
+import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 
 
 
@@ -56,7 +56,7 @@ import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbOracle;
 
 public class TestRelationsMonoPersistantes {
     
-    private static Geodatabase db = new GeodatabaseOjbOracle();
+    private static Geodatabase db = GeodatabaseOjbFactory.newInstance();
 
     public static void main (String args[]) {
         System.out.println("DEBUT DES TESTS");

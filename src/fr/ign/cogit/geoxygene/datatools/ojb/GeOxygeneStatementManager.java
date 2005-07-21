@@ -26,6 +26,7 @@
 
 package fr.ign.cogit.geoxygene.datatools.ojb;
 
+import java.lang.reflect.Method;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -57,6 +58,9 @@ import org.apache.ojb.broker.metadata.ProcedureDescriptor;
 import org.apache.ojb.broker.platforms.Platform;
 import org.apache.ojb.broker.platforms.PlatformException;
 import org.apache.ojb.broker.platforms.PlatformFactory;
+import org.apache.ojb.broker.platforms.PlatformOracle9iImpl;
+import org.apache.ojb.broker.platforms.PlatformOracleImpl;
+import org.apache.ojb.broker.platforms.PlatformPostgreSQLImpl;
 import org.apache.ojb.broker.query.BetweenCriteria;
 import org.apache.ojb.broker.query.Criteria;
 import org.apache.ojb.broker.query.ExistsCriteria;
@@ -66,8 +70,13 @@ import org.apache.ojb.broker.query.NullCriteria;
 import org.apache.ojb.broker.query.Query;
 import org.apache.ojb.broker.query.SelectionCriteria;
 import org.apache.ojb.broker.query.SqlCriteria;
+import org.apache.ojb.broker.util.JdbcTypesHelper;
 import org.apache.ojb.broker.util.logging.Logger;
 import org.apache.ojb.broker.util.logging.LoggerFactory;
+import org.postgis.PGgeometry;
+
+//import fr.ign.cogit.geoxygene.datatools.oracle.ArrayGeOxygene2Oracle;
+//import fr.ign.cogit.geoxygene.datatools.oracle.GeomGeOxygene2Oracle;
 
 /**
  * Meme chose que la classe org.apache.ojb.broker.accesslayer.StatementManager. 
@@ -83,8 +92,12 @@ import org.apache.ojb.broker.util.logging.LoggerFactory;
  *  changement dans getNonKeyValues
  *  modification des " setNull " (plusieurs) pour gerer le cas de l'ecriture de geometries nulles.
  * 
+ * AB 11 juillet 2005 : 
+ * <br> Utilisation des noms de classes et de la réflection pour permettre la compilation sépérée pour Oracle.
+ * <br> Patch pour permettre l'utilisation de la meme classe de "FieldConversion" pour Oracle et Postgis. 
+ * 
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
  * 
  */
 
@@ -107,6 +120,22 @@ public class GeOxygeneStatementManager implements StatementManagerIF
      */
     private boolean m_eagerRelease;
     private ConnectionManagerIF m_conMan;
+    
+	// AJOUT pour GeOxygene ---------------------------------------------------
+	// Nom des classes relatives à Oracle, 
+	//en String pour permettre la compilation séparée
+	private final String GeomGeOxygene2Oracle_CLASS_NAME = 
+		"fr.ign.cogit.geoxygene.datatools.oracle.GeomGeOxygene2Oracle";
+	private final String ArrayGeOxygene2Oracle_CLASS_NAME = 
+		"fr.ign.cogit.geoxygene.datatools.oracle.ArrayGeOxygene2Oracle";
+	private final String GeomGeOxygene2Postgis_CLASS_NAME = 
+		"fr.ign.cogit.geoxygene.datatools.postgis.GeomGeOxygene2Postgis";	
+	private Class arrayGeOxygene2OracleClass;
+	private Method geomGeOxygene2OracleMethod; 
+	private Method arrayGeOxygene2OracleMethod;
+	private Method geomGeOxygene2PostgisMethod;  	
+	// FIN AJOUT pour GeOxygene ---------------------------------------------------	
+
 
     public GeOxygeneStatementManager(final PersistenceBroker pBroker)
     {      
@@ -116,6 +145,39 @@ public class GeOxygeneStatementManager implements StatementManagerIF
         this.m_conMan = m_broker.serviceConnectionManager();
         m_eagerRelease = m_conMan.getConnectionDescriptor().getEagerRelease();
         m_platform = PlatformFactory.getPlatformFor(m_conMan.getConnectionDescriptor());
+        
+		// AJOUT pour GeOxygene -----------------------------------------------------------
+		// ORACLE
+		if (m_platform instanceof PlatformOracle9iImpl || m_platform instanceof PlatformOracleImpl)
+			try {
+				Class geomGeOxygene2OracleClass = Class.forName(GeomGeOxygene2Oracle_CLASS_NAME);
+				arrayGeOxygene2OracleClass = Class.forName(ArrayGeOxygene2Oracle_CLASS_NAME);
+				geomGeOxygene2OracleMethod = geomGeOxygene2OracleClass.getMethod("javaToSql",
+																new Class[] {Object.class, Connection.class});
+				arrayGeOxygene2OracleMethod = arrayGeOxygene2OracleClass.getMethod("javaToSql",
+																new Class[] {Object.class, Connection.class});				
+			} catch (Exception e) {
+				e.printStackTrace();	
+			}
+			
+		// POSTGIS
+		else if (m_platform instanceof PlatformPostgreSQLImpl)
+			try {
+				Class geomGeOxygene2PostgisClass = Class.forName(GeomGeOxygene2Postgis_CLASS_NAME);
+				geomGeOxygene2PostgisMethod = geomGeOxygene2PostgisClass.getMethod("javaToSql",
+																new Class[] {Object.class});
+			} catch (Exception e) {
+				e.printStackTrace();	
+			}	
+			
+		// AUTRE DBMS	
+		else {	
+			System.out.println("## Le SGBD n'est ni Oracle, ni PostgreSQL ##");
+			System.out.println("## Le programme s'arrête ##");
+			System.exit(0);
+		}			
+		// FIN AJOUT pour GeOxygene ---------------------------------------------------			
+
                  
      }
 
@@ -273,20 +335,44 @@ public class GeOxygeneStatementManager implements StatementManagerIF
             if (value != null)
             {  
                 // =======  DEBUT AJOUT POUR GeOxygene ====================               
-                if (fld.getFieldConversion() instanceof GeomGeOxygene2Oracle) {                   
-                    GeomGeOxygene2Oracle fieldConv = (GeomGeOxygene2Oracle) fld.getFieldConversion();
-                    m_platform.setObjectForStatement(stmt, index, fieldConv.javaToSql(value, stmt.getConnection()), Types.STRUCT);
-                } else if (fld.getFieldConversion() instanceof ArrayGeOxygene2Oracle) {                   
-                    ArrayGeOxygene2Oracle fieldConv = (ArrayGeOxygene2Oracle) fld.getFieldConversion();
-                    m_platform.setObjectForStatement(stmt, index, fieldConv.javaToSql(value, stmt.getConnection()), Types.ARRAY);
+                // Gestion des géométrie
+                if (fld.getFieldConversion() instanceof GeomGeOxygene2Dbms) {   
+                	// ORACLE
+                	if (m_platform instanceof PlatformOracle9iImpl || m_platform instanceof PlatformOracleImpl) {
+						try {
+							Object sql = geomGeOxygene2OracleMethod.invoke(fld.getFieldConversion(), new Object[]{value, stmt.getConnection()});	
+							m_platform.setObjectForStatement(stmt, index, sql, Types.STRUCT);
+						} catch (Exception e) {
+							e.printStackTrace();					
+						}  
+                	} // POSTGIS
+					if (m_platform instanceof PlatformPostgreSQLImpl) {
+						try {
+							Object sql = geomGeOxygene2PostgisMethod.invoke(fld.getFieldConversion(), new Object[]{value});	
+							m_platform.setObjectForStatement(stmt, index, sql, Types.CHAR);
+						} catch (Exception e) {
+							e.printStackTrace();					
+						}                 	
+					}
+					
+				// Gestion des tableaux            	
+                } else if (fld.getFieldConversion().getClass() == arrayGeOxygene2OracleClass) {   
+                	try {                
+						Object sql = arrayGeOxygene2OracleMethod.invoke(fld.getFieldConversion(), new Object[]{value, stmt.getConnection()});	
+                    	m_platform.setObjectForStatement(stmt, index, sql, Types.ARRAY);
+					} catch (Exception e) {
+						e.printStackTrace();					
+					}                                   	
                 } else
-                // =======  FIN AJOUT POUR GeOxygene ======================             
+                // =======  FIN AJOUT POUR GeOxygene ======================    
+                // S'applique aux types d'objets standards (ni geometrie, ni tableau)         
                 
                 m_platform.setObjectForStatement(stmt, index, fld.getFieldConversion().javaToSql(value), fld.getJdbcType().getType());
             }
             else
             {
-                // =======  DEBUT AJOUT POUR GeOxygene ====================                                               
+                // =======  DEBUT AJOUT POUR GeOxygene ====================   
+                // Gestion des géométries nulles sous Oracle (plante sinon)                                            
                 if (fld.getJdbcType().getType() == Types.STRUCT) 
                     try {
                         stmt.setNull(index, fld.getJdbcType().getType(), "MDSYS.SDO_GEOMETRY");
@@ -523,13 +609,22 @@ public class GeOxygeneStatementManager implements StatementManagerIF
             for (int i = 0; i < values.length; i++)
             {
                 ValueContainer val = values[i];
+                
+				// DEBUT AJOUT POUR GEOXYGENE ----------------------------------------------
+				// Pour PostGIS le type JDBC STRUC n'est pas reconnu
+				// On cas en un autre type (CHAR)
+				if (val.getValue() instanceof PGgeometry)
+					val.setJdbcType(JdbcTypesHelper.getJdbcTypeByName("char"));
+				// FIN AJOUT POUR GEOXYGENE ----------------------------------------------
+				
                 if (val.getValue() != null)
                 {
                 	m_platform.setObjectForStatement(stmt, i + 1, val.getValue(), val.getJdbcType().getType());
                 }
                 else
                 {
-                    // =======  DEBUT AJOUT POUR GeOxygene ====================                                               
+                    // =======  DEBUT AJOUT POUR GeOxygene ====================    
+					// Gestion des géométries nulles sous Oracle (plante sinon)                                           
                     if (val.getJdbcType().getType() == Types.STRUCT) 
                         try {
                             stmt.setNull(i + 1, val.getJdbcType().getType(), "MDSYS.SDO_GEOMETRY");
@@ -601,13 +696,21 @@ public class GeOxygeneStatementManager implements StatementManagerIF
             // parameters for SET-clause
             for (int i = 0; i < values.length; i++)
             {
+				// DEBUT AJOUT POUR GEOXYGENE ----------------------------------------------
+				// Pour PostGIS le type JDBC STRUC n'est pas reconnu
+				// On cas en un autre type (CHAR)
+				if (values[i].getValue() instanceof PGgeometry)
+					values[i].setJdbcType(JdbcTypesHelper.getJdbcTypeByName("char"));
+				// FIN AJOUT POUR GEOXYGENE ----------------------------------------------
+				
                 if (values[i].getValue() != null)
                 {
                     m_platform.setObjectForStatement(stmt, index, values[i].getValue(), values[i].getJdbcType().getType());
                 }
                 else
                 {                    
-                    // =======  DEBUT AJOUT POUR GeOxygene ====================                                               
+                    // =======  DEBUT AJOUT POUR GeOxygene ==================== 
+					// Gestion des géométries nulles sous Oracle (plante sinon)                                             
                     if (values[i].getJdbcType().getType() == Types.STRUCT) 
                         try {
                             stmt.setNull(index, values[i].getJdbcType().getType(), "MDSYS.SDO_GEOMETRY");
@@ -647,7 +750,8 @@ public class GeOxygeneStatementManager implements StatementManagerIF
                 }
                 else
                 {
-                    // =======  DEBUT AJOUT POUR GeOxygene ====================                                               
+                    // =======  DEBUT AJOUT POUR GeOxygene ====================  
+					// Gestion des géométries nulles sous Oracle (plante sinon)                                           
                     if (values[i].getJdbcType().getType() == Types.STRUCT) 
                         try {
                             stmt.setNull(index, values[i].getJdbcType().getType(), "MDSYS.SDO_GEOMETRY");

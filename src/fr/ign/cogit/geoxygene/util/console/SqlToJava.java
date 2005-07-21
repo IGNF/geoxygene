@@ -44,7 +44,7 @@ import fr.ign.cogit.geoxygene.util.loader.gui.GUIConfigOJBXMLJava;
 /**
   *
   * @author Thierry Badard & Arnaud Braun
-  * @version 1.0
+  * @version 1.1
   * 
   */
 

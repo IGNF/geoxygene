@@ -36,7 +36,7 @@ import org.apache.ojb.broker.core.PersistenceBrokerImpl;
  * permettant d'appeler un "GeOxygeneBrokerHelper" qui permet d'ecrire des structures dans Oracle.
  * 
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
  * 
  */
 

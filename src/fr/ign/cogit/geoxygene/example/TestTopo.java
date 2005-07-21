@@ -29,7 +29,7 @@ package fr.ign.cogit.geoxygene.example;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
-import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbOracle;
+import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.topoprim.TP_DirectedEdge;
@@ -58,7 +58,7 @@ import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
  * (sinon changer le nom de la classe dans le code).
  * 
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
  * 
  */
 
@@ -73,7 +73,7 @@ public class TestTopo {
     /* Attributs */
     private static Geodatabase db;                        // source de données
     private static Class tronconClass;                  // classe de troncons   
-    private String nomClasse = "donnees.defaut.Troncon_route"; // nom de la classe a charger
+    private String nomClasse = "geoxygene.geodata.Troncon_route"; // nom de la classe a charger
     private static int identifiant = 664000;            // id du troncon a charger
 
     
@@ -82,7 +82,7 @@ public class TestTopo {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     /** constructeur : initialisation dses attributs */
     public TestTopo() {
-        db = new GeodatabaseOjbOracle();   // pour ne pas avoir les messages Castor        
+		db = GeodatabaseOjbFactory.newInstance();		      
         try {
             tronconClass = Class.forName(nomClasse);
         } catch (ClassNotFoundException e) {

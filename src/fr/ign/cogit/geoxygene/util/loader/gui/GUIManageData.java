@@ -68,7 +68,7 @@ public class GUIManageData extends JFrame {
 	private boolean spatialIndex = false;
 	private boolean emprise = false;
 	
-	private String genereIdsText = "Generation des COGITID (pour ORACLE)"; 
+	private String genereIdsText = "Generation des COGITID"; 
 	private String homogeneiseText = "Homogeneise les geometries";
 	private String spatialIndexText = "Calcul des index spatiaux";
 	private String empriseText = "Calcul des emprises (pour ORACLE)";

@@ -53,7 +53,7 @@ public class GUICompileMessage extends JFrame {
 	private static String message = "A faire toi meme ! : "+
 										"\n## Compiler les classes generees"+
 										"\n## Faire pointer le fichier racine repository.xml vers les fichiers de mapping generes"+
-										"\n et apres ceci, pour Oracle : creer une colonne \"COGITID\" dans vos tables " +
+										"\n et apres ceci : creer une colonne \"COGITID\" dans vos tables " +
 										"\n                  a l'aide du menu \"Manage Data\" (Generation COGITID)";
 	
 

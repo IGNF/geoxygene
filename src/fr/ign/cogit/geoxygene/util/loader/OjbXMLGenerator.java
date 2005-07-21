@@ -37,7 +37,7 @@ import fr.ign.cogit.geoxygene.datatools.Geodatabase;
   *
   *
   * @author Thierry Badard & Arnaud Braun
-  * @version 1.0
+  * @version 1.1
   * 
   */
 
@@ -58,7 +58,7 @@ class OjbXMLGenerator  {
     
     private String keyColumnName;
     private final static String KEY_COLUMN_NAME_ORACLE = "COGITID";
-	private final static String KEY_COLUMN_NAME_POSTGIS = "GID";
+	private final static String KEY_COLUMN_NAME_POSTGIS = "COGITID";
     
 	OjbXMLGenerator(Geodatabase Data, String path, String mappingFileName, String ExtentClassName, String extentMappingFileName )  {
 		try {  
@@ -185,11 +185,13 @@ class OjbXMLGenerator  {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////        
 	private String oracleType2JdbcType(String oracle) throws Exception {
 		if (oracle.compareToIgnoreCase("VARCHAR2") == 0) return "VARCHAR";
+		else if (oracle.compareToIgnoreCase("VARCHAR") == 0) return "VARCHAR";
+		else if (oracle.compareToIgnoreCase("CHAR") == 0) return "VARCHAR";
 		else if (oracle.compareToIgnoreCase("NUMBER") == 0) return "DOUBLE";
 		else if (oracle.compareToIgnoreCase("FLOAT") == 0) return "DOUBLE";
 		else if (oracle.compareToIgnoreCase("INTEGER") == 0) return "INTEGER";
-		else if (oracle.compareToIgnoreCase("CHAR") == 0) return "BIT";
-		else if (oracle.compareToIgnoreCase("SDO_GEOMETRY") == 0) return "STRUCT\" conversion=\"fr.ign.cogit.geoxygene.datatools.ojb.GeomGeOxygene2Oracle";
+		else if (oracle.compareToIgnoreCase("BOOLEAN") == 0) return "BIT";
+		else if (oracle.compareToIgnoreCase("SDO_GEOMETRY") == 0) return "STRUCT\" conversion=\"fr.ign.cogit.geoxygene.datatools.ojb.GeomGeOxygene2Dbms";
 		else throw new Exception("type non reconnu : "+oracle);
 	}
 		
@@ -198,12 +200,13 @@ class OjbXMLGenerator  {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////        
 	private String postgisType2JdbcType(String postgis) throws Exception {
 		if (postgis.compareToIgnoreCase("varchar") == 0) return "VARCHAR";
+		else if (postgis.compareToIgnoreCase("bpchar") == 0) return "VARCHAR";		
 		else if (postgis.compareToIgnoreCase("float8") == 0) return "DOUBLE";
 		else if (postgis.compareToIgnoreCase("float4") == 0) return "FLOAT";
 		else if (postgis.compareToIgnoreCase("int4") == 0) return "INTEGER";
 		else if (postgis.compareToIgnoreCase("int8") == 0) return "BIGINT";
 		else if (postgis.compareToIgnoreCase("bool") == 0) return "BIT";        
-		else if (postgis.compareToIgnoreCase("geometry") == 0) return "OTHER\" conversion=\"fr.ign.cogit.geoxygene.datatools.ojb.GeomGeOxygene2Postgis";
+		else if (postgis.compareToIgnoreCase("geometry") == 0) return "STRUCT\" conversion=\"fr.ign.cogit.geoxygene.datatools.ojb.GeomGeOxygene2Dbms";
 		else throw new Exception("type non reconnu : "+postgis);
 	}
 

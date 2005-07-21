@@ -27,7 +27,7 @@
 package fr.ign.cogit.geoxygene.example;
 
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
-import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbOracle;
+import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeCurve;
@@ -44,7 +44,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
  * (sinon changer le nom de la classe dans le code).
  * 
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
  * 
  */
 
@@ -54,7 +54,7 @@ public class TestGeomCurve {
     /* Attributs */
     private Geodatabase db;
     private Class tronconClass;	// classe de troncons  
-    private String nomClasse = "donnees.defaut.Troncon_route"; // nom de la classe a charger
+    private String nomClasse = "geoxygene.geodata.Troncon_route"; // nom de la classe a charger
     int identifiant1 = 50736;    // identifiant de l'objet qu'on va charger
     int identifiant2 = 50717;    // identifiant pour former une composite curve
     int identifiant3 = 50716;    // identifiant pour former une composite curve
@@ -62,7 +62,7 @@ public class TestGeomCurve {
     
     /* Creates new GeomCurve */
     public TestGeomCurve() {
-        db = new GeodatabaseOjbOracle();
+		db = GeodatabaseOjbFactory.newInstance();		
         try {
             tronconClass = Class.forName(nomClasse);
         } catch (ClassNotFoundException e) {

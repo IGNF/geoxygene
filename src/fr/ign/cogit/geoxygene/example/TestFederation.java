@@ -40,7 +40,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * a etudier.
  * 
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
  *
  */
 
@@ -57,8 +57,8 @@ public class TestFederation {
         System.out.println("coucou");
     
 		db1 = GeodatabaseOjbFactory.newInstance();
-		db2 = GeodatabaseOjbFactory.newInstance("thales");
-		db3 = GeodatabaseOjbFactory.newInstance("chenipan");
+		db2 = GeodatabaseOjbFactory.newInstance("ORACLE_ALIAS_NCDB");
+		db3 = GeodatabaseOjbFactory.newInstance("POSTGRES_ALIAS");
 		
 		System.out.println(db1);
 		System.out.println(db2);
@@ -66,8 +66,8 @@ public class TestFederation {
 
     	
     	try {
-    		featureClass1 = Class.forName("donnees.defaut.Bdc38_troncon_route");
-			featureClass2 = Class.forName("donnees.defaut.Noeud_routier");
+    		featureClass1 = Class.forName("geoxygene.geodata.Troncon_voie_ferree");
+			featureClass2 = Class.forName("geoxygene.geodata.Troncon_voie_ferree_50");
     	} catch (Exception e) {
     		e.printStackTrace();
     	}
@@ -76,19 +76,17 @@ public class TestFederation {
         System.out.println("nombre d'objets : "+db1.countObjects(featureClass1));    
 		System.out.println("nombre d'objets : "+db2.countObjects(featureClass2));        
          
-                
         System.out.print("chargement ... "+featureClass1.getName()+"   ");
         t1 = System.currentTimeMillis();
         FT_FeatureCollection coll1 = db1.loadAllFeatures(featureClass1);
         t2 = System.currentTimeMillis();
         System.out.println( (t2-t1) / 1000. );
-        
+
 		System.out.print("chargement ... "+featureClass2.getName()+"  ");
 		t1 = System.currentTimeMillis();
 		FT_FeatureCollection coll2 = db2.loadAllFeatures(featureClass2);
 		t2 = System.currentTimeMillis();
 		System.out.println( (t2-t1) / 1000. );
-		
 		
 		System.out.println("Calcul buffer 1 ...");
 		int i = 0;
@@ -109,7 +107,7 @@ public class TestFederation {
 		while (coll2.hasNext()) {
 			i++;
 			GM_Object geom = coll2.next().getGeom();
-			geom = geom.buffer(1000.);
+			geom = geom.buffer(50.);
 			aggr.add(geom);
 			if (i > 1000) break;
 		}

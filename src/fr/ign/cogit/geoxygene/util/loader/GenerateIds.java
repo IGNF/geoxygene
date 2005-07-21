@@ -46,7 +46,7 @@ import fr.ign.cogit.geoxygene.datatools.Geodatabase;
   * et unicite sur toutes les tables geographiques de la base (par l'algo du max) fonctionnent.
   *
   * @author Thierry Badard & Arnaud Braun
-  * @version 1.0
+  * @version 1.1
   * 
   */
 
@@ -60,6 +60,7 @@ public class GenerateIds {
 	private boolean unique;  // veut-on des identifiants uniques sur toute la base ?
 	
 	private final static String ORACLE_COLUMN_QUERY = "SELECT TABLE_NAME FROM USER_SDO_GEOM_METADATA";
+	private final static String POSTGIS_COLUMN_QUERY = "SELECT F_TABLE_NAME FROM GEOMETRY_COLUMNS";
         
         
     
@@ -79,9 +80,11 @@ public class GenerateIds {
 		dropColumnID();
 		addColumnID();
 		if (unique) {
-			if (data.getDBMS() == Geodatabase.ORACLE) maxCOGITIDOracle();
+			if (data.getDBMS() == Geodatabase.ORACLE) maxCOGITID(ORACLE_COLUMN_QUERY);
+			else if (data.getDBMS() == Geodatabase.POSTGIS) maxCOGITID(POSTGIS_COLUMN_QUERY);
 		}
 		if (data.getDBMS() == Geodatabase.ORACLE) genereIDOracle();
+		else if (data.getDBMS() == Geodatabase.POSTGIS) genereIDPostgres();		
 	}
 		
         
@@ -92,11 +95,13 @@ public class GenerateIds {
 	void addColumnID () {
 		try {
 			Connection conn = data.getConnection();
+			conn.commit();
 			Statement stm = conn.createStatement();
 			String query = "ALTER TABLE "+tableName+" ADD COGITID INTEGER";
 			stm.executeUpdate(query);
 			System.out.println(tableName+" : colonne CogitID creee");
-			stm.close();            
+			stm.close();  
+			conn.commit(); 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -110,6 +115,7 @@ public class GenerateIds {
 	void dropColumnID () {
 		try {
 			Connection conn = data.getConnection();
+			conn.commit();
 			Statement stm = conn.createStatement();
 			try {
 				String query = "ALTER TABLE "+tableName+" DROP COLUMN COGITID";
@@ -119,6 +125,7 @@ public class GenerateIds {
 				conn.commit();
 			}
 			stm.close();
+			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -141,7 +148,9 @@ public class GenerateIds {
 				System.out.println(nbCount+" objets dans la table "+tableName+" ... generation des identifiants ...");
 			}
             
-			// creation de la procedure PL/SQL de generation des cles
+			// creation de la procedure PL/SQL de generation des clés
+			// A FAIRE : y a moyen de faire plus simple : utiliser séquence ?
+			// Ou utiliser la fonction 'cursor for update' et 'current of' 
 			String proc = "CREATE OR REPLACE PROCEDURE genere_cogitid AS";
 			proc=proc+" BEGIN";
 			proc=proc+" DECLARE";            
@@ -167,7 +176,7 @@ public class GenerateIds {
 			cstm.execute();
 			cstm.close();
             
-			// on enleve si ancienne cle etrangere
+			// on enleve si ancienne cle primaire
 			try {
 				String update = "ALTER TABLE "+tableName+" DROP PRIMARY KEY";
 				stm.executeUpdate(update);
@@ -189,17 +198,81 @@ public class GenerateIds {
 			e.printStackTrace();
 		}
 	}
+	
+
+
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	// genere les identifiants dans la colonne COGITID, puis cree une cle primaire sur cette colonne
+	void genereIDPostgres() {
+		try {
+			int i=0;
+			Connection conn = data.getConnection();
+			conn.commit();
+			Statement stm = conn.createStatement();
+			String query = "SELECT COUNT(*) FROM "+tableName;
+			ResultSet rs = (ResultSet)stm.executeQuery(query);
+			while (rs.next()) {
+				int nbCount = ((Number)rs.getObject(1)).intValue();
+				System.out.println(nbCount+" objets dans la table "+tableName+" ... generation des identifiants ...");
+			}
+			
+			// Création d'une séquence
+			try {
+				String update = "create SEQUENCE seq_genere_cogitid";
+				stm.executeUpdate(update);
+			} catch (Exception ee) {
+				// La séquence existe déjà !
+				conn.commit();
+			}
+			conn.commit();
+            
+			// Affectation du maxID + 1 à la séquence
+			query = "SELECT setval ('seq_genere_cogitid', "+maxID+1+")";
+			rs = (ResultSet)stm.executeQuery(query);
+			while (rs.next()) { }
+			conn.commit();
+		
+			// Mise à jour de la table à l'aide de la sequence
+			String update = "update "+tableName+" set cogitid = nextval('seq_genere_cogitid')";
+			stm.executeUpdate(update);
+			conn.commit();
+			         
+			// on enleve si ancienne cle primaire
+			try {
+				update = "ALTER TABLE "+tableName+" DROP PRIMARY KEY";
+				stm.executeUpdate(update);
+				System.out.println("cle primaire sur "+tableName+" supprimee");
+				conn.commit();
+			} catch (Exception e1) {
+				System.out.println("aucune cle primaire sur "+tableName);
+				conn.commit();
+			}
+           
+			// ajout de la cle primaire
+			update = "ALTER TABLE "+tableName+" ADD PRIMARY KEY (COGITID)";
+			stm.executeUpdate(update);
+			System.out.println("cle primaire sur "+tableName+" ajoutee (colonne COGITID)");
+            
+			// fin
+			stm.close();
+			conn.commit();
+		} catch (Exception e) {
+			System.out.println(tableName);
+			e.printStackTrace();
+		}
+	}
 
              
     
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	// recherche du COGITID maximum parmi les tables geographiques (variable globale maxID)
-	public void maxCOGITIDOracle() {
+	// recherche du COGITID maximum parmi les tables géographiques (variable globale maxID)
+	public void maxCOGITID(String query) {
 		try {
 			Connection conn = data.getConnection();
+			conn.commit();
 			Statement stm = conn.createStatement();
-			String query = ORACLE_COLUMN_QUERY;
 			ResultSet rs = stm.executeQuery(query);
 			List listOfTables = new ArrayList();
 			while (rs.next())
@@ -212,9 +285,10 @@ public class GenerateIds {
 					rs= stm.executeQuery(query);
 					int max = 0;
 					while (rs.next())
-						max = ((BigDecimal)rs.getObject(1)).intValue();
-					if (max > maxID) maxID = max;
+						max = ((Number)rs.getObject(1)).intValue();
+					if (max > maxID) maxID = max;				
 				} catch (Exception ee) {    // pas de colonne cogitID
+					conn.commit();
 				}
 			}
 			stm.close();

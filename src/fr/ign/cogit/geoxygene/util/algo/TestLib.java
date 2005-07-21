@@ -30,7 +30,7 @@ package fr.ign.cogit.geoxygene.util.algo;
 import java.util.Date;
 
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
-import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbOracle;
+import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.example.Resultat;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
@@ -42,7 +42,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
   * par extension de util.GeomAlgorithms .
   *
   * @author Thierry Badard, Arnaud Braun & Christophe Pele 
-  * @version 1.0
+  * @version 1.1
   * 
   */
 
@@ -52,6 +52,9 @@ public class TestLib {
     private JtsAlgorithms algo;       // typage JTS pour tester des algos specifiques a JTS
      
     private double seuil = 50.0;     // seuil pour le buffer     
+	
+	// Alias de Connection a Oracle (dans le fichier de mapping repository_database.xml)
+	private String ORACLE_ALIAS = "ORACLE_ALIAS";
     
     private Geodatabase db;     // connection a la base de donnees
     private Class featureClass1, featureClass2;    // classes de FT_Feature a charger     
@@ -65,7 +68,7 @@ public class TestLib {
 
      public TestLib() {        
          
-         db = new GeodatabaseOjbOracle();   
+         db = GeodatabaseOjbFactory.newInstance(ORACLE_ALIAS);
          
          aggr1 = new GM_MultiSurface();  /* eventuellement new GM_MultiCurve(); */
          aggr2 = new GM_MultiSurface();  /* eventuellement new GM_MultiCurve(); */

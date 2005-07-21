@@ -47,7 +47,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
   *
   *
   * @author Thierry Badard & Arnaud Braun
-  * @version 1.0
+  * @version 1.1
   * 
   */
 

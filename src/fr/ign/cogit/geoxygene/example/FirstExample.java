@@ -27,12 +27,13 @@
 package fr.ign.cogit.geoxygene.example;
 
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
-import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbOracle;
+import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.generalisation.Filtering;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.util.viewer.ObjectViewer;
 
 
 
@@ -44,7 +45,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
  * (java -Xmx512M exemple.FirstExample) .
  * 
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
  *
  */
 
@@ -56,8 +57,9 @@ public class FirstExample {
     /* Attributs */
     private Geodatabase db;     // connection a la base de donnees
     private Class tronconClasse;	// classe de troncons
-    private String nomClasse = "geoxygene.geodata.Troncon_route"; // nom de la classe a charger
-    
+ 
+	private String nomClasse = "geoxygene.geodata.Troncon_route"; // nom de la classe a charger
+
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,7 +68,7 @@ public class FirstExample {
         
         // initialisation de la connection et lecture des fichiers de mapping
         System.out.println("Debut initialisation");    
-        db = new GeodatabaseOjbOracle();  
+		db = GeodatabaseOjbFactory.newInstance();		
         System.out.println("Initialisation OK");
         try {
             tronconClasse = Class.forName(nomClasse);
@@ -100,14 +102,14 @@ public class FirstExample {
 		Resultat buffer;
         GM_LineString polyligne;
         GM_Polygon polygone;
-        int rayon = 2000;                // rayon de buffer
+        int rayon = 20;                // rayon de buffer
                           
         // Debut d'une transaction
         System.out.println("Debut transaction");
         db.begin();
         
         // Recherche du plus petit identifiant
-        Integer gid = new Integer ( db.minId(tronconClasse) );
+        Integer gid = new Integer ( db.maxId(tronconClasse) );
                 
         // Chargement d'un objet par son identifiant
         troncon = (FT_Feature)db.load(tronconClasse,gid);
@@ -134,7 +136,16 @@ public class FirstExample {
         //Fermeture transaction et commit ( = validation des ecritures dans la base)
         System.out.println("commit");
         db.commit();
-          
+        
+        // Visualisation dans le viewer
+        ObjectViewer viewer = new ObjectViewer(db);
+        FT_FeatureCollection iniColl = new FT_FeatureCollection();
+		iniColl.add(troncon);
+		FT_FeatureCollection bufferColl = new FT_FeatureCollection();
+		bufferColl.add(buffer);
+		viewer.addFeatureCollection(iniColl,"Tronçons");
+        viewer.addFeatureCollection(bufferColl,"Résultats");
+        
     }     
 
     
@@ -159,9 +170,12 @@ public class FirstExample {
         int n = db.countObjects(tronconClasse);
         System.out.println("Nombre d'objets a traiter :"+n);
         
-        // Chargement de tous les objets
+        // Chargement de tous les objets 
         tronconList = db.loadAllFeatures(tronconClasse);
-        System.out.println("chargement termine");        
+        System.out.println("chargement termine");    
+        
+        // Création d'une nouvelle collection pour stocker les résultats
+        FT_FeatureCollection allResults = new FT_FeatureCollection();    
         
         // Traitement des les objets        
         tronconList.initIterator();
@@ -175,13 +189,17 @@ public class FirstExample {
             compteur++;
             if (compteur % 100 == 0)
                 System.out.println(compteur);
-         
+            allResults.add(resultat);
         }
         
         //Fermeture transaction et commit ( = validation des ecritures dans la base)
         System.out.println("commit");
         db.commit();
         
+		// Visualisation dans le viewer
+		ObjectViewer viewer = new ObjectViewer(db);
+		viewer.addFeatureCollection(tronconList,"Tronçons");        
+		viewer.addFeatureCollection(allResults,"Résultats");              
     }
                 
 }

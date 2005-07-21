@@ -27,6 +27,7 @@
 package fr.ign.cogit.geoxygene.datatools.ojb;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.util.StringTokenizer;
@@ -44,6 +45,11 @@ import org.apache.ojb.broker.metadata.FieldDescriptor;
 import org.apache.ojb.broker.metadata.MetadataException;
 import org.apache.ojb.broker.metadata.MetadataManager;
 import org.apache.ojb.broker.metadata.fieldaccess.PersistentField;
+import org.apache.ojb.broker.platforms.Platform;
+import org.apache.ojb.broker.platforms.PlatformFactory;
+import org.apache.ojb.broker.platforms.PlatformOracle9iImpl;
+import org.apache.ojb.broker.platforms.PlatformOracleImpl;
+import org.apache.ojb.broker.platforms.PlatformPostgreSQLImpl;
 import org.apache.ojb.broker.query.Criteria;
 import org.apache.ojb.broker.query.MtoNQuery;
 import org.apache.ojb.broker.query.Query;
@@ -52,6 +58,9 @@ import org.apache.ojb.broker.query.QueryBySQL;
 import org.apache.ojb.broker.query.ReportQueryByCriteria;
 import org.apache.ojb.broker.query.ReportQueryByMtoNCriteria;
 import org.apache.ojb.broker.util.sequence.SequenceManagerException;
+
+//import fr.ign.cogit.geoxygene.datatools.oracle.ArrayGeOxygene2Oracle;
+//import fr.ign.cogit.geoxygene.datatools.oracle.GeomGeOxygene2Oracle;
 //#else
 /*
 import com.develop.java.lang.reflect.Proxy;
@@ -73,19 +82,71 @@ import com.develop.java.lang.reflect.Proxy;
  *  un parametre connection ajoute dans getKeyValues.
  * Les 4 dernieres modifs se font suite a des erreurs de compile, 
  * suite au premier ajout dans getValuesForObject.
+ * 
+ * AB 11 juillet 2005 : 
+ * <br> Utilisation des noms de classes et de la réflection pour permettre la compilation sépérée pour Oracle.
+ * <br> Patch pour permettre l'utilisation de la meme classe de "FieldConversion" pour Oracle et Postgis. 
  *  
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
  * 
  */
 public class GeOxygeneBrokerHelper
 {
+	
+	// AJOUT pour GeOxygene ---------------------------------------------------
+	// Nom des classes relatives à Oracle, 
+	//en String pour permettre la compilation séparée
+	private final String GeomGeOxygene2Oracle_CLASS_NAME = 
+		"fr.ign.cogit.geoxygene.datatools.oracle.GeomGeOxygene2Oracle";
+	private final String GeomGeOxygene2Postgis_CLASS_NAME = 
+		"fr.ign.cogit.geoxygene.datatools.postgis.GeomGeOxygene2Postgis";	
+	private Method geomGeOxygene2OracleMethod; 
+	private Method geomGeOxygene2PostgisMethod;
+	// SGBD
+	private Platform m_platform;
+	// FIN AJOUT pour GeOxygene ---------------------------------------------------	
+	
+	
 	public static final String REPOSITORY_NAME_SEPARATOR = "#";
 	private PersistenceBroker m_broker;
 
 	public GeOxygeneBrokerHelper(PersistenceBroker broker)
 	{
 		this.m_broker = broker;
+		
+		// AJOUT pour GeOxygene -----------------------------------------------------------
+		// Definition du SGBD
+		m_platform = PlatformFactory.getPlatformFor(m_broker.serviceConnectionManager().getConnectionDescriptor());
+		
+		// ORACLE
+		if (m_platform instanceof PlatformOracle9iImpl || m_platform instanceof PlatformOracleImpl)
+			try {
+				Class geomGeOxygene2OracleClass = Class.forName(GeomGeOxygene2Oracle_CLASS_NAME);
+				geomGeOxygene2OracleMethod = geomGeOxygene2OracleClass.getMethod("javaToSql",
+																new Class[] {Object.class, Connection.class});	
+			} catch (Exception e) {
+				e.printStackTrace();	
+			}
+			
+		// POSTGIS
+		else if (m_platform instanceof PlatformPostgreSQLImpl)
+			try {
+				Class geomGeOxygene2PostgisClass = Class.forName(GeomGeOxygene2Postgis_CLASS_NAME);
+				geomGeOxygene2PostgisMethod = geomGeOxygene2PostgisClass.getMethod("javaToSql",
+																new Class[] {Object.class});
+			} catch (Exception e) {
+				e.printStackTrace();	
+			}	
+			
+		// AUTRE DBMS	
+		else {	
+			System.out.println("## Le SGBD n'est ni Oracle, ni PostgreSQL ##");
+			System.out.println("## Le programme s'arrête ##");
+			System.exit(0);
+		}			
+		// FIN AJOUT pour GeOxygene ---------------------------------------------------			
+	
 	}
 
 	/**
@@ -347,15 +408,28 @@ public class GeOxygeneBrokerHelper
 			{
 				// apply type and value conversion
                 
-                // DEBUT AJOUT  POUR GeOxygene
-                if (fd.getFieldConversion() instanceof GeomGeOxygene2Oracle) {                   
-                    GeomGeOxygene2Oracle geOxyFieldConv = (GeomGeOxygene2Oracle) fd.getFieldConversion();
-                    cv = geOxyFieldConv.javaToSql(cv,conn);
-                } else if (fd.getFieldConversion() instanceof ArrayGeOxygene2Oracle) {                   
-                    ArrayGeOxygene2Oracle geOxyFieldConv = (ArrayGeOxygene2Oracle) fd.getFieldConversion();
-                    cv = geOxyFieldConv.javaToSql(cv,conn);
-                } else                
-                // FIN AJOUT  POUR GeOxygene
+                // DEBUT AJOUT  POUR GeOxygene -------------------------------------------------------------
+				// Gestion des géométrie
+			   if (fd.getFieldConversion() instanceof GeomGeOxygene2Dbms) {   
+				   // ORACLE
+				   if (m_platform instanceof PlatformOracle9iImpl || m_platform instanceof PlatformOracleImpl) {
+					   try {
+						   cv = geomGeOxygene2OracleMethod.invoke(fd.getFieldConversion(), new Object[]{cv, conn});	
+					   } catch (Exception e) {
+						   e.printStackTrace();					
+					   }  
+				   } // POSTGIS
+				   if (m_platform instanceof PlatformPostgreSQLImpl) {
+					   try {
+						   cv = geomGeOxygene2PostgisMethod.invoke(fd.getFieldConversion(), new Object[]{cv});	
+					   } catch (Exception e) {
+						   e.printStackTrace();					
+					   }                 	
+				   }
+				   			
+				} else                
+                // FIN AJOUT  POUR GeOxygene----------------------------------------------------------------
+                // Types non géométriques
                                     
 				cv = fd.getFieldConversion().javaToSql(cv);
 			}

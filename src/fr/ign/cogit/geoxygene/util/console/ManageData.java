@@ -36,8 +36,6 @@ import org.apache.ojb.broker.util.configuration.impl.OjbConfiguration;
 
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
-import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbOracle;
-import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbPostgis;
 import fr.ign.cogit.geoxygene.util.loader.GenerateIds;
 import fr.ign.cogit.geoxygene.util.loader.MetadataReader;
 import fr.ign.cogit.geoxygene.util.loader.TypeGeom;
@@ -48,7 +46,7 @@ import fr.ign.cogit.geoxygene.util.loader.gui.GUIManageData;
 /**
   *
   * @author Thierry Badard & Arnaud Braun
-  * @version 1.0
+  * @version 1.1
   * 
   */
 
@@ -73,10 +71,7 @@ class ManageData extends JPanel {
 		OjbConfiguration config = new OjbConfiguration();
 		File fileMapping = new File(config.getRepositoryFilename());
 		try {
-			if (data.getDBMS() == Geodatabase.ORACLE)
-				((GeodatabaseOjbOracle)data).refreshRepository(fileMapping);    
-			 else if (data.getDBMS() == Geodatabase.POSTGIS)
-				((GeodatabaseOjbPostgis)data).refreshRepository(fileMapping);    
+			data.refreshRepository(fileMapping);     
 		} catch (Exception ee) {
 			System.out.println("## ATTENTION les fichiers de mapping sont incorrects");
 			ee.printStackTrace();
@@ -112,14 +107,10 @@ class ManageData extends JPanel {
 		
 		if (genereIds) {
 			System.out.println("Generation des COGITID ...");
-			if (data.getDBMS() == Geodatabase.ORACLE){
-				for (int i=0; i< allTables.size(); i++) {
-					String table = (String) allTables.get(i);
-					GenerateIds generator = new GenerateIds(data,table,genereUnique);
-					generator.genere();
-				}
-			} else {
-				System.out.println("La generation des COGIT ne fonctionne que pour Oracle");
+			for (int i=0; i< allTables.size(); i++) {
+				String table = (String) allTables.get(i);
+				GenerateIds generator = new GenerateIds(data,table,genereUnique);
+				generator.genere();
 			}
 			System.out.println("Fin de la generation des COGITID ...");			
 		}

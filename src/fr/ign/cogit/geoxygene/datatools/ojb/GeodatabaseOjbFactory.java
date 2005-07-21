@@ -26,9 +26,8 @@
 
 package fr.ign.cogit.geoxygene.datatools.ojb;
 
-import oracle.jdbc.driver.OracleConnection;
-
-import org.postgresql.PGConnection;
+import java.lang.reflect.Constructor;
+import java.sql.SQLException;
 
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 
@@ -37,27 +36,85 @@ import fr.ign.cogit.geoxygene.datatools.Geodatabase;
  * defini dans le fichier de configuration repository_database.xml.
  * 
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
  *
  */
 public class GeodatabaseOjbFactory {
+	
+	private final static String ORACLE_PRODUCT_NAME = "Oracle";
+	private final static String POSTGRES_PRODUCT_NAME = "PostgreSQL";	
+	private final static String GEODATABASE_OJB_ORACLE_CLASS_NAME = 
+		"fr.ign.cogit.geoxygene.datatools.oracle.GeodatabaseOjbOracle";
+	private final static String GEODATABASE_OJB_POSTGIS_CLASS_NAME = 
+		"fr.ign.cogit.geoxygene.datatools.postgis.GeodatabaseOjbPostgis";
 	
 	/** Constructeur de GeodatabaseOjb (Oracle ou Postgis) a partir d'un alias de connection
 	 * defini dans le fichier de configuration repository_database.xml.*/
 	public static Geodatabase newInstance(String jcdAlias) {
 		GeodatabaseOjb ojb = new GeodatabaseOjb(jcdAlias);	
 		
-		 if (ojb._conn instanceof PGConnection) 
-			 return new GeodatabaseOjbPostgis(ojb);
-		 
+	/*	 if (ojb._conn instanceof PGConnection) 
+			 return new GeodatabaseOjbPostgis(ojb); 
 		 else if (ojb._conn instanceof OracleConnection) 
 			 return new GeodatabaseOjbOracle(ojb);
-		 
 		 else {
 			 System.out.println("### Cas non traite : "+ojb._conn.getClass().getName());
 			 System.exit(0);
 			 return null;
+		 }*/
+		 
+		 Constructor geodatabaseConstructor = null;
+
+		 try {	
+			 if (ojb._conn.getMetaData().getDatabaseProductName().compareToIgnoreCase(ORACLE_PRODUCT_NAME) == 0) {
+				 try {
+					Class geodatabaseClass = Class.forName(GEODATABASE_OJB_ORACLE_CLASS_NAME);
+					geodatabaseConstructor = geodatabaseClass.getConstructor(new Class[] {GeodatabaseOjb.class} );
+				 } catch (Exception notfound) {
+					 System.out.println("Classe "+ GEODATABASE_OJB_ORACLE_CLASS_NAME + " non trouvée dans le CLASSPATH");
+					 notfound.printStackTrace();
+					 System.out.println("## PROGRAMME ARRETE !! ## ");
+					 System.exit(0);
+					 return null;				
+				 }
+			 }
+		
+			 else if (ojb._conn.getMetaData().getDatabaseProductName().compareToIgnoreCase(POSTGRES_PRODUCT_NAME) == 0) {
+				 try {
+					 Class geodatabaseClass = Class.forName(GEODATABASE_OJB_POSTGIS_CLASS_NAME);
+					geodatabaseConstructor = geodatabaseClass.getConstructor(new Class[] {GeodatabaseOjb.class} );
+				 } catch (Exception notfound) {
+					 System.out.println("Classe "+ GEODATABASE_OJB_POSTGIS_CLASS_NAME + " non trouvée dans le CLASSPATH");
+					 notfound.printStackTrace();
+					 System.out.println("## PROGRAMME ARRETE !! ## ");				
+					 System.exit(0);
+					 return null;				
+				 }
+			 }
+				
+			 else {
+				 System.out.println("### Cas non traite : "+ojb._conn.getClass().getName());
+				 System.out.println("## PROGRAMME ARRETE !! ## ");
+				 System.exit(0);
+				 return null;
+			 }
+		
+		 } catch (SQLException sqlex) {
+			 sqlex.printStackTrace();
+			 System.out.println("## PROGRAMME ARRETE !! ## ");
+			 System.exit(0);
+			 return null;		
 		 }
+   
+		 try {
+			 return (Geodatabase) geodatabaseConstructor.newInstance(new Object[] {ojb});
+		 } catch (Exception ex) {
+			 ex.printStackTrace();
+			 System.out.println("## PROGRAMME ARRETE !! ## ");
+			 System.exit(0);
+			 return null;		   	 
+		 }
+    		 
    		
 	}	
    

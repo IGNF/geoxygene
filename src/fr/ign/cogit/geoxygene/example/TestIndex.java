@@ -27,7 +27,7 @@
 package fr.ign.cogit.geoxygene.example;
 
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
-import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbOracle;
+import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
@@ -38,7 +38,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * Exemple et test d'utilisation d'un index spatial (dallage) sur FT_FeatureCollection.
  * 
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
  * 
  */
 
@@ -46,7 +46,7 @@ public class TestIndex {
 
 	private Geodatabase db;
 	private Class featureClass;
-    private String nomClasse = "donnees.defaut.Bdc38_troncon_route"; 
+    private String nomClasse = "geoxygene.geodata.Troncon_route"; 
 	private FT_FeatureCollection featureList;
 	private FT_FeatureCollection sublist;
 	private GM_Envelope emprise;
@@ -64,7 +64,7 @@ public class TestIndex {
 		}
 		
 		// Initialisation connexion a la BD
-		db = new GeodatabaseOjbOracle();
+		db = GeodatabaseOjbFactory.newInstance();		
 		db.begin();
 		
 		// Recherche du nombre d'objets a traiter

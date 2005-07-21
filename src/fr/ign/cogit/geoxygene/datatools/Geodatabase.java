@@ -27,6 +27,7 @@
 package fr.ign.cogit.geoxygene.datatools;
 
 
+import java.io.File;
 import java.sql.Connection;
 import java.util.List;
 
@@ -43,7 +44,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * Gere la manipulation des donnees via un mappeur objet-relationnel (Castor, OJB).
  *
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
  * 
  */
 
@@ -226,7 +227,8 @@ public interface Geodatabase  {
        A appeler a l'interieur d'une transaction ouverte. */
     public int minId(Class theClass)  ;
     
-    
+	/** Recharger un fichier de mapping qui a ete modifie. */              
+	public void refreshRepository(File newRepository) throws Exception ;
 
     
 }

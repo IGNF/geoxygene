@@ -43,9 +43,10 @@ import fr.ign.cogit.geoxygene.datatools.Geodatabase;
   * On peut eventuellement choisir le nom des tables (si on a acces a une ligne de commande :
   * passer un BufferedReader (parametre "in" non null au constructeur).
   *
+  * <br> AB 18 juillet 2005 : gestion des clés primaires (possiblité d'utiliser une clé primaire existante).
   *
   * @author Thierry Badard & Arnaud Braun
-  * @version 1.0
+  * @version 1.1
   * 
   */
 
@@ -63,6 +64,7 @@ public class XMLJavaDicoGenerator {
 	private boolean flagInterroTable;
 	private String packageName;
 	private String userName;
+	
 
 
     
@@ -133,23 +135,24 @@ public class XMLJavaDicoGenerator {
 					if (r.compareToIgnoreCase("o")==0)  flagInterroFields = true;
 				}
 
+				
 				theDicoGenerator.writeAttribute(javaClassName,"id","int");
 				
-				// boucle sur les colonnes
-				String query = getQuery (sqlTableName,userName);				
+				// Boucle sur les colonnes
+				String query = getQueryColumnName(sqlTableName,userName);				
 				conn.commit();
 				ResultSet rs = (ResultSet)stm.executeQuery(query);
 				while (rs.next()) {
 					
+					// La colonne SQL
 					String sqlColumnName = rs.getString(1);
-					if (//sqlColumnName.compareToIgnoreCase("Topo")==0 ||
-						//sqlColumnName.compareToIgnoreCase("TopoID")==0 ||
-						sqlColumnName.compareToIgnoreCase("ID")==0 ||
-						sqlColumnName.compareToIgnoreCase("COGITID")==0 ||
-						sqlColumnName.compareToIgnoreCase("GID")==0 )
-						continue;
-						
+					
+					// Le type SQL
 					String sqlDbmsType = rs.getString(2);
+					
+					// Si c'est le champ COGITID : on passe
+					if (sqlColumnName.compareToIgnoreCase("COGITID") == 0) 
+						continue;
 					
 					// bidouille speciale Oracle pour traiter le cas des entiers ...
 					if (data.getDBMS() == Geodatabase.ORACLE)
@@ -160,9 +163,26 @@ public class XMLJavaDicoGenerator {
 					  } 
 					// fin de la bidouille
 					
+					// bidouille speciale Oracle pour traiter le cas des booleans ...
+					// Les booleans ne sont pas reconnus par Oracle JDBC.
+					// On suppose que CHAR(1) est un boolean
+					if (data.getDBMS() == Geodatabase.ORACLE)
+					  if (rs.getObject(3) != null) {
+						  int dataScale = ((BigDecimal)rs.getObject(3)).intValue();
+						  if ((sqlDbmsType.compareToIgnoreCase("CHAR")==0) &&
+							  (dataScale == 1)) sqlDbmsType ="BOOLEAN";
+					  } 
+					// fin de la bidouille
+									
+					// Le type Java
 					String javaType = getJavaType(sqlDbmsType);
 					
+					// Gestion exception 
+					if (javaType.compareTo("") == 0) continue;
+					
+					// Le nom Java
 					String javaFieldName = sqlColumnName.toLowerCase();
+					
 					// attention : le champ portant la geometrie doit s'appeler geom (heritage de FT_Feature")
 					if ((javaType.compareToIgnoreCase("GM_Object")==0)) {
 						javaFieldName = "geom";
@@ -171,7 +191,7 @@ public class XMLJavaDicoGenerator {
 					if (javaFieldName.equals("population")) javaFieldName = "population_";
 	
 					if (flagInterroFields) {
-						if ((javaFieldName.compareToIgnoreCase("id")!=0) &&
+						if ((javaFieldName.compareToIgnoreCase("id") != 0) &&
 							(javaFieldName.compareToIgnoreCase("geom")!=0)) {
 							Message m = new Message(in,"colonne "+sqlColumnName+" : on la charge ?","o","n");
 							String r = m.getAnswer();
@@ -196,17 +216,20 @@ public class XMLJavaDicoGenerator {
 					} else {		
 						theXMLGenerator.writeField(javaFieldName,sqlColumnName,sqlDbmsType);
 						
-						// ces champs sont obtenus par heritage de FT_Feature
+						// Ecriture du champ dans la classe java
+						// Ces champs ne sont pas écrits dans la classe java car ils héritent de FT_Feature
 						if ((javaFieldName.compareToIgnoreCase("id")!=0) &&
 							(javaFieldName.compareToIgnoreCase("geom")!=0)) 
 								aJavaGenerator.writeField(javaType,javaFieldName);
 								
+						// Ecriture dans le dictionnaire des données
 						theDicoGenerator.writeAttribute(javaClassName,javaFieldName,javaType);
 					}
 					System.out.println("    nom sql : "+sqlColumnName+"\n   nom java : "+javaFieldName);
 
 				}
 
+				rs.close();
 				theXMLGenerator.writeClassBottom();
 				aJavaGenerator.writeBottom();
 			}
@@ -225,11 +248,11 @@ public class XMLJavaDicoGenerator {
     
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////        
-	private String getQuery(String tableName, String user) {
+	private String getQueryColumnName(String tableName, String user) {
 		if (data.getDBMS() == Geodatabase.ORACLE) 
-		   return getQueryOracle(tableName);
+		   return getQueryColumnNameOracle(tableName);
 		else if (data.getDBMS() == Geodatabase.POSTGIS) 
-		   return getQueryPostgis(tableName,user);
+		   return getQueryColumnNamePostgis(tableName,user);
 		return null;
 	}
 	
@@ -237,7 +260,7 @@ public class XMLJavaDicoGenerator {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////        
-	private String getQueryOracle(String tableName) {
+	private String getQueryColumnNameOracle(String tableName) {
 		return "SELECT COLUMN_NAME, DATA_TYPE, DATA_SCALE FROM USER_TAB_COLUMNS WHERE TABLE_NAME = '"+tableName+"'";
 	}
 	
@@ -245,7 +268,7 @@ public class XMLJavaDicoGenerator {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////        
-	private String getQueryPostgis(String tableName, String user) {	
+	private String getQueryColumnNamePostgis(String tableName, String user) {	
 		return 	"select pg_attribute.attname, pg_type.typname "+
 			"from pg_attribute, pg_type, pg_class, pg_user "+
 			"where pg_class.oid = pg_attribute.attrelid "+
@@ -254,7 +277,7 @@ public class XMLJavaDicoGenerator {
 			"and pg_class.relowner = pg_user.usesysid "+
 			"and pg_user.usename = '"+user.toLowerCase()+"' "+
 			"and pg_class.relname='"+tableName.toLowerCase()+"'";
-	}
+	}	
 	
 	
 	
@@ -266,10 +289,10 @@ public class XMLJavaDicoGenerator {
 				return oracleType2javaType(sqlType);
 			else if (data.getDBMS() == Geodatabase.POSTGIS) 
 				return postgisType2javaType(sqlType);
-			return null;
+			return "";
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			return "";
 		}
 	}
 	
@@ -279,10 +302,12 @@ public class XMLJavaDicoGenerator {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////        
 	private String oracleType2javaType(String oracle) throws Exception {
 		if (oracle.compareToIgnoreCase("VARCHAR2") == 0) return "String";
+		else if (oracle.compareToIgnoreCase("VARCHAR") == 0) return "String";
+		else if (oracle.compareToIgnoreCase("CHAR") == 0) return "String";
 		else if (oracle.compareToIgnoreCase("NUMBER") == 0) return "double";
 		else if (oracle.compareToIgnoreCase("FLOAT") == 0) return "double";
 		else if (oracle.compareToIgnoreCase("INTEGER") == 0) return "int";
-		else if (oracle.compareToIgnoreCase("CHAR") == 0) return "boolean";        
+		else if (oracle.compareToIgnoreCase("BOOLEAN") == 0) return "boolean";        
 		else if (oracle.compareToIgnoreCase("SDO_GEOMETRY") == 0) return "GM_Object";
 		else throw new Exception("type non reconnu : "+oracle);
 	}
@@ -293,6 +318,7 @@ public class XMLJavaDicoGenerator {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////        
 	private String postgisType2javaType(String postgis) throws Exception {
 		if (postgis.compareToIgnoreCase("varchar") == 0) return "String";
+		else if (postgis.compareToIgnoreCase("bpchar") == 0) return "String";
 		else if (postgis.compareToIgnoreCase("float8") == 0) return "double";
 		else if (postgis.compareToIgnoreCase("float4") == 0) return "float";
 		else if (postgis.compareToIgnoreCase("int4") == 0) return "int";

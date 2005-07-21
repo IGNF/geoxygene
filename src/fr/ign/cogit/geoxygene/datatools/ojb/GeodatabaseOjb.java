@@ -26,7 +26,6 @@
 
 package fr.ign.cogit.geoxygene.datatools.ojb;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -36,12 +35,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.ojb.broker.PersistenceBroker;
-import org.apache.ojb.broker.core.PersistenceBrokerHandle;
-import org.apache.ojb.broker.core.PoolablePersistenceBroker;
 import org.apache.ojb.broker.metadata.ClassDescriptor;
 import org.apache.ojb.broker.metadata.DescriptorRepository;
 import org.apache.ojb.broker.metadata.FieldDescriptor;
-import org.apache.ojb.broker.metadata.MetadataManager;
 import org.apache.ojb.odmg.HasBroker;
 import org.apache.ojb.odmg.OJB;
 import org.odmg.DList;
@@ -67,12 +63,12 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
  * pour Postgis caster en Long ...
  *
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
  */
 
 
 
-class GeodatabaseOjb {
+public class GeodatabaseOjb {
 
     /////////////////////////////////////////////////////////////////////////////////////////
     ///// attributs /////////////////////////////////////////////////////////////////////////
@@ -98,7 +94,7 @@ class GeodatabaseOjb {
     
     
     /** Constructeur avec la connection par defaut dans repository_database.xml */
-    GeodatabaseOjb () {
+	protected GeodatabaseOjb () {
     	this (null);
     }
             
@@ -475,22 +471,21 @@ class GeodatabaseOjb {
         return result;
     }          
     
-    
-
+       
+       
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // getters ODMG ///////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-    /** Utilise par EsayLoader pour recharger un fichier de mapping qui a ete modifie. */              
-    public void refreshRepository(File newRepository) throws Exception {
-       MetadataManager mm = MetadataManager.getInstance();
-       DescriptorRepository rd = mm.readDescriptorRepository(newRepository.getPath());  
-       mm.setDescriptor(rd,true);
-       begin();
-       PersistenceBrokerHandle pbh = (PersistenceBrokerHandle) ((HasBroker)_tx).getBroker() ;
-       PoolablePersistenceBroker ppb = (PoolablePersistenceBroker) pbh.getDelegate();
-       GeOxygenePersistenceBrokerImpl pbi = (GeOxygenePersistenceBrokerImpl) ppb.getDelegate();
-       pbi.refresh();
-       commit();
-       initMetadata();
-   } 
+    public Implementation getODMGImplementation() {
+    	return _odmg;
+    }
+   
+	public Database getODMGDatabase() {
+    	return _db;
+    }
+    
+	public Transaction getODMGTransaction() {
+    	return _tx;
+    }
    	
 }

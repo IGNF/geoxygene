@@ -26,17 +26,16 @@
 
 package fr.ign.cogit.geoxygene.spatial.geomroot;
 
-//import model.FT_Feature;
 
 import java.awt.Color;
 
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
+//import fr.ign.cogit.geoxygene.datatools.oracle.OracleAlgorithms;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
-import fr.ign.cogit.geoxygene.util.algo.OracleAlgorithms;
 import fr.ign.cogit.geoxygene.util.conversion.ImgUtil;
 import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
 
@@ -65,8 +64,11 @@ import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
   * Cette table est dédiée aux requêtes spatiales.
   * De même, le paramètre tolérance est exigé par Oracle.
   *
+  * ARNAUD 12 juillet 2005 : mise en commentaire de ce qui se rapporte à Oracle
+  * pour isoler la compilation. A décommenter pour utiliser Oracle.
+  * 
   * @author Thierry Badard & Arnaud Braun
-  * @version 1.0
+  * @version 1.1
   *
   */
 
@@ -420,35 +422,35 @@ abstract public class GM_Object implements Cloneable {
     * @param data Paramètres de connection à la base de données.
     * @param tolerance Tolérance pour le calcul.
     * @param radius Distance pour calculer le buffer. */
-   public GM_Object bufferAgregatOracle(Geodatabase data, double tolerance, double radius) {
+/*   public GM_Object bufferAgregatOracle(Geodatabase data, double tolerance, double radius) {
        return new OracleAlgorithms(data,tolerance).bufferAgregat(this,radius);
    }        
-   
+*/   
    /** Calcule le buffer de self (avec Oracle). La distance doit être positive.
     * @param data Paramètres de connection à la base de données.
     * @param tolerance Tolérance pour le calcul.
     * @param radius Distance pour calculer le buffer. */
-   public GM_Object bufferOracle (Geodatabase data, double tolerance, double radius) {
+/*   public GM_Object bufferOracle (Geodatabase data, double tolerance, double radius) {
      return new OracleAlgorithms(data,tolerance).buffer(this,radius);
    }
-           
+*/           
    /** Enveloppe convexe de self (avec Oracle). Renvoie NULL si self est un point, ou est défini avec moins de trois points.
      * Le résultat est un GM_Polygon.
      * @param data Paramètres de connection à la base de données.
      * @param tolerance Tolérance pour le calcul. */
-   public GM_Object convexHullOracle (Geodatabase data, double tolerance)  {
+/*   public GM_Object convexHullOracle (Geodatabase data, double tolerance)  {
        return new OracleAlgorithms(data,tolerance).convexHull(this);
    }
-   
+*/   
    /** Centre de gravité de self (avec Oracle). Le résultat n'est pas nécessairement dans l'objet. 
      * Pour un objet multi-dimensions, on ne prendra en compte que la plus grande dimension pour le calcul.
      * ATTENTION implementé uniquement pour un polygone. Sinon renvoie NULL.
      * @param data Paramètres de connection à la base de données.
      * @param tolerance Tolérance pour le calcul.  */
-   public GM_Object centroidOracle (Geodatabase data, double tolerance)  {
+/*   public GM_Object centroidOracle (Geodatabase data, double tolerance)  {
        return new OracleAlgorithms(data,tolerance).centroid(this);
    }
-
+*/
    /** Un point représentatif à l'intérieur de self (avec Oracle). Ce point peut être n'importe où. 
      * Deux appels différents à cette méthode sur un objet peuvent produire deux résultats différents. 
      * On garantit juste que le point est à l'intérieur.
@@ -457,116 +459,116 @@ abstract public class GM_Object implements Cloneable {
      * REMARQUE : dans la norme, on impose que ce point soit le centroide s'il est à l'intérieur, un autre point sinon.
      * @param data Paramètres de connection à la base de données.
      * @param tolerance Tolérance pour le calcul. */
-   public DirectPosition representativePointOracle (Geodatabase data, double tolerance) {
+/*   public DirectPosition representativePointOracle (Geodatabase data, double tolerance) {
        return new OracleAlgorithms(data,tolerance).representativePoint(this);
    }
-   
+*/   
    /** Rectangle englobant minimum de self (avec Oracle).
     *  @param data Paramètres de connection à la base de données.  */
-   public GM_Envelope envelopeOracle (Geodatabase data) {
+/*   public GM_Envelope envelopeOracle (Geodatabase data) {
        return new OracleAlgorithms(data,0.).envelope(this);
    }   
-    
+*/    
    /** Différence de self avec l'objet passé en paramètre (avec Oracle).
      * @param data Paramètres de connection à la base de données.
      * @param tolerance Tolérance pour le calcul.
      * @param g Objet géométrique avec lequel on va réaliser l'opération. */
-   public GM_Object differenceOracle (Geodatabase data, double tolerance, GM_Object g)  {
+/*   public GM_Object differenceOracle (Geodatabase data, double tolerance, GM_Object g)  {
        return new OracleAlgorithms(data,tolerance).difference(this,g);
    }  
-       
+*/       
    /** Intersection de self avec l'objet passé en paramètre (avec Oracle).
      * Renvoie NULL si les objets sont disjoints.
      * @param data Paramètres de connection à la base de données.
      * @param tolerance Tolérance pour le calcul.
      * @param g Objet géométrique avec lequel on va réaliser l'opération. */
-   public GM_Object intersectionOracle (Geodatabase data, double tolerance, GM_Object g)  {
+/*   public GM_Object intersectionOracle (Geodatabase data, double tolerance, GM_Object g)  {
        return new OracleAlgorithms(data,tolerance).intersection(this,g);
    }
-   
+*/   
    /** Union de self et de l'objet passé en paramètre (avec Oracle). 
      * Renvoie éventuellement un aggrégat si les objets sont disjoints.
      * @param data Paramètres de connection à la base de données.
      * @param tolerance Tolérance pour le calcul.
      * @param g Objet géométrique avec lequel on va réaliser l'union.  */
-   public GM_Object unionOracle (Geodatabase data, double tolerance, GM_Object g) {
+/*   public GM_Object unionOracle (Geodatabase data, double tolerance, GM_Object g) {
        return new OracleAlgorithms(data,tolerance).union(this,g);
    }   
-       
+*/       
    /** Différence symétrique de self avec l'objet passé en paramètre (avec Oracle).
      * La différence symétrique (opérateur booléan XOR) est la différence de l'union avec l'intersection.
      * @param data Paramètres de connection à la base de données.
      * @param tolerance Tolérance pour le calcul.
      * @param g Objet géométrique avec lequel on va réaliser l'opération. */
-   public GM_Object symmetricDifferenceOracle (Geodatabase data, double tolerance, GM_Object g)  {
+/*   public GM_Object symmetricDifferenceOracle (Geodatabase data, double tolerance, GM_Object g)  {
        return new OracleAlgorithms(data,tolerance).symDifference(this,g);
    }       
-       
+*/       
    /** Teste si self contient l'objet passé en paramètre (avec Oracle).
      * REMARQUE : les frontières ne doivent pas se toucher, sinon renvoie false - A TESTER.
      * @param data Paramètres de connection à la base de données.
      * @param tolerance Tolérance pour le calcul.
      * @param g GM_Object avec lequel on teste l'intersection  */
-   public boolean containsOracle (Geodatabase data, double tolerance, GM_Object g)  {
+/*   public boolean containsOracle (Geodatabase data, double tolerance, GM_Object g)  {
        return new OracleAlgorithms(data,tolerance).contains(this,g);
    }
-       
+*/      
    /** Teste si self contient le DirectPosition passé en paramètre (avec Oracle).
      * @param data Paramètres de connection à la base de données.
      * @param tolerance Tolérance pour le calcul.
      * @param P DirectPosition avec lequel on teste l'intersection. */
-   public boolean containsOracle (Geodatabase data, double tolerance, DirectPosition P)  {
+/*   public boolean containsOracle (Geodatabase data, double tolerance, DirectPosition P)  {
        return new OracleAlgorithms(data,tolerance).contains(this,P);
    }
-
+*/
    /** Teste si self intersecte l'objet géométrique passé en paramètre (avec Oracle). Renvoie un boolean.
      * REMARQUE : si les 2 objets n'ont que la frontière en commun, alors renvoie false - A TESTER.
      * CAS des COMPLEXES : a revoir (cf.norme)
      * @param data Paramètres de connection à la base de données.
      * @param tolerance Tolérance pour le calcul.
      * @param g GM_Object avec lequel on teste l'intersection.  */
-   public boolean intersectsOracle (Geodatabase data, double tolerance, GM_Object g)  {
+/*   public boolean intersectsOracle (Geodatabase data, double tolerance, GM_Object g)  {
        return new OracleAlgorithms(data,tolerance).intersects(this,g);
    }
-     
+*/     
    /** Teste si self et l'objet passé en paramètre sont géométriquement égaux (avec Oracle). 
      * @param data Paramètres de connection à la base de données.
      * @param tolerance Tolérance pour le calcul.
      * @param g GM_Object avec lequel on teste l'intersection.  */
-   public boolean equalsOracle (Geodatabase data, double tolerance, GM_Object g)  {
+/*   public boolean equalsOracle (Geodatabase data, double tolerance, GM_Object g)  {
        return new OracleAlgorithms(data,tolerance).equals(this,g);
    }
-       
+*/       
    /** Renvoie TRUE si self n'a pas de point d'auto-intersection ou d'auto-tangence (avec Oracle SDOAPI). 
      * Cette opération n'est pas applicable aux objets fermés (ceux pour lesquels isCycle() = TRUE).
      * @param data Paramètres de connection à la base de données. */
-   public boolean isSimpleOracle(Geodatabase data)  {
+/*   public boolean isSimpleOracle(Geodatabase data)  {
        return new OracleAlgorithms(data,0.).isSimple(this);   
    }
-    
+*/    
    /** Distance de self à l'objet passé en paramètre (avec Oracle). 
      * Cette distance est définie comme la distance euclidienne. 
      * Si les objets se recouvrent ou se touchent, la distance doit être nulle (pas de distance négative).
      * @param data Paramètres de connection à la base de données.
      * @param tolerance Tolérance pour le calcul.
      * @param g GM_Object avec lequel on teste l'intersection. */
-   public double distanceOracle (Geodatabase data, double tolerance, GM_Object g)  {
+/*   public double distanceOracle (Geodatabase data, double tolerance, GM_Object g)  {
        return new OracleAlgorithms(data,0.).distance(this,g);
    }
-   
+*/   
    /** Longueur de l'objet, si c'est une primitive linéaire (avec Oracle). 
      * Applicable sur GM_Curve et GM_MultiCurve.
      * @param data Paramètres de connection à la base de données. */
-   public double lengthOracle (Geodatabase data)  {
+/*   public double lengthOracle (Geodatabase data)  {
        return new OracleAlgorithms(data,0.).length(this);
    }   
-   
+*/   
    /** Surface de l'objet, si c'est une primitive surfacique (avec Oracle). 
      * Applicable sur GM_Surface et GM_MultiSurface.
      * @param data Paramètres de connection à la base de données. */
-   public double areaOracle (Geodatabase data)  {
+/*   public double areaOracle (Geodatabase data)  {
        return new OracleAlgorithms(data,0.).area(this);
    }      
-   
+*/   
    
 }

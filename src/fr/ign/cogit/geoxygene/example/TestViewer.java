@@ -27,7 +27,7 @@
 package fr.ign.cogit.geoxygene.example;
 
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
-import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbOracle;
+import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
@@ -37,15 +37,16 @@ import fr.ign.cogit.geoxygene.util.viewer.ObjectViewer;
  * It is a simple test program to know how to use the (Geo)ObjectViewer.
  * 
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
  * 
  */
 
 public class TestViewer {
 	
+	
 	// choisir les noms de classe de test ici
-	private static String featureClassName1 = "donnees.defaut.Departement";
-	private static String featureClassName2 = "donnees.defaut.Bdc38_canton";	
+	private static String featureClassName1 = "geoxygene.geodata.Departement";
+	private static String featureClassName2 = "geoxygene.geodata.Bdc38_canton";	
 	// choisir les noms de themes a apparaitre dans le viewer ici
 	private static String nomTheme1 = "departement";
 	private static String nomTheme2 = "canton 38";
@@ -58,7 +59,7 @@ public class TestViewer {
 
 	public static void main(String args[]) throws Exception {
 		
-		Geodatabase db = new GeodatabaseOjbOracle();		
+		Geodatabase db = GeodatabaseOjbFactory.newInstance();		
 		
 		// init viewer with Geodatabase connection
 		ObjectViewer vwr = new ObjectViewer(db);

@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
-import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbOracle;
+import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.dico.GF_AssociationRole;
 import fr.ign.cogit.geoxygene.dico.GF_AssociationType;
 import fr.ign.cogit.geoxygene.dico.GF_AttributeType;
@@ -45,7 +45,7 @@ import fr.ign.cogit.geoxygene.dico.GF_PropertyType;
  * Utilisation du dictionnaire de données : exemple de code.
  * 
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
  *
  */
 
@@ -85,7 +85,7 @@ public class TestDico {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     /* Constructeur */
     public TestDico() {
-        db = new GeodatabaseOjbOracle();
+		db = GeodatabaseOjbFactory.newInstance();		
     }
  
     

@@ -43,7 +43,8 @@ import com.vividsolutions.jts.geom.DefaultCoordinateSequenceFactory;
 import com.vividsolutions.jts.geom.TopologyException;
 
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
-import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbOracle;
+import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
+//import fr.ign.cogit.geoxygene.datatools.oracle.*;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
@@ -67,9 +68,12 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
   * On charge un nombre progressif d'objets, en utilisant le rectangle englobant (enveloppe) des couches testees
   * et en faisant varier par un facteur la taille de cette enveloppe (variables a regler au debut du code). 
   * A l'aide d'une boucle, on charge progressivement de plus en plus d'objets.
+  * 
+  * ARNAUD 12 juillet 2005 : mise en commentaire de ce qui se rapporte à Oracle
+  * pour isoler la compilation. A décommenter pour utiliser Oracle.
   *
   * @author Thierry Badard, Arnaud Braun & Christophe Pele 
-  * @version 1.0
+  * @version 1.1
   * 
   */
 
@@ -80,6 +84,9 @@ public class CompareLib  {
     private static PrintStream err=System.err;
     
     private Geodatabase db;
+    
+    // Alias de Connection a Oracle (dans le fichier de mapping repository_database.xml)
+    private String ORACLE_ALIAS = "ORACLE_ALIAS";
     
     // classes a charger
     private Class featClass1;
@@ -156,11 +163,11 @@ public class CompareLib  {
         out.println("Begin!");  
         
         out.print("connecting database ... ");        
-        db=new GeodatabaseOjbOracle();    
+        db= GeodatabaseOjbFactory.newInstance(ORACLE_ALIAS);    
         out.println("OK");
 
         if (testJts) jts=new JtsAlgorithms();
-        if (testOracle) oracle=new OracleAlgorithms(db,0.0000000005);
+//        if (testOracle) oracle=new OracleAlgorithms(db,0.0000000005);
         if (testGeos) geos=new GeosAlgorithms();
         
         try {
@@ -362,7 +369,7 @@ public class CompareLib  {
 
 
     // ########################################################################################    
-    private long launchOracle(String realAlgoName, Class[] algoParamTypes, Object[] algoParameters)  
+/*    private long launchOracle(String realAlgoName, Class[] algoParamTypes, Object[] algoParameters)  
     {
         try {
         	out.indentRight();
@@ -386,7 +393,7 @@ public class CompareLib  {
             return 10000000;
         }
     }
- 
+ */
  
     // ########################################################################################   
     private long launchGeos(String realAlgoName, Class[] algoParamTypes, Object[] algoParameters) throws Exception
@@ -464,7 +471,7 @@ public class CompareLib  {
     	
     		/*-- ...Oracle -------------------------------------------------*/    		
     		long oracleTime=0;
-            if (testOracle) oracleTime=launchOracle(realAlgoName,algoParamTypes,algoParameters);
+ //           if (testOracle) oracleTime=launchOracle(realAlgoName,algoParamTypes,algoParameters);
     			
     		/*-- Print line in testresult file ---------------------------*/    			
     		String datLine;
