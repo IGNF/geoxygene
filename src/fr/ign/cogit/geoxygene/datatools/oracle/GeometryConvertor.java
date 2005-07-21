@@ -46,7 +46,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * Conversion dans les 2 sens entre une SDO_GEOMETRY (format sql.STRUCT) et un GM_Object
  *
  * @author Thierry Badard & Arnaud Braun
- * @version 1.1
+ * @version 1.1  
  */
 
 public class GeometryConvertor  {

@@ -46,7 +46,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * Ceci est utilise par OJB.
  * 
  * @author Thierry Badard & Arnaud Braun
- * @version 1.1
+ * @version 1.1  
  *
  */
 

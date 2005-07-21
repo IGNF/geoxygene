@@ -77,7 +77,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * INUTILE DEPUIS LE PASSAGE A JTS (sauf pour l'extraction par zone, et a l'initialisation des metadonnees) !
  *
  * @author Thierry Badard & Arnaud Braun
- * @version 1.1
+ * @version 1.1  
  *
  */
 

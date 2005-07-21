@@ -46,7 +46,7 @@ import org.apache.ojb.broker.util.batch.BatchConnection;
  * string[] -> "VARRAY_OF_STRING" 
  * 
  * @author Thierry Badard & Arnaud Braun
- * @version 1.1
+ * @version 1.1  
  * 
  */
 

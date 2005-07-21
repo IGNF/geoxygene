@@ -37,7 +37,7 @@ import fr.ign.cogit.geoxygene.util.algo.GeomAlgorithms;
   * Appel des methodes Oracle sur des GM_Object.
   *
   * @author Thierry Badard, Arnaud Braun & Christophe Pele 
-  * @version 1.1
+  * @version 1.1  
   * 
   */
 

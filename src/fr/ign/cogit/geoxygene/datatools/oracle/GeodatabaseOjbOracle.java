@@ -57,7 +57,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * et Oracle comme SGBDR geographique.
  *
  * @author Thierry Badard & Arnaud Braun
- * @version 1.1
+ * @version 1.1  
  */
 
 
