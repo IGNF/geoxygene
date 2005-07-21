@@ -67,7 +67,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * ne fonctionne pas pour les GM_Surface composées de plusieurs patch.
  *  
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
  */
 
  

@@ -29,7 +29,6 @@ package fr.ign.cogit.geoxygene.datatools.oracle;
 import java.sql.Connection;
 
 import oracle.jdbc.driver.OracleConnection;
-import oracle.sdoapi.OraSpatialManager;
 import oracle.sdoapi.adapter.SDOGeometry;
 import oracle.sdoapi.adapter.SDOTemplateFactory;
 import oracle.sdoapi.adapter.SDOTemplateFactoryImpl;
@@ -43,21 +42,25 @@ import org.apache.ojb.broker.util.batch.BatchConnection;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
- * Conversion dans les 2 sens entre une SDO_GEOMETRY (format sql.STRUCT) et un GM_Object
- *
+ * Conversion dans les 2 sens entre une SDO_GEOMETRY (format sql.STRUCT) et un GM_Object.
+ * Ceci est utilise par OJB.
+ * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.1
+ *
  */
 
-public class GeometryConvertor  {
-
-
-    /////////////////////////////////////////////////////////////////////////////////////
-    public static Object Sdo2GM_Object(Object object) {
+public class GeomGeOxygene2Oracle  {
+	
+	// Initialise au demarrage de la Geodatabase Oracle comme un singleton
+	public static Connection CONNECTION;
+	public static SRManager SRM;
+	public static GeometryFactory GF;
+    
+    
+    public static Object sqlToJava (Object object) {
         try {
-            GeometryFactory gf = OraSpatialManager.getGeometryFactory();
-            SRManager srm = OraSpatialManager.getSpatialReferenceManager();
-            Geometry sdoGeom = SDOGeometry.STRUCTtoGeometry((STRUCT)object,gf,srm);
+            Geometry sdoGeom = SDOGeometry.STRUCTtoGeometry((STRUCT)object,GF,SRM);
             GM_Object isoGeom = IsoAndSdo.sdoapi2iso(sdoGeom);
             return isoGeom;
         } catch (Exception e) {
@@ -66,12 +69,39 @@ public class GeometryConvertor  {
         }
     }
     
+    
+    /** Methode utilisee si on n'utilise PAS les classes maison "OxygenePresistenceBroker" et "GeOxygeneStatementManager".
+     * Ceci est a definir dans OJB.properties.
+     * Inconvenient : on utilise une variable connection statique, 
+     * donc impossible de se connecter a plusieurs bases Oracle simultanement.
+     * De plus il y a un bug avec OJB : impossible d'ecrire des geometries nulles.
+     */
+	public static Object javaToSql (Object object) {    
+		try {
+			Geometry sdoGeom = IsoAndSdo.iso2sdoapi(GF,(GM_Object)object);   
+			SDOTemplateFactory sdoTF;
+			if (CONNECTION instanceof BatchConnection)  {// ceci est pour OJB
+				OracleConnection oConn = (OracleConnection) ((BatchConnection)CONNECTION).getDelegate();
+				sdoTF = new SDOTemplateFactoryImpl(oConn);
+			} else
+				sdoTF = new SDOTemplateFactoryImpl((OracleConnection)CONNECTION);
+            
+			STRUCT str = SDOGeometry.geometryToSTRUCT(sdoGeom,sdoTF);           
+			return str;
+	   } catch (Exception e) {
+			e.printStackTrace();
+			return null;
+	   }                       
+	}
 
-    /////////////////////////////////////////////////////////////////////////////////////
-    public static Object GM_Object2Sdo(Object object, Connection conn) {     
+
+	/** Methode utilisee si on utilise les classes maison "GeOxygenePresistenceBroker" et "GeOxygeneStatementManager".
+	 * Ceci est a definir dans OJB.properties.
+	 * Ceci corrige les deux defauts de la methode qui ne passe pas de connection en parametre.
+	 */
+    public static Object javaToSql(Object object, Connection conn) {    
         try {
-            GeometryFactory gf = OraSpatialManager.getGeometryFactory();
-            Geometry sdoGeom = IsoAndSdo.iso2sdoapi(gf,(GM_Object)object);   
+            Geometry sdoGeom = IsoAndSdo.iso2sdoapi(GF,(GM_Object)object);   
             SDOTemplateFactory sdoTF;
             if (conn instanceof BatchConnection)  {// ceci est pour OJB
                 OracleConnection oConn = (OracleConnection) ((BatchConnection)conn).getDelegate();
@@ -86,5 +116,5 @@ public class GeometryConvertor  {
             return null;
        }                       
     }
-    
+
 }
