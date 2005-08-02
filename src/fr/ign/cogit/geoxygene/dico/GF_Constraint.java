@@ -1,7 +1,7 @@
 /*
  * This file is part of the GeOxygene project source files. 
  * 
- * GeOxygene aims at providing an open framework compliant with OGC/ISO specifications for 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
  * the development and deployment of geographic (GIS) applications. It is a open source 
  * contribution of the COGIT laboratory at the Institut Géographique National (the French 
  * National Mapping Agency).
