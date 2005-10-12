@@ -39,10 +39,6 @@ import fr.ign.cogit.geoxygene.datatools.Geodatabase;
  *  Un DataSet est constitué de manière récursive d'un ensemble de jeux de données, 
  *  et d'un ensemble de populations, elles mêmes constituées d'un ensemble d'éléments.
  * 
- * ATTENTION: pour des raisons propres à OJB, même si la classe DataSet est concrète,
- * il n'est pas possible de créer un objet PERSISTANT de cette classe,
- * il faut utiliser les sous-classes.
- * 
  * @author Sébastien Mustière
  * @version 1.0
  *  
