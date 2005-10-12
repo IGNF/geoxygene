@@ -17,7 +17,6 @@
 -- Creation de tables necessaires au fonctionnement de GeOxygene avec Oracle et OJB.
 -- Script a appliquer avant toute d'utilisation de GeOxygene avec Oracle et OJB.
 
-
 DROP TABLE DATASET;
 DROP TABLE POPULATIONS;
 DROP TABLE EXTRACTIONS;
@@ -30,8 +29,7 @@ CREATE TABLE DATASET (
     ZONE VARCHAR(255),
     DATEJEU VARCHAR(255),
     COMMENTAIRE VARCHAR(255),
-    APPARTIENT_A INTEGER,
-    OJB_CONCRETE_CLASS VARCHAR(255)
+    APPARTIENT_A INTEGER
     );
 
 
