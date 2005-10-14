@@ -52,7 +52,11 @@ public class GeomGeOxygene2Postgis  {
 		PGgeometry pgGeom = (PGgeometry)geom;
 		
 		try {
-			GM_Object geOxyGeom = WktGeOxygene.makeGeOxygene(pgGeom.toString());
+			/* In version 1.0.x of PostGIS, SRID is added to the beginning of the pgGeom string  */
+			
+			//System.out.println(pgGeom.toString().substring(pgGeom.toString().indexOf(";")+1));
+			GM_Object geOxyGeom = WktGeOxygene.makeGeOxygene(pgGeom.toString().substring(pgGeom.toString().indexOf(";")+1));
+			//GM_Object geOxyGeom = WktGeOxygene.makeGeOxygene(pgGeom.toString());
 			
 			if (geOxyGeom instanceof GM_MultiPoint) {
 				GM_MultiPoint aggr = (GM_MultiPoint)geOxyGeom;

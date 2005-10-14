@@ -88,9 +88,17 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
     /** Ajoute les types de donnees geometriques a la connection Postgres. */
      private void updateConnection() {
          try {
+         	 /* pgConn.addDataType(String, String) is deprecated in version 1.0.x of the Postgresql JDBC driver.
+         	  * This modification breaks compatibility with version 0.x of PostGIS. */
+         	
 			 PGConnection pgConn = (PGConnection) _conn;
-			 pgConn.addDataType("geometry","org.postgis.PGgeometry");
-			 pgConn.addDataType("box3d","org.postgis.PGbox3d");	
+			 //pgConn.addDataType("geometry","org.postgis.PGgeometry");
+			 pgConn.addDataType("geometry",org.postgis.PGgeometry.class);
+			 //pgConn.addDataType("box3d","org.postgis.PGbox3d");
+			 pgConn.addDataType("box3d",org.postgis.PGbox3d.class);
+			 
+			 System.out.println(pgConn.toString());
+			 
          } catch(Exception e) { 
             e.printStackTrace();
          }

@@ -119,7 +119,7 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
 	
 	}
 	
-	// Les méthodes relativesà Oracle ou Postgis sont appelée directement dans "GeOxygeneStatementManager"
+	// Les méthodes relatives à Oracle ou Postgis sont appelée directement dans "GeOxygeneStatementManager"
 	public Object javaToSql (Object geom) {	
 		System.out.println("## WARNING ## Ne devrait pas être appelé !! Renvoie nulle");
 		return null;
