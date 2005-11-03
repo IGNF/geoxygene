@@ -97,7 +97,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 			 //pgConn.addDataType("box3d","org.postgis.PGbox3d");
 			 pgConn.addDataType("box3d",org.postgis.PGbox3d.class);
 			 
-			 System.out.println(pgConn.toString());
+			 //System.out.println(pgConn.toString());
 			 
          } catch(Exception e) { 
             e.printStackTrace();
