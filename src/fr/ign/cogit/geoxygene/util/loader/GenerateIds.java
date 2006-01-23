@@ -239,16 +239,23 @@ public class GenerateIds {
 			conn.commit();
 			         
 			// on enleve si ancienne cle primaire
-			try {
-				update = "ALTER TABLE "+tableName+" DROP PRIMARY KEY";
-				stm.executeUpdate(update);
-				System.out.println("cle primaire sur "+tableName+" supprimee");
-				conn.commit();
-			} catch (Exception e1) {
-				System.out.println("aucune cle primaire sur "+tableName);
-				conn.commit();
+			// Arnaud 28 oct : modif
+			query = "select con.conname, con.contype from pg_constraint con, pg_class cl";
+			query = query+" where con.conrelid = cl.oid";
+			query = query+" and cl.relname='"+tableName+"'";
+			rs = (ResultSet)stm.executeQuery(query);
+			String conName = "";
+			while (rs.next()) { 
+				String conType = rs.getString(2);
+				if (conType.compareToIgnoreCase("p") == 0)
+					conName = rs.getString(1);
 			}
-           
+			if (conName.compareTo("") != 0) {
+				update = "ALTER TABLE "+tableName+" DROP CONSTRAINT "+conName;
+				stm.executeUpdate(update);
+				System.out.println("cle primaire sur "+tableName+" supprimé : "+conName);	
+			}		
+			
 			// ajout de la cle primaire
 			update = "ALTER TABLE "+tableName+" ADD PRIMARY KEY (COGITID)";
 			stm.executeUpdate(update);
