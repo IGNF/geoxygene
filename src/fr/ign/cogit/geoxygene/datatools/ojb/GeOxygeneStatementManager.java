@@ -698,11 +698,14 @@ public class GeOxygeneStatementManager implements StatementManagerIF
             // parameters for SET-clause
             for (int i = 0; i < values.length; i++)
             {
+            	
 				// DEBUT AJOUT POUR GEOXYGENE ----------------------------------------------
 				// Pour PostGIS le type JDBC STRUC n'est pas reconnu
-				// On cas en un autre type (CHAR)
+				// On caste en un autre type (OTHER)
+				// qui a été ajouté dans le "JDBCTypesHelper" réécrit pour l'occasion 
+				// ( ce type n'existe pas dans OJB par défaut)
 				if (values[i].getValue() instanceof PGgeometry)
-					values[i].setJdbcType(JdbcTypesHelper.getJdbcTypeByName("char"));
+					values[i].setJdbcType(JdbcTypesHelper.getJdbcTypeByName("other"));
 				// FIN AJOUT POUR GEOXYGENE ----------------------------------------------
 				
                 if (values[i].getValue() != null)
