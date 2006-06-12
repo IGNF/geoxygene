@@ -1,0 +1,36 @@
+GeOxygene 1.1
+2006/06/12
+
+- Compilation of the project without Oracle librairies is now possible:
+
+	* Some classes have been moved in the "datatools" package.
+	* Calls to Oracle algorithms in GM_Object have been disabled.
+	* A new ant task named "compile-without-oracle" has been created.
+
+- Improvment of the function GeoDatabase::loadAllFeatures for PostGIS 
+  (loading of all the features inside a geometry is now supported). 
+
+- PostGIS and Oracle can (and must) share the same XML mapping files. 
+  JDBC type is 'STRUCT' and the field conversion class is "fr.ign.cogit.geoxygene.datatools.ojb.GeomGeOxygene2Dbms".
+  Examples of mapping files have been modified.
+
+- Support of Postgis 1.0.x ! Compatibility with previous version of PostGIS is broken.
+
+- Generation of primary key column "COGITID" on geospatial tables in PostGIS is now possible 
+  (use the "Manage Data" item in the Console menu).
+
+- Deletion of a call to the TABLESPACE in the code of OracleSpatialQuery::spatialIndex.
+
+- Correction of errors in the sql scripts for PostGIS.
+
+- Correction of errors in the sql scripts for Oracle. 
+  (Since 10g it is not possible to insert a null value in diminfo column of USER_SDO_GEOM_METADATA).
+
+- A problem in the ant build file has been fixed (images and property files were not copied in the class folder).
+
+
+------------------------------------------------------------
+GeOxygene 1.0
+2005/05/08
+
+Initial release !

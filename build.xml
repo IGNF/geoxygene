@@ -49,6 +49,9 @@
       </src>
       <classpath refid="compilation-classpath"/>
     </javac>
+    <copy todir="${classes.dir}">
+      <fileset dir="${src.dir}" includes="**/*.properties,**/*.gif"/>
+    </copy>
   </target>
   
   <target name="compile-without-oracle" description="o Compiles the code without Oracle libs" depends="init">
@@ -56,13 +59,16 @@
     		deprecation="true"
     		debug="true" 
     		optimize="false" 
-    		excludes="**/package.html,fr/ign/cogit/geoxygene/datatools/oracle/**">
+    		excludes="**/package.html,fr/ign/cogit/geoxygene/datatools/oracle/**"> 
       <src>
         <pathelement location="${src.dir}">
         </pathelement>
       </src>
       <classpath refid="compilation-classpath"/>
     </javac>
+    <copy todir="${classes.dir}">
+      <fileset dir="${src.dir}" includes="**/*.properties,**/*.gif"/>
+    </copy>
   </target>  
   
   <target name="jar" description="o Creates the jar" depends="compile">
@@ -98,6 +104,7 @@
       <zipfileset file="${notice.file}" prefix="${dist-filename-prefix}"></zipfileset>
       <zipfileset file="${readme.file}" prefix="${dist-filename-prefix}"></zipfileset>
       <zipfileset file="${todo.file}" prefix="${dist-filename-prefix}"></zipfileset>
+      <zipfileset file="${changes.file}" prefix="${dist-filename-prefix}"></zipfileset>
       <zipfileset dir="${lib.dir}" prefix="${dist-filename-prefix}/${lib.dir}"></zipfileset>
       <zipfileset dir="${mapping.dir}" prefix="${dist-filename-prefix}/${mapping.dir}"></zipfileset>
       <zipfileset dir="${sql.dir}" prefix="${dist-filename-prefix}/${sql.dir}"></zipfileset>
