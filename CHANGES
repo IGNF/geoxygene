@@ -8,7 +8,7 @@ GeOxygene 1.1
 	* A new ant task named "compile-without-oracle" has been created.
 
 - Improvment of the function GeoDatabase::loadAllFeatures for PostGIS 
-  (loading of all the features inside a geometry is now supported). 
+  (loading all the features inside a geometry is now supported). 
 
 - PostGIS and Oracle can (and must) share the same XML mapping files. 
   JDBC type is 'STRUCT' and the field conversion class is "fr.ign.cogit.geoxygene.datatools.ojb.GeomGeOxygene2Dbms".
