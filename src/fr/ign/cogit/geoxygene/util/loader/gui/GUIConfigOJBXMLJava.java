@@ -53,8 +53,7 @@ import javax.swing.JTextField;
   * 
   */
 
-/* Le pasage des parametres se fait par un tableau de String :
- * C'est code a la va-vite comme un porc ...
+/* Le pasage des parametres se fait par un tableau de String
  */
 
 

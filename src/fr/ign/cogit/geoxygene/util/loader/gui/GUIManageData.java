@@ -52,7 +52,6 @@ import javax.swing.JPanel;
  * simple,  unicite sur toutes les tables geographiques de la base, 
  * recopie d'une colonne, un jour calcul d'empreinte numerique ...
  * La parametrisation se fait par passage d'un tableau de bbolean. 
- * C'est code a la va-vite comme un porc ....
  * 
  *
  */

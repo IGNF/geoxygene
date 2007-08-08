@@ -38,7 +38,7 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
 /**
-  * Envoie d'un p'tit message a l'utilisateur ...
+  * Envoie d'un message a l'utilisateur ...
   *
   * @author Thierry Badard & Arnaud Braun
   * @version 1.0
