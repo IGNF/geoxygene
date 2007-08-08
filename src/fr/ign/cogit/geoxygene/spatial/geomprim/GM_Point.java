@@ -33,7 +33,10 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
   * Classe pour un objet géométrique constitué de un point, et seulement un.
   *
   * @author Thierry Badard & Arnaud Braun
-  * @version 1.0
+  * 
+  * 19.02.2007 : correction de bug constructeur à partir d'une DirectPosition
+  * 
+  * @version 1.1
   * 
   */
 
@@ -77,7 +80,7 @@ public class GM_Point extends GM_Primitive {
     /** Constructeur à partir de coordonnées. 
       * @param pos DirectPosition : coordonnées du point */
     public GM_Point(DirectPosition pos) {
-        position = pos;
+    	position = new DirectPosition(pos.getCoordinate());
     }
             
     /** Affiche les coordonnées du point (2D et 3D). */

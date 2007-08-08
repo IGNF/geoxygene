@@ -32,11 +32,13 @@ import java.util.List;
 
 
 /** 
- *  Liste de DirectPosition.
+ * Liste de DirectPosition.
  * On reprend les méthodes standards de <tt> java.util.List </tt> en les typant.
  *
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
+ * 
+ * 19.02.2007 : ajout de la méthode removeAll
  *
  */
 
@@ -90,6 +92,11 @@ public class DirectPositionList {
     /** Efface le i-ème élément de la liste */
     public void remove (int i)  {
         this.list.remove(i);
+    }
+    
+    /** Retire une liste de DirectPosititon */
+    public void removeAll (DirectPositionList theList) {
+        this.list.removeAll(theList.getList());
     }
     
     /** Efface toute la liste */

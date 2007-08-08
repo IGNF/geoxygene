@@ -37,11 +37,11 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  * Si on est en 2D, la 3ieme coordonnée vaut NaN.
  *
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
+ * 
+ * 19.02.2007 : correction de bug méthode move(double offsetX, double offsetY, double offsetZ)
  *
  */
-
-/* modif 1.1 : on passe tout en 3D */
 
 
 public class DirectPosition {
@@ -227,9 +227,11 @@ public class DirectPosition {
         coordinate[1] += offsetY;
     }
         
-    /** Déplace le point suivant X, Y et Z. */
+    /** Déplace le point suivant X, Y et Z.
+	 * coordinate.length<3 -> coordinate.length<4
+	 */
     public void move(double offsetX, double offsetY, double offsetZ) {
-        if (coordinate.length<3) {
+        if (coordinate.length<4) {
             coordinate[0] += offsetX;
             coordinate[1] += offsetY;
             coordinate[2] += offsetZ;

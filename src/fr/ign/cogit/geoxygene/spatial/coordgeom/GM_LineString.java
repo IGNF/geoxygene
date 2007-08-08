@@ -35,8 +35,10 @@ import java.util.List;
   * L'attribut "interpolation" est égal à "linear".
   * 
   * @author Thierry Badard & Arnaud Braun
-  * @version 1.0
+  * @version 1.1
   * 
+  * 19.02.2007 : correction de bug constructeur à partir d'une liste de DirectPosition
+  *  
   */
 
 public class GM_LineString extends GM_CurveSegment {
@@ -103,18 +105,15 @@ public class GM_LineString extends GM_CurveSegment {
     }
         
 
-    /** Constructeur à partir d'une liste de DirectPosition. 
-      * Attention : la liste est CLONEE et non passée par référence.*/
+    /** Constructeur à partir d'une liste de DirectPosition.*/
     public GM_LineString(DirectPositionList points) {
         super();
         this.segment.add(this);
-        controlPoint = points;
-        interpolation = "linear";              
+        controlPoint = new DirectPositionList();
+        controlPoint.addAll(points);
+        interpolation = "linear";        
     }
-               
-    
-    
-
+ 
     //////////////////////////////////////////////////////////////////////////
     // Méthode de la norme ///////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////

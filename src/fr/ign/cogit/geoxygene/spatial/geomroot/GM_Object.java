@@ -68,7 +68,9 @@ import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
   * pour isoler la compilation. A décommenter pour utiliser Oracle.
   * 
   * @author Thierry Badard & Arnaud Braun
-  * @version 1.1
+  * @version 1.2
+  * 
+  * 19.02.2007 : ajout de la méthode intersectsStrictement
   *
   */
 
@@ -237,7 +239,19 @@ abstract public class GM_Object implements Cloneable {
       * qui n'utilisent pas les rectangles minimaux englobants.  */
     public GM_Polygon mbRegion(Geodatabase data) {
         return new GM_Polygon(this.envelope());
-    }  
+    }
+    
+	/**Teste l'intersection stricte entre la géométrie manipulée et celle passée en
+	 * paramètre, i.e. l'intersection sans les cas où les géométries sont simplement
+	 * adjacentes (intersection = point ou ligne) ou sont contenues l'une dans
+	 * dans l'autre
+	 * @param GM_Object geom
+     * @return boolean
+	 */
+	public boolean intersectsStrictement(GM_Object geom) {
+		return (this.intersects(geom) && !this.contains(geom) &&
+				!geom.contains(this)&& !this.touches(geom));
+	}    
    
    
    
