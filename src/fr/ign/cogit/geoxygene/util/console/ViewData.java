@@ -33,9 +33,10 @@ import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.util.viewer.ObjectViewer;
 
 /**
-  *
+  * janvier 2007 : modification pour amélioration de la gestion de la fermeture - grosso
+  * 
   * @author Thierry Badard & Arnaud Braun
-  * @version 1.0
+  * @version 1.1
   * 
   */
 
@@ -44,8 +45,8 @@ class ViewData extends JPanel {
 		
 	protected static void action() {
 		Geodatabase data = GeodatabaseOjbFactory.newInstance();
+		ObjectViewer.flagWindowClosing = false;
 		ObjectViewer vwr = new ObjectViewer(data);
-                        
 	}
 
 }

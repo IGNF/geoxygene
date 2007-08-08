@@ -118,7 +118,7 @@ class SqlToJava extends JPanel {
 																mappingFileName,extentMappingFileName);
 			String[] selectedValues = configuration.showDialog();
 			
-			// ceci permet d'utiliser le cancel (code comme un porc !)
+			// ceci permet d'utiliser le cancel
 			if (selectedValues[2] == null) return;
 
 			XMLJavaDicoGenerator generator = new XMLJavaDicoGenerator(null,data,false,allTables,

@@ -91,7 +91,6 @@ class ManageData extends JPanel {
 		boolean[] selectedActions = configuration.showDialog();
 		
 		// le passage des parametres de l'IHM se fait par passage d'un tableau de boolean ...
-		// code a la va-vite comme un portc !
 		if (selectedActions[0]) genereIds = true;
 		     else genereIds = false;
 		if (selectedActions[1]) homogeneise = true;
