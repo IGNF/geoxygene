@@ -40,7 +40,9 @@ import fr.ign.cogit.geoxygene.datatools.Geodatabase;
  *  et d'un ensemble de populations, elles mêmes constituées d'un ensemble d'éléments.
  * 
  * @author Sébastien Mustière
- * @version 1.0
+ * @version 1.1
+ *  
+ * 9.02.2006 : extension de la méthode chargeExtractionThematiqueEtSpatiale (grosso)
  *  
  */
 
@@ -137,13 +139,13 @@ import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 		chargeElementsPartie(zoneExtraction.getGeom());
 	} 
     
-	/** Méthode de chargement pour les test. Elle est un peu tordue
+	/**Méthode de chargement pour les test. Elle est un peu tordue
 	 * dans le paramétrage mais permet de ne charger que ce qu'on veut.
 	 * Elle permet de charger les instances des populations persistantes 
 	 * d'un jeu de données qui :
 	 * - intersectent une géométrie donnée (extraction géométrique),
 	 * - ET qui appartiennent à certains thèmes et populations précisés en entrée.
-	 * 
+	 *
 	 * @param geom : Définit la zone d'extraction.
 	 * 
 	 * @param themes : Définit les sous-DS du DS à charger. Pour le DS lui-même,
@@ -240,8 +242,12 @@ import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 					}
 				}
 			}
-			if ( aCharger && pop.getPersistant() ) pop.chargeElementsPartie(geom);
+			if ( aCharger && pop.getPersistant() ){
+				if (geom!=null)pop.chargeElementsPartie(geom);
+				else pop.chargeElements();
+			}
 		}
+
 	}
     
     /** Pour un jeu de données persistant, détruit le jeu de données, ses thèmes et ses objets populations -

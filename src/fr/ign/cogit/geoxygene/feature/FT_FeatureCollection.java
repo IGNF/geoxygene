@@ -42,13 +42,16 @@ import fr.ign.cogit.geoxygene.util.index.SpatialIndex;
  * Collection (liste) de FT_Feature. Peut porter un index spatial.
  * 
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.1
+ * 
+ * 19.02.2007 : ajout des méthodes contains, addUnique, remove, removeCollection,
+ * addUniqueCollection, iterator
  * 
  */
 
 public class FT_FeatureCollection {
-    
-    // constructeurs
+
+	// constructeurs
 	public FT_FeatureCollection() {}
 
 	/** constructeur recopiant une autre collection.
@@ -63,65 +66,65 @@ public class FT_FeatureCollection {
 	public FT_FeatureCollection(Collection col) {
 		this.getElements().addAll(col); 
 	}
-	     
+
 	// ---------------------------------------
 	// --- Indicateurs de geometrie et topo --
 	// ---------------------------------------
-    
-    /** Boolean indiquant si les FT_Feature portent une geometrie (true par defaut). */
-    protected boolean flagGeom = true;
-    
-    
+
+	/** Boolean indiquant si les FT_Feature portent une geometrie (true par defaut). */
+	protected boolean flagGeom = true;
+
+
 	/** Boolean indiquant si les FT_Feature portent une geometrie. */
 	public boolean getFlagGeom() {
 		return flagGeom; 
 	}
-	
+
 	/** Boolean indiquant si les FT_Feature portent une geometrie. */
 	public boolean hasGeom() {
 		return flagGeom; 
 	}
-	
+
 	/** Boolean indiquant si les FT_Feature portent une geometrie. */
 	public void setFlagGeom(boolean Geom) {
 		flagGeom = Geom; 
 	}
 
 
-    /** Boolean indiquant si les FT_Feature portent une topologie (false par defaut). */
+	/** Boolean indiquant si les FT_Feature portent une topologie (false par defaut). */
 	protected boolean flagTopo = false;
-	
+
 	/** Boolean indiquant si les FT_Feature portent une topologie. */
 	public boolean hasTopo() {
 		return flagTopo; 
 	}
-	
+
 	/** Boolean indiquant si les FT_Feature portent une topologie. */
 	public void setFlagTopo(boolean Topo) {
 		flagTopo = Topo; 
 	}
-        
 
-        
+
+
 	// ---------------------------------------
 	// --- Accesseurs ------------------------
 	// ---------------------------------------
-	      
-    /** La liste des FT_Feature composant this. */
-    protected List elements = new ArrayList();
-    
-    /** Iterateur sur la liste des FT_Feature composant this. */
-    private Iterator iElements;
-       
-    /** Renvoie la liste de FT_Feature composant this. */
-    public List getElements () {
-        return this.elements;
-    }
 
-    /** Affecte une liste de FT_Feature à this, et met à jour le lien inverse. 
-     * Attention detruit l'index spatial si celui existait. 
-     * Il faut donc le reinitialiser si on souhaite l'utiliser.*/
-    public void setElements (List L) {
+	/** La liste des FT_Feature composant this. */
+	protected List elements = new ArrayList();
+
+	/** Iterateur sur la liste des FT_Feature composant this. */
+	private Iterator iElements;
+
+	/** Renvoie la liste de FT_Feature composant this. */
+	public List getElements () {
+		return this.elements;
+	}
+
+	/** Affecte une liste de FT_Feature à this, et met à jour le lien inverse. 
+	 * Attention detruit l'index spatial si celui existait. 
+	 * Il faut donc le reinitialiser si on souhaite l'utiliser.*/
+	public void setElements (List L) {
 		List old = new ArrayList(elements);
 		Iterator it1 = old.iterator();
 		while ( it1.hasNext() ) {
@@ -137,22 +140,22 @@ public class FT_FeatureCollection {
 				O.getFeatureCollections().add(this);
 		}	
 		if (isIndexed) removeSpatialIndex();
-    }
-    
-    /** Renvoie le i-eme element de la liste des composants de this. */
-    public FT_Feature get (int i) {
-            return (FT_Feature) this.elements.get(i);
-    }
-        
-    /** Ajoute un element a la liste des composants de this, et met à jour le lien inverse. */
-    public void add (FT_Feature value) {
-    	if (value == null) return;
-        this.elements.add(value);
-        value.getFeatureCollections().add(this);
-        if (isIndexed)
-        	if (spatialindex.hasAutomaticUpdate()) spatialindex.update(value,+1);
-    }
-    
+	}
+
+	/** Renvoie le i-eme element de la liste des composants de this. */
+	public FT_Feature get (int i) {
+		return (FT_Feature) this.elements.get(i);
+	}
+
+	/** Ajoute un element a la liste des composants de this, et met à jour le lien inverse. */
+	public void add (FT_Feature value) {
+		if (value == null) return;
+		this.elements.add(value);
+		value.getFeatureCollections().add(this);
+		if (isIndexed)
+			if (spatialindex.hasAutomaticUpdate()) spatialindex.update(value,+1);
+	}
+
 	/** Ajoute les éléments d'une FT_FeatureCollection a la liste des composants de this, et met à jour le lien inverse. */
 	public void addCollection (FT_FeatureCollection value) {
 		FT_Feature elem;
@@ -160,10 +163,10 @@ public class FT_FeatureCollection {
 		Iterator iter = value.elements.iterator();
 		while(iter.hasNext()){
 			elem = (FT_Feature) iter.next();
-		    add(elem);
+			add(elem);
 		}
 	}
-        
+
 	/** Efface de la liste l'element passe en parametre.
 	 *  Attention, si l'élément est persistant, celui-ci n'est pas détruit, le faire après au besoin.
 	 */
@@ -172,9 +175,9 @@ public class FT_FeatureCollection {
 		this.elements.remove(value);
 		value.getFeatureCollections().remove(this);
 		if (isIndexed)
-				if (spatialindex.hasAutomaticUpdate()) spatialindex.update(value,-1);
+			if (spatialindex.hasAutomaticUpdate()) spatialindex.update(value,-1);
 	}    
-    
+
 	/** Efface de la liste tous les élements de la collection passée en paramètre.
 	 *  Attention, si l'élément est persistant, celui-ci n'est pas détruit, le faire après au besoin.
 	 */
@@ -187,63 +190,63 @@ public class FT_FeatureCollection {
 			this.remove(objet);
 		}
 	}    
-    
-    /** Efface toute la liste. 
-     * Detruit l'index spatial si celui existe. */
-    public void clear() {   	
-        Iterator it = elements.iterator(); 
-        while ( it.hasNext() ) {
-                FT_Feature O = (FT_Feature)it.next();
-                O.getFeatureCollections().remove(this);
-        }
-        this.elements.clear();
-        if (isIndexed) removeSpatialIndex();
-    }
-    
-    /** Initialise l'iterateur de la liste. */
-    public void initIterator() {
+
+	/** Efface toute la liste. 
+	 * Detruit l'index spatial si celui existe. */
+	public void clear() {   	
+		Iterator it = elements.iterator(); 
+		while ( it.hasNext() ) {
+			FT_Feature O = (FT_Feature)it.next();
+			O.getFeatureCollections().remove(this);
+		}
+		this.elements.clear();
+		if (isIndexed) removeSpatialIndex();
+	}
+
+	/** Initialise l'iterateur de la liste. */
+	public void initIterator() {
 		iElements = this.elements.iterator();
-    }
-    
-    /** Renvoie true s'il reste des elements avec l'iterateur, false sinon. */
-    public boolean hasNext() {
-        if (iElements.hasNext()) return true;
-        else return false;
-    }
-    
-    /** Renvoie le prochain element avec l'iterateur. */
-    public FT_Feature next() {
-        return (FT_Feature)iElements.next();
-    }
-    
-    /** Renvoie le nombre de elements */
-    public int size() {
-        return this.elements.size();
-    }
-        
+	}
+
+	/** Renvoie true s'il reste des elements avec l'iterateur, false sinon. */
+	public boolean hasNext() {
+		if (iElements.hasNext()) return true;
+		else return false;
+	}
+
+	/** Renvoie le prochain element avec l'iterateur. */
+	public FT_Feature next() {
+		return (FT_Feature)iElements.next();
+	}
+
+	/** Renvoie le nombre de elements */
+	public int size() {
+		return this.elements.size();
+	}
 
 
-    // ---------------------------------------
-    // --- Calcul de l'emprise ---------------
-    // ---------------------------------------
-    
-    /** Calcul l'emprise rectangulaire des geometries de la collection. */
-    public GM_Envelope envelope () {
-    	if (this.hasGeom())
-        	return this.getGeomAggregate().envelope();
-    	else {
-    		System.out.println("ATTENTION appel de envelope() sur une FT_FeatureCollection sans geometrie ! (renvoie null) ");
-    		return null;
-    	}
-    }
-    
-    
-    
-    
+
+	// ---------------------------------------
+	// --- Calcul de l'emprise ---------------
+	// ---------------------------------------
+
+	/** Calcul l'emprise rectangulaire des geometries de la collection. */
+	public GM_Envelope envelope () {
+		if (this.hasGeom())
+			return this.getGeomAggregate().envelope();
+		else {
+			System.out.println("ATTENTION appel de envelope() sur une FT_FeatureCollection sans geometrie ! (renvoie null) ");
+			return null;
+		}
+	}
+
+
+
+
 	// ---------------------------------------
 	// --- Utile ! ---------------------------
 	// ---------------------------------------
-    
+
 	/** Renvoie toutes les geometries sous la forme d'un GM_Aggregate. */
 	public GM_Aggregate getGeomAggregate() {
 		if (this.hasGeom()) {
@@ -257,29 +260,29 @@ public class FT_FeatureCollection {
 			return null;
 		}
 	}
-    
-            
-        
+
+
+
 	// ---------------------------------------
 	// --- Index spatial ---------------------
 	// ---------------------------------------
-	
+
 	/** Index spatial. */
 	private SpatialIndex spatialindex;
-	
+
 	/** La collection possede-t-elle un index spatial ? */
 	private boolean isIndexed = false;
-	
+
 	/** Index spatial. */	
 	public SpatialIndex getSpatialIndex() {
 		return spatialindex;
 	}
-	
+
 	/** La collection possede-t-elle un index spatial ? */
 	public boolean hasSpatialIndex() {
 		return isIndexed;
 	}
-		
+
 	/** Initialise un index spatial avec détermination automatique des paramètres. 
 	 * Le boolean indique si on souhaite une mise a jour automatique de l'index. */
 	public void initSpatialIndex (Class spatialIndexClass, boolean automaticUpdate) {	
@@ -289,15 +292,15 @@ public class FT_FeatureCollection {
 		}
 		try {
 			spatialindex = (SpatialIndex) spatialIndexClass.
-						getConstructor(new Class[] {FT_FeatureCollection.class, Boolean.class}).
-						newInstance(new Object[] {this, new Boolean(automaticUpdate)} );
+			getConstructor(new Class[] {FT_FeatureCollection.class, Boolean.class}).
+			newInstance(new Object[] {this, new Boolean(automaticUpdate)} );
 			isIndexed = true;						
 		} catch (Exception e) {
 			System.out.println("Probleme a l'initialisation de l'index spatial !");
 			e.printStackTrace();
 		}
 	}
-	
+
 	/** Initialise un index spatial avec un parametre entier (utilise pour le dallage). 
 	 * Le boolean indique si on souhaite une mise a jour automatique de l'index.*/
 	public void initSpatialIndex (Class spatialIndexClass, boolean automaticUpdate, int i) {
@@ -307,15 +310,15 @@ public class FT_FeatureCollection {
 		}		
 		try {
 			spatialindex = (SpatialIndex) spatialIndexClass.
-						getConstructor(new Class[] {FT_FeatureCollection.class, Boolean.class, Integer.class}).
-						newInstance(new Object[] {this, new Boolean(automaticUpdate), new Integer(i)} );
+			getConstructor(new Class[] {FT_FeatureCollection.class, Boolean.class, Integer.class}).
+			newInstance(new Object[] {this, new Boolean(automaticUpdate), new Integer(i)} );
 			isIndexed = true;												
 		} catch (Exception e) {
 			System.out.println("Probleme a l'initialisation de l'index spatial !");
 			e.printStackTrace();
 		}	
 	}
-	
+
 	/** Initialise un index spatial d'une collection de FT_Feature, 
 	 * en prenant pour paramètre les limites de la zone et un entier 
 	 * (pour le dallage, cet entier est le nombre en X et Y de cases souhaitées sur la zone).
@@ -341,8 +344,8 @@ public class FT_FeatureCollection {
 		}		
 		try {
 			spatialindex = (SpatialIndex) spatialIndexClass.
-						getConstructor(new Class[] {FT_FeatureCollection.class, Boolean.class, GM_Envelope.class, Integer.class}).
-						newInstance(new Object[] {this, new Boolean(automaticUpdate), enveloppe, new Integer(i)} );
+			getConstructor(new Class[] {FT_FeatureCollection.class, Boolean.class, GM_Envelope.class, Integer.class}).
+			newInstance(new Object[] {this, new Boolean(automaticUpdate), enveloppe, new Integer(i)} );
 			isIndexed = true;												
 		} catch (Exception e) {
 			System.out.println("Probleme a l'initialisation de l'index spatial !");
@@ -354,7 +357,7 @@ public class FT_FeatureCollection {
 	 * en prenant pour paramètre ceux d'un index existant.
 	 */		
 	public void initSpatialIndex (SpatialIndex spIdx) {
-							//enlevé : Class spatialIndexClass,
+		//enlevé : Class spatialIndexClass,
 		if (!this.hasGeom()) {
 			System.out.println("Attention initialisation d'index sur une liste ne portant pas de geometrie !");
 			return;
@@ -362,8 +365,8 @@ public class FT_FeatureCollection {
 		try {
 //			spatialindex = (SpatialIndex) spatialIndexClass.
 			spatialindex = (SpatialIndex) spIdx.getClass().
-						getConstructor(new Class[] {FT_FeatureCollection.class, spIdx.getClass()}).
-						newInstance(new Object[] {this, spIdx} );
+			getConstructor(new Class[] {FT_FeatureCollection.class, spIdx.getClass()}).
+			newInstance(new Object[] {this, spIdx} );
 
 
 
@@ -396,7 +399,7 @@ public class FT_FeatureCollection {
 		}
 		return spatialindex.select(P,D);
 	}
-	
+
 	/** Selection dans un rectangle. */	
 	public FT_FeatureCollection select (GM_Envelope env) {
 		if (!isIndexed) {
@@ -405,7 +408,7 @@ public class FT_FeatureCollection {
 		}
 		return spatialindex.select(env);
 	}
-    
+
 	/** Selection des objets qui intersectent un objet geometrique quelconque. */
 	public FT_FeatureCollection select (GM_Object geometry) {
 		if (!isIndexed) {
@@ -439,8 +442,68 @@ public class FT_FeatureCollection {
 			return null;
 		}
 		return spatialindex.select(geometry, distance);
-		
+
 	}
-	        
+
+	/** Encapsulation de la methode contains() avec typage */
+	public boolean contains (FT_Feature value) {
+		if (this.elements.contains(value)) return true;
+		else
+			return false;
+	}
+
+
+	/** Ajoute un element a la liste des composants de this s'il n'est pas déjà présent, et 
+	 *  met à jour le lien inverse. */
+	public void addUnique (FT_Feature value) {
+		if (value == null) return;
+		if (this.elements.contains(value)) return;
+		this.elements.add(value);
+		value.getFeatureCollections().add(this);
+		if (isIndexed)
+			if (spatialindex.hasAutomaticUpdate()) spatialindex.update(value,+1);
+	}
+
+	/** Efface de la liste l'element en position i.
+	 *  Attention, si l'élément est persistant, celui-ci n'est pas détruit, le faire après au besoin.
+	 */
+	public void remove (int i)  {
+		if (i>this.size()) return;
+		FT_Feature value = this.get(i); 
+		this.elements.remove(value);
+		value.getFeatureCollections().remove(this);
+		if (isIndexed)
+			if (spatialindex.hasAutomaticUpdate()) spatialindex.update(value,-1);
+	}    
+
+
+	/** Efface de la liste la collection passée en parametre.
+	 *  Attention, si l'élément est persistant, celui-ci n'est pas détruit, le faire après au besoin.
+	 */
+	public void removeCollection (FT_FeatureCollection value)  {
+		FT_Feature elem;
+		if (value==null) return;
+		Iterator iter = value.elements.iterator();
+		while(iter.hasNext()){
+			elem = (FT_Feature) iter.next();
+			remove(elem);
+		}
+	}    
+
+	/** Ajoute les éléments d'une FT_FeatureCollection a la liste des composants de this, et met à jour le lien inverse. */
+	public void addUniqueCollection (FT_FeatureCollection value) {
+		FT_Feature elem;
+		if (value == null) return;
+		Iterator iter = value.elements.iterator();
+		while(iter.hasNext()){
+			elem = (FT_Feature) iter.next();
+			this.addUnique(elem);
+		}
+	}
+	/** Iterateur
+	 */
+	public Iterator iterator(){
+		return this.elements.iterator();
+	}
+
 }
-    

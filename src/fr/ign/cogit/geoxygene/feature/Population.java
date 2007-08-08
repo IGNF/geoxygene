@@ -26,12 +26,21 @@
 
 package fr.ign.cogit.geoxygene.feature;
 
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /** 
  *  Une population représente TOUS les objets d'une classe héritant de FT_Feature.
  *
- *  <P> Les objets qui la compose peuvent avoir une géometrie ou non.
+ *  <P> Les objets qui la composent peuvent avoir une géometrie ou non.
  *  La population peut être persistante ou non, associée à un index spatial ou non.
  *
  *  <P> NB: une population existe indépendamment des ses éléments. 
@@ -49,13 +58,13 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * </UL>  
  * 
  * @author Sébastien Mustière
- * @version 1.0
+ * @version 1.1
  * 
  */
 
 public class Population extends FT_FeatureCollection {
     
-    /** Identifiant. Correspond au "cogitID" des tables Oracle.*/
+    /** Identifiant. Correspond au "cogitID" des tables du SGBD.*/
     protected int id;
     /** Renvoie l'identifiant. NB: l'ID n'est remplit automatiquement que si la population est persistante */
     public int getId() {return id;}
@@ -72,30 +81,15 @@ public class Population extends FT_FeatureCollection {
     /** Constructeur d'une population.
      *  Une population peut être persistante ou non (la population elle-même est alors rendue persistante dans ce constructeur).
      *  Une population a un nom logique (utile pour naviguer entre populations).
-     *  Les élements d'une population se réalisent dans une classe contrète (nom_classe_elements).
+     *  Les élements d'une population se réalisent dans une classe contrète (classeElements).
      *  NB: lors la construction, auncun élément n'est affectée à la population, cela doit être fait
      *  à partir d'elements peristant avec chargeElements, ou a partir d'objets Java avec les setElements
      */
-    public Population(boolean persistance, String nom_logique, String nom_classe_elements, boolean drapeauGeom) {
+    public Population(boolean persistance, String nomLogique, Class classeElements, boolean drapeauGeom) {
         this.setPersistant(persistance);
-        this.setNom(nom_logique);
-        this.setNomClasse(nom_classe_elements);
+        this.setNom(nomLogique);
+        this.setNomClasse(classeElements.getName());
         this.flagGeom = drapeauGeom;
-        if (persistance) DataSet.db.makePersistent(this);
-    }
-    
-    /** Constructeur d'une population dont les éléments ont géométrie.
-     *  Une population peut être persistante ou non (la population elle-même est alors rendue persistante dans ce constructeur).
-     *  Une population a un nom logique (utile pour naviguer entre populations).
-     *  Les élements d'une population se réalisent dans une classe contrète (nom_classe_elements).
-     *  NB: lors la construction, auncun élément n'est affectée à la population, cela doit être fait
-     *  à partir d'elements peristant avec chargeElements, ou a partir d'objets Java avec les setElements
-     */
-    public Population(boolean persistance, String nom_logique, String nom_classe_elements) {
-        this.setPersistant(persistance);
-        this.setNom(nom_logique);
-        this.setNomClasse(nom_classe_elements);
-        this.flagGeom = true;
         if (persistance) DataSet.db.makePersistent(this);
     }
     
@@ -116,7 +110,7 @@ public class Population extends FT_FeatureCollection {
             elements = DataSet.db.loadAllFeatures(classe).getElements();
         } catch (Exception e) {
             System.out.println("----- ATTENTION : Chargement impossible de la population "+this.getNom());
-            System.out.println("-----             Sans doute un probleme avec ORACLE, ou table inexistante, ou pas de mapping ");
+            System.out.println("-----             Sans doute un probleme avec le SGBD, ou table inexistante, ou pas de mapping ");
             e.printStackTrace();
             return;
         }
@@ -125,7 +119,7 @@ public class Population extends FT_FeatureCollection {
     }
 
     /** Chargement des éléments persistants d'une population qui intersectent une géométrie donnée. 
-     *  ATTENTION: la table qui stocke les éléments doit avoir été indexée dans Oracle.
+     *  ATTENTION: la table qui stocke les éléments doit avoir été indexée dans le SGBD.
      *  ATTENTION AGAIN: seules les populations avec une géométrie sont chargées.
      */
     public void chargeElementsPartie(GM_Object geom) { 
@@ -148,16 +142,114 @@ public class Population extends FT_FeatureCollection {
             elements = DataSet.db.loadAllFeatures(this.getClasse(), geom).getElements();
         } catch (Exception e) {
             System.out.println("----- ATTENTION : Chargement impossible de la population "+this.getNom());
-            System.out.println("-----             La classe n'est peut-être pas indexée dans Oracle");
-            System.out.println("-----             ou table inexistante, ou pas de mapping ou probleme avec ORACLE ");
+            System.out.println("-----             La classe n'est peut-être pas indexée dans le SGBD");
+            System.out.println("-----             ou table inexistante, ou pas de mapping ou probleme avec le SGBD ");
             return;
         }
         
         System.out.println("   "+this.size()+" instances chargees dans la population");
     }
   
+	/** Chargement des éléments persistants d'une population. 
+	 *  Tous les éléments de la table correspondante sont chargés.
+	 *  Les données doivent d'abord avoir été indexées.
+	 *  PB: TRES LENT !!!!!!!
+	 */
+	public void chargeElementsProches(Population pop, double dist) { 
+		System.out.println("");
+		System.out.println("-- Chargement des elements de la population  "+this.getNom());
+		System.out.println("-- à moins de "+dist+" de ceux de la population   "+pop.getNom());
+
+		if (!this.getPersistant()) {
+			System.out.println("----- ATTENTION : Aucune instance n'est chargee dans la population "+this.getNom());
+			System.out.println("-----             La population n'est pas persistante");
+			return;
+		}
+        
+		try {
+			Iterator itPop = pop.getElements().iterator();
+			Collection selectionTotale = new HashSet();
+			while (itPop.hasNext()) {
+				FT_Feature objet = (FT_Feature) itPop.next();
+				FT_FeatureCollection selection = DataSet.db.loadAllFeatures(classe, objet.getGeom(), dist);
+				selectionTotale.addAll(selection.getElements());
+			}
+			elements = new ArrayList(selectionTotale);
+		} catch (Exception e) {
+			System.out.println("----- ATTENTION : Chargement impossible de la population "+this.getNom());
+			System.out.println("-----             Sans doute un probleme avec le SGBD, ou table inexistante, ou pas de mapping ");
+			e.printStackTrace();
+			return;
+		}
+        
+		System.out.println("-- "+this.size()+" instances chargees dans la population");
+	}
+    
+    /** Renvoie une population avec tous les éléments de this
+	 *  situés à moins de "dist" des éléments de la population
+	 *  Travail sur un index en mémoire (pas celui du SGBD).
+	 *  Rmq : Fonctionne avec des objets de géométrie quelconque 
+    */
+    public Population selectionElementsProchesGenerale(Population pop, double dist) {
+    	Population popTemporaire = new Population();
+		Population popResultat = new Population(false, this.getNom(), this.getClasse(),true);
+		Set selectionUnObjet, selectionTotale = new HashSet();
+		
+		popTemporaire.addCollection(this);
+		popTemporaire.initSpatialIndex(Tiling.class, true, 20);
+		System.out.println("Fin indexation "+(new Time(System.currentTimeMillis())).toString());
+		Iterator itPop = pop.getElements().iterator();
+		while (itPop.hasNext()) {
+			FT_Feature objet = (FT_Feature) itPop.next();
+			GM_Envelope enveloppe = objet.getGeom().envelope();
+			double xmin = enveloppe.getLowerCorner().getX()-dist;
+			double xmax = enveloppe.getUpperCorner().getX()+dist;
+			double ymin = enveloppe.getLowerCorner().getY()-dist;
+			double ymax = enveloppe.getUpperCorner().getY()+dist;
+			enveloppe = new GM_Envelope(xmin,xmax,ymin,ymax);
+			FT_FeatureCollection selection = popTemporaire.select(enveloppe);
+			Iterator itSel = selection.getElements().iterator();
+			selectionUnObjet = new HashSet();
+			while (itSel.hasNext()) {
+				FT_Feature objetSel = (FT_Feature) itSel.next();
+				//if (Distances.premiereComposanteHausdorff((GM_LineString)objetSel.getGeom(),(GM_LineString)objet.getGeom())<dist) 
+				if (objetSel.getGeom().distance(objet.getGeom())<dist) selectionUnObjet.add(objetSel);	
+			}
+			popTemporaire.getElements().removeAll(selectionUnObjet);
+			selectionTotale.addAll(selectionUnObjet);
+		} 
+		popResultat.setElements(new ArrayList(selectionTotale));
+		return popResultat;
+    } 
+
+    /** Renvoie une population avec tous les éléments de this
+     *  situés à moins de "dist" des éléments de la population pop.
+    */
+	public Population selectionLargeElementsProches(Population pop, double dist) {
+		Population popTemporaire = new Population();
+		Population popResultat = new Population(false, this.getNom(), this.getClasse(),true);
+	
+		popTemporaire.addCollection(this);
+		popTemporaire.initSpatialIndex(Tiling.class, true);
+		Iterator itPop = pop.getElements().iterator();
+		while (itPop.hasNext()) {
+			FT_Feature objet = (FT_Feature) itPop.next();
+			GM_Envelope enveloppe = objet.getGeom().envelope();
+			double xmin = enveloppe.getLowerCorner().getX()-dist;
+			double xmax = enveloppe.getUpperCorner().getX()+dist;
+			double ymin = enveloppe.getLowerCorner().getY()-dist;
+			double ymax = enveloppe.getUpperCorner().getY()+dist;
+			enveloppe = new GM_Envelope(xmin,xmax,ymin,ymax);
+			FT_FeatureCollection selection = popTemporaire.select(enveloppe);
+			popTemporaire.getElements().removeAll(selection.getElements());
+			popResultat.addCollection(selection);
+		} 
+		return popResultat;
+	} 
+
+
 	/** Chargement des éléments persistants d'une population qui intersectent une zone d'extraction donnée. 
-	 *  ATTENTION: la table qui stocke les éléments doit avoir été indexée dans Oracle.
+	 *  ATTENTION: la table qui stocke les éléments doit avoir été indexée dans le SGBD.
 	 *  ATTENTION AGAIN: seules les populations avec une géométrie sont chargées.
 	 */
 	public void chargeElementsPartie(Extraction zoneExtraction) {
@@ -165,7 +257,7 @@ public class Population extends FT_FeatureCollection {
 	} 
     
     /** Detruit la population si elle est persistante, 
-     *  MAIS ne détruit pas les éléments de cette population (pour cela vider la table Oracle correspondante).
+     *  MAIS ne détruit pas les éléments de cette population (pour cela vider la table correspondante dans le SGBD).
      */
     public void detruitPopulation() {
         if (!this.getPersistant()) return;
