@@ -1,4 +1,4 @@
-GeOxygene, version 1.0
+GeOxygene, version 1.2
 
 GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
 the development and deployment of geographic (GIS) applications. It is a open source 
@@ -124,3 +124,15 @@ The distribution of Oracle libraries is not allowed.
 In order to compile Geoxygene you will need :
 - a JDBC driver
 - the "SDOAPI" library that allows the access to "Oracle spatial" database from Java code 
+
+8) JAMA
+
+JAMA is a basic linear algebra package for Java. It provides user-level classes for
+constructing and manipulating real, dense matrices.  It is meant to provide sufficient
+functionality for routine problems, packaged in a way that is natural and understandable
+to non-experts.
+Website : http://math.nist.gov/javanumerics/jama/
+
+JAMA is released under the public domain.
+
+The file "Jama-1.0.2.jar" of the Geoxygene distribution is the version 1.0.2 of JAMA distribution.
