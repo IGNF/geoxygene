@@ -1,4 +1,4 @@
-GeOxygene, version 1.2
+GeOxygene, version 1.3
 
 GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
 the development and deployment of geographic (GIS) applications. It is a open source 
@@ -40,11 +40,11 @@ two classes from the Apache Avalon project (http://avalon.apache.org).
 
 The Java Topology Suite (JTS) is an API of 2D spatial predicates and functions,
 which conforms to the Simple Features Specification for SQL published by the OGC.
-Website: http://www.vividsolutions.com/jts/jtshome.htm
+Website: http://sourceforge.net/projects/jts-topo-suite
 JTS is released under the LGPL license:
 http://www.gnu.org/copyleft/lesser.html
 
-The  file "jts.jar" of the GeOxygene distribution is the version 1.4 of JTS distribution.
+The  file "jts-1.9.jar" of the GeOxygene distribution is the version 1.9 of JTS distribution.
 
 
 3) GEOTOOLS 1.0 LITE PROJECT
@@ -100,9 +100,10 @@ Website: http://www.postgresql.org/
 PostgreSQL is released under the BSD license:
 http://www.postgresql.org/about/licence
 
-The file "pg74.1jdbc3.jar" of the Geoxygene distribution is the JDBC driver 
-of PostgreSQL  v7.4 for JDBC 3.
-http://jdbc.postgresql.org/
+The file "postgresql-8.2-507.jdbc4.jar" of the Geoxygene distribution is the JDBC driver 
+of PostgreSQL  v8.2 for JDBC4 (JDBC4 is recommended with the 1.6 Java Virtual Machine).
+If you use the 1.5 JVM, you should download and use the file "postgresql-8.2-507.jdbc3.jar"
+available on the website http://jdbc.postgresql.org.
 
 
 6) POSTGIS
@@ -111,10 +112,10 @@ PostGIS adds support for geographic objects to the PostgreSQL
 object-relational database.
 Website: http://postgis.refractions.net/
 
-PostGIS is released under the LGPL license:
+The PostGIS Driver is released under the LGPL license:
 http://www.gnu.org/copyleft/lesser.html
 
-The file "postgis.jar" of the Geoxygene distribution allows the access 
+The file "postgis-1.3.2.jar" of the Geoxygene distribution allows the access 
 to PostGIS database from Java code and is included in the PostGIS distribution.
 
 
@@ -124,6 +125,7 @@ The distribution of Oracle libraries is not allowed.
 In order to compile Geoxygene you will need :
 - a JDBC driver
 - the "SDOAPI" library that allows the access to "Oracle spatial" database from Java code 
+
 
 8) JAMA
 

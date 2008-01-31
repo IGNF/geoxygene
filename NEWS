@@ -1,3 +1,15 @@
+Version 1.3:
+
+ - This version provides a data matching tool and a generator of DBMS tables and XML mapping
+   files from Java classes.
+   
+
+Version 1.2:
+
+ - This version provides new tools (topological map, geometric tools, Delaunay's triangulation)
+   and corrects some minor bugs.
+
+
 Version 1.1:
 
  - This version corrects some minor bugs and enhances the support of PostGIS. 
