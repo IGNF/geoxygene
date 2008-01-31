@@ -37,18 +37,18 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
-  *
-  * @author Thierry Badard & Arnaud Braun
-  * @version 1.0
-  * 
-  */
+ *
+ * @author Thierry Badard & Arnaud Braun & Eric Grosso
+ * @version 1.1
+ * 
+ */
 
 class GeOxygeneConsoleInterface extends JFrame {
-	
+
 
 	private static String ojb = "OJB";
 	private static String castor= "Castor";
-	
+
 	private static String sqlToJavaText = "SQL to Java";
 	private static String javaToSqlText = "Java to SQL";
 	private static String manageDataText = "Manage Data";
@@ -64,20 +64,20 @@ class GeOxygeneConsoleInterface extends JFrame {
 
 
 	private void InterfaceInit() {
-		
+
 		System.out.println("Bonjour");
-		
+
 		// Init GUI
 		this.getContentPane().setLayout( new GridLayout(8,1) );
-		
+
 		//A COMMENTER
 		final JPanel mappingPanel =	new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 		final JComboBox mappingComboBox = new JComboBox( new String[] {ojb,castor} );
 		mappingPanel.add(mappingComboBox);
-		
+
 		this.getContentPane().add(mappingPanel);	
 
-		
+
 		JButton sqlToJavaButton = new JButton (sqlToJavaText);
 		this.getContentPane().add(sqlToJavaButton);
 		sqlToJavaButton.addActionListener(new ActionListener() {
@@ -86,15 +86,15 @@ class GeOxygeneConsoleInterface extends JFrame {
 				SqlToJava.action(getMappingTool(mappingTool));
 			}
 		});
-		
+
 		JButton javaToSqlButton = new JButton (javaToSqlText);
 		this.getContentPane().add(javaToSqlButton);
 		javaToSqlButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("marche pas !!");
+				JavaToSql.action();
 			}
 		});			
-		
+
 		JButton manageDataButton = new JButton (manageDataText);
 		this.getContentPane().add(manageDataButton);
 		manageDataButton.addActionListener(new ActionListener() {
@@ -102,7 +102,7 @@ class GeOxygeneConsoleInterface extends JFrame {
 				ManageData.action();
 			}
 		});			
-		
+
 		JButton datasetButton = new JButton (datasetText);
 		this.getContentPane().add(datasetButton);
 		datasetButton.addActionListener(new ActionListener() {
@@ -110,7 +110,7 @@ class GeOxygeneConsoleInterface extends JFrame {
 				System.out.println("marche pas !!");
 			}
 		});			
-				
+
 		JButton importDataButton = new JButton (importDatatext);
 		this.getContentPane().add(importDataButton);
 		importDataButton.addActionListener(new ActionListener() {
@@ -118,7 +118,7 @@ class GeOxygeneConsoleInterface extends JFrame {
 				System.out.println("marche pas !!");
 			}
 		});			
-		
+
 		JButton viewDataButton = new JButton (viewDataText);
 		this.getContentPane().add(viewDataButton);	
 		viewDataButton.addActionListener(new ActionListener() {
@@ -126,7 +126,7 @@ class GeOxygeneConsoleInterface extends JFrame {
 				ViewData.action();
 			}
 		});			
-				
+
 		JButton quitButton = new JButton (quitText);
 		this.getContentPane().add(quitButton);
 		quitButton.addActionListener(new ActionListener() {
@@ -135,14 +135,14 @@ class GeOxygeneConsoleInterface extends JFrame {
 				System.exit(0);
 			}
 		});
-		
+
 	}
-	
-	
+
+
 	private int getMappingTool (String string) {
 		if (string.equals(ojb)) return GeOxygeneConsole.OJB;
 		else if (string.equals(castor)) return GeOxygeneConsole.CASTOR;
 		else return 0;
 	}
-	
+
 }
