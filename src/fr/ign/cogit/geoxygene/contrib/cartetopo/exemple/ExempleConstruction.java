@@ -119,17 +119,17 @@ public class ExempleConstruction {
 		ct.creeTopologieFaces();
 
 		// Affichage du nombre de faces
-		System.out.println("Nombre de faces de la carte : "+ct.getListefaces().size());
+		System.out.println("Nombre de faces de la carte : "+ct.getListeFaces().size());
 
 		// Affichage des coordonnees du noeud initial et du noeud final du premier arc
-		MonArc arc = (MonArc) ct.getListearcs().get(0);
-		System.out.println("Noeud initial de a0 : "+arc.getNoeudini().getCoord());
-		System.out.println("Noeud final de a0   : "+arc.getNoeudfin().getCoord());
+		MonArc arc = (MonArc) ct.getListeArcs().get(0);
+		System.out.println("Noeud initial de a0 : "+arc.getNoeudIni().getCoord());
+		System.out.println("Noeud final de a0   : "+arc.getNoeudFin().getCoord());
 		
 		// Calcul de la superficie des deux faces
-		MaFace face = (MaFace) ct.getListefaces().get(0);
+		MaFace face = (MaFace) ct.getListeFaces().get(0);
 		System.out.println("Superficie de f0 : "+face.getGeom().area());
-		face = (MaFace) ct.getListefaces().get(1);
+		face = (MaFace) ct.getListeFaces().get(1);
 		System.out.println("Superficie de f1 : "+face.getGeom().area());
 		
 		// Visualisation des données
@@ -142,4 +142,5 @@ public class ExempleConstruction {
 		obj.addFeatureCollection(ct.getPopNoeuds(),"Noeuds");
 		
 	}
+
 }

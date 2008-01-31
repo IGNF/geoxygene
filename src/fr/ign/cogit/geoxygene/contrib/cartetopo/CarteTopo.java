@@ -62,9 +62,9 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 public class CarteTopo extends DataSet {
 
-////////////////////////////////////////////////////////////////////////////////////////////
-//				Accès aux composants de la carte topo
-////////////////////////////////////////////////////////////////////////////////////////////
+
+//	Accès aux composants de la carte topo
+
 	/** Population des arcs de la carte topo. */
 	public Population getPopArcs() {return this.getPopulation("Arc");}
 	/** Population des noeuds de la carte topo. */
@@ -75,13 +75,13 @@ public class CarteTopo extends DataSet {
 	public Population getPopGroupes() {return this.getPopulation("Groupe");}
 
 	/** Liste des noeuds de la carte topo. Surcharge de getPopNoeuds().getElements(). */
-	public List getListenoeuds() {return this.getPopNoeuds().getElements();}
+	public List getListeNoeuds() {return this.getPopNoeuds().getElements();}
 	/** Liste des arcs de la carte topo. Surcharge de getPopArcs().getElements(). */
-	public List getListearcs() {return this.getPopArcs().getElements();}
+	public List getListeArcs() {return this.getPopArcs().getElements();}
 	/** Liste des faces de la carte topo. Surcharge de getPopFaces().getElements(). */
-	public List getListefaces() {return this.getPopFaces().getElements();}
+	public List getListeFaces() {return this.getPopFaces().getElements();}
 	/** Liste des groupes de la carte topo. Surcharge de getPopGroupes().getElements(). */
-	public List getListegroupes() {return this.getPopGroupes().getElements();}
+	public List getListeGroupes() {return this.getPopGroupes().getElements();}
 
 	/** Ajoute un noeud à la population des noeuds de la carte topo. 
 		Attention : même si la carte topo est persistante, le noeud n'est pas rendu persistant dans cette méthode */
@@ -98,13 +98,13 @@ public class CarteTopo extends DataSet {
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-//								Constructeurs
+//	Constructeurs
 /////////////////////////////////////////////////////////////////////////////////////////////
 	/** Constructeur par défaut;
 	 *  ATTENTION, constructeur à éviter car aucune population n'est créée:
 	 * seule un objet carteTopo est créé */
 	public CarteTopo() {}
-    
+
 	/** Constructeur d'une carte topo non persistante.
 	 *  Le nom logique peut ête utilisé si la carte topo apparient à un DataSet, 
 	 *  il peut être une chaîne vide sinon.
@@ -112,9 +112,9 @@ public class CarteTopo extends DataSet {
 	 *  Par ce constructeur, la carte topo contient des arcs/noeuds/faces/groupes  
 	 *  des classes CarteTopo.Arc, CarteTopo.Noeud, CarteTopo.Face, CarteTopo.Groupe.
 	 */
-	public CarteTopo(String nom_logique) {
+	public CarteTopo(String nomLogique) {
 		this.ojbConcreteClass = this.getClass().getName(); // nécessaire pour ojb
-		this.setNom(nom_logique);
+		this.setNom(nomLogique);
 		this.setPersistant(false);
 		Population arcs = new Population(false, "Arc", fr.ign.cogit.geoxygene.contrib.cartetopo.Arc.class,true);
 		this.addPopulation(arcs);
@@ -126,11 +126,11 @@ public class CarteTopo extends DataSet {
 		this.addPopulation(groupes);
 	}
 
-    
+
 /////////////////////////////////////////////////////////////////////////////////////////////
-//							Attributs de la carte topo     
+//	Attributs de la carte topo     
 /////////////////////////////////////////////////////////////////////////////////////////////
-   
+
 	// Description de la structure topologique
 	/** Spaghetti = pas de relation topologique entre arcs, noeuds et faces */
 	public static final int SPAGHETTI = 0;
@@ -146,11 +146,11 @@ public class CarteTopo extends DataSet {
 	private int type = MAP;
 	public int getType() {return type;}
 	public void setType(int i) {type = i;}
-    
-    
-    
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////
-//							  COPIE et VIDAGE de la carte topo     
+//	COPIE et VIDAGE de la carte topo     
 /////////////////////////////////////////////////////////////////////////////////////////////
 	/** Copie d'une carte topologique avec toutes les relations topologiques.
 	 * Les liens "correspondants" sont aussi dupliqués.
@@ -163,21 +163,19 @@ public class CarteTopo extends DataSet {
 		Noeud noeud, noeudCopie;
 		Arc arc, arcCopie;
 		Face face, faceCopie;
+		Groupe groupe, groupeCopie;
 		FT_Feature corresp;
-		Groupe groupe, groupecopie;
-		Iterator iterNoeuds, iterArcs, itCorresp, iterArcscopies,   
-					iterFaces, iterGroupes, iterGroupescopies;
-		ArrayList alnoeuds, alnoeudscopies, alarcs, alarcscopies, 
-					alfaces, alfacescopies;
-        
+		Iterator itNoeuds, itArcs, itCorresp, itArcsCopies,   
+		itFaces, itGroupes, itGroupesCopies;
+		ArrayList noeuds, noeudsCopies, arcs, arcsCopies, faces, facesCopies;
 
 		// création d'une nouvelle carte        
 		CarteTopo carte = new CarteTopo(nomLogique);
 
 		// copie des objets, sans relation topologique        
-		iterNoeuds = this.getPopNoeuds().getElements().iterator();
-		while (iterNoeuds.hasNext()) {
-			noeud = (Noeud) iterNoeuds.next();
+		itNoeuds = this.getPopNoeuds().getElements().iterator();
+		while (itNoeuds.hasNext()) {
+			noeud = (Noeud) itNoeuds.next();
 			noeudCopie = (Noeud)carte.getPopNoeuds().nouvelElement();
 			noeudCopie.setGeometrie(noeud.getGeometrie());
 			itCorresp = noeud.getCorrespondants().iterator();
@@ -186,9 +184,9 @@ public class CarteTopo extends DataSet {
 				noeudCopie.addCorrespondant(corresp);
 			}
 		}
-		iterArcs = this.getPopArcs().getElements().iterator();
-		while (iterArcs.hasNext()) {
-			arc = (Arc) iterArcs.next();
+		itArcs = this.getPopArcs().getElements().iterator();
+		while (itArcs.hasNext()) {
+			arc = (Arc) itArcs.next();
 			arcCopie = (Arc)carte.getPopArcs().nouvelElement();
 			arcCopie.setGeometrie(arc.getGeometrie());
 			itCorresp = arc.getCorrespondants().iterator();
@@ -197,9 +195,9 @@ public class CarteTopo extends DataSet {
 				arcCopie.addCorrespondant(corresp);
 			}
 		}
-		iterFaces = this.getPopFaces().getElements().iterator();
-		while (iterFaces.hasNext()) {
-			face = (Face) iterFaces.next();
+		itFaces = this.getPopFaces().getElements().iterator();
+		while (itFaces.hasNext()) {
+			face = (Face) itFaces.next();
 			faceCopie = (Face)carte.getPopFaces().nouvelElement();
 			faceCopie.setGeometrie(face.getGeometrie());
 			itCorresp = face.getCorrespondants().iterator();
@@ -208,64 +206,64 @@ public class CarteTopo extends DataSet {
 				faceCopie.addCorrespondant(corresp);
 			}
 		}
-		iterGroupes = this.getPopGroupes().getElements().iterator();
-		while (iterGroupes.hasNext()) {
-			groupe = (Groupe) iterGroupes.next();
-			groupecopie = (Groupe)carte.getPopGroupes().nouvelElement();
+		itGroupes = this.getPopGroupes().getElements().iterator();
+		while (itGroupes.hasNext()) {
+			groupe = (Groupe) itGroupes.next();
+			groupeCopie = (Groupe)carte.getPopGroupes().nouvelElement();
 			itCorresp = groupe.getCorrespondants().iterator();
 			while (itCorresp.hasNext() ) {
 				corresp = (FT_Feature)itCorresp.next();
-				groupecopie.addCorrespondant(corresp);
+				groupeCopie.addCorrespondant(corresp);
 			}
 		}
 
 		if (type == SPAGHETTI) return carte;
 
 		// copie des relations topologiques        
-		alnoeuds = new ArrayList(this.getPopNoeuds().getElements());
-		alnoeudscopies = new ArrayList(carte.getPopNoeuds().getElements());
-		alarcs = new ArrayList(this.getPopArcs().getElements());
-		alarcscopies = new ArrayList(carte.getPopArcs().getElements());
-		alfaces = new ArrayList(this.getPopFaces().getElements());
-		alfacescopies = new ArrayList(carte.getPopArcs().getElements());
-        
-		iterArcs = this.getPopArcs().getElements().iterator();
-		iterArcscopies = carte.getPopArcs().getElements().iterator();
-		while (iterArcs.hasNext()) {
-			arc = (Arc) iterArcs.next();
-			arcCopie = (Arc) iterArcscopies.next();
-			arcCopie.setNoeudini((Noeud) alnoeudscopies.get(alnoeuds.indexOf(arc.getNoeudini())));
-			arcCopie.setNoeudfin((Noeud) alnoeudscopies.get(alnoeuds.indexOf(arc.getNoeudfin())));
-			if (arc.getFacegauche() != null) {
-				arcCopie.setFacegauche((Face) alfacescopies.get(alfaces.indexOf(arc.getFacegauche())));
+		noeuds = new ArrayList(this.getPopNoeuds().getElements());
+		noeudsCopies = new ArrayList(carte.getPopNoeuds().getElements());
+		arcs = new ArrayList(this.getPopArcs().getElements());
+		arcsCopies = new ArrayList(carte.getPopArcs().getElements());
+		faces = new ArrayList(this.getPopFaces().getElements());
+		facesCopies = new ArrayList(carte.getPopArcs().getElements());
+
+		itArcs = this.getPopArcs().getElements().iterator();
+		itArcsCopies = carte.getPopArcs().getElements().iterator();
+		while (itArcs.hasNext()) {
+			arc = (Arc) itArcs.next();
+			arcCopie = (Arc) itArcsCopies.next();
+			arcCopie.setNoeudIni((Noeud) noeudsCopies.get(noeuds.indexOf(arc.getNoeudIni())));
+			arcCopie.setNoeudFin((Noeud) noeudsCopies.get(noeuds.indexOf(arc.getNoeudFin())));
+			if (arc.getFaceGauche() != null) {
+				arcCopie.setFaceGauche((Face) facesCopies.get(faces.indexOf(arc.getFaceGauche())));
 			}
-			if (arc.getFacedroite() != null) {
-				arcCopie.setFacedroite((Face) alfacescopies.get(alfaces.indexOf(arc.getFacedroite())));
+			if (arc.getFaceDroite() != null) {
+				arcCopie.setFaceDroite((Face) facesCopies.get(faces.indexOf(arc.getFaceDroite())));
 			}
 		}
 
-		iterGroupes = this.getPopGroupes().getElements().iterator();
-		iterGroupescopies = carte.getPopGroupes().getElements().iterator();
-		while (iterGroupes.hasNext()) {
-			groupe = (Groupe) iterGroupes.next();
-			groupecopie = (Groupe) iterGroupescopies.next();
-			iterNoeuds = groupecopie.getListenoeuds().iterator();
-			while (iterNoeuds.hasNext()) {
-				noeud = (Noeud) iterNoeuds.next();
-				groupecopie.addNoeud( (Noeud) alnoeudscopies.get(alnoeuds.indexOf(noeud)) );
+		itGroupes = this.getPopGroupes().getElements().iterator();
+		itGroupesCopies = carte.getPopGroupes().getElements().iterator();
+		while (itGroupes.hasNext()) {
+			groupe = (Groupe) itGroupes.next();
+			groupeCopie = (Groupe) itGroupesCopies.next();
+			itNoeuds = groupeCopie.getListeNoeuds().iterator();
+			while (itNoeuds.hasNext()) {
+				noeud = (Noeud) itNoeuds.next();
+				groupeCopie.addNoeud( (Noeud) noeudsCopies.get(noeuds.indexOf(noeud)) );
 			}
-			iterArcs = groupecopie.getListearcs().iterator();
-			while (iterArcs.hasNext()) {
-				arc = (Arc) iterArcs.next();
-				groupecopie.addArc( (Arc) alarcscopies.get(alarcs.indexOf(arc)) );
+			itArcs = groupeCopie.getListeArcs().iterator();
+			while (itArcs.hasNext()) {
+				arc = (Arc) itArcs.next();
+				groupeCopie.addArc( (Arc) arcsCopies.get(arcs.indexOf(arc)) );
 			}
-			iterFaces = groupecopie.getListefaces().iterator();
-			while (iterFaces.hasNext()) {
-				face = (Face) iterFaces.next();
-				groupecopie.addFace( (Face) alfacescopies.get(alfaces.indexOf(face)) );
+			itFaces = groupeCopie.getListeFaces().iterator();
+			while (itFaces.hasNext()) {
+				face = (Face) itFaces.next();
+				groupeCopie.addFace( (Face) facesCopies.get(faces.indexOf(face)) );
 			}
 		} 
-	   return carte;
+		return carte;
 	}
 
 
@@ -278,13 +276,13 @@ public class CarteTopo extends DataSet {
 		while (itArcs.hasNext()) {
 			arc = (Arc) itArcs.next();
 			this.getPopArcs().remove(arc);
-			arc.setNoeudfin(null);
-			arc.setNoeudini(null);
-			arc.setFacedroite(null);
-			arc.setFacegauche(null);
+			arc.setNoeudFin(null);
+			arc.setNoeudIni(null);
+			arc.setFaceDroite(null);
+			arc.setFaceGauche(null);
 		}
 	}
-	
+
 	/** Enlève des noeuds de la carteTopo, en enlevant aussi les relations topologiques
 	 * les concernant (avec les arcs et par conséquent avec les faces).
 	 */
@@ -299,16 +297,16 @@ public class CarteTopo extends DataSet {
 			itArcs = noeud.getEntrants().iterator();
 			while (itArcs.hasNext()) {
 				arc = (Arc) itArcs.next();
-				arc.setNoeudfin(null);
+				arc.setNoeudFin(null);
 			}
 			itArcs = noeud.getSortants().iterator();
 			while (itArcs.hasNext()) {
 				arc = (Arc) itArcs.next();
-				arc.setNoeudini(null);
+				arc.setNoeudIni(null);
 			}
 		}
 	}
-	
+
 	/** Enlève des faces de la carteTopo, en enlevant aussi les relations topologiques
 	 * les concernant (avec les arcs et par conséquent avec les noeuds).
 	 */
@@ -320,64 +318,64 @@ public class CarteTopo extends DataSet {
 		while (itFaces.hasNext()) {
 			face = (Face) itFaces.next();
 			this.getPopFaces().remove(face);
-			itArcs = face.getArcsdirects().iterator();
+			itArcs = face.getArcsDirects().iterator();
 			while (itArcs.hasNext()) {
 				arc = (Arc) itArcs.next();
-				arc.setFacegauche(null);
+				arc.setFaceGauche(null);
 			}
-			itArcs = face.getArcsindirects().iterator();
+			itArcs = face.getArcsIndirects().iterator();
 			while (itArcs.hasNext()) {
 				arc = (Arc) itArcs.next();
-				arc.setFacedroite(null);
+				arc.setFaceDroite(null);
 			}
 		}
 	}
 
-    
-/////////////////////////////////////////////////////////////////////////////////////////////
-//			Instanciation ou nettoyage de la topologie de réseau 
-/////////////////////////////////////////////////////////////////////////////////////////////
-   
-  /** Instancie la topologie de réseau d'une Carte Topo, 
-   *  en se basant sur la géométrie 2D des arcs et des noeuds.
-   *  Autrement dit: crée les relation "noeud initial" et "noeud final" d'un arc.
-   * 
-   *  ATTENTION: cette méthode ne rajoute pas de noeuds. Si un arc n'a pas de noeud
-   *  localisé à son extrémité, il n'aura pas de noeud initial (ou final).
-   *  DE PLUS si plusieurs noeuds sont trop proches (cf. param tolérance), 
-   *  alors un des noeuds est choisi au hasard pour la relation arc/noeud,
-   *  ce qui n'est pas correct.
-   *  IL EST DONC CONSEILLE DE FILTRER LES DOUBLONS AVANT SI NECESSAIRE.
-   * 
-   *  NB: si cela n'avait pas été fait avant, 
-   *  la population des noeuds est indexée dans cette méthode
-   *  (dallage, paramètre = 20).
-   * 
-   *  @param tolerance
-   *  Le paramètre "tolerance" spécifie la distance maximale acceptée entre
-   *  la position d'un noeud et la position d'une extrémité de ligne, 
-   *  pour considérer ce noeud comme extrémité (la tolérance peut être nulle).
-   * 
-   */
-  public void creeTopologieArcsNoeuds(double tolerance) {
-	  Arc arc;
-	  Iterator itArcs;
-	  FT_FeatureCollection selection;
 
-	  // initialisation de l'index au besoin		
-	  if ( ! this.getPopNoeuds().hasSpatialIndex() )
+/////////////////////////////////////////////////////////////////////////////////////////////
+//	Instanciation ou nettoyage de la topologie de réseau 
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+	/** Instancie la topologie de réseau d'une Carte Topo, 
+	 *  en se basant sur la géométrie 2D des arcs et des noeuds.
+	 *  Autrement dit: crée les relation "noeud initial" et "noeud final" d'un arc.
+	 * 
+	 *  ATTENTION: cette méthode ne rajoute pas de noeuds. Si un arc n'a pas de noeud
+	 *  localisé à son extrémité, il n'aura pas de noeud initial (ou final).
+	 *  DE PLUS si plusieurs noeuds sont trop proches (cf. param tolérance), 
+	 *  alors un des noeuds est choisi au hasard pour la relation arc/noeud,
+	 *  ce qui n'est pas correct.
+	 *  IL EST DONC CONSEILLE DE FILTRER LES DOUBLONS AVANT SI NECESSAIRE.
+	 * 
+	 *  NB: si cela n'avait pas été fait avant, 
+	 *  la population des noeuds est indexée dans cette méthode
+	 *  (dallage, paramètre = 20).
+	 * 
+	 *  @param tolerance
+	 *  Le paramètre "tolerance" spécifie la distance maximale acceptée entre
+	 *  la position d'un noeud et la position d'une extrémité de ligne, 
+	 *  pour considérer ce noeud comme extrémité (la tolérance peut être nulle).
+	 * 
+	 */
+	public void creeTopologieArcsNoeuds(double tolerance) {
+		Arc arc;
+		Iterator itArcs;
+		FT_FeatureCollection selection;
+
+		// initialisation de l'index au besoin		
+		if ( ! this.getPopNoeuds().hasSpatialIndex() )
 			this.getPopNoeuds().initSpatialIndex(Tiling.class, true, 20 );
 
-	  itArcs = this.getPopArcs().getElements().iterator();
-	  while (itArcs.hasNext()) {
-		arc = (Arc)itArcs.next();
-		selection = this.getPopNoeuds().select(arc.getGeometrie().startPoint(), tolerance);
-		if (selection.getElements().size() != 0) arc.setNoeudini((Noeud)selection.getElements().get(0));
-		selection = this.getPopNoeuds().select(arc.getGeometrie().endPoint(), tolerance);
-		if (selection.getElements().size() != 0) arc.setNoeudfin((Noeud)selection.getElements().get(0));
-	  }
-	  
-  }
+		itArcs = this.getPopArcs().getElements().iterator();
+		while (itArcs.hasNext()) {
+			arc = (Arc)itArcs.next();
+			selection = this.getPopNoeuds().select(arc.getGeometrie().startPoint(), tolerance);
+			if (selection.getElements().size() != 0) arc.setNoeudIni((Noeud)selection.getElements().get(0));
+			selection = this.getPopNoeuds().select(arc.getGeometrie().endPoint(), tolerance);
+			if (selection.getElements().size() != 0) arc.setNoeudFin((Noeud)selection.getElements().get(0));
+		}
+
+	}
 
 
 	/**  Crée un nouveau noeud à l'extrémité de chaque arc si il n'y en a pas.
@@ -391,7 +389,7 @@ public class CarteTopo extends DataSet {
 	 *  sinon Dallage avec à peu près 50 noeuds par dalle.
 	 * 
 	 */
-	 public void creeNoeudsManquants(double tolerance) {
+	public void creeNoeudsManquants(double tolerance) {
 		Arc arc;
 		Noeud noeud;
 		Iterator itArcs; 
@@ -411,7 +409,7 @@ public class CarteTopo extends DataSet {
 				this.getPopNoeuds().initSpatialIndex(Tiling.class, true, enveloppe, nb);
 			}
 		}
-		
+
 		itArcs = this.getPopArcs().getElements().iterator();;
 		while (itArcs.hasNext()) {
 			arc = (Arc)itArcs.next();
@@ -421,19 +419,19 @@ public class CarteTopo extends DataSet {
 				noeud = (Noeud)this.getPopNoeuds().nouvelElement(new GM_Point(arc.getGeometrie().startPoint()));
 			}
 			else noeud = (Noeud)selection.getElements().get(0);
-			arc.setNoeudini(noeud);
-			
+			arc.setNoeudIni(noeud);
+
 			//noeud final
 			selection = this.getPopNoeuds().select(arc.getGeometrie().endPoint(),tolerance);
 			if (selection.getElements().size() == 0) {
 				noeud = (Noeud)this.getPopNoeuds().nouvelElement(new GM_Point(arc.getGeometrie().endPoint()));
 			}
 			else noeud = (Noeud)selection.getElements().get(0);
-			arc.setNoeudfin(noeud);
+			arc.setNoeudFin(noeud);
 		}
-	 }
-	 
-	 
+	}
+
+
 	/** Filtrage des noeuds isolés (c'est-à-dire connectés à aucun arc).
 	 *  Ceux-ci sont enlevés de la Carte Topo  
 	 *  IMPORTANT : La topologie de réseau doit avoir été instanciée,
@@ -443,7 +441,7 @@ public class CarteTopo extends DataSet {
 		Iterator itNoeuds;
 		List aJeter = new ArrayList();
 		Noeud noeud;
-        
+
 		itNoeuds = this.getPopNoeuds().getElements().iterator();
 		while (itNoeuds.hasNext()) {
 			noeud = (Noeud)itNoeuds.next();
@@ -456,9 +454,8 @@ public class CarteTopo extends DataSet {
 		}
 	}
 
-    
-    
-   /** Filtrage des noeuds doublons (plusieurs noeuds localisés au même endroit).
+
+	/** Filtrage des noeuds doublons (plusieurs noeuds localisés au même endroit).
 	 * 
 	 * NB: si cela n'avait pas été fait avant, 
 	 * la population des noeuds est indexée dans cette méthode 
@@ -478,7 +475,7 @@ public class CarteTopo extends DataSet {
 		Noeud doublon, noeud;
 		Arc arc;
 		FT_Feature corresp;
-		List a_jeter = new ArrayList();
+		List aJeter = new ArrayList();
 		FT_FeatureCollection selection;
 
 		// initialisation de l'index au besoin		
@@ -488,7 +485,7 @@ public class CarteTopo extends DataSet {
 		itNoeuds = this.getPopNoeuds().getElements().iterator();
 		while (itNoeuds.hasNext()) {
 			noeud = (Noeud)itNoeuds.next();
-			if ( a_jeter.contains(noeud) ) continue;
+			if ( aJeter.contains(noeud) ) continue;
 			selection = this.getPopNoeuds().select(noeud.getCoord(),tolerance);
 			itDoublons = selection.getElements().iterator();
 			while (itDoublons.hasNext()) {
@@ -496,7 +493,7 @@ public class CarteTopo extends DataSet {
 				if ( doublon == noeud ) continue;
 				// on a trouvé un doublon à jeter
 				// on gère les conséquences sur la topologie et les correspondants
-				a_jeter.add(doublon);
+				aJeter.add(doublon);
 				itCorresp = doublon.getCorrespondants().iterator();
 				while (itCorresp.hasNext() ) {
 					corresp = (FT_Feature)itCorresp.next();
@@ -514,14 +511,14 @@ public class CarteTopo extends DataSet {
 				}
 			}
 		}
-		itNoeuds = a_jeter.iterator();
+		itNoeuds = aJeter.iterator();
 		while (itNoeuds.hasNext()) {
 			noeud = (Noeud)itNoeuds.next();
 			this.getPopNoeuds().enleveElement(noeud);
 		}
 	}
-    
-    
+
+
 	/** Filtrage des noeuds "simples", c'est-à-dire avec seulement deux arcs incidents,
 	 * si ils ont des orientations compatibles.
 	 * Ces noeuds sont enlevés et un seul arc est créé à la place des deux arcs incidents.
@@ -542,7 +539,7 @@ public class CarteTopo extends DataSet {
 		Arc arcTotal, arc1, arc2;
 		Face faceDroite1, faceDroite2, faceGauche1, faceGauche2;  
 		FT_Feature corresp;
-        
+
 		itNoeuds = this.getPopNoeuds().getElements().iterator();
 		List noeudsElimines = new ArrayList();
 		while (itNoeuds.hasNext()) {
@@ -553,51 +550,51 @@ public class CarteTopo extends DataSet {
 			if ( noeud.entrantsOrientes().size() == 0 ) continue; // incompatibilité d'orientation
 			if ( noeud.sortantsOrientes().size() == 0 ) continue; // incompatibilité d'orientation
 			if ( (noeud.entrantsOrientes().size()+noeud.sortantsOrientes().size()) == 3 ) continue; // incompatibilité d'orientation
-			
+
 			arcTotal = (Arc)this.getPopArcs().nouvelElement();
 			geometries= new ArrayList();
 			arc1 = (Arc)arcsIncidents.get(0);
 			arc2 = (Arc)arcsIncidents.get(1);
 			geometries.add(arc1.getGeometrie());
 			geometries.add(arc2.getGeometrie());
-			
+
 			//création de la nouvelle géométrie
 			arcTotal.setGeometrie(Operateurs.compileArcs(geometries));
-			
+
 			//gestion des conséquences sur l'orientation et les correspondants
 			arcTotal.setOrientation(arc1.getOrientation());
 			itCorresp = arc1.getCorrespondants().iterator();
 			while (itCorresp.hasNext() ) {
 				corresp = (FT_Feature)itCorresp.next();
 				if (!arcTotal.getCorrespondants().contains(corresp))
-						arcTotal.addCorrespondant(corresp);
+					arcTotal.addCorrespondant(corresp);
 			}
 			arc1.setCorrespondants(new ArrayList());
-			
+
 			itCorresp = arc2.getCorrespondants().iterator();
 			while (itCorresp.hasNext() ) {
 				corresp = (FT_Feature)itCorresp.next();
 				arcTotal.addCorrespondant(corresp);
 			}
 			arc2.setCorrespondants(new ArrayList());
-			
+
 			itCorresp = noeud.getCorrespondants().iterator();
 			while (itCorresp.hasNext() ) {
 				corresp = (FT_Feature)itCorresp.next();
 				if (!arcTotal.getCorrespondants().contains(corresp))
-						arcTotal.addCorrespondant(corresp);
+					arcTotal.addCorrespondant(corresp);
 			}
 			noeud.setCorrespondants(new ArrayList());
 
 			//gestion des conséquences sur la topologie
-			faceDroite1 = arc1.getFacedroite();
-			faceGauche1 = arc1.getFacegauche();
-			faceDroite2 = arc2.getFacedroite();
-			faceGauche2 = arc2.getFacegauche();
-			noeudIni1 = arc1.getNoeudini();
-			noeudFin1 = arc1.getNoeudfin();
-			noeudIni2 = arc2.getNoeudini();
-			noeudFin2 = arc2.getNoeudfin();
+			faceDroite1 = arc1.getFaceDroite();
+			faceGauche1 = arc1.getFaceGauche();
+			faceDroite2 = arc2.getFaceDroite();
+			faceGauche2 = arc2.getFaceGauche();
+			noeudIni1 = arc1.getNoeudIni();
+			noeudFin1 = arc1.getNoeudFin();
+			noeudIni2 = arc2.getNoeudIni();
+			noeudFin2 = arc2.getNoeudFin();
 
 			// conséquences sur le premier arc 			
 			if ( noeudIni1 == noeud ) {
@@ -605,15 +602,15 @@ public class CarteTopo extends DataSet {
 				if ( noeudFin1 != null ) {
 					noeudFin1.getEntrants().remove(arc1);
 					noeudFin1.addSortant(arcTotal);
-					
+
 				}
 				if ( faceDroite1 != null) {
-					faceDroite1.getArcsindirects().remove(arc1);
-					arcTotal.setFacegauche(faceDroite1);
+					faceDroite1.getArcsIndirects().remove(arc1);
+					arcTotal.setFaceGauche(faceDroite1);
 				}
 				if ( faceGauche1 != null) {
-					faceGauche1.getArcsdirects().remove(arc1);
-					arcTotal.setFacedroite(faceGauche1);
+					faceGauche1.getArcsDirects().remove(arc1);
+					arcTotal.setFaceDroite(faceGauche1);
 				}
 			}
 			else {
@@ -623,12 +620,12 @@ public class CarteTopo extends DataSet {
 					noeudIni1.addSortant(arcTotal);
 				}
 				if ( faceDroite1 != null) {
-					faceDroite1.getArcsindirects().remove(arc1);
-					arcTotal.setFacedroite(faceDroite1);
+					faceDroite1.getArcsIndirects().remove(arc1);
+					arcTotal.setFaceDroite(faceDroite1);
 				}
 				if ( faceGauche1 != null) {
-					faceGauche1.getArcsdirects().remove(arc1);
-					arcTotal.setFacegauche(faceGauche1);
+					faceGauche1.getArcsDirects().remove(arc1);
+					arcTotal.setFaceGauche(faceGauche1);
 				}
 			}
 
@@ -638,13 +635,13 @@ public class CarteTopo extends DataSet {
 				if ( noeudFin2 != null ) {
 					noeudFin2.getEntrants().remove(arc2);
 					noeudFin2.addEntrant(arcTotal);
-					
+
 				}
 				if ( faceDroite2 != null) {
-					faceDroite2.getArcsindirects().remove(arc2);
+					faceDroite2.getArcsIndirects().remove(arc2);
 				}
 				if ( faceGauche2 != null) {
-					faceGauche1.getArcsdirects().remove(arc2);
+					faceGauche1.getArcsDirects().remove(arc2);
 				}
 			}
 			else {
@@ -654,13 +651,13 @@ public class CarteTopo extends DataSet {
 					noeudIni2.addEntrant(arcTotal);
 				}
 				if ( faceDroite2 != null) {
-					faceDroite2.getArcsindirects().remove(arc2);
+					faceDroite2.getArcsIndirects().remove(arc2);
 				}
 				if ( faceGauche2 != null) {
-					faceGauche2.getArcsdirects().remove(arc2);
+					faceGauche2.getArcsDirects().remove(arc2);
 				}
 			}
-			
+
 			//Elimination des arcs et du noeud inutile
 			this.getPopArcs().enleveElement(arc1);			
 			this.getPopArcs().enleveElement(arc2);			
@@ -671,16 +668,16 @@ public class CarteTopo extends DataSet {
 			this.getPopNoeuds().enleveElement((Noeud)noeudsElimines.get(i));
 		}
 	}
-    
-    /** Filtre les arcs en double 
-     * (en double = même géométrie et même orientation).
-     * 
-     * Attention: les conséquences sur la topologie arcs/faces ne sont pas gérées.
-     */
-    public void filtreArcsDoublons() {
-    	List arcs = this.getPopArcs().getElements();
-    	List arcsAEnlever = new ArrayList();
-    	for (int i=0; i<arcs.size();i++) {
+
+	/** Filtre les arcs en double 
+	 * (en double = même géométrie et même orientation).
+	 * 
+	 * Attention: les conséquences sur la topologie arcs/faces ne sont pas gérées.
+	 */
+	public void filtreArcsDoublons() {
+		List arcs = this.getPopArcs().getElements();
+		List arcsAEnlever = new ArrayList();
+		for (int i=0; i<arcs.size();i++) {
 			Arc arci = (Arc)arcs.get(i);
 			if (arcsAEnlever.contains(arci)) continue;
 			for (int j=i+1; j<arcs.size();j++) {
@@ -694,13 +691,13 @@ public class CarteTopo extends DataSet {
 					arci.addCorrespondant(corresp);
 				}
 				arcj.setCorrespondants(new ArrayList());
-				arcj.setNoeudfin(null);
-				arcj.setNoeudini(null);
+				arcj.setNoeudFin(null);
+				arcj.setNoeudIni(null);
 			}
 		}
 		this.getPopArcs().removeAll(arcsAEnlever); 
-    }
-    
+	}
+
 	/** Transforme la carte topo pour la rendre planaire :
 	 *  les arcs sont découpés à chaque intersection d'arcs, 
 	 *  et un noeud est créé à chaque extrémité d'arc.
@@ -737,7 +734,7 @@ public class CarteTopo extends DataSet {
 		List arcsEnleves = new ArrayList();
 		GM_MultiPoint frontiereArc, frontiereArcSel  ;
 		GM_Point ptArcIni, ptArcFin, ptArcSelIni, ptArcSelFin;
-						
+
 		if (this.getPopArcs().size() == 0) return;
 		// initialisation de l'index des arcs au besoin		
 		if ( ! this.getPopArcs().hasSpatialIndex() )
@@ -747,13 +744,13 @@ public class CarteTopo extends DataSet {
 			arc = (Arc)this.getPopArcs().get(i);
 			if (arcsEnleves.contains(arc)) continue;
 			if (dejaTraites.contains(arc)) continue;
-			
+
 			//les arcs qui croisent l'arc courant
 			// Optimisation et blindage pour tous les cas non garanti (Seb)
 			selection = this.getPopArcs().select(arc.getGeometrie()); 
 			selection.remove(arc); 
 			selection.getElements().removeAll(arcsEnleves);
-			
+
 			listeInter = new ArrayList();
 			itSel = selection.getElements().iterator();
 			ptArcIni = new GM_Point(arc.getGeometrie().startPoint());
@@ -765,13 +762,13 @@ public class CarteTopo extends DataSet {
 				arcSel = (Arc) itSel.next();
 
 //				if (arcSel == arc) continue;
-				
+
 				ptArcSelIni = new GM_Point(arcSel.getGeometrie().startPoint());
 				ptArcSelFin = new GM_Point(arcSel.getGeometrie().endPoint());
 
 				intersection = arcSel.getGeometrie().intersection(arc.getGeometrie());
-			
-/*				//modif Seb: tentative d'accélération : buggé mais je ne trouve pas pourquoi
+
+				/* //modif Seb: tentative d'accélération : buggé mais je ne trouve pas pourquoi
 				if (intersection instanceof GM_Point ) {
 					if ( Operateurs.superposes(ptArcIni, (GM_Point)intersection) || 
 						 Operateurs.superposes(ptArcFin, (GM_Point)intersection) ) { 		     
@@ -782,7 +779,7 @@ public class CarteTopo extends DataSet {
 					listeInter.add(arcSel);
 					continue;
 				}
-*/				
+				 */				
 				frontiereArcSel = new GM_MultiPoint();
 				frontiereArcSel.add(ptArcSelIni);
 				frontiereArcSel.add(ptArcSelFin);
@@ -793,7 +790,7 @@ public class CarteTopo extends DataSet {
 			}			
 
 			if (listeInter.size() == 0) continue; //pas d'intersection avec cet arc
-			
+
 			//on découpe tout
 			itSel = listeInter.iterator();
 			nodedLineStrings = arc.getGeometrie();
@@ -838,7 +835,7 @@ public class CarteTopo extends DataSet {
 				}
 				continue;
 			}
-			
+
 			//cas imprévu: OUPS
 			System.out.println("Problème pour rendre le graphe planaire");
 			System.out.println("  bug non identifié : l'union donne une "+nodedLineStrings.getClass() );
@@ -851,7 +848,7 @@ public class CarteTopo extends DataSet {
 		this.creeNoeudsManquants(tolerance);
 	}
 
-	
+
 	/** Fusionne en un seul noeud, tous les noeuds proches de moins de "tolerance"
 	 * Les correspondants suivent, la topologie arcs/noeuds aussi.
 	 * NB: les petits arcs qui n'ont plus de sens sont aussi éliminés.
@@ -879,7 +876,7 @@ public class CarteTopo extends DataSet {
 			noeudsProches = this.getPopNoeuds().select(noeud.getGeometrie(), tolerance);
 			noeudsProches.removeAll(aEnlever);
 			if (noeudsProches.size() < 2) continue;
-			
+
 			//Si il y a des voisins, on crée un nouveau noeud
 			GM_MultiPoint points = new GM_MultiPoint();
 			itNoeudsProches = noeudsProches.getElements().iterator();
@@ -904,12 +901,12 @@ public class CarteTopo extends DataSet {
 				while (itArcs.hasNext()) {
 					arc = (Arc)itArcs.next();
 					arcsModifies.add(arc);
-					if ( arc.getNoeudini() == noeudProche ) {
-						arc.setNoeudini(nouveauNoeud);
+					if ( arc.getNoeudIni() == noeudProche ) {
+						arc.setNoeudIni(nouveauNoeud);
 						arc.getGeometrie().coord().set(0,nouveauNoeud.getGeometrie().getPosition());
 					}
-					if ( arc.getNoeudfin() == noeudProche ) {
-						arc.setNoeudfin(nouveauNoeud);
+					if ( arc.getNoeudFin() == noeudProche ) {
+						arc.setNoeudFin(nouveauNoeud);
 						int fin = arc.getGeometrie().coord().size()-1;
 						arc.getGeometrie().coord().set(fin,nouveauNoeud.getGeometrie().getPosition());
 					}
@@ -919,11 +916,11 @@ public class CarteTopo extends DataSet {
 				itArcs = arcsModifies.iterator();
 				while (itArcs.hasNext()) {
 					arc = (Arc) itArcs.next();
-					if ( arc.getNoeudini() == nouveauNoeud && arc.getNoeudfin() == nouveauNoeud ) {
+					if ( arc.getNoeudIni() == nouveauNoeud && arc.getNoeudFin() == nouveauNoeud ) {
 						if ( Distances.hausdorff(arc.getGeometrie(),noeudProche.getGeometrie()) <= tolerance ) {
 							nouveauNoeud.getCorrespondants().addAll(arc.getCorrespondants());
-							arc.setNoeudini(null);
-							arc.setNoeudfin(null);
+							arc.setNoeudIni(null);
+							arc.setNoeudFin(null);
 							this.getPopArcs().remove(arc);
 						}		
 					}
@@ -962,13 +959,13 @@ public class CarteTopo extends DataSet {
 
 		if ( ! this.getPopNoeuds().hasSpatialIndex() )
 			this.getPopNoeuds().initSpatialIndex(Tiling.class, true);
-		
+
 		while (itSurf.hasNext()) {
 			FT_Feature surf = (FT_Feature) itSurf.next();
 			noeudsProches = this.getPopNoeuds().select(surf.getGeom());
 			noeudsProches.removeAll(aEnlever);
 			if (noeudsProches.size() < 2) continue;
-			
+
 			//Si il y a plusieurs noeuds dans la surface, on crée un nouveau noeud
 			GM_MultiPoint points = new GM_MultiPoint();
 			itNoeudsProches = noeudsProches.getElements().iterator();
@@ -993,12 +990,12 @@ public class CarteTopo extends DataSet {
 				while (itArcs.hasNext()) {
 					arc = (Arc)itArcs.next();
 					arcsModifies.add(arc);
-					if ( arc.getNoeudini() == noeudProche ) {
-						arc.setNoeudini(nouveauNoeud);
+					if ( arc.getNoeudIni() == noeudProche ) {
+						arc.setNoeudIni(nouveauNoeud);
 						arc.getGeometrie().coord().set(0,nouveauNoeud.getGeometrie().getPosition());
 					}
-					if ( arc.getNoeudfin() == noeudProche ) {
-						arc.setNoeudfin(nouveauNoeud);
+					if ( arc.getNoeudFin() == noeudProche ) {
+						arc.setNoeudFin(nouveauNoeud);
 						int fin = arc.getGeometrie().coord().size()-1;
 						arc.getGeometrie().coord().set(fin,nouveauNoeud.getGeometrie().getPosition());
 					}
@@ -1008,11 +1005,11 @@ public class CarteTopo extends DataSet {
 				itArcs = arcsModifies.iterator();
 				while (itArcs.hasNext()) {
 					arc = (Arc) itArcs.next();
-					if ( arc.getNoeudini() == nouveauNoeud && arc.getNoeudfin() == nouveauNoeud ) {
+					if ( arc.getNoeudIni() == nouveauNoeud && arc.getNoeudFin() == nouveauNoeud ) {
 						if ( surf.getGeom().contains(arc.getGeometrie()) ) {
 							nouveauNoeud.getCorrespondants().addAll(arc.getCorrespondants());
-							arc.setNoeudini(null);
-							arc.setNoeudfin(null);
+							arc.setNoeudIni(null);
+							arc.setNoeudFin(null);
 							this.getPopArcs().remove(arc);
 						}		
 					}
@@ -1046,13 +1043,13 @@ public class CarteTopo extends DataSet {
 		Noeud noeud;
 		Iterator itNoeuds = ct.getPopNoeuds().getElements().iterator();
 		Iterator itArcs ;
-		
+
 		if ( !this.getPopArcs().hasSpatialIndex()) {
 			int nb = (int)Math.sqrt(this.getPopArcs().size()/20);
 			if (nb == 0) nb=1;
 			this.getPopArcs().initSpatialIndex(Tiling.class, true, nb);
 		}
-		
+
 		while (itNoeuds.hasNext()) {
 			noeud = (Noeud) itNoeuds.next();
 			if (impassesSeulement) {
@@ -1062,14 +1059,14 @@ public class CarteTopo extends DataSet {
 			while (itArcs.hasNext()) {
 				arc = (Arc) itArcs.next();
 				if ( Distances.distance(arc.getGeometrie().startPoint(), 
-										noeud.getGeometrie().getPosition()) < distanceMaxProjectionNoeud ) continue;
+						noeud.getGeometrie().getPosition()) < distanceMaxProjectionNoeud ) continue;
 				if ( Distances.distance(arc.getGeometrie().endPoint(), 
-										noeud.getGeometrie().getPosition()) < distanceMaxProjectionNoeud ) continue;
+						noeud.getGeometrie().getPosition()) < distanceMaxProjectionNoeud ) continue;
 				arc.projeteEtDecoupe(noeud.getGeometrie());						
 			}
 		}
 	}
-    
+
 	/** Découpe la carte topo this en fonction de tous les points (noeuds et points intermediaires)
 	 * d'une autre carte topo (ct).
 	 * En détail: 
@@ -1087,13 +1084,13 @@ public class CarteTopo extends DataSet {
 		Arc arc, arcCT;
 		Iterator itArcsCT = ct.getPopArcs().getElements().iterator();
 		Iterator itArcs, itPointsCT ;
-		
+
 		if ( !this.getPopArcs().hasSpatialIndex()) {
 			int nb = (int)Math.sqrt(this.getPopArcs().size()/20);
 			if (nb == 0) nb=1;
 			this.getPopArcs().initSpatialIndex(Tiling.class, true, nb);
 		}
-		
+
 		while (itArcsCT.hasNext()) {
 			arcCT = (Arc) itArcsCT.next();
 			itPointsCT = arcCT.getGeometrie().coord().getList().iterator();
@@ -1105,15 +1102,15 @@ public class CarteTopo extends DataSet {
 				while (itArcs.hasNext()) {
 					arc = (Arc) itArcs.next();
 					if ( Distances.distance(arc.getGeometrie().startPoint(), 
-											dp) < distanceMaxProjectionNoeud ) continue;
+							dp) < distanceMaxProjectionNoeud ) continue;
 					if ( Distances.distance(arc.getGeometrie().endPoint(), 
-											dp) < distanceMaxProjectionNoeud ) continue;
+							dp) < distanceMaxProjectionNoeud ) continue;
 					arc.projeteEtDecoupe(new GM_Point(dp));						
 				}
 			}
 		}
 	}
-    
+
 	/** Découpe la carte topo this en fonction d'un ensemble de points (GM_Point).
 	 * En détail: 
 	 * Pour chaque point en entrée, 
@@ -1134,121 +1131,121 @@ public class CarteTopo extends DataSet {
 			while (itArcs.hasNext()) {
 				arc = (Arc) itArcs.next();
 				if ( Distances.distance(arc.getGeometrie().startPoint(), 
-										point.getPosition()) < distanceMaxProjectionNoeud ) continue;
+						point.getPosition()) < distanceMaxProjectionNoeud ) continue;
 				if ( Distances.distance(arc.getGeometrie().endPoint(), 
-										point.getPosition()) < distanceMaxProjectionNoeud ) continue;
+						point.getPosition()) < distanceMaxProjectionNoeud ) continue;
 				arc.projeteEtDecoupe(point);						
 			}
 		}
 	}
-    
+
 /////////////////////////////////////////////////////////////////////////////////////////////
-//			Instanciation de la topologie de faces
+//	Instanciation de la topologie de faces
 /////////////////////////////////////////////////////////////////////////////////////////////
-   /** Crée les faces à partir d'un graphe planaire et instancie la topologie face / arcs. 
-	*  Une face est délimitée par un cycle minimal du graphe.
-	*
-	*  Le paramètre persistant spécifie si les faces créées, ainsi que la topologie, sont rendus persistants. 
-	*  Si oui, il faut appeler cette méthode dans une transaction ouverte.
-	*
-	*  NB1 : la topologie de réseau arcs/noeuds doit avoir été instanciée.
-	*  NB2 : une face "extérieure" est créée (sa géométrie entoure le "trou" de l'extérieur qu'est le réseau.
-	*        Donc, dans le cas d'une topologie complete arcs/faces, tous les arcs ont une face gauche 
-	*        et une face à droite.
-	*  NB3 : ATTENTION : en cas d'un réseau non connexe, une face extérieure différente est crée pour chaque 
-	*        partie connexe ! 
-	*  NB4 : Les culs de sac ont la même face à gauche et à droite, et la face "longe le cul de sac";
-	*        i.e. la géométrie de la face fait un aller/retour sur le cul-de-sac.
-	*  NB5 : Méthode en théorie conçue pour les graphes planaires uniquement (testée dans ce cadre uniquement).
-	*       La méthode est en théorie valable pour les graphes non planaires, mais les faces créées
-	*       seront étranges (on ne recrée pas les intersections manquantes, on les ignore).
-	*       Si il existe des arcs sans noeud initial ou final (topologie de réseau pas complete), 
-	*       alors ces arcs n'ont ni face à gauche, ni face à droite
-	*/
-   public void creeTopologieFaces() {
-	   List arcsDejaTraitesADroite = new ArrayList();
-	   List arcsDejaTraitesAGauche = new ArrayList();
-	   List cycle;
-	   List arcsDuCycle;
-	   List orientationsArcsDuCycle;
-	   Iterator itArcs, itArcsCycle, itOrientations;
-	   Arc arc, arcCycle;
-	   Face face;
-	   GM_Polygon geometrie_du_cycle;
-	   boolean orientation_OK = true;
-	   Population popFaces = this.getPopFaces();
-       
-	   // Parcours de tous les arcs du graphe. Puis, pour chaque arc: 
-	   //    - recherche du cycle à droite et du cycle à gauche
-	   //    - creation des faces correspondantes
-	   //    - on note les arcs par lesquels on est déjà passé pour ne pas refaire le travail
-	   itArcs = this.getPopArcs().getElements().iterator();
-	   while(itArcs.hasNext()) {
-		   arc = (Arc)itArcs.next();
-		   // a droite
-		   if ( !arcsDejaTraitesADroite.contains(arc) ) {
-			   cycle = arc.cycleADroite();
-			   if ( cycle == null ) continue;
-			   arcsDuCycle = (List)cycle.get(0);
-			   orientationsArcsDuCycle = (List)cycle.get(1);
-			   geometrie_du_cycle = (GM_Polygon)cycle.get(2);
-			   face = (Face)popFaces.nouvelElement();
-			   face.setGeometrie(geometrie_du_cycle);
-			   //if ( persistant ) JeuDeDonnees.db.makePersistent(face);
-			   itArcsCycle = arcsDuCycle.iterator();
-			   itOrientations = orientationsArcsDuCycle.iterator();
-			   while (itArcsCycle.hasNext()) {
-				   arcCycle = (Arc)itArcsCycle.next();
-				   orientation_OK = ((Boolean)itOrientations.next()).booleanValue();
-				   if ( orientation_OK ) {
-					   arcCycle.setFacedroite(face);
-					   arcsDejaTraitesADroite.add(arcCycle);
-				   }
-				   else {
-					   arcCycle.setFacegauche(face);
-					   arcsDejaTraitesAGauche.add(arcCycle);
-				   }
-			   }
-		   }
-		   // a gauche
-		   if ( !arcsDejaTraitesAGauche.contains(arc) ) {
-			   cycle = arc.cycleAGauche();
-			   if ( cycle == null ) continue;
-			   arcsDuCycle = (List)cycle.get(0);
-			   orientationsArcsDuCycle = (List)cycle.get(1);
-			   geometrie_du_cycle = (GM_Polygon)cycle.get(2);
-			   face = (Face)popFaces.nouvelElement();
-			   face.setGeometrie(geometrie_du_cycle);
-			   //if ( persistant ) JeuDeDonnees.db.makePersistent(face);
-			   itArcsCycle = arcsDuCycle.iterator();
-			   itOrientations = orientationsArcsDuCycle.iterator();
-			   while (itArcsCycle.hasNext()) {
-				   arcCycle = (Arc)itArcsCycle.next();
-				   orientation_OK = ((Boolean)itOrientations.next()).booleanValue();
-				   if ( orientation_OK ) {
-					   arcCycle.setFacegauche(face);
-					   arcsDejaTraitesAGauche.add(arcCycle);
-				   }
-				   else {
-					   arcCycle.setFacedroite(face);
-					   arcsDejaTraitesADroite.add(arcCycle);
-				   }
-			   }
-		   }
-	   }
-   }
-           
+	/** Crée les faces à partir d'un graphe planaire et instancie la topologie face / arcs. 
+	 *  Une face est délimitée par un cycle minimal du graphe.
+	 *
+	 *  Le paramètre persistant spécifie si les faces créées, ainsi que la topologie, sont rendus persistants. 
+	 *  Si oui, il faut appeler cette méthode dans une transaction ouverte.
+	 *
+	 *  NB1 : la topologie de réseau arcs/noeuds doit avoir été instanciée.
+	 *  NB2 : une face "extérieure" est créée (sa géométrie entoure le "trou" de l'extérieur qu'est le réseau.
+	 *        Donc, dans le cas d'une topologie complete arcs/faces, tous les arcs ont une face gauche 
+	 *        et une face à droite.
+	 *  NB3 : ATTENTION : en cas d'un réseau non connexe, une face extérieure différente est crée pour chaque 
+	 *        partie connexe ! 
+	 *  NB4 : Les culs de sac ont la même face à gauche et à droite, et la face "longe le cul de sac";
+	 *        i.e. la géométrie de la face fait un aller/retour sur le cul-de-sac.
+	 *  NB5 : Méthode en théorie conçue pour les graphes planaires uniquement (testée dans ce cadre uniquement).
+	 *       La méthode est en théorie valable pour les graphes non planaires, mais les faces créées
+	 *       seront étranges (on ne recrée pas les intersections manquantes, on les ignore).
+	 *       Si il existe des arcs sans noeud initial ou final (topologie de réseau pas complete), 
+	 *       alors ces arcs n'ont ni face à gauche, ni face à droite
+	 */
+	public void creeTopologieFaces() {
+		List arcsDejaTraitesADroite = new ArrayList();
+		List arcsDejaTraitesAGauche = new ArrayList();
+		List cycle;
+		List arcsDuCycle;
+		List orientationsArcsDuCycle;
+		Iterator itArcs, itArcsCycle, itOrientations;
+		Arc arc, arcCycle;
+		Face face;
+		GM_Polygon geometrieDuCycle;
+		boolean orientationOk = true;
+		Population popFaces = this.getPopFaces();
+
+		// Parcours de tous les arcs du graphe. Puis, pour chaque arc: 
+		//    - recherche du cycle à droite et du cycle à gauche
+		//    - creation des faces correspondantes
+		//    - on note les arcs par lesquels on est déjà passé pour ne pas refaire le travail
+		itArcs = this.getPopArcs().getElements().iterator();
+		while(itArcs.hasNext()) {
+			arc = (Arc)itArcs.next();
+			// a droite
+			if ( !arcsDejaTraitesADroite.contains(arc) ) {
+				cycle = arc.cycleADroite();
+				if ( cycle == null ) continue;
+				arcsDuCycle = (List)cycle.get(0);
+				orientationsArcsDuCycle = (List)cycle.get(1);
+				geometrieDuCycle = (GM_Polygon)cycle.get(2);
+				face = (Face)popFaces.nouvelElement();
+				face.setGeometrie(geometrieDuCycle);
+				//if ( persistant ) JeuDeDonnees.db.makePersistent(face);
+				itArcsCycle = arcsDuCycle.iterator();
+				itOrientations = orientationsArcsDuCycle.iterator();
+				while (itArcsCycle.hasNext()) {
+					arcCycle = (Arc)itArcsCycle.next();
+					orientationOk = ((Boolean)itOrientations.next()).booleanValue();
+					if ( orientationOk ) {
+						arcCycle.setFaceDroite(face);
+						arcsDejaTraitesADroite.add(arcCycle);
+					}
+					else {
+						arcCycle.setFaceGauche(face);
+						arcsDejaTraitesAGauche.add(arcCycle);
+					}
+				}
+			}
+			// a gauche
+			if ( !arcsDejaTraitesAGauche.contains(arc) ) {
+				cycle = arc.cycleAGauche();
+				if ( cycle == null ) continue;
+				arcsDuCycle = (List)cycle.get(0);
+				orientationsArcsDuCycle = (List)cycle.get(1);
+				geometrieDuCycle = (GM_Polygon)cycle.get(2);
+				face = (Face)popFaces.nouvelElement();
+				face.setGeometrie(geometrieDuCycle);
+				//if ( persistant ) JeuDeDonnees.db.makePersistent(face);
+				itArcsCycle = arcsDuCycle.iterator();
+				itOrientations = orientationsArcsDuCycle.iterator();
+				while (itArcsCycle.hasNext()) {
+					arcCycle = (Arc)itArcsCycle.next();
+					orientationOk = ((Boolean)itOrientations.next()).booleanValue();
+					if ( orientationOk ) {
+						arcCycle.setFaceGauche(face);
+						arcsDejaTraitesAGauche.add(arcCycle);
+					}
+					else {
+						arcCycle.setFaceDroite(face);
+						arcsDejaTraitesADroite.add(arcCycle);
+					}
+				}
+			}
+		}
+	}
+
 	/** Détruit les relations topologique d'une face avec tous ses arcs entourants */
 	public void videTopologieFace(Face face) {
 		Iterator it = face.arcs().iterator();
 		Arc arc;
 		while ( it.hasNext() ) {
 			arc = (Arc)it.next();
-			arc.setFacedroite(null);
-			arc.setFacegauche(null);
+			arc.setFaceDroite(null);
+			arc.setFaceGauche(null);
 		}
 	}
-    
+
 	/** Ajoute des arcs et des noeuds à la carteTopo this qui ne contient que des faces.
 	 * Ces arcs sont les arcs entourant les faces.
 	 * 
@@ -1274,7 +1271,7 @@ public class CarteTopo extends DataSet {
 		DirectPosition pt1, pt2;
 		Iterator itPts ;
 		boolean sensDirect;
-		
+
 		// On crée un arc pour chaque segment reliant deux points intermédiaires d'une surface
 		// Pour deux faces adjacentes, on duplique ces arcs. On fait le ménage après.
 		Iterator itFaces =  this.getPopFaces().getElements().iterator();
@@ -1293,8 +1290,8 @@ public class CarteTopo extends DataSet {
 				segment.addControlPoint(pt1);
 				segment.addControlPoint(pt2);
 				arc.setGeom(segment);
-				if (sensDirect) arc.setFacegauche(face);
-				else arc.setFacedroite(face);
+				if (sensDirect) arc.setFaceGauche(face);
+				else arc.setFaceDroite(face);
 				pt1=pt2;
 			}
 			//gestion des trous
@@ -1312,8 +1309,8 @@ public class CarteTopo extends DataSet {
 					segment.addControlPoint(pt1);
 					segment.addControlPoint(pt2);
 					arc.setGeom(segment);
-					if (sensDirect) arc.setFacedroite(face);
-					else arc.setFacegauche(face);
+					if (sensDirect) arc.setFaceDroite(face);
+					else arc.setFaceGauche(face);
 					pt1=pt2;
 				}
 			}
@@ -1338,35 +1335,35 @@ public class CarteTopo extends DataSet {
 			while (itArcsProches.hasNext()) {
 				Arc arc2 = (Arc) itArcsProches.next();
 				if ( arc2.getGeometrie().startPoint().equals(arc.getGeometrie().startPoint(),0) 
-						 && arc2.getGeometrie().endPoint().equals(arc.getGeometrie().endPoint(),0) ) {
-							arcsAEnlever.add(arc2);
-							arcsNonTraites.remove(arc2);
-							if (arc2.getFacedroite() != null) arc.setFacedroite(arc2.getFacedroite());
-							if (arc2.getFacegauche() != null) arc.setFacegauche(arc2.getFacegauche());
-						}   
+						&& arc2.getGeometrie().endPoint().equals(arc.getGeometrie().endPoint(),0) ) {
+					arcsAEnlever.add(arc2);
+					arcsNonTraites.remove(arc2);
+					if (arc2.getFaceDroite() != null) arc.setFaceDroite(arc2.getFaceDroite());
+					if (arc2.getFaceGauche() != null) arc.setFaceGauche(arc2.getFaceGauche());
+				}   
 				if ( arc2.getGeometrie().startPoint().equals(arc.getGeometrie().endPoint(),0) 
-						 && arc2.getGeometrie().endPoint().equals(arc.getGeometrie().startPoint(),0) ) {
-							arcsAEnlever.add(arc2);
-							arcsNonTraites.remove(arc2);
-							if (arc2.getFacedroite() != null) arc.setFacegauche(arc2.getFacedroite());
-							if (arc2.getFacegauche() != null) arc.setFacedroite(arc2.getFacegauche());
-						}   
+						&& arc2.getGeometrie().endPoint().equals(arc.getGeometrie().startPoint(),0) ) {
+					arcsAEnlever.add(arc2);
+					arcsNonTraites.remove(arc2);
+					if (arc2.getFaceDroite() != null) arc.setFaceGauche(arc2.getFaceDroite());
+					if (arc2.getFaceGauche() != null) arc.setFaceDroite(arc2.getFaceGauche());
+				}   
 			}
 		}
 		this.getPopArcs().removeAll(arcsAEnlever);
-		
-		
+
+
 		// ajout des noeuds et des relations topologiqes arc/noeud
 		this.creeNoeudsManquants(0);
-		
+
 		// filtrage de tous les noeuds simples (degré=2)
 		if (filtrageNoeudsSimples) this.filtreNoeudsSimples();
 	}
-	
+
 /////////////////////////////////////////////////////////////////////////////////////////////
-//			  Pour les calculs de plus court chemin
+//	Pour les calculs de plus court chemin
 /////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	/** Initialise le poids de chaque arc comme étant égal à sa longueur;
 	 *  NB: utile uniquement aux plus courts chemins */
 	public void initialisePoids() {
@@ -1378,9 +1375,9 @@ public class CarteTopo extends DataSet {
 			arc.setPoids(arc.longueur());
 		}
 	}
-    
+
 /////////////////////////////////////////////////////////////////////////////////////////////
-//			  IMPORT: remplissage de la carte topo à partir de Features
+//	IMPORT: remplissage de la carte topo à partir de Features
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 	/** Charge en mémoire les élements de la classe 'nomClasseGeo'

@@ -57,19 +57,20 @@ public class Groupe  extends ElementCarteTopo   {
     ///////////////////////////////////////////////////
     
     /* Noeuds composants du groupe */
-    private List listenoeuds = new ArrayList();
+    private List listeNoeuds = new ArrayList();
 	/** Renvoie la liste des noeuds de self*/
-    public List getListenoeuds() {return this.listenoeuds;}
+    public List getListeNoeuds() {return this.listeNoeuds;}
 	/** Définit la liste des noeuds de self*/
-    public void setListenoeuds(List liste) {this.listenoeuds = liste;}
+    public void setListeNoeuds(List liste) {this.listeNoeuds = liste;}
 	/** Ajoute un noeud à self*/ 
     public void addNoeud(Noeud noeud) {
-    	if (noeud != null && !listenoeuds.contains(noeud)) {
-            this.listenoeuds.add(noeud);	
-            if (!noeud.getListegroupes().contains(this))
+    	if (noeud != null && !listeNoeuds.contains(noeud)) {
+            this.listeNoeuds.add(noeud);	
+            if (!noeud.getListeGroupes().contains(this))
                     noeud.addGroupe(this);
     	}
     }
+    /** Ajoute une liste de noeuds à self**/
 	public void addAllNoeuds(List liste) {
 		Iterator itObj = liste.iterator();
 		while (itObj.hasNext()) {
@@ -79,19 +80,20 @@ public class Groupe  extends ElementCarteTopo   {
 	}
     
     /* Arcs composants du groupe */
-    private List listearcs = new ArrayList();
+    private List listeArcs = new ArrayList();
 	/** Renvoie la liste des arcs de self*/
-    public List getListearcs() {return this.listearcs;}
+    public List getListeArcs() {return this.listeArcs;}
 	/** Définit la liste des arcs de self*/
-    public void setListearcs(List liste) {this.listearcs = liste;}
+    public void setListeArcs(List liste) {this.listeArcs = liste;}
 	/** Ajoute un arc de self*/
     public void addArc(Arc arc) {
-        if (arc != null && !listearcs.contains(arc)) {
-            this.listearcs.add(arc); 	
-            if (!arc.getListegroupes().contains(this))
+        if (arc != null && !listeArcs.contains(arc)) {
+            this.listeArcs.add(arc); 	
+            if (!arc.getListeGroupes().contains(this))
                     arc.addGroupe(this);
     	}
     }
+    /** Ajoute une liste d'arcs à self**/
 	public void addAllArcs(List liste) {
 		Iterator itObj = liste.iterator();
 		while (itObj.hasNext()) {
@@ -101,19 +103,20 @@ public class Groupe  extends ElementCarteTopo   {
 	}
 
     /* Faces composants du groupe */
-    private List listefaces = new ArrayList();
+    private List listeFaces = new ArrayList();
 	/** Renvoie la liste des faces de self*/
-    public List getListefaces() {return this.listefaces;}
+    public List getListeFaces() {return this.listeFaces;}
 	/** Définit la liste des faces de self*/
-    public void setListefaces(List liste) {this.listefaces = liste;}
+    public void setListeFaces(List liste) {this.listeFaces = liste;}
 	/** Ajoute une face à self*/
     public void addFace(Face face) {
-        if (face != null && !listefaces.contains(face)) {
-            this.listefaces.add(face);	
-            if (!face.getListegroupes().contains(this))
+        if (face != null && !listeFaces.contains(face)) {
+            this.listeFaces.add(face);	
+            if (!face.getListeGroupes().contains(this))
                     face.addGroupe(this);
         }
     }
+    /** Ajoute une liste de faces à self**/
 	public void addAllFaces(List liste) {
 		Iterator itObj = liste.iterator();
 		while (itObj.hasNext()) {
@@ -121,8 +124,6 @@ public class Groupe  extends ElementCarteTopo   {
 			this.addFace(objet);
 		}
 	}
-
-
     
     ///////////////////////////////////////////////////
     // Pour les relations topologiques dans une vision Groupe = Hyper Noeud
@@ -131,13 +132,13 @@ public class Groupe  extends ElementCarteTopo   {
     /** Arcs entrants dans le groupe, au sens de la géométrie (vision groupe = hyper-noeud) */
     public List getEntrants() {
         List arcs = new ArrayList();
-        List arcs_du_noeud = new ArrayList();
+        List arcsDuNoeud = new ArrayList();
         int i, j;
         
-        for (i=0; i<this.getListenoeuds().size();i++) {
-            arcs_du_noeud = ((Noeud)this.getListenoeuds().get(i)).getEntrants();
-            for (j=0; j<arcs_du_noeud.size(); j++) {
-                if (!this.getListearcs().contains(arcs_du_noeud.get(j))) arcs.add(arcs_du_noeud.get(j));
+        for (i=0; i<this.getListeNoeuds().size();i++) {
+            arcsDuNoeud = ((Noeud)this.getListeNoeuds().get(i)).getEntrants();
+            for (j=0; j<arcsDuNoeud.size(); j++) {
+                if (!this.getListeArcs().contains(arcsDuNoeud.get(j))) arcs.add(arcsDuNoeud.get(j));
             }
         }
         return arcs;
@@ -146,13 +147,13 @@ public class Groupe  extends ElementCarteTopo   {
     /** Arcs sortants du groupe, au sens de la géométrie (vision groupe = hyper-noeud) */
     public List getSortants() {
         List arcs = new ArrayList();
-        List arcs_du_noeud = new ArrayList();
+        List arcsDuNoeud = new ArrayList();
         int i, j;
         
-        for (i=0; i<this.getListenoeuds().size();i++) {
-            arcs_du_noeud = ((Noeud)this.getListenoeuds().get(i)).getSortants();
-            for (j=0; j<arcs_du_noeud.size(); j++) {
-                if (!this.getListearcs().contains(arcs_du_noeud.get(j))) arcs.add(arcs_du_noeud.get(j));
+        for (i=0; i<this.getListeNoeuds().size();i++) {
+            arcsDuNoeud = ((Noeud)this.getListeNoeuds().get(i)).getSortants();
+            for (j=0; j<arcsDuNoeud.size(); j++) {
+                if (!this.getListeArcs().contains(arcsDuNoeud.get(j))) arcs.add(arcsDuNoeud.get(j));
             }
         }
         return arcs;
@@ -175,13 +176,13 @@ public class Groupe  extends ElementCarteTopo   {
     /** Arcs entrants dans le groupe, au sens de la géométrie (vision groupe = hyper-noeud) */
     public List entrantsOrientes() {
         List arcs = new ArrayList();
-        List arcs_du_noeud = new ArrayList();
+        List arcsDuNoeud = new ArrayList();
         int i, j;
         
-        for (i=0; i<this.getListenoeuds().size();i++) {
-            arcs_du_noeud = ((Noeud)this.getListenoeuds().get(i)).entrantsOrientes();
-            for (j=0; j<arcs_du_noeud.size(); j++) {
-                if (!this.getListearcs().contains(arcs_du_noeud.get(j))) arcs.add(arcs_du_noeud.get(j));
+        for (i=0; i<this.getListeNoeuds().size();i++) {
+            arcsDuNoeud = ((Noeud)this.getListeNoeuds().get(i)).entrantsOrientes();
+            for (j=0; j<arcsDuNoeud.size(); j++) {
+                if (!this.getListeArcs().contains(arcsDuNoeud.get(j))) arcs.add(arcsDuNoeud.get(j));
             }
         }
         return arcs;
@@ -190,13 +191,13 @@ public class Groupe  extends ElementCarteTopo   {
     /** Arcs sortants du groupe, au sens de la géométrie (vision groupe = hyper-noeud) */
     public List sortantsOrientes() {
         List arcs = new ArrayList();
-        List arcs_du_noeud = new ArrayList();
+        List arcsDuNoeud = new ArrayList();
         int i, j;
         
-        for (i=0; i<this.getListenoeuds().size();i++) {
-            arcs_du_noeud = ((Noeud)this.getListenoeuds().get(i)).sortantsOrientes();
-            for (j=0; j<arcs_du_noeud.size(); j++) {
-                if (!this.getListearcs().contains(arcs_du_noeud.get(j))) arcs.add(arcs_du_noeud.get(j));
+        for (i=0; i<this.getListeNoeuds().size();i++) {
+            arcsDuNoeud = ((Noeud)this.getListeNoeuds().get(i)).sortantsOrientes();
+            for (j=0; j<arcsDuNoeud.size(); j++) {
+                if (!this.getListeArcs().contains(arcsDuNoeud.get(j))) arcs.add(arcsDuNoeud.get(j));
             }
         }
         return arcs;
@@ -214,23 +215,23 @@ public class Groupe  extends ElementCarteTopo   {
 	 *  NB : Ce classement est recalculé en fonction de la géométrie à chaque appel de la méthode.
 	 */
 	public List arcsClasses() {
-		List arcsclasses = new ArrayList();
-		List arcsclasses_orientation = new ArrayList();
-		List arcs_entrants = new ArrayList(this.getEntrants());
-		List arcs_sortants = new ArrayList(this.getSortants());
+		List arcsClasses = new ArrayList();
+		List arcsClassesOrientation = new ArrayList();
+		List arcsEntrants = new ArrayList(this.getEntrants());
+		List arcsSortants = new ArrayList(this.getSortants());
 		List arcs = new ArrayList();
 		List angles = new ArrayList();
 		List orientations = new ArrayList();
 		List resultat = new ArrayList();
 		Arc arc;
 		Angle angle;
-		double anglemin, anglecourant;
+		double angleMin, angleCourant;
 		int imin;
 		Iterator itArcs;
 		int i;
 
 		// recherche de l'angle de départ de chaque arc sortant
-		itArcs = arcs_sortants.iterator();
+		itArcs = arcsSortants.iterator();
 		while ( itArcs.hasNext() ) {
 			arc = (Arc)itArcs.next();
 			angle = new Angle((DirectPosition)arc.getCoord().get(0),(DirectPosition)arc.getCoord().get(1));
@@ -239,7 +240,7 @@ public class Groupe  extends ElementCarteTopo   {
 			orientations.add(new Boolean(false));
 		}
 		// recherche de l'angle de départ de chaque arc entrant
-		itArcs = arcs_entrants.iterator();
+		itArcs = arcsEntrants.iterator();
 		while ( itArcs.hasNext() ) {
 			arc = (Arc)itArcs.next();
 			angle = new Angle((DirectPosition)arc.getCoord().get(arc.getCoord().size()-1),
@@ -250,24 +251,24 @@ public class Groupe  extends ElementCarteTopo   {
 		}
 		// classement des arcs 
 		while ( !(arcs.isEmpty()) ) {
-			anglemin = ((Angle)angles.get(0)).getAngle();
+			angleMin = ((Angle)angles.get(0)).getAngle();
 			imin = 0;
 			for(i=1;i<arcs.size() ;i++) {
-				anglecourant = ((Angle)angles.get(i)).getAngle();
-				if ( anglecourant < anglemin ) {
-					anglemin = anglecourant;
+				angleCourant = ((Angle)angles.get(i)).getAngle();
+				if ( angleCourant < angleMin ) {
+					angleMin = angleCourant;
 					imin = i;
 				}
 			}
-			arcsclasses.add(arcs.get(imin));
-			arcsclasses_orientation.add(orientations.get(imin));
+			arcsClasses.add(arcs.get(imin));
+			arcsClassesOrientation.add(orientations.get(imin));
 			arcs.remove(imin);
 			angles.remove(imin);
 			orientations.remove(imin);
 		}
 		//retour du résultat
-		resultat.add(arcsclasses);
-		resultat.add(arcsclasses_orientation);
+		resultat.add(arcsClasses);
+		resultat.add(arcsClassesOrientation);
 		return resultat;
 	}
     
@@ -278,18 +279,18 @@ public class Groupe  extends ElementCarteTopo   {
      * Vide mais ne détruit pas le groupe: i.e. ne l'enlève pas de la carte topo.
      */
     public void vide() {
-		Iterator itArcs = this.getListearcs().iterator();
+		Iterator itArcs = this.getListeArcs().iterator();
 		while (itArcs.hasNext()) {
 			Arc arc = (Arc) itArcs.next();
-			arc.getListegroupes().remove(this);
+			arc.getListeGroupes().remove(this);
 		}  
-		Iterator itNoeuds = this.getListenoeuds().iterator();
+		Iterator itNoeuds = this.getListeNoeuds().iterator();
 		while (itNoeuds.hasNext()) {
 			Noeud noeud= (Noeud) itNoeuds.next();
-			noeud.getListegroupes().remove(this);
+			noeud.getListeGroupes().remove(this);
 		}  
-        this.getListearcs().clear();
-        this.getListenoeuds().clear();
+        this.getListeArcs().clear();
+        this.getListeNoeuds().clear();
     }
 
 	/** Pour vider un groupe, mettre à jour les liens des objets simples vers ce groupe,
@@ -311,9 +312,9 @@ public class Groupe  extends ElementCarteTopo   {
 	public Groupe copie() {
 		//Groupe copie = new Groupe();
 		Groupe  copie = (Groupe)this.getPopulation().nouvelElement();
-		copie.addAllArcs(this.getListearcs());
-		copie.addAllNoeuds(this.getListenoeuds());
-		copie.addAllFaces(this.getListefaces());
+		copie.addAllArcs(this.getListeArcs());
+		copie.addAllNoeuds(this.getListeNoeuds());
+		copie.addAllFaces(this.getListeFaces());
 		//copie.setPopulation(this.getPopulation());
 		return copie;
 	}
@@ -329,8 +330,8 @@ public class Groupe  extends ElementCarteTopo   {
       * ATTENTION : LE GROUPE EN ENTREE EST VIDE AU COURS DE LA METHODE PUIS ENLEVE DE LA CARTE TOPO. 
       */
     public List decomposeConnexes() {
-        List groupes_connexes = new ArrayList();
-        Groupe groupe_connexe;
+        List groupesConnexes = new ArrayList();
+        Groupe groupeConnexe;
         Noeud amorce; 
         Arc arc;
         int i;
@@ -357,55 +358,54 @@ public class Groupe  extends ElementCarteTopo   {
                 return null;
             }
             
-            while (this.getListenoeuds().size() != 0) {
-                groupe_connexe = (Groupe)this.getPopulation().nouvelElement();
-                groupes_connexes.add(groupe_connexe);
+            while (this.getListeNoeuds().size() != 0) {
+                groupeConnexe = (Groupe)this.getPopulation().nouvelElement();
+                groupesConnexes.add(groupeConnexe);
                 // le premier noeud de la liste des noeuds, vidée au fur et à mesure, est l'amorce d'un nouveau groupe connexe
-                amorce = (Noeud)this.getListenoeuds().get(0); 
-                groupe_connexe.ajoute_voisins(amorce, this);  //nb: méthode récursive
-                groupe_connexe.arcs_dans_groupe(this); // recherche des arcs du groupe, situés entre 2 noeuds du goupe connexe
+                amorce = (Noeud)this.getListeNoeuds().get(0); 
+                groupeConnexe.ajouteVoisins(amorce, this);  //nb: méthode récursive
+                groupeConnexe.arcsDansGroupe(this); // recherche des arcs du groupe, situés entre 2 noeuds du goupe connexe
             }
             // vidage des arcs du groupe, pour faire propre (on a déjà vidé les noeuds au fur et à mesure)
-            for (i=0; i<this.getListearcs().size(); i++) {
-                arc = (Arc)this.getListearcs().get(i);
-                arc.getListegroupes().remove(this);
+            for (i=0; i<this.getListeArcs().size(); i++) {
+                arc = (Arc)this.getListeArcs().get(i);
+                arc.getListeGroupes().remove(this);
             }
-            this.getListearcs().clear();
+            this.getListeArcs().clear();
             this.getPopulation().enleveElement(this);
 
-            return groupes_connexes;
+            return groupesConnexes;
         } catch (Exception e) {System.out.println("----- ERREUR dans décomposition en groupes connxes: ");
                                System.out.println("Source possible : Nom de la classe des groupes pas ou mal renseigné dans la carte topo");
                                return null;}
     }
 
-        // Methode nécessaire à Decompose_Connexe 
+        // Methode nécessaire à DecomposeConnexe 
         // ajoute le noeud au groupe connexe, cherche ses voisins, puis l'enlève du goupe total
-        private void ajoute_voisins(Noeud noeud,
-                                    Groupe groupe_total) {
-            List noeuds_voisins = new ArrayList();
+        private void ajouteVoisins(Noeud noeud, Groupe groupeTotal) {
+            List noeudsVoisins = new ArrayList();
             int i;
 
-            if ( this.getListenoeuds().contains(noeud) ) return;
+            if ( this.getListeNoeuds().contains(noeud) ) return;
             this.addNoeud(noeud);
             noeud.addGroupe(this);
-            noeuds_voisins = noeud.voisins(groupe_total);
-            groupe_total.getListenoeuds().remove(noeud);
-            noeud.getListegroupes().remove(groupe_total);
-            for (i=0; i<noeuds_voisins.size(); i++) {
-                this.ajoute_voisins((Noeud)noeuds_voisins.get(i), groupe_total);
+            noeudsVoisins = noeud.voisins(groupeTotal);
+            groupeTotal.getListeNoeuds().remove(noeud);
+            noeud.getListeGroupes().remove(groupeTotal);
+            for (i=0; i<noeudsVoisins.size(); i++) {
+                this.ajouteVoisins((Noeud)noeudsVoisins.get(i), groupeTotal);
             }
             return;
         }
 
-        // Methode nécessaire à Decompose_Connexe 
-        // Recherche les arcs de groupe_total ayant pour extrémité des noeuds de this.
-        private void arcs_dans_groupe(Groupe groupe_total) {
+        // Methode nécessaire à DecomposeConnexe 
+        // Recherche les arcs de groupeTotal ayant pour extrémité des noeuds de this.
+        private void arcsDansGroupe(Groupe groupeTotal) {
             int i;
             Arc arc;
-            for (i=0; i<groupe_total.getListearcs().size(); i++) {
-                arc = (Arc)groupe_total.getListearcs().get(i);
-                if ( this.getListenoeuds().contains(arc.getNoeudini()) || this.getListenoeuds().contains(arc.getNoeudini()) )  {
+            for (i=0; i<groupeTotal.getListeArcs().size(); i++) {
+                arc = (Arc)groupeTotal.getListeArcs().get(i);
+                if ( this.getListeNoeuds().contains(arc.getNoeudIni()) || this.getListeNoeuds().contains(arc.getNoeudIni()) )  {
                         this.addArc(arc);
                         arc.addGroupe(this);
                 }
@@ -416,8 +416,8 @@ public class Groupe  extends ElementCarteTopo   {
 	public double longueur() {
 		int i;
 		double longueur = 0;
-		for(i=0;i<this.getListearcs().size() ;i++) {
-			longueur = longueur + ((Arc)this.getListearcs().get(i)).longueur();
+		for(i=0;i<this.getListeArcs().size() ;i++) {
+			longueur = longueur + ((Arc)this.getListeArcs().get(i)).longueur();
 		}
 		return longueur;
 	}
@@ -426,9 +426,9 @@ public class Groupe  extends ElementCarteTopo   {
 	/** Teste si le groupe contient exactement les mêmes arcs qu'un autre groupe.
 	 *  NB: si des arcs sont en double dans un des groupes et pas dans l'autre, renvoie true quand même
 	 */
-	public boolean contient_memes_arcs(Groupe groupe) {
-		if (!groupe.getListearcs().containsAll(this.getListearcs()) ) return false;
-		if (!this.getListearcs().containsAll(groupe.getListearcs()) ) return false;
+	public boolean contientMemesArcs(Groupe groupe) {
+		if (!groupe.getListeArcs().containsAll(this.getListeArcs()) ) return false;
+		if (!this.getListeArcs().containsAll(groupe.getListeArcs()) ) return false;
 		return true;
 	}
     
@@ -441,27 +441,23 @@ public class Groupe  extends ElementCarteTopo   {
 		Noeud ini, fin;
 		Arc arc;
         
-		for (i=0; i<this.getListearcs().size(); i++) {
-			arc = (Arc)this.getListearcs().get(i);
-			ini = arc.getNoeudini();
-			fin = arc.getNoeudfin();
+		for (i=0; i<this.getListeArcs().size(); i++) {
+			arc = (Arc)this.getListeArcs().get(i);
+			ini = arc.getNoeudIni();
+			fin = arc.getNoeudFin();
 			if ( ini != null ) {
-				if ( !this.getListenoeuds().contains(ini) ) {
+				if ( !this.getListeNoeuds().contains(ini) ) {
 					this.addNoeud(ini);
 					ini.addGroupe(this);
 				}
 			}
 			if ( fin != null ) {
-				if ( !this.getListenoeuds().contains(fin) ) {
+				if ( !this.getListeNoeuds().contains(fin) ) {
 					this.addNoeud(fin);
 					fin.addGroupe(this);
 				}
 			}
 		}
-	}
-    
-
-	
-
+	}	
 
 }

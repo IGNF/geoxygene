@@ -44,8 +44,8 @@ public class ArcDelaunay extends Arc {
 			  dpl.add(n1.getCoord());
 			  dpl.add(n2.getCoord());
 			  setCoord(dpl);
-			  setNoeudini(n1);
-			  setNoeudfin(n2);
+			  setNoeudIni(n1);
+			  setNoeudFin(n2);
 		}
 
 }

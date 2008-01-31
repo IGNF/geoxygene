@@ -74,45 +74,45 @@ public class Arc  extends ElementCarteTopo   {
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //                          Gestion de la topologie arc / noeuds  
 /////////////////////////////////////////////////////////////////////////////////////////////////
-    private Noeud noeudini;
+    private Noeud noeudIni;
 	/** Renvoie le noeud initial de self */
-    public Noeud getNoeudini() {return this.noeudini;}
+    public Noeud getNoeudIni() {return this.noeudIni;}
 	/** Définit le noeud initial de self. 
 	 * NB: met à jour la relation inverse "sortants" de noeud
 	 */
-    public void setNoeudini(Noeud i)  {
-       if (i != null) {
-            this.noeudini = i;
-            if (!i.getSortants().contains(this))
-                i.addSortant(this);
+    public void setNoeudIni(Noeud noeud)  {
+       if (noeud != null) {
+            this.noeudIni = noeud;
+            if (!noeud.getSortants().contains(this))
+            	noeud.addSortant(this);
         } else {
-			if (this.getNoeudini() != null ) this.getNoeudini().getSortants().remove(i); 
-            noeudini = null;
+			if (this.getNoeudIni() != null ) this.getNoeudIni().getSortants().remove(noeud); 
+            noeudIni = null;
         }
     }
     
-    private Noeud noeudfin;
+    private Noeud noeudFin;
 	/** Renvoie le noeud final de self */
-    public Noeud getNoeudfin() {return this.noeudfin;}
+    public Noeud getNoeudFin() {return this.noeudFin;}
 	/** Définit le noeud final de self.
 	 * NB: met à jour la relation inverse "entrants" de noeud
 	 */
-    public void setNoeudfin(Noeud f)  {
-        if (f != null) {
-            this.noeudfin = f;
-            if (!f.getEntrants().contains(this))
-                    f.addEntrant(this);
+    public void setNoeudFin(Noeud noeud)  {
+        if (noeud != null) {
+            this.noeudFin = noeud;
+            if (!noeud.getEntrants().contains(this))
+            	noeud.addEntrant(this);
         } else {
-			if (this.getNoeudfin() != null ) this.getNoeudfin().getEntrants().remove(f); 
-            noeudfin = null;
+			if (this.getNoeudFin() != null ) this.getNoeudFin().getEntrants().remove(noeud); 
+            noeudFin = null;
         }
     }
     
     /** Renvoie le noeud initial et final de self */
     public List noeuds() {
         List noeuds = new ArrayList();
-        if ( !(noeudini == null) ) noeuds.add(noeudini);
-        if ( !(noeudfin == null) ) noeuds.add(noeudfin);
+        if ( !(noeudIni == null) ) noeuds.add(noeudIni);
+        if ( !(noeudFin == null) ) noeuds.add(noeudFin);
         return noeuds;
     }
 
@@ -168,21 +168,21 @@ public class Arc  extends ElementCarteTopo   {
 		arcApres.setGeometrie(new GM_LineString(ptsApres));
 		
 		// instanciation de la topologie et des attributs
-		this.getNoeudini().getSortants().remove(this);
-		arcAvant.setNoeudini(this.getNoeudini());
-		arcAvant.setNoeudfin(nouveauNoeud);
+		this.getNoeudIni().getSortants().remove(this);
+		arcAvant.setNoeudIni(this.getNoeudIni());
+		arcAvant.setNoeudFin(nouveauNoeud);
 		arcAvant.setCorrespondants(this.getCorrespondants());
 		arcAvant.setOrientation(this.getOrientation());
 		
-		arcApres.setNoeudini(nouveauNoeud);
-		this.getNoeudfin().getEntrants().remove(this);
-		arcApres.setNoeudfin(this.getNoeudfin());
+		arcApres.setNoeudIni(nouveauNoeud);
+		this.getNoeudFin().getEntrants().remove(this);
+		arcApres.setNoeudFin(this.getNoeudFin());
 		arcApres.setCorrespondants(this.getCorrespondants());
 		arcApres.setOrientation(this.getOrientation());
 		
 		//destruction de l'ancien arc
-		this.setNoeudini(null);
-		this.setNoeudfin(null);
+		this.setNoeudIni(null);
+		this.setNoeudFin(null);
 		popArcs.enleveElement(this);
     }
     
@@ -192,42 +192,42 @@ public class Arc  extends ElementCarteTopo   {
     /** Renvoie la face à gauche et à droite de self */
     public List faces() {
         List faces = new ArrayList();
-        if(this.getFacegauche()!=null) faces.add(this.getFacegauche());
-		if(this.getFacedroite()!=null) faces.add(this.getFacedroite());
+        if(this.getFaceGauche()!=null) faces.add(this.getFaceGauche());
+		if(this.getFaceDroite()!=null) faces.add(this.getFaceDroite());
         return faces;
     }
 
-    private Face facegauche;
+    private Face faceGauche;
 	/** Renvoie la face à gauche de self */
-    public Face getFacegauche() {return this.facegauche;}
+    public Face getFaceGauche() {return this.faceGauche;}
 	/** Définit la face à gauche de self.
 	 * NB: met à jour la relation inverse "arsc directs" de face
 	 */
-    public void setFacegauche(Face f) {
-        if (f != null) {
-            this.facegauche = f;
-            if (!f.getArcsdirects().contains(this))
-                    f.addArcdirect(this);
+    public void setFaceGauche(Face face) {
+        if (face != null) {
+            this.faceGauche = face;
+            if (!face.getArcsDirects().contains(this))
+            	face.addArcDirect(this);
         } else {
-			if (this.getFacegauche() != null ) this.getFacegauche().getArcsdirects().remove(f); 
-            facegauche = null;
+			if (this.getFaceGauche() != null ) this.getFaceGauche().getArcsDirects().remove(face); 
+            faceGauche = null;
         }            
     }
     
-    private Face facedroite;
+    private Face faceDroite;
 	/** Renvoie la face à droite de self */
-    public Face getFacedroite() {return this.facedroite;}
+    public Face getFaceDroite() {return this.faceDroite;}
 	/** Définit la face à droite de self.
 	 * NB: met à jour la relation inverse "arsc indirects" de face
 	 */
-    public void setFacedroite(Face f)  {
-        if (f != null) {
-            this.facedroite = f;
-            if (!f.getArcsindirects().contains(this))
-                    f.addArcindirect(this);
+    public void setFaceDroite(Face face)  {
+        if (face != null) {
+            this.faceDroite = face;
+            if (!face.getArcsIndirects().contains(this))
+                    face.addArcIndirect(this);
         } else {
-			if (this.getFacedroite() != null ) this.getFacedroite().getArcsindirects().remove(f); 
-            facedroite = null;
+			if (this.getFaceDroite() != null ) this.getFaceDroite().getArcsIndirects().remove(face); 
+            faceDroite = null;
         }
     }
     
@@ -387,9 +387,9 @@ public class Arc  extends ElementCarteTopo   {
      *  NB : l'arcSuivant peut être self, en cas de cul de sac sur le noeud final.
      */
     public List arcSuivantFin() {
-        if ( this.getNoeudfin() == null ) return null;
-        List arcs = (List)this.getNoeudfin().arcsClasses().get(0);
-        List arcsOrientation = (List)this.getNoeudfin().arcsClasses().get(1);
+        if ( this.getNoeudFin() == null ) return null;
+        List arcs = (List)this.getNoeudFin().arcsClasses().get(0);
+        List arcsOrientation = (List)this.getNoeudFin().arcsClasses().get(1);
         Iterator itArcs = arcs.iterator();
         Iterator itArcsOrientation = arcsOrientation.iterator();
         Boolean orientationEntrant;
@@ -428,9 +428,9 @@ public class Arc  extends ElementCarteTopo   {
      *  NB : l'arcSuivant peut être self, en cas de cul de sac sur le noeud initial.
      */
     public List arcSuivantDebut() {
-        if ( this.getNoeudini() == null ) return null;
-        List arcs = (List)this.getNoeudini().arcsClasses().get(0);
-        List arcsOrientation = (List)this.getNoeudini().arcsClasses().get(1);
+        if ( this.getNoeudIni() == null ) return null;
+        List arcs = (List)this.getNoeudIni().arcsClasses().get(0);
+        List arcsOrientation = (List)this.getNoeudIni().arcsClasses().get(1);
         Iterator itArcs = arcs.iterator();
         Iterator itArcsOrientation = arcsOrientation.iterator();
         Boolean orientationEntrant;
@@ -469,9 +469,9 @@ public class Arc  extends ElementCarteTopo   {
      *  NB : l'arc précédent peut être self, en cas de cul de sac sur le noeud final.
      */
     public List arcPrecedentFin() {
-        if ( this.getNoeudfin() == null ) return null;
-        List arcs = (List)this.getNoeudfin().arcsClasses().get(0);
-        List arcsOrientation = (List)this.getNoeudfin().arcsClasses().get(1);
+        if ( this.getNoeudFin() == null ) return null;
+        List arcs = (List)this.getNoeudFin().arcsClasses().get(0);
+        List arcsOrientation = (List)this.getNoeudFin().arcsClasses().get(1);
         Iterator itArcs = arcs.iterator();
         Iterator itArcsOrientation = arcsOrientation.iterator();
         Boolean orientationEntrant, orientationPrecedent;
@@ -513,9 +513,9 @@ public class Arc  extends ElementCarteTopo   {
      *  NB : l'arc précédent peut être self, en cas de cul de sac sur le noeud initial.
      */
     public List arcPrecedentDebut() {
-        if ( this.getNoeudini() == null ) return null;
-        List arcs = (List)this.getNoeudini().arcsClasses().get(0);
-        List arcsOrientation = (List)this.getNoeudini().arcsClasses().get(1);
+        if ( this.getNoeudIni() == null ) return null;
+        List arcs = (List)this.getNoeudIni().arcsClasses().get(0);
+        List arcsOrientation = (List)this.getNoeudIni().arcsClasses().get(1);
         Iterator itArcs = arcs.iterator();
         Iterator itArcsOrientation = arcsOrientation.iterator();
         Boolean orientationEntrant, orientationPrecedent;
@@ -545,9 +545,6 @@ public class Arc  extends ElementCarteTopo   {
         }
         return null;
     }
-
-    
-
     
     
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -570,8 +567,8 @@ public class Arc  extends ElementCarteTopo   {
      */
     public List inisOrientes() {
         List noeuds = new ArrayList();
-        if ( (orientation == 2 || orientation == 1) && !(noeudini == null) ) noeuds.add(noeudini);
-        if ( (orientation == 2 || orientation == -1)  && !(noeudfin == null) ) noeuds.add(noeudfin);
+        if ( (orientation == 2 || orientation == 1) && !(noeudIni == null) ) noeuds.add(noeudIni);
+        if ( (orientation == 2 || orientation == -1)  && !(noeudFin == null) ) noeuds.add(noeudFin);
         return noeuds;
     }
      
@@ -582,8 +579,8 @@ public class Arc  extends ElementCarteTopo   {
      */
     public List finsOrientes() {
         List noeuds = new ArrayList();
-        if ( (orientation == 2 || orientation == -1) && !(noeudini == null) ) noeuds.add(noeudini);
-        if ( (orientation == 2 || orientation == 1)  && !(noeudfin == null) ) noeuds.add(noeudfin);
+        if ( (orientation == 2 || orientation == -1) && !(noeudIni == null) ) noeuds.add(noeudIni);
+        if ( (orientation == 2 || orientation == 1)  && !(noeudFin == null) ) noeuds.add(noeudFin);
         return noeuds;
     }
 
@@ -602,20 +599,19 @@ public class Arc  extends ElementCarteTopo   {
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
     /* Groupes auquels self appartient */
-    private Collection listegroupes = new ArrayList();
+    private Collection listeGroupes = new ArrayList();
 	/** Renvoie la liste des groupes de self*/
-    public Collection getListegroupes() {return this.listegroupes;}
+    public Collection getListeGroupes() {return this.listeGroupes;}
 	/** Définit la liste des groupes de self*/
-    public void setListegroupes(Collection liste) {this.listegroupes = liste;}
+    public void setListegroupes(Collection liste) {this.listeGroupes = liste;}
 	/** Ajoute un groupe à self*/ 
     public void addGroupe(Groupe groupe) {
-    	if (groupe != null && !listegroupes.contains(groupe)) {
-            this.listegroupes.add(groupe);	
-            if (!groupe.getListearcs().contains(this))
+    	if (groupe != null && !listeGroupes.contains(groupe)) {
+            this.listeGroupes.add(groupe);	
+            if (!groupe.getListeArcs().contains(this))
                     groupe.addArc(this);
     	}
     }
-
     
     
 /////////////////////////////////////////////////////////////////////////////////////////////////

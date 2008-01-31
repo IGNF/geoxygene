@@ -57,11 +57,11 @@ public class TriangleDelaunay extends Face {
 		iterarcs = arcs.iterator();
 		while (iterarcs.hasNext()) {
 			arc = (Arc) iterarcs.next();
-			if ((arc.getNoeudini() == n1) && (arc.getNoeudfin() == n2)) {
-				arc.setFacegauche(this);
+			if ((arc.getNoeudIni() == n1) && (arc.getNoeudFin() == n2)) {
+				arc.setFaceGauche(this);
 				break;
-			} else if ((arc.getNoeudini() == n2) && (arc.getNoeudfin() == n1)) {
-				arc.setFacedroite(this);            
+			} else if ((arc.getNoeudIni() == n2) && (arc.getNoeudFin() == n1)) {
+				arc.setFaceDroite(this);            
 				break;
 			}
 		}
@@ -69,11 +69,11 @@ public class TriangleDelaunay extends Face {
 		iterarcs = arcs.iterator();
 		while (iterarcs.hasNext()) {
 			arc = (Arc) iterarcs.next();
-			if ((arc.getNoeudini() == n2) && (arc.getNoeudfin() == n3)) {
-				arc.setFacegauche(this);
+			if ((arc.getNoeudIni() == n2) && (arc.getNoeudFin() == n3)) {
+				arc.setFaceGauche(this);
 				break;
-			} else if ((arc.getNoeudini() == n3) && (arc.getNoeudfin() == n2)) {
-				arc.setFacedroite(this);            
+			} else if ((arc.getNoeudIni() == n3) && (arc.getNoeudFin() == n2)) {
+				arc.setFaceDroite(this);            
 				break;
 			}
 		}
@@ -81,18 +81,14 @@ public class TriangleDelaunay extends Face {
 		iterarcs = arcs.iterator();
 		while (iterarcs.hasNext()) {
 			arc = (Arc) iterarcs.next();            
-			if ((arc.getNoeudini() == n3) && (arc.getNoeudfin() == n1)) {
-				arc.setFacegauche(this);
+			if ((arc.getNoeudIni() == n3) && (arc.getNoeudFin() == n1)) {
+				arc.setFaceGauche(this);
 				break;
-			} else if ((arc.getNoeudini() == n1) && (arc.getNoeudfin() == n3)) {
-				arc.setFacedroite(this);            
+			} else if ((arc.getNoeudIni() == n1) && (arc.getNoeudFin() == n3)) {
+				arc.setFaceDroite(this);            
 				break;
 			}
-		}
-        
-        
+		}        
 	}
-
-
 
 }

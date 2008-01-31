@@ -48,8 +48,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
 public class ChargeurTriangulation extends Chargeur {
 	
-	public ChargeurTriangulation() {
-	}
+	public ChargeurTriangulation() {}
 	
 	public static void importLigneEnPoints(String nomClasseGeo, 
 			Triangulation carte) throws Exception {
@@ -78,13 +77,9 @@ public class ChargeurTriangulation extends Chargeur {
 			}
 		}
 		System.out.println("Fin importLigneEnPoints");
-		
 	}    
 	
-	
-	
-	
-	public static void importLigneEnPoints(FT_FeatureCollection  listeFeatures,
+	public static void importLigneEnPoints(FT_FeatureCollection listeFeatures,
 			Triangulation carte) throws Exception {
 		FT_Feature objGeo;
 		NoeudDelaunay noeud;
@@ -109,9 +104,7 @@ public class ChargeurTriangulation extends Chargeur {
 			}
 		}
 		System.out.println("Fin importLigneEnPoints");
-		
 	}    
-	
 	
 	public static void importSegments(String nomClasseGeo, 
 			Triangulation carte) throws Exception {
@@ -122,16 +115,14 @@ public class ChargeurTriangulation extends Chargeur {
 		ArcDelaunay arc;
 		DirectPositionList listePoints;
 		DirectPosition dp;
-		ArrayList listetemp, listenoeuds, listenoeudseffaces = null;
+		ArrayList listeTemp, listeNoeuds, listeNoeudsEffaces = null;
 		DirectPositionList tableau = null;
-		Iterator iter, iterentrants, itersortants = null;
+		Iterator it, itEntrants, itSortants = null;
 		int i, j;
 		
 		FT_FeatureCollection listeFeatures = CarteTopo.db.loadAllFeatures(clGeo);
 		Class[] signaturea = {carte.getPopNoeuds().getClasse(),carte.getPopNoeuds().getClasse()};
 		Object[] parama = new Object[2];
-
-		
 
 		for(i=0 ; i<listeFeatures.size() ; i++) {
 			System.out.println("Nombre de lignes importées :" + i);
@@ -139,60 +130,57 @@ public class ChargeurTriangulation extends Chargeur {
 			
 			if ( objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString ) {
 				listePoints = ((GM_LineString)objGeo.getGeom()).getControlPoint();
-				listetemp = new ArrayList();
+				listeTemp = new ArrayList();
 				for (j=0; j<listePoints.size(); j++) {
 					if ( (j % 100) == 0 ) {
 						System.out.println("    Nombre de points créés :" + j);
 					}
 					noeud1 = (NoeudDelaunay)carte.getPopNoeuds().nouvelElement();
 					noeud1.setCoord(listePoints.get(j));
-					listetemp.add(noeud1);
+					listeTemp.add(noeud1);
 					
 				}
-				for(j=0;j<listetemp.size()-1;j++) {
-					parama[0] = (NoeudDelaunay) listetemp.get(j);
-					parama[1] = (NoeudDelaunay) listetemp.get(j+1);
+				for(j=0;j<listeTemp.size()-1;j++) {
+					parama[0] = (NoeudDelaunay) listeTemp.get(j);
+					parama[1] = (NoeudDelaunay) listeTemp.get(j+1);
 					arc = (ArcDelaunay)carte.getPopArcs().nouvelElement(signaturea,parama);
 				}
-
 			}
 		}
 
-
 		// Filtrage des noeuds en double et correction de la topologie
 		System.out.println("Filtrage des noeuds en double");
-		listenoeuds = new ArrayList(carte.getListenoeuds());
-		iter = carte.getListenoeuds().iterator();
+		listeNoeuds = new ArrayList(carte.getListeNoeuds());
+		it = carte.getListeNoeuds().iterator();
 		tableau = new DirectPositionList();
-		listenoeudseffaces = new ArrayList();
-		while (iter.hasNext()) {
-			noeud1 = (NoeudDelaunay) iter.next();
+		listeNoeudsEffaces = new ArrayList();
+		while (it.hasNext()) {
+			noeud1 = (NoeudDelaunay) it.next();
 			dp = noeud1.getCoord();
 			if (Operateurs.indice2D(tableau,dp) != -1) {
 				System.out.println("Elimination d'un doublon");
-				iterentrants = noeud1.getEntrants().iterator();
-				while (iterentrants.hasNext()) {
-					arc = (ArcDelaunay) iterentrants.next();
-					arc.setNoeudfin((NoeudDelaunay)listenoeuds.get(Operateurs.indice2D(tableau,dp)));
+				itEntrants = noeud1.getEntrants().iterator();
+				while (itEntrants.hasNext()) {
+					arc = (ArcDelaunay) itEntrants.next();
+					arc.setNoeudFin((NoeudDelaunay)listeNoeuds.get(Operateurs.indice2D(tableau,dp)));
 				}
-				itersortants = noeud1.getSortants().iterator();
-				while (itersortants.hasNext()) {
-					arc = (ArcDelaunay) itersortants.next();
-					arc.setNoeudini((NoeudDelaunay)listenoeuds.get(Operateurs.indice2D(tableau,dp)));
+				itSortants = noeud1.getSortants().iterator();
+				while (itSortants.hasNext()) {
+					arc = (ArcDelaunay) itSortants.next();
+					arc.setNoeudIni((NoeudDelaunay)listeNoeuds.get(Operateurs.indice2D(tableau,dp)));
 				}
 			}
 			tableau.add(dp);			
 		}
-		iter = listenoeudseffaces.iterator();
-		while (iter.hasNext()) {
-			noeud1 = (NoeudDelaunay) iter.next();
+		it = listeNoeudsEffaces.iterator();
+		while (it.hasNext()) {
+			noeud1 = (NoeudDelaunay) it.next();
 			carte.getPopNoeuds().remove(noeud1); // pour la bidirection
 		}
 		System.out.println("Fin importSegments");
-		
 	}    
 	
-	public static void importSegments(FT_FeatureCollection  listeFeatures, 
+	public static void importSegments(FT_FeatureCollection listeFeatures, 
 			Triangulation carte) throws Exception {
 		FT_Feature objGeo;
 		
@@ -200,15 +188,13 @@ public class ChargeurTriangulation extends Chargeur {
 		ArcDelaunay arc;
 		DirectPositionList listePoints;
 		DirectPosition dp;
-		ArrayList listetemp, listenoeuds, listenoeudseffaces = null;
+		ArrayList listeTemp, listeNoeuds, listeNoeudsEffaces = null;
 		DirectPositionList tableau = null;
-		Iterator iter, iterentrants, itersortants = null;
+		Iterator it, itEntrants, itSortants = null;
 		int i, j;
 
 		Class[] signaturea = {carte.getPopNoeuds().getClasse(),carte.getPopNoeuds().getClasse()};
 		Object[] parama = new Object[2];
-
-		
 
 		for(i=0 ; i<listeFeatures.size() ; i++) {
 			System.out.println("Nombre de lignes importées :" + i);
@@ -216,22 +202,22 @@ public class ChargeurTriangulation extends Chargeur {
 			
 			if ( objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString ) {
 				listePoints = ((GM_LineString)objGeo.getGeom()).coord();
-				listetemp = new ArrayList();
+				listeTemp = new ArrayList();
 				for (j=0; j<listePoints.size(); j++) {
 					if ( (j % 100) == 0 ) {
 						System.out.println("    Nombre de points créés :" + j);
 					}
 					noeud1 = (NoeudDelaunay)carte.getPopNoeuds().nouvelElement();
 					noeud1.setCoord(listePoints.get(j));
-					listetemp.add(noeud1);
+					listeTemp.add(noeud1);
 				}
-				for(j=0;j<listetemp.size()-1;j++) {
-					parama[0] = (NoeudDelaunay) listetemp.get(j);
-					parama[1] = (NoeudDelaunay) listetemp.get(j+1);
+				for(j=0;j<listeTemp.size()-1;j++) {
+					parama[0] = (NoeudDelaunay) listeTemp.get(j);
+					parama[1] = (NoeudDelaunay) listeTemp.get(j+1);
 					arc = (ArcDelaunay)carte.getPopArcs().nouvelElement(signaturea,parama);
 				}
-				parama[0] = (NoeudDelaunay) listetemp.get(listetemp.size()-1);
-				parama[1] = (NoeudDelaunay) listetemp.get(0);
+				parama[0] = (NoeudDelaunay) listeTemp.get(listeTemp.size()-1);
+				parama[1] = (NoeudDelaunay) listeTemp.get(0);
 				arc = (ArcDelaunay)carte.getPopArcs().nouvelElement(signaturea,parama);
 
 			}
@@ -239,60 +225,58 @@ public class ChargeurTriangulation extends Chargeur {
 			if ( objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon ) {
 				listePoints = ((GM_Polygon)objGeo.getGeom()).coord();
 				System.out.println("Polygone "+i+" "+listePoints);
-				listetemp = new ArrayList();
+				listeTemp = new ArrayList();
 				for (j=0; j<listePoints.size(); j++) {
 					if ( (j % 100) == 0 ) {
 						System.out.println("    Nombre de points créés :" + j);
 					}
 					noeud1 = (NoeudDelaunay)carte.getPopNoeuds().nouvelElement();
 					noeud1.setCoord(listePoints.get(j));
-					listetemp.add(noeud1);
+					listeTemp.add(noeud1);
 				}
-				for(j=0;j<listetemp.size()-1;j++) {
-					parama[0] = (NoeudDelaunay) listetemp.get(j);
-					parama[1] = (NoeudDelaunay) listetemp.get(j+1);
+				for(j=0;j<listeTemp.size()-1;j++) {
+					parama[0] = (NoeudDelaunay) listeTemp.get(j);
+					parama[1] = (NoeudDelaunay) listeTemp.get(j+1);
 					arc = (ArcDelaunay)carte.getPopArcs().nouvelElement(signaturea,parama);
 				}
-
 			}
 		}
 
 		// Filtrage des noeuds en double et correction de la topologie
 		System.out.println("Filtrage des noeuds en double");
-		listenoeuds = new ArrayList(carte.getListenoeuds());
-		iter = carte.getListenoeuds().iterator();
+		listeNoeuds = new ArrayList(carte.getListeNoeuds());
+		it = carte.getListeNoeuds().iterator();
 		tableau = new DirectPositionList();
-		listenoeudseffaces = new ArrayList();
-		while (iter.hasNext()) {
-			noeud1 = (NoeudDelaunay) iter.next();
+		listeNoeudsEffaces = new ArrayList();
+		while (it.hasNext()) {
+			noeud1 = (NoeudDelaunay) it.next();
 			dp = noeud1.getCoord();
 			if (Operateurs.indice2D(tableau,dp) != -1) {
 				//System.out.println("Elimination d'un doublon");
-				iterentrants = noeud1.getEntrants().iterator();
-				while (iterentrants.hasNext()) {
-					arc = (ArcDelaunay) iterentrants.next();
-					arc.setNoeudfin((NoeudDelaunay)listenoeuds.get(Operateurs.indice2D(tableau,dp)));
+				itEntrants = noeud1.getEntrants().iterator();
+				while (itEntrants.hasNext()) {
+					arc = (ArcDelaunay) itEntrants.next();
+					arc.setNoeudFin((NoeudDelaunay)listeNoeuds.get(Operateurs.indice2D(tableau,dp)));
 				}
-				itersortants = noeud1.getSortants().iterator();
-				while (itersortants.hasNext()) {
-					arc = (ArcDelaunay) itersortants.next();
-					arc.setNoeudini((NoeudDelaunay)listenoeuds.get(Operateurs.indice2D(tableau,dp)));
+				itSortants = noeud1.getSortants().iterator();
+				while (itSortants.hasNext()) {
+					arc = (ArcDelaunay) itSortants.next();
+					arc.setNoeudIni((NoeudDelaunay)listeNoeuds.get(Operateurs.indice2D(tableau,dp)));
 				}
 			}
 			tableau.add(dp);			
 		}
-		iter = listenoeudseffaces.iterator();
-		while (iter.hasNext()) {
-			noeud1 = (NoeudDelaunay) iter.next();
+		it = listeNoeudsEffaces.iterator();
+		while (it.hasNext()) {
+			noeud1 = (NoeudDelaunay) it.next();
 			carte.getPopNoeuds().remove(noeud1); // pour la bidirection
 		}
 		System.out.println("Fin importSegments");
-		System.out.println("liste de noeuds "+carte.getListenoeuds().size());
-		System.out.println("liste des arcs "+carte.getListearcs().size());
-		
+		System.out.println("liste de noeuds "+carte.getListeNoeuds().size());
+		System.out.println("liste des arcs "+carte.getListeArcs().size());
 	}    
 
-	public static void importPolygoneEnPoints(FT_FeatureCollection  listeFeatures,
+	public static void importPolygoneEnPoints(FT_FeatureCollection listeFeatures,
 			Triangulation carte) throws Exception {
 		FT_Feature objGeo;
 		NoeudDelaunay noeud;
@@ -312,13 +296,9 @@ public class ChargeurTriangulation extends Chargeur {
 					}
 					noeud = (NoeudDelaunay)carte.getPopNoeuds().nouvelElement();
 					noeud.setCoord(listePoints.get(j));
-					
 				}
 			}
 		}
 		System.out.println("Fin importPolygoneEnPoints");
-		
-	}    
-	
-	
+	}    	
 }

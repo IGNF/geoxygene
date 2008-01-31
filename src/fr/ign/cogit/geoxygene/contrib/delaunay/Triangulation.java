@@ -67,7 +67,7 @@ public class Triangulation extends CarteTopo{
 		NoeudDelaunay node;
 		GM_Point point;
 		DirectPosition coord;
-		ArrayList noeuds = new ArrayList(this.getListenoeuds());
+		ArrayList noeuds = new ArrayList(this.getListeNoeuds());
 
 		jin.numberofpoints = noeuds.size();
 		jin.pointlist = new double[2*jin.numberofpoints];
@@ -82,13 +82,13 @@ public class Triangulation extends CarteTopo{
 
 	private void convertJinSegments() {
 		int i;
-		ArrayList noeuds = new ArrayList(this.getListenoeuds());
-		ArrayList aretes = new ArrayList(this.getListearcs());
+		ArrayList noeuds = new ArrayList(this.getListeNoeuds());
+		ArrayList aretes = new ArrayList(this.getListeArcs());
 		jin.numberofsegments = aretes.size();
 		jin.segmentlist = new int[2*jin.numberofsegments];
 		for (i=0; i<jin.numberofsegments; i++) {
-			jin.segmentlist[2*i]=noeuds.indexOf(((ArcDelaunay)aretes.get(i)).getNoeudini());
-			jin.segmentlist[2*i+1]=noeuds.indexOf(((ArcDelaunay)aretes.get(i)).getNoeudfin());
+			jin.segmentlist[2*i]=noeuds.indexOf(((ArcDelaunay)aretes.get(i)).getNoeudIni());
+			jin.segmentlist[2*i+1]=noeuds.indexOf(((ArcDelaunay)aretes.get(i)).getNoeudFin());
 		}
 
 	}
@@ -101,7 +101,6 @@ public class Triangulation extends CarteTopo{
 			int i;
 			GM_LineString ls;
 
-
 			for (i=jin.numberofpoints; i<jout.numberofpoints; i++) {
 
 				noe = (NoeudDelaunay)this.getPopNoeuds().nouvelElement();
@@ -109,8 +108,7 @@ public class Triangulation extends CarteTopo{
 				this.addNoeud(noe);
 			}
 
-
-			ArrayList noeuds = new ArrayList(this.getListenoeuds());
+			ArrayList noeuds = new ArrayList(this.getListeNoeuds());
 
 			Class[] signaturea = {this.getPopNoeuds().getClasse(),this.getPopNoeuds().getClasse()};
 			Object[] parama = new Object[2];
@@ -153,7 +151,6 @@ public class Triangulation extends CarteTopo{
 		trianguleC(options, jin, jout, null);
 		convertJout();
 	}
-
 
 	public void triangule() throws Exception{
 		this.lanceTriangulation("czeB");

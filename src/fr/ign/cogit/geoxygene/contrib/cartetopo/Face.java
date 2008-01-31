@@ -71,16 +71,16 @@ public class Face  extends ElementCarteTopo   {
 /////////////////////////////////////////////////////////////////////////////////////////////////
     
     /* Groupes auquels self appartient */
-    private Collection listegroupes = new ArrayList();
+    private Collection listeGroupes = new ArrayList();
 	/** Renvoie la liste des groupes de self*/
-    public Collection getListegroupes() {return this.listegroupes;}
+    public Collection getListeGroupes() {return this.listeGroupes;}
 	/** Définit la liste des groupes de self*/
-    public void setListegroupes(Collection liste) {this.listegroupes = liste;}
+    public void setListeGroupes(Collection liste) {this.listeGroupes = liste;}
 	/** Ajoute un groupe à self*/ 
     public void addGroupe(Groupe groupe) {
-    	if (groupe != null && !listegroupes.contains(groupe)) {
-            this.listegroupes.add(groupe);	
-            if (!groupe.getListefaces().contains(this))
+    	if (groupe != null && !listeGroupes.contains(groupe)) {
+            this.listeGroupes.add(groupe);	
+            if (!groupe.getListeFaces().contains(this))
                     groupe.addFace(this);
     	}
     }
@@ -91,46 +91,42 @@ public class Face  extends ElementCarteTopo   {
 //                         Gestion de la topologie arcs / faces
 /////////////////////////////////////////////////////////////////////////////////////////////////
                                         
-    private List arcsdirects = new ArrayList();
+    private List arcsDirects = new ArrayList();
 	/** Renvoie la liste des arcs directs de self */
-    public List getArcsdirects() {
-        return arcsdirects;
-    }
+    public List getArcsDirects() { return arcsDirects; }
 	/** Ajoute un arc direct de self */
-    public void addArcdirect (Arc arc) {
-        if (arc != null && !arcsdirects.contains(arc)) {
-            arcsdirects.add(arc);
-            if (arc.getFacegauche() != this)
-                arc.setFacegauche(this);
+    public void addArcDirect (Arc arc) {
+        if (arc != null && !arcsDirects.contains(arc)) {
+            arcsDirects.add(arc);
+            if (arc.getFaceGauche() != this)
+                arc.setFaceGauche(this);
         }
     }
 	/** Enlève un arc direct de self */
 	public void enleveArcDirect (Arc arc) {
 		if (arc == null) return;
-		if (!arcsdirects.contains(arc)) return;
-		arcsdirects.remove(arc);
-		arc.setFacegauche(null);
+		if (!arcsDirects.contains(arc)) return;
+		arcsDirects.remove(arc);
+		arc.setFaceGauche(null);
 	}
 
-    private List arcsindirects = new ArrayList();
+    private List arcsIndirects = new ArrayList();
 	/** Renvoie la liste des arcs indirects de self */
-    public List getArcsindirects() {
-        return arcsindirects;
-    }
+    public List getArcsIndirects() { return arcsIndirects; }
 	/** Ajoute un arc indirect de self */
-    public void addArcindirect (Arc arc) {
-        if (arc != null && !arcsindirects.contains(arc)) {
-            arcsindirects.add(arc);
-            if (arc.getFacedroite() != this)
-                arc.setFacedroite(this);
+    public void addArcIndirect (Arc arc) {
+        if (arc != null && !arcsIndirects.contains(arc)) {
+            arcsIndirects.add(arc);
+            if (arc.getFaceDroite() != this)
+                arc.setFaceDroite(this);
         }
     }
 	/** Enlève un arc indirect de self */
 	public void enleveArcIndirect (Arc arc) {
 		if (arc == null) return;
-		if (!arcsindirects.contains(arc)) return;
-		arcsindirects.remove(arc);
-		arc.setFacedroite(null);
+		if (!arcsIndirects.contains(arc)) return;
+		arcsIndirects.remove(arc);
+		arc.setFaceDroite(null);
 	}
 
       /** Renvoie la liste (non classée) des arcs entourant self.
@@ -141,8 +137,8 @@ public class Face  extends ElementCarteTopo   {
        */                
     public List arcs() {
         List Arcs = new ArrayList();
-        Arcs.addAll(this.getArcsdirects());
-        Arcs.addAll(this.getArcsindirects());
+        Arcs.addAll(this.getArcsDirects());
+        Arcs.addAll(this.getArcsIndirects());
         return Arcs;
     }
 
@@ -233,11 +229,11 @@ public class Face  extends ElementCarteTopo   {
 		}
 		
 		arc0 = (Arc)arcs.get(0);
-		if ( arc0.getFacedroite() == this ) {
+		if ( arc0.getFaceDroite() == this ) {
 			cycle = arc0.cycleADroite();
 			renverser = true;
 		} 
-		else if ( arc0.getFacegauche() == this ) {
+		else if ( arc0.getFaceGauche() == this ) {
 			cycle = arc0.cycleAGauche();
 			renverser = false;
 		} 
@@ -248,8 +244,8 @@ public class Face  extends ElementCarteTopo   {
 		while (itArcsEntourants.hasNext() ) {
 			arc = (Arc)itArcsEntourants.next();
 			orientation = ((Boolean)itOrientations.next()).booleanValue();
-			if (orientation) noeud = arc.getNoeudini();
-			else  noeud = arc.getNoeudfin();
+			if (orientation) noeud = arc.getNoeudIni();
+			else  noeud = arc.getNoeudFin();
 			if (renverser) noeuds.add(0, noeud);
 			else noeuds.add(noeud); 
 		} 
