@@ -50,7 +50,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * (création des réseaux, lancement de l'appariement, export des résultats).
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
- * @version 1.0 
+ * @version 1.1 
  * 
  */
 
@@ -99,11 +99,11 @@ public class AppariementIO {
 		// NB: l'ordre dans lequel les projections sont faites n'est pas neutre
 		if ( paramApp.projeteNoeud2surReseau1 ) {
 			if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  Projection du réseau 2 sur le réseau 1 "+(new Time(System.currentTimeMillis())).toString());
-			else reseauRef.projete(reseauComp, paramApp.projeteNoeud2surReseau1_DistanceNoeudArc, paramApp.projeteNoeud2surReseau1_DistanceProjectionNoeud, paramApp.projeteNoeud2surReseau1_ImpassesSeulement);
+			reseauRef.projete(reseauComp, paramApp.projeteNoeud2surReseau1_DistanceNoeudArc, paramApp.projeteNoeud2surReseau1_DistanceProjectionNoeud, paramApp.projeteNoeud2surReseau1_ImpassesSeulement);
 		}
 		if ( paramApp.projeteNoeuds1SurReseau2 ) {
 			if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  Projection du réseau 1 sur le réseau 2 "+(new Time(System.currentTimeMillis())).toString());
-			else reseauComp.projete(reseauRef, paramApp.projeteNoeuds1SurReseau2_DistanceNoeudArc, paramApp.projeteNoeuds1SurReseau2_DistanceProjectionNoeud, paramApp.projeteNoeuds1SurReseau2_ImpassesSeulement);
+			reseauComp.projete(reseauRef, paramApp.projeteNoeuds1SurReseau2_DistanceNoeudArc, paramApp.projeteNoeuds1SurReseau2_DistanceProjectionNoeud, paramApp.projeteNoeuds1SurReseau2_ImpassesSeulement);
 		} 
 
 		if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  Remplissage des attributs des arcs et noeuds des réseaux "+(new Time(System.currentTimeMillis())).toString());
