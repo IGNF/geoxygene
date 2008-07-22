@@ -293,7 +293,7 @@ public class ParametresApp implements Cloneable {
 	/////////////////////////////////////////////////////////////////////////////////
 	/////////////        OPTIONS D'EXPORT                                ////////////
 	/////////////////////////////////////////////////////////////////////////////////
-	/** Si true, la géométrie des liens est calculée des objets2 vers les objets 2
+	/** Si true, la géométrie des liens est calculée des objets2 vers les objets 1
 	 * si false, c'est l'inverse
 	 */
 	public boolean exportGeometrieLiens2vers1 = true;
