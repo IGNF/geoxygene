@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="fr/ign/cogit/geoxygene/datatools/oracle/" kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/batik-awt-util-1.7.jar"/>
+	<classpathentry kind="lib" path="lib/batik-dom-1.7.jar"/>
+	<classpathentry kind="lib" path="lib/batik-svggen-1.7.jar"/>
+	<classpathentry kind="lib" path="lib/batik-transcoder-1.7.jar"/>
+	<classpathentry kind="lib" path="lib/commons-collections-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/dom4j.jar"/>
+	<classpathentry kind="lib" path="lib/ejb3-persistence.jar"/>
+	<classpathentry kind="lib" path="lib/geoapi-2.2-M1.jar"/>
+	<classpathentry kind="lib" path="lib/gt-api-2.5.4.jar"/>
+	<classpathentry kind="lib" path="lib/gt-data-2.5.4.jar"/>
+	<classpathentry kind="lib" path="lib/gt-main-2.5.4.jar"/>
+	<classpathentry kind="lib" path="lib/gt-metadata-2.5.4.jar"/>
+	<classpathentry kind="lib" path="lib/gt-referencing-2.5.4.jar"/>
+	<classpathentry kind="lib" path="lib/gt-shapefile-2.5.4.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-annotations-3.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-commons-annotations-3.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-core-3.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-spatial-1.0-M2.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-spatial-postgis-1.0-M2.jar"/>
+	<classpathentry kind="lib" path="lib/jai_core.jar"/>
+	<classpathentry kind="lib" path="lib/Jama-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/javassist.jar"/>
+	<classpathentry kind="lib" path="lib/jsr-275-1.0-beta-2.jar"/>
+	<classpathentry kind="lib" path="lib/jta.jar"/>
+	<classpathentry kind="lib" path="lib/jts-1.10.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="lib/ojb-1.0.rc6.jar"/>
+	<classpathentry kind="lib" path="lib/pdf-transcoder-0.94.jar"/>
+	<classpathentry kind="lib" path="lib/postgis_1.3.2.jar"/>
+	<classpathentry kind="lib" path="lib/postgresql-8.3-603.jdbc4.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.5.6.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.5.6.jar"/>
+	<classpathentry kind="lib" path="lib/vecmath-1.5.2.jar"/>
+	<classpathentry kind="lib" path="lib/xstream-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/geotools1-cogit.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
