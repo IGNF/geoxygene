@@ -1,27 +1,27 @@
 /*
- * This file is part of the GeOxygene project source files. 
+ * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
- * the development and deployment of geographic (GIS) applications. It is a open source 
- * contribution of the COGIT laboratory at the Institut Géographique National (the French 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
+ * the development and deployment of geographic (GIS) applications. It is a open source
+ * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
  * 
- * See: http://oxygene-project.sourceforge.net 
- *  
+ * See: http://oxygene-project.sourceforge.net
+ * 
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation; 
+ * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with 
- * this library (see file LICENSE if present); if not, write to the Free Software 
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
+ * 
  */
 
 package fr.ign.cogit.geoxygene.contrib.appariement;
@@ -45,6 +45,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 
 /**
@@ -54,23 +55,25 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  * @version 1.0
  */
 
-public class EnsembleDeLiens extends Population {
+public class EnsembleDeLiens extends Population<FT_Feature> {
 
 	public EnsembleDeLiens() {
-		super(false, "Ensemble de liens", Lien.class, true);		
+		super(false, "Ensemble de liens", Lien.class, true);
 	}
 
 	public EnsembleDeLiens(boolean persistant) {
-		super(persistant, "Ensemble de liens", Lien.class, true);		
+		super(persistant, "Ensemble de liens", Lien.class, true);
 	}
 
-	public EnsembleDeLiens(Class classeDesLiens) {
-		super(false, "Ensemble de liens", classeDesLiens, true);		
+	public EnsembleDeLiens(Class<?> classeDesLiens) {
+		super(false, "Ensemble de liens", classeDesLiens, true);
 	}
 
 	/** Nom du l'ensemble des liens d'appariement  (ex: "Appariement des routes par la méthode XX")*/
 	private String nom ;
+	@Override
 	public String getNom() {return nom;}
+	@Override
 	public void setNom(String nom) {this.nom = nom;}
 
 	/** Description textuelle des paramètres utilisés pour l'appariement */
@@ -90,20 +93,20 @@ public class EnsembleDeLiens extends Population {
 
 
 	//////////////////////////////////////////////////////////////
-	// METHODES UTILES A LA MANIPULATION DES ENSEMBLES DE LIENS   
+	// METHODES UTILES A LA MANIPULATION DES ENSEMBLES DE LIENS
 	//////////////////////////////////////////////////////////////
 
 	//////////////////////////////////////////////////////////////
-	// MANIPULATION DE BASE DES LISTES D'ELEMENTS   
+	// MANIPULATION DE BASE DES LISTES D'ELEMENTS
 	//////////////////////////////////////////////////////////////
 	/** Copie d'un ensemble de liens */
 	public EnsembleDeLiens copie() {
 		EnsembleDeLiens copie = new EnsembleDeLiens();
 		copie.setElements(this.getElements());
 		copie.setNom(this.getNom());
-		copie.setEvaluationGlobale(this.getEvaluationGlobale());			
+		copie.setEvaluationGlobale(this.getEvaluationGlobale());
 		copie.setEvaluationInterne(this.getEvaluationInterne());
-		return copie;			
+		return copie;
 	}
 
 	/** Compilation de deux listes de liens */
@@ -125,39 +128,36 @@ public class EnsembleDeLiens extends Population {
 	 * en entrée (this) on a 4 liens 1-1 (A-X) (B-X) (B-Y) (C-Z)
 	 * en sortie on a un lien n-m (A,B)-(X-Y) et 1 lien 1-1 (C-Z)
 	 * 
-	 */ 
-	public EnsembleDeLiens regroupeLiens(Population popRef, Population popComp) {
+	 */
+	public EnsembleDeLiens regroupeLiens(Population<FT_Feature> popRef, Population<FT_Feature> popComp) {
 		EnsembleDeLiens liensGroupes ;
 		Lien lienGroupe;
 		CarteTopo grapheDesLiens ;
 		Groupe groupeTotal, groupeConnexe;
-		Iterator itGroupes, itNoeuds;
 		Noeud noeud;
 		FT_Feature feat;
 		grapheDesLiens = this.transformeEnCarteTopo(popRef, popComp);
-		groupeTotal = (Groupe)grapheDesLiens.getPopGroupes().nouvelElement();
+		groupeTotal = grapheDesLiens.getPopGroupes().nouvelElement();
 		groupeTotal.setListeArcs(grapheDesLiens.getListeArcs());
 		groupeTotal.setListeNoeuds(grapheDesLiens.getListeNoeuds());
 		groupeTotal.decomposeConnexes();
 
 		liensGroupes = new EnsembleDeLiens();
 		liensGroupes.setNom("TMP : liens issus d'un regroupement");
-		// on parcours tous les groupes connexes créés 
-		itGroupes = grapheDesLiens.getListeArcs().iterator();
-		while (itGroupes.hasNext()) {
-			groupeConnexe = (Groupe)itGroupes.next();
+		// on parcours tous les groupes connexes créés
+		for (FT_Feature feature:grapheDesLiens.getListeGroupes()) {
+			groupeConnexe = (Groupe)feature;
 			if ( groupeConnexe.getListeArcs().size() == 0 ) continue; // cas des noeuds isolés
 			lienGroupe = (Lien)liensGroupes.nouvelElement();
-			itNoeuds = groupeConnexe.getListeNoeuds().iterator();
-			while (itNoeuds.hasNext()) {
-				noeud = (Noeud)itNoeuds.next();
+			for(FT_Feature n:groupeConnexe.getListeNoeuds()) {
+				noeud = (Noeud)n;
 				feat = noeud.getCorrespondant(0);
-				if ( popRef.getElements().contains(feat) ) 
+				if ( popRef.getElements().contains(feat) )
 					lienGroupe.addObjetRef(feat);
-				if ( popComp.getElements().contains(feat) ) 
+				if ( popComp.getElements().contains(feat) )
 					lienGroupe.addObjetComp(feat);
 				// nettoyage de la carteTopo créée
-				noeud.setCorrespondants(new ArrayList());
+				noeud.setCorrespondants(new ArrayList<FT_Feature>());
 			}
 		}
 		return liensGroupes;
@@ -169,39 +169,36 @@ public class EnsembleDeLiens extends Population {
 	 * exemple : Ref = (A,B,C), Comp = (X,Y,Z)
 	 * en entrée (this) on a 4 liens 1-1 (A-X) (B-X) (B-Y) (C-Z)
 	 * en sortie on a un lien n-m (A,B)-(X-Y) et 1 lien 1-1 (C-Z)
-	 */ 
-	public EnsembleDeLiens regroupeLiens(FT_FeatureCollection popRef, FT_FeatureCollection popComp) {
+	 */
+	public EnsembleDeLiens regroupeLiens(FT_FeatureCollection<FT_Feature> popRef, FT_FeatureCollection<FT_Feature> popComp) {
 		EnsembleDeLiens liensGroupes ;
 		Lien lienGroupe;
 		CarteTopo grapheDesLiens ;
 		Groupe groupeTotal, groupeConnexe;
-		Iterator itGroupes, itNoeuds;
 		Noeud noeud;
 		FT_Feature feat;
 		grapheDesLiens = this.transformeEnCarteTopo(popRef, popComp);
-		groupeTotal = (Groupe)grapheDesLiens.getPopGroupes().nouvelElement();
+		groupeTotal = grapheDesLiens.getPopGroupes().nouvelElement();
 		groupeTotal.setListeArcs(grapheDesLiens.getListeArcs());
 		groupeTotal.setListeNoeuds(grapheDesLiens.getListeNoeuds());
 		groupeTotal.decomposeConnexes();
 
 		liensGroupes = new EnsembleDeLiens();
 		liensGroupes.setNom("TMP : liens issus d'un regroupement");
-		// on parcours tous les groupes connexes créés 
-		itGroupes = grapheDesLiens.getListeArcs().iterator();
-		while (itGroupes.hasNext()) {
-			groupeConnexe = (Groupe)itGroupes.next();
+		// on parcours tous les groupes connexes créés
+		for (FT_Feature feature:grapheDesLiens.getListeGroupes()) {
+			groupeConnexe = (Groupe)feature;
 			if ( groupeConnexe.getListeArcs().size() == 0 ) continue; // cas des noeuds isolés
 			lienGroupe = (Lien)liensGroupes.nouvelElement();
-			itNoeuds = groupeConnexe.getListeNoeuds().iterator();
-			while (itNoeuds.hasNext()) {
-				noeud = (Noeud)itNoeuds.next();
+			for(FT_Feature n:groupeConnexe.getListeNoeuds()) {
+				noeud = (Noeud)n;
 				feat = noeud.getCorrespondant(0);
-				if ( popRef.getElements().contains(feat) ) 
+				if ( popRef.getElements().contains(feat) )
 					lienGroupe.addObjetRef(feat);
-				if ( popComp.getElements().contains(feat) ) 
+				if ( popComp.getElements().contains(feat) )
 					lienGroupe.addObjetComp(feat);
 				// nettoyage de la carteTopo créée
-				noeud.setCorrespondants(new ArrayList());
+				noeud.setCorrespondants(new ArrayList<FT_Feature>());
 			}
 		}
 		return liensGroupes;
@@ -212,10 +209,10 @@ public class EnsembleDeLiens extends Population {
 	 * en une carte topo (graphe sans géométrie) où :
 	 * - les objets de popRef et popComp sont des noeuds (sans géométrie)
 	 * - les liens sont des arcs entre ces noeuds (sans géométrie)
-	 */ 
-	public CarteTopo transformeEnCarteTopo(FT_FeatureCollection popRef, FT_FeatureCollection popComp) {
-		Iterator itObjetsRef, itObjetsComp, itNoeudsRef, itNoeudsComp; 
-		List noeudsRef = new ArrayList(), noeudsComp = new ArrayList(); // listes de Noeud
+	 */
+	public CarteTopo transformeEnCarteTopo(FT_FeatureCollection<FT_Feature> popRef, FT_FeatureCollection<FT_Feature> popComp) {
+		Iterator<FT_Feature> itObjetsRef, itObjetsComp, itNoeudsRef, itNoeudsComp;
+		List<FT_Feature> noeudsRef = new ArrayList<FT_Feature>(), noeudsComp = new ArrayList<FT_Feature>(); // listes de Noeud
 
 		Lien lien;
 		CarteTopo grapheDesLiens = new CarteTopo("Carte de liens");
@@ -226,32 +223,32 @@ public class EnsembleDeLiens extends Population {
 		// création de noeuds du graphe = les objets ref et comp
 		itObjetsRef = popRef.getElements().iterator();
 		while (itObjetsRef.hasNext()){
-			objetRef = (FT_Feature)itObjetsRef.next();
-			noeudRef = (Noeud)grapheDesLiens.getPopNoeuds().nouvelElement();
+			objetRef = itObjetsRef.next();
+			noeudRef = grapheDesLiens.getPopNoeuds().nouvelElement();
 			noeudRef.addCorrespondant(objetRef);
 		}
 		itObjetsComp = popComp.getElements().iterator();
 		while (itObjetsComp.hasNext()){
-			objetComp = (FT_Feature)itObjetsComp.next();
-			noeudComp = (Noeud)grapheDesLiens.getPopNoeuds().nouvelElement();
+			objetComp = itObjetsComp.next();
+			noeudComp = grapheDesLiens.getPopNoeuds().nouvelElement();
 			noeudComp.addCorrespondant(objetComp);
 		}
 
-		// création des arcs du graphe = les liens d'appariement 
-		Iterator itLiens = this.getElements().iterator();
+		// création des arcs du graphe = les liens d'appariement
+		Iterator<FT_Feature> itLiens = this.getElements().iterator();
 		while (itLiens.hasNext()) {
 			lien = (Lien)itLiens.next();
 			itObjetsRef = lien.getObjetsRef().iterator();
 			// création des listes de noeuds concernés par le lien
 			noeudsRef.clear();
 			while (itObjetsRef.hasNext()) {
-				objetRef = (FT_Feature)itObjetsRef.next();
+				objetRef = itObjetsRef.next();
 				noeudsRef.add(objetRef.getCorrespondants(grapheDesLiens.getPopNoeuds()).get(0));
 			}
 			itObjetsComp = lien.getObjetsComp().iterator();
 			noeudsComp.clear();
 			while (itObjetsComp.hasNext()) {
-				objetComp = (FT_Feature)itObjetsComp.next();
+				objetComp = itObjetsComp.next();
 				noeudsComp.add(objetComp.getCorrespondants(grapheDesLiens.getPopNoeuds()).get(0));
 			}
 
@@ -262,7 +259,7 @@ public class EnsembleDeLiens extends Population {
 				itNoeudsComp = noeudsComp.iterator();
 				while(itNoeudsComp.hasNext()){
 					noeudComp = (Noeud)itNoeudsComp.next();
-					arc = (Arc)grapheDesLiens.getPopArcs().nouvelElement();
+					arc = grapheDesLiens.getPopArcs().nouvelElement();
 					arc.addCorrespondant(lien);
 					arc.setNoeudIni(noeudRef);
 					arc.setNoeudFin(noeudComp);
@@ -274,11 +271,12 @@ public class EnsembleDeLiens extends Population {
 
 	/** Methode de regroupement des liens 1-1 carto qui pointent sur le meme
 	 * objet topo; non optimisee du tout!!!
-	 * @return
+	 * @return EnsembleDeLiens
 	 */
 	public EnsembleDeLiens regroupeLiensCartoQuiPointentSurMemeTopo() {
-		List liens = this.getElements();
-		List remove = new ArrayList(), objetsRef = new ArrayList(),objetsComp = new ArrayList();
+		List<FT_Feature> liens = this.getElements();
+		List<Integer> remove = new ArrayList<Integer>();
+		List<FT_Feature> objetsRef = new ArrayList<FT_Feature>(),objetsComp = new ArrayList<FT_Feature>();
 		Object objetTest;
 		int i,j,k;
 
@@ -292,20 +290,20 @@ public class EnsembleDeLiens extends Population {
 			objetTest = objetsComp.get(j);
 			for (k=j;k<liens.size();k++){
 				if (objetTest.equals(objetsComp.get(k))&&j!=k){
-					((Lien)liens.get(j)).addObjetRef((FT_Feature)objetsRef.get(k));
+					((Lien)liens.get(j)).addObjetRef(objetsRef.get(k));
 					if (!remove.contains(new Integer(k))){
-						remove.add(new Integer(k));	
+						remove.add(new Integer(k));
 					}
 				}
 			}
 		}
 
 		//destruction des liens superflus
-		SortedSet s = Collections.synchronizedSortedSet(new TreeSet());
+		SortedSet<Integer> s = Collections.synchronizedSortedSet(new TreeSet<Integer>());
 		s.addAll(remove);
-		remove = new ArrayList(s);
+		remove = new ArrayList<Integer>(s);
 		for (i=s.size()-1;i>=0;i--){
-			liens.remove(((Integer)remove.get(i)).intValue());
+			liens.remove((remove.get(i)).intValue());
 		}
 		return this;
 	}
@@ -313,7 +311,7 @@ public class EnsembleDeLiens extends Population {
 
 
 	//////////////////////////////////////////////////////////////
-	// AUTOUR DE L'EVALUATION   
+	// AUTOUR DE L'EVALUATION
 	//////////////////////////////////////////////////////////////
 
 	/** Filtrage des liens, on ne retient que ceux dont l'évaluation
@@ -321,7 +319,7 @@ public class EnsembleDeLiens extends Population {
 	 */
 	public void filtreLiens(float seuilEvaluation) {
 		Lien lien;
-		Iterator itLiens =this.getElements().iterator(); 
+		Iterator<FT_Feature> itLiens =this.getElements().iterator();
 		while(itLiens.hasNext()){
 			lien = (Lien)itLiens.next();
 			if ( lien.getEvaluation() < seuilEvaluation ) this.enleveElement(lien);
@@ -340,7 +338,7 @@ public class EnsembleDeLiens extends Population {
 	 */
 	public void evaluationLiensParCardinalite(boolean flag,double seuilCardinalite){
 		Lien lien;
-		Iterator itLiens =this.getElements().iterator(); 
+		Iterator<FT_Feature> itLiens =this.getElements().iterator();
 		if (flag) {
 			while(itLiens.hasNext()){
 				lien = (Lien)itLiens.next();
@@ -351,21 +349,21 @@ public class EnsembleDeLiens extends Population {
 			while(itLiens.hasNext()){
 				lien = (Lien)itLiens.next();
 				if (lien.getObjetsRef().size()>seuilCardinalite) lien.setEvaluation(0);
-			}			
-		}	
+			}
+		}
 	}
 
 	/** Crée une liste de population en fonction des seuils sur l'evaluation
 	 *  passés en paramètre.
-	 * Exemple: si la liste en entree contient 2 "Double" (0.5, 1), 
+	 * Exemple: si la liste en entree contient 2 "Double" (0.5, 1),
 	 * alors renvoie 3 populations avec les liens ayant respectivement leur évaluation...
 	 * 0: inférieur à 0.5 (strictement)
 	 * 1: entre 0.5 et 1 (strictement sur 1)
 	 * 2: supérieur ou égal à 1
 	 */
-	public List classeSelonSeuilEvaluation(List valeursClassement) {
-		List liensClasses = new ArrayList();
-		Iterator itLiens = this.getElements().iterator();
+	public List<EnsembleDeLiens> classeSelonSeuilEvaluation(List<Double> valeursClassement) {
+		List<EnsembleDeLiens> liensClasses = new ArrayList<EnsembleDeLiens>();
+		Iterator<FT_Feature> itLiens = this.getElements().iterator();
 		Lien lien, lienClasse;
 		double seuil;
 		int i;
@@ -378,9 +376,9 @@ public class EnsembleDeLiens extends Population {
 			lien= (Lien) itLiens.next();
 			trouve = false;
 			for(i=0;i<valeursClassement.size();i++) {
-				seuil = ((Double)valeursClassement.get(i)).doubleValue();
+				seuil = (valeursClassement.get(i)).doubleValue();
 				if ( lien.getEvaluation()< seuil ) {
-					lienClasse = (Lien)((EnsembleDeLiens)liensClasses.get(i)).nouvelElement();
+					lienClasse = (Lien)(liensClasses.get(i)).nouvelElement();
 					lienClasse.setEvaluation(lien.getEvaluation());
 					lienClasse.setGeom(lien.getGeom());
 					lienClasse.setCommentaire(lien.getCommentaire());
@@ -393,7 +391,7 @@ public class EnsembleDeLiens extends Population {
 				}
 			}
 			if (trouve) continue;
-			lienClasse = (Lien)((EnsembleDeLiens)liensClasses.get(valeursClassement.size())).nouvelElement();
+			lienClasse = (Lien)(liensClasses.get(valeursClassement.size())).nouvelElement();
 			lienClasse.setEvaluation(lien.getEvaluation());
 			lienClasse.setGeom(lien.getGeom());
 			lienClasse.setCommentaire(lien.getCommentaire());
@@ -407,112 +405,112 @@ public class EnsembleDeLiens extends Population {
 
 
 	//////////////////////////////////////////////////////////////
-	// AUTOUR DE LA GEOMETRIE ET DE LA VISUALISATION   
+	// AUTOUR DE LA GEOMETRIE ET DE LA VISUALISATION
 	//////////////////////////////////////////////////////////////
 
 	/** Affecte une géométrie à l'ensemble des liens, cette géométrie
 	 * relie les centroïdes des objets concernés entre eux */
 	public void creeGeometrieDesLiens() {
-		Iterator itLiens = this.getElements().iterator();
-		Iterator itRef, itComp;
+		Iterator<FT_Feature> itLiens = this.getElements().iterator();
+		Iterator<FT_Feature> itRef, itComp;
 		Lien lien;
 		FT_Feature ref, comp;
 
 		while (itLiens.hasNext()) {
 			lien = (Lien)itLiens.next();
 			itRef = lien.getObjetsRef().iterator();
-			GM_Aggregate geom = new GM_Aggregate();
+			GM_Aggregate<GM_Object> geom = new GM_Aggregate<GM_Object>();
 			while (itRef.hasNext()) {
-				ref = (FT_Feature) itRef.next();
+				ref = itRef.next();
 				itComp = lien.getObjetsComp().iterator();
 				while (itComp.hasNext()) {
-					comp = (FT_Feature) itComp.next();
+					comp = itComp.next();
 					GM_LineString ligne = new GM_LineString();
-					ligne.addControlPoint(((GM_Point)ref.getGeom().centroid()).getPosition());								
-					ligne.addControlPoint(((GM_Point)comp.getGeom().centroid()).getPosition());
+					ligne.addControlPoint(ref.getGeom().centroid());
+					ligne.addControlPoint(comp.getGeom().centroid());
 					geom.add(ligne);
 				}
 			}
-			lien.setGeom(geom);								
+			lien.setGeom(geom);
 		}
 	}
 
 
 	/** Affecte une géométrie à l'ensemble des liens, cette géométrie
 	 * relie le milieu d'une ligne au milieu d'une ligne correspondant
-	 * des objets 
+	 * des objets
 	 */
 	public void creeGeometrieDesLiensEntreLignesEtLignes() {
-		Iterator itLiens = this.getElements().iterator();
-		Iterator itRef, itComp;
+		Iterator<FT_Feature> itLiens = this.getElements().iterator();
+		Iterator<FT_Feature> itRef, itComp;
 		Lien lien;
 		FT_Feature ref, comp;
 		GM_LineString lineStringLien;
-		GM_Aggregate geom;
+		GM_Aggregate<GM_Object> geom;
 		DirectPosition dpRef;
 
 		while (itLiens.hasNext()) {
 			lien = (Lien)itLiens.next();
-			geom = new GM_Aggregate();
+			geom = new GM_Aggregate<GM_Object>();
 			itRef = lien.getObjetsRef().iterator();
 			while (itRef.hasNext()) {
-				ref = (FT_Feature) itRef.next();
+				ref = itRef.next();
 				dpRef = Operateurs.milieu((GM_LineString)ref.getGeom());
 				itComp = lien.getObjetsComp().iterator();
 				while (itComp.hasNext()) {
-					comp = (FT_Feature) itComp.next();
+					comp = itComp.next();
 					lineStringLien = new GM_LineString();
 					lineStringLien.addControlPoint(dpRef);
 					lineStringLien.addControlPoint(Operateurs.milieu((GM_LineString)comp.getGeom()));
 					geom.add(lineStringLien);
 				}
 			}
-			lien.setGeom(geom);								
+			lien.setGeom(geom);
 		}
 	}
 
 	/** Affecte une géométrie à l'ensemble des liens, cette géométrie
 	 * relie le centroide d'une surface au milieu du segment correspondant
-	 * des objets 
+	 * des objets
 	 * @param comparaison : true si les objets de la BD de comparaison sont
 	 * des lignes; false s'il s'agit des objets de la BD de référence
 	 */
 	public void creeGeometrieDesLiensEntreSurfacesEtLignes(boolean comparaison) {
-		Iterator itLiens = this.getElements().iterator();
-		Iterator itRef, itComp;
+		Iterator<FT_Feature> itLiens = this.getElements().iterator();
+		Iterator<FT_Feature> itRef, itComp;
 		Lien lien;
 		FT_Feature ref, comp;
 
 		while (itLiens.hasNext()) {
 			lien = (Lien)itLiens.next();
 			itRef = lien.getObjetsRef().iterator();
-			GM_Aggregate geom = new GM_Aggregate();
+			GM_Aggregate<GM_Object> geom = new GM_Aggregate<GM_Object>();
 			while (itRef.hasNext()) {
-				ref = (FT_Feature) itRef.next();
+				ref = itRef.next();
 				itComp = lien.getObjetsComp().iterator();
 				while (itComp.hasNext()) {
-					comp = (FT_Feature) itComp.next();
+					comp = itComp.next();
 					GM_LineString ligne = new GM_LineString();
 					if (comparaison){
-						GM_Point centroideSurface = (GM_Point)ref.getGeom().centroid();
+						GM_Point centroideSurface = new GM_Point(ref.getGeom().centroid());
 						double pointCentral = Math.floor(((GM_LineString)comp.getGeom()).numPoints()/2)-1;
 						GM_Point pointMilieu = new GM_Point(((GM_LineString)comp.getGeom()).getControlPoint((int)pointCentral));
-						ligne.addControlPoint(centroideSurface.getPosition());								
+						ligne.addControlPoint(centroideSurface.getPosition());
 						ligne.addControlPoint(pointMilieu.getPosition());
 						geom.add(ligne);
 					}
 					else {
-						GM_Point centroideSurface = (GM_Point)comp.getGeom().centroid();
+						GM_Point centroideSurface = new GM_Point(comp.getGeom().centroid());
 						double pointCentral = Math.floor(((GM_LineString)ref.getGeom()).numPoints()/2)-1;
 						GM_Point pointMilieu = new GM_Point(((GM_LineString)ref.getGeom()).getControlPoint((int)pointCentral));
-						ligne.addControlPoint(centroideSurface.getPosition());								
+						ligne.addControlPoint(centroideSurface.getPosition());
 						ligne.addControlPoint(pointMilieu.getPosition());
 						geom.add(ligne);
 					}
 
 				}
 			}
-			lien.setGeom(geom);								
+			lien.setGeom(geom);
 		}
 	}
 
@@ -523,37 +521,37 @@ public class EnsembleDeLiens extends Population {
 	 * des points; false s'il s'agit des objets de la BD de référence
 	 */
 	public void creeGeometrieDesLiensEntreSurfacesEtPoints(boolean comparaison) {
-		Iterator itLiens = this.getElements().iterator();
-		Iterator itRef, itComp;
+		Iterator<FT_Feature> itLiens = this.getElements().iterator();
+		Iterator<FT_Feature> itRef, itComp;
 		Lien lien;
 		FT_Feature ref, comp;
 
 		while (itLiens.hasNext()) {
 			lien = (Lien)itLiens.next();
 			itRef = lien.getObjetsRef().iterator();
-			GM_Aggregate geom = new GM_Aggregate();
+			GM_Aggregate<GM_Object> geom = new GM_Aggregate<GM_Object>();
 			while (itRef.hasNext()) {
-				ref = (FT_Feature) itRef.next();
+				ref = itRef.next();
 				itComp = lien.getObjetsComp().iterator();
 				while (itComp.hasNext()) {
-					comp = (FT_Feature) itComp.next();
+					comp = itComp.next();
 					GM_LineString ligne = new GM_LineString();
 					if (comparaison){
-						GM_Point centroideSurface = (GM_Point)ref.getGeom().centroid();
-						ligne.addControlPoint(centroideSurface.getPosition());								
+						GM_Point centroideSurface = new GM_Point(ref.getGeom().centroid());
+						ligne.addControlPoint(centroideSurface.getPosition());
 						ligne.addControlPoint(((GM_Point)comp.getGeom()).getPosition());
 						geom.add(ligne);
 					}
 					else {
-						GM_Point centroideSurface = (GM_Point)comp.getGeom().centroid();
-						ligne.addControlPoint(centroideSurface.getPosition());								
+						GM_Point centroideSurface = new GM_Point(comp.getGeom().centroid());
+						ligne.addControlPoint(centroideSurface.getPosition());
 						ligne.addControlPoint(((GM_Point)ref.getGeom()).getPosition());
 						geom.add(ligne);
 					}
 
 				}
 			}
-			lien.setGeom(geom);								
+			lien.setGeom(geom);
 		}
 	}
 
@@ -561,58 +559,58 @@ public class EnsembleDeLiens extends Population {
 	/** Détruit la géométrie des liens
 	 */
 	public void detruitGeometrieDesLiens() {
-		Iterator itLiens = this.getElements().iterator();
+		Iterator<FT_Feature> itLiens = this.getElements().iterator();
 		Lien lien;
 
 		while (itLiens.hasNext()) {
 			lien = (Lien)itLiens.next();
-			GM_Aggregate geom = new GM_Aggregate();
-			lien.setGeom(geom);								
+			GM_Aggregate<GM_Object> geom = new GM_Aggregate<GM_Object>();
+			lien.setGeom(geom);
 		}
 	}
 
 
 	//////////////////////////////////////////////////////////////
-	// AUTOUR DE LA VISUALISATION OBJETS APPARIES / NON APPARIES   
+	// AUTOUR DE LA VISUALISATION OBJETS APPARIES / NON APPARIES
 	//////////////////////////////////////////////////////////////
 
 	/** Méthode qui renvoie à partir d'un ensemble de liens une liste de dimension 4,
-	 * avec 
+	 * avec
 	 * en 1. la population issue de la population de référence qui a été appariée,
-	 * en 2. la population issue de la population de comparaison qui a été appariée, 
+	 * en 2. la population issue de la population de comparaison qui a été appariée,
 	 * en 3. la population issue de la population de référence qui n'a pas été appariée,
 	 * en 4. la population issue de la population de comparaison qui n'a pas été appariée.
-	 * @param ensemble: ensemble de liens issu d'un appariement
+	 * @param ensemble ensemble de liens issu d'un appariement
 	 * @param popRef
 	 * @param popComp
 	 * @return liste des populations appariées et non appariées
 	 */
-	public static List<Population> objetsApparies(EnsembleDeLiens ensemble, FT_FeatureCollection popRef, FT_FeatureCollection popComp){
-		List<Population> listPopulation = new ArrayList<Population>();
-		Population popCompAppariee = new Population(), popCompNonAppariee = new Population(),
-				popRefAppariee = new Population(), popRefNonAppariee = new Population();
+	public static List<Population<FT_Feature>> objetsApparies(EnsembleDeLiens ensemble, FT_FeatureCollection<FT_Feature> popRef, FT_FeatureCollection<FT_Feature> popComp){
+		List<Population<FT_Feature>> listPopulation = new ArrayList<Population<FT_Feature>>();
+		Population<FT_Feature> popCompAppariee = new Population<FT_Feature>(), popCompNonAppariee = new Population<FT_Feature>(),
+		popRefAppariee = new Population<FT_Feature>(), popRefNonAppariee = new Population<FT_Feature>();
 
 		Lien lien;
 		FT_Feature elementPopComp, elementPopRef;
 
-		List liens = ensemble.getElements();
-		Iterator itLiens = liens.iterator();
+		List<FT_Feature> liens = ensemble.getElements();
+		Iterator<FT_Feature> itLiens = liens.iterator();
 		//ajout des éléments appariés dans les populations concernées
 		while (itLiens.hasNext()){
 			lien = (Lien)itLiens.next();
-			List elementsComp = lien.getObjetsComp();
-			List elementsRef = lien.getObjetsRef();
+			List<FT_Feature> elementsComp = lien.getObjetsComp();
+			List<FT_Feature> elementsRef = lien.getObjetsRef();
 
-			Iterator itComp = elementsComp.iterator();
-			Iterator itRef = elementsRef.iterator();
+			Iterator<FT_Feature> itComp = elementsComp.iterator();
+			Iterator<FT_Feature> itRef = elementsRef.iterator();
 
 			while (itComp.hasNext()){
-				elementPopComp = (FT_Feature)itComp.next();
+				elementPopComp = itComp.next();
 				popCompAppariee.add(elementPopComp);
 			}
 
 			while (itRef.hasNext()){
-				elementPopRef = (FT_Feature)itRef.next();
+				elementPopRef = itRef.next();
 				popRefAppariee.add(elementPopRef);
 			}
 		}
@@ -623,18 +621,18 @@ public class EnsembleDeLiens extends Population {
 		popCompNonAppariee.setElements(popComp.getElements());
 		popRefNonAppariee.setElements(popRef.getElements());
 
-		Iterator itPopCompApp = popCompAppariee.getElements().iterator();
-		Iterator itPopRefApp = popRefAppariee.getElements().iterator();
+		Iterator<FT_Feature> itPopCompApp = popCompAppariee.getElements().iterator();
+		Iterator<FT_Feature> itPopRefApp = popRefAppariee.getElements().iterator();
 
 		//élimination dans les populations non appariées des éléments appariés contenus
 		//dans les populations appariés afin d'obtenir les complémentaires
 		while (itPopCompApp.hasNext()){
-			FT_Feature elementAOter = (FT_Feature)itPopCompApp.next();
+			FT_Feature elementAOter = itPopCompApp.next();
 			popCompNonAppariee.remove(elementAOter);
 		}
 
 		while (itPopRefApp.hasNext()){
-			FT_Feature elementAOter = (FT_Feature)itPopRefApp.next();
+			FT_Feature elementAOter = itPopRefApp.next();
 			popRefNonAppariee.remove(elementAOter);
 		}
 
@@ -646,30 +644,30 @@ public class EnsembleDeLiens extends Population {
 		return listPopulation;
 	}
 
-	/**  Methode utile principalement pour analyser les résultats d'un appariement, 
-	 * qui découpe un réseau en plusieurs réseaux selon les valeurs de l'attribut 
-	 * "resultatAppariement" des arcs et noeuds du réseau apparié.  
+	/**  Methode utile principalement pour analyser les résultats d'un appariement,
+	 * qui découpe un réseau en plusieurs réseaux selon les valeurs de l'attribut
+	 * "resultatAppariement" des arcs et noeuds du réseau apparié.
 	 */
-	public List scindeSelonValeursCommentaires(List valeursClassement) {
-		List liensClasses = new ArrayList();
+	public List<EnsembleDeLiens> scindeSelonValeursCommentaires(List<String> valeursClassement) {
+		List<EnsembleDeLiens> liensClasses = new ArrayList<EnsembleDeLiens>();
 		int i;
 
 		for(i=0;i<valeursClassement.size();i++) {
 			liensClasses.add(new EnsembleDeLiens());
 		}
-		Iterator itLiens = this.getElements().iterator();
+		Iterator<FT_Feature> itLiens = this.getElements().iterator();
 		while (itLiens.hasNext()) {
 			Lien lien= (Lien) itLiens.next();
 			for(i=0;i<valeursClassement.size();i++) {
 				if ( lien.getCommentaire() == null ) {
 					continue;
 				}
-				if (lien.getCommentaire().startsWith((String)valeursClassement.get(i))) {
-					((EnsembleDeLiens)liensClasses.get(i)).add(lien);
+				if (lien.getCommentaire().startsWith(valeursClassement.get(i))) {
+					(liensClasses.get(i)).add(lien);
 				}
 			}
 		}
 		return liensClasses;
 	}
 
-}    
+}

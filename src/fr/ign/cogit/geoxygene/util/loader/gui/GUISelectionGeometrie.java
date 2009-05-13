@@ -18,28 +18,31 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.WindowConstants;
 
 /**
  * Choix des paramètres géométriques lors de la création de tables postgis
  * et du fichier de mapping à partir d'une classe java (le problème ne se
  * pose pas avec Oracle)
- *  
+ * 
  * @author Eric Grosso - IGN / Laboratoire COGIT
  * @version 1.0
  */
 
 public class GUISelectionGeometrie extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7651040118952366197L;
 	private static Dialog frame = new JDialog();
 	private final GUISelectionGeometrie selectionGeometrie;
 	private Color bluegray = new Color(197,197,232);
 	private JPanel panneauType, panneauDimension, jPanelBoutton;
-	private JScrollPane scrollChargement, scrollStockage;
+	//private JScrollPane scrollChargement, scrollStockage;
 	private Box boxType, boxDimension;
-	private int selectionType = 0, selectionDimension = 0;
+	//private int selectionType = 0, selectionDimension = 0;
 	private JButton jButtonOK;
 	private Box boxe = Box.createVerticalBox();
 	private static String[] stringsChoixType = new String[4];
@@ -61,7 +64,7 @@ public class GUISelectionGeometrie extends JDialog {
 	public GUISelectionGeometrie(){
 		super(frame,"Choix de la géométrie",true);
 		selectionGeometrie = this;
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setPreferredSize(new Dimension(430,270));
 		setSize(430,270);
 		setResizable(false);
@@ -90,8 +93,8 @@ public class GUISelectionGeometrie extends JDialog {
 		titreDimension = "Quel est la dimension de votre géométrie ?";
 		initBoxTypeGeom();
 		initBoxDimensionGeom();
-		initJPanelType(true);
-		initJPanelDimension(true);
+		initJPanelType();
+		initJPanelDimension();
 		initJPanelBoutton();
 
 		boxe.setBackground(Color.white);
@@ -109,7 +112,7 @@ public class GUISelectionGeometrie extends JDialog {
 	}
 
 	/**initialise le panel principal**/
-	private void initJPanelType(boolean flag) {
+	private void initJPanelType() {
 		panneauType = new JPanel(new java.awt.BorderLayout());
 		panneauType.setPreferredSize(new Dimension(820,300));
 		panneauType.setMaximumSize(new Dimension(820,300));
@@ -120,7 +123,7 @@ public class GUISelectionGeometrie extends JDialog {
 	}
 
 	/**initialise le panel principal**/
-	private void initJPanelDimension(boolean flag) {
+	private void initJPanelDimension() {
 		panneauDimension = new JPanel(new java.awt.BorderLayout());
 		panneauDimension.setPreferredSize(new Dimension(820,300));
 		panneauDimension.setMaximumSize(new Dimension(820,300));
@@ -136,7 +139,7 @@ public class GUISelectionGeometrie extends JDialog {
 		JCheckBox checkBox;
 		final int t = stringsChoixType.length;
 		for (int i=0;i<t;i++){
-			checkBox = new JCheckBox((String)stringsChoixType[i]);
+			checkBox = new JCheckBox(stringsChoixType[i]);
 			checkBox.setBackground(Color.white);
 			if(i==0){
 				checkBox.setSelected(true);
@@ -146,9 +149,9 @@ public class GUISelectionGeometrie extends JDialog {
 				public void itemStateChanged(ItemEvent e) {
 					if (e.getStateChange() == 1){
 						Object source = e.getItemSelectable();
-						for (int i=0;i<t;i++){
-							if (((JCheckBox)source).getText().equals(stringsChoixType[i])){
-								setTypeGeometrie(i);
+						for (int index=0;index<t;index++){
+							if (((JCheckBox)source).getText().equals(stringsChoixType[index])){
+								setTypeGeometrie(index);
 							}
 						}
 					}
@@ -165,7 +168,7 @@ public class GUISelectionGeometrie extends JDialog {
 		JCheckBox checkBox;
 		final int t = stringsChoixDimension.length;
 		for (int i=0;i<t;i++){
-			checkBox = new JCheckBox((String)stringsChoixDimension[i]);
+			checkBox = new JCheckBox(stringsChoixDimension[i]);
 			checkBox.setBackground(Color.white);
 			if(i==0){
 				checkBox.setSelected(true);
@@ -175,9 +178,9 @@ public class GUISelectionGeometrie extends JDialog {
 				public void itemStateChanged(ItemEvent e) {
 					if (e.getStateChange() == 1){
 						Object source = e.getItemSelectable();
-						for (int i=0;i<t;i++){
-							if (((JCheckBox)source).getText().equals(stringsChoixDimension[i])){
-								setDimensionGeometrie(i+2);
+						for (int index=0;index<t;index++){
+							if (((JCheckBox)source).getText().equals(stringsChoixDimension[index])){
+								setDimensionGeometrie(index+2);
 							}
 						}
 					}

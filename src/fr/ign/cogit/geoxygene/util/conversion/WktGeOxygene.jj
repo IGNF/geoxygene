@@ -30,9 +30,7 @@ options {
 
 PARSER_BEGIN(WktGeOxygene)
 
-package conversion;
-
-import util.GeOxygeneUtil;
+package fr.ign.cogit.geoxygene.util.conversion;
 
 import java.util.StringTokenizer;
 import java.util.List;
@@ -51,22 +49,21 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.ByteArrayInputStream;
 
-import spatial.coordgeom.DirectPosition;
-import spatial.coordgeom.GM_LineString;
-import spatial.coordgeom.GM_Polygon;
-import spatial.geomprim.GM_Ring;
-import spatial.geomprim.GM_Curve;
-import spatial.geomaggr.GM_MultiPoint;
-import spatial.geomaggr.GM_MultiCurve;
-import spatial.geomaggr.GM_MultiSurface;
-import spatial.geomroot.GM_Object;
-import spatial.geomaggr.GM_Aggregate;
-import spatial.geomprim.GM_Point;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
+import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 public class WktGeOxygene
 {
-    static class EndOfFile extends Exception {}
-    static class EmptyLine extends Exception {}
+    static class EndOfFile extends Exception {private static final long serialVersionUID = 1L;}
+    static class EmptyLine extends Exception {private static final long serialVersionUID = 1L;}
     
     /*-----------------------------------------------------*/
     /*- Create Wkt object(s) from GM_Object ---------------*/
@@ -78,7 +75,7 @@ public class WktGeOxygene
     {
         StringBuffer result=new StringBuffer();
         result.append("GEOMETRYCOLLECTION ");
-        if (GeOxygeneUtil.isEmpty(aggregate)) result.append("EMPTY");
+        if (IsEmptyUtil.isEmpty(aggregate)) result.append("EMPTY");
         else {
 	        result.append("(");
 	        for (int i=0; i<aggregate.size(); i++) {
@@ -98,7 +95,7 @@ public class WktGeOxygene
         GM_Point point;
         StringBuffer result=new StringBuffer();
         result.append("MULTIPOINT ");
-        if (GeOxygeneUtil.isEmpty(multiPoint)) result.append("EMPTY");
+        if (IsEmptyUtil.isEmpty(multiPoint)) result.append("EMPTY");
         else {
 	        result.append("(");
 	        for (int i=0; i<multiPoint.size(); i++) {
@@ -119,7 +116,7 @@ public class WktGeOxygene
         GM_LineString lineString;
         StringBuffer result=new StringBuffer();
         result.append("MULTILINESTRING ");
-        if (GeOxygeneUtil.isEmpty(multiCurve)) result.append("EMPTY");
+        if (IsEmptyUtil.isEmpty(multiCurve)) result.append("EMPTY");
         else {
 	        result.append("(");
 	        for (int i=0; i<multiCurve.size(); i++) {
@@ -164,7 +161,7 @@ public class WktGeOxygene
     {
         StringBuffer result=new StringBuffer();
         result.append("MULTIPOLYGON ");
-        if (GeOxygeneUtil.isEmpty(multiSurface)) result.append("EMPTY");
+        if (IsEmptyUtil.isEmpty(multiSurface)) result.append("EMPTY");
         else {
 			result.append(multiPolygonText(multiSurface));
 	    }
@@ -192,7 +189,7 @@ public class WktGeOxygene
     {
         StringBuffer result=new StringBuffer();
         result.append("LINESTRING ");
-        if (GeOxygeneUtil.isEmpty(lineString)) result.append("EMPTY");
+        if (IsEmptyUtil.isEmpty(lineString)) result.append("EMPTY");
         else result.append(lineStringText(lineString));
         
         return result.toString();
@@ -203,7 +200,6 @@ public class WktGeOxygene
     static String polygonText(GM_Polygon polygon)
     {
         GM_LineString lineString;
-        GM_Curve prim;
 
         StringBuffer result=new StringBuffer();
         result.append("("); 
@@ -224,13 +220,14 @@ public class WktGeOxygene
     {
         StringBuffer result=new StringBuffer();
         result.append("POLYGON ");
-        if (GeOxygeneUtil.isEmpty(polygon)) result.append("EMPTY");
+        if (IsEmptyUtil.isEmpty(polygon)) result.append("EMPTY");
         else result.append(polygonText(polygon));
         return result.toString();
     }
 
     /*- GM_Point ------------------------------------------*/
 
+//TODO déterminer la dimension de la géométrie attendue par postgis
     static String point(GM_Point point)
     {
         DirectPosition position=point.getPosition();
@@ -238,6 +235,10 @@ public class WktGeOxygene
         result.append(position.getX());
         result.append(" ");
         result.append(position.getY());
+		if (!Double.isNaN(position.getZ())) {
+			result.append(" ");
+			result.append(position.getZ());
+		}        
         return result.toString();
     }
 
@@ -254,37 +255,63 @@ public class WktGeOxygene
     {
         StringBuffer result=new StringBuffer();
         result.append("POINT ");
-        if (GeOxygeneUtil.isEmpty(point)) result.append("EMPTY");
+        if (IsEmptyUtil.isEmpty(point)) result.append("EMPTY");
         else result.append(pointText(point));
         return result.toString();
     }
+    
+    /*- GM_Ring -----------------------------------------*/
+    
+    private static String ringTaggedText(GM_Ring ring) {
+		StringBuffer result=new StringBuffer();
+		result.append("RING ");
+		if (IsEmptyUtil.isEmpty(ring)) result.append("EMPTY");
+		else result.append(ringText(ring));
+		return result.toString();
+	}
+
+	private static Object ringText(GM_Ring ring) {
+		GM_Point point;
+		StringBuffer result=new StringBuffer();
+		result.append("(");
+		for (int i=0; i<ring.coord().size(); i++) {
+			point=new GM_Point(ring.coord().get(i));
+			if (i!=0)
+				result.append(", ");
+			result.append(point(point));
+		}
+		result.append(")");
+		return result.toString();
+	}
 
     /*- GM_Object -----------------------------------------*/
 
-    public static String makeWkt(GM_Object object) 
-    {
-        String result="POINT EMPTY";
-        if (object instanceof GM_Point)
-            result=pointTaggedText((GM_Point)object);
-        else if (object instanceof GM_MultiSurface)
-            result=multiPolygonTaggedText((GM_MultiSurface)object);
-        else if (object instanceof GM_MultiCurve)
-            result=multiLineStringTaggedText((GM_MultiCurve)object);
-        else if (object instanceof GM_MultiPoint)
-            result=multiPointTaggedText((GM_MultiPoint)object);
-        else if (object instanceof GM_Polygon)
-            result=polygonTaggedText((GM_Polygon)object);
-        else if (object instanceof GM_LineString)
-            result=lineStringTaggedText((GM_LineString)object);
-        else if (object instanceof GM_Aggregate)
-            result=geometryCollectionTaggedText((GM_Aggregate)object);
-        return result;
-    }
-    
-    public static String makeWkt(List geomList)
+	public static String makeWkt(GM_Object object)
+	{
+		String result="POINT EMPTY";
+		if (object instanceof GM_Point)
+			result=pointTaggedText((GM_Point)object);
+		else if (object instanceof GM_MultiSurface)
+			result=multiPolygonTaggedText((GM_MultiSurface)object);
+		else if (object instanceof GM_MultiCurve)
+			result=multiLineStringTaggedText((GM_MultiCurve)object);
+		else if (object instanceof GM_MultiPoint)
+			result=multiPointTaggedText((GM_MultiPoint)object);
+		else if (object instanceof GM_Polygon)
+			result=polygonTaggedText((GM_Polygon)object);
+		else if (object instanceof GM_LineString)
+			result=lineStringTaggedText((GM_LineString)object);
+		else if (object instanceof GM_Aggregate)
+			result=geometryCollectionTaggedText((GM_Aggregate)object);
+		else if (object instanceof GM_Ring)
+			result=ringTaggedText((GM_Ring)object);
+		return result;
+	}
+   
+    public static String makeWkt(List<?> geomList)
     {
     	StringBuffer result=new StringBuffer();
-    	Iterator i=geomList.iterator();
+    	Iterator<?> i=geomList.iterator();
     	while (i.hasNext()) {
     		GM_Object geom=(GM_Object)i.next();
     		String wkt=makeWkt(geom);
@@ -317,6 +344,12 @@ public class WktGeOxygene
 
     /*- Write to stream -----------------------------------*/
 
+    public static void writeWkt(String path, boolean append, GM_Object geom)
+    throws IOException
+    {
+		writeWkt(new FileOutputStream(path, append), geom);
+    }
+
     public static void writeWkt(String path, GM_Object geom)
     throws IOException
     {
@@ -329,10 +362,10 @@ public class WktGeOxygene
         new PrintStream(out).println(makeWkt(geom));
     }
 
-    public static void writeWkt(OutputStream out, List geomList)
+    public static void writeWkt(OutputStream out, List<?> geomList)
     throws IOException
     {
-        Iterator i=geomList.iterator();
+        Iterator<?> i=geomList.iterator();
         while (i.hasNext()) {
             GM_Object geom=(GM_Object)i.next();
             writeWkt(out,geom);
@@ -343,10 +376,10 @@ public class WktGeOxygene
     /*- Create GM_Object from Wkt object(s) ---------------*/
     /*-----------------------------------------------------*/
 
-    public static List makeGeOxygeneList(String inStrArray[])
+    public static List<?> makeGeOxygeneList(String inStrArray[])
 	throws ParseException
     {
-        ArrayList list=new ArrayList();
+        ArrayList<GM_Object> list=new ArrayList<GM_Object>();
         for (int i=0; i<inStrArray.length; i++) {
             list.add(makeGeOxygene(inStrArray[i]));
         }
@@ -368,23 +401,23 @@ public class WktGeOxygene
         return geom;
     }
 
-    public static List makeGeOxygeneList(File file)
+    public static List<?> makeGeOxygeneList(File file)
     throws Exception
     {
         return makeGeOxygeneList(new FileInputStream(file));
     }
     
-    public static List makeGeOxygeneList(String wkt)
+    public static List<?> makeGeOxygeneList(String wkt)
     throws Exception
     {
     	InputStream in=new ByteArrayInputStream(wkt.getBytes());
     	return makeGeOxygeneList(in);
     }
 
-    public static List makeGeOxygeneList(InputStream in)
+    public static List<?> makeGeOxygeneList(InputStream in)
     throws ParseException
     {
-        ArrayList list=new ArrayList();
+        ArrayList<GM_Object> list=new ArrayList<GM_Object>();
         WktGeOxygene parser=new WktGeOxygene(in);
 
         while (true) {
@@ -426,7 +459,7 @@ TOKEN:
 
 TOKEN:
 {
-    <POINT: <CONSTANT>(" ")+<CONSTANT>>
+    <POINT: <CONSTANT>((" ")+<CONSTANT>)+>
 }
 
 TOKEN:
@@ -450,6 +483,16 @@ DirectPosition point():
         StringTokenizer tkz=new StringTokenizer(xy.image);
         String xStr=tkz.nextToken();
         String yStr=tkz.nextToken();
+        if (tkz.hasMoreTokens()) {
+        	// récupération de la 3ème coordonnée si elle existe
+        	String zStr=tkz.nextToken();
+        	if (tkz.hasMoreTokens()) {
+        		// si il y en a une 4ème, alors on est en XYZM et on prend Z
+        		// sinon, on est en XYM et on ignore la mesure car elle n'est pas gérée par le type DirectPosition
+        		p=new DirectPosition(Double.parseDouble(xStr), Double.parseDouble(yStr), Double.parseDouble(zStr));
+				return p;
+			}
+		}        
         p=new DirectPosition(
             Double.parseDouble(xStr), Double.parseDouble(yStr));
         return p;
@@ -480,8 +523,6 @@ GM_Polygon polygonText():
 {
     GM_Polygon polygon=new GM_Polygon();
     GM_LineString lineString;
-    DirectPosition start;
-    DirectPosition end;
 }
 {
     ("("
@@ -561,42 +602,42 @@ GM_Aggregate geometrycollectionText():
 GM_Point pointTaggedText():
 {DirectPosition p;}
 {
-    "POINT"
+    "POINT" ("Z"|"M")?
     (p=pointText() {return new GM_Point(p);})
 }
 
 GM_MultiPoint multipointTaggedText():
 {GM_MultiPoint mp;}
 {
-    "MULTIPOINT"
+    "MULTIPOINT" ("Z"|"M")?
     (mp=multipointText() {return mp;})
 }
 
 GM_LineString linestringTaggedText():
 {GM_LineString lineString;}
 {
-    "LINESTRING"
+    "LINESTRING" ("Z"|"M")?
     (lineString=linestringText() {return lineString;})
 }
 
 GM_MultiCurve multilinestringTaggedText():
 {GM_MultiCurve multiLineString;}
 {
-    "MULTILINESTRING"
+    "MULTILINESTRING" ("Z"|"M")?
     (multiLineString=multilinestringText() {return multiLineString;})
 }
 
 GM_Polygon polygonTaggedText():
 {GM_Polygon poly;}
 {
-    "POLYGON"
+    "POLYGON" ("Z"|"M")?
     (poly=polygonText() {return poly;})
 }
 
 GM_MultiSurface multipolygonTaggedText():
 {GM_MultiSurface mp;}
 {
-    "MULTIPOLYGON"
+    "MULTIPOLYGON" ("Z"|"M")?
     (mp=multipolygonText() {return mp;})
 }
 

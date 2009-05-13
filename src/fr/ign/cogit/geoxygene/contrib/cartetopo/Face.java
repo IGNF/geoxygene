@@ -1,27 +1,27 @@
 /*
- * This file is part of the GeOxygene project source files. 
+ * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
- * the development and deployment of geographic (GIS) applications. It is a open source 
- * contribution of the COGIT laboratory at the Institut Géographique National (the French 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
+ * the development and deployment of geographic (GIS) applications. It is a open source
+ * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
  * 
- * See: http://oxygene-project.sourceforge.net 
- *  
+ * See: http://oxygene-project.sourceforge.net
+ * 
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation; 
+ * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with 
- * this library (see file LICENSE if present); if not, write to the Free Software 
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
+ * 
  */
 
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
@@ -32,6 +32,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -40,68 +42,68 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 /**
  * Classe des faces de la carte topo.
  * Les arcs ont pour géométrie un GM_Polygon.
- * @author  Mustière/Bonin
- * @version 1.0
+ * @author Sébastien Mustière
+ * @author Olivier Bonin
+ * @author Julien Perret
  */
 
 public class Face  extends ElementCarteTopo   {
+	static Logger logger=Logger.getLogger(Face.class.getName());
 
-    public Face() {
-    }
-    
-    
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//                                      Géométrie
-/////////////////////////////////////////////////////////////////////////////////////////////////
-    
+	public Face() {}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	//                                      Géométrie
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+
 	/** Renvoie le GM_Polygon qui définit la géométrie de self */
-    public GM_Polygon getGeometrie() {return (GM_Polygon)this.geom;}
+	public GM_Polygon getGeometrie() {return (GM_Polygon)this.geom;}
 	/** Définit le GM_Polygon qui définit la géométrie de self */
-    public void setGeometrie(GM_Polygon geometrie) {this.setGeom(geometrie);}
+	public void setGeometrie(GM_Polygon geometrie) {this.setGeom(geometrie);}
 	/** Renvoie la liste de DirectPosition qui définit les coordonnées de self */
-    public DirectPositionList getCoord() {return this.getGeometrie().exteriorCoord();}
-    // On suppose que exteriorCoordList() donne deux fois le point de départ
+	public DirectPositionList getCoord() {return this.getGeometrie().exteriorCoord();}
+	// On suppose que exteriorCoordList() donne deux fois le point de départ
 	/** Définit la liste de DirectPosition qui définit les coordonnées de self */
-    public void setCoord(DirectPositionList dpl) {geom = new GM_Polygon(new GM_LineString(dpl));}
-    
-                                            
-                                            
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//                              Gestion des groupes
-/////////////////////////////////////////////////////////////////////////////////////////////////
-    
-    /* Groupes auquels self appartient */
-    private Collection listeGroupes = new ArrayList();
-	/** Renvoie la liste des groupes de self*/
-    public Collection getListeGroupes() {return this.listeGroupes;}
-	/** Définit la liste des groupes de self*/
-    public void setListeGroupes(Collection liste) {this.listeGroupes = liste;}
-	/** Ajoute un groupe à self*/ 
-    public void addGroupe(Groupe groupe) {
-    	if (groupe != null && !listeGroupes.contains(groupe)) {
-            this.listeGroupes.add(groupe);	
-            if (!groupe.getListeFaces().contains(this))
-                    groupe.addFace(this);
-    	}
-    }
+	public void setCoord(DirectPositionList dpl) {geom = new GM_Polygon(new GM_LineString(dpl));}
 
-    
-    
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//                         Gestion de la topologie arcs / faces
-/////////////////////////////////////////////////////////////////////////////////////////////////
-                                        
-    private List arcsDirects = new ArrayList();
+
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	//                              Gestion des groupes
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/* Groupes auquels self appartient */
+	private Collection<Groupe> listeGroupes = new ArrayList<Groupe>();
+	/** Renvoie la liste des groupes de self*/
+	public Collection<Groupe> getListeGroupes() {return this.listeGroupes;}
+	/** Définit la liste des groupes de self*/
+	public void setListeGroupes(Collection<Groupe> liste) {this.listeGroupes = liste;}
+	/** Ajoute un groupe à self*/
+	public void addGroupe(Groupe groupe) {
+		if (groupe != null && !listeGroupes.contains(groupe)) {
+			this.listeGroupes.add(groupe);
+			if (!groupe.getListeFaces().contains(this))
+				groupe.addFace(this);
+		}
+	}
+
+
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	//                         Gestion de la topologie arcs / faces
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private List<Arc> arcsDirects = new ArrayList<Arc>();
 	/** Renvoie la liste des arcs directs de self */
-    public List getArcsDirects() { return arcsDirects; }
+	public List<Arc> getArcsDirects() { return arcsDirects; }
 	/** Ajoute un arc direct de self */
-    public void addArcDirect (Arc arc) {
-        if (arc != null && !arcsDirects.contains(arc)) {
-            arcsDirects.add(arc);
-            if (arc.getFaceGauche() != this)
-                arc.setFaceGauche(this);
-        }
-    }
+	public void addArcDirect (Arc arc) {
+		if (arc != null && !arcsDirects.contains(arc)) {
+			arcsDirects.add(arc);
+			if (arc.getFaceGauche() != this)
+				arc.setFaceGauche(this);
+		}
+	}
 	/** Enlève un arc direct de self */
 	public void enleveArcDirect (Arc arc) {
 		if (arc == null) return;
@@ -110,17 +112,17 @@ public class Face  extends ElementCarteTopo   {
 		arc.setFaceGauche(null);
 	}
 
-    private List arcsIndirects = new ArrayList();
+	private List<Arc> arcsIndirects = new ArrayList<Arc>();
 	/** Renvoie la liste des arcs indirects de self */
-    public List getArcsIndirects() { return arcsIndirects; }
+	public List<Arc> getArcsIndirects() { return arcsIndirects; }
 	/** Ajoute un arc indirect de self */
-    public void addArcIndirect (Arc arc) {
-        if (arc != null && !arcsIndirects.contains(arc)) {
-            arcsIndirects.add(arc);
-            if (arc.getFaceDroite() != this)
-                arc.setFaceDroite(this);
-        }
-    }
+	public void addArcIndirect (Arc arc) {
+		if (arc != null && !arcsIndirects.contains(arc)) {
+			arcsIndirects.add(arc);
+			if (arc.getFaceDroite() != this)
+				arc.setFaceDroite(this);
+		}
+	}
 	/** Enlève un arc indirect de self */
 	public void enleveArcIndirect (Arc arc) {
 		if (arc == null) return;
@@ -129,20 +131,20 @@ public class Face  extends ElementCarteTopo   {
 		arc.setFaceDroite(null);
 	}
 
-      /** Renvoie la liste (non classée) des arcs entourant self.
-       *  NB: cette liste est la concaténation des listes des arcs directs et indirects. 
-       *  Ce sont ces listes qui doivent être manipulées pour la modification/l'instanciation
-       *  des relations topologiques sur les faces.
-       *  NB2 codeur : A faire : coder une méthode qui renvoie ces arcs dans le bon ordre de parcours
-       */                
-    public List arcs() {
-        List Arcs = new ArrayList();
-        Arcs.addAll(this.getArcsDirects());
-        Arcs.addAll(this.getArcsIndirects());
-        return Arcs;
-    }
+	/** Renvoie la liste (non classée) des arcs entourant self.
+	 *  NB: cette liste est la concaténation des listes des arcs directs et indirects.
+	 *  Ce sont ces listes qui doivent être manipulées pour la modification/l'instanciation
+	 *  des relations topologiques sur les faces.
+	 *  NB2 codeur : A faire : coder une méthode qui renvoie ces arcs dans le bon ordre de parcours
+	 */
+	public List<Arc> arcs() {
+		List<Arc> Arcs = new ArrayList<Arc>();
+		Arcs.addAll(this.getArcsDirects());
+		Arcs.addAll(this.getArcsIndirects());
+		return Arcs;
+	}
 
-	/** Liste de liste représentant les arcs incidents à une face 
+	/** Liste de liste représentant les arcs incidents à une face
 	 * (i.e. les arcs des noeuds de la face, sauf les arcs de la face eux-mêmes).
 	 * Dans l'esprit de la méthode arcsOrientés d'un noeud, les arcs sont
 	 * classés en tournant autour de la face dans l'ordre trigonométrique,
@@ -151,31 +153,33 @@ public class Face  extends ElementCarteTopo   {
 	 *
 	 * ATTENTION : renvoie une liste de liste:
 	 *      Liste.get(0) = liste des arcs (de la classe 'Arc')
-	 *      Liste.get(1) = liste des orientations de type Boolean (classe Boolean et non type boolean), 
+	 *      Liste.get(1) = liste des orientations de type Boolean (classe Boolean et non type boolean),
 	 *                    true = entrant, false = sortant)
 	 * 
 	 * NB : Le classement est recalculé en fonction de la géométrie à chaque appel de la méthode.
 	 */
-	public List arcsExterieursClasses() {
-		List arcsDeLaFace = this.arcs();
-		Iterator itNoeudsDeLaFace = this.noeudsTrigo().iterator();
-		List arcsDuNoeud;
-		List resultat = new ArrayList();
-		List arcsExterieurs = new ArrayList();
-		List orientations = new ArrayList();
-		Iterator itArcs, itOrientations;
+	@SuppressWarnings("unchecked")
+	public List<Object> arcsExterieursClasses() {
+		List<Arc> arcsDeLaFace = this.arcs();
+		Iterator<Noeud> itNoeudsDeLaFace = this.noeudsTrigo().iterator();
+		List<Object> arcsDuNoeud;
+		List<Object> resultat = new ArrayList<Object>();
+		List<Arc> arcsExterieurs = new ArrayList<Arc>();
+		List<Boolean> orientations = new ArrayList<Boolean>();
+		Iterator<Arc> itArcs;
+		Iterator<Boolean> itOrientations;
 		Noeud noeud;
 		Arc arc;
 		Boolean orientation;
-		
+
 		while(itNoeudsDeLaFace.hasNext()){
-			noeud = (Noeud)itNoeudsDeLaFace.next();
+			noeud = itNoeudsDeLaFace.next();
 			arcsDuNoeud = noeud.arcsClasses();
-			itArcs = ((List)arcsDuNoeud.get(0)).iterator();
-			itOrientations = ((List)arcsDuNoeud.get(1)).iterator();;
+			itArcs = ((List<Arc>)arcsDuNoeud.get(0)).iterator();
+			itOrientations = ((List<Boolean>)arcsDuNoeud.get(1)).iterator();;
 			while(itArcs.hasNext()){
-				arc = (Arc)itArcs.next();
-				orientation = (Boolean)itOrientations.next();
+				arc = itArcs.next();
+				orientation = itOrientations.next();
 				if ( arcsDeLaFace.contains(arc)) continue;
 				arcsExterieurs.add(arc);
 				orientations.add(orientation);
@@ -185,104 +189,118 @@ public class Face  extends ElementCarteTopo   {
 		resultat.add(orientations);
 		return resultat;
 	}
-    
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//                              Topologie faces / noeuds
-/////////////////////////////////////////////////////////////////////////////////////////////////
-    
-    /** Renvoie la liste des noeuds entourant self.
-     *  NB: cette liste n'est pas modifiable directement. En effet, la topologie face/noeuds n'est pas gérée 
-     *  directement, elle est déduite par calcul des topologies face/arcs et arcs/noeuds
-     */
-    public List noeuds() {
-        List arcs = this.arcs();
-        HashSet noeuds = new HashSet();
-        Arc arc;
-        Iterator iterarcs = arcs.iterator();
-        while (iterarcs.hasNext()) {
-            arc =(Arc) iterarcs.next();
-            noeuds.addAll(arc.noeuds());
-        }
-        return new ArrayList(noeuds);
-    }   
-    
-	/**Renvoie la liste des noeuds entourant self en parcourant la face 
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	//                              Topologie faces / noeuds
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/** Renvoie la liste des noeuds entourant self.
+	 *  NB: cette liste n'est pas modifiable directement. En effet, la topologie face/noeuds n'est pas gérée
+	 *  directement, elle est déduite par calcul des topologies face/arcs et arcs/noeuds
+	 */
+	public List<Noeud> noeuds() {
+		List<Arc> arcs = this.arcs();
+		HashSet<Noeud> noeuds = new HashSet<Noeud>();
+		Arc arc;
+		Iterator<Arc> iterarcs = arcs.iterator();
+		while (iterarcs.hasNext()) {
+			arc = iterarcs.next();
+			noeuds.addAll(arc.noeuds());
+		}
+		return new ArrayList<Noeud>(noeuds);
+	}
+
+	/**Renvoie la liste des noeuds entourant self en parcourant la face
 	 * dans le sens trigonométrique. Le noeud de départ est choisi au hasard.
 	 * NB : La topologie arcs/noeuds ET faces doit avoir été instanciée.
-	 * NB : On ne boucle pas : le premier noeud n'est pas égal au dernier noeud 
+	 * NB : On ne boucle pas : le premier noeud n'est pas égal au dernier noeud
 	 * (contrairement aux géométries de polygone).
 	 */
-	public List noeudsTrigo() {
-		List arcs;
-		List cycle = new ArrayList();
-		List noeuds = new ArrayList();
+	public List<Noeud> noeudsTrigo() {
+		List<Arc> arcs;
+		Cycle cycle = null;
+		List<Noeud> noeuds = new ArrayList<Noeud>();
 		Arc arc0, arc;
 		Noeud noeud;
 		boolean renverser = true, orientation;
-		Iterator itArcsEntourants, itOrientations; 
-		
-		arcs = new ArrayList(this.arcs());
+		Iterator<Arc> itArcsEntourants;
+		Iterator<Boolean> itOrientations;
+
+		arcs = new ArrayList<Arc>(this.arcs());
 		if ( arcs.size() == 0 ) {
-			System.out.println("Problème : gestion d'une face avec zéro arc entourant: ");
-			System.out.println("           la topolgie de face a bien été instanciée?"); 
+			//TODO: face infinie ???
+			logger.error("Problème : gestion d'une face avec zéro arc entourant: ");
+			logger.error("           la topolgie de face a bien été instanciée?");
 			return null;
 		}
-		
-		arc0 = (Arc)arcs.get(0);
+
+		arc0 = arcs.get(0);
 		if ( arc0.getFaceDroite() == this ) {
 			cycle = arc0.cycleADroite();
 			renverser = true;
-		} 
+		}
 		else if ( arc0.getFaceGauche() == this ) {
 			cycle = arc0.cycleAGauche();
 			renverser = false;
-		} 
-		else System.out.println("Problème : incohérence dans la topologie arcs / faces"); 
-		
-		itArcsEntourants = ((List)cycle.get(0)).iterator(); 
-		itOrientations = ((List)cycle.get(1)).iterator();
+		}
+		else {
+			logger.error("Problème : incohérence dans la topologie arcs / faces");
+			return null;
+		}
+
+		itArcsEntourants = cycle.getArcs().iterator();
+		itOrientations = cycle.getOrientationsArcs().iterator();
 		while (itArcsEntourants.hasNext() ) {
-			arc = (Arc)itArcsEntourants.next();
-			orientation = ((Boolean)itOrientations.next()).booleanValue();
+			arc = itArcsEntourants.next();
+			orientation = (itOrientations.next()).booleanValue();
 			if (orientation) noeud = arc.getNoeudIni();
 			else  noeud = arc.getNoeudFin();
 			if (renverser) noeuds.add(0, noeud);
-			else noeuds.add(noeud); 
-		} 
+			else noeuds.add(noeud);
+		}
 		return noeuds;
 	}
 
-    
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//                         Topologie faces / faces
-/////////////////////////////////////////////////////////////////////////////////////////////////
-    /** Renvoie la liste des faces voisines de self.
-     *  NB: ceci est calculé en passant par la topologie faces/arcs qui doit être instanciée.
-     */
-    public List voisins() {
-        List arcs = this.arcs();
-        HashSet voisins = new HashSet();
-        Arc arc;
-        Iterator iterarcs = arcs.iterator();
-        while (iterarcs.hasNext()) {
-            arc =(Arc) iterarcs.next();
-            voisins.addAll(arc.faces());
-        }
-        voisins.remove(this);
-        return new ArrayList(voisins);
-    }       
 
-    
-    
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//                      Opérateurs de calcul sur les faces 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-    /**Surface d'un polygone. */
-	// Le calcul est effectué dans un repère local centré sur le premier point 
-	// de la surface, ce qui est utile pour minimiser les erreurs de calcul 
-	// si on manipule de grandes coordonnées). 
-    public double surface(){
-    	return Operateurs.surface(this.getGeometrie());
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	//                         Topologie faces / faces
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	/** Renvoie la liste des faces voisines de self.
+	 *  NB: ceci est calculé en passant par la topologie faces/arcs qui doit être instanciée.
+	 */
+	public List<Face> voisins() {
+		List<Arc> arcs = this.arcs();
+		HashSet<Face> voisins = new HashSet<Face>();
+		Arc arc;
+		Iterator<Arc> iterarcs = arcs.iterator();
+		while (iterarcs.hasNext()) {
+			arc =iterarcs.next();
+			voisins.addAll(arc.faces());
+		}
+		voisins.remove(this);
+		return new ArrayList<Face>(voisins);
 	}
-    
+
+
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	//                      Opérateurs de calcul sur les faces
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	/**Surface d'un polygone. */
+	// Le calcul est effectué dans un repère local centré sur le premier point
+	// de la surface, ce qui est utile pour minimiser les erreurs de calcul
+	// si on manipule de grandes coordonnées).
+	public double surface(){return Operateurs.surface(this.getGeometrie());}
+
+	protected String arcsUtilises="";
+	protected String arcsIgnores="";
+
+	public String getArcsUtilises() {return arcsUtilises;}
+	public void setArcsUtilises(String arcsUtilises) {this.arcsUtilises = arcsUtilises;}
+	public String getArcsIgnores() {return arcsIgnores;}
+	public void setArcsIgnores(String arcsIgnores) {this.arcsIgnores = arcsIgnores;}
+	protected List<Arc> arcsPendants = new ArrayList<Arc>();
+	public List<Arc> getArcsPendants() {return arcsPendants;}
+	public void setArcsPendants(List<Arc> arcsPendants) {this.arcsPendants = arcsPendants;}
+	
 }

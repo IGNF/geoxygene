@@ -1,27 +1,27 @@
 /*
- * This file is part of the GeOxygene project source files. 
+ * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
- * the development and deployment of geographic (GIS) applications. It is a open source 
- * contribution of the COGIT laboratory at the Institut Géographique National (the French 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
+ * the development and deployment of geographic (GIS) applications. It is a open source
+ * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
  * 
- * See: http://oxygene-project.sourceforge.net 
- *  
+ * See: http://oxygene-project.sourceforge.net
+ * 
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation; 
+ * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with 
- * this library (see file LICENSE if present); if not, write to the Free Software 
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
+ * 
  */
 
 package fr.ign.cogit.geoxygene.util.viewer;
@@ -63,8 +63,8 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.browser.ObjectBrowser;
 
 /**
- * A class to simplify the process of loading a FT_FeatureCollection from GeOxygene. 
- * Collections MUST be homogeneous. 
+ * A class to simplify the process of loading a FT_FeatureCollection from GeOxygene.
+ * Collections MUST be homogeneous.
  * Geometry types in the collection MUST be the same for all features (but some null geometries are accepted).
  * All features in the collection must belong to same class.
  * Works only for collections of features whose geometry type is :
@@ -86,8 +86,8 @@ class GeOxygeneReader implements DataSource {
 	public static boolean SHOW_PROTECTED_ATTRIBUTES = true;
 
 	// GeOxygene fields
-	private FT_FeatureCollection coll;
-	private Class featureClass ;
+	private FT_FeatureCollection<? extends FT_Feature> coll;
+	private Class<? extends FT_Feature> featureClass ;
 
 	// GEOTOOLS fields
 	private Layer layer;
@@ -95,43 +95,41 @@ class GeOxygeneReader implements DataSource {
 
 
 
-	public GeOxygeneReader (FT_FeatureCollection featColl) {
+	@SuppressWarnings("unchecked")
+	public GeOxygeneReader (FT_FeatureCollection<? extends FT_Feature> featColl) {
 		coll = featColl;
 
 		// guess feature class (type of the first feature ...)
-		coll.initIterator();
-		FT_Feature feature = coll.next();
+		Iterator<? extends FT_Feature> iterator = coll.iterator();
+		FT_Feature feature = iterator.next();
 		featureClass = feature.getClass();
 
 		// guess geometry type (type of the first geometry is the type for all geometries ...)
-		coll.initIterator();
+		iterator = coll.iterator();
 		GM_Object geom = null;
-		boolean hasGeom = false;
-		while (coll.hasNext()) {
-			geom = coll.next().getGeom();	
+		while (iterator.hasNext()) {
+			geom = iterator.next().getGeom();
 			if (geom != null) {
-				hasGeom = true;
 				break;
-			}			
+			}
 		}
-		if (!hasGeom) {
+		if (geom==null) {
 			System.out.println("No geometry in "+coll.get(0).getClass().getName());
 			return;
-		}		
-
-		// init layer 
+		}
+		// init layer
 		if (GM_Point.class.isAssignableFrom(geom.getClass())
-				|| GM_MultiPoint.class.isAssignableFrom(geom.getClass())) 
+				|| GM_MultiPoint.class.isAssignableFrom(geom.getClass()))
 			layer = readPoints();
 		else if (GM_LineString.class.isAssignableFrom(geom.getClass())
-				|| GM_MultiCurve.class.isAssignableFrom(geom.getClass()))		
+				|| GM_MultiCurve.class.isAssignableFrom(geom.getClass()))
 			layer = readLines();
 		else if (GM_Polygon.class.isAssignableFrom(geom.getClass())
-				|| GM_MultiSurface.class.isAssignableFrom(geom.getClass()))  		
+				|| GM_MultiSurface.class.isAssignableFrom(geom.getClass()))
 			layer = readPolygons();
 		//ajout pour le cas des GM_Aggregate (
 		else if (GM_Aggregate.class.isAssignableFrom(geom.getClass())){
-			Class classe = ((GM_Aggregate)geom).get(0).getClass();
+			Class<? extends GM_Object> classe = ((GM_Aggregate<? extends GM_Object>)geom).get(0).getClass();
 			if (GM_Point.class.isAssignableFrom(geom.getClass())
 					|| GM_MultiPoint.class.isAssignableFrom(classe)){
 				layer = readPoints();
@@ -139,7 +137,7 @@ class GeOxygeneReader implements DataSource {
 			else if (GM_LineString.class.isAssignableFrom(classe)
 					|| GM_MultiCurve.class.isAssignableFrom(classe)){
 				layer = readLines();
-			}		
+			}
 			else if (GM_Polygon.class.isAssignableFrom(classe)
 					|| GM_MultiSurface.class.isAssignableFrom(classe)){
 				layer = readPolygons();
@@ -148,7 +146,7 @@ class GeOxygeneReader implements DataSource {
 		else {
 			System.out.println(" ## GeOxygeneReader works only for GM_Point, GM_LineString or GM_Polygon or MultiPrimitives or GM_Aggregate with the same geometry");
 			System.out.println(" ## Have tried to read : " + geom.getClass().getName());
-		} 
+		}
 
 		// init theme
 		theme =  new Theme(getLayer());
@@ -168,7 +166,7 @@ class GeOxygeneReader implements DataSource {
 
 
 	/** Returns a Theme shaded by an attribute. */
-	public Theme getTheme (Shader shader, String shadedBy) {		
+	public Theme getTheme (Shader shader, String shadedBy) {
 		if (shader instanceof HSVShader) {
 			InitHSVShader hsvShader = new InitHSVShader (shader, shadedBy);
 			hsvShader.start();
@@ -193,111 +191,112 @@ class GeOxygeneReader implements DataSource {
 			return theme;
 		}
 
-		return theme;	
+		return theme;
 	}
 
 
 	/** Refresh the feature. The feature must belong to the collection.*/
 	public void refreshFeature (FT_Feature feature) {
 		ShapeLayer shLayer = (ShapeLayer) layer;
-		GM_Object geom = feature.getGeom();		
-		if (shLayer.getGeoShape(feature.hashCode()) == null) {		// new shape			
-			addGeoShape(feature,geom);	
-		} else {				
+		GM_Object geom = feature.getGeom();
+		if (shLayer.getGeoShape(feature.hashCode()) == null) {		// new shape
+			addGeoShape(feature,geom);
+		} else {
 			GeoShape shape = shLayer.getGeoShape(feature.hashCode());
 			shLayer.removeGeoShape(shape);
-			addGeoShape(feature,geom);	
+			addGeoShape(feature,geom);
 		}
 	}
 
 
 	/** Reads the feature information from the FT_FeatureCollection and produces a PointLayer for use in a Theme. */
+	@SuppressWarnings("unchecked")
 	private Layer readPoints() {
-		PointLayer layer = new PointLayer(false);
-		coll.initIterator();
-		while (coll.hasNext()) {
-			FT_Feature feat = coll.next();
+		PointLayer pointLayer = new PointLayer(false);
+		Iterator<? extends FT_Feature> iterator = coll.iterator();
+		while (iterator.hasNext()) {
+			FT_Feature feat = iterator.next();
 			GM_Object geom = feat.getGeom();
 			if (geom != null) {
 				if (GM_Point.class.isAssignableFrom(geom.getClass())) {
-					layer.addGeoPoint(geOxygenePointToGeoPoint(feat.hashCode(), geom));
+					pointLayer.addGeoPoint(geOxygenePointToGeoPoint(feat.hashCode(), geom));
 				} else if (GM_MultiPoint.class.isAssignableFrom(geom.getClass())
 						|| GM_Aggregate.class.isAssignableFrom(geom.getClass())) {
-					GM_Aggregate aggr = (GM_Aggregate)geom;
-					aggr.initIterator();
-					while (aggr.hasNext()) 
-						layer.addGeoPoint(geOxygenePointToGeoPoint(feat.hashCode(), aggr.next()));
+					GM_Aggregate<GM_Object> aggr = (GM_Aggregate<GM_Object>)geom;
+					for(GM_Object o:aggr) pointLayer.addGeoPoint(geOxygenePointToGeoPoint(feat.hashCode(), o));
 				}
 			}
 		}
-		return layer;				
+		return pointLayer;
 	}
 
 
-	/** Reads the feature information from the FT_FeatureCollection and produces a LineLayer for use in a Theme. */
+	/** 
+	 * Reads the feature information from the FT_FeatureCollection and produces a LineLayer for use in a Theme. 
+	 * @return a LineLayer for use in a Theme
+	 */
+	@SuppressWarnings("unchecked")
 	private Layer readLines() {
-		LineLayer layer = new LineLayer();
-		coll.initIterator();
-		while (coll.hasNext()) {
-			FT_Feature feat = coll.next();
+		LineLayer lineLayer = new LineLayer();
+		Iterator<? extends FT_Feature> iterator = coll.iterator();
+		while (iterator.hasNext()) {
+			FT_Feature feat = iterator.next();
 			GM_Object geom = feat.getGeom();
 			if (geom != null) {
 				if (GM_LineString.class.isAssignableFrom(geom.getClass())) {
-					layer.addGeoLine(geOxygeneLineStringToGeoLine(feat.hashCode(),geom));
+					lineLayer.addGeoLine(geOxygeneLineStringToGeoLine(feat.hashCode(),geom));
 				} else if (GM_MultiCurve.class.isAssignableFrom(geom.getClass())
 						|| GM_Aggregate.class.isAssignableFrom(geom.getClass())) {
-					GM_Aggregate aggr = (GM_Aggregate)geom;
-					aggr.initIterator();
-					while (aggr.hasNext()) 
-						layer.addGeoLine(geOxygeneLineStringToGeoLine(feat.hashCode(),aggr.next()));											
+					GM_Aggregate<GM_Object> aggr = (GM_Aggregate<GM_Object>)geom;
+					for(GM_Object o:aggr) lineLayer.addGeoLine(geOxygeneLineStringToGeoLine(feat.hashCode(),o));
 				}
 			}
 		}
-		return layer;				
+		return lineLayer;
 	}
 
 
 	/** Reads the feature information from the FT_FeatureCollection and produces a PolygonLayer for use in a Theme. */
+	@SuppressWarnings("unchecked")
 	private Layer readPolygons() {
-		PolygonLayer layer = new PolygonLayer();
-		coll.initIterator();
-		while (coll.hasNext()) {
-			FT_Feature feat = coll.next();
+		PolygonLayer polygonLayer = new PolygonLayer();
+		Iterator<? extends FT_Feature> iterator = coll.iterator();
+		while (iterator.hasNext()) {
+			FT_Feature feat = iterator.next();
 			GM_Object geom = feat.getGeom();
 			if (geom != null) {
 				if (GM_Polygon.class.isAssignableFrom(geom.getClass())) {
 					GM_Polygon poly = (GM_Polygon)geom;
-					GM_Polygon ext = new GM_Polygon (poly.getExterior());					
-					layer.addGeoPolygon(geOxygenePolygonToGeoPolygon( feat.hashCode(), ext) );
+					GM_Polygon ext = new GM_Polygon (poly.getExterior());
+					polygonLayer.addGeoPolygon(geOxygenePolygonToGeoPolygon( feat.hashCode(), ext) );
 					for (int i=0; i<poly.sizeInterior(); i++) {
 						GM_Polygon inter = new GM_Polygon (poly.getInterior(i));
-						layer.addGeoPolygon(geOxygenePolygonToGeoPolygon(feat.hashCode(), inter) );
+						polygonLayer.addGeoPolygon(geOxygenePolygonToGeoPolygon(feat.hashCode(), inter) );
 					}
 				} else if (GM_MultiSurface.class.isAssignableFrom(geom.getClass())
 						|| GM_Aggregate.class.isAssignableFrom(geom.getClass())) {
-					GM_Aggregate aggr = (GM_Aggregate)geom;
-					aggr.initIterator();
-					while (aggr.hasNext()) {
-						GM_Polygon poly = (GM_Polygon)aggr.next();
-						GM_Polygon ext = new GM_Polygon (poly.getExterior());					
-						layer.addGeoPolygon(geOxygenePolygonToGeoPolygon( feat.hashCode(), ext) );
+					GM_Aggregate<GM_Object> aggr = (GM_Aggregate<GM_Object>)geom;
+					for(GM_Object o:aggr) {
+						GM_Polygon poly = (GM_Polygon)o;
+						GM_Polygon ext = new GM_Polygon (poly.getExterior());
+						polygonLayer.addGeoPolygon(geOxygenePolygonToGeoPolygon( feat.hashCode(), ext) );
 						for (int i=0; i<poly.sizeInterior(); i++) {
 							GM_Polygon inter = new GM_Polygon (poly.getInterior(i));
-							layer.addGeoPolygon(geOxygenePolygonToGeoPolygon(feat.hashCode(), inter) );
+							polygonLayer.addGeoPolygon(geOxygenePolygonToGeoPolygon(feat.hashCode(), inter) );
 						}
-					}											
+					}
 				}
 			}
 		}
-		return layer;				
+		return polygonLayer;
 	}
 
 
 	/** Convert a GM_Point to a GeoPoint */
 	private GeoPoint geOxygenePointToGeoPoint(int id, GM_Object geom) {
-		GM_Point geOxyPoint = (GM_Point)geom;	
+		GM_Point geOxyPoint = (GM_Point)geom;
 		GeoPoint geoPoint = new GeoPoint(id,geOxyPoint.getPosition().getX(), geOxyPoint.getPosition().getY());
-		return geoPoint;		
+		return geoPoint;
 	}
 
 
@@ -307,7 +306,7 @@ class GeOxygeneReader implements DataSource {
 		DirectPositionList dpl = geOxyLineString.coord();
 		int nbPts = dpl.size();
 		GeoLine geoLine = new GeoLine(id,dpl.toArrayX(),dpl.toArrayY(),nbPts );
-		return geoLine;						
+		return geoLine;
 	}
 
 
@@ -317,77 +316,73 @@ class GeOxygeneReader implements DataSource {
 		DirectPositionList dpl = geOxyPolygon.coord();
 		int nbPts = dpl.size();
 		GeoPolygon geoPoly = new GeoPolygon (id,dpl.toArrayX(), dpl.toArrayY(),	nbPts );
-		return geoPoly;						
+		return geoPoly;
 	}
 
 
+	@SuppressWarnings("unchecked")
 	private void addGeoShape(FT_Feature feature, GM_Object geom) {
 		if (GM_Point.class.isAssignableFrom(geom.getClass())) {
 			((PointLayer)layer).addGeoPoint(geOxygenePointToGeoPoint(feature.hashCode(), geom));
 		}
 		else if (GM_MultiPoint.class.isAssignableFrom(geom.getClass())) {
-			GM_Aggregate aggr = (GM_Aggregate)geom;
-			aggr.initIterator();
-			while (aggr.hasNext()) 
-				((PointLayer)layer).addGeoPoint(geOxygenePointToGeoPoint(feature.hashCode(), aggr.next()));
+			GM_Aggregate<GM_Object> aggr = (GM_Aggregate<GM_Object>)geom;
+			for(GM_Object o:aggr) ((PointLayer)layer).addGeoPoint(geOxygenePointToGeoPoint(feature.hashCode(), o));
 		}
 		else if (GM_LineString.class.isAssignableFrom(geom.getClass())) {
 			((LineLayer)layer).addGeoLine(geOxygeneLineStringToGeoLine(feature.hashCode(),geom));
-		} 
+		}
 		else if (GM_MultiCurve.class.isAssignableFrom(geom.getClass())) {
-			GM_Aggregate aggr = (GM_Aggregate)geom;
-			aggr.initIterator();
-			while (aggr.hasNext()) 
-				((LineLayer)layer).addGeoLine(geOxygeneLineStringToGeoLine(feature.hashCode(),aggr.next()));											
+			GM_Aggregate<GM_Object> aggr = (GM_Aggregate<GM_Object>)geom;
+			for(GM_Object o:aggr) ((LineLayer)layer).addGeoLine(geOxygeneLineStringToGeoLine(feature.hashCode(),o));
 		}
 		else if (GM_Polygon.class.isAssignableFrom(geom.getClass())) {
 			GM_Polygon poly = (GM_Polygon)geom;
-			GM_Polygon ext = new GM_Polygon (poly.getExterior());					
+			GM_Polygon ext = new GM_Polygon (poly.getExterior());
 			((PolygonLayer)layer).addGeoPolygon(geOxygenePolygonToGeoPolygon( feature.hashCode(), ext) );
 			for (int i=0; i<poly.sizeInterior(); i++) {
 				GM_Polygon inter = new GM_Polygon (poly.getInterior(i));
 				((PolygonLayer)layer).addGeoPolygon(geOxygenePolygonToGeoPolygon(feature.hashCode(), inter) );
 			}
-		} 
+		}
 		else if (GM_MultiSurface.class.isAssignableFrom(geom.getClass())) {
-			GM_Aggregate aggr = (GM_Aggregate)geom;
-			aggr.initIterator();
-			while (aggr.hasNext()) {
-				GM_Polygon poly = (GM_Polygon)aggr.next();
-				GM_Polygon ext = new GM_Polygon (poly.getExterior());					
+			GM_Aggregate<GM_Object> aggr = (GM_Aggregate<GM_Object>)geom;
+			for(GM_Object o:aggr) {
+				GM_Polygon poly = (GM_Polygon)o;
+				GM_Polygon ext = new GM_Polygon (poly.getExterior());
 				((PolygonLayer)layer).addGeoPolygon(geOxygenePolygonToGeoPolygon( feature.hashCode(), ext) );
 				for (int i=0; i<poly.sizeInterior(); i++) {
 					GM_Polygon inter = new GM_Polygon (poly.getInterior(i));
 					((PolygonLayer)layer).addGeoPolygon(geOxygenePolygonToGeoPolygon(feature.hashCode(), inter) );
 				}
-			}									
-		}			
+			}
+		}
 		else {
 			System.out.println(" ## GeOxygeneReader works only for GM_Point, GM_LineString or GM_Polygon or MultiPrimitives");
 			System.out.println(" ## Have tried to read : " + geom.getClass().getName());
 			return;
-		}		
+		}
 	}
 
 
 	/** Fills geodata objects with all of the fields of the collection.	*/
 	public Object[] readData() {
-		Vector columnNames = new Vector();
-		Vector rowData = new Vector();
+		Vector<String> columnNames = new Vector<String>();
+		Vector<Vector<Object>> rowData = new Vector<Vector<Object>>();
 
 		// Fill columnNames
 		Field[] fields = getAccessibleFields();
 		int nbFields = fields.length;
-		for (int i=0; i<nbFields; i++) 
+		for (int i=0; i<nbFields; i++)
 			columnNames.add(fields[i].getName());
 
 		// Fill rowData
-		coll.initIterator();
-		while (coll.hasNext()) {
-			FT_Feature feature = coll.next();
-			Vector row = new Vector();
-			for (int i = 0; i < nbFields; i++) 
-				try {		
+		Iterator<? extends FT_Feature> iterator = coll.iterator();
+		while (iterator.hasNext()) {
+			FT_Feature feature = iterator.next();
+			Vector<Object> row = new Vector<Object>();
+			for (int i = 0; i < nbFields; i++)
+				try {
 					row.add ( fields[i].get(feature) );
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
@@ -405,29 +400,29 @@ class GeOxygeneReader implements DataSource {
 	 * Field type MUST be String ou double. */
 	private GeoData readData(String fieldName) {
 		SimpleGeoData data = new SimpleGeoData();
-		try {			
+		try {
 			Field field = getAccessibleField(fieldName);
-			coll.initIterator();
+			Iterator<? extends FT_Feature> iterator = coll.iterator();
 			if (field.getType().equals(String.class))  {
 				data.setDataType(GeoData.CHARACTER);
-				while (coll.hasNext()) {
-					FT_Feature feature = coll.next();
+				while (iterator.hasNext()) {
+					FT_Feature feature = iterator.next();
 					Object obj = field.get(feature);
 					if (obj != null)
 						data.setText(feature.hashCode(), (String) obj );
-				}	
+				}
 			} else if (field.getType().equals(double.class)) {
 				data.setDataType(GeoData.FLOATING);
-				while (coll.hasNext()) {
-					FT_Feature feature = coll.next();
+				while (iterator.hasNext()) {
+					FT_Feature feature = iterator.next();
 					Object obj = field.get(feature);
 					if (obj != null)
 						data.setValue(feature.hashCode(), ((Double)obj).doubleValue());
 				}
 			} else if (field.getType().equals(int.class)) {
 				data.setDataType(GeoData.FLOATING);
-				while (coll.hasNext()) {
-					FT_Feature feature = coll.next();
+				while (iterator.hasNext()) {
+					FT_Feature feature = iterator.next();
 					Object obj = field.get(feature);
 					if (obj != null)
 						data.setValue(feature.hashCode(), ((Integer)obj).doubleValue());
@@ -435,10 +430,10 @@ class GeOxygeneReader implements DataSource {
 			} else {
 				System.out.println("readData() : works only for String or double or int "+fieldName);
 				return data;
-			}	
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}		
+		}
 		return data;
 
 
@@ -451,17 +446,17 @@ class GeOxygeneReader implements DataSource {
 		String[] strings = new String[fields.length];
 		for (int i=0; i<strings.length; i++)
 			strings[i] = fields[i].getName();
-		return strings;	
+		return strings;
 	}
 
 
 	/** Returns all possible values for a litteral field. */
 	private String[] getPossibleValues (String fieldName) {
-		Set values = new HashSet();
+		Set<Object> values = new HashSet<Object>();
 		Field field = getAccessibleField(fieldName);
-		coll.initIterator();
-		while (coll.hasNext()) {
-			FT_Feature feature = coll.next();
+		Iterator<? extends FT_Feature> iterator = coll.iterator();
+		while (iterator.hasNext()) {
+			FT_Feature feature = iterator.next();
 			try {
 				values.add(field.get(feature));
 			} catch (Exception e) {
@@ -469,7 +464,7 @@ class GeOxygeneReader implements DataSource {
 			}
 		}
 		String[] result = new String[values.size()];
-		Iterator it = values.iterator();
+		Iterator<Object> it = values.iterator();
 		int i= 0;
 		while (it.hasNext()) {
 			result[i] = (String) it.next();
@@ -480,7 +475,7 @@ class GeOxygeneReader implements DataSource {
 	}
 
 
-	public Class getFieldType (String fieldName) {
+	public Class<?> getFieldType (String fieldName) {
 		return getAccessibleField(fieldName).getType();
 	}
 
@@ -504,16 +499,16 @@ class GeOxygeneReader implements DataSource {
 	}
 
 
-	public FT_FeatureCollection getFeatureCollection() {
+	public FT_FeatureCollection<? extends FT_Feature> getFeatureCollection() {
 		return coll;
 	}
 
 
 	public FT_Feature getFeatureById (int id) {
-		coll.initIterator();
-		while (coll.hasNext()) {
-			FT_Feature f = coll.next();
-			if (f.hashCode() == id) 
+		Iterator<? extends FT_Feature> iterator = coll.iterator();
+		while (iterator.hasNext()) {
+			FT_Feature f = iterator.next();
+			if (f.hashCode() == id)
 				return f;
 		}
 		System.out.println("### No feature found - id = "+id);
@@ -527,18 +522,19 @@ class GeOxygeneReader implements DataSource {
 		public InitUniqueShader(Shader sh, String field) {
 			shader = sh;
 			shadedBy = field;
-		}		
+		}
+		@Override
 		public void run() {
 			UniqueShader uShader = (UniqueShader) shader;
 			Field field = getAccessibleField(shadedBy);
 			String[] values = getPossibleValues(shadedBy);
 			int n = values.length;
 			Color[] colors = new Color[n];
-			for (int i=0; i<n; i++) 
+			for (int i=0; i<n; i++)
 				colors[i] = getRandomColor();
-			coll.initIterator();
-			while (coll.hasNext()) {
-				FT_Feature feature = coll.next();
+			Iterator<? extends FT_Feature> iterator = coll.iterator();
+			while (iterator.hasNext()) {
+				FT_Feature feature = iterator.next();
 				String value = null;
 				try {
 					value = (String) field.get(feature);
@@ -550,14 +546,14 @@ class GeOxygeneReader implements DataSource {
 						uShader.setColor(feature.hashCode(),ObjectViewerThemeProperties.DEFAULT_MISSING_VALUE_SHADER_COLOR);
 						break;
 					}
-					if (value.equals(values[i])) {					
+					if (value.equals(values[i])) {
 						uShader.setColor(feature.hashCode(),colors[i]);
 						break;
 					}
 
 				}
 			}
-		}		
+		}
 		public Shader getShader() {
 			return shader;
 		}
@@ -570,13 +566,14 @@ class GeOxygeneReader implements DataSource {
 		public InitHSVShader(Shader sh, String field) {
 			shader = sh;
 			shadedBy = field;
-		}		
+		}
+		@Override
 		public void run() {
 			SimpleGeoData data = (SimpleGeoData) readData(shadedBy);
 			theme.setGeoData(data);
 			shader.setRange(data);
 
-		}		
+		}
 		public Shader getShader() {
 			return shader;
 		}

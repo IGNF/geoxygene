@@ -1,27 +1,27 @@
 /*
- * This file is part of the GeOxygene project source files. 
+ * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
- * the development and deployment of geographic (GIS) applications. It is a open source 
- * contribution of the COGIT laboratory at the Institut Géographique National (the French 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
+ * the development and deployment of geographic (GIS) applications. It is a open source
+ * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
  * 
- * See: http://oxygene-project.sourceforge.net 
- *  
+ * See: http://oxygene-project.sourceforge.net
+ * 
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation; 
+ * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with 
- * this library (see file LICENSE if present); if not, write to the Free Software 
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
+ * 
  */
 
 package fr.ign.cogit.geoxygene.contrib.operateurs;
@@ -36,33 +36,33 @@ import java.util.List;
  */
 public class Ensemble {
 
-	private static List combinaisons;
-	
+	private static List<List<Object>> combinaisons;
+
 	/** Renvoie une liste de liste contenant l'ensemble des
 	 * combinaisons des éléments de la liste en entrée.
 	 * Exemple : si la liste contient A, B, C en entrée ça renvoie :
 	 * [[], [A], [A, B], [A, B, C], [A, C], [B], [B, C], [C]]
 	 */
-	public static List combinaisons(List listeIN) {
-		combinaisons = new ArrayList();
-		List currentList = new ArrayList();
+	public static List<List<Object>> combinaisons(List<Object> listeIN) {
+		combinaisons = new ArrayList<List<Object>>();
+		List<Object> currentList = new ArrayList<Object>();
 		combinaisons.add(currentList);
-		List toBeAddedList = new ArrayList(listeIN);		
+		List<Object> toBeAddedList = new ArrayList<Object>(listeIN);
 		ajouteSuite(currentList, toBeAddedList);
-		return combinaisons;		
+		return combinaisons;
 	}
-	
-	private static void ajouteSuite(List currentList, List toBeAddedList) {
-		Iterator itToAdd = toBeAddedList.iterator();
-		List copieAjout = new ArrayList(toBeAddedList);
+
+	private static void ajouteSuite(List<Object> currentList, List<Object> toBeAddedList) {
+		Iterator<Object> itToAdd = toBeAddedList.iterator();
+		List<Object> copieAjout = new ArrayList<Object>(toBeAddedList);
 		while (itToAdd.hasNext()) {
 			Object ajout = itToAdd.next();
-			List nouvelleCombinaison = new ArrayList(currentList);
+			List<Object> nouvelleCombinaison = new ArrayList<Object>(currentList);
 			nouvelleCombinaison.add(ajout);
 			combinaisons.add(nouvelleCombinaison);
 			copieAjout.remove(ajout);
 			ajouteSuite(nouvelleCombinaison,copieAjout);
 		}
 	}
-	
+
 }

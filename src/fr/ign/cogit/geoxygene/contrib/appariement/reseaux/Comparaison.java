@@ -1,27 +1,27 @@
 /*
- * This file is part of the GeOxygene project source files. 
+ * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
- * the development and deployment of geographic (GIS) applications. It is a open source 
- * contribution of the COGIT laboratory at the Institut Géographique National (the French 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
+ * the development and deployment of geographic (GIS) applications. It is a open source
+ * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
  * 
- * See: http://oxygene-project.sourceforge.net 
- *  
+ * See: http://oxygene-project.sourceforge.net
+ * 
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation; 
+ * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with 
- * this library (see file LICENSE if present); if not, write to the Free Software 
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
+ * 
  */
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
@@ -44,23 +44,23 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
  * Classe supportant les méthodes de comparaison globale de réseaux.
- *  
+ * 
  * @author Mustiere - IGN / Laboratoire COGIT
- * @version 1.0 
+ * @version 1.0
  * 
  */
 
 public class Comparaison {
 
 	/** Approximation de l'écart moyen entre deux réseaux.
-	 * Cette approximation grossière évalue pour tout point de réseau1 son écart à réseau2 
-	 * (point le plus proche quelconque), sans réaliser d'appariement de réseau. 
+	 * Cette approximation grossière évalue pour tout point de réseau1 son écart à réseau2
+	 * (point le plus proche quelconque), sans réaliser d'appariement de réseau.
 	 * 
 	 * @param reseau1
-	 * Un réseau, typiquement un réseau peu précis dont on veut estimer la qualité par rapport à reseau2. 
+	 * Un réseau, typiquement un réseau peu précis dont on veut estimer la qualité par rapport à reseau2.
 	 * 
 	 * @param reseau2
-	 * Un autre réseau, typiquement un réseau de bonne qualité qui sert de référence. 
+	 * Un autre réseau, typiquement un réseau de bonne qualité qui sert de référence.
 	 * 
 	 * @param distanceMax
 	 * Sert à éliminer les aberrations dans le calcul de la moyenne:
@@ -70,23 +70,23 @@ public class Comparaison {
 	 * @return
 	 * L'écart moyen. Il est calculé comme la moyenne des distances entre les points
 	 * des arcs de reseau1 et reseau2. Cette moyenne est pondérée par la longueur
-	 * des segments entourant les points en question. 
+	 * des segments entourant les points en question.
 	 */
 	public static double approximationEcartPlaniMoyen(CarteTopo reseau1, CarteTopo reseau2, double distanceMax) {
 
 		double dtot = 0, ltot = 0, dmax = 0;
 		double ltotArc, dtotArc, dmaxArc, l1, l2, l;
 		int n = 0;
-		Iterator itArcsRef, itArcsComp;
-		FT_FeatureCollection arcsCompProches;
-		FT_FeatureCollection arcsRef = reseau1.getPopArcs();
-		FT_FeatureCollection arcsComp = reseau2.getPopArcs();
+		Iterator<?> itArcsRef, itArcsComp;
+		FT_FeatureCollection<?> arcsCompProches;
+		FT_FeatureCollection<?> arcsRef = reseau1.getPopArcs();
+		FT_FeatureCollection<?> arcsComp = reseau2.getPopArcs();
 
 		itArcsRef = arcsRef.getElements().iterator();
 		while (itArcsRef.hasNext()) { //pour chaque arc de this
 			FT_Feature objetRef = (FT_Feature) itArcsRef.next();
 			GM_LineString geomRef = (GM_LineString)objetRef.getGeom();
-			DirectPositionList dp = geomRef.coord(); 
+			DirectPositionList dp = geomRef.coord();
 			arcsCompProches=arcsComp.select(geomRef,distanceMax);
 
 			dtotArc = 0;
@@ -95,10 +95,10 @@ public class Comparaison {
 			for(int i=0;i<dp.size();i++) { //pour chaque point d'un arc de this
 				DirectPosition ptRef = dp.get(i);
 				if ( i == 0 ) l1 = 0;
-				else l1 = Distances.distance(dp.get(i),dp.get(i-1));  
+				else l1 = Distances.distance(dp.get(i),dp.get(i-1));
 				if ( i == dp.size()-1 ) l2 = 0;
 				else l2 = Distances.distance(dp.get(i),dp.get(i+1));
-				l = l1+l2;  
+				l = l1+l2;
 				double dmin = Double.MAX_VALUE;
 				itArcsComp = arcsCompProches.getElements().iterator();
 				while (itArcsComp.hasNext()) {
@@ -108,16 +108,16 @@ public class Comparaison {
 					double d = Distances.distance(ptRef,ptProjete);
 					if (d<dmin) dmin = d;
 				}
-				if ( dmin > dmaxArc ) dmaxArc = dmin; 
+				if ( dmin > dmaxArc ) dmaxArc = dmin;
 				dtotArc = dtotArc +dmin*l;
 				ltotArc = ltotArc + l;
 			}
-			if ( dmaxArc > distanceMax ) continue; 
-			if ( dmaxArc > dmax) dmax = dmaxArc; 
+			if ( dmaxArc > distanceMax ) continue;
+			if ( dmaxArc > dmax) dmax = dmaxArc;
 			dtot = dtot + dtotArc;
 			ltot = ltot + ltotArc;
 			n++;
-		} 
+		}
 
 		System.out.println("distance moyenne entre les arcs"+dtot/ltot);
 		System.out.println("distance max entre les arcs "+dmax);
@@ -126,13 +126,13 @@ public class Comparaison {
 		return dtot/ltot;
 	}
 
-	
-	/** Ensemble d'indicateurs évaluant globalement l'écart de position entre le réseau à étudier réseau11 
+
+	/** Ensemble d'indicateurs évaluant globalement l'écart de position entre le réseau à étudier réseau11
 	 * et un réseau de référence réseau2.
 	 * Cette évaluation se fait en s'appuyant sur le calcul des écarts entre chaque point
 	 * de reseau1 et sa projection au plus près sur le réseau reseau2 (et non sur un réel appariement d'arcs).
 	 * Les moyennes sont pondérées par la longueur des segments entourant les points,
-	 * pour gommer les effets dus aux pas de découpage variables des lignes. 
+	 * pour gommer les effets dus aux pas de découpage variables des lignes.
 	 * 
 	 * @param reseau1
 	 * Réseau étudié.
@@ -145,9 +145,9 @@ public class Comparaison {
 	 * 
 	 * @param distanceMax
 	 * Sert à éliminer les aberrations dans les calculs.
-	 * - Les arcs de reseau1 situés en au moins un point à plus de distanceMax 
+	 * - Les arcs de reseau1 situés en au moins un point à plus de distanceMax
 	 *   de reseau2 ne sont pas pris en compte dans le calcul des indicateurs sur les arcs.
-	 * - Les noeuds de reseau1 situés à plus de distanceMax d'un noeud 
+	 * - Les noeuds de reseau1 situés à plus de distanceMax d'un noeud
 	 *   de reseau2 ne sont pas pris en compte dans le calcul des indicateurs sur les noeuds
 	 * 
 	 * @return
@@ -168,9 +168,9 @@ public class Comparaison {
 	 * 			(moyenne des longueurs des vecteurs d'écart entre un point de "this" et son projeté sur "reseau")
 	 * liste(9): estimation de l'écart moyen quadratique sur les arcs
 	 * 			(moyenne quadratique des longueurs des vecteurs d'écart entre un point de "this" et son projeté sur "reseau")
-	 * liste(10): estimation de l'écart type sur les arcs, i.e. précision une fois le biais corrigé 
+	 * liste(10): estimation de l'écart type sur les arcs, i.e. précision une fois le biais corrigé
 	 * 			( racine(ecart moyen quadratique^2 - biais^2)
-	 * liste(11): histogramme de répartition des écarts sur tous les points (en nb de points intermédiaires sur les arcs)  
+	 * liste(11): histogramme de répartition des écarts sur tous les points (en nb de points intermédiaires sur les arcs)
 	 * 
 	 * ESTIMATEURS SUR LES NOEUDS (si ils existent)
 	 * liste(12): nombre de noeuds du réseau "this" total
@@ -184,29 +184,29 @@ public class Comparaison {
 	 * 			(moyenne des longueurs des vecteurs d'écart entre un noeud de "this" et le noeud le plus proche de "reseau")
 	 * liste(18): estimation de l'écart moyen quadratique sur les arcs
 	 * 			(moyenne quadratique des longueurs des vecteurs d'écart entre un noeud de "this" et le noeud le plus proche de "reseau")
-	 * liste(19): estimation de l'écart type sur les noeuds, i.e. précision une fois le biais corrigé 
-	 * 			( racine(ecart moyen quadratique^2 - biais^2) 
-	 * liste(20): histogramme de répartition des écarts sur tous les noeuds (en nb de noeuds)  
+	 * liste(19): estimation de l'écart type sur les noeuds, i.e. précision une fois le biais corrigé
+	 * 			( racine(ecart moyen quadratique^2 - biais^2)
+	 * liste(20): histogramme de répartition des écarts sur tous les noeuds (en nb de noeuds)
 	 * 
 	 */
-	public static List evaluationEcartPosition(CarteTopo reseau1, CarteTopo reseau2, double distanceMax, boolean affichage) {
-	
-		List resultats = new ArrayList();
-		FT_FeatureCollection arcs1 = reseau1.getPopArcs();
-		FT_FeatureCollection arcs2 = reseau2.getPopArcs();
-		Iterator itArcs1, itArcs2;
+	public static List<?> evaluationEcartPosition(CarteTopo reseau1, CarteTopo reseau2, double distanceMax, boolean affichage) {
+
+		List<Double> resultats = new ArrayList<Double>();
+		FT_FeatureCollection<?> arcs1 = reseau1.getPopArcs();
+		FT_FeatureCollection<?> arcs2 = reseau2.getPopArcs();
+		Iterator<?> itArcs1, itArcs2;
 		Arc arc1, arc2;
 		GM_LineString geom1, geom2;
 		Vecteur v12, vmin, vPourUnArc1, vTotal;
 		DirectPosition pt1, projete;
-		FT_FeatureCollection arcs2proches;
-		double longArc1, poids, d12, ecartQuadratiquePourUnArc1, l1, l2, 
-				poidsPourUnArc1, ecartPourUnArc1, ecartMaxArc1, poidsTotal;
+		FT_FeatureCollection<?> arcs2proches;
+		double longArc1, poids, d12, ecartQuadratiquePourUnArc1, l1, l2,
+		poidsPourUnArc1, ecartPourUnArc1, ecartMaxArc1, poidsTotal;
 
 		// indicateurs finaux
 		double longTotal1, longPrisEnCompte1, longTotal2;
 		double ecartTotal , ecartQuadratiqueTotal, ecartTypeArcs;
-		int nbArcsTotal1, nbArcsPrisEnCompte1, nbArcsTotal2;				
+		int nbArcsTotal1, nbArcsPrisEnCompte1, nbArcsTotal2;
 
 
 		///////////////// EVALUATION SUR LES ARCS ////////////////////
@@ -217,7 +217,7 @@ public class Comparaison {
 		// parcours du réseau 2 juste pour calculer sa longueur
 		itArcs2 = arcs2.getElements().iterator();
 		longTotal2 = 0;
-		while (itArcs2.hasNext()) { 
+		while (itArcs2.hasNext()) {
 			arc2 = (Arc) itArcs2.next();
 			longTotal2 = longTotal2+((GM_LineString)arc2.getGeom()).length();
 		}
@@ -246,15 +246,15 @@ public class Comparaison {
 			vmin = new Vecteur();
 			vPourUnArc1 = new Vecteur(new DirectPosition(0,0));
 			ecartMaxArc1 = 0;
-			DirectPositionList dp = geom1.coord(); 
+			DirectPositionList dp = geom1.coord();
 			for(int i=0; i<dp.size(); i++) { //pour chaque point de arc1
 				pt1 = dp.get(i);
 				// calcul du poids de ce point
 				if ( i == 0 ) l1 = 0;
-				else l1 = Distances.distance(dp.get(i),dp.get(i-1));  
+				else l1 = Distances.distance(dp.get(i),dp.get(i-1));
 				if ( i == dp.size()-1 ) l2 = 0;
 				else l2 = Distances.distance(dp.get(i),dp.get(i+1));
-				poids = l1+l2;  
+				poids = l1+l2;
 				// projection du point sur le réseau2
 				double dmin = Double.MAX_VALUE;
 				itArcs2 = arcs2proches.getElements().iterator();
@@ -267,7 +267,7 @@ public class Comparaison {
 					if (d12<dmin) {
 						dmin = d12;
 						vmin = v12;
-						} 
+					}
 				}
 				// calcul des indicateurs
 				if (dmin > ecartMaxArc1 ) ecartMaxArc1 = dmin;
@@ -279,16 +279,16 @@ public class Comparaison {
 			if ( ecartMaxArc1 > distanceMax ) continue; // on ne prend pas l'arc en compte
 			longPrisEnCompte1 = longPrisEnCompte1 + longArc1;
 			nbArcsPrisEnCompte1++;
-			poidsTotal = poidsTotal + poidsPourUnArc1; 
+			poidsTotal = poidsTotal + poidsPourUnArc1;
 			ecartTotal = ecartTotal + ecartPourUnArc1;
 			ecartQuadratiqueTotal = ecartQuadratiqueTotal + ecartQuadratiquePourUnArc1;
 			vTotal = vTotal.ajoute(vPourUnArc1);
 		}
 		vTotal = vTotal.multConstante(1/poidsTotal);
-		ecartTotal = ecartTotal/poidsTotal; 
+		ecartTotal = ecartTotal/poidsTotal;
 		ecartTypeArcs = Math.sqrt((ecartQuadratiqueTotal/poidsTotal)-(Math.pow(vTotal.getX(),2)+Math.pow(vTotal.getY(),2)));
-		ecartQuadratiqueTotal = Math.sqrt(ecartQuadratiqueTotal/poidsTotal); 
-		// resultats sur les arcs 
+		ecartQuadratiqueTotal = Math.sqrt(ecartQuadratiqueTotal/poidsTotal);
+		// resultats sur les arcs
 		if (affichage) System.out.println("******************* BILAN SUR LES ARCS *******************");
 		if (affichage) System.out.println("** Comparaison globale des réseaux, en nombre et longueur d'arcs :");
 		resultats.add(new Double(longTotal1));
@@ -303,18 +303,18 @@ public class Comparaison {
 		if (affichage) System.out.println("** Nombre d'arcs du réseau 1 pris en compte pour le calcul : "+nbArcsPrisEnCompte1);
 		resultats.add(new Double(nbArcsTotal2));
 		if (affichage) System.out.println("** Nombre d'arcs du réseau 2 : "+nbArcsTotal2);
-		
+
 		if (affichage) System.out.println("");
 		if (affichage) System.out.println("** Estimateurs d'écart ");
-		resultats.add(new Double(vTotal.getX()));		
+		resultats.add(new Double(vTotal.getX()));
 		if (affichage) System.out.println("** Biais systématique en X  : "+vTotal.getX());
-		resultats.add(new Double(vTotal.getY()));		
+		resultats.add(new Double(vTotal.getY()));
 		if (affichage) System.out.println("** Biais systématique en Y  : "+vTotal.getY());
-		resultats.add(new Double(ecartTotal));		
+		resultats.add(new Double(ecartTotal));
 		if (affichage) System.out.println("** Ecart moyen : "+ecartTotal);
-		resultats.add(new Double(ecartQuadratiqueTotal));		
+		resultats.add(new Double(ecartQuadratiqueTotal));
 		if (affichage) System.out.println("** Ecart moyen quadratique : "+ecartQuadratiqueTotal);
-		resultats.add(new Double(ecartTypeArcs));		
+		resultats.add(new Double(ecartTypeArcs));
 		if (affichage) System.out.println("** Ecart type : "+ecartTypeArcs);
 		if (affichage) System.out.println("*********************************************************");
 

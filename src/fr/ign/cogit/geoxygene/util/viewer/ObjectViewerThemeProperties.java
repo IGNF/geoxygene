@@ -1,27 +1,27 @@
 /*
- * This file is part of the GeOxygene project source files. 
+ * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
- * the development and deployment of geographic (GIS) applications. It is a open source 
- * contribution of the COGIT laboratory at the Institut Géographique National (the French 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
+ * the development and deployment of geographic (GIS) applications. It is a open source
+ * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
  * 
- * See: http://oxygene-project.sourceforge.net 
- *  
+ * See: http://oxygene-project.sourceforge.net
+ * 
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation; 
+ * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with 
- * this library (see file LICENSE if present); if not, write to the Free Software 
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
+ * 
  */
 
 package fr.ign.cogit.geoxygene.util.viewer;
@@ -44,12 +44,12 @@ import uk.ac.leeds.ccg.geotools.UniqueShader;
 import uk.ac.leeds.ccg.geotools.satShader;
 
 /**
-  * This class allow to handle properties of themes to be displayed in the (Geo)Object viewer.  
-  *
-  * @author Thierry Badard & Arnaud Braun
-  * @version 1.0
-  * 
-  */
+ * This class allow to handle properties of themes to be displayed in the (Geo)Object viewer.
+ *
+ * @author Thierry Badard & Arnaud Braun
+ * @version 1.0
+ * 
+ */
 
 class ObjectViewerThemeProperties {
 
@@ -59,14 +59,14 @@ class ObjectViewerThemeProperties {
 	public static final Color DEFAULT_HIGHLIGHT_COLOR = Color.GREEN;
 	public static final Color DEFAULT_MISSING_VALUE_SHADER_COLOR = Color.WHITE;
 	public static final int DEFAULT_MISSING_VALUE_SHADER = -999999999;
-	
+
 	private ObjectViewerInterface objectViewerInterface;
 	private Theme objectViewerTheme;
-	
+
 	private String dataSourceType;
 	private DataSource dataSource;
-	
-	private Shader shader;	
+
+	private Shader shader;
 	private String shadedBy = null;
 
 	private Color fillInThemeColor;
@@ -75,16 +75,16 @@ class ObjectViewerThemeProperties {
 	private Color outlineHighlightColor;
 	private Color fillInSelectionColor;
 	private Color outlineSelectionColor;
-	
+
 	private SelectionManager themeSelectionManager;
 	private HighlightManager themeHighlightManager;
-	
+
 	private boolean active;
 	private boolean visible;
 
 
 	private ObjectViewerThemeProperties() {
-		
+
 		// random color for filling it
 		Random randomColor = new Random();
 		float randomRed = randomColor.nextFloat();
@@ -93,23 +93,23 @@ class ObjectViewerThemeProperties {
 		System.out.println("Theme Color (R: "+ randomRed * 255+ ";G: "+ randomGreen * 255+ ";B: "+ randomBlue * 255	+ ")");
 		Color randomShaderColor = new Color(randomRed, randomGreen, randomBlue);
 		setFillInThemeColor(randomShaderColor);
-		
+
 		// default color
 		setOutlineThemeColor(DEFAULT_OUTLINE_THEME_COLOR);
 		setFillInHighlightColor(DEFAULT_HIGHLIGHT_COLOR);
 		setOutlineHighlightColor(DEFAULT_HIGHLIGHT_COLOR);
 		setFillInSelectionColor(DEFAULT_SELECTION_COLOR);
 		setOutlineSelectionColor(DEFAULT_SELECTION_COLOR);
-		
+
 	}
-	
+
 
 	public ObjectViewerThemeProperties(	ObjectViewerInterface objectViewerInterface,
-										Theme objectViewerTheme,
-										String dataSourceType,
-										DataSource datasource,
-										boolean IsActive,
-										boolean IsVisible ) {
+			Theme objectViewerTheme,
+			String dataSourceType,
+			DataSource datasource,
+			boolean IsActive,
+			boolean IsVisible ) {
 		this();
 		setObjectViewerInterface(objectViewerInterface);
 		setObjectViewerTheme(objectViewerTheme);
@@ -122,9 +122,9 @@ class ObjectViewerThemeProperties {
 
 	public void setChanged() {
 		Theme t = getObjectViewerTheme();
-		
+
 		if (	(t.getLayer() instanceof PolygonLayer)
-			 && (!(t.getLayer() instanceof LineLayer)) ) {
+				&& (!(t.getLayer() instanceof LineLayer)) ) {
 			ShadeStyle updatedThemeShadeStyle = new ShadeStyle();
 			updatedThemeShadeStyle.setLineColor(getOutlineThemeColor());
 			t.setStyle(updatedThemeShadeStyle);
@@ -143,12 +143,12 @@ class ObjectViewerThemeProperties {
 		if (shader instanceof MonoShader) {
 			MonoShader updatedShader = new MonoShader(getFillInThemeColor());
 			t.setShader(updatedShader);
-			
+
 		} else if (shader instanceof RandomShader) {
 			RandomShader updatedShader = new RandomShader();
 			t.setShader(updatedShader);
 
-				
+
 		} else if (shader instanceof HSVShader) {
 			//HSVShader updatedShader = new HSVShader(DEFAULT_LOW_HSVSHADER_COLOR, DEFAULT_HIGH_HSVSHADER_COLOR); marche pas
 			satShader updatedShader = new satShader(getFillInThemeColor());
@@ -157,15 +157,15 @@ class ObjectViewerThemeProperties {
 			/*if (dataSourceType.equals(Utils.SHAPEFILE)) {
 				System.out.println("Shader HSV with field = "+shadedBy);
 				ShapefileReader shpRd = (ShapefileReader) dataSource;
-				t = shpRd.getTheme(updatedShader,shadedBy);		
+				t = shpRd.getTheme(updatedShader,shadedBy);
 			} a faire
-			
+
 			else */if (dataSourceType.equals(Utils.GEOXYGENE)) {
 				GeOxygeneReader geOxyRd = (GeOxygeneReader) dataSource;
 				t = geOxyRd.getTheme(updatedShader,shadedBy);
 			}
-		
-		
+
+
 		} else if (shader instanceof UniqueShader) {
 			UniqueShader updatedShader = new UniqueShader();
 			updatedShader.setMissingValueCode(DEFAULT_MISSING_VALUE_SHADER);
@@ -173,15 +173,15 @@ class ObjectViewerThemeProperties {
 			/*if (dataSourceType.equals(Utils.SHAPEFILE)) {
 				a faire
 			}
-				
+
 			else */ if (dataSourceType.equals(Utils.GEOXYGENE)) {
 				GeOxygeneReader geOxyRd = (GeOxygeneReader) dataSource;
 				t = geOxyRd.getTheme(updatedShader,shadedBy);
 			}
 		}
-			
+
 		getObjectViewerInterface().view.setThemeIsVisible(t, true, true);
-		
+
 	}
 
 
@@ -265,29 +265,28 @@ class ObjectViewerThemeProperties {
 	public void setDataSource(DataSource source) {
 		dataSource = source;
 	}
-	
+
 	public void setShader (Shader sh) {
 		shader = sh;
 	}
-	
+
 	public void setShader (Shader sh, String field) {
 		shader = sh;
 		if (field != null) shadedBy = field;
-		else field = null;
 	}
-	
+
 	public Shader getShader() {
 		return shader;
 	}
-	
+
 	public String getShadedBy() {
 		return shadedBy;
 	}
-	
+
 	public boolean isActive() {
 		return active;
 	}
-	
+
 	public void setActive(boolean b) {
 		active = b;
 	}
@@ -295,7 +294,7 @@ class ObjectViewerThemeProperties {
 	public HighlightManager getThemeHighlightManager() {
 		return themeHighlightManager;
 	}
-	
+
 	public void setThemeHighlightManager(HighlightManager manager) {
 		themeHighlightManager = manager;
 	}

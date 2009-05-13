@@ -1,27 +1,27 @@
 /*
- * This file is part of the GeOxygene project source files. 
+ * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
- * the development and deployment of geographic (GIS) applications. It is a open source 
- * contribution of the COGIT laboratory at the Institut Géographique National (the French 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
+ * the development and deployment of geographic (GIS) applications. It is a open source
+ * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
  * 
- * See: http://oxygene-project.sourceforge.net 
- *  
+ * See: http://oxygene-project.sourceforge.net
+ * 
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation; 
+ * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with 
- * this library (see file LICENSE if present); if not, write to the Free Software 
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
+ * 
  */
 
 package fr.ign.cogit.geoxygene.util.viewer;
@@ -48,16 +48,21 @@ import uk.ac.leeds.ccg.geotools.ZoomTool;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.util.browser.ObjectBrowser;
+import fr.ign.cogit.geoxygene.util.viewer.ObjectViewerInterface.ObjectsIDAndSource;
 
 /**
-  * 
-  * @author Thierry Badard & Arnaud Braun
-  * @version 1.0
-  * 
-  */
+ * 
+ * @author Thierry Badard & Arnaud Braun
+ * @version 1.0
+ * 
+ */
 
 class ObjectViewerToolBar extends JToolBar {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5951002017821866988L;
 	//Default selection of tools
 	public static final boolean IS_OPENFILETOOL_SELECTED = true;
 	public static final boolean IS_ZOOMINTOOL_SELECTED = true;
@@ -70,15 +75,15 @@ class ObjectViewerToolBar extends JToolBar {
 	private ObjectViewerInterface objectViewerInterface;
 
 	public ObjectViewerToolBar(
-		ObjectViewerInterface objectViewerInterface,
-		boolean openFileTool,
-		boolean zoomInTool,
-		boolean zoomOutTool,
-		boolean zoomExtentTool,
-		boolean panTool,
-		boolean fullExtentTool,
-		boolean selectionTool,
-		Geodatabase db) {
+			ObjectViewerInterface objectViewerInterface,
+			boolean openFileTool,
+			boolean zoomInTool,
+			boolean zoomOutTool,
+			boolean zoomExtentTool,
+			boolean panTool,
+			boolean fullExtentTool,
+			boolean selectionTool,
+			Geodatabase db) {
 
 		this.objectViewerInterface = objectViewerInterface;
 		URL imageUrl;
@@ -92,7 +97,7 @@ class ObjectViewerToolBar extends JToolBar {
 			opentbutton.addActionListener(new GeOxygeneViewerOpenFileAction(objectViewerInterface));
 			this.add(opentbutton);
 		}
-		
+
 		if (db != null) {
 			imageUrl = this.getClass().getResource("images/oxygene.gif");
 			Icon geOxygeneIcon = new ImageIcon(imageUrl);
@@ -100,9 +105,9 @@ class ObjectViewerToolBar extends JToolBar {
 				new JToggleButton(geOxygeneIcon, false);
 			geOxygenetbutton.setToolTipText("Access to GeOxygene mapping repository");
 			geOxygenetbutton.addActionListener(new GeOxygeneViewerOpenGeOxygeneAction(objectViewerInterface,db));
-			this.add(geOxygenetbutton);		
+			this.add(geOxygenetbutton);
 		}
-		
+
 		if (openFileTool || db != null)
 			this.addSeparator();
 
@@ -160,7 +165,7 @@ class ObjectViewerToolBar extends JToolBar {
 					setToolBarButtonsUnselected(zoomextenttbutton);
 
 					System.out.println(
-						"Zoom In/Out to extent tool selected !!!");
+					"Zoom In/Out to extent tool selected !!!");
 
 					//System.out.println("Zoom: "+view.getZoomAsPercent());
 					ZoomTool zoomouttool = new ZoomTool();
@@ -208,7 +213,7 @@ class ObjectViewerToolBar extends JToolBar {
 			});
 			this.add(resettbutton);
 		}
-		
+
 		if (zoomInTool || zoomOutTool || zoomExtentTool || panTool || fullExtentTool)
 			this.addSeparator();
 
@@ -223,7 +228,7 @@ class ObjectViewerToolBar extends JToolBar {
 					setToolBarButtonsUnselected(selecttbutton);
 
 					System.out.println("Select tool selected !!!");
-					
+
 					SelectTool selecttool = new SelectTool();
 					System.out.println(selecttool.getDescription());
 					getObjectViewerInterface().view.setTool(selecttool);
@@ -242,29 +247,29 @@ class ObjectViewerToolBar extends JToolBar {
 					setToolBarButtonsUnselected(selectIDtbutton);
 
 					System.out.println("Show attributes selected !!!");
-					
-					List selectedFeatures = new ArrayList();
-					Vector selectedObjects = getObjectViewerInterface().getSelectedObjects();
+
+					List<FT_Feature> selectedFeatures = new ArrayList<FT_Feature>();
+					Vector<ObjectsIDAndSource> selectedObjects = getObjectViewerInterface().getSelectedObjects();
 					if (selectedObjects!=null) {
-					for (int i=0; i<selectedObjects.size(); i++) {
-						ObjectViewerInterface.ObjectsIDAndSource aSelectedObjectAndSource = 
-							(ObjectViewerInterface.ObjectsIDAndSource)selectedObjects.get(i);
-						if (aSelectedObjectAndSource.getDataSource() instanceof GeOxygeneReader) {
-							GeOxygeneReader geOxyRd = (GeOxygeneReader) aSelectedObjectAndSource.getDataSource();
-							int[] selectedIDs = aSelectedObjectAndSource.getObjectsID();
-							for (int j=0; j<selectedIDs.length; j++) {
-								FT_Feature feature = geOxyRd.getFeatureById(selectedIDs[j]);
-								if (feature != null)
-									selectedFeatures.add(feature);
+						for (int i=0; i<selectedObjects.size(); i++) {
+							ObjectViewerInterface.ObjectsIDAndSource aSelectedObjectAndSource =
+								selectedObjects.get(i);
+							if (aSelectedObjectAndSource.getDataSource() instanceof GeOxygeneReader) {
+								GeOxygeneReader geOxyRd = (GeOxygeneReader) aSelectedObjectAndSource.getDataSource();
+								int[] selectedIDs = aSelectedObjectAndSource.getObjectsID();
+								for (int j=0; j<selectedIDs.length; j++) {
+									FT_Feature feature = geOxyRd.getFeatureById(selectedIDs[j]);
+									if (feature != null)
+										selectedFeatures.add(feature);
+								}
 							}
 						}
-					}
-					if (selectedFeatures.size() > 0) {
-						if (selectedFeatures.size() == 1)
-							ObjectBrowser.browse(selectedFeatures.get(0));
-						else
-							ObjectBrowser.browse(selectedFeatures);
-					}}
+						if (selectedFeatures.size() > 0) {
+							if (selectedFeatures.size() == 1)
+								ObjectBrowser.browse(selectedFeatures.get(0));
+							else
+								ObjectBrowser.browse(selectedFeatures);
+						}}
 				}
 			});
 			this.add(selectIDtbutton);
@@ -275,14 +280,14 @@ class ObjectViewerToolBar extends JToolBar {
 
 	public ObjectViewerToolBar(ObjectViewerInterface objectViewerInterface, Geodatabase db) {
 		this (			objectViewerInterface,
-		IS_OPENFILETOOL_SELECTED,
-		IS_ZOOMINTOOL_SELECTED,
-		IS_ZOOMOUTTOOL_SELECTED,
-		IS_ZOOMEXTENTTOOL_SELECTED,
-		IS_PANTOOL_SELECTED,
-		IS_FULLEXTENTTOOL_SELECTED,
-		IS_SELECTIONTOOL_SELECTED,
-		db);
+				IS_OPENFILETOOL_SELECTED,
+				IS_ZOOMINTOOL_SELECTED,
+				IS_ZOOMOUTTOOL_SELECTED,
+				IS_ZOOMEXTENTTOOL_SELECTED,
+				IS_PANTOOL_SELECTED,
+				IS_FULLEXTENTTOOL_SELECTED,
+				IS_SELECTIONTOOL_SELECTED,
+				db);
 	}
 
 
@@ -294,8 +299,8 @@ class ObjectViewerToolBar extends JToolBar {
 		for (int i = 0; i < nbtbcomp; i++) {
 			classname = tbcomp[i].getClass().getName();
 			if ((classname == "javax.swing.JToggleButton")
-				&& (tbcomp[i] != tb_button))
-				 ((JToggleButton) tbcomp[i]).setSelected(false);
+					&& (tbcomp[i] != tb_button))
+				((JToggleButton) tbcomp[i]).setSelected(false);
 		}
 	}
 

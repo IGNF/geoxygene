@@ -1,27 +1,27 @@
 /*
- * This file is part of the GeOxygene project source files. 
+ * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
- * the development and deployment of geographic (GIS) applications. It is a open source 
- * contribution of the COGIT laboratory at the Institut Géographique National (the French 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
+ * the development and deployment of geographic (GIS) applications. It is a open source
+ * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
  * 
- * See: http://oxygene-project.sourceforge.net 
- *  
+ * See: http://oxygene-project.sourceforge.net
+ * 
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation; 
+ * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with 
- * this library (see file LICENSE if present); if not, write to the Free Software 
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
+ * 
  */
 
 package fr.ign.cogit.geoxygene.util.browser;
@@ -36,18 +36,18 @@ import java.util.Collection;
 import java.util.Vector;
 
 /**
-  *  Classe mettant en oeuvre le navigateur d'objet graphique de GeOxygene. 
-  *  <br>Elle instancie le "modèle" du navigateur d'objet de GeOxygene, conformement à
-  *  l'architecture à modèle séparable de Sun Microsystems. Elle pilote la construction de 
-  *  l'interface graphique (vue) représentant l'objet Java (classe ObjectBrowserGUI).
-  *  <br><br> Cette classe utilise intensivement le package reflection du J2SDK afin de rendre
-  *  possible la représentation graphique et la navigation au sein de n'importe quel schéma de 
-  *  classes Java.
-  *
-  * @author Thierry Badard & Arnaud Braun
-  * @version 1.0
-  * 
-  */
+ *  Classe mettant en oeuvre le navigateur d'objet graphique de GeOxygene.
+ *  <br>Elle instancie le "modèle" du navigateur d'objet de GeOxygene, conformement à
+ *  l'architecture à modèle séparable de Sun Microsystems. Elle pilote la construction de
+ *  l'interface graphique (vue) représentant l'objet Java (classe ObjectBrowserGUI).
+ *  <br><br> Cette classe utilise intensivement le package reflection du J2SDK afin de rendre
+ *  possible la représentation graphique et la navigation au sein de n'importe quel schéma de
+ *  classes Java.
+ *
+ * @author Thierry Badard & Arnaud Braun
+ * @version 1.0
+ * 
+ */
 
 public class ObjectBrowser {
 
@@ -58,23 +58,23 @@ public class ObjectBrowser {
 	private static final int STRING = 4;
 	private static final int COLLECTION = 5;
 
-	/** Flag indiquant si un bandeau portant le nom de la classe doit être 
+	/** Flag indiquant si un bandeau portant le nom de la classe doit être
 	 * affiché dans l'interface (vrai par défaut). */
 	private static final boolean SHOW_CLASSNAME = true;
-	/** Flag indiquant si les attributs publics de l'objet doivent être 
+	/** Flag indiquant si les attributs publics de l'objet doivent être
 	 * affichés dans l'interface (vrai par défaut). */
 	private static final boolean SHOW_PUBLIC_ATTRIBUTES = true;
-	/** Flag indiquant si les attributs protected de l'objet doivent être 
+	/** Flag indiquant si les attributs protected de l'objet doivent être
 	 * affichés dans l'interface (vrai par défaut). */
 	private static final boolean SHOW_PROTECTED_ATTRIBUTES = true;
-	/** Flag indiquant si les méthodes publiques de l'objet doivent être 
+	/** Flag indiquant si les méthodes publiques de l'objet doivent être
 	 * affichées dans l'interface (vrai par défaut). */
 	private static final boolean SHOW_PUBLIC_METHODS = true;
-	/** Flag indiquant si les méthodes protected de l'objet doivent être 
-		 * affichées dans l'interface (vrai par défaut). */
+	/** Flag indiquant si les méthodes protected de l'objet doivent être
+	 * affichées dans l'interface (vrai par défaut). */
 	private static final boolean SHOW_PROTECTED_METHODS = true;
-	/** Fixe le comportement par défaut lors d'une demande de rafraichissement de la représentation 
-	 * graphique d'un objet. Par défaut, l'ancienne représentation de l'objet reste visible et une 
+	/** Fixe le comportement par défaut lors d'une demande de rafraichissement de la représentation
+	 * graphique d'un objet. Par défaut, l'ancienne représentation de l'objet reste visible et une
 	 * nouvelle représentation est affichée. */
 	protected static final boolean HIDE_WHEN_REFRESH = false;
 
@@ -87,12 +87,15 @@ public class ObjectBrowser {
 	 * @return vrai si l'objet passé en paramètre est une instance de Collection, faux sinon.
 	 */
 	private static boolean isCollectionClass(Object obj) {
+		return (obj.getClass().isInstance(Collection.class));
+		/*
 		try {
-			Object[] arrayFromCollectionObject = ((Collection) obj).toArray();
+			((Collection) obj).toArray();
 			return true;
 		} catch (ClassCastException ccex) {
 			return false;
 		}
+		 */
 	}
 
 	/**
@@ -104,7 +107,7 @@ public class ObjectBrowser {
 	 */
 	private static Object[] convertCollectionToArray(Object obj) {
 		try {
-			return ((Collection) obj).toArray();
+			return ((Collection<?>) obj).toArray();
 		} catch (ClassCastException ccex) {
 			return null;
 		}
@@ -114,9 +117,9 @@ public class ObjectBrowser {
 	 * Teste si la classe passée en paramètre est de type Array (tableau).
 	 * 
 	 * @param classObject la classe à tester.
-	 * @return vrai si classObject est de type Array, faux sinon. 
+	 * @return vrai si classObject est de type Array, faux sinon.
 	 */
-	private static boolean isArrayClass(Class classObject) {
+	private static boolean isArrayClass(Class<?> classObject) {
 		return classObject.isArray();
 	}
 
@@ -124,12 +127,12 @@ public class ObjectBrowser {
 	 * Si classObject est de type Array, cette méthode permet de déterminer le type de contenu de ce "tableau".
 	 * 
 	 * @param classObject la classe de type tableau dont on cherche à déterminer le type de contenu.
-	 * @return ObjectBrowser.PRIMITIVE dans le cas où le contenu du tableau est de type primitif, 
+	 * @return ObjectBrowser.PRIMITIVE dans le cas où le contenu du tableau est de type primitif,
 	 * ObjectBrowser.OBJECT (i.e. de type objet) dans tous les autres cas.
 	 */
-	private static int getArrayClassComponentType(Class classObject) {
+	private static int getArrayClassComponentType(Class<?> classObject) {
 		// Faudrait peut-être intercepter le fait que ce soit pas un Array !!! ;-))
-		Class componentType = classObject.getComponentType();
+		Class<?> componentType = classObject.getComponentType();
 		if (componentType.isPrimitive()) {
 			return PRIMITIVE;
 		} else {
@@ -138,13 +141,13 @@ public class ObjectBrowser {
 	}
 
 	/**
-	 * Méthode statique permettant de tester si la classe passée en argument est de type tableau 
-	 * d'un type primitif (int, short, long, boolean, char, etc.). 
+	 * Méthode statique permettant de tester si la classe passée en argument est de type tableau
+	 * d'un type primitif (int, short, long, boolean, char, etc.).
 	 * 
 	 * @param classObject la classe à tester.
 	 * @return vrai si la classe passée en argument est de type tableau d'un type primitif, faux sinon.
 	 */
-	private static boolean isArrayClassComponentTypePrimitive(Class classObject) {
+	private static boolean isArrayClassComponentTypePrimitive(Class<?> classObject) {
 		// Faudrait peut-être intercepter le fait que ce soit pas un Array !!! ;-))
 		if (getArrayClassComponentType(classObject) == PRIMITIVE) {
 			return true;
@@ -187,17 +190,17 @@ public class ObjectBrowser {
 	}
 
 	/**
-	 * Méthode statique retournant le type du contenu d'un champ de type tableau (Array), passé 
+	 * Méthode statique retournant le type du contenu d'un champ de type tableau (Array), passé
 	 * en argument de la méthode.
 	 * 
 	 * @param field le champ de type tableau pour lequel on cherche le type de contenu.
-	 * @return ObjectBrowser.STRING s'il s'agit d'un tableau de chaîne de caractères, 
-	 * ObjectBrowser.PRIMITIVE pour un tableau d'éléments de type primitif, et 
-	 * ObjectBrowser.OBJECT sinon.  
+	 * @return ObjectBrowser.STRING s'il s'agit d'un tableau de chaîne de caractères,
+	 * ObjectBrowser.PRIMITIVE pour un tableau d'éléments de type primitif, et
+	 * ObjectBrowser.OBJECT sinon.
 	 */
 	private static int getArrayComponentType(Field field) {
 		// Faudrait peut-être intercepter le fait que ce soit pas un Array !!! ;-))
-		Class fieldType = field.getType();
+		Class<?> fieldType = field.getType();
 		String fieldTypeName = fieldType.getName();
 		String underlyingFieldTypeName;
 		char underlyingType;
@@ -207,18 +210,18 @@ public class ObjectBrowser {
 		underlyingType = fieldTypeName.charAt(typeIndex);
 
 		switch (underlyingType) {
-			case 'L' :
-				underlyingFieldTypeName =
-					fieldTypeName.substring(
+		case 'L' :
+			underlyingFieldTypeName =
+				fieldTypeName.substring(
 						typeIndex + 1,
 						fieldTypeName.length() - 1);
-				if (underlyingFieldTypeName.equals("java.lang.String")) {
-					return STRING;
-				} else {
-					return OBJECT;
-				}
-			default :
-				return PRIMITIVE;
+			if (underlyingFieldTypeName.equals("java.lang.String")) {
+				return STRING;
+			} else {
+				return OBJECT;
+			}
+		default :
+			return PRIMITIVE;
 		}
 
 	}
@@ -240,33 +243,33 @@ public class ObjectBrowser {
 		underlyingType = typeName.charAt(typeIndex);
 
 		switch (underlyingType) {
-			case 'L' :
-				underlyingTypeName =
-					typeName.substring(typeIndex + 1, typeName.length() - 1);
-				return underlyingTypeName;
-			case 'B' :
-				return "byte";
-			case 'C' :
-				return "char";
-			case 'D' :
-				return "double";
-			case 'F' :
-				return "float";
-			case 'I' :
-				return "int";
-			case 'J' :
-				return "long";
-			case 'S' :
-				return "short";
-			case 'Z' :
-				return "boolean";
-			default :
-				return "void";
+		case 'L' :
+			underlyingTypeName =
+				typeName.substring(typeIndex + 1, typeName.length() - 1);
+			return underlyingTypeName;
+		case 'B' :
+			return "byte";
+		case 'C' :
+			return "char";
+		case 'D' :
+			return "double";
+		case 'F' :
+			return "float";
+		case 'I' :
+			return "int";
+		case 'J' :
+			return "long";
+		case 'S' :
+			return "short";
+		case 'Z' :
+			return "boolean";
+		default :
+			return "void";
 		}
 	}
 
 	/**
-	 * Si l'attribut field passé en paramètre est de type tableau, cette méthode statique 
+	 * Si l'attribut field passé en paramètre est de type tableau, cette méthode statique
 	 * renvoie le nom du type ou de la classe qualifiant le contenu du tableau.
 	 * 
 	 * @param field le champ de type tableau dont on cherche à déterminer le type de contenu.
@@ -274,7 +277,7 @@ public class ObjectBrowser {
 	 */
 	private static String getArrayComponentTypeName(Field field) {
 		// Faudrait peut-être intercepter le fait que ce soit pas un Array !!! ;-))
-		Class fieldType = field.getType();
+		Class<?> fieldType = field.getType();
 		String fieldTypeName = fieldType.getName();
 		String underlyingFieldTypeName;
 		char underlyingType;
@@ -284,41 +287,41 @@ public class ObjectBrowser {
 		underlyingType = fieldTypeName.charAt(typeIndex);
 
 		switch (underlyingType) {
-			case 'L' :
-				underlyingFieldTypeName =
-					fieldTypeName.substring(
+		case 'L' :
+			underlyingFieldTypeName =
+				fieldTypeName.substring(
 						typeIndex + 1,
 						fieldTypeName.length() - 1);
-				return underlyingFieldTypeName;
-			case 'B' :
-				return "byte";
-			case 'C' :
-				return "char";
-			case 'D' :
-				return "double";
-			case 'F' :
-				return "float";
-			case 'I' :
-				return "int";
-			case 'J' :
-				return "long";
-			case 'S' :
-				return "short";
-			case 'Z' :
-				return "boolean";
-			default :
-				return "void";
+			return underlyingFieldTypeName;
+		case 'B' :
+			return "byte";
+		case 'C' :
+			return "char";
+		case 'D' :
+			return "double";
+		case 'F' :
+			return "float";
+		case 'I' :
+			return "int";
+		case 'J' :
+			return "long";
+		case 'S' :
+			return "short";
+		case 'Z' :
+			return "boolean";
+		default :
+			return "void";
 		}
 	}
 
 	/**
-	 * Pour l'attribut field de type Collection sur l'objet obj, retourne le type 
+	 * Pour l'attribut field de type Collection sur l'objet obj, retourne le type
 	 * du contenu de la Collection.
 	 * 
 	 * @param field l'attribut de type Collection.
 	 * @param obj l'objet portant l'attribut field.
-	 * @return ObjectBrowser.NULL s'il ne s'agit pas d'un champ de type Collection, 
-	 * ObjectBrowser.PRIMITIVE (resp. ObjectBrowser.OBJECT) s'il s'agit d'une Collection 
+	 * @return ObjectBrowser.NULL s'il ne s'agit pas d'un champ de type Collection,
+	 * ObjectBrowser.PRIMITIVE (resp. ObjectBrowser.OBJECT) s'il s'agit d'une Collection
 	 * d'éléments de type primitif (resp. de type objet).
 	 */
 	private static int getCollectionComponentType(Field field, Object obj) {
@@ -342,17 +345,17 @@ public class ObjectBrowser {
 	}
 
 	/**
-	 * Retourne le type de l'attribut field porté par l'objet obj. 
+	 * Retourne le type de l'attribut field porté par l'objet obj.
 	 * 
 	 * @param field l'attribut dont on cherche le type.
 	 * @param obj l'objet portant l'attribut field.
-	 * @return suivant le type, une valeur entière parmi ObjectBrowser.PRIMITIVE, 
-	 * ObjectBrowser.ARRAY, ObjectBrowser.OBJECT, ObjectBrowser.STRING, 
+	 * @return suivant le type, une valeur entière parmi ObjectBrowser.PRIMITIVE,
+	 * ObjectBrowser.ARRAY, ObjectBrowser.OBJECT, ObjectBrowser.STRING,
 	 * ObjectBrowser.OBJECT ou ObjectBrowser.NULL.
 	 */
 	private static int getFieldType(Field field, Object obj) {
 
-		Class fieldType = field.getType();
+		Class<?> fieldType = field.getType();
 		String fieldTypeName = fieldType.getName();
 		Object fieldValue;
 		String fieldValueString;
@@ -380,12 +383,18 @@ public class ObjectBrowser {
 					if (fieldTypeName.equals("java.lang.String")) {
 						return STRING;
 					} else {
+						if (fieldValue.getClass().isInstance(Collection.class))
+							return COLLECTION;
+						else
+							return OBJECT;
+						/*
 						try {
 							Collection testCollection = (Collection) fieldValue;
 							return COLLECTION;
 						} catch (ClassCastException cce) {
 							return OBJECT;
 						}
+						 */
 					}
 				}
 			}
@@ -476,11 +485,12 @@ public class ObjectBrowser {
 	 * @param classObj la classe sur laquelle on cherche les attributs publics et/ou protected accessibles.
 	 * @return un tableau (Field[]) contenant l'ensemble des attributs accessibles de la classe.
 	 */
-	private static Field[] getAccessibleFields(Class classObj) {
+	@SuppressWarnings("unused")
+	private static Field[] getAccessibleFields(Class<?> classObj) {
 		return getAccessibleFields(
-			classObj,
-			SHOW_PUBLIC_ATTRIBUTES,
-			SHOW_PROTECTED_ATTRIBUTES);
+				classObj,
+				SHOW_PUBLIC_ATTRIBUTES,
+				SHOW_PROTECTED_ATTRIBUTES);
 	}
 
 	/**
@@ -493,25 +503,25 @@ public class ObjectBrowser {
 	 * @return un tableau (Field[]) contenant l'ensemble des attributs accessibles de la classe.
 	 */
 	public static Field[] getAccessibleFields(
-		Class classObj,
-		boolean retrievePublicFields,
-		boolean retrieveProtectedFields) {
-		
+			Class<?> classObj,
+			boolean retrievePublicFields,
+			boolean retrieveProtectedFields) {
+
 		//Field[] allAccessibleFields = classObj.getDeclaredFields();
 		Field[] publicFields=classObj.getFields();
 		int nbPublicFields=publicFields.length;
 		Field[] localFields=classObj.getDeclaredFields();
 		int nbLocalFields=localFields.length;
-		
+
 		/* TreeSet allFields=new TreeSet(new Comparator() {
 			public int compare(Object o1, Object o2) {
 			   return ((Field)o1).getName().compareTo(((Field)o2).getName());
 			}
-		}); */ 
-						
-		Vector allFields=new Vector();
+		}); */
+
+		Vector<Field> allFields=new Vector<Field>();
 		boolean isAlreadyInVector;
-								
+
 		for(int i=0;i<nbLocalFields;i++) {
 			allFields.add(localFields[i]);
 		}
@@ -519,42 +529,42 @@ public class ObjectBrowser {
 		for(int i=0;i<nbPublicFields;i++) {
 			isAlreadyInVector=false;
 			for(int j=0;j<allFields.size();j++) {
-				if (publicFields[i].equals((Field)allFields.get(j))) {
+				if (publicFields[i].equals(allFields.get(j))) {
 					isAlreadyInVector=true;
 					break;
 				}
 			}
 			if (!isAlreadyInVector){
-				allFields.add(publicFields[i]);	
+				allFields.add(publicFields[i]);
 			}
 		}
-		
-		
+
+
 		///////////////////////////////////////////////////////////
 		//// debut ajout Arnaud pour recuperer les champs "primitive" protected herites
-		//// en fait on fait ceci pour recuper l'id ! 	
-		Class superClass = classObj.getSuperclass();
+		//// en fait on fait ceci pour recuper l'id !
+		Class<?> superClass = classObj.getSuperclass();
 		while (superClass != Object.class) {
-			Field[] superAccessibleFields = superClass.getDeclaredFields();		
+			Field[] superAccessibleFields = superClass.getDeclaredFields();
 			for (int i=0; i<superAccessibleFields.length; i++)
 				if (superAccessibleFields[i].getType().isPrimitive())
 					allFields.add(superAccessibleFields[i]);
-			superClass = superClass.getSuperclass();	
+			superClass = superClass.getSuperclass();
 		}
-		//// fin ajout Arnaud 	
+		//// fin ajout Arnaud
 		///////////////////////////////////////////////////////////
-				
-		
+
+
 		Object[] allObjectFields=allFields.toArray();
-		
+
 		Field[] allAccessibleFields = new Field[allObjectFields.length];
 		for(int i=0;i<allObjectFields.length;i++) {
 			allAccessibleFields[i]=(Field)allObjectFields[i];
 		}
-				
-		
+
+
 		int nbAllAccessibleFields = allAccessibleFields.length;
-		Vector accessibleFields = new Vector();
+		Vector<Field> accessibleFields = new Vector<Field>();
 		Field[] resultAccessibleFields;
 		int nbAccessibleFields = 0;
 		int fieldModifier = 0;
@@ -563,11 +573,11 @@ public class ObjectBrowser {
 			fieldModifier = allAccessibleFields[i].getModifiers();
 
 			if (Modifier.isPublic(fieldModifier)
-				&& (!(Modifier.isStatic(fieldModifier)))
-				&& retrievePublicFields) {
+					&& (!(Modifier.isStatic(fieldModifier)))
+					&& retrievePublicFields) {
 				accessibleFields.add(allAccessibleFields[i]);
 			} else if (
-				Modifier.isProtected(fieldModifier)
+					Modifier.isProtected(fieldModifier)
 					&& (!(Modifier.isStatic(fieldModifier)))
 					&& retrieveProtectedFields) {
 				accessibleFields.add(allAccessibleFields[i]);
@@ -584,7 +594,7 @@ public class ObjectBrowser {
 		nbAccessibleFields = accessibleFields.size();
 		resultAccessibleFields = new Field[nbAccessibleFields];
 		for (int i = 0; i < nbAccessibleFields; i++) {
-			resultAccessibleFields[i] = (Field) (accessibleFields.get(i));
+			resultAccessibleFields[i] = (accessibleFields.get(i));
 		}
 
 		return resultAccessibleFields;
@@ -592,51 +602,52 @@ public class ObjectBrowser {
 
 	/**
 	 * En fonction de la valeur des constantes SHOW_PUBLIC_METHODS et SHOW_PROTECTED_METHODS, renvoie
-	 * l'ensemble des méthodes publiques et/ou protected locales et héritées, ne prenant aucun argument et accessibles de la classe 
+	 * l'ensemble des méthodes publiques et/ou protected locales et héritées, ne prenant aucun argument et accessibles de la classe
 	 * classObj passée en argument.
 	 * 
-	 * @param classObj la classe sur laquelle on cherche les méthodes locales et héritées, publiques 
+	 * @param classObj la classe sur laquelle on cherche les méthodes locales et héritées, publiques
 	 * et/ou protected.
 	 * @return un tableau (Method[]) contenant l'ensemble des méthodes publiques et/ou protected, locales et héritées, ne prenant aucun argument et accessibles de la classe.
 	 */
-	private static Method[] getAccessibleMethods(Class classObj) {
+	@SuppressWarnings("unused")
+	private static Method[] getAccessibleMethods(Class<?> classObj) {
 		return getAccessibleMethods(
-			classObj,
-			SHOW_PUBLIC_METHODS,
-			SHOW_PROTECTED_METHODS);
+				classObj,
+				SHOW_PUBLIC_METHODS,
+				SHOW_PROTECTED_METHODS);
 	}
 
 	/**
 	 * En fonction de la valeur des arguments retrievePublicMethods et retrieveProtectedMethods, renvoie
-	 * l'ensemble des méthodes publiques et/ou protected, locales et héritées, ne prenant aucun argument et accessibles de la classe 
+	 * l'ensemble des méthodes publiques et/ou protected, locales et héritées, ne prenant aucun argument et accessibles de la classe
 	 * classObj passée en argument.
 	 * 
-	 * @param classObj la classe sur laquelle on cherche les méthodes publiques et/ou protected, locales 
+	 * @param classObj la classe sur laquelle on cherche les méthodes publiques et/ou protected, locales
 	 * et héritées.
 	 * @param retrievePublicMethods si vrai, l'ensemble des méthodes publiques, locales et héritées, portées par la classe classObj sera retourné par la méthode.
 	 * @param retrieveProtectedMethods si vrai, l'ensemble des méthodes protected, locales et héritées, portées par la classe classObj sera retourné par la méthode.
 	 * @return un tableau (Method[]) contenant l'ensemble des méthodes publiques et/ou protected, locales et héritées, ne prenant aucun argument et accessibles de la classe.
 	 */
 	private static Method[] getAccessibleMethods(
-		Class classObj,
-		boolean retrievePublicMethods,
-		boolean retrieveProtectedMethods) {
+			Class<?> classObj,
+			boolean retrievePublicMethods,
+			boolean retrieveProtectedMethods) {
 		Method[] allAccessibleMethods;
-		Vector allAccessibleMethodsVector = new Vector();
+		Vector<Method> allAccessibleMethodsVector = new Vector<Method>();
 		Method[] publicMethods = classObj.getMethods();
 		Method[] localMethods = classObj.getDeclaredMethods();
-		Vector localMethodNames = new Vector();
+		Vector<String> localMethodNames = new Vector<String>();
 		int nbLocalMethods = localMethods.length;
 		int nbPublicMethods = publicMethods.length;
 		boolean isInVector;
 
 		int nbAllAccessibleMethods;
-		Vector accessibleMethods;
+		Vector<Method> accessibleMethods;
 		Method[] resultAccessibleMethods;
 		int nbAccessibleMethods = 0;
 		int methodModifier = 0;
 		int nbParameters;
-		Class methodReturnType;
+		Class<?> methodReturnType;
 
 		for (int j = 0; j < nbLocalMethods; j++) {
 			localMethodNames.add(localMethods[j].getName());
@@ -647,8 +658,8 @@ public class ObjectBrowser {
 			isInVector = false;
 			for (int j = 0; j < nbLocalMethods; j++) {
 				if (publicMethods[i]
-					.getName()
-					.equals(localMethodNames.get(j))) {
+				                  .getName()
+				                  .equals(localMethodNames.get(j))) {
 					isInVector = true;
 					break;
 				}
@@ -662,9 +673,9 @@ public class ObjectBrowser {
 		allAccessibleMethods = new Method[nbAllAccessibleMethods];
 		for (int i = 0; i < nbAllAccessibleMethods; i++) {
 			allAccessibleMethods[i] =
-				(Method) (allAccessibleMethodsVector.get(i));
+				(allAccessibleMethodsVector.get(i));
 		}
-		accessibleMethods = new Vector();
+		accessibleMethods = new Vector<Method>();
 
 		for (int i = 0; i < nbAllAccessibleMethods; i++) {
 			methodModifier = allAccessibleMethods[i].getModifiers();
@@ -672,18 +683,18 @@ public class ObjectBrowser {
 			methodReturnType = allAccessibleMethods[i].getReturnType();
 
 			if (Modifier.isPublic(methodModifier)
-				&& (!(Modifier.isStatic(methodModifier)))
-				&& retrievePublicMethods) {
+					&& (!(Modifier.isStatic(methodModifier)))
+					&& retrievePublicMethods) {
 				if ((nbParameters == 0)
-					&& (!(methodReturnType.getName().equals("void")))) {
+						&& (!(methodReturnType.getName().equals("void")))) {
 					accessibleMethods.add(allAccessibleMethods[i]);
 				}
 			} else if (
-				Modifier.isProtected(methodModifier)
+					Modifier.isProtected(methodModifier)
 					&& (!(Modifier.isStatic(methodModifier)))
 					&& retrieveProtectedMethods) {
 				if ((nbParameters == 0)
-					&& (!(methodReturnType.getName().equals("void")))) {
+						&& (!(methodReturnType.getName().equals("void")))) {
 					accessibleMethods.add(allAccessibleMethods[i]);
 					try {
 						if (!(allAccessibleMethods[i].isAccessible())) {
@@ -699,7 +710,7 @@ public class ObjectBrowser {
 		nbAccessibleMethods = accessibleMethods.size();
 		resultAccessibleMethods = new Method[nbAccessibleMethods];
 		for (int i = 0; i < nbAccessibleMethods; i++) {
-			resultAccessibleMethods[i] = (Method) (accessibleMethods.get(i));
+			resultAccessibleMethods[i] = (accessibleMethods.get(i));
 		}
 
 		return resultAccessibleMethods;
@@ -707,19 +718,19 @@ public class ObjectBrowser {
 
 	/**
 	 * Lance l'affichage par défaut (défini par les constantes SHOW_CLASSNAME, SHOW_PUBLIC_ATTRIBUTES,
-	 * SHOW_PROTECTED_ATTRIBUTES, SHOW_PUBLIC_METHODS, SHOW_PROTECTED_METHODS) de la représentation 
-	 * graphique de l'objet obj passé en argument. 
+	 * SHOW_PROTECTED_ATTRIBUTES, SHOW_PUBLIC_METHODS, SHOW_PROTECTED_METHODS) de la représentation
+	 * graphique de l'objet obj passé en argument.
 	 * 
 	 * @param obj l'objet dont on souhaite obtenir une représentaion par défaut dans le navigateur d'objet de GeOxygene.
 	 */
 	public static void browse(Object obj) {
 		browse(
-			obj,
-			SHOW_CLASSNAME,
-			SHOW_PUBLIC_ATTRIBUTES,
-			SHOW_PROTECTED_ATTRIBUTES,
-			SHOW_PUBLIC_METHODS,
-			SHOW_PROTECTED_METHODS);
+				obj,
+				SHOW_CLASSNAME,
+				SHOW_PUBLIC_ATTRIBUTES,
+				SHOW_PROTECTED_ATTRIBUTES,
+				SHOW_PUBLIC_METHODS,
+				SHOW_PROTECTED_METHODS);
 	}
 
 	/**
@@ -732,13 +743,14 @@ public class ObjectBrowser {
 	 * @param showPublicMethods si vrai, affiche dans l'interface les méthodes publiques, locales et héritées, portées par l'objet.
 	 * @param showProtectedMethods si vrai, affiche dans l'interface les méthodes protected, locales et héritées, portées par l'objet.
 	 */
+	@SuppressWarnings("unchecked")
 	public static void browse(
-		Object obj,
-		boolean showClassName,
-		boolean showPublicAttributes,
-		boolean showProtectedAttributes,
-		boolean showPublicMethods,
-		boolean showProtectedMethods) {
+			Object obj,
+			boolean showClassName,
+			boolean showPublicAttributes,
+			boolean showProtectedAttributes,
+			boolean showPublicMethods,
+			boolean showProtectedMethods) {
 
 		try {
 			Class objectClass;
@@ -757,8 +769,10 @@ public class ObjectBrowser {
 			int arrayLevel;
 
 			Method currentMethod;
+			@SuppressWarnings("unused")
 			String currentMethodName;
 			Class[] currentMethodParameters;
+			@SuppressWarnings("unused")
 			int nbCurrentMethodParameters;
 
 			try {
@@ -766,31 +780,31 @@ public class ObjectBrowser {
 				objectClassName = objectClass.getName();
 				objectFields =
 					getAccessibleFields(
-						objectClass,
-						showPublicAttributes,
-						showProtectedAttributes);
+							objectClass,
+							showPublicAttributes,
+							showProtectedAttributes);
 				objectMethods =
 					getAccessibleMethods(
-						objectClass,
-						showPublicMethods,
-						showProtectedMethods);
+							objectClass,
+							showPublicMethods,
+							showProtectedMethods);
 				nbFields = objectFields.length;
 				nbMethods = objectMethods.length;
-												
+
 				browserInterface =
 					new ObjectBrowserGUI(
-						obj,
-						showClassName,
-						showPublicAttributes,
-						showProtectedAttributes,
-						showPublicMethods,
-						showProtectedMethods,
-						objectClassName);
+							obj,
+							showClassName,
+							showPublicAttributes,
+							showProtectedAttributes,
+							showPublicMethods,
+							showProtectedMethods,
+							objectClassName);
 
 				// Special case of Array classes.
 				if (isArrayClass(objectClass)) {
 					int nbArrayElements = Array.getLength(obj);
-					Vector arrayElements = new Vector();
+					Vector<Object> arrayElements = new Vector<Object>();
 					for (int i = 0; i < nbArrayElements; i++) {
 						arrayElements.add(Array.get(obj, i));
 					}
@@ -805,7 +819,7 @@ public class ObjectBrowser {
 							arrayObjectClassName += "]";
 						}
 						browserInterface.addClassNameLabel(
-							arrayObjectClassName);
+								arrayObjectClassName);
 						browserInterface.changeTitle(arrayObjectClassName);
 
 					}
@@ -825,17 +839,17 @@ public class ObjectBrowser {
 						convertCollectionToArray(obj);
 
 					int nbCollectionElements = arrayFromCollectionObject.length;
-					Vector collectionElements = new Vector();
+					Vector<Object> collectionElements = new Vector<Object>();
 					for (int i = 0; i < nbCollectionElements; i++) {
 						collectionElements.add(arrayFromCollectionObject[i]);
 					}
 
 					if (isArrayClassComponentTypePrimitive(arrayFromCollectionObject
-						.getClass())) {
+							.getClass())) {
 						browserInterface.addAttributeList(collectionElements);
 					} else {
 						browserInterface.addObjectAttributeList(
-							collectionElements);
+								collectionElements);
 					}
 
 				}
@@ -851,31 +865,31 @@ public class ObjectBrowser {
 
 						if (isFieldTypeObject(currentField, obj)) {
 							browserInterface.addObjectAttribute(
-								currentFieldName,
-								currentFieldTypeName,
-								currentFieldValue);
+									currentFieldName,
+									currentFieldTypeName,
+									currentFieldValue);
 						}
 
 						if (isFieldTypePrimitive(currentField, obj)
-							|| isFieldTypeString(currentField, obj)) {
+								|| isFieldTypeString(currentField, obj)) {
 							browserInterface.addAttribute(
-								currentFieldName,
-								currentFieldValue.toString());
+									currentFieldName,
+									currentFieldValue.toString());
 						}
 
 						if (isFieldTypeCollection(currentField, obj)) {
 
 							if (getCollectionComponentType(currentField, obj)
-								!= OBJECT) {
+									!= OBJECT) {
 								browserInterface.addAttributeList(
-									currentFieldName,
-									new Vector(
-										(Collection) (currentFieldValue)));
+										currentFieldName,
+										new Vector(
+												(Collection) (currentFieldValue)));
 							} else {
 								browserInterface.addObjectAttributeList(
-									currentFieldName,
-									new Vector(
-										(Collection) (currentFieldValue)));
+										currentFieldName,
+										new Vector(
+												(Collection) (currentFieldValue)));
 							}
 						}
 
@@ -888,28 +902,28 @@ public class ObjectBrowser {
 
 							for (int j = 0; j < arrayFieldLength; j++) {
 								attribvalarray.add(
-									Array.get(currentFieldValue, j));
+										Array.get(currentFieldValue, j));
 							}
 
 							if (((getArrayComponentType(currentField)
-								== STRING)
-								|| (getArrayComponentType(currentField)
-									== PRIMITIVE))
-								&& (arrayLevel == 1)) {
+									== STRING)
+									|| (getArrayComponentType(currentField)
+											== PRIMITIVE))
+											&& (arrayLevel == 1)) {
 								browserInterface.addAttributeList(
-									currentFieldName,
-									attribvalarray);
+										currentFieldName,
+										attribvalarray);
 							} else {
 								if (arrayLevel == 1) {
 									browserInterface.addObjectAttributeList(
-										currentFieldName,
-										attribvalarray);
+											currentFieldName,
+											attribvalarray);
 								} else {
 									browserInterface.addObjectAttributeList(
-										currentFieldName,
-										attribvalarray,
-										arrayLevel - 1,
-										getArrayComponentTypeName(currentField));
+											currentFieldName,
+											attribvalarray,
+											arrayLevel - 1,
+											getArrayComponentTypeName(currentField));
 								}
 							}
 						}
@@ -918,9 +932,9 @@ public class ObjectBrowser {
 
 						//browserInterface.add_attribute(currentFieldName,"NULL");
 						browserInterface.addObjectAttribute(
-							currentFieldName,
-							"null",
-							null);
+								currentFieldName,
+								"null",
+								null);
 					}
 				}
 
@@ -937,18 +951,22 @@ public class ObjectBrowser {
 				browserInterface.pack();
 				//browserInterface.setSize(browserInterface.getPreferredSize());
 
-				browserInterface.show();
+				//browserInterface.show();
+				browserInterface.setVisible(true);
 
 				browserInterface.addWindowListener(new WindowAdapter() {
+					@Override
 					public void windowClosing(WindowEvent e) {
 						browserInterface.dispose();
 					}
 				});
 			} catch (NullPointerException npex) {
+				@SuppressWarnings("unused")
 				ObjectBrowserNullPointerFrame nullFrame =
 					new ObjectBrowserNullPointerFrame();
 			}
 		} catch (IllegalAccessException e) {
+			@SuppressWarnings("unused")
 			ObjectBrowserIllegalAccessFrame illegalAccessFrame =
 				new ObjectBrowserIllegalAccessFrame();
 			//e.printStackTrace();
@@ -957,11 +975,11 @@ public class ObjectBrowser {
 	}
 
 	/**
-	 * Déclenche de façon programmatique le rafraichissement de l'interface représentant l'objet. Le 
-	 * comportement du rafraîchissement (l'ancienne représentation de l'objet disparaît-elle ?) est 
+	 * Déclenche de façon programmatique le rafraichissement de l'interface représentant l'objet. Le
+	 * comportement du rafraîchissement (l'ancienne représentation de l'objet disparaît-elle ?) est
 	 * fixé par la valeur de la constante ObjectBrowser.HIDE_WHEN_REFRESH.
-	 * <p>De plus, Le nouvel affichage de l'objet est régi par les valeurs des constantes SHOW_CLASSNAME, 
-	 * SHOW_PUBLIC_ATTRIBUTES,SHOW_PROTECTED_ATTRIBUTES, SHOW_PUBLIC_METHODS et SHOW_PROTECTED_METHODS.</p> 
+	 * <p>De plus, Le nouvel affichage de l'objet est régi par les valeurs des constantes SHOW_CLASSNAME,
+	 * SHOW_PUBLIC_ATTRIBUTES,SHOW_PROTECTED_ATTRIBUTES, SHOW_PUBLIC_METHODS et SHOW_PROTECTED_METHODS.</p>
 	 * 
 	 * @param obj objet dont on veut rafrîchir la représentation graphique.
 	 */
@@ -993,21 +1011,21 @@ public class ObjectBrowser {
 	 * @param showProtectedMethods si vrai, affiche dans l'interface les méthodes protected, locales et héritées, portées par l'objet.
 	 */
 	public static void refresh(
-		Object obj,
-		boolean dispose,
-		boolean showClassName,
-		boolean showPublicAttributes,
-		boolean showProtectedAttributes,
-		boolean showPublicMethods,
-		boolean showProtectedMethods) {
+			Object obj,
+			boolean dispose,
+			boolean showClassName,
+			boolean showPublicAttributes,
+			boolean showProtectedAttributes,
+			boolean showPublicMethods,
+			boolean showProtectedMethods) {
 		browserInterface.setVisible(!dispose);
 		browse(
-			obj,
-			showClassName,
-			showPublicAttributes,
-			showProtectedAttributes,
-			showPublicMethods,
-			showProtectedMethods);
+				obj,
+				showClassName,
+				showPublicAttributes,
+				showProtectedAttributes,
+				showPublicMethods,
+				showProtectedMethods);
 	}
 
 }

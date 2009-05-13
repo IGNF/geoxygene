@@ -1,27 +1,27 @@
 /*
- * This file is part of the GeOxygene project source files. 
+ * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
- * the development and deployment of geographic (GIS) applications. It is a open source 
- * contribution of the COGIT laboratory at the Institut Géographique National (the French 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
+ * the development and deployment of geographic (GIS) applications. It is a open source
+ * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
  * 
- * See: http://oxygene-project.sourceforge.net 
- *  
+ * See: http://oxygene-project.sourceforge.net
+ * 
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation; 
+ * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with 
- * this library (see file LICENSE if present); if not, write to the Free Software 
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
+ * 
  */
 
 package fr.ign.cogit.geoxygene.util.viewer;
@@ -54,23 +54,28 @@ import uk.ac.leeds.ccg.geotools.ShapefileReader;
 import uk.ac.leeds.ccg.geotools.UniqueShader;
 
 /**
-  * This class implements the frame for the defintion of properties of themes to be displayed 
-  * in the (Geo)Object viewer. 
-  *
-  * @author Thierry Badard & Arnaud Braun
-  * @version 1.0
-  * 
-  */
+ * This class implements the frame for the defintion of properties of themes to be displayed
+ * in the (Geo)Object viewer.
+ *
+ * @author Thierry Badard & Arnaud Braun
+ * @version 1.0
+ * 
+ */
 
 class ObjectViewerThemePropertiesFrame extends JFrame {
-	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3613183796524975458L;
+
 	public static final String FRAME_TITLE =
 		"GeOxygene Object Viewer - Theme Properties";
 
 	private ObjectViewerThemeProperties objectViewerThemeProperties;
 
 	public ObjectViewerThemePropertiesFrame(ObjectViewerThemeProperties objectViewerThemeProperties) {
-		
+
 		super(FRAME_TITLE);
 
 		this.objectViewerThemeProperties = objectViewerThemeProperties;
@@ -81,27 +86,28 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 
 		JPanel themePropertiesPanel = new JPanel(new GridLayout(6, 2, 10, 10));
 		themePropertiesPanel.setBorder(
-			BorderFactory.createTitledBorder("Theme Properties"));
+				BorderFactory.createTitledBorder("Theme Properties"));
 
 		JPanel themeShadersPanel = new JPanel(new GridLayout(3, 2, 1, 50));
 		themeShadersPanel.setBorder(
-			BorderFactory.createTitledBorder("Shader Properties"));
+				BorderFactory.createTitledBorder("Shader Properties"));
 
 		//Add the components to the themePropertiesPanel
 		JLabel fillThemeColorLabel = new JLabel("Fill in Theme Color:");
 		Icon fillThemeColorButtonIcon =
 			new RectIcon(
-				getObjectViewerThemeProperties().getFillInThemeColor());
+					getObjectViewerThemeProperties().getFillInThemeColor());
 		final JButton fillThemeColorButton =
 			new JButton(fillThemeColorButtonIcon);
 		fillThemeColorButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				final JFrame ccframe =
 					new ObjectViewerColorChooser(
-						((RectIcon) (fillThemeColorButton.getIcon()))
+							((RectIcon) (fillThemeColorButton.getIcon()))
 							.getColor(),
-						fillThemeColorButton);
+							fillThemeColorButton);
 				ccframe.addWindowListener(new WindowAdapter() {
+					@Override
 					public void windowClosing(WindowEvent e) {
 						ccframe.dispose();
 					}
@@ -114,18 +120,19 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 
 		JLabel outlineThemeColorLabel = new JLabel("Outline Theme Color:");
 		Icon outlineThemeColorButtonIcon =
-			new RectIcon(				
-				getObjectViewerThemeProperties().getOutlineThemeColor());
+			new RectIcon(
+					getObjectViewerThemeProperties().getOutlineThemeColor());
 		final JButton outlineThemeColorButton =
 			new JButton(outlineThemeColorButtonIcon);
 		outlineThemeColorButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				final JFrame ccframe =
 					new ObjectViewerColorChooser(
-						((RectIcon) (outlineThemeColorButton.getIcon()))
+							((RectIcon) (outlineThemeColorButton.getIcon()))
 							.getColor(),
-						outlineThemeColorButton);
+							outlineThemeColorButton);
 				ccframe.addWindowListener(new WindowAdapter() {
+					@Override
 					public void windowClosing(WindowEvent e) {
 						ccframe.dispose();
 					}
@@ -145,10 +152,11 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				final JFrame ccframe =
 					new ObjectViewerColorChooser(
-						((RectIcon) (fillHighlightColorButton.getIcon()))
+							((RectIcon) (fillHighlightColorButton.getIcon()))
 							.getColor(),
-						fillHighlightColorButton);
+							fillHighlightColorButton);
 				ccframe.addWindowListener(new WindowAdapter() {
+					@Override
 					public void windowClosing(WindowEvent e) {
 						ccframe.dispose();
 					}
@@ -163,17 +171,18 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 			new JLabel("Outline Highlight Color:");
 		Icon outlineHighlightColorButtonIcon =
 			new RectIcon(
-				getObjectViewerThemeProperties().getOutlineHighlightColor());
+					getObjectViewerThemeProperties().getOutlineHighlightColor());
 		final JButton outlineHighlightColorButton =
 			new JButton(outlineHighlightColorButtonIcon);
 		outlineHighlightColorButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				final JFrame ccframe =
 					new ObjectViewerColorChooser(
-						((RectIcon) (outlineHighlightColorButton.getIcon()))
+							((RectIcon) (outlineHighlightColorButton.getIcon()))
 							.getColor(),
-						outlineHighlightColorButton);
+							outlineHighlightColorButton);
 				ccframe.addWindowListener(new WindowAdapter() {
+					@Override
 					public void windowClosing(WindowEvent e) {
 						ccframe.dispose();
 					}
@@ -187,17 +196,18 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 		JLabel fillSelectionColorLabel = new JLabel("Fill in Selection Color:");
 		Icon fillSelectionColorButtonIcon =
 			new RectIcon(
-				getObjectViewerThemeProperties().getFillInSelectionColor());
+					getObjectViewerThemeProperties().getFillInSelectionColor());
 		final JButton fillSelectionColorButton =
 			new JButton(fillSelectionColorButtonIcon);
 		fillSelectionColorButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				final JFrame ccframe =
 					new ObjectViewerColorChooser(
-						((RectIcon) (fillSelectionColorButton.getIcon()))
+							((RectIcon) (fillSelectionColorButton.getIcon()))
 							.getColor(),
-						fillSelectionColorButton);
+							fillSelectionColorButton);
 				ccframe.addWindowListener(new WindowAdapter() {
+					@Override
 					public void windowClosing(WindowEvent e) {
 						ccframe.dispose();
 					}
@@ -212,17 +222,18 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 			new JLabel("Outline Selection Color:");
 		Icon outlineSelectionColorButtonIcon =
 			new RectIcon(
-				getObjectViewerThemeProperties().getOutlineSelectionColor());
+					getObjectViewerThemeProperties().getOutlineSelectionColor());
 		final JButton outlineSelectionColorButton =
 			new JButton(outlineSelectionColorButtonIcon);
 		outlineSelectionColorButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				final JFrame ccframe =
 					new ObjectViewerColorChooser(
-						((RectIcon) (outlineSelectionColorButton.getIcon()))
+							((RectIcon) (outlineSelectionColorButton.getIcon()))
 							.getColor(),
-						outlineSelectionColorButton);
+							outlineSelectionColorButton);
 				ccframe.addWindowListener(new WindowAdapter() {
+					@Override
 					public void windowClosing(WindowEvent e) {
 						ccframe.dispose();
 					}
@@ -248,59 +259,59 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 		themePropertiesPanel.add(outlineSelectionColorLabel);
 		themePropertiesPanel.add(outlineSelectionColorButton);
 
-	
+
 		//Add the components to the themeShadersPanel
 		final JComboBox shaderTypeComboBox ;
 		final JComboBox attributeDoubleComboBox;
 		final JComboBox attributeStringComboBox;
 
 		if (getObjectViewerThemeProperties().getDataSourceType() == Utils.GEOXYGENE) {
-		
+
 			JLabel shaderLabel = new JLabel("Type of shader:");
 			shaderTypeComboBox = new JComboBox( new String[] {"Mono", "Random", "Continuous", "Unique"} );
 			shaderTypeComboBox.setSelectedItem( getShaderName(getObjectViewerThemeProperties().getShader()) );
-			final JLabel attributeDoubleLabel = new JLabel("Attributes (double or int):");			
+			final JLabel attributeDoubleLabel = new JLabel("Attributes (double or int):");
 			attributeDoubleComboBox = new JComboBox();
-			final JLabel attributeStringLabel = new JLabel("Attributes (String):");	
-			attributeStringComboBox = new JComboBox();				
-	
+			final JLabel attributeStringLabel = new JLabel("Attributes (String):");
+			attributeStringComboBox = new JComboBox();
+
 			String[] doubleFieldsNames = getDoubleOrIntFields();
-			if (doubleFieldsNames.length > 0) {	
-				for (int i=0; i<doubleFieldsNames.length; i++)	
+			if (doubleFieldsNames.length > 0) {
+				for (int i=0; i<doubleFieldsNames.length; i++)
 					attributeDoubleComboBox.addItem(doubleFieldsNames[i]);
-				if (getObjectViewerThemeProperties().getShadedBy() != null 
-					&& getSelectedFieldClass(getObjectViewerThemeProperties().getShadedBy()).equals(double.class) )
+				if (getObjectViewerThemeProperties().getShadedBy() != null
+						&& getSelectedFieldClass(getObjectViewerThemeProperties().getShadedBy()).equals(double.class) )
 					attributeDoubleComboBox.setSelectedItem( getObjectViewerThemeProperties().getShadedBy() );
-				else 
+				else
 					attributeDoubleComboBox.setSelectedItem(doubleFieldsNames[0]);
 			}
-					
+
 			String[] stringFieldsNames = getStringFields();
-			if (stringFieldsNames.length > 0) {		
-				for (int i=0; i<stringFieldsNames.length; i++)		
+			if (stringFieldsNames.length > 0) {
+				for (int i=0; i<stringFieldsNames.length; i++)
 					attributeStringComboBox.addItem(stringFieldsNames[i]);
 				if (getObjectViewerThemeProperties().getShadedBy() != null
-					&& getSelectedFieldClass(getObjectViewerThemeProperties().getShadedBy()).equals(String.class) )		
+						&& getSelectedFieldClass(getObjectViewerThemeProperties().getShadedBy()).equals(String.class) )
 					attributeStringComboBox.setSelectedItem( getObjectViewerThemeProperties().getShadedBy() );
-				else 
-					attributeStringComboBox.setSelectedItem(stringFieldsNames[0]);		
+				else
+					attributeStringComboBox.setSelectedItem(stringFieldsNames[0]);
 			}
-			
+
 			themeShadersPanel.add(shaderLabel);
 			themeShadersPanel.add(shaderTypeComboBox);
-			themeShadersPanel.add(attributeDoubleLabel);		
-			themeShadersPanel.add(attributeDoubleComboBox);		
-			themeShadersPanel.add(attributeStringLabel);		
+			themeShadersPanel.add(attributeDoubleLabel);
+			themeShadersPanel.add(attributeDoubleComboBox);
+			themeShadersPanel.add(attributeStringLabel);
 			themeShadersPanel.add(attributeStringComboBox);
-			
+
 			attributeDoubleLabel.setEnabled(false);
 			attributeDoubleComboBox.setEnabled(false);
 			attributeStringLabel.setEnabled(false);
 			attributeStringComboBox.setEnabled(false);
-			
+
 			shaderTypeComboBox.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if (shaderTypeComboBox.getSelectedItem().equals("Continuous")) {						
+					if (shaderTypeComboBox.getSelectedItem().equals("Continuous")) {
 						attributeDoubleLabel.setEnabled(true);
 						attributeDoubleComboBox.setEnabled(true);
 						attributeStringLabel.setEnabled(false);
@@ -318,14 +329,14 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 					}
 				}
 			});
-			
+
 		} else {
 			shaderTypeComboBox = null;
 			attributeDoubleComboBox = null;
-			attributeStringComboBox = null;	
+			attributeStringComboBox = null;
 		}
-				
-		
+
+
 		//Add the control panel at the bottom of the window
 		final JPanel controlPanel =
 			new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
@@ -334,35 +345,31 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				ObjectViewerThemePropertiesFrame.this.dispose();
 				getObjectViewerThemeProperties().setFillInThemeColor(
-					((RectIcon) (fillThemeColorButton.getIcon())).getColor());
+						((RectIcon) (fillThemeColorButton.getIcon())).getColor());
 				getObjectViewerThemeProperties().setOutlineThemeColor(
-					((RectIcon) (outlineThemeColorButton.getIcon()))
+						((RectIcon) (outlineThemeColorButton.getIcon()))
 						.getColor());
 				getObjectViewerThemeProperties().setFillInHighlightColor(
-					((RectIcon) (fillHighlightColorButton.getIcon()))
+						((RectIcon) (fillHighlightColorButton.getIcon()))
 						.getColor());
 				getObjectViewerThemeProperties().setOutlineHighlightColor(
-					((RectIcon) (outlineHighlightColorButton.getIcon()))
+						((RectIcon) (outlineHighlightColorButton.getIcon()))
 						.getColor());
 				getObjectViewerThemeProperties().setFillInSelectionColor(
-					((RectIcon) (fillSelectionColorButton.getIcon()))
+						((RectIcon) (fillSelectionColorButton.getIcon()))
 						.getColor());
 				getObjectViewerThemeProperties().setOutlineSelectionColor(
-					((RectIcon) (outlineSelectionColorButton.getIcon()))
-						.getColor());	
-						
-				if (getObjectViewerThemeProperties().getDataSourceType() == Utils.GEOXYGENE) {	
-										
+						((RectIcon) (outlineSelectionColorButton.getIcon()))
+						.getColor());
+				if ((getObjectViewerThemeProperties().getDataSourceType() == Utils.GEOXYGENE)&&(attributeDoubleComboBox!=null)&&(attributeStringComboBox!=null)&&(shaderTypeComboBox!=null)) {
 					if (attributeDoubleComboBox.isEnabled() && !attributeStringComboBox.isEnabled())
 						getObjectViewerThemeProperties().setShader( selectShader(( String) shaderTypeComboBox.getSelectedItem()) ,
-																(String) attributeDoubleComboBox.getSelectedItem() );
+								(String) attributeDoubleComboBox.getSelectedItem() );
 					else if (!attributeDoubleComboBox.isEnabled() && attributeStringComboBox.isEnabled())
 						getObjectViewerThemeProperties().setShader( selectShader(( String) shaderTypeComboBox.getSelectedItem()) ,
-															(String) attributeStringComboBox.getSelectedItem() );
+								(String) attributeStringComboBox.getSelectedItem() );
 					else getObjectViewerThemeProperties().setShader( selectShader(( String) shaderTypeComboBox.getSelectedItem()));
-					
 				}
-				
 				getObjectViewerThemeProperties().setChanged();
 			}
 		});
@@ -380,14 +387,14 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 		Container contentPane = getContentPane();
 		themePropertiesTabbedPanel.addTab("Colors", themePropertiesPanel);
 		themePropertiesTabbedPanel.setToolTipTextAt(
-			0,
-			"Set the colors for the current theme.");
+				0,
+		"Set the colors for the current theme.");
 		themePropertiesTabbedPanel.setSelectedIndex(0);
 		themePropertiesTabbedPanel.addTab("Shaders", themeShadersPanel);
 		themePropertiesTabbedPanel.setToolTipTextAt(
-			1,
-			"Change the shader of the current theme.");
-			
+				1,
+		"Change the shader of the current theme.");
+
 		contentPane.add(themePropertiesTabbedPanel, BorderLayout.CENTER);
 		contentPane.add(controlPanel, BorderLayout.SOUTH);
 
@@ -400,7 +407,7 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 		else if (type.equals("Continuous")) return new HSVShader();
 		else if (type.equals("Unique")) return new UniqueShader();
 		else System.out.println("### PROBLEM selecting shader ...");
-			return null;
+		return null;
 	}
 
 
@@ -416,50 +423,50 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 	private String[] getFieldNames() {
 		String[] fieldsName = new String[0];
 		if (getObjectViewerThemeProperties().getDataSourceType().equals(Utils.SHAPEFILE)) {
-			ShapefileReader shpRd = (ShapefileReader) getObjectViewerThemeProperties().getDataSource();			
+			ShapefileReader shpRd = (ShapefileReader) getObjectViewerThemeProperties().getDataSource();
 			Dbf dbf = shpRd.dbf;
 			fieldsName = new String[dbf.getNumFields()];
 			for (int i=0; i<fieldsName.length; i++)
-				fieldsName[i] = dbf.getFieldName(i).toString();		
+				fieldsName[i] = dbf.getFieldName(i).toString();
 		}
-			
+
 		else if (getObjectViewerThemeProperties().getDataSourceType().equals(Utils.GEOXYGENE)) {
 			GeOxygeneReader geOxyRd = (GeOxygeneReader) getObjectViewerThemeProperties().getDataSource();
 			fieldsName = geOxyRd.getFieldsNames();
 		}
 		return fieldsName;
 	}
-	
-	
+
+
 	private String[] getDoubleOrIntFields() {
-		Vector vector = new Vector();
+		Vector<String> vector = new Vector<String>();
 		String[] allFields = getFieldNames();
-		for (int i=0; i<allFields.length; i++) 
+		for (int i=0; i<allFields.length; i++)
 			if (getSelectedFieldClass(allFields[i]).equals(double.class) ||
-				getSelectedFieldClass(allFields[i]).equals(int.class))
+					getSelectedFieldClass(allFields[i]).equals(int.class))
 				vector.add(allFields[i]);
 		String[] array = new String[vector.size()];
 		for (int i=0; i<vector.size(); i++)
-			array[i] = (String) vector.get(i);
+			array[i] = vector.get(i);
 		return array;
 	}
-	
+
 
 	private String[] getStringFields() {
-		Vector vector = new Vector();
+		Vector<String> vector = new Vector<String>();
 		String[] allFields = getFieldNames();
-		for (int i=0; i<allFields.length; i++) 
+		for (int i=0; i<allFields.length; i++)
 			if (getSelectedFieldClass(allFields[i]).equals(String.class))
 				vector.add(allFields[i]);
 		String[] array = new String[vector.size()];
 		for (int i=0; i<vector.size(); i++)
-			array[i] = (String) vector.get(i);
+			array[i] = vector.get(i);
 		return array;
 	}
-		
-	
-	private Class getSelectedFieldClass (String fieldName) {
-		Class result = null;
+
+
+	private Class<?> getSelectedFieldClass (String fieldName) {
+		Class<?> result = null;
 		if (getObjectViewerThemeProperties().getDataSourceType().equals(Utils.GEOXYGENE)) {
 			GeOxygeneReader geOxyRd = (GeOxygeneReader) getObjectViewerThemeProperties().getDataSource();
 			result = geOxyRd.getFieldType(fieldName);

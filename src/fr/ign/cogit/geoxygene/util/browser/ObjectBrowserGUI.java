@@ -1,27 +1,27 @@
 /*
- * This file is part of the GeOxygene project source files. 
+ * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
- * the development and deployment of geographic (GIS) applications. It is a open source 
- * contribution of the COGIT laboratory at the Institut Géographique National (the French 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
+ * the development and deployment of geographic (GIS) applications. It is a open source
+ * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
  * 
- * See: http://oxygene-project.sourceforge.net 
- *  
+ * See: http://oxygene-project.sourceforge.net
+ * 
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation; 
+ * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with 
- * this library (see file LICENSE if present); if not, write to the Free Software 
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
+ * 
  */
 
 package fr.ign.cogit.geoxygene.util.browser;
@@ -50,18 +50,23 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 /**
-  * Cette classe met en oeuvre l'interface graphique (vue et contrôleur) du Navigateur d'objet de GeOxygene, conformement à
-  * l'architecture à modèle séparable de Sun Microsystems. 
-  * Les méthodes mises à disposition par cette classe sont appelées depuis la classe ObjectBrowser (modèle).
-  *
-  * @author Thierry Badard & Arnaud Braun
-  * @version 1.0
-  * 
-  */
+ * Cette classe met en oeuvre l'interface graphique (vue et contrôleur) du Navigateur d'objet de GeOxygene, conformement à
+ * l'architecture à modèle séparable de Sun Microsystems.
+ * Les méthodes mises à disposition par cette classe sont appelées depuis la classe ObjectBrowser (modèle).
+ *
+ * @author Thierry Badard & Arnaud Braun
+ * @version 1.0
+ * 
+ */
 
 public class ObjectBrowserGUI extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/** Localisation des fichiers d'internationalisation de l'interface. */
 	private static final String I18N_LANGUAGE_FILE_LOCATION =
 		"fr.ign.cogit.geoxygene.util.browser.ObjectBrowserLanguageFile";
@@ -81,7 +86,7 @@ public class ObjectBrowserGUI extends JFrame {
 
 	/** L'objet dont l'interface courante du navigateur d'objet de GeOxygene est la représentation. */
 	private Object browsedObject;
-	
+
 	/** Flag définissant si l'affichage d'un bandeau contenant le nom du type de l'objet a été demandé par le modèle (ObjectBrowser). */
 	private boolean showClassName;
 	/** Flag définissant si l'affichage des attributs publics de l'objet a été demandé par le modèle (ObjectBrowser). */
@@ -92,7 +97,7 @@ public class ObjectBrowserGUI extends JFrame {
 	private boolean showPublicMethods;
 	/** Flag définissant si l'affichage des méthodes protected, locales et héritées de l'objet a été demandé par le modèle (ObjectBrowser). */
 	private boolean showProtectedMethods;
-	
+
 	/** Locale courante. */
 	private Locale currentLocale;
 	/** RessourceBundle lié à la Locale et au fichier d'internationalisation. */
@@ -109,18 +114,18 @@ public class ObjectBrowserGUI extends JFrame {
 	 * @param showProtectedMethods l'affichage des méthodes protected, locales et héritées de l'objet est-il demandé ?
 	 */
 	public ObjectBrowserGUI(
-		Object browsedObject,
-		boolean showClassName,
-		boolean showPublicAttributes,
-		boolean showProtectedAttributes,
-		boolean showPublicMethods,
-		boolean showProtectedMethods) {
+			Object browsedObject,
+			boolean showClassName,
+			boolean showPublicAttributes,
+			boolean showProtectedAttributes,
+			boolean showPublicMethods,
+			boolean showProtectedMethods) {
 		super();
 		currentLocale = Locale.getDefault();
 		i18nLanguageFile = ResourceBundle.getBundle(I18N_LANGUAGE_FILE_LOCATION,currentLocale);
 		//i18nLanguageFile = ResourceBundle.getBundle(I18N_LANGUAGE_FILE_LOCATION,new Locale("en", "US"));
-		
-		setTitle(i18nLanguageFile.getString("DefaultFrameTitle"));		
+
+		setTitle(i18nLanguageFile.getString("DefaultFrameTitle"));
 		this.browsedObject = browsedObject;
 		this.showClassName = showClassName;
 		this.showPublicAttributes = showPublicAttributes;
@@ -142,18 +147,18 @@ public class ObjectBrowserGUI extends JFrame {
 	 * @param className le nom du type de l'objet représenté par l'interface du navigateur que l'on cherche à construire.
 	 */
 	public ObjectBrowserGUI(
-		Object browsedObject,
-		boolean showClassName,
-		boolean showPublicAttributes,
-		boolean showProtectedAttributes,
-		boolean showPublicMethods,
-		boolean showProtectedMethods,
-		String className) {		
+			Object browsedObject,
+			boolean showClassName,
+			boolean showPublicAttributes,
+			boolean showProtectedAttributes,
+			boolean showPublicMethods,
+			boolean showProtectedMethods,
+			String className) {
 		super();
 		currentLocale = Locale.getDefault();
 		i18nLanguageFile = ResourceBundle.getBundle(I18N_LANGUAGE_FILE_LOCATION,currentLocale);
 		//i18nLanguageFile = ResourceBundle.getBundle(I18N_LANGUAGE_FILE_LOCATION,new Locale("en", "US"));
-		
+
 		setTitle(i18nLanguageFile.getString("DefaultFrameTitle")+" "+className);
 		this.browsedObject = browsedObject;
 		this.showClassName = showClassName;
@@ -163,9 +168,9 @@ public class ObjectBrowserGUI extends JFrame {
 		this.showProtectedMethods = showProtectedMethods;
 		initInterface();
 	}
-	
+
 	/**
-	 * Méthode permettant le changement du titre de la fenêtre d'interface représentant l'objet courant. 
+	 * Méthode permettant le changement du titre de la fenêtre d'interface représentant l'objet courant.
 	 * 
 	 * @param className le nom du type de l'objet représenté par l'interface du navigateur d'objet.
 	 */
@@ -186,13 +191,13 @@ public class ObjectBrowserGUI extends JFrame {
 		JMenuBar jmb = new JMenuBar();
 
 		// Definition of the "File" menu and of the "Close" attached item.
-		
+
 		JMenu file = new JMenu(i18nLanguageFile.getString("MenuFileLabel"));
 		JMenuItem item;
 		file.add(
-			item =
-				new JMenuItem(
-					i18nLanguageFile.getString("MenuFileCloseItemLabel")));
+				item =
+					new JMenuItem(
+							i18nLanguageFile.getString("MenuFileCloseItemLabel")));
 		item.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
@@ -200,12 +205,12 @@ public class ObjectBrowserGUI extends JFrame {
 		});
 
 		// Definition of the "Exit" item.
-		
+
 		file.addSeparator();
 		file.add(
-			item =
-				new JMenuItem(
-					i18nLanguageFile.getString("MenuFileExitItemLabel")));
+				item =
+					new JMenuItem(
+							i18nLanguageFile.getString("MenuFileExitItemLabel")));
 		item.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
@@ -215,22 +220,22 @@ public class ObjectBrowserGUI extends JFrame {
 		jmb.add(file);
 
 		// Definition of the "Edit" menu and of the "Refresh" attached item.
-		
+
 		JMenu edit = new JMenu(i18nLanguageFile.getString("MenuEditLabel"));
 		edit.add(
-			item =
-				new JMenuItem(
-					i18nLanguageFile.getString("MenuEditRefreshItemLabel")));
+				item =
+					new JMenuItem(
+							i18nLanguageFile.getString("MenuEditRefreshItemLabel")));
 		item.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ObjectBrowser.refresh(
-									getBrowsedObject(),
-									ObjectBrowser.HIDE_WHEN_REFRESH,
-									showClassName,
-									showPublicAttributes,
-									showProtectedAttributes,
-									showPublicMethods,
-									showProtectedMethods);
+						getBrowsedObject(),
+						ObjectBrowser.HIDE_WHEN_REFRESH,
+						showClassName,
+						showPublicAttributes,
+						showProtectedAttributes,
+						showPublicMethods,
+						showProtectedMethods);
 			}
 		});
 		jmb.add(edit);
@@ -241,13 +246,13 @@ public class ObjectBrowserGUI extends JFrame {
 	}
 
 	/**
-	 * Ajoute un bandeau à l'interface contenant l'affichage du type (className) de l'objet représenté 
+	 * Ajoute un bandeau à l'interface contenant l'affichage du type (className) de l'objet représenté
 	 * par l'instance courante du navigateur d'objet.
 	 * 
-	 * @param className le type de l'objet représenté par l'instance courante du navigateur d'objet. 
+	 * @param className le type de l'objet représenté par l'instance courante du navigateur d'objet.
 	 */
 	public void addClassNameLabel(String className) {
-		JLabel label = new JLabel(className, JLabel.CENTER);
+		JLabel label = new JLabel(className, SwingConstants.CENTER);
 		label.setOpaque(true);
 		label.setBackground(Color.GRAY);
 
@@ -268,13 +273,13 @@ public class ObjectBrowserGUI extends JFrame {
 	}
 
 	/**
-	 * Ajoute à l'interface du navigateur, la représentation d'un attribut de type primitif ou chaîne de caractères. 
+	 * Ajoute à l'interface du navigateur, la représentation d'un attribut de type primitif ou chaîne de caractères.
 	 * 
 	 * @param attrib_label le nom de l'attribut.
 	 * @param attrib_value la valeur de l'attribut.
 	 */
 	public void addAttribute(String attrib_label, String attrib_value) {
-		JLabel label = new JLabel(attrib_label + " :", JLabel.RIGHT);
+		JLabel label = new JLabel(attrib_label + " :", SwingConstants.RIGHT);
 		JTextField txtfld = new JTextField(attrib_value);
 
 		this.gbc.fill = GridBagConstraints.BOTH;
@@ -304,15 +309,15 @@ public class ObjectBrowserGUI extends JFrame {
 	 * @param attrib_obj la valeur de l'attribut.
 	 */
 	public void addObjectAttribute(
-		String attrib_label,
-		String attrib_type,
-		Object attrib_obj) {
-		JLabel label = new JLabel(attrib_label + " :", JLabel.RIGHT);
+			String attrib_label,
+			String attrib_type,
+			Object attrib_obj) {
+		JLabel label = new JLabel(attrib_label + " :", SwingConstants.RIGHT);
 		JButton object_button = new JButton(attrib_type);
 		object_button.setToolTipText(
-			"Visualiser l'objet de type " + attrib_type + ".");
+				"Visualiser l'objet de type " + attrib_type + ".");
 		object_button.addActionListener(
-			new ObjectBrowserAttributeListener(attrib_obj));
+				new ObjectBrowserAttributeListener(attrib_obj));
 
 		this.gbc.fill = GridBagConstraints.BOTH;
 		this.gbc.gridy = this.ncc;
@@ -332,29 +337,29 @@ public class ObjectBrowserGUI extends JFrame {
 
 		this.ncc++;
 	}
-	
+
 	/**
-	 * Ajoute à l'interface du navigateur, un composant graphique représentant le contenu d'un tableau ou d'une 
+	 * Ajoute à l'interface du navigateur, un composant graphique représentant le contenu d'un tableau ou d'une
 	 * collection de type primitif ou chaîne de caractères.
-	 * <p>ATTENTION: méthode vouée à disparaître, car remplacée par addObjectAttributeList() !</p>  
+	 * <p>ATTENTION: méthode vouée à disparaître, car remplacée par addObjectAttributeList() !</p>
 	 * @param attrib_values un vecteur contenant l'ensemble des valeurs de l'objet de type tableau ou collection.
 	 */
-	public void addAttributeList(Vector attrib_values) {
+	public void addAttributeList(Vector<Object> attrib_values) {
 		//addAttributeList(i18nLanguageFile.getString("DefaultCollectionClassesContentLabel"),attrib_values);
-		addObjectAttributeList(i18nLanguageFile.getString("DefaultCollectionClassesContentLabel"),attrib_values);	
+		addObjectAttributeList(i18nLanguageFile.getString("DefaultCollectionClassesContentLabel"),attrib_values);
 	}
 
 	/**
-	 * Ajoute à l'interface du navigateur, un composant graphique représentant le contenu d'un attribut de type tableau ou 
+	 * Ajoute à l'interface du navigateur, un composant graphique représentant le contenu d'un attribut de type tableau ou
 	 * collection de type primitif ou chaîne de caractères.
 	 * <p>ATTENTION: méthode vouée à disparaître, car remplacée par addObjectAttributeList() !</p>
 	 * @param attrib_label le nom de l'attribut.
 	 * @param attrib_values les valeurs du tableau ou de la collection portés par l'attribut.
 	 */
-	public void addAttributeList(String attrib_label, Vector attrib_values) {
-		
+	public void addAttributeList(String attrib_label, Vector<Object> attrib_values) {
+
 		addObjectAttributeList(attrib_label, attrib_values);
-		
+
 		/* JLabel label = new JLabel(attrib_label + " :", JLabel.RIGHT);
 		JList attribList = new JList(attrib_values);
 		attribList.setVisibleRowCount(NBVISIBLEROW);
@@ -381,28 +386,28 @@ public class ObjectBrowserGUI extends JFrame {
 	}
 
 	/**
-	 * Ajoute à l'interface du navigateur, un composant graphique représentant le contenu d'un tableau ou d'une 
+	 * Ajoute à l'interface du navigateur, un composant graphique représentant le contenu d'un tableau ou d'une
 	 * collection.
 	 * @param attrib_objects un vecteur contenant l'ensemble des valeurs de l'objet de type tableau ou collection.
 	 */
-	public void addObjectAttributeList(Vector attrib_objects) {
+	public void addObjectAttributeList(Vector<Object> attrib_objects) {
 		addObjectAttributeList(i18nLanguageFile.getString("DefaultCollectionClassesContentLabel"), attrib_objects, 1, "");
 	}
 
 	/**
-	 * Ajoute à l'interface du navigateur, un composant graphique représentant le contenu d'un attribut de type tableau ou 
+	 * Ajoute à l'interface du navigateur, un composant graphique représentant le contenu d'un attribut de type tableau ou
 	 * collection.
 	 * @param attrib_label le nom de l'attribut.
 	 * @param attrib_objects les valeurs du tableau ou de la collection portés par l'attribut.
 	 */
 	public void addObjectAttributeList(
-		String attrib_label,
-		Vector attrib_objects) {
+			String attrib_label,
+			Vector<Object> attrib_objects) {
 		addObjectAttributeList(attrib_label, attrib_objects, 1, "");
 	}
 
 	/**
-	 * Ajoute à l'interface du navigateur, un composant graphique représentant le contenu d'un attribut de type tableau ou 
+	 * Ajoute à l'interface du navigateur, un composant graphique représentant le contenu d'un attribut de type tableau ou
 	 * collection.
 	 * @param attrib_label le nom de l'attribut.
 	 * @param attrib_objects les valeurs du tableau ou de la collection portés par l'attribut.
@@ -410,18 +415,18 @@ public class ObjectBrowserGUI extends JFrame {
 	 * @param attrib_underlyingType le type du contenu du tableau ou de la collection.
 	 */
 	public void addObjectAttributeList(
-		String attrib_label,
-		Vector attrib_objects,
-		int attrib_level,
-		String attrib_underlyingType) {
-		JLabel label = new JLabel(attrib_label + " :", JLabel.RIGHT);
+			String attrib_label,
+			Vector<Object> attrib_objects,
+			int attrib_level,
+			String attrib_underlyingType) {
+		JLabel label = new JLabel(attrib_label + " :", SwingConstants.RIGHT);
 		JPanel attribListPanel = new JPanel();
 		int NbElemAttribList = attrib_objects.size();
 		GridLayout gl_attribListPanel = new GridLayout(NbElemAttribList, 1);
 		//GridLayout gl_attribListPanel = new GridLayout(NbElemAttribList,2);
 		attribListPanel.setLayout(gl_attribListPanel);
 		String attribTypeName;
-		Class attribType;
+		Class<?> attribType;
 		String attribValue;
 		double prefHeight = 0;
 		double prefWidth = 0;
@@ -431,7 +436,7 @@ public class ObjectBrowserGUI extends JFrame {
 		for (int i = 0; i < NbElemAttribList; i++) {
 			//JLabel listlabel = new JLabel(i+":",JLabel.RIGHT);
 			//attribListPanel.add(listlabel);
-			
+
 			attribType = attrib_objects.get(i).getClass();
 			attribValue = attrib_objects.get(i).toString();
 			isTextPrintableField=false;
@@ -448,41 +453,41 @@ public class ObjectBrowserGUI extends JFrame {
 					attribTypeName += "]";
 				}
 			}
-			
-			if (attribTypeName.equals("java.lang.String") 
-				|| attribTypeName.equals("java.lang.Boolean")
-				|| attribTypeName.equals("java.lang.Byte")
-				|| attribTypeName.equals("java.lang.Character")
-				|| attribTypeName.equals("java.lang.Double")
-				|| attribTypeName.equals("java.lang.Float")
-				|| attribTypeName.equals("java.lang.Integer")
-				|| attribTypeName.equals("java.lang.Long")
-				|| attribTypeName.equals("java.lang.Short")) {
+
+			if (attribTypeName.equals("java.lang.String")
+					|| attribTypeName.equals("java.lang.Boolean")
+					|| attribTypeName.equals("java.lang.Byte")
+					|| attribTypeName.equals("java.lang.Character")
+					|| attribTypeName.equals("java.lang.Double")
+					|| attribTypeName.equals("java.lang.Float")
+					|| attribTypeName.equals("java.lang.Integer")
+					|| attribTypeName.equals("java.lang.Long")
+					|| attribTypeName.equals("java.lang.Short")) {
 				isTextPrintableField=true;
 			}
-						
+
 			//if (!((attribValue.indexOf("@") > -1) || (attribValue.lastIndexOf("[") > -1))) {
 			if (isTextPrintableField) {
 				JTextField txtfld = new JTextField(attribValue);
 				attribListPanel.add(txtfld);
 				if (i < NBVISIBLEROW) {
 					//prefsize += 7 + txtfld.getPreferredSize().getHeight();
-					prefHeight += txtfld.getPreferredSize().getHeight(); 
+					prefHeight += txtfld.getPreferredSize().getHeight();
 				}
 				prefWidth = txtfld.getPreferredSize().getWidth();
-				if (prefWidth > prefWidthMax) prefWidthMax = prefWidth;					
+				if (prefWidth > prefWidthMax) prefWidthMax = prefWidth;
 			} else {
 				JButton object_button = new JButton(attribTypeName);
-				
+
 				Object[] msgArguments = { new Integer(i), attribTypeName };
 				MessageFormat formatter = new MessageFormat("");
 				formatter.setLocale(currentLocale);
 				formatter.applyPattern(
-					i18nLanguageFile.getString("AttributeToolTipLabel"));
+						i18nLanguageFile.getString("AttributeToolTipLabel"));
 				object_button.setToolTipText(formatter.format(msgArguments));
 
 				object_button.addActionListener(
-					new ObjectBrowserAttributeListener(attrib_objects.get(i)));
+						new ObjectBrowserAttributeListener(attrib_objects.get(i)));
 				attribListPanel.add(object_button);
 				if (i < NBVISIBLEROW) {
 					prefHeight += 1 + object_button.getPreferredSize().getHeight();
@@ -497,18 +502,18 @@ public class ObjectBrowserGUI extends JFrame {
 
 		//attribPane.setPreferredSize(new Dimension(100, (int) prefsize));
 		attribPane.setPreferredSize(new Dimension((int) (prefWidthMax+50), (int) (prefHeight+3)));
-		
+
 		ObjectBrowserListRuler lruler =
 			new ObjectBrowserListRuler(
-				NbElemAttribList,
-				(int) attribListPanel.getPreferredSize().getHeight());
+					NbElemAttribList,
+					(int) attribListPanel.getPreferredSize().getHeight());
 		lruler.setPreferredHeight(
-			(int) (attribListPanel.getPreferredSize().getHeight()));
+				(int) (attribListPanel.getPreferredSize().getHeight()));
 		attribPane.setRowHeaderView(lruler);
 
 		//attribPane.setPreferredSize(new Dimension(0, (int) prefsize));
 		//attribPane.setPreferredSize(new Dimension((int) (prefwidthmax*1.2), (int) prefsize));
-		
+
 		this.gbc.fill = GridBagConstraints.BOTH;
 		this.gbc.gridy = this.ncc;
 		this.gbc.gridwidth = 1;
@@ -536,16 +541,16 @@ public class ObjectBrowserGUI extends JFrame {
 	 */
 	public void addMethod(Object obj, Method method) {
 		JButton method_button = new JButton(method.getName());
-		
+
 		Object[] msgArguments = { method.getName()};
 		MessageFormat formatter = new MessageFormat("");
 		formatter.setLocale(currentLocale);
 		formatter.applyPattern(
-			i18nLanguageFile.getString("MethodToolTipLabel"));
+				i18nLanguageFile.getString("MethodToolTipLabel"));
 		method_button.setToolTipText(formatter.format(msgArguments));
 
 		method_button.addActionListener(
-			new ObjectBrowserMethodListener(obj, method));
+				new ObjectBrowserMethodListener(obj, method));
 
 		this.gbc.fill = GridBagConstraints.BOTH;
 		this.gbc.gridy = this.ncc;
@@ -568,7 +573,7 @@ public class ObjectBrowserGUI extends JFrame {
 		return this.browsedObject;
 	}
 
-	 /**
+	/**
 	 * @return le RessourceBundle lié à la Locale et au fichier d'internationalisation.
 	 */
 	public ResourceBundle getI18nLanguageFile() {

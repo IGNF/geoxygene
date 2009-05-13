@@ -1,27 +1,27 @@
 /*
- * This file is part of the GeOxygene project source files. 
+ * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
- * the development and deployment of geographic (GIS) applications. It is a open source 
- * contribution of the COGIT laboratory at the Institut Géographique National (the French 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
+ * the development and deployment of geographic (GIS) applications. It is a open source
+ * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
  * 
- * See: http://oxygene-project.sourceforge.net 
- *  
+ * See: http://oxygene-project.sourceforge.net
+ * 
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation; 
+ * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with 
- * this library (see file LICENSE if present); if not, write to the Free Software 
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
+ * 
  */
 
 package fr.ign.cogit.geoxygene.util.console;
@@ -46,6 +46,10 @@ import javax.swing.JPanel;
 class GeOxygeneConsoleInterface extends JFrame {
 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static String ojb = "OJB";
 	private static String castor= "Castor";
 
@@ -55,6 +59,7 @@ class GeOxygeneConsoleInterface extends JFrame {
 	private static String datasetText = "Create DataSet";
 	private static String viewDataText = "View data";
 	private static String importDatatext = "Import data";
+	private static String exportDatatext = "Export data";
 	private static String quitText = "QUIT";
 
 	protected GeOxygeneConsoleInterface(String titre) {
@@ -68,14 +73,14 @@ class GeOxygeneConsoleInterface extends JFrame {
 		System.out.println("Bonjour");
 
 		// Init GUI
-		this.getContentPane().setLayout( new GridLayout(8,1) );
+		this.getContentPane().setLayout( new GridLayout(9,1) );
 
 		//A COMMENTER
 		final JPanel mappingPanel =	new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 		final JComboBox mappingComboBox = new JComboBox( new String[] {ojb,castor} );
 		mappingPanel.add(mappingComboBox);
 
-		this.getContentPane().add(mappingPanel);	
+		this.getContentPane().add(mappingPanel);
 
 
 		JButton sqlToJavaButton = new JButton (sqlToJavaText);
@@ -93,7 +98,7 @@ class GeOxygeneConsoleInterface extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JavaToSql.action();
 			}
-		});			
+		});
 
 		JButton manageDataButton = new JButton (manageDataText);
 		this.getContentPane().add(manageDataButton);
@@ -101,7 +106,7 @@ class GeOxygeneConsoleInterface extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				ManageData.action();
 			}
-		});			
+		});
 
 		JButton datasetButton = new JButton (datasetText);
 		this.getContentPane().add(datasetButton);
@@ -109,7 +114,7 @@ class GeOxygeneConsoleInterface extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("marche pas !!");
 			}
-		});			
+		});
 
 		JButton importDataButton = new JButton (importDatatext);
 		this.getContentPane().add(importDataButton);
@@ -117,15 +122,24 @@ class GeOxygeneConsoleInterface extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("marche pas !!");
 			}
-		});			
+		});
+
+		final ExportData exportData = new ExportData();
+		JButton exportDataButton = new JButton (exportDatatext);
+		this.getContentPane().add(exportDataButton);
+		exportDataButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				exportData.action();
+			}
+		});
 
 		JButton viewDataButton = new JButton (viewDataText);
-		this.getContentPane().add(viewDataButton);	
+		this.getContentPane().add(viewDataButton);
 		viewDataButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ViewData.action();
 			}
-		});			
+		});
 
 		JButton quitButton = new JButton (quitText);
 		this.getContentPane().add(quitButton);

@@ -1,27 +1,27 @@
 /*
- * This file is part of the GeOxygene project source files. 
+ * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
- * the development and deployment of geographic (GIS) applications. It is a open source 
- * contribution of the COGIT laboratory at the Institut Géographique National (the French 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
+ * the development and deployment of geographic (GIS) applications. It is a open source
+ * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
  * 
- * See: http://oxygene-project.sourceforge.net 
- *  
+ * See: http://oxygene-project.sourceforge.net
+ * 
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation; 
+ * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with 
- * this library (see file LICENSE if present); if not, write to the Free Software 
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
+ * 
  */
 
 package fr.ign.cogit.geoxygene.contrib.appariement.stockageLiens;
@@ -56,7 +56,7 @@ public class LienSGBD extends FT_Feature {
 	public String getObjetsComp() {return objetsComp;}
 	public void setObjetsComp(String liste) { objetsComp = liste; }
 
-	/** Estimation de la qualité du lien d'appariement 
+	/** Estimation de la qualité du lien d'appariement
 	 * (mapping fait avec la table Representation_Lien au besoin)*/
 	private double evaluation ;
 	public double getEvaluation() {return evaluation;}
@@ -67,25 +67,25 @@ public class LienSGBD extends FT_Feature {
 	public String getIndicateurs() {return indicateurs;}
 	public void setIndicateurs(String indicateurs) { this.indicateurs = indicateurs; }
 
-	/** Texte libre 
+	/** Texte libre
 	 * (mapping fait avec la table Representation_Lien au besoin)*/
 	protected String commentaire = new String();
 	public String getCommentaire() {return commentaire;}
 	public void setCommentaire(String commentaire) { this.commentaire = commentaire; }
 
-	/** Texte libre pour décrire le nom de l'appariement.  
+	/** Texte libre pour décrire le nom de l'appariement.
 	 * (mapping fait avec la table Representation_Lien au besoin)*/
 	protected String nom = new String();
 	public String getNom() {return nom;}
 	public void setNom(String nom) { this.nom = nom; }
 
-	/** Texte libre pour décrire le type d'appariement (ex. "Noeud-Noeud"). 
+	/** Texte libre pour décrire le type d'appariement (ex. "Noeud-Noeud").
 	 * (mapping fait avec la table Representation_Lien au besoin)*/
 	protected String type = new String();
 	public String getType() {return type;}
 	public void setType(String type) { this.type = type; }
 
-	/** Texte libre pour décrire les objets de référence pointés. 
+	/** Texte libre pour décrire les objets de référence pointés.
 	 * (mapping fait avec la table Representation_Lien au besoin)*/
 	protected String reference = new String();
 	public String getReference() {return reference;}
@@ -100,9 +100,9 @@ public class LienSGBD extends FT_Feature {
 
 	/**Methode de conversion entre les liens d'appariement vers les liens SGBD */
 	public LienSGBD conversionLiensVersSGBD(Lien lien){
-		List objetsRef = lien.getObjetsRef(), objetsComp = lien.getObjetsComp(), 
+		List<?> objetsRef = lien.getObjetsRef(), objetsComp = lien.getObjetsComp(),
 		indic = lien.getIndicateurs();
-		Iterator itRef = objetsRef.iterator(), itComp = objetsComp.iterator(),
+		Iterator<?> itRef = objetsRef.iterator(), itComp = objetsComp.iterator(),
 		itIndic = indic.iterator();
 
 		FT_Feature feature;
@@ -139,7 +139,7 @@ public class LienSGBD extends FT_Feature {
 			formatIndic = formatIndic+(String)itIndic.next()+"|";
 		}
 		if (formatIndic.length()>0)this.setIndicateurs(formatIndic.substring(0,formatIndic.length()-1));
-		else this.setIndicateurs("Non renseigné"); 
+		else this.setIndicateurs("Non renseigné");
 
 		//evaluation
 		this.setEvaluation(lien.getEvaluation());

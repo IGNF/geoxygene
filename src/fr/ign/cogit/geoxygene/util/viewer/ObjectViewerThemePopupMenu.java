@@ -1,27 +1,27 @@
 /*
- * This file is part of the GeOxygene project source files. 
+ * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
- * the development and deployment of geographic (GIS) applications. It is a open source 
- * contribution of the COGIT laboratory at the Institut Géographique National (the French 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
+ * the development and deployment of geographic (GIS) applications. It is a open source
+ * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
  * 
- * See: http://oxygene-project.sourceforge.net 
- *  
+ * See: http://oxygene-project.sourceforge.net
+ * 
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation; 
+ * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with 
- * this library (see file LICENSE if present); if not, write to the Free Software 
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
+ * 
  */
 
 package fr.ign.cogit.geoxygene.util.viewer;
@@ -42,25 +42,29 @@ import javax.swing.JRadioButtonMenuItem;
 import uk.ac.leeds.ccg.geotools.Theme;
 
 /**
-  * This class defines the PopMenu for the ThemeButton of the ObjectViewer's GUI.
-  *
-  * @author Thierry Badard & Arnaud Braun
-  * @version 1.0
-  * 
-  */
+ * This class defines the PopMenu for the ThemeButton of the ObjectViewer's GUI.
+ *
+ * @author Thierry Badard & Arnaud Braun
+ * @version 1.0
+ * 
+ */
 
 class ObjectViewerThemePopupMenu extends JPopupMenu {
 	//Default
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8815459323148363472L;
 	//Public variables
 	public ObjectViewerInterface objectViewerInterface;
 	public ObjectViewerThemeButton objectViewerThemeButton;
 	public ObjectViewerThemeProperties objectViewerThemeProperties;
 
 	public ObjectViewerThemePopupMenu(
-		ObjectViewerInterface objectViewerInterface,
-		ObjectViewerThemeButton objectViewerThemeButton,
-		ObjectViewerThemeProperties objectViewerThemeProperties) {
+			ObjectViewerInterface objectViewerInterface,
+			ObjectViewerThemeButton objectViewerThemeButton,
+			ObjectViewerThemeProperties objectViewerThemeProperties) {
 
 		super();
 
@@ -77,7 +81,7 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
 		final Icon checked = new ImageIcon(imageUrl);
 		imageUrl = this.getClass().getResource("images/unchecked.gif");
 		final Icon unchecked = new ImageIcon(imageUrl);
-		
+
 		ButtonGroup rbGroup = new ButtonGroup();
 		JRadioButtonMenuItem rbMenuItem = new JRadioButtonMenuItem("Visible");
 		if (getObjectViewerThemeProperties().isVisible()) rbMenuItem.setSelected(true);
@@ -85,15 +89,15 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
 		rbMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (getObjectViewerThemeButton()
-					.getIcon()
-					.toString()
-					.equals(unchecked.toString())) {
+						.getIcon()
+						.toString()
+						.equals(unchecked.toString())) {
 					getObjectViewerThemeButton().setIcon(checked);
 					getObjectViewerThemeProperties().setVisible(true);
 					getObjectViewerInterface().view.setThemeIsVisible(
-						getObjectViewerThemeProperties().getObjectViewerTheme(),
-						true,
-						true);
+							getObjectViewerThemeProperties().getObjectViewerTheme(),
+							true,
+							true);
 				}
 			}
 		});
@@ -105,20 +109,20 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
 		rbMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (getObjectViewerThemeButton()
-					.getIcon()
-					.toString()
-					.equals(checked.toString())) {
+						.getIcon()
+						.toString()
+						.equals(checked.toString())) {
 					getObjectViewerThemeButton().setIcon(unchecked);
 					getObjectViewerThemeProperties().setVisible(false);
 					getObjectViewerInterface().view.setThemeIsVisible(
-						getObjectViewerThemeProperties().getObjectViewerTheme(),
-						false,
-						true);
+							getObjectViewerThemeProperties().getObjectViewerTheme(),
+							false,
+							true);
 				}
 			}
 		});
 		add(rbMenuItem);
-		
+
 		JMenuItem menuItem = new JMenuItem("Up");
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -136,7 +140,7 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
 			}
 		});
 		add(menuItem);
-				
+
 		menuItem = new JMenuItem("Remove");
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -152,12 +156,13 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
 
 				final ObjectViewerAttributesTableFrame themeAttributesFrame =
 					new ObjectViewerAttributesTableFrame(
-						getObjectViewerThemeProperties().getObjectViewerTheme(),
-						getObjectViewerThemeProperties().getDataSourceType(),
-						getObjectViewerThemeProperties().getDataSource()										
-							);
-																		
+							getObjectViewerThemeProperties().getObjectViewerTheme(),
+							getObjectViewerThemeProperties().getDataSourceType(),
+							getObjectViewerThemeProperties().getDataSource()
+					);
+
 				themeAttributesFrame.addWindowListener(new WindowAdapter() {
+					@Override
 					public void windowClosing(WindowEvent e) {
 						themeAttributesFrame.dispose();
 					}
@@ -179,6 +184,7 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
 				final ObjectViewerThemePropertiesFrame themePropertiesFrame =
 					new ObjectViewerThemePropertiesFrame(objectViewerThemeProperties);
 				themePropertiesFrame.addWindowListener(new WindowAdapter() {
+					@Override
 					public void windowClosing(WindowEvent e) {
 						themePropertiesFrame.dispose();
 						//System.exit(0);

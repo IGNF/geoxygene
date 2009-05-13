@@ -1,27 +1,27 @@
 /*
- * This file is part of the GeOxygene project source files. 
+ * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
- * the development and deployment of geographic (GIS) applications. It is a open source 
- * contribution of the COGIT laboratory at the Institut Géographique National (the French 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
+ * the development and deployment of geographic (GIS) applications. It is a open source
+ * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
  * 
- * See: http://oxygene-project.sourceforge.net 
- *  
+ * See: http://oxygene-project.sourceforge.net
+ * 
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation; 
+ * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with 
- * this library (see file LICENSE if present); if not, write to the Free Software 
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *  
+ * 
  */
 
 package fr.ign.cogit.geoxygene.contrib.geometrie;
@@ -50,62 +50,62 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * CONTIENT des méthodes de :
  *	Projections d'un point
  *	Manipulation de l'abscisse curviligne d'une ligne
- *  Mesures sur un polygone                          
+ *  Mesures sur un polygone
  *  Offset d'une ligne (décalage)
  *  Echantillonage d'une ligne
  *	Regression linéaire
  *  et beaucoup d'autres choses très diverses
- *  
+ * 
  *  ATTENTION: certaines méthodes n'ont pas été conçues ni testées pour des coordonnées 3D
- *  
+ * 
  * 
  * English: Very very diverse set of methods on geometries
  * 
- * @author  Mustière / Bonin / Rousseaux / Grosso / Lafragueta
+ * author  Mustière / Bonin / Rousseaux / Grosso / Lafragueta
  * @version 1.0
  */
 
 public abstract class Operateurs {
 
-        
-	
-//////////////////////////////////////////////////////////////////////
-//  	Projections d'un point
-//////////////////////////////////////////////////////////////////////
 
-	/** Projection de M sur le segment [A,B] 
+
+	//////////////////////////////////////////////////////////////////////
+	//  	Projections d'un point
+	//////////////////////////////////////////////////////////////////////
+
+	/** Projection de M sur le segment [A,B]
 	 * 
 	 * English: Projects M on a [A,B]
-	 * @author Mustière 
+	 * author Mustière
 	 * */
 	public static DirectPosition projection(DirectPosition M, DirectPosition A, DirectPosition B) {
 		double lambda;
 		Vecteur uAB, AM;
-	
+
 		if (Distances.distance(A,B) == 0 ) return A;   // cas ou A et B sont confondus
-	    
-	  	uAB = new Vecteur(A,B).vectNorme();
-	  	AM = new Vecteur(A,M);
-	  	lambda = AM.prodScalaire(uAB);
-	    
-	  	if ( lambda <= 0 ) return A;  // Cas ou M se projete en A sur le segment [AB] 
-	  	if ( lambda >= Distances.distance(A,B) ) return B;  // Cas ou M se projete en B sur le segment [AB] 
+
+		uAB = new Vecteur(A,B).vectNorme();
+		AM = new Vecteur(A,M);
+		lambda = AM.prodScalaire(uAB);
+
+		if ( lambda <= 0 ) return A;  // Cas ou M se projete en A sur le segment [AB]
+		if ( lambda >= Distances.distance(A,B) ) return B;  // Cas ou M se projete en B sur le segment [AB]
 		return translate(A, uAB.multConstante(lambda)); // Cas ou M se projete entre A et B
 	}
 
-    /** Projection du point sur la polyligne.
-     * En théorie, il peut y avoir plusieurs points projetés, mais dans ce cas
-     * cette méthode n'en renvoie qu'un seul (le premier dans le sens de parcours 
-     * de la ligne).
-     * 
+	/** Projection du point sur la polyligne.
+	 * En théorie, il peut y avoir plusieurs points projetés, mais dans ce cas
+	 * cette méthode n'en renvoie qu'un seul (le premier dans le sens de parcours
+	 * de la ligne).
+	 * 
 	 * English: Projects M on the lineString
-	 * @author Mustière 
-     */
+	 * author Mustière
+	 */
 	public static DirectPosition projection(DirectPosition dp, GM_LineString LS) {
 		DirectPositionList listePoints = LS.coord();
 		double d , dmin;
 		DirectPosition pt, ptmin;
-        
+
 		if (listePoints.size() == 0) return listePoints.get(0);
 		ptmin = projection(dp,listePoints.get(0),listePoints.get(1));
 		dmin = Distances.distance(dp,ptmin);
@@ -127,16 +127,16 @@ public abstract class Operateurs {
 	 * cette méthode n'en renvoie qu'un seul.
 	 * 
 	 * English: Projects M on the agregate
-	 * @author Mustière 
+	 * author Mustière
 	 * */
-	public static DirectPosition projection(DirectPosition dp, GM_Aggregate aggr) {
-		Iterator itComposants = aggr.getList().iterator();
+	public static DirectPosition projection(DirectPosition dp, GM_Aggregate<GM_Object> aggr) {
+		Iterator<GM_Object> itComposants = aggr.getList().iterator();
 		double d = 0, dmin = Double.MAX_VALUE;
 		DirectPosition pt = null, ptmin = null;
 		boolean geomOK;
-		
+
 		while (itComposants.hasNext()) {
-			GM_Object composant = (GM_Object) itComposants.next();
+			GM_Object composant = itComposants.next();
 			geomOK = false;
 			if ( composant instanceof GM_Point ) {
 				pt = ((GM_Point)composant).getPosition();
@@ -151,7 +151,7 @@ public abstract class Operateurs {
 			if ( !geomOK) {
 				System.out.println("Projection - Type de géométrie non géré: "+composant.getClass());
 				continue;
-			} 
+			}
 			if ( d < dmin ) {
 				ptmin = pt;
 				dmin = d;
@@ -160,19 +160,19 @@ public abstract class Operateurs {
 		return ptmin;
 	}
 
-	
-	
-	
-	
-//////////////////////////////////////////////////////////////////////
-//	Manipulation de l'abscisse curviligne d'une ligne
-//////////////////////////////////////////////////////////////////////
+
+
+
+
+	//////////////////////////////////////////////////////////////////////
+	//	Manipulation de l'abscisse curviligne d'une ligne
+	//////////////////////////////////////////////////////////////////////
 
 	/** Coordonnées du point situé sur la ligne à l'abscisse curviligne passée en paramètre.
-	 *  Renvoie  Null si l'abscisse est négative ou plus grande que la longueur de la ligne. 
-	 *  
+	 *  Renvoie  Null si l'abscisse est négative ou plus grande que la longueur de la ligne.
+	 * 
 	 * English: Point located at the curvilinear abscisse
-	 * @author Mustière 
+	 * author Mustière
 	 */
 	public static DirectPosition pointEnAbscisseCurviligne(GM_LineString ls, double abscisse) {
 		int i;
@@ -180,7 +180,7 @@ public abstract class Operateurs {
 		double d;
 		DirectPosition pt1, pt2;
 		Vecteur v1;
-       
+
 		if ( abscisse > ls.length() || abscisse < 0 ) return null;
 		pt1 = ls.coord().get(0);
 		for(i=1; i<ls.coord().size() ;i++) {
@@ -200,8 +200,8 @@ public abstract class Operateurs {
 	}
 
 	/** Abscisse curviligne du ieme point de la ligne ls.
-	 * English: curvilinear abscisse of the ith point  
-	 * @author Mustière 
+	 * English: curvilinear abscisse of the ith point
+	 * author Mustière
 	 */
 	public static double abscisseCurviligne(GM_LineString ls, int i) {
 		double abs = 0;
@@ -211,49 +211,49 @@ public abstract class Operateurs {
 		return abs;
 	}
 
-	/** Coordonnées du point situé sur au milieu de la ligne. 
-	 * English: Point in the middle of the line  
-	 * @author Mustière
-	 */ 
+	/** Coordonnées du point situé sur au milieu de la ligne.
+	 * English: Point in the middle of the line
+	 * author Mustière
+	 */
 	public static DirectPosition milieu(GM_LineString ls) {
 		return pointEnAbscisseCurviligne(ls, ls.length() / 2);
 	}
 
-	/** renvoie le milieu de [A,B]. 
+	/** renvoie le milieu de [A,B].
 	 * 
-	 * English: Point in the middle of [A,B]  
-	 * @author Mustière
-	 */ 
+	 * English: Point in the middle of [A,B]
+	 * author Mustière
+	 */
 	public static DirectPosition milieu(DirectPosition A, DirectPosition B) {
 		DirectPosition M ;
 		if ( !Double.isNaN(A.getZ()) && !Double.isNaN(B.getZ()) ) {
 			M = new DirectPosition( (A.getX()+B.getX())/2 ,
-									(A.getY()+B.getY())/2 ,  
-									(A.getZ()+B.getZ())/2 ); 
+					(A.getY()+B.getY())/2 ,
+					(A.getZ()+B.getZ())/2 );
 		}
 		else {
 			M = new DirectPosition( (A.getX()+B.getX())/2 ,
-									(A.getY()+B.getY())/2 ,
-									Double.NaN); 
+					(A.getY()+B.getY())/2 ,
+					Double.NaN);
 		}
 		return M ;
 	}
 
-	/** Premiers points intermédiaires de la ligne ls, situés à moins 
+	/** Premiers points intermédiaires de la ligne ls, situés à moins
 	 * de la longueur curviligne passée en paramètre du point initial.
 	 * Renvoie null si la longueur est négative.
 	 * Renvoie le premier point si et seulement si la longueur est 0.
 	 * Renvoie tous les points si la longueur est supérieure à la longueur de la ligne
 	 * NB: les points sont renvoyés dans l'ordre en partant du premier point.
 	 * 
-	 * English: First points of the line.  
-	 * @author Mustière
+	 * English: First points of the line.
+	 * author Mustière
 	 */
 	public static DirectPositionList premiersPoints(GM_LineString ls, double longueur) {
 		int i;
 		double l = 0;
 		DirectPositionList listePts = new DirectPositionList();
-       
+
 		if ( longueur < 0 ) return null;
 		listePts.add(ls.getControlPoint(0));
 		for(i=1; i<ls.coord().size() ;i++) {
@@ -264,23 +264,23 @@ public abstract class Operateurs {
 		return listePts;
 	}
 
-	/** Derniers points intermédiaires de la ligne ls, situés à moins 
+	/** Derniers points intermédiaires de la ligne ls, situés à moins
 	 * de la longueur curviligne passée en paramètre du point final.
 	 * Renvoie null si la longueur est négative.
 	 * Renvoie le dernier point seulement si la longueur est 0.
 	 * Renvoie tous les points si la longueur est supérieure à la longueur de la ligne.
-	 * NB: les points sont renvoyés dans l'ordre en partant du dernier point 
+	 * NB: les points sont renvoyés dans l'ordre en partant du dernier point
 	 * (ordre inverse par rapport à la géoémtrie initiale).
 	 * 
-	 * English: Last points of the line.  
-	 * @author Mustière
+	 * English: Last points of the line.
+	 * author Mustière
 	 */
 	public static DirectPositionList derniersPoints(GM_LineString ls, double longueur) {
 		int i;
 		double l = 0;
 		DirectPositionList listePts = new DirectPositionList();
-        int nbPts = ls.coord().size();
-        
+		int nbPts = ls.coord().size();
+
 		if ( longueur < 0 ) return null;
 		listePts.add(ls.getControlPoint(nbPts-1));
 		for(i=nbPts-2; i>=0 ;i--) {
@@ -292,49 +292,49 @@ public abstract class Operateurs {
 	}
 
 
-        
-        
-//////////////////////////////////////////////////////////////////////
-//                   Mesures sur un polygone                          
-//////////////////////////////////////////////////////////////////////
+
+
+	//////////////////////////////////////////////////////////////////////
+	//                   Mesures sur un polygone
+	//////////////////////////////////////////////////////////////////////
 	/** Barycentre 2D (approximatif).
 	 * Il est défini comme le barycentre des points intermédiaires du contour,
-	 *  ce qui est très approximatif 
-	 *  
-	 * English: Center of the points of the polygon.  
-	 * @author Mustière
+	 *  ce qui est très approximatif
+	 * 
+	 * English: Center of the points of the polygon.
+	 * author Mustière
 	 */
 	public static DirectPosition barycentre2D(GM_Polygon poly) {
 		DirectPositionList listePoints = poly.coord();
-                DirectPosition barycentre;
+		DirectPosition barycentre;
 		double moyenneX = 0;
-                double moyenneY = 0;
-                double sommeX = 0;
-                double sommeY = 0;
-                
+		double moyenneY = 0;
+		double sommeX = 0;
+		double sommeY = 0;
+
 		for (int i=0;i<listePoints.size()-1;i++) {
-                    sommeX = sommeX + listePoints.get(i).getX();
-                    sommeY = sommeY + listePoints.get(i).getY();
+			sommeX = sommeX + listePoints.get(i).getX();
+			sommeY = sommeY + listePoints.get(i).getY();
 		};
-        moyenneX = sommeX / (listePoints.size()-1);
-        moyenneY = sommeY / (listePoints.size()-1);
-        
-        barycentre = new DirectPosition(moyenneX, moyenneY);
+		moyenneX = sommeX / (listePoints.size()-1);
+		moyenneY = sommeY / (listePoints.size()-1);
+
+		barycentre = new DirectPosition(moyenneX, moyenneY);
 		return(barycentre);
 	}
-        
-        
-        
-//////////////////////////////////////////////////////////////////////
-//            Offset d'une ligne (décalage)
-//////////////////////////////////////////////////////////////////////
-    /** Calcul d'un offset direct (demi-buffer d'une ligne, ou décalage à gauche). 
-     *  Le paramètre offset est la taille du décalage.
-     *   
-     *  English: shift of a line on the left
-     *  
-	 *  @author Bonin, Rousseaux.
-     */        
+
+
+
+	//////////////////////////////////////////////////////////////////////
+	//            Offset d'une ligne (décalage)
+	//////////////////////////////////////////////////////////////////////
+	/** Calcul d'un offset direct (demi-buffer d'une ligne, ou décalage à gauche).
+	 *  Le paramètre offset est la taille du décalage.
+	 * 
+	 *  English: shift of a line on the left
+	 * 
+	 *  author Bonin, Rousseaux.
+	 */
 	public static GM_LineString directOffset(GM_LineString ls, double offset) {
 		DirectPositionList listePoints = ls.coord();
 		DirectPosition point, pointPrec, pointSuiv, pointRes;
@@ -343,51 +343,51 @@ public abstract class Operateurs {
 		u = new Vecteur(listePoints.get(0),listePoints.get(1));
 		u.setZ(0.0);
 		pointRes = new DirectPosition(listePoints.get(0).getX() + offset * u.vectNorme().getY(),
-									  listePoints.get(0).getY() - offset * u.vectNorme().getX(),
-									  listePoints.get(0).getZ());
+				listePoints.get(0).getY() - offset * u.vectNorme().getX(),
+				listePoints.get(0).getZ());
 		ligneResultat.addControlPoint(pointRes);
 		for (int j=1;j<listePoints.size()-1;j++) {
-		   pointPrec = (DirectPosition) listePoints.get(j-1);
-		   point = (DirectPosition) listePoints.get(j);
-		   pointSuiv = (DirectPosition) listePoints.get(j+1);
-		   u = new Vecteur(pointPrec,point);
-		   u.setZ(0);
-		   v = new Vecteur(point,pointSuiv);
-		   v.setZ(0);
-		   n = u.vectNorme().soustrait(v.vectNorme());
-		   if (u.prodVectoriel(v).getZ() > 0) {
-			   pointRes = new DirectPosition(point.getX() + offset * n.vectNorme().getX(),
-											 point.getY() + offset * n.vectNorme().getY(),
-											 point.getZ());
-			   ligneResultat.addControlPoint(pointRes);
-		   }
-		   else {
-			   pointRes = new DirectPosition(point.getX() - offset * n.vectNorme().getX(),
-											 point.getY() - offset * n.vectNorme().getY(),
-											 point.getZ());
-			   ligneResultat.addControlPoint(pointRes);
-		   }
+			pointPrec = listePoints.get(j-1);
+			point = listePoints.get(j);
+			pointSuiv = listePoints.get(j+1);
+			u = new Vecteur(pointPrec,point);
+			u.setZ(0);
+			v = new Vecteur(point,pointSuiv);
+			v.setZ(0);
+			n = u.vectNorme().soustrait(v.vectNorme());
+			if (u.prodVectoriel(v).getZ() > 0) {
+				pointRes = new DirectPosition(point.getX() + offset * n.vectNorme().getX(),
+						point.getY() + offset * n.vectNorme().getY(),
+						point.getZ());
+				ligneResultat.addControlPoint(pointRes);
+			}
+			else {
+				pointRes = new DirectPosition(point.getX() - offset * n.vectNorme().getX(),
+						point.getY() - offset * n.vectNorme().getY(),
+						point.getZ());
+				ligneResultat.addControlPoint(pointRes);
+			}
 		}
 		u = new Vecteur(listePoints.get(listePoints.size()-2),
-						listePoints.get(listePoints.size()-1));
+				listePoints.get(listePoints.size()-1));
 		u.setZ(0.0);
-		pointRes = new DirectPosition(listePoints.get(listePoints.size()-1).getX() 
-											 + offset * u.vectNorme().getY(),
-									  listePoints.get(listePoints.size()-1).getY() 
-											 - offset * u.vectNorme().getX(),
-									  listePoints.get(listePoints.size()-1).getZ() );
+		pointRes = new DirectPosition(listePoints.get(listePoints.size()-1).getX()
+				+ offset * u.vectNorme().getY(),
+				listePoints.get(listePoints.size()-1).getY()
+				- offset * u.vectNorme().getX(),
+				listePoints.get(listePoints.size()-1).getZ() );
 		ligneResultat.addControlPoint(pointRes);
 		return ligneResultat;
 	}
-    
-    
-    /** Calcul d'un offset indirect (demi-buffer d'une ligne, ou décalage à droite). 
-     *  Le paramètre offset est la taille du décalage. 
-     *  
-     *  English: shift of a line on the right
+
+
+	/** Calcul d'un offset indirect (demi-buffer d'une ligne, ou décalage à droite).
+	 *  Le paramètre offset est la taille du décalage.
+	 * 
+	 *  English: shift of a line on the right
 	 *
-	 *  @author Bonin, Rousseaux.
-     */        
+	 *  author Bonin, Rousseaux.
+	 */
 	public static GM_LineString indirectOffset(GM_LineString ls, double offset) {
 		DirectPositionList listePoints = ls.coord();
 		DirectPosition point, pointPrec, pointSuiv, pointRes;
@@ -396,56 +396,56 @@ public abstract class Operateurs {
 		u = new Vecteur(listePoints.get(0),listePoints.get(1));
 		u.setZ(0);
 		pointRes = new DirectPosition(listePoints.get(0).getX() - offset * u.vectNorme().getY(),
-									  listePoints.get(0).getY() + offset * u.vectNorme().getX(),
-									  listePoints.get(0).getZ());
+				listePoints.get(0).getY() + offset * u.vectNorme().getX(),
+				listePoints.get(0).getZ());
 		ligneResultat.addControlPoint(pointRes);
 		for (int j=1;j<listePoints.size()-1;j++) {
-		   pointPrec = (DirectPosition) listePoints.get(j-1);
-		   point = (DirectPosition) listePoints.get(j);
-		   pointSuiv = (DirectPosition) listePoints.get(j+1);
-		   u = new Vecteur(pointPrec,point);
-		   u.setZ(0);
-		   v = new Vecteur(point,pointSuiv);
-		   v.setZ(0);
-		   n = u.vectNorme().soustrait(v.vectNorme());
-		   if (u.prodVectoriel(v).getZ() < 0) {
-			   pointRes = new DirectPosition(point.getX() + offset * n.vectNorme().getX(),
-											 point.getY() + offset * n.vectNorme().getY(),
-											 point.getZ());
-			   ligneResultat.addControlPoint(pointRes);
-		   }
-		   else {
-			   pointRes = new DirectPosition(point.getX() - offset * n.vectNorme().getX(),
-											 point.getY() - offset * n.vectNorme().getY(),
-											 point.getZ());
-			   ligneResultat.addControlPoint(pointRes);
-		   }
+			pointPrec = listePoints.get(j-1);
+			point = listePoints.get(j);
+			pointSuiv = listePoints.get(j+1);
+			u = new Vecteur(pointPrec,point);
+			u.setZ(0);
+			v = new Vecteur(point,pointSuiv);
+			v.setZ(0);
+			n = u.vectNorme().soustrait(v.vectNorme());
+			if (u.prodVectoriel(v).getZ() < 0) {
+				pointRes = new DirectPosition(point.getX() + offset * n.vectNorme().getX(),
+						point.getY() + offset * n.vectNorme().getY(),
+						point.getZ());
+				ligneResultat.addControlPoint(pointRes);
+			}
+			else {
+				pointRes = new DirectPosition(point.getX() - offset * n.vectNorme().getX(),
+						point.getY() - offset * n.vectNorme().getY(),
+						point.getZ());
+				ligneResultat.addControlPoint(pointRes);
+			}
 		}
 		u = new Vecteur(listePoints.get(listePoints.size()-2),
-						listePoints.get(listePoints.size()-1));
+				listePoints.get(listePoints.size()-1));
 		u.setZ(0);
-		pointRes = new DirectPosition(listePoints.get(listePoints.size()-1).getX() 
-												- offset * u.vectNorme().getY(),
-									 listePoints.get(listePoints.size()-1).getY() 
-												+ offset * u.vectNorme().getX(),
-									 listePoints.get(listePoints.size()-1).getZ() );
+		pointRes = new DirectPosition(listePoints.get(listePoints.size()-1).getX()
+				- offset * u.vectNorme().getY(),
+				listePoints.get(listePoints.size()-1).getY()
+				+ offset * u.vectNorme().getX(),
+				listePoints.get(listePoints.size()-1).getZ() );
 		ligneResultat.addControlPoint(pointRes);
-		return ligneResultat;                  
+		return ligneResultat;
 	}
-    
-    
-//////////////////////////////////////////////////////////////////////
-//            Echantillonage
-//////////////////////////////////////////////////////////////////////
-	/** Méthode pour suréchantillonner une GM_LineString. 
+
+
+	//////////////////////////////////////////////////////////////////////
+	//            Echantillonage
+	//////////////////////////////////////////////////////////////////////
+	/** Méthode pour suréchantillonner une GM_LineString.
 	 *  Des points intermédiaires écartés du pas sont ajoutés sur chaque segment
-	 *  de la ligne ls, à partir du premier point de chaque segment. 
+	 *  de la ligne ls, à partir du premier point de chaque segment.
 	 *  (voir aussi echantillonePasVariable pour une autre méthode )
 	 *
 	 *  English: Resampling of a line
-	 *  
-	 *  @author Bonin, Rousseaux.
-	 */    
+	 * 
+	 *  author Bonin, Rousseaux.
+	 */
 	public static GM_LineString echantillone (GM_LineString ls, double pas) {
 		DirectPosition point1, point2, Xins ;
 		Vecteur u1;
@@ -456,35 +456,35 @@ public abstract class Operateurs {
 		DirectPositionList listePoints = routeSurech.coord();
 		DirectPositionList listePointsEchant = new DirectPositionList();
 		for (int j=1;j<listePoints.size();j++) {
-			point1 = (DirectPosition) listePoints.get(j-1);
+			point1 = listePoints.get(j-1);
 			listePointsEchant.add(point1);
-			point2 = (DirectPosition) listePoints.get(j);
+			point2 = listePoints.get(j);
 			longTronc = Distances.distance(point1,point2);
 			fseg = new Double(longTronc / pas);
 			nseg = fseg.intValue();
 			u1 = new Vecteur(point1,point2);
 			for (i=0; i< nseg-1; i++) {
-				 Xins = new DirectPosition(point1.getX() + (i+1)*pas*u1.vectNorme().getX(),
-										   point1.getY() + (i+1)*pas*u1.vectNorme().getY(),
-										   point1.getZ() + (i+1)*pas*u1.vectNorme().getZ());
+				Xins = new DirectPosition(point1.getX() + (i+1)*pas*u1.vectNorme().getX(),
+						point1.getY() + (i+1)*pas*u1.vectNorme().getY(),
+						point1.getZ() + (i+1)*pas*u1.vectNorme().getZ());
 				listePointsEchant.add(Xins);
-				};
+			};
 		}
 		listePointsEchant.add(listePoints.get(listePoints.size()-1));
 		routeSurech = new GM_LineString(listePointsEchant);
 		return routeSurech;
 	}
 
-	/** Méthode pour suréchantillonner une GM_LineString. 
-	 *  A l'inverse de la méthode "echantillone", le pas d'echantillonage 
-	 *  diffère sur chaque segment de manière à ce que l'on échantillone chaque 
+	/** Méthode pour suréchantillonner une GM_LineString.
+	 *  A l'inverse de la méthode "echantillone", le pas d'echantillonage
+	 *  diffère sur chaque segment de manière à ce que l'on échantillone chaque
 	 *  segment en différents mini-segments tous de même longueur.
 	 *  Le pas en entrée est le pas maximum autorisé.
 	 *
 	 *  English : Resampling of a line
-	 *  
-	 *  @author Grosso.
-	 */    
+	 * 
+	 *  author Grosso.
+	 */
 	public static GM_LineString echantillonePasVariable (GM_LineString ls, double pas) {
 		DirectPosition point1, point2, Xins ;
 		Vecteur u1;
@@ -495,9 +495,9 @@ public abstract class Operateurs {
 		DirectPositionList listePoints = routeSurech.coord();
 		DirectPositionList listePointsEchant = new DirectPositionList();
 		for (int j=1;j<listePoints.size();j++) {
-			point1 = (DirectPosition) listePoints.get(j-1);
+			point1 = listePoints.get(j-1);
 			listePointsEchant.add(point1);
-			point2 = (DirectPosition) listePoints.get(j);
+			point2 = listePoints.get(j);
 			longTronc = Distances.distance(point1,point2);
 			fseg = new Double(longTronc / pas);
 			nseg = fseg.intValue();
@@ -508,52 +508,52 @@ public abstract class Operateurs {
 			double nouveauPas = pas - epsilonPas;
 			u1 = new Vecteur(point1,point2);
 			for (i=0; i< nseg-1; i++) {
-				 Xins = new DirectPosition(point1.getX() + (i+1)*nouveauPas*u1.vectNorme().getX(),
-										   point1.getY() + (i+1)*nouveauPas*u1.vectNorme().getY(),
-										   point1.getZ() + (i+1)*nouveauPas*u1.vectNorme().getZ());
+				Xins = new DirectPosition(point1.getX() + (i+1)*nouveauPas*u1.vectNorme().getX(),
+						point1.getY() + (i+1)*nouveauPas*u1.vectNorme().getY(),
+						point1.getZ() + (i+1)*nouveauPas*u1.vectNorme().getZ());
 				listePointsEchant.add(Xins);
-				};
+			};
 		}
 		listePointsEchant.add(listePoints.get(listePoints.size()-1));
 		routeSurech = new GM_LineString(listePointsEchant);
 		return routeSurech;
 	}
-  
-  
-	/** Renvoie le point translaté de P avec le vecteur V; 
-	  * Contrairement au "move" de DirectPosition, on ne deplace pas le point P
-	  *  
-      *  English : Shift of a point
-	  */    
+
+
+	/** Renvoie le point translaté de P avec le vecteur V;
+	 * Contrairement au "move" de DirectPosition, on ne deplace pas le point P
+	 * 
+	 *  English : Shift of a point
+	 */
 	public static DirectPosition translate(DirectPosition P, Vecteur V) {
 		if (!Double.isNaN(P.getZ()) && !Double.isNaN(V.getZ())) {
 			return new DirectPosition(P.getX() + V.getX(),
-									  P.getY() + V.getY(),
-									  P.getZ() + V.getZ());
+					P.getY() + V.getY(),
+					P.getZ() + V.getZ());
 		}
 		else {
 			return new DirectPosition(P.getX() + V.getX(),
-									  P.getY() + V.getY(),
-									  Double.NaN);
+					P.getY() + V.getY(),
+					Double.NaN);
 		}
 	}
 
-	
-	
-	
-//////////////////////////////////////////////////////////////////////
-//				(Très) Divers
-//////////////////////////////////////////////////////////////////////
+
+
+
+	//////////////////////////////////////////////////////////////////////
+	//				(Très) Divers
+	//////////////////////////////////////////////////////////////////////
 
 	/** Mise bout à bout de plusieurs GM_LineString pour constituer une nouvelle GM_LineString
-	 * La liste en entrée contient des GM_LineString. 
+	 * La liste en entrée contient des GM_LineString.
 	 * La polyligne créée commence sur l'extrémité libre de la première
 	 * polyligne de la liste.
 	 * 
 	 * English: Combination of lines
-	 * @author: Mustière
+	 * author: Mustière
 	 */
-	public static GM_LineString compileArcs(List geometries) {
+	public static GM_LineString compileArcs(List<GM_LineString> geometries) {
 		DirectPositionList pointsFinaux = new DirectPositionList();
 		DirectPosition pointCourant;
 		GM_LineString LSCourante, LSSuivante, LSCopie ;
@@ -561,40 +561,40 @@ public abstract class Operateurs {
 			System.out.println("ATTENTION. Erreur à la compilation de lignes : aucune ligne en entrée");
 			return null;
 		}
-		
-		LSCourante = (GM_LineString)geometries.get(0) ;
+
+		LSCourante = geometries.get(0) ;
 
 		if (geometries.size() == 1 ) {
 			return LSCourante;
 		}
-		
-		LSSuivante = (GM_LineString)geometries.get(1) ;
-				
-		if ( Distances.proche(LSCourante.startPoint(),LSSuivante.startPoint(), 0) 
+
+		LSSuivante = geometries.get(1) ;
+
+		if ( Distances.proche(LSCourante.startPoint(),LSSuivante.startPoint(), 0)
 				|| Distances.proche(LSCourante.startPoint(),LSSuivante.endPoint(), 0) ) {
 			//premier point = point finale de la premiere ligne
 			pointsFinaux.addAll(((GM_LineString)LSCourante.reverse()).getControlPoint());
 			pointCourant = LSCourante.startPoint();
 		}
-		else if ( Distances.proche(LSCourante.endPoint(),LSSuivante.startPoint(), 0) 
+		else if ( Distances.proche(LSCourante.endPoint(),LSSuivante.startPoint(), 0)
 				|| Distances.proche(LSCourante.endPoint(),LSSuivante.endPoint(), 0) ) {
 			//premier point = point initial de la premiere ligne
 			pointsFinaux.addAll(LSCourante.getControlPoint());
 			pointCourant = LSCourante.endPoint();
-			}
+		}
 		else {
 			System.out.println("ATTENTION. Erreur à la compilation de lignes (Operateurs) : les lignes ne se touchent pas");
 			return null;
 		}
-		
+
 		for (int i = 1; i < geometries.size(); i++) {
-			LSSuivante = (GM_LineString)geometries.get(i); 
+			LSSuivante = geometries.get(i);
 			LSCopie = new GM_LineString(LSSuivante.getControlPoint());
 			if ( Distances.proche(pointCourant,LSSuivante.startPoint(), 0) ) {
 				//LSSuivante dans le bon sens
 				LSCopie.removeControlPoint(LSCopie.startPoint());
 				pointsFinaux.addAll(LSCopie.getControlPoint());
-				
+
 				//quel intéret à cette ligne???
 				pointCourant = LSCopie.endPoint();
 			}
@@ -602,7 +602,7 @@ public abstract class Operateurs {
 				//LSSuivante dans le bon sens
 				LSCopie.removeControlPoint(LSCopie.endPoint());
 				pointsFinaux.addAll(((GM_LineString)LSCopie.reverse()).getControlPoint());
-				
+
 				//quel intéret à cette ligne???
 				pointCourant = LSCopie.startPoint();
 			}
@@ -611,7 +611,7 @@ public abstract class Operateurs {
 				return null;
 			}
 		}
-		
+
 		return new GM_LineString(pointsFinaux);
 	}
 
@@ -620,13 +620,13 @@ public abstract class Operateurs {
 	 * progressivement avec 10 seuils entre min et max.
 	 * 
 	 * English: Robust intersection of objects (to bypass JTS bugs)
-	 * @author: Mustière 
+	 * author: Mustière
 	 */
 	public static GM_Object intersectionRobuste(GM_Object A, GM_Object B, double min, double max) {
 		GM_Object intersection, Amodif, Bmodif ;
 		double seuilDouglas;
 		intersection = A.intersection(B);
-			
+
 		if ( intersection != null ) return intersection;
 		for(int i = 0; i < 10 ; i++) {
 			seuilDouglas = min+i*(max-min)/10;
@@ -635,9 +635,9 @@ public abstract class Operateurs {
 			intersection = Amodif.intersection(Bmodif);
 			if (intersection != null ) {
 				System.out.println("Calcul d'intersection fait après filtrage avec Douglas Peucker à "+seuilDouglas+"m, pour cause de plantage de JTS");
-				return intersection;					
+				return intersection;
 			}
-		}					
+		}
 		System.out.println("ATTENTION : Plantage du calcul d'intersection, même après nettoyage de la géométrie avec Douglas Peucker");
 		return null;
 	}
@@ -647,14 +647,14 @@ public abstract class Operateurs {
 	 * progressivement avec 10 seuils entre min et max.
 	 * 
 	 * English: Robust union of objects (to bypass JTS bugs)
-	 * @author: Mustière 
+	 * author: Mustière
 	 */
 	public static GM_Object unionRobuste(GM_Object A, GM_Object B, double min, double max) {
 		GM_Object union , Amodif, Bmodif ;
 		double seuilDouglas;
-		
+
 		union = A.union(B);
-			
+
 		if ( union != null ) return union ;
 		for(int i = 0; i < 10 ; i++) {
 			seuilDouglas = min+i*(max-min)/10;
@@ -663,231 +663,247 @@ public abstract class Operateurs {
 			union = Amodif.union(Bmodif);
 			if (union != null ) {
 				System.out.println("Calcul d'union fait après filtrage avec Douglas Peucker à "+seuilDouglas+"m, pour cause de plantage de JTS");
-				return union ;					
+				return union ;
 			}
-		}					
+		}
 		System.out.println("ATTENTION : Plantage du calcul d'union, même après nettoyage de la géométrie avec Douglas Peucker");
 		return null;
 	}
 
 
-//	////////////////////////////////////////////////////////////////////
-//				Regression linéaire
-//	////////////////////////////////////////////////////////////////////
+	//	////////////////////////////////////////////////////////////////////
+	//				Regression linéaire
+	//	////////////////////////////////////////////////////////////////////
 	/** Methode qui donne l'angle (radians) par rapport à l'axe des x de la droite passant
 	 *  au mieux au milieu d'un nuage de points (regression par moindres carrés).
 	 *  Cet angle (défini à pi près) est entre 0 et pi.
-	 *   
+	 * 
 	 * English: Linear approximation
-	 * @author: grosso
+	 * author: grosso
 	 */
-	  public static Angle directionPrincipale (DirectPositionList listePts){
-		  Angle ang = new Angle();
-		  double angle;
-		  double x0, y0, x, y, a;
-		  double moyenneX = 0, moyenneY = 0;
-		  Matrix Atrans, A, B, X; 
-		  int i;		
+	public static Angle directionPrincipale (DirectPositionList listePts){
+		Angle ang = new Angle();
+		double angle;
+		double x0, y0, x, y, a;
+		double moyenneX = 0, moyenneY = 0;
+		Matrix Atrans, A, B, X;
+		int i;
 
-		  // cas où la ligne n'a que 2 pts
-		  if ((listePts.size() == 2)){
-			 ang =  new Angle(listePts.get(0),listePts.get(1));
-			 angle = ang.getAngle();
-			 if ( angle >= Math.PI ) return new Angle(angle - Math.PI) ;
-			 else return new Angle(angle);
-		  }
-		
-		  // initialisation des matrices
-		  // On stocke les coordonnées, en se ramenant dans un repère local sur (x0,y0)
-		  A = new Matrix(listePts.size(),1); // X des points de la ligne
-		  B = new Matrix(listePts.size(),1); // Y des points de la ligne
-		  x0 = listePts.get(0).getX();
-		  y0 = listePts.get(0).getY();
-		  for (i=0;i<listePts.size();i++){
-			  x = listePts.get(i).getX() - x0;
-			  moyenneX = moyenneX + x;
-			  A.set(i,0,x);
-			  y = listePts.get(i).getY() - y0;
-			  moyenneY = moyenneY + y;
-			  B.set(i,0,y);
-		  }
-		  moyenneX = moyenneX/listePts.size();
-		  moyenneY = moyenneY/listePts.size();
-		
-		  // cas où l'angle est vertical
-		  if (moyenneX == 0) return new Angle(Math.PI/2);
-		
-		  // cas général : on cherche l'angle par régression linéaire
-		  Atrans = A.transpose();
-		  X = (Atrans.times(A)).inverse().times(Atrans.times(B));
-		  a= X.get(0,0);
-		  angle=Math.atan(a);
-		  // on obtient un angle entre -pi/2 et pi/2 ouvert
-		  // on replace cet angle dans 0 et pi
-		  if (angle<0) return new Angle(angle+Math.PI);
-		  else return new Angle(angle);	
-	  }
+		// cas où la ligne n'a que 2 pts
+		if ((listePts.size() == 2)){
+			ang =  new Angle(listePts.get(0),listePts.get(1));
+			angle = ang.getValeur();
+			if ( angle >= Math.PI ) return new Angle(angle - Math.PI) ;
+			else return new Angle(angle);
+		}
+
+		// initialisation des matrices
+		// On stocke les coordonnées, en se ramenant dans un repère local sur (x0,y0)
+		A = new Matrix(listePts.size(),1); // X des points de la ligne
+		B = new Matrix(listePts.size(),1); // Y des points de la ligne
+		x0 = listePts.get(0).getX();
+		y0 = listePts.get(0).getY();
+		for (i=0;i<listePts.size();i++){
+			x = listePts.get(i).getX() - x0;
+			moyenneX = moyenneX + x;
+			A.set(i,0,x);
+			y = listePts.get(i).getY() - y0;
+			moyenneY = moyenneY + y;
+			B.set(i,0,y);
+		}
+		moyenneX = moyenneX/listePts.size();
+		moyenneY = moyenneY/listePts.size();
+
+		// cas où l'angle est vertical
+		if (moyenneX == 0) return new Angle(Math.PI/2);
+
+		// cas général : on cherche l'angle par régression linéaire
+		Atrans = A.transpose();
+		X = (Atrans.times(A)).inverse().times(Atrans.times(B));
+		a= X.get(0,0);
+		angle=Math.atan(a);
+		// on obtient un angle entre -pi/2 et pi/2 ouvert
+		// on replace cet angle dans 0 et pi
+		if (angle<0) return new Angle(angle+Math.PI);
+		else return new Angle(angle);
+	}
 
 	/** Methode qui donne l'angle dans [0,2*pi[ par rapport à l'axe des x,
-	 *  de la droite orientée passant au mieux au milieu d'un nuage de points ordonnés 
+	 *  de la droite orientée passant au mieux au milieu d'un nuage de points ordonnés
 	 *  (regression par moindres carrés).
 	 *  L'ordre des points en entrée est important, c'est lui qui permet de donner
 	 *  l'angle à 2.pi près.
 	 *  Exemple: la liste des points peut correspondre à n points d'un arc, l'angle
 	 *  représente alors l'orientation générale de ces points, en prenant le premier
 	 *  pour point de départ.
-	 *  
+	 * 
 	 * English: Linear approximation
-	 * @author: grosso
+	 * author: grosso
 	 */
-	  public static Angle directionPrincipaleOrientee (DirectPositionList listePts){
-		  double angle;
-		  double x0, y0, x, y, a;
-		  double moyenneX = 0, moyenneY = 0;
-		  Matrix Atrans, A, B, X; 
-		  int i;		
+	public static Angle directionPrincipaleOrientee (DirectPositionList listePts){
+		double angle;
+		double x0, y0, x, y, a;
+		double moyenneX = 0, moyenneY = 0;
+		Matrix Atrans, A, B, X;
+		int i;
 
-		  // cas où la ligne n'a que 2 pts
-		  if ((listePts.size() == 2)){
-			 return new Angle(listePts.get(0),listePts.get(1));
-		  }
-		
-		  // initialisation des matrices
-		  // On stocke les coordonnées, en se ramenant dans un repère local sur (x0,y0)
-		  A = new Matrix(listePts.size(),1); // X des points de la ligne
-		  B = new Matrix(listePts.size(),1); // Y des points de la ligne
-		  x0 = listePts.get(0).getX();
-		  y0 = listePts.get(0).getY();
-		  for (i=0;i<listePts.size();i++){
-			  x = listePts.get(i).getX() - x0;
-			  moyenneX = moyenneX + x;
-			  A.set(i,0,x);
-			  y = listePts.get(i).getY() - y0;
-			  moyenneY = moyenneY + y;
-			  B.set(i,0,y);
-		  }
-		  moyenneX = moyenneX/listePts.size();
-		  moyenneY = moyenneY/listePts.size();
-		
-		  // cas où l'angle est vertical
-		  if (moyenneX == 0){
-			  if (moyenneY<0) return new Angle(3*Math.PI/2);
-			  if (moyenneY>0) return new Angle(Math.PI/2);
-		  }
-		
-		  // cas général : on cherche l'angle par régression linéaire
-		  Atrans = A.transpose();
-		  X = (Atrans.times(A)).inverse().times(Atrans.times(B));
-		  a= X.get(0,0);
-		  // on obtient un angle entre -pi/2 et pi/2 ouvert
-		  angle=Math.atan(a);
-		  // on replace cet angle dans 0 et 2pi
-		  if (moyenneY<0){ 
-			  if (angle>=0) return new Angle(angle+Math.PI); 
-			  else return new Angle(angle+2*Math.PI);
-		  }
-		  if (angle<0) return new Angle(angle+Math.PI);
-		  return new Angle(angle);	
-	  }
+		// cas où la ligne n'a que 2 pts
+		if ((listePts.size() == 2)){
+			return new Angle(listePts.get(0),listePts.get(1));
+		}
+
+		// initialisation des matrices
+		// On stocke les coordonnées, en se ramenant dans un repère local sur (x0,y0)
+		A = new Matrix(listePts.size(),1); // X des points de la ligne
+		B = new Matrix(listePts.size(),1); // Y des points de la ligne
+		x0 = listePts.get(0).getX();
+		y0 = listePts.get(0).getY();
+		for (i=0;i<listePts.size();i++){
+			x = listePts.get(i).getX() - x0;
+			moyenneX = moyenneX + x;
+			A.set(i,0,x);
+			y = listePts.get(i).getY() - y0;
+			moyenneY = moyenneY + y;
+			B.set(i,0,y);
+		}
+		moyenneX = moyenneX/listePts.size();
+		moyenneY = moyenneY/listePts.size();
+
+		// cas où l'angle est vertical
+		if (moyenneX == 0){
+			if (moyenneY<0) return new Angle(3*Math.PI/2);
+			if (moyenneY>0) return new Angle(Math.PI/2);
+		}
+
+		// cas général : on cherche l'angle par régression linéaire
+		Atrans = A.transpose();
+		X = (Atrans.times(A)).inverse().times(Atrans.times(B));
+		a= X.get(0,0);
+		// on obtient un angle entre -pi/2 et pi/2 ouvert
+		angle=Math.atan(a);
+		// on replace cet angle dans 0 et 2pi
+		if (moyenneY<0){
+			if (angle>=0) return new Angle(angle+Math.PI);
+			else return new Angle(angle+2*Math.PI);
+		}
+		if (angle<0) return new Angle(angle+Math.PI);
+		return new Angle(angle);
+	}
 
 
-//////////////////////////////////////////////////////////////////////
-//            Divers
-//////////////////////////////////////////////////////////////////////
-  /** Teste si 2 DirectPosition ont les mêmes coordonnées.  
-   * 
-   * English: Tests the equality of geometries
-   */
-  public static boolean superposes(DirectPosition pt1, DirectPosition pt2) {
-	  if ( pt1.getX() != pt2.getX()) return false;
-	  if ( pt1.getY() != pt2.getY()) return false;
-	  if ( pt1.getZ() != Double.NaN ) {
-		if ( pt1.getZ() != pt2.getZ()) return false;
-	  }
-	  return true;
-  }
+	//////////////////////////////////////////////////////////////////////
+	//            Divers
+	//////////////////////////////////////////////////////////////////////
+	/** 
+	 * Teste si 2 <code>DirectPosition</code>s ont les mêmes coordonnées. 
+	 * Le test est effectué en 3D :
+	 * <ul>
+	 * <li> si le premier point n'a pas de Z, le second ne doit pas en avoir pour être égal.
+	 * <li> si le premier point possède un Z, sa valeur est comparée au Z du second.
+	 * </ul>
+	 * English: Tests the equality of geometries in 3D
+	 * @param pt1 une position
+	 * @param pt2 une position
+	 * @return vrai si les deux <code>DirectPosition</code>s ont les mêmes coordonnées.
+	 */
+	public static boolean superposes(DirectPosition pt1, DirectPosition pt2) {
+		return (pt1.getX()==pt2.getX())&&(pt1.getY()==pt2.getY())&&(Double.isNaN(pt1.getZ())?Double.isNaN(pt2.getZ()):(pt1.getZ()==pt2.getZ()));
+	}
+	/** 
+	 * Teste si 2 <code>DirectPosition</code>s ont les mêmes coordonnées. 
+	 * Le test est effectué en 2D : aucun Z n'est considéré.
+	 * English: Tests the equality of geometries in 2D
+	 * @param pt1 une position
+	 * @param pt2 une position
+	 * @return vrai si les deux <code>DirectPosition</code>s ont les mêmes coordonnées en 2D.
+	 */
+	public static boolean superposes2D(DirectPosition pt1, DirectPosition pt2) {
+		return (pt1.getX()==pt2.getX())&&(pt1.getY()==pt2.getY());
+	}
 
-  /** Teste si 2 GM_Point ont les mêmes coordonnées.
-   *   
-    * English: Tests the equality of geometries
-    */
-  public static boolean superposes(GM_Point pt1, GM_Point pt2) {
-  	return superposes(pt1.getPosition(),pt2.getPosition());
-  }
 
-  	/** Teste la présence d'un DirectPosition (égalité 2D) dans une
-     *  DirectPositionList.
-     * Renvoie -1 si le directPosition n'est pas dans la liste
-     * 
-     * English: tests if the line contains the point (in 2D)
-     */
+	/** Teste si 2 <code>GM_Point</code>s ont les mêmes coordonnées.
+	 * 
+	 * English: Tests the equality of geometries
+	 */
+	public static boolean superposes(GM_Point pt1, GM_Point pt2) {
+		return superposes(pt1.getPosition(),pt2.getPosition());
+	}
+
+	/** Teste la présence d'un DirectPosition (égalité 2D) dans une
+	 *  DirectPositionList.
+	 * Renvoie -1 si le directPosition n'est pas dans la liste
+	 * 
+	 * English: tests if the line contains the point (in 2D)
+	 */
 	public static int indice2D(DirectPositionList dpl, DirectPosition dp) {
 		int i;
 		DirectPosition dp1;
 		for (i=0; i<dpl.size(); i++) {
-			dp1 = (DirectPosition) dpl.get(i);
+			dp1 = dpl.get(i);
 			if ((dp1.getX() == dp.getX()) && (dp1.getY() == dp.getY()))return i;
 		}
 		return -1;
 	}
-	
-  	/** Teste la présence d'un DirectPosition (égalité 3D) dans une
-     *  DirectPositionList.
-     * Renvoie -1 si le directPosition n'est pas dans la liste
-     * 
-     * English: tests if the line contains the point (in 3D)
-     */
-    public static int indice3D(DirectPositionList dpl, DirectPosition dp) {
-        int i;
-        DirectPosition dp1;
-        for (i=0; i<dpl.size(); i++) {
-                dp1 = (DirectPosition) dpl.get(i);
-                if ((dp1.getX() == dp.getX()) && (dp1.getY() == dp.getY())
-                                && (dp1.getZ() == dp.getZ()))return i;
-        }
-        return -1;
-    }
-	
-	 /** Attribue par interpolation un Z aux points d'une ligne en connaissant le Z 
-	  * des extrémités.
-	  *
-	  * English: Z interpolation
-	  * @author : Arnaud Lafragueta
-	  */
-	  public static GM_LineString calculeZ(GM_LineString ligne) { 
-			
-		  DirectPosition pointIni = ligne.startPoint(); 
-		  DirectPosition pointFin = ligne.endPoint(); 
-		  double z_ini = pointIni.getZ(); 
-		  double z_fin = pointFin.getZ(); 
-		  DirectPositionList listePoints = ligne.coord(); 
-		  double longueur = 0.0; 
-		  double zCalc; 
-		  DirectPosition pointRoute, pointRoute1; 
-		  for (int j=1;j<listePoints.size()-1;j++) { 
-			 pointRoute = listePoints.get(j); 
-			 pointRoute1 = listePoints.get(j-1); 
-			 longueur = longueur + Distances.distance(pointRoute,pointRoute1); 
-			 zCalc = z_ini + (z_fin - z_ini) * longueur / ligne.length();           
-			 pointRoute.setZ(zCalc); 
-			 ligne.setControlPoint(j, pointRoute);
-		  } 
-		
-		  return ligne;
+
+	/** Teste la présence d'un DirectPosition (égalité 3D) dans une
+	 *  DirectPositionList.
+	 * Renvoie -1 si le directPosition n'est pas dans la liste
+	 * 
+	 * English: tests if the line contains the point (in 3D)
+	 */
+	public static int indice3D(DirectPositionList dpl, DirectPosition dp) {
+		int i;
+		DirectPosition dp1;
+		for (i=0; i<dpl.size(); i++) {
+			dp1 = dpl.get(i);
+			if ((dp1.getX() == dp.getX()) && (dp1.getY() == dp.getY())
+					&& (dp1.getZ() == dp.getZ()))return i;
+		}
+		return -1;
+	}
+
+	/** Attribue par interpolation un Z aux points d'une ligne en connaissant le Z
+	 * des extrémités.
+	 *
+	 * English: Z interpolation
+	 * author : Arnaud Lafragueta
+	 */
+	public static GM_LineString calculeZ(GM_LineString ligne) {
+
+		DirectPosition pointIni = ligne.startPoint();
+		DirectPosition pointFin = ligne.endPoint();
+		double z_ini = pointIni.getZ();
+		double z_fin = pointFin.getZ();
+		DirectPositionList listePoints = ligne.coord();
+		double longueur = 0.0;
+		double zCalc;
+		DirectPosition pointRoute, pointRoute1;
+		for (int j=1;j<listePoints.size()-1;j++) {
+			pointRoute = listePoints.get(j);
+			pointRoute1 = listePoints.get(j-1);
+			longueur = longueur + Distances.distance(pointRoute,pointRoute1);
+			zCalc = z_ini + (z_fin - z_ini) * longueur / ligne.length();
+			pointRoute.setZ(zCalc);
+			ligne.setControlPoint(j, pointRoute);
 		}
 
+		return ligne;
+	}
+
 	/** Fusionne les surfaces adjacentes d'une population.
-	 * NB: quand X objets sont fusionnés, un des objets (au hasard) est gardé 
+	 * NB: quand X objets sont fusionnés, un des objets (au hasard) est gardé
 	 * avec ses attributs et sa géoémtrie est remplacée par celle fusionnée.
 	 *
 	 * English: aggregation of surfaces
 	 */
+	@SuppressWarnings("unchecked")
 	public static void fusionneSurfaces(Population popSurf) {
 
 		Iterator itSurf = popSurf.getElements().iterator();
 		Iterator itSurfAdjacentes ;
-		List aEnlever = new ArrayList(); 
-		GM_Object surfaceAfusionner, surfFusionnee; 
+		List aEnlever = new ArrayList();
+		GM_Object surfaceAfusionner, surfFusionnee;
 		FT_Feature objSurf, objAfusionner, objetAEnlever;
 
 		if ( ! popSurf.hasSpatialIndex() ) popSurf.initSpatialIndex(Tiling.class, true);
@@ -914,20 +930,20 @@ public abstract class Operateurs {
 			objetAEnlever = (FT_Feature) itAEnlever.next();
 			popSurf.enleveElement(objetAEnlever);
 		}
-		
+
 	}
 
 	/** Dilate les surfaces de la population.
 	 * 
 	 * English: dilates surfaces
 	 */
-	public static void bufferSurfaces(Population popSurf, double tailleBuffer) {
+	public static void bufferSurfaces(Population<FT_Feature> popSurf, double tailleBuffer) {
 
 		FT_Feature objSurf;
-		Iterator itSurf = popSurf.getElements().iterator();
+		Iterator<FT_Feature> itSurf = popSurf.getElements().iterator();
 
 		while (itSurf.hasNext()) {
-			objSurf = (FT_Feature) itSurf.next();
+			objSurf = itSurf.next();
 			objSurf.setGeom(objSurf.getGeom().buffer(tailleBuffer));
 		}
 	}
@@ -935,12 +951,12 @@ public abstract class Operateurs {
 	/** Surface d'un polygone (trous non gérés).
 	 * Utile pour pallier aux déficiences de JTS qui n'accèpte pas les géométries dégénérées.
 	 * 
-	 * Le calcul est effectué dans un repère local centré sur le premier point 
-	 * de la surface, ce qui est utile pour minimiser les erreurs de calcul 
+	 * Le calcul est effectué dans un repère local centré sur le premier point
+	 * de la surface, ce qui est utile pour minimiser les erreurs de calcul
 	 * si on manipule de grandes coordonnées).
 	 * 
 	 * English: surface of a polygon
-	 */ 
+	 */
 	public static double surface(GM_Polygon poly){
 		DirectPositionList pts = poly.exteriorCoord();
 		DirectPosition pt1, pt2;
@@ -960,7 +976,7 @@ public abstract class Operateurs {
 	/** Surface d'un polygone (liste de points supposée fermée).
 	 * 
 	 * English: surface of a polygon
-	 */ 
+	 */
 	public static double surface(DirectPositionList pts){
 		DirectPosition pt1, pt2;
 		double ymin;
@@ -981,16 +997,16 @@ public abstract class Operateurs {
 	 * NB : renvoie true pour une surface dégénérée.
 	 * 
 	 * English : orientation of a polygon (direct rotation?)
-	 */ 
+	 */
 	public static boolean sensDirect(DirectPositionList pts){
-		Iterator itPts=pts.getList().iterator(); 
+		Iterator<DirectPosition> itPts=pts.getList().iterator();
 		DirectPosition pt1, pt2;
 		double ymin;
 		double surf = 0;
-		pt1 = (DirectPosition)itPts.next();
+		pt1 = itPts.next();
 		ymin = pt1.getY();
 		while (itPts.hasNext()) {
-			pt2 = (DirectPosition) itPts.next();
+			pt2 = itPts.next();
 			surf = surf + ((pt2.getX()-pt1.getX())*(pt2.getY()+pt1.getY()-2*ymin));
 			pt1 = pt2;
 		}
