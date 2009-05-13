@@ -37,5 +37,6 @@
 	<classpathentry kind="lib" path="lib/vecmath-1.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/xstream-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/geotools1-cogit.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
