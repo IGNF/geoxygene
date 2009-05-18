@@ -42,12 +42,24 @@ public class GUIShapefileChoice extends JFrame {
 	private static final long serialVersionUID = 1L;
 	static Logger logger=Logger.getLogger(GUIShapefileChoice.class.getName());
 
+	/**
+	 * Dernier dossier ouvert
+	 */
+	private String directoryPath;
 	private boolean multiSelectionEnabled = true;
 	/**
-	 * Constructeur de sélecteur de shapefiles
+	 * Constructeurs de sélecteur de shapefiles
 	 * @param MultiSelectionEnabled
 	 */
-	public GUIShapefileChoice(boolean MultiSelectionEnabled) {this.multiSelectionEnabled = MultiSelectionEnabled;}
+	public GUIShapefileChoice(boolean MultiSelectionEnabled) {
+		this.multiSelectionEnabled = MultiSelectionEnabled;
+		directoryPath = null;
+	}
+	
+	public GUIShapefileChoice(boolean MultiSelectionEnabled, String latestFolder) {
+		this.multiSelectionEnabled = MultiSelectionEnabled;
+		directoryPath = latestFolder;
+	}
 	/**
 	 * Ouvre une fenêtre de sélection et renvoie un tableau contenant les fichiers sélectionnés.
 	 * Ne permet que la sélection de fichiers.
@@ -66,7 +78,8 @@ public class GUIShapefileChoice extends JFrame {
 	 * @return un tableau contenant les fichiers ou répertoires sélectionnés. null si rien n'a été sélectionné
 	 */
 	public File[] getSelectedFilesOrDirectories(boolean selectFiles) {
-		JFileChooser chooser = new JFileChooser();
+		JFileChooser chooser = new JFileChooser(directoryPath);
+		
 		if (selectFiles) {
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("ESRI Shapefiles","shp");
 			chooser.setFileFilter(filter);		    
@@ -74,9 +87,11 @@ public class GUIShapefileChoice extends JFrame {
 		    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		}
 		chooser.setMultiSelectionEnabled(multiSelectionEnabled);
+		
 		int returnVal = chooser.showOpenDialog(this);
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			File[] files = chooser.getSelectedFiles();
+			
 			if (logger.isTraceEnabled()) for(int i = 0; i < files.length ; i++)
 				logger.trace("You chose this "+(selectFiles?"file :":" directory ") + files[i].getName());
 			return files;
