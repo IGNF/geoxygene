@@ -105,8 +105,11 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			return JtsGeOxygene.makeGeOxygeneGeom(jtsBuffer);
 		} catch (Exception e) {
 			logger.error("## CALCUL DE BUFFER AVEC JTS : PROBLEME (le resultat renvoie NULL) ##");
-			if (logger.isDebugEnabled()) logger.debug(e.getMessage());
-			//e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug("Buffer de distance "+distance+" avec la géométrie :");
+				logger.debug((geom!=null)?geom.toString():"null");
+				logger.debug(e.getMessage());
+			}
 			return null;
 		}
 	}
@@ -118,8 +121,11 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			return JtsGeOxygene.makeGeOxygeneGeom(jtsBuffer);
 		} catch (Exception e) {
 			logger.error("## CALCUL DE BUFFER AVEC JTS : PROBLEME (le resultat renvoie NULL) ##");
-			if (logger.isDebugEnabled()) logger.debug(e.getMessage());
-			//e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug("Buffer de distance "+distance+" avec "+nSegments+" segments et la géométrie :");
+				logger.debug((geom!=null)?geom.toString():"null");
+				logger.debug(e.getMessage());
+			}
 			return null;
 		}
 	}
@@ -249,7 +255,12 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			return jtsGeom1.contains(jtsGeom2);
 		} catch (Exception e) {
 			logger.error("## PREDICAT CONTAINS AVEC JTS : PROBLEME (le resultat renvoie FALSE) ##");
-			if (logger.isDebugEnabled()) logger.debug(e.getMessage());
+			if (logger.isDebugEnabled()) {
+				logger.debug("Les deux géométries concernées sont :");
+				logger.debug((g1!=null)?g1.toString():"null");
+				logger.debug((g2!=null)?g2.toString():"null");
+				logger.debug(e.getMessage());
+			}
 			//e.printStackTrace();
 			return false;
 		}
@@ -316,8 +327,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			logger.error("## PREDICAT INTERSECTS AVEC JTS : PROBLEME (le resultat renvoie FALSE) ##");
 			if (logger.isDebugEnabled()) {
 				logger.debug("Les deux géométries concernées sont :");
-				logger.debug(g1.toString());
-				logger.debug(g2.toString());
+				logger.debug((g1!=null)?g1.toString():"null");
+				logger.debug((g2!=null)?g2.toString():"null");
 				logger.debug(e.getMessage());
 			}
 			//e.printStackTrace();

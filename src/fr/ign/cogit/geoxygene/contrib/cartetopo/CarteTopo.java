@@ -717,8 +717,8 @@ public class CarteTopo extends DataSet {
 		// initialisation de l'index des arcs au besoin
 		if (!this.getPopArcs().hasSpatialIndex()) this.getPopArcs().initSpatialIndex(Tiling.class, true);
 		fireActionPerformed(new ActionEvent(this,0,"Rendre la carte planaire",this.getPopArcs().size()));
-		for(int i=0;i<this.getPopArcs().size();i++) {
-			Arc arc = this.getPopArcs().get(i);
+		for(int indexArc=0;indexArc<this.getPopArcs().size();indexArc++) {
+			Arc arc = this.getPopArcs().get(indexArc);
 			if (logger.isDebugEnabled()) logger.debug("Traitement de l'"+arc);
 			if (arcsEnleves.contains(arc)||dejaTraites.contains(arc)) continue;
 			//les arcs qui croisent l'arc courant
@@ -759,7 +759,7 @@ public class CarteTopo extends DataSet {
 				listeInter.add(arcSel);
 			}
 			if (listeInter.size() == 0) {
-				fireActionPerformed(new ActionEvent(this,1,"Arc traité",i+1));
+				fireActionPerformed(new ActionEvent(this,1,"Arc traité",indexArc+1));
 				continue; //pas d'intersection avec cet arc
 			}
 			//on découpe tout
@@ -803,7 +803,7 @@ public class CarteTopo extends DataSet {
 						//else logger.error(" "+ a.getGeometrie().toString());
 					}
 				}
-				fireActionPerformed(new ActionEvent(this,1,"Arc traité",i+1));
+				fireActionPerformed(new ActionEvent(this,1,"Arc traité",indexArc+1));
 				continue;
 			}
 			if (nodedLineStrings instanceof GM_MultiCurve ) { //cas où il faut découper
@@ -829,7 +829,7 @@ public class CarteTopo extends DataSet {
 					arcSel.setCorrespondants(new ArrayList<FT_Feature>());
 					arcsEnleves.add(arcSel);
 				}
-				fireActionPerformed(new ActionEvent(this,1,"Arc traité",i+1));
+				fireActionPerformed(new ActionEvent(this,1,"Arc traité",indexArc+1));
 				continue;
 			}
 			//cas imprévu: OUPS

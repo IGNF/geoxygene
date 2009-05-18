@@ -171,7 +171,7 @@ public class Population<Feature extends FT_Feature> extends FT_FeatureCollection
 		catch (Exception e) {
 			logger.error("----- ATTENTION : Chargement impossible de la population "+this.getNom());
 			logger.error("-----             Sans doute un probleme avec le SGBD, ou table inexistante, ou pas de mapping ");
-			e.printStackTrace();
+			//e.printStackTrace();
 			return;
 		}
 		if (logger.isInfoEnabled()) logger.info("-- "+this.size()+" instances chargees dans la population");
