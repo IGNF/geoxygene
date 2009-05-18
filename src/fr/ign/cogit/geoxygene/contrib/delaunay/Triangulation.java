@@ -27,11 +27,16 @@
 package fr.ign.cogit.geoxygene.contrib.delaunay;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 /**
@@ -42,133 +47,205 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 @SuppressWarnings("unchecked")
 public class Triangulation extends CarteTopo{
+    static Logger logger=Logger.getLogger(Triangulation.class.getName());
 
-	public Triangulation() {}
+    /**
+     * 
+     */
+    public Triangulation() {
+	this.ojbConcreteClass = this.getClass().getName(); // nécessaire pour ojb
+	this.setPersistant(false);
+	Population<ArcDelaunay> arcs = new Population<ArcDelaunay>(false, "Arc", ArcDelaunay.class,true);
+	this.addPopulation(arcs);
+	Population<NoeudDelaunay> noeuds = new Population<NoeudDelaunay>(false, "Noeud", NoeudDelaunay.class,true);
+	this.addPopulation(noeuds);
+	Population<TriangleDelaunay> faces = new Population<TriangleDelaunay>(false, "Face", TriangleDelaunay.class,true);
+	this.addPopulation(faces);
+    }
 
-	public Triangulation(String nom_logique) {
-		this.ojbConcreteClass = this.getClass().getName(); // nécessaire pour ojb
-		this.setNom(nom_logique);
-		this.setPersistant(false);
-		Population<ArcDelaunay> arcs = new Population<ArcDelaunay>(false, "Arc", ArcDelaunay.class,true);
-		this.addPopulation(arcs);
-		Population<NoeudDelaunay> noeuds = new Population<NoeudDelaunay>(false, "Noeud", NoeudDelaunay.class,true);
-		this.addPopulation(noeuds);
-		Population<TriangleDelaunay> faces = new Population<TriangleDelaunay>(false, "Face", TriangleDelaunay.class,true);
-		this.addPopulation(faces);
+    /**
+     * @param nom_logique
+     */
+    public Triangulation(String nom_logique) {
+	this.ojbConcreteClass = this.getClass().getName(); // nécessaire pour ojb
+	this.setNom(nom_logique);
+	this.setPersistant(false);
+	Population<ArcDelaunay> arcs = new Population<ArcDelaunay>(false, "Arc", ArcDelaunay.class,true);
+	this.addPopulation(arcs);
+	Population<NoeudDelaunay> noeuds = new Population<NoeudDelaunay>(false, "Noeud", NoeudDelaunay.class,true);
+	this.addPopulation(noeuds);
+	Population<TriangleDelaunay> faces = new Population<TriangleDelaunay>(false, "Face", TriangleDelaunay.class,true);
+	this.addPopulation(faces);
+    }
+
+    private Triangulateio jin = new Triangulateio();
+    private Triangulateio jout = new Triangulateio();
+    private Triangulateio jvorout = new Triangulateio();
+    private String options = null;
+
+    private void convertJin() {
+	int i;
+	NoeudDelaunay node;
+	GM_Point point;
+	DirectPosition coord;
+	ArrayList<FT_Feature> noeuds = new ArrayList<FT_Feature>(this.getListeNoeuds());
+
+	jin.numberofpoints = noeuds.size();
+	jin.pointlist = new double[2*jin.numberofpoints];
+	for (i=0; i<noeuds.size(); i++) {
+	    node = (NoeudDelaunay) noeuds.get(i);
+	    point = node.getGeometrie();
+	    coord = point.getPosition();
+	    jin.pointlist[2*i]=coord.getX();
+	    jin.pointlist[2*i+1]=coord.getY();
+	}
+    }
+
+    private void convertJinSegments() {
+	int i;
+	ArrayList<FT_Feature> noeuds = new ArrayList<FT_Feature>(this.getListeNoeuds());
+	ArrayList<FT_Feature> aretes = new ArrayList<FT_Feature>(this.getListeArcs());
+	jin.numberofsegments = aretes.size();
+	jin.segmentlist = new int[2*jin.numberofsegments];
+	for (i=0; i<jin.numberofsegments; i++) {
+	    jin.segmentlist[2*i]=noeuds.indexOf(((ArcDelaunay)aretes.get(i)).getNoeudIni());
+	    jin.segmentlist[2*i+1]=noeuds.indexOf(((ArcDelaunay)aretes.get(i)).getNoeudFin());
 	}
 
-	private Triangulateio jin = new Triangulateio();
-	private Triangulateio jout = new Triangulateio();
-	//private Triangulateio jvorout = new Triangulateio();
-	private String options = null;
+    }
 
-	private void convertJin() {
-		int i;
-		NoeudDelaunay node;
-		GM_Point point;
-		DirectPosition coord;
-		ArrayList<FT_Feature> noeuds = new ArrayList<FT_Feature>(this.getListeNoeuds());
+    private void convertJout() {
+	try {
+	    TriangleDelaunay tri;
+	    //ArcDelaunay are;
+	    NoeudDelaunay noe;
+	    int i;
+	    //GM_LineString ls;
 
-		jin.numberofpoints = noeuds.size();
-		jin.pointlist = new double[2*jin.numberofpoints];
-		for (i=0; i<noeuds.size(); i++) {
-			node = (NoeudDelaunay) noeuds.get(i);
-			point = node.getGeometrie();
-			coord = point.getPosition();
-			jin.pointlist[2*i]=coord.getX();
-			jin.pointlist[2*i+1]=coord.getY();
+	    for (i=jin.numberofpoints; i<jout.numberofpoints; i++) {
+
+		noe = (NoeudDelaunay)this.getPopNoeuds().nouvelElement();
+		noe.setCoord(new DirectPosition(jout.pointlist[2*i],jout.pointlist[2*i+1]));
+		this.addNoeud(noe);
+	    }
+
+	    ArrayList<FT_Feature> noeuds = new ArrayList<FT_Feature>(this.getListeNoeuds());
+
+	    Class<?>[] signaturea = {this.getPopNoeuds().getClasse(),this.getPopNoeuds().getClasse()};
+	    Object[] parama = new Object[2];
+
+	    for (i=0; i<jout.numberofedges; i++) {
+		parama[0] = noeuds.get(jout.edgelist[2*i]);
+		parama[1] = noeuds.get(jout.edgelist[2*i+1]);
+		/*are = (ArcDelaunay)*/this.getPopArcs().nouvelElement(signaturea,parama);
+	    }
+
+
+	    Class<?> [] signaturef = {this.getPopNoeuds().getClasse(),this.getPopNoeuds().getClasse(),this.getPopNoeuds().getClasse()};
+	    Object[] paramf = new Object[3];
+
+	    for (i=0; i<jout.numberoftriangles; i++) {
+		paramf[0] = noeuds.get(jout.trianglelist[3*i]);
+		paramf[1] = noeuds.get(jout.trianglelist[3*i+1]);
+		paramf[2] = noeuds.get(jout.trianglelist[3*i+2]);
+		tri = (TriangleDelaunay)this.getPopFaces().nouvelElement(signaturef,paramf);
+		tri.setId(i);
+	    }
+
+	    if (this.getOptions().indexOf('v') != -1) {
+		// l'export du diagramme de voronoi
+		if (logger.isDebugEnabled()) logger.debug("parcours des noeuds du diagramme de voronoi");
+		Population<NoeudDelaunay> noeudsVoronoi = new Population<NoeudDelaunay>(false, "NoeudVoronoi", NoeudDelaunay.class,true);
+		this.addPopulation(noeudsVoronoi);
+
+		for (i=0; i<jvorout.numberofpoints; i++) {
+		    noe = (NoeudDelaunay)this.getPopNoeuds().nouvelElement();
+		    noe.setCoord(new DirectPosition(jvorout.pointlist[2*i],jvorout.pointlist[2*i+1]));
+		    noeudsVoronoi.add(noe);
 		}
-	}
+		if (logger.isDebugEnabled()) logger.debug(noeudsVoronoi.size()+" noeuds créés");
+		// création d'un noeud dummy (infini)
+		NoeudDelaunay dummy = (NoeudDelaunay)this.getPopNoeuds().nouvelElement();
+		dummy.setCoord(new DirectPosition());
+		noeudsVoronoi.add(dummy);
 
-	private void convertJinSegments() {
-		int i;
-		ArrayList<FT_Feature> noeuds = new ArrayList<FT_Feature>(this.getListeNoeuds());
-		ArrayList<FT_Feature> aretes = new ArrayList<FT_Feature>(this.getListeArcs());
-		jin.numberofsegments = aretes.size();
-		jin.segmentlist = new int[2*jin.numberofsegments];
-		for (i=0; i<jin.numberofsegments; i++) {
-			jin.segmentlist[2*i]=noeuds.indexOf(((ArcDelaunay)aretes.get(i)).getNoeudIni());
-			jin.segmentlist[2*i+1]=noeuds.indexOf(((ArcDelaunay)aretes.get(i)).getNoeudFin());
+		if (logger.isDebugEnabled()) logger.debug("parcours des arcs du diagramme de voronoi");
+		Population<ArcDelaunay> arcsVoronoi = new Population<ArcDelaunay>(false, "ArcVoronoi", ArcDelaunay.class,true);
+		this.addPopulation(arcsVoronoi);
+		Class<?>[] signatureav = {noeudsVoronoi.getClasse(),noeudsVoronoi.getClasse()};
+		Object[] paramav = new Object[2];
+
+		for (i=0; i<jvorout.numberofedges; i++) {
+		    int indexIni = jvorout.edgelist[2*i];
+		    int indexFin = jvorout.edgelist[2*i+1];
+		    paramav[0] = (indexIni!=-1)?noeudsVoronoi.get(indexIni):dummy;
+		    paramav[1] = (indexFin!=-1)?noeudsVoronoi.get(indexFin):dummy;
+		    ArcDelaunay arc = arcsVoronoi.nouvelElement(signatureav,paramav);
+		    if ((indexIni==-1)||(indexFin==-1)) {
+			// arc infini
+			logger.debug(indexIni+" - "+indexFin);
+			double vx = jvorout.normlist[2*i];
+			double vy = jvorout.normlist[2*i+1];
+			DirectPosition p1 = noeudsVoronoi.get(indexIni).getGeometrie().getPosition();
+			DirectPosition p2 = new DirectPosition(p1.getX()+100*vx,p1.getY()+100*vy);
+			arc.setGeometrie(new GM_LineString(new DirectPositionList(Arrays.asList(p1,p2))));
+		    }
 		}
+		if (logger.isDebugEnabled()) logger.debug(noeudsVoronoi.size()+" arcs créés");
 
+	    }
 	}
+	catch (Exception e) {e.printStackTrace();}
+    }
 
-	private void convertJout() {
-		try {
-			TriangleDelaunay tri;
-			//ArcDelaunay are;
-			NoeudDelaunay noe;
-			int i;
-			//GM_LineString ls;
+    ///Méthode de triangulation proprment dite en C - va chercher la dll
+    private native void trianguleC(String options, Triangulateio jin, Triangulateio jout, Triangulateio jvorout);
+    static {
+	System.loadLibrary("trianguledll");
+    }
 
-			for (i=jin.numberofpoints; i<jout.numberofpoints; i++) {
-
-				noe = (NoeudDelaunay)this.getPopNoeuds().nouvelElement();
-				noe.setCoord(new DirectPosition(jout.pointlist[2*i],jout.pointlist[2*i+1]));
-				this.addNoeud(noe);
-			}
-
-			ArrayList<FT_Feature> noeuds = new ArrayList<FT_Feature>(this.getListeNoeuds());
-
-			Class<?>[] signaturea = {this.getPopNoeuds().getClasse(),this.getPopNoeuds().getClasse()};
-			Object[] parama = new Object[2];
-
-			for (i=0; i<jout.numberofedges; i++) {
-				parama[0] = noeuds.get(jout.edgelist[2*i]);
-				parama[1] = noeuds.get(jout.edgelist[2*i+1]);
-				/*are = (ArcDelaunay)*/this.getPopArcs().nouvelElement(signaturea,parama);
-			}
-
-
-			Class<?> [] signaturef = {this.getPopNoeuds().getClasse(),this.getPopNoeuds().getClasse(),
-					this.getPopNoeuds().getClasse()};
-			Object[] paramf = new Object[3];
-
-			for (i=0; i<jout.numberoftriangles; i++) {
-				paramf[0] = noeuds.get(jout.trianglelist[3*i]);
-				paramf[1] = noeuds.get(jout.trianglelist[3*i+1]);
-				paramf[2] = noeuds.get(jout.trianglelist[3*i+2]);
-				tri = (TriangleDelaunay)this.getPopFaces().nouvelElement(signaturef,paramf);
-				tri.setId(i);
-			}
-		}
-		catch (Exception e) {e.printStackTrace();}
+    /**
+     * Lance la triangulation avec les paramètres donnés
+     * @param options paramètres de la triangulation :
+     * <ul> 
+     * <li> Q for quiet 
+     * <li> v for vorout
+     * </ul>
+     * @throws Exception
+     */
+    public void triangule(String options) throws Exception {
+	this.setOptions(options);
+	this.convertJin();
+	if (options.indexOf('p') != -1) {
+	    this.convertJinSegments();
+	    this.getPopArcs().setElements(new ArrayList());
 	}
-
-	///Méthode de triangulation proprment dite en C - va chercher la dll
-	private native void trianguleC(String options, Triangulateio jin, Triangulateio jout, Triangulateio jvorout);
-	static {
-		System.loadLibrary("trianguledll");
+	if (this.getOptions().indexOf('v') != -1) {
+	    trianguleC(options, jin, jout, jvorout);
+	} else {
+	    trianguleC(options, jin, jout, null);
 	}
+	convertJout();
+	if (logger.isInfoEnabled()) logger.info("Triangulation terminée");
+    }
 
-	public void lanceTriangulation(String options) {
-		this.setOptions(options);
-		this.convertJin();
-		if (options.indexOf('p') != -1) {
-			this.convertJinSegments();
-			this.getPopArcs().setElements(new ArrayList());
-		}
-		trianguleC(options, jin, jout, null);
-		convertJout();
-	}
+    /**
+     * @throws Exception
+     */
+    public void triangule() throws Exception{this.triangule("czeB");}
 
-	public void triangule() throws Exception{
-		this.lanceTriangulation("czeB");
-		System.out.println("Triangulation terminée");
-	}
+    /**
+     * @param options the options to set
+     */
+    public void setOptions(String options) {
+	this.options = options;
+    }
 
-	/**
-	 * @param options the options to set
-	 */
-	public void setOptions(String options) {
-		this.options = options;
-	}
-
-	/**
-	 * @return the options
-	 */
-	public String getOptions() {
-		return options;
-	}
+    /**
+     * @return the options
+     */
+    public String getOptions() {
+	return options;
+    }
 
 }

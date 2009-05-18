@@ -51,8 +51,17 @@ out.edgemarkerlist = (int *) NULL;
 in.holelist = (REAL *) NULL;
 in.regionlist = (REAL *) NULL;
 
+vorout.pointlist = (REAL *) NULL;
+vorout.pointmarkerlist = (int *) NULL;
+vorout.trianglelist = (int *) NULL;
+vorout.segmentlist = (int *) NULL;
+vorout.segmentmarkerlist = (int *) NULL;
+vorout.edgelist = (int *) NULL;
+vorout.edgemarkerlist = (int *) NULL;
+vorout.normlist = (REAL *) NULL;
+
 /********* Appel du code proprement dit *******/
-triangulate(options, &in, &out, (struct triangulateio *) NULL); 
+triangulate(options, &in, &out, &vorout); 
 /**********************************************/
 
 cls = (*env)->GetObjectClass(env, jout);
@@ -91,5 +100,31 @@ fid = (*env)->GetFieldID(env, cls, "trianglelist", "[I");
 (*env)->SetIntArrayRegion(env, (*env)->GetObjectField(env, jout, fid), 
 	0, 3*out.numberoftriangles, (jint*) out.trianglelist);
 
-}
+/*****************/
 
+if (jvorout != NULL) {
+
+cls = (*env)->GetObjectClass(env, jvorout);
+
+fid = (*env)->GetFieldID(env, cls, "numberofpoints", "I");
+(*env)->SetIntField(env, jvorout, fid, out.numberofpoints);
+
+fid = (*env)->GetFieldID(env, cls, "numberofedges", "I");
+(*env)->SetIntField(env, jvorout, fid, out.numberofedges);
+
+mid = (*env)->GetMethodID(env, cls, "jvoroutInit", "()V");
+(*env)->CallVoidMethod(env, jvorout, mid);
+
+fid = (*env)->GetFieldID(env, cls, "pointlist", "[D");
+(*env)->SetDoubleArrayRegion(env, (*env)->GetObjectField(env, jvorout, fid), 
+	0, 2*vorout.numberofpoints, (jdouble*) vorout.pointlist);
+
+fid = (*env)->GetFieldID(env, cls, "edgelist", "[I");
+(*env)->SetIntArrayRegion(env, (*env)->GetObjectField(env, jvorout, fid), 
+	0, 2*vorout.numberofedges, (jint*) vorout.edgelist);
+
+fid = (*env)->GetFieldID(env, cls, "normlist", "[D");
+(*env)->SetDoubleArrayRegion(env, (*env)->GetObjectField(env, jvorout, fid), 
+	0, 2*vorout.numberofedges, (jdouble*) vorout.normlist);
+}
+}

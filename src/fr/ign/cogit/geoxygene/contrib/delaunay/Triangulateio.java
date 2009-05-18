@@ -68,9 +68,8 @@ public class Triangulateio {
 
 	protected int[] edgelist = null;
 	protected int[] edgemarkerlist = null;
-	protected double[] normelist = null;
+	protected double[] normlist = null;
 	protected int numberofedges = 0;
-
 
 	protected void joutInit() {
 		pointlist = new double[2*numberofpoints];
@@ -79,4 +78,9 @@ public class Triangulateio {
 		trianglelist = new int[numberofcorners*numberoftriangles];
 	}
 
+	protected void jvoroutInit() {
+		pointlist = new double[2*numberofpoints];
+		edgelist = new int[2*numberofedges];
+		normlist = new double[2*numberofedges];
+	}
 }
