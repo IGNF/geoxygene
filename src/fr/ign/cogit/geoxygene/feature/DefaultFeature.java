@@ -103,6 +103,8 @@ public class DefaultFeature extends FT_Feature {
 		if (logger.isDebugEnabled()) logger.warn("!!! le nom '"+nom+"' ne correspond pas à un attribut de ce feature !!!");
 		return null;
 	}
+	@Override
+	public Object getAttribute(AttributeType attribute) {return getAttribute(attribute.getMemberName());}
 	/**
 	 * @param attributes the attributes to set
 	 */
