@@ -1588,11 +1588,91 @@ public abstract class Appariement {
 		comp.projete(noeudsNonApparies, param.varianteRedecoupageNoeudsNonApparies_DistanceNoeudArc, param.varianteRedecoupageNoeudsNonApparies_DistanceProjectionNoeud);
 	}
 
-	/** Découpe les arcs de référence non appariés par les 'liens' de manière
-	 *  à introduire un noeud dans le reséau Ref aux endroits où il s'éloigne du réseau Comp.
+	/** Découpe les arcs du reseau1 'reseauADecouper' non appariés par les 'liens' de manière
+	 *  à introduire un noeud dans le reséauADecouper aux endroits où il s'éloigne du réseau2 'reseauDecoupant'.
 	 * 
 	 *  Remarque: utilisé pour les GR par exemple pour traiter le cas des GR hors sentier.
+	 *  
+	 *  Dernière modif: 
+	 *  08/04/2009, Seb, amélioration de la méthode pour autoriser les découpages multiples
 	 */
+	public static void decoupeNonApparies(ReseauApp reseauADecouper, ReseauApp reseauDecoupant, EnsembleDeLiens liens,  ParametresApp param) {
+
+		double distanceMaxNoeudArc = param.projeteNoeud2surReseau1_DistanceNoeudArc; //param.distanceArcsMax;
+		double distancePtCourantVersArcADecoupe ;
+		ArcApp arcDecoupant, arcADecouper;
+		Iterator<?> itArcsDecoupes,itArcsDecoupants;
+		FT_FeatureCollection<?> arcsDecoupantsRes2 ;
+		List<GM_Point> pointsDeDecoupage;
+		DirectPosition ptCourantArcDecoupant, ptDecoupage;
+		int indiceDernierPtProche ;
+		boolean proche;
+
+		itArcsDecoupes = reseauADecouper.getPopArcs().getElements().iterator();
+		pointsDeDecoupage = new ArrayList<GM_Point>();
+		// recherche des points de découpage pour chaque arc découpant
+		while (itArcsDecoupes.hasNext()) {
+			arcADecouper = (ArcApp) itArcsDecoupes.next();
+			// on ne traite que les arcs non appariés auparavant
+			if (arcADecouper.getLiens(liens.getElements()).size() != 0) continue;
+			
+			// on découpe chaque arc non apparié en fonction des arcs de l'autre réseau assez proches (seuil choisi = diantanceMaxNoeudArc)
+			arcsDecoupantsRes2 = reseauDecoupant.getPopArcs().select(arcADecouper.getGeometrie(), distanceMaxNoeudArc);
+			if (arcsDecoupantsRes2.size() == 0) continue;
+
+			// on traite chaque arc découpant à son tour
+			itArcsDecoupants = arcsDecoupantsRes2.getElements().iterator();
+			while (itArcsDecoupants.hasNext()) {
+				arcDecoupant = (ArcApp)itArcsDecoupants.next();
+				// initalisation des compteurs
+				indiceDernierPtProche= 0;
+				if ( Distances.distance(arcDecoupant.getGeometrie().getControlPoint(0), arcADecouper.getGeometrie() ) <= distanceMaxNoeudArc ) 
+					proche = true;
+				else
+					proche = false;
+				// parcour des points de l'arc découpant
+				for(int i=1;i<arcDecoupant.getGeometrie().getControlPoint().size();i++) {
+					ptCourantArcDecoupant = arcDecoupant.getGeometrie().getControlPoint(i);
+					distancePtCourantVersArcADecoupe = Distances.distance(ptCourantArcDecoupant, arcADecouper.getGeometrie()) ;
+					if (proche) {
+						if ( distancePtCourantVersArcADecoupe >  distanceMaxNoeudArc) {
+							// on était proche et on s'éloigne à partir de ce point
+							// --> on rajoute deux points de découpage, entourant la partie proche,
+							proche = false;
+							ptDecoupage = Operateurs.projection(arcDecoupant.getGeometrie().getControlPoint(indiceDernierPtProche), arcADecouper.getGeometrie());
+							pointsDeDecoupage.add(new GM_Point(ptDecoupage));
+							ptDecoupage = Operateurs.projection(arcDecoupant.getGeometrie().getControlPoint(i-1), arcADecouper.getGeometrie());
+							pointsDeDecoupage.add(new GM_Point(ptDecoupage));
+							continue;
+						}
+						else {
+							// on était proche et on le reste: on continue à parcourir l'arc découpant
+							continue;
+						}
+					}
+					else {
+						if ( distancePtCourantVersArcADecoupe <= distanceMaxNoeudArc) {
+							// on était éloigné et on rentre dans une zone proche: intialisation des compteurs
+							proche = true;
+							indiceDernierPtProche = i;
+							continue;
+						}
+						else {
+							// on était éloigné et on le reste: on continue à parcourir l'arc découpant
+							continue;
+						}
+					}
+				}
+			}
+		}
+		
+		// Découpage effectif du réseau à découper.
+		reseauADecouper.projete(pointsDeDecoupage, distanceMaxNoeudArc, distanceMaxNoeudArc);
+		reseauADecouper.instancieAttributsNuls(param);
+		reseauDecoupant.projete(pointsDeDecoupage, distanceMaxNoeudArc, distanceMaxNoeudArc);
+	}
+
+	/* Ancienne version 08/04/2009, avant amélioration du redecoupage
 	public static void decoupeNonApparies(ReseauApp ref, ReseauApp comp, EnsembleDeLiens liens,  ParametresApp param) {
 
 		double distanceMaxNoeudArc = param.projeteNoeud2surReseau1_DistanceNoeudArc; //param.distanceArcsMax;
@@ -1670,4 +1750,5 @@ public abstract class Appariement {
 		ref.instancieAttributsNuls(param);
 		comp.projete(pointsDeDecoupage, distanceMaxNoeudArc, distanceMaxNoeudArc);
 	}
+	*/
 }
