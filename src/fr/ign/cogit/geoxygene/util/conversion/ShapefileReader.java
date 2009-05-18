@@ -244,17 +244,18 @@ public class ShapefileReader implements Runnable {
 			type.setValueType(valueType);
 			newFeatureType.addFeatureAttribute(type);
 			attLookup.put(i, new String[]{nomField,memberName});
-			if(logger.isTraceEnabled()) logger.trace("Ajout de l'attribut "+i+" = "+nomField);
+			if(logger.isDebugEnabled()) logger.debug("Ajout de l'attribut "+i+" = "+nomField);
 		}
 		/** Création d'un schéma associé au featureType */
-		newFeatureType.setGeometryType(reader.getShapeType());
+		newFeatureType.setGeometryType((reader.getShapeType()==null)?GM_Object.class:reader.getShapeType());
+		if(logger.isDebugEnabled())logger.debug("shapeType = "+reader.getShapeType()+" type de géométrie = "+newFeatureType.getGeometryType());
 		schemaDefaultFeature.setFeatureType(newFeatureType);
 		newFeatureType.setSchema(schemaDefaultFeature);
 		schemaDefaultFeature.setAttLookup(attLookup);
 		population.setFeatureType(newFeatureType);
-		if(logger.isTraceEnabled()) 
+		if(logger.isDebugEnabled()) 
 		    for(GF_AttributeType fa : newFeatureType.getFeatureAttributes()) {
-			logger.trace("FeatureAttibute = "+fa.getMemberName()+"-"+fa.getValueType());
+			logger.debug("FeatureAttibute = "+fa.getMemberName()+"-"+fa.getValueType());
 		    }
 		return reader;
 	}
@@ -306,25 +307,36 @@ class Reader {
 		org.geotools.data.shapefile.shp.ShapefileReader shapefileReader = null;
 		org.geotools.data.shapefile.dbf.DbaseFileReader dbaseFileReader = null;
 		PrjFileReader prjFileReader = null;
+		ShpFiles shpf;
 		try {
-			ShpFiles shpf = new ShpFiles(shapefileName);
-			shapefileReader = new org.geotools.data.shapefile.shp.ShapefileReader(shpf, true, false);
-			dbaseFileReader = new org.geotools.data.shapefile.dbf.DbaseFileReader(shpf, true, Charset.defaultCharset() );
-			prjFileReader = new PrjFileReader(shpf);
-		}
-		catch (FileNotFoundException e) {
-			if (logger.isDebugEnabled()) logger.debug("fichier "+shapefileName+" non trouvé.");
-			return;
+		    shpf = new ShpFiles(shapefileName);
 		} catch (MalformedURLException e) {
 			if (logger.isDebugEnabled()) logger.debug("URL "+shapefileName+" mal formée.");
+			return;
+		} 
+		try {
+			shapefileReader = new org.geotools.data.shapefile.shp.ShapefileReader(shpf, true, false);
+			dbaseFileReader = new org.geotools.data.shapefile.dbf.DbaseFileReader(shpf, true, Charset.defaultCharset() );
+		} catch (FileNotFoundException e) {
+			if (logger.isDebugEnabled()) logger.debug("fichier "+shapefileName+" non trouvé.");
 			return;
 		} catch (ShapefileException e) {
 			if (logger.isDebugEnabled()) logger.debug("Erreur pendant la lecture du fichier shape "+shapefileName);
 			return;
 		} catch (IOException e) {
-			if (logger.isDebugEnabled()) logger.debug("Erreur pendant la lecture du fichier "+shapefileName);
-			return;
+		    if (logger.isDebugEnabled()) logger.debug("Erreur pendant la lecture du fichier "+shapefileName);
+		    return;
 		}
+		try {
+		    prjFileReader = new PrjFileReader(shpf);
+		} catch (FileNotFoundException e) {
+		    if (logger.isDebugEnabled()) logger.debug("fichier prj "+shapefileName+" non trouvé.");
+		} catch (ShapefileException e) {
+		    if (logger.isDebugEnabled()) logger.debug("Erreur pendant la lecture du fichier prj "+shapefileName);
+		} catch (IOException e) {
+		    if (logger.isDebugEnabled()) logger.debug("Erreur pendant la lecture du fichier prj "+shapefileName);
+		}
+
 		minX=shapefileReader.getHeader().minX();
 		maxX=shapefileReader.getHeader().maxX();
 		minY=shapefileReader.getHeader().minY();
@@ -362,7 +374,7 @@ class Reader {
 			}
 			shapefileReader.close();
 			dbaseFileReader.close();
-			prjFileReader.close();
+			if (prjFileReader!=null) prjFileReader.close();
 		} catch (IOException e) {e.printStackTrace();}
 	}
 	/**
@@ -411,10 +423,11 @@ class Reader {
 	 * @return
 	 */
 	private static Class<? extends GM_Object> geometryType(ShapeType type) {
+	    if(logger.isDebugEnabled()) logger.debug("shapeType = "+type);
 		if (type.isPointType()) return GM_Point.class;
 		if (type.isMultiPointType()) return GM_MultiPoint.class;
 		if (type.isLineType()) return GM_MultiCurve.class;
 		if (type.isPolygonType()) return GM_MultiSurface.class;
-		return null;
+		return GM_MultiSurface.class;
 	}
 }
