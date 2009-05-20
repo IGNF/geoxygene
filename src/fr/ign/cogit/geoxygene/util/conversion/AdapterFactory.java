@@ -411,6 +411,7 @@ public class AdapterFactory  {
 		if(GM_MultiSurface.class.equals(geometryType)) return MultiPolygon.class;
 		if(GM_Point.class.equals(geometryType)) return Point.class;
 		if(GM_MultiPoint.class.equals(geometryType)) return MultiPoint.class;
+		if(GM_Aggregate.class.equals(geometryType)) return GeometryCollection.class;
 		return Geometry.class;
 	}
 }
