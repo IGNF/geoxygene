@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
+import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.GroupeApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.NoeudApp;
@@ -45,7 +46,6 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.IndicesForme;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
@@ -125,9 +125,9 @@ public abstract class Appariement {
 			decoupeNoeudsNonApparies(reseau1,reseau2,liensAppNoeuds,param);
 			if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Nettoyage des liens "+(new Time(System.currentTimeMillis())).toString());
 			nettoyageLiens(reseau1, reseau2);
-			liensPreAppNN.setElements(new ArrayList<FT_Feature>());
-			liensPreAppAA.setElements(new ArrayList<FT_Feature>());
-			liensAppNoeuds.setElements(new ArrayList<FT_Feature>());
+			liensPreAppNN.setElements(new ArrayList<Lien>());
+			liensPreAppAA.setElements(new ArrayList<Lien>());
+			liensAppNoeuds.setElements(new ArrayList<Lien>());
 			System.gc();
 			// Préappariement de noeuds à noeuds
 			if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Pré-appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
@@ -154,9 +154,9 @@ public abstract class Appariement {
 			if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Redécoupage plus fort pour les arcs non appariés "+(new Time(System.currentTimeMillis())).toString());
 			decoupeNonApparies(reseau1,reseau2,tousLiens,param);
 			nettoyageLiens(reseau1, reseau2);
-			liensPreAppNN.setElements(new ArrayList<FT_Feature>());
-			liensPreAppAA.setElements(new ArrayList<FT_Feature>());
-			liensAppNoeuds.setElements(new ArrayList<FT_Feature>());
+			liensPreAppNN.setElements(new ArrayList<Lien>());
+			liensPreAppAA.setElements(new ArrayList<Lien>());
+			liensAppNoeuds.setElements(new ArrayList<Lien>());
 			// Préappariement de noeuds à noeuds
 			if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Pré-appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
 			liensPreAppNN = preAppariementNoeudNoeud(reseau1, reseau2, param);
@@ -187,7 +187,7 @@ public abstract class Appariement {
 	public static void nettoyageLiens(ReseauApp reseau1, ReseauApp reseau2, EnsembleDeLiens liens) {
 		nettoyageLiens(reseau1, liens);
 		nettoyageLiens(reseau2, liens);
-		liens.setElements(new ArrayList<FT_Feature>());
+		liens.setElements(new ArrayList<Lien>());
 	}
 
 	/** Enlève tous les liens "liens" des cartes topo en entrée */

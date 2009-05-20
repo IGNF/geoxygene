@@ -33,11 +33,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
+import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.LienReseaux;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 
 /**
  * Noeud du reseau à apparier.
@@ -72,7 +72,7 @@ public class NoeudApp extends Noeud {
 	////////////////////////////////////////////////////
 
 	/** Renvoie les liens de l'objet qui appartiennent à la liste liensPertinents */
-	public List<LienReseaux> getLiens(List<FT_Feature> liensPertinents) {
+	public List<LienReseaux> getLiens(List<Lien> liensPertinents) {
 		List<LienReseaux> listeTmp = new ArrayList<LienReseaux>(this.getLiens());
 		listeTmp.retainAll(liensPertinents);
 		return listeTmp;

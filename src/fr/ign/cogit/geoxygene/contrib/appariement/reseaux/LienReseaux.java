@@ -325,7 +325,7 @@ public class LienReseaux extends Lien {
 		List<FT_Feature> tousobjetsRef,tousobjetsComp ;
 		Iterator<Groupe> itGroupe;
 		Groupe groupe;
-		Iterator<FT_Feature> itLiens;
+		Iterator<Lien> itLiens;
 
 		if ( param.debugAffichageCommentaires > 1 ) System.out.println("BILAN de l'appariement sur le réseau 1");
 		if ( param.debugAffichageCommentaires > 1 ) System.out.println("NB : bilan sur les objets des réseaux créés, et non sur les objets initiaux, il peut y avoir quelques nuances");

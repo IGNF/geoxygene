@@ -55,7 +55,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * @version 1.0
  */
 
-public class EnsembleDeLiens extends Population<FT_Feature> {
+public class EnsembleDeLiens extends Population<Lien> {
 
 	public EnsembleDeLiens() {
 		super(false, "Ensemble de liens", Lien.class, true);
@@ -235,7 +235,7 @@ public class EnsembleDeLiens extends Population<FT_Feature> {
 		}
 
 		// création des arcs du graphe = les liens d'appariement
-		Iterator<FT_Feature> itLiens = this.getElements().iterator();
+		Iterator<Lien> itLiens = this.getElements().iterator();
 		while (itLiens.hasNext()) {
 			lien = (Lien)itLiens.next();
 			itObjetsRef = lien.getObjetsRef().iterator();
@@ -274,7 +274,7 @@ public class EnsembleDeLiens extends Population<FT_Feature> {
 	 * @return EnsembleDeLiens
 	 */
 	public EnsembleDeLiens regroupeLiensCartoQuiPointentSurMemeTopo() {
-		List<FT_Feature> liens = this.getElements();
+		List<Lien> liens = this.getElements();
 		List<Integer> remove = new ArrayList<Integer>();
 		List<FT_Feature> objetsRef = new ArrayList<FT_Feature>(),objetsComp = new ArrayList<FT_Feature>();
 		Object objetTest;
@@ -319,7 +319,7 @@ public class EnsembleDeLiens extends Population<FT_Feature> {
 	 */
 	public void filtreLiens(float seuilEvaluation) {
 		Lien lien;
-		Iterator<FT_Feature> itLiens =this.getElements().iterator();
+		Iterator<Lien> itLiens =this.getElements().iterator();
 		while(itLiens.hasNext()){
 			lien = (Lien)itLiens.next();
 			if ( lien.getEvaluation() < seuilEvaluation ) this.enleveElement(lien);
@@ -338,7 +338,7 @@ public class EnsembleDeLiens extends Population<FT_Feature> {
 	 */
 	public void evaluationLiensParCardinalite(boolean flag,double seuilCardinalite){
 		Lien lien;
-		Iterator<FT_Feature> itLiens =this.getElements().iterator();
+		Iterator<Lien> itLiens =this.getElements().iterator();
 		if (flag) {
 			while(itLiens.hasNext()){
 				lien = (Lien)itLiens.next();
@@ -363,7 +363,7 @@ public class EnsembleDeLiens extends Population<FT_Feature> {
 	 */
 	public List<EnsembleDeLiens> classeSelonSeuilEvaluation(List<Double> valeursClassement) {
 		List<EnsembleDeLiens> liensClasses = new ArrayList<EnsembleDeLiens>();
-		Iterator<FT_Feature> itLiens = this.getElements().iterator();
+		Iterator<Lien> itLiens = this.getElements().iterator();
 		Lien lien, lienClasse;
 		double seuil;
 		int i;
@@ -411,7 +411,7 @@ public class EnsembleDeLiens extends Population<FT_Feature> {
 	/** Affecte une géométrie à l'ensemble des liens, cette géométrie
 	 * relie les centroïdes des objets concernés entre eux */
 	public void creeGeometrieDesLiens() {
-		Iterator<FT_Feature> itLiens = this.getElements().iterator();
+		Iterator<Lien> itLiens = this.getElements().iterator();
 		Iterator<FT_Feature> itRef, itComp;
 		Lien lien;
 		FT_Feature ref, comp;
@@ -441,7 +441,7 @@ public class EnsembleDeLiens extends Population<FT_Feature> {
 	 * des objets
 	 */
 	public void creeGeometrieDesLiensEntreLignesEtLignes() {
-		Iterator<FT_Feature> itLiens = this.getElements().iterator();
+		Iterator<Lien> itLiens = this.getElements().iterator();
 		Iterator<FT_Feature> itRef, itComp;
 		Lien lien;
 		FT_Feature ref, comp;
@@ -476,7 +476,7 @@ public class EnsembleDeLiens extends Population<FT_Feature> {
 	 * des lignes; false s'il s'agit des objets de la BD de référence
 	 */
 	public void creeGeometrieDesLiensEntreSurfacesEtLignes(boolean comparaison) {
-		Iterator<FT_Feature> itLiens = this.getElements().iterator();
+		Iterator<Lien> itLiens = this.getElements().iterator();
 		Iterator<FT_Feature> itRef, itComp;
 		Lien lien;
 		FT_Feature ref, comp;
@@ -521,7 +521,7 @@ public class EnsembleDeLiens extends Population<FT_Feature> {
 	 * des points; false s'il s'agit des objets de la BD de référence
 	 */
 	public void creeGeometrieDesLiensEntreSurfacesEtPoints(boolean comparaison) {
-		Iterator<FT_Feature> itLiens = this.getElements().iterator();
+		Iterator<Lien> itLiens = this.getElements().iterator();
 		Iterator<FT_Feature> itRef, itComp;
 		Lien lien;
 		FT_Feature ref, comp;
@@ -559,7 +559,7 @@ public class EnsembleDeLiens extends Population<FT_Feature> {
 	/** Détruit la géométrie des liens
 	 */
 	public void detruitGeometrieDesLiens() {
-		Iterator<FT_Feature> itLiens = this.getElements().iterator();
+		Iterator<Lien> itLiens = this.getElements().iterator();
 		Lien lien;
 
 		while (itLiens.hasNext()) {
@@ -593,8 +593,8 @@ public class EnsembleDeLiens extends Population<FT_Feature> {
 		Lien lien;
 		FT_Feature elementPopComp, elementPopRef;
 
-		List<FT_Feature> liens = ensemble.getElements();
-		Iterator<FT_Feature> itLiens = liens.iterator();
+		List<Lien> liens = ensemble.getElements();
+		Iterator<Lien> itLiens = liens.iterator();
 		//ajout des éléments appariés dans les populations concernées
 		while (itLiens.hasNext()){
 			lien = (Lien)itLiens.next();
@@ -655,7 +655,7 @@ public class EnsembleDeLiens extends Population<FT_Feature> {
 		for(i=0;i<valeursClassement.size();i++) {
 			liensClasses.add(new EnsembleDeLiens());
 		}
-		Iterator<FT_Feature> itLiens = this.getElements().iterator();
+		Iterator<Lien> itLiens = this.getElements().iterator();
 		while (itLiens.hasNext()) {
 			Lien lien= (Lien) itLiens.next();
 			for(i=0;i<valeursClassement.size();i++) {

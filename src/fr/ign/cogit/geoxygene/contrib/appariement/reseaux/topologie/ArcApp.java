@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
+import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.LienReseaux;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.ElementCarteTopo;
@@ -69,7 +70,7 @@ public class ArcApp extends Arc {
 	////////////////////////////////////////////////////
 
 	/** Renvoie les liens de l'objet qui appartiennent à la liste liensPertinents */
-	public List<LienReseaux> getLiens(List<FT_Feature> liensPertinents) {
+	public List<LienReseaux> getLiens(List<Lien> liensPertinents) {
 		List<LienReseaux> listeTmp = new ArrayList<LienReseaux>(this.getLiens());
 		listeTmp.retainAll(liensPertinents);
 		return listeTmp;
@@ -230,7 +231,7 @@ public class ArcApp extends Arc {
 		Iterator<?> itGroupes = this.getListeGroupes().iterator();
 		while (itGroupes.hasNext()) {
 			GroupeApp groupe = (GroupeApp) itGroupes.next();
-			List<?> liensDuGroupe = groupe.getLiens(liens.getElements());
+			List<LienReseaux> liensDuGroupe = groupe.getLiens(liens.getElements());
 			if ( liensDuGroupe.size() != 0 ) return true;
 		}
 		return false;
