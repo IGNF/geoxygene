@@ -202,7 +202,7 @@ public class LienReseaux extends Lien {
 					List objets2 = getCorrespondants(objetCT2, pops2);
 					if (objets1.size() == 0 && objets2.size()==0 ) {
 						//cas où il n'y a pas de correspondant dans les données de départ des 2 cotés
-						lienG = (Lien)liensGeneriques.nouvelElement();
+						lienG = liensGeneriques.nouvelElement();
 						lienG.setEvaluation(lienReseau.getEvaluation());
 						lienG.setCommentaire("Pas de correspondant géo dans les deux BDs");
 						if (param.exportGeometrieLiens2vers1) lienG.setGeom(creeGeometrieLienSimple(objetCT1, objetCT2));
@@ -214,7 +214,7 @@ public class LienReseaux extends Lien {
 						itObjets2 = objets2.iterator();
 						while (itObjets2.hasNext()) {
 							FT_Feature objet2 = (FT_Feature) itObjets2.next();
-							lienG = (Lien)liensGeneriques.nouvelElement();
+							lienG = liensGeneriques.nouvelElement();
 							lienG.setEvaluation(lienReseau.getEvaluation());
 							lienG.setCommentaire("Pas de correspondant géo dans BD1");
 							if (param.exportGeometrieLiens2vers1) lienG.setGeom(creeGeometrieLienSimple(objetCT1, objet2));
@@ -228,7 +228,7 @@ public class LienReseaux extends Lien {
 						itObjets1 = objets1.iterator();
 						while (itObjets1.hasNext()) {
 							FT_Feature objet1 = (FT_Feature) itObjets1.next();
-							lienG = (Lien)liensGeneriques.nouvelElement();
+							lienG = liensGeneriques.nouvelElement();
 							lienG.setEvaluation(lienReseau.getEvaluation());
 							lienG.setCommentaire("Pas de correspondant géo dans BD1");
 							if (param.exportGeometrieLiens2vers1) lienG.setGeom(creeGeometrieLienSimple(objet1, objetCT2));
@@ -244,7 +244,7 @@ public class LienReseaux extends Lien {
 						itObjets2 = objets2.iterator();
 						while (itObjets2.hasNext()) {
 							FT_Feature objet2 = (FT_Feature) itObjets2.next();
-							lienG = (Lien)liensGeneriques.nouvelElement();
+							lienG = liensGeneriques.nouvelElement();
 							lienG.setEvaluation(lienReseau.getEvaluation());
 							lienG.setCommentaire("");
 							if (param.exportGeometrieLiens2vers1)lienG.setGeom(creeGeometrieLienSimple(objet1, objet2));
@@ -318,94 +318,103 @@ public class LienReseaux extends Lien {
 	/** Méthode qui affecte une geometrie aux liens de réseau et remplit les commentaires des liens.
 	 * UTILE POUR CODE / DEBUG UNIQUEMENT
 	 */
-	public static EnsembleDeLiens exportAppCarteTopo(EnsembleDeLiens liensReseaux,ParametresApp param) {
-		EnsembleDeLiens liensGeneriques ;
+	public static void exportAppCarteTopo(EnsembleDeLiens liensReseaux,ParametresApp param) {
+//		EnsembleDeLiens liensGeneriques ;
+//		LienReseaux lienR;
+//		Lien lienG;
+//		List<FT_Feature> tousobjetsRef,tousobjetsComp ;
+//		Iterator<Groupe> itGroupe;
+//		Groupe groupe;
 		LienReseaux lienR;
-		Lien lienG;
-		List<FT_Feature> tousobjetsRef,tousobjetsComp ;
-		Iterator<Groupe> itGroupe;
-		Groupe groupe;
 		Iterator<Lien> itLiens;
 
-		if ( param.debugAffichageCommentaires > 1 ) System.out.println("BILAN de l'appariement sur le réseau 1");
-		if ( param.debugAffichageCommentaires > 1 ) System.out.println("NB : bilan sur les objets des réseaux créés, et non sur les objets initiaux, il peut y avoir quelques nuances");
-
-		liensGeneriques = new EnsembleDeLiens();
-		liensGeneriques.setNom(liensReseaux.getNom());
-
+		/////////////////////////////////////////
+		// Création de la géométrie des liens
 		itLiens = liensReseaux.getElements().iterator();
 		while (itLiens.hasNext()) {
 			lienR = (LienReseaux) itLiens.next();
-			lienG = (Lien)liensGeneriques.nouvelElement();
-			lienG.setEvaluation(lienR.getEvaluation());
-
-			/////////////////////////////////////////
-			// Récupération des objets pointés par le lien
-
-			// Liens vers les objets de référence
-			tousobjetsRef = new ArrayList<FT_Feature>();
-			tousobjetsRef.addAll(lienR.getArcs1());
-			tousobjetsRef.addAll(lienR.getNoeuds1());
-			itGroupe = lienR.getGroupes1().iterator();
-			while (itGroupe.hasNext()) {
-				groupe = itGroupe.next();
-				tousobjetsRef.addAll(groupe.getListeArcs());
-				tousobjetsRef.addAll(groupe.getListeNoeuds());
-			}
-			lienG.setObjetsRef(tousobjetsRef);
-
-			// Liens vers les objets de comparaison
-			tousobjetsComp = new ArrayList<FT_Feature>();
-			tousobjetsComp.addAll(lienR.getArcs2());
-			tousobjetsComp.addAll(lienR.getNoeuds2());
-			itGroupe = lienR.getGroupes2().iterator();
-			while (itGroupe.hasNext()) {
-				groupe = itGroupe.next();
-				tousobjetsComp.addAll(groupe.getListeArcs());
-				tousobjetsComp.addAll(groupe.getListeNoeuds());
-			}
-			lienG.setObjetsComp(tousobjetsComp);
-
-			/////////////////////////////////////////
-			// Détermination du type du lien
-			if (lienR.getNoeuds1().size() != 0 ) {
-				lienG.setType("Lien de noeud ref");
-				//				liensGeneriques.enleveElement(lienG);
-				//				continue;
-			}
-			else if (lienR.getArcs1().size() != 0 ) lienG.setType("Lien d'arc ref");
-
-			/////////////////////////////////////////
-			// Remplissage des chaines de caractères pour l'export
-			Iterator<FT_Feature> itRef = lienG.getObjetsRef().iterator();
-			String txt = new String("COGITID:");
-			while (itRef.hasNext()) {
-				FT_Feature objet = itRef.next();
-				Iterator<FT_Feature> itObjGeo = objet.getCorrespondants().iterator();
-				while (itObjGeo.hasNext()) {
-					FT_Feature objetGeo = itObjGeo.next();
-					txt = txt.concat(objetGeo.getId()+" ");
-				}
-			}
-			lienG.setReference(txt);
-
-			txt = new String("COGITID:");
-			Iterator<FT_Feature> itComp= lienG.getObjetsComp().iterator();
-			while (itComp.hasNext()) {
-				FT_Feature objet = itComp.next();
-				Iterator<FT_Feature> itObjGeo = objet.getCorrespondants().iterator();
-				while (itObjGeo.hasNext()) {
-					FT_Feature objetGeo = itObjGeo.next();
-					txt = txt.concat(objetGeo.getId()+" ");
-				}
-			}
-			lienG.setComparaison(txt);
-
-			/////////////////////////////////////////
-			// Création de la géométrie des liens
-			lienG.setGeom(lienR.creeGeometrieLien(param.debugTirets, param.debugPasTirets, param.debugBuffer, param.debugTailleBuffer));
+			lienR.setGeom(lienR.creeGeometrieLien(param.debugTirets, param.debugPasTirets, param.debugBuffer, param.debugTailleBuffer));
 		}
-		return liensGeneriques;
+
+//		if ( param.debugAffichageCommentaires > 1 ) System.out.println("BILAN de l'appariement sur le réseau 1");
+//		if ( param.debugAffichageCommentaires > 1 ) System.out.println("NB : bilan sur les objets des réseaux créés, et non sur les objets initiaux, il peut y avoir quelques nuances");
+//
+//		liensGeneriques = new EnsembleDeLiens();
+//		liensGeneriques.setNom(liensReseaux.getNom());
+//
+//		itLiens = liensReseaux.getElements().iterator();
+//		while (itLiens.hasNext()) {
+//			lienR = (LienReseaux) itLiens.next();
+//			lienG = (Lien)liensGeneriques.nouvelElement();
+//			lienG.setEvaluation(lienR.getEvaluation());
+//
+//			/////////////////////////////////////////
+//			// Récupération des objets pointés par le lien
+//
+//			// Liens vers les objets de référence
+//			tousobjetsRef = new ArrayList<FT_Feature>();
+//			tousobjetsRef.addAll(lienR.getArcs1());
+//			tousobjetsRef.addAll(lienR.getNoeuds1());
+//			itGroupe = lienR.getGroupes1().iterator();
+//			while (itGroupe.hasNext()) {
+//				groupe = itGroupe.next();
+//				tousobjetsRef.addAll(groupe.getListeArcs());
+//				tousobjetsRef.addAll(groupe.getListeNoeuds());
+//			}
+//			lienG.setObjetsRef(tousobjetsRef);
+//
+//			// Liens vers les objets de comparaison
+//			tousobjetsComp = new ArrayList<FT_Feature>();
+//			tousobjetsComp.addAll(lienR.getArcs2());
+//			tousobjetsComp.addAll(lienR.getNoeuds2());
+//			itGroupe = lienR.getGroupes2().iterator();
+//			while (itGroupe.hasNext()) {
+//				groupe = itGroupe.next();
+//				tousobjetsComp.addAll(groupe.getListeArcs());
+//				tousobjetsComp.addAll(groupe.getListeNoeuds());
+//			}
+//			lienG.setObjetsComp(tousobjetsComp);
+//
+//			/////////////////////////////////////////
+//			// Détermination du type du lien
+//			if (lienR.getNoeuds1().size() != 0 ) {
+//				lienG.setType("Lien de noeud ref");
+//				//				liensGeneriques.enleveElement(lienG);
+//				//				continue;
+//			}
+//			else if (lienR.getArcs1().size() != 0 ) lienG.setType("Lien d'arc ref");
+//
+//			/////////////////////////////////////////
+//			// Remplissage des chaines de caractères pour l'export
+//			Iterator<FT_Feature> itRef = lienG.getObjetsRef().iterator();
+//			String txt = new String("COGITID:");
+//			while (itRef.hasNext()) {
+//				FT_Feature objet = itRef.next();
+//				Iterator<FT_Feature> itObjGeo = objet.getCorrespondants().iterator();
+//				while (itObjGeo.hasNext()) {
+//					FT_Feature objetGeo = itObjGeo.next();
+//					txt = txt.concat(objetGeo.getId()+" ");
+//				}
+//			}
+//			lienG.setReference(txt);
+//
+//			txt = new String("COGITID:");
+//			Iterator<FT_Feature> itComp= lienG.getObjetsComp().iterator();
+//			while (itComp.hasNext()) {
+//				FT_Feature objet = itComp.next();
+//				Iterator<FT_Feature> itObjGeo = objet.getCorrespondants().iterator();
+//				while (itObjGeo.hasNext()) {
+//					FT_Feature objetGeo = itObjGeo.next();
+//					txt = txt.concat(objetGeo.getId()+" ");
+//				}
+//			}
+//			lienG.setComparaison(txt);
+//
+//			/////////////////////////////////////////
+//			// Création de la géométrie des liens
+//			lienG.setGeom(lienR.creeGeometrieLien(param.debugTirets, param.debugPasTirets, param.debugBuffer, param.debugTailleBuffer));
+//		}
+//		return liensGeneriques;
 	}
 
 	/** Methode créant une géométrie pour les liens de réseau.

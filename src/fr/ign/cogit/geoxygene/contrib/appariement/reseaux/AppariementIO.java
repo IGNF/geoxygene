@@ -129,26 +129,19 @@ public class AppariementIO {
 		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("");
 		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("BILAN ET EXPORT DES RESULTATS  ");
 		if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  DEBUT DE LA PHASE D'EXPORT "+(new Time(System.currentTimeMillis())).toString());
-		if (paramApp.debugBilanSurObjetsGeo == false) {
-			if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  Affectation d'une géométrie aux liens "+(new Time(System.currentTimeMillis())).toString());
-			liensGeneriques = LienReseaux.exportAppCarteTopo(liens, paramApp);
-		}
-		else {
+		if (paramApp.debugBilanSurObjetsGeo ) {
 			if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  Transformation des liens de réseaux en liens génériques "+(new Time(System.currentTimeMillis())).toString());
 			liensGeneriques= LienReseaux.exportLiensAppariement(liens, reseauRef, paramApp);
+			Appariement.nettoyageLiens(reseauRef, reseauComp);
+			if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("######## FIN DE L'APPARIEMENT DE RESEAUX #########");
+			return liensGeneriques;
 		}
-
-		if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  Nettoyage des réseaux (destruction des liens temporaires créés...)  "+(new Time(System.currentTimeMillis())).toString());
-		Appariement.nettoyageLiens(reseauRef, reseauComp);
-		if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  Fin du nettoyage  "+(new Time(System.currentTimeMillis())).toString());
-
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("  Bilan et export terminés ");
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("  "+liensGeneriques.size()+" liens d'appariement ont été exportés (dans la structure finale)");
-		if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  FIN DE LA PHASE D'EXPORT "+(new Time(System.currentTimeMillis())).toString());
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("");
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("######## FIN DE L'APPARIEMENT DE RESEAUX #########");
-
-		return liensGeneriques;
+		else {
+			if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  Affectation d'une géométrie aux liens "+(new Time(System.currentTimeMillis())).toString());
+			LienReseaux.exportAppCarteTopo(liens, paramApp);
+			if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("######## FIN DE L'APPARIEMENT DE RESEAUX #########");
+			return liens;
+		}
 	}
 
 

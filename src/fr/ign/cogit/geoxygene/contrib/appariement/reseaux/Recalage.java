@@ -58,8 +58,11 @@ public class Recalage {
 	 *  Un lien (correspondant) est gardé entre les nouveaux arcs et leurs correspondants
 	 *  dans le réseau de référence (accessible par arc.getCorrespondants()),
 	 * 
-	 *  IMPORTANT: ctARecaler doit être le réseau 1 dans l'appariement,
+	 *  IMPORTANT 1: ctARecaler doit être le réseau 1 dans l'appariement,
 	 *  et ctSurLaquelleRecaler le réseau 2.
+	 *  
+	 *  IMPORTANT 2: pour garder les liens, l'appariement doit avoir été lancé
+	 *  avec le paramètre debugBilanSurObjetsGeo à FALSE
 	 * 
 	 *  NB: méthode conçue pour les cas relativement simples qui mérite sans doute d'être affinée.
 	 * 

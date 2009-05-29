@@ -227,7 +227,9 @@ public class ArcApp extends Arc {
 	/** A un correspondant par l'appariement passé en paramètre, soit directement,
 	 * soit par l'intermédiaire d'un groupe ? */
 	public boolean aUnCorrespondantGeneralise(EnsembleDeLiens liens) {
-		if (this.aUnCorrespondant(liens)) return true;
+		if (this.aUnCorrespondant(liens)) {
+			return true;
+		}
 		Iterator<?> itGroupes = this.getListeGroupes().iterator();
 		while (itGroupes.hasNext()) {
 			GroupeApp groupe = (GroupeApp) itGroupes.next();
