@@ -200,7 +200,7 @@ public abstract class AppariementSurfaces {
 				if (surfaceIntersection<=param.surface_min_intersection) continue;
 				pourcentageRecouvrement= Math.max(surfaceIntersection/geomRef.area(), surfaceIntersection/geomComp.area());
 				if ( pourcentageRecouvrement<param.pourcentage_min_intersection) continue; //intersection pas suffisante
-				lien = (Lien)preAppLiens.nouvelElement();
+				lien = preAppLiens.nouvelElement();
 				lien.addObjetRef(featureRef);
 				lien.addObjetComp(featureComp);
 				lien.setEvaluation(pourcentageRecouvrement);
@@ -318,7 +318,7 @@ public abstract class AppariementSurfaces {
 			groupeConnexe = itGroupes.next();
 			if ( groupeConnexe.getListeArcs().size() == 0 ) continue; // cas des noeuds isolés
 			//if ( groupeConnexe.getListenoeuds().size() == 0 ) continue;
-			lienGroupe = (Lien)liensGroupes.nouvelElement();
+			lienGroupe = liensGroupes.nouvelElement();
 			itNoeuds = groupeConnexe.getListeNoeuds().iterator();
 			while (itNoeuds.hasNext()) {
 				noeud = itNoeuds.next();
@@ -450,7 +450,7 @@ public abstract class AppariementSurfaces {
 			if ( param.minimiseDistanceSurfacique) {
 				distSurf = lien.distanceSurfaciqueRobuste();
 				if (distSurf < param.distSurfMaxFinal ) {
-					lienOK = (Lien)liensFiltres.nouvelElement();
+					lienOK = liensFiltres.nouvelElement();
 					lienOK.copie(lien);
 					lienOK.setEvaluation(distSurf);
 				}
@@ -458,7 +458,7 @@ public abstract class AppariementSurfaces {
 			else {
 				if ((lien.exactitude() > param.completudeExactitudeMinFinal )
 						&& (lien.completude() > param.completudeExactitudeMinFinal)){
-					lienOK = (Lien)liensFiltres.nouvelElement();
+					lienOK = liensFiltres.nouvelElement();
 					lienOK.copie(lien);
 				}
 			}

@@ -148,7 +148,7 @@ public class EnsembleDeLiens extends Population<Lien> {
 		for (FT_Feature feature:grapheDesLiens.getListeGroupes()) {
 			groupeConnexe = (Groupe)feature;
 			if ( groupeConnexe.getListeArcs().size() == 0 ) continue; // cas des noeuds isolés
-			lienGroupe = (Lien)liensGroupes.nouvelElement();
+			lienGroupe = liensGroupes.nouvelElement();
 			for(FT_Feature n:groupeConnexe.getListeNoeuds()) {
 				noeud = (Noeud)n;
 				feat = noeud.getCorrespondant(0);
@@ -189,7 +189,7 @@ public class EnsembleDeLiens extends Population<Lien> {
 		for (FT_Feature feature:grapheDesLiens.getListeGroupes()) {
 			groupeConnexe = (Groupe)feature;
 			if ( groupeConnexe.getListeArcs().size() == 0 ) continue; // cas des noeuds isolés
-			lienGroupe = (Lien)liensGroupes.nouvelElement();
+			lienGroupe = liensGroupes.nouvelElement();
 			for(FT_Feature n:groupeConnexe.getListeNoeuds()) {
 				noeud = (Noeud)n;
 				feat = noeud.getCorrespondant(0);
@@ -237,7 +237,7 @@ public class EnsembleDeLiens extends Population<Lien> {
 		// création des arcs du graphe = les liens d'appariement
 		Iterator<Lien> itLiens = this.getElements().iterator();
 		while (itLiens.hasNext()) {
-			lien = (Lien)itLiens.next();
+			lien = itLiens.next();
 			itObjetsRef = lien.getObjetsRef().iterator();
 			// création des listes de noeuds concernés par le lien
 			noeudsRef.clear();
@@ -281,8 +281,8 @@ public class EnsembleDeLiens extends Population<Lien> {
 		int i,j,k;
 
 		for(i=0;i<liens.size();i++){
-			objetsComp.add(((Lien)liens.get(i)).getObjetsComp().get(0));
-			objetsRef.add(((Lien)liens.get(i)).getObjetsRef().get(0));
+			objetsComp.add(liens.get(i).getObjetsComp().get(0));
+			objetsRef.add(liens.get(i).getObjetsRef().get(0));
 		}
 
 		//regroupement des liens
@@ -290,7 +290,7 @@ public class EnsembleDeLiens extends Population<Lien> {
 			objetTest = objetsComp.get(j);
 			for (k=j;k<liens.size();k++){
 				if (objetTest.equals(objetsComp.get(k))&&j!=k){
-					((Lien)liens.get(j)).addObjetRef(objetsRef.get(k));
+					liens.get(j).addObjetRef(objetsRef.get(k));
 					if (!remove.contains(new Integer(k))){
 						remove.add(new Integer(k));
 					}
@@ -321,7 +321,7 @@ public class EnsembleDeLiens extends Population<Lien> {
 		Lien lien;
 		Iterator<Lien> itLiens =this.getElements().iterator();
 		while(itLiens.hasNext()){
-			lien = (Lien)itLiens.next();
+			lien = itLiens.next();
 			if ( lien.getEvaluation() < seuilEvaluation ) this.enleveElement(lien);
 		}
 	}
@@ -341,13 +341,13 @@ public class EnsembleDeLiens extends Population<Lien> {
 		Iterator<Lien> itLiens =this.getElements().iterator();
 		if (flag) {
 			while(itLiens.hasNext()){
-				lien = (Lien)itLiens.next();
+				lien = itLiens.next();
 				if (lien.getObjetsComp().size()>seuilCardinalite) lien.setEvaluation(0);
 			}
 		}
 		else{
 			while(itLiens.hasNext()){
-				lien = (Lien)itLiens.next();
+				lien = itLiens.next();
 				if (lien.getObjetsRef().size()>seuilCardinalite) lien.setEvaluation(0);
 			}
 		}
@@ -373,12 +373,12 @@ public class EnsembleDeLiens extends Population<Lien> {
 			liensClasses.add(new EnsembleDeLiens());
 		}
 		while (itLiens.hasNext()) {
-			lien= (Lien) itLiens.next();
+			lien= itLiens.next();
 			trouve = false;
 			for(i=0;i<valeursClassement.size();i++) {
 				seuil = (valeursClassement.get(i)).doubleValue();
 				if ( lien.getEvaluation()< seuil ) {
-					lienClasse = (Lien)(liensClasses.get(i)).nouvelElement();
+					lienClasse = liensClasses.get(i).nouvelElement();
 					lienClasse.setEvaluation(lien.getEvaluation());
 					lienClasse.setGeom(lien.getGeom());
 					lienClasse.setCommentaire(lien.getCommentaire());
@@ -391,7 +391,7 @@ public class EnsembleDeLiens extends Population<Lien> {
 				}
 			}
 			if (trouve) continue;
-			lienClasse = (Lien)(liensClasses.get(valeursClassement.size())).nouvelElement();
+			lienClasse = liensClasses.get(valeursClassement.size()).nouvelElement();
 			lienClasse.setEvaluation(lien.getEvaluation());
 			lienClasse.setGeom(lien.getGeom());
 			lienClasse.setCommentaire(lien.getCommentaire());
@@ -417,7 +417,7 @@ public class EnsembleDeLiens extends Population<Lien> {
 		FT_Feature ref, comp;
 
 		while (itLiens.hasNext()) {
-			lien = (Lien)itLiens.next();
+			lien = itLiens.next();
 			itRef = lien.getObjetsRef().iterator();
 			GM_Aggregate<GM_Object> geom = new GM_Aggregate<GM_Object>();
 			while (itRef.hasNext()) {
@@ -450,7 +450,7 @@ public class EnsembleDeLiens extends Population<Lien> {
 		DirectPosition dpRef;
 
 		while (itLiens.hasNext()) {
-			lien = (Lien)itLiens.next();
+			lien = itLiens.next();
 			geom = new GM_Aggregate<GM_Object>();
 			itRef = lien.getObjetsRef().iterator();
 			while (itRef.hasNext()) {
@@ -482,7 +482,7 @@ public class EnsembleDeLiens extends Population<Lien> {
 		FT_Feature ref, comp;
 
 		while (itLiens.hasNext()) {
-			lien = (Lien)itLiens.next();
+			lien = itLiens.next();
 			itRef = lien.getObjetsRef().iterator();
 			GM_Aggregate<GM_Object> geom = new GM_Aggregate<GM_Object>();
 			while (itRef.hasNext()) {
@@ -527,7 +527,7 @@ public class EnsembleDeLiens extends Population<Lien> {
 		FT_Feature ref, comp;
 
 		while (itLiens.hasNext()) {
-			lien = (Lien)itLiens.next();
+			lien = itLiens.next();
 			itRef = lien.getObjetsRef().iterator();
 			GM_Aggregate<GM_Object> geom = new GM_Aggregate<GM_Object>();
 			while (itRef.hasNext()) {
@@ -563,7 +563,7 @@ public class EnsembleDeLiens extends Population<Lien> {
 		Lien lien;
 
 		while (itLiens.hasNext()) {
-			lien = (Lien)itLiens.next();
+			lien = itLiens.next();
 			GM_Aggregate<GM_Object> geom = new GM_Aggregate<GM_Object>();
 			lien.setGeom(geom);
 		}
@@ -597,7 +597,7 @@ public class EnsembleDeLiens extends Population<Lien> {
 		Iterator<Lien> itLiens = liens.iterator();
 		//ajout des éléments appariés dans les populations concernées
 		while (itLiens.hasNext()){
-			lien = (Lien)itLiens.next();
+			lien = itLiens.next();
 			List<FT_Feature> elementsComp = lien.getObjetsComp();
 			List<FT_Feature> elementsRef = lien.getObjetsRef();
 
@@ -657,7 +657,7 @@ public class EnsembleDeLiens extends Population<Lien> {
 		}
 		Iterator<Lien> itLiens = this.getElements().iterator();
 		while (itLiens.hasNext()) {
-			Lien lien= (Lien) itLiens.next();
+			Lien lien = itLiens.next();
 			for(i=0;i<valeursClassement.size();i++) {
 				if ( lien.getCommentaire() == null ) {
 					continue;
