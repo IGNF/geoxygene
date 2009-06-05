@@ -104,7 +104,7 @@ public class MathUtil {
 	 */
 	public static double max(List<Double> liste) {
 		if (liste.isEmpty()) return 0.0;
-		double max=Double.MIN_VALUE;
+		double max=-Double.MAX_VALUE;
 		for(Double val:liste) max=Math.max(max, val);
 		return max;
 	}
