@@ -193,7 +193,7 @@ public class ShapefileReader implements Runnable {
 		/** Crée un filtre qui n'accepte que les fichier shp ou les répertoires */
 		choixFichierShape.setFileFilter(new FileFilter(){
 			@Override
-			public boolean accept(File f) {return (f.isFile()&&f.getAbsolutePath().endsWith(".shp")||f.isDirectory());}
+			public boolean accept(File f) {return (f.isFile() && (f.getAbsolutePath().endsWith(".shp") || f.getAbsolutePath().endsWith(".SHP")) || f.isDirectory());}
 			@Override
 			public String getDescription() {return "fichiers ESRI shapefile";}
 		});
