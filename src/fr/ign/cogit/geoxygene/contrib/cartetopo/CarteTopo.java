@@ -642,9 +642,8 @@ public class CarteTopo extends DataSet {
 		}
 	}
 
-	/** Filtre les arcs en double
-	 * (en double = même géométrie et même orientation).
-	 * 
+	/** Filtre les arcs en double (en double = même géométrie et même orientation).
+	 * On vérifie à la fois la géométrie et la topologie, i.e. la topologie arcs/noeuds doit être instanciée.
 	 * <strong>Attention: les conséquences sur la topologie arcs/faces ne sont pas gérées.</strong>
 	 * TODO s'il existe des arcs en plus de 2 exemplaires, ils ne sont pas enlevés je crois
 	 * 
