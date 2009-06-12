@@ -99,6 +99,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	}
 
 	public GM_Object buffer (GM_Object geom, double distance) {
+	     	if (distance==0.0) return geom;
 		try {
 			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
 			Geometry jtsBuffer=jtsGeom.buffer(distance);

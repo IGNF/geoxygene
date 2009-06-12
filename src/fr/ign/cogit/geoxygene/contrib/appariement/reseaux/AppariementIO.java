@@ -251,8 +251,12 @@ public class AppariementIO {
 		// 1- Création de la topologie arcs-noeuds, rendu du graphe planaire
 		if ((ref && paramApp.topologieGraphePlanaire1) || (!ref && paramApp.topologieGraphePlanaire2)) { // cas où on veut une topologie planaire
 			if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("    Rendu du graphe planaire et instanciation de la topologie arcs-noeuds "+(new Time(System.currentTimeMillis())).toString());
+			// Debut Ajout 
+			reseau.creeTopologieArcsNoeuds(0);
+			reseau.creeNoeudsManquants(0);
+			reseau.filtreDoublons(0);
 			reseau.filtreArcsDoublons();
-			//reseau.creeTopologieArcsNoeuds(0);
+			// Fin Ajout
 			reseau.rendPlanaire(0);
 			reseau.filtreDoublons(0);
 		}
