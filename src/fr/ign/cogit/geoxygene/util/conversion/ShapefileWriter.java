@@ -82,6 +82,7 @@ public class ShapefileWriter {
 				specs+=","+attributeType.getMemberName()+":"+valueType2Class(attributeType.getValueType()).getSimpleName();
 			    }
 			String featureTypeName = shapefileName.substring(shapefileName.lastIndexOf("/")+1,shapefileName.lastIndexOf("."));
+			featureTypeName=featureTypeName.replace('.', '_');
 			SimpleFeatureType type = DataUtilities.createType(featureTypeName, specs);
 			store.createSchema(type);
 			FeatureStore featureStore = (FeatureStore) store.getFeatureSource(featureTypeName);

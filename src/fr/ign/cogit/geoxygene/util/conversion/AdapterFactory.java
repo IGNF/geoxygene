@@ -198,6 +198,7 @@ public class AdapterFactory  {
 			return new GM_LineString(toDirectPositionList(geom.getCoordinates()));
 		}
 		if (geom instanceof Polygon) {
+		    if (geom.isEmpty()) return new GM_Polygon();
 			GM_Polygon polygon = new GM_Polygon(new GM_Ring(new GM_LineString(toDirectPositionList(((Polygon)geom).getExteriorRing().getCoordinates()))));
 			for (int index=0 ; index<((Polygon)geom).getNumInteriorRing() ; index++) {
 				LineString ring = ((Polygon)geom).getInteriorRingN(index);

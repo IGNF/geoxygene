@@ -273,9 +273,13 @@ public class ShapefileReader implements Runnable {
 			defaultFeature.setSchema(schema);
 			defaultFeature.setAttributes(reader.fieldValues[indexFeature]);
 			try {
-				defaultFeature.setGeom(fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene.makeGeOxygene(reader.geometries[indexFeature].toText()));
-				population.add(defaultFeature);
-			} catch (ParseException e) {
+				if (reader.geometries[indexFeature]==null) {
+					logger.error("Géométrie nulle, objet ignoré");
+				} else {
+					defaultFeature.setGeom(AdapterFactory.toGM_Object(reader.geometries[indexFeature]));
+					population.add(defaultFeature);
+				}
+			} catch (Exception e) {
 				logger.error("Problème pendant la conversion de la géométrie. L'objet est ignoré");
 			}
 		}
