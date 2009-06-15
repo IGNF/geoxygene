@@ -53,6 +53,7 @@ import com.vividsolutions.jts.operation.distance.DistanceOp;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
@@ -99,7 +100,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	}
 
 	public GM_Object buffer (GM_Object geom, double distance) {
-	     	if (distance==0.0) return geom;
+		if ((distance==0)&&(geom instanceof GM_Point)) return geom;
 		try {
 			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
 			Geometry jtsBuffer=jtsGeom.buffer(distance);
