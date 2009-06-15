@@ -366,6 +366,27 @@ public abstract class FT_Feature implements Cloneable {
 				valeur = methodGetter.invoke(this, (Object[]) null);
 				return valeur;
 			} catch (SecurityException e) {
+				if (logger.isTraceEnabled()) logger.trace("SecurityException pendant l'appel de la mï¿½thode "+nomGetFieldMethod+" sur la classe "+classe);
+			} catch (IllegalArgumentException e) {
+				if (logger.isTraceEnabled()) logger.trace("IllegalArgumentException pendant l'appel de la mï¿½thode "+nomGetFieldMethod+" sur la classe "+classe);
+			} catch (NoSuchMethodException e) {
+				if (logger.isTraceEnabled()) logger.trace("La mï¿½thode "+nomGetFieldMethod+" n'existe pas dans la classe "+classe);
+			} catch (IllegalAccessException e) {
+				if (logger.isTraceEnabled()) logger.trace("IllegalAccessException pendant l'appel de la mï¿½thode "+nomGetFieldMethod+" sur la classe "+classe);
+			} catch (InvocationTargetException e) {
+				if (logger.isTraceEnabled()) logger.trace("InvocationTargetException pendant l'appel de la mï¿½thode "+nomGetFieldMethod+" sur la classe "+classe);
+			}
+			classe = classe.getSuperclass();
+		}
+		// on rï¿½essayer si le getter est du genre isAttribute, ie pour un boolï¿½en
+		nomGetFieldMethod = "is" + nomFieldMaj;
+		classe = this.getClass();
+		while (!classe.equals(Object.class)) {
+			try {
+				Method methodGetter = classe.getDeclaredMethod(nomGetFieldMethod, (Class[]) null);
+				valeur = methodGetter.invoke(this, (Object[]) null);
+				return valeur;
+			} catch (SecurityException e) {
 				if (logger.isTraceEnabled()) logger.trace("SecurityException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
 			} catch (IllegalArgumentException e) {
 				if (logger.isTraceEnabled()) logger.trace("IllegalArgumentException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
