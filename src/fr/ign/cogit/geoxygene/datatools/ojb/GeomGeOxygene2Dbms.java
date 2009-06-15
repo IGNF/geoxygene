@@ -99,6 +99,8 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
 
 	public Object sqlToJava (Object geom) {
 
+		if (geom==null) return null;
+		
 		// ORACLE
 		if (geom.getClass().getName().compareTo(ORACLE_GEOM_CLASS_NAME) == 0) {
 			try {
