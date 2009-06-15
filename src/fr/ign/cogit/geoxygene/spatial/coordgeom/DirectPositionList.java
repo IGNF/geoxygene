@@ -222,4 +222,29 @@ public class DirectPositionList implements Collection<DirectPosition> {
 	 */
 	@Override
 	public <T> T[] toArray(T[] a) {return list.toArray(a);}
+
+	/**
+	 * permuter les elements i et j
+	 * @param i
+	 * @param j
+	 */
+	public void permuter(int i, int j){
+		if(i==j) return;
+		if( i >= size() || j >= size() ) {
+			System.out.println("Erreur dans permutation: index "+i+" ou "+j+" plus grand que "+size());
+		}
+		DirectPosition dpi = get(i),  dpj = get(j);
+		remove(i); add(i, dpj);
+		remove(j); add(j, dpi);
+	}
+
+	/**
+	 * inverse l'ordre des directposition de la liste
+	 */
+	public void inverseOrdre(){
+		int nb = size();
+		for(int i=0; i<nb/2; i++) permuter(i, nb-1-i);
+		
+	}
+
 }
