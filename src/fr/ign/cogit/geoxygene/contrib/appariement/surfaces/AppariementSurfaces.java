@@ -384,7 +384,7 @@ public abstract class AppariementSurfaces {
 	 */
 	public static void ajoutPetitesSurfaces(EnsembleDeLiens liens, FT_FeatureCollection<?> popRef, FT_FeatureCollection<?> popComp, ParametresAppSurfaces param) {
 		Iterator<?> itRef = popRef.getElements().iterator();
-		Iterator<?> itLiens = liens.getElements().iterator();
+		Iterator<Lien> itLiens = liens.getElements().iterator();
 		Set<FT_Feature> objetsRefLies = new HashSet<FT_Feature>();
 		FT_FeatureCollection<?> objetsAdjacents;
 		Lien lienAdjacent, lien2;
@@ -397,7 +397,7 @@ public abstract class AppariementSurfaces {
 		}
 
 		while (itLiens.hasNext()) {
-			Lien lien = (Lien) itLiens.next();
+			Lien lien = itLiens.next();
 			objetsRefLies.addAll(lien.getObjetsRef());
 		}
 
@@ -428,10 +428,10 @@ public abstract class AppariementSurfaces {
 	}
 
 	private static Lien liensDeObj(FT_Feature objet, EnsembleDeLiens liens) {
-		Iterator<?> itLiens = liens.getElements().iterator();
+		Iterator<Lien> itLiens = liens.getElements().iterator();
 
 		while (itLiens.hasNext()) {
-			Lien lien = (Lien) itLiens.next();
+			Lien lien = itLiens.next();
 			if (lien.getObjetsRef().contains(objet))return lien;
 		}
 		return null;
@@ -443,9 +443,9 @@ public abstract class AppariementSurfaces {
 		Lien lien, lienOK ;
 		double distSurf;
 
-		Iterator<?> itGroupes = liensRegroupes.getElements().iterator();
+		Iterator<Lien> itGroupes = liensRegroupes.getElements().iterator();
 		while (itGroupes.hasNext()) {
-			lien = (Lien) itGroupes.next();
+			lien = itGroupes.next();
 			// si on depasse le seuil acceptable: on refuse.
 			if ( param.minimiseDistanceSurfacique) {
 				distSurf = lien.distanceSurfaciqueRobuste();
@@ -474,7 +474,7 @@ public abstract class AppariementSurfaces {
 		FT_Feature objetComp;
 		GM_Point pointAccrocheRef, pointAccrocheComp;
 		CarteTopo armRef, armComp;
-		Iterator<?> itLiens = liens.getElements().iterator();
+		Iterator<Lien> itLiens = liens.getElements().iterator();
 		Iterator<?> itArcs, itNoeuds, itObjetsComp;
 		Arc arc;
 		Noeud noeud;
@@ -484,7 +484,7 @@ public abstract class AppariementSurfaces {
 		if (persistant) DataSet.db.begin();
 		System.out.println("Création de la géométrie des liens");
 		while (itLiens.hasNext()) {
-			Lien lien = (Lien) itLiens.next();
+			Lien lien = itLiens.next();
 			if (lien.getObjetsRef().size() == 0) {
 				System.out.println("Attention, lien sans objet de référence");
 				continue;

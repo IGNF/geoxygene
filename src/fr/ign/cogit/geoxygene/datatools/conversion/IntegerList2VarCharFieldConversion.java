@@ -47,7 +47,7 @@ public class IntegerList2VarCharFieldConversion implements FieldConversion {
 			String[] values = s.split("-");
 			List<Integer> result = new ArrayList<Integer>();
 			for (String val:values) {
-				result.add(Integer.parseInt(val));
+				if (!val.isEmpty()) result.add(Integer.parseInt(val));
 			}
 			return result;
 		}

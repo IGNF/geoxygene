@@ -32,6 +32,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
@@ -60,6 +62,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  */
 
 public class LienReseaux extends Lien {
+	static Logger logger=Logger.getLogger(LienReseaux.class.getName());
 
 
 	/** Nom de l'appariement qui a créé le lien */
@@ -156,8 +159,6 @@ public class LienReseaux extends Lien {
 	 */
 	@SuppressWarnings("unchecked")
 	public static EnsembleDeLiens exportLiensAppariement(EnsembleDeLiens liensReseaux, ReseauApp ctRef, ParametresApp param) {
-		Lien lienG;
-		Iterator itObjets2,itObjets1;
 		EnsembleDeLiens liensGeneriques;
 
 		liensGeneriques = new EnsembleDeLiens();
@@ -170,7 +171,7 @@ public class LienReseaux extends Lien {
 		pops2.addAll(param.populationsNoeuds2);
 
 		//boucle sur les liens entre cartes topo
-		Iterator itLiensReseaux = liensReseaux.iterator();
+		Iterator<Lien> itLiensReseaux = liensReseaux.iterator();
 		while (itLiensReseaux.hasNext()) {
 			LienReseaux lienReseau = (LienReseaux) itLiensReseaux.next();
 			// on récupère tous les objets des carte topo concernés
@@ -199,10 +200,10 @@ public class LienReseaux extends Lien {
 				List objets1 = getCorrespondants(objetCT1, pops1);
 				while (itObjetsCT2PourUnLien.hasNext()) {
 					FT_Feature objetCT2 = (FT_Feature) itObjetsCT2PourUnLien.next();
-					List objets2 = getCorrespondants(objetCT2, pops2);
+					List<FT_Feature> objets2 = getCorrespondants(objetCT2, pops2);
 					if (objets1.size() == 0 && objets2.size()==0 ) {
 						//cas où il n'y a pas de correspondant dans les données de départ des 2 cotés
-						lienG = liensGeneriques.nouvelElement();
+						Lien lienG = liensGeneriques.nouvelElement();
 						lienG.setEvaluation(lienReseau.getEvaluation());
 						lienG.setCommentaire("Pas de correspondant géo dans les deux BDs");
 						if (param.exportGeometrieLiens2vers1) lienG.setGeom(creeGeometrieLienSimple(objetCT1, objetCT2));
@@ -211,10 +212,10 @@ public class LienReseaux extends Lien {
 					}
 					if (objets1.size() == 0 ) {
 						//cas où il n'y a pas de correspondant dans les données de BD1
-						itObjets2 = objets2.iterator();
+						Iterator<FT_Feature> itObjets2 = objets2.iterator();
 						while (itObjets2.hasNext()) {
-							FT_Feature objet2 = (FT_Feature) itObjets2.next();
-							lienG = liensGeneriques.nouvelElement();
+							FT_Feature objet2 = itObjets2.next();
+							Lien lienG = liensGeneriques.nouvelElement();
 							lienG.setEvaluation(lienReseau.getEvaluation());
 							lienG.setCommentaire("Pas de correspondant géo dans BD1");
 							if (param.exportGeometrieLiens2vers1) lienG.setGeom(creeGeometrieLienSimple(objetCT1, objet2));
@@ -225,10 +226,10 @@ public class LienReseaux extends Lien {
 					}
 					if (objets2.size() == 0 ) {
 						//cas où il n'y a pas de correspondant dans les données de BD2
-						itObjets1 = objets1.iterator();
+						Iterator<FT_Feature> itObjets1 = objets1.iterator();
 						while (itObjets1.hasNext()) {
-							FT_Feature objet1 = (FT_Feature) itObjets1.next();
-							lienG = liensGeneriques.nouvelElement();
+							FT_Feature objet1 = itObjets1.next();
+							Lien lienG = liensGeneriques.nouvelElement();
 							lienG.setEvaluation(lienReseau.getEvaluation());
 							lienG.setCommentaire("Pas de correspondant géo dans BD1");
 							if (param.exportGeometrieLiens2vers1) lienG.setGeom(creeGeometrieLienSimple(objet1, objetCT2));
@@ -238,13 +239,13 @@ public class LienReseaux extends Lien {
 						continue;
 					}
 					//cas où il y a des correspondants dans les deux BD
-					itObjets1 = objets1.iterator();
+					Iterator<FT_Feature> itObjets1 = objets1.iterator();
 					while (itObjets1.hasNext()) {
-						FT_Feature objet1 = (FT_Feature) itObjets1.next();
-						itObjets2 = objets2.iterator();
+						FT_Feature objet1 = itObjets1.next();
+						Iterator<FT_Feature> itObjets2 = objets2.iterator();
 						while (itObjets2.hasNext()) {
-							FT_Feature objet2 = (FT_Feature) itObjets2.next();
-							lienG = liensGeneriques.nouvelElement();
+							FT_Feature objet2 = itObjets2.next();
+							Lien lienG = liensGeneriques.nouvelElement();
 							lienG.setEvaluation(lienReseau.getEvaluation());
 							lienG.setCommentaire("");
 							if (param.exportGeometrieLiens2vers1)lienG.setGeom(creeGeometrieLienSimple(objet1, objet2));
@@ -278,6 +279,8 @@ public class LienReseaux extends Lien {
 	 * deux objets concerné par un simple trait
 	 */
 	private static GM_Object creeGeometrieLienSimple(FT_Feature obj1, FT_Feature obj2) {
+		if (logger.isDebugEnabled()) logger.debug(obj1+" - "+obj2);
+		
 		GM_LineString ligne = new GM_LineString();
 		DirectPosition DP2 = null;
 		if ( obj2.getGeom() instanceof GM_Point) {
@@ -299,6 +302,8 @@ public class LienReseaux extends Lien {
 			GM_LineString ligne1 = (GM_LineString)obj1.getGeom()  ;
 			ligne.addControlPoint(Operateurs.projection(DP2,ligne1));
 		}
+		if (logger.isDebugEnabled()) logger.debug(ligne);
+
 		return ligne;
 	}
 
@@ -441,6 +446,8 @@ public class LienReseaux extends Lien {
 	 */
 	private GM_Object creeGeometrieLien(boolean tirets, double pasTirets, boolean buffer, double tailleBuffer) {
 
+		if (logger.isDebugEnabled()) logger.debug(tirets+" - "+pasTirets+" - "+buffer+" - "+tailleBuffer);
+
 		Iterator<Groupe> itGroupes;
 		Iterator<Noeud> itNoeuds;
 		Iterator<Noeud> itNoeudsComp;
@@ -454,6 +461,8 @@ public class LienReseaux extends Lien {
 
 		// LIEN D'UN NOEUD REF VERS DES NOEUDS COMP ET/OU DES GROUPES COMP
 		if ( this.getNoeuds1().size() == 1 ) {
+			if (logger.isDebugEnabled()) logger.debug("Noeuds1 = "+this.getNoeuds1().size());
+			
 			noeudRef = (NoeudApp)this.getNoeuds1().get(0);
 			geomLien = new GM_Aggregate<GM_Object>();
 
@@ -490,6 +499,7 @@ public class LienReseaux extends Lien {
 				geomLien.add(ligne);
 			}
 
+			if (logger.isDebugEnabled()) logger.debug("geomLien = "+geomLien);
 			if (geomLien.coord().size() > 1 ) return geomLien;
 			System.out.println("Lien pour un noeud non créé : pas assez de coordonnées");
 			return null;
@@ -530,6 +540,7 @@ public class LienReseaux extends Lien {
 			}
 
 		}
+		if (logger.isDebugEnabled()) logger.debug("geomLien = "+geomLien);
 		if (geomLien.coord().size() > 1 ) return geomLien;
 		System.out.println("Lien pour un arc non créé : pas assez de coordonnées");
 		return null;
