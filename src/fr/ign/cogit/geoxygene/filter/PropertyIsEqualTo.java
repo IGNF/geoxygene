@@ -27,6 +27,9 @@ package fr.ign.cogit.geoxygene.filter;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.filter.expression.Literal;
+import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
+
 /**
  * @author Julien Perret
  *
@@ -34,6 +37,15 @@ import org.apache.log4j.Logger;
 public class PropertyIsEqualTo extends BinaryComparisonOpsType {
 	static Logger logger=Logger.getLogger(PropertyIsEqualTo.class.getName());
 
+	public PropertyIsEqualTo() {}
+	/**
+	 * @param propertyName
+	 * @param literal
+	 */
+	public PropertyIsEqualTo(PropertyName propertyName, Literal literal) {
+		this.setPropertyName(propertyName);
+		this.setLiteral(literal);
+	}
 	@Override
 	public boolean evaluate(Object object) {
 		Object property = this.getPropertyName().evaluate(object);
@@ -44,6 +56,9 @@ public class PropertyIsEqualTo extends BinaryComparisonOpsType {
 		}
 		if (property instanceof Number) {
 			return (((Number)property).doubleValue()== Double.parseDouble((String)this.getLiteral().getValue()));
+		}
+		if (property instanceof Boolean) {
+			return ((Boolean)property).equals(Boolean.valueOf((String)this.getLiteral().getValue()));
 		}
 		if (logger.isDebugEnabled()) logger.debug("Propriété "+this.getPropertyName()+" de valeur = "+property+" n'est ni de type String ni de type Number");
 		return property.equals(this.getLiteral());
