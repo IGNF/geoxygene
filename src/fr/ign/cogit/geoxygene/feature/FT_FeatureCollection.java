@@ -54,7 +54,7 @@ import fr.ign.cogit.geoxygene.util.index.SpatialIndex;
  * 
  * @composed 0 - n FT_Feature
  */
-public class FT_FeatureCollection<Feature extends FT_Feature> implements Collection<Feature> {
+public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection<Feat> {
 	static Logger logger = Logger.getLogger(FT_FeatureCollection.class.getName());
 	protected List<ChangeListener> listenerList = new ArrayList<ChangeListener>();
 	/**
@@ -96,7 +96,7 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	 * l'éventuel index spatial.
 	 * @param listeACopier collection à recopier
 	 */
-	public FT_FeatureCollection(FT_FeatureCollection<Feature> listeACopier) {
+	public FT_FeatureCollection(FT_FeatureCollection<Feat> listeACopier) {
 		this.setFlagGeom(listeACopier.getFlagGeom());
 		this.setFlagTopo(listeACopier.flagTopo);
 		this.getElements().addAll(listeACopier.getElements());
@@ -105,7 +105,7 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	 * Constructeur à partir d'une collection de FT_Feature 
 	 * @param collectionACopier collection à recopier
 	 */
-	public FT_FeatureCollection(Collection<Feature> collectionACopier) {this.getElements().addAll(collectionACopier);}
+	public FT_FeatureCollection(Collection<Feat> collectionACopier) {this.getElements().addAll(collectionACopier);}
 	// ---------------------------------------
 	// --- Indicateurs de geometrie et topo --
 	// ---------------------------------------
@@ -150,12 +150,12 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	/** 
 	 * La liste des <code>Feature</code>s composant this. 
 	 */
-	protected List<Feature> elements = new ArrayList<Feature>();
+	protected List<Feat> elements = new ArrayList<Feat>();
 	/**
 	 * Renvoie la liste de <code>Feature</code>s composant this.
 	 * @return la liste de <code>Feature</code>s composant this.
 	 */
-	public List<Feature> getElements() {return this.elements;}
+	public List<Feat> getElements() {return this.elements;}
 	/**
 	 * Affecte une liste de <code>Feature</code>s à this, et met à jour le lien inverse.
 	 * Attention detruit l'index spatial si celui existait. Il faut donc le
@@ -163,13 +163,13 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	 * @param liste liste de <code>Feature</code>s à affecter
 	 */
 	@SuppressWarnings("unchecked")
-	public void setElements(Collection<Feature> liste) {
-		List<Feature> old = new ArrayList<Feature>(elements);
-		for(Feature O:old) {
+	public void setElements(Collection<Feat> liste) {
+		List<Feat> old = new ArrayList<Feat>(elements);
+		for(Feat O:old) {
 			elements.remove(O);
 			O.getFeatureCollections().remove(this);			
 		}
-		for(Feature O:liste) {
+		for(Feat O:liste) {
 			elements.add(O);
 			if (!O.getFeatureCollections().contains(this))
 				O.getFeatureCollections().add((FT_FeatureCollection<FT_Feature>) this);
@@ -181,18 +181,17 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	 * @param i indice de l'élément à renvoyer
 	 * @return le i-eme element de la liste des composants de this.
 	 */
-	public Feature get(int i) {return this.elements.get(i);}
+	public Feat get(int i) {return this.elements.get(i);}
 	/**
 	 * Ajoute un element a la liste des composants de this, et met à jour le
 	 * lien inverse.
 	 */
 	@SuppressWarnings("unchecked")
-	public boolean add(Feature value) {
+	public boolean add(Feat value) {
 		if (value == null) return false;
 		boolean result = this.elements.add(value);
 		result = value.getFeatureCollections().add((FT_FeatureCollection<FT_Feature>) this) && result;
-		if (isIndexed&&spatialindex.hasAutomaticUpdate())
-				spatialindex.update(value, +1);
+		if (isIndexed&&spatialindex.hasAutomaticUpdate()) spatialindex.update(value, +1);
 		this.fireActionPerformed(new ChangeEvent(this));
 		return result;
 	}
@@ -200,15 +199,15 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	 * Ajoute les éléments d'une FT_FeatureCollection a la liste des composants
 	 * de this, et met à jour le lien inverse.
 	 */
-	public void addCollection(FT_FeatureCollection<Feature> value) {
+	public void addCollection(FT_FeatureCollection<Feat> value) {
 		if (value == null) return;
-		for(Feature element:value.elements) this.add(element);
+		for(Feat element:value.elements) this.add(element);
 	}
 	/**
 	 * Efface de la liste l'element passe en parametre. Attention, si l'élément
 	 * est persistant, celui-ci n'est pas détruit, le faire après au besoin.
 	 */
-	public boolean remove(Feature value) {
+	public boolean remove(Feat value) {
 		if (value == null) return false;
 		boolean result = this.elements.remove(value);
 		value.getFeatureCollections().remove(this);
@@ -237,7 +236,7 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	 */
 	@Override
 	public void clear() {
-		for(Feature O:this) O.getFeatureCollections().remove(this);
+		for(Feat O:this) O.getFeatureCollections().remove(this);
 		this.elements.clear();
 		if (isIndexed) removeSpatialIndex();
 	}
@@ -259,7 +258,7 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	public GM_Aggregate<GM_Object> getGeomAggregate() {
 		if (this.hasGeom()) {
 			GM_Aggregate<GM_Object> aggr = new GM_Aggregate<GM_Object>();
-			for(Feature f:this) aggr.add(f.getGeom());
+			for(Feat f:this) aggr.add(f.getGeom());
 			return aggr;
 		}
 		logger.warn("ATTENTION appel de getGeom() sur une FT_FeatureCollection sans geometrie ! (renvoie null) ");
@@ -283,14 +282,14 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	// --- Index spatial ---------------------
 	// ---------------------------------------
 	/** Index spatial. */
-	private SpatialIndex<Feature> spatialindex;
+	private SpatialIndex<Feat> spatialindex;
 	/** La collection possede-t-elle un index spatial ? */
 	private boolean isIndexed = false;
 	/**
 	 * Index spatial.
 	 * @return l'index spatial
 	 */
-	public SpatialIndex<Feature> getSpatialIndex() {return spatialindex;}
+	public SpatialIndex<Feat> getSpatialIndex() {return spatialindex;}
 	/**
 	 * La collection possede-t-elle un index spatial ?
 	 * @return vrai si la collection possède un index spatial, faux sinon
@@ -313,9 +312,7 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 			return;
 		}
 		try {
-			spatialindex = (SpatialIndex<Feature>) spatialIndexClass
-					.getConstructor(new Class[] {FT_FeatureCollection.class,Boolean.class})
-					.newInstance(new Object[] {this, new Boolean(automaticUpdate)});
+			spatialindex = (SpatialIndex<Feat>) spatialIndexClass.getConstructor(new Class[] {FT_FeatureCollection.class,Boolean.class}).newInstance(new Object[] {this, new Boolean(automaticUpdate)});
 			isIndexed = true;
 		} catch (Exception e) {
 			logger.error("Probleme a l'initialisation de l'index spatial !");
@@ -342,13 +339,7 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 			return;
 		}
 		try {
-			spatialindex = (SpatialIndex<Feature>) spatialIndexClass
-					.getConstructor(
-							new Class[] { FT_FeatureCollection.class,
-									Boolean.class, Integer.class })
-					.newInstance(
-							new Object[] { this, new Boolean(automaticUpdate),
-									new Integer(i) });
+			spatialindex = (SpatialIndex<Feat>) spatialIndexClass.getConstructor(new Class[] { FT_FeatureCollection.class,Boolean.class, Integer.class }).newInstance(new Object[] { this, new Boolean(automaticUpdate), new Integer(i) });
 			isIndexed = true;
 		} catch (Exception e) {
 			logger.error("Probleme a l'initialisation de l'index spatial !");
@@ -382,7 +373,7 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 			return;
 		}
 		try {
-			spatialindex = (SpatialIndex<Feature>) spatialIndexClass
+			spatialindex = (SpatialIndex<Feat>) spatialIndexClass
 					.getConstructor(
 							new Class[] { FT_FeatureCollection.class,
 									Boolean.class, GM_Envelope.class,
@@ -440,7 +431,7 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	 *            cote
 	 * @return objets qui intersectent le carre dont P est le centre, de cote D.
 	 */
-	public FT_FeatureCollection<Feature> select(DirectPosition P, double D) {
+	public FT_FeatureCollection<Feat> select(DirectPosition P, double D) {
 		if (!isIndexed) {
 			logger.warn("select() sur FT_FeatureCollection : l'index spatial n'est pas initialise (renvoie null)");
 			return null;
@@ -454,7 +445,7 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	 *            rectangle
 	 * @return objets qui intersectent un rectangle
 	 */
-	public FT_FeatureCollection<Feature> select(GM_Envelope env) {
+	public FT_FeatureCollection<Feat> select(GM_Envelope env) {
 		if (!isIndexed) {
 			logger.warn("select() sur FT_FeatureCollection : l'index spatial n'est pas initialise (renvoie null)");
 			return null;
@@ -468,7 +459,7 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	 *            geometrie quelconque
 	 * @return objets qui intersectent un objet geometrique quelconque.
 	 */
-	public FT_FeatureCollection<Feature> select(GM_Object geometry) {
+	public FT_FeatureCollection<Feat> select(GM_Object geometry) {
 		if (!isIndexed) {
 			logger.warn("select() sur FT_FeatureCollection : l'index spatial n'est pas initialise (renvoie null)");
 			return null;
@@ -490,7 +481,7 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	 * @return objets qui intersectent strictement un objet geometrique
 	 *         quelconque
 	 */
-	public FT_FeatureCollection<Feature> select(GM_Object geometry, boolean strictlyCrosses) {
+	public FT_FeatureCollection<Feat> select(GM_Object geometry, boolean strictlyCrosses) {
 		if (!isIndexed) {
 			logger.warn("select() sur FT_FeatureCollection : l'index spatial n'est pas initialise (renvoie null)");
 			return null;
@@ -507,7 +498,7 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	 * @return objets à moins d'une certaine distance d'un objet geometrique
 	 *         quelconque.
 	 */
-	public FT_FeatureCollection<Feature> select(GM_Object geometry, double distance) {
+	public FT_FeatureCollection<Feat> select(GM_Object geometry, double distance) {
 		if (!isIndexed) {
 			logger.warn("select() sur FT_FeatureCollection : l'index spatial n'est pas initialise (renvoie null)");
 			return null;
@@ -524,7 +515,7 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	 *            valeur
 	 * @return vrai si la collection contient la valeur, faux sinon
 	 */
-	public boolean contains(Feature value) {return this.elements.contains(value);}
+	public boolean contains(Feat value) {return this.elements.contains(value);}
 	/**
 	 * Ajoute un element a la liste des composants de this s'il n'est pas déjà
 	 * présent, et met à jour le lien inverse.
@@ -533,7 +524,7 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	 *            élément à ajouter
 	 */
 	@SuppressWarnings("unchecked")
-	public void addUnique(Feature feature) {
+	public void addUnique(Feat feature) {
 		if (feature == null) return;
 		if (this.elements.contains(feature)) return;
 		this.elements.add(feature);
@@ -551,7 +542,7 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	 */
 	public void remove(int i) {
 		if (i > this.size()) return;
-		Feature value = this.get(i);
+		Feat value = this.get(i);
 		this.elements.remove(value);
 		value.getFeatureCollections().remove(this);
 		if (isIndexed)
@@ -566,9 +557,9 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	 * @param value
 	 *            collection d'éléments à effacer
 	 */
-	public void removeCollection(FT_FeatureCollection<Feature> value) {
+	public void removeCollection(FT_FeatureCollection<Feat> value) {
 		if (value == null) return;
-		for(Feature f:value.getElements()) remove(f);
+		for(Feat f:value.getElements()) remove(f);
 		}
 	/**
 	 * Ajoute les éléments d'une FT_FeatureCollection a la liste des composants
@@ -577,18 +568,18 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	 * @param value
 	 *            collection d'éléments à ajouter
 	 */
-	public void addUniqueCollection(FT_FeatureCollection<? extends Feature> value) {
-		Feature elem;
+	public void addUniqueCollection(FT_FeatureCollection<? extends Feat> value) {
+		Feat elem;
 		if (value == null)
 			return;
-		Iterator<? extends Feature> iter = value.elements.iterator();
+		Iterator<? extends Feat> iter = value.elements.iterator();
 		while (iter.hasNext()) {
 			elem = iter.next();
 			this.addUnique(elem);
 		}
 	}
 	@Override
-	public Iterator<Feature> iterator() {return this.elements.iterator();}
+	public Iterator<Feat> iterator() {return this.elements.iterator();}
 	@Override
 	public boolean contains(Object obj) {return this.elements.contains(obj);}
 	@Override
@@ -605,11 +596,11 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	public boolean isEmpty() {return this.elements.isEmpty();}
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean remove(Object obj) {return this.remove((Feature)obj);}
+	public boolean remove(Object obj) {return this.remove((Feat)obj);}
 	@Override
 	public boolean retainAll(Collection<?> coll) {
-		List<Feature> toRemove = new ArrayList<Feature>();
-		for (Feature feature : this.elements) {
+		List<Feat> toRemove = new ArrayList<Feat>();
+		for (Feat feature : this.elements) {
 			if (!coll.contains(feature))
 				toRemove.add(feature);
 		}
@@ -618,10 +609,10 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	@Override
 	public Object[] toArray() {return this.elements.toArray();}
 	@Override
-	public boolean addAll(Collection<? extends Feature> c) {
+	public boolean addAll(Collection<? extends Feat> c) {
 		if (c == null) return false;
-		Feature elem;
-		Iterator<? extends Feature> iter = c.iterator();
+		Feat elem;
+		Iterator<? extends Feat> iter = c.iterator();
 		boolean result = true;
 		while (iter.hasNext()) {
 			elem = iter.next();
@@ -637,9 +628,9 @@ public class FT_FeatureCollection<Feature extends FT_Feature> implements Collect
 	/** Classe par défaut des instances de la population.
 	 *  Ceci est utile pour pouvoir savoir dans quelle classe créer de nouvelles instances.
 	 */
-	protected Class<Feature> classe;
-	public Class<Feature> getClasse() {return classe; }
-	public void setClasse (Class<Feature> C) {
+	protected Class<Feat> classe;
+	public Class<Feat> getClasse() {return classe; }
+	public void setClasse (Class<Feat> C) {
 		classe = C;
 		this.nomClasse = classe.getName();
 	}

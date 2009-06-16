@@ -71,7 +71,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * @author Julien Perret 
  */
 @Entity
-public class Population<Feature extends FT_Feature> extends FT_FeatureCollection<Feature> {
+public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Feat> {
 	/** logger*/
 	static Logger logger=Logger.getLogger(Population.class.getName());
 	/** Identifiant. Correspond au "cogitID" des tables du SGBD.*/
@@ -108,7 +108,7 @@ public class Population<Feature extends FT_Feature> extends FT_FeatureCollection
 	public Population(boolean persistance, String nomLogique, Class<?> classeElements, boolean drapeauGeom) {
 		this.setPersistant(persistance);
 		this.setNom(nomLogique);
-		this.setClasse((Class<Feature>)classeElements);
+		this.setClasse((Class<Feat>)classeElements);
 		this.flagGeom = drapeauGeom;
 		if (persistance) DataSet.db.makePersistent(this);
 	}
@@ -207,7 +207,7 @@ public class Population<Feature extends FT_Feature> extends FT_FeatureCollection
 	 *  Les données doivent d'abord avoir été indexées.
 	 *  PB: TRES LENT !!!!!!!
 	 */
-	public void chargeElementsProches(Population<Feature> pop, double dist) {
+	public void chargeElementsProches(Population<Feat> pop, double dist) {
 		if (logger.isInfoEnabled()) {
 			logger.info("-- Chargement des elements de la population  "+this.getNom());
 			logger.info("-- à moins de "+dist+" de ceux de la population   "+pop.getNom());
@@ -218,14 +218,14 @@ public class Population<Feature extends FT_Feature> extends FT_FeatureCollection
 			return;
 		}
 		try {
-			Iterator<Feature> itPop = pop.getElements().iterator();
-			Collection<Feature> selectionTotale = new HashSet<Feature>();
+			Iterator<Feat> itPop = pop.getElements().iterator();
+			Collection<Feat> selectionTotale = new HashSet<Feat>();
 			while (itPop.hasNext()) {
-				Feature objet = itPop.next();
-				FT_FeatureCollection<Feature> selection = DataSet.db.loadAllFeatures(classe, objet.getGeom(), dist);
+				Feat objet = itPop.next();
+				FT_FeatureCollection<Feat> selection = DataSet.db.loadAllFeatures(classe, objet.getGeom(), dist);
 				selectionTotale.addAll(selection.getElements());
 			}
-			elements = new ArrayList<Feature>(selectionTotale);
+			elements = new ArrayList<Feat>(selectionTotale);
 		} catch (Exception e) {
 			logger.error("----- ATTENTION : Chargement impossible de la population "+this.getNom());
 			logger.error("-----             Sans doute un probleme avec le SGBD, ou table inexistante, ou pas de mapping ");
@@ -240,28 +240,28 @@ public class Population<Feature extends FT_Feature> extends FT_FeatureCollection
 	 *  Travail sur un index en mémoire (pas celui du SGBD).
 	 *  Rmq : Fonctionne avec des objets de géométrie quelconque
 	 */
-	public Population<Feature> selectionElementsProchesGenerale(Population<Feature> pop, double dist) {
-		Population<Feature> popTemporaire = new Population<Feature>();
-		Population<Feature> popResultat = new Population<Feature>(false, this.getNom(), this.getClasse(),true);
-		Set<Feature> selectionUnObjet, selectionTotale = new HashSet<Feature>();
+	public Population<Feat> selectionElementsProchesGenerale(Population<Feat> pop, double dist) {
+		Population<Feat> popTemporaire = new Population<Feat>();
+		Population<Feat> popResultat = new Population<Feat>(false, this.getNom(), this.getClasse(),true);
+		Set<Feat> selectionUnObjet, selectionTotale = new HashSet<Feat>();
 
 		popTemporaire.addCollection(this);
 		popTemporaire.initSpatialIndex(Tiling.class, true, 20);
 		if (logger.isDebugEnabled()) logger.debug("Fin indexation "+(new Time(System.currentTimeMillis())).toString());
-		Iterator<Feature> itPop = pop.getElements().iterator();
+		Iterator<Feat> itPop = pop.getElements().iterator();
 		while (itPop.hasNext()) {
-			Feature objet = itPop.next();
+			Feat objet = itPop.next();
 			GM_Envelope enveloppe = objet.getGeom().envelope();
 			double xmin = enveloppe.getLowerCorner().getX()-dist;
 			double xmax = enveloppe.getUpperCorner().getX()+dist;
 			double ymin = enveloppe.getLowerCorner().getY()-dist;
 			double ymax = enveloppe.getUpperCorner().getY()+dist;
 			enveloppe = new GM_Envelope(xmin,xmax,ymin,ymax);
-			FT_FeatureCollection<Feature> selection = popTemporaire.select(enveloppe);
-			Iterator<Feature> itSel = selection.getElements().iterator();
-			selectionUnObjet = new HashSet<Feature>();
+			FT_FeatureCollection<Feat> selection = popTemporaire.select(enveloppe);
+			Iterator<Feat> itSel = selection.getElements().iterator();
+			selectionUnObjet = new HashSet<Feat>();
 			while (itSel.hasNext()) {
-				Feature objetSel = itSel.next();
+				Feat objetSel = itSel.next();
 				//if (Distances.premiereComposanteHausdorff((GM_LineString)objetSel.getGeom(),(GM_LineString)objet.getGeom())<dist)
 				if (objetSel.getGeom().distance(objet.getGeom())<dist) selectionUnObjet.add(objetSel);
 			}
@@ -274,22 +274,22 @@ public class Population<Feature extends FT_Feature> extends FT_FeatureCollection
 	/** Renvoie une population avec tous les éléments de this
 	 *  situés à moins de "dist" des éléments de la population pop.
 	 */
-	public Population<Feature> selectionLargeElementsProches(Population<Feature> pop, double dist) {
-		Population<Feature> popTemporaire = new Population<Feature>();
-		Population<Feature> popResultat = new Population<Feature>(false, this.getNom(), this.getClasse(),true);
+	public Population<Feat> selectionLargeElementsProches(Population<Feat> pop, double dist) {
+		Population<Feat> popTemporaire = new Population<Feat>();
+		Population<Feat> popResultat = new Population<Feat>(false, this.getNom(), this.getClasse(),true);
 
 		popTemporaire.addCollection(this);
 		popTemporaire.initSpatialIndex(Tiling.class, true);
-		Iterator<Feature> itPop = pop.getElements().iterator();
+		Iterator<Feat> itPop = pop.getElements().iterator();
 		while (itPop.hasNext()) {
-			Feature objet = itPop.next();
+			Feat objet = itPop.next();
 			GM_Envelope enveloppe = objet.getGeom().envelope();
 			double xmin = enveloppe.getLowerCorner().getX()-dist;
 			double xmax = enveloppe.getUpperCorner().getX()+dist;
 			double ymin = enveloppe.getLowerCorner().getY()-dist;
 			double ymax = enveloppe.getUpperCorner().getY()+dist;
 			enveloppe = new GM_Envelope(xmin,xmax,ymin,ymax);
-			FT_FeatureCollection<Feature> selection = popTemporaire.select(enveloppe);
+			FT_FeatureCollection<Feat> selection = popTemporaire.select(enveloppe);
 			popTemporaire.getElements().removeAll(selection.getElements());
 			popResultat.addCollection(selection);
 		}
@@ -363,7 +363,7 @@ public class Population<Feature extends FT_Feature> extends FT_FeatureCollection
 	 * <p>
 	 * <b>NB :</b> différent de remove (hérité de FT_FeatureCollection) qui ne détruit pas l'élément.
 	 */
-	public void enleveElement(Feature O) {
+	public void enleveElement(Feat O) {
 		super.remove(O);
 		if ( this.getPersistant() ) DataSet.db.deletePersistent(O);
 	}
@@ -374,7 +374,7 @@ public class Population<Feature extends FT_Feature> extends FT_FeatureCollection
 	 *  Si la population est persistante, alors le nouvel élément est rendu persistant dans cette méthode
 	 * <b>NB :</b> différent de add (hérité de FT_FeatureCollection) qui ajoute un élément déjà existant.
 	 */
-	public Feature nouvelElement() {return nouvelElement(null);}
+	public Feat nouvelElement() {return nouvelElement(null);}
 	/**
 	 * Crée un nouvel élément de la population (avec la géoémtrie geom),
 	 *  instance de sa classe par défaut, et l'ajoute à la population.
@@ -382,9 +382,9 @@ public class Population<Feature extends FT_Feature> extends FT_FeatureCollection
 	 *  Si la population est persistante, alors le nouvel élément est rendu persistant dans cette méthode
 	 *  <b>NB :</b> différent de add (hérité de FT_FeatureCollection) qui ajoute un élément déjà existant.
 	 */
-	public Feature nouvelElement(GM_Object geom) {
+	public Feat nouvelElement(GM_Object geom) {
 		try {
-			Feature elem = this.getClasse().newInstance();
+			Feat elem = this.getClasse().newInstance();
 			elem.setId(++idNouvelElement);
 			elem.setGeom(geom);
 			//elem.setPopulation(this);
@@ -412,9 +412,9 @@ public class Population<Feature extends FT_Feature> extends FT_FeatureCollection
 	 * @param param
 	 * @return
 	 */
-	public Feature nouvelElement(Class<?>[] signature, Object[] param) {
+	public Feat nouvelElement(Class<?>[] signature, Object[] param) {
 		try {
-			Feature elem = this.getClasse().getConstructor(signature).newInstance(param);
+			Feat elem = this.getClasse().getConstructor(signature).newInstance(param);
 			super.add(elem);
 			if ( this.getPersistant() ) DataSet.db.makePersistent(elem);
 			return elem;
@@ -439,7 +439,7 @@ public class Population<Feature extends FT_Feature> extends FT_FeatureCollection
 	 * </ul>
 	 * @param populationACopier
 	 */
-	public void copiePopulation(Population<Feature> populationACopier){
+	public void copiePopulation(Population<Feat> populationACopier){
 		this.setElements(populationACopier.getElements());
 		this.setClasse(populationACopier.getClasse());
 		this.setFlagGeom(populationACopier.getFlagGeom());
@@ -486,7 +486,7 @@ public class Population<Feature extends FT_Feature> extends FT_FeatureCollection
 		}
 		try {
 			if (logger.isTraceEnabled()) logger.trace("debut");
-			FT_FeatureCollection<Feature> coll = DataSet.db.loadAllFeatures(this.getFeatureType());
+			FT_FeatureCollection<Feat> coll = DataSet.db.loadAllFeatures(this.getFeatureType());
 			if (logger.isTraceEnabled()) logger.trace("milieu");
 			this.addUniqueCollection(coll);
 			if (logger.isTraceEnabled()) logger.trace("fin");
