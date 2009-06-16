@@ -27,6 +27,7 @@
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -57,6 +58,13 @@ public class Arc extends ElementCarteTopo {
 	static Logger logger=Logger.getLogger(Arc.class.getName());
 
 	public Arc() {super();}
+
+	public Arc(Noeud ini, Noeud fin) {
+		super();
+		this.setNoeudIni(ini);
+		this.setNoeudFin(fin);
+		this.setGeometrie(new GM_LineString(new DirectPositionList(Arrays.asList(ini.getGeometrie().getPosition(),fin.getGeometrie().getPosition()))));
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//                                      Géométrie

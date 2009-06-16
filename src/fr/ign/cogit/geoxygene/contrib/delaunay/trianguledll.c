@@ -5,8 +5,7 @@
 #include "fr_ign_cogit_geoxygene_contrib_delaunay_Triangulation.h"
 
 JNIEXPORT void JNICALL Java_fr_ign_cogit_geoxygene_contrib_delaunay_Triangulation_trianguleC
-  (JNIEnv * env, jobject obj, 
-	jstring joptions, jobject jin, jobject jout, jobject jvorout) {
+  (JNIEnv * env, jobject obj, jstring joptions, jobject jin, jobject jout, jobject jvorout) {
 
 const char * options;
 struct triangulateio in, out, vorout;
@@ -107,10 +106,10 @@ if (jvorout != NULL) {
 cls = (*env)->GetObjectClass(env, jvorout);
 
 fid = (*env)->GetFieldID(env, cls, "numberofpoints", "I");
-(*env)->SetIntField(env, jvorout, fid, out.numberofpoints);
+(*env)->SetIntField(env, jvorout, fid, vorout.numberofpoints);
 
 fid = (*env)->GetFieldID(env, cls, "numberofedges", "I");
-(*env)->SetIntField(env, jvorout, fid, out.numberofedges);
+(*env)->SetIntField(env, jvorout, fid, vorout.numberofedges);
 
 mid = (*env)->GetMethodID(env, cls, "jvoroutInit", "()V");
 (*env)->CallVoidMethod(env, jvorout, mid);

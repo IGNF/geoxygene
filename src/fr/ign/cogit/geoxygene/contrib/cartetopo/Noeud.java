@@ -50,8 +50,8 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 public class Noeud extends ElementCarteTopo {
 
-	public Noeud() {
-	}
+	public Noeud() {}
+	public Noeud(GM_Point point) {this.setGeom(point);}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//	Géométrie
