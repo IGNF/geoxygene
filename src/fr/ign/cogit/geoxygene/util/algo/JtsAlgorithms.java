@@ -45,10 +45,13 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.operation.buffer.BufferParameters;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
+import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;
 
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -781,4 +784,83 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		Coordinate[] coords = AdapterFactory.toCoordinateSequence(new GeometryFactory(), line.coord()).toCoordinateArray();
 		return CGAlgorithms.isCCW(coords);
 	}
+
+
+
+	/**
+	 * tente d'appliquer filtre de douglas peucker a une geometrie.
+	 * en cas d'echec, renvoie la geometrie initiale
+	 * @param geom
+	 * @param seuil
+	 * @return
+	 */
+	public static Geometry filtreDouglasPeucker(Geometry geom, double seuil){
+		if (seuil == 0.0) return (Geometry)geom.clone();
+		if (seuil <0.0) {
+			logger.warn("Application de filtre de DP a une geometrie avec un seuil negatif: "+seuil);
+			return geom;
+		}
+
+		Geometry g = DouglasPeuckerSimplifier.simplify(geom, seuil);
+
+		if (g==null) {
+			logger.warn("Echec lors de l'application de filtre de DP (resultat nul) (seuil="+seuil+", geom="+geom+"). Resultat: "+g);
+			return geom;
+		}
+		else if (g.isEmpty() ) {
+			logger.warn("Echec lors de l'application de filtre de DP (resultat vide) (seuil="+seuil+", geom="+geom+"). Resultat: "+g);
+			return geom;
+		}
+		else if (!g.isValid()) {
+			logger.warn("Echec lors de l'application de filtre de DP (resultat non valide) (seuil="+seuil+", geom="+geom+"). Resultat: "+g);
+			return geom;
+		}
+		else if ( g.getGeometryType() != geom.getGeometryType()) {
+			logger.warn("Echec lors de l'application de filtre de D. types differents: "+geom.getGeometryType()+" -> "+ g.getGeometryType());			
+			return geom;
+		}
+		else return g;
+	}
+
+	/**
+	 * calcule fermeture de geometrie (juste buffer externe, puis interne)
+	 * @param geometry géométrie de départ
+	 * @param distance distance utilisée pour le buffer positif puis pour le buffer négatif
+	 * @param quadrantSegments nombre de segments utilisés pour la simplification par l'algorithme de Douglas-Peucker
+	 * @param endCapStyle type d'approximation utilisée pour la simplification par l'algorithme de Douglas-Peucker
+	 * @return la fermeture de la géométrie passée en paramètre
+	 */
+	public static Geometry fermeture(Geometry geometry, double distance, int quadrantSegments, int endCapStyle ) {
+		Geometry geom = geometry.buffer(distance,quadrantSegments,endCapStyle);
+		geom = geom.buffer(-distance,quadrantSegments,endCapStyle);
+		return geom;
+	}
+	public static Geometry fermeture(Geometry geometry, double distance, int quadrantSegments) {
+		return fermeture(geometry, distance, quadrantSegments, BufferParameters.CAP_ROUND);
+	}
+
+	/**
+	 * Supprime les trous d'un polygone.
+	 * Remove the holes from a polygon.
+	 * 
+	 * @param poly un polygone, a polygon
+	 */
+	public static Polygon supprimeTrous(Polygon poly){
+		return new Polygon((LinearRing)poly.getExteriorRing(), null, poly.getFactory());
+	}
+
+	/**
+	 * Supprime les trous d'un multipolygone, i.e. supprime les trous de tous les polygones d'un multipolygone.
+	 * Remove the holes from a multipolygon.
+	 * @see #supprimeTrous(Polygon)
+	 * 
+	 * @param mp un multipolyone, a multipolygon
+	 */
+	public static MultiPolygon supprimeTrous(MultiPolygon mp){
+		Polygon[] polys = new Polygon[mp.getNumGeometries()];
+		for(int i=0; i<mp.getNumGeometries(); i++) polys[i] = supprimeTrous((Polygon)mp.getGeometryN(i));
+		return (new GeometryFactory()).createMultiPolygon(polys);
+	}
+
+
 } // class
