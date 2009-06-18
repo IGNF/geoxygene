@@ -1619,4 +1619,33 @@ public class CarteTopo extends DataSet {
 			}
 		}
 	}
+
+	/**
+	 * Nettoie les pointeurs de la carte topo pour assurer une bonne liberation de la memoire
+	 * A utiliser lorsque'on souhaite effacer une carte topo.
+	 */
+	public void nettoyer() {
+
+		for(Population<? extends FT_Feature> pop : getPopulations())  for(FT_Feature f : pop) f.setCorrespondants(new ArrayList<FT_Feature>());
+
+		for(Arc arc : getPopArcs()) {
+			arc.setNoeudFin(null);
+			arc.setNoeudIni(null);
+			arc.setFaceDroite(null);
+			arc.setFaceGauche(null);
+		}
+		for(Face face : getPopFaces()) {
+			face.setArcsPendants(null);
+			face.setListeGroupes(null);
+		}
+		for(Groupe gr : getPopGroupes()) {
+			gr.setListeArcs(null);
+			gr.setListeNoeuds(null);
+			gr.setListeFaces(null);
+		}	
+		emptyComposants();
+		emptyPopulations();
+
+	}
+
 }

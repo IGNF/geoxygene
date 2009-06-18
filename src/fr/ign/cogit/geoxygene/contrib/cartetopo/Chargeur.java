@@ -87,17 +87,17 @@ public class Chargeur {
 	public static void importClasseGeo(FT_FeatureCollection<?> listeFeatures, CarteTopo carte, boolean convert2d) {
 		if(listeFeatures.isEmpty()) {logger.warn("Rien n'a été importé : la liste de features est vide");return;}
 		if (listeFeatures.get(0).getGeom() instanceof GM_Point) {
-			int nbElements = importClasseGeo(listeFeatures,carte.getPopNoeuds(),convert2d);
+			int nbElements = importClasseGeo(listeFeatures, carte.getPopNoeuds(), convert2d);
 			if(logger.isDebugEnabled()) logger.debug("Nb de noeuds importés : "+nbElements);
 			return;
 		}
 		if ( (listeFeatures.get(0).getGeom() instanceof GM_LineString)  || (listeFeatures.get(0).getGeom() instanceof GM_MultiCurve) ) {
-			int nbElements = importClasseGeo(listeFeatures,carte.getPopArcs(),convert2d);
+			int nbElements = importClasseGeo(listeFeatures, carte.getPopArcs(), convert2d);
 			if(logger.isDebugEnabled()) logger.debug("Nb d'arcs importés    : "+nbElements);
 			return;
 		}
 		if ( (listeFeatures.get(0).getGeom() instanceof GM_Polygon) || (listeFeatures.get(0).getGeom() instanceof GM_MultiSurface) ) {
-			int nbElements = importClasseGeo(listeFeatures,carte.getPopFaces(),convert2d);
+			int nbElements = importClasseGeo(listeFeatures, carte.getPopFaces(), convert2d);
 			if(logger.isDebugEnabled()) logger.debug("Nb de faces importées : "+nbElements);
 			return;
 		}
@@ -112,14 +112,14 @@ public class Chargeur {
 	@SuppressWarnings("unchecked")
 	private static int importClasseGeo(FT_FeatureCollection<?> listeFeatures, Population<?> population, boolean convert2d) {
 		int nbElements=0;
-		for(FT_Feature feature:listeFeatures) {
+		for(FT_Feature feature : listeFeatures) {
 			if (feature.getGeom() instanceof GM_Primitive) {
-				creeElement(feature, feature.getGeom(),population,convert2d);
+				creeElement(feature, feature.getGeom(), population, convert2d);
 				nbElements++;
 			} else {
 				for(GM_Object geom:((GM_Aggregate<GM_Object>)feature.getGeom())) {
 					try {
-						creeElement(feature, geom,population,convert2d);
+						creeElement(feature, geom,  population, convert2d);
 						nbElements++;
 						} catch (Exception e) {e.printStackTrace();}
 				}				
@@ -137,7 +137,7 @@ public class Chargeur {
 	private static void creeElement(FT_Feature feature, GM_Object geom, Population<?> population, boolean convert2d) {
 		FT_Feature nouvelElement;
 		try {
-			nouvelElement = population.nouvelElement(convert2d?AdapterFactory.to2DGM_Object(geom):geom);
+			nouvelElement = population.nouvelElement(convert2d ? AdapterFactory.to2DGM_Object(geom) : geom);
 			nouvelElement.addCorrespondant(feature);
 		} catch (Exception e) {e.printStackTrace();}
 	}

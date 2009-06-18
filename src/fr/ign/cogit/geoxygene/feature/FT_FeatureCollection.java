@@ -386,6 +386,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 			e.printStackTrace();
 		}
 	}
+	
 	/**
 	 * Initialise un index spatial d'une collection de FT_Feature, en prenant
 	 * pour paramètre ceux d'un index existant.
@@ -412,6 +413,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 			e.printStackTrace();
 		}
 	}
+	
 	/**
 	 * Détruit l'index spatial.
 	 */
@@ -438,6 +440,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 		}
 		return spatialindex.select(P, D);
 	}
+	
 	/**
 	 * Selection dans un rectangle.
 	 * 
@@ -452,6 +455,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 		}
 		return spatialindex.select(env);
 	}
+	
 	/**
 	 * Selection des objets qui intersectent un objet geometrique quelconque.
 	 * 
@@ -466,6 +470,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 		}
 		return spatialindex.select(geometry);
 	}
+	
 	/**
 	 * Selection des objets qui croisent ou intersectent un objet geometrique
 	 * quelconque.
@@ -488,6 +493,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 		}
 		return spatialindex.select(geometry, strictlyCrosses);
 	}
+	
 	/**
 	 * Selection a l'aide d'un objet geometrique quelconque et d'une distance.
 	 * 
@@ -505,6 +511,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 		}
 		return spatialindex.select(geometry, distance);
 	}
+	
 	// ---------------------------------------
 	// --- Méthodes nécessaire pour implémenter l'interface Collection
 	// ---------------------------------------	

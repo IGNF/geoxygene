@@ -252,8 +252,7 @@ public abstract class FT_Feature implements Cloneable {
 	 */
 	public List<FT_Feature> getCorrespondants(FT_FeatureCollection<? extends FT_Feature> pop) {
 		List<? extends FT_Feature> elementsPop = pop.getElements();
-		List<FT_Feature> resultats = new ArrayList<FT_Feature>(this
-				.getCorrespondants());
+		List<FT_Feature> resultats = new ArrayList<FT_Feature>(this.getCorrespondants());
 		resultats.retainAll(elementsPop);
 		return resultats;
 	}
