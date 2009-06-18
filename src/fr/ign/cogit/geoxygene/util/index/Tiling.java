@@ -449,10 +449,8 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	 * @param n
 	 *            Nombre de dalles en X et en Y, du dallage.
 	 */
-	public Tiling(FT_FeatureCollection<Feature> fc, Boolean automaticUpd, Integer n) {
-		this(fc, automaticUpd, fc.envelope(), n);
-	}
-
+	public Tiling(FT_FeatureCollection<Feature> fc, Boolean automaticUpd, Integer n) {this(fc, automaticUpd, fc.envelope(), n);}
+	
 	/**
 	 * Crée et instancie un dallage d'une collection de FT_Feature. Les
 	 * paramètres sont définis par la collection en entrée: 1/ Les limites de la
@@ -469,24 +467,20 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	 *            quand on modifie les objets de fc
 	 * 
 	 */
-	public Tiling(FT_FeatureCollection<Feature> fc, Boolean automaticUpd) {
-		this(fc, automaticUpd, new Integer(nbDallesXY(fc)));
-	}
-
-	private static int nbDallesXY(FT_FeatureCollection<? extends FT_Feature> fc) {
-		int nb = (int) Math.sqrt(fc.size() / 50);
-		if (nb == 0) nb = 1;
-		return nb;
-	}
+	public Tiling(FT_FeatureCollection<Feature> fc, Boolean automaticUpd) {this(fc, automaticUpd, new Integer(nbDallesXY(fc)));}
 
 	/**
-	 * Crée et instancie un dallage en reprenant les paramètres d'un autre
-	 * dallage.
+	 * Calcul du choix d'un nombre de dalles arbitraire à utiliser quand l'utilisateur ne le stipule pas.
+	 * Le calcul renvoie sqrt(nombre d'éléments de la collection/50) et 1 si la collection est vide ou contient moins de 50 éléments.
+	 * @param fc collection
+	 * @return un nombre de dalles arbitraire à utiliser quand l'utilisateur ne le stipule pas.
 	 */
-	public Tiling(FT_FeatureCollection<Feature> fc, Tiling<Feature> spIdx) {
-		this(fc, (Boolean) spIdx.getParametres().get(1), (GM_Envelope) spIdx
-				.getParametres().get(2), (Integer) spIdx.getParametres().get(3));
-	}
+	private static int nbDallesXY(FT_FeatureCollection<? extends FT_Feature> fc) {return Math.max((int) Math.sqrt(fc.size() / 50), 1);}
+
+	/**
+	 * Crée et instancie un dallage en reprenant les paramètres d'un autre dallage.
+	 */
+	public Tiling(FT_FeatureCollection<Feature> fc, Tiling<Feature> spIdx) {this(fc, (Boolean) spIdx.getParametres().get(1), (GM_Envelope) spIdx.getParametres().get(2), (Integer) spIdx.getParametres().get(3));}
 
 	// ===============================================
 	// MISE A JOUR
