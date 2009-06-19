@@ -2,6 +2,7 @@ package fr.ign.cogit.geoxygene.gui;
 
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Image;
@@ -12,6 +13,7 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -20,6 +22,9 @@ import javax.swing.JSplitPane;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.feature.FT_Feature;
+import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
@@ -233,5 +238,77 @@ public class InterfaceGeoxygene extends JFrame {
 		chargement.getFichiers().put(populationName, shapefileName);
 		/** On lance le chargement asynchrone */
 		reader.read();		
+	}
+	
+	/**
+	 * @param population
+	 * @param populationName
+	 * @param color
+	 */
+	public void addPopulation(Population<? extends FT_Feature> population, String populationName, Color color) {
+		getPanelVisu().getDataset().addPopulation(population);
+		/**
+		 * Ajoute un layer au SLD du panel de visualisation.
+		 * On essaye de récupérer les styles existants depuis le sld courant 
+		 * ou depuis le sld par défaut
+		 */
+		Layer layer = getPanelVisu().getSld().getLayer(populationName);
+		/** On n'a pas trouvé la couche dans le SLD courant, on cherche dans le sld par défaut */
+		if (layer==null) {
+			if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvé dans le sld courant");
+			layer = getPanelVisu().getDefaultSld().getLayer(populationName);
+			/** On n'a pas trouvé la couche dans le SLD, on en crée une nouvelle */
+			if (layer==null) {
+				if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvé dans le sld par défaut");
+				layer = getPanelVisu().getSld().createLayer(populationName,population.getFeatureType().getGeometryType(),color);
+			}
+			getPanelVisu().getSld().getLayers().add(layer);
+		}
+		getPanelVisu().centrer();
+	}
+	/**
+	 * @param population
+	 * @param populationName
+	 */
+	public void addPopulation(Population<? extends FT_Feature> population, String populationName) {
+	    this.addPopulation(population, populationName,new Color((float)Math.random(),(float)Math.random(),(float)Math.random(),0.5f));
+	}
+
+	/**
+	 * @param collection
+	 * @param populationName
+	 */
+	public void addFeatureCollection(FT_FeatureCollection<? extends FT_Feature> collection, String populationName) {
+	    this.addFeatureCollection(collection, populationName, new Color((float)Math.random(),(float)Math.random(),(float)Math.random(),0.5f));
+	}
+
+	/**
+	 * @param collection
+	 * @param populationName
+	 * @param color
+	 */
+	@SuppressWarnings("unchecked")
+	public void addFeatureCollection(FT_FeatureCollection<? extends FT_Feature> collection, String populationName, Color color) {
+		Population<FT_Feature> population = new Population<FT_Feature>(populationName);
+		population.setElements((Collection<FT_Feature>) collection.getElements());
+		getPanelVisu().getDataset().addPopulation(population);
+		/**
+		 * Ajoute un layer au SLD du panel de visualisation.
+		 * On essaye de récupérer les styles existants depuis le sld courant 
+		 * ou depuis le sld par défaut
+		 */
+		Layer layer = getPanelVisu().getSld().getLayer(populationName);
+		/** On n'a pas trouvé la couche dans le SLD courant, on cherche dans le sld par défaut */
+		if (layer==null) {
+			if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvé dans le sld courant");
+			layer = getPanelVisu().getDefaultSld().getLayer(populationName);
+			/** On n'a pas trouvé la couche dans le SLD, on en crée une nouvelle */
+			if (layer==null) {
+				if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvé dans le sld par défaut");
+				layer = getPanelVisu().getSld().createLayer(populationName,population.getFeatureType().getGeometryType(),color);
+			}
+			getPanelVisu().getSld().getLayers().add(layer);
+		}
+		getPanelVisu().centrer();
 	}
 }

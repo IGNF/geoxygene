@@ -238,25 +238,25 @@ public class StyledLayerDescriptor {
 		}
 		return null;
 	}
+	
 	/**
 	 * Crée un nouveau layer portant le nom donné en paramètre et un symbolizer
 	 * adapté au type de géométrie en paramètre.
 	 * <p>
-	 * Les couleurs associées au symbolizer du layer sont créées aléatoirement.
 	 * TODO choisir les couleur de la nouvelle couche dans une palette
 	 * ou à partir de la couche la plus proche
 	 * @param layerName nom du layer cherché 
 	 * @param geometryType type de géométrie porté par le layer
+	 * @param color couleur de la nouvelle couche
 	 * @return layer portant le nom et la géométrie en paramètre
 	 */
-	public Layer createLayer(String layerName, Class<? extends GM_Object> geometryType) {
+	public Layer createLayer(String layerName, Class<? extends GM_Object> geometryType, Color color) {
 		Layer layer = new NamedLayer(layerName);
 		UserStyle style = new UserStyle();
 		style.setName("Style créé pour le layer "+layerName);
 		FeatureTypeStyle fts = new FeatureTypeStyle();
 		Rule rule = new Rule();
 		Stroke stroke = new Stroke();
-		Color color = new Color((float)Math.random(),(float)Math.random(),(float)Math.random(),0.5f);
 		stroke.setStroke(color);
 		Fill fill = new Fill();
 		fill.setFill(color.brighter());
@@ -286,5 +286,17 @@ public class StyledLayerDescriptor {
 		style.getFeatureTypeStyles().add(fts);
 		layer.getStyles().add(style);
 		return layer;
+	}
+	/**
+	 * Crée un nouveau layer portant le nom donné en paramètre et un symbolizer
+	 * adapté au type de géométrie en paramètre.
+	 * <p>
+	 * Les couleurs associées au symbolizer du layer sont créées aléatoirement.
+	 * @param layerName nom du layer cherché 
+	 * @param geometryType type de géométrie porté par le layer
+	 * @return layer portant le nom et la géométrie en paramètre
+	 */
+	public Layer createLayer(String layerName, Class<? extends GM_Object> geometryType) {
+	    return this.createLayer(layerName, geometryType,new Color((float)Math.random(),(float)Math.random(),(float)Math.random(),0.5f));
 	}
 }
