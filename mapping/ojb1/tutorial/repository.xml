@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This is a sample metadata repository for the
+     Apache ObJectRelationalBridge (OJB) System.
+     Use this file as a template for building your own mappings.
+-->
+
+<!-- doctype definition
+     By default we are using a local DTD that is expected to reside
+     in the same directory as this repository.xml file.
+     If you intend to validate your repository.xml against
+     the public dtd at the Apache site, please replace the string
+     "repository.dtd"
+     by the public adress
+     "http://db.apache.org/ojb/dtds/1.0/repository.dtd".
+     In this case validation will only work if the machine you
+     run your application on can connect to the internet!
+-->
+
+<!DOCTYPE descriptor-repository PUBLIC
+       "-//Apache Software Foundation//DTD OJB Repository//EN"
+       "repository.dtd"
+[
+
+<!ENTITY database SYSTEM "repository_database.xml">
+<!ENTITY internal SYSTEM "repository_internal.xml">
+<!ENTITY tableaux SYSTEM "repository_tableaux.xml">
+<!ENTITY bdc_tr_route SYSTEM "repository_bdc_tr_route.xml">
+<!ENTITY bdt_tr_route SYSTEM "repository_bdt_tr_route.xml">
+<!ENTITY geo SYSTEM "repository_geo.xml">
+]>
+
+
+<descriptor-repository version="1.0" isolation-level="read-uncommitted" proxy-prefetching-limit="50">
+
+    <!-- fichier de mapping internes a OJB INDISPENSABLE -->
+    &internal;
+
+    <!-- parametres de la connection au SGBD-->
+    &database;
+
+    <!-- exemple classes geographiques  -->
+	<!-- &geo; -->
+	
+	<!-- donnees routieres -->
+	&bdc_tr_route;
+	&bdt_tr_route;
+
+</descriptor-repository>

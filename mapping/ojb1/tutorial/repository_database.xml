@@ -1,0 +1,39 @@
+<!-- DEFINIR ICI LES PARAMETRES DE CONNECTION AU SGBD -->
+  
+<jdbc-connection-descriptor
+   		jcd-alias="POSTGRES_ALIAS"
+   		default-connection="true"   		
+   		platform="PostgreSQL"
+   		jdbc-level="2.0"
+   		driver="org.postgresql.Driver"
+   		protocol="jdbc"
+   		subprotocol="postgresql"
+   		dbalias="//HOSTNAME:5432/DBNAME"
+   		username="USERNAME"
+   		password="PASSWORD"
+        eager-release="false"
+   		batch-mode="true"
+        useAutoCommit="2"
+        ignoreAutoCommitExceptions="false"  >     
+    <connection-pool maxActive="21" validationQuery="" />
+	<sequence-manager className="org.apache.ojb.broker.util.sequence.SequenceManagerInMemoryImpl" />
+</jdbc-connection-descriptor>
+
+<jdbc-connection-descriptor
+   		jcd-alias="ORACLE_ALIAS"
+   		default-connection="false"
+   		platform="Oracle9i"
+   		jdbc-level="2.0"
+   		driver="oracle.jdbc.driver.OracleDriver"
+   		protocol="jdbc"
+   		subprotocol="oracle"
+   		dbalias="thin:@HOSTNAME:1521:SID"
+   		username="USERNAME"
+   		password="PASSWORD"
+        eager-release="false"
+   		batch-mode="true"
+        useAutoCommit="2"
+        ignoreAutoCommitExceptions="false"  >
+    <connection-pool maxActive="21" validationQuery="" />
+	<sequence-manager className="org.apache.ojb.broker.util.sequence.SequenceManagerInMemoryImpl" />
+</jdbc-connection-descriptor>

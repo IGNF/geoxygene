@@ -1,0 +1,17 @@
+<class-descriptor class="fr.ign.cogit.geoxygene.tutorial.data.BdTopoTrRoute" table="bdt_tr_route" >
+  <field-descriptor name="id"  column="COGITID" jdbc-type="INTEGER" primarykey="true" autoincrement="true"/>
+  <field-descriptor name="gid" column="gid" jdbc-type="INTEGER" />
+  <field-descriptor name="type" column="type" jdbc-type="VARCHAR" />
+  <field-descriptor name="dept" column="dept" jdbc-type="VARCHAR" />
+  <field-descriptor name="num_route" column="num_route" jdbc-type="VARCHAR" />
+  <field-descriptor name="categorie" column="categorie" jdbc-type="VARCHAR" />
+  <field-descriptor name="nom_route" column="nom_route" jdbc-type="VARCHAR" />
+  <field-descriptor name="etat_chau" column="etat_chau" jdbc-type="VARCHAR" />
+  <field-descriptor name="importance" column="importance" jdbc-type="VARCHAR" />
+  <field-descriptor name="nb_voies" column="nb_voies" jdbc-type="VARCHAR" />
+  <field-descriptor name="normalisee" column="normalisee" jdbc-type="VARCHAR" />
+  <field-descriptor name="pos_sol" column="pos_sol" jdbc-type="VARCHAR" />
+  <field-descriptor name="toponyme" column="toponyme" jdbc-type="VARCHAR" />
+  <field-descriptor name="geom" column="the_geom" jdbc-type="STRUCT" conversion="fr.ign.cogit.geoxygene.datatools.ojb.GeomGeOxygene2Dbms" />
+</class-descriptor>
+
