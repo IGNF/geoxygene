@@ -28,6 +28,7 @@ import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
+import fr.ign.cogit.geoxygene.util.index.Tiling;
 import fr.ign.cogit.geoxygene.util.loader.Chargement;
 
 
@@ -246,6 +247,10 @@ public class InterfaceGeoxygene extends JFrame {
 	 * @param color
 	 */
 	public void addPopulation(Population<? extends FT_Feature> population, String populationName, Color color) {
+		if (population.isEmpty()) {
+			logger.error("Aucun élément à afficher : collection vide");
+			return;
+		}
 		getPanelVisu().getDataset().addPopulation(population);
 		/**
 		 * Ajoute un layer au SLD du panel de visualisation.
@@ -260,12 +265,19 @@ public class InterfaceGeoxygene extends JFrame {
 			/** On n'a pas trouvé la couche dans le SLD, on en crée une nouvelle */
 			if (layer==null) {
 				if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvé dans le sld par défaut");
-				layer = getPanelVisu().getSld().createLayer(populationName,population.getFeatureType().getGeometryType(),color);
+				if(population.getFeatureType() == null){
+					layer = getPanelVisu().getSld().createLayer(populationName,population.get(0).getGeom().getClass(),color);	
+				}
+				else {
+					layer = getPanelVisu().getSld().createLayer(populationName,population.getFeatureType().getGeometryType(),color);
+				}
 			}
 			getPanelVisu().getSld().getLayers().add(layer);
 		}
+		if (!population.hasSpatialIndex()) population.initSpatialIndex(Tiling.class,true);
 		getPanelVisu().centrer();
 	}
+	
 	/**
 	 * @param population
 	 * @param populationName
@@ -289,6 +301,10 @@ public class InterfaceGeoxygene extends JFrame {
 	 */
 	@SuppressWarnings("unchecked")
 	public void addFeatureCollection(FT_FeatureCollection<? extends FT_Feature> collection, String populationName, Color color) {
+		if (collection.isEmpty()) {
+			logger.error("Aucun élément à afficher : collection vide");
+			return;
+		}
 		Population<FT_Feature> population = new Population<FT_Feature>(populationName);
 		population.setElements((Collection<FT_Feature>) collection.getElements());
 		getPanelVisu().getDataset().addPopulation(population);
@@ -305,10 +321,16 @@ public class InterfaceGeoxygene extends JFrame {
 			/** On n'a pas trouvé la couche dans le SLD, on en crée une nouvelle */
 			if (layer==null) {
 				if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvé dans le sld par défaut");
-				layer = getPanelVisu().getSld().createLayer(populationName,population.getFeatureType().getGeometryType(),color);
+				if(population.getFeatureType() == null){
+					layer = getPanelVisu().getSld().createLayer(populationName,population.get(0).getGeom().getClass(),color);	
+				}
+				else {
+					layer = getPanelVisu().getSld().createLayer(populationName,population.getFeatureType().getGeometryType(),color);
+				}
 			}
 			getPanelVisu().getSld().getLayers().add(layer);
 		}
+		if (!population.hasSpatialIndex()) population.initSpatialIndex(Tiling.class,true);
 		getPanelVisu().centrer();
 	}
 }
