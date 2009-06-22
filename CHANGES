@@ -10,7 +10,7 @@ GeOxygene 1.4
   
 - Added a first version of the new GeOxygene interface.
 
-- Added some example codes to learn how to use the topoligical map and the data matching tool.
+- Added some example codes to learn how to use the topological map and the data matching tool.
 
 - Added a Java 6 support in regard to Java 6 specifications (types, annotations, etc.).
 
