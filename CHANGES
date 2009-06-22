@@ -1,3 +1,18 @@
+GeOxygene 1.4
+2009/06/22
+
+- Added an ISO1909 General Feature Model implementation.
+
+- Added a SLD (Styled Layer Description) implementation based on the OGC 02-070 implementation
+  specification done.
+  
+- Added a first version of the new GeOxygene interface.
+
+- Added some example codes to learn how to use the topoligical map and the data matching tool.
+
+- Added a Java 6 support in regard to Java 6 specifications (types, annotations, etc.).
+
+
 GeOxygene 1.3
 2008/01/31
 

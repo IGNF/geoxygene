@@ -29,11 +29,8 @@ Website: http://xml.apache.org/batik/
 Batik is a part of the APACHE XML project, released under the Apache License v2.0:
 http://www.apache.org/licenses/
 
-The file "batik-all.jar" of the GeOxygene distribution is single jar file 
-containing all "batik-xxx.jar" files of the batik 1.5 distribution, plus
-the "pdf-transcoder.jar" file of this distribution, stemming from the 
-Apache Fop project (http://xml.apache.org/fop) slightly modified with 
-two classes from the Apache Avalon project (http://avalon.apache.org).
+The "batik-xxx-1.7.jar" files of the GeOxygene distribution are the files of the
+batik 1.7 distribution.
 
 
 2) JTS 
@@ -44,7 +41,8 @@ Website: http://sourceforge.net/projects/jts-topo-suite
 JTS is released under the LGPL license:
 http://www.gnu.org/copyleft/lesser.html
 
-The  file "jts-1.9.jar" of the GeOxygene distribution is the version 1.9 of JTS distribution.
+The file "jts-1.10.jar" of the GeOxygene distribution is the version 1.10 of JTS
+distribution.
 
 
 3) GEOTOOLS 1.0 LITE PROJECT
@@ -100,9 +98,9 @@ Website: http://www.postgresql.org/
 PostgreSQL is released under the BSD license:
 http://www.postgresql.org/about/licence
 
-The file "postgresql-8.2-507.jdbc4.jar" of the Geoxygene distribution is the JDBC driver 
-of PostgreSQL  v8.2 for JDBC4 (JDBC4 is recommended with the 1.6 Java Virtual Machine).
-If you use the 1.5 JVM, you should download and use the file "postgresql-8.2-507.jdbc3.jar"
+The file "postgresql-8.3-603.jdbc4.jar" of the Geoxygene distribution is the JDBC driver 
+of PostgreSQL  v8.3 for JDBC4 (JDBC4 is recommended with the 1.6 Java Virtual Machine).
+If you use the 1.5 JVM, you should download and use the file "postgresql-8.3-603.jdbc3.jar"
 available on the website http://jdbc.postgresql.org.
 
 
@@ -137,4 +135,154 @@ Website : http://math.nist.gov/javanumerics/jama/
 
 JAMA is released under the public domain.
 
-The file "Jama-1.0.2.jar" of the Geoxygene distribution is the version 1.0.2 of JAMA distribution.
+The file "Jama-1.0.2.jar" of the Geoxygene distribution is the version 1.0.2 of JAMA
+distribution.
+
+
+9) GEOTOOLS
+
+GeoTools is an open source (LGPL) Java code library which provides standards compliant
+methods for the manipulation of geospatial data, for example to implement Geographic
+Information Systems (GIS). The GeoTools library implements Open Geospatial Consortium
+(OGC) specifications as they are developed.
+Website: http://geotools.codehaus.org/
+GEOTOOLS is released under the LGPL license:
+http://www.gnu.org/copyleft/lesser.html
+
+The "gt-xxxx-2.5.4.jar" files and the "geoapi-2.2-M1.jar" of the GeOxygene distribution
+are the files of the GEOTOOLS 2.5.4 distribution.
+
+
+10) DOM4J
+dom4j is an easy to use, open source library for working with XML, XPath and XSLT on
+the Java platform using the Java Collections Framework and with full support for DOM,
+SAX and JAXP.
+Website: http://www.dom4j.org/
+DOM4J is released under an Apache-style open source license. Notice for this licence
+is included below:
+
+-------
+Redistribution and use of this software and associated documentation ("Software"),
+with or without modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain copyright statements and notices. 
+   Redistributions must also contain a copy of this document.
+2. Redistributions in binary form must reproduce the above copyright notice, this list
+   of conditions and the following disclaimer in the documentation and/or other materials
+   provided with the distribution.
+3. The name "DOM4J" must not be used to endorse or promote products derived from this
+   Software without prior written permission of MetaStuff, Ltd. For written permission,
+   please contact dom4j-info@metastuff.com.
+4. Products derived from this Software may not be called "DOM4J" nor may "DOM4J" appear
+   in their names without prior written permission of MetaStuff, Ltd. DOM4J is a registered
+   trademark of MetaStuff, Ltd.
+5. Due credit should be given to the DOM4J Project - http://www.dom4j.org
+
+THIS SOFTWARE IS PROVIDED BY METASTUFF, LTD. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESSED
+OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL METASTUFF, LTD. OR
+ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Copyright 2001-2005 (C) MetaStuff, Ltd. All Rights Reserved. 
+-------
+
+
+11) HIBERNATE
+
+Hibernate is a powerful, high performance object/relational persistence and query service.
+Hibernate lets you develop persistent classes following object-oriented idiom - including
+association, inheritance, polymorphism, composition, and collections. Hibernate allows you
+to express queries in its own portable SQL extension (HQL), as well as in native SQL, or
+with an object-oriented Criteria and Example API.
+
+Website: https://www.hibernate.org/
+
+HIBERNATE is released under LGPL licence:
+http://www.gnu.org/copyleft/lesser.html
+
+The HIBERNATE files of the Geoxygene distribution are the "hibernate-xxxx.jar" files.
+
+
+12) XSTREAM
+
+XStream is a simple library to serialize objects to XML and back again.
+
+Website: http://xstream.codehaus.org/
+
+XSTREAM is released under the BSD license. Notice for this licence is included below:
+
+-------
+Copyright (c) 2003-2006, Joe Walnes
+Copyright (c) 2006-2007, XStream Committers
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of
+conditions and the following disclaimer. Redistributions in binary form must reproduce
+the above copyright notice, this list of conditions and the following disclaimer in
+the documentation and/or other materials provided with the distribution.
+
+Neither the name of XStream nor the names of its contributors may be used to endorse
+or promote products derived from this software without specific prior written
+permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGE.
+-------
+
+
+13) LOG4J
+
+log4j is a tool to help the programmer output log statements to a variety of output targets.
+In case of problems with an application, it is helpful to enable logging so that the problem
+can be located. With log4j it is possible to enable logging at runtime without modifying the
+application binary. The log4j package is designed so that log statements can remain in
+shipped code without incurring a high performance cost. It follows that the speed of logging
+(or rather not logging) is capital.
+
+Website: http://logging.apache.org/log4j/
+
+LOG4J is released under the Apache License v2.0. The Apache License v2.0 file is provided
+with the GeOxygene distribution (see file APACHE-LICENSE-2.0).
+
+The "log4j-1.2.15.jar" file of the Geoxygene distribution is the version 1.2.15 of
+LOG4J distribution.
+
+
+14) SLF4J
+
+The Simple Logging Facade for Java or (SLF4J) serves as a simple facade or abstraction
+for various logging frameworks, e.g. java.util.logging, log4j and logback, allowing the
+end user to plug in the desired logging framework at deployment time. 
+
+Website: http://www.slf4j.org/
+SLF4J is release under the MIT license. Notice for this licence is included below:
+
+-------
+Copyright (c) 2004-2008 QOS.ch All rights reserved. Permission is hereby granted, free
+of charge, to any person obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without restriction, including without
+limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions: The above copyright notice and this permission
+notice shall be included in all copies or substantial portions of the Software. THE
+SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-------
