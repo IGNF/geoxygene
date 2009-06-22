@@ -4,7 +4,7 @@ GeOxygene 1.4
 - Added an ISO1909 General Feature Model implementation.
 
 - Added a SLD (Styled Layer Description) implementation based on the OGC 02-070 implementation
-  specification done.
+  specification.
   
 - Added an Hibernate support.
   
