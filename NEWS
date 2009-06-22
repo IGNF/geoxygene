@@ -1,8 +1,8 @@
 Version 1.4:
 
  - This version provides an ISO1909 General Feature Model implementation, a SLD (Styled Layer
-   Description) implementation based on the OGC 02-070 implementation specification, an
-   Hibernate support, a first version of the new GeOxygene interface, some example code to
+   Descriptor) implementation based on the OGC 02-070 implementation specification, an
+   Hibernate support, a first version of the new GeOxygene interface, some code example to
    learn how to use the topoligical map and the data matching tool, and a complete Java 6
    support in regard to Java 6 specifications (types, annotations, etc.).
 
