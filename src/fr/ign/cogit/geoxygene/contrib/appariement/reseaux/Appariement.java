@@ -49,6 +49,7 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
@@ -1610,7 +1611,7 @@ public abstract class Appariement {
 
 		itArcsDecoupes = reseauADecouper.getPopArcs().getElements().iterator();
 		pointsDeDecoupage = new ArrayList<GM_Point>();
-		// recherche des points de découpage pour chaque arc découpant
+		// recherche des points de découpage pour chaque arc à découper
 		while (itArcsDecoupes.hasNext()) {
 			arcADecouper = (ArcApp) itArcsDecoupes.next();
 			// on ne traite que les arcs non appariés auparavant
@@ -1624,24 +1625,31 @@ public abstract class Appariement {
 			itArcsDecoupants = arcsDecoupantsRes2.getElements().iterator();
 			while (itArcsDecoupants.hasNext()) {
 				arcDecoupant = (ArcApp)itArcsDecoupants.next();
+				// ré échantillonage de la géométrie de l'arc découpant à environ 1m
+				
+				GM_LineString lineStringDecoupant = arcDecoupant.getGeometrie();
+				for(DirectPosition dp:arcADecouper.getGeometrie().coord().getList()) {
+					lineStringDecoupant = Operateurs.projectionEtInsertion(dp, lineStringDecoupant);
+				}
+				
 				// initalisation des compteurs
 				indiceDernierPtProche= 0;
-				if ( Distances.distance(arcDecoupant.getGeometrie().getControlPoint(0), arcADecouper.getGeometrie() ) <= distanceMaxNoeudArc ) 
+				if ( Distances.distance(lineStringDecoupant.getControlPoint(0), arcADecouper.getGeometrie() ) <= distanceMaxNoeudArc ) 
 					proche = true;
 				else
 					proche = false;
 				// parcour des points de l'arc découpant
-				for(int i=1;i<arcDecoupant.getGeometrie().getControlPoint().size();i++) {
-					ptCourantArcDecoupant = arcDecoupant.getGeometrie().getControlPoint(i);
+				for(int i=1;i<lineStringDecoupant.getControlPoint().size();i++) {
+					ptCourantArcDecoupant = lineStringDecoupant.getControlPoint(i);
 					distancePtCourantVersArcADecoupe = Distances.distance(ptCourantArcDecoupant, arcADecouper.getGeometrie()) ;
 					if (proche) {
 						if ( distancePtCourantVersArcADecoupe >  distanceMaxNoeudArc) {
 							// on était proche et on s'éloigne à partir de ce point
 							// --> on rajoute deux points de découpage, entourant la partie proche,
 							proche = false;
-							ptDecoupage = Operateurs.projection(arcDecoupant.getGeometrie().getControlPoint(indiceDernierPtProche), arcADecouper.getGeometrie());
-							pointsDeDecoupage.add(new GM_Point(ptDecoupage));
-							ptDecoupage = Operateurs.projection(arcDecoupant.getGeometrie().getControlPoint(i-1), arcADecouper.getGeometrie());
+							//ptDecoupage = Operateurs.projection(arcDecoupant.getGeometrie().getControlPoint(indiceDernierPtProche), arcADecouper.getGeometrie());
+							//pointsDeDecoupage.add(new GM_Point(ptDecoupage));
+							ptDecoupage = Operateurs.projection(lineStringDecoupant.getControlPoint(i-1), arcADecouper.getGeometrie());
 							pointsDeDecoupage.add(new GM_Point(ptDecoupage));
 							continue;
 						}
@@ -1655,6 +1663,8 @@ public abstract class Appariement {
 							// on était éloigné et on rentre dans une zone proche: intialisation des compteurs
 							proche = true;
 							indiceDernierPtProche = i;
+							ptDecoupage = Operateurs.projection(lineStringDecoupant.getControlPoint(indiceDernierPtProche), arcADecouper.getGeometrie());
+							pointsDeDecoupage.add(new GM_Point(ptDecoupage));
 							continue;
 						}
 						else {
