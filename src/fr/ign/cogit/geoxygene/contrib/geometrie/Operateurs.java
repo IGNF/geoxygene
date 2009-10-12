@@ -61,7 +61,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * 
  * English: Very very diverse set of methods on geometries
  * 
- * author  Mustière / Bonin / Rousseaux / Grosso / Lafragueta
+ * @author  Mustière / Bonin / Rousseaux / Grosso / Lafragueta
  * @version 1.0
  */
 
@@ -109,7 +109,7 @@ public abstract class Operateurs {
 		if (listePoints.size() == 0) return listePoints.get(0);
 		ptmin = projection(dp,listePoints.get(0),listePoints.get(1));
 		dmin = Distances.distance(dp,ptmin);
-		for (int i=1;i<listePoints.size()-1;i++) {
+		for (int i=0;i<listePoints.size()-1;i++) {
 			pt = projection(dp,listePoints.get(i),listePoints.get(i+1));
 			d = Distances.distance(dp,pt);
 			if ( d < dmin ) {
@@ -120,6 +120,36 @@ public abstract class Operateurs {
 		return ptmin;
 	}
 
+	/** 
+	 * Projection du point sur la polyligne et insertion du point projeté dans la ligne
+	 * 
+	 * English: Projects M on the lineString and return the line with the projected point inserted
+	 * author Mustière
+	 */
+	public static GM_LineString projectionEtInsertion(DirectPosition dp, GM_LineString LS) {
+		DirectPositionList listePoints = LS.coord();
+		double d , dmin;
+		DirectPosition pt, ptmin;
+
+		if (listePoints.size() == 0) return LS;
+		ptmin = projection(dp,listePoints.get(0),listePoints.get(1));
+		dmin = Distances.distance(dp,ptmin);
+		int imin = 0;
+		for (int i=0;i<listePoints.size()-1;i++) {
+			pt = projection(dp,listePoints.get(i),listePoints.get(i+1));
+			d = Distances.distance(dp,pt);
+			if ( d < dmin ) {
+				ptmin = pt;
+				dmin = d;
+				imin = i;
+			}
+		}
+		DirectPositionList pointList = new DirectPositionList(listePoints.getList());
+		pointList.add(imin+1,ptmin);
+		GM_LineString newLine = new GM_LineString(pointList);
+		return newLine;
+	}
+	
 	/** Projection du point sur l'aggregat;
 	 * ATTENTION: ne fonctionne que si l'aggregat ne contient que des GM_Point et GM_LineString.
 	 * 
