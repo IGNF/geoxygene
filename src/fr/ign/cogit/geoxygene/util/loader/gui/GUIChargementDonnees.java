@@ -89,6 +89,7 @@ public class GUIChargementDonnees extends JPanel {
 		 * Renvoie la valeur de l'attribut precedent.
 		 * @return la valeur de l'attribut precedent
 		 */
+		@SuppressWarnings("unused")
 		public GeoPanel previousPanel() {return this.previous;}
 		List<GeoPanel> next = new ArrayList<GeoPanel>();
 		List<JRadioButton> radioButtons = new ArrayList<JRadioButton>();
