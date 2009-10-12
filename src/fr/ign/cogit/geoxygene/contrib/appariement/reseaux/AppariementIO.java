@@ -31,6 +31,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.NoeudApp;
@@ -56,6 +59,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  */
 
 public class AppariementIO {
+	private final static Logger logger=Logger.getLogger(AppariementIO.class.getName());
 
 	/** Lancement de l'appariement de réseaux sur des objets géographiques :
 	 * 1- Transformation des données initales en deux graphes, en fonction des paramètres d'import.
@@ -74,72 +78,91 @@ public class AppariementIO {
 	 */
 	public static EnsembleDeLiens AppariementDeJeuxGeo(ParametresApp paramApp, List<ReseauApp> cartesTopo) {
 
+		switch(paramApp.debugAffichageCommentaires) {
+			case 0 : logger.setLevel(Level.ERROR); break;
+			case 1 : logger.setLevel(Level.INFO); break;
+			default : logger.setLevel(Level.DEBUG); break;
+		}
 		ReseauApp reseauRef, reseauComp;
 		EnsembleDeLiens liens, liensGeneriques;
 
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("");
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("######## DEBUT DE L'APPARIEMENT DE RESEAUX #########");
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("  (1 = les données les moins détaillées ; 2 = les données les plus détaillées)");
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("");
+		if (logger.isInfoEnabled()) {
+			logger.info("");
+			logger.info("######## DEBUT DE L'APPARIEMENT DE RESEAUX #########");
+			logger.info("  (1 = les données les moins détaillées ; 2 = les données les plus détaillées)");
+			logger.info("");
+		}
 		////////////////////////////////////////////////
 		// STRUCTURATION
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("STRUCTURATION DES DONNEES");
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("  Organisation des données en réseau et prétraitements topologiques");
-		if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  DEBUT DE LA PHASE DE STRUCTURATION "+(new Time(System.currentTimeMillis())).toString());
-		if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  Création du réseau correspondant au jeu 1   "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isInfoEnabled()) {
+			logger.info("STRUCTURATION DES DONNEES");
+			logger.info("  Organisation des données en réseau et prétraitements topologiques");
+		}
+		if (logger.isDebugEnabled()) {
+			logger.debug("  DEBUT DE LA PHASE DE STRUCTURATION "+(new Time(System.currentTimeMillis())).toString());
+			logger.debug("  Création du réseau correspondant au jeu 1   "+(new Time(System.currentTimeMillis())).toString());
+		}
 		reseauRef = Import(paramApp, true);
 		if ( cartesTopo != null ) cartesTopo.add(reseauRef);
-		if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  Création du réseau correspondant au jeu 2   "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isDebugEnabled()) logger.debug("  Création du réseau correspondant au jeu 2   "+(new Time(System.currentTimeMillis())).toString());
 		reseauComp = Import(paramApp, false);
 		if ( cartesTopo != null ) cartesTopo.add(reseauComp);
 
 		// NB: l'ordre dans lequel les projections sont faites n'est pas neutre
 		if ( paramApp.projeteNoeud2surReseau1 ) {
-			if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  Projection du réseau 2 sur le réseau 1 "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  Projection du réseau 2 sur le réseau 1 "+(new Time(System.currentTimeMillis())).toString());
 			reseauRef.projete(reseauComp, paramApp.projeteNoeud2surReseau1_DistanceNoeudArc, paramApp.projeteNoeud2surReseau1_DistanceProjectionNoeud, paramApp.projeteNoeud2surReseau1_ImpassesSeulement);
 		}
 		if ( paramApp.projeteNoeuds1SurReseau2 ) {
-			if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  Projection du réseau 1 sur le réseau 2 "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  Projection du réseau 1 sur le réseau 2 "+(new Time(System.currentTimeMillis())).toString());
 			reseauComp.projete(reseauRef, paramApp.projeteNoeuds1SurReseau2_DistanceNoeudArc, paramApp.projeteNoeuds1SurReseau2_DistanceProjectionNoeud, paramApp.projeteNoeuds1SurReseau2_ImpassesSeulement);
 		}
 
-		if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  Remplissage des attributs des arcs et noeuds des réseaux "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isDebugEnabled()) logger.debug("  Remplissage des attributs des arcs et noeuds des réseaux "+(new Time(System.currentTimeMillis())).toString());
 		reseauRef.instancieAttributsNuls(paramApp);
 		reseauComp.initialisePoids();
 
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("  Structuration initiale des données terminée : ");
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("     Réseau 1 : "+reseauRef.getPopArcs().size()+" arcs et "+reseauRef.getPopNoeuds().size()+" noeuds.");
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("     Réseau 2 : "+reseauComp.getPopArcs().size()+" arcs et "+reseauComp.getPopNoeuds().size()+" noeuds.");
-		if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  FIN DE LA PHASE DE STRUCTURATION "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isInfoEnabled()) {
+			logger.info("  Structuration initiale des données terminée : ");
+			logger.info("     Réseau 1 : "+reseauRef.getPopArcs().size()+" arcs et "+reseauRef.getPopNoeuds().size()+" noeuds.");
+			logger.info("     Réseau 2 : "+reseauComp.getPopArcs().size()+" arcs et "+reseauComp.getPopNoeuds().size()+" noeuds.");
+		}
+		if (logger.isDebugEnabled()) logger.debug("  FIN DE LA PHASE DE STRUCTURATION "+(new Time(System.currentTimeMillis())).toString());
 
 
 		////////////////////////////////////////////////
 		// APPARIEMENT
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("");
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("APPARIEMENT DES RESEAUX");
-		if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  DEBUT DE LA PHASE D'APPARIEMENT DES RESEAUX "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isInfoEnabled()) {
+			logger.info("");
+			logger.info("APPARIEMENT DES RESEAUX");
+		}
+		if (logger.isDebugEnabled()) logger.debug("  DEBUT DE LA PHASE D'APPARIEMENT DES RESEAUX "+(new Time(System.currentTimeMillis())).toString());
 		liens = Appariement.appariementReseaux(reseauRef, reseauComp, paramApp);
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("  Appariement des réseaux terminé ");
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("  "+liens.size()+" liens d'appariement ont été trouvés (dans la structure de travail)");
-		if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  FIN DE LA PHASE D'APPARIEMENT DES RESEAUX "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isInfoEnabled()) {
+			logger.info("  Appariement des réseaux terminé ");
+			logger.info("  "+liens.size()+" liens d'appariement ont été trouvés (dans la structure de travail)");
+		}
+		if (logger.isDebugEnabled()) logger.debug("  FIN DE LA PHASE D'APPARIEMENT DES RESEAUX "+(new Time(System.currentTimeMillis())).toString());
 
 
 		////////////////////////////////////////////////
 		// EXPORT
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("");
-		if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("BILAN ET EXPORT DES RESULTATS  ");
-		if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  DEBUT DE LA PHASE D'EXPORT "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isInfoEnabled()) {
+			logger.info("");
+			logger.info("BILAN ET EXPORT DES RESULTATS  ");
+		}
+		if (logger.isDebugEnabled()) logger.debug("  DEBUT DE LA PHASE D'EXPORT "+(new Time(System.currentTimeMillis())).toString());
 		if (paramApp.debugBilanSurObjetsGeo ) {
-			if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  Transformation des liens de réseaux en liens génériques "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  Transformation des liens de réseaux en liens génériques "+(new Time(System.currentTimeMillis())).toString());
 			liensGeneriques= LienReseaux.exportLiensAppariement(liens, reseauRef, paramApp);
 			Appariement.nettoyageLiens(reseauRef, reseauComp);
-			if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("######## FIN DE L'APPARIEMENT DE RESEAUX #########");
+			if (logger.isInfoEnabled()) logger.info("######## FIN DE L'APPARIEMENT DE RESEAUX #########");
 			return liensGeneriques;
 		}
 		else {
-			if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("  Affectation d'une géométrie aux liens "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  Affectation d'une géométrie aux liens "+(new Time(System.currentTimeMillis())).toString());
 			LienReseaux.exportAppCarteTopo(liens, paramApp);
-			if ( paramApp.debugAffichageCommentaires > 0 ) System.out.println("######## FIN DE L'APPARIEMENT DE RESEAUX #########");
+			if (logger.isInfoEnabled()) logger.info("######## FIN DE L'APPARIEMENT DE RESEAUX #########");
 			return liens;
 		}
 	}
@@ -160,6 +183,13 @@ public class AppariementIO {
 	 * false = on traite le réseau de comparaison
 	 */
 	private static ReseauApp Import(ParametresApp paramApp, boolean ref) {
+
+		switch(paramApp.debugAffichageCommentaires) {
+			case 0 : logger.setLevel(Level.ERROR); break;
+			case 1 : logger.setLevel(Level.INFO); break;
+			default : logger.setLevel(Level.DEBUG); break;
+		}
+
 		ReseauApp reseau;
 		Iterator<FT_FeatureCollection<Arc>> itPopArcs;
 		Iterator<?> itPopNoeuds, itElements;
@@ -239,7 +269,7 @@ public class AppariementIO {
 		/////////////////////////////
 		// Indexation spatiale des arcs et noeuds
 		// On crée un dallage régulier avec en moyenne 20 objets par case
-		if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("    Indexation spatiale des arcs et des noeuds "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isDebugEnabled()) logger.debug("    Indexation spatiale des arcs et des noeuds "+(new Time(System.currentTimeMillis())).toString());
 		int nb = (int)Math.sqrt(reseau.getPopArcs().size()/20);
 		if (nb == 0) nb=1;
 		reseau.getPopArcs().initSpatialIndex(Tiling.class, true, nb);
@@ -250,7 +280,7 @@ public class AppariementIO {
 
 		// 1- Création de la topologie arcs-noeuds, rendu du graphe planaire
 		if ((ref && paramApp.topologieGraphePlanaire1) || (!ref && paramApp.topologieGraphePlanaire2)) { // cas où on veut une topologie planaire
-			if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("    Rendu du graphe planaire et instanciation de la topologie arcs-noeuds "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("    Rendu du graphe planaire et instanciation de la topologie arcs-noeuds "+(new Time(System.currentTimeMillis())).toString());
 			// Debut Ajout 
 			reseau.creeTopologieArcsNoeuds(0);
 			reseau.creeNoeudsManquants(0);
@@ -261,7 +291,7 @@ public class AppariementIO {
 			reseau.filtreDoublons(0);
 		}
 		else { // cas où on ne veut pas nécessairement rendre planaire la topologie
-			if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("    Instanciation de la topologie "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("    Instanciation de la topologie "+(new Time(System.currentTimeMillis())).toString());
 			reseau.creeNoeudsManquants(0);
 			reseau.filtreDoublons(0);
 			reseau.creeTopologieArcsNoeuds(0);
@@ -270,56 +300,56 @@ public class AppariementIO {
 		// 2- On fusionne les noeuds proches
 		if (ref) {
 			if ( paramApp.topologieSeuilFusionNoeuds1 >= 0 ) {
-				if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("    Fusion des noeuds proches "+(new Time(System.currentTimeMillis())).toString());
+				if (logger.isDebugEnabled()) logger.debug("    Fusion des noeuds proches "+(new Time(System.currentTimeMillis())).toString());
 				reseau.fusionNoeuds(paramApp.topologieSeuilFusionNoeuds1);
 			}
 			if ( paramApp.topologieSurfacesFusionNoeuds1 != null ) {
-				if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("    Fusion des noeuds dans une même surface "+(new Time(System.currentTimeMillis())).toString());
+				if (logger.isDebugEnabled()) logger.debug("    Fusion des noeuds dans une même surface "+(new Time(System.currentTimeMillis())).toString());
 				reseau.fusionNoeuds(paramApp.topologieSurfacesFusionNoeuds1);
 			}
 		}
 		else {
 			if ( paramApp.topologieSeuilFusionNoeuds2 >= 0 ) {
-				if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("    Fusion des noeuds proches "+(new Time(System.currentTimeMillis())).toString());
+				if (logger.isDebugEnabled()) logger.debug("    Fusion des noeuds proches "+(new Time(System.currentTimeMillis())).toString());
 				reseau.fusionNoeuds(paramApp.topologieSeuilFusionNoeuds2);
 			}
 			if ( paramApp.topologieSurfacesFusionNoeuds2 != null ) {
-				if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("    Fusion des noeuds dans une même surface "+(new Time(System.currentTimeMillis())).toString());
+				if (logger.isDebugEnabled()) logger.debug("    Fusion des noeuds dans une même surface "+(new Time(System.currentTimeMillis())).toString());
 				reseau.fusionNoeuds(paramApp.topologieSurfacesFusionNoeuds2);
 			}
 		}
 
 		// 3- On enlève les noeuds isolés
-		if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("    Filtrage des noeuds isolés "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isDebugEnabled()) logger.debug("    Filtrage des noeuds isolés "+(new Time(System.currentTimeMillis())).toString());
 		reseau.filtreNoeudsIsoles();
 
 		// 4- On filtre les noeuds simples (avec 2 arcs incidents)
 		if (( ref && paramApp.topologieElimineNoeudsAvecDeuxArcs1) ||
 				( !ref && paramApp.topologieElimineNoeudsAvecDeuxArcs2)) {
-			if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("    Filtrage des noeuds avec seulement 2 arcs incidents "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("    Filtrage des noeuds avec seulement 2 arcs incidents "+(new Time(System.currentTimeMillis())).toString());
 			reseau.filtreNoeudsSimples();
 		}
 
 		// 5- On fusionne des arcs en double
 		if (ref && paramApp.topologieFusionArcsDoubles1) {
-			if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("    Filtrage des arcs en double "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("    Filtrage des arcs en double "+(new Time(System.currentTimeMillis())).toString());
 			reseau.filtreArcsDoublons();
 		}
 		if (!ref && paramApp.topologieFusionArcsDoubles2) {
-			if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("    Filtrage des arcs en double "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("    Filtrage des arcs en double "+(new Time(System.currentTimeMillis())).toString());
 			reseau.filtreArcsDoublons();
 		}
 
 		// 6 - On crée la topologie de faces
 		if ( !ref && paramApp.varianteChercheRondsPoints ) {
-			if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("    Création de la topologie de faces");
+			if (logger.isDebugEnabled()) logger.debug("    Création de la topologie de faces");
 			reseau.creeTopologieFaces();
 		}
 
 		// 7 - On double la taille de recherche pour les impasses
 		if ( paramApp.distanceNoeudsImpassesMax >=0 ) {
 			if (ref) {
-				if ( paramApp.debugAffichageCommentaires > 1 ) System.out.println("    Doublage du rayon de recherche des noeuds aux impasses");
+				if (logger.isDebugEnabled()) logger.debug("    Doublage du rayon de recherche des noeuds aux impasses");
 				Iterator<?> itNoeuds = reseau.getPopNoeuds().getElements().iterator();
 				while (itNoeuds.hasNext()) {
 					NoeudApp noeud2 = (NoeudApp) itNoeuds.next();
