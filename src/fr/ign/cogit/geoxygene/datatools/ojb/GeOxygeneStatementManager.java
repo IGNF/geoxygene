@@ -470,7 +470,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
 	 */
 	private int bindStatement(PreparedStatement stmt, int index, InCriteria crit, ClassDescriptor cld) throws SQLException
 	{
-		if (crit.getValue() instanceof Collection)
+		if (crit.getValue() instanceof Collection<?>)
 		{
 			Collection<?> values = (Collection<?>) crit.getValue();
 			Iterator<?> iter = values.iterator();

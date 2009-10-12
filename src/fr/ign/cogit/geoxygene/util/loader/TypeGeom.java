@@ -86,12 +86,12 @@ public class TypeGeom {
 					i++;
 					FT_Feature f = iterator.next();
 					GM_Object o = f.getGeom();
-					if (o instanceof GM_MultiSurface) {
+					if (o instanceof GM_MultiSurface<?>) {
 						FT_Feature f1 = f.cloneGeom();
 						db.deletePersistent(f);
 						this.multiSurface(f1);
 					}
-					else if (o instanceof GM_MultiCurve) {
+					else if (o instanceof GM_MultiCurve<?>) {
 						FT_Feature f1 = f.cloneGeom();
 						db.deletePersistent(f);
 						this.multiCurve(f1);

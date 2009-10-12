@@ -300,7 +300,7 @@ public abstract class FT_Feature implements Cloneable {
 	 */
 	public Population<FT_Feature> getPopulation() {
 		if (this.population != null) {return population;}
-		for(FT_FeatureCollection<FT_Feature> f:getFeatureCollections()) if (f instanceof Population) return (Population<FT_Feature>) f;
+		for(FT_FeatureCollection<FT_Feature> f:getFeatureCollections()) if (f instanceof Population<?>) return (Population<FT_Feature>) f;
 		return null;
 	}
 	/**
