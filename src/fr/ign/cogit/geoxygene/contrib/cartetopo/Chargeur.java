@@ -91,12 +91,12 @@ public class Chargeur {
 			if(logger.isDebugEnabled()) logger.debug("Nb de noeuds importés : "+nbElements);
 			return;
 		}
-		if ( (listeFeatures.get(0).getGeom() instanceof GM_LineString)  || (listeFeatures.get(0).getGeom() instanceof GM_MultiCurve) ) {
+		if ( (listeFeatures.get(0).getGeom() instanceof GM_LineString)  || (listeFeatures.get(0).getGeom() instanceof GM_MultiCurve<?>) ) {
 			int nbElements = importClasseGeo(listeFeatures, carte.getPopArcs(), convert2d);
 			if(logger.isDebugEnabled()) logger.debug("Nb d'arcs importés    : "+nbElements);
 			return;
 		}
-		if ( (listeFeatures.get(0).getGeom() instanceof GM_Polygon) || (listeFeatures.get(0).getGeom() instanceof GM_MultiSurface) ) {
+		if ( (listeFeatures.get(0).getGeom() instanceof GM_Polygon) || (listeFeatures.get(0).getGeom() instanceof GM_MultiSurface<?>) ) {
 			int nbElements = importClasseGeo(listeFeatures, carte.getPopFaces(), convert2d);
 			if(logger.isDebugEnabled()) logger.debug("Nb de faces importées : "+nbElements);
 			return;
