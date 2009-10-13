@@ -194,26 +194,25 @@ public class TP_Expression {
 
 	/** TRUE s'il y a égalité polynomiale. */
 	public boolean equals(TP_Expression s) {
+		//construit des clones simplifies
 		TP_Expression thisBis = new TP_Expression();
-		TP_Expression sBis = new TP_Expression();
-		for (int i=0; i< this.sizeTerm(); i++)
-			thisBis.addTerm(this.getTerm(i));
-		for (int i=0; i< s.sizeTerm(); i++)
-			sBis.addTerm(s.getTerm(i));
+		for (int i=0; i< this.sizeTerm(); i++) thisBis.addTerm(getTerm(i));
 		thisBis.simplify();
+
+		TP_Expression sBis = new TP_Expression();
+		for (int i=0; i< s.sizeTerm(); i++) sBis.addTerm(s.getTerm(i));
 		sBis.simplify();
+
 		if (thisBis.sizeTerm() != sBis.sizeTerm()) return false;
-		while (thisBis.sizeTerm() > 0) {
-			TP_DirectedTopo dt1 = thisBis.getTerm(0);
+
+		for (int i=0; i<thisBis.sizeTerm(); i++) {
+			TP_DirectedTopo dt1 = thisBis.getTerm(i);
+			boolean trouve = false;
 			for (int j=0; j<sBis.sizeTerm(); j++) {
 				TP_DirectedTopo dt2 = sBis.getTerm(j);
-				if (dt1.getId() == dt2.getId()) {
-					thisBis.removeTerm(0);
-					sBis.removeTerm(j);
-					break;
-				}
-				return false;
+				if (dt1.getId() == dt2.getId()) trouve = true;
 			}
+			if (!trouve) return false;
 		}
 		return true;
 	}
