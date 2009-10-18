@@ -644,12 +644,8 @@ public class GeodatabaseOjb {
 	}
 
 	public boolean tableExists(String tableName) {
-	    try {
-		return getConnection().getMetaData().getTables(null,null,tableName,null).next();
-	    } catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	    }
+	    try {return getConnection().getMetaData().getTables(null,null,tableName,null).next();}
+	    catch (SQLException e) {e.printStackTrace();}
 	    return false;
 	}
 
