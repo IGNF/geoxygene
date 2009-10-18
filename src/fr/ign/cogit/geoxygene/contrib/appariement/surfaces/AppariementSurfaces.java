@@ -185,12 +185,12 @@ public abstract class AppariementSurfaces {
 
 			// Test d'association sur tous les objets comp intersectant l'objet ref
 			candidatComp = popComp.select(geomRef);
-			Iterator<? extends FT_Feature> it = candidatComp.iterator();
-			while (it.hasNext()) {
-				featureComp = it.next();
+			Iterator<? extends FT_Feature> iteratorComp = candidatComp.iterator();
+			while (iteratorComp.hasNext()) {
+				featureComp = iteratorComp.next();
 				geomComp = featureComp.getGeom();
 				if ( !(geomComp instanceof GM_Surface)) {
-					System.out.println("Objet de la population de comparaison sans géométrie surfacique COGITID = " + featureComp.getId());
+					System.out.println("Objet de la population de comparaison sans géométrie surfacique COGITID = "+featureComp.getId());
 					continue;
 				}
 				// création éventuelle d'un nouveau lien de pré-appariement

@@ -34,6 +34,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.feature.event.FeatureCollectionEvent;
 import fr.ign.cogit.geoxygene.feature.type.GF_AssociationRole;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AssociationRole;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AssociationType;
@@ -97,15 +98,21 @@ public abstract class FT_Feature implements Cloneable {
 	 * Affecte une geometrie et met à jour les éventuels index concernés.
 	 * @param g nouvelle géométrie de l'objet 
 	 */
+	@SuppressWarnings("unchecked")
 	public void setGeom(GM_Object g) {
-		boolean geomAvant = (this.geom != null);
+		GM_Object previousGeometry = this.geom;
+		boolean geomAvant = (previousGeometry != null);
 		this.geom = g;
-		for (FT_FeatureCollection<FT_Feature>fc:this.getFeatureCollections()) {
-			if (fc.hasSpatialIndex()) {
-				if (fc.getSpatialIndex().hasAutomaticUpdate()) {
-					if (geomAvant) fc.getSpatialIndex().update(this, 0);
-					else fc.getSpatialIndex().update(this, 1);
+		synchronized(this.featurecollections) {
+			FT_FeatureCollection<FT_Feature>[] collections = this.featurecollections.toArray(new FT_FeatureCollection[0]);
+			for (FT_FeatureCollection<FT_Feature>fc:collections) {
+				if (fc.hasSpatialIndex()) {
+					if (fc.getSpatialIndex().hasAutomaticUpdate()) {
+						if (geomAvant) fc.getSpatialIndex().update(this, (g!=null)?0:-1);
+						else fc.getSpatialIndex().update(this, 1);
+					}
 				}
+				if ((previousGeometry != null)&&((this.geom==null)||!previousGeometry.equals(this.geom))) fc.fireActionPerformed(new FeatureCollectionEvent(fc, this, FeatureCollectionEvent.Type.CHANGED,previousGeometry));
 			}
 		}
 	}
@@ -298,9 +305,13 @@ public abstract class FT_Feature implements Cloneable {
 	/**
 	 * @return the population
 	 */
+	@SuppressWarnings("unchecked")
 	public Population<FT_Feature> getPopulation() {
 		if (this.population != null) {return population;}
-		for(FT_FeatureCollection<FT_Feature> f:getFeatureCollections()) if (f instanceof Population<?>) return (Population<FT_Feature>) f;
+		synchronized(this.featurecollections) {
+		    FT_FeatureCollection<FT_Feature>[] collections = this.featurecollections.toArray(new FT_FeatureCollection[0]);
+		    for(FT_FeatureCollection<FT_Feature> f:collections) if (f instanceof Population<?>) return (Population<FT_Feature>) f;
+		}
 		return null;
 	}
 	/**
@@ -351,12 +362,8 @@ public abstract class FT_Feature implements Cloneable {
 		}
 		Object valeur = null;
 		String nomFieldMaj = null;
-		if (attribute.getNomField().length() == 0) {
-			nomFieldMaj = attribute.getNomField();
-		} else {
-			nomFieldMaj = Character.toUpperCase(attribute.getNomField().charAt(0))
-			+ attribute.getNomField().substring(1);
-		}
+		if (attribute.getNomField().length() == 0) nomFieldMaj = attribute.getNomField();
+		else nomFieldMaj = Character.toUpperCase(attribute.getNomField().charAt(0)) + attribute.getNomField().substring(1);
 		String nomGetFieldMethod = "get" + nomFieldMaj;
 		Class<?> classe = this.getClass();
 		while (!classe.equals(Object.class)) {
@@ -364,37 +371,19 @@ public abstract class FT_Feature implements Cloneable {
 				Method methodGetter = classe.getDeclaredMethod(nomGetFieldMethod, (Class[]) null);
 				valeur = methodGetter.invoke(this, (Object[]) null);
 				return valeur;
-			} catch (SecurityException e) {
-				if (logger.isTraceEnabled()) logger.trace("SecurityException pendant l'appel de la mï¿½thode "+nomGetFieldMethod+" sur la classe "+classe);
-			} catch (IllegalArgumentException e) {
-				if (logger.isTraceEnabled()) logger.trace("IllegalArgumentException pendant l'appel de la mï¿½thode "+nomGetFieldMethod+" sur la classe "+classe);
 			} catch (NoSuchMethodException e) {
-				if (logger.isTraceEnabled()) logger.trace("La mï¿½thode "+nomGetFieldMethod+" n'existe pas dans la classe "+classe);
-			} catch (IllegalAccessException e) {
-				if (logger.isTraceEnabled()) logger.trace("IllegalAccessException pendant l'appel de la mï¿½thode "+nomGetFieldMethod+" sur la classe "+classe);
-			} catch (InvocationTargetException e) {
-				if (logger.isTraceEnabled()) logger.trace("InvocationTargetException pendant l'appel de la mï¿½thode "+nomGetFieldMethod+" sur la classe "+classe);
-			}
-			classe = classe.getSuperclass();
-		}
-		// on rï¿½essayer si le getter est du genre isAttribute, ie pour un boolï¿½en
-		nomGetFieldMethod = "is" + nomFieldMaj;
-		classe = this.getClass();
-		while (!classe.equals(Object.class)) {
-			try {
-				Method methodGetter = classe.getDeclaredMethod(nomGetFieldMethod, (Class[]) null);
-				valeur = methodGetter.invoke(this, (Object[]) null);
-				return valeur;
+				//if (logger.isTraceEnabled()) logger.trace("La méthode "+nomGetFieldMethod+" n'existe pas dans la classe "+classe);
 			} catch (SecurityException e) {
-				if (logger.isTraceEnabled()) logger.trace("SecurityException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
+				if (logger.isDebugEnabled()) logger.debug("SecurityException pendant l'appel de la mï¿½thode "+nomGetFieldMethod+" sur la classe "+classe);
 			} catch (IllegalArgumentException e) {
-				if (logger.isTraceEnabled()) logger.trace("IllegalArgumentException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
-			} catch (NoSuchMethodException e) {
-				if (logger.isTraceEnabled()) logger.trace("La méthode "+nomGetFieldMethod+" n'existe pas dans la classe "+classe);
+				if (logger.isDebugEnabled()) logger.debug("IllegalArgumentException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
 			} catch (IllegalAccessException e) {
-				if (logger.isTraceEnabled()) logger.trace("IllegalAccessException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
+				if (logger.isDebugEnabled()) logger.debug("IllegalAccessException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
 			} catch (InvocationTargetException e) {
-				if (logger.isTraceEnabled()) logger.trace("InvocationTargetException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
+				if (logger.isDebugEnabled()) {
+				    logger.debug("InvocationTargetException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
+				    logger.debug(e.getCause());
+				}
 			}
 			classe = classe.getSuperclass();
 		}
@@ -406,12 +395,12 @@ public abstract class FT_Feature implements Cloneable {
 				Method methodGetter = classe.getDeclaredMethod(nomGetFieldMethod, (Class[]) null);
 				valeur = methodGetter.invoke(this, (Object[]) null);
 				return valeur;
+			} catch (NoSuchMethodException e) {
+				//if (logger.isTraceEnabled()) logger.trace("La méthode "+nomGetFieldMethod+" n'existe pas dans la classe "+classe);
 			} catch (SecurityException e) {
 				if (logger.isTraceEnabled()) logger.trace("SecurityException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
 			} catch (IllegalArgumentException e) {
 				if (logger.isTraceEnabled()) logger.trace("IllegalArgumentException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
-			} catch (NoSuchMethodException e) {
-				if (logger.isTraceEnabled()) logger.trace("La méthode "+nomGetFieldMethod+" n'existe pas dans la classe "+classe);
 			} catch (IllegalAccessException e) {
 				if (logger.isTraceEnabled()) logger.trace("IllegalAccessException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
 			} catch (InvocationTargetException e) {
@@ -419,7 +408,7 @@ public abstract class FT_Feature implements Cloneable {
 			}
 			classe = classe.getSuperclass();
 		}
-		logger.error("Echec de l'appel à la méthode "+nomGetFieldMethod+" sur la classe "+this.getClass());
+		logger.error("Echec de l'appel au getter de l'attribut "+attribute.getNomField()+" sur l'objet "+this);
 		return null;
 	}
 	/**
@@ -582,11 +571,6 @@ public abstract class FT_Feature implements Cloneable {
 		if (logger.isDebugEnabled()) logger.debug("\n**fin de la recherche des features en relation**");
 		return listResult;
 	}
-	////////////////////////////////////////////////////////////////////////////
-	// /
-	// ///////////////// Ajout Nathalie
-	////////////////////////////////////////////////////////////////////////////
-	// /
 
 	/**
 	 * Methode pour recupérer la valeur d'un attribut dont le nom est donné en
@@ -686,5 +670,5 @@ public abstract class FT_Feature implements Cloneable {
 		return this.getGeom().envelope().intersects(env);
 	}
 	@Override
-	public String toString() {return this.getClass().getName()+" "+this.getGeom();}
+	public String toString() {return this.getClass().getSimpleName()+" "+this.getGeom();}
 }

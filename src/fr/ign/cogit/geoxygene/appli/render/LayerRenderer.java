@@ -184,12 +184,11 @@ public class LayerRenderer implements Renderer {
 						if (cancelled) return;
 						Rule rule=featureTypeStyle.getRules().get(indexRule);
 						if (logger.isDebugEnabled()) logger.debug(filteredFeatures.get(rule)+"  for rule "+rule);
-						for (Symbolizer symbolizer:rule.getSymbolizers()) {
-							if (logger.isDebugEnabled()) logger.debug("symbolizer =  "+symbolizer);
-							if (logger.isDebugEnabled()) logger.debug("stroke =  "+symbolizer.getStroke());
-							if (logger.isDebugEnabled()) logger.debug("awt stroke =  "+symbolizer.getStroke().toAwtStroke());
-							if (logger.isDebugEnabled()) logger.debug("color =  "+symbolizer.getStroke().getColor());
-							
+						if (logger.isDebugEnabled()) for (Symbolizer symbolizer:rule.getSymbolizers()) {
+							logger.debug("symbolizer =  "+symbolizer);
+							logger.debug("stroke =  "+symbolizer.getStroke());
+							logger.debug("awt stroke =  "+symbolizer.getStroke().toAwtStroke());
+							logger.debug("color =  "+symbolizer.getStroke().getColor());
 						}
 						for (FT_Feature feature:filteredFeatures.get(rule))
 							for (Symbolizer symbolizer:rule.getSymbolizers()) {render(symbolizer,feature,theImage);}

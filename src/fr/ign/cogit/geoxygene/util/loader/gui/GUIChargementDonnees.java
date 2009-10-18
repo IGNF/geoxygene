@@ -357,8 +357,8 @@ public class GUIChargementDonnees extends JPanel {
 					/** On remplit le panel de confirmation à l'aide du fichier de chargement choisi */
 					Chargement chargement = Chargement.charge(choixFichier.getSelectedFile().getName());
 					for(String nomFichier:chargement.getFichiers().values()) {
-						JLabel label = new JLabel(nomFichier);
-						chargementExistantConfirmationPanel.getBox().add(label,BorderLayout.CENTER);
+						JLabel newLabel = new JLabel(nomFichier);
+						chargementExistantConfirmationPanel.getBox().add(newLabel,BorderLayout.CENTER);
 					}
 					frame.pack();
 					frame.repaint();
@@ -444,9 +444,9 @@ public class GUIChargementDonnees extends JPanel {
 					DataSet.db = GeodatabaseFactory.newInstance(index);
 					dataSets = DataSet.db.loadAll(DataSet.class);
 					for(Object o:dataSets) {
-						DataSet dataSet = (DataSet) o;
-						dataSetStrings.add(dataSet.getNom());
-						if (logger.isDebugEnabled()) logger.debug("Ajout du dataset "+dataSet.getNom());
+						DataSet subDataSet = (DataSet) o;
+						dataSetStrings.add(subDataSet.getNom());
+						if (logger.isDebugEnabled()) logger.debug("Ajout du dataset "+subDataSet.getNom());
 						/**  Si on a trouvé au moins un dataset, on active le bouton finish */
 						panel.getFinishButton().setEnabled(true);
 					}
