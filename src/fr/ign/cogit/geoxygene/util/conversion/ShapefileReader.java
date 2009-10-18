@@ -86,6 +86,7 @@ public class ShapefileReader implements Runnable {
 	FeatureSource<SimpleFeatureType, SimpleFeature> source;
 	Population<DefaultFeature> population;
 	Reader reader = null;
+	public Reader getReader() {return this.reader;}
 	/**
 	 * Renvoie la population dans laquelle les objets sont chargés.
 	 * @return la population dans laquelle les objets sont chargés
@@ -291,6 +292,14 @@ public class ShapefileReader implements Runnable {
 			logger.error("Problème pendant la lecture du fichier "+shapefileName+". Il n'a pas été chargé et le résultat est null.");
 		}
 	}
+	/**
+	 * @return
+	 */
+	public double getMaxX() {return reader.getMaxX();}
+	public double getMinX() {return reader.getMinX();}
+
+	public double getMaxY() {return reader.getMaxY();}
+	public double getMinY() {return reader.getMinY();}
 }
 class Reader {
 	private final static Logger logger=Logger.getLogger(Reader.class.getName());
