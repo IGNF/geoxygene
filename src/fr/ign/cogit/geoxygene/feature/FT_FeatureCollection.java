@@ -33,11 +33,11 @@ import java.util.List;
 
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.feature.event.FeatureCollectionEvent;
+import fr.ign.cogit.geoxygene.feature.event.FeatureCollectionListener;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
@@ -55,38 +55,30 @@ import fr.ign.cogit.geoxygene.util.index.SpatialIndex;
  * @composed 0 - n FT_Feature
  */
 public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection<Feat> {
-	static Logger logger = Logger.getLogger(FT_FeatureCollection.class.getName());
-	protected List<ChangeListener> listenerList = new ArrayList<ChangeListener>();
-	/**
-	 * Ajoute un {@link ChangeListener}.
-	 * <p>
-	 * Adds a {@link ChangeListener}.
-	 * @param l le {@link ChangeListener} à ajouter. the {@link ChangeListener} to be added.
-	 */
-	public void addChangeListener(ChangeListener l) {
-		if (listenerList==null) {
-			if (logger.isDebugEnabled()) logger.debug("bizarre");
-			listenerList = new ArrayList<ChangeListener>();
-		}
-		listenerList.add(l);
-	}
-	/**
-	 * Prévient tous les {@link ChangeListener} enregistrés qu'un 
-	 * évènement a eu lieu.
-	 * <p>
-	 * Notifies all listeners that have registered interest for
-	 * notification on this event type.  The event instance
-	 * is lazily created.
-	 */
-	public void fireActionPerformed(ChangeEvent e) {
-		// Guaranteed to return a non-null array
-		Object[] listeners = listenerList.toArray();
-		// Process the listeners last to first, notifying
-		// those that are interested in this event
-		for (int i = listeners.length-1; i>=0; i-=1) {
-			((ChangeListener)listeners[i]).stateChanged(e);
-		}
-	}
+    static Logger logger = Logger.getLogger(FT_FeatureCollection.class.getName());
+    protected List<FeatureCollectionListener> listenerList = new ArrayList<FeatureCollectionListener>();
+    /**
+     * Ajoute un {@link FeatureCollectionListener}.
+     * <p>
+     * Adds a {@link FeatureCollectionListener}.
+     * @param l le {@link FeatureCollectionListener} à ajouter. the {@link FeatureCollectionListener} to be added.
+     */
+    public void addFeatureCollectionListener(FeatureCollectionListener l) {listenerList.add(l);}
+    /**
+     * Prévient tous les {@link FeatureCollectionListener} enregistrés qu'un 
+     * évènement a eu lieu.
+     * <p>
+     * Notifies all listeners that have registered interest for
+     * notification on this event type.  The event instance
+     * is lazily created.
+     */
+    public void fireActionPerformed(FeatureCollectionEvent event) {
+	// Guaranteed to return a non-null array
+	FeatureCollectionListener[] listeners = listenerList.toArray(new FeatureCollectionListener[0]);
+	// Process the listeners last to first, notifying
+	// those that are interested in this event
+	for (int i = listeners.length-1; i>=0; i-=1) listeners[i].changed(event);
+    }
 	/**
 	 * Constructeur 
 	 */
@@ -192,7 +184,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 		boolean result = this.elements.add(value);
 		result = value.getFeatureCollections().add((FT_FeatureCollection<FT_Feature>) this) && result;
 		if (isIndexed&&spatialindex.hasAutomaticUpdate()) spatialindex.update(value, +1);
-		this.fireActionPerformed(new ChangeEvent(this));
+		this.fireActionPerformed(new FeatureCollectionEvent(this, value, FeatureCollectionEvent.Type.ADDED,value.getGeom()));
 		return result;
 	}
 	/**
@@ -213,7 +205,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 		value.getFeatureCollections().remove(this);
 		if (isIndexed && spatialindex.hasAutomaticUpdate())
 			spatialindex.update(value, -1);
-		//if (!result&&logger.isDebugEnabled()) logger.debug("La suppression de l'objet a échouée : "+value);
+		this.fireActionPerformed(new FeatureCollectionEvent(this, value, FeatureCollectionEvent.Type.REMOVED,value.getGeom()));
 		return result;
 	}
 	/**
@@ -539,6 +531,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 		if (isIndexed)
 			if (spatialindex.hasAutomaticUpdate())
 				spatialindex.update(feature, +1);
+		this.fireActionPerformed(new FeatureCollectionEvent(this, feature, FeatureCollectionEvent.Type.ADDED,feature.getGeom()));
 	}
 	/**
 	 * Efface de la liste l'element en position i. Attention, si l'élément est

@@ -65,7 +65,7 @@ public class DefaultFeature extends FT_Feature {
 	 * @param geometry géométrie de l'objet
 	 */
 	public DefaultFeature(GM_Object geometry) {super(geometry);}
-	private FeatureType featureType;
+	//private FeatureType featureType;
 	/**
 	 * nom table et colonnes. contient une "lookup table" reliant le numéro de l'attribut
 	 * dans la table attributes[] du defaultFeature, son nom de colonne et son nom d'attributeType.

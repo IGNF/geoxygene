@@ -195,7 +195,6 @@ public class DataSet {
 		List<String> populationsACharger2;
 		Iterator<List<String>> itThemes;
 		Iterator<String> itPopulationsACharger;
-		String nom;
 		boolean aCharger;
 
 		// chargement recursif des dataset composants this
@@ -241,8 +240,8 @@ public class DataSet {
 				aCharger = false;
 				itPopulationsACharger = populationsACharger2.iterator();
 				while (itPopulationsACharger.hasNext()) {
-					nom = itPopulationsACharger.next();
-					if (pop.getNom().equals(nom)) {
+					String nomPopulation = itPopulationsACharger.next();
+					if (pop.getNom().equals(nomPopulation)) {
 						aCharger = true;
 						break;
 					}
@@ -412,12 +411,12 @@ public class DataSet {
 		composants.clear();
 	}
 	/** Recupère le DataSet composant de this avec le nom donné. 
-	 * @param nom nom du dataset à récupérer
+	 * @param nomComposant nom du dataset à récupérer
 	 * @return le DataSet composant de this avec le nom donné.
 	 */
-	public DataSet getComposant(String nom) {
-		for(DataSet dataset:this.getComposants()) if (dataset.getNom().equals(nom)) return dataset;
-		logger.warn("----- ATTENTION : DataSet composant #" + nom + "# introuvable dans le DataSet " + this.getNom());
+	public DataSet getComposant(String nomComposant) {
+		for(DataSet dataset:this.getComposants()) if (dataset.getNom().equals(nomComposant)) return dataset;
+		logger.warn("----- ATTENTION : DataSet composant #" + nomComposant + "# introuvable dans le DataSet " + this.getNom());
 		return null;
 	}
 
@@ -502,11 +501,11 @@ public class DataSet {
 	}
 
 	/** Recupère la population avec le nom donné.
-	 * @param nom nom de la population à récupérer
+	 * @param nomPopulation nom de la population à récupérer
 	 * @return la population avec le nom donné.
 	 */
-	public Population<? extends FT_Feature> getPopulation(String nom) {
-		for (Population<? extends FT_Feature> pop:this.getPopulations()) if (pop.getNom().equals(nom))	return pop;
+	public Population<? extends FT_Feature> getPopulation(String nomPopulation) {
+		for (Population<? extends FT_Feature> pop:this.getPopulations()) if (pop.getNom().equals(nomPopulation))	return pop;
 		//if (logger.isDebugEnabled()) logger.debug("=============== ATTENTION : population '" + nom + "' introuvable ==============");
 		return null;
 	}
@@ -604,16 +603,16 @@ public class DataSet {
 	}
 
 	/**
-	 * @param nom nom du featuretype
+	 * @param nomFeatureType nom du featuretype
 	 * @return population dont le featuretype correspond au nom donné
 	 */
-	public Population<? extends FT_Feature> getPopulationByFeatureTypeName(String nom) {
+	public Population<? extends FT_Feature> getPopulationByFeatureTypeName(String nomFeatureType) {
 		for (int i = 0; i < this.getPopulations().size(); i++) {
-			if (this.getPopulations().get(i).getFeatureType().getTypeName().equals(nom)) {
+			if (this.getPopulations().get(i).getFeatureType().getTypeName().equals(nomFeatureType)) {
 				return this.getPopulations().get(i);
 			}
 		}
-		logger.error("La Population " + nom + " n'a pas été trouvée.");
+		logger.error("La Population " + nomFeatureType + " n'a pas été trouvée.");
 		return null;
 	}
 

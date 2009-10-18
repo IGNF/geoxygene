@@ -38,8 +38,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
-import org.apache.log4j.Logger;
-
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
@@ -73,7 +71,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
 @Entity
 public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Feat> {
 	/** logger*/
-	static Logger logger=Logger.getLogger(Population.class.getName());
+	//static Logger logger=Logger.getLogger(Population.class.getName());
 	/** Identifiant. Correspond au "cogitID" des tables du SGBD.*/
 	protected int id;
 	/** Renvoie l'identifiant. NB: l'ID n'est remplit automatiquement que si la population est persistante */
