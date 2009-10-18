@@ -279,4 +279,17 @@ public class GM_Polygon extends GM_SurfacePatch {
 
 	@Override
 	public boolean isPolygon() {return true;}
+
+	/**
+	 * @return true if the polygon is counter clockwise, false otherwise
+	 */
+	public boolean isCounterClockwise() {
+		// computation of the signed area
+		DirectPositionList exteriorCoord = this.exteriorCoord();
+		double signedArea=0;
+		for(int i = 0 ; i < exteriorCoord.size() -1 ; i++) {
+			signedArea+=(exteriorCoord.get(i).getX()*exteriorCoord.get(i+1).getY()-exteriorCoord.get(i+1).getX()*exteriorCoord.get(i).getY())/2;
+		}
+		return signedArea>0;
+	}
 }

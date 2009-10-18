@@ -51,52 +51,34 @@ public class GM_LineString extends GM_CurveSegment {
 	protected DirectPositionList controlPoint;
 
 	/** Renvoie la liste conbtrolPoint. Equivalent de samplePoint() et de coord(). A laisser ?*/
-	public DirectPositionList getControlPoint() {
-		return controlPoint;
-	}
+	public DirectPositionList getControlPoint() {return controlPoint;}
 
 	/** Renvoie le DirectPosition de rang i. */
-	public DirectPosition getControlPoint (int i) {
-		return this.controlPoint.get(i);
-	}
+	public DirectPosition getControlPoint (int i) {return this.controlPoint.get(i);}
 
 	/** Affecte un DirectPosition au i-ème rang de la liste. */
-	public void setControlPoint (int i, DirectPosition value) {
-		this.controlPoint.set(i, value);
-	}
+	public void setControlPoint (int i, DirectPosition value) {this.controlPoint.set(i, value);}
 
 	/** Ajoute un DirectPosition en fin de liste */
-	public void addControlPoint (DirectPosition value) {
-		this.controlPoint.add(value);
-	}
+	public void addControlPoint (DirectPosition value) {this.controlPoint.add(value);}
 
 	/** Ajoute un DirectPosition au i-ème rang de la liste. */
-	public void addControlPoint (int i, DirectPosition value) {
-		this.controlPoint.add(i, value);
-	}
+	public void addControlPoint (int i, DirectPosition value) {this.controlPoint.add(i, value);}
 
 	/** Efface de la liste le DirectPosition passé en paramètre. */
-	public void removeControlPoint (DirectPosition value)  {
-		this.controlPoint.remove(value);
-	}
+	public void removeControlPoint (DirectPosition value)  {this.controlPoint.remove(value);}
 
 	/** Efface le i-ème DirectPosition de la liste. */
-	public void removeControlPoint (int i)  {
-		this.controlPoint.remove(i);
-	}
+	public void removeControlPoint (int i)  {this.controlPoint.remove(i);}
 
 	/** Renvoie le nombre de DirectPosition. */
-	public int sizeControlPoint () {
-		return this.controlPoint.size();
-	}
+	public int sizeControlPoint () {return this.controlPoint.size();}
 
 	//////////////////////////////////////////////////////////////////////////
 	// Constructeurs /////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
 	/** Constructeur par défaut.*/
-	public GM_LineString() {
-		this(new DirectPositionList());
-	}
+	public GM_LineString() {this(new DirectPositionList());}
 
 	/** Constructeur à partir d'une liste de DirectPosition.*/
 	public GM_LineString(DirectPositionList points) {
@@ -114,9 +96,7 @@ public class GM_LineString extends GM_CurveSegment {
 	 * TODO Renvoie null.
 	 * Décompose une polyligne en une séquence de segments.
 	 */
-	public List<GM_LineSegment> asGM_LineSegment() {
-		return null;
-	}
+	public List<GM_LineSegment> asGM_LineSegment() {return null;}
 
 
 
@@ -126,9 +106,7 @@ public class GM_LineString extends GM_CurveSegment {
 	//////////////////////////////////////////////////////////////////////////
 	/**  Renvoie la liste ordonnée des points de contrôle (idem que coord()).   */
 	@Override
-	public DirectPositionList coord() {
-		return (controlPoint);
-	}
+	public DirectPositionList coord() {return controlPoint;}
 
 	/** Renvoie un GM_CurveSegment de sens opposé. */
 	@Override
@@ -148,14 +126,13 @@ public class GM_LineString extends GM_CurveSegment {
 		return coord().get(0).equals2D( coord().get(coord().size()-1), tolerance );
 	}
 
-	public boolean isClosed() {
-		return isClosed(0);
-	}
+	/**
+	 * @return
+	 */
+	public boolean isClosed() {return isClosed(0);}
 
 	@Override
-	public Object clone() {
-		return new GM_LineString((DirectPositionList) controlPoint.clone());
-	}
+	public Object clone() {return new GM_LineString((DirectPositionList) controlPoint.clone());}
 
 	@Override
 	public boolean isLineString() {return true;}

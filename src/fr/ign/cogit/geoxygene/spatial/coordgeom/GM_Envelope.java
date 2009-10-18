@@ -26,6 +26,8 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
@@ -41,6 +43,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  */
 
 public class GM_Envelope {
+	protected final static Logger logger=Logger.getLogger(GM_Envelope.class.getName());
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	// Attributs et accesseurs /////////////////////////////////////////////////////////////////////
@@ -175,6 +178,7 @@ public class GM_Envelope {
 			double theMin = lowerCorner.getCoordinate(i);
 			double theMax = upperCorner.getCoordinate(i);
 			result.setCoordinate(i,theMin+(theMax-theMin)/2);
+			if (logger.isTraceEnabled()) logger.trace("Center "+i+" "+theMin+" "+theMax+" = "+(theMin+(theMax-theMin)/2));
 		}
 		return result;
 	}
