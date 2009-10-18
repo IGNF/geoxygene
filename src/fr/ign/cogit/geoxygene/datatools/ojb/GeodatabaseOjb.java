@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -577,6 +578,7 @@ public class GeodatabaseOjb {
         Cette commande ne doit pas renvoyer de resultat : INSERT, UPDATE, DELETE, mais pas SELECT. */
 	public void exeSQL(String query) {
 		try {
+			if (logger.isDebugEnabled()) logger.debug("exécution de la requête SQL : "+query);
 			Connection conn = getConnection();
 			Statement stm = conn.createStatement();
 			stm.executeUpdate(query);
@@ -641,7 +643,15 @@ public class GeodatabaseOjb {
 		return result;
 	}
 
-
+	public boolean tableExists(String tableName) {
+	    try {
+		return getConnection().getMetaData().getTables(null,null,tableName,null).next();
+	    } catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
+	    return false;
+	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// getters ODMG ///////////////////////////////////////////////////////////////////////////////////////////
