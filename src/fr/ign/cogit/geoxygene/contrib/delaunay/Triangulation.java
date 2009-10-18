@@ -163,12 +163,13 @@ public class Triangulation extends CarteTopo{
     			paramf[2] = noeuds.get(jout.trianglelist[3*i+2]);
     			this.getPopFaces().nouvelElement(signaturef,paramf).setId(i);
     		}
-    		
-    		GM_Envelope envelope = this.getPopNoeuds().envelope();
-    		envelope.expandBy(100);
-    		voronoiVertices.initSpatialIndex(Tiling.class, true, envelope, 50);
-
     		if (this.getOptions().indexOf('v') != -1) {
+        		if (logger.isDebugEnabled()) logger.debug("Début de l'export du diagramme de Voronoi");
+
+        		GM_Envelope envelope = this.getPopNoeuds().envelope();
+            		envelope.expandBy(100);
+            		voronoiVertices.initSpatialIndex(Tiling.class, true, envelope, 10);
+
     			// l'export du diagramme de voronoi
 				for (int i=0; i<jvorout.numberofpoints; i++) {
 					voronoiVertices.add(new Noeud(new GM_Point(new DirectPosition(jvorout.pointlist[2*i],jvorout.pointlist[2*i+1]))));
@@ -182,10 +183,12 @@ public class Triangulation extends CarteTopo{
 						double vy = jvorout.normlist[2*i+1];
 						Noeud c1 = voronoiVertices.getElements().get(indexIni);
 						Noeud c2 = new Noeud();
-						c2.setGeometrie(new GM_Point(new DirectPosition(c1.getGeometrie().getPosition().getX()+1000000*vx,c1.getGeometrie().getPosition().getY()+1000000*vy)));
+						double vectorSize = 10000000;
+						c2.setGeometrie(new GM_Point(new DirectPosition(c1.getGeometrie().getPosition().getX()+vectorSize*vx,c1.getGeometrie().getPosition().getY()+vectorSize*vy)));
 						GM_LineString line = new GM_LineString(new DirectPositionList(Arrays.asList(c1.getGeometrie().getPosition(),c2.getGeometrie().getPosition())));
 						GM_Object intersection = line.intersection(envelope.getGeom());
-						c2.setGeometrie(intersection.coord().get(1).toGM_Point());
+						DirectPositionList list = intersection.coord();
+						if (list.size()>1) c2.setGeometrie(list.get(1).toGM_Point());
 						indexFin = voronoiVertices.size();
 						voronoiVertices.add(c2);
 					}
@@ -198,13 +201,13 @@ public class Triangulation extends CarteTopo{
     }
     
     ///Méthode de triangulation proprment dite en C - va chercher la bibliothèque C (dll/so)
-    private native void trianguleC(String options, Triangulateio jin, Triangulateio jout, Triangulateio jvorout);
+    private native void trianguleC(String trianguleOptions, Triangulateio trianguleJin, Triangulateio trianguleJout, Triangulateio trianguleJvorout);
     static {System.loadLibrary("trianguledll");}
 
     /**
      * Run the triangulation with the given parameters.
      * Lance la triangulation avec les paramètres donnés
-     * @param options paramètres de la triangulation :
+     * @param trianguleOptions paramètres de la triangulation :
      * <ul> 
 	 * <li> <b>z Zero:</b> points are numbered from zero
 	 * <li> <b>e Edges:</b> export edges
@@ -260,18 +263,22 @@ public class Triangulation extends CarteTopo{
      * </ul>
      * @throws Exception
      */
-    public void triangule(String options) throws Exception {
-    	if (logger.isDebugEnabled()) logger.debug("Triangulation commencée avec les options "+options);
-    	this.setOptions(options);
+    public void triangule(String trianguleOptions) throws Exception {
+    	if (this.getPopNoeuds().size()<3) {
+    		logger.error("Triangulation annulée : "+this.getPopNoeuds().size()+" points (3 points au moins)");
+    		return;
+    	}
+    	if (logger.isDebugEnabled()) logger.debug("Triangulation commencée avec les options "+trianguleOptions);
+    	this.setOptions(trianguleOptions);
     	this.convertJin();
-    	if (options.indexOf('p') != -1) {
+    	if (trianguleOptions.indexOf('p') != -1) {
     		this.convertJinSegments();
     		this.getPopArcs().setElements(new ArrayList<Arc>());
     	}
     	if (this.getOptions().indexOf('v') != -1) {
-    		trianguleC(options, jin, jout, jvorout);
+    		trianguleC(trianguleOptions, jin, jout, jvorout);
     	} else {
-    		trianguleC(options, jin, jout, null);
+    		trianguleC(trianguleOptions, jin, jout, null);
     	}
     	convertJout();
     	if (logger.isDebugEnabled()) logger.debug("Triangulation terminée");
