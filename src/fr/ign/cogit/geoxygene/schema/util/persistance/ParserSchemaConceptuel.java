@@ -684,9 +684,9 @@ public class ParserSchemaConceptuel {
 
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
+			DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
 
-			Document doc = db.newDocument();
+			Document doc = documentBuilder.newDocument();
 			schema = doc.createElement("schema");
 
 			elementAttributeNode = doc.createElement("name");
@@ -953,9 +953,9 @@ public class ParserSchemaConceptuel {
 
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
+			DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
 
-			Document doc = db.newDocument();
+			Document doc = documentBuilder.newDocument();
 			schema = doc.createElement("schema");
 
 			elementAttributeNode = doc.createElement("name");

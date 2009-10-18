@@ -88,17 +88,17 @@ public class ChargeurGMLSchema {
 	/**
 	 * transforme un GMLSchema déjà parsé en un objet SchemaISOJeu
 	 * contenant une liste de FeatureType.
-	 * @param docXSD
+	 * @param newDocXSD
 	 * @return SchemaConceptuelJeu
 	 */
-	public SchemaConceptuelJeu gmlSchema2schemaConceptuel(Document docXSD){
+	public SchemaConceptuelJeu gmlSchema2schemaConceptuel(Document newDocXSD){
 		SchemaConceptuelJeu schemaConceptuel = new SchemaConceptuelJeu();
 
 		//recherche des FeatureTypes
 		//recherche de tout ce qui etend AbstractFeatureType
 		//System.out.println("nom element racine = "+docXSD.getElementsByTagName("element").item(0).getAttributes().getNamedItem("name").getNodeValue());
 
-		NodeList listeNoeuds = docXSD.getElementsByTagName("extension");
+		NodeList listeNoeuds = newDocXSD.getElementsByTagName("extension");
 		//System.out.println("nb extension = "+listeNoeuds.getLength());
 		Node noeudAbstractFeatureType = null;
 		String nomType = null;
@@ -116,7 +116,7 @@ public class ChargeurGMLSchema {
 				//je cherche le nom des élemnts de ce type : ca me donnera le nom du
 				//FeatureType à mettre dans mon schemaConceptuel
 				System.out.println("\nLecture des attributs...");
-				NodeList listElements = docXSD.getElementsByTagName("element");
+				NodeList listElements = newDocXSD.getElementsByTagName("element");
 				for (int j=0 ; j<listElements.getLength(); j++){
 
 

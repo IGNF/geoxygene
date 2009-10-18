@@ -40,7 +40,7 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 	protected List<GF_FeatureType> linkBetween;
 
 	/** Les roles de cette association. */
-	protected List<GF_AssociationRole> roles;
+	//protected List<GF_AssociationRole> roles;
 
 
 	/**
