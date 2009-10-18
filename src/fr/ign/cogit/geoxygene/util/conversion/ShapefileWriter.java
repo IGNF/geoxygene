@@ -69,18 +69,22 @@ public class ShapefileWriter {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <Feature extends FT_Feature> void write(FT_FeatureCollection<Feature> featureCollection, String shapefileName) {
-	    if (featureCollection.isEmpty()) return;
+		if (featureCollection.isEmpty()) return;
 		try {
 			ShapefileDataStore store = new ShapefileDataStore(new File(shapefileName).toURI().toURL());
 			String specs="geom:";
-			if (featureCollection.getFeatureType()!=null)
-			    specs+=AdapterFactory.toJTSGeometryType(featureCollection.getFeatureType().getGeometryType()).getSimpleName();
-			else
-			    specs+=AdapterFactory.toJTSGeometryType(featureCollection.get(0).getGeom().getClass()).getSimpleName();
-			if (featureCollection.get(0).getFeatureType()!=null)
-			    for(GF_AttributeType attributeType:featureCollection.get(0).getFeatureType().getFeatureAttributes()) {
-				specs+=","+attributeType.getMemberName()+":"+valueType2Class(attributeType.getValueType()).getSimpleName();
-			    }
+			if (featureCollection.getFeatureType()!=null) {
+				specs+=AdapterFactory.toJTSGeometryType(featureCollection.getFeatureType().getGeometryType()).getSimpleName();
+				for(GF_AttributeType attributeType:featureCollection.getFeatureType().getFeatureAttributes()) {
+					specs+=","+attributeType.getMemberName()+":"+valueType2Class(attributeType.getValueType()).getSimpleName();
+				}
+			} else {
+				specs+=AdapterFactory.toJTSGeometryType(featureCollection.get(0).getGeom().getClass()).getSimpleName();
+				if (featureCollection.get(0).getFeatureType()!=null)
+					for(GF_AttributeType attributeType:featureCollection.get(0).getFeatureType().getFeatureAttributes()) {
+						specs+=","+attributeType.getMemberName()+":"+valueType2Class(attributeType.getValueType()).getSimpleName();
+					}
+			}
 			String featureTypeName = shapefileName.substring(shapefileName.lastIndexOf("/")+1,shapefileName.lastIndexOf("."));
 			featureTypeName=featureTypeName.replace('.', '_');
 			SimpleFeatureType type = DataUtilities.createType(featureTypeName, specs);
@@ -93,9 +97,9 @@ public class ShapefileWriter {
 				List<Object> liste = new ArrayList<Object>();
 				liste.add(AdapterFactory.toGeometry(new GeometryFactory(), feature.getGeom()));
 				if (feature.getFeatureType()!=null)
-				    for(GF_AttributeType attributeType:feature.getFeatureType().getFeatureAttributes()) {
-					liste.add(feature.getAttribute(attributeType.getMemberName()));
-				    }
+					for(GF_AttributeType attributeType:feature.getFeatureType().getFeatureAttributes()) {
+						liste.add(feature.getAttribute(attributeType.getMemberName()));
+					}
 				collection.add(SimpleFeatureBuilder.build(type, liste.toArray(), String.valueOf(i++)));
 			}
 			featureStore.addFeatures(collection);
