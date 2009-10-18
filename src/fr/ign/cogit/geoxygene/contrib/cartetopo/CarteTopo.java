@@ -1166,24 +1166,25 @@ public class CarteTopo extends DataSet {
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	/** Crée les faces à partir d'un graphe planaire et instancie la topologie face / arcs.
 	 *  Une face est délimitée par un cycle minimal du graphe.
-	 *
+	 *  <p>
 	 *  Le paramètre persistant spécifie si les faces créées, ainsi que la topologie, sont rendus persistants.
 	 *  Si oui, il faut appeler cette méthode dans une transaction ouverte.
-	 *
-	 *  NB1 : la topologie de réseau arcs/noeuds doit avoir été instanciée.
-	 *  NB2 : une face "extérieure" est créée (sa géométrie entoure le "trou" de l'extérieur qu'est le réseau.
+	 *  <ul>
+	 *  <li> NB1 : la topologie de réseau arcs/noeuds doit avoir été instanciée.
+	 *  <li> NB2 : une face "extérieure" est créée (sa géométrie entoure le "trou" de l'extérieur qu'est le réseau.
 	 *        Donc, dans le cas d'une topologie complete arcs/faces, tous les arcs ont une face gauche
 	 *        et une face à droite.
-	 *  NB3 : ATTENTION : en cas d'un réseau non connexe, une face extérieure différente est crée pour chaque
+	 *  <li> NB3 : <b>ATTENTION :</b> en cas d'un réseau non connexe, une face extérieure différente est crée pour chaque
 	 *        partie connexe !
-	 *  NB4 : Les culs de sac ont la même face à gauche et à droite, et la face "longe le cul de sac";
-	 *  NB5 : Méthode en théorie conçue pour les graphes planaires uniquement (testée dans ce cadre uniquement).
+	 *  <li> NB4 : Les culs de sac ont la même face à gauche et à droite, et la face "longe le cul de sac";
+	 *  <li> NB5 : Méthode en théorie conçue pour les graphes planaires uniquement (testée dans ce cadre uniquement).
 	 *       La méthode est en théorie valable pour les graphes non planaires, mais les faces créées
 	 *       seront étranges (on ne recrée pas les intersections manquantes, on les ignore).
 	 *       Si il existe des arcs sans noeud initial ou final (topologie de réseau pas complete),
 	 *       alors ces arcs n'ont ni face à gauche, ni face à droite
-	 *       
-	 * Depuis la version 1.6 la géométrie des faces est corrigée et n'inclue donc plus un aller-retour sur les culs-de-sac. Les trous sont aussi ajoutés à la géométrie des faces.
+	 * </ul>
+	 * Depuis la version 1.6 la géométrie des faces est corrigée et n'inclue donc plus un aller-retour sur les culs-de-sac. 
+	 * Les trous sont aussi ajoutés à la géométrie des faces.
 	 */
 	public void creeTopologieFaces() {
 		List<Arc> arcsDejaTraitesADroite = new ArrayList<Arc>();
