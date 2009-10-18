@@ -100,9 +100,9 @@ public class LienSGBD extends FT_Feature {
 
 	/**Methode de conversion entre les liens d'appariement vers les liens SGBD */
 	public LienSGBD conversionLiensVersSGBD(Lien lien){
-		List<?> objetsRef = lien.getObjetsRef(), objetsComp = lien.getObjetsComp(),
+		List<?> listeObjetsRef = lien.getObjetsRef(), listeObjetsComp = lien.getObjetsComp(),
 		indic = lien.getIndicateurs();
-		Iterator<?> itRef = objetsRef.iterator(), itComp = objetsComp.iterator(),
+		Iterator<?> itRef = listeObjetsRef.iterator(), itComp = listeObjetsComp.iterator(),
 		itIndic = indic.iterator();
 
 		FT_Feature feature;
@@ -178,7 +178,7 @@ public class LienSGBD extends FT_Feature {
 		//reference
 		String formatRef = this.getObjetsRef(), valeurRef, valeurRefClass, valeurRefIds,valeurRefId;
 		StringTokenizer tokenRef = new StringTokenizer(formatRef,"|");StringTokenizer tokenRefId;
-		Population population;
+		Population populationCourante;
 		FT_Feature feature;
 		List<Population> liste = this.getEnsembleLiensSGBD().getListePopulations();
 		while(tokenRef.hasMoreElements()){
@@ -188,15 +188,15 @@ public class LienSGBD extends FT_Feature {
 			tokenRefId = new StringTokenizer(valeurRefIds," ");
 			Iterator<Population> it = liste.iterator();
 			while(it.hasNext()){
-				population = it.next();
-				if(valeurRefClass.equals(population.getNomClasse())){
+				populationCourante = it.next();
+				if(valeurRefClass.equals(populationCourante.getNomClasse())){
 					while(tokenRefId.hasMoreElements()){
 						valeurRefId = tokenRefId.nextToken();
-						int id = new Integer(valeurRefId).intValue();
-						Iterator<FT_Feature> itPop = population.getElements().iterator();
+						int refId = new Integer(valeurRefId).intValue();
+						Iterator<FT_Feature> itPop = populationCourante.getElements().iterator();
 						while(itPop.hasNext()){
 							feature = itPop.next();
-							if(id==feature.getId()){
+							if(refId==feature.getId()){
 								lien.addObjetRef(feature);
 								break;
 							}
@@ -217,15 +217,15 @@ public class LienSGBD extends FT_Feature {
 			tokenCompId = new StringTokenizer(valeurCompIds," ");
 			Iterator<Population> it = liste.iterator();
 			while(it.hasNext()){
-				population = it.next();
-				if(valeurCompClass.equals(population.getNomClasse())){
+				populationCourante = it.next();
+				if(valeurCompClass.equals(populationCourante.getNomClasse())){
 					while(tokenCompId.hasMoreElements()){
 						valeurCompId = tokenCompId.nextToken();
-						int id = new Integer(valeurCompId).intValue();
-						Iterator<FT_Feature> itPop = population.getElements().iterator();
+						int compId = new Integer(valeurCompId).intValue();
+						Iterator<FT_Feature> itPop = populationCourante.getElements().iterator();
 						while(itPop.hasNext()){
 							feature = itPop.next();
-							if(id==feature.getId()){
+							if(compId==feature.getId()){
 								lien.addObjetComp(feature);
 								break;
 							}
