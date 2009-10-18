@@ -64,7 +64,7 @@ public class NoeudApp extends Noeud {
 	private List<LienReseaux> liens = new ArrayList<LienReseaux>();
 	public List<LienReseaux> getLiens() {return liens;}
 	public void setLiens(List<LienReseaux> liens) { this.liens=liens; }
-	public void addLiens(LienReseaux liens) { this.liens.add(liens); }
+	public void addLiens(LienReseaux liensReseaux) { this.liens.add(liensReseaux); }
 
 
 	////////////////////////////////////////////////////
@@ -81,28 +81,28 @@ public class NoeudApp extends Noeud {
 	/** Renvoie les liens concernant l'objet et portant le nom passé en paramètre.
 	 *  NB: renvoie une liste vide (et non "Null") si il n'y a pas de tels liens. */
 	public List<LienReseaux> retrouveLiens(String nom) {
-		List<LienReseaux> liens = new ArrayList<LienReseaux>();
+		List<LienReseaux> liensReseaux = new ArrayList<LienReseaux>();
 		List<LienReseaux> tousLiens = new ArrayList<LienReseaux>();
 
 		tousLiens = this.getLiens();
 		Iterator<LienReseaux> it = tousLiens.iterator();
 		while (it.hasNext()) {
 			LienReseaux lien = it.next();
-			if (lien.getNom().compareToIgnoreCase(nom)==0) liens.add(lien);
+			if (lien.getNom().compareToIgnoreCase(nom)==0) liensReseaux.add(lien);
 		}
-		return liens;
+		return liensReseaux;
 	}
 
 	/** Noeuds reliés à this par l'appariement passé en paramètre.
 	 * La liste contient des NoeudComp. */
-	public List<Noeud> noeudsCompEnCorrespondance(EnsembleDeLiens liens) {
+	public List<Noeud> noeudsCompEnCorrespondance(EnsembleDeLiens ensembleDeLiens) {
 		List<Noeud> noeuds = new ArrayList<Noeud>();
 		List<LienReseaux> liensOK = new ArrayList<LienReseaux>();
 		LienReseaux lien;
 		int i;
 
 		liensOK = new ArrayList<LienReseaux>(this.getLiens());
-		liensOK.retainAll(liens.getElements());
+		liensOK.retainAll(ensembleDeLiens.getElements());
 		for(i=0;i<liensOK.size() ;i++) {
 			lien = liensOK.get(i);
 			noeuds.addAll(lien.getNoeuds2());
@@ -112,14 +112,14 @@ public class NoeudApp extends Noeud {
 
 	/** Groupes reliés à this par l'appariement passé en paramètre
 	 * La liste contient des GroupeComp. */
-	public List<Groupe> groupesCompEnCorrespondance(EnsembleDeLiens liens) {
+	public List<Groupe> groupesCompEnCorrespondance(EnsembleDeLiens ensembleDeLiens) {
 		List<Groupe> groupes = new ArrayList<Groupe>();
 		List<LienReseaux> liensOK = new ArrayList<LienReseaux>();
 		LienReseaux lien;
 		int i;
 
 		liensOK = new ArrayList<LienReseaux>(this.getLiens());
-		liensOK.retainAll(liens.getElements());
+		liensOK.retainAll(ensembleDeLiens.getElements());
 		for (i=0;i<liensOK.size();i++) {
 			lien = liensOK.get(i);
 			groupes.addAll(lien.getGroupes2());
@@ -358,14 +358,14 @@ public class NoeudApp extends Noeud {
 	/** Methode utile à correspCommunicants (pour les noeuds et les groupes)
 	 * Renvoie le nb d'éléments de ref ayant au moins un correspondant dans comp par liens
 	 */
-	private int nbArcsRefAvecCorrespondant(List<Arc> ref, List<Arc> comp, EnsembleDeLiens liens) {
+	private int nbArcsRefAvecCorrespondant(List<Arc> ref, List<Arc> comp, EnsembleDeLiens ensembleDeLiens) {
 		int nb = 0;
 		List<Arc> corresp;
 		ArcApp arcRef;
 		Iterator<Arc> itRef = ref.iterator();
 		while (itRef.hasNext()) {
 			arcRef= (ArcApp) itRef.next();
-			corresp = arcRef.arcsCompEnCorrespondance(liens);
+			corresp = arcRef.arcsCompEnCorrespondance(ensembleDeLiens);
 			corresp.retainAll(comp);
 			if ( corresp.size() != 0 ) nb = nb+1;
 		}
@@ -380,7 +380,7 @@ public class NoeudApp extends Noeud {
 	 * @param rangRef : rang de l'arc ref en cours de traitement
 	 */
 	@SuppressWarnings("unchecked")
-	private boolean correspondantsArcsClasses(List ref, List comp, int rangRef, EnsembleDeLiens liens) {
+	private boolean correspondantsArcsClasses(List ref, List comp, int rangRef, EnsembleDeLiens ensembleDeLiens) {
 
 		ArcApp arcRef, arcComp;
 		List liensArcRef, arcsCompCandidats, compPourProchain;
@@ -393,7 +393,7 @@ public class NoeudApp extends Noeud {
 		arcRef = (ArcApp)ref.get(rangRef); // arc en cours de traitement
 
 		// on cherche les candidats à l'appariement de arcRef
-		liensArcRef = new ArrayList(arcRef.getLiens(liens.getElements()));
+		liensArcRef = new ArrayList(arcRef.getLiens(ensembleDeLiens.getElements()));
 		arcsCompCandidats = new ArrayList();
 		for (int i=0; i<liensArcRef.size(); i++) arcsCompCandidats.addAll( ((LienReseaux)liensArcRef.get(i)).getArcs2() );
 		arcsCompCandidats.retainAll(comp);
@@ -416,7 +416,7 @@ public class NoeudApp extends Noeud {
 				for(int j=i+1;j<comp.size();j++) compPourProchain.add(comp.get(j));
 			}
 			if ( compPourProchain.size() < ref.size()-rangRef-1) continue;
-			OK = correspondantsArcsClasses(ref, compPourProchain, rangRef+1, liens);
+			OK = correspondantsArcsClasses(ref, compPourProchain, rangRef+1, ensembleDeLiens);
 			if ( OK ) return true; // une correspondance possible : on continue
 		}
 		return false; // aucune correspondance possible : on remonte d'un cran

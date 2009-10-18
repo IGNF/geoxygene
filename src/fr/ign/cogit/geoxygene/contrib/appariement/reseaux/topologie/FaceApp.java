@@ -54,7 +54,7 @@ public class FaceApp extends Face {
 	private List<LienReseaux> liens = new ArrayList<LienReseaux>();
 	public List<LienReseaux> getLiens() {return liens;}
 	public void setLiens(List<LienReseaux> liens) { this.liens=liens; }
-	public void addLiens(LienReseaux liens) { this.liens.add(liens); }
+	public void addLiens(LienReseaux liensReseaux) { this.liens.add(liensReseaux); }
 
 	/** Renvoie les liens de l'objet qui appartiennent à la liste liensPertinents */
 	public List<LienReseaux> getLiens(List<LienReseaux> liensPertinents) {

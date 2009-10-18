@@ -62,7 +62,7 @@ public class ArcApp extends Arc {
 	private List<LienReseaux> liens = new ArrayList<LienReseaux>();
 	public List<LienReseaux> getLiens() {return liens;}
 	public void setLiens(List<LienReseaux> liens) { this.liens = liens; }
-	public void addLiens(LienReseaux liens) { this.liens.add(liens); }
+	public void addLiens(LienReseaux liensReseaux) { this.liens.add(liensReseaux); }
 
 
 	////////////////////////////////////////////////////
@@ -135,14 +135,14 @@ public class ArcApp extends Arc {
 	/** Arcs reliés à this par l'appariement passé en paramètre.
 	 * Cette liste ne contient pas de doublon.
 	 * La liste contient des Arc_Comp. */
-	public List<Arc> arcsCompEnCorrespondance(EnsembleDeLiens liens) {
+	public List<Arc> arcsCompEnCorrespondance(EnsembleDeLiens liensArcs) {
 		List<LienReseaux> liensOK;
 		Collection<Arc> arcs = new HashSet<Arc>();
 		LienReseaux lien;
 		Iterator<LienReseaux> itLiensOK;
 
 		liensOK = new ArrayList<LienReseaux>(this.getLiens());
-		liensOK.retainAll(liens.getElements());
+		liensOK.retainAll(liensArcs.getElements());
 		itLiensOK = liensOK.iterator();
 		while (itLiensOK.hasNext()) {
 			lien = itLiensOK.next();
@@ -153,14 +153,14 @@ public class ArcApp extends Arc {
 
 	/** Arcs reliés à this par l'appariement passé en paramètre.
 	 * La liste contient des Arc_Ref. */
-	public List<Arc> arcsRefEnCorrespondance(EnsembleDeLiens liens) {
+	public List<Arc> arcsRefEnCorrespondance(EnsembleDeLiens liensArcs) {
 		List<Arc> arcs = new ArrayList<Arc>();
 		List<LienReseaux> liensOK;
 		LienReseaux lien;
 		int i;
 
 		liensOK = new ArrayList<LienReseaux>(this.getLiens());
-		liensOK.retainAll(liens.getElements());
+		liensOK.retainAll(liensArcs.getElements());
 		for (i=0;i<liensOK.size();i++) {
 			lien = liensOK.get(i);
 			arcs.addAll(lien.getArcs1());
@@ -172,7 +172,7 @@ public class ArcApp extends Arc {
 	 * qui est  en correspondance avec this (un arc_comp) à travers liens,
 	 * soit directement, soit par l'intermédiaire d'un groupe.
 	 */
-	public List<FT_Feature> objetsGeoRefEnCorrespondance(EnsembleDeLiens liens) {
+	public List<FT_Feature> objetsGeoRefEnCorrespondance(EnsembleDeLiens liensArc) {
 		List<ElementCarteTopo> objetsCtEnCorrespondance = new ArrayList<ElementCarteTopo>();
 		List<FT_Feature> objetsGeoEnCorrespondance = new ArrayList<FT_Feature>();
 		List<LienReseaux> liensOK;
@@ -183,7 +183,7 @@ public class ArcApp extends Arc {
 
 		// objets de reseauRef en correspondance directe avec this.
 		liensOK = new ArrayList<LienReseaux>(this.getLiens());
-		liensOK.retainAll(liens.getElements());
+		liensOK.retainAll(liensArc.getElements());
 		itLiens = liensOK.iterator();
 		while (itLiens.hasNext()) {
 			lien = itLiens.next();
@@ -196,7 +196,7 @@ public class ArcApp extends Arc {
 		while (itGroupes.hasNext()) {
 			GroupeApp groupe = (GroupeApp) itGroupes.next();
 			liensOK = new ArrayList<LienReseaux>(groupe.getLiens());
-			liensOK.retainAll(liens.getElements());
+			liensOK.retainAll(liensArc.getElements());
 			itLiens = liensOK.iterator();
 			while (itLiens.hasNext()) {
 				lien = itLiens.next();
@@ -216,24 +216,22 @@ public class ArcApp extends Arc {
 	}
 
 	/** A un correspondant par l'appariement passé en paramètre ? */
-	public boolean aUnCorrespondant(EnsembleDeLiens liens) {
+	public boolean aUnCorrespondant(EnsembleDeLiens ensembleDeLiens) {
 		List<LienReseaux> liensOK = new ArrayList<LienReseaux>();
 		liensOK = new ArrayList<LienReseaux>(this.getLiens());
-		liensOK.retainAll(liens.getElements());
+		liensOK.retainAll(ensembleDeLiens.getElements());
 		if ( liensOK.size() != 0 ) return true;
 		return false;
 	}
 
 	/** A un correspondant par l'appariement passé en paramètre, soit directement,
 	 * soit par l'intermédiaire d'un groupe ? */
-	public boolean aUnCorrespondantGeneralise(EnsembleDeLiens liens) {
-		if (this.aUnCorrespondant(liens)) {
-			return true;
-		}
+	public boolean aUnCorrespondantGeneralise(EnsembleDeLiens ensembleDeLiens) {
+		if (this.aUnCorrespondant(ensembleDeLiens)) return true;
 		Iterator<?> itGroupes = this.getListeGroupes().iterator();
 		while (itGroupes.hasNext()) {
 			GroupeApp groupe = (GroupeApp) itGroupes.next();
-			List<LienReseaux> liensDuGroupe = groupe.getLiens(liens.getElements());
+			List<LienReseaux> liensDuGroupe = groupe.getLiens(ensembleDeLiens.getElements());
 			if ( liensDuGroupe.size() != 0 ) return true;
 		}
 		return false;
