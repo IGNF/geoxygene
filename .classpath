@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="fr/ign/cogit/geoxygene/datatools/oracle/" kind="src" path="src"/>
+	<classpathentry kind="src" path="images"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/batik-awt-util-1.7.jar"/>
 	<classpathentry kind="lib" path="lib/batik-dom-1.7.jar"/>
