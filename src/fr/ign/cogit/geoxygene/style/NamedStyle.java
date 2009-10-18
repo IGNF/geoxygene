@@ -25,10 +25,13 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+
 /**
  * @author Julien Perret
  *
  */
+@XmlRootElement
 public class NamedStyle extends AbstractStyle {
-
 }

@@ -25,10 +25,14 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import javax.xml.bind.annotation.XmlTransient;
+
+
 /**
  * @author Julien Perret
  *
  */
+@XmlTransient
 public interface Style {
 	/**
 	 * Renvoie la valeur de l'attribut name.

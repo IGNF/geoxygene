@@ -25,11 +25,12 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+
 /**
  * @author Julien Perret
  *
  */
-public class AbstractStyle implements Style {
+public abstract class AbstractStyle implements Style {
 
 	private String name;
 	

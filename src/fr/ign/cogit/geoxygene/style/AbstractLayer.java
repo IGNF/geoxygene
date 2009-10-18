@@ -28,23 +28,35 @@ package fr.ign.cogit.geoxygene.style;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * @author Julien Perret
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractLayer implements Layer {
 	
-	@XStreamAlias("Named")
+    @XmlElement(name = "Name", required = true)
 	private String name;
-
 	@Override
 	public String getName() {return this.name;}
-
 	@Override
 	public void setName(String name) {this.name = name;}
 	
+    //@XmlElement(name = "Description")
+    //protected Description description;
+    //@XmlElement(name = "LayerFeatureConstraints")
+    //protected LayerFeatureConstraints layerFeatureConstraints;
+	
+    @XmlElements({
+        @XmlElement(name = "UserStyle", type = UserStyle.class),
+        @XmlElement(name = "NamedStyle", type = NamedStyle.class)
+    })
 	List<Style> styles = new ArrayList<Style>();
 
 	@Override
@@ -53,4 +65,17 @@ public abstract class AbstractLayer implements Layer {
 	@Override
 	public void setStyles(List<Style> styles) {this.styles = styles;}
 
+	@XmlTransient
+	private boolean visible = true;
+	@Override
+	public boolean isVisible() {return this.visible;}
+	@Override
+	public void setVisible(boolean visible) {this.visible = visible;}
+
+	@XmlTransient
+	private boolean selectable = true;
+	@Override
+	public boolean isSelectable() {return this.selectable;}
+	@Override
+	public void setSelectable(boolean selectable) {this.selectable = selectable;}
 }

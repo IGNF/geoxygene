@@ -30,5 +30,5 @@ package fr.ign.cogit.geoxygene.filter;
  * @author Julien Perret
  *
  */
-public interface SpatialOpsType extends Filter {
+public abstract class SpatialOpsType extends Filter {
 }

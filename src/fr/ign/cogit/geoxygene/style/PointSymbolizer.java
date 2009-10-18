@@ -25,6 +25,17 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
+
+import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.feature.FT_Feature;
+
 
 /**
  * @author Julien Perret
@@ -37,4 +48,27 @@ public class PointSymbolizer extends AbstractSymbolizer {
 	private Graphic graphic=null;
 	public Graphic getGraphic() {return graphic;}
 	public void setGraphic(Graphic graphic) {this.graphic=graphic;}
+	@Override
+	public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics) {
+		if (this.getGraphic()==null) return;
+		Point2D point;
+		try {point = viewport.toViewPoint(feature.getGeom().centroid());}
+		catch (NoninvertibleTransformException e) {e.printStackTrace();return;}
+		for(Mark mark:this.getGraphic().getMarks()) {
+			Shape markShape = mark.toShape();
+			float size = this.getGraphic().getSize();
+			AffineTransform at = AffineTransform.getTranslateInstance(point.getX(),point.getY());
+			at.rotate(this.getGraphic().getRotation());
+			at.scale(size,size);
+			markShape = at.createTransformedShape(markShape);
+			graphics.setColor((mark.getFill()==null)?Color.gray:mark.getFill().getColor());
+			graphics.fill(markShape);
+			graphics.setColor((mark.getStroke()==null)?Color.black:mark.getStroke().getColor());
+			graphics.draw(markShape);
+		}
+		for(ExternalGraphic theGraphic:this.getGraphic().getExternalGraphics()) {
+			Image onlineImage = theGraphic.getOnlineResource();
+			graphics.drawImage(onlineImage, (int)point.getX()-onlineImage.getWidth(null)/2, (int)point.getY()-onlineImage.getHeight(null)/2, null);
+		}		
+	}
 }

@@ -25,13 +25,30 @@
 
 package fr.ign.cogit.geoxygene.filter;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+
 
 /**
  * @author Julien Perret
  *
  */
-public abstract class UnaryLogicOpsType implements LogicOpsType {
+@XmlAccessorType(XmlAccessType.FIELD)
+public abstract class UnaryLogicOpsType extends LogicOpsType {
 
+    @XmlElements({
+        @XmlElement(name = "PropertyIsEqualTo", type = PropertyIsEqualTo.class),
+        @XmlElement(name = "PropertyIsGreaterThan", type = PropertyIsGreaterThan.class),
+        @XmlElement(name = "PropertyIsGreaterThanOrEqualTo", type = PropertyIsGreaterThanOrEqualTo.class),
+        @XmlElement(name = "PropertyIsLessThan", type = PropertyIsLessThan.class),
+        @XmlElement(name = "PropertyIsLessThanOrEqualTo", type = PropertyIsLessThanOrEqualTo.class),
+        @XmlElement(name = "PropertyIsNotEqualTo", type = PropertyIsNotEqualTo.class),
+        @XmlElement(name = "And", type = And.class),
+        @XmlElement(name = "Or", type = Or.class),
+        @XmlElement(name = "Not", type = Not.class)
+    })
 	Filter op = null;
 	/**
 	 * Renvoie la valeur de l'attribut op.

@@ -29,16 +29,22 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlMixed;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 
 /**
  * @author Julien Perret
  *
  */
-public class PropertyName implements Expression {
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "PropertyName")
+public class PropertyName extends Expression {
 	static Logger logger=Logger.getLogger(PropertyName.class.getName());
 
 	/**
@@ -50,27 +56,25 @@ public class PropertyName implements Expression {
 	 */
 	public PropertyName(String name) {this.setPropertyName(name);}
 	
-	private String propertyName;
+	@XmlMixed
+    private String[] propertyName = new String[1];
 	/**
 	 * @return
 	 */
-	public String getPropertyName() {return propertyName;}
+	public String getPropertyName() {return propertyName[0];}
 	/**
 	 * @param propertyName
 	 */
-	public void setPropertyName(String propertyName) {this.propertyName=propertyName;}
+	public void setPropertyName(String propertyName) {this.propertyName[0]=propertyName;}
 	
 	@Override
 	public Object evaluate(Object object) {
-		String getterName = "get"+propertyName.substring(0, 1).toUpperCase()+propertyName.substring(1);
+		String getterName = "get"+this.getPropertyName().substring(0, 1).toUpperCase()+this.getPropertyName().substring(1);
 		if (object instanceof FT_Feature) {
 			FT_Feature feature = (FT_Feature) object;
-			AttributeType type = new AttributeType();
-			type.setNomField(propertyName);
-			type.setMemberName(propertyName);
-			Object resultat = feature.getAttribute(type);
-			if (resultat instanceof Number)
-				return new BigDecimal(((Number)resultat).doubleValue());
+			Object resultat = feature.getAttribute(this.getPropertyName());
+			if (resultat instanceof Number) return new BigDecimal(((Number)resultat).doubleValue());
+			//if (resultat instanceof Boolean) return new BigDecimal(((Boolean)resultat).booleanValue()?0:1);
 			return resultat;
 		}
 		Class<?> classe = object.getClass();
@@ -86,7 +90,6 @@ public class PropertyName implements Expression {
 				logger.error("La méthode "+getterName+" n'existe pas dans la classe "+object.getClass()+" / "+classe);
 			} catch (IllegalArgumentException e) {
 				logger.error("Arguments illégaux pour la méthode "+getterName+" de la classe "+object.getClass()+" / "+classe);
-				//e.printStackTrace();
 			} catch (IllegalAccessException e) {
 				logger.error("Accès illégal à la méthode "+getterName+" de la classe "+object.getClass()+" / "+classe);
 			} catch (InvocationTargetException e) {
@@ -97,4 +100,7 @@ public class PropertyName implements Expression {
 		logger.error("On a échoué sur l'objet "+object+" avec le getter "+getterName);
 		return null;
 	}
+	
+	@Override
+	public String toString() {return getPropertyName();}
 }

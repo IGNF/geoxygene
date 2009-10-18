@@ -39,14 +39,15 @@ public class PropertyIsGreaterThanOrEqualTo extends BinaryComparisonOpsType {
 		Object property = this.getPropertyName().evaluate(object);
 		if (property==null) return false;
 		if (property instanceof String) {
-			if (!this.isMatchCase()) return (String.CASE_INSENSITIVE_ORDER.compare(((String) property), (String) this.getLiteral().getValue())>=0);
+			if (!this.isMatchCase()) return (String.CASE_INSENSITIVE_ORDER.compare(((String) property), this.getLiteral().getValue())>=0);
 			//FIXME voir cas sensitif à la case
 		}
 		if (property instanceof Number) {
-			return (((Number)property).doubleValue()>=Double.parseDouble((String)this.getLiteral().getValue()));
+			return (((Number)property).doubleValue()>=Double.parseDouble(this.getLiteral().getValue()));
 		}
 		if (logger.isDebugEnabled()) logger.debug("Propriété "+this.getPropertyName()+" de valeur = "+property+" n'est ni de type String ni de type Number");
 		return property.equals(this.getLiteral());
 	}
-
+	@Override
+	public String toString() {return this.getPropertyName()+" >= "+this.getLiteral().toString();}
 }

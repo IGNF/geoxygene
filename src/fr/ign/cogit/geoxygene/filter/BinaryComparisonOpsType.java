@@ -25,13 +25,19 @@
 
 package fr.ign.cogit.geoxygene.filter;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+
 
 /**
  * @author Julien Perret
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class BinaryComparisonOpsType extends ComparisonOpsType {
 
+	@XmlAttribute(required=false)
     private boolean matchCase = true;
 
     /**
@@ -45,5 +51,4 @@ public abstract class BinaryComparisonOpsType extends ComparisonOpsType {
      * @return la valeur de l'attribut matchCase
      */
     public boolean isMatchCase() {return matchCase;}
-    
 }

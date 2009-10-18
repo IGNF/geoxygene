@@ -25,12 +25,18 @@
 
 package fr.ign.cogit.geoxygene.filter;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+
+
 /**
  * @author Julien Perret
  *
  */
-public interface Filter {
+@XmlSeeAlso({LogicOpsType.class,ComparisonOpsType.class})
+@XmlRootElement
+public abstract class Filter {
 
-	public boolean evaluate(Object object);
+	public abstract boolean evaluate(Object object);
 
 }

@@ -25,6 +25,10 @@
 
 package fr.ign.cogit.geoxygene.filter;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 import fr.ign.cogit.geoxygene.filter.expression.Literal;
 import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
 
@@ -33,7 +37,9 @@ import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
  * @author Julien Perret
  *
  */
-public abstract class ComparisonOpsType implements Filter {
+@XmlAccessorType(XmlAccessType.FIELD)
+public abstract class ComparisonOpsType extends Filter {
+	@XmlElement(name="PropertyName")
 	PropertyName propertyName;
 	/**
 	 * Renvoie la valeur de l'attribut propertyName.
@@ -46,6 +52,7 @@ public abstract class ComparisonOpsType implements Filter {
 	 */
 	public void setPropertyName(PropertyName propertyName) {this.propertyName = propertyName;}
 
+	@XmlElement(name="Literal")
 	Literal literal;
 	/**
 	 * Renvoie la valeur de l'attribut literal.
@@ -57,4 +64,6 @@ public abstract class ComparisonOpsType implements Filter {
 	 * @param literal l'attribut literal à affecter
 	 */
 	public void setLiteral(Literal literal) {this.literal = literal;}
+	@Override
+	public String toString() {return this.getClass().getSimpleName()+" "+this.getPropertyName()+" "+this.getLiteral().toString();}
 }

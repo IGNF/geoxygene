@@ -28,15 +28,58 @@ package fr.ign.cogit.geoxygene.style;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+import fr.ign.cogit.geoxygene.filter.And;
+import fr.ign.cogit.geoxygene.filter.ElseFilter;
+import fr.ign.cogit.geoxygene.filter.ElseFilterImpl;
 import fr.ign.cogit.geoxygene.filter.Filter;
+import fr.ign.cogit.geoxygene.filter.Not;
+import fr.ign.cogit.geoxygene.filter.Or;
+import fr.ign.cogit.geoxygene.filter.PropertyIsEqualTo;
+import fr.ign.cogit.geoxygene.filter.PropertyIsGreaterThan;
+import fr.ign.cogit.geoxygene.filter.PropertyIsGreaterThanOrEqualTo;
+import fr.ign.cogit.geoxygene.filter.PropertyIsLessThan;
+import fr.ign.cogit.geoxygene.filter.PropertyIsLessThanOrEqualTo;
+import fr.ign.cogit.geoxygene.filter.PropertyIsNotEqualTo;
 
 /**
  * @author Julien Perret
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "name",
+    //"description",
+    //"legendGraphic",
+    "filter",
+    "elseFilter",
+    "minScaleDenominator",
+    "maxScaleDenominator",
+    "symbolizers"
+})
+@XmlRootElement(name = "Rule")
 public class Rule {
-	
-	private String name;
+
+    @XmlElement(name = "Name")
+    protected String name;
+    //@XmlElement(name = "Description")
+    //protected Description description;
+    //@XmlElement(name = "LegendGraphic")
+    //protected LegendGraphic legendGraphic;
+    //protected FilterType filter;
+    @XmlElement(name = "MinScaleDenominator")
+    protected Double minScaleDenominator;
+    @XmlElement(name = "MaxScaleDenominator")
+    protected Double maxScaleDenominator;
+
+	//private String name;
 
 	/**
 	 * Renvoie la valeur de l'attribut name.
@@ -50,34 +93,53 @@ public class Rule {
 	 */
 	public void setName(String name) {this.name = name;}
 	
-	private String title;
-
-	/**
-	 * Renvoie la valeur de l'attribut title.
-	 * @return la valeur de l'attribut title
-	 */
-	public String getTitle() {return this.title;}
-
-	/**
-	 * Affecte la valeur de l'attribut title.
-	 * @param title l'attribut title à affecter
-	 */
-	public void setTitle(String title) {this.title = title;}
+	//private String title;
+	//public String getTitle() {return this.title;}
+	//public void setTitle(String title) {this.title = title;}
 	
-	private Filter filter = null;
+    @XmlElements({
+    	        @XmlElement(name = "PropertyIsEqualTo", type = PropertyIsEqualTo.class),
+    	        @XmlElement(name = "PropertyIsGreaterThan", type = PropertyIsGreaterThan.class),
+    	        @XmlElement(name = "PropertyIsGreaterThanOrEqualTo", type = PropertyIsGreaterThanOrEqualTo.class),
+    	        @XmlElement(name = "PropertyIsLessThan", type = PropertyIsLessThan.class),
+    	        @XmlElement(name = "PropertyIsLessThanOrEqualTo", type = PropertyIsLessThanOrEqualTo.class),
+    	        @XmlElement(name = "PropertyIsNotEqualTo", type = PropertyIsNotEqualTo.class),
+    	        @XmlElement(name = "And", type = And.class),
+    	        @XmlElement(name = "Or", type = Or.class),
+    	        @XmlElement(name = "Not", type = Not.class)
+    	    })
+    @XmlElementWrapper(name="Filter")
+    //@XmlElement(name = "Filter", namespace = "http://www.opengis.net/ogc")
+	private Filter[] filter = null;
 
 	/**
 	 * Renvoie la valeur de l'attribut filter.
 	 * @return la valeur de l'attribut filter
 	 */
-	public Filter getFilter() {return this.filter;}
+	public Filter getFilter() {return (filter == null)?null:this.filter[0];}
 
 	/**
 	 * Affecte la valeur de l'attribut filter.
 	 * @param filter l'attribut filter à affecter
 	 */
-	public void setFilter(Filter filter) {this.filter = filter;}
+	public void setFilter(Filter filter) {this.filter[0] = filter;}
 	
+    @XmlElement(name = "ElseFilter", type=ElseFilterImpl.class)
+    protected ElseFilter elseFilter = null;
+
+	//public void setElseFilter(ElseFilter elseFilter) {this.elseFilter = elseFilter;}
+	//public ElseFilter getElseFilter() {return elseFilter;}
+	
+    
+    //@XmlElementRef(name = "symbolizers", namespace = "http://www.opengis.net/sld", type = Symbolizer.class)
+    //protected List<JAXBElement<? extends SymbolType>> symbol;
+    @XmlElements({
+        @XmlElement(name = "LineSymbolizer", type = LineSymbolizer.class),
+        @XmlElement(name = "PointSymbolizer", type = PointSymbolizer.class),
+        @XmlElement(name = "PolygonSymbolizer", type = PolygonSymbolizer.class),
+        @XmlElement(name = "RasterSymbolizer", type = RasterSymbolizer.class),
+        @XmlElement(name = "TextSymbolizer", type = TextSymbolizer.class)
+    })
 	private List<Symbolizer> symbolizers = new ArrayList<Symbolizer>();
 
 	/**
@@ -94,7 +156,7 @@ public class Rule {
 
 	@Override
 	public String toString() {
-		String result = "Rule "+this.getName()+" - "+this.getTitle()+"\n";
+		String result = "Rule "+this.getName()+"\n";
 		result+="\tFilter "+this.getFilter()+"\n";
 		for (Symbolizer symbolizer:this.getSymbolizers()) {
 			result+="\tSymbolizer "+symbolizer+"\n";

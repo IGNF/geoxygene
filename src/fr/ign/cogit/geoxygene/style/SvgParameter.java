@@ -25,12 +25,19 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlValue;
+
 /**
  * @author Julien Perret
  *
  */
-public class CssParameter {
+@XmlAccessorType(XmlAccessType.FIELD)
+public class SvgParameter {
 	
+	@XmlAttribute
 	private String name;
 
 	/**
@@ -45,6 +52,7 @@ public class CssParameter {
 	 */
 	public void setName(String name) {this.name = name;}
 
+	@XmlValue
 	private String value;
 
 	/**

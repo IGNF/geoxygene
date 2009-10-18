@@ -25,6 +25,11 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 
@@ -32,12 +37,14 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
  * @author Julien Perret
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "UserLayer")
 public class UserLayer extends AbstractLayer {
 
 	/*
 	 *  TODO revoir cette implémentation des userLayers...
 	 */
-	
+	@XmlTransient
 	FT_FeatureCollection<? extends FT_Feature> features = null;
 	/**
 	 * Affecte la valeur de l'attribut features.
@@ -47,5 +54,13 @@ public class UserLayer extends AbstractLayer {
 
 	@Override
 	public FT_FeatureCollection<? extends FT_Feature> getFeatureCollection() {return this.features;}
-
+	
+	public UserLayer() {
+		this.setFeatures(new FT_FeatureCollection<FT_Feature>());
+	}
+	public UserLayer(Layer layer) {
+		this.setName(layer.getName());
+		this.setFeatures(new FT_FeatureCollection<FT_Feature>());
+		this.setStyles(layer.getStyles());
+	}
 }

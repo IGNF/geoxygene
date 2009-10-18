@@ -31,6 +31,6 @@ import fr.ign.cogit.geoxygene.filter.SpatialOpsType;
  * @author Julien Perret
  *
  */
-public abstract class BinarySpatialOpsType implements SpatialOpsType {
+public abstract class BinarySpatialOpsType extends SpatialOpsType {
 
 }

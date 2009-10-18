@@ -28,12 +28,18 @@ package fr.ign.cogit.geoxygene.style;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * @author Julien Perret
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class UserStyle extends AbstractStyle {
 	
+	@XmlElement(name="FeatureTypeStyle")
 	private List<FeatureTypeStyle> featureTypeStyles = new ArrayList<FeatureTypeStyle>();
 
 	/**

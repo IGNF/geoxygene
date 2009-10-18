@@ -28,6 +28,8 @@ package fr.ign.cogit.geoxygene.style;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 
@@ -38,6 +40,7 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
  * @author Julien Perret
  *
  */
+@XmlTransient
 public interface Layer {
 	/**
 	 * Renvoie la valeur de l'attribut name.
@@ -69,4 +72,22 @@ public interface Layer {
 	 * @return les features de la couche
 	 */
 	public FT_FeatureCollection<? extends FT_Feature> getFeatureCollection();
+
+	/**
+	 * @return
+	 */
+	public boolean isVisible();
+	/**
+	 * @param visible
+	 */
+	public void setVisible(boolean visible);
+
+	/**
+	 * @return
+	 */
+	public boolean isSelectable();
+	/**
+	 * @param selectable
+	 */
+	public void setSelectable(boolean selectable);
 }

@@ -25,12 +25,21 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
+import org.apache.log4j.Logger;
+
 /**
  * @author Julien Perret
  *
  */
-public class AbstractSymbolizer implements Symbolizer {
+@XmlAccessorType(XmlAccessType.FIELD)
+public abstract class AbstractSymbolizer implements Symbolizer {
+    static Logger logger=Logger.getLogger(AbstractSymbolizer.class.getName());
 
+    @XmlElement(name = "Stroke")
 	private Stroke stroke = null;
 
 	@Override
@@ -53,6 +62,7 @@ public class AbstractSymbolizer implements Symbolizer {
 	@Override
 	public boolean isTextSymbolizer() {return false;}
 
+	@XmlElement(name = "GeometryPropertyName")
 	private String geometryPropertyName = "geom";
 
 	@Override

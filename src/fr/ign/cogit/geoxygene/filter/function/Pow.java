@@ -27,14 +27,16 @@ package fr.ign.cogit.geoxygene.filter.function;
 
 import java.math.BigDecimal;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * @author Julien Perret
  *
  */
+@XmlRootElement(name="Function")
 public class Pow extends FunctionImpl {
 
-	@Override
-	public String getName() {return "Pow";}
+	public Pow() {name="Pow";}
 
 	@Override
 	public Object evaluate(Object object) {

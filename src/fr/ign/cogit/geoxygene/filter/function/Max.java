@@ -27,14 +27,16 @@ package fr.ign.cogit.geoxygene.filter.function;
 
 import java.math.BigDecimal;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * @author Julien Perret
  *
  */
+@XmlRootElement(name="Function")
 public class Max extends FunctionImpl {
 
-	@Override
-	public String getName() {return "Max";}
+	public Max() {name = "Max";}
 
 	@Override
 	public Object evaluate(Object object) {

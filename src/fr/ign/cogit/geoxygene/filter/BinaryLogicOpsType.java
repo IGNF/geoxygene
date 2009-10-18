@@ -28,12 +28,29 @@ package fr.ign.cogit.geoxygene.filter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+
 /**
  * @author Julien Perret
  *
  */
-public abstract class BinaryLogicOpsType implements LogicOpsType {
+@XmlAccessorType(XmlAccessType.FIELD)
+public abstract class BinaryLogicOpsType extends LogicOpsType {
 
+    @XmlElements({
+        @XmlElement(name = "PropertyIsEqualTo", type = PropertyIsEqualTo.class),
+        @XmlElement(name = "PropertyIsGreaterThan", type = PropertyIsGreaterThan.class),
+        @XmlElement(name = "PropertyIsGreaterThanOrEqualTo", type = PropertyIsGreaterThanOrEqualTo.class),
+        @XmlElement(name = "PropertyIsLessThan", type = PropertyIsLessThan.class),
+        @XmlElement(name = "PropertyIsLessThanOrEqualTo", type = PropertyIsLessThanOrEqualTo.class),
+        @XmlElement(name = "PropertyIsNotEqualTo", type = PropertyIsNotEqualTo.class),
+        @XmlElement(name = "And", type = And.class),
+        @XmlElement(name = "Or", type = Or.class),
+        @XmlElement(name = "Not", type = Not.class)
+    })
 	List<Filter> ops = new ArrayList<Filter>();
 
 	/**
@@ -47,5 +64,7 @@ public abstract class BinaryLogicOpsType implements LogicOpsType {
 	 * @param ops l'attribut ops à affecter
 	 */
 	public void setOps(List<Filter> ops) {this.ops = ops;}
-
+	
+	@Override
+	public String toString() {return ops.get(0).toString()+this.getClass().getSimpleName()+ops.get(1).toString();}
 }

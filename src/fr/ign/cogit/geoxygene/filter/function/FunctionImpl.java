@@ -25,32 +25,55 @@
 
 package fr.ign.cogit.geoxygene.filter.function;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlElementRefs;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import fr.ign.cogit.geoxygene.filter.expression.Expression;
+import fr.ign.cogit.geoxygene.filter.expression.ExpressionFactory;
 import fr.ign.cogit.geoxygene.filter.expression.Function;
 
 /**
  * @author Julien Perret
  *
  */
-public class FunctionImpl implements Function {
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name="Function")
+public class FunctionImpl extends Function {
 	String fallbackValue;
 	@Override
 	public String getFallbackValue() {return fallbackValue;}
 	@Override
 	public void setFallbackValue(String fallbackValue) {this.fallbackValue = fallbackValue;}
+	
+	@XmlAttribute
+	String name = "Function default implementation";
 	@Override
-	public String getName() {return "Function default implementation";}
+	public String getName() {return name;}
 
-	List<Expression> parameters;
+	@XmlElementRefs(@XmlElementRef)
+	List<Expression> parameters = new ArrayList<Expression>();
 	@Override
 	public List<Expression> getParameters() {return parameters;}
 	/**
 	 * Affecte la valeur de l'attribut parameters.
 	 * @param parameters l'attribut parameters à affecter
 	 */
+	@Override
 	public void setParameters(List<Expression> parameters) {this.parameters = parameters;}
 	@Override
-	public Object evaluate(Object object) {return this.getFallbackValue();}
+	public Object evaluate(Object object) {
+		Function function = ExpressionFactory.createFunction(name);
+		if (function!=null) {
+			function.getParameters().addAll(parameters);
+			return function.evaluate(object);
+		}
+		return this.getFallbackValue();
+	}
 }

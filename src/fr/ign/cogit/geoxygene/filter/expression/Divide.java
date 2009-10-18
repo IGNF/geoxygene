@@ -27,16 +27,22 @@ package fr.ign.cogit.geoxygene.filter.expression;
 
 import java.math.BigDecimal;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * @author Julien Perret
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "Div")
 public class Divide extends BinaryExpression {
 
 	@Override
 	public Object evaluate(Object object) {
-		BigDecimal value1 = (BigDecimal) getExpression1().evaluate(object);
-		BigDecimal value2 = (BigDecimal) getExpression2().evaluate(object);
+		BigDecimal value1 = (getExpression1().evaluate(object) instanceof BigDecimal)?(BigDecimal) getExpression1().evaluate(object):new BigDecimal(((Boolean)getExpression1().evaluate(object)).booleanValue()?1:0);
+		BigDecimal value2 = (getExpression2().evaluate(object) instanceof BigDecimal)?(BigDecimal) getExpression2().evaluate(object):new BigDecimal(((Boolean)getExpression2().evaluate(object)).booleanValue()?1:0);
 		return value1.divide(value2,BinaryExpression.mc);
 
 		/*

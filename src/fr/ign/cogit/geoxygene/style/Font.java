@@ -28,10 +28,16 @@ package fr.ign.cogit.geoxygene.style;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+
 /**
  * @author Julien Perret
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Font {
 	
 	private String fontFamily = "Default";
@@ -82,21 +88,25 @@ public class Font {
 	 */
 	public void setFontSize(int fontSize) {this.fontSize = fontSize;}
 
-	private List<CssParameter> cssParameters = new ArrayList<CssParameter>();
+    @XmlElements({
+        @XmlElement(name = "SvgParameter", type = SvgParameter.class),
+        @XmlElement(name = "CssParameter", type = SvgParameter.class)
+    })
+	private List<SvgParameter> svgParameters = new ArrayList<SvgParameter>();
 	/**
 	 * Renvoie la valeur de l'attribut cssParameters.
 	 * @return la valeur de l'attribut cssParameters
 	 */
-	public List<CssParameter> getCssParameters() {return this.cssParameters;}
+	public List<SvgParameter> getSvgParameters() {return this.svgParameters;}
 	/**
 	 * Affecte la valeur de l'attribut cssParameters.
 	 * Four types of CssParameter are allowed, 'font-family', 'font-style', 'font-weight', and 'font-size'.
 	 * (cf. OGC 02-070 p.46)
-	 * @param cssParameters l'attribut cssParameters à affecter
+	 * @param svgParameters l'attribut cssParameters à affecter
 	 */
-	public void setCssParameters(List<CssParameter> cssParameters) {
-		this.cssParameters = cssParameters;
-		for (CssParameter parameter:cssParameters) {
+	public void setSvgParameters(List<SvgParameter> svgParameters) {
+		this.svgParameters = svgParameters;
+		for (SvgParameter parameter:svgParameters) {
 			if (parameter.getName().equalsIgnoreCase("font-family")) {
 				this.setFontFamily(parameter.getValue());
 			} else if (parameter.getName().equalsIgnoreCase("font-style")) {

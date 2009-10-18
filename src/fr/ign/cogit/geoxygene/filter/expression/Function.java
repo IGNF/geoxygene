@@ -27,30 +27,37 @@ package fr.ign.cogit.geoxygene.filter.expression;
 
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+
+import fr.ign.cogit.geoxygene.filter.function.FunctionImpl;
+
 /**
  * @author Julien Perret
  *
  */
-public interface Function extends Expression {
+@XmlRootElement(name="Function")
+@XmlSeeAlso({FunctionImpl.class})
+public abstract class Function extends Expression {
 	/**
 	 * @return
 	 */
-	public String getName();
+	public abstract String getName();
 	/**
 	 * @return
 	 */
-	public String getFallbackValue();
+	public abstract String getFallbackValue();
 	/**
 	 * @param fallbackValue
 	 */
-	public void setFallbackValue(String fallbackValue);
+	public abstract void setFallbackValue(String fallbackValue);
 	
 	/**
 	 * @return
 	 */
-	public List<Expression> getParameters();
+	public abstract List<Expression> getParameters();
 	/**
 	 * @param parameters
 	 */
-	public void setParameters(List<Expression> parameters);
+	public abstract void setParameters(List<Expression> parameters);
 }

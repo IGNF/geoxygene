@@ -25,11 +25,23 @@
 
 package fr.ign.cogit.geoxygene.filter.expression;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+
 
 /**
  * @author Julien Perret
  *
  */
-public interface Expression {
-	public Object evaluate(Object object);
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso({
+    PropertyName.class,
+    BinaryExpression.class,
+    Function.class
+})
+@XmlRootElement
+public abstract class Expression {
+	public abstract Object evaluate(Object object);
 }

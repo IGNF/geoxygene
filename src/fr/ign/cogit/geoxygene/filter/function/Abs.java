@@ -27,15 +27,17 @@ package fr.ign.cogit.geoxygene.filter.function;
 
 import java.math.BigDecimal;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * @author Julien Perret
  *
  */
+@XmlRootElement(name="Function")
 public class Abs extends FunctionImpl {
 
-	@Override
-	public String getName() {return "Abs";}
-
+	public Abs() {name="Abs";}
+	
 	@Override
 	public Object evaluate(Object object) {
 		return ((BigDecimal)this.getParameters().get(0).evaluate(object)).abs();

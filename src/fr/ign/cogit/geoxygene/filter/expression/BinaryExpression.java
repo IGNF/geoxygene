@@ -27,18 +27,32 @@ package fr.ign.cogit.geoxygene.filter.expression;
 
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlElementRefs;
+import javax.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * @author Julien Perret
  *
  */
-public abstract class BinaryExpression implements Expression {
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso({
+    Add.class,
+    Divide.class,
+    Multiply.class,
+    Subtract.class
+})
+public abstract class BinaryExpression extends Expression {
 	static MathContext mc = new MathContext( (int)Math.min(9 +(long)Math.ceil(30.0),Integer.MAX_VALUE),RoundingMode.HALF_EVEN);
 
-	private Expression expression1;
-	public Expression getExpression1() {return expression1;}
-	public void setExpression1(Expression expression) {this.expression1=expression;}
-	private Expression expression2;
-	public Expression getExpression2() {return expression2;}
-	public void setExpression2(Expression expression) {this.expression2=expression;}
+	@XmlElementRefs(@XmlElementRef)
+	private List<Expression> parameters = new ArrayList<Expression>();
+	public List<Expression> getParameters() {return parameters;}
+	public Expression getExpression1() {return parameters.get(0);}
+	public Expression getExpression2() {return parameters.get(1);}
 }

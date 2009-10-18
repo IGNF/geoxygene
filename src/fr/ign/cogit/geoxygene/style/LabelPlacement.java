@@ -25,12 +25,22 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+
 /**
  * @author Julien Perret
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class LabelPlacement {
 	
+    @XmlElements({
+        @XmlElement(name = "LinePlacement", type = LinePlacement.class),
+        @XmlElement(name = "PointPlacement", type = PointPlacement.class)
+    })
 	private Placement placement = null;
 	/**
 	 * Renvoie la valeur de l'attribut placement.

@@ -29,10 +29,17 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlTransient;
+
 /**
  * @author Julien Perret
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Fill {
 	public enum LineJoin {MITRE,ROUND,BEVEL};
 	public enum LineCap {BUTT,ROUND,SQUARE};
@@ -51,21 +58,28 @@ public class Fill {
 	 */
 	public void setGraphicFill(GraphicFill graphicFill) {this.graphicFill = graphicFill;}
 
-	private List<CssParameter> cssParameters = new ArrayList<CssParameter>();
+    @XmlElements({
+        @XmlElement(name = "SvgParameter", type = SvgParameter.class),
+        @XmlElement(name = "CssParameter", type = SvgParameter.class)
+    })
+    private List<SvgParameter> svgParameters = new ArrayList<SvgParameter>();
 
 	/**
 	 * Renvoie la valeur de l'attribut cssParameters.
 	 * @return la valeur de l'attribut cssParameters
 	 */
-	public List<CssParameter> getCssParameters() {return this.cssParameters;}
+	public List<SvgParameter> getSvgParameters() {return this.svgParameters;}
 
 	/**
 	 * Affecte la valeur de l'attribut cssParameters.
-	 * @param cssParameters l'attribut cssParameters à affecter
+	 * @param svgParameters l'attribut cssParameters à affecter
 	 */
-	public void setCssParameters(List<CssParameter> cssParameters) {
-		this.cssParameters = cssParameters;
-		for (CssParameter parameter:cssParameters) {
+	public void setSvgParameters(List<SvgParameter> svgParameters) {
+		this.svgParameters = svgParameters;
+		this.updateValues();
+	}
+	private void updateValues() {
+		for (SvgParameter parameter:svgParameters) {
 			if (parameter.getName().equalsIgnoreCase("fill")) {
 				this.setFill(Color.decode(parameter.getValue()));
 			} else {
@@ -73,9 +87,10 @@ public class Fill {
 					this.setFillOpacity(Float.parseFloat(parameter.getValue()));
 				}
 			}
-		}
+		}		
 	}
-	
+
+	@XmlTransient
 	private Color fill = Color.gray;
 
 	/**
@@ -90,7 +105,7 @@ public class Fill {
 	 */
 	public void setFill(Color fill) {
 		this.fill = fill;
-		for (CssParameter parameter:cssParameters) {
+		for (SvgParameter parameter:svgParameters) {
 			if (parameter.getName().equalsIgnoreCase("fill")) {
 				String rgb = Integer.toHexString(fill.getRGB());
 				rgb = rgb.substring(2, rgb.length());
@@ -99,6 +114,7 @@ public class Fill {
 		}
 	}
 	
+	@XmlTransient
 	private float fillOpacity = 1.0f;
 	
 	/**
@@ -113,16 +129,18 @@ public class Fill {
 	 */
 	public void setFillOpacity(float fillOpacity) {
 		this.fillOpacity = fillOpacity;
-		for (CssParameter parameter:cssParameters) {
+		for (SvgParameter parameter:svgParameters) {
 			if (parameter.getName().equalsIgnoreCase("fillOpacity")) {
 				parameter.setValue(Float.toString(fillOpacity));
 			}
 		}
 	}
 
+	@XmlTransient
 	private Color color = null;
 	public Color getColor() {
 		if (color==null) {
+			this.updateValues();
 			if (fillOpacity==1.0f) color = fill;
 			else color = new Color(fill.getRed(),fill.getGreen(),fill.getBlue(),(int)(fillOpacity*255));
 		}

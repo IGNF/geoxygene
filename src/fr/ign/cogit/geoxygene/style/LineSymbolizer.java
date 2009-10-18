@@ -25,12 +25,51 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.NoninvertibleTransformException;
+
+import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.feature.FT_Feature;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
+
 /**
  * @author Julien Perret
  *
  */
 public class LineSymbolizer extends AbstractSymbolizer {
-	@Override
-	public boolean isLineSymbolizer() {return true;}
+    @Override
+    public boolean isLineSymbolizer() {return true;}
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics) {
+	//if (logger.isDebugEnabled()) logger.debug("line");
+	if (feature.getGeom()==null) return;
+	if (this.getStroke()!=null) {
+	    if (this.getStroke().getGraphicType()==null) {
+		//if (logger.isDebugEnabled()) logger.debug("stroke "+shape.getBounds2D());
+		graphics.setStroke(this.getStroke().toAwtStroke());
+		graphics.setColor(this.getStroke().getColor());
+		if (feature.getGeom().isLineString()) {
+		    try {
+			Shape shape = viewport.toShape(feature.getGeom());
+			if (shape!=null) graphics.draw(shape);
+		    } catch (NoninvertibleTransformException e) {e.printStackTrace();}
+		} else if (feature.getGeom().isMultiCurve()) {
+		    for(GM_OrientableCurve line:(GM_MultiCurve<GM_OrientableCurve>)feature.getGeom()) {
+			try {
+			    Shape shape = viewport.toShape(line);
+			    if (shape!=null) graphics.draw(shape);					
+			} catch (NoninvertibleTransformException e) {e.printStackTrace();}
+		    }
+		} else {
+
+		}
+	    } else {
+	    }
+	}		
+    }
 
 }

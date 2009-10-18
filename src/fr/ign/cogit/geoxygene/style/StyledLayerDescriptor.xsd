@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="1.0">
+
+<xs:element name="StyledLayerDescriptor">
+   <xs:complexType>
+      <xs:sequence>
+        <xs:element name ="layers">
+           <xs:complexType>
+              <xs:sequence>
+                <xs:element name="NamedLayer" type="NamedLayer" minOccurs="1" maxOccurs="unbounded"/>
+              </xs:sequence>
+           </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+</xs:element>
+
+<xs:complexType name="NamedLayer">
+  <xs:sequence>
+    <xs:element name="name" type="xs:string"/>
+  </xs:sequence>
+  <xs:attribute name="itemId" type="xs:string" />
+</xs:complexType>
+
+</xs:schema>

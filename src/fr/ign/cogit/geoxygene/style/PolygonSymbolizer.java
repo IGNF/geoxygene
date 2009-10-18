@@ -25,14 +25,31 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.NoninvertibleTransformException;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
+import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.feature.FT_Feature;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
+
 /**
  * @author Julien Perret
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class PolygonSymbolizer extends AbstractSymbolizer {
 	@Override
 	public boolean isPolygonSymbolizer() {return true;}
-
+	
+	@XmlElement(name = "Fill")
 	private Fill fill = null;
 	/**
 	 * @return
@@ -42,4 +59,52 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
 	 * @param fill
 	 */
 	public void setFill(Fill fill) {this.fill = fill;}
+	@SuppressWarnings("unchecked")
+	@Override
+	public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics) {
+		if (feature.getGeom()==null) return;
+		Color fillColor = null;
+		if (this.getFill()!=null) fillColor = this.getFill().getColor();
+		if (fillColor!=null) {
+			graphics.setColor(fillColor);
+			if (feature.getGeom().isPolygon()) this.fillPolygon((GM_Polygon) feature.getGeom(), viewport, graphics);
+			else if (feature.getGeom().isMultiSurface()) 
+			    for(GM_OrientableSurface surface:((GM_MultiSurface<GM_OrientableSurface>)feature.getGeom())) {
+				this.fillPolygon((GM_Polygon) surface, viewport, graphics);
+			    }
+		}
+		if (this.getStroke()!=null) {
+			if (this.getStroke().getGraphicType()==null) {
+				// Solid color
+				Color color = this.getStroke().getColor();
+				java.awt.Stroke bs = this.getStroke().toAwtStroke();
+				graphics.setColor(color);
+				graphics.setStroke(bs);
+				if (feature.getGeom().isPolygon()) this.drawPolygon((GM_Polygon) feature.getGeom(), viewport, graphics);
+				else if (feature.getGeom().isMultiSurface()) 
+				    for(GM_OrientableSurface surface:((GM_MultiSurface<GM_OrientableSurface>)feature.getGeom())) {
+					this.drawPolygon((GM_Polygon) surface, viewport, graphics);
+				    }
+			}
+		}
+	}
+	private void fillPolygon(GM_Polygon polygon, Viewport viewport, Graphics2D graphics) {
+	    if (polygon==null) return;
+		try {
+			Shape shape = viewport.toShape(polygon);
+			if (shape!=null) graphics.fill(shape);
+		} catch (NoninvertibleTransformException e) {e.printStackTrace();}	    
+	}
+	private void drawPolygon(GM_Polygon polygon, Viewport viewport, Graphics2D graphics) {
+	    if (polygon==null) return;
+	    try {
+	    	Shape shape = viewport.toShape(polygon.exteriorLineString());
+	    	if (shape!=null) graphics.draw(shape);
+	    } catch (NoninvertibleTransformException e) {e.printStackTrace();}
+	    for(int i = 0 ; i < polygon.sizeInterior() ; i++)
+		try {
+			Shape shape = viewport.toShape(polygon.interiorLineString(i));
+			if (shape!=null) graphics.draw(shape);
+		} catch (NoninvertibleTransformException e) {e.printStackTrace();}	    
+	}
 }

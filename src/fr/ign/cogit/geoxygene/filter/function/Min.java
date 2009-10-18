@@ -23,37 +23,24 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.style.converter;
+package fr.ign.cogit.geoxygene.filter.function;
 
-import com.thoughtworks.xstream.converters.Converter;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import java.math.BigDecimal;
 
-import fr.ign.cogit.geoxygene.style.CssParameter;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Julien Perret
  *
  */
-public class CssParameterConverter implements Converter {
-	@Override
-	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
-		CssParameter css = (CssParameter) source;
-		writer.addAttribute("name", css.getName());
-		writer.setValue(css.getValue());
-	}
+@XmlRootElement(name="Function")
+public class Min extends FunctionImpl {
+
+	public Min() {name="Min";}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-		CssParameter css = new CssParameter();
-		css.setName(reader.getAttribute("name"));
-		css.setValue(reader.getValue());
-		return css;
+	public Object evaluate(Object object) {
+		return ((BigDecimal)this.getParameters().get(0).evaluate(object)).min((BigDecimal)this.getParameters().get(1).evaluate(object));
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public boolean canConvert(Class classe) {return classe.equals(CssParameter.class);}
 }

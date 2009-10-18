@@ -23,42 +23,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.style.converter;
-
-import com.thoughtworks.xstream.converters.Converter;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+package fr.ign.cogit.geoxygene.filter;
 
 /**
  * @author Julien Perret
  *
  */
-public class GeometryPropertyNameConverter implements Converter {
+public interface ElseFilter {
 
-	@Override
-	public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
-		String string = (String) value;
-		writer.startNode("Geometry");
-		writer.startNode("ogc:PropertyName");
-		writer.setValue(string);
-		writer.endNode();
-		writer.endNode();
-	}
-
-	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,UnmarshallingContext context) {
-		reader.moveDown();
-		reader.moveDown();
-		String value = reader.getValue();
-		reader.moveUp();
-		reader.moveUp();
-		return value;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public boolean canConvert(Class classe) {return classe.equals(String.class);}
+	public boolean evaluate(Object object);
 
 }

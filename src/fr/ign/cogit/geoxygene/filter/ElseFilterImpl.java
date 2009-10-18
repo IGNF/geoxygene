@@ -23,47 +23,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *******************************************************************************/
 
-package fr.ign.cogit.geoxygene.filter.converter;
-
-import com.thoughtworks.xstream.converters.Converter;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-
-import fr.ign.cogit.geoxygene.filter.Filter;
-import fr.ign.cogit.geoxygene.filter.PropertyIsEqualTo;
+package fr.ign.cogit.geoxygene.filter;
 
 /**
  * @author Julien Perret
  *
  */
-public class FilterConverter implements Converter {
+public class ElseFilterImpl implements ElseFilter {
 
 	@Override
-	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
-		Filter filter = (Filter) source;
-		writer.startNode(filter.getClass().getSimpleName());
-		context.convertAnother(filter);
-		writer.endNode();
-	}
+	public boolean evaluate(Object object) {return true;}
 
-	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-		Filter filter = null;
-        while (reader.hasMoreChildren()) {
-    		reader.moveDown();
-    		// FIXME gérer les autres types de filtre
-            if (reader.getNodeName().equalsIgnoreCase("PropertyIsEqualTo")) {
-            	PropertyIsEqualTo property = (PropertyIsEqualTo) context.convertAnother(filter,PropertyIsEqualTo.class);
-            	filter = property;
-            }
-        	reader.moveUp();
-        }
-		return filter;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public boolean canConvert(Class classe) {return classe.equals(Filter.class);}
 }

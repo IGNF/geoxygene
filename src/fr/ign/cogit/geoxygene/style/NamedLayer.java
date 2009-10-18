@@ -25,7 +25,9 @@
 
 package fr.ign.cogit.geoxygene.style;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
@@ -35,7 +37,16 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
  * @author Julien Perret
  *
  */
-@XStreamAlias("NamedLayer")
+@XmlAccessorType(XmlAccessType.FIELD)
+/*
+@XmlType(name = "", propOrder = {
+    "name",
+    //"description",
+    "layerFeatureConstraints",
+    "styles"
+})
+*/
+@XmlRootElement(name = "NamedLayer")
 public class NamedLayer extends AbstractLayer {
 	/**
 	 */

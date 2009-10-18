@@ -27,8 +27,6 @@ package fr.ign.cogit.geoxygene.filter.expression;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.filter.function.FunctionImpl;
-
 /**
  * @author Julien Perret
  *
@@ -61,6 +59,6 @@ public class ExpressionFactory {
 		} catch (IllegalAccessException e) {
 			logger.error("Constructeur de la classe "+nomClasse+" inaccessible");
 		}
-		return new FunctionImpl();
+		return null;
 	}
 }

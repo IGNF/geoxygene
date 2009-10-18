@@ -25,6 +25,11 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import java.awt.Graphics2D;
+
+import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.feature.FT_Feature;
+
 /**
  * @author Julien Perret
  *
@@ -59,4 +64,11 @@ public interface Symbolizer {
 	 * @param geometryPropertyName l'attribut geometryPropertyName à affecter
 	 */
 	public void setGeometryPropertyName(String geometryPropertyName);
+
+	/**
+	 * @param feature
+	 * @param viewport
+	 * @param graphics
+	 */
+	public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics);
 }

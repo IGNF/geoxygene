@@ -30,6 +30,6 @@ package fr.ign.cogit.geoxygene.filter;
  * @author Julien Perret
  *
  */
-public interface LogicOpsType extends Filter {
+public abstract class LogicOpsType extends Filter {
 
 }

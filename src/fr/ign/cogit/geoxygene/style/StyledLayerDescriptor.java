@@ -26,26 +26,33 @@
 package fr.ign.cogit.geoxygene.style;
 
 import java.awt.Color;
-import java.io.File;
+import java.io.CharArrayWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.filter.Filter;
-import fr.ign.cogit.geoxygene.filter.PropertyIsEqualTo;
-import fr.ign.cogit.geoxygene.filter.converter.ExpressionConverter;
-import fr.ign.cogit.geoxygene.filter.converter.FilterConverter;
-import fr.ign.cogit.geoxygene.filter.converter.PropertyIsEqualToConverter;
-import fr.ign.cogit.geoxygene.filter.expression.Literal;
-import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
@@ -53,20 +60,6 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
-import fr.ign.cogit.geoxygene.style.converter.CssParameterConverter;
-import fr.ign.cogit.geoxygene.style.converter.ExternalGraphicConverter;
-import fr.ign.cogit.geoxygene.style.converter.FillConverter;
-import fr.ign.cogit.geoxygene.style.converter.GraphicConverter;
-import fr.ign.cogit.geoxygene.style.converter.LineSymbolizerConverter;
-import fr.ign.cogit.geoxygene.style.converter.MarkConverter;
-import fr.ign.cogit.geoxygene.style.converter.NamedLayerConverter;
-import fr.ign.cogit.geoxygene.style.converter.PlacementConverter;
-import fr.ign.cogit.geoxygene.style.converter.PointSymbolizerConverter;
-import fr.ign.cogit.geoxygene.style.converter.PolygonSymbolizerConverter;
-import fr.ign.cogit.geoxygene.style.converter.RuleConverter;
-import fr.ign.cogit.geoxygene.style.converter.StrokeConverter;
-import fr.ign.cogit.geoxygene.style.converter.StyledLayerDescriptorConverter;
-import fr.ign.cogit.geoxygene.style.converter.TextSymbolizerConverter;
 
 /**
  * Descripteur de couches stylisées.
@@ -77,42 +70,40 @@ import fr.ign.cogit.geoxygene.style.converter.TextSymbolizerConverter;
  * @author Julien Perret
  *
  */
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "name",
+    //"description",
+    //"environmentVariables",
+    //"useSLDLibrary",
+    "layers"
+})
+@XmlRootElement(name = "StyledLayerDescriptor")
 public class StyledLayerDescriptor {
-	protected List<ChangeListener> listenerList = new ArrayList<ChangeListener>();
-	/**
-	 * Ajout un {@link ChangeListener}.
-	 * Adds a {@link ChangeListener}.
-	 * @param l the {@link ChangeListener} to be added
-	 */
-	public void addChangeListener(ChangeListener l) {
-		if (listenerList==null) {listenerList = new ArrayList<ChangeListener>();}
-		listenerList.add(l);
-	}
-	/**
-	 * Notifies all listeners that have registered interest for
-	 * notification on this event type.  The event instance
-	 * is lazily created.
-	 */
-	public void fireActionPerformed(ChangeEvent e) {
-		// Guaranteed to return a non-null array
-		Object[] listeners = listenerList.toArray();
-		// Process the listeners last to first, notifying
-		// those that are interested in this event
-		for (int i = listeners.length-1; i>=0; i-=1) {
-			((ChangeListener)listeners[i]).stateChanged(e);
-		}
-	}
+	static Logger logger=Logger.getLogger(StyledLayerDescriptor.class.getName());
+	
+    @XmlElement(name = "Name")
+    protected String name;
+    //@XmlElement(name = "Description")
+    //protected Description description;
+    //@XmlElement(name = "EnvironmentVariables")
+    //protected EnvironmentVariables environmentVariables;
+    //@XmlElement(name = "UseSLDLibrary")
+    //protected List<UseSLDLibrary> useSLDLibrary;
+    @XmlAttribute(required = true)
+    protected String version;
 
 	/**
 	 * Constructeur vide.
 	 */
 	public StyledLayerDescriptor() {super();}
 
+    @XmlElements({
+        @XmlElement(name = "NamedLayer", type = NamedLayer.class),
+        @XmlElement(name = "UserLayer", type = UserLayer.class)
+    })
 	private List<Layer> layers = new ArrayList<Layer>();
-	/**
-	 * Renvoie la valeur de l'attribut layers.
-	 * @return la valeur de l'attribut layers
-	 */
 	public List<Layer> getLayers() {return this.layers;}
 	/**
 	 * Affecte la valeur de l'attribut layers.
@@ -120,108 +111,11 @@ public class StyledLayerDescriptor {
 	 */
 	public void setLayers(List<Layer> layers) {this.layers = layers;}
 	
-	/**
-	 * Charge le SLD décrit dans le fichier XML.
-	 * Si le fichier n'existe pas, crée un nouveau SLD vide.
-	 * @param nomFichier fichier XML décrivant le SLD à charger
-	 * @return le SLD décrit dans le fichier XML ou un SLD vide si le fichier n'existe pas.
-	 */
-	public static StyledLayerDescriptor charge(String nomFichier) {
-        try {return (StyledLayerDescriptor) StyledLayerDescriptor.getXStream().fromXML(new FileInputStream(new File(nomFichier)));}
-        catch (FileNotFoundException e) {
-			/** Si le fichier n'existe pas, on crée un nouveau SLD vide */
-			return new StyledLayerDescriptor();
-		}
-	}
-	/**
-	 * Sauve le SLD dans le fichier en paramètre
-	 * @param nomFichier fichier dans lequel on sauve le SLD
-	 */
-	public void toXml(String nomFichier) {
-		try {StyledLayerDescriptor.getXStream().toXML(this, new FileOutputStream(new File(nomFichier)));}
-		catch (FileNotFoundException e) {e.printStackTrace();}
-	}
-	/**
-	 * Renvoie un objet {@link XStream} servant pour le chargement ou la sauvegarde
-	 * d'un objet de type {@link StyledLayerDescriptor}
-	 * @return un objet {@link XStream} servant pour le chargement ou la sauvegarde
-	 * d'un objet de type {@link StyledLayerDescriptor}
-	 */
-	private static XStream getXStream() {
-		XStream xstream = new XStream(new DomDriver());
-		xstream.alias("StyledLayerDescriptor", StyledLayerDescriptor.class);
-		xstream.alias("NamedLayer", NamedLayer.class);
-		xstream.alias("UserStyle", UserStyle.class);
-		xstream.alias("FeatureTypeStyle", FeatureTypeStyle.class);
-		xstream.alias("Rule", Rule.class);
-		xstream.alias("LineSymbolizer", LineSymbolizer.class);
-		xstream.alias("PolygonSymbolizer", PolygonSymbolizer.class);
-		xstream.alias("PointSymbolizer", PointSymbolizer.class);
-		xstream.alias("TextSymbolizer", TextSymbolizer.class);
-        xstream.alias("Geometry",String.class);
-        xstream.alias("Graphic",Graphic.class);
-        xstream.alias("Stroke",Stroke.class);
-        xstream.alias("Fill",Fill.class);
-        xstream.alias("Filter",Filter.class);
-        xstream.alias("Font",Font.class);
-        xstream.alias("Mark",Mark.class);
-        xstream.alias("ExternalGraphic",ExternalGraphic.class);
-        xstream.alias("Label",String.class);
-        xstream.alias("CssParameter",CssParameter.class);
-        xstream.alias("PointPlacement",PointPlacement.class);
-        xstream.alias("LinePlacement",LinePlacement.class);
-        xstream.alias("PropertyIsEqualTo",PropertyIsEqualTo.class);
-        xstream.alias("PropertyName",PropertyName.class);
-        xstream.alias("Literal",Literal.class);
-		xstream.addImplicitCollection(StyledLayerDescriptor.class, "layers");
-		xstream.addImplicitCollection(FeatureTypeStyle.class, "rules");
-		xstream.addImplicitCollection(UserStyle.class, "featureTypeStyles");
-		xstream.addImplicitCollection(Stroke.class, "cssParameters");
-		xstream.addImplicitCollection(Font.class, "cssParameters");
-		xstream.registerConverter(new StyledLayerDescriptorConverter());
-		xstream.registerConverter(new NamedLayerConverter());
-		xstream.registerConverter(new RuleConverter());
-		xstream.registerConverter(new LineSymbolizerConverter());
-		xstream.registerConverter(new StrokeConverter());
-		xstream.registerConverter(new CssParameterConverter());
-		xstream.registerConverter(new PolygonSymbolizerConverter());
-		xstream.registerConverter(new FillConverter());
-		xstream.registerConverter(new FilterConverter());
-		xstream.registerConverter(new GraphicConverter());
-		xstream.registerConverter(new MarkConverter());
-		xstream.registerConverter(new PointSymbolizerConverter());
-		xstream.registerConverter(new PropertyIsEqualToConverter());
-		xstream.registerConverter(new TextSymbolizerConverter());
-		xstream.registerConverter(new ExternalGraphicConverter());
-		xstream.registerConverter(new PlacementConverter());
-		xstream.registerConverter(new ExpressionConverter());
-		return xstream;
-	}
 	@Override
 	public String toString() {
-		String result = "StyledLayerDescriptor\n";
-		for (Layer layer:this.getLayers()) {
-			result+="   "+layer.getClass().getSimpleName()+" - "+layer.getName()+"\n";
-			for(Style style:layer.getStyles()) {
-				result+="      "+style.getClass().getSimpleName()+" - "+style.getName()+"\n";
-				if (style.isUserStyle()) {
-					UserStyle userStyle = (UserStyle) style;
-					for(FeatureTypeStyle fts:userStyle.getFeatureTypeStyles()) {
-						result+="         "+fts.getClass().getSimpleName()+" - "+fts.getName()+"\n";
-						for(Rule rule:fts.getRules()) {
-							result+="            "+rule.getClass().getSimpleName()+" - "+rule.getName()+"\n";
-							for(Symbolizer symbolizer:rule.getSymbolizers()) {
-								result+="               "+symbolizer.getClass().getSimpleName()+"\n";
-								result+="               -Geometry = "+symbolizer.getGeometryPropertyName()+"\n";
-								result+="               -Stroke Color = "+symbolizer.getStroke().getColor()+"\n";
-								result+="               -Stroke width = "+symbolizer.getStroke().getStrokeWidth()+"\n";
-							}
-						}
-					}
-				}
-			}
-		}
-		return result;
+		CharArrayWriter writer = new CharArrayWriter(); 
+		this.marshall(writer);
+		return writer.toString();
 	}
 
 	/**
@@ -298,5 +192,105 @@ public class StyledLayerDescriptor {
 	 */
 	public Layer createLayer(String layerName, Class<? extends GM_Object> geometryType) {
 	    return this.createLayer(layerName, geometryType,new Color((float)Math.random(),(float)Math.random(),(float)Math.random(),0.5f));
+	}
+	/**
+	 * @param layer
+	 */
+	public void add(Layer layer) {
+		this.layers.add(layer);
+		this.fireActionPerformed(new ChangeEvent(this));
+	}
+	
+	// Event handling
+	@XmlTransient
+	protected List<ChangeListener> listenerList = new ArrayList<ChangeListener>();
+	/**
+	 * Ajout un {@link ChangeListener}.
+	 * Adds a {@link ChangeListener}.
+	 * @param l the {@link ChangeListener} to be added
+	 */
+	public void addChangeListener(ChangeListener l) {
+		if (listenerList==null) {listenerList = new ArrayList<ChangeListener>();}
+		listenerList.add(l);
+	}
+	/**
+	 * Notifies all listeners that have registered interest for
+	 * notification on this event type.  The event instance
+	 * is lazily created.
+	 */
+	public void fireActionPerformed(ChangeEvent e) {
+		// Guaranteed to return a non-null array
+		Object[] listeners = listenerList.toArray();
+		// Process the listeners last to first, notifying
+		// those that are interested in this event
+		for (int i = listeners.length-1; i>=0; i-=1) {((ChangeListener)listeners[i]).stateChanged(e);}
+	}
+	
+	
+	public static void main(String[] args) {
+		StyledLayerDescriptor sld = StyledLayerDescriptor.unmarshall("geopensimSLD.xml");
+		System.out.println(sld);
+	}
+
+	public static StyledLayerDescriptor unmarshall(InputStream stream) {
+		try {
+			JAXBContext context = JAXBContext.newInstance(
+					StyledLayerDescriptor.class,
+					NamedLayer.class,
+					NamedStyle.class);
+			Unmarshaller m = context.createUnmarshaller();
+			StyledLayerDescriptor sld = (StyledLayerDescriptor) m.unmarshal(stream);
+			return sld;
+		} catch (JAXBException e) {e.printStackTrace();}
+		return new StyledLayerDescriptor();		
+	}
+	/**
+	 * Charge le SLD décrit dans le fichier XML.
+	 * Si le fichier n'existe pas, crée un nouveau SLD vide.
+	 * @param fileName fichier XML décrivant le SLD à charger
+	 * @return le SLD décrit dans le fichier XML ou un SLD vide si le fichier n'existe pas.
+	 */
+	public static StyledLayerDescriptor unmarshall(String fileName) {
+		try {
+			return unmarshall(new FileInputStream(fileName));
+		} catch (FileNotFoundException e) {
+			logger.error("File "+fileName+" could not be read");
+			return new StyledLayerDescriptor();
+		}
+	}
+
+	public void marshall(Writer writer) {
+		try {
+			JAXBContext context = JAXBContext.newInstance(
+					StyledLayerDescriptor.class,
+					NamedLayer.class,
+					NamedStyle.class);
+			Marshaller m = context.createMarshaller();
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			m.marshal(this, writer);
+		} catch (JAXBException e) {e.printStackTrace();}		
+	}
+
+	public void marshall(OutputStream stream) {
+		try {
+			JAXBContext context = JAXBContext.newInstance(
+					StyledLayerDescriptor.class,
+					NamedLayer.class,
+					NamedStyle.class);
+			Marshaller m = context.createMarshaller();
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			m.marshal(this, stream);
+		} catch (JAXBException e) {e.printStackTrace();}		
+	}
+	/**
+	 * Sauve le SLD dans le fichier en paramètre
+	 * @param fileName fichier dans lequel on sauve le SLD
+	 */
+	public void marshall(String fileName) {
+		try {
+			this.marshall(new FileOutputStream(fileName));
+		} catch (FileNotFoundException e) {
+			logger.error("File "+fileName+" could not be written to");
+		}
 	}
 }

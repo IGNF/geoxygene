@@ -27,11 +27,18 @@ package fr.ign.cogit.geoxygene.filter.expression;
 
 import java.math.BigDecimal;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlMixed;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * @author Julien Perret
  *
  */
-public class Literal implements Expression {
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "Literal")
+public class Literal extends Expression {
 	
 	/**
 	 * 
@@ -42,16 +49,19 @@ public class Literal implements Expression {
 	 */
 	public Literal(String value) {this.setValue(value);}
 	
-	private Object value;
+	@XmlMixed
+	private String[] value = new String[1];
 	/**
 	 * @return
 	 */
-	public Object getValue() {return value;}
+	public String getValue() {return value[0];}
 	/**
 	 * @param value
 	 */
-	public void setValue(Object value) {this.value=value;}
+	public void setValue(String value) {this.value[0]=value;}
 	
 	@Override
-	public Object evaluate(Object object) {return new BigDecimal((String)value);}
+	public Object evaluate(Object object) {return new BigDecimal(this.getValue());}
+	@Override
+	public String toString() {return this.getValue();}
 }

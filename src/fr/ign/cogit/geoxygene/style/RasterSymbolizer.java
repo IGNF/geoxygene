@@ -25,6 +25,11 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import java.awt.Graphics2D;
+
+import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.feature.FT_Feature;
+
 /**
  * @author Julien Perret
  *
@@ -32,5 +37,10 @@ package fr.ign.cogit.geoxygene.style;
 public class RasterSymbolizer extends AbstractSymbolizer {
 	@Override
 	public boolean isRasterSymbolizer() {return true;}
+
+	@Override
+	public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics) {
+		// TODO
+	}
 
 }
