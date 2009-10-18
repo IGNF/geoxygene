@@ -250,7 +250,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 	public GM_Aggregate<GM_Object> getGeomAggregate() {
 		if (this.hasGeom()) {
 			GM_Aggregate<GM_Object> aggr = new GM_Aggregate<GM_Object>();
-			for(Feat f:this) aggr.add(f.getGeom());
+	    	for(Feat f:this) if (f.getGeom()!=null) aggr.add(f.getGeom());
 			return aggr;
 		}
 		logger.warn("ATTENTION appel de getGeom() sur une FT_FeatureCollection sans geometrie ! (renvoie null) ");
@@ -427,8 +427,11 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 	 */
 	public FT_FeatureCollection<Feat> select(DirectPosition P, double D) {
 		if (!isIndexed) {
-			logger.warn("select() sur FT_FeatureCollection : l'index spatial n'est pas initialise (renvoie null)");
-			return null;
+	    FT_FeatureCollection<Feat> selectedFeatures = new FT_FeatureCollection<Feat>();
+		    for (Feat feature:this) {
+				if (feature.getGeom().distance(P.toGM_Point())<=D) selectedFeatures.add(feature);
+	    	}
+		    return selectedFeatures;
 		}
 		return spatialindex.select(P, D);
 	}
@@ -442,8 +445,11 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 	 */
 	public FT_FeatureCollection<Feat> select(GM_Envelope env) {
 		if (!isIndexed) {
-			logger.warn("select() sur FT_FeatureCollection : l'index spatial n'est pas initialise (renvoie null)");
-			return null;
+		    FT_FeatureCollection<Feat> selectedFeatures = new FT_FeatureCollection<Feat>();
+		    for (Feat feature:this) {
+				if (feature.getGeom().intersects(env.getGeom())) selectedFeatures.add(feature);
+		    }
+		    return selectedFeatures;
 		}
 		return spatialindex.select(env);
 	}
@@ -457,8 +463,11 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 	 */
 	public FT_FeatureCollection<Feat> select(GM_Object geometry) {
 		if (!isIndexed) {
-			logger.warn("select() sur FT_FeatureCollection : l'index spatial n'est pas initialise (renvoie null)");
-			return null;
+		    FT_FeatureCollection<Feat> selectedFeatures = new FT_FeatureCollection<Feat>();
+		    for (Feat feature:this) {
+				if (feature.getGeom().intersects(geometry)) selectedFeatures.add(feature);
+		    }
+		    return selectedFeatures;
 		}
 		return spatialindex.select(geometry);
 	}
@@ -480,8 +489,11 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 	 */
 	public FT_FeatureCollection<Feat> select(GM_Object geometry, boolean strictlyCrosses) {
 		if (!isIndexed) {
-			logger.warn("select() sur FT_FeatureCollection : l'index spatial n'est pas initialise (renvoie null)");
-			return null;
+		    FT_FeatureCollection<Feat> selectedFeatures = new FT_FeatureCollection<Feat>();
+		    for (Feat feature:this) {
+				if (feature.getGeom().intersectsStrictement(geometry)) selectedFeatures.add(feature);
+		    }
+		    return selectedFeatures;
 		}
 		return spatialindex.select(geometry, strictlyCrosses);
 	}
@@ -498,8 +510,11 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 	 */
 	public FT_FeatureCollection<Feat> select(GM_Object geometry, double distance) {
 		if (!isIndexed) {
-			logger.warn("select() sur FT_FeatureCollection : l'index spatial n'est pas initialise (renvoie null)");
-			return null;
+		    FT_FeatureCollection<Feat> selectedFeatures = new FT_FeatureCollection<Feat>();
+		    for (Feat feature:this) {
+				if (feature.getGeom().distance(geometry)<=distance) selectedFeatures.add(feature);
+		    }
+		    return selectedFeatures;
 		}
 		return spatialindex.select(geometry, distance);
 	}
@@ -548,6 +563,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 		if (isIndexed)
 			if (spatialindex.hasAutomaticUpdate())
 				spatialindex.update(value, -1);
+		this.fireActionPerformed(new FeatureCollectionEvent(this, value, FeatureCollectionEvent.Type.REMOVED,value.getGeom()));
 	}
 	/**
 	 * Efface de la liste la collection passée en parametre. Attention, si
@@ -560,7 +576,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 	public void removeCollection(FT_FeatureCollection<Feat> value) {
 		if (value == null) return;
 		for(Feat f:value.getElements()) remove(f);
-		}
+	}
 	/**
 	 * Ajoute les éléments d'une FT_FeatureCollection a la liste des composants
 	 * de this, et met à jour le lien inverse.
@@ -570,8 +586,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 	 */
 	public void addUniqueCollection(FT_FeatureCollection<? extends Feat> value) {
 		Feat elem;
-		if (value == null)
-			return;
+		if (value == null) return;
 		Iterator<? extends Feat> iter = value.elements.iterator();
 		while (iter.hasNext()) {
 			elem = iter.next();
@@ -587,8 +602,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 		Iterator<?> i = coll.iterator();
 		while (i.hasNext()) {
 			Object element = i.next();
-			if (!contains(element))
-				return false;
+			if (!contains(element)) return false;
 		}
 		return true;
 	}
@@ -601,8 +615,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 	public boolean retainAll(Collection<?> coll) {
 		List<Feat> toRemove = new ArrayList<Feat>();
 		for (Feat feature : this.elements) {
-			if (!coll.contains(feature))
-				toRemove.add(feature);
+			if (!coll.contains(feature)) toRemove.add(feature);
 		}
 		return removeAll(toRemove);
 	}
