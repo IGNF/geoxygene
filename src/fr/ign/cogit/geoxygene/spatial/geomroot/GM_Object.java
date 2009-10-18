@@ -197,15 +197,15 @@ abstract public class GM_Object implements Cloneable {
 	public GM_Envelope envelope() {
 		DirectPositionList list = coord();
 		if (list.size()==0) return new GM_Envelope();
-		double xmin = Double.MAX_VALUE;
-		double xmax = Double.MIN_VALUE;
-		double ymin = Double.MAX_VALUE;
-		double ymax = Double.MIN_VALUE;
+		double xmin = Double.POSITIVE_INFINITY;
+		double xmax = Double.NEGATIVE_INFINITY;
+		double ymin = Double.POSITIVE_INFINITY;
+		double ymax = Double.NEGATIVE_INFINITY;
 		for (DirectPosition point:list) {
-			xmin=Math.min(xmin, point.getX());
-			xmax=Math.max(xmax, point.getX());
-			ymin=Math.min(ymin, point.getY());
-			ymax=Math.max(ymax, point.getY());
+			if (!Double.isNaN(point.getX())) xmin=Math.min(xmin, point.getX());
+			if (!Double.isNaN(point.getX())) xmax=Math.max(xmax, point.getX());
+			if (!Double.isNaN(point.getY())) ymin=Math.min(ymin, point.getY());
+			if (!Double.isNaN(point.getY())) ymax=Math.max(ymax, point.getY());
 		}
 		return new GM_Envelope (xmin,xmax,ymin,ymax);
 	}

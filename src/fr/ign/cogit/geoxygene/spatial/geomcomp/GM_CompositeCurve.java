@@ -246,15 +246,13 @@ public class GM_CompositeCurve extends GM_Composite {
 		int n = generator.size();
 		if (n > 0) {
 			// vidage de la primitive
-			GM_Curve prim = this.primitive;
-			while (prim.sizeSegment() > 0)
-				prim.removeSegment(0);
-			for (int i=0; i<n; i++) {
-				GM_OrientableCurve oCurve = generator.get(i);
-				GM_Curve thePrimitive = oCurve.getPrimitive();
-				for (int j=0; j<thePrimitive.sizeSegment(); j++) {
-					GM_CurveSegment theSegment = thePrimitive.getSegment(j);
-					(this.primitive).addSegment(theSegment);
+			synchronized (this.primitive.getSegment()) {
+				this.primitive.clearSegments();
+				for (GM_OrientableCurve oCurve : this.generator) {
+					GM_Curve thePrimitive = oCurve.getPrimitive();
+					synchronized (thePrimitive.getSegment()) {
+						for (GM_CurveSegment theSegment : thePrimitive.getSegment()) this.primitive.addSegment(theSegment);
+					}
 				}
 			}
 		}

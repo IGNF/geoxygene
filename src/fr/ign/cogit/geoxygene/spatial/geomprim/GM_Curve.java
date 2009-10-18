@@ -29,6 +29,8 @@ package fr.ign.cogit.geoxygene.spatial.geomprim;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_CurveSegment;
@@ -51,7 +53,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 public class GM_Curve extends GM_OrientableCurve
 /*implements GM_GenericCurve*/ {
-
+	static Logger logger=Logger.getLogger(GM_Curve.class.getName());
 
 	//////////////////////////////////////////////////////////////////////////////////
 	// Attribut "segment" et méthodes pour le traiter ////////////////////////////////
@@ -60,18 +62,16 @@ public class GM_Curve extends GM_OrientableCurve
 	protected List<GM_CurveSegment> segment;
 
 	/** Renvoie la liste des segments. */
-	public List<GM_CurveSegment> getSegment() {
-		return this.segment;
-	}
+	public List<GM_CurveSegment> getSegment() {return this.segment;}
 
 	/** Renvoie le segment de rang i */
 	public GM_CurveSegment getSegment (int i) {
 		if ((GM_CurveSegment.class).isAssignableFrom(this.getClass())) {
 			if (i != 0) {
-				System.out.println("Recherche d'un segment avec i<>0 alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme");
+				logger.error("Recherche d'un segment avec i<>0 alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme");
 				return null;
 			}
-			return this.segment.get(i);			
+			return this.segment.get(i);
 		}
 		return this.segment.get(i);
 	}
@@ -80,7 +80,7 @@ public class GM_Curve extends GM_OrientableCurve
 	public void setSegment (int i, GM_CurveSegment value) {
 		if ((GM_CurveSegment.class).isAssignableFrom(this.getClass()))
 			if (i != 0)
-				System.out.println("Affection d'un segment avec i<>0 alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
+				logger.error("Affection d'un segment avec i<>0 alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
 			else this.segment.set(i, value);
 		else this.segment.set(i, value);
 	}
@@ -89,7 +89,7 @@ public class GM_Curve extends GM_OrientableCurve
 	public void addSegment (GM_CurveSegment value)  {
 		if ((GM_CurveSegment.class).isAssignableFrom(this.getClass()))
 			if (sizeSegment() > 0)
-				System.out.println("Ajout d'un segment alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
+				logger.error("Ajout d'un segment alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
 			else this.segment.add(value);
 		else this.segment.add(value);
 	}
@@ -101,7 +101,7 @@ public class GM_Curve extends GM_OrientableCurve
 	public void addSegment(GM_CurveSegment value, double tolerance) throws Exception {
 		if ((GM_CurveSegment.class).isAssignableFrom(this.getClass()))
 			if (sizeSegment() > 0)
-				System.out.println("Ajout d'un segment alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
+				logger.error("Ajout d'un segment alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
 			else this.segment.add(value);
 		else {
 			if (this.sizeSegment() == 0) this.segment.add(value);
@@ -122,7 +122,7 @@ public class GM_Curve extends GM_OrientableCurve
 	public void addSegmentTry (GM_CurveSegment value, double tolerance) throws Exception {
 		if ((GM_CurveSegment.class).isAssignableFrom(this.getClass()))
 			if (sizeSegment() > 0)
-				System.out.println("Ajout d'un segment alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
+				logger.error("Ajout d'un segment alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
 			else this.segment.add(value);
 		else {
 			try {
@@ -141,7 +141,7 @@ public class GM_Curve extends GM_OrientableCurve
 	public void addSegment (int i, GM_CurveSegment value) {
 		if ((GM_CurveSegment.class).isAssignableFrom(this.getClass()))
 			if (i != 0)
-				System.out.println("Ajout d'un segment avec i<>0 alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
+				logger.error("Ajout d'un segment avec i<>0 alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
 			else this.segment.add(value);
 		else this.segment.add(i, value);
 	}
@@ -149,22 +149,22 @@ public class GM_Curve extends GM_OrientableCurve
 	/** Efface de la liste le (ou les) segment passé en paramètre */
 	public void removeSegment (GM_CurveSegment value)  {
 		if ((GM_CurveSegment.class).isAssignableFrom(this.getClass()))
-			System.out.println("removeSegment() : Ne fait rien car un GM_CurveSegment ne contient qu'un segment qui est lui-meme.");
+			logger.error("removeSegment() : Ne fait rien car un GM_CurveSegment ne contient qu'un segment qui est lui-meme.");
 		else this.segment.remove(value);
 	}
 
 	/** Efface le i-ème segment de la liste */
 	public void removeSegment (int i) {
 		if ((GM_CurveSegment.class).isAssignableFrom(this.getClass()))
-			System.out.println("removeSegment() : Ne fait rien car un GM_CurveSegment ne contient qu'un segment qui est lui-meme.");
+			logger.error("removeSegment() : Ne fait rien car un GM_CurveSegment ne contient qu'un segment qui est lui-meme.");
 		else this.segment.remove(i);
 	}
 
 	/** Renvoie le nombre de segment */
-	public int sizeSegment () {
-		return this.segment.size();
-	}
+	public int sizeSegment () {return this.segment.size();}
 
+	public void clearSegments () {this.segment.clear();}
+	
 	/** A TESTER.
 	 * Vérifie le chaînage des segments. renvoie TRUE s'ils sont chaînés, FALSE sinon.
 	 * Nécessité de définir une tolérance.
@@ -235,9 +235,7 @@ public class GM_Curve extends GM_OrientableCurve
 	/** Retourne le DirectPosition du premier point.
 	 * Différent de l'opérateur "boundary" car renvoie la valeur du point et non pas l'objet géométrique représentatif.
 	 * Méthode d'implémentation de l'interface GM_GenericCurve. */
-	public DirectPosition startPoint() {
-		return this.getSegment(0).coord().get(0);
-	}
+	public DirectPosition startPoint() {return this.getSegment(0).coord().get(0);}
 
 
 	/**Retourne le DirectPosition du dernier point.
@@ -359,21 +357,20 @@ public class GM_Curve extends GM_OrientableCurve
 	public GM_LineString asLineString(double spacing, double offset, double tolerance)   {
 		GM_LineString theLineString = null;
 		if ((spacing != 0.0) || (offset != 0.0)) {
-			System.out.println("GM_Curve::asLineString() : Spacing et Offset ne sont pas implémentés. Passer (0.0, 0.0, tolerance) en paramètres");
+			logger.error("GM_Curve::asLineString() : Spacing et Offset ne sont pas implémentés. Passer (0.0, 0.0, tolerance) en paramètres");
 			return null;
 		} 
 		theLineString = new GM_LineString();
-		DirectPositionList aListOfPoints;
-		if (this.sizeSegment() > 0) {
-			for (int i=0; i<this.sizeSegment(); i++) {
-				aListOfPoints = this.getSegment(i).coord();
-				for(DirectPosition pt1:aListOfPoints) {
-					if (theLineString.getControlPoint().size() > 0) {
-						DirectPosition pt2 = theLineString.getControlPoint().get(theLineString.getControlPoint().size()-1);
-						if (!pt1.equals(pt2,tolerance)) theLineString.getControlPoint().add(pt1);
-					} else theLineString.getControlPoint().add(pt1);
-				}
+		synchronized(this.segment) {
+		    for(GM_CurveSegment theSegment : this.segment) {
+			DirectPositionList aListOfPoints = theSegment.coord();
+			for(DirectPosition pt1:aListOfPoints) {
+			    if (theLineString.sizeControlPoint() > 0) {
+				DirectPosition pt2 = theLineString.getControlPoint().get(theLineString.getControlPoint().size()-1);
+				if (!pt1.equals(pt2,tolerance)) theLineString.getControlPoint().add(pt1);
+			    } else theLineString.getControlPoint().add(pt1);
 			}
+		    }
 		}
 		return theLineString;
 	}
@@ -408,12 +405,12 @@ public class GM_Curve extends GM_OrientableCurve
 	public DirectPositionList coord ()  {
 		DirectPositionList result = new DirectPositionList();
 		if (sizeSegment() == 0) return result;
-		for(int i=0; i<this.sizeSegment(); i++) {
-			GM_CurveSegment theSegment = this.getSegment(i);
+		synchronized(this.segment) {
+		    for (GM_CurveSegment theSegment : this.segment) {
 			DirectPositionList theList = theSegment.coord();
-			for(DirectPosition thePoint:theList) result.add(thePoint);
+			result.addAll(theList);
+		    }
 		}
 		return result;
 	}
-
 }
