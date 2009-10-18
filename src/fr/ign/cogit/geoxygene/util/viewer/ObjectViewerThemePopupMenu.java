@@ -163,7 +163,7 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
 
 				themeAttributesFrame.addWindowListener(new WindowAdapter() {
 					@Override
-					public void windowClosing(WindowEvent e) {
+					public void windowClosing(WindowEvent event) {
 						themeAttributesFrame.dispose();
 					}
 				});
@@ -185,7 +185,7 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
 					new ObjectViewerThemePropertiesFrame(objectViewerThemeProperties);
 				themePropertiesFrame.addWindowListener(new WindowAdapter() {
 					@Override
-					public void windowClosing(WindowEvent e) {
+					public void windowClosing(WindowEvent event) {
 						themePropertiesFrame.dispose();
 						//System.exit(0);
 					}

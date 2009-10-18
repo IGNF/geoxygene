@@ -108,7 +108,7 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 							fillThemeColorButton);
 				ccframe.addWindowListener(new WindowAdapter() {
 					@Override
-					public void windowClosing(WindowEvent e) {
+					public void windowClosing(WindowEvent event) {
 						ccframe.dispose();
 					}
 				});
@@ -133,7 +133,7 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 							outlineThemeColorButton);
 				ccframe.addWindowListener(new WindowAdapter() {
 					@Override
-					public void windowClosing(WindowEvent e) {
+					public void windowClosing(WindowEvent event) {
 						ccframe.dispose();
 					}
 				});
@@ -157,7 +157,7 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 							fillHighlightColorButton);
 				ccframe.addWindowListener(new WindowAdapter() {
 					@Override
-					public void windowClosing(WindowEvent e) {
+					public void windowClosing(WindowEvent event) {
 						ccframe.dispose();
 					}
 				});
@@ -183,7 +183,7 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 							outlineHighlightColorButton);
 				ccframe.addWindowListener(new WindowAdapter() {
 					@Override
-					public void windowClosing(WindowEvent e) {
+					public void windowClosing(WindowEvent event) {
 						ccframe.dispose();
 					}
 				});
@@ -208,7 +208,7 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 							fillSelectionColorButton);
 				ccframe.addWindowListener(new WindowAdapter() {
 					@Override
-					public void windowClosing(WindowEvent e) {
+					public void windowClosing(WindowEvent event) {
 						ccframe.dispose();
 					}
 				});
@@ -234,7 +234,7 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 							outlineSelectionColorButton);
 				ccframe.addWindowListener(new WindowAdapter() {
 					@Override
-					public void windowClosing(WindowEvent e) {
+					public void windowClosing(WindowEvent event) {
 						ccframe.dispose();
 					}
 				});

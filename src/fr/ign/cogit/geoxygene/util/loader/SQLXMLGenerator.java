@@ -191,13 +191,13 @@ public class SQLXMLGenerator {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private String getQueryColumnNameOracle(String tableName) {
-		return "SELECT COLUMN_NAME, DATA_TYPE, DATA_SCALE FROM USER_TAB_COLUMNS WHERE TABLE_NAME = '"+tableName+"'";
+	private String getQueryColumnNameOracle(String oracleTableName) {
+		return "SELECT COLUMN_NAME, DATA_TYPE, DATA_SCALE FROM USER_TAB_COLUMNS WHERE TABLE_NAME = '"+oracleTableName+"'";
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private String getQueryColumnNamePostgis(String tableName, String user) {
+	private String getQueryColumnNamePostgis(String postgisTableName, String user) {
 		return 	"select pg_attribute.attname, pg_type.typname "+
 		"from pg_attribute, pg_type, pg_class, pg_user "+
 		"where pg_class.oid = pg_attribute.attrelid "+
@@ -205,7 +205,7 @@ public class SQLXMLGenerator {
 		"and pg_attribute.atttypid = pg_type.oid "+
 		"and pg_class.relowner = pg_user.usesysid "+
 		"and pg_user.usename = '"+user.toLowerCase()+"' "+
-		"and pg_class.relname='"+tableName.toLowerCase()+"'";
+		"and pg_class.relname='"+postgisTableName.toLowerCase()+"'";
 	}
 
 
