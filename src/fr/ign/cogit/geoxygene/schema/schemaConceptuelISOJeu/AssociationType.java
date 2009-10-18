@@ -56,7 +56,7 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 	protected List<GF_FeatureType> linkBetween;
 
 	/** Les roles de cette association. */
-	protected List<GF_AssociationRole> roles;
+	//protected List<GF_AssociationRole> roles;
 
 
 	/**
@@ -225,15 +225,15 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 	 */
 	public SchemaConceptuelJeu getSchemaConceptuel() {
 
-		SchemaConceptuelJeu schema;
+		SchemaConceptuelJeu schemaConceptuel;
 		if (this.getLinkBetween()!=null){
-			schema = ((FeatureType)this.getLinkBetweenI(0)).getSchema();
+			schemaConceptuel = ((FeatureType)this.getLinkBetweenI(0)).getSchema();
 			for (int i=0 ; i<this.getLinkBetween().size() ; i++ ){
-				if (!((FeatureType)this.getLinkBetween().get(i)).getSchema().equals(schema)){
+				if (!((FeatureType)this.getLinkBetween().get(i)).getSchema().equals(schemaConceptuel)){
 					return null;
 				}
 			}
-			return schema;
+			return schemaConceptuel;
 		}
 		else return null;
 	}
