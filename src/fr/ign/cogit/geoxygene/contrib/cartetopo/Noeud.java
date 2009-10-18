@@ -132,19 +132,8 @@ public class Noeud extends ElementCarteTopo {
 	 *  sans tenir compte de l'orientation (i.e. tous les arcs sont considérés en double sens) */
 	public List<Noeud> voisins() {
 		List<Noeud> voisins = new ArrayList<Noeud>();
-		List<Arc> entrants = this.getEntrants();
-		Arc arc;
-		Iterator<Arc> iterentrants = entrants.iterator();
-		while(iterentrants.hasNext()) {
-			arc = iterentrants.next();
-			voisins.add(arc.getNoeudIni());
-		}
-		List<Arc> sortants = this.getSortants();
-		Iterator<Arc> itersortants = sortants.iterator();
-		while(itersortants.hasNext()) {
-			arc = itersortants.next();
-			voisins.add(arc.getNoeudFin());
-		}
+		for (Arc arc:this.getEntrants()) voisins.add(arc.getNoeudIni());
+		for (Arc arc:this.getSortants()) voisins.add(arc.getNoeudFin());
 		return voisins;
 	}
 
