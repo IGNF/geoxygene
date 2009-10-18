@@ -112,39 +112,39 @@ public class LienReseaux extends Lien {
 	/** Methode qui affecte la valeur 'eval' comme évaluation du lien et
 	 * le commentaire 'commentaire' à tous les objets liés par ce lien.
 	 */
-	public void affecteEvaluationAuxObjetsLies(double eval, String commentaire) {
+	public void affecteEvaluationAuxObjetsLies(double eval, String commentaireEvaluation) {
 		this.setEvaluation(eval);
 		Iterator<?> itObj;
 
 		itObj = this.getArcs2().iterator();
 		while (itObj.hasNext()) {
 			ArcApp arc = (ArcApp) itObj.next();
-			arc.setResultatAppariement(commentaire);
+			arc.setResultatAppariement(commentaireEvaluation);
 		}
 		itObj = this.getArcs1().iterator();
 		while (itObj.hasNext()) {
 			ArcApp arc = (ArcApp) itObj.next();
-			arc.setResultatAppariement(commentaire);
+			arc.setResultatAppariement(commentaireEvaluation);
 		}
 		itObj = this.getNoeuds2().iterator();
 		while (itObj.hasNext()) {
 			NoeudApp noeud = (NoeudApp) itObj.next();
-			noeud.setResultatAppariement(commentaire);
+			noeud.setResultatAppariement(commentaireEvaluation);
 		}
 		itObj = this.getNoeuds1().iterator();
 		while (itObj.hasNext()) {
 			NoeudApp noeud = (NoeudApp) itObj.next();
-			noeud.setResultatAppariement(commentaire);
+			noeud.setResultatAppariement(commentaireEvaluation);
 		}
 		itObj = this.getGroupes2().iterator();
 		while (itObj.hasNext()) {
 			GroupeApp groupe = (GroupeApp) itObj.next();
-			groupe.setResultatAppariement(commentaire);
+			groupe.setResultatAppariement(commentaireEvaluation);
 		}
 		itObj = this.getGroupes1().iterator();
 		while (itObj.hasNext()) {
 			GroupeApp groupe = (GroupeApp) itObj.next();
-			groupe.setResultatAppariement(commentaire);
+			groupe.setResultatAppariement(commentaireEvaluation);
 		}
 	}
 
@@ -258,7 +258,6 @@ public class LienReseaux extends Lien {
 			}
 		}
 		if ( param.debugAffichageCommentaires > 1 ) System.out.println("  "+liensGeneriques.size()+" liens 1-1 ont été exportés");
-		System.out.println("liens réseaux"+liensReseaux.size());
 
 		return liensGeneriques;
 	}
