@@ -247,15 +247,18 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 		tab = this.dallesIntersectees(env);
 		for (int i = tab[0]; i <= tab[1]; i++) {
 			for (int j = tab[2]; j <= tab[3]; j++) {
-				int size = index[i][j].size();
-				for (int ind = 0 ; ind < size ; ind++) {
+			    synchronized (index) {
+				int tileSize = index[i][j].size();
+				for (int ind = 0 ; ind < tileSize ; ind++) {
 					Feature feature = index[i][j].get(ind);
 					GM_Object geom = feature.getGeom();
+					if (geom==null) continue;
 					GM_Envelope envCourante = geom.envelope();
 					if (env.overlaps(envCourante))
 						if (geometry.intersects(geom))
 							result.add(feature);
 				}
+			    }
 			}
 		}
 		FT_FeatureCollection<Feature> collectionresult = new FT_FeatureCollection<Feature>();
@@ -282,14 +285,13 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 		for (int i = tab[0]; i <= tab[1]; i++) {
 			for (int j = tab[2]; j <= tab[3]; j++) {
 				if (geometry.intersects(dallesPolygones[i][j])) {
-					Iterator<Feature> it = index[i][j].iterator();
-					while (it.hasNext()) {
-						Feature feature = it.next();
-						GM_Object geom = feature.getGeom();
-						GM_Envelope envCourante = geom.envelope();
-						if (envGeometry.overlaps(envCourante))
-							if (geometry.intersects(geom))
+					synchronized (index) {
+						for(Feature feature : index[i][j]) {
+							GM_Object geom = feature.getGeom();
+							GM_Envelope envCourante = geom.envelope();
+							if (envGeometry.overlaps(envCourante)&&geometry.intersects(geom))
 								result.add(feature);
+						}
 					}
 				}
 			}
@@ -317,18 +319,16 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 		tab = this.dallesIntersectees(envGeometry);
 		for (int i = tab[0]; i <= tab[1]; i++) {
 			for (int j = tab[2]; j <= tab[3]; j++) {
-				if (!geometry.intersects(dallesPolygones[i][j])) continue;
-				Iterator<Feature> it = index[i][j].iterator();
-				while (it.hasNext()) {
-					Feature feature = it.next();
-					GM_Object geom = feature.getGeom();
-					GM_Envelope envCourante = geom.envelope();
-					if (envGeometry.overlaps(envCourante))
-						if (strictlyCrosses) {
-							if (geometry.crosses(geom))
+				if (geometry.intersects(dallesPolygones[i][j])) {
+					synchronized (index) {
+						for(Feature feature : index[i][j]) {
+							GM_Object geom = feature.getGeom();
+							GM_Envelope envCourante = geom.envelope();
+							if (envGeometry.overlaps(envCourante)&&
+									(strictlyCrosses?(geometry.crosses(geom)):(geometry.intersects(geom))))
 								result.add(feature);
-						} else if (geometry.intersects(geom))
-							result.add(feature);
+						}
+					}
 				}
 			}
 		}
@@ -421,6 +421,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 		while (iterator.hasNext()) {
 			Feature feature = iterator.next();
 			GM_Object geom = feature.getGeom();
+			if (geom == null) continue;
 			GM_Envelope envObjet = geom.envelope();
 			tab = this.dallesIntersectees(envObjet);
 			for (int i = tab[0]; i <= tab[1]; i++) {
@@ -498,7 +499,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 			for (int i = tab[0]; i <= tab[1]; i++) {
 				for (int j = tab[2]; j <= tab[3]; j++) {
 					if (geom.intersects(dallesPolygones[i][j])) {
-						index[i][j].add(value);
+						synchronized(index) {index[i][j].add(value);}
 					}
 				}
 			}
@@ -509,7 +510,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 				.getNumDallage(value).iterator();
 				while (itDallesConcernees.hasNext()) {
 					List<Integer> num = itDallesConcernees.next();
-					index[(num.get(0)).intValue()][(num.get(1)).intValue()].remove(value);
+					synchronized(index) {index[(num.get(0)).intValue()][(num.get(1)).intValue()].remove(value);}
 				}
 			}
 		} else if (cas == 0) {//modification : suppression puis ajout
