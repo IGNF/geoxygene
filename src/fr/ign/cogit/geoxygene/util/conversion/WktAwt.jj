@@ -30,26 +30,22 @@ options {
 
 PARSER_BEGIN(WktAwt)
 
-package conversion;
+package fr.ign.cogit.geoxygene.util.conversion;
 
 import java.util.StringTokenizer;
 
 import java.io.InputStream;
-import java.io.FileInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 
-import java.awt.Shape;
 import java.awt.geom.Point2D;
-import java.awt.geom.Line2D;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.geom.GeneralPath;
 
+@SuppressWarnings("unchecked")
 public class WktAwt
 {
-    static class EndOfFile extends Exception {}
-    static class EmptyLine extends Exception {}
+    static class EndOfFile extends Exception {private static final long serialVersionUID = 1L;}
+    static class EmptyLine extends Exception {private static final long serialVersionUID = 1L;}
 
     /*-----------------------------------------------------*/
     /*- Create AwtShape from Wkt object(s) ----------------*/
@@ -126,19 +122,22 @@ Point2D point():
 {
     xy=<POINT>
     {
-        StringTokenizer tkz=new StringTokenizer(xy.image);
-        String xStr=tkz.nextToken();
-        String yStr=tkz.nextToken();
-        double x=Double.parseDouble(xStr);
-        double y=Double.parseDouble(yStr);
-        return new Point2D.Double(x,y);
+    	try {
+	        StringTokenizer tkz=new StringTokenizer(xy.image);
+	        String xStr=tkz.nextToken();
+	        String yStr=tkz.nextToken();
+	        double x=Double.parseDouble(xStr);
+	        double y=Double.parseDouble(yStr);
+	        return new Point2D.Double(x,y);
+        } catch (Exception e) {System.out.println(e);}
     }
 }
 
 Point2D pointText():
 {Point2D p=new Point2D.Double(Double.NaN, Double.NaN);}
 {
-    ("(" p=point() ")" | "EMPTY") {return p;}
+    ("(" p=point() ")" | "EMPTY")
+    {try {return p;} catch (Exception e) {System.out.println(e);}}
 }
 
 GeneralPath linestringText():
@@ -153,7 +152,7 @@ GeneralPath linestringText():
     )*
     ")"
     | "EMPTY")
-    {return lineString;}
+    {try {return lineString;} catch (Exception e) {System.out.println(e);}}
 }
 
 AwtShape polygonText():
@@ -174,7 +173,7 @@ AwtShape polygonText():
     )*
     ")"
     | "EMPTY")
-    {return poly;}
+    {try {return poly;} catch (Exception e) {System.out.println(e);}}
 }
 
 AwtShape multipointText():
@@ -189,7 +188,7 @@ AwtShape multipointText():
     )*
     ")"
     | "EMPTY")
-    {return new AwtSurface(multi);}
+    {try {return new AwtSurface(multi);} catch (Exception e) {System.out.println(e);}}
 }
 
 AwtShape multilinestringText():
@@ -204,7 +203,7 @@ AwtShape multilinestringText():
     )*
     ")"
     | "EMPTY")
-    {return new AwtOutline(multi);}
+    {try {return new AwtOutline(multi);} catch (Exception e) {System.out.println(e);}}
 }
 
 AwtShape multipolygonText():
@@ -219,7 +218,7 @@ AwtShape multipolygonText():
     )*
     ")"
     | "EMPTY")
-    {return multi;}
+    {try {return multi;} catch (Exception e) {System.out.println(e);}}
 }
 
 AwtShape geometrycollectionText():
@@ -234,14 +233,16 @@ AwtShape geometrycollectionText():
     )*
     ")"
     | "EMPTY")
-    {return collec;}
+    {try {return collec;} catch (Exception e) {System.out.println(e);}}
 }
 
 AwtShape pointTaggedText():
 {Point2D p;}
 {
     "POINT"
-    (p=pointText() {return new AwtSurface(makeVisiblePoint(p));})
+    (p=pointText()
+    	{try {return new AwtSurface(makeVisiblePoint(p));} catch (Exception e) {System.out.println(e);}}
+    )
 }
 
 AwtShape linestringTaggedText():
@@ -250,42 +251,48 @@ AwtShape linestringTaggedText():
 }
 {
     "LINESTRING" 
-    lineString=linestringText() {return new AwtOutline(lineString);}
+    lineString=linestringText()
+    {try {return new AwtOutline(lineString);} catch (Exception e) {System.out.println(e);}}
 }
 
 AwtShape multipointTaggedText():
 {AwtShape multi;}
 {
     "MULTIPOINT"
-    multi=multipointText() {return multi;}
+    multi=multipointText()
+    {try {return multi;} catch (Exception e) {System.out.println(e);}}
 }
 
 AwtShape multilinestringTaggedText():
 {AwtShape multi;}
 {
     "MULTILINESTRING"
-    multi=multilinestringText() {return multi;}
+    multi=multilinestringText()
+    {try {return multi;} catch (Exception e) {System.out.println(e);}}
 }
 
 AwtShape polygonTaggedText():
 {AwtShape poly;}
 {
     "POLYGON" 
-    poly=polygonText() {return poly;}
+    poly=polygonText()
+    {try {return poly;} catch (Exception e) {System.out.println(e);}}
 }
 
 AwtShape multipolygonTaggedText():
 {AwtShape multi;}
 {
     "MULTIPOLYGON"
-    multi=multipolygonText() {return multi;}
+    multi=multipolygonText()
+    {try {return multi;} catch (Exception e) {System.out.println(e);}}
 }
 
 AwtShape geometrycollectionTaggedText():
 {AwtShape collec;}
 {
     "GEOMETRYCOLLECTION"
-    collec=geometrycollectionText() {return collec;}
+    collec=geometrycollectionText()
+    {try {return collec;} catch (Exception e) {System.out.println(e);}}
 }
 
 AwtShape geometryTaggedText():
@@ -300,7 +307,7 @@ AwtShape geometryTaggedText():
     | geom=multilinestringTaggedText()
     | geom=multipolygonTaggedText()
     | geom=geometrycollectionTaggedText())
-    {return geom;}
+    {try {return geom;} catch (Exception e) {System.out.println(e);}}
 }
 
 AwtShape parseOneLine() throws EmptyLine,EndOfFile:
@@ -308,7 +315,8 @@ AwtShape parseOneLine() throws EmptyLine,EndOfFile:
     AwtShape geom;
 }
 {
-    (geom=geometryTaggedText())(<EOF>|<EOL>) {return geom;}
-    | <EOL> {throw new EmptyLine(); return null;}
-    | <EOF> {throw new EndOfFile(); return null;}
+    (geom=geometryTaggedText())(<EOF>|<EOL>)
+    {try {return geom;} catch (Exception e) {System.out.println(e);}}
+    | <EOL> {try {return null;} catch (Exception e) {System.out.println(e);}}
+    | <EOF> {try {return null;} catch (Exception e) {System.out.println(e);}}
 }

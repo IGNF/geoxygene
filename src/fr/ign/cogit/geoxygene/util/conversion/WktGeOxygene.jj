@@ -60,6 +60,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
+@SuppressWarnings("unchecked")
 public class WktGeOxygene
 {
     static class EndOfFile extends Exception {private static final long serialVersionUID = 1L;}
@@ -99,7 +100,7 @@ public class WktGeOxygene
         else {
 	        result.append("(");
 	        for (int i=0; i<multiPoint.size(); i++) {
-	            point=(GM_Point)multiPoint.get(i);
+	            point=multiPoint.get(i);
 	            if (i!=0)
 	                result.append(", ");
 	            result.append(point(point));
@@ -176,7 +177,7 @@ public class WktGeOxygene
         StringBuffer result=new StringBuffer();
         result.append("(");
         for (int i=0; i<lineString.sizeControlPoint(); i++) {
-            point=(GM_Point)new GM_Point(lineString.getControlPoint(i));
+            point=new GM_Point(lineString.getControlPoint(i));
             if (i!=0)
                 result.append(", ");
             result.append(point(point));
@@ -495,14 +496,15 @@ DirectPosition point():
 		}        
         p=new DirectPosition(
             Double.parseDouble(xStr), Double.parseDouble(yStr));
-        return p;
+    	try {return p;} catch (Exception e) {System.out.println(e);}
     }
 }
 
 DirectPosition pointText():
 {DirectPosition p=new DirectPosition();}
 {
-    ("(" p=point() ")" | "EMPTY") {return p;}
+    ("(" p=point() ")" | "EMPTY")
+    {try {return p;} catch (Exception e) {System.out.println(e);}}
 }
 
 GM_LineString linestringText():
@@ -516,7 +518,7 @@ GM_LineString linestringText():
     ("," p=point() {lineString.addControlPoint(p);})*
     ")"
     | "EMPTY")
-    {return lineString;}
+    {try {return lineString;} catch (Exception e) {System.out.println(e);}}
 }
 
 GM_Polygon polygonText():
@@ -537,7 +539,7 @@ GM_Polygon polygonText():
     )*
     ")"
     | "EMPTY")
-    {return polygon;}
+    {try {return polygon;} catch (Exception e) {System.out.println(e);}}
 }
 
 GM_MultiPoint multipointText():
@@ -551,7 +553,7 @@ GM_MultiPoint multipointText():
     ("," p=point() {multiPoint.add(new GM_Point(p));})*
     ")"
     | "EMPTY")
-    {return multiPoint;}
+    {try {return multiPoint;} catch (Exception e) {System.out.println(e);}}
 }
 
 GM_MultiCurve multilinestringText():
@@ -566,7 +568,7 @@ GM_MultiCurve multilinestringText():
         {multiLineString.add(lineString);})*
     ")"
     | "EMPTY")
-    {return multiLineString;}
+    {try {return multiLineString;} catch (Exception e) {System.out.println(e);}}
 }
 
 GM_MultiSurface multipolygonText():
@@ -580,7 +582,7 @@ GM_MultiSurface multipolygonText():
     ("," polygon=polygonText() {multiPolygon.add(polygon);})*
     ")"
     | "EMPTY")
-    {return multiPolygon;}
+    {try {return multiPolygon;} catch (Exception e) {System.out.println(e);}}
 }
 
 GM_Aggregate geometrycollectionText():
@@ -596,56 +598,70 @@ GM_Aggregate geometrycollectionText():
     )*
     ")"
     | "EMPTY")
-    {return geometryCollection;}
+    {try {return geometryCollection;} catch (Exception e) {System.out.println(e);}}
 }
 
 GM_Point pointTaggedText():
 {DirectPosition p;}
 {
     "POINT" ("Z"|"M")?
-    (p=pointText() {return new GM_Point(p);})
+    (p=pointText()
+    {try {return new GM_Point(p);} catch (Exception e) {System.out.println(e);}}
+    )
 }
 
 GM_MultiPoint multipointTaggedText():
 {GM_MultiPoint mp;}
 {
     "MULTIPOINT" ("Z"|"M")?
-    (mp=multipointText() {return mp;})
+    (mp=multipointText()
+    {try {return mp;} catch (Exception e) {System.out.println(e);}}
+    )
 }
 
 GM_LineString linestringTaggedText():
 {GM_LineString lineString;}
 {
     "LINESTRING" ("Z"|"M")?
-    (lineString=linestringText() {return lineString;})
+    (lineString=linestringText()
+    {try {return lineString;} catch (Exception e) {System.out.println(e);}}
+    )
 }
 
 GM_MultiCurve multilinestringTaggedText():
 {GM_MultiCurve multiLineString;}
 {
     "MULTILINESTRING" ("Z"|"M")?
-    (multiLineString=multilinestringText() {return multiLineString;})
+    (multiLineString=multilinestringText()
+    {try {return multiLineString;} catch (Exception e) {System.out.println(e);}}
+    )
 }
 
 GM_Polygon polygonTaggedText():
 {GM_Polygon poly;}
 {
     "POLYGON" ("Z"|"M")?
-    (poly=polygonText() {return poly;})
+    (poly=polygonText()
+    {try {return poly;} catch (Exception e) {System.out.println(e);}}
+    )
 }
 
 GM_MultiSurface multipolygonTaggedText():
 {GM_MultiSurface mp;}
 {
     "MULTIPOLYGON" ("Z"|"M")?
-    (mp=multipolygonText() {return mp;})
+    (mp=multipolygonText()
+    {try {return mp;} catch (Exception e) {System.out.println(e);}}
+    )
 }
 
 GM_Aggregate geometrycollectionTaggedText():
 {GM_Aggregate o;}
 {
     "GEOMETRYCOLLECTION"
-    (o=geometrycollectionText() {return o;})
+    (o=geometrycollectionText()
+    {try {return o;} catch (Exception e) {System.out.println(e);}}
+    )
 }
 
 
@@ -661,13 +677,13 @@ GM_Object geometryTaggedText():
     | o=multipolygonTaggedText()
     | o=geometrycollectionTaggedText()
     )
-    {return o;}
+    {try {return o;} catch (Exception e) {System.out.println(e);}}
 }
 
 GM_Object parseOneLine() throws EmptyLine,EndOfFile:
 {GM_Object o;}
 {
-    (o=geometryTaggedText())(<EOL>|<EOF>) {return o;}
-    | <EOL> {throw new EmptyLine(); return null;}
-    | <EOF> {throw new EndOfFile(); return null;}
+    (o=geometryTaggedText())(<EOL>|<EOF>) {try {return o;} catch (Exception e) {System.out.println(e);}}
+    | <EOL> {try {return null;} catch (Exception e) {System.out.println(e);}}
+    | <EOF> {try {return null;} catch (Exception e) {System.out.println(e);}}
 }
