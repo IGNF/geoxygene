@@ -243,9 +243,9 @@ public class CompareLib  {
 		long time;
 		time=time();
 
-		GM_Envelope baseEnvelope=(GM_Envelope)this.baseEnvelope.clone();
-		baseEnvelope.expandBy(factor);
-		GM_Polygon bbox=new GM_Polygon(baseEnvelope);
+		GM_Envelope envelope=(GM_Envelope)this.baseEnvelope.clone();
+		envelope.expandBy(factor);
+		GM_Polygon bbox=new GM_Polygon(envelope);
 
 		FT_FeatureCollection<?> featList1=db.loadAllFeatures(featClass1, bbox);
 		FT_FeatureCollection<?> featList2=db.loadAllFeatures(featClass2, bbox);

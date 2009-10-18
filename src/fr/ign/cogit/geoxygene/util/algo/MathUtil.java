@@ -78,10 +78,10 @@ public class MathUtil {
 	 * @param moyenne moyennes des éléments de la liste
 	 * @return écart type des éléments d'une liste
 	 */
-	public static double ecartType(List<Double> liste, double moyenne) {
+	public static <E extends Number> double ecartType(List<E> liste, double moyenne) {
 		if (liste.isEmpty()) return 0.0;
 		double somme=0.0;
-		for(double d:liste) {double e=d-moyenne;somme+=e*e;}
+		for(Number d:liste) {double e=d.doubleValue()-moyenne;somme+=e*e;}
 		return Math.sqrt(somme/liste.size());
 	}
 

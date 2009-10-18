@@ -54,6 +54,7 @@ import com.vividsolutions.jts.operation.distance.DistanceOp;
 import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;
 
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
@@ -173,8 +174,12 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsInter=jtsGeom1.intersection(jtsGeom2);
 			return JtsGeOxygene.makeGeOxygeneGeom(jtsInter);
 		} catch (Exception e) {
-			logger.error("## CALCUL D'INTERSECTION AVEC JTS : PROBLEME (le resultat renvoie NULL) ##");
-			if (logger.isDebugEnabled()) logger.debug(e.getMessage());
+			if (logger.isDebugEnabled()) {
+			    logger.error("## CALCUL D'INTERSECTION AVEC JTS : PROBLEME (le resultat renvoie NULL) ##");
+			    logger.debug(e.getMessage());
+			    logger.debug("geometry 1 = "+g1);
+			    logger.debug("geometry 2 = "+g2);
+			}
 			//e.printStackTrace();
 			return null;
 		}
@@ -603,6 +608,34 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		return null;
 	}
 
+	/**
+	 * Détermine les points les plus proches deux géométries. 
+	 * Les points sont donnés dans le même ordre que les deux géométries d'entrée.
+	 * Compute the nearest points of two geometries.
+	 * The points are presented in the same order as the input Geometries. 
+	 * 
+	 * @param g1 une géométrie
+	 * @param g2 une autre géométrie
+	 * @return la liste des 2 points les plus proches
+	 */
+	public static DirectPositionList getPointsLesPlusProches(GM_Object g1, GM_Object g2) {
+		try {
+			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
+			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
+			Coordinate[] coord = DistanceOp.nearestPoints(jtsGeom1, jtsGeom2);
+			DirectPosition dp1 = new DirectPosition(coord[0].x,coord[0].y);
+			DirectPosition dp2 = new DirectPosition(coord[1].x,coord[1].y);
+			DirectPositionList listePoints =new DirectPositionList();
+			listePoints.add(dp1);
+			listePoints.add(dp2);
+			return listePoints;
+		} catch (Exception e) {
+			logger.error("erreur jts avec getPointsLesPlusProches");
+			if (logger.isDebugEnabled()) logger.debug(e.getMessage());
+		}
+		return null;
+	}
+
 	static JtsAlgorithms singleton = new JtsAlgorithms();
 	protected static EventListenerList listenerList = new EventListenerList();
 
@@ -785,8 +818,6 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		return CGAlgorithms.isCCW(coords);
 	}
 
-
-
 	/**
 	 * tente d'appliquer filtre de douglas peucker a une geometrie.
 	 * en cas d'echec, renvoie la geometrie initiale
@@ -861,6 +892,5 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		for(int i=0; i<mp.getNumGeometries(); i++) polys[i] = supprimeTrous((Polygon)mp.getGeometryN(i));
 		return (new GeometryFactory()).createMultiPolygon(polys);
 	}
-
-
+	
 } // class
