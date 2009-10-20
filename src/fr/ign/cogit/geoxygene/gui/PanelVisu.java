@@ -81,7 +81,7 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
  */
 public class PanelVisu extends JPanel implements Printable, ChangeListener, FeatureCollectionListener {
 	private static final long serialVersionUID = 6867389438475472471L;
-	private final static Logger logger=Logger.getLogger(PanelVisu.class.getName());
+	protected final static Logger logger=Logger.getLogger(PanelVisu.class.getName());
 
 	private String overlayText = null;
 	/**
@@ -326,7 +326,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	}
 
 	public static int tempsRafraichissementAutomatique=400;// temps en millisecondes
-	private Timer repaintTimer = new Timer(tempsRafraichissementAutomatique, new ActionListener() {
+	protected Timer repaintTimer = new Timer(tempsRafraichissementAutomatique, new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			if (logger.isTraceEnabled()) logger.trace("repaintTimer activé");
 			if ( (dessinable!=null) && (dessinable.getThreadMaj()!=null) && (dessinable.getThreadMaj().get()!=null) && (dessinable.getThreadMaj().get().isAlive()) ) {
@@ -402,7 +402,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	 * 'enveloppeAffichage' est utilise pour determiner les objets a tracer dans la vue (ceux qui l'intersectent)
 	 * @throws InterruptedException
 	 */
-	private synchronized void majLimitesAffichage(){
+	protected synchronized void majLimitesAffichage(){
 		dessinable.majLimitesAffichage(this.getWidth(),this.getHeight());
 		update = false;
 	}
@@ -427,7 +427,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 		update=true;
 	}
 
-	long start;
+	protected long start;
 	@Override
 	public synchronized void paintComponent(Graphics g) {
 		start = System.currentTimeMillis();
