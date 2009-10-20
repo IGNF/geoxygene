@@ -106,7 +106,7 @@ public abstract class Operateurs {
 		double d , dmin;
 		DirectPosition pt, ptmin;
 
-		if (listePoints.size() == 0) return listePoints.get(0);
+		if (listePoints.size() <= 1) return listePoints.get(0);
 		ptmin = projection(dp,listePoints.get(0),listePoints.get(1));
 		dmin = Distances.distance(dp,ptmin);
 		for (int i=0;i<listePoints.size()-1;i++) {
