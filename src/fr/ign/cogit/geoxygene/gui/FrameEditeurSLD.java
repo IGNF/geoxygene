@@ -140,10 +140,10 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 
 	/**
 	 * Crée un dataset pour afficher le SLD.
-	 * @param sld SLD à utiliser
+	 * @param newSld SLD à utiliser
 	 */
-	private void createDataSetFromSld(StyledLayerDescriptor sld) {
-		for (Layer layer:sld.getLayers()) {
+	private void createDataSetFromSld(StyledLayerDescriptor newSld) {
+		for (Layer layer:newSld.getLayers()) {
 			if ((layer.getFeatureCollection()!=null)&&(layer.getFeatureCollection().size()>0)) {
 				Population<FT_Feature> population = new Population<FT_Feature>();
 				population.setNom(layer.getName());
@@ -203,29 +203,29 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 	class SLDRenderer extends DefaultTreeCellRenderer {
 		private static final long serialVersionUID = 2130271540227696439L;
 
-		private StyledLayerDescriptor sld;
-	    public SLDRenderer(StyledLayerDescriptor sld) {this.sld=sld;}
+		private StyledLayerDescriptor sldRenderer;
+	    public SLDRenderer(StyledLayerDescriptor sld) {this.sldRenderer=sld;}
 
 	    @Override
 		public Component getTreeCellRendererComponent(
-	                        JTree tree,
+	                        JTree treeRenderer,
 	                        Object value,
 	                        boolean sel,
 	                        boolean expanded,
 	                        boolean leaf,
 	                        int row,
-	                        boolean hasFocus) {
+	                        boolean hasFocusRenderer) {
 
 	        super.getTreeCellRendererComponent(
-	                        tree, value, sel,
+	                        treeRenderer, value, sel,
 	                        expanded, leaf, row,
-	                        hasFocus);
+	                        hasFocusRenderer);
 	        if (leaf && isLayer(value)) {
 	            setToolTipText("Ceci est un layer.");
 	            Layer layer = (Layer) ((DefaultMutableTreeNode)value).getUserObject();
 	            setText(layer.getClass().getSimpleName()+" - "+layer.getName());
 				if (dataset.getPopulation(layer.getName())!=null)
-					setIcon(new LayerIcon(layer,sld));
+					setIcon(new LayerIcon(layer,sldRenderer));
 	        } else {
 	            setToolTipText(null); //no tool tip
 	        } 
