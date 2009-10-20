@@ -152,18 +152,18 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener, 
 	}
 	class LayerRenderer extends DefaultTreeCellRenderer {
 		private static final long serialVersionUID = 3819934049264771686L;
-		private StyledLayerDescriptor sld;
-	    public LayerRenderer(StyledLayerDescriptor sld) {this.sld=sld;}
+		private StyledLayerDescriptor sldRenderer;
+	    public LayerRenderer(StyledLayerDescriptor sld) {this.sldRenderer=sld;}
 
 	    @Override
-		public Component getTreeCellRendererComponent(JTree tree,Object value,boolean sel,boolean expanded,boolean leaf,int row,boolean hasFocus) {
+		public Component getTreeCellRendererComponent(JTree treeRenderer,Object value,boolean sel,boolean expanded,boolean leaf,int row,boolean hasFocusRenderer) {
 
-	        super.getTreeCellRendererComponent(tree, value, sel,expanded, leaf, row,hasFocus);
+	        super.getTreeCellRendererComponent(treeRenderer, value, sel,expanded, leaf, row,hasFocusRenderer);
 	        if (leaf && isStyle(value)) {
 	            setToolTipText("Ceci est un style.");
 	            Style style = (Style) ((DefaultMutableTreeNode)value).getUserObject();
 	            setText(style.getName());
-	            setIcon(new StyleIcon(style,sld));
+	            setIcon(new StyleIcon(style,sldRenderer));
 	        } else {
 	            setToolTipText(null); //no tool tip
 	        } 
