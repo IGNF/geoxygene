@@ -147,10 +147,12 @@ public class InterfaceGeoxygene extends JFrame {
 		    	/**
 		    	 * Sauve le sld courant et la liste des fichiers ouverts...
 		    	 */
+		    	/*
 		    	logger.info("Sauvegarde d'un sld portant "+getPanelVisu().getSld().getLayers().size()+" layers");
 		    	getPanelVisu().getSld().toXml("sld.xml");
 		    	chargement.setDataSet(getPanelVisu().getDataset());
 		    	chargement.toXml("chargement.xml");
+		    	*/
 		    	System.exit(0);
 		    }
 			@Override
@@ -217,7 +219,7 @@ public class InterfaceGeoxygene extends JFrame {
 		 *  Ajoute le panel de visualisation au listeners de la population.
 		 *  Il sera informé de l'ajout des nouveaux objets au fur et à mesure.
 		 */
-		reader.getPopulation().addChangeListener(getPanelVisu());
+		reader.getPopulation().addFeatureCollectionListener(getPanelVisu());
 		/**
 		 * Ajoute un layer au SLD du panel de visualisation.
 		 * On essaye de récupérer les styles existants depuis le sld courant 

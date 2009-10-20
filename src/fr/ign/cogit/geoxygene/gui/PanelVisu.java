@@ -61,6 +61,8 @@ import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
+import fr.ign.cogit.geoxygene.feature.event.FeatureCollectionEvent;
+import fr.ign.cogit.geoxygene.feature.event.FeatureCollectionListener;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -77,7 +79,7 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
  * @author julien Gaffuri
  *
  */
-public class PanelVisu extends JPanel implements Printable, ChangeListener {
+public class PanelVisu extends JPanel implements Printable, ChangeListener, FeatureCollectionListener {
 	private static final long serialVersionUID = 6867389438475472471L;
 	private final static Logger logger=Logger.getLogger(PanelVisu.class.getName());
 
@@ -269,9 +271,9 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener {
 		
 		setBackground(Color.white);
 		/** Charge le SLD par défaut */
-		defaultSld = StyledLayerDescriptor.charge("defaultSLD.xml");
+		defaultSld = StyledLayerDescriptor.unmarshall("defaultSLD.xml");
 		/** Charge le dernier SLD utilisé */
-		sld = StyledLayerDescriptor.charge("sld.xml");
+		sld = StyledLayerDescriptor.unmarshall("sld.xml");
 		
 		dessinable = new DessinableGeoxygene(this.getSld());
 		if (useChangeListener) dessinable.addChangeListener(this);
@@ -858,6 +860,11 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener {
 	 */
 	public void repaint(boolean b) {
 		update = update||b;
+		repaint();
+	}
+	@Override
+	public void changed(FeatureCollectionEvent event) {
+		update = true;
 		repaint();
 	}
 }
