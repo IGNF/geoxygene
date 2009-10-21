@@ -80,6 +80,7 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  */
 
 
+@SuppressWarnings("nls")
 public class CompareLib  {
 
 	private static IndentedPrintStream out;
@@ -88,7 +89,7 @@ public class CompareLib  {
 	private Geodatabase db;
 
 	// Alias de Connection a Oracle (dans le fichier de mapping repository_database.xml)
-	private String ORACLE_ALIAS = "ORACLE_ALIAS";
+	private String ORACLE_ALIAS = "ORACLE_ALIAS"; //$NON-NLS-1$
 
 	// classes a charger
 	private Class<? extends FT_Feature> featClass1;
@@ -115,19 +116,19 @@ public class CompareLib  {
 
 	/* liste des algos a tester */
 	private String[] algorithmsName = new String[] {
-			"buffer10",
-			"convexHull",
-			"centroid",
-			"intersection",
-			"union",
-			"difference",
-			"symDifference",
-			"length",
-			"area",
-			"distance",
-			"equals",
-			"contains",
-	"intersects" };
+			"buffer10", //$NON-NLS-1$
+			"convexHull", //$NON-NLS-1$
+			"centroid", //$NON-NLS-1$
+			"intersection", //$NON-NLS-1$
+			"union", //$NON-NLS-1$
+			"difference", //$NON-NLS-1$
+			"symDifference", //$NON-NLS-1$
+			"length", //$NON-NLS-1$
+			"area", //$NON-NLS-1$
+			"distance", //$NON-NLS-1$
+			"equals", //$NON-NLS-1$
+			"contains", //$NON-NLS-1$
+	"intersects" }; //$NON-NLS-1$
 
 	/* Les noms de classes de feature a charger */
 	private String featClassName1 = "geoschema.feature.Topo_bati_extrait5";
@@ -166,38 +167,38 @@ public class CompareLib  {
 		out.println("Begin!");
 
 		out.print("connecting database ... ");
-		db= GeodatabaseOjbFactory.newInstance(ORACLE_ALIAS);
+		this.db= GeodatabaseOjbFactory.newInstance(this.ORACLE_ALIAS);
 		out.println("OK");
 
-		if (testJts) jts=new JtsAlgorithms();
+		if (this.testJts) this.jts=new JtsAlgorithms();
 		//        if (testOracle) oracle=new OracleAlgorithms(db,0.0000000005);
-		if (testGeos) geos=new GeosAlgorithms();
+		if (this.testGeos) this.geos=new GeosAlgorithms();
 
 		try {
-			featClass1=(Class<? extends FT_Feature>) Class.forName(featClassName1);
-			featClass2=(Class<? extends FT_Feature>) Class.forName(featClassName2);
+			this.featClass1=(Class<? extends FT_Feature>) Class.forName(this.featClassName1);
+			this.featClass2=(Class<? extends FT_Feature>) Class.forName(this.featClassName2);
 		} catch (Exception e) {
 			err.println("## Classes geographiques non trouvées ##");
 			System.exit(0);
 		}
-		out.println("test class 1 : "+featClass1.getName());
-		out.println("test class 2 : "+featClass2.getName());
+		out.println("test class 1 : "+this.featClass1.getName());
+		out.println("test class 2 : "+this.featClass2.getName());
 
 		out.println("Computing envelope...");
 
 		try {
-			GM_Envelope baseEnvelope1 = db.getMetadata(featClass1).getEnvelope();
-			GM_Envelope baseEnvelope2 = db.getMetadata(featClass2).getEnvelope();
+			GM_Envelope baseEnvelope1 = this.db.getMetadata(this.featClass1).getEnvelope();
+			GM_Envelope baseEnvelope2 = this.db.getMetadata(this.featClass2).getEnvelope();
 			// on prend l'enveloppe maximale des deux enveloppes
 			baseEnvelope1.expand(baseEnvelope2);
-			baseEnvelope = (GM_Envelope)baseEnvelope1.clone();
+			this.baseEnvelope = (GM_Envelope)baseEnvelope1.clone();
 		} catch (Exception e) {
 			err.println("## Problemes en recuperant l'emprise des couches dans les metadonnees ##");
 			System.exit(0);
 		}
 
-		out.println("envelope : "+baseEnvelope);
-		out.println("test path : "+path);
+		out.println("envelope : "+this.baseEnvelope);
+		out.println("test path : "+this.path);
 
 	}
 
@@ -207,11 +208,11 @@ public class CompareLib  {
 	{
 		out.indentRight();
 
-		int numAlgos=algorithmsName.length;
+		int numAlgos=this.algorithmsName.length;
 
 		for (int i=0; i<numAlgos; i++) {
-			String algoName=algorithmsName[i];
-			String outDirPath=outDirPathTab[i]=path+"/"+algoName+"/";
+			String algoName=this.algorithmsName[i];
+			String outDirPath=outDirPathTab[i]=this.path+"/"+algoName+"/"; //$NON-NLS-1$ //$NON-NLS-2$
 			File outDirFile=new File(outDirPath);
 			outDirFile.mkdirs();
 			PrintStream dataOut=dataOutTab[i]=new PrintStream(new FileOutputStream(outDirPath+"test.dat"));
@@ -222,11 +223,11 @@ public class CompareLib  {
 			String datLine;
 			datLine=""+"factor\t"+"size\t";
 
-			if (testJts) datLine=datLine+"jts\t";
-			if (testOracle) datLine=datLine+"oracle\t";
-			if (testGeos) datLine=datLine+"geos\t";
-			if (testJts && testOracle ) datLine=datLine+"jts/oracle\t";
-			if (testGeos && testOracle ) datLine=datLine+"geos/oracle\t";
+			if (this.testJts) datLine=datLine+"jts\t";
+			if (this.testOracle) datLine=datLine+"oracle\t";
+			if (this.testGeos) datLine=datLine+"geos\t";
+			if (this.testJts && this.testOracle ) datLine=datLine+"jts/oracle\t";
+			if (this.testGeos && this.testOracle ) datLine=datLine+"geos/oracle\t";
 
 			dataOut.println(datLine);
 			dataOut.println();
@@ -247,29 +248,29 @@ public class CompareLib  {
 		envelope.expandBy(factor);
 		GM_Polygon bbox=new GM_Polygon(envelope);
 
-		FT_FeatureCollection<?> featList1=db.loadAllFeatures(featClass1, bbox);
-		FT_FeatureCollection<?> featList2=db.loadAllFeatures(featClass2, bbox);
+		FT_FeatureCollection<?> featList1=this.db.loadAllFeatures(this.featClass1, bbox);
+		FT_FeatureCollection<?> featList2=this.db.loadAllFeatures(this.featClass2, bbox);
 
 		// creation des agregats
-		geom1.clear();
+		this.geom1.clear();
 		Iterator<? extends FT_Feature> iterator = featList1.iterator();
-		while (iterator.hasNext()) geom1.add((GM_OrientableSurface)iterator.next().getGeom());
-		geom2.clear();
+		while (iterator.hasNext()) this.geom1.add((GM_OrientableSurface)iterator.next().getGeom());
+		this.geom2.clear();
 		iterator = featList2.iterator();
-		while (iterator.hasNext()) geom2.add((GM_OrientableSurface)iterator.next().getGeom());
+		while (iterator.hasNext()) this.geom2.add((GM_OrientableSurface)iterator.next().getGeom());
 
 		out.println("Creation: "+(time()-time)/1000.+" seconds");
-		out.println("Size of geom1: "+geom1.size());
-		out.println("Size of geom2: "+geom2.size());
+		out.println("Size of geom1: "+this.geom1.size());
+		out.println("Size of geom2: "+this.geom2.size());
 
 		out.println("Envelope of geom1:");
 		out.indentRight();
-		out.println(geom1.envelope().toString());
+		out.println(this.geom1.envelope().toString());
 		out.indentLeft();
 
 		out.println("Envelope of geom2:");
 		out.indentRight();
-		out.println(geom2.envelope().toString());
+		out.println(this.geom2.envelope().toString());
 		out.indentLeft();
 
 		out.indentLeft();
@@ -292,42 +293,42 @@ public class CompareLib  {
 
 		Color[] colors;
 		if (nbParameters==1) {
-			geomsJts= new GM_Object[] {(GM_Object)resultJts,geom1};
-			geomsOracle= new GM_Object[] {(GM_Object)resultOracle,geom1};
-			geomsGeos= new GM_Object[] {(GM_Object)resultGeos,geom1};
+			geomsJts= new GM_Object[] {(GM_Object)this.resultJts,this.geom1};
+			geomsOracle= new GM_Object[] {(GM_Object)this.resultOracle,this.geom1};
+			geomsGeos= new GM_Object[] {(GM_Object)this.resultGeos,this.geom1};
 			colors=new Color[] {colorResult,colorG1};
 		} else /*if (nbParameters==2) */ {
-			geomsJts= new GM_Object[] {(GM_Object)resultJts,geom1,geom2};
-			geomsOracle= new GM_Object[] {(GM_Object)resultOracle,geom1,geom2};
-			geomsGeos= new GM_Object[] {(GM_Object)resultGeos,geom1,geom2};
+			geomsJts= new GM_Object[] {(GM_Object)this.resultJts,this.geom1,this.geom2};
+			geomsOracle= new GM_Object[] {(GM_Object)this.resultOracle,this.geom1,this.geom2};
+			geomsGeos= new GM_Object[] {(GM_Object)this.resultGeos,this.geom1,this.geom2};
 			colors=new Color[] {colorG1,colorG2,colorResult};
 		}
 
-		if (testJts) {
+		if (this.testJts) {
 			String pfx1=outDirPath+"jts_"+factorString;
 			String imgPath1=pfx1+".png";
 			String svgzPath1=pfx1+".svg.z";
 			out.println("Saving "+pfx1+"...");
-			if (saveImage) ImgUtil.saveImage(geomsJts,imgPath1,colors,bg,width,height);
-			if (saveSvg) ImgUtil.saveSvgz(geomsJts,svgzPath1,colors,bg,width,height);
+			if (this.saveImage) ImgUtil.saveImage(geomsJts,imgPath1,colors,bg,width,height);
+			if (this.saveSvg) ImgUtil.saveSvgz(geomsJts,svgzPath1,colors,bg,width,height);
 		}
 
-		if (testOracle) {
+		if (this.testOracle) {
 			String pfx1=outDirPath+"oracle_"+factorString;
 			String imgPath1=pfx1+".png";
 			String svgzPath1=pfx1+".svg.z";
 			out.println("Saving "+pfx1+"...");
-			if (saveImage) ImgUtil.saveImage(geomsOracle,imgPath1,colors,bg,width,height);
-			if (saveSvg) ImgUtil.saveSvgz(geomsOracle,svgzPath1,colors,bg,width,height);
+			if (this.saveImage) ImgUtil.saveImage(geomsOracle,imgPath1,colors,bg,width,height);
+			if (this.saveSvg) ImgUtil.saveSvgz(geomsOracle,svgzPath1,colors,bg,width,height);
 		}
 
-		if (testGeos) {
+		if (this.testGeos) {
 			String pfx1=outDirPath+"geos_"+factorString;
 			String imgPath1=pfx1+".png";
 			String svgzPath1=pfx1+".svg.z";
 			out.println("Saving "+pfx1+"...");
-			if (saveImage) ImgUtil.saveImage(geomsGeos,imgPath1,colors,bg,width,height);
-			if (saveSvg) ImgUtil.saveSvgz(geomsGeos,svgzPath1,colors,bg,width,height);
+			if (this.saveImage) ImgUtil.saveImage(geomsGeos,imgPath1,colors,bg,width,height);
+			if (this.saveSvg) ImgUtil.saveSvgz(geomsGeos,svgzPath1,colors,bg,width,height);
 		}
 
 		out.indentLeft();
@@ -346,7 +347,7 @@ public class CompareLib  {
 			out.println("JTS...");
 			long time=time();
 			try {
-				resultJts=jtsAlgo.invoke(jts,algoParameters);
+				this.resultJts=jtsAlgo.invoke(this.jts,algoParameters);
 			} catch (InvocationTargetException e) {
 				Throwable cause=e.getCause();
 				cause.printStackTrace();
@@ -354,7 +355,7 @@ public class CompareLib  {
 					CoordinateSequence jtsCoord= CoordinateArraySequenceFactory.instance().
 					create(new Coordinate[] {((TopologyException)cause).getCoordinate()});
 					DirectPosition geOxyCoord=JtsGeOxygene.makeDirectPosition(jtsCoord);
-					resultJts=new GM_Point(geOxyCoord);
+					this.resultJts=new GM_Point(geOxyCoord);
 				}
 			}
 			time=time()-time;
@@ -409,7 +410,7 @@ public class CompareLib  {
 
 			out.println("Geos...");
 			long time=time();
-			resultGeos=geosAlgo.invoke(geos,algoParameters);
+			this.resultGeos=geosAlgo.invoke(this.geos,algoParameters);
 			time=time()-time;
 			out.println("Geos: "+(time/1000.)+" seconds");
 			long geosTime=time;
@@ -437,10 +438,10 @@ public class CompareLib  {
 		Method[] geomAlgos=geomAlgoClass.getMethods();
 		int nbParameters=0;
 
-		for (int i=0; i<algorithmsName.length; i++) {
+		for (int i=0; i<this.algorithmsName.length; i++) {
 			PrintStream dataOut=dataOutTab[i];
 			String outDirPath=outDirPathTab[i];
-			String realAlgoName=algorithmsName[i];
+			String realAlgoName=this.algorithmsName[i];
 
 			out.println(realAlgoName);
 
@@ -455,10 +456,10 @@ public class CompareLib  {
 			}
 			if (nbParameters==1)  {
 				algoParamTypes = new Class[] {GM_Object.class};
-				algoParameters = new Object[] {geom1};
+				algoParameters = new Object[] {this.geom1};
 			} else if (nbParameters==2){
 				algoParamTypes = new Class[] {GM_Object.class, GM_Object.class};
-				algoParameters = new Object[] {geom1, geom2};
+				algoParameters = new Object[] {this.geom1, this.geom2};
 			} else {
 				err.println(" ## Probleme dans le choix des parametres ## ");
 			}
@@ -466,11 +467,11 @@ public class CompareLib  {
 
 			/*-- ...Geos -------------------------------------------------*/
 			long geosTime=0;
-			if (testGeos) geosTime=launchGeos(realAlgoName,algoParamTypes,algoParameters);
+			if (this.testGeos) geosTime=launchGeos(realAlgoName,algoParamTypes,algoParameters);
 
 			/*-- ...Jts ----------------------------------------------------*/
 			long jtsTime=0;
-			if (testJts) jtsTime=launchJts(realAlgoName,algoParamTypes,algoParameters);
+			if (this.testJts) jtsTime=launchJts(realAlgoName,algoParamTypes,algoParameters);
 
 			/*-- ...Oracle -------------------------------------------------*/
 			long oracleTime=0;
@@ -478,14 +479,14 @@ public class CompareLib  {
 
 			/*-- Print line in testresult file ---------------------------*/
 			String datLine;
-			datLine=""+factorString+'\t'+geom1.size()+'\t';
-			if (nbParameters==2) datLine += geom2.size()+'\t';
+			datLine=""+factorString+'\t'+this.geom1.size()+'\t';
+			if (nbParameters==2) datLine += this.geom2.size()+'\t';
 
-			if (testJts) datLine=datLine+jtsTime+'\t';
-			if (testOracle) datLine=datLine+oracleTime+'\t';
-			if (testGeos) datLine=datLine+geosTime+'\t';
-			if (testJts && testOracle ) datLine=datLine+((double)jtsTime)/oracleTime+'\t';
-			if (testGeos && testOracle ) datLine=datLine+((double)geosTime)/oracleTime;
+			if (this.testJts) datLine=datLine+jtsTime+'\t';
+			if (this.testOracle) datLine=datLine+oracleTime+'\t';
+			if (this.testGeos) datLine=datLine+geosTime+'\t';
+			if (this.testJts && this.testOracle ) datLine=datLine+((double)jtsTime)/oracleTime+'\t';
+			if (this.testGeos && this.testOracle ) datLine=datLine+((double)geosTime)/oracleTime;
 
 			dataOut.println(datLine);
 
@@ -493,16 +494,16 @@ public class CompareLib  {
 			if (returnType==GM_Object.class) {
 				out.indentRight();
 				out.println("Saving images...");
-				int width = (int) baseEnvelope.width()/100;
-				int height = (int) baseEnvelope.length()/100;
+				int width = (int) this.baseEnvelope.width()/100;
+				int height = (int) this.baseEnvelope.length()/100;
 				saveImagesCm(nbParameters,outDirPath,factorString,width,height);
 				out.indentLeft();
 			} else {
 				out.indentRight();
 				out.indentRight();
-				if (testJts) out.println("result jts : "+resultJts);
-				if (testOracle) out.println("result oracle : "+resultOracle);
-				if (testGeos) out.println("result geos : "+resultGeos);
+				if (this.testJts) out.println("result jts : "+this.resultJts);
+				if (this.testOracle) out.println("result oracle : "+this.resultOracle);
+				if (this.testGeos) out.println("result geos : "+this.resultGeos);
 				out.indentLeft();
 				out.indentLeft();
 			}
@@ -518,12 +519,12 @@ public class CompareLib  {
 		out.indentRight();
 
 		/*-- Create output directories and testresult files --------------*/
-		String[] outDirPathTab=new String[algorithmsName.length];
+		String[] outDirPathTab=new String[this.algorithmsName.length];
 		PrintStream[] dataOutTab=new PrintStream[outDirPathTab.length];
 		initFiles(outDirPathTab,dataOutTab);
 
 		/* boucle reglant la taille des envelopes pour le chargement des objets */
-		for (double factor=min; factor<=max; factor+=step) {
+		for (double factor=this.min; factor<=this.max; factor+=this.step) {
 			DecimalFormat format=new DecimalFormat();
 			format.setMaximumFractionDigits(2);
 			String factorString=format.format(factor);
@@ -555,7 +556,7 @@ public class CompareLib  {
 
 	// ########################################################################################
 	private class IndentedPrintStream extends PrintStream {
-		private String indent="";
+		private String indent=""; //$NON-NLS-1$
 
 		public IndentedPrintStream(OutputStream out)
 		{
@@ -579,16 +580,16 @@ public class CompareLib  {
 		@Override
 		public void println(String x)
 		{
-			StringTokenizer tkz=new StringTokenizer(x, "\n");
+			StringTokenizer tkz=new StringTokenizer(x, "\n"); //$NON-NLS-1$
 			while (tkz.hasMoreTokens()) {
 				String line=tkz.nextToken();
-				super.print(indent);
+				super.print(this.indent);
 				super.println(line);
 			}
 		}
 
-		public void indentRight() {indent+="\t";}
-		public void indentLeft() {indent=indent.replaceFirst("\t$","");}
+		public void indentRight() {this.indent+="\t";} //$NON-NLS-1$
+		public void indentLeft() {this.indent=this.indent.replaceFirst("\t$","");}  //$NON-NLS-1$//$NON-NLS-2$
 	}
 
 }

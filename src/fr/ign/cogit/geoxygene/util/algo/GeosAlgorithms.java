@@ -44,7 +44,7 @@ import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
 public class GeosAlgorithms implements GeomAlgorithms {
 
 	public GeosAlgorithms() {
-		System.loadLibrary("GeosAlgorithms");
+		System.loadLibrary("GeosAlgorithms"); //$NON-NLS-1$
 	}
 
 	private native String intersection(String wkt1, String wkt2);

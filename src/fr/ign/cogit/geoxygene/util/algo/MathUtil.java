@@ -41,7 +41,7 @@ public class MathUtil {
 	public static double moyenne(List<Double> liste) {
 		if (liste.isEmpty()) return 0.0;
 		double somme = 0.0;
-		for(Double val:liste) somme+=val;
+		for(Double val:liste) somme+=val.doubleValue();
 		return somme/liste.size();
 	}
 
@@ -53,7 +53,7 @@ public class MathUtil {
 	public static double moyenneCarres(List<Double> liste) {
 		if (liste.isEmpty()) return 0.0;
 		double somme = 0.0;
-		for(Double val:liste) somme+=val*val;
+		for(Double val:liste) somme+=val.doubleValue()*val.doubleValue();
 		return somme/liste.size();
 	}
 
@@ -93,7 +93,7 @@ public class MathUtil {
 	public static double min(List<Double> liste) {
 		if (liste.isEmpty()) return 0.0;
 		double min=Double.MAX_VALUE;
-		for(Double val:liste) min=Math.min(min, val);
+		for(Double val:liste) min=Math.min(min, val.doubleValue());
 		return min;
 	}
 
@@ -105,7 +105,7 @@ public class MathUtil {
 	public static double max(List<Double> liste) {
 		if (liste.isEmpty()) return 0.0;
 		double max=-Double.MAX_VALUE;
-		for(Double val:liste) max=Math.max(max, val);
+		for(Double val:liste) max=Math.max(max, val.doubleValue());
 		return max;
 	}
 
@@ -118,7 +118,7 @@ public class MathUtil {
 		if (liste.isEmpty()) return 0.0;
 		Double[] listeTriee = liste.toArray(new Double[0]);
 		java.util.Arrays.sort(listeTriee);
-		return listeTriee[liste.size()/2];
+		return listeTriee[liste.size()/2].doubleValue();
 	}
 
 }

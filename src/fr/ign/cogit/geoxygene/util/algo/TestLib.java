@@ -58,7 +58,7 @@ public class TestLib {
 	private double seuil = 50.0;     // seuil pour le buffer
 
 	// Alias de Connection a Oracle (dans le fichier de mapping repository_database.xml)
-	private String ORACLE_ALIAS = "ORACLE_ALIAS";
+	private String ORACLE_ALIAS = "ORACLE_ALIAS"; //$NON-NLS-1$
 
 	private Geodatabase db;     // connection a la base de donnees
 	private Class<?> featureClass1, featureClass2;    // classes de FT_Feature a charger
@@ -70,26 +70,27 @@ public class TestLib {
 
 
 
+	@SuppressWarnings("nls")
 	public TestLib() {
 
-		db = GeodatabaseOjbFactory.newInstance(ORACLE_ALIAS);
+		this.db = GeodatabaseOjbFactory.newInstance(this.ORACLE_ALIAS);
 
-		aggr1 = new GM_MultiSurface<GM_OrientableSurface>();  /* eventuellement new GM_MultiCurve(); */
-		aggr2 = new GM_MultiSurface<GM_OrientableSurface>();  /* eventuellement new GM_MultiCurve(); */
+		this.aggr1 = new GM_MultiSurface<GM_OrientableSurface>();  /* eventuellement new GM_MultiCurve(); */
+		this.aggr2 = new GM_MultiSurface<GM_OrientableSurface>();  /* eventuellement new GM_MultiCurve(); */
 
 		/* definir ici la bibliotheque a tester */
-		algo = new JtsAlgorithms();
+		this.algo = new JtsAlgorithms();
 		//algos =new OracleAlgorithms(db,0.0000000005);
 
 		/* definir ici les classe d'objets geographiques a charger */
 		try {
 			//featureClass1 = Class.forName("geoschema.feature.Batiment_surf");
 			//featureClass1 = Class.forName("geoschema.feature.Troncon_route_bdc");
-			featureClass1 = Class.forName("geoschema.feature.Topo_bati_extrait5");
-			featureClass2 = Class.forName("geoschema.feature.Topo_bati_extrait5_translate");
+			this.featureClass1 = Class.forName("geoschema.feature.Topo_bati_extrait5");
+			this.featureClass2 = Class.forName("geoschema.feature.Topo_bati_extrait5_translate");
 		} catch (ClassNotFoundException e) {
-			System.out.println("classe geographique non trouvee : "+featureClass1.getName());
-			System.out.println("classe geographique non trouvee : "+featureClass2.getName());
+			System.out.println("classe geographique non trouvee : "+this.featureClass1.getName());
+			System.out.println("classe geographique non trouvee : "+this.featureClass2.getName());
 		}
 	}
 
@@ -100,229 +101,228 @@ public class TestLib {
 	}
 
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "nls" })
 	public void testAll() {
 
 		// Debut d'une transaction
 		System.out.println("Debut transaction");
-		db.begin();
+		this.db.begin();
 
 		// Recherche du nombre d'objets a traiter
-		int n = db.countObjects(featureClass1);
+		int n = this.db.countObjects(this.featureClass1);
 		System.out.println("Nombre d'objets a traiter classe 1:"+n);
-		n = db.countObjects(featureClass2);
+		n = this.db.countObjects(this.featureClass2);
 		System.out.println("Nombre d'objets a traiter classe 2:"+n);
 
 		// Chargement de tous les objets
-		featureList1 = (List<? extends FT_Feature>) db.loadAll(featureClass1);
-		featureList2 = (List<? extends FT_Feature>) db.loadAll(featureClass2);
+		this.featureList1 = (List<? extends FT_Feature>) this.db.loadAll(this.featureClass1);
+		this.featureList2 = (List<? extends FT_Feature>) this.db.loadAll(this.featureClass2);
 		System.out.println("chargement termine");
 
 		// Constitution des agregats
-		Iterator<? extends FT_Feature> iterator = featureList1.iterator();
-		while (iterator.hasNext())  aggr1.add((GM_OrientableSurface) iterator.next().getGeom());
-		iterator = featureList2.iterator();
-		while (iterator.hasNext())  aggr2.add((GM_OrientableSurface) iterator.next().getGeom());
+		Iterator<? extends FT_Feature> iterator = this.featureList1.iterator();
+		while (iterator.hasNext())  this.aggr1.add((GM_OrientableSurface) iterator.next().getGeom());
+		iterator = this.featureList2.iterator();
+		while (iterator.hasNext())  this.aggr2.add((GM_OrientableSurface) iterator.next().getGeom());
 
 		// buffer
 		System.out.println("buffer ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		geom = algo.buffer(aggr1,seuil);
+		this.geom = this.algo.buffer(this.aggr1,this.seuil);
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		result = new Resultat();
-		result.setGeom(geom);
-		db.makePersistent(result);
-		db.checkpoint();
+		this.result = new Resultat();
+		this.result.setGeom(this.geom);
+		this.db.makePersistent(this.result);
+		this.db.checkpoint();
 
 		// centroide
 		System.out.println("centroide ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		geom = new GM_Point(algo.centroid(aggr1));
+		this.geom = new GM_Point(this.algo.centroid(this.aggr1));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		result = new Resultat();
-		result.setGeom(geom);
-		db.makePersistent(result);
-		db.checkpoint();
+		this.result = new Resultat();
+		this.result.setGeom(this.geom);
+		this.db.makePersistent(this.result);
+		this.db.checkpoint();
 
 		// enveloppe convexe
 		System.out.println("enveloppe convexe ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		geom = algo.convexHull(aggr1);
+		this.geom = this.algo.convexHull(this.aggr1);
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		result = new Resultat();
-		result.setGeom(geom);
-		db.makePersistent(result);
-		db.checkpoint();
+		this.result = new Resultat();
+		this.result.setGeom(this.geom);
+		this.db.makePersistent(this.result);
+		this.db.checkpoint();
 
 		// difference
 		System.out.println("difference ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		geom = algo.difference(aggr1,aggr2);
+		this.geom = this.algo.difference(this.aggr1,this.aggr2);
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		result = new Resultat();
-		result.setGeom(geom);
-		db.makePersistent(result);
-		db.checkpoint();
+		this.result = new Resultat();
+		this.result.setGeom(this.geom);
+		this.db.makePersistent(this.result);
+		this.db.checkpoint();
 
 		// intersection
 		System.out.println("intersection ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		geom = algo.intersection(aggr1,aggr2);
+		this.geom = this.algo.intersection(this.aggr1,this.aggr2);
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		result = new Resultat();
-		result.setGeom(geom);
-		db.makePersistent(result);
-		db.checkpoint();
+		this.result = new Resultat();
+		this.result.setGeom(this.geom);
+		this.db.makePersistent(this.result);
+		this.db.checkpoint();
 
 		// union
 		System.out.println("union ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		geom = algo.union(aggr1,aggr2);
+		this.geom = this.algo.union(this.aggr1,this.aggr2);
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		result = new Resultat();
-		result.setGeom(geom);
-		db.makePersistent(result);
-		db.checkpoint();
+		this.result = new Resultat();
+		this.result.setGeom(this.geom);
+		this.db.makePersistent(this.result);
+		this.db.checkpoint();
 
 		// difference symetrique
 		System.out.println("difference symetrique ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		geom = algo.symDifference(aggr1,aggr2);
+		this.geom = this.algo.symDifference(this.aggr1,this.aggr2);
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		result = new Resultat();
-		result.setGeom(geom);
-		db.makePersistent(result);
-		db.checkpoint();
+		this.result = new Resultat();
+		this.result.setGeom(this.geom);
+		this.db.makePersistent(this.result);
+		this.db.checkpoint();
 
 		// predicat contains
 		System.out.println(" predicat contains ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		System.out.println(algo.contains(aggr1,aggr2));
+		System.out.println(this.algo.contains(this.aggr1,this.aggr2));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
 
 		// predicat intersects
 		System.out.println(" predicat intersects ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		System.out.println(algo.intersects(aggr1,aggr2));
+		System.out.println(this.algo.intersects(this.aggr1,this.aggr2));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
 
 		// predicat equals
 		System.out.println(" predicat equals ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		System.out.println(algo.equals(aggr1,aggr2));
+		System.out.println(this.algo.equals(this.aggr1,this.aggr2));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
 
 		// distance
 		System.out.println(" distance ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		System.out.println(algo.distance(aggr1,aggr2));
+		System.out.println(this.algo.distance(this.aggr1,this.aggr2));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
 
 		// longueur
 		System.out.println(" longueur ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		System.out.println(algo.length(aggr1));
+		System.out.println(this.algo.length(this.aggr1));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
 
 		// aire
 		System.out.println(" aire ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		System.out.println(algo.area(aggr1));
+		System.out.println(this.algo.area(this.aggr1));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-
 
 		// ## ce qui suit est specifique JTS
 
 		// predicat equals exact
 		System.out.println(" predicat equals exact ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		System.out.println(algo.equalsExact(aggr1,aggr2));
+		System.out.println(this.algo.equalsExact(this.aggr1,this.aggr2));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
 
 		// predicat crosses
 		System.out.println(" predicat crosses ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		System.out.println(algo.crosses(aggr1,aggr2));
+		System.out.println(this.algo.crosses(this.aggr1,this.aggr2));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
 
 		// predicat disjoint
 		System.out.println(" predicat disjoint ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		System.out.println(algo.disjoint(aggr1,aggr2));
+		System.out.println(this.algo.disjoint(this.aggr1,this.aggr2));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
 
 		// predicat within
 		System.out.println(" predicat within ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		System.out.println(algo.within(aggr1,aggr2));
+		System.out.println(this.algo.within(this.aggr1,this.aggr2));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
 
 		// predicat overlaps
 		System.out.println(" predicat overlaps ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		System.out.println(algo.overlaps(aggr1,aggr2));
+		System.out.println(this.algo.overlaps(this.aggr1,this.aggr2));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
 
 		// predicat touches
 		System.out.println(" predicat touches ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		System.out.println(algo.touches(aggr1,aggr2));
+		System.out.println(this.algo.touches(this.aggr1,this.aggr2));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
 
 		// isValid
 		System.out.println(" isValid ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		System.out.println(algo.isValid(aggr1));
+		System.out.println(this.algo.isValid(this.aggr1));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
 
 		// isEmpty
 		System.out.println(" isEmpty ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		System.out.println(algo.isEmpty(aggr1));
+		System.out.println(this.algo.isEmpty(this.aggr1));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
 
 		// isSimple
 		System.out.println(" isSimple ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		System.out.println(algo.isSimple(aggr1));
+		System.out.println(this.algo.isSimple(this.aggr1));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
 
 		// dimension
 		System.out.println(" dimension ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		System.out.println(algo.dimension(aggr1));
+		System.out.println(this.algo.dimension(this.aggr1));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
 
 		// numPoints
 		System.out.println(" numPoints ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		System.out.println(algo.numPoints(aggr1));
+		System.out.println(this.algo.numPoints(this.aggr1));
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
 
 		// translate
 		System.out.println("translate ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		geom = algo.translate(aggr1,50,50,0);
+		this.geom = this.algo.translate(this.aggr1,50,50,0);
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		result = new Resultat();
-		result.setGeom(geom);
-		db.makePersistent(result);
-		db.checkpoint();
+		this.result = new Resultat();
+		this.result.setGeom(this.geom);
+		this.db.makePersistent(this.result);
+		this.db.checkpoint();
 
 		// boundary
 		System.out.println("boundary ...");
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		geom = algo.boundary(aggr1);
+		this.geom = this.algo.boundary(this.aggr1);
 		System.out.println("\t"+new Date(System.currentTimeMillis()));
-		result = new Resultat();
-		result.setGeom(geom);
-		db.makePersistent(result);
-		db.checkpoint();
+		this.result = new Resultat();
+		this.result.setGeom(this.geom);
+		this.db.makePersistent(this.result);
+		this.db.checkpoint();
 
 
 		//Fermeture transaction
 		System.out.println("commit");
-		db.commit();
+		this.db.commit();
 
 	}
 
