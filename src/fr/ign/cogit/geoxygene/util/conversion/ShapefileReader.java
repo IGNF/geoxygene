@@ -381,7 +381,11 @@ class Reader {
 			while (shapefileReader.hasNext() && dbaseFileReader.hasNext()) {
 				Object[] entry = dbaseFileReader.readEntry();
 				Record record = shapefileReader.nextRecord();
-				geometries[indexFeatures]=(Geometry)record.shape();
+				try{
+					geometries[indexFeatures]=(Geometry)record.shape();
+				} catch (Exception e) {
+					geometries[indexFeatures]=null;
+				}
 				for(int index = 0 ; index < nbFields ; index++) fieldValues[indexFeatures][index]=entry[index];
 				indexFeatures++;
 			}
