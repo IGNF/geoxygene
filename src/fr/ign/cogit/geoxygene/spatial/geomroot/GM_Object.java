@@ -98,7 +98,7 @@ abstract public class GM_Object implements Cloneable {
 	/** Renvoie l' identifiant du système de coordonnées de référence. */
 	public int getCRS() { return this.CRS; }
 	/** Affecte une valeur au système de coordonnées de référence. */
-	public void setCRS(int crs) { CRS = crs;}
+	public void setCRS(int crs) { this.CRS = crs;}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Méthodes de la norme non implementees (souvent liees a l'utilisation de GM_Conplex) //////////////
@@ -149,7 +149,7 @@ abstract public class GM_Object implements Cloneable {
 		try {return WktGeOxygene.makeWkt(this);}
 		catch (Exception e) {
 			e.printStackTrace();
-			return "## ToSring() D'UN GM_OBJECT : PROBLEME ##";
+			return null;
 		}
 	}
 	/** Exporte la géométrie dans un fichier texte au format WKT.
@@ -159,7 +159,6 @@ abstract public class GM_Object implements Cloneable {
 	public void exportWkt(String path, boolean append) {
 		try {WktGeOxygene.writeWkt(path,append,this);}
 		catch (Exception e) {
-			System.out.println ("## EXPORT WKT D'UN GM_OBJECT : PROBLEME ##");
 			e.printStackTrace();
 		}
 	}
@@ -173,7 +172,6 @@ abstract public class GM_Object implements Cloneable {
 	public static void exportImage (GM_Object[] geoms, String path, Color foreground[], Color background, int width, int height) {
 		try {ImgUtil.saveImage (geoms, path, foreground, background, width, height);}
 		catch (Exception e) {
-			System.out.println ("## EXPORT IMAGE D'UN GM_OBJECT : PROBLEME ##");
 			e.printStackTrace();
 		}
 	}
@@ -186,7 +184,6 @@ abstract public class GM_Object implements Cloneable {
 	public  static void exportSvgz(GM_Object[] geoms, String path, Color foreground[], Color background, int width, int height) {
 		try {ImgUtil.saveSvgz (geoms, path, foreground, background, width, height);}
 		catch (Exception e) {
-			System.out.println ("## EXPORT SVG D'UN GM_OBJECT : PROBLEME ##");
 			e.printStackTrace();
 		}
 	}
@@ -340,7 +337,7 @@ abstract public class GM_Object implements Cloneable {
 	public GM_Object translate(final double tx, final double ty, final double tz)  {
 		return new JtsAlgorithms().translate(this,tx,ty,tz);
 	}
-	/** Returns the DE-9IM intersection matrix for the two Geometrys. */
+	/** Returns the DE-9IM intersection matrix for the two Geometries. */
 	public String relate(GM_Object geom) {return new JtsAlgorithms().relate(this,geom);}
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// methodes geometriques et topologiques faisant appel a Oracle /////////////////////////////////////

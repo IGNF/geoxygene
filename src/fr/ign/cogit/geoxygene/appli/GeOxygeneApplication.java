@@ -40,14 +40,14 @@ public class GeOxygeneApplication {
 	/**
 	 * @return The splash image
 	 */
-	public synchronized static ImageIcon splashImage() {if (splashImage == null) {synchronized (GeOxygeneApplication.class) {splashImage = new ImageIcon(GeOxygeneApplication.class.getResource("/geoxygene-logo.png" ));}} return splashImage;}
+	public synchronized static ImageIcon splashImage() {if (splashImage == null) {synchronized (GeOxygeneApplication.class) {splashImage = new ImageIcon(GeOxygeneApplication.class.getResource("/geoxygene-logo.png" ));}} return splashImage;} //$NON-NLS-1$
 	/**
 	 * The icon of the icon, i.e. the GeOxygene icon by default. Also used by {@link LayerViewPanel}
 	 */
-	private ImageIcon applicationIcon = new ImageIcon(GeOxygeneApplication.class.getResource("/icone.gif" ));
+	private ImageIcon applicationIcon = new ImageIcon(GeOxygeneApplication.class.getResource("/icone.gif" )); //$NON-NLS-1$
 	public ImageIcon getIcon() {return this.applicationIcon;}
 
-	private Font font = new Font("Arial",Font.PLAIN,10);
+	private Font font = new Font("Arial",Font.PLAIN,10); //$NON-NLS-1$
 	/**
 	 * @return The font to be used for all menus, etc.
 	 */
@@ -61,7 +61,7 @@ public class GeOxygeneApplication {
 	 * Constructor.
 	 */
 	public GeOxygeneApplication() {
-		this.frame = new MainFrame("GeOxygene",this);
+		this.frame = new MainFrame("GeOxygene",this); //$NON-NLS-1$
 		this.frame.setVisible(true);
 	}
 
@@ -77,14 +77,14 @@ public class GeOxygeneApplication {
 	 * Exit the application. 
 	 */
 	public void exit() {
-		frame.setVisible(false);
-		frame.dispose();
+		this.frame.setVisible(false);
+		this.frame.dispose();
 	}
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		SplashScreen splashScreen = new SplashScreen(splashImage(),"GeOxygene");
+		SplashScreen splashScreen = new SplashScreen(splashImage(),"GeOxygene"); //$NON-NLS-1$
 		splashScreen.setVisible(true);
 		GeOxygeneApplication application = new GeOxygeneApplication();
 		application.getFrame().newProjectFrame();

@@ -28,6 +28,7 @@ package fr.ign.cogit.geoxygene.appli.render;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Transparency;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
@@ -61,12 +62,12 @@ public class SelectionRenderer implements Renderer {
 	protected volatile boolean rendering = false;
 	protected volatile boolean rendered = false;
 	BufferedImage image = null;
-	private Color fillColor = new Color (1f,1f,0f,0.5f);
-	private Color strokeColor = new Color (1f,1f,0f,1f);
-	private float strokeWidth = 2f;
+	Color fillColor = new Color (1f,1f,0f,0.5f);
+	Color strokeColor = new Color (1f,1f,0f,1f);
+	float strokeWidth = 2f;
 	public Color getStrokeColor() {return this.strokeColor;}
 	public void setStrokeColor(Color color) {this.strokeColor = color;}
-	private int pointRadius = 2;
+	int pointRadius = 2;
 
 	private Symbolizer symbolizer = new Symbolizer() {
 		@Override
@@ -87,23 +88,23 @@ public class SelectionRenderer implements Renderer {
 		public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics) {
 			if (feature.getGeom()==null) return;
 			if (feature.getGeom().isPolygon()||feature.getGeom().isMultiSurface()) {
-				graphics.setColor(fillColor);
+				graphics.setColor(SelectionRenderer.this.fillColor);
 				RenderUtil.fill(feature.getGeom(), viewport, graphics);
 			}
-			java.awt.Stroke bs = new BasicStroke(strokeWidth,BasicStroke.CAP_SQUARE,BasicStroke.JOIN_MITER,10.0f);
-			graphics.setColor(strokeColor);
+			java.awt.Stroke bs = new BasicStroke(SelectionRenderer.this.strokeWidth,BasicStroke.CAP_SQUARE,BasicStroke.JOIN_MITER,10.0f);
+			graphics.setColor(SelectionRenderer.this.strokeColor);
 			graphics.setStroke(bs);
 			RenderUtil.draw(feature.getGeom(), viewport, graphics);
 			try {
 				graphics.setStroke(new BasicStroke(1,BasicStroke.CAP_SQUARE,BasicStroke.JOIN_MITER,10.0f));
 				for(DirectPosition position:viewport.toViewDirectPositionList(feature.getGeom().coord())) {
 					GeneralPath shape = new GeneralPath();
-					shape.moveTo(position.getX()-pointRadius, position.getY()-pointRadius);
-					shape.lineTo(position.getX()+pointRadius, position.getY()-pointRadius);
-					shape.lineTo(position.getX()+pointRadius, position.getY()+pointRadius);
-					shape.lineTo(position.getX()-pointRadius, position.getY()+pointRadius);
-					shape.lineTo(position.getX()-pointRadius, position.getY()-pointRadius);
-					graphics.setColor(strokeColor);
+					shape.moveTo(position.getX()-SelectionRenderer.this.pointRadius, position.getY()-SelectionRenderer.this.pointRadius);
+					shape.lineTo(position.getX()+SelectionRenderer.this.pointRadius, position.getY()-SelectionRenderer.this.pointRadius);
+					shape.lineTo(position.getX()+SelectionRenderer.this.pointRadius, position.getY()+SelectionRenderer.this.pointRadius);
+					shape.lineTo(position.getX()-SelectionRenderer.this.pointRadius, position.getY()+SelectionRenderer.this.pointRadius);
+					shape.lineTo(position.getX()-SelectionRenderer.this.pointRadius, position.getY()-SelectionRenderer.this.pointRadius);
+					graphics.setColor(SelectionRenderer.this.strokeColor);
 					graphics.fill(shape);
 					graphics.setColor(Color.black);
 					graphics.draw(shape);
@@ -125,22 +126,22 @@ public class SelectionRenderer implements Renderer {
 	public SelectionRenderer(LayerViewPanel theLayerViewPanel) {this.layerViewPanel=theLayerViewPanel;}
 
 	@Override
-	public boolean isRendering() {return rendering;}
+	public boolean isRendering() {return this.rendering;}
 	@Override
-	public boolean isRendered() {return rendered;}
+	public boolean isRendered() {return this.rendered;}
 
 	/**
 	 * Cancel the rendering. This method does not actually interrupt the thread but lets the thread know it should stop.
 	 * @see Runnable
 	 * @see Thread
 	 */
-	public void cancel() {cancelled = true;}
+	public void cancel() {this.cancelled = true;}
 
 	/**
 	 * Copy the rendered image the a 2D graphics
 	 * @param graphics the 2D graphics to draw into
 	 */
-	public void copyTo(Graphics2D graphics) {if (image != null) graphics.drawImage(image, 0, 0, null);}
+	public void copyTo(Graphics2D graphics) {if (this.image != null) graphics.drawImage(this.image, 0, 0, null);}
 
 	/**
 	 * Create a runnable for the renderer. A renderer create a new image to draw into. 
@@ -152,32 +153,32 @@ public class SelectionRenderer implements Renderer {
 	 * @see #isRendering()
 	 */
 	public Runnable createRunnable() {
-		if (image != null) {return null;}
-		cancelled = false;
+		if (this.image != null) {return null;}
+		this.cancelled = false;
 		return new Runnable() {
 			public void run() {
-				rendering = true;
-				rendered = false;
+				SelectionRenderer.this.rendering = true;
+				SelectionRenderer.this.rendered = false;
 				try {
 					// it the rendering is cancel, stop
-					if (cancelled) return;
+					if (SelectionRenderer.this.cancelled) return;
 					// if either the width or the height of the panel is lesser or equal to 0, stop
-					if (Math.min(layerViewPanel.getWidth(),layerViewPanel.getHeight())<=0) return;
+					if (Math.min(SelectionRenderer.this.layerViewPanel.getWidth(),SelectionRenderer.this.layerViewPanel.getHeight())<=0) return;
 					// create a new image
-					image = new BufferedImage(layerViewPanel.getWidth(),layerViewPanel.getHeight(),BufferedImage.TYPE_INT_ARGB);
+					SelectionRenderer.this.image = new BufferedImage(SelectionRenderer.this.layerViewPanel.getWidth(),SelectionRenderer.this.layerViewPanel.getHeight(),BufferedImage.TYPE_INT_ARGB);
 					// do the actual rendering
-					try {renderHook(image);}
+					try {renderHook(SelectionRenderer.this.image);}
 					catch (Throwable t) {
 						// TODO WARN THE USER?
 						t.printStackTrace(System.err);
 						return;
 					}
 					// when time comes, repaint the panel
-					SwingUtilities.invokeLater(new Runnable() {public void run() {layerViewPanel.superRepaint();}});
+					SwingUtilities.invokeLater(new Runnable() {public void run() {SelectionRenderer.this.layerViewPanel.superRepaint();}});
 				} finally {
 					// the renderer is not rendering anymore ( used by isRendering() )
-					rendering = false;
-					rendered = true;
+					SelectionRenderer.this.rendering = false;
+					SelectionRenderer.this.rendered = true;
 				}
 			}
 		};
@@ -188,10 +189,10 @@ public class SelectionRenderer implements Renderer {
 	 * @param theImage the image to draw into
 	 * @see #cancel()
 	 */
-	private void renderHook(BufferedImage theImage) {
-		if (cancelled) return;
-		for (FT_Feature feature:layerViewPanel.getSelectedFeatures()) {
-			if (cancelled) return;
+	void renderHook(BufferedImage theImage) {
+		if (this.cancelled) return;
+		for (FT_Feature feature:this.layerViewPanel.getSelectedFeatures()) {
+			if (this.cancelled) return;
 			if (feature.getGeom() != null && !feature.getGeom().isEmpty()) render(feature,theImage);
 		}	
 	}
@@ -202,19 +203,19 @@ public class SelectionRenderer implements Renderer {
 	 * @param theImage
 	 */
 	private void render(FT_Feature feature, BufferedImage theImage) {
-		symbolizer.paint(feature,layerViewPanel.getViewport(),(Graphics2D) theImage.getGraphics());
+		this.symbolizer.paint(feature,this.layerViewPanel.getViewport(),(Graphics2D) theImage.getGraphics());
 	}
 
 	/**
 	 * Clear the image cache, i.e. delete the current image.
 	 */
-	public void clearImageCache() {image = null;}
+	public void clearImageCache() {this.image = null;}
 	@Override
 	public void clearImageCache(int x, int y, int width, int height) {
-		if (cancelled) return;
-		for(int i = Math.max(x, 0) ; i < Math.min(x+width, layerViewPanel.getWidth()) ; i++)
-			for(int j = Math.max(y, 0) ; j < Math.min(y+height, layerViewPanel.getHeight()) ; j++) 
-				image.setRGB(i, j, Color.TRANSLUCENT);
+		if (this.cancelled) return;
+		for(int i = Math.max(x, 0) ; i < Math.min(x+width, this.layerViewPanel.getWidth()) ; i++)
+			for(int j = Math.max(y, 0) ; j < Math.min(y+height, this.layerViewPanel.getHeight()) ; j++) 
+				this.image.setRGB(i, j, Transparency.TRANSLUCENT);
 	}
 	@Override
 	public Runnable createFeatureRunnable(FT_Feature feature) {return null;}

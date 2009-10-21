@@ -83,8 +83,8 @@ public class Viewport {
 	 * @see #update()
 	 */
 	public AffineTransform getModelToViewTransform() throws NoninvertibleTransformException {
-		if (modelToViewTransform == null) {update();}
-		return modelToViewTransform;
+		if (this.modelToViewTransform == null) {update();}
+		return this.modelToViewTransform;
 	}
 	/**
 	 * Update the model to view transformation and repaint the panel.
@@ -92,8 +92,8 @@ public class Viewport {
 	 * @see #modelToViewTransform
 	 */
 	public void update() throws NoninvertibleTransformException {
-		modelToViewTransform = modelToViewTransform(scale, viewOrigin, layerViewPanel.getHeight());
-		layerViewPanel.repaint();
+		this.modelToViewTransform = modelToViewTransform(this.scale, this.viewOrigin, this.layerViewPanel.getHeight());
+		this.layerViewPanel.repaint();
 	}
 	/**
 	 * Compute the {@link AffineTransform} corresponding to the transformation from model to view coordinates.
@@ -121,30 +121,30 @@ public class Viewport {
 	 * @return The envelope of the panel in model coordinates.
 	 */
 	public GM_Envelope getEnvelopeInModelCoordinates() {
-		double widthAsPerceivedByModel = layerViewPanel.getWidth() / scale;
-		double heightAsPerceivedByModel = layerViewPanel.getHeight() / scale;
+		double widthAsPerceivedByModel = this.layerViewPanel.getWidth() / this.scale;
+		double heightAsPerceivedByModel = this.layerViewPanel.getHeight() / this.scale;
 		return new GM_Envelope(
-					viewOrigin.getX(), viewOrigin.getX() + widthAsPerceivedByModel,
-					viewOrigin.getY(), viewOrigin.getY() + heightAsPerceivedByModel);
+				this.viewOrigin.getX(), this.viewOrigin.getX() + widthAsPerceivedByModel,
+				this.viewOrigin.getY(), this.viewOrigin.getY() + heightAsPerceivedByModel);
 	}
 	/**
 	 * @return The envelope of the panel in model coordinates.
 	 */
 	public GM_Envelope getEnvelopeInModelCoordinates(int x, int y, int width, int height) {
-		double xAsPerceivedByModel = x / scale;
-		double yAsPerceivedByModel = y / scale;
-		double widthAsPerceivedByModel = width / scale;
-		double heightAsPerceivedByModel = height / scale;
+		double xAsPerceivedByModel = x / this.scale;
+		double yAsPerceivedByModel = y / this.scale;
+		double widthAsPerceivedByModel = width / this.scale;
+		double heightAsPerceivedByModel = height / this.scale;
 		return new GM_Envelope(
-					viewOrigin.getX() + xAsPerceivedByModel, viewOrigin.getX() + xAsPerceivedByModel + widthAsPerceivedByModel,
-					viewOrigin.getY() + yAsPerceivedByModel, viewOrigin.getY() + yAsPerceivedByModel + heightAsPerceivedByModel);
+				this.viewOrigin.getX() + xAsPerceivedByModel, this.viewOrigin.getX() + xAsPerceivedByModel + widthAsPerceivedByModel,
+				this.viewOrigin.getY() + yAsPerceivedByModel, this.viewOrigin.getY() + yAsPerceivedByModel + heightAsPerceivedByModel);
 	}
 
 	/**
 	 * @param geometry a geometry
 	 * @return A shape representing the geometry in view coordinates
+	 * @throws NoninvertibleTransformException 
 	 */
-	@SuppressWarnings("unchecked")
 	public Shape toShape(GM_Object geometry) throws NoninvertibleTransformException {
 		GM_Envelope envelope = this.getEnvelopeInModelCoordinates();
 		try {
@@ -158,9 +158,9 @@ public class Viewport {
 			if (geometry.isMultiCurve()) return null;
 			if (geometry.isPoint()) return toShape((GM_Point) geometry);
 			if (geometry instanceof GM_Aggregate) return null;
-			throw new IllegalArgumentException("Unhandled Geometry class: " + geometry.getClass());
+			throw new IllegalArgumentException(Messages.getString("geoxygene.Viewport.UnhandledGeometryClass") + geometry.getClass()); //$NON-NLS-1$
 		} catch (Exception e) {
-			logger.info("geometry "+geometry);
+			logger.info(Messages.getString("geoxygene.Viewport.Geometry")+geometry); //$NON-NLS-1$
 			e.printStackTrace();
 			return null;
 		}
@@ -264,17 +264,17 @@ public class Viewport {
 	 * Zoom to full extent, i.e. to view all the layers of the associated panel
 	 * @throws NoninvertibleTransformException
 	 */
-	public void zoomToFullExtent() throws NoninvertibleTransformException {zoom(layerViewPanel.getEnvelope());}
+	public void zoomToFullExtent() throws NoninvertibleTransformException {zoom(this.layerViewPanel.getEnvelope());}
 	/**
 	 * @param extent
 	 * @throws NoninvertibleTransformException 
 	 */
 	public void zoom(GM_Envelope extent) throws NoninvertibleTransformException {
 		if (extent.isEmpty()) {return;}
-		scale = Math.min(layerViewPanel.getWidth() / extent.width(),layerViewPanel.getHeight() / extent.length());
-		double xCenteringOffset = ((layerViewPanel.getWidth() / scale) - extent.width()) / 2d; 
-		double yCenteringOffset = ((layerViewPanel.getHeight() / scale) - extent.length()) / 2d;
-		viewOrigin = new Point2D.Double(extent.minX()-xCenteringOffset, extent.minY()-yCenteringOffset);
+		this.scale = Math.min(this.layerViewPanel.getWidth() / extent.width(),this.layerViewPanel.getHeight() / extent.length());
+		double xCenteringOffset = ((this.layerViewPanel.getWidth() / this.scale) - extent.width()) / 2d; 
+		double yCenteringOffset = ((this.layerViewPanel.getHeight() / this.scale) - extent.length()) / 2d;
+		this.viewOrigin = new Point2D.Double(extent.minX()-xCenteringOffset, extent.minY()-yCenteringOffset);
 		update();
 	}
 	/**
@@ -303,9 +303,9 @@ public class Viewport {
 	 * @throws NoninvertibleTransformException
 	 */
 	public void zoom(int x, int y, double widthOfNewView, double heightOfNewView) throws NoninvertibleTransformException {
-		double zoomFactor = Math.min(layerViewPanel.getWidth() / widthOfNewView, layerViewPanel.getHeight() / heightOfNewView);
-		double realWidthOfNewView = layerViewPanel.getWidth() / zoomFactor;
-		double realHeightOfNewView = layerViewPanel.getHeight() / zoomFactor;
+		double zoomFactor = Math.min(this.layerViewPanel.getWidth() / widthOfNewView, this.layerViewPanel.getHeight() / heightOfNewView);
+		double realWidthOfNewView = this.layerViewPanel.getWidth() / zoomFactor;
+		double realHeightOfNewView = this.layerViewPanel.getHeight() / zoomFactor;
 		GM_Envelope zoomEnvelope;
 		try {
 			zoomEnvelope = toModelEnvelope(x - (0.5 * realWidthOfNewView), x + (0.5 * realWidthOfNewView), y - (0.5 * realHeightOfNewView), y + (0.5 * realHeightOfNewView));
@@ -380,26 +380,26 @@ public class Viewport {
 	/**
 	 * @throws NoninvertibleTransformException
 	 */
-	public void moveUp() throws NoninvertibleTransformException {this.moveOf(0, layerViewPanel.getHeight() * MOVE_FACTOR / scale);}
+	public void moveUp() throws NoninvertibleTransformException {this.moveOf(0, this.layerViewPanel.getHeight() * MOVE_FACTOR / this.scale);}
 	/**
 	 * @throws NoninvertibleTransformException
 	 */
-	public void moveDown() throws NoninvertibleTransformException {this.moveOf(0, -layerViewPanel.getHeight() * MOVE_FACTOR / scale);}
+	public void moveDown() throws NoninvertibleTransformException {this.moveOf(0, -this.layerViewPanel.getHeight() * MOVE_FACTOR / this.scale);}
 	/**
 	 * @throws NoninvertibleTransformException
 	 */
-	public void moveRight() throws NoninvertibleTransformException {this.moveOf(layerViewPanel.getWidth() * MOVE_FACTOR / scale, 0);}
+	public void moveRight() throws NoninvertibleTransformException {this.moveOf(this.layerViewPanel.getWidth() * MOVE_FACTOR / this.scale, 0);}
 	/**
 	 * @throws NoninvertibleTransformException
 	 */
-	public void moveLeft() throws NoninvertibleTransformException {this.moveOf(-layerViewPanel.getWidth() * MOVE_FACTOR / scale, 0);}	
+	public void moveLeft() throws NoninvertibleTransformException {this.moveOf(-this.layerViewPanel.getWidth() * MOVE_FACTOR / this.scale, 0);}	
 	/**
 	 * @param x
 	 * @param y
 	 * @throws NoninvertibleTransformException
 	 */
 	public void moveOf(double x, double y) throws NoninvertibleTransformException {
-		viewOrigin.setLocation(viewOrigin.getX()+x, viewOrigin.getY()+y);
+		this.viewOrigin.setLocation(this.viewOrigin.getX()+x, this.viewOrigin.getY()+y);
 		update();
 	}
 	/**
@@ -407,8 +407,8 @@ public class Viewport {
 	 */
 	public void moveTo(Point point) throws NoninvertibleTransformException {
 		Point2D modelPoint = toModelPoint(point);
-		modelPoint.setLocation(modelPoint.getX()-layerViewPanel.getWidth()*0.5/ scale, modelPoint.getY()-layerViewPanel.getHeight()*0.5/ scale);
-		viewOrigin.setLocation(modelPoint);
+		modelPoint.setLocation(modelPoint.getX()-this.layerViewPanel.getWidth()*0.5/ this.scale, modelPoint.getY()-this.layerViewPanel.getHeight()*0.5/ this.scale);
+		this.viewOrigin.setLocation(modelPoint);
 		update();
 	}
 }

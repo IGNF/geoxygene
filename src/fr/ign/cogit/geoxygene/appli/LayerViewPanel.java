@@ -65,12 +65,11 @@ public class LayerViewPanel extends JPanel {
     /**
      * Constructor
      */
-    public LayerViewPanel() {
-    }    
+    public LayerViewPanel() {}
 
     @Override
     public void repaint() {
-	if (renderingManager != null) renderingManager.renderAll();
+	if (this.renderingManager != null) this.renderingManager.renderAll();
 	superRepaint();
     }
 	/**
@@ -78,7 +77,7 @@ public class LayerViewPanel extends JPanel {
 	 * @param feature
 	 */
 	public void repaint(Layer layer, FT_Feature feature) {
-    	if (renderingManager != null) renderingManager.render(layer, feature);
+    	if (this.renderingManager != null) this.renderingManager.render(layer, feature);
         superRepaint();
 	}
 	/**
@@ -86,7 +85,7 @@ public class LayerViewPanel extends JPanel {
 	 * @param geom
 	 */
 	public void repaint(Layer layer, GM_Object geom) {
-		if (renderingManager != null) renderingManager.render(layer, geom);
+		if (this.renderingManager != null) this.renderingManager.render(layer, geom);
 		superRepaint();
 	}
     /**
@@ -104,7 +103,7 @@ public class LayerViewPanel extends JPanel {
 	    g.setColor(getBackground());
 	    g.fillRect(0, 0, getWidth(),getHeight());
 	    // copy the result of the rendering manager to the panel
-	    renderingManager.copyTo((Graphics2D) g);
+	    this.renderingManager.copyTo((Graphics2D) g);
 	    firePainted(g);
 	} catch (Throwable t) {
 	    // TODO HANDLE EXCEPTIONS
@@ -121,8 +120,8 @@ public class LayerViewPanel extends JPanel {
      * Dispose of the panel and its rendering manager
      */
     public void dispose() {
-	renderingManager.dispose();
-	viewport = null;
+	this.renderingManager.dispose();
+	this.viewport = null;
 	//TODO
     }
     /**
@@ -137,5 +136,5 @@ public class LayerViewPanel extends JPanel {
     /**
      * @return
      */
-    public Set<FT_Feature> getSelectedFeatures() {return selectedFeatures ;}
+    public Set<FT_Feature> getSelectedFeatures() {return this.selectedFeatures ;}
 }

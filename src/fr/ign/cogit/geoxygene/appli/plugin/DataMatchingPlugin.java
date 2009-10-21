@@ -31,6 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
+import fr.ign.cogit.geoxygene.appli.Messages;
 
 /**
  * @author Julien Perret
@@ -38,8 +39,8 @@ import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
  */
 public class DataMatchingPlugin implements ActionListener {
 	public void initialize(GeOxygeneApplication application) {
-		Menu menu = new Menu("Data Matching");
-		MenuItem menuItem = new MenuItem("Open the data matching environment");
+		Menu menu = new Menu(Messages.getString("geoxygene.DataMatchingPlugin.DataMatching")); //$NON-NLS-1$
+		MenuItem menuItem = new MenuItem(Messages.getString("geoxygene.DataMatchingPlugin.OpenDataMatchingEnvironment")); //$NON-NLS-1$
 		menuItem.addActionListener(this);
 		menu.add(menuItem);
 		application.getFrame().getMenuBar().add(menu);

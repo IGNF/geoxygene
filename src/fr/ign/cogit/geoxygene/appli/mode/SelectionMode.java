@@ -53,7 +53,7 @@ public class SelectionMode extends AbstractMode {
 	}
 	
 	@Override
-	protected JButton createButton() {return new JButton(new ImageIcon(this.getClass().getResource("/icons/16x16/selection.png")));}
+	protected JButton createButton() {return new JButton(new ImageIcon(this.getClass().getResource("/icons/16x16/selection.png")));} //$NON-NLS-1$
 	
 	@Override
 	public void leftMouseButtonClicked(MouseEvent e, ProjectFrame frame) {

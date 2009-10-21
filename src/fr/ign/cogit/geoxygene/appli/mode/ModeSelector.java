@@ -51,6 +51,7 @@ import javax.swing.JToolBar;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.MainFrame;
+import fr.ign.cogit.geoxygene.appli.Messages;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 
 /**
@@ -61,9 +62,9 @@ public class ModeSelector implements ContainerListener, KeyListener, MouseListen
     static Logger logger=Logger.getLogger(ModeSelector.class.getName());
     private List<Mode> modes = new ArrayList<Mode>();
     private Mode currentMode = null;
-    private JToolBar toolBar = new JToolBar("Mode selection");
+    private JToolBar toolBar = new JToolBar(Messages.getString("geoxygene.ModeSelector.ModeSelection")); //$NON-NLS-1$
     public JToolBar getToolBar() {return this.toolBar;}
-    private MainFrame mainFrame;
+    MainFrame mainFrame;
 
     public ModeSelector(MainFrame theMainFrame) {
 	this.mainFrame = theMainFrame;
@@ -78,11 +79,11 @@ public class ModeSelector implements ContainerListener, KeyListener, MouseListen
 	
 	this.toolBar.addSeparator();
 	
-	JButton zoomToFullExtentButton = new JButton(new ImageIcon(ModeSelector.class.getResource("/icons/16x16/zoomToFullExtent.png")));
+	JButton zoomToFullExtentButton = new JButton(new ImageIcon(ModeSelector.class.getResource("/icons/16x16/zoomToFullExtent.png"))); //$NON-NLS-1$
 	zoomToFullExtentButton.addActionListener(new ActionListener() {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		ProjectFrame projectFrame = mainFrame.getSelectedProjectFrame();
+		ProjectFrame projectFrame = ModeSelector.this.mainFrame.getSelectedProjectFrame();
 		if (projectFrame!=null) try {projectFrame.getLayerViewPanel().getViewport().zoomToFullExtent();} catch (NoninvertibleTransformException e1) {e1.printStackTrace();}
 	    }
 	});
@@ -119,7 +120,7 @@ public class ModeSelector implements ContainerListener, KeyListener, MouseListen
      * @param mode
      */
     public void setCurrentMode(Mode mode) {
-	if (currentMode!=null) this.currentMode.getButton().setEnabled(true);
+	if (this.currentMode!=null) this.currentMode.getButton().setEnabled(true);
 	this.currentMode = mode;
 	mode.getButton().setEnabled(false);
     }

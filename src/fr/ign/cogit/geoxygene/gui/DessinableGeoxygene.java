@@ -48,6 +48,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.apache.batik.ext.awt.geom.Polygon2D;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
@@ -163,23 +164,24 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	public void setCentreGeo(DirectPosition centreGeo) {this.centreGeo = centreGeo;}
 	
 	@Override
-	public synchronized void majLimitesAffichage(int width, int height) {
-		this.image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
+	public synchronized void majLimitesAffichage(int newWidth, int newHeight) {
+		this.image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB_PRE);
 		this.graphics = image.createGraphics();
-		if (logger.isTraceEnabled()) logger.trace("majLimitesAffichage("+width+","+height+")");
+		if (logger.isTraceEnabled()) logger.trace("majLimitesAffichage("+newWidth+","+newHeight+")");
 		if (this.getGraphics()==null) return;
-		this.width=width;
-		this.height=height;
-		if (logger.isTraceEnabled()) logger.trace("Limites : "+width+" - "+height);
+		this.width=newWidth;
+		this.height=newHeight;
+		if (logger.isTraceEnabled()) logger.trace("Limites : "+newWidth+" - "+newHeight);
 		double XMin = pixToCoordX(-nbPixelsMarge);
-		double XMax = pixToCoordX(width+nbPixelsMarge);
-		double YMin = pixToCoordY(height+nbPixelsMarge);
+		double XMax = pixToCoordX(newWidth+nbPixelsMarge);
+		double YMin = pixToCoordY(newHeight+nbPixelsMarge);
 		double YMax = pixToCoordY(-nbPixelsMarge);
 		enveloppeAffichage = new GM_Envelope( XMin, XMax, YMin, YMax );
+		if (logger.isTraceEnabled()) logger.trace("enveloppeAffichage : "+enveloppeAffichage);
 
-		affineTransform = AffineTransform.getTranslateInstance(0, height);
+		affineTransform = AffineTransform.getTranslateInstance(0, newHeight);
 		affineTransform.scale(1/taillePixel,-1/taillePixel);
-		affineTransform.translate(width*0.5*taillePixel-centreGeo.getX(),height*0.5*taillePixel-centreGeo.getY());
+		affineTransform.translate(newWidth*0.5*taillePixel-centreGeo.getX(),newHeight*0.5*taillePixel-centreGeo.getY());
 
 		if (useCache) majCachedFeatures();
 		//clearShapeCache();
@@ -219,7 +221,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 		}
 	}
 
-	boolean useCache = true;	
+	boolean useCache = false;
 	Map<Layer,FT_FeatureCollection<? extends FT_Feature>> cachedFeatures = new HashMap<Layer,FT_FeatureCollection<? extends FT_Feature>>();
 	/**
 	 * @param layer
@@ -239,8 +241,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	private FT_FeatureCollection<? extends FT_Feature> getCachedFeatures(Layer layer) {return cachedFeatures.get(layer);}
 	
 	public void dessiner(Graphics2D g, Layer layer,FT_FeatureCollection<? extends FT_Feature> features) throws InterruptedException {
-		if (logger.isTraceEnabled()) {logger.trace("dessiner()");}
 		if (features == null) return;
+		if (logger.isTraceEnabled()) {logger.trace("dessiner() sur "+features.size()+" features");}
 		double debut = System.currentTimeMillis();
 		for (Style style:layer.getStyles()) {
 			dessiner(g, style,features);
@@ -271,7 +273,11 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 						for (Symbolizer symbolizer:rule.getSymbolizers()) this.dessiner(g, symbolizer,features);
 					} else {
 						FT_FeatureCollection<FT_Feature> filteredFeatures = new FT_FeatureCollection<FT_Feature>();
-						for (FT_Feature feature:features) if (rule.getFilter().evaluate(feature)) filteredFeatures.add(feature);
+						int size = features.size();
+						for (int index = 0; index < size ; index++) {
+							FT_Feature feature=features.get(index);
+							if (rule.getFilter().evaluate(feature)) filteredFeatures.add(feature);
+						}
 						if (logger.isTraceEnabled()) logger.trace(filteredFeatures.size()+" features filtered");
 						for (Symbolizer symbolizer:rule.getSymbolizers()) this.dessiner(g, symbolizer,filteredFeatures);
 					}
@@ -348,6 +354,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 			int size = features.size();
 			for (int index = 0; index < size ; index++) {
 				FT_Feature feature=features.get(index);
+				if (feature.getGeom()==null) continue;
 				if (feature.getGeom().isPolygon()) {
 					if (fillColor!=null) this.remplir(g, fillColor, (GM_Polygon)feature.getGeom());
 					if (symbolizer.getStroke()!=null) {
@@ -378,6 +385,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 					int size = features.size();
 					for (int index = 0; index < size ; index++) {
 						FT_Feature feature=features.get(index);
+						if (feature.getGeom()==null) continue;
 						if (feature.getGeom().isLineString()) {
 							this.dessiner(g, symbolizer.getStroke(), (GM_LineString) feature.getGeom());
 						} else if (feature.getGeom().isMultiCurve()) {
@@ -595,8 +603,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 			g.draw(shape);
 		}
 		for(ExternalGraphic graphic:pointSymbolizer.getGraphic().getExternalGraphics()) {
-			Image image = graphic.getOnlineResource();
-			g.drawImage(image, coordToPixX(position.getX())-image.getWidth(null)/2, coordToPixY(position.getY())-image.getHeight(null)/2, null);
+			Image onlineImage = graphic.getOnlineResource();
+			g.drawImage(onlineImage, coordToPixX(position.getX())-onlineImage.getWidth(null)/2, coordToPixY(position.getY())-onlineImage.getHeight(null)/2, null);
 		}
 		//fireObjectChange();
 	}
@@ -620,64 +628,65 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	private void remplir(Graphics2D g, GM_Polygon poly) {
 		GM_Envelope envelope = poly.envelope();
 		if ((envelope.width()<=taillePixel)&&(envelope.height()<=taillePixel)) return;
-		/*
-		Polygon2D p = (Polygon2D) shapeCache.get(poly);
-		if (p==null) try {
-			int nb=poly.coord().size();			
+		//Polygon2D p = (Polygon2D) shapeCache.get(poly);
+		//if (p==null) try {
+		try{
+			int nb=poly.coord().size()+poly.getInterior().size();
+			
 			float[] geoX=new float[nb], geoY=new float[nb];
+			
+			//int[] x=new int[nb], y=new int[nb];
 			//enveloppe exterieure
 			GM_Ring ls=poly.getExterior();
-			for(int i=0;i<ls.coord().size();i++) {
+			/*
+			int x0=coordToPixX(ls.coord().get(0).getX());
+			int y0=coordToPixY(ls.coord().get(0).getY());
+			for(int i=0;i<ls.coord().size();i++){
+				x[i]=coordToPixX(ls.coord().get(i).getX());
+				y[i]=coordToPixY(ls.coord().get(i).getY());
+			}
+			*/
+			double x0=ls.coord().get(0).getX();
+			double y0=ls.coord().get(0).getY();
+			for(int i=0;i<ls.coord().size();i++){
 				geoX[i]=(float) ls.coord().get(i).getX();
 				geoY[i]=(float) ls.coord().get(i).getY();
 			}
 			//trous
 			int index=ls.coord().size();
-			for(int j=0;j<poly.getInterior().size();j++) {
+			/*
+			for(int j=0;j<poly.getInterior().size();j++){
 				ls=poly.getInterior(j);
-				for(int i=index;i<index+ls.coord().size();i++) {
+				for(int i=index;i<index+ls.coord().size();i++){
+					x[i]=coordToPixX(ls.coord().get(i-index).getX());
+					y[i]=coordToPixY(ls.coord().get(i-index).getY());
+				}//i
+				x[index+ls.coord().size()]=x0;
+				y[index+ls.coord().size()]=y0;
+				index+=ls.coord().size()+1;
+			}//j
+			*/
+			for(int j=0;j<poly.getInterior().size();j++){
+				ls=poly.getInterior(j);
+				for(int i=index;i<index+ls.coord().size();i++){
 					geoX[i]=(float) ls.coord().get(i-index).getX();
 					geoY[i]=(float) ls.coord().get(i-index).getY();
 				}//i
-				index+=ls.coord().size();
+				geoX[index+ls.coord().size()]=(float) x0;
+				geoY[index+ls.coord().size()]=(float) y0;
+				index+=ls.coord().size()+1;
 			}//j
-			p = new Polygon2D(geoX,geoY,nb);
-			
-			shapeCache.put(poly,p);
+			//getG2d().fillPolygon(x,y,nb);
+			Polygon2D p = new Polygon2D(geoX,geoY,nb);
+			//shapeCache.put(poly,p);
+			g.fill(toScreen(p));
 		} catch(Exception e) {
 			logger.error("Impossible de remplir le polygone "+poly);
-			e.printStackTrace();
+			logger.debug(e.getCause());
 			return;
 		}
-		Shape shape = toScreen(p);
-		g.fill(shape);
-		*/
+		//g.fill(toScreen(p));
 		//fireObjectChange();
-		try {
-			int nb=poly.coord().size();			
-			int[] geoX=new int[nb], geoY=new int[nb];
-			//enveloppe exterieure
-			GM_Ring ls=poly.getExterior();
-			for(int i=0;i<ls.coord().size();i++) {
-				geoX[i]=coordToPixX(ls.coord().get(i).getX());
-				geoY[i]=coordToPixY(ls.coord().get(i).getY());
-			}
-			//trous
-			int index=ls.coord().size();
-			for(int j=0;j<poly.getInterior().size();j++) {
-				ls=poly.getInterior(j);
-				for(int i=index;i<index+ls.coord().size();i++) {
-					geoX[i]=coordToPixX(ls.coord().get(i-index).getX());
-					geoY[i]=coordToPixY(ls.coord().get(i-index).getY());
-				}//i
-				index+=ls.coord().size();
-			}//j
-			g.fillPolygon(geoX, geoY, nb);
-		} catch(Exception e) {
-			logger.error("Impossible de remplir le polygone "+poly);
-			e.printStackTrace();
-			return;
-		}
 	}
 	
 	/**
@@ -872,10 +881,10 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @param line la ligne à dessiner
 	 */
 	private void dessiner(Graphics2D g, GM_LineString line) {
-		GeneralPath p = (GeneralPath) shapeCache.get(line);
-		if (p==null) {
+		//GeneralPath p = (GeneralPath) shapeCache.get(line);
+		//if (p==null) {
 			DirectPositionList coords=line.coord();
-			p=new GeneralPath();
+			GeneralPath p=new GeneralPath();
 
 			int nb = coords.size();
 			
@@ -902,17 +911,19 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 				p.lineTo(x,y);
 			}
 			
-			shapeCache.put(line,p);
-		}
-		g.draw(toScreen(p));
+			//shapeCache.put(line,p);
+			g.draw(toScreen(p));
+
+		//}
+		//g.draw(toScreen(p));
 		//fireObjectChange();
 	}
 	
-	Map<GM_Object,Shape> shapeCache = new HashMap<GM_Object,Shape>();
+	//Map<GM_Object,Shape> shapeCache = new HashMap<GM_Object,Shape>();
 	/**
 	 * Nettoie le cache contenant les formes pour le dessin.
 	 */
-	public void clearShapeCache() {shapeCache.clear();}
+	//public void clearShapeCache() {shapeCache.clear();}
 	
 	/**
 	 * Lance le processus de dessin.
@@ -943,7 +954,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
     public static class ThreadVar {
         private Thread thread;
         ThreadVar(Thread t) { thread = t; }
-        synchronized Thread get() { return thread; }
+        public synchronized Thread get() { return thread; }
         synchronized void clear() { thread = null; }
     }
 

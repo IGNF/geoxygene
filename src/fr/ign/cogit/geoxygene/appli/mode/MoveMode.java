@@ -49,7 +49,7 @@ public class MoveMode extends AbstractMode {
 	}
 	
 	@Override
-	protected JButton createButton() {return new JButton(new ImageIcon(this.getClass().getResource("/icons/16x16/move.png")));}
+	protected JButton createButton() {return new JButton(new ImageIcon(this.getClass().getResource("/icons/16x16/move.png")));} //$NON-NLS-1$
 	
 	@Override
 	public void leftMouseButtonClicked(MouseEvent e, ProjectFrame frame) {

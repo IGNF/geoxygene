@@ -62,7 +62,7 @@ public abstract class AbstractMode implements Mode {
 		this.button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				modeSelector.setCurrentMode(currentMode);
+				AbstractMode.this.modeSelector.setCurrentMode(currentMode);
 			}});
 		this.modeSelector.getToolBar().add(this.getButton());
 	}
@@ -72,7 +72,7 @@ public abstract class AbstractMode implements Mode {
 	abstract protected JButton createButton();
 	@Override
 	public void keyPressed(KeyEvent e) {
-		ProjectFrame frame = mainFrame.getSelectedProjectFrame();
+		ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
 		if (frame==null) return;
 		switch(e.getKeyCode()) {
 		case KeyEvent.VK_KP_UP:
@@ -111,7 +111,7 @@ public abstract class AbstractMode implements Mode {
 	public void keyTyped(KeyEvent e) {}
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		ProjectFrame frame = mainFrame.getSelectedProjectFrame();
+		ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
 		if ((frame==null)||(e.getSource()!=frame.getLayerViewPanel())) return;
 		switch (e.getButton()) {
 		case MouseEvent.BUTTON1: this.leftMouseButtonClicked(e,frame);break;
@@ -120,11 +120,23 @@ public abstract class AbstractMode implements Mode {
 		}
 	}
 	
+	/**
+	 * @param e
+	 * @param frame
+	 */
 	public void leftMouseButtonClicked(MouseEvent e, ProjectFrame frame) {}
+	/**
+	 * @param e
+	 * @param frame
+	 */
 	public void middleMouseButtonClicked(MouseEvent e, ProjectFrame frame) {
 		try {frame.getLayerViewPanel().getViewport().moveTo(e.getPoint());}
 		catch (NoninvertibleTransformException e1) {e1.printStackTrace();}
 	}
+	/**
+	 * @param e
+	 * @param frame
+	 */
 	public void rightMouseButtonClicked(MouseEvent e, ProjectFrame frame) {}
 	@Override
 	public void mouseEntered(MouseEvent e) {}
@@ -141,7 +153,7 @@ public abstract class AbstractMode implements Mode {
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		boolean zoomIn = e.getWheelRotation()<0;
-		ProjectFrame frame = mainFrame.getSelectedProjectFrame();
+		ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
 		if (frame==null) return;
 		try {
 			if (zoomIn) frame.getLayerViewPanel().getViewport().zoomInTo(e.getPoint());

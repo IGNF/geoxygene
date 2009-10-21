@@ -109,7 +109,7 @@ public class ProjectFrame extends JInternalFrame implements FeatureCollectionLis
 		this.layerLegendPanel.repaint();
 		this.layerLegendPanel.validate();
 		*/
-		featureCollectionToLayerMap.put(layer.getFeatureCollection(), layer);
+		this.featureCollectionToLayerMap.put(layer.getFeatureCollection(), layer);
 		this.layerViewPanel.repaint();
 	}
 	
@@ -129,7 +129,7 @@ public class ProjectFrame extends JInternalFrame implements FeatureCollectionLis
     @Override
     public void changed(FeatureCollectionEvent event) {
 	//logger.info("changed received "+event.getType());
-	Layer layer = featureCollectionToLayerMap.get(event.getSource());
+	Layer layer = this.featureCollectionToLayerMap.get(event.getSource());
 	if (layer==null) return;
 	//this.layerViewPanel.superRepaint();
 	if (event.getType()==FeatureCollectionEvent.Type.ADDED) this.layerViewPanel.repaint(layer,event.getFeature());

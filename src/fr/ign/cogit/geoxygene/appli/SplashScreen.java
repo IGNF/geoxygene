@@ -55,15 +55,15 @@ public class SplashScreen extends JWindow {
 		container.setBackground(Color.white);
 		this.imageLabel.setIcon(image);
 		this.captionLabel.setText(caption);
-		this.captionLabel.setFont(new Font("Arial",Font.PLAIN,10));
+		this.captionLabel.setFont(new Font("Arial",Font.PLAIN,10)); //$NON-NLS-1$
 		this.captionLabel.setBackground(Color.white);
 		this.captionLabel.setOpaque(false);
 		this.captionLabel.setForeground(Color.lightGray);
 		this.progressBar.setOpaque(false);
 		this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-		container.add(imageLabel, new GridBagConstraints(0,0,1,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,new Insets(10, 10,10, 10),0,0));
-		container.add(captionLabel,new GridBagConstraints(0,1,1,1,0,0,GridBagConstraints.EAST,GridBagConstraints.NONE,new Insets(0, 10, 0, 10),0,0));
-		container.add(progressBar,new GridBagConstraints(0,2,1,1,0,0,GridBagConstraints.CENTER,GridBagConstraints.HORIZONTAL,new Insets(0, 10,10, 10),0,0));
+		container.add(this.imageLabel, new GridBagConstraints(0,0,1,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,new Insets(10, 10,10, 10),0,0));
+		container.add(this.captionLabel,new GridBagConstraints(0,1,1,1,0,0,GridBagConstraints.EAST,GridBagConstraints.NONE,new Insets(0, 10, 0, 10),0,0));
+		container.add(this.progressBar,new GridBagConstraints(0,2,1,1,0,0,GridBagConstraints.CENTER,GridBagConstraints.HORIZONTAL,new Insets(0, 10,10, 10),0,0));
 		this.getContentPane().setBackground(Color.white);
 		this.getContentPane().add(container);
 		this.pack();

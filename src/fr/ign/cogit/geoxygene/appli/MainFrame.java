@@ -85,32 +85,32 @@ public class MainFrame extends JFrame {
 
 		this.menuBar = new JMenuBar();
 
-		JMenu fileMenu = new JMenu("File");
-		JMenu viewMenu = new JMenu("View");
-		JMenu configurationMenu = new JMenu("Configuration");
-		JMenu helpMenu = new JMenu("?");
+		JMenu fileMenu = new JMenu(Messages.getString("geoxygene.MainFrame.File")); //$NON-NLS-1$
+		JMenu viewMenu = new JMenu(Messages.getString("geoxygene.MainFrame.View")); //$NON-NLS-1$
+		JMenu configurationMenu = new JMenu(Messages.getString("geoxygene.MainFrame.Configuration")); //$NON-NLS-1$
+		JMenu helpMenu = new JMenu(Messages.getString("geoxygene.MainFrame.Help")); //$NON-NLS-1$
 
 		//StyledLayerDescriptor sld = StyledLayerDescriptor.charge("defaultSLD.xml");
-		JMenuItem openShapefileMenuItem = new JMenuItem("Open Shapefile");
+		JMenuItem openShapefileMenuItem = new JMenuItem(Messages.getString("geoxygene.MainFrame.OpenShapefile")); //$NON-NLS-1$
 		openShapefileMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ProjectFrame projectFrame = (ProjectFrame) desktopPane.getSelectedFrame();
+				ProjectFrame projectFrame = (ProjectFrame) MainFrame.this.getDesktopPane().getSelectedFrame();
 				if (projectFrame==null) 
-					if (desktopPane.getAllFrames().length!=0) {
+					if (MainFrame.this.getDesktopPane().getAllFrames().length!=0) {
 						// TODO ask the user in which frame (s)he wants to load into?
-						projectFrame = (ProjectFrame) desktopPane.getAllFrames()[0];
+						projectFrame = (ProjectFrame) MainFrame.this.getDesktopPane().getAllFrames()[0];
 					} else {
 						// TODO create a new project frame?
-						logger.info("No frame to load into");
+						logger.info(Messages.getString("geoxygene.MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
 						return;
 					}
 				JFileChooser choixFichierShape = new JFileChooser();
 				/** Crée un filtre qui n'accepte que les fichier shp ou les répertoires */
 				choixFichierShape.setFileFilter(new FileFilter(){
 					@Override
-					public boolean accept(File f) {return (f.isFile() && (f.getAbsolutePath().endsWith(".shp") || f.getAbsolutePath().endsWith(".SHP")) || f.isDirectory());}
+					public boolean accept(File f) {return (f.isFile() && (f.getAbsolutePath().endsWith(".shp") || f.getAbsolutePath().endsWith(".SHP")) || f.isDirectory());} //$NON-NLS-1$ //$NON-NLS-2$
 					@Override
-					public String getDescription() {return "fichiers ESRI shapefile";}
+					public String getDescription() {return Messages.getString("geoxygene.MainFrame.ShapefileDescription");} //$NON-NLS-1$
 				});
 				choixFichierShape.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				choixFichierShape.setMultiSelectionEnabled(false);
@@ -119,14 +119,14 @@ public class MainFrame extends JFrame {
 				int returnVal = choixFichierShape.showOpenDialog(frame);
 				frame.dispose();
 				if(returnVal == JFileChooser.APPROVE_OPTION) {
-					if (logger.isDebugEnabled()) logger.debug("You chose to open this file: " + choixFichierShape.getSelectedFile().getAbsolutePath());
+					if (logger.isDebugEnabled()) logger.debug(Messages.getString("geoxygene.MainFrame.FileChosenDebug") + choixFichierShape.getSelectedFile().getAbsolutePath()); //$NON-NLS-1$
 					String shapefileName = choixFichierShape.getSelectedFile().getAbsolutePath();
-					String populationName = shapefileName.substring(shapefileName.lastIndexOf("/")+1,shapefileName.lastIndexOf("."));
+					String populationName = shapefileName.substring(shapefileName.lastIndexOf("/")+1,shapefileName.lastIndexOf(".")); //$NON-NLS-1$ //$NON-NLS-2$
 					ShapefileReader shapefileReader = new ShapefileReader(shapefileName, populationName, DataSet.getInstance(), true);
 
 					Population<DefaultFeature> population = shapefileReader.getPopulation();
 					if (population!=null) {
-						logger.info("Loading population "+population.getNom());
+						logger.info(Messages.getString("geoxygene.MainFrame.LoadingPopulation")+population.getNom()); //$NON-NLS-1$
 						projectFrame.addFeatureCollection(population,population.getNom());
 					}
 					shapefileReader.read();
@@ -138,11 +138,11 @@ public class MainFrame extends JFrame {
 
 			}
 		});
-		JMenuItem exitMenuItem = new JMenuItem("Exit");
+		JMenuItem exitMenuItem = new JMenuItem(Messages.getString("geoxygene.MainFrame.Exit")); //$NON-NLS-1$
 		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				application.exit();
+				MainFrame.this.application.exit();
 			}
 		});
 		fileMenu.add(openShapefileMenuItem);
@@ -154,14 +154,14 @@ public class MainFrame extends JFrame {
 		this.menuBar.add(viewMenu);
 		this.menuBar.add(configurationMenu);
 		this.menuBar.add(helpMenu);
-		this.setJMenuBar(menuBar);
+		this.setJMenuBar(this.menuBar);
 
 		this.getContentPane().setLayout(new BorderLayout());
-		this.getContentPane().add(desktopPane, BorderLayout.CENTER);
+		this.getContentPane().add(this.desktopPane, BorderLayout.CENTER);
 
 		this.addWindowListener(new WindowAdapter() {
 			@Override
-			public void windowClosing(WindowEvent e) {application.exit();}
+			public void windowClosing(WindowEvent e) {MainFrame.this.application.exit();}
 		});	
 
 		this.modeSelector=new ModeSelector(this);    
@@ -176,8 +176,8 @@ public class MainFrame extends JFrame {
 	 * @return
 	 */
 	public ProjectFrame getSelectedProjectFrame() {
-		if (desktopPane.getSelectedFrame()==null) return null;
-		return (ProjectFrame) desktopPane.getSelectedFrame();    	
+		if (this.desktopPane.getSelectedFrame()==null) return null;
+		return (ProjectFrame) this.desktopPane.getSelectedFrame();    	
 	}
 
 	/**
@@ -185,13 +185,13 @@ public class MainFrame extends JFrame {
 	 */
 	public ProjectFrame[] getAllProjectFrames() {
 		List<ProjectFrame> projectFrameList = new ArrayList<ProjectFrame>();
-		for(JInternalFrame frame:desktopPane.getAllFrames())
+		for(JInternalFrame frame:this.desktopPane.getAllFrames())
 			if (frame instanceof ProjectFrame) projectFrameList.add((ProjectFrame)frame);
 		return projectFrameList.toArray(new ProjectFrame[0]);
 	}
 
 	public ProjectFrame newProjectFrame() {
-		ProjectFrame projectFrame = new ProjectFrame(application.getIcon());
+		ProjectFrame projectFrame = new ProjectFrame(this.application.getIcon());
 		projectFrame.setSize(this.desktopPane.getSize());
 		projectFrame.setVisible(true);
 		this.desktopPane.add(projectFrame,JLayeredPane.DEFAULT_LAYER);

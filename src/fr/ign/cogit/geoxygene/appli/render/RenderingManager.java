@@ -51,7 +51,7 @@ public class RenderingManager {
 	/**
 	 * The managed {@link LayerViewPanel} panel
 	 */
-	private LayerViewPanel layerViewPanel = null;
+	LayerViewPanel layerViewPanel = null;
 	/**
 	 * Insertion-ordered map between a layer and its renderer.
 	 */
@@ -75,7 +75,7 @@ public class RenderingManager {
 	/**
 	 * Queue containg the runnables, one for each layer.
 	 */
-	private LinkedBlockingQueue<Runnable> runnableQueue = new LinkedBlockingQueue<Runnable>();
+	LinkedBlockingQueue<Runnable> runnableQueue = new LinkedBlockingQueue<Runnable>();
 	/**
 	 * Create a new daemon.
 	 * @return the new daemon
@@ -88,13 +88,13 @@ public class RenderingManager {
 				try {
 					for (;;) {
 						Runnable runnable;
-						synchronized (runnableQueue) {
-							if (runnableQueue.isEmpty()) {
-								try {runnableQueue.wait(DAEMON_MAXIMUM_WAITING_TIME);}
+						synchronized (RenderingManager.this.runnableQueue) {
+							if (RenderingManager.this.runnableQueue.isEmpty()) {
+								try {RenderingManager.this.runnableQueue.wait(DAEMON_MAXIMUM_WAITING_TIME);}
 								catch (InterruptedException ie) {}
 							}
-							runnable = runnableQueue.poll();
-							if (logger.isDebugEnabled()) logger.debug(runnableQueue.size()+" runnables in the queue");
+							runnable = RenderingManager.this.runnableQueue.poll();
+							if (logger.isDebugEnabled()) logger.debug(RenderingManager.this.runnableQueue.size()+" runnables in the queue"); //$NON-NLS-1$
 							if (runnable == null) return;
 						}
 						try {runnable.run();}
@@ -113,19 +113,19 @@ public class RenderingManager {
 	 * It allows for a progressive rendering.
 	 * @see Timer
 	 */
-	private Timer repaintTimer = new Timer(repaintTimerDelay, new ActionListener() {
+	Timer repaintTimer = new Timer(this.repaintTimerDelay, new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			for (Renderer renderer:getRenderers()) {
 				// while a layer is being rendered, repaint the panel
 				if (renderer.isRendering()) {
-					layerViewPanel.superRepaint();
+					RenderingManager.this.layerViewPanel.superRepaint();
 					return;
 				}
 			}
 			// when no more layer is being rendered, stop the timer
-			repaintTimer.stop();
+			RenderingManager.this.repaintTimer.stop();
 			// repaint the panel
-			layerViewPanel.superRepaint();
+			RenderingManager.this.layerViewPanel.superRepaint();
 		}
 	});
 
@@ -136,8 +136,8 @@ public class RenderingManager {
 	public RenderingManager(LayerViewPanel theLayerViewPanel) {
 		this.layerViewPanel = theLayerViewPanel;
 		// set the repaint timer to coalesce multiple pending events in case the application does not keep up
-		repaintTimer.setCoalesce(true);
-		selectionRenderer = new SelectionRenderer(theLayerViewPanel);
+		this.repaintTimer.setCoalesce(true);
+		this.selectionRenderer = new SelectionRenderer(theLayerViewPanel);
 	}
 
 	/**
@@ -145,23 +145,23 @@ public class RenderingManager {
 	 * @return the collection of managed renderers
 	 * @see LayerRenderer
 	 */
-	private Collection<LayerRenderer> getRenderers() {return rendererMap.values();}
+	Collection<LayerRenderer> getRenderers() {return this.rendererMap.values();}
 
 	/**
 	 * Render all managed layers
 	 */
 	public void renderAll() {
 		// if the daemon is still alive, interrupt it
-		if ((daemon!=null)&&daemon.isAlive()) synchronized(daemon) {daemon.interrupt();}
+		if ((this.daemon!=null)&&this.daemon.isAlive()) synchronized(this.daemon) {this.daemon.interrupt();}
 		// create a new daemon 
-		daemon = createDaemon();
+		this.daemon = createDaemon();
 		// clear the queue of runnables
-		runnableQueue.clear();
+		this.runnableQueue.clear();
 		// start the new daemon
-		daemon.start();
+		this.daemon.start();
 		// render all layers
-		for(Renderer renderer:rendererMap.values()) this.render(renderer);
-		this.render(selectionRenderer);
+		for(Renderer renderer:this.rendererMap.values()) this.render(renderer);
+		this.render(this.selectionRenderer);
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class RenderingManager {
 	 * @see LayerRenderer
 	 */
 	public void addLayer(Layer layer) {
-		if (rendererMap.get(layer)==null) rendererMap.put(layer, new LayerRenderer(layer,layer.getFeatureCollection(),layerViewPanel));
+		if (this.rendererMap.get(layer)==null) this.rendererMap.put(layer, new LayerRenderer(layer,layer.getFeatureCollection(),this.layerViewPanel));
 	}
 
 	/**
@@ -187,19 +187,19 @@ public class RenderingManager {
 		// create a new runnable for the rendering
 		Runnable runnable = renderer.createRunnable();
 		if (runnable != null) {
-			synchronized(runnableQueue) {
+			synchronized(this.runnableQueue) {
 				// add it to the queue
-				runnableQueue.add(runnable);
+				this.runnableQueue.add(runnable);
 				// notify the queue which should wake the daemon up as it should be waiting on it
-				runnableQueue.notify();
+				this.runnableQueue.notify();
 			}
 		}
 		// if the repaint timer is not running yet, start it
-		if (!repaintTimer.isRunning()) {
+		if (!this.repaintTimer.isRunning()) {
 			// repaint the panel
-			layerViewPanel.superRepaint();
+			this.layerViewPanel.superRepaint();
 			// start the timer
-			repaintTimer.start();
+			this.repaintTimer.start();
 		}
 	}
 
@@ -208,25 +208,25 @@ public class RenderingManager {
 	 * @return the collection of managed layers
 	 * @see Layer
 	 */
-	public Collection<Layer> getLayers() {return rendererMap.keySet();}
+	public Collection<Layer> getLayers() {return this.rendererMap.keySet();}
 
 	/**
 	 * Copy the rendered images to a 2D graphics in the same order the layers were added to the manager
 	 * @param destination a 2D graphics to copy the images to
 	 */
 	public void copyTo(Graphics2D destination) {
-		for (Layer layer:rendererMap.keySet()) rendererMap.get(layer).copyTo(destination);
-		selectionRenderer.copyTo(destination);
+		for (Layer layer:this.rendererMap.keySet()) this.rendererMap.get(layer).copyTo(destination);
+		this.selectionRenderer.copyTo(destination);
 	}
 
 	/**
 	 * Dispose of the manager. Cleans up all threads, renderers, daemons, etc.
 	 */
 	public void dispose() {
-		rendererMap.clear();
-		repaintTimer.stop();
-		runnableQueue.clear();
-		if (daemon!=null) synchronized(daemon) {daemon.interrupt();}
+		this.rendererMap.clear();
+		this.repaintTimer.stop();
+		this.runnableQueue.clear();
+		if (this.daemon!=null) synchronized(this.daemon) {this.daemon.interrupt();}
 	}
 
 	/**
@@ -234,25 +234,25 @@ public class RenderingManager {
 	 * @param feature
 	 */
 	public void render(Layer layer, FT_Feature feature) {
-		Renderer renderer = rendererMap.get(layer);
+		Renderer renderer = this.rendererMap.get(layer);
 		// if the renderer is not already finished, do nothing
 		if (!renderer.isRendered()) return;
 		// create a new runnable for the rendering
 		Runnable runnable = renderer.createFeatureRunnable(feature);
 		if (runnable != null) {
-			synchronized(runnableQueue) {
+			synchronized(this.runnableQueue) {
 				// add it to the queue
-				runnableQueue.add(runnable);
+				this.runnableQueue.add(runnable);
 				// notify the queue which should wake the daemon up as it should be waiting on it
-				runnableQueue.notify();
+				this.runnableQueue.notify();
 			}
 		}
 		// if the repaint timer is not running yet, start it
-		if (!repaintTimer.isRunning()) {
+		if (!this.repaintTimer.isRunning()) {
 			// repaint the panel
-			layerViewPanel.superRepaint();
+			this.layerViewPanel.superRepaint();
 			// start the timer
-			repaintTimer.start();
+			this.repaintTimer.start();
 		}
 	}
 
@@ -261,25 +261,25 @@ public class RenderingManager {
 	 * @param geom
 	 */
 	public void render(Layer layer, GM_Object geom) {
-		Renderer renderer = rendererMap.get(layer);
+		Renderer renderer = this.rendererMap.get(layer);
 		// if the renderer is not already finished, do nothing
 		if (!renderer.isRendered()) return;
 		// create a new runnable for the rendering
 		Runnable runnable = renderer.createLocalRunnable(geom);
 		if (runnable != null) {
-			synchronized(runnableQueue) {
+			synchronized(this.runnableQueue) {
 				// add it to the queue
-				runnableQueue.add(runnable);
+				this.runnableQueue.add(runnable);
 				// notify the queue which should wake the daemon up as it should be waiting on it
-				runnableQueue.notify();
+				this.runnableQueue.notify();
 			}
 		}
 		// if the repaint timer is not running yet, start it
-		if (!repaintTimer.isRunning()) {
+		if (!this.repaintTimer.isRunning()) {
 			// repaint the panel
-			layerViewPanel.superRepaint();
+			this.layerViewPanel.superRepaint();
 			// start the timer
-			repaintTimer.start();
+			this.repaintTimer.start();
 		}
 	}
 }
