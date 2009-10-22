@@ -157,7 +157,7 @@ public class Viewport {
 			if (geometry.isLineString()) return toShape((GM_LineString) geometry);
 			if (geometry.isMultiCurve()) return null;
 			if (geometry.isPoint()) return toShape((GM_Point) geometry);
-			if (geometry instanceof GM_Aggregate) return null;
+			if (geometry instanceof GM_Aggregate<?>) return null;
 			throw new IllegalArgumentException(Messages.getString("geoxygene.Viewport.UnhandledGeometryClass") + geometry.getClass()); //$NON-NLS-1$
 		} catch (Exception e) {
 			logger.info(Messages.getString("geoxygene.Viewport.Geometry")+geometry); //$NON-NLS-1$
