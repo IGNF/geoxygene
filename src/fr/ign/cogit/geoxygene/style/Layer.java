@@ -74,7 +74,7 @@ public interface Layer {
 	public FT_FeatureCollection<? extends FT_Feature> getFeatureCollection();
 
 	/**
-	 * @return
+	 * @return <code>true</code> if the layer is visible in the LayerViewPanel by the user; <code>false</code> otherwise.
 	 */
 	public boolean isVisible();
 	/**
@@ -83,7 +83,7 @@ public interface Layer {
 	public void setVisible(boolean visible);
 
 	/**
-	 * @return
+	 * @return <code>true</code> if the layer is selectable by the user; <code>false</code> otherwise.
 	 */
 	public boolean isSelectable();
 	/**

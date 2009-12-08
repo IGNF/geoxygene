@@ -391,7 +391,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	/**
 	 * @deprecated
 	 * @param obj
-	 * @return
+	 * @return <code>true</code> if the given feature has to be drawn; <code>false</code> otherwise.
 	 */
 	@Deprecated
 	public boolean aAfficher(FT_Feature obj) {return obj.intersecte(getEnveloppeAffichage());}

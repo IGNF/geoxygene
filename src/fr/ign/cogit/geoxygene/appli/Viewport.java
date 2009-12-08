@@ -197,7 +197,7 @@ public class Viewport {
 	}
 	/**
 	 * @param modelDirectPositionList
-	 * @return
+	 * @return a DirectPositionList of DirectPosition in the screen coordinate system corresponding to the given DirectPositionList in model coordinate system
 	 * @throws NoninvertibleTransformException
 	 */
 	public DirectPositionList toViewDirectPositionList(DirectPositionList modelDirectPositionList) throws NoninvertibleTransformException {
@@ -227,7 +227,7 @@ public class Viewport {
 	}
 	/**
 	 * @param modelDirectPosition
-	 * @return
+	 * @return a Point2D (on the screen) corresponding to the given DirectPosition in model coordinate system
 	 */
 	public Point2D toViewPoint(DirectPosition modelDirectPosition) throws NoninvertibleTransformException {
 		Point2D.Double pt = new Point2D.Double(modelDirectPosition.getX(), modelDirectPosition.getY());
@@ -235,7 +235,7 @@ public class Viewport {
 	}
 	/**
 	 * @param lineString
-	 * @return
+	 * @return a GeneralPath representing the given linestring as an AWT shape
 	 * @throws NoninvertibleTransformException
 	 */
 	private GeneralPath toShape(GM_LineString lineString) throws NoninvertibleTransformException {
@@ -251,7 +251,7 @@ public class Viewport {
 	}
 	/**
 	 * @param point
-	 * @return
+	 * @return a GeneralPath representing the given point as an AWT shape
 	 * @throws NoninvertibleTransformException
 	 */
 	private GeneralPath toShape(GM_Point point) throws NoninvertibleTransformException {
@@ -320,15 +320,15 @@ public class Viewport {
 	 * @param xMax
 	 * @param yMin
 	 * @param yMax
-	 * @return
+	 * @return the envelope in model coordinate system containing xMin,xMax,yMin,yMax
 	 * @throws NoninvertibleTransformException
 	 */
 	private GM_Envelope toModelEnvelope(double xMin, double xMax, double yMin, double yMax) throws NoninvertibleTransformException {
 		return new GM_Envelope(toModelDirectPosition(new Point2D.Double(xMax, yMin)),toModelDirectPosition(new Point2D.Double(xMin, yMax)));
 	}
 	/**
-	 * @param viewPoint
-	 * @return
+	 * @param viewPoint a 2D point
+	 * @return a DirectPosition in the model coordinate system corresponding to the viewPoint (on the screen)
 	 * @throws NoninvertibleTransformException
 	 */
 	public DirectPosition toModelDirectPosition(Point2D viewPoint) throws NoninvertibleTransformException {
@@ -336,16 +336,17 @@ public class Viewport {
 		return new DirectPosition(p.getX(),p.getY());
 	}
 	/**
-	 * @param viewPoint
-	 * @return
+	 * @param viewPoint  a 2D point
+	 * @return a Point2D in the model coordinate system corresponding to the viewPoint (on the screen)
 	 * @throws NoninvertibleTransformException
 	 */
 	public Point2D toModelPoint(Point2D viewPoint) throws NoninvertibleTransformException {
 		return getModelToViewTransform().inverseTransform(toPoint2DDouble(viewPoint), null);
 	}
 	/**
-	 * @param p
-	 * @return
+	 * Conversion function from any Point2D to the equivalent Point2D.Double
+	 * @param p a 2D point
+	 * @return a correspondin Point2D.Double
 	 */
 	private Point2D.Double toPoint2DDouble(Point2D p) {
 		if (p instanceof Point2D.Double) {return (Point2D.Double) p;}

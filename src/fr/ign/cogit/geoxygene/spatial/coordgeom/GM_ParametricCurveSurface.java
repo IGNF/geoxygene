@@ -51,7 +51,7 @@ class GM_ParametricCurveSurface extends GM_SurfacePatch {
 
 	/**
 	 * @param t
-	 * @return
+	 * @return horizontal curve
 	 */
 	public GM_Curve horizontalCurve( double t) {
 		return null;
@@ -59,7 +59,7 @@ class GM_ParametricCurveSurface extends GM_SurfacePatch {
 
 	/**
 	 * @param s
-	 * @return
+	 * @return vertical curve
 	 */
 	public GM_Curve verticalCurve( double s) {
 		return null;
@@ -68,7 +68,7 @@ class GM_ParametricCurveSurface extends GM_SurfacePatch {
 	/**
 	 * @param s
 	 * @param t
-	 * @return
+	 * @return surface of the curve surface
 	 */
 	public DirectPosition surface(double s,double t) {
 		return null;

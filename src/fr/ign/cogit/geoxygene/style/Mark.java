@@ -97,7 +97,7 @@ public class Mark {
 			13);
 	
 	/**
-	 * @return
+	 * @return the AWT shape used to draw this Mark
 	 */
 	public Shape toShape() {
 		if ((this.wellKnownName==null)||(this.wellKnownName.equalsIgnoreCase("square"))) return square;

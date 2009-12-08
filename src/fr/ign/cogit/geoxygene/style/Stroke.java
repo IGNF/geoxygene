@@ -304,7 +304,7 @@ public class Stroke {
     @XmlTransient
     private java.awt.Stroke awtStroke = null;
 	/**
-	 * @return
+	 * @return the AWT Stroke properties to be used for drawing
 	 */
 	public java.awt.Stroke toAwtStroke() {
 		if (awtStroke==null) {

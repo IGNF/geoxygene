@@ -44,7 +44,7 @@ public class Halo {
 	
 	private Fill fill = null;
 	/**
-	 * @return
+	 * @return the Fill properties to be used for drawing this Halo
 	 */
 	public Fill getFill() {return this.fill;}
 	/**

@@ -882,7 +882,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	 * en cas d'echec, renvoie la geometrie initiale
 	 * @param geom
 	 * @param seuil
-	 * @return
+	 * @return the resulting Geometry after the application of the DouglasPeucker filter
 	 */
 	public static Geometry filtreDouglasPeucker(Geometry geom, double seuil){
 		if (seuil == 0.0) return (Geometry)geom.clone();

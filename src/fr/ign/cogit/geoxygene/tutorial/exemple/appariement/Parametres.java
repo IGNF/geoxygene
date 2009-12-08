@@ -44,7 +44,7 @@ public class Parametres {
 	 *  
 	 * @param populationsArcs1
 	 * @param populationsArcs2
-	 * @return
+	 * @return a set of default parameters to be used with two sets of edges
 	 */
 	@SuppressWarnings("unchecked")
 	public static ParametresApp parametresDefaut (
@@ -143,7 +143,7 @@ public class Parametres {
 	 * @param populationsNoeuds1
 	 * @param populationsArcs2
 	 * @param populationsNoeuds2
-	 * @return
+	 * @return default parameters to be used with two collections of edges and nodes
 	 */
 	@SuppressWarnings("unchecked")
 	public static ParametresApp parametresAvecNoeudsDefaut (

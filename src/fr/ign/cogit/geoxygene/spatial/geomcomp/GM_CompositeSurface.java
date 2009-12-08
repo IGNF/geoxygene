@@ -209,7 +209,7 @@ public class GM_CompositeSurface extends GM_Composite {
 	 * Vérifie la continuité des composants. Renvoie TRUE s'ils sont contigus, FALSE sinon.
 	 * Cette méthode n'est pas dans la norme.
 	 * @param tolerance
-	 * @return
+	 * @return <code>true</code> if composite surface is validated with the given tolerance; <code>false</false> otherwise.
 	 */
 	public boolean validate(double tolerance) {
 		/*    for (int i=0; i<generator.size()-1; i++) {

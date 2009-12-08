@@ -193,7 +193,7 @@ public class GM_Envelope {
 	/**
 	 * Indique si self contient le point passe en parametre, fonctionne en 2D uniquement.
 	 * @param dp le point
-	 * @return
+	 * @return <code>true</code> if this Envelope contains the given DirectPosition; <code>false</code> otherwise.
 	 */
 	public boolean contains (DirectPosition dp) {
 		return contains(dp.getX(), dp.getY());
@@ -202,7 +202,7 @@ public class GM_Envelope {
 	/**
 	 * Indique si self contient le point passe en parametre, fonctionne en 2D uniquement.
 	 * @param point
-	 * @return
+	 * @return <code>true</code> if this Envelope contains the given Point; <code>false</code> otherwise.
 	 */
 	public boolean contains (GM_Point point) {
 		return contains(point.getPosition());
@@ -212,7 +212,7 @@ public class GM_Envelope {
 	 * Indique si self contient le point de coordonnees x,y passees en parametre (2D).
 	 * @param x
 	 * @param y
-	 * @return
+	 * @return <code>true</code> if this Envelope contains the point with the given coordinates x and y; <code>false</code> otherwise.
 	 */
 	public boolean contains (double x, double y) {
 		if (x < lowerCorner.getX()) return false;
@@ -374,7 +374,7 @@ public class GM_Envelope {
 
 	/**
 	 * Construit un GM_object de l'enveloppe
-	 * @return
+	 * @return the Envelope as a Polygon
 	 */
 	public GM_Object getGeom() {
 		DirectPositionList coords = new DirectPositionList();

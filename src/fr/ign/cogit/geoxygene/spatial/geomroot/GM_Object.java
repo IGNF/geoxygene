@@ -211,7 +211,7 @@ abstract public class GM_Object implements Cloneable {
 	 * Tout autre implémentation serait possible : le but serait de supporter des méthodes d'indexation
 	 * qui n'utilisent pas les rectangles minimaux englobants.  
 	 * @param data
-	 * @return
+	 * @return minimum containing rectangle as a Polygon
 	 */
 	public GM_Polygon mbRegion(Geodatabase data) {return new GM_Polygon(this.envelope());}
 	/**Teste l'intersection stricte entre la géométrie manipulée et celle passée en

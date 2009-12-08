@@ -119,7 +119,7 @@ public class GM_LineString extends GM_CurveSegment {
 
 	  /**
 	   * Verifie si la ligne est fermee ou non. La ligne est fermee lorsque les deux points extremes ont la meme position
-	 * @return
+	 * @return <code>true</code> if this LineString is closed with the given tolerance (<code>distance(startpoint,endpoint) < tolerance</code>); <code>false</code> otherwise.
 	 */
 	public boolean isClosed(double tolerance) {
 		if (isEmpty()) return false;
@@ -127,7 +127,7 @@ public class GM_LineString extends GM_CurveSegment {
 	}
 
 	/**
-	 * @return
+	 * @return <code>true</code> if this LineString is closed (start point=end point); <code>false</code> otherwise.
 	 */
 	public boolean isClosed() {return isClosed(0);}
 

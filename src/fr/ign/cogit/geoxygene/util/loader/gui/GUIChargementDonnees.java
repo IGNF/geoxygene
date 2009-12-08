@@ -99,26 +99,7 @@ public class GUIChargementDonnees extends JPanel {
 		JButton nextButton = null;
 		JButton finishButton = null;
 		boolean isFinal = false;
-		/**
-		 * Constructeur affectant un layout de type GridBag.
-		 * @param titre titre du panel
-		 */
-		public GeoPanel(String titre) {
-			super(new BorderLayout());
-			this.setName(titre);
-			initGUI();
-		}
-
-		/**
-		 * Constructeur affectant un layout de type GridBag et un le panel précédent.
-		 * Un bouton "précédent" est créé pour revenir à celui-ci.
-		 * Ce Panel n'est pas final.
-		 * @param titre titre du panel
-		 * @param precedent le panel précédent
-		 * @see #GeoPanel(String,GeoPanel,boolean)
-		 */
-		public GeoPanel(String titre, GeoPanel precedent) {this(titre,precedent,false);}
-
+		
 		/**
 		 * Constructeur vide affectant un layout de type GridBag et un le panel précédent.
 		 * Un bouton "précédent" est créé pour revenir à celui-ci.
@@ -133,6 +114,25 @@ public class GUIChargementDonnees extends JPanel {
 			this.previous=precedent;
 			this.previous.addSuivant(this);
 			this.isFinal=isFinal;
+			initGUI();
+		}
+		
+		/**
+		 * Constructeur affectant un layout de type GridBag et un le panel précédent.
+		 * Un bouton "précédent" est créé pour revenir à celui-ci.
+		 * Ce Panel n'est pas final.
+		 * @param titre titre du panel
+		 * @param precedent le panel précédent
+		 */
+		public GeoPanel(String titre, GeoPanel precedent) {this(titre,precedent,false);}
+
+		/**
+		 * Constructeur affectant un layout de type GridBag.
+		 * @param titre titre du panel
+		 */
+		public GeoPanel(String titre) {
+			super(new BorderLayout());
+			this.setName(titre);
 			initGUI();
 		}
 
@@ -174,8 +174,6 @@ public class GUIChargementDonnees extends JPanel {
 		 * Ajout d'un panel à la liste des panels suivants.
 		 * Ajout un radio button et le boutton suivant s'il manque.
 		 * @param suivant un panel suivant
-		 * @see #GeoPanel(String,GeoPanel)
-		 * @see #GeoPanel(String,GeoPanel,boolean)
 		 */
 		public void addSuivant(GeoPanel suivant) {
 			JRadioButton button = new JRadioButton(suivant.getName());

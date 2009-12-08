@@ -96,7 +96,7 @@ class TP_Complex extends TP_Object
 
 	/**
 	 * @param data
-	 * @return
+	 * @return the coBoundary
 	 */
 	public List<?> coBoundary(Geodatabase data) {
 		return null;

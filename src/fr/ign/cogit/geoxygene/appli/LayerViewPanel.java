@@ -134,7 +134,7 @@ public class LayerViewPanel extends JPanel {
 	return envelope;
     }
     /**
-     * @return
+     * @return the features selected by the user
      */
     public Set<FT_Feature> getSelectedFeatures() {return this.selectedFeatures ;}
 }

@@ -36,7 +36,7 @@ public class ExpressionFactory {
 	/**
 	 * FIXME voir comment créer des fonctions
 	 * @param type
-	 * @return
+	 * @return a new Expression corresponding to the given type
 	 */
 	public static Expression createExpression(String type) {
 		if (type.equalsIgnoreCase("add")) return new Add();
@@ -47,6 +47,10 @@ public class ExpressionFactory {
 		if (type.equalsIgnoreCase("propertyName")) return new PropertyName();
 		return null;
 	}
+	/**
+	 * @param name
+	 * @return a new function corresponding to the given name
+	 */
 	public static Function createFunction(String name) {
 		String nomClasse = "fr.ign.cogit.geoxygene.filter.function."+name.substring(0, 1).toUpperCase()+name.substring(1);
 		try {

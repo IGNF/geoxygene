@@ -225,7 +225,6 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	Map<Layer,FT_FeatureCollection<? extends FT_Feature>> cachedFeatures = new HashMap<Layer,FT_FeatureCollection<? extends FT_Feature>>();
 	/**
 	 * @param layer
-	 * @param selectedFeatures
 	 */
 	private synchronized void setCachedFeatures(Layer layer) {
 		if (layer.getFeatureCollection()==null) return;
@@ -236,7 +235,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	}
 	/**
 	 * @param layer
-	 * @return
+	 * @return the features in cache
 	 */
 	private FT_FeatureCollection<? extends FT_Feature> getCachedFeatures(Layer layer) {return cachedFeatures.get(layer);}
 	

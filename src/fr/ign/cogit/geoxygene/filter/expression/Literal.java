@@ -52,7 +52,7 @@ public class Literal extends Expression {
 	@XmlMixed
 	private String[] value = new String[1];
 	/**
-	 * @return
+	 * @return the value of the Literal
 	 */
 	public String getValue() {return value[0];}
 	/**

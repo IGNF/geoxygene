@@ -245,8 +245,8 @@ public class DirectPosition {
 
 	/**
 	 * Calcul de la distance entre deux directPosition
-	 * @param d
-	 * @return
+	 * @param d a DirectPosition
+	 * @return the distance between this DirectPosition and <code>d</code>
 	 */
 	public double distance(DirectPosition d) {
 	    double dx = getX() - d.getX();

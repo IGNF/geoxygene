@@ -84,12 +84,12 @@ public interface Renderer {
 
 	/**
 	 * @param feature
-	 * @return
+	 * @return a featureRunnable to draw the given Feature
 	 */
 	public abstract Runnable createFeatureRunnable(FT_Feature feature);
 	/**
 	 * @param geom
-	 * @return
+	 * @return a localRunnable to draw the given region
 	 */
 	public abstract Runnable createLocalRunnable(GM_Object geom);
 

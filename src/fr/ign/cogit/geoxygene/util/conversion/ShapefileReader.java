@@ -293,7 +293,7 @@ public class ShapefileReader implements Runnable {
 		}
 	}
 	/**
-	 * @return
+	 * @return maximum X value
 	 */
 	public double getMaxX() {return reader.getMaxX();}
 	public double getMinX() {return reader.getMinX();}
@@ -426,18 +426,18 @@ class Reader {
 	public int getNbFeatures() {return this.nbFeatures;}
 	/**
 	 * @param i
-	 * @return
+	 * @return the name of the given field
 	 */
 	public String getFieldName(int i) {return fieldNames[i];}
 	/**
 	 * @param i
-	 * @return
+	 * @return the class of the given field
 	 */
 	public Class<?> getFieldClass(int i) {return fieldClasses[i];}
 	public Class<? extends GM_Object> getShapeType() {return shapeType;}
 	/**
-	 * @param name
-	 * @return
+	 * @param type
+	 * @return the class of the given geometry type
 	 */
 	private static Class<? extends GM_Object> geometryType(ShapeType type) {
 	    if(logger.isDebugEnabled()) logger.debug("shapeType = "+type);

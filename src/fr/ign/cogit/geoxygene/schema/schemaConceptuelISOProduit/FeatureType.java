@@ -68,7 +68,7 @@ public class FeatureType implements GF_FeatureType {
 				sISO.addFeatureType(this);}
 	}
 	/**
-	 * @return
+	 * @return the schema of this FeatureType
 	 */
 	public SchemaConceptuelProduit getSchema() {return schema;}
 	/**Identifiant d'un objet*/
@@ -93,7 +93,7 @@ public class FeatureType implements GF_FeatureType {
 	public AssociationRole getRoleI(int i) {return (AssociationRole) roles.get(i);}
 	/**
 	 * @param nomRole
-	 * @return
+	 * @return an AssociationRole with the given name
 	 */
 	public AssociationRole getRoleByName(String nomRole){
 		List<GF_AssociationRole> listRoles = this.getRoles();

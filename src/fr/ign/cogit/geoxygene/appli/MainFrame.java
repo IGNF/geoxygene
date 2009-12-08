@@ -173,7 +173,7 @@ public class MainFrame extends JFrame {
 		super.dispose();
 	}
 	/**
-	 * @return
+	 * @return the selected (current) project frame
 	 */
 	public ProjectFrame getSelectedProjectFrame() {
 		if (this.desktopPane.getSelectedFrame()==null) return null;
@@ -181,7 +181,7 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * @return
+	 * @return an array containing all projects frame available in the interface
 	 */
 	public ProjectFrame[] getAllProjectFrames() {
 		List<ProjectFrame> projectFrameList = new ArrayList<ProjectFrame>();

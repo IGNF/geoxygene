@@ -43,7 +43,7 @@ public interface Dessinable {
 	 */
 	public GM_Envelope getEnveloppeAffichage();
 	/**
-	 * @return
+	 * @return the center of this Dessinalble in Model coordinates
 	 */
 	public DirectPosition getCentreGeo();
 	/**
@@ -51,7 +51,7 @@ public interface Dessinable {
 	 */
 	public void setCentreGeo(DirectPosition centreGeo);
 	/**
-	 * @return
+	 * @return the size of one pixel in meters
 	 */
 	public double getTaillePixel();
 	/**

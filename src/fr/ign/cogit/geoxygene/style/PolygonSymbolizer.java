@@ -52,7 +52,7 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
 	@XmlElement(name = "Fill")
 	private Fill fill = null;
 	/**
-	 * @return
+	 * @return the Fill properties to be used for drawing this Polygon
 	 */
 	public Fill getFill() {return this.fill;}
 	/**

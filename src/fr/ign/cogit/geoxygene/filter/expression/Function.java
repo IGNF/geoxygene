@@ -40,11 +40,11 @@ import fr.ign.cogit.geoxygene.filter.function.FunctionImpl;
 @XmlSeeAlso({FunctionImpl.class})
 public abstract class Function extends Expression {
 	/**
-	 * @return
+	 * @return the name of the function 
 	 */
 	public abstract String getName();
 	/**
-	 * @return
+	 * @return the fallback (default) value returned by the function, especially used if the function could not be evaluated.
 	 */
 	public abstract String getFallbackValue();
 	/**
@@ -53,7 +53,7 @@ public abstract class Function extends Expression {
 	public abstract void setFallbackValue(String fallbackValue);
 	
 	/**
-	 * @return
+	 * @return the list of the function's parameters
 	 */
 	public abstract List<Expression> getParameters();
 	/**

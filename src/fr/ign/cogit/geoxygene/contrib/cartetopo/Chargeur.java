@@ -106,8 +106,8 @@ public class Chargeur {
 
 	/** Remplit la carte topo 'carte' avec des correspondants des éléments de 'listeFeature'.
 	 * @param listeFeatures éléments
+	 * @param population the population to import
 	 * @param convert2d si vrai, alors convertir les géométries en 2d
-	 * @param carte carte topo
 	 */
 	@SuppressWarnings("unchecked")
 	private static int importClasseGeo(FT_FeatureCollection<?> listeFeatures, Population<?> population, boolean convert2d) {

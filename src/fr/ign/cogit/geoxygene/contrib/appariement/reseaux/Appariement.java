@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
@@ -54,16 +56,24 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
- * Cette classe supporte les methodes d'entrée pour executer l'appariement
+ * Appariement is the abstract class for data matching which carrie the algorithms for networks matching 
+ * using topological maps ({@link ReseauApp}). 
+ * The method is based on [Devogele 97]. 
+ * <b>For data matching of complete sets of data, use {@link AppariementIO}.</b>
+ * 
+ * <p>
+ * La classe Appariement  supporte les methodes d'entrée pour executer l'appariement
  * de réseaux inspiré de la méthode de [Devogele 97].
  * 
- * NB: Cette classe ne porte QUE les méthodes concernant l'appariement de cartes topo.
+ * <p>
+ * <b>NB: Cette classe ne porte QUE les méthodes concernant l'appariement de cartes topo ({@link ReseauApp}).
  * Pour un appariement complet de jeux géo (création carte topo, appariement, export),
- * voir la classe appariementIO.
+ * voir la classe {@link AppariementIO}.</b>
  * 
- * @author Mustiere / IGN Laboratoire COGIT
- * @version 1.0
- * 
+ * @author Mustiere
+ * @see AppariementIO
+ * @see ReseauApp
+ * @see CarteTopo
  */
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,11 +81,28 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 public abstract class Appariement {
+	private final static Logger logger=Logger.getLogger(Appariement.class.getName());
 
-	/** Appariement entre deux réseaux représentés par des carte topo.
+	/**
+	 * Matching between two networks represented by topological maps ({@link ReseauApp}).
+	 * <b>The networks given as arguments are modified during this process: groups are created</b>
+	 * 
+	 * <p>
+	 * Appariement entre deux réseaux représentés par des carte topo.
 	 * Processus largement inspiré de celui défini dans la thèse de Thomas Devogèle (1997).
 	 * 
-	 * Attention : les réseaux passés en entrée sont modifiés durant le traitement : des groupes y sont ajoutés.
+	 * <b>Attention : les réseaux passés en entrée sont modifiés durant le traitement : des groupes y sont ajoutés.</b>
+	 * 
+	 * @param reseau1 first network to be matched 
+	 * @param reseau2 second network to be matched 
+	 * @param param parameters of the data matching algorithm 
+	 * @return 	a set of links between objects from both networks
+	 * 
+	 * @see ReseauApp
+	 * @see CarteTopo
+	 * @see EnsembleDeLiens
+	 * @see ReseauApp
+	 * @see ParametresApp
 	 */
 	public static EnsembleDeLiens appariementReseaux(ReseauApp reseau1, ReseauApp reseau2, ParametresApp param) {
 		EnsembleDeLiens liensPreAppNN ;
@@ -84,30 +111,28 @@ public abstract class Appariement {
 		EnsembleDeLiens liensAppNoeuds ;
 		EnsembleDeLiens tousLiens ;
 
-		// Indexation spatiale si cela n'a pas déjà été fait :
-		// dallage régulier avec en moyenne 20 objets par case
+		// build a spatial index (regular tiling with an average of 20 objets per tile) if the network do not have one already
+		// Indexation spatiale si cela n'a pas déjà été fait : dallage régulier avec en moyenne 20 objets par case
 		if ( !reseau1.getPopArcs().hasSpatialIndex()) {
-			int nb = (int)Math.sqrt(reseau1.getPopArcs().size()/20);
-			if (nb == 0) nb=1;
+			int nb = Math.max((int)Math.sqrt(reseau1.getPopArcs().size()/20),1);
 			reseau1.getPopArcs().initSpatialIndex(Tiling.class, true, nb);
 		}
-
 		if ( !reseau2.getPopNoeuds().hasSpatialIndex()) {
-			int nb = (int)Math.sqrt(reseau2.getPopNoeuds().size()/20);
-			if (nb == 0) nb=1;
+			int nb = Math.max((int)Math.sqrt(reseau2.getPopNoeuds().size()/20),1);
 			reseau2.getPopNoeuds().initSpatialIndex(Tiling.class, true, nb);
 		}
 
-
 		///////////// APPARIEMENT
+		// Pre-matching using nodes
 		// Préappariement de noeuds à noeuds
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Pré-appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isDebugEnabled()) logger.debug("  -- Pré-appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
 		liensPreAppNN = preAppariementNoeudNoeud(reseau1, reseau2, param);
 
+		// Pre-matching using edges
 		// Préappariement d'arcs à arcs
-		if (liensPreAppNN.size() != 0 ) { // il est inutile de pre-appariéer les arcs si rien n'a été trouvé sur les noeuds
+		if (liensPreAppNN.size() != 0 ) {// nothing to do if there is no node. Il est inutile de pre-appariéer les arcs si rien n'a été trouvé sur les noeuds
 			// Preappariement des arcs entre eux (basé principalement sur Hausdorf)
-			if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Pré-appariement des arcs "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  -- Pré-appariement des arcs "+(new Time(System.currentTimeMillis())).toString());
 			liensPreAppAA = preAppariementArcArc(reseau1, reseau2, param);
 		}
 		else {
@@ -115,61 +140,62 @@ public abstract class Appariement {
 			liensPreAppAA.setNom("Préappariement des arcs");
 		}
 
-		// Appariement de chaque noeud de la BDref (indépendamment les uns des autres)
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
+		// Matching each node of reseau1 independantly with nodes of reseau2
+		// Appariement de chaque noeud de la BDref / reseau1 (indépendamment les uns des autres)
+		if (logger.isDebugEnabled()) logger.debug("  -- Appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
 		liensAppNoeuds = appariementNoeuds(reseau1, reseau2, liensPreAppNN, liensPreAppAA, param);
 
+		// cleaning-up
 		nettoyageLiens(reseau1, reseau2, liensPreAppNN);
 
 		if (param.varianteRedecoupageNoeudsNonApparies) {
-			if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Projection plus forte pour les noeuds non appariés "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  -- Projection plus forte pour les noeuds non appariés "+(new Time(System.currentTimeMillis())).toString());
 			decoupeNoeudsNonApparies(reseau1,reseau2,liensAppNoeuds,param);
-			if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Nettoyage des liens "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  -- Nettoyage des liens "+(new Time(System.currentTimeMillis())).toString());
 			nettoyageLiens(reseau1, reseau2);
 			liensPreAppNN.setElements(new ArrayList<Lien>());
 			liensPreAppAA.setElements(new ArrayList<Lien>());
 			liensAppNoeuds.setElements(new ArrayList<Lien>());
 			System.gc();
 			// Préappariement de noeuds à noeuds
-			if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Pré-appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  -- Pré-appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
 			liensPreAppNN = preAppariementNoeudNoeud(reseau1, reseau2, param);
-			if ( param.debugAffichageCommentaires > 1 )  System.out.println("  Nb de liens de pre-appariement noeud-noeud = "+liensPreAppNN.size());
+			if (logger.isDebugEnabled()) logger.debug("  Nb de liens de pre-appariement noeud-noeud = "+liensPreAppNN.size());
 			// Preappariement des arcs entre eux (basé principalement sur Hausdroff)
-			if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Pré-appariement des arcs "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  -- Pré-appariement des arcs "+(new Time(System.currentTimeMillis())).toString());
 			liensPreAppAA = preAppariementArcArc(reseau1, reseau2, param);
 			// Appariement de chaque noeud de la BDref (indépendamment)
-			if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  -- Appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
 			liensAppNoeuds = appariementNoeuds(reseau1, reseau2, liensPreAppNN, liensPreAppAA, param);
 			nettoyageLiens(reseau1, reseau2, liensPreAppNN);
 		}
 
 		// Appariement de chaque arc du reseau 1
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Appariement des arcs "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isDebugEnabled()) logger.debug("  -- Appariement des arcs "+(new Time(System.currentTimeMillis())).toString());
 		liensAppArcs = appariementArcs(reseau1, reseau2, liensPreAppAA, liensAppNoeuds, param);
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("");
 		tousLiens = EnsembleDeLiens.compile(liensAppNoeuds, liensAppArcs);
 
 
 		if (param.varianteRedecoupageArcsNonApparies) {
 			// NB: pas optimal du tout, on recalcule tout après avoir redécoupé.
-			if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Redécoupage plus fort pour les arcs non appariés "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  -- Redécoupage plus fort pour les arcs non appariés "+(new Time(System.currentTimeMillis())).toString());
 			decoupeNonApparies(reseau1,reseau2,tousLiens,param);
 			nettoyageLiens(reseau1, reseau2);
 			liensPreAppNN.setElements(new ArrayList<Lien>());
 			liensPreAppAA.setElements(new ArrayList<Lien>());
 			liensAppNoeuds.setElements(new ArrayList<Lien>());
 			// Préappariement de noeuds à noeuds
-			if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Pré-appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  -- Pré-appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
 			liensPreAppNN = preAppariementNoeudNoeud(reseau1, reseau2, param);
 			// Preappariement des arcs entre eux (basé principalement sur Hausdroff)
-			if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Pré-appariement des arcs "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  -- Pré-appariement des arcs "+(new Time(System.currentTimeMillis())).toString());
 			liensPreAppAA = preAppariementArcArc(reseau1, reseau2, param);
 			// Appariement de chaque noeud de la BDref (indépendamment)
-			if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  -- Appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
 			liensAppNoeuds = appariementNoeuds(reseau1, reseau2, liensPreAppNN, liensPreAppAA, param);
 			nettoyageLiens(reseau1, reseau2, liensPreAppNN);
 			// Appariement de chaque arc de la BDref
-			if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Appariement des arcs "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  -- Appariement des arcs "+(new Time(System.currentTimeMillis())).toString());
 			liensAppArcs = appariementArcs(reseau1, reseau2, liensPreAppAA, liensAppNoeuds, param);
 			tousLiens = EnsembleDeLiens.compile(liensAppNoeuds, liensAppArcs);
 		}
@@ -177,7 +203,7 @@ public abstract class Appariement {
 		nettoyageLiens(reseau1, reseau2, liensPreAppAA);
 
 		// Evaluation globale
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("  -- Controle global des appariements et bilan "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isDebugEnabled()) logger.debug("  -- Controle global des appariements et bilan "+(new Time(System.currentTimeMillis())).toString());
 		controleGlobal(reseau1, reseau2, tousLiens, param);
 
 		//return liens_AppArcs;
@@ -276,7 +302,7 @@ public abstract class Appariement {
 				}
 			}
 		}
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("  Bilan : "+nbCandidats+" noeuds comp candidats pour "+nbRef+" noeuds ref à traiter");
+		if (logger.isDebugEnabled()) logger.debug("  Bilan : "+nbCandidats+" noeuds comp candidats pour "+nbRef+" noeuds ref à traiter");
 		return liens;
 	}
 
@@ -349,7 +375,7 @@ public abstract class Appariement {
 				arcRef.addLiens(lien);
 			}
 		}
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("  Bilan : "+nbCandidats+" arcs comp candidats pour "+reseau1.getListeArcs().size()+" arcs ref");
+		if (logger.isDebugEnabled()) logger.debug("  Bilan : "+nbCandidats+" arcs comp candidats pour "+reseau1.getListeArcs().size()+" arcs ref");
 		return liens;
 	}
 
@@ -844,19 +870,21 @@ public abstract class Appariement {
 
 
 		// Fin, affichage du bilan
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("  Bilan des noeuds:");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    Appariement jugés corrects : ");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("      "+nbNoeudNoeud+" noeuds 1 appariés avec un seul noeud");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("      "+nbNoeudGroupe+" noeuds 1 appariés avec un groupe");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    Appariement jugés incertains : ");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("      "+nbNoeudNoeudIncertain+" noeuds 1 appariés avec un noeud incomplet");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("      "+nbPlusieursNoeudsComplets+" noeuds 1 avec plusieurs noeuds complets");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("      "+nbNoeudGroupeIncertain+" noeuds 1 appariés avec un groupe incomplet");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    Appariement jugés incohérents : ");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("      "+nbSansHomologue+" noeuds 1 sans homolgues trouvés dans le préappariement");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("      "+nbPlusieursGroupesComplets+" noeuds 1 avec plusieurs homologues groupes");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    Noeuds non traités : ");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("      "+nbNonTraite+" noeuds 1 isolés");
+		if (logger.isDebugEnabled()) {
+			logger.debug("  Bilan des noeuds:");
+			logger.debug("    Appariement jugés corrects : ");
+			logger.debug("      "+nbNoeudNoeud+" noeuds 1 appariés avec un seul noeud");
+			logger.debug("      "+nbNoeudGroupe+" noeuds 1 appariés avec un groupe");
+			logger.debug("    Appariement jugés incertains : ");
+			logger.debug("      "+nbNoeudNoeudIncertain+" noeuds 1 appariés avec un noeud incomplet");
+			logger.debug("      "+nbPlusieursNoeudsComplets+" noeuds 1 avec plusieurs noeuds complets");
+			logger.debug("      "+nbNoeudGroupeIncertain+" noeuds 1 appariés avec un groupe incomplet");
+			logger.debug("    Appariement jugés incohérents : ");
+			logger.debug("      "+nbSansHomologue+" noeuds 1 sans homolgues trouvés dans le préappariement");
+			logger.debug("      "+nbPlusieursGroupesComplets+" noeuds 1 avec plusieurs homologues groupes");
+			logger.debug("    Noeuds non traités : ");
+			logger.debug("      "+nbNonTraite+" noeuds 1 isolés");
+		}
 		return liens;
 	}
 
@@ -1290,18 +1318,19 @@ public abstract class Appariement {
 		longTot = 	longSansHomologuePbNoeud + longSansHomologuePbPCC + longOkUneSerie +
 		longOkPlusieursSeries + longDouteuxPbNoeud + longDouteuxPbSens ;
 		nbTot = reseau1.getPopArcs().getElements().size();
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("  Bilan des arcs:");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    (Longueur totale du réseau 1 : "+Math.round(longTot/1000)+" km, si l'unité des données est le mètre)");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    Appariement jugés corrects : ");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("      "+nbOkUneSerie+" arcs 1 appariés avec un ou plusieurs arc comp en série ("+nbOkUneSerie*100/nbTot+"%nb, "+Math.round(longOkUneSerie*100/longTot)+"%long)");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("      "+nbOkPlusieursSeries+" arcs 1 appariés avec 2 ensembles de arc comp en parralèle ("+nbOkPlusieursSeries*100/nbTot+"%nb, "+Math.round(longOkPlusieursSeries*100/longTot)+"%long)");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    Appariement jugés incertains : ");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("      "+nbDouteuxPbSens+" arcs 1 appariés dans un seul sens ("+nbDouteuxPbSens*100/nbTot+"%nb, "+Math.round(longDouteuxPbSens*100/longTot)+"%long)");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("      "+nbDouteuxPbNoeud+" arcs 1 appariés avec un noeud ("+nbDouteuxPbNoeud*100/nbTot+"%nb, "+Math.round(longDouteuxPbNoeud*100/longTot)+"%long)");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    Arcs non appariés : ");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("      "+nbSansHomologuePbNoeud+" arcs 1 sans homolgues (un des noeuds n'est pas apparié) ("+nbSansHomologuePbNoeud*100/nbTot+"%nb, "+Math.round(longSansHomologuePbNoeud*100/longTot)+"%long)");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("      "+nbSansHomologuePbPCC+" arcs 1 sans homolgues (pas de plus court chemin trouvé) ("+nbSansHomologuePbPCC*100/nbTot+"%nb, "+Math.round(longSansHomologuePbPCC*100/longTot)+"%long)");
-
+		if (logger.isDebugEnabled()) {
+			logger.debug("  Bilan des arcs:");
+			logger.debug("    (Longueur totale du réseau 1 : "+Math.round(longTot/1000)+" km, si l'unité des données est le mètre)");
+			logger.debug("    Appariement jugés corrects : ");
+			logger.debug("      "+nbOkUneSerie+" arcs 1 appariés avec un ou plusieurs arc comp en série ("+nbOkUneSerie*100/nbTot+"%nb, "+Math.round(longOkUneSerie*100/longTot)+"%long)");
+			logger.debug("      "+nbOkPlusieursSeries+" arcs 1 appariés avec 2 ensembles de arc comp en parralèle ("+nbOkPlusieursSeries*100/nbTot+"%nb, "+Math.round(longOkPlusieursSeries*100/longTot)+"%long)");
+			logger.debug("    Appariement jugés incertains : ");
+			logger.debug("      "+nbDouteuxPbSens+" arcs 1 appariés dans un seul sens ("+nbDouteuxPbSens*100/nbTot+"%nb, "+Math.round(longDouteuxPbSens*100/longTot)+"%long)");
+			logger.debug("      "+nbDouteuxPbNoeud+" arcs 1 appariés avec un noeud ("+nbDouteuxPbNoeud*100/nbTot+"%nb, "+Math.round(longDouteuxPbNoeud*100/longTot)+"%long)");
+			logger.debug("    Arcs non appariés : ");
+			logger.debug("      "+nbSansHomologuePbNoeud+" arcs 1 sans homolgues (un des noeuds n'est pas apparié) ("+nbSansHomologuePbNoeud*100/nbTot+"%nb, "+Math.round(longSansHomologuePbNoeud*100/longTot)+"%long)");
+			logger.debug("      "+nbSansHomologuePbPCC+" arcs 1 sans homolgues (pas de plus court chemin trouvé) ("+nbSansHomologuePbPCC*100/nbTot+"%nb, "+Math.round(longSansHomologuePbPCC*100/longTot)+"%long)");
+		}
 		return liensArcsArcs;
 	}
 
@@ -1441,12 +1470,13 @@ public abstract class Appariement {
 
 		nb = nbDouteux+nbOK+nbSansCorresp;
 		longTotal=longDouteux+longOK+longSansCorresp;
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("  Arcs du réseau 2 ("+nb+"):");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    arcs appariés et jugés OK : "+nbOK+" ("+(nbOK*100/nb)+"%, "+Math.round(longOK*100/longTotal)+"%long)");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    arcs appariés et jugés douteux : "+nbDouteux+" ("+(nbDouteux*100/nb)+"%, "+Math.round(longDouteux*100/longTotal)+"%long)");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    arcs non appariés  : "+nbSansCorresp+" ("+(nbSansCorresp*100/nb)+"%, "+Math.round(longSansCorresp*100/longTotal)+"%long)");
-
-
+		if (logger.isDebugEnabled()) {
+			logger.debug("  Arcs du réseau 2 ("+nb+"):");
+			logger.debug("    arcs appariés et jugés OK : "+nbOK+" ("+(nbOK*100/nb)+"%, "+Math.round(longOK*100/longTotal)+"%long)");
+			logger.debug("    arcs appariés et jugés douteux : "+nbDouteux+" ("+(nbDouteux*100/nb)+"%, "+Math.round(longDouteux*100/longTotal)+"%long)");
+			logger.debug("    arcs non appariés  : "+nbSansCorresp+" ("+(nbSansCorresp*100/nb)+"%, "+Math.round(longSansCorresp*100/longTotal)+"%long)");
+		}
+		
 		////////////////////////////////////////////////////////////
 		//////////// Controle global des noeuds comp //////////////
 		// on recherche les noeuds comp appariés avec plusieurs objets ref
@@ -1506,11 +1536,12 @@ public abstract class Appariement {
 			}
 		}
 		nb = nbDouteux+nbOK+nbSansCorresp;
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("  Noeuds du réseau 2 ("+nb+"):");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    noeuds appariés et jugés OK : "+nbOK+" ("+(nbOK*100/nb)+"%)");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    noeuds appariés et jugés douteux : "+nbDouteux+" ("+(nbDouteux*100/nb)+"%)");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    noeuds non appariés : "+nbSansCorresp+" ("+(nbSansCorresp*100/nb)+"%)");
-
+		if (logger.isDebugEnabled()) {
+			logger.debug("  Noeuds du réseau 2 ("+nb+"):");
+			logger.debug("    noeuds appariés et jugés OK : "+nbOK+" ("+(nbOK*100/nb)+"%)");
+			logger.debug("    noeuds appariés et jugés douteux : "+nbDouteux+" ("+(nbDouteux*100/nb)+"%)");
+			logger.debug("    noeuds non appariés : "+nbSansCorresp+" ("+(nbSansCorresp*100/nb)+"%)");
+		}
 
 		////////////////////////////////////////////////////////
 		//////////// Controle global des arcs ref //////////////
@@ -1536,15 +1567,17 @@ public abstract class Appariement {
 				longOK= longOK+arc.longueur();
 				continue;
 			}
-			if ( param.debugAffichageCommentaires > 1 )  System.out.println("Valeur imprévue de résultat d'arc : "+arc.getResultatAppariement());
+			if (logger.isDebugEnabled()) logger.debug("Valeur imprévue de résultat d'arc : "+arc.getResultatAppariement());
 		}
 
 		nb = nbDouteux+nbOK+nbSansCorresp;
 		longTotal=longDouteux+longOK+longSansCorresp;
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("  Arcs du réseau 1 ("+nb+"):");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    arcs appariés et jugés OK : "+nbOK+" ("+(nbOK*100/nb)+"%, "+Math.round(longOK*100/longTotal)+"%long)");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    arcs appariés et jugés douteux : "+nbDouteux+" ("+(nbDouteux*100/nb)+"%, "+Math.round(longDouteux*100/longTotal)+"%long)");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    arcs non appariés : "+nbSansCorresp+" ("+(nbSansCorresp*100/nb)+"%, "+Math.round(longSansCorresp*100/longTotal)+"%long)");
+		if (logger.isDebugEnabled()) {
+			logger.debug("  Arcs du réseau 1 ("+nb+"):");
+			logger.debug("    arcs appariés et jugés OK : "+nbOK+" ("+(nbOK*100/nb)+"%, "+Math.round(longOK*100/longTotal)+"%long)");
+			logger.debug("    arcs appariés et jugés douteux : "+nbDouteux+" ("+(nbDouteux*100/nb)+"%, "+Math.round(longDouteux*100/longTotal)+"%long)");
+			logger.debug("    arcs non appariés : "+nbSansCorresp+" ("+(nbSansCorresp*100/nb)+"%, "+Math.round(longSansCorresp*100/longTotal)+"%long)");
+		}
 
 		/////////////////////////////////////////////
 		//////////// cas des noeudss ref ////////////
@@ -1565,13 +1598,15 @@ public abstract class Appariement {
 				nbOK++;
 				continue;
 			}
-			if ( param.debugAffichageCommentaires > 1 )  System.out.println("Valeur imprévue de résultat de noeud : "+noeud.getResultatAppariement());
+			if (logger.isDebugEnabled()) logger.debug("Valeur imprévue de résultat de noeud : "+noeud.getResultatAppariement());
 		}
 		nb = nbDouteux+nbOK+nbSansCorresp;
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("  Noeuds du réseau 1 ("+nb+"):");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    noeuds appariés et jugés OK : "+nbOK+" ("+(nbOK*100/nb)+"%)");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    noeuds appariés et jugés douteux : "+nbDouteux+" ("+(nbDouteux*100/nb)+"%)");
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("    noeuds non appariés : "+nbSansCorresp+" ("+(nbSansCorresp*100/nb)+"%)");
+		if (logger.isDebugEnabled()) {
+			logger.debug("  Noeuds du réseau 1 ("+nb+"):");
+			logger.debug("    noeuds appariés et jugés OK : "+nbOK+" ("+(nbOK*100/nb)+"%)");
+			logger.debug("    noeuds appariés et jugés douteux : "+nbDouteux+" ("+(nbDouteux*100/nb)+"%)");
+			logger.debug("    noeuds non appariés : "+nbSansCorresp+" ("+(nbSansCorresp*100/nb)+"%)");
+		}
 	}
 
 	/** Les noeuds de référence non appariés par les 'liens' sont projetés sur le réseau comp
@@ -1585,7 +1620,7 @@ public abstract class Appariement {
 			NoeudApp noeud = (NoeudApp) itNoeuds.next();
 			if ( noeud.getLiens(liens.getElements()).size() == 0) noeudsNonApparies.add(noeud.getGeometrie());
 		}
-		if ( param.debugAffichageCommentaires > 1 )  System.out.println("Nb de noeuds non appariés : "+noeudsNonApparies.size());
+		if (logger.isDebugEnabled()) logger.debug("Nb de noeuds non appariés : "+noeudsNonApparies.size());
 		comp.projete(noeudsNonApparies, param.varianteRedecoupageNoeudsNonApparies_DistanceNoeudArc, param.varianteRedecoupageNoeudsNonApparies_DistanceProjectionNoeud);
 	}
 

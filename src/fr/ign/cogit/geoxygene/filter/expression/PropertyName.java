@@ -59,7 +59,7 @@ public class PropertyName extends Expression {
 	@XmlMixed
     private String[] propertyName = new String[1];
 	/**
-	 * @return
+	 * @return the name of the PropertyName
 	 */
 	public String getPropertyName() {return propertyName[0];}
 	/**

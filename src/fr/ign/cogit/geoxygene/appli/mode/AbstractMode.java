@@ -50,7 +50,7 @@ public abstract class AbstractMode implements Mode {
 	protected ModeSelector modeSelector;
 	private JButton button;
 	/**
-	 * @return
+	 * @return the button giving access to this mode
 	 */
 	public JButton getButton() {return this.button;}
 

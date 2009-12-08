@@ -155,7 +155,7 @@ public class LienReseaux extends Lien {
 	 * @param liensReseaux
 	 * @param ctRef
 	 * @param param
-	 * @return
+	 * @return a set of links between the two networks given as arguments
 	 */
 	@SuppressWarnings("unchecked")
 	public static EnsembleDeLiens exportLiensAppariement(EnsembleDeLiens liensReseaux, ReseauApp ctRef, ParametresApp param) {

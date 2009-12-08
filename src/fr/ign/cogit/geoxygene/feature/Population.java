@@ -408,7 +408,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	 * <b>NB :</b> différent de add (hérité de FT_FeatureCollection) qui ajoute un élément déjà existant.
 	 * @param signature
 	 * @param param
-	 * @return
+	 * @return a new Feature
 	 */
 	public Feat nouvelElement(Class<?>[] signature, Object[] param) {
 		try {
