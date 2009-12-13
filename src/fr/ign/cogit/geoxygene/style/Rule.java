@@ -116,13 +116,16 @@ public class Rule {
 	 * Renvoie la valeur de l'attribut filter.
 	 * @return la valeur de l'attribut filter
 	 */
-	public Filter getFilter() {return (filter == null)?null:this.filter[0];}
+	public Filter getFilter() {return (this.filter == null)?null:this.filter[0];}
 
 	/**
 	 * Affecte la valeur de l'attribut filter.
 	 * @param filter l'attribut filter à affecter
 	 */
-	public void setFilter(Filter filter) {this.filter[0] = filter;}
+	public void setFilter(Filter filter) {
+		if (this.filter == null) this.filter = new Filter[1];
+		this.filter[0] = filter;
+	}
 	
     @XmlElement(name = "ElseFilter", type=ElseFilterImpl.class)
     protected ElseFilter elseFilter = null;
