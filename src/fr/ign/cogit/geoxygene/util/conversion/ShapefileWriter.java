@@ -45,6 +45,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -72,20 +73,20 @@ public class ShapefileWriter {
 		if (featureCollection.isEmpty()) return;
 		try {
 			ShapefileDataStore store = new ShapefileDataStore(new File(shapefileName).toURI().toURL());
-			String specs="geom:";
+			String specs="geom:"; //$NON-NLS-1$
 			if (featureCollection.getFeatureType()!=null) {
 				specs+=AdapterFactory.toJTSGeometryType(featureCollection.getFeatureType().getGeometryType()).getSimpleName();
 				for(GF_AttributeType attributeType:featureCollection.getFeatureType().getFeatureAttributes()) {
-					specs+=","+attributeType.getMemberName()+":"+valueType2Class(attributeType.getValueType()).getSimpleName();
+					specs+=","+attributeType.getMemberName()+":"+valueType2Class(attributeType.getValueType()).getSimpleName(); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			} else {
 				specs+=AdapterFactory.toJTSGeometryType(featureCollection.get(0).getGeom().getClass()).getSimpleName();
 				if (featureCollection.get(0).getFeatureType()!=null)
 					for(GF_AttributeType attributeType:featureCollection.get(0).getFeatureType().getFeatureAttributes()) {
-						specs+=","+attributeType.getMemberName()+":"+valueType2Class(attributeType.getValueType()).getSimpleName();
+						specs+=","+attributeType.getMemberName()+":"+valueType2Class(attributeType.getValueType()).getSimpleName();  //$NON-NLS-1$//$NON-NLS-2$
 					}
 			}
-			String featureTypeName = shapefileName.substring(shapefileName.lastIndexOf("/")+1,shapefileName.lastIndexOf("."));
+			String featureTypeName = shapefileName.substring(shapefileName.lastIndexOf("/")+1,shapefileName.lastIndexOf(".")); //$NON-NLS-1$ //$NON-NLS-2$
 			featureTypeName=featureTypeName.replace('.', '_');
 			SimpleFeatureType type = DataUtilities.createType(featureTypeName, specs);
 			store.createSchema(type);
@@ -100,7 +101,8 @@ public class ShapefileWriter {
 					for(GF_AttributeType attributeType:feature.getFeatureType().getFeatureAttributes()) {
 						liste.add(feature.getAttribute(attributeType.getMemberName()));
 					}
-				collection.add(SimpleFeatureBuilder.build(type, liste.toArray(), String.valueOf(i++)));
+				SimpleFeature simpleFeature = SimpleFeatureBuilder.build(type, liste.toArray(), String.valueOf(i++));
+				collection.add(simpleFeature);
 			}
 			featureStore.addFeatures(collection);
 			t.commit();
@@ -127,13 +129,15 @@ public class ShapefileWriter {
 	 * @param valueType nom d'un type primitif
 	 * @return la classe correspondant au nom d'un type primitif ou 
 	 * null si le paramètre ne correspond pas à un type primitif ou 
-	 * s'il n'est pas géré.
+	 * s'il n'est pas géré. <b>Attention : les booléans sont convertis en strings car
+	 * les format ESRI shapefile ne les gère pas</b>
 	 */
 	public static Class<?> valueType2Class(String valueType) {
-		if(valueType.equalsIgnoreCase("string")) {return String.class;}
-		if(valueType.equalsIgnoreCase("integer")) {return Integer.class;}
-		if(valueType.equalsIgnoreCase("double")) {return Double.class;}
-		if(valueType.equalsIgnoreCase("long")) {return Integer.class;}
+		if(valueType.equalsIgnoreCase("string")) {return String.class;} //$NON-NLS-1$
+		if(valueType.equalsIgnoreCase("integer")) {return Integer.class;} //$NON-NLS-1$
+		if(valueType.equalsIgnoreCase("double")) {return Double.class;} //$NON-NLS-1$
+		if(valueType.equalsIgnoreCase("long")) {return Integer.class;} //$NON-NLS-1$
+		if(valueType.equalsIgnoreCase("boolean")) {return String.class;} //$NON-NLS-1$
 		return null;
 	}
 	/**
@@ -146,7 +150,7 @@ public class ShapefileWriter {
 		JFileChooser choixFichierShape = new JFileChooser();
 		choixFichierShape.setFileFilter(new FileFilter(){
 			@Override
-			public boolean accept(File f) {return (f.isFile()&&f.getAbsolutePath().endsWith(".shp")||f.isDirectory());}
+			public boolean accept(File f) {return (f.isFile()&&f.getAbsolutePath().endsWith(".shp")||f.isDirectory());} //$NON-NLS-1$
 			@Override
 			public String getDescription() {return "fichiers ESRI shapefile";}
 		});
