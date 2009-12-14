@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
@@ -125,77 +126,77 @@ public abstract class Appariement {
 		///////////// APPARIEMENT
 		// Pre-matching using nodes
 		// Préappariement de noeuds à noeuds
-		if (logger.isDebugEnabled()) logger.debug("  -- Pré-appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodePrematching")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 		liensPreAppNN = preAppariementNoeudNoeud(reseau1, reseau2, param);
 
 		// Pre-matching using edges
 		// Préappariement d'arcs à arcs
 		if (liensPreAppNN.size() != 0 ) {// nothing to do if there is no node. Il est inutile de pre-appariéer les arcs si rien n'a été trouvé sur les noeuds
 			// Preappariement des arcs entre eux (basé principalement sur Hausdorf)
-			if (logger.isDebugEnabled()) logger.debug("  -- Pré-appariement des arcs "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgePrematching")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 			liensPreAppAA = preAppariementArcArc(reseau1, reseau2, param);
 		}
 		else {
 			liensPreAppAA = new EnsembleDeLiens(LienReseaux.class);
-			liensPreAppAA.setNom("Préappariement des arcs");
+			liensPreAppAA.setNom(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgePrematching")); //$NON-NLS-1$
 		}
 
 		// Matching each node of reseau1 independantly with nodes of reseau2
 		// Appariement de chaque noeud de la BDref / reseau1 (indépendamment les uns des autres)
-		if (logger.isDebugEnabled()) logger.debug("  -- Appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodeMatching")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 		liensAppNoeuds = appariementNoeuds(reseau1, reseau2, liensPreAppNN, liensPreAppAA, param);
 
 		// cleaning-up
 		nettoyageLiens(reseau1, reseau2, liensPreAppNN);
 
 		if (param.varianteRedecoupageNoeudsNonApparies) {
-			if (logger.isDebugEnabled()) logger.debug("  -- Projection plus forte pour les noeuds non appariés "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.ReprojectionOfNonMatchedNodes")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 			decoupeNoeudsNonApparies(reseau1,reseau2,liensAppNoeuds,param);
-			if (logger.isDebugEnabled()) logger.debug("  -- Nettoyage des liens "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.LinkCleanup")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 			nettoyageLiens(reseau1, reseau2);
 			liensPreAppNN.setElements(new ArrayList<Lien>());
 			liensPreAppAA.setElements(new ArrayList<Lien>());
 			liensAppNoeuds.setElements(new ArrayList<Lien>());
 			System.gc();
 			// Préappariement de noeuds à noeuds
-			if (logger.isDebugEnabled()) logger.debug("  -- Pré-appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodePrematching")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 			liensPreAppNN = preAppariementNoeudNoeud(reseau1, reseau2, param);
-			if (logger.isDebugEnabled()) logger.debug("  Nb de liens de pre-appariement noeud-noeud = "+liensPreAppNN.size());
+			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NumberOfPrematchedNodes")+liensPreAppNN.size()); //$NON-NLS-1$
 			// Preappariement des arcs entre eux (basé principalement sur Hausdroff)
-			if (logger.isDebugEnabled()) logger.debug("  -- Pré-appariement des arcs "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgePrematching")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 			liensPreAppAA = preAppariementArcArc(reseau1, reseau2, param);
 			// Appariement de chaque noeud de la BDref (indépendamment)
-			if (logger.isDebugEnabled()) logger.debug("  -- Appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodeMatching")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 			liensAppNoeuds = appariementNoeuds(reseau1, reseau2, liensPreAppNN, liensPreAppAA, param);
 			nettoyageLiens(reseau1, reseau2, liensPreAppNN);
 		}
 
 		// Appariement de chaque arc du reseau 1
-		if (logger.isDebugEnabled()) logger.debug("  -- Appariement des arcs "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgeMatching")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 		liensAppArcs = appariementArcs(reseau1, reseau2, liensPreAppAA, liensAppNoeuds, param);
 		tousLiens = EnsembleDeLiens.compile(liensAppNoeuds, liensAppArcs);
 
 
 		if (param.varianteRedecoupageArcsNonApparies) {
 			// NB: pas optimal du tout, on recalcule tout après avoir redécoupé.
-			if (logger.isDebugEnabled()) logger.debug("  -- Redécoupage plus fort pour les arcs non appariés "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.ResplittingNonMatchedEdges")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 			decoupeNonApparies(reseau1,reseau2,tousLiens,param);
 			nettoyageLiens(reseau1, reseau2);
 			liensPreAppNN.setElements(new ArrayList<Lien>());
 			liensPreAppAA.setElements(new ArrayList<Lien>());
 			liensAppNoeuds.setElements(new ArrayList<Lien>());
 			// Préappariement de noeuds à noeuds
-			if (logger.isDebugEnabled()) logger.debug("  -- Pré-appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodePrematching")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 			liensPreAppNN = preAppariementNoeudNoeud(reseau1, reseau2, param);
 			// Preappariement des arcs entre eux (basé principalement sur Hausdroff)
-			if (logger.isDebugEnabled()) logger.debug("  -- Pré-appariement des arcs "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgePrematching")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 			liensPreAppAA = preAppariementArcArc(reseau1, reseau2, param);
 			// Appariement de chaque noeud de la BDref (indépendamment)
-			if (logger.isDebugEnabled()) logger.debug("  -- Appariement des noeuds "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodeMatching")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 			liensAppNoeuds = appariementNoeuds(reseau1, reseau2, liensPreAppNN, liensPreAppAA, param);
 			nettoyageLiens(reseau1, reseau2, liensPreAppNN);
 			// Appariement de chaque arc de la BDref
-			if (logger.isDebugEnabled()) logger.debug("  -- Appariement des arcs "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgeMatching")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 			liensAppArcs = appariementArcs(reseau1, reseau2, liensPreAppAA, liensAppNoeuds, param);
 			tousLiens = EnsembleDeLiens.compile(liensAppNoeuds, liensAppArcs);
 		}
@@ -203,7 +204,7 @@ public abstract class Appariement {
 		nettoyageLiens(reseau1, reseau2, liensPreAppAA);
 
 		// Evaluation globale
-		if (logger.isDebugEnabled()) logger.debug("  -- Controle global des appariements et bilan "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.GlobalControl")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 		controleGlobal(reseau1, reseau2, tousLiens, param);
 
 		//return liens_AppArcs;
@@ -219,22 +220,9 @@ public abstract class Appariement {
 
 	/** Enlève tous les liens "liens" des cartes topo en entrée */
 	private static void nettoyageLiens(ReseauApp res, EnsembleDeLiens liens) {
-		Iterator<?> it;
-		it = res.getPopArcs().getElements().iterator();
-		while (it.hasNext()) {
-			ArcApp objet = (ArcApp) it.next();
-			objet.getLiens().removeAll(liens.getElements());
-		}
-		it = res.getPopNoeuds().getElements().iterator();
-		while (it.hasNext()) {
-			NoeudApp objet = (NoeudApp) it.next();
-			objet.getLiens().removeAll(liens.getElements());
-		}
-		it = res.getPopGroupes().getElements().iterator();
-		while (it.hasNext()) {
-			GroupeApp objet = (GroupeApp) it.next();
-			objet.getLiens().removeAll(liens.getElements());
-		}
+		for(Arc arc:res.getPopArcs()) ((ArcApp)arc).getLiens().removeAll(liens.getElements());
+		for(Noeud node:res.getPopNoeuds()) ((NoeudApp)node).getLiens().removeAll(liens.getElements());
+		for(Groupe group:res.getPopGroupes()) ((GroupeApp)group).getLiens().removeAll(liens.getElements());
 	}
 
 	/** Enlève tous les liens des cartes topo en entrée, et détruit les groupes */
@@ -245,17 +233,8 @@ public abstract class Appariement {
 
 	/** Enlève tous les liens de la carte topo en entrée, et détruit les groupes */
 	public static void nettoyageLiens(ReseauApp res) {
-		Iterator<?> it;
-		it = res.getPopArcs().getElements().iterator();
-		while (it.hasNext()) {
-			ArcApp objet = (ArcApp) it.next();
-			objet.setLiens(new ArrayList<LienReseaux>());
-		}
-		it = res.getPopNoeuds().getElements().iterator();
-		while (it.hasNext()) {
-			NoeudApp objet = (NoeudApp) it.next();
-			objet.setLiens(new ArrayList<LienReseaux>());
-		}
+		for(Arc arc:res.getPopArcs()) ((ArcApp)arc).setLiens(new ArrayList<LienReseaux>());
+		for(Noeud node:res.getPopNoeuds()) ((NoeudApp)node).setLiens(new ArrayList<LienReseaux>());
 		res.getPopGroupes().setElements(new ArrayList<Groupe>());
 	}
 
@@ -270,6 +249,7 @@ public abstract class Appariement {
 	 *  le type du noeud de la BD de reférence (rond point, changement d'attribut...).
 	 *  NB1: On préfère largement une taille de recherche sur-évaluée que sous-évaluée.
 	 *  NB2: On ne traite pas les noeuds isolés.
+	 * @param param 
 	 */
 	public static EnsembleDeLiens preAppariementNoeudNoeud(CarteTopo reseau1, CarteTopo reseau2, ParametresApp param) {
 		int nbCandidats = 0, nbRef=0;
@@ -280,7 +260,7 @@ public abstract class Appariement {
 		LienReseaux lien;
 
 		liens = new EnsembleDeLiens(LienReseaux.class);
-		liens.setNom("Préappariement des noeuds");
+		liens.setNom(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodePrematching")); //$NON-NLS-1$
 		Iterator<Noeud> itNoeuds = reseau1.getListeNoeuds().iterator();
 		while (itNoeuds.hasNext()) {
 			noeudRef = (NoeudApp)itNoeuds.next();
@@ -302,7 +282,7 @@ public abstract class Appariement {
 				}
 			}
 		}
-		if (logger.isDebugEnabled()) logger.debug("  Bilan : "+nbCandidats+" noeuds comp candidats pour "+nbRef+" noeuds ref à traiter");
+		if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.Assessment")+nbCandidats+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.CandidateCompNodes")+nbRef+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.RefNodesToProcess")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		return liens;
 	}
 
@@ -334,7 +314,7 @@ public abstract class Appariement {
 		double dmin, dmax, d;
 
 		liens = new EnsembleDeLiens(LienReseaux.class);
-		liens.setNom("Préappariement des arcs");
+		liens.setNom("Préappariement des arcs"); //$NON-NLS-1$
 		itArcs = reseau2.getListeArcs().iterator();
 		while (itArcs.hasNext()) {
 			arcComp = (ArcApp)itArcs.next();
@@ -375,7 +355,7 @@ public abstract class Appariement {
 				arcRef.addLiens(lien);
 			}
 		}
-		if (logger.isDebugEnabled()) logger.debug("  Bilan : "+nbCandidats+" arcs comp candidats pour "+reseau1.getListeArcs().size()+" arcs ref");
+		if (logger.isDebugEnabled()) logger.debug("  Bilan : "+nbCandidats+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.CandidateCompEdges")+reseau1.getListeArcs().size()+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.RefEdgesToProcess")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		return liens;
 	}
 
@@ -410,22 +390,22 @@ public abstract class Appariement {
 		EnsembleDeLiens liens;
 
 		liens = new EnsembleDeLiens(LienReseaux.class);
-		liens.setNom("Appariement des noeuds");
+		liens.setNom(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodeMatching")); //$NON-NLS-1$
 		// On initialise le resultat à "non apparié" pour les noeuds comp
 		itNoeuds = reseau2.getPopNoeuds().getElements().iterator();
 		while (itNoeuds.hasNext()) {
 			noeudComp = (NoeudApp)itNoeuds.next();
-			noeudComp.setResultatAppariement("Non apparié");
+			noeudComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.Unmatched")); //$NON-NLS-1$
 		}
 
 		// On traite chaque noeud ref, un par un
 		itNoeuds = reseau1.getPopNoeuds().getElements().iterator();
 		while (itNoeuds.hasNext()) {
 			noeudRef = (NoeudApp)itNoeuds.next();
-			noeudRef.setResultatAppariement("Bug: valeur non remplie"); // pour détecter les cas non traités
+			noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NA")); // pour détecter les cas non traités //$NON-NLS-1$
 			// On ne traite pas les noeuds isolés
 			if ( noeudRef.arcs().size() == 0 ) {
-				noeudRef.setResultatAppariement("Non traité : noeud isolé");
+				noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.IsolatedNode")); //$NON-NLS-1$
 				nbNonTraite ++;
 				continue;
 			}
@@ -435,7 +415,7 @@ public abstract class Appariement {
 			//////////////////////////////////////////////////////////////////
 			// Noeud ref qui n'a aucun noeud comp candidat dans le pré-appariement
 			if (liensDuNoeudRef.size() == 0) {
-				noeudRef.setResultatAppariement("Non apparié, aucun candidat");
+				noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NoCandidateForMatching")); //$NON-NLS-1$
 				nbSansHomologue++;
 				continue;
 			}
@@ -464,8 +444,8 @@ public abstract class Appariement {
 			// C'est un appariement que l'on juge sûr.
 			if ( complets.size() == 1 ) {
 				noeudComp = (NoeudApp)complets.get(0);
-				noeudRef.setResultatAppariement("Apparié avec un noeud");
-				noeudComp.setResultatAppariement("Apparié avec un noeud");
+				noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithANode")); //$NON-NLS-1$
+				noeudComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithANode")); //$NON-NLS-1$
 				nbNoeudNoeud ++;
 				lien = (LienReseaux)liens.nouvelElement();
 				lien.addNoeuds1(noeudRef);
@@ -485,13 +465,13 @@ public abstract class Appariement {
 			if ( complets.size() > 1 ) {
 				filtrageNoeudsComplets(complets, noeudRef);
 				if ( complets.size() == 1 ) {
-					noeudRef.setResultatAppariement("Incertitude : choix fait parmi plusieurs noeuds complets");
+					noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainChoiceBetweenSeveralNodes")); //$NON-NLS-1$
 					nbPlusieursNoeudsComplets++;
 					lien = (LienReseaux)liens.nouvelElement();
 					lien.addNoeuds1(noeudRef);
 					noeudRef.addLiens(lien);
 					noeudComp = (NoeudApp)complets.get(0);
-					noeudComp.setResultatAppariement("Incertitude : choisi parmi plusieurs noeuds complets");
+					noeudComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainChoiceBetweenSeveralNodes")); //$NON-NLS-1$
 					lien.addNoeuds2(noeudComp);
 					noeudComp.addLiens(lien);
 					lien.setEvaluation(0.5);
@@ -499,14 +479,14 @@ public abstract class Appariement {
 				}
 				// Si il reste plusieurs noeuds complets après le filtrage
 				// NB : cas impossible dans l'état actuel du filtrage qui ne garde qu'un noeud complet
-				noeudRef.setResultatAppariement("Incertitude : apparié avec plusieurs noeuds complets");
+				noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithSeveralNodes")); //$NON-NLS-1$
 				nbPlusieursNoeudsComplets++;
 				lien = (LienReseaux)liens.nouvelElement();
 				lien.addNoeuds1(noeudRef);
 				noeudRef.addLiens(lien);
 				for (j=0; j<complets.size(); j++) {
 					noeudComp = (NoeudApp)complets.get(j);
-					noeudComp.setResultatAppariement("Incertitude : plusieurs noeuds complets concurrents");
+					noeudComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainCompetingNodes")); //$NON-NLS-1$
 					lien.addNoeuds2(noeudComp);
 					noeudComp.addLiens(lien);
 				}
@@ -520,8 +500,8 @@ public abstract class Appariement {
 			// mais c'est un appariement que l'on juge incertain
 			if ( incomplets.size() == 1 ) {
 				noeudComp = (NoeudApp)incomplets.get(0);
-				noeudRef.setResultatAppariement("Incertitude : apparié avec un noeud incomplet");
-				noeudComp.setResultatAppariement("Incertitude : noeud incomplet");
+				noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithIncompleteNode")); //$NON-NLS-1$
+				noeudComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainIncompleteNode")); //$NON-NLS-1$
 				nbNoeudNoeudIncertain ++;
 				lien = (LienReseaux)liens.nouvelElement();
 				lien.addNoeuds1(noeudRef);
@@ -536,7 +516,7 @@ public abstract class Appariement {
 			// Le noeud ref n'a que des noeuds comp candidats impossibles
 			// i.e. ils n'ont aucun arc sortant apparié avec un des arcs sortant du noeudref
 			if ( incomplets.size() == 0 ) {
-				noeudRef.setResultatAppariement("Non apparié, tous candidats impossibles");
+				noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedNoPossibleCandidate")); //$NON-NLS-1$
 				nbSansHomologue++;
 				continue;
 			}
@@ -547,8 +527,8 @@ public abstract class Appariement {
 			// On choisit alors le noeud incomplet le plus proche
 			if (param.varianteForceAppariementSimple) {
 				noeudComp = noeudLePlusProche(incomplets, noeudRef);
-				noeudRef.setResultatAppariement("Incertitude : apparié avec un noeud incomplet");
-				noeudComp.setResultatAppariement("Incertitude : noeud incomplet");
+				noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithIncompleteNode")); //$NON-NLS-1$
+				noeudComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainIncompleteNode")); //$NON-NLS-1$
 				nbNoeudNoeudIncertain ++;
 				lien = (LienReseaux)liens.nouvelElement();
 				lien.addNoeuds1(noeudRef);
@@ -623,14 +603,14 @@ public abstract class Appariement {
 				// filtrage du groupe connexe choisi
 				groupeComp.filtrageGroupePendantAppariementDesNoeuds(noeudRef, liensPreAppAA);
 				if ( groupeComp.getListeNoeuds().size() == 0 ) {
-					noeudRef.setResultatAppariement("Non apparié, unique groupe complet vidé au filtrage");
+					noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedUniqueCompleteGroup")); //$NON-NLS-1$
 					nbSansHomologue = nbSansHomologue+1;
 					continue;
 				}
 				if ( (groupeComp.getListeNoeuds().size() == 1) && (groupeComp.getListeArcs().size() == 0) ) {
 					noeudComp = (NoeudApp)groupeComp.getListeNoeuds().get(0);
-					noeudRef.setResultatAppariement("Apparié à un noeud");
-					noeudComp.setResultatAppariement("Apparié à un noeud");
+					noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithANode")); //$NON-NLS-1$
+					noeudComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithANode")); //$NON-NLS-1$
 					groupeComp.vide();
 					nbNoeudNoeud++;
 					lien = new LienReseaux();
@@ -643,14 +623,14 @@ public abstract class Appariement {
 					continue;
 				}
 				else {
-					noeudRef.setResultatAppariement("Apparié à un groupe");
-					groupeComp.setResultatAppariement("Apparié à un noeud");
+					noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithAGroup")); //$NON-NLS-1$
+					groupeComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithANode")); //$NON-NLS-1$
 					nbNoeudGroupe++;
 					for(j=0;j<groupeComp.getListeArcs().size() ;j++) {
-						((ArcApp)groupeComp.getListeArcs().get(j)).setResultatAppariement("Apparié à un noeud, dans un groupe");
+						((ArcApp)groupeComp.getListeArcs().get(j)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithANodeInAGroup")); //$NON-NLS-1$
 					}
 					for(j=0;j<groupeComp.getListeNoeuds().size() ;j++) {
-						((NoeudApp)groupeComp.getListeNoeuds().get(j)).setResultatAppariement("Apparié à un noeud, dans un groupe");
+						((NoeudApp)groupeComp.getListeNoeuds().get(j)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithANodeInAGroup")); //$NON-NLS-1$
 					}
 					lien = new LienReseaux();
 					liens.add(lien);
@@ -683,7 +663,7 @@ public abstract class Appariement {
 
 				// aucun goupe complet restant après les filtrages
 				if ( complets.size() == 0 ) {
-					noeudRef.setResultatAppariement("Non apparié, groupes complets vidés au filtrage");
+					noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedEmptiedCompleteGroups")); //$NON-NLS-1$
 					nbSansHomologue++;
 					continue;
 				}
@@ -692,15 +672,15 @@ public abstract class Appariement {
 				if ( complets.size() == 1 ) {
 					lien = new LienReseaux();
 					liens.add(lien);
-					noeudRef.setResultatAppariement("Incertitude : apparié à un groupe complet, autres groupes complets vidés au filtrage");
+					noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithCompleteGroup")); //$NON-NLS-1$
 					nbNoeudGroupeIncertain++;
 					groupeComp = (GroupeApp)complets.get(0);
-					groupeComp.setResultatAppariement("Incertitude : seul groupe complet, autres groupes complets vidés au filtrage");
+					groupeComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainOnlyCompleteGroup")); //$NON-NLS-1$
 					for(k=0;k<groupeComp.getListeArcs().size() ;k++) {
-						((ArcApp)groupeComp.getListeArcs().get(k)).setResultatAppariement("Incertitude : dans un seul groupe complet, autres groupes complets vidés au filtrage");
+						((ArcApp)groupeComp.getListeArcs().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainInTheOnlyCompleteGroup")); //$NON-NLS-1$
 					}
 					for(k=0;k<groupeComp.getListeNoeuds().size() ;k++) {
-						((NoeudApp)groupeComp.getListeNoeuds().get(k)).setResultatAppariement("Incertitude : dans un seul groupe complet, autres groupes complets vidés au filtrage");
+						((NoeudApp)groupeComp.getListeNoeuds().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainInTheOnlyCompleteGroup")); //$NON-NLS-1$
 					}
 					lien.setEvaluation(0.5);
 					lien.addGroupes2(groupeComp);
@@ -713,16 +693,16 @@ public abstract class Appariement {
 				// plusieurs goupes complets restant après les filtrages
 				lien = new LienReseaux();
 				liens.add(lien);
-				noeudRef.setResultatAppariement("Incertitude : apparié à plusieurs groupes complets");
+				noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithSeveralCompleteGroups")); //$NON-NLS-1$
 				nbPlusieursGroupesComplets++;
 				for (j=0; j<complets.size(); j++) {
 					groupeComp = (GroupeApp)complets.get(j);
-					groupeComp.setResultatAppariement("Incertitude : un de plusieurs groupes complets concurrents");
+					groupeComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainOneOfSeveralCompetingCompleteGroups")); //$NON-NLS-1$
 					for(k=0;k<groupeComp.getListeArcs().size() ;k++) {
-						((ArcApp)groupeComp.getListeArcs().get(k)).setResultatAppariement("Incertitude : dans un de plusieurs groupes complets concurrents");
+						((ArcApp)groupeComp.getListeArcs().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainInOneOfSeveralCompetingCompleteGroups")); //$NON-NLS-1$
 					}
 					for(k=0;k<groupeComp.getListeNoeuds().size() ;k++) {
-						((NoeudApp)groupeComp.getListeNoeuds().get(k)).setResultatAppariement("Incertitude : dans un de plusieurs groupes complets concurrents");
+						((NoeudApp)groupeComp.getListeNoeuds().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainInOneOfSeveralCompetingCompleteGroups")); //$NON-NLS-1$
 					}
 					lien.addGroupes2(groupeComp);
 					groupeComp.addLiens(lien);
@@ -740,14 +720,14 @@ public abstract class Appariement {
 				groupeComp = (GroupeApp)incomplets.get(0);
 				groupeComp.filtrageGroupePendantAppariementDesNoeuds(noeudRef, liensPreAppAA);
 				if ( groupeComp.getListeNoeuds().size() == 0 ) {
-					noeudRef.setResultatAppariement("Non apparié, seul goupe incomplet vidé au filtrage");
+					noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedOnlyEmptiedIncompleteGroup")); //$NON-NLS-1$
 					nbSansHomologue++;
 					continue;
 				}
 				if ( (groupeComp.getListeNoeuds().size() == 1) && (groupeComp.getListeArcs().size() == 0) ) {
 					noeudComp = (NoeudApp)groupeComp.getListeNoeuds().get(0);
-					noeudRef.setResultatAppariement("Apparié à un noeud");
-					noeudComp.setResultatAppariement("Apparié à un noeud");
+					noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithANode")); //$NON-NLS-1$
+					noeudComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithANode")); //$NON-NLS-1$
 					groupeComp.vide();
 					nbNoeudNoeudIncertain++;
 					lien = new LienReseaux();
@@ -760,14 +740,14 @@ public abstract class Appariement {
 					continue;
 				}
 				else {
-					noeudRef.setResultatAppariement("Incertitude : apparié à un groupe incomplet");
+					noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithAnIncompleteGroup")); //$NON-NLS-1$
 					nbNoeudGroupeIncertain = nbNoeudGroupeIncertain + 1;
-					groupeComp.setResultatAppariement("Incertitude : groupe incomplet");
+					groupeComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainIncompleteGroup")); //$NON-NLS-1$
 					for(k=0;k<groupeComp.getListeArcs().size() ;k++) {
-						((ArcApp)groupeComp.getListeArcs().get(k)).setResultatAppariement("Incertitude : dans groupe incomplet");
+						((ArcApp)groupeComp.getListeArcs().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainInAnIncompleteGroup")); //$NON-NLS-1$
 					}
 					for(k=0;k<groupeComp.getListeNoeuds().size() ;k++) {
-						((NoeudApp)groupeComp.getListeNoeuds().get(k)).setResultatAppariement("Incertitude : dans groupe incomplet");
+						((NoeudApp)groupeComp.getListeNoeuds().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainInAnIncompleteGroup")); //$NON-NLS-1$
 					}
 					//param.db.create(groupeComp);
 					lien = new LienReseaux();
@@ -795,7 +775,7 @@ public abstract class Appariement {
 
 				// aucun goupe incomplet restant après le filtrage
 				if ( incomplets.size() == 0 ) {
-					noeudRef.setResultatAppariement("Non apparié, groupes incomplets vidés au filtrage");
+					noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedEmptiedIncompleteGroups")); //$NON-NLS-1$
 					nbSansHomologue = nbSansHomologue+1;
 					continue;
 				}
@@ -805,16 +785,16 @@ public abstract class Appariement {
 					lien = new LienReseaux();
 					liens.add(lien);
 					groupeComp = (GroupeApp)incomplets.get(0);
-					groupeComp.setResultatAppariement("Incertitude : incomplet, autres groupes incomplets vidés au filtrage");
+					groupeComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainIncompleteGroupEmptiedIncompleteGroups")); //$NON-NLS-1$
 					for(k=0;k<groupeComp.getListeArcs().size() ;k++) {
-						((ArcApp)groupeComp.getListeArcs().get(k)).setResultatAppariement("Incertitude : dans groupe incomplet, autres groupes incomplets vidés au filtrage");
+						((ArcApp)groupeComp.getListeArcs().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainInIncompleteGroupEmptiedIncompleteGroups")); //$NON-NLS-1$
 					}
 					for(k=0;k<groupeComp.getListeNoeuds().size() ;k++) {
-						((NoeudApp)groupeComp.getListeNoeuds().get(k)).setResultatAppariement("Incertitude : dans groupe incomplet, autres groupes incomplets vidés au filtrage");
+						((NoeudApp)groupeComp.getListeNoeuds().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainInIncompleteGroupEmptiedIncompleteGroups")); //$NON-NLS-1$
 					}
 					lien.addGroupes2(groupeComp);
 					groupeComp.addLiens(lien);
-					noeudRef.setResultatAppariement("Incertitude : apparié à groupe incomplet, autres groupes incomplets vidés au filtrage");
+					noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithAnIncompleteGroupEmptiedIncompleteGroups")); //$NON-NLS-1$
 					nbNoeudGroupeIncertain++;
 					lien.addNoeuds1(noeudRef);
 					noeudRef.addLiens(lien);
@@ -827,17 +807,17 @@ public abstract class Appariement {
 				liens.add(lien);
 				for (j=0; j<incomplets.size(); j++) {
 					groupeComp = (GroupeApp)incomplets.get(j);
-					groupeComp.setResultatAppariement("Incertitude : parmi plusieurs groupes incomplets");
+					groupeComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainAmongSeveralIncompleteGroups")); //$NON-NLS-1$
 					for(k=0;k<groupeComp.getListeArcs().size() ;k++) {
-						((ArcApp)groupeComp.getListeArcs().get(k)).setResultatAppariement("Incertitude : dans un de plusieurs groupes incomplets");
+						((ArcApp)groupeComp.getListeArcs().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainInOneOfSeveralIncompleteGroups")); //$NON-NLS-1$
 					}
 					for(k=0;k<groupeComp.getListeNoeuds().size() ;k++) {
-						((NoeudApp)groupeComp.getListeNoeuds().get(k)).setResultatAppariement("Incertitude : dans un de plusieurs groupes incomplets");
+						((NoeudApp)groupeComp.getListeNoeuds().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainInOneOfSeveralIncompleteGroups")); //$NON-NLS-1$
 					}
 					lien.addGroupes2(groupeComp);
 					groupeComp.addLiens(lien);
 				}
-				noeudRef.setResultatAppariement("Incertitude : apparié à plusieurs groupes incomplets");
+				noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithSeveralIncompleteGroups")); //$NON-NLS-1$
 				nbPlusieursGroupesComplets++;
 				lien.addNoeuds1(noeudRef);
 				noeudRef.addLiens(lien);
@@ -846,7 +826,7 @@ public abstract class Appariement {
 			}
 
 			if ( incomplets.size() == 0 ) { // ajout Seb 31/05/05
-				noeudRef.setResultatAppariement("Incertitude : groupes candidats impossibles, choix fait parmis les noeuds incomplets");
+				noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainImpossibleCandidateGroups")); //$NON-NLS-1$
 				nbNoeudNoeudIncertain++;
 				lien = new LienReseaux();
 				liens.add(lien);
@@ -855,7 +835,7 @@ public abstract class Appariement {
 				lien.setEvaluation(0.5);
 				for (j=0; j<noeudsIncomplets.size(); j++) {
 					noeudComp = (NoeudApp)noeudsIncomplets.get(j);
-					noeudComp.setResultatAppariement("Incertitude : groupes candidats impossibles, choix fait parmis les noeuds incomplets");
+					noeudComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainImpossibleCandidateGroups")); //$NON-NLS-1$
 					lien.addNoeuds2(noeudComp);
 					noeudComp.addLiens(lien);
 				}
@@ -871,19 +851,19 @@ public abstract class Appariement {
 
 		// Fin, affichage du bilan
 		if (logger.isDebugEnabled()) {
-			logger.debug("  Bilan des noeuds:");
-			logger.debug("    Appariement jugés corrects : ");
-			logger.debug("      "+nbNoeudNoeud+" noeuds 1 appariés avec un seul noeud");
-			logger.debug("      "+nbNoeudGroupe+" noeuds 1 appariés avec un groupe");
-			logger.debug("    Appariement jugés incertains : ");
-			logger.debug("      "+nbNoeudNoeudIncertain+" noeuds 1 appariés avec un noeud incomplet");
-			logger.debug("      "+nbPlusieursNoeudsComplets+" noeuds 1 avec plusieurs noeuds complets");
-			logger.debug("      "+nbNoeudGroupeIncertain+" noeuds 1 appariés avec un groupe incomplet");
-			logger.debug("    Appariement jugés incohérents : ");
-			logger.debug("      "+nbSansHomologue+" noeuds 1 sans homolgues trouvés dans le préappariement");
-			logger.debug("      "+nbPlusieursGroupesComplets+" noeuds 1 avec plusieurs homologues groupes");
-			logger.debug("    Noeuds non traités : ");
-			logger.debug("      "+nbNonTraite+" noeuds 1 isolés");
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodeAssessment")); //$NON-NLS-1$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.CorrectMatches")); //$NON-NLS-1$
+			logger.debug("      "+nbNoeudNoeud+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodesMatchedWithASingleNode")); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.debug("      "+nbNoeudGroupe+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodesMatchedWithASingleGroup")); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatches")); //$NON-NLS-1$
+			logger.debug("      "+nbNoeudNoeudIncertain+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodesMatchedWithASingleIncompleteNode")); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.debug("      "+nbPlusieursNoeudsComplets+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodesMatchedWithASeveralNodes")); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.debug("      "+nbNoeudGroupeIncertain+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodesMatchedWithASingleIncompleteGroup")); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.IncoherentMatches")); //$NON-NLS-1$
+			logger.debug("      "+nbSansHomologue+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodesWithoutMatchFound")); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.debug("      "+nbPlusieursGroupesComplets+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodesWithSeveralHomologousGroups")); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnprocessedNodes")); //$NON-NLS-1$
+			logger.debug("      "+nbNonTraite+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.IsolatedNodes")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return liens;
 	}
@@ -935,21 +915,21 @@ public abstract class Appariement {
 						rondPoint.addLiens(lien);
 						if (noeudRef.correspCommunicants(rondPoint, liensPreAppAA)==1) {
 							lien.setEvaluation(1);
-							rondPoint.setResultatAppariement("Apparié à un noeud (rond-point)");
+							rondPoint.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithANode-Roundabout")); //$NON-NLS-1$
 							for(int k=0;k<rondPoint.getListeArcs().size() ;k++) {
-								((ArcApp)rondPoint.getListeArcs().get(k)).setResultatAppariement("Apparié à un noeud, dans un rond-point");
+								((ArcApp)rondPoint.getListeArcs().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithANode-InRoundabout")); //$NON-NLS-1$
 							}
 							for(int k=0;k<rondPoint.getListeNoeuds().size() ;k++) {
-								((NoeudApp)rondPoint.getListeNoeuds().get(k)).setResultatAppariement("Apparié à un noeud, dans un rond-point");
+								((NoeudApp)rondPoint.getListeNoeuds().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithANode-InRoundabout")); //$NON-NLS-1$
 							}
 						}
 						else {
-							rondPoint.setResultatAppariement("Incertitude: Apparié à un noeud (rond-point incomplet)");
+							rondPoint.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithANode-IncompleteRoundabout")); //$NON-NLS-1$
 							for(int k=0;k<rondPoint.getListeArcs().size() ;k++) {
-								((ArcApp)rondPoint.getListeArcs().get(k)).setResultatAppariement("Incertitude: Apparié à un noeud, dans un rond-point incomplet");
+								((ArcApp)rondPoint.getListeArcs().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithANode-InIncompleteRoundabout")); //$NON-NLS-1$
 							}
 							for(int k=0;k<rondPoint.getListeNoeuds().size() ;k++) {
-								((NoeudApp)rondPoint.getListeNoeuds().get(k)).setResultatAppariement("Incertitude: Apparié à un noeud, dans un rond-point incomplet");
+								((NoeudApp)rondPoint.getListeNoeuds().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithANode-InIncompleteRoundabout")); //$NON-NLS-1$
 							}
 						}
 						continue;
@@ -978,21 +958,21 @@ public abstract class Appariement {
 					noeudRef = (NoeudApp)lien.getNoeuds1().get(0);
 					if (noeudRef.correspCommunicants(groupe, liensPreAppAA)==1) {
 						lien.setEvaluation(1);
-						groupe.setResultatAppariement("Apparié à un noeud (rond-point)");
+						groupe.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithANode-Roundabout")); //$NON-NLS-1$
 						for(int k=0;k<groupe.getListeArcs().size() ;k++) {
-							((ArcApp)groupe.getListeArcs().get(k)).setResultatAppariement("Apparié à un noeud, dans un rond-point");
+							((ArcApp)groupe.getListeArcs().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithANode-InRoundabout")); //$NON-NLS-1$
 						}
 						for(int k=0;k<groupe.getListeNoeuds().size() ;k++) {
-							((NoeudApp)groupe.getListeNoeuds().get(k)).setResultatAppariement("Apparié à un noeud, dans un rond-point");
+							((NoeudApp)groupe.getListeNoeuds().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithANode-InRoundabout")); //$NON-NLS-1$
 						}
 					}
 					else {
-						groupe.setResultatAppariement("Incertitude: Apparié à un noeud (rond-point incomplet)");
+						groupe.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithANode-InIncompleteRoundabout")); //$NON-NLS-1$
 						for(int k=0;k<groupe.getListeArcs().size() ;k++) {
-							((ArcApp)groupe.getListeArcs().get(k)).setResultatAppariement("Incertitude: Apparié à un noeud, dans un rond-point incomplet");
+							((ArcApp)groupe.getListeArcs().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithANode-InIncompleteRoundabout")); //$NON-NLS-1$
 						}
 						for(int k=0;k<groupe.getListeNoeuds().size() ;k++) {
-							((NoeudApp)groupe.getListeNoeuds().get(k)).setResultatAppariement("Incertitude: Apparié à un noeud, dans un rond-point incomplet");
+							((NoeudApp)groupe.getListeNoeuds().get(k)).setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithANode-InIncompleteRoundabout")); //$NON-NLS-1$
 						}
 					}
 
@@ -1067,20 +1047,20 @@ public abstract class Appariement {
 		Iterator<?> itArcs;
 		Iterator<Arc> itTousArcsComp;
 
-		liensArcsArcs.setNom("Appariement des arcs");
+		liensArcsArcs.setNom(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgeMatching")); //$NON-NLS-1$
 
 		// on étudie tous les arc ref, un par un, indépendamment les uns des autres
 		itArcs = reseau1.getPopArcs().getElements().iterator();
 		while (itArcs.hasNext()) {
 			arcRef = (ArcApp)itArcs.next();
-			arcRef.setResultatAppariement("Bug: valeur non remplie"); // pour vérifier que tous les cas sont bien traités
+			arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NA")); // pour vérifier que tous les cas sont bien traités //$NON-NLS-1$
 
 			///////// ETUDE DES EXTREMITES DE L'ARC /////////
 
 			// Problème de topologie ?
 			if ( (arcRef.getNoeudIni() == null) || (arcRef.getNoeudFin() == null) ) {
 				// Cas 1 : l'arc n'a pas de noeud à une de ses extrêmités
-				arcRef.setResultatAppariement("Non apparié, arc sans extrémité");
+				arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedEdgeMissingANode")); //$NON-NLS-1$
 				nbSansHomologuePbNoeud++;
 				longSansHomologuePbNoeud = longSansHomologuePbNoeud+arcRef.longueur();
 				continue;
@@ -1088,7 +1068,7 @@ public abstract class Appariement {
 
 			// On ne sait pas traiter les boucles (CODE A AFFINER POUR FAIRE CELA)
 			if ( (arcRef.getNoeudIni() == arcRef.getNoeudFin() ) ) {
-				arcRef.setResultatAppariement("Non apparié, on ne sait pas traiter les boucles");
+				arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedLoop")); //$NON-NLS-1$
 				nbSansHomologuePbPCC++;
 				longSansHomologuePbPCC = longSansHomologuePbPCC+arcRef.longueur();
 				continue;
@@ -1106,7 +1086,7 @@ public abstract class Appariement {
 			if ( ( (noeudsFinIn.size() == 0) && (noeudsFinOut.size() == 0))
 					|| ( (noeudsDebutIn.size() == 0) && (noeudsDebutOut.size() == 0)) ) {
 				// Cas 2 : un noeud extrémité n'est pas apparié
-				arcRef.setResultatAppariement("Non apparié, noeud extrémité non apparié");
+				arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedNodeUnmatched")); //$NON-NLS-1$
 				nbSansHomologuePbNoeud++;
 				longSansHomologuePbNoeud = longSansHomologuePbNoeud+arcRef.longueur();
 				continue;
@@ -1142,7 +1122,7 @@ public abstract class Appariement {
 
 			// cas 3 : on n'a trouvé aucun plus court chemin, dans aucun sens
 			if ( (pccMin1 == null) && (pccMin2 == null) ) {
-				arcRef.setResultatAppariement("Non apparié, pas de plus court chemin");
+				arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedNoShortestPath")); //$NON-NLS-1$
 				nbSansHomologuePbPCC++;
 				longSansHomologuePbPCC = longSansHomologuePbPCC+arcRef.longueur();
 				continue;
@@ -1159,8 +1139,8 @@ public abstract class Appariement {
 					lien.addNoeuds2(noeudComp);
 					lien.setEvaluation(0.5);
 					noeudComp.addLiens(lien);
-					arcRef.setResultatAppariement("Incertitude : Apparié à un noeud comp");
-					noeudComp.setResultatAppariement("Incertitude : Apparié à un arc");
+					arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithACompNode")); //$NON-NLS-1$
+					noeudComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithAnEdge")); //$NON-NLS-1$
 					pccMin2.videEtDetache();
 					nbDouteuxPbNoeud++;
 					longDouteuxPbNoeud= longDouteuxPbNoeud+arcRef.longueur();
@@ -1172,16 +1152,16 @@ public abstract class Appariement {
 				if ( arcRef.getOrientation() == -1 ) {
 					// cas 4b : on a trouvé un pcc dans un seul sens, et c'est normal
 					lien.setEvaluation(1);
-					arcRef.setResultatAppariement("Apparié à un arc ou une suite d'arcs");
-					pccMin2.setResultatAppariementGlobal("Apparié à un arc ref");
+					arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithAnEdgeOrASuccessionOfEdges")); //$NON-NLS-1$
+					pccMin2.setResultatAppariementGlobal(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithARefEdge")); //$NON-NLS-1$
 					nbOkUneSerie++;
 					longOkUneSerie= longOkUneSerie+arcRef.longueur();
 				}
 				else {
 					// cas 4c : on a trouvé un pcc dans un seul sens, mais ce n'est pas normal
 					lien.setEvaluation(0.5);
-					arcRef.setResultatAppariement("Incertitude : Apparié que dans un sens");
-					pccMin2.setResultatAppariementGlobal("Incertitude : Apparié que dans un sens");
+					arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedOnlyOneWay")); //$NON-NLS-1$
+					pccMin2.setResultatAppariementGlobal(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedOnlyOneWay")); //$NON-NLS-1$
 					nbDouteuxPbSens++;
 					longDouteuxPbSens= longDouteuxPbSens+arcRef.longueur();
 				}
@@ -1199,8 +1179,8 @@ public abstract class Appariement {
 					lien.addNoeuds2(noeudComp);
 					lien.setEvaluation(0.5);
 					noeudComp.addLiens(lien);
-					arcRef.setResultatAppariement("Incertitude : Apparié à un noeud comp");
-					noeudComp.setResultatAppariement("Incertitude : Apparié à un arc");
+					arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithACompNode")); //$NON-NLS-1$
+					noeudComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithAnEdge")); //$NON-NLS-1$
 					pccMin1.videEtDetache();
 					nbDouteuxPbNoeud++;
 					longDouteuxPbNoeud= longDouteuxPbNoeud+arcRef.longueur();
@@ -1213,16 +1193,16 @@ public abstract class Appariement {
 				if ( arcRef.getOrientation() == 1 ) {
 					// cas 4a : on a trouvé un pcc dans un seul sens, et c'est normal
 					lien.setEvaluation(1);
-					arcRef.setResultatAppariement("Apparié à un arc ou une suite d'arcs");
-					pccMin1.setResultatAppariementGlobal("Apparié à un arc ref");
+					arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithAnEdgeOrASuccessionOfEdges")); //$NON-NLS-1$
+					pccMin1.setResultatAppariementGlobal(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithARedEdge")); //$NON-NLS-1$
 					nbOkUneSerie++;
 					longOkUneSerie= longOkUneSerie+arcRef.longueur();
 				}
 				else {
 					// cas 4b : on a trouvé un pcc dans un seul sens, mais ce n'est pas normal
 					lien.setEvaluation(0.5);
-					arcRef.setResultatAppariement("Incertitude : Apparié que dans un sens");
-					pccMin1.setResultatAppariementGlobal("Incertitude : Apparié que dans un sens");
+					arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedOnlyOneWay")); //$NON-NLS-1$
+					pccMin1.setResultatAppariementGlobal(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedOnlyOneWay")); //$NON-NLS-1$
 					nbDouteuxPbSens++;
 					longDouteuxPbSens= longDouteuxPbSens+arcRef.longueur();
 				}
@@ -1241,8 +1221,8 @@ public abstract class Appariement {
 					lien.addNoeuds2(noeudComp);
 					lien.setEvaluation(0.5);
 					noeudComp.addLiens(lien);
-					arcRef.setResultatAppariement("Incertitude : Apparié à un noeud comp");
-					noeudComp.setResultatAppariement("Incertitude : Apparié à un arc");
+					arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithACompNode")); //$NON-NLS-1$
+					noeudComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithAnEdge")); //$NON-NLS-1$
 					pccMin1.videEtDetache();
 					nbDouteuxPbNoeud++;
 					longDouteuxPbNoeud= longDouteuxPbNoeud+arcRef.longueur();
@@ -1253,8 +1233,8 @@ public abstract class Appariement {
 				lien.addGroupes2(pccMin1);
 				lien.setEvaluation(1);
 				pccMin1.addLiens(lien);
-				arcRef.setResultatAppariement("Apparié à un arc");
-				pccMin1.setResultatAppariementGlobal("Apparié à un arc");
+				arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithAnEdge")); //$NON-NLS-1$
+				pccMin1.setResultatAppariementGlobal(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithAnEdge")); //$NON-NLS-1$
 				nbOkUneSerie++;
 				longOkUneSerie= longOkUneSerie+arcRef.longueur();
 				continue;
@@ -1271,8 +1251,8 @@ public abstract class Appariement {
 				lien.addNoeuds2(noeudComp);
 				lien.setEvaluation(0.5);
 				noeudComp.addLiens(lien);
-				arcRef.setResultatAppariement("Incertitude : Apparié à un noeud comp");
-				noeudComp.setResultatAppariement("Incertitude : Apparié à un arc");
+				arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithACompNode")); //$NON-NLS-1$
+				noeudComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithAnEdge")); //$NON-NLS-1$
 				pccMin1.videEtDetache();
 			}
 			else {
@@ -1281,8 +1261,8 @@ public abstract class Appariement {
 				lien.setEvaluation(1);
 				lien.addGroupes2(pccMin1);
 				pccMin1.addLiens(lien);
-				arcRef.setResultatAppariement("Apparié à plusieurs arcs en parallèle");
-				pccMin1.setResultatAppariementGlobal("Apparié à un arc");
+				arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithSeveralEdges")); //$NON-NLS-1$
+				pccMin1.setResultatAppariementGlobal(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithAnEdge")); //$NON-NLS-1$
 			}
 			if ( pccMin2.getListeArcs().size() == 0 ) {
 				// cas 6a : on a trouvé un pcc mais il est réduit à un point
@@ -1290,8 +1270,8 @@ public abstract class Appariement {
 				lien.addNoeuds2(noeudComp);
 				lien.setEvaluation(0.5);
 				noeudComp.addLiens(lien);
-				arcRef.setResultatAppariement("Incertitude : Apparié à un noeud comp");
-				noeudComp.setResultatAppariement("Incertitude : Apparié à un arc");
+				arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithACompNode")); //$NON-NLS-1$
+				noeudComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithAnEdge")); //$NON-NLS-1$
 				pccMin2.videEtDetache();
 				nbDouteuxPbNoeud++;
 				longDouteuxPbNoeud= longDouteuxPbNoeud+arcRef.longueur();
@@ -1301,8 +1281,8 @@ public abstract class Appariement {
 				pccMin2.enleveExtremites();
 				lien.addGroupes2(pccMin2);
 				pccMin2.addLiens(lien);
-				arcRef.setResultatAppariement("Apparié à plusieurs arcs en parallèle");
-				pccMin2.setResultatAppariementGlobal("Apparié à un arc");
+				arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithSeveralEdges")); //$NON-NLS-1$
+				pccMin2.setResultatAppariementGlobal(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithAnEdge")); //$NON-NLS-1$
 				if (lien.getEvaluation() == 1 )	{
 					nbOkPlusieursSeries++;
 					longOkPlusieursSeries= longOkPlusieursSeries+arcRef.longueur();
@@ -1319,17 +1299,17 @@ public abstract class Appariement {
 		longOkPlusieursSeries + longDouteuxPbNoeud + longDouteuxPbSens ;
 		nbTot = reseau1.getPopArcs().getElements().size();
 		if (logger.isDebugEnabled()) {
-			logger.debug("  Bilan des arcs:");
-			logger.debug("    (Longueur totale du réseau 1 : "+Math.round(longTot/1000)+" km, si l'unité des données est le mètre)");
-			logger.debug("    Appariement jugés corrects : ");
-			logger.debug("      "+nbOkUneSerie+" arcs 1 appariés avec un ou plusieurs arc comp en série ("+nbOkUneSerie*100/nbTot+"%nb, "+Math.round(longOkUneSerie*100/longTot)+"%long)");
-			logger.debug("      "+nbOkPlusieursSeries+" arcs 1 appariés avec 2 ensembles de arc comp en parralèle ("+nbOkPlusieursSeries*100/nbTot+"%nb, "+Math.round(longOkPlusieursSeries*100/longTot)+"%long)");
-			logger.debug("    Appariement jugés incertains : ");
-			logger.debug("      "+nbDouteuxPbSens+" arcs 1 appariés dans un seul sens ("+nbDouteuxPbSens*100/nbTot+"%nb, "+Math.round(longDouteuxPbSens*100/longTot)+"%long)");
-			logger.debug("      "+nbDouteuxPbNoeud+" arcs 1 appariés avec un noeud ("+nbDouteuxPbNoeud*100/nbTot+"%nb, "+Math.round(longDouteuxPbNoeud*100/longTot)+"%long)");
-			logger.debug("    Arcs non appariés : ");
-			logger.debug("      "+nbSansHomologuePbNoeud+" arcs 1 sans homolgues (un des noeuds n'est pas apparié) ("+nbSansHomologuePbNoeud*100/nbTot+"%nb, "+Math.round(longSansHomologuePbNoeud*100/longTot)+"%long)");
-			logger.debug("      "+nbSansHomologuePbPCC+" arcs 1 sans homolgues (pas de plus court chemin trouvé) ("+nbSansHomologuePbPCC*100/nbTot+"%nb, "+Math.round(longSansHomologuePbPCC*100/longTot)+"%long)");
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgeAssessment")); //$NON-NLS-1$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.Network1TotalLength")+Math.round(longTot/1000)+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.KmIfMetric")); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.CorrectMatches")); //$NON-NLS-1$
+			logger.debug("      "+nbOkUneSerie+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgesMatchesWithOneOrSeveralCompEdges")+nbOkUneSerie*100/nbTot+"%nb, "+Math.round(longOkUneSerie*100/longTot)+"%long)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			logger.debug("      "+nbOkPlusieursSeries+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgesMatchesWithTwoSetsOfCompEdges")+nbOkPlusieursSeries*100/nbTot+"%nb, "+Math.round(longOkPlusieursSeries*100/longTot)+"%long)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatches")); //$NON-NLS-1$
+			logger.debug("      "+nbDouteuxPbSens+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgesMatchedOnlyOneWay")+nbDouteuxPbSens*100/nbTot+"%nb, "+Math.round(longDouteuxPbSens*100/longTot)+"%long)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			logger.debug("      "+nbDouteuxPbNoeud+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgesMatchesWithANode")+nbDouteuxPbNoeud*100/nbTot+"%nb, "+Math.round(longDouteuxPbNoeud*100/longTot)+"%long)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedEdges")); //$NON-NLS-1$
+			logger.debug("      "+nbSansHomologuePbNoeud+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgesWithoutHomologous-UnmatchedNode")+nbSansHomologuePbNoeud*100/nbTot+"%nb, "+Math.round(longSansHomologuePbNoeud*100/longTot)+"%long)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			logger.debug("      "+nbSansHomologuePbPCC+I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgesWithoutHomologous-NoShortestPath")+nbSansHomologuePbPCC*100/nbTot+"%nb, "+Math.round(longSansHomologuePbPCC*100/longTot)+"%long)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		}
 		return liensArcsArcs;
 	}
@@ -1382,7 +1362,7 @@ public abstract class Appariement {
 			}
 			// cas où l'arc n'est concerné par aucun lien
 			if ( liensObjet.size() == 0) {
-				arcComp.setResultatAppariement("Non apparié");
+				arcComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.Unmatched")); //$NON-NLS-1$
 				nbSansCorresp++;
 				longSansCorresp=longSansCorresp+arcComp.longueur();
 				continue;
@@ -1417,7 +1397,7 @@ public abstract class Appariement {
 						}
 					}
 					if (impasse) { //on nettoie
-						arcComp.setResultatAppariement("Non apparié: impasse filtrée");
+						arcComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedDeadend")); //$NON-NLS-1$
 						itGroupes = arcComp.getListeGroupes().iterator();
 						while (itGroupes.hasNext()) {
 							groupe = (GroupeApp) itGroupes.next();
@@ -1442,7 +1422,7 @@ public abstract class Appariement {
 						}
 					}
 					if (impasse) { //on nettoie
-						arcComp.setResultatAppariement("Non apparié: impasse filtrée");
+						arcComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedDeadend")); //$NON-NLS-1$
 						itGroupes = arcComp.getListeGroupes().iterator();
 						while (itGroupes.hasNext()) {
 							groupe = (GroupeApp) itGroupes.next();
@@ -1462,8 +1442,8 @@ public abstract class Appariement {
 			itLiens = liensObjet.iterator();
 			while (itLiens.hasNext()) {
 				LienReseaux lien = (LienReseaux) itLiens.next();
-				lien.affecteEvaluationAuxObjetsLies(0.5, "Incertitude: 1 arc comp lié à plusieurs objets ref différents");
-				arcComp.setResultatAppariement("Incertitude: apparié à plusieurs objets de référence");
+				lien.affecteEvaluationAuxObjetsLies(0.5, I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainCompEdgeMatchedWithSeveralRefObjects")); //$NON-NLS-1$
+				arcComp.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithSeveralRefObjects")); //$NON-NLS-1$
 			}
 			continue;
 		}
@@ -1471,10 +1451,10 @@ public abstract class Appariement {
 		nb = nbDouteux+nbOK+nbSansCorresp;
 		longTotal=longDouteux+longOK+longSansCorresp;
 		if (logger.isDebugEnabled()) {
-			logger.debug("  Arcs du réseau 2 ("+nb+"):");
-			logger.debug("    arcs appariés et jugés OK : "+nbOK+" ("+(nbOK*100/nb)+"%, "+Math.round(longOK*100/longTotal)+"%long)");
-			logger.debug("    arcs appariés et jugés douteux : "+nbDouteux+" ("+(nbDouteux*100/nb)+"%, "+Math.round(longDouteux*100/longTotal)+"%long)");
-			logger.debug("    arcs non appariés  : "+nbSansCorresp+" ("+(nbSansCorresp*100/nb)+"%, "+Math.round(longSansCorresp*100/longTotal)+"%long)");
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.Network2Edges")+nb+"):"); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.CorrectMatchedEdges")+nbOK+" ("+(nbOK*100/nb)+"%, "+Math.round(longOK*100/longTotal)+"%long)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedEdges")+nbDouteux+" ("+(nbDouteux*100/nb)+"%, "+Math.round(longDouteux*100/longTotal)+"%long)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedEdges")+nbSansCorresp+" ("+(nbSansCorresp*100/nb)+"%, "+Math.round(longSansCorresp*100/longTotal)+"%long)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		}
 		
 		////////////////////////////////////////////////////////////
@@ -1500,7 +1480,7 @@ public abstract class Appariement {
 
 			// cas où le noeud n'est concerné par aucun lien
 			if ( liensObjet.size() == 0) {
-				noeud.setResultatAppariement("Non apparié");
+				noeud.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.Unmatched")); //$NON-NLS-1$
 				nbSansCorresp = nbSansCorresp+1;
 				continue;
 			}
@@ -1530,17 +1510,17 @@ public abstract class Appariement {
 				itLiens = liensObjet.iterator();
 				while (itLiens.hasNext()) {
 					LienReseaux lien = (LienReseaux) itLiens.next();
-					lien.affecteEvaluationAuxObjetsLies(0.5, "Incertitude: 1 noeud comp lié à plusieurs objets ref différents");
-					noeud.setResultatAppariement("Incertitude: apparié à plusieurs objets de référence");
+					lien.affecteEvaluationAuxObjetsLies(0.5, I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainCompNodeMatchedWithSeveralRefObjects")); //$NON-NLS-1$
+					noeud.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithSeveralRefObjects")); //$NON-NLS-1$
 				}
 			}
 		}
 		nb = nbDouteux+nbOK+nbSansCorresp;
 		if (logger.isDebugEnabled()) {
-			logger.debug("  Noeuds du réseau 2 ("+nb+"):");
-			logger.debug("    noeuds appariés et jugés OK : "+nbOK+" ("+(nbOK*100/nb)+"%)");
-			logger.debug("    noeuds appariés et jugés douteux : "+nbDouteux+" ("+(nbDouteux*100/nb)+"%)");
-			logger.debug("    noeuds non appariés : "+nbSansCorresp+" ("+(nbSansCorresp*100/nb)+"%)");
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.Network2Nodes")+nb+"):"); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.CorrectMatchedNodes")+nbOK+" ("+(nbOK*100/nb)+"%)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedNodes")+nbDouteux+" ("+(nbDouteux*100/nb)+"%)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedNodes")+nbSansCorresp+" ("+(nbSansCorresp*100/nb)+"%)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 
 		////////////////////////////////////////////////////////
@@ -1552,31 +1532,31 @@ public abstract class Appariement {
 		itArcs = reseau1.getPopArcs().getElements().iterator();
 		while (itArcs.hasNext()) {
 			ArcApp arc = (ArcApp) itArcs.next();
-			if (arc.getResultatAppariement().startsWith("Non apparié")) {
+			if (arc.getResultatAppariement().startsWith(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.Unmatched"))) { //$NON-NLS-1$
 				nbSansCorresp++;
 				longSansCorresp = longSansCorresp+arc.longueur();
 				continue;
 			}
-			if (arc.getResultatAppariement().startsWith("Incertitude")) {
+			if (arc.getResultatAppariement().startsWith(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.Uncertain"))) { //$NON-NLS-1$
 				nbDouteux++;
 				longDouteux= longDouteux+arc.longueur();
 				continue;
 			}
-			if (arc.getResultatAppariement().startsWith("Apparié")) {
+			if (arc.getResultatAppariement().startsWith(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.Matched"))) { //$NON-NLS-1$
 				nbOK++;
 				longOK= longOK+arc.longueur();
 				continue;
 			}
-			if (logger.isDebugEnabled()) logger.debug("Valeur imprévue de résultat d'arc : "+arc.getResultatAppariement());
+			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnexpectedResultOnEdge")+arc.getResultatAppariement()); //$NON-NLS-1$
 		}
 
 		nb = nbDouteux+nbOK+nbSansCorresp;
 		longTotal=longDouteux+longOK+longSansCorresp;
 		if (logger.isDebugEnabled()) {
-			logger.debug("  Arcs du réseau 1 ("+nb+"):");
-			logger.debug("    arcs appariés et jugés OK : "+nbOK+" ("+(nbOK*100/nb)+"%, "+Math.round(longOK*100/longTotal)+"%long)");
-			logger.debug("    arcs appariés et jugés douteux : "+nbDouteux+" ("+(nbDouteux*100/nb)+"%, "+Math.round(longDouteux*100/longTotal)+"%long)");
-			logger.debug("    arcs non appariés : "+nbSansCorresp+" ("+(nbSansCorresp*100/nb)+"%, "+Math.round(longSansCorresp*100/longTotal)+"%long)");
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.Network1Edges")+nb+"):"); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.CorrectMatchedEdges")+nbOK+" ("+(nbOK*100/nb)+"%, "+Math.round(longOK*100/longTotal)+"%long)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedEdges")+nbDouteux+" ("+(nbDouteux*100/nb)+"%, "+Math.round(longDouteux*100/longTotal)+"%long)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedEdges")+nbSansCorresp+" ("+(nbSansCorresp*100/nb)+"%, "+Math.round(longSansCorresp*100/longTotal)+"%long)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		}
 
 		/////////////////////////////////////////////
@@ -1586,26 +1566,26 @@ public abstract class Appariement {
 		itNoeuds = reseau1.getPopNoeuds().getElements().iterator();
 		while (itNoeuds.hasNext()) {
 			NoeudApp noeud = (NoeudApp) itNoeuds.next();
-			if (noeud.getResultatAppariement().startsWith("Non apparié")) {
+			if (noeud.getResultatAppariement().startsWith(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.Unmatched"))) { //$NON-NLS-1$
 				nbSansCorresp++;
 				continue;
 			}
-			if (noeud.getResultatAppariement().startsWith("Incertitude")) {
+			if (noeud.getResultatAppariement().startsWith(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.Uncertain"))) { //$NON-NLS-1$
 				nbDouteux++;
 				continue;
 			}
-			if (noeud.getResultatAppariement().startsWith("Apparié")) {
+			if (noeud.getResultatAppariement().startsWith(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.Unmatched"))) { //$NON-NLS-1$
 				nbOK++;
 				continue;
 			}
-			if (logger.isDebugEnabled()) logger.debug("Valeur imprévue de résultat de noeud : "+noeud.getResultatAppariement());
+			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnexpectedResultOnNode")+noeud.getResultatAppariement()); //$NON-NLS-1$
 		}
 		nb = nbDouteux+nbOK+nbSansCorresp;
 		if (logger.isDebugEnabled()) {
-			logger.debug("  Noeuds du réseau 1 ("+nb+"):");
-			logger.debug("    noeuds appariés et jugés OK : "+nbOK+" ("+(nbOK*100/nb)+"%)");
-			logger.debug("    noeuds appariés et jugés douteux : "+nbDouteux+" ("+(nbDouteux*100/nb)+"%)");
-			logger.debug("    noeuds non appariés : "+nbSansCorresp+" ("+(nbSansCorresp*100/nb)+"%)");
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.Network1Nodes")+nb+"):"); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.CorrectMatchedNodes")+nbOK+" ("+(nbOK*100/nb)+"%)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedNodes")+nbDouteux+" ("+(nbDouteux*100/nb)+"%)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedNodes")+nbSansCorresp+" ("+(nbSansCorresp*100/nb)+"%)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 	}
 
@@ -1620,7 +1600,7 @@ public abstract class Appariement {
 			NoeudApp noeud = (NoeudApp) itNoeuds.next();
 			if ( noeud.getLiens(liens.getElements()).size() == 0) noeudsNonApparies.add(noeud.getGeometrie());
 		}
-		if (logger.isDebugEnabled()) logger.debug("Nb de noeuds non appariés : "+noeudsNonApparies.size());
+		if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedNodes")+noeudsNonApparies.size()); //$NON-NLS-1$
 		comp.projete(noeudsNonApparies, param.varianteRedecoupageNoeudsNonApparies_DistanceNoeudArc, param.varianteRedecoupageNoeudsNonApparies_DistanceProjectionNoeud);
 	}
 

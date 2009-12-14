@@ -50,8 +50,8 @@ import javax.swing.JToolBar;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
-import fr.ign.cogit.geoxygene.appli.Messages;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 
 /**
@@ -62,7 +62,7 @@ public class ModeSelector implements ContainerListener, KeyListener, MouseListen
     static Logger logger=Logger.getLogger(ModeSelector.class.getName());
     private List<Mode> modes = new ArrayList<Mode>();
     private Mode currentMode = null;
-    private JToolBar toolBar = new JToolBar(Messages.getString("geoxygene.ModeSelector.ModeSelection")); //$NON-NLS-1$
+    private JToolBar toolBar = new JToolBar(I18N.getString("fr.ign.cogit.geoxygene.ModeSelector.ModeSelection")); //$NON-NLS-1$
     public JToolBar getToolBar() {return this.toolBar;}
     MainFrame mainFrame;
 

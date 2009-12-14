@@ -48,6 +48,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
@@ -85,13 +86,13 @@ public class MainFrame extends JFrame {
 
 		this.menuBar = new JMenuBar();
 
-		JMenu fileMenu = new JMenu(Messages.getString("geoxygene.MainFrame.File")); //$NON-NLS-1$
-		JMenu viewMenu = new JMenu(Messages.getString("geoxygene.MainFrame.View")); //$NON-NLS-1$
-		JMenu configurationMenu = new JMenu(Messages.getString("geoxygene.MainFrame.Configuration")); //$NON-NLS-1$
-		JMenu helpMenu = new JMenu(Messages.getString("geoxygene.MainFrame.Help")); //$NON-NLS-1$
+		JMenu fileMenu = new JMenu(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.File")); //$NON-NLS-1$
+		JMenu viewMenu = new JMenu(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.View")); //$NON-NLS-1$
+		JMenu configurationMenu = new JMenu(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.Configuration")); //$NON-NLS-1$
+		JMenu helpMenu = new JMenu(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.Help")); //$NON-NLS-1$
 
 		//StyledLayerDescriptor sld = StyledLayerDescriptor.charge("defaultSLD.xml");
-		JMenuItem openShapefileMenuItem = new JMenuItem(Messages.getString("geoxygene.MainFrame.OpenShapefile")); //$NON-NLS-1$
+		JMenuItem openShapefileMenuItem = new JMenuItem(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.OpenShapefile")); //$NON-NLS-1$
 		openShapefileMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ProjectFrame projectFrame = (ProjectFrame) MainFrame.this.getDesktopPane().getSelectedFrame();
@@ -101,7 +102,7 @@ public class MainFrame extends JFrame {
 						projectFrame = (ProjectFrame) MainFrame.this.getDesktopPane().getAllFrames()[0];
 					} else {
 						// TODO create a new project frame?
-						logger.info(Messages.getString("geoxygene.MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
+						logger.info(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
 						return;
 					}
 				JFileChooser choixFichierShape = new JFileChooser();
@@ -110,7 +111,7 @@ public class MainFrame extends JFrame {
 					@Override
 					public boolean accept(File f) {return (f.isFile() && (f.getAbsolutePath().endsWith(".shp") || f.getAbsolutePath().endsWith(".SHP")) || f.isDirectory());} //$NON-NLS-1$ //$NON-NLS-2$
 					@Override
-					public String getDescription() {return Messages.getString("geoxygene.MainFrame.ShapefileDescription");} //$NON-NLS-1$
+					public String getDescription() {return I18N.getString("fr.ign.cogit.geoxygene.MainFrame.ShapefileDescription");} //$NON-NLS-1$
 				});
 				choixFichierShape.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				choixFichierShape.setMultiSelectionEnabled(false);
@@ -119,14 +120,14 @@ public class MainFrame extends JFrame {
 				int returnVal = choixFichierShape.showOpenDialog(frame);
 				frame.dispose();
 				if(returnVal == JFileChooser.APPROVE_OPTION) {
-					if (logger.isDebugEnabled()) logger.debug(Messages.getString("geoxygene.MainFrame.FileChosenDebug") + choixFichierShape.getSelectedFile().getAbsolutePath()); //$NON-NLS-1$
+					if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.FileChosenDebug") + choixFichierShape.getSelectedFile().getAbsolutePath()); //$NON-NLS-1$
 					String shapefileName = choixFichierShape.getSelectedFile().getAbsolutePath();
 					String populationName = shapefileName.substring(shapefileName.lastIndexOf("/")+1,shapefileName.lastIndexOf(".")); //$NON-NLS-1$ //$NON-NLS-2$
 					ShapefileReader shapefileReader = new ShapefileReader(shapefileName, populationName, DataSet.getInstance(), true);
 
 					Population<DefaultFeature> population = shapefileReader.getPopulation();
 					if (population!=null) {
-						logger.info(Messages.getString("geoxygene.MainFrame.LoadingPopulation")+population.getNom()); //$NON-NLS-1$
+						logger.info(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.LoadingPopulation")+population.getNom()); //$NON-NLS-1$
 						projectFrame.addFeatureCollection(population,population.getNom());
 					}
 					shapefileReader.read();
@@ -138,7 +139,7 @@ public class MainFrame extends JFrame {
 
 			}
 		});
-		JMenuItem exitMenuItem = new JMenuItem(Messages.getString("geoxygene.MainFrame.Exit")); //$NON-NLS-1$
+		JMenuItem exitMenuItem = new JMenuItem(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.Exit")); //$NON-NLS-1$
 		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();

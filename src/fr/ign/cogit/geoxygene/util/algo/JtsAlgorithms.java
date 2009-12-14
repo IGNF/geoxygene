@@ -53,6 +53,7 @@ import com.vividsolutions.jts.operation.buffer.BufferParameters;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
 import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -82,8 +83,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Point jtsCentroid=jtsGeom.getCentroid();
 			return new DirectPosition(jtsCentroid.getX(),jtsCentroid.getY());
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.CentroidError")); //$NON-NLS-1$
-			logger.debug(Messages.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.CentroidError")); //$NON-NLS-1$
+			logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 			if (logger.isDebugEnabled()) logger.debug(e.getMessage());
 			return null;
 		}
@@ -96,7 +97,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			GM_Object result=JtsGeOxygene.makeGeOxygeneGeom(jtsHull);
 			return result;
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.ConvexHullError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.ConvexHullError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) logger.debug(e.getMessage());
 			//e.printStackTrace();
 			return null;
@@ -110,10 +111,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsBuffer=jtsGeom.buffer(distance);
 			return JtsGeOxygene.makeGeOxygeneGeom(jtsBuffer);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.BufferError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.BufferError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.BufferDistance")+distance); //$NON-NLS-1$ 
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.BufferDistance")+distance); //$NON-NLS-1$ 
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return null;
@@ -126,11 +127,11 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsBuffer=jtsGeom.buffer(distance,nSegments);
 			return JtsGeOxygene.makeGeOxygeneGeom(jtsBuffer);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.BufferError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.BufferError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.BufferDistance")+distance); //$NON-NLS-1$ 
-				logger.debug(Messages.getString("JtsAlgorithms.BufferSegments")+nSegments); //$NON-NLS-1$ 
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.BufferDistance")+distance); //$NON-NLS-1$ 
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.BufferSegments")+nSegments); //$NON-NLS-1$ 
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return null;
@@ -147,9 +148,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsResult=jtsGeom1.getBoundary();
 			return JtsGeOxygene.makeGeOxygeneGeom(jtsResult);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.BoundaryError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.BoundaryError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return null;
@@ -163,10 +164,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsUnion=jtsGeom1.union(jtsGeom2);
 			return JtsGeOxygene.makeGeOxygeneGeom(jtsUnion);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.UnionError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.UnionError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return null;
@@ -181,10 +182,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			return JtsGeOxygene.makeGeOxygeneGeom(jtsInter);
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
-			    logger.error(Messages.getString("JtsAlgorithms.IntersectionError")); //$NON-NLS-1$
+			    logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.IntersectionError")); //$NON-NLS-1$
 				if (logger.isDebugEnabled()) {
-					logger.debug(Messages.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-					logger.debug(Messages.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+					logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+					logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 					logger.debug(e.getMessage());
 				}
 			}
@@ -200,10 +201,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			//if (jtsResult.isEmpty()||jtsResult.getArea()==0.0) return null;
 			return JtsGeOxygene.makeGeOxygeneGeom(jtsResult);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.DifferenceError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.DifferenceError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return null;
@@ -217,10 +218,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsSymDiff=jtsGeom1.symDifference(jtsGeom2);
 			return JtsGeOxygene.makeGeOxygeneGeom(jtsSymDiff);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.SymDifferenceError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.SymDifferenceError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return null;
@@ -233,10 +234,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
 			return jtsGeom1.equals(jtsGeom2);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.EqualsError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.EqualsError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return false;
@@ -249,10 +250,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
 			return jtsGeom1.equalsExact(jtsGeom2);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.EqualsExactError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.EqualsExactError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return false;
@@ -265,11 +266,11 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
 			return jtsGeom1.equalsExact(jtsGeom2,tol);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.EqualsExactError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.EqualsExactError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Tolerance")+tol); //$NON-NLS-1$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Tolerance")+tol); //$NON-NLS-1$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return false;
@@ -282,10 +283,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
 			return jtsGeom1.contains(jtsGeom2);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.ContainsError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.ContainsError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return false;
@@ -298,10 +299,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
 			return jtsGeom1.crosses(jtsGeom2);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.CrossesError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.CrossesError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return false;
@@ -314,10 +315,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
 			return jtsGeom1.disjoint(jtsGeom2);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.DisjointError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.DisjointError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return false;
@@ -330,10 +331,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
 			return jtsGeom1.within(jtsGeom2);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.WithinError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.WithinError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return false;
@@ -346,11 +347,11 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
 			return jtsGeom1.isWithinDistance(jtsGeom2,dist);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.IsWithinDistanceError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.IsWithinDistanceError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Distance")+dist); //$NON-NLS-1$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Distance")+dist); //$NON-NLS-1$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return false;
@@ -363,10 +364,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
 			return jtsGeom1.intersects(jtsGeom2);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.IntersectsError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.IntersectsError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return false;
@@ -379,10 +380,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
 			return jtsGeom1.overlaps(jtsGeom2);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.OverlapsError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.OverlapsError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return false;
@@ -395,10 +396,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
 			return jtsGeom1.touches(jtsGeom2);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.TouchesError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.TouchesError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return false;
@@ -410,9 +411,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
 			return jtsGeom.isEmpty();
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.IsEmptyError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.IsEmptyError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return true;
@@ -424,9 +425,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
 			return jtsGeom.isSimple();
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.IsSimpleError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.IsSimpleError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return false;
@@ -438,9 +439,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
 			return jtsGeom.isValid();
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.IsValidError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.IsValidError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return false;
@@ -453,10 +454,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
 			return jtsGeom1.distance(jtsGeom2);
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.DistanceError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.DistanceError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return 0.0;
@@ -468,9 +469,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(geom);
 			return jtsGeom1.getArea();
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.AreaError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.AreaError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return 0.0;
@@ -482,9 +483,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
 			return jtsGeom.getLength();
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.LengthError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.LengthError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return 0.0;
@@ -496,9 +497,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
 			return jtsGeom.getDimension();
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.DimensionError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.DimensionError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return 0;
@@ -511,9 +512,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
 			return jtsGeom.getNumPoints();
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.NumPointsError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NumPointsError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return 0;
@@ -534,9 +535,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			GM_Object result=JtsGeOxygene.makeGeOxygeneGeom(jtsGeom);
 			return result;
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.TranslateError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.TranslateError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return null;
@@ -549,10 +550,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
 			return jtsGeom1.relate(jtsGeom2).toString();
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.RelateError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.RelateError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return "ERROR"; //$NON-NLS-1$
@@ -569,9 +570,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		for(GM_Object geom:listeGeometries) {
 			try {listeGeometriesJts.add(JtsGeOxygene.makeJtsGeom(geom));}
 			catch(Exception e){
-				logger.error(Messages.getString("JtsAlgorithms.GeometryConversionError")); //$NON-NLS-1$
+				logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.GeometryConversionError")); //$NON-NLS-1$
 				if (logger.isDebugEnabled()) {
-					logger.debug(Messages.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+					logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 					logger.debug(e.getMessage());
 				}
 			}
@@ -579,9 +580,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		Geometry union = union(listeGeometriesJts);
 		try {return JtsGeOxygene.makeGeOxygeneGeom(union);}
 		catch(Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.GeometryConversionError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.GeometryConversionError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(Messages.getString("JtsAlgorithms.Geometry")+((union!=null)?union.toString():Messages.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.debug(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry")+((union!=null)?union.toString():I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
 			return null;
@@ -687,7 +688,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			listePoints.add(dp2);
 			return listePoints;
 		} catch (Exception e) {
-			logger.error(Messages.getString("JtsAlgorithms.ClosestPointsError")); //$NON-NLS-1$
+			logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.ClosestPointsError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) logger.debug(e.getMessage());
 		}
 		return null;
@@ -757,9 +758,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		};
 		int iteration = 1;
 		int nbIteration = 1 + (int)(Math.log(newGeometryCollection.size())/Math.log(4));
-		fireActionPerformed(new ActionEvent(singleton,0,Messages.getString("JtsAlgorithms.UnionAction"),nbIteration)); //$NON-NLS-1$
+		fireActionPerformed(new ActionEvent(singleton,0,I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.UnionAction"),nbIteration)); //$NON-NLS-1$
 		while (newGeometryCollection.size() > 1) {
-			fireActionPerformed(new ActionEvent(singleton,1,Messages.getString("JtsAlgorithms.UnionIterationAction"),iteration++)); //$NON-NLS-1$
+			fireActionPerformed(new ActionEvent(singleton,1,I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.UnionIterationAction"),iteration++)); //$NON-NLS-1$
 			if (logger.isTraceEnabled()) logger.trace("Union (" + iteration + "/" + nbIteration + ")");  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 			TreeSet<Geometry> treeSet = new TreeSet<Geometry>(comparator);
 			treeSet.addAll(newGeometryCollection);
@@ -773,9 +774,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				for (int index = 0;index < multiPolygon.getNumGeometries();index++)
 					polygons.add((Polygon)multiPolygon.getGeometryN(index));
 			} else
-				logger.error(Messages.getString("JtsAlgorithms.UnhandledGeometryType")+geom.getGeometryType()); //$NON-NLS-1$
+				logger.error(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.UnhandledGeometryType")+geom.getGeometryType()); //$NON-NLS-1$
 		}
-		fireActionPerformed(new ActionEvent(singleton,4,Messages.getString("JtsAlgorithms.UnionFinishedAction"))); //$NON-NLS-1$
+		fireActionPerformed(new ActionEvent(singleton,4,I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.UnionFinishedAction"))); //$NON-NLS-1$
 		if (polygons.size()==1) return polygons.get(0);
 		if (newGeometryCollection.isEmpty()) return new GeometryFactory().createGeometryCollection(new Geometry[0]);
 		return newGeometryCollection.iterator().next().getFactory().createMultiPolygon(polygons.toArray(new Polygon[0]));
@@ -794,14 +795,14 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		Geometry currUnion = null;
 		int size = treeSet.size();
 		int count = 0;
-		fireActionPerformed(new ActionEvent(singleton,2,Messages.getString("JtsAlgorithms.UnionDetailAction"),size)); //$NON-NLS-1$
+		fireActionPerformed(new ActionEvent(singleton,2,I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.UnionDetailAction"),size)); //$NON-NLS-1$
 		for (Geometry geom:treeSet) {
 			if ((currUnion==null)||(count%groupSize==0)) currUnion = geom;
 			else {
 				currUnion = currUnion.union(geom);
 				if (groupSize-count%groupSize==1) unionGeometryList.add(currUnion);
 			}
-			fireActionPerformed(new ActionEvent(singleton,3,Messages.getString("JtsAlgorithms.UnionDetailIterationAction"),++count)); //$NON-NLS-1$
+			fireActionPerformed(new ActionEvent(singleton,3,I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.UnionDetailIterationAction"),++count)); //$NON-NLS-1$
 			if (logger.isTraceEnabled()) logger.trace(" "+(count)+" - "+size+" features");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 		}
 		if (groupSize-count%groupSize!=0) {
@@ -832,15 +833,15 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		};
 		int iteration = 1;
 		int nbIteration = 1 + (int)(Math.log(newGeometryCollection.size())/Math.log(4));
-		fireActionPerformed(new ActionEvent(singleton,0,Messages.getString("JtsAlgorithms.UnionAction"),nbIteration)); //$NON-NLS-1$
+		fireActionPerformed(new ActionEvent(singleton,0,I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.UnionAction"),nbIteration)); //$NON-NLS-1$
 		while (newGeometryCollection.size() > 1) {
-			fireActionPerformed(new ActionEvent(singleton,1,Messages.getString("JtsAlgorithms.UnionIterationAction"),iteration++)); //$NON-NLS-1$
+			fireActionPerformed(new ActionEvent(singleton,1,I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.UnionIterationAction"),iteration++)); //$NON-NLS-1$
 			if (logger.isTraceEnabled()) logger.trace("Union (" + iteration + "/" + nbIteration + ")");  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 			TreeSet<Geometry> treeSet = new TreeSet<Geometry>(comparator);
 			treeSet.addAll(newGeometryCollection);
 			newGeometryCollection = unionLineString(treeSet, 4);
 		}
-		fireActionPerformed(new ActionEvent(singleton,4,Messages.getString("JtsAlgorithms.UnionFinishedAction"))); //$NON-NLS-1$
+		fireActionPerformed(new ActionEvent(singleton,4,I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.UnionFinishedAction"))); //$NON-NLS-1$
 		return newGeometryCollection.get(0);
 	}
 	/**
@@ -856,14 +857,14 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		Geometry currUnion = null;
 		int size = treeSet.size();
 		int count = 0;
-		fireActionPerformed(new ActionEvent(singleton,2,Messages.getString("JtsAlgorithms.UnionDetailAction"),size)); //$NON-NLS-1$
+		fireActionPerformed(new ActionEvent(singleton,2,I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.UnionDetailAction"),size)); //$NON-NLS-1$
 		for (Geometry geom:treeSet) {
 			if ((currUnion==null)||(count%groupSize==0)) currUnion = geom;
 			else {
 				currUnion = currUnion.union(geom);
 				if (groupSize-count%groupSize==1) unionGeometryList.add(currUnion);
 			}
-			fireActionPerformed(new ActionEvent(singleton,3,Messages.getString("JtsAlgorithms.UnionDetailIterationAction"),++count)); //$NON-NLS-1$
+			fireActionPerformed(new ActionEvent(singleton,3,I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.UnionDetailIterationAction"),++count)); //$NON-NLS-1$
 			if (logger.isTraceEnabled()) logger.trace(" "+(count)+" - "+size+" features");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 		}
 		if (groupSize-count%groupSize!=0) {
@@ -887,24 +888,24 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	public static Geometry filtreDouglasPeucker(Geometry geom, double seuil){
 		if (seuil == 0.0) return (Geometry)geom.clone();
 		if (seuil <0.0) {
-			logger.warn(Messages.getString("JtsAlgorithms.DouglasPeuckerWithNegativeThreshold")+seuil); //$NON-NLS-1$
+			logger.warn(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.DouglasPeuckerWithNegativeThreshold")+seuil); //$NON-NLS-1$
 			return geom;
 		}
 
 		Geometry g = DouglasPeuckerSimplifier.simplify(geom, seuil);
 
 		if ((g==null)||g.isEmpty()||!g.isValid()) {
-			logger.warn(Messages.getString("JtsAlgorithms.DouglasPeuckerError")); //$NON-NLS-1$
-			logger.warn(Messages.getString("JtsAlgorithms.DouglasPeuckerThreshold")+seuil); //$NON-NLS-1$
-			logger.warn(Messages.getString("JtsAlgorithms.Geometry")+geom); //$NON-NLS-1$
-			logger.warn(Messages.getString("JtsAlgorithms.Result")+g); //$NON-NLS-1$ 
+			logger.warn(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.DouglasPeuckerError")); //$NON-NLS-1$
+			logger.warn(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.DouglasPeuckerThreshold")+seuil); //$NON-NLS-1$
+			logger.warn(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry")+geom); //$NON-NLS-1$
+			logger.warn(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Result")+g); //$NON-NLS-1$ 
 			return geom;
 		}
 		else if ( g.getGeometryType() != geom.getGeometryType()) {
-			logger.warn(Messages.getString("JtsAlgorithms.DouglasPeuckerWithDifferentTypesError")); //$NON-NLS-1$
-			logger.warn(Messages.getString("JtsAlgorithms.DouglasPeuckerThreshold")+seuil); //$NON-NLS-1$
-			logger.warn(Messages.getString("JtsAlgorithms.Geometry")+geom); //$NON-NLS-1$
-			logger.warn(Messages.getString("JtsAlgorithms.Result")+g); //$NON-NLS-1$
+			logger.warn(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.DouglasPeuckerWithDifferentTypesError")); //$NON-NLS-1$
+			logger.warn(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.DouglasPeuckerThreshold")+seuil); //$NON-NLS-1$
+			logger.warn(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Geometry")+geom); //$NON-NLS-1$
+			logger.warn(I18N.getString("fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms.Result")+g); //$NON-NLS-1$
 			return geom;
 		}
 		else return g;

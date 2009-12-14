@@ -35,6 +35,7 @@ import java.awt.geom.Point2D;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
@@ -158,9 +159,9 @@ public class Viewport {
 			if (geometry.isMultiCurve()) return null;
 			if (geometry.isPoint()) return toShape((GM_Point) geometry);
 			if (geometry instanceof GM_Aggregate<?>) return null;
-			throw new IllegalArgumentException(Messages.getString("geoxygene.Viewport.UnhandledGeometryClass") + geometry.getClass()); //$NON-NLS-1$
+			throw new IllegalArgumentException(I18N.getString("fr.ign.cogit.geoxygene.Viewport.UnhandledGeometryClass") + geometry.getClass()); //$NON-NLS-1$
 		} catch (Exception e) {
-			logger.info(Messages.getString("geoxygene.Viewport.Geometry")+geometry); //$NON-NLS-1$
+			logger.info(I18N.getString("fr.ign.cogit.geoxygene.Viewport.Geometry")+geometry); //$NON-NLS-1$
 			e.printStackTrace();
 			return null;
 		}
