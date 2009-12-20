@@ -1,14 +1,14 @@
-/*
+/**
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -28,11 +28,11 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
 import java.util.List;
 
-/** NON UTILISE. Cette interface de la norme n'a plus de sens depuis qu'on a fait hériter GM_CurveSegment de GM_Curve.
+/** NON UTILISE. Cette interface de la norme n'a plus de sens depuis qu'on a fait heriter GM_CurveSegment de GM_Curve.
  *
- * <P> Définition de la norme : les classes GM_Curve et GM_CurveSegment représentent toutes deux des géométries à une dimension, et partagent donc plusieurs signatures d'opération.
- * Celles-ci sont définies dans l'interface GM_GenericCurve.
- * La paramétrisation employée dans les méthodes se fait par la longueur de l'arc (absisse curviligne) ou par une autre paramétrisation.
+ * <P> Definition de la norme : les classes GM_Curve et GM_CurveSegment representent toutes deux des geometries Ã  une dimension, et partagent donc plusieurs signatures d'operation.
+ * Celles-ci sont definies dans l'interface GM_GenericCurve.
+ * La parametrisation employee dans les methodes se fait par la longueur de l'arc (absisse curviligne) ou par une autre parametrisation.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -43,73 +43,73 @@ import java.util.List;
 interface GM_GenericCurve {
 
 	/**
-	 * Retourne le DirectPosition du premier point. Différent de l'opérateur "boundary" car renvoie la valeur du point et non pas l'objet géométrique représentatif.
+	 * Retourne le DirectPosition du premier point. Different de l'operateur "boundary" car renvoie la valeur du point et non pas l'objet geometrique representatif.
 	 */
 	DirectPosition startPoint();
 
 
 	/**
-	 * Retourne le DirectPosition du dernier point. Différent de l'opérateur "boundary" car renvoie la valeur du point et non pas l'objet géométrique représentatif.
+	 * Retourne le DirectPosition du dernier point. Different de l'operateur "boundary" car renvoie la valeur du point et non pas l'objet geometrique representatif.
 	 */
 	DirectPosition endPoint();
 
 
 	/** NON IMPLEMENTE.
-	 * Renvoie un point à l'abcsisse curviligne s.
+	 * Renvoie un point Ã  l'abcsisse curviligne s.
 	 */
-	// NORME : le paramètre en entree est de type Distance.
+	// NORME : le parametre en entree est de type Distance.
 	DirectPosition param(double s);
 
 
 	/** NON IMPLEMENTE.
-	 * Vecteur tangent a la courbe, à l'abscisse curviligne  passée en paramètre. Le vecteur résultat est normé.
+	 * Vecteur tangent a la courbe, Ã  l'abscisse curviligne  passee en parametre. Le vecteur resultat est norme.
 	 */
-	// NORME : le paramètre en entree est de type Distance.
+	// NORME : le parametre en entree est de type Distance.
 	//     Vecteur tangent(double s);
 
 
 	/**
 	 * Renvoie O pour une GM_Curve.
-	 * Pour un GM_CurveSegment, égal au endParam du précedent segment dans la segmentation (0 pour le premier segment).
+	 * Pour un GM_CurveSegment, egal au endParam du precedent segment dans la segmentation (0 pour le premier segment).
 	 */
-	// NORME : le résultat est de type Distance.
+	// NORME : le resultat est de type Distance.
 	double startParam();
 
 
 	/**
-	 * Longueur de la courbe pour une GM_Curve. Pour un GM_CurveSegment, égale à startParam plus la longueur du segment.
+	 * Longueur de la courbe pour une GM_Curve. Pour un GM_CurveSegment, egale Ã  startParam plus la longueur du segment.
 	 */
-	// NORME : le résultat est de type Distance.
+	// NORME : le resultat est de type Distance.
 	double endParam();
 
 
 	/** NON IMPLEMENTE.
-	 * Renvoie le paramètre au point P (le paramètre étant a priori la distance).
+	 * Renvoie le parametre au point P (le parametre etant a priori la distance).
 	 * Si P n'est pas sur la courbe, on cherche alors pour le calcul le point le plus proche de P sur la courbe
-	 * (qui est aussi renvoyé en résultat).
-	 * On renvoie en général une seule distance, sauf si la courbe n'est pas simple.
+	 * (qui est aussi renvoye en resultat).
+	 * On renvoie en general une seule distance, sauf si la courbe n'est pas simple.
 	 */
-	// NORME : le résultat est de type Distance.
+	// NORME : le resultat est de type Distance.
 	List<?> paramForPoint(DirectPosition P);
 
 
 	/** NON IMPLEMENTE.
-	 * Représentation alternative d'une courbe comme l'image continue d'un intervalle de réels,
-	 * sans imposer que cette paramétrisation représente la longueur de la courbe,
+	 * Representation alternative d'une courbe comme l'image continue d'un intervalle de reels,
+	 * sans imposer que cette parametrisation represente la longueur de la courbe,
 	 * et sans imposer de restrictions entre la courbe et ses segments.
-	 * Utilité : pour les courbes paramétrées,  pour construire une surface paramétrée.
+	 * Utilite : pour les courbes parametrees,  pour construire une surface parametree.
 	 */
 	DirectPosition constrParam(double cp);
 
 
 	/** NON IMPLEMENTE.
-	 * Paramètre au startPoint pour une courbe paramétrée, c'est-à-dire : constrParam(startConstrParam())=startPoint().
+	 * Parametre au startPoint pour une courbe parametree, c'est-e-dire : constrParam(startConstrParam())=startPoint().
 	 */
 	double startConstrParam();
 
 
 	/** NON IMPLEMENTE.
-	 * Paramètre au endPoint pour une courbe paramétrée, c'est-à-dire : constrParam(endConstrParam())=endPoint().
+	 * Parametre au endPoint pour une courbe parametree, c'est-e-dire : constrParam(endConstrParam())=endPoint().
 	 */
 	double endConstrParam();
 
@@ -117,24 +117,24 @@ interface GM_GenericCurve {
 	/** NON IMPLEMENTE.
 	 * Longueur entre 2 points.
 	 */
-	// NORME : le résultat est de type Length.
+	// NORME : le resultat est de type Length.
 	double length(GM_Position p1, GM_Position p2);
 
 
 	/** NON IMPLEMENTE.
-	 * Longueur d'une courbe paramétrée "entre 2 réels".
+	 * Longueur d'une courbe parametree "entre 2 reels".
 	 */
-	// NORME : le résultat est de type Length.
+	// NORME : le resultat est de type Length.
 	double length(double cparam1, double cparam2);
 
 
 	/**
-	 * Approximation linéaire d'une courbe avec les points de contrôle.
-	 * Le  paramètre spacing indique la distance maximum entre 2 points de contrôle;
-	 * le paramètre  offset indique la distance maximum entre la polyligne générée et la courbe originale.
-	 * Si ces 2 paramètres sont à 0, alors aucune contrainte n'est imposée.
-	 * Le paramètre tolérance permet d'éliminer les points consécutifs doublons qui peuvent apparaître quand la courbe est composée de plusieurs segments.
+	 * Approximation lineaire d'une courbe avec les points de contrele.
+	 * Le  parametre spacing indique la distance maximum entre 2 points de contrele;
+	 * le parametre  offset indique la distance maximum entre la polyligne generee et la courbe originale.
+	 * Si ces 2 parametres sont Ã  0, alors aucune contrainte n'est imposee.
+	 * Le parametre tolerance permet d'eliminer les points consecutifs doublons qui peuvent apparaetre quand la courbe est composee de plusieurs segments.
 	 */
-	// NORME : spacing et offset sont de type Distance. tolerance n'est pas en paramètre.
+	// NORME : spacing et offset sont de type Distance. tolerance n'est pas en parametre.
 	GM_LineString asLineString (double spacing, double offset, double tolerance) ;
 }

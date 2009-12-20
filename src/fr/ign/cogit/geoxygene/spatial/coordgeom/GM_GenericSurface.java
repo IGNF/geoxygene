@@ -1,14 +1,14 @@
-/*
+/**
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -27,10 +27,10 @@
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
 /**
- * NON UTILISE. Cette interface de la norme n'a plus de sens depuis qu'on a fait hériter GM_SurfacePatch de GM_Surface.
+ * NON UTILISE. Cette interface de la norme n'a plus de sens depuis qu'on a fait heriter GM_SurfacePatch de GM_Surface.
  *
- * <P> Définition de la norme : les classes GM_Surface et GM_SurfacePatch représentent toutes deux des géométries à deux dimensions,
- * et partagent donc plusieurs signatures d'opération. Celles-ci sont définies dans l'interface GM_GenericSurface.
+ * <P> Definition de la norme : les classes GM_Surface et GM_SurfacePatch representent toutes deux des geometries Ã  deux dimensions,
+ * et partagent donc plusieurs signatures d'operation. Celles-ci sont definies dans l'interface GM_GenericSurface.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -39,14 +39,14 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
 interface GM_GenericSurface {
 
-	/** Vecteur normal à self, au point passé en paramètre. */
+	/** Vecteur normal Ã  self, au point passe en parametre. */
 	//     Vecteur upNormal(DirectPosition point);
 
-	/**Périmètre. */
-	//NORME : le résultat est de type Length.
+	/**Perimetre. */
+	//NORME : le resultat est de type Length.
 	double perimeter ();
 
 	/** Aire. */
-	// NORME : le résultat est de type Area.
+	// NORME : le resultat est de type Area.
 	double area();
 }

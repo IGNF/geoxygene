@@ -1,14 +1,14 @@
-/*
+/**
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -29,7 +29,7 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Curve;
 
 /** NON IMPLEMENTE.
- * Classe mère pour les surfaces paramétrées par des courbes.
+ * Classe mï¿½re pour les surfaces paramï¿½trï¿½es par des courbes.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -75,7 +75,7 @@ class GM_ParametricCurveSurface extends GM_SurfacePatch {
 	}
 
 
-	// Implémentation d'une méthode abstraite de GM_SurfacePatch.
+	// ImplÃ©mentation d'une mÃ©thode abstraite de GM_SurfacePatch.
 	@Override
 	public GM_SurfacePatch reverse() {
 		return null;

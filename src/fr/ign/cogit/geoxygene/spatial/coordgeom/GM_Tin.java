@@ -1,14 +1,14 @@
-/*
+/**
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -30,7 +30,7 @@ import java.util.List;
 
 
 /** NON IMPLEMENTE, A FAIRE.
- * Surface triangulée avec la méthode de Delaunay ou un algorithme similaire, et prenant en considération des stoplines, des breaklines et une longueur maximale pour les arêtes des triangles.
+ * Surface triangulee avec la methode de Delaunay ou un algorithme similaire, et prenant en consideration des stoplines, des breaklines et une longueur maximale pour les aretes des triangles.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -40,7 +40,7 @@ import java.util.List;
 class GM_Tin extends GM_TriangulatedSurface {
 
 	/**
-	 * Lignes où la continuité locale ou la régularité de la surface est remise en cause : un triangle intersectant une telle ligne doit être enlevé du TIN en laissant un trou à la place.
+	 * Lignes ou la continuite locale ou la regularite de la surface est remise en cause : un triangle intersectant une telle ligne doit etre enleve du TIN en laissant un trou Ã  la place.
 	 */
 	protected List<GM_LineString> stopLines;
 	public GM_LineString getStopLines (int i) {
@@ -51,7 +51,7 @@ class GM_Tin extends GM_TriangulatedSurface {
 	}
 
 	/**
-	 * Lignes qui doivent être incluses dans la triangulation, même en violant les critères de Delaunay.
+	 * Lignes qui doivent etre incluses dans la triangulation, meme en violant les criteres de Delaunay.
 	 */
 	protected List<GM_LineString> breakLines;
 	public GM_LineString getBreakLines (int i) {
@@ -62,7 +62,7 @@ class GM_Tin extends GM_TriangulatedSurface {
 	}
 
 	/**
-	 * Longueur maximum de l'arête d'un triangle du TIN. Tout triangle adjacent à une arête dont la longueur est supérieure à maxLength doit être supprimé de la triangulation. (NORME : cet attribut est de type Distance.)
+	 * Longueur maximum de l'arete d'un triangle du TIN. Tout triangle adjacent Ã  une arete dont la longueur est superieure Ã  maxLength doit etre supprime de la triangulation. (NORME : cet attribut est de type Distance.)
 	 */
 	protected double maxLength;
 	public double getMaxLength () {
@@ -70,7 +70,7 @@ class GM_Tin extends GM_TriangulatedSurface {
 	}
 
 	/**
-	 * Points servant à construire la grille.
+	 * Points servant Ã  construire la grille.
 	 */
 	protected List<GM_Position> controlPoint;
 	public GM_Position getControlPoint (int i) {

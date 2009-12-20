@@ -1,14 +1,14 @@
-/*
+/**
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -29,10 +29,10 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Curve;
 
 /**
- * Segment homogène d'une GM_Curve. Classe mère abstraite.
- * <P> Modification de la norme : cette classe hérite de GM_Curve. Du coup on a fait sauter le lien d'implémentation de GM_GenericCurve.
- * Un GM_CurveSegment sera une GM_Curve composée d'un et d'un seul segment qui sera lui-même.
- * Les méthodes addSegment, removeSegment, etc... seront interdites.
+ * Segment homogene d'une GM_Curve. Classe mere abstraite.
+ * <P> Modification de la norme : cette classe herite de GM_Curve. Du coup on a fait sauter le lien d'implementation de GM_GenericCurve.
+ * Un GM_CurveSegment sera une GM_Curve composee d'un et d'un seul segment qui sera lui-meme.
+ * Les methodes addSegment, removeSegment, etc... seront interdites.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -46,33 +46,33 @@ abstract public class GM_CurveSegment   extends GM_Curve
 	//////////////////////////////////////////////////////////////////////////////////
 	// Attributs /////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////
-	/** Mécanisme d'interpolation, selon une liste de codes. Vaut "linear" par défaut.
+	/** Mecanisme d'interpolation, selon une liste de codes. Vaut "linear" par defaut.
 	 * <P> La liste de codes est la suivante :
 	 * {linear, geodesic, circularArc3Points, circularArc2PointsWithBulge, elliptical, clothoid,
 	 * conic, polynomialSpline, cubicSpline, rationalSpline}.  */
-	protected String interpolation = "linear";
+	protected String interpolation = "linear"; //$NON-NLS-1$
 
 	/** Renvoie l'attribut interpolation. */
 	public String getInterpolation () {return this.interpolation;}
 
 
-	/** Type de continuité entre un segment et son prédecesseur (ignoré pour le premier segment).
-	 * Pour des polylignes on aura une continuité C0.  */
+	/** Type de continuite entre un segment et son predecesseur (ignore pour le premier segment).
+	 * Pour des polylignes on aura une continuite C0.  */
 	protected int numDerivativesAtStart = 0;
 
 	/** Renvoie l'attribut numDerivativesAtStart. */
 	public int getNumDerivativesAtStart () {return this.numDerivativesAtStart;}
 
-	/** Type de continuité entre un segment et son successeur (ignoré pour le dernier segment).
-	 * Pour des polylignes on aura une continuité C0.  */
+	/** Type de continuite entre un segment et son successeur (ignore pour le dernier segment).
+	 * Pour des polylignes on aura une continuite C0.  */
 	protected int numDerivativeAtEnd = 0;
 
 	/** Renvoie l'attribut numDerivativeAtEnd. */
 	public int getNumDerivativeAtEnd () {return this.numDerivativeAtEnd;}
 
 
-	/** Type de continuité garantie à l'intérieur de la courbe.
-	 * Pour des polylignes on aura une continuité C0. */
+	/** Type de continuite garantie Ã  l'interieur de la courbe.
+	 * Pour des polylignes on aura une continuite C0. */
 	protected int numDerivativeInterior = 0;
 
 	/** Renvoie l'attribut numDerivativeInterior. */
@@ -82,9 +82,9 @@ abstract public class GM_CurveSegment   extends GM_Curve
 
 
 	//////////////////////////////////////////////////////////////////////////////////
-	// Méthodes (abstaites, implémentée dans les sous-classes)////////////////////////
+	// Methodes (abstaites, implementee dans les sous-classes)////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////
-	/** Renvoie un GM_CurveSegment de sens opposé. Méthode abstraite implémentée dans les sous-classes. */
+	/** Renvoie un GM_CurveSegment de sens oppose. Methode abstraite implementee dans les sous-classes. */
 	abstract public GM_CurveSegment reverse() ;
 
 }
