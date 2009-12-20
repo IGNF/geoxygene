@@ -1,0 +1,255 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>fr.ign.cogit</groupId>
+  <artifactId>geoxygene</artifactId>
+  <name>GeOxygene</name>
+  <version>1.4-SNAPSHOT</version>
+  <description>GeOxygene is an open framework which implements OGC/ISO specifications for the development and deployment of geographic (GIS) applications.</description>
+  <url>http://oxygene-project.sourceforge.net/</url>
+  <developers>
+  	<developer>
+  		<id>julien-perret</id>
+  		<name>Julien Perret</name>
+  		<email>julien.perret@ign.fr</email>
+  		<url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=Julien&amp;nom=Perret</url>
+  		<organization>Laboratoire COGIT, IGN</organization>
+  		<organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
+  		<roles>
+  		</roles>
+  	</developer>
+  	<developer>
+  		<id>jgaffuri</id>
+  		<name>Julien Gaffuri</name>
+  		<email>julien.gaffuri@ign.fr</email>
+  		<url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=Julien&amp;nom=Gaffuri</url>
+  		<organization>Laboratoire COGIT, IGN</organization>
+  		<organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
+  	</developer>
+  	<developer>
+  		<id>egrosso</id>
+  		<name>Eric Grosso</name>
+  		<email>eric.grosso@ign.fr</email>
+  		<url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=Eric&amp;nom=Grosso</url>
+  		<organization>Laboratoire COGIT, IGN</organization>
+  		<organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
+  	</developer>
+  	<developer>
+  		<id>tbadard</id>
+  		<name>Thierry Badard</name>
+  		<email>Thierry.Badard@scg.ulaval.ca</email>
+  		<url>http://geosoa.scg.ulaval.ca/fr/index.php</url>
+  		<organization>Département des sciences géomatiques, Université Laval, Québec, Canada</organization>
+  		<organizationUrl>http://www.scg.ulaval.ca/</organizationUrl>
+  	</developer>
+  	<developer>
+  		<id>abraun</id>
+  		<name>Arnaud Braun </name>
+  		<email>arnaud.braun@ign.fr</email>
+  		<url>http://recherche.ign.fr/labos/cogit/english/cv.php?prenom=Arnaud&amp;nom=Braun</url>
+  		<organization>IGN</organization>
+  		<organizationUrl>http://www.ign.fr/</organizationUrl>
+  	</developer>
+  	<developer>
+  		<id>mustiere</id>
+  		<name>Sebastien Mustiere</name>
+  		<email>Sebastien.Mustiere@ign.fr</email>
+  		<url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=S%E9bastien&amp;nom=Musti%E8re</url>
+  		<organization>Laboratoire COGIT, IGN</organization>
+  		<organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
+  	</developer>
+  	<developer>
+  		<id>choarau</id>
+  		<name>Charlotte Hoarau </name>
+  		<email>Charlotte.Hoarau@ign.fr</email>
+  		<url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=Charlotte&amp;nom=Hoarau</url>
+  		<organization>Laboratoire COGIT, IGN</organization>
+  		<organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
+  	</developer>
+  </developers>
+  <scm>
+  	<url>https://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project/main/trunk/geoxygene</url>
+  </scm>
+  <organization>
+  	<name>Laboratoire COGIT, IGN</name>
+  	<url>http://recherche.ign.fr/labos/cogit</url>
+  </organization>
+  <build>
+  	<sourceDirectory>src</sourceDirectory>
+  	<plugins>
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-compiler-plugin</artifactId>
+  			<configuration>
+  				<compilerVersion>1.6</compilerVersion>
+  				<source>1.6</source>
+				<complianceLevel>1.6</complianceLevel>
+				<target>1.6</target>
+  			</configuration>
+  		</plugin>
+  	</plugins>
+  	<extensions>
+  	</extensions>
+  </build>
+  <repositories>
+  	<repository>
+  		<id>snapshots</id>
+  		<name>Nexus Snapshots Repository</name>
+  		<url>http://localhost:8080/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
+  		<releases>
+  			<enabled>false</enabled>
+  		</releases>
+  		<snapshots>
+  			<updatePolicy>always</updatePolicy>
+  			<checksumPolicy>ignore</checksumPolicy>
+  		</snapshots>
+  	</repository>
+  	<repository>
+  		<id>releases</id>
+  		<name>Nexus Repository</name>
+  		<url>http://localhost:8080/nexus-webapp-1.4.1/content/repositories/releases/</url>
+  		<snapshots>
+  			<enabled>false</enabled>
+  		</snapshots>
+  	</repository>
+  	<repository>
+  		<id>Central</id>
+  		<name>Central Repository</name>
+  		<url>http://repo1.maven.org/maven2</url>
+  	</repository>
+  	<repository>
+  		<id>maven2-repository.dev.java.net</id>
+  		<name>Java.net Repository for Maven 2</name>
+  		<url>http://download.java.net/maven/2/</url>
+  	</repository>
+  	<repository>
+  		<id>osgeo</id>
+  		<name>Open Source Geospatial Foundation Repository</name>
+  		<url>http://download.osgeo.org/webdav/geotools/</url>
+  	</repository>
+  </repositories>
+  <dependencies>
+  	<dependency>
+  		<groupId>log4j</groupId>
+  		<artifactId>log4j</artifactId>
+  		<version>1.2.15</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.vividsolutions</groupId>
+  		<artifactId>jts</artifactId>
+  		<version>1.10</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache</groupId>
+  		<artifactId>ojb</artifactId>
+  		<version>1.0.rc6</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.postgis</groupId>
+  		<artifactId>postgis-jdbc</artifactId>
+  		<version>1.3.2</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>jama</groupId>
+  		<artifactId>jama</artifactId>
+  		<version>1.0.2</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.hibernate</groupId>
+  		<artifactId>hibernate-core</artifactId>
+  		<version>3.3.1.GA</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.hibernate</groupId>
+  		<artifactId>hibernate-annotations</artifactId>
+  		<version>3.4.0.GA</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>oracle</groupId>
+  		<artifactId>oracle-jdbc</artifactId>
+  		<version>9.0.2</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>oracle</groupId>
+  		<artifactId>sdoapi</artifactId>
+  		<version>9.0.2</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache.xmlgraphics</groupId>
+  		<artifactId>batik-awt-util</artifactId>
+  		<version>1.7</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache.xmlgraphics</groupId>
+  		<artifactId>batik-dom</artifactId>
+  		<version>1.7</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache.xmlgraphics</groupId>
+  		<artifactId>batik-svggen</artifactId>
+  		<version>1.7</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache.xmlgraphics</groupId>
+  		<artifactId>batik-transcoder</artifactId>
+  		<version>1.7</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.geotools</groupId>
+  		<artifactId>gt-api</artifactId>
+  		<version>2.5.4</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.geotools</groupId>
+  		<artifactId>gt-main</artifactId>
+  		<version>2.5.4</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.geotools</groupId>
+  		<artifactId>gt-data</artifactId>
+  		<version>2.5.4</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.geotools</groupId>
+  		<artifactId>gt-metadata</artifactId>
+  		<version>2.5.4</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.geotools</groupId>
+  		<artifactId>gt-referencing</artifactId>
+  		<version>2.5.4</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.geotools</groupId>
+  		<artifactId>gt-shapefile</artifactId>
+  		<version>2.5.4</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.opengis</groupId>
+  		<artifactId>geoapi</artifactId>
+  		<version>2.2-M1</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>uk.ac.leeds.ccg</groupId>
+  		<artifactId>geotools</artifactId>
+  		<version>1</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.thoughtworks.xstream</groupId>
+  		<artifactId>xstream</artifactId>
+  		<version>1.3.1</version>
+  	</dependency>
+  </dependencies>
+  <distributionManagement>
+  	<downloadUrl>http://sourceforge.net/projects/oxygene-project/files/</downloadUrl>
+  	<snapshotRepository>
+  		<id>snapshots</id>
+  		<name>Nexus Snapshots Repository</name>
+  		<url>http://localhost:8080/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
+  	</snapshotRepository>
+  	<site>
+  		<id>GeOxygene-website</id>
+  		<name>GeOxygene website</name>
+  		<url>http://oxygene-project.sourceforge.net/</url>
+  	</site>
+  </distributionManagement>
+</project>
