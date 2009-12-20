@@ -1,27 +1,28 @@
-/*******************************************************************************
+/**
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
- * 
+ * Copyright (C) 2005 Institut GÃ©ographique National
+ *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with
  * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *******************************************************************************/
+ * 
+ */
 
 package fr.ign.cogit.geoxygene.style;
 
@@ -37,7 +38,7 @@ import org.apache.batik.ext.awt.geom.Polygon2D;
  */
 public class Mark {
 
-	private String wellKnownName = "square";
+	private String wellKnownName = "square"; //$NON-NLS-1$
 	/**
 	 * Renvoie la valeur de l'attribut wellKnownName.
 	 * @return la valeur de l'attribut wellKnownName
@@ -45,7 +46,7 @@ public class Mark {
 	public String getWellKnownName() {return this.wellKnownName;}
 	/**
 	 * Affecte la valeur de l'attribut wellKnownName.
-	 * @param wellKnownName l'attribut wellKnownName à affecter
+	 * @param wellKnownName l'attribut wellKnownName ï¿½ affecter
 	 */
 	public void setWellKnownName(String wellKnownName) {this.wellKnownName = wellKnownName;}
 	
@@ -57,7 +58,7 @@ public class Mark {
 	public Fill getFill() {return this.fill;}
 	/**
 	 * Affecte la valeur de l'attribut fill.
-	 * @param fill l'attribut fill à affecter
+	 * @param fill l'attribut fill ï¿½ affecter
 	 */
 	public void setFill(Fill fill) {this.fill = fill;}
 
@@ -69,7 +70,7 @@ public class Mark {
 	public Stroke getStroke() {return this.stroke;}
 	/**
 	 * Affecte la valeur de l'attribut stroke.
-	 * @param stroke l'attribut stroke à affecter
+	 * @param stroke l'attribut stroke ï¿½ affecter
 	 */
 	public void setStroke(Stroke stroke) {this.stroke = stroke;}
 
@@ -100,12 +101,12 @@ public class Mark {
 	 * @return the AWT shape used to draw this Mark
 	 */
 	public Shape toShape() {
-		if ((this.wellKnownName==null)||(this.wellKnownName.equalsIgnoreCase("square"))) return square;
-		if (this.wellKnownName.equalsIgnoreCase("circle")) return circle;
-		if (this.wellKnownName.equalsIgnoreCase("triangle")) return triangle;
-		if (this.wellKnownName.equalsIgnoreCase("star")) return star;
-		if (this.wellKnownName.equalsIgnoreCase("cross")) return cross;
-		if (this.wellKnownName.equalsIgnoreCase("x")) return xShape;
+		if ((this.wellKnownName==null)||(this.wellKnownName.equalsIgnoreCase("square"))) return square; //$NON-NLS-1$
+		if (this.wellKnownName.equalsIgnoreCase("circle")) return circle; //$NON-NLS-1$
+		if (this.wellKnownName.equalsIgnoreCase("triangle")) return triangle; //$NON-NLS-1$
+		if (this.wellKnownName.equalsIgnoreCase("star")) return star; //$NON-NLS-1$
+		if (this.wellKnownName.equalsIgnoreCase("cross")) return cross; //$NON-NLS-1$
+		if (this.wellKnownName.equalsIgnoreCase("x")) return xShape; //$NON-NLS-1$
 		return null;
 	}
 }

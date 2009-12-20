@@ -1,27 +1,28 @@
-/*******************************************************************************
+/**
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
- * 
+ * Copyright (C) 2005 Institut GÃ©ographique National
+ *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with
  * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *******************************************************************************/
+ * 
+ */
 
 package fr.ign.cogit.geoxygene.style;
 
@@ -44,7 +45,7 @@ public interface Symbolizer {
 
 	/**
 	 * Affecte la valeur de l'attribut stroke.
-	 * @param stroke l'attribut stroke à affecter
+	 * @param stroke l'attribut stroke ï¿½ affecter
 	 */
 	public void setStroke(Stroke stroke);
 	
@@ -61,7 +62,7 @@ public interface Symbolizer {
 	public String getGeometryPropertyName();
 	/**
 	 * Affecte la valeur de l'attribut geometryPropertyName.
-	 * @param geometryPropertyName l'attribut geometryPropertyName à affecter
+	 * @param geometryPropertyName l'attribut geometryPropertyName ï¿½ affecter
 	 */
 	public void setGeometryPropertyName(String geometryPropertyName);
 

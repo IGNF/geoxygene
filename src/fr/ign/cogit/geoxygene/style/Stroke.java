@@ -1,27 +1,28 @@
-/*******************************************************************************
+/**
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
- * 
+ * Copyright (C) 2005 Institut GÃ©ographique National
+ *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with
  * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *******************************************************************************/
+ * 
+ */
 
 package fr.ign.cogit.geoxygene.style;
 
@@ -60,7 +61,7 @@ public class Stroke {
 
 	/**
 	 * Affecte la valeur de l'attribut graphicType.
-	 * @param graphicType l'attribut graphicType à affecter
+	 * @param graphicType l'attribut graphicType Ã  affecter
 	 */
 	public void setGraphicType(GraphicType graphicType) {this.graphicType = graphicType;}
 
@@ -78,7 +79,7 @@ public class Stroke {
 
 	/**
 	 * Affecte la valeur de l'attribut cssParameters.
-	 * @param svgParameters l'attribut cssParameters à affecter
+	 * @param svgParameters l'attribut cssParameters Ã  affecter
 	 */
 	public void setSvgParameters(List<SvgParameter> svgParameters) {
 		this.svgParameters = svgParameters;
@@ -86,20 +87,20 @@ public class Stroke {
 	}
 	
 	private void updateValues() {
-		for (SvgParameter parameter:svgParameters) {
-			if (parameter.getName().equalsIgnoreCase("stroke")) {
-				stroke = Color.decode(parameter.getValue());
-			} else if (parameter.getName().equalsIgnoreCase("stroke-opacity")) {
-				strokeOpacity = Float.parseFloat(parameter.getValue());
-			} else if (parameter.getName().equalsIgnoreCase("stroke-width")) {
-				strokeWidth = Float.parseFloat(parameter.getValue());
-			} else if (parameter.getName().equalsIgnoreCase("stroke-linejoin")) {
+		for (SvgParameter parameter:this.svgParameters) {
+			if (parameter.getName().equalsIgnoreCase("stroke")) { //$NON-NLS-1$
+				this.stroke = Color.decode(parameter.getValue());
+			} else if (parameter.getName().equalsIgnoreCase("stroke-opacity")) { //$NON-NLS-1$
+				this.strokeOpacity = Float.parseFloat(parameter.getValue());
+			} else if (parameter.getName().equalsIgnoreCase("stroke-width")) { //$NON-NLS-1$
+				this.strokeWidth = Float.parseFloat(parameter.getValue());
+			} else if (parameter.getName().equalsIgnoreCase("stroke-linejoin")) { //$NON-NLS-1$
 				this.setStrokeLineJoin(parameter.getValue());
-			} else if (parameter.getName().equalsIgnoreCase("stroke-linecap")) {
+			} else if (parameter.getName().equalsIgnoreCase("stroke-linecap")) { //$NON-NLS-1$
 				this.setStrokeLineCap(parameter.getValue());
-			} else if (parameter.getName().equalsIgnoreCase("stroke-dasharray")) {
+			} else if (parameter.getName().equalsIgnoreCase("stroke-dasharray")) { //$NON-NLS-1$
 				this.setStrokeDashArray(parameter.getValue());
-			} else if (parameter.getName().equalsIgnoreCase("stroke-dashoffset")) {
+			} else if (parameter.getName().equalsIgnoreCase("stroke-dashoffset")) { //$NON-NLS-1$
 				this.setStrokeDashOffset(parameter.getValue());
 			}
 		}		
@@ -115,16 +116,16 @@ public class Stroke {
 	/**
 	 * Affecte la valeur de l'attribut stroke.
 	 * <p>
-	 * Met à jout le paramètre CSS correspondant
-	 * @param stroke l'attribut stroke à affecter
+	 * Met Ã  jout le parametre CSS correspondant
+	 * @param stroke l'attribut stroke Ã  affecter
 	 */
 	public void setStroke(Color stroke) {
 		this.stroke = stroke;
-		for (SvgParameter parameter:svgParameters) {
-			if (parameter.getName().equalsIgnoreCase("stroke")) {
+		for (SvgParameter parameter:this.svgParameters) {
+			if (parameter.getName().equalsIgnoreCase("stroke")) { //$NON-NLS-1$
 				String rgb = Integer.toHexString(stroke.getRGB());
 				rgb = rgb.substring(2, rgb.length());
-				parameter.setValue("#"+rgb);
+				parameter.setValue("#"+rgb); //$NON-NLS-1$
 			}
 		}
 	}
@@ -138,12 +139,12 @@ public class Stroke {
 	public float getStrokeOpacity() {return this.strokeOpacity;}
 	/**
 	 * Affecte la valeur de l'attribut strokeOpacity.
-	 * @param strokeOpacity l'attribut strokeOpacity à affecter
+	 * @param strokeOpacity l'attribut strokeOpacity Ã  affecter
 	 */
 	public void setStrokeOpacity(float strokeOpacity) {
 		this.strokeOpacity = strokeOpacity;
-		for (SvgParameter parameter:svgParameters) {
-			if (parameter.getName().equalsIgnoreCase("strokeOpacity")) {
+		for (SvgParameter parameter:this.svgParameters) {
+			if (parameter.getName().equalsIgnoreCase("strokeOpacity")) { //$NON-NLS-1$
 				parameter.setValue(Float.toString(strokeOpacity));
 			}
 		}
@@ -158,12 +159,12 @@ public class Stroke {
 	public float getStrokeWidth() {return this.strokeWidth;}
 	/**
 	 * Affecte la valeur de l'attribut strokeWidth.
-	 * @param strokeWidth l'attribut strokeWidth à affecter
+	 * @param strokeWidth l'attribut strokeWidth Ã  affecter
 	 */
 	public void setStrokeWidth(float strokeWidth) {
 		this.strokeWidth = strokeWidth;
-		for (SvgParameter parameter:svgParameters) {
-			if (parameter.getName().equalsIgnoreCase("strokeWidth")) {
+		for (SvgParameter parameter:this.svgParameters) {
+			if (parameter.getName().equalsIgnoreCase("strokeWidth")) { //$NON-NLS-1$
 				parameter.setValue(Float.toString(strokeWidth));
 			}
 		}
@@ -178,24 +179,24 @@ public class Stroke {
 	public int getStrokeLineJoin() {return this.strokeLineJoin;}
 	/**
 	 * Affecte la valeur de l'attribut strokeLineJoin.
-	 * @param strokeLineJoin l'attribut strokeLineJoin à affecter
+	 * @param strokeLineJoin l'attribut strokeLineJoin Ã  affecter
 	 */
 	public void setStrokeLineJoin(int strokeLineJoin) {
 		this.strokeLineJoin = strokeLineJoin;
-		for (SvgParameter parameter:svgParameters) {
-			if (parameter.getName().equalsIgnoreCase("strokeLineJoin")) {
+		for (SvgParameter parameter:this.svgParameters) {
+			if (parameter.getName().equalsIgnoreCase("strokeLineJoin")) { //$NON-NLS-1$
 				parameter.setValue(Integer.toString(strokeLineJoin));
 			}
 		}
 	}
 	/**
 	 * Affecte la valeur de l'attribut strokeLineJoin.
-	 * @param strokeLineJoin l'attribut strokeLineJoin à affecter
+	 * @param strokeLineJoin l'attribut strokeLineJoin Ã  affecter
 	 */
 	private void setStrokeLineJoin(String strokeLineJoin) {
-		if (strokeLineJoin.equalsIgnoreCase("mitre")) this.strokeLineJoin=BasicStroke.JOIN_MITER;
-		else if (strokeLineJoin.equalsIgnoreCase("bevel")) this.strokeLineJoin=BasicStroke.JOIN_BEVEL;
-		// sinon, c'est la valeur par défaut
+		if (strokeLineJoin.equalsIgnoreCase("mitre")) this.strokeLineJoin=BasicStroke.JOIN_MITER; //$NON-NLS-1$
+		else if (strokeLineJoin.equalsIgnoreCase("bevel")) this.strokeLineJoin=BasicStroke.JOIN_BEVEL; //$NON-NLS-1$
+		// sinon, c'est la valeur par defaut
 	}
     
 	@XmlTransient
@@ -207,24 +208,24 @@ public class Stroke {
 	public int getStrokeLineCap() {return this.strokeLineCap;}
 	/**
 	 * Affecte la valeur de l'attribut strokeLineCap.
-	 * @param strokeLineCap l'attribut strokeLineCap à affecter
+	 * @param strokeLineCap l'attribut strokeLineCap Ã  affecter
 	 */
 	public void setStrokeLineCap(int strokeLineCap) {
 		this.strokeLineCap = strokeLineCap;
-		for (SvgParameter parameter:svgParameters) {
-			if (parameter.getName().equalsIgnoreCase("strokeLineCap")) {
+		for (SvgParameter parameter:this.svgParameters) {
+			if (parameter.getName().equalsIgnoreCase("strokeLineCap")) { //$NON-NLS-1$
 				parameter.setValue(Integer.toString(strokeLineCap));
 			}
 		}
 	}
 	/**
 	 * Affecte la valeur de l'attribut strokeLineCap.
-	 * @param strokeLineCap l'attribut strokeLineCap à affecter
+	 * @param strokeLineCap l'attribut strokeLineCap Ã  affecter
 	 */
 	private void setStrokeLineCap(String strokeLineCap) {
-		if (strokeLineCap.equalsIgnoreCase("butt")) this.strokeLineCap=BasicStroke.CAP_BUTT;
-		else if (strokeLineCap.equalsIgnoreCase("square")) this.strokeLineCap=BasicStroke.CAP_SQUARE;
-		// sinon, c'est la valeur par défaut
+		if (strokeLineCap.equalsIgnoreCase("butt")) this.strokeLineCap=BasicStroke.CAP_BUTT; //$NON-NLS-1$
+		else if (strokeLineCap.equalsIgnoreCase("square")) this.strokeLineCap=BasicStroke.CAP_SQUARE; //$NON-NLS-1$
+		// sinon, c'est la valeur par dÃ©faut
 	}
 
     @XmlTransient
@@ -236,12 +237,12 @@ public class Stroke {
 	public float getStrokeDashOffset() {return this.strokeDashOffset;}
 	/**
 	 * Affecte la valeur de l'attribut strokeDashOffset.
-	 * @param strokeDashOffset l'attribut strokeDashOffset à affecter
+	 * @param strokeDashOffset l'attribut strokeDashOffset Ã  affecter
 	 */
 	public void setStrokeDashOffset(float strokeDashOffset) {
 		this.strokeDashOffset = strokeDashOffset;
-		for (SvgParameter parameter:svgParameters) {
-			if (parameter.getName().equalsIgnoreCase("strokeDashOffset")) {
+		for (SvgParameter parameter:this.svgParameters) {
+			if (parameter.getName().equalsIgnoreCase("strokeDashOffset")) { //$NON-NLS-1$
 				parameter.setValue(Float.toString(strokeDashOffset));
 			}
 		}
@@ -260,15 +261,15 @@ public class Stroke {
 	public float[] getStrokeDashArray() {return this.strokeDashArray;}
 	/**
 	 * Affecte la valeur de l'attribut strokeDashArray.
-	 * @param strokeDashArray l'attribut strokeDashArray à affecter
+	 * @param strokeDashArray l'attribut strokeDashArray Ã  affecter
 	 */
 	public void setStrokeDashArray(float[] strokeDashArray) {
 		this.strokeDashArray = strokeDashArray;
-		for (SvgParameter parameter:svgParameters) {
-			if (parameter.getName().equalsIgnoreCase("strokeDashArray")) {
-				String dashArray ="";
+		for (SvgParameter parameter:this.svgParameters) {
+			if (parameter.getName().equalsIgnoreCase("strokeDashArray")) { //$NON-NLS-1$
+				String dashArray =""; //$NON-NLS-1$
 				for (int i = 0 ; i < strokeDashArray.length ; i++) 
-					dashArray+=strokeDashArray[i]+" ";
+					dashArray+=strokeDashArray[i]+" "; //$NON-NLS-1$
 				parameter.setValue(dashArray);
 			}
 		}
@@ -277,28 +278,28 @@ public class Stroke {
 	 * @param value
 	 */
 	private void setStrokeDashArray(String value) {
-		String[] values = value.split(" ");
-		strokeDashArray = new float[values.length];
-		for (int index=0;index<values.length;index++) strokeDashArray[index]=Float.parseFloat(values[index]);
+		String[] values = value.split(" "); //$NON-NLS-1$
+		this.strokeDashArray = new float[values.length];
+		for (int index=0;index<values.length;index++) this.strokeDashArray[index]=Float.parseFloat(values[index]);
 	}
 
     @XmlTransient
     private Color color = null;
 	public Color getColor() {
-		if (color==null) {
+		if (this.color==null) {
 			updateValues();
-			if (strokeOpacity==1.0f) color = stroke;
-			else color = new Color(stroke.getRed(),stroke.getGreen(),stroke.getBlue(),(int)(strokeOpacity*255));
+			if (this.strokeOpacity==1.0f) this.color = this.stroke;
+			else this.color = new Color(this.stroke.getRed(),this.stroke.getGreen(),this.stroke.getBlue(),(int)(this.strokeOpacity*255));
 		}
-		return color;
+		return this.color;
 	}
 	/**
 	 * @param newColor
 	 */
 	public void setColor(Color newColor) {
 		this.setStroke(newColor);
-		if (strokeOpacity==1.0f) color = stroke;
-		else color = new Color(stroke.getRed(),stroke.getGreen(),stroke.getBlue(),(int)(strokeOpacity*255));
+		if (this.strokeOpacity==1.0f) this.color = this.stroke;
+		else this.color = new Color(this.stroke.getRed(),this.stroke.getGreen(),this.stroke.getBlue(),(int)(this.strokeOpacity*255));
 	}
 
     @XmlTransient
@@ -307,10 +308,10 @@ public class Stroke {
 	 * @return the AWT Stroke properties to be used for drawing
 	 */
 	public java.awt.Stroke toAwtStroke() {
-		if (awtStroke==null) {
+		if (this.awtStroke==null) {
 			updateValues();
-			awtStroke=new BasicStroke(this.getStrokeWidth(),this.getStrokeLineCap(),this.getStrokeLineJoin(),10.0f,this.getStrokeDashArray(),this.getStrokeDashOffset());
+			this.awtStroke=new BasicStroke(this.getStrokeWidth(),this.getStrokeLineCap(),this.getStrokeLineJoin(),10.0f,this.getStrokeDashArray(),this.getStrokeDashOffset());
 		}
-		return awtStroke;
+		return this.awtStroke;
 	}
 }

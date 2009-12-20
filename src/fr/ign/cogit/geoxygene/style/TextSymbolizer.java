@@ -1,27 +1,28 @@
-/*******************************************************************************
+/**
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
- * 
+ * Copyright (C) 2005 Institut GÃ©ographique National
+ *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with
  * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *******************************************************************************/
+ * 
+ */
 
 package fr.ign.cogit.geoxygene.style;
 
@@ -52,7 +53,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
     public String getLabel() {return this.label;}
     /**
      * Affecte la valeur de l'attribut label.
-     * @param label l'attribut label à affecter
+     * @param label l'attribut label ï¿½ affecter
      */
     public void setLabel(String label) {this.label = label;}
 
@@ -64,7 +65,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
     public Font getFont() {return this.font;}
     /**
      * Affecte la valeur de l'attribut font.
-     * @param font l'attribut font à affecter
+     * @param font l'attribut font ï¿½ affecter
      */
     public void setFont(Font font) {this.font = font;}
 
@@ -76,7 +77,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
     public LabelPlacement getLabelPlacement() {return this.labelPlacement;}
     /**
      * Affecte la valeur de l'attribut labelPlacement.
-     * @param labelPlacement l'attribut labelPlacement à affecter
+     * @param labelPlacement l'attribut labelPlacement ï¿½ affecter
      */
     public void setLabelPlacement(LabelPlacement labelPlacement) {this.labelPlacement = labelPlacement;}
 
@@ -88,7 +89,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
     public Halo getHalo() {return this.halo;}
     /**
      * Affecte la valeur de l'attribut halo.
-     * @param halo l'attribut halo à affecter
+     * @param halo l'attribut halo ï¿½ affecter
      */
     public void setHalo(Halo halo) {this.halo = halo;}
 
@@ -101,7 +102,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
 
     /**
      * Affecte la valeur de l'attribut fill.
-     * @param fill l'attribut fill à affecter
+     * @param fill l'attribut fill ï¿½ affecter
      */
     public void setFill(Fill fill) {this.fill = fill;}
     @Override
@@ -120,7 +121,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
 	if (this.getFill()!=null) fillColor = this.getFill().getColor();
 	java.awt.Font awtFont = null;
 	if (this.getFont()!=null) awtFont = this.getFont().toAwfFont();
-	if (awtFont==null) awtFont = new java.awt.Font("Default",java.awt.Font.PLAIN,10);
+	if (awtFont==null) awtFont = new java.awt.Font("Default",java.awt.Font.PLAIN,10); //$NON-NLS-1$
 	Color haloColor = null;
 	float haloRadius = 1.0f;
 	if (this.getHalo()!=null) {

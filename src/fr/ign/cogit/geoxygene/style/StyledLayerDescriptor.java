@@ -1,27 +1,28 @@
-/*******************************************************************************
+/**
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
- * 
+ * Copyright (C) 2005 Institut GÃ©ographique National
+ *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with
  * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *******************************************************************************/
+ * 
+ */
 
 package fr.ign.cogit.geoxygene.style;
 
@@ -62,11 +63,11 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
- * Descripteur de couches stylisées.
- * Implémente la norme OGC 02-070 sur les StyledLayerDescriptors.
+ * Descripteur de couches stylisÃ©es.
+ * ImplÃ©mente la norme OGC 02-070 sur les StyledLayerDescriptors.
  *  TODO revoir les userLayer
  *  TODO voir les rasterSymbolizers
- *  FIXME passer à la geoapi
+ *  FIXME passer Ã  la geoapi
  * @author Julien Perret
  *
  */
@@ -107,7 +108,7 @@ public class StyledLayerDescriptor {
 	public List<Layer> getLayers() {return this.layers;}
 	/**
 	 * Affecte la valeur de l'attribut layers.
-	 * @param layers l'attribut layers à affecter
+	 * @param layers l'attribut layers Ã  affecter
 	 */
 	public void setLayers(List<Layer> layers) {this.layers = layers;}
 	
@@ -119,14 +120,14 @@ public class StyledLayerDescriptor {
 	}
 
 	/**
-	 * Renvoie le layer portant le nom en paramètre.
-	 * @param layerName nom du layer cherché
-	 * @return layer portant le nom en paramètre
+	 * Renvoie le layer portant le nom en paramÃ¨tre.
+	 * @param layerName nom du layer cherchÃ©
+	 * @return layer portant le nom en paramÃ¨tre
 	 */
 	public Layer getLayer(String layerName) {
-		for (Layer layer:layers) {
+		for (Layer layer:this.layers) {
 			if (layer.getName().equalsIgnoreCase(layerName.toLowerCase())) {
-				//System.out.println("Récupération du layer "+layer);
+				//System.out.println("Recuperation du layer "+layer);
 				return layer;
 			}
 		}
@@ -134,20 +135,20 @@ public class StyledLayerDescriptor {
 	}
 	
 	/**
-	 * Crée un nouveau layer portant le nom donné en paramètre et un symbolizer
-	 * adapté au type de géométrie en paramètre.
+	 * CrÃ©e un nouveau layer portant le nom donne en parametre et un symbolizer
+	 * adapte au type de geometrie en parametre.
 	 * <p>
 	 * TODO choisir les couleur de la nouvelle couche dans une palette
-	 * ou à partir de la couche la plus proche
-	 * @param layerName nom du layer cherché 
-	 * @param geometryType type de géométrie porté par le layer
+	 * ou Ã  partir de la couche la plus proche
+	 * @param layerName nom du layer cherche 
+	 * @param geometryType type de geometrie porte par le layer
 	 * @param color couleur de la nouvelle couche
-	 * @return layer portant le nom et la géométrie en paramètre
+	 * @return layer portant le nom et la geometrie en parametre
 	 */
 	public Layer createLayer(String layerName, Class<? extends GM_Object> geometryType, Color color) {
 		Layer layer = new NamedLayer(layerName);
 		UserStyle style = new UserStyle();
-		style.setName("Style créé pour le layer "+layerName);
+		style.setName("Style cree pour le layer "+layerName); //$NON-NLS-1$
 		FeatureTypeStyle fts = new FeatureTypeStyle();
 		Rule rule = new Rule();
 		Stroke stroke = new Stroke();
@@ -182,13 +183,13 @@ public class StyledLayerDescriptor {
 		return layer;
 	}
 	/**
-	 * Crée un nouveau layer portant le nom donné en paramètre et un symbolizer
-	 * adapté au type de géométrie en paramètre.
+	 * Cree un nouveau layer portant le nom donne en parametre et un symbolizer
+	 * adapte au type de geometrie en parametre.
 	 * <p>
-	 * Les couleurs associées au symbolizer du layer sont créées aléatoirement.
-	 * @param layerName nom du layer cherché 
-	 * @param geometryType type de géométrie porté par le layer
-	 * @return layer portant le nom et la géométrie en paramètre
+	 * Les couleurs associees au symbolizer du layer sont creees aleatoirement.
+	 * @param layerName nom du layer cherche 
+	 * @param geometryType type de geometrie porte par le layer
+	 * @return layer portant le nom et la geometrie en parametre
 	 */
 	public Layer createLayer(String layerName, Class<? extends GM_Object> geometryType) {
 	    return this.createLayer(layerName, geometryType,new Color((float)Math.random(),(float)Math.random(),(float)Math.random(),0.5f));
@@ -210,8 +211,8 @@ public class StyledLayerDescriptor {
 	 * @param l the {@link ChangeListener} to be added
 	 */
 	public void addChangeListener(ChangeListener l) {
-		if (listenerList==null) {listenerList = new ArrayList<ChangeListener>();}
-		listenerList.add(l);
+		if (this.listenerList==null) {this.listenerList = new ArrayList<ChangeListener>();}
+		this.listenerList.add(l);
 	}
 	/**
 	 * Notifies all listeners that have registered interest for
@@ -220,7 +221,7 @@ public class StyledLayerDescriptor {
 	 */
 	public void fireActionPerformed(ChangeEvent e) {
 		// Guaranteed to return a non-null array
-		Object[] listeners = listenerList.toArray();
+		Object[] listeners = this.listenerList.toArray();
 		// Process the listeners last to first, notifying
 		// those that are interested in this event
 		for (int i = listeners.length-1; i>=0; i-=1) {((ChangeListener)listeners[i]).stateChanged(e);}
@@ -228,7 +229,7 @@ public class StyledLayerDescriptor {
 	
 	
 	public static void main(String[] args) {
-		StyledLayerDescriptor sld = StyledLayerDescriptor.unmarshall("geopensimSLD.xml");
+		StyledLayerDescriptor sld = StyledLayerDescriptor.unmarshall("geopensimSLD.xml"); //$NON-NLS-1$
 		System.out.println(sld);
 	}
 
@@ -245,16 +246,16 @@ public class StyledLayerDescriptor {
 		return new StyledLayerDescriptor();		
 	}
 	/**
-	 * Charge le SLD décrit dans le fichier XML.
-	 * Si le fichier n'existe pas, crée un nouveau SLD vide.
-	 * @param fileName fichier XML décrivant le SLD à charger
-	 * @return le SLD décrit dans le fichier XML ou un SLD vide si le fichier n'existe pas.
+	 * Charge le SLD decrit dans le fichier XML.
+	 * Si le fichier n'existe pas, cree un nouveau SLD vide.
+	 * @param fileName fichier XML decrivant le SLD Ã  charger
+	 * @return le SLD decrit dans le fichier XML ou un SLD vide si le fichier n'existe pas.
 	 */
 	public static StyledLayerDescriptor unmarshall(String fileName) {
 		try {
 			return unmarshall(new FileInputStream(fileName));
 		} catch (FileNotFoundException e) {
-			logger.error("File "+fileName+" could not be read");
+			logger.error("File "+fileName+" could not be read");  //$NON-NLS-1$//$NON-NLS-2$
 			return new StyledLayerDescriptor();
 		}
 	}
@@ -266,7 +267,7 @@ public class StyledLayerDescriptor {
 					NamedLayer.class,
 					NamedStyle.class);
 			Marshaller m = context.createMarshaller();
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			m.marshal(this, writer);
 		} catch (JAXBException e) {e.printStackTrace();}		
 	}
@@ -278,19 +279,19 @@ public class StyledLayerDescriptor {
 					NamedLayer.class,
 					NamedStyle.class);
 			Marshaller m = context.createMarshaller();
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			m.marshal(this, stream);
 		} catch (JAXBException e) {e.printStackTrace();}		
 	}
 	/**
-	 * Sauve le SLD dans le fichier en paramètre
+	 * Sauve le SLD dans le fichier en parametre
 	 * @param fileName fichier dans lequel on sauve le SLD
 	 */
 	public void marshall(String fileName) {
 		try {
 			this.marshall(new FileOutputStream(fileName));
 		} catch (FileNotFoundException e) {
-			logger.error("File "+fileName+" could not be written to");
+			logger.error("File "+fileName+" could not be written to");  //$NON-NLS-1$//$NON-NLS-2$
 		}
 	}
 }

@@ -1,27 +1,28 @@
-/*******************************************************************************
+/**
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
- * 
+ * Copyright (C) 2005 Institut GÃ©ographique National
+ *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with
  * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *******************************************************************************/
+ * 
+ */
 
 package fr.ign.cogit.geoxygene.style;
 
@@ -89,7 +90,7 @@ public class Rule {
 
 	/**
 	 * Affecte la valeur de l'attribut name.
-	 * @param name l'attribut name à affecter
+	 * @param name l'attribut name ï¿½ affecter
 	 */
 	public void setName(String name) {this.name = name;}
 	
@@ -120,7 +121,7 @@ public class Rule {
 
 	/**
 	 * Affecte la valeur de l'attribut filter.
-	 * @param filter l'attribut filter à affecter
+	 * @param filter l'attribut filter ï¿½ affecter
 	 */
 	public void setFilter(Filter filter) {
 		if (this.filter == null) this.filter = new Filter[1];
@@ -153,16 +154,16 @@ public class Rule {
 
 	/**
 	 * Affecte la valeur de l'attribut symbolizers.
-	 * @param symbolizers l'attribut symbolizers à affecter
+	 * @param symbolizers l'attribut symbolizers ï¿½ affecter
 	 */
 	public void setSymbolizers(List<Symbolizer> symbolizers) {this.symbolizers = symbolizers;}
 
 	@Override
 	public String toString() {
-		String result = "Rule "+this.getName()+"\n";
-		result+="\tFilter "+this.getFilter()+"\n";
+		String result = "Rule "+this.getName()+"\n"; //$NON-NLS-1$ //$NON-NLS-2$
+		result+="\tFilter "+this.getFilter()+"\n";  //$NON-NLS-1$//$NON-NLS-2$
 		for (Symbolizer symbolizer:this.getSymbolizers()) {
-			result+="\tSymbolizer "+symbolizer+"\n";
+			result+="\tSymbolizer "+symbolizer+"\n"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return result;
 	}
