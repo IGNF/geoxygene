@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -40,30 +40,30 @@ import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
 
 
 /**
- * Classe mère abstraite pour la géométrie, selon la norme OGC Topic 1 / ISO 19107.
- * Cette classe définit les opérations communes aux différents objets géométriques qui en héritent.
- * Toutes les opérations doivent se faire dans le même système de coordonnées.
- * Un objet géométrique est en fait une combinaison d'un système de référence de coordonnées (CRS),
- * et d'une géométrie munie de coordonnées (CoordGeom).
+ * Classe mÃ¨re abstraite pour la gÃ©omÃ©trie, selon la norme OGC Topic 1 / ISO 19107.
+ * Cette classe dÃ©finit les opÃ©rations communes aux diffÃ©rents objets gÃ©omÃ©triques qui en hÃ©ritent.
+ * Toutes les opÃ©rations doivent se faire dans le mÃªme systÃ¨me de coordonnÃ©es.
+ * Un objet gÃ©omÃ©trique est en fait une combinaison d'un systÃ¨me de rÃ©fÃ©rence de coordonnÃ©es (CRS),
+ * et d'une gÃ©omÃ©trie munie de coordonnÃ©es (CoordGeom).
  * <p>
  * Les methodes geometriques font par defaut appel a la bibliotheque JTS,
- * via des appels aux methodes de la classe {@link JtsAlgorithms}. Attention, bien souvent, ces méthodes
- * ne fonctionnent que sur des primitives ou des agrégats homogènes GM_MultiPrimitive.
+ * via des appels aux methodes de la classe {@link JtsAlgorithms}. Attention, bien souvent, ces mÃ©thodes
+ * ne fonctionnent que sur des primitives ou des agrÃ©gats homogÃ¨nes GM_MultiPrimitive.
  * <p>
  * Historiquememt, les methodes faisaient appel aux fonctions geometriques d'Oracle
  * et a la bibliotheque fournie par Oracle sdoapi.zip,
  * via des appels aux methodes de la classe util.algo.OracleAlgorithms,
  * qui elles-memes appellent des methodes datatools.oracle.SpatialQuery.
  * Ces methodes ont ete gardees et portent le suffixe "Oracle".
- * Pour les appeler, il est nécessaire d'établir une connection à Oracle,
- * c'est pourquoi on passe une "Geodatabase" en paramètre de chaque fonction.
- * On suppose qu'il existe dans la base, dans le schéma utilisateur,
+ * Pour les appeler, il est nÃ©cessaire d'Ã©tablir une connection Ã  Oracle,
+ * c'est pourquoi on passe une "Geodatabase" en paramÃ¨tre de chaque fonction.
+ * On suppose qu'il existe dans la base, dans le schÃ©ma utilisateur,
  * une table TEMP_REQUETE, avec une colonne GID (NUMBER) et une colonne GEOM (SDO_GEOMETRY).
- * Cette table est dédiée aux requêtes spatiales.
- * De même, le paramètre tolérance est exigé par Oracle.
+ * Cette table est dÃ©diÃ©e aux requÃªtes spatiales.
+ * De mÃªme, le paramÃ¨tre tolÃ©rance est exigÃ© par Oracle.
  *
- * ARNAUD 12 juillet 2005 : mise en commentaire de ce qui se rapporte à Oracle
- * pour isoler la compilation. A décommenter pour utiliser Oracle.
+ * ARNAUD 12 juillet 2005 : mise en commentaire de ce qui se rapporte Ã  Oracle
+ * pour isoler la compilation. A dÃ©commenter pour utiliser Oracle.
  * 
  * @author Thierry Badard & Arnaud Braun
  *
@@ -73,44 +73,44 @@ abstract public class GM_Object implements Cloneable {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Attributs et accesseurs //////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	/** Identifiant de l'objet géométrique, dans la table du SGBD.
-	 * Cet identifiant n'est pas spécifié dans la norme ISO.
+	/** Identifiant de l'objet gÃ©omÃ©trique, dans la table du SGBD.
+	 * Cet identifiant n'est pas spÃ©cifiÃ© dans la norme ISO.
 	 * Non utilise a ce jour. */
 	//    protected int GM_ObjectID;
-	/** Renvoie l'identifiant géométrique.*/
+	/** Renvoie l'identifiant gÃ©omÃ©trique.*/
 	//    public int getGM_ObjectID() { return this.GM_ObjectID; }
 	/** Affecte un identifiant. */
 	//    public void setGM_ObjectID(int geomID) { this.GM_ObjectID = geomID; }
 
-	/** FT_Feature auquel est rattaché cette géométrie.
+	/** FT_Feature auquel est rattachÃ© cette gÃ©omÃ©trie.
 	 * Cette association n'est pas dans la norme.
-	 * A prevoir : faire une liste pour gérer les partages de géométrie. */
+	 * A prevoir : faire une liste pour gÃ©rer les partages de gÃ©omÃ©trie. */
 	//    protected FT_Feature feature;
-	/** Renvoie le FT_Feature auquel est rattaché cette géométrie. */
+	/** Renvoie le FT_Feature auquel est rattachÃ© cette gÃ©omÃ©trie. */
 	//    public FT_Feature getFeature() { return this.feature; }
 	/** Affecte un FT_Feature. */
 	//    public void setFeature(FT_Feature Feature) { this.feature = Feature;}
 
-	/** Identifiant du système de coordonnées de référence (CRS en anglais).
-	 * Par défaut, vaut 41014 : identifiant du Lambert II carto.
-	 * Dans la norme ISO, cet attribut est une relation qui pointe vers la classe SC_CRS (non implémentée) */
+	/** Identifiant du systÃ¨me de coordonnÃ©es de rÃ©fÃ©rence (CRS en anglais).
+	 * Par dÃ©faut, vaut 41014 : identifiant du Lambert II carto.
+	 * Dans la norme ISO, cet attribut est une relation qui pointe vers la classe SC_CRS (non implÃ©mentÃ©e) */
 	protected int CRS = -1;
-	/** Renvoie l' identifiant du système de coordonnées de référence. */
+	/** Renvoie l' identifiant du systÃ¨me de coordonnÃ©es de rÃ©fÃ©rence. */
 	public int getCRS() { return this.CRS; }
-	/** Affecte une valeur au système de coordonnées de référence. */
+	/** Affecte une valeur au systÃ¨me de coordonnÃ©es de rÃ©fÃ©rence. */
 	public void setCRS(int crs) { this.CRS = crs;}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Méthodes de la norme non implementees (souvent liees a l'utilisation de GM_Conplex) //////////////
+	// MÃ©thodes de la norme non implementees (souvent liees a l'utilisation de GM_Conplex) //////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	/** Collection de GM_Object représentant la frontière de self.
+	/** Collection de GM_Object reprÃ©sentant la frontiÃ¨re de self.
 	 * Cette collection d'objets a une structure de GM_Boundary, qui est un sous-type de GM_Complex.  */
-	// en commentaire car oblige a typer toute les méthodes boundary() des sous-classes en GM_Boundary : pénible à l'utilisation
+	// en commentaire car oblige a typer toute les mÃ©thodes boundary() des sous-classes en GM_Boundary : pÃ©nible Ã  l'utilisation
 	//abstract public GM_Boundary boundary() ;
 
-	/** Union de l'objet et de sa frontière.
-	 *  Si l'objet est dans un GM_Complex, alors la frontière du GM_Complex retourné doit être dans le même complexe ;
-	 *  Si l'objet n'est pas dans un GM_Complex, alors sa frontière doit être construite en réponse à cette opération.  */
+	/** Union de l'objet et de sa frontiÃ¨re.
+	 *  Si l'objet est dans un GM_Complex, alors la frontiÃ¨re du GM_Complex retournÃ© doit Ãªtre dans le mÃªme complexe ;
+	 *  Si l'objet n'est pas dans un GM_Complex, alors sa frontiÃ¨re doit Ãªtre construite en rÃ©ponse Ã  cette opÃ©ration.  */
 	//public GM_Complex closure() {
 	//}
 
@@ -118,11 +118,11 @@ abstract public class GM_Object implements Cloneable {
 	//public GM_Complex[] maximalComplex() {
 	//}
 
-	/** Renvoie TRUE si la frontière est vide. */
+	/** Renvoie TRUE si la frontiÃ¨re est vide. */
 	//public boolean isCycle() {
 	//}
 
-	/** Dimension du système de coordonnées (1D, 2D ou 3D). */
+	/** Dimension du systÃ¨me de coordonnÃ©es (1D, 2D ou 3D). */
 	//public int coordinateDimension() {
 	//}
 
@@ -130,20 +130,20 @@ abstract public class GM_Object implements Cloneable {
 	// diverses methodes utiles /////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	/** Renvoie la liste des DirectPosition de l'objet.
-        Méthode abstraite redéfinie dans les sous-classes.
-        Cette méthode se comporte différemment selon le type d'objet géométrique. */
+        Mï¿½thode abstraite redï¿½finie dans les sous-classes.
+        Cette mï¿½thode se comporte diffï¿½remment selon le type d'objet gï¿½omï¿½trique. */
 	abstract public DirectPositionList coord();
 	/** Clone l'objet. */
 	@Override
 	public Object clone() {
-		//FIXME j'ai comme un doute que ça marche ça
+		//FIXME j'ai comme un doute que ï¿½a marche ï¿½a
 		try {return super.clone();}
 		catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
-	/** Ecrit la géométrie dans une chaine de caractere au format WKT. */
+	/** Ecrit la gï¿½omï¿½trie dans une chaine de caractere au format WKT. */
 	@Override
 	public String toString() {
 		try {return WktGeOxygene.makeWkt(this);}
@@ -152,7 +152,7 @@ abstract public class GM_Object implements Cloneable {
 			return null;
 		}
 	}
-	/** Exporte la géométrie dans un fichier texte au format WKT.
+	/** Exporte la gï¿½omï¿½trie dans un fichier texte au format WKT.
 	 * Si append = false, un nouveau fichier est systematiquement cree.
 	 * Si append = true, et que le fichier existe deja, la geometrie est ajoutee a la fin du fichier;
 	 * si le fichier n'existe pas, il est cree. */
@@ -163,10 +163,10 @@ abstract public class GM_Object implements Cloneable {
 		}
 	}
 
-	/** Exporte des géométries dans une image.
-	 * Le format de l'image (.jpg ou .png par defaut) est determiné par l'extension du nom de fichier,
+	/** Exporte des gï¿½omï¿½tries dans une image.
+	 * Le format de l'image (.jpg ou .png par defaut) est determinï¿½ par l'extension du nom de fichier,
 	 * a mettre dans le parametre "path".
-	 * Le tableau de couleur permet d'affecter des couleurs différentes aux géométries.
+	 * Le tableau de couleur permet d'affecter des couleurs diffï¿½rentes aux gï¿½omï¿½tries.
 	 * <BR> Exemple : GM_Object.exportImage(new GM_Object[] {geom1, geom2},"/home/users/truc/essai.jpg",
 	 *                                          new Color[] {Color.RED, Color.BLUE}, Color.WHITE, 150, 80) */
 	public static void exportImage (GM_Object[] geoms, String path, Color foreground[], Color background, int width, int height) {
@@ -176,9 +176,9 @@ abstract public class GM_Object implements Cloneable {
 		}
 	}
 
-	/** Exporte des géométries dans un fichier SVG compressé.
+	/** Exporte des gï¿½omï¿½tries dans un fichier SVG compressï¿½.
 	 * Donner dans la variable "path" le chemin et le nom du fichier (avec l'extension .svgz)
-	 * Le tableau de couleur permet d'affecter des couleurs différentes aux géométries.
+	 * Le tableau de couleur permet d'affecter des couleurs diffï¿½rentes aux gï¿½omï¿½tries.
 	 * <BR> Exemple : GM_Object.exportSvgz(new GM_Object[] {geom1, geom2},"/home/users/truc/essai.jpg",
 	 *                                          new Color[] {Color.RED, Color.BLUE}, Color.WHITE, 150, 80) */
 	public  static void exportSvgz(GM_Object[] geoms, String path, Color foreground[], Color background, int width, int height) {
@@ -208,14 +208,14 @@ abstract public class GM_Object implements Cloneable {
 	}
 	/** Rectangle englobant minimum de l'objet (en 2D) sous forme de GM_Polygon.
 	 * Le but est d'obtenir une region contenant l'objet.
-	 * Tout autre implémentation serait possible : le but serait de supporter des méthodes d'indexation
+	 * Tout autre implï¿½mentation serait possible : le but serait de supporter des mï¿½thodes d'indexation
 	 * qui n'utilisent pas les rectangles minimaux englobants.  
 	 * @param data
 	 * @return minimum containing rectangle as a Polygon
 	 */
 	public GM_Polygon mbRegion(Geodatabase data) {return new GM_Polygon(this.envelope());}
-	/**Teste l'intersection stricte entre la géométrie manipulée et celle passée en
-	 * paramètre, i.e. l'intersection sans les cas où les géométries sont simplement
+	/**Teste l'intersection stricte entre la gï¿½omï¿½trie manipulï¿½e et celle passï¿½e en
+	 * paramï¿½tre, i.e. l'intersection sans les cas oï¿½ les gï¿½omï¿½tries sont simplement
 	 * adjacentes (intersection = point ou ligne) ou sont contenues l'une dans
 	 * dans l'autre
 	 * @param geom GM_Object
@@ -227,65 +227,65 @@ abstract public class GM_Object implements Cloneable {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// methodes geometriques et topologiques faisant appel a JTS ////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	/** Centre de gravité de l'objet (avec JTS). Le résultat n'est pas nécessairement dans l'objet. */
+	/** Centre de gravitï¿½ de l'objet (avec JTS). Le rï¿½sultat n'est pas nï¿½cessairement dans l'objet. */
 	public DirectPosition centroid() {return new JtsAlgorithms().centroid(this);}
 	/** Enveloppe convexe de l'objet (avec JTS).  */
 	public GM_Object convexHull()  {return new JtsAlgorithms().convexHull(this);}
 	/**
 	 * Calcule de buffer sur l'objet (avec JTS).
-	 * Les distances negatives sont acceptees (pour faire une érosion).
-	 * Le nombre de segments utilisés pour approximer les parties courbes du buffer est celui par défaut de JTS, i.e. 8.
-	 * La forme du "chapeau" (cap) utilsée est celle par défaut de JTS, i.e. CAP_ROUND : une courbe.
-	 * @param distance distance utilisée pour le calcul du buffer
+	 * Les distances negatives sont acceptees (pour faire une ï¿½rosion).
+	 * Le nombre de segments utilisï¿½s pour approximer les parties courbes du buffer est celui par dï¿½faut de JTS, i.e. 8.
+	 * La forme du "chapeau" (cap) utilsï¿½e est celle par dï¿½faut de JTS, i.e. CAP_ROUND : une courbe.
+	 * @param distance distance utilisï¿½e pour le calcul du buffer
 	 * @return buffer sur l'objet
 	 * @see #buffer(double, int)
 	 */
 	public GM_Object buffer (double distance) {return new JtsAlgorithms().buffer(this,distance);}
 	/**
 	 * Calcule de buffer sur l'objet (avec JTS) en indiquant le nombre de segments approximant la partie courbe.
-	 * Les distances negatives sont acceptees (pour faire une érosion).
-	 * La forme du "chapeau" (cap) utilsée est celle par défaut de JTS, i.e. CAP_ROUND : une courbe.
-	 * @param distance distance utilisée pour le calcul du buffer
-	 * @param nSegments nombre de segments utilisés pour approximer les parties courbes du buffer
+	 * Les distances negatives sont acceptees (pour faire une ï¿½rosion).
+	 * La forme du "chapeau" (cap) utilsï¿½e est celle par dï¿½faut de JTS, i.e. CAP_ROUND : une courbe.
+	 * @param distance distance utilisï¿½e pour le calcul du buffer
+	 * @param nSegments nombre de segments utilisï¿½s pour approximer les parties courbes du buffer
 	 * @return buffer sur l'objet
 	 * @see #buffer(double)
 	 */
 	public GM_Object buffer (double distance, int nSegments) {return new JtsAlgorithms().buffer(this,distance,nSegments);}
-	/** Union avec l'objet passé en paramètre (avec JTS).
-	 * Renvoie éventuellement un aggrégat si les objets sont disjoints.  */
+	/** Union avec l'objet passï¿½ en paramï¿½tre (avec JTS).
+	 * Renvoie ï¿½ventuellement un aggrï¿½gat si les objets sont disjoints.  */
 	public GM_Object union(GM_Object geom)  {return new JtsAlgorithms().union(this,geom);}
-	/** Intersection avec l'objet passé en paramètre (avec JTS).
+	/** Intersection avec l'objet passï¿½ en paramï¿½tre (avec JTS).
 	 * Renvoie un GM_Aggregate vide si les objets sont disjoints. */
 	public GM_Object intersection(GM_Object geom) {return new JtsAlgorithms().intersection(this,geom);}
-	/** Différence avec l'objet passé en paramètre (avec JTS).
+	/** Diffï¿½rence avec l'objet passï¿½ en paramï¿½tre (avec JTS).
 	 * Returns a Geometry representing the points making up this Geometry that do not make up "geom".*/
 	public GM_Object difference(GM_Object geom)   {return new JtsAlgorithms().difference(this,geom);}
-	/** Différence symétrique avec l'objet passé en paramètre (avec JTS).
-	 * La différence symétrique (opérateur booléan XOR) est la différence de l'union avec l'intersection.
+	/** Diffï¿½rence symï¿½trique avec l'objet passï¿½ en paramï¿½tre (avec JTS).
+	 * La diffï¿½rence symï¿½trique (opï¿½rateur boolï¿½an XOR) est la diffï¿½rence de l'union avec l'intersection.
 	 *  Returns a set combining the points in this Geometry not in other, and the points in other not in this Geometry.*/
 	public GM_Object symmetricDifference(GM_Object geom) {return new JtsAlgorithms().symDifference(this,geom);}
 	/**
 	 * Predicat topologique sur la relation d'egalite (!= equalsExact) (avec JTS).
 	 * Returns true if the DE-9IM intersection matrix for the two Geometrys is T*F**FFF*.
-	 * @param geom géométrie à comparer à this
-	 * @return vrai si les deux géométries sont égales (if the DE-9IM intersection matrix for the two Geometrys is T*F**FFF*)
+	 * @param geom gï¿½omï¿½trie ï¿½ comparer ï¿½ this
+	 * @return vrai si les deux gï¿½omï¿½tries sont ï¿½gales (if the DE-9IM intersection matrix for the two Geometrys is T*F**FFF*)
 	 * @see #equalsExact(GM_Object)
 	 * @see #equalsExact(GM_Object, double)
 	 */
 	public boolean equals(GM_Object geom) {return new JtsAlgorithms().equals(this,geom);}
 	/**
-	 * This et l'objet passe en parametre appartiennent a la meme classe et ont exactement les memes coordonnees dans le même ordre (avec JTS).
-	 * Ce prédicat est plus stricte que {@link #equals(GM_Object)}
-	 * @param geom géométrie à comparer à this
-	 * @return vrai si les deux géométries ont la même classe et sont strictement égales
+	 * This et l'objet passe en parametre appartiennent a la meme classe et ont exactement les memes coordonnees dans le mï¿½me ordre (avec JTS).
+	 * Ce prï¿½dicat est plus stricte que {@link #equals(GM_Object)}
+	 * @param geom gï¿½omï¿½trie ï¿½ comparer ï¿½ this
+	 * @return vrai si les deux gï¿½omï¿½tries ont la mï¿½me classe et sont strictement ï¿½gales
 	 * @see #equals(GM_Object)
 	 * @see #equalsExact(GM_Object, double)
 	 */
 	public boolean equalsExact(GM_Object geom) {return new JtsAlgorithms().equalsExact(this,geom);}
-	/** This et l'objet passe en parametre appartiennent a la meme classe et ont exactement les memes coordonnees à une tolérance près (avec JTS)
-	 * Ce prédicat est plus stricte que {@link #equals(GM_Object)} et moins que {@link #equalsExact(GM_Object)}
-	 * @param geom géométrie à comparer à this
-	 * @return vrai si les deux géométries ont la même classe et sont strictement égales à une tolérance près
+	/** This et l'objet passe en parametre appartiennent a la meme classe et ont exactement les memes coordonnees ï¿½ une tolï¿½rance prï¿½s (avec JTS)
+	 * Ce prï¿½dicat est plus stricte que {@link #equals(GM_Object)} et moins que {@link #equalsExact(GM_Object)}
+	 * @param geom gï¿½omï¿½trie ï¿½ comparer ï¿½ this
+	 * @return vrai si les deux gï¿½omï¿½tries ont la mï¿½me classe et sont strictement ï¿½gales ï¿½ une tolï¿½rance prï¿½s
 	 */
 	public boolean equalsExact(GM_Object geom, double tolerance) {return new JtsAlgorithms().equalsExact(this,geom,tolerance);}
 	/** Predicat topologique sur la relation de contenance (avec JTS).
@@ -302,7 +302,7 @@ abstract public class GM_Object implements Cloneable {
 	/** Predicat topologique sur la relation d'interieur (avec JTS).
 	 * Returns true if the DE-9IM intersection matrix for the two Geometrys is T*F**F***. */
 	public boolean within(GM_Object geom) {return new JtsAlgorithms().within(this,geom);}
-	/** Teste si la distance entre cette géométrie et geom est inférieure à la distance passée en paramètre. */
+	/** Teste si la distance entre cette gï¿½omï¿½trie et geom est infï¿½rieure ï¿½ la distance passï¿½e en paramï¿½tre. */
 	public boolean isWithinDistance(GM_Object geom, double distance) {return new JtsAlgorithms().isWithinDistance(this,geom,distance);}
 	/** Predicat topologique sur la relation d'intersection (avec JTS).
 	 * Returns true if disjoint returns false. */
@@ -318,7 +318,7 @@ abstract public class GM_Object implements Cloneable {
 	/** Renvoie true si la geometrie est vide (avec JTS). */
 	public boolean isEmpty() {return new JtsAlgorithms().isEmpty(this);}
 	/** Renvoie TRUE si l'objet n'a pas de point d'auto-intersection ou d'auto-tangence (avec JTS).
-	 * Cette opération n'est pas applicable aux objets fermés (ceux pour lesquels isCycle() = TRUE). */
+	 * Cette opï¿½ration n'est pas applicable aux objets fermï¿½s (ceux pour lesquels isCycle() = TRUE). */
 	public boolean isSimple() {return new JtsAlgorithms().isSimple(this);}
 	/** Renvoie TRUE si la geometrie est valide au sens JTS. Utile pour debugger. */
 	public boolean isValid() {return new JtsAlgorithms().isValid(this);}
@@ -342,151 +342,151 @@ abstract public class GM_Object implements Cloneable {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// methodes geometriques et topologiques faisant appel a Oracle /////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	/** Calcul de buffer optimisé sous Oracle, pour les agrégats.
+	/** Calcul de buffer optimisï¿½ sous Oracle, pour les agrï¿½gats.
 	 *  Cette methode semble meilleure en performance que "bufferOracle"
 	 *  pour calculer les buffer et les fusionner,
-	 *  si le GM_Object est un agrégat contenant beaucoup d'objets.
+	 *  si le GM_Object est un agrï¿½gat contenant beaucoup d'objets.
 	 *  Le GM_Object doit etre un GM_Aggregate ou une sous classe, sinon plantage.
-	 * @param data Paramètres de connection à la base de données.
-	 * @param tolerance Tolérance pour le calcul.
+	 * @param data Paramï¿½tres de connection ï¿½ la base de donnï¿½es.
+	 * @param tolerance Tolï¿½rance pour le calcul.
 	 * @param radius Distance pour calculer le buffer. */
 	/*   public GM_Object bufferAgregatOracle(Geodatabase data, double tolerance, double radius) {
        return new OracleAlgorithms(data,tolerance).bufferAgregat(this,radius);
    }
 	 */
-	/** Calcule le buffer de self (avec Oracle). La distance doit être positive.
-	 * @param data Paramètres de connection à la base de données.
-	 * @param tolerance Tolérance pour le calcul.
+	/** Calcule le buffer de self (avec Oracle). La distance doit ï¿½tre positive.
+	 * @param data Paramï¿½tres de connection ï¿½ la base de donnï¿½es.
+	 * @param tolerance Tolï¿½rance pour le calcul.
 	 * @param radius Distance pour calculer le buffer. */
 	/*   public GM_Object bufferOracle (Geodatabase data, double tolerance, double radius) {
      return new OracleAlgorithms(data,tolerance).buffer(this,radius);
    }
 	 */
-	/** Enveloppe convexe de self (avec Oracle). Renvoie NULL si self est un point, ou est défini avec moins de trois points.
-	 * Le résultat est un GM_Polygon.
-	 * @param data Paramètres de connection à la base de données.
-	 * @param tolerance Tolérance pour le calcul. */
+	/** Enveloppe convexe de self (avec Oracle). Renvoie NULL si self est un point, ou est dï¿½fini avec moins de trois points.
+	 * Le rï¿½sultat est un GM_Polygon.
+	 * @param data Paramï¿½tres de connection ï¿½ la base de donnï¿½es.
+	 * @param tolerance Tolï¿½rance pour le calcul. */
 	/*   public GM_Object convexHullOracle (Geodatabase data, double tolerance)  {
        return new OracleAlgorithms(data,tolerance).convexHull(this);
    }
 	 */
-	/** Centre de gravité de self (avec Oracle). Le résultat n'est pas nécessairement dans l'objet.
+	/** Centre de gravitï¿½ de self (avec Oracle). Le rï¿½sultat n'est pas nï¿½cessairement dans l'objet.
 	 * Pour un objet multi-dimensions, on ne prendra en compte que la plus grande dimension pour le calcul.
-	 * ATTENTION implementé uniquement pour un polygone. Sinon renvoie NULL.
-	 * @param data Paramètres de connection à la base de données.
-	 * @param tolerance Tolérance pour le calcul.  */
+	 * ATTENTION implementï¿½ uniquement pour un polygone. Sinon renvoie NULL.
+	 * @param data Paramï¿½tres de connection ï¿½ la base de donnï¿½es.
+	 * @param tolerance Tolï¿½rance pour le calcul.  */
 	/*   public GM_Object centroidOracle (Geodatabase data, double tolerance)  {
        return new OracleAlgorithms(data,tolerance).centroid(this);
    }
 	 */
-	/** Un point représentatif à l'intérieur de self (avec Oracle). Ce point peut être n'importe où.
-	 * Deux appels différents à cette méthode sur un objet peuvent produire deux résultats différents.
-	 * On garantit juste que le point est à l'intérieur.
-	 * ATTENTION : implémenté uniquement pour un polygone, sinon renvoie NULL.
-	 * Une utilisation peut être le placement de labels pour une présentation graphique.
-	 * REMARQUE : dans la norme, on impose que ce point soit le centroide s'il est à l'intérieur, un autre point sinon.
-	 * @param data Paramètres de connection à la base de données.
-	 * @param tolerance Tolérance pour le calcul. */
+	/** Un point reprï¿½sentatif ï¿½ l'intï¿½rieur de self (avec Oracle). Ce point peut ï¿½tre n'importe oï¿½.
+	 * Deux appels diffï¿½rents ï¿½ cette mï¿½thode sur un objet peuvent produire deux rï¿½sultats diffï¿½rents.
+	 * On garantit juste que le point est ï¿½ l'intï¿½rieur.
+	 * ATTENTION : implï¿½mentï¿½ uniquement pour un polygone, sinon renvoie NULL.
+	 * Une utilisation peut ï¿½tre le placement de labels pour une prï¿½sentation graphique.
+	 * REMARQUE : dans la norme, on impose que ce point soit le centroide s'il est ï¿½ l'intï¿½rieur, un autre point sinon.
+	 * @param data Paramï¿½tres de connection ï¿½ la base de donnï¿½es.
+	 * @param tolerance Tolï¿½rance pour le calcul. */
 	/*   public DirectPosition representativePointOracle (Geodatabase data, double tolerance) {
        return new OracleAlgorithms(data,tolerance).representativePoint(this);
    }
 	 */
 	/** Rectangle englobant minimum de self (avec Oracle).
-	 *  @param data Paramètres de connection à la base de données.  */
+	 *  @param data Paramï¿½tres de connection ï¿½ la base de donnï¿½es.  */
 	/*   public GM_Envelope envelopeOracle (Geodatabase data) {
        return new OracleAlgorithms(data,0.).envelope(this);
    }
 	 */
-	/** Différence de self avec l'objet passé en paramètre (avec Oracle).
-	 * @param data Paramètres de connection à la base de données.
-	 * @param tolerance Tolérance pour le calcul.
-	 * @param g Objet géométrique avec lequel on va réaliser l'opération. */
+	/** Diffï¿½rence de self avec l'objet passï¿½ en paramï¿½tre (avec Oracle).
+	 * @param data Paramï¿½tres de connection ï¿½ la base de donnï¿½es.
+	 * @param tolerance Tolï¿½rance pour le calcul.
+	 * @param g Objet gï¿½omï¿½trique avec lequel on va rï¿½aliser l'opï¿½ration. */
 	/*   public GM_Object differenceOracle (Geodatabase data, double tolerance, GM_Object g)  {
        return new OracleAlgorithms(data,tolerance).difference(this,g);
    }
 	 */
-	/** Intersection de self avec l'objet passé en paramètre (avec Oracle).
+	/** Intersection de self avec l'objet passï¿½ en paramï¿½tre (avec Oracle).
 	 * Renvoie NULL si les objets sont disjoints.
-	 * @param data Paramètres de connection à la base de données.
-	 * @param tolerance Tolérance pour le calcul.
-	 * @param g Objet géométrique avec lequel on va réaliser l'opération. */
+	 * @param data Paramï¿½tres de connection ï¿½ la base de donnï¿½es.
+	 * @param tolerance Tolï¿½rance pour le calcul.
+	 * @param g Objet gï¿½omï¿½trique avec lequel on va rï¿½aliser l'opï¿½ration. */
 	/*   public GM_Object intersectionOracle (Geodatabase data, double tolerance, GM_Object g)  {
        return new OracleAlgorithms(data,tolerance).intersection(this,g);
    }
 	 */
-	/** Union de self et de l'objet passé en paramètre (avec Oracle).
-	 * Renvoie éventuellement un aggrégat si les objets sont disjoints.
-	 * @param data Paramètres de connection à la base de données.
-	 * @param tolerance Tolérance pour le calcul.
-	 * @param g Objet géométrique avec lequel on va réaliser l'union.  */
+	/** Union de self et de l'objet passï¿½ en paramï¿½tre (avec Oracle).
+	 * Renvoie ï¿½ventuellement un aggrï¿½gat si les objets sont disjoints.
+	 * @param data Paramï¿½tres de connection ï¿½ la base de donnï¿½es.
+	 * @param tolerance Tolï¿½rance pour le calcul.
+	 * @param g Objet gï¿½omï¿½trique avec lequel on va rï¿½aliser l'union.  */
 	/*   public GM_Object unionOracle (Geodatabase data, double tolerance, GM_Object g) {
        return new OracleAlgorithms(data,tolerance).union(this,g);
    }
 	 */
-	/** Différence symétrique de self avec l'objet passé en paramètre (avec Oracle).
-	 * La différence symétrique (opérateur booléan XOR) est la différence de l'union avec l'intersection.
-	 * @param data Paramètres de connection à la base de données.
-	 * @param tolerance Tolérance pour le calcul.
-	 * @param g Objet géométrique avec lequel on va réaliser l'opération. */
+	/** Diffï¿½rence symï¿½trique de self avec l'objet passï¿½ en paramï¿½tre (avec Oracle).
+	 * La diffï¿½rence symï¿½trique (opï¿½rateur boolï¿½an XOR) est la diffï¿½rence de l'union avec l'intersection.
+	 * @param data Paramï¿½tres de connection ï¿½ la base de donnï¿½es.
+	 * @param tolerance Tolï¿½rance pour le calcul.
+	 * @param g Objet gï¿½omï¿½trique avec lequel on va rï¿½aliser l'opï¿½ration. */
 	/*   public GM_Object symmetricDifferenceOracle (Geodatabase data, double tolerance, GM_Object g)  {
        return new OracleAlgorithms(data,tolerance).symDifference(this,g);
    }
 	 */
-	/** Teste si self contient l'objet passé en paramètre (avec Oracle).
-	 * REMARQUE : les frontières ne doivent pas se toucher, sinon renvoie false - A TESTER.
-	 * @param data Paramètres de connection à la base de données.
-	 * @param tolerance Tolérance pour le calcul.
+	/** Teste si self contient l'objet passï¿½ en paramï¿½tre (avec Oracle).
+	 * REMARQUE : les frontiï¿½res ne doivent pas se toucher, sinon renvoie false - A TESTER.
+	 * @param data Paramï¿½tres de connection ï¿½ la base de donnï¿½es.
+	 * @param tolerance Tolï¿½rance pour le calcul.
 	 * @param g GM_Object avec lequel on teste l'intersection  */
 	/*   public boolean containsOracle (Geodatabase data, double tolerance, GM_Object g)  {
        return new OracleAlgorithms(data,tolerance).contains(this,g);
    }
 	 */
-	/** Teste si self contient le DirectPosition passé en paramètre (avec Oracle).
-	 * @param data Paramètres de connection à la base de données.
-	 * @param tolerance Tolérance pour le calcul.
+	/** Teste si self contient le DirectPosition passï¿½ en paramï¿½tre (avec Oracle).
+	 * @param data Paramï¿½tres de connection ï¿½ la base de donnï¿½es.
+	 * @param tolerance Tolï¿½rance pour le calcul.
 	 * @param P DirectPosition avec lequel on teste l'intersection. */
 	/*   public boolean containsOracle (Geodatabase data, double tolerance, DirectPosition P)  {
        return new OracleAlgorithms(data,tolerance).contains(this,P);
    }
 	 */
-	/** Teste si self intersecte l'objet géométrique passé en paramètre (avec Oracle). Renvoie un boolean.
-	 * REMARQUE : si les 2 objets n'ont que la frontière en commun, alors renvoie false - A TESTER.
+	/** Teste si self intersecte l'objet gï¿½omï¿½trique passï¿½ en paramï¿½tre (avec Oracle). Renvoie un boolean.
+	 * REMARQUE : si les 2 objets n'ont que la frontiï¿½re en commun, alors renvoie false - A TESTER.
 	 * CAS des COMPLEXES : a revoir (cf.norme)
-	 * @param data Paramètres de connection à la base de données.
-	 * @param tolerance Tolérance pour le calcul.
+	 * @param data Paramï¿½tres de connection ï¿½ la base de donnï¿½es.
+	 * @param tolerance Tolï¿½rance pour le calcul.
 	 * @param g GM_Object avec lequel on teste l'intersection.  */
 	/*   public boolean intersectsOracle (Geodatabase data, double tolerance, GM_Object g)  {
        return new OracleAlgorithms(data,tolerance).intersects(this,g);
    }
 	 */
-	/** Teste si self et l'objet passé en paramètre sont géométriquement égaux (avec Oracle).
-	 * @param data Paramètres de connection à la base de données.
-	 * @param tolerance Tolérance pour le calcul.
+	/** Teste si self et l'objet passï¿½ en paramï¿½tre sont gï¿½omï¿½triquement ï¿½gaux (avec Oracle).
+	 * @param data Paramï¿½tres de connection ï¿½ la base de donnï¿½es.
+	 * @param tolerance Tolï¿½rance pour le calcul.
 	 * @param g GM_Object avec lequel on teste l'intersection.  */
 	/*   public boolean equalsOracle (Geodatabase data, double tolerance, GM_Object g)  {
        return new OracleAlgorithms(data,tolerance).equals(this,g);
    }
 	 */
 	/** Renvoie TRUE si self n'a pas de point d'auto-intersection ou d'auto-tangence (avec Oracle SDOAPI).
-	 * Cette opération n'est pas applicable aux objets fermés (ceux pour lesquels isCycle() = TRUE).
-	 * @param data Paramètres de connection à la base de données. */
+	 * Cette opï¿½ration n'est pas applicable aux objets fermï¿½s (ceux pour lesquels isCycle() = TRUE).
+	 * @param data Paramï¿½tres de connection ï¿½ la base de donnï¿½es. */
 	/*   public boolean isSimpleOracle(Geodatabase data)  {
        return new OracleAlgorithms(data,0.).isSimple(this);
    }
 	 */
-	/** Distance de self à l'objet passé en paramètre (avec Oracle).
-	 * Cette distance est définie comme la distance euclidienne.
-	 * Si les objets se recouvrent ou se touchent, la distance doit être nulle (pas de distance négative).
-	 * @param data Paramètres de connection à la base de données.
-	 * @param tolerance Tolérance pour le calcul.
+	/** Distance de self ï¿½ l'objet passï¿½ en paramï¿½tre (avec Oracle).
+	 * Cette distance est dï¿½finie comme la distance euclidienne.
+	 * Si les objets se recouvrent ou se touchent, la distance doit ï¿½tre nulle (pas de distance nï¿½gative).
+	 * @param data Paramï¿½tres de connection ï¿½ la base de donnï¿½es.
+	 * @param tolerance Tolï¿½rance pour le calcul.
 	 * @param g GM_Object avec lequel on teste l'intersection. */
 	/*   public double distanceOracle (Geodatabase data, double tolerance, GM_Object g)  {
        return new OracleAlgorithms(data,0.).distance(this,g);
    }
 	 */
-	/** Longueur de l'objet, si c'est une primitive linéaire (avec Oracle).
+	/** Longueur de l'objet, si c'est une primitive linï¿½aire (avec Oracle).
 	 * Applicable sur GM_Curve et GM_MultiCurve.
-	 * @param data Paramètres de connection à la base de données. */
+	 * @param data Paramï¿½tres de connection ï¿½ la base de donnï¿½es. */
 	/*   public double lengthOracle (Geodatabase data)  {
        return new OracleAlgorithms(data,0.).length(this);
    }
