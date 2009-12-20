@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -34,7 +34,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 /**
- * Agrégation de points. Il n'y a aucune structure interne.
+ * Agregation de points. Il n'y a aucune structure interne.
  * La liste "element" est une liste de GM_Point.
  *
  * @author Thierry Badard & Arnaud Braun
@@ -48,26 +48,26 @@ public class GM_MultiPoint extends GM_MultiPrimitive<GM_Point> {
 	// constructeurs ////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////
 
-	/** Constructeur par défaut. */
+	/** Constructeur par defaut. */
 	public GM_MultiPoint() {
-		element = new ArrayList<GM_Point>();
+		this.element = new ArrayList<GM_Point>();
 	}
 
-	/** Constructeur à partir d'un GM_Point. */
+	/** Constructeur Ã  partir d'un GM_Point. */
 	public GM_MultiPoint (GM_Point aGM_Point) {
-		element = new ArrayList<GM_Point>();
+		this.element = new ArrayList<GM_Point>();
 		this.add(aGM_Point);
 	}
 
-	/** Constructeur à partir d'une liste de GM_Point. */
+	/** Constructeur Ã  partir d'une liste de GM_Point. */
 	public GM_MultiPoint (List<GM_Point> fromGM_Point) {
-		element = new ArrayList<GM_Point>();
+		this.element = new ArrayList<GM_Point>();
 		for (GM_Point point:fromGM_Point) this.add(point);
 	}
 
-	/** Constructeur à partir d'une liste de DirectPosition. */
+	/** Constructeur Ã  partir d'une liste de DirectPosition. */
 	public GM_MultiPoint (DirectPositionList L) {
-		element = new ArrayList<GM_Point>();
+		this.element = new ArrayList<GM_Point>();
 		for (DirectPosition position:L) this.add(position.toGM_Point());
 	}
 }

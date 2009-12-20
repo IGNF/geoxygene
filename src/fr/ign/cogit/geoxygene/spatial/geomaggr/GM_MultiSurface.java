@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -35,7 +35,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
 
 
 /**
- * Agrégation de surfaces orientées.
+ * AgrÃ©gation de surfaces orientÃ©es.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -45,7 +45,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
 public class GM_MultiSurface<GeomType extends GM_OrientableSurface> extends GM_MultiPrimitive<GeomType> {
 
 	/** Aire totale. */
-	// Dans la norme, ceci est un attribut et non une méthode.
+	// Dans la norme, ceci est un attribut et non une mÃ©thode.
 	// Dans la norme, cet attribut est de type Area et non double
 	// code dans GM_Object
 	@Override
@@ -56,32 +56,26 @@ public class GM_MultiSurface<GeomType extends GM_OrientableSurface> extends GM_M
 	}
 
 
-	/** Périmètre totale. */
-	// Dans la norme, ceci est un attribut et non une méthode.
+	/** PÃ©rimÃ¨tre totale. */
+	// Dans la norme, ceci est un attribut et non une mÃ©thode.
 	// Dans la norme, cet attribut est de type Length et non double
-	public double perimeter()  {
-		return this.length();
-	}
+	public double perimeter()  {return this.length();}
 
 	/** a expliquer **/
 	@SuppressWarnings("unchecked")
-	public GM_MultiSurface<GeomType> homogeneise() {
-		return (GM_MultiSurface<GeomType>) this.buffer(0);
-	}
+	public GM_MultiSurface<GeomType> homogeneise() {return (GM_MultiSurface<GeomType>) this.buffer(0);}
 	
-	/** Constructeur par défaut. */
-	public GM_MultiSurface() {
-		this.element = new ArrayList<GeomType>();
-	}
+	/** Constructeur par dÃ©faut. */
+	public GM_MultiSurface() {this.element = new ArrayList<GeomType>();}
 
-	/** Constructeur à partir d'un GM_CompositeSurface. */
+	/** Constructeur Ã  partir d'un GM_CompositeSurface. */
 	@SuppressWarnings("unchecked")
 	public GM_MultiSurface(GM_CompositeSurface compSurf) {
 		this.element = new ArrayList <GeomType>();
 		this.addAll((List<GeomType>) compSurf.getGenerator());
 	}
 
-	/** Constructeur à partir d'une liste de GM_OrientableSurface. */
+	/** Constructeur Ã  partir d'une liste de GM_OrientableSurface. */
 	@SuppressWarnings("unchecked")
 	public GM_MultiSurface(ArrayList<GM_OrientableSurface> lOS) {
 		this.element = new ArrayList <GeomType>();
@@ -90,4 +84,5 @@ public class GM_MultiSurface<GeomType extends GM_OrientableSurface> extends GM_M
 
 	@Override
 	public boolean isMultiSurface() {return true;}
+
 }
