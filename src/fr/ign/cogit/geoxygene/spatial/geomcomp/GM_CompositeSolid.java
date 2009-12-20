@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -33,11 +33,11 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 
 
 /** NON UTILISE.
- * Complexe ayant toutes les propriétes géométriques d'un solide. C'est un set de solides (GM_Solid) partageant des surfaces communes.
- * Hérite de GM_Solid, mais le lien n'apparaît pas explicitement (problème de double héritage en java). Les méthodes et attributs ont été reportés.
+ * Complexe ayant toutes les propriÃ©tes gÃ©omÃ©triques d'un solide. C'est un set de solides (GM_Solid) partageant des surfaces communes.
+ * HÃ©rite de GM_Solid, mais le lien n'apparaÃ®t pas explicitement (problÃ¨me de double hÃ©ritage en java). Les mÃ©thodes et attributs ont Ã©tÃ© reportÃ©s.
  *
  * <P> ATTENTION : normalement, il faudrait remplir le set "element" (contrainte : toutes les primitives du generateur
- * sont dans le complexe). Ceci n'est pas implémenté pour le moment.
+ * sont dans le complexe). Ceci n'est pas implÃ©mentÃ© pour le moment.
  * <P> A FAIRE AUSSI : iterateur sur "generator"
  *
  * @author Thierry Badard & Arnaud Braun
@@ -48,28 +48,28 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 public class GM_CompositeSolid extends GM_Composite {
 
 	////////////////////////////////////////////////////////////////////////
-	// Attribut "generator" et méthodes pour le traiter ////////////////////
+	// Attribut "generator" et mÃ©thodes pour le traiter ////////////////////
 	////////////////////////////////////////////////////////////////////////
 
 	/** Les GM_Solid constituant self. */
 	protected List<GM_Solid> generator;
 
 	/** Renvoie la liste des GM_Solid */
-	public List<GM_Solid> getGenerator() {return generator;}
+	public List<GM_Solid> getGenerator() {return this.generator;}
 
 	/** Renvoie le GM_Solid de rang i */
 	//public GM_Solid getGenerator (int i) {return (GM_Solid)this.generator.get(i);}
 
-	/** Affecte un GM_Solid au rang i. Attention : aucun contrôle de cohérence n'est effectué. */
+	/** Affecte un GM_Solid au rang i. Attention : aucun contrÃ´le de cohÃ©rence n'est effectuÃ©. */
 	//protected void setGenerator (int i, GM_Solid value) {this.generator.set(i, value);}
 
-	/** Ajoute un GM_Solid en fin de liste. Attention : aucun contrôle de cohérence n'est effectué. */
+	/** Ajoute un GM_Solid en fin de liste. Attention : aucun contrÃ´le de cohÃ©rence n'est effectuÃ©. */
 	//protected void addGenerator (GM_Solid value) {this.generator.add(value);}
 
-	/** Ajoute un GM_Solid au rang i. Attention : aucun contrôle de cohérence n'est effectué. */
+	/** Ajoute un GM_Solid au rang i. Attention : aucun contrÃ´le de cohÃ©rence n'est effectuÃ©. */
 	//protected void addGenerator (int i, GM_Solid value) {this.generator.add(i, value);}
 
-	/** Efface le (ou les) GM_Solid passé en paramètre. Attention : aucun contrôle de cohérence n'est effectué. */
+	/** Efface le (ou les) GM_Solid passÃ© en paramÃ¨tre. Attention : aucun contrÃ´le de cohÃ©rence n'est effectuÃ©. */
 	/*protected void removeGenerator (GM_Solid value) throws Exception {
         if (this.generator.size() == 1)
             throw new Exception ( "Dr Cogit - error 4.001" );
@@ -77,55 +77,48 @@ public class GM_CompositeSolid extends GM_Composite {
             this.generator.remove(value);
     }*/
 
-	/** Efface le GM_Solid de rang i. Attention : aucun contrôle de cohérence n'est effectué. */
+	/** Efface le GM_Solid de rang i. Attention : aucun contrÃ´le de cohÃ©rence n'est effectuÃ©. */
 	protected void removeGenerator (int i) throws Exception {
-		if (this.generator.size() == 1) throw new Exception ( "Il n'y a qu'un objet dans l'association." );
+		if (this.generator.size() == 1) throw new Exception ( "Il n'y a qu'un objet dans l'association." ); //$NON-NLS-1$
 		this.generator.remove(i);
 	}
 
 	/** Nombre de GM_Solid constituant self */
 	public int sizeGenerator () {return this.generator.size();}
 
-
-
-
 	/////////////////////////////////////////////////////////////////////////////////////////
-	// Méthodes héritées de GM_Solid (héritage simulé) //////////////////////////////////////
+	// MÃ©thodes hÃ©ritÃ©es de GM_Solid (hÃ©ritage simulÃ©) //////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////
 
 	/** NON IMPLEMETE (renvoie 0.0).
 	 * Aire. */
-	// Dans la norme, le résultat est de type Area.
+	// Dans la norme, le rÃ©sultat est de type Area.
 	@Override
 	public double area() {return 0.0;}
 
 	/** NON IMPLEMETE (renvoie 0.0).
 	 * Volume. */
-	// Dans la norme, le résultat est de type Volume.
+	// Dans la norme, le rÃ©sultat est de type Volume.
 	public double volume() {return 0.0;}
 
 	/** NON IMPLEMENTE (Renvoie null).
-	 * Redéfinition de l'opérateur "boundary" sur GM_Object. Renvoie une GM_SolidBoundary,
-	 * c'est-à-dire un shell extérieur et éventuellement un (des) shell(s) intérieur(s). */
+	 * RedÃ©finition de l'opÃ©rateur "boundary" sur GM_Object. Renvoie une GM_SolidBoundary,
+	 * c'est-Ã -dire un shell extÃ©rieur et Ã©ventuellement un (des) shell(s) intÃ©rieur(s). */
 	//public GM_SolidBoundary boundary() {return null;}
-
-
-
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Constructeurs ////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////
 
-	/**  Constructeur par défaut.  */
+	/**  Constructeur par dÃ©faut.  */
 	public GM_CompositeSolid () {
-		generator = new ArrayList<GM_Solid>();
+		this.generator = new ArrayList<GM_Solid>();
 	}
 
-	/** Constructeur à partir d'un GM_Solid. */
+	/** Constructeur Ã  partir d'un GM_Solid. */
 	/* public  GM_CompositeSolid (GM_Solid theSolid) {
         generator = new ArrayList();
         generator.add(theSolid);
     }*/
+	
 }

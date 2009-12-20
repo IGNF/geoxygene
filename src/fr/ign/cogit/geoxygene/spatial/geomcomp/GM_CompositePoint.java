@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -30,13 +30,13 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 /**
- * Complexe contenant un et un seul GM_Point. Cette classe ne sert pas a grand chose mais elle a été mise pour homogénéiser
+ * Complexe contenant un et un seul GM_Point. Cette classe ne sert pas a grand chose mais elle a Ã©tÃ© mise pour homogÃ©nÃ©iser
  * avec les GM_Composite des autres types de primitives.
- * Hérite de GM_Point, mais le lien n'apparaît pas explicitement (problème de double héritage en java). Les méthodes et attributs ont été reportés.
- * <P> Utilisation : un GM_CompositePoint se construit exclusivement à partir d'un GM_Point.
+ * HÃ©rite de GM_Point, mais le lien n'apparaÃ®t pas explicitement (problÃ¨me de double hÃ©ritage en java). Les mÃ©thodes et attributs ont Ã©tÃ© reportÃ©s.
+ * <P> Utilisation : un GM_CompositePoint se construit exclusivement Ã  partir d'un GM_Point.
  *
  * <P> ATTENTION : normalement, il faudrait remplir le set "element" (contrainte : toutes les primitives du generateur
- * sont dans le complexe). Ceci n'est pas implémenté pour le moment.
+ * sont dans le complexe). Ceci n'est pas implÃ©mentÃ© pour le moment.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -47,10 +47,10 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 public class GM_CompositePoint extends GM_Composite {
 
 	/////////////////////////////////////////////////////////////////////////////////////////
-	// Attribut et méthodes propres à GM_CompositePoint /////////////////////////////////////
+	// Attribut et mï¿½thodes propres ï¿½ GM_CompositePoint /////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////
 
-	/** Le GM_Point constituant self. C´est une référence (un nouvel objet n'est pas construit).*/
+	/** Le GM_Point constituant self. Cï¿½est une rï¿½fï¿½rence (un nouvel objet n'est pas construit).*/
 	protected GM_Point generator;
 
 	/** Renvoie le GM_Point constituant self. */
@@ -62,7 +62,7 @@ public class GM_CompositePoint extends GM_Composite {
 		this.position = new DirectPosition(value.getPosition().getCoordinate());
 	}
 
-	/** Renvoie 1 si un GM_Point a été affecté, 0 sinon. */
+	/** Renvoie 1 si un GM_Point a Ã©tÃ© affectÃ©, 0 sinon. */
 	public int sizeGenerator () {
 		if ( this.generator == null ) return 0;
 		return 1;
@@ -72,15 +72,15 @@ public class GM_CompositePoint extends GM_Composite {
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////
-	// Attribut et méthodes héritées de GM_Point (héritage simulé) //////////////////////////
+	// Attribut et mÃ©thodes hÃ©ritÃ©es de GM_Point (hÃ©ritage simulÃ©) //////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////
 
-	/** DirectPosition du point (DirectPosition étant la classe stockant les coordonnées). */
+	/** DirectPosition du point (DirectPosition Ã©tant la classe stockant les coordonnÃ©es). */
 	protected DirectPosition position;
 
 	/** Renvoie le DirectPosition du point. */
 	public DirectPosition getPosition () {
-		position = generator.getPosition();
+		this.position = this.generator.getPosition();
 		return this.position;
 	}
 
@@ -89,35 +89,34 @@ public class GM_CompositePoint extends GM_Composite {
 	// Dans la norme, on passe un GM_Position en parametre. Je prefere faire 2 methodes pour simplifier,
 	// l'une avec un GM_Point en parametre, l'autre avec un DirectPosition.
 	/** NON IMPLEMENTE (renvoie null).
-	 * Direction entre self et le GM_Point passé en paramètre, en suivant une courbe qui dépend du sytème de coordonnées (courbe géodésique par exemple).
-	 * Le bearing retourné est un vecteur.
+	 * Direction entre self et le GM_Point passÃ© en paramÃ¨tre, en suivant une courbe qui dÃ©pend du systÃ¨me de coordonnÃ©es (courbe gÃ©odÃ©sique par exemple).
+	 * Le bearing retournÃ© est un vecteur.
 	 */
 	/*public Bearing bearing(GM_Point toPoint) {
         return null;
     }*/
 
 	/** NON IMPLEMENTE (renvoie null).
-	 * Direction entre self et le DirectPosition passé en paramètre, en suivant une courbe qui dépend du sytème de coordonnées (courbe géodésique par exemple).
-	 * Le bearing retourné est un vecteur.
+	 * Direction entre self et le DirectPosition passÃ© en paramÃ¨tre, en suivant une courbe qui dÃ©pend du systÃ¨me de coordonnÃ©es (courbe gÃ©odÃ©sique par exemple).
+	 * Le bearing retournÃ© est un vecteur.
 	 */
 	/*public Bearing bearing(DirectPosition toPoint) {
         return null;
     }*/
 
-
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Constructeurs ////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////
 
-	/** Constructeur par défaut. */
+	/** Constructeur par dÃ©faut. */
 	public GM_CompositePoint() {
-		position = new DirectPosition();
+		this.position = new DirectPosition();
 	}
 
-	/** Constructeur à partir d'un GM_Point. */
+	/** Constructeur Ã  partir d'un GM_Point. */
 	public GM_CompositePoint(GM_Point thePoint) {
 		this.generator = thePoint;
-		position = new DirectPosition(thePoint.getPosition().getCoordinate());
+		this.position = new DirectPosition(thePoint.getPosition().getCoordinate());
 	}
 
 }

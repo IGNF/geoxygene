@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -37,12 +37,12 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_CurveBoundary;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
 
 /**
- * Complexe ayant toutes les propriétés géométriques d'une courbe.
- * C'est une liste de courbes orientées (GM_OrientableCurve) de telle manière que le noeud final d'une courbe correspond au noeud initial de la courbe suivante dans la liste.
- * Hérite de GM_OrientableCurve, mais le lien n'apparaît pas explicitement (problème de double héritage en java). Les méthodes et attributs ont été reportés.
+ * Complexe ayant toutes les propriÃ©tÃ©s gÃ©omÃ©triques d'une courbe.
+ * C'est une liste de courbes orientÃ©es (GM_OrientableCurve) de telle maniÃ¨re que le noeud final d'une courbe correspond au noeud initial de la courbe suivante dans la liste.
+ * HÃ©rite de GM_OrientableCurve, mais le lien n'apparaÃ®t pas explicitement (problÃ¨me de double hÃ©ritage en java). Les mÃ©thodes et attributs ont Ã©tÃ© reportÃ©s.
  *
  *<P> ATTENTION : normalement, il faudrait remplir le set "element" (contrainte : toutes les primitives du generateur
- * sont dans le complexe). Ceci n'est pas implémenté pour le moment.
+ * sont dans le complexe). Ceci n'est pas implÃ©mentÃ© pour le moment.
  *<P> A FAIRE AUSSI : iterateur sur "generator"
  *
  * @author Thierry Badard & Arnaud Braun
@@ -54,42 +54,42 @@ public class GM_CompositeCurve extends GM_Composite {
 
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
-	// Attribut "generator" et méthodes pour le traiter ////////////////////
+	// Attribut "generator" et mÃ©thodes pour le traiter ////////////////////
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
 	/** Les GM_OrientableCurve constituant self. */
 	protected List<GM_OrientableCurve> generator;
 
 	/** Renvoie la liste des GM_OrientableCurve */
-	public List<GM_OrientableCurve> getGenerator() {return generator;}
+	public List<GM_OrientableCurve> getGenerator() {return this.generator;}
 
 	/** Renvoie la GM_OrientableCurve de rang i */
 	public GM_OrientableCurve getGenerator (int i) {return this.generator.get(i);}
 
-	/** Affecte une GM_OrientableCurve au rang i. Attention : aucun contrôle de continuité n'est effectué. */
+	/** Affecte une GM_OrientableCurve au rang i. Attention : aucun contrÃ´le de continuitÃ© n'est effectuÃ©. */
 	public void setGenerator (int i, GM_OrientableCurve value) {this.generator.set(i, value);}
 
-	/** Ajoute une GM_OrientableCurve en fin de liste. Attention : aucun contrôle de continuité n'est effectué. */
+	/** Ajoute une GM_OrientableCurve en fin de liste. Attention : aucun contrÃ´le de continuitÃ© n'est effectuÃ©. */
 	public void addGenerator (GM_OrientableCurve value) {this.generator.add(value);}
 
-	/** Ajoute une GM_OrientableCurve en fin de liste avec un contrôle de continuité avec la tolérance passée en paramètre.
-	 * Envoie une exception en cas de problème. */
+	/** Ajoute une GM_OrientableCurve en fin de liste avec un contrÃ´le de continuitÃ© avec la tolÃ©rance passÃ©e en paramÃ¨tre.
+	 * Envoie une exception en cas de problÃ¨me. */
 	public void addGenerator (GM_OrientableCurve value, double tolerance) throws Exception {
 		DirectPosition pt1;
 		DirectPosition pt2;
-		if (generator.size() > 0) {
-			GM_OrientableCurve laDerniereCourbe = this.getGenerator(generator.size()-1);
+		if (this.generator.size() > 0) {
+			GM_OrientableCurve laDerniereCourbe = this.getGenerator(this.generator.size()-1);
 			pt1 = (laDerniereCourbe.boundary()).getEndPoint().getPosition();
 			pt2 = (value.boundary()).getStartPoint().getPosition();
 			if (pt1.equals(pt2,tolerance)) this.generator.add(value);
-			else throw new Exception("Rupture de chaînage avec la courbe passée en paramètre.");
+			else throw new Exception("Rupture de chaÃ®nage avec la courbe passÃ©e en paramÃ¨tre."); //$NON-NLS-1$
 		}
 		else this.generator.add(value);
 	}
 
-	/** Ajoute une GM_OrientableCurve en fin de liste avec un contrôle de continuité avec la tolérance passée en paramètre.
+	/** Ajoute une GM_OrientableCurve en fin de liste avec un contrÃ´le de continuitÃ© avec la tolÃ©rance passÃ©e en paramÃ¨tre.
 	 * Eventuellement change le sens d'orientation de la courbe pour assurer la continuite.
-	 * Envoie une exception en cas de problème. */
+	 * Envoie une exception en cas de problÃ¨me. */
 	public void addGeneratorTry (GM_OrientableCurve value, double tolerance) throws Exception {
 		try {
 			this.addGenerator(value,tolerance);
@@ -97,31 +97,28 @@ public class GM_CompositeCurve extends GM_Composite {
 			try {
 				this.addGenerator(value.getNegative(),tolerance);
 			} catch (Exception e2) {
-				throw new Exception("Rupture de chaînage avec la courbe passée en paramètre(après avoir essayé les 2 orientations)");
+				throw new Exception("Rupture de chaÃ®nage avec la courbe passÃ©e en paramÃ¨tre(aprÃ¨s avoir essayÃ© les 2 orientations)"); //$NON-NLS-1$
 			}
 		}
 	}
 
-	/** Ajoute une GM_OrientableCurve au rang i. Attention : aucun contrôle de continuité n'est effectué. */
+	/** Ajoute une GM_OrientableCurve au rang i. Attention : aucun contrÃ´le de continuitÃ© n'est effectuÃ©. */
 	public void addGenerator (int i, GM_OrientableCurve value) {this.generator.add(i, value);}
 
-	/** Efface la (ou les) GM_OrientableCurve passé en paramètre. Attention : aucun contrôle de continuité n'est effectué. */
+	/** Efface la (ou les) GM_OrientableCurve passÃ© en paramÃ¨tre. Attention : aucun contrÃ´le de continuitÃ© n'est effectuÃ©. */
 	public void removeGenerator (GM_OrientableCurve value) throws Exception {
-		if (this.generator.size() == 1) throw new Exception ( "Il n'y a qu'un objet dans l'association." );
+		if (this.generator.size() == 1) throw new Exception ( "Il n'y a qu'un objet dans l'association." ); //$NON-NLS-1$
 		this.generator.remove(value);
 	}
 
-	/** Efface la GM_OrientableCurve de rang i. Attention : aucun contrôle de continuité n'est effectué. */
+	/** Efface la GM_OrientableCurve de rang i. Attention : aucun contrÃ´le de continuitÃ© n'est effectuÃ©. */
 	public void removeGenerator (int i) throws Exception {
-		if (this.generator.size() == 1) throw new Exception ( "Il n'y a qu'un objet dans l'association." );
+		if (this.generator.size() == 1) throw new Exception ( "Il n'y a qu'un objet dans l'association." ); //$NON-NLS-1$
 		this.generator.remove(i);
 	}
 
 	/** Nombre de GM_OrientableCurve constituant self */
 	public int sizeGenerator () {return this.generator.size();}
-
-
-
 
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
@@ -129,48 +126,45 @@ public class GM_CompositeCurve extends GM_Composite {
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
 	// les constructeurs sont calques sur ceux de GM_Curve
-	/** Constructeur par défaut */
+	/** Constructeur par dÃ©faut */
 	public GM_CompositeCurve() {
-		generator = new ArrayList<GM_OrientableCurve>();
-		primitive = new GM_Curve();
-		proxy[0] = primitive;
+		this.generator = new ArrayList<GM_OrientableCurve>();
+		this.primitive = new GM_Curve();
+		this.proxy[0] = this.primitive;
 		GM_OrientableCurve proxy1 = new GM_OrientableCurve();
 		proxy1.orientation = -1;
-		proxy1.proxy[0] = primitive;
+		proxy1.proxy[0] = this.primitive;
 		proxy1.proxy[1] = proxy1;
-		proxy1.primitive = new GM_Curve(primitive);
-		proxy[1] = proxy1;
+		proxy1.primitive = new GM_Curve(this.primitive);
+		this.proxy[1] = proxy1;
 	}
 
-	/** Constructeur à partir d'une et d'une seule GM_OrientableCurve.
+	/** Constructeur Ã  partir d'une et d'une seule GM_OrientableCurve.
 	 *  L'orientation vaut +1. */
 	public GM_CompositeCurve(GM_OrientableCurve oCurve) {
-		generator = new ArrayList<GM_OrientableCurve>();
-		generator.add(oCurve);
-		primitive = new GM_Curve();
+		this.generator = new ArrayList<GM_OrientableCurve>();
+		this.generator.add(oCurve);
+		this.primitive = new GM_Curve();
 		this.simplifyPrimitive();
-		proxy[0] = primitive;
+		this.proxy[0] = this.primitive;
 		GM_OrientableCurve proxy1 = new GM_OrientableCurve();
 		proxy1.orientation = -1;
-		proxy1.proxy[0] = primitive;
+		proxy1.proxy[0] = this.primitive;
 		proxy1.proxy[1] = proxy1;
-		proxy1.primitive = new GM_Curve(primitive);
-		proxy[1] = proxy1;
+		proxy1.primitive = new GM_Curve(this.primitive);
+		this.proxy[1] = proxy1;
 	}
 
-
-
-
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
-	// Attributs et méthodes héritées de GM_OrientableCurve ////////////////
+	// Attributs et mÃ©thodes hÃ©ritÃ©es de GM_OrientableCurve ////////////////
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
 	// On simule l'heritage du modele en reportant les attributs et methodes
 	// de GM_OrientableCurve
 	// On n'a pas repris l'attribut "orientation" qui ne sert a rien ici.
 
-	/** Primitive. Elle doit etre recalculée à chaque modification de self : fait dans getPrimitive(). */
+	/** Primitive. Elle doit etre recalculÃ©e Ã  chaque modification de self : fait dans getPrimitive(). */
 	protected GM_Curve primitive;
 
 	/** Renvoie la primitive de self. */
@@ -181,69 +175,63 @@ public class GM_CompositeCurve extends GM_Composite {
 	}
 
 	/**
-	 * Attribut stockant les primitives orientées de cette primitive.
-	 * Proxy[0] est celle orientée positivement.
-	 * Proxy[1] est celle orientée négativement.
-	 * On accède aux primitives orientées par getPositive() et getNegative().
+	 * Attribut stockant les primitives orientÃ©es de cette primitive.
+	 * Proxy[0] est celle orientÃ©e positivement.
+	 * Proxy[1] est celle orientÃ©e nÃ©gativement.
+	 * On accÃ¨de aux primitives orientÃ©es par getPositive() et getNegative().
 	 */
 	protected GM_OrientableCurve[] proxy = new GM_OrientableCurve[2];
 
-	/** Renvoie la primitive orientée positivement. */
+	/** Renvoie la primitive orientÃ©e positivement. */
 	public GM_OrientableCurve getPositive() {
 		this.simplifyPrimitive();
 		return this.primitive;       // equivaut a return this.proxy[0]
 	}
 
-	/** Renvoie la primitive orientée négativement. */
+	/** Renvoie la primitive orientÃ©e nÃ©gativement. */
 	public GM_OrientableCurve getNegative()  {
 		this.simplifyPrimitive();
 		return this.primitive.getNegative();
 	}
 
-	/** Redéfinition de l'opérateur "boundary" sur GM_OrientableCurve. Renvoie une GM_CurveBoundary, c'est-à-dire deux GM_Point.  */
+	/** RedÃ©finition de l'opÃ©rateur "boundary" sur GM_OrientableCurve. Renvoie une GM_CurveBoundary, c'est-Ã -dire deux GM_Point.  */
 	public GM_CurveBoundary boundary()  {
 		this.simplifyPrimitive();
 		return this.primitive.boundary();
 	}
 
-
-
-
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
-	// Méthodes "validate" /////////////////////////////////////////////////
+	// MÃ©thodes "validate" /////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
-	// cette méthode n'est pas dans la norme.
-	/** Vérifie le chaînage des composants. Renvoie TRUE s'ils sont chaînés, FALSE sinon. */
+	// cette mÃ©thode n'est pas dans la norme.
+	/** VÃ©rifie le chaÃ®nage des composants. Renvoie TRUE s'ils sont chaÃ®nÃ©s, FALSE sinon. */
 	public boolean validate(double tolerance) {
-		for (int i=0; i<generator.size()-1; i++) {
-			GM_OrientableCurve oCurve1 = generator.get(i);
+		for (int i=0; i<this.generator.size()-1; i++) {
+			GM_OrientableCurve oCurve1 = this.generator.get(i);
 			GM_Curve prim1 = oCurve1.getPrimitive();
-			GM_OrientableCurve oCurve2 = generator.get(i+1);
+			GM_OrientableCurve oCurve2 = this.generator.get(i+1);
 			GM_Curve prim2 = oCurve2.getPrimitive();
 			DirectPosition pt1 = prim1.endPoint();
 			DirectPosition pt2 = prim2.startPoint();
-			if (!pt1.equals(pt2,tolerance))
-				return false;
+			if (!pt1.equals(pt2,tolerance)) return false;
 		}
 		return true;
 	}
 
 	/** Renvoie les coordonnees de la primitive.  */
 	@Override
-	public DirectPositionList coord() {
-		return getPrimitive().coord();
-	}
+	public DirectPositionList coord() {return getPrimitive().coord();}
 
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
-	// Méthodes privées pour usage interne /////////////////////////////////
+	// MÃ©thodes privÃ©es pour usage interne /////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
 	/** Calcule la primitive se self. */
 	private void simplifyPrimitive()  {
-		int n = generator.size();
+		int n = this.generator.size();
 		if (n > 0) {
 			// vidage de la primitive
 			synchronized (this.primitive.getSegment()) {

@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -36,12 +36,13 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_SurfaceBoundary;
 
 
 /** NON UTILISE POUR LE MOMENT. A TERMINER ET TESTER.
- * Complexe ayant toutes les propriétés géométriques d'une surface.
- * C'est une liste de surfaces orientées (GM_OrientableSurfaces) contigues.
- * Hérite de GM_OrientableCurve, mais le lien n'apparaît pas explicitement (problème de double héritage en java). Les méthodes et attributs ont été reportés.
+ * Complexe ayant toutes les propriÃ©tÃ©s gÃ©omÃ©triques d'une surface.
+ * C'est une liste de surfaces orientÃ©es (GM_OrientableSurfaces) contigues.
+ * HÃ©rite de GM_OrientableCurve, mais le lien n'apparaÃ®t pas explicitement (problÃ¨me de double hÃ©ritage en java). 
+ * Les mÃ©thodes et attributs ont Ã©tÃ© reportÃ©s.
  *
  *  <P> ATTENTION : normalement, il faudrait remplir le set "element" (contrainte : toutes les primitives du generateur
- * sont dans le complexe). Ceci n'est pas implémenté pour le moment.
+ * sont dans le complexe). Ceci n'est pas implÃ©mentÃ© pour le moment.
  *  <P> A FAIRE AUSSI : iterateur sur "generator"
  *
  * @author Thierry Badard & Arnaud Braun
@@ -53,27 +54,27 @@ public class GM_CompositeSurface extends GM_Composite {
 
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
-	// Attribut "generator" et méthodes pour le traiter ////////////////////
+	// Attribut "generator" et mÃ©thodes pour le traiter ////////////////////
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
 	/** Les GM_OrientableSurface constituant self. */
 	protected List<GM_OrientableSurface> generator;
 
 	/** Renvoie la liste des GM_OrientableSurface */
-	public List<GM_OrientableSurface> getGenerator() {return generator;}
+	public List<GM_OrientableSurface> getGenerator() {return this.generator;}
 
 	/** Renvoie la GM_OrientableSurface de rang i */
 	public GM_OrientableSurface getGenerator (int i) {return this.generator.get(i);}
 
-	/** Affecte une GM_OrientableSurface au rang i. Attention : aucun contrôle de continuité n'est effectué. */
+	/** Affecte une GM_OrientableSurface au rang i. Attention : aucun contrÃ´le de continuitÃ© n'est effectuÃ©. */
 	public void setGenerator (int i, GM_OrientableSurface value) {this.generator.set(i, value);}
 
-	/** Ajoute une GM_OrientableSurface en fin de liste. Attention : aucun contrôle de continuité n'est effectué. */
+	/** Ajoute une GM_OrientableSurface en fin de liste. Attention : aucun contrÃ´le de continuitÃ© n'est effectuÃ©. */
 	public void addGenerator (GM_OrientableSurface value) {this.generator.add(value);}
 
 	/** A FAIRE.
-	 * Ajoute une GM_OrientableSurface en fin de liste avec un contrôle de continuité avec la tolérance passée en paramètre.
-	 * Envoie une exception en cas de problème.
+	 * Ajoute une GM_OrientableSurface en fin de liste avec un contrÃ´le de continuitÃ© avec la tolÃ©rance passÃ©e en paramÃ¨tre.
+	 * Envoie une exception en cas de problÃ¨me.
 	 * @param value
 	 * @param tolerance
 	 * @throws Exception
@@ -82,9 +83,9 @@ public class GM_CompositeSurface extends GM_Composite {
 	}
 
 	/** A FAIRE.
-	 * Ajoute une GM_OrientableSurface en fin de liste avec un contrôle de continuité avec la tolérance passée en paramètre.
+	 * Ajoute une GM_OrientableSurface en fin de liste avec un contrÃ´le de continuitÃ© avec la tolÃ©rance passÃ©e en paramÃ¨tre.
 	 * Eventuellement change le sens d'orientation de la surface pour assurer la continuite.
-	 * Envoie une exception en cas de problème.
+	 * Envoie une exception en cas de problÃ¨me.
 	 * @param value
 	 * @param tolerance
 	 * @throws Exception
@@ -92,26 +93,23 @@ public class GM_CompositeSurface extends GM_Composite {
 	public void addGeneratorTry (GM_OrientableSurface value, double tolerance) throws Exception {
 	}
 
-	/** Ajoute une GM_OrientableSurface au rang i. Attention : aucun contrôle de continuité n'est effectué. */
+	/** Ajoute une GM_OrientableSurface au rang i. Attention : aucun contrÃ´le de continuitÃ© n'est effectuÃ©. */
 	public void addGenerator (int i, GM_OrientableSurface value) {this.generator.add(i, value);}
 
-	/** Efface la (ou les) GM_OrientableSurface passé en paramètre. Attention : aucun contrôle de continuité n'est effectué. */
+	/** Efface la (ou les) GM_OrientableSurface passÃ© en paramÃ¨tre. Attention : aucun contrÃ´le de continuitÃ© n'est effectuÃ©. */
 	public void removeGenerator (GM_OrientableSurface value) throws Exception {
-		if (this.generator.size() == 1) throw new Exception ( "Il n'y a qu'un objet dans l'association." );
+		if (this.generator.size() == 1) throw new Exception ( "Il n'y a qu'un objet dans l'association." ); //$NON-NLS-1$
 		this.generator.remove(value);
 	}
 
-	/** Efface la GM_OrientableSurface de rang i. Attention : aucun contrôle de continuité n'est effectué. */
+	/** Efface la GM_OrientableSurface de rang i. Attention : aucun contrÃ´le de continuitÃ© n'est effectuÃ©. */
 	public void removeGenerator (int i) throws Exception {
-		if (this.generator.size() == 1) throw new Exception ( "Il n'y a qu'un objet dans l'association." );
+		if (this.generator.size() == 1) throw new Exception ( "Il n'y a qu'un objet dans l'association." ); //$NON-NLS-1$
 		this.generator.remove(i);
 	}
 
 	/** Nombre de GM_OrientableSurface constituant self */
 	public int sizeGenerator () {return this.generator.size();}
-
-
-
 
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
@@ -119,48 +117,45 @@ public class GM_CompositeSurface extends GM_Composite {
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
 	// les constructeurs sont calques sur ceux de GM_Surface
-	/** Constructeur par défaut */
+	/** Constructeur par dÃ©faut */
 	public GM_CompositeSurface() {
-		generator = new ArrayList<GM_OrientableSurface>();
-		primitive = new GM_Surface();
-		proxy[0] = primitive;
+		this.generator = new ArrayList<GM_OrientableSurface>();
+		this.primitive = new GM_Surface();
+		this.proxy[0] = this.primitive;
 		GM_OrientableSurface proxy1 = new GM_OrientableSurface();
 		proxy1.orientation = -1;
-		proxy1.proxy[0] = primitive;
+		proxy1.proxy[0] = this.primitive;
 		proxy1.proxy[1] = proxy1;
-		proxy1.primitive = new GM_Surface(primitive);
-		proxy[1] = proxy1;
+		proxy1.primitive = new GM_Surface(this.primitive);
+		this.proxy[1] = proxy1;
 	}
 
-	/** Constructeur à partir d'une et d'une seule GM_OrientableSurface.
+	/** Constructeur Ã  partir d'une et d'une seule GM_OrientableSurface.
 	 *  L'orientation vaut +1. */
 	public GM_CompositeSurface(GM_OrientableSurface oCurve) {
-		generator = new ArrayList<GM_OrientableSurface>();
-		generator.add(oCurve);
-		primitive = new GM_Surface();
+		this.generator = new ArrayList<GM_OrientableSurface>();
+		this.generator.add(oCurve);
+		this.primitive = new GM_Surface();
 		//        this.simplifyPrimitive(); -> creer la primitive
-		proxy[0] = primitive;
+		this.proxy[0] = this.primitive;
 		GM_OrientableSurface proxy1 = new GM_OrientableSurface();
 		proxy1.orientation = -1;
-		proxy1.proxy[0] = primitive;
+		proxy1.proxy[0] = this.primitive;
 		proxy1.proxy[1] = proxy1;
-		proxy1.primitive = new GM_Surface(primitive);
-		proxy[1] = proxy1;
+		proxy1.primitive = new GM_Surface(this.primitive);
+		this.proxy[1] = proxy1;
 	}
-
-
-
-
+	
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
-	// Attributs et méthodes héritées de GM_OrientableSurface ////////////////
+	// Attributs et mÃ©thodes hÃ©ritÃ©es de GM_OrientableSurface ////////////////
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
 	// On simule l'heritage du modele en reportant les attributs et methodes
 	// de GM_OrientableSurface
 	// On n'a pas repris l'attribut "orientation" qui ne sert a rien ici.
 
-	/** Primitive. Elle doit etre recalculée à chaque modification de self : fait dans getPrimitive(). */
+	/** Primitive. Elle doit etre recalculÃ©e Ã  chaque modification de self : fait dans getPrimitive(). */
 	protected GM_Surface primitive;
 
 	/** Renvoie la primitive de self. */
@@ -171,43 +166,40 @@ public class GM_CompositeSurface extends GM_Composite {
 	}
 
 	/**
-	 * Attribut stockant les primitives orientées de cette primitive.
-	 * Proxy[0] est celle orientée positivement.
-	 * Proxy[1] est celle orientée négativement.
-	 * On accède aux primitives orientées par getPositive() et getNegative().
+	 * Attribut stockant les primitives orientÃ©es de cette primitive.
+	 * Proxy[0] est celle orientÃ©e positivement.
+	 * Proxy[1] est celle orientÃ©e nÃ©gativement.
+	 * On accÃ¨de aux primitives orientÃ©es par getPositive() et getNegative().
 	 */
 	protected GM_OrientableSurface[] proxy = new GM_OrientableSurface[2];
 
-	/** Renvoie la primitive orientée positivement. */
+	/** Renvoie la primitive orientÃ©e positivement. */
 	public GM_OrientableSurface getPositive(Geodatabase data) {
 		this.simplifyPrimitive(data);
 		return this.primitive;       // equivaut a return this.proxy[0]
 	}
 
-	/** Renvoie la primitive orientée négativement. */
+	/** Renvoie la primitive orientÃ©e nÃ©gativement. */
 	public GM_OrientableSurface getNegative(Geodatabase data)  {
 		this.simplifyPrimitive(data);
 		return this.primitive.getNegative();
 	}
 
-	/** Redéfinition de l'opérateur "boundary" sur GM_OrientableSurface. Renvoie une GM_SurfaceBoundary.  */
+	/** RedÃ©finition de l'opÃ©rateur "boundary" sur GM_OrientableSurface. Renvoie une GM_SurfaceBoundary.  */
 	public GM_SurfaceBoundary boundary(Geodatabase data)  {
 		this.simplifyPrimitive(data);
 		return this.primitive.boundary();
 	}
 
-
-
-
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
-	// Méthodes "validate" /////////////////////////////////////////////////
+	// MÃ©thodes "validate" /////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
 	/** 
 	 * A FAIRE - renvoie toujours true pour le moment.
-	 * Vérifie la continuité des composants. Renvoie TRUE s'ils sont contigus, FALSE sinon.
-	 * Cette méthode n'est pas dans la norme.
+	 * VÃ©rifie la continuitÃ© des composants. Renvoie TRUE s'ils sont contigus, FALSE sinon.
+	 * Cette mÃ©thode n'est pas dans la norme.
 	 * @param tolerance
 	 * @return <code>true</code> if composite surface is validated with the given tolerance; <code>false</false> otherwise.
 	 */
@@ -230,7 +222,7 @@ public class GM_CompositeSurface extends GM_Composite {
 
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
-	// Méthodes privées pour usage interne /////////////////////////////////
+	// MÃ©thodes privÃ©es pour usage interne /////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////
 	/** 
@@ -254,9 +246,5 @@ public class GM_CompositeSurface extends GM_Composite {
             }
         }*/
 	}
-
-
-
-
 
 }
