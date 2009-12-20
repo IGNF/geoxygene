@@ -247,4 +247,7 @@
   		<url>http://oxygene-project.sourceforge.net/</url>
   	</site>
   </distributionManagement>
+  <properties>
+  	<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+	</properties>
 </project>
