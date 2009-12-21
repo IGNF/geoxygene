@@ -1,8 +1,8 @@
 /*
- * Créé le 30 sept. 2004
+ * crÃ©Ã© le 30 sept. 2004
  *
- * Pour changer le modèle de ce fichier généré, allez à :
- * Fenêtre&gt;Préférences&gt;Java&gt;Génération de code&gt;Code et commentaires
+ * Pour changer le ModÃ¨le de ce fichier gÃ©nÃ©rÃ©, allez Ã  :
+ * FenÃªtre&gt;PrÃ©fÃ©rences&gt;Java&gt;Gï¿½nï¿½ration de code&gt;Code et commentaires
  */
 package fr.ign.cogit.geoxygene.feature.type;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author Balley
  *
- * GF_PropertyType proposé par le General Feature Model de la norme ISO19109
+ * GF_PropertyType proposï¿½ par le General Feature Model de la norme ISO19109
  */
 public interface GF_PropertyType {
 
@@ -23,23 +23,23 @@ public interface GF_PropertyType {
 
 
 
-	/** Renvoie le feature type auquel est rattachée la propriété. */
+	/** Renvoie le feature type auquel est rattachï¿½e la propriÃ©tÃ©. */
 	public GF_FeatureType getFeatureType();
-	/** Affecte un feature type à la propriété. */
+	/** Affecte un feature type Ã  la propriÃ©tÃ©. */
 	public void setFeatureType(GF_FeatureType FeatureType) ;
 
 
 
-	/** Renvoie le nom de la propriété. */
+	/** Renvoie le nom de la propriÃ©tÃ©. */
 	public String getMemberName () ;
-	/** Affecte un nom de propriété. */
+	/** Affecte un nom de propriÃ©tÃ©. */
 	public void setMemberName (String MemberName) ;
 
 
 
-	/** Renvoie la définition. */
+	/** Renvoie la dÃ©finition. */
 	public String getDefinition ();
-	/** Affecte une définition. */
+	/** Affecte une dÃ©finition. */
 	public void setDefinition (String Definition) ;
 
 

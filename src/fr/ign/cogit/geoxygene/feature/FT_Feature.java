@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -45,8 +45,8 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
 
 /**
- * Classe mère pour toute classe d'éléments ayant une réalité géographique. Par
- * défaut, porte une géométrie et une topologie, qui peuvent être nulles.
+ * Classe mÃ¨re pour toute classe d'Ã©lÃ©ments ayant une rï¿½alitï¿½ GÃ©ographique. Par
+ * dÃ©faut, porte une gÃ©omÃ©trie et une topologie, qui peuvent Ãªtre nulles.
  * 
  * <P>
  * TODO : ne plus porter de geometrie ni de topologie par defaut,
@@ -62,12 +62,12 @@ public abstract class FT_Feature implements Cloneable {
 	static Logger logger=Logger.getLogger(FT_Feature.class.getName());
 
 	/**
-	 * Constructeur par défaut
+	 * Constructeur par dÃ©faut
 	 */
 	public FT_Feature() {super();}
 	/**
-	 * Contructeur à partir d'une géométrie
-	 * @param geom géométrie du feature
+	 * Contructeur Ã  partir d'une gÃ©omÃ©trie
+	 * @param geom gÃ©omÃ©trie du feature
 	 */
 	public FT_Feature(GM_Object geom) {
 		super();
@@ -80,23 +80,23 @@ public abstract class FT_Feature implements Cloneable {
 	 * pour les objets persistants
 	 * @return l'identifiant
 	 */
-	public int getId() {return id;}
+	public int getId() {return this.id;}
 	/**
 	 * Affecte un identifiant (ne pas utiliser si l'objet est persistant car
 	 * cela est automatique)
 	 * @param Id l'identifiant
 	 */
-	public void setId(int Id) {id = Id;}
+	public void setId(int Id) {this.id = Id;}
 
 	protected GM_Object geom = null;
 	/** 
 	 * Renvoie une geometrie. 
-	 * @return la géométrie de l'objet
+	 * @return la gÃ©omÃ©trie de l'objet
 	 */
-	public GM_Object getGeom() {return geom;}
+	public GM_Object getGeom() {return this.geom;}
 	/** 
-	 * Affecte une geometrie et met à jour les éventuels index concernés.
-	 * @param g nouvelle géométrie de l'objet 
+	 * Affecte une geometrie et met Ã  jour les Ã©ventuels index concernÃ©s.
+	 * @param g nouvelle gÃ©omÃ©trie de l'objet 
 	 */
 	@SuppressWarnings("unchecked")
 	public void setGeom(GM_Object g) {
@@ -121,24 +121,24 @@ public abstract class FT_Feature implements Cloneable {
 	 * Renvoie true si une geometrie existe, false sinon.
 	 * @return vrai si une geometrie existe, faux sinon.
 	 */
-	public boolean hasGeom() {return (geom!=null);}
+	public boolean hasGeom() {return (this.geom!=null);}
 
 	protected TP_Object topo = null;
 	/**
 	 * Renvoie la topologie de l'objet. 
 	 * @return la topologie de l'objet
 	 */
-	public TP_Object getTopo() {return topo;}
+	public TP_Object getTopo() {return this.topo;}
 	/**
 	 * Affecte la topologie de l'objet.
 	 * @param t la topologie de l'objet
 	 */
-	public void setTopo(TP_Object t) {topo = t;}
+	public void setTopo(TP_Object t) {this.topo = t;}
 	/**
 	 * Renvoie true si une topologie existe, false sinon.
-	 * @return vrai si l'objet possède une topologie, faux sinon
+	 * @return vrai si l'objet possÃ¨de une topologie, faux sinon
 	 */
-	public boolean hasTopo() {return (topo != null);}
+	public boolean hasTopo() {return (this.topo != null);}
 	/** Clonage avec clonage de la geometrie. 
 	 * @throws CloneNotSupportedException */
 	public FT_Feature cloneGeom() throws CloneNotSupportedException {
@@ -160,19 +160,19 @@ public abstract class FT_Feature implements Cloneable {
 
 	/** Renvoie toutes les FT_FeatureCollection auquelles appartient this. */
 	public List<FT_FeatureCollection<FT_Feature>> getFeatureCollections() {
-		return featurecollections;
+		return this.featurecollections;
 	}
 
 	/** Renvoie la i-eme FT_FeatureCollection a laquelle appartient this. */
 	public FT_FeatureCollection<FT_Feature> getFeatureCollection(int i) {
-		return featurecollections.get(i);
+		return this.featurecollections.get(i);
 	}
 
 	/**
 	 * Population a laquelle appartient this. Renvoie null si this n'appartient
-	 * a aucune population. NB : normalement, this appartient à une seule
+	 * a aucune population. NB : normalement, this appartient Ã  une seule
 	 * collection. Si ce n'est pas le cas, une seule des collections est
-	 * renvoyée au hasard (la première de la liste).
+	 * renvoyÃ©e au hasard (la PremiÃ¨re de la liste).
 	 */
 	// @SuppressWarnings("unchecked")
 	// public Population<? extends FT_Feature> getPopulation() {
@@ -187,8 +187,8 @@ public abstract class FT_Feature implements Cloneable {
 	// return null;
 	// }
 	/**
-	 * Définit la population en relation, et met à jour la relation inverse.
-	 * ATTENTION : persistance du FT_Feature non gérée dans cette méthode.
+	 * dÃ©finit la population en relation, et met Ã  jour la relation inverse.
+	 * ATTENTION : persistance du FT_Feature non gÃ©rÃ©e dans cette mÃ©thode.
 	 */
 
 	// public void setPopulation(Population O) { Population old =
@@ -196,9 +196,9 @@ public abstract class FT_Feature implements Cloneable {
 	// )
 	// O.add(this); }
 	/**
-	 * Lien bidirectionnel n-m des éléments vers eux-mêmes. Les méthodes get
-	 * (sans indice) et set sont nécessaires au mapping. Les autres méthodes
-	 * sont là seulement pour faciliter l'utilisation de la relation. ATTENTION:
+	 * Lien bidirectionnel n-m des Ã©lÃ©ments vers eux-mÃªmes. Les mÃ©thodes get
+	 * (sans indice) et set sont nÃ©cessaires au mapping. Les autres mÃ©thodes
+	 * sont lÃ  seulement pour faciliter l'utilisation de la relation. ATTENTION:
 	 * Pour assurer la bidirection, il faut modifier les listes uniquement avec
 	 * ces methodes. NB: si il n'y a pas d'objet en relation, la liste est vide
 	 * mais n'est pas "null". Pour casser toutes les relations, faire
@@ -206,49 +206,49 @@ public abstract class FT_Feature implements Cloneable {
 	 */
 	private List<FT_Feature> correspondants = new ArrayList<FT_Feature>();
 
-	/** Lien bidirectionnel n-m des éléments vers eux-mêmes. */
-	public List<FT_Feature> getCorrespondants() {return correspondants;}
+	/** Lien bidirectionnel n-m des Ã©lÃ©ments vers eux-mÃªmes. */
+	public List<FT_Feature> getCorrespondants() {return this.correspondants;}
 
-	/** Lien bidirectionnel n-m des éléments vers eux-mêmes. */
+	/** Lien bidirectionnel n-m des Ã©lÃ©ments vers eux-mÃªmes. */
 	public void setCorrespondants(List<FT_Feature> L) {
-		List<FT_Feature> old = new ArrayList<FT_Feature>(correspondants);
+		List<FT_Feature> old = new ArrayList<FT_Feature>(this.correspondants);
 		for(FT_Feature O:old) {
-			correspondants.remove(O);
+			this.correspondants.remove(O);
 			O.getCorrespondants().remove(this);
 		}
 		for(FT_Feature O:L) {
-			correspondants.add(O);
+			this.correspondants.add(O);
 			O.getCorrespondants().add(this);
 		}
 	}
 
-	/** Lien bidirectionnel n-m des éléments vers eux-mêmes. */
+	/** Lien bidirectionnel n-m des Ã©lÃ©ments vers eux-mÃªmes. */
 	public FT_Feature getCorrespondant(int i) {
-		if (correspondants.size() == 0) return null;
-		return correspondants.get(i);
+		if (this.correspondants.size() == 0) return null;
+		return this.correspondants.get(i);
 	}
 
-	/** Lien bidirectionnel n-m des éléments vers eux même. */
+	/** Lien bidirectionnel n-m des Ã©lÃ©ments vers eux mÃªme. */
 	public void addCorrespondant(FT_Feature O) {
 		if (O == null) return;
-		correspondants.add(O);
+		this.correspondants.add(O);
 		O.getCorrespondants().add(this);
 	}
 
-	/** Lien bidirectionnel n-m des éléments vers eux-mêmes. */
+	/** Lien bidirectionnel n-m des Ã©lÃ©ments vers eux-mÃªmes. */
 	public void removeCorrespondant(FT_Feature O) {
 		if (O == null) return;
-		correspondants.remove(O);
+		this.correspondants.remove(O);
 		O.getCorrespondants().remove(this);
 	}
 
-	/** Lien bidirectionnel n-m des éléments vers eux-mêmes. */
+	/** Lien bidirectionnel n-m des Ã©lÃ©ments vers eux-mÃªmes. */
 	public void clearCorrespondants() {
-		for(FT_Feature O:correspondants) {O.getCorrespondants().remove(this);}
-		correspondants.clear();
+		for(FT_Feature O:this.correspondants) {O.getCorrespondants().remove(this);}
+		this.correspondants.clear();
 	}
 
-	/** Lien bidirectionnel n-m des éléments vers eux même. */
+	/** Lien bidirectionnel n-m des Ã©lÃ©ments vers eux mÃªme. */
 	public void addAllCorrespondants(Collection<FT_Feature> c) {
 		for(FT_Feature feature:c) addCorrespondant(feature);
 	}
@@ -267,21 +267,21 @@ public abstract class FT_Feature implements Cloneable {
 	////////////////////////////////////////////////////////////////////////////
 	// /////
 	/**
-	 * Méthodes issues de MdFeature : Permettent de créer un
-	 * Feature dont les propriétés (valeurs d'attributs, opérations et objets en
-	 * relation) peuvent être accedés de façon générique en mentionnant le nom
-	 * de la propriété. Pour permettre cela chaque feature est rattaché à son
+	 * mÃ©thodes issues de MdFeature : Permettent de crÃ©er un
+	 * Feature dont les propriÃ©tÃ©s (valeurs d'attributs, opÃ©rations et objets en
+	 * relation) peuvent Ãªtre accedï¿½s de faï¿½on gÃ©nÃ©rique en mentionnant le nom
+	 * de la propriÃ©tÃ©. Pour permettre cela chaque feature est rattachï¿½ Ã  son
 	 * featureType.
 	 */
 	////////////////////////////////////////////////////////////////////////////
 	// /////
 	/**
-	 * Creation d'un feature du type donné en paramètre, par exemple Route.
-	 * L'objet crée sera alors une instance de bdcarto.TronconRoute (l'element
-	 * de schéma logique correspondant au featureType Route) qui étend
-	 * FeatureCommun. Les valeurs d'attributs ne sont pas initialisées.
-	 * @param featureType le feature type de l'objet à créer
-	 * @return l'objet créé
+	 * Creation d'un feature du type donnÃ© en paramÃ¨tre, par exemple Route.
+	 * L'objet crÃ©e sera alors une instance de bdcarto.TronconRoute (l'element
+	 * de schÃ©ma logique correspondant au featureType Route) qui ï¿½tend
+	 * FeatureCommun. Les valeurs d'attributs ne sont pas initialisÃ©es.
+	 * @param featureType le feature type de l'objet Ã  crÃ©er
+	 * @return l'objet crÃ©Ã©
 	 */
 	public static FT_Feature createTypedFeature(FeatureType featureType) {
 		FT_Feature feature = null;
@@ -299,7 +299,7 @@ public abstract class FT_Feature implements Cloneable {
 	}
 
 	/**
-	 * L'unique population à laquelle appartient cet objet.
+	 * L'unique population Ã  laquelle appartient cet objet.
 	 */
 	protected Population<FT_Feature> population;
 	/**
@@ -307,7 +307,7 @@ public abstract class FT_Feature implements Cloneable {
 	 */
 	@SuppressWarnings("unchecked")
 	public Population<FT_Feature> getPopulation() {
-		if (this.population != null) {return population;}
+		if (this.population != null) {return this.population;}
 		synchronized(this.featurecollections) {
 		    FT_FeatureCollection<FT_Feature>[] collections = this.featurecollections.toArray(new FT_FeatureCollection[0]);
 		    for(FT_FeatureCollection<FT_Feature> f:collections) if (f instanceof Population<?>) return (Population<FT_Feature>) f;
@@ -319,8 +319,8 @@ public abstract class FT_Feature implements Cloneable {
 	 */
 	public void setPopulation(Population<FT_Feature> population) {
 		this.population = population;
-		// Refuse d'écrire dans ma population car ne peut pas pas vérifier si
-		// this hérite bien de FT_Feature...
+		// Refuse d'ï¿½crire dans ma population car ne peut pas pas vÃ©rifier si
+		// this hÃ©rite bien de FT_Feature...
 		// this.population.addUnique(this);
 	}
 	/**
@@ -338,33 +338,33 @@ public abstract class FT_Feature implements Cloneable {
 	 * @return le featureType de ce feature
 	 */
 	public FeatureType getFeatureType() {
-		if ( (featureType == null) && (this.getPopulation() != null) )
+		if ( (this.featureType == null) && (this.getPopulation() != null) )
 			return this.getPopulation().getFeatureType();
-		return featureType;
+		return this.featureType;
 	}
 	/**
-	 * Methode reflexive pour recupérer la valeur d'un attribut donné en
-	 * paramètre
+	 * Methode reflexive pour RÃ©cupÃ¨rer la valeur d'un attribut donnÃ© en
+	 * paramÃ¨tre
 	 * 
 	 * @param attribute
 	 * @return la valeur de l'attribut sous forme d'Object
 	 */
 	public Object getAttribute(AttributeType attribute) {
-		if (attribute.getMemberName().equals("geom")) {
-			logger.warn("WARNING : Pour récupérer la primitive géométrique par défaut, veuillez utiliser "
-					+ "la méthode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)");
+		if (attribute.getMemberName().equals("geom")) { //$NON-NLS-1$
+			logger.warn("WARNING : Pour RÃ©cupÃ¨rer la primitive gÃ©omÃ©trique par dÃ©faut, veuillez utiliser " //$NON-NLS-1$
+					+ "la mÃ©thode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
 			return this.getGeom();
 		}
-		if (attribute.getMemberName().equals("topo")) {
-			logger.warn("WARNING : Pour récupérer la primitive topologique par défaut, veuillez utiliser "
-					+ "la méthode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)");
+		if (attribute.getMemberName().equals("topo")) { //$NON-NLS-1$
+			logger.warn("WARNING : Pour RÃ©cupÃ¨rer la primitive topologique par dÃ©faut, veuillez utiliser " //$NON-NLS-1$
+					+ "la mÃ©thode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
 			return this.getTopo();
 		}
 		Object valeur = null;
 		String nomFieldMaj = null;
 		if (attribute.getNomField().length() == 0) nomFieldMaj = attribute.getNomField();
 		else nomFieldMaj = Character.toUpperCase(attribute.getNomField().charAt(0)) + attribute.getNomField().substring(1);
-		String nomGetFieldMethod = "get" + nomFieldMaj;
+		String nomGetFieldMethod = "get" + nomFieldMaj; //$NON-NLS-1$
 		Class<?> classe = this.getClass();
 		while (!classe.equals(Object.class)) {
 			try {
@@ -372,23 +372,23 @@ public abstract class FT_Feature implements Cloneable {
 				valeur = methodGetter.invoke(this, (Object[]) null);
 				return valeur;
 			} catch (NoSuchMethodException e) {
-				//if (logger.isTraceEnabled()) logger.trace("La méthode "+nomGetFieldMethod+" n'existe pas dans la classe "+classe);
+				//if (logger.isTraceEnabled()) logger.trace("La mÃ©thode "+nomGetFieldMethod+" n'existe pas dans la classe "+classe);
 			} catch (SecurityException e) {
-				if (logger.isDebugEnabled()) logger.debug("SecurityException pendant l'appel de la mï¿½thode "+nomGetFieldMethod+" sur la classe "+classe);
+				if (logger.isDebugEnabled()) logger.debug("SecurityException pendant l'appel de la mÃ©thode "+nomGetFieldMethod+" sur la classe "+classe); //$NON-NLS-1$ //$NON-NLS-2$
 			} catch (IllegalArgumentException e) {
-				if (logger.isDebugEnabled()) logger.debug("IllegalArgumentException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
+				if (logger.isDebugEnabled()) logger.debug("IllegalArgumentException pendant l'appel de la mÃ©thode "+nomGetFieldMethod+" sur la classe "+classe); //$NON-NLS-1$ //$NON-NLS-2$
 			} catch (IllegalAccessException e) {
-				if (logger.isDebugEnabled()) logger.debug("IllegalAccessException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
+				if (logger.isDebugEnabled()) logger.debug("IllegalAccessException pendant l'appel de la mÃ©thode "+nomGetFieldMethod+" sur la classe "+classe); //$NON-NLS-1$ //$NON-NLS-2$
 			} catch (InvocationTargetException e) {
 				if (logger.isDebugEnabled()) {
-				    logger.debug("InvocationTargetException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
+				    logger.debug("InvocationTargetException pendant l'appel de la mÃ©thode "+nomGetFieldMethod+" sur la classe "+classe); //$NON-NLS-1$ //$NON-NLS-2$
 				    logger.debug(e.getCause());
 				}
 			}
 			classe = classe.getSuperclass();
 		}
-		// on réessayer si le getter est du genre isAttribute, ie pour un booléen
-		nomGetFieldMethod = "is" + nomFieldMaj;
+		// on rï¿½essayer si le getter est du genre isAttribute, ie pour un BoolÃ©en
+		nomGetFieldMethod = "is" + nomFieldMaj; //$NON-NLS-1$
 		classe = this.getClass();
 		while (!classe.equals(Object.class)) {
 			try {
@@ -396,37 +396,37 @@ public abstract class FT_Feature implements Cloneable {
 				valeur = methodGetter.invoke(this, (Object[]) null);
 				return valeur;
 			} catch (NoSuchMethodException e) {
-				//if (logger.isTraceEnabled()) logger.trace("La méthode "+nomGetFieldMethod+" n'existe pas dans la classe "+classe);
+				//if (logger.isTraceEnabled()) logger.trace("La mÃ©thode "+nomGetFieldMethod+" n'existe pas dans la classe "+classe);
 			} catch (SecurityException e) {
-				if (logger.isTraceEnabled()) logger.trace("SecurityException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
+				if (logger.isTraceEnabled()) logger.trace("SecurityException pendant l'appel de la mÃ©thode "+nomGetFieldMethod+" sur la classe "+classe); //$NON-NLS-1$ //$NON-NLS-2$
 			} catch (IllegalArgumentException e) {
-				if (logger.isTraceEnabled()) logger.trace("IllegalArgumentException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
+				if (logger.isTraceEnabled()) logger.trace("IllegalArgumentException pendant l'appel de la mÃ©thode "+nomGetFieldMethod+" sur la classe "+classe); //$NON-NLS-1$ //$NON-NLS-2$
 			} catch (IllegalAccessException e) {
-				if (logger.isTraceEnabled()) logger.trace("IllegalAccessException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
+				if (logger.isTraceEnabled()) logger.trace("IllegalAccessException pendant l'appel de la mÃ©thode "+nomGetFieldMethod+" sur la classe "+classe); //$NON-NLS-1$ //$NON-NLS-2$
 			} catch (InvocationTargetException e) {
-				if (logger.isTraceEnabled()) logger.trace("InvocationTargetException pendant l'appel de la méthode "+nomGetFieldMethod+" sur la classe "+classe);
+				if (logger.isTraceEnabled()) logger.trace("InvocationTargetException pendant l'appel de la mÃ©thode "+nomGetFieldMethod+" sur la classe "+classe); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			classe = classe.getSuperclass();
 		}
-		logger.error("Echec de l'appel au getter de l'attribut "+attribute.getNomField()+" sur l'objet "+this);
+		logger.error("Echec de l'appel au getter de l'attribut "+attribute.getNomField()+" sur l'objet "+this); //$NON-NLS-1$ //$NON-NLS-2$
 		return null;
 	}
 	/**
-	 * Méthode reflexive pour affecter à un feature une valeur d'attribut pour
-	 * l'attributeType donné en paramètre. Il est inutile de connaître la classe
-	 * d'implémentation du feature ni le nom de la méthode setter à invoquer.
+	 * mÃ©thode reflexive pour affecter Ã  un feature une valeur d'attribut pour
+	 * l'attributeType donnÃ© en paramÃ¨tre. Il est inutile de connaÃªtre la classe
+	 * d'implÃ©mentation du feature ni le nom de la mÃ©thode setter Ã  invoquer.
 	 * 
 	 * @param attribute
 	 * @param valeur
 	 */
 	public void setAttribute(AttributeType attribute, Object valeur) {
-		if (attribute.getMemberName().equals("geom")) {
-			logger.warn("WARNING : Pour affecter la primitive géométrique par défaut, veuillez utiliser "
-					+ "la méthode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)");
+		if (attribute.getMemberName().equals("geom")) { //$NON-NLS-1$
+			logger.warn("WARNING : Pour affecter la primitive gÃ©omÃ©trique par dÃ©faut, veuillez utiliser " //$NON-NLS-1$
+					+ "la mÃ©thode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
 			this.setGeom((GM_Object) valeur);
-		} else if (attribute.getMemberName().equals("topo")) {
-			logger.warn("WARNING : Pour affecter la primitive topologique par défaut, veuillez utiliser "
-					+ "la méthode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)");
+		} else if (attribute.getMemberName().equals("topo")) { //$NON-NLS-1$
+			logger.warn("WARNING : Pour affecter la primitive topologique par dÃ©faut, veuillez utiliser " //$NON-NLS-1$
+					+ "la mÃ©thode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
 			this.setTopo((TP_Object) valeur);
 		}
 		else {
@@ -437,13 +437,13 @@ public abstract class FT_Feature implements Cloneable {
 					nomFieldMaj2 = Character.toUpperCase(attribute.getNomField().charAt(0))
 							+ attribute.getNomField().substring(1);
 				}
-				String nomSetFieldMethod = "set" + nomFieldMaj2;
+				String nomSetFieldMethod = "set" + nomFieldMaj2; //$NON-NLS-1$
 				Method methodSetter = this.getClass().getDeclaredMethod(nomSetFieldMethod, valeur.getClass());
 				// Method methodGetter =
 				// this.getClass().getSuperclass().getDeclaredMethod(
 				// nomGetFieldMethod,
 				// null);
-				valeur = methodSetter.invoke(this, valeur);
+				methodSetter.invoke(this, valeur);
 			} catch (SecurityException e) {
 				e.printStackTrace();
 			} catch (IllegalArgumentException e) {
@@ -458,33 +458,33 @@ public abstract class FT_Feature implements Cloneable {
 		}
 	}
 	/**
-	 * Methode reflexive pour recupérer les features en relation par
-	 * l'intermédiaire du role donné en paramètre. Attention, cette méthode
-	 * suppose que tous les éléments en relation ont été chargés en mémoire. Ce
+	 * Methode reflexive pour RÃ©cupÃ¨rer les features en relation par
+	 * l'intermÃ©diaire du role donnÃ© en paramÃ¨tre. Attention, cette mÃ©thode
+	 * suppose que tous les Ã©lÃ©ments en relation ont Ã©tÃ© chargÃ©s en mï¿½moire. Ce
 	 * n'est pas toujours le cas avec OJB : pour des raisons de performances, le
-	 * concepteur du fichier de mapping y représente parfois les relations de
-	 * façon unidirectionnelle. Si la méthode renvoie une liste vide, vérifiez
+	 * concepteur du fichier de mapping y reprÃ©sente parfois les relations de
+	 * faï¿½on unidirectionnelle. Si la mÃ©thode renvoie une liste vide, vÃ©rifiez
 	 * votre fichier de mapping. Si vous ne souhaitez pas le modifier, explorez
 	 * la relation dans l'autre sens (par exemple, avec un fichier de mapping
-	 * donné, le role "troncon route a pour noeud initial" sera explorable mais
-	 * pas le role "noeud routier à pour arcs sortants".
+	 * donnÃ©, le role "troncon route a pour noeud initial" sera explorable mais
+	 * pas le role "noeud routier Ã  pour arcs sortants".
 	 * 
 	 * @param ftt le type d'objets dont on veut la liste
-	 * @param role le rôle que l'on souhaite explorer
+	 * @param role le rï¿½le que l'on souhaite explorer
 	 * @return la liste des features en relation
 	 */
 	@SuppressWarnings("unchecked")
 	public List<? extends FT_Feature> getRelatedFeatures(FeatureType ftt,AssociationRole role) {
 		List<FT_Feature> listResult = new ArrayList();
-		if (logger.isDebugEnabled()) logger.debug("\n**recherche des features en relation**");
+		if (logger.isDebugEnabled()) logger.debug("\n**recherche des features en relation**"); //$NON-NLS-1$
 		try {
-			// cas 1-1 ou 1-N ou N-1 où il n'y a pas de classe association
+			// cas 1-1 ou 1-N ou N-1 oÃ¹ il n'y a pas de classe association
 			if (role.getNomFieldAsso() == null) {
-				if (logger.isDebugEnabled()) logger.debug("pas de classe association");
+				if (logger.isDebugEnabled()) logger.debug("pas de classe association"); //$NON-NLS-1$
 				String nomFieldClasseMaj;
 				if (role.getNomFieldClasse().length() == 0) {nomFieldClasseMaj = role.getNomFieldClasse();}
 				else {nomFieldClasseMaj = Character.toUpperCase(role.getNomFieldClasse().charAt(0))+role.getNomFieldClasse().substring(1);}
-				String nomGetMethod = "get" + nomFieldClasseMaj;
+				String nomGetMethod = "get" + nomFieldClasseMaj; //$NON-NLS-1$
 				Method methodGetter = this.getClass().getDeclaredMethod(nomGetMethod, (Class[]) null);
 				// Method methodGetter =
 				// this.getClass().getSuperclass().getDeclaredMethod(
@@ -496,27 +496,27 @@ public abstract class FT_Feature implements Cloneable {
 			}
 			// cas ou il y a une classe association
 			else {
-				if (logger.isDebugEnabled()) logger.debug("classe association : "
+				if (logger.isDebugEnabled()) logger.debug("classe association : " //$NON-NLS-1$
 						+ role.getAssociationType().getTypeName());
 				List<FT_Feature> listInstancesAsso = new ArrayList<FT_Feature>();
 				// je vais chercher les instances de classe-association
 				String nomFieldClasseMaj;
 				if (role.getNomFieldClasse().length() == 0) {nomFieldClasseMaj = role.getNomFieldClasse();}
 				else {nomFieldClasseMaj = Character.toUpperCase(role.getNomFieldClasse().charAt(0))+role.getNomFieldClasse().substring(1);}
-				String nomGetMethod = "get" + nomFieldClasseMaj;
+				String nomGetMethod = "get" + nomFieldClasseMaj; //$NON-NLS-1$
 				Method methodGetter = this.getClass().getDeclaredMethod(nomGetMethod, (Class[]) null);
 				String nomClasseAsso = ((AssociationType) role.getAssociationType()).getNomClasseAsso();
 				Class classeAsso = Class.forName(nomClasseAsso);
-				if (logger.isDebugEnabled()) logger.debug("cardMax de " + role.getMemberName() + " = "+ role.getCardMax());
-				if (!role.getCardMax().equals("1")) {
-					if (logger.isDebugEnabled()) logger.debug("invocation de "+ methodGetter.getName() + " sur le feature "+ this.getId());
+				if (logger.isDebugEnabled()) logger.debug("cardMax de " + role.getMemberName() + " = "+ role.getCardMax()); //$NON-NLS-1$ //$NON-NLS-2$
+				if (!role.getCardMax().equals("1")) { //$NON-NLS-1$
+					if (logger.isDebugEnabled()) logger.debug("invocation de "+ methodGetter.getName() + " sur le feature "+ this.getId()); //$NON-NLS-1$ //$NON-NLS-2$
 					listInstancesAsso.addAll((List<FT_Feature>) methodGetter.invoke(this, (Object[]) null));
-					if (logger.isDebugEnabled()) logger.debug("nb instances d'association = "+ listInstancesAsso.size());
+					if (logger.isDebugEnabled()) logger.debug("nb instances d'association = "+ listInstancesAsso.size()); //$NON-NLS-1$
 				} else {
 					listInstancesAsso.add((FT_Feature) methodGetter.invoke(this, (Object[]) null));
-					if (logger.isDebugEnabled()) logger.debug("nb instances d'association = "+listInstancesAsso.size());
+					if (logger.isDebugEnabled()) logger.debug("nb instances d'association = "+listInstancesAsso.size()); //$NON-NLS-1$
 				}
-				// je cherche le (ou les) role(s) allant de l'association à
+				// je cherche le (ou les) role(s) allant de l'association ï¿½
 				// l'autre featureType
 				List listRoles = role.getAssociationType().getRoles();
 				listRoles.remove(role);
@@ -528,26 +528,26 @@ public abstract class FT_Feature implements Cloneable {
 					}
 				}
 				/**
-				 * pour chaque role concerné (il peut y en avoir plus d'un) je
+				 * pour chaque role concernÃ© (il peut y en avoir plus d'un) je
 				 * vais chercher les instances en relation
 				 */
 				AssociationRole roleExplore;
 				for (int i = 0; i < listRolesAGarder.size(); i++) {
 					roleExplore = (AssociationRole) listRolesAGarder.get(i);
-					if (logger.isDebugEnabled()) logger.debug("role exploré = "+ roleExplore.getMemberName());
+					if (logger.isDebugEnabled()) logger.debug("role explorï¿½ = "+ roleExplore.getMemberName()); //$NON-NLS-1$
 					String nomFieldAssoMaj;
 					if (roleExplore.getNomFieldAsso().length() == 0) {nomFieldAssoMaj = roleExplore.getNomFieldAsso();}
 					else {nomFieldAssoMaj = Character.toUpperCase(roleExplore.getNomFieldAsso().charAt(0))+roleExplore.getNomFieldAsso().substring(1);}
-					nomGetMethod = "get" + nomFieldAssoMaj;
+					nomGetMethod = "get" + nomFieldAssoMaj; //$NON-NLS-1$
 					methodGetter = classeAsso.getDeclaredMethod(nomGetMethod,(Class[]) null);
-					if (logger.isDebugEnabled()) logger.debug("methode de la classe-asso pour recuperer les instances en relation = "+methodGetter.getName());
+					if (logger.isDebugEnabled()) logger.debug("methode de la classe-asso pour recuperer les instances en relation = "+methodGetter.getName()); //$NON-NLS-1$
 					/**
 					 *  je vais chercher les objets en relation via chaque instance de classe-association
 					 */
 					for (int j = 0; j < listInstancesAsso.size(); j++) {
-						if (logger.isDebugEnabled()) logger.debug("j = " + j);
-						if (logger.isDebugEnabled()) logger.debug("instance = "+listInstancesAsso.get(j).getId());
-						if (logger.isDebugEnabled()) logger.debug("class  "+listInstancesAsso.get(j).getClass());
+						if (logger.isDebugEnabled()) logger.debug("j = " + j); //$NON-NLS-1$
+						if (logger.isDebugEnabled()) logger.debug("instance = "+listInstancesAsso.get(j).getId()); //$NON-NLS-1$
+						if (logger.isDebugEnabled()) logger.debug("class  "+listInstancesAsso.get(j).getClass()); //$NON-NLS-1$
 						if (logger.isDebugEnabled()) logger.debug(methodGetter.invoke(listInstancesAsso.get(j), (Object[]) null));
 						Object objResult = methodGetter.invoke(listInstancesAsso.get(j), (Object[]) null);
 						if (objResult instanceof FT_Feature) {listResult.add((FT_Feature) objResult);}
@@ -568,13 +568,13 @@ public abstract class FT_Feature implements Cloneable {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		if (logger.isDebugEnabled()) logger.debug("\n**fin de la recherche des features en relation**");
+		if (logger.isDebugEnabled()) logger.debug("\n**fin de la recherche des features en relation**"); //$NON-NLS-1$
 		return listResult;
 	}
 
 	/**
-	 * Methode pour recupérer la valeur d'un attribut dont le nom est donné en
-	 * paramètre
+	 * Methode pour RÃ©cupÃ¨rer la valeur d'un attribut dont le nom est donnÃ© en
+	 * paramÃ¨tre
 	 * 
 	 * @param nomAttribut
 	 * @return la valeur de l'attribut sous forme d'Object
@@ -587,44 +587,44 @@ public abstract class FT_Feature implements Cloneable {
 			type.setMemberName(nomAttribut);
 			//FIXME c'est un peu une bidouille
 			return this.getAttribute(type);
-			//logger.error("Le FeatureType correspondant à ce FT_Feature est introuvable: Impossible de remonter au AttributeType à partir de son nom.");
+			//logger.error("Le FeatureType correspondant Ã  ce FT_Feature est introuvable: Impossible de remonter au AttributeType Ã  partir de son nom.");
 			//return null;
 		}
 		AttributeType attribute = ft.getFeatureAttributeByName(nomAttribut);
 		return (this.getAttribute(attribute));
 	}
 	/**
-	 * Methode pour recupérer les features en relation par l'intermédiaire du
-	 * role donné en paramètre. Attention, cette méthode suppose que tous les
-	 * éléments en relation ont été chargés en mémoire. Ce n'est pas toujours le
+	 * Methode pour RÃ©cupÃ¨rer les features en relation par l'intermÃ©diaire du
+	 * role donnÃ© en paramÃ¨tre. Attention, cette mÃ©thode suppose que tous les
+	 * Ã©lÃ©ments en relation ont Ã©tÃ© chargÃ©s en mï¿½moire. Ce n'est pas toujours le
 	 * cas avec OJB : pour des raisons de performances, le concepteur du fichier
-	 * de mapping y représente parfois les relations de façon unidirectionnelle.
-	 * Si la méthode renvoie une liste vide, vérifiez votre fichier de mapping.
+	 * de mapping y reprÃ©sente parfois les relations de faï¿½on unidirectionnelle.
+	 * Si la mÃ©thode renvoie une liste vide, vÃ©rifiez votre fichier de mapping.
 	 * Si vous ne souhaitez pas le modifier, explorez la relation dans l'autre
-	 * sens (par exemple, avec un fichier de mapping donné, le role "troncon
+	 * sens (par exemple, avec un fichier de mapping donnÃ©, le role "troncon
 	 * route a pour noeud initial" sera explorable mais pas le role "noeud
-	 * routier à pour arcs sortants".
+	 * routier Ã  pour arcs sortants".
 	 * 
 	 * @param nomFeatureType
 	 * @param nomRole
 	 * @return la liste des features en relation avec nomFeatureType via nomRole
 	 */
 	public List<? extends FT_Feature> getRelatedFeatures(String nomFeatureType,String nomRole) {
-		// Initialisation de la liste des résultats
+		// Initialisation de la liste des rÃ©sultats
 		List<? extends FT_Feature> listResultats = null;
-		// On récupère le featuretype nommé nomFeatureType
+		// On RÃ©cupÃ¨re le featuretype nommï¿½ nomFeatureType
 		FeatureType ftt = (FeatureType) this.getFeatureType().getSchema()
 		.getFeatureTypeByName(nomFeatureType);
-		// On récupère l'AssociationRole nommé nomRole
+		// On RÃ©cupÃ¨re l'AssociationRole nommï¿½ nomRole
 		AssociationRole role = null;
 		List<GF_AssociationRole> listeRoles = ftt.getRoles();
 		for (GF_AssociationRole r : listeRoles) {
 			if (r.getMemberName().equalsIgnoreCase(nomRole)) role = (AssociationRole) r;
 			else continue;
 		}
-		if ((ftt == null) || (role == null)) {
-			logger.error("Le FeatureType "+nomFeatureType+" ou l'AssociationRole "+nomRole
-					+ " est introuvable. Impossible de calculer les FT_Feature en relation!");
+		if (role == null) {
+			logger.error("Le FeatureType "+nomFeatureType+" ou l'AssociationRole "+nomRole //$NON-NLS-1$ //$NON-NLS-2$
+					+ " est introuvable. Impossible de calculer les FT_Feature en relation!"); //$NON-NLS-1$
 			return null;
 		}
 		listResultats = this.getRelatedFeatures(ftt, role);
@@ -632,32 +632,32 @@ public abstract class FT_Feature implements Cloneable {
 	}
 
 	/**
-	 * La sémiologie de l'objet géographique
+	 * La sï¿½miologie de l'objet GÃ©ographique
 	 */
 	private Representation representation = null;
 	/**
-	 * Renvoie la représentation liée à l'objet - Renvoie null si non définie
-	 * @return la représentation liée à l'objet - Renvoie null si non définie
+	 * Renvoie la reprÃ©sentation liï¿½e Ã  l'objet - Renvoie null si non dÃ©finie
+	 * @return la reprÃ©sentation liï¿½e Ã  l'objet - Renvoie null si non dÃ©finie
 	 */
 	public Representation getRepresentation() {return this.representation;}
 	/**
-	 * Affecte une représentation à un objet
-	 * @param rep représentation à affecter au FT_Feature
+	 * Affecte une reprÃ©sentation Ã  un objet
+	 * @param rep reprÃ©sentation Ã  affecter au FT_Feature
 	 */
 	public void setRepresentation(Representation rep) {this.representation = rep;}
 
 	/**
-	 * marqueur de suppression d'un objet (utilisé par exemple en généralisation)
+	 * marqueur de suppression d'un objet (utilisÃ© par exemple en gÃ©nÃ©ralisation)
 	 */
 	private boolean estSupprime = false;
 	/**
-	 * Marqueur de suppression d'un objet (utilisé par exemple en généralisation).
-	 * @return vrai si l'objet a été supprimé, faux sinon 
+	 * Marqueur de suppression d'un objet (utilisÃ© par exemple en gÃ©nÃ©ralisation).
+	 * @return vrai si l'objet a Ã©tÃ© supprimï¿½, faux sinon 
 	 */
-	public boolean estSupprime() { return estSupprime; }
+	public boolean estSupprime() { return this.estSupprime; }
 	/**
-	 * Affecte le marqueur de suppression d'un objet (utilisé par exemple en généralisation).
-	 * @param estSupprime vrai si l'objet a été supprimé, faux sinon
+	 * Affecte le marqueur de suppression d'un objet (utilisÃ© par exemple en gÃ©nÃ©ralisation).
+	 * @param estSupprime vrai si l'objet a Ã©tÃ© supprimï¿½, faux sinon
 	 */
 	public void setEstSupprime(boolean estSupprime) { this.estSupprime = estSupprime; }	
 	/**
@@ -670,5 +670,6 @@ public abstract class FT_Feature implements Cloneable {
 		return this.getGeom().envelope().intersects(env);
 	}
 	@Override
-	public String toString() {return this.getClass().getSimpleName()+" "+this.getGeom();}
+	public String toString() {return this.getClass().getSimpleName()+" "+this.getGeom();} //$NON-NLS-1$
+	
 }

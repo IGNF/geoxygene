@@ -1,8 +1,8 @@
 /*
- * Créé le 30 sept. 2004
+ * crÃ©Ã© le 30 sept. 2004
  *
- * Pour changer le modèle de ce fichier généré, allez à :
- * Fenêtre&gt;Préférences&gt;Java&gt;Génération de code&gt;Code et commentaires
+ * Pour changer le ModÃ¨le de ce fichier gÃ©nÃ©rÃ©, allez Ã  :
+ * FenÃªtre&gt;PrÃ©fÃ©rences&gt;Java&gt;Gï¿½nï¿½ration de code&gt;Code et commentaires
  */
 package fr.ign.cogit.geoxygene.feature.type;
 
@@ -10,8 +10,8 @@ package fr.ign.cogit.geoxygene.feature.type;
 /**
  * @author Balley
  *
- * GF_InheritanceRelation proposé par le General Feature Model de la norme ISO1909.
- * Une relation d'héritage a exactement un subType et une superType.
+ * GF_InheritanceRelation proposï¿½ par le General Feature Model de la norme ISO1909.
+ * Une relation d'hÃ©ritage a exactement un subType et une superType.
  */
 public interface GF_InheritanceRelation {
 
@@ -32,11 +32,11 @@ public interface GF_InheritanceRelation {
 
 
 	/** Renvoie l'attribut uniqueInstance.
-	 * Dans la norme, cet attribut indique si une instance du supertype peut être
-	 * instance de plusieurs subtypes. La norme est ici ambigüe puisqu'elle indique
+	 * Dans la norme, cet attribut indique si une instance du supertype peut Ãªtre
+	 * instance de plusieurs subtypes. La norme est ici ambigï¿½e puisqu'elle indique
 	 * par ailleurs qu'une relation d'heritage ne comporte qu'un subtype : cela
 	 * signifierait que l'attribut uniqueInstance est superflu au niveau de la
-	 * relation d'héritage mais devrait être défini au niveau du superType.
+	 * relation d'hÃ©ritage mais devrait Ãªtre dÃ©fini au niveau du superType.
 	 * 
 	 * "UniqueInstance is a Boolean variable, where .TRUE. means that an instance of the supertype shall not
 	 * be an instance of more than one of the subtypes, whereas .FALSE. means that an instance of the
@@ -48,15 +48,15 @@ public interface GF_InheritanceRelation {
 
 
 
-	/** Renvoie la classe mère de la relation d'héritage. */
+	/** Renvoie la classe mÃ¨re de la relation d'hÃ©ritage. */
 	public GF_FeatureType getSuperType();
-	/** Affecte une classe mère à la relation d'héritage. */
+	/** Affecte une classe mÃ¨re Ã  la relation d'hÃ©ritage. */
 	public void setSuperType(GF_FeatureType SuperType);
 
 
-	/** Renvoie la classe fille de la relation d'héritage. */
+	/** Renvoie la classe fille de la relation d'hÃ©ritage. */
 	public GF_FeatureType getSubType();
-	/** Affecte une classe fille à la relation d'héritage. */
+	/** Affecte une classe fille Ã  la relation d'hÃ©ritage. */
 	public void setSubType(GF_FeatureType SubType);
 
 

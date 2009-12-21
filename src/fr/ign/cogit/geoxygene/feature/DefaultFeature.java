@@ -1,14 +1,14 @@
-/*******************************************************************************
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  * 
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -21,7 +21,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *******************************************************************************/
+ */
 
 package fr.ign.cogit.geoxygene.feature;
 
@@ -32,18 +32,18 @@ import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
 
 /**
  *
- * Feature générique.
- * Les attributs sont représentés dans une table et ne peuvent
- * pas être accédés autrement -(pas de getter ou setter spécifique à un attribut
+ * Feature gÃ©nÃ©rique.
+ * Les attributs sont reprÃ©sentÃ©s dans une table et ne peuvent
+ * pas Ãªtre accÃ¨dÃ©s autrement -(pas de getter ou setter spÃ©cifique Ã  un attribut
  * comme getNbVoies() pour les TronconRoute.java par exemple).
  * 
- * Un defaultFeature est cependant associé à un FeatureType avec toutes les
- * descriptions des ses attributs, types de valeurs etc. C'est au développeur de
- * s'assurer que le defaultFeature reste conforme à la définition de son featureType.
- * Au premier chargement, s'il n'y a pas de featuretype renseigné, un nouveau featureType
- * est généré automatiquement grâce aux colonnes de la table. Mais cela ne constitue pas
- * un schéma conceptuel, il doit donc être précisé manuellement dès que possible pour
- * les utilisations ultérieures (notamment pour identifier les relatios entre objets etc.)
+ * Un defaultFeature est cependant associÃ© Ã  un FeatureType avec toutes les
+ * descriptions des ses attributs, types de valeurs etc. C'est au dÃ©veloppeur de
+ * s'assurer que le defaultFeature reste conforme Ã  la dÃ©finition de son featureType.
+ * Au premier chargement, s'il n'y a pas de featuretype renseignÃ©, un nouveau featureType
+ * est gÃ©nÃ©rÃ© automatiquement grÃ¢ce aux colonnes de la table. Mais cela ne constitue pas
+ * un schÃ©ma conceptuel, il doit donc Ãªtre prÃ©cisÃ© manuellement dÃ¨s que possible pour
+ * les utilisations ultÃ©rieures (notamment pour identifier les relatios entre objets etc.)
  * 
  * Stockage et chargement par OJB : un seul mapping pour toutes les tables
  * 
@@ -61,13 +61,13 @@ public class DefaultFeature extends FT_Feature {
 	 */
 	public DefaultFeature() {super();}
 	/**
-	 * Constructeur à partir d'une géométrie
-	 * @param geometry géométrie de l'objet
+	 * Constructeur Ã  partir d'une gÃ©omÃ©trie
+	 * @param geometry gÃ©omÃ©trie de l'objet
 	 */
 	public DefaultFeature(GM_Object geometry) {super(geometry);}
 	//private FeatureType featureType;
 	/**
-	 * nom table et colonnes. contient une "lookup table" reliant le numéro de l'attribut
+	 * nom table et colonnes. contient une "lookup table" reliant le numÃ©ro de l'attribut
 	 * dans la table attributes[] du defaultFeature, son nom de colonne et son nom d'attributeType.
 	 */
 	private SchemaDefaultFeature schema;
@@ -76,7 +76,7 @@ public class DefaultFeature extends FT_Feature {
 	 * Renvoie un tableau contenant les valeurs des attributs de l'objet
 	 * @return un tableau contenant les valeurs des attributs de l'objet
 	 */
-	public Object[] getAttributes() {return attributes;}
+	public Object[] getAttributes() {return this.attributes;}
 	/**
 	 * Renvoie l'attribut de position <code>n</code> dans le tableau d'attributs
 	 * @param rang le rang de l'attribut
@@ -86,21 +86,23 @@ public class DefaultFeature extends FT_Feature {
 	@Override
 	public Object getAttribute(String nom){
 		/**
-		 * on regarde en priorité si le nom correspond à un nom d'attributeType (métadonnées de niveau conceptuel)
+		 * on regarde en prioritÃ© si le nom correspond Ã  un nom 
+		 * d'attributeType (mÃ©tadonnÃ©es de niveau conceptuel)
 		 */
 		String[] tabNoms;
 		for(Integer key:getSchema().getAttLookup().keySet()) {
 			tabNoms = this.getSchema().getAttLookup().get(key);
-			if ((tabNoms!=null)&&(tabNoms[1]!=null)&&(tabNoms[1].equals(nom))) return this.getAttribute(key);
+			if ((tabNoms!=null)&&(tabNoms[1]!=null)&&(tabNoms[1].equals(nom))) return this.getAttribute(key.intValue());
 		}
 		/**
-		 * si on n'a pas trouvé au niveau conceptuel, on regarde s'il correspond à un nom de colonne (métadonnées de niveau logique)
+		 * si on n'a pas trouvÃ© au niveau conceptuel, 
+		 * on regarde s'il correspond Ã  un nom de colonne (mÃ©tadonnÃ©es de niveau logique)
 		 */
 		for(Integer key:getSchema().getAttLookup().keySet()) {
 			tabNoms = this.getSchema().getAttLookup().get(key);
-			if ((tabNoms!=null)&&(tabNoms[0]!=null)&&(tabNoms[0].equals(nom))) return this.getAttribute(key);
+			if ((tabNoms!=null)&&(tabNoms[0]!=null)&&(tabNoms[0].equals(nom))) return this.getAttribute(key.intValue());
 		}
-		if (logger.isDebugEnabled()) logger.warn("!!! le nom '"+nom+"' ne correspond pas à un attribut de ce feature !!!");
+		if (logger.isDebugEnabled()) logger.warn("!!! le nom '"+nom+"' ne correspond pas Ã  un attribut de ce feature !!!");  //$NON-NLS-1$//$NON-NLS-2$
 		return null;
 	}
 	@Override
@@ -111,51 +113,52 @@ public class DefaultFeature extends FT_Feature {
 	public void setAttributes(Object[] attributes) {this.attributes = attributes;}
 	/**
 	 * met la valeur value dans la case rang de la table d'attributs.
-	 * Pour éviter toute erreur, mieux vaut utiliser setAttribute(String nom, Object value)
+	 * Pour Ã©viter toute erreur, mieux vaut utiliser setAttribute(String nom, Object value)
 	 * qui va chercher dans le schema l'emplacement correct de l'attribut.
 	 * @param rang
 	 * @param value
 	 */
 	public void setAttribute(int rang, Object value){this.attributes[rang]=value;}
 	/**
-	 * Va voir dans la lookup table de feature.schéma dans quelle case se place l'attribut
+	 * Va voir dans la lookup table de feature.schÃ©ma dans quelle case se place l'attribut
 	 * puis le met dans la table d'attributs.
 	 * @param nom nom de l'attribut
-	 * @param value valeur à affecter à l'attribut
+	 * @param value valeur Ã  affecter Ã  l'attribut
 	 */
 	public void setAttribute(String nom, Object value){
 		/**
-		 * on regarde en priorité si le nom correspond à un nom d'attributeType (métadonnées de niveau conceptuel)
+		 * on regarde en prioritÃ© si le nom correspond Ã  un nom d'attributeType (mÃ©tadonnÃ©es de niveau conceptuel)
 		 */
 		String[] tabNoms;
 		for(Integer key:getSchema().getAttLookup().keySet()) {
 			tabNoms = this.getSchema().getAttLookup().get(key);
 			if ((tabNoms!=null)&&(tabNoms[1]!=null)) {
 				if (tabNoms[1].equals(nom)){
-					this.setAttribute(key, value);
+					this.setAttribute(key.intValue(), value);
 					return;
 				}
 			}			
 		}
 		/**
-		 * si on n'a pas trouvé au niveau conceptuel, on regarde s'il correspond à un nom de colonne (métadonnées de niveau logique)
+		 * si on n'a pas trouvÃ© au niveau conceptuel, 
+		 * on regarde s'il correspond Ã  un nom de colonne (mÃ©tadonnÃ©es de niveau logique)
 		 */
 		for(Integer key:getSchema().getAttLookup().keySet()) {
 			tabNoms = this.getSchema().getAttLookup().get(key);
 			if ( (tabNoms!=null) && (tabNoms[0]!=null) ) {
 				if (tabNoms[0].equals(nom)){
-					if (logger.isDebugEnabled()) logger.debug("setAttribute "+nom+" =?= "+tabNoms[0]);
-					this.setAttribute(key, value);
+					if (logger.isDebugEnabled()) logger.debug("setAttribute "+nom+" =?= "+tabNoms[0]);  //$NON-NLS-1$//$NON-NLS-2$
+					this.setAttribute(key.intValue(), value);
 					return;
 				}
 			}
 		}
 		if (logger.isDebugEnabled()) {
-			logger.warn("!!! le nom '"+nom+"' ne correspond pas à un attribut de ce feature !!!");
+			logger.warn("!!! le nom '"+nom+"' ne correspond pas Ã  un attribut de ce feature !!!"); //$NON-NLS-1$ //$NON-NLS-2$
 			for(Integer key:getSchema().getAttLookup().keySet()) {
 				tabNoms = this.getSchema().getAttLookup().get(key);
-				if (tabNoms==null) logger.debug("Attribut "+key+" nul");
-				else logger.debug("Attribut "+key+" = "+tabNoms[0]+" - "+tabNoms[1]);
+				if (tabNoms==null) logger.debug("Attribut "+key+" nul"); //$NON-NLS-1$ //$NON-NLS-2$
+				else logger.debug("Attribut "+key+" = "+tabNoms[0]+" - "+tabNoms[1]);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 			}
 		}
 		return;
@@ -163,7 +166,7 @@ public class DefaultFeature extends FT_Feature {
 	/**
 	 * @return the featureType
 	 */
-	public FeatureType getScFeatureType() {return featureType;}
+	public FeatureType getScFeatureType() {return this.featureType;}
 	/**
 	 * @param featureType the featureType to set
 	 */
@@ -171,7 +174,7 @@ public class DefaultFeature extends FT_Feature {
 	/**
 	 * @return the table
 	 */
-	public SchemaDefaultFeature getSchema() {return schema;}
+	public SchemaDefaultFeature getSchema() {return this.schema;}
 	/**
 	 * @param schema
 	 */
@@ -179,13 +182,13 @@ public class DefaultFeature extends FT_Feature {
 	@Override
 	public void setAttribute(AttributeType attribute, Object valeur) {
 		// FIXME changer le comportement !!!!
-		if (attribute.getMemberName().equals("geom")) {
-			logger.warn("WARNING : Pour affecter la primitive géométrique par défaut, veuillez utiliser "
-					+ "la méthode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)");
+		if (attribute.getMemberName().equals("geom")) { //$NON-NLS-1$
+			logger.warn("WARNING : Pour affecter la primitive gÃ©omÃ©trique par dÃ©faut, veuillez utiliser " //$NON-NLS-1$
+					+ "la mÃ©thode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
 			this.setGeom((GM_Object) valeur);
-		} else if (attribute.getMemberName().equals("topo")) {
-			logger.warn("WARNING : Pour affecter la primitive topologique par défaut, veuillez utiliser "
-					+ "la méthode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)");
+		} else if (attribute.getMemberName().equals("topo")) { //$NON-NLS-1$
+			logger.warn("WARNING : Pour affecter la primitive topologique par dÃ©faut, veuillez utiliser " //$NON-NLS-1$
+					+ "la mÃ©thode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
 			this.setTopo((TP_Object) valeur);
 		}
 		else {
@@ -216,4 +219,5 @@ public class DefaultFeature extends FT_Feature {
 			*/
 		}
 	}
+	
 }

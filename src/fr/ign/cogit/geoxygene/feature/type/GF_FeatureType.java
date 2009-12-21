@@ -1,8 +1,8 @@
 /*
- * Créé le 30 sept. 2004
+ * crÃ©Ã© le 30 sept. 2004
  *
- * Pour changer le modèle de ce fichier généré, allez à :
- * Fenêtre&gt;Préférences&gt;Java&gt;Génération de code&gt;Code et commentaires
+ * Pour changer le ModÃ¨le de ce fichier gÃ©nÃ©rÃ©, allez Ã  :
+ * FenÃªtre&gt;PrÃ©fÃ©rences&gt;Java&gt;Gï¿½nï¿½ration de code&gt;Code et commentaires
  */
 package fr.ign.cogit.geoxygene.feature.type;
 import java.util.List;
@@ -11,22 +11,22 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
  * @author Sandrine Balley
- * GF_FeatureType proposé par le General Feature Model de la norme ISO1909
+ * GF_FeatureType proposï¿½ par le General Feature Model de la norme ISO1909
  */
 public interface GF_FeatureType {
-	/** Renvoie le nom de la classe géographique. */
+	/** Renvoie le nom de la classe GÃ©ographique. */
 	public String getTypeName ();
 	/** Affecte un nom. */
 	public void setTypeName (String TypeName);
 
-	/** Renvoie le nom de la principale classe de la géométrie portée par le featuretype. */
+	/** Renvoie le nom de la principale classe de la gÃ©omÃ©trie portï¿½e par le featuretype. */
 	public Class<? extends GM_Object> getGeometryType();
-	/** Affecte le nom de la principale classe de la géométrie portée par le featuretype. */
+	/** Affecte le nom de la principale classe de la gÃ©omÃ©trie portï¿½e par le featuretype. */
 	public void setGeometryType (Class<? extends GM_Object> GeometryType);
 
 	/** Renvoie la description de la classe geographique. */
 	public String getDefinition ();
-	/** Affecte une définition. */
+	/** Affecte une dÃ©finition. */
 	public void setDefinition (String Definition);
 
 	/** Renvoie l'attribut isAbtract. */
@@ -34,49 +34,49 @@ public interface GF_FeatureType {
 	/** Affecte l'attribut isAbstract. */
 	public void setIsAbstract (boolean IsAbstract);
 
-	/**renvoie la définition semantique du featureType (sous la forme d'un String
+	/**renvoie la dÃ©finition semantique du featureType (sous la forme d'un String
 	 * ou d'une classe d'ontologie)
-	 * ou un pointeur vers cette définition (sous la forme d'une URI)
+	 * ou un pointeur vers cette dÃ©finition (sous la forme d'une URI)
 	 * 
-	 * Correspond à FC_DescriptionReference et FC_DescriptionSource proposés
+	 * Correspond Ã  FC_DescriptionReference et FC_DescriptionSource proposï¿½s
 	 * dans la norme ISO19110
 	 * @return Object
 	 */
 	public Object getDefinitionReference();
 	public void setDefinitionReference(Object ref);
 
-	/** Renvoie les relations de généralisation dans lesquelles est impliquée la classe. */
+	/** Renvoie les relations de gÃ©nÃ©ralisation dans lesquelles est impliquï¿½e la classe. */
 	public List<GF_InheritanceRelation> getGeneralization();
 	/** Affecte une liste de generalisations */
 	public void setGeneralization (List<GF_InheritanceRelation> L);
-	/** Renvoie le nombre de relation de généralisation dans lesquelles est impliquée la classe. */
+	/** Renvoie le nombre de relation de gÃ©nÃ©ralisation dans lesquelles est impliquï¿½e la classe. */
 	public int sizeGeneralization ();
-	/** Ajoute une relation de généralisation. Affecte automatiquement le sous-type de cette relation.*/
+	/** Ajoute une relation de gÃ©nÃ©ralisation. Affecte automatiquement le sous-type de cette relation.*/
 	public void addGeneralization (GF_InheritanceRelation value);
 	public void removeGeneralization(GF_InheritanceRelation value);
 
-	/** Renvoie la liste des relations de spécialisation dans lesquelles est impliquée la classe. */
+	/** Renvoie la liste des relations de spÃ©cialisation dans lesquelles est impliquï¿½e la classe. */
 	public List<GF_InheritanceRelation> getSpecialization();
 	/** Affecte une liste de specialisations */
 	public void setSpecialization (List<GF_InheritanceRelation> L);
-	/** Renvoie le nombre de relation de spécialisation dans lesquelles est impliquée la classe. */
+	/** Renvoie le nombre de relation de spÃ©cialisation dans lesquelles est impliquï¿½e la classe. */
 	public int sizeSpecialization ();
-	/** Ajoute une relation de spécialisation. Affecte automatiquement le super-type de cette relation.*/
+	/** Ajoute une relation de spÃ©cialisation. Affecte automatiquement le super-type de cette relation.*/
 	public void addSpecialization (GF_InheritanceRelation value);
 	public void removeSpecialization(GF_InheritanceRelation value);
 
-	/** Renvoie la liste des propriétés. */
+	/** Renvoie la liste des propriÃ©tÃ©s. */
 	public List<GF_PropertyType> getProperties();
 	/** Affecte une liste de proprietes */
 	public void setProperties (List<GF_PropertyType> L);
-	/** Renvoie le nombre de propriétés. */
+	/** Renvoie le nombre de propriÃ©tÃ©s. */
 	public int sizeProperties ();
 
-	/** Renvoie les associations dans lesquelles est impliquée cette classe. */
+	/** Renvoie les associations dans lesquelles est impliquï¿½e cette classe. */
 	public List<GF_AssociationType> getMemberOf();
 	/** Affecte une liste d'associations */
 	public void setMemberOf (List<GF_AssociationType> L);
-	/** Le nombre d'associations dans lesquelles est impliquée cette classe. */
+	/** Le nombre d'associations dans lesquelles est impliquï¿½e cette classe. */
 	public int sizeMemberOf ();
 	/** Ajoute une association. */
 	public void addMemberOf (GF_AssociationType value);

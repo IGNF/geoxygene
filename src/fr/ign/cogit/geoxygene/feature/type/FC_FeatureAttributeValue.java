@@ -3,15 +3,15 @@ package fr.ign.cogit.geoxygene.feature.type;
 /**
  * @author Sandrine Balley
  *
- * FC_FeatureAttributeValue proposé par la norme ISO19110 "FeatureCataloguing"
+ * FC_FeatureAttributeValue proposï¿½ par la norme ISO19110 "FeatureCataloguing"
  */
 public interface FC_FeatureAttributeValue {
 
 
 
-	/** Renvoie l'attribut auquel est rattaché la valeur. */
+	/** Renvoie l'attribut auquel est rattachï¿½ la valeur. */
 	public GF_AttributeType getFeatureAttribute();
-	/** Affecte l'attribut auquel est rattaché la valeur. */
+	/** Affecte l'attribut auquel est rattachï¿½ la valeur. */
 	public void setFeatureAttribute(GF_AttributeType FeatureAttribute);
 
 
@@ -27,18 +27,18 @@ public interface FC_FeatureAttributeValue {
 	public void setCode(int value);
 
 
-	/** Renvoie la définition. */
+	/** Renvoie la dÃ©finition. */
 	public String getDefinition();
-	/** Affecte une définition. */
+	/** Affecte une dÃ©finition. */
 	public void setDefinition(String Definition);
 
 
 
-	/**renvoie la définition semantique du FeatureAttributeValue (sous la forme d'un String
+	/**renvoie la dÃ©finition semantique du FeatureAttributeValue (sous la forme d'un String
 	 * ou d'une classe d'ontologie)
-	 * ou un pointeur vers cette définition (sous la forme d'une URI)
+	 * ou un pointeur vers cette dÃ©finition (sous la forme d'une URI)
 	 * 
-	 * Correspond à FC_DescriptionReference et FC_DescriptionSource proposés
+	 * Correspond Ã  FC_DescriptionReference et FC_DescriptionSource proposï¿½s
 	 * dans la norme ISO19110
 	 * @return Object
 	 */

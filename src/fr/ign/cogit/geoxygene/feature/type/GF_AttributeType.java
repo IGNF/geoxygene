@@ -1,8 +1,8 @@
 /*
- * Créé le 30 sept. 2004
+ * crÃ©Ã© le 30 sept. 2004
  *
- * Pour changer le modèle de ce fichier généré, allez à :
- * Fenêtre&gt;Préférences&gt;Java&gt;Génération de code&gt;Code et commentaires
+ * Pour changer le ModÃ¨le de ce fichier gÃ©nÃ©rÃ©, allez Ã  :
+ * FenÃªtre&gt;PrÃ©fÃ©rences&gt;Java&gt;Gï¿½nï¿½ration de code&gt;Code et commentaires
  */
 package fr.ign.cogit.geoxygene.feature.type;
 
@@ -13,16 +13,16 @@ import java.util.List;
 /**
  * @author Balley
  *
- * GF_AttributeType proposé par le General Feature Model de la norme ISO19109.
+ * GF_AttributeType proposï¿½ par le General Feature Model de la norme ISO19109.
  * Nous y ajoutons le lien avec FC_FeatureAttributeValue defini dans la norme ISO 19110
- * pour preciser les domaines de valeurs enumérés.
+ * pour preciser les domaines de valeurs enumï¿½rï¿½s.
  */
 public interface GF_AttributeType extends GF_PropertyType{
 
 
 	/** Renvoie le type de l'attribut. */
 	public String getValueType ();
-	/** Affecte un type à l'attribut. */
+	/** Affecte un type Ã  l'attribut. */
 	public void setValueType(String ValueType);
 
 
@@ -36,57 +36,57 @@ public interface GF_AttributeType extends GF_PropertyType{
 
 	/** Renvoie le nombre de valeurs minimal de l'attribut. */
 	public int getCardMin ();
-	/** Affecte un nombre de valeurs minimal à l'attribut. */
+	/** Affecte un nombre de valeurs minimal Ã  l'attribut. */
 	public void setCardMin (int CardMin);
 
 
 
 	/** Renvoie le nombre de valeurs maximal de l'attribut. */
 	public int getCardMax ();
-	/** Affecte un nombre de valeurs maximal à l'attribut. */
+	/** Affecte un nombre de valeurs maximal Ã  l'attribut. */
 	public void setCardMax (int CardMax);
 
 
 
 
-	/** Renvoie l'attribut que self caractérise. */
+	/** Renvoie l'attribut que self caractï¿½rise. */
 	public GF_AttributeType getCharacterize();
-	/** Affecte un attribut que self caractérise. */
+	/** Affecte un attribut que self caractï¿½rise. */
 	public void setCharacterize(GF_AttributeType Characterize);
 
 
 
 
 	/** Renvoie le type de domaine de valeur de l'attribut.
-	 * (FALSE pour non enuméré, TRUE pour énuméré
-	 * C'est une extension du GFM proposée par la norme ISO 19110
+	 * (FALSE pour non enumï¿½rï¿½, TRUE pour ï¿½numï¿½rï¿½
+	 * C'est une extension du GFM proposï¿½e par la norme ISO 19110
 	 **/
 	public boolean getValueDomainType();
-	/** Affecte un type à l'attribut. */
+	/** Affecte un type Ã  l'attribut. */
 	public void setValueDomainType(boolean ValueDomainType);
 
 	/** Renvoie les valeurs possibles d'un attribut enumere. */
 	public List<FC_FeatureAttributeValue> getValuesDomain();
 
 	/** Renvoie les valeurs possibles d'un attribut enumere sous forme de liste de
-	 * chaines de caractères.
-	 * Peut servir avantageusement à affecter une valeur à l'attribut
-	 * domainOfValues proposé par le GFM
+	 * chaines de caractï¿½res.
+	 * Peut servir avantageusement Ã  affecter une valeur Ã  l'attribut
+	 * domainOfValues proposï¿½ par le GFM
 	 **/
 	public List<String> getValuesDomainToString();
 	/** Affecte une liste de valeurs possibles. */
 	public void setValuesDomain(List<FC_FeatureAttributeValue> ValuesDomain);
-	/** Ajoute une valeur à la liste des valeurs possibles de l'attribut. */
+	/** Ajoute une valeur Ã  la liste des valeurs possibles de l'attribut. */
 	public void addValuesDomain(FC_FeatureAttributeValue value);
 	/** Enleve une valeur a la liste des valeurs possibles de l'attribut. */
 	public void removeValuesDomain(FC_FeatureAttributeValue value);
 
 
-	/**renvoie la définition semantique de l'AttributeType (sous la forme d'un String
+	/**renvoie la dÃ©finition semantique de l'AttributeType (sous la forme d'un String
 	 * ou d'une classe d'ontologie)
-	 * ou un pointeur vers cette définition (sous la forme d'une URI)
+	 * ou un pointeur vers cette dÃ©finition (sous la forme d'une URI)
 	 * 
-	 * Correspond à FC_DescriptionReference et FC_DescriptionSource proposés
+	 * Correspond Ã  FC_DescriptionReference et FC_DescriptionSource proposï¿½s
 	 * dans la norme ISO19110
 	 * @return Object
 	 */

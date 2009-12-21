@@ -1,23 +1,23 @@
 /*
- * Créé le 30 sept. 2004
+ * crÃ©Ã© le 30 sept. 2004
  *
- * Pour changer le modèle de ce fichier généré, allez à :
- * Fenêtre&gt;Préférences&gt;Java&gt;Génération de code&gt;Code et commentaires
+ * Pour changer le ModÃ¨le de ce fichier gÃ©nÃ©rÃ©, allez Ã  :
+ * FenÃªtre&gt;PrÃ©fÃ©rences&gt;Java&gt;Gï¿½nï¿½ration de code&gt;Code et commentaires
  */
 package fr.ign.cogit.geoxygene.feature.type;
 import java.util.List;
 /**
  * @author Balley
  *
- * GF_AssociationType proposé par le General Feature Model de la norme ISO1909
+ * GF_AssociationType proposï¿½ par le General Feature Model de la norme ISO1909
  */
 public interface GF_AssociationType extends GF_FeatureType {
 
-	/** Renvoie les feature types impliqués dans cette association. */
+	/** Renvoie les feature types impliquï¿½s dans cette association. */
 	public List<GF_FeatureType> getLinkBetween();
 	/** Affecte une liste de feature types */
 	public void setLinkBetween (List<GF_FeatureType> L);
-	/** Renvoie le nombre de feature types impliqués dans cette association. */
+	/** Renvoie le nombre de feature types impliquï¿½s dans cette association. */
 	public int sizeLinkBetween ();
 	/** Ajoute un feature type. Execute un "addMemberOf" sur GF_FeatureType.*/
 	public void addLinkBetween (GF_FeatureType value);

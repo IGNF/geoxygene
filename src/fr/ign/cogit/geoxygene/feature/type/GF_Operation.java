@@ -1,15 +1,15 @@
 /*
- * Créé le 30 sept. 2004
+ * crÃ©Ã© le 30 sept. 2004
  *
- * Pour changer le modèle de ce fichier généré, allez à :
- * Fenêtre&gt;Préférences&gt;Java&gt;Génération de code&gt;Code et commentaires
+ * Pour changer le ModÃ¨le de ce fichier gÃ©nÃ©rÃ©, allez Ã  :
+ * FenÃªtre&gt;PrÃ©fÃ©rences&gt;Java&gt;Gï¿½nï¿½ration de code&gt;Code et commentaires
  */
 package fr.ign.cogit.geoxygene.feature.type;
 
 /**
  * @author Balley
  *
- * GF_Operation proposé par le General Feature Model de la norme ISO1909.
+ * GF_Operation proposï¿½ par le General Feature Model de la norme ISO1909.
  */
 public interface GF_Operation {
 

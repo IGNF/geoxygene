@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -44,13 +44,13 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
- *  Une population représente TOUS les objets d'une classe héritant de FT_Feature.
+ *  Une population reprÃ©sente TOUS les objets d'une classe hÃ©ritant de FT_Feature.
  *
- *  <P> Les objets qui la composent peuvent avoir une géometrie ou non.
- *  La population peut être persistante ou non, associée à un index spatial ou non.
+ *  <P> Les objets qui la composent peuvent avoir une gÃ©ometrie ou non.
+ *  La population peut Ãªtre persistante ou non, associÃ©e Ã  un index spatial ou non.
  *
- *  <P> NB: une population existe indépendamment des ses éléments.
- *  Avant de charger ses élements, la population existe mais ne contient aucun élément.
+ *  <P> NB: une population existe indÃ©pendamment des ses Ã©lÃ©ments.
+ *  Avant de charger ses Ã©lÃ©ments, la population existe mais ne contient aucun Ã©lÃ©ment.
  * 
  * <P> Difference avec FT_FeatureCollection :
  * une Population est une FT_FeatureCollection possedant les proprietes suivantes.
@@ -64,7 +64,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * </UL>
  * TODO Finir les annotations pour la persistance
  * 
- * @author Sébastien Mustière
+ * @author SÃ©bastien MustiÃ¨re
  * @author Sandrine Balley
  * @author Julien Perret 
  */
@@ -76,31 +76,31 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	protected int id;
 	/** Renvoie l'identifiant. NB: l'ID n'est remplit automatiquement que si la population est persistante */
 	@Id
-	public int getId() {return id;}
+	public int getId() {return this.id;}
 	/** Affecte une valeur a l'identifiant */
-	public void setId (int I) {id = I;}
+	public void setId (int I) {this.id = I;}
 	///////////////////////////////////////////////////////
 	//      Constructeurs / Chargement / persistance
 	///////////////////////////////////////////////////////
-	/** Constructeur par défaut. Sauf besoins particuliers, utiliser plutôt l'autre constructeur */
+	/** Constructeur par dÃ©faut. Sauf besoins particuliers, utiliser plutÃ´t l'autre constructeur */
 	public Population() {}
 	/**
-	 * Constructeur à partir du nom de la population
+	 * Constructeur Ã  partir du nom de la population
 	 * @param nom nom de la population.
 	 */
 	public Population(String nom) {this.setNom(nom);}
 	/**
 	 * Constructeur d'une population.
-	 *  Une population peut être persistante ou non (la population elle-même est alors rendue persistante dans ce constructeur).
+	 *  Une population peut Ãªtre persistante ou non (la population elle-mÃªme est alors rendue persistante dans ce constructeur).
 	 *  Une population a un nom logique (utile pour naviguer entre populations).
-	 *  Les élements d'une population se réalisent dans une classe contrète (classeElements).
+	 *  Les Ã©lÃ©ments d'une population se rÃ©alisent dans une classe contrï¿½te (classeElements).
 	 *  <p>
-	 *  <b>NB :</b> lors la construction, auncun élément n'est affectée à la population, cela doit être fait
-	 *  à partir d'elements peristant avec chargeElements, ou a partir d'objets Java avec les setElements
+	 *  <b>NB :</b> lors la construction, auncun Ã©lÃ©ment n'est affectÃ©e Ã  la population, cela doit Ãªtre fait
+	 *  Ã  partir d'elements peristant avec chargeElements, ou a partir d'objets Java avec les setElements
 	 * @param persistance si vrai, alors la population est persistante
 	 * @param nomLogique nom de la population
-	 * @param classeElements classe des éléments de la population
-	 * @param drapeauGeom vrai si les éléments de la population portent une géométrie, faux sinon
+	 * @param classeElements classe des Ã©lÃ©ments de la population
+	 * @param drapeauGeom vrai si les Ã©lÃ©ments de la population portent une gÃ©omÃ©trie, faux sinon
 	 */
 	@SuppressWarnings("unchecked")
 	public Population(boolean persistance, String nomLogique, Class<?> classeElements, boolean drapeauGeom) {
@@ -111,7 +111,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 		if (persistance) DataSet.db.makePersistent(this);
 	}
 	/**
-	 * Constructeur le plus adapté à l'utilisation des Populations dotées d'un
+	 * Constructeur le plus adaptÃ© Ã  l'utilisation des Populations dotï¿½es d'un
 	 * lien vers le FeatureType correspondant.
 	 * 
 	 * @param ft
@@ -122,14 +122,14 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 		this.setNomClasse(ft.getNomClasse());
 	}
 	/**
-	 * Constructeur d'une population. Une population peut être persistante ou
-	 * non (la population elle-même est alors rendue persistante dans ce
+	 * Constructeur d'une population. Une population peut Ãªtre persistante ou
+	 * non (la population elle-mÃªme est alors rendue persistante dans ce
 	 * constructeur). Une population a un nom logique (utile pour naviguer entre
-	 * populations). Les élements d'une population se réalisent dans une classe
-	 * contrète (nom_classe_elements). 
+	 * populations). Les Ã©lÃ©ments d'une population se rÃ©alisent dans une classe
+	 * contrï¿½te (nom_classe_elements). 
 	 * <p>
-	 * <b>NB :</b> lors la construction, auncun élément
-	 * n'est affecté à la population, cela doit être fait à partir d'elements
+	 * <b>NB :</b> lors la construction, auncun Ã©lÃ©ment
+	 * n'est affectï¿½ Ã  la population, cela doit Ãªtre fait Ã  partir d'elements
 	 * peristant avec chargeElements, ou a partir d'objets Java avec les
 	 * setElements
 	 */
@@ -155,64 +155,64 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 		if (persistance) DataSet.db.makePersistent(this);
 	}
 
-	/** Chargement des éléments persistants d'une population.
-	 *  Tous les éléments de la table correspondante sont chargés.
+	/** Chargement des Ã©lÃ©ments persistants d'une population.
+	 *  Tous les Ã©lÃ©ments de la table correspondante sont chargÃ©s.
 	 */
 	public void chargeElements() {
-		if (logger.isInfoEnabled()) logger.info("-- Chargement des elements de la population  "+this.getNom());
+		if (logger.isInfoEnabled()) logger.info("-- Chargement des elements de la population  "+this.getNom()); //$NON-NLS-1$
 		if (!this.getPersistant()) {
-			logger.warn("----- ATTENTION : Aucune instance n'est chargee dans la population "+this.getNom());
-			logger.warn("-----             La population n'est pas persistante");
+			logger.warn("----- ATTENTION : Aucune instance n'est chargee dans la population "+this.getNom()); //$NON-NLS-1$
+			logger.warn("-----             La population n'est pas persistante"); //$NON-NLS-1$
 			return;
 		}
-		try {elements = DataSet.db.loadAll(classe);}
+		try {this.elements = DataSet.db.loadAll(this.classe);}
 		catch (Exception e) {
-			logger.error("----- ATTENTION : Chargement impossible de la population "+this.getNom());
-			logger.error("-----             Sans doute un probleme avec le SGBD, ou table inexistante, ou pas de mapping ");
+			logger.error("----- ATTENTION : Chargement impossible de la population "+this.getNom()); //$NON-NLS-1$
+			logger.error("-----             Sans doute un probleme avec le SGBD, ou table inexistante, ou pas de mapping "); //$NON-NLS-1$
 			//e.printStackTrace();
 			return;
 		}
-		if (logger.isInfoEnabled()) logger.info("-- "+this.size()+" instances chargees dans la population");
+		if (logger.isInfoEnabled()) logger.info("-- "+this.size()+" instances chargees dans la population"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
-	/** Chargement des éléments persistants d'une population qui intersectent une géométrie donnée.
-	 *  ATTENTION: la table qui stocke les éléments doit avoir été indexée dans le SGBD.
-	 *  ATTENTION AGAIN: seules les populations avec une géométrie sont chargées.
+	/** Chargement des Ã©lÃ©ments persistants d'une population qui intersectent une gÃ©omÃ©trie donnÃ©e.
+	 *  ATTENTION: la table qui stocke les Ã©lÃ©ments doit avoir Ã©tÃ© indexÃ©e dans le SGBD.
+	 *  ATTENTION AGAIN: seules les populations avec une gÃ©omÃ©trie sont chargÃ©es.
 	 */
 	public void chargeElementsPartie(GM_Object geom) {
-		if (logger.isInfoEnabled()) logger.info("-- Chargement des elements de la population  "+this.getNom());
+		if (logger.isInfoEnabled()) logger.info("-- Chargement des elements de la population  "+this.getNom()); //$NON-NLS-1$
 		if (!this.getPersistant()) {
-			logger.warn("----- ATTENTION : Aucune instance n'est chargee dans la population "+this.getNom());
-			logger.warn("-----             La population n'est pas persistante");
+			logger.warn("----- ATTENTION : Aucune instance n'est chargee dans la population "+this.getNom()); //$NON-NLS-1$
+			logger.warn("-----             La population n'est pas persistante"); //$NON-NLS-1$
 			return;
 		}
 		if (!this.hasGeom()) {
-			logger.warn("----- ATTENTION : Aucune instance n'est chargee dans la population "+this.getNom());
-			logger.warn("-----             Les éléments de la population n'ont pas de géométrie");
+			logger.warn("----- ATTENTION : Aucune instance n'est chargee dans la population "+this.getNom()); //$NON-NLS-1$
+			logger.warn("-----             Les Ã©lÃ©ments de la population n'ont pas de gÃ©omÃ©trie"); //$NON-NLS-1$
 			return;
 		}
 		try {
-			elements = DataSet.db.loadAllFeatures(this.getClasse(), geom).getElements();
+			this.elements = DataSet.db.loadAllFeatures(this.getClasse(), geom).getElements();
 		} catch (Exception e) {
-			logger.error("----- ATTENTION : Chargement impossible de la population "+this.getNom());
-			logger.error("-----             La classe n'est peut-être pas indexée dans le SGBD");
-			logger.error("-----             ou table inexistante, ou pas de mapping ou probleme avec le SGBD ");
+			logger.error("----- ATTENTION : Chargement impossible de la population "+this.getNom()); //$NON-NLS-1$
+			logger.error("-----             La classe n'est peut-Ãªtre pas indexÃ©e dans le SGBD"); //$NON-NLS-1$
+			logger.error("-----             ou table inexistante, ou pas de mapping ou probleme avec le SGBD "); //$NON-NLS-1$
 			return;
 		}
-		if (logger.isInfoEnabled()) logger.info("   "+this.size()+" instances chargees dans la population");
+		if (logger.isInfoEnabled()) logger.info("   "+this.size()+" instances chargees dans la population"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
-	/** Chargement des éléments persistants d'une population.
-	 *  Tous les éléments de la table correspondante sont chargés.
-	 *  Les données doivent d'abord avoir été indexées.
+	/** Chargement des Ã©lÃ©ments persistants d'une population.
+	 *  Tous les Ã©lÃ©ments de la table correspondante sont chargÃ©s.
+	 *  Les donnÃ©es doivent d'abord avoir Ã©tÃ© indexÃ©es.
 	 *  PB: TRES LENT !!!!!!!
 	 */
 	public void chargeElementsProches(Population<Feat> pop, double dist) {
 		if (logger.isInfoEnabled()) {
-			logger.info("-- Chargement des elements de la population  "+this.getNom());
-			logger.info("-- à moins de "+dist+" de ceux de la population   "+pop.getNom());
+			logger.info("-- Chargement des elements de la population  "+this.getNom()); //$NON-NLS-1$
+			logger.info("-- Ã  moins de "+dist+" de ceux de la population   "+pop.getNom()); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		if (!this.getPersistant()) {
-			logger.warn("----- ATTENTION : Aucune instance n'est chargee dans la population "+this.getNom());
-			logger.warn("-----             La population n'est pas persistante");
+			logger.warn("----- ATTENTION : Aucune instance n'est chargee dans la population "+this.getNom()); //$NON-NLS-1$
+			logger.warn("-----             La population n'est pas persistante"); //$NON-NLS-1$
 			return;
 		}
 		try {
@@ -220,23 +220,23 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 			Collection<Feat> selectionTotale = new HashSet<Feat>();
 			while (itPop.hasNext()) {
 				Feat objet = itPop.next();
-				FT_FeatureCollection<Feat> selection = DataSet.db.loadAllFeatures(classe, objet.getGeom(), dist);
+				FT_FeatureCollection<Feat> selection = DataSet.db.loadAllFeatures(this.classe, objet.getGeom(), dist);
 				selectionTotale.addAll(selection.getElements());
 			}
-			elements = new ArrayList<Feat>(selectionTotale);
+			this.elements = new ArrayList<Feat>(selectionTotale);
 		} catch (Exception e) {
-			logger.error("----- ATTENTION : Chargement impossible de la population "+this.getNom());
-			logger.error("-----             Sans doute un probleme avec le SGBD, ou table inexistante, ou pas de mapping ");
+			logger.error("----- ATTENTION : Chargement impossible de la population "+this.getNom()); //$NON-NLS-1$
+			logger.error("-----             Sans doute un probleme avec le SGBD, ou table inexistante, ou pas de mapping "); //$NON-NLS-1$
 			e.printStackTrace();
 			return;
 		}
-		if (logger.isInfoEnabled()) logger.info("-- "+this.size()+" instances chargees dans la population");
+		if (logger.isInfoEnabled()) logger.info("-- "+this.size()+" instances chargees dans la population"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
-	/** Renvoie une population avec tous les éléments de this
-	 *  situés à moins de "dist" des éléments de la population
-	 *  Travail sur un index en mémoire (pas celui du SGBD).
-	 *  Rmq : Fonctionne avec des objets de géométrie quelconque
+	/** Renvoie une population avec tous les Ã©lÃ©ments de this
+	 *  situï¿½s Ã  moins de "dist" des Ã©lÃ©ments de la population
+	 *  Travail sur un index en mï¿½moire (pas celui du SGBD).
+	 *  Rmq : Fonctionne avec des objets de gÃ©omÃ©trie quelconque
 	 */
 	public Population<Feat> selectionElementsProchesGenerale(Population<Feat> pop, double dist) {
 		Population<Feat> popTemporaire = new Population<Feat>();
@@ -245,7 +245,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 
 		popTemporaire.addCollection(this);
 		popTemporaire.initSpatialIndex(Tiling.class, true, 20);
-		if (logger.isDebugEnabled()) logger.debug("Fin indexation "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isDebugEnabled()) logger.debug("Fin indexation "+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 		Iterator<Feat> itPop = pop.getElements().iterator();
 		while (itPop.hasNext()) {
 			Feat objet = itPop.next();
@@ -269,8 +269,8 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 		popResultat.setElements(selectionTotale);
 		return popResultat;
 	}
-	/** Renvoie une population avec tous les éléments de this
-	 *  situés à moins de "dist" des éléments de la population pop.
+	/** Renvoie une population avec tous les Ã©lÃ©ments de this
+	 *  situï¿½s Ã  moins de "dist" des Ã©lÃ©ments de la population pop.
 	 */
 	public Population<Feat> selectionLargeElementsProches(Population<Feat> pop, double dist) {
 		Population<Feat> popTemporaire = new Population<Feat>();
@@ -293,73 +293,73 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 		}
 		return popResultat;
 	}
-	/** Chargement des éléments persistants d'une population qui intersectent une zone d'extraction donnée.
-	 *  ATTENTION: la table qui stocke les éléments doit avoir été indexée dans le SGBD.
-	 *  ATTENTION AGAIN: seules les populations avec une géométrie sont chargées.
+	/** Chargement des Ã©lÃ©ments persistants d'une population qui intersectent une zone d'extraction donnÃ©e.
+	 *  ATTENTION: la table qui stocke les Ã©lÃ©ments doit avoir Ã©tÃ© indexÃ©e dans le SGBD.
+	 *  ATTENTION AGAIN: seules les populations avec une gÃ©omÃ©trie sont chargÃ©es.
 	 */
 	public void chargeElementsPartie(Extraction zoneExtraction) {chargeElementsPartie(zoneExtraction.getGeom());}
 	/** Detruit la population si elle est persistante,
-	 *  MAIS ne détruit pas les éléments de cette population (pour cela vider la table correspondante dans le SGBD).
+	 *  MAIS ne dÃ©truit pas les Ã©lÃ©ments de cette population (pour cela vider la table correspondante dans le SGBD).
 	 */
 	public void detruitPopulation() {
 		if (!this.getPersistant()) return;
-		if (logger.isInfoEnabled()) logger.info("Destruction de la population des "+this.getNom());
+		if (logger.isInfoEnabled()) logger.info("Destruction de la population des "+this.getNom()); //$NON-NLS-1$
 		DataSet.db.deletePersistent(this);
 	}
 	///////////////////////////////////////////////////////
-	//          Attributs décrivant la population
+	//          Attributs dÃ©crivant la population
 	///////////////////////////////////////////////////////
-	/** Nom logique des éléments de la population.
-	 *  La seule contrainte est de ne pas dépasser 255 caractères, les accents et espaces sont autorisés.
-	 *  A priori, on met le nom des éléments au singulier.
-	 *  Exemple: "Tronçon de route"
+	/** Nom logique des Ã©lÃ©ments de la population.
+	 *  La seule contrainte est de ne pas dÃ©passer 255 caractï¿½res, les accents et espaces sont autorisï¿½s.
+	 *  A priori, on met le nom des Ã©lÃ©ments au singulier.
+	 *  Exemple: "TronÃ§on de route"
 	 */
 	protected String nom;
-	public String getNom() {return nom; }
-	public void setNom (String S) {nom = S; }
+	public String getNom() {return this.nom; }
+	public void setNom (String S) {this.nom = S; }
 
-	/** Booléen spécifiant si la population est persistente ou non (vrai par défaut).  */
-	// NB pour dévelopeurs : laisser 'true' par défaut.
-	// Sinon, cela pose des problèmes au chargement (un thème persistant chargé a son attribut persistant à false).
+	/** BoolÃ©en spÃ©cifiant si la population est persistente ou non (vrai par dÃ©faut).  */
+	// NB pour dï¿½velopeurs : laisser 'true' par dÃ©faut.
+	// Sinon, cela pose des problÃ¨mes au chargement (un thÃ¨me persistant chargÃ© a son attribut persistant Ã  false).
 	protected boolean persistant = true;
-	/** Booléen spécifiant si la population est persistente ou non (vrai par défaut).  */
-	public boolean getPersistant() {return persistant;}
-	/** Booléen spécifiant si la population est persistente ou non (vrai par défaut).  */
-	public void setPersistant(boolean b) {persistant = b;}
+	/** BoolÃ©en spÃ©cifiant si la population est persistente ou non (vrai par dÃ©faut).  */
+	public boolean getPersistant() {return this.persistant;}
+	/** BoolÃ©en spÃ©cifiant si la population est persistente ou non (vrai par dÃ©faut).  */
+	public void setPersistant(boolean b) {this.persistant = b;}
 
 	///////////////////////////////////////////////////////
-	//     Relations avec les thèmes et les étéments
+	//     Relations avec les thÃ¨mes et les Ã©tÃ©ments
 	///////////////////////////////////////////////////////
-	/** DataSet auquel apparient la population (une population appartient à un seul DataSet). */
+	/** DataSet auquel apparient la population (une population appartient Ã  un seul DataSet). */
 	protected DataSet dataSet;
-	/** Récupère le DataSet de la population. */
+	/** RÃ©cupÃ¨re le DataSet de la population. */
 	@ManyToOne
-	public DataSet getDataSet() {return dataSet;  }
-	/** Définit le DataSet de la population, et met à jour la relation inverse. */
+	public DataSet getDataSet() {return this.dataSet;  }
+	/** dÃ©finit le DataSet de la population, et met Ã  jour la relation inverse. */
 	public void setDataSet(DataSet O) {
-		DataSet old = dataSet;
-		dataSet= O;
+		DataSet old = this.dataSet;
+		this.dataSet= O;
 		if ( old  != null ) old.getPopulations().remove(this);
 		if ( O != null ) {
-			dataSetID = O.getId();
+			this.dataSetID = O.getId();
 			if ( !(O.getPopulations().contains(this)) ) O.getPopulations().add(this);
-		} else dataSetID = 0;
+		} else this.dataSetID = 0;
 	}
 	private int dataSetID;
 	/** Ne pas utiliser, necessaire au mapping OJB */
-	public void setDataSetID(int I) {dataSetID = I;}
+	public void setDataSetID(int I) {this.dataSetID = I;}
 	/** Ne pas utiliser, necessaire au mapping OJB */
 	@Transient
-	public int getDataSetID() {return dataSetID;}
+	public int getDataSetID() {return this.dataSetID;}
 
 	//////////////////////////////////////////////////
 	// Methodes surchargeant des trucs de FT_FeatureCollection, avec une gestion de la persistance
 
 	/** 
-	 * Enlève, ET DETRUIT si il est persistant, un élément de la liste des elements de la population,
-	 * met également à jour la relation inverse, et eventuellement l'index.
+	 * enlÃ¨ve, ET DETRUIT si il est persistant, un Ã©lÃ©ment de la liste des elements de la population,
+	 * met Ã©galement Ã  jour la relation inverse, et eventuellement l'index.
 	 * <p>
-	 * <b>NB :</b> différent de remove (hérité de FT_FeatureCollection) qui ne détruit pas l'élément.
+	 * <b>NB :</b> diffÃ©rent de remove (hÃ©ritï¿½ de FT_FeatureCollection) qui ne dÃ©truit pas l'Ã©lÃ©ment.
 	 */
 	public void enleveElement(Feat O) {
 		super.remove(O);
@@ -367,18 +367,18 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	}
 	private static int idNouvelElement = 1;
 	/** 
-	 * Crée un nouvel élément de la population, instance de sa classe par défaut, et l'ajoute à la population.
+	 * crÃ©e un nouvel Ã©lÃ©ment de la population, instance de sa classe par dÃ©faut, et l'ajoute Ã  la population.
 	 * <p>
-	 *  Si la population est persistante, alors le nouvel élément est rendu persistant dans cette méthode
-	 * <b>NB :</b> différent de add (hérité de FT_FeatureCollection) qui ajoute un élément déjà existant.
+	 *  Si la population est persistante, alors le nouvel Ã©lÃ©ment est rendu persistant dans cette mÃ©thode
+	 * <b>NB :</b> diffÃ©rent de add (hÃ©ritï¿½ de FT_FeatureCollection) qui ajoute un Ã©lÃ©ment dÃ©jÃ  existant.
 	 */
 	public Feat nouvelElement() {return nouvelElement(null);}
 	/**
-	 * Crée un nouvel élément de la population (avec la géoémtrie geom),
-	 *  instance de sa classe par défaut, et l'ajoute à la population.
+	 * crÃ©e un nouvel Ã©lÃ©ment de la population (avec la gÃ©oï¿½mtrie geom),
+	 *  instance de sa classe par dÃ©faut, et l'ajoute Ã  la population.
 	 * <p>
-	 *  Si la population est persistante, alors le nouvel élément est rendu persistant dans cette méthode
-	 *  <b>NB :</b> différent de add (hérité de FT_FeatureCollection) qui ajoute un élément déjà existant.
+	 *  Si la population est persistante, alors le nouvel Ã©lÃ©ment est rendu persistant dans cette mÃ©thode
+	 *  <b>NB :</b> diffÃ©rent de add (hÃ©ritï¿½ de FT_FeatureCollection) qui ajoute un Ã©lÃ©ment dÃ©jÃ  existant.
 	 */
 	public Feat nouvelElement(GM_Object geom) {
 		try {
@@ -390,22 +390,22 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 			if ( this.getPersistant() ) DataSet.db.makePersistent(elem);
 			return elem;
 		} catch (Exception e) {
-			logger.error("ATTENTION : Problème à la création d'un élément de la population "+this.getNom());
-			logger.error("            Soit la classe des éléments est non valide : "+this.getNomClasse());
-			logger.error("               Causes possibles : la classe n'existe pas? n'est pas compilée? est abstraite?");
-			logger.error("            Soit problème à la mise à jour de l'index ");
-			logger.error("               Causes possibles : mise à jour automatique de l'index, mais l'objet n'a pas encore de géoémtrie");
+			logger.error("ATTENTION : problÃ¨me Ã  la crÃ©ation d'un Ã©lÃ©ment de la population "+this.getNom()); //$NON-NLS-1$
+			logger.error("            Soit la classe des Ã©lÃ©ments est non valide : "+this.getNomClasse()); //$NON-NLS-1$
+			logger.error("               Causes possibles : la classe n'existe pas? n'est pas compilï¿½e? est abstraite?"); //$NON-NLS-1$
+			logger.error("            Soit problÃ¨me Ã  la mise Ã  jour de l'index "); //$NON-NLS-1$
+			logger.error("               Causes possibles : mise Ã  jour automatique de l'index, mais l'objet n'a pas encore de gÃ©oï¿½mtrie"); //$NON-NLS-1$
 			return null;
 		}
 	}
 	/**
-	 * Crée un nouvel élément de la population, instance de sa classe par défaut, et l'ajoute à la population.
-	 *  La création est effectuée à l'aide du constructeur spécifié par les tableaux signature(classe des
-	 *  objets du constructeur), et param (objets eux-mêmes).
+	 * crÃ©e un nouvel Ã©lÃ©ment de la population, instance de sa classe par dÃ©faut, et l'ajoute Ã  la population.
+	 *  La crÃ©ation est effectuï¿½e Ã  l'aide du constructeur spÃ©cifiï¿½ par les tableaux signature(classe des
+	 *  objets du constructeur), et param (objets eux-mÃªmes).
 	 *  <p>
-	 *  Si la population est persistante, alors le nouvel élément est rendu persistant dans cette méthode
+	 *  Si la population est persistante, alors le nouvel Ã©lÃ©ment est rendu persistant dans cette mÃ©thode
 	 *  <p>
-	 * <b>NB :</b> différent de add (hérité de FT_FeatureCollection) qui ajoute un élément déjà existant.
+	 * <b>NB :</b> diffÃ©rent de add (hÃ©ritï¿½ de FT_FeatureCollection) qui ajoute un Ã©lÃ©ment dÃ©jÃ  existant.
 	 * @param signature
 	 * @param param
 	 * @return a new Feature
@@ -417,9 +417,9 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 			if ( this.getPersistant() ) DataSet.db.makePersistent(elem);
 			return elem;
 		} catch (Exception e) {
-			logger.error("ATTENTION : Problème à la création d'un élément de la population "+this.getNom());
-			logger.error("            Classe des éléments non valide : "+this.getNomClasse());
-			logger.error("            Causes possibles : la classe n'existe pas? n'est pas compilée?");
+			logger.error("ATTENTION : problÃ¨me Ã  la crÃ©ation d'un Ã©lÃ©ment de la population "+this.getNom()); //$NON-NLS-1$
+			logger.error("            Classe des Ã©lÃ©ments non valide : "+this.getNomClasse()); //$NON-NLS-1$
+			logger.error("            Causes possibles : la classe n'existe pas? n'est pas compilï¿½e?"); //$NON-NLS-1$
 			return null;
 		}
 	}
@@ -427,13 +427,13 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	//////////////////////////////////////////////////
 	// Copie de population
 	/** 
-	 * Copie la population passée en argument dans la population traitée (this).
+	 * Copie la population passÃ©e en argument dans la population traitï¿½e (this).
 	 * <p>
 	 * <b>NB :<b>
 	 * <ul>
 	 * <li> 1/ ne copie pas l'eventuelle indexation spatiale,
-	 * <li> 2/ n'affecte pas la population au DataSet de la population à copier.
-	 * <li> 3/ mais recopie les autres infos: élements, classe, FlagGeom, Nom et NomClasse
+	 * <li> 2/ n'affecte pas la population au DataSet de la population Ã  copier.
+	 * <li> 3/ mais recopie les autres infos: Ã©lÃ©ments, classe, FlagGeom, Nom et NomClasse
 	 * </ul>
 	 * @param populationACopier
 	 */
@@ -446,13 +446,13 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	}
 	// //////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Complète Population.chargeElements().
-	 * - On vérifie que la population correspond à une classe du schéma conceptuel du DataSet.
+	 * Complï¿½te Population.chargeElements().
+	 * - On vÃ©rifie que la population correspond Ã  une classe du schÃ©ma conceptuel du DataSet.
 	 *   Si non, on initie les populations du DataSet en y incluant celle-ci.
-	 * - Chaque FT_Feature chargé est renseigné avec sa population (donc son featureType).
+	 * - Chaque FT_Feature chargÃ© est renseignÃ© avec sa population (donc son featureType).
 	 */
 	public void chargeElementsAvecMetadonnees(){
-		if (logger.isInfoEnabled()) logger.info("-- Chargement des elements de la population  "+this.getNom());
+		if (logger.isInfoEnabled()) logger.info("-- Chargement des elements de la population  "+this.getNom()); //$NON-NLS-1$
 		//		MdDataSet datasetContexte = (MdDataSet)this.getDataSet();
 		//
 		////		 je cherche via le featureType et le schema Conceptuel si on est dans le cadre d'un
@@ -463,38 +463,39 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 		//			if (this.getFeatureType().getSchema()!=null){
 		//				if (this.getFeatureType().getSchema().getDataset()!=null){
 		//					datasetContexte = this.getFeatureType().getSchema().getDataset();
-		//					// ce dataset avait-il déjà des populations ?
+		//					// ce dataset avait-il dÃ©jÃ  des populations ?
 		//
 		//				}
-		//				else System.out.println("Vous êtes hors du contexte d'un MdDataSet");
+		//				else System.out.println("Vous ï¿½tes hors du contexte d'un MdDataSet");
 		//			}
-		//			else System.out.println("Vous êtes hors du contexte d'un SchemaConceptuelJeu");
+		//			else System.out.println("Vous ï¿½tes hors du contexte d'un SchemaConceptuelJeu");
 		//		}
 		//
 		//		//
-		//		// j'ai trouvé le MdDataSet dans lequel je travaille.
-		//		// Je regarde si ses populations ont été initialisées. Si oui,
+		//		// j'ai trouvÃ© le MdDataSet dans lequel je travaille.
+		//		// Je regarde si ses populations ont Ã©tÃ© initialisÃ©es. Si oui,
 		//		// je prends la place de l'une d'elles. Si non, je les initialise
 		//		// et je prends la place de l'une d'elles.
 		//		//
 		if (!this.getPersistant()) {
-			logger.warn("----- ATTENTION : Aucune instance n'est chargee dans la population "+this.getNom());
-			logger.warn("-----             La population n'est pas persistante");
+			logger.warn("----- ATTENTION : Aucune instance n'est chargee dans la population "+this.getNom()); //$NON-NLS-1$
+			logger.warn("-----             La population n'est pas persistante"); //$NON-NLS-1$
 			return;
 		}
 		try {
-			if (logger.isTraceEnabled()) logger.trace("debut");
+			if (logger.isTraceEnabled()) logger.trace("debut"); //$NON-NLS-1$
 			FT_FeatureCollection<Feat> coll = DataSet.db.loadAllFeatures(this.getFeatureType());
-			if (logger.isTraceEnabled()) logger.trace("milieu");
+			if (logger.isTraceEnabled()) logger.trace("milieu"); //$NON-NLS-1$
 			this.addUniqueCollection(coll);
-			if (logger.isTraceEnabled()) logger.trace("fin");
+			if (logger.isTraceEnabled()) logger.trace("fin"); //$NON-NLS-1$
 
 		} catch (Exception e) {
-			logger.error("----- ATTENTION : Chargement impossible de la population "+this.getNom());
-			logger.error("-----             Sans doute un probleme avec ORACLE, ou table inexistante, ou pas de mapping ");
+			logger.error("----- ATTENTION : Chargement impossible de la population "+this.getNom()); //$NON-NLS-1$
+			logger.error("-----             Sans doute un probleme avec ORACLE, ou table inexistante, ou pas de mapping "); //$NON-NLS-1$
 			e.printStackTrace();
 			return;
 		}
-		if (logger.isInfoEnabled()) logger.info("-- "+this.size()+" instances chargees dans la population");
+		if (logger.isInfoEnabled()) logger.info("-- "+this.size()+" instances chargees dans la population"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
+	
 }

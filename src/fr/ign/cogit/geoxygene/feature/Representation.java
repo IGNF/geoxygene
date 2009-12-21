@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -28,12 +28,10 @@ package fr.ign.cogit.geoxygene.feature;
 
 
 /**
- * Interface permettant de faire le lien entre un objet et sa représentation 2D/3D 
+ * Interface permettant de faire le lien entre un objet et sa reprÃ©sentation 2D/3D 
  * @author MBrasebin
  *
  */
-public interface Representation {
-
-	
-	//L'interface reste à définir cependent des classes l'implémenteront en 2D et 3D ultérieurement
+public interface Representation {	
+	//L'interface reste Ã  dÃ©finir cependent des classes l'implÃ©menteront en 2D et 3D ultÃ©rieurement
 }

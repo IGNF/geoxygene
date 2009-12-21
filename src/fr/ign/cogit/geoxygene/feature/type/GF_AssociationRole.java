@@ -1,15 +1,15 @@
 /*
- * Créé le 30 sept. 2004
+ * crÃ©Ã© le 30 sept. 2004
  *
- * Pour changer le modèle de ce fichier généré, allez à :
- * Fenêtre&gt;Préférences&gt;Java&gt;Génération de code&gt;Code et commentaires
+ * Pour changer le ModÃ¨le de ce fichier gÃ©nÃ©rÃ©, allez Ã  :
+ * FenÃªtre&gt;PrÃ©fÃ©rences&gt;Java&gt;Gï¿½nï¿½ration de code&gt;Code et commentaires
  */
 package fr.ign.cogit.geoxygene.feature.type;
 
 /**
  * @author Balley
  *
- * GF_AssociationRole proposé par le General Feature Model de la norme ISO19109
+ * GF_AssociationRole proposï¿½ par le General Feature Model de la norme ISO19109
  */
 public interface GF_AssociationRole extends GF_PropertyType {
 
@@ -19,30 +19,30 @@ public interface GF_AssociationRole extends GF_PropertyType {
 
 	/** Renvoie le nombre de valeurs minimal de l'attribut. */
 	public String getCardMin ();
-	/** Affecte un nombre de valeurs minimal à l'attribut. */
+	/** Affecte un nombre de valeurs minimal Ã  l'attribut. */
 	public void setCardMin (String value);
 
 
 
 	/** Renvoie le nombre de valeurs maximal de l'attribut. */
 	public String getCardMax ();
-	/** Affecte un nombre de valeurs maximal à l'attribut. */
+	/** Affecte un nombre de valeurs maximal Ã  l'attribut. */
 	public void setCardMax (String value);
 
 
 
-	/** Renvoie le feature type auquel est rattaché la propriété. */
+	/** Renvoie le feature type auquel est rattachï¿½ la propriÃ©tÃ©. */
 	public GF_AssociationType getAssociationType();
-	/** Affecte un feature type à la propriété. */
+	/** Affecte un feature type Ã  la propriÃ©tÃ©. */
 	public void setAssociationType(GF_AssociationType AssociationType);
 
-	/** Renvoie 1 si pour un rôle décrivant la relation "se compose de" et 0 sinon */
+	/** Renvoie 1 si pour un rï¿½le dÃ©crivant la relation "se compose de" et 0 sinon */
 	public boolean getIsComposite();
-	/** Affecte 1 ou 0 selon que le rôle décrit la relation "se compose de" ou non. */
+	/** Affecte 1 ou 0 selon que le rï¿½le dÃ©crit la relation "se compose de" ou non. */
 	public void setIsComposite(boolean value);
 
-	/** Renvoie 1 si pour un rôle décrivant la relation "compose" et 0 sinon */
+	/** Renvoie 1 si pour un rï¿½le dÃ©crivant la relation "compose" et 0 sinon */
 	public boolean getIsComponent();
-	/** Affecte 1 ou 0 selon que le rôle décrit la relation "compose" ou non. */
+	/** Affecte 1 ou 0 selon que le rï¿½le dÃ©crit la relation "compose" ou non. */
 	public void setIsComponent(boolean value);
 }

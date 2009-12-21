@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -30,9 +30,9 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
 /**
  * Zone d'extraction pour pouvoir lancer des traitement sur une partie seulement
- * d'un jeu de données.
+ * d'un jeu de donnÃ©es.
  * 
- * @author Sébastien Mustière
+ * @author SÃ©bastien MustiÃ¨re
  *
  */
 public class Extraction {
@@ -40,35 +40,36 @@ public class Extraction {
 	/** Identifiant de la zone d'extraction */
 	protected int id;
 	/** Renvoie l'identifiant. NB: l'identifiant n'est rempli automatiquement que pour les objets persistants */
-	public int getId() {return id;}
+	public int getId() {return this.id;}
 	/** Affecte un identifiant (ne pas utiliser si l'objet est persistant car cela est automatique) */
-	public void setId (int Id) {id = Id;}
+	public void setId (int Id) {this.id = Id;}
 
-	/** Géometrie définissant la zone d'extraction */
+	/** gÃ©ometrie dÃ©finissant la zone d'extraction */
 	protected GM_Polygon geom = null;
 	/** Renvoie une geometrie. */
-	public GM_Polygon getGeom() {return geom;}
+	public GM_Polygon getGeom() {return this.geom;}
 	/** Affecte une geometrie. */
-	public void setGeom (GM_Polygon g) {geom = g;}
+	public void setGeom (GM_Polygon g) {this.geom = g;}
 
 	/** Nom de la zone d'extraction */
 	protected String nom;
-	public String getNom() {return nom; }
-	public void setNom (String S) {nom = S; }
+	public String getNom() {return this.nom; }
+	public void setNom (String S) {this.nom = S; }
 
 	/** DataSet auquel appartient la zone d'extraction.
 	 * Utile uniquement pour OJB: ne pas utiliser directement
 	 */
 	private int dataSetID;
 	/** Ne pas utiliser, necessaire au mapping OJB */
-	public void setDataSetID(int I) {dataSetID = I;}
+	public void setDataSetID(int I) {this.dataSetID = I;}
 	/** Ne pas utiliser, necessaire au mapping OJB */
-	public int getDataSetID() {return dataSetID;}
+	public int getDataSetID() {return this.dataSetID;}
 
-	/** renvoie une extension avec une géométrie nulle et un nom par défaut: "Zone complète" */
+	/** renvoie une extension avec une gÃ©omÃ©trie nulle et un nom par dÃ©faut: "Zone complï¿½te" */
 	public static Extraction zoneComplete () {
 		Extraction ex = new Extraction();
-		ex.setNom("Zone complète");
+		ex.setNom("Zone complï¿½te"); //$NON-NLS-1$
 		return ex;
 	}
+	
 }
