@@ -35,7 +35,7 @@ import fr.ign.cogit.geoxygene.util.browser.ObjectBrowser;
 
 /**
  *  Classe de test pour le navigateur d'objets graphique de GeOxygene (ObjectBrowser), permettant de
- *  montrer comment on appelle celui-ci afin de visualiser graphiquement l'�tat d'un objet Java.
+ *  montrer comment on appelle celui-ci afin de visualiser graphiquement l'état d'un objet Java.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -81,11 +81,11 @@ public class TestBrowser
 	}
 
 	public String getAttribut1() {
-		return Attribut1;
+		return this.Attribut1;
 	}
 
 	public double[] getAttribut7() {
-		return Attribut7;
+		return this.Attribut7;
 	}
 
 	@SuppressWarnings("unchecked")

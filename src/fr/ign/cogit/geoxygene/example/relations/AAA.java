@@ -264,7 +264,7 @@ public class AAA extends ClasseMere {
 	 *  à partir des get et set. Elles servent néanmoins:
 	 *  1/ à encapsuler les méthodes de liste en harmonisant avec les relations
 	 *      bidirectionnelles et/ou persistantes;
-	 *  2/ à rendre le code plus solide en v�rifiant la classe des objets ajoutés/enlev�s d�s la compilation.
+	 *  2/ à rendre le code plus solide en vérifiant la classe des objets ajoutés/enlevés dès la compilation.
 	 *
 	 *  NB: si il n'y a pas d'objet en relation, la liste est vide mais n'est pas "null".
 	 *  Pour casser toutes les relations, faire setListe(new ArrayList()) ou emptyListe().
@@ -305,7 +305,7 @@ public class AAA extends ClasseMere {
 	 *  à partir des get et set. Elles servent néanmoins:
 	 *  1/ à encapsuler les méthodes de liste en harmonisant avec les relations
 	 *      bidirectionnelles et/ou persistantes;
-	 *  2/ à rendre le code plus solide en v�rifiant la classe des objets ajoutés/enlev�s d�s la compilation.
+	 *  2/ à rendre le code plus solide en vérifiant la classe des objets ajoutés/enlevés dès la compilation.
 	 *
 	 *  NB: si il n'y a pas d'objet en relation, la liste est vide mais n'est pas "null".
 	 *  Pour casser toutes les relations, faire setListe(new ArrayList()) ou emptyListe().

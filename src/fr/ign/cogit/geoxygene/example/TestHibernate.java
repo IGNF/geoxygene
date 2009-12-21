@@ -12,7 +12,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 /**
  * Classe de test pour la GeodatabaseHibernate.
- * Afin de pouvoir utiliser ce test, il faut activer le mapping des classes Point_eau et Troncon_cours_eau dans le fichier de configuration d'Hibernate : hibernate.cfg.xml qui se trouve dans la racine du r�pertoire src/
+ * Afin de pouvoir utiliser ce test, il faut activer le mapping des classes Point_eau et Troncon_cours_eau dans le fichier de configuration d'Hibernate : hibernate.cfg.xml qui se trouve dans la racine du répertoire src/
  * Pour ce faire, ajouter les lignes suivantes :
  * <mapping class="donnees.julien.Point_eau"/>
  *  <mapping class="donnees.julien.Troncon_cours_eau"/> 
@@ -22,7 +22,7 @@ public class TestHibernate {
 
 	/**
 	 * méthode main pour lancer le test. Aucun argument n'est pris en compte.
-	 * @param args arguments d'ex�cution. Non pris en compte.
+	 * @param args arguments d'exécution. Non pris en compte.
 	 */
 	public static void main(String[] args) {
 		// création de la base de données hibernate
@@ -56,7 +56,7 @@ public class TestHibernate {
 
         Troncon_cours_eau t = new Troncon_cours_eau();
         
-        t.setNom("rivi�re"+result1);
+        t.setNom("rivière"+result1);
         t.setSource("juju");
         DirectPositionList liste = new DirectPositionList();
         liste.add(new DirectPosition(10000,10000,100));

@@ -39,7 +39,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 
 
 /**
- * Utilisation du package spatial pour les primitives lin�aires :  Exemple de code.
+ * Utilisation du package spatial pour les primitives linéaires :  Exemple de code.
  * On suppose qu'il existe une classe persistante "donnees.defaut.Troncon_route"
  * (sinon changer le nom de la classe dans le code).
  * 
