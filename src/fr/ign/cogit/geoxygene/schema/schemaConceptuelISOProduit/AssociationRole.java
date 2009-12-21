@@ -94,12 +94,12 @@ public class AssociationRole implements GF_AssociationRole {
 	/**
 	 * Non standard
 	 * Utils aux applications de transformation de schéma
-	 * caract�re implicite ou explicite de l'élément : cf AssociationType.isExplicite
+	 * caractère implicite ou explicite de l'élément : cf AssociationType.isExplicite
 	 **/
 	protected boolean isExplicite;
 	/** Renvoie le caractere explicite ou implicite */
 	public boolean getIsExplicite(){return this.isExplicite;}
-	/** Affecte le caract�re implicite ou explicite */
+	/** Affecte le caractère implicite ou explicite */
 	public void setIsExplicite(boolean value){this.isExplicite = value;}
 
 

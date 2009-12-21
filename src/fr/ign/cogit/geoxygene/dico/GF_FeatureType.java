@@ -74,13 +74,13 @@ public class GF_FeatureType {
 	public void setIsAbstract (boolean IsAbstract) {this.isAbstract = IsAbstract;}
 
 
-	/** Les relations de généralisation dans lesquelles est impliqu�e la classe. */
+	/** Les relations de généralisation dans lesquelles est impliquée la classe. */
 	protected List<GF_InheritanceRelation> generalization = new ArrayList<GF_InheritanceRelation>();
-	/** Renvoie les relations de généralisation dans lesquelles est impliqu�e la classe. */
+	/** Renvoie les relations de généralisation dans lesquelles est impliquée la classe. */
 	public List<GF_InheritanceRelation> getGeneralization() {return this.generalization; }
 	/** Affecte une liste de generalisations */
 	public void setGeneralization (List<GF_InheritanceRelation> L) {this.generalization = L;}
-	/** Renvoie le nombre de relation de généralisation dans lesquelles est impliqu�e la classe. */
+	/** Renvoie le nombre de relation de généralisation dans lesquelles est impliquée la classe. */
 	public int sizeGeneralization () {return this.generalization.size(); }
 	/** Ajoute une relation de généralisation. Affecte automatiquement le sous-type de cette relation.*/
 	public void addGeneralization (GF_InheritanceRelation value) {
@@ -90,13 +90,13 @@ public class GF_FeatureType {
 	}
 
 
-	/** Les relations de spécialisation dans lesquelles est impliqu�e la classe. */
+	/** Les relations de spécialisation dans lesquelles est impliquée la classe. */
 	protected List<GF_InheritanceRelation> specialization = new ArrayList<GF_InheritanceRelation>();
-	/** Renvoie la liste des relations de spécialisation dans lesquelles est impliqu�e la classe. */
+	/** Renvoie la liste des relations de spécialisation dans lesquelles est impliquée la classe. */
 	public List<GF_InheritanceRelation> getSpecialization() {return this.specialization; }
 	/** Affecte une liste de specialisations */
 	public void setSpecialization (List<GF_InheritanceRelation> L) {this.specialization = L;}
-	/** Renvoie le nombre de relation de spécialisation dans lesquelles est impliqu�e la classe. */
+	/** Renvoie le nombre de relation de spécialisation dans lesquelles est impliquée la classe. */
 	public int sizeSpecialization () {return this.specialization.size(); }
 	/** Ajoute une relation de spécialisation. Affecte automatiquement le super-type de cette relation.*/
 	public void addSpecialization (GF_InheritanceRelation value) {
@@ -122,13 +122,13 @@ public class GF_FeatureType {
 	}
 
 
-	/** Les associations dans lesquelles est impliqu�e cette classe. */
+	/** Les associations dans lesquelles est impliquée cette classe. */
 	protected List<GF_AssociationType> memberOf = new ArrayList<GF_AssociationType>();
-	/** Renvoie les associations dans lesquelles est impliqu�e cette classe. */
+	/** Renvoie les associations dans lesquelles est impliquée cette classe. */
 	public List<GF_AssociationType> getMemberOf() {return this.memberOf; }
 	/** Affecte une liste d'associations */
 	public void setMemberOf (List<GF_AssociationType> L) {this.memberOf = L;}
-	/** Le nombre d'associations dans lesquelles est impliqu�e cette classe. */
+	/** Le nombre d'associations dans lesquelles est impliquée cette classe. */
 	public int sizeMemberOf () { return this.memberOf.size(); }
 	/** Ajoute une association. */
 	public void addMemberOf (GF_AssociationType value) {

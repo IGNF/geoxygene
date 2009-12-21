@@ -71,7 +71,7 @@ public class AttributeType implements GF_AttributeType {
 	public String getValueType() {return this.valueType;}
 	/** Affecte un type à l'attribut. */
 	public void setValueType(String ValueType) {this.valueType = ValueType;}
-	/** Type de domaine de valeur 0 pour non �num�r� et 1 pour �num�r�. */
+	/** Type de domaine de valeur 0 pour non énuméré et 1 pour énuméré. */
 	protected boolean valueDomainType;
 	/** Renvoie le type de domaine de valeur de l'attribut. */
 	public boolean getValueDomainType(){return this.valueDomainType;}
@@ -111,8 +111,8 @@ public class AttributeType implements GF_AttributeType {
 	public int getCardMax() {return this.cardMax;}
 	/** Affecte un nombre de valeurs maximal à l'attribut. */
 	public void setCardMax(int CardMax) {this.cardMax = CardMax;}
-	/** le domaine de valeurs (�num�r� ou non) sous forme de chaîne de caract�res
-	 * exemples : "positif", "toute extension de GM_Object", "oui/non/ind�termin�"
+	/** le domaine de valeurs (énuméré ou non) sous forme de chaîne de caractères
+	 * exemples : "positif", "toute extension de GM_Object", "oui/non/indéterminé"
 	 **/
 	protected String domainOfValues;
 	/** Renvoie le domaine de valeurs. */
@@ -157,18 +157,18 @@ public class AttributeType implements GF_AttributeType {
 	/**
 	 * Non standard
 	 * Utile aux applications de transformation de schéma
-	 * caract�re implicite ou explicite de l'élément : un attributeType implicite
-	 * n'a pas de valeur à priori mais celle-ci pourra être d�riv�e
+	 * caractère implicite ou explicite de l'élément : un attributeType implicite
+	 * n'a pas de valeur à priori mais celle-ci pourra être dérivée
 	 * d'elements explicites par le biais de transformations
 	 **/
 	protected boolean isExplicite;
 	/** Renvoie le caractere explicite ou implicite */
 	public boolean getIsExplicite() {return this.isExplicite;}
-	/** Affecte le caract�re implicite ou explicite */
+	/** Affecte le caractère implicite ou explicite */
 	public void setIsExplicite(boolean value) {this.isExplicite = value;}
 	/**
-	 * commodit� pour retrouver à quel schéma conceptuel appartient cet attribut
-	 * (en passant par le featureType qu'il caract�rise).
+	 * commodité pour retrouver à quel schéma conceptuel appartient cet attribut
+	 * (en passant par le featureType qu'il caractérise).
 	 **/
 	public SchemaConceptuelJeu getSchemaConceptuel() {
 		if (this.getFeatureType()!=null) return ((FeatureType)this.getFeatureType()).getSchema();
@@ -180,7 +180,7 @@ public class AttributeType implements GF_AttributeType {
 	// //////////////////////////////////////////////////////
 	/** Renvoie les valeurs possibles d'un attribut enumere. */
 	public List<FC_FeatureAttributeValue> getValuesDomain() {return this.valuesDomain;}
-	/** Renvoie les valeurs possibles d'un attribut enumere sous forme de liste de chaines de caract�res. */
+	/** Renvoie les valeurs possibles d'un attribut enumere sous forme de liste de chaines de caractères. */
 	public List<String> getValuesDomainToString() {
 		List<String> valeurs = new ArrayList<String>();
 		Iterator<FC_FeatureAttributeValue> it = this.valuesDomain.iterator();
@@ -222,20 +222,20 @@ public class AttributeType implements GF_AttributeType {
 	////////////////////////////////////////////////////////
 	// Champs et Methodes herites et utilises
 	////////////////////////////////////////////////////////
-	/** Renvoie le feature type auquel est rattach� la propriété. */
+	/** Renvoie le feature type auquel est rattaché la propriété. */
 	public GF_FeatureType getFeatureType() {return this.featureType;}
 	/** Affecte un feature type à la propriété. */
 	public void setFeatureType(GF_FeatureType FeatureType) {this.featureType = FeatureType;}
 
-	// méthodes hérit�es non utilisées
+	// méthodes héritées non utilisées
 	/**
-	 * Attribut en caract�risant un autre. La relation inverse n'est pas
+	 * Attribut en caractérisant un autre. La relation inverse n'est pas
 	 * implémentée.
 	 */
 	protected GF_AttributeType characterize;
-	/** Renvoie l'attribut que self caract�rise. */
+	/** Renvoie l'attribut que self caractérise. */
 	public GF_AttributeType getCharacterize() {return this.characterize;}
-	/** Affecte un attribut que self caract�rise. */
+	/** Affecte un attribut que self caractérise. */
 	public void setCharacterize(GF_AttributeType Characterize) {this.characterize = Characterize;}
 	/** 
 	 * Renvoie la liste des contraintes.

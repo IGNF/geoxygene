@@ -28,10 +28,10 @@ import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.SchemaConceptuelJeu;
 
 /**
  * @author Balley
- * transforme un GMLschema, c'est à dire un fichier x.xsd conforme �
+ * transforme un GMLschema, c'est à dire un fichier x.xsd conforme à
  * http://schemas.opengis.net/gml/2.1.2/feature.xsd, en un SchemaISOJeu
  * 
- * TODO gérer le GML3 et les xlink, s'occuper plus en d�tail des
+ * TODO gérer le GML3 et les xlink, s'occuper plus en détail des
  * types géométriques
  */
 public class ChargeurGMLSchema {
@@ -86,7 +86,7 @@ public class ChargeurGMLSchema {
 	}
 
 	/**
-	 * transforme un GMLSchema déjà pars� en un objet SchemaISOJeu
+	 * transforme un GMLSchema déjà parsé en un objet SchemaISOJeu
 	 * contenant une liste de FeatureType.
 	 * @param newDocXSD
 	 * @return SchemaConceptuelJeu
@@ -113,7 +113,7 @@ public class ChargeurGMLSchema {
 
 
 
-				//je cherche le nom des �lemnts de ce type : ca me donnera le nom du
+				//je cherche le nom des élements de ce type : ca me donnera le nom du
 				//FeatureType à mettre dans mon schemaConceptuel
 				System.out.println("\nLecture des attributs...");
 				NodeList listElements = newDocXSD.getElementsByTagName("element");
@@ -129,7 +129,7 @@ public class ChargeurGMLSchema {
 							nomElementsDeCeType = listElements.item(j).getAttributes().getNamedItem("name").getNodeValue();
 							//System.out.println("nom des elements de ce type : "+nomElementsDeCeType);
 
-							//ce type est effectivement utiliis� dans le jeu, je crée un featureType
+							//ce type est effectivement utilisé dans le jeu, je crée un featureType
 							FeatureType ft = new FeatureType();
 							ft.setTypeName(nomElementsDeCeType);
 
@@ -148,7 +148,7 @@ public class ChargeurGMLSchema {
 
 								if (noeudAttribut.getNodeName().equals("choice")){
 									//System.out.println("cas choice");
-									//� voir, pour la géométrie par exemple
+									//à voir, pour la géométrie par exemple
 								}
 								else if (noeudAttribut.getNodeName().equals("element")){
 									//System.out.println("cas element");
@@ -166,7 +166,7 @@ public class ChargeurGMLSchema {
 										//System.out.println("type direct : "+noeudAttribut.getAttributes().getNamedItem("type").getNodeValue());
 									}
 
-									//soit c'est un type simple en �tendant un autre
+									//soit c'est un type simple en étendant un autre
 									else if (noeudAttribut.hasChildNodes()){
 										//System.out.println("le type a "+noeudAttribut.getChildNodes().getLength()+" childNodes : il doit etendre un type");
 										for (int l=0 ; l<noeudAttribut.getChildNodes().getLength() ; l++){
@@ -211,7 +211,7 @@ public class ChargeurGMLSchema {
 	public void trouveTypeGeom(Node noeudFT, FeatureType ft){
 
 		AttributeType attribGeom = null;
-		System.out.println("\nrecherche spatialit�...");
+		System.out.println("\nrecherche spatialité...");
 		//System.out.println(noeudFT.getNodeType());
 		NodeList list = noeudFT.getChildNodes();
 		for (int i=0 ; i<list.getLength() ; i++){
@@ -257,7 +257,7 @@ public class ChargeurGMLSchema {
 
 
 	/**
-	 * transforme un GMLSchema déjà pars� en un objet SchemaConceptuelIni
+	 * transforme un GMLSchema déjà parsé en un objet SchemaConceptuelIni
 	 * contenant une liste de SC_Ini_FeatureType.
 	 * Utile seulement pour l'application transfoschema qui doit garder le
 	 * schéma initial du producteur, non modifiable, en face d'un schéma
@@ -269,8 +269,8 @@ public class ChargeurGMLSchema {
 
 
 	/**
-	 * g�n�re une structure goexygene complete : schéma conceptuel persistant,
-	 * biblioth�ques de classes, tables et mapping. Utilise la méthode
+	 * Génère une structure goexygene complete : schéma conceptuel persistant,
+	 * bibliothèques de classes, tables et mapping. Utilise la méthode
 	 * gmlSchema2schemaConceptuel(docXSD) et les utilitaires du package
 	 * fr.ign.cogit.appli.sissi.outils.transfoschema.donnees.classesGenerees.outils
 	 * 
@@ -298,8 +298,8 @@ public class ChargeurGMLSchema {
 		else if (GMLType.compareToIgnoreCase("") == 0) return "float";
 		else if (GMLType.compareToIgnoreCase("integer") == 0) return "entier";
 		else if (GMLType.compareToIgnoreCase("") == 0) return "bool";
-		else if (GMLType.compareToIgnoreCase("gml:lineStringProperty") == 0) return "lin�aire";
-		else if (GMLType.compareToIgnoreCase("gml:multiLineStringProperty") == 0) return "lin�aire";
+		else if (GMLType.compareToIgnoreCase("gml:lineStringProperty") == 0) return "linéaire";
+		else if (GMLType.compareToIgnoreCase("gml:multiLineStringProperty") == 0) return "linéaire";
 		else if (GMLType.compareToIgnoreCase("gml:pointProperty") == 0) return "ponctuel";
 		else if (GMLType.compareToIgnoreCase("gml:multiPolygonProperty") == 0) return "surfacique";
 		else if (GMLType.compareToIgnoreCase("gml:polygonProperty") == 0) return "surfacique";

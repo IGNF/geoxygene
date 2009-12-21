@@ -56,7 +56,7 @@ public class Operation implements GF_Operation {
 	/** Affecte un identifiant. */
 	public void setId(int Id) {this.id = Id;}
 
-	/** Renvoie le feature type auquel est rattach� la propriété. */
+	/** Renvoie le feature type auquel est rattaché la propriété. */
 	public GF_FeatureType getFeatureType(){return this.featureType;}
 	/** Affecte un feature type à la propriété. */
 	public void setFeatureType(GF_FeatureType FeatureType){this.featureType = FeatureType;}
@@ -80,8 +80,8 @@ public class Operation implements GF_Operation {
 
 
 	/**
-	 * commodit� pour retrouver à quel schéma conceptuel appartient cette operation
-	 * (en passant par le featureType qu'elle caract�rise).
+	 * commodité pour retrouver à quel schéma conceptuel appartient cette operation
+	 * (en passant par le featureType qu'elle caractérise).
 	 **/
 	public SchemaConceptuelJeu getSchemaConceptuel() {
 		if (this.getFeatureType()!=null){

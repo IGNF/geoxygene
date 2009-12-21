@@ -61,10 +61,10 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 
 /**
- * méthodes de conversion du format SDOAPI vers le format ISO, et r�ciproquement.
+ * méthodes de conversion du format SDOAPI vers le format ISO, et réciproquement.
  * Le format SDOAPI permet ensuite d'importer et d'exporter facilement dans Oracle.
  *
- * <P> A priori achev�, MAIS
+ * <P> A priori achevé, MAIS
  *  ne fonctionne pas pour les arcs de cercles et
  * ne fonctionne pas pour les GM_Surface composées de plusieurs patch.
  * 
@@ -84,33 +84,33 @@ public class IsoAndSdo {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/** Convertit du format SDOAPI vers notre format ISO. Si on a null en entrée, renvoie null.
-	 * Cette méthode publique appelle la méthode priv�e "sdoapi2iso_xxxxx" adéquate, selon le type de géométrie rencontr�e.*/
+	 * Cette méthode publique appelle la méthode privée "sdoapi2iso_xxxxx" adéquate, selon le type de géométrie rencontrée.*/
 	public static GM_Object sdoapi2iso (Geometry geom) throws Exception {
 		GM_Object gm_o = null;
 		int n=3;    // dimension par defaut (avant on la passait en parametre)
 		if (geom != null) {
 			java.lang.Class<?> geomClass = geom.getGeometryType();
-			if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.Point"))
+			if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.Point")) //$NON-NLS-1$
 				gm_o = sdoapi2iso_point((Point)geom,n);
-			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.LineString"))
+			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.LineString")) //$NON-NLS-1$
 				gm_o = sdoapi2iso_linestring((LineString)geom,n);
-			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.Polygon"))
+			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.Polygon")) //$NON-NLS-1$
 				gm_o = sdoapi2iso_polygon((Polygon)geom,n);
-			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.CurveString"))
+			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.CurveString")) //$NON-NLS-1$
 				gm_o = sdoapi2iso_curvestring((CurveString)geom,n);
-			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.CurvePolygon"))
+			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.CurvePolygon")) //$NON-NLS-1$
 				gm_o = sdoapi2iso_curvepolygon((CurvePolygon)geom,n);
-			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.GeometryCollection"))
+			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.GeometryCollection")) //$NON-NLS-1$
 				gm_o = sdoapi2iso_geometrycollection((GeometryCollection)geom,n);
-			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.MultiPoint"))
+			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.MultiPoint")) //$NON-NLS-1$
 				gm_o = sdoapi2iso_multipoint((MultiPoint)geom,n);
-			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.MultiLineString"))
+			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.MultiLineString")) //$NON-NLS-1$
 				gm_o = sdoapi2iso_multilinestring((MultiLineString)geom,n);
-			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.MultiPolygon"))
+			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.MultiPolygon")) //$NON-NLS-1$
 				gm_o = sdoapi2iso_multipolygon((MultiPolygon)geom,n);
-			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.MultiCurveString"))
+			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.MultiCurveString")) //$NON-NLS-1$
 				gm_o = sdoapi2iso_multicurvestring((MultiCurveString)geom,n);
-			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.MultiCurvePolygon"))
+			else if (geomClass == java.lang.Class.forName("oracle.sdoapi.geom.MultiCurvePolygon")) //$NON-NLS-1$
 				gm_o = sdoapi2iso_multicurvepolygon((MultiCurvePolygon)geom,n);
 			else throw new Exception("Format sdoapi non reconnu : "+geomClass.getName());
 		}
@@ -162,10 +162,10 @@ public class IsoAndSdo {
 	}
 
 
-	// A REPRENDRE quand on aura implement� GM_ArcString
+	// A REPRENDRE quand on aura implémenté GM_ArcString
 	/** Convertit une CurveString SDOAPI en une GM_Curve ISO.
 	 * A TERMINER : pour l'instant je genere une GM_Curve composee uniquement de GM_LineString.
-	 * Les segments éventuellement circulaires sont lin�aris�s (pas de 10, en dur).
+	 * Les segments éventuellement circulaires sont linéarisés (pas de 10, en dur).
 	 * Il faudra generer une vraie GM_Curve composee de segments éventuellement circulaires. */
 	private static GM_Curve sdoapi2iso_curvestring (CurveString sdoCurveString, int n) throws Exception {
 		GM_Curve isoCurve = new GM_Curve();
@@ -173,11 +173,11 @@ public class IsoAndSdo {
 		Segment SegmentArray[] = sdoCurveString.getSegmentArray();
 		for (int j=0; j<nbseg; j++) {
 			Segment segment = SegmentArray[j];
-			if (segment.getSegmentType() == java.lang.Class.forName("oracle.sdoapi.geom.CircularArc")) {  // c'est ca qu'il faudra changer
+			if (segment.getSegmentType() == java.lang.Class.forName("oracle.sdoapi.geom.CircularArc")) {  // c'est ca qu'il faudra changer //$NON-NLS-1$
 				Segment segment_arc = (Segment)segment.clone();
 				segment = segment_arc.linearizeSegment(10);
 			} else if (segment.getSegmentType() != java.lang.Class.forName("oracle.sdoapi.geom.LinearSegment"))
-				throw new Exception("Cas non trait� dans la conversion de SDOAPI en ISO (ni lin�aire, ni arc de cercle)");
+				throw new Exception("Cas non traité dans la conversion de SDOAPI en ISO (ni linéaire, ni arc de cercle)");
 			GM_LineString isoLineString  = new GM_LineString();
 			int nbpts = segment.getNumPoints();
 			for (int i=0; i<nbpts; i++) {
@@ -395,29 +395,29 @@ public class IsoAndSdo {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/** Convertit de notre format ISO vers le format SDOAPI. Si on a null en entrée, renvoie null.
-	 * Cette méthode publique appelle la méthode priv�e "iso2sdoapi_xxxxx" adéquate, selon le type de géométrie rencontr�e.*/
+	 * Cette méthode publique appelle la méthode privée "iso2sdoapi_xxxxx" adéquate, selon le type de géométrie rencontrée.*/
 	@SuppressWarnings("unchecked")
 	public static Geometry iso2sdoapi (GeometryFactory gf, GM_Object gm_o) throws Exception {
 		Geometry geom = null;
 		if (gm_o != null) {
 			java.lang.Class<?> gmoClass = gm_o.getClass();
-			if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point"))
+			if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point")) //$NON-NLS-1$
 				geom = iso2sdoapi_point(gf,(GM_Point)gm_o);  // a faire
-			else if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.geomprim.GM_Curve"))
+			else if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.geomprim.GM_Curve")) //$NON-NLS-1$
 				geom = iso2sdoapi_curve(gf,(GM_Curve)gm_o);
-			else if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString"))
+			else if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString")) //$NON-NLS-1$
 				geom = iso2sdoapi_linestring(gf,(GM_LineString)gm_o);
-			else if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface"))
+			else if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface")) //$NON-NLS-1$
 				geom = iso2sdoapi_surface(gf,(GM_Surface)gm_o);
-			else if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon"))
+			else if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon")) //$NON-NLS-1$
 				geom = iso2sdoapi_polygon(gf,(GM_Polygon)gm_o);
-			else if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate"))
+			else if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate")) //$NON-NLS-1$
 				geom = iso2sdoapi_aggregate(gf,(GM_Aggregate<GM_Object>)gm_o);
-			else if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint"))
+			else if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint")) //$NON-NLS-1$
 				geom = iso2sdoapi_multipoint(gf,(GM_MultiPoint)gm_o);
-			else if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve"))
+			else if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve")) //$NON-NLS-1$
 				geom = iso2sdoapi_multicurve(gf,(GM_MultiCurve<GM_OrientableCurve>)gm_o);
-			else if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface"))
+			else if (gmoClass == java.lang.Class.forName("fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface")) //$NON-NLS-1$
 				geom = iso2sdoapi_multisurface(gf,(GM_MultiSurface<GM_OrientableSurface>)gm_o);
 			else throw new Exception("Impossible de rendre ce type de géométrie ISO persistante : "+gmoClass.getName());
 		}
@@ -440,8 +440,8 @@ public class IsoAndSdo {
 
 
 	/** Convertit une GM_Curve ISO en un type de courbe SDOAPI.
-	 *  Si la courbe est compose d'un seul segment qui est une polyligne, on appelle iso2sdoapi_linestring, qui g�n�re une LineString.
-	 *  Sinon on appelle iso2sdoapi_curvestring, qui g�n�re une CurveString. */
+	 *  Si la courbe est compose d'un seul segment qui est une polyligne, on appelle iso2sdoapi_linestring, qui génère une LineString.
+	 *  Sinon on appelle iso2sdoapi_curvestring, qui génère une CurveString. */
 	private static Geometry iso2sdoapi_curve (GeometryFactory gf, GM_Curve isoCurve) throws Exception {
 		Geometry geom = null;
 		if ((isoCurve.sizeSegment() == 1) && (isoCurve.getSegment(0).getInterpolation()=="linear"))
@@ -451,7 +451,7 @@ public class IsoAndSdo {
 	}
 
 
-	/** G�n�re une LineString SDOAPI à partir d'une GM_Curve ISO constituée d'une et d'une seule GM_LineString. */
+	/** Génère une LineString SDOAPI à partir d'une GM_Curve ISO constituée d'une et d'une seule GM_LineString. */
 	private static Geometry iso2sdoapi_linestring (GeometryFactory gf, GM_LineString isoCurve) throws Exception {
 		Geometry geom = null;
 		DirectPositionList listOfPoints = isoCurve.coord();
@@ -473,9 +473,9 @@ public class IsoAndSdo {
 	}
 
 
-	// A REPRENDRE quand on aura implement� GM_ArcString
-	/** G�n�re une CurveString SDOAPI à partir d'une GM_Curve ISO. Ne fonctionne que pour des segments lin�aires.
-	 *  A TERMINER : pour l'instant je genere une CurveString composee uniquement de segments lin�aires.
+	// A REPRENDRE quand on aura implémenté GM_ArcString
+	/** Génère une CurveString SDOAPI à partir d'une GM_Curve ISO. Ne fonctionne que pour des segments linéaires.
+	 *  A TERMINER : pour l'instant je genere une CurveString composee uniquement de segments linéaires.
 	 *  Il faudra generer une vraie CurveString composée de segments éventuellement circulaires. */
 	private static Geometry iso2sdoapi_curvestring (GeometryFactory gf, GM_Curve isoCurve) throws Exception {
 		Geometry geom = null;
@@ -483,9 +483,9 @@ public class IsoAndSdo {
 		Segment[] sdoSegmentArray = new Segment[isoCurve.sizeSegment()];
 		for (int i=0; i<isoCurve.sizeSegment(); i++) {
 			GM_CurveSegment isoSegment = isoCurve.getSegment(i);
-			// pr�voir les cas : Bezier, Circular
+			// prévoir les cas : Bezier, Circular
 			if (isoSegment.getInterpolation() == "linear") sdoClassName = "oracle.sdoapi.geom.LinearSegment";
-			else throw new Exception("Cas non trait� dans la conversion de ISO en SDOAPI (géométrie non lin�aire)");
+			else throw new Exception("Cas non traité dans la conversion de ISO en SDOAPI (géométrie non linéaire)");
 			DirectPositionList listOfPoints = isoSegment.coord();
 			CoordPoint[] sdoPointArray = new CoordPoint[listOfPoints.size()];
 			int j = 0;
@@ -509,7 +509,7 @@ public class IsoAndSdo {
 
 
 	/** Convertit une GM_Surface ISO en un type de surface SDOAPI.
-	 *  Si la surface est compose d'un seul morceau qui est un polygone, on appelle iso2sdoapi_polygon, qui g�n�re un Polygon ou un CurvePolygon.
+	 *  Si la surface est compose d'un seul morceau qui est un polygone, on appelle iso2sdoapi_polygon, qui Génère un Polygon ou un CurvePolygon.
 	 *  Sinon : A FAIRE. */
 	private static Geometry iso2sdoapi_surface (GeometryFactory gf, GM_Surface isoSurface) throws Exception {
 		Geometry geom = null;
@@ -519,7 +519,7 @@ public class IsoAndSdo {
 	}
 
 
-	/** G�n�re un Polygon ou un CurvePolygon SDOAPI à partir d'un GM_Polygon ISO. */
+	/** Génère un Polygon ou un CurvePolygon SDOAPI à partir d'un GM_Polygon ISO. */
 	private static Geometry iso2sdoapi_polygon (GeometryFactory gf, GM_Polygon isoSurface) throws Exception {
 		Geometry sdoGeom = null;
 		if (isoSurface.sizeExterior() == 1) {
@@ -571,7 +571,7 @@ public class IsoAndSdo {
 	}
 
 
-	/** G�n�re une GeometryCollection SDOAPI à partir d'un GM_Aggregate ISO */
+	/** Génère une GeometryCollection SDOAPI à partir d'un GM_Aggregate ISO */
 	private static Geometry iso2sdoapi_aggregate (GeometryFactory gf, GM_Aggregate<GM_Object> isoCollection) throws Exception {
 		Geometry sdoCollection = null;
 		int n = isoCollection.size();
@@ -586,7 +586,7 @@ public class IsoAndSdo {
 	}
 
 
-	/** G�n�re un MultiPoint SDOAPI à partir d'un GM_MultiPoint ISO */
+	/** Génère un MultiPoint SDOAPI à partir d'un GM_MultiPoint ISO */
 	private static Geometry iso2sdoapi_multipoint (GeometryFactory gf, GM_MultiPoint isoCollection) throws Exception {
 		Geometry sdoMultiPoint = null;
 		int n = isoCollection.size();
@@ -601,7 +601,7 @@ public class IsoAndSdo {
 	}
 
 
-	/** G�n�re un MultiCurveString SDOAPI à partir d'un GM_MultiCurve ISO */
+	/** Génère un MultiCurveString SDOAPI à partir d'un GM_MultiCurve ISO */
 	private static Geometry iso2sdoapi_multicurve (GeometryFactory gf, GM_MultiCurve<GM_OrientableCurve> isoCollection) throws Exception {
 		Geometry sdoMultiCurveString = null;
 		int n = isoCollection.size();
@@ -616,7 +616,7 @@ public class IsoAndSdo {
 	}
 
 
-	/** G�n�re un MultiCurvePolygon SDOAPI à partir d'un GM_MultiSurface ISO */
+	/** Génère un MultiCurvePolygon SDOAPI à partir d'un GM_MultiSurface ISO */
 	private static Geometry iso2sdoapi_multisurface (GeometryFactory gf, GM_MultiSurface<GM_OrientableSurface> isoCollection) throws Exception {
 		Geometry sdoMultiCurvePolygon = null;
 		int n = isoCollection.size();

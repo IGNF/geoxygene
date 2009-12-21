@@ -166,7 +166,7 @@ public interface Geodatabase  {
 	 * Charge tous les features correspondant à une même classe de schéma
 	 * conceptuel (il n'est pas nécessaire de connaêtre la classe Java
 	 * d'implémentation). Si on est dans le contexte d'un MdDataSet, les
-	 * MdFeatures sont en même temps affect�s à une MdPopulation propre à leur
+	 * MdFeatures sont en même temps affectés à une MdPopulation propre à leur
 	 * classe de schéma conceptuel.
 	 */
 	public <T extends FT_Feature> FT_FeatureCollection<T> loadAllFeatures(FeatureType featureType);
@@ -260,8 +260,8 @@ public interface Geodatabase  {
 	 * Pour recuperer le premier resultat :
 	 * <tt> edgeId = ( (BigDecimal) ((Object[]) (edges.get(0)) )[0] ).intValue(); </tt>
 	 * Utile uniquement pour debugger : on ne doit pas utiliser de SQL direct avec GeOxygene !
-	 * @param query requete SQL à ex�cuter
-	 * @return liste contenant le resultat de la requ�te SQL
+	 * @param query requete SQL à exécuter
+	 * @return liste contenant le resultat de la requête SQL
 	 */
 	public List<?> exeSQLQuery(String query) ;
 

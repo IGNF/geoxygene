@@ -78,11 +78,11 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 	/** Constructeur en specialisant GeodatabaseOjb.
 	 * Usage interne, appele par GeodatabaseOjbFactory. */
 	public GeodatabaseOjbPostgis(GeodatabaseOjb ojb) {
-		_conn = ojb.getConnection();
-		_odmg = ojb.getODMGImplementation();
-		_db = ojb.getODMGDatabase();
-		_tx = ojb.getODMGTransaction();
-		_metadataList = ojb.getMetadata();
+		this._conn = ojb.getConnection();
+		this._odmg = ojb.getODMGImplementation();
+		this._db = ojb.getODMGDatabase();
+		this._tx = ojb.getODMGTransaction();
+		this._metadataList = ojb.getMetadata();
 		updateConnection();
 		initGeomMetadata();
 	}
@@ -94,11 +94,11 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 			/* pgConn.addDataType(String, String) is deprecated in version 1.0.x of the Postgresql JDBC driver.
 			 * This modification breaks compatibility with version 0.x of PostGIS. */
 
-			PGConnection pgConn = (PGConnection) _conn;
+			PGConnection pgConn = (PGConnection) this._conn;
 			//pgConn.addDataType("geometry","org.postgis.PGgeometry");
-			pgConn.addDataType("geometry",org.postgis.PGgeometry.class);
+			pgConn.addDataType("geometry",org.postgis.PGgeometry.class); //$NON-NLS-1$
 			//pgConn.addDataType("box3d","org.postgis.PGbox3d");
-			pgConn.addDataType("box3d",org.postgis.PGbox3d.class);
+			pgConn.addDataType("box3d",org.postgis.PGbox3d.class); //$NON-NLS-1$
 
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -109,7 +109,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 	/** Renseigne l'attribut _metadataList.
 	 * Attention pour POSTGIS, l'emprise et la tolerance ne sont pas renseignes. */
 	private void initGeomMetadata()  {
-		PostgisSpatialQuery.initGeomMetadata(_metadataList, _conn) ;
+		PostgisSpatialQuery.initGeomMetadata(this._metadataList, this._conn) ;
 	}
 
 
@@ -125,12 +125,12 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 			// charge tous les objets dont on a trouve l'identifiant
 			if (idList.size() > 0) {
 				String query = createInQuery(idList,featureClass.getName());
-				OQLQuery oqlQuery = _odmg.newOQLQuery();
+				OQLQuery oqlQuery = this._odmg.newOQLQuery();
 				try {
 					oqlQuery.create(query);
 					DList list = (DList) oqlQuery.execute();
 					Iterator<T> iter = list.iterator();
-					// on Récupère le srid attribu� à cette classe dans les métadonnées
+					// on Récupère le srid attribué à cette classe dans les métadonnées
 					Metadata metadata = this.getMetadata(featureClass);
 					int srid = -1;
 					if (metadata!=null&&metadata.getSRID()!=0) {
@@ -184,12 +184,12 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 			// charge tous les objets dont on a trouve l'identifiant
 			if (idList.size() > 0) {
 				String query = createInQuery(idList,featureClass.getName());
-				OQLQuery oqlQuery = _odmg.newOQLQuery();
+				OQLQuery oqlQuery = this._odmg.newOQLQuery();
 				try {
 					oqlQuery.create(query);
 					DList list = (DList) oqlQuery.execute();
 					Iterator<?> iter = list.iterator();
-					// on Récupère le srid attribu� à cette classe dans les métadonnées
+					// on Récupère le srid attribué à cette classe dans les métadonnées
 					Metadata metadata = this.getMetadata(featureClass);
 					int srid = -1;
 					if (metadata!=null&&metadata.getSRID()!=0) {
@@ -204,13 +204,13 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 								srid=metadata.getSRID();
 							}
 							if (feature.getGeom()!=null) feature.getGeom().setCRS(srid);
-							result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature});
+							result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature}); //$NON-NLS-1$
 						}
 					}
 					while (iter.hasNext()) {
 						FT_Feature feature = (FT_Feature) iter.next();
 						if (feature.getGeom()!=null) feature.getGeom().setCRS(srid);
-						result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature});
+						result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature}); //$NON-NLS-1$
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -236,12 +236,12 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 			// charge tous les objets dont on a trouve l'identifiant
 			if (idList.size() > 0) {
 				String query = createInQuery(idList,featureClass.getName());
-				OQLQuery oqlQuery = _odmg.newOQLQuery();
+				OQLQuery oqlQuery = this._odmg.newOQLQuery();
 				try {
 					oqlQuery.create(query);
 					DList list = (DList) oqlQuery.execute();
 					Iterator<T> iter = list.iterator();
-					// on Récupère le srid attribu� à cette classe dans les métadonnées
+					// on Récupère le srid attribué à cette classe dans les métadonnées
 					Metadata metadata = this.getMetadata(featureClass);
 					int srid = -1;
 					if (metadata!=null&&metadata.getSRID()!=0) {
@@ -295,12 +295,12 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 			// charge tous les objets dont on a trouve l'identifiant
 			if (idList.size() > 0) {
 				String query = createInQuery(idList,featureClass.getName());
-				OQLQuery oqlQuery = _odmg.newOQLQuery();
+				OQLQuery oqlQuery = this._odmg.newOQLQuery();
 				try {
 					oqlQuery.create(query);
 					DList list = (DList) oqlQuery.execute();
 					Iterator<?> iter = list.iterator();
-					// on Récupère le srid attribu� à cette classe dans les métadonnées
+					// on Récupère le srid attribué à cette classe dans les métadonnées
 					Metadata metadata = this.getMetadata(featureClass);
 					int srid = -1;
 					if (metadata!=null&&metadata.getSRID()!=0) {
@@ -315,13 +315,13 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 								srid=metadata.getSRID();
 							}
 							if (feature.getGeom()!=null) feature.getGeom().setCRS(srid);
-							result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature});
+							result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature}); //$NON-NLS-1$
 						}
 					}
 					while (iter.hasNext()) {
 						FT_Feature feature = (FT_Feature) iter.next();
 						if (feature.getGeom()!=null) feature.getGeom().setCRS(srid);
-						result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature});
+						result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature}); //$NON-NLS-1$
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -337,17 +337,17 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 	/** Cree une requete pour permettre de charger tous les objets a partir d'une liste d'identifants.
 	 * Usage interne. */
 	private String createInQuery (List<?> idList, String className) {
-		String result = "select x from "+className+" where id in (";
+		String result = "select x from "+className+" where id in (";  //$NON-NLS-1$//$NON-NLS-2$
 		StringBuffer strbuff = new StringBuffer(result);
 		Iterator<?> i = idList.iterator();
 		while (i.hasNext()) {
 			int k = ((Number)i.next()).intValue();
 			strbuff.append(k);
-			strbuff.append(",");
+			strbuff.append(","); //$NON-NLS-1$
 		}
 		result = strbuff.toString();
 		result = result.substring(0,result.length()-1);
-		result = result+")";
+		result = result+")"; //$NON-NLS-1$
 		return result;
 	}
 
@@ -369,7 +369,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 		A appeler a l'interieur d'une transaction ouverte. */
 	public int countObjects(Class<?> theClass)  {
 		String tableName = getMetadata(theClass).getTableName();
-		String query = "select count(*) from "+tableName;
+		String query = "select count(*) from "+tableName; //$NON-NLS-1$
 		Number nn = null;
 		try {
 			Connection conn = getConnection();
@@ -392,7 +392,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 	public int maxId(Class<?> theClass)  {
 		String idColumnName = getMetadata(theClass).getIdColumnName();
 		String tableName = getMetadata(theClass).getTableName();
-		String query = "select max("+idColumnName+") from "+tableName;
+		String query = "select max("+idColumnName+") from "+tableName; //$NON-NLS-1$ //$NON-NLS-2$
 		Number nn = null;
 		try {
 			Connection conn = getConnection();
@@ -415,7 +415,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 	public int minId(Class<?> theClass)  {
 		String idColumnName = getMetadata(theClass).getIdColumnName();
 		String tableName = getMetadata(theClass).getTableName();
-		String query = "select min("+idColumnName+") from "+tableName;
+		String query = "select min("+idColumnName+") from "+tableName; //$NON-NLS-1$ //$NON-NLS-2$
 		Number nn = null;
 		try {
 			Connection conn = getConnection();
@@ -444,7 +444,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 		DescriptorRepository rd = mm.readDescriptorRepository(newRepository.getPath());
 		mm.setDescriptor(rd,true);
 		begin();
-		PersistenceBrokerHandle pbh = (PersistenceBrokerHandle) ((HasBroker)_tx).getBroker() ;
+		PersistenceBrokerHandle pbh = (PersistenceBrokerHandle) ((HasBroker)this._tx).getBroker() ;
 		PoolablePersistenceBroker ppb = (PoolablePersistenceBroker) pbh.getDelegate();
 		GeOxygenePersistenceBrokerImpl pbi = (GeOxygenePersistenceBrokerImpl) ppb.getDelegate();
 		pbi.refresh();
@@ -452,6 +452,5 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 		initMetadata();
 		initGeomMetadata();
 	}
-
 
 }

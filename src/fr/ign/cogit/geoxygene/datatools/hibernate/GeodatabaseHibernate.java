@@ -50,7 +50,7 @@ public class GeodatabaseHibernate implements Geodatabase {
 	/////////////////////////////////////////////////////////////////////////////////////////
 	/** Constructeur. */
 	public GeodatabaseHibernate() {
-		session = HibernateUtil.getSessionFactory().openSession();
+		this.session = HibernateUtil.getSessionFactory().openSession();
 		initMetadata();
 	}
 	
@@ -62,7 +62,7 @@ public class GeodatabaseHibernate implements Geodatabase {
 
 	/** Renseigne l'attribut _metadataList. */
 	protected void initMetadata()  {
-		metadataList = new ArrayList<Metadata>();
+		this.metadataList = new ArrayList<Metadata>();
 		Map<?,?> allClassesMetadata = HibernateUtil.getSessionFactory().getAllClassMetadata();
 
 		for (Object key:allClassesMetadata.keySet()) {
@@ -87,42 +87,42 @@ public class GeodatabaseHibernate implements Geodatabase {
 					logger.debug("id column name = "+metadataElt.getIdColumnName());
 				}
 			}
-			metadataList.add(metadataElt);
+			this.metadataList.add(metadataElt);
 		}
 	}
 
 	@Override
-	public void abort() {session.cancelQuery();}
+	public void abort() {this.session.cancelQuery();}
 
 	@Override
-	public void begin() {transaction=session.beginTransaction();}
+	public void begin() {this.transaction=this.session.beginTransaction();}
 
 	@Override
-	public void checkpoint() {transaction.commit();transaction=session.beginTransaction();}
+	public void checkpoint() {this.transaction.commit();this.transaction=this.session.beginTransaction();}
 
 	@Override
-	public void clearCache() {session.clear();}
+	public void clearCache() {this.session.clear();}
 
 	@Override
-	public void close() {session.close();}
+	public void close() {this.session.close();}
 
 	@Override
-	public void commit() {transaction.commit();}
+	public void commit() {this.transaction.commit();}
 
 	@Override
-	public int countObjects(Class<?> theClass) {return session.createQuery("from "+theClass.getSimpleName()).list().size();}
+	public int countObjects(Class<?> theClass) {return this.session.createQuery("from "+theClass.getSimpleName()).list().size();} //$NON-NLS-1$
 
 	@Override
-	public void deletePersistent(Object obj) {session.delete(obj);}
+	public void deletePersistent(Object obj) {this.session.delete(obj);}
 
 	@Override
-	public void exeSQL(String query) {session.createSQLQuery(query);}
+	public void exeSQL(String query) {this.session.createSQLQuery(query);}
 
 	@Override
 	public void exeSQLFile(String fileName) {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(fileName));
-			String query = "";
+			String query = ""; //$NON-NLS-1$
 			String line = reader.readLine();
 			while (line!=null) {
 				query += line.trim();
@@ -132,53 +132,53 @@ public class GeodatabaseHibernate implements Geodatabase {
 		} catch (FileNotFoundException e) {
 			logger.error("Le fichier "+fileName+" n'existe pas");
 		} catch (IOException e) {
-			logger.error("Erreur pendant l'ex�cution des requ�tes du fichier "+fileName);
+			logger.error("Erreur pendant l'exécution des requêtes du fichier "+fileName);
 			logger.error(e.getMessage());
 		}
 	}
 
 	@Override
-	public List<?> exeSQLQuery(String query) {return session.createSQLQuery(query).list();}
+	public List<?> exeSQLQuery(String query) {return this.session.createSQLQuery(query).list();}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public Connection getConnection() {return session.connection();}
+	public Connection getConnection() {return this.session.connection();}
 
 	@Override
 	public int getDBMS() {return Geodatabase.POSTGIS;}
 
 	@Override
-	public List<Metadata> getMetadata() {return metadataList;}
+	public List<Metadata> getMetadata() {return this.metadataList;}
 
 	@Override
 	public Metadata getMetadata(Class<?> theClass) {
-		for (int i=0; i<metadataList.size(); i++)
-			if (theClass.getName().compareTo((metadataList.get(i)).getClassName()) == 0)
-				return metadataList.get(i);
-		logger.warn("La classe n'est pas mapp�e : "+theClass.getName());
+		for (int i=0; i<this.metadataList.size(); i++)
+			if (theClass.getName().compareTo((this.metadataList.get(i)).getClassName()) == 0)
+				return this.metadataList.get(i);
+		logger.warn("La classe n'est pas mappée : "+theClass.getName());
 		return null;
 	}
 
 	@Override
 	public Metadata getMetadata(String theTable) {
-		for (int i=0; i<metadataList.size(); i++)
-			if ((metadataList.get(i)).getTableName() != null)
-				if (theTable.compareToIgnoreCase((metadataList.get(i)).getTableName()) == 0)
-					return metadataList.get(i);
-		logger.warn("La table n'est pas mapp�e : "+theTable);
+		for (int i=0; i<this.metadataList.size(); i++)
+			if ((this.metadataList.get(i)).getTableName() != null)
+				if (theTable.compareToIgnoreCase((this.metadataList.get(i)).getTableName()) == 0)
+					return this.metadataList.get(i);
+		logger.warn("La table n'est pas mappée : "+theTable);
 		return null;
 	}
 
 	@Override
-	public boolean isOpen() {return session.isOpen();}
+	public boolean isOpen() {return this.session.isOpen();}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T load(Class<T> clazz, Object id) {return (T) session.load(clazz, (Serializable) id);}
+	public <T> T load(Class<T> clazz, Object id) {return (T) this.session.load(clazz, (Serializable) id);}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> loadAll(Class<T> featureClass) {return session.createQuery("from "+featureClass.getSimpleName()).list();}
+	public <T> List<T> loadAll(Class<T> featureClass) {return this.session.createQuery("from "+featureClass.getSimpleName()).list();} //$NON-NLS-1$
 
 	@Override
 	public <T> T loadAll(Class<?> featureClass, Class<T> featureListClass) {
@@ -195,7 +195,7 @@ public class GeodatabaseHibernate implements Geodatabase {
 			while (iter.hasNext()) {
 				Object feature = iter.next();
 				result.getClass()
-						.getMethod("add", new Class[] { featureClass }).invoke(
+						.getMethod("add", new Class[] { featureClass }).invoke( //$NON-NLS-1$
 								result, new Object[] { feature });
 			}
 		} catch (Exception e) {
@@ -218,7 +218,7 @@ public class GeodatabaseHibernate implements Geodatabase {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T loadAllFeatures(Class<?> featureClass, Class<T> featureListClass, String param, String value) {
-		return (T) session.createSQLQuery("select x from "+featureClass.getName()+" where "+param+" = "+value).list();
+		return (T) this.session.createSQLQuery("select x from "+featureClass.getName()+" where "+param+" = "+value).list(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	@Override
@@ -227,17 +227,17 @@ public class GeodatabaseHibernate implements Geodatabase {
 	/** Cree une requete pour permettre de charger tous les objets a partir d'une liste d'identifants.
 	 * Usage interne. */
 	private String createInQuery (List<?> idList, String className) {
-		String result = "select x from "+className+" where id in (";
+		String result = "select x from "+className+" where id in ("; //$NON-NLS-1$ //$NON-NLS-2$
 		StringBuffer strbuff = new StringBuffer(result);
 		Iterator<?> i = idList.iterator();
 		while (i.hasNext()) {
 			int k = ((Number)i.next()).intValue();
 			strbuff.append(k);
-			strbuff.append(",");
+			strbuff.append(","); //$NON-NLS-1$
 		}
 		result = strbuff.toString();
 		result = result.substring(0,result.length()-1);
-		result = result+")";
+		result = result+")"; //$NON-NLS-1$
 		return result;
 	}
 	@Override
@@ -257,9 +257,9 @@ public class GeodatabaseHibernate implements Geodatabase {
 			if (idList.size() > 0) {
 				String query = createInQuery(idList,featureClass.getName());
 				try {
-					List<?> list = session.createSQLQuery(query).list();
+					List<?> list = this.session.createSQLQuery(query).list();
 					Iterator<?> iter = list.iterator();
-					// on Récupère le srid attribu� à cette classe dans les métadonnées
+					// on Récupère le srid attribué à cette classe dans les métadonnées
 					Metadata metadata = this.getMetadata(featureClass);
 					int srid = -1;
 					if (metadata!=null&&metadata.getSRID()!=0) {
@@ -274,13 +274,13 @@ public class GeodatabaseHibernate implements Geodatabase {
 								srid=metadata.getSRID();
 							}
 							if (feature.getGeom()!=null) feature.getGeom().setCRS(srid);
-							result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature});
+							result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature}); //$NON-NLS-1$
 						}
 					}
 					while (iter.hasNext()) {
 						FT_Feature feature = (FT_Feature) iter.next();
 						if (feature.getGeom()!=null) feature.getGeom().setCRS(srid);
-						result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature});
+						result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature}); //$NON-NLS-1$
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -303,9 +303,9 @@ public class GeodatabaseHibernate implements Geodatabase {
 			if (idList.size() > 0) {
 				String query = createInQuery(idList,featureClass.getName());
 				try {
-					List<T> list = session.createSQLQuery(query).list();
+					List<T> list = this.session.createSQLQuery(query).list();
 					Iterator<T> iter = list.iterator();
-					// on Récupère le srid attribu� à cette classe dans les métadonnées
+					// on Récupère le srid attribué à cette classe dans les métadonnées
 					Metadata metadata = this.getMetadata(featureClass);
 					int srid = -1;
 					if (metadata!=null&&metadata.getSRID()!=0) {
@@ -348,7 +348,7 @@ public class GeodatabaseHibernate implements Geodatabase {
 		return null;
 	}
 	@Override
-	public void makePersistent(Object obj) {session.saveOrUpdate(obj);}
+	public void makePersistent(Object obj) {this.session.saveOrUpdate(obj);}
 	//public void makePersistent(Object obj) {session.persist(obj);}	
 	@Override
 	public int maxId(Class<?> theClass) {return 0;}
@@ -362,4 +362,5 @@ public class GeodatabaseHibernate implements Geodatabase {
 	public void refreshRepository(File newRepository) throws Exception {}
 	@Override
 	public void spatialIndex(Class<?> clazz) {}
+	
 }

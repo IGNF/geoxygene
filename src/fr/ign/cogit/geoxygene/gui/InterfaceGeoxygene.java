@@ -217,7 +217,7 @@ public class InterfaceGeoxygene extends JFrame {
 				true);
 		/**
 		 *  Ajoute le panel de visualisation au listeners de la population.
-		 *  Il sera inform� de l'ajout des nouveaux objets au fur et à mesure.
+		 *  Il sera informé de l'ajout des nouveaux objets au fur et à mesure.
 		 */
 		reader.getPopulation().addFeatureCollectionListener(getPanelVisu());
 		/**

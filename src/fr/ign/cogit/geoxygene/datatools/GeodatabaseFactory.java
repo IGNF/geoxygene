@@ -36,7 +36,7 @@ public class GeodatabaseFactory {
 	/**
 	 * crée une géodatabase.
 	 * @param type type de geodatabase à créer
-	 * @return une geodatabase du type spécifi�
+	 * @return une geodatabase du type spécifié
 	 */
 	public static Geodatabase newInstance(int type) {
 		if (type == GeodatabaseType.HIBERNATE)

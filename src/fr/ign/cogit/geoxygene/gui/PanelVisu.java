@@ -139,7 +139,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	 */
 	public StyledLayerDescriptor getDefaultSld() {return this.defaultSld;}
 	/**
-	 * @return l'enveloppe affich�e
+	 * @return l'enveloppe affichée
 	 */
 	public GM_Envelope getEnveloppeAffichage() { return dessinable.getEnveloppeAffichage(); }
 	public double getXMax(){ return getEnveloppeAffichage().maxX(); }
@@ -147,7 +147,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	public double getYMax(){ return getEnveloppeAffichage().maxY(); }
 	public double getYMin(){ return getEnveloppeAffichage().minY(); }
 	/**
-	 * taille d'un pixel (la longueur d'un cote de pixel représente une longueur de taillePixel dans la r�alit�)
+	 * taille d'un pixel (la longueur d'un cote de pixel représente une longueur de taillePixel dans la réalité)
 	 * ce champ est celui qui permet de changer le zoom de la vue
 	 */
 	public double getTaillePixel() { return dessinable.getTaillePixel(); }
@@ -159,8 +159,8 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
     private final static double METERS_PER_PIXEL;
 	public static double getMETERS_PER_PIXEL() {return METERS_PER_PIXEL;}
 	static {
-		//elle est calcul�e à partir de la r�solution de l'�cran en DPI.
-		//par exemple si la r�solution est 90DPI, c'est: 90 pix/inch = 1/90 inch/pix = 0.0254/90 meter/pix
+		//elle est calculée à partir de la résolution de l'écran en DPI.
+		//par exemple si la résolution est 90DPI, c'est: 90 pix/inch = 1/90 inch/pix = 0.0254/90 meter/pix
 	    METERS_PER_PIXEL=0.02540005/Toolkit.getDefaultToolkit().getScreenResolution();
 	    //System.out.print(METERS_PER_PIXEL*1280);
 	}
@@ -259,7 +259,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 		menuItemCentrerVue.addActionListener(getActionListenerGeox());
 		/**
 		 * ajout d'un deuxième mouse listener qui ne gère que les
-		 * �v�nements venant du popupmenu 
+		 * évènements venant du popupmenu 
 		 */
 		addMouseListener(getPopupListenerGeox());
 
@@ -306,7 +306,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	 */
 	public void setAffichageEchelle(boolean affichageEchelle) {this.affichageEchelle = affichageEchelle;}
 	/**
-	 * indique si la position du curseur doit être affich�e dans la barre du bas
+	 * indique si la position du curseur doit être affichée dans la barre du bas
 	 */
 	public boolean suivrePositionCurseur = false;
 
@@ -328,7 +328,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	public static int tempsRafraichissementAutomatique=400;// temps en millisecondes
 	protected Timer repaintTimer = new Timer(tempsRafraichissementAutomatique, new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			if (logger.isTraceEnabled()) logger.trace("repaintTimer activ�");
+			if (logger.isTraceEnabled()) logger.trace("repaintTimer activé");
 			if ( (dessinable!=null) && (dessinable.getThreadMaj()!=null) && (dessinable.getThreadMaj().get()!=null) && (dessinable.getThreadMaj().get().isAlive()) ) {
 				if (logger.isTraceEnabled()) logger.trace("repaintTimer copy");
 				update = false;
@@ -370,7 +370,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	}
 
 	/**
-	 * D�place le centre de la vue au niveau d'une position Géographique donnée.
+	 * Déplace le centre de la vue au niveau d'une position Géographique donnée.
 	 * @param xGeoCentre
 	 * @param yGeoCentre
 	 */
@@ -495,7 +495,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 		//g2.dispose();
 	}
 
-	//les methodes de conversion entre coordonnées �cran (pixel) et coordonnées Géographiques
+	//les methodes de conversion entre coordonnées écran (pixel) et coordonnées Géographiques
 	public int coordToPixX(double x){ return (int)((x-(getCentreGeo().getX()-getWidth()*0.5*getTaillePixel()))/getTaillePixel());}		
 	public int coordToPixY(double y){ return (int)(getHeight()+(getCentreGeo().getY()-getHeight()*0.5*getTaillePixel()-y)/getTaillePixel());}
 	public double pixToCoordX(int x){ return getCentreGeo().getX()-getWidth()*0.5*getTaillePixel()+x*getTaillePixel();}
@@ -539,7 +539,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	}
 
 	/**
-	 * centre la vue sur toutes les populations affich�es
+	 * centre la vue sur toutes les populations affichées
 	 */
 	public void centrer(){
 		double x=0;
@@ -639,8 +639,8 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	}
 
 	/**
-	 * méthode appel�e par les objets que le panel surveille
-	 * lorsque leur �tat change.
+	 * méthode appelée par les objets que le panel surveille
+	 * lorsque leur état change.
 	 */
 	@Override
 	public void stateChanged(ChangeEvent e) {
@@ -1097,9 +1097,9 @@ class PopupListenerGeox extends MouseAdapter {
     @Override
 	public void mouseReleased(MouseEvent e) {maybeShowPopup(e);}
     /**
-     * Affiche un menu popup si l'�v�nement souris est l'�v�nement 
+     * Affiche un menu popup si l'évènement souris est l'évènement 
      * d'affichage du menu popup.
-     * @param e �v�nement souris
+     * @param e évènement souris
      */
     private void maybeShowPopup(MouseEvent e) {
         if (e.isPopupTrigger()) {

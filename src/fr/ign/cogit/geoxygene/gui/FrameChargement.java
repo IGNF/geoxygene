@@ -89,11 +89,11 @@ public class FrameChargement extends JFrame {
 	 */
 	private TableModel dataModel;
 	/**
-	 * vrai si le chargement a été valid� (grâce au bouton "Ok").
+	 * vrai si le chargement a été validé (grâce au bouton "Ok").
 	 */
 	protected boolean validated = false;
 	/**
-	 * ComboBox utilisée pour �diter les valeurs des types associés aux shapefiles.
+	 * ComboBox utilisée pour éditer les valeurs des types associés aux shapefiles.
 	 */
 	protected JComboBox comboBox;
 
@@ -112,19 +112,19 @@ public class FrameChargement extends JFrame {
 		setResizable(true);
 		setSize(new Dimension(500,500));
 		setExtendedState(Frame.MAXIMIZED_BOTH);
-		setTitle(title);
+		setTitle(this.title);
 		setIconImage(InterfaceGeoxygene.getIcone());
 
-		layerNames.add("Nouvelle Couche");
-		for (Layer layer:sld.getLayers()) {layerNames.add(layer.getName());}
-		this.comboBox = new JComboBox(new Vector<String>(layerNames));
+		this.layerNames.add("Nouvelle Couche");
+		for (Layer layer:sld.getLayers()) {this.layerNames.add(layer.getName());}
+		this.comboBox = new JComboBox(new Vector<String>(this.layerNames));
 				
-		dataModel = new AbstractTableModel() {
+		this.dataModel = new AbstractTableModel() {
 			private static final long serialVersionUID = 1L;
 			public int getColumnCount() {return 2;}
-			public int getRowCount() {return shapeFiles.size();}
+			public int getRowCount() {return FrameChargement.this.shapeFiles.size();}
 			public Object getValueAt(int row, int col) {
-				return (col == 0)?shapeFiles.get(row).getName():shapeFileLayers.get(row);
+				return (col == 0)?FrameChargement.this.shapeFiles.get(row).getName():FrameChargement.this.shapeFileLayers.get(row);
 			}
 			@Override
 			public boolean isCellEditable(int row, int col) {return (col==1);}
@@ -139,19 +139,19 @@ public class FrameChargement extends JFrame {
 			@Override
 			public void setValueAt(Object value, int row, int col) {
 				if (col == 0) {
-					shapeFiles.set(row,(File) value);
+					FrameChargement.this.shapeFiles.set(row,(File) value);
 					fireTableCellUpdated(row,col);
 				}
 				if (col == 1) {
 					boolean found = false;
 					int index = 0;
-					for (index = 0; index < layerNames.size()&&!found;index++) {
-						if (layerNames.get(index).equals(value)) {
+					for (index = 0; index < FrameChargement.this.layerNames.size()&&!found;index++) {
+						if (FrameChargement.this.layerNames.get(index).equals(value)) {
 							found = true;
 							index--;
 						}
 					}
-					shapeFileLayers.set(row, index);
+					FrameChargement.this.shapeFileLayers.set(row, index);
 					fireTableCellUpdated(row,col);
 				}
 			}
@@ -162,7 +162,7 @@ public class FrameChargement extends JFrame {
 	/**
 	 * Ajout de fichiers shapefiles.
 	 */
-	private void addShapeFiles() {
+	void addShapeFiles() {
 		GUIShapefileChoice sfc = new GUIShapefileChoice(true);
 		File[] files = sfc.getSelectedFiles();
 		if ((files == null)||(files.length == 0)) {
@@ -172,11 +172,11 @@ public class FrameChargement extends JFrame {
 	}
 
 	/**
-	 * Ajout de r�pertoires contenant des fichiers shapefiles.
-	 * Les r�pertoires sont tous parcourus récursivement et
+	 * Ajout de répertoires contenant des fichiers shapefiles.
+	 * Les répertoires sont tous parcourus récursivement et
 	 * tous les shapefiles qu'ils contiennent sont ajoutés.
 	 */
-	private void addDirectories() {
+	void addDirectories() {
 		GUIShapefileChoice sfc = new GUIShapefileChoice(true);
 		File[] files = sfc.getSelectedDirectories();
 		if ((files == null)||(files.length == 0)) {
@@ -188,7 +188,7 @@ public class FrameChargement extends JFrame {
 	private void updateLayoutDirectories(File[] files) {
 		for (int i = 0; i < files.length; i++) {
 			if (files[i].isFile()) {
-				if (files[i].getName().endsWith(".shp")||files[i].getName().endsWith(".SHP"))
+				if (files[i].getName().endsWith(".shp")||files[i].getName().endsWith(".SHP")) //$NON-NLS-1$ //$NON-NLS-2$
 					updateLayout(files[i]);
 			} else {
 				updateLayoutDirectories(files[i].listFiles());
@@ -218,41 +218,41 @@ public class FrameChargement extends JFrame {
 
 		if (layerName!=null){
 			boolean found = false;
-			for (index = 0; index < layerNames.size()&&!found;index++) {
-				if (layerNames.get(index).equals(layerName)) {
+			for (index = 0; index < this.layerNames.size()&&!found;index++) {
+				if (this.layerNames.get(index).equals(layerName)) {
 					if (logger.isTraceEnabled()) logger.trace(shapefileName+" - layer = "+layerName);
-					shapeFiles.add(shapefile);
-					shapeFileLayers.add(index);
-					((AbstractTableModel) dataModel).fireTableDataChanged();
+					this.shapeFiles.add(shapefile);
+					this.shapeFileLayers.add(index);
+					((AbstractTableModel) this.dataModel).fireTableDataChanged();
 					return;
 				}
 			}
 		}
-		shapeFiles.add(shapefile);
-		shapeFileLayers.add(0);
-		((AbstractTableModel) dataModel).fireTableDataChanged();
+		this.shapeFiles.add(shapefile);
+		this.shapeFileLayers.add(0);
+		((AbstractTableModel) this.dataModel).fireTableDataChanged();
 	}
 
 	/**
-	 * création du JDialog de s�lection des fichiers.
+	 * création du JDialog de sélection des fichiers.
 	 * @param parent Frame parent du JDialog à créer.
-	 * @return JDialog de s�lection des fichiers shapefiles à charger.
+	 * @return JDialog de sélection des fichiers shapefiles à charger.
 	 */
 	private JDialog createDialog(Frame parent) {
-		final JDialog dialog = new JDialog(parent, title, true);
+		final JDialog dialog = new JDialog(parent, this.title, true);
 
 		Container contentPane = dialog.getContentPane();
 		contentPane.setLayout(new BorderLayout());
 
-		final JTable table = new JTable(dataModel);
+		final JTable table = new JTable(this.dataModel);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		JScrollPane scrollpane = new JScrollPane(table);
 		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		TableColumn col = table.getColumnModel().getColumn(0);
 		col.setCellRenderer(new MappingTableCellRenderer());
 		col = table.getColumnModel().getColumn(1);
-		col.setCellEditor(new DefaultCellEditor(comboBox));
-		col.setCellRenderer(new MyComboBoxRenderer(layerNames.toArray(new String[0])));
+		col.setCellEditor(new DefaultCellEditor(this.comboBox));
+		col.setCellRenderer(new MyComboBoxRenderer(this.layerNames.toArray(new String[0])));
 		table.setFillsViewportHeight(true);
 		contentPane.add(scrollpane,BorderLayout.LINE_START);
 
@@ -265,7 +265,7 @@ public class FrameChargement extends JFrame {
 		okButton.setActionCommand("Ok");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				validated = true;
+				FrameChargement.this.validated = true;
 				dialog.dispose();
 			}
 		});
@@ -286,8 +286,8 @@ public class FrameChargement extends JFrame {
 			}
 		});
 		Icon iconAddDirectoryButton = new ImageIcon("images/AjoutRepertoire.png");
-		JButton addDirectoryButton = new JButton("Ajouter des r�pertoires contenant des Shapefiles",iconAddDirectoryButton);
-		addDirectoryButton.setToolTipText("Ajouter des r�pertoires contenant des Shapefiles");
+		JButton addDirectoryButton = new JButton("Ajouter des répertoires contenant des Shapefiles",iconAddDirectoryButton);
+		addDirectoryButton.setToolTipText("Ajouter des répertoires contenant des Shapefiles");
 		addDirectoryButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				addDirectories();
@@ -308,14 +308,14 @@ public class FrameChargement extends JFrame {
 	}
 
 	/**
-	 * création du JDialog de s�lection des fichiers.
-	 * @return vrai si le JDialog a été valid� (grâce au bouton "Ok"), faux sinon.
+	 * création du JDialog de sélection des fichiers.
+	 * @return vrai si le JDialog a été validé (grâce au bouton "Ok"), faux sinon.
 	 */
 	public boolean showDialog() {
 		final JDialog dialog = createDialog(this);
 		dialog.setVisible(true);
 		dialog.dispose();
-		return validated;
+		return this.validated;
 	}
 	
 	/**
@@ -356,7 +356,7 @@ public class FrameChargement extends JFrame {
 
 	/**
 	 * TableCellRenderer utilisé pour la colonne contenant le type des objets chargés.
-	 * Cette colonne est �ditable grace à une comboBox.
+	 * Cette colonne est éditable grace à une comboBox.
 	 */
 	public class MyComboBoxRenderer extends JComboBox implements TableCellRenderer {
 		private static final long serialVersionUID = 1L;
@@ -386,7 +386,7 @@ public class FrameChargement extends JFrame {
 			int selectedIndex = ((Integer)value).intValue();
 			//if ((selectedIndex<0) || (selectedIndex>=sld.getLayers().size()) || (sld.getLayers().get(selectedIndex)==null)) return this;
 			//String layerName = sld.getLayers().get(selectedIndex).getName();
-			String layerName = layerNames.get(selectedIndex);
+			String layerName = FrameChargement.this.layerNames.get(selectedIndex);
 			setSelectedItem(layerName);
 			return this;
 		}
@@ -408,8 +408,8 @@ public class FrameChargement extends JFrame {
 	}
 	/**
 	 * Récupère le type d'objets contenus dans le fichier grâce au nom du fichier.
-	 * Ce n'est qu'un heuristique simple : on consid�re que le fichier
-	 * contient des b�timents si son nom contient "batiment", etc.
+	 * Ce n'est qu'un heuristique simple : on considère que le fichier
+	 * contient des bâtiments si son nom contient "batiment", etc.
 	 * @param shapefileName nom d'un fichier shapefile
 	 * @return le type java supposé correspondant aux features de ce fichier
 	 */

@@ -12,7 +12,7 @@ import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.SchemaConceptuel
  * Un produit qui a un producteur, des métadonnées minimales et notamment
  * un schéma conceptuel (de type SchemaISOProduit)
  * D'autres métadonnées sont à venir, notamment des MD ISO 19115
- * et des spécifications Cogit compl�tes
+ * et des spécifications Cogit complètes
  */
 
 public class Produit {
@@ -41,7 +41,7 @@ public class Produit {
 
 	/**
 	 * 1 = BD
-	 * 2 = s�rie de cartes
+	 * 2 = sûrie de cartes
 	 */
 	protected int type;
 
@@ -55,7 +55,7 @@ public class Produit {
 	/**
 	 * @param type the type to set
 	 * 1 = BD
-	 * 2 = s�rie de cartes
+	 * 2 = sûrie de cartes
 	 */
 	public void setType(int type) {
 		this.type = type;

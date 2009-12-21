@@ -93,11 +93,11 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @param l the <code>ChangeListener</code> to be added
 	 */
 	public void addChangeListener(ChangeListener l) {
-		if (listenerList==null) {
+		if (this.listenerList==null) {
 			if (logger.isTraceEnabled()) logger.trace("bizarre");
-			listenerList = new ArrayList<ChangeListener>();
+			this.listenerList = new ArrayList<ChangeListener>();
 		}
-		listenerList.add(l);
+		this.listenerList.add(l);
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 */
 	public void fireActionPerformed(ChangeEvent e) {
 		// Guaranteed to return a non-null array
-		Object[] listeners = listenerList.toArray();
+		Object[] listeners = this.listenerList.toArray();
 		// Process the listeners last to first, notifying
 		// those that are interested in this event
 		for (int i = listeners.length-1; i>=0; i-=1) {
@@ -122,9 +122,9 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 
 	private double taillePixel=10.0;
 	@Override
-	public double getTaillePixel() { return taillePixel; }
+	public double getTaillePixel() { return this.taillePixel; }
 	@Override
-	public void setTaillePixel(double tp) { taillePixel=tp; }
+	public void setTaillePixel(double tp) { this.taillePixel=tp; }
 
 	private StyledLayerDescriptor sld;
 	/**
@@ -159,7 +159,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	
 	private DirectPosition centreGeo = new DirectPosition(0.0, 0.0);
 	@Override
-	public DirectPosition getCentreGeo() { return centreGeo; }
+	public DirectPosition getCentreGeo() { return this.centreGeo; }
 	@Override
 	public void setCentreGeo(DirectPosition centreGeo) {this.centreGeo = centreGeo;}
 	
@@ -172,51 +172,51 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 		this.width=newWidth;
 		this.height=newHeight;
 		if (logger.isTraceEnabled()) logger.trace("Limites : "+newWidth+" - "+newHeight);
-		double XMin = pixToCoordX(-nbPixelsMarge);
-		double XMax = pixToCoordX(newWidth+nbPixelsMarge);
-		double YMin = pixToCoordY(newHeight+nbPixelsMarge);
-		double YMax = pixToCoordY(-nbPixelsMarge);
-		enveloppeAffichage = new GM_Envelope( XMin, XMax, YMin, YMax );
-		if (logger.isTraceEnabled()) logger.trace("enveloppeAffichage : "+enveloppeAffichage);
+		double XMin = pixToCoordX(-this.nbPixelsMarge);
+		double XMax = pixToCoordX(newWidth+this.nbPixelsMarge);
+		double YMin = pixToCoordY(newHeight+this.nbPixelsMarge);
+		double YMax = pixToCoordY(-this.nbPixelsMarge);
+		this.enveloppeAffichage = new GM_Envelope( XMin, XMax, YMin, YMax );
+		if (logger.isTraceEnabled()) logger.trace("enveloppeAffichage : "+this.enveloppeAffichage);
 
-		affineTransform = AffineTransform.getTranslateInstance(0, newHeight);
-		affineTransform.scale(1/taillePixel,-1/taillePixel);
-		affineTransform.translate(newWidth*0.5*taillePixel-centreGeo.getX(),newHeight*0.5*taillePixel-centreGeo.getY());
+		this.affineTransform = AffineTransform.getTranslateInstance(0, newHeight);
+		this.affineTransform.scale(1/this.taillePixel,-1/this.taillePixel);
+		this.affineTransform.translate(newWidth*0.5*this.taillePixel-this.centreGeo.getX(),newHeight*0.5*this.taillePixel-this.centreGeo.getY());
 
-		if (useCache) majCachedFeatures();
+		if (this.useCache) majCachedFeatures();
 		//clearShapeCache();
 	}
 	/**
 	 * Mise à jour du cache contenant les features à l'intérieur des limites de l'affichage, i.e. les features visibles.
 	 */
 	private void majCachedFeatures() {
-		if (sld==null) return;
+		if (this.sld==null) return;
 		if (logger.isTraceEnabled()) {logger.trace("début du calcul des features à mettre dans le cache");}
 		double debut = System.currentTimeMillis();
-		for (Layer layer:sld.getLayers()) setCachedFeatures(layer);
+		for (Layer layer:this.sld.getLayers()) setCachedFeatures(layer);
 		double fin = System.currentTimeMillis();
 		if (logger.isTraceEnabled()) {logger.trace("("+(fin-debut)+"Fin du calcul des features à mettre dans le cache");}
 	}
 
-	public int coordToPixX(double x){ return (int)((x-(centreGeo.getX()-width*0.5*taillePixel))/taillePixel);}		
-	public int coordToPixY(double y){ return (int)(height+(centreGeo.getY()-height*0.5*taillePixel-y)/taillePixel);}
-	public double pixToCoordX(int x){ return centreGeo.getX()-width*0.5*taillePixel+x*taillePixel;}
-	public double pixToCoordY(int y){ return centreGeo.getY()-height*0.5*taillePixel+(height-y)*taillePixel;}
+	public int coordToPixX(double x){ return (int)((x-(this.centreGeo.getX()-this.width*0.5*this.taillePixel))/this.taillePixel);}		
+	public int coordToPixY(double y){ return (int)(this.height+(this.centreGeo.getY()-this.height*0.5*this.taillePixel-y)/this.taillePixel);}
+	public double pixToCoordX(int x){ return this.centreGeo.getX()-this.width*0.5*this.taillePixel+x*this.taillePixel;}
+	public double pixToCoordY(int y){ return this.centreGeo.getY()-this.height*0.5*this.taillePixel+(this.height-y)*this.taillePixel;}
 
 	AffineTransform affineTransform=null;
-	public Shape toScreen(Shape s) {return affineTransform.createTransformedShape(s);}
+	public Shape toScreen(Shape s) {return this.affineTransform.createTransformedShape(s);}
 
 	@Override
 	public void dessiner(Graphics2D g) throws InterruptedException {
-		if (sld==null) {
+		if (this.sld==null) {
 			logger.info("SLD null");
 			return;
 		}
 		if (logger.isTraceEnabled()) {logger.trace("dessiner() ");}
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, antiAliasing?RenderingHints.VALUE_ANTIALIAS_ON:RenderingHints.VALUE_ANTIALIAS_OFF);
-		for (Layer layer:sld.getLayers()) {
+		for (Layer layer:this.sld.getLayers()) {
 			if (logger.isTraceEnabled()) logger.trace("dessiner le layer "+layer);
-			dessiner(g, layer, (useCache)?getCachedFeatures(layer):layer.getFeatureCollection());
+			dessiner(g, layer, (this.useCache)?getCachedFeatures(layer):layer.getFeatureCollection());
 			fireChange();
 		}
 	}
@@ -229,7 +229,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	private synchronized void setCachedFeatures(Layer layer) {
 		if (layer.getFeatureCollection()==null) return;
 		double debut = System.currentTimeMillis();
-		cachedFeatures.put(layer, layer.getFeatureCollection().select(this.enveloppeAffichage));
+		this.cachedFeatures.put(layer, layer.getFeatureCollection().select(this.enveloppeAffichage));
 		double fin = System.currentTimeMillis();
 		if (logger.isTraceEnabled()) {logger.trace("("+(fin-debut)+") Fin du calcul des features à mettre dans le cache pour la couche "+layer.getName());}
 	}
@@ -237,7 +237,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @param layer
 	 * @return the features in cache
 	 */
-	private FT_FeatureCollection<? extends FT_Feature> getCachedFeatures(Layer layer) {return cachedFeatures.get(layer);}
+	private FT_FeatureCollection<? extends FT_Feature> getCachedFeatures(Layer layer) {return this.cachedFeatures.get(layer);}
 	
 	public void dessiner(Graphics2D g, Layer layer,FT_FeatureCollection<? extends FT_Feature> features) throws InterruptedException {
 		if (features == null) return;
@@ -248,7 +248,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 			//fireChange();
 		}
 		double fin = System.currentTimeMillis();
-		if (logger.isTraceEnabled()) {logger.trace("dessiner() termin� pour la couche "+layer.getName()+" en "+(fin-debut)+")");}
+		if (logger.isTraceEnabled()) {logger.trace("dessiner() terminé pour la couche "+layer.getName()+" en "+(fin-debut)+")");}
 	}
 
 	/**
@@ -263,7 +263,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 				//if (logger.isDebugEnabled()) logger.debug("Dessiner le featureTypeStyle "+featureTypeStyle);
 				/**
 				 * TODO les règles devraient etre dans l'ordre de priorité et donc 
-				 * affich�es dans l'ordre inverse (OGC 02-070 p.26)
+				 * affichées dans l'ordre inverse (OGC 02-070 p.26)
 				 */
 				//if (logger.isDebugEnabled()) logger.debug(featureTypeStyle.getRules().size()+" Rules");
 				for(int indexRule=featureTypeStyle.getRules().size()-1;indexRule>=0;indexRule--) {
@@ -288,7 +288,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 
 	/**
 	 * Dessine une liste de Features dans un Graphics2D à l'aide d'un Symbolizer.
-	 * Tous les parcours de FT_FeatureCollection de cette classe sont effectu�s dans cette m�thde.
+	 * Tous les parcours de FT_FeatureCollection de cette classe sont effectués dans cette méthode.
 	 * @param symbolizer
 	 * @param features
 	 */
@@ -306,7 +306,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 			if (textSymbolizer.getFill()!=null) fillColor = textSymbolizer.getFill().getColor();
 			Font font = null;
 			if (textSymbolizer.getFont()!=null) font = textSymbolizer.getFont().toAwfFont();
-			if (font==null) font = new java.awt.Font("Default",java.awt.Font.PLAIN,10);
+			if (font==null) font = new java.awt.Font("Default",java.awt.Font.PLAIN,10); //$NON-NLS-1$
 			Color haloColor = null;
 			float haloRadius = 1.0f;
 			if (textSymbolizer.getHalo()!=null) {
@@ -443,7 +443,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @param font police du texte
 	 * @param texte texte à dessiner
 	 * @param line ligne support du texte à dessiner
-	 * TODO à d�bugger : ça ne marche pas encore bien
+	 * TODO à débugger : ça ne marche pas encore bien
 	 */
 	private void dessinerText(Graphics2D g, Color fillColor, Color haloColor, float haloRadius, Font font, String texte, GM_LineString line) {
 		if (texte==null) return;
@@ -525,18 +525,18 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	}
 
 	/**
-	 * Remplit un carr� de 6 de cété. 
+	 * Remplit un carré de 6 de cété. 
 	 * @see #remplirCarre(Graphics2D, DirectPosition, int)
 	 * @param g l'objet graphics2D
-	 * @param position le centre du carr�
+	 * @param position le centre du carré
 	 */
 	public void remplirCarre(Graphics2D g, DirectPosition position) {remplirCarre(g, position,3);}
 
 	/**
-	 * Remplit un carr�. 
+	 * Remplit un carré. 
 	 * @param g l'objet graphics2D
-	 * @param position le centre du carr�
-	 * @param radius le demi-cété du carr�
+	 * @param position le centre du carré
+	 * @param radius le demi-cété du carré
 	 */
 	public void remplirCarre(Graphics2D g, DirectPosition position, int radius) {
 		g.fillRect((int)position.getX()-radius, (int)position.getY()-radius, 2*radius, 2*radius);
@@ -565,17 +565,17 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	}
 
 	/**
-	 * Dessine le contour d'un carr� de 6 de cété. 
+	 * Dessine le contour d'un carré de 6 de cété. 
 	 * @param g l'objet graphics2D
-	 * @param position le centre du carr�
+	 * @param position le centre du carré
 	 */
 	public void dessinerCarre(Graphics2D g, DirectPosition position) {dessinerCarre(g, position,3);}
 
 	/**
-	 * Dessine le contour d'un carr�. 
+	 * Dessine le contour d'un carré. 
 	 * @param g l'objet graphics2D
-	 * @param position le centre du carr�
-	 * @param radius le demi-cété du carr�
+	 * @param position le centre du carré
+	 * @param radius le demi-cété du carré
 	 */
 	public void dessinerCarre(Graphics2D g, DirectPosition position, int radius) {
 		g.drawRect((int)position.getX()-radius, (int)position.getY()-radius, 2*radius, 2*radius);
@@ -626,7 +626,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 */
 	private void remplir(Graphics2D g, GM_Polygon poly) {
 		GM_Envelope envelope = poly.envelope();
-		if ((envelope.width()<=taillePixel)&&(envelope.height()<=taillePixel)) return;
+		if ((envelope.width()<=this.taillePixel)&&(envelope.height()<=this.taillePixel)) return;
 		//Polygon2D p = (Polygon2D) shapeCache.get(poly);
 		//if (p==null) try {
 		try{
@@ -929,7 +929,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 */
 	public void start() {
 		Thread t = new Thread(this);
-    	threadMaj = new ThreadVar(t);
+    	this.threadMaj = new ThreadVar(t);
         t.start();
 	}
 	
@@ -952,9 +952,9 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
      */
     public static class ThreadVar {
         private Thread thread;
-        ThreadVar(Thread t) { thread = t; }
-        public synchronized Thread get() { return thread; }
-        synchronized void clear() { thread = null; }
+        ThreadVar(Thread t) { this.thread = t; }
+        public synchronized Thread get() { return this.thread; }
+        synchronized void clear() { this.thread = null; }
     }
 
     private ThreadVar threadMaj = null;
@@ -963,13 +963,13 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
      * Interromp le processus de dessin.
      */
     public void interruptMaj() {
-    	if (threadMaj==null) return;
-        Thread t = threadMaj.get();
+    	if (this.threadMaj==null) return;
+        Thread t = this.threadMaj.get();
         if (t != null) {t.interrupt();}
     }
     
     /**
-     * méthode appel�e quand le processus est termin�.
+     * méthode appelée quand le processus est terminé.
      */
     public void finishedMaj() {
     	if (logger.isTraceEnabled()) logger.trace("finishedMaj");
@@ -980,7 +980,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
      * Informe les listeners que l'image que l'objet dessine a été modifiée.
      */
     private void fireChange() {
-    	objectsChange=0;
+    	this.objectsChange=0;
     	this.fireActionPerformed(new ChangeEvent(this));
     }
 
@@ -989,8 +989,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
      * Informe les listeners que l'image que l'objet dessine a été modifiée.
      */
     private void fireObjectChange() {
-    	objectsChange++;
-    	if (objectsChange>1000) {fireChange();}
+    	this.objectsChange++;
+    	if (this.objectsChange>1000) {fireChange();}
     }
 
     /**
@@ -1024,7 +1024,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	public void setAntiAliasing(boolean antiAliasing) {this.antiAliasing = antiAliasing;}
 
 	///////////////////////////////
-	// méthodes pour la compatibilit� avec Mirage....
+	// méthodes pour la compatibilité avec Mirage....
 	///////////////////////////////
 	/**
 	 * Dessine le contour d'un multi polygone.
@@ -1152,7 +1152,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 */
 	@Deprecated
 	public void dessinerTexte(Graphics2D g, Color couleur, GM_Object geom, String texte) {
-		this.dessinerTexte(g, couleur, new Font("Default",java.awt.Font.PLAIN,10), geom, texte);
+		this.dessinerTexte(g, couleur, new Font("Default",java.awt.Font.PLAIN,10), geom, texte); //$NON-NLS-1$
 	}
 	/**
 	 * Dessine un texte
@@ -1166,7 +1166,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 */
 	@Deprecated
 	public void dessinerTexte(Graphics2D g, Color couleur, double x, double y, String texte) {
-		this.dessinerText(g, couleur, null, 0.0f, new Font("Default",java.awt.Font.PLAIN,10), texte, new DirectPosition(x,y));
+		this.dessinerText(g, couleur, null, 0.0f, new Font("Default",java.awt.Font.PLAIN,10), texte, new DirectPosition(x,y)); //$NON-NLS-1$
 	}
 	/**
 	 * Dessine un segment
@@ -1206,6 +1206,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	@Deprecated
 	public void dessinerRect(Graphics2D g, Color couleur, double x, double y, int largeur) {
 		g.setColor(couleur);
-		g.fillRect(coordToPixX(x-largeur/2), coordToPixY(y+largeur/2), (int)Math.round(largeur/taillePixel+0.5), (int)Math.round(largeur/taillePixel+0.5));
+		g.fillRect(coordToPixX(x-largeur/2), coordToPixY(y+largeur/2), (int)Math.round(largeur/this.taillePixel+0.5), (int)Math.round(largeur/this.taillePixel+0.5));
 	}
+
 }

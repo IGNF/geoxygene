@@ -43,7 +43,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * @author Thierry Badard & Arnaud Braun
  * @version 1.3
  * 21/07/2008 : modification de la définition de la requete dans la methode executeFeatureList (Nathalie, Seb)
- * 21/07/2008 : modification de initGeomMetadata : r�cup�ration du SRID dans postgis (Julien Perret)
+ * 21/07/2008 : modification de initGeomMetadata : récupération du SRID dans postgis (Julien Perret)
  */
 public class PostgisSpatialQuery {
 
@@ -154,7 +154,7 @@ public class PostgisSpatialQuery {
 			// Récupère la connection
 			Connection conn = data.getConnection();
 
-			// définition de la requ�te
+			// définition de la requête
 			String geomString = "SRID="+geom.getCRS()+";"+geom.toString();
 			String query = "SELECT t."+pkColumn+" FROM "+tableName+" t ";
 			query = query + "WHERE t." +geomColumn + " && '" +geomString + "'";

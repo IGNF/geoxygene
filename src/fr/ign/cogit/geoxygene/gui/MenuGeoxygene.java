@@ -29,7 +29,7 @@ public class MenuGeoxygene extends JMenuBar {
 
 	private InterfaceGeoxygene frameMirage = null;
 	/**
-	 * @return la fenêtre à laquelle le menu est eventuellement li�
+	 * @return la fenêtre à laquelle le menu est eventuellement lié
 	 */
 	InterfaceGeoxygene getFrameMirage() {return frameMirage;}
 

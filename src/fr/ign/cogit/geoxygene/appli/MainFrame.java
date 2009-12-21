@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
@@ -21,7 +21,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *******************************************************************************/
+ */
 
 package fr.ign.cogit.geoxygene.appli;
 
@@ -106,7 +106,7 @@ public class MainFrame extends JFrame {
 						return;
 					}
 				JFileChooser choixFichierShape = new JFileChooser();
-				/** crée un filtre qui n'accepte que les fichier shp ou les r�pertoires */
+				/** crée un filtre qui n'accepte que les fichier shp ou les répertoires */
 				choixFichierShape.setFileFilter(new FileFilter(){
 					@Override
 					public boolean accept(File f) {return (f.isFile() && (f.getAbsolutePath().endsWith(".shp") || f.getAbsolutePath().endsWith(".SHP")) || f.isDirectory());} //$NON-NLS-1$ //$NON-NLS-2$

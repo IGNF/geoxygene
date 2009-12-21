@@ -75,7 +75,7 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
 				System.exit(0);
 			}
 		} catch (ClassNotFoundException notfound1) {
-			// On ne dit rien : Oracle n'a pas été compil� !
+			// On ne dit rien : Oracle n'a pas été compilé !
 		}
 
 		//	POSTGIS
@@ -132,9 +132,9 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
 
 	}
 
-	// Les méthodes relatives à Oracle ou Postgis sont appel�e directement dans "GeOxygeneStatementManager"
+	// Les méthodes relatives à Oracle ou Postgis sont appelée directement dans "GeOxygeneStatementManager"
 	public Object javaToSql (Object geom) {
-		logger.error("## WARNING ## Ne devrait pas être appel� !! Renvoie nulle");
+		logger.error("## WARNING ## Ne devrait pas être appelé !! Renvoie nulle");
 		return null;
 	}
 

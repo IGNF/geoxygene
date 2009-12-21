@@ -51,7 +51,7 @@ public class Test {
 		schemaJeu.createFeatureAttributeValue((AttributeType)ft.getFeatureAttributeI(0), "valeur1 !");
 		schemaJeu.createFeatureAttributeValue((AttributeType)ft.getFeatureAttributeI(0), "valeur2 !");
 		System.out.println("ft dans ce schema : "+schemaJeu.getFeatureTypes());
-		schemaJeu.createFeatureAssociation("acces!",(FeatureType)schemaJeu.getFeatureTypeI(0), (FeatureType)schemaJeu.getFeatureTypeI(1), "donne acces à !", "est acced� par !");
+		schemaJeu.createFeatureAssociation("acces!",(FeatureType)schemaJeu.getFeatureTypeI(0), (FeatureType)schemaJeu.getFeatureTypeI(1), "donne acces à !", "est accedé par !");
 
 		System.out.println("asso dans ce schéma : "+schemaJeu.getFeatureAssociations());
 		System.out.println("schema produit cree");
@@ -60,7 +60,7 @@ public class Test {
 		System.out.println("att Values dans ce schéma : "+schemaJeu.getFeatureAttributeValues().size());
 
 		System.out.println("schema jeu cree");
-		schemaJeu.setDefinition("cre�� a la vol�e pdt un test");
+		schemaJeu.setDefinition("créé a la volée pdt un test");
 		MdDataSet.db = new MdGeodatabase();
 		MdDataSet.db.begin();
 		MdDataSet.db.makePersistent(schemaJeu);
@@ -84,12 +84,12 @@ public class Test {
 		schemaProduit.createFeatureAttributeValue((AttributeType)ft.getFeatureAttributeI(0), "valeur1 !");
 		schemaProduit.createFeatureAttributeValue((AttributeType)ft.getFeatureAttributeI(0), "valeur2 !");
 		System.out.println("ft dans ce schema : "+schemaProduit.getFeatureTypes());
-		schemaProduit.createFeatureAssociation("acces !",(FeatureType)schemaProduit.getFeatureTypeI(0), (FeatureType)schemaProduit.getFeatureTypeI(1), "donne acces à !", "est acced� par !");
+		schemaProduit.createFeatureAssociation("acces !",(FeatureType)schemaProduit.getFeatureTypeI(0), (FeatureType)schemaProduit.getFeatureTypeI(1), "donne acces à !", "est accedé par !");
 
 		System.out.println("asso dans ce schéma : "+schemaProduit.getFeatureAssociations());
 		System.out.println("schema produit cree");
 
-		schemaProduit.setDefinition("cre�� a la vol�e pdt un test");
+		schemaProduit.setDefinition("créé a la volée pdt un test");
 		MdDataSet.db = new MdGeodatabase();
 		MdDataSet.db.begin();
 		MdDataSet.db.makePersistent(schemaProduit);
@@ -100,7 +100,7 @@ public class Test {
 
 
 	/**
-	 * cree un schemaProduit, le duplique en un schéma jeu et �crit celui-ci dans la base oracle
+	 * cree un schemaProduit, le duplique en un schéma jeu et écrit celui-ci dans la base oracle
 	 */
 	/*
 	public static void creationSchemaProduitJeuVolee(){
@@ -112,14 +112,14 @@ public class Test {
 		ft.setSchema(schemaProd);
 		schemaProd.createFeatureAttribute(ft, "nature", "String");
 		System.out.println("ft dans ce schema : "+schemaProd.getFeatureTypes());
-		schemaProd.createFeatureAssociation("acces",(FeatureType)schemaProd.getFeatureTypeI(0), (FeatureType)schemaProd.getFeatureTypeI(1), "donne acces �", "est acced� par");
+		schemaProd.createFeatureAssociation("acces",(FeatureType)schemaProd.getFeatureTypeI(0), (FeatureType)schemaProd.getFeatureTypeI(1), "donne acces à", "est accedé par");
 
 		System.out.println("asso dans ce schéma : "+schemaProd.getFeatureAssociations());
 		System.out.println("schema produit cree");
 
 		SchemaISOJeu schemaJeu = new SchemaISOJeu(schemaProd);
 		System.out.println("schema jeu cree");
-		schemaJeu.setDefinition("cre�� a la vol�e pdt un test");
+		schemaJeu.setDefinition("créé à la volée pdt un test");
 		//schemaJeu.setId(2);
 		DataSetCommun.db = new GeodatabaseCommun();
 		DataSetCommun.db.begin();
@@ -140,7 +140,7 @@ public class Test {
 
 		SchemaConceptuelJeu schemaJeu = new SchemaConceptuelJeu(schemaProduit);
 		System.out.println("schema jeu cree");
-		schemaJeu.setDefinition("cre�� a la vol�e pdt un test");
+		schemaJeu.setDefinition("créé à la volée pdt un test");
 		DataSet.db.begin();
 		DataSet.db.makePersistent(schemaJeu);
 		DataSet.db.commit();
@@ -160,7 +160,7 @@ public class Test {
 
 		SchemaConceptuelJeu schemaJeu = new SchemaConceptuelJeu(schemaProduit);
 		System.out.println("schema jeu cree");
-		schemaJeu.setDefinition("cre�� a la vol�e pdt un test");
+		schemaJeu.setDefinition("créé à la volée pdt un test");
 		ParserSchemaConceptuel parser = new ParserSchemaConceptuel();
 		parser.ecritSchemaConceptuelJeu(schemaJeu, fileSchema);
 
@@ -280,11 +280,11 @@ public class Test {
 
 
 	/**
-	 * G�n�re un objet SchemaConceptuel pour faire des tests.
-	 * Pour pouvoir être utilisé ce schéma doit être affect� à un jeu
+	 * Génère un objet SchemaConceptuel pour faire des tests.
+	 * Pour pouvoir être utilisé ce schéma doit être affecté à un jeu
 	 * (MdDataSet.setSchemaConceptuel()). Il doit pointer vers des noms de classe
 	 * et de champs java qui correspondent à votre implémentation et qui
-	 * sont référenc�es dans votre mapping.
+	 * sont référencées dans votre mapping.
 	 * @return un objet schémaConceptuelJeu miniature composé de deux classes et
 	 * une association
 	 */
@@ -292,7 +292,7 @@ public class Test {
 
 		SchemaConceptuelJeu schemaJeu = new SchemaConceptuelJeu();
 		schemaJeu.setNomSchema("routes et batiments");
-		schemaJeu.setDefinition("schéma miniature créé a la vol�e pdt un test");
+		schemaJeu.setDefinition("schéma miniature créé a la volée pdt un test");
 
 		//creation d'une premiere classe
 		schemaJeu.createFeatureType("Tronçon de route");
@@ -310,7 +310,7 @@ public class Test {
 
 
 		//création d'une assoication
-		schemaJeu.createFeatureAssociation("acces",(FeatureType)schemaJeu.getFeatureTypeI(0), (FeatureType)schemaJeu.getFeatureTypeI(1), "donne acces �", "est acced� par");
+		schemaJeu.createFeatureAssociation("acces",(FeatureType)schemaJeu.getFeatureTypeI(0), (FeatureType)schemaJeu.getFeatureTypeI(1), "donne acces à", "est accedé par");
 
 		//renseignement des classes et champs java d'implémentation
 		((FeatureType)schemaJeu.getFeatureTypeByName("Tronçon de route")).setNomClasse("donnees.bdcarto.TronconRoute");

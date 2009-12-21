@@ -17,7 +17,7 @@ import fr.ign.cogit.geoxygene.feature.type.GF_Operation;
  */
 public class AssociationType extends FeatureType implements	GF_AssociationType {
 	/**
-	 * attributs hérit�s de SC_FeatureType
+	 * attributs hérités de SC_FeatureType
 	 * 
 	 * protected List fc; protected String typeName; protected String
 	 * definition; protected int id; protected List featureAttributes; protected
@@ -36,7 +36,7 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 
 
 
-	/** Les feature types impliqu�s dans cette association. */
+	/** Les feature types impliqués dans cette association. */
 	protected List<GF_FeatureType> linkBetween;
 
 	/** Les roles de cette association. */
@@ -45,7 +45,7 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 
 	/**
 	 * le nom de la classe-association Java correspondante si elle existe (en
-	 * cas de cardinalit� n-m)
+	 * cas de cardinalité n-m)
 	 */
 	protected String nomClasseAsso;
 
@@ -92,7 +92,7 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 		}
 	}
 
-	/** Renvoie le nombre de feature types impliqu�s dans cette association. */
+	/** Renvoie le nombre de feature types impliqués dans cette association. */
 	public int sizeLinkBetween() {
 		return this.linkBetween.size();
 	}

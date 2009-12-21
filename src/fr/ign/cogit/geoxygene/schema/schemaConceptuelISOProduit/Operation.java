@@ -56,7 +56,7 @@ public class Operation implements GF_Operation {
 	public void setFormalDefinition(String value) {this.formalDefinition = value;}
 
 
-	/** Renvoie le feature type auquel est rattach� la propriété. */
+	/** Renvoie le feature type auquel est rattaché la propriété. */
 	public GF_FeatureType getFeatureType(){return this.featureType;}
 	/** Affecte un feature type à la propriété. */
 	public void setFeatureType(GF_FeatureType FeatureType){this.featureType = FeatureType;}

@@ -160,13 +160,13 @@ public class FeatureType implements GF_FeatureType {
 	protected String definition;
 	/** Les attributs de cette classe. */
 	protected List<GF_AttributeType> featureAttributes;
-	/** Les associations dans lesquelles est impliqu�e cette classe. */
+	/** Les associations dans lesquelles est impliquée cette classe. */
 	protected List<GF_AssociationType> memberOf;
 	/** Les operations de cette classe. */
 	protected List<GF_Operation> featureOperations;
-	/** Les relations de généralisation dans lesquelles est impliqu�e la classe. */
+	/** Les relations de généralisation dans lesquelles est impliquée la classe. */
 	protected List<GF_InheritanceRelation> generalization = new ArrayList<GF_InheritanceRelation>();
-	/** Les relations de spécialisation dans lesquelles est impliqu�e la classe. */
+	/** Les relations de spécialisation dans lesquelles est impliquée la classe. */
 	protected List<GF_InheritanceRelation> specialization = new ArrayList<GF_InheritanceRelation>();
 	/**
 	 * le nom de la Classe Java correspondant au FeatureType et contenant les
@@ -184,16 +184,16 @@ public class FeatureType implements GF_FeatureType {
 	/**
 	 * Non standard
 	 * Utile aux applications de transformation de schéma
-	 * caract�re implicite ou explicite de l'élément : un featureType implicite
-	 * n'a pas d'instances à priori mais celles-ci pourront être d�riv�es
+	 * caractère implicite ou explicite de l'élément : un featureType implicite
+	 * n'a pas d'instances à priori mais celles-ci pourront être dérivées
 	 * d'elements explicites par le biais de transformations
 	 **/
 	protected boolean isExplicite;
 	/** Renvoie le caractere explicite ou implicite */
 	public boolean getIsExplicite() {return this.isExplicite;}
-	/** Affecte le caract�re implicite ou explicite */
+	/** Affecte le caractère implicite ou explicite */
 	public void setIsExplicite(boolean value) {this.isExplicite = value;}
-	/**caract�re instancié ou non de cette classe. Par exemple
+	/**caractère instancié ou non de cette classe. Par exemple
 	 * la classe Route peut êtree abstraite et n'être implémentée
 	 * que pas le biais de ses sous-types Route principale et Route secondaire.
 	 */
@@ -260,7 +260,7 @@ public class FeatureType implements GF_FeatureType {
 	public String getDefinition() {return this.definition;}
 	public void setDefinition(String Definition) {this.definition = Definition;}
 	/**
-	 * Renvoie les relations d'héritage dans lesquelles est impliqu�e la
+	 * Renvoie les relations d'héritage dans lesquelles est impliquée la
 	 * classe en tant que subType.
 	 */
 	public List<GF_InheritanceRelation> getGeneralization() {return this.generalization;}
@@ -268,7 +268,7 @@ public class FeatureType implements GF_FeatureType {
 	public void setGeneralization(List<GF_InheritanceRelation> L) {this.generalization = L;}
 	/**
 	 * Renvoie le nombre de relation de généralisation dans lesquelles est
-	 * impliqu�e la classe.
+	 * impliquée la classe.
 	 */
 	public int sizeGeneralization() {return this.generalization.size();}
 	/**
@@ -289,7 +289,7 @@ public class FeatureType implements GF_FeatureType {
 	}
 	// //////////////////////////////////////////////////////////////////////////
 	/**
-	 * Renvoie la liste des relations d'h�titage dans lesquelles est impliqu�e
+	 * Renvoie la liste des relations d'héritage dans lesquelles est impliquée
 	 * la classeen tant que superType.
 	 */
 	public List<GF_InheritanceRelation> getSpecialization() {return this.specialization;}
@@ -297,7 +297,7 @@ public class FeatureType implements GF_FeatureType {
 	public void setSpecialization(List<GF_InheritanceRelation> L) {this.specialization = L;}
 	/**
 	 * Renvoie le nombre de relation de spécialisation dans lesquelles est
-	 * impliqu�e la classe.
+	 * impliquée la classe.
 	 */
 	public int sizeSpecialization() {return this.specialization.size();}
 	/**
@@ -319,7 +319,7 @@ public class FeatureType implements GF_FeatureType {
 		value.setSuperType(null);// gestion de la bi-direction
 	}
 	// //////////////////////////////////////////////////////////////////////////
-	/** Renvoie les associations dans lesquelles est impliqu�e cette classe. */
+	/** Renvoie les associations dans lesquelles est impliquée cette classe. */
 	public List<GF_AssociationType> getMemberOf() {return this.memberOf;}
 	/** Affecte une liste d'associations */
 	public void setMemberOf(List<GF_AssociationType> L) {
@@ -337,7 +337,7 @@ public class FeatureType implements GF_FeatureType {
 			scfa.getLinkBetween().add(this);
 		}
 	}
-	/** Le nombre d'associations dans lesquelles est impliqu�e cette classe. */
+	/** Le nombre d'associations dans lesquelles est impliquée cette classe. */
 	public int sizeMemberOf() {return this.memberOf.size();}
 	/** Ajoute une association. */
 	public void addMemberOf(GF_AssociationType value) {

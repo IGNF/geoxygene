@@ -28,7 +28,7 @@ package fr.ign.cogit.geoxygene.dico;
 
 /**
  * métaclasse pour la définition des attributs des Feature Types.
- * Dans la norme, il existe des sous-classes pour distinguer les attributs temporels, th�matiques,
+ * Dans la norme, il existe des sous-classes pour distinguer les attributs temporels, thématiques,
  * spatiaux, sur la qualité, etc.
  *
  * @author Thierry Badard & Arnaud Braun
@@ -70,12 +70,12 @@ public class GF_AttributeType extends GF_PropertyType {
 	public void setCardMax (int CardMax) {this.cardMax = CardMax;}
 
 
-	/** Attribut en caract�risant un autre.
+	/** Attribut en caractérisant un autre.
 	 * La relation inverse n'est pas implémentée. */
 	protected GF_AttributeType characterize;
-	/** Renvoie l'attribut que self caract�rise. */
+	/** Renvoie l'attribut que self caractérise. */
 	public GF_AttributeType getCharacterize() {return this.characterize;}
-	/** Affecte un attribut que self caract�rise. */
+	/** Affecte un attribut que self caractérise. */
 	public void setCharacterize(GF_AttributeType Characterize) {this.characterize = Characterize; }
 
 }

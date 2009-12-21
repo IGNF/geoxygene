@@ -27,8 +27,8 @@
 package fr.ign.cogit.geoxygene.dico;
 
 /**
- * métaclasse pour les classes de r�les composant des GF_AssociationType.
- * Les r�les sont des propriétés sur les Feature Types.
+ * métaclasse pour les classes de rôles composant des GF_AssociationType.
+ * Les rôles sont des propriétés sur les Feature Types.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -61,9 +61,9 @@ public class GF_AssociationRole extends GF_PropertyType {
 	public void setCardMax (int CardMax) {this.cardMax = CardMax;}
 
 
-	/** Association type auquel est rattach� la propriété. */
+	/** Association type auquel est rattachée la propriété. */
 	protected GF_AssociationType associationType;
-	/** Renvoie le feature type auquel est rattach� la propriété. */
+	/** Renvoie le feature type auquel est rattachée la propriété. */
 	public GF_AssociationType getAssociationType() {return this.associationType;}
 	/** Affecte un feature type à la propriété. */
 	public void setAssociationType(GF_AssociationType AssociationType) {

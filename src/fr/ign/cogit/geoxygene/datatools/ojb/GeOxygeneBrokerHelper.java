@@ -85,7 +85,7 @@ import com.develop.java.lang.reflect.Proxy;
  * suite au premier ajout dans getValuesForObject.
  * 
  * AB 11 juillet 2005 :
- * <br> Utilisation des noms de classes et de la r�flection pour permettre la compilation s�p�r�e pour Oracle.
+ * <br> Utilisation des noms de classes et de la réflection pour permettre la compilation séparée pour Oracle.
  * <br> Patch pour permettre l'utilisation de la meme classe de "FieldConversion" pour Oracle et Postgis.
  * 
  * @author Thierry Badard & Arnaud Braun
@@ -97,7 +97,7 @@ public class GeOxygeneBrokerHelper {
 
 	// AJOUT pour GeOxygene ---------------------------------------------------
 	// Nom des classes relatives à Oracle,
-	//en String pour permettre la compilation s�par�e
+	//en String pour permettre la compilation séparée
 	private final String GeomGeOxygene2Oracle_CLASS_NAME =
 		"fr.ign.cogit.geoxygene.datatools.oracle.GeomGeOxygene2Oracle";
 	private final String GeomGeOxygene2Postgis_CLASS_NAME =
@@ -143,7 +143,7 @@ public class GeOxygeneBrokerHelper {
 				// AUTRE DBMS
 				else {
 					logger.fatal("## Le SGBD n'est ni Oracle, ni PostgreSQL ##");
-					logger.fatal("## Le programme s'arr�te ##");
+					logger.fatal("## Le programme s'arrête ##");
 					System.exit(0);
 				}
 		// FIN AJOUT pour GeOxygene ---------------------------------------------------

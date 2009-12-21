@@ -25,12 +25,12 @@ import fr.ign.cogit.geoxygene.schema.SchemaConceptuel;
  * schéma conceptuel d'un produit, typiquement une base de données Géographique.
  * Correspond à la notion "Feature Catalogue" dans les normes ISO.
  * Un schéma est composé de classes et de relations (associations et héritage) comportant
- * des propriet�s (attributs, r�les, opérations) et des contraintes.
+ * des proprietés (attributs, rôles, opérations) et des contraintes.
  * 
  * Cette classe est similaire à la classe
  * fr.ign.cogit.appli.commun.metadata.schemaConceptuel.schemaJeu.schemaConceptuelJeu
- * à quelques nuances pr�s : elle utilise notamment des classes implémentant le GFM
- * mais d�di�es aux produits et non pas aux jeux de données.
+ * à quelques nuances prés : elle utilise notamment des classes implémentant le GFM
+ * mais dédiées aux produits et non pas aux jeux de données.
  * 
  */
 
@@ -143,7 +143,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 
 
 	/**
-	 * D�signation usuelle du schéma
+	 * dèsignation usuelle du schéma
 	 */
 	protected String nomSchema;
 
@@ -227,7 +227,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 		// création d'un nouveau featuretype
 		FeatureType ft = new FeatureType();
 
-		// V�rification qu'aucune classe du même nom n'existe dans le schéma
+		// vérification qu'aucune classe du même nom n'existe dans le schéma
 		if (!this.featureTypes.isEmpty()) {
 			Iterator<GF_FeatureType> iTft = this.featureTypes.iterator();
 			while (iTft.hasNext()) {
@@ -270,7 +270,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 
 	/**
 	 * Supprime une classe du schéma en cours: Cette méthode se charge d'effacer
-	 * toute trace des attributs de la classe, de leurs valeurs �num�r�es, des
+	 * toute trace des attributs de la classe, de leurs valeurs énumérées, des
 	 * associations, des roles, etc.
 	 */
 	public void removeFeatureType(FeatureType ft) {
@@ -286,7 +286,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 
 			/* Suppression des valeurs d'attribut pour les types enumeres */
 			if (attbd.getValueDomainType()) {
-				//On crée une liste locale des valeurs d'attributs �num�r�s
+				//On crée une liste locale des valeurs d'attributs énumérés
 				List<FeatureAttributeValue> valList = new ArrayList<FeatureAttributeValue>();
 				// On Récupère la liste des valeurs
 				List<FC_FeatureAttributeValue> valeurs = attbd.getValuesDomain();
@@ -319,7 +319,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 			fav.setFeatureType(null);
 		}
 
-		/* Suppression des associations dans lesquelles la classe est impliqu�e */
+		/* Suppression des associations dans lesquelles la classe est impliquée */
 		// variables locales
 		FeatureType scft=new FeatureType();
 		List<GF_AssociationType> assoList = new ArrayList<GF_AssociationType>();
@@ -331,7 +331,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 			GF_AssociationType monAsso = iTasso.next();
 			assoList.add(monAsso);
 
-			//On Récupère la liste des roles jou�s par les ft dans cette asso
+			//On Récupère la liste des roles joués par les ft dans cette asso
 			List<GF_AssociationRole> mesRoles = monAsso.getRoles();
 
 			//On Récupère le featuretype associé
@@ -389,7 +389,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 		Iterator<GF_InheritanceRelation> iTgeneral = listGeneral.iterator();
 		while (iTgeneral.hasNext()) {
 			GF_InheritanceRelation generalisation = iTgeneral.next();
-			// R�cuperation de la classe mere
+			// Récupération de la classe mere
 			FeatureType classeMere = (FeatureType) generalisation
 			.getSuperType();
 			// Suppression de la relation au niveau de la classe mere et de la
@@ -403,7 +403,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 		Iterator<GF_InheritanceRelation> iTspecial = listSpecial.iterator();
 		while (iTspecial.hasNext()) {
 			GF_InheritanceRelation specialisation = iTspecial.next();
-			// R�cuperation de la classe fille
+			// Récupération de la classe fille
 			FeatureType classeFille = (FeatureType) specialisation
 			.getSubType();
 			// Suppression de la relation au niveau de la classe mere et de la
@@ -424,7 +424,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 
 
 		/*
-		 * V�rification qu'aucun attribut du même nom n'existe pour cette classe
+		 * vérification qu'aucun attribut du même nom n'existe pour cette classe
 		 * et ajout dans la liste
 		 */
 		List<GF_AttributeType> AttExistants = ft.getFeatureAttributes();
@@ -475,7 +475,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 			}
 		} else {
 		}
-		//On vide la liste des valeurs �num�r�es
+		//On vide la liste des valeurs énumérées
 		att.getValuesDomain().clear();
 	}
 
@@ -521,7 +521,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 			JOptionPane
 			.showMessageDialog(
 					null,
-					"Erreur : On ne peut �tablir de relation de généralisation entre classes issues de BD différentes.",
+					"Erreur : On ne peut établir de relation de généralisation entre classes issues de BD différentes.",
 					"Erreur!", JOptionPane.ERROR_MESSAGE);
 			return;
 		} else {
@@ -599,7 +599,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 			JOptionPane
 			.showMessageDialog(
 					null,
-					"Erreur : On ne peut �tablir de relation de spécialisation entre classes issues de BD différentes.",
+					"Erreur : On ne peut établir de relation de spécialisation entre classes issues de BD différentes.",
 					"Erreur!", JOptionPane.ERROR_MESSAGE);
 			return;
 		} else {
@@ -675,7 +675,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 			JOptionPane
 			.showMessageDialog(
 					null,
-					"Erreur : On ne peut �tablir de lien entre classes issues de schémas différents.",
+					"Erreur : On ne peut établir de lien entre classes issues de schémas différents.",
 					"Erreur!", JOptionPane.ERROR_MESSAGE);
 			return;
 		} else {
@@ -694,13 +694,13 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 			/*
 			 * S'il existe déjà une association entre ces deux classes
 			 * et qu'elle porte le même nom, on
-			 * pr�vient et on sort
+			 * prévient et on sort
 			 */
 			if ((ftList.contains(ft2))&(scfa.getTypeName().equals(nomAsso))) {
 				JOptionPane
 				.showMessageDialog(
 						null,
-						"Erreur : Une association nomm�e "
+						"Erreur : Une association nommée "
 						+nomAsso+ " existe déjà entre ces deux classes.",
 						"Relation redondante.",
 						JOptionPane.ERROR_MESSAGE);
@@ -801,7 +801,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 		} else {
 		}
 
-		// R�cup�ration des roles
+		// Récupération des roles
 		List<GF_AssociationRole> mesRoles = monAsso.getRoles();
 
 		// Supression de l'association au niveau des FeatureTypes
@@ -832,7 +832,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 
 	/*
 	 * *********************************************************
-	 * méthodes hérit�es de Schema pour lister les éléments
+	 * méthodes héritées de Schema pour lister les éléments
 	 * *********************************************************
 	 */
 
@@ -856,7 +856,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 	}
 
 	/**
-	 * @return La liste de toutes les valeurs d'attributs �num�r�s du schéma
+	 * @return La liste de toutes les valeurs d'attributs énumérés du schéma
 	 */
 	public List<FeatureAttributeValue> getFeatureAttributeValues(){
 		List<FeatureAttributeValue> valList = new ArrayList<FeatureAttributeValue>();
@@ -936,7 +936,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 
 	/*
 	 * *********************************************************
-	 * méthodes hérit�es de Schema pour la persistance
+	 * méthodes héritées de Schema pour la persistance
 	 * *********************************************************
 	 */
 

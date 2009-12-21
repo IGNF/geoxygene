@@ -34,10 +34,10 @@ public abstract class SchemaPersistentOJB {
 		if (bd != null && bd.isOpen()){
 			//			Suppression de l'objet persistent
 			bd.deletePersistent(this);}
-		else //L'objet ne pourra être effac�: envoi d'un message d'erreur
+		else //L'objet ne pourra être effacé: envoi d'un message d'erreur
 		{System.err.println
 			("Attention : effacement d'un objet persistant alors qu'aucune "
-					+ "transaction n'est en cours. L'objet n'a pas été effac� de la base.");}
+					+ "transaction n'est en cours. L'objet n'a pas été effacé de la base.");}
 	}//Fin de la méthode deletePersistent
 
 
@@ -115,7 +115,7 @@ public abstract class SchemaPersistentOJB {
 				ftListLocal.add(ft);
 			}
 
-			//Suppression des objets en m�moire
+			//Suppression des objets en mémoire
 			Iterator<FeatureType> iTftloc = ftListLocal.iterator();
 			while (iTftloc.hasNext()){
 				FeatureType ft = iTftloc.next();
@@ -128,7 +128,7 @@ public abstract class SchemaPersistentOJB {
 		else {
 			{System.err.println
 				("Attention : effacement d'un objet persistant alors qu'aucune "
-						+ "transaction n'est en cours. L'objet n'a pas été effac� de la base.");}
+						+ "transaction n'est en cours. L'objet n'a pas été effacé de la base.");}
 		}
 	}
 
@@ -192,7 +192,7 @@ public abstract class SchemaPersistentOJB {
 			ftListLocal.add(ft);
 		}
 
-		//Suppression des objets en m�moire
+		//Suppression des objets en mémoire
 		Iterator<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType> iTftloc = ftListLocal.iterator();
 		while (iTftloc.hasNext()){
 			fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType ft = iTftloc.next();

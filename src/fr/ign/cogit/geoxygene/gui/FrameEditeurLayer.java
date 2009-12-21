@@ -78,7 +78,7 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener, 
 	private JTree tree;
 
 	private StyledLayerDescriptor sld;
-	private DataSet dataset;
+	DataSet dataset;
 	
 	/**
 	 * Renvoie la valeur de l'attribut sld.
@@ -92,7 +92,7 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener, 
 	 */
 	public void setSld(StyledLayerDescriptor sld) {this.sld = sld;sld.addChangeListener(this);}
 	
-	private Layer layer;
+	Layer layer;
 	/**
 	 * Renvoie la valeur de l'attribut layer.
 	 * @return la valeur de l'attribut layer
@@ -107,9 +107,9 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener, 
 
 	public FrameEditeurLayer(FrameEditeurSLD frame,Layer layer) {
 		this.frameEditeurSLD=frame;
-		setSld(frameEditeurSLD.getSld());
+		setSld(this.frameEditeurSLD.getSld());
 		setLayer(layer);
-		dataset=frame.dataset;
+		this.dataset=frame.dataset;
 		
 		enableEvents(AWTEvent.WINDOW_EVENT_MASK);
 		setLayout(new BorderLayout());
@@ -117,22 +117,22 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener, 
 		setSize(new Dimension(500,500));
 		setExtendedState(Frame.MAXIMIZED_BOTH);
 		setTitle("Editeur de Layers de GeOxygene");
-		setIconImage(frameEditeurSLD.getIconImage());
+		setIconImage(this.frameEditeurSLD.getIconImage());
 
 	    DefaultMutableTreeNode top = new DefaultMutableTreeNode("Styled Layer Descriptor");
-	    tree = new JTree(top);
+	    this.tree = new JTree(top);
 	    createNodes(top);
-	    tree.setCellRenderer(new LayerRenderer(sld));
+	    this.tree.setCellRenderer(new LayerRenderer(this.sld));
 	    //tree.setEditable(true);
-	    tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-	    tree.addTreeSelectionListener(this);
-	    tree.setShowsRootHandles(false);
-	    tree.setExpandsSelectedPaths(true);
-	    tree.expandRow(0);
+	    this.tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+	    this.tree.addTreeSelectionListener(this);
+	    this.tree.setShowsRootHandles(false);
+	    this.tree.setExpandsSelectedPaths(true);
+	    this.tree.expandRow(0);
 		//Enable tool tips.
-	    ToolTipManager.sharedInstance().registerComponent(tree);
+	    ToolTipManager.sharedInstance().registerComponent(this.tree);
 
-		JScrollPane scroll = new JScrollPane(tree,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JScrollPane scroll = new JScrollPane(this.tree,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scroll,BorderLayout.CENTER);
 	}
 
@@ -140,11 +140,11 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener, 
 	 * @param top
 	 */
 	private void createNodes(DefaultMutableTreeNode top) {
-		if (layer==null) return;
+		if (this.layer==null) return;
 		int nbStyle = 0;
-		for (Style style : layer.getStyles()) {
+		for (Style style : this.layer.getStyles()) {
 			String name = style.getName();
-			if ((name==null)||(name.length()==0)) name=style.getClass().getSimpleName()+" "+nbStyle++;
+			if ((name==null)||(name.length()==0)) name=style.getClass().getSimpleName()+" "+nbStyle++; //$NON-NLS-1$
 			style.setName(name);
 			DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode(style);
 			top.add(styleNode);
@@ -163,7 +163,7 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener, 
 	            setToolTipText("Ceci est un style.");
 	            Style style = (Style) ((DefaultMutableTreeNode)value).getUserObject();
 	            setText(style.getName());
-	            setIcon(new StyleIcon(style,sldRenderer));
+	            setIcon(new StyleIcon(style,this.sldRenderer));
 	        } else {
 	            setToolTipText(null); //no tool tip
 	        } 
@@ -180,9 +180,9 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener, 
 		Style style;
 		DessinableGeoxygene d;
 		public StyleIcon(Style s, StyledLayerDescriptor sld) {
-			style = s;
-			d = new DessinableGeoxygene(sld);
-			d.setCentreGeo(new DirectPosition(50.0,50.0));
+			this.style = s;
+			this.d = new DessinableGeoxygene(sld);
+			this.d.setCentreGeo(new DirectPosition(50.0,50.0));
 		}
 		@Override
 		public int getIconHeight() {return 50;}
@@ -191,9 +191,9 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener, 
 		@Override
 		public void paintIcon(Component c, Graphics g, int x, int y) {
 			try {
-				d.majLimitesAffichage(this.getIconWidth(),this.getIconHeight());
-				if (dataset.getPopulation(layer.getName())!=null)
-					d.dessiner((Graphics2D)g,style, dataset.getPopulation(layer.getName()));
+				this.d.majLimitesAffichage(this.getIconWidth(),this.getIconHeight());
+				if (FrameEditeurLayer.this.dataset.getPopulation(FrameEditeurLayer.this.layer.getName())!=null)
+					this.d.dessiner((Graphics2D)g,this.style, FrameEditeurLayer.this.dataset.getPopulation(FrameEditeurLayer.this.layer.getName()));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -202,7 +202,7 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener, 
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-		tree.getLastSelectedPathComponent();
+		this.tree.getLastSelectedPathComponent();
 
 		//Nothing is selected.	
 		if (node == null) return;
@@ -210,7 +210,7 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener, 
 		Object nodeInfo = node.getUserObject();
 		if (node.isLeaf()) {
 			Style style = (Style)nodeInfo;
-			if (logger.isDebugEnabled()) logger.debug(style.getClass().getSimpleName()+ " s�l�ctionn�");
+			if (logger.isDebugEnabled()) logger.debug(style.getClass().getSimpleName()+ " sélectionné");
 			int nbColor = 0;
 			Stroke stroke = null;
 			Color strokeColor = null;
@@ -274,7 +274,7 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener, 
 					if (logger.isDebugEnabled()) logger.debug("couleur pour le halo du texte = "+haloColor);
 					haloFill.setColor(newColor);
 				}
-				sld.fireActionPerformed(new ChangeEvent(this));
+				this.sld.fireActionPerformed(new ChangeEvent(this));
 			}
 		} else {}
 	}

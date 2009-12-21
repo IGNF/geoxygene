@@ -71,9 +71,9 @@ public class ApplicationExemple {
 		fr.getMenu().add(menuChargement,0);
 
 		/**
-		 * Ajout d'un menu pour �diter la l�gende de l'affichage
+		 * Ajout d'un menu pour éditer la làgende de l'affichage
 		 */
-		JMenu menu = new JMenu("L�gende");
+		JMenu menu = new JMenu("Légende");
 		JMenuItem menuItem = new JMenuItem("Editeur de SLD");
 		menuItem.addActionListener(new ActionListener(){
 			@Override

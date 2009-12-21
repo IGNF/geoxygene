@@ -18,7 +18,7 @@ public interface SchemaConceptuel {
 
 
 	/**
-	 * D�signation usuelle du schéma
+	 * dèsignation usuelle du schéma
 	 */
 	public String getNomSchema();
 	public void setNomSchema(String nom);
@@ -45,7 +45,7 @@ public interface SchemaConceptuel {
 	 * ******************************************************************
 	 */
 
-	//méthodes enlev�es, descendues dans schemaISOJeu et SchemaISOProduit
+	//méthodes enlevées, descendues dans schemaISOJeu et SchemaISOProduit
 
 	/*
 	 * ******************************************************************
@@ -53,7 +53,7 @@ public interface SchemaConceptuel {
 	 * ******************************************************************
 	 */
 
-	//	méthodes enlev�es, descendues dans schemaISOJeu et SchemaISOProduit
+	//	méthodes enlevées, descendues dans schemaISOJeu et SchemaISOProduit
 
 	/*
 	 * ******************************************************************
@@ -61,8 +61,8 @@ public interface SchemaConceptuel {
 	 * ******************************************************************
 	 */
 
-	/*	méthodes enlev�es car elles obligeaient un import de classe "outil"
-	 * dans le modele. Les méthodes save et delete sont implementees de fa�on
+	/*	méthodes enlevées car elles obligeaient un import de classe "outil"
+	 * dans le modele. Les méthodes save et delete sont implementees de façon
 	 * statique dans SchemaPersistentOJB
 	 */
 

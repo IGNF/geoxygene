@@ -22,7 +22,7 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 	 */
 
 	/*
-	 * attributs hérit�s de SC_FeatureType
+	 * attributs hérités de SC_FeatureType
 	 * 
 	 * protected List fc; protected String typeName; protected String
 	 * definition; protected int id; protected List featureAttributes; protected
@@ -52,7 +52,7 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 		this.isAggregation = ori.getIsAggregation();
 	}
 
-	/** Les feature types impliqu�s dans cette association. */
+	/** Les feature types impliqués dans cette association. */
 	protected List<GF_FeatureType> linkBetween;
 
 	/** Les roles de cette association. */
@@ -61,7 +61,7 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 
 	/**
 	 * le nom de la classe-association Java correspondante si elle existe (en
-	 * cas de cardinalit� n-m)
+	 * cas de cardinalité n-m)
 	 */
 	protected String nomClasseAsso;
 
@@ -108,7 +108,7 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 		}
 	}
 
-	/** Renvoie le nombre de feature types impliqu�s dans cette association. */
+	/** Renvoie le nombre de feature types impliqués dans cette association. */
 	public int sizeLinkBetween() {
 		return this.linkBetween.size();
 	}
@@ -218,9 +218,9 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 
 
 	/**
-	 * commodit� pour retrouver à quel schéma conceptuel appartient cette association
+	 * commodité pour retrouver à quel schéma conceptuel appartient cette association
 	 * (en passant par les featureType qu'elle relie).
-	 * S'il y a incoh�rence entre les membres de l'association, la méthode renvoie null.
+	 * S'il y a incohérence entre les membres de l'association, la méthode renvoie null.
 	 * 
 	 */
 	public SchemaConceptuelJeu getSchemaConceptuel() {

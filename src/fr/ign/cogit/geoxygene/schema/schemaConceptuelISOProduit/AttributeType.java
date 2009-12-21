@@ -49,7 +49,7 @@ public class AttributeType implements	GF_AttributeType {
 	/** Type de l'attribut. */
 	protected String valueType;
 
-	/** Type de domaine de valeur 0 pour non �num�r� et 1 pour �num�r�. */
+	/** Type de domaine de valeur 0 pour non énuméré et 1 pour énuméré. */
 	protected boolean valueDomainType;
 
 
@@ -63,7 +63,7 @@ public class AttributeType implements	GF_AttributeType {
 	protected GF_FeatureType featureType;
 
 
-	/** Renvoie le feature type auquel est rattach� la propriété. */
+	/** Renvoie le feature type auquel est rattaché la propriété. */
 	public GF_FeatureType getFeatureType() {
 		return this.featureType;
 	}
@@ -182,8 +182,8 @@ public class AttributeType implements	GF_AttributeType {
 	/**
 	 * Non standard
 	 * Utile aux applications de transformation de schéma
-	 * caract�re implicite ou explicite de l'élément : un attributeType implicite
-	 * n'a pas de valeur à priori mais celle-ci pourra être d�riv�e
+	 * caractère implicite ou explicite de l'élément : un attributeType implicite
+	 * n'a pas de valeur à priori mais celle-ci pourra être dérivée
 	 * d'elements explicites par le biais de transformations
 	 **/
 	protected boolean isExplicite;
@@ -193,7 +193,7 @@ public class AttributeType implements	GF_AttributeType {
 		return this.isExplicite;
 	}
 
-	/** Affecte le caract�re implicite ou explicite */
+	/** Affecte le caractère implicite ou explicite */
 	public void setIsExplicite(boolean value) {
 		this.isExplicite = value;
 	}
@@ -221,8 +221,8 @@ public class AttributeType implements	GF_AttributeType {
 	}
 
 
-	/** le domaine de valeurs (�num�r� ou non) sous forme de chaîne de caract�res
-	 * exemples : "positif", "toute extension de GM_Object", "oui/non/ind�termin�"
+	/** le domaine de valeurs (énuméré ou non) sous forme de chaîne de caractères
+	 * exemples : "positif", "toute extension de GM_Object", "oui/non/indéterminé"
 	 **/
 	protected String domainOfValues;
 
@@ -244,7 +244,7 @@ public class AttributeType implements	GF_AttributeType {
 		return this.valuesDomain;
 	}
 
-	/** Renvoie les valeurs possibles d'un attribut enumere sous forme de liste de chaines de caract�res. */
+	/** Renvoie les valeurs possibles d'un attribut enumere sous forme de liste de chaines de caractères. */
 	public List<String> getValuesDomainToString() {
 		List<String> valeurs = new ArrayList<String>();
 		Iterator<FC_FeatureAttributeValue> it = this.valuesDomain.iterator();
@@ -288,17 +288,17 @@ public class AttributeType implements	GF_AttributeType {
 	////////////////////////////
 
 	/**
-	 * Attribut en caract�risant un autre. La relation inverse n'est pas
+	 * Attribut en caractérisant un autre. La relation inverse n'est pas
 	 * implémentée.
 	 */
 	protected GF_AttributeType characterize;
 
-	/** Renvoie l'attribut que self caract�rise. */
+	/** Renvoie l'attribut que self caractérise. */
 	public GF_AttributeType getCharacterize() {
 		return this.characterize;
 	}
 
-	/** Affecte un attribut que self caract�rise. */
+	/** Affecte un attribut que self caractérise. */
 	public void setCharacterize(GF_AttributeType characterize) {
 		this.characterize = characterize;
 	}

@@ -11,7 +11,7 @@ import fr.ign.cogit.geoxygene.feature.type.GF_AttributeType;
 public class FeatureAttributeValue implements FC_FeatureAttributeValue {
 
 	/**
-	 * Valeur d'attribut s'appliquant à un attribut de type �num�r�
+	 * Valeur d'attribut s'appliquant à un attribut de type énuméré
 	 */
 	public FeatureAttributeValue() {
 		super();
@@ -25,7 +25,7 @@ public class FeatureAttributeValue implements FC_FeatureAttributeValue {
 
 	/**Identifiant d'un objet*/
 	protected int id;
-	public int getId() {return id;}
+	public int getId() {return this.id;}
 	public void setId(int id) {this.id = id;}
 
 
@@ -33,14 +33,14 @@ public class FeatureAttributeValue implements FC_FeatureAttributeValue {
 	/**
 	 * Non standard
 	 * Utile aux applications de transformation de schéma
-	 * caract�re implicite ou explicite de l'élément : un featureAttributeValue
-	 * implicite n'est jamais affect� à priori mais il peut l'être par le
+	 * caractère implicite ou explicite de l'élément : un featureAttributeValue
+	 * implicite n'est jamais affecté à priori mais il peut l'être par le
 	 * biais de calculs à partir d'éléments explicites
 	 **/
 	protected boolean isExplicite;
 	/** Renvoie le caractere explicite ou implicite */
 	public boolean getIsExplicite(){return this.isExplicite;}
-	/** Affecte le caract�re implicite ou explicite */
+	/** Affecte le caractère implicite ou explicite */
 	public void setIsExplicite(boolean value){this.isExplicite = value;}
 
 
@@ -95,7 +95,7 @@ public class FeatureAttributeValue implements FC_FeatureAttributeValue {
 	 * @return the definitionReference
 	 */
 	public Object getDefinitionReference() {
-		return definitionReference;
+		return this.definitionReference;
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class FeatureAttributeValue implements FC_FeatureAttributeValue {
 
 
 	/**
-	 * commodit� pour retrouver à quel schéma conceptuel participe cette
+	 * commodité pour retrouver à quel schéma conceptuel participe cette
 	 * valeur d'attribut
 	 * (en passant par l'attribut auquel elle se rapporte).
 	 **/
@@ -117,9 +117,7 @@ public class FeatureAttributeValue implements FC_FeatureAttributeValue {
 		if (this.getFeatureAttribute()!=null){
 			return ((AttributeType)this.getFeatureAttribute()).getSchemaConceptuel();
 		}
-		else return null;
+		return null;
 	}
-
-
 
 }

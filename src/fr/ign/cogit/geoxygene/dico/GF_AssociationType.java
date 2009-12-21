@@ -42,13 +42,13 @@ import java.util.List;
 public class GF_AssociationType extends GF_FeatureType {
 
 
-	/** Les feature types impliqu�s dans cette association. */
+	/** Les feature types impliqués dans cette association. */
 	protected List<GF_FeatureType> linkBetween = new ArrayList<GF_FeatureType>();
-	/** Renvoie les feature types impliqu�s dans cette association. */
+	/** Renvoie les feature types impliqués dans cette association. */
 	public List<GF_FeatureType> getLinkBetween() {return this.linkBetween; }
 	/** Affecte une liste de feature types */
 	public void setLinkBetween (List<GF_FeatureType> L) {this.linkBetween = L;}
-	/** Renvoie le nombre de feature types impliqu�s dans cette association. */
+	/** Renvoie le nombre de feature types impliqués dans cette association. */
 	public int sizeLinkBetween () {return this.linkBetween.size();}
 	/** Ajoute un feature type. Execute un "addMemberOf" sur GF_FeatureType.*/
 	public void addLinkBetween (GF_FeatureType value) {

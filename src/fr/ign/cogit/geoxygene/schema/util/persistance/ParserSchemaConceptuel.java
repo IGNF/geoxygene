@@ -179,7 +179,7 @@ public class ParserSchemaConceptuel {
 							featureAssociation.addFeatureAttribute(featureAttribute);
 						}
 
-						//je r�cupere les roles
+						//je récupère les roles
 						listRoles = asType.getElementsByTagName("AssociationRole");
 						int idFt;
 						fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType ft;
@@ -329,7 +329,7 @@ public class ParserSchemaConceptuel {
 							featureAssociation.addFeatureAttribute(featureAttribute);
 						}
 
-						//je r�cupere les roles
+						//je récupère les roles
 						listRoles = asType.getElementsByTagName("AssociationRole");
 						int idFt;
 						fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType ft;
@@ -479,7 +479,7 @@ public class ParserSchemaConceptuel {
 							featureAssociation.addFeatureAttribute(featureAttribute);
 						}
 
-						//je r�cupere les roles
+						//je récupère les roles
 						listRoles = asType.getElementsByTagName("AssociationRole");
 						int idFt;
 						FeatureType ft;
@@ -623,7 +623,7 @@ public class ParserSchemaConceptuel {
 							featureAssociation.addFeatureAttribute(featureAttribute);
 						}
 
-						//je r�cupere les roles
+						//je récupère les roles
 						listRoles = asType.getElementsByTagName("AssociationRole");
 						int idFt;
 						FeatureType ft;
@@ -669,7 +669,7 @@ public class ParserSchemaConceptuel {
 	}
 
 	/**
-	 * s�rialise dans un fichier XML un objet SchemaConceptuelJeu
+	 * sûrialise dans un fichier XML un objet SchemaConceptuelJeu
 	 */
 	public void ecritSchemaConceptuelJeu(SchemaConceptuelJeu sc, File file){
 
@@ -937,7 +937,7 @@ public class ParserSchemaConceptuel {
 	}
 
 	/**
-	 * s�rialise dans un fichier XML un objet SchemaConceptuelProduit
+	 * sûrialise dans un fichier XML un objet SchemaConceptuelProduit
 	 * @param sc
 	 * @param file
 	 */

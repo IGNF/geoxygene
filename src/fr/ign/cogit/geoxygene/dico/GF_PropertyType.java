@@ -31,9 +31,9 @@ import java.util.List;
 
 
 /**
- * Classe mère pour les métaclasses de propriétés définissant les caract�ristiques
+ * Classe mère pour les métaclasses de propriétés définissant les caractéristiques
  * des classes Géographiques Feature Types ou des associations Association Types.
- * (opérations, attributs, r�les dans une associations).
+ * (opérations, attributs, rôles dans une associations).
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -51,9 +51,9 @@ abstract public class GF_PropertyType {
 	public void setId(int Id) {this.id = Id;}
 
 
-	/** Feature type auquel est rattach� la propriété. */
+	/** Feature type auquel est rattachée la propriété. */
 	protected GF_FeatureType featureType;
-	/** Renvoie le feature type auquel est rattach� la propriété. */
+	/** Renvoie le feature type auquel est rattachée la propriété. */
 	public GF_FeatureType getFeatureType() {return this.featureType;}
 	/** Affecte un feature type à la propriété. */
 	public void setFeatureType(GF_FeatureType FeatureType) {

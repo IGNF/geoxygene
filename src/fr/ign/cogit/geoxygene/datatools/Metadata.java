@@ -59,7 +59,7 @@ public class Metadata {
 	/** Le nom de l'attribut qui "mappe" la clef (ne gère pas les clefs complexes !). */
 	protected String _idFieldName;
 
-	/** L'identifant du syst�me de coordonnées. */
+	/** L'identifant du système de coordonnées. */
 	protected int _SRID;
 
 	/** L'enveloppe de la couche. */
@@ -79,12 +79,12 @@ public class Metadata {
 	/// get /////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/** Le nom de la classe persistante. */
-	public String getClassName() {return _className;}
+	public String getClassName() {return this._className;}
 
 	/** La classe java persistante; */
 	public Class<?> getJavaClass()  {
 		try {
-			return Class.forName(_className);
+			return Class.forName(this._className);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -92,62 +92,62 @@ public class Metadata {
 	}
 
 	/** La table du SGBD. */
-	public String getTableName() {return _tableName;}
+	public String getTableName() {return this._tableName;}
 
 	/** La colonne où est stockée la géométrie (mono-représentation !). */
-	public String getGeomColumnName() {return _geomColumnName;}
+	public String getGeomColumnName() {return this._geomColumnName;}
 
 	/** La colonne où est stocké la clef (ne gère pas les clefs complexes !). */
-	public String getIdColumnName() {return _idColumnName;}
+	public String getIdColumnName() {return this._idColumnName;}
 
 	/** Le nom de l'attribut qui "mappe" la clef (ne gère pas les clefs complexes !). */
-	public String getIdFieldName() {return _idFieldName;}
+	public String getIdFieldName() {return this._idFieldName;}
 
-	/** L'identifant du syst�me de coordonnées.
-        Vaut 0 s'il n'est pas affect�, ou si la classe n'est pas Géographique.*/
-	public int getSRID() {return _SRID;}
+	/** L'identifant du système de coordonnées.
+        Vaut 0 s'il n'est pas affecté, ou si la classe n'est pas Géographique.*/
+	public int getSRID() {return this._SRID;}
 
 	/** L'enveloppe de la couche.
         Vaut null si la classe n'est pas Géographique. */
-	public GM_Envelope getEnvelope() {return _envelope;}
+	public GM_Envelope getEnvelope() {return this._envelope;}
 
 	/** La tolerance sur les coordonnées.
         _tolerance[0] = tolerance sur X, etc.
         Vaut null si la classe n'est pas Géographique. */
-	public double[] getTolerance() {return _tolerance;}
+	public double[] getTolerance() {return this._tolerance;}
 
 	/** La tolerance sur les coordonnées.
         getTolerance(i) = tolerance sur X, etc.
         Vaut null si la classe n'est pas Géographique. */
-	public double getTolerance(int i) {return _tolerance[i];}
+	public double getTolerance(int i) {return this._tolerance[i];}
 
 	/** Dimension des coordonnées (2D ou 3D).
         Vaut null si la classe n'est pas Géographique. */
-	public int getDimension() {return _dimension;}
+	public int getDimension() {return this._dimension;}
 
 
 
 	/////////////////////////////////////////////////////////////////
 	/// set /////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
-	public void setClassName (String ClassName) {_className = ClassName;}
+	public void setClassName (String ClassName) {this._className = ClassName;}
 
-	public void setTableName (String TableName) {_tableName = TableName;}
+	public void setTableName (String TableName) {this._tableName = TableName;}
 
-	public void setGeomColumnName (String GeomColumnName) {_geomColumnName = GeomColumnName;}
+	public void setGeomColumnName (String GeomColumnName) {this._geomColumnName = GeomColumnName;}
 
-	public void setIdColumnName (String IdColumnName) {_idColumnName = IdColumnName;}
+	public void setIdColumnName (String IdColumnName) {this._idColumnName = IdColumnName;}
 
-	public void setIdFieldName (String IdFieldName) {_idFieldName = IdFieldName;}
+	public void setIdFieldName (String IdFieldName) {this._idFieldName = IdFieldName;}
 
-	public void setSRID (int SRID) {_SRID = SRID;}
+	public void setSRID (int SRID) {this._SRID = SRID;}
 
-	public void setEnvelope(GM_Envelope Envelope) {_envelope = Envelope;}
+	public void setEnvelope(GM_Envelope Envelope) {this._envelope = Envelope;}
 
-	public void setTolerance (double[] Tolerance) {_tolerance = Tolerance;}
+	public void setTolerance (double[] Tolerance) {this._tolerance = Tolerance;}
 
-	public void setTolerance (int i, double Tolerance) {_tolerance[i] = Tolerance;}
+	public void setTolerance (int i, double Tolerance) {this._tolerance[i] = Tolerance;}
 
-	public void setDimension(int Dimension) { _dimension = Dimension;}
+	public void setDimension(int Dimension) { this._dimension = Dimension;}
 
 }

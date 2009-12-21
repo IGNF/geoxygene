@@ -29,7 +29,7 @@ package fr.ign.cogit.geoxygene.dico;
 
 /**
  * Contraintes pour assurer l'intégrité des données.
- * Ces contraintes sont port�es par les GF_FeatureType ou les GF_PropertyType (relations 0..n unidirectionnelles).
+ * Ces contraintes sont portées par les GF_FeatureType ou les GF_PropertyType (relations 0..n unidirectionnelles).
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0

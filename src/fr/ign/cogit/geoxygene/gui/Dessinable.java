@@ -38,7 +38,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 public interface Dessinable {
 	
 	/**
-	 * géometrie en coordonnées Géographiques de la fenetre d'affichage du cadre : tous les objets intersectant ce cadre seront affich�s
+	 * géometrie en coordonnées Géographiques de la fenetre d'affichage du cadre : tous les objets intersectant ce cadre seront affichés
 	 * @return géometrie en coordonnées Géographiques de la fenetre d'affichage du cadre
 	 */
 	public GM_Envelope getEnveloppeAffichage();

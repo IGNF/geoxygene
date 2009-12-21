@@ -118,13 +118,13 @@ public class GeodatabaseOjb {
 	/** Initialise la base ODMG et une transaction */
 	protected void initODMG (String jcdAlias) {
 		try {
-			_odmg = OJB.getInstance();
-			_db = _odmg.newDatabase();
+			this._odmg = OJB.getInstance();
+			this._db = this._odmg.newDatabase();
 			if (jcdAlias != null)
-				_db.open(jcdAlias, Database.OPEN_READ_WRITE) ;
+				this._db.open(jcdAlias, Database.OPEN_READ_WRITE) ;
 			else
-				_db.open(null, Database.OPEN_READ_WRITE) ;
-			_tx = _odmg.newTransaction();
+				this._db.open(null, Database.OPEN_READ_WRITE) ;
+			this._tx = this._odmg.newTransaction();
 		} catch ( Exception except ) {
 			logger.fatal(" ### PROBLEME A LA LECTURE DES FICHIERS DE MAPPING OJB ... ### ");
 			logger.fatal(" ### PROGRAMME ARRETE ! ### ");
@@ -138,10 +138,10 @@ public class GeodatabaseOjb {
 	/** Initialise la connection JDBC. */
 	protected void initConnection() {
 		try {
-			_tx.begin();
+			this._tx.begin();
 			PersistenceBroker broker = ((HasBroker) _tx).getBroker();
-			_conn = broker.serviceConnectionManager().getConnection();
-			_tx.commit();
+			this._conn = broker.serviceConnectionManager().getConnection();
+			this._tx.commit();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -150,11 +150,11 @@ public class GeodatabaseOjb {
 	/** Renseigne l'attribut _metadataList. */
 	protected void initMetadata()  {
 		try {
-			_tx.begin();
+			this._tx.begin();
 			PersistenceBroker broker = ((HasBroker) _tx).getBroker();
 			DescriptorRepository desc = broker.getDescriptorRepository();
 			Iterator<?> enDesc = desc.getDescriptorTable().values().iterator();
-			_metadataList = new ArrayList<Metadata>();
+			this._metadataList = new ArrayList<Metadata>();
 
 			while (enDesc.hasNext()) {
 				ClassDescriptor cd = (ClassDescriptor) enDesc.next();
@@ -179,10 +179,10 @@ public class GeodatabaseOjb {
 					}
 					metadataElt.setIdColumnName(fdPK[0].getColumnName());
 					metadataElt.setIdFieldName(fdPK[0].getAttributeName());
-					_metadataList.add(metadataElt);
+					this._metadataList.add(metadataElt);
 				}
 			}
-			_tx.commit();
+			this._tx.commit();
 
 		} catch (Exception e) {
 			logger.fatal(" ### PROBLEME A LA LECTURE DES FICHIERS DE MAPPING OJB ... ### ");
@@ -202,7 +202,7 @@ public class GeodatabaseOjb {
 	/** Ouvre une transaction. */
 	public void begin() {
 		try {
-			_tx.begin();
+			this._tx.begin();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -211,7 +211,7 @@ public class GeodatabaseOjb {
 	/** Commit la transaction sans la fermer. */
 	public void checkpoint() {
 		try {
-			_tx.checkpoint();
+			this._tx.checkpoint();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -220,7 +220,7 @@ public class GeodatabaseOjb {
 	/** Commite et ferme la transaction. */
 	public void commit() {
 		try {
-			_tx.commit();
+			this._tx.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -229,7 +229,7 @@ public class GeodatabaseOjb {
 	/** Annule et ferme la transaction. */
 	public void abort() {
 		try {
-			_tx.abort();
+			this._tx.abort();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -237,13 +237,13 @@ public class GeodatabaseOjb {
 
 	/** Renvoie true si la transaction est active. */
 	public boolean isOpen() {
-		return _tx.isOpen();
+		return this._tx.isOpen();
 	}
 
 	/** Ferme la connection (libere les ressources). */
 	public void close() {
 		try {
-			_db.close();
+			this._db.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -252,7 +252,7 @@ public class GeodatabaseOjb {
 	/** Vide le cache de la transaction.
      A appeler a l'interieur d'une transaction ouverte. */
 	public void clearCache() {
-		PersistenceBroker broker = ((HasBroker) _tx).getBroker();
+		PersistenceBroker broker = ((HasBroker) this._tx).getBroker();
 		broker.clearCache();
 	}
 
@@ -263,7 +263,7 @@ public class GeodatabaseOjb {
         A appeler a l'interieur d'une transaction ouverte.*/
 	public void makePersistent(Object obj) {
 		try {
-			_db.makePersistent(obj);
+			this._db.makePersistent(obj);
 		} catch (ClassNotPersistenceCapableException e) {
 			logger.error("L'objet n'a pas pu être rendu persistent.");
 			logger.error("La raison la plus probable est qu'il n'existe pas de fichier de mapping correpondant.");
@@ -281,7 +281,7 @@ public class GeodatabaseOjb {
         A appeler a l'interieur d'une transaction ouverte. */
 	public void deletePersistent(Object obj) {
 		try {
-			_db.deletePersistent(obj);
+			this._db.deletePersistent(obj);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -297,8 +297,8 @@ public class GeodatabaseOjb {
         A appeler a l'interieur d'une transaction ouverte. */
 	public <T> T load(Class<T> clazz, Object id) {
 		try {
-			OQLQuery query = _odmg.newOQLQuery();
-			query.create("select x from "+clazz.getName()+" where id = $0");
+			OQLQuery query = this._odmg.newOQLQuery();
+			query.create("select x from "+clazz.getName()+" where id = $0"); //$NON-NLS-1$ //$NON-NLS-2$
 			query.bind( id );
 			DList result = (DList) query.execute();
 			if (result.size() > 0) return clazz.cast(result.get(0));
@@ -320,8 +320,8 @@ public class GeodatabaseOjb {
 	@SuppressWarnings("unchecked")
 	public <T> List<T> loadAll(Class<T> theClass) {
 		try {
-			OQLQuery query = _odmg.newOQLQuery();
-			query.create("select x from "+theClass.getName());
+			OQLQuery query = this._odmg.newOQLQuery();
+			query.create("select x from "+theClass.getName()); //$NON-NLS-1$
 			DList result = (DList) query.execute();
 			return result;
 		} catch (Exception e) {
@@ -346,13 +346,13 @@ public class GeodatabaseOjb {
 			return null;
 		}
 		try {
-			OQLQuery query = _odmg.newOQLQuery();
-			query.create("select x from "+featureClass.getName());
+			OQLQuery query = this._odmg.newOQLQuery();
+			query.create("select x from "+featureClass.getName()); //$NON-NLS-1$
 			DList list = (DList) query.execute();
 			Iterator<?> iter = list.iterator();
 			while (iter.hasNext()) {
 				Object feature = iter.next();
-				result.getClass().getMethod("add", new Class[]{featureClass}).invoke(result,new Object[] {feature});
+				result.getClass().getMethod("add", new Class[]{featureClass}).invoke(result,new Object[] {feature}); //$NON-NLS-1$
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -368,11 +368,11 @@ public class GeodatabaseOjb {
 		FT_FeatureCollection<T> result = new FT_FeatureCollection<T>();
 		if ((FT_Feature.class).isAssignableFrom(featureClass)) {
 			try {
-				OQLQuery query = _odmg.newOQLQuery();
-				query.create("select x from "+featureClass.getName());
+				OQLQuery query = this._odmg.newOQLQuery();
+				query.create("select x from "+featureClass.getName()); //$NON-NLS-1$
 				DList list = (DList) query.execute();
 				Iterator<T> iter = list.iterator();
-				// on Récupère le srid attribu� à cette classe dans les métadonnées
+				// on Récupère le srid attribué à cette classe dans les métadonnées
 				Metadata metadata = this.getMetadata(featureClass);
 				int srid = -1;
 				if (metadata!=null&&metadata.getSRID()!=0) {
@@ -419,11 +419,11 @@ public class GeodatabaseOjb {
 		}
 		if ((FT_Feature.class).isAssignableFrom(featureClass)) {
 			try {
-				OQLQuery query = _odmg.newOQLQuery();
-				query.create("select x from "+featureClass.getName());
+				OQLQuery query = this._odmg.newOQLQuery();
+				query.create("select x from "+featureClass.getName()); //$NON-NLS-1$
 				DList list = (DList) query.execute();
 				Iterator<?> iter = list.iterator();
-				// on Récupère le srid attribu� à cette classe dans les métadonnées
+				// on Récupère le srid attribué à cette classe dans les métadonnées
 				Metadata metadata = this.getMetadata(featureClass);
 				int srid = -1;
 				if (metadata!=null&&metadata.getSRID()!=0) {
@@ -438,13 +438,13 @@ public class GeodatabaseOjb {
 							srid=metadata.getSRID();
 						}
 						if (feature.getGeom()!=null) feature.getGeom().setCRS(srid);
-						result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature});
+						result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature}); //$NON-NLS-1$
 					}
 				}
 				while (iter.hasNext()) {
 					FT_Feature feature = (FT_Feature) iter.next();
 					if (feature.getGeom()!=null) feature.getGeom().setCRS(srid);
-					result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature});
+					result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature}); //$NON-NLS-1$
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -474,11 +474,11 @@ public class GeodatabaseOjb {
 		}
 		if ((FT_Feature.class).isAssignableFrom(featureClass)) {
 			try {
-				OQLQuery query = _odmg.newOQLQuery();
-				query.create("select x from "+featureClass.getName()+" where "+param+" = "+value);
+				OQLQuery query = this._odmg.newOQLQuery();
+				query.create("select x from "+featureClass.getName()+" where "+param+" = "+value); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				DList list = (DList) query.execute();
 				Iterator<?> iter = list.iterator();
-				// on Récupère le srid attribu� à cette classe dans les métadonnées
+				// on Récupère le srid attribué à cette classe dans les métadonnées
 				Metadata metadata = this.getMetadata(featureClass);
 				int srid = -1;
 				if (metadata!=null&&metadata.getSRID()!=0) {
@@ -493,13 +493,13 @@ public class GeodatabaseOjb {
 							srid=metadata.getSRID();
 						}
 						if (feature.getGeom()!=null) feature.getGeom().setCRS(srid);
-						result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature});
+						result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature}); //$NON-NLS-1$
 					}
 				}
 				while (iter.hasNext()) {
 					FT_Feature feature = (FT_Feature) iter.next();
 					if (feature.getGeom()!=null) feature.getGeom().setCRS(srid);
-					result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature});
+					result.getClass().getMethod("add", new Class[]{FT_Feature.class}).invoke(result,new Object[] {feature}); //$NON-NLS-1$
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -517,7 +517,7 @@ public class GeodatabaseOjb {
         A appeler a l'interieur d'une transaction ouverte.
         On peut passer null pour param, si on ne souhaite lier la requete a aucune variable. */
 	public  List<?> loadOQL(String query, Object param) {
-		OQLQuery oqlQuery = _odmg.newOQLQuery();
+		OQLQuery oqlQuery = this._odmg.newOQLQuery();
 		try {
 			oqlQuery.create(query);
 			oqlQuery.bind( param );
@@ -531,7 +531,7 @@ public class GeodatabaseOjb {
 
 	/** Cree une requete OQL */
 	public OQLQuery newOQLQuery() {
-		return _odmg.newOQLQuery() ;
+		return this._odmg.newOQLQuery() ;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -539,15 +539,15 @@ public class GeodatabaseOjb {
 	/////////////////////////////////////////////////////////////////////////////////////////
 	/** Renvoie le tableau des metadonnees. */
 	public List<Metadata> getMetadata() {
-		return _metadataList;
+		return this._metadataList;
 	}
 
 	/** Renvoie les metadonnees de la classe theClass.
         theClass doit etre une classe definie dans le mapping.*/
 	public Metadata getMetadata(Class<?> theClass) {
-		for (int i=0; i<_metadataList.size(); i++)
-			if (theClass.getName().compareTo((_metadataList.get(i)).getClassName()) == 0)
-				return _metadataList.get(i);
+		for (int i=0; i<this._metadataList.size(); i++)
+			if (theClass.getName().compareTo((this._metadataList.get(i)).getClassName()) == 0)
+				return this._metadataList.get(i);
 		if (logger.isDebugEnabled()) logger.warn("La classe n'est pas dans le fichier de mapping : "+theClass.getName());
 		return null;
 	}
@@ -556,10 +556,10 @@ public class GeodatabaseOjb {
         theTable doit etre une table definie dans le mapping.
         Si theTable est mappee avec plusieurs classes, en renvoie une. */
 	public Metadata getMetadata(String theTable) {
-		for (int i=0; i<_metadataList.size(); i++)
-			if ((_metadataList.get(i)).getTableName() != null)
-				if (theTable.compareToIgnoreCase((_metadataList.get(i)).getTableName()) == 0)
-					return _metadataList.get(i);
+		for (int i=0; i<this._metadataList.size(); i++)
+			if ((this._metadataList.get(i)).getTableName() != null)
+				if (theTable.compareToIgnoreCase((this._metadataList.get(i)).getTableName()) == 0)
+					return this._metadataList.get(i);
 		if (logger.isDebugEnabled()) logger.warn("La table n'est pas dans le fichier de mapping : "+theTable);
 		return null;
 	}
@@ -571,21 +571,21 @@ public class GeodatabaseOjb {
 	/////////////////////////////////////////////////////////////////////////////////////////
 	/** Renvoie la connection JDBC sous-jacente. */
 	public Connection getConnection() {
-		return _conn;
+		return this._conn;
 	}
 
 	/** Execute une commande SQL.
         Cette commande ne doit pas renvoyer de resultat : INSERT, UPDATE, DELETE, mais pas SELECT. */
 	public void exeSQL(String query) {
 		try {
-			if (logger.isDebugEnabled()) logger.debug("ex�cution de la requ�te SQL : "+query);
+			if (logger.isDebugEnabled()) logger.debug("exécution de la requête SQL : "+query);
 			Connection conn = getConnection();
 			Statement stm = conn.createStatement();
 			stm.executeUpdate(query);
 			stm.close();
 			conn.commit();
 		} catch (Exception e) {
-			logger.error("Erreur pendant l'ex�cution de la requ�te SQL : "+query);
+			logger.error("Erreur pendant l'exécution de la requête SQL : "+query);
 			logger.error(e.getMessage());
 		}
 	}
@@ -597,13 +597,13 @@ public class GeodatabaseOjb {
 	public void exeSQLFile(String fileName) {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(fileName));
-			String query = "";
+			String query = ""; //$NON-NLS-1$
 			String line = reader.readLine();
 			while (line!=null) {
 				query += line;
-				if (line.trim().endsWith(";")) {
+				if (line.trim().endsWith(";")) { //$NON-NLS-1$
 					exeSQL(query);
-					query = "";
+					query = ""; //$NON-NLS-1$
 				}
 				line = reader.readLine();
 			}
@@ -611,7 +611,7 @@ public class GeodatabaseOjb {
 		} catch (FileNotFoundException e) {
 			logger.error("Le fichier "+fileName+" n'existe pas");
 		} catch (IOException e) {
-			logger.error("Erreur pendant l'ex�cution des requ�tes du fichier "+fileName);
+			logger.error("Erreur pendant l'exécution des requêtes du fichier "+fileName);
 			logger.error(e.getMessage());
 		}
 	}
@@ -653,15 +653,15 @@ public class GeodatabaseOjb {
 	// getters ODMG ///////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public Implementation getODMGImplementation() {
-		return _odmg;
+		return this._odmg;
 	}
 
 	public Database getODMGDatabase() {
-		return _db;
+		return this._db;
 	}
 
 	public Transaction getODMGTransaction() {
-		return _tx;
+		return this._tx;
 	}
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 	/*
@@ -676,7 +676,7 @@ public class GeodatabaseOjb {
 	 * chargement de tous les features correspondant à une même classe de schéma
 	 * conceptuel (il n'est pas nécessaire de connaêtre la classe Java
 	 * d'implémentation). Si on est dans le contexte d'un DataSet, les
-	 * Features sont en même temps affect�s à une Population propre à leur
+	 * Features sont en même temps affectés à une Population propre à leur
 	 * classe de schéma conceptuel.
 	 * 
 	 */
@@ -693,8 +693,8 @@ public class GeodatabaseOjb {
 	}
 
 	/**
-	 * Chargement dans le cas simple où un featureType correspond strictement �
-	 * une population (pas de règle d'extraction spécifi�e).
+	 * Chargement dans le cas simple où un featureType correspond strictement à
+	 * une population (pas de règle d'extraction spécifiée).
 	 * 
 	 * @param featureType
 	 * @return FT_FeatureCollection
@@ -732,7 +732,7 @@ public class GeodatabaseOjb {
 				}
 				pop.addUniqueCollection(coll);
 				System.out
-				.println("Vous �tes dans le contexte d'un MdDataSet. Sa population "
+				.println("Vous êtes dans le contexte d'un MdDataSet. Sa population "
 						+ featureType.getTypeName()
 						+ " a été mise à jour");
 			}
@@ -784,7 +784,7 @@ public class GeodatabaseOjb {
 
 	/**
 	 * chargement dans le cas où un featureType ne corespond pas seulement à une
-	 * population (une RegleExtraction +/- complexe a été spécifi�e
+	 * population (une RegleExtraction +/- complexe a été spécifiée
 	 */
 	public <T extends FT_Feature> FT_FeatureCollection<T> loadAllFeaturesCasComplexe(FeatureType featureType) {
 		FT_FeatureCollection<T> coll = null;
@@ -814,4 +814,5 @@ public class GeodatabaseOjb {
 		List<T> coll = DataSet.db.loadAll(theClass);
 		return coll;
 	}
+	
 }

@@ -29,7 +29,7 @@ package fr.ign.cogit.geoxygene.dico;
 
 /**
  * Attribut permettant de localiser grâce à un identifiant
- * (th�oriquement de type SI_LocationInstance défini dans l'ISO 19112).
+ * (théoriquement de type SI_LocationInstance défini dans l'ISO 19112).
  * Est utilisé typiquement pour l'adressage.
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0

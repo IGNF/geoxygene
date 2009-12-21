@@ -27,7 +27,7 @@ public class InheritanceRelation implements GF_InheritanceRelation {
 
 	/**Identifiant d'un objet*/
 	protected int id;
-	public int getId() {return id;}
+	public int getId() {return this.id;}
 	public void setId(int id) {this.id = id;}
 
 	/**Nom de la généralisation ou de la spécialisation. */
@@ -42,7 +42,7 @@ public class InheritanceRelation implements GF_InheritanceRelation {
 	/** Classe mère de la relation d'heritage. */
 	protected FeatureType superType;
 	/** Renvoie la classe mère de la relation d'héritage. */
-	public GF_FeatureType getSuperType() { return superType; }
+	public GF_FeatureType getSuperType() { return this.superType; }
 
 	/** Affecte une classe mère à la relation d'héritage. */
 	public void setSuperType(GF_FeatureType SuperType) {
@@ -58,7 +58,7 @@ public class InheritanceRelation implements GF_InheritanceRelation {
 	/** Classe fille de la relation d'heritage. */
 	protected FeatureType subType;
 	/** Renvoie la classe fille de la relation d'héritage. */
-	public GF_FeatureType getSubType() { return subType; }
+	public GF_FeatureType getSubType() { return this.subType; }
 
 	/** Affecte une classe fille à la relation d'héritage. */
 	public void setSubType(GF_FeatureType SubType) {
@@ -95,9 +95,9 @@ public class InheritanceRelation implements GF_InheritanceRelation {
 
 
 	/**
-	 * commodit� pour retrouver à quel schéma conceptuel appartient cette relation
+	 * commodité pour retrouver à quel schéma conceptuel appartient cette relation
 	 * (en passant par les featureType qu'elle relie).
-	 * S'il y a incoh�rence entre les membres de l'héritage, la méthode renvoie null.
+	 * S'il y a incohérence entre les membres de l'héritage, la méthode renvoie null.
 	 * 
 	 */
 	public SchemaConceptuelJeu getSchemaConceptuel() {
@@ -111,7 +111,4 @@ public class InheritanceRelation implements GF_InheritanceRelation {
 		return schema;
 	}
 
-
 }
-
-

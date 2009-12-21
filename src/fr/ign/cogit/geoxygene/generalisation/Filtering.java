@@ -63,7 +63,7 @@ public class Filtering {
 	// On constitue une liste de points, et appelle la méthode "DouglasPeuckerListe" sur cette liste
 	public static GM_LineString DouglasPeuckerLineString (GM_Curve G0, double seuil) {
 
-		// lin�arise la courbe
+		// linéarise la courbe
 		GM_LineString theLineString = null;
 		theLineString =  G0.asLineString(0.0,0.0,0.0);
 		if (theLineString==null) {
@@ -85,7 +85,7 @@ public class Filtering {
 
 	/**
 	 * Filtrage de Douglas-Peucker sur un polygone.
-	 * Les trous dont la géométrie n'est pas valide sont supprim�s.
+	 * Les trous dont la géométrie n'est pas valide sont supprimés.
 	 * @param polygone polygone à simplifier
 	 * @param seuil seuil à utiliser pour le filtrage
 	 * @return résultat du filtrage de Douglas-Peucker sur un polygone
@@ -110,7 +110,7 @@ public class Filtering {
 
 
 	/** Filtrage de DouglasPeucker sur un GM_Object.
-       Support�s : Aggrégat, Courbe, Polyligne, Polygon.  */
+       Supportés : Aggrégat, Courbe, Polyligne, Polygon.  */
 	@SuppressWarnings("unchecked")
 	public static GM_Object DouglasPeucker (GM_Object geom, double seuil) {
 
@@ -153,10 +153,10 @@ public class Filtering {
 	/** 
 	 * Douglas-Peucker sur une liste de points.
 	 * <p>
-	 * On applique l'algo en utilisant la récursivit�.
+	 * On applique l'algo en utilisant la récursivité.
 	 * @param PtList liste de points
 	 * @param seuil seuil utilisé
-	 * @return la liste de points filtr�e
+	 * @return la liste de points filtrée
 	 */
 	public static DirectPositionList DouglasPeuckerList (DirectPositionList PtList, double seuil) {
 

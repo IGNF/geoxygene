@@ -158,14 +158,14 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 					feature.setGeom(polygon);
 				} else if ((geometryType.equals(GM_MultiPoint.class))||(geometryType.equals(GM_Point.class))) {
 					feature.setGeom(point);
-				} else {logger.error("Aucune géométrie n'a été affect�e !!!");}
+				} else {logger.error("Aucune géométrie n'a été affectée !!!");}
 				if (layer.getFeatureCollection().get(0).getFeatureType()!=null) {
 					feature.setFeatureType(layer.getFeatureCollection().get(0).getFeatureType());
 				}
 				if (layer.getFeatureCollection().get(0) instanceof DefaultFeature) {
 					// FIXME arriver à faire ça si ce n'est pas un FeafautFeature
 					feature.setSchema(((DefaultFeature) layer.getFeatureCollection().get(0)).getSchema());
-					/** on crée un tableau d'attributs suffisamment grand pour recevoir la cl� la plus grande */
+					/** on crée un tableau d'attributs suffisamment grand pour recevoir la clé la plus grande */
 					Integer[] keys = feature.getSchema().getAttLookup().keySet().toArray(new Integer[0]);
 					Arrays.sort(keys);
 					feature.setAttributes(new Object[keys[keys.length-1]+1]);
@@ -279,7 +279,7 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 		Object nodeInfo = node.getUserObject();
 		if (node.isLeaf()) {
 			Layer layer = (Layer)nodeInfo;
-			if (logger.isDebugEnabled()) logger.debug("Layer "+layer.getName()+ " s�l�ctionn�");
+			if (logger.isDebugEnabled()) logger.debug("Layer "+layer.getName()+ " sélectionné");
 			FrameEditeurLayer editeur = new FrameEditeurLayer(this,layer);
 			editeur.setVisible(true);
 		} else {}
