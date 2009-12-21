@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -32,8 +32,8 @@ import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_Complex;
 import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
 
-/** Classe non implémentée.
- * Complexe topologique, en parallèle a GM_Complex.
+/** Classe non implÃ©mentÃ©e.
+ * Complexe topologique, en parallÃ¨le a GM_Complex.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -43,53 +43,31 @@ import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
 class TP_Complex extends TP_Object
 {
 	/* declaration des variables */
-	protected long TP_ComplexID;
+	protected long complexID;
 
 	/* accesseurs en lecture et en ecriture */
-	long getTP_ComplexID(){return TP_ComplexID;}
-	void setTP_ComplexID(long id){TP_ComplexID=id;}
+	long getTP_ComplexID(){return this.complexID;}
+	void setTP_ComplexID(long id){this.complexID=id;}
 
-	// mettre le tableau des éléments
+	// mettre le tableau des Ã©lÃ©ments
 
 	protected GM_Complex geometry;
-	public GM_Complex getGeometry () {
-		return this.geometry;
-	}
-	protected void setGeometry (GM_Complex value) {
-		this.geometry = value;
-	}
-	public int sizeGeometry () {
-		if ( this.geometry == null ) return 0;
-		return 1;
-	}
-
-
-
+	public GM_Complex getGeometry () {return this.geometry;}
+	protected void setGeometry (GM_Complex value) {this.geometry = value;}
+	public int sizeGeometry () {return ( this.geometry == null )?0:1;}
+	
 	protected TP_Complex maximalComplex;
-	public TP_Complex getMaximalComplex () {
-		return this.maximalComplex;
-	}
-	protected void setMaximalComplex (TP_Complex value) {
-		this.maximalComplex = value;
-	}
-	public int cardMaximalComplex () {
-		if ( this.maximalComplex == null ) return 0;
-		return 1;
-	}
-
-
+	public TP_Complex getMaximalComplex () {return this.maximalComplex;}
+	protected void setMaximalComplex (TP_Complex value) {this.maximalComplex = value;}
+	public int cardMaximalComplex () {return ( this.maximalComplex == null )?0:1;}
 
 	/** Renvoie TRUE si le complexe est maximal.   */
-	public boolean isMaximal()   {
-		return false;
-	}
+	public boolean isMaximal() {return false;}
 
-	/** Renvoie TRUE si le complexe est connnecté.  */
-	public boolean isConnected() {
-		return false;
-	}
+	/** Renvoie TRUE si le complexe est connectÃ©.  */
+	public boolean isConnected() {return false;}
 
-	/** Renvoie la frontière de self.*/
+	/** Renvoie la frontiÃ¨re de self.*/
 	/* public TP_Boundary boundary(DataSource data) {
         return null;
     }*/
@@ -98,14 +76,12 @@ class TP_Complex extends TP_Object
 	 * @param data
 	 * @return the coBoundary
 	 */
-	public List<?> coBoundary(Geodatabase data) {
-		return null;
-	}
+	public List<?> coBoundary(Geodatabase data) {return null;}
 
 	/**
-	 * Constructeur à partir d'une géométrie.
+	 * Constructeur Ã  partir d'une gÃ©omÃ©trie.
 	 * @param gc
 	 */
-	public TP_Complex (final GM_Complex gc)  {
-	}
+	public TP_Complex (final GM_Complex gc)  {}
+	
 }

@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -27,9 +27,9 @@
 package fr.ign.cogit.geoxygene.spatial.topoprim;
 
 /**
- * Frontière d'un brin topologique. Contient 2 référence vers des TP_DirectedNode,
- * le startNode est orienté négativement, le endNode positivement.
- * Comme TP_Expression, le TP_EdgeBoundary se présente comme ceci :
+ * frontiÃ¨re d'un brin topologique. Contient 2 rÃ©fÃ©rence vers des TP_DirectedNode,
+ * le startNode est orientÃ© nÃ©gativement, le endNode positivement.
+ * Comme TP_Expression, le TP_EdgeBoundary se prÃ©sente comme ceci :
  * Edge.boundary()=+endNode-startNode.
  *
  * @author Thierry Badard & Arnaud Braun
@@ -39,28 +39,25 @@ package fr.ign.cogit.geoxygene.spatial.topoprim;
 
 public class TP_EdgeBoundary extends TP_PrimitiveBoundary {
 
-	/** Constructeur par défaut. */
+	/** Constructeur par dÃ©faut. */
 	public TP_EdgeBoundary () {
 	}
 
-	/** Constructeur à partir d'un noeud initial et d'un noeud final */
+	/** Constructeur Ã  partir d'un noeud initial et d'un noeud final */
 	public TP_EdgeBoundary (TP_DirectedNode theStartNode, TP_DirectedNode theEndNode) {
-		term.add(theEndNode);
-		term.add(theStartNode);
-		endNode = theEndNode;
-		startNode = theStartNode;
+		this.term.add(theEndNode);
+		this.term.add(theStartNode);
+		this.endNode = theEndNode;
+		this.startNode = theStartNode;
 	}
-
 
 	/** Noeud initial.*/
 	protected TP_DirectedNode startNode;
-
 	/** Renvoie le noeud initial.*/
 	public TP_DirectedNode getStartnode () {return this.startNode;}
-
+	
 	/** Noeud final. */
 	protected TP_DirectedNode endNode;
-
 	/** Renvoie le noeud final. */
 	public TP_DirectedNode getEndnode () {return this.endNode;}
 

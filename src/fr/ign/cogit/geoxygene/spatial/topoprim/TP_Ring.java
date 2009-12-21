@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -31,8 +31,8 @@ import java.util.List;
 
 
 /**
- * Représente des TP_DirectedEdge connectés en un cycle.
- * L'anneau doit être orienté pour que la face soit à sa gauche.
+ * reprÃ©sente des TP_DirectedEdge connectÃ©s en un cycle.
+ * L'anneau doit Ãªtre orientÃ© pour que la face soit Ã  sa gauche.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -42,16 +42,17 @@ import java.util.List;
 public class TP_Ring extends TP_Expression {
 
 
-	/** Constructeur par défaut. */
+	/** Constructeur par dÃ©faut. */
 	public TP_Ring() {
-		term = new ArrayList<TP_DirectedTopo>();
+		this.term = new ArrayList<TP_DirectedTopo>();
 	}
 
 
-	/** Constructeur à partir de plusieurs TP_DirectedEdge. La liste doit contenir au moins 1 element.
-	 * Le constructeur réorganise la liste pour que les brins orientés soient chaînés. Il renvoie une exception si ça ne boucle pas. */
+	/** Constructeur Ã  partir de plusieurs TP_DirectedEdge. La liste doit contenir au moins 1 element.
+	 * Le constructeur rÃ©organise la liste pour que les brins orientÃ©s soient chaÃ®nÃ©s.
+	 * Il renvoie une exception si Ã§a ne boucle pas. */
 	public TP_Ring(List<TP_DirectedEdge> sdt) throws Exception {
-		term = new ArrayList<TP_DirectedTopo>();
+		this.term = new ArrayList<TP_DirectedTopo>();
 		int compteur; // nombre d'arc en contact avec l'arc courant
 
 		TP_DirectedEdge dt0 = sdt.get(0);
@@ -59,14 +60,14 @@ public class TP_Ring extends TP_Expression {
 
 		// probleme si on commence par un arc pendant, dans ce cas on en prend un autre
 		if (!dt0.topo().getLeftface().equals(dt0.topo().getRightface())) {
-			term.add(dt0);
+			this.term.add(dt0);
 			sdt.remove(0);
 		} else {
 			if (sdt.size() > 1) {
 				for (int i=1; i<sdt.size(); i++) {
 					dt0 = sdt.get(i);
 					if (!dt0.topo().getLeftface().equals(dt0.topo().getRightface())) {
-						term.add(dt0);
+						this.term.add(dt0);
 						sdt.remove(i);
 						break;
 					}
@@ -91,12 +92,12 @@ public class TP_Ring extends TP_Expression {
 
 			// probleme ! ca ne chaine pas
 			if (compteur == 0) {
-				throw new Exception("Les brins ne sont pas chainés.");
+				throw new Exception("Les brins ne sont pas chaÃ®nÃ©s."); //$NON-NLS-1$
 			}
 
 			// pas de probleme !
 			else if (compteur == 1) {
-				term.add(dtref);
+				this.term.add(dtref);
 				if (dtref!=null) {
 					IDEndNode = dtref.endNode().topo().getId();
 					dt0=dtref;
@@ -120,7 +121,7 @@ public class TP_Ring extends TP_Expression {
 								TP_Edge dt1topo = dt1.topo();
 								if ((IDEndNode == IDStartNode) &&
 										(dt1topo.getLeftface().equals(dt1topo.getRightface()))) {
-									term.add(dt1);
+									this.term.add(dt1);
 									IDEndNode = dt1.endNode().topo().getId();
 									dt0 = dt1;
 									sdt.remove(dt1);
@@ -130,7 +131,7 @@ public class TP_Ring extends TP_Expression {
 							}
 						}
 						if (flag) {    // pas d'autre candidat trouve : on rebrousse chemin
-							term.add(dt);
+							this.term.add(dt);
 							IDEndNode = dt.endNode().topo().getId();
 							dt0 = dt;
 							sdt.remove(dt);
@@ -143,7 +144,7 @@ public class TP_Ring extends TP_Expression {
 
 		// ultime verification du bouclage
 		if (theIDStartNode != IDEndNode)
-			throw new Exception("Les brins ne sont pas chainés.");
+			throw new Exception("Les brins ne sont pas chaÃ®nÃ©s."); //$NON-NLS-1$
 
 	}
 

@@ -28,10 +28,10 @@ package fr.ign.cogit.geoxygene.spatial.topoprim;
 
 import java.util.List;
 
-
 /**
  * Brin topologique orienté. Supporte la classe TP_Edge pour les TP_Expression.
- * Dans notre implémentation, l'identifiant d'un TP_DirectedTopo est celui de sa primitive avec le signe de l'orientation.
+ * Dans notre implémentation, l'identifiant d'un TP_DirectedTopo est celui 
+ * de sa primitive avec le signe de l'orientation.
  * EXPLIQUER QUE C'EST PAS PERSISTANT et que A PRIORI ca n'a pas de GEOMETRIE
  *
  * @author Thierry Badard, Arnaud Braun & Audrey Simon
@@ -41,15 +41,11 @@ import java.util.List;
 
 public class TP_DirectedEdge extends TP_DirectedTopo {
 
-
 	/////////////////////////////////////////////////////////////////////////////////////
 	// constructeur /////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	/** Constructeur par défaut. */
-	public TP_DirectedEdge() {
-	}
-
-
+	public TP_DirectedEdge() {}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// topo /////////////////////////////////////////////////////////////////////////////
@@ -57,22 +53,16 @@ public class TP_DirectedEdge extends TP_DirectedTopo {
 	/** Primitive de this. */
 	protected TP_Edge topo;
 	/** Primitive de this. */
-	public TP_Edge topo () {
-		return topo;
-	}
-
-
+	public TP_Edge topo () {return this.topo;}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// negate ///////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	/** Renvoie le TP_DirectedEdge d'orientation opposée. */
 	public TP_DirectedEdge negate()  {
-		if (orientation<0) return topo.proxy[0];
-		return topo.proxy[1];
+		if (this.orientation<0) return this.topo.proxy[0];
+		return this.topo.proxy[1];
 	}
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// boundary /////////////////////////////////////////////////////////////////////////
@@ -80,9 +70,9 @@ public class TP_DirectedEdge extends TP_DirectedTopo {
 	/** Renvoie les TP_DirectedNode frontière du TP_DirectedEdge, structurés en TP_EdgeBoundary.
 	 * Un peut lourd à utiliser, mieux d'utiliser directement getEndnode() et getStartnode().*/
 	public TP_EdgeBoundary boundary()  {
-		if (orientation == +1) return this.topo().boundary();
+		if (this.orientation == +1) return this.topo().boundary();
 		// si le brin est négatif on retourne tout
-		else if (orientation == -1) {
+		else if (this.orientation == -1) {
 			TP_EdgeBoundary boundary = this.topo().boundary();
 			TP_DirectedNode startNode = boundary.getStartnode().negate();
 			TP_DirectedNode endNode = boundary.getEndnode().negate();
@@ -92,14 +82,12 @@ public class TP_DirectedEdge extends TP_DirectedTopo {
 		else return null;
 	}
 
-
 	/** Renvoie directement le endNode (qui est orienté positivement). */
 	public TP_DirectedNode endNode()  {
 		TP_EdgeBoundary bdy = this.boundary();
 		TP_DirectedNode theNode = bdy.getEndnode();
 		return theNode;
 	}
-
 
 	/** Renvoie directement le startNode (qui est orienté négativemnt). */
 	public TP_DirectedNode startNode()  {
@@ -108,17 +96,15 @@ public class TP_DirectedEdge extends TP_DirectedTopo {
 		return theNode;
 	}
 
-
-
 	/////////////////////////////////////////////////////////////////////////////////////
 	// coboundary ///////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	/** Renvoie les TP_DirectedFace associés au TP_DirectedEdge. */
 	@SuppressWarnings("unchecked")
 	public List coBoundary()  {
-		if (orientation == +1) return this.topo().coBoundary();
+		if (this.orientation == +1) return this.topo().coBoundary();
 		// si le brin est négatif on retourne tout
-		else if (orientation == -1) {
+		else if (this.orientation == -1) {
 			List coBoundary = this.topo().coBoundary();
 			for (int i=0; i<coBoundary.size(); i++) {
 				TP_DirectedFace directedFace1 = (TP_DirectedFace)coBoundary.get(i);
@@ -129,7 +115,6 @@ public class TP_DirectedEdge extends TP_DirectedTopo {
 		}
 		else return null;
 	}
-
 
 	/** Renvoie la face gauche (orientée du même signe que le TP_DirectedEdge). */
 	public TP_DirectedFace leftFace() {
@@ -143,7 +128,6 @@ public class TP_DirectedEdge extends TP_DirectedTopo {
 		return null;
 	}
 
-
 	/** Renvoie la face droite (orientée du signe opposé au TP_DirectedEdge). */
 	public TP_DirectedFace rightFace() {
 		List<?> cobdy = this.coBoundary();
@@ -155,8 +139,6 @@ public class TP_DirectedEdge extends TP_DirectedTopo {
 		}
 		return null;
 	}
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// brin suivant /////////////////////////////////////////////////////////////////////
@@ -187,7 +169,6 @@ public class TP_DirectedEdge extends TP_DirectedTopo {
 		return coBdy;
 	}
 
-
 	/** Le brin orienté suivant (= celui partageant la même face gauche). */
 	public TP_DirectedEdge nextEdge()  {
 		TP_DirectedNode endNode = this.endNode();
@@ -213,8 +194,6 @@ public class TP_DirectedEdge extends TP_DirectedTopo {
 		if (result!=null) result = result.negate();
 		return result;
 	}
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// brin precedent ///////////////////////////////////////////////////////////////////
@@ -245,7 +224,6 @@ public class TP_DirectedEdge extends TP_DirectedTopo {
 		return coBdy;
 	}
 
-
 	/** Le brin orienté précédent (= celui partageant la même face gauche). */
 	public TP_DirectedEdge previousEdge() {
 		TP_DirectedNode startNode = this.startNode();
@@ -274,8 +252,6 @@ public class TP_DirectedEdge extends TP_DirectedTopo {
 		return result;
 	}
 
-
-
 	/////////////////////////////////////////////////////////////////////////////////////
 	// cycle ////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -291,6 +267,5 @@ public class TP_DirectedEdge extends TP_DirectedTopo {
 		}
 		return ring;
 	}
-
 
 }

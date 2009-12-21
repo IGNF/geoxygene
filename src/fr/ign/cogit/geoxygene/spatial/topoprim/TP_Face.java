@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut GÈographique National (the French
+ * contribution of the COGIT laboratory at the Institut G√©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut GÈographique National
+ * Copyright (C) 2005 Institut G√©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -33,9 +33,12 @@ import java.util.List;
 
 /**
  * Face topologique (orientation positive).
- * <P> L'operation "CoBoundary" redefinie sur TP_Object renvoie ici une sequence de TP_DirectedSolid, indiquant quels solides ont self pour frontiere.
+ * <P> L'operation "CoBoundary" redefinie sur TP_Object 
+ * renvoie ici une sequence de TP_DirectedSolid, indiquant quels solides ont self pour frontiere.
  * Cette operation est aussi une association. Ceci n'est pas implemente.
- * <P> L'operation "Boundary" redefinie sur TP_Object renvoie une liste de TP_DirectedEdge avec les orientations adequates. Cette liste est structuree en TP_FaceBoundary.
+ * <P> L'operation "Boundary" redefinie sur TP_Object 
+ * renvoie une liste de TP_DirectedEdge avec les orientations adequates. 
+ * Cette liste est structur√©e en TP_FaceBoundary.
  *
  * EXPLIQUER LA STRUCTURE DE GRAPHE
  * A REVOIR POUR LES TROUS (ne pas utliser le container)
@@ -47,77 +50,68 @@ import java.util.List;
 
 public class TP_Face extends TP_DirectedFace {
 
-
 	/** Les 2 primitives orientees de this. */
 	// hesitation sur le fait : proxy[0] = this ou proxy[0] = new TP_DirectedFace(id) + proxy[0].topo = this
 	protected TP_DirectedFace[] proxy;
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// constructeur /////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	public TP_Face () {
-		orientation = +1;
-		proxy = new TP_DirectedFace[2];
-		proxy[0] = this;
-		topo = this;
-		proxy[1] = new TP_DirectedFace();
-		proxy[1].topo = this;
-		proxy[1].orientation = -1;
+		this.orientation = +1;
+		this.proxy = new TP_DirectedFace[2];
+		this.proxy[0] = this;
+		this.topo = this;
+		this.proxy[1] = new TP_DirectedFace();
+		this.proxy[1].topo = this;
+		this.proxy[1].orientation = -1;
 	}
 
 	// redefinition pour affecter un bon id au proxy negatif
 	@Override
 	public void setId(int Id) {
 		super.setId(Id);
-		proxy[1].setId(-Id);
-		//if (Id<0) System.out.println("TP_Face::setId(id) : L'identifiant doit Ítre positif");
+		this.proxy[1].setId(-Id);
+		//if (Id<0) System.out.println("TP_Face::setId(id) : L'identifiant doit √™tre positif");
 	}
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// asTP_DirectedTopo() //////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	/** Renvoie le TP_DirectedFace d'orientation "sign". "sign" doit valoir +1 ou -1, sinon renvoie null. */
 	public TP_DirectedFace asTP_DirectedTopo(int sign) {
-		if (sign == +1) return proxy[0];
-		else if (sign == -1) return proxy[1];
+		if (sign == +1) return this.proxy[0];
+		else if (sign == -1) return this.proxy[1];
 		else {
-			System.out.println("TP_Face::asTP_DirectedTopo(sign) : Passer +1 ou -1 en paramËtre.");
+			System.out.println("TP_Face::asTP_DirectedTopo(sign) : Passer +1 ou -1 en param√®tre."); //$NON-NLS-1$
 			return null;
 		}
 	}
-
-
-
+	
 	/////////////////////////////////////////////////////////////////////////////////////
 	// isolated in (relation inverse de container) //////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	/** Relation inverse de container sur TP_Node. */
 	public Collection<TP_Node> isolated = new ArrayList<TP_Node>();
-	public Collection<TP_Node> getIsolated() {return isolated;}
-	public void setIsolated (Collection<TP_Node> c) {isolated = c;}
+	public Collection<TP_Node> getIsolated() {return this.isolated;}
+	public void setIsolated (Collection<TP_Node> c) {this.isolated = c;}
 	public void addIsolated(TP_Node node) {
 		if (node != null) {
-			isolated.add(node);
+			this.isolated.add(node);
 			if (node.getContainer() != this)
 				node.setContainer(this);
 		}
 	}
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// boundary /////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	/** Les TP_Edge qui ont this pour face gauche. */
 	public Collection<TP_Edge> left = new ArrayList<TP_Edge>();
-	public Collection<TP_Edge> getLeft() {return left;}
+	public Collection<TP_Edge> getLeft() {return this.left;}
 	public void addLeft(TP_Edge edge) {
 		if (edge != null) {
-			left.add(edge);
+			this.left.add(edge);
 			if (edge.getLeftface() != this)
 				edge.setLeftface(this);
 		}
@@ -125,10 +119,10 @@ public class TP_Face extends TP_DirectedFace {
 
 	/** Les TP_Edge qui ont this pour face droite. */
 	public Collection<TP_Edge> right = new ArrayList<TP_Edge>() ;
-	public Collection<TP_Edge> getRight() {return right;}
+	public Collection<TP_Edge> getRight() {return this.right;}
 	public void addRight(TP_Edge edge) {
 		if (edge != null) {
-			right.add(edge);
+			this.right.add(edge);
 			if (edge.getRightface() != this)
 				edge.setRightface(this);
 		}
@@ -142,12 +136,12 @@ public class TP_Face extends TP_DirectedFace {
 		try {
 			// liste des DirectedEdge qui ont this pour frontiere gauche
 			List<TP_DirectedEdge> theEdges = new ArrayList<TP_DirectedEdge>();
-			it = left.iterator();
+			it = this.left.iterator();
 			while (it.hasNext()) {
 				TP_Edge edge = it.next();
 				theEdges.add(edge.asTP_DirectedTopo(+1));
 			}
-			it = right.iterator();
+			it = this.right.iterator();
 			while (it.hasNext()) {
 				TP_Edge edge = it.next();
 				theEdges.add(edge.asTP_DirectedTopo(-1));
@@ -221,16 +215,12 @@ public class TP_Face extends TP_DirectedFace {
 		}
 	}
 
-
-
 	/////////////////////////////////////////////////////////////////////////////////////
 	// coBoundary ///////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	/** non implemente (renvoie null). Les TP_DirectedSolid associes au TP_Face. */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List coBoundary()  {
-		return null;
-	}
+	public List coBoundary()  {return null;}
 
 }

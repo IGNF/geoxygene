@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -45,9 +45,7 @@ import fr.ign.cogit.geoxygene.spatial.topoprim.TP_Node;
  * 
  */
 
-
 abstract public class TP_Object implements Cloneable {
-
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// pour le mapping ///////////////////////////////////////////////////////////////////////////////////
@@ -60,15 +58,13 @@ abstract public class TP_Object implements Cloneable {
 
 	// castor
 	protected String classtype;
-	public String getClasstype() {return classtype; }
-	public void setClasstype(String Classtype) {classtype = Classtype; }
+	public String getClasstype() {return this.classtype; }
+	public void setClasstype(String Classtype) {this.classtype = Classtype; }
 
 	// ojb
 	protected String ojbConcreteClass;
-	public String getOjbConcreteClass() {return ojbConcreteClass; }
-	public void setOjbConcreteClass(String OjbConcreteClass) {ojbConcreteClass = OjbConcreteClass; }
-
-
+	public String getOjbConcreteClass() {return this.ojbConcreteClass; }
+	public void setOjbConcreteClass(String OjbConcreteClass) {this.ojbConcreteClass = OjbConcreteClass; }
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	/// identifiant /////////////////////////////////////////////////////////////////////
@@ -89,15 +85,13 @@ abstract public class TP_Object implements Cloneable {
     		feature.setTopoID(id);*/
 	}
 
-
-
 	/////////////////////////////////////////////////////////////////////////////////////
 	/// lien 1-1 vers FT_Feature - ce lien n'est pas dans la norme //////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	/** FT_Feature auquel est rattache this. */
 	protected FT_Feature feature;
 	/** FT_Feature auquel est rattache this. */
-	public FT_Feature getFeature() {return feature;}
+	public FT_Feature getFeature() {return this.feature;}
 	/**
 	 * Affecte un FT_Feature a this.
 	 * A REVOIR OBSOLETE
@@ -117,10 +111,8 @@ abstract public class TP_Object implements Cloneable {
 
 	// pour ojb
 	protected int featureID;
-	public int getFeatureID() {return featureID;}
-	public void setFeatureID(int ID) {featureID= ID;}
-
-
+	public int getFeatureID() {return this.featureID;}
+	public void setFeatureID(int ID) {this.featureID= ID;}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	/// lien n-m vers FT_Feature - abandonne pour cause de maivaise perf ////////////////
@@ -168,8 +160,6 @@ abstract public class TP_Object implements Cloneable {
         return feature.size();
     }
 
-
-
     /////////////////////////////////////////////////////////////////////////////////////
     /// dimension ///////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////
@@ -181,13 +171,11 @@ abstract public class TP_Object implements Cloneable {
 		else if (this instanceof TP_Face || this instanceof TP_DirectedFace) return 2;
 		//  else if (this instanceof TP_Solid || this instanceof TP_DirectedSolid) return 3;
 		else {
-			System.out.println("this n'est pas une primitive topologique. La fonction dimension renvoie -1.");
+			System.out.println("this n'est pas une primitive topologique. La fonction dimension renvoie -1."); //$NON-NLS-1$
 			return -1;
 		}
 	}
-
-
-
+	
 	/////////////////////////////////////////////////////////////////////////////////////
 	/// methodes de la norme supprimees pour simplification                           //
 	/// ces methodes sont definies dans les sous-classes avec un bon typage en sortie //
@@ -199,8 +187,6 @@ abstract public class TP_Object implements Cloneable {
 
 	/** Tous les TP_DirectedTopo qui ont self pour fronti?re.  */
 	//abstract public List coBoundary() ;
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	/// non implemente, relatif aux TP_Complex //////////////////////////////////////////
@@ -230,8 +216,6 @@ abstract public class TP_Object implements Cloneable {
 	//    return null;
 	//}
 
-
-
 	/////////////////////////////////////////////////////////////////////////////////////
 	/// equals //////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -245,10 +229,6 @@ abstract public class TP_Object implements Cloneable {
 		if ( this.id!=o.id ) return( false );
 		return( true );
 	}
-
-
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	/// clone ///////////////////////////////////////////////////////////////////////////

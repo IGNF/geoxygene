@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -34,13 +34,13 @@ import java.util.List;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
-
 /**
  * Noeud topologique (orientation positive).
  * <P>L'operation "CoBoundary" redefinie sur TP_Object renvoie ici un set de TP_DirectedEdge,
  * oriente positivement pour les entrants, negativement pour les sortants.
  * <P>L'operation "Boundary" sur TP_Object renvoie null.
- * <P>Dans le modele, cette classe herite directement de TP_Primitive (double heritage TP_Primitive / TP_DirectedNode).
+ * <P>Dans le modele, cette classe herite directement de TP_Primitive 
+ * (double heritage TP_Primitive / TP_DirectedNode).
  * Ceci n'a pas ete repris en java, mais l'heritage se retrouve par l'intermediaire de TP_DirectedTopo.
  *
  * A EXPLIQUER : la structure de graphe
@@ -52,62 +52,55 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 public class TP_Node extends TP_DirectedNode  {
 
-
 	/** Les 2 primitives orientees de this. */
 	// hesitation sur le fait : proxy[0] = this ou proxy[0] = new TP_DirectedNode(id) avec proxy[0].topo = this ?
 	protected TP_DirectedNode[] proxy;
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// constructeur /////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	public TP_Node () {
-		orientation = +1;
-		proxy = new TP_DirectedNode[2];
-		proxy[0] = this;
-		topo = this;
-		proxy[1] = new TP_DirectedNode();
-		proxy[1].topo = this;
-		proxy[1].orientation = -1;
+		this.orientation = +1;
+		this.proxy = new TP_DirectedNode[2];
+		this.proxy[0] = this;
+		this.topo = this;
+		this.proxy[1] = new TP_DirectedNode();
+		this.proxy[1].topo = this;
+		this.proxy[1].orientation = -1;
 	}
 
 	// redefinition pour affecter un bon id au proxy negatif
 	@Override
 	public void setId(int Id) {
 		super.setId(Id);
-		proxy[1].setId(-Id);
-		if (Id<0) System.out.println("TP_Node::setId(id) : L'identifiant doit être positif");
+		this.proxy[1].setId(-Id);
+		if (Id<0) System.out.println("TP_Node::setId(id) : L'identifiant doit Ãªtre positif"); //$NON-NLS-1$
 	}
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// asTP_DirectedTopo() //////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	/** Renvoie le TP_DirectedNode d'orientation "sign". "sign" doit valoir +1 ou -1, sinon renvoie null.*/
 	public TP_DirectedNode asTP_DirectedTopo(int sign) {
-		if (sign == +1) return proxy[0];
-		else if (sign == -1) return proxy[1];
+		if (sign == +1) return this.proxy[0];
+		else if (sign == -1) return this.proxy[1];
 		else {
-			System.out.println("TP_Node::asTP_DirectedTopo(sign) : Passer +1 ou -1 en paramètre.");
+			System.out.println("TP_Node::asTP_DirectedTopo(sign) : Passer +1 ou -1 en paramÃ¨tre."); //$NON-NLS-1$
 			return null;
 		}
 	}
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// container ////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	/** Face dans laquelle est incluse this, pour les noeuds isoles. */
 	public TP_Face container;
-	public TP_Face getContainer() {return container;}
+	public TP_Face getContainer() {return this.container;}
 	public void setContainer(TP_Face Container) {
 		if (Container == null) {
-			container = null;
-			containerID = 0;
-		} else if (Container.getId() == -1) container = null;
+			this.container = null;
+			this.containerID = 0;
+		} else if (Container.getId() == -1) this.container = null;
 		else {
 			this.container = Container;
 			this.containerID = Container.getId();
@@ -121,8 +114,8 @@ public class TP_Node extends TP_DirectedNode  {
 	// il faut un objet topo avec un id = -1 (TP_Face) dans la table TP_Object;
 	// cela accelere le chargement
 	public int containerID = -1;
-	public int getContainerID() {return containerID; }
-	public void setContainerID(int ContainerID) {containerID = ContainerID;}
+	public int getContainerID() {return this.containerID; }
+	public void setContainerID(int ContainerID) {this.containerID = ContainerID;}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// coBoundary ///////////////////////////////////////////////////////////////////////
@@ -135,12 +128,12 @@ public class TP_Node extends TP_DirectedNode  {
 	public List coBoundary()  {
 		List result = new ArrayList();
 		Iterator i;
-		i = entrant.iterator();
+		i = this.entrant.iterator();
 		while (i.hasNext()) {
 			TP_Edge edge = (TP_Edge)i.next();
 			result.add(edge.asTP_DirectedTopo(+1));
 		}
-		i = sortant.iterator();
+		i = this.sortant.iterator();
 		while (i.hasNext()) {
 			TP_Edge edge = (TP_Edge)i.next();
 			result.add(edge.asTP_DirectedTopo(-1));
@@ -150,48 +143,41 @@ public class TP_Node extends TP_DirectedNode  {
 		return result;
 	}
 
-
 	/** Les TP_Edge entrants dans ce noeud. */
 	// c'est en collection et pas en liste pour permettre le lazy loading Castor
 	public Collection<TP_Edge> entrant = new ArrayList<TP_Edge>();
-	public Collection<TP_Edge> getEntrant() {return entrant;}
+	public Collection<TP_Edge> getEntrant() {return this.entrant;}
 	public void addEntrant(TP_Edge edge) {
 		if (edge != null) {
-			entrant.add(edge);
+			this.entrant.add(edge);
 			if (edge.getEndnode() != this)
 				edge.setEndnode(this);
 		}
 	}
 
-
 	/** Les TP_Edge sortants dans ce noeud. */
 	public Collection<TP_Edge> sortant = new ArrayList<TP_Edge>();
-	public Collection<TP_Edge> getSortant() {return sortant;}
+	public Collection<TP_Edge> getSortant() {return this.sortant;}
 	public void addSortant(TP_Edge edge) {
 		if (edge != null) {
-			sortant.add(edge);
+			this.sortant.add(edge);
 			if (edge.getStartnode() != this)
 				edge.setStartnode(this);
 		}
 	}
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// boundary /////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	/** Renvoie null. */
 	@Override
-	public TP_Boundary boundary()  {
-		return null;
-	}
-
-
+	public TP_Boundary boundary()  {return null;}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// methodes privees pour ordonner la coboundary /////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
-	/* ordonne les edges dans le sens trigo (ordonne l'angle des 2 premiers points de la geometrie dans le sens croissant)*/
+	/* ordonne les edges dans le sens trigo 
+	 * (ordonne l'angle des 2 premiers points de la geometrie dans le sens croissant)*/
 	private void ordonne (List<TP_DirectedEdge> theDirEdges) {
 		double[] listOfAngles = new double[theDirEdges.size()];
 		for (int i=0; i<theDirEdges.size(); i++) {
@@ -220,7 +206,6 @@ public class TP_Node extends TP_DirectedNode  {
 				}
 		}
 	}
-
 
 	/* calcule l'angle forme par les 2 PREMIERS points de la ligne (dans [0, 2.pi]*/
 	private  double calculeAngle (GM_LineString line) {

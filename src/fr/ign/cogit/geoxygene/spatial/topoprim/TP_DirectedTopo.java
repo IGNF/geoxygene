@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -27,16 +27,16 @@
 package fr.ign.cogit.geoxygene.spatial.topoprim;
 
 /**
- * Classe mère abstraite pour les primitives topologiques orientées.
- * Dans notre implémentation 2 TP_DirectedTopo opposés ont des identifiants opposés.
- * Bien expliquer que dans la norme, ca n'herite pas de TP_Primitive, mais on a fait ca  a cause du double heritage
+ * Classe mÃ¨re abstraite pour les primitives topologiques orientÃ©es.
+ * Dans notre implÃ©mentation 2 TP_DirectedTopo opposÃ©s ont des identifiants opposÃ©s.
+ * Bien expliquer que dans la norme, ca n'herite pas de TP_Primitive, 
+ * mais on a fait Ã§a Ã  cause du double heritage
  * (heritage fictif)
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
  * 
  */
-
 
 abstract public class TP_DirectedTopo extends TP_Primitive {
 
@@ -47,21 +47,20 @@ abstract public class TP_DirectedTopo extends TP_Primitive {
 	public int getOrientation () {return this.orientation;}
 
 	/** Affecte une orientation */
-	public void setOrientation(int Ori) {orientation=Ori;}
+	public void setOrientation(int Ori) {this.orientation=Ori;}
 
-	/** Crée un TP_Expression à partir de self.
+	/** CrÃ©e un TP_Expression Ã  partir de self.
 	 * Sert de constructeur pour les TP_Expression. */
 	public TP_Expression asTP_Expression() {
 		TP_Expression result = new TP_Expression(this);
 		return result;
 	}
 
-
 	///////////////////////////////////////////////////////////////////////////////////////
 	/// methodes de la norme supprimees pour simplification                              /
 	/// cette methodes sont definies dans les sous-classes avec un bon typage en sortie //
 	//////////////////////////////////////////////////////////////////////////////////////
-	/** Primitive orientée d'orientation opposée. */
+	/** Primitive orientÃ©e d'orientation opposÃ©e. */
 	//abstract public TP_DirectedTopo negate(DataSource data) throws Exception ;
 
 	/** Primitive de self (de type TP_Node, ou TP_Edge, ou TP_Face, ou TP_Solid). */

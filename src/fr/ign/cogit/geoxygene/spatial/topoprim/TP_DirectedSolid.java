@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -32,8 +32,9 @@ import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
 
 
 /**
- * Solide topologique orienté. Supporte la classe TP_Solid pour les TP_Expression.
- * Dans notre implémentation, l'identifiant d'un TP_DirectedTopo est celui de sa primitive avec le signe de l'orientation.
+ * Solide topologique orientÃ©. Supporte la classe TP_Solid pour les TP_Expression.
+ * Dans notre implÃ©mentation, l'identifiant d'un TP_DirectedTopo est celui 
+ * de sa primitive avec le signe de l'orientation.
  * EXPLIQUER QUE C'EST PAS PERISTANT et que A PRIORI ca n'a pas de GEOMETRIE
  *
  * @author Thierry Badard, Arnaud Braun & Audrey Simon
@@ -43,17 +44,11 @@ import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
 
 class TP_DirectedSolid extends TP_DirectedTopo {
 
-
-
-
 	/////////////////////////////////////////////////////////////////////////////////////
 	// constructeur /////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
-	/** Constructeur par défaut. */
-	public TP_DirectedSolid() {
-	}
-
-
+	/** Constructeur par dÃ©faut. */
+	public TP_DirectedSolid() {}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// topo() ///////////////////////////////////////////////////////////////////////////
@@ -61,39 +56,27 @@ class TP_DirectedSolid extends TP_DirectedTopo {
 	/** Primitive de this. */
 	protected TP_Solid topo;
 	/** Primitive de this. */
-	public TP_Solid topo () {
-		return topo;
-	}
-
-
+	public TP_Solid topo () {return this.topo;}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// negate() /////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
-	/**  Renvoie le TP_DirectedSolid d'orientation opposée. */
+	/**  Renvoie le TP_DirectedSolid d'orientation opposÃ©e. */
 	public TP_DirectedSolid negate()  {
-		if (orientation<0) return topo.proxy[0];
-		return topo.proxy[1];
+		if (this.orientation<0) return this.topo.proxy[0];
+		return this.topo.proxy[1];
 	}
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// boundary() ///////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
-	/** non implémenté (renvoie null). Renvoie la frontière de self.*/
-	public TP_SolidBoundary boundary()  {
-		return null;
-	}
-
-
+	/** non implÃ©mentÃ© (renvoie null). Renvoie la frontiÃ¨re de self.*/
+	public TP_SolidBoundary boundary()  {return null;}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// coboundary() /////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	/** Renvoie null. */
-	public List<TP_Object> coBoundary()  {
-		return null;
-	}
+	public List<TP_Object> coBoundary()  {return null;}
 
 }

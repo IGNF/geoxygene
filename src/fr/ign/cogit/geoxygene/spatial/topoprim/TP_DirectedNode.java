@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -30,10 +30,10 @@ import java.util.List;
 
 import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
 
-
 /**
- * Noeud topologique orienté. Supporte la classe TP_Node pour les TP_Expression.
- * Dans notre implémentation, l'identifiant d'un TP_DirectedTopo est celui de sa primitive avec le signe de l'orientation.
+ * Noeud topologique orientÃ©. Supporte la classe TP_Node pour les TP_Expression.
+ * Dans notre implÃ©mentation, l'identifiant d'un TP_DirectedTopo est celui 
+ * de sa primitive avec le signe de l'orientation.
  * EXPLIQUER QUE C'EST PAS PERSISTANT et que A PRIORI ca n'a pas de GEOMETRIE
  *
  * @author Thierry Badard, Arnaud Braun & Audrey Simon
@@ -43,15 +43,11 @@ import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
 
 public class TP_DirectedNode extends TP_DirectedTopo {
 
-
 	/////////////////////////////////////////////////////////////////////////////////////
 	// constructeur /////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
-	/** Constructeur par défaut. */
-	public TP_DirectedNode() {
-	}
-
-
+	/** Constructeur par dÃ©faut. */
+	public TP_DirectedNode() {}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// topo /////////////////////////////////////////////////////////////////////////////
@@ -59,42 +55,32 @@ public class TP_DirectedNode extends TP_DirectedTopo {
 	/** Primitive de this. */
 	protected TP_Node topo;
 	/** Primitive de this. */
-	public TP_Node topo () {
-		return topo;
-	}
-
-
+	public TP_Node topo () {return this.topo;}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// negate ///////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
-	/** Renvoie le TP_DirectedNode d'orientation opposée. */
+	/** Renvoie le TP_DirectedNode d'orientation opposÃ©e. */
 	public TP_DirectedNode negate()  {
-		if (orientation<0) return topo.proxy[0];
-		return topo.proxy[1];
+		if (this.orientation<0) return this.topo.proxy[0];
+		return this.topo.proxy[1];
 	}
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// boundary /////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	/** Renvoie null. */
-	public TP_Boundary boundary()  {
-		return null;
-	}
-
-
+	public TP_Boundary boundary()  {return null;}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// coBoundary ///////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	@SuppressWarnings("unchecked")
 	public List coBoundary()  {
-		if (orientation == +1) return this.topo().coBoundary();
+		if (this.orientation == +1) return this.topo().coBoundary();
 
 		// pour un noeud negatif, on retourne tous les brins
-		else if (orientation == -1) {
+		else if (this.orientation == -1) {
 			List<TP_Object> coBoundary = this.topo().coBoundary();
 			for (int i=0; i<coBoundary.size(); i++) {
 				TP_DirectedEdge directedEdge1 = (TP_DirectedEdge)coBoundary.get(i);

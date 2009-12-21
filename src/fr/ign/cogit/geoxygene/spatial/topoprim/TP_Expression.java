@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -31,8 +31,8 @@ import java.util.List;
 
 
 /**
- * Permet de manipuler algébriquement les primitives, sous forme de polynomes de degré 1.
- * Le TP_DirectedTopo représente un terme du polynome. Le TP_Expression représente tout le polynome.
+ * Permet de manipuler algÃ©briquement les primitives, sous forme de polynomes de degrÃ© 1.
+ * Le TP_DirectedTopo reprÃ©sente un terme du polynome. Le TP_Expression reprÃ©sente tout le polynome.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -40,68 +40,47 @@ import java.util.List;
  */
 //On n'utilise pas la classe TP_ExpressionTerm de la norme.
 
-
 public class TP_Expression {
 
 	/** Liste des termes. */
 	protected List<TP_DirectedTopo> term;
-
 	/** Renvoie le terme de rang i. */
 	public TP_DirectedTopo getTerm (int i) {return this.term.get(i);}
-
 	/** Renvoie la liste des termes. */
 	public List<TP_DirectedTopo> getTermList() {return this.term;}
-
 	/** Affecte une valeur au rang i. */
-	public void setTerm (int i, TP_DirectedTopo value) {
-		this.term.set(i, value);
-	}
-
+	public void setTerm (int i, TP_DirectedTopo value) {this.term.set(i, value);}
 	/** Ajoute un terme en fin de liste. */
-	public void addTerm (TP_DirectedTopo value) {
-		this.term.add(value);
-	}
-
+	public void addTerm (TP_DirectedTopo value) {this.term.add(value);}
 	/** Ajoute un terme au rang i. */
-	public void addTerm (int i, TP_DirectedTopo value) {
-		this.term.add(i,value);
-	}
-
+	public void addTerm (int i, TP_DirectedTopo value) {this.term.add(i,value);}
 	/** Efface le terme de valeur "value". */
 	public void removeTerm (TP_DirectedTopo value)  {this.term.remove(value);}
-
 	/** Efface le terme de rang i. */
 	public void removeTerm (int i)  {this.term.remove(i);}
-
 	/** Renvoie le nombre de termes. */
 	public int sizeTerm () {return this.term.size();}
 
+	/** Constructeur par dÃ©faut. */
+	public TP_Expression() {this.term = new ArrayList<TP_DirectedTopo>();}
 
-	/** Constructeur par défaut. */
-	public TP_Expression() {
-		term = new ArrayList<TP_DirectedTopo>();
-	}
-
-
-	/**Constructeur à partir d'un TP_DirectedTopo.*/
+	/**Constructeur Ã  partir d'un TP_DirectedTopo.*/
 	public TP_Expression(TP_DirectedTopo dt) {
-		term = new ArrayList<TP_DirectedTopo>();
-		term.add(dt);
+		this.term = new ArrayList<TP_DirectedTopo>();
+		this.term.add(dt);
 	}
 
-
-	/** Constructeur à partir de plusieurs TP_DirectedTopo. */
+	/** Constructeur Ã  partir de plusieurs TP_DirectedTopo. */
 	public TP_Expression(List<TP_DirectedNode> sdt)  {
-		term = new ArrayList<TP_DirectedTopo>();
+		this.term = new ArrayList<TP_DirectedTopo>();
 		for (int i=0; i<sdt.size(); i++) {
 			TP_DirectedTopo dt = sdt.get(i);
-			term.add(dt);
+			this.term.add(dt);
 		}
 		this.simplify();
 	}
 
-
-	/** Addition de 2 TP_Expression (self et le TP_Expression passé en paramètre). */
+	/** Addition de 2 TP_Expression (self et le TP_Expression passÃ© en paramÃ¨tre). */
 	public TP_Expression plus(TP_Expression s)  {
 		TP_Expression result = new TP_Expression();
 		result.term.addAll(this.term);
@@ -110,8 +89,7 @@ public class TP_Expression {
 		return result;
 	}
 
-
-	/** Soustraction de 2 TP_Expression (self et le TP_Expression passé en paramètre). */
+	/** Soustraction de 2 TP_Expression (self et le TP_Expression passÃ© en paramÃ¨tre). */
 	public TP_Expression minus(TP_Expression s) {
 		TP_Expression result = new TP_Expression();
 		result.term.addAll(this.term);
@@ -133,8 +111,7 @@ public class TP_Expression {
 		return result;
 	}
 
-
-	/** Renvoie l'opposé de self.*/
+	/** Renvoie l'opposÃ© de self.*/
 	public TP_Expression negate()   {
 		TP_Expression result = new TP_Expression();
 		int n = this.sizeTerm();
@@ -155,23 +132,18 @@ public class TP_Expression {
 		return result;
 	}
 
-
-	/** TRUE si self est un zéro polynomial.*/
+	/** TRUE si self est un zÃ©ro polynomial.*/
 	public boolean isZero()  {
 		this.simplify();
 		if (this.sizeTerm() == 0) return true;
 		return false;
 	}
 
+	/** TRUE si la frontiÃ¨re est zÃ©ro. */
+	public boolean isCycle() {return (this.boundary().isZero());}
 
-	/** TRUE si la frontière est zéro. */
-	public boolean isCycle() {
-		if (this.boundary().isZero()) return true;
-		return false;
-	}
-
-
-	/** Remplace chaque boundary de chaque TP_Primitive de chaque TP_DirectedTopo, et simplifie le résultat. */
+	/** Remplace chaque boundary de chaque TP_Primitive de chaque TP_DirectedTopo, 
+	 * et simplifie le rÃ©sultat. */
 	public TP_Expression boundary()  {
 		TP_Expression result = new TP_Expression();
 		for (int i=0; i<this.sizeTerm(); i++) {
@@ -191,8 +163,7 @@ public class TP_Expression {
 		return result;
 	}
 
-
-	/** TRUE s'il y a égalité polynomiale. */
+	/** TRUE s'il y a Ã©galitÃ© polynomiale. */
 	public boolean equals(TP_Expression s) {
 		//construit des clones simplifies
 		TP_Expression thisBis = new TP_Expression();
@@ -217,7 +188,6 @@ public class TP_Expression {
 		return true;
 	}
 
-
 	/** Cast en liste de TP_Primitive. Dans la norme, on convertit en set.*/
 	public List<TP_Primitive> support()  {
 		List<TP_Primitive> result = new ArrayList<TP_Primitive>();
@@ -238,8 +208,8 @@ public class TP_Expression {
 		return result;
 	}
 
-
-	/** Cast chaque coBoundary de chaque TP_Primitive de chaque TP_DirectedTopo en TP_Expression, et simplifie le résultat.*/
+	/** Cast chaque coBoundary de chaque TP_Primitive de chaque TP_DirectedTopo en TP_Expression, 
+	 * et simplifie le rÃ©sultat.*/
 	@SuppressWarnings("unchecked")
 	public TP_Expression coBoundary()  {
 		TP_Expression result = new TP_Expression();
@@ -261,7 +231,6 @@ public class TP_Expression {
 		return result;
 	}
 
-
 	/** Cast en liste de TP_DirectedTopo. Dans la norme, on convertit en set.*/
 	public List<TP_DirectedTopo> asSet()  {
 		List<TP_DirectedTopo> result = new ArrayList<TP_DirectedTopo>();
@@ -272,8 +241,7 @@ public class TP_Expression {
 		return result;
 	}
 
-
-	/**= Usage interne. Simplifie le TP_Expression en annulant les termes opposés. */
+	/**= Usage interne. Simplifie le TP_Expression en annulant les termes opposÃ©s. */
 	private void simplify()  {
 		int n = this.sizeTerm();
 		if (n>1) {

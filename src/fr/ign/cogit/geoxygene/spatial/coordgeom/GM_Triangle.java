@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
@@ -27,7 +27,7 @@
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
 /** NON IMPLEMENTE, A FAIRE.
- * Triangle. R�sultat d'un constructeur du type : GM_Polygon(GM_LineString(<P1,P2,P3,P1>))
+ * Triangle. résultat d'un constructeur du type : GM_Polygon(GM_LineString(<P1,P2,P3,P1>))
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0

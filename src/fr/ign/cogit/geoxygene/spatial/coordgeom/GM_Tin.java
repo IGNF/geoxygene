@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for

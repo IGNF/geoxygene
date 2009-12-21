@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -32,9 +32,11 @@ import java.util.List;
 
 /**
  * Solide topologique (orientation positive).
- * <P> L'opération "CoBoundary" redéfinie sur TP_Object renvoie NULL.
- * <P> L'opération "Boundary" redéfinie sur TP_Object renvoie un set de TP_DirectedFace avec les orientations adéquates.  Cette opération est aussi une association.
- * Ceci n'est pas implémenté.
+ * <P> L'opÃ©ration "CoBoundary" redÃ©finie sur TP_Object renvoie NULL.
+ * <P> L'opÃ©ration "Boundary" redÃ©finie sur TP_Object renvoie 
+ * un set de TP_DirectedFace avec les orientations adÃ©quates.
+ * Cette opÃ©ration est aussi une association.
+ * Ceci n'est pas implÃ©mentÃ©.
  *
  * @author Thierry Badard, Arnaud Braun & Audrey Simon
  * @version 1.0
@@ -43,80 +45,66 @@ import java.util.List;
 
 class TP_Solid extends TP_DirectedSolid {
 
-
-	/** Les 2 primitives orientées de this. */
+	/** Les 2 primitives orientÃ©es de this. */
 	// hesitation sur le fait : proxy[0] = this ou proxy[0] = new TP_DirectedSolid(id) + proxy[0].topo = this
 	protected TP_DirectedSolid[] proxy;
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// constructeur /////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	public TP_Solid () {
-		orientation = +1;
-		proxy = new TP_DirectedSolid[2];
-		proxy[0] = this;
-		topo = this;
-		proxy[1] = new TP_DirectedSolid();
-		proxy[1].topo = this;
-		proxy[1].orientation = -1;
+		this.orientation = +1;
+		this.proxy = new TP_DirectedSolid[2];
+		this.proxy[0] = this;
+		this.topo = this;
+		this.proxy[1] = new TP_DirectedSolid();
+		this.proxy[1].topo = this;
+		this.proxy[1].orientation = -1;
 	}
 
 	// redefinition pour affecter un bon id au proxy negatif
 	@Override
 	public void setId(int Id) {
 		super.setId(Id);
-		proxy[1].setId(-Id);
-		if (Id<0) System.out.println("TP_Solid::setId(id) : L'identifiant doit être positif");
+		this.proxy[1].setId(-Id);
+		if (Id<0) System.out.println("TP_Solid::setId(id) : L'identifiant doit Ãªtre positif"); //$NON-NLS-1$
 	}
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// asTP_DirectedTopo() //////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	/** Renvoie le TP_DirectedSolid d'orientation "sign". "sign" doit valoir +1 ou -1, sinon renvoie null. */
 	public TP_DirectedSolid asTP_DirectedTopo(int sign)  {
-		if (sign == +1) return proxy[0];
-		else if (sign == -1) return proxy[1];
+		if (sign == +1) return this.proxy[0];
+		else if (sign == -1) return this.proxy[1];
 		else {
-			System.out.println("TP_Solid::asTP_DirectedTopo(sign) : Passer +1 ou -1 en paramètre.");
+			System.out.println("TP_Solid::asTP_DirectedTopo(sign) : Passer +1 ou -1 en paramÃ¨tre."); //$NON-NLS-1$
 			return null;
 		}
 	}
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// isolated in (relation inverse de container) //////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	/** Relation inverse de container sur TP_Edge. */
 	public Collection<TP_Edge> isolated;
-	public Collection<TP_Edge> getIsolated() {return isolated;}
-	public void setIsolated (Collection<TP_Edge> c) {isolated = c;}
-	public void addIsolated(TP_Edge edge) {isolated.add(edge);}
-
-
+	public Collection<TP_Edge> getIsolated() {return this.isolated;}
+	public void setIsolated (Collection<TP_Edge> c) {this.isolated = c;}
+	public void addIsolated(TP_Edge edge) {this.isolated.add(edge);}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// boundary() ///////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
-	/** non implémenté (renvoie null). Renvoie la frontière de self.*/
+	/** non implÃ©mentÃ© (renvoie null). Renvoie la frontiÃ¨re de self.*/
 	@Override
-	public TP_SolidBoundary boundary() {
-		return null;
-	}
-
-
-
+	public TP_SolidBoundary boundary() {return null;}
+	
 	/////////////////////////////////////////////////////////////////////////////////////
 	// coBoundary() ////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	/** Renvoie null. */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List coBoundary()  {
-		return null;
-	}
+	public List coBoundary()  {return null;}
 
 }
