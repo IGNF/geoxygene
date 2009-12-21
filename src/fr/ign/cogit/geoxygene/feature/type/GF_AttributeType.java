@@ -2,7 +2,7 @@
  * créé le 30 sept. 2004
  *
  * Pour changer le Modèle de ce fichier généré, allez à :
- * Fenêtre&gt;Préférences&gt;Java&gt;G�n�ration de code&gt;Code et commentaires
+ * Fenêtre&gt;Préférences&gt;Java&gt;Génération de code&gt;Code et commentaires
  */
 package fr.ign.cogit.geoxygene.feature.type;
 
@@ -13,19 +13,16 @@ import java.util.List;
 /**
  * @author Balley
  *
- * GF_AttributeType propos� par le General Feature Model de la norme ISO19109.
+ * GF_AttributeType proposé par le General Feature Model de la norme ISO19109.
  * Nous y ajoutons le lien avec FC_FeatureAttributeValue defini dans la norme ISO 19110
- * pour preciser les domaines de valeurs enum�r�s.
+ * pour preciser les domaines de valeurs énumérés.
  */
 public interface GF_AttributeType extends GF_PropertyType{
-
 
 	/** Renvoie le type de l'attribut. */
 	public String getValueType ();
 	/** Affecte un type à l'attribut. */
 	public void setValueType(String ValueType);
-
-
 
 	/** Renvoie le domaine de valeur. */
 	public String getDomainOfValues ();
@@ -39,27 +36,19 @@ public interface GF_AttributeType extends GF_PropertyType{
 	/** Affecte un nombre de valeurs minimal à l'attribut. */
 	public void setCardMin (int CardMin);
 
-
-
 	/** Renvoie le nombre de valeurs maximal de l'attribut. */
 	public int getCardMax ();
 	/** Affecte un nombre de valeurs maximal à l'attribut. */
 	public void setCardMax (int CardMax);
 
-
-
-
-	/** Renvoie l'attribut que self caract�rise. */
+	/** Renvoie l'attribut que self caractérise. */
 	public GF_AttributeType getCharacterize();
-	/** Affecte un attribut que self caract�rise. */
+	/** Affecte un attribut que self caractérise. */
 	public void setCharacterize(GF_AttributeType Characterize);
 
-
-
-
 	/** Renvoie le type de domaine de valeur de l'attribut.
-	 * (FALSE pour non enum�r�, TRUE pour �num�r�
-	 * C'est une extension du GFM propos�e par la norme ISO 19110
+	 * (FALSE pour non énuméré, TRUE pour énuméré
+	 * C'est une extension du GFM proposée par la norme ISO 19110
 	 **/
 	public boolean getValueDomainType();
 	/** Affecte un type à l'attribut. */
@@ -69,9 +58,9 @@ public interface GF_AttributeType extends GF_PropertyType{
 	public List<FC_FeatureAttributeValue> getValuesDomain();
 
 	/** Renvoie les valeurs possibles d'un attribut enumere sous forme de liste de
-	 * chaines de caract�res.
+	 * chaines de caractères.
 	 * Peut servir avantageusement à affecter une valeur à l'attribut
-	 * domainOfValues propos� par le GFM
+	 * domainOfValues proposé par le GFM
 	 **/
 	public List<String> getValuesDomainToString();
 	/** Affecte une liste de valeurs possibles. */
@@ -86,7 +75,7 @@ public interface GF_AttributeType extends GF_PropertyType{
 	 * ou d'une classe d'ontologie)
 	 * ou un pointeur vers cette définition (sous la forme d'une URI)
 	 * 
-	 * Correspond à FC_DescriptionReference et FC_DescriptionSource propos�s
+	 * Correspond à FC_DescriptionReference et FC_DescriptionSource proposés
 	 * dans la norme ISO19110
 	 * @return Object
 	 */

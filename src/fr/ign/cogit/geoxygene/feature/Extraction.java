@@ -65,10 +65,10 @@ public class Extraction {
 	/** Ne pas utiliser, necessaire au mapping OJB */
 	public int getDataSetID() {return this.dataSetID;}
 
-	/** renvoie une extension avec une géométrie nulle et un nom par défaut: "Zone compl�te" */
+	/** renvoie une extension avec une géométrie nulle et un nom par défaut: "Zone complète" */
 	public static Extraction zoneComplete () {
 		Extraction ex = new Extraction();
-		ex.setNom("Zone compl�te"); //$NON-NLS-1$
+		ex.setNom("Zone complète"); //$NON-NLS-1$
 		return ex;
 	}
 	

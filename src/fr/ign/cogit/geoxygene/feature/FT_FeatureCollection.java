@@ -65,8 +65,8 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
      */
     public void addFeatureCollectionListener(FeatureCollectionListener l) {this.listenerList.add(l);}
     /**
-     * Pr�vient tous les {@link FeatureCollectionListener} enregistrès qu'un 
-     * �v�nement a eu lieu.
+     * prévient tous les {@link FeatureCollectionListener} enregistrès qu'un 
+     * évènement a eu lieu.
      * <p>
      * Notifies all listeners that have registered interest for
      * notification on this event type.  The event instance
@@ -288,7 +288,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 	 */
 	public boolean hasSpatialIndex() {return this.isIndexed;}
 	/**
-	 * Initialise un index spatial avec d�termination automatique des
+	 * Initialise un index spatial avec détermination automatique des
 	 * paramètres. Le boolean indique si on souhaite une mise a jour automatique
 	 * de l'index.
 	 * @param spatialIndexClass
@@ -341,7 +341,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 	/**
 	 * Initialise un index spatial d'une collection de FT_Feature, en prenant
 	 * pour paramètre les limites de la zone et un entier (pour le dallage, cet
-	 * entier est le nombre en X et Y de cases souhait�es sur la zone).
+	 * entier est le nombre en X et Y de cases souhaitées sur la zone).
 	 * 
 	 * @param spatialIndexClass
 	 *            Nom de la classe d'index.
@@ -352,7 +352,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 	 * 
 	 * @param enveloppe
 	 *            Enveloppe décrivant les limites de l'index spatial. NB: Tout
-	 *            objet hors de ces limites ne sera pas trait� lors des requ�tes
+	 *            objet hors de ces limites ne sera pas traité lors des requêtes
 	 *            spatiales !!!!!
 	 * 
 	 * @param i
@@ -388,7 +388,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements Collection
 	 */
 	@SuppressWarnings("unchecked")
 	public void initSpatialIndex(SpatialIndex<?> spIdx) {
-		// enlev� : Class spatialIndexClass,
+		// enlevé : Class spatialIndexClass,
 		if (!this.hasGeom()) {
 			logger.warn("Attention initialisation d'index sur une liste ne portant pas de geometrie !"); //$NON-NLS-1$
 			return;

@@ -93,7 +93,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	 * Constructeur d'une population.
 	 *  Une population peut être persistante ou non (la population elle-même est alors rendue persistante dans ce constructeur).
 	 *  Une population a un nom logique (utile pour naviguer entre populations).
-	 *  Les éléments d'une population se réalisent dans une classe contr�te (classeElements).
+	 *  Les éléments d'une population se réalisent dans une classe concrete (classeElements).
 	 *  <p>
 	 *  <b>NB :</b> lors la construction, auncun élément n'est affectée à la population, cela doit être fait
 	 *  à partir d'elements peristant avec chargeElements, ou a partir d'objets Java avec les setElements
@@ -111,7 +111,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 		if (persistance) DataSet.db.makePersistent(this);
 	}
 	/**
-	 * Constructeur le plus adapté à l'utilisation des Populations dot�es d'un
+	 * Constructeur le plus adapté à l'utilisation des Populations dotées d'un
 	 * lien vers le FeatureType correspondant.
 	 * 
 	 * @param ft
@@ -126,10 +126,10 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	 * non (la population elle-même est alors rendue persistante dans ce
 	 * constructeur). Une population a un nom logique (utile pour naviguer entre
 	 * populations). Les éléments d'une population se réalisent dans une classe
-	 * contr�te (nom_classe_elements). 
+	 * concrete (nom_classe_elements). 
 	 * <p>
 	 * <b>NB :</b> lors la construction, auncun élément
-	 * n'est affect� à la population, cela doit être fait à partir d'elements
+	 * n'est affecté à la population, cela doit être fait à partir d'elements
 	 * peristant avec chargeElements, ou a partir d'objets Java avec les
 	 * setElements
 	 */
@@ -234,8 +234,8 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	}
 
 	/** Renvoie une population avec tous les éléments de this
-	 *  situ�s à moins de "dist" des éléments de la population
-	 *  Travail sur un index en m�moire (pas celui du SGBD).
+	 *  situés à moins de "dist" des éléments de la population
+	 *  Travail sur un index en mémoire (pas celui du SGBD).
 	 *  Rmq : Fonctionne avec des objets de géométrie quelconque
 	 */
 	public Population<Feat> selectionElementsProchesGenerale(Population<Feat> pop, double dist) {
@@ -270,7 +270,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 		return popResultat;
 	}
 	/** Renvoie une population avec tous les éléments de this
-	 *  situ�s à moins de "dist" des éléments de la population pop.
+	 *  situés à moins de "dist" des éléments de la population pop.
 	 */
 	public Population<Feat> selectionLargeElementsProches(Population<Feat> pop, double dist) {
 		Population<Feat> popTemporaire = new Population<Feat>();
@@ -310,7 +310,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	//          Attributs décrivant la population
 	///////////////////////////////////////////////////////
 	/** Nom logique des éléments de la population.
-	 *  La seule contrainte est de ne pas dépasser 255 caract�res, les accents et espaces sont autoris�s.
+	 *  La seule contrainte est de ne pas dépasser 255 caractères, les accents et espaces sont autorisés.
 	 *  A priori, on met le nom des éléments au singulier.
 	 *  Exemple: "Tronçon de route"
 	 */
@@ -319,7 +319,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	public void setNom (String S) {this.nom = S; }
 
 	/** Booléen spécifiant si la population est persistente ou non (vrai par défaut).  */
-	// NB pour d�velopeurs : laisser 'true' par défaut.
+	// NB pour dévelopeurs : laisser 'true' par défaut.
 	// Sinon, cela pose des problèmes au chargement (un thème persistant chargé a son attribut persistant à false).
 	protected boolean persistant = true;
 	/** Booléen spécifiant si la population est persistente ou non (vrai par défaut).  */
@@ -359,7 +359,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	 * enlève, ET DETRUIT si il est persistant, un élément de la liste des elements de la population,
 	 * met également à jour la relation inverse, et eventuellement l'index.
 	 * <p>
-	 * <b>NB :</b> différent de remove (hérit� de FT_FeatureCollection) qui ne détruit pas l'élément.
+	 * <b>NB :</b> différent de remove (hérité de FT_FeatureCollection) qui ne détruit pas l'élément.
 	 */
 	public void enleveElement(Feat O) {
 		super.remove(O);
@@ -370,15 +370,15 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	 * crée un nouvel élément de la population, instance de sa classe par défaut, et l'ajoute à la population.
 	 * <p>
 	 *  Si la population est persistante, alors le nouvel élément est rendu persistant dans cette méthode
-	 * <b>NB :</b> différent de add (hérit� de FT_FeatureCollection) qui ajoute un élément déjà existant.
+	 * <b>NB :</b> différent de add (hérité de FT_FeatureCollection) qui ajoute un élément déjà existant.
 	 */
 	public Feat nouvelElement() {return nouvelElement(null);}
 	/**
-	 * crée un nouvel élément de la population (avec la géo�mtrie geom),
+	 * crée un nouvel élément de la population (avec la géométrie geom),
 	 *  instance de sa classe par défaut, et l'ajoute à la population.
 	 * <p>
 	 *  Si la population est persistante, alors le nouvel élément est rendu persistant dans cette méthode
-	 *  <b>NB :</b> différent de add (hérit� de FT_FeatureCollection) qui ajoute un élément déjà existant.
+	 *  <b>NB :</b> différent de add (hérité de FT_FeatureCollection) qui ajoute un élément déjà existant.
 	 */
 	public Feat nouvelElement(GM_Object geom) {
 		try {
@@ -392,20 +392,20 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 		} catch (Exception e) {
 			logger.error("ATTENTION : problème à la création d'un élément de la population "+this.getNom()); //$NON-NLS-1$
 			logger.error("            Soit la classe des éléments est non valide : "+this.getNomClasse()); //$NON-NLS-1$
-			logger.error("               Causes possibles : la classe n'existe pas? n'est pas compil�e? est abstraite?"); //$NON-NLS-1$
+			logger.error("               Causes possibles : la classe n'existe pas? n'est pas compilée? est abstraite?"); //$NON-NLS-1$
 			logger.error("            Soit problème à la mise à jour de l'index "); //$NON-NLS-1$
-			logger.error("               Causes possibles : mise à jour automatique de l'index, mais l'objet n'a pas encore de géo�mtrie"); //$NON-NLS-1$
+			logger.error("               Causes possibles : mise à jour automatique de l'index, mais l'objet n'a pas encore de géométrie"); //$NON-NLS-1$
 			return null;
 		}
 	}
 	/**
 	 * crée un nouvel élément de la population, instance de sa classe par défaut, et l'ajoute à la population.
-	 *  La création est effectu�e à l'aide du constructeur spécifi� par les tableaux signature(classe des
+	 *  La création est effectuée à l'aide du constructeur spécifié par les tableaux signature(classe des
 	 *  objets du constructeur), et param (objets eux-mêmes).
 	 *  <p>
 	 *  Si la population est persistante, alors le nouvel élément est rendu persistant dans cette méthode
 	 *  <p>
-	 * <b>NB :</b> différent de add (hérit� de FT_FeatureCollection) qui ajoute un élément déjà existant.
+	 * <b>NB :</b> différent de add (hérité de FT_FeatureCollection) qui ajoute un élément déjà existant.
 	 * @param signature
 	 * @param param
 	 * @return a new Feature
@@ -419,7 +419,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 		} catch (Exception e) {
 			logger.error("ATTENTION : problème à la création d'un élément de la population "+this.getNom()); //$NON-NLS-1$
 			logger.error("            Classe des éléments non valide : "+this.getNomClasse()); //$NON-NLS-1$
-			logger.error("            Causes possibles : la classe n'existe pas? n'est pas compil�e?"); //$NON-NLS-1$
+			logger.error("            Causes possibles : la classe n'existe pas? n'est pas compilée?"); //$NON-NLS-1$
 			return null;
 		}
 	}
@@ -427,7 +427,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	//////////////////////////////////////////////////
 	// Copie de population
 	/** 
-	 * Copie la population passée en argument dans la population trait�e (this).
+	 * Copie la population passée en argument dans la population traitée (this).
 	 * <p>
 	 * <b>NB :<b>
 	 * <ul>
@@ -446,7 +446,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	}
 	// //////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Compl�te Population.chargeElements().
+	 * Complète Population.chargeElements().
 	 * - On vérifie que la population correspond à une classe du schéma conceptuel du DataSet.
 	 *   Si non, on initie les populations du DataSet en y incluant celle-ci.
 	 * - Chaque FT_Feature chargé est renseigné avec sa population (donc son featureType).
@@ -466,9 +466,9 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 		//					// ce dataset avait-il déjà des populations ?
 		//
 		//				}
-		//				else System.out.println("Vous �tes hors du contexte d'un MdDataSet");
+		//				else System.out.println("Vous êtes hors du contexte d'un MdDataSet");
 		//			}
-		//			else System.out.println("Vous �tes hors du contexte d'un SchemaConceptuelJeu");
+		//			else System.out.println("Vous êtes hors du contexte d'un SchemaConceptuelJeu");
 		//		}
 		//
 		//		//

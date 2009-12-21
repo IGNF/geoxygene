@@ -2,7 +2,7 @@
  * créé le 30 sept. 2004
  *
  * Pour changer le Modèle de ce fichier généré, allez à :
- * Fenêtre&gt;Préférences&gt;Java&gt;G�n�ration de code&gt;Code et commentaires
+ * Fenêtre&gt;Préférences&gt;Java&gt;Génération de code&gt;Code et commentaires
  */
 package fr.ign.cogit.geoxygene.feature.type;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author Balley
  *
- * GF_PropertyType propos� par le General Feature Model de la norme ISO19109
+ * GF_PropertyType proposé par le General Feature Model de la norme ISO19109
  */
 public interface GF_PropertyType {
 
@@ -23,7 +23,7 @@ public interface GF_PropertyType {
 
 
 
-	/** Renvoie le feature type auquel est rattach�e la propriété. */
+	/** Renvoie le feature type auquel est rattachée la propriété. */
 	public GF_FeatureType getFeatureType();
 	/** Affecte un feature type à la propriété. */
 	public void setFeatureType(GF_FeatureType FeatureType) ;

@@ -45,7 +45,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
 
 /**
- * Classe mère pour toute classe d'éléments ayant une r�alit� Géographique. Par
+ * Classe mère pour toute classe d'éléments ayant une réalité Géographique. Par
  * défaut, porte une géométrie et une topologie, qui peuvent être nulles.
  * 
  * <P>
@@ -269,8 +269,8 @@ public abstract class FT_Feature implements Cloneable {
 	/**
 	 * méthodes issues de MdFeature : Permettent de créer un
 	 * Feature dont les propriétés (valeurs d'attributs, opérations et objets en
-	 * relation) peuvent être acced�s de fa�on générique en mentionnant le nom
-	 * de la propriété. Pour permettre cela chaque feature est rattach� à son
+	 * relation) peuvent être accedés de façon générique en mentionnant le nom
+	 * de la propriété. Pour permettre cela chaque feature est rattaché à son
 	 * featureType.
 	 */
 	////////////////////////////////////////////////////////////////////////////
@@ -278,7 +278,7 @@ public abstract class FT_Feature implements Cloneable {
 	/**
 	 * Creation d'un feature du type donné en paramètre, par exemple Route.
 	 * L'objet crée sera alors une instance de bdcarto.TronconRoute (l'element
-	 * de schéma logique correspondant au featureType Route) qui �tend
+	 * de schéma logique correspondant au featureType Route) qui étend
 	 * FeatureCommun. Les valeurs d'attributs ne sont pas initialisées.
 	 * @param featureType le feature type de l'objet à créer
 	 * @return l'objet créé
@@ -319,7 +319,7 @@ public abstract class FT_Feature implements Cloneable {
 	 */
 	public void setPopulation(Population<FT_Feature> population) {
 		this.population = population;
-		// Refuse d'�crire dans ma population car ne peut pas pas vérifier si
+		// Refuse d'écrire dans ma population car ne peut pas pas vérifier si
 		// this hérite bien de FT_Feature...
 		// this.population.addUnique(this);
 	}
@@ -387,7 +387,7 @@ public abstract class FT_Feature implements Cloneable {
 			}
 			classe = classe.getSuperclass();
 		}
-		// on r�essayer si le getter est du genre isAttribute, ie pour un Booléen
+		// on réessayer si le getter est du genre isAttribute, ie pour un Booléen
 		nomGetFieldMethod = "is" + nomFieldMaj; //$NON-NLS-1$
 		classe = this.getClass();
 		while (!classe.equals(Object.class)) {
@@ -460,17 +460,17 @@ public abstract class FT_Feature implements Cloneable {
 	/**
 	 * Methode reflexive pour Récupèrer les features en relation par
 	 * l'intermédiaire du role donné en paramètre. Attention, cette méthode
-	 * suppose que tous les éléments en relation ont été chargés en m�moire. Ce
+	 * suppose que tous les éléments en relation ont été chargés en mémoire. Ce
 	 * n'est pas toujours le cas avec OJB : pour des raisons de performances, le
 	 * concepteur du fichier de mapping y représente parfois les relations de
-	 * fa�on unidirectionnelle. Si la méthode renvoie une liste vide, vérifiez
+	 * façon unidirectionnelle. Si la méthode renvoie une liste vide, vérifiez
 	 * votre fichier de mapping. Si vous ne souhaitez pas le modifier, explorez
 	 * la relation dans l'autre sens (par exemple, avec un fichier de mapping
 	 * donné, le role "troncon route a pour noeud initial" sera explorable mais
 	 * pas le role "noeud routier à pour arcs sortants".
 	 * 
 	 * @param ftt le type d'objets dont on veut la liste
-	 * @param role le r�le que l'on souhaite explorer
+	 * @param role le rôle que l'on souhaite explorer
 	 * @return la liste des features en relation
 	 */
 	@SuppressWarnings("unchecked")
@@ -516,7 +516,7 @@ public abstract class FT_Feature implements Cloneable {
 					listInstancesAsso.add((FT_Feature) methodGetter.invoke(this, (Object[]) null));
 					if (logger.isDebugEnabled()) logger.debug("nb instances d'association = "+listInstancesAsso.size()); //$NON-NLS-1$
 				}
-				// je cherche le (ou les) role(s) allant de l'association �
+				// je cherche le (ou les) role(s) allant de l'association à
 				// l'autre featureType
 				List listRoles = role.getAssociationType().getRoles();
 				listRoles.remove(role);
@@ -534,7 +534,7 @@ public abstract class FT_Feature implements Cloneable {
 				AssociationRole roleExplore;
 				for (int i = 0; i < listRolesAGarder.size(); i++) {
 					roleExplore = (AssociationRole) listRolesAGarder.get(i);
-					if (logger.isDebugEnabled()) logger.debug("role explor� = "+ roleExplore.getMemberName()); //$NON-NLS-1$
+					if (logger.isDebugEnabled()) logger.debug("role exploré = "+ roleExplore.getMemberName()); //$NON-NLS-1$
 					String nomFieldAssoMaj;
 					if (roleExplore.getNomFieldAsso().length() == 0) {nomFieldAssoMaj = roleExplore.getNomFieldAsso();}
 					else {nomFieldAssoMaj = Character.toUpperCase(roleExplore.getNomFieldAsso().charAt(0))+roleExplore.getNomFieldAsso().substring(1);}
@@ -596,9 +596,9 @@ public abstract class FT_Feature implements Cloneable {
 	/**
 	 * Methode pour Récupèrer les features en relation par l'intermédiaire du
 	 * role donné en paramètre. Attention, cette méthode suppose que tous les
-	 * éléments en relation ont été chargés en m�moire. Ce n'est pas toujours le
+	 * éléments en relation ont été chargés en mémoire. Ce n'est pas toujours le
 	 * cas avec OJB : pour des raisons de performances, le concepteur du fichier
-	 * de mapping y représente parfois les relations de fa�on unidirectionnelle.
+	 * de mapping y représente parfois les relations de façon unidirectionnelle.
 	 * Si la méthode renvoie une liste vide, vérifiez votre fichier de mapping.
 	 * Si vous ne souhaitez pas le modifier, explorez la relation dans l'autre
 	 * sens (par exemple, avec un fichier de mapping donné, le role "troncon
@@ -612,10 +612,10 @@ public abstract class FT_Feature implements Cloneable {
 	public List<? extends FT_Feature> getRelatedFeatures(String nomFeatureType,String nomRole) {
 		// Initialisation de la liste des résultats
 		List<? extends FT_Feature> listResultats = null;
-		// On Récupère le featuretype nomm� nomFeatureType
+		// On Récupère le featuretype nommé nomFeatureType
 		FeatureType ftt = (FeatureType) this.getFeatureType().getSchema()
 		.getFeatureTypeByName(nomFeatureType);
-		// On Récupère l'AssociationRole nomm� nomRole
+		// On Récupère l'AssociationRole nommé nomRole
 		AssociationRole role = null;
 		List<GF_AssociationRole> listeRoles = ftt.getRoles();
 		for (GF_AssociationRole r : listeRoles) {
@@ -632,12 +632,12 @@ public abstract class FT_Feature implements Cloneable {
 	}
 
 	/**
-	 * La s�miologie de l'objet Géographique
+	 * La sémiologie de l'objet Géographique
 	 */
 	private Representation representation = null;
 	/**
-	 * Renvoie la représentation li�e à l'objet - Renvoie null si non définie
-	 * @return la représentation li�e à l'objet - Renvoie null si non définie
+	 * Renvoie la représentation liée à l'objet - Renvoie null si non définie
+	 * @return la représentation liée à l'objet - Renvoie null si non définie
 	 */
 	public Representation getRepresentation() {return this.representation;}
 	/**
@@ -652,12 +652,12 @@ public abstract class FT_Feature implements Cloneable {
 	private boolean estSupprime = false;
 	/**
 	 * Marqueur de suppression d'un objet (utilisé par exemple en généralisation).
-	 * @return vrai si l'objet a été supprim�, faux sinon 
+	 * @return vrai si l'objet a été supprimé, faux sinon 
 	 */
 	public boolean estSupprime() { return this.estSupprime; }
 	/**
 	 * Affecte le marqueur de suppression d'un objet (utilisé par exemple en généralisation).
-	 * @param estSupprime vrai si l'objet a été supprim�, faux sinon
+	 * @param estSupprime vrai si l'objet a été supprimé, faux sinon
 	 */
 	public void setEstSupprime(boolean estSupprime) { this.estSupprime = estSupprime; }	
 	/**

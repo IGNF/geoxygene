@@ -183,6 +183,7 @@ public class DataSet {
 	 * <li> liste3 = {"ferré"}.
 	 * </ul
 	 */
+	@SuppressWarnings("null")
 	public void chargeExtractionThematiqueEtSpatiale(GM_Object geom, List<List<String>> themes) {
 		if (!this.getPersistant()) {
 			logger.warn("----- ATTENTION : Probleme au chargement du jeu de donnees " + this.getNom()); //$NON-NLS-1$

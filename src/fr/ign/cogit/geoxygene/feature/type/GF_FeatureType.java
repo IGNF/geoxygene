@@ -2,7 +2,7 @@
  * créé le 30 sept. 2004
  *
  * Pour changer le Modèle de ce fichier généré, allez à :
- * Fenêtre&gt;Préférences&gt;Java&gt;G�n�ration de code&gt;Code et commentaires
+ * Fenêtre&gt;Préférences&gt;Java&gt;Génération de code&gt;Code et commentaires
  */
 package fr.ign.cogit.geoxygene.feature.type;
 import java.util.List;
@@ -11,7 +11,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
  * @author Sandrine Balley
- * GF_FeatureType propos� par le General Feature Model de la norme ISO1909
+ * GF_FeatureType proposé par le General Feature Model de la norme ISO1909
  */
 public interface GF_FeatureType {
 	/** Renvoie le nom de la classe Géographique. */
@@ -19,9 +19,9 @@ public interface GF_FeatureType {
 	/** Affecte un nom. */
 	public void setTypeName (String TypeName);
 
-	/** Renvoie le nom de la principale classe de la géométrie port�e par le featuretype. */
+	/** Renvoie le nom de la principale classe de la géométrie portée par le featuretype. */
 	public Class<? extends GM_Object> getGeometryType();
-	/** Affecte le nom de la principale classe de la géométrie port�e par le featuretype. */
+	/** Affecte le nom de la principale classe de la géométrie portée par le featuretype. */
 	public void setGeometryType (Class<? extends GM_Object> GeometryType);
 
 	/** Renvoie la description de la classe geographique. */
@@ -38,28 +38,28 @@ public interface GF_FeatureType {
 	 * ou d'une classe d'ontologie)
 	 * ou un pointeur vers cette définition (sous la forme d'une URI)
 	 * 
-	 * Correspond à FC_DescriptionReference et FC_DescriptionSource propos�s
+	 * Correspond à FC_DescriptionReference et FC_DescriptionSource proposés
 	 * dans la norme ISO19110
 	 * @return Object
 	 */
 	public Object getDefinitionReference();
 	public void setDefinitionReference(Object ref);
 
-	/** Renvoie les relations de généralisation dans lesquelles est impliqu�e la classe. */
+	/** Renvoie les relations de généralisation dans lesquelles est impliquée la classe. */
 	public List<GF_InheritanceRelation> getGeneralization();
 	/** Affecte une liste de generalisations */
 	public void setGeneralization (List<GF_InheritanceRelation> L);
-	/** Renvoie le nombre de relation de généralisation dans lesquelles est impliqu�e la classe. */
+	/** Renvoie le nombre de relation de généralisation dans lesquelles est impliquée la classe. */
 	public int sizeGeneralization ();
 	/** Ajoute une relation de généralisation. Affecte automatiquement le sous-type de cette relation.*/
 	public void addGeneralization (GF_InheritanceRelation value);
 	public void removeGeneralization(GF_InheritanceRelation value);
 
-	/** Renvoie la liste des relations de spécialisation dans lesquelles est impliqu�e la classe. */
+	/** Renvoie la liste des relations de spécialisation dans lesquelles est impliquée la classe. */
 	public List<GF_InheritanceRelation> getSpecialization();
 	/** Affecte une liste de specialisations */
 	public void setSpecialization (List<GF_InheritanceRelation> L);
-	/** Renvoie le nombre de relation de spécialisation dans lesquelles est impliqu�e la classe. */
+	/** Renvoie le nombre de relation de spécialisation dans lesquelles est impliquée la classe. */
 	public int sizeSpecialization ();
 	/** Ajoute une relation de spécialisation. Affecte automatiquement le super-type de cette relation.*/
 	public void addSpecialization (GF_InheritanceRelation value);
@@ -72,11 +72,11 @@ public interface GF_FeatureType {
 	/** Renvoie le nombre de propriétés. */
 	public int sizeProperties ();
 
-	/** Renvoie les associations dans lesquelles est impliqu�e cette classe. */
+	/** Renvoie les associations dans lesquelles est impliquée cette classe. */
 	public List<GF_AssociationType> getMemberOf();
 	/** Affecte une liste d'associations */
 	public void setMemberOf (List<GF_AssociationType> L);
-	/** Le nombre d'associations dans lesquelles est impliqu�e cette classe. */
+	/** Le nombre d'associations dans lesquelles est impliquée cette classe. */
 	public int sizeMemberOf ();
 	/** Ajoute une association. */
 	public void addMemberOf (GF_AssociationType value);

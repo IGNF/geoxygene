@@ -2,7 +2,7 @@
  * créé le 30 sept. 2004
  *
  * Pour changer le Modèle de ce fichier généré, allez à :
- * Fenêtre&gt;Préférences&gt;Java&gt;G�n�ration de code&gt;Code et commentaires
+ * Fenêtre&gt;Préférences&gt;Java&gt;Génération de code&gt;Code et commentaires
  */
 package fr.ign.cogit.geoxygene.feature.type;
 
@@ -10,7 +10,7 @@ package fr.ign.cogit.geoxygene.feature.type;
 /**
  * @author Balley
  *
- * GF_InheritanceRelation propos� par le General Feature Model de la norme ISO1909.
+ * GF_InheritanceRelation proposé par le General Feature Model de la norme ISO1909.
  * Une relation d'héritage a exactement un subType et une superType.
  */
 public interface GF_InheritanceRelation {
@@ -33,7 +33,7 @@ public interface GF_InheritanceRelation {
 
 	/** Renvoie l'attribut uniqueInstance.
 	 * Dans la norme, cet attribut indique si une instance du supertype peut être
-	 * instance de plusieurs subtypes. La norme est ici ambig�e puisqu'elle indique
+	 * instance de plusieurs subtypes. La norme est ici ambigüe puisqu'elle indique
 	 * par ailleurs qu'une relation d'heritage ne comporte qu'un subtype : cela
 	 * signifierait que l'attribut uniqueInstance est superflu au niveau de la
 	 * relation d'héritage mais devrait être défini au niveau du superType.

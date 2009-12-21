@@ -2,14 +2,14 @@
  * créé le 30 sept. 2004
  *
  * Pour changer le Modèle de ce fichier généré, allez à :
- * Fenêtre&gt;Préférences&gt;Java&gt;G�n�ration de code&gt;Code et commentaires
+ * Fenêtre&gt;Préférences&gt;Java&gt;Génération de code&gt;Code et commentaires
  */
 package fr.ign.cogit.geoxygene.feature.type;
 
 /**
  * @author Balley
  *
- * GF_AssociationRole propos� par le General Feature Model de la norme ISO19109
+ * GF_AssociationRole proposé par le General Feature Model de la norme ISO19109
  */
 public interface GF_AssociationRole extends GF_PropertyType {
 
@@ -31,18 +31,19 @@ public interface GF_AssociationRole extends GF_PropertyType {
 
 
 
-	/** Renvoie le feature type auquel est rattach� la propriété. */
+	/** Renvoie le feature type auquel est rattaché la propriété. */
 	public GF_AssociationType getAssociationType();
 	/** Affecte un feature type à la propriété. */
 	public void setAssociationType(GF_AssociationType AssociationType);
 
-	/** Renvoie 1 si pour un r�le décrivant la relation "se compose de" et 0 sinon */
+	/** Renvoie 1 si pour un rôle décrivant la relation "se compose de" et 0 sinon */
 	public boolean getIsComposite();
-	/** Affecte 1 ou 0 selon que le r�le décrit la relation "se compose de" ou non. */
+	/** Affecte 1 ou 0 selon que le rôle décrit la relation "se compose de" ou non. */
 	public void setIsComposite(boolean value);
 
-	/** Renvoie 1 si pour un r�le décrivant la relation "compose" et 0 sinon */
+	/** Renvoie 1 si pour un rôle décrivant la relation "compose" et 0 sinon */
 	public boolean getIsComponent();
-	/** Affecte 1 ou 0 selon que le r�le décrit la relation "compose" ou non. */
+	/** Affecte 1 ou 0 selon que le rôle décrit la relation "compose" ou non. */
 	public void setIsComponent(boolean value);
+	
 }
