@@ -95,9 +95,12 @@
   			<artifactId>maven-checkstyle-plugin</artifactId>
   			<version>2.4</version>
   		</plugin>
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-javadoc-plugin</artifactId>
+  			<version>2.6.1</version>
+  		</plugin>
   	</plugins>
-  	<extensions>
-  	</extensions>
   </build>
   <repositories>
   	<repository>
@@ -258,6 +261,9 @@
   		<version>1.0.2.GA</version>
   	</dependency>
   </dependencies>
+  <reporting>
+  	<outputDirectory>target/reports</outputDirectory>
+  </reporting>
   <distributionManagement>
   	<downloadUrl>http://sourceforge.net/projects/oxygene-project/files/</downloadUrl>
   	<snapshotRepository>
