@@ -204,7 +204,7 @@ public class ExportData extends JPanel {
 
 			ObjectViewer.flagWindowClosing = false;
 			ObjectViewer viewer = new ObjectViewer(data);
-			viewer.addFeatureCollection(ftfc, "données export�es");
+			viewer.addFeatureCollection(ftfc, "données exportées");
 
 			System.out.println("#### FINI !! ####");
 

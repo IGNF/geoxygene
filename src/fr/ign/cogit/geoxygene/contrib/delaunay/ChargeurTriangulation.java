@@ -67,7 +67,7 @@ public class ChargeurTriangulation extends Chargeur {
 		if (logger.isDebugEnabled()) logger.debug("début importLignesEnPoints");
 		FT_FeatureCollection<?> listeFeatures = DataSet.db.loadAllFeatures(clGeo);
 		for(i=0 ; i<listeFeatures.size() ; i++) {
-			if (logger.isDebugEnabled()) logger.debug("Nombre de lignes import�es :" + i);
+			if (logger.isDebugEnabled()) logger.debug("Nombre de lignes importées :" + i);
 			objGeo = listeFeatures.get(i);
 
 			if ( objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString ) {
@@ -91,7 +91,7 @@ public class ChargeurTriangulation extends Chargeur {
 		DirectPositionList listePoints;
 		if (logger.isDebugEnabled()) logger.debug("début importLignesEnPoints");
 		for(int i=0 ; i<listeFeatures.size() ; i++) {
-			if (logger.isDebugEnabled()) logger.debug("Nombre de lignes import�es :" + i);
+			if (logger.isDebugEnabled()) logger.debug("Nombre de lignes importées :" + i);
 			objGeo = listeFeatures.get(i);
 
 			if ( objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString ) {
@@ -132,7 +132,7 @@ public class ChargeurTriangulation extends Chargeur {
 		Object[] parama = new Object[2];
 
 		for(i=0 ; i<listeFeatures.size() ; i++) {
-			if (logger.isDebugEnabled()) logger.debug("Nombre de lignes import�es :" + i);
+			if (logger.isDebugEnabled()) logger.debug("Nombre de lignes importées :" + i);
 			objGeo = listeFeatures.get(i);
 
 			if ( objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString ) {
@@ -194,7 +194,7 @@ public class ChargeurTriangulation extends Chargeur {
 		Object[] parama = new Object[2];
 
 		for(int i=0 ; i<listeFeatures.size() ; i++) {
-			if (logger.isDebugEnabled()) logger.debug("Nombre de lignes import�es :" + i);
+			if (logger.isDebugEnabled()) logger.debug("Nombre de lignes importées :" + i);
 			objGeo = listeFeatures.get(i);
 
 			if ( objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString ) {
@@ -275,7 +275,7 @@ public class ChargeurTriangulation extends Chargeur {
 
 		if (logger.isDebugEnabled()) logger.debug("début importPolygoneEnPoints");
 		for(i=0 ; i<listeFeatures.size() ; i++) {
-			if (logger.isDebugEnabled()) logger.debug("Nombre de polygones import�es :" + i);
+			if (logger.isDebugEnabled()) logger.debug("Nombre de polygones importées :" + i);
 			objGeo = listeFeatures.get(i);
 
 			if ( objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon ) {
@@ -308,7 +308,7 @@ public class ChargeurTriangulation extends Chargeur {
 				GM_Point p = new GM_Point(objGeo.getGeom().centroid());
 				noeud = (NoeudDelaunay)carte.getPopNoeuds().nouvelElement(p);
 				noeud.addCorrespondant(objGeo);
-				if (logger.isDebugEnabled()) logger.debug("Centroide import� = " + p);
+				if (logger.isDebugEnabled()) logger.debug("Centroide importé = " + p);
 			}
 		}
 		if (logger.isDebugEnabled()) logger.debug("Fin importCentroidesPolygones");

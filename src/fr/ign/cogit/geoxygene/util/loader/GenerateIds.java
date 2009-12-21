@@ -147,8 +147,8 @@ public class GenerateIds {
 				System.out.println(nbCount+" objets dans la table "+tableName+" ... generation des identifiants ...");
 			}
 
-			// creation de la procedure PL/SQL de generation des cl�s
-			// A FAIRE : y a moyen de faire plus simple : utiliser s�quence ?
+			// creation de la procedure PL/SQL de generation des clés
+			// A FAIRE : y a moyen de faire plus simple : utiliser séquence ?
 			// Ou utiliser la fonction 'cursor for update' et 'current of'
 			String proc = "CREATE OR REPLACE PROCEDURE genere_cogitid AS";
 			proc=proc+" BEGIN";
@@ -215,19 +215,19 @@ public class GenerateIds {
 				System.out.println(nbCount+" objets dans la table "+tableName+" ... generation des identifiants ...");
 			}
 
-			// création d'une s�quence
+			// création d'une séquence
 			try {
 				String update = "create SEQUENCE seq_genere_cogitid";
 				stm.executeUpdate(update);
 			} catch (Exception ee) {
-				// La s�quence existe déjà !
+				// La séquence existe déjà !
 				conn.commit();
 			}
 			conn.commit();
 
 			// Si le maxID vaut 0 (il n'y a pas encore d'identifiant dans la base), on le force à 1
 			if (maxID==0) maxID=1;
-			// Affectation du maxID à la s�quence
+			// Affectation du maxID à la séquence
 			// On a pas besoin de l'affecter à maxID+1 puisque l'on utilise toujours nextval pour affecter les identifiants
 			query = "SELECT setval ('seq_genere_cogitid', "+maxID+")";
 			rs = stm.executeQuery(query);
@@ -254,7 +254,7 @@ public class GenerateIds {
 			if (conName.compareTo("") != 0) {
 				update = "ALTER TABLE "+tableName+" DROP CONSTRAINT "+conName;
 				stm.executeUpdate(update);
-				System.out.println("cle primaire sur "+tableName+" supprim� : "+conName);
+				System.out.println("cle primaire sur "+tableName+" supprimé : "+conName);
 			}
 
 			// ajout de la cle primaire

@@ -25,7 +25,7 @@
 package fr.ign.cogit.geoxygene.util.loader.gui;
 
 /**
- * S�lecteur de shapefiles simple permettant la s�lection simple ou multiple.
+ * Sélecteur de shapefiles simple permettant la sélection simple ou multiple.
  * @author Julien Perret
  *
  */
@@ -48,7 +48,7 @@ public class GUIShapefileChoice extends JFrame {
 	private String directoryPath;
 	private boolean multiSelectionEnabled = true;
 	/**
-	 * Constructeurs de s�lecteur de shapefiles
+	 * Constructeurs de sélecteur de shapefiles
 	 * @param MultiSelectionEnabled
 	 */
 	public GUIShapefileChoice(boolean MultiSelectionEnabled) {
@@ -61,21 +61,21 @@ public class GUIShapefileChoice extends JFrame {
 		directoryPath = latestFolder;
 	}
 	/**
-	 * Ouvre une fenêtre de s�lection et renvoie un tableau contenant les fichiers s�lectionn�s.
-	 * Ne permet que la s�lection de fichiers.
-	 * @return un tableau contenant les fichiers s�lectionn�s. null si rien n'a été s�lectionn�
+	 * Ouvre une fenêtre de sélection et renvoie un tableau contenant les fichiers sélectionnés.
+	 * Ne permet que la sélection de fichiers.
+	 * @return un tableau contenant les fichiers sélectionnés. null si rien n'a été sélectionné
 	 */
 	public File[] getSelectedFiles() {return getSelectedFilesOrDirectories(true);}
 	/**
-	 * Ouvre une fenêtre de s�lection et renvoie un tableau contenant les r�pertoires s�lectionn�s.
-	 * Ne permet que la s�lection de r�pertoires.
-	 * @return un tableau contenant les r�pertoires s�lectionn�s. null si rien n'a été s�lectionn�
+	 * Ouvre une fenêtre de sélection et renvoie un tableau contenant les répertoires sélectionnés.
+	 * Ne permet que la sélection de répertoires.
+	 * @return un tableau contenant les répertoires sélectionnés. null si rien n'a été sélectionné
 	 */
 	public File[] getSelectedDirectories() {return getSelectedFilesOrDirectories(false);}
 	/**
-	 * Ouvre une fenêtre de s�lection et renvoie un tableau contenant les fichiers ou r�pertoires s�lectionn�s.
-	 * @param selectFiles si vrai, ne permet que la s�lection de fichiers, si faux que la s�lection de r�pertoires.
-	 * @return un tableau contenant les fichiers ou r�pertoires s�lectionn�s. null si rien n'a été s�lectionn�
+	 * Ouvre une fenêtre de sélection et renvoie un tableau contenant les fichiers ou répertoires sélectionnés.
+	 * @param selectFiles si vrai, ne permet que la sélection de fichiers, si faux que la sélection de répertoires.
+	 * @return un tableau contenant les fichiers ou répertoires sélectionnés. null si rien n'a été sélectionné
 	 */
 	public File[] getSelectedFilesOrDirectories(boolean selectFiles) {
 		JFileChooser chooser = new JFileChooser(directoryPath);

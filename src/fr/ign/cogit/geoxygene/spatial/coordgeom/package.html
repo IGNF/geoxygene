@@ -5,14 +5,14 @@
     <TITLE></TITLE>
   </HEAD>
   <BODY>
-    <P>Package contenant les classes d'objets géométriques munis de coordonnées. Par exemple : points, polylignes, polygones, TIN, etc. 
-Les coordonnées sont stockées indépendamment de tout système de coordonnées.
-La classe DirectPosition permet de stocker les coordonnées d'un point (x,y,z).
+    <P>Package contenant les classes d'objets gÃ©omÃ©triques munis de coordonnÃ©es. Par exemple : points, polylignes, polygones, TIN, etc. 
+Les coordonnÃ©es sont stockÃ©es indÃ©pendamment de tout systÃ¨me de coordonnÃ©es.
+La classe DirectPosition permet de stocker les coordonnÃ©es d'un point (x,y,z).
     <P>La classe GM_CurveSegment et ses sous-classes composent une GM_Curve. La classe GM_SurfacePatch et ses sous-classes composent une GM_Surface.
 Le seul type de GM_CurveSegment utilisable est la polyligne GM_LineString. Le seul type de GM_SurfacePatch utilisable est le polygone GM_Polygon.
     <P>Dans la norme ISO 19107,  une GM_LineString, ou un GM_Polygon ne peuvent pas exister en dehors du contexte d'une GM_Curve ou d'une GM_Surface.
-Pour plus de souplesse, nous avons étendu la norme : en plus du lien de composition, GM_LineString hérite de GM_Curve, et GM_Polygon hérite de GM_Surface. 
-Ainsi, une GM_LineString est une GM_Curve particulière composée d'un seul segment qui est elle-même (idem pour GM_Polygon et GM_Surface).
-Ceci permet de travailler directement sur les GM_LineString et GM_Polygon, et notamment de profiter des méthodes de GM_Object.
+Pour plus de souplesse, nous avons Ã©tendu la norme : en plus du lien de composition, GM_LineString hÃ©rite de GM_Curve, et GM_Polygon hÃ©rite de GM_Surface. 
+Ainsi, une GM_LineString est une GM_Curve particuliÃ¨re composÃ©e d'un seul segment qui est elle-mÃªme (idem pour GM_Polygon et GM_Surface).
+Ceci permet de travailler directement sur les GM_LineString et GM_Polygon, et notamment de profiter des mÃ©thodes de GM_Object.
   </BODY>
 </HTML>

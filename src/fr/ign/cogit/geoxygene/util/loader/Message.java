@@ -29,7 +29,7 @@ package fr.ign.cogit.geoxygene.util.loader;
 import java.io.BufferedReader;
 
 /**
- * Usage interne. Outil pour �crire des message en console, et pour lire les r�ponses.
+ * Usage interne. Outil pour écrire des message en console, et pour lire les réponses.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0

@@ -52,7 +52,7 @@ public class ConstructeurSalle {
 		
 		//Ouverture d'une transaction pour la base définie
 		
-		//création de 10 salles avec une géométrie (polygone carr�)
+		//création de 10 salles avec une géométrie (polygone carré)
 		//for...
 			//création d'un nouvel objet "salle"
 

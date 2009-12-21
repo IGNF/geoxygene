@@ -49,18 +49,18 @@ public class ObjectBrowserListRuler extends JComponent {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/** Famille de la police de caract�res par défaut. */
+	/** Famille de la police de caractères par défaut. */
 	public static final String FONT_FAMILY = "SansSerif";
-	/** Taille de la police de caract�res par défaut. */
+	/** Taille de la police de caractères par défaut. */
 	public static final int FONT_SIZE = 10;
 	/** Couleur de fond du composant graphique. */
 	public static final Color RULER_COLOR = new Color(255, 255, 255);
 	/** Nombre d'éléments contenus dans l'attribut à représenter. */
 	private int nb_elements;
-	/** Taille horizontale du composant graphique, calcul�e en fonction du nombre d'éléments et
-	 * de la taille de la police de caract�res. */
+	/** Taille horizontale du composant graphique, calculée en fonction du nombre d'éléments et
+	 * de la taille de la police de caractères. */
 	private int size;
-	/** Espacement vertical calcul� entre les numéros d'index représentant les rangs des objets
+	/** Espacement vertical calculé entre les numéros d'index représentant les rangs des objets
 	 *  constituants la collection ou le tableau à représenter. */
 	private double gap;
 
@@ -68,7 +68,7 @@ public class ObjectBrowserListRuler extends JComponent {
 	 * Constructeur principal du ObjectBrowserListRuler.
 	 * 
 	 * @param nbElements nombre d'éléments contenus dans l'attribut à représenter.
-	 * @param height hauteur souhait�e en pixel du composant graphique.
+	 * @param height hauteur souhaitée en pixel du composant graphique.
 	 */
 	public ObjectBrowserListRuler(int nbElements,double height) {
 		nb_elements = nbElements;
@@ -78,9 +78,9 @@ public class ObjectBrowserListRuler extends JComponent {
 	}
 
 	/**
-	 * Fixe la hauteur souhait�e en pixel du composant graphique.
+	 * Fixe la hauteur souhaitée en pixel du composant graphique.
 	 * 
-	 * @param ph la hauteur souhait�e en pixel du composant graphique.
+	 * @param ph la hauteur souhaitée en pixel du composant graphique.
 	 */
 	public void setPreferredHeight(int ph) {
 		setPreferredSize(new Dimension(size, ph));

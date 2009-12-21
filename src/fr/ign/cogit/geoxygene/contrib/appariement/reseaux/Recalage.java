@@ -43,8 +43,8 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 /**
  * méthodes pour le recalage d'un réseau sur un autre.
- * NB : méthodes réalis�es pour un cas particulier et non retouch�es pour assurer une bonne g�n�ricit�.
- *  ////////////// A manier avec pr�caution  //////////////////.
+ * NB : méthodes réalisées pour un cas particulier et non retouchées pour assurer une bonne généricité.
+ *  ////////////// A manier avec précaution  //////////////////.
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
  * @version 1.0
@@ -55,16 +55,16 @@ public class Recalage {
 	/** Recale la géométrie des arcs d'un graphe sur un autre graphe
 	 *  une fois que ceux-ci ont été appariés.
 	 * 
-	 *  Un lien (correspondant) est gard� entre les nouveaux arcs et leurs correspondants
+	 *  Un lien (correspondant) est gardé entre les nouveaux arcs et leurs correspondants
 	 *  dans le réseau de référence (accessible par arc.getCorrespondants()),
 	 * 
 	 *  IMPORTANT 1: ctARecaler doit être le réseau 1 dans l'appariement,
 	 *  et ctSurLaquelleRecaler le réseau 2.
 	 *  
-	 *  IMPORTANT 2: pour garder les liens, l'appariement doit avoir été lanc�
+	 *  IMPORTANT 2: pour garder les liens, l'appariement doit avoir été lancé
 	 *  avec le paramètre debugBilanSurObjetsGeo à FALSE
 	 * 
-	 *  NB: méthode con�ue pour les cas relativement simples qui m�rite sans doute d'être affin�e.
+	 *  NB: méthode pour les cas relativement simples qui mérite sans doute d'être affinée.
 	 * 
 	 * @param ctARecaler
 	 * Le réseau à recaler
@@ -73,15 +73,15 @@ public class Recalage {
 	 * Le réseau sur lequel recaler
 	 * 
 	 * @param liens
-	 * Des liens d'appariement entre les réseaux "� recaler" et "sur lequel recaler"
+	 * Des liens d'appariement entre les réseaux "à recaler" et "sur lequel recaler"
 	 * 
-	 * @return Le réseau recal� (en entrée-sortie)
+	 * @return Le réseau recalé (en entrée-sortie)
 	 */
 	public static CarteTopo recalage(ReseauApp ctARecaler,
 			ReseauApp ctSurLaquelleRecaler,
 			EnsembleDeLiens liens) {
 		CarteTopo ctRecale = new CarteTopo("reseau recalé");
-		// On ajoute dans le réseau recal� les arcs sur lesquels on recale qui sont appariés.
+		// On ajoute dans le réseau recalé les arcs sur lesquels on recale qui sont appariés.
 		Iterator<?> itArcsSurLesquelsRecaler = ctSurLaquelleRecaler.getPopArcs().getElements().iterator();
 		while (itArcsSurLesquelsRecaler.hasNext()) {
 			ArcApp arc = (ArcApp) itArcsSurLesquelsRecaler.next();
@@ -92,7 +92,7 @@ public class Recalage {
 			nouvelArc.setCorrespondants(arc.objetsGeoRefEnCorrespondance(liens));
 		}
 
-		// On ajoute dans le réseau recal� les arcs à recaler qui ne sont pas appariés,
+		// On ajoute dans le réseau recalé les arcs à recaler qui ne sont pas appariés,
 		// en modifiant la géométrie pour assurer un raccord amorti avec le reste.
 		Iterator<?> itArcsARecaler = ctARecaler.getPopArcs().getElements().iterator();
 		while (itArcsARecaler.hasNext()) {
@@ -107,7 +107,7 @@ public class Recalage {
 
 	/** Methode utilisée par le recalage pour assurer le recalage.
 	 *  Attention : cette méthode n'est pas très générique : elle suppose que l'on recale Ref sur Comp uniquement
-	 *  et elle m�rite des affinements.
+	 *  et elle mérite des affinements.
 	 */
 	private static void geometrieRecalee(ArcApp arcARecaler, Arc arcRecale, EnsembleDeLiens liens) {
 		NoeudApp noeudARecalerIni = (NoeudApp)arcARecaler.getNoeudIni();
@@ -123,7 +123,7 @@ public class Recalage {
 		int i;
 
 		if ( liensDuNoeudARecalerIni.size() == 1 ) {
-			// si le noeud initial de l'arc à recal� est apparié avec le réseau comp
+			// si le noeud initial de l'arc à recalé est apparié avec le réseau comp
 			if ( (liensDuNoeudARecalerIni.get(0)).getNoeuds2().size() == 1 ) {
 				noeudRecaleIni = (NoeudApp)(liensDuNoeudARecalerIni.get(0)).getNoeuds2().get(0);
 				nouvelleGeometrie.setControlPoint(0, noeudRecaleIni.getGeometrie().getPosition());
@@ -141,7 +141,7 @@ public class Recalage {
 			}
 		}
 
-		// si le noeud final de l'arc à recal� est apparié avec le réseau comp
+		// si le noeud final de l'arc à recalé est apparié avec le réseau comp
 		if ( liensDuNoeudARecalerFin.size() == 1 ) {
 			if ( (liensDuNoeudARecalerFin.get(0)).getNoeuds2().size() == 1 ) {
 				noeudRecaleFin = (NoeudApp)(liensDuNoeudARecalerFin.get(0)).getNoeuds2().get(0);

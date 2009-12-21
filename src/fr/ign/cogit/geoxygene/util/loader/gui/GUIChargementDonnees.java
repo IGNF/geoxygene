@@ -75,9 +75,9 @@ public class GUIChargementDonnees extends JPanel {
 	Border padding = BorderFactory.createEmptyBorder(20,20,5,20);
 	/**
 	 * Panel structuré en arbre.
-	 * Un panel possède un panel pr�c�dent et une liste de panels suivants.
+	 * Un panel possède un panel précédent et une liste de panels suivants.
 	 * <p>s
-	 * TODO ajouter une méthode update à ex�cuter à chaque fois qu'on change
+	 * TODO ajouter une méthode update à exécuter à chaque fois qu'on change
 	 * de panel pour mettre à jour son contenu
 	 * @author Julien Perret
 	 *
@@ -101,11 +101,11 @@ public class GUIChargementDonnees extends JPanel {
 		boolean isFinal = false;
 		
 		/**
-		 * Constructeur vide affectant un layout de type GridBag et un le panel pr�c�dent.
-		 * Un bouton "pr�c�dent" est créé pour revenir à celui-ci.
+		 * Constructeur vide affectant un layout de type GridBag et un le panel précédent.
+		 * Un bouton "précédent" est créé pour revenir à celui-ci.
 		 * Si ce Panel est final, un bouton "finish" est créer et permet de terminer le chargement.
 		 * @param titre titre du panel
-		 * @param precedent le panel pr�c�dent
+		 * @param precedent le panel précédent
 		 * @param isFinal vrai si le panel est final, faux sinon
 		 */
 		public GeoPanel(String titre, GeoPanel precedent,boolean isFinal) {
@@ -118,11 +118,11 @@ public class GUIChargementDonnees extends JPanel {
 		}
 		
 		/**
-		 * Constructeur affectant un layout de type GridBag et un le panel pr�c�dent.
-		 * Un bouton "pr�c�dent" est créé pour revenir à celui-ci.
+		 * Constructeur affectant un layout de type GridBag et un le panel précédent.
+		 * Un bouton "précédent" est créé pour revenir à celui-ci.
 		 * Ce Panel n'est pas final.
 		 * @param titre titre du panel
-		 * @param precedent le panel pr�c�dent
+		 * @param precedent le panel précédent
 		 */
 		public GeoPanel(String titre, GeoPanel precedent) {this(titre,precedent,false);}
 
@@ -149,7 +149,7 @@ public class GUIChargementDonnees extends JPanel {
 			c.anchor=GridBagConstraints.WEST;
 			c.weightx=1;
 			if (this.previous!=null) {
-				final JButton previousButton = new JButton("Pr�c�dent");
+				final JButton previousButton = new JButton("précédent");
 				previousButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						previousDialog();
@@ -198,8 +198,8 @@ public class GUIChargementDonnees extends JPanel {
 		}
 		
 		/**
-		 * Renvoie le panel suivant s�lectionn� dans le groupe de radiobuttons.
-		 * @return le panel suivant s�lectionn� dans le groupe de radiobuttons.
+		 * Renvoie le panel suivant sélectionné dans le groupe de radiobuttons.
+		 * @return le panel suivant sélectionné dans le groupe de radiobuttons.
 		 */
 		public GeoPanel nextPanel() {
 			for(int i = 0 ; i < this.radioButtons.size() ; i++) {
@@ -230,10 +230,10 @@ public class GUIChargementDonnees extends JPanel {
 	JLabel label;
 	JFrame frame;
 	String chargementDesc = "Chargement de données à partir d'un fichier";
-	String chargementExistantDesc = "Ex�cute un chargement existant";
-	String chargementExistantConfirmationDesc = "Ex�cuter le chargement suivant";
+	String chargementExistantDesc = "exécute un chargement existant";
+	String chargementExistantConfirmationDesc = "exécuter le chargement suivant";
 	String chargementShapefileDesc = "Chargement de shapefiles";
-	String chargementAvanceDesc = "Chargement avanc�";
+	String chargementAvanceDesc = "Chargement avancé";
 	String chargementAvanceChoixJeuDesc = "Choix d'un jeu existant";
 	String chargementAvanceNouveauJeuDesc = "Nouveau jeu";
 	String chargementAvanceIgnorerJeuDesc = "Ne pas définir de jeu";
@@ -272,7 +272,7 @@ public class GUIChargementDonnees extends JPanel {
 		frame.setMinimumSize(new Dimension(600,400));
 		this.setLayout(layout);
 
-		label = new JLabel("Appuyer sur \"suivant\" pour passer à l'�tape suivante.",SwingConstants.CENTER);
+		label = new JLabel("Appuyer sur \"suivant\" pour passer à l'étape suivante.",SwingConstants.CENTER);
 		
 		chargementPanel = new GeoPanel(chargementDesc);
 		
@@ -376,7 +376,7 @@ public class GUIChargementDonnees extends JPanel {
 		c.gridx = 1;
 		fichierPanel.add(choixFichierButton,c);
 
-		panel.getBox().add(new JLabel("Choisissez le fichier de chargement à ex�cuter"), BorderLayout.NORTH);
+		panel.getBox().add(new JLabel("Choisissez le fichier de chargement à exécuter"), BorderLayout.NORTH);
 		panel.getBox().add(fichierPanel, BorderLayout.CENTER);
 		return panel;
 	}
@@ -384,7 +384,7 @@ public class GUIChargementDonnees extends JPanel {
 	 */
 	private GeoPanel creerChargementExistantConfirmation() {
 	    GeoPanel panel = new GeoPanel(chargementExistantConfirmationDesc,chargementExistantPanel,true);
-		panel.getBox().add(new JLabel("Appuyer sur \"Finir\" pour ex�cuter le chargement des fichiers list�s :"), BorderLayout.NORTH);
+		panel.getBox().add(new JLabel("Appuyer sur \"Finir\" pour exécuter le chargement des fichiers listés :"), BorderLayout.NORTH);
 		return panel;
 	}
 
@@ -449,7 +449,7 @@ public class GUIChargementDonnees extends JPanel {
 						panel.getFinishButton().setEnabled(true);
 					}
 					if(dataSets.isEmpty()) {
-						logger.info("Aucun dataset trouvé dans la base de donnée s�lectionn�e");
+						logger.info("Aucun dataset trouvé dans la base de donnée sélectionnée");
 					} else {
 						dataSet = (DataSet) dataSets.get(0);
 					}
@@ -520,7 +520,7 @@ public class GUIChargementDonnees extends JPanel {
 		c.gridwidth=1;
 		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.LINE_START;
-		final JButton previousButton = new JButton("Pr�c�dent");
+		final JButton previousButton = new JButton("précédent");
 		previousButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				previousDialog();
@@ -558,7 +558,7 @@ public class GUIChargementDonnees extends JPanel {
 		c.gridwidth=1;
 		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.LINE_START;
-		final JButton previousButton = new JButton("Pr�c�dent");
+		final JButton previousButton = new JButton("précédent");
 		previousButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				previousDialog();
@@ -632,7 +632,7 @@ public class GUIChargementDonnees extends JPanel {
 		c.gridwidth=1;
 		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.LINE_START;
-		final JButton previousButton = new JButton("Pr�c�dent");
+		final JButton previousButton = new JButton("précédent");
 		previousButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				previousDialog();

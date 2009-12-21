@@ -40,7 +40,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 /** Classe fabrique de cartes topologiques :
  *  - soit par défaut
- *  - soit une carte topologique avec des noeuds valu�s
+ *  - soit une carte topologique avec des noeuds valués
  * 
  * @author Eric Grosso - IGN / Laboratoire COGIT
  *
@@ -62,7 +62,7 @@ public class CarteTopoFactory {
 		//Initialisation d'une nouvelle CarteTopo
 		CarteTopo carteTopo = new CarteTopo("Graphe");
 
-		//R�cup�ration des arcs de la carteTopo
+		//Récupération des arcs de la carteTopo
 		Population<Arc> arcs = carteTopo.getPopArcs();
 
 		Iterator<FT_Feature> it = (Iterator<FT_Feature>) collection.getElements().iterator();
@@ -75,7 +75,7 @@ public class CarteTopoFactory {
 			//création d'un nouvel élément
 			arc = arcs.nouvelElement();
 			//affectation de la géométrie de l'objet issu de la collection
-			//� l'arc de la carteTopo
+			//à l'arc de la carteTopo
 			arc.setGeometrie((GM_LineString) feature.getGeom());
 			//instanciation de la relation entre l'arc créé et l'objet
 			//issu de la collection
@@ -104,7 +104,7 @@ public class CarteTopoFactory {
 
 	
 	
-	/**création d'une carte topologique �tendue (noeud valu�) à partir d'une FT_FeatureCollection
+	/**création d'une carte topologique étendue (noeud valué) à partir d'une FT_FeatureCollection
 	 * 
 	 * @param collection
 	 * @return une carte topologique
@@ -116,7 +116,7 @@ public class CarteTopoFactory {
 		//Initialisation d'une nouvelle CarteTopo
 		CarteTopoEtendue carteTopo = new CarteTopoEtendue("Graphe");
 
-		//R�cup�ration des arcs de la carteTopo
+		//Récupération des arcs de la carteTopo
 		Population<Arc> arcs = carteTopo.getPopArcs();
 
 		Iterator<FT_Feature> it = (Iterator<FT_Feature>) collection.getElements().iterator();
@@ -129,7 +129,7 @@ public class CarteTopoFactory {
 			//création d'un nouvel élément
 			arc = arcs.nouvelElement();
 			//affectation de la géométrie de l'objet issu de la collection
-			//� l'arc de la carteTopo
+			//à l'arc de la carteTopo
 			arc.setGeometrie((GM_LineString) feature.getGeom());
 			//instanciation de la relation entre l'arc créé et l'objet
 			//issu de la collection
@@ -147,7 +147,7 @@ public class CarteTopoFactory {
 		//Valuation des noeuds
 		logger.info("Valuation des noeuds");
 
-		//R�cup�ration des noeuds de la carteTopo
+		//Récupération des noeuds de la carteTopo
 		Population<Noeud> noeuds = carteTopo.getPopNoeuds();
 		
 		Iterator<Noeud> itNoeuds = noeuds.iterator();

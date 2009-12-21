@@ -29,15 +29,15 @@ package fr.ign.cogit.geoxygene.contrib.cartetopo.exemple;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
 
 /**
- * Exemple de construction et d'utilisation d'une carte topo simple, hérit�e
+ * Exemple de construction et d'utilisation d'une carte topo simple, héritée
  * du schéma générique de la cartetopo.
  * 
  * La carte topo en question est definie par heritage à partir des
  * classes du package : MonNoeud, MonArc, MaFace, MaCarteTopo (on n'utilise
  * pas de groupes dans cet exemple).
  * 
- * La seule petite difficult� est d'indiquer dans le code que
- * MaCarteTopo est constitue� d'objets MonNoeud, MonArc et MaFace
+ * La seule petite difficulté est d'indiquer dans le code que
+ * MaCarteTopo est constituée d'objets MonNoeud, MonArc et MaFace
  * plutôt que les génériques Noeud, Arc et Face. Cette opération doit
  * se faire par un constructeur spécial dans la classe MaCarteTopo.
  * 

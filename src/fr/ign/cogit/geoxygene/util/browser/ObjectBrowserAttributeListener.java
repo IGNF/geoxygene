@@ -30,9 +30,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Cette classe fournit l'implémentation de l'�couteur d'�v�nement pour les objets cliquables de type attribut ou mebre d'un attribut (objet ou collection).
+ * Cette classe fournit l'implémentation de l'écouteur d'évènement pour les objets cliquables de type attribut ou mebre d'un attribut (objet ou collection).
  * <br/>Elle permet la navigation générique entre les objets Java d'une application, en faisant explicitement appel à un nouveau navigateur d'objet
- * graphique pour représenté graphiquement l'élément cliqu�.
+ * graphique pour représenté graphiquement l'élément cliqué.
  *
  *
  * @author Thierry Badard & Arnaud Braun
@@ -43,13 +43,13 @@ import java.awt.event.ActionListener;
 
 public class ObjectBrowserAttributeListener implements ActionListener {
 
-	/** Objet portant l'attribut sur lequel on définit l'�couteur d'�v�nement ObjectBrowserAttributeListener. */
+	/** Objet portant l'attribut sur lequel on définit l'écouteur d'évènement ObjectBrowserAttributeListener. */
 	private Object obj;
 
 	/**
 	 * Constructeur principal de ObjectBrowserAttributeListener.
 	 * 
-	 * @param obj l'objet portant l'attribut sur lequel on définit l'�couteur d'�v�nement ObjectBrowserAttributeListener.
+	 * @param obj l'objet portant l'attribut sur lequel on définit l'écouteur d'évènement ObjectBrowserAttributeListener.
 	 */
 	public ObjectBrowserAttributeListener(Object obj) {
 		this.obj = obj;

@@ -67,12 +67,12 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
 /**
  * Classe permettant de lire des shapefiles et de créer une population de DefautFeatures.
  * Le schéma et le FeatureType associé sont créés au passage.
- * Il existe deux principales possibilit�s pour l'utiliser :
+ * Il existe deux principales possibilités pour l'utiliser :
  * <ul>
- * <li> de fa�on <b>asynchrone</b>. Pour ce, il faut créer un objet ShapefileReader et
- * ex�cuter la méthode read dessus. Cel� lance un nouveau processus qui lit les features
+ * <li> de façon <b>asynchrone</b>. Pour ce, il faut créer un objet ShapefileReader et
+ * exécuter la méthode read dessus. Celà lance un nouveau processus qui lit les features
  * et ajoute les objets à la population au fur et à mesure.
- * <li> de fa�on <b>synchrone</b>. Pour ce, utiliser une des méthodes statiques read ou chooseAndReadShapefile
+ * <li> de façon <b>synchrone</b>. Pour ce, utiliser une des méthodes statiques read ou chooseAndReadShapefile
  * </ul>
  * @author Julien Perret
  *
@@ -167,10 +167,10 @@ public class ShapefileReader implements Runnable {
 			SchemaDefaultFeature schemaDefaultFeature = new SchemaDefaultFeature();
 			/** Initialise le schéma */
 			Reader reader = initSchema(shapefileName, schemaDefaultFeature, population, initSpatialIndex);
-			/** Parcours de features du fichier et création de Default features �quivalents */
+			/** Parcours de features du fichier et création de Default features équivalents */
 			read(reader, schemaDefaultFeature, population);
 		} catch (MalformedURLException e1) {
-			logger.error("L'URL du fichier "+shapefileName+" est mal form�e. Il n'a pas été chargé et le résultat est null.");
+			logger.error("L'URL du fichier "+shapefileName+" est mal formée. Il n'a pas été chargé et le résultat est null.");
 			return null;
 		} catch (IOException e) {
 			logger.error("problème pendant la lecture du fichier "+shapefileName+". Il n'a pas été chargé et le résultat est null.");
@@ -191,7 +191,7 @@ public class ShapefileReader implements Runnable {
 	 */
 	public static Population<DefaultFeature> chooseAndReadShapefile() {
 		JFileChooser choixFichierShape = new JFileChooser();
-		/** crée un filtre qui n'accepte que les fichier shp ou les r�pertoires */
+		/** crée un filtre qui n'accepte que les fichier shp ou les répertoires */
 		choixFichierShape.setFileFilter(new FileFilter(){
 			@Override
 			public boolean accept(File f) {return (f.isFile() && (f.getAbsolutePath().endsWith(".shp") || f.getAbsolutePath().endsWith(".SHP")) || f.isDirectory());}
@@ -275,13 +275,13 @@ public class ShapefileReader implements Runnable {
 			defaultFeature.setAttributes(reader.fieldValues[indexFeature]);
 			try {
 				if (reader.geometries[indexFeature]==null) {
-					logger.error("géométrie nulle, objet ignor�");
+					logger.error("géométrie nulle, objet ignoré");
 				} else {
 					defaultFeature.setGeom(AdapterFactory.toGM_Object(reader.geometries[indexFeature]));
 					population.add(defaultFeature);
 				}
 			} catch (Exception e) {
-				logger.error("problème pendant la conversion de la géométrie. L'objet est ignor�");
+				logger.error("problème pendant la conversion de la géométrie. L'objet est ignoré");
 			}
 		}
 	}
@@ -324,7 +324,7 @@ class Reader {
 		try {
 		    shpf = new ShpFiles(shapefileName);
 		} catch (MalformedURLException e) {
-			if (logger.isDebugEnabled()) logger.debug("URL "+shapefileName+" mal form�e.");
+			if (logger.isDebugEnabled()) logger.debug("URL "+shapefileName+" mal formée.");
 			return;
 		} 
 		try {

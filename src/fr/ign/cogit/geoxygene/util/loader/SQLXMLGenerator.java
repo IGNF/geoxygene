@@ -39,8 +39,8 @@ import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.util.loader.gui.GUISelectionGeometrie;
 
 /**
- * Usage interne. Appel� par la Console.
- * G�n�re à partir d'une classe Java, la table dans le SGBD et le fichier de mapping
+ * Usage interne. appelé par la Console.
+ * Génère à partir d'une classe Java, la table dans le SGBD et le fichier de mapping
  * correspondants.
  *
  * @author Eric Grosso - IGN / Laboratoire COGIT
@@ -82,8 +82,8 @@ public class SQLXMLGenerator {
 			if (data.getDBMS() == Geodatabase.ORACLE) querySQLOracle(javaFilePath,tableName,heritage);
 			else if (data.getDBMS() == Geodatabase.POSTGIS)querySQLPostgis(javaFilePath,tableName,heritage);
 			else {
-				JOptionPane.showMessageDialog(null,"problème de SGBD non support� : il appara�t que" +
-						" ce n'est ni Oracle ni PostgreSQL","SGBD non support�",JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(null,"problème de SGBD non supporté : il apparaît que" +
+						" ce n'est ni Oracle ni PostgreSQL","SGBD non supporté",JOptionPane.WARNING_MESSAGE);
 				return;
 			}
 			System.out.println("Table créée");
@@ -93,7 +93,7 @@ public class SQLXMLGenerator {
 			e.printStackTrace();
 		}
 
-		System.out.println("création de la table termin�e");
+		System.out.println("création de la table terminée");
 
 		//ecriture du fichier de mapping correspondant
 		try {
@@ -213,10 +213,10 @@ public class SQLXMLGenerator {
 	//////////////////////////////// ORACLE ///////////////////////////////
 	///////////////////////////////////////////////////////////////////////
 
-	//l'identifiant COGITID est créé par défaut en tant que cl� primaire de la table
+	//l'identifiant COGITID est créé par défaut en tant que clé primaire de la table
 	//HERITAGE :
-	//héritage jusqu'� ce que la classe mère soit différente de java.lang.Object
-	//n'est hérit� de FT_Feature que la géométrie et l'identifiant
+	//héritage jusqu'à ce que la classe mère soit différente de java.lang.Object
+	//n'est hérité de FT_Feature que la géométrie et l'identifiant
 	private void querySQLOracle(String cheminClasse, String nomTable, boolean flagHeritage) throws Exception {
 		String query="";
 		Field[] attributs;
@@ -294,12 +294,12 @@ public class SQLXMLGenerator {
 
 	/**
 	 * création de la table postgis.
-	 * L'identifiant COGITID est créé par défaut en tant que cl� primaire de la table.
-	 * Si flagHeritage est vrai, la fonction parcours les superclasses de la classe cheminClasse jusqu'� java.lang.Object.
-	 * Ne sont hérit�s de FT_Feature que la géométrie et l'identifiant.
+	 * L'identifiant COGITID est créé par défaut en tant que clé primaire de la table.
+	 * Si flagHeritage est vrai, la fonction parcours les superclasses de la classe cheminClasse jusqu'à java.lang.Object.
+	 * Ne sont hérités de FT_Feature que la géométrie et l'identifiant.
 	 * @param cheminClasse nom de la classe Java des objets à stocker dans le SGBD
 	 * @param nomTable nom de la table dans le SGBD
-	 * @param flagHeritage autorise ou non le parcours de la hi�rarchie des classes Java.
+	 * @param flagHeritage autorise ou non le parcours de la hiérarchie des classes Java.
 	 * @throws Exception renvoie des exceptions si le type des attributs n'est pas reconnu
 	 */
 	private void querySQLPostgis(String cheminClasse, String nomTable, boolean flagHeritage) throws Exception {
@@ -374,7 +374,7 @@ public class SQLXMLGenerator {
 				System.out.println("query = "+query);
 				stm.executeUpdate(query);//executeQuery(query);
 			} catch (SQLException e) {
-				System.out.println("création table �chou�e : "+e.getMessage());
+				System.out.println("création table échouée : "+e.getMessage());
 				//e.printStackTrace();
 			}
 
@@ -420,7 +420,7 @@ public class SQLXMLGenerator {
 			stm.close();
 		}
 		catch (Exception e) {
-			System.out.println("�chec dans querySQLPostgis");
+			System.out.println("échec dans querySQLPostgis");
 			e.printStackTrace();
 		}
 	}

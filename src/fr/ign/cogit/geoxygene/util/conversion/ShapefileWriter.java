@@ -55,7 +55,7 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.type.GF_AttributeType;
 
 /**
- * Classe permettant d'�crire des shapefiles à partir d'une collection de Features.
+ * Classe permettant d'écrire des shapefiles à partir d'une collection de Features.
  * 
  * @author Julien Perret
  *
@@ -109,16 +109,16 @@ public class ShapefileWriter {
 			t.close();			
 			store.dispose();
 		} catch (MalformedURLException e) {
-			logger.error("Le nom du fichier "+shapefileName+" est mal form�");
+			logger.error("Le nom du fichier "+shapefileName+" est mal formé");
 			e.printStackTrace();
 		} catch (IOException e) {
-			logger.error("Erreur pendant l'�criture du fichier "+shapefileName);
+			logger.error("Erreur pendant l'écriture du fichier "+shapefileName);
 			e.printStackTrace();
 		} catch (SchemaException e) {
-			logger.error("Le schéma utilisé pour l'�criture du fichier "+shapefileName+" est incorrect");
+			logger.error("Le schéma utilisé pour l'écriture du fichier "+shapefileName+" est incorrect");
 			e.printStackTrace();
 		} catch (Exception e) {
-			logger.error("Erreur pendant l'�criture du fichier "+shapefileName);
+			logger.error("Erreur pendant l'écriture du fichier "+shapefileName);
 			e.printStackTrace();
 		}
 	}
@@ -129,7 +129,7 @@ public class ShapefileWriter {
 	 * @param valueType nom d'un type primitif
 	 * @return la classe correspondant au nom d'un type primitif ou 
 	 * null si le paramètre ne correspond pas à un type primitif ou 
-	 * s'il n'est pas géré. <b>Attention : les bool�ans sont convertis en strings car
+	 * s'il n'est pas géré. <b>Attention : les booléans sont convertis en strings car
 	 * les format ESRI shapefile ne les gère pas</b>
 	 */
 	public static Class<?> valueType2Class(String valueType) {

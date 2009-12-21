@@ -29,7 +29,7 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Curve;
 
 /** NON IMPLEMENTE.
- * Classe mère pour les surfaces paramètr�es par des courbes.
+ * Classe mère pour les surfaces paramètrées par des courbes.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0

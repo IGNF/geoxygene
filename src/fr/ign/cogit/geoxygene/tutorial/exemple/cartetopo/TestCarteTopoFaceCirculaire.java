@@ -9,7 +9,7 @@ import fr.ign.cogit.geoxygene.tutorial.data.BdTopoTrRoute;
 import fr.ign.cogit.geoxygene.util.viewer.ObjectViewer;
 
 /** Exemple d'utilisation de la carte topologique : 
- *  D�tection des faces circulaires.
+ *  détection des faces circulaires.
  * 
  *  @author Eric Grosso - IGN / Laboratoire COGIT
  */
@@ -28,7 +28,7 @@ public class TestCarteTopoFaceCirculaire {
 		//création de la carte topologique
 		CarteTopo carteTopo = CarteTopoFactory.creeCarteTopoDefaut(tronconsBDT);
 
-		//D�tection des faces circulaires
+		//détection des faces circulaires
 		FT_FeatureCollection<Face> facesCirculaires =
 			CarteTopoAlgorithmie.detectionFacesCirculaires(carteTopo);
 

@@ -45,23 +45,23 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
  * En vrac un ensemble de méthodes statiques qui manipulent des géométries:
- * projections, abscisse curviligne, d�calage, orientation...
+ * projections, abscisse curviligne, décalage, orientation...
  * 
  * CONTIENT des méthodes de :
  *	Projections d'un point
  *	Manipulation de l'abscisse curviligne d'une ligne
  *  Mesures sur un polygone
- *  Offset d'une ligne (d�calage)
+ *  Offset d'une ligne (décalage)
  *  Echantillonage d'une ligne
- *	Regression lin�aire
+ *	Regression linéaire
  *  et beaucoup d'autres choses très diverses
  * 
- *  ATTENTION: certaines méthodes n'ont pas été con�ues ni test�es pour des coordonnées 3D
+ *  ATTENTION: certaines méthodes n'ont pas été conçues ni testées pour des coordonnées 3D
  * 
  * 
  * English: Very very diverse set of methods on geometries
  * 
- * @author  Musti�re / Bonin / Rousseaux / Grosso / Lafragueta
+ * @author  Mustière / Bonin / Rousseaux / Grosso / Lafragueta
  * @version 1.0
  */
 
@@ -76,7 +76,7 @@ public abstract class Operateurs {
 	/** Projection de M sur le segment [A,B]
 	 * 
 	 * English: Projects M on a [A,B]
-	 * author Musti�re
+	 * author Mustière
 	 * */
 	public static DirectPosition projection(DirectPosition M, DirectPosition A, DirectPosition B) {
 		double lambda;
@@ -94,12 +94,12 @@ public abstract class Operateurs {
 	}
 
 	/** Projection du point sur la polyligne.
-	 * En th�orie, il peut y avoir plusieurs points projetés, mais dans ce cas
+	 * En théorie, il peut y avoir plusieurs points projetés, mais dans ce cas
 	 * cette méthode n'en renvoie qu'un seul (le premier dans le sens de parcours
 	 * de la ligne).
 	 * 
 	 * English: Projects M on the lineString
-	 * author Musti�re
+	 * author Mustière
 	 */
 	public static DirectPosition projection(DirectPosition dp, GM_LineString LS) {
 		DirectPositionList listePoints = LS.coord();
@@ -124,7 +124,7 @@ public abstract class Operateurs {
 	 * Projection du point sur la polyligne et insertion du point projeté dans la ligne
 	 * 
 	 * English: Projects M on the lineString and return the line with the projected point inserted
-	 * author Musti�re
+	 * author Mustière
 	 */
 	public static GM_LineString projectionEtInsertion(DirectPosition dp, GM_LineString LS) {
 		DirectPositionList listePoints = LS.coord();
@@ -153,11 +153,11 @@ public abstract class Operateurs {
 	/** Projection du point sur l'aggregat;
 	 * ATTENTION: ne fonctionne que si l'aggregat ne contient que des GM_Point et GM_LineString.
 	 * 
-	 * En th�orie, il peut y avoir plusieurs points projetés, mais dans ce cas
+	 * En théorie, il peut y avoir plusieurs points projetés, mais dans ce cas
 	 * cette méthode n'en renvoie qu'un seul.
 	 * 
 	 * English: Projects M on the agregate
-	 * author Musti�re
+	 * author Mustière
 	 * */
 	public static DirectPosition projection(DirectPosition dp, GM_Aggregate<GM_Object> aggr) {
 		Iterator<GM_Object> itComposants = aggr.getList().iterator();
@@ -198,11 +198,11 @@ public abstract class Operateurs {
 	//	Manipulation de l'abscisse curviligne d'une ligne
 	//////////////////////////////////////////////////////////////////////
 
-	/** coordonnées du point situ� sur la ligne à l'abscisse curviligne passée en paramètre.
+	/** coordonnées du point situé sur la ligne à l'abscisse curviligne passée en paramètre.
 	 *  Renvoie  Null si l'abscisse est négative ou plus grande que la longueur de la ligne.
 	 * 
 	 * English: Point located at the curvilinear abscisse
-	 * author Musti�re
+	 * author Mustière
 	 */
 	public static DirectPosition pointEnAbscisseCurviligne(GM_LineString ls, double abscisse) {
 		int i;
@@ -231,7 +231,7 @@ public abstract class Operateurs {
 
 	/** Abscisse curviligne du ieme point de la ligne ls.
 	 * English: curvilinear abscisse of the ith point
-	 * author Musti�re
+	 * author Mustière
 	 */
 	public static double abscisseCurviligne(GM_LineString ls, int i) {
 		double abs = 0;
@@ -241,9 +241,9 @@ public abstract class Operateurs {
 		return abs;
 	}
 
-	/** coordonnées du point situ� sur au milieu de la ligne.
+	/** coordonnées du point situé sur au milieu de la ligne.
 	 * English: Point in the middle of the line
-	 * author Musti�re
+	 * author Mustière
 	 */
 	public static DirectPosition milieu(GM_LineString ls) {
 		return pointEnAbscisseCurviligne(ls, ls.length() / 2);
@@ -252,7 +252,7 @@ public abstract class Operateurs {
 	/** renvoie le milieu de [A,B].
 	 * 
 	 * English: Point in the middle of [A,B]
-	 * author Musti�re
+	 * author Mustière
 	 */
 	public static DirectPosition milieu(DirectPosition A, DirectPosition B) {
 		DirectPosition M ;
@@ -269,7 +269,7 @@ public abstract class Operateurs {
 		return M ;
 	}
 
-	/** Premiers points intermédiaires de la ligne ls, situ�s à moins
+	/** Premiers points intermédiaires de la ligne ls, situés à moins
 	 * de la longueur curviligne passée en paramètre du point initial.
 	 * Renvoie null si la longueur est négative.
 	 * Renvoie le premier point si et seulement si la longueur est 0.
@@ -277,7 +277,7 @@ public abstract class Operateurs {
 	 * NB: les points sont renvoyés dans l'ordre en partant du premier point.
 	 * 
 	 * English: First points of the line.
-	 * author Musti�re
+	 * author Mustière
 	 */
 	public static DirectPositionList premiersPoints(GM_LineString ls, double longueur) {
 		int i;
@@ -294,16 +294,16 @@ public abstract class Operateurs {
 		return listePts;
 	}
 
-	/** Derniers points intermédiaires de la ligne ls, situ�s à moins
+	/** Derniers points intermédiaires de la ligne ls, situés à moins
 	 * de la longueur curviligne passée en paramètre du point final.
 	 * Renvoie null si la longueur est négative.
 	 * Renvoie le dernier point seulement si la longueur est 0.
 	 * Renvoie tous les points si la longueur est supérieure à la longueur de la ligne.
 	 * NB: les points sont renvoyés dans l'ordre en partant du dernier point
-	 * (ordre inverse par rapport à la géo�mtrie initiale).
+	 * (ordre inverse par rapport à la géométrie initiale).
 	 * 
 	 * English: Last points of the line.
-	 * author Musti�re
+	 * author Mustière
 	 */
 	public static DirectPositionList derniersPoints(GM_LineString ls, double longueur) {
 		int i;
@@ -332,7 +332,7 @@ public abstract class Operateurs {
 	 *  ce qui est très approximatif
 	 * 
 	 * English: Center of the points of the polygon.
-	 * author Musti�re
+	 * author Mustière
 	 */
 	public static DirectPosition barycentre2D(GM_Polygon poly) {
 		DirectPositionList listePoints = poly.coord();
@@ -356,10 +356,10 @@ public abstract class Operateurs {
 
 
 	//////////////////////////////////////////////////////////////////////
-	//            Offset d'une ligne (d�calage)
+	//            Offset d'une ligne (décalage)
 	//////////////////////////////////////////////////////////////////////
-	/** Calcul d'un offset direct (demi-buffer d'une ligne, ou d�calage à gauche).
-	 *  Le paramètre offset est la taille du d�calage.
+	/** Calcul d'un offset direct (demi-buffer d'une ligne, ou décalage à gauche).
+	 *  Le paramètre offset est la taille du décalage.
 	 * 
 	 *  English: shift of a line on the left
 	 * 
@@ -411,8 +411,8 @@ public abstract class Operateurs {
 	}
 
 
-	/** Calcul d'un offset indirect (demi-buffer d'une ligne, ou d�calage à droite).
-	 *  Le paramètre offset est la taille du d�calage.
+	/** Calcul d'un offset indirect (demi-buffer d'une ligne, ou décalage à droite).
+	 *  Le paramètre offset est la taille du décalage.
 	 * 
 	 *  English: shift of a line on the right
 	 *
@@ -467,8 +467,8 @@ public abstract class Operateurs {
 	//////////////////////////////////////////////////////////////////////
 	//            Echantillonage
 	//////////////////////////////////////////////////////////////////////
-	/** méthode pour sur�chantillonner une GM_LineString.
-	 *  Des points intermédiaires écart�s du pas sont ajoutés sur chaque segment
+	/** méthode pour suréchantillonner une GM_LineString.
+	 *  Des points intermédiaires écartés du pas sont ajoutés sur chaque segment
 	 *  de la ligne ls, à partir du premier point de chaque segment.
 	 *  (voir aussi echantillonePasVariable pour une autre méthode )
 	 *
@@ -505,11 +505,11 @@ public abstract class Operateurs {
 		return routeSurech;
 	}
 
-	/** méthode pour sur�chantillonner une GM_LineString.
+	/** méthode pour suréchantillonner une GM_LineString.
 	 *  A l'inverse de la méthode "echantillone", le pas d'echantillonage
-	 *  diffère sur chaque segment de manière à ce que l'on �chantillone chaque
+	 *  diffère sur chaque segment de manière à ce que l'on échantillone chaque
 	 *  segment en différents mini-segments tous de même longueur.
-	 *  Le pas en entrée est le pas maximum autoris�.
+	 *  Le pas en entrée est le pas maximum autorisé.
 	 *
 	 *  English : Resampling of a line
 	 * 
@@ -550,7 +550,7 @@ public abstract class Operateurs {
 	}
 
 
-	/** Renvoie le point translat� de P avec le vecteur V;
+	/** Renvoie le point translaté de P avec le vecteur V;
 	 * Contrairement au "move" de DirectPosition, on ne deplace pas le point P
 	 * 
 	 *  English : Shift of a point
@@ -579,7 +579,7 @@ public abstract class Operateurs {
 	 * polyligne de la liste.
 	 * 
 	 * English: Combination of lines
-	 * author: Musti�re
+	 * author: Mustière
 	 */
 	public static GM_LineString compileArcs(List<GM_LineString> geometries) {
 		DirectPositionList pointsFinaux = new DirectPositionList();
@@ -623,7 +623,7 @@ public abstract class Operateurs {
 				LSCopie.removeControlPoint(LSCopie.startPoint());
 				pointsFinaux.addAll(LSCopie.getControlPoint());
 
-				//quel int�ret à cette ligne???
+				//quel intérêt à cette ligne???
 				pointCourant = LSCopie.endPoint();
 			}
 			else if ( Distances.proche(pointCourant,LSSuivante.endPoint(), 0) ) {
@@ -631,7 +631,7 @@ public abstract class Operateurs {
 				LSCopie.removeControlPoint(LSCopie.endPoint());
 				pointsFinaux.addAll(((GM_LineString)LSCopie.reverse()).getControlPoint());
 
-				//quel int�ret à cette ligne???
+				//quel intérêt à cette ligne???
 				pointCourant = LSCopie.startPoint();
 			}
 			else {
@@ -643,12 +643,12 @@ public abstract class Operateurs {
 		return new GM_LineString(pointsFinaux);
 	}
 
-	/** Version plus robuste mais aussi potentiellement fauss�e de l'intersection.
+	/** Version plus robuste mais aussi potentiellement faussée de l'intersection.
 	 * Si JTS plante au calcul d'intersection, on filtre les surfaces avec Douglas et Peucker,
 	 * progressivement avec 10 seuils entre min et max.
 	 * 
 	 * English: Robust intersection of objects (to bypass JTS bugs)
-	 * author: Musti�re
+	 * author: Mustière
 	 */
 	public static GM_Object intersectionRobuste(GM_Object A, GM_Object B, double min, double max) {
 		GM_Object intersection, Amodif, Bmodif ;
@@ -670,12 +670,12 @@ public abstract class Operateurs {
 		return null;
 	}
 
-	/** Version plus robuste mais aussi potentiellement fauss�e de l'union.
+	/** Version plus robuste mais aussi potentiellement faussée de l'union.
 	 * Si JTS plante au calcul d'union, on filtre les surfaces avec Douglas et Peucker,
 	 * progressivement avec 10 seuils entre min et max.
 	 * 
 	 * English: Robust union of objects (to bypass JTS bugs)
-	 * author: Musti�re
+	 * author: Mustière
 	 */
 	public static GM_Object unionRobuste(GM_Object A, GM_Object B, double min, double max) {
 		GM_Object union , Amodif, Bmodif ;
@@ -700,11 +700,11 @@ public abstract class Operateurs {
 
 
 	//	////////////////////////////////////////////////////////////////////
-	//				Regression lin�aire
+	//				Regression linéaire
 	//	////////////////////////////////////////////////////////////////////
 	/** Methode qui donne l'angle (radians) par rapport à l'axe des x de la droite passant
-	 *  au mieux au milieu d'un nuage de points (regression par moindres carr�s).
-	 *  Cet angle (défini à pi pr�s) est entre 0 et pi.
+	 *  au mieux au milieu d'un nuage de points (regression par moindres carrés).
+	 *  Cet angle (défini à pi prés) est entre 0 et pi.
 	 * 
 	 * English: Linear approximation
 	 * author: grosso
@@ -726,7 +726,7 @@ public abstract class Operateurs {
 		}
 
 		// initialisation des matrices
-		// On stocke les coordonnées, en se ramenant dans un rep�re local sur (x0,y0)
+		// On stocke les coordonnées, en se ramenant dans un repère local sur (x0,y0)
 		A = new Matrix(listePts.size(),1); // X des points de la ligne
 		B = new Matrix(listePts.size(),1); // Y des points de la ligne
 		x0 = listePts.get(0).getX();
@@ -745,7 +745,7 @@ public abstract class Operateurs {
 		// cas où l'angle est vertical
 		if (moyenneX == 0) return new Angle(Math.PI/2);
 
-		// cas général : on cherche l'angle par r�gression lin�aire
+		// cas général : on cherche l'angle par régression linéaire
 		Atrans = A.transpose();
 		X = (Atrans.times(A)).inverse().times(Atrans.times(B));
 		a= X.get(0,0);
@@ -758,12 +758,12 @@ public abstract class Operateurs {
 
 	/** Methode qui donne l'angle dans [0,2*pi[ par rapport à l'axe des x,
 	 *  de la droite orientée passant au mieux au milieu d'un nuage de points ordonnés
-	 *  (regression par moindres carr�s).
+	 *  (regression par moindres carrés).
 	 *  L'ordre des points en entrée est important, c'est lui qui permet de donner
-	 *  l'angle à 2.pi pr�s.
+	 *  l'angle à 2.pi prés.
 	 *  Exemple: la liste des points peut correspondre à n points d'un arc, l'angle
 	 *  représente alors l'orientation générale de ces points, en prenant le premier
-	 *  pour point de d�part.
+	 *  pour point de départ.
 	 * 
 	 * English: Linear approximation
 	 * author: grosso
@@ -781,7 +781,7 @@ public abstract class Operateurs {
 		}
 
 		// initialisation des matrices
-		// On stocke les coordonnées, en se ramenant dans un rep�re local sur (x0,y0)
+		// On stocke les coordonnées, en se ramenant dans un repère local sur (x0,y0)
 		A = new Matrix(listePts.size(),1); // X des points de la ligne
 		B = new Matrix(listePts.size(),1); // Y des points de la ligne
 		x0 = listePts.get(0).getX();
@@ -803,7 +803,7 @@ public abstract class Operateurs {
 			if (moyenneY>0) return new Angle(Math.PI/2);
 		}
 
-		// cas général : on cherche l'angle par r�gression lin�aire
+		// cas général : on cherche l'angle par régression linéaire
 		Atrans = A.transpose();
 		X = (Atrans.times(A)).inverse().times(Atrans.times(B));
 		a= X.get(0,0);
@@ -824,10 +824,10 @@ public abstract class Operateurs {
 	//////////////////////////////////////////////////////////////////////
 	/** 
 	 * Teste si 2 <code>DirectPosition</code>s ont les mêmes coordonnées. 
-	 * Le test est effectu� en 3D :
+	 * Le test est effectué en 3D :
 	 * <ul>
 	 * <li> si le premier point n'a pas de Z, le second ne doit pas en avoir pour être égal.
-	 * <li> si le premier point possède un Z, sa valeur est compar�e au Z du second.
+	 * <li> si le premier point possède un Z, sa valeur est comparée au Z du second.
 	 * </ul>
 	 * English: Tests the equality of geometries in 3D
 	 * @param pt1 une position
@@ -839,7 +839,7 @@ public abstract class Operateurs {
 	}
 	/** 
 	 * Teste si 2 <code>DirectPosition</code>s ont les mêmes coordonnées. 
-	 * Le test est effectu� en 2D : aucun Z n'est consid�r�.
+	 * Le test est effectué en 2D : aucun Z n'est considéré.
 	 * English: Tests the equality of geometries in 2D
 	 * @param pt1 une position
 	 * @param pt2 une position
@@ -858,7 +858,7 @@ public abstract class Operateurs {
 		return superposes(pt1.getPosition(),pt2.getPosition());
 	}
 
-	/** Teste la pr�sence d'un DirectPosition (égalité 2D) dans une
+	/** Teste la présence d'un DirectPosition (égalité 2D) dans une
 	 *  DirectPositionList.
 	 * Renvoie -1 si le directPosition n'est pas dans la liste
 	 * 
@@ -874,7 +874,7 @@ public abstract class Operateurs {
 		return -1;
 	}
 
-	/** Teste la pr�sence d'un DirectPosition (égalité 3D) dans une
+	/** Teste la présence d'un DirectPosition (égalité 3D) dans une
 	 *  DirectPositionList.
 	 * Renvoie -1 si le directPosition n'est pas dans la liste
 	 * 
@@ -920,8 +920,8 @@ public abstract class Operateurs {
 	}
 
 	/** Fusionne les surfaces adjacentes d'une population.
-	 * NB: quand X objets sont fusionn�s, un des objets (au hasard) est gard�
-	 * avec ses attributs et sa géo�mtrie est remplac�e par celle fusionn�e.
+	 * NB: quand X objets sont fusionés, un des objets (au hasard) est gardé
+	 * avec ses attributs et sa géométrie est remplacée par celle fusionée.
 	 *
 	 * English: aggregation of surfaces
 	 */
@@ -977,9 +977,9 @@ public abstract class Operateurs {
 	}
 
 	/** Surface d'un polygone (trous non gérés).
-	 * Utile pour pallier aux d�ficiences de JTS qui n'accèpte pas les géométries dégénérées.
+	 * Utile pour pallier aux déficiences de JTS qui n'accèpte pas les géométries dégénérées.
 	 * 
-	 * Le calcul est effectu� dans un rep�re local centré sur le premier point
+	 * Le calcul est effectué dans un repère local centré sur le premier point
 	 * de la surface, ce qui est utile pour minimiser les erreurs de calcul
 	 * si on manipule de grandes coordonnées).
 	 * 
@@ -1020,7 +1020,7 @@ public abstract class Operateurs {
 		return Math.abs(surf);
 	}
 
-	/** D�termine si une liste de points tourne dans le sens direct ou non.
+	/** détermine si une liste de points tourne dans le sens direct ou non.
 	 * NB : La liste de points est supposée fermée (premier point = dernier point).
 	 * NB : renvoie true pour une surface dégénérée.
 	 * 

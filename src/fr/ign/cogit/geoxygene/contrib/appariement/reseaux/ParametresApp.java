@@ -46,22 +46,22 @@ public class ParametresApp implements Cloneable {
 	/////////////   PARAMETRES SPECIFIANT QUELLE DONNEES SONT TRAITEES   ////////////
 	/////////////////////////////////////////////////////////////////////////////////
 
-	/** Liste des classes d'arcs de la BD 1 (la moins d�taill�e) concernés par l'appariement */
+	/** Liste des classes d'arcs de la BD 1 (la moins détaillée) concernés par l'appariement */
 	public List<FT_FeatureCollection<Arc>> populationsArcs1 = new ArrayList<FT_FeatureCollection<Arc>>();
 
-	/** Liste des classes de noeuds de la BD 1 (la moins d�taill�e) concernés par l'appariement */
+	/** Liste des classes de noeuds de la BD 1 (la moins détaillée) concernés par l'appariement */
 	public List<FT_FeatureCollection<Noeud>> populationsNoeuds1 = new ArrayList<FT_FeatureCollection<Noeud>>();
 
-	/** Liste des classes d'arcs de la BD 2 (la plus d�taill�e) concernés par l'appariement */
+	/** Liste des classes d'arcs de la BD 2 (la plus détaillée) concernés par l'appariement */
 	public List<FT_FeatureCollection<Arc>> populationsArcs2 = new ArrayList<FT_FeatureCollection<Arc>>();
 
-	/** Liste des classes de noeuds de la BD 2 (la plus d�taill�e) concernés par l'appariement */
+	/** Liste des classes de noeuds de la BD 2 (la plus détaillée) concernés par l'appariement */
 	public List<FT_FeatureCollection<Noeud>> populationsNoeuds2 = new ArrayList<FT_FeatureCollection<Noeud>>();
 
 	/** Prise en compte de l'orientation des arcs sur le terrain (sens de circulation).
 	 * Si true : on suppose tous les arcs en double sens.
 	 * Si false: on suppose tous les arcs en sens unique, celui défini par la géométrie.
-	 * NB: ne pas confondre cette orientation 'Géographique r�elle', avec l'orientation de la géo�mtrie.
+	 * NB: ne pas confondre cette orientation 'Géographique réelle', avec l'orientation de la géométrie.
 	 * 
 	 * Utile ensuite pour l'appariement des arcs.
 	 */
@@ -70,25 +70,25 @@ public class ParametresApp implements Cloneable {
 
 	/////////////////////////////////////////////////////////////////////////////////
 	/////////////////             TAILLES DE RECHERCHE        ///////////////////////
-	/////////////////        Ecarts de distance autoris�s     ///////////////////////
+	/////////////////        Ecarts de distance autorisés     ///////////////////////
 	/////////////////      CE SONT LES PARAMETRES PRINCIPAUX  ///////////////////////
 	/////////////////////////////////////////////////////////////////////////////////
 
-	/** Distance maximale autoris�e entre deux noeuds appariés.
+	/** Distance maximale autorisée entre deux noeuds appariés.
 	 */
 	public float distanceNoeudsMax = 150;
 
-	/** Distance maximale autoris�e entre deux noeuds appariés, quand le noeud du réseau 1
+	/** Distance maximale autorisée entre deux noeuds appariés, quand le noeud du réseau 1
 	 *  est une impasse uniquement.
 	 *  Ce paramètre permet de prendre en compte le fait que la localisation exacte des extrémités d'impasse
-	 *  est assez imprécise dans certains réseaux (où commence exactement une rivi�re par exemple?).
+	 *  est assez imprécise dans certains réseaux (où commence exactement une rivière par exemple?).
 	 * 
 	 *  Si cette distance est strictement négative, alors ce paramètre n'est pas pris en compte,
 	 *  et la distance maximale est la même pour tous les noeuds, y-compris aux extrémités.
 	 */
 	public float distanceNoeudsImpassesMax = -1;
 
-	/** Distance maximum autoris�e entre les arcs des deux réseaux.
+	/** Distance maximum autorisée entre les arcs des deux réseaux.
 	 * La distance est définie au sens de la "demi-distance de Hausdorf" des arcs
 	 * du réseau 2 vers les arcs du réseau 1.
 	 */
@@ -96,7 +96,7 @@ public class ParametresApp implements Cloneable {
 
 	/** Distance minimum sous laquelle l'écart de distance pour divers arcs du réseaux 2
 	 * (distance vers les arcs du réseau 1) n'a plus aucun sens.
-	 *  Cette distance est typiquement de l'ordre de la précision géométrique du r��seau le moins précis.
+	 *  Cette distance est typiquement de l'ordre de la précision géométrique du réseau le moins précis.
 	 */
 	public float distanceArcsMin = 30;
 
@@ -105,24 +105,24 @@ public class ParametresApp implements Cloneable {
 	/////////////         TRAITEMENTS TOPOLOGIQUES A L'IMPORT       /////////////////
 	/////////////////////////////////////////////////////////////////////////////////
 
-	/** Les noeuds proches du réseau 1 sont fusionn�s en un seul noeud
-	 *  (proches = �loign�s de moins que ce paramètre).
-	 *  Si ce paramètre est >0, les noeuds sont fusion�s à une position moyenne, et les arcs sont d�form�s pour suivre.
-	 *  Si ce paramètre est =0, seul les noeuds strictement superpos�s sont fusionn�s.
+	/** Les noeuds proches du réseau 1 sont fusionés en un seul noeud
+	 *  (proches = éloignés de moins que ce paramètre).
+	 *  Si ce paramètre est >0, les noeuds sont fusionés à une position moyenne, et les arcs sont déformés pour suivre.
+	 *  Si ce paramètre est =0, seul les noeuds strictement superposés sont fusionés.
 	 *  Si ce paramètre est <0 (défaut), aucune fusion n'est faite.
 	 */
 	public double topologieSeuilFusionNoeuds1 = -1;
 
-	/** Les noeuds proches du réseau 2 sont fusionn�s en un seul noeud
-	 *  (proches = �loign�s de moins que ce paramètre).
-	 *  Si ce paramètre est >0, les noeuds sont fusion�s à une position moyenne, et les arcs sont d�form�s pour suivre.
-	 *  Si ce paramètre est =0, seul les noeuds strictement superpos�s sont fusionn�s.
+	/** Les noeuds proches du réseau 2 sont fusionés en un seul noeud
+	 *  (proches = éloignés de moins que ce paramètre).
+	 *  Si ce paramètre est >0, les noeuds sont fusionés à une position moyenne, et les arcs sont déformés pour suivre.
+	 *  Si ce paramètre est =0, seul les noeuds strictement superposés sont fusionés.
 	 *  Si ce paramètre est <0 (défaut), aucune fusion n'est faite.
 	 */
 	public double topologieSeuilFusionNoeuds2 = -1;
 
 	/** Les noeuds du réseau 1 contenus dans une même surface de la population en paramètre
-	 *  seront fusionn�s en un seul noeud pour l'appariement.
+	 *  seront fusionés en un seul noeud pour l'appariement.
 	 *  Ce paramètre peut être null (défaut), auquel il est sans influence.
 	 *  Exemple typique: on fusionne toutes les extrémités de lignes ferrés arrivant dans une même aire de triage,
 	 *  si les aires de triage sont définies par des surfaces dans les données.
@@ -130,7 +130,7 @@ public class ParametresApp implements Cloneable {
 	public Population<?> topologieSurfacesFusionNoeuds1 = null;
 
 	/** Les noeuds du réseau 2 contenus dans une même surface de la population en paramètre
-	 *  seront fusionn�s en un seul noeud pour l'appariement.
+	 *  seront fusionés en un seul noeud pour l'appariement.
 	 *  Ce paramètre peut être null (défaut), auquel il est sans influence.
 	 *  Exemple typique: on fusionne toutes les extrémités de lignes ferrés arrivant dans une même aire de triage,
 	 *  si les aires de triage sont définies par des surfaces dans les données.
@@ -176,9 +176,9 @@ public class ParametresApp implements Cloneable {
 
 	/** Doit on projeter les noeuds du réseau 1 sur le réseau 2 pour découper ce dernier ?
 	 * Ce traitement réalise un surdécoupage du réseau 2 qui facilite l'appariement dans certains cas
-	 * (par exemple si les réseaux ont des niveaux de d�tail proches), mais qui va aussi un peu
+	 * (par exemple si les réseaux ont des niveaux de détail proches), mais qui va aussi un peu
 	 * à l'encontre de la philosophie générale du processus d'appariement.
-	 * A utiliser avec mod�ration donc.
+	 * A utiliser avec modération donc.
 	 */
 	public boolean projeteNoeuds1SurReseau2 = false;
 
@@ -202,9 +202,9 @@ public class ParametresApp implements Cloneable {
 
 	/** Doit on projeter les noeuds du réseau 2 sur le réseau 1 pour découper ce dernier ?
 	 * Ce traitement réalise un surdécoupage du réseau 1 qui facilite l'appariement dans certains cas
-	 * (par exemple si les réseaux ont des niveaux de d�tail proches), mais qui va aussi un peu
+	 * (par exemple si les réseaux ont des niveaux de détail proches), mais qui va aussi un peu
 	 * à l'encontre de la philosophie générale du processus d'appariement.
-	 * A utiliser avec mod�ration donc.
+	 * A utiliser avec modération donc.
 	 */
 	public boolean projeteNoeud2surReseau1 = false;
 
@@ -231,23 +231,23 @@ public class ParametresApp implements Cloneable {
 	/////////////            VARIANTES DU PROCESSUS GENERAL    //////////////////////
 	/////////////////////////////////////////////////////////////////////////////////
 
-	/** Niveau de complexit�: recherche ou non de liens 1-n aux noeuds.
+	/** Niveau de complexité: recherche ou non de liens 1-n aux noeuds.
 	 *  Si true: un noeud du réseau 1 est toujours apparié avec au plus un noeud du réseau 2 (1-1).
 	 *  Si false (défaut): on recherche liens 1-n aux noeuds .
 	 * 
-	 *  NB: dans le cas simple, le processus est �normêment simplifi� !!!!!!!!
-	 *  Ceci peut être pertinent si les données ont le même niveau de d�tail par exemple.
+	 *  NB: dans le cas simple, le processus est énormêment simplifié !!!!!!!!
+	 *  Ceci peut être pertinent si les données ont le même niveau de détail par exemple.
 	 */
 	public boolean varianteForceAppariementSimple = false;
 
 
 	/** Appariement en deux passes qui tente un surdécoupage du réseau pour les arcs non appariés en Première passe.
 	 * Si true: les arcs du réseau 1 non appariés dans une Première passe sont redécoupés de manière
-	 *          à introduire un noeud dans le res�au 1 aux endroits où il s'�loigne trop du réseau 2.
+	 *          à introduire un noeud dans le réseau 1 aux endroits où il s'éloigne trop du réseau 2.
 	 *          Le "trop" est égal à projeteNoeud2surReseau1_DistanceProjectionNoeud.
 	 * Si false (défaut): processus en une seule passe.
 	 * 
-	 * NB: pour l'instant, après ce re-découpage l'appariement est enti�rement refait, ce qui est long
+	 * NB: pour l'instant, après ce re-découpage l'appariement est entièrement refait, ce qui est long
 	 * et très loin d'être optimisé: code à revoir !!!
 	 */
 	public boolean varianteRedecoupageArcsNonApparies = false;
@@ -263,7 +263,7 @@ public class ParametresApp implements Cloneable {
 	 * - redecoupageNoeudsNonAppariesDistanceNoeudArc.
 	 * - redecoupageNoeudsNonAppariesDistanceProjectionNoeud
 	 * 
-	 * NB: pour l'instant, après ce re-découpage l'appariement est enti�rement refait, ce qui est long
+	 * NB: pour l'instant, après ce re-découpage l'appariement est entièrement refait, ce qui est long
 	 * et très loin d'être optimal: à revoir à l'occasion,
 	 */
 	public boolean varianteRedecoupageNoeudsNonApparies = false;
@@ -282,7 +282,7 @@ public class ParametresApp implements Cloneable {
 
 	/** Quand un arc est apparié à un ensemble d'arcs, élimine de cet ensemble
 	 *  les petites impasses qui créent des aller-retour parasites (de longueur inférieure à distanceNoeuds).
-	 *  NB: paramètre spécifique aux réseaux simples, qui permet d'am�liorer le recalage.
+	 *  NB: paramètre spécifique aux réseaux simples, qui permet d'améliorer le recalage.
 	 */
 	public boolean varianteFiltrageImpassesParasites = false;
 
@@ -297,7 +297,7 @@ public class ParametresApp implements Cloneable {
 	/////////////////////////////////////////////////////////////////////////////////
 	/////////////        OPTIONS D'EXPORT                                ////////////
 	/////////////////////////////////////////////////////////////////////////////////
-	/** Si true, la géométrie des liens est calcul�e des objets2 vers les objets 1
+	/** Si true, la géométrie des liens est calculée des objets2 vers les objets 1
 	 * si false, c'est l'inverse
 	 */
 	public boolean exportGeometrieLiens2vers1 = true;
@@ -305,17 +305,17 @@ public class ParametresApp implements Cloneable {
 	/////////////////////////////////////////////////////////////////////////////////
 	/////////////        OPTIONS DE DEBUG                                ////////////
 	/////////////////////////////////////////////////////////////////////////////////
-	/** paramètre pour gérer l'affichage des commentaires dans la fenêtre de contr�le
-	 * Si c'est égal à 0 : aucun commentaire n'est affich�
-	 * Si c'est égal à 1 : le début des grandes �tapes et les principaux résultats sont signal�s
-	 * Si c'est égal à 2 (debug) : tous les messages sont affich�s
+	/** paramètre pour gérer l'affichage des commentaires dans la fenêtre de contrôle
+	 * Si c'est égal à 0 : aucun commentaire n'est affiché
+	 * Si c'est égal à 1 : le début des grandes étapes et les principaux résultats sont signalés
+	 * Si c'est égal à 2 (debug) : tous les messages sont affichés
 	 */
 	public int debugAffichageCommentaires = 1;
 
 	/** Pour debug uniquement. Sur quels objets fait-on le bilan?
 	 *  Si true (normal) : On fait le bilan au niveau des objets Géographiques initiaux,
 	 *  		  et on exporte des liens de la classe appariement.Lien entre objets Géographiques initiaux;
-	 *  Si false (pour �tude/d�bug): On fait le bilan au niveau des arcs des cartes topo ayant servi au calcul
+	 *  Si false (pour étude/débug): On fait le bilan au niveau des arcs des cartes topo ayant servi au calcul
 	 *            et on exporte des liens de la classe appariementReseaux.LienReseaux entre objets des cartes topo.
 	 */
 	public boolean debugBilanSurObjetsGeo = true;
@@ -338,7 +338,7 @@ public class ParametresApp implements Cloneable {
 	public boolean debugBuffer = false;
 
 	/** Pour la représentation graphique des liens d'appariement entre cartes topos.
-	 * pour la repr�setnation des liens d'appariement, taille du buffer autour des objets appariés à un noeud.
+	 * pour la représentation des liens d'appariement, taille du buffer autour des objets appariés à un noeud.
 	 */
 	public double debugTailleBuffer = 10;
 

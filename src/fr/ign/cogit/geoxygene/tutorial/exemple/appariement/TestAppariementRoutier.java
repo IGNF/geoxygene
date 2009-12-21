@@ -43,7 +43,7 @@ import fr.ign.cogit.geoxygene.tutorial.data.BdCartoTrRoute;
 import fr.ign.cogit.geoxygene.tutorial.data.BdTopoTrRoute;
 import fr.ign.cogit.geoxygene.util.viewer.ObjectViewer;
 
-/**  Exemple d'appariement entre données routi�res 
+/**  Exemple d'appariement entre données routières 
  * 
  *  @author Eric Grosso - IGN / Laboratoire COGIT
  */
@@ -72,7 +72,7 @@ public class TestAppariementRoutier {
 		List<ReseauApp> cartesTopo = new ArrayList<ReseauApp>();
 		EnsembleDeLiens liens = AppariementIO.AppariementDeJeuxGeo(param, cartesTopo);
 		
-		//R�cup�ration des réseaux (ReseauApp hérite de CarteTopo)
+		//Récupération des réseaux (ReseauApp hérite de CarteTopo)
 		ReseauApp carteTopoBDC = cartesTopo.get(0);
 		ReseauApp carteTopoBDT = cartesTopo.get(1);
 
@@ -82,7 +82,7 @@ public class TestAppariementRoutier {
 		valeursClassement.add("Incertitude"); //$NON-NLS-1$
 		valeursClassement.add("Non apparié"); //$NON-NLS-1$
 
-		//R�cup�ration des arcs et des noeuds puis classement en "appariés", "incertains" ou "non appariés" (BD référence)
+		//Récupération des arcs et des noeuds puis classement en "appariés", "incertains" ou "non appariés" (BD référence)
 		List<ReseauApp> cartesTopoBDCValuees = AppariementIO.scindeSelonValeursResultatsAppariement(carteTopoBDC, valeursClassement);
 		Population<Arc> arcsBDCApparies = cartesTopoBDCValuees.get(0).getPopArcs();
 		Population<Arc> arcsBDCIncertains = cartesTopoBDCValuees.get(1).getPopArcs();
@@ -91,7 +91,7 @@ public class TestAppariementRoutier {
 		Population<Noeud> noeudsBDCIncertains = cartesTopoBDCValuees.get(1).getPopNoeuds();
 		Population<Noeud> noeudsBDCNonApparies = cartesTopoBDCValuees.get(2).getPopNoeuds();
 
-		//R�cup�ration des arcs et des noeuds puis classement en "appariés", "incertains" ou "non appariés" (BD comparaison)
+		//Récupération des arcs et des noeuds puis classement en "appariés", "incertains" ou "non appariés" (BD comparaison)
 		List<ReseauApp> cartesTopoBDTValuees = AppariementIO.scindeSelonValeursResultatsAppariement(carteTopoBDC, valeursClassement);
 		Population<Arc> arcsBDTApparies = cartesTopoBDTValuees.get(0).getPopArcs();
 		Population<Arc> arcsBDTIncertains = cartesTopoBDTValuees.get(1).getPopArcs();
@@ -101,7 +101,7 @@ public class TestAppariementRoutier {
 		Population<Noeud> noeudsBDTNonApparies = cartesTopoBDTValuees.get(2).getPopNoeuds();
 
 		
-		//R�cup�ration des liens puis classement en surs, incertains et très incertains
+		//Récupération des liens puis classement en surs, incertains et très incertains
 		List<Double> valeursClassementL = new ArrayList<Double>();
 		valeursClassementL.add(new Double(0.5));
 		valeursClassementL.add(new Double(1));

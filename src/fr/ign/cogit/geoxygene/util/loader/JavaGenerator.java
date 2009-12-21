@@ -31,7 +31,7 @@ import java.io.FileWriter;
 
 /**
  * Usage interne.
- * G�n�rateur de classe java.
+ * Générateur de classe java.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0

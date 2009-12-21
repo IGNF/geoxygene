@@ -26,7 +26,7 @@
 
 package fr.ign.cogit.geoxygene.tutorial.visu;
 
-/**Classe qui permet la visualisation de la carte des d�partements fran�ais
+/**Classe qui permet la visualisation de la carte des départements français
  * 
  * @author Eric Grosso - IGN / Laboratoire COGIT
  */

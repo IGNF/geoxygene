@@ -134,7 +134,7 @@ public abstract class Appariement {
 		// Pre-matching using edges
 		// préappariement d'arcs à arcs
 		if (liensPreAppNN.size() != 0 ) {// nothing to do if there is no node. Il est inutile de pre-appariéer les arcs si rien n'a été trouvé sur les noeuds
-			// Preappariement des arcs entre eux (bas� principalement sur Hausdorf)
+			// Preappariement des arcs entre eux (basé principalement sur Hausdorf)
 			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgePrematching")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 			liensPreAppAA = preAppariementArcArc(reseau1, reseau2, param);
 		}
@@ -164,7 +164,7 @@ public abstract class Appariement {
 			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodePrematching")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 			liensPreAppNN = preAppariementNoeudNoeud(reseau1, reseau2, param);
 			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NumberOfPrematchedNodes")+liensPreAppNN.size()); //$NON-NLS-1$
-			// Preappariement des arcs entre eux (bas� principalement sur Hausdroff)
+			// Preappariement des arcs entre eux (basé principalement sur Hausdroff)
 			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgePrematching")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 			liensPreAppAA = preAppariementArcArc(reseau1, reseau2, param);
 			// Appariement de chaque noeud de la BDref (indépendamment)
@@ -190,7 +190,7 @@ public abstract class Appariement {
 			// préappariement de noeuds à noeuds
 			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NodePrematching")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 			liensPreAppNN = preAppariementNoeudNoeud(reseau1, reseau2, param);
-			// Preappariement des arcs entre eux (bas� principalement sur Hausdroff)
+			// Preappariement des arcs entre eux (basé principalement sur Hausdroff)
 			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgePrematching")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 			liensPreAppAA = preAppariementArcArc(reseau1, reseau2, param);
 			// Appariement de chaque noeud de la BDref (indépendamment)
@@ -242,14 +242,14 @@ public abstract class Appariement {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	/** préappariement entre noeuds uniquement sur un crit�re de distance euclidienne,
-	 *  comme propos� dans [Devogèle 97].
+	/** préappariement entre noeuds uniquement sur un critère de distance euclidienne,
+	 *  comme proposé dans [Devogèle 97].
 	 *
 	 *  On crée des liens 1-n (n candidats noeuds de BDcomp pour chaque noeud de BDref).
 	 * 
 	 *  Comme suggéré dans [Devogèle 97], la taille de la recherche peut varier selon
-	 *  le type du noeud de la BD de ref�rence (rond point, changement d'attribut...).
-	 *  NB1: On préfére largement une taille de recherche sur-évalu�e que sous-évalu�e.
+	 *  le type du noeud de la BD de reférence (rond point, changement d'attribut...).
+	 *  NB1: On préfére largement une taille de recherche sur-évaluée que sous-évaluée.
 	 *  NB2: On ne traite pas les noeuds isolés.
 	 * @param param 
 	 */
@@ -269,7 +269,7 @@ public abstract class Appariement {
 			// On ne tient pas compte des noeuds isolés
 			if ( noeudRef.getEntrants().size() == 0 && noeudRef.getSortants().size() == 0 ) continue;
 			nbRef++;
-			// D�termination des noeuds comp dans le rayon de recherche
+			// Détermination des noeuds comp dans le rayon de recherche
 			candidats = reseau2.getPopNoeuds().select(noeudRef.getGeometrie(), noeudRef.getTaille()).getElements();
 			if (candidats.size() != 0) {
 				lien = (LienReseaux)liens.nouvelElement();
@@ -290,7 +290,7 @@ public abstract class Appariement {
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	/** préappariement entre arcs bas� sur la "demi-distance de Hausdorff"
+	/** préappariement entre arcs basé sur la "demi-distance de Hausdorff"
 	 * (on ne prend en compte que la composante de réseau 2 vers réseau 1).
 	 * 
 	 * Pour chaque arc du reseau 2, on garde les arcs du reseau 1 qui sont à la fois
@@ -298,12 +298,12 @@ public abstract class Appariement {
 	 * 2/ à moins de D + distanceMin de l'arc comp,
 	 * 		D étant la distance entre l'arc ref le plus proche de arc comp
 	 * 
-	 * NB: ce pr�-appariement est différent de ce qui est propos� dans [Devogèle 97],
-	 * pour minimiser la sensibilit� aux seuils.
+	 * NB: ce pré-appariement est différent de ce qui est proposé dans [Devogèle 97],
+	 * pour minimiser la sensibilité aux seuils.
 	 * 
 	 * On crée des liens 1-n: (1 arc de comp) - (n arcs de ref).
 	 * Un arc de ref peut être alors concerné par plusieurs liens différents.
-	 * Au total on a donc des relations n-m cod�es sous la forme de n relations 1-m
+	 * Au total on a donc des relations n-m codées sous la forme de n relations 1-m
 	 */
 	public static EnsembleDeLiens preAppariementArcArc(CarteTopo reseau1, CarteTopo reseau2, ParametresApp param) {
 		int nbCandidats = 0;
@@ -343,9 +343,9 @@ public abstract class Appariement {
 				if ( d<dmax ) candidats.add(arcsProches.get(i));
 			}
 
-			// Si pas de candidat pour l'arccomp, on s'arr�te l�
+			// Si pas de candidat pour l'arccomp, on s'arrête là
 			if (candidats.size()==0) continue;
-			// Si il y a des candidats: on construit le lien de pr�-appariement
+			// Si il y a des candidats: on construit le lien de pré-appariement
 			lien = (LienReseaux)liens.nouvelElement();
 			arcComp.addLiens(lien);
 			lien.addArcs2(arcComp);
@@ -363,10 +363,10 @@ public abstract class Appariement {
 
 
 	/** Appariement des Noeuds du reseau 1 avec les arcs et noeuds du reseau 1,
-	 *  comme propos� dans [Devogèle 97] + modif au filtrage Seb
+	 *  comme proposé dans [Devogèle 97] + modif au filtrage Seb
 	 *  On crée les liens qui vont bien si le noeud est apparié.
 	 *  Une évaluation de l'appariement est stockée sur les liens (note de 0, 0.5 ou 1)
-	 *  Une explication plus d�taill�e du résultat est stockée sur les noeuds ref et comp.
+	 *  Une explication plus détaillée du résultat est stockée sur les noeuds ref et comp.
 	 */
 	@SuppressWarnings("unchecked")
 	public static EnsembleDeLiens appariementNoeuds(
@@ -404,7 +404,7 @@ public abstract class Appariement {
 		itNoeuds = reseau1.getPopNoeuds().getElements().iterator();
 		while (itNoeuds.hasNext()) {
 			noeudRef = (NoeudApp)itNoeuds.next();
-			noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NA")); // pour d�tecter les cas non trait�s //$NON-NLS-1$
+			noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NA")); // pour détecter les cas non traités //$NON-NLS-1$
 			// On ne traite pas les noeuds isolés
 			if ( noeudRef.arcs().size() == 0 ) {
 				noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.IsolatedNode")); //$NON-NLS-1$
@@ -415,7 +415,7 @@ public abstract class Appariement {
 			liensDuNoeudRef = new ArrayList(noeudRef.getLiens(liensPreAppNN.getElements()));
 
 			//////////////////////////////////////////////////////////////////
-			// Noeud ref qui n'a aucun noeud comp candidat dans le pr�-appariement
+			// Noeud ref qui n'a aucun noeud comp candidat dans le pré-appariement
 			if (liensDuNoeudRef.size() == 0) {
 				noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NoCandidateForMatching")); //$NON-NLS-1$
 				nbSansHomologue++;
@@ -423,7 +423,7 @@ public abstract class Appariement {
 			}
 
 			//////////////////////////////////////////////////////////////////
-			// Noeud ref qui a un ou plusieurs candidats (r�unis dans un seul lien par construction)
+			// Noeud ref qui a un ou plusieurs candidats (réunis dans un seul lien par construction)
 			//
 			// On qualifie des noeuds comp candidats en comparant les entrants/sortants
 			// Un noeud comp est dit, par rapport au noeud ref, :
@@ -443,7 +443,7 @@ public abstract class Appariement {
 
 			////////////////////////////////////////////////////////////////////
 			// Cas d'un appariement simple : 1 noeud BDref correspond à un noeud BDComp
-			// C'est un appariement que l'on juge s�r.
+			// C'est un appariement que l'on juge sûr.
 			if ( complets.size() == 1 ) {
 				noeudComp = (NoeudApp)complets.get(0);
 				noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithANode")); //$NON-NLS-1$
@@ -460,10 +460,10 @@ public abstract class Appariement {
 
 			/////////////////////////////////////////////////////////////////////////
 			// Cas où plusieurs noeuds comp candidats sont complets.
-			// Ce cas ne devrait en th�orie pas arriver d'après Thomas,
+			// Ce cas ne devrait en théorie pas arriver d'après Thomas,
 			// mais si en pratique les seuils sont larges, c'est un cas courant
 			//
-			// Ajout Seb pour filtrer ce sur-appariement : on choisit le plus proche (devrait être affin�)
+			// Ajout Seb pour filtrer ce sur-appariement : on choisit le plus proche (devrait être affiné)
 			if ( complets.size() > 1 ) {
 				filtrageNoeudsComplets(complets, noeudRef);
 				if ( complets.size() == 1 ) {
@@ -480,7 +480,7 @@ public abstract class Appariement {
 					continue;
 				}
 				// Si il reste plusieurs noeuds complets après le filtrage
-				// NB : cas impossible dans l'�tat actuel du filtrage qui ne garde qu'un noeud complet
+				// NB : cas impossible dans l'état actuel du filtrage qui ne garde qu'un noeud complet
 				noeudRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedWithSeveralNodes")); //$NON-NLS-1$
 				nbPlusieursNoeudsComplets++;
 				lien = (LienReseaux)liens.nouvelElement();
@@ -582,7 +582,7 @@ public abstract class Appariement {
 			//   - complet si on trouve une correspondance entre tous les incidents des noeuds ref et comp,
 			//   - incomplet si on trouve une correspondance entre certains incidents
 			//   - impossible si on ne trouve aucune correspondance
-			// NB: methode strictement similaire à ce qui était réalis� sur les noeuds
+			// NB: methode strictement similaire à ce qui était réalisé sur les noeuds
 			complets = new ArrayList<ElementCarteTopo>();
 			incomplets = new ArrayList<ElementCarteTopo>();
 
@@ -595,9 +595,9 @@ public abstract class Appariement {
 
 			///////////////////////////////////////////////////////////////////////////////
 			// On a trouvé un unique groupe complet
-			// C'est un appariement que l'on juge s�r
+			// C'est un appariement que l'on juge sûr
 			if ( complets.size() == 1 ) {
-				// vidage des groupes rejet�s, pour faire propre
+				// vidage des groupes rejetés, pour faire propre
 				for(j=0; j<incomplets.size();j++) {
 					((GroupeApp)incomplets.get(j)).vide();
 				}
@@ -647,10 +647,10 @@ public abstract class Appariement {
 
 			///////////////////////////////////////////////////////////////////////////////
 			// plusieurs groupes sont bien appariés (complets) avec un noeud ref
-			// On est sur qu'il y a sur-appariement (� raffiner dans le futur si possible)
+			// On est sur qu'il y a sur-appariement (à raffiner dans le futur si possible)
 			// Cas qui ne devrait pas arriver d'après Thomas (si les seuils sont bien choisis !)
 			if ( complets.size() > 1 ) {
-				// vidage des groupes rejet�s, pour faire propre
+				// vidage des groupes rejetés, pour faire propre
 				for(j=0; j<incomplets.size();j++) {
 					((GroupeApp)incomplets.get(j)).vide();
 				}
@@ -765,7 +765,7 @@ public abstract class Appariement {
 
 			///////////////////////////////////////////////////////////////////////////////
 			// On a trouvé plusieurs groupes incomplets
-			// C'est un appariement que l'on accepte peut-être mais que l'on sait incoh�rent
+			// C'est un appariement que l'on accepte peut-être mais que l'on sait incohérent
 			if ( incomplets.size() > 1 ) {
 				incomplets2 = new ArrayList<ElementCarteTopo>();
 				for (j=0; j<incomplets.size(); j++) {
@@ -1021,8 +1021,8 @@ public abstract class Appariement {
 		return plusProche;
 	}
 
-	/** Appariement des arcs, s'appuyant sur un appariement pr�alable des noeuds,
-	 *  et sur un pr�-appariement des arcs.
+	/** Appariement des arcs, s'appuyant sur un appariement préalable des noeuds,
+	 *  et sur un pré-appariement des arcs.
 	 *  S'appuie essentiellement sur la notion de 'plus proche chemin d'un arc', défini
 	 *  comme le chemin minimisant la surface entre le chemin et l'arc.
 	 */
@@ -1051,11 +1051,11 @@ public abstract class Appariement {
 
 		liensArcsArcs.setNom(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgeMatching")); //$NON-NLS-1$
 
-		// on �tudie tous les arc ref, un par un, indépendamment les uns des autres
+		// on étudie tous les arc ref, un par un, indépendamment les uns des autres
 		itArcs = reseau1.getPopArcs().getElements().iterator();
 		while (itArcs.hasNext()) {
 			arcRef = (ArcApp)itArcs.next();
-			arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NA")); // pour vérifier que tous les cas sont bien trait�s //$NON-NLS-1$
+			arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.NA")); // pour vérifier que tous les cas sont bien traités //$NON-NLS-1$
 
 			///////// ETUDE DES EXTREMITES DE L'ARC /////////
 
@@ -1098,7 +1098,7 @@ public abstract class Appariement {
 			///////// CALCUL DES PLUS COURTS CHEMINS /////////
 
 			// creation d'un groupe "tousCandidats" avec tous les arcs candidats
-			// issus du pr�-appariement
+			// issus du pré-appariement
 			tousArcs = arcRef.arcsCompEnCorrespondance(liensPreAppAA);
 			tousCandidats = (GroupeApp)reseau2.getPopGroupes().nouvelElement();
 			tousCandidats.setListeArcs(new ArrayList<Arc> (tousArcs));
@@ -1108,7 +1108,7 @@ public abstract class Appariement {
 				arcComp.addGroupe(tousCandidats);
 			}
 			tousCandidats.ajouteNoeuds();
-			// Pour éviter les d�bordements, on ne cherche que les pcc pas trop grands
+			// Pour éviter les débordements, on ne cherche que les pcc pas trop grands
 			//longMaxRecherche = arcRef.getGeometrie().length()*5*param.coefficentPoidsLongueurDistance;
 			longMaxRecherche = arcRef.getGeometrie().length()*param.distanceArcsMax;
 
@@ -1136,7 +1136,7 @@ public abstract class Appariement {
 				lien.addArcs1(arcRef);
 				arcRef.addLiens(lien);
 				if ( pccMin2.getListeArcs().size() == 0 ) {
-					// cas 4a : on a trouvé un pcc mais il est r�duit à un point
+					// cas 4a : on a trouvé un pcc mais il est réduit à un point
 					noeudComp = (NoeudApp)pccMin2.getListeNoeuds().get(0);
 					lien.addNoeuds2(noeudComp);
 					lien.setEvaluation(0.5);
@@ -1176,7 +1176,7 @@ public abstract class Appariement {
 				lien.addArcs1(arcRef);
 				arcRef.addLiens(lien);
 				if ( pccMin1.getListeArcs().size() == 0 ) {
-					// cas 4a : on a trouvé un pcc mais il est r�duit à un point
+					// cas 4a : on a trouvé un pcc mais il est réduit à un point
 					noeudComp = (NoeudApp)pccMin1.getListeNoeuds().get(0);
 					lien.addNoeuds2(noeudComp);
 					lien.setEvaluation(0.5);
@@ -1218,7 +1218,7 @@ public abstract class Appariement {
 				lien.addArcs1(arcRef);
 				arcRef.addLiens(lien);
 				if ( pccMin1.getListeArcs().size() == 0 ) {
-					// cas 5a : on a trouvé un pcc mais il est r�duit à un point
+					// cas 5a : on a trouvé un pcc mais il est réduit à un point
 					noeudComp = (NoeudApp)pccMin1.getListeNoeuds().get(0);
 					lien.addNoeuds2(noeudComp);
 					lien.setEvaluation(0.5);
@@ -1231,7 +1231,7 @@ public abstract class Appariement {
 					continue;
 				}
 				pccMin1.enleveExtremites();
-				// cas 5b : on a trouvé un pcc dans les 2 sens, non r�duit à un point
+				// cas 5b : on a trouvé un pcc dans les 2 sens, non réduit à un point
 				lien.addGroupes2(pccMin1);
 				lien.setEvaluation(1);
 				pccMin1.addLiens(lien);
@@ -1243,12 +1243,12 @@ public abstract class Appariement {
 			}
 
 			// cas 6 : on a trouvé un pcc dans les 2 sens, mais ce n'est pas le même
-			//			cas d'arcs en parral�le
+			//			cas d'arcs en parralèle
 			lien = (LienReseaux)liensArcsArcs.nouvelElement();
 			lien.addArcs1(arcRef);
 			arcRef.addLiens(lien);
 			if ( pccMin1.getListeArcs().size() == 0 ) {
-				// cas 6a : on a trouvé un pcc mais il est r�duit à un point
+				// cas 6a : on a trouvé un pcc mais il est réduit à un point
 				noeudComp = (NoeudApp)pccMin1.getListeNoeuds().get(0);
 				lien.addNoeuds2(noeudComp);
 				lien.setEvaluation(0.5);
@@ -1258,7 +1258,7 @@ public abstract class Appariement {
 				pccMin1.videEtDetache();
 			}
 			else {
-				// cas 6b : on a trouvé un pcc non r�duit à un point
+				// cas 6b : on a trouvé un pcc non réduit à un point
 				pccMin1.enleveExtremites();
 				lien.setEvaluation(1);
 				lien.addGroupes2(pccMin1);
@@ -1267,7 +1267,7 @@ public abstract class Appariement {
 				pccMin1.setResultatAppariementGlobal(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithAnEdge")); //$NON-NLS-1$
 			}
 			if ( pccMin2.getListeArcs().size() == 0 ) {
-				// cas 6a : on a trouvé un pcc mais il est r�duit à un point
+				// cas 6a : on a trouvé un pcc mais il est réduit à un point
 				noeudComp = (NoeudApp)pccMin2.getListeNoeuds().get(0);
 				lien.addNoeuds2(noeudComp);
 				lien.setEvaluation(0.5);
@@ -1279,7 +1279,7 @@ public abstract class Appariement {
 				longDouteuxPbNoeud= longDouteuxPbNoeud+arcRef.longueur();
 			}
 			else {
-				// cas 6b : on a trouvé un pcc non r�duit à un point
+				// cas 6b : on a trouvé un pcc non réduit à un point
 				pccMin2.enleveExtremites();
 				lien.addGroupes2(pccMin2);
 				pccMin2.addLiens(lien);
@@ -1384,7 +1384,7 @@ public abstract class Appariement {
 			//cas où l'arc est concerné par plusieurs liens
 			if ( param.varianteFiltrageImpassesParasites ) {
 				// on regarde si l'arc est une petite impasse dans le réseau de comparaison apparié.
-				// Si oui, on l'enlève des appariements, c'est s�rement un parasite;
+				// Si oui, on l'enlève des appariements, c'est sûrement un parasite;
 				if (arcComp.longueur() < param.distanceNoeudsMax) { // est-il petit?
 					// est-il une impasse au début?
 					Noeud iniComp = arcComp.getNoeudIni();
@@ -1592,7 +1592,7 @@ public abstract class Appariement {
 	}
 
 	/** Les noeuds de référence non appariés par les 'liens' sont projetés sur le réseau comp
-	 * de manière à introduire un noeud dans le res�au Comp aux endroits qui pourraient correspondre
+	 * de manière à introduire un noeud dans le réseau Comp aux endroits qui pourraient correspondre
 	 * à ces noeuds Ref non appariés.
 	 */
 	public static void decoupeNoeudsNonApparies(ReseauApp ref, ReseauApp comp, EnsembleDeLiens liens,  ParametresApp param) {
@@ -1607,12 +1607,12 @@ public abstract class Appariement {
 	}
 
 	/** découpe les arcs du reseau1 'reseauADecouper' non appariés par les 'liens' de manière
-	 *  à introduire un noeud dans le res�auADecouper aux endroits où il s'�loigne du réseau2 'reseauDecoupant'.
+	 *  à introduire un noeud dans le reseauADecouper aux endroits où il s'éloigne du réseau2 'reseauDecoupant'.
 	 * 
 	 *  Remarque: utilisé pour les GR par exemple pour traiter le cas des GR hors sentier.
 	 *  
-	 *  Derni�re modif: 
-	 *  08/04/2009, Seb, am�lioration de la méthode pour autoriser les découpages multiples
+	 *  Dernière modif: 
+	 *  08/04/2009, Seb, amélioration de la méthode pour autoriser les découpages multiples
 	 */
 	public static void decoupeNonApparies(ReseauApp reseauADecouper, ReseauApp reseauDecoupant, EnsembleDeLiens liens,  ParametresApp param) {
 
@@ -1642,7 +1642,7 @@ public abstract class Appariement {
 			itArcsDecoupants = arcsDecoupantsRes2.getElements().iterator();
 			while (itArcsDecoupants.hasNext()) {
 				arcDecoupant = (ArcApp)itArcsDecoupants.next();
-				// r� �chantillonage de la géométrie de l'arc découpant à environ 1m
+				// ré échantillonage de la géométrie de l'arc découpant à environ 1m
 				
 				GM_LineString lineStringDecoupant = arcDecoupant.getGeometrie();
 				for(DirectPosition dp:arcADecouper.getGeometrie().coord().getList()) {
@@ -1661,7 +1661,7 @@ public abstract class Appariement {
 					distancePtCourantVersArcADecoupe = Distances.distance(ptCourantArcDecoupant, arcADecouper.getGeometrie()) ;
 					if (proche) {
 						if ( distancePtCourantVersArcADecoupe >  distanceMaxNoeudArc) {
-							// on était proche et on s'�loigne à partir de ce point
+							// on était proche et on s'éloigne à partir de ce point
 							// --> on rajoute deux points de découpage, entourant la partie proche,
 							proche = false;
 							//ptDecoupage = Operateurs.projection(arcDecoupant.getGeometrie().getControlPoint(indiceDernierPtProche), arcADecouper.getGeometrie());
@@ -1677,7 +1677,7 @@ public abstract class Appariement {
 					}
 					else {
 						if ( distancePtCourantVersArcADecoupe <= distanceMaxNoeudArc) {
-							// on était �loign� et on rentre dans une zone proche: intialisation des compteurs
+							// on était éloigné et on rentre dans une zone proche: intialisation des compteurs
 							proche = true;
 							indiceDernierPtProche = i;
 							ptDecoupage = Operateurs.projection(lineStringDecoupant.getControlPoint(indiceDernierPtProche), arcADecouper.getGeometrie());
@@ -1685,7 +1685,7 @@ public abstract class Appariement {
 							continue;
 						}
 						else {
-							// on était �loign� et on le reste: on continue à parcourir l'arc découpant
+							// on était éloigné et on le reste: on continue à parcourir l'arc découpant
 							continue;
 						}
 					}
@@ -1699,7 +1699,7 @@ public abstract class Appariement {
 		reseauDecoupant.projete(pointsDeDecoupage, distanceMaxNoeudArc, distanceMaxNoeudArc);
 	}
 
-	/* Ancienne version 08/04/2009, avant am�lioration du redecoupage
+	/* Ancienne version 08/04/2009, avant amélioration du redecoupage
 	public static void decoupeNonApparies(ReseauApp ref, ReseauApp comp, EnsembleDeLiens liens,  ParametresApp param) {
 
 		double distanceMaxNoeudArc = param.projeteNoeud2surReseau1_DistanceNoeudArc; //param.distanceArcsMax;

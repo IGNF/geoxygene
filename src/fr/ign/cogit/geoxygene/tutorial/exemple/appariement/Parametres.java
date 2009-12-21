@@ -58,16 +58,16 @@ public class Parametres {
 		/////////////   PARAMETRES SPECIFIANT QUELLE DONNEES SONT TRAITEES   ////////////
 		/////////////////////////////////////////////////////////////////////////////////
 
-		//Liste des classes d'arcs de la BD 1 (la moins d�taill�e) concernés par l'appariement
+		//Liste des classes d'arcs de la BD 1 (la moins détaillée) concernés par l'appariement
 		param.populationsArcs1.add((FT_FeatureCollection<Arc>) populationsArcs1);
-		// Liste des classes d'arcs de la BD 2 (la plus d�taill�e) concernés par l'appariement
+		// Liste des classes d'arcs de la BD 2 (la plus détaillée) concernés par l'appariement
 		param.populationsArcs2.add((FT_FeatureCollection<Arc>) populationsArcs2);
 
 		param.populationsArcsAvecOrientationDouble = true;
 
 		/////////////////////////////////////////////////////////////////////////////////
 		/////////////////             TAILLES DE RECHERCHE        ///////////////////////
-		/////////////////        Ecarts de distance autoris�s     ///////////////////////
+		/////////////////        Ecarts de distance autorisés     ///////////////////////
 		/////////////////      CE SONT LES PARAMETRES PRINCIPAUX  ///////////////////////
 		/////////////////////////////////////////////////////////////////////////////////
 
@@ -159,20 +159,20 @@ public class Parametres {
 		/////////////   PARAMETRES SPECIFIANT QUELLE DONNEES SONT TRAITEES   ////////////
 		/////////////////////////////////////////////////////////////////////////////////
 
-		//Liste des classes d'arcs de la BD 1 (la moins d�taill�e) concernés par l'appariement
+		//Liste des classes d'arcs de la BD 1 (la moins détaillée) concernés par l'appariement
 		param.populationsArcs1.add((FT_FeatureCollection<Arc>) populationsArcs1);
-		//Liste des classes de noeuds de la BD 1 (la moins d�taill�e) concernés par l'appariement
+		//Liste des classes de noeuds de la BD 1 (la moins détaillée) concernés par l'appariement
 		param.populationsNoeuds1.add((FT_FeatureCollection<Noeud>) populationsNoeuds1);
-		// Liste des classes d'arcs de la BD 2 (la plus d�taill�e) concernés par l'appariement
+		// Liste des classes d'arcs de la BD 2 (la plus détaillée) concernés par l'appariement
 		param.populationsArcs2.add((FT_FeatureCollection<Arc>) populationsArcs2);
-		//Liste des classes de noeuds de la BD 2 (la plus d�taill�e) concernés par l'appariement
+		//Liste des classes de noeuds de la BD 2 (la plus détaillée) concernés par l'appariement
 		param.populationsNoeuds2.add((FT_FeatureCollection<Noeud>) populationsNoeuds2);
 
 		param.populationsArcsAvecOrientationDouble = true;
 
 		/////////////////////////////////////////////////////////////////////////////////
 		/////////////////             TAILLES DE RECHERCHE        ///////////////////////
-		/////////////////        Ecarts de distance autoris�s     ///////////////////////
+		/////////////////        Ecarts de distance autorisés     ///////////////////////
 		/////////////////      CE SONT LES PARAMETRES PRINCIPAUX  ///////////////////////
 		/////////////////////////////////////////////////////////////////////////////////
 

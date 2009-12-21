@@ -42,7 +42,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * 
  * English: Computation of distances (static methods)
  * 
- * @author  Musti�re/Bonin
+ * @author  Mustière/Bonin
  * @version 1.0
  */
 
@@ -50,7 +50,7 @@ public abstract class Distances {
 
 	// Organisation du code:
 	// - Distances entre points
-	// - Distances entre un point et un autre type de géo�mtrie
+	// - Distances entre un point et un autre type de géométrie
 	// - Distances entre lignes
 	// - Distances entre surfaces
 
@@ -73,14 +73,14 @@ public abstract class Distances {
 				Math.pow(dp1.getY()-dp2.getY(),2));
 	}
 
-	/** Distance euclidienne calcul�e en 2 dimensions XY, même sur des objets 3D. */
+	/** Distance euclidienne calculée en 2 dimensions XY, même sur des objets 3D. */
 	public static double distance2D (DirectPosition dp1, DirectPosition dp2)   {
 		return Math.sqrt(Math.pow(dp1.getX()-dp2.getX(),2) +
 				Math.pow(dp1.getY()-dp2.getY(),2));
 	}
 
 	/** Est-ce que les deux points sont distants de moins du seuil passé en paramètre ?
-	 *  méthode optimisée pour accèl�rer les requ�tes spatiales. */
+	 *  méthode optimisée pour accélérer les requêtes spatiales. */
 	public static boolean proche(DirectPosition dp1, DirectPosition dp2, double distance) {
 		if ( Math.abs(dp1.getX()-dp2.getX()) > distance ) return false;
 		if ( Math.abs(dp1.getY()-dp2.getY()) > distance ) return false;
@@ -142,8 +142,8 @@ public abstract class Distances {
 	 * d'une des lignes a l'autre ligne. Dans certains cas cette definition
 	 * diffère de la définition theorique pure car la distance de Hausdorff ne se
 	 * realise pas necessairement sur un point intermediaire. Mais cela est rare
-	 * sur des données r�elles. Cette implementation est un bon compromis entre
-	 * simplicit� et précision.
+	 * sur des données réelles. Cette implementation est un bon compromis entre
+	 * simplicité et précision.
 	 */
 	public static double hausdorff(GM_LineString L1, GM_LineString L2)   {
 		return Math.max(premiereComposanteHausdorff(L1,L2), premiereComposanteHausdorff(L2,L1));
@@ -151,7 +151,7 @@ public abstract class Distances {
 
 	/** Distance de Hausdorff entre un point P et une ligne L.
 	 * c'est-à-dire distance au point P du point intermédiaire de
-	 * la ligne L le plus �loign� du point P.
+	 * la ligne L le plus éloigné du point P.
 	 */
 	public static double hausdorff(GM_LineString L, GM_Point P)   {
 		Iterator<DirectPosition> itPts = L.coord().getList().iterator();
@@ -167,7 +167,7 @@ public abstract class Distances {
 	}
 
 	/** Distance moyenne entre deux polylignes,
-	 * définie comme le rapport de l'aire s�parant deux polylignes
+	 * définie comme le rapport de l'aire séparant deux polylignes
 	 * sur la moyenne de leurs longueurs.
 	 * 
 	 * IMPORTANT: la méthode suppose que les lignes sont orientées globalement
@@ -178,7 +178,7 @@ public abstract class Distances {
 		GM_LineString perimetre;
 		Iterator<DirectPosition> itPts;
 
-		//fabrication de la surface delimit�e par les lignes
+		//fabrication de la surface delimitée par les lignes
 		perimetre = new GM_LineString();
 		itPts=L1.coord().getList().iterator();
 		while (itPts.hasNext()) {
@@ -197,12 +197,12 @@ public abstract class Distances {
 	}
 
 	/** Mesure d'écart entre deux polylignes, défini comme une approximation de la
-	 * surface s�parant les polylignes.
+	 * surface séparant les polylignes.
 	 * Plus précisément, cet écart est égal à la somme, pour chaque point P de L1,
 	 * de (distance de P à L2) * (moyenne des longueurs des segments autour de P)
 	 * 
-	 * NB: Ce n'est pas une distance au sens math�matique du terme,
-	 * et en particulier cet écart n'est pas sym�trique: ecart(L1,L2) != ecart(L2,L1)
+	 * NB: Ce n'est pas une distance au sens mathématique du terme,
+	 * et en particulier cet écart n'est pas symétrique: ecart(L1,L2) != ecart(L2,L1)
 	 */
 	public static double ecartSurface(GM_LineString L1, GM_LineString L2) {
 		double ecartTotal=0, distPt, long1, long2;
@@ -265,7 +265,7 @@ public abstract class Distances {
 	 * Il s'agit ici d'une pure bidouille pour contourner certains bugs de JTS:
 	 * Si JTS plante au calcul d'intersection, on filtre les surfaces avec Douglas et Peucker,
 	 * progressivement avec 10 seuils entre min et max. Min et Max doivent être fixer donc de
-	 * l'ordre de grandeur de la précision des données sinon le calcul risque d'être trop fauss�.
+	 * l'ordre de grandeur de la précision des données sinon le calcul risque d'être trop faussé.
 	 * 
 	 * définition : 1 - surface(intersection)/surface(union)
 	 * Ref [Vauglin 97]
@@ -291,7 +291,7 @@ public abstract class Distances {
 	 * définition : 1 - surface(intersection)/surface(union)
 	 * Ref [Vauglin 97]
 	 * 
-	 * NB: renvoie 2 en cas de problème r�siduer lors du calcul d'intersection avec JTS
+	 * NB: renvoie 2 en cas de problème résiduer lors du calcul d'intersection avec JTS
 	 *     (bug en particulier si les surfaces sont dégénérées ou trop complexes).
 	 */
 	public static double distanceSurfaciqueRobuste(GM_MultiSurface<GM_OrientableSurface> A, GM_MultiSurface<GM_OrientableSurface> B)   {
@@ -309,7 +309,7 @@ public abstract class Distances {
 	 * En contrepartie, cette méthode n'est valable que si les GM_Polygon composant A [resp. B]
 	 * ne s'intersectent pas entre elles.
 	 * 
-	 * NB: renvoie -1 en cas de problème r�siduer lors du calcul d'intersection avec JTS
+	 * NB: renvoie -1 en cas de problème résiduer lors du calcul d'intersection avec JTS
 	 *     (bug en particulier si les surfaces sont dégénérées ou trop complexes).
 	 */
 	public static double surfaceIntersection(GM_MultiSurface<GM_OrientableSurface> A, GM_MultiSurface<GM_OrientableSurface> B) {
@@ -338,7 +338,7 @@ public abstract class Distances {
 	 * En contrepartie, cette méthode n'est valable que si les GM_Polygon composant A [resp. B]
 	 * ne s'intersectent pas entre elles.
 	 * 
-	 * NB: renvoie -1 en cas de problème r�siduer lors du calcul d'intersection avec JTS
+	 * NB: renvoie -1 en cas de problème résiduer lors du calcul d'intersection avec JTS
 	 *     (bug en particulier si les surfaces sont dégénérées ou trop complexes).
 	 */
 	public static double surfaceUnion(GM_MultiSurface<GM_OrientableSurface> A, GM_MultiSurface<GM_OrientableSurface> B) {
@@ -361,7 +361,7 @@ public abstract class Distances {
 		return inter.area()/A.area();
 	}
 
-	/** Mesure dite "Compl�tude" entre 2 surfaces.
+	/** Mesure dite "Complétude" entre 2 surfaces.
 	 * Ref : [Bel Hadj Ali 2001]
 	 * 
 	 * définition : Surface(A inter B) / Surface(B)
@@ -380,7 +380,7 @@ public abstract class Distances {
 		return inter.area()/A.area();
 	}
 
-	/** Mesure dite "Compl�tude" entre 2 GM_MultiSurface.
+	/** Mesure dite "Complétude" entre 2 GM_MultiSurface.
 	 * 
 	 * Ref : [Bel Hadj Ali 2001]
 	 * définition : Surface(A inter B) / Surface(B)
@@ -415,7 +415,7 @@ public abstract class Distances {
 	 * Il s'agit ici d'une pure bidouille pour contourner certains bugs de JTS:
 	 * Si JTS plante au calcul , on filtre les surfaces avec Douglas et Peucker,
 	 * progressivement avec 10 seuils entre min et max. Min et Max doivent être fixer donc de
-	 * l'ordre de grandeur de la précision des données sinon le calcul risque d'être trop fauss�.
+	 * l'ordre de grandeur de la précision des données sinon le calcul risque d'être trop faussé.
 	 * 
 	 *  <BR> <STRONG> Definition :  </STRONG> associationSurfaces(A,B) = vrai si
 	 * <UL>

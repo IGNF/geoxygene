@@ -28,7 +28,7 @@ package fr.ign.cogit.geoxygene.util.algo;
 import java.util.List;
 
 /**
- * Fonctions math�matiques utilitaires
+ * Fonctions mathématiques utilitaires
  * @author Julien Perret
  */
 public class MathUtil {
@@ -46,9 +46,9 @@ public class MathUtil {
 	}
 
 	/**
-	 * Moyenne des carr�s d'une liste
+	 * Moyenne des carrés d'une liste
 	 * @param liste liste de doubles
-	 * @return moyenne des carr�s des éléments d'une liste
+	 * @return moyenne des carrés des éléments d'une liste
 	 */
 	public static double moyenneCarres(List<Double> liste) {
 		if (liste.isEmpty()) return 0.0;
@@ -110,9 +110,9 @@ public class MathUtil {
 	}
 
 	/**
-	 * La valeur m�diane d'une liste n'est définie que si la liste contient au moins un élément.
+	 * La valeur médiane d'une liste n'est définie que si la liste contient au moins un élément.
 	 * @param liste liste de doubles
-	 * @return Valeur m�diane de la liste si elle n'est pas vide. 0 sinon.
+	 * @return Valeur médiane de la liste si elle n'est pas vide. 0 sinon.
 	 */
 	public static double mediane(List<Double> liste) {
 		if (liste.isEmpty()) return 0.0;

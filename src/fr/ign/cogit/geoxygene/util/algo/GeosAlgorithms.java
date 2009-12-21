@@ -34,7 +34,7 @@ import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
 
 /**
  * Appel des methodes GEOS sur des GM_Object.
- * Non finalis�.
+ * Non finalisé.
  *
  * @author Thierry Badard, Arnaud Braun & Christophe Pele
  * @version 1.0

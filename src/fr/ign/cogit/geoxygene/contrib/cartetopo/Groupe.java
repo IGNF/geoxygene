@@ -39,7 +39,7 @@ import fr.ign.cogit.geoxygene.feature.Population;
  * Un groupe est une composition de noeuds, d'arcs et de faces.
  * 
  * English: a group is a set of nodes/arcs/faces of a topological map
- * @author  Musti�re/Bonin
+ * @author  Mustière/Bonin
  * @version 1.0
  */
 
@@ -197,16 +197,17 @@ public class Groupe  extends ElementCarteTopo   {
 		return arcs;
 	}
 
-	/** Arcs incidents à un noeuds, class�s en tournant autour du noeud dans l'ordre trigonom�trique,
-	 *  et qualifi�s d'entrants ou sortants, au sens de la géo�mtrie (utile particuli�rement à la gestion des boucles).
+	/** Arcs incidents à un noeuds, classés en tournant autour du noeud dans l'ordre trigonométrique,
+	 *  et qualifiés d'entrants ou sortants, au sens de la géoémtrie 
+	 *  (utile particulièrement à la gestion des boucles).
 	 *
 	 *  NB : renvoie une liste de liste:
 	 *      Liste.get(0) = liste des arcs (de la classe 'Arc')
 	 *      Liste.get(1) = liste des orientations de type Boolean,
 	 *                    true = entrant, false = sortant)
-	 *  NB : Classement effectu� sur la direction donnée par le premier point de l'arc après le noeud.
+	 *  NB : Classement effectué sur la direction donnée par le premier point de l'arc après le noeud.
 	 *  NB : Le premier arc est celui dont la direction est la plus proche de l'axe des X, en tournant dans le sens trigo.
-	 *  NB : Ce classement est recalcul� en fonction de la géométrie à chaque appel de la méthode.
+	 *  NB : Ce classement est recalculé en fonction de la géométrie à chaque appel de la méthode.
 	 */
 	public List<Object> arcsClasses() {
 		List<Arc> arcsClasses = new ArrayList<Arc>();
@@ -224,7 +225,7 @@ public class Groupe  extends ElementCarteTopo   {
 		Iterator<Arc> itArcs;
 		int i;
 
-		// recherche de l'angle de d�part de chaque arc sortant
+		// recherche de l'angle de départ de chaque arc sortant
 		itArcs = arcsSortants.iterator();
 		while ( itArcs.hasNext() ) {
 			arc = itArcs.next();
@@ -233,7 +234,7 @@ public class Groupe  extends ElementCarteTopo   {
 			angles.add(angle);
 			orientations.add(new Boolean(false));
 		}
-		// recherche de l'angle de d�part de chaque arc entrant
+		// recherche de l'angle de départ de chaque arc entrant
 		itArcs = arcsEntrants.iterator();
 		while ( itArcs.hasNext() ) {
 			arc = itArcs.next();
@@ -351,12 +352,12 @@ public class Groupe  extends ElementCarteTopo   {
 			while (this.getListeNoeuds().size() != 0) {
 				groupeConnexe = (Groupe)this.getPopulation().nouvelElement();
 				groupesConnexes.add(groupeConnexe);
-				// le premier noeud de la liste des noeuds, vid�e au fur et à mesure, est l'amorce d'un nouveau groupe connexe
+				// le premier noeud de la liste des noeuds, vidée au fur et à mesure, est l'amorce d'un nouveau groupe connexe
 				amorce = this.getListeNoeuds().get(0);
 				groupeConnexe.ajouteVoisins(amorce, this);  //nb: méthode récursive
-				groupeConnexe.arcsDansGroupe(this); // recherche des arcs du groupe, situ�s entre 2 noeuds du goupe connexe
+				groupeConnexe.arcsDansGroupe(this); // recherche des arcs du groupe, situés entre 2 noeuds du goupe connexe
 			}
-			// vidage des arcs du groupe, pour faire propre (on a déjà vid� les noeuds au fur et à mesure)
+			// vidage des arcs du groupe, pour faire propre (on a déjà vidé les noeuds au fur et à mesure)
 			for (i=0; i<this.getListeArcs().size(); i++) {
 				arc = this.getListeArcs().get(i);
 				arc.getListeGroupes().remove(this);

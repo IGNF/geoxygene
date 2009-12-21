@@ -44,7 +44,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  * Les arcs ont pour géométrie un GM_Point.
  * 
  * English: nodes of topological map
- * @author  Musti�re/Bonin
+ * @author  Mustière/Bonin
  * @version 1.0
  */
 
@@ -129,7 +129,7 @@ public class Noeud extends ElementCarteTopo {
 	}
 
 	/** Renvoie la liste des noeuds voisins de self dans le réseau
-	 *  sans tenir compte de l'orientation (i.e. tous les arcs sont consid�r�s en double sens) */
+	 *  sans tenir compte de l'orientation (i.e. tous les arcs sont considérés en double sens) */
 	public List<Noeud> voisins() {
 		List<Noeud> voisins = new ArrayList<Noeud>();
 		for (Arc arc:this.getEntrants()) voisins.add(arc.getNoeudIni());
@@ -202,20 +202,20 @@ public class Noeud extends ElementCarteTopo {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//	Gestion de type carte topologique
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//	Les arcs sont class�s autour d'un noeud en fonction de leur géométrie.
+	//	Les arcs sont classés autour d'un noeud en fonction de leur géométrie.
 	//	Ceci permet en particulier de parcourir facilement les cycles d'un graphe.
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 
-	/** Arcs incidents à un noeuds, class�s en tournant autour du noeud dans l'ordre trigonom�trique,
-	 *  et qualifi�s d'entrants ou sortants, au sens de la géo�mtrie (utile particuli�rement à la gestion des boucles).
+	/** Arcs incidents à un noeuds, classés en tournant autour du noeud dans l'ordre trigonométrique,
+	 *  et qualifiés d'entrants ou sortants, au sens de la géométrie (utile particulièrement à la gestion des boucles).
 	 *
 	 *  NB : renvoie une liste de liste:
 	 *      Liste.get(0) = liste des arcs (de la classe 'Arc')
 	 *      Liste.get(1) = liste des orientations de type Boolean,
 	 *                    true = entrant, false = sortant)
-	 *  NB : Classement effectu� sur la direction donnée par le premier point de l'arc après le noeud.
+	 *  NB : Classement effectué sur la direction donnée par le premier point de l'arc après le noeud.
 	 *  NB : Le premier arc est celui dont la direction est la plus proche de l'axe des X, en tournant dans le sens trigo.
-	 *  NB : Ce classement est recalcul� en fonction de la géométrie à chaque appel de la méthode.
+	 *  NB : Ce classement est recalculé en fonction de la géométrie à chaque appel de la méthode.
 	 */
 	public List<Object> arcsClasses() {
 		List<Arc> arcsClasses = new ArrayList<Arc>();
@@ -233,7 +233,7 @@ public class Noeud extends ElementCarteTopo {
 		Iterator<Arc> itArcs;
 		int i;
 
-		// recherche de l'angle de d�part de chaque arc sortant
+		// recherche de l'angle de départ de chaque arc sortant
 		itArcs = arcsSortants.iterator();
 		while ( itArcs.hasNext() ) {
 			arc = itArcs.next();
@@ -242,7 +242,7 @@ public class Noeud extends ElementCarteTopo {
 			angles.add(angle);
 			orientations.add(new Boolean(false));
 		}
-		// recherche de l'angle de d�part de chaque arc entrant
+		// recherche de l'angle de départ de chaque arc entrant
 		itArcs = arcsEntrants.iterator();
 		while ( itArcs.hasNext() ) {
 			arc = itArcs.next();
@@ -369,21 +369,21 @@ public class Noeud extends ElementCarteTopo {
 	/** utilisation interne : ne pas utiliser */
 	private Noeud _noeudPrecedent;
 
-	/** Plus court chemin de this vers arriv�e, en tenant compte du sens de circulation.
+	/** Plus court chemin de this vers arrivée, en tenant compte du sens de circulation.
 	 * Le pcc s'appuie sur l'attribut 'poids' des arcs, qui doit être rempli auparavant.
 	 * 
 	 * @param maxLongueur
-	 *   Pour optimiser: on arr�te de chercher et on renvoie null si il n'y a pas de pcc
+	 *   Pour optimiser: on arrête de chercher et on renvoie null si il n'y a pas de pcc
 	 *   de taille inférieure à maxLongueur (inactif si maxLongueur = 0).
 	 *
 	 * @return
 	 * 	Renvoie un groupe, qui contient (dans l'ordre) les noeuds et arcs du plus court chemin.
 	 *  Cas particuliers :
-	 *    Si this = arriv�e, renvoie un groupe contenant uniquement self;
-	 *    Si this et arriv�e sont sur 2 composantes connexes distinctes (pas de pcc), renvoie null.
+	 *    Si this = arrivée, renvoie un groupe contenant uniquement self;
+	 *    Si this et arrivée sont sur 2 composantes connexes distinctes (pas de pcc), renvoie null.
 	 * 
 	 * NB : l'attribut orientation DOIT etre renseigné.
-	 * NB : ce groupe contient le noeud de d�part et le noeud d'arriv�e.
+	 * NB : ce groupe contient le noeud de départ et le noeud d'arrivée.
 	 */
 	public Groupe plusCourtChemin(Noeud arrivee, double maxLongueur) {
 		List<Noeud> noeudsFinaux = new ArrayList<Noeud>();
@@ -431,7 +431,7 @@ public class Noeud extends ElementCarteTopo {
 
 			// Phase "avant"
 			while (aTraiter.size() != 0 ) {
-				// choisi le noeud à marquer comme trait� parmi les voisins
+				// choisi le noeud à marquer comme traité parmi les voisins
 				plusProche = aTraiter.get(0);
 				for (i=1; i<aTraiter.size(); i++) {
 					if ( aTraiter.get(i)._distance < plusProche._distance ) {
@@ -440,7 +440,7 @@ public class Noeud extends ElementCarteTopo {
 				}
 				traites.add(plusProche);
 				aTraiter.remove(plusProche);
-				if ( plusProche == arrivee ) break; //il s'agit du noeud d'arriv�e
+				if ( plusProche == arrivee ) break; //il s'agit du noeud d'arrivée
 				if ( maxLongueur != 0 ) {
 					if ( plusProche._distance > maxLongueur ) return null; // heuristique pour stopper la recherche
 				}
@@ -449,7 +449,7 @@ public class Noeud extends ElementCarteTopo {
 					noeudVoisin = noeudsVoisins.get(i);
 					arcVoisin = arcsVoisins.get(i);
 					dist = distancesVoisins.get(i).doubleValue();
-					if ( traites.contains(noeudVoisin) ) continue; // Noeud déjà trait�
+					if ( traites.contains(noeudVoisin) ) continue; // Noeud déjà traité
 					if ( aTraiter.contains(noeudVoisin) ) { // Noeud déjà atteint, on voit si on a trouvé un chemin plus court pour y accèder
 						if ( noeudVoisin._distance > (plusProche._distance+dist) ) {
 							noeudVoisin._distance = plusProche._distance+dist;
@@ -560,22 +560,22 @@ public class Noeud extends ElementCarteTopo {
 	}
 
 
-	/** Plus court chemin de this vers arriv�e, en tenant compte du sens de circulation,
+	/** Plus court chemin de this vers arrivée, en tenant compte du sens de circulation,
 	 * au sein d'un groupe d'arcs et de noeuds.
 	 * Le pcc s'appuie sur l'attribut 'poids' des arcs, qui doit être rempli auparavant.
 	 * 
 	 * @param maxLongueur
-	 *    Pour optimiser: on arr�te de chercher et on renvoie null si il n'y a pas de pcc
+	 *    Pour optimiser: on arrête de chercher et on renvoie null si il n'y a pas de pcc
 	 *    de taille inférieure à maxLongueur (inactif si maxLongueur = 0).
 	 * 
 	 * @return
 	 * 	Renvoie un groupe, qui contient (dans l'ordre) les noeuds et arcs du plus court chemin.
 	 *  Cas particuliers :
-	 *    Si this = arriv�e, renvoie un groupe contenant uniquement self;
-	 *    Si this et arriv�e sont sur 2 composantes connexes distinctes (pas de pcc), renvoie null.
+	 *    Si this = arrivée, renvoie un groupe contenant uniquement self;
+	 *    Si this et arrivée sont sur 2 composantes connexes distinctes (pas de pcc), renvoie null.
 	 * 
 	 * NB : l'attribut orientation DOIT etre renseigné.
-	 * NB : ce groupe contient le noeud de d�part et le noeud d'arriv�e.
+	 * NB : ce groupe contient le noeud de départ et le noeud d'arrivée.
 	 */
 	public Groupe plusCourtChemin(Noeud arrivee, Groupe groupe, double maxLongueur) {
 		List<Noeud> noeudsFinaux = new ArrayList<Noeud>();
@@ -623,7 +623,7 @@ public class Noeud extends ElementCarteTopo {
 			// Phase "avant"
 			while (aTraiter.size() != 0 ) {
 
-				// choisi le noeud à marquer comme trait� parmi les voisins
+				// choisi le noeud à marquer comme traité parmi les voisins
 				plusProche = aTraiter.get(0);
 				for (i=1; i<aTraiter.size(); i++) {
 					if ( aTraiter.get(i)._distance < plusProche._distance ) {
@@ -633,7 +633,7 @@ public class Noeud extends ElementCarteTopo {
 
 				traites.add(plusProche);
 				aTraiter.remove(plusProche);
-				if ( plusProche == arrivee ) break; //il s'agit du noeud d'arriv�e
+				if ( plusProche == arrivee ) break; //il s'agit du noeud d'arrivée
 				if ( maxLongueur != 0 ) {
 					if ( plusProche._distance > maxLongueur ) return null; // heuristique pour stopper la recherche
 				}
@@ -643,7 +643,7 @@ public class Noeud extends ElementCarteTopo {
 					noeudVoisin = noeudsVoisins.get(i);
 					arcVoisin = arcsVoisins.get(i);
 					dist = distancesVoisins.get(i).doubleValue();
-					if ( traites.contains(noeudVoisin) ) continue; // Noeud déjà trait�
+					if ( traites.contains(noeudVoisin) ) continue; // Noeud déjà traité
 					if ( aTraiter.contains(noeudVoisin) ) { // Noeud déjà atteint, on voit si on a trouvé un chemin plus court pour y accèder
 						if ( noeudVoisin._distance > (plusProche._distance+dist) ) {
 							noeudVoisin._distance = plusProche._distance+dist;
@@ -760,17 +760,17 @@ public class Noeud extends ElementCarteTopo {
 	///////////////////////////////////////////////////////
 
 	/** Direction (Angle entre 0 et 2PI) de l'arc à la sortie du noeud this.
-	 * Cette direction est calcul�e à partir d'une partie de l'arc d'une certaine
-	 * longueur (paramètre), et en r�-�chantillonant l'arc (paramètre).
+	 * Cette direction est calculée à partir d'une partie de l'arc d'une certaine
+	 * longueur (paramètre), et en ré-échantillonant l'arc (paramètre).
 	 * Si l'arc n'a pas pour noeud initial ou final this: renvoie null.
 	 * 
 	 * @param longueurEspaceTravail :
-	 * Longueur curviligne qui d�termine l'espace de travail autour du noeud,
-	 * Si elle est égale à 0: les deux premiers points de l'arc sont consid�r�s.
+	 * Longueur curviligne qui détermine l'espace de travail autour du noeud,
+	 * Si elle est égale à 0: les deux premiers points de l'arc sont considérés.
 	 *
 	 * @param pasEchantillonage :
-	 * Avant le calcul de la direction moyenne des points, la ligne est r��chantillon�e à ce pas.
-	 * Si égal à 0: aucun �chantillonage n'est effectu�
+	 * Avant le calcul de la direction moyenne des points, la ligne est ré-échantillonée à ce pas.
+	 * Si égal à 0: aucun échantillonage n'est effectué
 	 * 
 	 */
 	public Angle directionArc(Arc arc, double longueurEspaceTravail, double pasEchantillonage) {
@@ -803,4 +803,5 @@ public class Noeud extends ElementCarteTopo {
 	public String toString() {
 		return "Noeud "+this.getId()+" - "+this.getGeometrie(); //$NON-NLS-1$ //$NON-NLS-2$
 	}
+	
 }

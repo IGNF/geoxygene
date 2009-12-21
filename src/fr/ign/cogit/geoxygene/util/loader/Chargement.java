@@ -74,7 +74,7 @@ public class Chargement {
 	/**
 	 * Charge un objet {@link Chargement} depuis le fichier XML passé en paramètre.
 	 * @param nomFichier fichier XML
-	 * @return l'objet {@link Chargement} chrag� depuis le fichier XML passé en paramètre.
+	 * @return l'objet {@link Chargement} chragé depuis le fichier XML passé en paramètre.
 	 */
 	public static Chargement charge(String nomFichier) {
         try {return (Chargement) Chargement.getXStream().fromXML(new FileInputStream(new File(nomFichier)));}

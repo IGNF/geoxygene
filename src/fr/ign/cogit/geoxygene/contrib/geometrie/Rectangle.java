@@ -39,7 +39,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
  * Cette classe n'est là que pour optimiser quelques méthodes,
  * et est essentiellement utilisée pour l'index de dallage.
  * 
- * @author  Musti�re
+ * @author  Mustière
  * @version 1.0
  */
 

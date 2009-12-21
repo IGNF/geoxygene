@@ -61,7 +61,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * et resume dans le rapport [Mustiere 2002]:
  * ("Description des processus d'appariement mis en oeuvre au COGIT",SR/2002.0072, chap.6).
  * 
- * @author Braun & Musti�re - Laboratoire COGIT
+ * @author Braun & Mustière - Laboratoire COGIT
  * version 1.0
  * 
  */
@@ -71,22 +71,22 @@ public abstract class AppariementSurfaces {
 	/**
 	 * Appariement entre deux ensembles de surfaces.
 	 * Processus inspiré de celui défini dans la thèse de Atef Bel Hadj Ali (2001),
-	 * et resum� dans le rapport de Seb
+	 * et résumé dans le rapport de Seb
 	 * ("Description des processus d'appariement mise en oeuvre au COGIT",SR/2002.0072, chap.6).
 	 * 
 	 * NB 1 : LE CAS DES LIENS N-M N'EST PAS VRAIMENT SATIFAISANT
 	 * ET DOIT ENCORE ETRE REVU (reflechir aux mesures). néanmoins...
-	 * le processus a été am�lior� pour mieux raffiner le traitement des liens n-m :
+	 * le processus a été amélioré pour mieux raffiner le traitement des liens n-m :
 	 * un lien n-m issu du regroupement des liens 1-1 peut être redécoupé en
 	 * plusieurs liens n'-m', alors que le processus d'Atef ne semble permettre
 	 * que de simplifier ce groupe n-m en UN seul groupe n'-m' (n'<=n, m'<=m)
 	 * 
-	 * NB 2 :Les liens finaux sont qualifi�s (evaluation) par la mesure de
+	 * NB 2 :Les liens finaux sont qualifiés (evaluation) par la mesure de
 	 * distance surfacique entre groupes de surfaces.
 	 * 
 	 * NB 3 : si la population de référence n'est pas indexée, elle le sera pendant le calcul
 	 * 
-	 * NB 4 : l'appariement est sym�trique (si ref et comp sont �chang�s, les résultats sont identiques)
+	 * NB 4 : l'appariement est symétrique (si ref et comp sont échangés, les résultats sont identiques)
 	 * 
 	 * @param popRef : population des objets de référence.
 	 * 		Ces objets doivent avoir une géométrie "geom" de type GM_Polygon
@@ -95,7 +95,7 @@ public abstract class AppariementSurfaces {
 	 * @param param : paramètres de l'appariement
 	 * 
 	 * 
-	 * @return : liens d'appariement calcul�s. Ces liens peuvent être de type n-m.
+	 * @return : liens d'appariement calculés. Ces liens peuvent être de type n-m.
 	 */
 	public static EnsembleDeLiens appariementSurfaces(FT_FeatureCollection<FT_Feature> popRef, FT_FeatureCollection<FT_Feature> popComp, ParametresAppSurfaces param) {
 		EnsembleDeLiens liensPreApp, liensRegroupes, liensFiltres;
@@ -106,9 +106,9 @@ public abstract class AppariementSurfaces {
 			popComp.initSpatialIndex(Tiling.class, true);
 		}
 
-		// pr�-appariement selon un test sur la surface de l'intersection
+		// pré-appariement selon un test sur la surface de l'intersection
 		// entre les surfaces de référence et de comparaison
-		System.out.println("-- Pre-appariement sur des crit�res d'intersection "+new Time(System.currentTimeMillis()));
+		System.out.println("-- Pre-appariement sur des critères d'intersection "+new Time(System.currentTimeMillis()));
 		liensPreApp = preAppariementSurfaces(popRef, popComp, param);
 
 		// appariement par recherche des regroupements optimaux
@@ -141,24 +141,24 @@ public abstract class AppariementSurfaces {
 	}
 
 
-	/** 2 surfaces sont pr�-appariées si elles respectent le "test d'association"
+	/** 2 surfaces sont pré-appariées si elles respectent le "test d'association"
 	 * défini par Atef Bel Hadj Ali (2001). c'est-à-dire si :
 	 * 1/ l'intersection des surfaces a une taille supérieure au seuil "surface_min"
 	 * ET
-	 * 2/ l'intersection fait au moins la taille d'une des surfaces multipli�e
+	 * 2/ l'intersection fait au moins la taille d'une des surfaces multipliée
 	 * 	   par le paramètre "pourcentage_min".
 	 * 
 	 * NB 1 : Par construction : chaque lien pointe vers UN SEUL objet de la population
 	 * de référence et vers UN SEUL objet de la population de comparaison.
 	 * NB 2 : Aucune géométrie n'est instanciée pour les liens créés.
-	 * NB 3 : l'appariement est sym�trique.
+	 * NB 3 : l'appariement est symétrique.
 	 * NB 4 : la population de comparaison est indexée si elle ne l'était pas avant
 	 * 
 	 * @param popRef : population des objets de référence.
 	 * @param popComp : population des objets de comparaison.
 	 * @param param : paramètres de l'appariement.
 	 * 
-	 * @return : liens de pr�-appariement calcul�s.
+	 * @return : liens de pré-appariement calculés.
 	 */
 	public static EnsembleDeLiens preAppariementSurfaces(FT_FeatureCollection<?> popRef, FT_FeatureCollection<?> popComp, ParametresAppSurfaces param) {
 
@@ -193,7 +193,7 @@ public abstract class AppariementSurfaces {
 					System.out.println("Objet de la population de comparaison sans géométrie surfacique COGITID = "+featureComp.getId());
 					continue;
 				}
-				// création éventuelle d'un nouveau lien de pr�-appariement
+				// création éventuelle d'un nouveau lien de pré-appariement
 				GM_Object inter = Operateurs.intersectionRobuste(geomRef,geomComp,param.resolutionMin,param.resolutionMax);
 				if (inter == null) continue; // si plantage aux calculs d'intersection
 				surfaceIntersection = inter.area();
@@ -206,18 +206,18 @@ public abstract class AppariementSurfaces {
 				lien.setEvaluation(pourcentageRecouvrement);
 			}
 		}
-		System.out.println("   Nombre de liens (1-1) créés au pr�-appariement "+preAppLiens.size());
+		System.out.println("   Nombre de liens (1-1) créés au pré-appariement "+preAppLiens.size());
 		return preAppLiens;
 	}
 
-	/** On recherche les regroupements optimaux de liens de pr�-appariement, pour
+	/** On recherche les regroupements optimaux de liens de pré-appariement, pour
 	 * maximiser la distance surfacique entre les groupes de référence et de comparaison.
 	 * 
-	 * NB : l'appariement est sym�trique
+	 * NB : l'appariement est symétrique
 	 * 
 	 * @param param : paramètres de l'appariement
-	 * @param liensPreApp : liens issus du pr�-appariement
-	 * @return : liens d'appariement calcul�s (contient des objets de la classe Lien).
+	 * @param liensPreApp : liens issus du pré-appariement
+	 * @return : liens d'appariement calculés (contient des objets de la classe Lien).
 	 * Ces liens sont des liens n-m.
 	 */
 	public static EnsembleDeLiens rechercheRegroupementsOptimaux(EnsembleDeLiens liensPreApp, FT_FeatureCollection<FT_Feature> popRef, FT_FeatureCollection<FT_Feature> popComp, ParametresAppSurfaces param) {
@@ -251,7 +251,7 @@ public abstract class AppariementSurfaces {
 		itGroupes = groupesConnexes.iterator();
 		while (itGroupes.hasNext()) {
 			i++;
-			if ( i % 10000  == 0 ) System.out.println("Nb de groupes trait�s : "+i+"     "+new Time(System.currentTimeMillis()));
+			if ( i % 10000  == 0 ) System.out.println("Nb de groupes traités : "+i+"     "+new Time(System.currentTimeMillis()));
 			groupeConnexe = itGroupes.next();
 
 			// pour les objets isolés ou les liens 1-1, on ne fait rien de plus
@@ -262,7 +262,7 @@ public abstract class AppariementSurfaces {
 			}
 
 			// pour les groupes n-m, on va essayer d'enlever des arcs
-			// mais on garde à coup s�r les liens avec suffisament de recouvremnt
+			// mais on garde à coup sûr les liens avec suffisament de recouvremnt
 			arcsEnlevables =  new ArrayList<Arc>(groupeConnexe.getListeArcs());
 			arcsNonEnlevables=new ArrayList<Object>();
 			itArcs = arcsEnlevables.iterator();
@@ -272,7 +272,7 @@ public abstract class AppariementSurfaces {
 				if (lienArc.getEvaluation()>param.pourcentage_intersection_sur) arcsNonEnlevables.add(arc);
 			}
 			arcsEnlevables.removeAll(arcsNonEnlevables);
-			if (arcsEnlevables.size() == 0) { //si on ne peut rien enlever, on s'arr�te l�
+			if (arcsEnlevables.size() == 0) { //si on ne peut rien enlever, on s'arrête là
 				groupesGardes.add(groupeConnexe);
 				continue;
 			}
@@ -304,7 +304,7 @@ public abstract class AppariementSurfaces {
 				}
 			} //fin boucle sur les combinaisons possibles
 			groupeConnexe.getListeArcs().removeAll(arcsDuGroupeEnlevesFinal); //simplification finale des liens d'appariement du groupe
-			groupesDecomposes = groupeConnexe.decomposeConnexes(); //création des groupes finaux gard�s
+			groupesDecomposes = groupeConnexe.decomposeConnexes(); //création des groupes finaux gardés
 			groupesGardes.addAll(groupesDecomposes);
 		}
 
@@ -332,7 +332,7 @@ public abstract class AppariementSurfaces {
 		return liensGroupes;
 	}
 
-	/** Distance surfacique ou compl�tude "�tendue" sur un groupe.
+	/** Distance surfacique ou complétude "étendue" sur un groupe.
 	 * Attention: vide le groupe au passage.
 	 * MESURE NON SATISFAISANTE POUR LIENS N-M : moyenne entre parties connexes A REVOIR */
 	@SuppressWarnings("unchecked")

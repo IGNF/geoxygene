@@ -28,7 +28,7 @@ package fr.ign.cogit.geoxygene.tutorial.exemple.cartetopo;
 
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 
-/** Un noeud valu� est un noeud classique au sens de la carte topologique
+/** Un noeud valué est un noeud classique au sens de la carte topologique
  *  auquel est ajouté son degré (nombre d'arcs entrants et sortants)
  *  
  *  @author Eric Grosso - IGN / Laboratoire COGIT

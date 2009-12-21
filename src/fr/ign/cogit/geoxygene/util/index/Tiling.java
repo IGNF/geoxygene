@@ -61,9 +61,9 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	 * Renvoie les paramètres du dallage.
 	 * 
 	 * ArrayList de 4 éléments: - 1er élément : Class égal à Dallage.class -
-	 * 2�me élément : Boolean indiquant si l'index est en mode MAJ automatique
-	 * ou non - 3�me élément : GM_Envelope décrivant les limites de la zone
-	 * couverte - 4�me élément : Integer exprimant le nombre de cases en X et Y.
+	 * 2ème élément : Boolean indiquant si l'index est en mode MAJ automatique
+	 * ou non - 3ème élément : GM_Envelope décrivant les limites de la zone
+	 * couverte - 4ème élément : Integer exprimant le nombre de cases en X et Y.
 	 * 
 	 * 
 	 */
@@ -118,8 +118,8 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	public boolean hasAutomaticUpdate() {return automaticUpdate;}
 	/**
 	 * Demande une mise a jour automatique. NB: Cette méthode ne fait pas les
-	 * éventuelles MAJ qui auriant �te faites alors que le mode MAJ automatique
-	 * n'était pas activ�.
+	 * éventuelles MAJ qui auriant ete faites alors que le mode MAJ automatique
+	 * n'était pas activé.
 	 */
 	public void setAutomaticUpdate(boolean auto) {automaticUpdate = auto;}
 
@@ -358,7 +358,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 
 	/**
 	 * crée et instancie un dallage d'une collection de FT_Feature, en fonction
-	 * des limites de la zone et du nombre de cases souhait�es sur la zone.
+	 * des limites de la zone et du nombre de cases souhaitées sur la zone.
 	 * 
 	 * @param fc
 	 *            La liste de Features à indexer
@@ -369,7 +369,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	 * 
 	 * @param envelope
 	 *            Enveloppe décrivant les limites de l'index spatial. NB: Tout
-	 *            objet hors de ces limites ne sera pas trait� lors des requ�tes
+	 *            objet hors de ces limites ne sera pas traité lors des requêtes
 	 *            spatiales !!!!!
 	 * 
 	 * @param n
@@ -436,8 +436,8 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 
 	/**
 	 * crée et instancie un dallage d'une collection de FT_Feature, en fonction
-	 * du nombre de cases souhait�es sur la zone. NB: les limites de la zone de
-	 * l'index sont celles de la collection trait�e. Il est donc impossible de
+	 * du nombre de cases souhaitées sur la zone. NB: les limites de la zone de
+	 * l'index sont celles de la collection traitée. Il est donc impossible de
 	 * rajouter ensuite dans la collection un objet en dehors de cette zone.
 	 * 
 	 * @param fc
@@ -455,7 +455,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	/**
 	 * crée et instancie un dallage d'une collection de FT_Feature. Les
 	 * paramètres sont définis par la collection en entrée: 1/ Les limites de la
-	 * zone de l'index sont celles de la collection trait�e. Il est donc
+	 * zone de l'index sont celles de la collection traitée. Il est donc
 	 * impossible de rajouter ensuite dans la collection un objet en dehors de
 	 * cette zone. 2/ Le nombre de cases est défini automatiquement pour qu'il y
 	 * ait de l'ordre de 50 objets par dalle en moyennne (approximatif)

@@ -8,7 +8,7 @@ import fr.ign.cogit.geoxygene.tutorial.data.BdTopoTrRoute;
 import fr.ign.cogit.geoxygene.util.viewer.ObjectViewer;
 
 /** Exemple d'utilisation de la carte topologique : 
- *  Utilisation de noeud valu� pour réaliser une cartographie de leur valuation.
+ *  Utilisation de noeud valué pour réaliser une cartographie de leur valuation.
  * 
  *  @author Eric Grosso - IGN / Laboratoire COGIT
  */
@@ -33,7 +33,7 @@ public class TestCarteTopoNoeudValue {
 		//Initiatlisation du visualisateur GeOxygene
 		ObjectViewer viewer = new ObjectViewer();
 		viewer.addFeatureCollection(tronconsBDT,"Tronçon routier");
-		viewer.addFeatureCollection(carteTopo.getPopNoeuds(),"Noeuds valu�s");
+		viewer.addFeatureCollection(carteTopo.getPopNoeuds(),"Noeuds valués");
 
 	}
 

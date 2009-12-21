@@ -85,7 +85,7 @@ public class ARM {
 		nouveauNoeud.addCorrespondant(point);
 		// Ajout des points un à un
 		while(true) {
-			if (pointsCopie.size() == 0) break; //�a y est, on a relié tous les points
+			if (pointsCopie.size() == 0) break; //ça y est, on a relié tous les points
 
 			//on cherche le couple noeud-point le pus proche (TRES bourrin)
 			distMin = Double.MAX_VALUE;

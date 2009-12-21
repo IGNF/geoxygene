@@ -37,8 +37,8 @@ import java.util.Vector;
 
 /**
  *  Classe mettant en oeuvre le navigateur d'objet graphique de GeOxygene.
- *  <br>Elle instancie le "Modèle" du navigateur d'objet de GeOxygene, conformement �
- *  l'architecture à Modèle s�parable de Sun Microsystems. Elle pilote la construction de
+ *  <br>Elle instancie le "Modèle" du navigateur d'objet de GeOxygene, conformement à
+ *  l'architecture à Modèle séparable de Sun Microsystems. Elle pilote la construction de
  *  l'interface graphique (vue) représentant l'objet Java (classe ObjectBrowserGUI).
  *  <br><br> Cette classe utilise intensivement le package reflection du J2SDK afin de rendre
  *  possible la représentation graphique et la navigation au sein de n'importe quel schéma de
@@ -59,23 +59,23 @@ public class ObjectBrowser {
 	private static final int COLLECTION = 5;
 
 	/** Flag indiquant si un bandeau portant le nom de la classe doit être
-	 * affich� dans l'interface (vrai par défaut). */
+	 * affiché dans l'interface (vrai par défaut). */
 	private static final boolean SHOW_CLASSNAME = true;
 	/** Flag indiquant si les attributs publics de l'objet doivent être
-	 * affich�s dans l'interface (vrai par défaut). */
+	 * affichés dans l'interface (vrai par défaut). */
 	private static final boolean SHOW_PUBLIC_ATTRIBUTES = true;
 	/** Flag indiquant si les attributs protected de l'objet doivent être
-	 * affich�s dans l'interface (vrai par défaut). */
+	 * affichés dans l'interface (vrai par défaut). */
 	private static final boolean SHOW_PROTECTED_ATTRIBUTES = true;
 	/** Flag indiquant si les méthodes publiques de l'objet doivent être
-	 * affich�es dans l'interface (vrai par défaut). */
+	 * affichées dans l'interface (vrai par défaut). */
 	private static final boolean SHOW_PUBLIC_METHODS = true;
 	/** Flag indiquant si les méthodes protected de l'objet doivent être
-	 * affich�es dans l'interface (vrai par défaut). */
+	 * affichées dans l'interface (vrai par défaut). */
 	private static final boolean SHOW_PROTECTED_METHODS = true;
 	/** Fixe le comportement par défaut lors d'une demande de rafraichissement de la représentation
 	 * graphique d'un objet. Par défaut, l'ancienne représentation de l'objet reste visible et une
-	 * nouvelle représentation est affich�e. */
+	 * nouvelle représentation est affichée. */
 	protected static final boolean HIDE_WHEN_REFRESH = false;
 
 	/** référence vers l'interface graphique du navigateur d'objet. */
@@ -124,9 +124,9 @@ public class ObjectBrowser {
 	}
 
 	/**
-	 * Si classObject est de type Array, cette méthode permet de d�terminer le type de contenu de ce "tableau".
+	 * Si classObject est de type Array, cette méthode permet de déterminer le type de contenu de ce "tableau".
 	 * 
-	 * @param classObject la classe de type tableau dont on cherche à d�terminer le type de contenu.
+	 * @param classObject la classe de type tableau dont on cherche à déterminer le type de contenu.
 	 * @return ObjectBrowser.PRIMITIVE dans le cas où le contenu du tableau est de type primitif,
 	 * ObjectBrowser.OBJECT (i.e. de type objet) dans tous les autres cas.
 	 */
@@ -174,7 +174,7 @@ public class ObjectBrowser {
 	 * 
 	 * @param field l'attribut dont on cherche la dimension (tableau).
 	 * @param obj l'objet qui porte l'attribut field.
-	 * @return la dimension de l'attribut field port� par obj ou 0 s'il ne s'agit pas d'un attribut de type tableau (Array).
+	 * @return la dimension de l'attribut field porté par obj ou 0 s'il ne s'agit pas d'un attribut de type tableau (Array).
 	 */
 	private static int getArrayLevel(Field field, Object obj) {
 		// Faudrait peut-être intercepter le fait que ce soit pas un Array !!! ;-))
@@ -194,7 +194,7 @@ public class ObjectBrowser {
 	 * en argument de la méthode.
 	 * 
 	 * @param field le champ de type tableau pour lequel on cherche le type de contenu.
-	 * @return ObjectBrowser.STRING s'il s'agit d'un tableau de chaîne de caract�res,
+	 * @return ObjectBrowser.STRING s'il s'agit d'un tableau de chaîne de caractères,
 	 * ObjectBrowser.PRIMITIVE pour un tableau d'éléments de type primitif, et
 	 * ObjectBrowser.OBJECT sinon.
 	 */
@@ -272,7 +272,7 @@ public class ObjectBrowser {
 	 * Si l'attribut field passé en paramètre est de type tableau, cette méthode statique
 	 * renvoie le nom du type ou de la classe qualifiant le contenu du tableau.
 	 * 
-	 * @param field le champ de type tableau dont on cherche à d�terminer le type de contenu.
+	 * @param field le champ de type tableau dont on cherche à déterminer le type de contenu.
 	 * @return le nom de la classe ou du type de contenu du tableau.
 	 */
 	private static String getArrayComponentTypeName(Field field) {
@@ -345,11 +345,11 @@ public class ObjectBrowser {
 	}
 
 	/**
-	 * Retourne le type de l'attribut field port� par l'objet obj.
+	 * Retourne le type de l'attribut field porté par l'objet obj.
 	 * 
 	 * @param field l'attribut dont on cherche le type.
 	 * @param obj l'objet portant l'attribut field.
-	 * @return suivant le type, une valeur enti�re parmi ObjectBrowser.PRIMITIVE,
+	 * @return suivant le type, une valeur entière parmi ObjectBrowser.PRIMITIVE,
 	 * ObjectBrowser.ARRAY, ObjectBrowser.OBJECT, ObjectBrowser.STRING,
 	 * ObjectBrowser.OBJECT ou ObjectBrowser.NULL.
 	 */
@@ -404,7 +404,7 @@ public class ObjectBrowser {
 	}
 
 	/**
-	 * Teste si l'attribut field port� par l'objet obj est de type primitif.
+	 * Teste si l'attribut field porté par l'objet obj est de type primitif.
 	 * 
 	 * @param field l'attribut à tester.
 	 * @param obj l'objet portant l'attribut field.
@@ -419,7 +419,7 @@ public class ObjectBrowser {
 	}
 
 	/**
-	 * Teste si l'attribut field port� par l'objet obj est de type tableau (Array).
+	 * Teste si l'attribut field porté par l'objet obj est de type tableau (Array).
 	 * 
 	 * @param field l'attribut à tester.
 	 * @param obj l'objet portant l'attribut field.
@@ -434,7 +434,7 @@ public class ObjectBrowser {
 	}
 
 	/**
-	 * Teste si l'attribut field port� par l'objet obj est de type objet.
+	 * Teste si l'attribut field porté par l'objet obj est de type objet.
 	 * 
 	 * @param field l'attribut à tester.
 	 * @param obj l'objet portant l'attribut field.
@@ -449,11 +449,11 @@ public class ObjectBrowser {
 	}
 
 	/**
-	 * Teste si l'attribut field port� par l'objet obj est de type chaîne de caract�res (String).
+	 * Teste si l'attribut field porté par l'objet obj est de type chaîne de caractères (String).
 	 * 
 	 * @param field l'attribut à tester.
 	 * @param obj l'objet portant l'attribut field.
-	 * @return vrai si l'attribut est de type chaîne de caract�res (String), faux sinon.
+	 * @return vrai si l'attribut est de type chaîne de caractères (String), faux sinon.
 	 */
 	private static boolean isFieldTypeString(Field field, Object obj) {
 		if (getFieldType(field, obj) == STRING) {
@@ -464,7 +464,7 @@ public class ObjectBrowser {
 	}
 
 	/**
-	 * Teste si l'attribut field port� par l'objet obj est de type Collection d'objets.
+	 * Teste si l'attribut field porté par l'objet obj est de type Collection d'objets.
 	 * 
 	 * @param field l'attribut à tester.
 	 * @param obj l'objet portant l'attribut field.
@@ -602,12 +602,12 @@ public class ObjectBrowser {
 
 	/**
 	 * En fonction de la valeur des constantes SHOW_PUBLIC_METHODS et SHOW_PROTECTED_METHODS, renvoie
-	 * l'ensemble des méthodes publiques et/ou protected locales et hérit�es, ne prenant aucun argument et accessibles de la classe
+	 * l'ensemble des méthodes publiques et/ou protected locales et héritées, ne prenant aucun argument et accessibles de la classe
 	 * classObj passée en argument.
 	 * 
-	 * @param classObj la classe sur laquelle on cherche les méthodes locales et hérit�es, publiques
+	 * @param classObj la classe sur laquelle on cherche les méthodes locales et héritées, publiques
 	 * et/ou protected.
-	 * @return un tableau (Method[]) contenant l'ensemble des méthodes publiques et/ou protected, locales et hérit�es, ne prenant aucun argument et accessibles de la classe.
+	 * @return un tableau (Method[]) contenant l'ensemble des méthodes publiques et/ou protected, locales et héritées, ne prenant aucun argument et accessibles de la classe.
 	 */
 	@SuppressWarnings("unused")
 	private static Method[] getAccessibleMethods(Class<?> classObj) {
@@ -619,14 +619,14 @@ public class ObjectBrowser {
 
 	/**
 	 * En fonction de la valeur des arguments retrievePublicMethods et retrieveProtectedMethods, renvoie
-	 * l'ensemble des méthodes publiques et/ou protected, locales et hérit�es, ne prenant aucun argument et accessibles de la classe
+	 * l'ensemble des méthodes publiques et/ou protected, locales et héritées, ne prenant aucun argument et accessibles de la classe
 	 * classObj passée en argument.
 	 * 
 	 * @param classObj la classe sur laquelle on cherche les méthodes publiques et/ou protected, locales
-	 * et hérit�es.
-	 * @param retrievePublicMethods si vrai, l'ensemble des méthodes publiques, locales et hérit�es, port�es par la classe classObj sera retourné par la méthode.
-	 * @param retrieveProtectedMethods si vrai, l'ensemble des méthodes protected, locales et hérit�es, port�es par la classe classObj sera retourné par la méthode.
-	 * @return un tableau (Method[]) contenant l'ensemble des méthodes publiques et/ou protected, locales et hérit�es, ne prenant aucun argument et accessibles de la classe.
+	 * et héritées.
+	 * @param retrievePublicMethods si vrai, l'ensemble des méthodes publiques, locales et héritées, portées par la classe classObj sera retourné par la méthode.
+	 * @param retrieveProtectedMethods si vrai, l'ensemble des méthodes protected, locales et héritées, portées par la classe classObj sera retourné par la méthode.
+	 * @return un tableau (Method[]) contenant l'ensemble des méthodes publiques et/ou protected, locales et héritées, ne prenant aucun argument et accessibles de la classe.
 	 */
 	private static Method[] getAccessibleMethods(
 			Class<?> classObj,
@@ -738,10 +738,10 @@ public class ObjectBrowser {
 	 * 
 	 * @param obj obj l'objet dont on souhaite obtenir une représentaion dans le navigateur d'objet de GeOxygene.
 	 * @param showClassName si vrai, affiche dans l'interface un bandeau avec le nom du type de l'objet.
-	 * @param showPublicAttributes si vrai, affiche dans l'interface les attributs publics port�s par l'objet.
-	 * @param showProtectedAttributes si vrai, affiche dans l'interface les attributs protected port�s par l'objet.
-	 * @param showPublicMethods si vrai, affiche dans l'interface les méthodes publiques, locales et hérit�es, port�es par l'objet.
-	 * @param showProtectedMethods si vrai, affiche dans l'interface les méthodes protected, locales et hérit�es, port�es par l'objet.
+	 * @param showPublicAttributes si vrai, affiche dans l'interface les attributs publics portés par l'objet.
+	 * @param showProtectedAttributes si vrai, affiche dans l'interface les attributs protected portés par l'objet.
+	 * @param showPublicMethods si vrai, affiche dans l'interface les méthodes publiques, locales et héritées, portées par l'objet.
+	 * @param showProtectedMethods si vrai, affiche dans l'interface les méthodes protected, locales et héritées, portées par l'objet.
 	 */
 	@SuppressWarnings("unchecked")
 	public static void browse(
@@ -975,40 +975,40 @@ public class ObjectBrowser {
 	}
 
 	/**
-	 * D�clenche de fa�on programmatique le rafraichissement de l'interface représentant l'objet. Le
-	 * comportement du rafra�chissement (l'ancienne représentation de l'objet dispara�t-elle ?) est
-	 * fix� par la valeur de la constante ObjectBrowser.HIDE_WHEN_REFRESH.
-	 * <p>De plus, Le nouvel affichage de l'objet est r�gi par les valeurs des constantes SHOW_CLASSNAME,
+	 * Déclenche de façon programmatique le rafraichissement de l'interface représentant l'objet. Le
+	 * comportement du rafraîchissement (l'ancienne représentation de l'objet disparaît-elle ?) est
+	 * fixé par la valeur de la constante ObjectBrowser.HIDE_WHEN_REFRESH.
+	 * <p>De plus, Le nouvel affichage de l'objet est régi par les valeurs des constantes SHOW_CLASSNAME,
 	 * SHOW_PUBLIC_ATTRIBUTES,SHOW_PROTECTED_ATTRIBUTES, SHOW_PUBLIC_METHODS et SHOW_PROTECTED_METHODS.</p>
 	 * 
-	 * @param obj objet dont on veut rafr�chir la représentation graphique.
+	 * @param obj objet dont on veut rafrîchir la représentation graphique.
 	 */
 	public static void refresh(Object obj) {
 		refresh(obj, HIDE_WHEN_REFRESH);
 	}
 
 	/**
-	 * D�clenche de fa�on programmatique le rafraichissement de l'interface représentant l'objet. Le nouvel
-	 * affichage de l'objet est r�gi par les valeurs des constantes SHOW_CLASSNAME, SHOW_PUBLIC_ATTRIBUTES,
+	 * Déclenche de façon programmatique le rafraichissement de l'interface représentant l'objet. Le nouvel
+	 * affichage de l'objet est régi par les valeurs des constantes SHOW_CLASSNAME, SHOW_PUBLIC_ATTRIBUTES,
 	 * SHOW_PROTECTED_ATTRIBUTES, SHOW_PUBLIC_METHODS et SHOW_PROTECTED_METHODS.
 	 * 
-	 * @param obj objet dont on veut rafr�chir la représentation graphique.
-	 * @param dispose si vrai, l'ancienne représentation de l'objet dispara�t.
+	 * @param obj objet dont on veut rafrîchir la représentation graphique.
+	 * @param dispose si vrai, l'ancienne représentation de l'objet disparaît.
 	 */
 	public static void refresh(Object obj, boolean dispose) {
 		refresh(obj,dispose,SHOW_CLASSNAME,SHOW_PUBLIC_ATTRIBUTES,SHOW_PROTECTED_ATTRIBUTES,SHOW_PUBLIC_METHODS,SHOW_PROTECTED_METHODS);
 	}
 
 	/**
-	 * D�clenche de fa�on programmatique le rafraichissement de l'interface représentant l'objet.
+	 * Déclenche de façon programmatique le rafraichissement de l'interface représentant l'objet.
 	 * 
-	 * @param obj objet dont on veut rafr�chir la représentation graphique.
-	 * @param dispose si vrai, l'ancienne représentation de l'objet dispara�t.
+	 * @param obj objet dont on veut rafrîchir la représentation graphique.
+	 * @param dispose si vrai, l'ancienne représentation de l'objet disparaît.
 	 * @param showClassName si vrai, affiche dans l'interface un bandeau avec le nom du type de l'objet.
-	 * @param showPublicAttributes si vrai, affiche dans l'interface les attributs publics port�s par l'objet.
-	 * @param showProtectedAttributes si vrai, affiche dans l'interface les attributs protected port�s par l'objet.
-	 * @param showPublicMethods si vrai, affiche dans l'interface les méthodes publiques, locales et hérit�es, port�es par l'objet.
-	 * @param showProtectedMethods si vrai, affiche dans l'interface les méthodes protected, locales et hérit�es, port�es par l'objet.
+	 * @param showPublicAttributes si vrai, affiche dans l'interface les attributs publics portés par l'objet.
+	 * @param showProtectedAttributes si vrai, affiche dans l'interface les attributs protected portés par l'objet.
+	 * @param showPublicMethods si vrai, affiche dans l'interface les méthodes publiques, locales et héritées, portées par l'objet.
+	 * @param showProtectedMethods si vrai, affiche dans l'interface les méthodes protected, locales et héritées, portées par l'objet.
 	 */
 	public static void refresh(
 			Object obj,

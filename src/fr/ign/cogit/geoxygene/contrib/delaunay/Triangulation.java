@@ -46,7 +46,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
- * Classe mère de la triangulation construite sur la biblioth�que Triangle de Jonathan Richard Shewchuk.
+ * Classe mère de la triangulation construite sur la bibliothèque Triangle de Jonathan Richard Shewchuk.
  * Triangulation class used on top of Jonathan Richard Shewchuk's Triangle library.
  * @author Bonin
  * @author Julien Perret
@@ -200,7 +200,7 @@ public class Triangulation extends CarteTopo{
     	if (logger.isDebugEnabled()) logger.debug("Fin de l'export des données");
     }
     
-    ///méthode de triangulation proprment dite en C - va chercher la biblioth�que C (dll/so)
+    ///méthode de triangulation proprment dite en C - va chercher la bibliothèque C (dll/so)
     private native void trianguleC(String trianguleOptions, Triangulateio trianguleJin, Triangulateio trianguleJout, Triangulateio trianguleJvorout);
     static {System.loadLibrary("trianguledll");} //$NON-NLS-1$
 
@@ -265,10 +265,10 @@ public class Triangulation extends CarteTopo{
      */
     public void triangule(String trianguleOptions) throws Exception {
     	if (this.getPopNoeuds().size()<3) {
-    		logger.error("Triangulation annul�e : "+this.getPopNoeuds().size()+" points (3 points au moins)");
+    		logger.error("Triangulation annulée : "+this.getPopNoeuds().size()+" points (3 points au moins)");
     		return;
     	}
-    	if (logger.isDebugEnabled()) logger.debug("Triangulation commenc�e avec les options "+trianguleOptions);
+    	if (logger.isDebugEnabled()) logger.debug("Triangulation commencée avec les options "+trianguleOptions);
     	this.setOptions(trianguleOptions);
     	this.convertJin();
     	if (trianguleOptions.indexOf('p') != -1) {
@@ -281,7 +281,7 @@ public class Triangulation extends CarteTopo{
     		trianguleC(trianguleOptions, this.jin, this.jout, null);
     	}
     	convertJout();
-    	if (logger.isDebugEnabled()) logger.debug("Triangulation termin�e");
+    	if (logger.isDebugEnabled()) logger.debug("Triangulation terminée");
     }
 
     /**

@@ -72,7 +72,7 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  * A l'aide d'une boucle, on charge progressivement de plus en plus d'objets.
  * 
  * ARNAUD 12 juillet 2005 : mise en commentaire de ce qui se rapporte à Oracle
- * pour isoler la compilation. A d�commenter pour utiliser Oracle.
+ * pour isoler la compilation. A décommenter pour utiliser Oracle.
  *
  * @author Thierry Badard, Arnaud Braun & Christophe Pele
  * @version 1.1

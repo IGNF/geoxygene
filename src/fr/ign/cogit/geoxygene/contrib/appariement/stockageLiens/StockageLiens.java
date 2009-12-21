@@ -31,7 +31,7 @@ import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 
 /**
- * Classe permettant le stockage et le chargement d'ensemble de liens r�sultants
+ * Classe permettant le stockage et le chargement d'ensemble de liens résultants
  * d'appariement
  * 
  * @author Eric Grosso - IGN / Laboratoire COGIT
@@ -52,7 +52,7 @@ public class StockageLiens {
 		DataSet.db.commit();
 	}
 
-	/** méthode permettant de d�stocker automatiquement un ensemble de liens d'appariement
+	/** méthode permettant de déstocker automatiquement un ensemble de liens d'appariement
 	 * SGBD et les liens correspondants, en renvoyant l'ensemble de liens correspondants
 	 * @param ensembleLiensSGBD
 	 */

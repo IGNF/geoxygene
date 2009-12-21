@@ -82,7 +82,7 @@ public class EnsembleDeLiensSGBD extends Population {
 	public void setEvaluationGlobale(String evaluation) {this.evaluationGlobale = evaluation;}
 
 
-	/** Liste des populations auxquelles les objets ref et comp des liens sont attach�s
+	/** Liste des populations auxquelles les objets ref et comp des liens sont attachés
 	 * sous forme de string*/
 	private String populations ;
 	public String getPopulations() {return this.populations;}
@@ -93,7 +93,7 @@ public class EnsembleDeLiensSGBD extends Population {
 	public HashSet<String> getListePop() {return this.listePop;}
 	public void setListePop(HashSet<String> listePop) {this.listePop = listePop;}
 
-	/** Liste des populations r�elles*/
+	/** Liste des populations réelles*/
 	private List<Population> listePopulations;
 	public List<Population> getListePopulations() {return this.listePopulations;}
 	public void setListePopulations(List<Population> listePopulations) {this.listePopulations = listePopulations;}
@@ -260,7 +260,7 @@ public class EnsembleDeLiensSGBD extends Population {
 		//evaluationGlobale
 		ensemble.setEvaluationGlobale(this.getEvaluationGlobale());
 
-		//chargement des populations concernées par les liens d'appariement en m�moire
+		//chargement des populations concernées par les liens d'appariement en mémoire
 		StringTokenizer token = new StringTokenizer(this.getPopulations(),"|");
 		String pop;
 		Geodatabase geodb = GeodatabaseOjbFactory.newInstance();
@@ -275,7 +275,7 @@ public class EnsembleDeLiensSGBD extends Population {
 			}
 			catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("ATTENTION: la classe "+pop+" stockée dans LIENS ne semble plus exist�e");
+				System.out.println("ATTENTION: la classe "+pop+" stockée dans LIENS ne semble plus existée");
 				System.out.println("RESOLUTION: recréer cette classe ou refaire un appariement pour un stockage adapté de vos liens");
 			}
 		}

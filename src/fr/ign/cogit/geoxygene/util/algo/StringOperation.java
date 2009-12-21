@@ -28,19 +28,19 @@ import java.util.Vector;
 
 /**
  *
- * transformations de chaines de caract�res
+ * transformations de chaines de caractères
  */
 public class StringOperation {
 
-	/** Index du 1er caractere accentu� **/
+	/** Index du 1er caractere accentué **/
 	private static final int MIN = 192;
-	/** Index du dernier caractere accentu� **/
+	/** Index du dernier caractere accentué **/
 	private static final int MAX = 255;
 	/** Vecteur de correspondance entre accent / sans accent **/
 	private static final Vector<String> map = initMap();
 
-	/** Initialisation du tableau de correspondance entre les caract�res accentu�s
-	 * et leur homologues non accentu�s
+	/** Initialisation du tableau de correspondance entre les caractères accentués
+	 * et leur homologues non accentués
 	 */
 	private static Vector<String> initMap()
 	{  Vector<String> Result         = new Vector<String>();
@@ -145,7 +145,7 @@ public class StringOperation {
 
 	/** Transforme une chaine pouvant contenir des accents dans une version sans accent
 	 *  @param chaine Chaine a convertir sans accent
-	 *  @return Chaine dont les accents ont été supprim�
+	 *  @return Chaine dont les accents ont été supprimé
 	 **/
 	public static java.lang.String sansAccent(java.lang.String chaine)
 	{  java.lang.StringBuffer Result  = new StringBuffer(chaine);

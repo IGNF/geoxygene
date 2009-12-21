@@ -32,7 +32,7 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe;
 import fr.ign.cogit.geoxygene.feature.Population;
 
-/** Carte topologique �tendue qui utilise des noeuds valu�s
+/** Carte topologique étendue qui utilise des noeuds valués
  * (degré du noeud)
  * 
  * @author Eric Grosso - IGN / Laboratoire COGIT 

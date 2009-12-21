@@ -590,7 +590,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	}
 	
 	/**
-	 * D�termine le point d'un polygone le plus loin d'un autre point.
+	 * détermine le point d'un polygone le plus loin d'un autre point.
 	 * Le polygone doit être convexe et sans trou.
 	 * Determine the farest point of a polygon to another given point.
 	 * The polygon must be convex and without hole.
@@ -612,7 +612,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	}
 
 	/**
-	 * D�termine le point d'un polygone le plus proche d'un autre point.
+	 * détermine le point d'un polygone le plus proche d'un autre point.
 	 * Determine the closest point of a polygon to another given point.
 	 * 
 	 * @param pt un point, a point
@@ -623,7 +623,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	}
 
 	/**
-	 * D�termine le point d'une ligne le plus proche d'un autre point.
+	 * détermine le point d'une ligne le plus proche d'un autre point.
 	 * Determine the closest point of a line to another given point.
 	 * 
 	 * @param pt un point, a point
@@ -640,7 +640,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		return null;
 	}
 	/**
-	 * D�termine le point d'une ligne le plus loin d'une ligne de base.
+	 * détermine le point d'une ligne le plus loin d'une ligne de base.
 	 * Determine the closest point of a line to another given line.
 	 * 
 	 * @param base la ligne de comparaison, the base line
@@ -667,7 +667,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	}
 
 	/**
-	 * D�termine les points les plus proches deux géométries. 
+	 * détermine les points les plus proches deux géométries. 
 	 * Les points sont donnés dans le même ordre que les deux géométries d'entrée.
 	 * Compute the nearest points of two geometries.
 	 * The points are presented in the same order as the input Geometries. 
@@ -783,10 +783,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	}
 
 	/**
-	 * Union des éléments d'un ensemble de Polygones tri�s par groupes.
+	 * Union des éléments d'un ensemble de Polygones triés par groupes.
 	 * Par exemple, si la taille des groupes vaut 4, on effectue l'union des Polygones 4 par 4.
 	 * 
-	 * @param treeSet ensemble de Polygones tri�s
+	 * @param treeSet ensemble de Polygones triés
 	 * @param groupSize taille des groupes sur lesquels on effectue l'union
 	 * @return liste des unions
 	 */
@@ -845,10 +845,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		return newGeometryCollection.get(0);
 	}
 	/**
-	 * Union des éléments d'un ensemble de LineStrings tri�es par groupes.
+	 * Union des éléments d'un ensemble de LineStrings triées par groupes.
 	 * Par exemple, si la taille des groupes vaut 4, on effectue l'union des LineStrings 4 par 4.
 	 * 
-	 * @param treeSet ensemble de LineStrings tri�es
+	 * @param treeSet ensemble de LineStrings triées
 	 * @param groupSize taille des groupes sur lesquels on effectue l'union
 	 * @return liste des unions
 	 */
@@ -913,7 +913,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 
 	/**
 	 * calcule fermeture de geometrie (juste buffer externe, puis interne)
-	 * @param geometry géométrie de d�part
+	 * @param geometry géométrie de départ
 	 * @param distance distance utilisée pour le buffer positif puis pour le buffer négatif
 	 * @param quadrantSegments nombre de segments utilisés pour la simplification par l'algorithme de Douglas-Peucker
 	 * @param endCapStyle type d'approximation utilisée pour la simplification par l'algorithme de Douglas-Peucker

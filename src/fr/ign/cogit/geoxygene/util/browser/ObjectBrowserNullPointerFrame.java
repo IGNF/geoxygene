@@ -41,8 +41,8 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 /**
- * Cette classe permet l'affichage d'une fenêtre graphique contenant un message d'avertissement lorsqu'un accès à une valeur <b>null</b> est tent�
- * ou qu'une telle valeur est renvoyée par une méthode d�clench�e depuis le navigateur d'objet graphique de GeOxygene.
+ * Cette classe permet l'affichage d'une fenêtre graphique contenant un message d'avertissement lorsqu'un accès à une valeur <b>null</b> est tenté
+ * ou qu'une telle valeur est renvoyée par une méthode déclenchée depuis le navigateur d'objet graphique de GeOxygene.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -59,7 +59,7 @@ public class ObjectBrowserNullPointerFrame extends JFrame {
 	private static final String I18N_LANGUAGE_FILE_LOCATION = "fr.ign.cogit.geoxygene.util.browser.ObjectBrowserLanguageFile";
 	/** Locale courante. */
 	private Locale currentLocale;
-	/** RessourceBundle li� à la Locale et au fichier d'internationalisation. */
+	/** RessourceBundle lié à la Locale et au fichier d'internationalisation. */
 	private ResourceBundle i18nLanguageFile;
 
 	/**

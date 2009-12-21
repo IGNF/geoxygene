@@ -44,9 +44,9 @@ public interface GeomAlgorithms {
 
 	/**
 	 * Calcule de buffer sur l'objet passé en paramètre (avec JTS).
-	 * Les distances negatives sont acceptees (pour faire une �rosion).
+	 * Les distances negatives sont acceptees (pour faire une érosion).
 	 * Le nombre de segments utilisés pour approximer les parties courbes du buffer est celui par défaut de JTS, i.e. 8.
-	 * La forme du "chapeau" (cap) utils�e est celle par défaut de JTS, i.e. CAP_ROUND : une courbe.
+	 * La forme du "chapeau" (cap) utilsée est celle par défaut de JTS, i.e. CAP_ROUND : une courbe.
 	 * @param geOxyGeom objet autour duquel est construit le buffer 
 	 * @param distance distance utilisée pour le calcul du buffer
 	 * @return buffer sur l'objet passé en paramètre
@@ -56,7 +56,7 @@ public interface GeomAlgorithms {
 	/**
 	 * Calcule de buffer sur l'objet passé en paramètre (avec JTS).
 	 * Le nombre de segments utilisés pour approximer les parties courbes du buffer est celui par défaut de JTS, i.e. 8.
-	 * La forme du "chapeau" (cap) utils�e est celle par défaut de JTS, i.e. CAP_ROUND : une courbe.
+	 * La forme du "chapeau" (cap) utilsée est celle par défaut de JTS, i.e. CAP_ROUND : une courbe.
 	 * @param geOxyGeom objet autour duquel est construit le buffer 
 	 * @return buffer de 10 autour de l'objet passé en paramètre
 	 */

@@ -38,7 +38,7 @@ import fr.ign.cogit.geoxygene.util.loader.SQLXMLGenerator;
 import fr.ign.cogit.geoxygene.util.loader.gui.GUIConfigSqlOJBXML;
 
 /**
- * permet à partir d'une classe java choisie par l'utilisateur de g�n�rer automatiquement
+ * permet à partir d'une classe java choisie par l'utilisateur de Génèrer automatiquement
  * la table correspondante dans le sgbd (postgis ou oracle) et le fichier de mapping
  * correspondant
  * 

@@ -39,8 +39,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 /**
- * Cette classe rend possible l'affichage de l'argument de retour (pour l'instant de type primitif ou chaîne de caract�re)
- * renvoyé par une méthode d�clench�e depuis le navigateur d'objet graphique de GeOxygene.
+ * Cette classe rend possible l'affichage de l'argument de retour (pour l'instant de type primitif ou chaîne de caractère)
+ * renvoyé par une méthode déclenchée depuis le navigateur d'objet graphique de GeOxygene.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -59,14 +59,14 @@ public class ObjectBrowserPrimitiveFrame extends JFrame {
 	private static final int PRIMITIVE_FRAME_DEFAULT_TEXTFIELD_SIZE = 35;
 	/** Locale courante. */
 	private Locale currentLocale;
-	/** RessourceBundle li� à la Locale et au fichier d'internationalisation. */
+	/** RessourceBundle lié à la Locale et au fichier d'internationalisation. */
 	private ResourceBundle i18nLanguageFile;
 
 	/**
 	 * Constructeur principal de ObjectBrowserPrimitiveFrame.
 	 * 
 	 * @param title titre de la fenêtre
-	 * @param value valeur transtyp�e en chaîne de caract�res de l'argument de retour de la méthode d�clench�e.
+	 * @param value valeur transtypée en chaîne de caractères de l'argument de retour de la méthode déclenchée.
 	 * @throws HeadlessException
 	 */
 	public ObjectBrowserPrimitiveFrame(String title, String value)

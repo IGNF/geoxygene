@@ -39,7 +39,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
  * Coordinates are stored into DirectPosition. 2D vectors
  * are given Nan As third coordinate).
  * 
- * @author  Musti�re/Bonin
+ * @author  Mustière/Bonin
  * @version 1.0
  */
 
@@ -92,7 +92,7 @@ public class Vecteur {
 		return Math.sqrt(Math.pow(this.getX(),2) + Math.pow(this.getY(),2));
 	}
 
-	/** Renvoie un NOUVEAU vecteur égal au vecteur norm� port� par this */
+	/** Renvoie un NOUVEAU vecteur égal au vecteur normé porté par this */
 	public Vecteur vectNorme() {
 		double normev = this.norme();
 		if ( !Double.isNaN(this.getZ()) ) {
@@ -148,7 +148,7 @@ public class Vecteur {
 		return new Vecteur(new DirectPosition(lambda * this.getX(), lambda * this.getY(), Double.NaN));
 	}
 
-	/** Renvoie le point translat� de P par le vecteur this */
+	/** Renvoie le point translaté de P par le vecteur this */
 	public DirectPosition translate(DirectPosition P) {
 		DirectPosition P2 = new DirectPosition();
 		P2.setX(P.getX()+this.getX());
@@ -158,7 +158,7 @@ public class Vecteur {
 		return P2;
 	}
 
-	/** Renvoie la ligne translat�e de L par le vecteur this */
+	/** Renvoie la ligne translatée de L par le vecteur this */
 	public GM_LineString translate(GM_LineString L) {
 		GM_LineString L2 = new GM_LineString();
 		for (int i=0;i<L.sizeControlPoint(); i++) {

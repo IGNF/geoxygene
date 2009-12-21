@@ -62,7 +62,7 @@ public class Face  extends ElementCarteTopo   {
 	public void setGeometrie(GM_Polygon geometrie) {this.setGeom(geometrie);}
 	/** Renvoie la liste de DirectPosition qui définit les coordonnées de self */
 	public DirectPositionList getCoord() {return this.getGeometrie().exteriorCoord();}
-	// On suppose que exteriorCoordList() donne deux fois le point de d�part
+	// On suppose que exteriorCoordList() donne deux fois le point de départ
 	/** définit la liste de DirectPosition qui définit les coordonnées de self */
 	public void setCoord(DirectPositionList dpl) {this.geom = new GM_Polygon(new GM_LineString(dpl));}
 
@@ -131,9 +131,9 @@ public class Face  extends ElementCarteTopo   {
 		arc.setFaceDroite(null);
 	}
 
-	/** Renvoie la liste (non class�e) des arcs entourant self.
-	 *  NB: cette liste est la concat�nation des listes des arcs directs et indirects.
-	 *  Ce sont ces listes qui doivent être manipul�es pour la modification/l'instanciation
+	/** Renvoie la liste (non classée) des arcs entourant self.
+	 *  NB: cette liste est la concaténation des listes des arcs directs et indirects.
+	 *  Ce sont ces listes qui doivent être manipulées pour la modification/l'instanciation
 	 *  des relations topologiques sur les faces.
 	 *  NB2 codeur : A faire : coder une méthode qui renvoie ces arcs dans le bon ordre de parcours
 	 */
@@ -147,8 +147,8 @@ public class Face  extends ElementCarteTopo   {
 	/** Liste de liste représentant les arcs incidents à une face
 	 * (i.e. les arcs des noeuds de la face, sauf les arcs de la face eux-mêmes).
 	 * Dans l'esprit de la méthode arcsorientés d'un noeud, les arcs sont
-	 * class�s en tournant autour de la face dans l'ordre trigonom�trique,
-	 * et qualifi�s d'entrants ou sortants.
+	 * classés en tournant autour de la face dans l'ordre trigonométrique,
+	 * et qualifiés d'entrants ou sortants.
 	 * 
 	 *
 	 * ATTENTION : renvoie une liste de liste:
@@ -156,7 +156,7 @@ public class Face  extends ElementCarteTopo   {
 	 *      Liste.get(1) = liste des orientations de type Boolean (classe Boolean et non type boolean),
 	 *                    true = entrant, false = sortant)
 	 * 
-	 * NB : Le classement est recalcul� en fonction de la géométrie à chaque appel de la méthode.
+	 * NB : Le classement est recalculé en fonction de la géométrie à chaque appel de la méthode.
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Object> arcsExterieursClasses() {
@@ -196,7 +196,7 @@ public class Face  extends ElementCarteTopo   {
 
 	/** Renvoie la liste des noeuds entourant self.
 	 *  NB: cette liste n'est pas modifiable directement. En effet, la topologie face/noeuds n'est pas gérée
-	 *  directement, elle est d�duite par calcul des topologies face/arcs et arcs/noeuds
+	 *  directement, elle est déduite par calcul des topologies face/arcs et arcs/noeuds
 	 */
 	public List<Noeud> noeuds() {
 		List<Arc> arcs = this.arcs();
@@ -211,7 +211,7 @@ public class Face  extends ElementCarteTopo   {
 	}
 
 	/**Renvoie la liste des noeuds entourant self en parcourant la face
-	 * dans le sens trigonom�trique. Le noeud de d�part est choisi au hasard.
+	 * dans le sens trigonométrique. Le noeud de départ est choisi au hasard.
 	 * NB : La topologie arcs/noeuds ET faces doit avoir été instanciée.
 	 * NB : On ne boucle pas : le premier noeud n'est pas égal au dernier noeud
 	 * (contrairement aux géométries de polygone).
@@ -244,7 +244,7 @@ public class Face  extends ElementCarteTopo   {
 			renverser = false;
 		}
 		else {
-			logger.error("problème : incoh�rence dans la topologie arcs / faces");
+			logger.error("problème : incohérence dans la topologie arcs / faces");
 			return null;
 		}
 
@@ -266,7 +266,7 @@ public class Face  extends ElementCarteTopo   {
 	//                         Topologie faces / faces
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	/** Renvoie la liste des faces voisines de self.
-	 *  NB: ceci est calcul� en passant par la topologie faces/arcs qui doit être instanciée.
+	 *  NB: ceci est calculé en passant par la topologie faces/arcs qui doit être instanciée.
 	 */
 	public List<Face> voisins() {
 		List<Arc> arcs = this.arcs();
@@ -287,7 +287,7 @@ public class Face  extends ElementCarteTopo   {
 	//                      opérateurs de calcul sur les faces
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	/**Surface d'un polygone. */
-	// Le calcul est effectu� dans un rep�re local centré sur le premier point
+	// Le calcul est effectué dans un repère local centré sur le premier point
 	// de la surface, ce qui est utile pour minimiser les erreurs de calcul
 	// si on manipule de grandes coordonnées).
 	public double surface(){return Operateurs.surface(this.getGeometrie());}

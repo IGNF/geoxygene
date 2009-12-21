@@ -396,7 +396,7 @@ public class NoeudApp extends Noeud {
 		for (int i=0; i<liensArcRef.size(); i++) arcsCompCandidats.addAll( ((LienReseaux)liensArcRef.get(i)).getArcs2() );
 		arcsCompCandidats.retainAll(comp);
 
-		// si la liste des candidats est vide, c'est foutu, il faut revenir en arri�re
+		// si la liste des candidats est vide, c'est foutu, il faut revenir en arrière
 		if ( arcsCompCandidats.size() == 0 ) return false;
 
 		// on teste toutes les combinaisons de correspondance possibles

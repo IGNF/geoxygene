@@ -39,7 +39,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * 
  * English : Measures of shapes
  * 
- * @author  Musti�re/Sheeren/Grosso
+ * @author  Mustière/Sheeren/Grosso
  */
 
 public abstract class IndicesForme {
@@ -48,7 +48,7 @@ public abstract class IndicesForme {
 	// INDICES SUR DES SURFACES
 	//////////////////////////////////////////
 
-	/** Indice de circularit� de Miller (pour des surfaces)
+	/** Indice de circularité de Miller (pour des surfaces)
 	 * Valeur entre 0 et 1.
 	 * Vaut 1 si le polygone est un cercle, 0 si il est de surface nulle.
 	 * définition = 4*pi*surface/perimetre^2
@@ -63,8 +63,8 @@ public abstract class IndicesForme {
 		return 4*(Math.PI)*surface/Math.pow(perimetre,2);
 	}
 
-	/** Coefficient de compacit� de Gravelius (pour des surfaces)
-	 * Non born� : supérieur ou égal à 1 (cercle) .
+	/** Coefficient de compacité de Gravelius (pour des surfaces)
+	 * Non borné : supérieur ou égal à 1 (cercle) .
 	 * définition = perimetre/2*Racine(Pi*surface)
 	 */
 	public static double indiceCompaciteGravelius(GM_Polygon poly) {
@@ -74,7 +74,7 @@ public abstract class IndicesForme {
 	}
 
 	/** Diamêtre d'une surface: plus grande distance entre 2 points de la
-	 * frontière de la surface consid�r�e.
+	 * frontière de la surface considérée.
 	 * 
 	 * English: diameter of a surface
 	 * 
@@ -103,10 +103,10 @@ public abstract class IndicesForme {
 	//////////////////////////////////////////
 	// INDICES SUR DES LIGNES
 	//////////////////////////////////////////
-	/** méthode qui d�termine si la liste de points passée en entrée est rectiligne.
-	 *  Une ligne est consid�r�e rectiligne si les angles entre les segments qui
+	/** méthode qui détermine si la liste de points passée en entrée est rectiligne.
+	 *  Une ligne est considérée rectiligne si les angles entre les segments qui
 	 *  la constitue ne sont pas trop forts (inférieur au seuil en paramètre en radians).
-	 *  défaut : dépend de l'�chantillonage des courbes, des crit�res de courbure
+	 *  défaut : dépend de l'échantillonage des courbes, des critères de courbure
 	 *  seraient plus stables.
 	 * 
 	 *  English: is the line straight?

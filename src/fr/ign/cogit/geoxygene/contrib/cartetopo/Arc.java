@@ -46,7 +46,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 /**
  * Classe des arcs de la carte topo.
  * Les arcs ont pour géométrie une GM_LineString, et peuvent être orientés.
- * Des méthodes sont pr�vues pour une gestion de réseau, de graphe, et de carte topologique.
+ * Des méthodes sont prévues pour une gestion de réseau, de graphe, et de carte topologique.
  * 
  * English: arcs of a topological map
  * @author Sébastien Mustière
@@ -317,13 +317,13 @@ public class Arc extends ElementCarteTopo {
 
 	/** Recherche du cycle du réseau à droite de l'arc en se basant sur la topologie de RESEAU uniquement.
 	 *  NB: la liste retournée est égale à null si on n'a pas trouvé de cycle
-	 *          (cas pouvant arriver si la topologie arcs/noeuds n'est pas compl�te.
-	 *  NB: ne n�cessite PAS d'avoir une topologie arcs/faces instanciée.
-	 *  NB: n�cessite d'avoir une topologie arcs/noeuds instanciée.
+	 *          (cas pouvant arriver si la topologie arcs/noeuds n'est pas complète.
+	 *  NB: ne nécessite PAS d'avoir une topologie arcs/faces instanciée.
+	 *  NB: nécessite d'avoir une topologie arcs/noeuds instanciée.
 	 *  NB: un cycle passe 2 fois (une fois dans chaque sens) par les cul-de-sac si il y en a.
 	 * @return un cycle du réseau. Un cycle contient :
 	 * <ul>
-	 *  <li> la liste des arcs dans l'ordre de parcours du cycle. Cette Liste est class�e dans le sens anti-trigonometrique (sauf pour la face exterieure).
+	 *  <li> la liste des arcs dans l'ordre de parcours du cycle. Cette Liste est classée dans le sens anti-trigonometrique (sauf pour la face exterieure).
 	 *              (liste de type "ArrayList", contenant elle-même des Arcs).
 	 *  <li> la liste des orientations des arc : true si l'arc à sa face à gauche, false sinon. 
 	 *              (liste de type "ArrayList", contenant elle-même des objets Booleans).
@@ -344,7 +344,7 @@ public class Arc extends ElementCarteTopo {
 		sensEnCours = true;
 
 		// on parcours le cycle dans le sens anti-trigonometrique,
-		// jusqu'� revenir sur this en le parcourant dans le bon sens
+		// jusqu'à revenir sur this en le parcourant dans le bon sens
 		// (précision utile à la gestion des cul-de-sac).
 
 		while ( true ) {
@@ -383,13 +383,14 @@ public class Arc extends ElementCarteTopo {
 
 	/** Recherche du cycle du réseau à gauche de l'arc en se basant sur la topologie de RESEAU uniquement.
 	 *  NB: la liste retournée est égale à null si on n'a pas trouvé de cycle
-	 *          (cas pouvant arriver si la topologie arcs/noeuds n'est pas compl�te.
-	 *  NB: ne n�cessite PAS d'avoir une topologie arcs/faces instanciée.
-	 *  NB: n�cessite d'avoir une topologie arcs/noeuds instanciée.
+	 *          (cas pouvant arriver si la topologie arcs/noeuds n'est pas complète.
+	 *  NB: ne nécessite PAS d'avoir une topologie arcs/faces instanciée.
+	 *  NB: nécessite d'avoir une topologie arcs/noeuds instanciée.
 	 *  NB: un cycle passe 2 fois (une fois dans chaque sens) par les cul-de-sac si il y en a.
 	 * @return un cycle du réseau. Un cycle contient :
 	 * <ul>
-	 *  <li> la liste des arcs dans l'ordre de parcours du cycle. Cette Liste est class�e dans le sens trigonometrique (sauf pour la face exterieure).
+	 *  <li> la liste des arcs dans l'ordre de parcours du cycle. Cette Liste est classée 
+	 *  dans le sens trigonometrique (sauf pour la face exterieure).
 	 *              (liste de type "ArrayList", contenant elle-même des Arcs).
 	 *  <li> la liste des orientations des arc : true si l'arc à sa face à gauche, false sinon. 
 	 *              (liste de type "ArrayList", contenant elle-même des objets Booleans).
@@ -409,7 +410,7 @@ public class Arc extends ElementCarteTopo {
 		sensEnCours = true;
 
 		// on parcours le cycle dans le sens anti-trigonometrique,
-		// jusqu'� revenir sur this en le parcourant dans le bon sens
+		// jusqu'à revenir sur this en le parcourant dans le bon sens
 		// (précision utile à la gestion des cul-de-sac).
 		while ( true ) {
 			// ajout de l'arc en cours au cycle...
@@ -445,9 +446,10 @@ public class Arc extends ElementCarteTopo {
 
 	/**
 	 * Recherche du cycle du réseau à gauche de l'arc en se basant sur la topologie de RESEAU uniquement.
-	 * NB: le résultat est null si on n'a pas trouvé de cycle (cas pouvant arriver si la topologie arcs/noeuds n'est pas compl�te.
-	 * NB: ne n�cessite PAS d'avoir une topologie arcs/faces instanciée.
-	 * NB: n�cessite d'avoir une topologie arcs/noeuds instanciée.
+	 * NB: le résultat est null si on n'a pas trouvé de cycle 
+	 * (cas pouvant arriver si la topologie arcs/noeuds n'est pas complète.
+	 * NB: ne nécessite PAS d'avoir une topologie arcs/faces instanciée.
+	 * NB: nécessite d'avoir une topologie arcs/noeuds instanciée.
 	 * NB: un cycle passe 2 fois (une fois dans chaque sens) par les cul-de-sac si il y en a.
 	 * @param aGauche si vrai, on parcours l'arc par la gauche. Sinon, on le parcours par la droite.
 	 * @return un cycle du réseau
@@ -462,7 +464,7 @@ public class Arc extends ElementCarteTopo {
 		boolean sensEnCours = true;
 
 		// on parcours le cycle dans le sens anti-trigonometrique,
-		// jusqu'� revenir sur this en le parcourant dans le bon sens
+		// jusqu'à revenir sur this en le parcourant dans le bon sens
 		// (précision utile à la gestion des cul-de-sac).
 		while ( true ) {
 			// ajout de l'arc en cours au cycle...
@@ -498,18 +500,18 @@ public class Arc extends ElementCarteTopo {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//                      Gestion de type carte topopolgique
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// Les arcs sont class�s autour d'un noeud en fonction de leur géométrie.
+	// Les arcs sont classés autour d'un noeud en fonction de leur géométrie.
 	// Ceci permet en particulier de parcourir facilement les cycles d'un graphe.
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/** Arc suivant self à son noeud final, au sens des cartes topologiques.
 	 *  L'arc suivant est l'arc incident au noeud final de self,
-	 *  et suivant self dans l'ordre trigonom�trique autour de ce noeud final.
+	 *  et suivant self dans l'ordre trigonométrique autour de ce noeud final.
 	 *
 	 *  NB: renvoie une liste de 2 éléments :
 	 *      element 1, liste.get(0) = l'arc
 	 *      element 2, liste.get(1) = Boolean, true si entrant, false si sortant
-	 *  NB: calcul réalis� pour chaque appel de la méthode.
+	 *  NB: calcul réalisé pour chaque appel de la méthode.
 	 *  NB : l'arcSuivant peut être self, en cas de cul de sac sur le noeud final.
 	 */
 	public List<Object> arcSuivantFin() {
@@ -524,7 +526,7 @@ public class Arc extends ElementCarteTopo {
 
 		// On parcours la liste des arcs autour du noeud final
 		// Quand on y rencontre this en tant qu'entrant, on renvoie le suivant dans la liste
-		// NB: cette notion d'entrant est n�cesaire pour bien gérer les boucles
+		// NB: cette notion d'entrant est nécesaire pour bien gérer les boucles
 		while( itArcs.hasNext() ) {
 			arc = (Arc) itArcs.next();
 			orientationEntrant = (Boolean)itArcsOrientation.next();
@@ -545,12 +547,12 @@ public class Arc extends ElementCarteTopo {
 
 	/** Arc suivant self à son noeud initial, au sens des cartes topologiques.
 	 *  L'arc suivant est l'arc incident au noeud initial de self,
-	 *  et suivant self dans l'ordre trigonom�trique autour de ce noeud initial.
+	 *  et suivant self dans l'ordre trigonométrique autour de ce noeud initial.
 	 *
 	 *  NB: renvoie une liste de 2 éléments :
 	 *      element 1, liste.get(0) = l'arc
 	 *      element 2, liste.get(1) = Boolean, true si entrant, false si sortant
-	 *  NB: calcul réalis� pour chaque appel de la méthode.
+	 *  NB: calcul réalisé pour chaque appel de la méthode.
 	 *  NB : l'arcSuivant peut être self, en cas de cul de sac sur le noeud initial.
 	 */
 	public List<Object> arcSuivantDebut() {
@@ -565,7 +567,7 @@ public class Arc extends ElementCarteTopo {
 
 		// On parcours la liste des arcs autour du noeud initial
 		// Quand on y rencontre this en tant que sortant, on renvoie le suivant dans la liste
-		// NB: cette notion de sortant est n�cesaire pour bien gérer les boucles.
+		// NB: cette notion de sortant est nécessaire pour bien gérer les boucles.
 		while( itArcs.hasNext() ) {
 			arc = (Arc) itArcs.next();
 			orientationEntrant = (Boolean)itArcsOrientation.next();
@@ -584,15 +586,15 @@ public class Arc extends ElementCarteTopo {
 		return null;
 	}
 
-	/** Arc pr�c�dant self à son noeud final, au sens des cartes topologiques.
-	 *  L'arc pr�c�dent est l'arc incident au noeud final de self,
-	 *  et pr�c�dant self dans l'ordre trigonom�trique autour de ce noeud final.
+	/** Arc précédant self à son noeud final, au sens des cartes topologiques.
+	 *  L'arc précédent est l'arc incident au noeud final de self,
+	 *  et précédant self dans l'ordre trigonométrique autour de ce noeud final.
 	 *
 	 *  NB: renvoie une liste de 2 éléments :
 	 *      element 1, liste.get(0) = l'arc
 	 *      element 2, liste.get(1) = Boolean, true si entrant, false si sortant
-	 *  NB: calcul réalis� pour chaque appel de la méthode.
-	 *  NB : l'arc pr�c�dent peut être self, en cas de cul de sac sur le noeud final.
+	 *  NB: calcul réalisé pour chaque appel de la méthode.
+	 *  NB : l'arc précédent peut être self, en cas de cul de sac sur le noeud final.
 	 */
 	public List<Object> arcPrecedentFin() {
 		if ( this.getNoeudFin() == null ) return null;
@@ -605,8 +607,8 @@ public class Arc extends ElementCarteTopo {
 		List<Object> resultat = new ArrayList<Object>();
 
 		// On parcours la liste des arcs autour du noeud final
-		// Quand on y rencontre this en tant qu'entrant, on renvoie le pr�c�dant dans la liste
-		// NB: cette notion de pr�c�dant est n�cesaire pour bien gérer les boucles.
+		// Quand on y rencontre this en tant qu'entrant, on renvoie le précédant dans la liste
+		// NB: cette notion de précédant est nécessaire pour bien gérer les boucles.
 		arc = (Arc) itArcs.next();
 		orientationEntrant = (Boolean)itArcsOrientation.next();
 		if ((arc == this) && orientationEntrant.booleanValue() ) {
@@ -628,15 +630,15 @@ public class Arc extends ElementCarteTopo {
 		return null;
 	}
 
-	/** Arc pr�c�dent self à son noeud initial, au sens des cartes topologiques.
-	 *  L'arc pr�c�dent est l'arc incident au noeud initial de self,
-	 *  et pr�c�dent self dans l'ordre trigonom�trique autour de ce noeud initial.
+	/** Arc précédent self à son noeud initial, au sens des cartes topologiques.
+	 *  L'arc précédent est l'arc incident au noeud initial de self,
+	 *  et précédent self dans l'ordre trigonométrique autour de ce noeud initial.
 	 *
 	 *  NB: renvoie une liste de 2 éléments :
 	 *      element 1, liste.get(0) = l'arc
 	 *      element 2, liste.get(1) = Boolean, true si entrant, false si sortant
-	 *  NB: calcul réalis� pour chaque appel de la méthode.
-	 *  NB : l'arc pr�c�dent peut être self, en cas de cul de sac sur le noeud initial.
+	 *  NB: calcul réalisé pour chaque appel de la méthode.
+	 *  NB : l'arc précédent peut être self, en cas de cul de sac sur le noeud initial.
 	 */
 	public List<Object> arcPrecedentDebut() {
 		if ( this.getNoeudIni() == null ) return null;
@@ -649,8 +651,8 @@ public class Arc extends ElementCarteTopo {
 		List<Object> resultat = new ArrayList<Object>();
 
 		// On parcours la liste des arcs autour du noeud initial
-		// Quand on y rencontre this en tant que sortant, on renvoie le pr�c�dant dans la liste
-		// NB: cette notion de pr�c�dant est n�cesaire pour bien gérer les boucles.
+		// Quand on y rencontre this en tant que sortant, on renvoie le précédant dans la liste
+		// NB: cette notion de précédant est nécessaire pour bien gérer les boucles.
 		arc = (Arc) itArcs.next();
 		orientationEntrant = (Boolean)itArcsOrientation.next();
 		if ((arc == this) && !orientationEntrant.booleanValue() ) {
@@ -675,7 +677,7 @@ public class Arc extends ElementCarteTopo {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//                              Gestion d'un réseau orienté
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// NB: ne pas confondre orientation définie par l'attribut "orientation" (trait� ici),
+	// NB: ne pas confondre orientation définie par l'attribut "orientation" (traité ici),
 	//      et l'orientation définie implicitement par le sens de stockage de la géométrie
 
 	private int orientation = 2;
@@ -745,7 +747,7 @@ public class Arc extends ElementCarteTopo {
 	private Rectangle rectangleEnglobant = null;
 
 	/** Rectangle englobant de l'arc, orienté le long des axes des x,y.
-	 * NB: le rectangle est calcul� au premier appel de cette fonction.
+	 * NB: le rectangle est calculé au premier appel de cette fonction.
 	 * Si l'arc est modifié, la valeur n'est pas mise à jour : il faut le faire explicitement au besoin avec calculeRectangleEnglobant.
 	 */
 	public Rectangle getRectangleEnglobant() {
@@ -767,7 +769,7 @@ public class Arc extends ElementCarteTopo {
 	 * Elle est calculee comme le maximum des distances d'un point intermediaire
 	 * de self à l'arc. Cette approximation peut diffèrer sensiblement
 	 * de la definition theorique.
-	 * NB : défini en th�orie à 3D, mais non v�rifi� en profondeur */
+	 * NB : défini en théorie à 3D, mais non vérifié en profondeur */
 	public double premiereComposanteHausdorff (Arc arc) {return (Distances.premiereComposanteHausdorff(this.getGeometrie(), arc.getGeometrie()));}
 
 	/** Distance de Hausdorff entre self et l'arc.
@@ -775,12 +777,12 @@ public class Arc extends ElementCarteTopo {
 	 * d'une des lignes a l'autre ligne. Dans certains cas cette definition
 	 * differe de la definition theorique car la distance de Hausdorff ne se
 	 * realise pas necessairement sur un point intermediaire. Mais cela est rare
-	 * sur des données r�el. Cette implementation est un bon compromis entre
-	 * simplicit� et précision.
-	 * NB : défini en th�orie à 3D, mais non v�rifi� en profondeur */
+	 * sur des données réel. Cette implementation est un bon compromis entre
+	 * simplicité et précision.
+	 * NB : défini en théorie à 3D, mais non vérifié en profondeur */
 	public double hausdorff (Arc arc) {return (Distances.hausdorff(this.getGeometrie(), arc.getGeometrie()));}
 
-	/** Longueur euclidienne de l'arc. Est calcul� en 3D si la géométrie est définie en 3D */
+	/** Longueur euclidienne de l'arc. Est calculé en 3D si la géométrie est définie en 3D */
 	public double longueur() {return this.getGeometrie().length();}
 
 	protected boolean pendant = false;

@@ -64,16 +64,16 @@ public class AppariementIO {
 	/** Lancement de l'appariement de réseaux sur des objets Géographiques :
 	 * 1- Transformation des données initales en deux graphes, en fonction des paramètres d'import.
 	 * 2- Lancement du calcul d'appariement générique sur les deux réseaux.
-	 * 3- Analyse et export des r�sutlats éventuellement
+	 * 3- Analyse et export des résultats éventuellement
 	 * 
 	 * @return  L'ensemble des liens en sortie (de la classe EnsembleDeLiens).
 	 * 
-	 * @param paramApp Les paramètres de l'appariement (seuls de distance, pr�paration topologique des données...)
+	 * @param paramApp Les paramètres de l'appariement (seuls de distance, préparation topologique des données...)
 	 * 
 	 * @param cartesTopo Liste en entrée/sortie qui permet de Récupèrer en sortie les graphes intermédiaires créés pendant le calcul (de type Reseau_App, spécialisation de CarteTopo).
 	 * - Si on veut Récupèrer les graphes : passer une liste vide - new ArrayList() - mais non nulle.
-	 *    Elle contient alors en sortie 2 éléments : dans l'ordre les cartes topo de ref�rence et comparaison.
-	 *    Elle peut contenir un 3eme élément: le graphe ref recal� sur comp si cela est demand� dans les paramètres.
+	 *    Elle contient alors en sortie 2 éléments : dans l'ordre les cartes topo de référence et comparaison.
+	 *    Elle peut contenir un 3eme élément: le graphe ref recalé sur comp si cela est demandé dans les paramètres.
 	 * - Si on ne veut rien Récupèrer : passer Null
 	 */
 	public static EnsembleDeLiens AppariementDeJeuxGeo(ParametresApp paramApp, List<ReseauApp> cartesTopo) {
@@ -89,14 +89,14 @@ public class AppariementIO {
 		if (logger.isInfoEnabled()) {
 			logger.info("");
 			logger.info("######## DEBUT DE L'APPARIEMENT DE RESEAUX #########");
-			logger.info("  (1 = les données les moins d�taill�es ; 2 = les données les plus d�taill�es)");
+			logger.info("  (1 = les données les moins détaillées ; 2 = les données les plus détaillées)");
 			logger.info("");
 		}
 		////////////////////////////////////////////////
 		// STRUCTURATION
 		if (logger.isInfoEnabled()) {
 			logger.info("STRUCTURATION DES DONNEES");
-			logger.info("  Organisation des données en réseau et pr�traitements topologiques");
+			logger.info("  Organisation des données en réseau et prétraitements topologiques");
 		}
 		if (logger.isDebugEnabled()) {
 			logger.debug("  DEBUT DE LA PHASE DE STRUCTURATION "+(new Time(System.currentTimeMillis())).toString());
@@ -123,7 +123,7 @@ public class AppariementIO {
 		reseauComp.initialisePoids();
 
 		if (logger.isInfoEnabled()) {
-			logger.info("  Structuration initiale des données termin�e : ");
+			logger.info("  Structuration initiale des données terminée : ");
 			logger.info("     réseau 1 : "+reseauRef.getPopArcs().size()+" arcs et "+reseauRef.getPopNoeuds().size()+" noeuds.");
 			logger.info("     réseau 2 : "+reseauComp.getPopArcs().size()+" arcs et "+reseauComp.getPopNoeuds().size()+" noeuds.");
 		}
@@ -139,7 +139,7 @@ public class AppariementIO {
 		if (logger.isDebugEnabled()) logger.debug("  DEBUT DE LA PHASE D'APPARIEMENT DES RESEAUX "+(new Time(System.currentTimeMillis())).toString());
 		liens = Appariement.appariementReseaux(reseauRef, reseauComp, paramApp);
 		if (logger.isInfoEnabled()) {
-			logger.info("  Appariement des réseaux termin� ");
+			logger.info("  Appariement des réseaux terminé ");
 			logger.info("  "+liens.size()+" liens d'appariement ont été trouvés (dans la structure de travail)");
 		}
 		if (logger.isDebugEnabled()) logger.debug("  FIN DE LA PHASE D'APPARIEMENT DES RESEAUX "+(new Time(System.currentTimeMillis())).toString());
@@ -177,7 +177,7 @@ public class AppariementIO {
 	 * Le réseau créé.
 	 * 
 	 * @param paramApp
-	 * Les paramètres de l'appariement (seuls de distance, pr�paration topologique des données...)
+	 * Les paramètres de l'appariement (seuls de distance, préparation topologique des données...)
 	 * 
 	 * true = on traite le réseau de référence
 	 * false = on traite le réseau de comparaison
@@ -221,9 +221,9 @@ public class AppariementIO {
 				else arc.setOrientation(1);
 				arc.addCorrespondant(element);
 
-				// Le code ci-dessous permet un import plus fin mais a été réalis�
-				// pour des données spécifiques et n'est pas encore cod� très générique.
-				// Il est donc comment� dans cette version du code.
+				// Le code ci-dessous permet un import plus fin mais a été réalisé
+				// pour des données spécifiques et n'est pas encore codé très générique.
+				// Il est donc commenté dans cette version du code.
 				//				element = (FT_Feature)itElements.next();
 				//				if ( ref && paramApp.filtrageRef ) {
 				//					if ( filtrageTroncon(element) ) continue;
@@ -258,9 +258,9 @@ public class AppariementIO {
 				noeud.setGeometrie(new GM_Point((DirectPosition)((GM_Point)element.getGeom()).getPosition().clone()));
 				noeud.addCorrespondant(element);
 				noeud.setTaille(paramApp.distanceNoeudsMax);
-				// Le code ci-dessous permet un import plus fin mais a été réalis�
-				// pour des données spécifiques et n'est pas encore cod� très générique.
-				// Il est donc comment� dans cette version du code.
+				// Le code ci-dessous permet un import plus fin mais a été réalisé
+				// pour des données spécifiques et n'est pas encore codé très générique.
+				// Il est donc commenté dans cette version du code.
 				//				if ( paramApp.distanceNoeudsConstante ) noeud.setTaille(paramApp.distanceNoeuds);
 				//				else noeud.setTaille(tailleNoeud(element, paramApp));
 			}

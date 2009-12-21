@@ -43,7 +43,7 @@ import fr.ign.cogit.geoxygene.datatools.Geodatabase;
  * On peut eventuellement choisir le nom des tables (si on a acces a une ligne de commande :
  * passer un BufferedReader (parametre "in" non null au constructeur).
  *
- * <br> AB 18 juillet 2005 : gestion des cl�s primaires (possiblit� d'utiliser une cl� primaire existante).
+ * <br> AB 18 juillet 2005 : gestion des clés primaires (possiblité d'utiliser une clé primaire existante).
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.1
@@ -217,7 +217,7 @@ public class XMLJavaDicoGenerator {
 						theXMLGenerator.writeField(javaFieldName,sqlColumnName,sqlDbmsType);
 
 						// Ecriture du champ dans la classe java
-						// Ces champs ne sont pas �crits dans la classe java car ils héritent de FT_Feature
+						// Ces champs ne sont pas écrits dans la classe java car ils héritent de FT_Feature
 						if ((javaFieldName.compareToIgnoreCase("id")!=0) &&
 								(javaFieldName.compareToIgnoreCase("geom")!=0))
 							aJavaGenerator.writeField(javaType,javaFieldName);

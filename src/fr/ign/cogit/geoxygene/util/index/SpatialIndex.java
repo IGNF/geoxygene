@@ -50,9 +50,9 @@ public interface SpatialIndex<Feature extends FT_Feature> {
 	 * 
 	 * Pour un dallage: renvoie une ArrayList de 4 éléments
 	 * - 1er  élément : Class égal à Dallage.class
-	 * - 2�me élément : Boolean indiquant si l'index est en mode MAJ automatique ou non
-	 * - 3�me élément : GM_Envelope décrivant les limites de la zone couverte
-	 * - 4�me élément : Integer exprimant le nombre de cases en X et Y.
+	 * - 2ème élément : Boolean indiquant si l'index est en mode MAJ automatique ou non
+	 * - 3ème élément : GM_Envelope décrivant les limites de la zone couverte
+	 * - 4ème élément : Integer exprimant le nombre de cases en X et Y.
 	 * 
 	 */
 	public List<Object> getParametres();
@@ -62,14 +62,14 @@ public interface SpatialIndex<Feature extends FT_Feature> {
 
 	/** Demande une mise a jour automatique.
 	 * NB: Cette méthode ne fait pas les éventuelles MAJ qui
-	 * auriant �te faites alors que le mode MAJ automatique n'était
-	 * pas activ�.
+	 * auriant ete faites alors que le mode MAJ automatique n'était
+	 * pas activé.
 	 */
 	public void setAutomaticUpdate(boolean auto) ;
 
 	/** Met a jour l'index avec le FT_Feature passé en paramètre.
 	 * <p>
-	 * <b>ATTENTION : si le nouveau feature est en dehors des dalles existantes, il ne sera jamais ins�r� dans l'index !</b>
+	 * <b>ATTENTION : si le nouveau feature est en dehors des dalles existantes, il ne sera jamais insûré dans l'index !</b>
 	 * @param value FT_Feature provocant la mise à jour de l'index
 	 * @param cas type de modification de l'index :
 	 * <ul>

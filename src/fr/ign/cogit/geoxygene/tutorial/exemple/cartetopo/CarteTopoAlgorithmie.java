@@ -44,14 +44,14 @@ public class CarteTopoAlgorithmie {
 
 	static Logger logger = Logger.getLogger(CarteTopoAlgorithmie.class);
 	
-	/** D�tection des faces circulaires
+	/** détection des faces circulaires
 	 * 
 	 * @param carteTopo
 	 * @return collection de faces
 	 */
 	public static FT_FeatureCollection<Face> detectionFacesCirculaires(CarteTopo carteTopo) {
 		
-		//R�cup�ration des faces de la carteTopo
+		//Récupération des faces de la carteTopo
 		Population<Face> faces = carteTopo.getPopFaces();
 		
 		if (faces.isEmpty()) return new FT_FeatureCollection<Face>();
@@ -59,16 +59,16 @@ public class CarteTopoAlgorithmie {
 		//création d'une collection d'accueil pour sauver les faces circulaires
 		FT_FeatureCollection<Face> facesCirculaires = new FT_FeatureCollection<Face>();
 		
-		//It�ration sur les faces de la carteTopo
+		//Itération sur les faces de la carteTopo
 		Iterator<Face> it = faces.iterator();
 		while(it.hasNext()){
 			Face face = it.next();
 			
-			//Calcul de l'indice de compacit�
+			//Calcul de l'indice de compacité
 			double indiceCompacite = IndicesForme.indiceCompacite(face.getGeometrie());
 			
 			//Si l'indice est supérieur ou égal à 0.95, alors la face est
-			//consid�r�e comme circulaire et ajoutée à la collection
+			//considérée comme circulaire et ajoutée à la collection
 			if (indiceCompacite >= 0.95) {
 				facesCirculaires.add(face);
 				logger.info("Nouvelle face circulaire détectée (indice : " + indiceCompacite + ")");

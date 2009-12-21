@@ -196,7 +196,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
 
     /*- GM_Point ------------------------------------------*/
 
-//TODO d�terminer la dimension de la géométrie attendue par postgis
+//TODO déterminer la dimension de la géométrie attendue par postgis
     static String point(GM_Point point)
     {
         DirectPosition position=point.getPosition();
@@ -415,10 +415,10 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
         String xStr=tkz.nextToken();
         String yStr=tkz.nextToken();
         if (tkz.hasMoreTokens()) {
-                // r�cup�ration de la 3�me coordonnée si elle existe
+                // Récupération de la 3ème coordonnée si elle existe
                 String zStr=tkz.nextToken();
                 if (tkz.hasMoreTokens()) {
-                        // si il y en a une 4�me, alors on est en XYZM et on prend Z
+                        // si il y en a une 4ème, alors on est en XYZM et on prend Z
                         // sinon, on est en XYM et on ignore la mesure car elle n'est pas gérée par le type DirectPosition
                         p=new DirectPosition(Double.parseDouble(xStr), Double.parseDouble(yStr), Double.parseDouble(zStr));
                                 {if (true) return p;}

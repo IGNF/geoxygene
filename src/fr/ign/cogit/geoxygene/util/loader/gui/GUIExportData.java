@@ -158,8 +158,8 @@ public class GUIExportData extends JFrame {
 
 		if(rep == null || rep.equals("")){
 			JOptionPane.showMessageDialog(null,
-										"nom de r�pertoire incorrect",
-										"nom de r�pertoire incorrect",
+										"nom de répertoire incorrect",
+										"nom de répertoire incorrect",
 										JOptionPane.ERROR_MESSAGE);
 			return "";
 		}

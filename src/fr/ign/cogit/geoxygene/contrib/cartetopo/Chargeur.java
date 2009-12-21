@@ -52,7 +52,7 @@ import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 public class Chargeur {
 	static Logger logger=Logger.getLogger(Chargeur.class.getName());
 
-	/** Charge en m�moire les éléments de la classe 'nomClasseGeo'
+	/** Charge en mémoire les éléments de la classe 'nomClasseGeo'
 	 * et remplit la carte topo 'carte' avec des correspondants de ces éléments.
 	 */
 	public static void importClasseGeo(String nomClasseGeo, CarteTopo carte) {
@@ -61,7 +61,7 @@ public class Chargeur {
 		try {
 			clGeo = Class.forName(nomClasseGeo);
 		} catch (Exception e) {
-			logger.warn("ATTENTION : La classe nomm�e "+nomClasseGeo+ " n'existe pas");
+			logger.warn("ATTENTION : La classe nommée "+nomClasseGeo+ " n'existe pas");
 			logger.warn("            Impossible donc de l'importer");
 			e.printStackTrace();
 			return;
@@ -72,7 +72,7 @@ public class Chargeur {
 	}
 
 	/** Remplit la carte topo 'carte' avec des correspondants des éléments de 'listeFeature'.
-	 * @param listeFeatures �l�m�nts
+	 * @param listeFeatures éléments
 	 * @param carte carte topo
 	 */
 	public static void importClasseGeo(FT_FeatureCollection<?> listeFeatures, CarteTopo carte) {
@@ -85,23 +85,23 @@ public class Chargeur {
 	 * @param convert2d si vrai, alors convertir les géométries en 2d
 	 */
 	public static void importClasseGeo(FT_FeatureCollection<?> listeFeatures, CarteTopo carte, boolean convert2d) {
-		if(listeFeatures.isEmpty()) {logger.warn("Rien n'a été import� : la liste de features est vide");return;}
+		if(listeFeatures.isEmpty()) {logger.warn("Rien n'a été importé : la liste de features est vide");return;}
 		if (listeFeatures.get(0).getGeom() instanceof GM_Point) {
 			int nbElements = importClasseGeo(listeFeatures,carte.getPopNoeuds(),convert2d);
-			if(logger.isDebugEnabled()) logger.debug("Nb de noeuds import�s : "+nbElements);
+			if(logger.isDebugEnabled()) logger.debug("Nb de noeuds importés : "+nbElements);
 			return;
 		}
 		if ( (listeFeatures.get(0).getGeom() instanceof GM_LineString)  || (listeFeatures.get(0).getGeom() instanceof GM_MultiCurve<?>) ) {
 			int nbElements = importClasseGeo(listeFeatures,carte.getPopArcs(),convert2d);
-			if(logger.isDebugEnabled()) logger.debug("Nb d'arcs import�s    : "+nbElements);
+			if(logger.isDebugEnabled()) logger.debug("Nb d'arcs importés    : "+nbElements);
 			return;
 		}
 		if ( (listeFeatures.get(0).getGeom() instanceof GM_Polygon) || (listeFeatures.get(0).getGeom() instanceof GM_MultiSurface<?>) ) {
 			int nbElements = importClasseGeo(listeFeatures,carte.getPopFaces(),convert2d);
-			if(logger.isDebugEnabled()) logger.debug("Nb de faces import�es : "+nbElements);
+			if(logger.isDebugEnabled()) logger.debug("Nb de faces importées : "+nbElements);
 			return;
 		}
-		logger.warn("Attention: rien n'a été import�. Features non gérés dont la géométrie est de type "+listeFeatures.get(0).getClass().getName());
+		logger.warn("Attention: rien n'a été importé. Features non gérés dont la géométrie est de type "+listeFeatures.get(0).getClass().getName());
 	}
 
 	/** Remplit la carte topo 'carte' avec des correspondants des éléments de 'listeFeature'.

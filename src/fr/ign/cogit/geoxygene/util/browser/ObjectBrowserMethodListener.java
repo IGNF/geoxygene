@@ -31,7 +31,7 @@ import java.awt.event.ActionListener;
 import java.lang.reflect.Method;
 
 /**
- * Cette classe fournit l'implémentation de l'�couteur d'�v�nement pour les objets cliquables de type méthode.
+ * Cette classe fournit l'implémentation de l'écouteur d'évènement pour les objets cliquables de type méthode.
  * <BR/>Elle permet l'invocation générique des méthodes, sans paramètres, en utilisant le package reflection du J2SDK.
  *
  * @author Thierry Badard & Arnaud Braun
@@ -41,18 +41,18 @@ import java.lang.reflect.Method;
 
 public class ObjectBrowserMethodListener implements ActionListener {
 
-	/** Objet porteur de la méthode qui doit être invoqu�e.*/
+	/** Objet porteur de la méthode qui doit être invoquée.*/
 	private Object obj;
-	/** méthode qui doit être invoqu�e.*/
+	/** méthode qui doit être invoquée.*/
 	private Method method;
-	/** Nom de la méthode qui doit être invoqu�e.*/
+	/** Nom de la méthode qui doit être invoquée.*/
 	private String methodName;
 
 	/**
-	 * Constructeur principal de l'�couteur d'�v�nement ObjectBrowserMethodListener.
+	 * Constructeur principal de l'écouteur d'évènement ObjectBrowserMethodListener.
 	 * 
-	 * @param obj l'objet porteur de la méthode qui doit être invoqu�e.
-	 * @param method la méthode qui doit être invoqu�e.
+	 * @param obj l'objet porteur de la méthode qui doit être invoquée.
+	 * @param method la méthode qui doit être invoquée.
 	 */
 	public ObjectBrowserMethodListener(Object obj, Method method) {
 		this.obj = obj;
@@ -61,7 +61,7 @@ public class ObjectBrowserMethodListener implements ActionListener {
 	}
 
 	/**
-	 * Redéfinition de la méthode actionPerformed() fournie par l'interface ActionListener, afin de d�clencher
+	 * Redéfinition de la méthode actionPerformed() fournie par l'interface ActionListener, afin de déclencher
 	 * l'affichage de l'argument de retour de la méthode (instance de la classe ObjectBrowserPrimitiveFrame).
 	 */
 	@SuppressWarnings("unused")

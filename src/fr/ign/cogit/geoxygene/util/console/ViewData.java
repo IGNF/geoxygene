@@ -33,7 +33,7 @@ import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.util.viewer.ObjectViewer;
 
 /**
- * janvier 2007 : modification pour am�lioration de la gestion de la fermeture - grosso
+ * janvier 2007 : modification pour amélioration de la gestion de la fermeture - grosso
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.1

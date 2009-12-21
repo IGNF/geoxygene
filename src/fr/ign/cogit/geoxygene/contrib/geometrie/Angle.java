@@ -37,7 +37,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
  * English: Class for computations on angles (in radian). The attribute
  * angle is the value of the angle (in radian) between 0 and 2*pi.
  * 
- * @author  Musti�re/Bonin/Grosso
+ * @author  Mustière/Bonin/Grosso
  * @version 1.0
  */
 
@@ -77,14 +77,14 @@ public class Angle
 		this.setValeur(Math.atan2(y,x));
 	}
 
-	/** crée un angle à pi pr�s (entre O et pi),
-	 * à partir d'un angle à 2pi pr�s (entre 0 et pi) */
+	/** crée un angle à pi prés (entre O et pi),
+	 * à partir d'un angle à 2pi prés (entre 0 et pi) */
 	public static Angle angleAPiPres(Angle angle2pi) {
 		if (angle2pi.valeur > Math.PI ) return new Angle(angle2pi.valeur-Math.PI);
 		return new Angle(angle2pi.valeur);
 	}
 
-	/** crée un angle à pi pr�s (entre O et pi),
+	/** crée un angle à pi prés (entre O et pi),
 	 * à partir de this */
 	public Angle angleAPiPres() {
 		if (this.valeur > Math.PI ) return new Angle(this.valeur-Math.PI);
@@ -106,12 +106,12 @@ public class Angle
 		return new Angle(a.valeur+ecarttrigo(a,b).valeur/2);
 	}
 
-	/** Moyenne de deux angles (défini à pi pr�s). */
+	/** Moyenne de deux angles (défini à pi prés). */
 	public static Angle moyenne(Angle a, Angle b) {
 		return angleAPiPres(new Angle((a.valeur+b.valeur)/2));
 	}
 
-	/** Ecart de a vers b dans le sens trigonom�trique,
+	/** Ecart de a vers b dans le sens trigonométrique,
 	 * ex : ecart(pi/4, 7pi/4) = 3pi/2 */
 	public static Angle ecarttrigo(Angle a, Angle b) {
 		return new Angle(b.valeur-a.valeur);

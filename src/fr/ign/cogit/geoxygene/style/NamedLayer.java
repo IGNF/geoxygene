@@ -64,7 +64,7 @@ public class NamedLayer extends AbstractLayer {
 	public FT_FeatureCollection<? extends FT_Feature> getFeatureCollection() {
 		/*
 		 *  TODO Récupèrer la population à partir d'un vrai DataSet
-		 *  Pour l'instant, on utilise un singleton de DataSet qu'il faut donc avoir remplit au pr�alable...
+		 *  Pour l'instant, on utilise un singleton de DataSet qu'il faut donc avoir remplit au préalable...
 		 */
 		return DataSet.getInstance().getPopulation(this.getName());
 	}
