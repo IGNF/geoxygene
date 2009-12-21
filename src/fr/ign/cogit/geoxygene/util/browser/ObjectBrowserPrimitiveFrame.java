@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -39,8 +39,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 /**
- * Cette classe rend possible l'affichage de l'argument de retour (pour l'instant de type primitif ou chaîne de caractère)
- * renvoyé par une méthode déclenchée depuis le navigateur d'objet graphique de GeOxygene.
+ * Cette classe rend possible l'affichage de l'argument de retour (pour l'instant de type primitif ou chaÃ®ne de caractï¿½re)
+ * renvoyÃ© par une mÃ©thode dï¿½clenchï¿½e depuis le navigateur d'objet graphique de GeOxygene.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -55,18 +55,18 @@ public class ObjectBrowserPrimitiveFrame extends JFrame {
 
 	/** Localisation des fichiers d'internationalisation de l'interface. */
 	private static final String I18N_LANGUAGE_FILE_LOCATION = "fr.ign.cogit.geoxygene.util.browser.ObjectBrowserLanguageFile";
-	/** Taille par défaut du champ texte affichant le résultat de la méthode.*/
+	/** Taille par dÃ©faut du champ texte affichant le rÃ©sultat de la mÃ©thode.*/
 	private static final int PRIMITIVE_FRAME_DEFAULT_TEXTFIELD_SIZE = 35;
 	/** Locale courante. */
 	private Locale currentLocale;
-	/** RessourceBundle lié à la Locale et au fichier d'internationalisation. */
+	/** RessourceBundle liï¿½ Ã  la Locale et au fichier d'internationalisation. */
 	private ResourceBundle i18nLanguageFile;
 
 	/**
 	 * Constructeur principal de ObjectBrowserPrimitiveFrame.
 	 * 
-	 * @param title titre de la fenêtre
-	 * @param value valeur transtypée en chaîne de caractères de l'argument de retour de la méthode déclenchée.
+	 * @param title titre de la fenÃªtre
+	 * @param value valeur transtypï¿½e en chaÃ®ne de caractï¿½res de l'argument de retour de la mÃ©thode dï¿½clenchï¿½e.
 	 * @throws HeadlessException
 	 */
 	public ObjectBrowserPrimitiveFrame(String title, String value)

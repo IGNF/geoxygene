@@ -1,4 +1,4 @@
-/*
+/**
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
@@ -55,7 +55,7 @@ public class GUITableChoice extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = -4162760511903349752L;
-	private static final String FRAME_TITLE = "GeOxygene Geographic Tables in DBMS - ";
+	private static final String FRAME_TITLE = "GeOxygene Geographic Tables in DBMS - "; //$NON-NLS-1$
 	private String[] selectedData = new String[0];
 	private String[] data ;
 	private JList dataList;
@@ -63,12 +63,12 @@ public class GUITableChoice extends JFrame {
 
 
 	public  GUITableChoice (Object[] classesNames, String user) {
-		userName = user;
-		data = new String[classesNames.length];
-		for (int i=0; i<data.length; i++)
-			data[i] = (String) classesNames[i];
+		this.userName = user;
+		this.data = new String[classesNames.length];
+		for (int i=0; i<this.data.length; i++)
+			this.data[i] = (String) classesNames[i];
 		sortData();
-		dataList = new JList(data);
+		this.dataList = new JList(this.data);
 	}
 
 
@@ -77,30 +77,29 @@ public class GUITableChoice extends JFrame {
 		//dialog.show();
 		dialog.setVisible(true);
 		dialog.dispose();
-		return selectedData;
+		return this.selectedData;
 	}
 
 
-	private void getSelectedValues() {
-		Object[] selectedObjects = dataList.getSelectedValues();
-		selectedData = new String[selectedObjects.length];
+	void getSelectedValues() {
+		Object[] selectedObjects = this.dataList.getSelectedValues();
+		this.selectedData = new String[selectedObjects.length];
 		for (int i=0; i<selectedObjects.length; i++)
-			selectedData[i] = (String) selectedObjects[i];
+			this.selectedData[i] = (String) selectedObjects[i];
 	}
 
 
 	private JDialog createDialog (Frame parent) {
-
-		String title = FRAME_TITLE + userName;
+		String title = FRAME_TITLE + this.userName;
 		final JDialog dialog = new JDialog(parent, title, true);
 
-		JScrollPane scrollPane = new JScrollPane(dataList);
+		JScrollPane scrollPane = new JScrollPane(this.dataList);
 		scrollPane.setPreferredSize(new Dimension (500,600));
 
 		JPanel controlPanel =	new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
-		JButton okButton = new JButton("Ok");
-		okButton.setActionCommand("Ok");
+		JButton okButton = new JButton("Ok"); //$NON-NLS-1$
+		okButton.setActionCommand("Ok"); //$NON-NLS-1$
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				getSelectedValues();
@@ -108,7 +107,7 @@ public class GUITableChoice extends JFrame {
 			}
 		});
 
-		JButton cancelButton = new JButton("Cancel");
+		JButton cancelButton = new JButton("Cancel"); //$NON-NLS-1$
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dialog.dispose();
@@ -130,14 +129,14 @@ public class GUITableChoice extends JFrame {
 
 
 	private void sortData () {
-		if (data.length > 1) {
-			for (int i=0; i<data.length-1; i++) {
-				for (int j=i+1; j<data.length; j++)  {
-					String A = new String(data[i]);
-					String B = new String(data[j]);
+		if (this.data.length > 1) {
+			for (int i=0; i<this.data.length-1; i++) {
+				for (int j=i+1; j<this.data.length; j++)  {
+					String A = new String(this.data[i]);
+					String B = new String(this.data[j]);
 					if (B.compareTo(A) < 0) {
-						data[i] = B;
-						data[j] = A;
+						this.data[i] = B;
+						this.data[j] = A;
 					}
 				}
 			}

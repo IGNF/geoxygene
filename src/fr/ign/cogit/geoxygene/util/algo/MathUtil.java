@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -28,7 +28,7 @@ package fr.ign.cogit.geoxygene.util.algo;
 import java.util.List;
 
 /**
- * Fonctions mathématiques utilitaires
+ * Fonctions mathï¿½matiques utilitaires
  * @author Julien Perret
  */
 public class MathUtil {
@@ -36,7 +36,7 @@ public class MathUtil {
 	/**
 	 * Moyenne d'une liste
 	 * @param liste liste de doubles
-	 * @return moyenne des éléments d'une liste
+	 * @return moyenne des Ã©lÃ©ments d'une liste
 	 */
 	public static double moyenne(List<Double> liste) {
 		if (liste.isEmpty()) return 0.0;
@@ -46,9 +46,9 @@ public class MathUtil {
 	}
 
 	/**
-	 * Moyenne des carrés d'une liste
+	 * Moyenne des carrï¿½s d'une liste
 	 * @param liste liste de doubles
-	 * @return moyenne des carrés des éléments d'une liste
+	 * @return moyenne des carrï¿½s des Ã©lÃ©ments d'une liste
 	 */
 	public static double moyenneCarres(List<Double> liste) {
 		if (liste.isEmpty()) return 0.0;
@@ -59,10 +59,10 @@ public class MathUtil {
 
 	/**
 	 * Ecart type d'une liste.
-	 * Cette fonction ne prends que la liste des éléments comme paramètre.
-	 * Si vous connaissez déjà la moyenne des éléments de la liste, utilisez l'autre fonction et passez la en paramètre.
+	 * Cette fonction ne prends que la liste des Ã©lÃ©ments comme paramÃ¨tre.
+	 * Si vous connaissez dÃ©jÃ  la moyenne des Ã©lÃ©ments de la liste, utilisez l'autre fonction et passez la en paramÃ¨tre.
 	 * @param liste liste de doubles
-	 * @return écart type des éléments d'une liste
+	 * @return Ã©cart type des Ã©lÃ©ments d'une liste
 	 */
 	public static double ecartType(List<Double> liste) {
 		if (liste.isEmpty()) return 0.0;
@@ -71,12 +71,12 @@ public class MathUtil {
 
 	/**
 	 * Ecart type d'une liste.
-	 * Cette fonction prend en paramètre la moyennes des éléments de la liste.
-	 * Elle est essentiellement utilitaire mais peux servir si on connait déjà la moyenne des éléments de la liste passée en paramètre.
+	 * Cette fonction prend en paramÃ¨tre la moyennes des Ã©lÃ©ments de la liste.
+	 * Elle est essentiellement utilitaire mais peux servir si on connait dÃ©jÃ  la moyenne des Ã©lÃ©ments de la liste passÃ©e en paramÃ¨tre.
 	 * Sinon, passer par l'autre fonction.
 	 * @param liste liste de doubles
-	 * @param moyenne moyennes des éléments de la liste
-	 * @return écart type des éléments d'une liste
+	 * @param moyenne moyennes des Ã©lÃ©ments de la liste
+	 * @return Ã©cart type des Ã©lÃ©ments d'une liste
 	 */
 	public static <E extends Number> double ecartType(List<E> liste, double moyenne) {
 		if (liste.isEmpty()) return 0.0;
@@ -88,7 +88,7 @@ public class MathUtil {
 	/**
 	 * Minimum d'une liste
 	 * @param liste liste de doubles
-	 * @return plus petite valeur des éléments d'une liste
+	 * @return plus petite valeur des Ã©lÃ©ments d'une liste
 	 */
 	public static double min(List<Double> liste) {
 		if (liste.isEmpty()) return 0.0;
@@ -100,7 +100,7 @@ public class MathUtil {
 	/**
 	 * Maximum d'une liste
 	 * @param liste liste de doubles
-	 * @return plus grande valeur des éléments d'une liste
+	 * @return plus grande valeur des Ã©lÃ©ments d'une liste
 	 */
 	public static double max(List<Double> liste) {
 		if (liste.isEmpty()) return 0.0;
@@ -110,9 +110,9 @@ public class MathUtil {
 	}
 
 	/**
-	 * La valeur médiane d'une liste n'est définie que si la liste contient au moins un élément.
+	 * La valeur mï¿½diane d'une liste n'est dÃ©finie que si la liste contient au moins un Ã©lÃ©ment.
 	 * @param liste liste de doubles
-	 * @return Valeur médiane de la liste si elle n'est pas vide. 0 sinon.
+	 * @return Valeur mï¿½diane de la liste si elle n'est pas vide. 0 sinon.
 	 */
 	public static double mediane(List<Double> liste) {
 		if (liste.isEmpty()) return 0.0;

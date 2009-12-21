@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -43,7 +43,7 @@ import fr.ign.cogit.geoxygene.datatools.Geodatabase;
  * On peut eventuellement choisir le nom des tables (si on a acces a une ligne de commande :
  * passer un BufferedReader (parametre "in" non null au constructeur).
  *
- * <br> AB 18 juillet 2005 : gestion des clés primaires (possiblité d'utiliser une clé primaire existante).
+ * <br> AB 18 juillet 2005 : gestion des clï¿½s primaires (possiblitï¿½ d'utiliser une clï¿½ primaire existante).
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.1
@@ -217,12 +217,12 @@ public class XMLJavaDicoGenerator {
 						theXMLGenerator.writeField(javaFieldName,sqlColumnName,sqlDbmsType);
 
 						// Ecriture du champ dans la classe java
-						// Ces champs ne sont pas écrits dans la classe java car ils héritent de FT_Feature
+						// Ces champs ne sont pas ï¿½crits dans la classe java car ils hÃ©ritent de FT_Feature
 						if ((javaFieldName.compareToIgnoreCase("id")!=0) &&
 								(javaFieldName.compareToIgnoreCase("geom")!=0))
 							aJavaGenerator.writeField(javaType,javaFieldName);
 
-						// Ecriture dans le dictionnaire des données
+						// Ecriture dans le dictionnaire des donnÃ©es
 						theDicoGenerator.writeAttribute(javaClassName,javaFieldName,javaType);
 					}
 					System.out.println("    nom sql : "+sqlColumnName+"\n   nom java : "+javaFieldName);

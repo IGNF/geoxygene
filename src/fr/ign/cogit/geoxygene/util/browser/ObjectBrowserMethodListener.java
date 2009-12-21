@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -31,8 +31,8 @@ import java.awt.event.ActionListener;
 import java.lang.reflect.Method;
 
 /**
- * Cette classe fournit l'implémentation de l'écouteur d'événement pour les objets cliquables de type méthode.
- * <BR/>Elle permet l'invocation générique des méthodes, sans paramètres, en utilisant le package reflection du J2SDK.
+ * Cette classe fournit l'implÃ©mentation de l'ï¿½couteur d'ï¿½vï¿½nement pour les objets cliquables de type mÃ©thode.
+ * <BR/>Elle permet l'invocation gÃ©nÃ©rique des mÃ©thodes, sans paramÃ¨tres, en utilisant le package reflection du J2SDK.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -41,18 +41,18 @@ import java.lang.reflect.Method;
 
 public class ObjectBrowserMethodListener implements ActionListener {
 
-	/** Objet porteur de la méthode qui doit être invoquée.*/
+	/** Objet porteur de la mÃ©thode qui doit Ãªtre invoquï¿½e.*/
 	private Object obj;
-	/** Méthode qui doit être invoquée.*/
+	/** mÃ©thode qui doit Ãªtre invoquï¿½e.*/
 	private Method method;
-	/** Nom de la méthode qui doit être invoquée.*/
+	/** Nom de la mÃ©thode qui doit Ãªtre invoquï¿½e.*/
 	private String methodName;
 
 	/**
-	 * Constructeur principal de l'écouteur d'événement ObjectBrowserMethodListener.
+	 * Constructeur principal de l'ï¿½couteur d'ï¿½vï¿½nement ObjectBrowserMethodListener.
 	 * 
-	 * @param obj l'objet porteur de la méthode qui doit être invoquée.
-	 * @param method la méthode qui doit être invoquée.
+	 * @param obj l'objet porteur de la mÃ©thode qui doit Ãªtre invoquï¿½e.
+	 * @param method la mÃ©thode qui doit Ãªtre invoquï¿½e.
 	 */
 	public ObjectBrowserMethodListener(Object obj, Method method) {
 		this.obj = obj;
@@ -61,8 +61,8 @@ public class ObjectBrowserMethodListener implements ActionListener {
 	}
 
 	/**
-	 * Redéfinition de la méthode actionPerformed() fournie par l'interface ActionListener, afin de déclencher
-	 * l'affichage de l'argument de retour de la méthode (instance de la classe ObjectBrowserPrimitiveFrame).
+	 * RedÃ©finition de la mÃ©thode actionPerformed() fournie par l'interface ActionListener, afin de dï¿½clencher
+	 * l'affichage de l'argument de retour de la mÃ©thode (instance de la classe ObjectBrowserPrimitiveFrame).
 	 */
 	@SuppressWarnings("unused")
 	public void actionPerformed(ActionEvent e) {

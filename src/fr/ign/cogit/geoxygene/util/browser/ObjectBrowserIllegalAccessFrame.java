@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -41,8 +41,8 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 /**
- *  Cette classe permet l'affichage d'une fenêtre graphique contenant un message d'avertissement lorsqu'un accès non autorisé à un attribut est tenté ou
- *  ou qu'une exception de type IllegalAccess est renvoyée par une méthode déclenchée depuis le navigateur d'objet graphique de GeOxygene.
+ *  Cette classe permet l'affichage d'une fenÃªtre graphique contenant un message d'avertissement lorsqu'un accÃ¨s non autorisï¿½ Ã  un attribut est tentï¿½ ou
+ *  ou qu'une exception de type IllegalAccess est renvoyÃ©e par une mÃ©thode dï¿½clenchï¿½e depuis le navigateur d'objet graphique de GeOxygene.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -59,7 +59,7 @@ public class ObjectBrowserIllegalAccessFrame extends JFrame {
 	private static final String I18N_LANGUAGE_FILE_LOCATION = "fr.ign.cogit.geoxygene.util.browser.ObjectBrowserLanguageFile";
 	/** Locale courante. */
 	private Locale currentLocale;
-	/** RessourceBundle lié à la Locale et au fichier d'internationalisation. */
+	/** RessourceBundle liï¿½ Ã  la Locale et au fichier d'internationalisation. */
 	private ResourceBundle i18nLanguageFile;
 
 	/**

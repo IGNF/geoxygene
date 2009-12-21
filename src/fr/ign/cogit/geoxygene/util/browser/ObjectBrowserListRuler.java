@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -35,7 +35,7 @@ import java.awt.Rectangle;
 import javax.swing.JComponent;
 
 /**
- *  Cette classe définit un nouveau composant graphique Swing permettant l'affichage des numéros
+ *  Cette classe dÃ©finit un nouveau composant graphique Swing permettant l'affichage des numÃ©ros
  *  d'index des objets contenus dans un attribut de type Array ou Collection.
  *
  * @author Thierry Badard & Arnaud Braun
@@ -49,26 +49,26 @@ public class ObjectBrowserListRuler extends JComponent {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/** Famille de la police de caractères par défaut. */
+	/** Famille de la police de caractï¿½res par dÃ©faut. */
 	public static final String FONT_FAMILY = "SansSerif";
-	/** Taille de la police de caractères par défaut. */
+	/** Taille de la police de caractï¿½res par dÃ©faut. */
 	public static final int FONT_SIZE = 10;
 	/** Couleur de fond du composant graphique. */
 	public static final Color RULER_COLOR = new Color(255, 255, 255);
-	/** Nombre d'éléments contenus dans l'attribut à représenter. */
+	/** Nombre d'Ã©lÃ©ments contenus dans l'attribut Ã  reprÃ©senter. */
 	private int nb_elements;
-	/** Taille horizontale du composant graphique, calculée en fonction du nombre d'éléments et
-	 * de la taille de la police de caractères. */
+	/** Taille horizontale du composant graphique, calculï¿½e en fonction du nombre d'Ã©lÃ©ments et
+	 * de la taille de la police de caractï¿½res. */
 	private int size;
-	/** Espacement vertical calculé entre les numéros d'index représentant les rangs des objets
-	 *  constituants la collection ou le tableau à représenter. */
+	/** Espacement vertical calculï¿½ entre les numÃ©ros d'index reprÃ©sentant les rangs des objets
+	 *  constituants la collection ou le tableau Ã  reprÃ©senter. */
 	private double gap;
 
 	/**
 	 * Constructeur principal du ObjectBrowserListRuler.
 	 * 
-	 * @param nbElements nombre d'éléments contenus dans l'attribut à représenter.
-	 * @param height hauteur souhaitée en pixel du composant graphique.
+	 * @param nbElements nombre d'Ã©lÃ©ments contenus dans l'attribut Ã  reprÃ©senter.
+	 * @param height hauteur souhaitï¿½e en pixel du composant graphique.
 	 */
 	public ObjectBrowserListRuler(int nbElements,double height) {
 		nb_elements = nbElements;
@@ -78,9 +78,9 @@ public class ObjectBrowserListRuler extends JComponent {
 	}
 
 	/**
-	 * Fixe la hauteur souhaitée en pixel du composant graphique.
+	 * Fixe la hauteur souhaitï¿½e en pixel du composant graphique.
 	 * 
-	 * @param ph la hauteur souhaitée en pixel du composant graphique.
+	 * @param ph la hauteur souhaitï¿½e en pixel du composant graphique.
 	 */
 	public void setPreferredHeight(int ph) {
 		setPreferredSize(new Dimension(size, ph));

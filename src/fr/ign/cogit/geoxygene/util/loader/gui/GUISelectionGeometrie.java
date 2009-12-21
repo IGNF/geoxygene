@@ -22,8 +22,8 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 /**
- * Choix des paramètres géométriques lors de la création de tables postgis
- * et du fichier de mapping à partir d'une classe java (le problème ne se
+ * Choix des paramÃ¨tres gÃ©omÃ©triques lors de la crÃ©ation de tables postgis
+ * et du fichier de mapping Ã  partir d'une classe java (le problÃ¨me ne se
  * pose pas avec Oracle)
  * 
  * @author Eric Grosso - IGN / Laboratoire COGIT
@@ -62,7 +62,7 @@ public class GUISelectionGeometrie extends JDialog {
 
 	/** Constructeur de l'interface **/
 	public GUISelectionGeometrie(){
-		super(frame,"Choix de la géométrie",true);
+		super(frame,"Choix de la gÃ©omÃ©trie",true);
 		selectionGeometrie = this;
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setPreferredSize(new Dimension(430,270));
@@ -79,7 +79,7 @@ public class GUISelectionGeometrie extends JDialog {
 		Container contentPane = this.getContentPane();
 		contentPane.setLayout(new BoxLayout(contentPane,BoxLayout.Y_AXIS));
 
-		//initialisation des différents composants et variables
+		//initialisation des diffÃ©rents composants et variables
 		stringsChoixType[0]="Point";
 		stringsChoixType[1]="LineString";
 		stringsChoixType[2]="Polygon";
@@ -89,8 +89,8 @@ public class GUISelectionGeometrie extends JDialog {
 		stringsChoixDimension[1]="3D";
 
 
-		titreType = "Quel est le type de votre géométrie ?";
-		titreDimension = "Quel est la dimension de votre géométrie ?";
+		titreType = "Quel est le type de votre gÃ©omÃ©trie ?";
+		titreDimension = "Quel est la dimension de votre gÃ©omÃ©trie ?";
 		initBoxTypeGeom();
 		initBoxDimensionGeom();
 		initJPanelType();

@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -66,10 +66,10 @@ public class JtsGeOxygene
 	/*------------------------------------------------------------*/
 
 	/**
-	 * Conversion d'une géométrie Géoxygène {@link GM_Object} en géométrie JTS {@link Geometry}.
-	 * @param geOxyGeom une géométrie Géoxygène
-	 * @return une géométrie JTS équivalente
-	 * @throws Exception renvoie une exception si la géométrie en entrée n'est pas valide
+	 * Conversion d'une gÃ©omÃ©trie GeOxygene {@link GM_Object} en gÃ©omÃ©trie JTS {@link Geometry}.
+	 * @param geOxyGeom une gÃ©omÃ©trie GeOxygene
+	 * @return une gÃ©omÃ©trie JTS ï¿½quivalente
+	 * @throws Exception renvoie une exception si la gÃ©omÃ©trie en entrÃ©e n'est pas valide
 	 */
 	public static Geometry makeJtsGeom(GM_Object geOxyGeom)
 	throws Exception
@@ -78,11 +78,11 @@ public class JtsGeOxygene
 	}
 
 	/**
-	 * Conversion d'une géométrie Géoxygène {@link GM_Object} en géométrie JTS {@link Geometry}.
-	 * @param geOxyGeom une géométrie Géoxygène
+	 * Conversion d'une gÃ©omÃ©trie GeOxygene {@link GM_Object} en gÃ©omÃ©trie JTS {@link Geometry}.
+	 * @param geOxyGeom une gÃ©omÃ©trie GeOxygene
 	 * @param adapter si adapter est vrai, on utiliser la factory {@link AdapterFactory}, sinon, on passe par WKT
-	 * @return une géométrie JTS équivalente
-	 * @throws Exception Exception renvoie une exception si la géométrie en entrée n'est pas valide
+	 * @return une gÃ©omÃ©trie JTS ï¿½quivalente
+	 * @throws Exception Exception renvoie une exception si la gÃ©omÃ©trie en entrÃ©e n'est pas valide
 	 */
 	public static Geometry makeJtsGeom(GM_Object geOxyGeom,boolean adapter)
 	throws Exception
@@ -96,10 +96,10 @@ public class JtsGeOxygene
 	}
 
 	/**
-	 * Conversion d'une géométrie JTS {@link Geometry} en géométrie Géoxygène {@link GM_Object}.
-	 * @param jtsGeom une géométrie JTS
-	 * @return une géométrie Géoxygène équivalente
-	 * @throws Exception Exception renvoie une exception si la géométrie en entrée n'est pas valide
+	 * Conversion d'une gÃ©omÃ©trie JTS {@link Geometry} en gÃ©omÃ©trie GeOxygene {@link GM_Object}.
+	 * @param jtsGeom une gÃ©omÃ©trie JTS
+	 * @return une gÃ©omÃ©trie GeOxygene ï¿½quivalente
+	 * @throws Exception Exception renvoie une exception si la gÃ©omÃ©trie en entrÃ©e n'est pas valide
 	 */
 	public static GM_Object makeGeOxygeneGeom(Geometry jtsGeom)
 	throws Exception
@@ -108,11 +108,11 @@ public class JtsGeOxygene
 	}
 
 	/**
-	 * Conversion d'une géométrie JTS {@link Geometry} en géométrie Géoxygène {@link GM_Object}.
+	 * Conversion d'une gÃ©omÃ©trie JTS {@link Geometry} en gÃ©omÃ©trie GeOxygene {@link GM_Object}.
 	 * @param adapter si adapter est vrai, on utiliser la factory {@link AdapterFactory}, sinon, on passe par WKT
-	 * @param jtsGeom une géométrie JTS
-	 * @return une géométrie Géoxygène équivalente
-	 * @throws Exception Exception renvoie une exception si la géométrie en entrée n'est pas valide
+	 * @param jtsGeom une gÃ©omÃ©trie JTS
+	 * @return une gÃ©omÃ©trie GeOxygene ï¿½quivalente
+	 * @throws Exception Exception renvoie une exception si la gÃ©omÃ©trie en entrÃ©e n'est pas valide
 	 */
 	public static GM_Object makeGeOxygeneGeom(Geometry jtsGeom, boolean adapter)
 	throws Exception
@@ -125,10 +125,10 @@ public class JtsGeOxygene
 	}
 
 	/**
-	 * Conversion d'une coordonnée JTS {@link CoordinateSequence} en position Géoxygène {@link DirectPosition}.
-	 * @param jtsCoord une coordonnée JTS
-	 * @return une position Géoxygène équivalente
-	 * @throws Exception Exception renvoie une exception si la géométrie en entrée n'est pas valide
+	 * Conversion d'une coordonnÃ©e JTS {@link CoordinateSequence} en position GeOxygene {@link DirectPosition}.
+	 * @param jtsCoord une coordonnÃ©e JTS
+	 * @return une position GeOxygene ï¿½quivalente
+	 * @throws Exception Exception renvoie une exception si la gÃ©omÃ©trie en entrÃ©e n'est pas valide
 	 */
 	public static DirectPosition makeDirectPosition(CoordinateSequence jtsCoord)
 	throws Exception
@@ -141,10 +141,10 @@ public class JtsGeOxygene
 	}
 
 	/**
-	 * Conversion d'un tableau de coordonnées JTS {@link CoordinateSequence} en liste de positions Géoxygène {@link DirectPositionList}.
-	 * @param jtsCoords un tableau de coordonnées JTS
-	 * @return une list de positions Géoxygène équivalente
-	 * @throws Exception Exception renvoie une exception si la géométrie en entrée n'est pas valide
+	 * Conversion d'un tableau de coordonnÃ©es JTS {@link CoordinateSequence} en liste de positions GeOxygene {@link DirectPositionList}.
+	 * @param jtsCoords un tableau de coordonnÃ©es JTS
+	 * @return une list de positions GeOxygene ï¿½quivalente
+	 * @throws Exception Exception renvoie une exception si la gÃ©omÃ©trie en entrÃ©e n'est pas valide
 	 */
 	public static DirectPositionList makeDirectPositionList(CoordinateSequence[] jtsCoords)
 	throws Exception

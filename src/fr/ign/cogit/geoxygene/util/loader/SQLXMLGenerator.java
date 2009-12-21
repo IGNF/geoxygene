@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -39,8 +39,8 @@ import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.util.loader.gui.GUISelectionGeometrie;
 
 /**
- * Usage interne. Appelé par la Console.
- * Génére à partir d'une classe Java, la table dans le SGBD et le fichier de mapping
+ * Usage interne. Appelï¿½ par la Console.
+ * Gï¿½nï¿½re Ã  partir d'une classe Java, la table dans le SGBD et le fichier de mapping
  * correspondants.
  *
  * @author Eric Grosso - IGN / Laboratoire COGIT
@@ -74,26 +74,26 @@ public class SQLXMLGenerator {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public void writeAll()  {
 
-		//ecriture de la table correspondante à la classe java
-		boolean heritage = true; // à paramétrer par la suite
+		//ecriture de la table correspondante Ã  la classe java
+		boolean heritage = true; // Ã  paramÃ¨trer par la suite
 
-		System.out.println("Création de la table");
+		System.out.println("crÃ©ation de la table");
 		try {
 			if (data.getDBMS() == Geodatabase.ORACLE) querySQLOracle(javaFilePath,tableName,heritage);
 			else if (data.getDBMS() == Geodatabase.POSTGIS)querySQLPostgis(javaFilePath,tableName,heritage);
 			else {
-				JOptionPane.showMessageDialog(null,"Problème de SGBD non supporté : il apparaît que" +
-						" ce n'est ni Oracle ni PostgreSQL","SGBD non supporté",JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(null,"problÃ¨me de SGBD non supportï¿½ : il apparaï¿½t que" +
+						" ce n'est ni Oracle ni PostgreSQL","SGBD non supportï¿½",JOptionPane.WARNING_MESSAGE);
 				return;
 			}
-			System.out.println("Table créée");
+			System.out.println("Table crÃ©Ã©e");
 		}
 		catch (Exception e){
-			System.out.println("Table non créée");
+			System.out.println("Table non crÃ©Ã©e");
 			e.printStackTrace();
 		}
 
-		System.out.println("Création de la table terminée");
+		System.out.println("crÃ©ation de la table terminï¿½e");
 
 		//ecriture du fichier de mapping correspondant
 		try {
@@ -122,7 +122,7 @@ public class SQLXMLGenerator {
 					if (sqlColumnName.compareToIgnoreCase("COGITID") == 0)
 						continue;
 
-					// bidouille speciale Oracle pour traiter le cas des entiers et des booléens...
+					// bidouille speciale Oracle pour traiter le cas des entiers et des BoolÃ©ens...
 					if (rs.getObject(3) != null) {
 						int dataScale = ((BigDecimal)rs.getObject(3)).intValue();
 						//cas des entiers
@@ -213,10 +213,10 @@ public class SQLXMLGenerator {
 	//////////////////////////////// ORACLE ///////////////////////////////
 	///////////////////////////////////////////////////////////////////////
 
-	//l'identifiant COGITID est créé par défaut en tant que clé primaire de la table
+	//l'identifiant COGITID est crÃ©Ã© par dÃ©faut en tant que clï¿½ primaire de la table
 	//HERITAGE :
-	//héritage jusqu'à ce que la classe mère soit différente de java.lang.Object
-	//n'est hérité de FT_Feature que la géométrie et l'identifiant
+	//hÃ©ritage jusqu'ï¿½ ce que la classe mÃ¨re soit diffÃ©rente de java.lang.Object
+	//n'est hÃ©ritï¿½ de FT_Feature que la gÃ©omÃ©trie et l'identifiant
 	private void querySQLOracle(String cheminClasse, String nomTable, boolean flagHeritage) throws Exception {
 		String query="";
 		Field[] attributs;
@@ -293,13 +293,13 @@ public class SQLXMLGenerator {
 	///////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Création de la table postgis.
-	 * L'identifiant COGITID est créé par défaut en tant que clé primaire de la table.
-	 * Si flagHeritage est vrai, la fonction parcours les superclasses de la classe cheminClasse jusqu'à java.lang.Object.
-	 * Ne sont hérités de FT_Feature que la géométrie et l'identifiant.
-	 * @param cheminClasse nom de la classe Java des objets à stocker dans le SGBD
+	 * crÃ©ation de la table postgis.
+	 * L'identifiant COGITID est crÃ©Ã© par dÃ©faut en tant que clï¿½ primaire de la table.
+	 * Si flagHeritage est vrai, la fonction parcours les superclasses de la classe cheminClasse jusqu'ï¿½ java.lang.Object.
+	 * Ne sont hÃ©ritï¿½s de FT_Feature que la gÃ©omÃ©trie et l'identifiant.
+	 * @param cheminClasse nom de la classe Java des objets Ã  stocker dans le SGBD
 	 * @param nomTable nom de la table dans le SGBD
-	 * @param flagHeritage autorise ou non le parcours de la hiérarchie des classes Java.
+	 * @param flagHeritage autorise ou non le parcours de la hiï¿½rarchie des classes Java.
 	 * @throws Exception renvoie des exceptions si le type des attributs n'est pas reconnu
 	 */
 	private void querySQLPostgis(String cheminClasse, String nomTable, boolean flagHeritage) throws Exception {
@@ -331,11 +331,11 @@ public class SQLXMLGenerator {
 									type = javaType2PostgisType(attribut.getType().getName());
 									query = query + ", "+ attribut.getName() +" "+type;
 									//if (type.equals("GEOMETRY")) {
-									//interface pour connaitre le type de géométrie (impossible à savoir interactivement)
+									//interface pour connaitre le type de gÃ©omÃ©trie (impossible Ã  savoir interactivement)
 									//stm.executeQuery("SELECT AddGeometrycolumn ('','"+nomTable+"','"+nomAttribut+"','-1','GEOMETRY',2)");
 									//}
 								} catch(Exception e) {
-									System.out.println("Attribut "+attribut.getName()+ " non ajouté car son type n'est pas reconnu");
+									System.out.println("Attribut "+attribut.getName()+ " non ajoutÃ© car son type n'est pas reconnu");
 								}
 							}
 							i++;
@@ -374,11 +374,11 @@ public class SQLXMLGenerator {
 				System.out.println("query = "+query);
 				stm.executeUpdate(query);//executeQuery(query);
 			} catch (SQLException e) {
-				System.out.println("création table échouée : "+e.getMessage());
+				System.out.println("crÃ©ation table ï¿½chouï¿½e : "+e.getMessage());
 				//e.printStackTrace();
 			}
 
-			//interface pour connaitre le type de géométrie (impossible à savoir interactivement)
+			//interface pour connaitre le type de gÃ©omÃ©trie (impossible Ã  savoir interactivement)
 			if (flagGeomFeature){
 				GUISelectionGeometrie sg = new GUISelectionGeometrie();
 				switch (sg.getTypeGeometrie()) {
@@ -420,7 +420,7 @@ public class SQLXMLGenerator {
 			stm.close();
 		}
 		catch (Exception e) {
-			System.out.println("échec dans querySQLPostgis");
+			System.out.println("ï¿½chec dans querySQLPostgis");
 			e.printStackTrace();
 		}
 	}

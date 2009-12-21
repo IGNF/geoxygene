@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Gï¿½ographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -97,7 +97,7 @@ public class ExportData extends JPanel {
 	 */
 	protected void action() {
 
-		System.out.println("Export de données au format ESRI Shapefile");
+		System.out.println("Export de donnÃ©es au format ESRI Shapefile");
 
 		try {
 
@@ -182,7 +182,7 @@ public class ExportData extends JPanel {
 
 			System.out.println("export dans le fichier " + shapefileName);
 
-			System.out.println("Lecture des méta-données");
+			System.out.println("Lecture des mÃ©ta-donnÃ©es");
 			data.begin();
 			PersistenceBroker broker = ((HasBroker) ((GeodatabaseOjb)data).getODMGTransaction()).getBroker();
 			DescriptorRepository desc = broker.getDescriptorRepository();
@@ -204,7 +204,7 @@ public class ExportData extends JPanel {
 
 			ObjectViewer.flagWindowClosing = false;
 			ObjectViewer viewer = new ObjectViewer(data);
-			viewer.addFeatureCollection(ftfc, "Données exportées");
+			viewer.addFeatureCollection(ftfc, "donnÃ©es exportï¿½es");
 
 			System.out.println("#### FINI !! ####");
 

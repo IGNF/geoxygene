@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  * 
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -39,7 +39,7 @@ import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.util.loader.gui.GUIChargementDonnees;
 
 /**
- * Classe permettant de représenter un chargement de données.
+ * Classe permettant de reprÃ©senter un chargement de donnÃ©es.
  * 
  * @see GUIChargementDonnees
  * 
@@ -56,7 +56,7 @@ public class Chargement {
 	public DataSet getDataSet() {return this.dataSet;}
 	/**
 	 * Affecte la valeur de l'attribut dataSet.
-	 * @param dataSet l'attribut dataSet à affecter
+	 * @param dataSet l'attribut dataSet Ã  affecter
 	 */
 	public void setDataSet(DataSet dataSet) {this.dataSet = dataSet;}
 
@@ -68,20 +68,20 @@ public class Chargement {
 	public Map<String, String> getFichiers() {return this.fichiers;}
 	/**
 	 * Affecte la valeur de l'attribut fichiers.
-	 * @param fichiers l'attribut fichiers à affecter
+	 * @param fichiers l'attribut fichiers Ã  affecter
 	 */
 	public void setFichiers(Map<String, String> fichiers) {this.fichiers = fichiers;}
 	/**
-	 * Charge un objet {@link Chargement} depuis le fichier XML passé en paramètre.
+	 * Charge un objet {@link Chargement} depuis le fichier XML passÃ© en paramÃ¨tre.
 	 * @param nomFichier fichier XML
-	 * @return l'objet {@link Chargement} chragé depuis le fichier XML passé en paramètre.
+	 * @return l'objet {@link Chargement} chragï¿½ depuis le fichier XML passÃ© en paramÃ¨tre.
 	 */
 	public static Chargement charge(String nomFichier) {
         try {return (Chargement) Chargement.getXStream().fromXML(new FileInputStream(new File(nomFichier)));}
         catch (FileNotFoundException e) {return null;}
 	}
 	/**
-	 * Sauve le {@link Chargement} dans le fichier en paramètre.
+	 * Sauve le {@link Chargement} dans le fichier en paramÃ¨tre.
 	 * @param nomFichier fichier dans lequel on sauve le {@link Chargement}
 	 */
 	public void toXml(String nomFichier) {

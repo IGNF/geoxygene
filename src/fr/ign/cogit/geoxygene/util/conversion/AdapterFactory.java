@@ -1,14 +1,14 @@
-/**
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -60,13 +60,13 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
- * Cette factory sert à transformer les géométries JTS en géométrie GeOxygène et l'inverse.
- * Elle est beaucoup plus efficace que la méthode de la classe JtsGeOxygene puisqu'elle ne passe pas par la représentation des géométries en WKT,
- * mais transpose directement les structures de données. Néanmoins, tous les objets sont dupliqués (notamment les points).
- * Une autre méthode consisterait à faire de vrais adaptateurs qui ne dupliquent pas la géométrie mais se font passer pour des objets d'une autre classe.
- * Elle n'est pas implémentée et il reste à voir si c'est possible.
+ * Cette factory sert Ã  transformer les gÃ©omÃ©tries JTS en gÃ©omÃ©trie GeOxygene et l'inverse.
+ * Elle est beaucoup plus efficace que la mÃ©thode de la classe JtsGeOxygene puisqu'elle ne passe pas par la reprÃ©sentation des gÃ©omÃ©tries en WKT,
+ * mais transpose directement les structures de donnÃ©es. nÃ©anmoins, tous les objets sont dupliquÃ©s (notamment les points).
+ * Une autre mÃ©thode consisterait Ã  faire de vrais adaptateurs qui ne dupliquent pas la gÃ©omÃ©trie mais se font passer pour des objets d'une autre classe.
+ * Elle n'est pas implÃ©mentÃ©e et il reste Ã  voir si c'est possible.
  * 
- * TODO : gérer toutes les géométries, notamment {@link GM_Complex}, {@link GM_Solid}, etc.
+ * TODO : gÃ©rer toutes les gÃ©omÃ©tries, notamment {@link GM_Complex}, {@link GM_Solid}, etc.
  * 
  * @author Julien Perret
  */
@@ -74,14 +74,14 @@ public class AdapterFactory  {
 	static Logger logger=Logger.getLogger(AdapterFactory.class.getName());
 
 	/**
-	 * Transforme une géométrie GéOxygène ({@link GM_Object}) en géométrie JTS ({@link Geometry}).
-	 * Toutes les géométries ne sont pas gérées. Une géométrie non gérées renvoie une exception.
+	 * Transforme une gÃ©omÃ©trie GeOxygene ({@link GM_Object}) en gÃ©omÃ©trie JTS ({@link Geometry}).
+	 * Toutes les gÃ©omÃ©tries ne sont pas gÃ©rÃ©es. Une gÃ©omÃ©trie non gÃ©rÃ©es renvoie une exception.
 	 * TODO Doit-on renvoyer une exception si la GM_Ring contient 1 ou 2 points ?
 	 * 
-	 * @param factory factory JTS pour construire les nouvelles géométries JTS.
-	 * @param geom géométrie GéOxygène
-	 * @return géométrie JTS équivalente
-	 * @throws Exception renvoie une exception si le type de géométrie n'est pas géré.
+	 * @param factory factory JTS pour construire les nouvelles gÃ©omÃ©tries JTS.
+	 * @param geom gÃ©omÃ©trie GeOxygene
+	 * @return gÃ©omÃ©trie JTS Ã©quivalente
+	 * @throws Exception renvoie une exception si le type de gÃ©omÃ©trie n'est pas gÃ©rÃ©.
 	 */
 	@SuppressWarnings("unchecked")
 	public static Geometry toGeometry(GeometryFactory factory, GM_Object geom) throws Exception {
@@ -91,7 +91,7 @@ public class AdapterFactory  {
 		}
 		if (geom instanceof GM_Ring) {
 			if (geom.coord().size()<=3&&geom.coord().size()!=0) {
-				//logger.error("Une GM_Ring contenant "+geom.coord().size()+" points ne peut être transformée en LinearRing.");
+				//logger.error("Une GM_Ring contenant "+geom.coord().size()+" points ne peut Ãªtre transformï¿½e en LinearRing.");
 				throw new Exception("AdapterFactory : GM_Ring contenant moins de 4 points");
 			}
 			return factory.createLinearRing(toCoordinateSequence(factory, geom.coord()));
@@ -134,24 +134,24 @@ public class AdapterFactory  {
 			}
 			return factory.createGeometryCollection(geometries);
 		}
-		throw new Exception("AdapterFactory : Type "+geom.getClass()+" non géré.");
+		throw new Exception("AdapterFactory : Type "+geom.getClass()+" non gÃ©rÃ©.");
 	}
 
 	/**
-	 * Transforme une position GéOxygène ({@link DirectPosition}) en coordonnée JTS ({@link Coordinate}).
+	 * Transforme une position GeOxygene ({@link DirectPosition}) en coordonnÃ©e JTS ({@link Coordinate}).
 	 * 
-	 * @param directPosition position GéOxygène
-	 * @return coordonnée JTS équivalente
+	 * @param directPosition position GeOxygene
+	 * @return coordonnÃ©e JTS ï¿½quivalente
 	 */
 	public static Coordinate toCoordinate(DirectPosition directPosition) {
 		return new Coordinate(directPosition.getX(),directPosition.getY(),directPosition.getZ());
 	}
 
 	/**
-	 * Transforme une liste de positions GéOxygène ({@link DirectPositionList}) en coordonnées JTS ({@link CoordinateSequence}).
+	 * Transforme une liste de positions GeOxygene ({@link DirectPositionList}) en coordonnÃ©es JTS ({@link CoordinateSequence}).
 	 * @param factory factory JTS
-	 * @param list liste de Positions GéOxygène
-	 * @return séquence de coordonnées JTS équivalents
+	 * @param list liste de Positions GeOxygene
+	 * @return sï¿½quence de coordonnÃ©es JTS ï¿½quivalents
 	 */
 	public static CoordinateSequence toCoordinateSequence(GeometryFactory factory, DirectPositionList list) {
 		if (list==null) {return factory.getCoordinateSequenceFactory().create(new Coordinate[0]);}
@@ -161,11 +161,11 @@ public class AdapterFactory  {
 	}
 
 	/**
-	 * Transforme une liste de {@link GM_Ring}s GéOxygène en {@link LinearRing}s JTS
+	 * Transforme une liste de {@link GM_Ring}s GeOxygene en {@link LinearRing}s JTS
 	 * @param factory factory JTS
 	 * @param list liste de {@link GM_Ring}s
-	 * @return tableau de {@link LinearRing}s JTS équivalents
-	 * @throws Exception renvoie une exception si le type de géométrie n'est pas géré.
+	 * @return tableau de {@link LinearRing}s JTS ï¿½quivalents
+	 * @throws Exception renvoie une exception si le type de gÃ©omÃ©trie n'est pas gÃ©rÃ©.
 	 */
 	public static LinearRing[] toLinearRingArray(GeometryFactory factory, List<GM_Ring> list) throws Exception {
 		//LinearRing[] rings = new LinearRing[list.size()];
@@ -179,12 +179,12 @@ public class AdapterFactory  {
 	}
 
 	/**
-	 * Transforme une géométrie JTS ({@link Geometry}) en géométrie GéOxygène ({@link GM_Object}).
-	 * Toutes les géométries ne sont pas gérées. Une géométrie non gérée renvoie une exception.
+	 * Transforme une gÃ©omÃ©trie JTS ({@link Geometry}) en gÃ©omÃ©trie GeOxygene ({@link GM_Object}).
+	 * Toutes les gÃ©omÃ©tries ne sont pas gÃ©rÃ©es. Une gÃ©omÃ©trie non gÃ©rÃ©e renvoie une exception.
 	 * 
-	 * @param geom géométrie JTS
-	 * @return géométrie GéOxygène équivalente
-	 * @throws Exception renvoie une exception si le type de géométrie n'est pas géré.
+	 * @param geom gÃ©omÃ©trie JTS
+	 * @return gÃ©omÃ©trie GeOxygene ï¿½quivalente
+	 * @throws Exception renvoie une exception si le type de gÃ©omÃ©trie n'est pas gÃ©rÃ©.
 	 */
 	public static GM_Object toGM_Object(Geometry geom) throws Exception {
 		if (geom == null) return null;
@@ -244,24 +244,24 @@ public class AdapterFactory  {
 			}
 			return aggregate;
 		}
-		throw new Exception("AdapterFactory : Type "+geom.getClass()+" non géré.");
+		throw new Exception("AdapterFactory : Type "+geom.getClass()+" non gÃ©rÃ©.");
 	}
 
 	/**
-	 * Transforme une Coordonnée JTS ({@link Coordinate}) en position GéOxygène ({@link DirectPosition}).
+	 * Transforme une coordonnÃ©e JTS ({@link Coordinate}) en position GeOxygene ({@link DirectPosition}).
 	 * 
-	 * @param coord coordonnée JTS
-	 * @return position GéOxygène équivalente
+	 * @param coord coordonnÃ©e JTS
+	 * @return position GeOxygene ï¿½quivalente
 	 */
 	public static DirectPosition toDirectPosition(Coordinate coord)	{
 		return new DirectPosition(coord.x,coord.y,coord.z);
 	}
 
 	/**
-	 * Transforme un tableau de coordonnées JTS ({@link Coordinate}) en liste de positions GéOxygène ({@link DirectPositionList}).
+	 * Transforme un tableau de coordonnÃ©es JTS ({@link Coordinate}) en liste de positions GeOxygene ({@link DirectPositionList}).
 	 * 
-	 * @param coords tableau de coordonnées JTS
-	 * @return liste de positions GéOxygène équivalente
+	 * @param coords tableau de coordonnÃ©es JTS
+	 * @return liste de positions GeOxygene ï¿½quivalente
 	 */
 	public static DirectPositionList toDirectPositionList(Coordinate[] coords) {
 		DirectPositionList list = new DirectPositionList();
@@ -283,10 +283,10 @@ public class AdapterFactory  {
 	}
 
 	/**
-	 * Transforme la dimension des coordonnées d'un tableau de coordonnées JTS ({@link Coordinate}) en 2D.
+	 * Transforme la dimension des coordonnÃ©es d'un tableau de coordonnÃ©es JTS ({@link Coordinate}) en 2D.
 	 * 
-	 * @param coords tableau de coordonnées JTS
-	 * @return séquence de coordonnées JTS en 2D
+	 * @param coords tableau de coordonnÃ©es JTS
+	 * @return sï¿½quence de coordonnÃ©es JTS en 2D
 	 */
 	public static CoordinateSequence to2DCoordinateSequence(Coordinate[] coords, GeometryFactory factory) {
 		Coordinate[] newCoords = new Coordinate[coords.length];
@@ -297,10 +297,10 @@ public class AdapterFactory  {
 	}
 
 	/**
-	 * Transforme la dimension de coordonnées JTS ({@link Coordinate}) en 2D.
+	 * Transforme la dimension de coordonnÃ©es JTS ({@link Coordinate}) en 2D.
 	 * 
-	 * @param coord coordonnées JTS
-	 * @return coordonnées JTS en 2D
+	 * @param coord coordonnÃ©es JTS
+	 * @return coordonnÃ©es JTS en 2D
 	 */
 	public static Coordinate to2DCoordinate(Coordinate coord) {
 		return new Coordinate(coord.x, coord.y);
@@ -317,10 +317,10 @@ public class AdapterFactory  {
 	}
 
 	/**
-	 * Transforme la dimension d'une liste de positions GéOxygène ({@link DirectPositionList}).
+	 * Transforme la dimension d'une liste de positions GeOxygene ({@link DirectPositionList}).
 	 * 
-	 * @param directPositionList liste de positions GéOxygène
-	 * @return liste de positions GéOxygène équivalente en 2D
+	 * @param directPositionList liste de positions GeOxygene
+	 * @return liste de positions GeOxygene ï¿½quivalente en 2D
 	 */
 	public static DirectPositionList to2DDirectPositionList(DirectPositionList directPositionList) {
 		DirectPositionList list = new DirectPositionList();
@@ -331,10 +331,10 @@ public class AdapterFactory  {
 	}
 
 	/**
-	 * Transforme une géométrie GeOxygene en géométrie 2D.
-	 * @param geom une géométrie GeOxygene
-	 * @return une géométrie GeOxygene 2D
-	 * @throws Exception renvoie une exception si le type de géométrie n'est pas géré
+	 * Transforme une gÃ©omÃ©trie GeOxygene en gÃ©omÃ©trie 2D.
+	 * @param geom une gÃ©omÃ©trie GeOxygene
+	 * @return une gÃ©omÃ©trie GeOxygene 2D
+	 * @throws Exception renvoie une exception si le type de gÃ©omÃ©trie n'est pas gÃ©rÃ©
 	 */
 	@SuppressWarnings("unchecked")
 	public static GM_Object to2DGM_Object(GM_Object geom) throws Exception {
@@ -380,14 +380,14 @@ public class AdapterFactory  {
 			for(int i=0;i<gc.size();i++) aggregate.add(to2DGM_Object(gc.get(i)));
 			return aggregate;
 		}
-		throw new Exception("AdapterFactory : Type "+geom.getClass()+" non géré.");
+		throw new Exception("AdapterFactory : Type "+geom.getClass()+" non gÃ©rÃ©.");
 	}
 	/**
-	 * Traduit un type de géométrie JTS {@link Geometry} et renvoie le type de 
-	 * géométrie GeOxygene {@link GM_Object} équivalent.
-	 * TODO gérer tous les types de géométrie.
-	 * @param geometryType type de géométrie JTS
-	 * @return type de géométrie GeOxygene équivalent
+	 * Traduit un type de gÃ©omÃ©trie JTS {@link Geometry} et renvoie le type de 
+	 * gÃ©omÃ©trie GeOxygene {@link GM_Object} ï¿½quivalent.
+	 * TODO gÃ©rer tous les types de gÃ©omÃ©trie.
+	 * @param geometryType type de gÃ©omÃ©trie JTS
+	 * @return type de gÃ©omÃ©trie GeOxygene ï¿½quivalent
 	 */
 	public static Class<? extends GM_Object> toGeometryType(Class<?> geometryType) {
 		if(LineString.class.equals(geometryType)) return GM_LineString.class;
@@ -399,11 +399,11 @@ public class AdapterFactory  {
 		return GM_Object.class;
 	}
 	/**
-	 * Traduit un type de géométrie GeOxygene {@link GM_Object} et renvoie le type de 
-	 * géométrie JTS {@link Geometry} équivalent.
-	 * TODO gérer tous les types de géométrie.
-	 * @param geometryType type de géométrie GeOxygene
-	 * @return type de géométrie JTS équivalent
+	 * Traduit un type de gÃ©omÃ©trie GeOxygene {@link GM_Object} et renvoie le type de 
+	 * gÃ©omÃ©trie JTS {@link Geometry} ï¿½quivalent.
+	 * TODO gÃ©rer tous les types de gÃ©omÃ©trie.
+	 * @param geometryType type de gÃ©omÃ©trie GeOxygene
+	 * @return type de gÃ©omÃ©trie JTS ï¿½quivalent
 	 */
 	public static Class<? extends Geometry> toJTSGeometryType(Class<?> geometryType) {
 		if(GM_LineString.class.equals(geometryType)) return LineString.class;

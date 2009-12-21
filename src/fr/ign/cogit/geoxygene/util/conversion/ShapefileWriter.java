@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -55,7 +55,7 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.type.GF_AttributeType;
 
 /**
- * Classe permettant d'écrire des shapefiles à partir d'une collection de Features.
+ * Classe permettant d'ï¿½crire des shapefiles Ã  partir d'une collection de Features.
  * 
  * @author Julien Perret
  *
@@ -65,7 +65,7 @@ public class ShapefileWriter {
 	/**
 	 * Sauve une collection de features dans un fichier.
 	 * @param <Feature> type des features contenu dans la collection
-	 * @param featureCollection collection de features à sauver dans le fichier shape
+	 * @param featureCollection collection de features Ã  sauver dans le fichier shape
 	 * @param shapefileName nom du fichier dans lequel sauver les shapes
 	 */
 	@SuppressWarnings("unchecked")
@@ -109,28 +109,28 @@ public class ShapefileWriter {
 			t.close();			
 			store.dispose();
 		} catch (MalformedURLException e) {
-			logger.error("Le nom du fichier "+shapefileName+" est mal formé");
+			logger.error("Le nom du fichier "+shapefileName+" est mal formï¿½");
 			e.printStackTrace();
 		} catch (IOException e) {
-			logger.error("Erreur pendant l'écriture du fichier "+shapefileName);
+			logger.error("Erreur pendant l'ï¿½criture du fichier "+shapefileName);
 			e.printStackTrace();
 		} catch (SchemaException e) {
-			logger.error("Le schéma utilisé pour l'écriture du fichier "+shapefileName+" est incorrect");
+			logger.error("Le schÃ©ma utilisÃ© pour l'ï¿½criture du fichier "+shapefileName+" est incorrect");
 			e.printStackTrace();
 		} catch (Exception e) {
-			logger.error("Erreur pendant l'écriture du fichier "+shapefileName);
+			logger.error("Erreur pendant l'ï¿½criture du fichier "+shapefileName);
 			e.printStackTrace();
 		}
 	}
 	/**
 	 * Renvoie la classe correspondant au nom d'un type primitif, 
-	 * null si le paramètre ne correspond pas à un type primitif ou 
-	 * s'il n'est pas géré.
+	 * null si le paramÃ¨tre ne correspond pas Ã  un type primitif ou 
+	 * s'il n'est pas gÃ©rÃ©.
 	 * @param valueType nom d'un type primitif
 	 * @return la classe correspondant au nom d'un type primitif ou 
-	 * null si le paramètre ne correspond pas à un type primitif ou 
-	 * s'il n'est pas géré. <b>Attention : les booléans sont convertis en strings car
-	 * les format ESRI shapefile ne les gère pas</b>
+	 * null si le paramÃ¨tre ne correspond pas Ã  un type primitif ou 
+	 * s'il n'est pas gÃ©rÃ©. <b>Attention : les boolï¿½ans sont convertis en strings car
+	 * les format ESRI shapefile ne les gÃ¨re pas</b>
 	 */
 	public static Class<?> valueType2Class(String valueType) {
 		if(valueType.equalsIgnoreCase("string")) {return String.class;} //$NON-NLS-1$
@@ -141,10 +141,10 @@ public class ShapefileWriter {
 		return null;
 	}
 	/**
-	 * Ouvre une fenètre permettant à l'utilisateur de choisir le fichier
+	 * Ouvre une fenÃªtre permettant Ã  l'utilisateur de choisir le fichier
 	 * dans lequel il souhaite sauver ses features.
 	 * @param <Feature> type des features contenu dans la collection
-	 * @param featureCollection collection de features à sauver dans un fichier shape.
+	 * @param featureCollection collection de features Ã  sauver dans un fichier shape.
 	 */
 	public static <Feature extends FT_Feature> void chooseAndWriteShapefile(FT_FeatureCollection<Feature> featureCollection) {
 		JFileChooser choixFichierShape = new JFileChooser();

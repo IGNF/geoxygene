@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -71,8 +71,8 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  * et en faisant varier par un facteur la taille de cette enveloppe (variables a regler au debut du code).
  * A l'aide d'une boucle, on charge progressivement de plus en plus d'objets.
  * 
- * ARNAUD 12 juillet 2005 : mise en commentaire de ce qui se rapporte à Oracle
- * pour isoler la compilation. A décommenter pour utiliser Oracle.
+ * ARNAUD 12 juillet 2005 : mise en commentaire de ce qui se rapporte Ã  Oracle
+ * pour isoler la compilation. A dï¿½commenter pour utiliser Oracle.
  *
  * @author Thierry Badard, Arnaud Braun & Christophe Pele
  * @version 1.1
@@ -178,7 +178,7 @@ public class CompareLib  {
 			this.featClass1=(Class<? extends FT_Feature>) Class.forName(this.featClassName1);
 			this.featClass2=(Class<? extends FT_Feature>) Class.forName(this.featClassName2);
 		} catch (Exception e) {
-			err.println("## Classes geographiques non trouvées ##");
+			err.println("## Classes geographiques non trouvÃ©es ##");
 			System.exit(0);
 		}
 		out.println("test class 1 : "+this.featClass1.getName());
@@ -218,7 +218,7 @@ public class CompareLib  {
 			PrintStream dataOut=dataOutTab[i]=new PrintStream(new FileOutputStream(outDirPath+"test.dat"));
 
 			dataOut.println("# vim:ts=10");
-			dataOut.println("# Les temps sont donnés en millisecondes");
+			dataOut.println("# Les temps sont donnÃ©s en millisecondes");
 			dataOut.println();
 			String datLine;
 			datLine=""+"factor\t"+"size\t";

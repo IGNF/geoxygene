@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -147,8 +147,8 @@ public class GenerateIds {
 				System.out.println(nbCount+" objets dans la table "+tableName+" ... generation des identifiants ...");
 			}
 
-			// creation de la procedure PL/SQL de generation des clés
-			// A FAIRE : y a moyen de faire plus simple : utiliser séquence ?
+			// creation de la procedure PL/SQL de generation des clï¿½s
+			// A FAIRE : y a moyen de faire plus simple : utiliser sï¿½quence ?
 			// Ou utiliser la fonction 'cursor for update' et 'current of'
 			String proc = "CREATE OR REPLACE PROCEDURE genere_cogitid AS";
 			proc=proc+" BEGIN";
@@ -215,26 +215,26 @@ public class GenerateIds {
 				System.out.println(nbCount+" objets dans la table "+tableName+" ... generation des identifiants ...");
 			}
 
-			// Création d'une séquence
+			// crÃ©ation d'une sï¿½quence
 			try {
 				String update = "create SEQUENCE seq_genere_cogitid";
 				stm.executeUpdate(update);
 			} catch (Exception ee) {
-				// La séquence existe déjà !
+				// La sï¿½quence existe dÃ©jÃ  !
 				conn.commit();
 			}
 			conn.commit();
 
-			// Si le maxID vaut 0 (il n'y a pas encore d'identifiant dans la base), on le force à 1
+			// Si le maxID vaut 0 (il n'y a pas encore d'identifiant dans la base), on le force Ã  1
 			if (maxID==0) maxID=1;
-			// Affectation du maxID à la séquence
-			// On a pas besoin de l'affecter à maxID+1 puisque l'on utilise toujours nextval pour affecter les identifiants
+			// Affectation du maxID Ã  la sï¿½quence
+			// On a pas besoin de l'affecter Ã  maxID+1 puisque l'on utilise toujours nextval pour affecter les identifiants
 			query = "SELECT setval ('seq_genere_cogitid', "+maxID+")";
 			rs = stm.executeQuery(query);
 			while (rs.next()) { }
 			conn.commit();
 
-			// Mise à jour de la table à l'aide de la sequence
+			// Mise Ã  jour de la table Ã  l'aide de la sequence
 			String update = "update "+tableName+" set cogitid = nextval('seq_genere_cogitid')";
 			stm.executeUpdate(update);
 			conn.commit();
@@ -254,7 +254,7 @@ public class GenerateIds {
 			if (conName.compareTo("") != 0) {
 				update = "ALTER TABLE "+tableName+" DROP CONSTRAINT "+conName;
 				stm.executeUpdate(update);
-				System.out.println("cle primaire sur "+tableName+" supprimé : "+conName);
+				System.out.println("cle primaire sur "+tableName+" supprimï¿½ : "+conName);
 			}
 
 			// ajout de la cle primaire
@@ -275,7 +275,7 @@ public class GenerateIds {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	// recherche du COGITID maximum parmi les tables géographiques (variable globale maxID)
+	// recherche du COGITID maximum parmi les tables GÃ©ographiques (variable globale maxID)
 	public void maxCOGITID(String query) {
 		try {
 			Connection conn = data.getConnection();

@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -47,7 +47,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * 
  * @author Thierry Badard
  * @author Arnaud Braun
- * @author Sébastien Mustière
+ * @author SÃ©bastien MustiÃ¨re
  * @author Nathalie Abadie
  * @author Julien Perret
  * @version 1.3 Gestion d'erreur de calcul des buffers dans la fonction
@@ -58,12 +58,12 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	static Logger logger = Logger.getLogger(Tiling.class.getName());
 	// ===============================================
 	/**
-	 * Renvoie les paramètres du dallage.
+	 * Renvoie les paramÃ¨tres du dallage.
 	 * 
-	 * ArrayList de 4 éléments: - 1er élément : Class égal à Dallage.class -
-	 * 2ème élément : Boolean indiquant si l'index est en mode MAJ automatique
-	 * ou non - 3ème élément : GM_Envelope décrivant les limites de la zone
-	 * couverte - 4ème élément : Integer exprimant le nombre de cases en X et Y.
+	 * ArrayList de 4 Ã©lÃ©ments: - 1er Ã©lÃ©ment : Class Ã©gal Ã  Dallage.class -
+	 * 2ï¿½me Ã©lÃ©ment : Boolean indiquant si l'index est en mode MAJ automatique
+	 * ou non - 3ï¿½me Ã©lÃ©ment : GM_Envelope dÃ©crivant les limites de la zone
+	 * couverte - 4ï¿½me Ã©lÃ©ment : Integer exprimant le nombre de cases en X et Y.
 	 * 
 	 * 
 	 */
@@ -93,22 +93,22 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	}
 
 	// xmin, xmax, ymin, ymax
-	/** paramètre interne du dallage */
+	/** paramÃ¨tre interne du dallage */
 	private double xmin;
-	/** paramètre interne du dallage */
+	/** paramÃ¨tre interne du dallage */
 	private double xmax;
-	/** paramètre interne du dallage */
+	/** paramÃ¨tre interne du dallage */
 	private double ymin;
-	/** paramètre interne du dallage */
+	/** paramÃ¨tre interne du dallage */
 	private double ymax;
 
 	// calcul de dX et dY
-	/** paramètre interne du dallage */
+	/** paramÃ¨tre interne du dallage */
 	private double dX;
-	/** paramètre interne du dallage */
+	/** paramÃ¨tre interne du dallage */
 	private double dY;
 
-	/** Tableau à deux dimensions des dalles sous forme de Polygones. */
+	/** Tableau Ã  deux dimensions des dalles sous forme de Polygones. */
 	private GM_Polygon[][] dallesPolygones;
 
 	// ===============================================
@@ -117,17 +117,17 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	/** Indique si l'on a demande une mise a jour automatique. */
 	public boolean hasAutomaticUpdate() {return automaticUpdate;}
 	/**
-	 * Demande une mise a jour automatique. NB: Cette méthode ne fait pas les
-	 * éventuelles MAJ qui auriant ête faites alors que le mode MAJ automatique
-	 * n'était pas activé.
+	 * Demande une mise a jour automatique. NB: Cette mÃ©thode ne fait pas les
+	 * Ã©ventuelles MAJ qui auriant ï¿½te faites alors que le mode MAJ automatique
+	 * n'Ã©tait pas activï¿½.
 	 */
 	public void setAutomaticUpdate(boolean auto) {automaticUpdate = auto;}
 
 	// ===============================================
-	/** Tableau à deux dimensions des dalles. */
+	/** Tableau Ã  deux dimensions des dalles. */
 	private GM_Envelope[][] dallage;
 
-	/** Renvoie le tableau à 2 dimensions des dalles. */
+	/** Renvoie le tableau Ã  2 dimensions des dalles. */
 	public GM_Envelope[][] getDallage() {return dallage;}
 
 	/** renvoie la dalle d'indice i,j. */
@@ -146,7 +146,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 		return array;
 	}
 
-	/** Tableau des numéros des dalles contenant le feature. */
+	/** Tableau des numÃ©ros des dalles contenant le feature. */
 	public List<List<Integer>> getNumDallage(Feature feat) {
 		List<List<Integer>> result = new ArrayList<List<Integer>>();
 		for (int i = 0; i < size; i++) {
@@ -175,7 +175,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	}
 
 	/**
-	 * Etant donné une enveloppe, renvoie les indices min et max des dalles qui
+	 * Etant donnÃ© une enveloppe, renvoie les indices min et max des dalles qui
 	 * intersectent cette enveloppe (dans l'ordre: imin, imax, jmin, jmax)
 	 */
 	private int[] dallesIntersectees(GM_Envelope env) {
@@ -269,7 +269,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	// ===============================================
 	/**
 	 * Selection dans le carre dont P est le centre, de cote D. NB: distance
-	 * peut être nul.
+	 * peut Ãªtre nul.
 	 */
 	public FT_FeatureCollection<Feature> select(DirectPosition P, double distance) {
 		return select(new GM_Envelope(P, distance));
@@ -309,7 +309,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	 *            Si c'est TRUE : ne retient que les objets qui croisent (CROSS
 	 *            au sens JTS). Si c'est FALSE : ne retient que les objets qui
 	 *            intersectent (INTERSECT au sens JTS) Exemple : si 1 ligne
-	 *            touche "geometry" juste sur une extrémité, alors avec TRUE
+	 *            touche "geometry" juste sur une extrÃ©mitÃ©, alors avec TRUE
 	 *            cela ne renvoie pas la ligne, avec FALSE cela la renvoie
 	 */
 	public FT_FeatureCollection<Feature> select(GM_Object geometry,	boolean strictlyCrosses) {
@@ -340,7 +340,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	// ===============================================
 	/**
 	 * Selection a l'aide d'un objet geometrique quelconque et d'une distance.
-	 * NB: distance peut être nul.
+	 * NB: distance peut Ãªtre nul.
 	 */
 	public FT_FeatureCollection<Feature> select(GM_Object geometry, double distance) {
 		if (distance == 0) return select(geometry);
@@ -357,19 +357,19 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	// ===============================================
 
 	/**
-	 * Crée et instancie un dallage d'une collection de FT_Feature, en fonction
-	 * des limites de la zone et du nombre de cases souhaitées sur la zone.
+	 * crÃ©e et instancie un dallage d'une collection de FT_Feature, en fonction
+	 * des limites de la zone et du nombre de cases souhaitï¿½es sur la zone.
 	 * 
 	 * @param fc
-	 *            La liste de Features à indexer
+	 *            La liste de Features Ã  indexer
 	 * 
 	 * @param automaticUpd
-	 *            Spéciifie si l'index doit être mis à jour automatiquement
+	 *            spÃ©ciifie si l'index doit Ãªtre mis Ã  jour automatiquement
 	 *            quand on modifie les objets de fc
 	 * 
 	 * @param envelope
-	 *            Enveloppe décrivant les limites de l'index spatial. NB: Tout
-	 *            objet hors de ces limites ne sera pas traité lors des requêtes
+	 *            Enveloppe dÃ©crivant les limites de l'index spatial. NB: Tout
+	 *            objet hors de ces limites ne sera pas traitï¿½ lors des requï¿½tes
 	 *            spatiales !!!!!
 	 * 
 	 * @param n
@@ -435,16 +435,16 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	}
 
 	/**
-	 * Crée et instancie un dallage d'une collection de FT_Feature, en fonction
-	 * du nombre de cases souhaitées sur la zone. NB: les limites de la zone de
-	 * l'index sont celles de la collection traitée. Il est donc impossible de
+	 * crÃ©e et instancie un dallage d'une collection de FT_Feature, en fonction
+	 * du nombre de cases souhaitï¿½es sur la zone. NB: les limites de la zone de
+	 * l'index sont celles de la collection traitï¿½e. Il est donc impossible de
 	 * rajouter ensuite dans la collection un objet en dehors de cette zone.
 	 * 
 	 * @param fc
-	 *            La liste de Features à indexer
+	 *            La liste de Features Ã  indexer
 	 * 
 	 * @param automaticUpd
-	 *            Spéciifie si l'index doit être mis à jour automatiquement
+	 *            spÃ©ciifie si l'index doit Ãªtre mis Ã  jour automatiquement
 	 *            quand on modifie les objets de fc
 	 * 
 	 * @param n
@@ -453,33 +453,33 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	public Tiling(FT_FeatureCollection<Feature> fc, Boolean automaticUpd, Integer n) {this(fc, automaticUpd, fc.envelope(), n);}
 	
 	/**
-	 * Crée et instancie un dallage d'une collection de FT_Feature. Les
-	 * paramètres sont définis par la collection en entrée: 1/ Les limites de la
-	 * zone de l'index sont celles de la collection traitée. Il est donc
+	 * crÃ©e et instancie un dallage d'une collection de FT_Feature. Les
+	 * paramÃ¨tres sont dÃ©finis par la collection en entrÃ©e: 1/ Les limites de la
+	 * zone de l'index sont celles de la collection traitï¿½e. Il est donc
 	 * impossible de rajouter ensuite dans la collection un objet en dehors de
-	 * cette zone. 2/ Le nombre de cases est défini automatiquement pour qu'il y
+	 * cette zone. 2/ Le nombre de cases est dÃ©fini automatiquement pour qu'il y
 	 * ait de l'ordre de 50 objets par dalle en moyennne (approximatif)
 	 * 
 	 * @param fc
-	 *            La liste de Features à indexer
+	 *            La liste de Features Ã  indexer
 	 * 
 	 * @param automaticUpd
-	 *            Spéciifie si l'index doit être mis à jour automatiquement
+	 *            spÃ©ciifie si l'index doit Ãªtre mis Ã  jour automatiquement
 	 *            quand on modifie les objets de fc
 	 * 
 	 */
 	public Tiling(FT_FeatureCollection<Feature> fc, Boolean automaticUpd) {this(fc, automaticUpd, new Integer(nbDallesXY(fc)));}
 
 	/**
-	 * Calcul du choix d'un nombre de dalles arbitraire à utiliser quand l'utilisateur ne le stipule pas.
-	 * Le calcul renvoie sqrt(nombre d'éléments de la collection/50) et 1 si la collection est vide ou contient moins de 50 éléments.
+	 * Calcul du choix d'un nombre de dalles arbitraire Ã  utiliser quand l'utilisateur ne le stipule pas.
+	 * Le calcul renvoie sqrt(nombre d'Ã©lÃ©ments de la collection/50) et 1 si la collection est vide ou contient moins de 50 Ã©lÃ©ments.
 	 * @param fc collection
-	 * @return un nombre de dalles arbitraire à utiliser quand l'utilisateur ne le stipule pas.
+	 * @return un nombre de dalles arbitraire Ã  utiliser quand l'utilisateur ne le stipule pas.
 	 */
 	private static int nbDallesXY(FT_FeatureCollection<? extends FT_Feature> fc) {return Math.max((int) Math.sqrt(fc.size() / 50), 1);}
 
 	/**
-	 * Crée et instancie un dallage en reprenant les paramètres d'un autre dallage.
+	 * crÃ©e et instancie un dallage en reprenant les paramÃ¨tres d'un autre dallage.
 	 */
 	public Tiling(FT_FeatureCollection<Feature> fc, Tiling<Feature> spIdx) {this(fc, (Boolean) spIdx.getParametres().get(1), (GM_Envelope) spIdx.getParametres().get(2), (Integer) spIdx.getParametres().get(3));}
 

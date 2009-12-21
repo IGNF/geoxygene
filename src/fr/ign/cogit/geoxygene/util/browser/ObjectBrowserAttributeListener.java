@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -30,9 +30,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Cette classe fournit l'implémentation de l'écouteur d'événement pour les objets cliquables de type attribut ou mebre d'un attribut (objet ou collection).
- * <br/>Elle permet la navigation générique entre les objets Java d'une application, en faisant explicitement appel à un nouveau navigateur d'objet
- * graphique pour représenté graphiquement l'élément cliqué.
+ * Cette classe fournit l'implÃ©mentation de l'ï¿½couteur d'ï¿½vï¿½nement pour les objets cliquables de type attribut ou mebre d'un attribut (objet ou collection).
+ * <br/>Elle permet la navigation gÃ©nÃ©rique entre les objets Java d'une application, en faisant explicitement appel Ã  un nouveau navigateur d'objet
+ * graphique pour reprÃ©sentÃ© graphiquement l'Ã©lÃ©ment cliquï¿½.
  *
  *
  * @author Thierry Badard & Arnaud Braun
@@ -43,13 +43,13 @@ import java.awt.event.ActionListener;
 
 public class ObjectBrowserAttributeListener implements ActionListener {
 
-	/** Objet portant l'attribut sur lequel on définit l'écouteur d'événement ObjectBrowserAttributeListener. */
+	/** Objet portant l'attribut sur lequel on dÃ©finit l'ï¿½couteur d'ï¿½vï¿½nement ObjectBrowserAttributeListener. */
 	private Object obj;
 
 	/**
 	 * Constructeur principal de ObjectBrowserAttributeListener.
 	 * 
-	 * @param obj l'objet portant l'attribut sur lequel on définit l'écouteur d'événement ObjectBrowserAttributeListener.
+	 * @param obj l'objet portant l'attribut sur lequel on dÃ©finit l'ï¿½couteur d'ï¿½vï¿½nement ObjectBrowserAttributeListener.
 	 */
 	public ObjectBrowserAttributeListener(Object obj) {
 		this.obj = obj;

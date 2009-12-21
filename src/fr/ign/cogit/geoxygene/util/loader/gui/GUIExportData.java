@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -59,14 +59,14 @@ public class GUIExportData extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static final String FRAME_TITLE = "GeOxygene Export Données ESRI Shapefile";
+	private static final String FRAME_TITLE = "GeOxygene Export donnÃ©es ESRI Shapefile";
 
 	private String shapefilePath = "";
 	private String tableName;
 	private boolean validated = false;
 
-	private static String shapefilePathText = "Fichier ESRI Shapefile à exporter : ";
-	private static String tableNameText = "Nom de la table contenant les données à exporter : ";
+	private static String shapefilePathText = "Fichier ESRI Shapefile Ã  exporter : ";
+	private static String tableNameText = "Nom de la table contenant les donnÃ©es Ã  exporter : ";
 
 	private static String[] shapefileTypeText = {"ESRI Shapefiles","shp"};
 
@@ -158,8 +158,8 @@ public class GUIExportData extends JFrame {
 
 		if(rep == null || rep.equals("")){
 			JOptionPane.showMessageDialog(null,
-										"nom de répertoire incorrect",
-										"nom de répertoire incorrect",
+										"nom de rï¿½pertoire incorrect",
+										"nom de rï¿½pertoire incorrect",
 										JOptionPane.ERROR_MESSAGE);
 			return "";
 		}

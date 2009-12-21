@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -37,11 +37,11 @@ import java.io.File;
 
 class Utils {
 
-	public final static String SHAPEFILE = "shp";
-	public final static String GIF_IMAGE = "gif";
-	public final static String JPG_IMAGE = "jpg";
-	public final static String IMAGE = "image";
-	public final static String GEOXYGENE = "oxy";
+	public final static String SHAPEFILE = "shp"; //$NON-NLS-1$
+	public final static String GIF_IMAGE = "gif"; //$NON-NLS-1$
+	public final static String JPG_IMAGE = "jpg"; //$NON-NLS-1$
+	public final static String IMAGE = "image"; //$NON-NLS-1$
+	public final static String GEOXYGENE = "oxy"; //$NON-NLS-1$
 
 	/*
 	 * Get the extension of a file.

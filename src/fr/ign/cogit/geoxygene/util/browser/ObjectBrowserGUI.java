@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -53,9 +53,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 /**
- * Cette classe met en oeuvre l'interface graphique (vue et contrôleur) du Navigateur d'objet de GeOxygene, conformement à
- * l'architecture à modèle séparable de Sun Microsystems.
- * Les méthodes mises à disposition par cette classe sont appelées depuis la classe ObjectBrowser (modèle).
+ * Cette classe met en oeuvre l'interface graphique (vue et contrï¿½leur) du Navigateur d'objet de GeOxygene, conformement ï¿½
+ * l'architecture Ã  ModÃ¨le sï¿½parable de Sun Microsystems.
+ * Les mÃ©thodes mises Ã  disposition par cette classe sont appelï¿½es depuis la classe ObjectBrowser (ModÃ¨le).
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -77,41 +77,41 @@ public class ObjectBrowserGUI extends JFrame {
 	public GridBagConstraints gbc = new GridBagConstraints();
 	/** Gestionnaire de mise en page du navigateur d'objet. */
 	public GridBagLayout gbl = new GridBagLayout();
-	/** Insets définissant l'espacement entre les différents composants graphiques de l'interface. */
+	/** Insets dÃ©finissant l'espacement entre les diffÃ©rents composants graphiques de l'interface. */
 	public Insets extpad = new Insets(2, 5, 2, 5);
-	/** Panel d'affichage dans lequel sont positionnés les éléments. */
+	/** Panel d'affichage dans lequel sont positionnï¿½s les Ã©lÃ©ments. */
 	public JPanel panel = new JPanel();
 	public GridLayout gl_panel = new GridLayout();
 	public int ncc;
 
-	/** L'objet dont l'interface courante du navigateur d'objet de GeOxygene est la représentation. */
+	/** L'objet dont l'interface courante du navigateur d'objet de GeOxygene est la reprÃ©sentation. */
 	private Object browsedObject;
 
-	/** Flag définissant si l'affichage d'un bandeau contenant le nom du type de l'objet a été demandé par le modèle (ObjectBrowser). */
+	/** Flag dÃ©finissant si l'affichage d'un bandeau contenant le nom du type de l'objet a Ã©tÃ© demandï¿½ par le ModÃ¨le (ObjectBrowser). */
 	private boolean showClassName;
-	/** Flag définissant si l'affichage des attributs publics de l'objet a été demandé par le modèle (ObjectBrowser). */
+	/** Flag dÃ©finissant si l'affichage des attributs publics de l'objet a Ã©tÃ© demandï¿½ par le ModÃ¨le (ObjectBrowser). */
 	private boolean showPublicAttributes;
-	/** Flag définissant si l'affichage des attributs protected de l'objet a été demandé par le modèle (ObjectBrowser). */
+	/** Flag dÃ©finissant si l'affichage des attributs protected de l'objet a Ã©tÃ© demandï¿½ par le ModÃ¨le (ObjectBrowser). */
 	private boolean showProtectedAttributes;
-	/** Flag définissant si l'affichage des méthodes publiques, locales et héritées de l'objet a été demandé par le modèle (ObjectBrowser). */
+	/** Flag dÃ©finissant si l'affichage des mÃ©thodes publiques, locales et hÃ©ritï¿½es de l'objet a Ã©tÃ© demandï¿½ par le ModÃ¨le (ObjectBrowser). */
 	private boolean showPublicMethods;
-	/** Flag définissant si l'affichage des méthodes protected, locales et héritées de l'objet a été demandé par le modèle (ObjectBrowser). */
+	/** Flag dÃ©finissant si l'affichage des mÃ©thodes protected, locales et hÃ©ritï¿½es de l'objet a Ã©tÃ© demandï¿½ par le ModÃ¨le (ObjectBrowser). */
 	private boolean showProtectedMethods;
 
 	/** Locale courante. */
 	private Locale currentLocale;
-	/** RessourceBundle lié à la Locale et au fichier d'internationalisation. */
+	/** RessourceBundle liï¿½ Ã  la Locale et au fichier d'internationalisation. */
 	private ResourceBundle i18nLanguageFile;
 
 	/**
-	 * Constructeur par défaut.
+	 * Constructeur par dÃ©faut.
 	 * 
-	 * @param browsedObject l'objet que l'interface du navigateur que l'on cherche à construire doit représenter.
-	 * @param showClassName l'affichage d'un bandeau comportant le nom du type de l'objet est-il demandé ?
-	 * @param showPublicAttributes l'affichage des attributs publics de l'objet est-il demandé ?
-	 * @param showProtectedAttributes l'affichage des attributs protected de l'objet est-il demandé ?
-	 * @param showPublicMethods l'affichage des méthodes publiques, locales et héritées de l'objet est-il demandé ?
-	 * @param showProtectedMethods l'affichage des méthodes protected, locales et héritées de l'objet est-il demandé ?
+	 * @param browsedObject l'objet que l'interface du navigateur que l'on cherche Ã  construire doit reprÃ©senter.
+	 * @param showClassName l'affichage d'un bandeau comportant le nom du type de l'objet est-il demandï¿½ ?
+	 * @param showPublicAttributes l'affichage des attributs publics de l'objet est-il demandï¿½ ?
+	 * @param showProtectedAttributes l'affichage des attributs protected de l'objet est-il demandï¿½ ?
+	 * @param showPublicMethods l'affichage des mÃ©thodes publiques, locales et hÃ©ritï¿½es de l'objet est-il demandï¿½ ?
+	 * @param showProtectedMethods l'affichage des mÃ©thodes protected, locales et hÃ©ritï¿½es de l'objet est-il demandï¿½ ?
 	 */
 	public ObjectBrowserGUI(
 			Object browsedObject,
@@ -136,15 +136,15 @@ public class ObjectBrowserGUI extends JFrame {
 	}
 
 	/**
-	 * Construit une instance du navigateur d'objet de GeOxygene pour l'objet browsedObject avec un titre de fenêtre faisant référence à className.
+	 * Construit une instance du navigateur d'objet de GeOxygene pour l'objet browsedObject avec un titre de fenÃªtre faisant rÃ©fÃ©rence Ã  className.
 	 * 
-	 * @param browsedObject l'objet que l'interface du navigateur que l'on cherche à construire doit représenter.
-	 * @param showClassName l'affichage d'un bandeau comportant le nom du type de l'objet est-il demandé ?
-	 * @param showPublicAttributes l'affichage des attributs publics de l'objet est-il demandé ?
-	 * @param showProtectedAttributes l'affichage des attributs protected de l'objet est-il demandé ?
-	 * @param showPublicMethods l'affichage des méthodes publiques, locales et héritées de l'objet est-il demandé ?
-	 * @param showProtectedMethods l'affichage des méthodes protected, locales et héritées de l'objet est-il demandé ?
-	 * @param className le nom du type de l'objet représenté par l'interface du navigateur que l'on cherche à construire.
+	 * @param browsedObject l'objet que l'interface du navigateur que l'on cherche Ã  construire doit reprÃ©senter.
+	 * @param showClassName l'affichage d'un bandeau comportant le nom du type de l'objet est-il demandï¿½ ?
+	 * @param showPublicAttributes l'affichage des attributs publics de l'objet est-il demandï¿½ ?
+	 * @param showProtectedAttributes l'affichage des attributs protected de l'objet est-il demandï¿½ ?
+	 * @param showPublicMethods l'affichage des mÃ©thodes publiques, locales et hÃ©ritï¿½es de l'objet est-il demandï¿½ ?
+	 * @param showProtectedMethods l'affichage des mÃ©thodes protected, locales et hÃ©ritï¿½es de l'objet est-il demandï¿½ ?
+	 * @param className le nom du type de l'objet reprÃ©sentÃ© par l'interface du navigateur que l'on cherche Ã  construire.
 	 */
 	public ObjectBrowserGUI(
 			Object browsedObject,
@@ -170,9 +170,9 @@ public class ObjectBrowserGUI extends JFrame {
 	}
 
 	/**
-	 * Méthode permettant le changement du titre de la fenêtre d'interface représentant l'objet courant.
+	 * mÃ©thode permettant le changement du titre de la fenÃªtre d'interface reprÃ©sentant l'objet courant.
 	 * 
-	 * @param className le nom du type de l'objet représenté par l'interface du navigateur d'objet.
+	 * @param className le nom du type de l'objet reprÃ©sentÃ© par l'interface du navigateur d'objet.
 	 */
 	protected void changeTitle(String className) {
 		setTitle(i18nLanguageFile.getString("DefaultFrameTitle")+" "+className);
@@ -246,10 +246,10 @@ public class ObjectBrowserGUI extends JFrame {
 	}
 
 	/**
-	 * Ajoute un bandeau à l'interface contenant l'affichage du type (className) de l'objet représenté
+	 * Ajoute un bandeau Ã  l'interface contenant l'affichage du type (className) de l'objet reprÃ©sentÃ©
 	 * par l'instance courante du navigateur d'objet.
 	 * 
-	 * @param className le type de l'objet représenté par l'instance courante du navigateur d'objet.
+	 * @param className le type de l'objet reprÃ©sentÃ© par l'instance courante du navigateur d'objet.
 	 */
 	public void addClassNameLabel(String className) {
 		JLabel label = new JLabel(className, SwingConstants.CENTER);
@@ -273,7 +273,7 @@ public class ObjectBrowserGUI extends JFrame {
 	}
 
 	/**
-	 * Ajoute à l'interface du navigateur, la représentation d'un attribut de type primitif ou chaîne de caractères.
+	 * Ajoute Ã  l'interface du navigateur, la reprÃ©sentation d'un attribut de type primitif ou chaÃ®ne de caractï¿½res.
 	 * 
 	 * @param attrib_label le nom de l'attribut.
 	 * @param attrib_value la valeur de l'attribut.
@@ -302,7 +302,7 @@ public class ObjectBrowserGUI extends JFrame {
 	}
 
 	/**
-	 * Ajoute à l'interface du navigateur, la représentation d'un attribut de type objet.
+	 * Ajoute Ã  l'interface du navigateur, la reprÃ©sentation d'un attribut de type objet.
 	 * 
 	 * @param attrib_label le nom de l'attribut.
 	 * @param attrib_type le type de l'attribut.
@@ -339,9 +339,9 @@ public class ObjectBrowserGUI extends JFrame {
 	}
 
 	/**
-	 * Ajoute à l'interface du navigateur, un composant graphique représentant le contenu d'un tableau ou d'une
-	 * collection de type primitif ou chaîne de caractères.
-	 * <p>ATTENTION: méthode vouée à disparaître, car remplacée par addObjectAttributeList() !</p>
+	 * Ajoute Ã  l'interface du navigateur, un composant graphique reprÃ©sentant le contenu d'un tableau ou d'une
+	 * collection de type primitif ou chaÃ®ne de caractï¿½res.
+	 * <p>ATTENTION: mÃ©thode vouï¿½e Ã  disparaÃªtre, car remplacï¿½e par addObjectAttributeList() !</p>
 	 * @param attrib_values un vecteur contenant l'ensemble des valeurs de l'objet de type tableau ou collection.
 	 */
 	public void addAttributeList(Vector<Object> attrib_values) {
@@ -350,11 +350,11 @@ public class ObjectBrowserGUI extends JFrame {
 	}
 
 	/**
-	 * Ajoute à l'interface du navigateur, un composant graphique représentant le contenu d'un attribut de type tableau ou
-	 * collection de type primitif ou chaîne de caractères.
-	 * <p>ATTENTION: méthode vouée à disparaître, car remplacée par addObjectAttributeList() !</p>
+	 * Ajoute Ã  l'interface du navigateur, un composant graphique reprÃ©sentant le contenu d'un attribut de type tableau ou
+	 * collection de type primitif ou chaÃ®ne de caractï¿½res.
+	 * <p>ATTENTION: mÃ©thode vouï¿½e Ã  disparaÃªtre, car remplacï¿½e par addObjectAttributeList() !</p>
 	 * @param attrib_label le nom de l'attribut.
-	 * @param attrib_values les valeurs du tableau ou de la collection portés par l'attribut.
+	 * @param attrib_values les valeurs du tableau ou de la collection portï¿½s par l'attribut.
 	 */
 	public void addAttributeList(String attrib_label, Vector<Object> attrib_values) {
 
@@ -386,7 +386,7 @@ public class ObjectBrowserGUI extends JFrame {
 	}
 
 	/**
-	 * Ajoute à l'interface du navigateur, un composant graphique représentant le contenu d'un tableau ou d'une
+	 * Ajoute Ã  l'interface du navigateur, un composant graphique reprÃ©sentant le contenu d'un tableau ou d'une
 	 * collection.
 	 * @param attrib_objects un vecteur contenant l'ensemble des valeurs de l'objet de type tableau ou collection.
 	 */
@@ -395,10 +395,10 @@ public class ObjectBrowserGUI extends JFrame {
 	}
 
 	/**
-	 * Ajoute à l'interface du navigateur, un composant graphique représentant le contenu d'un attribut de type tableau ou
+	 * Ajoute Ã  l'interface du navigateur, un composant graphique reprÃ©sentant le contenu d'un attribut de type tableau ou
 	 * collection.
 	 * @param attrib_label le nom de l'attribut.
-	 * @param attrib_objects les valeurs du tableau ou de la collection portés par l'attribut.
+	 * @param attrib_objects les valeurs du tableau ou de la collection portï¿½s par l'attribut.
 	 */
 	public void addObjectAttributeList(
 			String attrib_label,
@@ -407,10 +407,10 @@ public class ObjectBrowserGUI extends JFrame {
 	}
 
 	/**
-	 * Ajoute à l'interface du navigateur, un composant graphique représentant le contenu d'un attribut de type tableau ou
+	 * Ajoute Ã  l'interface du navigateur, un composant graphique reprÃ©sentant le contenu d'un attribut de type tableau ou
 	 * collection.
 	 * @param attrib_label le nom de l'attribut.
-	 * @param attrib_objects les valeurs du tableau ou de la collection portés par l'attribut.
+	 * @param attrib_objects les valeurs du tableau ou de la collection portï¿½s par l'attribut.
 	 * @param attrib_level la dimension du tableau ou de la collection.
 	 * @param attrib_underlyingType le type du contenu du tableau ou de la collection.
 	 */
@@ -534,10 +534,10 @@ public class ObjectBrowserGUI extends JFrame {
 	}
 
 	/**
-	 * Ajoute à l'interface du navigateur, un composant graphique représentant une méthode.
+	 * Ajoute Ã  l'interface du navigateur, un composant graphique reprÃ©sentant une mÃ©thode.
 	 * 
-	 * @param obj l'objet portant la méthode à représenter au sein de l'interface du navigateur d'objet de GeOxygene.
-	 * @param method la méthde qui doit être représenté par ce composant graphique.
+	 * @param obj l'objet portant la mÃ©thode Ã  reprÃ©senter au sein de l'interface du navigateur d'objet de GeOxygene.
+	 * @param method la mï¿½thde qui doit Ãªtre reprÃ©sentÃ© par ce composant graphique.
 	 */
 	public void addMethod(Object obj, Method method) {
 		JButton method_button = new JButton(method.getName());
@@ -567,14 +567,14 @@ public class ObjectBrowserGUI extends JFrame {
 	}
 
 	/**
-	 * @return l'objet dont l'interface courante du navigateur d'objet de GeOxygene est la représentation.
+	 * @return l'objet dont l'interface courante du navigateur d'objet de GeOxygene est la reprÃ©sentation.
 	 */
 	public Object getBrowsedObject() {
 		return this.browsedObject;
 	}
 
 	/**
-	 * @return le RessourceBundle lié à la Locale et au fichier d'internationalisation.
+	 * @return le RessourceBundle liï¿½ Ã  la Locale et au fichier d'internationalisation.
 	 */
 	public ResourceBundle getI18nLanguageFile() {
 		return i18nLanguageFile;

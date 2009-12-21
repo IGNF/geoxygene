@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -561,9 +561,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	}
 	
 	/**
-	 * Calcul de l'union d'une liste de géométries
-	 * @param listeGeometries liste des géométries à unir
-	 * @return union d'une liste de géométries
+	 * Calcul de l'union d'une liste de gÃ©omÃ©tries
+	 * @param listeGeometries liste des gÃ©omÃ©tries Ã  unir
+	 * @return union d'une liste de gÃ©omÃ©tries
 	 */
 	public GM_Object union(List<GM_Object> listeGeometries) {
 		List<Geometry> listeGeometriesJts = new ArrayList<Geometry>();
@@ -590,8 +590,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	}
 	
 	/**
-	 * Détermine le point d'un polygone le plus loin d'un autre point.
-	 * Le polygone doit être convexe et sans trou.
+	 * Dï¿½termine le point d'un polygone le plus loin d'un autre point.
+	 * Le polygone doit Ãªtre convexe et sans trou.
 	 * Determine the farest point of a polygon to another given point.
 	 * The polygon must be convex and without hole.
 	 * 
@@ -612,7 +612,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	}
 
 	/**
-	 * Détermine le point d'un polygone le plus proche d'un autre point.
+	 * Dï¿½termine le point d'un polygone le plus proche d'un autre point.
 	 * Determine the closest point of a polygon to another given point.
 	 * 
 	 * @param pt un point, a point
@@ -623,7 +623,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	}
 
 	/**
-	 * Détermine le point d'une ligne le plus proche d'un autre point.
+	 * Dï¿½termine le point d'une ligne le plus proche d'un autre point.
 	 * Determine the closest point of a line to another given point.
 	 * 
 	 * @param pt un point, a point
@@ -640,7 +640,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		return null;
 	}
 	/**
-	 * Détermine le point d'une ligne le plus loin d'une ligne de base.
+	 * Dï¿½termine le point d'une ligne le plus loin d'une ligne de base.
 	 * Determine the closest point of a line to another given line.
 	 * 
 	 * @param base la ligne de comparaison, the base line
@@ -667,13 +667,13 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	}
 
 	/**
-	 * Détermine les points les plus proches deux géométries. 
-	 * Les points sont donnés dans le même ordre que les deux géométries d'entrée.
+	 * Dï¿½termine les points les plus proches deux gÃ©omÃ©tries. 
+	 * Les points sont donnÃ©s dans le mÃªme ordre que les deux gÃ©omÃ©tries d'entrÃ©e.
 	 * Compute the nearest points of two geometries.
 	 * The points are presented in the same order as the input Geometries. 
 	 * 
-	 * @param g1 une géométrie
-	 * @param g2 une autre géométrie
+	 * @param g1 une gÃ©omÃ©trie
+	 * @param g2 une autre gÃ©omÃ©trie
 	 * @return la liste des 2 points les plus proches
 	 */
 	public static DirectPositionList getClosestPoints(GM_Object g1, GM_Object g2) {
@@ -783,10 +783,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	}
 
 	/**
-	 * Union des éléments d'un ensemble de Polygones triés par groupes.
+	 * Union des Ã©lÃ©ments d'un ensemble de Polygones triï¿½s par groupes.
 	 * Par exemple, si la taille des groupes vaut 4, on effectue l'union des Polygones 4 par 4.
 	 * 
-	 * @param treeSet ensemble de Polygones triés
+	 * @param treeSet ensemble de Polygones triï¿½s
 	 * @param groupSize taille des groupes sur lesquels on effectue l'union
 	 * @return liste des unions
 	 */
@@ -845,10 +845,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		return newGeometryCollection.get(0);
 	}
 	/**
-	 * Union des éléments d'un ensemble de LineStrings triées par groupes.
+	 * Union des Ã©lÃ©ments d'un ensemble de LineStrings triï¿½es par groupes.
 	 * Par exemple, si la taille des groupes vaut 4, on effectue l'union des LineStrings 4 par 4.
 	 * 
-	 * @param treeSet ensemble de LineStrings triées
+	 * @param treeSet ensemble de LineStrings triï¿½es
 	 * @param groupSize taille des groupes sur lesquels on effectue l'union
 	 * @return liste des unions
 	 */
@@ -913,11 +913,11 @@ public class JtsAlgorithms implements GeomAlgorithms {
 
 	/**
 	 * calcule fermeture de geometrie (juste buffer externe, puis interne)
-	 * @param geometry géométrie de départ
-	 * @param distance distance utilisée pour le buffer positif puis pour le buffer négatif
-	 * @param quadrantSegments nombre de segments utilisés pour la simplification par l'algorithme de Douglas-Peucker
-	 * @param endCapStyle type d'approximation utilisée pour la simplification par l'algorithme de Douglas-Peucker
-	 * @return la fermeture de la géométrie passée en paramètre
+	 * @param geometry gÃ©omÃ©trie de dï¿½part
+	 * @param distance distance utilisÃ©e pour le buffer positif puis pour le buffer nÃ©gatif
+	 * @param quadrantSegments nombre de segments utilisÃ©s pour la simplification par l'algorithme de Douglas-Peucker
+	 * @param endCapStyle type d'approximation utilisÃ©e pour la simplification par l'algorithme de Douglas-Peucker
+	 * @return la fermeture de la gÃ©omÃ©trie passÃ©e en paramÃ¨tre
 	 */
 	public static Geometry fermeture(Geometry geometry, double distance, int quadrantSegments, int endCapStyle ) {
 		Geometry geom = geometry.buffer(distance,quadrantSegments,endCapStyle);

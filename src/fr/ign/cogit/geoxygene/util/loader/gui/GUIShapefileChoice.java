@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  * 
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -25,7 +25,7 @@
 package fr.ign.cogit.geoxygene.util.loader.gui;
 
 /**
- * Sélecteur de shapefiles simple permettant la sélection simple ou multiple.
+ * Sï¿½lecteur de shapefiles simple permettant la sï¿½lection simple ou multiple.
  * @author Julien Perret
  *
  */
@@ -48,7 +48,7 @@ public class GUIShapefileChoice extends JFrame {
 	private String directoryPath;
 	private boolean multiSelectionEnabled = true;
 	/**
-	 * Constructeurs de sélecteur de shapefiles
+	 * Constructeurs de sï¿½lecteur de shapefiles
 	 * @param MultiSelectionEnabled
 	 */
 	public GUIShapefileChoice(boolean MultiSelectionEnabled) {
@@ -61,21 +61,21 @@ public class GUIShapefileChoice extends JFrame {
 		directoryPath = latestFolder;
 	}
 	/**
-	 * Ouvre une fenêtre de sélection et renvoie un tableau contenant les fichiers sélectionnés.
-	 * Ne permet que la sélection de fichiers.
-	 * @return un tableau contenant les fichiers sélectionnés. null si rien n'a été sélectionné
+	 * Ouvre une fenÃªtre de sï¿½lection et renvoie un tableau contenant les fichiers sï¿½lectionnï¿½s.
+	 * Ne permet que la sï¿½lection de fichiers.
+	 * @return un tableau contenant les fichiers sï¿½lectionnï¿½s. null si rien n'a Ã©tÃ© sï¿½lectionnï¿½
 	 */
 	public File[] getSelectedFiles() {return getSelectedFilesOrDirectories(true);}
 	/**
-	 * Ouvre une fenêtre de sélection et renvoie un tableau contenant les répertoires sélectionnés.
-	 * Ne permet que la sélection de répertoires.
-	 * @return un tableau contenant les répertoires sélectionnés. null si rien n'a été sélectionné
+	 * Ouvre une fenÃªtre de sï¿½lection et renvoie un tableau contenant les rï¿½pertoires sï¿½lectionnï¿½s.
+	 * Ne permet que la sï¿½lection de rï¿½pertoires.
+	 * @return un tableau contenant les rï¿½pertoires sï¿½lectionnï¿½s. null si rien n'a Ã©tÃ© sï¿½lectionnï¿½
 	 */
 	public File[] getSelectedDirectories() {return getSelectedFilesOrDirectories(false);}
 	/**
-	 * Ouvre une fenêtre de sélection et renvoie un tableau contenant les fichiers ou répertoires sélectionnés.
-	 * @param selectFiles si vrai, ne permet que la sélection de fichiers, si faux que la sélection de répertoires.
-	 * @return un tableau contenant les fichiers ou répertoires sélectionnés. null si rien n'a été sélectionné
+	 * Ouvre une fenÃªtre de sï¿½lection et renvoie un tableau contenant les fichiers ou rï¿½pertoires sï¿½lectionnï¿½s.
+	 * @param selectFiles si vrai, ne permet que la sï¿½lection de fichiers, si faux que la sï¿½lection de rï¿½pertoires.
+	 * @return un tableau contenant les fichiers ou rï¿½pertoires sï¿½lectionnï¿½s. null si rien n'a Ã©tÃ© sï¿½lectionnï¿½
 	 */
 	public File[] getSelectedFilesOrDirectories(boolean selectFiles) {
 		JFileChooser chooser = new JFileChooser(directoryPath);
