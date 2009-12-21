@@ -123,7 +123,7 @@ public class InterfaceGeoxygene extends JFrame {
 		//setLocation(100,100);
 	    setSize(new Dimension(830,530));
 	    setExtendedState(Frame.MAXIMIZED_BOTH);
-		setTitle("GéOxygène");
+		setTitle("GeOxygene");
 		setIconImage(getIcone());
 
 		JSplitPane splitPaneGauche = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, getPanelVisu(), getPanelDroit());
@@ -191,14 +191,14 @@ public class InterfaceGeoxygene extends JFrame {
 				if (shapeFileLayers.get(i)==0) {
 					populationName = shapeFiles.get(i).getName();
 					if (getPanelVisu().getDataset().getPopulation(populationName)!=null) {
-						/** Il existe déjà une population avec ce nom */
+						/** Il existe dÃ©jÃ  une population avec ce nom */
 						int n = 2;
 						while (getPanelVisu().getDataset().getPopulation(populationName+" ("+n+")")!=null) {n++;}
 						populationName=populationName+" ("+n+")";
 					}
 				} else {
 					if (getPanelVisu().getDataset().getPopulation(populationName)!=null) {
-						/** Il existe déjà une population avec ce nom */
+						/** Il existe dÃ©jÃ  une population avec ce nom */
 						int n = 2;
 						while (getPanelVisu().getDataset().getPopulation(populationName+" ("+n+")")!=null) {n++;}
 						populationName=populationName+" ("+n+")";						
@@ -209,7 +209,7 @@ public class InterfaceGeoxygene extends JFrame {
 		}
 	}
 	public void chargeShapefile(String shapefileName,String populationName) {
-		/** Création du ShapefilReader pour le chargement asynchrone des fichiers */
+		/** crÃ©ation du ShapefilReader pour le chargement asynchrone des fichiers */
 		ShapefileReader reader = new ShapefileReader(
 				shapefileName,
 				populationName,
@@ -217,22 +217,22 @@ public class InterfaceGeoxygene extends JFrame {
 				true);
 		/**
 		 *  Ajoute le panel de visualisation au listeners de la population.
-		 *  Il sera informé de l'ajout des nouveaux objets au fur et à mesure.
+		 *  Il sera informï¿½ de l'ajout des nouveaux objets au fur et Ã  mesure.
 		 */
 		reader.getPopulation().addFeatureCollectionListener(getPanelVisu());
 		/**
 		 * Ajoute un layer au SLD du panel de visualisation.
-		 * On essaye de récupérer les styles existants depuis le sld courant 
-		 * ou depuis le sld par défaut
+		 * On essaye de RÃ©cupÃ¨rer les styles existants depuis le sld courant 
+		 * ou depuis le sld par dÃ©faut
 		 */
 		Layer layer = getPanelVisu().getSld().getLayer(populationName);
-		/** On n'a pas trouvé la couche dans le SLD courant, on cherche dans le sld par défaut */
+		/** On n'a pas trouvÃ© la couche dans le SLD courant, on cherche dans le sld par dÃ©faut */
 		if (layer==null) {
-			if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvé dans le sld courant");
+			if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvÃ© dans le sld courant");
 			layer = getPanelVisu().getDefaultSld().getLayer(populationName);
-			/** On n'a pas trouvé la couche dans le SLD, on en crée une nouvelle */
+			/** On n'a pas trouvÃ© la couche dans le SLD, on en crÃ©e une nouvelle */
 			if (layer==null) {
-				if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvé dans le sld par défaut");
+				if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvÃ© dans le sld par dÃ©faut");
 				layer = getPanelVisu().getSld().createLayer(populationName,reader.getPopulation().getFeatureType().getGeometryType());
 			}
 			getPanelVisu().getSld().getLayers().add(layer);
@@ -250,23 +250,23 @@ public class InterfaceGeoxygene extends JFrame {
 	 */
 	public void addPopulation(Population<? extends FT_Feature> population, String populationName, Color color) {
 		if (population.isEmpty()) {
-			logger.error("Aucun élément à afficher : collection vide");
+			logger.error("Aucun Ã©lÃ©ment Ã  afficher : collection vide");
 			return;
 		}
 		getPanelVisu().getDataset().addPopulation(population);
 		/**
 		 * Ajoute un layer au SLD du panel de visualisation.
-		 * On essaye de récupérer les styles existants depuis le sld courant 
-		 * ou depuis le sld par défaut
+		 * On essaye de RÃ©cupÃ¨rer les styles existants depuis le sld courant 
+		 * ou depuis le sld par dÃ©faut
 		 */
 		Layer layer = getPanelVisu().getSld().getLayer(populationName);
-		/** On n'a pas trouvé la couche dans le SLD courant, on cherche dans le sld par défaut */
+		/** On n'a pas trouvÃ© la couche dans le SLD courant, on cherche dans le sld par dÃ©faut */
 		if (layer==null) {
-			if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvé dans le sld courant");
+			if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvÃ© dans le sld courant");
 			layer = getPanelVisu().getDefaultSld().getLayer(populationName);
-			/** On n'a pas trouvé la couche dans le SLD, on en crée une nouvelle */
+			/** On n'a pas trouvÃ© la couche dans le SLD, on en crÃ©e une nouvelle */
 			if (layer==null) {
-				if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvé dans le sld par défaut");
+				if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvÃ© dans le sld par dÃ©faut");
 				if(population.getFeatureType() == null){
 					layer = getPanelVisu().getSld().createLayer(populationName,population.get(0).getGeom().getClass(),color);	
 				}
@@ -304,7 +304,7 @@ public class InterfaceGeoxygene extends JFrame {
 	@SuppressWarnings("unchecked")
 	public void addFeatureCollection(FT_FeatureCollection<? extends FT_Feature> collection, String populationName, Color color) {
 		if (collection.isEmpty()) {
-			logger.error("Aucun élément à afficher : collection vide");
+			logger.error("Aucun Ã©lÃ©ment Ã  afficher : collection vide");
 			return;
 		}
 		Population<FT_Feature> population = new Population<FT_Feature>(populationName);
@@ -312,17 +312,17 @@ public class InterfaceGeoxygene extends JFrame {
 		getPanelVisu().getDataset().addPopulation(population);
 		/**
 		 * Ajoute un layer au SLD du panel de visualisation.
-		 * On essaye de récupérer les styles existants depuis le sld courant 
-		 * ou depuis le sld par défaut
+		 * On essaye de RÃ©cupÃ¨rer les styles existants depuis le sld courant 
+		 * ou depuis le sld par dÃ©faut
 		 */
 		Layer layer = getPanelVisu().getSld().getLayer(populationName);
-		/** On n'a pas trouvé la couche dans le SLD courant, on cherche dans le sld par défaut */
+		/** On n'a pas trouvÃ© la couche dans le SLD courant, on cherche dans le sld par dÃ©faut */
 		if (layer==null) {
-			if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvé dans le sld courant");
+			if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvÃ© dans le sld courant");
 			layer = getPanelVisu().getDefaultSld().getLayer(populationName);
-			/** On n'a pas trouvé la couche dans le SLD, on en crée une nouvelle */
+			/** On n'a pas trouvÃ© la couche dans le SLD, on en crÃ©e une nouvelle */
 			if (layer==null) {
-				if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvé dans le sld par défaut");
+				if (logger.isDebugEnabled()) logger.debug("Layer "+populationName+" non trouvÃ© dans le sld par dÃ©faut");
 				if(population.getFeatureType() == null){
 					layer = getPanelVisu().getSld().createLayer(populationName,population.get(0).getGeom().getClass(),color);	
 				}

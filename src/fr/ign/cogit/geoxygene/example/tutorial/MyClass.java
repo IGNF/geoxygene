@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -45,36 +45,36 @@ public class MyClass {
 
 	/** Identifiant. */
 	protected int id;
-	public int getId() { return id; }
-	public void setId(int i) { id = i; }
+	public int getId() { return this.id; }
+	public void setId(int i) { this.id = i; }
 
 
 	/** Attribut de type entier. */
 	protected int field0;
-	public int getField0() { return field0; }
-	public void setField0(int i) { field0 = i; }
+	public int getField0() { return this.field0; }
+	public void setField0(int i) { this.field0 = i; }
 
 
 	/** Attribut de type String. */
 	protected String field1;
-	public String getField1() { return field1; }
-	public void setField1(String string) { field1 = string; }
+	public String getField1() { return this.field1; }
+	public void setField1(String string) { this.field1 = string; }
 
 
 	/** Attribut de type boolean. */
 	protected boolean field2;
-	public boolean getField2() { return field2; }
-	public void setField2(boolean b) { field2 = b; }
+	public boolean getField2() { return this.field2; }
+	public void setField2(boolean b) { this.field2 = b; }
 
 
 	/** Attribut de type double. */
 	protected double field3;
-	public double getField3() { return field3; }
-	public void setField3(double d) { field3 = d; }
+	public double getField3() { return this.field3; }
+	public void setField3(double d) { this.field3 = d; }
 
 
 	/** Affiche "bonjour". */
 	public void bonjour() {
-		System.out.println("bonjour");
+		System.out.println("bonjour"); //$NON-NLS-1$
 	}
 }

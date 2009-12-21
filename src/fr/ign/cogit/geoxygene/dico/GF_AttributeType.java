@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -27,9 +27,9 @@
 package fr.ign.cogit.geoxygene.dico;
 
 /**
- * Métaclasse pour la définition des attributs des Feature Types.
- * Dans la norme, il existe des sous-classes pour distinguer les attributs temporels, thématiques,
- * spatiaux, sur la qualité, etc.
+ * mÃ©taclasse pour la dÃ©finition des attributs des Feature Types.
+ * Dans la norme, il existe des sous-classes pour distinguer les attributs temporels, thï¿½matiques,
+ * spatiaux, sur la qualitÃ©, etc.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -42,7 +42,7 @@ public class GF_AttributeType extends GF_PropertyType {
 	protected String valueType;
 	/** Renvoie le type de l'attribut. */
 	public String getValueType () {return this.valueType;}
-	/** Affecte un type à l'attribut. */
+	/** Affecte un type Ã  l'attribut. */
 	public void setValueType(String ValueType) {this.valueType = ValueType;}
 
 
@@ -58,7 +58,7 @@ public class GF_AttributeType extends GF_PropertyType {
 	protected int cardMin;
 	/** Renvoie le nombre de valeurs minimal de l'attribut. */
 	public int getCardMin () {return this.cardMin;}
-	/** Affecte un nombre de valeurs minimal à l'attribut. */
+	/** Affecte un nombre de valeurs minimal Ã  l'attribut. */
 	public void setCardMin (int CardMin) {this.cardMin = CardMin;}
 
 
@@ -66,16 +66,16 @@ public class GF_AttributeType extends GF_PropertyType {
 	protected int cardMax;
 	/** Renvoie le nombre de valeurs maximal de l'attribut. */
 	public int getCardMax () {return this.cardMax;}
-	/** Affecte un nombre de valeurs maximal à l'attribut. */
+	/** Affecte un nombre de valeurs maximal Ã  l'attribut. */
 	public void setCardMax (int CardMax) {this.cardMax = CardMax;}
 
 
-	/** Attribut en caractérisant un autre.
-	 * La relation inverse n'est pas implémentée. */
+	/** Attribut en caractï¿½risant un autre.
+	 * La relation inverse n'est pas implÃ©mentÃ©e. */
 	protected GF_AttributeType characterize;
-	/** Renvoie l'attribut que self caractérise. */
+	/** Renvoie l'attribut que self caractï¿½rise. */
 	public GF_AttributeType getCharacterize() {return this.characterize;}
-	/** Affecte un attribut que self caractérise. */
+	/** Affecte un attribut que self caractï¿½rise. */
 	public void setCharacterize(GF_AttributeType Characterize) {this.characterize = Characterize; }
 
 }

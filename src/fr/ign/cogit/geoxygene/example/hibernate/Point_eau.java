@@ -13,15 +13,15 @@ public class Point_eau extends fr.ign.cogit.geoxygene.feature.FT_Feature {
 
      protected int gid;
      public int getGid() {return this.gid; }
-     public void setGid (int Gid) {gid = Gid; }
+     public void setGid (int Gid) {this.gid = Gid; }
 
      protected String source;
      public String getSource() {return this.source; }
-     public void setSource (String Source) {source = Source; }
+     public void setSource (String Source) {this.source = Source; }
 
      protected String nature;
      public String getNature() {return this.nature; }
-     public void setNature (String Nature) {nature = Nature; }
+     public void setNature (String Nature) {this.nature = Nature; }
      
      @Override
      @Id @GeneratedValue

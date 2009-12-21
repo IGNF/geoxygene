@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -32,7 +32,7 @@ import java.util.List;
 
 
 /**
- * Métaclasse instanciée par les classes correspondant aux thèmes géographiques.
+ * mÃ©taclasse instanciÃ©e par les classes correspondant aux thÃ¨mes GÃ©ographiques.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -50,19 +50,19 @@ public class GF_FeatureType {
 	public void setId (int Id) {this.id = Id;}
 
 
-	/** Nom de la classe géographique. Doit être unique dans un schéma applicatif. */
+	/** Nom de la classe GÃ©ographique. Doit Ãªtre unique dans un schÃ©ma applicatif. */
 	protected String typeName;
-	/** Renvoie le nom de la classe géographique. */
+	/** Renvoie le nom de la classe GÃ©ographique. */
 	public String getTypeName () {return this.typeName;}
 	/** Affecte un nom. */
 	public void setTypeName (String TypeName) {this.typeName = TypeName;}
 
 
-	/** Description de la classe géographique. */
+	/** Description de la classe GÃ©ographique. */
 	protected String definition;
 	/** Renvoie la description de la classe geographique. */
 	public String getDefinition () {return this.definition;}
-	/** Affecte une définition. */
+	/** Affecte une dÃ©finition. */
 	public void setDefinition (String Definition) {this.definition = Definition;}
 
 
@@ -74,15 +74,15 @@ public class GF_FeatureType {
 	public void setIsAbstract (boolean IsAbstract) {this.isAbstract = IsAbstract;}
 
 
-	/** Les relations de généralisation dans lesquelles est impliquée la classe. */
+	/** Les relations de gÃ©nÃ©ralisation dans lesquelles est impliquï¿½e la classe. */
 	protected List<GF_InheritanceRelation> generalization = new ArrayList<GF_InheritanceRelation>();
-	/** Renvoie les relations de généralisation dans lesquelles est impliquée la classe. */
+	/** Renvoie les relations de gÃ©nÃ©ralisation dans lesquelles est impliquï¿½e la classe. */
 	public List<GF_InheritanceRelation> getGeneralization() {return this.generalization; }
 	/** Affecte une liste de generalisations */
 	public void setGeneralization (List<GF_InheritanceRelation> L) {this.generalization = L;}
-	/** Renvoie le nombre de relation de généralisation dans lesquelles est impliquée la classe. */
+	/** Renvoie le nombre de relation de gÃ©nÃ©ralisation dans lesquelles est impliquï¿½e la classe. */
 	public int sizeGeneralization () {return this.generalization.size(); }
-	/** Ajoute une relation de généralisation. Affecte automatiquement le sous-type de cette relation.*/
+	/** Ajoute une relation de gÃ©nÃ©ralisation. Affecte automatiquement le sous-type de cette relation.*/
 	public void addGeneralization (GF_InheritanceRelation value) {
 		this.generalization.add(value);
 		if ( value.getSubType() != this)
@@ -90,15 +90,15 @@ public class GF_FeatureType {
 	}
 
 
-	/** Les relations de spécialisation dans lesquelles est impliquée la classe. */
+	/** Les relations de spÃ©cialisation dans lesquelles est impliquï¿½e la classe. */
 	protected List<GF_InheritanceRelation> specialization = new ArrayList<GF_InheritanceRelation>();
-	/** Renvoie la liste des relations de spécialisation dans lesquelles est impliquée la classe. */
+	/** Renvoie la liste des relations de spÃ©cialisation dans lesquelles est impliquï¿½e la classe. */
 	public List<GF_InheritanceRelation> getSpecialization() {return this.specialization; }
 	/** Affecte une liste de specialisations */
 	public void setSpecialization (List<GF_InheritanceRelation> L) {this.specialization = L;}
-	/** Renvoie le nombre de relation de spécialisation dans lesquelles est impliquée la classe. */
+	/** Renvoie le nombre de relation de spÃ©cialisation dans lesquelles est impliquï¿½e la classe. */
 	public int sizeSpecialization () {return this.specialization.size(); }
-	/** Ajoute une relation de spécialisation. Affecte automatiquement le super-type de cette relation.*/
+	/** Ajoute une relation de spÃ©cialisation. Affecte automatiquement le super-type de cette relation.*/
 	public void addSpecialization (GF_InheritanceRelation value) {
 		this.specialization.add(value);
 		if (! value.getSuperType().contains(this))
@@ -106,15 +106,15 @@ public class GF_FeatureType {
 	}
 
 
-	/** Les propriétés (attributs, opérations, roles). */
+	/** Les propriÃ©tÃ©s (attributs, opÃ©rations, roles). */
 	protected List<GF_PropertyType> properties = new ArrayList<GF_PropertyType>();
-	/** Renvoie la liste des propriétés. */
+	/** Renvoie la liste des propriÃ©tÃ©s. */
 	public List<GF_PropertyType> getProperties() {return this.properties; }
 	/** Affecte une liste de proprietes */
 	public void setProperties (List<GF_PropertyType> L) {this.properties = L;}
-	/** Renvoie le nombre de propriétés. */
+	/** Renvoie le nombre de propriÃ©tÃ©s. */
 	public int sizeProperties () {return this.properties.size();}
-	/** Ajoute une propriété. Affecte automatiquement le feature type de cette propriété.*/
+	/** Ajoute une propriÃ©tÃ©. Affecte automatiquement le feature type de cette propriÃ©tÃ©.*/
 	public void addProperty (GF_PropertyType value) {
 		this.properties.add(value);
 		if (value.getFeatureType() != this)
@@ -122,13 +122,13 @@ public class GF_FeatureType {
 	}
 
 
-	/** Les associations dans lesquelles est impliquée cette classe. */
+	/** Les associations dans lesquelles est impliquï¿½e cette classe. */
 	protected List<GF_AssociationType> memberOf = new ArrayList<GF_AssociationType>();
-	/** Renvoie les associations dans lesquelles est impliquée cette classe. */
+	/** Renvoie les associations dans lesquelles est impliquï¿½e cette classe. */
 	public List<GF_AssociationType> getMemberOf() {return this.memberOf; }
 	/** Affecte une liste d'associations */
 	public void setMemberOf (List<GF_AssociationType> L) {this.memberOf = L;}
-	/** Le nombre d'associations dans lesquelles est impliquée cette classe. */
+	/** Le nombre d'associations dans lesquelles est impliquï¿½e cette classe. */
 	public int sizeMemberOf () { return this.memberOf.size(); }
 	/** Ajoute une association. */
 	public void addMemberOf (GF_AssociationType value) {

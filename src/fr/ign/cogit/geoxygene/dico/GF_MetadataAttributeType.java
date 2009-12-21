@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -27,8 +27,8 @@
 package fr.ign.cogit.geoxygene.dico;
 
 /**
- * Attribut portant une information de métadonnée,
- * lorsque les métadonnées sont incluses comme données dans le jeu de données.
+ * Attribut portant une information de mÃ©tadonnÃ©e,
+ * lorsque les mÃ©tadonnÃ©es sont incluses comme donnÃ©es dans le jeu de donnÃ©es.
  * Le type est un de ceux de l'ISO 19115.
  * 
  * @author Thierry Badard & Arnaud Braun

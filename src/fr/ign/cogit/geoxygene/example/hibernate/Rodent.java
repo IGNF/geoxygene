@@ -21,7 +21,7 @@ public class Rodent implements Mammal {
 	@Override
 	@Id @GeneratedValue
 	public int getId() {return this.id;}
-	protected String name;;
+	protected String name;
 	@Override
 	public String getName() {return this.name;}
 	protected List<Mammal> predators = new ArrayList<Mammal>();

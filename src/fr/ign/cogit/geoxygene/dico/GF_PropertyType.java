@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -31,9 +31,9 @@ import java.util.List;
 
 
 /**
- * Classe mère pour les métaclasses de propriétés définissant les caractéristiques
- * des classes géographiques Feature Types ou des associations Association Types.
- * (opérations, attributs, rôles dans une associations).
+ * Classe mÃ¨re pour les mÃ©taclasses de propriÃ©tÃ©s dÃ©finissant les caractï¿½ristiques
+ * des classes GÃ©ographiques Feature Types ou des associations Association Types.
+ * (opÃ©rations, attributs, rï¿½les dans une associations).
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -51,11 +51,11 @@ abstract public class GF_PropertyType {
 	public void setId(int Id) {this.id = Id;}
 
 
-	/** Feature type auquel est rattaché la propriété. */
+	/** Feature type auquel est rattachï¿½ la propriÃ©tÃ©. */
 	protected GF_FeatureType featureType;
-	/** Renvoie le feature type auquel est rattaché la propriété. */
+	/** Renvoie le feature type auquel est rattachï¿½ la propriÃ©tÃ©. */
 	public GF_FeatureType getFeatureType() {return this.featureType;}
-	/** Affecte un feature type à la propriété. */
+	/** Affecte un feature type Ã  la propriÃ©tÃ©. */
 	public void setFeatureType(GF_FeatureType FeatureType) {
 		this.featureType = FeatureType;
 		if (!FeatureType.getProperties().contains(this))
@@ -63,19 +63,19 @@ abstract public class GF_PropertyType {
 	}
 
 
-	/** Nom de la propriété. */
+	/** Nom de la propriÃ©tÃ©. */
 	protected String memberName;
-	/** Renvoie le nom de la propriété. */
+	/** Renvoie le nom de la propriÃ©tÃ©. */
 	public String getMemberName () {return this.memberName;}
-	/** Affecte un nom de propriété. */
+	/** Affecte un nom de propriÃ©tÃ©. */
 	public void setMemberName (String MemberName) {this.memberName = MemberName;}
 
 
-	/** Définition. */
+	/** dÃ©finition. */
 	protected String definition;
-	/** Renvoie la définition. */
+	/** Renvoie la dÃ©finition. */
 	public String getDefinition () {return this.definition;}
-	/** Affecte une définition. */
+	/** Affecte une dÃ©finition. */
 	public void setDefinition (String Definition) {this.definition = Definition;}
 
 

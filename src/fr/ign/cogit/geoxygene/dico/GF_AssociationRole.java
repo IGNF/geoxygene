@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -27,8 +27,8 @@
 package fr.ign.cogit.geoxygene.dico;
 
 /**
- * Métaclasse pour les classes de rôles composant des GF_AssociationType.
- * Les rôles sont des propriétés sur les Feature Types.
+ * mÃ©taclasse pour les classes de rï¿½les composant des GF_AssociationType.
+ * Les rï¿½les sont des propriÃ©tÃ©s sur les Feature Types.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -41,7 +41,7 @@ public class GF_AssociationRole extends GF_PropertyType {
 	protected String valueType;
 	/** Renvoie le type de l'attribut. */
 	public String getValueType () {return this.valueType;}
-	/** Affecte un type à l'attribut. */
+	/** Affecte un type Ã  l'attribut. */
 	public void setValueType(String ValueType) {this.valueType = ValueType;}
 
 
@@ -49,7 +49,7 @@ public class GF_AssociationRole extends GF_PropertyType {
 	protected int cardMin;
 	/** Renvoie le nombre de valeurs minimal de l'attribut. */
 	public int getCardMin () {return this.cardMin;}
-	/** Affecte un nombre de valeurs minimal à l'attribut. */
+	/** Affecte un nombre de valeurs minimal Ã  l'attribut. */
 	public void setCardMin (int CardMin) {this.cardMin = CardMin;}
 
 
@@ -57,15 +57,15 @@ public class GF_AssociationRole extends GF_PropertyType {
 	protected int cardMax;
 	/** Renvoie le nombre de valeurs maximal de l'attribut. */
 	public int getCardMax () {return this.cardMax;}
-	/** Affecte un nombre de valeurs maximal à l'attribut. */
+	/** Affecte un nombre de valeurs maximal Ã  l'attribut. */
 	public void setCardMax (int CardMax) {this.cardMax = CardMax;}
 
 
-	/** Association type auquel est rattaché la propriété. */
+	/** Association type auquel est rattachï¿½ la propriÃ©tÃ©. */
 	protected GF_AssociationType associationType;
-	/** Renvoie le feature type auquel est rattaché la propriété. */
+	/** Renvoie le feature type auquel est rattachï¿½ la propriÃ©tÃ©. */
 	public GF_AssociationType getAssociationType() {return this.associationType;}
-	/** Affecte un feature type à la propriété. */
+	/** Affecte un feature type Ã  la propriÃ©tÃ©. */
 	public void setAssociationType(GF_AssociationType AssociationType) {
 		this.associationType = AssociationType;
 		if (! AssociationType.getRoles().contains(this))

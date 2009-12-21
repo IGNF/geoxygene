@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -39,8 +39,8 @@ import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 /** Classe fabrique de cartes topologiques :
- *  - soit par défaut
- *  - soit une carte topologique avec des noeuds valués
+ *  - soit par dÃ©faut
+ *  - soit une carte topologique avec des noeuds valuï¿½s
  * 
  * @author Eric Grosso - IGN / Laboratoire COGIT
  *
@@ -50,7 +50,7 @@ public class CarteTopoFactory {
 	static Logger logger = Logger.getLogger(CarteTopoFactory.class);
 	
 	
-	/**Création d'une CarteTopo à partir d'une FT_FeatureCollection
+	/**crÃ©ation d'une CarteTopo Ã  partir d'une FT_FeatureCollection
 	 * 
 	 * @param collection
 	 * @return une carte topologique
@@ -62,7 +62,7 @@ public class CarteTopoFactory {
 		//Initialisation d'une nouvelle CarteTopo
 		CarteTopo carteTopo = new CarteTopo("Graphe");
 
-		//Récupération des arcs de la carteTopo
+		//Rï¿½cupï¿½ration des arcs de la carteTopo
 		Population<Arc> arcs = carteTopo.getPopArcs();
 
 		Iterator<FT_Feature> it = (Iterator<FT_Feature>) collection.getElements().iterator();
@@ -72,39 +72,39 @@ public class CarteTopoFactory {
 		//Import des arcs de la collection dans la carteTopo
 		while (it.hasNext()) {
 			feature = it.next();
-			//création d'un nouvel élément
+			//crÃ©ation d'un nouvel Ã©lÃ©ment
 			arc = arcs.nouvelElement();
-			//affectation de la géométrie de l'objet issu de la collection
-			//à l'arc de la carteTopo
+			//affectation de la gÃ©omÃ©trie de l'objet issu de la collection
+			//ï¿½ l'arc de la carteTopo
 			arc.setGeometrie((GM_LineString) feature.getGeom());
-			//instanciation de la relation entre l'arc créé et l'objet
+			//instanciation de la relation entre l'arc crÃ©Ã© et l'objet
 			//issu de la collection
 			arc.addCorrespondant(feature);
 		}
 
-		logger.info("Nombre d'arcs créés : " + carteTopo.getPopArcs().size());
+		logger.info("Nombre d'arcs crÃ©Ã©s : " + carteTopo.getPopArcs().size());
 		
-		//Création des noeuds manquants
-		logger.info("Création des noeuds manquants");
+		//crÃ©ation des noeuds manquants
+		logger.info("crÃ©ation des noeuds manquants");
 		carteTopo.creeNoeudsManquants(2);
-		//Création de la topologie Arcs Noeuds
-		logger.info("Création de la topologie Arcs Noeuds");
+		//crÃ©ation de la topologie Arcs Noeuds
+		logger.info("crÃ©ation de la topologie Arcs Noeuds");
 		carteTopo.creeTopologieArcsNoeuds(2);
 		//La carteTopo est rendue planaire
 		logger.info("La carte topologique est rendue planaire");
 		carteTopo.rendPlanaire(2);
-		logger.info("Création des faces de la carte topologique");
-		//Création des faces de la carteTopo
+		logger.info("crÃ©ation des faces de la carte topologique");
+		//crÃ©ation des faces de la carteTopo
 		carteTopo.creeTopologieFaces();
 		
-		logger.info("Nombre de faces créées : " + carteTopo.getPopFaces().size());
+		logger.info("Nombre de faces crÃ©Ã©es : " + carteTopo.getPopFaces().size());
 		
 		return carteTopo;
 	}
 
 	
 	
-	/**Création d'une carte topologique étendue (noeud valué) à partir d'une FT_FeatureCollection
+	/**crÃ©ation d'une carte topologique ï¿½tendue (noeud valuï¿½) Ã  partir d'une FT_FeatureCollection
 	 * 
 	 * @param collection
 	 * @return une carte topologique
@@ -116,7 +116,7 @@ public class CarteTopoFactory {
 		//Initialisation d'une nouvelle CarteTopo
 		CarteTopoEtendue carteTopo = new CarteTopoEtendue("Graphe");
 
-		//Récupération des arcs de la carteTopo
+		//Rï¿½cupï¿½ration des arcs de la carteTopo
 		Population<Arc> arcs = carteTopo.getPopArcs();
 
 		Iterator<FT_Feature> it = (Iterator<FT_Feature>) collection.getElements().iterator();
@@ -126,28 +126,28 @@ public class CarteTopoFactory {
 		//Import des arcs de la collection dans la carteTopo
 		while (it.hasNext()) {
 			feature = it.next();
-			//création d'un nouvel élément
+			//crÃ©ation d'un nouvel Ã©lÃ©ment
 			arc = arcs.nouvelElement();
-			//affectation de la géométrie de l'objet issu de la collection
-			//à l'arc de la carteTopo
+			//affectation de la gÃ©omÃ©trie de l'objet issu de la collection
+			//ï¿½ l'arc de la carteTopo
 			arc.setGeometrie((GM_LineString) feature.getGeom());
-			//instanciation de la relation entre l'arc créé et l'objet
+			//instanciation de la relation entre l'arc crÃ©Ã© et l'objet
 			//issu de la collection
 			arc.addCorrespondant(feature);
 		}
 
-		logger.info("Nombre d'arcs créés : " + carteTopo.getPopArcs().size());
+		logger.info("Nombre d'arcs crÃ©Ã©s : " + carteTopo.getPopArcs().size());
 		
-		//Création des noeuds manquants
-		logger.info("Création des noeuds manquants");
+		//crÃ©ation des noeuds manquants
+		logger.info("crÃ©ation des noeuds manquants");
 		carteTopo.creeNoeudsManquants(2);
-		//Création de la topologie Arcs Noeuds
-		logger.info("Création de la topologie Arcs Noeuds");
+		//crÃ©ation de la topologie Arcs Noeuds
+		logger.info("crÃ©ation de la topologie Arcs Noeuds");
 		carteTopo.creeTopologieArcsNoeuds(2);
 		//Valuation des noeuds
 		logger.info("Valuation des noeuds");
 
-		//Récupération des noeuds de la carteTopo
+		//Rï¿½cupï¿½ration des noeuds de la carteTopo
 		Population<Noeud> noeuds = carteTopo.getPopNoeuds();
 		
 		Iterator<Noeud> itNoeuds = noeuds.iterator();

@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -48,7 +48,7 @@ import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
  * Pensez a activer le fichier de mapping "repository_AAA_BBB.xml" .
  * La base s'initialise avec le script "init_relations_AAA_BBB.sql" .
  * 
- * @author Thierry Badard, Arnaud Braun & Sébastien Mustière
+ * @author Thierry Badard, Arnaud Braun & SÃ©bastien MustiÃ¨re
  * @version 1.0
  * 
  */
@@ -59,7 +59,7 @@ public class TestRelationsMonoPersistantes {
 	private static Geodatabase db = GeodatabaseOjbFactory.newInstance();
 
 	public static void main (String args[]) {
-		System.out.println("DEBUT DES TESTS");
+		System.out.println("DEBUT DES TESTS"); //$NON-NLS-1$
 		test_mono11();
 		test_mono1N();
 		test_monoNN();
@@ -72,13 +72,13 @@ public class TestRelationsMonoPersistantes {
 
 		db.begin();
 
-		System.out.println("Creation des objets AAA, BBB");
-		AAA a1 = new AAA(); a1.setNom("a1");
-		AAA a2 = new AAA(); a2.setNom("a2");
-		AAA a3 = new AAA(); a3.setNom("a3");
-		BBB b1 = new BBB(); b1.setNom("b1");
-		BBB b2 = new BBB(); b2.setNom("b2");
-		BBB b3 = new BBB(); b3.setNom("b3");
+		System.out.println("Creation des objets AAA, BBB"); //$NON-NLS-1$
+		AAA a1 = new AAA(); a1.setNom("a1"); //$NON-NLS-1$
+		AAA a2 = new AAA(); a2.setNom("a2"); //$NON-NLS-1$
+		AAA a3 = new AAA(); a3.setNom("a3"); //$NON-NLS-1$
+		BBB b1 = new BBB(); b1.setNom("b1"); //$NON-NLS-1$
+		BBB b2 = new BBB(); b2.setNom("b2"); //$NON-NLS-1$
+		BBB b3 = new BBB(); b3.setNom("b3"); //$NON-NLS-1$
 
 		db.makePersistent(a1);
 		db.makePersistent(a2);
@@ -87,33 +87,33 @@ public class TestRelationsMonoPersistantes {
 		db.makePersistent(b2);
 		db.makePersistent(b3);
 
-		System.out.println("");
-		System.out.println("TEST RELATION 1-1 MONODIRECTIONNELLE");
-		System.out.println("objet BBB en relation avec a1 (null) : "+a1.getObjetBBB_mono11());
-		System.out.println("objet BBB en relation avec a2 (null) : "+a2.getObjetBBB_mono11());
-		System.out.println("--");
-		System.out.println("instanciation sur a1 de a1 R b1 ");
+		System.out.println(""); //$NON-NLS-1$
+		System.out.println("TEST RELATION 1-1 MONODIRECTIONNELLE"); //$NON-NLS-1$
+		System.out.println("objet BBB en relation avec a1 (null) : "+a1.getObjetBBB_mono11()); //$NON-NLS-1$
+		System.out.println("objet BBB en relation avec a2 (null) : "+a2.getObjetBBB_mono11()); //$NON-NLS-1$
+		System.out.println("--"); //$NON-NLS-1$
+		System.out.println("instanciation sur a1 de a1 R b1 "); //$NON-NLS-1$
 		a1.setObjetBBB_mono11(b1);
-		System.out.println("objet BBB en relation avec a1 (b1) : "+a1.getObjetBBB_mono11().getNom());
-		System.out.println("objet BBB en relation avec a2 (null) : "+a2.getObjetBBB_mono11());
+		System.out.println("objet BBB en relation avec a1 (b1) : "+a1.getObjetBBB_mono11().getNom()); //$NON-NLS-1$
+		System.out.println("objet BBB en relation avec a2 (null) : "+a2.getObjetBBB_mono11()); //$NON-NLS-1$
 		/* decommenter si on veut consulter l'etat de la base ici */
 		//         db.commit();
 		//         System.exit(0);
 
-		System.out.println("--");
-		System.out.println("instanciation sur a1 de a1 R b2 ");
+		System.out.println("--"); //$NON-NLS-1$
+		System.out.println("instanciation sur a1 de a1 R b2 "); //$NON-NLS-1$
 		a1.setObjetBBB_mono11(b2);
-		System.out.println("objet BBB en relation avec a1 (b2) : "+a1.getObjetBBB_mono11().getNom());
-		System.out.println("objet BBB en relation avec a2 (null) : "+a2.getObjetBBB_mono11());
+		System.out.println("objet BBB en relation avec a1 (b2) : "+a1.getObjetBBB_mono11().getNom()); //$NON-NLS-1$
+		System.out.println("objet BBB en relation avec a2 (null) : "+a2.getObjetBBB_mono11()); //$NON-NLS-1$
 		/* decommenter si on veut consulter l'etat de la base ici */
 		//         db.commit();
 		//         System.exit(0);
 
-		System.out.println("--");
-		System.out.println("instanciation sur a1 de a1 R b2 (2eme fois)");
+		System.out.println("--"); //$NON-NLS-1$
+		System.out.println("instanciation sur a1 de a1 R b2 (2eme fois)"); //$NON-NLS-1$
 		a1.setObjetBBB_mono11(b2);
-		System.out.println("objet BBB en relation avec a1 (b2) : "+a1.getObjetBBB_mono11().getNom());
-		System.out.println("objet BBB en relation avec a2 (null) : "+a2.getObjetBBB_mono11());
+		System.out.println("objet BBB en relation avec a1 (b2) : "+a1.getObjetBBB_mono11().getNom()); //$NON-NLS-1$
+		System.out.println("objet BBB en relation avec a2 (null) : "+a2.getObjetBBB_mono11()); //$NON-NLS-1$
 		/* decommenter si on veut consulter l'etat de la base ici */
 		//         db.commit();
 		//         System.exit(0);

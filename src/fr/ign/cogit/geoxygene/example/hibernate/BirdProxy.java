@@ -19,7 +19,7 @@ public class BirdProxy implements InvocationHandler {
 	public Object invoke(Object proxy, Method method, Object[] args)
 			throws Throwable {
 		try {// Do something on real object
-			return method.invoke(obj, args);
+			return method.invoke(this.obj, args);
 		} catch (InvocationTargetException e) {
 			throw e.getTargetException();
 		} catch (Exception e) {throw e;}

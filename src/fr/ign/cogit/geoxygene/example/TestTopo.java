@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -51,7 +51,7 @@ import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
 /**
  * Utilisation du package spatial pour la topologie : exemple de code.
  * Cet exemple montre comment charger un objet et sa topologie,
- * et l'utilisation des différentes méthodes des classes du package "topoprim".
+ * et l'utilisation des diffÃ©rentes mÃ©thodes des classes du package "topoprim".
  * On suppose qu'il existe une classe persistante "donnees.defaut.Troncon_route" pour laquelle
  * une topologie de face a ete calculee.
  * (sinon changer le nom de la classe dans le code).
@@ -70,7 +70,7 @@ public class TestTopo {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	/* Attributs */
-	private static Geodatabase db;                        // source de données
+	private static Geodatabase db;                        // source de donnÃ©es
 	private static Class<?> tronconClass;                  // classe de troncons
 	private String nomClasse = "geoxygene.geodata.Troncon_route"; // nom de la classe a charger
 	private static int identifiant = 664000;            // id du troncon a charger
@@ -95,7 +95,7 @@ public class TestTopo {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	/** chargement d'un objet et appel des méthodes sur noeud, brin et face*/
+	/** chargement d'un objet et appel des mÃ©thodes sur noeud, brin et face*/
 	public static void main (String args[]) {
 
 		//TestTopo test = new TestTopo();     // appel du constructeur

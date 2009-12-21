@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -32,15 +32,15 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 
-/** Exemple de paramètres pour l'appariement
+/** Exemple de paramÃ¨tres pour l'appariement
  *
- *  @author Sébastien Mustière - IGN / Laboratoire COGIT
+ *  @author SÃ©bastien MustiÃ¨re - IGN / Laboratoire COGIT
  *  @author Eric Grosso - IGN / Laboratoire COGIT
  */
 public class Parametres {
 
-	/** Paramètres d'appariement par défaut avec utilisation de deux collections
-	 *  de tronçons en entrée
+	/** paramÃ¨tres d'appariement par dÃ©faut avec utilisation de deux collections
+	 *  de TronÃ§ons en entrÃ©e
 	 *  
 	 * @param populationsArcs1
 	 * @param populationsArcs2
@@ -58,16 +58,16 @@ public class Parametres {
 		/////////////   PARAMETRES SPECIFIANT QUELLE DONNEES SONT TRAITEES   ////////////
 		/////////////////////////////////////////////////////////////////////////////////
 
-		//Liste des classes d'arcs de la BD 1 (la moins détaillée) concernés par l'appariement
+		//Liste des classes d'arcs de la BD 1 (la moins dï¿½taillï¿½e) concernÃ©s par l'appariement
 		param.populationsArcs1.add((FT_FeatureCollection<Arc>) populationsArcs1);
-		// Liste des classes d'arcs de la BD 2 (la plus détaillée) concernés par l'appariement
+		// Liste des classes d'arcs de la BD 2 (la plus dï¿½taillï¿½e) concernÃ©s par l'appariement
 		param.populationsArcs2.add((FT_FeatureCollection<Arc>) populationsArcs2);
 
 		param.populationsArcsAvecOrientationDouble = true;
 
 		/////////////////////////////////////////////////////////////////////////////////
 		/////////////////             TAILLES DE RECHERCHE        ///////////////////////
-		/////////////////        Ecarts de distance autorisés     ///////////////////////
+		/////////////////        Ecarts de distance autorisï¿½s     ///////////////////////
 		/////////////////      CE SONT LES PARAMETRES PRINCIPAUX  ///////////////////////
 		/////////////////////////////////////////////////////////////////////////////////
 
@@ -136,8 +136,8 @@ public class Parametres {
 		return param;
 	}
 	
-	/** Paramètres d'appariement par défaut avec utilisation de deux collections
-	 *  de tronçons et deux collections de noeuds en entrée
+	/** paramÃ¨tres d'appariement par dÃ©faut avec utilisation de deux collections
+	 *  de TronÃ§ons et deux collections de noeuds en entrÃ©e
 	 * 
 	 * @param populationsArcs1
 	 * @param populationsNoeuds1
@@ -159,20 +159,20 @@ public class Parametres {
 		/////////////   PARAMETRES SPECIFIANT QUELLE DONNEES SONT TRAITEES   ////////////
 		/////////////////////////////////////////////////////////////////////////////////
 
-		//Liste des classes d'arcs de la BD 1 (la moins détaillée) concernés par l'appariement
+		//Liste des classes d'arcs de la BD 1 (la moins dï¿½taillï¿½e) concernÃ©s par l'appariement
 		param.populationsArcs1.add((FT_FeatureCollection<Arc>) populationsArcs1);
-		//Liste des classes de noeuds de la BD 1 (la moins détaillée) concernés par l'appariement
+		//Liste des classes de noeuds de la BD 1 (la moins dï¿½taillï¿½e) concernÃ©s par l'appariement
 		param.populationsNoeuds1.add((FT_FeatureCollection<Noeud>) populationsNoeuds1);
-		// Liste des classes d'arcs de la BD 2 (la plus détaillée) concernés par l'appariement
+		// Liste des classes d'arcs de la BD 2 (la plus dï¿½taillï¿½e) concernÃ©s par l'appariement
 		param.populationsArcs2.add((FT_FeatureCollection<Arc>) populationsArcs2);
-		//Liste des classes de noeuds de la BD 2 (la plus détaillée) concernés par l'appariement
+		//Liste des classes de noeuds de la BD 2 (la plus dï¿½taillï¿½e) concernÃ©s par l'appariement
 		param.populationsNoeuds2.add((FT_FeatureCollection<Noeud>) populationsNoeuds2);
 
 		param.populationsArcsAvecOrientationDouble = true;
 
 		/////////////////////////////////////////////////////////////////////////////////
 		/////////////////             TAILLES DE RECHERCHE        ///////////////////////
-		/////////////////        Ecarts de distance autorisés     ///////////////////////
+		/////////////////        Ecarts de distance autorisï¿½s     ///////////////////////
 		/////////////////      CE SONT LES PARAMETRES PRINCIPAUX  ///////////////////////
 		/////////////////////////////////////////////////////////////////////////////////
 

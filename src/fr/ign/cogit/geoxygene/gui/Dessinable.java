@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  * 
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -38,8 +38,8 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 public interface Dessinable {
 	
 	/**
-	 * Géometrie en coordonnées géographiques de la fenetre d'affichage du cadre : tous les objets intersectant ce cadre seront affichés
-	 * @return Géometrie en coordonnées géographiques de la fenetre d'affichage du cadre
+	 * gÃ©ometrie en coordonnÃ©es GÃ©ographiques de la fenetre d'affichage du cadre : tous les objets intersectant ce cadre seront affichï¿½s
+	 * @return gÃ©ometrie en coordonnÃ©es GÃ©ographiques de la fenetre d'affichage du cadre
 	 */
 	public GM_Envelope getEnveloppeAffichage();
 	/**

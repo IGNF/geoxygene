@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -60,24 +60,24 @@ public class Filtering {
 	///// DouglasPeucker ///////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////
 	/** Filtrage de Douglas-Peucker sur une polyligne. */
-	// On constitue une liste de points, et appelle la méthode "DouglasPeuckerListe" sur cette liste
+	// On constitue une liste de points, et appelle la mÃ©thode "DouglasPeuckerListe" sur cette liste
 	public static GM_LineString DouglasPeuckerLineString (GM_Curve G0, double seuil) {
 
-		// linéarise la courbe
+		// linï¿½arise la courbe
 		GM_LineString theLineString = null;
 		theLineString =  G0.asLineString(0.0,0.0,0.0);
 		if (theLineString==null) {
-			logger.error("La création de la ligne a échouée");
+			logger.error("La crÃ©ation de la ligne a Ã©chouÃ©e");
 			return null;
 		}
 
 		// constitue une liste de points avec la polyligne
 		DirectPositionList initList = theLineString.coord();
 
-		// appelle la méthode qui agit sur la liste - on récupère une liste de points
+		// appelle la mÃ©thode qui agit sur la liste - on RÃ©cupÃ¨re une liste de points
 		DirectPositionList resultList = DouglasPeuckerList(initList,seuil);
 
-		// crée une polyligne avec cette liste de points
+		// crÃ©e une polyligne avec cette liste de points
 		GM_LineString theResult = new GM_LineString(resultList);
 		return theResult;
 	}
@@ -85,10 +85,10 @@ public class Filtering {
 
 	/**
 	 * Filtrage de Douglas-Peucker sur un polygone.
-	 * Les trous dont la géométrie n'est pas valide sont supprimés.
-	 * @param polygone polygone à simplifier
-	 * @param seuil seuil à utiliser pour le filtrage
-	 * @return résultat du filtrage de Douglas-Peucker sur un polygone
+	 * Les trous dont la gÃ©omÃ©trie n'est pas valide sont supprimï¿½s.
+	 * @param polygone polygone Ã  simplifier
+	 * @param seuil seuil Ã  utiliser pour le filtrage
+	 * @return rÃ©sultat du filtrage de Douglas-Peucker sur un polygone
 	 */
 	public static GM_Polygon DouglasPeuckerPoly (GM_Polygon polygone, double seuil) {
 
@@ -101,7 +101,7 @@ public class Filtering {
 			for (int i=0; i<polygone.sizeInterior(); i++) {
 				GM_Curve inte = DouglasPeuckerLineString(polygone.getInterior(i).getPrimitive(),seuil);
 				if (inte.numPoints()>4) poly.addInterior( new GM_Ring(inte) );
-				else if (logger.isDebugEnabled()) logger.debug("Trou non ajouté "+inte);
+				else if (logger.isDebugEnabled()) logger.debug("Trou non ajoutÃ© "+inte);
 			}
 		}
 
@@ -110,7 +110,7 @@ public class Filtering {
 
 
 	/** Filtrage de DouglasPeucker sur un GM_Object.
-       Supportés : Aggrégat, Courbe, Polyligne, Polygon.  */
+       Supportï¿½s : AggrÃ©gat, Courbe, Polyligne, Polygon.  */
 	@SuppressWarnings("unchecked")
 	public static GM_Object DouglasPeucker (GM_Object geom, double seuil) {
 
@@ -153,10 +153,10 @@ public class Filtering {
 	/** 
 	 * Douglas-Peucker sur une liste de points.
 	 * <p>
-	 * On applique l'algo en utilisant la récursivité.
+	 * On applique l'algo en utilisant la rÃ©cursivitï¿½.
 	 * @param PtList liste de points
-	 * @param seuil seuil utilisé
-	 * @return la liste de points filtrée
+	 * @param seuil seuil utilisÃ©
+	 * @return la liste de points filtrï¿½e
 	 */
 	public static DirectPositionList DouglasPeuckerList (DirectPositionList PtList, double seuil) {
 

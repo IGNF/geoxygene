@@ -7,6 +7,6 @@ public class BdCartoTrRoute extends fr.ign.cogit.geoxygene.feature.FT_Feature {
 
      protected int gid;
      public int getGid() {return this.gid; }
-     public void setGid (int Gid) {gid = Gid; }
+     public void setGid (int Gid) {this.gid = Gid; }
 
 }

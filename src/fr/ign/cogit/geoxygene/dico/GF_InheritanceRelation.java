@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -31,7 +31,7 @@ import java.util.List;
 
 
 /**
- * Classe générique pour traduire les relations d'héritage (généralisation / spécialisation).
+ * Classe gÃ©nÃ©rique pour traduire les relations d'hÃ©ritage (gÃ©nÃ©ralisation / spÃ©cialisation).
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -49,7 +49,7 @@ public class GF_InheritanceRelation {
 	public void setId (int Id) {this.id = Id;}
 
 
-	/**Nom de la généralisation ou de la spécialisation. */
+	/**Nom de la gÃ©nÃ©ralisation ou de la spÃ©cialisation. */
 	protected String name;
 	/** Renvoie le nom. */
 	public String getName () {return this.name;}
@@ -65,7 +65,7 @@ public class GF_InheritanceRelation {
 	public void setDescription (String Description) {this.description = Description;}
 
 
-	/** TRUE si une instance de l'hyperclasse doit être au plus dans une sous-classe, FALSE sinon. */
+	/** TRUE si une instance de l'hyperclasse doit Ãªtre au plus dans une sous-classe, FALSE sinon. */
 	protected boolean uniqueInstance;
 	/** Renvoie l'attribut uniqueInstance. */
 	public boolean getUniqueInstance () {return this.uniqueInstance;}
@@ -73,17 +73,17 @@ public class GF_InheritanceRelation {
 	public void setUniqueInstance (boolean UniqueInstance) {this.uniqueInstance = UniqueInstance;}
 
 
-	/** Les classes meres de la relation d'héritage. */
+	/** Les classes meres de la relation d'hÃ©ritage. */
 	protected List<GF_FeatureType> superType = new ArrayList<GF_FeatureType>();
-	/** Renvoie les classes mere de la relation d'héritage. */
-	public List<GF_FeatureType> getSuperType() { return superType; }
+	/** Renvoie les classes mere de la relation d'hÃ©ritage. */
+	public List<GF_FeatureType> getSuperType() { return this.superType; }
 	/** Affecte une liste de classes meres    */
 	public void setSuperType(List<GF_FeatureType> L) {this.superType = L;}
-	/** Nombre de classes meres de la relation d'héritage. */
+	/** Nombre de classes meres de la relation d'hÃ©ritage. */
 	public int sizeSuperType() { return this.superType.size(); }
-	/** Ajoute une classe mere à la relation d'héritage. */
+	/** Ajoute une classe mere Ã  la relation d'hÃ©ritage. */
 	public void addSuperType (GF_FeatureType featureType) {
-		superType.add(featureType);
+		this.superType.add(featureType);
 		if (!featureType.getSpecialization().contains(this))
 			featureType.addSpecialization(this);
 	}
@@ -91,9 +91,9 @@ public class GF_InheritanceRelation {
 
 	/** Classe fille de la relation d'heritage. */
 	protected GF_FeatureType subType;
-	/** Renvoie la classe fille de la relation d'héritage. */
-	public GF_FeatureType getSubType() { return subType; }
-	/** Affecte une classe fille à la relation d'héritage. */
+	/** Renvoie la classe fille de la relation d'hÃ©ritage. */
+	public GF_FeatureType getSubType() { return this.subType; }
+	/** Affecte une classe fille Ã  la relation d'hÃ©ritage. */
 	public void setSubType(GF_FeatureType SubType) {
 		this.subType = SubType;
 		if (!SubType.getGeneralization().contains(this))

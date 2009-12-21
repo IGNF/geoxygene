@@ -15,10 +15,10 @@ import javax.persistence.InheritanceType;
 public abstract class Bird {
 	protected int id;
 	@Id @GeneratedValue
-	public int getId() {return id;}	
+	public int getId() {return this.id;}	
 	public void setId(int id) {this.id = id;}
 
 	protected String name;
-	public String getName() {return name;}
+	public String getName() {return this.name;}
 	public void setName(String name) {this.name = name;}
 }

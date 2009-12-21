@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  * 
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -91,7 +91,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	public String getOverlayText() {return this.overlayText;}
 	/**
 	 * Affecte la valeur de l'attribut overlayText.
-	 * @param overlayText l'attribut overlayText à affecter
+	 * @param overlayText l'attribut overlayText Ã  affecter
 	 */
 	public void setOverlayText(String overlayText) {this.overlayText = overlayText;}
 
@@ -107,7 +107,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	public DessinableGeoxygene getDessinable() {return this.dessinable;}
 	
 	/**
-	 * coordonnées géographiques du centre du panneau.
+	 * coordonnÃ©es GÃ©ographiques du centre du panneau.
 	 * ce champ determine la localisation de la zone affichee..
 	 */
 	public DirectPosition getCentreGeo() { return dessinable.getCentreGeo(); }
@@ -125,7 +125,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	public StyledLayerDescriptor getSld() {return this.sld;}
 	/**
 	 * Affecte la valeur du sld courant.
-	 * @param sld la valeur du sld courant à affecter
+	 * @param sld la valeur du sld courant Ã  affecter
 	 */
 	public void setSld(StyledLayerDescriptor sld) {
 		this.sld = sld;
@@ -134,12 +134,12 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	}
 	StyledLayerDescriptor defaultSld;
 	/**
-	 * Renvoie le sld par défaut.
-	 * @return le sld par défaut
+	 * Renvoie le sld par dÃ©faut.
+	 * @return le sld par dÃ©faut
 	 */
 	public StyledLayerDescriptor getDefaultSld() {return this.defaultSld;}
 	/**
-	 * @return l'enveloppe affichée
+	 * @return l'enveloppe affichï¿½e
 	 */
 	public GM_Envelope getEnveloppeAffichage() { return dessinable.getEnveloppeAffichage(); }
 	public double getXMax(){ return getEnveloppeAffichage().maxX(); }
@@ -147,7 +147,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	public double getYMax(){ return getEnveloppeAffichage().maxY(); }
 	public double getYMin(){ return getEnveloppeAffichage().minY(); }
 	/**
-	 * taille d'un pixel (la longueur d'un cote de pixel représente une longueur de taillePixel dans la réalité)
+	 * taille d'un pixel (la longueur d'un cote de pixel reprÃ©sente une longueur de taillePixel dans la rï¿½alitï¿½)
 	 * ce champ est celui qui permet de changer le zoom de la vue
 	 */
 	public double getTaillePixel() { return dessinable.getTaillePixel(); }
@@ -159,8 +159,8 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
     private final static double METERS_PER_PIXEL;
 	public static double getMETERS_PER_PIXEL() {return METERS_PER_PIXEL;}
 	static {
-		//elle est calculée à partir de la résolution de l'écran en DPI.
-		//par exemple si la résolution est 90DPI, c'est: 90 pix/inch = 1/90 inch/pix = 0.0254/90 meter/pix
+		//elle est calculï¿½e Ã  partir de la rï¿½solution de l'ï¿½cran en DPI.
+		//par exemple si la rï¿½solution est 90DPI, c'est: 90 pix/inch = 1/90 inch/pix = 0.0254/90 meter/pix
 	    METERS_PER_PIXEL=0.02540005/Toolkit.getDefaultToolkit().getScreenResolution();
 	    //System.out.print(METERS_PER_PIXEL*1280);
 	}
@@ -247,7 +247,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 		addKeyListener(getKeyListenerGeox());
 		addMouseMotionListener(getMouseMotionListenerGeox());
 		/**
-		 * création d'un popup menu et ajout d'un action listener
+		 * crÃ©ation d'un popup menu et ajout d'un action listener
 		 */
 		this.popup = new JPopupMenu();
 		/**
@@ -258,8 +258,8 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 		this.popup.add(menuItemCentrerVue);
 		menuItemCentrerVue.addActionListener(getActionListenerGeox());
 		/**
-		 * ajout d'un deuxième mouse listener qui ne gère que les
-		 * évènements venant du popupmenu 
+		 * ajout d'un deuxiÃ¨me mouse listener qui ne gÃ¨re que les
+		 * ï¿½vï¿½nements venant du popupmenu 
 		 */
 		addMouseListener(getPopupListenerGeox());
 
@@ -270,9 +270,9 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 		repaintTimer.setCoalesce(true);
 		
 		setBackground(Color.white);
-		/** Charge le SLD par défaut */
+		/** Charge le SLD par dÃ©faut */
 		defaultSld = StyledLayerDescriptor.unmarshall("defaultSLD.xml");
-		/** Charge le dernier SLD utilisé */
+		/** Charge le dernier SLD utilisÃ© */
 		sld = StyledLayerDescriptor.unmarshall("sld.xml");
 		
 		dessinable = new DessinableGeoxygene(this.getSld());
@@ -302,11 +302,11 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	public boolean isAffichageEchelle() {return this.affichageEchelle;}
 	/**
 	 * Affecte la valeur de l'attribut affichageEchelle.
-	 * @param affichageEchelle l'attribut affichageEchelle à affecter
+	 * @param affichageEchelle l'attribut affichageEchelle Ã  affecter
 	 */
 	public void setAffichageEchelle(boolean affichageEchelle) {this.affichageEchelle = affichageEchelle;}
 	/**
-	 * indique si la position du curseur doit être affichée dans la barre du bas
+	 * indique si la position du curseur doit Ãªtre affichï¿½e dans la barre du bas
 	 */
 	public boolean suivrePositionCurseur = false;
 
@@ -328,7 +328,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	public static int tempsRafraichissementAutomatique=400;// temps en millisecondes
 	protected Timer repaintTimer = new Timer(tempsRafraichissementAutomatique, new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			if (logger.isTraceEnabled()) logger.trace("repaintTimer activé");
+			if (logger.isTraceEnabled()) logger.trace("repaintTimer activï¿½");
 			if ( (dessinable!=null) && (dessinable.getThreadMaj()!=null) && (dessinable.getThreadMaj().get()!=null) && (dessinable.getThreadMaj().get().isAlive()) ) {
 				if (logger.isTraceEnabled()) logger.trace("repaintTimer copy");
 				update = false;
@@ -343,7 +343,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	private boolean update = false;
 	
 	/**
-	 * Effectue un zoom d'un facteur donné
+	 * Effectue un zoom d'un facteur donnÃ©
 	 * @param facteur
 	 */
 	public void zoom(double facteur) {
@@ -370,7 +370,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	}
 
 	/**
-	 * Déplace le centre de la vue au niveau d'une position géographique donnée.
+	 * Dï¿½place le centre de la vue au niveau d'une position GÃ©ographique donnÃ©e.
 	 * @param xGeoCentre
 	 * @param yGeoCentre
 	 */
@@ -419,7 +419,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	}
 	/**
 	 * Affecte la valeur de l'attribut antiAliasing.
-	 * @param antiAliasing l'attribut antiAliasing à affecter
+	 * @param antiAliasing l'attribut antiAliasing Ã  affecter
 	 */
 	public void setAntiAliasing(boolean antiAliasing) {
 		this.antiAliasing = antiAliasing;
@@ -447,7 +447,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 					try {
 						dessinable.getThreadMaj().get().join();
 					} catch (InterruptedException e) {
-						logger.error("Le thread a été interrompu");
+						logger.error("Le thread a Ã©tÃ© interrompu");
 						e.printStackTrace();
 					}
 				}
@@ -459,7 +459,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	}
 	
 	/**
-	 * Copie l'image du buffer dans le graphics en paramètre.
+	 * Copie l'image du buffer dans le graphics en paramÃ¨tre.
 	 * @param g graphics dans lequel dessiner l'image
 	 */
 	public void copyBufferedImage(Graphics2D g) {
@@ -495,7 +495,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 		//g2.dispose();
 	}
 
-	//les methodes de conversion entre coordonnï¿½es ï¿½cran (pixel) et coordonnï¿½es gï¿½ographiques
+	//les methodes de conversion entre coordonnÃ©es ï¿½cran (pixel) et coordonnÃ©es GÃ©ographiques
 	public int coordToPixX(double x){ return (int)((x-(getCentreGeo().getX()-getWidth()*0.5*getTaillePixel()))/getTaillePixel());}		
 	public int coordToPixY(double y){ return (int)(getHeight()+(getCentreGeo().getY()-getHeight()*0.5*getTaillePixel()-y)/getTaillePixel());}
 	public double pixToCoordX(int x){ return getCentreGeo().getX()-getWidth()*0.5*getTaillePixel()+x*getTaillePixel();}
@@ -539,7 +539,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	}
 
 	/**
-	 * centre la vue sur toutes les populations affichées
+	 * centre la vue sur toutes les populations affichï¿½es
 	 */
 	public void centrer(){
 		double x=0;
@@ -598,8 +598,8 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	}
 
 	/**
-	 * Affiche l'échelle sur le graphics
-	 * @param g graphics utilisé pour le dessin
+	 * Affiche l'Ã©chelle sur le graphics
+	 * @param g graphics utilisÃ© pour le dessin
 	 * @throws InterruptedException
 	 */
 	public void afficherEchelle(Graphics2D g) throws InterruptedException{
@@ -634,13 +634,13 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 		g2d.translate(-d.width / 2.0, -d.height / 2.0);
 		g2d.drawImage(dessinable.getImage(), 0, 0, this);
 
-		// TODO à vérifier
+		// TODO Ã  vÃ©rifier
 		return Printable.PAGE_EXISTS;
 	}
 
 	/**
-	 * Méthode appelée par les objets que le panel surveille
-	 * lorsque leur état change.
+	 * mÃ©thode appelï¿½e par les objets que le panel surveille
+	 * lorsque leur ï¿½tat change.
 	 */
 	@Override
 	public void stateChanged(ChangeEvent e) {
@@ -918,7 +918,7 @@ class MouseListenerGeox implements MouseListener {
 				}
 			}
 
-			//si on n'a pas trouvï¿½ de point (ils sont tous trop loin du clic), on sort
+			//si on n'a pas trouvÃ© de point (ils sont tous trop loin du clic), on sort
 			if (pointSelectionne==null) return;
 
 			//si le point est plus proche
@@ -1085,7 +1085,7 @@ class ActionListenerGeox implements ActionListener {
 	}
 }
 /**
- * Popup listener qui gère l'affichage du popup menu
+ * Popup listener qui gÃ¨re l'affichage du popup menu
  * @author Julien Perret
  *
  */
@@ -1097,9 +1097,9 @@ class PopupListenerGeox extends MouseAdapter {
     @Override
 	public void mouseReleased(MouseEvent e) {maybeShowPopup(e);}
     /**
-     * Affiche un menu popup si l'évènement souris est l'évènement 
+     * Affiche un menu popup si l'ï¿½vï¿½nement souris est l'ï¿½vï¿½nement 
      * d'affichage du menu popup.
-     * @param e évènement souris
+     * @param e ï¿½vï¿½nement souris
      */
     private void maybeShowPopup(MouseEvent e) {
         if (e.isPopupTrigger()) {

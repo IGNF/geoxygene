@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  * 
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -88,7 +88,7 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener, 
 
 	/**
 	 * Affecte la valeur de l'attribut sld.
-	 * @param sld l'attribut sld à affecter
+	 * @param sld l'attribut sld Ã  affecter
 	 */
 	public void setSld(StyledLayerDescriptor sld) {this.sld = sld;sld.addChangeListener(this);}
 	
@@ -101,7 +101,7 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener, 
 
 	/**
 	 * Affecte la valeur de l'attribut layer.
-	 * @param layer l'attribut layer à affecter
+	 * @param layer l'attribut layer Ã  affecter
 	 */
 	public void setLayer(Layer layer) {this.layer = layer;}
 
@@ -116,7 +116,7 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener, 
 		setResizable(true);
 		setSize(new Dimension(500,500));
 		setExtendedState(Frame.MAXIMIZED_BOTH);
-		setTitle("Editeur de Layers de GéOxygène");
+		setTitle("Editeur de Layers de GeOxygene");
 		setIconImage(frameEditeurSLD.getIconImage());
 
 	    DefaultMutableTreeNode top = new DefaultMutableTreeNode("Styled Layer Descriptor");
@@ -210,7 +210,7 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener, 
 		Object nodeInfo = node.getUserObject();
 		if (node.isLeaf()) {
 			Style style = (Style)nodeInfo;
-			if (logger.isDebugEnabled()) logger.debug(style.getClass().getSimpleName()+ " séléctionné");
+			if (logger.isDebugEnabled()) logger.debug(style.getClass().getSimpleName()+ " sï¿½lï¿½ctionnï¿½");
 			int nbColor = 0;
 			Stroke stroke = null;
 			Color strokeColor = null;

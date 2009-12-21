@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -31,8 +31,8 @@ import java.util.List;
 
 
 /**
- * Métaclasse pour décrire les associations entre Feature Types.
- * L'héritage de GF_FeatureType permet à l'association de porter des propriétés.
+ * mÃ©taclasse pour dÃ©crire les associations entre Feature Types.
+ * L'hÃ©ritage de GF_FeatureType permet Ã  l'association de porter des propriÃ©tÃ©s.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -42,17 +42,17 @@ import java.util.List;
 public class GF_AssociationType extends GF_FeatureType {
 
 
-	/** Les feature types impliqués dans cette association. */
+	/** Les feature types impliquï¿½s dans cette association. */
 	protected List<GF_FeatureType> linkBetween = new ArrayList<GF_FeatureType>();
-	/** Renvoie les feature types impliqués dans cette association. */
+	/** Renvoie les feature types impliquï¿½s dans cette association. */
 	public List<GF_FeatureType> getLinkBetween() {return this.linkBetween; }
 	/** Affecte une liste de feature types */
 	public void setLinkBetween (List<GF_FeatureType> L) {this.linkBetween = L;}
-	/** Renvoie le nombre de feature types impliqués dans cette association. */
+	/** Renvoie le nombre de feature types impliquï¿½s dans cette association. */
 	public int sizeLinkBetween () {return this.linkBetween.size();}
 	/** Ajoute un feature type. Execute un "addMemberOf" sur GF_FeatureType.*/
 	public void addLinkBetween (GF_FeatureType value) {
-		linkBetween.add(value);
+		this.linkBetween.add(value);
 		if (!value.getMemberOf().contains(this))
 			value.addMemberOf(this);
 	}
@@ -67,7 +67,7 @@ public class GF_AssociationType extends GF_FeatureType {
 	public int sizeRoles() { return this.roles.size(); }
 	/** Ajoute un role. */
 	public void addRole (GF_AssociationRole Role) {
-		roles.add(Role);
+		this.roles.add(Role);
 		if (Role.getAssociationType() != this)
 			Role.setAssociationType(this);
 	}

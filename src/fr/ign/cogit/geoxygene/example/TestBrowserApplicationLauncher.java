@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -30,7 +30,7 @@ import fr.ign.cogit.geoxygene.util.browser.ObjectBrowser;
 
 /**
  *  Classe de test pour le navigateur d'objets graphique de GeOxygene (ObjectBrowser), permettant de
- *  montrer comment on peut construire, à moindre frais, une interface graphique de lancement pour
+ *  montrer comment on peut construire, Ã  moindre frais, une interface graphique de lancement pour
  *  une application comportant plusieurs traitements enchainables.
  * 
  * @author Thierry Badard & Arnaud Braun
@@ -42,25 +42,25 @@ public class TestBrowserApplicationLauncher {
 	protected String status;
 
 	/**
-	 * Constructeur par défaut de TestLanceurAppli.
+	 * Constructeur par dÃ©faut de TestLanceurAppli.
 	 */
 	public TestBrowserApplicationLauncher() {
 		status = "";
 	}
 
 	protected String lanceProgramme1() {
-		status = "Programme 1 executé.";
-		return "Programme 1 lancé !!!";
+		status = "Programme 1 executï¿½.";
+		return "Programme 1 lancï¿½ !!!";
 	}
 
 	protected String lanceProgramme2() {
-		status = "Programme 2 executé.";
-		return "Programme 2 lancé !!!";
+		status = "Programme 2 executï¿½.";
+		return "Programme 2 lancï¿½ !!!";
 	}
 
 	protected String lanceProgramme3() {
-		status = "Programme 3 executé.";
-		return "Programme 3 lancé !!!";
+		status = "Programme 3 executï¿½.";
+		return "Programme 3 lancï¿½ !!!";
 	}
 
 	public static void main(String[] args) {

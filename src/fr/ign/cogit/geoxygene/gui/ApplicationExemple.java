@@ -15,7 +15,7 @@ import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.util.loader.Chargement;
 
 /**
- * Exemple de d'utilisation de l'interface de géoxygene
+ * Exemple de d'utilisation de l'interface de gÃ©oxygene
  * @author julien Gaffuri
  * 6 mars 2009
  *
@@ -32,11 +32,11 @@ public class ApplicationExemple {
 		final InterfaceGeoxygene fr = new InterfaceGeoxygene();
 		
 		/**
-		 *  Ajout d'un menu et d'un menuitem associé pour le chargement de shapefiles
+		 *  Ajout d'un menu et d'un menuitem associÃ© pour le chargement de shapefiles
 		 */
 		JMenu menuChargement = new JMenu("Chargement");
 		menuChargement.setFont(fr.getMenu().getFont());
-		JMenuItem menuItemDernierChargement = new JMenuItem("Recharger les derniers fichiers chargés");
+		JMenuItem menuItemDernierChargement = new JMenuItem("Recharger les derniers fichiers chargÃ©s");
 		final Chargement chargement = Chargement.charge("chargement.xml");
 		if (chargement == null) menuItemDernierChargement.setEnabled(false);
 		menuItemDernierChargement.addActionListener(new ActionListener(){
@@ -61,7 +61,7 @@ public class ApplicationExemple {
 		menuItemDernierChargement.setFont(fr.getMenu().getFont());
 		menuChargement.add(menuItemDernierChargement);
 		
-		JMenuItem menuItemChargement = new JMenuItem("Charger des données");
+		JMenuItem menuItemChargement = new JMenuItem("Charger des donnÃ©es");
 		menuItemChargement.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {fr.chargeShapefiles();}
@@ -71,9 +71,9 @@ public class ApplicationExemple {
 		fr.getMenu().add(menuChargement,0);
 
 		/**
-		 * Ajout d'un menu pour éditer la légende de l'affichage
+		 * Ajout d'un menu pour ï¿½diter la lï¿½gende de l'affichage
 		 */
-		JMenu menu = new JMenu("Légende");
+		JMenu menu = new JMenu("Lï¿½gende");
 		JMenuItem menuItem = new JMenuItem("Editeur de SLD");
 		menuItem.addActionListener(new ActionListener(){
 			@Override

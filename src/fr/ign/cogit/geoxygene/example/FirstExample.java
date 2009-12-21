@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut GÈographique National (the French
+ * contribution of the COGIT laboratory at the Institut G√©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut GÈographique National
+ * Copyright (C) 2005 Institut G√©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -128,8 +128,8 @@ public class FirstExample {
 		iniColl.add(troncon);
 		FT_FeatureCollection<FT_Feature> bufferColl = new FT_FeatureCollection<FT_Feature>();
 		bufferColl.add(buffer);
-		viewer.addFeatureCollection(iniColl, "TronÁons");
-		viewer.addFeatureCollection(bufferColl, "RÈsultats");
+		viewer.addFeatureCollection(iniColl, "Tron√ßons");
+		viewer.addFeatureCollection(bufferColl, "r√©sultats");
 
 	}
 
@@ -148,7 +148,7 @@ public class FirstExample {
 		FT_FeatureCollection<? extends FT_Feature> tronconList = db.loadAllFeatures(tronconClasse);
 		System.out.println("chargement termine");
 
-		// CrÈation d'une nouvelle collection pour stocker les rÈsultats
+		// cr√©ation d'une nouvelle collection pour stocker les r√©sultats
 		FT_FeatureCollection<FT_Feature> allResults = new FT_FeatureCollection<FT_Feature>();
 
 
@@ -174,8 +174,8 @@ public class FirstExample {
 
 		// Visualisation dans le viewer
 		ObjectViewer viewer = new ObjectViewer(db);
-		viewer.addFeatureCollection(tronconList,"TronÁons");
-		viewer.addFeatureCollection(allResults,"RÈsultats");
+		viewer.addFeatureCollection(tronconList,"Tron√ßons");
+		viewer.addFeatureCollection(allResults,"r√©sultats");
 	}
 
 }

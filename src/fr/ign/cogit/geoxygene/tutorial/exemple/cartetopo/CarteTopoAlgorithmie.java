@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -44,34 +44,34 @@ public class CarteTopoAlgorithmie {
 
 	static Logger logger = Logger.getLogger(CarteTopoAlgorithmie.class);
 	
-	/** Détection des faces circulaires
+	/** Dï¿½tection des faces circulaires
 	 * 
 	 * @param carteTopo
 	 * @return collection de faces
 	 */
 	public static FT_FeatureCollection<Face> detectionFacesCirculaires(CarteTopo carteTopo) {
 		
-		//Récupération des faces de la carteTopo
+		//Rï¿½cupï¿½ration des faces de la carteTopo
 		Population<Face> faces = carteTopo.getPopFaces();
 		
 		if (faces.isEmpty()) return new FT_FeatureCollection<Face>();
 		
-		//Création d'une collection d'accueil pour sauver les faces circulaires
+		//crÃ©ation d'une collection d'accueil pour sauver les faces circulaires
 		FT_FeatureCollection<Face> facesCirculaires = new FT_FeatureCollection<Face>();
 		
-		//Itération sur les faces de la carteTopo
+		//Itï¿½ration sur les faces de la carteTopo
 		Iterator<Face> it = faces.iterator();
 		while(it.hasNext()){
 			Face face = it.next();
 			
-			//Calcul de l'indice de compacité
+			//Calcul de l'indice de compacitï¿½
 			double indiceCompacite = IndicesForme.indiceCompacite(face.getGeometrie());
 			
-			//Si l'indice est supérieur ou égal à 0.95, alors la face est
-			//considérée comme circulaire et ajoutée à la collection
+			//Si l'indice est supÃ©rieur ou Ã©gal Ã  0.95, alors la face est
+			//considï¿½rï¿½e comme circulaire et ajoutÃ©e Ã  la collection
 			if (indiceCompacite >= 0.95) {
 				facesCirculaires.add(face);
-				logger.info("Nouvelle face circulaire détectée (indice : " + indiceCompacite + ")");
+				logger.info("Nouvelle face circulaire dÃ©tectÃ©e (indice : " + indiceCompacite + ")");
 			}
 		}
 		

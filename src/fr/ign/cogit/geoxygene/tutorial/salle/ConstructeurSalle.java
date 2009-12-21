@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
-/** Méthodes possibles de construction de salles
+/** mÃ©thodes possibles de construction de salles
  * 
  *  @author Eric Grosso - IGN / Laboratoire COGIT
  */
@@ -39,7 +39,7 @@ public class ConstructeurSalle {
 	static Logger logger = Logger.getLogger(ConstructeurSalle.class);
 	
 	public static void main(String[] args) {
-		CreationSalles(10, "Réunion");
+		CreationSalles(10, "RÃ©union"); //$NON-NLS-1$
 	}
 
 	/** Construction de salles
@@ -48,34 +48,34 @@ public class ConstructeurSalle {
 	 * @param nomGenerique
 	 */
 	public static void CreationSalles(int nbSalles, String nomGenerique) {
-		//Création d'une connexion à la base
+		//crÃ©ation d'une connexion Ã  la base
 		
-		//Ouverture d'une transaction pour la base définie
+		//Ouverture d'une transaction pour la base dÃ©finie
 		
-		//Création de 10 salles avec une géométrie (polygone carré)
+		//crÃ©ation de 10 salles avec une gÃ©omÃ©trie (polygone carrï¿½)
 		//for...
-			//Création d'un nouvel objet "salle"
+			//crÃ©ation d'un nouvel objet "salle"
 
 			//L'objet "salle" est rendu persistant dans la base
 
 		//fin for
 
-		//Commit de la transaction (sauvegarde les objets créés et ferme la connexion)
+		//Commit de la transaction (sauvegarde les objets crÃ©Ã©s et ferme la connexion)
 	}
 
-	/** Création de la géométrie d'une salle en fonction de son numéro
+	/** crÃ©ation de la gÃ©omÃ©trie d'une salle en fonction de son numÃ©ro
 	 * @param numeroSalle
 	 * @return un polygone
 	 */
 	public static GM_Polygon creationGeometrie(int numeroSalle) {
 
-		//Création des points de la salle
+		//crÃ©ation des points de la salle
 
-		//Ajout des points de manière ordonnée dans une liste de points
+		//Ajout des points de maniÃ¨re ordonnÃ©e dans une liste de points
 
-		//Construction d'une ligne fermée (premier point = dernier) à partir d'une liste de points
+		//Construction d'une ligne fermÃ©e (premier point = dernier) Ã  partir d'une liste de points
 
-		//Retourne un polygone construit à partir de la ligne fermée
+		//Retourne un polygone construit Ã  partir de la ligne fermÃ©e
 		return new GM_Polygon();
 	}
 	

@@ -7,15 +7,15 @@ public class DepartementAlgorithmie {
 		calculSuperficieDepartements();		
 	}
 	
-	/** Calcul la superficie des départements contenus dans la base
+	/** Calcul la superficie des dï¿½partements contenus dans la base
 	 *  et affecte cette valeur dans la table "departements"
 	 */
 	public static void calculSuperficieDepartements(){
-		//Création d'une nouvelle connexion
+		//crÃ©ation d'une nouvelle connexion
 		
-		//Ouverture d'une transaction relative à la connexion
+		//Ouverture d'une transaction relative Ã  la connexion
 		
-		//Chargement des données de la classe Departements
+		//Chargement des donnÃ©es de la classe Departements
 
 		//Calcul et instanciation de l'attribut superficie
 		

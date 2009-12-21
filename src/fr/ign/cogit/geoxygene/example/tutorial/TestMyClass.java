@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -47,7 +47,7 @@ public class TestMyClass {
 
 	public TestMyClass() {
 		//initialise la connection au SGBD et le mapping
-		db = GeodatabaseOjbFactory.newInstance();
+		this.db = GeodatabaseOjbFactory.newInstance();
 	}
 
 	public static void main (String args[]) {
@@ -66,16 +66,16 @@ public class TestMyClass {
 	public void creation() {
 
 		// ouverture d'une transaction
-		System.out.println("ouverture");
-		db.begin();
+		System.out.println("ouverture"); //$NON-NLS-1$
+		this.db.begin();
 
 		//creation d'un objet persistent
 		MyClass obj = new MyClass();
-		db.makePersistent(obj);
+		this.db.makePersistent(obj);
 
 		obj.bonjour();
 		obj.setField0(123);
-		obj.setField1("M. et Mme. PIC ont une fille");
+		obj.setField1("M. et Mme. PIC ont une fille"); //$NON-NLS-1$
 		obj.setField2(true);
 		obj.setField3(3.14159);
 
@@ -84,9 +84,9 @@ public class TestMyClass {
 		// commit et fermeture de la transaction
 		// valide toutes les creations et modifications
 		// une modif meme apres le "db.makePersistent" est repercutee
-		System.out.println("commit");
-		db.commit();
-		System.out.println("commit ok");
+		System.out.println("commit"); //$NON-NLS-1$
+		this.db.commit();
+		System.out.println("commit ok"); //$NON-NLS-1$
 	}
 
 
@@ -94,27 +94,27 @@ public class TestMyClass {
 	public void chargement() {
 
 		// ouverture d'une transaction
-		System.out.println("ouverture");
-		db.begin();
+		System.out.println("ouverture"); //$NON-NLS-1$
+		this.db.begin();
 
 		//chargement de tous objets de Maclasse
-		List <?>list = db.loadAll(MyClass.class);
+		List <?>list = this.db.loadAll(MyClass.class);
 
 		//parcours de tous les objets
-		System.out.println("nb: "+list.size());
+		System.out.println("nb: "+list.size()); //$NON-NLS-1$
 		for (Object obj_:list) {
 			MyClass obj=(MyClass)obj_;
-			System.out.println("id : "+obj.getId());
-			System.out.println("classe : "+obj.getClass().getName());
-			System.out.println("field0 : "+obj.getField0());
-			System.out.println("field1 : "+obj.getField1());
-			System.out.println("field2 : "+obj.getField2());
-			System.out.println("field3 : "+obj.getField3());
+			System.out.println("id : "+obj.getId()); //$NON-NLS-1$
+			System.out.println("classe : "+obj.getClass().getName()); //$NON-NLS-1$
+			System.out.println("field0 : "+obj.getField0()); //$NON-NLS-1$
+			System.out.println("field1 : "+obj.getField1()); //$NON-NLS-1$
+			System.out.println("field2 : "+obj.getField2()); //$NON-NLS-1$
+			System.out.println("field3 : "+obj.getField3()); //$NON-NLS-1$
 		}
 
-		System.out.println("commit");
-		db.commit();
-		System.out.println("commit ok");
+		System.out.println("commit"); //$NON-NLS-1$
+		this.db.commit();
+		System.out.println("commit ok"); //$NON-NLS-1$
 	}
 
 
@@ -122,25 +122,24 @@ public class TestMyClass {
 	public void interroge() {
 
 		// ouverture d'une transaction
-		System.out.println("ouverture");
-		db.begin();
+		System.out.println("ouverture"); //$NON-NLS-1$
+		this.db.begin();
 
 		//la requete
-		String requete = "select x from fr.ign.cogit.geoxygene.example.tutorial.MyClass where field0 > $1";
+		String requete = "select x from fr.ign.cogit.geoxygene.example.tutorial.MyClass where field0 > $1"; //$NON-NLS-1$
 		// $1 represente un parametre (200 ici)
-		List<?> list = db.loadOQL(requete, new Integer(100));
+		List<?> list = this.db.loadOQL(requete, new Integer(100));
 
 		//parcours de tous les objets
-		System.out.println("nb: "+list.size());
+		System.out.println("nb: "+list.size()); //$NON-NLS-1$
 		for (Object obj_:list) {
 			MyClass obj=(MyClass)obj_;
-			System.out.println("id : "+obj.getId());
+			System.out.println("id : "+obj.getId()); //$NON-NLS-1$
 		}
 
-		System.out.println("commit");
-		db.commit();
-		System.out.println("commit ok");
+		System.out.println("commit"); //$NON-NLS-1$
+		this.db.commit();
+		System.out.println("commit ok"); //$NON-NLS-1$
 	}
 
 }
-

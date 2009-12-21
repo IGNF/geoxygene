@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  * 
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -65,7 +65,7 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.util.loader.gui.GUIShapefileChoice;
 
 /**
- * Fenetre utilisée pour le chargement de fichiers shape.
+ * Fenetre utilisÃ©e pour le chargement de fichiers shape.
  * @author Julien Perret
  *
  */
@@ -79,27 +79,27 @@ public class FrameChargement extends JFrame {
 	static Logger logger=Logger.getLogger(FrameChargement.class.getName());
 	
 	/**
-	 * Liste des fichiers shapefiles chargés.
+	 * Liste des fichiers shapefiles chargÃ©s.
 	 */
 	protected List<File> shapeFiles = new ArrayList<File>();
 	protected List<Integer> shapeFileLayers = new ArrayList<Integer>();
 
 	/**
-	 * Modèle de données pour la table.
+	 * ModÃ¨le de donnÃ©es pour la table.
 	 */
 	private TableModel dataModel;
 	/**
-	 * vrai si le chargement a été validé (grâce au bouton "Ok").
+	 * vrai si le chargement a Ã©tÃ© validï¿½ (grÃ¢ce au bouton "Ok").
 	 */
 	protected boolean validated = false;
 	/**
-	 * ComboBox utilisée pour éditer les valeurs des types associés aux shapefiles.
+	 * ComboBox utilisÃ©e pour ï¿½diter les valeurs des types associÃ©s aux shapefiles.
 	 */
 	protected JComboBox comboBox;
 
 	protected List<String> layerNames = new ArrayList<String>();
 	
-	String title = "Chargeur de GéOxygène";
+	String title = "Chargeur de GeOxygene";
 	/**
 	 * @param sld
 	 * @throws HeadlessException
@@ -130,7 +130,7 @@ public class FrameChargement extends JFrame {
 			public boolean isCellEditable(int row, int col) {return (col==1);}
 			@Override
 			public String getColumnName(int column) {
-				return (column == 0)?"Fichier shape":"Couche utilisée";
+				return (column == 0)?"Fichier shape":"Couche utilisÃ©e";
 			}
 			@Override
 			public Class<?> getColumnClass(int column) {
@@ -172,9 +172,9 @@ public class FrameChargement extends JFrame {
 	}
 
 	/**
-	 * Ajout de répertoires contenant des fichiers shapefiles.
-	 * Les répertoires sont tous parcourus récursivement et
-	 * tous les shapefiles qu'ils contiennent sont ajoutés.
+	 * Ajout de rï¿½pertoires contenant des fichiers shapefiles.
+	 * Les rï¿½pertoires sont tous parcourus rÃ©cursivement et
+	 * tous les shapefiles qu'ils contiennent sont ajoutÃ©s.
 	 */
 	private void addDirectories() {
 		GUIShapefileChoice sfc = new GUIShapefileChoice(true);
@@ -197,8 +197,8 @@ public class FrameChargement extends JFrame {
 	}
 
 	/**
-	 * Mise à jour de la table avec les fichiers en paramètre.
-	 * @param files fichiers à ajouter à la table des fichiers à charger.
+	 * Mise Ã  jour de la table avec les fichiers en paramÃ¨tre.
+	 * @param files fichiers Ã  ajouter Ã  la table des fichiers Ã  charger.
 	 */
 	private void updateLayout(File[] files) {
 		for (int i = 0; i < files.length; i++) {
@@ -207,8 +207,8 @@ public class FrameChargement extends JFrame {
 	}
 
 	/**
-	 * Mise à jour de la table avec le shapefile en paramètre.
-	 * @param shapefile fichier shapefile à ajouter à la table des fichiers à charger.
+	 * Mise Ã  jour de la table avec le shapefile en paramÃ¨tre.
+	 * @param shapefile fichier shapefile Ã  ajouter Ã  la table des fichiers Ã  charger.
 	 */
 	private void updateLayout(File shapefile) {
 		String shapefileName = shapefile.getName();
@@ -234,9 +234,9 @@ public class FrameChargement extends JFrame {
 	}
 
 	/**
-	 * Création du JDialog de sélection des fichiers.
-	 * @param parent Frame parent du JDialog à créer.
-	 * @return JDialog de sélection des fichiers shapefiles à charger.
+	 * crÃ©ation du JDialog de sï¿½lection des fichiers.
+	 * @param parent Frame parent du JDialog Ã  crÃ©er.
+	 * @return JDialog de sï¿½lection des fichiers shapefiles Ã  charger.
 	 */
 	private JDialog createDialog(Frame parent) {
 		final JDialog dialog = new JDialog(parent, title, true);
@@ -286,8 +286,8 @@ public class FrameChargement extends JFrame {
 			}
 		});
 		Icon iconAddDirectoryButton = new ImageIcon("images/AjoutRepertoire.png");
-		JButton addDirectoryButton = new JButton("Ajouter des répertoires contenant des Shapefiles",iconAddDirectoryButton);
-		addDirectoryButton.setToolTipText("Ajouter des répertoires contenant des Shapefiles");
+		JButton addDirectoryButton = new JButton("Ajouter des rï¿½pertoires contenant des Shapefiles",iconAddDirectoryButton);
+		addDirectoryButton.setToolTipText("Ajouter des rï¿½pertoires contenant des Shapefiles");
 		addDirectoryButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				addDirectories();
@@ -308,8 +308,8 @@ public class FrameChargement extends JFrame {
 	}
 
 	/**
-	 * Création du JDialog de sélection des fichiers.
-	 * @return vrai si le JDialog a été validé (grâce au bouton "Ok"), faux sinon.
+	 * crÃ©ation du JDialog de sï¿½lection des fichiers.
+	 * @return vrai si le JDialog a Ã©tÃ© validï¿½ (grÃ¢ce au bouton "Ok"), faux sinon.
 	 */
 	public boolean showDialog() {
 		final JDialog dialog = createDialog(this);
@@ -319,7 +319,7 @@ public class FrameChargement extends JFrame {
 	}
 	
 	/**
-	 * TableCellRenderer utilisé pour la colonne contenant les noms des fichiers chargés.
+	 * TableCellRenderer utilisÃ© pour la colonne contenant les noms des fichiers chargÃ©s.
 	 */
 	class MappingTableCellRenderer extends JLabel implements TableCellRenderer {
 		/**
@@ -355,8 +355,8 @@ public class FrameChargement extends JFrame {
 	}
 
 	/**
-	 * TableCellRenderer utilisé pour la colonne contenant le type des objets chargés.
-	 * Cette colonne est éditable grace à une comboBox.
+	 * TableCellRenderer utilisÃ© pour la colonne contenant le type des objets chargÃ©s.
+	 * Cette colonne est ï¿½ditable grace Ã  une comboBox.
 	 */
 	public class MyComboBoxRenderer extends JComboBox implements TableCellRenderer {
 		private static final long serialVersionUID = 1L;
@@ -393,7 +393,7 @@ public class FrameChargement extends JFrame {
 	}
 
 	/**
-	 * Editeur utilisé par la colonne contenant les types de objets chargés.
+	 * Editeur utilisÃ© par la colonne contenant les types de objets chargÃ©s.
 	 */
 	public class MyComboBoxEditor extends DefaultCellEditor {
 		private static final long serialVersionUID = 1L;
@@ -407,11 +407,11 @@ public class FrameChargement extends JFrame {
 		}
 	}
 	/**
-	 * Récupère le type d'objets contenus dans le fichier grâce au nom du fichier.
-	 * Ce n'est qu'un heuristique simple : on considère que le fichier
-	 * contient des bâtiments si son nom contient "batiment", etc.
+	 * RÃ©cupÃ¨re le type d'objets contenus dans le fichier grÃ¢ce au nom du fichier.
+	 * Ce n'est qu'un heuristique simple : on considï¿½re que le fichier
+	 * contient des bï¿½timents si son nom contient "batiment", etc.
 	 * @param shapefileName nom d'un fichier shapefile
-	 * @return le type java supposé correspondant aux features de ce fichier
+	 * @return le type java supposÃ© correspondant aux features de ce fichier
 	 */
 	private String getLayerNameFromFileName(String shapefileName) {
 		String fileName = shapefileName.toLowerCase();

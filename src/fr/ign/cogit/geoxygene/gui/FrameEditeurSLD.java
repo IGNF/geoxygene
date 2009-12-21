@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  * 
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -99,7 +99,7 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 	public StyledLayerDescriptor getSld() {return this.sld;}
 	/**
 	 * Affecte la valeur de l'attribut sld.
-	 * @param sld l'attribut sld à affecter
+	 * @param sld l'attribut sld Ã  affecter
 	 */
 	public void setSld(StyledLayerDescriptor sld) {this.sld = sld;sld.addChangeListener(this);}
 	/**
@@ -117,7 +117,7 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 		setResizable(true);
 		setSize(new Dimension(500,500));
 		setExtendedState(Frame.MAXIMIZED_BOTH);
-		setTitle("Editeur de SLD de GéOxygène");
+		setTitle("Editeur de SLD de GeOxygene");
 		setIconImage(InterfaceGeoxygene.getIcone());
 
 	    DefaultMutableTreeNode top = new DefaultMutableTreeNode("Styled Layer Descriptor");
@@ -139,8 +139,8 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 	}
 
 	/**
-	 * Crée un dataset pour afficher le SLD.
-	 * @param newSld SLD à utiliser
+	 * crÃ©e un dataset pour afficher le SLD.
+	 * @param newSld SLD Ã  utiliser
 	 */
 	private void createDataSetFromSld(StyledLayerDescriptor newSld) {
 		for (Layer layer:newSld.getLayers()) {
@@ -148,7 +148,7 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 				Population<FT_Feature> population = new Population<FT_Feature>();
 				population.setNom(layer.getName());
 				DefaultFeature feature = new DefaultFeature();
-				// FIXME ce n'est pas très joli, mais les featuresCollection peuvent ne pas avoir de featuretype
+				// FIXME ce n'est pas trÃ¨s joli, mais les featuresCollection peuvent ne pas avoir de featuretype
 				Class<? extends GM_Object> geometryType = (layer.getFeatureCollection().getFeatureType()!=null)?
 						layer.getFeatureCollection().getFeatureType().getGeometryType():
 							layer.getFeatureCollection().get(0).getGeom().getClass();
@@ -158,18 +158,18 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 					feature.setGeom(polygon);
 				} else if ((geometryType.equals(GM_MultiPoint.class))||(geometryType.equals(GM_Point.class))) {
 					feature.setGeom(point);
-				} else {logger.error("Aucune géométrie n'a été affectée !!!");}
+				} else {logger.error("Aucune gÃ©omÃ©trie n'a Ã©tÃ© affectï¿½e !!!");}
 				if (layer.getFeatureCollection().get(0).getFeatureType()!=null) {
 					feature.setFeatureType(layer.getFeatureCollection().get(0).getFeatureType());
 				}
 				if (layer.getFeatureCollection().get(0) instanceof DefaultFeature) {
-					// FIXME arriver à faire ça si ce n'est pas un FeafautFeature
+					// FIXME arriver Ã  faire Ã§a si ce n'est pas un FeafautFeature
 					feature.setSchema(((DefaultFeature) layer.getFeatureCollection().get(0)).getSchema());
-					/** on crée un tableau d'attributs suffisamment grand pour recevoir la clé la plus grande */
+					/** on crÃ©e un tableau d'attributs suffisamment grand pour recevoir la clï¿½ la plus grande */
 					Integer[] keys = feature.getSchema().getAttLookup().keySet().toArray(new Integer[0]);
 					Arrays.sort(keys);
 					feature.setAttributes(new Object[keys[keys.length-1]+1]);
-					/** On parcours le schéma et on affecte à tous les attributs de type texte une valeur "texte" */
+					/** On parcours le schÃ©ma et on affecte Ã  tous les attributs de type texte une valeur "texte" */
 					for (AttributeType attribute:feature.getFeatureType().getSchema().getFeatureAttributes()) {
 						if (attribute.getValueType().equalsIgnoreCase("String")) {
 							if (logger.isTraceEnabled()) logger.trace("affecte la valeur de l'attribut "+attribute);
@@ -185,8 +185,8 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 	}
 
 	/**
-	 * Crée les noeuds de l'arbre à partir du sld
-	 * @param top racine de l'arbre à remplir 
+	 * crÃ©e les noeuds de l'arbre Ã  partir du sld
+	 * @param top racine de l'arbre Ã  remplir 
 	 */
 	private void createNodes(DefaultMutableTreeNode top) {
 		if ((frameGeoxygene.getPanelVisu()==null) || (frameGeoxygene.getPanelVisu().getSld()==null)) return; 
@@ -197,7 +197,7 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 		}
 	}
 	/**
-	 * Classe utilisée pour le rendu des cellules de l'arbre du SLD.
+	 * Classe utilisÃ©e pour le rendu des cellules de l'arbre du SLD.
 	 * @author Julien Perret
 	 */
 	class SLDRenderer extends DefaultTreeCellRenderer {
@@ -239,7 +239,7 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 	    }
 	}
 	/**
-	 * Classe représentant l'icone d'une couche d'un SLD
+	 * Classe reprÃ©sentant l'icone d'une couche d'un SLD
 	 * @author Julien Perret
 	 */
 	class LayerIcon implements Icon {
@@ -247,7 +247,7 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 		DessinableGeoxygene d;
 		/**
 		 * Constructeur
-		 * @param l couche représentée par l'icone
+		 * @param l couche reprÃ©sentÃ©e par l'icone
 		 * @param sld sld auquel appartient la couche
 		 */
 		public LayerIcon(Layer l, StyledLayerDescriptor sld) {
@@ -279,7 +279,7 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 		Object nodeInfo = node.getUserObject();
 		if (node.isLeaf()) {
 			Layer layer = (Layer)nodeInfo;
-			if (logger.isDebugEnabled()) logger.debug("Layer "+layer.getName()+ " séléctionné");
+			if (logger.isDebugEnabled()) logger.debug("Layer "+layer.getName()+ " sï¿½lï¿½ctionnï¿½");
 			FrameEditeurLayer editeur = new FrameEditeurLayer(this,layer);
 			editeur.setVisible(true);
 		} else {}

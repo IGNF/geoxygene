@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  * 
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -134,7 +134,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	public StyledLayerDescriptor getSld() {return this.sld;}
 	/**
 	 * Affecte la valeur de l'attribut sld.
-	 * @param sld l'attribut sld à affecter
+	 * @param sld l'attribut sld Ã  affecter
 	 */
 	public void setSld(StyledLayerDescriptor sld) {this.sld = sld;}
 	/**
@@ -187,15 +187,15 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 		//clearShapeCache();
 	}
 	/**
-	 * Mise à jour du cache contenant les features à l'intérieur des limites de l'affichage, i.e. les features visibles.
+	 * Mise Ã  jour du cache contenant les features Ã  l'intÃ©rieur des limites de l'affichage, i.e. les features visibles.
 	 */
 	private void majCachedFeatures() {
 		if (sld==null) return;
-		if (logger.isTraceEnabled()) {logger.trace("Début du calcul des features à mettre dans le cache");}
+		if (logger.isTraceEnabled()) {logger.trace("dÃ©but du calcul des features Ã  mettre dans le cache");}
 		double debut = System.currentTimeMillis();
 		for (Layer layer:sld.getLayers()) setCachedFeatures(layer);
 		double fin = System.currentTimeMillis();
-		if (logger.isTraceEnabled()) {logger.trace("("+(fin-debut)+"Fin du calcul des features à mettre dans le cache");}
+		if (logger.isTraceEnabled()) {logger.trace("("+(fin-debut)+"Fin du calcul des features Ã  mettre dans le cache");}
 	}
 
 	public int coordToPixX(double x){ return (int)((x-(centreGeo.getX()-width*0.5*taillePixel))/taillePixel);}		
@@ -231,7 +231,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 		double debut = System.currentTimeMillis();
 		cachedFeatures.put(layer, layer.getFeatureCollection().select(this.enveloppeAffichage));
 		double fin = System.currentTimeMillis();
-		if (logger.isTraceEnabled()) {logger.trace("("+(fin-debut)+") Fin du calcul des features à mettre dans le cache pour la couche "+layer.getName());}
+		if (logger.isTraceEnabled()) {logger.trace("("+(fin-debut)+") Fin du calcul des features Ã  mettre dans le cache pour la couche "+layer.getName());}
 	}
 	/**
 	 * @param layer
@@ -248,7 +248,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 			//fireChange();
 		}
 		double fin = System.currentTimeMillis();
-		if (logger.isTraceEnabled()) {logger.trace("dessiner() terminé pour la couche "+layer.getName()+" en "+(fin-debut)+")");}
+		if (logger.isTraceEnabled()) {logger.trace("dessiner() terminï¿½ pour la couche "+layer.getName()+" en "+(fin-debut)+")");}
 	}
 
 	/**
@@ -262,8 +262,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 			for (FeatureTypeStyle featureTypeStyle:userStyle.getFeatureTypeStyles()) {
 				//if (logger.isDebugEnabled()) logger.debug("Dessiner le featureTypeStyle "+featureTypeStyle);
 				/**
-				 * TODO les règles devraient etre dans l'ordre de priorité et donc 
-				 * affichées dans l'ordre inverse (OGC 02-070 p.26)
+				 * TODO les rÃ¨gles devraient etre dans l'ordre de prioritÃ© et donc 
+				 * affichï¿½es dans l'ordre inverse (OGC 02-070 p.26)
 				 */
 				//if (logger.isDebugEnabled()) logger.debug(featureTypeStyle.getRules().size()+" Rules");
 				for(int indexRule=featureTypeStyle.getRules().size()-1;indexRule>=0;indexRule--) {
@@ -287,8 +287,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	}
 
 	/**
-	 * Dessine une liste de Features dans un Graphics2D à l'aide d'un Symbolizer.
-	 * Tous les parcours de FT_FeatureCollection de cette classe sont effectués dans cette méthde.
+	 * Dessine une liste de Features dans un Graphics2D Ã  l'aide d'un Symbolizer.
+	 * Tous les parcours de FT_FeatureCollection de cette classe sont effectuï¿½s dans cette mï¿½thde.
 	 * @param symbolizer
 	 * @param features
 	 */
@@ -394,7 +394,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 						}
 					}
 				} else {
-					logger.warn("Les graphics ne sont pas gérés pour l'instant");
+					logger.warn("Les graphics ne sont pas gÃ©rÃ©s pour l'instant");
 				}
 			}
 		}
@@ -406,8 +406,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @param haloColor couleur du halo du texte
 	 * @param haloRadius rayon du halo du texte
 	 * @param font police du texte
-	 * @param texte texte à dessiner
-	 * @param position position du texte à dessiner
+	 * @param texte texte Ã  dessiner
+	 * @param position position du texte Ã  dessiner
 	 */
 	private void dessinerText(Graphics2D g, Color fillColor, Color haloColor, float haloRadius, Font font, String texte, DirectPosition position) {
 		if (texte==null) return;
@@ -441,9 +441,9 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @param haloColor couleur du halo du texte
 	 * @param haloRadius rayon du halo du texte
 	 * @param font police du texte
-	 * @param texte texte à dessiner
-	 * @param line ligne support du texte à dessiner
-	 * TODO à débugger : ça ne marche pas encore bien
+	 * @param texte texte Ã  dessiner
+	 * @param line ligne support du texte Ã  dessiner
+	 * TODO Ã  dï¿½bugger : Ã§a ne marche pas encore bien
 	 */
 	private void dessinerText(Graphics2D g, Color fillColor, Color haloColor, float haloRadius, Font font, String texte, GM_LineString line) {
 		if (texte==null) return;
@@ -498,7 +498,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @param rasterSymbolizer
 	 */
 	private void dessiner(RasterSymbolizer rasterSymbolizer) {
-		// TODO pas géré pour le moment
+		// TODO pas gÃ©rÃ© pour le moment
 	}
 
 	/**
@@ -525,18 +525,18 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	}
 
 	/**
-	 * Remplit un carré de 6 de côté. 
+	 * Remplit un carrï¿½ de 6 de cÃ©tÃ©. 
 	 * @see #remplirCarre(Graphics2D, DirectPosition, int)
 	 * @param g l'objet graphics2D
-	 * @param position le centre du carré
+	 * @param position le centre du carrï¿½
 	 */
 	public void remplirCarre(Graphics2D g, DirectPosition position) {remplirCarre(g, position,3);}
 
 	/**
-	 * Remplit un carré. 
+	 * Remplit un carrï¿½. 
 	 * @param g l'objet graphics2D
-	 * @param position le centre du carré
-	 * @param radius le demi-côté du carré
+	 * @param position le centre du carrï¿½
+	 * @param radius le demi-cÃ©tÃ© du carrï¿½
 	 */
 	public void remplirCarre(Graphics2D g, DirectPosition position, int radius) {
 		g.fillRect((int)position.getX()-radius, (int)position.getY()-radius, 2*radius, 2*radius);
@@ -565,17 +565,17 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	}
 
 	/**
-	 * Dessine le contour d'un carré de 6 de côté. 
+	 * Dessine le contour d'un carrï¿½ de 6 de cÃ©tÃ©. 
 	 * @param g l'objet graphics2D
-	 * @param position le centre du carré
+	 * @param position le centre du carrï¿½
 	 */
 	public void dessinerCarre(Graphics2D g, DirectPosition position) {dessinerCarre(g, position,3);}
 
 	/**
-	 * Dessine le contour d'un carré. 
+	 * Dessine le contour d'un carrï¿½. 
 	 * @param g l'objet graphics2D
-	 * @param position le centre du carré
-	 * @param radius le demi-côté du carré
+	 * @param position le centre du carrï¿½
+	 * @param radius le demi-cÃ©tÃ© du carrï¿½
 	 */
 	public void dessinerCarre(Graphics2D g, DirectPosition position, int radius) {
 		g.drawRect((int)position.getX()-radius, (int)position.getY()-radius, 2*radius, 2*radius);
@@ -612,7 +612,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * Remplit un polygone.
 	 * @param g l'objet graphics2D
 	 * @param color couleur du remplissage
-	 * @param poly géométrie du polygone
+	 * @param poly gÃ©omÃ©trie du polygone
 	 */
 	private void remplir(Graphics2D g, Color color, GM_Polygon poly) {
 		g.setColor(color);
@@ -622,7 +622,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	/**
 	 * Remplit un polygone en utilisant la couleur courante.
 	 * @param g l'objet graphics2D
-	 * @param poly géométrie du polygone
+	 * @param poly gÃ©omÃ©trie du polygone
 	 */
 	private void remplir(Graphics2D g, GM_Polygon poly) {
 		GM_Envelope envelope = poly.envelope();
@@ -691,7 +691,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	/**
 	 * Remplit un multi-polygone en utilisant la couleur courante.
 	 * @param g l'objet graphics2D
-	 * @param multiPoly géométrie du multi-polygone
+	 * @param multiPoly gÃ©omÃ©trie du multi-polygone
 	 */
 	private void remplir(Graphics2D g, GM_MultiSurface<GM_Polygon> multiPoly) {
 		for (GM_Polygon poly:multiPoly.getList()) remplir(g, poly);
@@ -701,7 +701,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * Remplit un multi-polygone.
 	 * @param g l'objet graphics2D
 	 * @param couleur
-	 * @param multiPoly géométrie du multi-polygone
+	 * @param multiPoly gÃ©omÃ©trie du multi-polygone
 	 */
 	public void remplir(Graphics2D g, Color couleur, GM_MultiSurface<GM_Polygon> multiPoly) {
 		g.setColor(couleur);
@@ -712,7 +712,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * Dessine le contour d'un polygone.
 	 * @param g l'objet graphics2D
 	 * @param stroke le trait utilise pour le dessin
-	 * @param poly géométrie du polygone
+	 * @param poly gÃ©omÃ©trie du polygone
 	 */
 	public void dessiner(Graphics2D g, Stroke stroke, GM_Polygon poly) {
 		Color color = stroke.getColor();
@@ -726,7 +726,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * Dessine le contour d'un multi polygone.
 	 * @param g l'objet graphics2D
 	 * @param couleur couleur du trait
-	 * @param multiPoly le multi polygone à dessiner
+	 * @param multiPoly le multi polygone Ã  dessiner
 	 * @param d la largeur du trait
 	 * @param cap type de fin du trait
 	 * @param join type de join entre les lignes du trait
@@ -741,7 +741,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * Dessine le contour d'un multi polygone.
 	 * @param g l'objet graphics2D
 	 * @param couleur couleur du trait
-	 * @param multiPoly le multi polygone à dessiner
+	 * @param multiPoly le multi polygone Ã  dessiner
 	 */
 	public void dessiner(Graphics2D g, Color couleur, GM_MultiSurface<GM_Polygon> multiPoly) {
 		g.setColor(couleur);
@@ -751,7 +751,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	/**
 	 * Dessine le contour d'un multi polygone.
 	 * @param g l'objet graphics2D
-	 * @param multiPoly le multi polygone à dessiner
+	 * @param multiPoly le multi polygone Ã  dessiner
 	 */
 	public void dessiner(Graphics2D g, GM_MultiSurface<GM_Polygon> multiPoly) {
 		for (GM_Polygon poly:multiPoly.getList()) dessiner(g, poly);
@@ -762,7 +762,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @see #dessiner(Graphics2D, Color, GM_Polygon)
 	 * @param g l'objet graphics2D
 	 * @param couleur la couleur du trait
-	 * @param poly le polygone à dessiner
+	 * @param poly le polygone Ã  dessiner
 	 * @param d la largeur du trait
 	 * @param cap type de fin du trait
 	 * @param join type de join entre les lignes du trait
@@ -777,7 +777,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @see #dessiner(Graphics2D, GM_Polygon)
 	 * @param g l'objet graphics2D
 	 * @param couleur la couleur du trait
-	 * @param poly le polygone à dessiner
+	 * @param poly le polygone Ã  dessiner
 	 */
 	public void dessiner(Graphics2D g, Color couleur, GM_Polygon poly) {
 		g.setColor(couleur);
@@ -788,7 +788,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * Dessine le contour d'un polygone en utilisant la couleur et le trait courants.
 	 * @see #dessiner(Graphics2D, GM_LineString)
 	 * @param g l'objet graphics2D
-	 * @param poly le polygone à dessiner
+	 * @param poly le polygone Ã  dessiner
 	 */
 	public void dessiner(Graphics2D g, GM_Polygon poly) {
 		GM_Envelope envelope = poly.envelope();
@@ -808,7 +808,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @see #dessiner(Graphics2D, Color, GM_LineString)
 	 * @param g l'objet graphics2D
 	 * @param couleur la couleur du trait
-	 * @param multiLine la multi ligne à dessiner
+	 * @param multiLine la multi ligne Ã  dessiner
 	 * @param d la largeur du trait
 	 * @param cap type de fin du trait
 	 * @param join type de join entre les lignes du trait
@@ -822,7 +822,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @see #dessiner(Graphics2D, GM_MultiCurve)
 	 * @param g l'objet graphics2D
 	 * @param couleur la couleur du trait
-	 * @param multiLine la multi ligne à dessiner
+	 * @param multiLine la multi ligne Ã  dessiner
 	 */
 	public void dessiner(Graphics2D g, Color couleur, GM_MultiCurve<GM_LineString> multiLine) {
 		g.setColor(couleur);
@@ -832,7 +832,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * Dessine le contour d'une multi ligne.
 	 * @see #dessiner(Graphics2D, GM_LineString)
 	 * @param g l'objet graphics2D
-	 * @param multiLine la multi ligne à dessiner
+	 * @param multiLine la multi ligne Ã  dessiner
 	 */
 	private void dessiner(Graphics2D g, GM_MultiCurve<GM_LineString> multiLine) {
 		for (GM_LineString line:multiLine.getList()) dessiner(g, line);
@@ -842,8 +842,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * Dessiner le contour d'une ligne.
 	 * @see #dessiner(Graphics2D, Color, GM_LineString)
 	 * @param g l'objet graphics2D
-	 * @param stroke le trait à utiliser
-	 * @param line la ligne à dessiner
+	 * @param stroke le trait Ã  utiliser
+	 * @param line la ligne Ã  dessiner
 	 */
 	private void dessiner(Graphics2D g, Stroke stroke, GM_LineString line) {
 		g.setStroke(stroke.toAwtStroke());
@@ -854,7 +854,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @see #dessiner(Graphics2D, Color, GM_LineString)
 	 * @param g l'objet graphics2D
 	 * @param couleur couleur du trait
-	 * @param line la ligne à dessiner
+	 * @param line la ligne Ã  dessiner
 	 * @param d la largeur du trait
 	 * @param cap type de fin du trait
 	 * @param join type de join entre les lignes du trait
@@ -868,7 +868,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @see #dessiner(Graphics2D, GM_LineString)
 	 * @param g l'objet graphics2D
 	 * @param couleur couleur du trait
-	 * @param line la ligne à dessiner
+	 * @param line la ligne Ã  dessiner
 	 */
 	public void dessiner(Graphics2D g, Color couleur, GM_LineString line) {
 		g.setColor(couleur);
@@ -877,7 +877,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	/**
 	 * Dessine le contour d'une ligne en utilisant la couleur et le trait courants.
 	 * @param g l'objet graphics2D
-	 * @param line la ligne à dessiner
+	 * @param line la ligne Ã  dessiner
 	 */
 	private void dessiner(Graphics2D g, GM_LineString line) {
 		//GeneralPath p = (GeneralPath) shapeCache.get(line);
@@ -969,7 +969,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
     }
     
     /**
-     * Méthode appelée quand le processus est terminé.
+     * mÃ©thode appelï¿½e quand le processus est terminï¿½.
      */
     public void finishedMaj() {
     	if (logger.isTraceEnabled()) logger.trace("finishedMaj");
@@ -977,7 +977,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
     }
     
     /**
-     * Informe les listeners que l'image que l'objet dessine a été modifiée.
+     * Informe les listeners que l'image que l'objet dessine a Ã©tÃ© modifiÃ©e.
      */
     private void fireChange() {
     	objectsChange=0;
@@ -986,7 +986,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 
     int objectsChange=0;
     /**
-     * Informe les listeners que l'image que l'objet dessine a été modifiée.
+     * Informe les listeners que l'image que l'objet dessine a Ã©tÃ© modifiÃ©e.
      */
     private void fireObjectChange() {
     	objectsChange++;
@@ -1002,7 +1002,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	}
 	/**
 	 * Affecte la valeur de l'attribut threadMaj.
-	 * @param threadMaj l'attribut threadMaj à affecter
+	 * @param threadMaj l'attribut threadMaj Ã  affecter
 	 */
 	public void setThreadMaj(ThreadVar threadMaj) {
 		this.threadMaj = threadMaj;
@@ -1019,12 +1019,12 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	public boolean isAntiAliasing() {return this.antiAliasing;}
 	/**
 	 * Affecte la valeur de l'attribut antiAliasing.
-	 * @param antiAliasing l'attribut antiAliasing à affecter
+	 * @param antiAliasing l'attribut antiAliasing Ã  affecter
 	 */
 	public void setAntiAliasing(boolean antiAliasing) {this.antiAliasing = antiAliasing;}
 
 	///////////////////////////////
-	// Méthodes pour la compatibilité avec Mirage....
+	// mÃ©thodes pour la compatibilitï¿½ avec Mirage....
 	///////////////////////////////
 	/**
 	 * Dessine le contour d'un multi polygone.
@@ -1032,7 +1032,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @see #dessiner(Graphics2D, Color, GM_MultiSurface, float, int, int)
 	 * @param g l'objet graphics2D
 	 * @param couleur couleur du trait
-	 * @param multiPoly le multi polygone à dessiner
+	 * @param multiPoly le multi polygone Ã  dessiner
 	 * @param d la largeur du trait
 	 * @param cap type de fin du trait
 	 * @param join type de join entre les lignes du trait
@@ -1131,8 +1131,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @param g l'objet graphics2D
 	 * @param couleur couleur du trait
 	 * @param font police
-	 * @param geom géométrie support du texte
-	 * @param texte texte à dessiner
+	 * @param geom gÃ©omÃ©trie support du texte
+	 * @param texte texte Ã  dessiner
 	 */
 	@Deprecated
 	public void dessinerTexte(Graphics2D g, Color couleur, Font font, GM_Object geom, String texte) {
@@ -1147,8 +1147,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @deprecated
 	 * @param g l'objet graphics2D
 	 * @param couleur couleur du trait
-	 * @param geom géométrie support du texte
-	 * @param texte texte à dessiner
+	 * @param geom gÃ©omÃ©trie support du texte
+	 * @param texte texte Ã  dessiner
 	 */
 	@Deprecated
 	public void dessinerTexte(Graphics2D g, Color couleur, GM_Object geom, String texte) {
@@ -1162,7 +1162,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @param couleur couleur du trait
 	 * @param x position en x
 	 * @param y position en y
-	 * @param texte texte à dessiner
+	 * @param texte texte Ã  dessiner
 	 */
 	@Deprecated
 	public void dessinerTexte(Graphics2D g, Color couleur, double x, double y, String texte) {

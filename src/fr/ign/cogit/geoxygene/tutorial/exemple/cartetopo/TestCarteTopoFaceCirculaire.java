@@ -9,7 +9,7 @@ import fr.ign.cogit.geoxygene.tutorial.data.BdTopoTrRoute;
 import fr.ign.cogit.geoxygene.util.viewer.ObjectViewer;
 
 /** Exemple d'utilisation de la carte topologique : 
- *  Détection des faces circulaires.
+ *  Dï¿½tection des faces circulaires.
  * 
  *  @author Eric Grosso - IGN / Laboratoire COGIT
  */
@@ -17,18 +17,18 @@ public class TestCarteTopoFaceCirculaire {
 
 	public static void main(String[] args) {
 	
-		//Initialisation de la connexion à la base de données
+		//Initialisation de la connexion Ã  la base de donnÃ©es
 		Geodatabase geodb = GeodatabaseOjbFactory.newInstance();
 
-		//Chargement des données
+		//Chargement des donnÃ©es
 		
-		//Données BDTopo
+		//donnÃ©es BDTopo
 		FT_FeatureCollection<BdTopoTrRoute> tronconsBDT = geodb.loadAllFeatures(BdTopoTrRoute.class);		
 		
-		//Création de la carte topologique
+		//crÃ©ation de la carte topologique
 		CarteTopo carteTopo = CarteTopoFactory.creeCarteTopoDefaut(tronconsBDT);
 
-		//Détection des faces circulaires
+		//Dï¿½tection des faces circulaires
 		FT_FeatureCollection<Face> facesCirculaires =
 			CarteTopoAlgorithmie.detectionFacesCirculaires(carteTopo);
 
@@ -36,7 +36,7 @@ public class TestCarteTopoFaceCirculaire {
 		
 		//Initiatlisation du visualisateur
 		ObjectViewer viewer = new ObjectViewer();
-		viewer.addFeatureCollection(tronconsBDT,"Tronçons routiers");
+		viewer.addFeatureCollection(tronconsBDT,"TronÃ§ons routiers");
 		viewer.addFeatureCollection(facesCirculaires,"Faces circulaires");
 	}
 

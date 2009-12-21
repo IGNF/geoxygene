@@ -29,7 +29,7 @@ public class MenuGeoxygene extends JMenuBar {
 
 	private InterfaceGeoxygene frameMirage = null;
 	/**
-	 * @return la fenètre à laquelle le menu est eventuellement lié
+	 * @return la fenÃªtre Ã  laquelle le menu est eventuellement liï¿½
 	 */
 	InterfaceGeoxygene getFrameMirage() {return frameMirage;}
 
@@ -164,7 +164,7 @@ public class MenuGeoxygene extends JMenuBar {
 		//menu infos
 		mAPropos.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
-		 	    String message="<html><b>GéOxygène</b><br />http://oxygene-project.sourceforge.net/<br /><br />Laboratoire COGIT<br />http://recherche.ign.fr/labos/cogit<br /><br />Institut Géographique National<br />http://www.ign.fr</html>";
+		 	    String message="<html><b>GeOxygene</b><br />http://oxygene-project.sourceforge.net/<br /><br />Laboratoire COGIT<br />http://recherche.ign.fr/labos/cogit<br /><br />Institut GÃ©ographique National<br />http://www.ign.fr</html>";
 		 	    String titre="A propos de MiraGe";
 		 		JOptionPane.showMessageDialog(null, message, titre, JOptionPane.INFORMATION_MESSAGE, new ImageIcon("images/splash.png")); 
 			}});

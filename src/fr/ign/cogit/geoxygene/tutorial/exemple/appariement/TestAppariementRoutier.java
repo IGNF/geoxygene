@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -43,7 +43,7 @@ import fr.ign.cogit.geoxygene.tutorial.data.BdCartoTrRoute;
 import fr.ign.cogit.geoxygene.tutorial.data.BdTopoTrRoute;
 import fr.ign.cogit.geoxygene.util.viewer.ObjectViewer;
 
-/**  Exemple d'appariement entre données routières 
+/**  Exemple d'appariement entre donnÃ©es routiï¿½res 
  * 
  *  @author Eric Grosso - IGN / Laboratoire COGIT
  */
@@ -52,37 +52,37 @@ public class TestAppariementRoutier {
 
 	public static void main(String[] args) {
 	
-		//Initialisation de la connexion à la base de données
+		//Initialisation de la connexion Ã  la base de donnÃ©es
 		Geodatabase geodb = GeodatabaseOjbFactory.newInstance();
 
-		//Chargement des données
+		//Chargement des donnÃ©es
 		
-		//Données BDCarto
+		//donnÃ©es BDCarto
 		FT_FeatureCollection<BdCartoTrRoute> tronconsBDC = geodb.loadAllFeatures(BdCartoTrRoute.class);
-		//Données BDTopo
+		//donnÃ©es BDTopo
 		FT_FeatureCollection<BdTopoTrRoute> tronconsBDT = geodb.loadAllFeatures(BdTopoTrRoute.class);		
 		
 		
 		//Appariement
 		
-		//Initialisation des paramètres
+		//Initialisation des paramÃ¨tres
 		ParametresApp param = Parametres.parametresDefaut(tronconsBDC, tronconsBDT);
 		
-		//Lance les traitement et récupère les liens d'appariement
+		//Lance les traitement et RÃ©cupÃ¨re les liens d'appariement
 		List<ReseauApp> cartesTopo = new ArrayList<ReseauApp>();
 		EnsembleDeLiens liens = AppariementIO.AppariementDeJeuxGeo(param, cartesTopo);
 		
-		//Récupération des réseaux (ReseauApp hérite de CarteTopo)
+		//Rï¿½cupï¿½ration des rÃ©seaux (ReseauApp hÃ©rite de CarteTopo)
 		ReseauApp carteTopoBDC = cartesTopo.get(0);
 		ReseauApp carteTopoBDT = cartesTopo.get(1);
 
-		//Classement des arcs selon le resultat (évaluation des résultats)
+		//Classement des arcs selon le resultat (Ã©valuation des rÃ©sultats)
 		List<String> valeursClassement = new ArrayList<String>();
-		valeursClassement.add("Apparié");
-		valeursClassement.add("Incertitude");
-		valeursClassement.add("Non apparié");
+		valeursClassement.add("appariÃ©"); //$NON-NLS-1$
+		valeursClassement.add("Incertitude"); //$NON-NLS-1$
+		valeursClassement.add("Non appariÃ©"); //$NON-NLS-1$
 
-		//Récupération des arcs et des noeuds puis classement en "appariés", "incertains" ou "non appariés" (BD référence)
+		//Rï¿½cupï¿½ration des arcs et des noeuds puis classement en "appariÃ©s", "incertains" ou "non appariÃ©s" (BD rÃ©fÃ©rence)
 		List<ReseauApp> cartesTopoBDCValuees = AppariementIO.scindeSelonValeursResultatsAppariement(carteTopoBDC, valeursClassement);
 		Population<Arc> arcsBDCApparies = cartesTopoBDCValuees.get(0).getPopArcs();
 		Population<Arc> arcsBDCIncertains = cartesTopoBDCValuees.get(1).getPopArcs();
@@ -91,7 +91,7 @@ public class TestAppariementRoutier {
 		Population<Noeud> noeudsBDCIncertains = cartesTopoBDCValuees.get(1).getPopNoeuds();
 		Population<Noeud> noeudsBDCNonApparies = cartesTopoBDCValuees.get(2).getPopNoeuds();
 
-		//Récupération des arcs et des noeuds puis classement en "appariés", "incertains" ou "non appariés" (BD comparaison)
+		//Rï¿½cupï¿½ration des arcs et des noeuds puis classement en "appariÃ©s", "incertains" ou "non appariÃ©s" (BD comparaison)
 		List<ReseauApp> cartesTopoBDTValuees = AppariementIO.scindeSelonValeursResultatsAppariement(carteTopoBDC, valeursClassement);
 		Population<Arc> arcsBDTApparies = cartesTopoBDTValuees.get(0).getPopArcs();
 		Population<Arc> arcsBDTIncertains = cartesTopoBDTValuees.get(1).getPopArcs();
@@ -101,7 +101,7 @@ public class TestAppariementRoutier {
 		Population<Noeud> noeudsBDTNonApparies = cartesTopoBDTValuees.get(2).getPopNoeuds();
 
 		
-		//Récupération des liens puis classement en surs, incertains et très incertains
+		//Rï¿½cupï¿½ration des liens puis classement en surs, incertains et trÃ¨s incertains
 		List<Double> valeursClassementL = new ArrayList<Double>();
 		valeursClassementL.add(new Double(0.5));
 		valeursClassementL.add(new Double(1));
@@ -117,44 +117,44 @@ public class TestAppariementRoutier {
 		ObjectViewer viewerCarto = new ObjectViewer();
 		//BDCarto
 		ObjectViewer viewerTopo = new ObjectViewer();
-		//Objets appariés et non appariés
+		//Objets appariÃ©s et non appariÃ©s
 		ObjectViewer viewerApp = new ObjectViewer();
-		//Appariement et évaluation des liens
+		//Appariement et Ã©valuation des liens
 		ObjectViewer viewerEval = new ObjectViewer();
 		
 		//FENETRE BD REFERENCE
-		viewerCarto.addFeatureCollection(tronconsBDC,"BDCarto : Tronçons routiers");
-		viewerCarto.addFeatureCollection(carteTopoBDC.getPopArcs(),"Topologie : Arcs");
-		viewerCarto.addFeatureCollection(carteTopoBDC.getPopNoeuds(),"Réseau : Noeuds");
+		viewerCarto.addFeatureCollection(tronconsBDC,"BDCarto : TronÃ§ons routiers"); //$NON-NLS-1$
+		viewerCarto.addFeatureCollection(carteTopoBDC.getPopArcs(),"Topologie : Arcs"); //$NON-NLS-1$
+		viewerCarto.addFeatureCollection(carteTopoBDC.getPopNoeuds(),"rÃ©seau : Noeuds"); //$NON-NLS-1$
 
 		//FENETRE BD COMPARAISON
-		viewerTopo.addFeatureCollection(tronconsBDT,"BDTopo : Tronçons routiers");
-		viewerTopo.addFeatureCollection(carteTopoBDT.getPopArcs(),"Topologie : Arcs");
-		viewerTopo.addFeatureCollection(carteTopoBDT.getPopNoeuds(),"Réseau : Noeuds");
+		viewerTopo.addFeatureCollection(tronconsBDT,"BDTopo : TronÃ§ons routiers"); //$NON-NLS-1$
+		viewerTopo.addFeatureCollection(carteTopoBDT.getPopArcs(),"Topologie : Arcs"); //$NON-NLS-1$
+		viewerTopo.addFeatureCollection(carteTopoBDT.getPopNoeuds(),"rÃ©seau : Noeuds"); //$NON-NLS-1$
 
 		//FENETRE APPARIEMENT
-		viewerApp.addFeatureCollection(carteTopoBDC.getPopArcs(),"Arcs BDCarto");
-		viewerApp.addFeatureCollection(carteTopoBDC.getPopNoeuds(),"Noeuds BDCarto");
-		viewerApp.addFeatureCollection(carteTopoBDT.getPopArcs(),"Topologie : Arcs");
-		viewerApp.addFeatureCollection(carteTopoBDT.getPopNoeuds(),"Noeuds BDTopo");
-		viewerApp.addFeatureCollection(liensNuls,"Liens très peu surs");
-		viewerApp.addFeatureCollection(liensIncertains,"Liens incertains");
-		viewerApp.addFeatureCollection(liensSurs,"Liens surs");		
+		viewerApp.addFeatureCollection(carteTopoBDC.getPopArcs(),"Arcs BDCarto"); //$NON-NLS-1$
+		viewerApp.addFeatureCollection(carteTopoBDC.getPopNoeuds(),"Noeuds BDCarto"); //$NON-NLS-1$
+		viewerApp.addFeatureCollection(carteTopoBDT.getPopArcs(),"Topologie : Arcs"); //$NON-NLS-1$
+		viewerApp.addFeatureCollection(carteTopoBDT.getPopNoeuds(),"Noeuds BDTopo"); //$NON-NLS-1$
+		viewerApp.addFeatureCollection(liensNuls,"Liens trÃ¨s peu surs"); //$NON-NLS-1$
+		viewerApp.addFeatureCollection(liensIncertains,"Liens incertains"); //$NON-NLS-1$
+		viewerApp.addFeatureCollection(liensSurs,"Liens surs");		 //$NON-NLS-1$
 
 		//FENETRE EVALUATION
-		viewerEval.addFeatureCollection(arcsBDCApparies,"Arcs BDCarto appariées");
-		viewerEval.addFeatureCollection(arcsBDCIncertains,"Arcs BDCarto incertains");
-		viewerEval.addFeatureCollection(arcsBDCNonApparies,"Arcs BDCarto non appariés");
-		viewerEval.addFeatureCollection(noeudsBDCApparies,"Noeuds BDCarto appariés");
-		viewerEval.addFeatureCollection(noeudsBDCIncertains,"Noeuds BDCarto incertains");
-		viewerEval.addFeatureCollection(noeudsBDCNonApparies,"Noeuds BDCarto non appariés");
+		viewerEval.addFeatureCollection(arcsBDCApparies,"Arcs BDCarto appariÃ©es"); //$NON-NLS-1$
+		viewerEval.addFeatureCollection(arcsBDCIncertains,"Arcs BDCarto incertains"); //$NON-NLS-1$
+		viewerEval.addFeatureCollection(arcsBDCNonApparies,"Arcs BDCarto non appariÃ©s"); //$NON-NLS-1$
+		viewerEval.addFeatureCollection(noeudsBDCApparies,"Noeuds BDCarto appariÃ©s"); //$NON-NLS-1$
+		viewerEval.addFeatureCollection(noeudsBDCIncertains,"Noeuds BDCarto incertains"); //$NON-NLS-1$
+		viewerEval.addFeatureCollection(noeudsBDCNonApparies,"Noeuds BDCarto non appariÃ©s"); //$NON-NLS-1$
 
-		viewerEval.addFeatureCollection(arcsBDTApparies,"Arcs BDTopo appariées");
-		viewerEval.addFeatureCollection(arcsBDTIncertains,"Arcs BDTopo incertains");
-		viewerEval.addFeatureCollection(arcsBDTNonApparies,"Arcs BDTopo non appariés");
-		viewerEval.addFeatureCollection(noeudsBDTApparies,"Noeuds BDTopo appariés");
-		viewerEval.addFeatureCollection(noeudsBDTIncertains,"Noeuds BDTopo incertains");
-		viewerEval.addFeatureCollection(noeudsBDTNonApparies,"Noeuds BDTopo non appariés");
+		viewerEval.addFeatureCollection(arcsBDTApparies,"Arcs BDTopo appariÃ©es"); //$NON-NLS-1$
+		viewerEval.addFeatureCollection(arcsBDTIncertains,"Arcs BDTopo incertains"); //$NON-NLS-1$
+		viewerEval.addFeatureCollection(arcsBDTNonApparies,"Arcs BDTopo non appariÃ©s"); //$NON-NLS-1$
+		viewerEval.addFeatureCollection(noeudsBDTApparies,"Noeuds BDTopo appariÃ©s"); //$NON-NLS-1$
+		viewerEval.addFeatureCollection(noeudsBDTIncertains,"Noeuds BDTopo incertains"); //$NON-NLS-1$
+		viewerEval.addFeatureCollection(noeudsBDTNonApparies,"Noeuds BDTopo non appariÃ©s"); //$NON-NLS-1$
 
 	}
 	

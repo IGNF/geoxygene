@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut GÈographique National (the French
+ * contribution of the COGIT laboratory at the Institut G√©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut GÈographique National
+ * Copyright (C) 2005 Institut G√©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -34,7 +34,7 @@ import java.util.List;
 
 /** Classe exemple pour les relations, mono ou bidirectionnelles, avec la classe AAA.
  * 
- * @author Thierry Badard, Arnaud Braun & SÈbastien MustiËre
+ * @author Thierry Badard, Arnaud Braun & S√©bastien Musti√®re
  * @version 1.0
  * 
  */
@@ -63,21 +63,21 @@ public class BBB extends ClasseMere {
 	 *  1 objet AAA est en relation avec 1 objet BBB au plus.
 	 *  1 objet BBB est en relation avec 1 objet AAA au plus.
 	 *
-	 *  Les mÈthodes get et set sont utiles pour assurer la bidirection.
+	 *  Les m√©thodes get et set sont utiles pour assurer la bidirection.
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	private AAA objetAAA_bi11;
 
-	/** RÈcupËre l'objet en relation */
+	/** R√©cup√®re l'objet en relation */
 
-	public AAA getObjetAAA_bi11() {return objetAAA_bi11;  }
+	public AAA getObjetAAA_bi11() {return this.objetAAA_bi11;  }
 
-	/** DÈfinit l'objet en relation */
+	/** d√©finit l'objet en relation */
 	public void setObjetAAA_bi11(AAA O) {
-		AAA old = objetAAA_bi11;
-		objetAAA_bi11 = O;
+		AAA old = this.objetAAA_bi11;
+		this.objetAAA_bi11 = O;
 		if ( old != null ) old.setObjetBBB_bi11(null);
 		if ( O != null ) {
 			if ( O.getObjetBBB_bi11() != this ) O.setObjetBBB_bi11(this);
@@ -93,21 +93,21 @@ public class BBB extends ClasseMere {
 	 *  1 objet AAA est en relation avec n objets BBB (n pouvant etre nul).
 	 *  1 objet BBB est en relation avec 1 objet AAA au plus.
 	 *
-	 *  Les mÈthodes get et set sont utiles pour assurer la bidirection.
+	 *  Les m√©thodes get et set sont utiles pour assurer la bidirection.
 	 *
 	 *  NB : si il n'y a pas d'objet en relation, getObjet renvoie null.
 	 *  Pour casser une relation: faire setObjet(null);
 	 */
 	private AAA objetAAA_bi1N;
 
-	/** RÈcupËre l'objet en relation. */
+	/** R√©cup√®re l'objet en relation. */
 
-	public AAA getObjetAAA_bi1N() {return objetAAA_bi1N;  }
+	public AAA getObjetAAA_bi1N() {return this.objetAAA_bi1N;  }
 
-	/** DÈfinit l'objet en relation, et met ‡ jour la relation inverse. */
+	/** d√©finit l'objet en relation, et met √† jour la relation inverse. */
 	public void setObjetAAA_bi1N(AAA O) {
-		AAA old = objetAAA_bi1N;
-		objetAAA_bi1N = O;
+		AAA old = this.objetAAA_bi1N;
+		this.objetAAA_bi1N = O;
 		if ( old != null ) old.getListe_objetsBBB_bi1N().remove(this);
 		if ( O != null) {
 			if ( ! O.getListe_objetsBBB_bi1N().contains(this) ) O.getListe_objetsBBB_bi1N().add(this);
@@ -124,61 +124,61 @@ public class BBB extends ClasseMere {
 	 *  1 objet BBB est en relation avec m objets AAA (m pouvant etre nul).
 	 *
 	 *  NB: Contrairement aux relation 1-n, on autorise ici qu'un objet soit en relation
-	 *  plusieurs fois avec le mÍme objet AAA
+	 *  plusieurs fois avec le m√™me objet AAA
 	 *
-	 *  Les mÈthodes get (sans indice) et set sont nÈcessaires au mapping.
-	 *  Les autres mÈthodes sont l‡ seulement pour faciliter l'utilisation de la relation.
+	 *  Les m√©thodes get (sans indice) et set sont n√©cessaires au mapping.
+	 *  Les autres m√©thodes sont l√† seulement pour faciliter l'utilisation de la relation.
 	 *  ATTENTION: Pour assurer la bidirection, il faut modifier les listes uniquement avec ces methodes.
 	 *  NB: si il n'y a pas d'objet en relation, la liste est vide mais n'est pas "null".
 	 *  Pour casser toutes les relations, faire setListe(new ArrayList()) ou emptyListe().
 	 */
 	private List<Object> liste_objetsAAA_biNM = new ArrayList<Object>();
 
-	/** RÈcupËre l'objet en relation */
-	public List <Object>getListe_objetsAAA_biNM() {return liste_objetsAAA_biNM ; }
+	/** R√©cup√®re l'objet en relation */
+	public List <Object>getListe_objetsAAA_biNM() {return this.liste_objetsAAA_biNM ; }
 
-	/** DÈfinit l'objet en relation, et met ‡ jour la relation inverse. */
+	/** d√©finit l'objet en relation, et met √† jour la relation inverse. */
 	public void setListe_objetsAAA_biNM (List<Object> L) {
-		List<Object> old = new ArrayList<Object>(liste_objetsAAA_biNM);
+		List<Object> old = new ArrayList<Object>(this.liste_objetsAAA_biNM);
 		Iterator <Object>it1 = old.iterator();
 		while ( it1.hasNext() ) {
 			AAA O = (AAA)it1.next();
-			liste_objetsAAA_biNM.remove(O);
+			this.liste_objetsAAA_biNM.remove(O);
 			O.getListe_objetsBBB_biNM().remove(this);
 		}
 		Iterator<Object> it2 = L.iterator();
 		while ( it2.hasNext() ) {
 			AAA O = (AAA)it2.next();
-			liste_objetsAAA_biNM.add(O);
+			this.liste_objetsAAA_biNM.add(O);
 			O.getListe_objetsBBB_biNM().add(this);
 		}
 	}
 
-	/** RÈcupËre le iËme ÈlÈment de la liste des objets en relation. */
-	public AAA getObjetAAA_biNM(int i) {return (AAA)liste_objetsAAA_biNM.get(i) ; }
+	/** R√©cup√®re le i√®me √©l√©ment de la liste des objets en relation. */
+	public AAA getObjetAAA_biNM(int i) {return (AAA)this.liste_objetsAAA_biNM.get(i) ; }
 
-	/** Ajoute un objet ‡ la liste des objets en relation, et met ‡ jour la relation inverse. */
+	/** Ajoute un objet √† la liste des objets en relation, et met √† jour la relation inverse. */
 	public void addObjetAAA_biNM (AAA O) {
 		if ( O == null ) return;
-		liste_objetsAAA_biNM.add(O) ;
+		this.liste_objetsAAA_biNM.add(O) ;
 		O.getListe_objetsBBB_biNM().add(this);
 	}
 
-	/** EnlËve un ÈlÈment de la liste des objets en relation, et met ‡ jour la relation inverse. */
+	/** enl√®ve un √©l√©ment de la liste des objets en relation, et met √† jour la relation inverse. */
 	public void removeObjetAAA_biNM (AAA O) {
 		if ( O == null ) return;
-		liste_objetsAAA_biNM.remove(O) ;
+		this.liste_objetsAAA_biNM.remove(O) ;
 		O.getListe_objetsBBB_biNM().remove(this);
 	}
 
-	/** Vide la liste des objets en relation, et met ‡ jour la relation inverse. */
+	/** Vide la liste des objets en relation, et met √† jour la relation inverse. */
 	public void emptyListe_objetsAAA_biNM () {
-		Iterator<Object> it = liste_objetsAAA_biNM.iterator();
+		Iterator<Object> it = this.liste_objetsAAA_biNM.iterator();
 		while ( it.hasNext() ) {
 			AAA O = (AAA)it.next();
 			O.getListe_objetsBBB_biNM().remove(this);
 		}
-		liste_objetsAAA_biNM.clear();
+		this.liste_objetsAAA_biNM.clear();
 	}
 
 

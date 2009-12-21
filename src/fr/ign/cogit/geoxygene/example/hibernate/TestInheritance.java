@@ -18,35 +18,35 @@ public class TestInheritance {
 		
 		db.begin();
 		ParisBarcelone parisBarcelone = new ParisBarcelone();
-		parisBarcelone.setName("ParisBarcelone");
+		parisBarcelone.setName("ParisBarcelone"); //$NON-NLS-1$
 		ParisNewYork parisNewYork = new ParisNewYork();
-		parisNewYork.setName("ParisNewYork");
+		parisNewYork.setName("ParisNewYork"); //$NON-NLS-1$
 		db.makePersistent(parisBarcelone);
 		db.makePersistent(parisNewYork);
 		db.commit();
 		
 		db.begin();
 		A320 a320 = new A320();
-		a320.setName("A320");
+		a320.setName("A320"); //$NON-NLS-1$
 		Boeing747  boeing747 = new Boeing747();
-		boeing747.setName("Boeing747");
+		boeing747.setName("Boeing747"); //$NON-NLS-1$
 		db.makePersistent(a320);
 		db.makePersistent(boeing747);
 		db.commit();
 		
 		db.begin();
 		Boat boat=new Boat();
-		boat.setName("machin");
+		boat.setName("machin"); //$NON-NLS-1$
 		Ferry ferry = new Ferry();
-		ferry.setName("truc");
+		ferry.setName("truc"); //$NON-NLS-1$
 		db.makePersistent(boat);
 		db.makePersistent(ferry);
 		db.commit();
 		
 		AmericaCupClass americaCupClass = new AmericaCupClass();
-		americaCupClass.setName("america");
+		americaCupClass.setName("america"); //$NON-NLS-1$
 		AmericaCupClass americaCupClass2 = new AmericaCupClass();
-		americaCupClass2.setName("america2");
+		americaCupClass2.setName("america2"); //$NON-NLS-1$
 		
 		db.begin();
 		db.makePersistent(americaCupClass);
@@ -54,15 +54,15 @@ public class TestInheritance {
 		db.commit();
 
 		Pigeon pigeon = new Pigeon();
-		pigeon.setName("pigeon");
+		pigeon.setName("pigeon"); //$NON-NLS-1$
 		Goose goose = new Goose();
-		goose.setName("tom the goose");
+		goose.setName("tom the goose"); //$NON-NLS-1$
 		Hunter hunter = new Hunter();
-		hunter.setName("Claude the hunter");
+		hunter.setName("Claude the hunter"); //$NON-NLS-1$
 		hunter.getKills().add(pigeon);
 		hunter.getKills().add(goose);
 		BirdInterface birdy=new BirdImpl();
-		birdy.setName("Birdy");
+		birdy.setName("Birdy"); //$NON-NLS-1$
 		db.begin();
 		db.makePersistent(pigeon);
 		db.makePersistent(goose);
@@ -71,11 +71,11 @@ public class TestInheritance {
 		db.commit();
 		
 		Canine canine = new Canine();
-		canine.setName("dog");
+		canine.setName("dog"); //$NON-NLS-1$
 		Feline feline = new Feline();
-		feline.setName("cat");
+		feline.setName("cat"); //$NON-NLS-1$
 		Rodent rodent = new Rodent();
-		rodent.setName("Mouse");
+		rodent.setName("Mouse"); //$NON-NLS-1$
 		rodent.getPredators().add(canine);
 		rodent.getPredators().add(feline);
 		db.begin();
@@ -86,13 +86,13 @@ public class TestInheritance {
 		
 		List<BirdInterface>list=db.loadAll(BirdInterface.class);
 		for(BirdInterface b:list) {
-			System.out.println(b.getId()+" : "+b.getName());
+			System.out.println(b.getId()+" : "+b.getName()); //$NON-NLS-1$
 		}
 		List<Mammal>listMammals=db.loadAll(Mammal.class);
 		for(Mammal m:listMammals) {
-			System.out.println(m.getId()+" : "+m.getName());
+			System.out.println(m.getId()+" : "+m.getName()); //$NON-NLS-1$
 			for (Mammal p:m.getPredators()) {
-				System.out.println("prédator : "+p.getId()+" : "+p.getName());
+				System.out.println("predator : "+p.getId()+" : "+p.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		

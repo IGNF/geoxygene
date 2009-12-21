@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -42,7 +42,7 @@ import fr.ign.cogit.geoxygene.dico.GF_PropertyType;
 
 
 /**
- * Utilisation du dictionnaire de données : exemple de code.
+ * Utilisation du dictionnaire de donnÃ©es : exemple de code.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.1
@@ -92,7 +92,7 @@ public class TestDico {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	/* méthode main */
+	/* mÃ©thode main */
 	public static void main (String args[]) {
 		TestDico test = new TestDico();
 
@@ -299,7 +299,7 @@ public class TestDico {
 	public void interrogeDico ()  {
 
 		// inutile d'ouvrir une transaction ici,
-		// car on ne cree pas de nouvelles données persistantes
+		// car on ne cree pas de nouvelles donnÃ©es persistantes
 
 		// Chargement d'un objet par son nom - requete OQL
 		String query =  "select x from dico.GF_FeatureType where typeName=$1";
@@ -309,8 +309,8 @@ public class TestDico {
 		// On parcourt le resultat de la requete (un seul resultat ici !)
 		while ( it.hasNext() ) {
 			GF_FeatureType ft1 = (GF_FeatureType)it.next();
-			System.out.println("identifiant de l'objet chargé : "+ft1.getId());
-			System.out.println("nom de l'objet chargé : "+ft1.getTypeName());
+			System.out.println("identifiant de l'objet chargÃ© : "+ft1.getId());
+			System.out.println("nom de l'objet chargÃ© : "+ft1.getTypeName());
 			System.out.println("nombre de sous-classes : "+ft1.sizeSpecialization());
 			if (ft1.sizeSpecialization() > 0)
 				for (int i=0; i<ft1.sizeSpecialization(); i++) {
@@ -335,8 +335,8 @@ public class TestDico {
 		// On parcourt le resultat de la requete (un seul resultat ici !)
 		while ( it.hasNext() ) {
 			GF_FeatureType ft1 = (GF_FeatureType)it.next();
-			System.out.println("identifiant de l'objet chargé : "+ft1.getId());
-			System.out.println("nom de l'objet chargé : "+ft1.getTypeName());
+			System.out.println("identifiant de l'objet chargÃ© : "+ft1.getId());
+			System.out.println("nom de l'objet chargÃ© : "+ft1.getTypeName());
 			System.out.println("nombre de sous-classes : "+ft1.sizeSpecialization());
 			System.out.println("nombre de classes meres : "+ft1.sizeGeneralization());
 			// on remarque qu'on ne retrouve pas toutes les proprietes par heritages !
