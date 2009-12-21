@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -29,8 +29,8 @@ package fr.ign.cogit.geoxygene.spatial.geomprim;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 
 /**
- * Frontière d'une courbe orientée, définie par une référence vers un point initial
- * et une référence vers un point final.
+ * frontiÃ¨re d'une courbe orientÃ©e, dÃ©finie par une rÃ©fÃ©rence vers un point initial
+ * et une rÃ©fÃ©rence vers un point final.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -51,15 +51,16 @@ public class GM_CurveBoundary extends GM_PrimitiveBoundary {
 	/** Renvoie le point final.*/
 	public GM_Point getEndPoint () {return this.endPoint;}
 
-	/** Constructeur par défaut. */
+	/** Constructeur par dÃ©faut. */
 	public GM_CurveBoundary () { }
 
-	/** Constructeur à partir d'une GM_Curve. */
-	// c'est ce qui est utilisé dans GM_OrientableCurve::boundary();
+	/** Constructeur Ã  partir d'une GM_Curve. */
+	// c'est ce qui est utilisÃ© dans GM_OrientableCurve::boundary();
 	public GM_CurveBoundary(GM_Curve c) {
 		DirectPosition startPt = c.startPoint();
-		startPoint = new GM_Point(startPt);
+		this.startPoint = new GM_Point(startPt);
 		DirectPosition endPt = c.endPoint();
-		endPoint = new GM_Point(endPt);
+		this.endPoint = new GM_Point(endPt);
 	}
+	
 }

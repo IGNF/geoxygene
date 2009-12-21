@@ -27,7 +27,7 @@
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
 /** NON IMPLEMENTE, A FAIRE.
- * Surface polyh�deique compos�e exclusivement de triangles.
+ * Surface polyh�deique composée exclusivement de triangles.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0

@@ -27,7 +27,7 @@
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
 /** NON IMPLEMENTE.
- * Classe m�re pour les splines.
+ * Classe mère pour les splines.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0

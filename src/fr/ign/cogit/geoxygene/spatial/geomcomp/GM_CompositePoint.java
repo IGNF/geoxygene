@@ -47,10 +47,10 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 public class GM_CompositePoint extends GM_Composite {
 
 	/////////////////////////////////////////////////////////////////////////////////////////
-	// Attribut et m�thodes propres � GM_CompositePoint /////////////////////////////////////
+	// Attribut et méthodes propres à GM_CompositePoint /////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////
 
-	/** Le GM_Point constituant self. C�est une r�f�rence (un nouvel objet n'est pas construit).*/
+	/** Le GM_Point constituant self. C�est une référence (un nouvel objet n'est pas construit).*/
 	protected GM_Point generator;
 
 	/** Renvoie le GM_Point constituant self. */

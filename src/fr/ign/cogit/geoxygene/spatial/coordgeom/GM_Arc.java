@@ -27,7 +27,7 @@
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
 /** NON IMPLEMENTE.
- * Un segment d'arc, d�fini par 3 points.
+ * Un segment d'arc, défini par 3 points.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0

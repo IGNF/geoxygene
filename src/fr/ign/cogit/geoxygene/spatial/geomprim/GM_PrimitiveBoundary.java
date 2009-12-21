@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -27,9 +27,10 @@
 package fr.ign.cogit.geoxygene.spatial.geomprim;
 
 /**
- * Classe mère pour les frontières des primitives géométriques.
- * Les sous-classes concrétes sont GM_CurveBoundary, GM_SurfaceBoundary et GM_SolidBoundary.
- * On note que les points n'ont évidemment pas de type pour définir leur frontière, puisqu'ils n'ont pas de frontière.
+ * Classe mÃ¨re pour les frontiÃ¨res des primitives gÃ©omÃ©triques.
+ * Les sous-classes concrÃ¨tes sont GM_CurveBoundary, GM_SurfaceBoundary et GM_SolidBoundary.
+ * On note que les points n'ont Ã©videmment pas de type pour dÃ©finir leur frontiÃ¨re, 
+ * puisqu'ils n'ont pas de frontiÃ¨re.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0

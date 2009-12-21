@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -27,7 +27,7 @@
 package fr.ign.cogit.geoxygene.spatial.geomprim;
 
 /**
- * Primitive orientable, classe mère abstraite pour les courbes orientées et les surfaces orientées.
+ * Primitive orientable, classe mÃ¨re abstraite pour les courbes orientÃ©es et les surfaces orientÃ©es.
  * Contrainte : orientation = +1 implique primitive = self.
  *
  * @author Thierry Badard & Arnaud Braun
@@ -37,7 +37,7 @@ package fr.ign.cogit.geoxygene.spatial.geomprim;
 
 abstract public class GM_OrientablePrimitive extends GM_Primitive {
 
-	/** Orientation de la courbe (+1 ou -1).Vaut +1 par défaut.*/
+	/** Orientation de la courbe (+1 ou -1).Vaut +1 par dÃ©faut.*/
 	public int orientation = +1;
 
 	/** Renvoie l'orientation de self */

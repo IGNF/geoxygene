@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -33,16 +33,17 @@ import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_Complex;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
- * Classe mère abstraite pour les primitives géométriques (point, ligne, surface, solide).
- * Son but est définir l'opération de base "boundary()" qui lie les primitives de différentes dimensions entre elles.
- * Cette opération est redéfinie dans les sous-classes concrètes pour assurer un bon typage.
- * Une primitive géométrique ne peut pas être décomposée en autres primitives,
- * même si elle découpée en morceaux de courbes (curve segment) ou en morceaux de surface (surface patch) :
+ * Classe mÃ¨re abstraite pour les primitives gÃ©omÃ©triques (point, ligne, surface, solide).
+ * Son but est dÃ©finir l'opÃ©ration de base "boundary()" qui lie les primitives de diffÃ©rentes 
+ * dimensions entre elles.
+ * Cette opÃ©ration est redÃ©finie dans les sous-classes concrÃ¨tes pour assurer un bon typage.
+ * Une primitive gÃ©omÃ©trique ne peut pas Ãªtre dÃ©composÃ©e en autres primitives,
+ * mÃªme si elle dÃ©coupÃ©e en morceaux de courbes (curve segment) ou en morceaux de surface (surface patch) :
  * un curve segment et un surface patch ne peuvent pas exister en dehors du contexte d'une primitive.
- * GM_Complex et GM_Primitive partagent les mêmes propriétés, sauf qu'un complexe est fermé par l'opération "boundary".
+ * GM_Complex et GM_Primitive partagent les mÃªmes propriÃ©tÃ©s, sauf qu'un complexe est fermÃ© par l'opÃ©ration "boundary".
  * Par exemple pour une CompositeCurve, GM_Primitive::contains(endPoint) retourne FALSE,
  * alors que GM_Complex::contains(endPoint) retourne TRUE.
- * En tant que GM_Object ces 2 objets seront égaux.
+ * En tant que GM_Object ces 2 objets seront Ã©gaux.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -52,17 +53,14 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 abstract public class GM_Primitive extends GM_Object {
 
-
 	// The "Interior to" association is not implemented
-
 	// Le constructeur a partir d'une GM_Envelope est defini dans GM_Poygon
 
-
-	/** Association avec les GM_Complex, instanciée du coté du complexe. */
+	/** Association avec les GM_Complex, instanciÃ©e du cÃ´tÃ© du complexe. */
 	public Set<GM_Complex> complex = new HashSet<GM_Complex>();
 
 	/** Renvoie le set des complexes auxquels appartient this */
-	public Set<GM_Complex> getComplex() {return complex;}
+	public Set<GM_Complex> getComplex() {return this.complex;}
 
 	/** Nombre de complexes auxquels appartient this  */
 	public int sizeComplex () {return this.complex.size();}

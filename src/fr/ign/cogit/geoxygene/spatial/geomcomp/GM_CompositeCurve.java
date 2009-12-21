@@ -38,10 +38,14 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
 
 /**
  * Complexe ayant toutes les propriétés géométriques d'une courbe.
- * C'est une liste de courbes orientées (GM_OrientableCurve) de telle manière que le noeud final d'une courbe correspond au noeud initial de la courbe suivante dans la liste.
- * Hérite de GM_OrientableCurve, mais le lien n'apparaît pas explicitement (problème de double héritage en java). Les méthodes et attributs ont été reportés.
+ * C'est une liste de courbes orientées (GM_OrientableCurve) 
+ * de telle manière que le noeud final d'une courbe correspond au noeud initial 
+ * de la courbe suivante dans la liste.
+ * Hérite de GM_OrientableCurve, mais le lien n'apparaît pas explicitement 
+ * (problème de double héritage en java). Les méthodes et attributs ont été reportés.
  *
- *<P> ATTENTION : normalement, il faudrait remplir le set "element" (contrainte : toutes les primitives du generateur
+ *<P> ATTENTION : normalement, il faudrait remplir le set "element" 
+ *(contrainte : toutes les primitives du generateur
  * sont dans le complexe). Ceci n'est pas implémenté pour le moment.
  *<P> A FAIRE AUSSI : iterateur sur "generator"
  *

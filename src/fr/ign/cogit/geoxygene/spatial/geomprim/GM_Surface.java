@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -38,10 +38,10 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_SurfacePatch;
 
 
 /**
- * Surface, composée de morceaux de surface. L'orientation vaut nécessairement +1.
+ * Surface, composÃ©e de morceaux de surface. L'orientation vaut nÃ©cessairement +1.
  *
- * <P> Modification de la norme suite au retour d'utilisation : on fait hériter GM_SurfacePatch de GM_Surface.
- * Du coup, on n'implémente plus l'interface GM_GenericSurface.
+ * <P> Modification de la norme suite au retour d'utilisation : on fait hÃ©riter GM_SurfacePatch de GM_Surface.
+ * Du coup, on n'implÃ©mente plus l'interface GM_GenericSurface.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -53,7 +53,7 @@ public class GM_Surface extends GM_OrientableSurface
 	static Logger logger=Logger.getLogger(GM_Surface.class.getName());
 
 	//////////////////////////////////////////////////////////////////////////////////
-	// Attribut "patch" et méthodes pour le traiter //////////////////////////////////
+	// Attribut "patch" et mÃ©thodes pour le traiter //////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////
 	// A FAIRE : validate : pour que les patch soient contigue ?
 	// pour cela il faut regarder que l'union est du type GM_Surface et non GM_MultiSurface
@@ -68,7 +68,7 @@ public class GM_Surface extends GM_OrientableSurface
 	public GM_SurfacePatch getPatch (int i)  {
 		if ((GM_SurfacePatch.class).isAssignableFrom(this.getClass())) {
 			if (i != 0) {
-				logger.error("Recherche d'un patch avec i<>0 alors qu'un GM_SurfacePatch ne contient qu'un segment qui est lui-meme");
+				logger.error("Recherche d'un patch avec i<>0 alors qu'un GM_SurfacePatch ne contient qu'un segment qui est lui-meme"); //$NON-NLS-1$
 				return null;
 			}
 			return this.patch.get(i);
@@ -80,7 +80,7 @@ public class GM_Surface extends GM_OrientableSurface
 	public void setPatch (int i, GM_SurfacePatch value) {
 		if ((GM_SurfacePatch.class).isAssignableFrom(this.getClass()))
 			if (i != 0)
-				logger.error("Affection d'un patch avec i<>0 alors qu'un GM_SurfacePatch ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
+				logger.error("Affection d'un patch avec i<>0 alors qu'un GM_SurfacePatch ne contient qu'un segment qui est lui-meme. La mÃ©thode ne fait rien."); //$NON-NLS-1$
 			else this.patch.set(i, value);
 		else this.patch.set(i, value);
 	}
@@ -89,7 +89,7 @@ public class GM_Surface extends GM_OrientableSurface
 	public void addPatch (GM_SurfacePatch value) {
 		if ((GM_SurfacePatch.class).isAssignableFrom(this.getClass()))
 			if (sizePatch() > 0)
-				logger.error("Ajout d'un patch alors qu'un GM_SurfacePatch ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
+				logger.error("Ajout d'un patch alors qu'un GM_SurfacePatch ne contient qu'un segment qui est lui-meme. La mÃ©thode ne fait rien."); //$NON-NLS-1$
 			else this.patch.add(value);
 		else this.patch.add(value);
 	}
@@ -98,7 +98,7 @@ public class GM_Surface extends GM_OrientableSurface
 	public void addPatch (int i, GM_SurfacePatch value) {
 		if ((GM_SurfacePatch.class).isAssignableFrom(this.getClass()))
 			if (i != 0)
-				logger.error("Ajout d'un patch avec i<>0 alors qu'un GM_SurfacePatch ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
+				logger.error("Ajout d'un patch avec i<>0 alors qu'un GM_SurfacePatch ne contient qu'un segment qui est lui-meme. La mÃ©thode ne fait rien."); //$NON-NLS-1$
 			else this.patch.add(value);
 		else this.patch.add(i, value);
 	}
@@ -106,79 +106,71 @@ public class GM_Surface extends GM_OrientableSurface
 	/** Efface le patch de valeur value. */
 	public void removePatch (GM_SurfacePatch value)  {
 		if ((GM_SurfacePatch.class).isAssignableFrom(this.getClass()))
-			logger.error("removePatch() : Ne fait rien car un GM_SurfacePatch ne contient qu'un segment qui est lui-meme.");
+			logger.error("removePatch() : Ne fait rien car un GM_SurfacePatch ne contient qu'un segment qui est lui-meme."); //$NON-NLS-1$
 		else this.patch.remove(value);
 	}
 
 	/** Efface le patch de rang i. */
 	public void removePatch (int i) {
 		if ((GM_SurfacePatch.class).isAssignableFrom(this.getClass()))
-			logger.error("removePatch() : Ne fait rien car un GM_SurfacePatch ne contient qu'un segment qui est lui-meme.");
+			logger.error("removePatch() : Ne fait rien car un GM_SurfacePatch ne contient qu'un segment qui est lui-meme."); //$NON-NLS-1$
 		else this.patch.remove(i);
 	}
 
 	/** Renvoie le nombre de patch. */
 	public int sizePatch () {return this.patch.size();}
 
-
-
-
 	//////////////////////////////////////////////////////////////////////////////////
 	// Constructeurs /////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////
-	/** Constructeur par défaut */
+	/** Constructeur par dÃ©faut */
 	public GM_Surface () {
-		patch = new ArrayList<GM_SurfacePatch>();
-		orientation = +1;
-		primitive = this;
-		proxy[0] = this;
+		this.patch = new ArrayList<GM_SurfacePatch>();
+		this.orientation = +1;
+		this.primitive = this;
+		this.proxy[0] = this;
 		GM_OrientableSurface proxy1 = new GM_OrientableSurface();
 		proxy1.orientation = -1;
 		proxy1.proxy[0] = this;
 		proxy1.proxy[1] = proxy1;
 		proxy1.primitive = new GM_Surface(this);
-		proxy[1] = proxy1;
+		this.proxy[1] = proxy1;
 	}
 
-
-	/** Constructeur à partir d'un et d'un seul surface patch */
+	/** Constructeur Ã  partir d'un et d'un seul surface patch */
 	public GM_Surface(GM_SurfacePatch thePatch) {
 		this();
 		this.addPatch(thePatch);
 	}
 
-
-	/** Utilisé en interne (dans les constructeurs publics) pour construire la surface opposée,
-	 * qui est la primitive de proxy[1]. On définit ici les références nécessaires. Le but est de retrouver la propriete :
+	/** UtilisÃ© en interne (dans les constructeurs publics) pour construire la surface opposÃ©e,
+	 * qui est la primitive de proxy[1]. On dÃ©finit ici les rÃ©fÃ©rences nÃ©cessaires. Le but est de retrouver la propriete :
 	 * surface.getNegative().getPrimitive().getNegative().getPrimitive() = surface.
 	 * La frontiere de la surface est calculee en dynamique lors de l'appel a la methode getNegative(). */
 	public GM_Surface(GM_Surface surface) {
-		patch = new ArrayList<GM_SurfacePatch>();
-		orientation = +1;
-		primitive = this;
-		proxy[0] = this;
+		this.patch = new ArrayList<GM_SurfacePatch>();
+		this.orientation = +1;
+		this.primitive = this;
+		this.proxy[0] = this;
 		GM_OrientableSurface proxy1 = new GM_OrientableSurface();
 		proxy1.orientation = -1;
 		proxy1.proxy[0] = this;
 		proxy1.proxy[1] = proxy1;
 		proxy1.primitive = surface;
-		proxy[1] = proxy1;
+		this.proxy[1] = proxy1;
 	}
 
-
-
-
 	//////////////////////////////////////////////////////////////////////////////////
-	// Implémentation de GM_GenericCurve /////////////////////////////////////////////
+	// ImplÃ©mentation de GM_GenericCurve /////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////
 	/** NON IMPLEMENTE.
-	 * Vecteur normal à self au point passé en paramètre. */
+	 * Vecteur normal Ã  self au point passÃ© en paramÃ¨tre. */
 	/*    public Vecteur upNormal(DirectPosition point) {
         return null;
     }
 	 */
 
-	/** Périmètre. */
+	/** PÃ©rimÃ¨tre. */
 	public double perimeter()  {
 		//        return SpatialQuery.perimeter(this); (ancienne methode avec SDOAPI)
 		return this.length();
@@ -190,14 +182,12 @@ public class GM_Surface extends GM_OrientableSurface
         return SpatialQuery.area(this);
     }*/
 
-
-
-
 	//////////////////////////////////////////////////////////////////////////////////
-	// Méthodes d'accès aux coordonnées //////////////////////////////////////////////
+	// MÃ©thodes d'accÃ¨s aux coordonnÃ©es //////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////
-	/** Renvoie la frontière extérieure sous forme d'une polyligne (on a linéarisé).
-	 * Ne fonctionne que si la surface est composée d'un et d'un seul patch, qui est un polygone. (sinon renvoie null). */
+	/** Renvoie la frontiÃ¨re extÃ©rieure sous forme d'une polyligne (on a linÃ©arisÃ©).
+	 * Ne fonctionne que si la surface est composÃ©e d'un et d'un seul patch, qui est un polygone.
+	 * (sinon renvoie null). */
 	public GM_LineString exteriorLineString() {
 		if (this.sizePatch() == 1) {
 			GM_Polygon poly = (GM_Polygon)this.getPatch(0);
@@ -207,28 +197,29 @@ public class GM_Surface extends GM_OrientableSurface
 				GM_LineString ls = c.asLineString(0.0,0.0,0.0);
 				return ls;
 			}
-			logger.error("GM_Surface::exteriorLineString() : ATTENTION frontiere null");
+			logger.error("GM_Surface::exteriorLineString() : ATTENTION frontiere null"); //$NON-NLS-1$
 			return null;
 		}
-		logger.error("GM_Surface::exteriorLineString() : cette méthode ne fonctionne que si la surface est composée d'un seul patch.");
+		logger.error("GM_Surface::exteriorLineString() : cette mÃ©thode ne fonctionne que si la surface est composÃ©e d'un seul patch."); //$NON-NLS-1$
 		return null;
 	}
 
-	/** Renvoie la frontière extérieure sous forme d'une GM_Curve.
-	 * Ne fonctionne que si la surface est composée d'un et d'un seul patch, qui est un polygone. (sinon renvoie null). */
+	/** Renvoie la frontiÃ¨re extÃ©rieure sous forme d'une GM_Curve.
+	 * Ne fonctionne que si la surface est composÃ©e d'un et d'un seul patch, qui est un polygone. 
+	 * (sinon renvoie null). */
 	public GM_Curve exteriorCurve() {
 		if (this.sizePatch() == 1) {
 			GM_Polygon poly = (GM_Polygon)this.getPatch(0);
 			GM_Ring ext = poly.getExterior();
 			if (ext != null) return  ext.getPrimitive();
-			logger.error("GM_Surface::exteriorCurve() : ATTENTION frontiere null");
+			logger.error("GM_Surface::exteriorCurve() : ATTENTION frontiere null"); //$NON-NLS-1$
 			return null;
 		}
-		logger.error("GM_Surface::exteriorCurve() : cette méthode ne fonctionne que si la surface est composée d'un seul patch.");
+		logger.error("GM_Surface::exteriorCurve() : cette mÃ©thode ne fonctionne que si la surface est composÃ©e d'un seul patch."); //$NON-NLS-1$
 		return null;
 	}
 
-	/**  Renvoie la liste des coordonnées de la frontière EXTERIEURE d'une surface,
+	/**  Renvoie la liste des coordonnÃ©es de la frontiÃ¨re EXTERIEURE d'une surface,
        sous forme d'une DirectPositionList. */
 	public DirectPositionList exteriorCoord ()  {
 		GM_Curve c =  this.exteriorCurve();
@@ -236,9 +227,9 @@ public class GM_Surface extends GM_OrientableSurface
 		return new DirectPositionList();
 	}
 
-
-	/** Renvoie la frontière intérieure de rang i sous forme d'une polyligne (on a linéarisé).
-	 * Ne fonctionne que si la surface est composée d'un et d'un seul patch, qui est un polygone (sinon renvoie null). */
+	/** Renvoie la frontiÃ¨re intÃ©rieure de rang i sous forme d'une polyligne (on a linÃ©arisÃ©).
+	 * Ne fonctionne que si la surface est composÃ©e d'un et d'un seul patch, qui est un polygone 
+	 * (sinon renvoie null). */
 	public GM_LineString interiorLineString(int i) {
 		if (this.sizePatch() == 1) {
 			GM_Polygon poly = (GM_Polygon)this.getPatch(0);
@@ -248,29 +239,29 @@ public class GM_Surface extends GM_OrientableSurface
 				GM_LineString ls = c.asLineString(0.0,0.0,0.0);
 				return ls;
 			}
-			logger.error("GM_Surface::interiorLineString() : ATTENTION frontiere null");
+			logger.error("GM_Surface::interiorLineString() : ATTENTION frontiere null"); //$NON-NLS-1$
 			return null;
 		}
-		logger.error("GM_Surface::interiorLineString() : cette méthode ne fonctionne que si la surface est composée d'un seul patch");
+		logger.error("GM_Surface::interiorLineString() : cette mÃ©thode ne fonctionne que si la surface est composÃ©e d'un seul patch"); //$NON-NLS-1$
 		return null;
 	}
 
-	/** Renvoie la frontière intérieure de rang i sous forme d'une GM_Curve.
-	 * Ne fonctionne que si la surface est composée d'un et d'un seul patch, qui est un polygone (sinon renvoie null). */
+	/** Renvoie la frontiÃ¨re intÃ©rieure de rang i sous forme d'une GM_Curve.
+	 * Ne fonctionne que si la surface est composÃ©e d'un et d'un seul patch, qui est un polygone
+	 *  (sinon renvoie null). */
 	public GM_Curve interiorCurve(int i) {
 		if (this.sizePatch() == 1) {
 			GM_Polygon poly = (GM_Polygon)this.getPatch(0);
 			GM_Ring inte = poly.getInterior(i);
 			if (inte != null) return  inte.getPrimitive();
-
-			logger.error("GM_Surface::interiorCurve() : ATTENTION frontiere null");
+			logger.error("GM_Surface::interiorCurve() : ATTENTION frontiere null"); //$NON-NLS-1$
 			return null;
 		}
-		logger.error("GM_Surface::interiorCurve() : cette méthode ne fonctionne que si la surface est composée d'un seul patch");
+		logger.error("GM_Surface::interiorCurve() : cette mÃ©thode ne fonctionne que si la surface est composÃ©e d'un seul patch"); //$NON-NLS-1$
 		return null;
 	}
 
-	/**  Renvoie la liste des coordonnées de la frontière intérieure de rang i d'une surface,
+	/**  Renvoie la liste des coordonnÃ©es de la frontiÃ¨re intÃ©rieure de rang i d'une surface,
        sous forme d'un GM_PointArray. */
 	public DirectPositionList interiorCoord (int i)  {
 		GM_Curve c =  this.interiorCurve(i);
@@ -278,8 +269,7 @@ public class GM_Surface extends GM_OrientableSurface
 		return new DirectPositionList();
 	}
 
-
-	/**  Renvoie la liste des coordonnées  d'une surface (exterieure et interieur)
+	/**  Renvoie la liste des coordonnÃ©es  d'une surface (exterieure et interieur)
        sous forme d'une  DirectPositionList. Toutes les coordonnees sont concatenees.*/
 	@Override
 	public DirectPositionList coord ()  {
@@ -290,11 +280,11 @@ public class GM_Surface extends GM_OrientableSurface
 				dpl.addAll(interiorCurve(i).coord());
 			return dpl;
 		}
-		logger.error("GM_Surface::coord() : cette méthode ne fonctionne que si la surface est composée d'un seul patch");
+		logger.error("GM_Surface::coord() : cette mÃ©thode ne fonctionne que si la surface est composÃ©e d'un seul patch"); //$NON-NLS-1$
 		return null;
 	}
 
-	/**  Affiche la liste des coordonnées (interieures et exterieures) */
+	/**  Affiche la liste des coordonnÃ©es (interieures et exterieures) */
 	/*public String toString() {
         String result = new String();
         result = result+"exterieur : \n";
@@ -308,7 +298,7 @@ public class GM_Surface extends GM_OrientableSurface
                 else result = result+"vide";
             }
         } else {
-            System.out.println("GM_Surface::toString() : cette méthode ne fonctionne que si la surface est composée d'un seul patch");
+            System.out.println("GM_Surface::toString() : cette mÃ©thode ne fonctionne que si la surface est composÃ©e d'un seul patch");
         }
         return result;
     } */

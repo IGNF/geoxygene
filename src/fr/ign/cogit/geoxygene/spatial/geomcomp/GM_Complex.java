@@ -143,8 +143,6 @@ public class GM_Complex extends GM_Object {
 	//       return null;
 	//   }
 
-
-
 	/** Marche pas. Renvoie null.  */
 	@Override
 	public DirectPositionList coord() {

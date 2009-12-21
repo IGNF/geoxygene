@@ -27,7 +27,7 @@
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
 /** NON IMPLEMENTE.
- * Arc de cercle. Similaire � GM_LineString, sauf que l'interpolation est circulaire.
+ * Arc de cercle. Similaire à GM_LineString, sauf que l'interpolation est circulaire.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0

@@ -29,7 +29,7 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 /** NON UTILISE.
- * R�f�rence vers un GM_Point.
+ * référence vers un GM_Point.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0

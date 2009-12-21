@@ -36,5 +36,4 @@ package fr.ign.cogit.geoxygene.spatial.geomprim;
  */
 
 class GM_ComplexBoundary extends GM_Boundary {
-
 }

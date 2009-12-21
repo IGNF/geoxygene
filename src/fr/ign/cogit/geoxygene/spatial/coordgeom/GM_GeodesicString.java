@@ -27,7 +27,7 @@
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
 /** NON IMPLEMENTE.
- * S�quence de segments g�od�siques.
+ * S�quence de segments géodésiques.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0

@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -36,7 +36,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 
 /**
- * NON UTILISE. Object géométrique de base en 3D.
+ * NON UTILISE. Object gÃ©omÃ©trique de base en 3D.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -47,12 +47,12 @@ public class GM_Solid extends GM_Primitive {
 	static Logger logger = Logger.getLogger(GM_Solid.class.getName());
 
 	/**
-	 * NON IMPLEMENTE (renvoie 0.0). Aire. Dans la norme, le résultat est de
+	 * NON IMPLEMENTE (renvoie 0.0). Aire. Dans la norme, le rÃ©sultat est de
 	 * type Area.
 	 * */
 	@Override
 	public double area() {
-		logger.error("Non implémentée, utiliser : return CalculSansJava3D.CalculAire(this); (renvoi 0.0)");
+		logger.error("Non implÃ©mentÃ©e, utiliser : return CalculSansJava3D.CalculAire(this); (renvoi 0.0)"); //$NON-NLS-1$
 		return 0.0;
 	}
 
@@ -90,56 +90,54 @@ public class GM_Solid extends GM_Primitive {
 
 	/**
 	 * NON IMPLEMETE (renvoie 0.0). Volume.
-	 * Dans la norme, le résultat est de type Volume.
+	 * Dans la norme, le rÃ©sultat est de type Volume.
 	 */
 	public double volume() {
 
-		logger.error("Non implémentée, utiliser : return CalculSansJava3D.CalculVolume(this);");
+		logger.error("Non implÃ©mentÃ©e, utiliser : return CalculSansJava3D.CalculVolume(this);"); //$NON-NLS-1$
 
 		return 0.0;
 
 	}
 
-	/** Constructeur par défaut. */
+	/** Constructeur par dÃ©faut. */
 	public GM_Solid() {
 	}
 
 	/**
-	 * Constructeur à partir de la frontière.
+	 * Constructeur Ã  partir de la frontiÃ¨re.
 	 */
 	public GM_Solid(GM_SolidBoundary bdy) {
 		this.boundary = bdy;
 	}
 
 	/**
-	 * NON IMPLEMENTE. Constructeur à partir d'une enveloppe .
+	 * NON IMPLEMENTE. Constructeur Ã  partir d'une enveloppe .
 	 * @param env une enveloppe
 	 */
 	public GM_Solid(GM_Envelope env) {
-		logger.error("NON IMPLEMENTE");
+		logger.error("NON IMPLEMENTE"); //$NON-NLS-1$
 	}
 
 	/**
-	 * Redéfinition de l'opérateur "boundary" sur GM_Object. Renvoie une
-	 * GM_SolidBoundary, c'est-à-dire un shell extérieur et éventuellement un
-	 * (des) shell(s) intérieur(s).
+	 * RedÃ©finition de l'opÃ©rateur "boundary" sur GM_Object. Renvoie une
+	 * GM_SolidBoundary, c'est-Ã -dire un shell extÃ©rieur et Ã©ventuellement un
+	 * (des) shell(s) intÃ©rieur(s).
 	 */
-	public GM_SolidBoundary boundary() {
-		return this.boundary;
-	}
+	public GM_SolidBoundary boundary() {return this.boundary;}
 
 	/**
-	 * Boundary auquel est lié le solide
+	 * Boundary auquel est liÃ© le solide
 	 */
 	private GM_SolidBoundary boundary = null;
 
 	/**
-	 * Constructeur à partir d'une liste de faces extérieures
-	 * @param lOS une liste de faces extérieures
+	 * Constructeur Ã  partir d'une liste de faces extÃ©rieures
+	 * @param lOS une liste de faces extÃ©rieures
 	 */
 	public GM_Solid(ArrayList<GM_OrientableSurface> lOS) {
 
-		boundary = new GM_SolidBoundary(lOS);
+		this.boundary = new GM_SolidBoundary(lOS);
 
 	}
 
@@ -152,20 +150,20 @@ public class GM_Solid extends GM_Primitive {
 		List<? extends GM_OrientableSurface> lGMObj = multiSurf.getList();
 		int nbElements = lGMObj.size();
 		for (int i = 0; i < nbElements; i++) lOS.add(lGMObj.get(i));
-		boundary = new GM_SolidBoundary(lOS);
+		this.boundary = new GM_SolidBoundary(lOS);
 	}
 
 	/**
-	 * Renvoie la liste des faces extérieures d'un solide
+	 * Renvoie la liste des faces extÃ©rieures d'un solide
 	 * 
-	 * @return la liste des faces extérieures d'un solide
+	 * @return la liste des faces extÃ©rieures d'un solide
 	 */
 	public ArrayList<GM_OrientableSurface> getListeFacettes() {
 		return this.boundary().exterior.getlisteFaces();
 	}
 	
 	/**
-	 * Permet de renvoyer une chaine de caractère décrivant un solide
+	 * Permet de renvoyer une chaine de caractÃ©re dÃ©crivant un solide
 	 */
 	@Override
 	public String toString() {
@@ -173,14 +171,14 @@ public class GM_Solid extends GM_Primitive {
 		
 		ArrayList<GM_OrientableSurface> lOS =  this.getListeFacettes();
 		int nbElement =lOS.size();
-		sb.append("Solid(");
+		sb.append("Solid("); //$NON-NLS-1$
 		for(int i=0;i<nbElement;i++) {
 			
 			
 			sb.append(lOS.get(i).toString());
-			sb.append("\n");
+			sb.append("\n"); //$NON-NLS-1$
 		}
-		sb.append(");");
+		sb.append(");"); //$NON-NLS-1$
 		return sb.toString();
 	}
 

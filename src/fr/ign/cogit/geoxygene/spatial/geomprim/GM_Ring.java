@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -32,8 +32,8 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeCurve;
 
 /**
- * Représente un composant d'une GM_SurfaceBoundary.
- * Un GM_Ring est une GM_CompositeCurve fermée, c'est-à-dire des références vers des GM_OrientableCurve connectées en un cycle.
+ * ReprÃ©sente un composant d'une GM_SurfaceBoundary.
+ * Un GM_Ring est une GM_CompositeCurve fermÃ©e, c'est-Ã -dire des rÃ©fÃ©rences vers des GM_OrientableCurve connectÃ©es en un cycle.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -42,22 +42,22 @@ import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeCurve;
 
 public class GM_Ring extends GM_CompositeCurve {
 
-	/** Constructeur par défaut */
+	/** Constructeur par dÃ©faut */
 	public GM_Ring () {
 		super();
 	}
 
 
-	/** Constructeur à partir d'une et d'une seule GM_OrientableCurve.
-	 * Ne vérifie pas la fermeture. */
+	/** Constructeur Ã  partir d'une et d'une seule GM_OrientableCurve.
+	 * Ne vÃ©rifie pas la fermeture. */
 	public GM_Ring(GM_OrientableCurve oriCurve) {
 		super(oriCurve);
 	}
 
 
 	/**
-	 * Constructeur à partir d'une et d'une seule GM_OrientableCurve.
-	 * Vérifie la fermeture, d'où le paramètre tolérance. Exception si ca ne ferme pas.
+	 * Constructeur Ã  partir d'une et d'une seule GM_OrientableCurve.
+	 * VÃ©rifie la fermeture, d'oÃ¹ le paramÃ¨tre tolÃ©rance. Exception si ca ne ferme pas.
 	 * TODO : un nouveau type d'exception
 	 * @param oriCurve
 	 * @param tolerance
@@ -69,13 +69,13 @@ public class GM_Ring extends GM_CompositeCurve {
 		DirectPosition pt1 = c.startPoint();
 		DirectPosition pt2 = c.endPoint();
 		if (!pt1.equals(pt2,tolerance))
-			throw new Exception("tentative de créer un GM_Ring avec une courbe non fermée");
+			throw new Exception("tentative de crÃ©er un GM_Ring avec une courbe non fermÃ©e"); //$NON-NLS-1$
 	}
 
 
 	/** 
-	 * Constructeur à partir d'une courbe composée (cast).
-	 * Ne vérifie ni la fermeture, ni le chainage.
+	 * Constructeur Ã  partir d'une courbe composÃ©e (cast).
+	 * Ne vÃ©rifie ni la fermeture, ni le chainage.
 	 * @param compCurve
 	 */
 	public GM_Ring(GM_CompositeCurve compCurve) {
@@ -87,8 +87,8 @@ public class GM_Ring extends GM_CompositeCurve {
 	}
 
 
-	/** Constructeur à partir d'une courbe composée (cast).
-	 * Vérifie la fermeture et le chainage sinon exception. */
+	/** Constructeur Ã  partir d'une courbe composÃ©e (cast).
+	 * VÃ©rifie la fermeture et le chainage sinon exception. */
 	public GM_Ring(GM_CompositeCurve compCurve, double tolerance) throws Exception {
 		super();
 		this.generator = compCurve.getGenerator();
@@ -96,21 +96,20 @@ public class GM_Ring extends GM_CompositeCurve {
 		this.proxy[0] = compCurve.getPositive();
 		this.proxy[1] = compCurve.getNegative();
 		if (!super.validate(tolerance))
-			throw new Exception("new GM_Ring(): La courbe composée passée en paramètre n'est pas chaînée");
+			throw new Exception("new GM_Ring(): La courbe composÃ©e passÃ©e en paramÃ¨tre n'est pas chaÃ®nÃ©e"); //$NON-NLS-1$
 		if (!this.validate(tolerance))
-			throw new Exception("new GM_Ring(): La courbe composée passée en paramètre ne ferme pas.");
+			throw new Exception("new GM_Ring(): La courbe composÃ©e passÃ©e en paramÃ¨tre ne ferme pas."); //$NON-NLS-1$
 	}
 
 
-	/** Méthode pour vérifier qu'on a un chainage, et que le point initial est bien égal au point final.
-	 * Surcharge de la méthode validate sur GM_CompositeCurve.
+	/** MÃ©thode pour vÃ©rifier qu'on a un chainage, et que le point initial est bien Ã©gal au point final.
+	 * Surcharge de la mÃ©thode validate sur GM_CompositeCurve.
 	 * Renvoie TRUE si c'est le cas, FALSE sinon.*/
 	@Override
 	public boolean validate(double tolerance) {
 		if (!super.validate(tolerance)) return false;
 		GM_CurveBoundary bdy = this.boundary();
-		if (bdy.getStartPoint().getPosition().equals(bdy.getEndPoint().getPosition(),tolerance)) return true;
-		return false;
+		return (bdy.getStartPoint().getPosition().equals(bdy.getEndPoint().getPosition(),tolerance));
 	}
 
 	@Override

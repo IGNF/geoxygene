@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -30,13 +30,15 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
 /**
- * Surface orientée. A de l'intérêt pour traiter les trous : un trou est une surface orientée négativement.
- * A aussi de l'intérêt en 3D.
- * Une surface orientée positivement à sa frontière dans le sens direct (la surface est à gauche de la frontière).
- * Une surface orientée négativement à sa frontière dans le sens des aiguilles d'une montre (la surface est à droite de la frontière).
- * En 3D, on peut représenter un vecteur normal à la surface avec la règle du tire-bouchon.
- * Si l'orientation est +1, alors self est une GM_Surface, de primitive elle-même.
- * Si l'orientation est -1, alors self est une GM_OrientableSurface, de primitive une GM_Surface renversée par rapport à la surface positive.
+ * Surface orientÃ©e. A de l'intÃ©rÃªt pour traiter les trous : un trou est une surface orientÃ©e nÃ©gativement.
+ * A aussi de l'intÃ©rÃªt en 3D.
+ * Une surface orientÃ©e positivement Ã  sa frontiÃ¨re dans le sens direct 
+ * (la surface est Ã  gauche de la frontiÃ¨re).
+ * Une surface orientÃ©e nÃ©gativement Ã  sa frontiÃ¨re dans le sens des aiguilles d'une montre 
+ * (la surface est Ã  droite de la frontiÃ¨re).
+ * En 3D, on peut reprÃ©senter un vecteur normal Ã  la surface avec la rÃ¨gle du tire-bouchon.
+ * Si l'orientation est +1, alors self est une GM_Surface, de primitive elle-mÃªme.
+ * Si l'orientation est -1, alors self est une GM_OrientableSurface, de primitive une GM_Surface renversÃ©e par rapport Ã  la surface positive.
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -53,37 +55,31 @@ public class GM_OrientableSurface extends GM_OrientablePrimitive {
 	/** Renvoie la primitive de self */
 	public GM_Surface getPrimitive () {return this.primitive;}
 
-
-	/** Attribut stockant les primitives orientées de cette primitive.
-	 * Proxy[0] est celle orientée positivement.
-	 * Proxy[1] est celle orientée négativement.
-	 * On accède aux primitives orientées par getPositive() et getNegative().  */
+	/** Attribut stockant les primitives orientÃ©es de cette primitive.
+	 * Proxy[0] est celle orientÃ©e positivement.
+	 * Proxy[1] est celle orientÃ©e nÃ©gativement.
+	 * On accÃ¨de aux primitives orientÃ©es par getPositive() et getNegative().  */
 	public GM_OrientableSurface[] proxy = new GM_OrientableSurface[2];
 
+	/** Renvoie la primitive orientÃ©e positivement correspondant Ã  self. */
+	public GM_OrientableSurface getPositive () {return this.proxy[0];}
 
-	/** Renvoie la primitive orientée positivement correspondant à self. */
-	public GM_OrientableSurface getPositive () {
-		return proxy[0];
-	}
-
-
-	/** Renvoie la primitive orientée négativement correspondant à self. */
+	/** Renvoie la primitive orientÃ©e nÃ©gativement correspondant Ã  self. */
 	// on recalcule en dynamique la primitive de la primitive orientee negativement, qui est "renversee"
 	// par rapport a la primitive orientee positivement.
 	public GM_OrientableSurface getNegative() {
-		GM_Surface proxy1prim = proxy[1].primitive;
+		GM_Surface proxy1prim = this.proxy[1].primitive;
 		proxy1prim.getPatch().clear();
-		GM_Surface proxy0 = (GM_Surface)proxy[1].proxy[0];
+		GM_Surface proxy0 = (GM_Surface)this.proxy[1].proxy[0];
 		int n = proxy0.sizePatch();
-		if (n>0)
-			for (int i=0; i<n; i++) proxy1prim.addPatch(proxy0.getPatch(n-1-i).reverse());
-		return proxy[1];
+		if (n>0) for (int i=0; i<n; i++) proxy1prim.addPatch(proxy0.getPatch(n-1-i).reverse());
+		return this.proxy[1];
 	}
 
-
-	/** Redéfinition de l'opérateur "boundary" sur GM_Object. Renvoie une GM_SurfaceBoundary, c'est-à-dire un GM_Ring pour
-	 * représenter l'extérieur, et éventuellement des GM_Ring pour représenter les trous.
-	 * ATTENTION ne fonctionne que pour les surfaces composées d'un seul patch, qui est un polygone. */
+	/** RedÃ©finition de l'opÃ©rateur "boundary" sur GM_Object. 
+	 * Renvoie une GM_SurfaceBoundary, c'est-Ã -dire un GM_Ring pour
+	 * reprÃ©senter l'extÃ©rieur, et Ã©ventuellement des GM_Ring pour reprÃ©senter les trous.
+	 * ATTENTION ne fonctionne que pour les surfaces composÃ©es d'un seul patch, qui est un polygone. */
 	public GM_SurfaceBoundary boundary() {
 		GM_Surface s = this.getPrimitive();
 		int n = s.sizePatch();
@@ -94,14 +90,13 @@ public class GM_OrientableSurface extends GM_OrientablePrimitive {
 			bdy.interior = poly.getInterior();
 			return bdy;
 		}
-		System.out.println("GM_OrientableSurface::boundary() : cette méthode ne fonctionne que pour les surfaces composées d'un et d'un seul patch.");
+		System.out.println("GM_OrientableSurface::boundary() : cette mÃ©thode ne fonctionne que pour les surfaces composÃ©es d'un et d'un seul patch."); //$NON-NLS-1$
 		return null;
 	}
 
-
-	/** EXPERIMENTAL. Méthode "boundary" à utiliser dans le cas des surfaces en plusieurs morceaux
-	 * En effet, dans ce cas, on fait appel à Oracle, d'où le paramètre data. */
-	// A REVOIR : valeur de la tolérance.
+	/** EXPERIMENTAL. mÃ©thode "boundary" Ã  utiliser dans le cas des surfaces en plusieurs morceaux
+	 * En effet, dans ce cas, on fait appel Ã  Oracle, d'oÃ¹ le paramÃ¨tre data. */
+	// A REVOIR : valeur de la tolÃ©rance.
 	/*    public GM_SurfaceBoundary boundary(Geodatabase data) throws Exception {
         GM_Surface s = (GM_Surface)this.getPrimitive();
         int n = s.sizePatch();
@@ -129,11 +124,8 @@ public class GM_OrientableSurface extends GM_OrientablePrimitive {
         }
     }*/
 
-
 	/** Renvoie les coordonnees de la primitive.  */
 	@Override
-	public DirectPositionList coord() {
-		return getPrimitive().coord();
-	}
+	public DirectPositionList coord() {return getPrimitive().coord();}
 
 }

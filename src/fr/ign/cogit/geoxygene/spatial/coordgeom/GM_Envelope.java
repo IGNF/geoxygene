@@ -121,7 +121,7 @@ public class GM_Envelope {
 	/** Renvoie la dimension (3D). */
 	public int getDimension() {
 		if (this.upperCorner.getDimension() == this.lowerCorner.getDimension()) return this.upperCorner.getDimension();
-		System.out.println("GM_Enveloppe::getDimension() : Les points upperCorner et lowerCorner n'ont pas la m�me dimension."); //$NON-NLS-1$
+		System.out.println("GM_Enveloppe::getDimension() : Les points upperCorner et lowerCorner n'ont pas la même dimension."); //$NON-NLS-1$
 		return 0;
 	}
 
