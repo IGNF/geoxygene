@@ -54,7 +54,7 @@ public final class PanelDroit extends JPanel {
 
 		//selection
 		pSelection.setFont(getFont());
-		pSelection.setBorder(BorderFactory.createTitledBorder("Sélection"));
+		pSelection.setBorder(BorderFactory.createTitledBorder("Selection"));
 
 		lNbSelection.setFont(getFont());
 		pSelection.add(lNbSelection, c);
