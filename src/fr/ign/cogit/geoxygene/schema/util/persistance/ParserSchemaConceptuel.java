@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  * 
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -78,9 +78,9 @@ public class ParserSchemaConceptuel {
 
 
 	/**
-	 * parseur de schema conceptuelProduit : crée des listes de FeatureType, AttributeType
+	 * parseur de schema conceptuelProduit : crÃ©e des listes de FeatureType, AttributeType
 	 * et InheritanceRelation
-	 * à partir d'un InputStream
+	 * Ã  partir d'un InputStream
 	 * @param is
 	 **/
 	public SchemaConceptuelProduit litSchemaConceptuelProduitXML(InputStream is){
@@ -113,7 +113,7 @@ public class ParserSchemaConceptuel {
 			fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AssociationRole associationRole;
 
 
-			//je récupère les feature types
+			//je RÃ©cupÃ¨re les feature types
 			for(int i=0; i<listFeatureTypeNodes.getLength(); i++){
 				currentNode = listFeatureTypeNodes.item(i);
 				//System.out.println(currentNode.getLocalName());
@@ -135,7 +135,7 @@ public class ParserSchemaConceptuel {
 
 						schemaCible.getFeatureTypes().add(featureType);
 
-						//je récupère les attributs
+						//je RÃ©cupÃ¨re les attributs
 						listAttrib = fType.getElementsByTagName("AttributeType");
 						for(int j=0; j<listAttrib.getLength(); j++){
 							aType = (Element)listAttrib.item(j);
@@ -166,7 +166,7 @@ public class ParserSchemaConceptuel {
 						schemaCible.getFeatureAssociations().add(featureAssociation);
 
 
-						//je récupère les attributs
+						//je RÃ©cupÃ¨re les attributs
 						listAttrib = asType.getElementsByTagName("AttributeType");
 						for(int j=0; j<listAttrib.getLength(); j++){
 							aType = (Element)listAttrib.item(j);
@@ -179,7 +179,7 @@ public class ParserSchemaConceptuel {
 							featureAssociation.addFeatureAttribute(featureAttribute);
 						}
 
-						//je récupere les roles
+						//je rï¿½cupere les roles
 						listRoles = asType.getElementsByTagName("AssociationRole");
 						int idFt;
 						fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType ft;
@@ -197,7 +197,7 @@ public class ParserSchemaConceptuel {
 							associationRole.setAssociationType(featureAssociation);
 							featureAssociation.addRole(associationRole);
 
-							//je cherche le feature type associé
+							//je cherche le feature type associÃ©
 							//idFt = eRole.getElementsByTagName("idFeatureType").item(0).getNodeValue()).intValue();
 							idFt = new Integer(eRole.getElementsByTagName("featureTypeId").item(0).getFirstChild().getNodeValue()).intValue();
 							for (int k = 0; k<schemaCible.getFeatureTypes().size(); k++){
@@ -225,12 +225,12 @@ public class ParserSchemaConceptuel {
 
 
 	/**
-	 * parseur de schema conceptuelProduit : crée des listes de FeatureType, AttributeType
+	 * parseur de schema conceptuelProduit : crÃ©e des listes de FeatureType, AttributeType
 	 * et InheritanceRelation
-	 * à partir d'un fichier
+	 * Ã  partir d'un fichier
 	 * @param file
-	 * fichier XML du schéma conceptuel lu
-	 * @return objet SchemaConceptuelJeu qui va être créé par le parseur.
+	 * fichier XML du schÃ©ma conceptuel lu
+	 * @return objet SchemaConceptuelJeu qui va Ãªtre crÃ©Ã© par le parseur.
 	 */
 	public SchemaConceptuelProduit litSchemaConceptuelProduitXML(File file){
 
@@ -263,7 +263,7 @@ public class ParserSchemaConceptuel {
 			fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AssociationRole associationRole;
 
 
-			//je récupère les feature types
+			//je RÃ©cupÃ¨re les feature types
 			for(int i=0; i<listFeatureTypeNodes.getLength(); i++){
 				currentNode = listFeatureTypeNodes.item(i);
 				//System.out.println(currentNode.getLocalName());
@@ -285,7 +285,7 @@ public class ParserSchemaConceptuel {
 
 						schemaCible.getFeatureTypes().add(featureType);
 
-						//je récupère les attributs
+						//je RÃ©cupÃ¨re les attributs
 						listAttrib = fType.getElementsByTagName("AttributeType");
 						for(int j=0; j<listAttrib.getLength(); j++){
 							aType = (Element)listAttrib.item(j);
@@ -316,7 +316,7 @@ public class ParserSchemaConceptuel {
 						schemaCible.getFeatureAssociations().add(featureAssociation);
 
 
-						//je récupère les attributs
+						//je RÃ©cupÃ¨re les attributs
 						listAttrib = asType.getElementsByTagName("AttributeType");
 						for(int j=0; j<listAttrib.getLength(); j++){
 							aType = (Element)listAttrib.item(j);
@@ -329,7 +329,7 @@ public class ParserSchemaConceptuel {
 							featureAssociation.addFeatureAttribute(featureAttribute);
 						}
 
-						//je récupere les roles
+						//je rï¿½cupere les roles
 						listRoles = asType.getElementsByTagName("AssociationRole");
 						int idFt;
 						fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType ft;
@@ -347,7 +347,7 @@ public class ParserSchemaConceptuel {
 							associationRole.setAssociationType(featureAssociation);
 							featureAssociation.addRole(associationRole);
 
-							//je cherche le feature type associé
+							//je cherche le feature type associÃ©
 							//idFt = eRole.getElementsByTagName("idFeatureType").item(0).getNodeValue()).intValue();
 							idFt = new Integer(eRole.getElementsByTagName("featureTypeId").item(0).getFirstChild().getNodeValue()).intValue();
 							for (int k = 0; k<schemaCible.getFeatureTypes().size(); k++){
@@ -376,12 +376,12 @@ public class ParserSchemaConceptuel {
 
 
 	/**
-	 * parseur de schema conceptuelJeu : crée des listes de FeatureType, AttributeType
+	 * parseur de schema conceptuelJeu : crÃ©e des listes de FeatureType, AttributeType
 	 * et InheritanceRelation
-	 * à partir d'un fichier
+	 * Ã  partir d'un fichier
 	 * @param file
-	 * fichier XML du schéma conceptuel lu
-	 * @return objet SchemaConceptuelJeu qui va être créé par le parseur.
+	 * fichier XML du schÃ©ma conceptuel lu
+	 * @return objet SchemaConceptuelJeu qui va Ãªtre crÃ©Ã© par le parseur.
 	 */
 	public SchemaConceptuelJeu litSchemaConceptuelJeuXML(File file){
 
@@ -413,7 +413,7 @@ public class ParserSchemaConceptuel {
 			AttributeType featureAttribute;
 			AssociationRole associationRole;
 
-			//je récupère les feature types
+			//je RÃ©cupÃ¨re les feature types
 			for(int i=0; i<listFeatureTypeNodes.getLength(); i++){
 				currentNode = listFeatureTypeNodes.item(i);
 				//System.out.println(currentNode.getLocalName());
@@ -435,7 +435,7 @@ public class ParserSchemaConceptuel {
 
 						schemaCible.getFeatureTypes().add(featureType);
 
-						//je récupère les attributs
+						//je RÃ©cupÃ¨re les attributs
 						listAttrib = fType.getElementsByTagName("AttributeType");
 						for(int j=0; j<listAttrib.getLength(); j++){
 							aType = (Element)listAttrib.item(j);
@@ -466,7 +466,7 @@ public class ParserSchemaConceptuel {
 						(schemaCible).getFeatureAssociations().add(featureAssociation);
 
 
-						//je récupère les attributs
+						//je RÃ©cupÃ¨re les attributs
 						listAttrib = asType.getElementsByTagName("AttributeType");
 						for(int j=0; j<listAttrib.getLength(); j++){
 							aType = (Element)listAttrib.item(j);
@@ -479,7 +479,7 @@ public class ParserSchemaConceptuel {
 							featureAssociation.addFeatureAttribute(featureAttribute);
 						}
 
-						//je récupere les roles
+						//je rï¿½cupere les roles
 						listRoles = asType.getElementsByTagName("AssociationRole");
 						int idFt;
 						FeatureType ft;
@@ -497,7 +497,7 @@ public class ParserSchemaConceptuel {
 							associationRole.setAssociationType(featureAssociation);
 							featureAssociation.addRole(associationRole);
 
-							//je cherche le feature type associé
+							//je cherche le feature type associÃ©
 							//idFt = eRole.getElementsByTagName("idFeatureType").item(0).getNodeValue()).intValue();
 							idFt = new Integer(eRole.getElementsByTagName("featureTypeId").item(0).getFirstChild().getNodeValue()).intValue();
 							for (int k = 0; k<schemaCible.getFeatureTypes().size(); k++){
@@ -524,12 +524,12 @@ public class ParserSchemaConceptuel {
 	}
 	
 	/**
-	 * parseur de schema conceptuelJeu : crée des listes de FeatureType, AttributeType
+	 * parseur de schema conceptuelJeu : crÃ©e des listes de FeatureType, AttributeType
 	 * et InheritanceRelation
-	 * à partir d'un fichier
+	 * Ã  partir d'un fichier
 	 * @param is
-	 * flux XML correspondant au schéma conceptuel lu
-	 * @return objet SchemaConceptuelJeu qui va être créé par le parseur.
+	 * flux XML correspondant au schÃ©ma conceptuel lu
+	 * @return objet SchemaConceptuelJeu qui va Ãªtre crÃ©Ã© par le parseur.
 	 */
 	public SchemaConceptuelJeu litSchemaConceptuelJeuXML(InputStream is){
 
@@ -557,7 +557,7 @@ public class ParserSchemaConceptuel {
 			AssociationType featureAssociation;
 			AttributeType featureAttribute;
 			AssociationRole associationRole;
-			//				je récupère les feature types
+			//				je RÃ©cupÃ¨re les feature types
 			for(int i=0; i<listFeatureTypeNodes.getLength(); i++){
 				currentNode = listFeatureTypeNodes.item(i);
 				//System.out.println(currentNode.getLocalName());
@@ -579,7 +579,7 @@ public class ParserSchemaConceptuel {
 
 						schemaCible.getFeatureTypes().add(featureType);
 
-						//je récupère les attributs
+						//je RÃ©cupÃ¨re les attributs
 						listAttrib = fType.getElementsByTagName("AttributeType");
 						for(int j=0; j<listAttrib.getLength(); j++){
 							aType = (Element)listAttrib.item(j);
@@ -610,7 +610,7 @@ public class ParserSchemaConceptuel {
 						(schemaCible).getFeatureAssociations().add(featureAssociation);
 
 
-						//je récupère les attributs
+						//je RÃ©cupÃ¨re les attributs
 						listAttrib = asType.getElementsByTagName("AttributeType");
 						for(int j=0; j<listAttrib.getLength(); j++){
 							aType = (Element)listAttrib.item(j);
@@ -623,7 +623,7 @@ public class ParserSchemaConceptuel {
 							featureAssociation.addFeatureAttribute(featureAttribute);
 						}
 
-						//je récupere les roles
+						//je rï¿½cupere les roles
 						listRoles = asType.getElementsByTagName("AssociationRole");
 						int idFt;
 						FeatureType ft;
@@ -641,7 +641,7 @@ public class ParserSchemaConceptuel {
 							associationRole.setAssociationType(featureAssociation);
 							featureAssociation.addRole(associationRole);
 
-							//je cherche le feature type associé
+							//je cherche le feature type associÃ©
 							//idFt = eRole.getElementsByTagName("idFeatureType").item(0).getNodeValue()).intValue();
 							idFt = new Integer(eRole.getElementsByTagName("featureTypeId").item(0).getFirstChild().getNodeValue()).intValue();
 							for (int k = 0; k<schemaCible.getFeatureTypes().size(); k++){
@@ -669,7 +669,7 @@ public class ParserSchemaConceptuel {
 	}
 
 	/**
-	 * sérialise dans un fichier XML un objet SchemaConceptuelJeu
+	 * sï¿½rialise dans un fichier XML un objet SchemaConceptuelJeu
 	 */
 	public void ecritSchemaConceptuelJeu(SchemaConceptuelJeu sc, File file){
 
@@ -903,7 +903,7 @@ public class ParserSchemaConceptuel {
 			}
 
 
-			//ecriture des heritages : à faire !!!
+			//ecriture des heritages : Ã  faire !!!
 
 			doc.appendChild(schema);
 
@@ -937,7 +937,7 @@ public class ParserSchemaConceptuel {
 	}
 
 	/**
-	 * sérialise dans un fichier XML un objet SchemaConceptuelProduit
+	 * sï¿½rialise dans un fichier XML un objet SchemaConceptuelProduit
 	 * @param sc
 	 * @param file
 	 */
@@ -1166,7 +1166,7 @@ public class ParserSchemaConceptuel {
 			}
 
 
-			//ecriture des heritages : à faire !!!
+			//ecriture des heritages : Ã  faire !!!
 
 			doc.appendChild(schema);
 

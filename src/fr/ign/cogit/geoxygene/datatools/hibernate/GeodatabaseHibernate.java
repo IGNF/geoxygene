@@ -132,7 +132,7 @@ public class GeodatabaseHibernate implements Geodatabase {
 		} catch (FileNotFoundException e) {
 			logger.error("Le fichier "+fileName+" n'existe pas");
 		} catch (IOException e) {
-			logger.error("Erreur pendant l'exécution des requêtes du fichier "+fileName);
+			logger.error("Erreur pendant l'exï¿½cution des requï¿½tes du fichier "+fileName);
 			logger.error(e.getMessage());
 		}
 	}
@@ -155,7 +155,7 @@ public class GeodatabaseHibernate implements Geodatabase {
 		for (int i=0; i<metadataList.size(); i++)
 			if (theClass.getName().compareTo((metadataList.get(i)).getClassName()) == 0)
 				return metadataList.get(i);
-		logger.warn("La classe n'est pas mappée : "+theClass.getName());
+		logger.warn("La classe n'est pas mappï¿½e : "+theClass.getName());
 		return null;
 	}
 
@@ -165,7 +165,7 @@ public class GeodatabaseHibernate implements Geodatabase {
 			if ((metadataList.get(i)).getTableName() != null)
 				if (theTable.compareToIgnoreCase((metadataList.get(i)).getTableName()) == 0)
 					return metadataList.get(i);
-		logger.warn("La table n'est pas mappée : "+theTable);
+		logger.warn("La table n'est pas mappï¿½e : "+theTable);
 		return null;
 	}
 
@@ -246,7 +246,7 @@ public class GeodatabaseHibernate implements Geodatabase {
 		try {
 			result = featureListClass.newInstance();
 		} catch (Exception e)  {
-			logger.error("Impossible de créer une nouvelle instance de la classe "+featureListClass.getName());
+			logger.error("Impossible de crÃ©er une nouvelle instance de la classe "+featureListClass.getName());
 			e.printStackTrace();
 			return null;
 		}
@@ -259,14 +259,14 @@ public class GeodatabaseHibernate implements Geodatabase {
 				try {
 					List<?> list = session.createSQLQuery(query).list();
 					Iterator<?> iter = list.iterator();
-					// on récupère le srid attribué à cette classe dans les métadonnées
+					// on RÃ©cupÃ¨re le srid attribuï¿½ Ã  cette classe dans les mÃ©tadonnÃ©es
 					Metadata metadata = this.getMetadata(featureClass);
 					int srid = -1;
 					if (metadata!=null&&metadata.getSRID()!=0) {
 						srid=metadata.getSRID();
 					} else {
-						// si cette classe ne contient pas de métadonnées ou si c'est une classe mère de la classe stockée dans le SGBD
-						// on récupère le premier élément (s'il existe) et ses métadonnées.
+						// si cette classe ne contient pas de mÃ©tadonnÃ©es ou si c'est une classe mÃ¨re de la classe stockÃ©e dans le SGBD
+						// on RÃ©cupÃ¨re le premier Ã©lÃ©ment (s'il existe) et ses mÃ©tadonnÃ©es.
 						if (iter.hasNext()) {
 							FT_Feature feature = (FT_Feature) iter.next();
 							metadata = this.getMetadata(feature.getClass());
@@ -305,14 +305,14 @@ public class GeodatabaseHibernate implements Geodatabase {
 				try {
 					List<T> list = session.createSQLQuery(query).list();
 					Iterator<T> iter = list.iterator();
-					// on récupère le srid attribué à cette classe dans les métadonnées
+					// on RÃ©cupÃ¨re le srid attribuï¿½ Ã  cette classe dans les mÃ©tadonnÃ©es
 					Metadata metadata = this.getMetadata(featureClass);
 					int srid = -1;
 					if (metadata!=null&&metadata.getSRID()!=0) {
 						srid=metadata.getSRID();
 					} else {
-						// si cette classe ne contient pas de métadonnées ou si c'est une classe mère de la classe stockée dans le SGBD
-						// on récupère le premier élément (s'il existe) et ses métadonnées.
+						// si cette classe ne contient pas de mÃ©tadonnÃ©es ou si c'est une classe mÃ¨re de la classe stockÃ©e dans le SGBD
+						// on RÃ©cupÃ¨re le premier Ã©lÃ©ment (s'il existe) et ses mÃ©tadonnÃ©es.
 						if (iter.hasNext()) {
 							T feature = iter.next();
 							metadata = this.getMetadata(feature.getClass());
@@ -344,7 +344,7 @@ public class GeodatabaseHibernate implements Geodatabase {
 	public <T extends FT_Feature> FT_FeatureCollection<T> loadAllFeatures(FeatureType featureType) {return null;}
 	@Override
 	public List<?> loadOQL(String query, Object param) {
-		// TODO à implémenter
+		// TODO Ã  implÃ©menter
 		return null;
 	}
 	@Override

@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -34,8 +34,8 @@ import org.apache.ojb.broker.accesslayer.conversions.FieldConversion;
 /**
  * Conversion des geometries d'un SGBD (Oracle ou Postgis)
  * dans le format GeOxygene, et reciproquement.
- * Pour fonctionner, utiliser absolument la classe "GeOxygeneStatementManager" ( à configurer dans OJB.properties).
- * Permet d'utiliser le même convertisseur pour Oracle et Postgis, et ainsi les mêmes fichiers de mapping.
+ * Pour fonctionner, utiliser absolument la classe "GeOxygeneStatementManager" ( Ã  configurer dans OJB.properties).
+ * Permet d'utiliser le mÃªme convertisseur pour Oracle et Postgis, et ainsi les mÃªmes fichiers de mapping.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.1
@@ -62,7 +62,7 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
 	private Method geomPostgis2GeOxygeneMethod;
 
 
-	// Le constructeur initialise les méthodes à appeler
+	// Le constructeur initialise les mÃ©thodes Ã  appeler
 	public GeomGeOxygene2Dbms () {
 
 		// ORACLE
@@ -75,7 +75,7 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
 				System.exit(0);
 			}
 		} catch (ClassNotFoundException notfound1) {
-			// On ne dit rien : Oracle n'a pas été compilé !
+			// On ne dit rien : Oracle n'a pas Ã©tÃ© compilï¿½ !
 		}
 
 		//	POSTGIS
@@ -84,7 +84,7 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
 			try {
 				geomPostgis2GeOxygeneMethod = geomGeOxygene2PostgisClass.getMethod("sqlToJava", new Class[] {Object.class});
 			} catch (NoSuchMethodException nosuch2) {
-				logger.fatal("la méthode sqlToJava n'existe pas sur la classe "+GeomGeOxygene2Postgis_CLASS_NAME);
+				logger.fatal("la mÃ©thode sqlToJava n'existe pas sur la classe "+GeomGeOxygene2Postgis_CLASS_NAME);
 				nosuch2.printStackTrace();
 				System.exit(0);
 			}
@@ -106,7 +106,7 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
 			try {
 				return geomOracle2GeOxygeneMethod.invoke(null, new Object[] {geom});
 			} catch (Exception e) {
-				logger.error("Géométrie renvoyée nulle");
+				logger.error("gÃ©omÃ©trie renvoyÃ©e nulle");
 				logger.error(e.getMessage());
 				e.printStackTrace();
 				return null;
@@ -118,7 +118,7 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
 			try {
 				return geomPostgis2GeOxygeneMethod.invoke(null, new Object[] {geom});
 			} catch (Exception e) {
-				logger.error("Géométrie renvoyée nulle");
+				logger.error("gÃ©omÃ©trie renvoyÃ©e nulle");
 				logger.error(e.getMessage());
 				e.printStackTrace();
 				return null;
@@ -126,15 +126,15 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
 		}
 		// SINON
 		else {
-			logger.error("## Le SGBD n'est ni Oracle, ni PostgreSQL - valeur nulle retournée ##");
+			logger.error("## Le SGBD n'est ni Oracle, ni PostgreSQL - valeur nulle retournÃ©e ##");
 			return null;
 		}
 
 	}
 
-	// Les méthodes relatives à Oracle ou Postgis sont appelée directement dans "GeOxygeneStatementManager"
+	// Les mÃ©thodes relatives Ã  Oracle ou Postgis sont appelï¿½e directement dans "GeOxygeneStatementManager"
 	public Object javaToSql (Object geom) {
-		logger.error("## WARNING ## Ne devrait pas être appelé !! Renvoie nulle");
+		logger.error("## WARNING ## Ne devrait pas Ãªtre appelï¿½ !! Renvoie nulle");
 		return null;
 	}
 

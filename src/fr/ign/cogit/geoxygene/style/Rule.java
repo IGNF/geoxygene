@@ -90,7 +90,7 @@ public class Rule {
 
 	/**
 	 * Affecte la valeur de l'attribut name.
-	 * @param name l'attribut name � affecter
+	 * @param name l'attribut name à affecter
 	 */
 	public void setName(String name) {this.name = name;}
 	
@@ -121,7 +121,7 @@ public class Rule {
 
 	/**
 	 * Affecte la valeur de l'attribut filter.
-	 * @param filter l'attribut filter � affecter
+	 * @param filter l'attribut filter à affecter
 	 */
 	public void setFilter(Filter filter) {
 		if (this.filter == null) this.filter = new Filter[1];
@@ -154,7 +154,7 @@ public class Rule {
 
 	/**
 	 * Affecte la valeur de l'attribut symbolizers.
-	 * @param symbolizers l'attribut symbolizers � affecter
+	 * @param symbolizers l'attribut symbolizers à affecter
 	 */
 	public void setSymbolizers(List<Symbolizer> symbolizers) {this.symbolizers = symbolizers;}
 

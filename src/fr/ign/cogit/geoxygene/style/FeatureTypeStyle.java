@@ -51,7 +51,7 @@ public class FeatureTypeStyle {
 
 	/**
 	 * Affecte la valeur de l'attribut rules.
-	 * @param rules l'attribut rules � affecter
+	 * @param rules l'attribut rules à affecter
 	 */
 	public void setRules(List<Rule> rules) {this.rules = rules;}
 
@@ -64,7 +64,7 @@ public class FeatureTypeStyle {
 
 	/**
 	 * Affecte la valeur de l'attribut name.
-	 * @param name l'attribut name � affecter
+	 * @param name l'attribut name à affecter
 	 */
 	public void setName(String name) {this.name=name;}
 

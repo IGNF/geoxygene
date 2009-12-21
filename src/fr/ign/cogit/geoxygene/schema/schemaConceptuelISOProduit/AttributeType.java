@@ -34,12 +34,12 @@ public class AttributeType implements	GF_AttributeType {
 	/** nom de l'attribut. */
 	protected String memberName;
 
-	/** Renvoie le nom de la propriété. */
+	/** Renvoie le nom de la propriÃ©tÃ©. */
 	public String getMemberName() {
 		return this.memberName;
 	}
 
-	/** Affecte un nom de propriété. */
+	/** Affecte un nom de propriÃ©tÃ©. */
 	public void setMemberName(String MemberName) {
 		this.memberName = MemberName;
 	}
@@ -49,7 +49,7 @@ public class AttributeType implements	GF_AttributeType {
 	/** Type de l'attribut. */
 	protected String valueType;
 
-	/** Type de domaine de valeur 0 pour non énuméré et 1 pour énuméré. */
+	/** Type de domaine de valeur 0 pour non ï¿½numï¿½rï¿½ et 1 pour ï¿½numï¿½rï¿½. */
 	protected boolean valueDomainType;
 
 
@@ -63,12 +63,12 @@ public class AttributeType implements	GF_AttributeType {
 	protected GF_FeatureType featureType;
 
 
-	/** Renvoie le feature type auquel est rattaché la propriété. */
+	/** Renvoie le feature type auquel est rattachï¿½ la propriÃ©tÃ©. */
 	public GF_FeatureType getFeatureType() {
 		return this.featureType;
 	}
 
-	/** Affecte un feature type à la propriété. */
+	/** Affecte un feature type Ã  la propriÃ©tÃ©. */
 	public void setFeatureType(GF_FeatureType FeatureType) {
 		this.featureType = FeatureType;
 	}
@@ -78,20 +78,20 @@ public class AttributeType implements	GF_AttributeType {
 	/** definition de l'attribut. */
 	protected String definition;
 
-	/** Renvoie la définition. */
+	/** Renvoie la dÃ©finition. */
 	public String getDefinition() {
 		return this.definition;
 	}
 
-	/** Affecte une définition. */
+	/** Affecte une dÃ©finition. */
 	public void setDefinition(String Definition) {
 		this.definition = Definition;
 	}
 
 
-	/**la définition semantique du featureType (sous la forme d'un String
+	/**la dÃ©finition semantique du featureType (sous la forme d'un String
 	 ou d'une classe d'ontologie)
-	 ou un pointeur vers cette définition (sous la forme d'une URI)*/
+	 ou un pointeur vers cette dÃ©finition (sous la forme d'une URI)*/
 	protected Object definitionReference;
 	/**
 	 * @return the definitionReference
@@ -117,7 +117,7 @@ public class AttributeType implements	GF_AttributeType {
 		return this.cardMin;
 	}
 
-	/** Affecte un nombre de valeurs minimal à l'attribut. */
+	/** Affecte un nombre de valeurs minimal Ã  l'attribut. */
 	public void setCardMin(int CardMin) {
 		this.cardMin = CardMin;
 	}
@@ -132,7 +132,7 @@ public class AttributeType implements	GF_AttributeType {
 		return this.cardMax;
 	}
 
-	/** Affecte un nombre de valeurs maximal à l'attribut. */
+	/** Affecte un nombre de valeurs maximal Ã  l'attribut. */
 	public void setCardMax(int CardMax) {
 		this.cardMax = CardMax;
 	}
@@ -181,9 +181,9 @@ public class AttributeType implements	GF_AttributeType {
 
 	/**
 	 * Non standard
-	 * Utile aux applications de transformation de schéma
-	 * caractère implicite ou explicite de l'élément : un attributeType implicite
-	 * n'a pas de valeur à priori mais celle-ci pourra être dérivée
+	 * Utile aux applications de transformation de schÃ©ma
+	 * caractï¿½re implicite ou explicite de l'Ã©lÃ©ment : un attributeType implicite
+	 * n'a pas de valeur Ã  priori mais celle-ci pourra Ãªtre dï¿½rivï¿½e
 	 * d'elements explicites par le biais de transformations
 	 **/
 	protected boolean isExplicite;
@@ -193,7 +193,7 @@ public class AttributeType implements	GF_AttributeType {
 		return this.isExplicite;
 	}
 
-	/** Affecte le caractère implicite ou explicite */
+	/** Affecte le caractï¿½re implicite ou explicite */
 	public void setIsExplicite(boolean value) {
 		this.isExplicite = value;
 	}
@@ -205,7 +205,7 @@ public class AttributeType implements	GF_AttributeType {
 		return this.valueType;
 	}
 
-	/** Affecte un type à l'attribut. */
+	/** Affecte un type Ã  l'attribut. */
 	public void setValueType(String ValueType) {
 		this.valueType = ValueType;
 	}
@@ -215,14 +215,14 @@ public class AttributeType implements	GF_AttributeType {
 		return this.valueDomainType;
 	}
 
-	/** Affecte un type à l'attribut. */
+	/** Affecte un type Ã  l'attribut. */
 	public void setValueDomainType(boolean ValueDomainType) {
 		this.valueDomainType = ValueDomainType;
 	}
 
 
-	/** le domaine de valeurs (énuméré ou non) sous forme de chaîne de caractères
-	 * exemples : "positif", "toute extension de GM_Object", "oui/non/indéterminé"
+	/** le domaine de valeurs (ï¿½numï¿½rï¿½ ou non) sous forme de chaÃ®ne de caractï¿½res
+	 * exemples : "positif", "toute extension de GM_Object", "oui/non/indï¿½terminï¿½"
 	 **/
 	protected String domainOfValues;
 
@@ -244,7 +244,7 @@ public class AttributeType implements	GF_AttributeType {
 		return this.valuesDomain;
 	}
 
-	/** Renvoie les valeurs possibles d'un attribut enumere sous forme de liste de chaines de caractères. */
+	/** Renvoie les valeurs possibles d'un attribut enumere sous forme de liste de chaines de caractï¿½res. */
 	public List<String> getValuesDomainToString() {
 		List<String> valeurs = new ArrayList<String>();
 		Iterator<FC_FeatureAttributeValue> it = this.valuesDomain.iterator();
@@ -270,7 +270,7 @@ public class AttributeType implements	GF_AttributeType {
 		}
 	}
 
-	/** Ajoute une valeur à la liste des valeurs possibles de l'attribut. */
+	/** Ajoute une valeur Ã  la liste des valeurs possibles de l'attribut. */
 	public void addValuesDomain(FC_FeatureAttributeValue value) {
 		if (value==null){return;}
 		this.valuesDomain.add(value);
@@ -288,17 +288,17 @@ public class AttributeType implements	GF_AttributeType {
 	////////////////////////////
 
 	/**
-	 * Attribut en caractérisant un autre. La relation inverse n'est pas
-	 * implémentée.
+	 * Attribut en caractï¿½risant un autre. La relation inverse n'est pas
+	 * implÃ©mentÃ©e.
 	 */
 	protected GF_AttributeType characterize;
 
-	/** Renvoie l'attribut que self caractérise. */
+	/** Renvoie l'attribut que self caractï¿½rise. */
 	public GF_AttributeType getCharacterize() {
 		return this.characterize;
 	}
 
-	/** Affecte un attribut que self caractérise. */
+	/** Affecte un attribut que self caractï¿½rise. */
 	public void setCharacterize(GF_AttributeType characterize) {
 		this.characterize = characterize;
 	}

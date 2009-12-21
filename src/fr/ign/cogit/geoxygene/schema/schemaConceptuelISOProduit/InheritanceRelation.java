@@ -21,7 +21,7 @@ public class InheritanceRelation implements GF_InheritanceRelation {
 	public int getId() {return id;}
 	public void setId(int id) {this.id = id;}
 
-	/**Nom de la généralisation ou de la spécialisation. */
+	/**Nom de la gÃ©nÃ©ralisation ou de la spÃ©cialisation. */
 	protected String name;
 	/** Renvoie le nom. */
 	public String getName () {return this.name;}
@@ -30,12 +30,12 @@ public class InheritanceRelation implements GF_InheritanceRelation {
 
 
 
-	/** Classe mère de la relation d'heritage. */
+	/** Classe mÃ¨re de la relation d'heritage. */
 	protected FeatureType superType;
-	/** Renvoie la classe mère de la relation d'héritage. */
+	/** Renvoie la classe mÃ¨re de la relation d'hÃ©ritage. */
 	public GF_FeatureType getSuperType() { return superType; }
 
-	/** Affecte une classe mère à la relation d'héritage. */
+	/** Affecte une classe mÃ¨re Ã  la relation d'hÃ©ritage. */
 	public void setSuperType(GF_FeatureType SuperType) {
 		FeatureType old=this.superType;
 		this.superType = (FeatureType)SuperType;
@@ -48,10 +48,10 @@ public class InheritanceRelation implements GF_InheritanceRelation {
 
 	/** Classe fille de la relation d'heritage. */
 	protected FeatureType subType;
-	/** Renvoie la classe fille de la relation d'héritage. */
+	/** Renvoie la classe fille de la relation d'hÃ©ritage. */
 	public GF_FeatureType getSubType() { return subType; }
 
-	/** Affecte une classe fille à la relation d'héritage. */
+	/** Affecte une classe fille Ã  la relation d'hÃ©ritage. */
 	public void setSubType(GF_FeatureType SubType) {
 		FeatureType old = this.subType;
 		this.subType = (FeatureType)SubType;
@@ -69,7 +69,7 @@ public class InheritanceRelation implements GF_InheritanceRelation {
 	public void setDescription (String Description) {this.description = Description;}
 
 
-	/** TRUE si une instance de l'hyperclasse doit être au plus dans une sous-classe, FALSE sinon. */
+	/** TRUE si une instance de l'hyperclasse doit Ãªtre au plus dans une sous-classe, FALSE sinon. */
 	protected boolean uniqueInstance;
 	/** Renvoie l'attribut uniqueInstance. */
 	public boolean getUniqueInstance () {return this.uniqueInstance;}
@@ -82,7 +82,7 @@ public class InheritanceRelation implements GF_InheritanceRelation {
 	public boolean getBoolExtends(){return this.boolExtends;}
 	public void setBoolExtends(boolean value){this.boolExtends = value;}
 
-	/** proprietaire de l'élément (producteur=1, utilisateur=2)**/
+	/** proprietaire de l'Ã©lÃ©ment (producteur=1, utilisateur=2)**/
 	protected int proprietaire;
 	/** Renvoie le proprietaire */
 	public int getProprietaire(){return this.proprietaire;}

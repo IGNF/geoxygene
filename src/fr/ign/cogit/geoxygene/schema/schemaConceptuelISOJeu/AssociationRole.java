@@ -53,7 +53,7 @@ public class AssociationRole implements GF_AssociationRole {
 	public String getDefinition() {return this.definition;}
 	public void setDefinition(String Definition) {this.definition = Definition;}
 
-	/**lien vers le featureType concerné*/
+	/**lien vers le featureType concernÃ©*/
 	protected FeatureType featureType;
 	public GF_FeatureType getFeatureType() {return this.featureType;}
 	public void setFeatureType(GF_FeatureType featureType) {
@@ -65,7 +65,7 @@ public class AssociationRole implements GF_AssociationRole {
 		}
 	}
 
-	/**lien vers le featureAssociation concerné*/
+	/**lien vers le featureAssociation concernÃ©*/
 	protected AssociationType associationType;
 	public GF_AssociationType getAssociationType(){return this.associationType;}
 	public void setAssociationType(GF_AssociationType associationType) {this.associationType = (AssociationType)associationType;}
@@ -103,19 +103,19 @@ public class AssociationRole implements GF_AssociationRole {
 
 	/**
 	 * Non standard
-	 * Utils aux applications de transformation de schéma
-	 * caractère implicite ou explicite de l'élément : cf AssociationType.isExplicite
+	 * Utils aux applications de transformation de schÃ©ma
+	 * caractï¿½re implicite ou explicite de l'Ã©lÃ©ment : cf AssociationType.isExplicite
 	 **/
 	protected boolean isExplicite;
 	/** Renvoie le caractere explicite ou implicite */
 	public boolean getIsExplicite(){return this.isExplicite;}
-	/** Affecte le caractère implicite ou explicite */
+	/** Affecte le caractï¿½re implicite ou explicite */
 	public void setIsExplicite(boolean value){this.isExplicite = value;}
 
 
 
 	/**
-	 * commodité pour retrouver à quel schéma appartient ce role
+	 * commoditï¿½ pour retrouver Ã  quel schÃ©ma appartient ce role
 	 * (en passant par le featureType auquel il se rapporte)
 	 * @return SchemaConceptuelJeu
 	 */
@@ -128,7 +128,7 @@ public class AssociationRole implements GF_AssociationRole {
 
 
 
-	/***methodes heritees de l'interface pas encore précisées***/
+	/***methodes heritees de l'interface pas encore prÃ©cisÃ©es***/
 
 
 	public List<GF_Constraint> getConstraint() {

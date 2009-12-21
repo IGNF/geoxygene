@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -42,8 +42,8 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.3
- * 21/07/2008 : modification de la définition de la requete dans la methode executeFeatureList (Nathalie, Seb)
- * 21/07/2008 : modification de initGeomMetadata : récupération du SRID dans postgis (Julien Perret)
+ * 21/07/2008 : modification de la dÃ©finition de la requete dans la methode executeFeatureList (Nathalie, Seb)
+ * 21/07/2008 : modification de initGeomMetadata : rï¿½cupï¿½ration du SRID dans postgis (Julien Perret)
  */
 public class PostgisSpatialQuery {
 
@@ -132,14 +132,14 @@ public class PostgisSpatialQuery {
 
 
 	public static List<?> loadAllFeatures(Geodatabase data, Class<?> theClass, GM_Object geom, double dist) {
-		// On crée un buffer autour de la géometrie
+		// On crÃ©e un buffer autour de la gÃ©ometrie
 		GM_Object buffer = geom.buffer(dist);
 		String query = "Intersects";
 		return executeFeatureList(data,buffer,theClass,query);
 	}
 
 
-	/** Renvoie une liste d'identifiants résultats d'une requete spatiale.*/
+	/** Renvoie une liste d'identifiants rÃ©sultats d'une requete spatiale.*/
 	private static List<?> executeFeatureList(Geodatabase data, GM_Object geom, Class<?> theClass, String theQuery) {
 
 		// ceci sera le resultat
@@ -151,10 +151,10 @@ public class PostgisSpatialQuery {
 			String pkColumn = data.getMetadata(theClass).getIdColumnName();
 			String geomColumn = data.getMetadata(theClass).getGeomColumnName();
 
-			// récupère la connection
+			// RÃ©cupÃ¨re la connection
 			Connection conn = data.getConnection();
 
-			// définition de la requête
+			// dÃ©finition de la requï¿½te
 			String geomString = "SRID="+geom.getCRS()+";"+geom.toString();
 			String query = "SELECT t."+pkColumn+" FROM "+tableName+" t ";
 			query = query + "WHERE t." +geomColumn + " && '" +geomString + "'";

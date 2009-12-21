@@ -40,7 +40,7 @@ public class PointPlacement implements Placement {
 	public AnchorPoint getAnchorPoint() {return this.anchorPoint;}
 	/**
 	 * Affecte la valeur de l'attribut anchorPoint.
-	 * @param anchorPoint l'attribut anchorPoint � affecter
+	 * @param anchorPoint l'attribut anchorPoint à affecter
 	 */
 	public void setAnchorPoint(AnchorPoint anchorPoint) {this.anchorPoint = anchorPoint;}
 	
@@ -52,7 +52,7 @@ public class PointPlacement implements Placement {
 	public Displacement getDisplacement() {return this.displacement;}
 	/**
 	 * Affecte la valeur de l'attribut displacement.
-	 * @param displacement l'attribut displacement � affecter
+	 * @param displacement l'attribut displacement à affecter
 	 */
 	public void setDisplacement(Displacement displacement) {this.displacement = displacement;}
 	
@@ -64,7 +64,7 @@ public class PointPlacement implements Placement {
 	public float getRotation() {return this.rotation;}
 	/**
 	 * Affecte la valeur de l'attribut rotation.
-	 * @param rotation l'attribut rotation � affecter
+	 * @param rotation l'attribut rotation à affecter
 	 */
 	public void setRotation(float rotation) {this.rotation = rotation;}
 }

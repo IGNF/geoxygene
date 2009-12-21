@@ -43,7 +43,7 @@ public class Graphic {
 	public List<ExternalGraphic> getExternalGraphics() {return this.externalGraphics;}
 	/**
 	 * Affecte la valeur de l'attribut externalGraphics.
-	 * @param externalGraphics l'attribut externalGraphics � affecter
+	 * @param externalGraphics l'attribut externalGraphics à affecter
 	 */
 	public void setExternalGraphics(List<ExternalGraphic> externalGraphics) {this.externalGraphics = externalGraphics;}
 
@@ -55,7 +55,7 @@ public class Graphic {
 	public List<Mark> getMarks() {return this.marks;}
 	/**
 	 * Affecte la valeur de l'attribut marks.
-	 * @param marks l'attribut marks � affecter
+	 * @param marks l'attribut marks à affecter
 	 */
 	public void setMarks(List<Mark> marks) {this.marks = marks;}
 	
@@ -67,7 +67,7 @@ public class Graphic {
 	public float getOpacity() {return this.opacity;}
 	/**
 	 * Affecte la valeur de l'attribut opacity.
-	 * @param opacity l'attribut opacity � affecter
+	 * @param opacity l'attribut opacity à affecter
 	 */
 	public void setOpacity(float opacity) {this.opacity = opacity;}
 
@@ -79,7 +79,7 @@ public class Graphic {
 	public float getSize() {return this.size;}
 	/**
 	 * Affecte la valeur de l'attribut size.
-	 * @param size l'attribut size � affecter
+	 * @param size l'attribut size à affecter
 	 */
 	public void setSize(float size) {this.size = size;}
 
@@ -91,7 +91,7 @@ public class Graphic {
 	public float getRotation() {return this.rotation;}
 	/**
 	 * Affecte la valeur de l'attribut rotation.
-	 * @param rotation l'attribut rotation � affecter
+	 * @param rotation l'attribut rotation à affecter
 	 */
 	public void setRotation(float rotation) {this.rotation = rotation;}
 }

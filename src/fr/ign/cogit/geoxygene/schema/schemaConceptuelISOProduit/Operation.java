@@ -29,11 +29,11 @@ public class Operation implements GF_Operation {
 	protected GF_FeatureType featureType;
 	/** definition de l'opeartion.*/
 	protected String definition;
-	/** Description du nom, des arguments et du renvoi de l'opération.  */
+	/** Description du nom, des arguments et du renvoi de l'opÃ©ration.  */
 	protected String signature;
 	/**definition formelle de l'operation*/
 	protected String formalDefinition;
-	/** le nom de l'opération*/
+	/** le nom de l'opÃ©ration*/
 	protected String memberName;
 
 	/**le nom de la methode correspondant a l'operation dans la classe ou classe-association Java correspondante*/
@@ -41,7 +41,7 @@ public class Operation implements GF_Operation {
 	public String getNomMethode(){return this.nomMethode;}
 	public void setNomMethode(String value){this.nomMethode = value;}
 
-	/** proprietaire de l'élément (producteur=1, utilisateur=2)**/
+	/** proprietaire de l'Ã©lÃ©ment (producteur=1, utilisateur=2)**/
 	protected int proprietaire;
 	/** Renvoie le proprietaire */
 	public int getProprietaire(){return this.proprietaire;}
@@ -50,20 +50,20 @@ public class Operation implements GF_Operation {
 
 
 
-	/** Renvoie la définition formelle */
+	/** Renvoie la dÃ©finition formelle */
 	public String getFormalDefinition() {return this.formalDefinition;}
 	/** Affecte une definition formelle. */
 	public void setFormalDefinition(String value) {this.formalDefinition = value;}
 
 
-	/** Renvoie le feature type auquel est rattaché la propriété. */
+	/** Renvoie le feature type auquel est rattachï¿½ la propriÃ©tÃ©. */
 	public GF_FeatureType getFeatureType(){return this.featureType;}
-	/** Affecte un feature type à la propriété. */
+	/** Affecte un feature type Ã  la propriÃ©tÃ©. */
 	public void setFeatureType(GF_FeatureType FeatureType){this.featureType = FeatureType;}
 
-	/** Renvoie la définition. */
+	/** Renvoie la dÃ©finition. */
 	public String getDefinition (){return this.definition;}
-	/** Affecte une définition. */
+	/** Affecte une dÃ©finition. */
 	public void setDefinition (String Definition) {this.definition = Definition;}
 
 	/** Renvoie la signature. */
@@ -72,9 +72,9 @@ public class Operation implements GF_Operation {
 	public void setSignature(String Signature) {this.signature = Signature;}
 
 
-	/** Renvoie le nom de la propriété. */
+	/** Renvoie le nom de la propriÃ©tÃ©. */
 	public String getMemberName () {return this.memberName;}
-	/** Affecte un nom de propriété. */
+	/** Affecte un nom de propriÃ©tÃ©. */
 	public void setMemberName (String MemberName) {this.memberName = MemberName;}
 
 }

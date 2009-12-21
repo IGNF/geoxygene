@@ -51,7 +51,7 @@ public class LabelPlacement {
 
 	/**
 	 * Affecte la valeur de l'attribut placement.
-	 * @param placement l'attribut placement � affecter
+	 * @param placement l'attribut placement à affecter
 	 */
 	public void setPlacement(Placement placement) {this.placement = placement;}
 }

@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -74,7 +74,7 @@ import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.2
- * 22/07/2008 : modification des fonctions loadAllFeatures pour récupérer le SRID dans les métadonnées (Julien Perret)
+ * 22/07/2008 : modification des fonctions loadAllFeatures pour RÃ©cupÃ¨rer le SRID dans les mÃ©tadonnÃ©es (Julien Perret)
  */
 
 
@@ -265,9 +265,9 @@ public class GeodatabaseOjb {
 		try {
 			_db.makePersistent(obj);
 		} catch (ClassNotPersistenceCapableException e) {
-			logger.error("L'objet n'a pas pu être rendu persistent.");
+			logger.error("L'objet n'a pas pu Ãªtre rendu persistent.");
 			logger.error("La raison la plus probable est qu'il n'existe pas de fichier de mapping correpondant.");
-			logger.error("Vérifiez votre fichier repository.xml");
+			logger.error("vÃ©rifiez votre fichier repository.xml");
 			e.printStackTrace();
 			System.exit(0);
 		} catch (Exception e) {
@@ -315,7 +315,7 @@ public class GeodatabaseOjb {
 	/**
 	 * Charge tous les objets persistants de la classe theClass et les met dans une liste.
 	 * A appeler a l'interieur d'une transaction ouverte.
-	 * TODO Si ce sont des FT_Features, il faut récupérere les srids
+	 * TODO Si ce sont des FT_Features, il faut RÃ©cupÃ¨rere les srids
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> List<T> loadAll(Class<T> theClass) {
@@ -326,7 +326,7 @@ public class GeodatabaseOjb {
 			return result;
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
-				logger.warn("La classe n'a pas été trouvée dans le repository par OJB : "+theClass.getName());
+				logger.warn("La classe n'a pas Ã©tÃ© trouvÃ©e dans le repository par OJB : "+theClass.getName());
 				logger.debug(e.getMessage());
 			}
 			//e.printStackTrace();
@@ -335,7 +335,7 @@ public class GeodatabaseOjb {
 	}
 	/** Charge tous les objets persistants de la classe theClass dans la classe featureListClass.
 	 * A appeler a l'interieur d'une transaction ouverte.
-	 * TODO Si ce sont des FT_Features, il faut récupérere les srids
+	 * TODO Si ce sont des FT_Features, il faut RÃ©cupÃ¨rere les srids
 	 */
 	public <T> T loadAll(Class<?> featureClass, Class<T> featureListClass) {
 		T result = null;
@@ -372,14 +372,14 @@ public class GeodatabaseOjb {
 				query.create("select x from "+featureClass.getName());
 				DList list = (DList) query.execute();
 				Iterator<T> iter = list.iterator();
-				// on récupère le srid attribué à cette classe dans les métadonnées
+				// on RÃ©cupÃ¨re le srid attribuï¿½ Ã  cette classe dans les mÃ©tadonnÃ©es
 				Metadata metadata = this.getMetadata(featureClass);
 				int srid = -1;
 				if (metadata!=null&&metadata.getSRID()!=0) {
 					srid=metadata.getSRID();
 				} else {
-					// si cette classe ne contient pas de métadonnées ou si c'est une classe mère de la classe stockée dans le SGBD
-					// on récupère le premier élément (s'il existe) et ses métadonnées.
+					// si cette classe ne contient pas de mÃ©tadonnÃ©es ou si c'est une classe mÃ¨re de la classe stockÃ©e dans le SGBD
+					// on RÃ©cupÃ¨re le premier Ã©lÃ©ment (s'il existe) et ses mÃ©tadonnÃ©es.
 					if (iter.hasNext()) {
 						T feature = iter.next();
 						metadata = this.getMetadata(feature.getClass());
@@ -423,14 +423,14 @@ public class GeodatabaseOjb {
 				query.create("select x from "+featureClass.getName());
 				DList list = (DList) query.execute();
 				Iterator<?> iter = list.iterator();
-				// on récupère le srid attribué à cette classe dans les métadonnées
+				// on RÃ©cupÃ¨re le srid attribuï¿½ Ã  cette classe dans les mÃ©tadonnÃ©es
 				Metadata metadata = this.getMetadata(featureClass);
 				int srid = -1;
 				if (metadata!=null&&metadata.getSRID()!=0) {
 					srid=metadata.getSRID();
 				} else {
-					// si cette classe ne contient pas de métadonnées ou si c'est une classe mère de la classe stockée dans le SGBD
-					// on récupère le premier élément (s'il existe) et ses métadonnées.
+					// si cette classe ne contient pas de mÃ©tadonnÃ©es ou si c'est une classe mÃ¨re de la classe stockÃ©e dans le SGBD
+					// on RÃ©cupÃ¨re le premier Ã©lÃ©ment (s'il existe) et ses mÃ©tadonnÃ©es.
 					if (iter.hasNext()) {
 						FT_Feature feature = (FT_Feature) iter.next();
 						metadata = this.getMetadata(feature.getClass());
@@ -456,13 +456,13 @@ public class GeodatabaseOjb {
 	}
 
 	/**
-	 * Charge tous les FT_Feature de la classe featureClass avec une certaine valeur pour un paramètre dans la classe featureListClass.
+	 * Charge tous les FT_Feature de la classe featureClass avec une certaine valeur pour un paramÃ¨tre dans la classe featureListClass.
 	 * A appeler a l'interieur d'une transaction ouverte.
 	 * @param featureClass doit etre une sous-classe de FT_Feature, sinon renvoie une liste vide.
 	 * @param featureListClass doit etre un sous classe de FT_FeatureCollection.
-	 * @param param nom du paramètre
-	 * @param value valeur du paramètre
-	 * @return tous les FT_Feature de la classe featureClass avec une certaine valeur pour un paramètre dans la classe featureListClass.
+	 * @param param nom du paramÃ¨tre
+	 * @param value valeur du paramÃ¨tre
+	 * @return tous les FT_Feature de la classe featureClass avec une certaine valeur pour un paramÃ¨tre dans la classe featureListClass.
 	 */
 	public <T> T loadAllFeatures(Class<?> featureClass, Class<T> featureListClass, String param, String value) {
 		T result = null;
@@ -478,14 +478,14 @@ public class GeodatabaseOjb {
 				query.create("select x from "+featureClass.getName()+" where "+param+" = "+value);
 				DList list = (DList) query.execute();
 				Iterator<?> iter = list.iterator();
-				// on récupère le srid attribué à cette classe dans les métadonnées
+				// on RÃ©cupÃ¨re le srid attribuï¿½ Ã  cette classe dans les mÃ©tadonnÃ©es
 				Metadata metadata = this.getMetadata(featureClass);
 				int srid = -1;
 				if (metadata!=null&&metadata.getSRID()!=0) {
 					srid=metadata.getSRID();
 				} else {
-					// si cette classe ne contient pas de métadonnées ou si c'est une classe mère de la classe stockée dans le SGBD
-					// on récupère le premier élément (s'il existe) et ses métadonnées.
+					// si cette classe ne contient pas de mÃ©tadonnÃ©es ou si c'est une classe mÃ¨re de la classe stockÃ©e dans le SGBD
+					// on RÃ©cupÃ¨re le premier Ã©lÃ©ment (s'il existe) et ses mÃ©tadonnÃ©es.
 					if (iter.hasNext()) {
 						FT_Feature feature = (FT_Feature) iter.next();
 						metadata = this.getMetadata(feature.getClass());
@@ -578,14 +578,14 @@ public class GeodatabaseOjb {
         Cette commande ne doit pas renvoyer de resultat : INSERT, UPDATE, DELETE, mais pas SELECT. */
 	public void exeSQL(String query) {
 		try {
-			if (logger.isDebugEnabled()) logger.debug("exécution de la requête SQL : "+query);
+			if (logger.isDebugEnabled()) logger.debug("exï¿½cution de la requï¿½te SQL : "+query);
 			Connection conn = getConnection();
 			Statement stm = conn.createStatement();
 			stm.executeUpdate(query);
 			stm.close();
 			conn.commit();
 		} catch (Exception e) {
-			logger.error("Erreur pendant l'exécution de la requête SQL : "+query);
+			logger.error("Erreur pendant l'exï¿½cution de la requï¿½te SQL : "+query);
 			logger.error(e.getMessage());
 		}
 	}
@@ -611,7 +611,7 @@ public class GeodatabaseOjb {
 		} catch (FileNotFoundException e) {
 			logger.error("Le fichier "+fileName+" n'existe pas");
 		} catch (IOException e) {
-			logger.error("Erreur pendant l'exécution des requêtes du fichier "+fileName);
+			logger.error("Erreur pendant l'exï¿½cution des requï¿½tes du fichier "+fileName);
 			logger.error(e.getMessage());
 		}
 	}
@@ -667,17 +667,17 @@ public class GeodatabaseOjb {
 	/*
 	 * @author Balley
 	 * 
-	 * Méthodes de chargement de données (loadAll, loadAllFeatures) qui prennent
-	 * en entrée des élémentsde schéma conceptuel
+	 * mÃ©thodes de chargement de donnÃ©es (loadAll, loadAllFeatures) qui prennent
+	 * en entrÃ©e des Ã©lÃ©mentsde schÃ©ma conceptuel
 	 * 
 	 */
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * chargement de tous les features correspondant à une même classe de schéma
-	 * conceptuel (il n'est pas nécessaire de connaître la classe Java
-	 * d'implémentation). Si on est dans le contexte d'un DataSet, les
-	 * Features sont en même temps affectés à une Population propre à leur
-	 * classe de schéma conceptuel.
+	 * chargement de tous les features correspondant Ã  une mÃªme classe de schÃ©ma
+	 * conceptuel (il n'est pas nÃ©cessaire de connaÃªtre la classe Java
+	 * d'implÃ©mentation). Si on est dans le contexte d'un DataSet, les
+	 * Features sont en mÃªme temps affectï¿½s Ã  une Population propre Ã  leur
+	 * classe de schÃ©ma conceptuel.
 	 * 
 	 */
 
@@ -693,12 +693,12 @@ public class GeodatabaseOjb {
 	}
 
 	/**
-	 * Chargement dans le cas simple où un featureType correspond strictement à
-	 * une population (pas de règle d'extraction spécifiée).
+	 * Chargement dans le cas simple oÃ¹ un featureType correspond strictement ï¿½
+	 * une population (pas de rÃ¨gle d'extraction spÃ©cifiï¿½e).
 	 * 
 	 * @param featureType
 	 * @return FT_FeatureCollection
-	 * TODO Si ce sont des FT_Features, il faut récupérere les srids
+	 * TODO Si ce sont des FT_Features, il faut RÃ©cupÃ¨rere les srids
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends FT_Feature> FT_FeatureCollection<T> loadAllFeaturesCasSimple(FeatureType featureType) {
@@ -732,14 +732,14 @@ public class GeodatabaseOjb {
 				}
 				pop.addUniqueCollection(coll);
 				System.out
-				.println("Vous êtes dans le contexte d'un MdDataSet. Sa population "
+				.println("Vous ï¿½tes dans le contexte d'un MdDataSet. Sa population "
 						+ featureType.getTypeName()
-						+ " a été mise à jour");
+						+ " a Ã©tÃ© mise Ã  jour");
 			}
 			/*
-			 * si je ne suis pas dans le contexte d'un schéma conceptuel (donc
+			 * si je ne suis pas dans le contexte d'un schÃ©ma conceptuel (donc
 			 * encore moins d'un mdDataset), je ne remplis pas de population
-			 * mais j'associe quand même son featureType à chaque feature
+			 * mais j'associe quand mÃªme son featureType Ã  chaque feature
 			 */
 			else {
 				System.out.println("schema non nul mais dataset nul");
@@ -750,7 +750,7 @@ public class GeodatabaseOjb {
 		}
 		/*
 		 * si je ne suis pas dans le contexte d'un MdDataSet, je ne remplis pas
-		 * de population mais j'associe quand même son featureType à chaque
+		 * de population mais j'associe quand mÃªme son featureType Ã  chaque
 		 * feature
 		 */
 		else {
@@ -765,10 +765,10 @@ public class GeodatabaseOjb {
 	}
 
 	/**
-	 * chargement du feature d'identifiant id correspondant à la classe de
-	 * schéma conceptuel featureType (il n'est pas nécessaire de connaître la
-	 * classe Java d'implémentation)
-	 * TODO Si ce sont des FT_Features, il faut récupérere les srids
+	 * chargement du feature d'identifiant id correspondant Ã  la classe de
+	 * schÃ©ma conceptuel featureType (il n'est pas nÃ©cessaire de connaÃªtre la
+	 * classe Java d'implÃ©mentation)
+	 * TODO Si ce sont des FT_Features, il faut RÃ©cupÃ¨rere les srids
 	 */
 	public FT_Feature load(FeatureType featureType, Object id) {
 		String nomClasseChargee = featureType.getNomClasse();
@@ -783,15 +783,15 @@ public class GeodatabaseOjb {
 	}
 
 	/**
-	 * chargement dans le cas où un featureType ne corespond pas seulement à une
-	 * population (une RegleExtraction +/- complexe a été spécifiée
+	 * chargement dans le cas oÃ¹ un featureType ne corespond pas seulement Ã  une
+	 * population (une RegleExtraction +/- complexe a Ã©tÃ© spÃ©cifiï¿½e
 	 */
 	public <T extends FT_Feature> FT_FeatureCollection<T> loadAllFeaturesCasComplexe(FeatureType featureType) {
 		FT_FeatureCollection<T> coll = null;
 		System.out.println("Cas complexe de chargement : " + "le FeatureType "
 				+ featureType.getTypeName()
-				+ "devrait avoir une règle d'extraction mais je "
-				+ "ne l'ai pas trouvée");
+				+ "devrait avoir une rÃ¨gle d'extraction mais je "
+				+ "ne l'ai pas trouvÃ©e");
 		return coll;
 	}
 
@@ -799,7 +799,7 @@ public class GeodatabaseOjb {
 	 * @param <T>
 	 * @param featureType
 	 * @return
-	 * TODO Si ce sont des FT_Features, il faut récupérere les srids
+	 * TODO Si ce sont des FT_Features, il faut RÃ©cupÃ¨rere les srids
 	 */
 	@SuppressWarnings("unchecked")
 	public  <T> List<T> loadAll(FeatureType featureType) {

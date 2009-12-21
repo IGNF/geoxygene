@@ -14,7 +14,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ParseException;
 import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
 
 /**
- * Classe de test. Elle n'est pas utilisée pour l'instant.
+ * Classe de test. Elle n'est pas utilisÃ©e pour l'instant.
  * @author Julien Perret
  *
  */

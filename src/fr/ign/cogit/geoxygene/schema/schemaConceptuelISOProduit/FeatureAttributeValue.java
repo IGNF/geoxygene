@@ -12,7 +12,7 @@ import fr.ign.cogit.geoxygene.feature.type.GF_AttributeType;
 public class FeatureAttributeValue implements FC_FeatureAttributeValue {
 
 	/**
-	 * Valeur d'attribut s'appliquant à un attribut de type énuméré
+	 * Valeur d'attribut s'appliquant Ã  un attribut de type ï¿½numï¿½rï¿½
 	 */
 	public FeatureAttributeValue() {super();}
 
@@ -25,15 +25,15 @@ public class FeatureAttributeValue implements FC_FeatureAttributeValue {
 
 	/**
 	 * Non standard
-	 * Utile aux applications de transformation de schéma
-	 * caractère implicite ou explicite de l'élément : un featureAttributeValue
-	 * implicite n'est jamais affecté à priori mais il peut l'être par le
-	 * biais de calculs à partir d'éléments explicites
+	 * Utile aux applications de transformation de schÃ©ma
+	 * caractï¿½re implicite ou explicite de l'Ã©lÃ©ment : un featureAttributeValue
+	 * implicite n'est jamais affectï¿½ Ã  priori mais il peut l'Ãªtre par le
+	 * biais de calculs Ã  partir d'Ã©lÃ©ments explicites
 	 **/
 	protected boolean isExplicite;
 	/** Renvoie le caractere explicite ou implicite */
 	public boolean getIsExplicite(){return this.isExplicite;}
-	/** Affecte le caractère implicite ou explicite */
+	/** Affecte le caractï¿½re implicite ou explicite */
 	public void setIsExplicite(boolean value){this.isExplicite = value;}
 
 
@@ -74,15 +74,15 @@ public class FeatureAttributeValue implements FC_FeatureAttributeValue {
 
 	/** definition de la valeur.*/
 	protected String definition;
-	/** Renvoie la définition. */
+	/** Renvoie la dÃ©finition. */
 	public String getDefinition (){return this.definition;}
-	/** Affecte une définition. */
+	/** Affecte une dÃ©finition. */
 	public void setDefinition (String Definition) {this.definition = Definition;}
 
 
-	/**la définition semantique du featureType (sous la forme d'un String
+	/**la dÃ©finition semantique du featureType (sous la forme d'un String
 	 ou d'une classe d'ontologie)
-	 ou un pointeur vers cette définition (sous la forme d'une URI)*/
+	 ou un pointeur vers cette dÃ©finition (sous la forme d'une URI)*/
 	protected Object definitionReference;
 	/**
 	 * @return the definitionReference

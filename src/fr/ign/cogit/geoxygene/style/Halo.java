@@ -39,7 +39,7 @@ public class Halo {
 	public float getRadius() {return this.radius;}
 	/**
 	 * Affecte la valeur de l'attribut radius.
-	 * @param radius l'attribut radius � affecter
+	 * @param radius l'attribut radius à affecter
 	 */
 	public void setRadius(float radius) {this.radius = radius;}
 	

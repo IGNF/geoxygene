@@ -39,7 +39,7 @@ public class AnchorPoint {
 	public float getAnchorPointX() {return this.x;}
 	/**
 	 * Affecte la valeur de l'attribut x.
-	 * @param x l'attribut x � affecter
+	 * @param x l'attribut x à affecter
 	 */
 	public void setAnchorPointX(float x) {this.x = x;}
 
@@ -51,7 +51,7 @@ public class AnchorPoint {
 	public float getAnchorPointY() {return this.y;}
 	/**
 	 * Affecte la valeur de l'attribut y.
-	 * @param y l'attribut y � affecter
+	 * @param y l'attribut y à affecter
 	 */
 	public void setAnchorPointY(float y) {this.y = y;}
 }

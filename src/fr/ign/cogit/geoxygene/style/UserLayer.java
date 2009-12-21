@@ -43,13 +43,13 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 public class UserLayer extends AbstractLayer {
 
 	/*
-	 *  TODO revoir cette impl�mentation des userLayers...
+	 *  TODO revoir cette implémentation des userLayers...
 	 */
 	@XmlTransient
 	FT_FeatureCollection<? extends FT_Feature> features = null;
 	/**
 	 * Affecte la valeur de l'attribut features.
-	 * @param features l'attribut features � affecter
+	 * @param features l'attribut features à affecter
 	 */
 	public void setFeatures(FT_FeatureCollection<? extends FT_Feature> features) {this.features = features;}
 

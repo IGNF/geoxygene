@@ -55,7 +55,7 @@ public class Fill {
 
 	/**
 	 * Affecte la valeur de l'attribut graphicFill.
-	 * @param graphicFill l'attribut graphicFill � affecter
+	 * @param graphicFill l'attribut graphicFill à affecter
 	 */
 	public void setGraphicFill(GraphicFill graphicFill) {this.graphicFill = graphicFill;}
 
@@ -73,7 +73,7 @@ public class Fill {
 
 	/**
 	 * Affecte la valeur de l'attribut cssParameters.
-	 * @param svgParameters l'attribut cssParameters � affecter
+	 * @param svgParameters l'attribut cssParameters à affecter
 	 */
 	public void setSvgParameters(List<SvgParameter> svgParameters) {
 		this.svgParameters = svgParameters;
@@ -126,7 +126,7 @@ public class Fill {
 
 	/**
 	 * Affecte la valeur de l'attribut fillOpacity.
-	 * @param fillOpacity l'attribut fillOpacity � affecter
+	 * @param fillOpacity l'attribut fillOpacity à affecter
 	 */
 	public void setFillOpacity(float fillOpacity) {
 		this.fillOpacity = fillOpacity;

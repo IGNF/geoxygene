@@ -7,31 +7,31 @@ import fr.ign.cogit.geoxygene.feature.type.GF_FeatureType;
 /**
  * 
  * @author Abadie, Balley
- * Interface pour tout schéma conceptuel.
+ * Interface pour tout schÃ©ma conceptuel.
  * (Application schema dans les normes ISO)
  * 
- * Il n'a pas de type de données standard ApplicationSchema.
- * Nous le définissons comme un ensemble d'éléments standards
- * définis dans le package fr.ign.cogit.appli.commun.metadonnees.schemaConceptuel.interfacesISO.
+ * Il n'a pas de type de donnÃ©es standard ApplicationSchema.
+ * Nous le dÃ©finissons comme un ensemble d'Ã©lÃ©ments standards
+ * dÃ©finis dans le package fr.ign.cogit.appli.commun.metadonnees.schemaConceptuel.interfacesISO.
  */
 public interface SchemaConceptuel {
 
 
 	/**
-	 * Désignation usuelle du schéma
+	 * Dï¿½signation usuelle du schÃ©ma
 	 */
 	public String getNomSchema();
 	public void setNomSchema(String nom);
 
 
 	/**
-	 * Description du schéma
+	 * Description du schÃ©ma
 	 */
 	public String getDefinition();
 	public void setDefinition(String def);
 
 	/**
-	 * Liste des classes appartenant au schéma
+	 * Liste des classes appartenant au schÃ©ma
 	 */
 	public List<GF_FeatureType> getFeatureTypes();
 	public void setFeatureTypes(List<GF_FeatureType> ftList);
@@ -41,28 +41,28 @@ public interface SchemaConceptuel {
 
 	/*
 	 * ******************************************************************
-	 * Méthodes pour manipuler mon schéma
+	 * mÃ©thodes pour manipuler mon schÃ©ma
 	 * ******************************************************************
 	 */
 
-	//méthodes enlevées, descendues dans schemaISOJeu et SchemaISOProduit
+	//mÃ©thodes enlevï¿½es, descendues dans schemaISOJeu et SchemaISOProduit
 
 	/*
 	 * ******************************************************************
-	 * Méthodes pour lister les différents éléments du schéma
+	 * mÃ©thodes pour lister les diffÃ©rents Ã©lÃ©ments du schÃ©ma
 	 * ******************************************************************
 	 */
 
-	//	méthodes enlevées, descendues dans schemaISOJeu et SchemaISOProduit
+	//	mÃ©thodes enlevï¿½es, descendues dans schemaISOJeu et SchemaISOProduit
 
 	/*
 	 * ******************************************************************
-	 * Méthodes pour sauvegarder mon schéma
+	 * mÃ©thodes pour sauvegarder mon schÃ©ma
 	 * ******************************************************************
 	 */
 
-	/*	méthodes enlevées car elles obligeaient un import de classe "outil"
-	 * dans le modele. Les méthodes save et delete sont implementees de façon
+	/*	mÃ©thodes enlevï¿½es car elles obligeaient un import de classe "outil"
+	 * dans le modele. Les mÃ©thodes save et delete sont implementees de faï¿½on
 	 * statique dans SchemaPersistentOJB
 	 */
 

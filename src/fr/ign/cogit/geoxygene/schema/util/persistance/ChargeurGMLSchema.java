@@ -28,11 +28,11 @@ import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.SchemaConceptuelJeu;
 
 /**
  * @author Balley
- * transforme un GMLschema, c'est à dire un fichier x.xsd conforme à
+ * transforme un GMLschema, c'est Ã  dire un fichier x.xsd conforme ï¿½
  * http://schemas.opengis.net/gml/2.1.2/feature.xsd, en un SchemaISOJeu
  * 
- * TODO gérer le GML3 et les xlink, s'occuper plus en détail des
- * types géométriques
+ * TODO gÃ©rer le GML3 et les xlink, s'occuper plus en dï¿½tail des
+ * types gÃ©omÃ©triques
  */
 public class ChargeurGMLSchema {
 
@@ -44,15 +44,15 @@ public class ChargeurGMLSchema {
 
 	/**
 	 * @param args
-	 * FIXME c'est très moche : il y a des noms de fichiers locaux...
+	 * FIXME c'est trÃ¨s moche : il y a des noms de fichiers locaux...
 	 */
 	public static void main(String[] args) {
-		//je ne crée que l'objet sc et je ne le rends pas persistant.
+		//je ne crÃ©e que l'objet sc et je ne le rends pas persistant.
 
 		try {
-			//File fichierXSD = new File("D:/Users/Balley/données/terranumerica/rge/bdtopo/TRONCON_ROUTE.xsd");
-			File fichierXSD = new File("D:/Users/Balley/données/gml/commune.xsd");
-			//File fichierXSD = new File("D:/Users/Balley/données/gml/route.xsd");
+			//File fichierXSD = new File("D:/Users/Balley/donnÃ©es/terranumerica/rge/bdtopo/TRONCON_ROUTE.xsd");
+			File fichierXSD = new File("D:/Users/Balley/donnÃ©es/gml/commune.xsd");
+			//File fichierXSD = new File("D:/Users/Balley/donnÃ©es/gml/route.xsd");
 			URL urlFichierXSD = fichierXSD.toURI().toURL();
 			//System.out.println(urlFichierXSD);
 
@@ -64,7 +64,7 @@ public class ChargeurGMLSchema {
 
 			SchemaConceptuelJeu sc = chargeur.gmlSchema2schemaConceptuel(documentXSD);
 
-			//ecriture du schéma généré
+			//ecriture du schÃ©ma gÃ©nÃ©rÃ©
 			System.out.println(sc.getFeatureTypes().size());
 			for(int i=0 ; i<sc.getFeatureTypes().size() ; i++){
 				System.out.println(sc.getFeatureTypes().get(i).getTypeName());
@@ -86,7 +86,7 @@ public class ChargeurGMLSchema {
 	}
 
 	/**
-	 * transforme un GMLSchema déjà parsé en un objet SchemaISOJeu
+	 * transforme un GMLSchema dÃ©jÃ  parsï¿½ en un objet SchemaISOJeu
 	 * contenant une liste de FeatureType.
 	 * @param newDocXSD
 	 * @return SchemaConceptuelJeu
@@ -113,8 +113,8 @@ public class ChargeurGMLSchema {
 
 
 
-				//je cherche le nom des élemnts de ce type : ca me donnera le nom du
-				//FeatureType à mettre dans mon schemaConceptuel
+				//je cherche le nom des ï¿½lemnts de ce type : ca me donnera le nom du
+				//FeatureType Ã  mettre dans mon schemaConceptuel
 				System.out.println("\nLecture des attributs...");
 				NodeList listElements = newDocXSD.getElementsByTagName("element");
 				for (int j=0 ; j<listElements.getLength(); j++){
@@ -129,7 +129,7 @@ public class ChargeurGMLSchema {
 							nomElementsDeCeType = listElements.item(j).getAttributes().getNamedItem("name").getNodeValue();
 							//System.out.println("nom des elements de ce type : "+nomElementsDeCeType);
 
-							//ce type est effectivement utiliisé dans le jeu, je crée un featureType
+							//ce type est effectivement utiliisï¿½ dans le jeu, je crÃ©e un featureType
 							FeatureType ft = new FeatureType();
 							ft.setTypeName(nomElementsDeCeType);
 
@@ -148,7 +148,7 @@ public class ChargeurGMLSchema {
 
 								if (noeudAttribut.getNodeName().equals("choice")){
 									//System.out.println("cas choice");
-									//à voir, pour la géométrie par exemple
+									//ï¿½ voir, pour la gÃ©omÃ©trie par exemple
 								}
 								else if (noeudAttribut.getNodeName().equals("element")){
 									//System.out.println("cas element");
@@ -166,7 +166,7 @@ public class ChargeurGMLSchema {
 										//System.out.println("type direct : "+noeudAttribut.getAttributes().getNamedItem("type").getNodeValue());
 									}
 
-									//soit c'est un type simple en étendant un autre
+									//soit c'est un type simple en ï¿½tendant un autre
 									else if (noeudAttribut.hasChildNodes()){
 										//System.out.println("le type a "+noeudAttribut.getChildNodes().getLength()+" childNodes : il doit etendre un type");
 										for (int l=0 ; l<noeudAttribut.getChildNodes().getLength() ; l++){
@@ -185,8 +185,8 @@ public class ChargeurGMLSchema {
 									}
 									ft.addFeatureAttribute(fa);
 
-									//soit c'est un type complexe... à faire
-									//soit c'est un xlink... à faire
+									//soit c'est un type complexe... Ã  faire
+									//soit c'est un xlink... Ã  faire
 								}
 							}
 
@@ -211,7 +211,7 @@ public class ChargeurGMLSchema {
 	public void trouveTypeGeom(Node noeudFT, FeatureType ft){
 
 		AttributeType attribGeom = null;
-		System.out.println("\nrecherche spatialité...");
+		System.out.println("\nrecherche spatialitï¿½...");
 		//System.out.println(noeudFT.getNodeType());
 		NodeList list = noeudFT.getChildNodes();
 		for (int i=0 ; i<list.getLength() ; i++){
@@ -221,8 +221,8 @@ public class ChargeurGMLSchema {
 		for (int i=0 ; i<list2.getLength() ; i++){
 			//System.out.println(list2.item(i).getNodeName());
 			if (list2.item(i).getAttributes().getNamedItem("ref")!=null){
-				//System.out.println("c'est une référence à "+list2.item(i).getAttributes().getNamedItem("ref").getNodeValue());
-				//ce noeud m'interesse, je regarde s'il appartient bien à mon abstractFeatureType
+				//System.out.println("c'est une rÃ©fÃ©rence Ã  "+list2.item(i).getAttributes().getNamedItem("ref").getNodeValue());
+				//ce noeud m'interesse, je regarde s'il appartient bien Ã  mon abstractFeatureType
 				Node noeudParent = list2.item(i);
 				while (noeudParent!=null){
 					//System.out.println("iter");
@@ -233,7 +233,7 @@ public class ChargeurGMLSchema {
 					noeudParent = noeudParent.getParentNode();
 				}
 				if (noeudParent==null){
-					//System.out.println("c'était ailleurs");
+					//System.out.println("c'Ã©tait ailleurs");
 				}
 
 				if (list2.item(i).getAttributes().getNamedItem("ref").getNodeValue().equals("gml:polygonProperty")){
@@ -257,10 +257,10 @@ public class ChargeurGMLSchema {
 
 
 	/**
-	 * transforme un GMLSchema déjà parsé en un objet SchemaConceptuelIni
+	 * transforme un GMLSchema dÃ©jÃ  parsï¿½ en un objet SchemaConceptuelIni
 	 * contenant une liste de SC_Ini_FeatureType.
 	 * Utile seulement pour l'application transfoschema qui doit garder le
-	 * schéma initial du producteur, non modifiable, en face d'un schéma
+	 * schÃ©ma initial du producteur, non modifiable, en face d'un schÃ©ma
 	 * d'utilisateur modifiable.
 	 * @param docXSD
 	 * @return
@@ -269,8 +269,8 @@ public class ChargeurGMLSchema {
 
 
 	/**
-	 * génère une structure goexygene complete : schéma conceptuel persistant,
-	 * bibliothèques de classes, tables et mapping. Utilise la méthode
+	 * gï¿½nï¿½re une structure goexygene complete : schÃ©ma conceptuel persistant,
+	 * bibliothï¿½ques de classes, tables et mapping. Utilise la mÃ©thode
 	 * gmlSchema2schemaConceptuel(docXSD) et les utilitaires du package
 	 * fr.ign.cogit.appli.sissi.outils.transfoschema.donnees.classesGenerees.outils
 	 * 
@@ -283,13 +283,13 @@ public class ChargeurGMLSchema {
 		DataSetCommun ds = new DataSetCommun();
 		DataSetCommun.db = new GeodatabaseCommun();
 		ds.setSchemaConceptuel(gmlSchema2schemaConceptuel(docXSD));
-		System.out.println("objet SchemaConceptuel créé");
+		System.out.println("objet SchemaConceptuel crÃ©Ã©");
 
 		GenerationSL.sc2schemaLogiqueGeoxygene(ds.getSchemaConceptuel(), false);
-		System.out.println("classes et tables du schéma logique créées");
+		System.out.println("classes et tables du schÃ©ma logique crÃ©Ã©es");
 		ds.getSchemaConceptuel().ecritSchemaConceptuel();
 		ds.getSchemaConceptuelIni().ecritSchemaConceptuel();
-		System.out.println("schéma conceptuel persistant");
+		System.out.println("schÃ©ma conceptuel persistant");
 	}
 	 */
 
@@ -298,8 +298,8 @@ public class ChargeurGMLSchema {
 		else if (GMLType.compareToIgnoreCase("") == 0) return "float";
 		else if (GMLType.compareToIgnoreCase("integer") == 0) return "entier";
 		else if (GMLType.compareToIgnoreCase("") == 0) return "bool";
-		else if (GMLType.compareToIgnoreCase("gml:lineStringProperty") == 0) return "linéaire";
-		else if (GMLType.compareToIgnoreCase("gml:multiLineStringProperty") == 0) return "linéaire";
+		else if (GMLType.compareToIgnoreCase("gml:lineStringProperty") == 0) return "linï¿½aire";
+		else if (GMLType.compareToIgnoreCase("gml:multiLineStringProperty") == 0) return "linï¿½aire";
 		else if (GMLType.compareToIgnoreCase("gml:pointProperty") == 0) return "ponctuel";
 		else if (GMLType.compareToIgnoreCase("gml:multiPolygonProperty") == 0) return "surfacique";
 		else if (GMLType.compareToIgnoreCase("gml:polygonProperty") == 0) return "surfacique";

@@ -1,14 +1,14 @@
-/*******************************************************************************
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  * 
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -21,7 +21,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *******************************************************************************/
+ */
 
 package fr.ign.cogit.geoxygene.filter.expression;
 
@@ -61,7 +61,7 @@ public class PropertyName extends Expression {
 	/**
 	 * @return the name of the PropertyName
 	 */
-	public String getPropertyName() {return propertyName[0];}
+	public String getPropertyName() {return this.propertyName[0];}
 	/**
 	 * @param propertyName
 	 */
@@ -69,7 +69,7 @@ public class PropertyName extends Expression {
 	
 	@Override
 	public Object evaluate(Object object) {
-		String getterName = "get"+this.getPropertyName().substring(0, 1).toUpperCase()+this.getPropertyName().substring(1);
+		String getterName = "get"+this.getPropertyName().substring(0, 1).toUpperCase()+this.getPropertyName().substring(1); //$NON-NLS-1$
 		if (object instanceof FT_Feature) {
 			FT_Feature feature = (FT_Feature) object;
 			Object resultat = feature.getAttribute(this.getPropertyName());
@@ -85,19 +85,19 @@ public class PropertyName extends Expression {
 				if (resultat instanceof Number) return new BigDecimal(((Number)resultat).doubleValue());
 				return resultat;
 			} catch (SecurityException e) {
-				logger.error("La méthode "+getterName+" n'est pas autorisée sur la classe "+object.getClass()+" / "+classe);
+				logger.error("La mÃ©thode "+getterName+" n'est pas autorisÃ©e sur la classe "+object.getClass()+" / "+classe);
 			} catch (NoSuchMethodException e) {
-				logger.error("La méthode "+getterName+" n'existe pas dans la classe "+object.getClass()+" / "+classe);
+				logger.error("La mÃ©thode "+getterName+" n'existe pas dans la classe "+object.getClass()+" / "+classe);
 			} catch (IllegalArgumentException e) {
-				logger.error("Arguments illégaux pour la méthode "+getterName+" de la classe "+object.getClass()+" / "+classe);
+				logger.error("Arguments illÃ©gaux pour la mÃ©thode "+getterName+" de la classe "+object.getClass()+" / "+classe);
 			} catch (IllegalAccessException e) {
-				logger.error("Accès illégal à la méthode "+getterName+" de la classe "+object.getClass()+" / "+classe);
+				logger.error("accÃ¨s illÃ©gal Ã  la mÃ©thode "+getterName+" de la classe "+object.getClass()+" / "+classe);
 			} catch (InvocationTargetException e) {
-				logger.error("Problème pendant l'invocation de la méthode "+getterName+" sur la classe "+object.getClass()+" / "+classe);
+				logger.error("problÃ¨me pendant l'invocation de la mÃ©thode "+getterName+" sur la classe "+object.getClass()+" / "+classe);
 			}
 			classe = classe.getSuperclass();
 		}
-		logger.error("On a échoué sur l'objet "+object+" avec le getter "+getterName);
+		logger.error("On a Ã©chouÃ© sur l'objet "+object+" avec le getter "+getterName);
 		return null;
 	}
 	

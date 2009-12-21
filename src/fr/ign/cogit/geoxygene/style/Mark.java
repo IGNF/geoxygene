@@ -46,7 +46,7 @@ public class Mark {
 	public String getWellKnownName() {return this.wellKnownName;}
 	/**
 	 * Affecte la valeur de l'attribut wellKnownName.
-	 * @param wellKnownName l'attribut wellKnownName � affecter
+	 * @param wellKnownName l'attribut wellKnownName à affecter
 	 */
 	public void setWellKnownName(String wellKnownName) {this.wellKnownName = wellKnownName;}
 	
@@ -58,7 +58,7 @@ public class Mark {
 	public Fill getFill() {return this.fill;}
 	/**
 	 * Affecte la valeur de l'attribut fill.
-	 * @param fill l'attribut fill � affecter
+	 * @param fill l'attribut fill à affecter
 	 */
 	public void setFill(Fill fill) {this.fill = fill;}
 
@@ -70,7 +70,7 @@ public class Mark {
 	public Stroke getStroke() {return this.stroke;}
 	/**
 	 * Affecte la valeur de l'attribut stroke.
-	 * @param stroke l'attribut stroke � affecter
+	 * @param stroke l'attribut stroke à affecter
 	 */
 	public void setStroke(Stroke stroke) {this.stroke = stroke;}
 

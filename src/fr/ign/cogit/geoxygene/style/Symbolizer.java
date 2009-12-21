@@ -45,7 +45,7 @@ public interface Symbolizer {
 
 	/**
 	 * Affecte la valeur de l'attribut stroke.
-	 * @param stroke l'attribut stroke � affecter
+	 * @param stroke l'attribut stroke à affecter
 	 */
 	public void setStroke(Stroke stroke);
 	
@@ -62,7 +62,7 @@ public interface Symbolizer {
 	public String getGeometryPropertyName();
 	/**
 	 * Affecte la valeur de l'attribut geometryPropertyName.
-	 * @param geometryPropertyName l'attribut geometryPropertyName � affecter
+	 * @param geometryPropertyName l'attribut geometryPropertyName à affecter
 	 */
 	public void setGeometryPropertyName(String geometryPropertyName);
 

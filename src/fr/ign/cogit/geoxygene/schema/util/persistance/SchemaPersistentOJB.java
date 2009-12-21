@@ -26,42 +26,42 @@ public abstract class SchemaPersistentOJB {
 
 
 
-	/**Méthode qui supprime définitivement un objet de la base*/
+	/**mÃ©thode qui supprime dÃ©finitivement un objet de la base*/
 	public void deletePersistent () {
 		//		Initialisation d'une connexion avec le SGBD et le mapping
 		Geodatabase bd = DataSet.db;
-		//		Si ma connexion est définie et ma base ouverte...
+		//		Si ma connexion est dÃ©finie et ma base ouverte...
 		if (bd != null && bd.isOpen()){
 			//			Suppression de l'objet persistent
 			bd.deletePersistent(this);}
-		else //L'objet ne pourra être effacé: envoi d'un message d'erreur
+		else //L'objet ne pourra Ãªtre effacï¿½: envoi d'un message d'erreur
 		{System.err.println
 			("Attention : effacement d'un objet persistant alors qu'aucune "
-					+ "transaction n'est en cours. L'objet n'a pas été effacé de la base.");}
-	}//Fin de la méthode deletePersistent
+					+ "transaction n'est en cours. L'objet n'a pas Ã©tÃ© effacï¿½ de la base.");}
+	}//Fin de la mÃ©thode deletePersistent
 
 
-	/**Méthode qui rend un objet persistent*/
+	/**mÃ©thode qui rend un objet persistent*/
 	public void makePersistent(){
 		//		Initialisation d'une connexion avec le SGBD et le mapping
 		Geodatabase bd = DataSet.db;
 		//		Sauvegarde de l'objet dans la base
 		if (bd!= null && bd.isOpen()){
 			bd.makePersistent(this);}
-		else {System.out.println("Problèmes de connexion à la BD!");}
-	}//Fin de la méthode makePersistent
+		else {System.out.println("problÃ¨mes de connexion Ã  la BD!");}
+	}//Fin de la mÃ©thode makePersistent
 
 
 
 
 	/**
-	 * Méthode qui efface un SchemaConceptuelJeu de la base Oracle
+	 * mÃ©thode qui efface un SchemaConceptuelJeu de la base Oracle
 	 */
 	public static void deleteSchema(SchemaConceptuelJeu schema){
 
 		if (DataSet.db != null && DataSet.db.isOpen()){
 
-			//Rassemblement de toutes les informations sur le schéma
+			//Rassemblement de toutes les informations sur le schÃ©ma
 			List<FeatureType> ftListLocal = new ArrayList<FeatureType>();
 			List<GF_FeatureType> ftList;
 			List<AttributeType> attList;
@@ -70,7 +70,7 @@ public abstract class SchemaPersistentOJB {
 			List<AssociationRole> roleList;
 			List<InheritanceRelation> heritList;
 
-			//Suppression de tous les éléments du schéma
+			//Suppression de tous les Ã©lÃ©ments du schÃ©ma
 
 			attList=schema.getFeatureAttributes();
 			Iterator<AttributeType> iTatt = attList.iterator();
@@ -115,20 +115,20 @@ public abstract class SchemaPersistentOJB {
 				ftListLocal.add(ft);
 			}
 
-			//Suppression des objets en mémoire
+			//Suppression des objets en mï¿½moire
 			Iterator<FeatureType> iTftloc = ftListLocal.iterator();
 			while (iTftloc.hasNext()){
 				FeatureType ft = iTftloc.next();
 				schema.removeFeatureType(ft);
 			}
 
-			//Suppression du schéma lui même
+			//Suppression du schÃ©ma lui mÃªme
 			DataSet.db.deletePersistent(schema);
 		}
 		else {
 			{System.err.println
 				("Attention : effacement d'un objet persistant alors qu'aucune "
-						+ "transaction n'est en cours. L'objet n'a pas été effacé de la base.");}
+						+ "transaction n'est en cours. L'objet n'a pas Ã©tÃ© effacï¿½ de la base.");}
 		}
 	}
 
@@ -138,7 +138,7 @@ public abstract class SchemaPersistentOJB {
 	 */
 	public static void deleteSchema(fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.SchemaConceptuelProduit schema){
 
-		//Rassemblement de toutes les informations sur le schéma
+		//Rassemblement de toutes les informations sur le schÃ©ma
 		List<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType> ftListLocal = new ArrayList<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType>();
 		List<GF_FeatureType> ftList;
 		List<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType> attList;
@@ -147,7 +147,7 @@ public abstract class SchemaPersistentOJB {
 		List<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AssociationRole> roleList;
 		List<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.InheritanceRelation> heritList;
 
-		//Suppression de tous les éléments du schéma
+		//Suppression de tous les Ã©lÃ©ments du schÃ©ma
 
 		attList=schema.getFeatureAttributes();
 		Iterator<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType> iTatt = attList.iterator();
@@ -192,14 +192,14 @@ public abstract class SchemaPersistentOJB {
 			ftListLocal.add(ft);
 		}
 
-		//Suppression des objets en mémoire
+		//Suppression des objets en mï¿½moire
 		Iterator<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType> iTftloc = ftListLocal.iterator();
 		while (iTftloc.hasNext()){
 			fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType ft = iTftloc.next();
 			schema.removeFeatureType(ft);
 		}
 
-		//Suppression du schéma lui même
+		//Suppression du schÃ©ma lui mÃªme
 		DataSet.db.deletePersistent(schema);
 	}
 

@@ -39,7 +39,7 @@ public class Displacement {
 	public float getDisplacementX() {return this.x;}
 	/**
 	 * Affecte la valeur de l'attribut x.
-	 * @param x l'attribut x � affecter
+	 * @param x l'attribut x à affecter
 	 */
 	public void setDisplacementX(float x) {this.x = x;}
 
@@ -51,7 +51,7 @@ public class Displacement {
 	public float getDisplacementY() {return this.y;}
 	/**
 	 * Affecte la valeur de l'attribut y.
-	 * @param y l'attribut y � affecter
+	 * @param y l'attribut y à affecter
 	 */
 	public void setDisplacementY(float y) {this.y = y;}
 }

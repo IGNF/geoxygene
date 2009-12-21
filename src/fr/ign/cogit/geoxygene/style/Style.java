@@ -43,7 +43,7 @@ public interface Style {
 
 	/**
 	 * Affecte la valeur de l'attribut name.
-	 * @param name l'attribut name � affecter
+	 * @param name l'attribut name à affecter
 	 */
 	public void setName(String name);
 

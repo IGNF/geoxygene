@@ -46,7 +46,7 @@ public class ExternalGraphic {
 	public String getHref() {return this.href;}
 	/**
 	 * Affecte la valeur de l'attribut href.
-	 * @param href l'attribut href � affecter
+	 * @param href l'attribut href à affecter
 	 */
 	public void setHref(String href) {this.href = href;}
 
@@ -58,7 +58,7 @@ public class ExternalGraphic {
 	public String getFormat() {return this.format;}
 	/**
 	 * Affecte la valeur de l'attribut format.
-	 * @param format l'attribut format � affecter
+	 * @param format l'attribut format à affecter
 	 */
 	public void setFormat(String format) {this.format = format;}
 
@@ -76,7 +76,7 @@ public class ExternalGraphic {
 
 	/**
 	 * Affecte la valeur de l'attribut onlineResource.
-	 * @param onlineResource l'attribut onlineResource � affecter
+	 * @param onlineResource l'attribut onlineResource à affecter
 	 */
 	public void setOnlineResource(Image onlineResource) {this.onlineResource = onlineResource;}
 

@@ -14,7 +14,7 @@ import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.SchemaConceptuel
  * @author Balley
  *
  * Pour tester la persistence des MdDataset, Produit, SchemaConceptuelJeu
- * et SchémaConceptuelProduit dans Oracle ou Postgis.
+ * et schÃ©maConceptuelProduit dans Oracle ou Postgis.
  */
 
 public class Test {
@@ -51,16 +51,16 @@ public class Test {
 		schemaJeu.createFeatureAttributeValue((AttributeType)ft.getFeatureAttributeI(0), "valeur1 !");
 		schemaJeu.createFeatureAttributeValue((AttributeType)ft.getFeatureAttributeI(0), "valeur2 !");
 		System.out.println("ft dans ce schema : "+schemaJeu.getFeatureTypes());
-		schemaJeu.createFeatureAssociation("acces!",(FeatureType)schemaJeu.getFeatureTypeI(0), (FeatureType)schemaJeu.getFeatureTypeI(1), "donne acces à !", "est accedé par !");
+		schemaJeu.createFeatureAssociation("acces!",(FeatureType)schemaJeu.getFeatureTypeI(0), (FeatureType)schemaJeu.getFeatureTypeI(1), "donne acces Ã  !", "est accedï¿½ par !");
 
-		System.out.println("asso dans ce schéma : "+schemaJeu.getFeatureAssociations());
+		System.out.println("asso dans ce schÃ©ma : "+schemaJeu.getFeatureAssociations());
 		System.out.println("schema produit cree");
-		System.out.println("att dans ce schéma : "+schemaJeu.getFeatureAttributes().size());
+		System.out.println("att dans ce schÃ©ma : "+schemaJeu.getFeatureAttributes().size());
 		System.out.println("val enumerees de cet attribut = "+schemaJeu.getFeatureAttributes().get(0).getValuesDomain().size());
-		System.out.println("att Values dans ce schéma : "+schemaJeu.getFeatureAttributeValues().size());
+		System.out.println("att Values dans ce schÃ©ma : "+schemaJeu.getFeatureAttributeValues().size());
 
 		System.out.println("schema jeu cree");
-		schemaJeu.setDefinition("creéé a la volée pdt un test");
+		schemaJeu.setDefinition("creï¿½ï¿½ a la volï¿½e pdt un test");
 		MdDataSet.db = new MdGeodatabase();
 		MdDataSet.db.begin();
 		MdDataSet.db.makePersistent(schemaJeu);
@@ -84,12 +84,12 @@ public class Test {
 		schemaProduit.createFeatureAttributeValue((AttributeType)ft.getFeatureAttributeI(0), "valeur1 !");
 		schemaProduit.createFeatureAttributeValue((AttributeType)ft.getFeatureAttributeI(0), "valeur2 !");
 		System.out.println("ft dans ce schema : "+schemaProduit.getFeatureTypes());
-		schemaProduit.createFeatureAssociation("acces !",(FeatureType)schemaProduit.getFeatureTypeI(0), (FeatureType)schemaProduit.getFeatureTypeI(1), "donne acces à !", "est accedé par !");
+		schemaProduit.createFeatureAssociation("acces !",(FeatureType)schemaProduit.getFeatureTypeI(0), (FeatureType)schemaProduit.getFeatureTypeI(1), "donne acces Ã  !", "est accedï¿½ par !");
 
-		System.out.println("asso dans ce schéma : "+schemaProduit.getFeatureAssociations());
+		System.out.println("asso dans ce schÃ©ma : "+schemaProduit.getFeatureAssociations());
 		System.out.println("schema produit cree");
 
-		schemaProduit.setDefinition("creéé a la volée pdt un test");
+		schemaProduit.setDefinition("creï¿½ï¿½ a la volï¿½e pdt un test");
 		MdDataSet.db = new MdGeodatabase();
 		MdDataSet.db.begin();
 		MdDataSet.db.makePersistent(schemaProduit);
@@ -100,7 +100,7 @@ public class Test {
 
 
 	/**
-	 * cree un schemaProduit, le duplique en un schéma jeu et écrit celui-ci dans la base oracle
+	 * cree un schemaProduit, le duplique en un schÃ©ma jeu et ï¿½crit celui-ci dans la base oracle
 	 */
 	/*
 	public static void creationSchemaProduitJeuVolee(){
@@ -112,14 +112,14 @@ public class Test {
 		ft.setSchema(schemaProd);
 		schemaProd.createFeatureAttribute(ft, "nature", "String");
 		System.out.println("ft dans ce schema : "+schemaProd.getFeatureTypes());
-		schemaProd.createFeatureAssociation("acces",(FeatureType)schemaProd.getFeatureTypeI(0), (FeatureType)schemaProd.getFeatureTypeI(1), "donne acces à", "est accedé par");
+		schemaProd.createFeatureAssociation("acces",(FeatureType)schemaProd.getFeatureTypeI(0), (FeatureType)schemaProd.getFeatureTypeI(1), "donne acces ï¿½", "est accedï¿½ par");
 
-		System.out.println("asso dans ce schéma : "+schemaProd.getFeatureAssociations());
+		System.out.println("asso dans ce schÃ©ma : "+schemaProd.getFeatureAssociations());
 		System.out.println("schema produit cree");
 
 		SchemaISOJeu schemaJeu = new SchemaISOJeu(schemaProd);
 		System.out.println("schema jeu cree");
-		schemaJeu.setDefinition("creéé a la volée pdt un test");
+		schemaJeu.setDefinition("creï¿½ï¿½ a la volï¿½e pdt un test");
 		//schemaJeu.setId(2);
 		DataSetCommun.db = new GeodatabaseCommun();
 		DataSetCommun.db.begin();
@@ -135,12 +135,12 @@ public class Test {
 	public static void dupliqueSchemaProduitEcritSchemaJeu(){
 		DataSet.db = new GeodatabaseOjbPostgis();
 		List<SchemaConceptuelProduit> listSchemas = DataSet.db.loadAll(SchemaConceptuelProduit.class);
-		System.out.println("nb de schémas = "+listSchemas.size());
+		System.out.println("nb de schÃ©mas = "+listSchemas.size());
 		SchemaConceptuelProduit schemaProduit = listSchemas.get(0);
 
 		SchemaConceptuelJeu schemaJeu = new SchemaConceptuelJeu(schemaProduit);
 		System.out.println("schema jeu cree");
-		schemaJeu.setDefinition("creéé a la volée pdt un test");
+		schemaJeu.setDefinition("creï¿½ï¿½ a la volï¿½e pdt un test");
 		DataSet.db.begin();
 		DataSet.db.makePersistent(schemaJeu);
 		DataSet.db.commit();
@@ -155,12 +155,12 @@ public class Test {
 		DataSet.db = new GeodatabaseOjbPostgis();
 		File fileSchema = new File("D:/Users/Balley/java/workspace/GeOxygene/src/fr/ign/cogit/appli/sissi/terranumerica/ressources/schemaConceptuelSerialise.xml");
 		List<SchemaConceptuelProduit> listSchemas = DataSet.db.loadAll(SchemaConceptuelProduit.class);
-		System.out.println("nb de schémas = "+listSchemas.size());
+		System.out.println("nb de schÃ©mas = "+listSchemas.size());
 		SchemaConceptuelProduit schemaProduit = listSchemas.get(0);
 
 		SchemaConceptuelJeu schemaJeu = new SchemaConceptuelJeu(schemaProduit);
 		System.out.println("schema jeu cree");
-		schemaJeu.setDefinition("creéé a la volée pdt un test");
+		schemaJeu.setDefinition("creï¿½ï¿½ a la volï¿½e pdt un test");
 		ParserSchemaConceptuel parser = new ParserSchemaConceptuel();
 		parser.ecritSchemaConceptuelJeu(schemaJeu, fileSchema);
 
@@ -169,14 +169,14 @@ public class Test {
 
 
 	/**
-	 * charge un schémaJeu de la base Oracle, le lit puis l'efface de la base
+	 * charge un schÃ©maJeu de la base Oracle, le lit puis l'efface de la base
 	 */
 	public static void persistenceSchemaJeu(){
 		System.out.println("teste persistence schemaISOJeu");
 		DataSet.db = new GeodatabaseOjbPostgis();
 		DataSet.db.begin();
 		List<SchemaConceptuelJeu> listSchemas =  DataSet.db.loadAll(SchemaConceptuelJeu.class);
-		System.out.println("nb de schémas = "+listSchemas.size());
+		System.out.println("nb de schÃ©mas = "+listSchemas.size());
 		SchemaConceptuelJeu schemaJeu = listSchemas.get(0);
 		System.out.println("Le 2eme = ");
 		System.out.println("id = "+schemaJeu.getId());
@@ -225,14 +225,14 @@ public class Test {
 	}
 
 	/**
-	 * charge un schémaJeu de la base Oracle, le lit puis l'efface de la base
+	 * charge un schÃ©maJeu de la base Oracle, le lit puis l'efface de la base
 	 */
 	public static void persistenceSchemaProduit(){
 		System.out.println("teste persistence schemaISOProduit");
 		DataSet.db = new GeodatabaseOjbPostgis();
 		DataSet.db.begin();
 		List<SchemaConceptuelProduit> listSchemas =  DataSet.db.loadAll(SchemaConceptuelProduit.class);
-		System.out.println("nb de schémas = "+listSchemas.size());
+		System.out.println("nb de schÃ©mas = "+listSchemas.size());
 		SchemaConceptuelProduit schemaProduit = listSchemas.get(2);
 		System.out.println("Le 2eme = ");
 		System.out.println("id = "+schemaProduit.getId());
@@ -280,22 +280,22 @@ public class Test {
 
 
 	/**
-	 * Génère un objet SchemaConceptuel pour faire des tests.
-	 * Pour pouvoir être utilisé ce schéma doit être affecté à un jeu
+	 * Gï¿½nï¿½re un objet SchemaConceptuel pour faire des tests.
+	 * Pour pouvoir Ãªtre utilisÃ© ce schÃ©ma doit Ãªtre affectï¿½ Ã  un jeu
 	 * (MdDataSet.setSchemaConceptuel()). Il doit pointer vers des noms de classe
-	 * et de champs java qui correspondent à votre implémentation et qui
-	 * sont référencées dans votre mapping.
-	 * @return un objet schémaConceptuelJeu miniature composé de deux classes et
+	 * et de champs java qui correspondent Ã  votre implÃ©mentation et qui
+	 * sont rÃ©fÃ©rencï¿½es dans votre mapping.
+	 * @return un objet schÃ©maConceptuelJeu miniature composÃ© de deux classes et
 	 * une association
 	 */
 	public static SchemaConceptuelJeu generationSchema(){
 
 		SchemaConceptuelJeu schemaJeu = new SchemaConceptuelJeu();
 		schemaJeu.setNomSchema("routes et batiments");
-		schemaJeu.setDefinition("schéma miniature créé a la volée pdt un test");
+		schemaJeu.setDefinition("schÃ©ma miniature crÃ©Ã© a la volï¿½e pdt un test");
 
 		//creation d'une premiere classe
-		schemaJeu.createFeatureType("tronçon de route");
+		schemaJeu.createFeatureType("TronÃ§on de route");
 
 		//creation d'une deuxieme classe
 		FeatureType ft = new FeatureType();
@@ -306,22 +306,22 @@ public class Test {
 		schemaJeu.createFeatureAttribute(ft, "utilisation", "String", true);
 		schemaJeu.createFeatureAttributeValue(ft.getFeatureAttributeByName("utilisation"), "administratif");
 		schemaJeu.createFeatureAttributeValue(ft.getFeatureAttributeByName("utilisation"), "habitation");
-		//le champ java d'implémentation :
+		//le champ java d'implÃ©mentation :
 
 
-		//création d'une assoication
-		schemaJeu.createFeatureAssociation("acces",(FeatureType)schemaJeu.getFeatureTypeI(0), (FeatureType)schemaJeu.getFeatureTypeI(1), "donne acces à", "est accedé par");
+		//crÃ©ation d'une assoication
+		schemaJeu.createFeatureAssociation("acces",(FeatureType)schemaJeu.getFeatureTypeI(0), (FeatureType)schemaJeu.getFeatureTypeI(1), "donne acces ï¿½", "est accedï¿½ par");
 
-		//renseignement des classes et champs java d'implémentation
-		((FeatureType)schemaJeu.getFeatureTypeByName("tronçon de route")).setNomClasse("donnees.bdcarto.TronconRoute");
+		//renseignement des classes et champs java d'implÃ©mentation
+		((FeatureType)schemaJeu.getFeatureTypeByName("TronÃ§on de route")).setNomClasse("donnees.bdcarto.TronconRoute");
 		((FeatureType)schemaJeu.getFeatureTypeByName("batiment")).setNomClasse("donnees.bdcarto.Batiment");
 		((FeatureType)schemaJeu.getFeatureTypeByName("batiment")).getFeatureAttributeByName("utilisation").setNomField("fonction");
 
-		//lecture du schéma créé
+		//lecture du schÃ©ma crÃ©Ã©
 		System.out.println("ft dans ce schema : "+schemaJeu.getFeatureTypes());
-		System.out.println("asso dans ce schéma : "+schemaJeu.getFeatureAssociations());
+		System.out.println("asso dans ce schÃ©ma : "+schemaJeu.getFeatureAssociations());
 		System.out.println("schema produit cree");
-		System.out.println("att dans ce schéma : "+schemaJeu.getFeatureAttributes().size());
+		System.out.println("att dans ce schÃ©ma : "+schemaJeu.getFeatureAttributes().size());
 		System.out.println("val enumerees de cet attribut = "+schemaJeu.getFeatureAttributes().get(0).getValuesDomain().size());
 
 
@@ -340,10 +340,10 @@ public class Test {
 		ParserSchemaConceptuel parser = new ParserSchemaConceptuel();
 		schemaJeu = parser.litSchemaConceptuelJeuXML(file);
 
-		//lecture du schéma créé
+		//lecture du schÃ©ma crÃ©Ã©
 		System.out.println("ft dans ce schema : "+schemaJeu.getFeatureTypes());
-		System.out.println("asso dans ce schéma : "+schemaJeu.getFeatureAssociations());
-		System.out.println("att dans ce schéma : "+schemaJeu.getFeatureAttributes().size());
+		System.out.println("asso dans ce schÃ©ma : "+schemaJeu.getFeatureAssociations());
+		System.out.println("att dans ce schÃ©ma : "+schemaJeu.getFeatureAttributes().size());
 
 		System.out.println("val enumerees de cet attribut = "+schemaJeu.getFeatureAttributes().get(0).getValuesDomain().size());
 		System.out.println("\nroles de ft 1 : ");
@@ -374,10 +374,10 @@ public class Test {
 		ParserSchemaConceptuel parser = new ParserSchemaConceptuel();
 		schemaProduit = parser.litSchemaConceptuelProduitXML(file);
 
-		//lecture du schéma créé
+		//lecture du schÃ©ma crÃ©Ã©
 		System.out.println("ft dans ce schema : "+schemaProduit.getFeatureTypes());
-		System.out.println("asso dans ce schéma : "+schemaProduit.getFeatureAssociations());
-		System.out.println("att dans ce schéma : "+schemaProduit.getFeatureAttributes().size());
+		System.out.println("asso dans ce schÃ©ma : "+schemaProduit.getFeatureAssociations());
+		System.out.println("att dans ce schÃ©ma : "+schemaProduit.getFeatureAttributes().size());
 
 		System.out.println("val enumerees de cet attribut = "+schemaProduit.getFeatureAttributes().get(0).getValuesDomain().size());
 		System.out.println("\nroles de ft 1 : ");

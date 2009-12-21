@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -128,13 +128,13 @@ public interface Geodatabase  {
 	public <T> T loadAllFeatures(Class<?> featureClass, Class<T> featureListClass) ;
 
 	/**
-	 * Charge tous les FT_Feature de la classe featureClass avec une certaine valeur pour un paramètre dans la classe featureListClass.
+	 * Charge tous les FT_Feature de la classe featureClass avec une certaine valeur pour un paramÃ¨tre dans la classe featureListClass.
 	 * A appeler a l'interieur d'une transaction ouverte.
 	 * @param featureClass doit etre une sous-classe de FT_Feature, sinon renvoie une liste vide.
 	 * @param featureListClass doit etre un sous classe de FT_FeatureCollection.
-	 * @param param nom du paramètre
-	 * @param value valeur du paramètre
-	 * @return  tous les FT_Feature de la classe featureClass avec une certaine valeur pour un paramètre dans la classe featureListClass.
+	 * @param param nom du paramÃ¨tre
+	 * @param value valeur du paramÃ¨tre
+	 * @return  tous les FT_Feature de la classe featureClass avec une certaine valeur pour un paramÃ¨tre dans la classe featureListClass.
 	 */
 	public <T> T loadAllFeatures(Class<?> featureClass, Class<T> featureListClass, String param, String value) ;
 
@@ -163,11 +163,11 @@ public interface Geodatabase  {
 	public <T> T loadAllFeatures(Class<?> featureClass, Class<T> featureListClass, GM_Object geom, double dist) ;
 
 	/**
-	 * Charge tous les features correspondant à une même classe de schéma
-	 * conceptuel (il n'est pas nécessaire de connaître la classe Java
-	 * d'implémentation). Si on est dans le contexte d'un MdDataSet, les
-	 * MdFeatures sont en même temps affectés à une MdPopulation propre à leur
-	 * classe de schéma conceptuel.
+	 * Charge tous les features correspondant Ã  une mÃªme classe de schÃ©ma
+	 * conceptuel (il n'est pas nÃ©cessaire de connaÃªtre la classe Java
+	 * d'implÃ©mentation). Si on est dans le contexte d'un MdDataSet, les
+	 * MdFeatures sont en mÃªme temps affectï¿½s Ã  une MdPopulation propre Ã  leur
+	 * classe de schÃ©ma conceptuel.
 	 */
 	public <T extends FT_Feature> FT_FeatureCollection<T> loadAllFeatures(FeatureType featureType);
 
@@ -260,8 +260,8 @@ public interface Geodatabase  {
 	 * Pour recuperer le premier resultat :
 	 * <tt> edgeId = ( (BigDecimal) ((Object[]) (edges.get(0)) )[0] ).intValue(); </tt>
 	 * Utile uniquement pour debugger : on ne doit pas utiliser de SQL direct avec GeOxygene !
-	 * @param query requete SQL à exécuter
-	 * @return liste contenant le resultat de la requête SQL
+	 * @param query requete SQL Ã  exï¿½cuter
+	 * @return liste contenant le resultat de la requï¿½te SQL
 	 */
 	public List<?> exeSQLQuery(String query) ;
 

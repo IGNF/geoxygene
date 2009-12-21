@@ -9,10 +9,10 @@ import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.SchemaConceptuel
  * 
  * @author Balley
  *
- * Un produit qui a un producteur, des métadonnées minimales et notamment
- * un schéma conceptuel (de type SchemaISOProduit)
- * D'autres métadonnées sont à venir, notamment des MD ISO 19115
- * et des spécifications Cogit complètes
+ * Un produit qui a un producteur, des mÃ©tadonnÃ©es minimales et notamment
+ * un schÃ©ma conceptuel (de type SchemaISOProduit)
+ * D'autres mÃ©tadonnÃ©es sont Ã  venir, notamment des MD ISO 19115
+ * et des spÃ©cifications Cogit complï¿½tes
  */
 
 public class Produit {
@@ -41,7 +41,7 @@ public class Produit {
 
 	/**
 	 * 1 = BD
-	 * 2 = série de cartes
+	 * 2 = sï¿½rie de cartes
 	 */
 	protected int type;
 
@@ -55,7 +55,7 @@ public class Produit {
 	/**
 	 * @param type the type to set
 	 * 1 = BD
-	 * 2 = série de cartes
+	 * 2 = sï¿½rie de cartes
 	 */
 	public void setType(int type) {
 		this.type = type;
@@ -144,7 +144,7 @@ public class Produit {
 
 
 	/**
-	 * la liste des jeux de données dont on dispose pour ce produit
+	 * la liste des jeux de donnÃ©es dont on dispose pour ce produit
 	 */
 	protected List<DataSet> jeuxDisponibles;
 

@@ -17,7 +17,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 
 /**
- * TODO implémenter les méthodes vides
+ * TODO implÃ©menter les mÃ©thodes vides
  * @author Sandrine Balley
  * @author Nathalie Abadie
  */
@@ -54,7 +54,7 @@ public class FeatureType implements GF_FeatureType {
 	// Ajout Nathalie///////////////////////////////////////
 	// /////////////////////////////////////////////////////
 
-	/** Schéma auquel participe ce FeatureType */
+	/** schÃ©ma auquel participe ce FeatureType */
 	protected SchemaConceptuelProduit schema;
 	/**
 	 * @param sISO
@@ -75,7 +75,7 @@ public class FeatureType implements GF_FeatureType {
 	protected int id;
 	public int getId() {return id;}
 	public void setId(int id) {this.id = id;}
-	/** Liste des roles associés par lien 1:n */
+	/** Liste des roles associÃ©s par lien 1:n */
 	protected List<GF_AssociationRole> roles;
 	public List<GF_AssociationRole> getRoles() {return this.roles;}
 	/** Affecte une liste de roles */
@@ -102,7 +102,7 @@ public class FeatureType implements GF_FeatureType {
 				return (AssociationRole)listRoles.get(i);
 			}
 		}
-		System.err.println("Le role "+nomRole+" n'a pas été trouvé pour la classe "+this.getTypeName());
+		System.err.println("Le role "+nomRole+" n'a pas Ã©tÃ© trouvÃ© pour la classe "+this.getTypeName());
 		return null;
 	}
 	/**
@@ -137,7 +137,7 @@ public class FeatureType implements GF_FeatureType {
 	//	/** Renvoie la liste des procedures de representation dans lesquelles le ft est implique */
 	//	public List<Modelisation> getModelisation () {return this.modelisation;}
 	//
-	//	/** Ajoute une procedure de representation à la liste */
+	//	/** Ajoute une procedure de representation Ã  la liste */
 	//	public void addModelisation (Modelisation mod) {
 	//		if (mod==null) return;
 	//		modelisation.add(mod);
@@ -160,13 +160,13 @@ public class FeatureType implements GF_FeatureType {
 	protected String definition;
 	/** Les attributs de cette classe. */
 	protected List<GF_AttributeType> featureAttributes;
-	/** Les associations dans lesquelles est impliquée cette classe. */
+	/** Les associations dans lesquelles est impliquï¿½e cette classe. */
 	protected List<GF_AssociationType> memberOf;
 	/** Les operations de cette classe. */
 	protected List<GF_Operation> featureOperations;
-	/** Les relations de généralisation dans lesquelles est impliquée la classe. */
+	/** Les relations de gÃ©nÃ©ralisation dans lesquelles est impliquï¿½e la classe. */
 	protected List<GF_InheritanceRelation> generalization = new ArrayList<GF_InheritanceRelation>();
-	/** Les relations de spécialisation dans lesquelles est impliquée la classe. */
+	/** Les relations de spÃ©cialisation dans lesquelles est impliquï¿½e la classe. */
 	protected List<GF_InheritanceRelation> specialization = new ArrayList<GF_InheritanceRelation>();
 	/**
 	 * le nom de la Classe Java correspondant au FeatureType et contenant les
@@ -175,7 +175,7 @@ public class FeatureType implements GF_FeatureType {
 	protected String nomClasse;
 	public String getNomClasse() {return this.nomClasse;}
 	public void setNomClasse(String value) {this.nomClasse = value;}
-	/** proprietaire de l'élément (producteur=1, utilisateur=2)* */
+	/** proprietaire de l'Ã©lÃ©ment (producteur=1, utilisateur=2)* */
 	protected int proprietaire;
 	/** Renvoie le proprietaire */
 	public int getProprietaire() {return this.proprietaire;}
@@ -183,26 +183,26 @@ public class FeatureType implements GF_FeatureType {
 	public void setProprietaire(int value) {this.proprietaire = value;}
 	/**
 	 * Non standard
-	 * Utile aux applications de transformation de schéma
-	 * caractère implicite ou explicite de l'élément : un featureType implicite
-	 * n'a pas d'instances à priori mais celles-ci pourront être dérivées
+	 * Utile aux applications de transformation de schÃ©ma
+	 * caractï¿½re implicite ou explicite de l'Ã©lÃ©ment : un featureType implicite
+	 * n'a pas d'instances Ã  priori mais celles-ci pourront Ãªtre dï¿½rivï¿½es
 	 * d'elements explicites par le biais de transformations
 	 **/
 	protected boolean isExplicite;
 	/** Renvoie le caractere explicite ou implicite */
 	public boolean getIsExplicite() {return this.isExplicite;}
-	/** Affecte le caractère implicite ou explicite */
+	/** Affecte le caractï¿½re implicite ou explicite */
 	public void setIsExplicite(boolean value) {this.isExplicite = value;}
-	/**caractère instancié ou non de cette classe. Par exemple
-	 * la classe Route peut êtree abstraite et n'être implémentée
+	/**caractï¿½re instanciÃ© ou non de cette classe. Par exemple
+	 * la classe Route peut Ãªtree abstraite et n'Ãªtre implÃ©mentÃ©e
 	 * que pas le biais de ses sous-types Route principale et Route secondaire.
 	 */
 	protected boolean isAbstract;
 	public boolean getIsAbstract() {return this.isAbstract;}
 	public void setIsAbstract(boolean IsAbstract) {this.isAbstract = IsAbstract;}
-	/**la définition semantique du featureType (sous la forme d'un String
+	/**la dÃ©finition semantique du featureType (sous la forme d'un String
 	 ou d'une classe d'ontologie)
-	 ou un pointeur vers cette définition (sous la forme d'une URI)*/
+	 ou un pointeur vers cette dÃ©finition (sous la forme d'une URI)*/
 	protected Object definitionReference;
 	/**
 	 * @return the definitionReference
@@ -240,7 +240,7 @@ public class FeatureType implements GF_FeatureType {
 				return (AttributeType)listAttrib.get(i);
 			}
 		}
-		System.err.println("L'attribut "+nomAttribut+" n'a pas été trouvé pour la classe "+this.getTypeName());
+		System.err.println("L'attribut "+nomAttribut+" n'a pas Ã©tÃ© trouvÃ© pour la classe "+this.getTypeName());
 		return null;
 	}
 	public void removeFeatureAttribute(GF_AttributeType ftatt) {
@@ -260,19 +260,19 @@ public class FeatureType implements GF_FeatureType {
 	public String getDefinition() {return this.definition;}
 	public void setDefinition(String Definition) {this.definition = Definition;}
 	/**
-	 * Renvoie les relations d'héritage dans lesquelles est impliquée la
+	 * Renvoie les relations d'hÃ©ritage dans lesquelles est impliquï¿½e la
 	 * classe en tant que subType.
 	 */
 	public List<GF_InheritanceRelation> getGeneralization() {return this.generalization;}
 	/** Affecte une liste de generalisations */
 	public void setGeneralization(List<GF_InheritanceRelation> L) {this.generalization = L;}
 	/**
-	 * Renvoie le nombre de relation de généralisation dans lesquelles est
-	 * impliquée la classe.
+	 * Renvoie le nombre de relation de gÃ©nÃ©ralisation dans lesquelles est
+	 * impliquï¿½e la classe.
 	 */
 	public int sizeGeneralization() {return this.generalization.size();}
 	/**
-	 * Ajoute une relation de généralisation. Affecte automatiquement le
+	 * Ajoute une relation de gÃ©nÃ©ralisation. Affecte automatiquement le
 	 * sous-type de cette relation.
 	 */
 	public void addGeneralization(GF_InheritanceRelation value) {
@@ -289,19 +289,19 @@ public class FeatureType implements GF_FeatureType {
 	}
 	// //////////////////////////////////////////////////////////////////////////
 	/**
-	 * Renvoie la liste des relations d'hétitage dans lesquelles est impliquée
+	 * Renvoie la liste des relations d'hï¿½titage dans lesquelles est impliquï¿½e
 	 * la classeen tant que superType.
 	 */
 	public List<GF_InheritanceRelation> getSpecialization() {return this.specialization;}
 	/** Affecte une liste de specialisations */
 	public void setSpecialization(List<GF_InheritanceRelation> L) {this.specialization = L;}
 	/**
-	 * Renvoie le nombre de relation de spécialisation dans lesquelles est
-	 * impliquée la classe.
+	 * Renvoie le nombre de relation de spÃ©cialisation dans lesquelles est
+	 * impliquï¿½e la classe.
 	 */
 	public int sizeSpecialization() {return this.specialization.size();}
 	/**
-	 * Ajoute une relation de spécialisation. Affecte automatiquement le
+	 * Ajoute une relation de spÃ©cialisation. Affecte automatiquement le
 	 * super-type de cette relation.
 	 */
 	public void addSpecialization(GF_InheritanceRelation value) {
@@ -319,7 +319,7 @@ public class FeatureType implements GF_FeatureType {
 		value.setSuperType(null);// gestion de la bi-direction
 	}
 	// //////////////////////////////////////////////////////////////////////////
-	/** Renvoie les associations dans lesquelles est impliquée cette classe. */
+	/** Renvoie les associations dans lesquelles est impliquï¿½e cette classe. */
 	public List<GF_AssociationType> getMemberOf() {return this.memberOf;}
 	/** Affecte une liste d'associations */
 	public void setMemberOf(List<GF_AssociationType> L) {
@@ -337,7 +337,7 @@ public class FeatureType implements GF_FeatureType {
 			scfa.getLinkBetween().add(this);
 		}
 	}
-	/** Le nombre d'associations dans lesquelles est impliquée cette classe. */
+	/** Le nombre d'associations dans lesquelles est impliquï¿½e cette classe. */
 	public int sizeMemberOf() {return this.memberOf.size();}
 	/** Ajoute une association. */
 	public void addMemberOf(GF_AssociationType value) {
@@ -358,38 +358,38 @@ public class FeatureType implements GF_FeatureType {
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
-	/** *******méthodes non utilisées de l'interface GF_Itf ********** */
+	/** *******mÃ©thodes non utilisÃ©es de l'interface GF_Itf ********** */
 	/**
-	 * Non implémenté
+	 * Non implÃ©mentÃ©
 	 */
 	public List<GF_PropertyType> getProperties() {return null;}
 	/**
-	 * Non implémenté
+	 * Non implÃ©mentÃ©
 	 */
 	public void setProperties(List<GF_PropertyType> L) {}
 	/**
-	 * Non implémenté
+	 * Non implÃ©mentÃ©
 	 */
 	public int sizeProperties() {return 0;}
 	/**
-	 * Non implémenté
+	 * Non implÃ©mentÃ©
 	 * @param value
 	 */
 	public void addProperty(GF_PropertyType value) {}
 	/**
-	 * Non implémenté
+	 * Non implÃ©mentÃ©
 	 */
 	public List<GF_Constraint> getConstraint() {return null;}
 	/**
-	 * Non implémenté
+	 * Non implÃ©mentÃ©
 	 */
 	public void setConstraint(List<GF_Constraint> L) {}
 	/**
-	 * Non implémenté
+	 * Non implÃ©mentÃ©
 	 */
 	public int sizeConstraint() {return 0;}
 	/**
-	 * Non implémenté
+	 * Non implÃ©mentÃ©
 	 */
 	public void addConstraint(GF_Constraint value) {}
 }

@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -59,7 +59,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.2
- * 22/07/2008 : modification des fonctions loadAllFeatures pour récupérer le SRID dans les métadonnées (Julien Perret)
+ * 22/07/2008 : modification des fonctions loadAllFeatures pour RÃ©cupÃ¨rer le SRID dans les mÃ©tadonnÃ©es (Julien Perret)
  */
 
 
@@ -130,14 +130,14 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 					oqlQuery.create(query);
 					DList list = (DList) oqlQuery.execute();
 					Iterator<T> iter = list.iterator();
-					// on récupère le srid attribué à cette classe dans les métadonnées
+					// on RÃ©cupÃ¨re le srid attribuï¿½ Ã  cette classe dans les mÃ©tadonnÃ©es
 					Metadata metadata = this.getMetadata(featureClass);
 					int srid = -1;
 					if (metadata!=null&&metadata.getSRID()!=0) {
 						srid=metadata.getSRID();
 					} else {
-						// si cette classe ne contient pas de métadonnées ou si c'est une classe mère de la classe stockée dans le SGBD
-						// on récupère le premier élément (s'il existe) et ses métadonnées.
+						// si cette classe ne contient pas de mÃ©tadonnÃ©es ou si c'est une classe mÃ¨re de la classe stockÃ©e dans le SGBD
+						// on RÃ©cupÃ¨re le premier Ã©lÃ©ment (s'il existe) et ses mÃ©tadonnÃ©es.
 						if (iter.hasNext()) {
 							T feature = iter.next();
 							metadata = this.getMetadata(feature.getClass());
@@ -174,7 +174,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 		try {
 			result = featureListClass.newInstance();
 		} catch (Exception e)  {
-			logger.error("Impossible de créer une nouvelle instance de la classe "+featureListClass.getName());
+			logger.error("Impossible de crÃ©er une nouvelle instance de la classe "+featureListClass.getName());
 			e.printStackTrace();
 			return null;
 		}
@@ -189,14 +189,14 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 					oqlQuery.create(query);
 					DList list = (DList) oqlQuery.execute();
 					Iterator<?> iter = list.iterator();
-					// on récupère le srid attribué à cette classe dans les métadonnées
+					// on RÃ©cupÃ¨re le srid attribuï¿½ Ã  cette classe dans les mÃ©tadonnÃ©es
 					Metadata metadata = this.getMetadata(featureClass);
 					int srid = -1;
 					if (metadata!=null&&metadata.getSRID()!=0) {
 						srid=metadata.getSRID();
 					} else {
-						// si cette classe ne contient pas de métadonnées ou si c'est une classe mère de la classe stockée dans le SGBD
-						// on récupère le premier élément (s'il existe) et ses métadonnées.
+						// si cette classe ne contient pas de mÃ©tadonnÃ©es ou si c'est une classe mÃ¨re de la classe stockÃ©e dans le SGBD
+						// on RÃ©cupÃ¨re le premier Ã©lÃ©ment (s'il existe) et ses mÃ©tadonnÃ©es.
 						if (iter.hasNext()) {
 							FT_Feature feature = (FT_Feature) iter.next();
 							metadata = this.getMetadata(feature.getClass());
@@ -241,14 +241,14 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 					oqlQuery.create(query);
 					DList list = (DList) oqlQuery.execute();
 					Iterator<T> iter = list.iterator();
-					// on récupère le srid attribué à cette classe dans les métadonnées
+					// on RÃ©cupÃ¨re le srid attribuï¿½ Ã  cette classe dans les mÃ©tadonnÃ©es
 					Metadata metadata = this.getMetadata(featureClass);
 					int srid = -1;
 					if (metadata!=null&&metadata.getSRID()!=0) {
 						srid=metadata.getSRID();
 					} else {
-						// si cette classe ne contient pas de métadonnées ou si c'est une classe mère de la classe stockée dans le SGBD
-						// on récupère le premier élément (s'il existe) et ses métadonnées.
+						// si cette classe ne contient pas de mÃ©tadonnÃ©es ou si c'est une classe mÃ¨re de la classe stockÃ©e dans le SGBD
+						// on RÃ©cupÃ¨re le premier Ã©lÃ©ment (s'il existe) et ses mÃ©tadonnÃ©es.
 						if (iter.hasNext()) {
 							T feature = iter.next();
 							metadata = this.getMetadata(feature.getClass());
@@ -285,7 +285,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 		try {
 			result = featureListClass.newInstance();
 		} catch (Exception e)  {
-			logger.error("Impossible de créer une nouvelle instance de la classe "+featureListClass.getName());
+			logger.error("Impossible de crÃ©er une nouvelle instance de la classe "+featureListClass.getName());
 			e.printStackTrace();
 			return null;
 		}
@@ -300,14 +300,14 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements Geodatabase
 					oqlQuery.create(query);
 					DList list = (DList) oqlQuery.execute();
 					Iterator<?> iter = list.iterator();
-					// on récupère le srid attribué à cette classe dans les métadonnées
+					// on RÃ©cupÃ¨re le srid attribuï¿½ Ã  cette classe dans les mÃ©tadonnÃ©es
 					Metadata metadata = this.getMetadata(featureClass);
 					int srid = -1;
 					if (metadata!=null&&metadata.getSRID()!=0) {
 						srid=metadata.getSRID();
 					} else {
-						// si cette classe ne contient pas de métadonnées ou si c'est une classe mère de la classe stockée dans le SGBD
-						// on récupère le premier élément (s'il existe) et ses métadonnées.
+						// si cette classe ne contient pas de mÃ©tadonnÃ©es ou si c'est une classe mÃ¨re de la classe stockÃ©e dans le SGBD
+						// on RÃ©cupÃ¨re le premier Ã©lÃ©ment (s'il existe) et ses mÃ©tadonnÃ©es.
 						if (iter.hasNext()) {
 							FT_Feature feature = (FT_Feature) iter.next();
 							metadata = this.getMetadata(feature.getClass());

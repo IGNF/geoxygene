@@ -49,7 +49,7 @@ public class SvgParameter {
 
 	/**
 	 * Affecte la valeur de l'attribut name.
-	 * @param name l'attribut name � affecter
+	 * @param name l'attribut name à affecter
 	 */
 	public void setName(String name) {this.name = name;}
 
@@ -64,7 +64,7 @@ public class SvgParameter {
 
 	/**
 	 * Affecte la valeur de l'attribut value.
-	 * @param value l'attribut value � affecter
+	 * @param value l'attribut value à affecter
 	 */
 	public void setValue(String value) {this.value = value;}
 }

@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -92,7 +92,7 @@ import org.postgis.PGgeometry;
  *  modification des " setNull " (plusieurs) pour gerer le cas de l'ecriture de geometries nulles.
  * 
  * AB 11 juillet 2005 :
- * <br> Utilisation des noms de classes et de la réflection pour permettre la compilation sépérée pour Oracle.
+ * <br> Utilisation des noms de classes et de la rï¿½flection pour permettre la compilation sï¿½pï¿½rï¿½e pour Oracle.
  * <br> Patch pour permettre l'utilisation de la meme classe de "FieldConversion" pour Oracle et Postgis.
  * 
  * @author Thierry Badard & Arnaud Braun
@@ -120,8 +120,8 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
 	private ConnectionManagerIF m_conMan;
 
 	// AJOUT pour GeOxygene ---------------------------------------------------
-	// Nom des classes relatives à Oracle,
-	//en String pour permettre la compilation séparée
+	// Nom des classes relatives Ã  Oracle,
+	//en String pour permettre la compilation sï¿½parï¿½e
 	private final String GeomGeOxygene2Oracle_CLASS_NAME =
 		"fr.ign.cogit.geoxygene.datatools.oracle.GeomGeOxygene2Oracle";
 	private final String ArrayGeOxygene2Oracle_CLASS_NAME =
@@ -171,7 +171,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
 				// AUTRE DBMS
 				else {
 					logger.fatal("## Le SGBD n'est ni Oracle, ni PostgreSQL ##");
-					logger.fatal("## Le programme s'arrête ##");
+					logger.fatal("## Le programme s'arrï¿½te ##");
 					System.exit(0);
 				}
 		// FIN AJOUT pour GeOxygene ---------------------------------------------------
@@ -331,7 +331,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
 			if (value != null)
 			{
 				// =======  DEBUT AJOUT POUR GeOxygene ====================
-				// Gestion des géométrie
+				// Gestion des gÃ©omÃ©trie
 				if (fld.getFieldConversion() instanceof GeomGeOxygene2Dbms) {
 					// ORACLE
 					if (m_platform instanceof PlatformOracle9iImpl || m_platform instanceof PlatformOracleImpl) {
@@ -368,7 +368,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
 			else
 			{
 				// =======  DEBUT AJOUT POUR GeOxygene ====================
-				// Gestion des géométries nulles sous Oracle (plante sinon)
+				// Gestion des gÃ©omÃ©tries nulles sous Oracle (plante sinon)
 				if (fld.getJdbcType().getType() == Types.STRUCT)
 					try {
 						stmt.setNull(index, fld.getJdbcType().getType(), "MDSYS.SDO_GEOMETRY");
@@ -609,8 +609,8 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
 				// DEBUT AJOUT POUR GEOXYGENE ----------------------------------------------
 				// Pour PostGIS le type JDBC STRUC n'est pas reconnu
 				// On caste en un autre type (OTHER)
-				// qui a été ajouté dans le "JDBCTypesHelper" réécrit pour l'occasion
-				// ( ce type n'existe pas dans OJB par défaut)
+				// qui a Ã©tÃ© ajoutÃ© dans le "JDBCTypesHelper" rï¿½ï¿½crit pour l'occasion
+				// ( ce type n'existe pas dans OJB par dÃ©faut)
 				if (val.getValue() instanceof PGgeometry)
 					val.setJdbcType(JdbcTypesHelper.getJdbcTypeByName("other"));
 				// FIN AJOUT POUR GEOXYGENE ----------------------------------------------
@@ -622,7 +622,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
 				else
 				{
 					// =======  DEBUT AJOUT POUR GeOxygene ====================
-						// Gestion des géométries nulles sous Oracle (plante sinon)
+						// Gestion des gÃ©omÃ©tries nulles sous Oracle (plante sinon)
 					if (val.getJdbcType().getType() == Types.STRUCT)
 						try {
 							stmt.setNull(i + 1, val.getJdbcType().getType(), "MDSYS.SDO_GEOMETRY");
@@ -698,8 +698,8 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
 				// DEBUT AJOUT POUR GEOXYGENE ----------------------------------------------
 				// Pour PostGIS le type JDBC STRUC n'est pas reconnu
 				// On caste en un autre type (OTHER)
-				// qui a été ajouté dans le "JDBCTypesHelper" réécrit pour l'occasion
-				// ( ce type n'existe pas dans OJB par défaut)
+				// qui a Ã©tÃ© ajoutÃ© dans le "JDBCTypesHelper" rï¿½ï¿½crit pour l'occasion
+				// ( ce type n'existe pas dans OJB par dÃ©faut)
 				if (values[i].getValue() instanceof PGgeometry)
 					values[i].setJdbcType(JdbcTypesHelper.getJdbcTypeByName("other"));
 				// FIN AJOUT POUR GEOXYGENE ----------------------------------------------
@@ -711,7 +711,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
 				else
 				{
 					// =======  DEBUT AJOUT POUR GeOxygene ====================
-						// Gestion des géométries nulles sous Oracle (plante sinon)
+						// Gestion des gÃ©omÃ©tries nulles sous Oracle (plante sinon)
 					if (values[i].getJdbcType().getType() == Types.STRUCT)
 						try {
 							stmt.setNull(index, values[i].getJdbcType().getType(), "MDSYS.SDO_GEOMETRY");
@@ -752,7 +752,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
 				else
 				{
 					// =======  DEBUT AJOUT POUR GeOxygene ====================
-						// Gestion des géométries nulles sous Oracle (plante sinon)
+						// Gestion des gÃ©omÃ©tries nulles sous Oracle (plante sinon)
 					if (values[i].getJdbcType().getType() == Types.STRUCT)
 						try {
 							stmt.setNull(index, values[i].getJdbcType().getType(), "MDSYS.SDO_GEOMETRY");

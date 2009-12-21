@@ -53,7 +53,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
     public String getLabel() {return this.label;}
     /**
      * Affecte la valeur de l'attribut label.
-     * @param label l'attribut label � affecter
+     * @param label l'attribut label à affecter
      */
     public void setLabel(String label) {this.label = label;}
 
@@ -65,7 +65,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
     public Font getFont() {return this.font;}
     /**
      * Affecte la valeur de l'attribut font.
-     * @param font l'attribut font � affecter
+     * @param font l'attribut font à affecter
      */
     public void setFont(Font font) {this.font = font;}
 
@@ -77,7 +77,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
     public LabelPlacement getLabelPlacement() {return this.labelPlacement;}
     /**
      * Affecte la valeur de l'attribut labelPlacement.
-     * @param labelPlacement l'attribut labelPlacement � affecter
+     * @param labelPlacement l'attribut labelPlacement à affecter
      */
     public void setLabelPlacement(LabelPlacement labelPlacement) {this.labelPlacement = labelPlacement;}
 
@@ -89,7 +89,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
     public Halo getHalo() {return this.halo;}
     /**
      * Affecte la valeur de l'attribut halo.
-     * @param halo l'attribut halo � affecter
+     * @param halo l'attribut halo à affecter
      */
     public void setHalo(Halo halo) {this.halo = halo;}
 
@@ -102,7 +102,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
 
     /**
      * Affecte la valeur de l'attribut fill.
-     * @param fill l'attribut fill � affecter
+     * @param fill l'attribut fill à affecter
      */
     public void setFill(Fill fill) {this.fill = fill;}
     @Override

@@ -40,7 +40,7 @@ public class LinePlacement implements Placement {
 	public float getPerpendicularOffset() {return this.perpendicularOffset;}
 	/**
 	 * Affecte la valeur de l'attribut perpendicularOffset.
-	 * @param perpendicularOffset l'attribut perpendicularOffset � affecter
+	 * @param perpendicularOffset l'attribut perpendicularOffset à affecter
 	 */
 	public void setPerpendicularOffset(float perpendicularOffset) {this.perpendicularOffset = perpendicularOffset;}
 }

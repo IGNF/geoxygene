@@ -51,7 +51,7 @@ public interface Layer {
 
 	/**
 	 * Affecte la valeur de l'attribut name.
-	 * @param name l'attribut name � affecter
+	 * @param name l'attribut name à affecter
 	 */
 	public void setName(String name);
 	
@@ -65,7 +65,7 @@ public interface Layer {
 
 	/**
 	 * Affecte la valeur de l'attribut styles.
-	 * @param styles l'attribut styles � affecter
+	 * @param styles l'attribut styles à affecter
 	 */
 	public void setStyles(List<Style> styles);
 	

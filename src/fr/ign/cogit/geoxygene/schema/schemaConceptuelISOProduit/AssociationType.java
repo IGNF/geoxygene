@@ -17,7 +17,7 @@ import fr.ign.cogit.geoxygene.feature.type.GF_Operation;
  */
 public class AssociationType extends FeatureType implements	GF_AssociationType {
 	/**
-	 * attributs hérités de SC_FeatureType
+	 * attributs hÃ©ritï¿½s de SC_FeatureType
 	 * 
 	 * protected List fc; protected String typeName; protected String
 	 * definition; protected int id; protected List featureAttributes; protected
@@ -36,7 +36,7 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 
 
 
-	/** Les feature types impliqués dans cette association. */
+	/** Les feature types impliquï¿½s dans cette association. */
 	protected List<GF_FeatureType> linkBetween;
 
 	/** Les roles de cette association. */
@@ -45,7 +45,7 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 
 	/**
 	 * le nom de la classe-association Java correspondante si elle existe (en
-	 * cas de cardinalité n-m)
+	 * cas de cardinalitï¿½ n-m)
 	 */
 	protected String nomClasseAsso;
 
@@ -92,7 +92,7 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 		}
 	}
 
-	/** Renvoie le nombre de feature types impliqués dans cette association. */
+	/** Renvoie le nombre de feature types impliquï¿½s dans cette association. */
 	public int sizeLinkBetween() {
 		return this.linkBetween.size();
 	}
@@ -162,7 +162,7 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 				return (AssociationRole)listRoles.get(i);
 			}
 		}
-		System.err.println("Le role "+nomRole+" n'a pas été trouvé pour l'association "+this.getTypeName());
+		System.err.println("Le role "+nomRole+" n'a pas Ã©tÃ© trouvÃ© pour l'association "+this.getTypeName());
 		return null;
 	}
 

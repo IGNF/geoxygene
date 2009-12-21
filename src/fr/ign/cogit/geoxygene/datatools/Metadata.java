@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -29,10 +29,10 @@ package fr.ign.cogit.geoxygene.datatools;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 
 /**
- * Classe pour décrire les métadonnées des classes java persistantes.
- * S'il s'agit de classes géographiques, des métadonnées sur la géométrie sont renseignées.
- * Cette classe est instanciée à l'initialisation de Geodatabase.
- * (on crée une liste de Métadata, une valeur par classe persistante).
+ * Classe pour dÃ©crire les mÃ©tadonnÃ©es des classes java persistantes.
+ * S'il s'agit de classes GÃ©ographiques, des mÃ©tadonnÃ©es sur la gÃ©omÃ©trie sont renseignÃ©es.
+ * Cette classe est instanciÃ©e Ã  l'initialisation de Geodatabase.
+ * (on crÃ©e une liste de mÃ©tadata, une valeur par classe persistante).
  *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -50,26 +50,26 @@ public class Metadata {
 	/** La table du SGBD. */
 	protected String _tableName;
 
-	/** La colonne où est stockée la géométrie (mono-représentation !).*/
+	/** La colonne oÃ¹ est stockÃ©e la gÃ©omÃ©trie (mono-reprÃ©sentation !).*/
 	protected String _geomColumnName;
 
-	/** La colonne où est stocké la clef (ne gère pas les clefs complexes !). */
+	/** La colonne oÃ¹ est stockÃ© la clef (ne gÃ¨re pas les clefs complexes !). */
 	protected String _idColumnName;
 
-	/** Le nom de l'attribut qui "mappe" la clef (ne gère pas les clefs complexes !). */
+	/** Le nom de l'attribut qui "mappe" la clef (ne gÃ¨re pas les clefs complexes !). */
 	protected String _idFieldName;
 
-	/** L'identifant du système de coordonnées. */
+	/** L'identifant du systï¿½me de coordonnÃ©es. */
 	protected int _SRID;
 
 	/** L'enveloppe de la couche. */
 	protected GM_Envelope _envelope;    //
 
-	/** La tolerance sur les coordonnées.
+	/** La tolerance sur les coordonnÃ©es.
         _tolerance[0] = tolerance sur X, etc.*/
 	protected double[] _tolerance;
 
-	/** Dimension des coordonnées (2D ou 3D). */
+	/** Dimension des coordonnÃ©es (2D ou 3D). */
 	protected int _dimension;
 
 
@@ -94,35 +94,35 @@ public class Metadata {
 	/** La table du SGBD. */
 	public String getTableName() {return _tableName;}
 
-	/** La colonne où est stockée la géométrie (mono-représentation !). */
+	/** La colonne oÃ¹ est stockÃ©e la gÃ©omÃ©trie (mono-reprÃ©sentation !). */
 	public String getGeomColumnName() {return _geomColumnName;}
 
-	/** La colonne où est stocké la clef (ne gère pas les clefs complexes !). */
+	/** La colonne oÃ¹ est stockÃ© la clef (ne gÃ¨re pas les clefs complexes !). */
 	public String getIdColumnName() {return _idColumnName;}
 
-	/** Le nom de l'attribut qui "mappe" la clef (ne gère pas les clefs complexes !). */
+	/** Le nom de l'attribut qui "mappe" la clef (ne gÃ¨re pas les clefs complexes !). */
 	public String getIdFieldName() {return _idFieldName;}
 
-	/** L'identifant du système de coordonnées.
-        Vaut 0 s'il n'est pas affecté, ou si la classe n'est pas géographique.*/
+	/** L'identifant du systï¿½me de coordonnÃ©es.
+        Vaut 0 s'il n'est pas affectï¿½, ou si la classe n'est pas GÃ©ographique.*/
 	public int getSRID() {return _SRID;}
 
 	/** L'enveloppe de la couche.
-        Vaut null si la classe n'est pas géographique. */
+        Vaut null si la classe n'est pas GÃ©ographique. */
 	public GM_Envelope getEnvelope() {return _envelope;}
 
-	/** La tolerance sur les coordonnées.
+	/** La tolerance sur les coordonnÃ©es.
         _tolerance[0] = tolerance sur X, etc.
-        Vaut null si la classe n'est pas géographique. */
+        Vaut null si la classe n'est pas GÃ©ographique. */
 	public double[] getTolerance() {return _tolerance;}
 
-	/** La tolerance sur les coordonnées.
+	/** La tolerance sur les coordonnÃ©es.
         getTolerance(i) = tolerance sur X, etc.
-        Vaut null si la classe n'est pas géographique. */
+        Vaut null si la classe n'est pas GÃ©ographique. */
 	public double getTolerance(int i) {return _tolerance[i];}
 
-	/** Dimension des coordonnées (2D ou 3D).
-        Vaut null si la classe n'est pas géographique. */
+	/** Dimension des coordonnÃ©es (2D ou 3D).
+        Vaut null si la classe n'est pas GÃ©ographique. */
 	public int getDimension() {return _dimension;}
 
 

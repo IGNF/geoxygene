@@ -49,7 +49,7 @@ public class Font {
 	public String getFontFamily() {return this.fontFamily;}
 	/**
 	 * Affecte la valeur de l'attribut fontFamily.
-	 * @param fontFamily l'attribut fontFamily � affecter
+	 * @param fontFamily l'attribut fontFamily à affecter
 	 */
 	public void setFontFamily(String fontFamily) {this.fontFamily = fontFamily;}
 	
@@ -61,7 +61,7 @@ public class Font {
 	public int getFontStyle() {return this.fontStyle;}
 	/**
 	 * Affecte la valeur de l'attribut fontStyle.
-	 * @param fontStyle l'attribut fontStyle � affecter
+	 * @param fontStyle l'attribut fontStyle à affecter
 	 */
 	public void setFontStyle(int fontStyle) {this.fontStyle = fontStyle;}
 	
@@ -73,7 +73,7 @@ public class Font {
 	public int getFontWeight() {return this.fontWeight;}
 	/**
 	 * Affecte la valeur de l'attribut fontWeight.
-	 * @param fontWeight l'attribut fontWeight � affecter
+	 * @param fontWeight l'attribut fontWeight à affecter
 	 */
 	public void setFontWeight(int fontWeight) {this.fontWeight = fontWeight;}
 	
@@ -85,7 +85,7 @@ public class Font {
 	public int getFontSize() {return this.fontSize;}
 	/**
 	 * Affecte la valeur de l'attribut fontSize.
-	 * @param fontSize l'attribut fontSize � affecter
+	 * @param fontSize l'attribut fontSize à affecter
 	 */
 	public void setFontSize(int fontSize) {this.fontSize = fontSize;}
 
@@ -103,7 +103,7 @@ public class Font {
 	 * Affecte la valeur de l'attribut cssParameters.
 	 * Four types of CssParameter are allowed, 'font-family', 'font-style', 'font-weight', and 'font-size'.
 	 * (cf. OGC 02-070 p.46)
-	 * @param svgParameters l'attribut cssParameters � affecter
+	 * @param svgParameters l'attribut cssParameters à affecter
 	 */
 	public void setSvgParameters(List<SvgParameter> svgParameters) {
 		this.svgParameters = svgParameters;

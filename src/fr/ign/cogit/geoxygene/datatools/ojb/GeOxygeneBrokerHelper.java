@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -85,7 +85,7 @@ import com.develop.java.lang.reflect.Proxy;
  * suite au premier ajout dans getValuesForObject.
  * 
  * AB 11 juillet 2005 :
- * <br> Utilisation des noms de classes et de la réflection pour permettre la compilation sépérée pour Oracle.
+ * <br> Utilisation des noms de classes et de la rï¿½flection pour permettre la compilation sï¿½pï¿½rï¿½e pour Oracle.
  * <br> Patch pour permettre l'utilisation de la meme classe de "FieldConversion" pour Oracle et Postgis.
  * 
  * @author Thierry Badard & Arnaud Braun
@@ -96,8 +96,8 @@ public class GeOxygeneBrokerHelper {
 	static Logger logger=Logger.getLogger(GeOxygeneBrokerHelper.class.getName());
 
 	// AJOUT pour GeOxygene ---------------------------------------------------
-	// Nom des classes relatives à Oracle,
-	//en String pour permettre la compilation séparée
+	// Nom des classes relatives Ã  Oracle,
+	//en String pour permettre la compilation sï¿½parï¿½e
 	private final String GeomGeOxygene2Oracle_CLASS_NAME =
 		"fr.ign.cogit.geoxygene.datatools.oracle.GeomGeOxygene2Oracle";
 	private final String GeomGeOxygene2Postgis_CLASS_NAME =
@@ -143,7 +143,7 @@ public class GeOxygeneBrokerHelper {
 				// AUTRE DBMS
 				else {
 					logger.fatal("## Le SGBD n'est ni Oracle, ni PostgreSQL ##");
-					logger.fatal("## Le programme s'arrête ##");
+					logger.fatal("## Le programme s'arrï¿½te ##");
 					System.exit(0);
 				}
 		// FIN AJOUT pour GeOxygene ---------------------------------------------------
@@ -410,7 +410,7 @@ public class GeOxygeneBrokerHelper {
 				// apply type and value conversion
 
 				// DEBUT AJOUT  POUR GeOxygene -------------------------------------------------------------
-				// Gestion des géométrie
+				// Gestion des gÃ©omÃ©trie
 				if (fd.getFieldConversion() instanceof GeomGeOxygene2Dbms) {
 					// ORACLE
 					if (m_platform instanceof PlatformOracle9iImpl || m_platform instanceof PlatformOracleImpl) {
@@ -430,7 +430,7 @@ public class GeOxygeneBrokerHelper {
 
 				} else
 					// FIN AJOUT  POUR GeOxygene----------------------------------------------------------------
-					// Types non géométriques
+					// Types non gÃ©omÃ©triques
 
 					cv = fd.getFieldConversion().javaToSql(cv);
 			}

@@ -23,7 +23,7 @@ public class AttributeType implements GF_AttributeType {
 	}
 
 	/**
-	 * Constructeur à partir d'un AttributeType schemaConceptuelISOProduit
+	 * Constructeur Ã  partir d'un AttributeType schemaConceptuelISOProduit
 	 * @param ori un AttributeType schemaConceptuelISOProduit
 	 */
 	public AttributeType(fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType ori) {
@@ -56,26 +56,26 @@ public class AttributeType implements GF_AttributeType {
 	/**nom de la propriete*/
 	protected String memberName;
 	/** 
-	 * Renvoie le nom de la propriété.
-	 * @return le nom de la propriété.
+	 * Renvoie le nom de la propriÃ©tÃ©.
+	 * @return le nom de la propriÃ©tÃ©.
 	 */
 	public String getMemberName() {return this.memberName;}
 	/** 
-	 * Affecte un nom de propriété.
-	 * @param MemberName un nom de propriété
+	 * Affecte un nom de propriÃ©tÃ©.
+	 * @param MemberName un nom de propriÃ©tÃ©
 	 */
 	public void setMemberName(String MemberName) {this.memberName = MemberName;}
 	/** Type de l'attribut. */
 	protected String valueType;
 	/** Renvoie le type de l'attribut. */
 	public String getValueType() {return this.valueType;}
-	/** Affecte un type à l'attribut. */
+	/** Affecte un type Ã  l'attribut. */
 	public void setValueType(String ValueType) {this.valueType = ValueType;}
-	/** Type de domaine de valeur 0 pour non énuméré et 1 pour énuméré. */
+	/** Type de domaine de valeur 0 pour non ï¿½numï¿½rï¿½ et 1 pour ï¿½numï¿½rï¿½. */
 	protected boolean valueDomainType;
 	/** Renvoie le type de domaine de valeur de l'attribut. */
 	public boolean getValueDomainType(){return this.valueDomainType;}
-	/** Affecte un type à l'attribut. */
+	/** Affecte un type Ã  l'attribut. */
 	public void setValueDomainType(boolean ValueDomainType) {this.valueDomainType = ValueDomainType;}
 	/** Definition du domaine de valeur POUR LES ENUMERES SEULEMENT. */
 	protected List<FC_FeatureAttributeValue> valuesDomain;
@@ -83,13 +83,13 @@ public class AttributeType implements GF_AttributeType {
 	protected GF_FeatureType featureType;
 	/** definition de l'attribut. */
 	protected String definition;
-	/** Renvoie la définition. */
+	/** Renvoie la dÃ©finition. */
 	public String getDefinition() {return this.definition;}
-	/** Affecte une définition. */
+	/** Affecte une dÃ©finition. */
 	public void setDefinition(String Definition) {this.definition = Definition;}
-	/**la définition semantique du featureType (sous la forme d'un String
+	/**la dÃ©finition semantique du featureType (sous la forme d'un String
 	 ou d'une classe d'ontologie)
-	 ou un pointeur vers cette définition (sous la forme d'une URI)*/
+	 ou un pointeur vers cette dÃ©finition (sous la forme d'une URI)*/
 	protected Object definitionReference;
 	/**
 	 * @return the definitionReference
@@ -103,16 +103,16 @@ public class AttributeType implements GF_AttributeType {
 	protected int cardMin;
 	/** Renvoie le nombre de valeurs minimal de l'attribut. */
 	public int getCardMin() {return this.cardMin;}
-	/** Affecte un nombre de valeurs minimal à l'attribut. */
+	/** Affecte un nombre de valeurs minimal Ã  l'attribut. */
 	public void setCardMin(int CardMin) {this.cardMin = CardMin;}
 	/** Nombre de valeurs maximal de l'attribut */
 	protected int cardMax;
 	/** Renvoie le nombre de valeurs maximal de l'attribut. */
 	public int getCardMax() {return this.cardMax;}
-	/** Affecte un nombre de valeurs maximal à l'attribut. */
+	/** Affecte un nombre de valeurs maximal Ã  l'attribut. */
 	public void setCardMax(int CardMax) {this.cardMax = CardMax;}
-	/** le domaine de valeurs (énuméré ou non) sous forme de chaîne de caractères
-	 * exemples : "positif", "toute extension de GM_Object", "oui/non/indéterminé"
+	/** le domaine de valeurs (ï¿½numï¿½rï¿½ ou non) sous forme de chaÃ®ne de caractï¿½res
+	 * exemples : "positif", "toute extension de GM_Object", "oui/non/indï¿½terminï¿½"
 	 **/
 	protected String domainOfValues;
 	/** Renvoie le domaine de valeurs. */
@@ -144,7 +144,7 @@ public class AttributeType implements GF_AttributeType {
 	protected boolean isTopologic;
 	public boolean getIsTopologic() {return isTopologic;}
 	public void setTopologic(boolean isTopologic) {this.isTopologic = isTopologic;}
-	/**L'élément de schéma conceptuel de produit dont provient cet attribut*/
+	/**L'Ã©lÃ©ment de schÃ©ma conceptuel de produit dont provient cet attribut*/
 	protected fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType elementSchemaProduitOrigine;
 	/**
 	 * @return the elementSchemaProduitOrigine
@@ -156,19 +156,19 @@ public class AttributeType implements GF_AttributeType {
 	public void setElementSchemaProduitOrigine(fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType elementSchemaProduitOrigine) {this.elementSchemaProduitOrigine = elementSchemaProduitOrigine;}
 	/**
 	 * Non standard
-	 * Utile aux applications de transformation de schéma
-	 * caractère implicite ou explicite de l'élément : un attributeType implicite
-	 * n'a pas de valeur à priori mais celle-ci pourra être dérivée
+	 * Utile aux applications de transformation de schÃ©ma
+	 * caractï¿½re implicite ou explicite de l'Ã©lÃ©ment : un attributeType implicite
+	 * n'a pas de valeur Ã  priori mais celle-ci pourra Ãªtre dï¿½rivï¿½e
 	 * d'elements explicites par le biais de transformations
 	 **/
 	protected boolean isExplicite;
 	/** Renvoie le caractere explicite ou implicite */
 	public boolean getIsExplicite() {return this.isExplicite;}
-	/** Affecte le caractère implicite ou explicite */
+	/** Affecte le caractï¿½re implicite ou explicite */
 	public void setIsExplicite(boolean value) {this.isExplicite = value;}
 	/**
-	 * commodité pour retrouver à quel schéma conceptuel appartient cet attribut
-	 * (en passant par le featureType qu'il caractérise).
+	 * commoditï¿½ pour retrouver Ã  quel schÃ©ma conceptuel appartient cet attribut
+	 * (en passant par le featureType qu'il caractï¿½rise).
 	 **/
 	public SchemaConceptuelJeu getSchemaConceptuel() {
 		if (this.getFeatureType()!=null) return ((FeatureType)this.getFeatureType()).getSchema();
@@ -180,7 +180,7 @@ public class AttributeType implements GF_AttributeType {
 	// //////////////////////////////////////////////////////
 	/** Renvoie les valeurs possibles d'un attribut enumere. */
 	public List<FC_FeatureAttributeValue> getValuesDomain() {return this.valuesDomain;}
-	/** Renvoie les valeurs possibles d'un attribut enumere sous forme de liste de chaines de caractères. */
+	/** Renvoie les valeurs possibles d'un attribut enumere sous forme de liste de chaines de caractï¿½res. */
 	public List<String> getValuesDomainToString() {
 		List<String> valeurs = new ArrayList<String>();
 		Iterator<FC_FeatureAttributeValue> it = this.valuesDomain.iterator();
@@ -204,7 +204,7 @@ public class AttributeType implements GF_AttributeType {
 			maValeur.setFeatureAttribute(this);
 		}
 	}
-	/** Ajoute une valeur à la liste des valeurs possibles de l'attribut. */
+	/** Ajoute une valeur Ã  la liste des valeurs possibles de l'attribut. */
 	public void addValuesDomain(FC_FeatureAttributeValue value) {
 		if (value==null){return;}
 		this.valuesDomain.add(value);
@@ -222,36 +222,36 @@ public class AttributeType implements GF_AttributeType {
 	////////////////////////////////////////////////////////
 	// Champs et Methodes herites et utilises
 	////////////////////////////////////////////////////////
-	/** Renvoie le feature type auquel est rattaché la propriété. */
+	/** Renvoie le feature type auquel est rattachï¿½ la propriÃ©tÃ©. */
 	public GF_FeatureType getFeatureType() {return this.featureType;}
-	/** Affecte un feature type à la propriété. */
+	/** Affecte un feature type Ã  la propriÃ©tÃ©. */
 	public void setFeatureType(GF_FeatureType FeatureType) {this.featureType = FeatureType;}
 
-	// méthodes héritées non utilisées
+	// mÃ©thodes hÃ©ritï¿½es non utilisÃ©es
 	/**
-	 * Attribut en caractérisant un autre. La relation inverse n'est pas
-	 * implémentée.
+	 * Attribut en caractï¿½risant un autre. La relation inverse n'est pas
+	 * implÃ©mentÃ©e.
 	 */
 	protected GF_AttributeType characterize;
-	/** Renvoie l'attribut que self caractérise. */
+	/** Renvoie l'attribut que self caractï¿½rise. */
 	public GF_AttributeType getCharacterize() {return this.characterize;}
-	/** Affecte un attribut que self caractérise. */
+	/** Affecte un attribut que self caractï¿½rise. */
 	public void setCharacterize(GF_AttributeType Characterize) {this.characterize = Characterize;}
 	/** 
 	 * Renvoie la liste des contraintes.
-	 * TODO non implémenté
+	 * TODO non implÃ©mentÃ©
 	 */
 	public List<GF_Constraint> getConstraint() {return null;}
 	/**
 	 * Affecte une liste de contraintes
-	 * TODO non implémenté
+	 * TODO non implÃ©mentÃ©
 	 */
 	public void setConstraint(List<GF_Constraint> L) {}
 	/** Ajoute une contrainte. */
 	public void addConstraint(GF_Constraint value) {}
 	/** 
 	 * Renvoie le nombre de contraintes.
-	 * TODO non implémenté
+	 * TODO non implÃ©mentÃ©
 	 */
 	public int sizeConstraint() {return 0;}
 	@Override

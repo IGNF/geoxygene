@@ -51,7 +51,7 @@ public class UserStyle extends AbstractStyle {
 
 	/**
 	 * Affecte la valeur de l'attribut featureTypeStyles.
-	 * @param featureTypeStyles l'attribut featureTypeStyles � affecter
+	 * @param featureTypeStyles l'attribut featureTypeStyles à affecter
 	 */
 	public void setFeatureTypeStyles(List<FeatureTypeStyle> featureTypeStyles) {this.featureTypeStyles = featureTypeStyles;}
 

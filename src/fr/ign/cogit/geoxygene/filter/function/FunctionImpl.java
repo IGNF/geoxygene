@@ -1,14 +1,14 @@
-/*******************************************************************************
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  * 
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -21,7 +21,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *******************************************************************************/
+ */
 
 package fr.ign.cogit.geoxygene.filter.function;
 
@@ -48,32 +48,33 @@ import fr.ign.cogit.geoxygene.filter.expression.Function;
 public class FunctionImpl extends Function {
 	String fallbackValue;
 	@Override
-	public String getFallbackValue() {return fallbackValue;}
+	public String getFallbackValue() {return this.fallbackValue;}
 	@Override
 	public void setFallbackValue(String fallbackValue) {this.fallbackValue = fallbackValue;}
 	
 	@XmlAttribute
-	String name = "Function default implementation";
+	String name = "Function default implementation"; //$NON-NLS-1$
 	@Override
-	public String getName() {return name;}
+	public String getName() {return this.name;}
 
 	@XmlElementRefs(@XmlElementRef)
 	List<Expression> parameters = new ArrayList<Expression>();
 	@Override
-	public List<Expression> getParameters() {return parameters;}
+	public List<Expression> getParameters() {return this.parameters;}
 	/**
 	 * Affecte la valeur de l'attribut parameters.
-	 * @param parameters l'attribut parameters à affecter
+	 * @param parameters l'attribut parameters Ã  affecter
 	 */
 	@Override
 	public void setParameters(List<Expression> parameters) {this.parameters = parameters;}
 	@Override
 	public Object evaluate(Object object) {
-		Function function = ExpressionFactory.createFunction(name);
+		Function function = ExpressionFactory.createFunction(this.name);
 		if (function!=null) {
-			function.getParameters().addAll(parameters);
+			function.getParameters().addAll(this.parameters);
 			return function.evaluate(object);
 		}
 		return this.getFallbackValue();
 	}
+	
 }

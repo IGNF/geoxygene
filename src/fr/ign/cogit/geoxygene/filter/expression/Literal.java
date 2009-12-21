@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
@@ -21,7 +21,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *******************************************************************************/
+ */
 
 package fr.ign.cogit.geoxygene.filter.expression;
 
@@ -54,7 +54,7 @@ public class Literal extends Expression {
 	/**
 	 * @return the value of the Literal
 	 */
-	public String getValue() {return value[0];}
+	public String getValue() {return this.value[0];}
 	/**
 	 * @param value
 	 */
