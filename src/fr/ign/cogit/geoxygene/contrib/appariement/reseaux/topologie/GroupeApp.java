@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -42,7 +42,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 /**
  * Un Groupe est un ensemble d'arcs et de noeuds d'un reseau.
- * L'appariement de réseaux à des échelles différentes abouti à de nombreux appariements 1-n,
+ * L'appariement de rÃ©seaux Ã  des Ã©chelles diffÃ©rentes abouti Ã  de nombreux appariements 1-n,
  * d'un objet vers un groupe.
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
@@ -53,8 +53,8 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 public class GroupeApp extends Groupe {
 
 	private String resultatAppariement;
-	public String getResultatAppariement () {return resultatAppariement;}
-	public void setResultatAppariement (String resultat) {resultatAppariement = resultat;}
+	public String getResultatAppariement () {return this.resultatAppariement;}
+	public void setResultatAppariement (String resultat) {this.resultatAppariement = resultat;}
 
 	/** affecte le resultat de l'appariement sur le groupe et ses composants */
 	public void setResultatAppariementGlobal (String resultat) {
@@ -73,23 +73,21 @@ public class GroupeApp extends Groupe {
 		}
 	}
 
-	/** Liens qui référencent l'objet apparié */
+	/** Liens qui rÃ©fÃ©rencent l'objet appariÃ© */
 	private List<LienReseaux> liens = new ArrayList<LienReseaux>();
-	public List<LienReseaux> getLiens() {return liens;}
+	public List<LienReseaux> getLiens() {return this.liens;}
 	public void setLiens(List<LienReseaux> liens) { this.liens=liens; }
 	public void addLiens(LienReseaux liensReseaux) { this.liens.add(liensReseaux); }
 
-
-	/** Renvoie les liens de l'objet qui appartiennent à la liste liensPertinents */
+	/** Renvoie les liens de l'objet qui appartiennent Ã  la liste liensPertinents */
 	public List<LienReseaux> getLiens(List<Lien> liensPertinents) {
 		List<LienReseaux> listeTmp = new ArrayList<LienReseaux>(this.getLiens());
 		listeTmp.retainAll(liensPertinents);
 		return listeTmp;
 	}
 
-
 	/** Les noeuds d'entree dans le groupe comp (au sens de la communication).
-	 * La notion d'entrée / sortie est relative au préappariement d'arcs et au noeud ref passé en paramètre.
+	 * La notion d'entrÃ©e / sortie est relative au prÃ©appariement d'arcs et au noeud ref passÃ© en paramÃ¨tre.
 	 * La liste en sortie contient des NoeudApp */
 	public List<Noeud> noeudsEntree(NoeudApp noeudref, EnsembleDeLiens liensPreappArcs) {
 		List<Arc> arcsRef = new ArrayList<Arc>();
@@ -117,7 +115,8 @@ public class GroupeApp extends Groupe {
 	}
 
 	/** Les noeuds de sortie dans le groupe (au sens de la communication).
-	 * La notion d'entrée / sortie est relative au préappariement d'arcs et au noeud ref passé en paramètre.
+	 * La notion d'entrÃ©e / sortie est relative au prÃ©appariement d'arcs et 
+	 * au noeud ref passÃ© en paramÃ¨tre.
 	 * La liste en sortie contient des Noeud */
 	public List<Noeud> noeudsSortie(NoeudApp noeudref, EnsembleDeLiens liensPreappArcs) {
 		List<Arc> arcsRef = new ArrayList<Arc>();
@@ -160,7 +159,7 @@ public class GroupeApp extends Groupe {
 
 
 	/** Plus court chemin dans this pour relier les noeudsDepart aux noeudsArrivee,
-	 * NB: le pcc renvoyé ici NE CONTIENT PAS les noeuds initiaux et finaux */
+	 * NB: le pcc renvoyÃ© ici NE CONTIENT PAS les noeuds initiaux et finaux */
 	public GroupeApp plusCourtChemin(List<Noeud> noeudsDepart, List<Noeud> noeudsArrivee, double longMax) {
 		GroupeApp pccMin = null, pcc;
 		double longueur, longMin = longMax+1;
@@ -184,25 +183,24 @@ public class GroupeApp extends Groupe {
 		return pccMin;
 	}
 
-
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	// FILTRAGES DES GROUPES LORS DE L'APPARIEMENT
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	/** Méthode permettant de filtrer un groupe du graphe de comparaison, supposé apparié
-	 * avec un noeud du graphe de référence.
-	 * D'après thèse de Thomas Devogèle (1997), avec ajouts de Sébastien Mustière (2002).
+	/** mÃ©thode permettant de filtrer un groupe du graphe de comparaison, supposÃ© appariÃ©
+	 * avec un noeud du graphe de rÃ©fÃ©rence.
+	 * D'aprÃ¨s thÃ¨se de Thomas DevogÃ¨le (1997), avec ajouts de SÃ©bastien MustiÃ¨re (2002).
 	 * S'appuie principalement sur des recherches d'impasses et des calculs de plus courts chemins.
-	 * NB: le groupe en sortie peut être vide (filtrage trop fort)*/
+	 * NB: le groupe en sortie peut Ãªtre vide (filtrage trop fort)*/
 	public void filtrageGroupePendantAppariementDesNoeuds(NoeudApp noeudRef,
 			EnsembleDeLiens liensPreappArcs) {
 		int nbArcs;
 		boolean complet;
 
-		// le traitement diffère pour les groupes complets à l'origine et les autres
+		// le traitement diffÃ¨re pour les groupes complets Ã  l'origine et les autres
 		if ( noeudRef.correspCommunicants(this, liensPreappArcs) == 1 ) complet = true;
 		else complet = false;
 
-		// 1. Elimination des impasses de BD comp. Récursif
+		// 1. Elimination des impasses de BD comp. RÃ©cursif
 		while(true) {
 			nbArcs = this.getListeArcs().size();
 			if (nbArcs == 1) break; // ajout seb mars 2005
@@ -211,8 +209,8 @@ public class GroupeApp extends Groupe {
 		}
 
 		// 2. Elimination des impasses au sein du groupe (sans tenir compte des autres arcs de BDcomp)
-		// ET dont l'extrémité (à l'extérieure du groupe) n'a pas d'autre troncon apparié avec des arcs
-		// de la BDRef par le préappariement. Recursif tant qu'on en enleve encore
+		// ET dont l'extrÃ©mitÃ© (Ã  l'extÃ©rieure du groupe) n'a pas d'autre troncon appariÃ© avec des arcs
+		// de la BDRef par le prÃ©appariement. Recursif tant qu'on en enleve encore
 		while(true) {
 			nbArcs = this.getListeArcs().size();
 			if (nbArcs == 1) break; // ajout seb mars 2005
@@ -222,13 +220,13 @@ public class GroupeApp extends Groupe {
 
 		// 3. Pour les groupes incomplets :
 		// Elimination des impasses au sein du groupe (sans tenir compte des autres arcs de BDcomp)
-		// ET dont l'extrémité (à l'extérieure du groupe) a tous ses troncons adjacents (y compris l'impasse)
-		// appariés avec le même arc de BDcomp. Recursif.
+		// ET dont l'extrÃ©mitÃ© (Ã  l'extÃ©rieure du groupe) a tous ses troncons adjacents (y compris l'impasse)
+		// appariÃ©s avec le mÃªme arc de BDcomp. Recursif.
 		if ( !complet) {
 			while(true) {
 				nbArcs = this.getListeArcs().size();
 				if (nbArcs == 1) break; // ajout seb mars 2005
-				// modif Seb par rapport à Thomas
+				// modif Seb par rapport Ã  Thomas
 				this.filtrageImpassesTousApparies(liensPreappArcs);
 				if (this.getListeArcs().size() == nbArcs ) break;
 			}
@@ -236,12 +234,12 @@ public class GroupeApp extends Groupe {
 
 		// 3. Pour les groupes complets :
 		// Elimination des impasses au sein du groupe (sans tenir compte des autres arcs de BDcomp)
-		// qui laissent le groupe complet si on les enlève
+		// qui laissent le groupe complet si on les enlÃ¨ve
 		if ( complet) {
 			while(true) {
 				nbArcs = this.getListeArcs().size();
 				if (nbArcs == 1) break; // ajout seb mars 2005
-				// modif Seb par rapport à Thomas
+				// modif Seb par rapport Ã  Thomas
 				this.filtrageImpassesComplets(noeudRef, liensPreappArcs);
 				if (this.getListeArcs().size() == nbArcs ) break;
 			}
@@ -255,7 +253,7 @@ public class GroupeApp extends Groupe {
 			while(true) {
 				nbArcs = this.getListeArcs().size();
 				if (nbArcs == 1) break; // ajout seb mars 2005
-				// modif Seb par rapport à Thomas
+				// modif Seb par rapport Ã  Thomas
 				this.filtrageImpassesTousApparies(liensPreappArcs);
 				if (this.getListeArcs().size() == nbArcs ) break;
 			}
@@ -265,7 +263,7 @@ public class GroupeApp extends Groupe {
 			while(true) {
 				nbArcs = this.getListeArcs().size();
 				if (nbArcs == 1) break; // ajout seb mars 2005
-				// modif Seb par rapport à Thomas
+				// modif Seb par rapport Ã  Thomas
 				this.filtrageImpassesComplets(noeudRef, liensPreappArcs);
 				if (this.getListeArcs().size() == nbArcs ) break;
 			}
@@ -280,13 +278,13 @@ public class GroupeApp extends Groupe {
 		List<ArcApp> impassesDebut = new ArrayList<ArcApp>();
 		List<ArcApp> impassesFin = new ArrayList<ArcApp>();
 
-		// Recherche des arcs à éliminer
+		// Recherche des arcs Ã  Ã©liminer
 		for(i=0; i<this.getListeArcs().size(); i++){
 			arcComp = (ArcApp)this.getListeArcs().get(i);
 			if ( arcComp.impasseDebut() ) impassesDebut.add(arcComp);
 			if ( arcComp.impasseFin() ) impassesFin.add(arcComp);
 		}
-		// Elimination des arcs à éliminer ainsi que de leurs extrémités libres
+		// Elimination des arcs Ã  Ã©liminer ainsi que de leurs extrÃ©mitÃ©s libres
 		for(i=0; i<impassesDebut.size(); i++) {
 			arcComp = impassesDebut.get(i);
 			this.getListeArcs().remove(arcComp);
@@ -304,8 +302,8 @@ public class GroupeApp extends Groupe {
 	}
 
 	/** Methode utile pour le filtrage des groupes
-	 * Elimination des impasses AU SEIN du groupe et dont l'extrémité (à l'extérieure du groupe)
-	 * n'a pas d'autre troncon apparié avec des arcs de la BD Ref (par le préappariement) */
+	 * Elimination des impasses AU SEIN du groupe et dont l'extrÃ©mitÃ© (Ã  l'extÃ©rieure du groupe)
+	 * n'a pas d'autre troncon appariÃ© avec des arcs de la BD Ref (par le prÃ©appariement) */
 	private void filtrageImpassesNonApparie(EnsembleDeLiens liensPreappArcs) {
 		int i, j;
 		boolean match;
@@ -314,7 +312,7 @@ public class GroupeApp extends Groupe {
 		List<ArcApp> impassesDebut = new ArrayList<ArcApp>();
 		List<ArcApp> impassesFin = new ArrayList<ArcApp>();
 
-		// Recherche des arcs à éliminer
+		// Recherche des arcs Ã  Ã©liminer
 		for(i=0;i<this.getListeArcs().size();i++){
 			arcComp = (ArcApp)this.getListeArcs().get(i);
 			match = false;
@@ -344,7 +342,7 @@ public class GroupeApp extends Groupe {
 			}
 		}
 
-		// Elimination des arcs à éliminer ainsi que de leurs extrémités libres
+		// Elimination des arcs Ã  Ã©liminer ainsi que de leurs extrÃ©mitÃ©s libres
 		for(i=0;i<impassesDebut.size() ;i++) {
 			arcComp = impassesDebut.get(i);
 			this.getListeArcs().remove(arcComp);
@@ -362,9 +360,9 @@ public class GroupeApp extends Groupe {
 	}
 
 	/** Methode utile pour le filtrage des groupes
-	 * Filtrage par "réduction"
-	 * Elimination des impasses au sein du groupe et dont l'extrémité (à l'extérieure du groupe)
-	 * a tous ses troncons appariés avec le même arc de BDcomp. */
+	 * Filtrage par "rÃ©duction"
+	 * Elimination des impasses au sein du groupe et dont l'extrÃ©mitÃ© (Ã  l'extÃ©rieure du groupe)
+	 * a tous ses troncons appariÃ©s avec le mÃªme arc de BDcomp. */
 	private void filtrageImpassesTousApparies(EnsembleDeLiens liensPreappArcs) {
 		int i, j;
 		List<Arc> arcsCommuns = new ArrayList<Arc>();
@@ -375,12 +373,12 @@ public class GroupeApp extends Groupe {
 		List<ArcApp> impassesDebut = new ArrayList<ArcApp>();
 		List<ArcApp> impassesFin = new ArrayList<ArcApp>();
 
-		// Recherche des arcs à éliminer
+		// Recherche des arcs Ã  Ã©liminer
 		for(i=0;i<this.getListeArcs().size();i++){
 			arcComp = (ArcApp)this.getListeArcs().get(i);
 			if ( arcComp.impasseDebut(this) ) {
 				// on cherche si tous les entrants/sortants du noeud ini de Arc_Comp
-				// sont appariés avec au moins un même arc de BDref commun
+				// sont appariÃ©s avec au moins un mÃªme arc de BDref commun
 				communs = true;
 				arcsCompCommuniquants = arcComp.getNoeudIni().arcs();
 				arcsCommuns = arcComp.arcsRefEnCorrespondance(liensPreappArcs);
@@ -397,7 +395,7 @@ public class GroupeApp extends Groupe {
 			}
 			if ( arcComp.impasseFin(this) ) {
 				// on cherche si tous les entrants/sortants du noeud fin de arcComp
-				// sont appariés avec au moins un même arc de BDref commun
+				// sont appariÃ©s avec au moins un mÃªme arc de BDref commun
 				communs = true;
 				arcsCompCommuniquants = arcComp.getNoeudFin().arcs();
 				arcsCommuns = arcComp.arcsRefEnCorrespondance(liensPreappArcs);
@@ -414,7 +412,7 @@ public class GroupeApp extends Groupe {
 			}
 		}
 
-		// Elimination des arcs à éliminer ainsi que de leurs extrémités libres
+		// Elimination des arcs Ã  Ã©liminer ainsi que de leurs extrÃ©mitÃ©s libres
 		for(i=0;i<impassesDebut.size() ;i++) {
 			arcComp = impassesDebut.get(i);
 			this.getListeArcs().remove(arcComp);
@@ -439,12 +437,12 @@ public class GroupeApp extends Groupe {
 		int correspondance;
 		List<FT_Feature> arcsATester = new ArrayList<FT_Feature>();
 
-		// Recherche des arcs à éliminer
+		// Recherche des arcs Ã  Ã©liminer
 		arcsATester.addAll(this.getListeArcs());
 		for(i=0; i<arcsATester.size(); i++){
 			arccomp = (ArcApp)arcsATester.get(i);
 			if ( arccomp.impasseDebut(this) ) {
-				// on enlève l'arc, et on vérifie si le goupe est toujours complet, sinon on remet l'arc
+				// on enlÃ¨ve l'arc, et on vÃ©rifie si le goupe est toujours complet, sinon on remet l'arc
 				this.getListeArcs().remove(arccomp);
 				arccomp.getListeGroupes().remove(this);
 				this.getListeNoeuds().remove(arccomp.getNoeudIni());
@@ -457,7 +455,7 @@ public class GroupeApp extends Groupe {
 				((NoeudApp)arccomp.getNoeudIni()).getListeGroupes().add(this);
 			}
 			if ( arccomp.impasseFin(this) ) {
-				// on enlève l'arc, et on vérifie si le goupe est toujours complet, sinon on remet l'arc
+				// on enlÃ¨ve l'arc, et on vÃ©rifie si le goupe est toujours complet, sinon on remet l'arc
 				this.getListeArcs().remove(arccomp);
 				arccomp.getListeGroupes().remove(this);
 				this.getListeNoeuds().remove(arccomp.getNoeudFin());
@@ -472,7 +470,7 @@ public class GroupeApp extends Groupe {
 		}
 	}
 
-	/** Méthode utile pour le filtrage des groupes */
+	/** mÃ©thode utile pour le filtrage des groupes */
 	private void filtragePlusCourtChemin(NoeudApp noeudRef, EnsembleDeLiens liensPreappArcs) {
 
 		List<Noeud> noeudsIn = new ArrayList<Noeud>();
@@ -532,16 +530,15 @@ public class GroupeApp extends Groupe {
 			arcComp.getListeGroupes().remove(this);
 		}
 	}
-
-
+	
 	//////////////////////////////////////////////////////////////////////////////////////
 	// POUR EXPORT UNIQUEMENT
 	//////////////////////////////////////////////////////////////////////////////////////
-	/** Pour l'export : mise bout à bout des arcs du groupe, dans le bon ordre. NB: n'est valable que pour un groupe
-	 * où les arcs sont bout à bout, et dans le bon ordre, comme ceux issus du plus_court_chemin
+	/** Pour l'export : mise bout Ã  bout des arcs du groupe, dans le bon ordre. NB: n'est valable que pour un groupe
+	 * oÃ¹ les arcs sont bout Ã  bout, et dans le bon ordre, comme ceux issus du plus_court_chemin
 	 * Cas particuliers :
 	 * si le goupe est vide, renvoie null;
-	 * si le goupe ne contient que des points, renvoie une ligne dégénérée contenant 2 fois le premier point. */
+	 * si le goupe ne contient que des points, renvoie une ligne dÃ©gÃ©nÃ©rÃ©e contenant 2 fois le premier point. */
 	public GM_LineString compileArcs(Arc arcRef) {
 		Arc arc, premierArc;
 		Noeud premierNoeud;
@@ -558,7 +555,7 @@ public class GroupeApp extends Groupe {
 			return chemin;
 		}
 
-		// on met bout à bout les arcs
+		// on met bout Ã  bout les arcs
 		premierArc = this.getListeArcs().get(0);
 		if ( this.getListeNoeuds().contains(premierArc.getNoeudIni()) ) premierNoeud = premierArc.getNoeudFin();
 		else premierNoeud = premierArc.getNoeudIni();

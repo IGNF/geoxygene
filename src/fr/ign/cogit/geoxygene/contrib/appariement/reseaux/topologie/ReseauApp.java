@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut GÈographique National (the French
+ * contribution of the COGIT laboratory at the Institut G√©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut GÈographique National
+ * Copyright (C) 2005 Institut G√©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -33,8 +33,8 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.feature.Population;
 
 /**
- * RÈseau ‡ apparier, spÈcialisation d'une carte topo,
- * utile quasi-uniquement pour spÈcifier un constructeur adhoc.
+ * r√©seau √† apparier, sp√©cialisation d'une carte topo,
+ * utile quasi-uniquement pour sp√©cifier un constructeur adhoc.
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
  * @version 1.0
@@ -43,36 +43,34 @@ import fr.ign.cogit.geoxygene.feature.Population;
 
 public class ReseauApp extends CarteTopo {
 
-	/** Constructeur par dÈfaut : ATTENTION, constructeur ‡ Èviter car aucune population n'est crÈÈe */
+	/** Constructeur par d√©faut : ATTENTION, constructeur √† √©viter car aucune population n'est cr√©√©e */
 	public ReseauApp() {
-		this.ojbConcreteClass = this.getClass().getName(); // nÈcessaire pour ojb
+		this.ojbConcreteClass = this.getClass().getName(); // n√©cessaire pour ojb
 	}
 
-	/** Constructeur qui crÈÈ une carte topo non persistante de type Reseau_App, avec des populations
+	/** Constructeur qui cr√©√© une carte topo non persistante de type Reseau_App, avec des populations
 	 * de Arc_App, Noeud_App, Face_App, et Groupe_App */
 	public ReseauApp(String nom_logique) {
-		this.ojbConcreteClass = this.getClass().getName(); // nÈcessaire pour ojb
+		this.ojbConcreteClass = this.getClass().getName(); // n√©cessaire pour ojb
 		this.setNom(nom_logique);
 		this.setPersistant(false);
-		Population<ArcApp> arcs = new Population<ArcApp>(false, "Arc", ArcApp.class,true);
+		Population<ArcApp> arcs = new Population<ArcApp>(false, "Arc", ArcApp.class,true); //$NON-NLS-1$
 		this.addPopulation(arcs);
-		Population<NoeudApp> noeuds = new Population<NoeudApp>(false, "Noeud", NoeudApp.class,true);
+		Population<NoeudApp> noeuds = new Population<NoeudApp>(false, "Noeud", NoeudApp.class,true); //$NON-NLS-1$
 		this.addPopulation(noeuds);
-		Population<FaceApp> faces = new Population<FaceApp>(false, "Face", FaceApp.class,true);
+		Population<FaceApp> faces = new Population<FaceApp>(false, "Face", FaceApp.class,true); //$NON-NLS-1$
 		this.addPopulation(faces);
-		Population<GroupeApp> groupes = new Population<GroupeApp>(false, "Groupe", GroupeApp.class,false);
+		Population<GroupeApp> groupes = new Population<GroupeApp>(false, "Groupe", GroupeApp.class,false); //$NON-NLS-1$
 		this.addPopulation(groupes);
 	}
 
 	public void instancieAttributsNuls(ParametresApp param) {
-		// On affecte une taille par dÈfaut ‡ tous nouveaux sans taille
+		// On affecte une taille par d√©faut √† tous nouveaux sans taille
 		Iterator<?> itNoeuds = this.getPopNoeuds().getElements().iterator();
 		while( itNoeuds.hasNext() ) {
 			NoeudApp noeud = (NoeudApp)itNoeuds.next();
 			if (noeud.getTaille() == 0 ) noeud.setTaille(param.distanceNoeudsMax);
 		}
 	}
-
-
 
 }

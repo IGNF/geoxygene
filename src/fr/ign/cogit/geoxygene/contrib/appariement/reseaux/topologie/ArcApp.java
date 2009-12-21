@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -44,7 +44,7 @@ import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 
 /**
- * Arc d'un reseau à apparier.
+ * Arc d'un reseau Ã  apparier.
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
  * @version 1.0
@@ -53,37 +53,36 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 
 public class ArcApp extends Arc {
 
-	/** Evaluation du résultat de l'appariement sur l'arc. */
+	/** Evaluation du rÃ©sultat de l'appariement sur l'arc. */
 	private String resultatAppariement;
-	public String getResultatAppariement () {return resultatAppariement;}
-	public void setResultatAppariement (String resultat) {resultatAppariement = resultat;}
+	public String getResultatAppariement () {return this.resultatAppariement;}
+	public void setResultatAppariement (String resultat) {this.resultatAppariement = resultat;}
 
-	/** Liens qui référencent les objets auquel l'arc est apparié dans un autre réseau. */
+	/** Liens qui rÃ©fÃ©rencent les objets auquel l'arc est appariÃ© dans un autre rÃ©seau. */
 	private List<LienReseaux> liens = new ArrayList<LienReseaux>();
-	public List<LienReseaux> getLiens() {return liens;}
+	public List<LienReseaux> getLiens() {return this.liens;}
 	public void setLiens(List<LienReseaux> liens) { this.liens = liens; }
 	public void addLiens(LienReseaux liensReseaux) { this.liens.add(liensReseaux); }
-
 
 	////////////////////////////////////////////////////
 	// POUR MANIPULER LES LIENS
 	////////////////////////////////////////////////////
 
-	/** Renvoie les liens de l'objet qui appartiennent à la liste liensPertinents */
+	/** Renvoie les liens de l'objet qui appartiennent Ã  la liste liensPertinents */
 	public List<LienReseaux> getLiens(List<Lien> liensPertinents) {
 		List<LienReseaux> listeTmp = new ArrayList<LienReseaux>(this.getLiens());
 		listeTmp.retainAll(liensPertinents);
 		return listeTmp;
 	}
 
-	/** Recherche des noeuds en correspondance aux extrémités de l'arc,
+	/** Recherche des noeuds en correspondance aux extrÃ©mitÃ©s de l'arc,
 	 * que ce soit en entree ou en sortie (au sens de la circulation, i.e. de l'attribut orientation)
 	 * 
 	 * Renvoie une liste de 4 listes:
-	 * 0: les noeuds en correspondance au début de l'arc, et en entree
-	 * 1: les noeuds en correspondance au début de l'arc, et en sortie
-	 * 2: les noeuds en correspondance à la fin de l'arc, et en entree
-	 * 3: les noeuds en correspondance à la fin de l'arc, et en sortie
+	 * 0: les noeuds en correspondance au dÃ©but de l'arc, et en entree
+	 * 1: les noeuds en correspondance au dÃ©but de l'arc, et en sortie
+	 * 2: les noeuds en correspondance Ã  la fin de l'arc, et en entree
+	 * 3: les noeuds en correspondance Ã  la fin de l'arc, et en sortie
 	 */
 	public List<List<Noeud>> noeudsEnCorrespondanceAuxExtremites(EnsembleDeLiens liensNoeuds, EnsembleDeLiens liensArcs) {
 		List<Noeud> tousNoeuds;
@@ -96,13 +95,12 @@ public class ArcApp extends Arc {
 
 		// traitement du noeud ini
 		noeudRef = (NoeudApp)this.getNoeudIni();
-		// noeud INI apparié avec un ou des noeuds
+		// noeud INI appariÃ© avec un ou des noeuds
 		tousNoeuds = noeudRef.noeudsCompEnCorrespondance(liensNoeuds);
 		if ( this.getOrientation() != 1 ) noeudsDebutIn.addAll(tousNoeuds);
 		if ( this.getOrientation() != -1 ) noeudsDebutOut.addAll(tousNoeuds);
 
-
-		// noeud INI apparié avec un groupe
+		// noeud INI appariÃ© avec un groupe
 		itTousGroupes = noeudRef.groupesCompEnCorrespondance(liensNoeuds).iterator();
 		while (itTousGroupes.hasNext()) {
 			groupeComp = (GroupeApp) itTousGroupes.next();
@@ -112,12 +110,12 @@ public class ArcApp extends Arc {
 
 		// traitement du noeud fin
 		noeudRef = (NoeudApp)this.getNoeudFin();
-		// noeud FIN apparié avec un ou des noeuds
+		// noeud FIN appariÃ© avec un ou des noeuds
 		tousNoeuds = noeudRef.noeudsCompEnCorrespondance(liensNoeuds);
 		if ( this.getOrientation() != -1 ) noeudsFinIn.addAll(tousNoeuds);
 		if ( this.getOrientation() != 1 ) noeudsFinOut.addAll(tousNoeuds);
 
-		// noeud FIN apparié avec un groupe
+		// noeud FIN appariÃ© avec un groupe
 		itTousGroupes = noeudRef.groupesCompEnCorrespondance(liensNoeuds).iterator();
 		while (itTousGroupes.hasNext()) {
 			groupeComp = (GroupeApp) itTousGroupes.next();
@@ -132,7 +130,7 @@ public class ArcApp extends Arc {
 		return resultat;
 	}
 
-	/** Arcs reliés à this par l'appariement passé en paramètre.
+	/** Arcs reliÃ©s Ã  this par l'appariement passÃ© en paramÃ¨tre.
 	 * Cette liste ne contient pas de doublon.
 	 * La liste contient des Arc_Comp. */
 	public List<Arc> arcsCompEnCorrespondance(EnsembleDeLiens liensArcs) {
@@ -151,7 +149,7 @@ public class ArcApp extends Arc {
 		return new ArrayList<Arc>(arcs);
 	}
 
-	/** Arcs reliés à this par l'appariement passé en paramètre.
+	/** Arcs reliÃ©s Ã  this par l'appariement passÃ© en paramÃ¨tre.
 	 * La liste contient des Arc_Ref. */
 	public List<Arc> arcsRefEnCorrespondance(EnsembleDeLiens liensArcs) {
 		List<Arc> arcs = new ArrayList<Arc>();
@@ -168,9 +166,9 @@ public class ArcApp extends Arc {
 		return arcs;
 	}
 
-	/** Renvoie la liste des objets géo initaux reliés à un arc ref ou un noeud ref
-	 * qui est  en correspondance avec this (un arc_comp) à travers liens,
-	 * soit directement, soit par l'intermédiaire d'un groupe.
+	/** Renvoie la liste des objets gÃ©o initaux reliÃ©s Ã  un arc ref ou un noeud ref
+	 * qui est  en correspondance avec this (un arc_comp) Ã  travers liens,
+	 * soit directement, soit par l'intermÃ©diaire d'un groupe.
 	 */
 	public List<FT_Feature> objetsGeoRefEnCorrespondance(EnsembleDeLiens liensArc) {
 		List<ElementCarteTopo> objetsCtEnCorrespondance = new ArrayList<ElementCarteTopo>();
@@ -191,7 +189,7 @@ public class ArcApp extends Arc {
 			objetsCtEnCorrespondance.addAll(lien.getNoeuds1());
 		}
 
-		// objets de reseauRef en correspondance avec this à travers un groupe
+		// objets de reseauRef en correspondance avec this Ã  travers un groupe
 		itGroupes = this.getListeGroupes().iterator();
 		while (itGroupes.hasNext()) {
 			GroupeApp groupe = (GroupeApp) itGroupes.next();
@@ -215,7 +213,7 @@ public class ArcApp extends Arc {
 		return objetsGeoEnCorrespondance;
 	}
 
-	/** A un correspondant par l'appariement passé en paramètre ? */
+	/** A un correspondant par l'appariement passÃ© en paramÃ¨tre ? */
 	public boolean aUnCorrespondant(EnsembleDeLiens ensembleDeLiens) {
 		List<LienReseaux> liensOK = new ArrayList<LienReseaux>();
 		liensOK = new ArrayList<LienReseaux>(this.getLiens());
@@ -224,8 +222,8 @@ public class ArcApp extends Arc {
 		return false;
 	}
 
-	/** A un correspondant par l'appariement passé en paramètre, soit directement,
-	 * soit par l'intermédiaire d'un groupe ? */
+	/** A un correspondant par l'appariement passÃ© en paramÃ¨tre, soit directement,
+	 * soit par l'intermÃ©diaire d'un groupe ? */
 	public boolean aUnCorrespondantGeneralise(EnsembleDeLiens ensembleDeLiens) {
 		if (this.aUnCorrespondant(ensembleDeLiens)) return true;
 		Iterator<?> itGroupes = this.getListeGroupes().iterator();
@@ -237,61 +235,45 @@ public class ArcApp extends Arc {
 		return false;
 	}
 
-
 	////////////////////////////////////////////////////
 	// POUR MANIPULER LA TOPOLOGIE ET LA GEOMETRIE
 	////////////////////////////////////////////////////
 
 	/** L'arc est il une impasse ? */
-	public boolean impasse() {
-		return ( this.impasseDebut() || this.impasseFin() );
-	}
+	public boolean impasse() {return ( this.impasseDebut() || this.impasseFin() );}
 
-	/** L'arc est il une impasse au début (noeud ini fond de l'impasse) ? */
-	public boolean impasseDebut() {
-		if ( (this.getNoeudIni().arcs().size()) == 1 ) return true;
-		return false;
-	}
+	/** L'arc est il une impasse au dÃ©but (noeud ini fond de l'impasse) ? */
+	public boolean impasseDebut() {return ( (this.getNoeudIni().arcs().size()) == 1 );}
 
-	/** L'arc est il une impasse à la fin (noeud fin fond de l'impasse) ? */
-	public boolean impasseFin() {
-		if ( (this.getNoeudFin().arcs().size()) == 1 ) return true;
-		return false;
-	}
+	/** L'arc est il une impasse Ã  la fin (noeud fin fond de l'impasse) ? */
+	public boolean impasseFin() {return ( (this.getNoeudFin().arcs().size()) == 1 );}
 
 	/** L'arc est il une boucle (noeud ini = noeud fin) ? */
-	public boolean boucle() {
-		if ( this.getNoeudFin() == this.getNoeudIni() ) return true;
-		return false;
-	}
+	public boolean boucle() {return ( this.getNoeudFin() == this.getNoeudIni() );}
 
 	/** L'arc est il une impasse au sein du groupe ? */
-	public boolean impasse(GroupeApp groupe) {
-		return ( this.impasseDebut(groupe) || this.impasseFin(groupe) );
-	}
+	public boolean impasse(GroupeApp groupe) {return ( this.impasseDebut(groupe) || this.impasseFin(groupe) );}
 
-	/** L'arc est il une impasse au sein du groupe, au début (noeud ini fond de l'impasse) ? */
+	/** L'arc est il une impasse au sein du groupe, au dÃ©but (noeud ini fond de l'impasse) ? */
 	public boolean impasseDebut(GroupeApp groupe) {
 		List<Arc> arcs = new ArrayList<Arc>();
 		arcs = new ArrayList<Arc>(this.getNoeudIni().arcs());
 		arcs.retainAll(groupe.getListeArcs());
-		if ( arcs.size() == 1 ) return true;
-		return false;
+		return ( arcs.size() == 1 );
 	}
 
-	/** L'arc est il une impasse au sein du groupe, à la fin (noeud final au fond de l'impasse) ? */
+	/** L'arc est il une impasse au sein du groupe, Ã  la fin (noeud final au fond de l'impasse) ? */
 	public boolean impasseFin(GroupeApp groupe) {
 		List<Arc> arcs = new ArrayList<Arc>();
 		arcs = new ArrayList<Arc>(this.getNoeudFin().arcs());
 		arcs.retainAll(groupe.getListeArcs());
-		if ( arcs.size() == 1 ) return true;
-		return false;
+		return ( arcs.size() == 1 );
 	}
 
-	/** Première composante de la distance de Hausdorff de self vers l'arc.
-	 * Version optimisée pour l'appariement:
-	 * si cette distance est supérieure à Dmax, alors renvoie Double.MAX_VALUE,
-	 * sans plus de précision.
+	/** PremiÃ¨re composante de la distance de Hausdorff de self vers l'arc.
+	 * Version optimisÃ©e pour l'appariement:
+	 * si cette distance est supÃ©rieure Ã  Dmax, alors renvoie Double.MAX_VALUE,
+	 * sans plus de prÃ©cision.
 	 */
 	public double premiereComposanteHausdorff (Arc arc, double dmax) {
 		double dist , hausdorff = 0;

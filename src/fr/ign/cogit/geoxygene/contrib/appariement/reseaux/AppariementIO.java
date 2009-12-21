@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -50,8 +50,8 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
  *
- * Méthodes d'import et export pour l'appariement sur des données géographiques quelconques
- * (création des réseaux, lancement de l'appariement, export des résultats).
+ * mÃ©thodes d'import et export pour l'appariement sur des donnÃ©es GÃ©ographiques quelconques
+ * (crÃ©ation des rÃ©seaux, lancement de l'appariement, export des rÃ©sultats).
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
  * @version 1.0
@@ -61,20 +61,20 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
 public class AppariementIO {
 	private final static Logger logger=Logger.getLogger(AppariementIO.class.getName());
 
-	/** Lancement de l'appariement de réseaux sur des objets géographiques :
-	 * 1- Transformation des données initales en deux graphes, en fonction des paramètres d'import.
-	 * 2- Lancement du calcul d'appariement générique sur les deux réseaux.
-	 * 3- Analyse et export des résutlats éventuellement
+	/** Lancement de l'appariement de rÃ©seaux sur des objets GÃ©ographiques :
+	 * 1- Transformation des donnÃ©es initales en deux graphes, en fonction des paramÃ¨tres d'import.
+	 * 2- Lancement du calcul d'appariement gï¿½nï¿½rique sur les deux rÃ©seaux.
+	 * 3- Analyse et export des rï¿½sutlats Ã©ventuellement
 	 * 
 	 * @return  L'ensemble des liens en sortie (de la classe EnsembleDeLiens).
 	 * 
-	 * @param paramApp Les paramètres de l'appariement (seuls de distance, préparation topologique des données...)
+	 * @param paramApp Les paramÃ¨tres de l'appariement (seuls de distance, prï¿½paration topologique des donnÃ©es...)
 	 * 
-	 * @param cartesTopo Liste en entrée/sortie qui permet de récupérer en sortie les graphes intermédiaires créés pendant le calcul (de type Reseau_App, spécialisation de CarteTopo).
-	 * - Si on veut récupérer les graphes : passer une liste vide - new ArrayList() - mais non nulle.
-	 *    Elle contient alors en sortie 2 éléments : dans l'ordre les cartes topo de reférence et comparaison.
-	 *    Elle peut contenir un 3eme élément: le graphe ref recalé sur comp si cela est demandé dans les paramètres.
-	 * - Si on ne veut rien récupérer : passer Null
+	 * @param cartesTopo Liste en entrÃ©e/sortie qui permet de rï¿½cupï¿½rer en sortie les graphes intermÃ©diaires crÃ©Ã©s pendant le calcul (de type Reseau_App, spÃ©cialisation de CarteTopo).
+	 * - Si on veut rï¿½cupï¿½rer les graphes : passer une liste vide - new ArrayList() - mais non nulle.
+	 *    Elle contient alors en sortie 2 Ã©lÃ©ments : dans l'ordre les cartes topo de refï¿½rence et comparaison.
+	 *    Elle peut contenir un 3eme Ã©lÃ©ment: le graphe ref recalï¿½ sur comp si cela est demandï¿½ dans les paramÃ¨tres.
+	 * - Si on ne veut rien rï¿½cupï¿½rer : passer Null
 	 */
 	public static EnsembleDeLiens AppariementDeJeuxGeo(ParametresApp paramApp, List<ReseauApp> cartesTopo) {
 
@@ -89,43 +89,43 @@ public class AppariementIO {
 		if (logger.isInfoEnabled()) {
 			logger.info("");
 			logger.info("######## DEBUT DE L'APPARIEMENT DE RESEAUX #########");
-			logger.info("  (1 = les données les moins détaillées ; 2 = les données les plus détaillées)");
+			logger.info("  (1 = les donnÃ©es les moins dï¿½taillï¿½es ; 2 = les donnÃ©es les plus dï¿½taillï¿½es)");
 			logger.info("");
 		}
 		////////////////////////////////////////////////
 		// STRUCTURATION
 		if (logger.isInfoEnabled()) {
 			logger.info("STRUCTURATION DES DONNEES");
-			logger.info("  Organisation des données en réseau et prétraitements topologiques");
+			logger.info("  Organisation des donnÃ©es en rÃ©seau et prï¿½traitements topologiques");
 		}
 		if (logger.isDebugEnabled()) {
 			logger.debug("  DEBUT DE LA PHASE DE STRUCTURATION "+(new Time(System.currentTimeMillis())).toString());
-			logger.debug("  Création du réseau correspondant au jeu 1   "+(new Time(System.currentTimeMillis())).toString());
+			logger.debug("  crÃ©ation du rÃ©seau correspondant au jeu 1   "+(new Time(System.currentTimeMillis())).toString());
 		}
 		reseauRef = Import(paramApp, true);
 		if ( cartesTopo != null ) cartesTopo.add(reseauRef);
-		if (logger.isDebugEnabled()) logger.debug("  Création du réseau correspondant au jeu 2   "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isDebugEnabled()) logger.debug("  crÃ©ation du rÃ©seau correspondant au jeu 2   "+(new Time(System.currentTimeMillis())).toString());
 		reseauComp = Import(paramApp, false);
 		if ( cartesTopo != null ) cartesTopo.add(reseauComp);
 
 		// NB: l'ordre dans lequel les projections sont faites n'est pas neutre
 		if ( paramApp.projeteNoeud2surReseau1 ) {
-			if (logger.isDebugEnabled()) logger.debug("  Projection du réseau 2 sur le réseau 1 "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  Projection du rÃ©seau 2 sur le rÃ©seau 1 "+(new Time(System.currentTimeMillis())).toString());
 			reseauRef.projete(reseauComp, paramApp.projeteNoeud2surReseau1_DistanceNoeudArc, paramApp.projeteNoeud2surReseau1_DistanceProjectionNoeud, paramApp.projeteNoeud2surReseau1_ImpassesSeulement);
 		}
 		if ( paramApp.projeteNoeuds1SurReseau2 ) {
-			if (logger.isDebugEnabled()) logger.debug("  Projection du réseau 1 sur le réseau 2 "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  Projection du rÃ©seau 1 sur le rÃ©seau 2 "+(new Time(System.currentTimeMillis())).toString());
 			reseauComp.projete(reseauRef, paramApp.projeteNoeuds1SurReseau2_DistanceNoeudArc, paramApp.projeteNoeuds1SurReseau2_DistanceProjectionNoeud, paramApp.projeteNoeuds1SurReseau2_ImpassesSeulement);
 		}
 
-		if (logger.isDebugEnabled()) logger.debug("  Remplissage des attributs des arcs et noeuds des réseaux "+(new Time(System.currentTimeMillis())).toString());
+		if (logger.isDebugEnabled()) logger.debug("  Remplissage des attributs des arcs et noeuds des rÃ©seaux "+(new Time(System.currentTimeMillis())).toString());
 		reseauRef.instancieAttributsNuls(paramApp);
 		reseauComp.initialisePoids();
 
 		if (logger.isInfoEnabled()) {
-			logger.info("  Structuration initiale des données terminée : ");
-			logger.info("     Réseau 1 : "+reseauRef.getPopArcs().size()+" arcs et "+reseauRef.getPopNoeuds().size()+" noeuds.");
-			logger.info("     Réseau 2 : "+reseauComp.getPopArcs().size()+" arcs et "+reseauComp.getPopNoeuds().size()+" noeuds.");
+			logger.info("  Structuration initiale des donnÃ©es terminï¿½e : ");
+			logger.info("     rÃ©seau 1 : "+reseauRef.getPopArcs().size()+" arcs et "+reseauRef.getPopNoeuds().size()+" noeuds.");
+			logger.info("     rÃ©seau 2 : "+reseauComp.getPopArcs().size()+" arcs et "+reseauComp.getPopNoeuds().size()+" noeuds.");
 		}
 		if (logger.isDebugEnabled()) logger.debug("  FIN DE LA PHASE DE STRUCTURATION "+(new Time(System.currentTimeMillis())).toString());
 
@@ -139,8 +139,8 @@ public class AppariementIO {
 		if (logger.isDebugEnabled()) logger.debug("  DEBUT DE LA PHASE D'APPARIEMENT DES RESEAUX "+(new Time(System.currentTimeMillis())).toString());
 		liens = Appariement.appariementReseaux(reseauRef, reseauComp, paramApp);
 		if (logger.isInfoEnabled()) {
-			logger.info("  Appariement des réseaux terminé ");
-			logger.info("  "+liens.size()+" liens d'appariement ont été trouvés (dans la structure de travail)");
+			logger.info("  Appariement des rÃ©seaux terminï¿½ ");
+			logger.info("  "+liens.size()+" liens d'appariement ont Ã©tÃ© trouvï¿½s (dans la structure de travail)");
 		}
 		if (logger.isDebugEnabled()) logger.debug("  FIN DE LA PHASE D'APPARIEMENT DES RESEAUX "+(new Time(System.currentTimeMillis())).toString());
 
@@ -153,14 +153,14 @@ public class AppariementIO {
 		}
 		if (logger.isDebugEnabled()) logger.debug("  DEBUT DE LA PHASE D'EXPORT "+(new Time(System.currentTimeMillis())).toString());
 		if (paramApp.debugBilanSurObjetsGeo ) {
-			if (logger.isDebugEnabled()) logger.debug("  Transformation des liens de réseaux en liens génériques "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  Transformation des liens de rÃ©seaux en liens gï¿½nï¿½riques "+(new Time(System.currentTimeMillis())).toString());
 			liensGeneriques= LienReseaux.exportLiensAppariement(liens, reseauRef, paramApp);
 			Appariement.nettoyageLiens(reseauRef, reseauComp);
 			if (logger.isInfoEnabled()) logger.info("######## FIN DE L'APPARIEMENT DE RESEAUX #########");
 			return liensGeneriques;
 		}
 		else {
-			if (logger.isDebugEnabled()) logger.debug("  Affectation d'une géométrie aux liens "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  Affectation d'une gÃ©omÃ©trie aux liens "+(new Time(System.currentTimeMillis())).toString());
 			LienReseaux.exportAppCarteTopo(liens, paramApp);
 			if (logger.isInfoEnabled()) logger.info("######## FIN DE L'APPARIEMENT DE RESEAUX #########");
 			return liens;
@@ -171,16 +171,16 @@ public class AppariementIO {
 	//////////////////////////////////////////////////////////////////////
 	// 				        METHODES D'IMPORT							//
 	//////////////////////////////////////////////////////////////////////
-	/** Création d'une carte topo à partir des objets géographiques initiaux.
+	/** crÃ©ation d'une carte topo Ã  partir des objets GÃ©ographiques initiaux.
 	 * 	 *
 	 * @return
-	 * Le réseau créé.
+	 * Le rÃ©seau crÃ©Ã©.
 	 * 
 	 * @param paramApp
-	 * Les paramètres de l'appariement (seuls de distance, préparation topologique des données...)
+	 * Les paramÃ¨tres de l'appariement (seuls de distance, prï¿½paration topologique des donnÃ©es...)
 	 * 
-	 * true = on traite le réseau de référence
-	 * false = on traite le réseau de comparaison
+	 * true = on traite le rÃ©seau de rÃ©fÃ©rence
+	 * false = on traite le rÃ©seau de comparaison
 	 */
 	private static ReseauApp Import(ParametresApp paramApp, boolean ref) {
 
@@ -199,8 +199,8 @@ public class AppariementIO {
 		ArcApp arc;
 		NoeudApp noeud;
 
-		if (ref) reseau = new ReseauApp("Réseau de référence");
-		else reseau = new ReseauApp("Réseau de comparaison");
+		if (ref) reseau = new ReseauApp("rÃ©seau de rÃ©fÃ©rence");
+		else reseau = new ReseauApp("rÃ©seau de comparaison");
 		popArcApp = reseau.getPopArcs();
 		popNoeudApp = reseau.getPopNoeuds();
 
@@ -221,9 +221,9 @@ public class AppariementIO {
 				else arc.setOrientation(1);
 				arc.addCorrespondant(element);
 
-				// Le code ci-dessous permet un import plus fin mais a été réalisé
-				// pour des données spécifiques et n'est pas encore codé très générique.
-				// Il est donc commenté dans cette version du code.
+				// Le code ci-dessous permet un import plus fin mais a Ã©tÃ© rÃ©alisï¿½
+				// pour des donnÃ©es spÃ©cifiques et n'est pas encore codï¿½ trÃ¨s gï¿½nï¿½rique.
+				// Il est donc commentï¿½ dans cette version du code.
 				//				element = (FT_Feature)itElements.next();
 				//				if ( ref && paramApp.filtrageRef ) {
 				//					if ( filtrageTroncon(element) ) continue;
@@ -258,9 +258,9 @@ public class AppariementIO {
 				noeud.setGeometrie(new GM_Point((DirectPosition)((GM_Point)element.getGeom()).getPosition().clone()));
 				noeud.addCorrespondant(element);
 				noeud.setTaille(paramApp.distanceNoeudsMax);
-				// Le code ci-dessous permet un import plus fin mais a été réalisé
-				// pour des données spécifiques et n'est pas encore codé très générique.
-				// Il est donc commenté dans cette version du code.
+				// Le code ci-dessous permet un import plus fin mais a Ã©tÃ© rÃ©alisï¿½
+				// pour des donnÃ©es spÃ©cifiques et n'est pas encore codï¿½ trÃ¨s gï¿½nï¿½rique.
+				// Il est donc commentï¿½ dans cette version du code.
 				//				if ( paramApp.distanceNoeudsConstante ) noeud.setTaille(paramApp.distanceNoeuds);
 				//				else noeud.setTaille(tailleNoeud(element, paramApp));
 			}
@@ -268,7 +268,7 @@ public class AppariementIO {
 
 		/////////////////////////////
 		// Indexation spatiale des arcs et noeuds
-		// On crée un dallage régulier avec en moyenne 20 objets par case
+		// On crÃ©e un dallage rÃ©gulier avec en moyenne 20 objets par case
 		if (logger.isDebugEnabled()) logger.debug("    Indexation spatiale des arcs et des noeuds "+(new Time(System.currentTimeMillis())).toString());
 		int nb = (int)Math.sqrt(reseau.getPopArcs().size()/20);
 		if (nb == 0) nb=1;
@@ -278,8 +278,8 @@ public class AppariementIO {
 		/////////////////////////////
 		// Instanciation de la topologie
 
-		// 1- Création de la topologie arcs-noeuds, rendu du graphe planaire
-		if ((ref && paramApp.topologieGraphePlanaire1) || (!ref && paramApp.topologieGraphePlanaire2)) { // cas où on veut une topologie planaire
+		// 1- crÃ©ation de la topologie arcs-noeuds, rendu du graphe planaire
+		if ((ref && paramApp.topologieGraphePlanaire1) || (!ref && paramApp.topologieGraphePlanaire2)) { // cas oÃ¹ on veut une topologie planaire
 			if (logger.isDebugEnabled()) logger.debug("    Rendu du graphe planaire et instanciation de la topologie arcs-noeuds "+(new Time(System.currentTimeMillis())).toString());
 			// Debut Ajout 
 			reseau.creeTopologieArcsNoeuds(0);
@@ -290,7 +290,7 @@ public class AppariementIO {
 			reseau.rendPlanaire(0);
 			reseau.filtreDoublons(0);
 		}
-		else { // cas où on ne veut pas nécessairement rendre planaire la topologie
+		else { // cas oÃ¹ on ne veut pas nÃ©cessairement rendre planaire la topologie
 			if (logger.isDebugEnabled()) logger.debug("    Instanciation de la topologie "+(new Time(System.currentTimeMillis())).toString());
 			reseau.creeNoeudsManquants(0);
 			reseau.filtreDoublons(0);
@@ -304,7 +304,7 @@ public class AppariementIO {
 				reseau.fusionNoeuds(paramApp.topologieSeuilFusionNoeuds1);
 			}
 			if ( paramApp.topologieSurfacesFusionNoeuds1 != null ) {
-				if (logger.isDebugEnabled()) logger.debug("    Fusion des noeuds dans une même surface "+(new Time(System.currentTimeMillis())).toString());
+				if (logger.isDebugEnabled()) logger.debug("    Fusion des noeuds dans une mÃªme surface "+(new Time(System.currentTimeMillis())).toString());
 				reseau.fusionNoeuds(paramApp.topologieSurfacesFusionNoeuds1);
 			}
 		}
@@ -314,13 +314,13 @@ public class AppariementIO {
 				reseau.fusionNoeuds(paramApp.topologieSeuilFusionNoeuds2);
 			}
 			if ( paramApp.topologieSurfacesFusionNoeuds2 != null ) {
-				if (logger.isDebugEnabled()) logger.debug("    Fusion des noeuds dans une même surface "+(new Time(System.currentTimeMillis())).toString());
+				if (logger.isDebugEnabled()) logger.debug("    Fusion des noeuds dans une mÃªme surface "+(new Time(System.currentTimeMillis())).toString());
 				reseau.fusionNoeuds(paramApp.topologieSurfacesFusionNoeuds2);
 			}
 		}
 
-		// 3- On enlève les noeuds isolés
-		if (logger.isDebugEnabled()) logger.debug("    Filtrage des noeuds isolés "+(new Time(System.currentTimeMillis())).toString());
+		// 3- On enlÃ¨ve les noeuds isolÃ©s
+		if (logger.isDebugEnabled()) logger.debug("    Filtrage des noeuds isolÃ©s "+(new Time(System.currentTimeMillis())).toString());
 		reseau.filtreNoeudsIsoles();
 
 		// 4- On filtre les noeuds simples (avec 2 arcs incidents)
@@ -340,9 +340,9 @@ public class AppariementIO {
 			reseau.filtreArcsDoublons();
 		}
 
-		// 6 - On crée la topologie de faces
+		// 6 - On crÃ©e la topologie de faces
 		if ( !ref && paramApp.varianteChercheRondsPoints ) {
-			if (logger.isDebugEnabled()) logger.debug("    Création de la topologie de faces");
+			if (logger.isDebugEnabled()) logger.debug("    crÃ©ation de la topologie de faces");
 			reseau.creeTopologieFaces();
 		}
 
@@ -366,9 +366,9 @@ public class AppariementIO {
 	// 						METHODES D'EXPORT							//
 	//////////////////////////////////////////////////////////////////////
 
-	/**  Methode utile principalement pour analyser les résultats d'un appariement,
-	 * qui découpe un réseau en plusieurs réseaux selon les valeurs de l'attribut
-	 * "Resultat_Appariement" des arcs et noeuds du réseau apparié.
+	/**  Methode utile principalement pour analyser les rÃ©sultats d'un appariement,
+	 * qui dÃ©coupe un rÃ©seau en plusieurs rÃ©seaux selon les valeurs de l'attribut
+	 * "Resultat_Appariement" des arcs et noeuds du rÃ©seau appariÃ©.
 	 */
 	public static List<ReseauApp> scindeSelonValeursResultatsAppariement(ReseauApp reseauRef, List<String> valeursClassement) {
 		List<ReseauApp> cartesTopoClassees = new ArrayList<ReseauApp>();

@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -43,7 +43,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
- * Classe supportant les méthodes de comparaison globale de réseaux.
+ * Classe supportant les mÃ©thodes de comparaison globale de rÃ©seaux.
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
  * @version 1.0
@@ -52,24 +52,24 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 public class Comparaison {
 
-	/** Approximation de l'écart moyen entre deux réseaux.
-	 * Cette approximation grossière évalue pour tout point de réseau1 son écart à réseau2
-	 * (point le plus proche quelconque), sans réaliser d'appariement de réseau.
+	/** Approximation de l'Ã©cart moyen entre deux rÃ©seaux.
+	 * Cette approximation grossiï¿½re Ã©value pour tout point de rÃ©seau1 son Ã©cart Ã  rÃ©seau2
+	 * (point le plus proche quelconque), sans rÃ©aliser d'appariement de rÃ©seau.
 	 * 
 	 * @param reseau1
-	 * Un réseau, typiquement un réseau peu précis dont on veut estimer la qualité par rapport à reseau2.
+	 * Un rÃ©seau, typiquement un rÃ©seau peu prÃ©cis dont on veut estimer la qualitÃ© par rapport Ã  reseau2.
 	 * 
 	 * @param reseau2
-	 * Un autre réseau, typiquement un réseau de bonne qualité qui sert de référence.
+	 * Un autre rÃ©seau, typiquement un rÃ©seau de bonne qualitÃ© qui sert de rÃ©fÃ©rence.
 	 * 
 	 * @param distanceMax
-	 * Sert à éliminer les aberrations dans le calcul de la moyenne:
-	 * les arcs de reseau1 situés au moins en un point à plus de distanceMax de reseau2
+	 * Sert Ã  Ã©liminer les aberrations dans le calcul de la moyenne:
+	 * les arcs de reseau1 situï¿½s au moins en un point Ã  plus de distanceMax de reseau2
 	 * ne sont pas pris en compte dans le calcul.
 	 * 
 	 * @return
-	 * L'écart moyen. Il est calculé comme la moyenne des distances entre les points
-	 * des arcs de reseau1 et reseau2. Cette moyenne est pondérée par la longueur
+	 * L'Ã©cart moyen. Il est calculï¿½ comme la moyenne des distances entre les points
+	 * des arcs de reseau1 et reseau2. Cette moyenne est pondï¿½rï¿½e par la longueur
 	 * des segments entourant les points en question.
 	 */
 	public static double approximationEcartPlaniMoyen(CarteTopo reseau1, CarteTopo reseau2, double distanceMax) {
@@ -127,66 +127,66 @@ public class Comparaison {
 	}
 
 
-	/** Ensemble d'indicateurs évaluant globalement l'écart de position entre le réseau à étudier réseau11
-	 * et un réseau de référence réseau2.
-	 * Cette évaluation se fait en s'appuyant sur le calcul des écarts entre chaque point
-	 * de reseau1 et sa projection au plus près sur le réseau reseau2 (et non sur un réel appariement d'arcs).
-	 * Les moyennes sont pondérées par la longueur des segments entourant les points,
-	 * pour gommer les effets dus aux pas de découpage variables des lignes.
+	/** Ensemble d'indicateurs Ã©valuant globalement l'Ã©cart de position entre le rÃ©seau Ã  ï¿½tudier rÃ©seau11
+	 * et un rÃ©seau de rÃ©fÃ©rence rÃ©seau2.
+	 * Cette Ã©valuation se fait en s'appuyant sur le calcul des Ã©carts entre chaque point
+	 * de reseau1 et sa projection au plus prï¿½s sur le rÃ©seau reseau2 (et non sur un rï¿½el appariement d'arcs).
+	 * Les moyennes sont pondï¿½rï¿½es par la longueur des segments entourant les points,
+	 * pour gommer les effets dus aux pas de dÃ©coupage variables des lignes.
 	 * 
 	 * @param reseau1
-	 * Réseau étudié.
+	 * rÃ©seau ï¿½tudiï¿½.
 	 * 
 	 * @param reseau2
-	 * Réseau servant de référence.
+	 * rÃ©seau servant de rÃ©fÃ©rence.
 	 * 
 	 * @param affichage
-	 * Si TRUE alors les résultats sont affichés.
+	 * Si TRUE alors les rÃ©sultats sont affichï¿½s.
 	 * 
 	 * @param distanceMax
-	 * Sert à éliminer les aberrations dans les calculs.
-	 * - Les arcs de reseau1 situés en au moins un point à plus de distanceMax
+	 * Sert Ã  Ã©liminer les aberrations dans les calculs.
+	 * - Les arcs de reseau1 situï¿½s en au moins un point Ã  plus de distanceMax
 	 *   de reseau2 ne sont pas pris en compte dans le calcul des indicateurs sur les arcs.
-	 * - Les noeuds de reseau1 situés à plus de distanceMax d'un noeud
+	 * - Les noeuds de reseau1 situï¿½s Ã  plus de distanceMax d'un noeud
 	 *   de reseau2 ne sont pas pris en compte dans le calcul des indicateurs sur les noeuds
 	 * 
 	 * @return
-	 * Liste (de 'double') contenant un ensemble d'indicateurs sur l'écart entre les réseaux :
+	 * Liste (de 'double') contenant un ensemble d'indicateurs sur l'Ã©cart entre les rÃ©seaux :
 	 * 
 	 * ESTIMATEURS SUR LES ARCS
-	 * liste(0): longueur des arcs du réseau "this" total
-	 * liste(1): longueur des arcs du réseau "this" pris en compte dans les calculs d'évaluation de l'écart
-	 * liste(2): longueur des arcs du réseau "reseau"
-	 * liste(3): nombre d'arcs du réseau "this" total
-	 * liste(4): nombre d'arcs du réseau "this" pris en compte dans les calculs d'évaluation de l'écart
-	 * liste(5): nombre d'arcs du réseau "reseau"
-	 * liste(6): estimation du biais systématique en X sur les arcs
-	 * 			(valeur en X de la moyenne des vecteurs d'écart entre un point de "this" et son projeté sur "reseau")
-	 * liste(7): estimation du biais systématique en Y sur les arcs
-	 * 			(valeur en Y de la moyenne des vecteurs d'écart entre un point de "this" et son projeté sur "reseau")
-	 * liste(8): estimation de l'écart moyen sur les arcs
-	 * 			(moyenne des longueurs des vecteurs d'écart entre un point de "this" et son projeté sur "reseau")
-	 * liste(9): estimation de l'écart moyen quadratique sur les arcs
-	 * 			(moyenne quadratique des longueurs des vecteurs d'écart entre un point de "this" et son projeté sur "reseau")
-	 * liste(10): estimation de l'écart type sur les arcs, i.e. précision une fois le biais corrigé
+	 * liste(0): longueur des arcs du rÃ©seau "this" total
+	 * liste(1): longueur des arcs du rÃ©seau "this" pris en compte dans les calculs d'Ã©valuation de l'Ã©cart
+	 * liste(2): longueur des arcs du rÃ©seau "reseau"
+	 * liste(3): nombre d'arcs du rÃ©seau "this" total
+	 * liste(4): nombre d'arcs du rÃ©seau "this" pris en compte dans les calculs d'Ã©valuation de l'Ã©cart
+	 * liste(5): nombre d'arcs du rÃ©seau "reseau"
+	 * liste(6): estimation du biais systï¿½matique en X sur les arcs
+	 * 			(valeur en X de la moyenne des vecteurs d'Ã©cart entre un point de "this" et son projetÃ© sur "reseau")
+	 * liste(7): estimation du biais systï¿½matique en Y sur les arcs
+	 * 			(valeur en Y de la moyenne des vecteurs d'Ã©cart entre un point de "this" et son projetÃ© sur "reseau")
+	 * liste(8): estimation de l'Ã©cart moyen sur les arcs
+	 * 			(moyenne des longueurs des vecteurs d'Ã©cart entre un point de "this" et son projetÃ© sur "reseau")
+	 * liste(9): estimation de l'Ã©cart moyen quadratique sur les arcs
+	 * 			(moyenne quadratique des longueurs des vecteurs d'Ã©cart entre un point de "this" et son projetÃ© sur "reseau")
+	 * liste(10): estimation de l'Ã©cart type sur les arcs, i.e. prÃ©cision une fois le biais corrigï¿½
 	 * 			( racine(ecart moyen quadratique^2 - biais^2)
-	 * liste(11): histogramme de répartition des écarts sur tous les points (en nb de points intermédiaires sur les arcs)
+	 * liste(11): histogramme de rï¿½partition des Ã©carts sur tous les points (en nb de points intermÃ©diaires sur les arcs)
 	 * 
 	 * ESTIMATEURS SUR LES NOEUDS (si ils existent)
-	 * liste(12): nombre de noeuds du réseau "this" total
-	 * liste(13): nombre de noeuds du réseau "this" pris en compte dans les calculs d'évaluation de l'écart
-	 * liste(14): nombre de noeuds du réseau "reseau"
-	 * liste(15): estimation du biais systématique en X sur les noeuds
-	 * 			(valeur en X de la moyenne des vecteurs d'écart entre un noeud de "this" et le noeud le plus proche de "reseau")
-	 * liste(16): estimation du biais systématique en Y sur les noeuds
-	 * 			(valeur en Y de la moyenne des vecteurs d'écart entre un noeud de "this" et le noeud le plus proche de "reseau")
-	 * liste(17): estimation de l'écart moyen sur les noeuds
-	 * 			(moyenne des longueurs des vecteurs d'écart entre un noeud de "this" et le noeud le plus proche de "reseau")
-	 * liste(18): estimation de l'écart moyen quadratique sur les arcs
-	 * 			(moyenne quadratique des longueurs des vecteurs d'écart entre un noeud de "this" et le noeud le plus proche de "reseau")
-	 * liste(19): estimation de l'écart type sur les noeuds, i.e. précision une fois le biais corrigé
+	 * liste(12): nombre de noeuds du rÃ©seau "this" total
+	 * liste(13): nombre de noeuds du rÃ©seau "this" pris en compte dans les calculs d'Ã©valuation de l'Ã©cart
+	 * liste(14): nombre de noeuds du rÃ©seau "reseau"
+	 * liste(15): estimation du biais systï¿½matique en X sur les noeuds
+	 * 			(valeur en X de la moyenne des vecteurs d'Ã©cart entre un noeud de "this" et le noeud le plus proche de "reseau")
+	 * liste(16): estimation du biais systï¿½matique en Y sur les noeuds
+	 * 			(valeur en Y de la moyenne des vecteurs d'Ã©cart entre un noeud de "this" et le noeud le plus proche de "reseau")
+	 * liste(17): estimation de l'Ã©cart moyen sur les noeuds
+	 * 			(moyenne des longueurs des vecteurs d'Ã©cart entre un noeud de "this" et le noeud le plus proche de "reseau")
+	 * liste(18): estimation de l'Ã©cart moyen quadratique sur les arcs
+	 * 			(moyenne quadratique des longueurs des vecteurs d'Ã©cart entre un noeud de "this" et le noeud le plus proche de "reseau")
+	 * liste(19): estimation de l'Ã©cart type sur les noeuds, i.e. prÃ©cision une fois le biais corrigï¿½
 	 * 			( racine(ecart moyen quadratique^2 - biais^2)
-	 * liste(20): histogramme de répartition des écarts sur tous les noeuds (en nb de noeuds)
+	 * liste(20): histogramme de rï¿½partition des Ã©carts sur tous les noeuds (en nb de noeuds)
 	 * 
 	 */
 	public static List<?> evaluationEcartPosition(CarteTopo reseau1, CarteTopo reseau2, double distanceMax, boolean affichage) {
@@ -210,11 +210,11 @@ public class Comparaison {
 
 
 		///////////////// EVALUATION SUR LES ARCS ////////////////////
-		// indexation des arcs du réseau 2
+		// indexation des arcs du rÃ©seau 2
 		if ( !reseau2.getPopArcs().hasSpatialIndex()) {
 			reseau2.getPopArcs().initSpatialIndex(Tiling.class, false, 20 );
 		}
-		// parcours du réseau 2 juste pour calculer sa longueur
+		// parcours du rÃ©seau 2 juste pour calculer sa longueur
 		itArcs2 = arcs2.getElements().iterator();
 		longTotal2 = 0;
 		while (itArcs2.hasNext()) {
@@ -222,7 +222,7 @@ public class Comparaison {
 			longTotal2 = longTotal2+((GM_LineString)arc2.getGeom()).length();
 		}
 		nbArcsTotal2 = arcs2.getElements().size();
-		// parcours du réseau 1 pour évaluer les écarts sur les arcs
+		// parcours du rÃ©seau 1 pour Ã©valuer les Ã©carts sur les arcs
 		nbArcsTotal1 = arcs1.getElements().size();
 		nbArcsPrisEnCompte1 = 0;
 		poidsTotal = 0;
@@ -232,7 +232,7 @@ public class Comparaison {
 		longTotal1 = 0;
 		longPrisEnCompte1 = 0;
 		itArcs1 = arcs1.getElements().iterator();
-		while (itArcs1.hasNext()) { //pour chaque arc du réseau 1
+		while (itArcs1.hasNext()) { //pour chaque arc du rÃ©seau 1
 			arc1 = (Arc) itArcs1.next();
 			geom1 = (GM_LineString)arc1.getGeom();
 			longArc1 = geom1.length();
@@ -255,10 +255,10 @@ public class Comparaison {
 				if ( i == dp.size()-1 ) l2 = 0;
 				else l2 = Distances.distance(dp.get(i),dp.get(i+1));
 				poids = l1+l2;
-				// projection du point sur le réseau2
+				// projection du point sur le rÃ©seau2
 				double dmin = Double.MAX_VALUE;
 				itArcs2 = arcs2proches.getElements().iterator();
-				while (itArcs2.hasNext()) { // pour chaque arc du réseau 2
+				while (itArcs2.hasNext()) { // pour chaque arc du rÃ©seau 2
 					arc2 = (Arc) itArcs2.next();
 					geom2 = (GM_LineString)arc2.getGeom();
 					projete = Operateurs.projection(pt1, geom2);
@@ -290,26 +290,26 @@ public class Comparaison {
 		ecartQuadratiqueTotal = Math.sqrt(ecartQuadratiqueTotal/poidsTotal);
 		// resultats sur les arcs
 		if (affichage) System.out.println("******************* BILAN SUR LES ARCS *******************");
-		if (affichage) System.out.println("** Comparaison globale des réseaux, en nombre et longueur d'arcs :");
+		if (affichage) System.out.println("** Comparaison globale des rÃ©seaux, en nombre et longueur d'arcs :");
 		resultats.add(new Double(longTotal1));
-		if (affichage) System.out.println("** Longueur total des arcs du réseau 1 (km) : "+Math.round(longTotal1/1000));
+		if (affichage) System.out.println("** Longueur total des arcs du rÃ©seau 1 (km) : "+Math.round(longTotal1/1000));
 		resultats.add(new Double(longPrisEnCompte1));
-		if (affichage) System.out.println("** Longueur total des arcs du réseau 1 pris en compte pour le calcul (km) : "+Math.round(longPrisEnCompte1/1000));
+		if (affichage) System.out.println("** Longueur total des arcs du rÃ©seau 1 pris en compte pour le calcul (km) : "+Math.round(longPrisEnCompte1/1000));
 		resultats.add(new Double(longTotal2));
-		if (affichage) System.out.println("** Longueur total des arcs du réseau 2(km) : "+Math.round(longTotal2/1000));
+		if (affichage) System.out.println("** Longueur total des arcs du rÃ©seau 2(km) : "+Math.round(longTotal2/1000));
 		resultats.add(new Double(nbArcsTotal1));
-		if (affichage) System.out.println("** Nombre d'arcs du réseau 1 : "+nbArcsTotal1);
+		if (affichage) System.out.println("** Nombre d'arcs du rÃ©seau 1 : "+nbArcsTotal1);
 		resultats.add(new Double(nbArcsPrisEnCompte1));
-		if (affichage) System.out.println("** Nombre d'arcs du réseau 1 pris en compte pour le calcul : "+nbArcsPrisEnCompte1);
+		if (affichage) System.out.println("** Nombre d'arcs du rÃ©seau 1 pris en compte pour le calcul : "+nbArcsPrisEnCompte1);
 		resultats.add(new Double(nbArcsTotal2));
-		if (affichage) System.out.println("** Nombre d'arcs du réseau 2 : "+nbArcsTotal2);
+		if (affichage) System.out.println("** Nombre d'arcs du rÃ©seau 2 : "+nbArcsTotal2);
 
 		if (affichage) System.out.println("");
-		if (affichage) System.out.println("** Estimateurs d'écart ");
+		if (affichage) System.out.println("** Estimateurs d'Ã©cart ");
 		resultats.add(new Double(vTotal.getX()));
-		if (affichage) System.out.println("** Biais systématique en X  : "+vTotal.getX());
+		if (affichage) System.out.println("** Biais systï¿½matique en X  : "+vTotal.getX());
 		resultats.add(new Double(vTotal.getY()));
-		if (affichage) System.out.println("** Biais systématique en Y  : "+vTotal.getY());
+		if (affichage) System.out.println("** Biais systï¿½matique en Y  : "+vTotal.getY());
 		resultats.add(new Double(ecartTotal));
 		if (affichage) System.out.println("** Ecart moyen : "+ecartTotal);
 		resultats.add(new Double(ecartQuadratiqueTotal));

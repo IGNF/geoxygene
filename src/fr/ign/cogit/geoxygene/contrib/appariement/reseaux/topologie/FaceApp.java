@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -33,10 +33,10 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.LienReseaux;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
 
 /**
- * Face d'un graphe à apparier.
- * La notion de face est très peu utilisée pour l'appariement de réseaux,
- * mais elle l'est néanmoins pour des cas particuliers, comme la gestion des rond-points
- * dans le réseau routier.
+ * Face d'un graphe Ã  apparier.
+ * La notion de face est trÃ¨s peu utilisÃ©e pour l'appariement de rÃ©seaux,
+ * mais elle l'est nÃ©anmoins pour des cas particuliers, comme la gestion des rond-points
+ * dans le rÃ©seau routier.
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
  * @version 1.0
@@ -45,18 +45,18 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
 
 public class FaceApp extends Face {
 
-	/** Evaluation du résultat de l'appariement sur la face. */
+	/** Evaluation du rÃ©sultat de l'appariement sur la face. */
 	private String resultatAppariement;
-	public String getResultatAppariement () {return resultatAppariement;}
-	public void setResultatAppariement (String resultat) {resultatAppariement = resultat;}
+	public String getResultatAppariement () {return this.resultatAppariement;}
+	public void setResultatAppariement (String resultat) {this.resultatAppariement = resultat;}
 
-	/** Liens qui référencent l'objet apparié */
+	/** Liens qui rÃ©fÃ©rencent l'objet appariÃ© */
 	private List<LienReseaux> liens = new ArrayList<LienReseaux>();
-	public List<LienReseaux> getLiens() {return liens;}
+	public List<LienReseaux> getLiens() {return this.liens;}
 	public void setLiens(List<LienReseaux> liens) { this.liens=liens; }
 	public void addLiens(LienReseaux liensReseaux) { this.liens.add(liensReseaux); }
 
-	/** Renvoie les liens de l'objet qui appartiennent à la liste liensPertinents */
+	/** Renvoie les liens de l'objet qui appartiennent Ã  la liste liensPertinents */
 	public List<LienReseaux> getLiens(List<LienReseaux> liensPertinents) {
 		List<LienReseaux> listeTmp = new ArrayList<LienReseaux>(this.getLiens());
 		listeTmp.retainAll(liensPertinents);

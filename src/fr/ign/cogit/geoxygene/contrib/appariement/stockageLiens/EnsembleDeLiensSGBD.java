@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -40,7 +40,7 @@ import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.feature.Population;
 
 /**
- * Structure permettant le stockage des Résultats de la réalisation
+ * Structure permettant le stockage des rÃ©sultats de la rÃ©alisation
  * d'un appariement au sein du SGBD
  * 
  * @author Eric Grosso - IGN / Laboratoire COGIT
@@ -59,41 +59,41 @@ public class EnsembleDeLiensSGBD extends Population {
 		super(persistant, "Ensemble de liens SGBD", LienSGBD.class, true);
 	}
 
-	/** Nom du l'ensemble des liens d'appariement  (ex: "Appariement des routes par la méthode XX")*/
+	/** Nom du l'ensemble des liens d'appariement  (ex: "Appariement des routes par la mÃ©thode XX")*/
 	private String nom ;
 	@Override
 	public String getNom() {return nom;}
 	@Override
 	public void setNom(String nom) {this.nom = nom;}
 
-	/** Description textuelle des paramètres utilisés pour l'appariement */
+	/** Description textuelle des paramÃ¨tres utilisÃ©s pour l'appariement */
 	private String parametrage ;
 	public String getParametrage() {return parametrage;}
 	public void setParametrage(String parametrage) {this.parametrage = parametrage;}
 
-	/** Description textuelle du résultat de l'auto-évaluation des liens */
+	/** Description textuelle du rÃ©sultat de l'auto-Ã©valuation des liens */
 	private String evaluationInterne ;
 	public String getEvaluationInterne() {return evaluationInterne;}
 	public void setEvaluationInterne(String evaluation) {evaluationInterne = evaluation;}
 
-	/** Description textuelle du résultat de l'évaluation globale des liens */
+	/** Description textuelle du rÃ©sultat de l'Ã©valuation globale des liens */
 	private String evaluationGlobale ;
 	public String getEvaluationGlobale() {return evaluationGlobale;}
 	public void setEvaluationGlobale(String evaluation) {evaluationGlobale = evaluation;}
 
 
-	/** Liste des populations auxquelles les objets ref et comp des liens sont attachés
+	/** Liste des populations auxquelles les objets ref et comp des liens sont attachï¿½s
 	 * sous forme de string*/
 	private String populations ;
 	public String getPopulations() {return populations;}
 	public void setPopulations(String populations) {this.populations = populations;}
 
-	/** Liste aidant à instancier la variable populations*/
+	/** Liste aidant Ã  instancier la variable populations*/
 	private HashSet<String> listePop;
 	public HashSet<String> getListePop() {return listePop;}
 	public void setListePop(HashSet<String> listePop) {this.listePop = listePop;}
 
-	/** Liste des populations réelles*/
+	/** Liste des populations rï¿½elles*/
 	private List<Population> listePopulations;
 	public List<Population> getListePopulations() {return listePopulations;}
 	public void setListePopulations(List<Population> listePopulations) {this.listePopulations = listePopulations;}
@@ -127,8 +127,8 @@ public class EnsembleDeLiensSGBD extends Population {
 	 *  1 objet EnsembleDeLiens est en relation avec n objets LienSGBD (n pouvant etre nul).
 	 *  1 objet LienSGBD est en relation avec 1 objet EnsembleDeLiens au plus.
 	 *
-	 *  NB: un objet EnsembleDeLiens ne doit pas être en relation plusieurs fois avec le même objet LienSGBD :
-	 *  il est impossible de bien gérer des relations 1-n bidirectionnelles avec doublons.
+	 *  NB: un objet EnsembleDeLiens ne doit pas Ãªtre en relation plusieurs fois avec le mÃªme objet LienSGBD :
+	 *  il est impossible de bien gÃ©rer des relations 1-n bidirectionnelles avec doublons.
 	 *
 	 *  ATTENTION: Pour assurer la bidirection, il faut modifier les listes uniquement avec
 	 *  les methodes fournies.
@@ -138,10 +138,10 @@ public class EnsembleDeLiensSGBD extends Population {
 	 */
 	private List<LienSGBD> liensSGBD = this.getElements();
 
-	/** Récupère la liste des objets en relation. */
+	/** Rï¿½cupï¿½re la liste des objets en relation. */
 	public List<LienSGBD> getLiensSGBD() {return liensSGBD ; }
 
-	/** Définit la liste des objets en relation, et met à jour la relation inverse. */
+	/** dÃ©finit la liste des objets en relation, et met Ã  jour la relation inverse. */
 	public void setLiensSGBD (List<LienSGBD> L) {
 		List old = new ArrayList(liensSGBD);
 		Iterator it1 = old.iterator();
@@ -156,24 +156,24 @@ public class EnsembleDeLiensSGBD extends Population {
 		}
 	}
 
-	/** Récupère le ième élément de la liste des objets en relation. */
+	/** Rï¿½cupï¿½re le iï¿½me Ã©lÃ©ment de la liste des objets en relation. */
 	public LienSGBD getLienSGBD(int i) {return liensSGBD.get(i) ; }
 
-	/** Ajoute un objet à la liste des objets en relation, et met à jour la relation inverse. */
+	/** Ajoute un objet Ã  la liste des objets en relation, et met Ã  jour la relation inverse. */
 	public void addLienSGBD (LienSGBD lien) {
 		if ( lien == null ) return;
 		liensSGBD.add(lien) ;
 		lien.setEnsembleLiensSGBD(this) ;
 	}
 
-	/** Enlève un élément de la liste des objets en relation, et met à jour la relation inverse. */
+	/** enlÃ¨ve un Ã©lÃ©ment de la liste des objets en relation, et met Ã  jour la relation inverse. */
 	public void removeLienSGBD(LienSGBD lien) {
 		if ( lien == null ) return;
 		liensSGBD.remove(lien) ;
 		lien.setEnsembleLiensSGBD(null);
 	}
 
-	/** Vide la liste des objets en relation, et met à jour la relation inverse. */
+	/** Vide la liste des objets en relation, et met Ã  jour la relation inverse. */
 	public void emptyLiensSGBD () {
 		List old = new ArrayList(liensSGBD);
 		Iterator it = old.iterator();
@@ -183,7 +183,7 @@ public class EnsembleDeLiensSGBD extends Population {
 		}
 	}
 
-	/** Détruit dans le SGBD l'ensemble de liens SGBD et les liens d'appariement SGBD
+	/** dÃ©truit dans le SGBD l'ensemble de liens SGBD et les liens d'appariement SGBD
 	 * en correspondance (attention: il faut que les objets soient persistants) */
 	public void detruitEnsembleDeLiensSGBD(Geodatabase geodatabase){
 		Iterator<LienSGBD> it = this.getLiensSGBD().iterator();
@@ -202,21 +202,21 @@ public class EnsembleDeLiensSGBD extends Population {
 	 * de liens SGBD */
 	public EnsembleDeLiensSGBD conversionEnsembleLiensVersSGBD(EnsembleDeLiens ensemble, int rouge, int vert, int bleu){
 		//nom
-		if (ensemble.getNom()==null || ensemble.getNom().length()==0)this.setNom("Non renseigné");
+		if (ensemble.getNom()==null || ensemble.getNom().length()==0)this.setNom("Non renseignï¿½");
 		else this.setNom(ensemble.getNom());
 
 		//parametrage
 		if (ensemble.getParametrage()==null || ensemble.getParametrage().length()==0){
-			this.setParametrage("Non renseigné");
+			this.setParametrage("Non renseignï¿½");
 		}
 		else this.setParametrage(ensemble.getParametrage());
 
 		//evaluationInterne
-		if (ensemble.getEvaluationInterne()==null || ensemble.getEvaluationInterne().length()==0)this.setEvaluationInterne("Non renseigné");
+		if (ensemble.getEvaluationInterne()==null || ensemble.getEvaluationInterne().length()==0)this.setEvaluationInterne("Non renseignï¿½");
 		else this.setEvaluationInterne(ensemble.getEvaluationInterne());
 
 		//evaluationGlobale
-		if (ensemble.getEvaluationGlobale()==null || ensemble.getEvaluationGlobale().length()==0)this.setEvaluationGlobale("Non renseigné");
+		if (ensemble.getEvaluationGlobale()==null || ensemble.getEvaluationGlobale().length()==0)this.setEvaluationGlobale("Non renseignï¿½");
 		else this.setEvaluationGlobale(ensemble.getEvaluationGlobale());
 
 		//date
@@ -261,7 +261,7 @@ public class EnsembleDeLiensSGBD extends Population {
 		//evaluationGlobale
 		ensemble.setEvaluationGlobale(this.getEvaluationGlobale());
 
-		//chargement des populations concernées par les liens d'appariement en mémoire
+		//chargement des populations concernÃ©es par les liens d'appariement en mï¿½moire
 		StringTokenizer token = new StringTokenizer(this.getPopulations(),"|");
 		String pop;
 		Geodatabase geodb = GeodatabaseOjbFactory.newInstance();
@@ -276,8 +276,8 @@ public class EnsembleDeLiensSGBD extends Population {
 			}
 			catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("ATTENTION: la classe "+pop+" stockée dans LIENS ne semble plus existée");
-				System.out.println("RESOLUTION: recréer cette classe ou refaire un appariement pour un stockage adapté de vos liens");
+				System.out.println("ATTENTION: la classe "+pop+" stockï¿½e dans LIENS ne semble plus existï¿½e");
+				System.out.println("RESOLUTION: recrÃ©er cette classe ou refaire un appariement pour un stockage adaptÃ© de vos liens");
 			}
 		}
 
@@ -286,8 +286,8 @@ public class EnsembleDeLiensSGBD extends Population {
 		while(it.hasNext()){
 			LienSGBD lienSGBD = it.next();
 			//ensemble.getElements().add(lienSGBD.conversionSGBDVersLiens());
-			//meilleure solution dans le sens où précise la population du lien
-			//mais plantage au niveau du stockage au moment de la création de la population
+			//meilleure solution dans le sens oÃ¹ prÃ©cise la population du lien
+			//mais plantage au niveau du stockage au moment de la crÃ©ation de la population
 			//de l'ensemble de liens SGBD
 			ensemble.add(lienSGBD.conversionSGBDVersLiens());
 		}

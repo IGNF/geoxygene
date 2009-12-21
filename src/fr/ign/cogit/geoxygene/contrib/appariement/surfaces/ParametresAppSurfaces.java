@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -27,7 +27,7 @@
 package fr.ign.cogit.geoxygene.contrib.appariement.surfaces;
 
 /**
- * Paramètres de l'appariement de surfaces.
+ * paramÃ¨tres de l'appariement de surfaces.
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
  * @version 1.0
@@ -36,92 +36,92 @@ package fr.ign.cogit.geoxygene.contrib.appariement.surfaces;
 
 public class ParametresAppSurfaces implements Cloneable {
 
-	/** 2 surfaces, pour être appariées, doivent s'intersecter et l'intersection
-	 * doit faire au moins la taille fixée par ce seuil. A l'extrême, ce paramètre peut être nul.
-	 * Valeur par défaut : 1 m2
+	/** 2 surfaces, pour Ãªtre appariÃ©es, doivent s'intersecter et l'intersection
+	 * doit faire au moins la taille fixï¿½e par ce seuil. A l'extrï¿½me, ce paramÃ¨tre peut Ãªtre nul.
+	 * Valeur par dÃ©faut : 1 m2
 	 */
 	public double surface_min_intersection = 1;
 
-	/** 2 surfaces, pour être appariées, doivent s'intersecter et l'intersection
-	 * doit faire au moins la taille d'une des surfaces multipliée
-	 * par ce paramètre. A l'extrême, ce paramètre peut être nul.
-	 * Valeur par défaut : 0.2
+	/** 2 surfaces, pour Ãªtre appariÃ©es, doivent s'intersecter et l'intersection
+	 * doit faire au moins la taille d'une des surfaces multipliï¿½e
+	 * par ce paramÃ¨tre. A l'extrï¿½me, ce paramÃ¨tre peut Ãªtre nul.
+	 * Valeur par dÃ©faut : 0.2
 	 */
 	public double pourcentage_min_intersection = 0.2;
 
-	/** Si 2 surfaces s'intersectent d'au moins la taille d'une des surfaces multipliée
-	 * par ce paramètre, on garde ce lien à coup sûr.
-	 * Valeur par défaut : 0.8
+	/** Si 2 surfaces s'intersectent d'au moins la taille d'une des surfaces multipliï¿½e
+	 * par ce paramÃ¨tre, on garde ce lien Ã  coup sï¿½r.
+	 * Valeur par dÃ©faut : 0.8
 	 */
 	public double pourcentage_intersection_sur = 0.8;
 
 	/** Mesure de ressemblance entre surfaces (ou groupes de surfaces)
-	 * à optimiser lors du choix final de l'appariement.
-	 * 2 possibilités :
+	 * Ã  optimiser lors du choix final de l'appariement.
+	 * 2 possibilitï¿½s :
 	 * TRUE : minimise la distance surfacique
-	 * 	(conseillé par Atef en cas de données avec des niveaux de détail similaires).
-	 * FALSE : minimise la somme Exactitude + Complétude.
+	 * 	(conseillï¿½ par Atef en cas de donnÃ©es avec des niveaux de dï¿½tail similaires).
+	 * FALSE : minimise la somme Exactitude + Complï¿½tude.
 	 * 
 	 * Remarque :
-	 * - Complétude = surf(Sref inter Scomp) / Sref
+	 * - Complï¿½tude = surf(Sref inter Scomp) / Sref
 	 * - Exactitude = surf(Sref inter Scomp) / Scomp.
 	 * 
 	 */
 	public boolean minimiseDistanceSurfacique = true;
 
-	/** Si on utilise le critère de Distance Surfacique
+	/** Si on utilise le critï¿½re de Distance Surfacique
 	 * (cf. parametre minimiseDistanceSurfacique):
 	 * On n'accepte que les appariements finaux pour lesquels
-	 * distance surfacique est inférieure à ce seuil.
+	 * distance surfacique est infÃ©rieure Ã  ce seuil.
 	 */
 	public double distSurfMaxFinal = 0.6;
 
-	/** Si on utilise le critère d'exactitude/complétude :
+	/** Si on utilise le critï¿½re d'exactitude/complï¿½tude :
 	 * (cf. parametre minimiseDistanceSurfacique):
 	 * On n'accepte que les appariements finaux pour lesquels la somme
-	 * exactitude + complétude est supérieur à ce seuil.
+	 * exactitude + complï¿½tude est supÃ©rieur Ã  ce seuil.
 	 */
 	public double completudeExactitudeMinFinal = 0.3;
 
-	/** Paramètre indiquant si on souhaite faire un regroupement optimal
+	/** paramÃ¨tre indiquant si on souhaite faire un regroupement optimal
 	 * des liens
 	 */
 	public boolean regroupementOptimal = true;
 
-	/** Paramètre indiquant si on souhaite faire un filtrage final
-	 * des liens sur des critères de distance surfacique ou de complétude
+	/** paramÃ¨tre indiquant si on souhaite faire un filtrage final
+	 * des liens sur des critï¿½res de distance surfacique ou de complï¿½tude
 	 */
 	public boolean filtrageFinal = true;
 
-	/** Paramètre indiquant si on souhaite faire un raffinement
-	 * en essayant d'aparier les petites surfaces non appariées
+	/** paramÃ¨tre indiquant si on souhaite faire un raffinement
+	 * en essayant d'aparier les petites surfaces non appariÃ©es
 	 */
 	public boolean ajoutPetitesSurfaces = false;
 
-	/** On ne rajout que les petites surface de taille inférieure à
-	 * ce paramètre * taille de la surface à laquelle on le rajoute
+	/** On ne rajout que les petites surface de taille infÃ©rieure ï¿½
+	 * ce paramÃ¨tre * taille de la surface Ã  laquelle on le rajoute
 	 */
 	public double seuilPourcentageTaillePetitesSurfaces = 0.1;
 
-	/** Paramètre indiquant si les liens fianux sont redus persistant ou non.
-	 * Par défaut: false
+	/** paramÃ¨tre indiquant si les liens fianux sont redus persistant ou non.
+	 * Par dÃ©faut: false
 	 */
 	public boolean persistant = false;
 
 
-	/** Uniquement pour des problèmes de robustesse du code si les surfaces
-	 * en entrée ne sont pas propres (existence de mini-boucles).
-	 * Si JTS plante à cuase de ces surfaces bizarres, celles-ci seront
-	 * filtrées avec DouglasPeucker.
+	/** Uniquement pour des problï¿½mes de robustesse du code si les surfaces
+	 * en entrÃ©e ne sont pas propres (existence de mini-boucles).
+	 * Si JTS plante Ã  cuase de ces surfaces bizarres, celles-ci seront
+	 * filtrï¿½es avec DouglasPeucker.
 	 * On essaiera plusieurs forces de filtrage:
 	 * entre resolutionMin et resolutionMax.
 	 */
 	public double resolutionMin = 1;
 
-	/** Uniquement pour des problèmes de robustesse du code si les surfaces
-	 * en entrée ne sont pas propres (existence de mini-boucles).
-	 * Si JTS plante à cuase de ces surfaces bizarres, celles-ci seront
-	 * filtrées avec DouglasPeucker.
+	/** Uniquement pour des problï¿½mes de robustesse du code si les surfaces
+	 * en entrÃ©e ne sont pas propres (existence de mini-boucles).
+	 * Si JTS plante Ã  cuase de ces surfaces bizarres, celles-ci seront
+	 * filtrï¿½es avec DouglasPeucker.
 	 * On essaiera plusieurs forces de filtrage:
 	 * entre resolutionMin et resolutionMax.
 	 */

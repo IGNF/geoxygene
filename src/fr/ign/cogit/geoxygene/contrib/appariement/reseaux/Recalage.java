@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -42,9 +42,9 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 /**
- * Méthodes pour le recalage d'un réseau sur un autre.
- * NB : méthodes réalisées pour un cas particulier et non retouchées pour assurer une bonne généricité.
- *  ////////////// A manier avec précaution  //////////////////.
+ * mÃ©thodes pour le recalage d'un rÃ©seau sur un autre.
+ * NB : mÃ©thodes rÃ©alisï¿½es pour un cas particulier et non retouchï¿½es pour assurer une bonne gï¿½nï¿½ricitï¿½.
+ *  ////////////// A manier avec prï¿½caution  //////////////////.
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
  * @version 1.0
@@ -52,36 +52,36 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
  */
 
 public class Recalage {
-	/** Recale la géométrie des arcs d'un graphe sur un autre graphe
-	 *  une fois que ceux-ci ont été appariés.
+	/** Recale la gÃ©omÃ©trie des arcs d'un graphe sur un autre graphe
+	 *  une fois que ceux-ci ont Ã©tÃ© appariÃ©s.
 	 * 
-	 *  Un lien (correspondant) est gardé entre les nouveaux arcs et leurs correspondants
-	 *  dans le réseau de référence (accessible par arc.getCorrespondants()),
+	 *  Un lien (correspondant) est gardï¿½ entre les nouveaux arcs et leurs correspondants
+	 *  dans le rÃ©seau de rÃ©fÃ©rence (accessible par arc.getCorrespondants()),
 	 * 
-	 *  IMPORTANT 1: ctARecaler doit être le réseau 1 dans l'appariement,
-	 *  et ctSurLaquelleRecaler le réseau 2.
+	 *  IMPORTANT 1: ctARecaler doit Ãªtre le rÃ©seau 1 dans l'appariement,
+	 *  et ctSurLaquelleRecaler le rÃ©seau 2.
 	 *  
-	 *  IMPORTANT 2: pour garder les liens, l'appariement doit avoir été lancé
-	 *  avec le paramètre debugBilanSurObjetsGeo à FALSE
+	 *  IMPORTANT 2: pour garder les liens, l'appariement doit avoir Ã©tÃ© lancï¿½
+	 *  avec le paramÃ¨tre debugBilanSurObjetsGeo Ã  FALSE
 	 * 
-	 *  NB: méthode conçue pour les cas relativement simples qui mérite sans doute d'être affinée.
+	 *  NB: mÃ©thode conï¿½ue pour les cas relativement simples qui mï¿½rite sans doute d'ï¿½tre affinï¿½e.
 	 * 
 	 * @param ctARecaler
-	 * Le réseau à recaler
+	 * Le rÃ©seau Ã  recaler
 	 * 
 	 * @param ctSurLaquelleRecaler
-	 * Le réseau sur lequel recaler
+	 * Le rÃ©seau sur lequel recaler
 	 * 
 	 * @param liens
-	 * Des liens d'appariement entre les réseaux "à recaler" et "sur lequel recaler"
+	 * Des liens d'appariement entre les rÃ©seaux "ï¿½ recaler" et "sur lequel recaler"
 	 * 
-	 * @return Le réseau recalé (en entrée-sortie)
+	 * @return Le rÃ©seau recalï¿½ (en entrÃ©e-sortie)
 	 */
 	public static CarteTopo recalage(ReseauApp ctARecaler,
 			ReseauApp ctSurLaquelleRecaler,
 			EnsembleDeLiens liens) {
-		CarteTopo ctRecale = new CarteTopo("reseau recalé");
-		// On ajoute dans le réseau recalé les arcs sur lesquels on recale qui sont appariés.
+		CarteTopo ctRecale = new CarteTopo("reseau recalï¿½");
+		// On ajoute dans le rÃ©seau recalï¿½ les arcs sur lesquels on recale qui sont appariÃ©s.
 		Iterator<?> itArcsSurLesquelsRecaler = ctSurLaquelleRecaler.getPopArcs().getElements().iterator();
 		while (itArcsSurLesquelsRecaler.hasNext()) {
 			ArcApp arc = (ArcApp) itArcsSurLesquelsRecaler.next();
@@ -92,22 +92,22 @@ public class Recalage {
 			nouvelArc.setCorrespondants(arc.objetsGeoRefEnCorrespondance(liens));
 		}
 
-		// On ajoute dans le réseau recalé les arcs à recaler qui ne sont pas appariés,
-		// en modifiant la géométrie pour assurer un raccord amorti avec le reste.
+		// On ajoute dans le rÃ©seau recalï¿½ les arcs Ã  recaler qui ne sont pas appariÃ©s,
+		// en modifiant la gÃ©omÃ©trie pour assurer un raccord amorti avec le reste.
 		Iterator<?> itArcsARecaler = ctARecaler.getPopArcs().getElements().iterator();
 		while (itArcsARecaler.hasNext()) {
 			ArcApp arc = (ArcApp) itArcsARecaler.next();
 			if (arc.getLiens(liens.getElements()).size()!=0) continue;
 			Arc nouvelArc = ctRecale.getPopArcs().nouvelElement();
-			nouvelArc.setGeometrie(new GM_LineString((DirectPositionList)arc.getGeom().coord().clone())); // vraie duplication de géométrie (un peu tordu, certes)
+			nouvelArc.setGeometrie(new GM_LineString((DirectPositionList)arc.getGeom().coord().clone())); // vraie duplication de gÃ©omÃ©trie (un peu tordu, certes)
 			geometrieRecalee(arc, nouvelArc, liens);
 		}
 		return ctRecale;
 	}
 
-	/** Methode utilisée par le recalage pour assurer le recalage.
-	 *  Attention : cette méthode n'est pas très générique : elle suppose que l'on recale Ref sur Comp uniquement
-	 *  et elle mérite des affinements.
+	/** Methode utilisÃ©e par le recalage pour assurer le recalage.
+	 *  Attention : cette mÃ©thode n'est pas trÃ¨s gï¿½nï¿½rique : elle suppose que l'on recale Ref sur Comp uniquement
+	 *  et elle mï¿½rite des affinements.
 	 */
 	private static void geometrieRecalee(ArcApp arcARecaler, Arc arcRecale, EnsembleDeLiens liens) {
 		NoeudApp noeudARecalerIni = (NoeudApp)arcARecaler.getNoeudIni();
@@ -123,7 +123,7 @@ public class Recalage {
 		int i;
 
 		if ( liensDuNoeudARecalerIni.size() == 1 ) {
-			// si le noeud initial de l'arc à recalé est apparié avec le réseau comp
+			// si le noeud initial de l'arc Ã  recalï¿½ est appariÃ© avec le rÃ©seau comp
 			if ( (liensDuNoeudARecalerIni.get(0)).getNoeuds2().size() == 1 ) {
 				noeudRecaleIni = (NoeudApp)(liensDuNoeudARecalerIni.get(0)).getNoeuds2().get(0);
 				nouvelleGeometrie.setControlPoint(0, noeudRecaleIni.getGeometrie().getPosition());
@@ -141,7 +141,7 @@ public class Recalage {
 			}
 		}
 
-		// si le noeud final de l'arc à recalé est apparié avec le réseau comp
+		// si le noeud final de l'arc Ã  recalï¿½ est appariÃ© avec le rÃ©seau comp
 		if ( liensDuNoeudARecalerFin.size() == 1 ) {
 			if ( (liensDuNoeudARecalerFin.get(0)).getNoeuds2().size() == 1 ) {
 				noeudRecaleFin = (NoeudApp)(liensDuNoeudARecalerFin.get(0)).getNoeuds2().get(0);

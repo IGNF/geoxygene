@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -37,7 +37,7 @@ import fr.ign.cogit.geoxygene.feature.Population;
 /**
  * Liens stockables dans le SGBD
  * Resultat de l'appariement : lien entre objets de BDref et objets de BDcomp.
- * Un lien a aussi une géométrie qui est sa représentation graphique.
+ * Un lien a aussi une gÃ©omÃ©trie qui est sa reprÃ©sentation graphique.
  * 
  * @author Eric Grosso - IGN / Laboratoire COGIT
  * @version 1.0
@@ -46,23 +46,23 @@ import fr.ign.cogit.geoxygene.feature.Population;
 
 public class LienSGBD extends FT_Feature {
 
-	/** Les objets de Reference pointés par le lien */
+	/** Les objets de Reference pointÃ©s par le lien */
 	protected String objetsRef;
 	public String getObjetsRef() {return objetsRef;}
 	public void setObjetsRef(String liste) { objetsRef = liste; }
 
-	/** Les objets de Comparaison pointés par le lien */
+	/** Les objets de Comparaison pointÃ©s par le lien */
 	protected String objetsComp;
 	public String getObjetsComp() {return objetsComp;}
 	public void setObjetsComp(String liste) { objetsComp = liste; }
 
-	/** Estimation de la qualité du lien d'appariement
+	/** Estimation de la qualitÃ© du lien d'appariement
 	 * (mapping fait avec la table Representation_Lien au besoin)*/
 	private double evaluation ;
 	public double getEvaluation() {return evaluation;}
 	public void setEvaluation(double evaluation) {this.evaluation = evaluation;}
 
-	/** Liste d'indicateurs temporaires utilisés pendant les calculs d'appariement */
+	/** Liste d'indicateurs temporaires utilisÃ©s pendant les calculs d'appariement */
 	protected String indicateurs;
 	public String getIndicateurs() {return indicateurs;}
 	public void setIndicateurs(String indicateurs) { this.indicateurs = indicateurs; }
@@ -73,25 +73,25 @@ public class LienSGBD extends FT_Feature {
 	public String getCommentaire() {return commentaire;}
 	public void setCommentaire(String commentaire) { this.commentaire = commentaire; }
 
-	/** Texte libre pour décrire le nom de l'appariement.
+	/** Texte libre pour dÃ©crire le nom de l'appariement.
 	 * (mapping fait avec la table Representation_Lien au besoin)*/
 	protected String nom = new String();
 	public String getNom() {return nom;}
 	public void setNom(String nom) { this.nom = nom; }
 
-	/** Texte libre pour décrire le type d'appariement (ex. "Noeud-Noeud").
+	/** Texte libre pour dÃ©crire le type d'appariement (ex. "Noeud-Noeud").
 	 * (mapping fait avec la table Representation_Lien au besoin)*/
 	protected String type = new String();
 	public String getType() {return type;}
 	public void setType(String type) { this.type = type; }
 
-	/** Texte libre pour décrire les objets de référence pointés.
+	/** Texte libre pour dÃ©crire les objets de rÃ©fÃ©rence pointÃ©s.
 	 * (mapping fait avec la table Representation_Lien au besoin)*/
 	protected String reference = new String();
 	public String getReference() {return reference;}
 	public void setReference(String reference) { this.reference = reference; }
 
-	/** Texte libre pour décrire les objets de comparaison pointés.
+	/** Texte libre pour dÃ©crire les objets de comparaison pointÃ©s.
 	 * (mapping fait avec la table Representation_Lien au besoin)*/
 	protected String comparaison = new String();
 	public String getComparaison() {return comparaison;}
@@ -139,29 +139,29 @@ public class LienSGBD extends FT_Feature {
 			formatIndic = formatIndic+(String)itIndic.next()+"|";
 		}
 		if (formatIndic.length()>0)this.setIndicateurs(formatIndic.substring(0,formatIndic.length()-1));
-		else this.setIndicateurs("Non renseigné");
+		else this.setIndicateurs("Non renseignï¿½");
 
 		//evaluation
 		this.setEvaluation(lien.getEvaluation());
 
 		//commentaire
-		if (lien.getCommentaire().length()==0)this.setCommentaire("Non renseigné");
+		if (lien.getCommentaire().length()==0)this.setCommentaire("Non renseignï¿½");
 		else this.setCommentaire(lien.getCommentaire());
 
 		//nom
-		if (lien .getNom().length()==0)this.setNom("Non renseigné");
+		if (lien .getNom().length()==0)this.setNom("Non renseignï¿½");
 		else this.setNom(lien.getNom());
 
 		//type
-		if (lien.getType().length()==0)this.setType("Non renseigné");
+		if (lien.getType().length()==0)this.setType("Non renseignï¿½");
 		else this.setType(lien.getType());
 
 		//reference
-		if (lien.getReference().length()==0)this.setReference("Non renseigné");
+		if (lien.getReference().length()==0)this.setReference("Non renseignï¿½");
 		else this.setReference(lien.getReference());
 
 		//comparaison
-		if (lien.getComparaison().length()==0)this.setComparaison("Non renseigné");
+		if (lien.getComparaison().length()==0)this.setComparaison("Non renseignï¿½");
 		else this.setComparaison(lien.getComparaison());
 
 		//geometrie
@@ -271,10 +271,10 @@ public class LienSGBD extends FT_Feature {
 	//////////////////////////////////////
 	private EnsembleDeLiensSGBD ensembleLiensSGBD;
 
-	/** Récupère l'objet en relation. */
+	/** Rï¿½cupï¿½re l'objet en relation. */
 	public EnsembleDeLiensSGBD getEnsembleLiensSGBD() {return ensembleLiensSGBD;  }
 
-	/** Définit l'objet en relation, et met à jour la relation inverse. */
+	/** dÃ©finit l'objet en relation, et met Ã  jour la relation inverse. */
 	public void setEnsembleLiensSGBD(EnsembleDeLiensSGBD ensemble) {
 		EnsembleDeLiensSGBD old = ensembleLiensSGBD;
 		ensembleLiensSGBD = ensemble;

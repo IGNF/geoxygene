@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -49,7 +49,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 
 /**
- * Resultats de la réalisation d'un appariement : un ensemble de liens.
+ * Resultats de la rÃ©alisation d'un appariement : un ensemble de liens.
  * 
  * @author Mustiere / IGN Laboratoire COGIT
  * @version 1.0
@@ -58,39 +58,38 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 public class EnsembleDeLiens extends Population<Lien> {
 
 	public EnsembleDeLiens() {
-		super(false, "Ensemble de liens", Lien.class, true);
+		super(false, "Ensemble de liens", Lien.class, true); //$NON-NLS-1$
 	}
 
 	public EnsembleDeLiens(boolean persistant) {
-		super(persistant, "Ensemble de liens", Lien.class, true);
+		super(persistant, "Ensemble de liens", Lien.class, true); //$NON-NLS-1$
 	}
 
 	public EnsembleDeLiens(Class<?> classeDesLiens) {
-		super(false, "Ensemble de liens", classeDesLiens, true);
+		super(false, "Ensemble de liens", classeDesLiens, true); //$NON-NLS-1$
 	}
 
-	/** Nom du l'ensemble des liens d'appariement  (ex: "Appariement des routes par la méthode XX")*/
+	/** Nom du l'ensemble des liens d'appariement  (ex: "Appariement des routes par la mÃ©thode XX")*/
 	private String nom ;
 	@Override
-	public String getNom() {return nom;}
+	public String getNom() {return this.nom;}
 	@Override
 	public void setNom(String nom) {this.nom = nom;}
 
-	/** Description textuelle des paramètres utilisés pour l'appariement */
+	/** Description textuelle des paramÃ¨tres utilisÃ©s pour l'appariement */
 	private String parametrage ;
-	public String getParametrage() {return parametrage;}
+	public String getParametrage() {return this.parametrage;}
 	public void setParametrage(String parametrage) {this.parametrage = parametrage;}
 
-	/** Description textuelle du résultat de l'auto-évaluation des liens */
+	/** Description textuelle du rÃ©sultat de l'auto-Ã©valuation des liens */
 	private String evaluationInterne ;
-	public String getEvaluationInterne() {return evaluationInterne;}
-	public void setEvaluationInterne(String evaluation) {evaluationInterne = evaluation;}
+	public String getEvaluationInterne() {return this.evaluationInterne;}
+	public void setEvaluationInterne(String evaluation) {this.evaluationInterne = evaluation;}
 
-	/** Description textuelle du résultat de l'évaluation globale des liens */
+	/** Description textuelle du rÃ©sultat de l'Ã©valuation globale des liens */
 	private String evaluationGlobale ;
-	public String getEvaluationGlobale() {return evaluationGlobale;}
-	public void setEvaluationGlobale(String evaluation) {evaluationGlobale = evaluation;}
-
+	public String getEvaluationGlobale() {return this.evaluationGlobale;}
+	public void setEvaluationGlobale(String evaluation) {this.evaluationGlobale = evaluation;}
 
 	//////////////////////////////////////////////////////////////
 	// METHODES UTILES A LA MANIPULATION DES ENSEMBLES DE LIENS
@@ -116,16 +115,16 @@ public class EnsembleDeLiens extends Population<Lien> {
 		return total;
 	}
 
-	/** Ajout des liens à this. NB: modifie this. */
+	/** Ajout des liens Ã  this. NB: modifie this. */
 	public void compile(EnsembleDeLiens liensAAjouter) {
 		this.getElements().addAll(liensAAjouter.getElements());
 	}
 
-	/** Regroupement de liens pointant vers les mêmes objets.
-	 * Autrement dit : les liens en entrée forment un graphe entre les objets;
-	 * la méthode crée un seul lien pour toute partie connexe du graphe.
+	/** Regroupement de liens pointant vers les mÃªmes objets.
+	 * Autrement dit : les liens en entrÃ©e forment un graphe entre les objets;
+	 * la mÃ©thode crÃ©e un seul lien pour toute partie connexe du graphe.
 	 * exemple : Ref = (A,B,C), Comp = (X,Y,Z)
-	 * en entrée (this) on a 4 liens 1-1 (A-X) (B-X) (B-Y) (C-Z)
+	 * en entrÃ©e (this) on a 4 liens 1-1 (A-X) (B-X) (B-Y) (C-Z)
 	 * en sortie on a un lien n-m (A,B)-(X-Y) et 1 lien 1-1 (C-Z)
 	 * 
 	 */
@@ -143,11 +142,11 @@ public class EnsembleDeLiens extends Population<Lien> {
 		groupeTotal.decomposeConnexes();
 
 		liensGroupes = new EnsembleDeLiens();
-		liensGroupes.setNom("TMP : liens issus d'un regroupement");
-		// on parcours tous les groupes connexes créés
+		liensGroupes.setNom("TMP : liens issus d'un regroupement"); //$NON-NLS-1$
+		// on parcours tous les groupes connexes crÃ©Ã©s
 		for (FT_Feature feature:grapheDesLiens.getListeGroupes()) {
 			groupeConnexe = (Groupe)feature;
-			if ( groupeConnexe.getListeArcs().size() == 0 ) continue; // cas des noeuds isolés
+			if ( groupeConnexe.getListeArcs().size() == 0 ) continue; // cas des noeuds isolÃ©s
 			lienGroupe = liensGroupes.nouvelElement();
 			for(FT_Feature n:groupeConnexe.getListeNoeuds()) {
 				noeud = (Noeud)n;
@@ -156,18 +155,18 @@ public class EnsembleDeLiens extends Population<Lien> {
 					lienGroupe.addObjetRef(feat);
 				if ( popComp.getElements().contains(feat) )
 					lienGroupe.addObjetComp(feat);
-				// nettoyage de la carteTopo créée
+				// nettoyage de la carteTopo crÃ©Ã©e
 				noeud.setCorrespondants(new ArrayList<FT_Feature>());
 			}
 		}
 		return liensGroupes;
 	}
 
-	/** Regroupement de liens pointant vers les mêmes objets.
-	 * Autrement dit : les liens en entrée forment un graphe entre les objets;
-	 * la méthode crée un seul lien pour toute partie connexe du graphe.
+	/** Regroupement de liens pointant vers les mÃªmes objets.
+	 * Autrement dit : les liens en entrÃ©e forment un graphe entre les objets;
+	 * la mÃ©thode crÃ©e un seul lien pour toute partie connexe du graphe.
 	 * exemple : Ref = (A,B,C), Comp = (X,Y,Z)
-	 * en entrée (this) on a 4 liens 1-1 (A-X) (B-X) (B-Y) (C-Z)
+	 * en entrÃ©e (this) on a 4 liens 1-1 (A-X) (B-X) (B-Y) (C-Z)
 	 * en sortie on a un lien n-m (A,B)-(X-Y) et 1 lien 1-1 (C-Z)
 	 */
 	public EnsembleDeLiens regroupeLiens(FT_FeatureCollection<FT_Feature> popRef, FT_FeatureCollection<FT_Feature> popComp) {
@@ -184,11 +183,11 @@ public class EnsembleDeLiens extends Population<Lien> {
 		groupeTotal.decomposeConnexes();
 
 		liensGroupes = new EnsembleDeLiens();
-		liensGroupes.setNom("TMP : liens issus d'un regroupement");
-		// on parcours tous les groupes connexes créés
+		liensGroupes.setNom("TMP : liens issus d'un regroupement"); //$NON-NLS-1$
+		// on parcours tous les groupes connexes crÃ©Ã©s
 		for (FT_Feature feature:grapheDesLiens.getListeGroupes()) {
 			groupeConnexe = (Groupe)feature;
-			if ( groupeConnexe.getListeArcs().size() == 0 ) continue; // cas des noeuds isolés
+			if ( groupeConnexe.getListeArcs().size() == 0 ) continue; // cas des noeuds isolÃ©s
 			lienGroupe = liensGroupes.nouvelElement();
 			for(FT_Feature n:groupeConnexe.getListeNoeuds()) {
 				noeud = (Noeud)n;
@@ -197,30 +196,29 @@ public class EnsembleDeLiens extends Population<Lien> {
 					lienGroupe.addObjetRef(feat);
 				if ( popComp.getElements().contains(feat) )
 					lienGroupe.addObjetComp(feat);
-				// nettoyage de la carteTopo créée
+				// nettoyage de la carteTopo crÃ©Ã©e
 				noeud.setCorrespondants(new ArrayList<FT_Feature>());
 			}
 		}
 		return liensGroupes;
 	}
 
-
 	/** Transforme les liens, qui relient des objets de popRef et popComp,
-	 * en une carte topo (graphe sans géométrie) où :
-	 * - les objets de popRef et popComp sont des noeuds (sans géométrie)
-	 * - les liens sont des arcs entre ces noeuds (sans géométrie)
+	 * en une carte topo (graphe sans gÃ©omÃ©trie) oÃ¹ :
+	 * - les objets de popRef et popComp sont des noeuds (sans gÃ©omÃ©trie)
+	 * - les liens sont des arcs entre ces noeuds (sans gÃ©omÃ©trie)
 	 */
 	public CarteTopo transformeEnCarteTopo(FT_FeatureCollection<FT_Feature> popRef, FT_FeatureCollection<FT_Feature> popComp) {
 		Iterator<FT_Feature> itObjetsRef, itObjetsComp, itNoeudsRef, itNoeudsComp;
 		List<FT_Feature> noeudsRef = new ArrayList<FT_Feature>(), noeudsComp = new ArrayList<FT_Feature>(); // listes de Noeud
 
 		Lien lien;
-		CarteTopo grapheDesLiens = new CarteTopo("Carte de liens");
+		CarteTopo grapheDesLiens = new CarteTopo("Carte de liens"); //$NON-NLS-1$
 		FT_Feature objetRef, objetComp  ;
 		Noeud noeudRef, noeudComp;
 		Arc arc;
 
-		// création de noeuds du graphe = les objets ref et comp
+		// crÃ©ation de noeuds du graphe = les objets ref et comp
 		itObjetsRef = popRef.getElements().iterator();
 		while (itObjetsRef.hasNext()){
 			objetRef = itObjetsRef.next();
@@ -234,12 +232,12 @@ public class EnsembleDeLiens extends Population<Lien> {
 			noeudComp.addCorrespondant(objetComp);
 		}
 
-		// création des arcs du graphe = les liens d'appariement
+		// crÃ©ation des arcs du graphe = les liens d'appariement
 		Iterator<Lien> itLiens = this.getElements().iterator();
 		while (itLiens.hasNext()) {
 			lien = itLiens.next();
 			itObjetsRef = lien.getObjetsRef().iterator();
-			// création des listes de noeuds concernés par le lien
+			// crÃ©ation des listes de noeuds concernÃ©s par le lien
 			noeudsRef.clear();
 			while (itObjetsRef.hasNext()) {
 				objetRef = itObjetsRef.next();
@@ -307,15 +305,13 @@ public class EnsembleDeLiens extends Population<Lien> {
 		}
 		return this;
 	}
-
-
-
+	
 	//////////////////////////////////////////////////////////////
 	// AUTOUR DE L'EVALUATION
 	//////////////////////////////////////////////////////////////
 
-	/** Filtrage des liens, on ne retient que ceux dont l'évaluation
-	 * est supérieure ou égale au seuil passé en paramètre.
+	/** Filtrage des liens, on ne retient que ceux dont l'Ã©valuation
+	 * est supÃ©rieure ou Ã©gale au seuil passÃ© en paramÃ¨tre.
 	 */
 	public void filtreLiens(float seuilEvaluation) {
 		Lien lien;
@@ -326,14 +322,13 @@ public class EnsembleDeLiens extends Population<Lien> {
 		}
 	}
 
-
-	/** Change l'évaluation d'un lien si celui-ci a un nombre d'objets associés
-	 * à la base de comparaison (flag=true) ou à la base de référence (flag=false)
-	 * supérieur au seuilCardinalite, en lui donnant la valeur nulle.
-	 * Si le seuil n'est pas dépassé, l'évaluation du lien reste ce qu'elle est.
-	 * @param flag : true si l'on s'intéresse aux objets de la base de comparaison des liens,
-	 * false s'il s'agit de la base de référence
-	 * @param seuilCardinalite : seuil au dessus duquel la méthode affecte une évaluation nulle
+	/** Change l'Ã©valuation d'un lien si celui-ci a un nombre d'objets associÃ©s
+	 * Ã  la base de comparaison (flag=true) ou Ã  la base de rÃ©fÃ©rence (flag=false)
+	 * supÃ©rieur au seuilCardinalite, en lui donnant la valeur nulle.
+	 * Si le seuil n'est pas dÃ©passÃ©, l'Ã©valuation du lien reste ce qu'elle est.
+	 * @param flag : true si l'on s'intÃ©resse aux objets de la base de comparaison des liens,
+	 * false s'il s'agit de la base de rÃ©fÃ©rence
+	 * @param seuilCardinalite : seuil au dessus duquel la mÃ©thode affecte une Ã©valuation nulle
 	 * au lien
 	 */
 	public void evaluationLiensParCardinalite(boolean flag,double seuilCardinalite){
@@ -353,13 +348,13 @@ public class EnsembleDeLiens extends Population<Lien> {
 		}
 	}
 
-	/** Crée une liste de population en fonction des seuils sur l'evaluation
-	 *  passés en paramètre.
+	/** crÃ©e une liste de population en fonction des seuils sur l'evaluation
+	 *  passÃ©s en paramÃ¨tre.
 	 * Exemple: si la liste en entree contient 2 "Double" (0.5, 1),
-	 * alors renvoie 3 populations avec les liens ayant respectivement leur évaluation...
-	 * 0: inférieur à 0.5 (strictement)
+	 * alors renvoie 3 populations avec les liens ayant respectivement leur Ã©valuation...
+	 * 0: infÃ©rieur Ã  0.5 (strictement)
 	 * 1: entre 0.5 et 1 (strictement sur 1)
-	 * 2: supérieur ou égal à 1
+	 * 2: supÃ©rieur ou Ã©gal Ã  1
 	 */
 	public List<EnsembleDeLiens> classeSelonSeuilEvaluation(List<Double> valeursClassement) {
 		List<EnsembleDeLiens> liensClasses = new ArrayList<EnsembleDeLiens>();
@@ -402,14 +397,13 @@ public class EnsembleDeLiens extends Population<Lien> {
 		}
 		return liensClasses;
 	}
-
-
+	
 	//////////////////////////////////////////////////////////////
 	// AUTOUR DE LA GEOMETRIE ET DE LA VISUALISATION
 	//////////////////////////////////////////////////////////////
 
-	/** Affecte une géométrie à l'ensemble des liens, cette géométrie
-	 * relie les centroïdes des objets concernés entre eux */
+	/** Affecte une gÃ©omÃ©trie Ã  l'ensemble des liens, cette gÃ©omÃ©trie
+	 * relie les centroÃ¯des des objets concernÃ©s entre eux */
 	public void creeGeometrieDesLiens() {
 		Iterator<Lien> itLiens = this.getElements().iterator();
 		Iterator<FT_Feature> itRef, itComp;
@@ -435,8 +429,7 @@ public class EnsembleDeLiens extends Population<Lien> {
 		}
 	}
 
-
-	/** Affecte une géométrie à l'ensemble des liens, cette géométrie
+	/** Affecte une gÃ©omÃ©trie Ã  l'ensemble des liens, cette gÃ©omÃ©trie
 	 * relie le milieu d'une ligne au milieu d'une ligne correspondant
 	 * des objets
 	 */
@@ -469,11 +462,11 @@ public class EnsembleDeLiens extends Population<Lien> {
 		}
 	}
 
-	/** Affecte une géométrie à l'ensemble des liens, cette géométrie
+	/** Affecte une gÃ©omÃ©trie Ã  l'ensemble des liens, cette gÃ©omÃ©trie
 	 * relie le centroide d'une surface au milieu du segment correspondant
 	 * des objets
 	 * @param comparaison : true si les objets de la BD de comparaison sont
-	 * des lignes; false s'il s'agit des objets de la BD de référence
+	 * des lignes; false s'il s'agit des objets de la BD de rÃ©fÃ©rence
 	 */
 	public void creeGeometrieDesLiensEntreSurfacesEtLignes(boolean comparaison) {
 		Iterator<Lien> itLiens = this.getElements().iterator();
@@ -514,11 +507,10 @@ public class EnsembleDeLiens extends Population<Lien> {
 		}
 	}
 
-
-	/** Affecte une géométrie à l'ensemble des liens, cette géométrie
-	 * relie le centroïde d'une surface à un point
+	/** Affecte une gÃ©omÃ©trie Ã  l'ensemble des liens, cette gÃ©omÃ©trie
+	 * relie le centroÃ¯de d'une surface Ã  un point
 	 * @param comparaison : true si les objets de la BD de comparaison sont
-	 * des points; false s'il s'agit des objets de la BD de référence
+	 * des points; false s'il s'agit des objets de la BD de rÃ©fÃ©rence
 	 */
 	public void creeGeometrieDesLiensEntreSurfacesEtPoints(boolean comparaison) {
 		Iterator<Lien> itLiens = this.getElements().iterator();
@@ -555,8 +547,7 @@ public class EnsembleDeLiens extends Population<Lien> {
 		}
 	}
 
-
-	/** Détruit la géométrie des liens
+	/** dÃ©truit la gÃ©omÃ©trie des liens
 	 */
 	public void detruitGeometrieDesLiens() {
 		Iterator<Lien> itLiens = this.getElements().iterator();
@@ -574,16 +565,16 @@ public class EnsembleDeLiens extends Population<Lien> {
 	// AUTOUR DE LA VISUALISATION OBJETS APPARIES / NON APPARIES
 	//////////////////////////////////////////////////////////////
 
-	/** Méthode qui renvoie à partir d'un ensemble de liens une liste de dimension 4,
+	/** mÃ©thode qui renvoie Ã  partir d'un ensemble de liens une liste de dimension 4,
 	 * avec
-	 * en 1. la population issue de la population de référence qui a été appariée,
-	 * en 2. la population issue de la population de comparaison qui a été appariée,
-	 * en 3. la population issue de la population de référence qui n'a pas été appariée,
-	 * en 4. la population issue de la population de comparaison qui n'a pas été appariée.
+	 * en 1. la population issue de la population de rÃ©fÃ©rence qui a Ã©tÃ© appariÃ©e,
+	 * en 2. la population issue de la population de comparaison qui a Ã©tÃ© appariÃ©e,
+	 * en 3. la population issue de la population de rÃ©fÃ©rence qui n'a pas Ã©tÃ© appariÃ©e,
+	 * en 4. la population issue de la population de comparaison qui n'a pas Ã©tÃ© appariÃ©e.
 	 * @param ensemble ensemble de liens issu d'un appariement
 	 * @param popRef
 	 * @param popComp
-	 * @return liste des populations appariées et non appariées
+	 * @return liste des populations appariÃ©es et non appariÃ©es
 	 */
 	public static List<Population<FT_Feature>> objetsApparies(EnsembleDeLiens ensemble, FT_FeatureCollection<FT_Feature> popRef, FT_FeatureCollection<FT_Feature> popComp){
 		List<Population<FT_Feature>> listPopulation = new ArrayList<Population<FT_Feature>>();
@@ -595,7 +586,7 @@ public class EnsembleDeLiens extends Population<Lien> {
 
 		List<Lien> liens = ensemble.getElements();
 		Iterator<Lien> itLiens = liens.iterator();
-		//ajout des éléments appariés dans les populations concernées
+		//ajout des Ã©lÃ©ments appariÃ©s dans les populations concernÃ©es
 		while (itLiens.hasNext()){
 			lien = itLiens.next();
 			List<FT_Feature> elementsComp = lien.getObjetsComp();
@@ -615,7 +606,7 @@ public class EnsembleDeLiens extends Population<Lien> {
 			}
 		}
 
-		//copie des populations comp et ref dans les populations non appariées
+		//copie des populations comp et ref dans les populations non appariÃ©es
 		//popCompNonAppariee.copiePopulation(popComp);
 		//popRefNonAppariee.copiePopulation(popRef);
 		popCompNonAppariee.setElements(popComp.getElements());
@@ -624,8 +615,8 @@ public class EnsembleDeLiens extends Population<Lien> {
 		Iterator<FT_Feature> itPopCompApp = popCompAppariee.getElements().iterator();
 		Iterator<FT_Feature> itPopRefApp = popRefAppariee.getElements().iterator();
 
-		//élimination dans les populations non appariées des éléments appariés contenus
-		//dans les populations appariés afin d'obtenir les complémentaires
+		//Ã©limination dans les populations non appariÃ©es des Ã©lÃ©ments appariÃ©s contenus
+		//dans les populations appariÃ©s afin d'obtenir les complÃ©mentaires
 		while (itPopCompApp.hasNext()){
 			FT_Feature elementAOter = itPopCompApp.next();
 			popCompNonAppariee.remove(elementAOter);
@@ -644,9 +635,9 @@ public class EnsembleDeLiens extends Population<Lien> {
 		return listPopulation;
 	}
 
-	/**  Methode utile principalement pour analyser les résultats d'un appariement,
-	 * qui découpe un réseau en plusieurs réseaux selon les valeurs de l'attribut
-	 * "resultatAppariement" des arcs et noeuds du réseau apparié.
+	/**  Methode utile principalement pour analyser les rÃ©sultats d'un appariement,
+	 * qui dÃ©coupe un rÃ©seau en plusieurs rÃ©seaux selon les valeurs de l'attribut
+	 * "resultatAppariement" des arcs et noeuds du rÃ©seau appariÃ©.
 	 */
 	public List<EnsembleDeLiens> scindeSelonValeursCommentaires(List<String> valeursClassement) {
 		List<EnsembleDeLiens> liensClasses = new ArrayList<EnsembleDeLiens>();

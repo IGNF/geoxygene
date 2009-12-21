@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -40,7 +40,7 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 
 /**
- * Noeud du reseau à apparier.
+ * Noeud du reseau Ã  apparier.
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
  * @version 1.0
@@ -52,33 +52,32 @@ public class NoeudApp extends Noeud {
 	/** Rayon maximal sur le tarrain de l'objet correpondant au noeud
 	 * (rayon de recherche pour l'appariement). */
 	private double taille = 0.0;
-	public double getTaille() {return taille;}
+	public double getTaille() {return this.taille;}
 	public void setTaille(double taille) {this.taille = taille;}
 
-	/** Evaluation du résultat de l'appariement sur la face. */
+	/** Evaluation du rÃ©sultat de l'appariement sur la face. */
 	private String resultatAppariement;
-	public String getResultatAppariement () {return resultatAppariement;}
-	public void setResultatAppariement (String resultat) {resultatAppariement = resultat;}
+	public String getResultatAppariement () {return this.resultatAppariement;}
+	public void setResultatAppariement (String resultat) {this.resultatAppariement = resultat;}
 
-	/** Liens qui référencent les objets auquel l'arc est apparié dans un autre réseau. */
+	/** Liens qui rÃ©fÃ©rencent les objets auquel l'arc est appariÃ© dans un autre rÃ©seau. */
 	private List<LienReseaux> liens = new ArrayList<LienReseaux>();
-	public List<LienReseaux> getLiens() {return liens;}
+	public List<LienReseaux> getLiens() {return this.liens;}
 	public void setLiens(List<LienReseaux> liens) { this.liens=liens; }
 	public void addLiens(LienReseaux liensReseaux) { this.liens.add(liensReseaux); }
-
 
 	////////////////////////////////////////////////////
 	// POUR MANIPULER LES LIENS
 	////////////////////////////////////////////////////
 
-	/** Renvoie les liens de l'objet qui appartiennent à la liste liensPertinents */
+	/** Renvoie les liens de l'objet qui appartiennent Ã  la liste liensPertinents */
 	public List<LienReseaux> getLiens(List<Lien> liensPertinents) {
 		List<LienReseaux> listeTmp = new ArrayList<LienReseaux>(this.getLiens());
 		listeTmp.retainAll(liensPertinents);
 		return listeTmp;
 	}
 
-	/** Renvoie les liens concernant l'objet et portant le nom passé en paramètre.
+	/** Renvoie les liens concernant l'objet et portant le nom passÃ© en paramÃ¨tre.
 	 *  NB: renvoie une liste vide (et non "Null") si il n'y a pas de tels liens. */
 	public List<LienReseaux> retrouveLiens(String nom) {
 		List<LienReseaux> liensReseaux = new ArrayList<LienReseaux>();
@@ -93,7 +92,7 @@ public class NoeudApp extends Noeud {
 		return liensReseaux;
 	}
 
-	/** Noeuds reliés à this par l'appariement passé en paramètre.
+	/** Noeuds reliÃ©s Ã  this par l'appariement passÃ© en paramÃ¨tre.
 	 * La liste contient des NoeudComp. */
 	public List<Noeud> noeudsCompEnCorrespondance(EnsembleDeLiens ensembleDeLiens) {
 		List<Noeud> noeuds = new ArrayList<Noeud>();
@@ -110,7 +109,7 @@ public class NoeudApp extends Noeud {
 		return noeuds;
 	}
 
-	/** Groupes reliés à this par l'appariement passé en paramètre
+	/** Groupes reliÃ©s Ã  this par l'appariement passÃ© en paramÃ¨tre
 	 * La liste contient des GroupeComp. */
 	public List<Groupe> groupesCompEnCorrespondance(EnsembleDeLiens ensembleDeLiens) {
 		List<Groupe> groupes = new ArrayList<Groupe>();
@@ -127,12 +126,11 @@ public class NoeudApp extends Noeud {
 		return groupes;
 	}
 
-
 	///////////////////////////////////////////////////
 	// DIVERS
 	///////////////////////////////////////////////////
 
-	/** Noeud d'un groupe le plus proche d'un noeud donné */
+	/** Noeud d'un groupe le plus proche d'un noeud donnÃ© */
 	public NoeudApp noeudLePlusProche(Groupe groupe) {
 		NoeudApp noeud, noeudLePlusProche;
 		Iterator<Noeud> itNoeuds = groupe.getListeNoeuds().iterator();
@@ -187,8 +185,8 @@ public class NoeudApp extends Noeud {
 		if (nbCorresp != arcsRef.size()) return 0;
 
 		// 2: est-ce que chaque arc ref a un correspondant pour lui tout seul ?
-		// NB: 1er filtrage pour gérer les cas faciles plus vite,
-		//     mais ne gère pas bien tous les cas
+		// NB: 1er filtrage pour gÃ©rer les cas faciles plus vite,
+		//     mais ne gÃ¨re pas bien tous les cas
 		Iterator itArcsRef = arcsRef.iterator();
 		Collection<Arc> arcsCompCandidats = new HashSet<Arc>();
 		while (itArcsRef.hasNext()) {
@@ -200,7 +198,7 @@ public class NoeudApp extends Noeud {
 
 		// 3 : plus fin : est-ce qu'on trouve bien des correspondances 1-1 ?
 
-		// On crée les listes d'arcs in et out (au sens de la circulation),
+		// On crÃ©e les listes d'arcs in et out (au sens de la circulation),
 		// en tournant autour des noeuds dans le bon sens.
 		inRef = new ArrayList<Arc>();
 		inComp = new ArrayList<Arc>();
@@ -240,7 +238,7 @@ public class NoeudApp extends Noeud {
 			}
 		}
 
-		// c'est la même chose en in et out ?
+		// c'est la mÃªme chose en in et out ?
 		if (inRef.size() == outRef.size() && inRef.size() == arcsRef.size() ) inOut = true;
 
 		//		// on double les liste pour pouvoir tourner comme on veut
@@ -251,16 +249,16 @@ public class NoeudApp extends Noeud {
 
 
 		// on teste si chaque arc entrant a au moins un correspondant,
-		// sans compter le même correspondant deux fois,
+		// sans compter le mÃªme correspondant deux fois,
 		// et en respectant le sens de rotation autour des noeuds
 		if (inRef.size() != 0 ) {
 			if (!correspondantsArcsClasses(inRef, inComp, 0, liensPreappArcs)) return 0;
 		}
 
-		// si tous les arcs sont entrants et sortant, on ne refait pas 2 fois la même chose
+		// si tous les arcs sont entrants et sortant, on ne refait pas 2 fois la mÃªme chose
 		if (inOut ) return 1;
 
-		//sinon, on refait la même chose sur les sortants
+		//sinon, on refait la mÃªme chose sur les sortants
 		if (outRef.size() != 0   ){
 			if (!correspondantsArcsClasses(outRef, outComp, 0, liensPreappArcs)) return 0;
 		}
@@ -295,7 +293,7 @@ public class NoeudApp extends Noeud {
 		if (nbCorresp == 0) return -1;
 		if (nbCorresp != arcsRef.size()) return 0;
 
-		// On crée les listes d'arcs in et out (au sens de la circulation),
+		// On crÃ©e les listes d'arcs in et out (au sens de la circulation),
 		// en tournant autour des noeuds dans le bon sens.
 		inRef = new ArrayList<Arc>();
 		inComp = new ArrayList<Arc>();
@@ -336,18 +334,18 @@ public class NoeudApp extends Noeud {
 			}
 		}
 
-		// c'est la même chose en in et out ?
+		// c'est la mÃªme chose en in et out ?
 		if (inRef.size() == outRef.size() && inRef.size() == arcsRef.size() ) inOut = true;
 
-		// on teste si chaque arc entrant a au moins un correspondant, sans compter le même correspondant deux fois
+		// on teste si chaque arc entrant a au moins un correspondant, sans compter le mÃªme correspondant deux fois
 		if (inRef.size() != 0 ) {
 			if ( !correspondantsArcsClasses(inRef, inComp, 0, liensPreappArcs) ) return 0;
 		}
 
-		// si tous les arcs sont entrants et sortant, on ne refait pas 2 fois la même chose
+		// si tous les arcs sont entrants et sortant, on ne refait pas 2 fois la mÃªme chose
 		if (inOut ) return 1;
 
-		//sinon, on refait la même chose sur les sortants
+		//sinon, on refait la mÃªme chose sur les sortants
 		if (outRef.size() != 0   ){
 			if ( !correspondantsArcsClasses(outRef, outComp, 0, liensPreappArcs) ) return 0;
 		}
@@ -355,8 +353,8 @@ public class NoeudApp extends Noeud {
 	}
 
 
-	/** Methode utile à correspCommunicants (pour les noeuds et les groupes)
-	 * Renvoie le nb d'éléments de ref ayant au moins un correspondant dans comp par liens
+	/** Methode utile Ã  correspCommunicants (pour les noeuds et les groupes)
+	 * Renvoie le nb d'Ã©lÃ©ments de ref ayant au moins un correspondant dans comp par liens
 	 */
 	private int nbArcsRefAvecCorrespondant(List<Arc> ref, List<Arc> comp, EnsembleDeLiens ensembleDeLiens) {
 		int nb = 0;
@@ -373,7 +371,7 @@ public class NoeudApp extends Noeud {
 	}
 
 
-	/** Methode utile à correspCommunicants (pour les noeuds et les groupes)
+	/** Methode utile Ã  correspCommunicants (pour les noeuds et les groupes)
 	 * renvoie OK quand tout est bon
 	 * @param ref : les arcs du noeud ref qui n'ont pas encore de correspondant
 	 * @param comp : les arcs du noeud comp qui n'ont pas encore de correspondant
@@ -386,19 +384,19 @@ public class NoeudApp extends Noeud {
 		List liensArcRef, arcsCompCandidats, compPourProchain;
 		boolean OK;
 
-		// si on n'a plus d'arc à traiter, c'est gagné
+		// si on n'a plus d'arc Ã  traiter, c'est gagnÃ©
 		if (rangRef == ref.size() ) return true;
 
 
 		arcRef = (ArcApp)ref.get(rangRef); // arc en cours de traitement
 
-		// on cherche les candidats à l'appariement de arcRef
+		// on cherche les candidats Ã  l'appariement de arcRef
 		liensArcRef = new ArrayList(arcRef.getLiens(ensembleDeLiens.getElements()));
 		arcsCompCandidats = new ArrayList();
 		for (int i=0; i<liensArcRef.size(); i++) arcsCompCandidats.addAll( ((LienReseaux)liensArcRef.get(i)).getArcs2() );
 		arcsCompCandidats.retainAll(comp);
 
-		// si la liste des candidats est vide, c'est foutu, il faut revenir en arrière
+		// si la liste des candidats est vide, c'est foutu, il faut revenir en arriï¿½re
 		if ( arcsCompCandidats.size() == 0 ) return false;
 
 		// on teste toutes les combinaisons de correspondance possibles
