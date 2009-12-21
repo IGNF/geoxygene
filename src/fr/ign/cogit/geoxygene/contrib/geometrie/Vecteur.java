@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -31,7 +31,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 /**
  * Classe pour le calcul avec des vecteurs (2D ou 3D).
- * Supporte la plupart des opérations classiques.
+ * Supporte la plupart des opÃ©rations classiques.
  * Les coordonnees des vecteurs sont stockees dans des DirectPosition.
  * Les vecteurs 2D ont NaN comme troisieme coordonnee.
  * 
@@ -39,7 +39,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
  * Coordinates are stored into DirectPosition. 2D vectors
  * are given Nan As third coordinate).
  * 
- * @author  Mustière/Bonin
+ * @author  Mustiï¿½re/Bonin
  * @version 1.0
  */
 
@@ -52,22 +52,22 @@ public class Vecteur {
 	public static final Vecteur vecteurNul2D = new Vecteur(new DirectPosition(0,0,Double.NaN));
 	public static final Vecteur vecteurNul3D = new Vecteur(new DirectPosition(0,0,0));
 
-	public Vecteur() { coord = new DirectPosition(); }
+	public Vecteur() { this.coord = new DirectPosition(); }
 
 	/** Initialise le vecteur 0 -> dp1 (a dp1) */
 	public Vecteur(DirectPosition dp1) {
-		coord = dp1;
+		this.coord = dp1;
 	}
 
 	/** Initialise le vecteur dp1 -> dp2 (a dp2-dp1) */
 	public Vecteur(DirectPosition dp1, DirectPosition dp2) {
 		if ( !Double.isNaN(dp1.getZ()) && !Double.isNaN(dp2.getZ()) ) {
-			coord = new DirectPosition (dp2.getX()-dp1.getX(),
+			this.coord = new DirectPosition (dp2.getX()-dp1.getX(),
 					dp2.getY()-dp1.getY(),
 					dp2.getZ()-dp1.getZ());
 		}
 		else {
-			coord = new DirectPosition (dp2.getX()-dp1.getX(),
+			this.coord = new DirectPosition (dp2.getX()-dp1.getX(),
 					dp2.getY()-dp1.getY(),
 					Double.NaN);
 		}
@@ -75,8 +75,8 @@ public class Vecteur {
 
 
 	public Vecteur(double a, double b, double c) {
-		if ( c != 0 ) coord = new DirectPosition (a, b, c);
-		else coord = new DirectPosition (a, b, Double.NaN);
+		if ( c != 0 ) this.coord = new DirectPosition (a, b, c);
+		else this.coord = new DirectPosition (a, b, Double.NaN);
 	}
 
 	public double getX() { return this.coord.getX(); }
@@ -92,7 +92,7 @@ public class Vecteur {
 		return Math.sqrt(Math.pow(this.getX(),2) + Math.pow(this.getY(),2));
 	}
 
-	/** Renvoie un NOUVEAU vecteur égal au vecteur normé porté par this */
+	/** Renvoie un NOUVEAU vecteur Ã©gal au vecteur normï¿½ portï¿½ par this */
 	public Vecteur vectNorme() {
 		double normev = this.norme();
 		if ( !Double.isNaN(this.getZ()) ) {
@@ -118,7 +118,7 @@ public class Vecteur {
 	}
 
 
-	/** Renvoie un NOUVEAU vecteur égal à (this + v1) */
+	/** Renvoie un NOUVEAU vecteur Ã©gal Ã  (this + v1) */
 	public Vecteur ajoute(Vecteur v1) {
 		if ( !Double.isNaN(this.getZ()) && !Double.isNaN(v1.getZ()) ) {
 			return new Vecteur(new DirectPosition(this.getX() + v1.getX(),
@@ -128,7 +128,7 @@ public class Vecteur {
 		return new Vecteur(new DirectPosition(this.getX() + v1.getX(), this.getY() + v1.getY(), Double.NaN));
 	}
 
-	/** Renvoie un NOUVEAU vecteur égal à (this - v1) */
+	/** Renvoie un NOUVEAU vecteur Ã©gal Ã  (this - v1) */
 	public Vecteur soustrait(Vecteur v1) {
 		if ( !Double.isNaN(this.getZ()) && !Double.isNaN(v1.getZ()) ) {
 			return new Vecteur(new DirectPosition(this.getX() - v1.getX(),
@@ -138,7 +138,7 @@ public class Vecteur {
 		return new Vecteur(new DirectPosition(this.getX() - v1.getX(), this.getY() - v1.getY(), Double.NaN));
 	}
 
-	/** Renvoie un NOUVEAU vecteur égal à (lambda.this) */
+	/** Renvoie un NOUVEAU vecteur Ã©gal Ã  (lambda.this) */
 	public Vecteur multConstante(double lambda) {
 		if ( !Double.isNaN(this.getZ()) ) {
 			return new Vecteur(new DirectPosition(lambda * this.getX(),
@@ -148,7 +148,7 @@ public class Vecteur {
 		return new Vecteur(new DirectPosition(lambda * this.getX(), lambda * this.getY(), Double.NaN));
 	}
 
-	/** Renvoie le point translaté de P par le vecteur this */
+	/** Renvoie le point translatï¿½ de P par le vecteur this */
 	public DirectPosition translate(DirectPosition P) {
 		DirectPosition P2 = new DirectPosition();
 		P2.setX(P.getX()+this.getX());
@@ -158,7 +158,7 @@ public class Vecteur {
 		return P2;
 	}
 
-	/** Renvoie la ligne translatée de L par le vecteur this */
+	/** Renvoie la ligne translatï¿½e de L par le vecteur this */
 	public GM_LineString translate(GM_LineString L) {
 		GM_LineString L2 = new GM_LineString();
 		for (int i=0;i<L.sizeControlPoint(); i++) {
@@ -170,7 +170,7 @@ public class Vecteur {
 
 	/** Renvoie le produit vectoriel this^v1 ;
 	 * NB: le produit vectoriel renvoie toujours un vecteur 3D,
-	 * même à partir de vecteurs 2D */
+	 * mÃªme Ã  partir de vecteurs 2D */
 	public Vecteur prodVectoriel(Vecteur v1) {
 		if ( !Double.isNaN(this.getZ()) && !Double.isNaN(v1.getZ()) ) {
 			return new Vecteur(new DirectPosition
@@ -192,7 +192,7 @@ public class Vecteur {
 		return (this.getX() * v1.getX() + this.getY() * v1.getY());
 	}
 
-	/** Angle entre l'axe des X et le vecteur this projeté sur le plan XY */
+	/** Angle entre l'axe des X et le vecteur this projetÃ© sur le plan XY */
 	public Angle direction() {
 		return new Angle(Math.atan2(this.getY(),this.getX()));
 	}

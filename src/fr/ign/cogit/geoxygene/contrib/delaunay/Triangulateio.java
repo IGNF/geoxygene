@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -36,7 +36,7 @@ package fr.ign.cogit.geoxygene.contrib.delaunay;
 public class Triangulateio {
 
 	//Constructeur
-	protected  Triangulateio() {};
+	protected  Triangulateio() {}
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -72,15 +72,15 @@ public class Triangulateio {
 	protected int numberofedges = 0;
 
 	protected void joutInit() {
-		pointlist = new double[2*numberofpoints];
-		edgelist = new int[2*numberofedges];
-		segmentlist = new int[2*numberofsegments];
-		trianglelist = new int[numberofcorners*numberoftriangles];
+		this.pointlist = new double[2*this.numberofpoints];
+		this.edgelist = new int[2*this.numberofedges];
+		this.segmentlist = new int[2*this.numberofsegments];
+		this.trianglelist = new int[this.numberofcorners*this.numberoftriangles];
 	}
 
 	protected void jvoroutInit() {
-		pointlist = new double[2*numberofpoints];
-		edgelist = new int[2*numberofedges];
-		normlist = new double[2*numberofedges];
+		this.pointlist = new double[2*this.numberofpoints];
+		this.edgelist = new int[2*this.numberofedges];
+		this.normlist = new double[2*this.numberofedges];
 	}
 }

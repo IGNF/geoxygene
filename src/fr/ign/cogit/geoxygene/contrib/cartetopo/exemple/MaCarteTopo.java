@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -30,19 +30,19 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.feature.Population;
 
 /**
- * Exemple de construction et d'utilisation d'une carte topo simple, héritée
- * du schéma générique de la cartetopo.
+ * Exemple de construction et d'utilisation d'une carte topo simple, hÃ©ritï¿½e
+ * du schÃ©ma gÃ©nÃ©rique de la cartetopo.
  * 
- * La carte topo en question est definie par heritage à partir des
+ * La carte topo en question est definie par heritage Ã  partir des
  * classes du package : MonNoeud, MonArc, MaFace, MaCarteTopo (on n'utilise
  * pas de groupes dans cet exemple).
  * 
- * La seule petite difficulté est d'indiquer dans le code que
- * MaCarteTopo est constitueé d'objets MonNoeud, MonArc et MaFace
- * plutôt que les génériques Noeud, Arc et Face. Cette opération doit
- * se faire par un constructeur spécial dans la classe MaCarteTopo.
+ * La seule petite difficultï¿½ est d'indiquer dans le code que
+ * MaCarteTopo est constitueï¿½ d'objets MonNoeud, MonArc et MaFace
+ * plutÃ´t que les gÃ©nÃ©riques Noeud, Arc et Face. Cette opÃ©ration doit
+ * se faire par un constructeur spÃ©cial dans la classe MaCarteTopo.
  * 
- * NB: il est bien entendu possible d'uiliser une cartetopo par défaut si
+ * NB: il est bien entendu possible d'uiliser une cartetopo par dÃ©faut si
  * la surcharge des classes arcs, noeuds et faces n'est pas necessaire
  * dans l'application.
  * 
@@ -52,15 +52,15 @@ import fr.ign.cogit.geoxygene.feature.Population;
 public class MaCarteTopo extends CarteTopo {
 
 	/** Constructeur d'une carte topo non persistante.
-	 *  Le nom logique peut ête utilisé si la carte topo apparient à un DataSet,
-	 *  il peut être une chaîne vide sinon.
+	 *  Le nom logique peut ï¿½te utilisÃ© si la carte topo apparient Ã  un DataSet,
+	 *  il peut Ãªtre une chaÃ®ne vide sinon.
 	 * 
 	 *  Par ce constructeur, la carte topo contient des arcs/noeuds/faces/groupes
 	 *  des classes CarteTopo.Arc, CarteTopo.Noeud, CarteTopo.Face, CarteTopo.Groupe.
 	 * @param nom_logique nom de la carte topo
 	 */
 	public MaCarteTopo(String nom_logique) {
-		this.ojbConcreteClass = this.getClass().getName(); // nécessaire pour ojb
+		this.ojbConcreteClass = this.getClass().getName(); // nÃ©cessaire pour ojb
 		this.setNom(nom_logique);
 		this.setPersistant(false);
 

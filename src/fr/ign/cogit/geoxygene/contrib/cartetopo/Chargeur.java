@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -43,8 +43,8 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 
 /**
- * Chargeur permettant de créer une carte topo à partir de classes de "FT_Feature"
- * @author Sébastien Mustière
+ * Chargeur permettant de crÃ©er une carte topo Ã  partir de classes de "FT_Feature"
+ * @author SÃ©bastien MustiÃ¨re
  * @author Olivier Bonin
  * @author Julien Perret
  */
@@ -52,8 +52,8 @@ import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 public class Chargeur {
 	static Logger logger=Logger.getLogger(Chargeur.class.getName());
 
-	/** Charge en mémoire les élements de la classe 'nomClasseGeo'
-	 * et remplit la carte topo 'carte' avec des correspondants de ces éléments.
+	/** Charge en mï¿½moire les Ã©lÃ©ments de la classe 'nomClasseGeo'
+	 * et remplit la carte topo 'carte' avec des correspondants de ces Ã©lÃ©ments.
 	 */
 	public static void importClasseGeo(String nomClasseGeo, CarteTopo carte) {
 		Class<?> clGeo;
@@ -61,7 +61,7 @@ public class Chargeur {
 		try {
 			clGeo = Class.forName(nomClasseGeo);
 		} catch (Exception e) {
-			logger.warn("ATTENTION : La classe nommée "+nomClasseGeo+ " n'existe pas");
+			logger.warn("ATTENTION : La classe nommï¿½e "+nomClasseGeo+ " n'existe pas");
 			logger.warn("            Impossible donc de l'importer");
 			e.printStackTrace();
 			return;
@@ -71,43 +71,43 @@ public class Chargeur {
 		importClasseGeo(listeFeatures,carte);
 	}
 
-	/** Remplit la carte topo 'carte' avec des correspondants des éléments de 'listeFeature'.
-	 * @param listeFeatures éléménts
+	/** Remplit la carte topo 'carte' avec des correspondants des Ã©lÃ©ments de 'listeFeature'.
+	 * @param listeFeatures ï¿½lï¿½mï¿½nts
 	 * @param carte carte topo
 	 */
 	public static void importClasseGeo(FT_FeatureCollection<?> listeFeatures, CarteTopo carte) {
 		importClasseGeo(listeFeatures, carte, false);
 	}
 
-	/** Remplit la carte topo 'carte' avec des correspondants des éléments de 'listeFeature'.
-	 * @param listeFeatures éléments
+	/** Remplit la carte topo 'carte' avec des correspondants des Ã©lÃ©ments de 'listeFeature'.
+	 * @param listeFeatures Ã©lÃ©ments
 	 * @param carte carte topo
-	 * @param convert2d si vrai, alors convertir les géométries en 2d
+	 * @param convert2d si vrai, alors convertir les gÃ©omÃ©tries en 2d
 	 */
 	public static void importClasseGeo(FT_FeatureCollection<?> listeFeatures, CarteTopo carte, boolean convert2d) {
-		if(listeFeatures.isEmpty()) {logger.warn("Rien n'a été importé : la liste de features est vide");return;}
+		if(listeFeatures.isEmpty()) {logger.warn("Rien n'a Ã©tÃ© importï¿½ : la liste de features est vide");return;}
 		if (listeFeatures.get(0).getGeom() instanceof GM_Point) {
 			int nbElements = importClasseGeo(listeFeatures,carte.getPopNoeuds(),convert2d);
-			if(logger.isDebugEnabled()) logger.debug("Nb de noeuds importés : "+nbElements);
+			if(logger.isDebugEnabled()) logger.debug("Nb de noeuds importï¿½s : "+nbElements);
 			return;
 		}
 		if ( (listeFeatures.get(0).getGeom() instanceof GM_LineString)  || (listeFeatures.get(0).getGeom() instanceof GM_MultiCurve<?>) ) {
 			int nbElements = importClasseGeo(listeFeatures,carte.getPopArcs(),convert2d);
-			if(logger.isDebugEnabled()) logger.debug("Nb d'arcs importés    : "+nbElements);
+			if(logger.isDebugEnabled()) logger.debug("Nb d'arcs importï¿½s    : "+nbElements);
 			return;
 		}
 		if ( (listeFeatures.get(0).getGeom() instanceof GM_Polygon) || (listeFeatures.get(0).getGeom() instanceof GM_MultiSurface<?>) ) {
 			int nbElements = importClasseGeo(listeFeatures,carte.getPopFaces(),convert2d);
-			if(logger.isDebugEnabled()) logger.debug("Nb de faces importées : "+nbElements);
+			if(logger.isDebugEnabled()) logger.debug("Nb de faces importï¿½es : "+nbElements);
 			return;
 		}
-		logger.warn("Attention: rien n'a été importé. Features non gérés dont la géométrie est de type "+listeFeatures.get(0).getClass().getName());
+		logger.warn("Attention: rien n'a Ã©tÃ© importï¿½. Features non gÃ©rÃ©s dont la gÃ©omÃ©trie est de type "+listeFeatures.get(0).getClass().getName());
 	}
 
-	/** Remplit la carte topo 'carte' avec des correspondants des éléments de 'listeFeature'.
-	 * @param listeFeatures éléments
+	/** Remplit la carte topo 'carte' avec des correspondants des Ã©lÃ©ments de 'listeFeature'.
+	 * @param listeFeatures Ã©lÃ©ments
 	 * @param population the population to import
-	 * @param convert2d si vrai, alors convertir les géométries en 2d
+	 * @param convert2d si vrai, alors convertir les gÃ©omÃ©tries en 2d
 	 */
 	@SuppressWarnings("unchecked")
 	private static int importClasseGeo(FT_FeatureCollection<?> listeFeatures, Population<?> population, boolean convert2d) {
@@ -129,10 +129,10 @@ public class Chargeur {
 	}
 
 	/**
-	 * Crée un élément de la carte topo comme correspondant de l'objet feature et la géométrie geom.
-	 * @param geom géométrie du nouvel élément
-	 * @param population population à laquelle ajout le nouvel élément
-	 * @param convert2d si vrai alors la géométrie du nouvel élément est convertie en 2d 
+	 * crÃ©e un Ã©lÃ©ment de la carte topo comme correspondant de l'objet feature et la gÃ©omÃ©trie geom.
+	 * @param geom gÃ©omÃ©trie du nouvel Ã©lÃ©ment
+	 * @param population population Ã  laquelle ajout le nouvel Ã©lÃ©ment
+	 * @param convert2d si vrai alors la gÃ©omÃ©trie du nouvel Ã©lÃ©ment est convertie en 2d 
 	 */
 	private static void creeElement(FT_Feature feature, GM_Object geom, Population<?> population, boolean convert2d) {
 		FT_Feature nouvelElement;

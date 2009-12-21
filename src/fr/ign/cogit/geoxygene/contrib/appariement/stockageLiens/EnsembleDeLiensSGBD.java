@@ -62,62 +62,61 @@ public class EnsembleDeLiensSGBD extends Population {
 	/** Nom du l'ensemble des liens d'appariement  (ex: "Appariement des routes par la méthode XX")*/
 	private String nom ;
 	@Override
-	public String getNom() {return nom;}
+	public String getNom() {return this.nom;}
 	@Override
 	public void setNom(String nom) {this.nom = nom;}
 
 	/** Description textuelle des paramètres utilisés pour l'appariement */
 	private String parametrage ;
-	public String getParametrage() {return parametrage;}
+	public String getParametrage() {return this.parametrage;}
 	public void setParametrage(String parametrage) {this.parametrage = parametrage;}
 
 	/** Description textuelle du résultat de l'auto-évaluation des liens */
 	private String evaluationInterne ;
-	public String getEvaluationInterne() {return evaluationInterne;}
-	public void setEvaluationInterne(String evaluation) {evaluationInterne = evaluation;}
+	public String getEvaluationInterne() {return this.evaluationInterne;}
+	public void setEvaluationInterne(String evaluation) {this.evaluationInterne = evaluation;}
 
 	/** Description textuelle du résultat de l'évaluation globale des liens */
 	private String evaluationGlobale ;
-	public String getEvaluationGlobale() {return evaluationGlobale;}
-	public void setEvaluationGlobale(String evaluation) {evaluationGlobale = evaluation;}
+	public String getEvaluationGlobale() {return this.evaluationGlobale;}
+	public void setEvaluationGlobale(String evaluation) {this.evaluationGlobale = evaluation;}
 
 
 	/** Liste des populations auxquelles les objets ref et comp des liens sont attach�s
 	 * sous forme de string*/
 	private String populations ;
-	public String getPopulations() {return populations;}
+	public String getPopulations() {return this.populations;}
 	public void setPopulations(String populations) {this.populations = populations;}
 
 	/** Liste aidant à instancier la variable populations*/
 	private HashSet<String> listePop;
-	public HashSet<String> getListePop() {return listePop;}
+	public HashSet<String> getListePop() {return this.listePop;}
 	public void setListePop(HashSet<String> listePop) {this.listePop = listePop;}
 
 	/** Liste des populations r�elles*/
 	private List<Population> listePopulations;
-	public List<Population> getListePopulations() {return listePopulations;}
+	public List<Population> getListePopulations() {return this.listePopulations;}
 	public void setListePopulations(List<Population> listePopulations) {this.listePopulations = listePopulations;}
 
 	/** Date de l'enregistrement*/
 	private String date;
-	public String getDate() {return date;}
+	public String getDate() {return this.date;}
 	public void setDate(String date) {this.date = date;}
 
 	/**Couleur du lien : rouge */
 	private int rouge;
-	public int getRouge() { return rouge; }
+	public int getRouge() { return this.rouge; }
 	public void setRouge(int rouge) { this.rouge = rouge; }
 
 	/**Couleur du lien : vert */
 	private int vert;
-	public int getVert() { return vert; }
+	public int getVert() { return this.vert; }
 	public void setVert(int vert) { this.vert = vert; }
 
 	/**Couleur du lien : bleu */
 	private int bleu;
-	public int getBleu() { return bleu; }
+	public int getBleu() { return this.bleu; }
 	public void setBleu(int bleu) { this.bleu = bleu; }
-
 
 	//////////////////////////////////////////////////////////////////////////
 	//  relation     BIDIRECTIONNELLE     1-n     ////////////////////////
@@ -138,12 +137,12 @@ public class EnsembleDeLiensSGBD extends Population {
 	 */
 	private List<LienSGBD> liensSGBD = this.getElements();
 
-	/** R�cup�re la liste des objets en relation. */
-	public List<LienSGBD> getLiensSGBD() {return liensSGBD ; }
+	/** Récupère la liste des objets en relation. */
+	public List<LienSGBD> getLiensSGBD() {return this.liensSGBD ; }
 
 	/** définit la liste des objets en relation, et met à jour la relation inverse. */
 	public void setLiensSGBD (List<LienSGBD> L) {
-		List old = new ArrayList(liensSGBD);
+		List old = new ArrayList(this.liensSGBD);
 		Iterator it1 = old.iterator();
 		while ( it1.hasNext() ) {
 			LienSGBD lien = (LienSGBD)it1.next();
@@ -156,26 +155,26 @@ public class EnsembleDeLiensSGBD extends Population {
 		}
 	}
 
-	/** R�cup�re le i�me élément de la liste des objets en relation. */
-	public LienSGBD getLienSGBD(int i) {return liensSGBD.get(i) ; }
+	/** Récupère le ième élément de la liste des objets en relation. */
+	public LienSGBD getLienSGBD(int i) {return this.liensSGBD.get(i) ; }
 
 	/** Ajoute un objet à la liste des objets en relation, et met à jour la relation inverse. */
 	public void addLienSGBD (LienSGBD lien) {
 		if ( lien == null ) return;
-		liensSGBD.add(lien) ;
+		this.liensSGBD.add(lien) ;
 		lien.setEnsembleLiensSGBD(this) ;
 	}
 
 	/** enlève un élément de la liste des objets en relation, et met à jour la relation inverse. */
 	public void removeLienSGBD(LienSGBD lien) {
 		if ( lien == null ) return;
-		liensSGBD.remove(lien) ;
+		this.liensSGBD.remove(lien) ;
 		lien.setEnsembleLiensSGBD(null);
 	}
 
 	/** Vide la liste des objets en relation, et met à jour la relation inverse. */
 	public void emptyLiensSGBD () {
-		List old = new ArrayList(liensSGBD);
+		List old = new ArrayList(this.liensSGBD);
 		Iterator it = old.iterator();
 		while ( it.hasNext() ) {
 			LienSGBD lien = (LienSGBD)it.next();
@@ -202,21 +201,21 @@ public class EnsembleDeLiensSGBD extends Population {
 	 * de liens SGBD */
 	public EnsembleDeLiensSGBD conversionEnsembleLiensVersSGBD(EnsembleDeLiens ensemble, int rouge, int vert, int bleu){
 		//nom
-		if (ensemble.getNom()==null || ensemble.getNom().length()==0)this.setNom("Non renseign�");
+		if (ensemble.getNom()==null || ensemble.getNom().length()==0)this.setNom("Non renseigné");
 		else this.setNom(ensemble.getNom());
 
 		//parametrage
 		if (ensemble.getParametrage()==null || ensemble.getParametrage().length()==0){
-			this.setParametrage("Non renseign�");
+			this.setParametrage("Non renseigné");
 		}
 		else this.setParametrage(ensemble.getParametrage());
 
 		//evaluationInterne
-		if (ensemble.getEvaluationInterne()==null || ensemble.getEvaluationInterne().length()==0)this.setEvaluationInterne("Non renseign�");
+		if (ensemble.getEvaluationInterne()==null || ensemble.getEvaluationInterne().length()==0)this.setEvaluationInterne("Non renseigné");
 		else this.setEvaluationInterne(ensemble.getEvaluationInterne());
 
 		//evaluationGlobale
-		if (ensemble.getEvaluationGlobale()==null || ensemble.getEvaluationGlobale().length()==0)this.setEvaluationGlobale("Non renseign�");
+		if (ensemble.getEvaluationGlobale()==null || ensemble.getEvaluationGlobale().length()==0)this.setEvaluationGlobale("Non renseigné");
 		else this.setEvaluationGlobale(ensemble.getEvaluationGlobale());
 
 		//date
@@ -236,7 +235,7 @@ public class EnsembleDeLiensSGBD extends Population {
 			lienSGBD.conversionLiensVersSGBD((Lien)it.next());
 		}
 
-		Iterator<String> itPop = listePop.iterator();
+		Iterator<String> itPop = this.listePop.iterator();
 		String pop = "";
 		while(itPop.hasNext()){
 			pop = pop.concat(itPop.next()+"|");
@@ -276,7 +275,7 @@ public class EnsembleDeLiensSGBD extends Population {
 			}
 			catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("ATTENTION: la classe "+pop+" stock�e dans LIENS ne semble plus exist�e");
+				System.out.println("ATTENTION: la classe "+pop+" stockée dans LIENS ne semble plus exist�e");
 				System.out.println("RESOLUTION: recréer cette classe ou refaire un appariement pour un stockage adapté de vos liens");
 			}
 		}

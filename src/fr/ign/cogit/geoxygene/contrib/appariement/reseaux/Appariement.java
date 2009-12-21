@@ -133,7 +133,7 @@ public abstract class Appariement {
 
 		// Pre-matching using edges
 		// préappariement d'arcs à arcs
-		if (liensPreAppNN.size() != 0 ) {// nothing to do if there is no node. Il est inutile de pre-appariéer les arcs si rien n'a été trouv� sur les noeuds
+		if (liensPreAppNN.size() != 0 ) {// nothing to do if there is no node. Il est inutile de pre-appariéer les arcs si rien n'a été trouvé sur les noeuds
 			// Preappariement des arcs entre eux (bas� principalement sur Hausdorf)
 			if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.EdgePrematching")+(new Time(System.currentTimeMillis())).toString()); //$NON-NLS-1$
 			liensPreAppAA = preAppariementArcArc(reseau1, reseau2, param);
@@ -365,8 +365,8 @@ public abstract class Appariement {
 	/** Appariement des Noeuds du reseau 1 avec les arcs et noeuds du reseau 1,
 	 *  comme propos� dans [Devogèle 97] + modif au filtrage Seb
 	 *  On crée les liens qui vont bien si le noeud est apparié.
-	 *  Une évaluation de l'appariement est stock�e sur les liens (note de 0, 0.5 ou 1)
-	 *  Une explication plus d�taill�e du résultat est stock�e sur les noeuds ref et comp.
+	 *  Une évaluation de l'appariement est stockée sur les liens (note de 0, 0.5 ou 1)
+	 *  Une explication plus d�taill�e du résultat est stockée sur les noeuds ref et comp.
 	 */
 	@SuppressWarnings("unchecked")
 	public static EnsembleDeLiens appariementNoeuds(
@@ -582,7 +582,7 @@ public abstract class Appariement {
 			//   - complet si on trouve une correspondance entre tous les incidents des noeuds ref et comp,
 			//   - incomplet si on trouve une correspondance entre certains incidents
 			//   - impossible si on ne trouve aucune correspondance
-			// NB: methode strictement similaire à ce qui �tait réalis� sur les noeuds
+			// NB: methode strictement similaire à ce qui était réalis� sur les noeuds
 			complets = new ArrayList<ElementCarteTopo>();
 			incomplets = new ArrayList<ElementCarteTopo>();
 
@@ -594,7 +594,7 @@ public abstract class Appariement {
 			}
 
 			///////////////////////////////////////////////////////////////////////////////
-			// On a trouv� un unique groupe complet
+			// On a trouvé un unique groupe complet
 			// C'est un appariement que l'on juge s�r
 			if ( complets.size() == 1 ) {
 				// vidage des groupes rejet�s, pour faire propre
@@ -716,7 +716,7 @@ public abstract class Appariement {
 			}
 
 			///////////////////////////////////////////////////////////////////////////////
-			// On a trouv� un unique groupe incomplet
+			// On a trouvé un unique groupe incomplet
 			// C'est un appariement que l'on accepte mais qu'on l'on juge incertain
 			if ( incomplets.size() == 1 ) {
 				groupeComp = (GroupeApp)incomplets.get(0);
@@ -764,8 +764,8 @@ public abstract class Appariement {
 			}
 
 			///////////////////////////////////////////////////////////////////////////////
-			// On a trouv� plusieurs groupes incomplets
-			// C'est un appariement que l'on accepte peut-�tre mais que l'on sait incoh�rent
+			// On a trouvé plusieurs groupes incomplets
+			// C'est un appariement que l'on accepte peut-être mais que l'on sait incoh�rent
 			if ( incomplets.size() > 1 ) {
 				incomplets2 = new ArrayList<ElementCarteTopo>();
 				for (j=0; j<incomplets.size(); j++) {
@@ -1059,7 +1059,7 @@ public abstract class Appariement {
 
 			///////// ETUDE DES EXTREMITES DE L'ARC /////////
 
-			// Probl�me de topologie ?
+			// problème de topologie ?
 			if ( (arcRef.getNoeudIni() == null) || (arcRef.getNoeudFin() == null) ) {
 				// Cas 1 : l'arc n'a pas de noeud à une de ses extrémités
 				arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedEdgeMissingANode")); //$NON-NLS-1$
@@ -1122,7 +1122,7 @@ public abstract class Appariement {
 
 			///////// ANALYSE DES PLUS COURTS CHEMINS /////////
 
-			// cas 3 : on n'a trouv� aucun plus court chemin, dans aucun sens
+			// cas 3 : on n'a trouvé aucun plus court chemin, dans aucun sens
 			if ( (pccMin1 == null) && (pccMin2 == null) ) {
 				arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UnmatchedNoShortestPath")); //$NON-NLS-1$
 				nbSansHomologuePbPCC++;
@@ -1130,13 +1130,13 @@ public abstract class Appariement {
 				continue;
 			}
 
-			// cas 4 : on a trouv� un pcc dans un seul sens: celui direct
+			// cas 4 : on a trouvé un pcc dans un seul sens: celui direct
 			if (pccMin1 == null) {
 				lien = (LienReseaux)liensArcsArcs.nouvelElement();
 				lien.addArcs1(arcRef);
 				arcRef.addLiens(lien);
 				if ( pccMin2.getListeArcs().size() == 0 ) {
-					// cas 4a : on a trouv� un pcc mais il est r�duit à un point
+					// cas 4a : on a trouvé un pcc mais il est r�duit à un point
 					noeudComp = (NoeudApp)pccMin2.getListeNoeuds().get(0);
 					lien.addNoeuds2(noeudComp);
 					lien.setEvaluation(0.5);
@@ -1152,7 +1152,7 @@ public abstract class Appariement {
 				lien.addGroupes2(pccMin2);
 				pccMin2.addLiens(lien);
 				if ( arcRef.getOrientation() == -1 ) {
-					// cas 4b : on a trouv� un pcc dans un seul sens, et c'est normal
+					// cas 4b : on a trouvé un pcc dans un seul sens, et c'est normal
 					lien.setEvaluation(1);
 					arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithAnEdgeOrASuccessionOfEdges")); //$NON-NLS-1$
 					pccMin2.setResultatAppariementGlobal(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithARefEdge")); //$NON-NLS-1$
@@ -1160,7 +1160,7 @@ public abstract class Appariement {
 					longOkUneSerie= longOkUneSerie+arcRef.longueur();
 				}
 				else {
-					// cas 4c : on a trouv� un pcc dans un seul sens, mais ce n'est pas normal
+					// cas 4c : on a trouvé un pcc dans un seul sens, mais ce n'est pas normal
 					lien.setEvaluation(0.5);
 					arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedOnlyOneWay")); //$NON-NLS-1$
 					pccMin2.setResultatAppariementGlobal(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedOnlyOneWay")); //$NON-NLS-1$
@@ -1170,13 +1170,13 @@ public abstract class Appariement {
 				continue;
 			}
 
-			// cas 4 : on a trouv� un pcc dans un seul sens: celui indirect
+			// cas 4 : on a trouvé un pcc dans un seul sens: celui indirect
 			if (pccMin2 == null) {
 				lien = (LienReseaux)liensArcsArcs.nouvelElement();
 				lien.addArcs1(arcRef);
 				arcRef.addLiens(lien);
 				if ( pccMin1.getListeArcs().size() == 0 ) {
-					// cas 4a : on a trouv� un pcc mais il est r�duit à un point
+					// cas 4a : on a trouvé un pcc mais il est r�duit à un point
 					noeudComp = (NoeudApp)pccMin1.getListeNoeuds().get(0);
 					lien.addNoeuds2(noeudComp);
 					lien.setEvaluation(0.5);
@@ -1193,7 +1193,7 @@ public abstract class Appariement {
 				pccMin1.addLiens(lien);
 				// pour noter le résultat sur les objets concernés
 				if ( arcRef.getOrientation() == 1 ) {
-					// cas 4a : on a trouv� un pcc dans un seul sens, et c'est normal
+					// cas 4a : on a trouvé un pcc dans un seul sens, et c'est normal
 					lien.setEvaluation(1);
 					arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithAnEdgeOrASuccessionOfEdges")); //$NON-NLS-1$
 					pccMin1.setResultatAppariementGlobal(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithARedEdge")); //$NON-NLS-1$
@@ -1201,7 +1201,7 @@ public abstract class Appariement {
 					longOkUneSerie= longOkUneSerie+arcRef.longueur();
 				}
 				else {
-					// cas 4b : on a trouv� un pcc dans un seul sens, mais ce n'est pas normal
+					// cas 4b : on a trouvé un pcc dans un seul sens, mais ce n'est pas normal
 					lien.setEvaluation(0.5);
 					arcRef.setResultatAppariement(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedOnlyOneWay")); //$NON-NLS-1$
 					pccMin1.setResultatAppariementGlobal(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.UncertainMatchedOnlyOneWay")); //$NON-NLS-1$
@@ -1211,14 +1211,14 @@ public abstract class Appariement {
 				continue;
 			}
 
-			// cas 5 : on a trouv� un pcc dans les 2 sens, et c'est le même
+			// cas 5 : on a trouvé un pcc dans les 2 sens, et c'est le même
 			if ( pccMin1.contientMemesArcs(pccMin2) ) {
 				pccMin2.videEtDetache();
 				lien = (LienReseaux)liensArcsArcs.nouvelElement();
 				lien.addArcs1(arcRef);
 				arcRef.addLiens(lien);
 				if ( pccMin1.getListeArcs().size() == 0 ) {
-					// cas 5a : on a trouv� un pcc mais il est r�duit à un point
+					// cas 5a : on a trouvé un pcc mais il est r�duit à un point
 					noeudComp = (NoeudApp)pccMin1.getListeNoeuds().get(0);
 					lien.addNoeuds2(noeudComp);
 					lien.setEvaluation(0.5);
@@ -1231,7 +1231,7 @@ public abstract class Appariement {
 					continue;
 				}
 				pccMin1.enleveExtremites();
-				// cas 5b : on a trouv� un pcc dans les 2 sens, non r�duit à un point
+				// cas 5b : on a trouvé un pcc dans les 2 sens, non r�duit à un point
 				lien.addGroupes2(pccMin1);
 				lien.setEvaluation(1);
 				pccMin1.addLiens(lien);
@@ -1242,13 +1242,13 @@ public abstract class Appariement {
 				continue;
 			}
 
-			// cas 6 : on a trouv� un pcc dans les 2 sens, mais ce n'est pas le même
+			// cas 6 : on a trouvé un pcc dans les 2 sens, mais ce n'est pas le même
 			//			cas d'arcs en parral�le
 			lien = (LienReseaux)liensArcsArcs.nouvelElement();
 			lien.addArcs1(arcRef);
 			arcRef.addLiens(lien);
 			if ( pccMin1.getListeArcs().size() == 0 ) {
-				// cas 6a : on a trouv� un pcc mais il est r�duit à un point
+				// cas 6a : on a trouvé un pcc mais il est r�duit à un point
 				noeudComp = (NoeudApp)pccMin1.getListeNoeuds().get(0);
 				lien.addNoeuds2(noeudComp);
 				lien.setEvaluation(0.5);
@@ -1258,7 +1258,7 @@ public abstract class Appariement {
 				pccMin1.videEtDetache();
 			}
 			else {
-				// cas 6b : on a trouv� un pcc non r�duit à un point
+				// cas 6b : on a trouvé un pcc non r�duit à un point
 				pccMin1.enleveExtremites();
 				lien.setEvaluation(1);
 				lien.addGroupes2(pccMin1);
@@ -1267,7 +1267,7 @@ public abstract class Appariement {
 				pccMin1.setResultatAppariementGlobal(I18N.getString("fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Appariement.MatchedWithAnEdge")); //$NON-NLS-1$
 			}
 			if ( pccMin2.getListeArcs().size() == 0 ) {
-				// cas 6a : on a trouv� un pcc mais il est r�duit à un point
+				// cas 6a : on a trouvé un pcc mais il est r�duit à un point
 				noeudComp = (NoeudApp)pccMin2.getListeNoeuds().get(0);
 				lien.addNoeuds2(noeudComp);
 				lien.setEvaluation(0.5);
@@ -1279,7 +1279,7 @@ public abstract class Appariement {
 				longDouteuxPbNoeud= longDouteuxPbNoeud+arcRef.longueur();
 			}
 			else {
-				// cas 6b : on a trouv� un pcc non r�duit à un point
+				// cas 6b : on a trouvé un pcc non r�duit à un point
 				pccMin2.enleveExtremites();
 				lien.addGroupes2(pccMin2);
 				pccMin2.addLiens(lien);
@@ -1354,7 +1354,7 @@ public abstract class Appariement {
 		itArcs = reseau2.getPopArcs().getElements().iterator();
 		while (itArcs.hasNext()) {
 			arcComp = (ArcApp) itArcs.next();
-			// On r�cup�re tous les liens concernés par l'arc
+			// On Récupère tous les liens concernés par l'arc
 			liensObjet = new ArrayList<LienReseaux>();
 			liensObjet.addAll(arcComp.getLiens(liens.getElements()));
 			itGroupes = arcComp.getListeGroupes().iterator();
@@ -1470,7 +1470,7 @@ public abstract class Appariement {
 		itNoeuds = reseau2.getPopNoeuds().getElements().iterator();
 		while (itNoeuds.hasNext()) {
 			NoeudApp noeud = (NoeudApp) itNoeuds.next();
-			//on r�cup�re tous les liens concernés par le noeud
+			//on Récupère tous les liens concernés par le noeud
 			liensObjet = new ArrayList<LienReseaux>();
 			liensObjet.addAll(noeud.getLiens());
 			itGroupes = noeud.getListeGroupes().iterator();
@@ -1592,7 +1592,7 @@ public abstract class Appariement {
 	}
 
 	/** Les noeuds de référence non appariés par les 'liens' sont projetés sur le réseau comp
-	 * de mani�re à introduire un noeud dans le res�au Comp aux endroits qui pourraient correspondre
+	 * de manière à introduire un noeud dans le res�au Comp aux endroits qui pourraient correspondre
 	 * à ces noeuds Ref non appariés.
 	 */
 	public static void decoupeNoeudsNonApparies(ReseauApp ref, ReseauApp comp, EnsembleDeLiens liens,  ParametresApp param) {
@@ -1606,7 +1606,7 @@ public abstract class Appariement {
 		comp.projete(noeudsNonApparies, param.varianteRedecoupageNoeudsNonApparies_DistanceNoeudArc, param.varianteRedecoupageNoeudsNonApparies_DistanceProjectionNoeud);
 	}
 
-	/** découpe les arcs du reseau1 'reseauADecouper' non appariés par les 'liens' de mani�re
+	/** découpe les arcs du reseau1 'reseauADecouper' non appariés par les 'liens' de manière
 	 *  à introduire un noeud dans le res�auADecouper aux endroits où il s'�loigne du réseau2 'reseauDecoupant'.
 	 * 
 	 *  Remarque: utilisé pour les GR par exemple pour traiter le cas des GR hors sentier.
@@ -1661,7 +1661,7 @@ public abstract class Appariement {
 					distancePtCourantVersArcADecoupe = Distances.distance(ptCourantArcDecoupant, arcADecouper.getGeometrie()) ;
 					if (proche) {
 						if ( distancePtCourantVersArcADecoupe >  distanceMaxNoeudArc) {
-							// on �tait proche et on s'�loigne à partir de ce point
+							// on était proche et on s'�loigne à partir de ce point
 							// --> on rajoute deux points de découpage, entourant la partie proche,
 							proche = false;
 							//ptDecoupage = Operateurs.projection(arcDecoupant.getGeometrie().getControlPoint(indiceDernierPtProche), arcADecouper.getGeometrie());
@@ -1671,13 +1671,13 @@ public abstract class Appariement {
 							continue;
 						}
 						else {
-							// on �tait proche et on le reste: on continue à parcourir l'arc découpant
+							// on était proche et on le reste: on continue à parcourir l'arc découpant
 							continue;
 						}
 					}
 					else {
 						if ( distancePtCourantVersArcADecoupe <= distanceMaxNoeudArc) {
-							// on �tait �loign� et on rentre dans une zone proche: intialisation des compteurs
+							// on était �loign� et on rentre dans une zone proche: intialisation des compteurs
 							proche = true;
 							indiceDernierPtProche = i;
 							ptDecoupage = Operateurs.projection(lineStringDecoupant.getControlPoint(indiceDernierPtProche), arcADecouper.getGeometrie());
@@ -1685,7 +1685,7 @@ public abstract class Appariement {
 							continue;
 						}
 						else {
-							// on �tait �loign� et on le reste: on continue à parcourir l'arc découpant
+							// on était �loign� et on le reste: on continue à parcourir l'arc découpant
 							continue;
 						}
 					}

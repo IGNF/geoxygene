@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -35,11 +35,11 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
- * Méthodes statiques de calcul d'indices de forme (de lignes et de surfaces).
+ * mÃ©thodes statiques de calcul d'indices de forme (de lignes et de surfaces).
  * 
  * English : Measures of shapes
  * 
- * @author  Mustière/Sheeren/Grosso
+ * @author  Mustiï¿½re/Sheeren/Grosso
  */
 
 public abstract class IndicesForme {
@@ -48,11 +48,11 @@ public abstract class IndicesForme {
 	// INDICES SUR DES SURFACES
 	//////////////////////////////////////////
 
-	/** Indice de circularité de Miller (pour des surfaces)
+	/** Indice de circularitï¿½ de Miller (pour des surfaces)
 	 * Valeur entre 0 et 1.
 	 * Vaut 1 si le polygone est un cercle, 0 si il est de surface nulle.
-	 * Définition = 4*pi*surface/perimetre^2
-	 * Conseil : le seuil de 0.95 est adapté pour des ronds points dans un réseau routier.
+	 * dÃ©finition = 4*pi*surface/perimetre^2
+	 * Conseil : le seuil de 0.95 est adaptÃ© pour des ronds points dans un rÃ©seau routier.
 	 */
 	public static double indiceCompacite(GM_Polygon poly) {
 		if (Operateurs.surface(poly) == 0) return 0;
@@ -63,9 +63,9 @@ public abstract class IndicesForme {
 		return 4*(Math.PI)*surface/Math.pow(perimetre,2);
 	}
 
-	/** Coefficient de compacité de Gravelius (pour des surfaces)
-	 * Non borné : supérieur ou égal à 1 (cercle) .
-	 * Définition = perimetre/2*Racine(Pi*surface)
+	/** Coefficient de compacitï¿½ de Gravelius (pour des surfaces)
+	 * Non bornï¿½ : supÃ©rieur ou Ã©gal Ã  1 (cercle) .
+	 * dÃ©finition = perimetre/2*Racine(Pi*surface)
 	 */
 	public static double indiceCompaciteGravelius(GM_Polygon poly) {
 		double perimetre = poly.length();
@@ -73,13 +73,13 @@ public abstract class IndicesForme {
 		return perimetre/2*(Math.sqrt(Math.PI*surface));
 	}
 
-	/** Diamètre d'une surface: plus grande distance entre 2 points de la
-	 * frontière de la surface considérée.
+	/** DiamÃªtre d'une surface: plus grande distance entre 2 points de la
+	 * frontiÃ¨re de la surface considï¿½rï¿½e.
 	 * 
 	 * English: diameter of a surface
 	 * 
 	 * @param A GM_Object
-	 * @return -1 si A n'est pas une surface, le diamètre sinon
+	 * @return -1 si A n'est pas une surface, le diamÃªtre sinon
 	 */
 	public static double diametreSurface(GM_Object A) {
 		if (A.area()==0) return -1;
@@ -103,10 +103,10 @@ public abstract class IndicesForme {
 	//////////////////////////////////////////
 	// INDICES SUR DES LIGNES
 	//////////////////////////////////////////
-	/** Méthode qui détermine si la liste de points passée en entrée est rectiligne.
-	 *  Une ligne est considérée rectiligne si les angles entre les segments qui
-	 *  la constitue ne sont pas trop forts (inférieur au seuil en paramètre en radians).
-	 *  Défaut : dépend de l'échantillonage des courbes, des critères de courbure
+	/** mÃ©thode qui dï¿½termine si la liste de points passÃ©e en entrÃ©e est rectiligne.
+	 *  Une ligne est considï¿½rï¿½e rectiligne si les angles entre les segments qui
+	 *  la constitue ne sont pas trop forts (infÃ©rieur au seuil en paramÃ¨tre en radians).
+	 *  dÃ©faut : dÃ©pend de l'ï¿½chantillonage des courbes, des critï¿½res de courbure
 	 *  seraient plus stables.
 	 * 
 	 *  English: is the line straight?

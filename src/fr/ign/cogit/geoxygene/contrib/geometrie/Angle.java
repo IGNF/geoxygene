@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -29,7 +29,7 @@ package fr.ign.cogit.geoxygene.contrib.geometrie;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 
 /**
- * Classe des angles en radian. Supporte quelques opérations
+ * Classe des angles en radian. Supporte quelques opÃ©rations
  * de base.
  * La classe possede un attribut angle qui est la valeur de l'angle (en radians)
  * comprise entre 0 et 2*pi. La methode setAngle(a) ramene a entre en 0 et 2*pi.
@@ -37,7 +37,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
  * English: Class for computations on angles (in radian). The attribute
  * angle is the value of the angle (in radian) between 0 and 2*pi.
  * 
- * @author  Mustière/Bonin/Grosso
+ * @author  Mustiï¿½re/Bonin/Grosso
  * @version 1.0
  */
 
@@ -77,21 +77,21 @@ public class Angle
 		this.setValeur(Math.atan2(y,x));
 	}
 
-	/** Crée un angle à pi près (entre O et pi),
-	 * à partir d'un angle à 2pi près (entre 0 et pi) */
+	/** crÃ©e un angle Ã  pi prï¿½s (entre O et pi),
+	 * Ã  partir d'un angle Ã  2pi prï¿½s (entre 0 et pi) */
 	public static Angle angleAPiPres(Angle angle2pi) {
 		if (angle2pi.valeur > Math.PI ) return new Angle(angle2pi.valeur-Math.PI);
 		return new Angle(angle2pi.valeur);
 	}
 
-	/** Crée un angle à pi près (entre O et pi),
-	 * à partir de this */
+	/** crÃ©e un angle Ã  pi prï¿½s (entre O et pi),
+	 * Ã  partir de this */
 	public Angle angleAPiPres() {
 		if (this.valeur > Math.PI ) return new Angle(this.valeur-Math.PI);
 		return new Angle(this.valeur);
 	}
 
-	/** ajoute a à l'angle */
+	/** ajoute a Ã  l'angle */
 	public void ajoute(Angle a) {this.setValeur(this.valeur+a.valeur);}
 
 	/** ajoute les angles a et b */
@@ -106,12 +106,12 @@ public class Angle
 		return new Angle(a.valeur+ecarttrigo(a,b).valeur/2);
 	}
 
-	/** Moyenne de deux angles (défini à pi près). */
+	/** Moyenne de deux angles (dÃ©fini Ã  pi prï¿½s). */
 	public static Angle moyenne(Angle a, Angle b) {
 		return angleAPiPres(new Angle((a.valeur+b.valeur)/2));
 	}
 
-	/** Ecart de a vers b dans le sens trigonométrique,
+	/** Ecart de a vers b dans le sens trigonomï¿½trique,
 	 * ex : ecart(pi/4, 7pi/4) = 3pi/2 */
 	public static Angle ecarttrigo(Angle a, Angle b) {
 		return new Angle(b.valeur-a.valeur);

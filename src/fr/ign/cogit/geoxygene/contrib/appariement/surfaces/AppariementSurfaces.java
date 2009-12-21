@@ -84,7 +84,7 @@ public abstract class AppariementSurfaces {
 	 * NB 2 :Les liens finaux sont qualifi�s (evaluation) par la mesure de
 	 * distance surfacique entre groupes de surfaces.
 	 * 
-	 * NB 3 : si la population de référence n'est pas index�e, elle le sera pendant le calcul
+	 * NB 3 : si la population de référence n'est pas indexée, elle le sera pendant le calcul
 	 * 
 	 * NB 4 : l'appariement est sym�trique (si ref et comp sont �chang�s, les résultats sont identiques)
 	 * 
@@ -152,7 +152,7 @@ public abstract class AppariementSurfaces {
 	 * de référence et vers UN SEUL objet de la population de comparaison.
 	 * NB 2 : Aucune géométrie n'est instanciée pour les liens créés.
 	 * NB 3 : l'appariement est sym�trique.
-	 * NB 4 : la population de comparaison est index�e si elle ne l'�tait pas avant
+	 * NB 4 : la population de comparaison est indexée si elle ne l'était pas avant
 	 * 
 	 * @param popRef : population des objets de référence.
 	 * @param popComp : population des objets de comparaison.
@@ -346,7 +346,7 @@ public abstract class AppariementSurfaces {
 		FT_Feature feat;
 
 
-		// on d�compose le groupe en parties connexes
+		// on décompose le groupe en parties connexes
 		groupesConnexes = groupe.decomposeConnexes();
 		itGroupes = groupesConnexes.iterator();
 		while (itGroupes.hasNext()){

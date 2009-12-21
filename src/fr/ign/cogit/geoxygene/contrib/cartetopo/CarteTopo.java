@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -61,11 +61,11 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * Classe racine de la carte topo.
  * Une carte topo est une composition d'arcs, de noeuds, de faces et de groupes.
  * Une carte topo est vue comme un DataSet particulier.
- * Elle a éventuellement une topologie (SPAGHETTI, NETWORK ou MAP).
+ * Elle a Ã©ventuellement une topologie (SPAGHETTI, NETWORK ou MAP).
  * <p>
  * English: a topological map is an oriented graph, with arcs sorted around the nodes;
  * 
- * @author Sébastien Mustière
+ * @author SÃ©bastien MustiÃ¨re
  * @author Olivier Bonin
  * @author Julien Perret
  */
@@ -79,7 +79,7 @@ public class CarteTopo extends DataSet {
 	 * Adds an <code>ActionListener</code> to the carteTopo.
 	 * @param l the <code>ActionListener</code> to be added
 	 */
-	public void addActionListener(ActionListener l) {listenerList.add(ActionListener.class, l);}
+	public void addActionListener(ActionListener l) {this.listenerList.add(ActionListener.class, l);}
 
 	/**
 	 * Sets the list of action listeners.
@@ -95,7 +95,7 @@ public class CarteTopo extends DataSet {
 	 */
 	protected void fireActionPerformed(ActionEvent event) {
 		// Guaranteed to return a non-null array
-		Object[] listeners = listenerList.getListenerList();
+		Object[] listeners = this.listenerList.getListenerList();
 		// Process the listeners last to first, notifying
 		// those that are interested in this event
 		for (int i = listeners.length-2; i>=0; i-=2) {
@@ -106,7 +106,7 @@ public class CarteTopo extends DataSet {
 		}
 	}
 
-	//	Accès aux composants de la carte topo
+	//	accÃ¨s aux composants de la carte topo
 
 	/** Population des arcs de la carte topo. */
 	@SuppressWarnings("unchecked")
@@ -130,41 +130,41 @@ public class CarteTopo extends DataSet {
 	/** Liste des groupes de la carte topo. Surcharge de getPopGroupes().getElements(). */
 	public List<Groupe> getListeGroupes() {return this.getPopGroupes().getElements();}
 
-	/** Ajoute un noeud à la population des noeuds de la carte topo.
-		Attention : même si la carte topo est persistante, le noeud n'est pas rendu persistant dans cette méthode */
+	/** Ajoute un noeud Ã  la population des noeuds de la carte topo.
+		Attention : mÃªme si la carte topo est persistante, le noeud n'est pas rendu persistant dans cette mÃ©thode */
 	public void addNoeud(Noeud noeud) {this.getPopNoeuds().add(noeud);}
-	/** Ajoute un arc à la population des arcs de la carte topo.
-		Attention : même si la carte topo est persistante, le noeud n'est pas rendu persistant dans cette méthode */
+	/** Ajoute un arc Ã  la population des arcs de la carte topo.
+		Attention : mÃªme si la carte topo est persistante, le noeud n'est pas rendu persistant dans cette mÃ©thode */
 	public void addArc(Arc arc) {this.getPopArcs().add(arc);}
-	/** Ajoute une face à la population des faces de la carte topo.
-		Attention : même si la carte topo est persistante, le noeud n'est pas rendu persistant dans cette méthode */
+	/** Ajoute une face Ã  la population des faces de la carte topo.
+		Attention : mÃªme si la carte topo est persistante, le noeud n'est pas rendu persistant dans cette mÃ©thode */
 	public void addFace(Face face) {this.getPopFaces().add(face);}
-	/** Ajoute un groupe à la population des groupes de la carte topo.
-		Attention : même si la carte topo est persistante, le noeud n'est pas rendu persistant dans cette méthode */
+	/** Ajoute un groupe Ã  la population des groupes de la carte topo.
+		Attention : mÃªme si la carte topo est persistante, le noeud n'est pas rendu persistant dans cette mÃ©thode */
 	public void addGroupe(Groupe groupe) {this.getPopGroupes().add(groupe);}
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	//	Constructeurs
 	/////////////////////////////////////////////////////////////////////////////////////////////
-	/** Constructeur par défaut ;
-	 *  ATTENTION, constructeur à éviter car aucune population n'est créée:
-	 * seule un objet carteTopo est créé.
+	/** Constructeur par dÃ©faut ;
+	 *  ATTENTION, constructeur Ã  Ã©viter car aucune population n'est crÃ©Ã©e:
+	 * seule un objet carteTopo est crÃ©Ã©.
 	 * Ce constructeur sert aux constructeurs des sous-classe de la CarteTopo. 
 	 * */
 	public CarteTopo() {}
 
 	/**
 	 * Constructeur d'une carte topo non persistante.
-	 *  Le nom logique peut ête utilisé si la carte topo apparient à un DataSet,
-	 *  il peut être une chaîne vide sinon.
+	 *  Le nom logique peut ï¿½te utilisÃ© si la carte topo apparient Ã  un DataSet,
+	 *  il peut Ãªtre une chaÃ®ne vide sinon.
 	 * 
 	 *  Par ce constructeur, la carte topo contient des arcs/noeuds/faces/groupes
 	 *  des classes CarteTopo.Arc, CarteTopo.Noeud, CarteTopo.Face, CarteTopo.Groupe.
 	 * @param nomLogique nom de la carte topo
 	 */
 	public CarteTopo(String nomLogique) {
-		this.ojbConcreteClass = this.getClass().getName(); // nécessaire pour ojb
+		this.ojbConcreteClass = this.getClass().getName(); // nÃ©cessaire pour ojb
 		this.setNom(nomLogique);
 		this.setPersistant(false);
 		this.addPopulation(new Population<Arc>(false, "Arc", fr.ign.cogit.geoxygene.contrib.cartetopo.Arc.class,true));
@@ -185,28 +185,28 @@ public class CarteTopo extends DataSet {
 	/** Network = topologie arc / noeuds / faces */
 	public static final int MAP = 2;
 	/** Niveau de topologie :
-	 * SPAGHETTI = pas de topologie ; NETWORK = topologie arcs/noeuds ; MAP (par défaut) = topologie arcs/noeuds/faces
+	 * SPAGHETTI = pas de topologie ; NETWORK = topologie arcs/noeuds ; MAP (par dÃ©faut) = topologie arcs/noeuds/faces
 	 * NB : utiliser les constantes SPAGHETTI, NETWORK ou MAP pour remplir cet attribut.
-	 * Remarque codeurs : Le code se sert très peu de l'attribut "type" pour l'instant. A revoir.
+	 * Remarque codeurs : Le code se sert trÃ¨s peu de l'attribut "type" pour l'instant. A revoir.
 	 */
 	private int type = MAP;
-	public int getType() {return type;}
-	public void setType(int i) {type = i;}
+	public int getType() {return this.type;}
+	public void setType(int i) {this.type = i;}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	//	COPIE et VIDAGE de la carte topo
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	/** 
 	 * Copie d'une carte topologique avec toutes les relations topologiques.
-	 * Les liens "correspondants" sont aussi dupliqués.
-	 * <strong>ATTENTION: ne fonctionne bien que pour une carteTopo non spécialisée
+	 * Les liens "correspondants" sont aussi dupliquï¿½s.
+	 * <strong>ATTENTION: ne fonctionne bien que pour une carteTopo non spÃ©cialisï¿½e
 	 * (i.e. avec carteTopo.Arc, carte.Noeud...).</strong>
-	 * En effet, les objets copiés appartiendront au package cartetopo.
+	 * En effet, les objets copiï¿½s appartiendront au package cartetopo.
 	 * @param nomLogique nom de la carte topo
 	 * @return une copie d'une carte topologique avec toutes les relations topologiques.
 	 */
 	public CarteTopo copie(String nomLogique) {
-		// création d'une nouvelle carte
+		// crÃ©ation d'une nouvelle carte
 		CarteTopo carte = new CarteTopo(nomLogique);
 
 		// copie des objets, sans relation topologique
@@ -230,7 +230,7 @@ public class CarteTopo extends DataSet {
 			groupeCopie.addAllCorrespondants(groupe.getCorrespondants());
 		}
 
-		if (type == SPAGHETTI) return carte;
+		if (this.type == SPAGHETTI) return carte;
 
 		// copie des relations topologiques
 		List<Noeud> noeuds = new ArrayList<Noeud>(this.getPopNoeuds().getElements());
@@ -269,14 +269,14 @@ public class CarteTopo extends DataSet {
 
 
 	/**
-	 * Enlève des arcs de la carteTopo, en enlevant aussi les relations topologiques
+	 * enlÃ¨ve des arcs de la carteTopo, en enlevant aussi les relations topologiques
 	 * les concernant (avec les faces et noeuds).
-	 * @param arcsAEnlever liste des arcs à enlever de la carte topo
+	 * @param arcsAEnlever liste des arcs Ã  enlever de la carte topo
 	 */
 	public void enleveArcs(List<Arc> arcsAEnlever) {
 		for(Arc arc:arcsAEnlever) {
 			if (!this.getPopArcs().remove(arc)) {
-				if (logger.isDebugEnabled()) logger.debug("La suppression de l'objet a échouée : "+arc);
+				if (logger.isDebugEnabled()) logger.debug("La suppression de l'objet a ï¿½chouï¿½e : "+arc);
 			}
 			arc.setNoeudFin(null);
 			arc.setNoeudIni(null);
@@ -286,7 +286,7 @@ public class CarteTopo extends DataSet {
 	}
 
 	/** 
-	 * Enlève les arcs qui forment une boucle, i.e. dont le noeud ini est égal au noeud fin.
+	 * enlÃ¨ve les arcs qui forment une boucle, i.e. dont le noeud ini est Ã©gal au noeud fin.
 	 */
 	public void enleveArcsBoucles() {
 		List<Arc> listeArcs = new ArrayList<Arc>();
@@ -295,9 +295,9 @@ public class CarteTopo extends DataSet {
 	}
 
 	/** 
-	 * Enlève des noeuds de la carteTopo, en enlevant aussi les relations topologiques
-	 * les concernant (avec les arcs et par conséquent avec les faces).
-	 * @param noeudsAEnlever noeuds à enlever de la carte topo
+	 * enlÃ¨ve des noeuds de la carteTopo, en enlevant aussi les relations topologiques
+	 * les concernant (avec les arcs et par consï¿½quent avec les faces).
+	 * @param noeudsAEnlever noeuds Ã  enlever de la carte topo
 	 */
 	public void enleveNoeuds(List<Noeud> noeudsAEnlever) {
 		Iterator<Noeud> itNoeuds = noeudsAEnlever.iterator();
@@ -321,9 +321,9 @@ public class CarteTopo extends DataSet {
 	}
 
 	/** 
-	 * Enlève des faces de la carteTopo, en enlevant aussi les relations topologiques
-	 * les concernant (avec les arcs et par conséquent avec les noeuds).
-	 * @param facesAEnlever liste des face à enlever de la carte topo
+	 * enlÃ¨ve des faces de la carteTopo, en enlevant aussi les relations topologiques
+	 * les concernant (avec les arcs et par consï¿½quent avec les noeuds).
+	 * @param facesAEnlever liste des face Ã  enlever de la carte topo
 	 */
 	public void enleveFaces(List<Face> facesAEnlever) {
 		Iterator<Face> itFaces = facesAEnlever.iterator();
@@ -348,28 +348,28 @@ public class CarteTopo extends DataSet {
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////////
-	//	Instanciation ou nettoyage de la topologie de réseau
+	//	Instanciation ou nettoyage de la topologie de rÃ©seau
 	/////////////////////////////////////////////////////////////////////////////////////////////
 
-	/** Instancie la topologie de réseau d'une Carte Topo,
-	 *  en se basant sur la géométrie 2D des arcs et des noeuds.
-	 *  Autrement dit: crée les relation "noeud initial" et "noeud final" d'un arc.
+	/** Instancie la topologie de rÃ©seau d'une Carte Topo,
+	 *  en se basant sur la gÃ©omÃ©trie 2D des arcs et des noeuds.
+	 *  Autrement dit: crÃ©e les relation "noeud initial" et "noeud final" d'un arc.
 	 * <ul>
-	 *  <li><strong>ATTENTION: cette méthode ne rajoute pas de noeuds. Si un arc n'a pas de noeud
-	 *  localisé à son extrémité, il n'aura pas de noeud initial (ou final).</strong>
-	 *  <li><strong>DE PLUS si plusieurs noeuds sont trop proches (cf. param tolérance),
+	 *  <li><strong>ATTENTION: cette mÃ©thode ne rajoute pas de noeuds. Si un arc n'a pas de noeud
+	 *  localisï¿½ Ã  son extrÃ©mitÃ©, il n'aura pas de noeud initial (ou final).</strong>
+	 *  <li><strong>DE PLUS si plusieurs noeuds sont trop proches (cf. param tolÃ©rance),
 	 *  alors un des noeuds est choisi au hasard pour la relation arc/noeud,
 	 *  ce qui n'est pas correct.</strong>
 	 *  <li><strong>IL EST DONC CONSEILLE DE FILTRER LES DOUBLONS AVANT SI NECESSAIRE.</strong>
 	 * 
-	 *  <li>NB: si cela n'avait pas été fait avant,
-	 *  la population des noeuds est indexée dans cette méthode
-	 *  (dallage, paramètre = 20).
+	 *  <li>NB: si cela n'avait pas Ã©tÃ© fait avant,
+	 *  la population des noeuds est indexÃ©e dans cette mÃ©thode
+	 *  (dallage, paramÃ¨tre = 20).
 	 * </ul>
 	 *  @param tolerance
-	 *  Le paramètre "tolerance" spécifie la distance maximale acceptée entre
-	 *  la position d'un noeud et la position d'une extrémité de ligne,
-	 *  pour considérer ce noeud comme extrémité (la tolérance peut être nulle).
+	 *  Le paramÃ¨tre "tolerance" spÃ©cifie la distance maximale acceptï¿½e entre
+	 *  la position d'un noeud et la position d'une extrÃ©mitÃ© de ligne,
+	 *  pour considï¿½rer ce noeud comme extrÃ©mitÃ© (la tolÃ©rance peut Ãªtre nulle).
 	 * 
 	 */
 	public void creeTopologieArcsNoeuds(double tolerance) {
@@ -388,21 +388,21 @@ public class CarteTopo extends DataSet {
 	}
 
 
-	/**  Crée un nouveau noeud à l'extrémité de chaque arc si il n'y en a pas.
-	 *   Les noeuds existants sont tous conservés.
+	/**  crÃ©e un nouveau noeud Ã  l'extrÃ©mitÃ© de chaque arc si il n'y en a pas.
+	 *   Les noeuds existants sont tous conservï¿½s.
 	 * <ul>
-	 *  <li>NB: la topologie arcs/noeuds est instanciée au passage.
-	 *  <li>NB: si cela n'avait pas été fait avant,
-	 *  la population des noeuds est indexée dans cette méthode.
-	 * 	<li>Paramètres de l'index = le même que celui des arcs si il existe,
-	 *  sinon Dallage avec à peu près 50 noeuds par dalle.
+	 *  <li>NB: la topologie arcs/noeuds est instanciÃ©e au passage.
+	 *  <li>NB: si cela n'avait pas Ã©tÃ© fait avant,
+	 *  la population des noeuds est indexÃ©e dans cette mÃ©thode.
+	 * 	<li>paramÃ¨tres de l'index = le mÃªme que celui des arcs si il existe,
+	 *  sinon Dallage avec Ã  peu prï¿½s 50 noeuds par dalle.
 	 *  </ul>
-	 * @param tolerance tolérance utilisée pour chercher des noeuds existants auxquels se raccrocher au lieu d'en créer de nouveaux.
+	 * @param tolerance tolÃ©rance utilisÃ©e pour chercher des noeuds existants auxquels se raccrocher au lieu d'en crÃ©er de nouveaux.
 	 */
 	public void creeNoeudsManquants(double tolerance) {
 		Noeud noeud;
 		// initialisation de l'index au besoin
-		// si on peut, on prend les mêmes paramètres que le dallage des arcs
+		// si on peut, on prend les mÃªmes paramÃ¨tres que le dallage des arcs
 		if ( ! this.getPopNoeuds().hasSpatialIndex() ) {
 			if ( this.getPopArcs().hasSpatialIndex()) {
 				this.getPopNoeuds().initSpatialIndex(this.getPopArcs().getSpatialIndex() );
@@ -415,13 +415,13 @@ public class CarteTopo extends DataSet {
 				this.getPopNoeuds().initSpatialIndex(Tiling.class, true, enveloppe, nb);
 			}
 		}
-		fireActionPerformed(new ActionEvent(this,0,"Création des noeuds manquants",this.getPopArcs().size()));
+		fireActionPerformed(new ActionEvent(this,0,"crÃ©ation des noeuds manquants",this.getPopArcs().size()));
 		int index=0;
 		List<Arc> arcsVides = new ArrayList<Arc>();
 		for(Object a:this.getPopArcs()) {
 			Arc arc = (Arc)a;
 			if (arc.getGeometrie().sizeControlPoint()==0) {
-				logger.error("Arc de géométrie vide");
+				logger.error("Arc de gÃ©omÃ©trie vide");
 				arcsVides.add(arc);
 				continue;
 			}
@@ -445,17 +445,17 @@ public class CarteTopo extends DataSet {
 				arc.getGeometrie().coord().set(arc.getGeometrie().sizeControlPoint()-1,noeud.getGeometrie().getPosition());
 			}
 			arc.setNoeudFin(noeud);
-			fireActionPerformed(new ActionEvent(this,1,"Arc traité",++index));
+			fireActionPerformed(new ActionEvent(this,1,"Arc traitï¿½",++index));
 		}
 		this.getPopArcs().removeAll(arcsVides);
-		fireActionPerformed(new ActionEvent(this,4,"Création des noeuds manquants terminée"));
+		fireActionPerformed(new ActionEvent(this,4,"crÃ©ation des noeuds manquants terminï¿½e"));
 	}
 
 
-	/** Filtrage des noeuds isolés (c'est-à-dire connectés à aucun arc).
-	 *  Ceux-ci sont enlevés de la Carte Topo
-	 *  IMPORTANT : La topologie de réseau doit avoir été instanciée,
-	 *  sinon tous les noeuds sont enlevés.
+	/** Filtrage des noeuds isolÃ©s (c'est-Ã -dire connectÃ©s Ã  aucun arc).
+	 *  Ceux-ci sont enlevï¿½s de la Carte Topo
+	 *  IMPORTANT : La topologie de rÃ©seau doit avoir Ã©tÃ© instanciÃ©e,
+	 *  sinon tous les noeuds sont enlevï¿½s.
 	 */
 	public void filtreNoeudsIsoles() {
 		List<Noeud> aJeter = new ArrayList<Noeud>();
@@ -464,20 +464,20 @@ public class CarteTopo extends DataSet {
 	}
 
 
-	/** Filtrage des noeuds doublons (plusieurs noeuds localisés au même endroit).
+	/** Filtrage des noeuds doublons (plusieurs noeuds localisï¿½s au mÃªme endroit).
 	 * <ul>
-	 * <li>NB: si cela n'avait pas été fait avant,
-	 * la population des noeuds est indexée dans cette méthode
-	 * (dallage, paramètre = 20).
+	 * <li>NB: si cela n'avait pas Ã©tÃ© fait avant,
+	 * la population des noeuds est indexÃ©e dans cette mÃ©thode
+	 * (dallage, paramÃ¨tre = 20).
 	 * 
-	 * <li>Cette méthode gère les conséquences sur la topologie,
-	 * si celle-ci a été instanciée auparavant.
-	 * <li>Cette méthode gère aussi les conséquences sur les correspondants (un
-	 * noeud gardé a pour correspondants tous les correspondants des doublons).
+	 * <li>Cette mÃ©thode gÃ¨re les consï¿½quences sur la topologie,
+	 * si celle-ci a Ã©tÃ© instanciÃ©e auparavant.
+	 * <li>Cette mÃ©thode gÃ¨re aussi les consï¿½quences sur les correspondants (un
+	 * noeud gardï¿½ a pour correspondants tous les correspondants des doublons).
 	 * </ul>
 	 * @param tolerance
-	 * Le paramètre tolérance spécifie la distance maximale pour considérer deux
-	 * noeuds positionnés au même endroit.
+	 * Le paramÃ¨tre tolÃ©rance spÃ©cifie la distance maximale pour considï¿½rer deux
+	 * noeuds positionnï¿½s au mÃªme endroit.
 	 */
 	public void filtreDoublons(double tolerance) {
 		List<Noeud> aJeter = new ArrayList<Noeud>();
@@ -490,8 +490,8 @@ public class CarteTopo extends DataSet {
 			selection = this.getPopNoeuds().select(noeud.getCoord(),tolerance);
 			selection.remove(noeud);
 			for(Noeud doublon:selection) {
-				// on a trouvé un doublon à jeter
-				// on gère les conséquences sur la topologie et les correspondants
+				// on a trouvÃ© un doublon Ã  jeter
+				// on gÃ¨re les consï¿½quences sur la topologie et les correspondants
 				aJeter.add(doublon);
 				noeud.addAllCorrespondants(doublon.getCorrespondants());
 				for (Arc a:doublon.getEntrants()) noeud.addEntrant(a);
@@ -502,19 +502,19 @@ public class CarteTopo extends DataSet {
 	}
 
 
-	/** Filtrage des noeuds "simples", c'est-à-dire avec seulement deux arcs incidents,
+	/** Filtrage des noeuds "simples", c'est-Ã -dire avec seulement deux arcs incidents,
 	 * si ils ont des orientations compatibles.
-	 * Ces noeuds sont enlevés et un seul arc est créé à la place des deux arcs incidents.
+	 * Ces noeuds sont enlevï¿½s et un seul arc est crÃ©Ã© Ã  la place des deux arcs incidents.
 	 * <ul>
-	 * <li>Cette méthode gère les conséquences sur la topologie arcs/noeuds/faces.
-	 * <li>Cette méthode gère aussi les conséquences sur les correspondants.
+	 * <li>Cette mÃ©thode gÃ¨re les consï¿½quences sur la topologie arcs/noeuds/faces.
+	 * <li>Cette mÃ©thode gÃ¨re aussi les consï¿½quences sur les correspondants.
 	 * (un nouvel arc a pour correspondants tous les correspondants des deux
 	 * arcs incidents).
-	 * <li>Cette méthode gère les conséquences sur l'orientation
+	 * <li>Cette mÃ©thode gÃ¨re les consï¿½quences sur l'orientation
 	 * </ul>
 	 * <p>
-	 * <strong>IMPORTANT: la topologie arcs/noeuds doit avoir été instanciée avant
-	 * de lancer cette méthode</strong>
+	 * <strong>IMPORTANT: la topologie arcs/noeuds doit avoir Ã©tÃ© instanciÃ©e avant
+	 * de lancer cette mÃ©thode</strong>
 	 */
 	public void filtreNoeudsSimples() {
 		List<GM_LineString> geometries;
@@ -528,9 +528,9 @@ public class CarteTopo extends DataSet {
 			arcsIncidents = noeud.arcs();
 			if ( arcsIncidents.size() != 2 ) continue;
 			if ( arcsIncidents.get(0) == arcsIncidents.get(1) ) continue; // gestion des boucles
-			if ( noeud.entrantsOrientes().size() == 0 ) continue; // incompatibilité d'orientation
-			if ( noeud.sortantsOrientes().size() == 0 ) continue; // incompatibilité d'orientation
-			if ( (noeud.entrantsOrientes().size()+noeud.sortantsOrientes().size()) == 3 ) continue; // incompatibilité d'orientation
+			if ( noeud.entrantsOrientes().size() == 0 ) continue; // incompatibilitï¿½ d'orientation
+			if ( noeud.sortantsOrientes().size() == 0 ) continue; // incompatibilitï¿½ d'orientation
+			if ( (noeud.entrantsOrientes().size()+noeud.sortantsOrientes().size()) == 3 ) continue; // incompatibilitï¿½ d'orientation
 
 			arcTotal = this.getPopArcs().nouvelElement();
 			geometries= new ArrayList<GM_LineString>();
@@ -539,10 +539,10 @@ public class CarteTopo extends DataSet {
 			geometries.add(arc1.getGeometrie());
 			geometries.add(arc2.getGeometrie());
 
-			//création de la nouvelle géométrie
+			//crÃ©ation de la nouvelle gÃ©omÃ©trie
 			arcTotal.setGeometrie(Operateurs.compileArcs(geometries));
 
-			//gestion des conséquences sur l'orientation et les correspondants
+			//gestion des consï¿½quences sur l'orientation et les correspondants
 			arcTotal.setOrientation(arc1.getOrientation());
 			for (FT_Feature corresp:arc1.getCorrespondants()) {
 				if (!arcTotal.getCorrespondants().contains(corresp))
@@ -559,7 +559,7 @@ public class CarteTopo extends DataSet {
 			}
 			noeud.setCorrespondants(new ArrayList<FT_Feature>());
 
-			//gestion des conséquences sur la topologie
+			//gestion des consï¿½quences sur la topologie
 			faceDroite1 = arc1.getFaceDroite();
 			faceGauche1 = arc1.getFaceGauche();
 			faceDroite2 = arc2.getFaceDroite();
@@ -569,7 +569,7 @@ public class CarteTopo extends DataSet {
 			noeudIni2 = arc2.getNoeudIni();
 			noeudFin2 = arc2.getNoeudFin();
 
-			// conséquences sur le premier arc
+			// consï¿½quences sur le premier arc
 			if ( noeudIni1 == noeud ) {
 				noeudIni1.getSortants().remove(arc1);
 				if ( noeudFin1 != null ) {
@@ -602,7 +602,7 @@ public class CarteTopo extends DataSet {
 				}
 			}
 
-			// conséquences sur le deuxième arc
+			// consï¿½quences sur le deuxiÃ¨me arc
 			if ( noeudIni2 == noeud ) {
 				noeudIni2.getSortants().remove(arc2);
 				if ( noeudFin2 != null ) {
@@ -642,10 +642,10 @@ public class CarteTopo extends DataSet {
 		}
 	}
 
-	/** Filtre les arcs en double (en double = même géométrie et même orientation).
-	 * On vérifie à la fois la géométrie et la topologie, i.e. la topologie arcs/noeuds doit être instanciée.
-	 * <strong>Attention: les conséquences sur la topologie arcs/faces ne sont pas gérées.</strong>
-	 * TODO s'il existe des arcs en plus de 2 exemplaires, ils ne sont pas enlevés je crois
+	/** Filtre les arcs en double (en double = mÃªme gÃ©omÃ©trie et mÃªme orientation).
+	 * On vÃ©rifie Ã  la fois la gÃ©omÃ©trie et la topologie, i.e. la topologie arcs/noeuds doit Ãªtre instanciÃ©e.
+	 * <strong>Attention: les consï¿½quences sur la topologie arcs/faces ne sont pas gÃ©rÃ©es.</strong>
+	 * TODO s'il existe des arcs en plus de 2 exemplaires, ils ne sont pas enlevï¿½s je crois
 	 * 
 	 */
 	public void filtreArcsDoublons() {
@@ -654,7 +654,7 @@ public class CarteTopo extends DataSet {
 		fireActionPerformed(new ActionEvent(this,0,"Filtrage des Arcs Doublons",arcs.size()-1));
 		for (int i=0; i<arcs.size()-1;i++) {
 			Arc arci = arcs.get(i);
-			if (arcsAEnlever.contains(arci)) continue;// on a déjà décidé d'enlever cet arc
+			if (arcsAEnlever.contains(arci)) continue;// on a dÃ©jÃ  dï¿½cidï¿½ d'enlever cet arc
 			for (int j=i+1; j<arcs.size();j++) {
 				Arc arcj = arcs.get(j);
 				if ( arcj.getOrientation() != arcj.getOrientation() ) continue;
@@ -666,7 +666,7 @@ public class CarteTopo extends DataSet {
 				arcj.setNoeudFin(null);
 				arcj.setNoeudIni(null);
 			}
-			fireActionPerformed(new ActionEvent(this,1,"Arc traité",i+1));
+			fireActionPerformed(new ActionEvent(this,1,"Arc traitï¿½",i+1));
 		}
 		this.enleveArcs(arcsAEnlever);
 		arcsAEnlever.clear();
@@ -676,37 +676,37 @@ public class CarteTopo extends DataSet {
 				arcsAEnlever.add(arc);
 			}
 		}
-		if (logger.isDebugEnabled()) logger.debug(arcsAEnlever.size()+" arcs nuls à enlever");
+		if (logger.isDebugEnabled()) logger.debug(arcsAEnlever.size()+" arcs nuls Ã  enlever");
 		this.enleveArcs(arcsAEnlever);
-		//if (!this.getPopArcs().removeAll(arcsAEnlever)) logger.warn("Attention : des arcs n'ont pas pu être enlevés");
-		fireActionPerformed(new ActionEvent(this,4,"Filtrage des Arcs Doublons terminé"));
+		//if (!this.getPopArcs().removeAll(arcsAEnlever)) logger.warn("Attention : des arcs n'ont pas pu Ãªtre enlevï¿½s");
+		fireActionPerformed(new ActionEvent(this,4,"Filtrage des Arcs Doublons terminï¿½"));
 	}
 
 	/** Transforme la carte topo pour la rendre planaire :
-	 *  les arcs sont découpés à chaque intersection d'arcs,
-	 *  et un noeud est créé à chaque extrémité d'arc.
+	 *  les arcs sont dÃ©coupÃ©s Ã  chaque intersection d'arcs,
+	 *  et un noeud est crÃ©Ã© Ã  chaque extrÃ©mitÃ© d'arc.
 	 * <ul>
-	 *  <li> NB: la topologie arcs/noeuds de la carte en sortie est instanciée.
-	 *  <li> NB: les populations d'arcs et de noeuds sont indexées pendant la méthode,
-	 *  si cela n'avait pas déjà été fait avant.
-	 *  Les paramètres de ces index sont:
+	 *  <li> NB: la topologie arcs/noeuds de la carte en sortie est instanciÃ©e.
+	 *  <li> NB: les populations d'arcs et de noeuds sont indexÃ©es pendant la mÃ©thode,
+	 *  si cela n'avait pas dÃ©jÃ  Ã©tÃ© fait avant.
+	 *  Les paramÃ¨tres de ces index sont:
 	 *  20x20 cases pour les noeuds, ~50 arcs par case pour les arcs.
 	 *  Si cela ne convient pas: instancier les topologies avant.
-	 *  <li>NB: les "correspondants" des arcs et noeuds suivent le découpage,
-	 *  de même que l'attribut orientation.
+	 *  <li>NB: les "correspondants" des arcs et noeuds suivent le dÃ©coupage,
+	 *  de mÃªme que l'attribut orientation.
 	 *  <li>MAIS ATTENTION:
 	 *  <ul>
 	 *  <li>- les liens vers des groupes ne suivent pas.
-	 *  <li>- les attributs/liens particuliers (cas où les arcs proviennent 
-	 *  d'une carteTopo spécialisée) ne suivent pas non plus
-	 *  <li>- la topologie des faces est détruite aussi
+	 *  <li>- les attributs/liens particuliers (cas oÃ¹ les arcs proviennent 
+	 *  d'une carteTopo spÃ©cialisï¿½e) ne suivent pas non plus
+	 *  <li>- la topologie des faces est dÃ©truite aussi
 	 *  </ul>
 	 *  </ul>
 	 * @param tolerance
-	 * Paramètre de tolérance sur la localisation des noeuds:
-	 * deux extrémités d'arc à moins de cette distance sont considérées superposées
-	 * (utilisé lors de la construction de la topologie arcs/noeuds).
-	 * Ce paramètre peut être nul.
+	 * paramÃ¨tre de tolÃ©rance sur la localisation des noeuds:
+	 * deux extrÃ©mitÃ©s d'arc Ã  moins de cette distance sont considï¿½rï¿½es superposï¿½es
+	 * (utilisÃ© lors de la construction de la topologie arcs/noeuds).
+	 * Ce paramÃ¨tre peut Ãªtre nul.
 	 */
 	@SuppressWarnings("unchecked")
 	public void rendPlanaire(double tolerance) {
@@ -723,24 +723,24 @@ public class CarteTopo extends DataSet {
 			//les arcs qui croisent l'arc courant
 			// Optimisation et blindage pour tous les cas non garanti (Seb)
 			FT_FeatureCollection<Arc> selection = this.getPopArcs().select(arc.getGeometrie());
-			//on enlève l'arc courant et les arcs déjà enlevés
+			//on enlÃ¨ve l'arc courant et les arcs dÃ©jÃ  enlevï¿½s
 			selection.remove(arc);
 			selection.removeAll(arcsEnleves);
 			List<Arc> listeInter = new ArrayList<Arc>();
-			//On construit un multipoint contenant les extrémités de l'arc courant
+			//On construit un multipoint contenant les extrÃ©mitÃ©s de l'arc courant
 			GM_MultiPoint frontiereArc = new GM_MultiPoint();
 			frontiereArc.add(new GM_Point(arc.getGeometrie().startPoint()));
 			frontiereArc.add(new GM_Point(arc.getGeometrie().endPoint()));
 			// pour chaque arc qui intersecte l'arc courant
 			for(Arc arcSel:selection) {
-				//On construit un multipoint contenant les extrémités de l'arc de la sélection
+				//On construit un multipoint contenant les extrÃ©mitÃ©s de l'arc de la sï¿½lection
 				GM_MultiPoint frontiereArcSel = new GM_MultiPoint();
 				frontiereArcSel.add(new GM_Point(arcSel.getGeometrie().startPoint()));
 				frontiereArcSel.add(new GM_Point(arcSel.getGeometrie().endPoint()));
-				// on calcule l'intersection de l'arc courant avec l'arc de la sélection
+				// on calcule l'intersection de l'arc courant avec l'arc de la sï¿½lection
 				GM_Object intersection = arcSel.getGeometrie().intersection(arc.getGeometrie());
 				/*
-				 //modif Seb: tentative d'accélération : buggé mais je ne trouve pas pourquoi
+				 //modif Seb: tentative d'accÃ¨lï¿½ration : buggï¿½ mais je ne trouve pas pourquoi
 				if (intersection instanceof GM_Point ) {
 					if ( Operateurs.superposes(ptArcIni, (GM_Point)intersection) ||
 						 Operateurs.superposes(ptArcFin, (GM_Point)intersection) ) {
@@ -752,19 +752,19 @@ public class CarteTopo extends DataSet {
 					continue;
 				}
 				 */
-				// si l'intersection trouvée fait partie des extrémités des 2 arcs, alors on passe à l'arc suivant
+				// si l'intersection trouvÃ©e fait partie des extrÃ©mitÃ©s des 2 arcs, alors on passe Ã  l'arc suivant
 				if (frontiereArc.contains(intersection)&&frontiereArcSel.contains(intersection)) continue;
-				// on a une intersection ailleurs que sur une extrémité
+				// on a une intersection ailleurs que sur une extrÃ©mitÃ©
 				listeInter.add(arcSel);
 			}
 			if (listeInter.size() == 0) {
-				fireActionPerformed(new ActionEvent(this,1,"Arc traité",indexArc+1));
+				fireActionPerformed(new ActionEvent(this,1,"Arc traitï¿½",indexArc+1));
 				continue; //pas d'intersection avec cet arc
 			}
-			//on découpe tout
+			//on dÃ©coupe tout
 			GM_Object nodedLineStrings = arc.getGeometrie();
 			for(Arc a:listeInter) {
-				if (a.getGeometrie().isEmpty()) logger.error("la géométrie de l'arc est vide "+a.getGeometrie().toString());
+				if (a.getGeometrie().isEmpty()) logger.error("la gÃ©omÃ©trie de l'arc est vide "+a.getGeometrie().toString());
 				else nodedLineStrings = nodedLineStrings.union(a.getGeometrie());
 			}
 			listeInter.add(arc); // on le rajoute pour la suite
@@ -772,79 +772,79 @@ public class CarteTopo extends DataSet {
 				boolean toutesEgales = true;
 				for(Arc arcSel:listeInter) {toutesEgales=arcSel.getGeometrie().equals(nodedLineStrings)&&toutesEgales;}
 				if (toutesEgales) {
-					if (logger.isDebugEnabled()) logger.debug("Toutes les géométries sont égales, on crée un nouvel arc");
+					if (logger.isDebugEnabled()) logger.debug("Toutes les gÃ©omÃ©tries sont Ã©gales, on crÃ©e un nouvel arc");
 					Arc arcNouveau = this.getPopArcs().nouvelElement(nodedLineStrings);
 					boolean premierArc = true;
 					for(Arc arcSel:listeInter) {
 						arcNouveau.addAllCorrespondants(arcSel.getCorrespondants());
 						arcsEnleves.add(arcSel);
 						if (premierArc) {
-							// on affecte la valeur initiale de l'orientation avec le premier arc rencontré
+							// on affecte la valeur initiale de l'orientation avec le premier arc rencontrï¿½
 							arcNouveau.setOrientation(arcSel.getOrientation());
 							premierArc=false;
 						} else {
-							// ensuite, si la valeur diffère de la valeur initale, on met l'orientation dans les deux sens 
+							// ensuite, si la valeur diffÃ¨re de la valeur initale, on met l'orientation dans les deux sens 
 							if (arcNouveau.getOrientation()!=arcSel.getOrientation()) arcNouveau.setOrientation(2);
 						}
 					}
-					// le nouvel arc possède la même géométrie que l'arc initial, pas la peine de revenir
+					// le nouvel arc possÃ¨de la mÃªme gÃ©omÃ©trie que l'arc initial, pas la peine de revenir
 					dejaTraites.add(arcNouveau);
 				} else {
-					logger.error("Problème pour rendre le graphe planaire");
-					logger.error("  l'intersection de plusieurs arcs donne un seul arc (pb non résolu, pb JTS?)" );
+					logger.error("problÃ¨me pour rendre le graphe planaire");
+					logger.error("  l'intersection de plusieurs arcs donne un seul arc (pb non rï¿½solu, pb JTS?)" );
 					logger.error("  pb sur l'arc "+ arc );
 					logger.error("  dont l'union est faite avec les arcs : ");
 					for(Arc a:listeInter) {
 						logger.error(this.getPopArcs().contains(a)+" - " + a);
 						logger.error(a.getNoeudIni());
 						logger.error(a.getNoeudFin());
-						//if ( a.getGeometrie().isEmpty()) logger.error("la géométrie de l'arc est vide "+ a.getGeometrie().toString());
+						//if ( a.getGeometrie().isEmpty()) logger.error("la gÃ©omÃ©trie de l'arc est vide "+ a.getGeometrie().toString());
 						//else logger.error(" "+ a.getGeometrie().toString());
 					}
 				}
-				fireActionPerformed(new ActionEvent(this,1,"Arc traité",indexArc+1));
+				fireActionPerformed(new ActionEvent(this,1,"Arc traitï¿½",indexArc+1));
 				continue;
 			}
-			if (nodedLineStrings instanceof GM_MultiCurve ) { //cas où il faut découper
-				//1: on rajoute les morceaux d'arcs découpés
+			if (nodedLineStrings instanceof GM_MultiCurve ) { //cas oÃ¹ il faut dÃ©couper
+				//1: on rajoute les morceaux d'arcs dÃ©coupÃ©s
 				for(GM_LineString ligneDecoupe:(GM_MultiCurve<GM_LineString>)nodedLineStrings) {
 					Arc arcNouveau = this.getPopArcs().nouvelElement(ligneDecoupe);
-					//on recherche à quel(s) arc(s) initial appartient chaque bout découpé
+					//on recherche Ã  quel(s) arc(s) initial appartient chaque bout dÃ©coupÃ©
 					for(Arc arcSel:listeInter) {
-						// on devrait mettre ==0 ci-dessous, mais pour gérer les erreurs d'arrondi on met <0.01
+						// on devrait mettre ==0 ci-dessous, mais pour gÃ©rer les erreurs d'arrondi on met <0.01
 						if ( Distances.premiereComposanteHausdorff(ligneDecoupe,arcSel.getGeometrie()) < 0.01 ) {
-							//on appartient à lui
+							//on appartient Ã  lui
 							arcNouveau.addAllCorrespondants(arcSel.getCorrespondants());
 							arcNouveau.setOrientation(arcSel.getOrientation());
-							//si on appartient à l'arc initial, pas la peine de revenir
+							//si on appartient Ã  l'arc initial, pas la peine de revenir
 							if (arcSel == arc) dejaTraites.add(arcNouveau);
 						}
 					}
-					if (logger.isDebugEnabled()) logger.debug("Nouvel arc ajouté "+arcNouveau);
+					if (logger.isDebugEnabled()) logger.debug("Nouvel arc ajoutÃ© "+arcNouveau);
 				}
-				//2: on virera les arcs initiaux qui ont été découpés
+				//2: on virera les arcs initiaux qui ont Ã©tÃ© dÃ©coupÃ©s
 				for(Arc arcSel:listeInter) {
-					if (logger.isDebugEnabled()) logger.debug("Intersection trouvée avec '"+arcSel);
+					if (logger.isDebugEnabled()) logger.debug("Intersection trouvÃ©e avec '"+arcSel);
 					arcSel.setCorrespondants(new ArrayList<FT_Feature>());
 					arcsEnleves.add(arcSel);
 				}
-				fireActionPerformed(new ActionEvent(this,1,"Arc traité",indexArc+1));
+				fireActionPerformed(new ActionEvent(this,1,"Arc traitï¿½",indexArc+1));
 				continue;
 			}
-			//cas imprévu: OUPS
-			logger.error("Problème pour rendre le graphe planaire");
-			logger.error("  bug non identifié : l'union donne une "+nodedLineStrings.getClass() );
+			//cas imprï¿½vu: OUPS
+			logger.error("problÃ¨me pour rendre le graphe planaire");
+			logger.error("  bug non identifiï¿½ : l'union donne une "+nodedLineStrings.getClass() );
 			logger.error("  pb sur l'arc "+arc.getGeom().coord() );
 		}
 
 		this.enleveArcs(arcsEnleves);
-		//On construit les nouveaux noeuds éventuels et la topologie arcs/noeuds
+		//On construit les nouveaux noeuds Ã©ventuels et la topologie arcs/noeuds
 		this.getPopNoeuds().setElements(new ArrayList<Noeud>());
 		this.creeNoeudsManquants(tolerance);
 		
 		/**
-		 * vérification des arcs qui s'intersectent presque à moins de tolérance
-		 * FIXME ATTENTION : ce bout de code est à nettoyer et à corriger éventuellement.
+		 * vï¿½rification des arcs qui s'intersectent presque Ã  moins de tolÃ©rance
+		 * FIXME ATTENTION : ce bout de code est Ã  nettoyer et Ã  corriger Ã©ventuellement.
 		 */
 		for (Noeud noeud:this.getPopNoeuds()) {
 		    if (noeud.arcs().size()==1) {
@@ -855,7 +855,7 @@ public class CarteTopo extends DataSet {
 			    if (logger.isDebugEnabled()) logger.debug("Nombre de noeuds dans le voisinage "+this.getPopNoeuds().select(noeud.getGeom().buffer(tolerance)).size());
 			    if (logger.isDebugEnabled()) logger.debug("Nombre d'arcs dans le voisinage "+arcs.size());
 			    Arc arc=arcs.get(0);
-			    if (logger.isDebugEnabled()) logger.debug("Découpage de l'arc "+arc);
+			    if (logger.isDebugEnabled()) logger.debug("dÃ©coupage de l'arc "+arc);
 			    arc.projeteEtDecoupe(noeud);
 			}
 		    }
@@ -866,18 +866,18 @@ public class CarteTopo extends DataSet {
 	/** 
 	 * Fusionne en un seul noeud, tous les noeuds proches de moins de "tolerance"
 	 * Les correspondants suivent, la topologie arcs/noeuds aussi.
-	 * NB: les petits arcs qui n'ont plus de sens sont aussi éliminés.
-	 * Plus précisément ce sont ceux qui partent et arrivent sur un même
-	 * nouveau noeud créé, et restant à moins de "tolerance" de ce nouveau noeud
+	 * NB: les petits arcs qui n'ont plus de sens sont aussi Ã©liminï¿½s.
+	 * Plus prÃ©cisÃ©ment ce sont ceux qui partent et arrivent sur un mÃªme
+	 * nouveau noeud crÃ©Ã©, et restant Ã  moins de "tolerance" de ce nouveau noeud
 	 * 
-	 * Un index spatial (dallage) est créé si cela n'avait pas été fait avant,
-	 * mais il est toujours conseillé de le faire en dehors de cette méthode,
+	 * Un index spatial (dallage) est crÃ©Ã© si cela n'avait pas Ã©tÃ© fait avant,
+	 * mais il est toujours conseillï¿½ de le faire en dehors de cette mÃ©thode,
 	 * pour controler la taille du dallage.
-	 * @param tolerance tolérance en dessous de laquelle les noeuds sont fusionnés
+	 * @param tolerance tolÃ©rance en dessous de laquelle les noeuds sont fusionnï¿½s
 	 */
 	public void fusionNoeuds(double tolerance) {
 		List<Noeud> aEnlever = new ArrayList<Noeud>();
-		// initialisation de l'index spatial sur les arcs avec mise à jour automatique
+		// initialisation de l'index spatial sur les arcs avec mise Ã  jour automatique
 		if (!this.getPopArcs().hasSpatialIndex()) this.getPopArcs().initSpatialIndex(Tiling.class, true);
 
 		fireActionPerformed(new ActionEvent(this,0,"Fusion des noeuds",this.getPopNoeuds().size()));
@@ -886,24 +886,24 @@ public class CarteTopo extends DataSet {
 			Noeud noeud = this.getPopNoeuds().get(index);
 			//On cherche les noeuds voisins
 			FT_FeatureCollection<Noeud> noeudsProches = this.getPopNoeuds().select(noeud.getGeometrie(), tolerance);
-			//On enlève les noeuds déjà sélectionnés comme à enlever
+			//On enlÃ¨ve les noeuds dÃ©jÃ  sï¿½lectionnï¿½s comme Ã  enlever
 			noeudsProches.removeAll(aEnlever);
 			if (noeudsProches.size() < 2) continue;// s'il n'y a qu'un seul noeud, c'est le noeud courant
-			//Si il y a des voisins, on crée un nouveau noeud
+			//Si il y a des voisins, on crÃ©e un nouveau noeud
 			GM_MultiPoint points = new GM_MultiPoint();
 			for (Object o:noeudsProches) points.add(((Noeud) o).getGeometrie());
-			// on calcule le centroïde de tous les voisins
+			// on calcule le centroÃ¯de de tous les voisins
 			GM_Point centroide = new GM_Point(points.centroid());
-			//On crée un nouveau noeud dont la géométrie est le centroïde calculé
+			//On crÃ©e un nouveau noeud dont la gÃ©omÃ©trie est le centroÃ¯de calculï¿½
 			Noeud nouveauNoeud = this.getPopNoeuds().nouvelElement(centroide);
-			//On raccroche tous les arcs à ce nouveau noeud
+			//On raccroche tous les arcs Ã  ce nouveau noeud
 			for (Noeud noeudProche : noeudsProches) {
 				//on associe le nouveau noeud aux correspondants du noeud
 				nouveauNoeud.addAllCorrespondants(noeudProche.getCorrespondants());
 				noeudProche.setCorrespondants(new ArrayList<FT_Feature>());
-				//on ajoute le noeud à la liste des noeuds à enlever
+				//on ajoute le noeud Ã  la liste des noeuds Ã  enlever
 				if (!aEnlever.contains(noeudProche)) aEnlever.add(noeudProche);
-				//modification de chaque arc du noeud proche à bouger
+				//modification de chaque arc du noeud proche Ã  bouger
 				for (Arc arc:noeudProche.arcs()) {
 					if ( arc.getNoeudIni().equals(noeudProche) ) {
 						arc.setNoeudIni(nouveauNoeud);
@@ -915,7 +915,7 @@ public class CarteTopo extends DataSet {
 						arc.getGeometrie().coord().set(fin,nouveauNoeud.getGeometrie().getPosition());
 					}
 				}
-				//On enlève les arcs qui n'ont plus lieu d'être
+				//On enlÃ¨ve les arcs qui n'ont plus lieu d'Ãªtre
 				// (tout petit autour du nouveau noeud)
 				List<Arc> listeArcsAEnlever = new ArrayList<Arc>();
 				for (Arc arc:noeudProche.arcs()) {
@@ -931,11 +931,11 @@ public class CarteTopo extends DataSet {
 				}
 				enleveArcs(listeArcsAEnlever);
 			}
-			fireActionPerformed(new ActionEvent(this,1,"Fusion du noeud effectuée",index+1));
+			fireActionPerformed(new ActionEvent(this,1,"Fusion du noeud effectuï¿½e",index+1));
 		}
 		
 		//on enleve tous les anciens noeuds
-		if (!aEnlever.isEmpty()&&!this.getPopNoeuds().removeAll(aEnlever)) logger.warn("removeAll a échoué sur la liste de noeuds !");
+		if (!aEnlever.isEmpty()&&!this.getPopNoeuds().removeAll(aEnlever)) logger.warn("removeAll a ï¿½chouï¿½ sur la liste de noeuds !");
 		List<Arc> listeArcsAEnlever = new ArrayList<Arc>();
 		// suppression des arcs trop petits
 		fireActionPerformed(new ActionEvent(this,2,"Suppression des arcs trop petits",this.getPopArcs().size()));
@@ -954,26 +954,26 @@ public class CarteTopo extends DataSet {
 					logger.error("arc invalide "+arc);
 				}
 			}
-			fireActionPerformed(new ActionEvent(this,3,"Arc traité",++index));
+			fireActionPerformed(new ActionEvent(this,3,"Arc traitï¿½",++index));
 		}
-		fireActionPerformed(new ActionEvent(this,4,"Fusion des noeuds terminée"));
+		fireActionPerformed(new ActionEvent(this,4,"Fusion des noeuds terminï¿½e"));
 		enleveArcs(listeArcsAEnlever);
 	}
 
 	/** 
-	 * Fusionne en un seul noeud, tous les noeuds contenu dans une même
-	 * surface de la population de surfaces passée en paramètre.
+	 * Fusionne en un seul noeud, tous les noeuds contenu dans une mÃªme
+	 * surface de la population de surfaces passÃ©e en paramÃ¨tre.
 	 * 
 	 * Les correspondants suivent, la topologie arcs/noeuds aussi.
 	 * 
-	 * NB: les petits arcs qui n'ont plus de sens sont aussi éliminés.
-	 * Plus précisément ce sont ceux qui partent et arrivent sur un même
-	 * nouveau noeud créé, et restant dans la surface de fusion.
+	 * NB: les petits arcs qui n'ont plus de sens sont aussi Ã©liminï¿½s.
+	 * Plus prÃ©cisÃ©ment ce sont ceux qui partent et arrivent sur un mÃªme
+	 * nouveau noeud crÃ©Ã©, et restant dans la surface de fusion.
 	 * 
-	 * Un index spatial (dallage) est créé si cela n'avait pas été fait avant,
-	 * mais il est toujours conseillé de le faire en dehors de cette méthode,
+	 * Un index spatial (dallage) est crÃ©Ã© si cela n'avait pas Ã©tÃ© fait avant,
+	 * mais il est toujours conseillï¿½ de le faire en dehors de cette mÃ©thode,
 	 * pour controler la taille du dallage.
-	 * @param popSurfaces population contenant les surface à fusionner en un seul noeud
+	 * @param popSurfaces population contenant les surface Ã  fusionner en un seul noeud
 	 */
 	public void fusionNoeuds(Population<? extends FT_Feature> popSurfaces) {
 		Iterator<Noeud> itNoeudsProches;
@@ -991,7 +991,7 @@ public class CarteTopo extends DataSet {
 			noeudsProches.removeAll(aEnlever);
 			if (noeudsProches.size() < 2) continue;
 
-			//Si il y a plusieurs noeuds dans la surface, on crée un nouveau noeud
+			//Si il y a plusieurs noeuds dans la surface, on crÃ©e un nouveau noeud
 			GM_MultiPoint points = new GM_MultiPoint();
 			itNoeudsProches = noeudsProches.getElements().iterator();
 			while (itNoeudsProches.hasNext()) {
@@ -1002,7 +1002,7 @@ public class CarteTopo extends DataSet {
 			nouveauNoeud = this.getPopNoeuds().nouvelElement();
 			nouveauNoeud.setGeometrie(centroide);
 
-			//On raccroche tous les arcs à ce nouveau noeud
+			//On raccroche tous les arcs Ã  ce nouveau noeud
 			arcsModifies = new ArrayList<Arc>();
 			itNoeudsProches = noeudsProches.getElements().iterator();
 			while (itNoeudsProches.hasNext()) {
@@ -1010,7 +1010,7 @@ public class CarteTopo extends DataSet {
 				nouveauNoeud.addAllCorrespondants(noeudProche.getCorrespondants());
 				noeudProche.setCorrespondants(new ArrayList<FT_Feature>());
 				aEnlever.add(noeudProche);
-				//modification de chaque arc du noeud proche à bouger
+				//modification de chaque arc du noeud proche Ã  bouger
 				for(Object a:noeudProche.arcs()) {
 					arc = (Arc)a;
 					arcsModifies.add(arc);
@@ -1024,7 +1024,7 @@ public class CarteTopo extends DataSet {
 						arc.getGeometrie().setControlPoint(fin,nouveauNoeud.getGeometrie().getPosition());
 					}
 				}
-				//On enlève les arcs qui n'ont plus lieu d'être
+				//On enlÃ¨ve les arcs qui n'ont plus lieu d'Ãªtre
 				// (tout petit autour du nouveau noeud)
 				for(Object a:arcsModifies) {
 					arc = (Arc) a;
@@ -1047,18 +1047,18 @@ public class CarteTopo extends DataSet {
 		}
 	}
 
-	/** Découpe la carte topo this en fonction des noeuds d'une autre carte topo (ct).
-	 * En détail:
-	 * Pour chaque noeud N de la carte topo en entrée,
-	 * on prend chaque arc de this qui en est proche (c'est-à-dire à moins de distanceMaxNoeudArc).
-	 * Si aucune des extrémités de cet arc est à moins de distanceMaxProjectionNoeud du noeud N,
-	 * alors on découpe l'arc en y projetant le noeud N.
+	/** dÃ©coupe la carte topo this en fonction des noeuds d'une autre carte topo (ct).
+	 * En dï¿½tail:
+	 * Pour chaque noeud N de la carte topo en entrÃ©e,
+	 * on prend chaque arc de this qui en est proche (c'est-Ã -dire Ã  moins de distanceMaxNoeudArc).
+	 * Si aucune des extrÃ©mitÃ©s de cet arc est Ã  moins de distanceMaxProjectionNoeud du noeud N,
+	 * alors on dÃ©coupe l'arc en y projetant le noeud N.
 	 * 
-	 * Si impassesSeulement = true: seules les noeuds N extrémités d'impasse peuvent être projetées
+	 * Si impassesSeulement = true: seules les noeuds N extrÃ©mitÃ©s d'impasse peuvent Ãªtre projetÃ©es
 	 * 
 	 * La topologie arcs/noeuds, l'orientation et les correspondants suivent.
 	 * 
-	 * Les arcs de this sont indexés au passage si cela n'avait pas été fait avant.
+	 * Les arcs de this sont indexÃ©s au passage si cela n'avait pas Ã©tÃ© fait avant.
 	 *
 	 */
 	public void projete(CarteTopo ct, double distanceMaxNoeudArc, double distanceMaxProjectionNoeud, boolean impassesSeulement) {
@@ -1088,17 +1088,17 @@ public class CarteTopo extends DataSet {
 		}
 	}
 
-	/** Découpe la carte topo this en fonction de tous les points (noeuds et points intermediaires)
+	/** dÃ©coupe la carte topo this en fonction de tous les points (noeuds et points intermediaires)
 	 * d'une autre carte topo (ct).
-	 * En détail:
-	 * Pour chaque point P de la carte topo en entrée,
-	 * on prend chaque arc de this qui en est proche (c'est-à-dire à moins de distanceMaxNoeudArc).
-	 * Si aucune des extrémités de cet arc est à moins de distanceMaxProjectionNoeud du noeud P,
-	 * alors on découpe l'arc en y projetant le noeud P.
+	 * En dï¿½tail:
+	 * Pour chaque point P de la carte topo en entrÃ©e,
+	 * on prend chaque arc de this qui en est proche (c'est-Ã -dire Ã  moins de distanceMaxNoeudArc).
+	 * Si aucune des extrÃ©mitÃ©s de cet arc est Ã  moins de distanceMaxProjectionNoeud du noeud P,
+	 * alors on dÃ©coupe l'arc en y projetant le noeud P.
 	 * 
 	 * La topologie arcs/noeuds, l'orientation et les correspondants suivent.
 	 * 
-	 * Les arcs de this sont indexés au passage si cela n'avait pas été fait avant.
+	 * Les arcs de this sont indexÃ©s au passage si cela n'avait pas Ã©tÃ© fait avant.
 	 *
 	 */
 	public void projeteTousLesPoints(CarteTopo ct, double distanceMaxNoeudArc, double distanceMaxProjectionNoeud) {
@@ -1133,12 +1133,12 @@ public class CarteTopo extends DataSet {
 		}
 	}
 
-	/** Découpe la carte topo this en fonction d'un ensemble de points (GM_Point).
-	 * En détail:
-	 * Pour chaque point en entrée,
-	 * on prend chaque arc de this qui en est proche (c'est-à-dire à moins de distanceMaxNoeudArc).
-	 * Si aucune des extrémités de cet arc est à moins de distanceMaxProjectionNoeud du noeud N,
-	 * alors on découpe l'arc en y projetant le noeud N.
+	/** dÃ©coupe la carte topo this en fonction d'un ensemble de points (GM_Point).
+	 * En dï¿½tail:
+	 * Pour chaque point en entrÃ©e,
+	 * on prend chaque arc de this qui en est proche (c'est-Ã -dire Ã  moins de distanceMaxNoeudArc).
+	 * Si aucune des extrÃ©mitÃ©s de cet arc est Ã  moins de distanceMaxProjectionNoeud du noeud N,
+	 * alors on dÃ©coupe l'arc en y projetant le noeud N.
 	 * 
 	 * La topologie arcs/noeuds, l'orientation et les correspondants suivent.
 	 *
@@ -1164,27 +1164,27 @@ public class CarteTopo extends DataSet {
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	//	Instanciation de la topologie de faces
 	/////////////////////////////////////////////////////////////////////////////////////////////
-	/** Crée les faces à partir d'un graphe planaire et instancie la topologie face / arcs.
-	 *  Une face est délimitée par un cycle minimal du graphe.
+	/** crÃ©e les faces Ã  partir d'un graphe planaire et instancie la topologie face / arcs.
+	 *  Une face est dï¿½limitï¿½e par un cycle minimal du graphe.
 	 *  <p>
-	 *  Le paramètre persistant spécifie si les faces créées, ainsi que la topologie, sont rendus persistants.
-	 *  Si oui, il faut appeler cette méthode dans une transaction ouverte.
+	 *  Le paramÃ¨tre persistant spÃ©cifie si les faces crÃ©Ã©es, ainsi que la topologie, sont rendus persistants.
+	 *  Si oui, il faut appeler cette mÃ©thode dans une transaction ouverte.
 	 *  <ul>
-	 *  <li> NB1 : la topologie de réseau arcs/noeuds doit avoir été instanciée.
-	 *  <li> NB2 : une face "extérieure" est créée (sa géométrie entoure le "trou" de l'extérieur qu'est le réseau.
+	 *  <li> NB1 : la topologie de rÃ©seau arcs/noeuds doit avoir Ã©tÃ© instanciÃ©e.
+	 *  <li> NB2 : une face "extÃ©rieure" est crÃ©Ã©e (sa gÃ©omÃ©trie entoure le "trou" de l'extÃ©rieur qu'est le rÃ©seau.
 	 *        Donc, dans le cas d'une topologie complete arcs/faces, tous les arcs ont une face gauche
-	 *        et une face à droite.
-	 *  <li> NB3 : <b>ATTENTION :</b> en cas d'un réseau non connexe, une face extérieure différente est crée pour chaque
+	 *        et une face Ã  droite.
+	 *  <li> NB3 : <b>ATTENTION :</b> en cas d'un rÃ©seau non connexe, une face extÃ©rieure diffÃ©rente est crÃ©e pour chaque
 	 *        partie connexe !
-	 *  <li> NB4 : Les culs de sac ont la même face à gauche et à droite, et la face "longe le cul de sac";
-	 *  <li> NB5 : Méthode en théorie conçue pour les graphes planaires uniquement (testée dans ce cadre uniquement).
-	 *       La méthode est en théorie valable pour les graphes non planaires, mais les faces créées
-	 *       seront étranges (on ne recrée pas les intersections manquantes, on les ignore).
-	 *       Si il existe des arcs sans noeud initial ou final (topologie de réseau pas complete),
-	 *       alors ces arcs n'ont ni face à gauche, ni face à droite
+	 *  <li> NB4 : Les culs de sac ont la mÃªme face Ã  gauche et Ã  droite, et la face "longe le cul de sac";
+	 *  <li> NB5 : mÃ©thode en thï¿½orie conï¿½ue pour les graphes planaires uniquement (testï¿½e dans ce cadre uniquement).
+	 *       La mÃ©thode est en thï¿½orie valable pour les graphes non planaires, mais les faces crÃ©Ã©es
+	 *       seront ï¿½tranges (on ne recrÃ©e pas les intersections manquantes, on les ignore).
+	 *       Si il existe des arcs sans noeud initial ou final (topologie de rÃ©seau pas complete),
+	 *       alors ces arcs n'ont ni face Ã  gauche, ni face Ã  droite
 	 * </ul>
-	 * Depuis la version 1.6 la géométrie des faces est corrigée et n'inclue donc plus un aller-retour sur les culs-de-sac. 
-	 * Les trous sont aussi ajoutés à la géométrie des faces.
+	 * Depuis la version 1.6 la gÃ©omÃ©trie des faces est corrigï¿½e et n'inclue donc plus un aller-retour sur les culs-de-sac. 
+	 * Les trous sont aussi ajoutÃ©s Ã  la gÃ©omÃ©trie des faces.
 	 */
 	public void creeTopologieFaces() {
 		List<Arc> arcsDejaTraitesADroite = new ArrayList<Arc>();
@@ -1198,10 +1198,10 @@ public class CarteTopo extends DataSet {
 		fireActionPerformed(new ActionEvent(this,0,"creeTopologieFaces : traitement des arcs",this.getPopArcs().size()));
 		int iteration=0;
 		/* Parcours de tous les arcs du graphe. Puis, pour chaque arc:
-		 *	- recherche du cycle à droite et du cycle à gauche
+		 *	- recherche du cycle Ã  droite et du cycle Ã  gauche
 		 *	- creation des faces correspondantes
-		 *	- on note les arcs par lesquels on est déjà passé pour ne pas refaire le travail
-		 * TODO Regrouper le traitement à droite et à gauche des arcs.
+		 *	- on note les arcs par lesquels on est dÃ©jÃ  passÃ© pour ne pas refaire le travail
+		 * TODO Regrouper le traitement Ã  droite et Ã  gauche des arcs.
 		 */		
 		for(Arc arc:this.getPopArcs()) {
 			Face face = null;
@@ -1209,7 +1209,7 @@ public class CarteTopo extends DataSet {
 			if ( !arcsDejaTraitesADroite.contains(arc) ) {
 				Cycle cycle = arc.cycle(false);
 				face = null;
-				if ( cycle == null ) {logger.error("Cycle null à droite pour l'arc "+arc.getId());continue;}
+				if ( cycle == null ) {logger.error("Cycle null Ã  droite pour l'arc "+arc.getId());continue;}
 				arcsDuCycle = cycle.getArcs();
 				orientationsArcsDuCycle = cycle.getOrientationsArcs();
 				geometrieDuCycle = cycle.getGeometrie();
@@ -1217,7 +1217,7 @@ public class CarteTopo extends DataSet {
 				boolean simple = geometrieDuCycle.isSimple();
 				if (!simple) {
 					List<Cycle> cyclesGeometrieNonSimple = construireGeometrieCycleExterieur(arc,false);
-					// la géométrie est corrigée
+					// la gÃ©omÃ©trie est corrigï¿½e
 					if (cyclesGeometrieNonSimple.size()==1) {geometrieDuCycle=cyclesGeometrieNonSimple.get(0).getGeometrie();}
 					else {
 						for(Cycle cycleCourant:cyclesGeometrieNonSimple) {
@@ -1240,7 +1240,7 @@ public class CarteTopo extends DataSet {
 			if ( !arcsDejaTraitesAGauche.contains(arc) ) {
 				Cycle cycle = arc.cycle(true);
 				face = null;
-				if ( cycle == null ) {if (logger.isDebugEnabled()) logger.debug("Cycle null à gauche pour l'arc "+arc.getId());continue;}
+				if ( cycle == null ) {if (logger.isDebugEnabled()) logger.debug("Cycle null Ã  gauche pour l'arc "+arc.getId());continue;}
 				arcsDuCycle = cycle.getArcs();
 				orientationsArcsDuCycle = cycle.getOrientationsArcs();
 				geometrieDuCycle = cycle.getGeometrie();
@@ -1248,7 +1248,7 @@ public class CarteTopo extends DataSet {
 				boolean simple = geometrieDuCycle.isSimple();
 				if (!simple) {
 					List<Cycle> cyclesGeometrieNonSimple = construireGeometrieCycleExterieur(arc,true);
-					// la géométrie est corrigée
+					// la gÃ©omÃ©trie est corrigï¿½e
 					if (cyclesGeometrieNonSimple.size()==1) {geometrieDuCycle=cyclesGeometrieNonSimple.get(0).getGeometrie();}
 					else {
 						for(Cycle cycleCourant:cyclesGeometrieNonSimple) {
@@ -1269,15 +1269,15 @@ public class CarteTopo extends DataSet {
 			}
 			fireActionPerformed(new ActionEvent(this,1,"creeTopologieFaces : traitement d'un arc",iteration++));
 		}
-		//détection des arcs pendants ie des culs-de-sac
+		//dï¿½tection des arcs pendants ie des culs-de-sac
 		for(Arc arcCourant:this.getPopArcs()) {
 			if ((arcCourant.getFaceDroite()==null)||(arcCourant.getFaceGauche()==null)) {continue;}
 			if (arcCourant.getFaceDroite()==arcCourant.getFaceGauche()) {arcCourant.setPendant(true);}
 		}
 		/*
-		 * Création de l'index spatial.
-		 * On n'active pas la mise à jour automatique afin que, lorsque l'on ajoute la face infinie,
-		 * elle n'apparaisse pas dans chaque requète select.
+		 * crÃ©ation de l'index spatial.
+		 * On n'active pas la mise Ã  jour automatique afin que, lorsque l'on ajoute la face infinie,
+		 * elle n'apparaisse pas dans chaque requï¿½te select.
 		 */
 		this.getPopFaces().initSpatialIndex(Tiling.class,false);
 		GM_Envelope envelope = this.getPopArcs().envelope();
@@ -1298,7 +1298,7 @@ public class CarteTopo extends DataSet {
 				}
 			}
 			marquerCycle(cycle,face);
-			// on ajoute un trous à la géométrie de la face infinie
+			// on ajoute un trous Ã  la gÃ©omÃ©trie de la face infinie
 			GM_Ring trou = new GM_Ring(cycle.getGeometrie());
 			if ((trou.coord().size()!=0)&&face.getGeometrie().contains(trou)) face.getGeometrie().addInterior(trou);
 			fireActionPerformed(new ActionEvent(this,3,"creeTopologieFaces : traitement d'un cycle",iteration++));
@@ -1307,10 +1307,10 @@ public class CarteTopo extends DataSet {
 	}
 
 	/**
-	 * Construire la liste des géométries corrigées d'un cycle
+	 * Construire la liste des gÃ©omÃ©tries corrigï¿½es d'un cycle
 	 * @param arcInitial premier arc du cycle
-	 * @param aGauche vrai si ce cycle parcours son premier arc à gauche, faux sinon
-	 * @return la liste des géométries corrigées du cycle
+	 * @param aGauche vrai si ce cycle parcours son premier arc Ã  gauche, faux sinon
+	 * @return la liste des gÃ©omÃ©tries corrigï¿½es du cycle
 	 */
 	public static List<Cycle> construireGeometrieCycleExterieur(Arc arcInitial, boolean aGauche) {
 		Stack<DirectPosition> pilePoints = new Stack<DirectPosition>();
@@ -1322,8 +1322,8 @@ public class CarteTopo extends DataSet {
 		boolean sensEnCours = true;
 		List<Cycle> listeCycles = new ArrayList<Cycle>();
 		/* on parcours le cycle dans le sens anti-trigonometrique,
-		 * jusqu'à revenir sur this en le parcourant dans le bon sens
-		 * (précision utile à la gestion des cul-de-sac).
+		 * jusqu'ï¿½ revenir sur this en le parcourant dans le bon sens
+		 * (prÃ©cision utile Ã  la gestion des cul-de-sac).
 		 */
 		while ( true ) {// ajout de l'arc en cours au cycle...
 			if (sensEnCours) {  // arc dans le bon sens
@@ -1336,8 +1336,8 @@ public class CarteTopo extends DataSet {
 						for (int j = 0 ; j < pileListesPoints.get(i).size() ; j++) {
 							if (!pointsCycle.contains(pileListesPoints.get(i).get(j))) pointsCycle.add(pileListesPoints.get(i).get(j));
 							else {
-								/* si le point est le même que le dernier du cycle en construction, on ne fait rien (le point est doublé dans la géométrie)
-								 * sinon, ça veut dire que c'est une impasse
+								/* si le point est le mÃªme que le dernier du cycle en construction, on ne fait rien (le point est doublï¿½ dans la gÃ©omÃ©trie)
+								 * sinon, Ã§a veut dire que c'est une impasse
 								 */
 								if (pointsCycle.indexOf(pileListesPoints.get(i).get(j))!=pointsCycle.size()-1) {dangle=true;}
 							}
@@ -1351,7 +1351,7 @@ public class CarteTopo extends DataSet {
 						pileArcs.pop();
 						pileOrientations.pop();
 					}
-					if (pointsCycle.size()>2&&!dangle) { // si on a plus de 3 points et que le cycle n'est pas marqué comme étant une impasse, on l'ajoute
+					if (pointsCycle.size()>2&&!dangle) { // si on a plus de 3 points et que le cycle n'est pas marquï¿½ comme Ã©tant une impasse, on l'ajoute
 						pointsCycle.add(premierPoint);
 						Cycle cycle = new Cycle(arcsCycle, orientationsCycle, new GM_LineString(AdapterFactory.to2DDirectPositionList(new DirectPositionList(pointsCycle))), aGauche);
 						listeCycles.add(cycle);
@@ -1374,8 +1374,8 @@ public class CarteTopo extends DataSet {
 						for (int j = 0 ; j < pileListesPoints.get(i).size() ; j++)
 							if (!pointsCycle.contains(pileListesPoints.get(i).get(j))) pointsCycle.add(pileListesPoints.get(i).get(j));
 							else {
-								/* si le point est le même que le dernier du cycle en construction, on ne fait rien (le point est doublé dans la géométrie)
-								 * sinon, ça veut dire que c'est une impasse
+								/* si le point est le mÃªme que le dernier du cycle en construction, on ne fait rien (le point est doublï¿½ dans la gÃ©omÃ©trie)
+								 * sinon, Ã§a veut dire que c'est une impasse
 								 */
 								if (pointsCycle.indexOf(pileListesPoints.get(i).get(j))!=pointsCycle.size()-1) {dangle=true;}
 							}
@@ -1389,7 +1389,7 @@ public class CarteTopo extends DataSet {
 						pileOrientations.pop();
 					}
 
-					if (pointsCycle.size()>2&&!dangle) {// si on a plus de 3 points et que le cycle n'est pas marqué comme étant une impasse, on l'ajoute
+					if (pointsCycle.size()>2&&!dangle) {// si on a plus de 3 points et que le cycle n'est pas marquï¿½ comme Ã©tant une impasse, on l'ajoute
 						pointsCycle.add(premierPoint);
 						Cycle cycle = new Cycle(arcsCycle, orientationsCycle, new GM_LineString(AdapterFactory.to2DDirectPositionList(new DirectPositionList(pointsCycle))), aGauche);
 						listeCycles.add(cycle);
@@ -1419,8 +1419,8 @@ public class CarteTopo extends DataSet {
 			for (int j = 0 ; j < pileListesPoints.get(i).size() ; j++)
 				if (!pointsCycle.contains(pileListesPoints.get(i).get(j))) pointsCycle.add(pileListesPoints.get(i).get(j));
 				else {
-					/* si le point est le même que le dernier du cycle en construction, on ne fait rien (le point est doublé dans la géométrie)
-					 * sinon, ça veut dire que c'est une impasse
+					/* si le point est le mÃªme que le dernier du cycle en construction, on ne fait rien (le point est doublï¿½ dans la gÃ©omÃ©trie)
+					 * sinon, Ã§a veut dire que c'est une impasse
 					 */
 					if (pointsCycle.indexOf(pileListesPoints.get(i).get(j))!=pointsCycle.size()-1) {dangle=true;}
 				}
@@ -1435,8 +1435,8 @@ public class CarteTopo extends DataSet {
 	}
 
 	/** 
-	 * Détruit les relations topologique d'une face avec tous ses arcs entourants
-	 * @param face face dont la topologie doit être vidée
+	 * dÃ©truit les relations topologique d'une face avec tous ses arcs entourants
+	 * @param face face dont la topologie doit Ãªtre vidï¿½e
 	 */
 	public void videTopologieFace(Face face) {
 		for(Arc arc:face.arcs()) {
@@ -1446,29 +1446,29 @@ public class CarteTopo extends DataSet {
 	}
 
 	/**
-	 * Ajoute des arcs et des noeuds à la carteTopo this qui ne contient que des faces.
+	 * Ajoute des arcs et des noeuds Ã  la carteTopo this qui ne contient que des faces.
 	 * Ces arcs sont les arcs entourant les faces.
 	 * 
-	 * Les relations topologiques arcs/noeuds/surfaces sont instanciées au passage.
+	 * Les relations topologiques arcs/noeuds/surfaces sont instanciÃ©es au passage.
 	 * 
-	 * Les trous sont gérés.
-	 * Les faces en entrée peuvent avoir une orientation quelconque (direct), cela est géré.
-	 * Par contre, on ne s'appuie que sur les points intermédiaires existants dans les polygones des faces :
-	 * les relations topologiques sont donc bien gérés uniquement si les polygones ont des géométrie "compatibles".
+	 * Les trous sont gÃ©rÃ©s.
+	 * Les faces en entrÃ©e peuvent avoir une orientation quelconque (direct), cela est gÃ©rÃ©.
+	 * Par contre, on ne s'appuie que sur les points intermÃ©diaires existants dans les polygones des faces :
+	 * les relations topologiques sont donc bien gÃ©rÃ©s uniquement si les polygones ont des gÃ©omÃ©trie "compatibles".
 	 * 
 	 * @param filtrageNoeudsSimples
-	 *   Si ce paramètre est égal à false, alors on crée un arc et deux noeuds
-	 *   pour chaque segment reliant des points intermédiares des surfaces.
-	 *   Si ce paramètre est égal à true, alors on fusionne les arcs et on ne retient
-	 *   que les noeuds qui ont 3 arcs incidents ou qui servent de point initial/final à une face.
+	 *   Si ce paramÃ¨tre est Ã©gal Ã  false, alors on crÃ©e un arc et deux noeuds
+	 *   pour chaque segment reliant des points intermï¿½diares des surfaces.
+	 *   Si ce paramÃ¨tre est Ã©gal Ã  true, alors on fusionne les arcs et on ne retient
+	 *   que les noeuds qui ont 3 arcs incidents ou qui servent de point initial/final Ã  une face.
 	 */
 	public void ajouteArcsEtNoeudsAuxFaces(boolean filtrageNoeudsSimples) {
 		DirectPosition pt1, pt2;
 		Iterator<DirectPosition> itPts ;
 		boolean sensDirect;
 
-		// On crée un arc pour chaque segment reliant deux points intermédiaires d'une surface
-		// Pour deux faces adjacentes, on duplique ces arcs. On fait le ménage après.
+		// On crÃ©e un arc pour chaque segment reliant deux points intermÃ©diaires d'une surface
+		// Pour deux faces adjacentes, on duplique ces arcs. On fait le mï¿½nage aprÃ¨s.
 		Iterator<Face> itFaces =  this.getPopFaces().getElements().iterator();
 		while (itFaces.hasNext()) {
 			Face face = itFaces.next();
@@ -1511,8 +1511,8 @@ public class CarteTopo extends DataSet {
 			}
 		}
 
-		//indexation spatiale des arcs crées
-		//on crée un dallage avec en moyenne 20 objets par case
+		//indexation spatiale des arcs crÃ©es
+		//on crÃ©e un dallage avec en moyenne 20 objets par case
 		FT_FeatureCollection<Arc> arcsNonTraites = new FT_FeatureCollection<Arc>(this.getPopArcs().getElements());
 		int nb = (int)Math.sqrt(arcsNonTraites.size()/20);
 		if (nb == 0) nb=1;
@@ -1548,7 +1548,7 @@ public class CarteTopo extends DataSet {
 		this.getPopArcs().removeAll(arcsAEnlever);
 		// ajout des noeuds et des relations topologiqes arc/noeud
 		this.creeNoeudsManquants(0);
-		// filtrage de tous les noeuds simples (degré=2)
+		// filtrage de tous les noeuds simples (degrÃ©=2)
 		if (filtrageNoeudsSimples) this.filtreNoeudsSimples();
 	}
 
@@ -1557,7 +1557,7 @@ public class CarteTopo extends DataSet {
 	/////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Initialise le poids de chaque arc comme étant égal à sa longueur;
+	 * Initialise le poids de chaque arc comme Ã©tant Ã©gal Ã  sa longueur;
 	 *  NB: utile uniquement aux plus courts chemins 
 	 */
 	public void initialisePoids() {
@@ -1568,41 +1568,41 @@ public class CarteTopo extends DataSet {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////
-	//	IMPORT: remplissage de la carte topo à partir de Features
+	//	IMPORT: remplissage de la carte topo Ã  partir de Features
 	/////////////////////////////////////////////////////////////////////////////////////////////
 
 	/** 
-	 * Charge en mémoire les élements de la classe 'nomClasseGeo' et remplit 'this' avec des correspondants de ces éléments.
-	 * @param nomClasseGeo nom de la classe des éléments à importer
+	 * Charge en mï¿½moire les Ã©lÃ©ments de la classe 'nomClasseGeo' et remplit 'this' avec des correspondants de ces Ã©lÃ©ments.
+	 * @param nomClasseGeo nom de la classe des Ã©lÃ©ments Ã  importer
 	 */
 	public void importClasseGeo(String nomClasseGeo) {Chargeur.importClasseGeo(nomClasseGeo, this);}
 	/**
-	 * Remplit 'this' avec des correspondants des éléments de 'listeFeature'.
-	 * @param listeFeatures liste des éléments à importer
+	 * Remplit 'this' avec des correspondants des Ã©lÃ©ments de 'listeFeature'.
+	 * @param listeFeatures liste des Ã©lÃ©ments Ã  importer
 	 */
 	public void importClasseGeo(FT_FeatureCollection<?> listeFeatures) {Chargeur.importClasseGeo(listeFeatures, this);}
 	/**
-	 * Remplit 'this' avec des correspondants des éléments de 'listeFeature'. Cette version de la méthode autorise la conversion des données en 2D.
-	 * @param listeFeatures liste des éléments à importer
-	 * @param is2d si vrai, alors convertir les géométries en 2d
+	 * Remplit 'this' avec des correspondants des Ã©lÃ©ments de 'listeFeature'. Cette version de la mÃ©thode autorise la conversion des donnÃ©es en 2D.
+	 * @param listeFeatures liste des Ã©lÃ©ments Ã  importer
+	 * @param is2d si vrai, alors convertir les gÃ©omÃ©tries en 2d
 	 */
 	public void importClasseGeo(FT_FeatureCollection<?> listeFeatures, boolean is2d) {Chargeur.importClasseGeo(listeFeatures, this, is2d);}
 
 	/**
-	 * Affecter la face passée en paramètre aux arcs du cycle
-	 * @param cycle cycle à parcourir afin d'affecter une face à ses arcs
-	 * @param face face à affecter aux arcs
+	 * Affecter la face passÃ©e en paramÃ¨tre aux arcs du cycle
+	 * @param cycle cycle Ã  parcourir afin d'affecter une face Ã  ses arcs
+	 * @param face face Ã  affecter aux arcs
 	 */
 	public void marquerCycle(Cycle cycle, Face face) {this.marquerCycle(cycle.getArcs(),cycle.getOrientationsArcs(),cycle.isAGauche(), face, null,null);}
 
 	/**
-	 * Affecter la face passée en paramètre aux arcs parcourus
-	 * @param arcs arcs à parcourir
+	 * Affecter la face passÃ©e en paramÃ¨tre aux arcs parcourus
+	 * @param arcs arcs Ã  parcourir
 	 * @param orientations orientations respectives des arcs
 	 * @param aGauche vrai si le premier arc est parcourus par la gauche, faux s'il est parcouru par la droite
-	 * @param face face à affecter aux arcs (du côté déterminé par l'orientation et la valeur de aGauche)
-	 * @param arcsDejaTraitesAGauche liste des arcs déjà traités à gauche à maintenir
-	 * @param arcsDejaTraitesADroite liste des arcs déjà traités à droite à maintenir
+	 * @param face face Ã  affecter aux arcs (du cÃ©tÃ© dï¿½terminï¿½ par l'orientation et la valeur de aGauche)
+	 * @param arcsDejaTraitesAGauche liste des arcs dÃ©jÃ  traitï¿½s Ã  gauche Ã  maintenir
+	 * @param arcsDejaTraitesADroite liste des arcs dÃ©jÃ  traitï¿½s Ã  droite Ã  maintenir
 	 */
 	public void marquerCycle(List<Arc> arcs, List<Boolean> orientations, boolean aGauche, Face face, List<Arc> arcsDejaTraitesAGauche, List<Arc> arcsDejaTraitesADroite) {
 		Iterator<Arc> itArcsCycle = arcs.iterator();

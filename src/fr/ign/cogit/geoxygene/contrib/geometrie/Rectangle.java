@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -35,11 +35,11 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
  * Rectangle.
  * 
  * NB: utiliser autant que possible directement la classe GM_Envelope qui
- * représente aussi des rectangles.
- * Cette classe n'est là que pour optimiser quelques méthodes,
- * et est essentiellement utilisée pour l'index de dallage.
+ * reprÃ©sente aussi des rectangles.
+ * Cette classe n'est lÃ  que pour optimiser quelques mÃ©thodes,
+ * et est essentiellement utilisÃ©e pour l'index de dallage.
  * 
- * @author  Mustière
+ * @author  Mustiï¿½re
  * @version 1.0
  */
 
@@ -68,7 +68,7 @@ public class Rectangle {
 			if ( point.getX() > R.xmax ) R.xmax = point.getX();
 			if ( point.getY() < R.ymin ) R.ymin = point.getY();
 			if ( point.getY() > R.ymax ) R.ymax = point.getY();
-		};
+		}
 		return R;
 	}
 
@@ -79,7 +79,7 @@ public class Rectangle {
 		R.ymin = this.ymin - dilatation;
 		R.ymax = this.ymax + dilatation;
 		return R;
-	};
+	}
 
 
 	public boolean intersecte(Rectangle R) {

@@ -64,7 +64,7 @@ public class Recalage {
 	 *  IMPORTANT 2: pour garder les liens, l'appariement doit avoir été lanc�
 	 *  avec le paramètre debugBilanSurObjetsGeo à FALSE
 	 * 
-	 *  NB: méthode con�ue pour les cas relativement simples qui m�rite sans doute d'�tre affin�e.
+	 *  NB: méthode con�ue pour les cas relativement simples qui m�rite sans doute d'être affin�e.
 	 * 
 	 * @param ctARecaler
 	 * Le réseau à recaler
@@ -80,7 +80,7 @@ public class Recalage {
 	public static CarteTopo recalage(ReseauApp ctARecaler,
 			ReseauApp ctSurLaquelleRecaler,
 			EnsembleDeLiens liens) {
-		CarteTopo ctRecale = new CarteTopo("reseau recal�");
+		CarteTopo ctRecale = new CarteTopo("reseau recalé");
 		// On ajoute dans le réseau recal� les arcs sur lesquels on recale qui sont appariés.
 		Iterator<?> itArcsSurLesquelsRecaler = ctSurLaquelleRecaler.getPopArcs().getElements().iterator();
 		while (itArcsSurLesquelsRecaler.hasNext()) {
@@ -106,7 +106,7 @@ public class Recalage {
 	}
 
 	/** Methode utilisée par le recalage pour assurer le recalage.
-	 *  Attention : cette méthode n'est pas très g�n�rique : elle suppose que l'on recale Ref sur Comp uniquement
+	 *  Attention : cette méthode n'est pas très générique : elle suppose que l'on recale Ref sur Comp uniquement
 	 *  et elle m�rite des affinements.
 	 */
 	private static void geometrieRecalee(ArcApp arcARecaler, Arc arcRecale, EnsembleDeLiens liens) {

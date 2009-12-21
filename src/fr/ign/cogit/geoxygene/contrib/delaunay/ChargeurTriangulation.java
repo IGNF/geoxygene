@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut GÈographique National (the French
+ * contribution of the COGIT laboratory at the Institut G√©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut GÈographique National
+ * Copyright (C) 2005 Institut G√©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -64,17 +64,17 @@ public class ChargeurTriangulation extends Chargeur {
 		DirectPositionList listePoints;
 		int i, j;
 
-		if (logger.isDebugEnabled()) logger.debug("DÈbut importLignesEnPoints");
+		if (logger.isDebugEnabled()) logger.debug("d√©but importLignesEnPoints");
 		FT_FeatureCollection<?> listeFeatures = DataSet.db.loadAllFeatures(clGeo);
 		for(i=0 ; i<listeFeatures.size() ; i++) {
-			if (logger.isDebugEnabled()) logger.debug("Nombre de lignes importÈes :" + i);
+			if (logger.isDebugEnabled()) logger.debug("Nombre de lignes importÔøΩes :" + i);
 			objGeo = listeFeatures.get(i);
 
 			if ( objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString ) {
 				listePoints = ((GM_LineString)objGeo.getGeom()).getControlPoint();
 				for (j=0; j<listePoints.size(); j++) {
 					if ( (j % 100) == 0 ) {
-						if (logger.isDebugEnabled()) logger.debug("    Nombre de points crÈÈs :" + j);
+						if (logger.isDebugEnabled()) logger.debug("    Nombre de points cr√©√©s :" + j);
 					}
 					noeud = (NoeudDelaunay)carte.getPopNoeuds().nouvelElement();
 					noeud.setCoord(listePoints.get(j));
@@ -89,9 +89,9 @@ public class ChargeurTriangulation extends Chargeur {
 		FT_Feature objGeo;
 		NoeudDelaunay noeud;
 		DirectPositionList listePoints;
-		if (logger.isDebugEnabled()) logger.debug("DÈbut importLignesEnPoints");
+		if (logger.isDebugEnabled()) logger.debug("d√©but importLignesEnPoints");
 		for(int i=0 ; i<listeFeatures.size() ; i++) {
-			if (logger.isDebugEnabled()) logger.debug("Nombre de lignes importÈes :" + i);
+			if (logger.isDebugEnabled()) logger.debug("Nombre de lignes importÔøΩes :" + i);
 			objGeo = listeFeatures.get(i);
 
 			if ( objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString ) {
@@ -100,14 +100,14 @@ public class ChargeurTriangulation extends Chargeur {
 					noeud = (NoeudDelaunay)carte.getPopNoeuds().nouvelElement();
 					noeud.setCoord(listePoints.get(j));
 				}
-				if (logger.isDebugEnabled()) logger.debug("    Nombre de points crÈÈs :" + listePoints.size());
+				if (logger.isDebugEnabled()) logger.debug("    Nombre de points cr√©√©s :" + listePoints.size());
 			} else if ( objGeo.getGeom() instanceof GM_MultiCurve<?> ) {
 				listePoints = ((GM_MultiCurve<?>)objGeo.getGeom()).coord();
 				for (int j=0; j<listePoints.size(); j++) {
 					noeud = (NoeudDelaunay)carte.getPopNoeuds().nouvelElement();
 					noeud.setCoord(listePoints.get(j));
 				}
-				if (logger.isDebugEnabled()) logger.debug("    Nombre de points crÈÈs :" + listePoints.size());
+				if (logger.isDebugEnabled()) logger.debug("    Nombre de points cr√©√©s :" + listePoints.size());
 			}
 
 		}
@@ -132,7 +132,7 @@ public class ChargeurTriangulation extends Chargeur {
 		Object[] parama = new Object[2];
 
 		for(i=0 ; i<listeFeatures.size() ; i++) {
-			if (logger.isDebugEnabled()) logger.debug("Nombre de lignes importÈes :" + i);
+			if (logger.isDebugEnabled()) logger.debug("Nombre de lignes importÔøΩes :" + i);
 			objGeo = listeFeatures.get(i);
 
 			if ( objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString ) {
@@ -140,7 +140,7 @@ public class ChargeurTriangulation extends Chargeur {
 				listeTemp = new ArrayList<NoeudDelaunay>();
 				for (j=0; j<listePoints.size(); j++) {
 					if ( (j % 100) == 0 ) {
-						if (logger.isDebugEnabled()) logger.debug("    Nombre de points crÈÈs :" + j);
+						if (logger.isDebugEnabled()) logger.debug("    Nombre de points cr√©√©s :" + j);
 					}
 					noeud1 = (NoeudDelaunay)carte.getPopNoeuds().nouvelElement();
 					noeud1.setCoord(listePoints.get(j));
@@ -194,7 +194,7 @@ public class ChargeurTriangulation extends Chargeur {
 		Object[] parama = new Object[2];
 
 		for(int i=0 ; i<listeFeatures.size() ; i++) {
-			if (logger.isDebugEnabled()) logger.debug("Nombre de lignes importÈes :" + i);
+			if (logger.isDebugEnabled()) logger.debug("Nombre de lignes importÔøΩes :" + i);
 			objGeo = listeFeatures.get(i);
 
 			if ( objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString ) {
@@ -202,7 +202,7 @@ public class ChargeurTriangulation extends Chargeur {
 				List<Noeud> listeTemp = new ArrayList<Noeud>();
 				for (int j=0; j<listePoints.size(); j++) {
 					if ( (j % 100) == 0 ) {
-						if (logger.isDebugEnabled()) logger.debug("    Nombre de points crÈÈs :" + j);
+						if (logger.isDebugEnabled()) logger.debug("    Nombre de points cr√©√©s :" + j);
 					}
 					Noeud noeud = carte.getPopNoeuds().nouvelElement();
 					noeud.setCoord(listePoints.get(j));
@@ -225,7 +225,7 @@ public class ChargeurTriangulation extends Chargeur {
 				List<Noeud> listeTemp = new ArrayList<Noeud>();
 				for (int j=0; j<listePoints.size(); j++) {
 					if ( (j % 100) == 0 ) {
-						if (logger.isDebugEnabled()) logger.debug("    Nombre de points crÈÈs :" + j);
+						if (logger.isDebugEnabled()) logger.debug("    Nombre de points cr√©√©s :" + j);
 					}
 					Noeud noeud = carte.getPopNoeuds().nouvelElement();
 					noeud.setCoord(listePoints.get(j));
@@ -273,16 +273,16 @@ public class ChargeurTriangulation extends Chargeur {
 		DirectPositionList listePoints;
 		int i, j;
 
-		if (logger.isDebugEnabled()) logger.debug("DÈbut importPolygoneEnPoints");
+		if (logger.isDebugEnabled()) logger.debug("d√©but importPolygoneEnPoints");
 		for(i=0 ; i<listeFeatures.size() ; i++) {
-			if (logger.isDebugEnabled()) logger.debug("Nombre de polygones importÈes :" + i);
+			if (logger.isDebugEnabled()) logger.debug("Nombre de polygones importÔøΩes :" + i);
 			objGeo = listeFeatures.get(i);
 
 			if ( objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon ) {
 				listePoints = ((GM_Polygon)objGeo.getGeom()).coord();
 				for (j=0; j<listePoints.size(); j++) {
 					if ( (j % 100) == 0 ) {
-						if (logger.isDebugEnabled()) logger.debug("    Nombre de points crÈÈs :" + j);
+						if (logger.isDebugEnabled()) logger.debug("    Nombre de points cr√©√©s :" + j);
 					}
 					noeud = (NoeudDelaunay)carte.getPopNoeuds().nouvelElement();
 					noeud.setCoord(listePoints.get(j));
@@ -301,14 +301,14 @@ public class ChargeurTriangulation extends Chargeur {
 		NoeudDelaunay noeud;
 		int i;
 
-		if (logger.isDebugEnabled()) logger.debug("DÈbut importCentroidesPolygones");
+		if (logger.isDebugEnabled()) logger.debug("d√©but importCentroidesPolygones");
 		for(i=0 ; i<listeFeatures.size() ; i++) {
 			objGeo = listeFeatures.get(i);
 			if ( objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon ) {
 				GM_Point p = new GM_Point(objGeo.getGeom().centroid());
 				noeud = (NoeudDelaunay)carte.getPopNoeuds().nouvelElement(p);
 				noeud.addCorrespondant(objGeo);
-				if (logger.isDebugEnabled()) logger.debug("Centroide importÈ = " + p);
+				if (logger.isDebugEnabled()) logger.debug("Centroide importÔøΩ = " + p);
 			}
 		}
 		if (logger.isDebugEnabled()) logger.debug("Fin importCentroidesPolygones");

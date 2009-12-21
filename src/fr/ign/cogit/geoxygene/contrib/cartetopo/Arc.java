@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -45,11 +45,11 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 /**
  * Classe des arcs de la carte topo.
- * Les arcs ont pour géométrie une GM_LineString, et peuvent être orientés.
- * Des méthodes sont prévues pour une gestion de réseau, de graphe, et de carte topologique.
+ * Les arcs ont pour gÃ©omÃ©trie une GM_LineString, et peuvent Ãªtre orientÃ©s.
+ * Des mÃ©thodes sont prï¿½vues pour une gestion de rÃ©seau, de graphe, et de carte topologique.
  * 
  * English: arcs of a topological map
- * @author Sébastien Mustière
+ * @author SÃ©bastien MustiÃ¨re
  * @author Olivier Bonin
  * @author Julien Perret
  */
@@ -67,19 +67,16 @@ public class Arc extends ElementCarteTopo {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//                                      Géométrie
+	//                                      gÃ©omÃ©trie
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	/** Renvoie le GM_LineString qui définit la géométrie de self */
-	public GM_LineString getGeometrie() {return (GM_LineString)geom;}
-	/** Définit le GM_LineString qui définit la géométrie de self */
+	/** Renvoie le GM_LineString qui dÃ©finit la gÃ©omÃ©trie de self */
+	public GM_LineString getGeometrie() {return (GM_LineString)this.geom;}
+	/** dÃ©finit le GM_LineString qui dÃ©finit la gÃ©omÃ©trie de self */
 	public void setGeometrie(GM_LineString geometrie) {this.setGeom(geometrie);}
-	/** Renvoie la liste de DirectPosition qui définit les coordonnées de self */
-	public DirectPositionList getCoord() {return geom.coord();}
-	/** Définit la liste de DirectPosition qui définit les coordonnées de self */
-	public void setCoord(DirectPositionList dpl) {geom = new GM_LineString(dpl);}
-
-
-
+	/** Renvoie la liste de DirectPosition qui dÃ©finit les coordonnÃ©es de self */
+	public DirectPositionList getCoord() {return this.geom.coord();}
+	/** dÃ©finit la liste de DirectPosition qui dÃ©finit les coordonnÃ©es de self */
+	public void setCoord(DirectPositionList dpl) {this.geom = new GM_LineString(dpl);}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//                          Gestion de la topologie arc / noeuds
@@ -87,8 +84,8 @@ public class Arc extends ElementCarteTopo {
 	private Noeud noeudIni;
 	/** Renvoie le noeud initial de self */
 	public Noeud getNoeudIni() {return this.noeudIni;}
-	/** Définit le noeud initial de self.
-	 * NB: met à jour la relation inverse "sortants" de noeud
+	/** dÃ©finit le noeud initial de self.
+	 * NB: met Ã  jour la relation inverse "sortants" de noeud
 	 */
 	public void setNoeudIni(Noeud noeud)  {
 		if (this.getNoeudIni() != null ) this.getNoeudIni().getSortants().remove(this);
@@ -97,15 +94,15 @@ public class Arc extends ElementCarteTopo {
 			if (!noeud.getSortants().contains(this))
 				noeud.addSortant(this);
 		} else {
-			noeudIni = null;
+			this.noeudIni = null;
 		}
 	}
 
 	private Noeud noeudFin;
 	/** Renvoie le noeud final de self */
 	public Noeud getNoeudFin() {return this.noeudFin;}
-	/** Définit le noeud final de self.
-	 * NB: met à jour la relation inverse "entrants" de noeud
+	/** dÃ©finit le noeud final de self.
+	 * NB: met Ã  jour la relation inverse "entrants" de noeud
 	 */
 	public void setNoeudFin(Noeud noeud)  {
 		if (this.getNoeudFin() != null ) this.getNoeudFin().getEntrants().remove(this);
@@ -114,22 +111,22 @@ public class Arc extends ElementCarteTopo {
 			if (!noeud.getEntrants().contains(this))
 				noeud.addEntrant(this);
 		} else {
-			noeudFin = null;
+			this.noeudFin = null;
 		}
 	}
 
 	/** Renvoie le noeud initial et final de self */
 	public List<Noeud> noeuds() {
 		List<Noeud> noeuds = new ArrayList<Noeud>();
-		if ( !(noeudIni == null) ) noeuds.add(noeudIni);
-		if ( !(noeudFin == null) ) noeuds.add(noeudFin);
+		if ( !(this.noeudIni == null) ) noeuds.add(this.noeudIni);
+		if ( !(this.noeudFin == null) ) noeuds.add(this.noeudFin);
 		return noeuds;
 	}
 
 	/** 
-	 * Projete le point P sur l'arc et découpe l'arc en 2 avec ce point projeté.
-	 * NB: si la projection tombe sur une extrémité de l'arc : ne fait rien.
-	 * @param P point projeté sur l'arc this afin de le découper
+	 * Projete le point P sur l'arc et dÃ©coupe l'arc en 2 avec ce point projetÃ©.
+	 * NB: si la projection tombe sur une extrÃ©mitÃ© de l'arc : ne fait rien.
+	 * @param P point projetÃ© sur l'arc this afin de le dÃ©couper
 	 */
 	public void projeteEtDecoupe(GM_Point P) {
 		DirectPositionList listePoints = this.getGeometrie().coord();
@@ -161,11 +158,11 @@ public class Arc extends ElementCarteTopo {
 		if (Distances.distance(ptmin, listePoints.get(0)) == 0) return;
 		if (Distances.distance(ptmin, listePoints.get(listePoints.size()-1)) == 0) return;
 
-		// création du nouveau noeud
+		// crÃ©ation du nouveau noeud
 		nouveauNoeud = popNoeuds.nouvelElement();
 		nouveauNoeud.setGeometrie(new GM_Point(ptmin));
 
-		// création des nouveaux arcs
+		// crÃ©ation des nouveaux arcs
 		ptsAvant = new DirectPositionList();
 		ptsApres = new DirectPositionList();
 
@@ -199,10 +196,10 @@ public class Arc extends ElementCarteTopo {
 	}
 
 	/** 
-	 * Projete le point P sur l'arc et découpe l'arc en 2 avec ce noeud projeté.
-	 * NB: si la projection tombe sur une extrémité de l'arc : ne fait rien.
-	 * TODO ATTENTION : il reste du nettoyage à faire !!!
-	 * @param n noeud projeté sur l'arc this afin de le découper
+	 * Projete le point P sur l'arc et dÃ©coupe l'arc en 2 avec ce noeud projetÃ©.
+	 * NB: si la projection tombe sur une extrÃ©mitÃ© de l'arc : ne fait rien.
+	 * TODO ATTENTION : il reste du nettoyage Ã  faire !!!
+	 * @param n noeud projetÃ© sur l'arc this afin de le dÃ©couper
 	 */
 	public void projeteEtDecoupe(Noeud n) {
 		DirectPositionList listePoints = this.getGeometrie().coord();
@@ -232,14 +229,14 @@ public class Arc extends ElementCarteTopo {
 		if (Distances.distance(ptmin, listePoints.get(0)) == 0) return;
 		if (Distances.distance(ptmin, listePoints.get(listePoints.size()-1)) == 0) return;
 
-		// modification de la géométrie du noeud et de ses arcs
+		// modification de la gÃ©omÃ©trie du noeud et de ses arcs
 		for(Arc arc:n.arcs()) {
 		    if (arc.getGeometrie().getControlPoint(0).equals(n.getGeometrie().getPosition())) {arc.getGeometrie().setControlPoint(0, ptmin);}
 		    else {arc.getGeometrie().setControlPoint(arc.getGeometrie().sizeControlPoint()-1, ptmin);}
 		}
 		n.setGeometrie(new GM_Point(ptmin));
 
-		// création des nouveaux arcs
+		// crÃ©ation des nouveaux arcs
 		ptsAvant = new DirectPositionList();
 		ptsApres = new DirectPositionList();
 
@@ -275,7 +272,7 @@ public class Arc extends ElementCarteTopo {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//                          Gestion de la topologie arc / faces
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	/** Renvoie la face à gauche et à droite de self */
+	/** Renvoie la face Ã  gauche et Ã  droite de self */
 	public List<Face> faces() {
 		List<Face> faces = new ArrayList<Face>();
 		if(this.getFaceGauche()!=null) faces.add(this.getFaceGauche());
@@ -284,10 +281,10 @@ public class Arc extends ElementCarteTopo {
 	}
 
 	private Face faceGauche;
-	/** Renvoie la face à gauche de self */
+	/** Renvoie la face Ã  gauche de self */
 	public Face getFaceGauche() {return this.faceGauche;}
-	/** Définit la face à gauche de self.
-	 * NB: met à jour la relation inverse "arsc directs" de face
+	/** dÃ©finit la face Ã  gauche de self.
+	 * NB: met Ã  jour la relation inverse "arsc directs" de face
 	 */
 	public void setFaceGauche(Face face) {
 		if (face != null) {
@@ -296,15 +293,15 @@ public class Arc extends ElementCarteTopo {
 				face.addArcDirect(this);
 		} else {
 			if (this.getFaceGauche() != null ) this.getFaceGauche().getArcsDirects().remove(face);
-			faceGauche = null;
+			this.faceGauche = null;
 		}
 	}
 
 	private Face faceDroite;
-	/** Renvoie la face à droite de self */
+	/** Renvoie la face Ã  droite de self */
 	public Face getFaceDroite() {return this.faceDroite;}
-	/** Définit la face à droite de self.
-	 * NB: met à jour la relation inverse "arsc indirects" de face
+	/** dÃ©finit la face Ã  droite de self.
+	 * NB: met Ã  jour la relation inverse "arsc indirects" de face
 	 */
 	public void setFaceDroite(Face face)  {
 		if (face != null) {
@@ -313,42 +310,42 @@ public class Arc extends ElementCarteTopo {
 				face.addArcIndirect(this);
 		} else {
 			if (this.getFaceDroite() != null ) this.getFaceDroite().getArcsIndirects().remove(face);
-			faceDroite = null;
+			this.faceDroite = null;
 		}
 	}
 
 
-	/** Recherche du cycle du réseau à droite de l'arc en se basant sur la topologie de RESEAU uniquement.
-	 *  NB: la liste retournée est égale à null si on n'a pas trouvé de cycle
-	 *          (cas pouvant arriver si la topologie arcs/noeuds n'est pas complète.
-	 *  NB: ne nécessite PAS d'avoir une topologie arcs/faces instanciée.
-	 *  NB: nécessite d'avoir une topologie arcs/noeuds instanciée.
+	/** Recherche du cycle du rÃ©seau Ã  droite de l'arc en se basant sur la topologie de RESEAU uniquement.
+	 *  NB: la liste retournÃ©e est Ã©gale Ã  null si on n'a pas trouvÃ© de cycle
+	 *          (cas pouvant arriver si la topologie arcs/noeuds n'est pas complï¿½te.
+	 *  NB: ne nï¿½cessite PAS d'avoir une topologie arcs/faces instanciÃ©e.
+	 *  NB: nï¿½cessite d'avoir une topologie arcs/noeuds instanciÃ©e.
 	 *  NB: un cycle passe 2 fois (une fois dans chaque sens) par les cul-de-sac si il y en a.
-	 * @return un cycle du réseau. Un cycle contient :
+	 * @return un cycle du rÃ©seau. Un cycle contient :
 	 * <ul>
-	 *  <li> la liste des arcs dans l'ordre de parcours du cycle. Cette Liste est classée dans le sens anti-trigonometrique (sauf pour la face exterieure).
-	 *              (liste de type "ArrayList", contenant elle-même des Arcs).
-	 *  <li> la liste des orientations des arc : true si l'arc à sa face à gauche, false sinon. 
-	 *              (liste de type "ArrayList", contenant elle-même des objets Booleans).
-	 *  <li> la géométrie du polygone faisant le tour du cycle (de type GM_Polygon).
+	 *  <li> la liste des arcs dans l'ordre de parcours du cycle. Cette Liste est classï¿½e dans le sens anti-trigonometrique (sauf pour la face exterieure).
+	 *              (liste de type "ArrayList", contenant elle-mÃªme des Arcs).
+	 *  <li> la liste des orientations des arc : true si l'arc Ã  sa face Ã  gauche, false sinon. 
+	 *              (liste de type "ArrayList", contenant elle-mÃªme des objets Booleans).
+	 *  <li> la gÃ©omÃ©trie du polygone faisant le tour du cycle (de type GM_Polygon).
 	 *  </ul>
 	 */
 	public Cycle cycleADroite() {
 		Arc arcEnCours;
 		boolean sensEnCours;
 		List<Object> arcOriente ;
-		GM_LineString contour = new GM_LineString();;
+		GM_LineString contour = new GM_LineString();
 		List<Arc> arcsDuCycle = new ArrayList<Arc>();
 		List<Boolean> orientationsDuCycle = new ArrayList<Boolean>();
 		int i;
 
-		// intialisation avec le premier arc du cycle (this) qui est par définition dans le bon sens
+		// intialisation avec le premier arc du cycle (this) qui est par dÃ©finition dans le bon sens
 		arcEnCours = this;
 		sensEnCours = true;
 
 		// on parcours le cycle dans le sens anti-trigonometrique,
-		// jusqu'à revenir sur this en le parcourant dans le bon sens
-		// (précision utile à la gestion des cul-de-sac).
+		// jusqu'ï¿½ revenir sur this en le parcourant dans le bon sens
+		// (prÃ©cision utile Ã  la gestion des cul-de-sac).
 
 		while ( true ) {
 			// ajout de l'arc en cours au cycle...
@@ -384,36 +381,36 @@ public class Arc extends ElementCarteTopo {
 	}
 
 
-	/** Recherche du cycle du réseau à gauche de l'arc en se basant sur la topologie de RESEAU uniquement.
-	 *  NB: la liste retournée est égale à null si on n'a pas trouvé de cycle
-	 *          (cas pouvant arriver si la topologie arcs/noeuds n'est pas complète.
-	 *  NB: ne nécessite PAS d'avoir une topologie arcs/faces instanciée.
-	 *  NB: nécessite d'avoir une topologie arcs/noeuds instanciée.
+	/** Recherche du cycle du rÃ©seau Ã  gauche de l'arc en se basant sur la topologie de RESEAU uniquement.
+	 *  NB: la liste retournÃ©e est Ã©gale Ã  null si on n'a pas trouvÃ© de cycle
+	 *          (cas pouvant arriver si la topologie arcs/noeuds n'est pas complï¿½te.
+	 *  NB: ne nï¿½cessite PAS d'avoir une topologie arcs/faces instanciÃ©e.
+	 *  NB: nï¿½cessite d'avoir une topologie arcs/noeuds instanciÃ©e.
 	 *  NB: un cycle passe 2 fois (une fois dans chaque sens) par les cul-de-sac si il y en a.
-	 * @return un cycle du réseau. Un cycle contient :
+	 * @return un cycle du rÃ©seau. Un cycle contient :
 	 * <ul>
-	 *  <li> la liste des arcs dans l'ordre de parcours du cycle. Cette Liste est classée dans le sens trigonometrique (sauf pour la face exterieure).
-	 *              (liste de type "ArrayList", contenant elle-même des Arcs).
-	 *  <li> la liste des orientations des arc : true si l'arc à sa face à gauche, false sinon. 
-	 *              (liste de type "ArrayList", contenant elle-même des objets Booleans).
-	 *  <li> la géométrie du polygone faisant le tour du cycle (de type GM_Polygon).
+	 *  <li> la liste des arcs dans l'ordre de parcours du cycle. Cette Liste est classï¿½e dans le sens trigonometrique (sauf pour la face exterieure).
+	 *              (liste de type "ArrayList", contenant elle-mÃªme des Arcs).
+	 *  <li> la liste des orientations des arc : true si l'arc Ã  sa face Ã  gauche, false sinon. 
+	 *              (liste de type "ArrayList", contenant elle-mÃªme des objets Booleans).
+	 *  <li> la gÃ©omÃ©trie du polygone faisant le tour du cycle (de type GM_Polygon).
 	 *  </ul>
 	 */
 	public Cycle cycleAGauche() {
 		Arc arcEnCours;
 		boolean sensEnCours;
 		List<Object> arcOriente ;
-		GM_LineString contour = new GM_LineString();;
+		GM_LineString contour = new GM_LineString();
 		List<Arc> arcsDuCycle = new ArrayList<Arc>();
 		List<Boolean> orientationsDuCycle = new ArrayList<Boolean>();
 		int i;
-		// intialisation avec le premier arc du cycle (this) qui est par définition dans le bon sens
+		// intialisation avec le premier arc du cycle (this) qui est par dÃ©finition dans le bon sens
 		arcEnCours = this;
 		sensEnCours = true;
 
 		// on parcours le cycle dans le sens anti-trigonometrique,
-		// jusqu'à revenir sur this en le parcourant dans le bon sens
-		// (précision utile à la gestion des cul-de-sac).
+		// jusqu'ï¿½ revenir sur this en le parcourant dans le bon sens
+		// (prÃ©cision utile Ã  la gestion des cul-de-sac).
 		while ( true ) {
 			// ajout de l'arc en cours au cycle...
 			arcsDuCycle.add(arcEnCours);
@@ -447,26 +444,26 @@ public class Arc extends ElementCarteTopo {
 
 
 	/**
-	 * Recherche du cycle du réseau à gauche de l'arc en se basant sur la topologie de RESEAU uniquement.
-	 * NB: le résultat est null si on n'a pas trouvé de cycle (cas pouvant arriver si la topologie arcs/noeuds n'est pas complète.
-	 * NB: ne nécessite PAS d'avoir une topologie arcs/faces instanciée.
-	 * NB: nécessite d'avoir une topologie arcs/noeuds instanciée.
+	 * Recherche du cycle du rÃ©seau Ã  gauche de l'arc en se basant sur la topologie de RESEAU uniquement.
+	 * NB: le rÃ©sultat est null si on n'a pas trouvÃ© de cycle (cas pouvant arriver si la topologie arcs/noeuds n'est pas complï¿½te.
+	 * NB: ne nï¿½cessite PAS d'avoir une topologie arcs/faces instanciÃ©e.
+	 * NB: nï¿½cessite d'avoir une topologie arcs/noeuds instanciÃ©e.
 	 * NB: un cycle passe 2 fois (une fois dans chaque sens) par les cul-de-sac si il y en a.
 	 * @param aGauche si vrai, on parcours l'arc par la gauche. Sinon, on le parcours par la droite.
-	 * @return un cycle du réseau
+	 * @return un cycle du rÃ©seau
 	 */
 	public Cycle cycle(boolean aGauche) {
 		List<Object> arcOriente;
 		GM_LineString contour = new GM_LineString();
 		List<Arc> arcsDuCycle = new ArrayList<Arc>();
 		List<Boolean> orientationsDuCycle = new ArrayList<Boolean>();
-		// intialisation avec le premier arc du cycle (this) qui est par définition dans le bon sens
+		// intialisation avec le premier arc du cycle (this) qui est par dÃ©finition dans le bon sens
 		Arc arcEnCours = this;
 		boolean sensEnCours = true;
 
 		// on parcours le cycle dans le sens anti-trigonometrique,
-		// jusqu'à revenir sur this en le parcourant dans le bon sens
-		// (précision utile à la gestion des cul-de-sac).
+		// jusqu'ï¿½ revenir sur this en le parcourant dans le bon sens
+		// (prÃ©cision utile Ã  la gestion des cul-de-sac).
 		while ( true ) {
 			// ajout de l'arc en cours au cycle...
 			arcsDuCycle.add(arcEnCours);
@@ -501,19 +498,19 @@ public class Arc extends ElementCarteTopo {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//                      Gestion de type carte topopolgique
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// Les arcs sont classés autour d'un noeud en fonction de leur géométrie.
+	// Les arcs sont classï¿½s autour d'un noeud en fonction de leur gÃ©omÃ©trie.
 	// Ceci permet en particulier de parcourir facilement les cycles d'un graphe.
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 
-	/** Arc suivant self à son noeud final, au sens des cartes topologiques.
+	/** Arc suivant self Ã  son noeud final, au sens des cartes topologiques.
 	 *  L'arc suivant est l'arc incident au noeud final de self,
-	 *  et suivant self dans l'ordre trigonométrique autour de ce noeud final.
+	 *  et suivant self dans l'ordre trigonomï¿½trique autour de ce noeud final.
 	 *
-	 *  NB: renvoie une liste de 2 éléments :
+	 *  NB: renvoie une liste de 2 Ã©lÃ©ments :
 	 *      element 1, liste.get(0) = l'arc
 	 *      element 2, liste.get(1) = Boolean, true si entrant, false si sortant
-	 *  NB: calcul réalisé pour chaque appel de la méthode.
-	 *  NB : l'arcSuivant peut être self, en cas de cul de sac sur le noeud final.
+	 *  NB: calcul rÃ©alisï¿½ pour chaque appel de la mÃ©thode.
+	 *  NB : l'arcSuivant peut Ãªtre self, en cas de cul de sac sur le noeud final.
 	 */
 	public List<Object> arcSuivantFin() {
 		if ( this.getNoeudFin() == null ) return null;
@@ -527,7 +524,7 @@ public class Arc extends ElementCarteTopo {
 
 		// On parcours la liste des arcs autour du noeud final
 		// Quand on y rencontre this en tant qu'entrant, on renvoie le suivant dans la liste
-		// NB: cette notion d'entrant est nécesaire pour bien gérer les boucles
+		// NB: cette notion d'entrant est nï¿½cesaire pour bien gÃ©rer les boucles
 		while( itArcs.hasNext() ) {
 			arc = (Arc) itArcs.next();
 			orientationEntrant = (Boolean)itArcsOrientation.next();
@@ -546,15 +543,15 @@ public class Arc extends ElementCarteTopo {
 		return null;
 	}
 
-	/** Arc suivant self à son noeud initial, au sens des cartes topologiques.
+	/** Arc suivant self Ã  son noeud initial, au sens des cartes topologiques.
 	 *  L'arc suivant est l'arc incident au noeud initial de self,
-	 *  et suivant self dans l'ordre trigonométrique autour de ce noeud initial.
+	 *  et suivant self dans l'ordre trigonomï¿½trique autour de ce noeud initial.
 	 *
-	 *  NB: renvoie une liste de 2 éléments :
+	 *  NB: renvoie une liste de 2 Ã©lÃ©ments :
 	 *      element 1, liste.get(0) = l'arc
 	 *      element 2, liste.get(1) = Boolean, true si entrant, false si sortant
-	 *  NB: calcul réalisé pour chaque appel de la méthode.
-	 *  NB : l'arcSuivant peut être self, en cas de cul de sac sur le noeud initial.
+	 *  NB: calcul rÃ©alisï¿½ pour chaque appel de la mÃ©thode.
+	 *  NB : l'arcSuivant peut Ãªtre self, en cas de cul de sac sur le noeud initial.
 	 */
 	public List<Object> arcSuivantDebut() {
 		if ( this.getNoeudIni() == null ) return null;
@@ -568,7 +565,7 @@ public class Arc extends ElementCarteTopo {
 
 		// On parcours la liste des arcs autour du noeud initial
 		// Quand on y rencontre this en tant que sortant, on renvoie le suivant dans la liste
-		// NB: cette notion de sortant est nécesaire pour bien gérer les boucles.
+		// NB: cette notion de sortant est nï¿½cesaire pour bien gÃ©rer les boucles.
 		while( itArcs.hasNext() ) {
 			arc = (Arc) itArcs.next();
 			orientationEntrant = (Boolean)itArcsOrientation.next();
@@ -587,15 +584,15 @@ public class Arc extends ElementCarteTopo {
 		return null;
 	}
 
-	/** Arc précédant self à son noeud final, au sens des cartes topologiques.
-	 *  L'arc précédent est l'arc incident au noeud final de self,
-	 *  et précédant self dans l'ordre trigonométrique autour de ce noeud final.
+	/** Arc prï¿½cï¿½dant self Ã  son noeud final, au sens des cartes topologiques.
+	 *  L'arc prï¿½cï¿½dent est l'arc incident au noeud final de self,
+	 *  et prï¿½cï¿½dant self dans l'ordre trigonomï¿½trique autour de ce noeud final.
 	 *
-	 *  NB: renvoie une liste de 2 éléments :
+	 *  NB: renvoie une liste de 2 Ã©lÃ©ments :
 	 *      element 1, liste.get(0) = l'arc
 	 *      element 2, liste.get(1) = Boolean, true si entrant, false si sortant
-	 *  NB: calcul réalisé pour chaque appel de la méthode.
-	 *  NB : l'arc précédent peut être self, en cas de cul de sac sur le noeud final.
+	 *  NB: calcul rÃ©alisï¿½ pour chaque appel de la mÃ©thode.
+	 *  NB : l'arc prï¿½cï¿½dent peut Ãªtre self, en cas de cul de sac sur le noeud final.
 	 */
 	public List<Object> arcPrecedentFin() {
 		if ( this.getNoeudFin() == null ) return null;
@@ -608,8 +605,8 @@ public class Arc extends ElementCarteTopo {
 		List<Object> resultat = new ArrayList<Object>();
 
 		// On parcours la liste des arcs autour du noeud final
-		// Quand on y rencontre this en tant qu'entrant, on renvoie le précédant dans la liste
-		// NB: cette notion de précédant est nécesaire pour bien gérer les boucles.
+		// Quand on y rencontre this en tant qu'entrant, on renvoie le prï¿½cï¿½dant dans la liste
+		// NB: cette notion de prï¿½cï¿½dant est nï¿½cesaire pour bien gÃ©rer les boucles.
 		arc = (Arc) itArcs.next();
 		orientationEntrant = (Boolean)itArcsOrientation.next();
 		if ((arc == this) && orientationEntrant.booleanValue() ) {
@@ -631,15 +628,15 @@ public class Arc extends ElementCarteTopo {
 		return null;
 	}
 
-	/** Arc précédent self à son noeud initial, au sens des cartes topologiques.
-	 *  L'arc précédent est l'arc incident au noeud initial de self,
-	 *  et précédent self dans l'ordre trigonométrique autour de ce noeud initial.
+	/** Arc prï¿½cï¿½dent self Ã  son noeud initial, au sens des cartes topologiques.
+	 *  L'arc prï¿½cï¿½dent est l'arc incident au noeud initial de self,
+	 *  et prï¿½cï¿½dent self dans l'ordre trigonomï¿½trique autour de ce noeud initial.
 	 *
-	 *  NB: renvoie une liste de 2 éléments :
+	 *  NB: renvoie une liste de 2 Ã©lÃ©ments :
 	 *      element 1, liste.get(0) = l'arc
 	 *      element 2, liste.get(1) = Boolean, true si entrant, false si sortant
-	 *  NB: calcul réalisé pour chaque appel de la méthode.
-	 *  NB : l'arc précédent peut être self, en cas de cul de sac sur le noeud initial.
+	 *  NB: calcul rÃ©alisï¿½ pour chaque appel de la mÃ©thode.
+	 *  NB : l'arc prï¿½cï¿½dent peut Ãªtre self, en cas de cul de sac sur le noeud initial.
 	 */
 	public List<Object> arcPrecedentDebut() {
 		if ( this.getNoeudIni() == null ) return null;
@@ -652,8 +649,8 @@ public class Arc extends ElementCarteTopo {
 		List<Object> resultat = new ArrayList<Object>();
 
 		// On parcours la liste des arcs autour du noeud initial
-		// Quand on y rencontre this en tant que sortant, on renvoie le précédant dans la liste
-		// NB: cette notion de précédant est nécesaire pour bien gérer les boucles.
+		// Quand on y rencontre this en tant que sortant, on renvoie le prï¿½cï¿½dant dans la liste
+		// NB: cette notion de prï¿½cï¿½dant est nï¿½cesaire pour bien gÃ©rer les boucles.
 		arc = (Arc) itArcs.next();
 		orientationEntrant = (Boolean)itArcsOrientation.next();
 		if ((arc == this) && !orientationEntrant.booleanValue() ) {
@@ -676,39 +673,39 @@ public class Arc extends ElementCarteTopo {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//                              Gestion d'un réseau orienté
+	//                              Gestion d'un rÃ©seau orientÃ©
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// NB: ne pas confondre orientation définie par l'attribut "orientation" (traité ici),
-	//      et l'orientation définie implicitement par le sens de stockage de la géométrie
+	// NB: ne pas confondre orientation dÃ©finie par l'attribut "orientation" (traitï¿½ ici),
+	//      et l'orientation dÃ©finie implicitement par le sens de stockage de la gÃ©omÃ©trie
 
 	private int orientation = 2;
 	/** Renvoie l'orientation. L'orientation vaut 2 dans les deux sens, -1 en sens indirect et 1 en sens direct */
 	public int getOrientation() {return this.orientation;}
-	/** Définit l'orientation. L'orientation vaut 2 dans les deux sens, -1 en sens indirect et 1 en sens direct */
+	/** dÃ©finit l'orientation. L'orientation vaut 2 dans les deux sens, -1 en sens indirect et 1 en sens direct */
 	public void setOrientation(int orientation) {this.orientation = orientation;}
 
 
 	/* Noeuds initiaux de l'arc, au sens de son orientation.
-	 * Si l'arc est en double sens (orientation = 2), les deux noeuds extrémités sont renvoyés.
-	 * Sinon, un seul noeud est renvoyé.
-	 * NB: à ne pas confondre avec getNoeudIni, qui renvoie le noeud initial au sens du stockage
+	 * Si l'arc est en double sens (orientation = 2), les deux noeuds extrÃ©mitÃ©s sont renvoyÃ©s.
+	 * Sinon, un seul noeud est renvoyÃ©.
+	 * NB: Ã  ne pas confondre avec getNoeudIni, qui renvoie le noeud initial au sens du stockage
 	 */
 	public List<Noeud> inisOrientes() {
 		List<Noeud> noeuds = new ArrayList<Noeud>();
-		if ( (orientation == 2 || orientation == 1) && !(noeudIni == null) ) noeuds.add(noeudIni);
-		if ( (orientation == 2 || orientation == -1)  && !(noeudFin == null) ) noeuds.add(noeudFin);
+		if ( (this.orientation == 2 || this.orientation == 1) && !(this.noeudIni == null) ) noeuds.add(this.noeudIni);
+		if ( (this.orientation == 2 || this.orientation == -1)  && !(this.noeudFin == null) ) noeuds.add(this.noeudFin);
 		return noeuds;
 	}
 
 	/* Noeuds finaux de l'arc, au sens de son orientation.
-	 * Si l'arc est en double sens (orientation = 2), les deux noeuds extrémités sont renvoyés.
-	 * Sinon, un seul noeud est renvoyé.
-	 * NB: à ne pas confondre avec getNoeudFin, qui renvoie le noeud final au sens du stockage
+	 * Si l'arc est en double sens (orientation = 2), les deux noeuds extrÃ©mitÃ©s sont renvoyÃ©s.
+	 * Sinon, un seul noeud est renvoyÃ©.
+	 * NB: Ã  ne pas confondre avec getNoeudFin, qui renvoie le noeud final au sens du stockage
 	 */
 	public List<Noeud> finsOrientes() {
 		List<Noeud> noeuds = new ArrayList<Noeud>();
-		if ( (orientation == 2 || orientation == -1) && !(noeudIni == null) ) noeuds.add(noeudIni);
-		if ( (orientation == 2 || orientation == 1)  && !(noeudFin == null) ) noeuds.add(noeudFin);
+		if ( (this.orientation == 2 || this.orientation == -1) && !(this.noeudIni == null) ) noeuds.add(this.noeudIni);
+		if ( (this.orientation == 2 || this.orientation == 1)  && !(this.noeudFin == null) ) noeuds.add(this.noeudFin);
 		return noeuds;
 	}
 
@@ -719,7 +716,7 @@ public class Arc extends ElementCarteTopo {
 	private double poids = 0;
 	/** Renvoie le poids de l'arc, pour les calculs de plus court chemin */
 	public double getPoids() {return this.poids;}
-	/** Définit le poids de l'arc, pour les calculs de plus court chemin */
+	/** dÃ©finit le poids de l'arc, pour les calculs de plus court chemin */
 	public void setPoids(double d) {this.poids = d;}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -730,11 +727,11 @@ public class Arc extends ElementCarteTopo {
 	private Collection<Groupe> listeGroupes = new ArrayList<Groupe>();
 	/** Renvoie la liste des groupes de self*/
 	public Collection<Groupe> getListeGroupes() {return this.listeGroupes;}
-	/** Définit la liste des groupes de self*/
+	/** dÃ©finit la liste des groupes de self*/
 	public void setListegroupes(Collection<Groupe> liste) {this.listeGroupes = liste;}
-	/** Ajoute un groupe à self*/
+	/** Ajoute un groupe Ã  self*/
 	public void addGroupe(Groupe groupe) {
-		if (groupe != null && !listeGroupes.contains(groupe)) {
+		if (groupe != null && !this.listeGroupes.contains(groupe)) {
 			this.listeGroupes.add(groupe);
 			if (!groupe.getListeArcs().contains(this))
 				groupe.addArc(this);
@@ -747,30 +744,30 @@ public class Arc extends ElementCarteTopo {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	private Rectangle rectangleEnglobant = null;
 
-	/** Rectangle englobant de l'arc, orienté le long des axes des x,y.
-	 * NB: le rectangle est calculé au premier appel de cette fonction.
-	 * Si l'arc est modifié, la valeur n'est pas mise à jour : il faut le faire explicitement au besoin avec calculeRectangleEnglobant.
+	/** Rectangle englobant de l'arc, orientÃ© le long des axes des x,y.
+	 * NB: le rectangle est calculï¿½ au premier appel de cette fonction.
+	 * Si l'arc est modifiÃ©, la valeur n'est pas mise Ã  jour : il faut le faire explicitement au besoin avec calculeRectangleEnglobant.
 	 */
 	public Rectangle getRectangleEnglobant() {
 		if (this.rectangleEnglobant == null) this.calculeRectangleEnglobant();
 		return this.rectangleEnglobant;
 	}
-	/** Calcule le rectangle englobant x,y en fonction de la géométrie */
+	/** Calcule le rectangle englobant x,y en fonction de la gÃ©omÃ©trie */
 	public void calculeRectangleEnglobant() {this.rectangleEnglobant = Rectangle.rectangleEnglobant(this.getGeometrie());}
 
 	protected boolean proche(Arc arc, double distance) {return arc.getRectangleEnglobant().intersecte(this.getRectangleEnglobant().dilate(distance));}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//                      Opérateurs de calculs sur les arcs
+	//                      opÃ©rateurs de calculs sur les arcs
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	/** Distance euclidienne entre le noeud et self */
 	public double distance (Noeud noeud) {return (Distances.distance(noeud.getCoord(),this.getGeometrie()));}
 
-	/** Première composante de la distance de Hausdorff de self vers l'arc.
+	/** PremiÃ¨re composante de la distance de Hausdorff de self vers l'arc.
 	 * Elle est calculee comme le maximum des distances d'un point intermediaire
-	 * de self à l'arc. Cette approximation peut différer sensiblement
+	 * de self Ã  l'arc. Cette approximation peut diffÃ¨rer sensiblement
 	 * de la definition theorique.
-	 * NB : défini en théorie à 3D, mais non vérifié en profondeur */
+	 * NB : dÃ©fini en thï¿½orie Ã  3D, mais non vï¿½rifiï¿½ en profondeur */
 	public double premiereComposanteHausdorff (Arc arc) {return (Distances.premiereComposanteHausdorff(this.getGeometrie(), arc.getGeometrie()));}
 
 	/** Distance de Hausdorff entre self et l'arc.
@@ -778,23 +775,23 @@ public class Arc extends ElementCarteTopo {
 	 * d'une des lignes a l'autre ligne. Dans certains cas cette definition
 	 * differe de la definition theorique car la distance de Hausdorff ne se
 	 * realise pas necessairement sur un point intermediaire. Mais cela est rare
-	 * sur des données réel. Cette implementation est un bon compromis entre
-	 * simplicité et précision.
-	 * NB : défini en théorie à 3D, mais non vérifié en profondeur */
+	 * sur des donnÃ©es rï¿½el. Cette implementation est un bon compromis entre
+	 * simplicitï¿½ et prÃ©cision.
+	 * NB : dÃ©fini en thï¿½orie Ã  3D, mais non vï¿½rifiï¿½ en profondeur */
 	public double hausdorff (Arc arc) {return (Distances.hausdorff(this.getGeometrie(), arc.getGeometrie()));}
 
-	/** Longueur euclidienne de l'arc. Est calculé en 3D si la géométrie est définie en 3D */
+	/** Longueur euclidienne de l'arc. Est calculï¿½ en 3D si la gÃ©omÃ©trie est dÃ©finie en 3D */
 	public double longueur() {return this.getGeometrie().length();}
 
 	protected boolean pendant = false;
 	/**
-	 * @return vrai si l'arc est pendant, i.e. si sa face droite est la même que sa face gauche. En d'autres mots, c'est une impasse.
+	 * @return vrai si l'arc est pendant, i.e. si sa face droite est la mÃªme que sa face gauche. En d'autres mots, c'est une impasse.
 	 */
-	public boolean isPendant() {return pendant;}
+	public boolean isPendant() {return this.pendant;}
 
 	/**
 	 * Affecte la valeur de l'attribut pendant de l'arc : 
-	 * @param pendant vrai si l'arc est pendant, i.e. si sa face droite est la même que sa face gauche. En d'autres mots, c'est une impasse.
+	 * @param pendant vrai si l'arc est pendant, i.e. si sa face droite est la mÃªme que sa face gauche. En d'autres mots, c'est une impasse.
 	 */
 	public void setPendant(boolean pendant) {
 		this.pendant = pendant;
@@ -803,6 +800,7 @@ public class Arc extends ElementCarteTopo {
 
 	@Override
 	public String toString() {
-		return "Arc "+this.getId()+" - "+this.getOrientation()+" - "+((this.getNoeudIni()==null)?"null":this.getNoeudIni().getId())+" - "+((this.getNoeudFin()==null)?"null":this.getNoeudFin().getId())+" - "+this.getGeometrie();
+		return "Arc "+this.getId()+" - "+this.getOrientation()+" - "+ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		((this.getNoeudIni()==null)?"null":""+this.getNoeudIni().getId())+" - "+((this.getNoeudFin()==null)?"null":""+this.getNoeudFin().getId())+" - "+this.getGeometrie(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 	}
 }

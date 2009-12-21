@@ -109,7 +109,7 @@ public class ParametresAppSurfaces implements Cloneable {
 	public boolean persistant = false;
 
 
-	/** Uniquement pour des probl�mes de robustesse du code si les surfaces
+	/** Uniquement pour des problèmes de robustesse du code si les surfaces
 	 * en entrée ne sont pas propres (existence de mini-boucles).
 	 * Si JTS plante à cuase de ces surfaces bizarres, celles-ci seront
 	 * filtr�es avec DouglasPeucker.
@@ -118,7 +118,7 @@ public class ParametresAppSurfaces implements Cloneable {
 	 */
 	public double resolutionMin = 1;
 
-	/** Uniquement pour des probl�mes de robustesse du code si les surfaces
+	/** Uniquement pour des problèmes de robustesse du code si les surfaces
 	 * en entrée ne sont pas propres (existence de mini-boucles).
 	 * Si JTS plante à cuase de ces surfaces bizarres, celles-ci seront
 	 * filtr�es avec DouglasPeucker.

@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -37,7 +37,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 /**
- * Méthodes statiques pour la création d'un ARM (Arbre de Recouvrement Minimal,
+ * mÃ©thodes statiques pour la crÃ©ation d'un ARM (Arbre de Recouvrement Minimal,
  * Minimal Spanning Tree)
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
@@ -46,20 +46,20 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  */
 public class ARM {
 
-	/** Création d'un ARM à partir d'un ensemble de points
+	/** crÃ©ation d'un ARM Ã  partir d'un ensemble de points
 	 * 
-	 * Cette méthode est très brutale: adaptée pour quelques points seulement.
+	 * Cette mÃ©thode est trÃ¨s brutale: adaptÃ©e pour quelques points seulement.
 	 * On fait des calculs de distance beaucoup trop souvent.
-	 * L'ARM étant un sous-graphe de Delaunay, cela peut être grandement optimisé en
+	 * L'ARM Ã©tant un sous-graphe de Delaunay, cela peut Ãªtre grandement optimisÃ© en
 	 * effectuant un Delaunay d'abord.
 	 * 
 	 * @param points
-	 * Liste d'objets en entrée: ils doivent avoir une géométrie de type point
+	 * Liste d'objets en entrÃ©e: ils doivent avoir une gÃ©omÃ©trie de type point
 	 * 
 	 * @return
 	 * Une carte topo contenant un noeud pour chaque point,
-	 * et un arc pour chaque tronçon du ARM
-	 * ("correspondant" est instancié pour relier les noeuds et les points).
+	 * et un arc pour chaque TronÃ§on du ARM
+	 * ("correspondant" est instanciÃ© pour relier les noeuds et les points).
 	 */
 	public static CarteTopo creeARM(FT_FeatureCollection<FT_Feature> points) {
 		Noeud noeud, nouveauNoeud;
@@ -76,23 +76,23 @@ public class ARM {
 		// Amorce, on prend un point au hasard: le premier
 		point = pointsCopie.get(0);
 		if ( ! (point.getGeom() instanceof GM_Point) ) {
-			System.out.println("Un des objets en entrée n'est pas un point, renvoie Null");
+			System.out.println("Un des objets en entrÃ©e n'est pas un point, renvoie Null");
 			return null;
 		}
 		pointsCopie.remove(point);
 		nouveauNoeud= arm.getPopNoeuds().nouvelElement();
 		nouveauNoeud.setGeom(point.getGeom());
 		nouveauNoeud.addCorrespondant(point);
-		// Ajout des points un à un
+		// Ajout des points un Ã  un
 		while(true) {
-			if (pointsCopie.size() == 0) break; //ça y est, on a relié tous les points
+			if (pointsCopie.size() == 0) break; //ï¿½a y est, on a reliÃ© tous les points
 
 			//on cherche le couple noeud-point le pus proche (TRES bourrin)
 			distMin = Double.MAX_VALUE;
 			for(i=0;i<pointsCopie.size();i++) {
 				point = pointsCopie.get(i);
 				if ( ! (point.getGeom() instanceof GM_Point) ) {
-					System.out.println("Un des objets en entrée n'est pas un point, renvoie Null");
+					System.out.println("Un des objets en entrÃ©e n'est pas un point, renvoie Null");
 					return null;
 				}
 
@@ -127,15 +127,15 @@ public class ARM {
 
 	}
 
-	/** Methode pour créer un ARM à partir des centroides d'un ensemble d'objets.
+	/** Methode pour crÃ©er un ARM Ã  partir des centroides d'un ensemble d'objets.
 	 * 
 	 * @param objets
-	 * Liste d'objets en entrée: ils doivent avoir une géométrie quelconque
+	 * Liste d'objets en entrÃ©e: ils doivent avoir une gÃ©omÃ©trie quelconque
 	 * 
 	 * @return
 	 * Une carte topo contenant un noeud pour chaque point,
-	 * et un arc pour chaque tronçon du ARM
-	 * ("correspondant" est instancié pour relier les noeuds et les points).
+	 * et un arc pour chaque TronÃ§on du ARM
+	 * ("correspondant" est instanciÃ© pour relier les noeuds et les points).
 	 * 
 	 */
 	public static CarteTopo creeARMsurObjetsQuelconques(FT_FeatureCollection<FT_Feature> objets) {
@@ -145,7 +145,7 @@ public class ARM {
 		while (itObjets.hasNext()) {
 			FT_Feature objet = itObjets.next();
 			if (objet.getGeom() == null) {
-				System.out.println("Un des objets en entrée n'a pas de géométrie, renvoie Null");
+				System.out.println("Un des objets en entrÃ©e n'a pas de gÃ©omÃ©trie, renvoie Null");
 				return null;
 			}
 			Noeud objet2 = new Noeud();

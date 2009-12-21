@@ -1,14 +1,14 @@
-/**
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
+ * contribution of the COGIT laboratory at the Institut GÃ©ographique National (the French
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut GÃ©ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
@@ -46,7 +46,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
- * Classe mère de la triangulation construite sur la bibliothèque Triangle de Jonathan Richard Shewchuk.
+ * Classe mÃ¨re de la triangulation construite sur la bibliothï¿½que Triangle de Jonathan Richard Shewchuk.
  * Triangulation class used on top of Jonathan Richard Shewchuk's Triangle library.
  * @author Bonin
  * @author Julien Perret
@@ -60,7 +60,7 @@ public class Triangulation extends CarteTopo{
      * 
      */
     public Triangulation() {
-	this.ojbConcreteClass = this.getClass().getName(); // nécessaire pour ojb
+	this.ojbConcreteClass = this.getClass().getName(); // nÃ©cessaire pour ojb
 	this.setPersistant(false);
 	Population<ArcDelaunay> arcs = new Population<ArcDelaunay>(false, "Arc", ArcDelaunay.class,true);
 	this.addPopulation(arcs);
@@ -74,7 +74,7 @@ public class Triangulation extends CarteTopo{
      * @param nom_logique
      */
     public Triangulation(String nom_logique) {
-	this.ojbConcreteClass = this.getClass().getName(); // nécessaire pour ojb
+	this.ojbConcreteClass = this.getClass().getName(); // nÃ©cessaire pour ojb
 	this.setNom(nom_logique);
 	this.setPersistant(false);
 	Population<ArcDelaunay> arcs = new Population<ArcDelaunay>(false, "Arc", ArcDelaunay.class,true);
@@ -105,13 +105,13 @@ public class Triangulation extends CarteTopo{
     	NoeudDelaunay node;
     	DirectPosition coord;
     	List<Noeud> noeuds = new ArrayList<Noeud>(this.getListeNoeuds());
-    	jin.numberofpoints = noeuds.size();
-    	jin.pointlist = new double[2*jin.numberofpoints];
+    	this.jin.numberofpoints = noeuds.size();
+    	this.jin.pointlist = new double[2*this.jin.numberofpoints];
     	for (i=0; i<noeuds.size(); i++) {
     		node = (NoeudDelaunay) noeuds.get(i);
     		coord = node.getGeometrie().getPosition();
-    		jin.pointlist[2*i]=coord.getX();
-    		jin.pointlist[2*i+1]=coord.getY();
+    		this.jin.pointlist[2*i]=coord.getX();
+    		this.jin.pointlist[2*i+1]=coord.getY();
     	}
     }
 
@@ -122,11 +122,11 @@ public class Triangulation extends CarteTopo{
     	int i;
     	ArrayList<FT_Feature> noeuds = new ArrayList<FT_Feature>(this.getListeNoeuds());
     	ArrayList<FT_Feature> aretes = new ArrayList<FT_Feature>(this.getListeArcs());
-    	jin.numberofsegments = aretes.size();
-    	jin.segmentlist = new int[2*jin.numberofsegments];
-    	for (i=0; i<jin.numberofsegments; i++) {
-    		jin.segmentlist[2*i]=noeuds.indexOf(((ArcDelaunay)aretes.get(i)).getNoeudIni());
-    		jin.segmentlist[2*i+1]=noeuds.indexOf(((ArcDelaunay)aretes.get(i)).getNoeudFin());
+    	this.jin.numberofsegments = aretes.size();
+    	this.jin.segmentlist = new int[2*this.jin.numberofsegments];
+    	for (i=0; i<this.jin.numberofsegments; i++) {
+    		this.jin.segmentlist[2*i]=noeuds.indexOf(((ArcDelaunay)aretes.get(i)).getNoeudIni());
+    		this.jin.segmentlist[2*i+1]=noeuds.indexOf(((ArcDelaunay)aretes.get(i)).getNoeudFin());
     	}
     }
 
@@ -134,11 +134,11 @@ public class Triangulation extends CarteTopo{
      * Convert back the result into vertices, edges and triangles.
      */
     private void convertJout() {
-    	if (logger.isDebugEnabled()) logger.debug("Début de l'export des données");
+    	if (logger.isDebugEnabled()) logger.debug("dÃ©but de l'export des donnÃ©es");
     	try {
-    		if (logger.isDebugEnabled()) logger.debug("Début de l'export des noeuds");
-    		for (int i=jin.numberofpoints; i<jout.numberofpoints; i++) {
-    			this.getPopNoeuds().nouvelElement().setCoord(new DirectPosition(jout.pointlist[2*i],jout.pointlist[2*i+1]));
+    		if (logger.isDebugEnabled()) logger.debug("dÃ©but de l'export des noeuds");
+    		for (int i=this.jin.numberofpoints; i<this.jout.numberofpoints; i++) {
+    			this.getPopNoeuds().nouvelElement().setCoord(new DirectPosition(this.jout.pointlist[2*i],this.jout.pointlist[2*i+1]));
     		}
 
     		ArrayList<FT_Feature> noeuds = new ArrayList<FT_Feature>(this.getListeNoeuds());
@@ -146,42 +146,42 @@ public class Triangulation extends CarteTopo{
     		Class<?>[] signaturea = {this.getPopNoeuds().getClasse(),this.getPopNoeuds().getClasse()};
     		Object[] parama = new Object[2];
 
-    		if (logger.isDebugEnabled()) logger.debug("Début de l'export des arcs");	
-    		for (int i=0; i<jout.numberofedges; i++) {
-    			parama[0] = noeuds.get(jout.edgelist[2*i]);
-    			parama[1] = noeuds.get(jout.edgelist[2*i+1]);
+    		if (logger.isDebugEnabled()) logger.debug("dÃ©but de l'export des arcs");	
+    		for (int i=0; i<this.jout.numberofedges; i++) {
+    			parama[0] = noeuds.get(this.jout.edgelist[2*i]);
+    			parama[1] = noeuds.get(this.jout.edgelist[2*i+1]);
     			this.getPopArcs().nouvelElement(signaturea,parama);
     		}
 
     		Class<?> [] signaturef = {this.getPopNoeuds().getClasse(),this.getPopNoeuds().getClasse(),this.getPopNoeuds().getClasse()};
     		Object[] paramf = new Object[3];
 
-    		if (logger.isDebugEnabled()) logger.debug("Début de l'export des triangles");
-    		for (int i=0; i<jout.numberoftriangles; i++) {
-    			paramf[0] = noeuds.get(jout.trianglelist[3*i]);
-    			paramf[1] = noeuds.get(jout.trianglelist[3*i+1]);
-    			paramf[2] = noeuds.get(jout.trianglelist[3*i+2]);
+    		if (logger.isDebugEnabled()) logger.debug("dÃ©but de l'export des triangles");
+    		for (int i=0; i<this.jout.numberoftriangles; i++) {
+    			paramf[0] = noeuds.get(this.jout.trianglelist[3*i]);
+    			paramf[1] = noeuds.get(this.jout.trianglelist[3*i+1]);
+    			paramf[2] = noeuds.get(this.jout.trianglelist[3*i+2]);
     			this.getPopFaces().nouvelElement(signaturef,paramf).setId(i);
     		}
     		if (this.getOptions().indexOf('v') != -1) {
-        		if (logger.isDebugEnabled()) logger.debug("Début de l'export du diagramme de Voronoi");
+        		if (logger.isDebugEnabled()) logger.debug("dÃ©but de l'export du diagramme de Voronoi");
 
         		GM_Envelope envelope = this.getPopNoeuds().envelope();
             		envelope.expandBy(100);
-            		voronoiVertices.initSpatialIndex(Tiling.class, true, envelope, 10);
+            		this.voronoiVertices.initSpatialIndex(Tiling.class, true, envelope, 10);
 
     			// l'export du diagramme de voronoi
-				for (int i=0; i<jvorout.numberofpoints; i++) {
-					voronoiVertices.add(new Noeud(new GM_Point(new DirectPosition(jvorout.pointlist[2*i],jvorout.pointlist[2*i+1]))));
+				for (int i=0; i<this.jvorout.numberofpoints; i++) {
+					this.voronoiVertices.add(new Noeud(new GM_Point(new DirectPosition(jvorout.pointlist[2*i],jvorout.pointlist[2*i+1]))));
 				}
-				for (int i=0; i<jvorout.numberofedges; i++) {
-					int indexIni = jvorout.edgelist[2*i];
-					int indexFin = jvorout.edgelist[2*i+1];
+				for (int i=0; i<this.jvorout.numberofedges; i++) {
+					int indexIni = this.jvorout.edgelist[2*i];
+					int indexFin = this.jvorout.edgelist[2*i+1];
 					if (indexFin==-1) {
 						// infinite edge
-						double vx = jvorout.normlist[2*i];
-						double vy = jvorout.normlist[2*i+1];
-						Noeud c1 = voronoiVertices.getElements().get(indexIni);
+						double vx = this.jvorout.normlist[2*i];
+						double vy = this.jvorout.normlist[2*i+1];
+						Noeud c1 = this.voronoiVertices.getElements().get(indexIni);
 						Noeud c2 = new Noeud();
 						double vectorSize = 10000000;
 						c2.setGeometrie(new GM_Point(new DirectPosition(c1.getGeometrie().getPosition().getX()+vectorSize*vx,c1.getGeometrie().getPosition().getY()+vectorSize*vy)));
@@ -189,25 +189,25 @@ public class Triangulation extends CarteTopo{
 						GM_Object intersection = line.intersection(envelope.getGeom());
 						DirectPositionList list = intersection.coord();
 						if (list.size()>1) c2.setGeometrie(list.get(1).toGM_Point());
-						indexFin = voronoiVertices.size();
-						voronoiVertices.add(c2);
+						indexFin = this.voronoiVertices.size();
+						this.voronoiVertices.add(c2);
 					}
-					voronoiEdges.add(new Arc(voronoiVertices.getElements().get(indexIni),voronoiVertices.getElements().get(indexFin)));
+					this.voronoiEdges.add(new Arc(this.voronoiVertices.getElements().get(indexIni),this.voronoiVertices.getElements().get(indexFin)));
 				}
     		}
     	}
     	catch (Exception e) {e.printStackTrace();}
-    	if (logger.isDebugEnabled()) logger.debug("Fin de l'export des données");
+    	if (logger.isDebugEnabled()) logger.debug("Fin de l'export des donnÃ©es");
     }
     
-    ///Méthode de triangulation proprment dite en C - va chercher la bibliothèque C (dll/so)
+    ///mÃ©thode de triangulation proprment dite en C - va chercher la bibliothï¿½que C (dll/so)
     private native void trianguleC(String trianguleOptions, Triangulateio trianguleJin, Triangulateio trianguleJout, Triangulateio trianguleJvorout);
-    static {System.loadLibrary("trianguledll");}
+    static {System.loadLibrary("trianguledll");} //$NON-NLS-1$
 
     /**
      * Run the triangulation with the given parameters.
-     * Lance la triangulation avec les paramètres donnés
-     * @param trianguleOptions paramètres de la triangulation :
+     * Lance la triangulation avec les paramÃ¨tres donnÃ©s
+     * @param trianguleOptions paramÃ¨tres de la triangulation :
      * <ul> 
 	 * <li> <b>z Zero:</b> points are numbered from zero
 	 * <li> <b>e Edges:</b> export edges
@@ -265,10 +265,10 @@ public class Triangulation extends CarteTopo{
      */
     public void triangule(String trianguleOptions) throws Exception {
     	if (this.getPopNoeuds().size()<3) {
-    		logger.error("Triangulation annulée : "+this.getPopNoeuds().size()+" points (3 points au moins)");
+    		logger.error("Triangulation annulï¿½e : "+this.getPopNoeuds().size()+" points (3 points au moins)");
     		return;
     	}
-    	if (logger.isDebugEnabled()) logger.debug("Triangulation commencée avec les options "+trianguleOptions);
+    	if (logger.isDebugEnabled()) logger.debug("Triangulation commencï¿½e avec les options "+trianguleOptions);
     	this.setOptions(trianguleOptions);
     	this.convertJin();
     	if (trianguleOptions.indexOf('p') != -1) {
@@ -276,12 +276,12 @@ public class Triangulation extends CarteTopo{
     		this.getPopArcs().setElements(new ArrayList<Arc>());
     	}
     	if (this.getOptions().indexOf('v') != -1) {
-    		trianguleC(trianguleOptions, jin, jout, jvorout);
+    		trianguleC(trianguleOptions, this.jin, this.jout, this.jvorout);
     	} else {
-    		trianguleC(trianguleOptions, jin, jout, null);
+    		trianguleC(trianguleOptions, this.jin, this.jout, null);
     	}
     	convertJout();
-    	if (logger.isDebugEnabled()) logger.debug("Triangulation terminée");
+    	if (logger.isDebugEnabled()) logger.debug("Triangulation terminï¿½e");
     }
 
     /**
@@ -309,7 +309,7 @@ public class Triangulation extends CarteTopo{
 	 * </ul>
      * @throws Exception
      */
-    public void triangule() throws Exception{this.triangule("czeBQ");}
+    public void triangule() throws Exception{this.triangule("czeBQ");} //$NON-NLS-1$
 
     /**
 	 * Set the triangulation options
@@ -321,5 +321,5 @@ public class Triangulation extends CarteTopo{
     /**
      * @return the options
      */
-    public String getOptions() {return options;}
+    public String getOptions() {return this.options;}
 }

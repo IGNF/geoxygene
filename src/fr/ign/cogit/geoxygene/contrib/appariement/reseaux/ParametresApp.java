@@ -124,7 +124,7 @@ public class ParametresApp implements Cloneable {
 	/** Les noeuds du réseau 1 contenus dans une même surface de la population en paramètre
 	 *  seront fusionn�s en un seul noeud pour l'appariement.
 	 *  Ce paramètre peut être null (défaut), auquel il est sans influence.
-	 *  Exemple typique: on fusionne toutes les extrémités de lignes ferr�s arrivant dans une même aire de triage,
+	 *  Exemple typique: on fusionne toutes les extrémités de lignes ferrés arrivant dans une même aire de triage,
 	 *  si les aires de triage sont définies par des surfaces dans les données.
 	 */
 	public Population<?> topologieSurfacesFusionNoeuds1 = null;
@@ -132,7 +132,7 @@ public class ParametresApp implements Cloneable {
 	/** Les noeuds du réseau 2 contenus dans une même surface de la population en paramètre
 	 *  seront fusionn�s en un seul noeud pour l'appariement.
 	 *  Ce paramètre peut être null (défaut), auquel il est sans influence.
-	 *  Exemple typique: on fusionne toutes les extrémités de lignes ferr�s arrivant dans une même aire de triage,
+	 *  Exemple typique: on fusionne toutes les extrémités de lignes ferrés arrivant dans une même aire de triage,
 	 *  si les aires de triage sont définies par des surfaces dans les données.
 	 */
 	public Population<?> topologieSurfacesFusionNoeuds2 = null;
@@ -242,13 +242,13 @@ public class ParametresApp implements Cloneable {
 
 
 	/** Appariement en deux passes qui tente un surdécoupage du réseau pour les arcs non appariés en Première passe.
-	 * Si true: les arcs du réseau 1 non appariés dans une Première passe sont redécoupés de mani�re
+	 * Si true: les arcs du réseau 1 non appariés dans une Première passe sont redécoupés de manière
 	 *          à introduire un noeud dans le res�au 1 aux endroits où il s'�loigne trop du réseau 2.
 	 *          Le "trop" est égal à projeteNoeud2surReseau1_DistanceProjectionNoeud.
 	 * Si false (défaut): processus en une seule passe.
 	 * 
 	 * NB: pour l'instant, après ce re-découpage l'appariement est enti�rement refait, ce qui est long
-	 * et très loin d'�tre optimisé: code à revoir !!!
+	 * et très loin d'être optimisé: code à revoir !!!
 	 */
 	public boolean varianteRedecoupageArcsNonApparies = false;
 
@@ -264,7 +264,7 @@ public class ParametresApp implements Cloneable {
 	 * - redecoupageNoeudsNonAppariesDistanceProjectionNoeud
 	 * 
 	 * NB: pour l'instant, après ce re-découpage l'appariement est enti�rement refait, ce qui est long
-	 * et très loin d'�tre optimal: à revoir à l'occasion,
+	 * et très loin d'être optimal: à revoir à l'occasion,
 	 */
 	public boolean varianteRedecoupageNoeudsNonApparies = false;
 
@@ -305,7 +305,7 @@ public class ParametresApp implements Cloneable {
 	/////////////////////////////////////////////////////////////////////////////////
 	/////////////        OPTIONS DE DEBUG                                ////////////
 	/////////////////////////////////////////////////////////////////////////////////
-	/** paramètre pour gérer l'affichage des commentaires dans la fen�tre de contr�le
+	/** paramètre pour gérer l'affichage des commentaires dans la fenêtre de contr�le
 	 * Si c'est égal à 0 : aucun commentaire n'est affich�
 	 * Si c'est égal à 1 : le début des grandes �tapes et les principaux résultats sont signal�s
 	 * Si c'est égal à 2 (debug) : tous les messages sont affich�s

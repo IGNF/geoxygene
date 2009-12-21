@@ -63,18 +63,18 @@ public class AppariementIO {
 
 	/** Lancement de l'appariement de réseaux sur des objets Géographiques :
 	 * 1- Transformation des données initales en deux graphes, en fonction des paramètres d'import.
-	 * 2- Lancement du calcul d'appariement g�n�rique sur les deux réseaux.
+	 * 2- Lancement du calcul d'appariement générique sur les deux réseaux.
 	 * 3- Analyse et export des r�sutlats éventuellement
 	 * 
 	 * @return  L'ensemble des liens en sortie (de la classe EnsembleDeLiens).
 	 * 
 	 * @param paramApp Les paramètres de l'appariement (seuls de distance, pr�paration topologique des données...)
 	 * 
-	 * @param cartesTopo Liste en entrée/sortie qui permet de r�cup�rer en sortie les graphes intermédiaires créés pendant le calcul (de type Reseau_App, spécialisation de CarteTopo).
-	 * - Si on veut r�cup�rer les graphes : passer une liste vide - new ArrayList() - mais non nulle.
+	 * @param cartesTopo Liste en entrée/sortie qui permet de Récupèrer en sortie les graphes intermédiaires créés pendant le calcul (de type Reseau_App, spécialisation de CarteTopo).
+	 * - Si on veut Récupèrer les graphes : passer une liste vide - new ArrayList() - mais non nulle.
 	 *    Elle contient alors en sortie 2 éléments : dans l'ordre les cartes topo de ref�rence et comparaison.
 	 *    Elle peut contenir un 3eme élément: le graphe ref recal� sur comp si cela est demand� dans les paramètres.
-	 * - Si on ne veut rien r�cup�rer : passer Null
+	 * - Si on ne veut rien Récupèrer : passer Null
 	 */
 	public static EnsembleDeLiens AppariementDeJeuxGeo(ParametresApp paramApp, List<ReseauApp> cartesTopo) {
 
@@ -140,7 +140,7 @@ public class AppariementIO {
 		liens = Appariement.appariementReseaux(reseauRef, reseauComp, paramApp);
 		if (logger.isInfoEnabled()) {
 			logger.info("  Appariement des réseaux termin� ");
-			logger.info("  "+liens.size()+" liens d'appariement ont été trouv�s (dans la structure de travail)");
+			logger.info("  "+liens.size()+" liens d'appariement ont été trouvés (dans la structure de travail)");
 		}
 		if (logger.isDebugEnabled()) logger.debug("  FIN DE LA PHASE D'APPARIEMENT DES RESEAUX "+(new Time(System.currentTimeMillis())).toString());
 
@@ -153,7 +153,7 @@ public class AppariementIO {
 		}
 		if (logger.isDebugEnabled()) logger.debug("  DEBUT DE LA PHASE D'EXPORT "+(new Time(System.currentTimeMillis())).toString());
 		if (paramApp.debugBilanSurObjetsGeo ) {
-			if (logger.isDebugEnabled()) logger.debug("  Transformation des liens de réseaux en liens g�n�riques "+(new Time(System.currentTimeMillis())).toString());
+			if (logger.isDebugEnabled()) logger.debug("  Transformation des liens de réseaux en liens génériques "+(new Time(System.currentTimeMillis())).toString());
 			liensGeneriques= LienReseaux.exportLiensAppariement(liens, reseauRef, paramApp);
 			Appariement.nettoyageLiens(reseauRef, reseauComp);
 			if (logger.isInfoEnabled()) logger.info("######## FIN DE L'APPARIEMENT DE RESEAUX #########");
@@ -222,7 +222,7 @@ public class AppariementIO {
 				arc.addCorrespondant(element);
 
 				// Le code ci-dessous permet un import plus fin mais a été réalis�
-				// pour des données spécifiques et n'est pas encore cod� très g�n�rique.
+				// pour des données spécifiques et n'est pas encore cod� très générique.
 				// Il est donc comment� dans cette version du code.
 				//				element = (FT_Feature)itElements.next();
 				//				if ( ref && paramApp.filtrageRef ) {
@@ -259,7 +259,7 @@ public class AppariementIO {
 				noeud.addCorrespondant(element);
 				noeud.setTaille(paramApp.distanceNoeudsMax);
 				// Le code ci-dessous permet un import plus fin mais a été réalis�
-				// pour des données spécifiques et n'est pas encore cod� très g�n�rique.
+				// pour des données spécifiques et n'est pas encore cod� très générique.
 				// Il est donc comment� dans cette version du code.
 				//				if ( paramApp.distanceNoeudsConstante ) noeud.setTaille(paramApp.distanceNoeuds);
 				//				else noeud.setTaille(tailleNoeud(element, paramApp));

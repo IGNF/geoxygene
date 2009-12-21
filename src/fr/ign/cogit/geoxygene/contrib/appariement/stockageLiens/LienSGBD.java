@@ -48,53 +48,53 @@ public class LienSGBD extends FT_Feature {
 
 	/** Les objets de Reference pointés par le lien */
 	protected String objetsRef;
-	public String getObjetsRef() {return objetsRef;}
-	public void setObjetsRef(String liste) { objetsRef = liste; }
+	public String getObjetsRef() {return this.objetsRef;}
+	public void setObjetsRef(String liste) { this.objetsRef = liste; }
 
 	/** Les objets de Comparaison pointés par le lien */
 	protected String objetsComp;
-	public String getObjetsComp() {return objetsComp;}
-	public void setObjetsComp(String liste) { objetsComp = liste; }
+	public String getObjetsComp() {return this.objetsComp;}
+	public void setObjetsComp(String liste) { this.objetsComp = liste; }
 
 	/** Estimation de la qualité du lien d'appariement
 	 * (mapping fait avec la table Representation_Lien au besoin)*/
 	private double evaluation ;
-	public double getEvaluation() {return evaluation;}
+	public double getEvaluation() {return this.evaluation;}
 	public void setEvaluation(double evaluation) {this.evaluation = evaluation;}
 
 	/** Liste d'indicateurs temporaires utilisés pendant les calculs d'appariement */
 	protected String indicateurs;
-	public String getIndicateurs() {return indicateurs;}
+	public String getIndicateurs() {return this.indicateurs;}
 	public void setIndicateurs(String indicateurs) { this.indicateurs = indicateurs; }
 
 	/** Texte libre
 	 * (mapping fait avec la table Representation_Lien au besoin)*/
 	protected String commentaire = new String();
-	public String getCommentaire() {return commentaire;}
+	public String getCommentaire() {return this.commentaire;}
 	public void setCommentaire(String commentaire) { this.commentaire = commentaire; }
 
 	/** Texte libre pour décrire le nom de l'appariement.
 	 * (mapping fait avec la table Representation_Lien au besoin)*/
 	protected String nom = new String();
-	public String getNom() {return nom;}
+	public String getNom() {return this.nom;}
 	public void setNom(String nom) { this.nom = nom; }
 
 	/** Texte libre pour décrire le type d'appariement (ex. "Noeud-Noeud").
 	 * (mapping fait avec la table Representation_Lien au besoin)*/
 	protected String type = new String();
-	public String getType() {return type;}
+	public String getType() {return this.type;}
 	public void setType(String type) { this.type = type; }
 
 	/** Texte libre pour décrire les objets de référence pointés.
 	 * (mapping fait avec la table Representation_Lien au besoin)*/
 	protected String reference = new String();
-	public String getReference() {return reference;}
+	public String getReference() {return this.reference;}
 	public void setReference(String reference) { this.reference = reference; }
 
 	/** Texte libre pour décrire les objets de comparaison pointés.
 	 * (mapping fait avec la table Representation_Lien au besoin)*/
 	protected String comparaison = new String();
-	public String getComparaison() {return comparaison;}
+	public String getComparaison() {return this.comparaison;}
 	public void setComparaison(String comparaison) { this.comparaison = comparaison; }
 
 
@@ -139,29 +139,29 @@ public class LienSGBD extends FT_Feature {
 			formatIndic = formatIndic+(String)itIndic.next()+"|";
 		}
 		if (formatIndic.length()>0)this.setIndicateurs(formatIndic.substring(0,formatIndic.length()-1));
-		else this.setIndicateurs("Non renseign�");
+		else this.setIndicateurs("Non renseigné");
 
 		//evaluation
 		this.setEvaluation(lien.getEvaluation());
 
 		//commentaire
-		if (lien.getCommentaire().length()==0)this.setCommentaire("Non renseign�");
+		if (lien.getCommentaire().length()==0)this.setCommentaire("Non renseigné");
 		else this.setCommentaire(lien.getCommentaire());
 
 		//nom
-		if (lien .getNom().length()==0)this.setNom("Non renseign�");
+		if (lien .getNom().length()==0)this.setNom("Non renseigné");
 		else this.setNom(lien.getNom());
 
 		//type
-		if (lien.getType().length()==0)this.setType("Non renseign�");
+		if (lien.getType().length()==0)this.setType("Non renseigné");
 		else this.setType(lien.getType());
 
 		//reference
-		if (lien.getReference().length()==0)this.setReference("Non renseign�");
+		if (lien.getReference().length()==0)this.setReference("Non renseigné");
 		else this.setReference(lien.getReference());
 
 		//comparaison
-		if (lien.getComparaison().length()==0)this.setComparaison("Non renseign�");
+		if (lien.getComparaison().length()==0)this.setComparaison("Non renseigné");
 		else this.setComparaison(lien.getComparaison());
 
 		//geometrie
@@ -271,13 +271,13 @@ public class LienSGBD extends FT_Feature {
 	//////////////////////////////////////
 	private EnsembleDeLiensSGBD ensembleLiensSGBD;
 
-	/** R�cup�re l'objet en relation. */
-	public EnsembleDeLiensSGBD getEnsembleLiensSGBD() {return ensembleLiensSGBD;  }
+	/** Récupère l'objet en relation. */
+	public EnsembleDeLiensSGBD getEnsembleLiensSGBD() {return this.ensembleLiensSGBD;  }
 
 	/** définit l'objet en relation, et met à jour la relation inverse. */
 	public void setEnsembleLiensSGBD(EnsembleDeLiensSGBD ensemble) {
-		EnsembleDeLiensSGBD old = ensembleLiensSGBD;
-		ensembleLiensSGBD = ensemble;
+		EnsembleDeLiensSGBD old = this.ensembleLiensSGBD;
+		this.ensembleLiensSGBD = ensemble;
 		if ( old != null ) old.getLiensSGBD().remove(this);
 		if ( ensemble != null) {
 			if ( ! ensemble.getLiensSGBD().contains(this) ) ensemble.getLiensSGBD().add(this);

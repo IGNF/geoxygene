@@ -68,45 +68,45 @@ public class LienReseaux extends Lien {
 	/** Nom de l'appariement qui a créé le lien */
 	private String nom;
 	@Override
-	public String getNom() {return nom;}
+	public String getNom() {return this.nom;}
 	@Override
 	public void setNom(String nom){ this.nom = nom; }
 
 	/** Les Arc1 pointés par le lien */
 	private List<Arc> arcs1 = new ArrayList<Arc>();
-	public List<Arc> getArcs1() {return arcs1;}
-	public void setArcs1(List<Arc> arcs) { arcs1=arcs; }
-	public void addArcs1(Arc arc) { arcs1.add(arc); }
+	public List<Arc> getArcs1() {return this.arcs1;}
+	public void setArcs1(List<Arc> arcs) { this.arcs1=arcs; }
+	public void addArcs1(Arc arc) { this.arcs1.add(arc); }
 
 	/** Les Noeud1 pointés par le lien */
 	private List<Noeud> noeuds1 = new ArrayList<Noeud>();
-	public List<Noeud> getNoeuds1() {return noeuds1;}
-	public void setNoeuds1(List<Noeud> noeuds) { noeuds1=noeuds; }
-	public void addNoeuds1(Noeud noeud) { noeuds1.add(noeud); }
+	public List<Noeud> getNoeuds1() {return this.noeuds1;}
+	public void setNoeuds1(List<Noeud> noeuds) { this.noeuds1=noeuds; }
+	public void addNoeuds1(Noeud noeud) { this.noeuds1.add(noeud); }
 
 	/** Les Groupe1 pointés par le lien */
 	private List<Groupe> groupes1 = new ArrayList<Groupe>();
-	public List<Groupe> getGroupes1() {return groupes1;}
-	public void setGroupes1(List<Groupe> groupes) { groupes1=groupes; }
-	public void addGroupes1(Groupe groupe) { groupes1.add(groupe); }
+	public List<Groupe> getGroupes1() {return this.groupes1;}
+	public void setGroupes1(List<Groupe> groupes) { this.groupes1=groupes; }
+	public void addGroupes1(Groupe groupe) { this.groupes1.add(groupe); }
 
 	/** Les Arc2 pointés par le lien */
 	private List<Arc> arcs2 = new ArrayList<Arc>();
-	public List<Arc> getArcs2() {return arcs2;}
-	public void setArcs2(List<Arc> arcs) { arcs2=arcs; }
-	public void addArcs2(Arc arc) { arcs2.add(arc); }
+	public List<Arc> getArcs2() {return this.arcs2;}
+	public void setArcs2(List<Arc> arcs) { this.arcs2=arcs; }
+	public void addArcs2(Arc arc) { this.arcs2.add(arc); }
 
 	/** Les Noeud2 pointés par le lien */
 	private List<Noeud> noeuds2 = new ArrayList<Noeud>();
-	public List<Noeud> getNoeuds2() {return noeuds2;}
-	public void setNoeuds2(List<Noeud> noeuds) { noeuds2=noeuds; }
-	public void addNoeuds2(Noeud noeud) { noeuds2.add(noeud); }
+	public List<Noeud> getNoeuds2() {return this.noeuds2;}
+	public void setNoeuds2(List<Noeud> noeuds) { this.noeuds2=noeuds; }
+	public void addNoeuds2(Noeud noeud) { this.noeuds2.add(noeud); }
 
 	/** Les Groupe2 pointés par le lien */
 	private List<Groupe> groupes2 = new ArrayList<Groupe>();
-	public List<Groupe> getGroupes2() {return groupes2;}
-	public void setGroupes2(List<Groupe> groupes) { groupes2=groupes; }
-	public void addGroupes2(Groupe groupe) { groupes2.add(groupe); }
+	public List<Groupe> getGroupes2() {return this.groupes2;}
+	public void setGroupes2(List<Groupe> groupes) { this.groupes2=groupes; }
+	public void addGroupes2(Groupe groupe) { this.groupes2.add(groupe); }
 
 
 	/** Methode qui affecte la valeur 'eval' comme évaluation du lien et
@@ -149,7 +149,7 @@ public class LienReseaux extends Lien {
 	}
 
 
-	/** méthode qui renvoie en sortie des liens g�n�riques (appariement.Lien, liens 1-1 uniquement)
+	/** méthode qui renvoie en sortie des liens génériques (appariement.Lien, liens 1-1 uniquement)
 	 * correspondant aux lienReseaux en entrée.
 	 * Cette méthode crée une géo�mtrie aux liens au passage
 	 * @param liensReseaux
@@ -174,7 +174,7 @@ public class LienReseaux extends Lien {
 		Iterator<Lien> itLiensReseaux = liensReseaux.iterator();
 		while (itLiensReseaux.hasNext()) {
 			LienReseaux lienReseau = (LienReseaux) itLiensReseaux.next();
-			// on r�cup�re tous les objets des carte topo concernés
+			// on Récupère tous les objets des carte topo concernés
 			Set objetsCT1PourUnLien = new HashSet(lienReseau.getArcs1());
 			objetsCT1PourUnLien.addAll(lienReseau.getNoeuds1());
 			Iterator itGroupes1 = lienReseau.getGroupes1().iterator();
@@ -428,13 +428,13 @@ public class LienReseaux extends Lien {
 	 *      - d'un trait reliant le noeud à ce buffer.
 	 * 
 	 * 2/ Pour chaque arc du réseau 1 apparié, cette géo�mtrie est constituée...
-	 *      - d'un ensemble de tirets reliant les arcs homologues de mani�re régulière
+	 *      - d'un ensemble de tirets reliant les arcs homologues de manière régulière
 	 *        (intervalle entre les tirets en paramètre),
 	 *      - ou alors d'un ensemble de traits reliant le milieu des arcs appariés.
 	 * 
 	 *  @param tirets
 	 *  spécifie si on veut une géométrie faite de tirets (true),
-	 *  ou plut�t d'un unique trait pour chaque couple d'arcs (false)
+	 *  ou plutôt d'un unique trait pour chaque couple d'arcs (false)
 	 * 
 	 *  @param pasTirets
 	 *  Si on veut des tirets réguliers, distance entre ces tirets.
