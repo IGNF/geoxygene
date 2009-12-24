@@ -1,26 +1,22 @@
 /*
  * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
- * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
- * National Mapping Agency).
- * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at
+ * the Institut Géographique National (the French National Mapping Agency).
  * See: http://oxygene-project.sourceforge.net
- * 
  * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License along with
- * this library (see file LICENSE if present); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or any later
+ * version.
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details. You should have received a copy of the GNU Lesser General
+ * Public License along with this library (see file LICENSE if present); if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place,
+ * Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.appli;
@@ -58,145 +54,292 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 /**
  * @author Julien Perret
- *
  */
 public class MainFrame extends JFrame {
-	private static final long serialVersionUID = 1L;
-	static Logger logger=Logger.getLogger(MainFrame.class.getName());
+    /**
+     * serial uid.
+     */
+    private static final long serialVersionUID = 1L;
+    /**
+     * Logger of the application.
+     */
+    private static Logger logger = Logger.getLogger(MainFrame.class.getName());
 
-	private JDesktopPane desktopPane = new JDesktopPane() {
-		private static final long serialVersionUID = 1L;
-		{setDesktopManager(new DefaultDesktopManager());}
-		};
-	public JDesktopPane getDesktopPane() {return this.desktopPane;}
+    /**
+     * Get the application logger.
+     *
+     * @return the application logger
+     */
+    public static Logger getLogger() {
+        return MainFrame.logger;
+    }
 
-	GeOxygeneApplication application;
-	private JMenuBar menuBar;
-	private ModeSelector modeSelector = null;
-	public ModeSelector getMode() {return this.modeSelector;}
+    /**
+     * The desktop pane containing the project frames.
+     */
+    private JDesktopPane desktopPane = new JDesktopPane() {
+        private static final long serialVersionUID = 1L;
+        {
+            setDesktopManager(new DefaultDesktopManager());
+        }
+    };
 
-	public MainFrame(String title, GeOxygeneApplication theApplication)  {
-		super(title);
-		this.application = theApplication;
-		this.setIconImage(this.application.getIcon().getImage());
-		this.setLayout(new BorderLayout());
-		this.setResizable(true);
-		this.setSize(800,600);
-		this.setExtendedState(Frame.MAXIMIZED_BOTH);
+    /**
+     * Return the desktop pane containing the project frames.
+     *
+     * @return the desktop pane containing the project frames
+     */
+    public final JDesktopPane getDesktopPane() {
+        return this.desktopPane;
+    }
 
-		this.menuBar = new JMenuBar();
+    /**
+     * The associated application.
+     */
+    private GeOxygeneApplication application;
 
-		JMenu fileMenu = new JMenu(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.File")); //$NON-NLS-1$
-		JMenu viewMenu = new JMenu(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.View")); //$NON-NLS-1$
-		JMenu configurationMenu = new JMenu(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.Configuration")); //$NON-NLS-1$
-		JMenu helpMenu = new JMenu(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.Help")); //$NON-NLS-1$
+    /**
+     * Get the associated application.
+     *
+     * @return the associated application
+     */
+    public final GeOxygeneApplication getApplication() {
+        return this.application;
+    }
 
-		//StyledLayerDescriptor sld = StyledLayerDescriptor.charge("defaultSLD.xml");
-		JMenuItem openShapefileMenuItem = new JMenuItem(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.OpenShapefile")); //$NON-NLS-1$
-		openShapefileMenuItem.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ProjectFrame projectFrame = (ProjectFrame) MainFrame.this.getDesktopPane().getSelectedFrame();
-				if (projectFrame==null) 
-					if (MainFrame.this.getDesktopPane().getAllFrames().length!=0) {
-						// TODO ask the user in which frame (s)he wants to load into?
-						projectFrame = (ProjectFrame) MainFrame.this.getDesktopPane().getAllFrames()[0];
-					} else {
-						// TODO create a new project frame?
-						logger.info(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
-						return;
-					}
-				JFileChooser choixFichierShape = new JFileChooser();
-				/** crée un filtre qui n'accepte que les fichier shp ou les répertoires */
-				choixFichierShape.setFileFilter(new FileFilter(){
-					@Override
-					public boolean accept(File f) {return (f.isFile() && (f.getAbsolutePath().endsWith(".shp") || f.getAbsolutePath().endsWith(".SHP")) || f.isDirectory());} //$NON-NLS-1$ //$NON-NLS-2$
-					@Override
-					public String getDescription() {return I18N.getString("fr.ign.cogit.geoxygene.MainFrame.ShapefileDescription");} //$NON-NLS-1$
-				});
-				choixFichierShape.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				choixFichierShape.setMultiSelectionEnabled(false);
-				JFrame frame = new JFrame();
-				frame.setVisible(true);
-				int returnVal = choixFichierShape.showOpenDialog(frame);
-				frame.dispose();
-				if(returnVal == JFileChooser.APPROVE_OPTION) {
-					if (logger.isDebugEnabled()) logger.debug(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.FileChosenDebug") + choixFichierShape.getSelectedFile().getAbsolutePath()); //$NON-NLS-1$
-					String shapefileName = choixFichierShape.getSelectedFile().getAbsolutePath();
-					String populationName = shapefileName.substring(shapefileName.lastIndexOf("/")+1,shapefileName.lastIndexOf(".")); //$NON-NLS-1$ //$NON-NLS-2$
-					ShapefileReader shapefileReader = new ShapefileReader(shapefileName, populationName, DataSet.getInstance(), true);
+    /**
+     * The frame menu bar.
+     */
+    private JMenuBar menuBar;
+    /**
+     * The mode selector.
+     */
+    private ModeSelector modeSelector = null;
 
-					Population<DefaultFeature> population = shapefileReader.getPopulation();
-					if (population!=null) {
-						logger.info(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.LoadingPopulation")+population.getNom()); //$NON-NLS-1$
-						projectFrame.addFeatureCollection(population,population.getNom());
-					}
-					shapefileReader.read();
-					if (projectFrame.getLayers().size()==1) {
-						try {projectFrame.getLayerViewPanel().getViewport().zoom(new GM_Envelope(shapefileReader.getMinX(),shapefileReader.getMaxX(),shapefileReader.getMinY(),shapefileReader.getMaxY()));} 
-						catch (NoninvertibleTransformException e1) {e1.printStackTrace();}
-					}
-				}
+    /**
+     * Return the current application mode.
+     *
+     * @return the current application mode
+     */
+    public final ModeSelector getMode() {
+        return this.modeSelector;
+    }
 
-			}
-		});
-		JMenuItem exitMenuItem = new JMenuItem(I18N.getString("fr.ign.cogit.geoxygene.MainFrame.Exit")); //$NON-NLS-1$
-		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				dispose();
-				MainFrame.this.application.exit();
-			}
-		});
-		fileMenu.add(openShapefileMenuItem);
-		fileMenu.addSeparator();
-		fileMenu.add(exitMenuItem);
+    /**
+     * The default width of the frame.
+     */
+    private final int defaultFrameWidth = 800;
+    /**
+     * The default height of the frame.
+     */
+    private final int defaultFrameHeight = 800;
 
-		this.menuBar.setFont(this.application.getFont());
-		this.menuBar.add(fileMenu);
-		this.menuBar.add(viewMenu);
-		this.menuBar.add(configurationMenu);
-		this.menuBar.add(helpMenu);
-		this.setJMenuBar(this.menuBar);
+    /**
+     * Constructor using a title and an associated application.
+     *
+     * @param title
+     *            the title of the frame
+     * @param theApplication
+     *            the associated application
+     */
+    public MainFrame(final String title,
+            final GeOxygeneApplication theApplication) {
+        super(title);
+        this.application = theApplication;
+        this.setIconImage(this.application.getIcon().getImage());
+        this.setLayout(new BorderLayout());
+        this.setResizable(true);
+        this.setSize(this.defaultFrameWidth, this.defaultFrameHeight);
+        this.setExtendedState(Frame.MAXIMIZED_BOTH);
 
-		this.getContentPane().setLayout(new BorderLayout());
-		this.getContentPane().add(this.desktopPane, BorderLayout.CENTER);
+        this.menuBar = new JMenuBar();
 
-		this.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {MainFrame.this.application.exit();}
-		});	
+        JMenu fileMenu = new JMenu(I18N.getString("MainFrame.File")); //$NON-NLS-1$
+        JMenu viewMenu = new JMenu(I18N.getString("MainFrame.View")); //$NON-NLS-1$
+        JMenu configurationMenu = new JMenu(I18N
+                .getString("MainFrame.Configuration")); //$NON-NLS-1$
+        JMenu helpMenu = new JMenu(I18N.getString("MainFrame.Help")); //$NON-NLS-1$
 
-		this.modeSelector=new ModeSelector(this);    
-	}
+        // StyledLayerDescriptor sld =
+        // StyledLayerDescriptor.charge("defaultSLD.xml");
+        JMenuItem openShapefileMenuItem = new JMenuItem(I18N
+                .getString("MainFrame.OpenShapefile")); //$NON-NLS-1$
+        openShapefileMenuItem
+                .addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(final ActionEvent e) {
+                        ProjectFrame projectFrame = (ProjectFrame) MainFrame.this
+                                .getDesktopPane().getSelectedFrame();
+                        if (projectFrame == null) {
+                            if (MainFrame.this.getDesktopPane().getAllFrames().length != 0) {
+                                // TODO ask the user in which frame (s)he
+                                // wants to load into?
+                                projectFrame = (ProjectFrame) MainFrame.this
+                                        .getDesktopPane().getAllFrames()[0];
+                            } else {
+                                // TODO create a new project frame?
+                                getLogger().info(
+                                        I18N.getString("MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
+                                return;
+                            }
+                        }
+                        JFileChooser choixFichierShape = new JFileChooser();
+                        /*
+                         * crée un filtre qui n'accepte
+                         * que les fichier shp ou les répertoires
+                         */
+                        choixFichierShape.setFileFilter(new FileFilter() {
+                            @Override
+                            public boolean accept(final File f) {
+                                return (f.isFile()
+                                        && (f.getAbsolutePath()
+                                                .endsWith(".shp") || //$NON-NLS-1$
+                                        f.getAbsolutePath().endsWith(".SHP")) || //$NON-NLS-1$
+                                f.isDirectory());
+                            }
 
-	@Override
-	public void dispose() {
-		for(JInternalFrame frame:this.desktopPane.getAllFrames()) {frame.dispose();}
-		super.dispose();
-	}
-	/**
-	 * @return the selected (current) project frame
-	 */
-	public ProjectFrame getSelectedProjectFrame() {
-		if (this.desktopPane.getSelectedFrame()==null) return null;
-		return (ProjectFrame) this.desktopPane.getSelectedFrame();    	
-	}
+                            @Override
+                            public String getDescription() {
+                                return I18N
+                                        .getString("MainFrame.ShapefileDescription"); //$NON-NLS-1$
+                                }
+                        });
+                        choixFichierShape
+                                .setFileSelectionMode(JFileChooser.FILES_ONLY);
+                        choixFichierShape.setMultiSelectionEnabled(false);
+                        JFrame frame = new JFrame();
+                        frame.setVisible(true);
+                        int returnVal = choixFichierShape.showOpenDialog(frame);
+                        frame.dispose();
+                        if (returnVal == JFileChooser.APPROVE_OPTION) {
+                            if (getLogger().isDebugEnabled()) {
+                                getLogger()
+                                        .debug(
+                                                I18N
+                                                        .getString("MainFrame.FileChosenDebug") + //$NON-NLS-1$
+                                                        choixFichierShape
+                                                                .getSelectedFile()
+                                                                .getAbsolutePath());
+                            }
+                            String shapefileName = choixFichierShape
+                                    .getSelectedFile().getAbsolutePath();
+                            String populationName = shapefileName
+                                    .substring(
+                                            shapefileName.lastIndexOf("/") + 1, shapefileName.lastIndexOf(".")); //$NON-NLS-1$ //$NON-NLS-2$
+                            ShapefileReader shapefileReader = new ShapefileReader(
+                                    shapefileName, populationName, DataSet
+                                            .getInstance(), true);
 
-	/**
-	 * @return an array containing all projects frame available in the interface
-	 */
-	public ProjectFrame[] getAllProjectFrames() {
-		List<ProjectFrame> projectFrameList = new ArrayList<ProjectFrame>();
-		for(JInternalFrame frame:this.desktopPane.getAllFrames())
-			if (frame instanceof ProjectFrame) projectFrameList.add((ProjectFrame)frame);
-		return projectFrameList.toArray(new ProjectFrame[0]);
-	}
+                            Population<DefaultFeature> population = shapefileReader
+                                    .getPopulation();
+                            if (population != null) {
+                                getLogger()
+                                        .info(
+                                                I18N
+                                                        .getString("MainFrame.LoadingPopulation") //$NON-NLS-1$
+                                                        + population.getNom());
+                                projectFrame.addFeatureCollection(population,
+                                        population.getNom());
+                            }
+                            shapefileReader.read();
+                            if (projectFrame.getLayers().size() == 1) {
+                                try {
+                                    projectFrame.getLayerViewPanel()
+                                            .getViewport().zoom(
+                                                    new GM_Envelope(
+                                                            shapefileReader
+                                                                    .getMinX(),
+                                                            shapefileReader
+                                                                    .getMaxX(),
+                                                            shapefileReader
+                                                                    .getMinY(),
+                                                            shapefileReader
+                                                                    .getMaxY()));
+                                } catch (NoninvertibleTransformException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        }
 
-	public ProjectFrame newProjectFrame() {
-		ProjectFrame projectFrame = new ProjectFrame(this.application.getIcon());
-		projectFrame.setSize(this.desktopPane.getSize());
-		projectFrame.setVisible(true);
-		this.desktopPane.add(projectFrame,JLayeredPane.DEFAULT_LAYER);
-		this.desktopPane.setSelectedFrame(projectFrame);
-		return projectFrame;
-	}
+                    }
+                });
+        JMenuItem exitMenuItem = new JMenuItem(I18N.getString("MainFrame.Exit")); //$NON-NLS-1$
+        exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                dispose();
+                MainFrame.this.getApplication().exit();
+            }
+        });
+        fileMenu.add(openShapefileMenuItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exitMenuItem);
+
+        this.menuBar.setFont(this.application.getFont());
+        this.menuBar.add(fileMenu);
+        this.menuBar.add(viewMenu);
+        this.menuBar.add(configurationMenu);
+        this.menuBar.add(helpMenu);
+        this.setJMenuBar(this.menuBar);
+
+        this.getContentPane().setLayout(new BorderLayout());
+        this.getContentPane().add(this.desktopPane, BorderLayout.CENTER);
+
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(final WindowEvent e) {
+                MainFrame.this.getApplication().exit();
+            }
+        });
+
+        this.modeSelector = new ModeSelector(this);
+    }
+
+    @Override
+    public final void dispose() {
+        for (JInternalFrame frame : this.desktopPane.getAllFrames()) {
+            frame.dispose();
+        }
+        super.dispose();
+    }
+
+    /**
+     * Return the selected (current) project frame.
+     *
+     * @return the selected (current) project frame
+     */
+    public final ProjectFrame getSelectedProjectFrame() {
+        if (this.desktopPane.getSelectedFrame() == null) {
+            return null;
+        }
+        return (ProjectFrame) this.desktopPane.getSelectedFrame();
+    }
+
+    /**
+     * Return all project frames.
+     *
+     * @return an array containing all project frames available in the
+     *         interface
+     */
+    public final ProjectFrame[] getAllProjectFrames() {
+        List<ProjectFrame> projectFrameList = new ArrayList<ProjectFrame>();
+        for (JInternalFrame frame : this.desktopPane.getAllFrames()) {
+            if (frame instanceof ProjectFrame) {
+                projectFrameList.add((ProjectFrame) frame);
+            }
+        }
+        return projectFrameList.toArray(new ProjectFrame[0]);
+    }
+
+    /**
+     * Create and return a new project frame.
+     *
+     * @return the newly created project frame
+     */
+    public final ProjectFrame newProjectFrame() {
+        ProjectFrame projectFrame = new ProjectFrame(this.application.getIcon());
+        projectFrame.setSize(this.desktopPane.getSize());
+        projectFrame.setVisible(true);
+        this.desktopPane.add(projectFrame, JLayeredPane.DEFAULT_LAYER);
+        this.desktopPane.setSelectedFrame(projectFrame);
+        return projectFrame;
+    }
 }
