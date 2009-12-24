@@ -401,7 +401,7 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 	}
 
 
-	private Shader selectShader(String type) {
+	Shader selectShader(String type) {
 		if (type.equals("Mono")) return new MonoShader();
 		else if (type.equals("Random")) return new RandomShader();
 		else if (type.equals("Continuous")) return new HSVShader();
@@ -475,8 +475,8 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 	}
 
 
-	private ObjectViewerThemeProperties getObjectViewerThemeProperties() {
-		return objectViewerThemeProperties;
+	ObjectViewerThemeProperties getObjectViewerThemeProperties() {
+		return this.objectViewerThemeProperties;
 	}
 
 }

@@ -62,22 +62,22 @@ public class GUIConfigSqlOJBXML extends JFrame {
 
 	private static final String FRAME_TITLE = "GeOxygene Configuration SQL / mapping OJB";
 
-	private String javaFilePath;
-	private String tableName;
-	private String mappingDirectory;
-	private String mappingFileName;
+	String javaFilePath;
+	String tableName;
+	String mappingDirectory;
+	String mappingFileName;
 
 	private static String javaFilePathText = "Classe Java à traduire : ";
 	private static String tableNameText = "Nom de la table : ";
 	private static String mappingDirectoryText = "Repertoire d'accueil du fichier de mapping : ";
 	private static String mappingFileNameText = "Nom du fichier de mapping : ";
 
-	private String[] selectedValues = new String[4];
+	String[] selectedValues = new String[4];
 
 	public  GUIConfigSqlOJBXML (String GeoxygeneDirectory, String MappingDirectory, String MappingFileName) {
-		javaFilePath = GeoxygeneDirectory;
-		mappingDirectory = MappingDirectory;
-		mappingFileName = MappingFileName;
+		this.javaFilePath = GeoxygeneDirectory;
+		this.mappingDirectory = MappingDirectory;
+		this.mappingFileName = MappingFileName;
 	}
 
 
@@ -85,15 +85,15 @@ public class GUIConfigSqlOJBXML extends JFrame {
 		final  JDialog dialog = createDialog(this);
 		dialog.setVisible(true);
 		dialog.dispose();
-		return selectedValues;
+		return this.selectedValues;
 	}
 
 
-	private void getSelectedValues() {
-		selectedValues[0] = javaFilePath;
-		selectedValues[1] = mappingDirectory;
-		selectedValues[2] = tableName;
-		selectedValues[3] = mappingFileName;
+	void getSelectedValues() {
+		this.selectedValues[0] = this.javaFilePath;
+		this.selectedValues[1] = this.mappingDirectory;
+		this.selectedValues[2] = this.tableName;
+		this.selectedValues[3] = this.mappingFileName;
 	}
 
 
@@ -108,11 +108,11 @@ public class GUIConfigSqlOJBXML extends JFrame {
 
 		JLabel javaFilePathLabel = new JLabel (javaFilePathText);
 		JPanel javaFilePathPanel =	new JPanel(new FlowLayout());
-		final JTextField javaFilePathTextField = new JTextField (javaFilePath);
-		JButton javaFilePathChoiceButton = new JButton("...");
+		final JTextField javaFilePathTextField = new JTextField (this.javaFilePath);
+		JButton javaFilePathChoiceButton = new JButton("..."); //$NON-NLS-1$
 		javaFilePathChoiceButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				javaFilePathTextField.setText(GUIConfigSqlOJBXML.selectRepertoire(javaFilePath));
+				javaFilePathTextField.setText(GUIConfigSqlOJBXML.selectRepertoire(GUIConfigSqlOJBXML.this.javaFilePath));
 			}
 		});
 		javaFilePathPanel.add(javaFilePathTextField);
@@ -121,18 +121,18 @@ public class GUIConfigSqlOJBXML extends JFrame {
 		contentPane.add(javaFilePathPanel);
 
 		JLabel tableNameLabel = new JLabel (tableNameText);
-		final JTextField tableNameTextField = new JTextField (tableName);
+		final JTextField tableNameTextField = new JTextField (this.tableName);
 		contentPane.add(tableNameLabel);
 		contentPane.add(tableNameTextField);
 
 
 		JLabel mappingDirectoryLabel = new JLabel (mappingDirectoryText);
 		JPanel mappingDirectoryPanel =	new JPanel(new FlowLayout());
-		final JTextField mappingDirectoryTextField = new JTextField (mappingDirectory);
-		JButton mappingDirectoryChoiceButton = new JButton("...");
+		final JTextField mappingDirectoryTextField = new JTextField (this.mappingDirectory);
+		JButton mappingDirectoryChoiceButton = new JButton("..."); //$NON-NLS-1$
 		mappingDirectoryChoiceButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mappingDirectoryTextField.setText(GUIConfigSqlOJBXML.selectRepertoire(mappingDirectory));
+				mappingDirectoryTextField.setText(GUIConfigSqlOJBXML.selectRepertoire(GUIConfigSqlOJBXML.this.mappingDirectory));
 			}
 		});
 		mappingDirectoryPanel.add(mappingDirectoryTextField);
@@ -141,7 +141,7 @@ public class GUIConfigSqlOJBXML extends JFrame {
 		contentPane.add(mappingDirectoryPanel);
 
 		JLabel mappingFileNameLabel = new JLabel (mappingFileNameText);
-		final JTextField mappingFileNameTextField = new JTextField (mappingFileName);
+		final JTextField mappingFileNameTextField = new JTextField (this.mappingFileName);
 		contentPane.add(mappingFileNameLabel);
 		contentPane.add(mappingFileNameTextField);
 
@@ -151,11 +151,11 @@ public class GUIConfigSqlOJBXML extends JFrame {
 		okButton.setActionCommand("Ok");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tableName = tableNameTextField.getText();
-				javaFilePath = javaFilePathTextField.getText().replace('/','.');
-				javaFilePath = javaFilePath.replace('\\','.');
-				mappingDirectory = mappingDirectoryTextField.getText();
-				mappingFileName = mappingFileNameTextField.getText();
+				GUIConfigSqlOJBXML.this.tableName = tableNameTextField.getText();
+				GUIConfigSqlOJBXML.this.javaFilePath = javaFilePathTextField.getText().replace('/','.');
+				GUIConfigSqlOJBXML.this.javaFilePath = GUIConfigSqlOJBXML.this.javaFilePath.replace('\\','.');
+				GUIConfigSqlOJBXML.this.mappingDirectory = mappingDirectoryTextField.getText();
+				GUIConfigSqlOJBXML.this.mappingFileName = mappingFileNameTextField.getText();
 				getSelectedValues();
 				dialog.dispose();
 			}
@@ -164,7 +164,7 @@ public class GUIConfigSqlOJBXML extends JFrame {
 		JButton cancelButton = new JButton("Annuler");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				selectedValues[0] = null; //file java path
+				GUIConfigSqlOJBXML.this.selectedValues[0] = null; //file java path
 				dialog.dispose();
 			}
 		});
@@ -181,12 +181,12 @@ public class GUIConfigSqlOJBXML extends JFrame {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private static String selectRepertoire(String javaFilePath){
+	static String selectRepertoire(String javaFilePath){
 		JFileChooser fileChooser = new JFileChooser(javaFilePath);
 		fileChooser.setFileFilter(new FileFilter() {
 			@Override
 			public boolean accept(File f) {
-				return f.getName().toLowerCase().endsWith(".java")||f.isDirectory();
+				return f.getName().toLowerCase().endsWith(".java")||f.isDirectory(); //$NON-NLS-1$
 			}
 			@Override
 			public String getDescription() {
@@ -195,7 +195,7 @@ public class GUIConfigSqlOJBXML extends JFrame {
 		});
 
 		int result = fileChooser.showOpenDialog(null);
-		String pathFileJava = "";
+		String pathFileJava = ""; //$NON-NLS-1$
 
 
 		if (result == JFileChooser.APPROVE_OPTION) {
@@ -206,10 +206,10 @@ public class GUIConfigSqlOJBXML extends JFrame {
 
 		}
 
-		if (pathFileJava == null || pathFileJava.equals("") || !pathFileJava.endsWith(".java")){
+		if (pathFileJava == null || pathFileJava.equals("") || !pathFileJava.endsWith(".java")){ //$NON-NLS-1$ //$NON-NLS-2$
 			JOptionPane.showMessageDialog(null,"Le type de votre fichier n'est pas valide (.java)","Fichier de type incorrect",
 					JOptionPane.WARNING_MESSAGE);
-			pathFileJava = "";
+			pathFileJava = ""; //$NON-NLS-1$
 		}
 		else {
 			if (pathFileJava.startsWith("src")) pathFileJava = pathFileJava.substring(4,pathFileJava.length()-5);
@@ -217,4 +217,5 @@ public class GUIConfigSqlOJBXML extends JFrame {
 		}
 		return pathFileJava;
 	}
+
 }

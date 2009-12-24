@@ -60,12 +60,12 @@ class GeOxygeneFilter  {
 
 
 	public  GeOxygeneFilter (Object[] classesNames, String user) {
-		userName = user;
-		data = new String[classesNames.length];
-		for (int i=0; i<data.length; i++)
-			data[i] = (String) classesNames[i];
+		this.userName = user;
+		this.data = new String[classesNames.length];
+		for (int i=0; i<this.data.length; i++)
+			this.data[i] = (String) classesNames[i];
 		sortData();
-		dataList = new JList(data);
+		this.dataList = new JList(this.data);
 	}
 
 
@@ -74,24 +74,24 @@ class GeOxygeneFilter  {
 		//dialog.show();
 		dialog.setVisible(true);
 		dialog.dispose();
-		return selectedData;
+		return this.selectedData;
 	}
 
 
-	private void getSelectedValues() {
-		Object[] selectedObjects = dataList.getSelectedValues();
-		selectedData = new String[selectedObjects.length];
+	void getSelectedValues() {
+		Object[] selectedObjects = this.dataList.getSelectedValues();
+		this.selectedData = new String[selectedObjects.length];
 		for (int i=0; i<selectedObjects.length; i++)
-			selectedData[i] = (String) selectedObjects[i];
+			this.selectedData[i] = (String) selectedObjects[i];
 	}
 
 
 	private JDialog createDialog (Frame parent) {
 
-		String title = FRAME_TITLE + userName;
+		String title = FRAME_TITLE + this.userName;
 		final JDialog dialog = new JDialog(parent, title, true);
 
-		JScrollPane scrollPane = new JScrollPane(dataList);
+		JScrollPane scrollPane = new JScrollPane(this.dataList);
 		scrollPane.setPreferredSize(new Dimension (500,600));
 
 		JPanel controlPanel =	new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
@@ -127,19 +127,18 @@ class GeOxygeneFilter  {
 
 
 	private void sortData () {
-		if (data.length > 1) {
-			for (int i=0; i<data.length-1; i++) {
-				for (int j=i+1; j<data.length; j++)  {
-					String A = new String(data[i]);
-					String B = new String(data[j]);
+		if (this.data.length > 1) {
+			for (int i=0; i<this.data.length-1; i++) {
+				for (int j=i+1; j<this.data.length; j++)  {
+					String A = new String(this.data[i]);
+					String B = new String(this.data[j]);
 					if (B.compareTo(A) < 0) {
-						data[i] = B;
-						data[j] = A;
+						this.data[i] = B;
+						this.data[j] = A;
 					}
 				}
 			}
 		}
 	}
-
 
 }

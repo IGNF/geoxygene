@@ -65,12 +65,12 @@ public class GUIManageData extends JFrame {
 
 	private static final String FRAME_TITLE = "GeOxygene Gestion des donnees ";
 
-	private boolean genereIds = false;
-	private boolean genereSimple = false;
-	private boolean genereUnique = false;
-	private boolean homogeneise = false;
-	private boolean spatialIndex = false;
-	private boolean emprise = false;
+	boolean genereIds = false;
+	boolean genereSimple = false;
+	boolean genereUnique = false;
+	boolean homogeneise = false;
+	boolean spatialIndex = false;
+	boolean emprise = false;
 
 	private String genereIdsText = "Generation des COGITID";
 	private String homogeneiseText = "Homogeneise les geometries";
@@ -93,17 +93,17 @@ public class GUIManageData extends JFrame {
 		//dialog.show();
 		dialog.setVisible(true);
 		dialog.dispose();
-		return selectedValues;
+		return this.selectedValues;
 	}
 
 
-	private void getSelectedValues() {
-		selectedValues[0] = genereIds;
-		selectedValues[1] = homogeneise;
-		selectedValues[2] = spatialIndex;
-		selectedValues[3] = emprise;
-		selectedValues[4] = genereSimple;
-		selectedValues[5] = genereUnique;
+	void getSelectedValues() {
+		this.selectedValues[0] = this.genereIds;
+		this.selectedValues[1] = this.homogeneise;
+		this.selectedValues[2] = this.spatialIndex;
+		this.selectedValues[3] = this.emprise;
+		this.selectedValues[4] = this.genereSimple;
+		this.selectedValues[5] = this.genereUnique;
 	}
 
 
@@ -115,11 +115,11 @@ public class GUIManageData extends JFrame {
 		Container contentPane = dialog.getContentPane();
 		contentPane.setLayout(new GridLayout(6,1));
 
-		final JCheckBox genereIdsCheckBox = new JCheckBox(genereIdsText);
+		final JCheckBox genereIdsCheckBox = new JCheckBox(this.genereIdsText);
 		contentPane.add(genereIdsCheckBox);
 		genereIdsCheckBox.setSelected(false);
 
-		final JComboBox typeGenere = new JComboBox(new String [] {genereSimpleText,genereUniqueText});
+		final JComboBox typeGenere = new JComboBox(new String [] {this.genereSimpleText,this.genereUniqueText});
 		typeGenere.setEnabled(false);
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT,100,10));
 		panel.add(typeGenere);
@@ -134,15 +134,15 @@ public class GUIManageData extends JFrame {
 			}
 		});
 
-		final JCheckBox homogeneiseCheckBox = new JCheckBox(homogeneiseText);
+		final JCheckBox homogeneiseCheckBox = new JCheckBox(this.homogeneiseText);
 		contentPane.add(homogeneiseCheckBox);
 		homogeneiseCheckBox.setSelected(false);
 
-		final JCheckBox empriseCheckBox = new JCheckBox(empriseText);
+		final JCheckBox empriseCheckBox = new JCheckBox(this.empriseText);
 		contentPane.add(empriseCheckBox);
 		empriseCheckBox.setSelected(false);
 
-		final JCheckBox spatialIndexCheckBox = new JCheckBox(spatialIndexText);
+		final JCheckBox spatialIndexCheckBox = new JCheckBox(this.spatialIndexText);
 		contentPane.add(spatialIndexCheckBox);
 		spatialIndexCheckBox.setSelected(false);
 
@@ -152,19 +152,19 @@ public class GUIManageData extends JFrame {
 		okButton.setActionCommand("Ok");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				genereIds = genereIdsCheckBox.isSelected();
-				homogeneise = homogeneiseCheckBox.isSelected();
-				spatialIndex = spatialIndexCheckBox.isSelected();
-				emprise = empriseCheckBox.isSelected();
+				GUIManageData.this.genereIds = genereIdsCheckBox.isSelected();
+				GUIManageData.this.homogeneise = homogeneiseCheckBox.isSelected();
+				GUIManageData.this.spatialIndex = spatialIndexCheckBox.isSelected();
+				GUIManageData.this.emprise = empriseCheckBox.isSelected();
 				if (typeGenere.getSelectedIndex() == 0) {
-					genereSimple = true;
-					genereUnique = false;
+					GUIManageData.this.genereSimple = true;
+					GUIManageData.this.genereUnique = false;
 				} else if (typeGenere.getSelectedIndex() == 1) {
-					genereSimple = false;
-					genereUnique = true;
+					GUIManageData.this.genereSimple = false;
+					GUIManageData.this.genereUnique = true;
 				} else {
-					genereSimple = false;
-					genereUnique = false;
+					GUIManageData.this.genereSimple = false;
+					GUIManageData.this.genereUnique = false;
 				}
 				getSelectedValues();
 				dialog.dispose();
@@ -174,12 +174,12 @@ public class GUIManageData extends JFrame {
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				genereIds = false;
-				genereSimple = false;
-				genereUnique = false;
-				homogeneise = false;
-				spatialIndex = false;
-				emprise = false;
+				GUIManageData.this.genereIds = false;
+				GUIManageData.this.genereSimple = false;
+				GUIManageData.this.genereUnique = false;
+				GUIManageData.this.homogeneise = false;
+				GUIManageData.this.spatialIndex = false;
+				GUIManageData.this.emprise = false;
 				getSelectedValues();
 				dialog.dispose();
 			}
@@ -194,6 +194,5 @@ public class GUIManageData extends JFrame {
 
 		return dialog;
 	}
-
 
 }

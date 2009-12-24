@@ -61,9 +61,9 @@ public class GUIExportData extends JFrame {
 
 	private static final String FRAME_TITLE = "GeOxygene Export données ESRI Shapefile";
 
-	private String shapefilePath = "";
-	private String tableName;
-	private boolean validated = false;
+	String shapefilePath = ""; //$NON-NLS-1$
+	String tableName;
+	boolean validated = false;
 
 	private static String shapefilePathText = "Fichier ESRI Shapefile à exporter : ";
 	private static String tableNameText = "Nom de la table contenant les données à exporter : ";
@@ -77,7 +77,7 @@ public class GUIExportData extends JFrame {
 		final  JDialog dialog = createDialog(this);
 		dialog.setVisible(true);
 		dialog.dispose();
-		return validated;
+		return this.validated;
 	}
 
 	private JDialog createDialog (Frame parent) {
@@ -90,7 +90,7 @@ public class GUIExportData extends JFrame {
 
 		// table SQL
 		JLabel tableNameLabel = new JLabel (tableNameText);
-		final JTextField tableNameTextField = new JTextField (tableName);
+		final JTextField tableNameTextField = new JTextField (this.tableName);
 		contentPane.add(tableNameLabel);
 		contentPane.add(tableNameTextField);
 
@@ -98,8 +98,8 @@ public class GUIExportData extends JFrame {
 		JLabel shapefilePathLabel = new JLabel (shapefilePathText);
 		JPanel shapefilePathPanel =	new JPanel();
 		shapefilePathPanel.setLayout(new BoxLayout(shapefilePathPanel, BoxLayout.X_AXIS));
-		final JTextField shapefilePathTextField = new JTextField (shapefilePath);
-		JButton shapefilePathChoiceButton = new JButton("...");
+		final JTextField shapefilePathTextField = new JTextField (this.shapefilePath);
+		JButton shapefilePathChoiceButton = new JButton("..."); //$NON-NLS-1$
 		shapefilePathChoiceButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				shapefilePathTextField.setText(GUIExportData.selectFichier(null));
@@ -117,10 +117,10 @@ public class GUIExportData extends JFrame {
 		okButton.setActionCommand("Ok");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tableName = tableNameTextField.getText();
-				shapefilePath = shapefilePathTextField.getText();
+				GUIExportData.this.tableName = tableNameTextField.getText();
+				GUIExportData.this.shapefilePath = shapefilePathTextField.getText();
 				dialog.dispose();
-				validated = true;
+				GUIExportData.this.validated = true;
 			}
 		});
 
@@ -167,7 +167,7 @@ public class GUIExportData extends JFrame {
 	}
 	 */
 
-	private static String selectFichier(String path){
+	static String selectFichier(String path){
 		JFileChooser fileChooser = new JFileChooser(path);
 		String[] typeText = shapefileTypeText;
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(typeText[0],typeText[1]);
@@ -176,19 +176,19 @@ public class GUIExportData extends JFrame {
 		int result = fileChooser.showDialog(null, "Ok");
 
 		if(result == JFileChooser.CANCEL_OPTION)
-			return "";
+			return ""; //$NON-NLS-1$
 
 		String file = fileChooser.getSelectedFile().getPath();
 
 		if (path!=null)
 			file = file.substring(path.toString().length()+1);
 
-		if(file == null || file.equals("")){
+		if(file == null || file.equals("")){ //$NON-NLS-1$
 			JOptionPane.showMessageDialog(null,
 					"nom de fichier incorrect",
 					"nom de fichier incorrect",
 					JOptionPane.ERROR_MESSAGE);
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 
 		return file;
@@ -198,14 +198,14 @@ public class GUIExportData extends JFrame {
 	 * @return shapefilePath
 	 */
 	public String getShapefilePath() {
-		return shapefilePath;
+		return this.shapefilePath;
 	}
 
 	/**
 	 * @return tableName
 	 */
 	public String getTableName() {
-		return tableName;
+		return this.tableName;
 	}
 
 

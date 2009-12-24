@@ -87,7 +87,7 @@ class ObjectViewerInterface extends JFrame implements Observer {
 	protected Viewer view = new Viewer();
 
 	/** It is a reference to the status bar of the ObjectViewer's GUI. */
-	private ObjectViewerStatusBar statusbar;
+	ObjectViewerStatusBar statusbar;
 
 	/** It is a reference to the tool bar of the GUI of the ObjectViewer. */
 	private ObjectViewerToolBar jtb;
@@ -99,7 +99,7 @@ class ObjectViewerInterface extends JFrame implements Observer {
 	//private Vector themesList;
 
 	/** List of properties of themes. */
-	private Vector<ObjectViewerThemeProperties> themesPropertiesList;
+	Vector<ObjectViewerThemeProperties> themesPropertiesList;
 
 	/** List of actives themes (button is pressed) */
 	private Vector<Theme> activeThemes;
@@ -111,7 +111,7 @@ class ObjectViewerInterface extends JFrame implements Observer {
 	private JScrollPane scrolling_panel_themes ;
 
 	/** Selected ID objects */
-	private Vector<ObjectsIDAndSource> selectedObjects ;
+	Vector<ObjectsIDAndSource> selectedObjects ;
 
 
 
@@ -129,45 +129,45 @@ class ObjectViewerInterface extends JFrame implements Observer {
 	private void InterfaceInit(Geodatabase db) {
 
 		// Init the lists
-		themesPropertiesList = new Vector<ObjectViewerThemeProperties>();
-		activeThemes = new Vector<Theme>();
+		this.themesPropertiesList = new Vector<ObjectViewerThemeProperties>();
+		this.activeThemes = new Vector<Theme>();
 
 		// Init GUI
 		this.getContentPane().setLayout( new BorderLayout() );
-		panel_themes.setLayout( new BoxLayout(panel_themes, BoxLayout.Y_AXIS) );
-		scrolling_panel_themes = new JScrollPane(panel_themes);
-		scrolling_panel_themes.setMinimumSize(new Dimension(180, 200));
+		this.panel_themes.setLayout( new BoxLayout(this.panel_themes, BoxLayout.Y_AXIS) );
+		this.scrolling_panel_themes = new JScrollPane(this.panel_themes);
+		this.scrolling_panel_themes.setMinimumSize(new Dimension(180, 200));
 		JPanel view_panel = new JPanel();
 		view_panel.setLayout( new BorderLayout());
-		view.setSize(300,200);
-		view.setBackground(Color.white);
-		view_panel.add(view);
-		JSplitPane jsp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, scrolling_panel_themes,	view_panel);
+		this.view.setSize(300,200);
+		this.view.setBackground(Color.white);
+		view_panel.add(this.view);
+		JSplitPane jsp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, this.scrolling_panel_themes,	view_panel);
 		jsp.setDividerLocation(0.4);
 		this.getContentPane().add(jsp);
 
 		// Definition of the ToolBar.
-		jtb = new ObjectViewerToolBar(this,db);
-		this.getContentPane().add(jtb, BorderLayout.NORTH);
+		this.jtb = new ObjectViewerToolBar(this,db);
+		this.getContentPane().add(this.jtb, BorderLayout.NORTH);
 
 		// Definition of the MenuBar.
-		jmb = new ObjectViewerMenuBar(this, db);
-		this.setJMenuBar(jmb);
+		this.jmb = new ObjectViewerMenuBar(this, db);
+		this.setJMenuBar(this.jmb);
 
 		// Definition of the StatusBar
-		statusbar = new ObjectViewerStatusBar(this);
-		this.getContentPane().add(statusbar, BorderLayout.SOUTH);
+		this.statusbar = new ObjectViewerStatusBar(this);
+		this.getContentPane().add(this.statusbar, BorderLayout.SOUTH);
 
 		// Mouse listener for view
-		view.addMouseMotionListener(new MouseMotionListener() {
+		this.view.addMouseMotionListener(new MouseMotionListener() {
 			public void mouseDragged(MouseEvent e) {
 
 			}
 
 			public void mouseMoved(MouseEvent e) {
-				double x = view.getMapGeoPoint().getX();
-				double y = view.getMapGeoPoint().getY();
-				statusbar.setText("X="+(int)x+"  Y="+(int)y);
+				double x = ObjectViewerInterface.this.view.getMapGeoPoint().getX();
+				double y = ObjectViewerInterface.this.view.getMapGeoPoint().getY();
+				ObjectViewerInterface.this.statusbar.setText("X="+(int)x+"  Y="+(int)y);
 			}
 		});
 	}
@@ -181,25 +181,25 @@ class ObjectViewerInterface extends JFrame implements Observer {
 			new ObjectViewerThemeProperties(this, t, sourcetype, source, THEME_SELECTION, THEME_VISIBILITY);
 
 		// fill vectors of themes and theme properties
-		themesPropertiesList.add(objectViewerThemeProperties);
-		activeThemes.add(t);
+		this.themesPropertiesList.add(objectViewerThemeProperties);
+		this.activeThemes.add(t);
 
 		// Init
 		initTheme(t,objectViewerThemeProperties );
 
 		// Init "theme button"
-		setThemeButton(themesPropertiesList.size()-1, objectViewerThemeProperties);
+		setThemeButton(this.themesPropertiesList.size()-1, objectViewerThemeProperties);
 
 		// Add theme to geotools viewer
-		view.addTheme(t);
-		view.setThemeIsVisible(t, THEME_VISIBILITY, true);
-		panel_themes.revalidate();
-		panel_themes.repaint();
+		this.view.addTheme(t);
+		this.view.setThemeIsVisible(t, THEME_VISIBILITY, true);
+		this.panel_themes.revalidate();
+		this.panel_themes.repaint();
 
 		// Gestion de l'ordre d'affichage
-		for (int i=0; i<themesPropertiesList.size(); i++) {
-			Theme th = themesPropertiesList.get(i).getObjectViewerTheme();
-			view.setThemeWaighting(th,-i);
+		for (int i=0; i<this.themesPropertiesList.size(); i++) {
+			Theme th = this.themesPropertiesList.get(i).getObjectViewerTheme();
+			this.view.setThemeWaighting(th,-i);
 		}
 	}
 
@@ -212,20 +212,20 @@ class ObjectViewerInterface extends JFrame implements Observer {
 			new ObjectViewerThemeProperties(this, t, sourcetype, source, active, visible);
 
 		// fill vectors of themes and theme properties
-		themesPropertiesList.set(index,objectViewerThemeProperties);
+		this.themesPropertiesList.set(index,objectViewerThemeProperties);
 
 		// Init
 		initTheme(t,objectViewerThemeProperties );
 
 		// Remove "theme button" and init new one
-		panel_themes.remove(index);
+		this.panel_themes.remove(index);
 		setThemeButton(index, objectViewerThemeProperties);
 
 		// Add theme to geotools viewer
-		view.addTheme(t);
-		view.setThemeIsVisible(t, visible, true);
-		panel_themes.revalidate();
-		panel_themes.repaint();
+		this.view.addTheme(t);
+		this.view.setThemeIsVisible(t, visible, true);
+		this.panel_themes.revalidate();
+		this.panel_themes.repaint();
 	}
 
 
@@ -256,9 +256,9 @@ class ObjectViewerInterface extends JFrame implements Observer {
 		themeSelectMgr.addSelectionChangedListener(new SelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent hce) {
 				System.out.println("Selection sur un theme ...");
-				selectedObjects = new Vector<ObjectsIDAndSource>();
-				for (int i = 0; i < themesPropertiesList.size(); i++) {
-					Theme activetheme = (themesPropertiesList.get(i)).getObjectViewerTheme();
+				ObjectViewerInterface.this.selectedObjects = new Vector<ObjectsIDAndSource>();
+				for (int i = 0; i < ObjectViewerInterface.this.themesPropertiesList.size(); i++) {
+					Theme activetheme = (ObjectViewerInterface.this.themesPropertiesList.get(i)).getObjectViewerTheme();
 					if (isActive(activetheme)) {
 						System.out.println("Themes: " + activetheme.getName());
 						//GeoData activethemeGeoData = activetheme.getGeoData();
@@ -275,8 +275,8 @@ class ObjectViewerInterface extends JFrame implements Observer {
 						int[] selectedIdObjectsNotNullArray = new int[selectedIdObjectsNotNullVector.size()];
 						for (int j=0; j < selectedIdObjectsNotNullArray.length; j++)
 							selectedIdObjectsNotNullArray[j] = selectedIdObjectsNotNullVector.get(j).intValue();
-						selectedObjects.add (new ObjectsIDAndSource (selectedIdObjectsNotNullArray,
-								themesPropertiesList.get(i).getDataSource() ));
+						ObjectViewerInterface.this.selectedObjects.add (new ObjectsIDAndSource (selectedIdObjectsNotNullArray,
+								ObjectViewerInterface.this.themesPropertiesList.get(i).getDataSource() ));
 					}
 				}
 			}
@@ -292,7 +292,7 @@ class ObjectViewerInterface extends JFrame implements Observer {
 		ShapefileReader sfr = new ShapefileReader(url);
 		final Theme t = sfr.getTheme();
 		String theme_name = t.getName();
-		String shapefile_name = theme_name.substring(theme_name.lastIndexOf("/") + 1);
+		String shapefile_name = theme_name.substring(theme_name.lastIndexOf("/") + 1); //$NON-NLS-1$
 		t.setName(shapefile_name);
 		this.addTheme(t, Utils.SHAPEFILE, sfr);
 	}
@@ -310,21 +310,21 @@ class ObjectViewerInterface extends JFrame implements Observer {
 	/** Refresh the FeatureCollection displayed in the viewer with this given name. */
 	protected void refreshAFeatureCollectionTheme (FT_FeatureCollection<? extends FT_Feature> fColl, String themeName) {
 		// Get the GeOxygeneReader of this collection
-		if (themesPropertiesList.size() > 0) {
-			for (int i=0; i<themesPropertiesList.size(); i++) {
-				ObjectViewerThemeProperties oldThemeProp = themesPropertiesList.get(i);
+		if (this.themesPropertiesList.size() > 0) {
+			for (int i=0; i<this.themesPropertiesList.size(); i++) {
+				ObjectViewerThemeProperties oldThemeProp = this.themesPropertiesList.get(i);
 				Theme oldTheme = oldThemeProp.getObjectViewerTheme();
 				// theme exists !!
 				if (oldThemeProp.getDataSourceType().equals (Utils.GEOXYGENE) && oldTheme.getName().equals(themeName)) {
 					//GeOxygeneReader oldGeOxyRead = (GeOxygeneReader) oldThemeProp.getDataSource();
-					int index = themesPropertiesList.indexOf(oldThemeProp);
-					view.removeStaticTheme(oldTheme);
+					int index = this.themesPropertiesList.indexOf(oldThemeProp);
+					this.view.removeStaticTheme(oldTheme);
 					GeOxygeneReader newGeOxyRead = new GeOxygeneReader (fColl);
 					final Theme newTheme = newGeOxyRead.getTheme();
 					newTheme.setName(themeName);
 					this.setTheme(newTheme, Utils.GEOXYGENE, newGeOxyRead, index, oldThemeProp.isActive(), oldThemeProp.isVisible());
-					activeThemes.remove (oldTheme);
-					activeThemes.add(newTheme);
+					this.activeThemes.remove (oldTheme);
+					this.activeThemes.add(newTheme);
 					return;
 				}
 			}
@@ -340,9 +340,9 @@ class ObjectViewerInterface extends JFrame implements Observer {
 	// ATTENTION apres un refresh, le highlight manager continue a etre active meme si le theme est deselectionne ...
 	public void refreshAFeatureCollectionTheme (FT_Feature feature, String themeName) {
 		// Get the GeOxygeneReader of this collection
-		if (themesPropertiesList.size() > 0) {
-			for (int i=0; i<themesPropertiesList.size(); i++) {
-				ObjectViewerThemeProperties themeProp = themesPropertiesList.get(i);
+		if (this.themesPropertiesList.size() > 0) {
+			for (int i=0; i<this.themesPropertiesList.size(); i++) {
+				ObjectViewerThemeProperties themeProp = this.themesPropertiesList.get(i);
 				Theme theme = themeProp.getObjectViewerTheme();
 				// theme exists !!
 				if (themeProp.getDataSourceType().equals (Utils.GEOXYGENE) && theme.getName().equals(themeName)) {
@@ -372,7 +372,7 @@ class ObjectViewerInterface extends JFrame implements Observer {
 			FileInputStream fis=new FileInputStream(fichier);
 			ImageLayer imageLayer = new ImageLayer(	fis, new GeoRectangle(x,y,width,height));
 			Theme t = new Theme (imageLayer);
-			String theme_name = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("."));
+			String theme_name = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf(".")); //$NON-NLS-1$ //$NON-NLS-2$
 			t.setName(theme_name);
 			this.addTheme(t, Utils.IMAGE, new ImageReader());
 		} catch (Exception e) {
@@ -382,18 +382,17 @@ class ObjectViewerInterface extends JFrame implements Observer {
 
 
 	protected Vector<ObjectsIDAndSource> getSelectedObjects() {
-		return selectedObjects;
+		return this.selectedObjects;
 	}
 
 
 	protected Vector<Theme> getActiveThemes () {
-		return activeThemes;
+		return this.activeThemes;
 	}
 
 
-	private boolean isActive (Theme t) {
-		if (activeThemes.contains(t)) return true;
-		else return false;
+	boolean isActive (Theme t) {
+		return (this.activeThemes.contains(t));
 	}
 
 
@@ -409,8 +408,8 @@ class ObjectViewerInterface extends JFrame implements Observer {
 		theme_chkbox.addMouseListener(popupListener);
 
 		// Get "theme button" and remove it
-		panel_themes.add(theme_chkbox,index);
-		panel_themes.add(Box.createVerticalStrut(2));
+		this.panel_themes.add(theme_chkbox,index);
+		this.panel_themes.add(Box.createVerticalStrut(2));
 		theme_chkbox.setPreferredSize(new Dimension(177, 30));
 		theme_chkbox.setMaximumSize(new Dimension(177, 30));
 
@@ -419,21 +418,21 @@ class ObjectViewerInterface extends JFrame implements Observer {
 
 	/** Move up a theme */
 	protected void upTheme (Theme t) {
-		for (int k=1; k<themesPropertiesList.size(); k++) {
-			ObjectViewerThemeProperties thPr1 = themesPropertiesList.get(k);
+		for (int k=1; k<this.themesPropertiesList.size(); k++) {
+			ObjectViewerThemeProperties thPr1 = this.themesPropertiesList.get(k);
 			Theme t1 = thPr1.getObjectViewerTheme();
 			if ( t1.equals(t)) {
-				ObjectViewerThemeProperties thPr0 = themesPropertiesList.get(k-1);
+				ObjectViewerThemeProperties thPr0 = this.themesPropertiesList.get(k-1);
 				Theme t0 = thPr0.getObjectViewerTheme();
-				view.swapThemes(t0,t1);
-				themesPropertiesList.set(k-1,thPr1);
-				themesPropertiesList.set(k,thPr0);
-				panel_themes.remove(k-1);
+				this.view.swapThemes(t0,t1);
+				this.themesPropertiesList.set(k-1,thPr1);
+				this.themesPropertiesList.set(k,thPr0);
+				this.panel_themes.remove(k-1);
 				setThemeButton(k-1,thPr1);
-				panel_themes.remove(k);
+				this.panel_themes.remove(k);
 				setThemeButton(k,thPr0);
-				panel_themes.revalidate();
-				panel_themes.repaint();
+				this.panel_themes.revalidate();
+				this.panel_themes.repaint();
 				break;
 			}
 		}
@@ -442,21 +441,21 @@ class ObjectViewerInterface extends JFrame implements Observer {
 
 	/** Moves down a theme */
 	protected void downTheme (Theme t) {
-		for (int k=0; k<themesPropertiesList.size()-1; k++) {
-			ObjectViewerThemeProperties thPr1 = themesPropertiesList.get(k);
+		for (int k=0; k<this.themesPropertiesList.size()-1; k++) {
+			ObjectViewerThemeProperties thPr1 = this.themesPropertiesList.get(k);
 			Theme t1 = thPr1.getObjectViewerTheme();
 			if ( t1.equals(t)) {
-				ObjectViewerThemeProperties thPr0 = themesPropertiesList.get(k+1);
+				ObjectViewerThemeProperties thPr0 = this.themesPropertiesList.get(k+1);
 				Theme t0 = thPr0.getObjectViewerTheme();
-				view.swapThemes(t0,t1);
-				themesPropertiesList.set(k+1,thPr1);
-				themesPropertiesList.set(k,thPr0);
-				panel_themes.remove(k+1);
+				this.view.swapThemes(t0,t1);
+				this.themesPropertiesList.set(k+1,thPr1);
+				this.themesPropertiesList.set(k,thPr0);
+				this.panel_themes.remove(k+1);
 				setThemeButton(k+1,thPr1);
-				panel_themes.remove(k);
+				this.panel_themes.remove(k);
 				setThemeButton(k,thPr0);
-				panel_themes.revalidate();
-				panel_themes.repaint();
+				this.panel_themes.revalidate();
+				this.panel_themes.repaint();
 				break;
 			}
 		}
@@ -464,15 +463,15 @@ class ObjectViewerInterface extends JFrame implements Observer {
 
 
 	protected void removeTheme (ObjectViewerThemeProperties prop) {
-		int index = themesPropertiesList.indexOf(prop);
+		int index = this.themesPropertiesList.indexOf(prop);
 		Theme t = prop.getObjectViewerTheme();
-		view.setThemeIsVisible(t,false,true);
-		panel_themes.remove(index);
-		panel_themes.revalidate();
-		panel_themes.repaint();
-		view.removeStaticTheme(t);
-		activeThemes.remove(t);
-		themesPropertiesList.remove(index);
+		this.view.setThemeIsVisible(t,false,true);
+		this.panel_themes.remove(index);
+		this.panel_themes.revalidate();
+		this.panel_themes.repaint();
+		this.view.removeStaticTheme(t);
+		this.activeThemes.remove(t);
+		this.themesPropertiesList.remove(index);
 	}
 
 
@@ -481,14 +480,14 @@ class ObjectViewerInterface extends JFrame implements Observer {
 		public int[] objectsID;
 		public DataSource source;
 		public ObjectsIDAndSource (int[] ids, DataSource s) {
-			objectsID = ids;
-			source = s;
+			this.objectsID = ids;
+			this.source = s;
 		}
 		public int[] getObjectsID() {
-			return objectsID;
+			return this.objectsID;
 		}
 		public DataSource getDataSource() {
-			return source;
+			return this.source;
 		}
 	}
 

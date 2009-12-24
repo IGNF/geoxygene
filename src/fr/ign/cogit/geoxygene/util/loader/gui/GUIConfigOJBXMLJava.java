@@ -66,12 +66,12 @@ public class GUIConfigOJBXMLJava extends JFrame {
 
 	private static final String FRAME_TITLE = "GeOxygene Configuration mapping OJB / Java ";
 
-	private String dataDirectory;
-	private String mappingDirectory;
-	private String packageName;
-	private String motherClass;
-	private String mappingFileName;
-	private String motherClasseMappingFileName;
+	String dataDirectory;
+	String mappingDirectory;
+	String packageName;
+	String motherClass;
+	String mappingFileName;
+	String motherClasseMappingFileName;
 
 	private static String packageNameText = "Nom du package : ";
 	private static String dataDirectoryText = "Repertoire d'accueil des packages : ";
@@ -83,16 +83,16 @@ public class GUIConfigOJBXMLJava extends JFrame {
 	private static String explicationText = "(*) : \nNe rien mettre si vous ne souhaitez pas faire apparaitre la classe mere dans le mapping"+
 	"\nOn peut aussi indiquer le meme fichier que le fichier de mapping";
 
-	private String[] selectedValues = new String[6];
+	String[] selectedValues = new String[6];
 
 	public  GUIConfigOJBXMLJava (String PackageName, String DataDirectory, String MappingDirectory,
 			String MotherClass,	String MappingFileName, String MotherClasseMappingFileName) {
-		packageName = PackageName;
-		dataDirectory = DataDirectory;
-		mappingDirectory = MappingDirectory;
-		motherClass = MotherClass;
-		mappingFileName = MappingFileName;
-		motherClasseMappingFileName = MotherClasseMappingFileName;
+		this.packageName = PackageName;
+		this.dataDirectory = DataDirectory;
+		this.mappingDirectory = MappingDirectory;
+		this.motherClass = MotherClass;
+		this.mappingFileName = MappingFileName;
+		this.motherClasseMappingFileName = MotherClasseMappingFileName;
 	}
 
 
@@ -101,18 +101,18 @@ public class GUIConfigOJBXMLJava extends JFrame {
 		//dialog.show();
 		dialog.setVisible(true);
 		dialog.dispose();
-		return selectedValues;
+		return this.selectedValues;
 	}
 
 
-	private void getSelectedValues() {
-		selectedValues[0] = dataDirectory;
-		selectedValues[1] = mappingDirectory;
-		selectedValues[2] = packageName;
-		selectedValues[3] = motherClass;
-		selectedValues[4] = mappingFileName;
-		selectedValues[5] = motherClasseMappingFileName;
-		if (selectedValues[5].trim().equals(""))selectedValues[5] = null;
+	void getSelectedValues() {
+		this.selectedValues[0] = this.dataDirectory;
+		this.selectedValues[1] = this.mappingDirectory;
+		this.selectedValues[2] = this.packageName;
+		this.selectedValues[3] = this.motherClass;
+		this.selectedValues[4] = this.mappingFileName;
+		this.selectedValues[5] = this.motherClasseMappingFileName;
+		if (this.selectedValues[5].trim().equals(""))this.selectedValues[5] = null; //$NON-NLS-1$
 	}
 
 
@@ -127,8 +127,8 @@ public class GUIConfigOJBXMLJava extends JFrame {
 
 		JLabel dataDirectoryLabel = new JLabel (dataDirectoryText);
 		JPanel dataDirectoryPanel =	new JPanel(new FlowLayout());
-		final JTextField dataDirectoryTextField = new JTextField (dataDirectory);
-		JButton dataDirectoryChoiceButton = new JButton("...");
+		final JTextField dataDirectoryTextField = new JTextField (this.dataDirectory);
+		JButton dataDirectoryChoiceButton = new JButton("..."); //$NON-NLS-1$
 		dataDirectoryChoiceButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dataDirectoryTextField.setText(GUIConfigOJBXMLJava.selectRepertoire());
@@ -139,11 +139,10 @@ public class GUIConfigOJBXMLJava extends JFrame {
 		contentPane.add(dataDirectoryLabel);
 		contentPane.add(dataDirectoryPanel);
 
-
 		JLabel mappingDirectoryLabel = new JLabel (mappingDirectoryText);
 		JPanel mappingDirectoryPanel =	new JPanel(new FlowLayout());
-		final JTextField mappingDirectoryTextField = new JTextField (mappingDirectory);
-		JButton mappingDirectoryChoiceButton = new JButton("...");
+		final JTextField mappingDirectoryTextField = new JTextField (this.mappingDirectory);
+		JButton mappingDirectoryChoiceButton = new JButton("..."); //$NON-NLS-1$
 		mappingDirectoryChoiceButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mappingDirectoryTextField.setText(GUIConfigOJBXMLJava.selectRepertoire());
@@ -155,23 +154,23 @@ public class GUIConfigOJBXMLJava extends JFrame {
 		contentPane.add(mappingDirectoryPanel);
 
 		JLabel packageNameLabel = new JLabel (packageNameText);
-		final JTextField packageNameTextField = new JTextField (packageName);
+		final JTextField packageNameTextField = new JTextField (this.packageName);
 		contentPane.add(packageNameLabel);
 		contentPane.add(packageNameTextField);
 
 
 		JLabel motherClassLabel = new JLabel (motherClassText);
-		final JTextField motherClassTextField = new JTextField (motherClass);
+		final JTextField motherClassTextField = new JTextField (this.motherClass);
 		contentPane.add(motherClassLabel);
 		contentPane.add(motherClassTextField);
 
 		JLabel mappingFileNameLabel = new JLabel (mappingFileNameText);
-		final JTextField mappingFileNameTextField = new JTextField (mappingFileName);
+		final JTextField mappingFileNameTextField = new JTextField (this.mappingFileName);
 		contentPane.add(mappingFileNameLabel);
 		contentPane.add(mappingFileNameTextField);
 
 		JLabel motherClasseMappingFileNameLabel = new JLabel (motherClasseMappingFileNameText);
-		final JTextField motherClasseMappingFileNameTextField = new JTextField (motherClasseMappingFileName);
+		final JTextField motherClasseMappingFileNameTextField = new JTextField (this.motherClasseMappingFileName);
 		contentPane.add(motherClasseMappingFileNameLabel);
 		contentPane.add(motherClasseMappingFileNameTextField);
 
@@ -185,12 +184,12 @@ public class GUIConfigOJBXMLJava extends JFrame {
 		okButton.setActionCommand("Ok");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				packageName = packageNameTextField.getText();
-				dataDirectory = dataDirectoryTextField.getText();
-				mappingDirectory = mappingDirectoryTextField.getText();
-				motherClass = motherClassTextField.getText();
-				mappingFileName = mappingFileNameTextField.getText();
-				motherClasseMappingFileName = motherClasseMappingFileNameTextField.getText();
+				GUIConfigOJBXMLJava.this.packageName = packageNameTextField.getText();
+				GUIConfigOJBXMLJava.this.dataDirectory = dataDirectoryTextField.getText();
+				GUIConfigOJBXMLJava.this.mappingDirectory = mappingDirectoryTextField.getText();
+				GUIConfigOJBXMLJava.this.motherClass = motherClassTextField.getText();
+				GUIConfigOJBXMLJava.this.mappingFileName = mappingFileNameTextField.getText();
+				GUIConfigOJBXMLJava.this.motherClasseMappingFileName = motherClasseMappingFileNameTextField.getText();
 				getSelectedValues();
 				dialog.dispose();
 			}
@@ -199,7 +198,7 @@ public class GUIConfigOJBXMLJava extends JFrame {
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				selectedValues[2] = null; //package name
+				GUIConfigOJBXMLJava.this.selectedValues[2] = null; //package name
 				dialog.dispose();
 			}
 		});
@@ -219,30 +218,26 @@ public class GUIConfigOJBXMLJava extends JFrame {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private static String selectRepertoire(){
+	static String selectRepertoire(){
 		JFileChooser choixRep = new JFileChooser();
 		choixRep.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
 		int result = choixRep.showSaveDialog(null);
 
 		if(result == JFileChooser.CANCEL_OPTION)
-			return "";
+			return ""; //$NON-NLS-1$
 
 		String rep = choixRep.getSelectedFile().getPath();
 
-		if(rep == null || rep.equals("")){
+		if(rep == null || rep.equals("")){ //$NON-NLS-1$
 			JOptionPane.showMessageDialog(null,
 					"nom de fichier incorrect",
 					"nom de fichier incorrect",
 					JOptionPane.ERROR_MESSAGE);
-			return "";
+			return ""; //$NON-NLS-1$
 		}
-		else
-			return rep;
+		return rep;
 
 	}
-
-
-
 
 }

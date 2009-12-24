@@ -50,8 +50,8 @@ class GeOxygeneConsoleInterface extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static String ojb = "OJB";
-	private static String castor= "Castor";
+	private static String ojb = "OJB"; //$NON-NLS-1$
+	private static String castor= "Castor"; //$NON-NLS-1$
 
 	private static String sqlToJavaText = "SQL to Java";
 	private static String javaToSqlText = "Java to SQL";
@@ -153,7 +153,7 @@ class GeOxygeneConsoleInterface extends JFrame {
 	}
 
 
-	private int getMappingTool (String string) {
+	int getMappingTool (String string) {
 		if (string.equals(ojb)) return GeOxygeneConsole.OJB;
 		else if (string.equals(castor)) return GeOxygeneConsole.CASTOR;
 		else return 0;
