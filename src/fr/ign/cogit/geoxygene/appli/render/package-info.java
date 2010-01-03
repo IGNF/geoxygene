@@ -19,44 +19,9 @@
  * Suite 330, Boston, MA 02111-1307 USA
  */
 
-package fr.ign.cogit.geoxygene.appli.mode;
-
-import java.awt.event.MouseEvent;
-import java.awt.geom.NoninvertibleTransformException;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-
-import fr.ign.cogit.geoxygene.appli.MainFrame;
-import fr.ign.cogit.geoxygene.appli.ProjectFrame;
-
 /**
- * @author Julien Perret
- *
+ * GeOxygene application render package.
+ * <p>
+ * It contains the rendering classes of the GeOxygene application.
  */
-public class MoveMode extends AbstractMode {
-
-    /**
-     * Constructor.
-     * @param theMainFrame the main frame
-     * @param theModeSelector the mode selector
-     */
-    public MoveMode(final MainFrame theMainFrame,
-            final ModeSelector theModeSelector) {
-        super(theMainFrame, theModeSelector);
-    }
-
-    @Override
-    protected final JButton createButton() {
-        return new JButton(new ImageIcon(this.getClass().
-                getResource("/icons/16x16/move.png"))); //$NON-NLS-1$
-    }
-
-    @Override
-    public final void leftMouseButtonClicked(final MouseEvent e,
-            final ProjectFrame frame) {
-        try {
-            frame.getLayerViewPanel().getViewport().moveTo(e.getPoint());
-        } catch (NoninvertibleTransformException e1) { e1.printStackTrace(); }
-    }
-}
+package fr.ign.cogit.geoxygene.appli.render;

@@ -1,27 +1,23 @@
-/*******************************************************************************
+/*
  * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
- * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
- * National Mapping Agency).
- * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at
+ * the Institut Géographique National (the French National Mapping Agency).
  * See: http://oxygene-project.sourceforge.net
- * 
  * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License along with
- * this library (see file LICENSE if present); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *******************************************************************************/
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or any later
+ * version.
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details. You should have received a copy of the GNU Lesser General
+ * Public License along with this library (see file LICENSE if present); if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place,
+ * Suite 330, Boston, MA 02111-1307 USA
+ */
 
 package fr.ign.cogit.geoxygene.appli.render;
 
@@ -57,338 +53,585 @@ import fr.ign.cogit.geoxygene.style.UserStyle;
 
 /**
  * A renderer to render a {@link Layer} into a {@link LayerViewPanel}.
- * 
+ *
  * @author Julien Perret
  * @see RenderingManager
  * @see Layer
  * @see LayerViewPanel
  */
 public class LayerRenderer implements Renderer {
-	static Logger logger=Logger.getLogger(LayerRenderer.class.getName());
+    /**
+     * The logger.
+     */
+    private static Logger logger =
+        Logger.getLogger(LayerRenderer.class.getName());
 
-	Layer layer = null;
-	LayerViewPanel layerViewPanel = null;
-	FT_FeatureCollection<? extends FT_Feature> features = null;
-	protected volatile boolean cancelled = false;
-	protected volatile boolean rendering = false;
-	protected volatile boolean rendered = false;
-	public boolean isRendered() {return this.rendered;}
+    /**
+     * Layer to render.
+     */
+    private Layer layer = null;
+    /**
+     * Layer view panel.
+     */
+    private LayerViewPanel layerViewPanel = null;
+    /**
+     * Features to render.
+     */
+    private FT_FeatureCollection<? extends FT_Feature> features = null;
+    /**
+     * Set the image.
+     * @param theImage the image to render
+     */
+    public final void setImage(final BufferedImage theImage) {
+        this.image = theImage;
+    }
+    /**
+     * Get the image.
+     * @return the rendered image
+     */
+    public final BufferedImage getImage() {
+        return this.image;
+    }
 
-	BufferedImage image = null;
+    /**
+     * Set the layer view panel.
+     * @param theLayerViewPanel the layer view panel
+     */
+    public final void setLayerViewPanel(
+            final LayerViewPanel theLayerViewPanel) {
+        this.layerViewPanel = theLayerViewPanel;
+    }
+    /**
+     * @return the layer view panel
+     */
+    public final LayerViewPanel getLayerViewPanel() {
+        return this.layerViewPanel;
+    }
+    /**
+     * True if rendering is finished.
+     */
+    private volatile boolean rendered = false;
+    /**
+     * @param isRendered True if rendering is finished, false otherwise
+     */
+    public final void setRendered(final boolean isRendered) {
+        this.rendered = isRendered;
+    }
+    /**
+     * @return true if rendering is finished, false otherwise
+     */
+    public final boolean isRendered() {
+        return this.rendered;
+    }
+    /**
+     * True if rendering is cancelled.
+     */
+    private volatile boolean cancelled = false;
+    /**
+     * @param isCancelled True if rendering is cancelled, false otherwise
+     */
+    public final void setCancelled(final boolean isCancelled) {
+        this.cancelled = isCancelled;
+    }
+    /**
+     * @return True if rendering is cancelled, false otherwise.
+     */
+    public final boolean isCancelled() {
+        return this.cancelled;
+    }
 
-	/**
-	 * Constructor of renderer using a {@link Layer} and a {@link LayerViewPanel}
-	 * @param theLayer a layer to render
-	 * @param theFeatures the feature to render
-	 * @param theLayerViewPanel the panel to draws into
-	 */
-	public LayerRenderer(Layer theLayer, FT_FeatureCollection<? extends FT_Feature> theFeatures, LayerViewPanel theLayerViewPanel) {
-		this.layer=theLayer;
-		this.layerViewPanel=theLayerViewPanel;
-		this.features = theFeatures;
-	}
+    /**
+     * The rendered image.
+     */
+    private BufferedImage image = null;
 
-	/**
-	 * True is the renderer is running, i.e. if its associated runnable is running, false otherwise.
-	 * @return true is the renderer is running, false otherwise
-	 * @see #createRunnable()
-	 * @see #renderHook(BufferedImage,GM_Envelope)
-	 */
-	public boolean isRendering() {return this.rendering;}
+    /**
+     * True if rendering is ongoing.
+     */
+    private volatile boolean rendering = false;
+    /**
+     * True is the renderer is running, i.e. if its associated runnable is
+     * running, false otherwise.
+     * @return true is the renderer is running, false otherwise
+     * @see #createRunnable()
+     * @see #renderHook(BufferedImage,GM_Envelope)
+     */
+    public final boolean isRendering() {
+        return this.rendering;
+    }
+    /**
+     * @param isRendering True if rendering is ongoing
+     */
+    public final void setRendering(final boolean isRendering) {
+        this.rendering = isRendering;
+    }
+    /**
+     * Cancel the rendering. This method does not actually interrupt the thread
+     * but lets the thread know it should stop.
+     * @see Runnable
+     * @see Thread
+     */
+    public final void cancel() {
+        this.setCancelled(true);
+    }
 
-	/**
-	 * Cancel the rendering. This method does not actually interrupt the thread but lets the thread know it should stop.
-	 * @see Runnable
-	 * @see Thread
-	 */
-	public void cancel() {this.cancelled = true;}
+    /**
+     * Constructor of renderer using a {@link Layer} and a
+     * {@link LayerViewPanel}.
+     * @param theLayer a layer to render
+     * @param theFeatures the feature to render
+     * @param theLayerViewPanel the panel to draws into
+     */
+    public LayerRenderer(final Layer theLayer,
+            final FT_FeatureCollection<? extends FT_Feature> theFeatures,
+                    final LayerViewPanel theLayerViewPanel) {
+        this.layer = theLayer;
+        this.setLayerViewPanel(theLayerViewPanel);
+        this.features = theFeatures;
+    }
 
-	/**
-	 * Copy the rendered image the a 2D graphics
-	 * @param graphics the 2D graphics to draw into
-	 */
-	public void copyTo(Graphics2D graphics) {if (this.image != null) graphics.drawImage(this.image, 0, 0, null);}
+    /**
+     * Copy the rendered image the a 2D graphics.
+     * @param graphics the 2D graphics to draw into
+     */
+    public final void copyTo(final Graphics2D graphics) {
+        if (this.getImage() != null) {
+            graphics.drawImage(this.getImage(), 0, 0, null);
+        }
+    }
 
-	/**
-	 * Create a runnable for the renderer. A renderer create a new image to draw into. 
-	 * If cancel() is called, the rendering stops as soon as possible. 
-	 * When finished, set the variable rendering to false.
-	 * @return a new runnable
-	 * @see Runnable
-	 * @see #cancel()
-	 * @see #isRendering()
-	 */
-	public Runnable createRunnable() {
-		if (this.image != null) {return null;}
-		this.cancelled = false;
-		return new Runnable() {
-			public void run() {
-				try {
-					LayerRenderer.this.rendering = true;
-					LayerRenderer.this.rendered = false;
-					// it the rendering is cancel, stop
-					if (LayerRenderer.this.cancelled) return;
-					// if either the width or the height of the panel is lesser or equal to 0, stop
-					if (Math.min(LayerRenderer.this.layerViewPanel.getWidth(),LayerRenderer.this.layerViewPanel.getHeight())<=0) return;
-					// create a new image
-					LayerRenderer.this.image = new BufferedImage(LayerRenderer.this.layerViewPanel.getWidth(),LayerRenderer.this.layerViewPanel.getHeight(),BufferedImage.TYPE_INT_ARGB);
-				    ((Graphics2D) LayerRenderer.this.image.getGraphics()).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-					// do the actual rendering
-					try {renderHook(LayerRenderer.this.image,LayerRenderer.this.layerViewPanel.getViewport().getEnvelopeInModelCoordinates());}
-					catch (Throwable t) {
-						// TODO WARN THE USER?
-						t.printStackTrace(System.err);
-						return;
-					}
-					// when time comes, repaint the panel
-					SwingUtilities.invokeLater(new Runnable() {public void run() {LayerRenderer.this.layerViewPanel.superRepaint();}});
-				} finally {
-					// the renderer is not rendering anymore ( used by isRendering() )
-					LayerRenderer.this.rendering = false;
-					LayerRenderer.this.rendered = true;
-				}
-			}
-		};
-	}
+    /**
+     * Create a runnable for the renderer. A renderer create a new image to
+     * draw into.
+     * If cancel() is called, the rendering stops as soon as possible.
+     * When finished, set the variable rendering to false.
+     * @return a new runnable
+     * @see Runnable
+     * @see #cancel()
+     * @see #isRendering()
+     */
+    public final Runnable createRunnable() {
+        if (this.getImage() != null) {
+            return null;
+        }
+        this.setCancelled(false);
+        return new Runnable() {
+            public void run() {
+                try {
+                    LayerRenderer.this.setRendering(true);
+                    LayerRenderer.this.setRendered(false);
+                    // it the rendering is cancel, stop
+                    if (LayerRenderer.this.isCancelled()) {
+                        return;
+                    }
+                    // if either the width or the height of the panel is lesser
+                    // or equal to 0, stop
+                    if (Math.min(
+                            LayerRenderer.this.getLayerViewPanel().getWidth(),
+                            LayerRenderer.this.getLayerViewPanel().getHeight())
+                            <= 0) {
+                        return;
+                    }
+                    // create a new image
+                    LayerRenderer.this.setImage(new BufferedImage(
+                            LayerRenderer.this.getLayerViewPanel().getWidth(),
+                            LayerRenderer.this.getLayerViewPanel().getHeight(),
+                            BufferedImage.TYPE_INT_ARGB));
+                    ((Graphics2D) LayerRenderer.this.getImage().getGraphics()).
+                    setRenderingHint(
+                            RenderingHints.KEY_ANTIALIASING,
+                            RenderingHints.VALUE_ANTIALIAS_ON);
+                    // do the actual rendering
+                    try { renderHook(
+                            LayerRenderer.this.getImage(),
+                            LayerRenderer.this.getLayerViewPanel().
+                            getViewport().getEnvelopeInModelCoordinates());
+                    } catch (Throwable t) {
+                        // TODO WARN THE USER?
+                        t.printStackTrace(System.err);
+                        return;
+                    }
+                    // when time comes, repaint the panel
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            LayerRenderer.this.getLayerViewPanel().
+                            superRepaint();
+                        }
+                    });
+                } finally {
+                    // the renderer is not rendering anymore
+                    // ( used by isRendering() )
+                    LayerRenderer.this.setRendering(false);
+                    LayerRenderer.this.setRendered(true);
+                }
+            }
+        };
+    }
 
-	/**
-	 * Actually renders the layer in an image. Stop if cancelled is true.
-	 * @param theImage the image to draw into
-	 * @param envelope 
-	 * @see #cancel()
-	 */
-	void renderHook(BufferedImage theImage, GM_Envelope envelope) {
-		if (this.cancelled||(this.features==null)) return;
-		FT_FeatureCollection<? extends FT_Feature> collection = this.features.select(envelope);
-		for (Style style : this.layer.getStyles()) {
-			if (this.cancelled) return;
-			if (style.isUserStyle()) {
-				UserStyle userStyle = (UserStyle) style;
-				for (FeatureTypeStyle featureTypeStyle:userStyle.getFeatureTypeStyles()) {
-					if (this.cancelled) return;
-					Map<Rule,Set<FT_Feature>> filteredFeatures = new HashMap<Rule,Set<FT_Feature>>();
-					for(Rule rule:featureTypeStyle.getRules()) filteredFeatures.put(rule, new HashSet<FT_Feature>());
-					if (logger.isDebugEnabled()) logger.debug(collection.size()+" features"); //$NON-NLS-1$
-					for (FT_Feature feature:collection) {
-						for(Rule rule:featureTypeStyle.getRules()) {
-							if ((rule.getFilter()==null)||rule.getFilter().evaluate(feature)) {
-								if (logger.isDebugEnabled()) logger.debug(feature+" filtered in "+rule.getFilter()); //$NON-NLS-1$
-								filteredFeatures.get(rule).add(feature);
-								break;
-							}
-							if (logger.isDebugEnabled()) logger.debug(feature+" filtered out "+rule.getFilter()); //$NON-NLS-1$
-						}
-					}
-					for(int indexRule=featureTypeStyle.getRules().size()-1;indexRule>=0;indexRule--) {
-						if (this.cancelled) return;
-						Rule rule=featureTypeStyle.getRules().get(indexRule);
-						if (logger.isDebugEnabled()) {
-							logger.debug(filteredFeatures.get(rule)+"  for rule "+rule); //$NON-NLS-1$
-							for (Symbolizer symbolizer:rule.getSymbolizers()) {
-								logger.debug("symbolizer =  "+symbolizer); //$NON-NLS-1$
-								logger.debug("stroke =  "+symbolizer.getStroke()); //$NON-NLS-1$
-								logger.debug("awt stroke =  "+symbolizer.getStroke().toAwtStroke()); //$NON-NLS-1$
-								logger.debug("color =  "+symbolizer.getStroke().getColor()); //$NON-NLS-1$
-							}
-						}
-						for (FT_Feature feature:filteredFeatures.get(rule))
-							for (Symbolizer symbolizer:rule.getSymbolizers()) {render(symbolizer,feature,theImage);}
-					}
-				}
-			}
-		}
-	}
+    /**
+     * Actually renders the layer in an image. Stop if cancelled is true.
+     * @param theImage the image to draw into
+     * @param envelope the envelope
+     * @see #cancel()
+     */
+    final void renderHook(final BufferedImage theImage,
+            final GM_Envelope envelope) {
+        if (this.isCancelled() || (this.features == null)) {
+            return;
+        }
+        FT_FeatureCollection<? extends FT_Feature> collection =
+            this.features.select(envelope);
+        for (Style style : this.layer.getStyles()) {
+            if (this.isCancelled()) {
+                return;
+            }
+            if (style.isUserStyle()) {
+                UserStyle userStyle = (UserStyle) style;
+                for (FeatureTypeStyle featureTypeStyle
+                        : userStyle.getFeatureTypeStyles()) {
+                    if (this.isCancelled()) {
+                        return;
+                    }
+                    Map<Rule, Set<FT_Feature>> filteredFeatures =
+                        new HashMap<Rule, Set<FT_Feature>>();
+                    for (Rule rule : featureTypeStyle.getRules()) {
+                        filteredFeatures.put(rule, new HashSet<FT_Feature>());
+                    }
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(collection.size()
+                                + " features"); //$NON-NLS-1$
+                    }
+                    for (FT_Feature feature : collection) {
+                        for (Rule rule : featureTypeStyle.getRules()) {
+                            if ((rule.getFilter() == null) || rule.getFilter().
+                                    evaluate(feature)) {
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug(feature
+                                            + " filtered in " + //$NON-NLS-1$
+                                            rule.getFilter());
+                                }
+                                filteredFeatures.get(rule).add(feature);
+                                break;
+                            }
+                            if (logger.isDebugEnabled()) {
+                                logger.debug(feature
+                                        + " filtered out " + //$NON-NLS-1$
+                                        rule.getFilter());
+                            }
+                        }
+                    }
+                    for (int indexRule =
+                        featureTypeStyle.getRules().size() - 1;
+                    indexRule >= 0; indexRule--) {
+                        if (this.isCancelled()) {
+                            return;
+                        }
+                        Rule rule = featureTypeStyle.getRules().get(indexRule);
+                        if (logger.isDebugEnabled()) {
+                            logger.debug(filteredFeatures.get(rule)
+                                    + "  for rule " + rule); //$NON-NLS-1$
+                            for (Symbolizer symbolizer
+                                    : rule.getSymbolizers()) {
+                                logger.debug("symbolizer =  " + //$NON-NLS-1$
+                                        symbolizer);
+                                logger.debug("stroke =  " + //$NON-NLS-1$
+                                        symbolizer.getStroke());
+                                logger.debug("awt stroke =  " + //$NON-NLS-1$
+                                        symbolizer.getStroke().toAwtStroke());
+                                logger.debug("color =  " + //$NON-NLS-1$
+                                        symbolizer.getStroke().getColor());
+                            }
+                        }
+                        for (FT_Feature feature : filteredFeatures.get(rule)) {
+                            for (Symbolizer symbolizer
+                                    : rule.getSymbolizers()) {
+                                render(symbolizer, feature, theImage);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	/**
-	 * Render a rule.
-	 * @param rule
-	 * @param theImage
-	 * @param envelope 
-	 */
-	@SuppressWarnings({ "unchecked", "unused" })
-	private void render(Rule rule, BufferedImage theImage, GM_Envelope envelope) {
-		if (this.cancelled) return;
-		//logger.info("using rule "+rule.getName());
-		FT_FeatureCollection<? extends FT_Feature> collection = this.features.select(envelope);
-		if (collection==null) return;
-		Collection<FT_Feature> filteredCollection = (Collection<FT_Feature>) collection.getElements();
-		if (rule.getFilter()!=null) {
-			if (this.cancelled) return;
-			filteredCollection = new ArrayList<FT_Feature>();
-			for (FT_Feature feature:collection) {
-				if (this.cancelled) return;
-				if (rule.getFilter().evaluate(feature)) filteredCollection.add(feature);
-			}
-		}
-		for (Symbolizer symbolizer:rule.getSymbolizers()) render(symbolizer,filteredCollection,theImage);
-	}
+    /**
+     * Render a rule.
+     * @param rule the rule
+     * @param theImage the image
+     * @param envelope the envelope
+     */
+    @SuppressWarnings({ "unchecked", "unused" })
+    private void render(final Rule rule, final BufferedImage theImage,
+            final GM_Envelope envelope) {
+        if (this.isCancelled()) {
+            return;
+        }
+        //logger.info("using rule "+rule.getName());
+        FT_FeatureCollection<? extends FT_Feature> collection =
+            this.features.select(envelope);
+        if (collection == null) {
+            return;
+        }
+        Collection<FT_Feature> filteredCollection =
+            (Collection<FT_Feature>) collection.getElements();
+        if (rule.getFilter() != null) {
+            if (this.isCancelled()) {
+                return;
+            }
+            filteredCollection = new ArrayList<FT_Feature>();
+            for (FT_Feature feature : collection) {
+                if (this.isCancelled()) {
+                    return;
+                }
+                if (rule.getFilter().evaluate(feature)) {
+                    filteredCollection.add(feature);
+                }
+            }
+        }
+        for (Symbolizer symbolizer : rule.getSymbolizers()) {
+            render(symbolizer, filteredCollection, theImage);
+        }
+    }
 
-	/**
-	 * Render a symbolizer in an image using the given features
-	 * @param symbolizer
-	 * @param featureCollection
-	 * @param theImage
-	 */
-	private void render(Symbolizer symbolizer,Collection<FT_Feature> featureCollection,BufferedImage theImage) {
-		FT_Feature[] collection = featureCollection.toArray(new FT_Feature[0]);
-		for (FT_Feature feature:collection) {
-			if (this.cancelled) return;
-			// TODO here, we should use the geometry parameter
-			if (feature.getGeom() != null && !feature.getGeom().isEmpty()) {
-				render(symbolizer,feature,theImage);
-			}
-		}		
-	}
+    /**
+     * Render a symbolizer in an image using the given features.
+     * @param symbolizer the symbolize
+     * @param featureCollection the feature collection
+     * @param theImage the image
+     */
+    private void render(final Symbolizer symbolizer,
+            final Collection<FT_Feature> featureCollection,
+            final BufferedImage theImage) {
+        FT_Feature[] collection = featureCollection.toArray(new FT_Feature[0]);
+        for (FT_Feature feature : collection) {
+            if (this.isCancelled()) {
+                return;
+            }
+            // TODO here, we should use the geometry parameter
+            if (feature.getGeom() != null && !feature.getGeom().isEmpty()) {
+                render(symbolizer, feature, theImage);
+            }
+        }
+    }
 
-	/**
-	 * Render a feature into an image using the given symbolizer
-	 * @param symbolizer
-	 * @param feature
-	 * @param theImage
-	 */
-	private void render(Symbolizer symbolizer, FT_Feature feature, BufferedImage theImage) {
-		if (theImage==null) return;
-		symbolizer.paint(feature,this.layerViewPanel.getViewport(),(Graphics2D) theImage.getGraphics());
-	}
+    /**
+     * Render a feature into an image using the given symbolizer.
+     * @param symbolizer the symbolizer
+     * @param feature the feature
+     * @param theImage the image
+     */
+    private void render(final Symbolizer symbolizer,
+            final FT_Feature feature,
+            final BufferedImage theImage) {
+        if (theImage == null) {
+            return;
+        }
+        symbolizer.paint(feature, this.getLayerViewPanel().getViewport(),
+                (Graphics2D) theImage.getGraphics());
+    }
 
-	/**
-	 * Clear the image cache, i.e. delete the current image.
-	 */
-	public void clearImageCache() {this.image = null;}
+    /**
+     * Clear the image cache, i.e. delete the current image.
+     */
+    public final void clearImageCache() { this.setImage(null); }
 
-	@Override
-	public void clearImageCache(int x, int y, int width, int height) {
-		if (this.cancelled||(this.image==null)) return;
-		for(int i = Math.max(x, 0) ; i < Math.min(x+width, this.layerViewPanel.getWidth()) ; i++)
-			for(int j = Math.max(y, 0) ; j < Math.min(y+height, this.layerViewPanel.getHeight()) ; j++) 
-				synchronized(this.image) {
-					if (this.image==null) return;
-					this.image.setRGB(i, j, Transparency.TRANSLUCENT);
-				}
-	}
+    @Override
+    public final void clearImageCache(final int x, final int y,
+            final int width, final int height) {
+        if (this.isCancelled() || (this.getImage() == null)) {
+            return;
+        }
+        for (int i = Math.max(x, 0);
+        i < Math.min(x + width, this.getLayerViewPanel().getWidth()); i++) {
+            for (int j = Math.max(y, 0);
+            j < Math.min(y + height, this.getLayerViewPanel().getHeight());
+            j++) {
+                synchronized (this.getImage()) {
+                    if (this.getImage() == null) {
+                        return;
+                    }
+                    this.getImage().setRGB(i, j, Transparency.TRANSLUCENT);
+                }
+            }
+        }
+    }
 
-	@Override
-	public Runnable createFeatureRunnable(final FT_Feature feature) {
-		if (this.image == null) {return null;}
-		this.cancelled = false;
-		return new Runnable() {
-			public void run() {
-				try {
-					LayerRenderer.this.rendering = true;
-					// it the rendering is cancel, stop
-					if (LayerRenderer.this.cancelled) return;
-					// if either the width or the height of the panel is lesser or equal to 0, stop
-					if (Math.min(LayerRenderer.this.layerViewPanel.getWidth(),LayerRenderer.this.layerViewPanel.getHeight())<=0) return;
-					// do the actual rendering
-					try {renderHook(LayerRenderer.this.image,feature);}
-					catch (Throwable t) {
-						// TODO WARN THE USER?
-						t.printStackTrace(System.err);
-						return;
-					}
-					// when time comes, repaint the panel
-					SwingUtilities.invokeLater(new Runnable() {public void run() {LayerRenderer.this.layerViewPanel.superRepaint();}});
-				} finally {
-					// the renderer is not rendering anymore ( used by isRendering() )
-					LayerRenderer.this.rendering = false;
-				}
-			}
-		};
-	}
-	@Override
-	public Runnable createLocalRunnable(final GM_Object geom) {
-		if (this.image == null) {return null;}
-		this.cancelled = false;
+    @Override
+    public final Runnable createFeatureRunnable(final FT_Feature feature) {
+        if (this.getImage() == null) { return null; }
+        this.setCancelled(false);
+        return new Runnable() {
+            public void run() {
+                try {
+                    LayerRenderer.this.setRendering(true);
+                    // it the rendering is cancel, stop
+                    if (LayerRenderer.this.isCancelled()) {
+                        return;
+                    }
+                    // if either the width or the height of the panel is lesser
+                    // or equal to 0, stop
+                    if (Math.min(
+                            LayerRenderer.this.getLayerViewPanel().getWidth(),
+                            LayerRenderer.this.getLayerViewPanel().getHeight())
+                            <= 0) {
+                        return;
+                    }
+                    // do the actual rendering
+                    try {
+                        renderHook(LayerRenderer.this.getImage(), feature);
+                    } catch (Throwable t) {
+                        // TODO WARN THE USER?
+                        t.printStackTrace(System.err);
+                        return;
+                    }
+                    // when time comes, repaint the panel
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            LayerRenderer.this.getLayerViewPanel().
+                            superRepaint();
+                        }
+                    });
+                } finally {
+                    // the renderer is not rendering anymore
+                    // ( used by isRendering() )
+                    LayerRenderer.this.setRendering(false);
+                }
+            }
+        };
+    }
+    @Override
+    public final Runnable createLocalRunnable(final GM_Object geom) {
+        if (this.getImage() == null) { return null; }
+        this.setCancelled(false);
 
-		return new Runnable() {
-			public void run() {
-				try {
-					LayerRenderer.this.rendering = true;
-					// it the rendering is cancel, stop
-					if (LayerRenderer.this.cancelled) return;
-					// if either the width or the height of the panel is lesser or equal to 0, stop
-					if (Math.min(LayerRenderer.this.layerViewPanel.getWidth(),LayerRenderer.this.layerViewPanel.getHeight())<=0) return;
-					// do the actual rendering
-					try {renderHook(LayerRenderer.this.image,geom);}
-					catch (Throwable t) {
-						// TODO WARN THE USER?
-						t.printStackTrace(System.err);
-						return;
-					}
-					// when time comes, repaint the panel
-					SwingUtilities.invokeLater(new Runnable() {public void run() {LayerRenderer.this.layerViewPanel.superRepaint();}});
-				} finally {
-					// the renderer is not rendering anymore ( used by isRendering() )
-					LayerRenderer.this.rendering = false;
-				}
-			}
-		};
-	}
+        return new Runnable() {
+            public void run() {
+                try {
+                    LayerRenderer.this.setRendering(true);
+                    // it the rendering is cancel, stop
+                    if (LayerRenderer.this.isCancelled()) { return; }
+                    // if either the width or the height of the panel is lesser
+                    // or equal to 0, stop
+                    if (Math.min(
+                            LayerRenderer.this.getLayerViewPanel().getWidth(),
+                            LayerRenderer.this.getLayerViewPanel().getHeight())
+                            <= 0) { return; }
+                    // do the actual rendering
+                    try {
+                        renderHook(LayerRenderer.this.getImage(), geom);
+                    } catch (Throwable t) {
+                        // TODO WARN THE USER?
+                        t.printStackTrace(System.err);
+                        return;
+                    }
+                    // when time comes, repaint the panel
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            LayerRenderer.this.getLayerViewPanel().
+                            superRepaint();
+                        }
+                    });
+                } finally {
+                    // the renderer is not rendering anymore
+                    // ( used by isRendering() )
+                    LayerRenderer.this.setRendering(false);
+                }
+            }
+        };
+    }
 
-	/**
-	 * @param theImage
-	 * @param feature
-	 */
-	void renderHook(BufferedImage theImage, FT_Feature feature) {
-		if (this.cancelled) return;
-		for (Style style : this.layer.getStyles()) {
-			if (this.cancelled) return;
-			if (style.isUserStyle()) {
-				UserStyle userStyle = (UserStyle) style;
-				for (FeatureTypeStyle featureTypeStyle:userStyle.getFeatureTypeStyles()) {
-					if (this.cancelled) return;
-					for(int indexRule=featureTypeStyle.getRules().size()-1;indexRule>=0;indexRule--) {
-						if (this.cancelled) return;
-						Rule rule=featureTypeStyle.getRules().get(indexRule);
-						for (Symbolizer symbolizer:rule.getSymbolizers()) {
-							if ((rule.getFilter()==null)||rule.getFilter().evaluate(feature)) {
-								render(symbolizer,feature,theImage);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	void renderHook(BufferedImage theImage, GM_Object geom) {
-		if (this.cancelled||(geom ==null)) return;
-		GM_Envelope envelope = geom.envelope();
-		DirectPosition lowerCornerPosition = envelope.getLowerCorner();
-		lowerCornerPosition.move(-1, -1);
-		DirectPosition upperCornerPosition = envelope.getUpperCorner();
-		upperCornerPosition.move(1, 1);
-		envelope.setLowerCorner(lowerCornerPosition);
-		envelope.setUpperCorner(upperCornerPosition);
-		try {
-			Point2D upperCorner = this.layerViewPanel.getViewport().toViewPoint(envelope.getUpperCorner());
-			Point2D lowerCorner = this.layerViewPanel.getViewport().toViewPoint(envelope.getLowerCorner());
-			this.clearImageCache((int)lowerCorner.getX(),(int)upperCorner.getY(),(int)(upperCorner.getX()-lowerCorner.getX()),(int)(lowerCorner.getY()-upperCorner.getY()));
-		} catch (NoninvertibleTransformException e) {e.printStackTrace();}
-		FT_FeatureCollection<? extends FT_Feature> visibleFeatures = this.features.select(envelope);
-		for (Style style : this.layer.getStyles()) {
-			if (this.cancelled) return;
-			if (style.isUserStyle()) {
-				UserStyle userStyle = (UserStyle) style;
-				for (FeatureTypeStyle featureTypeStyle:userStyle.getFeatureTypeStyles()) {
-					if (this.cancelled) return;
-					Map<Rule,Set<FT_Feature>> filteredFeatures = new HashMap<Rule,Set<FT_Feature>>();
-					for(Rule rule:featureTypeStyle.getRules()) filteredFeatures.put(rule, new HashSet<FT_Feature>());
-					for (FT_Feature feature:visibleFeatures) {
-						for(Rule rule:featureTypeStyle.getRules()) {
-							if ((rule.getFilter()==null)||rule.getFilter().evaluate(feature)) {
-								filteredFeatures.get(rule).add(feature);
-								break;
-							}
-						}
-					}
-					for(int indexRule=featureTypeStyle.getRules().size()-1;indexRule>=0;indexRule--) {
-						if (this.cancelled) return;
-						Rule rule=featureTypeStyle.getRules().get(indexRule);
-						for (FT_Feature feature:filteredFeatures.get(rule))
-							for (Symbolizer symbolizer:rule.getSymbolizers()) {render(symbolizer,feature,theImage);}
-					}
-				}
-			}
-		}
-	}
+    /**
+     * @param theImage the image
+     * @param feature the feature
+     */
+    final void renderHook(final BufferedImage theImage,
+            final FT_Feature feature) {
+        if (this.isCancelled()) { return; }
+        for (Style style : this.layer.getStyles()) {
+            if (this.isCancelled()) { return; }
+            if (style.isUserStyle()) {
+                UserStyle userStyle = (UserStyle) style;
+                for (FeatureTypeStyle featureTypeStyle
+                        : userStyle.getFeatureTypeStyles()) {
+                    if (this.isCancelled()) { return; }
+                    for (int indexRule =
+                        featureTypeStyle.getRules().size() - 1;
+                    indexRule >= 0; indexRule--) {
+                        if (this.isCancelled()) { return; }
+                        Rule rule = featureTypeStyle.getRules().get(indexRule);
+                        for (Symbolizer symbolizer : rule.getSymbolizers()) {
+                            if ((rule.getFilter() == null)
+                                    || rule.getFilter().evaluate(feature)) {
+                                render(symbolizer, feature, theImage);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    /**
+     * Render hook.
+     * @param theImage the image to render
+     * @param geom the geometry to render
+     */
+    final void renderHook(final BufferedImage theImage, final GM_Object geom) {
+        if (this.isCancelled() || (geom == null)) { return; }
+        GM_Envelope envelope = geom.envelope();
+        DirectPosition lowerCornerPosition = envelope.getLowerCorner();
+        lowerCornerPosition.move(-1, -1);
+        DirectPosition upperCornerPosition = envelope.getUpperCorner();
+        upperCornerPosition.move(1, 1);
+        envelope.setLowerCorner(lowerCornerPosition);
+        envelope.setUpperCorner(upperCornerPosition);
+        try {
+            Point2D upperCorner = this.getLayerViewPanel().getViewport().
+            toViewPoint(envelope.getUpperCorner());
+            Point2D lowerCorner = this.getLayerViewPanel().getViewport().
+            toViewPoint(envelope.getLowerCorner());
+            this.clearImageCache((int) lowerCorner.getX(),
+                    (int) upperCorner.getY(),
+                    (int) (upperCorner.getX() - lowerCorner.getX()),
+                    (int) (lowerCorner.getY() - upperCorner.getY()));
+        } catch (NoninvertibleTransformException e) { e.printStackTrace(); }
+        FT_FeatureCollection<? extends FT_Feature> visibleFeatures =
+            this.features.select(envelope);
+        for (Style style : this.layer.getStyles()) {
+            if (this.isCancelled()) { return; }
+            if (style.isUserStyle()) {
+                UserStyle userStyle = (UserStyle) style;
+                for (FeatureTypeStyle featureTypeStyle
+                        : userStyle.getFeatureTypeStyles()) {
+                    if (this.isCancelled()) { return; }
+                    Map<Rule, Set<FT_Feature>> filteredFeatures =
+                        new HashMap<Rule, Set<FT_Feature>>();
+                    for (Rule rule : featureTypeStyle.getRules()) {
+                        filteredFeatures.put(rule, new HashSet<FT_Feature>());
+                    }
+                    for (FT_Feature feature : visibleFeatures) {
+                        for (Rule rule : featureTypeStyle.getRules()) {
+                            if ((rule.getFilter() == null)
+                                    || rule.getFilter().evaluate(feature)) {
+                                filteredFeatures.get(rule).add(feature);
+                                break;
+                            }
+                        }
+                    }
+                    for (int indexRule =
+                        featureTypeStyle.getRules().size() - 1; indexRule >= 0;
+                        indexRule--) {
+                        if (this.isCancelled()) { return; }
+                        Rule rule = featureTypeStyle.getRules().get(indexRule);
+                        for (FT_Feature feature
+                                : filteredFeatures.get(rule)) {
+                            for (Symbolizer symbolizer
+                                    : rule.getSymbolizers()) {
+                                render(symbolizer, feature, theImage);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

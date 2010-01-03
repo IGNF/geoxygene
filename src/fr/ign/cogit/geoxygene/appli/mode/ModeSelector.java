@@ -58,7 +58,8 @@ public class ModeSelector implements ContainerListener, KeyListener,
     /**
      * Logger.
      */
-    static Logger logger = Logger.getLogger(ModeSelector.class.getName());
+    static final Logger LOGGER =
+        Logger.getLogger(ModeSelector.class.getName());
     /**
      * List of modes.
      */
@@ -77,46 +78,62 @@ public class ModeSelector implements ContainerListener, KeyListener,
      * Get the toolbar.
      * @return the toolbar
      */
-    public JToolBar getToolBar() {
+    public final JToolBar getToolBar() {
         return this.toolBar;
     }
 
     /**
      * Associated main frame.
      */
-    MainFrame mainFrame;
+    private MainFrame mainFrame;
+
+    /**
+     * @return the main frame
+     */
+    public final MainFrame getMainFrame() {
+        return this.mainFrame;
+    }
+
+    /**
+     * Set the main frame.
+     * @param frame the new main frame
+     */
+    public final void setMainFrame(final MainFrame frame) {
+        this.mainFrame = frame;
+    }
 
     /**
      * Constructor.
      * @param theMainFrame associated main frame
      */
-    public ModeSelector(MainFrame theMainFrame) {
-        this.mainFrame = theMainFrame;
-        this.mainFrame.add(this.toolBar, BorderLayout.PAGE_START);
+    public ModeSelector(final MainFrame theMainFrame) {
+        this.setMainFrame(theMainFrame);
+        this.getMainFrame().add(this.toolBar, BorderLayout.PAGE_START);
 
-        this.addComponent(this.mainFrame);
+        this.addComponent(this.getMainFrame());
 
-        this.modes.add(new ZoomMode(this.mainFrame, this));
-        this.modes.add(new MoveMode(this.mainFrame, this));
-        this.modes.add(new SelectionMode(this.mainFrame, this));
+        this.modes.add(new ZoomMode(this.getMainFrame(), this));
+        this.modes.add(new MoveMode(this.getMainFrame(), this));
+        this.modes.add(new SelectionMode(this.getMainFrame(), this));
 
         this.toolBar.addSeparator();
 
         JButton zoomToFullExtentButton = new JButton(new ImageIcon(
-                ModeSelector.class
-                        .getResource("/icons/16x16/zoomToFullExtent.png"))); //$NON-NLS-1$
+                ModeSelector.class.getResource(
+                        "/icons/16x16/zoomToFullExtent.png"))); //$NON-NLS-1$
         zoomToFullExtentButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                ProjectFrame projectFrame = ModeSelector.this.mainFrame
+            public void actionPerformed(final ActionEvent e) {
+                ProjectFrame projectFrame = ModeSelector.this.getMainFrame()
                         .getSelectedProjectFrame();
-                if (projectFrame != null)
+                if (projectFrame != null) {
                     try {
                         projectFrame.getLayerViewPanel().getViewport()
                                 .zoomToFullExtent();
                     } catch (NoninvertibleTransformException e1) {
                         e1.printStackTrace();
                     }
+                }
             }
         });
         this.toolBar.add(zoomToFullExtentButton);
@@ -125,57 +142,57 @@ public class ModeSelector implements ContainerListener, KeyListener,
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
+    public final void keyPressed(final KeyEvent e) {
         this.currentMode.keyPressed(e);
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public final void keyReleased(final KeyEvent e) {
         this.currentMode.keyReleased(e);
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public final void keyTyped(final KeyEvent e) {
         this.currentMode.keyTyped(e);
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public final void mouseClicked(final MouseEvent e) {
         this.currentMode.mouseClicked(e);
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
+    public final void mouseEntered(final MouseEvent e) {
         this.currentMode.mouseEntered(e);
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
+    public final void mouseExited(final MouseEvent e) {
         this.currentMode.mouseExited(e);
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public final void mousePressed(final MouseEvent e) {
         this.currentMode.mousePressed(e);
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public final void mouseReleased(final MouseEvent e) {
         this.currentMode.mouseReleased(e);
     }
 
     @Override
-    public void mouseWheelMoved(MouseWheelEvent e) {
+    public final void mouseWheelMoved(final MouseWheelEvent e) {
         this.currentMode.mouseWheelMoved(e);
     }
 
     @Override
-    public void mouseDragged(MouseEvent e) {
+    public final void mouseDragged(final MouseEvent e) {
         this.currentMode.mouseDragged(e);
     }
 
     @Override
-    public void mouseMoved(MouseEvent e) {
+    public final void mouseMoved(final MouseEvent e) {
         this.currentMode.mouseMoved(e);
     }
 
@@ -183,16 +200,16 @@ public class ModeSelector implements ContainerListener, KeyListener,
      * Set the current mode.
      * @param mode the new current mode.
      */
-    public void setCurrentMode(Mode mode) {
-        if (this.currentMode != null)
+    public final void setCurrentMode(final Mode mode) {
+        if (this.currentMode != null) {
             this.currentMode.getButton().setEnabled(true);
+        }
         this.currentMode = mode;
         mode.getButton().setEnabled(false);
     }
 
     @Override
-    public void componentAdded(ContainerEvent e) {
-        // logger.info(e.getChild().getClass().getSimpleName()+" added to "+e.getComponent().getClass().getSimpleName());
+    public final void componentAdded(final ContainerEvent e) {
         addComponent(e.getChild());
     }
 
@@ -200,10 +217,10 @@ public class ModeSelector implements ContainerListener, KeyListener,
      * Add a component.
      * @param component the newly added component
      */
-    private void addComponent(Component component) {
-        if (component instanceof AbstractButton)
+    private void addComponent(final Component component) {
+        if (component instanceof AbstractButton) {
             return;
-        // logger.info("component "+component.getClass().getSimpleName()+" added");
+        }
         component.addKeyListener(this);
         component.addMouseWheelListener(this);
         component.addMouseListener(this);
@@ -211,12 +228,13 @@ public class ModeSelector implements ContainerListener, KeyListener,
         if (component instanceof Container) {
             Container container = (Container) component;
             container.addContainerListener(this);
-            for (Component child : container.getComponents())
+            for (Component child : container.getComponents()) {
                 addComponent(child);
+            }
         }
     }
 
     @Override
-    public void componentRemoved(ContainerEvent e) {
+    public final void componentRemoved(final ContainerEvent e) {
     }
 }

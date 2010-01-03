@@ -29,9 +29,14 @@ import java.awt.event.MouseWheelListener;
 import javax.swing.JButton;
 
 /**
+ * Interface for all modes.
  * @author Julien Perret
  *
  */
-public interface Mode extends KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
-	public JButton getButton();
+public interface Mode extends KeyListener, MouseListener, MouseMotionListener,
+MouseWheelListener {
+    /**
+     * @return The button trigger the mode.
+     */
+    JButton getButton();
 }

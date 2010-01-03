@@ -30,8 +30,6 @@ import java.awt.geom.NoninvertibleTransformException;
 
 import javax.swing.JButton;
 
-import org.apache.log4j.Logger;
-
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 
@@ -40,27 +38,37 @@ import fr.ign.cogit.geoxygene.appli.ProjectFrame;
  */
 public abstract class AbstractMode implements Mode {
     /**
-     * Logger.
-     */
-    static Logger logger = Logger.getLogger(AbstractMode.class.getName());
-
-    /**
      * MainFrame.
      */
-    protected MainFrame mainFrame;
+    private MainFrame mainFrame;
     /**
      * Mode Selector.
      */
-    protected ModeSelector modeSelector;
+    private ModeSelector modeSelector;
     /**
      * Button triggering the mode.
      */
     private JButton button;
 
     /**
+     * Set the mode selector.
+     * @param theModeSelector the new mode selector
+     */
+    public final void setModeSelector(final ModeSelector theModeSelector) {
+        this.modeSelector = theModeSelector;
+    }
+
+    /**
+     * @return the mode selector
+     */
+    public final ModeSelector getModeSelector() {
+        return this.modeSelector;
+    }
+
+    /**
      * @return the button giving access to this mode
      */
-    public JButton getButton() {
+    public final JButton getButton() {
         return this.button;
     }
 
@@ -69,31 +77,33 @@ public abstract class AbstractMode implements Mode {
      * @param theMainFrame the associated application
      * @param theModeSelector the mode selector
      */
-    public AbstractMode(MainFrame theMainFrame, ModeSelector theModeSelector) {
+    public AbstractMode(final MainFrame theMainFrame,
+            final ModeSelector theModeSelector) {
         this.mainFrame = theMainFrame;
-        this.modeSelector = theModeSelector;
+        this.setModeSelector(theModeSelector);
         final Mode currentMode = this;
         this.button = this.createButton();
         this.button.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                AbstractMode.this.modeSelector.setCurrentMode(currentMode);
+            public void actionPerformed(final ActionEvent e) {
+                AbstractMode.this.getModeSelector().setCurrentMode(currentMode);
             }
         });
-        this.modeSelector.getToolBar().add(this.getButton());
+        this.getModeSelector().getToolBar().add(this.getButton());
     }
 
     /**
-     * Create a button
+     * Create a button.
      * @return the created button
      */
-    abstract protected JButton createButton();
+    protected abstract JButton createButton();
 
     @Override
-    public void keyPressed(KeyEvent e) {
+    public final void keyPressed(final KeyEvent e) {
         ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
-        if (frame == null)
+        if (frame == null) {
             return;
+        }
         switch (e.getKeyCode()) {
         case KeyEvent.VK_KP_UP:
         case KeyEvent.VK_UP:
@@ -141,22 +151,24 @@ public abstract class AbstractMode implements Mode {
                 e1.printStackTrace();
             }
             break;
+        default:
         }
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyReleased(final KeyEvent e) {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void keyTyped(final KeyEvent e) {
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public final void mouseClicked(final MouseEvent e) {
         ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
-        if ((frame == null) || (e.getSource() != frame.getLayerViewPanel()))
+        if ((frame == null) || (e.getSource() != frame.getLayerViewPanel())) {
             return;
+        }
         switch (e.getButton()) {
         case MouseEvent.BUTTON1:
             this.leftMouseButtonClicked(e, frame);
@@ -167,21 +179,24 @@ public abstract class AbstractMode implements Mode {
         case MouseEvent.BUTTON3:
             this.rightMouseButtonClicked(e, frame);
             break;
+        default:
         }
     }
 
     /**
-     * @param e
-     * @param frame
+     * @param e mouse event
+     * @param frame the project frame
      */
-    public void leftMouseButtonClicked(MouseEvent e, ProjectFrame frame) {
+    public void leftMouseButtonClicked(final MouseEvent e,
+            final ProjectFrame frame) {
     }
 
     /**
-     * @param e
-     * @param frame
+     * @param e mouse event
+     * @param frame the project frame
      */
-    public void middleMouseButtonClicked(MouseEvent e, ProjectFrame frame) {
+    public final void middleMouseButtonClicked(final MouseEvent e,
+            final ProjectFrame frame) {
         try {
             frame.getLayerViewPanel().getViewport().moveTo(e.getPoint());
         } catch (NoninvertibleTransformException e1) {
@@ -190,47 +205,50 @@ public abstract class AbstractMode implements Mode {
     }
 
     /**
-     * @param e
-     * @param frame
+     * @param e mouse event
+     * @param frame the project frame
      */
-    public void rightMouseButtonClicked(MouseEvent e, ProjectFrame frame) {
+    public void rightMouseButtonClicked(final MouseEvent e,
+            final ProjectFrame frame) {
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
+    public void mouseEntered(final MouseEvent e) {
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(final MouseEvent e) {
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(final MouseEvent e) {
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(final MouseEvent e) {
     }
 
     @Override
-    public void mouseDragged(MouseEvent e) {
+    public void mouseDragged(final MouseEvent e) {
     }
 
     @Override
-    public void mouseMoved(MouseEvent e) {
+    public void mouseMoved(final MouseEvent e) {
     }
 
     @Override
-    public void mouseWheelMoved(MouseWheelEvent e) {
+    public final void mouseWheelMoved(final MouseWheelEvent e) {
         boolean zoomIn = e.getWheelRotation() < 0;
         ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
-        if (frame == null)
+        if (frame == null) {
             return;
+        }
         try {
-            if (zoomIn)
+            if (zoomIn) {
                 frame.getLayerViewPanel().getViewport().zoomInTo(e.getPoint());
-            else
+            } else {
                 frame.getLayerViewPanel().getViewport().zoomOutTo(e.getPoint());
+            }
         } catch (NoninvertibleTransformException e1) {
             e1.printStackTrace();
         }

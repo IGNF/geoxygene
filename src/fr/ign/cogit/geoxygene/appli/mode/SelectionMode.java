@@ -35,52 +35,74 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
+ * Selection Mode. Allow the user to select features.
  * @author Julien Perret
  *
  */
 public class SelectionMode extends AbstractMode {
 
-	/**
-	 * @param theMainFrame
-	 * @param theModeSelector
-	 */
-	public SelectionMode(MainFrame theMainFrame, ModeSelector theModeSelector) {
-		super(theMainFrame, theModeSelector);
-	}
-	
-	@Override
-	protected JButton createButton() {return new JButton(new ImageIcon(this.getClass().getResource("/icons/16x16/selection.png")));} //$NON-NLS-1$
-	
-	@Override
-	public void leftMouseButtonClicked(MouseEvent e, ProjectFrame frame) {
-		try {
-			DirectPosition p =frame.getLayerViewPanel().getViewport().toModelDirectPosition(e.getPoint());
-			FT_FeatureCollection<FT_Feature> features = new FT_FeatureCollection<FT_Feature>();
-			for(Layer layer:frame.getLayerViewPanel().getRenderingManager().getLayers()) {
-				if (layer.isVisible()&&layer.isSelectable()) {
-					features.addAll(layer.getFeatureCollection().select(p,10.0));
-				}
-			}
-			frame.getLayerViewPanel().getSelectedFeatures().addAll(features);
-			frame.getLayerViewPanel().repaint();
-		}
-		catch (NoninvertibleTransformException e1) {e1.printStackTrace();}
-	}
+    /**
+     * @param theMainFrame the main frame
+     * @param theModeSelector the mode selector
+     */
+    public SelectionMode(final MainFrame theMainFrame,
+            final ModeSelector theModeSelector) {
+        super(theMainFrame, theModeSelector);
+    }
 
-	@Override
-	public void rightMouseButtonClicked(MouseEvent e, ProjectFrame frame) {
-		try {
-			DirectPosition p =frame.getLayerViewPanel().getViewport().toModelDirectPosition(e.getPoint());
-			FT_FeatureCollection<FT_Feature> features = new FT_FeatureCollection<FT_Feature>();
-			for(Layer layer:frame.getLayerViewPanel().getRenderingManager().getLayers()) {
-				if (layer.isVisible()&&layer.isSelectable()) {
-					features.addAll(layer.getFeatureCollection().select(p,10.0));
-				}
-			}
-			if (features.isEmpty()) frame.getLayerViewPanel().getSelectedFeatures().clear();
-			else frame.getLayerViewPanel().getSelectedFeatures().removeAll(features);
-			frame.getLayerViewPanel().repaint();
-		}
-		catch (NoninvertibleTransformException e1) {e1.printStackTrace();}
-	}
+    @Override
+    protected final JButton createButton() {
+        return new JButton(new ImageIcon(this.getClass().
+                getResource("/icons/16x16/selection.png"))); //$NON-NLS-1$
+    }
+
+    /**
+     * Selection radius.
+     */
+    private final double selectionRadius = 10.0;
+
+    @Override
+    public final void leftMouseButtonClicked(final MouseEvent e,
+            final ProjectFrame frame) {
+        try {
+            DirectPosition p = frame.getLayerViewPanel().getViewport().
+            toModelDirectPosition(e.getPoint());
+            FT_FeatureCollection<FT_Feature> features =
+                new FT_FeatureCollection<FT_Feature>();
+            for (Layer layer : frame.getLayerViewPanel().
+                    getRenderingManager().getLayers()) {
+                if (layer.isVisible() && layer.isSelectable()) {
+                    features.addAll(layer.getFeatureCollection().
+                            select(p, this.selectionRadius));
+                }
+            }
+            frame.getLayerViewPanel().getSelectedFeatures().addAll(features);
+            frame.getLayerViewPanel().repaint();
+        } catch (NoninvertibleTransformException e1) { e1.printStackTrace(); }
+    }
+
+    @Override
+    public final void rightMouseButtonClicked(final MouseEvent e,
+            final ProjectFrame frame) {
+        try {
+            DirectPosition p = frame.getLayerViewPanel().getViewport().
+            toModelDirectPosition(e.getPoint());
+            FT_FeatureCollection<FT_Feature> features =
+                new FT_FeatureCollection<FT_Feature>();
+            for (Layer layer : frame.getLayerViewPanel().
+                    getRenderingManager().getLayers()) {
+                if (layer.isVisible() && layer.isSelectable()) {
+                    features.addAll(layer.getFeatureCollection().
+                            select(p, this.selectionRadius));
+                }
+            }
+            if (features.isEmpty()) {
+                frame.getLayerViewPanel().getSelectedFeatures().clear();
+            } else {
+                frame.getLayerViewPanel().getSelectedFeatures().
+                removeAll(features);
+            }
+            frame.getLayerViewPanel().repaint();
+        } catch (NoninvertibleTransformException e1) { e1.printStackTrace(); }
+    }
 }

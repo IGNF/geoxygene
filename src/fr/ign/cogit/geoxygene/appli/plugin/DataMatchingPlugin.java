@@ -30,20 +30,28 @@ import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 
 /**
+ * Data matching plugin.
  * @author Julien Perret
  */
 public class DataMatchingPlugin implements ActionListener {
-    public void initialize(GeOxygeneApplication application) {
-        Menu menu = new Menu(I18N.getString("DataMatchingPlugin.DataMatching")); //$NON-NLS-1$
-        MenuItem menuItem = new MenuItem(I18N
-                .getString("DataMatchingPlugin.OpenDataMatchingEnvironment")); //$NON-NLS-1$
+    /**
+     * Initialize the plugin.
+     * @param application the application
+     */
+    public final void initialize(final GeOxygeneApplication application) {
+        Menu menu = new Menu(I18N.getString(
+                "DataMatchingPlugin.DataMatching" //$NON-NLS-1$
+        ));
+        MenuItem menuItem = new MenuItem(I18N.getString(
+                "DataMatchingPlugin.OpenDataMatchingEnvironment" //$NON-NLS-1$
+        ));
         menuItem.addActionListener(this);
         menu.add(menuItem);
         application.getFrame().getMenuBar().add(menu);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
 
     }
 }

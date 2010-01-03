@@ -151,34 +151,33 @@ public class MainFrame extends JFrame {
         this.setResizable(true);
         this.setSize(this.defaultFrameWidth, this.defaultFrameHeight);
         this.setExtendedState(Frame.MAXIMIZED_BOTH);
-
         this.menuBar = new JMenuBar();
-
-        JMenu fileMenu = new JMenu(I18N.getString("MainFrame.File")); //$NON-NLS-1$
-        JMenu viewMenu = new JMenu(I18N.getString("MainFrame.View")); //$NON-NLS-1$
+        JMenu fileMenu = new JMenu(I18N
+                .getString("MainFrame.File")); //$NON-NLS-1$
+        JMenu viewMenu = new JMenu(I18N
+                .getString("MainFrame.View")); //$NON-NLS-1$
         JMenu configurationMenu = new JMenu(I18N
                 .getString("MainFrame.Configuration")); //$NON-NLS-1$
-        JMenu helpMenu = new JMenu(I18N.getString("MainFrame.Help")); //$NON-NLS-1$
-
-        // StyledLayerDescriptor sld =
-        // StyledLayerDescriptor.charge("defaultSLD.xml");
+        JMenu helpMenu = new JMenu(I18N
+                .getString("MainFrame.Help")); //$NON-NLS-1$
         JMenuItem openShapefileMenuItem = new JMenuItem(I18N
                 .getString("MainFrame.OpenShapefile")); //$NON-NLS-1$
         openShapefileMenuItem
                 .addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(final ActionEvent e) {
-                        ProjectFrame projectFrame = (ProjectFrame) MainFrame.this
-                                .getDesktopPane().getSelectedFrame();
+                        ProjectFrame projectFrame = (ProjectFrame)
+                            MainFrame.this.getDesktopPane().getSelectedFrame();
                         if (projectFrame == null) {
-                            if (MainFrame.this.getDesktopPane().getAllFrames().length != 0) {
+                            if (MainFrame.this.getDesktopPane()
+                                    .getAllFrames().length != 0) {
                                 // TODO ask the user in which frame (s)he
                                 // wants to load into?
                                 projectFrame = (ProjectFrame) MainFrame.this
                                         .getDesktopPane().getAllFrames()[0];
                             } else {
                                 // TODO create a new project frame?
-                                getLogger().info(
-                                        I18N.getString("MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
+                                getLogger().info(I18N.getString(
+                                 "MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
                                 return;
                             }
                         }
@@ -192,16 +191,19 @@ public class MainFrame extends JFrame {
                             public boolean accept(final File f) {
                                 return (f.isFile()
                                         && (f.getAbsolutePath()
-                                                .endsWith(".shp") || //$NON-NLS-1$
-                                        f.getAbsolutePath().endsWith(".SHP")) || //$NON-NLS-1$
-                                f.isDirectory());
+                                                .endsWith(".shp") //$NON-NLS-1$
+                                                ||
+                                                f.getAbsolutePath()
+                                                .endsWith(".SHP") //$NON-NLS-1$
+                                                )
+                                                || f.isDirectory());
                             }
-
                             @Override
                             public String getDescription() {
-                                return I18N
-                                        .getString("MainFrame.ShapefileDescription"); //$NON-NLS-1$
-                                }
+                                return I18N.getString(
+                                 "MainFrame.ShapefileDescription" //$NON-NLS-1$
+                                );
+                            }
                         });
                         choixFichierShape
                                 .setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -212,30 +214,30 @@ public class MainFrame extends JFrame {
                         frame.dispose();
                         if (returnVal == JFileChooser.APPROVE_OPTION) {
                             if (getLogger().isDebugEnabled()) {
-                                getLogger()
-                                        .debug(
-                                                I18N
-                                                        .getString("MainFrame.FileChosenDebug") + //$NON-NLS-1$
-                                                        choixFichierShape
-                                                                .getSelectedFile()
-                                                                .getAbsolutePath());
+                                getLogger().debug(I18N.getString(
+                                    "MainFrame.FileChosenDebug" //$NON-NLS-1$
+                                        ) + choixFichierShape
+                                        .getSelectedFile()
+                                        .getAbsolutePath());
                             }
                             String shapefileName = choixFichierShape
                                     .getSelectedFile().getAbsolutePath();
                             String populationName = shapefileName
                                     .substring(
-                                            shapefileName.lastIndexOf("/") + 1, shapefileName.lastIndexOf(".")); //$NON-NLS-1$ //$NON-NLS-2$
-                            ShapefileReader shapefileReader = new ShapefileReader(
+                                            shapefileName.
+                                            lastIndexOf("/") + 1, //$NON-NLS-1$
+                                            shapefileName.
+                                            lastIndexOf(".")); //$NON-NLS-1$
+                            ShapefileReader shapefileReader =
+                                new ShapefileReader(
                                     shapefileName, populationName, DataSet
                                             .getInstance(), true);
 
-                            Population<DefaultFeature> population = shapefileReader
-                                    .getPopulation();
+                            Population<DefaultFeature> population =
+                                shapefileReader.getPopulation();
                             if (population != null) {
-                                getLogger()
-                                        .info(
-                                                I18N
-                                                        .getString("MainFrame.LoadingPopulation") //$NON-NLS-1$
+                                getLogger().info(I18N.getString(
+                                   "MainFrame.LoadingPopulation") //$NON-NLS-1$
                                                         + population.getNom());
                                 projectFrame.addFeatureCollection(population,
                                         population.getNom());
@@ -244,25 +246,21 @@ public class MainFrame extends JFrame {
                             if (projectFrame.getLayers().size() == 1) {
                                 try {
                                     projectFrame.getLayerViewPanel()
-                                            .getViewport().zoom(
-                                                    new GM_Envelope(
-                                                            shapefileReader
-                                                                    .getMinX(),
-                                                            shapefileReader
-                                                                    .getMaxX(),
-                                                            shapefileReader
-                                                                    .getMinY(),
-                                                            shapefileReader
-                                                                    .getMaxY()));
+                                    .getViewport().zoom(
+                                            new GM_Envelope(
+                                                    shapefileReader.getMinX(),
+                                                    shapefileReader.getMaxX(),
+                                                    shapefileReader.getMinY(),
+                                                    shapefileReader.getMaxY()));
                                 } catch (NoninvertibleTransformException e1) {
                                     e1.printStackTrace();
                                 }
                             }
                         }
-
                     }
                 });
-        JMenuItem exitMenuItem = new JMenuItem(I18N.getString("MainFrame.Exit")); //$NON-NLS-1$
+        JMenuItem exitMenuItem = new JMenuItem(I18N
+                .getString("MainFrame.Exit")); //$NON-NLS-1$
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 dispose();
@@ -272,24 +270,20 @@ public class MainFrame extends JFrame {
         fileMenu.add(openShapefileMenuItem);
         fileMenu.addSeparator();
         fileMenu.add(exitMenuItem);
-
         this.menuBar.setFont(this.application.getFont());
         this.menuBar.add(fileMenu);
         this.menuBar.add(viewMenu);
         this.menuBar.add(configurationMenu);
         this.menuBar.add(helpMenu);
         this.setJMenuBar(this.menuBar);
-
         this.getContentPane().setLayout(new BorderLayout());
         this.getContentPane().add(this.desktopPane, BorderLayout.CENTER);
-
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(final WindowEvent e) {
                 MainFrame.this.getApplication().exit();
             }
         });
-
         this.modeSelector = new ModeSelector(this);
     }
 
@@ -335,7 +329,8 @@ public class MainFrame extends JFrame {
      * @return the newly created project frame
      */
     public final ProjectFrame newProjectFrame() {
-        ProjectFrame projectFrame = new ProjectFrame(this.application.getIcon());
+        ProjectFrame projectFrame = new ProjectFrame(
+                this.application.getIcon());
         projectFrame.setSize(this.desktopPane.getSize());
         projectFrame.setVisible(true);
         this.desktopPane.add(projectFrame, JLayeredPane.DEFAULT_LAYER);

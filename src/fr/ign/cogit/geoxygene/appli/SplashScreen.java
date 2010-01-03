@@ -36,23 +36,51 @@ import javax.swing.JProgressBar;
 import javax.swing.JWindow;
 
 /**
+ * Splash screen displayed when running the GeOxygene application.
+ *
  * @author Julien Perret
  */
 public class SplashScreen extends JWindow {
+        /**
+         * The serial version id.
+         */
         private static final long serialVersionUID = 1L;
+        /**
+         * The image label.
+         */
         private JLabel imageLabel = new JLabel();
+        /**
+         * The caption label.
+         */
         private JLabel captionLabel = new JLabel();
+        /**
+         * The progress bar.
+         */
         private JProgressBar progressBar = new JProgressBar();
-
-        public SplashScreen(Icon image, String caption) {
+        /**
+         * The default inset size.
+         */
+        private static final int DEFAULT_INSET_SIZE = 10;
+        /**
+         * The default font size.
+         */
+        private static final int DEFAULT_FONT_SIZE = 10;
+        /**
+         * Constructor.
+         * @param image the icon image
+         * @param caption the caption of the splash screen
+         */
+        public SplashScreen(final Icon image, final String caption) {
                 JPanel container = new JPanel(new GridBagLayout());
-                container
-                                .setBorder(BorderFactory
-                                                .createLineBorder(Color.black));
+                container.setBorder(
+                        BorderFactory.createLineBorder(Color.black));
                 container.setBackground(Color.white);
                 this.imageLabel.setIcon(image);
                 this.captionLabel.setText(caption);
-                this.captionLabel.setFont(new Font("Arial", Font.PLAIN, 10)); //$NON-NLS-1$
+                this.captionLabel.setFont(new Font(
+                        "Arial", //$NON-NLS-1$
+                        Font.PLAIN,
+                        SplashScreen.DEFAULT_FONT_SIZE));
                 this.captionLabel.setBackground(Color.white);
                 this.captionLabel.setOpaque(false);
                 this.captionLabel.setForeground(Color.lightGray);
@@ -60,16 +88,28 @@ public class SplashScreen extends JWindow {
                 this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
                 container.add(this.imageLabel, new GridBagConstraints(0, 0, 1,
                                 1, 1, 1, GridBagConstraints.CENTER,
-                                GridBagConstraints.BOTH, new Insets(10, 10, 10,
-                                                10), 0, 0));
+                                GridBagConstraints.BOTH, new Insets(
+                                        SplashScreen.DEFAULT_INSET_SIZE,
+                                        SplashScreen.DEFAULT_INSET_SIZE,
+                                        SplashScreen.DEFAULT_INSET_SIZE,
+                                        SplashScreen.DEFAULT_INSET_SIZE),
+                                        0, 0));
                 container.add(this.captionLabel, new GridBagConstraints(0, 1,
                                 1, 1, 0, 0, GridBagConstraints.EAST,
-                                GridBagConstraints.NONE, new Insets(0, 10, 0,
-                                                10), 0, 0));
+                                GridBagConstraints.NONE, new Insets(
+                                        0,
+                                        SplashScreen.DEFAULT_INSET_SIZE,
+                                        0,
+                                        SplashScreen.DEFAULT_INSET_SIZE),
+                                        0, 0));
                 container.add(this.progressBar, new GridBagConstraints(0, 2, 1,
                                 1, 0, 0, GridBagConstraints.CENTER,
-                                GridBagConstraints.HORIZONTAL, new Insets(0,
-                                                10, 10, 10), 0, 0));
+                                GridBagConstraints.HORIZONTAL, new Insets(
+                                        0,
+                                        SplashScreen.DEFAULT_INSET_SIZE,
+                                        SplashScreen.DEFAULT_INSET_SIZE,
+                                        SplashScreen.DEFAULT_INSET_SIZE),
+                                        0, 0));
                 this.getContentPane().setBackground(Color.white);
                 this.getContentPane().add(container);
                 this.pack();

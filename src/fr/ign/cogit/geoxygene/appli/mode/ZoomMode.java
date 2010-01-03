@@ -32,29 +32,38 @@ import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 
 
 /**
+ * Zoom mode. Allows the user to zoom.
  * @author Julien Perret
  *
  */
 public class ZoomMode extends AbstractMode {
-	/**
-	 * @param theMainFrame
-	 * @param theModeSelector 
-	 */
-	public ZoomMode(MainFrame theMainFrame, ModeSelector theModeSelector) {
-		super(theMainFrame,theModeSelector);
-	}
-	
-	@Override
-	protected JButton createButton() {return new JButton(new ImageIcon(this.getClass().getResource("/icons/16x16/zoom.png")));} //$NON-NLS-1$
-	
-	@Override
-	public void leftMouseButtonClicked(MouseEvent e, ProjectFrame frame) {
-		try {frame.getLayerViewPanel().getViewport().zoomInTo(e.getPoint());}
-		catch (NoninvertibleTransformException e1) {e1.printStackTrace();}
-	}
-	@Override
-	public void rightMouseButtonClicked(MouseEvent e, ProjectFrame frame) {
-		try {frame.getLayerViewPanel().getViewport().zoomOutTo(e.getPoint());}
-		catch (NoninvertibleTransformException e1) {e1.printStackTrace();}
-	}
+    /**
+     * @param theMainFrame the main frame
+     * @param theModeSelector the mode selector
+     */
+    public ZoomMode(final MainFrame theMainFrame,
+            final ModeSelector theModeSelector) {
+        super(theMainFrame, theModeSelector);
+    }
+
+    @Override
+    protected final JButton createButton() {
+        return new JButton(new ImageIcon(this.getClass().
+                getResource("/icons/16x16/zoom.png"))); //$NON-NLS-1$
+    }
+
+    @Override
+    public final void leftMouseButtonClicked(final MouseEvent e,
+            final ProjectFrame frame) {
+        try {
+            frame.getLayerViewPanel().getViewport().zoomInTo(e.getPoint());
+        } catch (NoninvertibleTransformException e1) { e1.printStackTrace(); }
+    }
+    @Override
+    public final void rightMouseButtonClicked(final MouseEvent e,
+            final ProjectFrame frame) {
+        try {
+            frame.getLayerViewPanel().getViewport().zoomOutTo(e.getPoint());
+        } catch (NoninvertibleTransformException e1) { e1.printStackTrace(); }
+    }
 }
