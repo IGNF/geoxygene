@@ -108,7 +108,7 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 	 */
 	public FrameEditeurSLD(InterfaceGeoxygene frame) {
 		this.frameGeoxygene=frame;
-		setSld(frameGeoxygene.getPanelVisu().getSld());
+		setSld(this.frameGeoxygene.getPanelVisu().getSld());
 		
 		createDataSetFromSld(getSld());
 		
@@ -121,20 +121,20 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 		setIconImage(InterfaceGeoxygene.getIcone());
 
 	    DefaultMutableTreeNode top = new DefaultMutableTreeNode("Styled Layer Descriptor");
-	    tree = new JTree(top);
+	    this.tree = new JTree(top);
 	    createNodes(top);
-	    tree.setCellRenderer(new SLDRenderer(sld));
+	    this.tree.setCellRenderer(new SLDRenderer(this.sld));
 	    //tree.setEditable(true);
-	    tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-	    tree.addTreeSelectionListener(this);
-	    tree.setShowsRootHandles(false);
-	    tree.setExpandsSelectedPaths(true);
-	    tree.expandPath(tree.getLeadSelectionPath());
-	    tree.expandRow(0);
+	    this.tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+	    this.tree.addTreeSelectionListener(this);
+	    this.tree.setShowsRootHandles(false);
+	    this.tree.setExpandsSelectedPaths(true);
+	    this.tree.expandPath(this.tree.getLeadSelectionPath());
+	    this.tree.expandRow(0);
 		//Enable tool tips.
-	    ToolTipManager.sharedInstance().registerComponent(tree);
+	    ToolTipManager.sharedInstance().registerComponent(this.tree);
 
-		JScrollPane scroll = new JScrollPane(tree,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JScrollPane scroll = new JScrollPane(this.tree,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scroll,BorderLayout.CENTER);
 	}
 
@@ -168,10 +168,10 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 					/** on crée un tableau d'attributs suffisamment grand pour recevoir la clé la plus grande */
 					Integer[] keys = feature.getSchema().getAttLookup().keySet().toArray(new Integer[0]);
 					Arrays.sort(keys);
-					feature.setAttributes(new Object[keys[keys.length-1]+1]);
+					feature.setAttributes(new Object[keys[keys.length-1].intValue()+1]);
 					/** On parcours le schéma et on affecte à tous les attributs de type texte une valeur "texte" */
 					for (AttributeType attribute:feature.getFeatureType().getSchema().getFeatureAttributes()) {
-						if (attribute.getValueType().equalsIgnoreCase("String")) {
+						if (attribute.getValueType().equalsIgnoreCase("String")) { //$NON-NLS-1$
 							if (logger.isTraceEnabled()) logger.trace("affecte la valeur de l'attribut "+attribute);
 							feature.setAttribute(attribute.getMemberName(), "Texte");
 						}
@@ -179,7 +179,7 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 				}
 				population.setElements(new ArrayList<FT_Feature>(Arrays.asList(feature)));
 				population.initSpatialIndex(Tiling.class,false);
-				dataset.addPopulation(population);
+				this.dataset.addPopulation(population);
 			}
 		}
 	}
@@ -189,8 +189,8 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 	 * @param top racine de l'arbre à remplir 
 	 */
 	private void createNodes(DefaultMutableTreeNode top) {
-		if ((frameGeoxygene.getPanelVisu()==null) || (frameGeoxygene.getPanelVisu().getSld()==null)) return; 
-		for (Layer layer : frameGeoxygene.getPanelVisu().getSld().getLayers()) {
+		if ((this.frameGeoxygene.getPanelVisu()==null) || (this.frameGeoxygene.getPanelVisu().getSld()==null)) return; 
+		for (Layer layer : this.frameGeoxygene.getPanelVisu().getSld().getLayers()) {
 			DefaultMutableTreeNode layerNode = new DefaultMutableTreeNode(layer.getName());
 			top.add(layerNode);
 			layerNode.setUserObject(layer);
@@ -223,9 +223,9 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 	        if (leaf && isLayer(value)) {
 	            setToolTipText("Ceci est un layer.");
 	            Layer layer = (Layer) ((DefaultMutableTreeNode)value).getUserObject();
-	            setText(layer.getClass().getSimpleName()+" - "+layer.getName());
-				if (dataset.getPopulation(layer.getName())!=null)
-					setIcon(new LayerIcon(layer,sldRenderer));
+	            setText(layer.getClass().getSimpleName()+" - "+layer.getName()); //$NON-NLS-1$
+				if (FrameEditeurSLD.this.dataset.getPopulation(layer.getName())!=null)
+					setIcon(new LayerIcon(layer,this.sldRenderer));
 	        } else {
 	            setToolTipText(null); //no tool tip
 	        } 
@@ -251,9 +251,9 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 		 * @param sld sld auquel appartient la couche
 		 */
 		public LayerIcon(Layer l, StyledLayerDescriptor sld) {
-			layer=l;
-			d = new DessinableGeoxygene(sld);
-			d.setCentreGeo(new DirectPosition(50.0,50.0));
+			this.layer=l;
+			this.d = new DessinableGeoxygene(sld);
+			this.d.setCentreGeo(new DirectPosition(50.0,50.0));
 		}		
 		@Override
 		public int getIconHeight() {return 50;}
@@ -262,9 +262,9 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 		@Override
 		public void paintIcon(Component c, Graphics g, int x, int y) {
 			try {
-				d.majLimitesAffichage(this.getIconWidth(),this.getIconHeight());
-				if (dataset.getPopulation(layer.getName())!=null)
-					d.dessiner((Graphics2D)g, layer, dataset.getPopulation(layer.getName()));
+				this.d.majLimitesAffichage(this.getIconWidth(),this.getIconHeight());
+				if (FrameEditeurSLD.this.dataset.getPopulation(this.layer.getName())!=null)
+					this.d.dessiner((Graphics2D)g, this.layer, FrameEditeurSLD.this.dataset.getPopulation(this.layer.getName()));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -273,7 +273,7 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener, Ch
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-		tree.getLastSelectedPathComponent();
+		this.tree.getLastSelectedPathComponent();
 		//Nothing is selected.	
 		if (node == null) return;
 		Object nodeInfo = node.getUserObject();

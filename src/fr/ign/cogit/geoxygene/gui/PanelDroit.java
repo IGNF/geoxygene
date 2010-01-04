@@ -23,7 +23,7 @@ public final class PanelDroit extends JPanel {
 
 	//la fenetre a laquelle le panel est eventuellement lie
 	private InterfaceGeoxygene frame = null;
-	InterfaceGeoxygene getFrame() { return frame; }
+	InterfaceGeoxygene getFrame() { return this.frame; }
 
 	public JPanel pSelection=new JPanel(new GridBagLayout());
 	public JLabel lNbSelection=new JLabel("Nb=0");
@@ -32,20 +32,20 @@ public final class PanelDroit extends JPanel {
 
 	private GridBagConstraints c_ = null;
 	public GridBagConstraints getGBC() {
-		if ( c_ == null ){
-			c_=new GridBagConstraints();
-			c_.gridwidth = GridBagConstraints.REMAINDER;
-			c_.anchor=GridBagConstraints.NORTHWEST;
-			c_.insets = new Insets(1,5,1,5);
+		if ( this.c_ == null ){
+			this.c_=new GridBagConstraints();
+			this.c_.gridwidth = GridBagConstraints.REMAINDER;
+			this.c_.anchor=GridBagConstraints.NORTHWEST;
+			this.c_.insets = new Insets(1,5,1,5);
 		}
-		return c_;
+		return this.c_;
 	}
 
 	public PanelDroit(InterfaceGeoxygene frame){
 		this.frame = frame;
 
 		setLayout(new GridBagLayout());
-		setFont(new Font("Arial", Font.PLAIN,9));
+		setFont(new Font("Arial", Font.PLAIN,9)); //$NON-NLS-1$
 
 		GridBagConstraints c=new GridBagConstraints();
 		c.gridwidth = GridBagConstraints.REMAINDER;
@@ -53,25 +53,25 @@ public final class PanelDroit extends JPanel {
 		c.insets = new Insets(1,5,1,5);
 
 		//selection
-		pSelection.setFont(getFont());
-		pSelection.setBorder(BorderFactory.createTitledBorder("Selection"));
+		this.pSelection.setFont(getFont());
+		this.pSelection.setBorder(BorderFactory.createTitledBorder("Selection"));
 
-		lNbSelection.setFont(getFont());
-		pSelection.add(lNbSelection, c);
+		this.lNbSelection.setFont(getFont());
+		this.pSelection.add(this.lNbSelection, c);
 		
-		cVoirSelection.setFont(getFont());
-		pSelection.add(cVoirSelection, c);
+		this.cVoirSelection.setFont(getFont());
+		this.pSelection.add(this.cVoirSelection, c);
 
-		bViderSelection.addActionListener(new ActionListener(){
+		this.bViderSelection.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				getFrame().getPanelVisu().objetsSelectionnes.clear();
-				lNbSelection.setText("Nb=0");
+				PanelDroit.this.lNbSelection.setText("Nb=0");
 				getFrame().getPanelVisu().repaint();
 			}});
-		bViderSelection.setFont(getFont());
-		pSelection.add(bViderSelection, c);
+		this.bViderSelection.setFont(getFont());
+		this.pSelection.add(this.bViderSelection, c);
 
-		add(pSelection, getGBC());
+		add(this.pSelection, getGBC());
 		
 	}
 

@@ -23,7 +23,7 @@ public final class PanelHaut extends JPanel {
 
 	//la fenetre a laquelle le panel est eventuellement lie
 	private InterfaceGeoxygene frameMirage = null;
-	InterfaceGeoxygene getFrameMirage() { return frameMirage; }
+	InterfaceGeoxygene getFrameMirage() { return this.frameMirage; }
 
 	public JButton bRafraichir=new JButton("Rafraichir");
 	public JCheckBox cRafraichir=new JCheckBox("(auto)",false);
@@ -33,18 +33,18 @@ public final class PanelHaut extends JPanel {
 
 		//setBackground(new Color(190,190,255));
 		setLayout(new FlowLayout(FlowLayout.LEFT));
-		setFont(new Font("Arial",Font.PLAIN,9));
+		setFont(new Font("Arial",Font.PLAIN,9)); //$NON-NLS-1$
 
 
-		bRafraichir.addActionListener(new ActionListener(){
+		this.bRafraichir.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) { /*getFrameMirage().getPanelVisu().activer();*/getFrameMirage().getPanelVisu().repaint(); }
 		});
-		bRafraichir.setFont(getFont());
-		add(bRafraichir);
+		this.bRafraichir.setFont(getFont());
+		add(this.bRafraichir);
 
-		cRafraichir.addItemListener(new ItemListener(){
+		this.cRafraichir.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent e) {
-				if (cRafraichir.isSelected()) {
+				if (PanelHaut.this.cRafraichir.isSelected()) {
 					//activer le rafraichissement
 					//getFrameMirage().getPanelVisu().desactiverRafraichissementAuto();
 					getFrameMirage().getPanelVisu().activerRafraichissementAuto();
@@ -54,8 +54,8 @@ public final class PanelHaut extends JPanel {
 					getFrameMirage().getPanelVisu().desactiverRafraichissementAuto();
 				}
 		}});
-		cRafraichir.setFont(getFont());
-		add(cRafraichir);
+		this.cRafraichir.setFont(getFont());
+		add(this.cRafraichir);
 
 	}
 

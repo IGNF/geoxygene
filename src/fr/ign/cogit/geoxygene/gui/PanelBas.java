@@ -20,14 +20,14 @@ public final class PanelBas extends JPanel {
 
 	//la fenetre a laquelle le panel est eventuellement lie
 	private InterfaceGeoxygene frameMirage = null;
-	InterfaceGeoxygene getFrameMirage() { return frameMirage; }
+	InterfaceGeoxygene getFrameMirage() { return this.frameMirage; }
 
-	public JButton b_=new JButton("-");
+	public JButton b_=new JButton("-"); //$NON-NLS-1$
 	public JCheckBox cAffichageEchelle=new JCheckBox("Echelle",false);
 	public JCheckBox cVoirPositionCurseur=new JCheckBox("Voir position",false);
-	public JLabel lX=new JLabel("X=");
-	public JLabel lY=new JLabel("Y=");
-	public JLabel lZ=new JLabel("Z=");
+	public JLabel lX=new JLabel("X="); //$NON-NLS-1$
+	public JLabel lY=new JLabel("Y="); //$NON-NLS-1$
+	public JLabel lZ=new JLabel("Z="); //$NON-NLS-1$
 	public JLabel lValPente=new JLabel("ValPente=");
 	public JLabel lOrPente=new JLabel("OrPente=");
 
@@ -36,46 +36,46 @@ public final class PanelBas extends JPanel {
 
 		//setBackground(new Color(190,190,255));
 		setLayout(new FlowLayout(FlowLayout.LEFT));
-		setFont(new Font("Arial",Font.PLAIN,9));
+		setFont(new Font("Arial",Font.PLAIN,9)); //$NON-NLS-1$
 
-		b_.addActionListener(new ActionListener(){
+		this.b_.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("");
-				System.out.println("=============================================");
-				System.out.println("");
+				System.out.println(""); //$NON-NLS-1$
+				System.out.println("============================================="); //$NON-NLS-1$
+				System.out.println(""); //$NON-NLS-1$
 			}});
-		b_.setFont(getFont());
-		b_.setSize(0,0);
-		add(b_);
+		this.b_.setFont(getFont());
+		this.b_.setSize(0,0);
+		add(this.b_);
 
-		cAffichageEchelle.setFont(getFont());
-		cAffichageEchelle.addActionListener(new ActionListener(){
+		this.cAffichageEchelle.setFont(getFont());
+		this.cAffichageEchelle.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				getFrameMirage().getPanelVisu().setAffichageEchelle(cAffichageEchelle.isSelected());
+				getFrameMirage().getPanelVisu().setAffichageEchelle(PanelBas.this.cAffichageEchelle.isSelected());
 				getFrameMirage().getPanelVisu().repaint();
 			}});
-		add(cAffichageEchelle);
+		add(this.cAffichageEchelle);
 
-		cVoirPositionCurseur.setFont(getFont());
-		cVoirPositionCurseur.addActionListener(new ActionListener(){
+		this.cVoirPositionCurseur.setFont(getFont());
+		this.cVoirPositionCurseur.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				if (cVoirPositionCurseur.isSelected()) {
+				if (PanelBas.this.cVoirPositionCurseur.isSelected()) {
 					getFrameMirage().getPanelVisu().suivrePositionCurseur = true;
 				}
 				else {
 					getFrameMirage().getPanelVisu().suivrePositionCurseur = false;
 				}
 			}});
-		add(cVoirPositionCurseur);
-		lX.setFont(getFont());
-		add(lX);
-		lY.setFont(getFont());
-		add(lY);
-		lZ.setFont(getFont());
-		add(lZ);
-		lValPente.setFont(getFont());
-		add(lValPente);		
-		lOrPente.setFont(getFont());
-		add(lOrPente);
+		add(this.cVoirPositionCurseur);
+		this.lX.setFont(getFont());
+		add(this.lX);
+		this.lY.setFont(getFont());
+		add(this.lY);
+		this.lZ.setFont(getFont());
+		add(this.lZ);
+		this.lValPente.setFont(getFont());
+		add(this.lValPente);		
+		this.lOrPente.setFont(getFont());
+		add(this.lOrPente);
 	}
 }

@@ -166,7 +166,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	@Override
 	public synchronized void majLimitesAffichage(int newWidth, int newHeight) {
 		this.image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB_PRE);
-		this.graphics = image.createGraphics();
+		this.graphics = this.image.createGraphics();
 		if (logger.isTraceEnabled()) logger.trace("majLimitesAffichage("+newWidth+","+newHeight+")");
 		if (this.getGraphics()==null) return;
 		this.width=newWidth;
@@ -213,7 +213,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 			return;
 		}
 		if (logger.isTraceEnabled()) {logger.trace("dessiner() ");}
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, antiAliasing?RenderingHints.VALUE_ANTIALIAS_ON:RenderingHints.VALUE_ANTIALIAS_OFF);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, this.antiAliasing?RenderingHints.VALUE_ANTIALIAS_ON:RenderingHints.VALUE_ANTIALIAS_OFF);
 		for (Layer layer:this.sld.getLayers()) {
 			if (logger.isTraceEnabled()) logger.trace("dessiner le layer "+layer);
 			dessiner(g, layer, (this.useCache)?getCachedFeatures(layer):layer.getFeatureCollection());
@@ -291,6 +291,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * Tous les parcours de FT_FeatureCollection de cette classe sont effectués dans cette méthode.
 	 * @param symbolizer
 	 * @param features
+	 * @throws InterruptedException 
 	 */
 	@SuppressWarnings("unchecked")
 	public void dessiner(Graphics2D g, Symbolizer symbolizer,FT_FeatureCollection<? extends FT_Feature> features)  throws InterruptedException {

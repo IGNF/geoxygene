@@ -22,48 +22,48 @@ public final class PanelGauche extends JPanel {
 
 	//la fenetre a laquelle le panel est eventuellement lie
 	private InterfaceGeoxygene frame = null;
-	InterfaceGeoxygene getFrame() { return frame; }
+	InterfaceGeoxygene getFrame() { return this.frame; }
 
 	//
 	public JCheckBox cSymbole=new JCheckBox("Afficher symboles",true);
 
 	private JPanel panneau = null;
 	public JPanel getPanneau() {
-		if (panneau == null) panneau = new JPanel();
-		return panneau;
+		if (this.panneau == null) this.panneau = new JPanel();
+		return this.panneau;
 	}
 
 	private GridBagConstraints c_ = null;
 	public GridBagConstraints getGBC() {
-		if ( c_ == null ){
-			c_=new GridBagConstraints();
-			c_.gridwidth = GridBagConstraints.REMAINDER;
-			c_.anchor=GridBagConstraints.NORTHWEST;
-			c_.insets = new Insets(1,5,1,5);
+		if ( this.c_ == null ){
+			this.c_=new GridBagConstraints();
+			this.c_.gridwidth = GridBagConstraints.REMAINDER;
+			this.c_.anchor=GridBagConstraints.NORTHWEST;
+			this.c_.insets = new Insets(1,5,1,5);
 		}
-		return c_;
+		return this.c_;
 	}
 
 	public PanelGauche(InterfaceGeoxygene frame){
 		this.frame = frame;
 		
-		setFont(new Font("Arial",Font.PLAIN,9));
+		setFont(new Font("Arial",Font.PLAIN,9)); //$NON-NLS-1$
 	
 		getPanneau().setLayout(new GridBagLayout());
 		getPanneau().setFont(getFont());
 
 		//symbolisation
-		cSymbole.addActionListener(new ActionListener(){
+		this.cSymbole.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				if (cSymbole.isSelected()) {
+				if (PanelGauche.this.cSymbole.isSelected()) {
 					getFrame().getPanelVisu().affichageSymbolisation = true;
 				}
 				else {
 					getFrame().getPanelVisu().affichageSymbolisation = false;
 				}
 			}});
-		cSymbole.setFont(getFont());
-		getPanneau().add(cSymbole);
+		this.cSymbole.setFont(getFont());
+		getPanneau().add(this.cSymbole);
 
 		JScrollPane scroll = new JScrollPane(getPanneau(),ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scroll);

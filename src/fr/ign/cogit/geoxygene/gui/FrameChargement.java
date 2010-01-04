@@ -151,7 +151,7 @@ public class FrameChargement extends JFrame {
 							index--;
 						}
 					}
-					FrameChargement.this.shapeFileLayers.set(row, index);
+					FrameChargement.this.shapeFileLayers.set(row, new Integer(index));
 					fireTableCellUpdated(row,col);
 				}
 			}
@@ -222,14 +222,14 @@ public class FrameChargement extends JFrame {
 				if (this.layerNames.get(index).equals(layerName)) {
 					if (logger.isTraceEnabled()) logger.trace(shapefileName+" - layer = "+layerName);
 					this.shapeFiles.add(shapefile);
-					this.shapeFileLayers.add(index);
+					this.shapeFileLayers.add(new Integer(index));
 					((AbstractTableModel) this.dataModel).fireTableDataChanged();
 					return;
 				}
 			}
 		}
 		this.shapeFiles.add(shapefile);
-		this.shapeFileLayers.add(0);
+		this.shapeFileLayers.add(new Integer(0));
 		((AbstractTableModel) this.dataModel).fireTableDataChanged();
 	}
 

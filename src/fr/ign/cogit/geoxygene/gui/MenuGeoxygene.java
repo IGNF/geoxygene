@@ -31,16 +31,16 @@ public class MenuGeoxygene extends JMenuBar {
 	/**
 	 * @return la fenêtre à laquelle le menu est eventuellement lié
 	 */
-	InterfaceGeoxygene getFrameMirage() {return frameMirage;}
+	InterfaceGeoxygene getFrameMirage() {return this.frameMirage;}
 
 	//vue
 	private JMenu menuVue=new JMenu("Affichage");
-	private JMenuItem mVueEch=new JMenuItem("1:"+Legende.getECHELLE_SYMBOLISATION());
-	private JMenuItem mVueEch6250=new JMenuItem("1:6250");
-	private JMenuItem mVueEch12500=new JMenuItem("1:12500");
-	private JMenuItem mVueEch25k=new JMenuItem("1:25k");
-	private JMenuItem mVueEch50k=new JMenuItem("1:50k");
-	private JMenuItem mVueEch100k=new JMenuItem("1:100k");
+	private JMenuItem mVueEch=new JMenuItem("1:"+Legende.getECHELLE_SYMBOLISATION()); //$NON-NLS-1$
+	private JMenuItem mVueEch6250=new JMenuItem("1:6250"); //$NON-NLS-1$
+	private JMenuItem mVueEch12500=new JMenuItem("1:12500"); //$NON-NLS-1$
+	private JMenuItem mVueEch25k=new JMenuItem("1:25k"); //$NON-NLS-1$
+	private JMenuItem mVueEch50k=new JMenuItem("1:50k"); //$NON-NLS-1$
+	private JMenuItem mVueEch100k=new JMenuItem("1:100k"); //$NON-NLS-1$
 	private JMenuItem mImprimer=new JMenuItem("Imprimer");
 
 	//config
@@ -49,69 +49,69 @@ public class MenuGeoxygene extends JMenuBar {
 	private JMenuItem mRechargerConfigurationLogger=new JMenuItem("Recharger la configuration du logger");
 
 	//infos
-	private JMenu menuInfos=new JMenu("?");
+	private JMenu menuInfos=new JMenu("?"); //$NON-NLS-1$
 	public JMenuItem mAPropos=new JMenuItem("A propos...");
 
 	public MenuGeoxygene(final InterfaceGeoxygene frameMirage) {
 		this.frameMirage = frameMirage;
 		
-		setFont(new Font("Arial",Font.PLAIN,9));
+		setFont(new Font("Arial",Font.PLAIN,9)); //$NON-NLS-1$
 
 		//menu vue
 
-		mVueEch.addActionListener(new ActionListener(){
+		this.mVueEch.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				getFrameMirage().getPanelVisu().setTaillePixel(Legende.getECHELLE_SYMBOLISATION()*PanelVisu.getMETERS_PER_PIXEL());
 				getFrameMirage().getPanelVisu().repaint();
 			}});
-		mVueEch.setFont(getFont());
-		menuVue.add(mVueEch);
+		this.mVueEch.setFont(getFont());
+		this.menuVue.add(this.mVueEch);
 
-		menuVue.addSeparator();
+		this.menuVue.addSeparator();
 		
-		mVueEch6250.addActionListener(new ActionListener(){
+		this.mVueEch6250.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				getFrameMirage().getPanelVisu().setTaillePixel(6250*PanelVisu.getMETERS_PER_PIXEL());
 				getFrameMirage().getPanelVisu().repaint();
 			}});
-		mVueEch6250.setFont(getFont());
-		menuVue.add(mVueEch6250);
+		this.mVueEch6250.setFont(getFont());
+		this.menuVue.add(this.mVueEch6250);
 
-		mVueEch12500.addActionListener(new ActionListener(){
+		this.mVueEch12500.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				getFrameMirage().getPanelVisu().setTaillePixel(12500*PanelVisu.getMETERS_PER_PIXEL());
 				getFrameMirage().getPanelVisu().repaint();
 			}});
-		mVueEch12500.setFont(getFont());
-		menuVue.add(mVueEch12500);
+		this.mVueEch12500.setFont(getFont());
+		this.menuVue.add(this.mVueEch12500);
 
-		mVueEch25k.addActionListener(new ActionListener(){
+		this.mVueEch25k.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				getFrameMirage().getPanelVisu().setTaillePixel(25000*PanelVisu.getMETERS_PER_PIXEL());
 				getFrameMirage().getPanelVisu().repaint();
 			}});
-		mVueEch25k.setFont(getFont());
-		menuVue.add(mVueEch25k);
+		this.mVueEch25k.setFont(getFont());
+		this.menuVue.add(this.mVueEch25k);
 
-		mVueEch50k.addActionListener(new ActionListener(){
+		this.mVueEch50k.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				getFrameMirage().getPanelVisu().setTaillePixel(50000*PanelVisu.getMETERS_PER_PIXEL());
 				getFrameMirage().getPanelVisu().repaint();
 			}});
-		mVueEch50k.setFont(getFont());
-		menuVue.add(mVueEch50k);
+		this.mVueEch50k.setFont(getFont());
+		this.menuVue.add(this.mVueEch50k);
 
-		mVueEch100k.addActionListener(new ActionListener(){
+		this.mVueEch100k.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				getFrameMirage().getPanelVisu().setTaillePixel(100000*PanelVisu.getMETERS_PER_PIXEL());
 				getFrameMirage().getPanelVisu().repaint();
 			}});
-		mVueEch100k.setFont(getFont());
-		menuVue.add(mVueEch100k);
+		this.mVueEch100k.setFont(getFont());
+		this.menuVue.add(this.mVueEch100k);
 
-		menuVue.addSeparator();
+		this.menuVue.addSeparator();
 
-		mImprimer.addActionListener(new ActionListener(){
+		this.mImprimer.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				Thread th=new Thread(new Runnable(){
 					public void run() {
@@ -129,8 +129,8 @@ public class MenuGeoxygene extends JMenuBar {
 				});
 				th.start();
 			}});
-		mImprimer.setFont(getFont());
-		menuVue.add(mImprimer);
+		this.mImprimer.setFont(getFont());
+		this.menuVue.add(this.mImprimer);
 
 		JMenuItem menuItemCentrer = new JMenuItem("Centrer la vue");
 		menuItemCentrer.addActionListener(new ActionListener(){
@@ -140,44 +140,44 @@ public class MenuGeoxygene extends JMenuBar {
 			}
 		});
 		menuItemCentrer.setFont(getFont());
-		menuVue.add(menuItemCentrer);
+		this.menuVue.add(menuItemCentrer);
 
 		//menu config
 
-		mAntiAliasing.addActionListener(new ActionListener(){
+		this.mAntiAliasing.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				getFrameMirage().getPanelVisu().setAntiAliasing(mAntiAliasing.isSelected());
+				getFrameMirage().getPanelVisu().setAntiAliasing(MenuGeoxygene.this.mAntiAliasing.isSelected());
 				getFrameMirage().getPanelVisu().repaint();
 			}});
-		mAntiAliasing.setSelected(getFrameMirage().getPanelVisu().isAntiAliasing());
-		mAntiAliasing.setFont(getFont());
-		menuConfig.add(mAntiAliasing);
+		this.mAntiAliasing.setSelected(getFrameMirage().getPanelVisu().isAntiAliasing());
+		this.mAntiAliasing.setFont(getFont());
+		this.menuConfig.add(this.mAntiAliasing);
 
-		mRechargerConfigurationLogger.addActionListener(new ActionListener(){
+		this.mRechargerConfigurationLogger.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				logger.info("Rechargement configuration log");
-				PropertyConfigurator.configure("log4j.properties");
+				PropertyConfigurator.configure("log4j.properties"); //$NON-NLS-1$
 			}});
-		mRechargerConfigurationLogger.setFont(getFont());
-		menuConfig.add(mRechargerConfigurationLogger);
+		this.mRechargerConfigurationLogger.setFont(getFont());
+		this.menuConfig.add(this.mRechargerConfigurationLogger);
 
 		//menu infos
-		mAPropos.addActionListener(new ActionListener(){
+		this.mAPropos.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
-		 	    String message="<html><b>GeOxygene</b><br />http://oxygene-project.sourceforge.net/<br /><br />Laboratoire COGIT<br />http://recherche.ign.fr/labos/cogit<br /><br />Institut Géographique National<br />http://www.ign.fr</html>";
+		 	    String message="<html><b>GeOxygene</b><br />http://oxygene-project.sourceforge.net/<br /><br />Laboratoire COGIT<br />http://recherche.ign.fr/labos/cogit<br /><br />Institut Géographique National<br />http://www.ign.fr</html>"; //$NON-NLS-1$
 		 	    String titre="A propos de MiraGe";
-		 		JOptionPane.showMessageDialog(null, message, titre, JOptionPane.INFORMATION_MESSAGE, new ImageIcon("images/splash.png")); 
+		 		JOptionPane.showMessageDialog(null, message, titre, JOptionPane.INFORMATION_MESSAGE, new ImageIcon("images/splash.png"));  //$NON-NLS-1$
 			}});
-		mAPropos.setFont(getFont());
-		menuInfos.add(mAPropos);
+		this.mAPropos.setFont(getFont());
+		this.menuInfos.add(this.mAPropos);
 
 		
-		menuVue.setFont(getFont());
-		add(menuVue);
-		menuConfig.setFont(getFont());
-		add(menuConfig);
-		menuInfos.setFont(getFont());
-		add(menuInfos);
+		this.menuVue.setFont(getFont());
+		add(this.menuVue);
+		this.menuConfig.setFont(getFont());
+		add(this.menuConfig);
+		this.menuInfos.setFont(getFont());
+		add(this.menuInfos);
 	}
 
 	/**

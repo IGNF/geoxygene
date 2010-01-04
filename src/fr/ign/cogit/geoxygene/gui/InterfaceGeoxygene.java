@@ -47,8 +47,8 @@ public class InterfaceGeoxygene extends JFrame {
 	 * @return le menu
 	 */
 	public MenuGeoxygene getMenu() {
-		if (menu==null) synchronized (InterfaceGeoxygene.class) {if (menu==null) menu = new MenuGeoxygene(this);}
-		return menu;
+		if (this.menu==null) synchronized (InterfaceGeoxygene.class) {if (this.menu==null) this.menu = new MenuGeoxygene(this);}
+		return this.menu;
 	}
 
 	private PanelVisu panelVisu=null;
@@ -57,8 +57,8 @@ public class InterfaceGeoxygene extends JFrame {
 	 * @return le panneau de visualisation
 	 */
 	public PanelVisu getPanelVisu(){
-		if (panelVisu==null) synchronized (InterfaceGeoxygene.class) {if (panelVisu==null) panelVisu = new PanelVisu(this);}
-		return panelVisu;
+		if (this.panelVisu==null) synchronized (InterfaceGeoxygene.class) {if (this.panelVisu==null) this.panelVisu = new PanelVisu(this);}
+		return this.panelVisu;
 	}
 
 	private PanelHaut panelhaut=null;
@@ -67,8 +67,8 @@ public class InterfaceGeoxygene extends JFrame {
 	 * @return le panneau en haut, sous le menu (barre d'outils)
 	 */
 	public PanelHaut getPanelHaut(){
-		if (panelhaut==null) synchronized (InterfaceGeoxygene.class) {if (panelhaut==null) panelhaut = new PanelHaut(this);}
-		return panelhaut;
+		if (this.panelhaut==null) synchronized (InterfaceGeoxygene.class) {if (this.panelhaut==null) this.panelhaut = new PanelHaut(this);}
+		return this.panelhaut;
 	}
 
 	private PanelBas panelBas=null;
@@ -77,8 +77,8 @@ public class InterfaceGeoxygene extends JFrame {
 	 * @return le panneau en bas
 	 */
 	public PanelBas getPanelBas(){
-		if (panelBas==null) synchronized (InterfaceGeoxygene.class) {if (panelBas==null) panelBas = new PanelBas(this);}
-		return panelBas;
+		if (this.panelBas==null) synchronized (InterfaceGeoxygene.class) {if (this.panelBas==null) this.panelBas = new PanelBas(this);}
+		return this.panelBas;
 	}
 
 	private PanelDroit panelDroit=null;
@@ -87,8 +87,8 @@ public class InterfaceGeoxygene extends JFrame {
 	 * @return le panneau de droite
 	 */
 	public PanelDroit getPanelDroit(){
-		if (panelDroit==null) synchronized (InterfaceGeoxygene.class) {if (panelDroit==null) panelDroit = new PanelDroit(this);}
-		return panelDroit;
+		if (this.panelDroit==null) synchronized (InterfaceGeoxygene.class) {if (this.panelDroit==null) this.panelDroit = new PanelDroit(this);}
+		return this.panelDroit;
 	}
 
 	private PanelGauche panelGauche=null;
@@ -97,8 +97,8 @@ public class InterfaceGeoxygene extends JFrame {
 	 * @return le panneau de gauche
 	 */
 	public PanelGauche getPanelGauche(){
-		if (panelGauche==null) synchronized (InterfaceGeoxygene.class) {if (panelGauche==null) panelGauche = new PanelGauche(this);}
-		return panelGauche;
+		if (this.panelGauche==null) synchronized (InterfaceGeoxygene.class) {if (this.panelGauche==null) this.panelGauche = new PanelGauche(this);}
+		return this.panelGauche;
 	}
 
 	private static Image icone;
@@ -107,7 +107,7 @@ public class InterfaceGeoxygene extends JFrame {
 	 * @return l'icone
 	 */
 	public static Image getIcone(){
-		if(icone==null) icone = (new ImageIcon("images/icone.gif")).getImage();
+		if(icone==null) icone = (new ImageIcon("images/icone.gif")).getImage(); //$NON-NLS-1$
 		return icone;
 	}
 	
@@ -123,14 +123,14 @@ public class InterfaceGeoxygene extends JFrame {
 		//setLocation(100,100);
 	    setSize(new Dimension(830,530));
 	    setExtendedState(Frame.MAXIMIZED_BOTH);
-		setTitle("GeOxygene");
+		setTitle("GeOxygene"); //$NON-NLS-1$
 		setIconImage(getIcone());
 
 		JSplitPane splitPaneGauche = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, getPanelVisu(), getPanelDroit());
 		splitPaneGauche.setContinuousLayout(false);
 		splitPaneGauche.setOneTouchExpandable(true);
 		splitPaneGauche.setDividerLocation(10000);
-		splitPaneGauche.addPropertyChangeListener("dividerLocation", new PropertyChangeListener(){
+		splitPaneGauche.addPropertyChangeListener("dividerLocation", new PropertyChangeListener(){ //$NON-NLS-1$
 			public void propertyChange(PropertyChangeEvent arg0) { getPanelVisu().repaint(); }
 		});
 
@@ -186,22 +186,22 @@ public class InterfaceGeoxygene extends JFrame {
 			List<Integer> shapeFileLayers = chargeur.shapeFileLayers;
 			List<String> layerNames = chargeur.layerNames;
 			for (int i = 0 ; i < shapeFiles.size() ; i++) {
-				String populationName = layerNames.get(shapeFileLayers.get(i));
+				String populationName = layerNames.get(shapeFileLayers.get(i).intValue());
 				String shapefileName = shapeFiles.get(i).getAbsolutePath();
-				if (shapeFileLayers.get(i)==0) {
+				if (shapeFileLayers.get(i).intValue()==0) {
 					populationName = shapeFiles.get(i).getName();
 					if (getPanelVisu().getDataset().getPopulation(populationName)!=null) {
 						/** Il existe déjà une population avec ce nom */
 						int n = 2;
-						while (getPanelVisu().getDataset().getPopulation(populationName+" ("+n+")")!=null) {n++;}
-						populationName=populationName+" ("+n+")";
+						while (getPanelVisu().getDataset().getPopulation(populationName+" ("+n+")")!=null) {n++;}  //$NON-NLS-1$//$NON-NLS-2$
+						populationName=populationName+" ("+n+")"; //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				} else {
 					if (getPanelVisu().getDataset().getPopulation(populationName)!=null) {
 						/** Il existe déjà une population avec ce nom */
 						int n = 2;
-						while (getPanelVisu().getDataset().getPopulation(populationName+" ("+n+")")!=null) {n++;}
-						populationName=populationName+" ("+n+")";						
+						while (getPanelVisu().getDataset().getPopulation(populationName+" ("+n+")")!=null) {n++;} //$NON-NLS-1$ //$NON-NLS-2$
+						populationName=populationName+" ("+n+")";						 //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 				chargeShapefile(shapefileName, populationName);
@@ -238,7 +238,7 @@ public class InterfaceGeoxygene extends JFrame {
 			getPanelVisu().getSld().getLayers().add(layer);
 		}
 		getPanelVisu().centrer();
-		chargement.getFichiers().put(populationName, shapefileName);
+		this.chargement.getFichiers().put(populationName, shapefileName);
 		/** On lance le chargement asynchrone */
 		reader.read();		
 	}
