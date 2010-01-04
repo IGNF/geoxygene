@@ -102,7 +102,9 @@ public class DefaultFeature extends FT_Feature {
 			tabNoms = this.getSchema().getAttLookup().get(key);
 			if ((tabNoms!=null)&&(tabNoms[0]!=null)&&(tabNoms[0].equals(nom))) return this.getAttribute(key.intValue());
 		}
-		if (logger.isDebugEnabled()) logger.warn("!!! le nom '"+nom+"' ne correspond pas à un attribut de ce feature !!!");  //$NON-NLS-1$//$NON-NLS-2$
+		if (getLogger().isDebugEnabled()) {
+    getLogger().warn("!!! le nom '"+nom+"' ne correspond pas à un attribut de ce feature !!!");  //$NON-NLS-1$//$NON-NLS-2$
+		}
 		return null;
 	}
 	@Override
@@ -147,18 +149,24 @@ public class DefaultFeature extends FT_Feature {
 			tabNoms = this.getSchema().getAttLookup().get(key);
 			if ( (tabNoms!=null) && (tabNoms[0]!=null) ) {
 				if (tabNoms[0].equals(nom)){
-					if (logger.isDebugEnabled()) logger.debug("setAttribute "+nom+" =?= "+tabNoms[0]);  //$NON-NLS-1$//$NON-NLS-2$
+					if (getLogger().isDebugEnabled()) {
+    getLogger().debug("setAttribute "+nom+" =?= "+tabNoms[0]);  //$NON-NLS-1$//$NON-NLS-2$
+					}
 					this.setAttribute(key.intValue(), value);
 					return;
 				}
 			}
 		}
-		if (logger.isDebugEnabled()) {
-			logger.warn("!!! le nom '"+nom+"' ne correspond pas à un attribut de ce feature !!!"); //$NON-NLS-1$ //$NON-NLS-2$
+		if (getLogger().isDebugEnabled()) {
+    getLogger().warn("!!! le nom '"+nom+"' ne correspond pas à un attribut de ce feature !!!"); //$NON-NLS-1$ //$NON-NLS-2$
 			for(Integer key:getSchema().getAttLookup().keySet()) {
 				tabNoms = this.getSchema().getAttLookup().get(key);
-				if (tabNoms==null) logger.debug("Attribut "+key+" nul"); //$NON-NLS-1$ //$NON-NLS-2$
-				else logger.debug("Attribut "+key+" = "+tabNoms[0]+" - "+tabNoms[1]);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+				if (tabNoms==null) {
+    getLogger().debug("Attribut "+key+" nul"); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+				else {
+    getLogger().debug("Attribut "+key+" = "+tabNoms[0]+" - "+tabNoms[1]);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+				}
 			}
 		}
 		return;
@@ -183,11 +191,11 @@ public class DefaultFeature extends FT_Feature {
 	public void setAttribute(AttributeType attribute, Object valeur) {
 		// FIXME changer le comportement !!!!
 		if (attribute.getMemberName().equals("geom")) { //$NON-NLS-1$
-			logger.warn("WARNING : Pour affecter la primitive géométrique par défaut, veuillez utiliser " //$NON-NLS-1$
+    getLogger().warn("WARNING : Pour affecter la primitive géométrique par défaut, veuillez utiliser " //$NON-NLS-1$
 					+ "la méthode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
 			this.setGeom((GM_Object) valeur);
 		} else if (attribute.getMemberName().equals("topo")) { //$NON-NLS-1$
-			logger.warn("WARNING : Pour affecter la primitive topologique par défaut, veuillez utiliser " //$NON-NLS-1$
+    getLogger().warn("WARNING : Pour affecter la primitive topologique par défaut, veuillez utiliser " //$NON-NLS-1$
 					+ "la méthode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
 			this.setTopo((TP_Object) valeur);
 		}
