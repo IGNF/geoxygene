@@ -83,9 +83,9 @@ public class TestTopo {
 	public TestTopo() {
 		db = GeodatabaseOjbFactory.newInstance();
 		try {
-			tronconClass = Class.forName(nomClasse);
+			tronconClass = Class.forName(this.nomClasse);
 		} catch (ClassNotFoundException e) {
-			System.out.println(nomClasse+" : non trouvee");
+			System.out.println(this.nomClasse+" : non trouvee");
 			System.exit(0);
 		}
 	}

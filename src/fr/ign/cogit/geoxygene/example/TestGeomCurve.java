@@ -48,7 +48,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
  * 
  */
 
-
+@SuppressWarnings({"unqualified-field-access"})
 public class TestGeomCurve {
 
 	/* Attributs */

@@ -49,7 +49,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * 
  */
 
-
+@SuppressWarnings({"unchecked","unqualified-field-access"})
 public class TestGeodatabase {
 
 	//la bd
@@ -103,7 +103,7 @@ public class TestGeodatabase {
 		System.out.println("transaction ouverte ? : "+db.isOpen());
 
 		// charge un objet par son identifiant
-		FT_Feature feature = db.load(tronconClass, new Integer(gid) );
+		FT_Feature feature = db.load(tronconClass, gid );
 		if (feature != null) System.out.println("objet charge : "+feature.getClass()+" - id : "+feature.getId());
 
 		// chargement de tous les FT_Feature d'une classe

@@ -58,19 +58,19 @@ public class FirstExample {
 	// classe de troncons
 	private Class<?> tronconClasse;
 	// nom de la classe a charger
-	private String nomClasse = "geoxygene.geodata.TronconRoute";
+	private String nomClasse = "geoxygene.geodata.TronconRoute"; //$NON-NLS-1$
 
 	//constructeur
 	public FirstExample() {
 
 		// initialisation de la connection et lecture des fichiers de mapping
 		System.out.println("Debut initialisation");
-		db = GeodatabaseOjbFactory.newInstance();
+		this.db = GeodatabaseOjbFactory.newInstance();
 		System.out.println("Initialisation OK");
 		try {
-			tronconClasse = Class.forName(nomClasse);
+			this.tronconClasse = Class.forName(this.nomClasse);
 		} catch (ClassNotFoundException e) {
-			System.out.println(nomClasse+" : non trouvee");
+			System.out.println(this.nomClasse+" : non trouvee");
 			System.exit(0);
 		}
 	}
@@ -92,13 +92,13 @@ public class FirstExample {
 
 		// Debut d'une transaction
 		System.out.println("Debut transaction");
-		db.begin();
+		this.db.begin();
 
 		// Recherche du plus grand identifiant
-		Integer gid = new Integer ( db.maxId(tronconClasse) );
+		Integer gid = new Integer ( this.db.maxId(this.tronconClasse) );
 
 		// Chargement d'un objet par son identifiant
-		FT_Feature troncon = (FT_Feature)db.load(tronconClasse, gid);
+		FT_Feature troncon = (FT_Feature)this.db.load(this.tronconClasse, gid);
 		System.out.println("identifiant de l'objet charge : "+troncon.getId());
 
 		// geometrie
@@ -107,23 +107,23 @@ public class FirstExample {
 
 		// Creation d'un objet Resultat auquel on affecte la geometrie du Troncon_route
 		Resultat resultat = new Resultat();
-		db.makePersistent(resultat);
+		this.db.makePersistent(resultat);
 		resultat.setGeom(polyligne);
 
 		// Creation d'un objet Resultat auquel on affecte la geometrie d'un buffer autour du Troncon
 		int rayon = 20;
 		GM_Polygon polygone = (GM_Polygon)polyligne.buffer(rayon);
 		Resultat buffer = new Resultat();
-		db.makePersistent(buffer);
+		this.db.makePersistent(buffer);
 		buffer.setGeom(polygone);
 
 
 		//Fermeture transaction et commit ( = validation des ecritures dans la base)
 		System.out.println("commit");
-		db.commit();
+		this.db.commit();
 
 		// Visualisation dans le viewer
-		ObjectViewer viewer = new ObjectViewer(db);
+		ObjectViewer viewer = new ObjectViewer(this.db);
 		FT_FeatureCollection<FT_Feature> iniColl = new FT_FeatureCollection<FT_Feature>();
 		iniColl.add(troncon);
 		FT_FeatureCollection<FT_Feature> bufferColl = new FT_FeatureCollection<FT_Feature>();
@@ -139,13 +139,13 @@ public class FirstExample {
 
 		// Debut d'une transaction
 		System.out.println("Debut transaction");
-		db.begin();
+		this.db.begin();
 
 		// Recherche du nombre d'objets a traiter
-		System.out.println("nb: " + db.countObjects(tronconClasse));
+		System.out.println("nb: " + this.db.countObjects(this.tronconClasse)); //$NON-NLS-1$
 
 		// Chargement de tous les objets
-		FT_FeatureCollection<? extends FT_Feature> tronconList = db.loadAllFeatures(tronconClasse);
+		FT_FeatureCollection<? extends FT_Feature> tronconList = this.db.loadAllFeatures(this.tronconClasse);
 		System.out.println("chargement termine");
 
 		// création d'une nouvelle collection pour stocker les résultats
@@ -162,7 +162,7 @@ public class FirstExample {
 			GM_LineString polyligne2 = (GM_LineString)Filtering.DouglasPeucker(polyligne1,seuil);
 			Resultat resultat = new Resultat();
 			resultat.setGeom(polyligne2);
-			db.makePersistent(resultat);
+			this.db.makePersistent(resultat);
 			compteur++;
 			if (compteur % 100 == 0) System.out.println(compteur);
 			allResults.add(resultat);
@@ -170,10 +170,10 @@ public class FirstExample {
 
 		//Fermeture transaction et commit ( = validation des ecritures dans la base)
 		System.out.println("commit");
-		db.commit();
+		this.db.commit();
 
 		// Visualisation dans le viewer
-		ObjectViewer viewer = new ObjectViewer(db);
+		ObjectViewer viewer = new ObjectViewer(this.db);
 		viewer.addFeatureCollection(tronconList,"Tronçons");
 		viewer.addFeatureCollection(allResults,"résultats");
 	}

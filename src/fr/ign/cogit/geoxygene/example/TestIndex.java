@@ -42,6 +42,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * 
  */
 
+@SuppressWarnings({"unchecked","unqualified-field-access"})
 public class TestIndex {
 
 	private Geodatabase db;

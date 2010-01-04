@@ -48,23 +48,23 @@ package fr.ign.cogit.geoxygene.example;
 public class ClassWithTable  {
 
 	public int id;
-	public int getId() {return id; }
-	public void setId(int Id) {id = Id;}
+	public int getId() {return this.id; }
+	public void setId(int Id) {this.id = Id;}
 
 	public double[] doubles = new double[10];
-	public double[] getDoubles() {return doubles ;}
-	public void setDoubles(double[] tab) {doubles = tab;}
+	public double[] getDoubles() {return this.doubles ;}
+	public void setDoubles(double[] tab) {this.doubles = tab;}
 
 	public int[] ints = new int[15];
-	public int[] getInts() {return ints ;}
-	public void setInts(int[] tab) {ints = tab;}
+	public int[] getInts() {return this.ints ;}
+	public void setInts(int[] tab) {this.ints = tab;}
 
 	public boolean[] booleans = new boolean[5];
-	public boolean[] getBooleans() {return booleans ;}
-	public void setBooleans(boolean[] tab) {booleans = tab;}
+	public boolean[] getBooleans() {return this.booleans ;}
+	public void setBooleans(boolean[] tab) {this.booleans = tab;}
 
 	public String[] strings = new String[10];
-	public String[] getStrings() {return strings ;}
-	public void setStrings(String[] tab) {strings = tab;}
+	public String[] getStrings() {return this.strings ;}
+	public void setStrings(String[] tab) {this.strings = tab;}
 
 }
