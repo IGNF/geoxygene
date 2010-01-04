@@ -21,6 +21,7 @@
 
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 
 /**
@@ -33,7 +34,8 @@ public class ElementCarteTopo extends FT_Feature {
      */
     public CarteTopo getCarteTopo() {
         if ( this.getPopulation() == null ) {
-            System.out.println("PB: pas de population à cet objet "+this);
+            FT_Feature.getLogger().error(I18N.getString(
+                    "ElementCarteTopo.NoPopulation") + this); //$NON-NLS-1$
             return null;
         }
         return (CarteTopo)this.getPopulation().getDataSet();
