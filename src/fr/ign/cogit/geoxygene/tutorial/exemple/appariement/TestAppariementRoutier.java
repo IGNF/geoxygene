@@ -70,7 +70,7 @@ public class TestAppariementRoutier {
 		
 		//Lance les traitement et Récupère les liens d'appariement
 		List<ReseauApp> cartesTopo = new ArrayList<ReseauApp>();
-		EnsembleDeLiens liens = AppariementIO.AppariementDeJeuxGeo(param, cartesTopo);
+		EnsembleDeLiens liens = AppariementIO.appariementDeJeuxGeo(param, cartesTopo);
 		
 		//Récupération des réseaux (ReseauApp hérite de CarteTopo)
 		ReseauApp carteTopoBDC = cartesTopo.get(0);

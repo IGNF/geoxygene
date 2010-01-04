@@ -96,13 +96,13 @@ public class Parametres {
 		/////////////////////////////////////////////////////////////////////////////////
 		
 		param.projeteNoeuds1SurReseau2 = false;
-		param.projeteNoeuds1SurReseau2_DistanceNoeudArc = 0;
-		param.projeteNoeuds1SurReseau2_DistanceProjectionNoeud = 0;
-		param.projeteNoeuds1SurReseau2_ImpassesSeulement = false;
+		param.projeteNoeuds1SurReseau2DistanceNoeudArc = 0;
+		param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = 0;
+		param.projeteNoeuds1SurReseau2ImpassesSeulement = false;
 		param.projeteNoeud2surReseau1 = false;
-		param.projeteNoeud2surReseau1_DistanceNoeudArc = 0;
-		param.projeteNoeud2surReseau1_DistanceProjectionNoeud = 0;
-		param.projeteNoeud2surReseau1_ImpassesSeulement = false;
+		param.projeteNoeud2surReseau1DistanceNoeudArc = 0;
+		param.projeteNoeud2surReseau1DistanceProjectionNoeud = 0;
+		param.projeteNoeud2surReseau1ImpassesSeulement = false;
 
 		/////////////////////////////////////////////////////////////////////////////////
 		/////////////            VARIANTES DU PROCESSUS GENERAL    //////////////////////
@@ -201,13 +201,13 @@ public class Parametres {
 		/////////////////////////////////////////////////////////////////////////////////
 		
 		param.projeteNoeuds1SurReseau2 = false;
-		param.projeteNoeuds1SurReseau2_DistanceNoeudArc = 0;
-		param.projeteNoeuds1SurReseau2_DistanceProjectionNoeud = 0;
-		param.projeteNoeuds1SurReseau2_ImpassesSeulement = false;
+		param.projeteNoeuds1SurReseau2DistanceNoeudArc = 0;
+		param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = 0;
+		param.projeteNoeuds1SurReseau2ImpassesSeulement = false;
 		param.projeteNoeud2surReseau1 = false;
-		param.projeteNoeud2surReseau1_DistanceNoeudArc = 0;
-		param.projeteNoeud2surReseau1_DistanceProjectionNoeud = 0;
-		param.projeteNoeud2surReseau1_ImpassesSeulement = false;
+		param.projeteNoeud2surReseau1DistanceNoeudArc = 0;
+		param.projeteNoeud2surReseau1DistanceProjectionNoeud = 0;
+		param.projeteNoeud2surReseau1ImpassesSeulement = false;
 		
 		/////////////////////////////////////////////////////////////////////////////////
 		/////////////            VARIANTES DU PROCESSUS GENERAL    //////////////////////
