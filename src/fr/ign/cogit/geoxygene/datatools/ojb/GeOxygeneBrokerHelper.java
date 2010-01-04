@@ -99,9 +99,9 @@ public class GeOxygeneBrokerHelper {
 	// Nom des classes relatives à Oracle,
 	//en String pour permettre la compilation séparée
 	private final String GeomGeOxygene2Oracle_CLASS_NAME =
-		"fr.ign.cogit.geoxygene.datatools.oracle.GeomGeOxygene2Oracle";
+		"fr.ign.cogit.geoxygene.datatools.oracle.GeomGeOxygene2Oracle"; //$NON-NLS-1$
 	private final String GeomGeOxygene2Postgis_CLASS_NAME =
-		"fr.ign.cogit.geoxygene.datatools.postgis.GeomGeOxygene2Postgis";
+		"fr.ign.cogit.geoxygene.datatools.postgis.GeomGeOxygene2Postgis"; //$NON-NLS-1$
 	private Method geomGeOxygene2OracleMethod;
 	private Method geomGeOxygene2PostgisMethod;
 	// SGBD
@@ -118,23 +118,23 @@ public class GeOxygeneBrokerHelper {
 
 		// AJOUT pour GeOxygene -----------------------------------------------------------
 		// Definition du SGBD
-		m_platform = PlatformFactory.getPlatformFor(m_broker.serviceConnectionManager().getConnectionDescriptor());
+		this.m_platform = PlatformFactory.getPlatformFor(this.m_broker.serviceConnectionManager().getConnectionDescriptor());
 
 		// ORACLE
-		if (m_platform instanceof PlatformOracle9iImpl || m_platform instanceof PlatformOracleImpl)
+		if (this.m_platform instanceof PlatformOracle9iImpl || this.m_platform instanceof PlatformOracleImpl)
 			try {
-				Class<?> geomGeOxygene2OracleClass = Class.forName(GeomGeOxygene2Oracle_CLASS_NAME);
-				geomGeOxygene2OracleMethod = geomGeOxygene2OracleClass.getMethod("javaToSql",
+				Class<?> geomGeOxygene2OracleClass = Class.forName(this.GeomGeOxygene2Oracle_CLASS_NAME);
+				this.geomGeOxygene2OracleMethod = geomGeOxygene2OracleClass.getMethod("javaToSql", //$NON-NLS-1$
 						new Class[] {Object.class, Connection.class});
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 			// POSTGIS
-			else if (m_platform instanceof PlatformPostgreSQLImpl)
+			else if (this.m_platform instanceof PlatformPostgreSQLImpl)
 				try {
-					Class<?> geomGeOxygene2PostgisClass = Class.forName(GeomGeOxygene2Postgis_CLASS_NAME);
-					geomGeOxygene2PostgisMethod = geomGeOxygene2PostgisClass.getMethod("javaToSql",
+					Class<?> geomGeOxygene2PostgisClass = Class.forName(this.GeomGeOxygene2Postgis_CLASS_NAME);
+					this.geomGeOxygene2PostgisMethod = geomGeOxygene2PostgisClass.getMethod("javaToSql", //$NON-NLS-1$
 							new Class[] {Object.class});
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -170,7 +170,7 @@ public class GeOxygeneBrokerHelper {
 		if (tok.hasMoreTokens())
 		{
 			user = tok.nextToken();
-			if (user != null && user.trim().equals(""))
+			if (user != null && user.trim().equals("")) //$NON-NLS-1$
 			{
 				user = null;
 			}
@@ -358,7 +358,7 @@ public class GeOxygeneBrokerHelper {
 			{
 				// lookup SeqMan for a value matching db column an
 				// fieldconversion
-				Object result = m_broker.serviceSequenceManager().getUniqueValue(fd);
+				Object result = this.m_broker.serviceSequenceManager().getUniqueValue(fd);
 				// reflect autoincrement value back into object
 				f.set(obj, result);
 				return result;
@@ -374,10 +374,7 @@ public class GeOxygeneBrokerHelper {
 				throw new PersistenceBrokerException("Could not get key value", e);
 			}
 		}
-		else
-		{
-			return cv;
-		}
+		return cv;
 	}
 
 	/**
@@ -413,16 +410,16 @@ public class GeOxygeneBrokerHelper {
 				// Gestion des géométrie
 				if (fd.getFieldConversion() instanceof GeomGeOxygene2Dbms) {
 					// ORACLE
-					if (m_platform instanceof PlatformOracle9iImpl || m_platform instanceof PlatformOracleImpl) {
+					if (this.m_platform instanceof PlatformOracle9iImpl || this.m_platform instanceof PlatformOracleImpl) {
 						try {
-							cv = geomGeOxygene2OracleMethod.invoke(fd.getFieldConversion(), new Object[]{cv, conn});
+							cv = this.geomGeOxygene2OracleMethod.invoke(fd.getFieldConversion(), new Object[]{cv, conn});
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					} // POSTGIS
-					if (m_platform instanceof PlatformPostgreSQLImpl) {
+					if (this.m_platform instanceof PlatformPostgreSQLImpl) {
 						try {
-							cv = geomGeOxygene2PostgisMethod.invoke(fd.getFieldConversion(), new Object[]{cv});
+							cv = this.geomGeOxygene2PostgisMethod.invoke(fd.getFieldConversion(), new Object[]{cv});
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -542,10 +539,7 @@ public class GeOxygeneBrokerHelper {
 		{
 			return getCountQuery((QueryBySQL)aQuery);
 		}
-		else
-		{
-			return getCountQuery((QueryByCriteria)aQuery);
-		}
+		return getCountQuery((QueryByCriteria)aQuery);
 	}
 
 	/**
@@ -557,13 +551,13 @@ public class GeOxygeneBrokerHelper {
 	{
 		String countSql = aQuery.getSql();
 
-		int fromPos = countSql.toUpperCase().indexOf(" FROM ");
+		int fromPos = countSql.toUpperCase().indexOf(" FROM "); //$NON-NLS-1$
 		if (fromPos >= 0)
 		{
-			countSql = "select count(*)" + countSql.substring(fromPos);
+			countSql = "select count(*)" + countSql.substring(fromPos); //$NON-NLS-1$
 		}
 
-		int orderPos = countSql.toUpperCase().indexOf(" ORDER BY ");
+		int orderPos = countSql.toUpperCase().indexOf(" ORDER BY "); //$NON-NLS-1$
 		if (orderPos >= 0)
 		{
 			countSql = countSql.substring(0, orderPos);
@@ -583,7 +577,7 @@ public class GeOxygeneBrokerHelper {
 		Class<?> searchClass = aQuery.getSearchClass();
 		ReportQueryByCriteria countQuery;
 		Criteria countCrit = null;
-		FieldDescriptor[] pkFields = m_broker.getClassDescriptor(searchClass).getPkFields();
+		FieldDescriptor[] pkFields = this.m_broker.getClassDescriptor(searchClass).getPkFields();
 		String[] columns = new String[pkFields.length];
 
 		// build a ReportQuery based on query orderby needs to be cleared
@@ -598,11 +592,11 @@ public class GeOxygeneBrokerHelper {
 		{
 			if (aQuery.isDistinct())
 			{
-				columns[i] = "count(distinct " + pkFields[i].getAttributeName() + ")";
+				columns[i] = "count(distinct " + pkFields[i].getAttributeName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			else
 			{
-				columns[i] = "count(" + pkFields[i].getAttributeName() + ")";
+				columns[i] = "count(" + pkFields[i].getAttributeName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 

@@ -50,13 +50,13 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final String POSTGRES_GEOM_CLASS_NAME = "org.postgis.PGgeometry";
-	private static final String ORACLE_GEOM_CLASS_NAME = "oracle.sql.STRUCT";
+	private static final String POSTGRES_GEOM_CLASS_NAME = "org.postgis.PGgeometry"; //$NON-NLS-1$
+	private static final String ORACLE_GEOM_CLASS_NAME = "oracle.sql.STRUCT"; //$NON-NLS-1$
 
 	private final String GeomGeOxygene2Oracle_CLASS_NAME =
-		"fr.ign.cogit.geoxygene.datatools.oracle.GeomGeOxygene2Oracle";
+		"fr.ign.cogit.geoxygene.datatools.oracle.GeomGeOxygene2Oracle"; //$NON-NLS-1$
 	private final String GeomGeOxygene2Postgis_CLASS_NAME =
-		"fr.ign.cogit.geoxygene.datatools.postgis.GeomGeOxygene2Postgis";
+		"fr.ign.cogit.geoxygene.datatools.postgis.GeomGeOxygene2Postgis"; //$NON-NLS-1$
 
 	private Method geomOracle2GeOxygeneMethod;
 	private Method geomPostgis2GeOxygeneMethod;
@@ -67,9 +67,9 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
 
 		// ORACLE
 		try {
-			Class<?> geomGeOxygene2OracleClass = Class.forName(GeomGeOxygene2Oracle_CLASS_NAME);
+			Class<?> geomGeOxygene2OracleClass = Class.forName(this.GeomGeOxygene2Oracle_CLASS_NAME);
 			try {
-				geomOracle2GeOxygeneMethod = geomGeOxygene2OracleClass.getMethod("sqlToJava", new Class[] {Object.class});
+				this.geomOracle2GeOxygeneMethod = geomGeOxygene2OracleClass.getMethod("sqlToJava", new Class[] {Object.class}); //$NON-NLS-1$
 			} catch (NoSuchMethodException nosuch1) {
 				nosuch1.printStackTrace();
 				System.exit(0);
@@ -80,11 +80,11 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
 
 		//	POSTGIS
 		try {
-			Class<?> geomGeOxygene2PostgisClass = Class.forName(GeomGeOxygene2Postgis_CLASS_NAME);
+			Class<?> geomGeOxygene2PostgisClass = Class.forName(this.GeomGeOxygene2Postgis_CLASS_NAME);
 			try {
-				geomPostgis2GeOxygeneMethod = geomGeOxygene2PostgisClass.getMethod("sqlToJava", new Class[] {Object.class});
+				this.geomPostgis2GeOxygeneMethod = geomGeOxygene2PostgisClass.getMethod("sqlToJava", new Class[] {Object.class});
 			} catch (NoSuchMethodException nosuch2) {
-				logger.fatal("la méthode sqlToJava n'existe pas sur la classe "+GeomGeOxygene2Postgis_CLASS_NAME);
+				logger.fatal("la méthode sqlToJava n'existe pas sur la classe "+this.GeomGeOxygene2Postgis_CLASS_NAME);
 				nosuch2.printStackTrace();
 				System.exit(0);
 			}
@@ -104,7 +104,7 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
 		// ORACLE
 		if (geom.getClass().getName().compareTo(ORACLE_GEOM_CLASS_NAME) == 0) {
 			try {
-				return geomOracle2GeOxygeneMethod.invoke(null, new Object[] {geom});
+				return this.geomOracle2GeOxygeneMethod.invoke(null, new Object[] {geom});
 			} catch (Exception e) {
 				logger.error("géométrie renvoyée nulle");
 				logger.error(e.getMessage());
@@ -116,7 +116,7 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
 		// POSTGIS
 		else if (geom.getClass().getName().compareTo(POSTGRES_GEOM_CLASS_NAME) == 0) {
 			try {
-				return geomPostgis2GeOxygeneMethod.invoke(null, new Object[] {geom});
+				return this.geomPostgis2GeOxygeneMethod.invoke(null, new Object[] {geom});
 			} catch (Exception e) {
 				logger.error("géométrie renvoyée nulle");
 				logger.error(e.getMessage());

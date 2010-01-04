@@ -86,7 +86,7 @@ public class GeodatabaseCastorOracle/* implements Geodatabase */{
 			if (writer != null) writer.println("Connection JDBC initialis?e.");
 			initMetadata();
 			if (writer != null) writer.println("M?tadonn?es initialis?es.");
-		} catch (Exception e) {_writer.println(e.getMessage());}
+		} catch (Exception e) {this._writer.println(e.getMessage());}
 	}
 
 	/** Constructeur, sans writer donc sans affichage des messages Castor. */
@@ -123,9 +123,9 @@ public class GeodatabaseCastorOracle/* implements Geodatabase */{
          initialise un writer sur la sortie standard qui est utilise uniquement pour afficher les messages de cette classe. */
 	private void initWriter (PrintWriter writer) {
 		if (writer != null) {
-			_writer = writer;
+			this._writer = writer;
 		} else {
-			_writer = new PrintWriter(System.out,true);
+			this._writer = new PrintWriter(System.out,true);
 		}
 	}
 
@@ -139,7 +139,7 @@ public class GeodatabaseCastorOracle/* implements Geodatabase */{
 			String ligne = br.readLine();
 			while (ligne != null) {
 				if ((ligne.length() >= 15) && (ligne.substring(0,15).compareTo("GEOXYGENE_MAPPING") == 0)) {
-					_oxygeneMapping = ligne.substring(16);
+					this._oxygeneMapping = ligne.substring(16);
 					break;
 				}
 				ligne = br.readLine();
@@ -152,7 +152,7 @@ public class GeodatabaseCastorOracle/* implements Geodatabase */{
 				String ligne = br.readLine();
 				while (ligne != null) {
 					if ((ligne.length() >= 15) && (ligne.substring(0,15).compareTo("GEOXYGENE_MAPPING") == 0)) {
-						_oxygeneMapping = ligne.substring(16);
+						this._oxygeneMapping = ligne.substring(16);
 						break;
 					}
 					ligne = br.readLine();
@@ -165,7 +165,7 @@ public class GeodatabaseCastorOracle/* implements Geodatabase */{
 					String ligne = br.readLine();
 					while (ligne != null) {
 						if ((ligne.length() >= 15) && (ligne.substring(0,15).compareTo("GEOXYGENE_MAPPING") == 0)) {
-							_oxygeneMapping = ligne.substring(16);
+							this._oxygeneMapping = ligne.substring(16);
 							break;
 						}
 						ligne = br.readLine();
@@ -178,8 +178,8 @@ public class GeodatabaseCastorOracle/* implements Geodatabase */{
 				}
 			}
 		}
-		if (_oxygeneMapping == null)
-			_writer.println(" ### La variable d'environnement GEOXYGENE_MAPPING n'est pas renseignée ###");
+		if (this._oxygeneMapping == null)
+			this._writer.println(" ### La variable d'environnement GEOXYGENE_MAPPING n'est pas renseignée ###");
 	}
 
 	/**
@@ -577,15 +577,15 @@ public class GeodatabaseCastorOracle/* implements Geodatabase */{
 	/////////////////////////////////////////////////////////////////////////////////////////
 	/** Renvoie le tableau des metadonnees. */
 	public List<?> getMetadata() {
-		return _metadataList;
+		return this._metadataList;
 	}
 
 	/** Renvoie les metadonnees de la classe theClass.
         theClass doit etre une classe definie dans le mapping.*/
 	public Metadata getMetadata(Class<?> theClass) {
-		for (int i=0; i<_metadataList.size(); i++)
-			if (theClass.getName().compareTo(((Metadata)_metadataList.get(i)).getClassName()) == 0)
-				return (Metadata)_metadataList.get(i);
+		for (int i=0; i<this._metadataList.size(); i++)
+			if (theClass.getName().compareTo(((Metadata)this._metadataList.get(i)).getClassName()) == 0)
+				return (Metadata)this._metadataList.get(i);
 		System.out.println("La classe n'est pas dans le fichier de mapping : "+theClass.getName());
 		return null;
 	}
@@ -594,9 +594,9 @@ public class GeodatabaseCastorOracle/* implements Geodatabase */{
         theTable doit etre une table d?finie dans le mapping.
         Si theTable est mappee avec plusieurs classes, en renvoie une. */
 	public Metadata getMetadata(String theTable) {
-		for (int i=0; i<_metadataList.size(); i++)
-			if (theTable.compareToIgnoreCase(((Metadata)_metadataList.get(i)).getTableName()) == 0)
-				return (Metadata)_metadataList.get(i);
+		for (int i=0; i<this._metadataList.size(); i++)
+			if (theTable.compareToIgnoreCase(((Metadata)this._metadataList.get(i)).getTableName()) == 0)
+				return (Metadata)this._metadataList.get(i);
 		System.out.println("La table n'est pas dans le fichier de mapping : "+theTable);
 		return null;
 	}
@@ -628,7 +628,7 @@ public class GeodatabaseCastorOracle/* implements Geodatabase */{
 	/////////////////////////////////////////////////////////////////////////////////////////
 	/** Renvoie la connection JDBC sous-jacente. */
 	public Connection getConnection() {
-		return _conn;
+		return this._conn;
 	}
 
 	/** Execute une commande SQL.

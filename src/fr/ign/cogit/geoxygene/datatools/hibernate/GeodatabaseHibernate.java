@@ -189,7 +189,7 @@ public class GeodatabaseHibernate implements Geodatabase {
 			e.printStackTrace();
 			return null;
 		}
-		List<?> list = session.createQuery("from "+featureClass.getSimpleName()).list();
+		List<?> list = this.session.createQuery("from "+featureClass.getSimpleName()).list(); //$NON-NLS-1$
 		Iterator<?> iter = list.iterator();
 		try {
 			while (iter.hasNext()) {

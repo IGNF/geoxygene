@@ -60,13 +60,13 @@ public class Driver {
 
 	public Param createParam() {return new Param();}
 
-	public ArrayList<?> getParam() {return _param;}
+	public ArrayList<?> getParam() {return this._param;}
 
-	public void addParam (Param param) {_param.add(param);}
+	public void addParam (Param param) {this._param.add(param);}
 
 	public String getUserName() throws Exception {
-		for (int i=0; i<_param.size(); i++) {
-			Param p = _param.get(i);
+		for (int i=0; i<this._param.size(); i++) {
+			Param p = this._param.get(i);
 			if (p.getName().compareToIgnoreCase("user") == 0)
 				return  p.getValue();
 		}
@@ -74,8 +74,8 @@ public class Driver {
 	}
 
 	public String getPassword() throws Exception {
-		for (int i=0; i<_param.size(); i++) {
-			Param p = _param.get(i);
+		for (int i=0; i<this._param.size(); i++) {
+			Param p = this._param.get(i);
 			if (p.getName().compareToIgnoreCase("password") == 0)
 				return  p.getValue();
 		}

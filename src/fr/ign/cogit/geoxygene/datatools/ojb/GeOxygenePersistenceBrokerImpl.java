@@ -40,6 +40,7 @@ import org.apache.ojb.broker.core.PersistenceBrokerImpl;
  * 
  */
 
+@SuppressWarnings("unused")
 public class GeOxygenePersistenceBrokerImpl extends PersistenceBrokerImpl implements PBState
 {
 
@@ -51,7 +52,7 @@ public class GeOxygenePersistenceBrokerImpl extends PersistenceBrokerImpl implem
 	public GeOxygenePersistenceBrokerImpl(PBKey key, PersistenceBrokerFactoryIF pbf)
 	{
 		super (key,pbf);
-		geOxygeneBrokerHelper = new GeOxygeneBrokerHelper(this);
+		this.geOxygeneBrokerHelper = new GeOxygeneBrokerHelper(this);
 	}
 
 

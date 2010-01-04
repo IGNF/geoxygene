@@ -44,10 +44,10 @@ public class IntegerList2VarCharFieldConversion implements FieldConversion {
 	public Object sqlToJava(Object source) throws ConversionException {
 		if (source instanceof String) {
 			String s = (String) source;
-			String[] values = s.split("-");
+			String[] values = s.split("-"); //$NON-NLS-1$
 			List<Integer> result = new ArrayList<Integer>();
 			for (String val:values) {
-				if (!val.isEmpty()) result.add(Integer.parseInt(val));
+				if (!val.isEmpty()) result.add(new Integer(Integer.parseInt(val)));
 			}
 			return result;
 		}

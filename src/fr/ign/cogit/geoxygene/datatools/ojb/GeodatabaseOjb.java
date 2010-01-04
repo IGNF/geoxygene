@@ -139,7 +139,7 @@ public class GeodatabaseOjb {
 	protected void initConnection() {
 		try {
 			this._tx.begin();
-			PersistenceBroker broker = ((HasBroker) _tx).getBroker();
+			PersistenceBroker broker = ((HasBroker) this._tx).getBroker();
 			this._conn = broker.serviceConnectionManager().getConnection();
 			this._tx.commit();
 		} catch(Exception e) {
@@ -151,7 +151,7 @@ public class GeodatabaseOjb {
 	protected void initMetadata()  {
 		try {
 			this._tx.begin();
-			PersistenceBroker broker = ((HasBroker) _tx).getBroker();
+			PersistenceBroker broker = ((HasBroker) this._tx).getBroker();
 			DescriptorRepository desc = broker.getDescriptorRepository();
 			Iterator<?> enDesc = desc.getDescriptorTable().values().iterator();
 			this._metadataList = new ArrayList<Metadata>();
@@ -159,11 +159,11 @@ public class GeodatabaseOjb {
 			while (enDesc.hasNext()) {
 				ClassDescriptor cd = (ClassDescriptor) enDesc.next();
 				String className = (cd.getClassNameOfObject());
-				if (!	(className.equals("org.apache.ojb.broker.util.sequence.HighLowSequence")
-						|| className.equals("org.apache.ojb.odmg.collections.DListImpl_2")
-						|| className.equals("org.apache.ojb.odmg.collections.DListEntry_2")
-						|| className.equals("org.apache.ojb.odmg.collections.DListImpl")
-						|| className.equals("org.apache.ojb.odmg.collections.DListEntry")	)) {
+				if (!	(className.equals("org.apache.ojb.broker.util.sequence.HighLowSequence") //$NON-NLS-1$
+						|| className.equals("org.apache.ojb.odmg.collections.DListImpl_2") //$NON-NLS-1$
+						|| className.equals("org.apache.ojb.odmg.collections.DListEntry_2") //$NON-NLS-1$
+						|| className.equals("org.apache.ojb.odmg.collections.DListImpl") //$NON-NLS-1$
+						|| className.equals("org.apache.ojb.odmg.collections.DListEntry")	)) { //$NON-NLS-1$
 					Metadata metadataElt = new Metadata();
 					metadataElt.setClassName(className);
 					metadataElt.setTableName(cd.getFullTableName());
@@ -187,7 +187,7 @@ public class GeodatabaseOjb {
 		} catch (Exception e) {
 			logger.fatal(" ### PROBLEME A LA LECTURE DES FICHIERS DE MAPPING OJB ... ### ");
 			logger.fatal(" ### PROGRAMME ARRETE ! ### ");
-			logger.fatal("");
+			logger.fatal(""); //$NON-NLS-1$
 			logger.fatal(e.getMessage());
 			e.printStackTrace( );
 			System.exit(0);
@@ -302,10 +302,8 @@ public class GeodatabaseOjb {
 			query.bind( id );
 			DList result = (DList) query.execute();
 			if (result.size() > 0) return clazz.cast(result.get(0));
-			else {
 				logger.warn("objet non trouve - id = "+id);
 				return null;
-			}
 		} catch (Exception ee) {
 			ee.printStackTrace();
 			return null;
