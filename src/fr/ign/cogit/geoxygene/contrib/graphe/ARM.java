@@ -28,6 +28,7 @@ package fr.ign.cogit.geoxygene.contrib.graphe;
 
 import java.util.Iterator;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
@@ -66,7 +67,7 @@ public class ARM {
 		Arc arc;
 		FT_Feature point;
 		double dist, distMin;
-		CarteTopo arm = new CarteTopo("AMR");
+		CarteTopo arm = new CarteTopo(I18N.getString("ARM.MST")); //$NON-NLS-1$
 		int i,j,imin=0,jmin=0;
 		GM_LineString trait;
 		FT_FeatureCollection<FT_Feature> pointsCopie = new FT_FeatureCollection<FT_Feature>(points);
@@ -76,7 +77,7 @@ public class ARM {
 		// Amorce, on prend un point au hasard: le premier
 		point = pointsCopie.get(0);
 		if ( ! (point.getGeom() instanceof GM_Point) ) {
-			System.out.println("Un des objets en entrée n'est pas un point, renvoie Null");
+			System.out.println(I18N.getString("ARM.AnObjectIsNotAPoint")); //$NON-NLS-1$
 			return null;
 		}
 		pointsCopie.remove(point);
@@ -92,7 +93,7 @@ public class ARM {
 			for(i=0;i<pointsCopie.size();i++) {
 				point = pointsCopie.get(i);
 				if ( ! (point.getGeom() instanceof GM_Point) ) {
-					System.out.println("Un des objets en entrée n'est pas un point, renvoie Null");
+					System.out.println(I18N.getString("ARM.AnObjectIsNotAPoint")); //$NON-NLS-1$
 					return null;
 				}
 
@@ -145,7 +146,7 @@ public class ARM {
 		while (itObjets.hasNext()) {
 			FT_Feature objet = itObjets.next();
 			if (objet.getGeom() == null) {
-				System.out.println("Un des objets en entrée n'a pas de géométrie, renvoie Null");
+				System.out.println(I18N.getString("ARM.AnObjectHasNoGeometry")); //$NON-NLS-1$
 				return null;
 			}
 			Noeud objet2 = new Noeud();
