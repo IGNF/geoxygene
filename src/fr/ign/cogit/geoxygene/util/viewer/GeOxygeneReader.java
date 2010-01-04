@@ -484,7 +484,7 @@ class GeOxygeneReader implements DataSource {
 		Field[] fields = getAccessibleFields();
 		for (int i=0; i<fields.length; i++)
 			if (fields[i].getName().equals(fieldName)) return fields[i];
-		System.out.println("No field found : "+fieldName+" class "+featureClass);
+		System.out.println("No field found : "+fieldName+" class "+this.featureClass);
 		return null;
 	}
 

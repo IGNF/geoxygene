@@ -140,16 +140,16 @@ class ObjectViewerThemeProperties {
 		updatedSelectionShadeStyle.setLineColor(getOutlineSelectionColor());
 		t.setSelectionStyle(updatedSelectionShadeStyle);
 
-		if (shader instanceof MonoShader) {
+		if (this.shader instanceof MonoShader) {
 			MonoShader updatedShader = new MonoShader(getFillInThemeColor());
 			t.setShader(updatedShader);
 
-		} else if (shader instanceof RandomShader) {
+		} else if (this.shader instanceof RandomShader) {
 			RandomShader updatedShader = new RandomShader();
 			t.setShader(updatedShader);
 
 
-		} else if (shader instanceof HSVShader) {
+		} else if (this.shader instanceof HSVShader) {
 			//HSVShader updatedShader = new HSVShader(DEFAULT_LOW_HSVSHADER_COLOR, DEFAULT_HIGH_HSVSHADER_COLOR); marche pas
 			satShader updatedShader = new satShader(getFillInThemeColor());
 			updatedShader.setMissingValueCode(DEFAULT_MISSING_VALUE_SHADER);
@@ -160,13 +160,13 @@ class ObjectViewerThemeProperties {
 				t = shpRd.getTheme(updatedShader,shadedBy);
 			} a faire
 
-			else */if (dataSourceType.equals(Utils.GEOXYGENE)) {
-				GeOxygeneReader geOxyRd = (GeOxygeneReader) dataSource;
-				t = geOxyRd.getTheme(updatedShader,shadedBy);
+			else */if (this.dataSourceType.equals(Utils.GEOXYGENE)) {
+				GeOxygeneReader geOxyRd = (GeOxygeneReader) this.dataSource;
+				t = geOxyRd.getTheme(updatedShader,this.shadedBy);
 			}
 
 
-		} else if (shader instanceof UniqueShader) {
+		} else if (this.shader instanceof UniqueShader) {
 			UniqueShader updatedShader = new UniqueShader();
 			updatedShader.setMissingValueCode(DEFAULT_MISSING_VALUE_SHADER);
 			updatedShader.setMissingValueColor(DEFAULT_MISSING_VALUE_SHADER_COLOR);
@@ -174,9 +174,9 @@ class ObjectViewerThemeProperties {
 				a faire
 			}
 
-			else */ if (dataSourceType.equals(Utils.GEOXYGENE)) {
-				GeOxygeneReader geOxyRd = (GeOxygeneReader) dataSource;
-				t = geOxyRd.getTheme(updatedShader,shadedBy);
+			else */ if (this.dataSourceType.equals(Utils.GEOXYGENE)) {
+				GeOxygeneReader geOxyRd = (GeOxygeneReader) this.dataSource;
+				t = geOxyRd.getTheme(updatedShader,this.shadedBy);
 			}
 		}
 
@@ -191,7 +191,7 @@ class ObjectViewerThemeProperties {
 	}
 
 	public ObjectViewerInterface getObjectViewerInterface() {
-		return objectViewerInterface;
+		return this.objectViewerInterface;
 	}
 
 	public void setFillInThemeColor(Color color) {
@@ -199,7 +199,7 @@ class ObjectViewerThemeProperties {
 	}
 
 	public Color getFillInThemeColor() {
-		return fillInThemeColor;
+		return this.fillInThemeColor;
 	}
 
 	public void setOutlineThemeColor(Color color) {
@@ -207,7 +207,7 @@ class ObjectViewerThemeProperties {
 	}
 
 	public Color getOutlineThemeColor() {
-		return outlineThemeColor;
+		return this.outlineThemeColor;
 	}
 
 	public void setFillInHighlightColor(Color color) {
@@ -215,7 +215,7 @@ class ObjectViewerThemeProperties {
 	}
 
 	public Color getFillInHighlightColor() {
-		return fillInHighlightColor;
+		return this.fillInHighlightColor;
 	}
 
 	public void setOutlineHighlightColor(Color color) {
@@ -223,7 +223,7 @@ class ObjectViewerThemeProperties {
 	}
 
 	public Color getOutlineHighlightColor() {
-		return outlineHighlightColor;
+		return this.outlineHighlightColor;
 	}
 
 	public void setFillInSelectionColor(Color color) {
@@ -231,7 +231,7 @@ class ObjectViewerThemeProperties {
 	}
 
 	public Color getFillInSelectionColor() {
-		return fillInSelectionColor;
+		return this.fillInSelectionColor;
 	}
 
 	public void setOutlineSelectionColor(Color color) {
@@ -239,7 +239,7 @@ class ObjectViewerThemeProperties {
 	}
 
 	public Color getOutlineSelectionColor() {
-		return outlineSelectionColor;
+		return this.outlineSelectionColor;
 	}
 
 	public void setObjectViewerTheme(Theme t) {
@@ -247,72 +247,72 @@ class ObjectViewerThemeProperties {
 	}
 
 	public Theme getObjectViewerTheme() {
-		return objectViewerTheme;
+		return this.objectViewerTheme;
 	}
 
 	public String getDataSourceType() {
-		return dataSourceType;
+		return this.dataSourceType;
 	}
 
 	public void setDataSourceType(String string) {
-		dataSourceType = string;
+		this.dataSourceType = string;
 	}
 
 	public DataSource getDataSource() {
-		return dataSource;
+		return this.dataSource;
 	}
 
 	public void setDataSource(DataSource source) {
-		dataSource = source;
+		this.dataSource = source;
 	}
 
 	public void setShader (Shader sh) {
-		shader = sh;
+		this.shader = sh;
 	}
 
 	public void setShader (Shader sh, String field) {
-		shader = sh;
-		if (field != null) shadedBy = field;
+		this.shader = sh;
+		if (field != null) this.shadedBy = field;
 	}
 
 	public Shader getShader() {
-		return shader;
+		return this.shader;
 	}
 
 	public String getShadedBy() {
-		return shadedBy;
+		return this.shadedBy;
 	}
 
 	public boolean isActive() {
-		return active;
+		return this.active;
 	}
 
 	public void setActive(boolean b) {
-		active = b;
+		this.active = b;
 	}
 
 	public HighlightManager getThemeHighlightManager() {
-		return themeHighlightManager;
+		return this.themeHighlightManager;
 	}
 
 	public void setThemeHighlightManager(HighlightManager manager) {
-		themeHighlightManager = manager;
+		this.themeHighlightManager = manager;
 	}
 
 	public SelectionManager getThemeSelectionManager() {
-		return themeSelectionManager;
+		return this.themeSelectionManager;
 	}
 
 	public void setThemeSelectionManager(SelectionManager manager) {
-		themeSelectionManager = manager;
+		this.themeSelectionManager = manager;
 	}
 
 	public boolean isVisible() {
-		return visible;
+		return this.visible;
 	}
 
 	public void setVisible(boolean b) {
-		visible = b;
+		this.visible = b;
 	}
 
 }

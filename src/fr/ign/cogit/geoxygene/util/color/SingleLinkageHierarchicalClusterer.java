@@ -66,17 +66,17 @@ public class SingleLinkageHierarchicalClusterer {
 	long t = System.currentTimeMillis();
 	setColors(thecolors);
 	for(Color color:this.getColors()) insertColor(color);
-	for(int i = 0 ; i < vertices.size() ; i++) {
-	    if (logger.isTraceEnabled()) logger.trace(i+" "+edges.size());
-	    for(int j = i+1 ; j < vertices.size() ; j++) {
-		Vertex v1= vertices.get(i);
-		Vertex v2=vertices.get(j);
+	for(int i = 0 ; i < this.vertices.size() ; i++) {
+	    if (logger.isTraceEnabled()) logger.trace(i+" "+this.edges.size()); //$NON-NLS-1$
+	    for(int j = i+1 ; j < this.vertices.size() ; j++) {
+		Vertex v1= this.vertices.get(i);
+		Vertex v2=this.vertices.get(j);
 		//float weight = weight(v1,v2);
 		//if (weight<limit)
-		edges.add(new Edge(v1,v2));
+		this.edges.add(new Edge(v1,v2));
 	    }
 	}
-	Edge[] edgeArray = edges.toArray(new Edge[0]);
+	Edge[] edgeArray = this.edges.toArray(new Edge[0]);
 	Arrays.sort(edgeArray,new Comparator<Edge>() {
 	    public int compare(Edge e1, Edge e2) {
 		float w =e1.weight-e2.weight;
@@ -102,13 +102,13 @@ public class SingleLinkageHierarchicalClusterer {
      * Returns the color array
      * @return the color array
      */
-    public Color[] getColors() {return colors;}
+    public Color[] getColors() {return this.colors;}
 
     /**
      * @param color
      * @param type
      */
-    private void insertColor(Color color) {if (color!=null) vertices.add(new Vertex(color));}
+    private void insertColor(Color color) {if (color!=null) this.vertices.add(new Vertex(color));}
 
     /**
      * @param cluster1
@@ -138,7 +138,7 @@ public class SingleLinkageHierarchicalClusterer {
 	//if (logger.isDebugEnabled()) logger.debug((distanceClusterCluster == MIN)?"MIN":(distanceClusterCluster == MAX)?"MAX":"AVG");
 	if (distanceClusterCluster == MIN) return Math.min(sqDistance1, sqDistance2);
 	if (distanceClusterCluster == MAX) return Math.max(sqDistance1, sqDistance2);
-	else return (sqDistance1+sqDistance2)/2;
+        return (sqDistance1+sqDistance2)/2;
     }
 
     public float sqDistance(Color color, Cluster cluster) {
@@ -157,16 +157,16 @@ public class SingleLinkageHierarchicalClusterer {
 	//if (logger.isDebugEnabled()) logger.debug((distanceColorCluster == MIN)?"MIN":(distanceColorCluster == MAX)?"MAX":"AVG");
 	if (distanceColorCluster == MIN) return Math.min(sqDistance1, sqDistance2);
 	if (distanceColorCluster == MAX) return Math.max(sqDistance1, sqDistance2);
-	else return (sqDistance1+sqDistance2)/2;
+	return (sqDistance1+sqDistance2)/2;
     }
 
     class Vertex {
 	Color color;
 	List<Edge> vertexEdges = new ArrayList<Edge>();
-	public Vertex(Color c) {color=c;}
+	public Vertex(Color c) {this.color=c;}
 	@Override
 	public boolean equals(Object obj) {return (obj instanceof Vertex)?this.equals((Vertex) obj):false;}
-	public boolean equals(Vertex vertex) {return color.equals(vertex.color);}
+	public boolean equals(Vertex vertex) {return this.color.equals(vertex.color);}
     }
 
     class Edge {
@@ -174,15 +174,15 @@ public class SingleLinkageHierarchicalClusterer {
 	Vertex finalVertex;
 	float weight;
 	public Edge(Vertex v1, Vertex v2) {
-	    initialVertex=v1;
-	    finalVertex=v2;
-	    weight = ColorUtil.sqDistance(v1.color, v2.color);
+	    this.initialVertex=v1;
+	    this.finalVertex=v2;
+	    this.weight = ColorUtil.sqDistance(v1.color, v2.color);
 	    v1.vertexEdges.add(this);
 	    v2.vertexEdges.add(this);
 	}
 	@Override
 	public boolean equals(Object obj) {return (obj instanceof Edge)?this.equals((Edge) obj):false;}
-	public boolean equals(Edge edge) {return initialVertex.equals(edge.initialVertex)&&finalVertex.equals(edge.finalVertex);}
+	public boolean equals(Edge edge) {return this.initialVertex.equals(edge.initialVertex)&&this.finalVertex.equals(edge.finalVertex);}
     }
 
     public float weight(Vertex v1, Vertex v2) {return ColorUtil.sqDistance(v1.color, v2.color);}
@@ -213,11 +213,11 @@ public class SingleLinkageHierarchicalClusterer {
 	    map.put(color, c);
 	}
 	List<Vertex> newVertices = new ArrayList<Vertex>();
-	newVertices.add(vertices.get(0));
+	newVertices.add(this.vertices.get(0));
 
 	while (clusterPool.size()!=1) {
 	    Edge e = getShortestEdge(newVertices);
-	    edges.remove(e);
+	    this.edges.remove(e);
 	    newVertices.add(newVertices.contains(e.initialVertex)?e.finalVertex:e.initialVertex);
 	    Color c1 = e.initialVertex.color;
 	    Color c2 = e.finalVertex.color;
@@ -227,7 +227,7 @@ public class SingleLinkageHierarchicalClusterer {
 	    while (cluster2.parentCluster!=null) cluster2=cluster2.parentCluster;
 	    while(cluster1.equals(cluster2)) {
 		e = getShortestEdge();
-		edges.remove(e);
+		this.edges.remove(e);
 		c1 = e.initialVertex.color;
 		c2 = e.finalVertex.color;
 		cluster1 = map.get(c1);
@@ -245,16 +245,16 @@ public class SingleLinkageHierarchicalClusterer {
 	t = System.currentTimeMillis()-t;
 	logger.info("Hierarchy building took "+t+" ms");
 
-	root = clusterPool.get(0);
+	this.root = clusterPool.get(0);
 	// marking depth
-	markDepth(root,0);
-	logger.info("root cluster with level "+root.level);
+	markDepth(this.root,0);
+	logger.info("root cluster with level "+this.root.level);
 
 	reduceClusters(numberOfClusters);
 
 	Color[] newColors = new Color[numberOfClusters];
 	int i = 0;
-	for(Cluster cluster:leafClusterList) newColors[i++]=cluster.getColor();
+	for(Cluster cluster:this.leafClusterList) newColors[i++]=cluster.getColor();
 	// changing the colors
 	this.setColors(newColors);
     }
@@ -264,7 +264,7 @@ public class SingleLinkageHierarchicalClusterer {
      * @return
      */
     private Edge getShortestEdge(List<Vertex> newVertices) {
-	for(Edge e:edges) {
+	for(Edge e:this.edges) {
 	    if ( (newVertices.contains(e.initialVertex)&&!newVertices.contains(e.finalVertex)) || (!newVertices.contains(e.initialVertex)&&newVertices.contains(e.finalVertex)) )
 		return e;
 	}
@@ -284,7 +284,7 @@ public class SingleLinkageHierarchicalClusterer {
 	}
 	return minEdge;
 	 */
-	return edges.get(0);
+	return this.edges.get(0);
     }
 
     /**
@@ -306,14 +306,14 @@ public class SingleLinkageHierarchicalClusterer {
 	// TODO revoir la fusion des clusters
 	while (clusterPool.size()!=1) {
 	    Edge e = getShortestEdge();
-	    edges.remove(e);
+	    this.edges.remove(e);
 	    Color c1 = e.initialVertex.color;
 	    Color c2 = e.finalVertex.color;
 	    Cluster cluster1 = topCluster(map.get(c1));
 	    Cluster cluster2 = topCluster(map.get(c2));
 	    while(cluster1.equals(cluster2)) {
 		e = getShortestEdge();
-		edges.remove(e);
+		this.edges.remove(e);
 		c1 = e.initialVertex.color;
 		c2 = e.finalVertex.color;
 		cluster1 = topCluster(map.get(c1));
@@ -330,9 +330,9 @@ public class SingleLinkageHierarchicalClusterer {
 	logger.info("Hierarchy building took "+(System.currentTimeMillis()-t)+" ms");
 	t = System.currentTimeMillis();
 
-	root = clusterPool.get(0);
+	this.root = clusterPool.get(0);
 	// marking depth
-	markDepth(root,0);
+	markDepth(this.root,0);
 
 	reduceClusters(numberOfClusters);
 	t = System.currentTimeMillis()-t;
@@ -340,14 +340,14 @@ public class SingleLinkageHierarchicalClusterer {
 
 	Color[] newColors = new Color[numberOfClusters];
 	int i = 0;
-	for(Cluster cluster:leafClusterList) newColors[i++]=cluster.getColor();
+	for(Cluster cluster:this.leafClusterList) newColors[i++]=cluster.getColor();
 	// changing the colors
 	this.setColors(newColors);
     }
 
     public BufferedImage buildImage() {
 	int ringSize = 10;
-	int width = (root.level+1)*2*ringSize;
+	int width = (this.root.level+1)*2*ringSize;
 	BufferedImage clusterImage = new BufferedImage(width, width,BufferedImage.TYPE_INT_RGB);
 	Graphics2D graphics = clusterImage.createGraphics();
 	graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -355,7 +355,7 @@ public class SingleLinkageHierarchicalClusterer {
 	graphics.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
 	graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
 	graphics.setStroke(new BasicStroke(1.0f));
-	drawCluster(graphics, root, new BigDecimal(0), new BigDecimal(360), width, ringSize);
+	drawCluster(graphics, this.root, new BigDecimal(0), new BigDecimal(360), width, ringSize);
 	return clusterImage;
     }
 
@@ -372,7 +372,7 @@ public class SingleLinkageHierarchicalClusterer {
 	graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
 	graphics.setStroke(new BasicStroke(1.0f));
 	for(Cluster cluster:clusterPool) drawClusterLab(graphics, cluster, 512, 8);
-	try {ImageIO.write(clusterImage, "PNG", new File("/tmp/"+prefix+clusterPool.size()+"_"+n));} catch (IOException e1) {e1.printStackTrace();}
+	try {ImageIO.write(clusterImage, "PNG", new File("/tmp/"+prefix+clusterPool.size()+"_"+n));} catch (IOException e1) {e1.printStackTrace();} //$NON-NLS-1$
     }
 
     /**
@@ -388,12 +388,12 @@ public class SingleLinkageHierarchicalClusterer {
     private Cluster mergeClusters(Cluster cluster1, Cluster cluster2) {return new Cluster(cluster1,cluster2);}
 
     public void reduceClusters(int numberOfClusters) {
-	Cluster[] leaves = leaves(root).toArray(new Cluster[0]);
+	Cluster[] leaves = leaves(this.root).toArray(new Cluster[0]);
 
 	// cutting the links to obtain k groups (numberOfClusters)
 	//TODO revoir cette distance entre clusters !!!
 	Arrays.sort(leaves, new Comparator<Cluster>() {
-	    public int compare(Cluster c1, Cluster c2) {;
+	    public int compare(Cluster c1, Cluster c2) {
 	    //if (c1.depth==c2.depth) {
 	    Cluster parent1 = c1.parentCluster;
 	    Cluster parent2 = c2.parentCluster;
@@ -415,28 +415,28 @@ public class SingleLinkageHierarchicalClusterer {
 	    //return c1.depth-c2.depth;
 	    }});
 
-	leafClusterList = new ArrayList<Cluster>(Arrays.asList(leaves));
+	this.leafClusterList = new ArrayList<Cluster>(Arrays.asList(leaves));
 	//logger.info("There are "+clusterList.size()+" leaves");
 
-	while(leafClusterList.size()>numberOfClusters) {
-	    Cluster lastCluster = leafClusterList.get(leafClusterList.size()-1);
+	while(this.leafClusterList.size()>numberOfClusters) {
+	    Cluster lastCluster = this.leafClusterList.get(this.leafClusterList.size()-1);
 	    Cluster lastClusterParent = lastCluster.parentCluster;
 	    Cluster brotherCluster = (lastClusterParent.rightCluster==lastCluster)?lastClusterParent.leftCluster:lastClusterParent.rightCluster;
 	    lastCluster.parentCluster=null;
 	    //logger.info("    "+clusterList.size()+" leaves before removal ( "+clusterList.indexOf(lastClusterParent.rightCluster)+"     "+clusterList.indexOf(lastClusterParent.leftCluster));
-	    leafClusterList.remove(lastCluster);
-	    leafClusterList.remove(brotherCluster);
+	    this.leafClusterList.remove(lastCluster);
+	    this.leafClusterList.remove(brotherCluster);
 	    //logger.info("    "+clusterList.size()+" leaves after removal");
 	    if (brotherCluster.leaf) {
 		lastClusterParent.leaf=true;
 		lastClusterParent.leftCluster = null;
 		lastClusterParent.rightCluster = null;
 		boolean inserted = false;
-		for (int i = 0 ; (i < leafClusterList.size()) && !inserted ; i++ ) {
+		for (int i = 0 ; (i < this.leafClusterList.size()) && !inserted ; i++ ) {
 		    Cluster parent1 = lastClusterParent.parentCluster;
-		    Cluster parent2 = leafClusterList.get(i).parentCluster;
+		    Cluster parent2 = this.leafClusterList.get(i).parentCluster;
 		    if (parent1==null) {
-			leafClusterList.add(i,lastClusterParent);
+			this.leafClusterList.add(i,lastClusterParent);
 			inserted = true;
 		    } else if (parent2==null) {
 			continue;
@@ -452,14 +452,14 @@ public class SingleLinkageHierarchicalClusterer {
 			//float d2Avg = (d2Left+d2Right)/2;
 			float d2 = Math.max(d2Left,d2Right);//(float) (Math.pow(d2Avg-d2Left,2)+Math.pow(d2Avg-d2Right,2));
 			if (d1>d2) {
-			    leafClusterList.add(i,lastClusterParent);
+			    this.leafClusterList.add(i,lastClusterParent);
 			    inserted = true;
 			}
 		    }
 		    //}
-		    logger.debug(leafClusterList.size()+" leaves");
+		    logger.debug(this.leafClusterList.size()+" leaves");
 		}
-		if (!inserted) leafClusterList.add(lastClusterParent);
+		if (!inserted) this.leafClusterList.add(lastClusterParent);
 	    } else {
 		if (lastClusterParent.parentCluster!=null) {
 		    // shift everything one level up
@@ -472,10 +472,10 @@ public class SingleLinkageHierarchicalClusterer {
 		brotherCluster.parentCluster=lastClusterParent.parentCluster;
 		markDepth(brotherCluster, lastClusterParent.depth);
 	    }
-	    if (logger.isDebugEnabled()) writeDebugImage("reduceCluster_",Arrays.asList(new Cluster[]{root}),leafClusterList.size());
+	    if (logger.isDebugEnabled()) writeDebugImage("reduceCluster_",Arrays.asList(new Cluster[]{this.root}),this.leafClusterList.size());
 	}
 
-	markDepth(root,0);
+	markDepth(this.root,0);
     }
 
     /**
@@ -513,7 +513,7 @@ public class SingleLinkageHierarchicalClusterer {
 	// shift the the beginning of the current arc
 	int x = width/2-r;
 	// angle for each child element
-	if (logger.isDebugEnabled()) logger.debug(cluster.depth+"-"+angle);
+	if (logger.isDebugEnabled()) logger.debug(cluster.depth+"-"+angle); //$NON-NLS-1$
 	// draw the children
 	//double angleChildren = angle/2.0;
 	if (!cluster.leaf) {
@@ -543,7 +543,7 @@ public class SingleLinkageHierarchicalClusterer {
     }
 
     public BufferedImage buildClusterImage(int imageSize, int clusterSize) {
-	return buildClusterImage(root, imageSize, clusterSize);
+	return buildClusterImage(this.root, imageSize, clusterSize);
     }
 
     public BufferedImage buildClusterImage(Cluster rootCluster,int imageSize, int clusterSize) {
@@ -613,35 +613,35 @@ class Cluster {
     public int size;
     public int depth=0;
     public Cluster(Color c) {
-	leaf = true;
-	red = c.getRed();
-	green = c.getGreen();
-	blue = c.getBlue();
+	this.leaf = true;
+	this.red = c.getRed();
+	this.green = c.getGreen();
+	this.blue = c.getBlue();
 	float[] xyz = ColorUtil.toXyz(c);
-	x = xyz[0];
-	y = xyz[1];
-	z = xyz[2];
+	this.x = xyz[0];
+	this.y = xyz[1];
+	this.z = xyz[2];
 	float[] lab = ColorUtil.toLab(c);
-	l = lab[0];
-	a = lab[1];
-	b = lab[2];
-	level = 0;
-	size = 1;
+	this.l = lab[0];
+	this.a = lab[1];
+	this.b = lab[2];
+	this.level = 0;
+	this.size = 1;
     }
     public Cluster(Cluster cluster1, Cluster cluster2) {
-	leaf = false;
-	leftCluster = cluster1;
-	rightCluster = cluster2;
-	leftCluster.parentCluster = this;
-	rightCluster.parentCluster = this;
-	red = cluster1.red+cluster2.red;
-	green = cluster1.green+cluster2.green;
-	blue = cluster1.blue+cluster2.blue;
-	l = cluster1.l+cluster2.l;
-	a = cluster1.a+cluster2.a;
-	b = cluster1.b+cluster2.b;
-	level = Math.max(cluster1.level, cluster2.level)+1;
-	size = cluster1.size+cluster2.size;
+	this.leaf = false;
+	this.leftCluster = cluster1;
+	this.rightCluster = cluster2;
+	this.leftCluster.parentCluster = this;
+	this.rightCluster.parentCluster = this;
+	this.red = cluster1.red+cluster2.red;
+	this.green = cluster1.green+cluster2.green;
+	this.blue = cluster1.blue+cluster2.blue;
+	this.l = cluster1.l+cluster2.l;
+	this.a = cluster1.a+cluster2.a;
+	this.b = cluster1.b+cluster2.b;
+	this.level = Math.max(cluster1.level, cluster2.level)+1;
+	this.size = cluster1.size+cluster2.size;
     }
     @Override
     public boolean equals(Object obj) {

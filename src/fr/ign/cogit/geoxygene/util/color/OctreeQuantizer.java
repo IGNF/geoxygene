@@ -64,19 +64,19 @@ public class OctreeQuantizer {
     
     // Getters and Setters
     public static int getMAXDEPTH() {return MAX_DEPTH;} 
-    public int getNumNodes() {return numNodes;}
+    public int getNumNodes() {return this.numNodes;}
     public void setNumNodes(int numNodes) {this.numNodes = numNodes;}
-    public int getMaxNodes() {return maxNodes;}
+    public int getMaxNodes() {return this.maxNodes;}
     public void setMaxNodes(int maxNodes) {this.maxNodes = maxNodes;}
-    public int getSize() {return size;}
+    public int getSize() {return this.size;}
     public void setSize(int size) {this.size = size;}
-    public int getLevel() {return currentDepth;}
+    public int getLevel() {return this.currentDepth;}
     public void setLevel(int level) {this.currentDepth = level;}
-    public int getLeafLevel() {return leafDepth;}
+    public int getLeafLevel() {return this.leafDepth;}
     public void setLeafLevel(int leafLevel) {this.leafDepth = leafLevel;}
-    public OctreeNode getTree() {return tree;}
-    public int getK() {return k;}
-    public Color[] getColorLookUpTable() {return colorLookUpTable;}
+    public OctreeNode getTree() {return this.tree;}
+    public int getK() {return this.k;}
+    public Color[] getColorLookUpTable() {return this.colorLookUpTable;}
     //public OctreeNode[] getReduceList() {return reduceList;}
 
     /**
@@ -87,8 +87,8 @@ public class OctreeQuantizer {
 	this.image=image;
 	Set<Color> paletteColors = ColorUtil.getColors(image);
 	int numberOfColors = paletteColors.size();
-	logger.info(numberOfColors+" colors found");
-	k = numberOfColors;
+	logger.info(numberOfColors+" colors found"); //$NON-NLS-1$
+	this.k = numberOfColors;
 	quantize();
     }
     /**
@@ -99,17 +99,17 @@ public class OctreeQuantizer {
      */
     public OctreeQuantizer(BufferedImage image, int ki) {
 	this.image=image;
-	k = ki;
+	this.k = ki;
 	quantize();
     }
 
     private void quantize() {
         long t = System.currentTimeMillis();
     	setColors();
-    	logger.info("Octree Quantization took "+(System.currentTimeMillis()-t)+" ms");
+    	logger.info("Octree Quantization took "+(System.currentTimeMillis()-t)+" ms"); //$NON-NLS-1$ //$NON-NLS-2$
     	t = System.currentTimeMillis();
-    	reMap(image);
-    	logger.info("Remapping took "+(System.currentTimeMillis()-t)+" ms");    	
+    	reMap(this.image);
+    	logger.info("Remapping took "+(System.currentTimeMillis()-t)+" ms");    	 //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     /**
@@ -117,13 +117,13 @@ public class OctreeQuantizer {
      * @param imageToReMap image to remap
      */
     public void reMap(BufferedImage imageToReMap) {
-	remappedImage=new BufferedImage(imageToReMap.getWidth(), imageToReMap.getHeight(),BufferedImage.TYPE_INT_RGB);
+	this.remappedImage=new BufferedImage(imageToReMap.getWidth(), imageToReMap.getHeight(),BufferedImage.TYPE_INT_RGB);
 	for(int y = 0 ; y < imageToReMap.getHeight() ; y++) {
 	    for(int x = 0 ; x < imageToReMap.getWidth() ; x++) {
 		Color color = new Color(imageToReMap.getRGB(x, y));
-		int id = findColor(tree, color); 
-		color = colorLookUpTable[id];
-		remappedImage.setRGB(x, y, color.getRGB());
+		int id = findColor(this.tree, color); 
+		color = this.colorLookUpTable[id];
+		this.remappedImage.setRGB(x, y, color.getRGB());
 	    }
 	}
     }
@@ -135,32 +135,32 @@ public class OctreeQuantizer {
      */
     public void setColors() {
 	// Create the color Look-Up Table
-	colorLookUpTable = new Color[k];
+	this.colorLookUpTable = new Color[this.k];
 	// Delete the existing tree if there is one
-	tree = delete(tree);
+	this.tree = delete(this.tree);
 	// Set the number of leaves of the tree to 0
-	size = 0;
+	this.size = 0;
 	// Set the current node depth to the maximum depth (maximum image depth is 24 bits)
-	currentDepth = MAX_DEPTH;
+	this.currentDepth = MAX_DEPTH;
 	// Set the leaf level to the current node depth+1 (all leaves are on the same level)
-	leafDepth = currentDepth + 1;
+	this.leafDepth = this.currentDepth + 1;
 	// For each pixel of the input image, insert the color into the octree
-	for(int y = 0 ; y < image.getHeight() ; y++) {
-	    for(int x = 0 ; x < image.getWidth() ; x++) {
-		Color color = new Color(image.getRGB(x, y));
-		Boolean added = colorMap.get(color);
+	for(int y = 0 ; y < this.image.getHeight() ; y++) {
+	    for(int x = 0 ; x < this.image.getWidth() ; x++) {
+		Color color = new Color(this.image.getRGB(x, y));
+		Boolean added = this.colorMap.get(color);
 		if (added==null) {
-			colorMap.put(color,true);
-			tree = insertNode(tree, color, 0);
+			this.colorMap.put(color,Boolean.TRUE);
+			this.tree = insertNode(this.tree, color, 0);
 			//writeDebugImage();
 			// if we have more leaves than the target number of colors, reduce the tree
-			if (size > k) reduceTree();
+			if (this.size > this.k) reduceTree();
 		}
 	    }
 	}
 	int index[] = new int[1]; 
 	index[0] = 0; 
-	initColorLookUpTable(tree, index);
+	initColorLookUpTable(this.tree, index);
     }
 
 	int tmpIndex = 0;
@@ -170,7 +170,7 @@ public class OctreeQuantizer {
 	@SuppressWarnings("unused")
 	private void writeDebugImage() {
 		BufferedImage debugImage = buildOctreeImage(50);
-		ColorUtil.writeImage(debugImage, "/tmp/Octree_"+(tmpIndex++));
+		ColorUtil.writeImage(debugImage, "/tmp/Octree_"+(this.tmpIndex++)); //$NON-NLS-1$
 	}
 
 	/**
@@ -179,20 +179,20 @@ public class OctreeQuantizer {
     public void setColors(Color[] colors) {
 	// Create the color Look-Up Table
 	this.k=colors.length;
-	colorLookUpTable = new Color[k];
+	this.colorLookUpTable = new Color[this.k];
 	// Delete the existing tree if there is one
-	tree = delete(tree);
+	this.tree = delete(this.tree);
 	// Set the number of leaves of the tree to 0
-	size = 0;
+	this.size = 0;
 	// Set the current node depth to the maximum depth (maximum image depth is 24 bits)
-	currentDepth = MAX_DEPTH;
+	this.currentDepth = MAX_DEPTH;
 	// Set the leaf level to the current node depth+1 (all leaves are on the same level)
-	leafDepth = currentDepth + 1;
+	this.leafDepth = this.currentDepth + 1;
 	// For input color, insert the color into the octree
-	for(Color color:colors) if(color!=null) tree = insertNode(tree, color, 0);
+	for(Color color:colors) if(color!=null) this.tree = insertNode(this.tree, color, 0);
 	int index[] = new int[1]; 
 	index[0] = 0; 
-	initColorLookUpTable(tree, index);
+	initColorLookUpTable(this.tree, index);
     }
 
     /**
@@ -217,10 +217,8 @@ public class OctreeQuantizer {
      */
     public int findColor(OctreeNode octreeNode, Color color) { 
 	if (octreeNode.leaf) return octreeNode.colorIndex;
-	else { 
-	    OctreeNode treeNode = octreeNode.children[branchIndex(color, octreeNode.depth)]; 
-	    return (treeNode != null)?findColor(treeNode, color):findNearestEntry(color); 
-	} 
+        OctreeNode treeNode = octreeNode.children[branchIndex(color, octreeNode.depth)]; 
+        return (treeNode != null)?findColor(treeNode, color):findNearestEntry(color); 
     } 
     /** 
      * Search the color look-up table for the closest color to a given one
@@ -228,11 +226,11 @@ public class OctreeQuantizer {
      * @return an index of the closest entry. 
      */ 
     public int findNearestEntry(Color color) { 
-	int n = colorLookUpTable.length;
+	int n = this.colorLookUpTable.length;
 	float distance = Float.MAX_VALUE; 
 	int bestIndex = 0; 
 	for (int i=0; i < n ; i++) { 
-	    Color c = colorLookUpTable[i];
+	    Color c = this.colorLookUpTable[i];
 	    if (c==null) continue;
 	    // compute the distance e between the color we're looking for and the current one
 	    float e = ColorUtil.sqDistance(c,color); 
@@ -254,39 +252,40 @@ public class OctreeQuantizer {
     public OctreeNode insertNode(OctreeNode octreeNode, Color color, int level) {
 	//if (logger.isDebugEnabled()) logger.debug("insertNode "+color+" at depth "+depth);
 	// if the octree is empty, create a new node
-	if (octreeNode == null) {
-	    octreeNode = new OctreeNode();
+        OctreeNode node = octreeNode;
+	if (node == null) {
+	    node = new OctreeNode();
 	    //increment the global number of nodes
-	    numNodes++;
+	    this.numNodes++;
 	    // maintain the maximum number of nodes the octree ever contained
-	    if (numNodes > maxNodes) maxNodes = numNodes;
+	    if (this.numNodes > this.maxNodes) this.maxNodes = this.numNodes;
 	    // set the node's depth
-	    octreeNode.depth = level;
-	    octreeNode.leaf = (level >= leafDepth) ? true : false;
-	    if (octreeNode.leaf) size++; // increment the number of leaves
+	    node.depth = level;
+	    node.leaf = (level >= this.leafDepth) ? true : false;
+	    if (node.leaf) this.size++; // increment the number of leaves
 	}
 	// increment the number of colors the node contains
-	octreeNode.nbColor++;
+        node.nbColor++;
 	// sum up all the red, green and blue values of all contained colors
-	octreeNode.addComponents(color);
+        node.addComponents(color);
 
-	if (!(octreeNode.leaf) && (level < leafDepth)) {
+	if (!(node.leaf) && (level < this.leafDepth)) {
 	    int branch = branchIndex(color,level); 
-	    if (octreeNode.children[branch] == null) {
+	    if (node.children[branch] == null) {
 		// add a new child to the node
-		octreeNode.nbChildren++;
-		if (octreeNode.nbChildren == 2) {
+	        node.nbChildren++;
+		if (node.nbChildren == 2) {
 		    // replace the tree for the current depth by the current tree
 		    // and add the previous one to the current tree as its next reduceable tree
 		    // this way, the reduceList contains a chain of all trees which contain at least 2 children for each level
-		    octreeNode.nextReduceable = reduceList[level];
-		    reduceList[level] = octreeNode;
+                    node.nextReduceable = this.reduceList[level];
+		    this.reduceList[level] = node;
 		}
 	    }
 	    // insert the color as a child of the current node
-	    octreeNode.children[branch] = insertNode(octreeNode.children[branch], color, level + 1); 
+	    node.children[branch] = insertNode(node.children[branch], color, level + 1); 
 	}
-	return octreeNode; 
+	return node; 
     }
 
     /**
@@ -296,7 +295,7 @@ public class OctreeQuantizer {
     public OctreeNode delete(OctreeNode octreeNode) { 
 	if (octreeNode == null) return null; 
 	for (int i = 0; i < 8; i++) octreeNode.children[i] = delete(octreeNode.children[i]);
-	numNodes--;
+	this.numNodes--;
 	return null;
     }
 
@@ -305,9 +304,9 @@ public class OctreeQuantizer {
      * The first tree deleted is the last one encounterd when adding colors
      */
     public void reduceTree() {
-	int newLevel = currentDepth;
+	int newLevel = this.currentDepth;
 	// find the lowest level where we have reduceable trees, i.e. trees with at least 2 children
-	while (reduceList[newLevel] == null) newLevel--;
+	while (this.reduceList[newLevel] == null) newLevel--;
 	reduceNode(newLevel);
     } 
 
@@ -328,7 +327,7 @@ public class OctreeQuantizer {
 	@SuppressWarnings("unused")
 	private void reduceNodeWithMinimumDistance(int newLevel) {
 		// find the best octree node to reduce
-		OctreeNode octreeNode = reduceList[newLevel];
+		OctreeNode octreeNode = this.reduceList[newLevel];
 		OctreeNode previousOctreeNode = null;
 		float minDistance = Float.MAX_VALUE;
 		OctreeNode minOctreeNode = octreeNode;
@@ -357,16 +356,16 @@ public class OctreeQuantizer {
 		// if there were only 2 children, the node is not reduceable any more
 		if(octreeNode.nbChildren==2) {
 			if(previousOctreeNode!=null) previousOctreeNode.nextReduceable=octreeNode.nextReduceable;
-			else reduceList[newLevel] = octreeNode.nextReduceable;
+			else this.reduceList[newLevel] = octreeNode.nextReduceable;
 			// delete the reduceable octree we chose and replace it by the next reduceable octree of the same level if there is one
 			// now, mark it as a leaf and delete its children
 			octreeNode.leaf = true;
-			size = size - octreeNode.nbChildren + 1;
+			this.size = this.size - octreeNode.nbChildren + 1;
 			int treeDepth = octreeNode.depth;
 			for (int i = 0; i < 8; i++) octreeNode.children[i] = delete(octreeNode.children[i]); 
-			if (treeDepth < currentDepth) {
-			    currentDepth = treeDepth; 
-			    leafDepth = currentDepth + 1; 
+			if (treeDepth < this.currentDepth) {
+			    this.currentDepth = treeDepth; 
+			    this.leafDepth = this.currentDepth + 1; 
 			}		
 		} else {
 			// otherwise, juste remove the selected child
@@ -385,7 +384,7 @@ public class OctreeQuantizer {
 	 */
 	private void reduceNodeWithMinimumStandardDeviation(int newLevel) {
 		// find the best octree node to reduce
-		OctreeNode octreeNode = reduceList[newLevel];
+		OctreeNode octreeNode = this.reduceList[newLevel];
 		OctreeNode previousOctreeNode = null;
 		double minSqStandardDeviation = Double.MAX_VALUE;
 		OctreeNode minOctreeNode = null;
@@ -413,16 +412,16 @@ public class OctreeQuantizer {
 		octreeNode=minOctreeNode;
 		previousOctreeNode = minPreviousOctreeNode;
 		if(previousOctreeNode!=null) previousOctreeNode.nextReduceable=octreeNode.nextReduceable;
-		else reduceList[newLevel] = octreeNode.nextReduceable;
+		else this.reduceList[newLevel] = octreeNode.nextReduceable;
 		// delete the reduceable octree we chose and replace it by the next reduceable octree of the same level if there is one
 		// now, mark it as a leaf and delete its children
 		octreeNode.leaf = true;
-		size = size - octreeNode.nbChildren + 1;
+		this.size = this.size - octreeNode.nbChildren + 1;
 		int treeDepth = octreeNode.depth;
 		for (int i = 0; i < 8; i++) octreeNode.children[i] = delete(octreeNode.children[i]); 
-		if (treeDepth < currentDepth) {
-		    currentDepth = treeDepth; 
-		    leafDepth = currentDepth + 1; 
+		if (treeDepth < this.currentDepth) {
+		    this.currentDepth = treeDepth; 
+		    this.leafDepth = this.currentDepth + 1; 
 		}
 	}
 
@@ -431,7 +430,7 @@ public class OctreeQuantizer {
 	 */
 	private void reduceNodeWithMinimumMaximumDistance(int newLevel) {
 		// find the best octree node to reduce
-		OctreeNode octreeNode = reduceList[newLevel];
+		OctreeNode octreeNode = this.reduceList[newLevel];
 		OctreeNode previousOctreeNode = null;
 		double minMaxDistance = Double.MAX_VALUE;
 		OctreeNode minOctreeNode = null;
@@ -458,16 +457,16 @@ public class OctreeQuantizer {
 		octreeNode=minOctreeNode;
 		previousOctreeNode = minPreviousOctreeNode;
 		if(previousOctreeNode!=null) previousOctreeNode.nextReduceable=octreeNode.nextReduceable;
-		else reduceList[newLevel] = octreeNode.nextReduceable;
+		else this.reduceList[newLevel] = octreeNode.nextReduceable;
 		// delete the reduceable octree we chose and replace it by the next reduceable octree of the same level if there is one
 		// now, mark it as a leaf and delete its children
 		octreeNode.leaf = true;
-		size = size - octreeNode.nbChildren + 1;
+		this.size = this.size - octreeNode.nbChildren + 1;
 		int treeDepth = octreeNode.depth;
 		for (int i = 0; i < 8; i++) octreeNode.children[i] = delete(octreeNode.children[i]); 
-		if (treeDepth < currentDepth) {
-		    currentDepth = treeDepth; 
-		    leafDepth = currentDepth + 1; 
+		if (treeDepth < this.currentDepth) {
+		    this.currentDepth = treeDepth; 
+		    this.leafDepth = this.currentDepth + 1; 
 		}
 	}
 
@@ -480,8 +479,8 @@ public class OctreeQuantizer {
 	if (octreeNode != null) {
 	    // if tree is a leaf, add its average color to the look-up table and affect it with its color index
 	    // otherwise, treat its children
-	    if (octreeNode.leaf || octreeNode.depth == leafDepth) {
-		if(colorLookUpTable[index[0]]==null) colorLookUpTable[index[0]]=octreeNode.getColor();
+	    if (octreeNode.leaf || octreeNode.depth == this.leafDepth) {
+		if(this.colorLookUpTable[index[0]]==null) this.colorLookUpTable[index[0]]=octreeNode.getColor();
 		octreeNode.colorIndex = index[0]++;
 		octreeNode.leaf = true;
 	    } else for (int octant = 0; octant < 8; octant++) initColorLookUpTable(octreeNode.children[octant], index);
@@ -525,7 +524,7 @@ public class OctreeQuantizer {
 	int r = 2*radius(leafLevel,node.depth,radius);
 	// angle for each child element
 	double angle = 360.0/Math.pow(8.0,node.depth);
-	if (logger.isDebugEnabled()) logger.debug(node.depth+"-"+angle);
+	if (logger.isDebugEnabled()) logger.debug(node.depth+"-"+angle); //$NON-NLS-1$
 	/*
 		graphics.setColor(Color.black);
 		graphics.drawLine(x+r/2, x+r/2, (int)(x+(r/2)*(1+Math.cos(Math.toRadians(startAngle)))), (int)(x+(r/2)*(1+Math.sin(Math.toRadians(startAngle)))));
@@ -547,7 +546,7 @@ public class OctreeQuantizer {
      * @param radius
      * @return
      */
-    public static int shift(int leafLevel, int depth, int radius) {return (int)((new Double(leafLevel-depth)*radius)/new Double(leafLevel));}
+    public static int shift(int leafLevel, int depth, int radius) {return (int)((new Double(leafLevel-depth).doubleValue()*radius)/new Double(leafLevel).doubleValue());}
 
     /**
      * @param leafLevel
@@ -555,7 +554,7 @@ public class OctreeQuantizer {
      * @param radius
      * @return
      */
-    public static int radius(int leafLevel, int depth, int radius) {return (int)(new Double(depth*radius)/new Double(leafLevel));}
+    public static int radius(int leafLevel, int depth, int radius) {return (int)(new Double(depth*radius).doubleValue()/new Double(leafLevel).doubleValue());}
 
     /**
      * Class representing a color octree node.
@@ -570,19 +569,19 @@ public class OctreeQuantizer {
         float[] components = new float[]{0f,0f,0f};
         OctreeNode nextReduceable = null;
         public OctreeNode children[] = new OctreeNode[8];
-        public OctreeNode() {for (int i = 0; i < 8; i++) children[i] = null;}
+        public OctreeNode() {for (int i = 0; i < 8; i++) this.children[i] = null;}
         
         public void addComponents(Color color) {
     		float[] newComponents = 
     			(ColorUtil.getColorSpace()==ColorUtil.RGB)?color.getColorComponents(null):
     			(ColorUtil.getColorSpace()==ColorUtil.LAB)?ColorUtil.toLab(color):ColorUtil.toXyz(color);
-        	for (int i = 0 ; i < 3 ; i++) components[i]+=newComponents[i];
+        	for (int i = 0 ; i < 3 ; i++) this.components[i]+=newComponents[i];
         }
         
         public Color getColor() {
         	float[] newComponents = new float[3];
-        	for ( int c = 0 ; c < 3 ; c++ ) newComponents[c]=components[c]/Math.max(1,nbColor);
-        	if (logger.isDebugEnabled()) logger.debug(newComponents[0]+" "+newComponents[1]+" "+newComponents[2]);
+        	for ( int c = 0 ; c < 3 ; c++ ) newComponents[c]=this.components[c]/Math.max(1,this.nbColor);
+        	if (logger.isDebugEnabled()) logger.debug(newComponents[0]+" "+newComponents[1]+" "+newComponents[2]); //$NON-NLS-1$ //$NON-NLS-2$
         	return
         		(ColorUtil.getColorSpace()==ColorUtil.RGB)?new Color(ColorSpace.getInstance(ColorSpace.CS_sRGB),newComponents,1f):
     			(ColorUtil.getColorSpace()==ColorUtil.LAB)?ColorUtil.toColor(newComponents):new Color(ColorSpace.getInstance(ColorSpace.CS_CIEXYZ),newComponents,1f);

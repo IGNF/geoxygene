@@ -53,12 +53,12 @@ public class GUIShapefileChoice extends JFrame {
 	 */
 	public GUIShapefileChoice(boolean MultiSelectionEnabled) {
 		this.multiSelectionEnabled = MultiSelectionEnabled;
-		directoryPath = null;
+		this.directoryPath = null;
 	}
 	
 	public GUIShapefileChoice(boolean MultiSelectionEnabled, String latestFolder) {
 		this.multiSelectionEnabled = MultiSelectionEnabled;
-		directoryPath = latestFolder;
+		this.directoryPath = latestFolder;
 	}
 	/**
 	 * Ouvre une fenêtre de sélection et renvoie un tableau contenant les fichiers sélectionnés.
@@ -78,7 +78,7 @@ public class GUIShapefileChoice extends JFrame {
 	 * @return un tableau contenant les fichiers ou répertoires sélectionnés. null si rien n'a été sélectionné
 	 */
 	public File[] getSelectedFilesOrDirectories(boolean selectFiles) {
-		JFileChooser chooser = new JFileChooser(directoryPath);
+		JFileChooser chooser = new JFileChooser(this.directoryPath);
 		
 		if (selectFiles) {
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("ESRI Shapefiles","shp");
@@ -86,7 +86,7 @@ public class GUIShapefileChoice extends JFrame {
 		} else {
 		    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		}
-		chooser.setMultiSelectionEnabled(multiSelectionEnabled);
+		chooser.setMultiSelectionEnabled(this.multiSelectionEnabled);
 		
 		int returnVal = chooser.showOpenDialog(this);
 		if(returnVal == JFileChooser.APPROVE_OPTION) {

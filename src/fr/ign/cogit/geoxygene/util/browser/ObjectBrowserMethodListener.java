@@ -71,7 +71,7 @@ public class ObjectBrowserMethodListener implements ActionListener {
 		Class<?> methodReturnType = this.method.getReturnType();
 		String returnedStringValue;
 
-		if ((methodReturnType.getName() == "java.lang.String")
+		if ((methodReturnType.getName() == "java.lang.String") //$NON-NLS-1$
 				|| (methodReturnType.isPrimitive())) {
 			try {
 				try {
@@ -79,7 +79,7 @@ public class ObjectBrowserMethodListener implements ActionListener {
 						(this.method.invoke(this.obj, nulObjArray)).toString();
 					ObjectBrowserPrimitiveFrame result =
 						new ObjectBrowserPrimitiveFrame(
-								methodName,
+								this.methodName,
 								returnedStringValue);
 				} catch (NullPointerException npex) {
 					ObjectBrowserNullPointerFrame nullFrame =

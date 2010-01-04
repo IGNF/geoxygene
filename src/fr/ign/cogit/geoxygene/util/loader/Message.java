@@ -41,57 +41,57 @@ public class Message {
 	private String reponse;
 
 	public Message(BufferedReader br, String prompt, String choix1, String choix2) {
-		reponse = "";
+		this.reponse = ""; //$NON-NLS-1$
 		try {
-			while (!((reponse.compareToIgnoreCase(choix1)==0) ||
-					(reponse.compareToIgnoreCase(choix2)==0) ||
-					(reponse.compareToIgnoreCase("q")==0))) {
-				System.out.println(prompt+" ("+choix1+"/"+choix2+"/q)");
-				reponse = br.readLine();
+			while (!((this.reponse.compareToIgnoreCase(choix1)==0) ||
+					(this.reponse.compareToIgnoreCase(choix2)==0) ||
+					(this.reponse.compareToIgnoreCase("q")==0))) { //$NON-NLS-1$
+				System.out.println(prompt+" ("+choix1+"/"+choix2+"/q)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				this.reponse = br.readLine();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if (reponse.compareToIgnoreCase("q") == 0) {
+		if (this.reponse.compareToIgnoreCase("q") == 0) { //$NON-NLS-1$
 			System.out.println("Au revoir");
 			System.exit(0);
 		}
 	}
 
 	public Message(BufferedReader br, String prompt, String choix1, String choix2, String choix3, String choix4) {
-		reponse = "";
+		this.reponse = ""; //$NON-NLS-1$
 		try {
-			while (!((reponse.compareToIgnoreCase(choix1)==0) ||
-					(reponse.compareToIgnoreCase(choix2)==0) ||
-					(reponse.compareToIgnoreCase(choix3)==0) ||
-					(reponse.compareToIgnoreCase(choix4)==0) ||
-					(reponse.compareToIgnoreCase("q")==0))) {
-				System.out.println(prompt+" ("+choix1+"/"+choix2+"/"+choix3+"/"+choix4+"/q)");
-				reponse = br.readLine();
+			while (!((this.reponse.compareToIgnoreCase(choix1)==0) ||
+					(this.reponse.compareToIgnoreCase(choix2)==0) ||
+					(this.reponse.compareToIgnoreCase(choix3)==0) ||
+					(this.reponse.compareToIgnoreCase(choix4)==0) ||
+					(this.reponse.compareToIgnoreCase("q")==0))) { //$NON-NLS-1$
+				System.out.println(prompt+" ("+choix1+"/"+choix2+"/"+choix3+"/"+choix4+"/q)");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+				this.reponse = br.readLine();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if (reponse.compareToIgnoreCase("q") == 0) {
+		if (this.reponse.compareToIgnoreCase("q") == 0) { //$NON-NLS-1$
 			System.out.println("Au revoir");
 			System.exit(0);
 		}
 	}
 
 	public Message(BufferedReader br, String prompt, String choix1, String choix2, String choix3) {
-		reponse = "";
+		this.reponse = ""; //$NON-NLS-1$
 		try {
-			while (!((reponse.compareToIgnoreCase(choix1)==0) ||
-					(reponse.compareToIgnoreCase(choix2)==0) ||
-					(reponse.compareToIgnoreCase(choix3)==0) ||
-					(reponse.compareToIgnoreCase("q")==0))) {
-				System.out.println(prompt+" ("+choix1+"/"+choix2+"/"+choix3+"/q)");
-				reponse = br.readLine();
+			while (!((this.reponse.compareToIgnoreCase(choix1)==0) ||
+					(this.reponse.compareToIgnoreCase(choix2)==0) ||
+					(this.reponse.compareToIgnoreCase(choix3)==0) ||
+					(this.reponse.compareToIgnoreCase("q")==0))) { //$NON-NLS-1$
+				System.out.println(prompt+" ("+choix1+"/"+choix2+"/"+choix3+"/q)");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+				this.reponse = br.readLine();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if (reponse.compareToIgnoreCase("q") == 0) {
+		if (this.reponse.compareToIgnoreCase("q") == 0) { //$NON-NLS-1$
 			System.out.println("Au revoir");
 			System.exit(0);
 		}
@@ -101,7 +101,7 @@ public class Message {
 	public Message(BufferedReader br, String prompt) {
 		System.out.println(prompt);
 		try {
-			reponse = br.readLine();
+			this.reponse = br.readLine();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -109,7 +109,7 @@ public class Message {
 
 
 	public String getAnswer() {
-		return reponse;
+		return this.reponse;
 	}
 
 

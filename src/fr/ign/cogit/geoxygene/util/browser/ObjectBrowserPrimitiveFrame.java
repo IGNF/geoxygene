@@ -54,7 +54,7 @@ public class ObjectBrowserPrimitiveFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	/** Localisation des fichiers d'internationalisation de l'interface. */
-	private static final String I18N_LANGUAGE_FILE_LOCATION = "fr.ign.cogit.geoxygene.util.browser.ObjectBrowserLanguageFile";
+	private static final String I18N_LANGUAGE_FILE_LOCATION = "fr.ign.cogit.geoxygene.util.browser.ObjectBrowserLanguageFile"; //$NON-NLS-1$
 	/** Taille par défaut du champ texte affichant le résultat de la méthode.*/
 	private static final int PRIMITIVE_FRAME_DEFAULT_TEXTFIELD_SIZE = 35;
 	/** Locale courante. */
@@ -73,18 +73,18 @@ public class ObjectBrowserPrimitiveFrame extends JFrame {
 	throws HeadlessException {
 		super();
 
-		currentLocale = Locale.getDefault();
-		i18nLanguageFile = ResourceBundle.getBundle(I18N_LANGUAGE_FILE_LOCATION,currentLocale);
+		this.currentLocale = Locale.getDefault();
+		this.i18nLanguageFile = ResourceBundle.getBundle(I18N_LANGUAGE_FILE_LOCATION,this.currentLocale);
 		//i18nLanguageFile = ResourceBundle.getBundle(I18N_LANGUAGE_FILE_LOCATION,new Locale("en", "US"));
 
-		setTitle(i18nLanguageFile.getString("PrimitiveFrameDefaultTitle")+ title + "()");
+		setTitle(this.i18nLanguageFile.getString("PrimitiveFrameDefaultTitle")+ title + "()");  //$NON-NLS-1$//$NON-NLS-2$
 
 		JTextField returnedValue =
 			new JTextField(value, PRIMITIVE_FRAME_DEFAULT_TEXTFIELD_SIZE);
 		returnedValue.setSize(returnedValue.getPreferredSize());
 		this.getContentPane().add(returnedValue, BorderLayout.CENTER);
 
-		JLabel returnedValueLabel = new JLabel(i18nLanguageFile.getString("PrimitiveFrameDefaultLabel"));
+		JLabel returnedValueLabel = new JLabel(this.i18nLanguageFile.getString("PrimitiveFrameDefaultLabel")); //$NON-NLS-1$
 		returnedValueLabel.setSize(returnedValueLabel.getPreferredSize());
 		this.getContentPane().add(returnedValueLabel, BorderLayout.WEST);
 		this.getContentPane().setSize(this.getContentPane().getPreferredSize());

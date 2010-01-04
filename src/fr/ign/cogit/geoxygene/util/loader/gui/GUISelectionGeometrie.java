@@ -37,7 +37,7 @@ public class GUISelectionGeometrie extends JDialog {
 	 */
 	private static final long serialVersionUID = 7651040118952366197L;
 	private static Dialog frame = new JDialog();
-	private final GUISelectionGeometrie selectionGeometrie;
+	final GUISelectionGeometrie selectionGeometrie;
 	private Color bluegray = new Color(197,197,232);
 	private JPanel panneauType, panneauDimension, jPanelBoutton;
 	//private JScrollPane scrollChargement, scrollStockage;
@@ -45,25 +45,25 @@ public class GUISelectionGeometrie extends JDialog {
 	//private int selectionType = 0, selectionDimension = 0;
 	private JButton jButtonOK;
 	private Box boxe = Box.createVerticalBox();
-	private static String[] stringsChoixType = new String[4];
-	private static String[] stringsChoixDimension = new String[2];
-	private String titreType="";
-	private String titreDimension="";
+	static String[] stringsChoixType = new String[4];
+	static String[] stringsChoixDimension = new String[2];
+	private String titreType=""; //$NON-NLS-1$
+	private String titreDimension=""; //$NON-NLS-1$
 
 
 	private int typeGeometrie;
-	public int getTypeGeometrie() {return typeGeometrie;}
+	public int getTypeGeometrie() {return this.typeGeometrie;}
 	public void setTypeGeometrie(int typeGeometrie) {this.typeGeometrie = typeGeometrie;}
 
 	private int dimensionGeometrie;
-	public int getDimensionGeometrie() {return dimensionGeometrie;}
+	public int getDimensionGeometrie() {return this.dimensionGeometrie;}
 	public void setDimensionGeometrie(int dimensionGeometrie) {this.dimensionGeometrie = dimensionGeometrie;}
 
 
 	/** Constructeur de l'interface **/
 	public GUISelectionGeometrie(){
 		super(frame,"Choix de la géométrie",true);
-		selectionGeometrie = this;
+		this.selectionGeometrie = this;
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setPreferredSize(new Dimension(430,270));
 		setSize(430,270);
@@ -80,31 +80,31 @@ public class GUISelectionGeometrie extends JDialog {
 		contentPane.setLayout(new BoxLayout(contentPane,BoxLayout.Y_AXIS));
 
 		//initialisation des différents composants et variables
-		stringsChoixType[0]="Point";
-		stringsChoixType[1]="LineString";
-		stringsChoixType[2]="Polygon";
-		stringsChoixType[3]="Geometry collection";
+		stringsChoixType[0]="Point"; //$NON-NLS-1$
+		stringsChoixType[1]="LineString"; //$NON-NLS-1$
+		stringsChoixType[2]="Polygon"; //$NON-NLS-1$
+		stringsChoixType[3]="Geometry collection"; //$NON-NLS-1$
 
-		stringsChoixDimension[0]="2D";
-		stringsChoixDimension[1]="3D";
+		stringsChoixDimension[0]="2D"; //$NON-NLS-1$
+		stringsChoixDimension[1]="3D"; //$NON-NLS-1$
 
 
-		titreType = "Quel est le type de votre géométrie ?";
-		titreDimension = "Quel est la dimension de votre géométrie ?";
+		this.titreType = "Quel est le type de votre géométrie ?";
+		this.titreDimension = "Quel est la dimension de votre géométrie ?";
 		initBoxTypeGeom();
 		initBoxDimensionGeom();
 		initJPanelType();
 		initJPanelDimension();
 		initJPanelBoutton();
 
-		boxe.setBackground(Color.white);
-		boxe.add(panneauType);
-		boxe.add(panneauDimension);
+		this.boxe.setBackground(Color.white);
+		this.boxe.add(this.panneauType);
+		this.boxe.add(this.panneauDimension);
 
-		boxe.add(jPanelBoutton);
+		this.boxe.add(this.jPanelBoutton);
 
 		//Association des panneaux au conteneur
-		this.setContentPane(boxe);
+		this.setContentPane(this.boxe);
 
 		//Visualisation
 		this.pack();
@@ -113,28 +113,28 @@ public class GUISelectionGeometrie extends JDialog {
 
 	/**initialise le panel principal**/
 	private void initJPanelType() {
-		panneauType = new JPanel(new java.awt.BorderLayout());
-		panneauType.setPreferredSize(new Dimension(820,300));
-		panneauType.setMaximumSize(new Dimension(820,300));
-		panneauType.setBackground(Color.white);
-		panneauType.setBorder(BorderFactory.createTitledBorder(
-				BorderFactory.createEtchedBorder(bluegray, bluegray),titreType));
-		panneauType.add(boxType);
+		this.panneauType = new JPanel(new java.awt.BorderLayout());
+		this.panneauType.setPreferredSize(new Dimension(820,300));
+		this.panneauType.setMaximumSize(new Dimension(820,300));
+		this.panneauType.setBackground(Color.white);
+		this.panneauType.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(this.bluegray, this.bluegray),this.titreType));
+		this.panneauType.add(this.boxType);
 	}
 
 	/**initialise le panel principal**/
 	private void initJPanelDimension() {
-		panneauDimension = new JPanel(new java.awt.BorderLayout());
-		panneauDimension.setPreferredSize(new Dimension(820,300));
-		panneauDimension.setMaximumSize(new Dimension(820,300));
-		panneauDimension.setBackground(Color.white);
-		panneauDimension.setBorder(BorderFactory.createTitledBorder(
-				BorderFactory.createEtchedBorder(bluegray, bluegray),titreDimension));
-		panneauDimension.add(boxDimension);
+		this.panneauDimension = new JPanel(new java.awt.BorderLayout());
+		this.panneauDimension.setPreferredSize(new Dimension(820,300));
+		this.panneauDimension.setMaximumSize(new Dimension(820,300));
+		this.panneauDimension.setBackground(Color.white);
+		this.panneauDimension.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(this.bluegray, this.bluegray),this.titreDimension));
+		this.panneauDimension.add(this.boxDimension);
 	}
 
 	private void initBoxTypeGeom() {
-		boxType = Box.createVerticalBox();
+		this.boxType = Box.createVerticalBox();
 		ButtonGroup choix = new ButtonGroup();
 		JCheckBox checkBox;
 		final int t = stringsChoixType.length;
@@ -158,12 +158,12 @@ public class GUISelectionGeometrie extends JDialog {
 				}
 			});
 			choix.add(checkBox);
-			boxType.add(checkBox);
+			this.boxType.add(checkBox);
 		}
 	}
 
 	private void initBoxDimensionGeom() {
-		boxDimension = Box.createVerticalBox();
+		this.boxDimension = Box.createVerticalBox();
 		ButtonGroup choix = new ButtonGroup();
 		JCheckBox checkBox;
 		final int t = stringsChoixDimension.length;
@@ -187,7 +187,7 @@ public class GUISelectionGeometrie extends JDialog {
 				}
 			});
 			choix.add(checkBox);
-			boxDimension.add(checkBox);
+			this.boxDimension.add(checkBox);
 		}
 	}
 
@@ -195,23 +195,23 @@ public class GUISelectionGeometrie extends JDialog {
 	private void initJPanelBoutton() {
 		initJButtonOK();
 
-		jPanelBoutton = new JPanel();
-		jPanelBoutton.setLayout(new FlowLayout());
-		jPanelBoutton.add(jButtonOK);
-		jPanelBoutton.setBackground(Color.white);
+		this.jPanelBoutton = new JPanel();
+		this.jPanelBoutton.setLayout(new FlowLayout());
+		this.jPanelBoutton.add(this.jButtonOK);
+		this.jPanelBoutton.setBackground(Color.white);
 	}
 
 	/** This method initializes jButtonChargement */
 	private void initJButtonOK() {
-		jButtonOK = new JButton();
-		jButtonOK.setPreferredSize(new java.awt.Dimension(80,30));
-		jButtonOK.setSize(new java.awt.Dimension(80,30));
-		jButtonOK.setText("Ok");
-		jButtonOK.setVisible(true);
+		this.jButtonOK = new JButton();
+		this.jButtonOK.setPreferredSize(new java.awt.Dimension(80,30));
+		this.jButtonOK.setSize(new java.awt.Dimension(80,30));
+		this.jButtonOK.setText("Ok");
+		this.jButtonOK.setVisible(true);
 
-		jButtonOK.addActionListener(new ActionListener() {
+		this.jButtonOK.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				selectionGeometrie.dispose();
+				GUISelectionGeometrie.this.selectionGeometrie.dispose();
 			}
 		});
 	}

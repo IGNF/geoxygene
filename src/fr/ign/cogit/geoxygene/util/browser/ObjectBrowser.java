@@ -79,7 +79,7 @@ public class ObjectBrowser {
 	protected static final boolean HIDE_WHEN_REFRESH = false;
 
 	/** référence vers l'interface graphique du navigateur d'objet. */
-	private static ObjectBrowserGUI browserInterface;
+	static ObjectBrowserGUI browserInterface;
 
 	/**
 	 * Teste si l'objet passé en paramètre est une instance de Collection (au sens Java du terme).
@@ -135,9 +135,8 @@ public class ObjectBrowser {
 		Class<?> componentType = classObject.getComponentType();
 		if (componentType.isPrimitive()) {
 			return PRIMITIVE;
-		} else {
-			return OBJECT;
 		}
+                return OBJECT;
 	}
 
 	/**
@@ -151,9 +150,8 @@ public class ObjectBrowser {
 		// Faudrait peut-être intercepter le fait que ce soit pas un Array !!! ;-))
 		if (getArrayClassComponentType(classObject) == PRIMITIVE) {
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	/**
@@ -217,9 +215,8 @@ public class ObjectBrowser {
 						fieldTypeName.length() - 1);
 			if (underlyingFieldTypeName.equals("java.lang.String")) {
 				return STRING;
-			} else {
-				return OBJECT;
 			}
+			return OBJECT;
 		default :
 			return PRIMITIVE;
 		}
@@ -379,14 +376,13 @@ public class ObjectBrowser {
 			} else {
 				if (fieldValueString.indexOf(fieldClass + "@") > -1) {
 					return OBJECT;
-				} else {
+				}
 					if (fieldTypeName.equals("java.lang.String")) {
 						return STRING;
-					} else {
+					}
 						if (fieldValue.getClass().isInstance(Collection.class))
 							return COLLECTION;
-						else
-							return OBJECT;
+						return OBJECT;
 						/*
 						try {
 							Collection testCollection = (Collection) fieldValue;
@@ -395,8 +391,6 @@ public class ObjectBrowser {
 							return OBJECT;
 						}
 						 */
-					}
-				}
 			}
 		} catch (IllegalAccessException e) {
 			return NULL;
@@ -413,9 +407,8 @@ public class ObjectBrowser {
 	private static boolean isFieldTypePrimitive(Field field, Object obj) {
 		if (getFieldType(field, obj) == PRIMITIVE) {
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	/**
@@ -428,9 +421,8 @@ public class ObjectBrowser {
 	private static boolean isFieldTypeArray(Field field, Object obj) {
 		if (getFieldType(field, obj) == ARRAY) {
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	/**
@@ -443,9 +435,8 @@ public class ObjectBrowser {
 	private static boolean isFieldTypeObject(Field field, Object obj) {
 		if (getFieldType(field, obj) == OBJECT) {
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	/**
@@ -458,9 +449,8 @@ public class ObjectBrowser {
 	private static boolean isFieldTypeString(Field field, Object obj) {
 		if (getFieldType(field, obj) == STRING) {
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	/**
@@ -473,9 +463,8 @@ public class ObjectBrowser {
 	private static boolean isFieldTypeCollection(Field field, Object obj) {
 		if (getFieldType(field, obj) == COLLECTION) {
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	/**

@@ -51,29 +51,29 @@ class OjbXMLGenerator  {
 	private int i = 1;  // identifiant du field dans le fichier de mapping
 	private String extentClassName;
 
-	private String mappingString="";	// chaine de caractere qu'on va ecrire dans le fichier de mapping
-	private String classeMereString="";// chaine de caractere qu'on va ecrire dans le fichier de mapping de la classe mere
+	private String mappingString="";	// chaine de caractere qu'on va ecrire dans le fichier de mapping //$NON-NLS-1$
+	private String classeMereString="";// chaine de caractere qu'on va ecrire dans le fichier de mapping de la classe mere //$NON-NLS-1$
 
 	private Geodatabase data;
 
 	private String keyColumnName;
-	private final static String KEY_COLUMN_NAME_ORACLE = "COGITID";
-	private final static String KEY_COLUMN_NAME_POSTGIS = "COGITID";
+	private final static String KEY_COLUMN_NAME_ORACLE = "COGITID"; //$NON-NLS-1$
+	private final static String KEY_COLUMN_NAME_POSTGIS = "COGITID"; //$NON-NLS-1$
 
 	OjbXMLGenerator(Geodatabase Data, String path, String mappingFileName, String ExtentClassName, String extentMappingFileName )  {
 		try {
-			data = Data;
+			this.data = Data;
 			//plateformePath = path;
 			File thePath = new File(path);
 			File mappingFile = new File(thePath,mappingFileName);
-			mappingFilePath = mappingFile.getPath();
-			extentClassName = ExtentClassName;
+			this.mappingFilePath = mappingFile.getPath();
+			this.extentClassName = ExtentClassName;
 			if (extentMappingFileName != null) {
 				File extentMappingFile = new File(thePath,extentMappingFileName);
-				extentMappingFilePath = extentMappingFile.getPath();
+				this.extentMappingFilePath = extentMappingFile.getPath();
 			}
-			if (data.getDBMS()==Geodatabase.ORACLE) keyColumnName = KEY_COLUMN_NAME_ORACLE;
-			else if (data.getDBMS()==Geodatabase.POSTGIS) keyColumnName = KEY_COLUMN_NAME_POSTGIS;
+			if (this.data.getDBMS()==Geodatabase.ORACLE) this.keyColumnName = KEY_COLUMN_NAME_ORACLE;
+			else if (this.data.getDBMS()==Geodatabase.POSTGIS) this.keyColumnName = KEY_COLUMN_NAME_POSTGIS;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -84,54 +84,54 @@ class OjbXMLGenerator  {
 		// fichier de mapping des classes filles
 		String line1 = "<!-- fichier de mapping OJB pour GeOxygene : classes geographiques -->\n";
 		String line2 = "<!-- fichier genere automatiquement par le chargeur de la plate-forme GeOxygene -->\n";
-		String line3 = "\n";
+		String line3 = "\n"; //$NON-NLS-1$
 
 		// fichier de mapping classe mere
-		if (extentMappingFilePath!=null  ) {
-			String line4 = "<class-descriptor class=\""+extentClassName+"\"  >\n";
-			classeMereString = line1+line2+line3+line4;
+		if (this.extentMappingFilePath!=null  ) {
+			String line4 = "<class-descriptor class=\""+this.extentClassName+"\"  >\n"; //$NON-NLS-1$ //$NON-NLS-2$
+			this.classeMereString = line1+line2+line3+line4;
 		}
 	}
 
 
 	void writeFileBottom()  {
 		// fichier de mapping de la classe mere
-		if (extentMappingFilePath!=null) {
-			String line0 = "</class-descriptor>\n";
-			String line1 = "\n" ;
-			classeMereString += line0+line1;
+		if (this.extentMappingFilePath!=null) {
+			String line0 = "</class-descriptor>\n"; //$NON-NLS-1$
+			String line1 = "\n" ; //$NON-NLS-1$
+			this.classeMereString += line0+line1;
 		}
 	}
 
 
 	void writeClassHeader(String className, String tableName)  {
 		// fichier de mapping des classes filles
-		i = 1;	// remise a 1 du compteur
-		String str1 = "<class-descriptor class=\""+className+"\" table=\""+tableName+"\" >\n";
-		String str2 = "  <field-descriptor name=\"id\"  column=\""+keyColumnName+"\" jdbc-type=\"INTEGER\" primarykey=\"true\" autoincrement=\"true\"/>\n";
-		mappingString += str1+str2;
+		this.i = 1;	// remise a 1 du compteur
+		String str1 = "<class-descriptor class=\""+className+"\" table=\""+tableName+"\" >\n"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		String str2 = "  <field-descriptor name=\"id\"  column=\""+this.keyColumnName+"\" jdbc-type=\"INTEGER\" primarykey=\"true\" autoincrement=\"true\"/>\n"; //$NON-NLS-1$ //$NON-NLS-2$
+		this.mappingString += str1+str2;
 
 		// fichier de mapping de la classe mere
-		if (extentMappingFilePath!=null) {
-			str1 = "  <extent-class class-ref=\""+className+"\" />\n";
-			classeMereString += str1;
+		if (this.extentMappingFilePath!=null) {
+			str1 = "  <extent-class class-ref=\""+className+"\" />\n"; //$NON-NLS-1$ //$NON-NLS-2$
+			this.classeMereString += str1;
 		}
 	}
 
 
 	void writeClassBottom()  {
 		// fichier de mapping des classes filles
-		String line0 = "</class-descriptor>\n";
-		String line1 = "\n" ;
-		mappingString += line0+line1;
+		String line0 = "</class-descriptor>\n"; //$NON-NLS-1$
+		String line1 = "\n" ; //$NON-NLS-1$
+		this.mappingString += line0+line1;
 	}
 
 
 	void writeField(String javaName, String sqlName, String sqlType)  {
 		try {
-			i++;
-			String str1 = "  <field-descriptor name=\""+javaName+"\" column=\""+sqlName+"\" jdbc-type=\""+getJdbcType(sqlType)+"\" />\n";
-			mappingString += str1;
+			this.i++;
+			String str1 = "  <field-descriptor name=\""+javaName+"\" column=\""+sqlName+"\" jdbc-type=\""+getJdbcType(sqlType)+"\" />\n"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			this.mappingString += str1;
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -140,23 +140,23 @@ class OjbXMLGenerator  {
 
 	void writeInFile () {
 		try {
-			if (extentMappingFilePath!=null) {
-				if (extentMappingFilePath.equals(mappingFilePath)) {
-					fw = new FileWriter(mappingFilePath);
-					fw.write(classeMereString+"\n"+mappingString);
-					fw.close();
+			if (this.extentMappingFilePath!=null) {
+				if (this.extentMappingFilePath.equals(this.mappingFilePath)) {
+					this.fw = new FileWriter(this.mappingFilePath);
+					this.fw.write(this.classeMereString+"\n"+this.mappingString); //$NON-NLS-1$
+					this.fw.close();
 				} else {
-					fw = new FileWriter(extentMappingFilePath);
-					fw.write(classeMereString);
-					fw.close();
-					fw = new FileWriter(mappingFilePath);
-					fw.write(mappingString);
-					fw.close();
+					this.fw = new FileWriter(this.extentMappingFilePath);
+					this.fw.write(this.classeMereString);
+					this.fw.close();
+					this.fw = new FileWriter(this.mappingFilePath);
+					this.fw.write(this.mappingString);
+					this.fw.close();
 				}
 			} else {
-				fw = new FileWriter(mappingFilePath);
-				fw.write(mappingString);
-				fw.close();
+				this.fw = new FileWriter(this.mappingFilePath);
+				this.fw.write(this.mappingString);
+				this.fw.close();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -169,9 +169,9 @@ class OjbXMLGenerator  {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private String getJdbcType(String sqlType) {
 		try {
-			if (data.getDBMS() == Geodatabase.ORACLE)
+			if (this.data.getDBMS() == Geodatabase.ORACLE)
 				return oracleType2JdbcType(sqlType);
-			else if (data.getDBMS() == Geodatabase.POSTGIS)
+			else if (this.data.getDBMS() == Geodatabase.POSTGIS)
 				return postgisType2JdbcType(sqlType);
 			return null;
 		} catch (Exception e) {
@@ -184,14 +184,14 @@ class OjbXMLGenerator  {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private String oracleType2JdbcType(String oracle) throws Exception {
-		if (oracle.compareToIgnoreCase("VARCHAR2") == 0) return "VARCHAR";
-		else if (oracle.compareToIgnoreCase("VARCHAR") == 0) return "VARCHAR";
-		else if (oracle.compareToIgnoreCase("CHAR") == 0) return "VARCHAR";
-		else if (oracle.compareToIgnoreCase("NUMBER") == 0) return "DOUBLE";
-		else if (oracle.compareToIgnoreCase("FLOAT") == 0) return "DOUBLE";
-		else if (oracle.compareToIgnoreCase("INTEGER") == 0) return "INTEGER";
-		else if (oracle.compareToIgnoreCase("BOOLEAN") == 0) return "BIT";
-		else if (oracle.compareToIgnoreCase("SDO_GEOMETRY") == 0) return "STRUCT\" conversion=\"fr.ign.cogit.geoxygene.datatools.ojb.GeomGeOxygene2Dbms";
+		if (oracle.compareToIgnoreCase("VARCHAR2") == 0) return "VARCHAR"; //$NON-NLS-1$ //$NON-NLS-2$
+		else if (oracle.compareToIgnoreCase("VARCHAR") == 0) return "VARCHAR"; //$NON-NLS-1$ //$NON-NLS-2$
+		else if (oracle.compareToIgnoreCase("CHAR") == 0) return "VARCHAR";  //$NON-NLS-1$//$NON-NLS-2$
+		else if (oracle.compareToIgnoreCase("NUMBER") == 0) return "DOUBLE"; //$NON-NLS-1$ //$NON-NLS-2$
+		else if (oracle.compareToIgnoreCase("FLOAT") == 0) return "DOUBLE";  //$NON-NLS-1$//$NON-NLS-2$
+		else if (oracle.compareToIgnoreCase("INTEGER") == 0) return "INTEGER"; //$NON-NLS-1$ //$NON-NLS-2$
+		else if (oracle.compareToIgnoreCase("BOOLEAN") == 0) return "BIT";  //$NON-NLS-1$//$NON-NLS-2$
+		else if (oracle.compareToIgnoreCase("SDO_GEOMETRY") == 0) return "STRUCT\" conversion=\"fr.ign.cogit.geoxygene.datatools.ojb.GeomGeOxygene2Dbms"; //$NON-NLS-1$ //$NON-NLS-2$
 		else throw new Exception("type non reconnu : "+oracle);
 	}
 
@@ -199,14 +199,14 @@ class OjbXMLGenerator  {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private String postgisType2JdbcType(String postgis) throws Exception {
-		if (postgis.compareToIgnoreCase("varchar") == 0) return "VARCHAR";
-		else if (postgis.compareToIgnoreCase("bpchar") == 0) return "VARCHAR";
-		else if (postgis.compareToIgnoreCase("float8") == 0) return "DOUBLE";
-		else if (postgis.compareToIgnoreCase("float4") == 0) return "FLOAT";
-		else if (postgis.compareToIgnoreCase("int4") == 0) return "INTEGER";
-		else if (postgis.compareToIgnoreCase("int8") == 0) return "BIGINT";
-		else if (postgis.compareToIgnoreCase("bool") == 0) return "BIT";
-		else if (postgis.compareToIgnoreCase("geometry") == 0) return "STRUCT\" conversion=\"fr.ign.cogit.geoxygene.datatools.ojb.GeomGeOxygene2Dbms";
+		if (postgis.compareToIgnoreCase("varchar") == 0) return "VARCHAR"; //$NON-NLS-1$ //$NON-NLS-2$
+		else if (postgis.compareToIgnoreCase("bpchar") == 0) return "VARCHAR"; //$NON-NLS-1$ //$NON-NLS-2$
+		else if (postgis.compareToIgnoreCase("float8") == 0) return "DOUBLE";  //$NON-NLS-1$//$NON-NLS-2$
+		else if (postgis.compareToIgnoreCase("float4") == 0) return "FLOAT";  //$NON-NLS-1$//$NON-NLS-2$
+		else if (postgis.compareToIgnoreCase("int4") == 0) return "INTEGER"; //$NON-NLS-1$ //$NON-NLS-2$
+		else if (postgis.compareToIgnoreCase("int8") == 0) return "BIGINT"; //$NON-NLS-1$ //$NON-NLS-2$
+		else if (postgis.compareToIgnoreCase("bool") == 0) return "BIT";  //$NON-NLS-1$//$NON-NLS-2$
+		else if (postgis.compareToIgnoreCase("geometry") == 0) return "STRUCT\" conversion=\"fr.ign.cogit.geoxygene.datatools.ojb.GeomGeOxygene2Dbms"; //$NON-NLS-1$ //$NON-NLS-2$
 		else throw new Exception("type non reconnu : "+postgis);
 	}
 

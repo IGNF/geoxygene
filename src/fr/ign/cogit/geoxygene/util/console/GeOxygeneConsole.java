@@ -48,15 +48,15 @@ public class GeOxygeneConsole {
 	public GeOxygeneConsoleInterface geOxygeneConsoleInterface;
 
 	public GeOxygeneConsole () {
-		geOxygeneConsoleInterface = new GeOxygeneConsoleInterface(CONSOLE_TITLE);
-		geOxygeneConsoleInterface.pack();
-		geOxygeneConsoleInterface.setSize(300, 350);
+		this.geOxygeneConsoleInterface = new GeOxygeneConsoleInterface(CONSOLE_TITLE);
+		this.geOxygeneConsoleInterface.pack();
+		this.geOxygeneConsoleInterface.setSize(300, 350);
 		//geOxygeneConsoleInterface.show();
-		geOxygeneConsoleInterface.setVisible(true);
-		geOxygeneConsoleInterface.addWindowListener(new WindowAdapter() {
+		this.geOxygeneConsoleInterface.setVisible(true);
+		this.geOxygeneConsoleInterface.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				geOxygeneConsoleInterface.dispose();
+				GeOxygeneConsole.this.geOxygeneConsoleInterface.dispose();
 				System.exit(0);
 			}
 		});

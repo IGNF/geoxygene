@@ -48,24 +48,24 @@ public class KMeansClusterer {
 	this.data=theData;
 	long t = System.currentTimeMillis();
 	// randomly guess the initial cluster locations
-	int index = new Double(data.size()*Math.random()).intValue();
-	clusters.add(new Cluster(data.get(index)));
-	for(int count = 0 ; count < numberOfClusters-1 ; count++) {
+	int index = new Double(this.data.size()*Math.random()).intValue();
+	this.clusters.add(new Cluster(this.data.get(index)));
+	for(int count = 0 ; count < this.numberOfClusters-1 ; count++) {
 	    // find the furthest data point
 	    float maxDistance = 0f;
-	    for(int i = 0 ; i < data.size() ; i++) {
-		float distance = sqDistanceFromClusters(data.get(i));
+	    for(int i = 0 ; i < this.data.size() ; i++) {
+		float distance = sqDistanceFromClusters(this.data.get(i));
 		if (distance>maxDistance) {
 		    maxDistance=distance;
 		    index=i;
 		}
 	    }
-	    clusters.add(new Cluster(data.get(index)));
+	    this.clusters.add(new Cluster(this.data.get(index)));
 	}
 	boolean hasChanged = assignDataPointsToClusters();
 	while (hasChanged) hasChanged = assignDataPointsToClusters();
 	t = System.currentTimeMillis()-t;
-	logger.info("KMeansClusterer with "+numberOfClusters+" clusters and "+data.size()+" data points took "+t+" ms to finish");
+	logger.info("KMeansClusterer with "+this.numberOfClusters+" clusters and "+this.data.size()+" data points took "+t+" ms to finish");
     }
 
     /**
@@ -73,10 +73,10 @@ public class KMeansClusterer {
      */
     private boolean  assignDataPointsToClusters() {
 	boolean hasChanged = false;
-	for(float[] dataPoint:data) {
+	for(float[] dataPoint:this.data) {
 	    float minDistance = Float.MAX_VALUE;
 	    Cluster closesCluster=null;
-	    for(Cluster cluster:clusters) {
+	    for(Cluster cluster:this.clusters) {
 		float distance = sqDistance(dataPoint,cluster.location);
 		if (distance<minDistance) {
 		    minDistance = distance;
@@ -91,7 +91,7 @@ public class KMeansClusterer {
 	    }
 	}
 	// find the centroid of each cluster
-	if (hasChanged) for(Cluster cluster:clusters) cluster.computeCentroid();
+	if (hasChanged) for(Cluster cluster:this.clusters) cluster.computeCentroid();
 	return hasChanged;
     }
 
@@ -101,7 +101,7 @@ public class KMeansClusterer {
      */
     private float sqDistanceFromClusters(float[] fs) {
 	float minDistance = Float.MAX_VALUE;
-	for(Cluster cluster:clusters) minDistance = Math.min(minDistance, sqDistance(fs,cluster.location));
+	for(Cluster cluster:this.clusters) minDistance = Math.min(minDistance, sqDistance(fs,cluster.location));
 	return minDistance;
     }
 
@@ -117,16 +117,16 @@ public class KMeansClusterer {
     }
 
     class Cluster {
-	private float[] location;
+	float[] location;
 	public float[] getLocation() {return this.location;}
-	private Set<float[]> dataPoints = new HashSet<float[]>();
+	Set<float[]> dataPoints = new HashSet<float[]>();
 	public Cluster(float[] theLocation) {this.location=theLocation;}
 	/**
 	 * 
 	 */
 	public void computeCentroid() {
-	    for(int i = 0 ; i < location.length ; i++) location[i]=0;
-	    for(float[] dataPoint:dataPoints) for(int i = 0 ; i < location.length ; i++) location[i]+=dataPoint[i]/dataPoints.size();
+	    for(int i = 0 ; i < this.location.length ; i++) this.location[i]=0;
+	    for(float[] dataPoint:this.dataPoints) for(int i = 0 ; i < this.location.length ; i++) this.location[i]+=dataPoint[i]/this.dataPoints.size();
 	}
     }
 }

@@ -27,7 +27,8 @@ public interface WktAwtConstants {
   int DEFAULT = 0;
 
   /** Literal token values. */
-  String[] tokenImage = {
+  @SuppressWarnings("nls")
+String[] tokenImage = {
     "<EOF>",
     "<CONSTANT>",
     "<FLOAT>",

@@ -53,49 +53,49 @@ public class MetadataReader {
 	private List<String> theList = new ArrayList<String>();
 	private String query;
 
-	private final String ORACLE_QUERY =  "SELECT TABLE_NAME FROM USER_SDO_GEOM_METADATA";
-	private final String POSTGIS_QUERY = "SELECT F_TABLE_NAME FROM GEOMETRY_COLUMNS";
+	private final String ORACLE_QUERY =  "SELECT TABLE_NAME FROM USER_SDO_GEOM_METADATA"; //$NON-NLS-1$
+	private final String POSTGIS_QUERY = "SELECT F_TABLE_NAME FROM GEOMETRY_COLUMNS"; //$NON-NLS-1$
 
 
 	public MetadataReader(Geodatabase Data) {
-		data = Data;
-		if (data.getDBMS() == Geodatabase.ORACLE) query = ORACLE_QUERY;
-		else if (data.getDBMS() == Geodatabase.POSTGIS) query = POSTGIS_QUERY;
+		this.data = Data;
+		if (this.data.getDBMS() == Geodatabase.ORACLE) this.query = this.ORACLE_QUERY;
+		else if (this.data.getDBMS() == Geodatabase.POSTGIS) this.query = this.POSTGIS_QUERY;
 	}
 
 
 	public List<String> getSelectedTables() {
 		getAllTables();
 		ihm();
-		return theList;
+		return this.theList;
 	}
 
 
 	private void getAllTables()  {
-		theList.clear();
+		this.theList.clear();
 		try {
-			Connection conn = data.getConnection();
+			Connection conn = this.data.getConnection();
 			Statement stm = conn.createStatement();
-			ResultSet rs = stm.executeQuery(query);
+			ResultSet rs = stm.executeQuery(this.query);
 			while (rs.next()) {
 				String sqlTableName = rs.getString(1);
-				if (sqlTableName.compareToIgnoreCase("RESULT_POINT")==0) {
+				if (sqlTableName.compareToIgnoreCase("RESULT_POINT")==0) { //$NON-NLS-1$
 					continue;
 				}
-				if (sqlTableName.compareToIgnoreCase("RESULT_CURVE")==0) {
+				if (sqlTableName.compareToIgnoreCase("RESULT_CURVE")==0) { //$NON-NLS-1$
 					continue;
 				}
-				if (sqlTableName.compareToIgnoreCase("RESULT_SURFACE")==0) {
+				if (sqlTableName.compareToIgnoreCase("RESULT_SURFACE")==0) { //$NON-NLS-1$
 					continue;
 				}
-				if (sqlTableName.compareToIgnoreCase("RESULTAT")==0) {
+				if (sqlTableName.compareToIgnoreCase("RESULTAT")==0) { //$NON-NLS-1$
 					continue;
 				}
-				if (sqlTableName.compareToIgnoreCase("TABLEAUX")==0) {
+				if (sqlTableName.compareToIgnoreCase("TABLEAUX")==0) { //$NON-NLS-1$
 					continue;
 				}
 
-				theList.add(sqlTableName);
+				this.theList.add(sqlTableName);
 			}
 			stm.close();
 		} catch (Exception e) {
@@ -107,17 +107,17 @@ public class MetadataReader {
 	private void ihm() {
 		String user = null;
 		try {
-			user = data.getConnection().getMetaData().getUserName();
+			user = this.data.getConnection().getMetaData().getUserName();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		System.out.println("Selection des tables ...");
-		GUITableChoice swing = new GUITableChoice(theList.toArray(), user);
+		GUITableChoice swing = new GUITableChoice(this.theList.toArray(), user);
 		String[] selectedTables = swing.showDialog();
-		theList = new ArrayList<String>();
+		this.theList = new ArrayList<String>();
 		for (int i=0; i<selectedTables.length; i++) {
 			System.out.println(selectedTables[i]);
-			theList.add(selectedTables[i]);
+			this.theList.add(selectedTables[i]);
 		}
 	}
 

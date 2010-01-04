@@ -44,17 +44,17 @@ public class AwtAggregate implements AwtShape
 		this.path=new GeneralPath();
 	}
 
-	public GeneralPath getPath() {return path;}
+	public GeneralPath getPath() {return this.path;}
 
 	public void add(AwtShape shape)
 	{
-		awtShapeList.add(shape);
-		path.append(shape.getBounds(), false);
+		this.awtShapeList.add(shape);
+		this.path.append(shape.getBounds(), false);
 	}
 
 	public void draw(Graphics2D g)
 	{
-		Iterator<AwtShape> i=awtShapeList.iterator();
+		Iterator<AwtShape> i=this.awtShapeList.iterator();
 		while (i.hasNext()) {
 			AwtShape shape=i.next();
 			shape.draw(g);
@@ -63,6 +63,6 @@ public class AwtAggregate implements AwtShape
 
 	public Rectangle2D getBounds()
 	{
-		return path.getBounds();
+		return this.path.getBounds();
 	}
 }

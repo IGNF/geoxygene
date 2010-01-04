@@ -58,14 +58,14 @@ class GeOxygeneViewerOpenGeOxygeneAction implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		String user = null;
 		try {
-			user = db.getConnection().getMetaData().getUserName();
+			user = this.db.getConnection().getMetaData().getUserName();
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
 		System.out.println(user+" est le plus beau !");
 		List<String> classList = new ArrayList<String>();
-		for (int i=0; i<db.getMetadata().size(); i++) {
-			Metadata md = db.getMetadata().get(i);
+		for (int i=0; i<this.db.getMetadata().size(); i++) {
+			Metadata md = this.db.getMetadata().get(i);
 			Class<?> theClass = md.getJavaClass();
 			if ( FT_Feature.class.isAssignableFrom(theClass) &&
 					! Modifier.isAbstract(theClass.getModifiers()) )
@@ -74,7 +74,7 @@ class GeOxygeneViewerOpenGeOxygeneAction implements ActionListener {
 
 		System.out.println("Selecting geographic classes ...");
 		GeOxygeneFilter geOxyFilter =	new GeOxygeneFilter(classList.toArray(), user);
-		String[] selectedClasses = geOxyFilter.showDialog(objectViewerInterface);
+		String[] selectedClasses = geOxyFilter.showDialog(this.objectViewerInterface);
 
 		for (int i=0; i<selectedClasses.length; i++) {
 			String themeName = selectedClasses[i].substring(selectedClasses[i].lastIndexOf(".")+1);
@@ -86,9 +86,9 @@ class GeOxygeneViewerOpenGeOxygeneAction implements ActionListener {
 			}
 			if (theClass != null) {
 				System.out.println("Loading "+selectedClasses[i]+" ... please wait ...");
-				FT_FeatureCollection<?> coll = db.loadAllFeatures(theClass);
+				FT_FeatureCollection<?> coll = this.db.loadAllFeatures(theClass);
 				System.out.println("   Loading finished. Displaying theme in viewer ...");
-				objectViewerInterface.addAFeatureCollectionTheme(coll,themeName);
+				this.objectViewerInterface.addAFeatureCollectionTheme(coll,themeName);
 			}
 		}
 	}

@@ -102,7 +102,7 @@ class ObjectViewerMenuBar extends JMenuBar {
 
 
 	public ObjectViewerInterface getObjectViewerInterface() {
-		return objectViewerInterface;
+		return this.objectViewerInterface;
 	}
 
 }

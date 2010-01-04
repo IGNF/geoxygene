@@ -54,19 +54,19 @@ public class AwtSurface implements AwtShape
 		this(new GeneralPath(shape));
 	}
 
-	public Rectangle2D getBounds() {return path.getBounds();}
+	public Rectangle2D getBounds() {return this.path.getBounds();}
 	public void addInterior(Shape shape) {this.path.append(shape,false);}
 
 	public void draw(Graphics2D g)
 	{
 		if (drawFilled) {
-			g.fill(path);
+			g.fill(this.path);
 			Color old=g.getColor();
 			g.setColor(Color.BLACK);
-			g.draw(path);
+			g.draw(this.path);
 			g.setColor(old);
 		} else {
-			g.draw(path);
+			g.draw(this.path);
 		}
 	}
 }

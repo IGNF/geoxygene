@@ -43,6 +43,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -92,7 +93,7 @@ public class AdapterFactory  {
 		if (geom instanceof GM_Ring) {
 			if (geom.coord().size()<=3&&geom.coord().size()!=0) {
 				//logger.error("Une GM_Ring contenant "+geom.coord().size()+" points ne peut être transformée en LinearRing.");
-				throw new Exception("AdapterFactory : GM_Ring contenant moins de 4 points");
+				throw new Exception(I18N.getString("AdapterFactory.RingWithLessThan4Points")); //$NON-NLS-1$
 			}
 			return factory.createLinearRing(toCoordinateSequence(factory, geom.coord()));
 		}
@@ -134,7 +135,7 @@ public class AdapterFactory  {
 			}
 			return factory.createGeometryCollection(geometries);
 		}
-		throw new Exception("AdapterFactory : Type "+geom.getClass()+" non géré.");
+		throw new Exception(I18N.getString("AdapterFactory.Type")+geom.getClass()+I18N.getString("AdapterFactory.Unhandled")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -244,7 +245,7 @@ public class AdapterFactory  {
 			}
 			return aggregate;
 		}
-		throw new Exception("AdapterFactory : Type "+geom.getClass()+" non géré.");
+		throw new Exception(I18N.getString("AdapterFactory.Type")+geom.getClass()+I18N.getString("AdapterFactory.Unhandled")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -380,7 +381,7 @@ public class AdapterFactory  {
 			for(int i=0;i<gc.size();i++) aggregate.add(to2DGM_Object(gc.get(i)));
 			return aggregate;
 		}
-		throw new Exception("AdapterFactory : Type "+geom.getClass()+" non géré.");
+		throw new Exception(I18N.getString("AdapterFactory.Type")+geom.getClass()+I18N.getString("AdapterFactory.Unhandled")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	/**
 	 * Traduit un type de géométrie JTS {@link Geometry} et renvoie le type de 

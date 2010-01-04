@@ -249,7 +249,7 @@ public class ColorUtil {
 	Map<Color,Integer> occurrenceMap = occurrenceMap(image);
 	for(Color color:colors) {
 	    // count the occurence of this color in the image
-	    int occurrence = occurrenceMap.get(color);
+	    int occurrence = occurrenceMap.get(color).intValue();
 	    for (int count = 0 ; count < occurrence ; count++ ) {
 		paletteImage.setRGB(x,y,color.getRGB());
 		if (x<image.getWidth()-1) x++;
@@ -271,8 +271,8 @@ public class ColorUtil {
 	for(int y = 0 ; y < image.getHeight() ; y++) {
 	    for(int x = 0 ; x < image.getWidth() ; x++) {
 		Color color = new Color(image.getRGB(x, y));
-		if(map.get(color)==null) map.put(color, 1);
-		else map.put(color,map.get(color)+1);
+		if(map.get(color)==null) map.put(color, new Integer(1));
+		else map.put(color,new Integer(map.get(color).intValue()+1));
 	    }
 	}
 	return map;

@@ -3,6 +3,7 @@
 package fr.ign.cogit.geoxygene.util.conversion;
 
 /** Token Manager Error. */
+@SuppressWarnings({"unqualified-field-access","unused","nls"})
 public class TokenMgrError extends Error
 {
 	private static final long serialVersionUID = 1L;

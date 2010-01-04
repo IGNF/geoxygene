@@ -79,8 +79,8 @@ public class ImageColorClusterGraph {
 		for(int i = 0 ; i < nbPixels ; i++) {
 			clusterIndices[i] = i;
 			List<Integer> list = new ArrayList<Integer>();
-			list.add(i);
-			clusterMap.put(i, list);
+			list.add(new Integer(i));
+			clusterMap.put(new Integer(i), list);
 		}
 		logger.info(clusterMap.size()+" clusters");
 		// merge clusters with identical clusters in its neighborhood
@@ -88,7 +88,7 @@ public class ImageColorClusterGraph {
 			for(int x = 0 ; x < clusterImage.getWidth() ; x++) {
 				List<Integer> neighbors = identicalNeighbors(clusterImage,x,y,1);
 				int index = x+y*clusterImage.getWidth();
-				for(Integer neighbor:neighbors) merge(clusterIndices,index,neighbor,clusterMap);
+				for(Integer neighbor:neighbors) merge(clusterIndices,index,neighbor.intValue(),clusterMap);
 			}
 		}
 		logger.info(clusterMap.size()+" clusters left");
@@ -97,27 +97,27 @@ public class ImageColorClusterGraph {
 		// find cluster colors and build a graph
 		for(Entry<Integer,List<Integer>> entry : clusterMap.entrySet()) {
 			// select the first pixel in the cluster
-			int index = entry.getValue().get(0);
+			int index = entry.getValue().get(0).intValue();
 			int x = index%clusterImage.getWidth();
 			int y = index/clusterImage.getWidth();
-			newColorMap.put(entry.getKey(), clusterImage.getRGB(x, y));
+			newColorMap.put(entry.getKey(), new Integer(clusterImage.getRGB(x, y)));
 			Vertex v = new Vertex(x,y,new Color(clusterImage.getRGB(x, y)));
 			v.count=entry.getValue().size();
-			vertices.put(entry.getKey(),v);
+			this.vertices.put(entry.getKey(),v);
 		}
 		// create edges between clusters
 		// find cluster colors and build a graph
 		for(Entry<Integer,List<Integer>> entry : clusterMap.entrySet()) {
 			Set<Integer> neighborhood = new HashSet<Integer>();
 			for (Integer index:entry.getValue()) {
-				int x = index%clusterImage.getWidth();
-				int y = index/clusterImage.getWidth();
+				int x = index.intValue()%clusterImage.getWidth();
+				int y = index.intValue()/clusterImage.getWidth();
 				neighborhood.addAll(neighborhood(clusterImage,x,y,1));
 			}
 			neighborhood.removeAll(entry.getValue());
 			for (Integer index:neighborhood) {
-				Edge edge = new Edge(vertices.get(entry.getKey()),vertices.get(clusterIndices[index]));
-				edges.add(edge);
+				Edge edge = new Edge(this.vertices.get(entry.getKey()),this.vertices.get(new Integer(clusterIndices[index.intValue()])));
+				this.edges.add(edge);
 			}
 		}
 		logger.info("Clustering finished in "+(System.currentTimeMillis()-t)+" ms");
@@ -141,7 +141,7 @@ public class ImageColorClusterGraph {
 						(x+i>=0) && (x+i<clusterImage.getWidth()) && 
 						(y+j>=0) && (y+j<clusterImage.getHeight()) &&
 						(clusterImage.getRGB(x, y) == clusterImage.getRGB(x+i, y+j)) )
-					neighbors.add(x+i+(y+j)*clusterImage.getWidth());
+					neighbors.add(new Integer(x+i+(y+j)*clusterImage.getWidth()));
 			}
 		}
 		return neighbors;
@@ -155,7 +155,7 @@ public class ImageColorClusterGraph {
 				if ( 
 						(x+i>=0) && (x+i<clusterImage.getWidth()) && 
 						(y+j>=0) && (y+j<clusterImage.getHeight()) )
-					neighbors.add(x+i+(y+j)*clusterImage.getWidth());
+					neighbors.add(new Integer(x+i+(y+j)*clusterImage.getWidth()));
 			}
 		}
 		return neighbors;
@@ -203,15 +203,15 @@ public class ImageColorClusterGraph {
 	 * @param clusterMap
 	 */
 	private void replaceIndices(int[] clusterIndices, int i1, int i2, Map<Integer, List<Integer>> clusterMap) {
-		List<Integer> pixels = clusterMap.get(clusterIndices[i2]);
-		clusterMap.remove(clusterIndices[i2]);
-		for(Integer i : pixels) clusterIndices[i]=clusterIndices[i1];
+		List<Integer> pixels = clusterMap.get(new Integer(clusterIndices[i2]));
+		clusterMap.remove(new Integer(clusterIndices[i2]));
+		for(Integer i : pixels) clusterIndices[i.intValue()]=clusterIndices[i1];
 		/*
 	    logger.info(clusterIndices[i1]);
 	    logger.info(clusterMap.get(clusterIndices[i1]));
 	    logger.info(pixels);
 		 */
-		clusterMap.get(clusterIndices[i1]).addAll(pixels);
+		clusterMap.get(new Integer(clusterIndices[i1])).addAll(pixels);
 		clusterIndices[i2]=clusterIndices[i1];
 	}
 
@@ -220,70 +220,70 @@ public class ImageColorClusterGraph {
 	 */
 	@SuppressWarnings("unchecked")
 	private void stats() {
-		int nbPixels = image.getWidth()*image.getHeight();
-		colorVertices = new HashMap<Color,List<Vertex>>();
-		Map<Color, Integer> occurrenceMap = ColorUtil.occurrenceMap(image);
+		int nbPixels = this.image.getWidth()*this.image.getHeight();
+		this.colorVertices = new HashMap<Color,List<Vertex>>();
+		Map<Color, Integer> occurrenceMap = ColorUtil.occurrenceMap(this.image);
 		List<float[]> sizes = new ArrayList<float[]>();
 		for(Color color:occurrenceMap.keySet()) {
 			List<Vertex> newColorVertices = new ArrayList<Vertex>();
 			int countSum = 0;
-			for(Vertex vertex:vertices.values()) if (vertex.color.equals(color)) {
+			for(Vertex vertex:this.vertices.values()) if (vertex.color.equals(color)) {
 				newColorVertices.add(vertex);
 				countSum+=vertex.count;
-				clusterSize.add(vertex.count);
+				this.clusterSize.add(new Integer(vertex.count));
 				if (vertex.count>10) sizes.add(new float[]{vertex.count});
 			}
-			colorVertices.put(color,newColorVertices);
-			colorNumberOfClusters.put(color,newColorVertices.size());
-			colorClusterSizeSum.add(countSum);
+			this.colorVertices.put(color,newColorVertices);
+			this.colorNumberOfClusters.put(color,new Integer(newColorVertices.size()));
+			this.colorClusterSizeSum.add(new Integer(countSum));
 			double clusterAverageSize = countSum/(double)newColorVertices.size();
-			colorClusterAverageSize.put(color,clusterAverageSize);
-			colorProportion.put(color,100*occurrenceMap.get(color)/(double)nbPixels);
-			totalCountSum+=countSum;
-			totalNumberOfClusters+=newColorVertices.size();
+			this.colorClusterAverageSize.put(color,new Double(clusterAverageSize));
+			this.colorProportion.put(color,new Double(100*occurrenceMap.get(color).intValue()/(double)nbPixels));
+			this.totalCountSum+=countSum;
+			this.totalNumberOfClusters+=newColorVertices.size();
 		}
-		clusterSizeAverage = totalCountSum/(double)totalNumberOfClusters;
-		clusterSizeStandardDeviation=MathUtil.ecartType(clusterSize, clusterSizeAverage);
-		logger.info("The average cluster is "+clusterSizeAverage+" pixels large");
-		logger.info("The standard deviation in the cluster size is "+clusterSizeStandardDeviation +" pixels");
+		this.clusterSizeAverage = this.totalCountSum/(double)this.totalNumberOfClusters;
+		this.clusterSizeStandardDeviation=MathUtil.ecartType(this.clusterSize, this.clusterSizeAverage);
+		logger.info("The average cluster is "+this.clusterSizeAverage+" pixels large");
+		logger.info("The standard deviation in the cluster size is "+this.clusterSizeStandardDeviation +" pixels"); //$NON-NLS-2$
 		
-		KMeansClusterer clusterer = new KMeansClusterer(numberOfClusters,sizes);
-		clusterSizes = new float[numberOfClusters];
+		KMeansClusterer clusterer = new KMeansClusterer(this.numberOfClusters,sizes);
+		this.clusterSizes = new float[this.numberOfClusters];
 		int i = 0;
 		for(KMeansClusterer.Cluster cluster:clusterer.getClusters()) {
-			clusterSizes[i++]=cluster.getLocation()[0];
+			this.clusterSizes[i++]=cluster.getLocation()[0];
 		}
-		Arrays.sort(clusterSizes);
-		for (float size : clusterSizes) logger.info("size "+size);
+		Arrays.sort(this.clusterSizes);
+		for (float size : this.clusterSizes) logger.info("size "+size);
 		
-		clusterColors = new List[clusterSizes.length];
+		this.clusterColors = new List[this.clusterSizes.length];
 		
 		for(Color color:occurrenceMap.keySet()) {
-			logger.info(colorNumberOfClusters.get(color)+" clusters for color "+Integer.toHexString(color.getRGB())+" with an average of "+colorClusterAverageSize.get(color)+" pixels per cluster    ---   "+occurrenceMap.get(color)+" pixels   --- "+colorProportion.get(color)+" %");
-			int[] listNumbers = getNumbers(colorVertices.get(color));
-			int[] listSurfaces = getSurfaces(colorVertices.get(color));
+			logger.info(this.colorNumberOfClusters.get(color)+" clusters for color "+Integer.toHexString(color.getRGB())+" with an average of "+this.colorClusterAverageSize.get(color)+" pixels per cluster    ---   "+occurrenceMap.get(color)+" pixels   --- "+this.colorProportion.get(color)+" %");
+			int[] listNumbers = getNumbers(this.colorVertices.get(color));
+			int[] listSurfaces = getSurfaces(this.colorVertices.get(color));
 			logger.info("It is made of:");
-			for (int index = 0 ; index < clusterSizes.length ; index++) {
+			for (int index = 0 ; index < this.clusterSizes.length ; index++) {
 				logger.info(listNumbers[index]+" clusters with a total area of "+listSurfaces[index]);
 				if (listNumbers[index]>0) {
-					if (clusterColors[index]==null) clusterColors[index]=new ArrayList<Color>();
-					clusterColors[index].add(color);
+					if (this.clusterColors[index]==null) this.clusterColors[index]=new ArrayList<Color>();
+					this.clusterColors[index].add(color);
 				}
 			}
 		}
 		Map<Integer,Integer> sizeMap = new HashMap<Integer,Integer>();
-		for (Vertex vertex:vertices.values()) {
+		for (Vertex vertex:this.vertices.values()) {
 			int count = vertex.count/10;
-			if (sizeMap.get(count)==null) sizeMap.put(count, 1);
-			else sizeMap.put(count, sizeMap.get(count)+1);
+			if (sizeMap.get(new Integer(count))==null) sizeMap.put(new Integer(count), new Integer(1));
+			else sizeMap.put(new Integer(count), new Integer(sizeMap.get(new Integer(count)).intValue()+1));
 		}
 		Integer[] sizeList = sizeMap.keySet().toArray(new Integer[0]);
 		Arrays.sort(sizeList);
 		int maxOccurence = 0;
-		for(Integer occurence:sizeMap.values()) maxOccurence=Math.max(maxOccurence, occurence);
+		for(Integer occurence:sizeMap.values()) maxOccurence=Math.max(maxOccurence, occurence.intValue());
 		
 		logger.info(sizeList[sizeList.length-1]+" x "+maxOccurence);
-		BufferedImage graphImage = new BufferedImage(sizeList[sizeList.length-1], maxOccurence/10,BufferedImage.TYPE_INT_RGB);
+		BufferedImage graphImage = new BufferedImage(sizeList[sizeList.length-1].intValue(), maxOccurence/10,BufferedImage.TYPE_INT_RGB);
 		Graphics2D graphics = graphImage.createGraphics();
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
@@ -291,7 +291,7 @@ public class ImageColorClusterGraph {
 		graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
 		graphics.setStroke(new BasicStroke(1.0f));
 		graphics.setColor(Color.white);
-		for(Entry<Integer,Integer> entry:sizeMap.entrySet()) graphics.drawLine(entry.getKey(), maxOccurence/10-1, entry.getKey(), maxOccurence/10-1-entry.getValue()/10);
+		for(Entry<Integer,Integer> entry:sizeMap.entrySet()) graphics.drawLine(entry.getKey().intValue(), maxOccurence/10-1, entry.getKey().intValue(), maxOccurence/10-1-entry.getValue().intValue()/10);
 		//ColorUtil.writeImage(graphImage, "/home/julien/Desktop/occurenceMap.png");
 	}
 	/**
@@ -300,7 +300,7 @@ public class ImageColorClusterGraph {
 	 * @return
 	 */
 	private int[] getSurfaces(List<Vertex> list) {
-		int[] surfaces = new int[clusterSizes.length];
+		int[] surfaces = new int[this.clusterSizes.length];
 		for(Vertex vertex:list) {
 			int index = getIndexOfClosestCluster(vertex.count);
 			surfaces[index]+=vertex.count;
@@ -314,7 +314,7 @@ public class ImageColorClusterGraph {
 	 * @return
 	 */
 	private int[] getNumbers(List<Vertex> list) {
-		int[] numbers = new int[clusterSizes.length];
+		int[] numbers = new int[this.clusterSizes.length];
 		for(Vertex vertex:list) {
 			int index = getIndexOfClosestCluster(vertex.count);
 			numbers[index]++;
@@ -330,8 +330,8 @@ public class ImageColorClusterGraph {
 	private int getIndexOfClosestCluster(int count) {
 	    float minDistance = Float.MAX_VALUE;
 	    int closestClusterIndex=0;
-		for(int index = 0 ; index < clusterSizes.length ; index++) {
-			float size=clusterSizes[index];
+		for(int index = 0 ; index < this.clusterSizes.length ; index++) {
+			float size=this.clusterSizes[index];
 			float distance = size-count;
 			distance*=distance;
 			if (distance<minDistance) {
@@ -347,33 +347,33 @@ public class ImageColorClusterGraph {
 	 */
 	public BufferedImage buildGraphImage() {
 		int vertexSize = 1;
-		BufferedImage graphImage = new BufferedImage(image.getWidth()*vertexSize, image.getHeight()*vertexSize,BufferedImage.TYPE_INT_RGB);
+		BufferedImage graphImage = new BufferedImage(this.image.getWidth()*vertexSize, this.image.getHeight()*vertexSize,BufferedImage.TYPE_INT_RGB);
 		Graphics2D graphics = graphImage.createGraphics();
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
 		graphics.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
 		graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
 		graphics.setStroke(new BasicStroke(1.0f));
-		for(int y = 0 ; y < image.getHeight() ; y++) {
-			for(int x = 0 ; x < image.getWidth() ; x++) {
-				Color color = new Color(image.getRGB(x, y));
+		for(int y = 0 ; y < this.image.getHeight() ; y++) {
+			for(int x = 0 ; x < this.image.getWidth() ; x++) {
+				Color color = new Color(this.image.getRGB(x, y));
 				graphics.setColor(color);
 				graphics.fillRect(x*vertexSize, y*vertexSize, vertexSize, vertexSize);
 			}
 		}
 		graphics.setColor(Color.white);
-		logger.info("drawing "+edges.size()+" edges");
-		for(Edge e:edges) {
+		logger.info("drawing "+this.edges.size()+" edges");
+		for(Edge e:this.edges) {
 			graphics.drawLine(e.initialVertex.x*vertexSize+vertexSize/2, e.initialVertex.y*vertexSize+vertexSize/2, e.finalVertex.x*vertexSize+vertexSize/2, e.finalVertex.y*vertexSize+vertexSize/2);
 		}
-		logger.info("drawing "+vertices.values().size()+" vertices");
-		for(Vertex v:vertices.values()) {
+		logger.info("drawing "+this.vertices.values().size()+" vertices");
+		for(Vertex v:this.vertices.values()) {
 			graphics.setColor(v.color);
 			//int countSize = 2*(v.count-1);
 			graphics.fillOval(v.x*vertexSize, v.y*vertexSize, vertexSize-1, vertexSize-1);
 			graphics.setColor(Color.black);
 			graphics.drawOval(v.x*vertexSize, v.y*vertexSize, vertexSize-1, vertexSize-1);
-			graphics.drawString(""+v.count, v.x*vertexSize, v.y*vertexSize+vertexSize-1);
+			graphics.drawString(""+v.count, v.x*vertexSize, v.y*vertexSize+vertexSize-1); //$NON-NLS-1$
 
 		}
 		logger.info("drawing finished");
@@ -388,16 +388,16 @@ public class ImageColorClusterGraph {
 		int maxNumberOfColorsPerCluster = 0;
 		float sizeOfMaxCluster = 0f;
 		Map<Color,float[]> averageSizePerColor = new HashMap<Color,float[]>();
-		for (Color color:colorVertices.keySet()) {
-			List<Vertex> theVertices = colorVertices.get(color);
-			List<Vertex>[] clusterVertices = new List[numberOfClusters];
-			for(int index = 0 ; index<numberOfClusters ; index++) clusterVertices[index]=new ArrayList<Vertex>();
+		for (Color color:this.colorVertices.keySet()) {
+			List<Vertex> theVertices = this.colorVertices.get(color);
+			List<Vertex>[] clusterVertices = new List[this.numberOfClusters];
+			for(int index = 0 ; index<this.numberOfClusters ; index++) clusterVertices[index]=new ArrayList<Vertex>();
 			for(Vertex v:theVertices) {
 				int index = getIndexOfClosestCluster(v.count);
 				clusterVertices[index].add(v);
 			}
-			float[] averageSize = new float[numberOfClusters];
-			for(int i = 0 ; i < numberOfClusters ; i++) {
+			float[] averageSize = new float[this.numberOfClusters];
+			for(int i = 0 ; i < this.numberOfClusters ; i++) {
 				float totalSize = 0f;
 				for(Vertex v:clusterVertices[i]) totalSize+=v.count;
 				if (totalSize==0f) continue;
@@ -407,16 +407,16 @@ public class ImageColorClusterGraph {
 			}
 			averageSizePerColor.put(color, averageSize);
 		}
-		for(List<Color> list:clusterColors) maxNumberOfColorsPerCluster=Math.max(maxNumberOfColorsPerCluster, list.size());
+		for(List<Color> list:this.clusterColors) maxNumberOfColorsPerCluster=Math.max(maxNumberOfColorsPerCluster, list.size());
 		
 		logger.info("sizeOfMaxCluster = "+sizeOfMaxCluster);
 		logger.info("maxNumberOfColorsPerCluster = "+maxNumberOfColorsPerCluster);
 		
-		int[][][] positionAndSizeArray = new int[numberOfClusters][][];
+		int[][][] positionAndSizeArray = new int[this.numberOfClusters][][];
 		int maxIndex = 0;
-		for(int i = 0 ; i < numberOfClusters ; i++) {
+		for(int i = 0 ; i < this.numberOfClusters ; i++) {
 			int index = 0;
-			List<Color> list = clusterColors[i];
+			List<Color> list = this.clusterColors[i];
 			logger.info(list.size()+" colors for "+i);
 			positionAndSizeArray[i]=new int[list.size()][];
 			for(int j = 0 ; j < list.size() ; j++) {
@@ -434,9 +434,9 @@ public class ImageColorClusterGraph {
 		
 		float factor = 1024f/maxIndex;
 		
-		logger.info("Creating image of "+maxIndex*factor+" x "+(int)sizeOfMaxCluster*numberOfClusters*factor);
+		logger.info("Creating image of "+maxIndex*factor+" x "+(int)sizeOfMaxCluster*this.numberOfClusters*factor);
 		
-		BufferedImage graphImage = new BufferedImage((int)(maxIndex*factor), (int)(sizeOfMaxCluster*numberOfClusters*factor),BufferedImage.TYPE_INT_ARGB);
+		BufferedImage graphImage = new BufferedImage((int)(maxIndex*factor), (int)(sizeOfMaxCluster*this.numberOfClusters*factor),BufferedImage.TYPE_INT_ARGB);
 		Graphics2D graphics = graphImage.createGraphics();
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
@@ -446,7 +446,7 @@ public class ImageColorClusterGraph {
 
 		for (int i = 0 ; i < positionAndSizeArray.length ; i++)
 			for (int j = 0 ; j < positionAndSizeArray[i].length ; j++) {
-				graphics.setColor(clusterColors[i].get(j));
+				graphics.setColor(this.clusterColors[i].get(j));
 				graphics.fillOval((int)(positionAndSizeArray[i][j][0]*factor), (int)(positionAndSizeArray[i][j][1]*factor), (int)(positionAndSizeArray[i][j][2]*factor), (int)(positionAndSizeArray[i][j][2]*factor));
 				graphics.setColor(Color.black);
 				graphics.drawOval((int)(positionAndSizeArray[i][j][0]*factor), (int)(positionAndSizeArray[i][j][1]*factor), (int)(positionAndSizeArray[i][j][2]*factor), (int)(positionAndSizeArray[i][j][2]*factor));

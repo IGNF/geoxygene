@@ -6,7 +6,7 @@ package fr.ign.cogit.geoxygene.util.conversion;
  * An implementation of interface CharStream, where the stream is assumed to
  * contain only ASCII characters (without unicode processing).
  */
-
+@SuppressWarnings({"unqualified-field-access","unused"})
 public class SimpleCharStream
 {
 /** Whether parser is static. */
@@ -118,8 +118,8 @@ public class SimpleCharStream
            inputStream.close();
            throw new java.io.IOException();
         }
-        else
-           maxNextCharInd += i;
+        
+        maxNextCharInd += i;
         return;
      }
      catch(java.io.IOException e) {
@@ -392,8 +392,7 @@ public class SimpleCharStream
   {
      if (bufpos >= tokenBegin)
         return new String(buffer, tokenBegin, bufpos - tokenBegin + 1);
-     else
-        return new String(buffer, tokenBegin, bufsize - tokenBegin) +
+     return new String(buffer, tokenBegin, bufsize - tokenBegin) +
                               new String(buffer, 0, bufpos + 1);
   }
 

@@ -37,6 +37,6 @@ public class AwtOutline implements AwtShape
 
 	public AwtOutline() {this.shape=new GeneralPath();}
 	public AwtOutline(Shape shape) {this.shape=shape;}
-	public Rectangle2D getBounds() {return shape.getBounds();}
-	public void draw(Graphics2D g) {g.draw(shape);}
+	public Rectangle2D getBounds() {return this.shape.getBounds();}
+	public void draw(Graphics2D g) {g.draw(this.shape);}
 }

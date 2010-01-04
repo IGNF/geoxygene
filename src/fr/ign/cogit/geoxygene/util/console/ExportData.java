@@ -69,7 +69,7 @@ public class ExportData extends JPanel {
 	 * @param l the <code>ActionListener</code> to be added
 	 */
 	public void addActionListener(ActionListener l) {
-		listenerList.add(ActionListener.class, l);
+		this.listenerList.add(ActionListener.class, l);
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class ExportData extends JPanel {
 	 */
 	protected void fireActionPerformed(ActionEvent event) {
 		// Guaranteed to return a non-null array
-		Object[] listeners = listenerList.getListenerList();
+		Object[] listeners = this.listenerList.getListenerList();
 		// Process the listeners last to first, notifying
 		// those that are interested in this event
 		for (int i = listeners.length-2; i>=0; i-=2) {

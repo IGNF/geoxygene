@@ -140,9 +140,9 @@ public class GUIChargementDonnees extends JPanel {
 		 * Initialise les boutons et le layout du panel.
 		 */
 		private void initGUI() {
-			box.setLayout(new BoxLayout(box,BoxLayout.Y_AXIS));
+			this.box.setLayout(new BoxLayout(this.box,BoxLayout.Y_AXIS));
 			
-			this.add(box,BorderLayout.CENTER);
+			this.add(this.box,BorderLayout.CENTER);
 			
 			GridBagConstraints c = new GridBagConstraints();
 			c.fill = GridBagConstraints.HORIZONTAL; 
@@ -155,20 +155,20 @@ public class GUIChargementDonnees extends JPanel {
 						previousDialog();
 					}
 				});
-				buttons.add(previousButton,c);
+				this.buttons.add(previousButton,c);
 			}
-			if (isFinal) {
+			if (this.isFinal) {
 				c.anchor = GridBagConstraints.EAST;
-				finishButton = new JButton("Finir");
-				finishButton.addActionListener(new ActionListener() {
+				this.finishButton = new JButton("Finir");
+				this.finishButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						finish();
 					}
 				});
-				buttons.add(finishButton,c);
+				this.buttons.add(this.finishButton,c);
 			}
-			this.add(buttons,BorderLayout.SOUTH);
-			this.setBorder(padding);
+			this.add(this.buttons,BorderLayout.SOUTH);
+			this.setBorder(GUIChargementDonnees.this.padding);
 		}
 		/**
 		 * Ajout d'un panel à la liste des panels suivants.
@@ -187,13 +187,13 @@ public class GUIChargementDonnees extends JPanel {
 				c.fill = GridBagConstraints.HORIZONTAL;
 				c.weightx=1;
 				c.anchor = GridBagConstraints.EAST;
-				nextButton = new JButton("Suivant");
-				nextButton.addActionListener(new ActionListener() {
+				this.nextButton = new JButton("Suivant");
+				this.nextButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						nextDialog(nextPanel());
 					}
 				});
-				buttons.add(nextButton,c);
+				this.buttons.add(this.nextButton,c);
 			}
 		}
 		
@@ -260,8 +260,8 @@ public class GUIChargementDonnees extends JPanel {
 	GeoPanel exportPanel;
 	BorderLayout layout = new BorderLayout();
 	DefaultListModel listModel = new DefaultListModel();
-	private DataSet dataSet = null;
-	private List<?> dataSets = null;
+	DataSet dataSet = null;
+	List<?> dataSets = null;
 	
 	int typeGeodatabase = GeodatabaseType.OJB;
 	
@@ -270,24 +270,24 @@ public class GUIChargementDonnees extends JPanel {
 		super();
 		this.frame = frame;
 		frame.setMinimumSize(new Dimension(600,400));
-		this.setLayout(layout);
+		this.setLayout(this.layout);
 
-		label = new JLabel("Appuyer sur \"suivant\" pour passer à l'étape suivante.",SwingConstants.CENTER);
+		this.label = new JLabel("Appuyer sur \"suivant\" pour passer à l'étape suivante.",SwingConstants.CENTER);
 		
-		chargementPanel = new GeoPanel(chargementDesc);
+		this.chargementPanel = new GeoPanel(this.chargementDesc);
 		
-		chargementExistantPanel = creerChargementExistant();
-		chargementExistantConfirmationPanel = creerChargementExistantConfirmation();
+		this.chargementExistantPanel = creerChargementExistant();
+		this.chargementExistantConfirmationPanel = creerChargementExistantConfirmation();
 		
-		chargementAvancePanel = new GeoPanel(chargementAvanceDesc,chargementPanel,false);
+		this.chargementAvancePanel = new GeoPanel(this.chargementAvanceDesc,this.chargementPanel,false);
 		
-		chargementAvanceChoixJeuPanel = creerChargementAvanceChoixJeu();
-		chargementAvanceNouveauJeuPanel = new GeoPanel(chargementAvanceNouveauJeuDesc,chargementAvancePanel,true);
-		chargementAvanceIgnorerJeuPanel = new GeoPanel(chargementAvanceIgnorerJeuDesc,chargementAvancePanel,false);
+		this.chargementAvanceChoixJeuPanel = creerChargementAvanceChoixJeu();
+		this.chargementAvanceNouveauJeuPanel = new GeoPanel(this.chargementAvanceNouveauJeuDesc,this.chargementAvancePanel,true);
+		this.chargementAvanceIgnorerJeuPanel = new GeoPanel(this.chargementAvanceIgnorerJeuDesc,this.chargementAvancePanel,false);
 
-		chargementShapefilePanel = new GeoPanel(chargementShapefileDesc,chargementAvanceIgnorerJeuPanel,true);
+		this.chargementShapefilePanel = new GeoPanel(this.chargementShapefileDesc,this.chargementAvanceIgnorerJeuPanel,true);
 		// 
-		final JList liste = new JList(listModel);
+		final JList liste = new JList(this.listModel);
 		final JButton ajouterButton = new JButton("Ajouter des shapefiles",new ImageIcon("images/Plus.png"));
 		final JButton supprimerButton = new JButton("Supprimer des shapefiles",new ImageIcon("images/Moins.png"));
 		ajouterButton.setToolTipText("Ajouter des fichiers ESRI shapefile à la liste");
@@ -299,7 +299,7 @@ public class GUIChargementDonnees extends JPanel {
 				chooser.dispose();
 				if (files!=null) {
 					for (int i = 0 ; i < files.length ; i++) {
-						listModel.addElement(files[i]);
+						GUIChargementDonnees.this.listModel.addElement(files[i]);
 					}
 				}
 				frame.pack();
@@ -312,19 +312,19 @@ public class GUIChargementDonnees extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				for (int index = liste.getSelectedIndices().length-1 ; index >=0 ; index --) {
 					int selectedIndex = liste.getSelectedIndices()[index];
-					listModel.remove(selectedIndex);
+					GUIChargementDonnees.this.listModel.remove(selectedIndex);
 				}
 			}
 		});
 		JPanel ajouterEtSupprimer = new JPanel(new BorderLayout());
 		ajouterEtSupprimer.add(ajouterButton,BorderLayout.WEST);
 		ajouterEtSupprimer.add(supprimerButton,BorderLayout.EAST);
-		chargementShapefilePanel.add(ajouterEtSupprimer,BorderLayout.NORTH);
+		this.chargementShapefilePanel.add(ajouterEtSupprimer,BorderLayout.NORTH);
 		liste.setMinimumSize(new Dimension(200,100));
-		chargementShapefilePanel.add(liste,BorderLayout.CENTER);
+		this.chargementShapefilePanel.add(liste,BorderLayout.CENTER);
 		
-		add(label, BorderLayout.SOUTH);
-		nextDialog(chargementPanel);
+		add(this.label, BorderLayout.SOUTH);
+		nextDialog(this.chargementPanel);
 	}
 
 	/**
@@ -332,7 +332,7 @@ public class GUIChargementDonnees extends JPanel {
 	 * fichiers à charger.
 	 */
 	private GeoPanel creerChargementExistant() {
-	    final GeoPanel panel = new GeoPanel(chargementExistantDesc,chargementPanel);
+	    final GeoPanel panel = new GeoPanel(this.chargementExistantDesc,this.chargementPanel);
 	    	
 		final JTextField chargementText = new JTextField("");
 		final JButton choixFichierButton = new JButton("Choisir...");
@@ -356,16 +356,16 @@ public class GUIChargementDonnees extends JPanel {
 					Chargement chargement = Chargement.charge(choixFichier.getSelectedFile().getName());
 					for(String nomFichier:chargement.getFichiers().values()) {
 						JLabel newLabel = new JLabel(nomFichier);
-						chargementExistantConfirmationPanel.getBox().add(newLabel,BorderLayout.CENTER);
+						GUIChargementDonnees.this.chargementExistantConfirmationPanel.getBox().add(newLabel,BorderLayout.CENTER);
 					}
-					frame.pack();
-					frame.repaint();
+					GUIChargementDonnees.this.frame.pack();
+					GUIChargementDonnees.this.frame.repaint();
 				}
 			}
 		});
 
 		JPanel fichierPanel = new JPanel(new GridBagLayout());
-		fichierPanel.setBorder(padding);
+		fichierPanel.setBorder(this.padding);
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 4;
@@ -383,7 +383,7 @@ public class GUIChargementDonnees extends JPanel {
 	/**
 	 */
 	private GeoPanel creerChargementExistantConfirmation() {
-	    GeoPanel panel = new GeoPanel(chargementExistantConfirmationDesc,chargementExistantPanel,true);
+	    GeoPanel panel = new GeoPanel(this.chargementExistantConfirmationDesc,this.chargementExistantPanel,true);
 		panel.getBox().add(new JLabel("Appuyer sur \"Finir\" pour exécuter le chargement des fichiers listés :"), BorderLayout.NORTH);
 		return panel;
 	}
@@ -393,7 +393,7 @@ public class GUIChargementDonnees extends JPanel {
 	 * TODO ajouter aussi le choix de la base de donnée !!!
 	 */
 	private GeoPanel creerChargementAvanceChoixJeu() {
-		final GeoPanel panel = new GeoPanel(chargementAvanceChoixJeuDesc,chargementAvancePanel,true);
+		final GeoPanel panel = new GeoPanel(this.chargementAvanceChoixJeuDesc,this.chargementAvancePanel,true);
 
 		panel.getFinishButton().setEnabled(false);
 		/*
@@ -414,7 +414,7 @@ public class GUIChargementDonnees extends JPanel {
 		});
 		*/
 		JPanel dbPanel = new JPanel(new GridBagLayout());
-		dbPanel.setBorder(padding);
+		dbPanel.setBorder(this.padding);
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1;
@@ -422,7 +422,7 @@ public class GUIChargementDonnees extends JPanel {
 		c.gridy = 0;
 
 		// ATTENTION : l'indice dans le tableau doit correspondre au type de database pour la méthode GeodatabaseFactory.newInstance(int);
-		String[] geodatabaseTypeStrings = {"None","OJB","Hibernate"};
+		String[] geodatabaseTypeStrings = {"None","OJB","Hibernate"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		JComboBox geodatabaseTypeCombo = new JComboBox(geodatabaseTypeStrings);
 		dbPanel.add(geodatabaseTypeCombo,c);
 		
@@ -440,18 +440,18 @@ public class GUIChargementDonnees extends JPanel {
 				if (index != 0) {
 				    if (logger.isDebugEnabled()) logger.debug("création d'une instance de base de données de type "+GeodatabaseType.toString(index));
 					DataSet.db = GeodatabaseFactory.newInstance(index);
-					dataSets = DataSet.db.loadAll(DataSet.class);
-					for(Object o:dataSets) {
+					GUIChargementDonnees.this.dataSets = DataSet.db.loadAll(DataSet.class);
+					for(Object o:GUIChargementDonnees.this.dataSets) {
 						DataSet subDataSet = (DataSet) o;
 						dataSetStrings.add(subDataSet.getNom());
 						if (logger.isDebugEnabled()) logger.debug("Ajout du dataset "+subDataSet.getNom());
 						/**  Si on a trouvé au moins un dataset, on active le bouton finish */
 						panel.getFinishButton().setEnabled(true);
 					}
-					if(dataSets.isEmpty()) {
+					if(GUIChargementDonnees.this.dataSets.isEmpty()) {
 						logger.info("Aucun dataset trouvé dans la base de donnée sélectionnée");
 					} else {
-						dataSet = (DataSet) dataSets.get(0);
+						GUIChargementDonnees.this.dataSet = (DataSet) GUIChargementDonnees.this.dataSets.get(0);
 					}
 					combo.setModel(new DefaultComboBoxModel(dataSetStrings.toArray(new String[0])));
 				}
@@ -461,7 +461,7 @@ public class GUIChargementDonnees extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int index = ((JComboBox)e.getSource()).getSelectedIndex();
-				dataSet = (DataSet) dataSets.get(index);
+				GUIChargementDonnees.this.dataSet = (DataSet) GUIChargementDonnees.this.dataSets.get(index);
 			}
 		});
 		panel.add(dbPanel,BorderLayout.CENTER);
@@ -472,7 +472,7 @@ public class GUIChargementDonnees extends JPanel {
 	 */
 	@SuppressWarnings("unused")
 	private GeoPanel creerChargementAvanceNouveauJeu() {
-		GeoPanel panel = new GeoPanel(chargementAvanceNouveauJeuDesc,chargementAvancePanel,true);
+		GeoPanel panel = new GeoPanel(this.chargementAvanceNouveauJeuDesc,this.chargementAvancePanel,true);
 		
 		final int numButtons = 2;
 		JRadioButton[] radioButtons = new JRadioButton[numButtons];
@@ -498,14 +498,14 @@ public class GUIChargementDonnees extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				String command = group.getSelection().getActionCommand();
 				if (command == rechargerCommand) {
-					nextDialog(exportPanel);
+					nextDialog(GUIChargementDonnees.this.exportPanel);
 				} else if (command == nouveauFichierCommand) {
-					nextDialog(exportPanel);
+					nextDialog(GUIChargementDonnees.this.exportPanel);
 				}
 			}
 		});
 
-		GeoPanel box = new GeoPanel(chargementAvanceSourceDesc);
+		GeoPanel box = new GeoPanel(this.chargementAvanceSourceDesc);
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor=GridBagConstraints.LINE_START;
@@ -542,10 +542,10 @@ public class GUIChargementDonnees extends JPanel {
 		final JButton nextButton = new JButton("Suite");
 
 		nextButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {nextDialog(exportPanel);}
+			public void actionPerformed(ActionEvent e) {nextDialog(GUIChargementDonnees.this.exportPanel);}
 		});
 
-		GeoPanel box = new GeoPanel(chargementAvanceSchemaDesc);
+		GeoPanel box = new GeoPanel(this.chargementAvanceSchemaDesc);
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor=GridBagConstraints.LINE_START;
@@ -606,7 +606,7 @@ public class GUIChargementDonnees extends JPanel {
 			}
 		});
 
-		GeoPanel box = new GeoPanel(chargementAvanceMappingDesc);
+		GeoPanel box = new GeoPanel(this.chargementAvanceMappingDesc);
 		JPanel fichierPanel = new JPanel();
 		fichierPanel.setLayout(new BoxLayout(fichierPanel, BoxLayout.X_AXIS));
 
@@ -648,7 +648,7 @@ public class GUIChargementDonnees extends JPanel {
 	 */
 	@SuppressWarnings("unused")
 	private GeoPanel creerExportDialogBox() {
-		GeoPanel box = new GeoPanel(exportDesc);
+		GeoPanel box = new GeoPanel(this.exportDesc);
 		return box;
 	}
 
@@ -656,11 +656,11 @@ public class GUIChargementDonnees extends JPanel {
 	 * @param newPanel
 	 */
 	protected void nextDialog(GeoPanel newPanel) {
-		if (currentPanel!=null) this.remove(currentPanel);
-		currentPanel=newPanel;
-		history.add(currentPanel);
-		this.add(currentPanel,BorderLayout.CENTER);
-		this.frame.setTitle(currentPanel.getName() + " :");
+		if (this.currentPanel!=null) this.remove(this.currentPanel);
+		this.currentPanel=newPanel;
+		this.history.add(this.currentPanel);
+		this.add(this.currentPanel,BorderLayout.CENTER);
+		this.frame.setTitle(this.currentPanel.getName() + " :");
 		this.frame.pack();
 		this.frame.repaint();
 	}
@@ -668,12 +668,12 @@ public class GUIChargementDonnees extends JPanel {
 	/**
 	 */
 	protected void previousDialog() {
-		if (history.size()<2) return;
-		if (currentPanel!=null) remove(currentPanel);
-		history.pop();
-		currentPanel=history.peek();
-		this.add(currentPanel,BorderLayout.CENTER);
-		this.frame.setTitle(currentPanel.getName() + " :");
+		if (this.history.size()<2) return;
+		if (this.currentPanel!=null) remove(this.currentPanel);
+		this.history.pop();
+		this.currentPanel=this.history.peek();
+		this.add(this.currentPanel,BorderLayout.CENTER);
+		this.frame.setTitle(this.currentPanel.getName() + " :");
 		this.frame.pack();
 		this.frame.repaint();
 	}
@@ -683,14 +683,14 @@ public class GUIChargementDonnees extends JPanel {
 	 */
 	protected void finish() {this.frame.dispose();}
 	/** Sets the text displayed at the bottom of the frame. */
-	void setLabel(String newText) {label.setText(newText);}
+	void setLabel(String newText) {this.label.setText(newText);}
 
 	/**
 	 * Create the GUI and show it.  For thread safety,
 	 * this method should be invoked from the
 	 * event-dispatching thread.
 	 */
-	private static void createAndShowGUI() {
+	static void createAndShowGUI() {
 		//Create and set up the window.
 		JFrame frame = new JFrame("DialogDemo");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -2,6 +2,7 @@
 package fr.ign.cogit.geoxygene.util.conversion;
 
 /** Token Manager. */
+@SuppressWarnings({"unqualified-field-access","unused"})
 public class WktGeOxygeneTokenManager implements WktGeOxygeneConstants
 {
 
@@ -857,8 +858,7 @@ public void SwitchTo(int lexState)
 {
    if (lexState >= 1 || lexState < 0)
       throw new TokenMgrError("Error: Ignoring invalid lexical state : " + lexState + ". State unchanged.", TokenMgrError.INVALID_LEXICAL_STATE);
-   else
-      curLexState = lexState;
+curLexState = lexState;
 }
 
 protected Token jjFillToken()
@@ -929,10 +929,7 @@ public Token getNextToken()
          matchedToken = jjFillToken();
          return matchedToken;
       }
-      else
-      {
-         continue EOFLoop;
-      }
+    continue EOFLoop;
    }
    int error_line = input_stream.getEndLine();
    int error_column = input_stream.getEndColumn();

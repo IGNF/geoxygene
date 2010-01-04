@@ -93,7 +93,7 @@ public class Token {
   @Override
   public String toString()
   {
-     return image;
+     return this.image;
   }
 
   /**

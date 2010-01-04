@@ -91,7 +91,7 @@ public class RemapImageUsingPalette {
 		// check if there is no useless color
 		List<Color> colorsToRemove = new ArrayList<Color>();
 		for (int i = 0 ; i < quantization.getColorLookUpTable().length ; i++) {
-		    if(occurrenceMap.get(quantization.getColorLookUpTable()[i])==0) colorsToRemove.add(quantization.getColorLookUpTable()[i]);
+		    if(occurrenceMap.get(quantization.getColorLookUpTable()[i]).intValue()==0) colorsToRemove.add(quantization.getColorLookUpTable()[i]);
 		}
 		if (!colorsToRemove.isEmpty()) {
 		    paletteColors.removeAll(colorsToRemove);
@@ -107,8 +107,8 @@ public class RemapImageUsingPalette {
 			Color rgb = quantization.getColorLookUpTable()[i];
 			if (rgb==null) continue;
 			Color color = new Color(rgb.getRGB());
-			colors.add(color.getRGB());
-			if (logger.isDebugEnabled()) logger.debug(Integer.toHexString(color.getRGB())+"    ---   "+occurrenceMap.get(quantization.getColorLookUpTable()[i])+" pixels   --- "+100*occurrenceMap.get(quantization.getColorLookUpTable()[i])/(double)nbPixels+" %");
+			colors.add(new Integer(color.getRGB()));
+			if (logger.isDebugEnabled()) logger.debug(Integer.toHexString(color.getRGB())+"    ---   "+occurrenceMap.get(quantization.getColorLookUpTable()[i])+" pixels   --- "+100*occurrenceMap.get(quantization.getColorLookUpTable()[i]).intValue()/(double)nbPixels+" %");
 		}
 		File directory = new File(imageFile.getAbsolutePath()+"_"+numberOfColors);
 		directory.mkdir();

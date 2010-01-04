@@ -97,11 +97,11 @@ class ObjectViewerThemeButton extends JToggleButton {
 
 
 	public ObjectViewerInterface getObjectViewerInterface() {
-		return objectViewerInterface;
+		return this.objectViewerInterface;
 	}
 
 	public ObjectViewerThemeProperties getThemeProperties() {
-		return themeProperties;
+		return this.themeProperties;
 	}
 
 }

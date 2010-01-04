@@ -77,7 +77,7 @@ public class ImgUtil {
 	throws Exception
 	{
 		if (geoms.length!=colors.length)
-			throw new IllegalArgumentException("geoms.length!=colors.length");
+			throw new IllegalArgumentException("geoms.length!=colors.length"); //$NON-NLS-1$
 		for (int i=0; i<geoms.length; i++) {
 			drawGeom(g, geoms[i], colors[i], transform);
 		}
@@ -89,7 +89,7 @@ public class ImgUtil {
 	throws Exception
 	{
 		if (isEmpty(geom)) return;
-		else drawGeom(g, WktGeOxygene.makeWkt(geom), color, transform);
+		drawGeom(g, WktGeOxygene.makeWkt(geom), color, transform);
 	}
 
 	private static
@@ -180,17 +180,18 @@ public class ImgUtil {
 	saveImage(BufferedImage image, String path)
 	throws IOException
 	{
-		String format="";
+		String format=""; //$NON-NLS-1$
 		String[] formatNames=ImageIO.getWriterFormatNames();
 		for (int i=0; i<formatNames.length; i++) {
-			if (path.endsWith("."+formatNames[i]))
+			if (path.endsWith("."+formatNames[i])) //$NON-NLS-1$
 				format=formatNames[i];
 		}
-		if (format.equals("")) {
-			path+=".png";
-			format="png";
+                String newPath=path;
+		if (format.equals("")) { //$NON-NLS-1$
+			newPath+=".png"; //$NON-NLS-1$
+			format="png"; //$NON-NLS-1$
 		}
-		ImageIO.write(image, format, new File(path));
+		ImageIO.write(image, format, new File(newPath));
 	}
 
 	public static void saveImage(GM_Object geom, String path)
@@ -263,7 +264,7 @@ public class ImgUtil {
 	throws Exception
 	{
 		DOMImplementation impl=GenericDOMImplementation.getDOMImplementation();
-		Document svgDoc=impl.createDocument(null, "svg", null);
+		Document svgDoc=impl.createDocument(null, "svg", null); //$NON-NLS-1$
 
 		AffineTransform transform=ImgUtil.makeScaleTransform(geoms,width,height);
 		final SVGGraphics2D svgGenerator=new SVGGraphics2D(svgDoc);
@@ -324,7 +325,7 @@ public class ImgUtil {
 	throws Exception
 	{
 		DOMImplementation impl=GenericDOMImplementation.getDOMImplementation();
-		Document svgDoc=impl.createDocument(null, "svg", null);
+		Document svgDoc=impl.createDocument(null, "svg", null); //$NON-NLS-1$
 
 		AffineTransform transform=ImgUtil.makeScaleTransform(geoms,width,height);
 
@@ -339,7 +340,7 @@ public class ImgUtil {
 
 		Writer svgGenOut=
 			new OutputStreamWriter(
-					new GZIPOutputStream(new FileOutputStream(path)), "UTF-8");
+					new GZIPOutputStream(new FileOutputStream(path)), "UTF-8"); //$NON-NLS-1$
 
 
 		boolean useCss=true;

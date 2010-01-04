@@ -52,9 +52,8 @@ class JPEGImageFileFilter extends FileFilter {
 		if (extension != null) {
 			if (extension.equals(Utils.JPG_IMAGE)) {
 				return true;
-			} else {
-				return false;
 			}
+			return false;
 		}
 		return false;
 	}

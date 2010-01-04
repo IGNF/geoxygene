@@ -298,7 +298,7 @@ class ObjectViewerToolBar extends JToolBar {
 
 		for (int i = 0; i < nbtbcomp; i++) {
 			classname = tbcomp[i].getClass().getName();
-			if ((classname == "javax.swing.JToggleButton")
+			if ((classname == "javax.swing.JToggleButton") //$NON-NLS-1$
 					&& (tbcomp[i] != tb_button))
 				((JToggleButton) tbcomp[i]).setSelected(false);
 		}
@@ -306,7 +306,7 @@ class ObjectViewerToolBar extends JToolBar {
 
 
 	public ObjectViewerInterface getObjectViewerInterface() {
-		return objectViewerInterface;
+		return this.objectViewerInterface;
 	}
 
 }

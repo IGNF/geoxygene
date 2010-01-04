@@ -50,7 +50,7 @@ public class ObjectBrowserListRuler extends JComponent {
 	private static final long serialVersionUID = 1L;
 
 	/** Famille de la police de caractères par défaut. */
-	public static final String FONT_FAMILY = "SansSerif";
+	public static final String FONT_FAMILY = "SansSerif"; //$NON-NLS-1$
 	/** Taille de la police de caractères par défaut. */
 	public static final int FONT_SIZE = 10;
 	/** Couleur de fond du composant graphique. */
@@ -71,9 +71,9 @@ public class ObjectBrowserListRuler extends JComponent {
 	 * @param height hauteur souhaitée en pixel du composant graphique.
 	 */
 	public ObjectBrowserListRuler(int nbElements,double height) {
-		nb_elements = nbElements;
-		size = FONT_SIZE + 7 * ((Integer.toString(nbElements)).length() - 1);
-		gap=height/nbElements;
+		this.nb_elements = nbElements;
+		this.size = FONT_SIZE + 7 * ((Integer.toString(nbElements)).length() - 1);
+		this.gap=height/nbElements;
 
 	}
 
@@ -83,7 +83,7 @@ public class ObjectBrowserListRuler extends JComponent {
 	 * @param ph la hauteur souhaitée en pixel du composant graphique.
 	 */
 	public void setPreferredHeight(int ph) {
-		setPreferredSize(new Dimension(size, ph));
+		setPreferredSize(new Dimension(this.size, ph));
 	}
 
 	@Override
@@ -96,8 +96,8 @@ public class ObjectBrowserListRuler extends JComponent {
 		g.setFont(new Font(FONT_FAMILY, Font.PLAIN, FONT_SIZE));
 		g.setColor(Color.black);
 
-		for (int i = 0; i < nb_elements; i++) {
-			g.drawString(Integer.toString(i), 2, (int)(i * gap + gap/2+1));
+		for (int i = 0; i < this.nb_elements; i++) {
+			g.drawString(Integer.toString(i), 2, (int)(i * this.gap + this.gap/2+1));
 		}
 
 	}

@@ -56,7 +56,7 @@ public class ObjectBrowserNullPointerFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	/** Localisation des fichiers d'internationalisation de l'interface. */
-	private static final String I18N_LANGUAGE_FILE_LOCATION = "fr.ign.cogit.geoxygene.util.browser.ObjectBrowserLanguageFile";
+	private static final String I18N_LANGUAGE_FILE_LOCATION = "fr.ign.cogit.geoxygene.util.browser.ObjectBrowserLanguageFile"; //$NON-NLS-1$
 	/** Locale courante. */
 	private Locale currentLocale;
 	/** RessourceBundle lié à la Locale et au fichier d'internationalisation. */
@@ -71,17 +71,17 @@ public class ObjectBrowserNullPointerFrame extends JFrame {
 
 		super();
 
-		currentLocale = Locale.getDefault();
-		i18nLanguageFile = ResourceBundle.getBundle(I18N_LANGUAGE_FILE_LOCATION,currentLocale);
+		this.currentLocale = Locale.getDefault();
+		this.i18nLanguageFile = ResourceBundle.getBundle(I18N_LANGUAGE_FILE_LOCATION,this.currentLocale);
 		/* i18nLanguageFile = ResourceBundle.getBundle(I18N_LANGUAGE_FILE_LOCATION,new Locale("en", "US")); */
 
-		setTitle(i18nLanguageFile.getString("NullPointerFrameDefaultTitle"));
+		setTitle(this.i18nLanguageFile.getString("NullPointerFrameDefaultTitle")); //$NON-NLS-1$
 
 		try {
 			URL imageUrl =
-				this.getClass().getResource("images/exclamation.gif");
+				this.getClass().getResource("images/exclamation.gif"); //$NON-NLS-1$
 
-			JLabel nullPointerLabel = new JLabel(i18nLanguageFile.getString("NullPointerFrameDefaultLabel"),new ImageIcon(imageUrl),SwingConstants.CENTER);
+			JLabel nullPointerLabel = new JLabel(this.i18nLanguageFile.getString("NullPointerFrameDefaultLabel"),new ImageIcon(imageUrl),SwingConstants.CENTER); //$NON-NLS-1$
 
 			this.getContentPane().add(nullPointerLabel, BorderLayout.CENTER);
 

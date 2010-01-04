@@ -71,6 +71,7 @@ import javax.swing.JSpinner;
 import javax.swing.JToolBar;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -105,19 +106,19 @@ public class ColorQuantizer extends JFrame implements ActionListener, MouseListe
 
     private JLabel imageLabel = new JLabel();
     private ImageIcon currentIcon = null;
-    private JToolBar buttonBar = new JToolBar();
-    private MissingIcon placeholderIcon = new MissingIcon();
+    JToolBar buttonBar = new JToolBar();
+    MissingIcon placeholderIcon = new MissingIcon();
 
     /**
      * List of all the descriptions of the image files. These correspond one to
      * one with the image file names
      */
-    private String[] imageCaptions = null;
+    String[] imageCaptions = null;
 
     /**
      * List of all the image files to load.
      */
-    private String[] imageFileNames = null;
+    String[] imageFileNames = null;
 
     /**
      * 
@@ -126,70 +127,70 @@ public class ColorQuantizer extends JFrame implements ActionListener, MouseListe
 	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	setTitle("Palette creator");
 
-	openButton.setMnemonic(KeyEvent.VK_O);
-	openButton.setActionCommand("Open");
-	openButton.addActionListener(this);
-	imageLabel = new JLabel(new MissingIcon(800,600),JLabel.CENTER);
+	this.openButton.setMnemonic(KeyEvent.VK_O);
+	this.openButton.setActionCommand("Open"); //$NON-NLS-1$
+	this.openButton.addActionListener(this);
+	this.imageLabel = new JLabel(new MissingIcon(800,600),SwingConstants.CENTER);
 	//imageLabel.setSize(400, 300);
 	//imageLabel.setMinimumSize(new Dimension(400,300));
-	imageLabel.setVerticalTextPosition(JLabel.BOTTOM);
-	imageLabel.setHorizontalTextPosition(JLabel.CENTER);
-	imageLabel.setHorizontalAlignment(JLabel.CENTER);
-	imageLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-	buttonBar.add(Box.createGlue());
-	buttonBar.add(Box.createGlue());
+	this.imageLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
+	this.imageLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+	this.imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	this.imageLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+	this.buttonBar.add(Box.createGlue());
+	this.buttonBar.add(Box.createGlue());
 
-	String[] colorSpaceStrings = { "RGB","LAB","XYZ" };
-	colorSpaceList = new JComboBox(colorSpaceStrings);
-	colorSpaceList.setSelectedIndex(0);
-	colorSpaceList.addActionListener(this);
+	String[] colorSpaceStrings = { "RGB","LAB","XYZ" };  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+	this.colorSpaceList = new JComboBox(colorSpaceStrings);
+	this.colorSpaceList.setSelectedIndex(0);
+	this.colorSpaceList.addActionListener(this);
 
-	String[] algorithmStrings = { "K-Means" , "Octree" , "Octree+Hierarchical Clustering" };
-	algorithmList = new JComboBox(algorithmStrings);
-	algorithmList.setSelectedIndex(0);
-	algorithmList.addActionListener(this);
+	String[] algorithmStrings = { "K-Means" , "Octree" , "Octree+Hierarchical Clustering" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	this.algorithmList = new JComboBox(algorithmStrings);
+	this.algorithmList.setSelectedIndex(0);
+	this.algorithmList.addActionListener(this);
 
-	String[] weightStrings = { "UNIFORM","AB","LAABB","RGGB" };
-	weightList = new JComboBox(weightStrings);
-	weightList.setSelectedIndex(0);
-	weightList.addActionListener(this);
+	String[] weightStrings = { "UNIFORM","AB","LAABB","RGGB" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+	this.weightList = new JComboBox(weightStrings);
+	this.weightList.setSelectedIndex(0);
+	this.weightList.addActionListener(this);
 
-	String[] minimumSpanningTreeAlgorithmStrings = { "Kruskal","Prim" };
-	minimumSpanningTreeAlgorithmList = new JComboBox(minimumSpanningTreeAlgorithmStrings);
-	minimumSpanningTreeAlgorithmList.setSelectedIndex(0);
-	minimumSpanningTreeAlgorithmList.addActionListener(this);
+	String[] minimumSpanningTreeAlgorithmStrings = { "Kruskal","Prim" }; //$NON-NLS-1$ //$NON-NLS-2$
+	this.minimumSpanningTreeAlgorithmList = new JComboBox(minimumSpanningTreeAlgorithmStrings);
+	this.minimumSpanningTreeAlgorithmList.setSelectedIndex(0);
+	this.minimumSpanningTreeAlgorithmList.addActionListener(this);
 
-	String[] distanceStrings = { "Min","Max", "Avg" };
-	distanceClusterList = new JComboBox(distanceStrings);
-	distanceClusterList.setSelectedIndex(0);
-	distanceClusterList.addActionListener(this);
+	String[] distanceStrings = { "Min","Max", "Avg" };   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+	this.distanceClusterList = new JComboBox(distanceStrings);
+	this.distanceClusterList.setSelectedIndex(0);
+	this.distanceClusterList.addActionListener(this);
 
-	distanceColorList = new JComboBox(distanceStrings);
-	distanceColorList.setSelectedIndex(0);
-	distanceColorList.addActionListener(this);
+	this.distanceColorList = new JComboBox(distanceStrings);
+	this.distanceColorList.setSelectedIndex(0);
+	this.distanceColorList.addActionListener(this);
 
 	SpinnerModel model = new SpinnerNumberModel(64, //initial value
 		1, //min
 		128, //max
 		1);       
-	numberOfColorsOctreeSpinner = new JSpinner(model);
+	this.numberOfColorsOctreeSpinner = new JSpinner(model);
 	model = new SpinnerNumberModel(16, //initial value
 		1, //min
 		128, //max
 		1);       
-	finalNumberOfColorsSpinner = new JSpinner(model);
+	this.finalNumberOfColorsSpinner = new JSpinner(model);
 
-	computeButton.setMnemonic(KeyEvent.VK_C);
-	computeButton.setActionCommand("Compute");
-	computeButton.addActionListener(this);
-	computeButton.setEnabled(false);
+	this.computeButton.setMnemonic(KeyEvent.VK_C);
+	this.computeButton.setActionCommand("Compute"); //$NON-NLS-1$
+	this.computeButton.addActionListener(this);
+	this.computeButton.setEnabled(false);
 
 	//setLayout(new BorderLayout());
 	initializeGroup();
 
-	add(group, BorderLayout.PAGE_START);
-	add(buttonBar, BorderLayout.PAGE_END);
-	add(imageLabel, BorderLayout.CENTER);
+	add(this.group, BorderLayout.PAGE_START);
+	add(this.buttonBar, BorderLayout.PAGE_END);
+	add(this.imageLabel, BorderLayout.CENTER);
 
 	//setSize(400, 300);
 	// this centers the frame on the screen
@@ -204,29 +205,29 @@ public class ColorQuantizer extends JFrame implements ActionListener, MouseListe
      * 
      */
     private void initializeGroup() {
-	group.removeAll();
-	group.add(openButton,BorderLayout.PAGE_START);
-	group.add(Box.createHorizontalGlue());
-	group.add(colorSpaceList,BorderLayout.PAGE_START);
-	group.add(algorithmList, BorderLayout.PAGE_START);
-	if (algorithmList.getSelectedIndex()>1) {
-	    group.add(weightList,BorderLayout.PAGE_START);
-	    group.add(minimumSpanningTreeAlgorithmList,BorderLayout.PAGE_START);
-	    group.add(distanceClusterList, BorderLayout.PAGE_START);
-	    group.add(distanceColorList, BorderLayout.PAGE_START);
-	    group.add(numberOfColorsOctreeSpinner,BorderLayout.PAGE_START);
+	this.group.removeAll();
+	this.group.add(this.openButton,BorderLayout.PAGE_START);
+	this.group.add(Box.createHorizontalGlue());
+	this.group.add(this.colorSpaceList,BorderLayout.PAGE_START);
+	this.group.add(this.algorithmList, BorderLayout.PAGE_START);
+	if (this.algorithmList.getSelectedIndex()>1) {
+	    this.group.add(this.weightList,BorderLayout.PAGE_START);
+	    this.group.add(this.minimumSpanningTreeAlgorithmList,BorderLayout.PAGE_START);
+	    this.group.add(this.distanceClusterList, BorderLayout.PAGE_START);
+	    this.group.add(this.distanceColorList, BorderLayout.PAGE_START);
+	    this.group.add(this.numberOfColorsOctreeSpinner,BorderLayout.PAGE_START);
 	}
-	group.add(finalNumberOfColorsSpinner,BorderLayout.PAGE_START);
-	group.add(computeButton,BorderLayout.PAGE_START);
+	this.group.add(this.finalNumberOfColorsSpinner,BorderLayout.PAGE_START);
+	this.group.add(this.computeButton,BorderLayout.PAGE_START);
 	pack();
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-	if ("Open".equals(e.getActionCommand())) {open();}
-	if ("Compute".equals(e.getActionCommand())) {compute();}
-	if (e.getSource().equals(algorithmList)) initializeGroup();
+	if ("Open".equals(e.getActionCommand())) {open();} //$NON-NLS-1$
+	if ("Compute".equals(e.getActionCommand())) {compute();} //$NON-NLS-1$
+	if (e.getSource().equals(this.algorithmList)) initializeGroup();
 	pack();
     }
 
@@ -234,91 +235,91 @@ public class ColorQuantizer extends JFrame implements ActionListener, MouseListe
      * 
      */
     private void compute() {
-	if (image==null) {
+	if (this.image==null) {
 	    logger.info("No image");
 	    return;
 	}
 
-	int finalNumberOfColors = (Integer) finalNumberOfColorsSpinner.getValue();
+	int finalNumberOfColors = ((Integer) this.finalNumberOfColorsSpinner.getValue()).intValue();
 
-	String baseDirectoryPath = imageFile.getAbsolutePath().substring(0, imageFile.getAbsolutePath().lastIndexOf("."));
+	String baseDirectoryPath = this.imageFile.getAbsolutePath().substring(0, this.imageFile.getAbsolutePath().lastIndexOf(".")); //$NON-NLS-1$
 	File directory = new File(baseDirectoryPath);
 	directory.mkdir();
 
-	Set<Color> initialColors = ColorUtil.getColors(image);
+	Set<Color> initialColors = ColorUtil.getColors(this.image);
 
-	ColorUtil.setColorSpace(colorSpaceList.getSelectedIndex());
-    ColorUtil.setWeights(weightList.getSelectedIndex());
-	SingleLinkageHierarchicalClusterer.setMinimumSpanningTreeAlgorithm(minimumSpanningTreeAlgorithmList.getSelectedIndex());
-	SingleLinkageHierarchicalClusterer.setDistanceClusterCluster(distanceClusterList.getSelectedIndex());
-	SingleLinkageHierarchicalClusterer.setDistanceColorCluster(distanceColorList.getSelectedIndex());
+	ColorUtil.setColorSpace(this.colorSpaceList.getSelectedIndex());
+    ColorUtil.setWeights(this.weightList.getSelectedIndex());
+	SingleLinkageHierarchicalClusterer.setMinimumSpanningTreeAlgorithm(this.minimumSpanningTreeAlgorithmList.getSelectedIndex());
+	SingleLinkageHierarchicalClusterer.setDistanceClusterCluster(this.distanceClusterList.getSelectedIndex());
+	SingleLinkageHierarchicalClusterer.setDistanceColorCluster(this.distanceColorList.getSelectedIndex());
 	
-	if (algorithmList.getSelectedIndex()>0) {
-	    if (algorithmList.getSelectedIndex()>1) {
-		int numberOfColorsOctree = (Integer) numberOfColorsOctreeSpinner.getValue();
+	if (this.algorithmList.getSelectedIndex()>0) {
+	    if (this.algorithmList.getSelectedIndex()>1) {
+		int numberOfColorsOctree = ((Integer) this.numberOfColorsOctreeSpinner.getValue()).intValue();
 
 		String imageDirectory = baseDirectoryPath+
-		"/Octree_"+numberOfColorsOctree+
-		"_HierarchicalClustering_"+minimumSpanningTreeAlgorithmList.getSelectedItem()+"_"+finalNumberOfColors+"_"+
-		colorSpaceList.getSelectedItem()+"_"+weightList.getSelectedItem()+"_"+distanceClusterList.getSelectedItem()+"_"+distanceColorList.getSelectedItem();
+		"/Octree_"+numberOfColorsOctree+ //$NON-NLS-1$
+		"_HierarchicalClustering_"+this.minimumSpanningTreeAlgorithmList.getSelectedItem()+"_"+finalNumberOfColors+"_"+ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		this.colorSpaceList.getSelectedItem()+"_"+this.weightList.getSelectedItem()+"_"+this.distanceClusterList.getSelectedItem()+"_"+this.distanceColorList.getSelectedItem();  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 		directory = new File(imageDirectory);
 		directory.mkdir();
 
-		String initialChromaticityImageName = imageDirectory+"/chromaticity_"+initialColors.size()+".png";
-		String octreeChromaticityImageName = imageDirectory+"/chromaticity_"+numberOfColorsOctree+".png";
-		String finalChromaticityImageName = imageDirectory+"/chromaticity_"+finalNumberOfColors+".png";
-		String paletteImageName = imageDirectory+"/palette_"+numberOfColorsOctree+".png";
-		String proportionalPaletteImageName = imageDirectory+"/prop_palette_"+numberOfColorsOctree+".png";
-		String remappedImageName = imageDirectory+"/remapped_"+numberOfColorsOctree+".png";
-		String octreeImageName = imageDirectory+"/octree_"+numberOfColorsOctree+".png";
-		String hierarchyImageName = imageDirectory+"/hierarchy_"+numberOfColorsOctree+".png";
-		String hierarchyPaletteImageName = imageDirectory+"/palette_hierarchy_"+numberOfColorsOctree+".png";
-		String hierarchyClusterImageName = imageDirectory+"/hierarchy_cluster_"+numberOfColorsOctree+".png";
-		String finalHierarchyImageName = imageDirectory+"/hierarchy_"+finalNumberOfColors+".png";
-		String finalHierarchyPaletteImageName = imageDirectory+"/palette_"+finalNumberOfColors+".png";
-		String finalHierarchyClusterImageName = imageDirectory+"/hierarchy_cluster_"+finalNumberOfColors+".png";
-		String finalHierarchyRemappedImageName = imageDirectory+"/remapped_"+finalNumberOfColors+".png";
+		String initialChromaticityImageName = imageDirectory+"/chromaticity_"+initialColors.size()+".png"; //$NON-NLS-1$ //$NON-NLS-2$
+		String octreeChromaticityImageName = imageDirectory+"/chromaticity_"+numberOfColorsOctree+".png";  //$NON-NLS-1$//$NON-NLS-2$
+		String finalChromaticityImageName = imageDirectory+"/chromaticity_"+finalNumberOfColors+".png"; //$NON-NLS-1$ //$NON-NLS-2$
+		String paletteImageName = imageDirectory+"/palette_"+numberOfColorsOctree+".png";  //$NON-NLS-1$//$NON-NLS-2$
+		String proportionalPaletteImageName = imageDirectory+"/prop_palette_"+numberOfColorsOctree+".png"; //$NON-NLS-1$ //$NON-NLS-2$
+		String remappedImageName = imageDirectory+"/remapped_"+numberOfColorsOctree+".png";  //$NON-NLS-1$//$NON-NLS-2$
+		String octreeImageName = imageDirectory+"/octree_"+numberOfColorsOctree+".png"; //$NON-NLS-1$ //$NON-NLS-2$
+		String hierarchyImageName = imageDirectory+"/hierarchy_"+numberOfColorsOctree+".png"; //$NON-NLS-1$ //$NON-NLS-2$
+		String hierarchyPaletteImageName = imageDirectory+"/palette_hierarchy_"+numberOfColorsOctree+".png"; //$NON-NLS-1$ //$NON-NLS-2$
+		String hierarchyClusterImageName = imageDirectory+"/hierarchy_cluster_"+numberOfColorsOctree+".png"; //$NON-NLS-1$ //$NON-NLS-2$
+		String finalHierarchyImageName = imageDirectory+"/hierarchy_"+finalNumberOfColors+".png";  //$NON-NLS-1$//$NON-NLS-2$
+		String finalHierarchyPaletteImageName = imageDirectory+"/palette_"+finalNumberOfColors+".png"; //$NON-NLS-1$ //$NON-NLS-2$
+		String finalHierarchyClusterImageName = imageDirectory+"/hierarchy_cluster_"+finalNumberOfColors+".png"; //$NON-NLS-1$ //$NON-NLS-2$
+		String finalHierarchyRemappedImageName = imageDirectory+"/remapped_"+finalNumberOfColors+".png"; //$NON-NLS-1$ //$NON-NLS-2$
 
 		/**
 		 * List of all the image files to load.
 		 */
-		imageFileNames = new String[15];
-		imageCaptions = new String[15];
+		this.imageFileNames = new String[15];
+		this.imageCaptions = new String[15];
 
-		imageFileNames[0] = imageFile.getAbsolutePath();
-		imageCaptions[0] = "Original Image";
-		imageFileNames[1] = finalHierarchyPaletteImageName;
-		imageCaptions[1] = "Final Palette";
-		imageFileNames[2] = paletteImageName;
-		imageCaptions[2] = "Octree Palette";
-		imageFileNames[3] = hierarchyPaletteImageName;
-		imageCaptions[3] = "Hierarchy Palette";
-		imageFileNames[4] = proportionalPaletteImageName;
-		imageCaptions[4] = "Proportional Palette";
-		imageFileNames[5] = finalHierarchyClusterImageName;
-		imageCaptions[5] = "Final Hierarchy in Chromaticity Diagram";
-		imageFileNames[6] = hierarchyClusterImageName;
-		imageCaptions[6] = "Initial Hierarchy in Chromaticity Diagram";
-		imageFileNames[7] = finalHierarchyImageName;
-		imageCaptions[7] = "Final Hierarchy in Cercle";
-		imageFileNames[8] = hierarchyImageName;
-		imageCaptions[8] = "Initial Hierarchy in Cercle";
-		imageFileNames[9] = initialChromaticityImageName;
-		imageCaptions[9] = "Initial Chromaticity Diagram";
-		imageFileNames[10] = octreeChromaticityImageName;
-		imageCaptions[10] = "Octree Chromaticity Diagram";
-		imageFileNames[11] = finalChromaticityImageName;
-		imageCaptions[11] = "Final Chromaticity Diagram";
-		imageFileNames[12] = octreeImageName;
-		imageCaptions[12] = "Octree";
-		imageFileNames[13] = finalHierarchyRemappedImageName;
-		imageCaptions[13] = "Final Remapped Image";
-		imageFileNames[14] = remappedImageName;
-		imageCaptions[14] = "Octree Remapped Image";
+		this.imageFileNames[0] = this.imageFile.getAbsolutePath();
+		this.imageCaptions[0] = "Original Image";
+		this.imageFileNames[1] = finalHierarchyPaletteImageName;
+		this.imageCaptions[1] = "Final Palette";
+		this.imageFileNames[2] = paletteImageName;
+		this.imageCaptions[2] = "Octree Palette";
+                this.imageFileNames[3] = hierarchyPaletteImageName;
+                this.imageCaptions[3] = "Hierarchy Palette";
+                this.imageFileNames[4] = proportionalPaletteImageName;
+                this.imageCaptions[4] = "Proportional Palette";
+                this.imageFileNames[5] = finalHierarchyClusterImageName;
+                this.imageCaptions[5] = "Final Hierarchy in Chromaticity Diagram";
+                this.imageFileNames[6] = hierarchyClusterImageName;
+                this.imageCaptions[6] = "Initial Hierarchy in Chromaticity Diagram";
+                this.imageFileNames[7] = finalHierarchyImageName;
+                this.imageCaptions[7] = "Final Hierarchy in Cercle";
+                this.imageFileNames[8] = hierarchyImageName;
+                this.imageCaptions[8] = "Initial Hierarchy in Cercle";
+                this.imageFileNames[9] = initialChromaticityImageName;
+                this.imageCaptions[9] = "Initial Chromaticity Diagram";
+                this.imageFileNames[10] = octreeChromaticityImageName;
+                this.imageCaptions[10] = "Octree Chromaticity Diagram";
+                this.imageFileNames[11] = finalChromaticityImageName;
+                this.imageCaptions[11] = "Final Chromaticity Diagram";
+                this.imageFileNames[12] = octreeImageName;
+                this.imageCaptions[12] = "Octree";
+                this.imageFileNames[13] = finalHierarchyRemappedImageName;
+                this.imageCaptions[13] = "Final Remapped Image";
+                this.imageFileNames[14] = remappedImageName;
+                this.imageCaptions[14] = "Octree Remapped Image";
 
 		ColorUtil.writeChromaticityImage(initialColors, 512, 3,initialChromaticityImageName);
 
-		OctreeQuantizer quantization = new OctreeQuantizer(image,numberOfColorsOctree);
+		OctreeQuantizer quantization = new OctreeQuantizer(this.image,numberOfColorsOctree);
 		ColorUtil.writePaletteImage(quantization.getColorLookUpTable(),50,paletteImageName);
 		ColorUtil.writeProportionalPaletteImage(quantization.getRemappedImage(),proportionalPaletteImageName);
 		ColorUtil.writeImage(quantization.getRemappedImage(), remappedImageName);
@@ -339,49 +340,49 @@ public class ColorQuantizer extends JFrame implements ActionListener, MouseListe
 		ColorUtil.writeChromaticityImage(Arrays.asList(graph.getColors()), 512, 16, finalChromaticityImageName);
 
 		quantization.setColors(graph.getColors());
-		quantization.reMap(image);
+		quantization.reMap(this.image);
 		ColorUtil.writeImage(quantization.getRemappedImage(), finalHierarchyRemappedImageName);
 
 	    } else {
-		String imageDirectory = baseDirectoryPath+"/Octree_"+finalNumberOfColors;
+		String imageDirectory = baseDirectoryPath+"/Octree_"+finalNumberOfColors; //$NON-NLS-1$
 		directory = new File(imageDirectory);
 		directory.mkdir();
 
-		String initialChromaticityImageName = imageDirectory+"/chromaticity_"+initialColors.size()+".png";
-		String finalChromaticityImageName = imageDirectory+"/chromaticity_"+finalNumberOfColors+".png";
-		String paletteImageName = imageDirectory+"/palette_"+finalNumberOfColors+".png";
-		String proportionalPaletteImageName = imageDirectory+"/prop_palette_"+finalNumberOfColors+".png";
-		String remappedImageName = imageDirectory+"/remapped_"+finalNumberOfColors+".png";
-		String octreeImageName = imageDirectory+"/octree_"+finalNumberOfColors+".png";
-		String graphClusterImageName = imageDirectory+"/graph_cluster_"+finalNumberOfColors+".png";
+		String initialChromaticityImageName = imageDirectory+"/chromaticity_"+initialColors.size()+".png"; //$NON-NLS-1$
+		String finalChromaticityImageName = imageDirectory+"/chromaticity_"+finalNumberOfColors+".png"; //$NON-NLS-1$
+		String paletteImageName = imageDirectory+"/palette_"+finalNumberOfColors+".png"; //$NON-NLS-1$ //$NON-NLS-2$
+		String proportionalPaletteImageName = imageDirectory+"/prop_palette_"+finalNumberOfColors+".png"; //$NON-NLS-1$ //$NON-NLS-2$
+		String remappedImageName = imageDirectory+"/remapped_"+finalNumberOfColors+".png";  //$NON-NLS-1$//$NON-NLS-2$
+		String octreeImageName = imageDirectory+"/octree_"+finalNumberOfColors+".png"; //$NON-NLS-1$ //$NON-NLS-2$
+		String graphClusterImageName = imageDirectory+"/graph_cluster_"+finalNumberOfColors+".png"; //$NON-NLS-1$
 		//String graphImageName = imageDirectory+"/graph_"+finalNumberOfColors+".png";
 
 		/**
 		 * List of all the image files to load.
 		 */
-		imageFileNames = new String[8];
-		imageCaptions = new String[8];
+                this.imageFileNames = new String[8];
+                this.imageCaptions = new String[8];
 
-		imageFileNames[0] = imageFile.getAbsolutePath();
-		imageCaptions[0] = "Original Image";
-		imageFileNames[1] = paletteImageName;
-		imageCaptions[1] = "Final Palette";
-		imageFileNames[2] = proportionalPaletteImageName;
-		imageCaptions[2] = "Proportional Palette";
-		imageFileNames[3] = initialChromaticityImageName;
-		imageCaptions[3] = "Initial Chromaticity Diagram";
-		imageFileNames[4] = finalChromaticityImageName;
-		imageCaptions[4] = "Final Chromaticity Diagram";
-		imageFileNames[5] = octreeImageName;
-		imageCaptions[5] = "Octree";
-		imageFileNames[6] = remappedImageName;
-		imageCaptions[6] = "Final Remapped Image";
-		imageFileNames[7] = graphClusterImageName;
-		imageCaptions[7] = "Graph Cluster Image";
+                this.imageFileNames[0] = this.imageFile.getAbsolutePath();
+                this.imageCaptions[0] = "Original Image";
+                this.imageFileNames[1] = paletteImageName;
+                this.imageCaptions[1] = "Final Palette";
+                this.imageFileNames[2] = proportionalPaletteImageName;
+                this.imageCaptions[2] = "Proportional Palette";
+                this.imageFileNames[3] = initialChromaticityImageName;
+                this.imageCaptions[3] = "Initial Chromaticity Diagram";
+                this.imageFileNames[4] = finalChromaticityImageName;
+                this.imageCaptions[4] = "Final Chromaticity Diagram";
+                this.imageFileNames[5] = octreeImageName;
+                this.imageCaptions[5] = "Octree";
+                this.imageFileNames[6] = remappedImageName;
+                this.imageCaptions[6] = "Final Remapped Image";
+                this.imageFileNames[7] = graphClusterImageName;
+                this.imageCaptions[7] = "Graph Cluster Image";
 
 		ColorUtil.writeChromaticityImage(initialColors, 512, 3,initialChromaticityImageName);
 
-		OctreeQuantizer quantization = new OctreeQuantizer(image,finalNumberOfColors);
+		OctreeQuantizer quantization = new OctreeQuantizer(this.image,finalNumberOfColors);
 		ColorUtil.writeChromaticityImage(Arrays.asList(quantization.getColorLookUpTable()), 512, 8,finalChromaticityImageName);
 		ColorUtil.writePaletteImage(quantization.getColorLookUpTable(),50,paletteImageName);
 		ColorUtil.writeProportionalPaletteImage(quantization.getRemappedImage(),proportionalPaletteImageName);
@@ -393,38 +394,38 @@ public class ColorQuantizer extends JFrame implements ActionListener, MouseListe
 
 	    }
 	} else {
-	    String imageDirectory = baseDirectoryPath+"/KMeans_"+finalNumberOfColors+"_"+colorSpaceList.getSelectedItem();
+	    String imageDirectory = baseDirectoryPath+"/KMeans_"+finalNumberOfColors+"_"+this.colorSpaceList.getSelectedItem(); //$NON-NLS-1$ //$NON-NLS-2$
 	    directory = new File(imageDirectory);
 	    directory.mkdir();
 
-	    String initialChromaticityImageName = imageDirectory+"/chromaticity_"+initialColors.size()+".png";
-	    String finalChromaticityImageName = imageDirectory+"/chromaticity_"+finalNumberOfColors+".png";
-	    String paletteImageName = imageDirectory+"/palette_"+finalNumberOfColors+".png";
-	    String remappedImageName = imageDirectory+"/remapped_"+finalNumberOfColors+".png";
+	    String initialChromaticityImageName = imageDirectory+"/chromaticity_"+initialColors.size()+".png"; //$NON-NLS-1$ //$NON-NLS-2$
+	    String finalChromaticityImageName = imageDirectory+"/chromaticity_"+finalNumberOfColors+".png"; //$NON-NLS-1$ //$NON-NLS-2$
+	    String paletteImageName = imageDirectory+"/palette_"+finalNumberOfColors+".png";  //$NON-NLS-1$//$NON-NLS-2$
+	    String remappedImageName = imageDirectory+"/remapped_"+finalNumberOfColors+".png"; //$NON-NLS-1$ //$NON-NLS-2$
 
 	    /**
 	     * List of all the image files to load.
 	     */
-	    imageFileNames = new String[5];
-	    imageCaptions = new String[5];
+	    this.imageFileNames = new String[5];
+	    this.imageCaptions = new String[5];
 
-	    imageFileNames[0] = imageFile.getAbsolutePath();
-	    imageCaptions[0] = "Original Image";
-	    imageFileNames[1] = paletteImageName;
-	    imageCaptions[1] = "Final Palette";
-	    imageFileNames[2] = initialChromaticityImageName;
-	    imageCaptions[2] = "Initial Chromaticity Diagram";
-	    imageFileNames[3] = finalChromaticityImageName;
-	    imageCaptions[3] = "Final Chromaticity Diagram";
-	    imageFileNames[4] = remappedImageName;
-	    imageCaptions[4] = "Final Remapped Image";
+	    this.imageFileNames[0] = this.imageFile.getAbsolutePath();
+	    this.imageCaptions[0] = "Original Image";
+	    this.imageFileNames[1] = paletteImageName;
+	    this.imageCaptions[1] = "Final Palette";
+	    this.imageFileNames[2] = initialChromaticityImageName;
+	    this.imageCaptions[2] = "Initial Chromaticity Diagram";
+	    this.imageFileNames[3] = finalChromaticityImageName;
+	    this.imageCaptions[3] = "Final Chromaticity Diagram";
+	    this.imageFileNames[4] = remappedImageName;
+	    this.imageCaptions[4] = "Final Remapped Image";
 
 	    // transforming colors into float arrays for use by the K-Means Clusterer
 	    List<float[]> floatArrayColors = new ArrayList<float[]>();
-	    for(Color color : ColorUtil.getColors(image)) {
+	    for(Color color : ColorUtil.getColors(this.image)) {
 	    	floatArrayColors.add(
-	    			(colorSpaceList.getSelectedIndex()==0)?color.getRGBColorComponents(null):
-	    				(colorSpaceList.getSelectedIndex()==1)?ColorUtil.toLab(color):ColorUtil.toXyz(color));
+	    			(this.colorSpaceList.getSelectedIndex()==0)?color.getRGBColorComponents(null):
+	    				(this.colorSpaceList.getSelectedIndex()==1)?ColorUtil.toLab(color):ColorUtil.toXyz(color));
 	    }
 
 	    KMeansClusterer clusterer = new KMeansClusterer(finalNumberOfColors,floatArrayColors);
@@ -434,15 +435,15 @@ public class ColorQuantizer extends JFrame implements ActionListener, MouseListe
 	    for(KMeansClusterer.Cluster cluster:clusters) {
 	    	float[] location = cluster.getLocation();
 	    	colors.add(
-	    			(colorSpaceList.getSelectedIndex()==0)?new Color(ColorSpace.getInstance(ColorSpace.CS_sRGB),location,1):
-	    				(colorSpaceList.getSelectedIndex()==1)?ColorUtil.toColor(location):
+	    			(this.colorSpaceList.getSelectedIndex()==0)?new Color(ColorSpace.getInstance(ColorSpace.CS_sRGB),location,1):
+	    				(this.colorSpaceList.getSelectedIndex()==1)?ColorUtil.toColor(location):
 	    					new Color(ColorSpace.getInstance(ColorSpace.CS_CIEXYZ),location,1));}		
 
 	    ColorUtil.writeChromaticityImage(initialColors, 512, 3,initialChromaticityImageName);
 	    ColorUtil.writeChromaticityImage(colors, 512, 16, finalChromaticityImageName);
 
 	    ColorUtil.writePaletteImage(colors.toArray(new Color[0]),50,paletteImageName);
-	    ColorUtil.writeImage(ColorUtil.reMap(image, colors), remappedImageName);
+	    ColorUtil.writeImage(ColorUtil.reMap(this.image, colors), remappedImageName);
 	}
 
 	logger.info("Finished");
@@ -455,19 +456,20 @@ public class ColorQuantizer extends JFrame implements ActionListener, MouseListe
      */
     private void open() {
 	JFileChooser chooser = new JFileChooser();
-	FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & GIF & PNG & BMP Images", "jpg", "gif","png", "bmp");
+	FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & GIF & PNG & BMP Images", "jpg", "gif","png", "bmp");    //$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$//$NON-NLS-5$
 	chooser.setFileFilter(filter);
 	int returnVal = chooser.showOpenDialog(this);
 	if(returnVal != JFileChooser.APPROVE_OPTION) return;
-	imageFile = chooser.getSelectedFile();
+	this.imageFile = chooser.getSelectedFile();
 	try {
-	    image = ImageIO.read(imageFile);
-	    ImageIcon newIcon = new ImageIcon(image);
+	    this.image = ImageIO.read(this.imageFile);
+	    ImageIcon newIcon = new ImageIcon(this.image);
 	    displayImageLabel(newIcon);
-	    imageLabel.setIcon(newIcon);
-	    computeButton.setEnabled(true);
+	    this.imageLabel.setIcon(newIcon);
+	    this.computeButton.setEnabled(true);
 	} catch (IOException e) {
-	    e.printStackTrace();	computeButton.setEnabled(false);
+	    e.printStackTrace();
+	    this.computeButton.setEnabled(false);
 	}
     }
 
@@ -477,7 +479,7 @@ public class ColorQuantizer extends JFrame implements ActionListener, MouseListe
      * event-dispatching thread.
      */
     static JFrame frame;
-    private static void createAndShowGUI() {
+    static void createAndShowGUI() {
 	//Create and set up the window.
 	frame = new ColorQuantizer();
 	frame.setVisible(true);
@@ -514,26 +516,26 @@ public class ColorQuantizer extends JFrame implements ActionListener, MouseListe
 	    Graphics2D g2d = (Graphics2D) g.create();
 
 	    g2d.setColor(Color.WHITE);
-	    g2d.fillRect(x +1 ,y + 1,width -2 ,height -2);
+	    g2d.fillRect(x +1 ,y + 1,this.width -2 ,this.height -2);
 
 	    g2d.setColor(Color.BLACK);
-	    g2d.drawRect(x +1 ,y + 1,width -2 ,height -2);
+	    g2d.drawRect(x +1 ,y + 1,this.width -2 ,this.height -2);
 
 	    g2d.setColor(Color.RED);
 
-	    g2d.setStroke(stroke);
-	    g2d.drawLine(x +10, y + 10, x + width -10, y + height -10);
-	    g2d.drawLine(x +10, y + height -10, x + width -10, y + 10);
+	    g2d.setStroke(this.stroke);
+	    g2d.drawLine(x +10, y + 10, x + this.width -10, y + this.height -10);
+	    g2d.drawLine(x +10, y + this.height -10, x + this.width -10, y + 10);
 
 	    g2d.dispose();
 	}
 
-	public int getIconWidth() {return width;}
-	public int getIconHeight() {return height;}
+	public int getIconWidth() {return this.width;}
+	public int getIconHeight() {return this.height;}
     }
 
     private void loadImages() {
-	buttonBar.removeAll();
+	this.buttonBar.removeAll();
 	/**
 	 * SwingWorker class that loads the images a background thread and calls publish
 	 * when a new one is ready to be displayed.
@@ -548,21 +550,21 @@ public class ColorQuantizer extends JFrame implements ActionListener, MouseListe
 	     */
 	    @Override
 	    protected Void doInBackground() throws Exception {
-		for (int i = 0; i < imageCaptions.length; i++) {
+		for (int i = 0; i < ColorQuantizer.this.imageCaptions.length; i++) {
 		    ImageIcon icon;
-		    icon = createImageIcon(imageFileNames[i], imageCaptions[i]);
+		    icon = createImageIcon(ColorQuantizer.this.imageFileNames[i], ColorQuantizer.this.imageCaptions[i]);
 
 		    ThumbnailAction thumbAction;
 		    if(icon != null){
 
 			ImageIcon thumbnailIcon = new ImageIcon(getScaledImage(icon.getImage(), 32, 32));
 
-			thumbAction = new ThumbnailAction(icon, thumbnailIcon, imageCaptions[i]);
+			thumbAction = new ThumbnailAction(icon, thumbnailIcon, ColorQuantizer.this.imageCaptions[i]);
 
 		    }else{
 			// the image failed to load for some reason
 			// so load a placeholder instead
-			thumbAction = new ThumbnailAction(placeholderIcon, placeholderIcon, imageCaptions[i]);
+			thumbAction = new ThumbnailAction(ColorQuantizer.this.placeholderIcon, ColorQuantizer.this.placeholderIcon, ColorQuantizer.this.imageCaptions[i]);
 		    }
 		    publish(thumbAction);
 		}
@@ -580,7 +582,7 @@ public class ColorQuantizer extends JFrame implements ActionListener, MouseListe
 		    JButton thumbButton = new JButton(thumbAction);
 		    // add the new button BEFORE the last glue
 		    // this centers the buttons in the toolbar
-		    buttonBar.add(thumbButton, buttonBar.getComponentCount() - 1);
+		    ColorQuantizer.this.buttonBar.add(thumbButton, ColorQuantizer.this.buttonBar.getComponentCount() - 1);
 		}
 	    }
 	};
@@ -601,7 +603,7 @@ public class ColorQuantizer extends JFrame implements ActionListener, MouseListe
      * @param h - desired height
      * @return - the new resized image
      */
-    private Image getScaledImage(Image srcImg, int w, int h){
+    Image getScaledImage(Image srcImg, int w, int h){
 	BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 	Graphics2D g2 = resizedImg.createGraphics();
 	g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -626,7 +628,7 @@ public class ColorQuantizer extends JFrame implements ActionListener, MouseListe
 	 * @param desc - The descriptioon of the icon.
 	 */
 	public ThumbnailAction(Icon photo, Icon thumb, String desc){
-	    displayPhoto = photo;
+	    this.displayPhoto = photo;
 
 	    // The short description becomes the tooltip of a button.
 	    putValue(SHORT_DESCRIPTION, desc);
@@ -640,7 +642,7 @@ public class ColorQuantizer extends JFrame implements ActionListener, MouseListe
 	 * Shows the full image in the main area and sets the application title.
 	 */
 	public void actionPerformed(ActionEvent e) {
-	    if (displayPhoto instanceof ImageIcon) displayImageLabel((ImageIcon)displayPhoto);
+	    if (this.displayPhoto instanceof ImageIcon) displayImageLabel((ImageIcon)this.displayPhoto);
 	    //imageLabel.setIcon(displayPhoto);
 	    setTitle("Color Quantizer: " + getValue(SHORT_DESCRIPTION).toString());
 	}
@@ -665,20 +667,20 @@ public class ColorQuantizer extends JFrame implements ActionListener, MouseListe
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
 	int wheelRotation = -e.getWheelRotation();
-	scale+=wheelRotation;
-	scale=Math.max(scale, -3);
-	scale=Math.min(scale, 3);
-	displayImageLabel(currentIcon);
+	this.scale+=wheelRotation;
+	this.scale=Math.max(this.scale, -3);
+	this.scale=Math.min(this.scale, 3);
+	displayImageLabel(this.currentIcon);
     }
 
     /**
      * @param currentIcon2
      */
-    private void displayImageLabel(ImageIcon icon) {
+    void displayImageLabel(ImageIcon icon) {
 	if (icon==null) return;
 	Image iconImage = icon.getImage();
-	double factor = Math.pow(2, scale);
-	currentIcon=icon;
-	imageLabel.setIcon(new ImageIcon(getScaledImage(iconImage,(int)(icon.getIconWidth()*factor), (int)(icon.getIconHeight()*factor))));
+	double factor = Math.pow(2, this.scale);
+	this.currentIcon=icon;
+	this.imageLabel.setIcon(new ImageIcon(getScaledImage(iconImage,(int)(icon.getIconWidth()*factor), (int)(icon.getIconHeight()*factor))));
     }
 }

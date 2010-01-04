@@ -50,11 +50,7 @@ class GIFImageFileFilter extends FileFilter {
 
 		String extension = Utils.getExtension(f);
 		if (extension != null) {
-			if (extension.equals(Utils.GIF_IMAGE)) {
-				return true;
-			} else {
-				return false;
-			}
+			return extension.equals(Utils.GIF_IMAGE);
 		}
 		return false;
 	}

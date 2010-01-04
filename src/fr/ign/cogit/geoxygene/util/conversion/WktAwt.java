@@ -10,7 +10,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked","unqualified-field-access","unused","nls"})
 public class WktAwt implements WktAwtConstants {
     static class EndOfFile extends Exception {private static final long serialVersionUID = 1L;}
     static class EmptyLine extends Exception {private static final long serialVersionUID = 1L;}
@@ -97,7 +97,7 @@ public class WktAwt implements WktAwtConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          ;
+          
           break;
         default:
           jj_la1[1] = jj_gen;
@@ -134,7 +134,7 @@ public class WktAwt implements WktAwtConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          ;
+          
           break;
         default:
           jj_la1[3] = jj_gen;
@@ -171,7 +171,7 @@ public class WktAwt implements WktAwtConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          ;
+          
           break;
         default:
           jj_la1[5] = jj_gen;
@@ -207,7 +207,7 @@ public class WktAwt implements WktAwtConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          ;
+          
           break;
         default:
           jj_la1[7] = jj_gen;
@@ -243,7 +243,7 @@ public class WktAwt implements WktAwtConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          ;
+          
           break;
         default:
           jj_la1[9] = jj_gen;
@@ -279,7 +279,7 @@ public class WktAwt implements WktAwtConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          ;
+          
           break;
         default:
           jj_la1[11] = jj_gen;
@@ -554,8 +554,7 @@ public class WktAwt implements WktAwtConstants {
   private int jj_ntk() {
     if ((jj_nt=token.next) == null)
       return (jj_ntk = (token.next=token_source.getNextToken()).kind);
-    else
-      return (jj_ntk = jj_nt.kind);
+    return (jj_ntk = jj_nt.kind);
   }
 
   private java.util.List jj_expentries = new java.util.ArrayList();

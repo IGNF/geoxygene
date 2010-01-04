@@ -55,7 +55,7 @@ class GeOxygeneViewerOpenFileAction implements ActionListener {
 		fc.addChoosableFileFilter(new GIFImageFileFilter());
 		fc.addChoosableFileFilter(new JPEGImageFileFilter());
 
-		int returnVal = fc.showOpenDialog(objectViewerInterface);
+		int returnVal = fc.showOpenDialog(this.objectViewerInterface);
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = fc.getSelectedFile();
@@ -63,14 +63,14 @@ class GeOxygeneViewerOpenFileAction implements ActionListener {
 			String filename = file.getAbsolutePath();
 			System.out.println("\nLoading " + filename + " ...");
 			try {
-				if (fileExtension.equals("shp")) {
-					int dotIndex = filename.lastIndexOf(".");
+				if (fileExtension.equals("shp")) { //$NON-NLS-1$
+					int dotIndex = filename.lastIndexOf("."); //$NON-NLS-1$
 					filename = filename.substring(0, dotIndex);
-					objectViewerInterface.addAShapefileTheme( new URL("file:///" + filename));
-				} else if (fileExtension.equals("jpg") ||
-						fileExtension.equals("jpeg") ||
-						fileExtension.equals("gif")) {
-					objectViewerInterface.addAnImageTheme (filename, 0,0,1,1);
+					this.objectViewerInterface.addAShapefileTheme( new URL("file:///" + filename)); //$NON-NLS-1$
+				} else if (fileExtension.equals("jpg") || //$NON-NLS-1$
+						fileExtension.equals("jpeg") || //$NON-NLS-1$
+						fileExtension.equals("gif")) { //$NON-NLS-1$
+					this.objectViewerInterface.addAnImageTheme (filename, 0,0,1,1);
 				}
 			} catch (Exception ex) {
 			}

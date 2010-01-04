@@ -3,33 +3,33 @@ package fr.ign.cogit.geoxygene.util.viewer;
 import java.awt.event.WindowAdapter;import java.awt.event.WindowEvent;import java.net.URL;import java.util.Observable;import fr.ign.cogit.geoxygene.datatools.Geodatabase;import fr.ign.cogit.geoxygene.feature.FT_Feature;import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 /** * 2007 : amélioration de la gestion de la fermeture - grosso *  * @author Thierry Badard & Arnaud Braun * @version 1.1 *  */public class ObjectViewer extends Observable {	private static final String OBJECTVIEWER_TITLE = "GeOxygene Object Viewer";	public static boolean flagWindowClosing = true;	public ObjectViewerInterface objectViewerInterface;
 	/** Creates a new ObjectViewer without connection to a Geodatabase.*/	public ObjectViewer() {		this (null);	}
-	/** Creates a new ObjectViewer with a connection to a Geodatabase. */	public ObjectViewer (Geodatabase db) {		objectViewerInterface = new ObjectViewerInterface(OBJECTVIEWER_TITLE, db);		addObserver(objectViewerInterface);		objectViewerInterface.pack();		objectViewerInterface.setSize(600, 400);		//objectViewerInterface.show();		objectViewerInterface.setVisible(true);		objectViewerInterface.addWindowListener(new WindowAdapter() {			@Override			public void windowClosing(WindowEvent e) {				if (flagWindowClosing)System.exit(0);				else objectViewerInterface.dispose();			}		});
+	/** Creates a new ObjectViewer with a connection to a Geodatabase. */	public ObjectViewer (Geodatabase db) {		this.objectViewerInterface = new ObjectViewerInterface(OBJECTVIEWER_TITLE, db);		addObserver(this.objectViewerInterface);		this.objectViewerInterface.pack();		this.objectViewerInterface.setSize(600, 400);		//objectViewerInterface.show();		this.objectViewerInterface.setVisible(true);		this.objectViewerInterface.addWindowListener(new WindowAdapter() {			@Override			public void windowClosing(WindowEvent e) {				if (flagWindowClosing)System.exit(0);				else ObjectViewer.this.objectViewerInterface.dispose();			}		});
 	}
 
 	/** Display objects stored in the FeatureCollection as a Theme with the given name. */
 	public void addFeatureCollection (FT_FeatureCollection<?> fColl, String themeName) {
-		objectViewerInterface.addAFeatureCollectionTheme(fColl,themeName);
+		this.objectViewerInterface.addAFeatureCollectionTheme(fColl,themeName);
 	}
 
 	/** Refresh fully the FeatureCollection displayed in the viewer with this given name. */
 	public void refreshFeatureCollection (FT_FeatureCollection<?> fColl, String themeName) {
-		objectViewerInterface.refreshAFeatureCollectionTheme(fColl, themeName);
+		this.objectViewerInterface.refreshAFeatureCollectionTheme(fColl, themeName);
 	}
 
 	/** Refresh the FeatureCollection displayed in the viewer with this given name with this feature.
 	 * The feature must already belong to the collection. */
 	public void refreshFeatureCollection (FT_Feature feature, String themeName) {
-		objectViewerInterface.refreshAFeatureCollectionTheme (feature, themeName);
+		this.objectViewerInterface.refreshAFeatureCollectionTheme (feature, themeName);
 	}
 
 	/** Display objects stored in the shapefile given by url (without .shp) in an ObjectViewer.	*/
 	public void addAShapefile(URL url) {
-		objectViewerInterface.addAShapefileTheme(url);
+		this.objectViewerInterface.addAShapefileTheme(url);
 	}
 
 	/** Display an image (.jpg or .gif) in an ObjectViewer.	*/
 	public void addAnImage(URL url, int x, int y, int width, int height) {
-		objectViewerInterface.addAnImageTheme(url.getFile(), x, y, width, height);
+		this.objectViewerInterface.addAnImageTheme(url.getFile(), x, y, width, height);
 	}
 
 }

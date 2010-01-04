@@ -66,8 +66,8 @@ class ObjectViewerAttributesTableFrame extends JFrame {
 	public ObjectViewerAttributesTableFrame(Theme t, String dataSourceType, DataSource source) {
 		super();
 
-		theme = t;
-		dataSource = source;
+		this.theme = t;
+		this.dataSource = source;
 
 		if (dataSourceType.equals(Utils.SHAPEFILE))  {
 			shapefile();
@@ -82,14 +82,14 @@ class ObjectViewerAttributesTableFrame extends JFrame {
 		}
 
 		// Title
-		this.setTitle(FRAME_TITLE + title);
+		this.setTitle(FRAME_TITLE + this.title);
 
 		// Layout
 		this.getContentPane().setLayout(new BorderLayout());
 
 
 		// Create/setup table
-		JTable table = new JTable(rowData, columnNames);
+		JTable table = new JTable(this.rowData, this.columnNames);
 
 		// Place table in JScrollPane
 		JScrollPane scrollPane = new JScrollPane(table);
@@ -103,28 +103,28 @@ class ObjectViewerAttributesTableFrame extends JFrame {
 	/** Fill vectors of attributes for a shapefile by reading directly dbf file (we do not load it into memory) */
 	public void shapefile() {
 
-		String themeName = theme.getName();
-		title = themeName.substring(themeName.lastIndexOf("/") + 1);
+		String themeName = this.theme.getName();
+		this.title = themeName.substring(themeName.lastIndexOf("/") + 1); //$NON-NLS-1$
 
 		try {
 			// Transformer URL en File pour eviter le chargement en memoire du fichier Dbf
-			final Dbf themeDbf = ((ShapefileReader)dataSource).dbf;
+			final Dbf themeDbf = ((ShapefileReader)this.dataSource).dbf;
 
-			nbFields = themeDbf.getNumFields();
-			nbRecords = themeDbf.getLastRec();
+			this.nbFields = themeDbf.getNumFields();
+			this.nbRecords = themeDbf.getLastRec();
 			StringBuffer fieldName;
 			Vector<String> row;
-			columnNames = new Vector<StringBuffer>();
-			rowData = new Vector<Vector<String>>();
+			this.columnNames = new Vector<StringBuffer>();
+			this.rowData = new Vector<Vector<String>>();
 
-			for (int i = 0; i < nbFields; i++) {
+			for (int i = 0; i < this.nbFields; i++) {
 				fieldName = themeDbf.getFieldName(i);
-				columnNames.add(fieldName);
+				this.columnNames.add(fieldName);
 			}
 
-			for (int j = 0; j < nbRecords; j++) {
+			for (int j = 0; j < this.nbRecords; j++) {
 				row = new Vector<String>();
-				for (int i = 0; i < nbFields; i++) {
+				for (int i = 0; i < this.nbFields; i++) {
 					if (themeDbf.getFieldType(i) == 'N') {
 						row.add(
 								(themeDbf.getFloatCol(i, j, j + 1))[0].toString());
@@ -133,7 +133,7 @@ class ObjectViewerAttributesTableFrame extends JFrame {
 								(themeDbf.getStringCol(i, j, j + 1))[0].toString());
 					}
 				}
-				rowData.add(row);
+				this.rowData.add(row);
 			}
 
 		} catch (Exception e) {
@@ -146,11 +146,11 @@ class ObjectViewerAttributesTableFrame extends JFrame {
 	/** Fill vectors of attributes for GeOxygene data */
 	@SuppressWarnings("unchecked")
 	public void geoxygene() {
-		title = theme.getName();
-		GeOxygeneReader geOxyRd = (GeOxygeneReader) dataSource;
+		this.title = this.theme.getName();
+		GeOxygeneReader geOxyRd = (GeOxygeneReader) this.dataSource;
 		Object[] result = geOxyRd.readData();
-		columnNames = (Vector<StringBuffer>) result[0];
-		rowData = (Vector<Vector<String>>) result[1];
+		this.columnNames = (Vector<StringBuffer>) result[0];
+		this.rowData = (Vector<Vector<String>>) result[1];
 
 	}
 

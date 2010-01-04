@@ -117,10 +117,10 @@ public class ShapefileReader implements Runnable {
 		this.populationName=populationName;
 		this.dataset=dataset;
 		this.population = new Population<DefaultFeature>(populationName);
-		if (dataset!=null) dataset.addPopulation(population);
+		if (dataset!=null) dataset.addPopulation(this.population);
 		this.schemaDefaultFeature = new SchemaDefaultFeature();
 		/** Initialise le schéma */
-		this.reader = initSchema(shapefileName, schemaDefaultFeature, population, initSpatialIndex);
+		this.reader = initSchema(shapefileName, this.schemaDefaultFeature, this.population, initSpatialIndex);
 	}
 	/**
 	 * Utilisée pour lancer le chargement asynchrone.
@@ -140,7 +140,7 @@ public class ShapefileReader implements Runnable {
 	 * @param shapefileName un shapefile
 	 * @return une population contenant les features contenues dans le fichier.
 	 */
-	public static Population<DefaultFeature> read(String shapefileName) {return read(shapefileName, shapefileName.substring(shapefileName.lastIndexOf("/")+1,shapefileName.lastIndexOf(".")), null, false);}
+	public static Population<DefaultFeature> read(String shapefileName) {return read(shapefileName, shapefileName.substring(shapefileName.lastIndexOf("/")+1,shapefileName.lastIndexOf(".")), null, false);} //$NON-NLS-1$ //$NON-NLS-2$
 	/**
 	 * Lit les features contenus dans le fichier en paramètre et ajoute la population chargée à un dataset.
 	 * Ce chargement est synchrone
@@ -244,7 +244,7 @@ public class ShapefileReader implements Runnable {
 			type.setMemberName(memberName);
 			type.setValueType(valueType);
 			newFeatureType.addFeatureAttribute(type);
-			attLookup.put(i, new String[]{nomField,memberName});
+			attLookup.put(new Integer(i), new String[]{nomField,memberName});
 			if(logger.isDebugEnabled()) logger.debug("Ajout de l'attribut "+i+" = "+nomField);
 		}
 		/** création d'un schéma associé au featureType */
@@ -287,19 +287,19 @@ public class ShapefileReader implements Runnable {
 	}
 	@Override
 	public void run() {
-		try {read(reader, this.schemaDefaultFeature, this.population);}
+		try {read(this.reader, this.schemaDefaultFeature, this.population);}
 		catch (IOException e) {
-			logger.error("problème pendant la lecture du fichier "+shapefileName+". Il n'a pas été chargé et le résultat est null.");
+			logger.error("problème pendant la lecture du fichier "+this.shapefileName+". Il n'a pas été chargé et le résultat est null.");
 		}
 	}
 	/**
 	 * @return maximum X value
 	 */
-	public double getMaxX() {return reader.getMaxX();}
-	public double getMinX() {return reader.getMinX();}
+	public double getMaxX() {return this.reader.getMaxX();}
+	public double getMinX() {return this.reader.getMinX();}
 
-	public double getMaxY() {return reader.getMaxY();}
-	public double getMinY() {return reader.getMinY();}
+	public double getMaxY() {return this.reader.getMaxY();}
+	public double getMinY() {return this.reader.getMinY();}
 }
 class Reader {
 	private final static Logger logger=Logger.getLogger(Reader.class.getName());
@@ -350,19 +350,19 @@ class Reader {
 		    if (logger.isDebugEnabled()) logger.debug("Erreur pendant la lecture du fichier prj "+shapefileName);
 		}
 
-		minX=shapefileReader.getHeader().minX();
-		maxX=shapefileReader.getHeader().maxX();
-		minY=shapefileReader.getHeader().minY();
-		maxY=shapefileReader.getHeader().maxY();
-		shapeType = geometryType(shapefileReader.getHeader().getShapeType());
-		nbFields = dbaseFileReader.getHeader().getNumFields();
-		nbFeatures = dbaseFileReader.getHeader().getNumRecords();
-		fieldValues = new Object[nbFeatures][nbFields];
-		fieldNames = new String[nbFields];
-		fieldClasses = new Class<?>[nbFields];
-		for(int i = 0 ; i < nbFields ; i++) {
-			fieldNames[i] = dbaseFileReader.getHeader().getFieldName(i);
-			fieldClasses[i] = dbaseFileReader.getHeader().getFieldClass(i);
+		this.minX=shapefileReader.getHeader().minX();
+		this.maxX=shapefileReader.getHeader().maxX();
+		this.minY=shapefileReader.getHeader().minY();
+		this.maxY=shapefileReader.getHeader().maxY();
+		this.shapeType = geometryType(shapefileReader.getHeader().getShapeType());
+		this.nbFields = dbaseFileReader.getHeader().getNumFields();
+		this.nbFeatures = dbaseFileReader.getHeader().getNumRecords();
+		this.fieldValues = new Object[this.nbFeatures][this.nbFields];
+		this.fieldNames = new String[this.nbFields];
+		this.fieldClasses = new Class<?>[this.nbFields];
+		for(int i = 0 ; i < this.nbFields ; i++) {
+			this.fieldNames[i] = dbaseFileReader.getHeader().getFieldName(i);
+			this.fieldClasses[i] = dbaseFileReader.getHeader().getFieldClass(i);
 		}
 		// FIXME gère le SRID
 		//System.out.println("code = "+prjFileReader.getCoodinateSystem().getName().getCode());
@@ -375,18 +375,18 @@ class Reader {
 			e1.printStackTrace();
 		}
 		*/
-		geometries = new Geometry[nbFeatures];
+		this.geometries = new Geometry[this.nbFeatures];
 		int indexFeatures = 0;
 		try {
 			while (shapefileReader.hasNext() && dbaseFileReader.hasNext()) {
 				Object[] entry = dbaseFileReader.readEntry();
 				Record record = shapefileReader.nextRecord();
 				try{
-					geometries[indexFeatures]=(Geometry)record.shape();
+					this.geometries[indexFeatures]=(Geometry)record.shape();
 				} catch (Exception e) {
-					geometries[indexFeatures]=null;
+					this.geometries[indexFeatures]=null;
 				}
-				for(int index = 0 ; index < nbFields ; index++) fieldValues[indexFeatures][index]=entry[index];
+				for(int index = 0 ; index < this.nbFields ; index++) this.fieldValues[indexFeatures][index]=entry[index];
 				indexFeatures++;
 			}
 			shapefileReader.close();
@@ -428,13 +428,13 @@ class Reader {
 	 * @param i
 	 * @return the name of the given field
 	 */
-	public String getFieldName(int i) {return fieldNames[i];}
+	public String getFieldName(int i) {return this.fieldNames[i];}
 	/**
 	 * @param i
 	 * @return the class of the given field
 	 */
-	public Class<?> getFieldClass(int i) {return fieldClasses[i];}
-	public Class<? extends GM_Object> getShapeType() {return shapeType;}
+	public Class<?> getFieldClass(int i) {return this.fieldClasses[i];}
+	public Class<? extends GM_Object> getShapeType() {return this.shapeType;}
 	/**
 	 * @param type
 	 * @return the class of the given geometry type

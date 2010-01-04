@@ -50,8 +50,8 @@ class DicoGenerator {
 
 
 	DicoGenerator(Geodatabase data) {
-		conn = data.getConnection();
-		dbms = data.getDBMS();
+		this.conn = data.getConnection();
+		this.dbms = data.getDBMS();
 	}
 
 
@@ -59,15 +59,15 @@ class DicoGenerator {
 		int max = 1;
 		try {
 
-			Statement stm = conn.createStatement();
+			Statement stm = this.conn.createStatement();
 
 			String query = "SELECT MAX (GF_FeatureTypeID) FROM GF_FEATURETYPE";
 			ResultSet rs = stm.executeQuery(query);
 			while (rs.next()) {
-				if (dbms == Geodatabase.ORACLE) {
+				if (this.dbms == Geodatabase.ORACLE) {
 					if (rs.getObject(1) != null)
 						max = ((BigDecimal) rs.getObject(1)).intValue() + 1;
-				} else if (dbms == Geodatabase.POSTGIS) {
+				} else if (this.dbms == Geodatabase.POSTGIS) {
 					max = rs.getInt(1) + 1;
 				}
 			}
@@ -77,7 +77,7 @@ class DicoGenerator {
 			stm.close();
 		} catch (Exception e) {
 			//			e.printStackTrace();
-			; // mieux de pas afficher de message : si les tables n'existent pas ou s'il y a des doublons
+			 // mieux de pas afficher de message : si les tables n'existent pas ou s'il y a des doublons
 		}
 	}
 
@@ -86,14 +86,14 @@ class DicoGenerator {
 		int id = 0;
 		int max = 1;
 		try {
-			Statement stm = conn.createStatement();
+			Statement stm = this.conn.createStatement();
 
 			String query = "SELECT GF_FEATURETYPEID FROM GF_FEATURETYPE WHERE TYPENAME = '"+featureName+"'";
 			ResultSet rs = stm.executeQuery(query);
 			while (rs.next()) {
-				if (dbms == Geodatabase.ORACLE) {
+				if (this.dbms == Geodatabase.ORACLE) {
 					id = ((BigDecimal) rs.getObject(1)).intValue();
-				} else if (dbms == Geodatabase.POSTGIS) {
+				} else if (this.dbms == Geodatabase.POSTGIS) {
 					id = rs.getInt(1);
 				}
 			}
@@ -101,10 +101,10 @@ class DicoGenerator {
 			query = "SELECT MAX (GF_PropertyTypeID) FROM GF_ATTRIBUTETYPE";
 			rs = stm.executeQuery(query);
 			while (rs.next()) {
-				if (dbms == Geodatabase.ORACLE) {
+				if (this.dbms == Geodatabase.ORACLE) {
 					if (rs.getObject(1) != null)
 						max = ((BigDecimal) rs.getObject(1)).intValue() + 1;
-				} else if (dbms == Geodatabase.POSTGIS) {
+				} else if (this.dbms == Geodatabase.POSTGIS) {
 					max = rs.getInt(1) + 1;
 				}
 			}
@@ -114,7 +114,7 @@ class DicoGenerator {
 			stm.close();
 		} catch (Exception e) {
 			//			e.printStackTrace();
-			; // mieux de pas afficher de message : si les tables n'existent pas ou s'il y a des doublons
+			 // mieux de pas afficher de message : si les tables n'existent pas ou s'il y a des doublons
 		}
 	}
 

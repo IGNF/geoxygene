@@ -182,7 +182,7 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
 				//final JFrame ccframe = new ObjectViewerColorChooser();
 				//final ObjectViewerThemePropertiesFrame themePropertiesFrame = new ObjectViewerThemePropertiesFrame(objectViewerThemeProperties.getFillInThemeColor(),objectViewerThemeProperties.getOutlineThemeColor());
 				final ObjectViewerThemePropertiesFrame themePropertiesFrame =
-					new ObjectViewerThemePropertiesFrame(objectViewerThemeProperties);
+					new ObjectViewerThemePropertiesFrame(ObjectViewerThemePopupMenu.this.objectViewerThemeProperties);
 				themePropertiesFrame.addWindowListener(new WindowAdapter() {
 					@Override
 					public void windowClosing(WindowEvent event) {
@@ -204,7 +204,7 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
 	}
 
 	public ObjectViewerInterface getObjectViewerInterface() {
-		return objectViewerInterface;
+		return this.objectViewerInterface;
 	}
 
 	public void setObjectViewerThemeButton(ObjectViewerThemeButton objectViewerThemeButton) {
@@ -212,7 +212,7 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
 	}
 
 	public ObjectViewerThemeButton getObjectViewerThemeButton() {
-		return objectViewerThemeButton;
+		return this.objectViewerThemeButton;
 	}
 
 	public void setObjectViewerThemeProperties(ObjectViewerThemeProperties objectViewerThemeProperties) {
@@ -220,7 +220,7 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
 	}
 
 	public ObjectViewerThemeProperties getObjectViewerThemeProperties() {
-		return objectViewerThemeProperties;
+		return this.objectViewerThemeProperties;
 	}
 
 }

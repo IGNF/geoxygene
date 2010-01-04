@@ -56,8 +56,8 @@ class ObjectViewerStatusBar extends JPanel {
 	public ObjectViewerStatusBar(ObjectViewerInterface objectViewerInterface) {
 
 		this.objectViewerInterface = objectViewerInterface;
-		statusJLabel=new JLabel(DEFAULT_STATUS, SwingConstants.LEFT);
-		add(statusJLabel, BorderLayout.WEST);
+		this.statusJLabel=new JLabel(DEFAULT_STATUS, SwingConstants.LEFT);
+		add(this.statusJLabel, BorderLayout.WEST);
 	}
 
 	public void setObjectViewerInterface(ObjectViewerInterface objectViewerInterface) {
@@ -65,25 +65,25 @@ class ObjectViewerStatusBar extends JPanel {
 	}
 
 	public ObjectViewerInterface getObjectViewerInterface() {
-		return objectViewerInterface;
+		return this.objectViewerInterface;
 	}
 
 	public void setText(String text) {
-		statusJLabel.setText(text);
+		this.statusJLabel.setText(text);
 	}
 
 	/**
 	 * @return the Label of the status bar.
 	 */
 	public JLabel getStatusJLabel() {
-		return statusJLabel;
+		return this.statusJLabel;
 	}
 
 	/**
 	 * @param label
 	 */
 	public void setStatusJLabel(JLabel label) {
-		statusJLabel = label;
+		this.statusJLabel = label;
 	}
 
 }

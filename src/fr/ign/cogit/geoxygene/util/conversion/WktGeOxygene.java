@@ -29,7 +29,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked","unqualified-field-access","unused","nls"})
 public class WktGeOxygene implements WktGeOxygeneConstants {
     static class EndOfFile extends Exception {private static final long serialVersionUID = 1L;}
     static class EmptyLine extends Exception {private static final long serialVersionUID = 1L;}
@@ -462,7 +462,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          ;
+          
           break;
         default:
           jj_la1[1] = jj_gen;
@@ -498,7 +498,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          ;
+          
           break;
         default:
           jj_la1[3] = jj_gen;
@@ -534,7 +534,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          ;
+          
           break;
         default:
           jj_la1[5] = jj_gen;
@@ -570,7 +570,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          ;
+          
           break;
         default:
           jj_la1[7] = jj_gen;
@@ -606,7 +606,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          ;
+          
           break;
         default:
           jj_la1[9] = jj_gen;
@@ -642,7 +642,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          ;
+          
           break;
         default:
           jj_la1[11] = jj_gen;
@@ -687,7 +687,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       break;
     default:
       jj_la1[14] = jj_gen;
-      ;
+      
     }
     p = pointText();
      try {{if (true) return new GM_Point(p);}} catch (Exception e) {System.out.println(e);}
@@ -715,7 +715,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       break;
     default:
       jj_la1[16] = jj_gen;
-      ;
+      
     }
     mp = multipointText();
      try {{if (true) return mp;}} catch (Exception e) {System.out.println(e);}
@@ -743,7 +743,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       break;
     default:
       jj_la1[18] = jj_gen;
-      ;
+      
     }
     lineString = linestringText();
      try {{if (true) return lineString;}} catch (Exception e) {System.out.println(e);}
@@ -771,7 +771,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       break;
     default:
       jj_la1[20] = jj_gen;
-      ;
+      
     }
     multiLineString = multilinestringText();
      try {{if (true) return multiLineString;}} catch (Exception e) {System.out.println(e);}
@@ -799,7 +799,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       break;
     default:
       jj_la1[22] = jj_gen;
-      ;
+      
     }
     poly = polygonText();
      try {{if (true) return poly;}} catch (Exception e) {System.out.println(e);}
@@ -827,7 +827,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       break;
     default:
       jj_la1[24] = jj_gen;
-      ;
+      
     }
     mp = multipolygonText();
      try {{if (true) return mp;}} catch (Exception e) {System.out.println(e);}
@@ -1037,8 +1037,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
   private int jj_ntk() {
     if ((jj_nt=token.next) == null)
       return (jj_ntk = (token.next=token_source.getNextToken()).kind);
-    else
-      return (jj_ntk = jj_nt.kind);
+    return (jj_ntk = jj_nt.kind);
   }
 
   private java.util.List jj_expentries = new java.util.ArrayList();
