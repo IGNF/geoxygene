@@ -79,6 +79,11 @@
   </organization>
   <build>
   	<sourceDirectory>src</sourceDirectory>
+  	<resources>
+  		<resource>
+  			<directory>images</directory>
+  		</resource>
+  	</resources>
   	<plugins>
   		<plugin>
   			<groupId>org.apache.maven.plugins</groupId>
@@ -88,6 +93,10 @@
   				<source>1.6</source>
 				<complianceLevel>1.6</complianceLevel>
 				<target>1.6</target>
+				<includes>
+					<include>src/**/*.java</include>
+					<include>data/**/*.java</include>
+				</includes>
   			</configuration>
   		</plugin>
   		<plugin>
@@ -113,14 +122,6 @@
   		<snapshots>
   			<updatePolicy>always</updatePolicy>
   			<checksumPolicy>ignore</checksumPolicy>
-  		</snapshots>
-  	</repository>
-  	<repository>
-  		<id>releases</id>
-  		<name>Nexus Repository</name>
-  		<url>http://localhost:8080/nexus-webapp-1.4.1/content/repositories/releases/</url>
-  		<snapshots>
-  			<enabled>false</enabled>
   		</snapshots>
   	</repository>
   	<repository>
@@ -154,6 +155,8 @@
   		<groupId>org.apache</groupId>
   		<artifactId>ojb</artifactId>
   		<version>1.0.rc6</version>
+  		<scope>system</scope>
+  		<systemPath>${basedir}/lib/ojb-1.0.rc6.jar</systemPath>
   	</dependency>
   	<dependency>
   		<groupId>org.postgis</groupId>
@@ -164,6 +167,8 @@
   		<groupId>jama</groupId>
   		<artifactId>jama</artifactId>
   		<version>1.0.2</version>
+  		<scope>system</scope>
+  		<systemPath>${basedir}/lib/Jama-1.0.2.jar</systemPath>
   	</dependency>
   	<dependency>
   		<groupId>org.hibernate</groupId>
@@ -174,16 +179,6 @@
   		<groupId>org.hibernate</groupId>
   		<artifactId>hibernate-annotations</artifactId>
   		<version>3.4.0.GA</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>oracle</groupId>
-  		<artifactId>oracle-jdbc</artifactId>
-  		<version>9.0.2</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>oracle</groupId>
-  		<artifactId>sdoapi</artifactId>
-  		<version>9.0.2</version>
   	</dependency>
   	<dependency>
   		<groupId>org.apache.xmlgraphics</groupId>
@@ -229,6 +224,8 @@
   		<groupId>uk.ac.leeds.ccg</groupId>
   		<artifactId>geotools</artifactId>
   		<version>1</version>
+  		<scope>system</scope>
+  		<systemPath>${basedir}/lib/geotools1-cogit.jar</systemPath>
   	</dependency>
   	<dependency>
   		<groupId>com.thoughtworks.xstream</groupId>
