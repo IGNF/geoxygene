@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
@@ -119,10 +120,10 @@ public class Comparaison {
 			n++;
 		}
 
-		System.out.println("distance moyenne entre les arcs"+dtot/ltot);
-		System.out.println("distance max entre les arcs "+dmax);
-		System.out.println("Nb d'arcs de this pris en compte dans le calcul "+n);
-		System.out.println("Nb d'arcs de this non pris en compte dans le calcul "+(arcsRef.size()-n));
+		System.out.println(I18N.getString("Comparaison.AverageDistanceBetweenEdges")+dtot/ltot); //$NON-NLS-1$
+		System.out.println(I18N.getString("Comparaison.MaxDistanceBetweenEdges")+dmax); //$NON-NLS-1$
+		System.out.println(I18N.getString("Comparaison.NumberOfEdgesUsed")+n); //$NON-NLS-1$
+		System.out.println(I18N.getString("Comparaison.NumberOfEdgesNotUsed")+(arcsRef.size()-n)); //$NON-NLS-1$
 		return dtot/ltot;
 	}
 
@@ -290,34 +291,34 @@ public class Comparaison {
 		ecartTypeArcs = Math.sqrt((ecartQuadratiqueTotal/poidsTotal)-(Math.pow(vTotal.getX(),2)+Math.pow(vTotal.getY(),2)));
 		ecartQuadratiqueTotal = Math.sqrt(ecartQuadratiqueTotal/poidsTotal);
 		// resultats sur les arcs
-		if (affichage) System.out.println("******************* BILAN SUR LES ARCS *******************");
-		if (affichage) System.out.println("** Comparaison globale des réseaux, en nombre et longueur d'arcs :");
+		if (affichage) System.out.println(I18N.getString("Comparaison.EdgeAssessment")); //$NON-NLS-1$
+		if (affichage) System.out.println(I18N.getString("Comparaison.GlobalNetworkComparison")); //$NON-NLS-1$
 		resultats.add(new Double(longTotal1));
-		if (affichage) System.out.println("** Longueur total des arcs du réseau 1 (km) : "+Math.round(longTotal1/1000));
+		if (affichage) System.out.println(I18N.getString("Comparaison.TotalEdgeLengthNetwork1")+Math.round(longTotal1/1000)); //$NON-NLS-1$
 		resultats.add(new Double(longPrisEnCompte1));
-		if (affichage) System.out.println("** Longueur total des arcs du réseau 1 pris en compte pour le calcul (km) : "+Math.round(longPrisEnCompte1/1000));
+		if (affichage) System.out.println(I18N.getString("Comparaison.TotalEdgeLengthNetwork1Used")+Math.round(longPrisEnCompte1/1000)); //$NON-NLS-1$
 		resultats.add(new Double(longTotal2));
-		if (affichage) System.out.println("** Longueur total des arcs du réseau 2(km) : "+Math.round(longTotal2/1000));
+		if (affichage) System.out.println(I18N.getString("Comparaison.TotalEdgeLengthNetwork2")+Math.round(longTotal2/1000)); //$NON-NLS-1$
 		resultats.add(new Double(nbArcsTotal1));
-		if (affichage) System.out.println("** Nombre d'arcs du réseau 1 : "+nbArcsTotal1);
+		if (affichage) System.out.println(I18N.getString("Comparaison.NumberOfEdgesNetwork1")+nbArcsTotal1); //$NON-NLS-1$
 		resultats.add(new Double(nbArcsPrisEnCompte1));
-		if (affichage) System.out.println("** Nombre d'arcs du réseau 1 pris en compte pour le calcul : "+nbArcsPrisEnCompte1);
+		if (affichage) System.out.println(I18N.getString("Comparaison.NumberOfEdgesNetwork1Used")+nbArcsPrisEnCompte1); //$NON-NLS-1$
 		resultats.add(new Double(nbArcsTotal2));
-		if (affichage) System.out.println("** Nombre d'arcs du réseau 2 : "+nbArcsTotal2);
+		if (affichage) System.out.println(I18N.getString("Comparaison.NumberOfEdgesNetwork2")+nbArcsTotal2); //$NON-NLS-1$
 
-		if (affichage) System.out.println("");
-		if (affichage) System.out.println("** Estimateurs d'écart ");
+		if (affichage) System.out.println(""); //$NON-NLS-1$
+		if (affichage) System.out.println(I18N.getString("Comparaison.DeviationEstimation")); //$NON-NLS-1$
 		resultats.add(new Double(vTotal.getX()));
-		if (affichage) System.out.println("** Biais systématique en X  : "+vTotal.getX());
+		if (affichage) System.out.println(I18N.getString("Comparaison.SystematicXBias")+vTotal.getX()); //$NON-NLS-1$
 		resultats.add(new Double(vTotal.getY()));
-		if (affichage) System.out.println("** Biais systématique en Y  : "+vTotal.getY());
+		if (affichage) System.out.println(I18N.getString("Comparaison.SystematicYBias")+vTotal.getY()); //$NON-NLS-1$
 		resultats.add(new Double(ecartTotal));
-		if (affichage) System.out.println("** Ecart moyen : "+ecartTotal);
+		if (affichage) System.out.println(I18N.getString("Comparaison.AverageDeviation")+ecartTotal); //$NON-NLS-1$
 		resultats.add(new Double(ecartQuadratiqueTotal));
-		if (affichage) System.out.println("** Ecart moyen quadratique : "+ecartQuadratiqueTotal);
+		if (affichage) System.out.println(I18N.getString("Comparaison.QuadraticAverageDeviation")+ecartQuadratiqueTotal); //$NON-NLS-1$
 		resultats.add(new Double(ecartTypeArcs));
-		if (affichage) System.out.println("** Ecart type : "+ecartTypeArcs);
-		if (affichage) System.out.println("*********************************************************");
+		if (affichage) System.out.println(I18N.getString("Comparaison.StandardDeviation")+ecartTypeArcs); //$NON-NLS-1$
+		if (affichage) System.out.println("*********************************************************"); //$NON-NLS-1$
 
 		return resultats;
 	}

@@ -29,6 +29,7 @@ package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
 import java.util.Iterator;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.NoeudApp;
@@ -80,7 +81,7 @@ public class Recalage {
 	public static CarteTopo recalage(ReseauApp ctARecaler,
 			ReseauApp ctSurLaquelleRecaler,
 			EnsembleDeLiens liens) {
-		CarteTopo ctRecale = new CarteTopo("reseau recalé");
+		CarteTopo ctRecale = new CarteTopo(I18N.getString("Recalage.CorrectedNetwork")); //$NON-NLS-1$
 		// On ajoute dans le réseau recalé les arcs sur lesquels on recale qui sont appariés.
 		Iterator<?> itArcsSurLesquelsRecaler = ctSurLaquelleRecaler.getPopArcs().getElements().iterator();
 		while (itArcsSurLesquelsRecaler.hasNext()) {

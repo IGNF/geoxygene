@@ -1,27 +1,22 @@
 /*
  * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
- * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
- * National Mapping Agency).
- * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at
+ * the Institut Géographique National (the French National Mapping Agency).
  * See: http://oxygene-project.sourceforge.net
- * 
  * Copyright (C) 2005 Institut Géographique National
- *
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License along with
- * this library (see file LICENSE if present); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or any later
+ * version.
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details. You should have received a copy of the GNU Lesser General
+ * Public License along with this library (see file LICENSE if present); if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place,
+ * Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
@@ -34,6 +29,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
@@ -63,14 +59,6 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 public class LienReseaux extends Lien {
 	static Logger logger=Logger.getLogger(LienReseaux.class.getName());
-
-
-	/** Nom de l'appariement qui a créé le lien */
-	private String nom;
-	@Override
-	public String getNom() {return this.nom;}
-	@Override
-	public void setNom(String nom){ this.nom = nom; }
 
 	/** Les Arc1 pointés par le lien */
 	private List<Arc> arcs1 = new ArrayList<Arc>();
@@ -205,7 +193,7 @@ public class LienReseaux extends Lien {
 						//cas où il n'y a pas de correspondant dans les données de départ des 2 côtés
 						Lien lienG = liensGeneriques.nouvelElement();
 						lienG.setEvaluation(lienReseau.getEvaluation());
-						lienG.setCommentaire("Pas de correspondant géo dans les deux BDs");
+						lienG.setCommentaire(I18N.getString("LienReseaux.NoCorrespondentInBothDatabases")); //$NON-NLS-1$
 						if (param.exportGeometrieLiens2vers1) lienG.setGeom(creeGeometrieLienSimple(objetCT1, objetCT2));
 						else lienG.setGeom(creeGeometrieLienSimple(objetCT2, objetCT1));
 						continue;
@@ -217,7 +205,7 @@ public class LienReseaux extends Lien {
 							FT_Feature objet2 = itObjets2.next();
 							Lien lienG = liensGeneriques.nouvelElement();
 							lienG.setEvaluation(lienReseau.getEvaluation());
-							lienG.setCommentaire("Pas de correspondant géo dans BD1");
+							lienG.setCommentaire(I18N.getString("LienReseaux.NoCorrespondentInDB1")); //$NON-NLS-1$
 							if (param.exportGeometrieLiens2vers1) lienG.setGeom(creeGeometrieLienSimple(objetCT1, objet2));
 							else lienG.setGeom(creeGeometrieLienSimple(objet2, objetCT1));
 							lienG.addObjetComp(objet2);
@@ -231,7 +219,7 @@ public class LienReseaux extends Lien {
 							FT_Feature objet1 = itObjets1.next();
 							Lien lienG = liensGeneriques.nouvelElement();
 							lienG.setEvaluation(lienReseau.getEvaluation());
-							lienG.setCommentaire("Pas de correspondant géo dans BD1");
+							lienG.setCommentaire(I18N.getString("LienReseaux.NoCorrespondentInDB1")); //$NON-NLS-1$
 							if (param.exportGeometrieLiens2vers1) lienG.setGeom(creeGeometrieLienSimple(objet1, objetCT2));
 							else lienG.setGeom(creeGeometrieLienSimple(objetCT2, objet1));
 							lienG.addObjetRef(objet1);
@@ -247,7 +235,7 @@ public class LienReseaux extends Lien {
 							FT_Feature objet2 = itObjets2.next();
 							Lien lienG = liensGeneriques.nouvelElement();
 							lienG.setEvaluation(lienReseau.getEvaluation());
-							lienG.setCommentaire("");
+							lienG.setCommentaire(""); //$NON-NLS-1$
 							if (param.exportGeometrieLiens2vers1)lienG.setGeom(creeGeometrieLienSimple(objet1, objet2));
 							else lienG.setGeom(creeGeometrieLienSimple(objet2, objet1));
 							lienG.addObjetRef(objet1);
@@ -257,7 +245,7 @@ public class LienReseaux extends Lien {
 				}
 			}
 		}
-		if ( param.debugAffichageCommentaires > 1 ) System.out.println("  "+liensGeneriques.size()+" liens 1-1 ont été exportés");
+		if ( param.debugAffichageCommentaires > 1 ) System.out.println("  "+liensGeneriques.size()+I18N.getString("LienReseaux.Link1-1exported")); //$NON-NLS-1$ //$NON-NLS-2$
 
 		return liensGeneriques;
 	}
@@ -278,7 +266,7 @@ public class LienReseaux extends Lien {
 	 * deux objets concerné par un simple trait
 	 */
 	private static GM_Object creeGeometrieLienSimple(FT_Feature obj1, FT_Feature obj2) {
-		if (logger.isDebugEnabled()) logger.debug(obj1+" - "+obj2);
+		if (logger.isDebugEnabled()) logger.debug(obj1+" - "+obj2); //$NON-NLS-1$
 		
 		GM_LineString ligne = new GM_LineString();
 		DirectPosition DP2 = null;
@@ -445,7 +433,7 @@ public class LienReseaux extends Lien {
 	 */
 	private GM_Object creeGeometrieLien(boolean tirets, double pasTirets, boolean buffer, double tailleBuffer) {
 
-		if (logger.isDebugEnabled()) logger.debug(tirets+" - "+pasTirets+" - "+buffer+" - "+tailleBuffer);
+		if (logger.isDebugEnabled()) logger.debug(tirets+" - "+pasTirets+" - "+buffer+" - "+tailleBuffer); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		Iterator<Groupe> itGroupes;
 		Iterator<Noeud> itNoeuds;
@@ -460,7 +448,7 @@ public class LienReseaux extends Lien {
 
 		// LIEN D'UN NOEUD REF VERS DES NOEUDS COMP ET/OU DES GROUPES COMP
 		if ( this.getNoeuds1().size() == 1 ) {
-			if (logger.isDebugEnabled()) logger.debug("Noeuds1 = "+this.getNoeuds1().size());
+			if (logger.isDebugEnabled()) logger.debug(I18N.getString("LienReseaux.Nodes1")+this.getNoeuds1().size()); //$NON-NLS-1$
 			
 			noeudRef = (NoeudApp)this.getNoeuds1().get(0);
 			geomLien = new GM_Aggregate<GM_Object>();
@@ -498,9 +486,9 @@ public class LienReseaux extends Lien {
 				geomLien.add(ligne);
 			}
 
-			if (logger.isDebugEnabled()) logger.debug("geomLien = "+geomLien);
+			if (logger.isDebugEnabled()) logger.debug(I18N.getString("LienReseaux.LinkGeometry")+geomLien); //$NON-NLS-1$
 			if (geomLien.coord().size() > 1 ) return geomLien;
-			System.out.println("Lien pour un noeud non créé : pas assez de coordonnées");
+			System.out.println(I18N.getString("LienReseaux.NodeLinkNotCreated")); //$NON-NLS-1$
 			return null;
 		}
 
@@ -539,9 +527,9 @@ public class LienReseaux extends Lien {
 			}
 
 		}
-		if (logger.isDebugEnabled()) logger.debug("geomLien = "+geomLien);
+		if (logger.isDebugEnabled()) logger.debug(I18N.getString("LienReseaux.LinkGeometry")+geomLien); //$NON-NLS-1$
 		if (geomLien.coord().size() > 1 ) return geomLien;
-		System.out.println("Lien pour un arc non créé : pas assez de coordonnées");
+		System.out.println(I18N.getString("LienReseaux.EdgeLinkNotCreated")); //$NON-NLS-1$
 		return null;
 	}
 

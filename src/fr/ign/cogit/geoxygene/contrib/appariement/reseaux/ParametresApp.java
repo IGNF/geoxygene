@@ -185,19 +185,19 @@ public class ParametresApp implements Cloneable {
 	/** Distance max de la projection des noeuds 2 sur le réseau 1.
 	 *  Utile uniquement si projeteNoeuds1SurReseau2 = true.
 	 */
-	public double projeteNoeuds1SurReseau2_DistanceNoeudArc = 0;
+	public double projeteNoeuds1SurReseau2DistanceNoeudArc = 0;
 
 	/** Distance min entre la projection d'un noeud sur un arc et les extrémités de cet arc
 	 * pour créer un nouveau noeud sur le réseau 2.
 	 *  Utile uniquement si projeteNoeuds1SurReseau2 = true.
 	 */
-	public double projeteNoeuds1SurReseau2_DistanceProjectionNoeud = 0;
+	public double projeteNoeuds1SurReseau2DistanceProjectionNoeud = 0;
 
 	/** Si true: on ne projete que les impasses du réseau 1 sur le réseau 2
 	 *  Si false: on projete tous les noeuds du réseau 1 sur le réseau 2.
 	 *  Utile uniquement si projeteNoeuds1SurReseau2 = true.
 	 */
-	public boolean projeteNoeuds1SurReseau2_ImpassesSeulement = false;
+	public boolean projeteNoeuds1SurReseau2ImpassesSeulement = false;
 
 
 	/** Doit on projeter les noeuds du réseau 2 sur le réseau 1 pour découper ce dernier ?
@@ -211,19 +211,19 @@ public class ParametresApp implements Cloneable {
 	/** Distance max de la projection des noeuds 1 sur le réseau 2.
 	 *  Utile uniquement si projeteNoeuds2SurReseau1 = true.
 	 */
-	public double projeteNoeud2surReseau1_DistanceNoeudArc = 0;
+	public double projeteNoeud2surReseau1DistanceNoeudArc = 0;
 
 	/** Distance min entre la projection d'un noeud sur un arc et les extrémités de cet arc
 	 * pour créer un nouveau noeud sur le réseau 1.
 	 *  Utile uniquement si projeteNoeuds2SurReseau1 = true.
 	 */
-	public double projeteNoeud2surReseau1_DistanceProjectionNoeud = 0;
+	public double projeteNoeud2surReseau1DistanceProjectionNoeud = 0;
 
 	/** Si true: on ne projete que les impasses du réseau 2 sur le réseau 1
 	 *  Si false: on projete tous les noeuds du réseau 2 sur le réseau 1.
 	 *  Utile uniquement si projeteNoeuds1SurReseau2 = true.
 	 */
-	public boolean projeteNoeud2surReseau1_ImpassesSeulement = false;
+	public boolean projeteNoeud2surReseau1ImpassesSeulement = false;
 
 
 
