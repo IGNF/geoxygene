@@ -174,7 +174,7 @@ public class TestTopo {
 		for (int i=0; i<node_coBdy.size(); i++) {
 			TP_DirectedEdge diredge = (TP_DirectedEdge)node_coBdy.get(i);
 			System.out.println("    identifiant du brin oriente : "+diredge.getId());
-			System.out.println("        identifiant du feature : "+diredge.topo().getFeature().getId());
+			//System.out.println("        identifiant du feature : "+diredge.topo().getFeature().getId());
 			// remarque : getFeature() s'applique sur un TP_Edge et non pas un TP_DirectedEdge (sinon renvoie null)
 			// c'est pour cela qu'on applique l'operation topo()
 		}
@@ -197,7 +197,7 @@ public class TestTopo {
 		for (int i=0; i<node_coBdy.size(); i++) {
 			TP_DirectedEdge diredge = (TP_DirectedEdge)node_coBdy.get(i);
 			System.out.println("    identifiant du brin oriente : "+diredge.getId());
-			System.out.println("        identifiant du feature : "+diredge.topo().getFeature().getId());
+			//System.out.println("        identifiant du feature : "+diredge.topo().getFeature().getId());
 			// meme remarque que plus haut
 		}
 
@@ -215,7 +215,7 @@ public class TestTopo {
 		System.out.println();
 
 		System.out.println("identifiant du brin : "+edge.getId());
-		System.out.println("    identifiant du feature du brin : "+edge.getFeature().getId());
+		//System.out.println("    identifiant du feature du brin : "+edge.getFeature().getId());
 
 		// boundary
 		// l'operateur "boundary" renvoie un  TP_EdgeBoundary
@@ -282,23 +282,23 @@ public class TestTopo {
 
 		// brin suivant
 		System.out.println("identifiant du brin suivant : "+edge.nextEdge().getId());
-		System.out.println("    identifiant du feature du brin suivant : "+edge.nextEdge().topo().getFeature().getId());
+		//System.out.println("    identifiant du feature du brin suivant : "+edge.nextEdge().topo().getFeature().getId());
 		// remarque : getFeature() s'applique sur un TP_Edge et non pas un TP_DirectedEdge (sinon renvoie null)
 		// c'est pour cela qu'on applique l'operation topo()
 
 		// brin suivant du negate()
 		System.out.println("identifiant du brin suivant du brin oppose : "+edge.negate().nextEdge().getId());
-		System.out.println("    identifiant du feature du brin suivant du brin oppose : "+edge.negate().nextEdge().topo().getFeature().getId());
+		//System.out.println("    identifiant du feature du brin suivant du brin oppose : "+edge.negate().nextEdge().topo().getFeature().getId());
 		// meme remarque que ci-dessus
 
 		// brin precedent
 		System.out.println("identifiant du brin precedent : "+edge.previousEdge().getId());
-		System.out.println("    identifiant du feature du brin precedent : "+edge.previousEdge().topo().getFeature().getId());
+		//System.out.println("    identifiant du feature du brin precedent : "+edge.previousEdge().topo().getFeature().getId());
 		// meme remarque que ci-dessus
 
 		// brin precedent du negate()
 		System.out.println("identifiant du brin precedent du brin oppose : "+edge.negate().previousEdge().getId());
-		System.out.println("    identifiant du feature du brin precedent du brin oppose : "+edge.negate().previousEdge().topo().getFeature().getId());
+		//System.out.println("    identifiant du feature du brin precedent du brin oppose : "+edge.negate().previousEdge().topo().getFeature().getId());
 		// meme remarque que ci-dessus
 
 
@@ -308,7 +308,7 @@ public class TestTopo {
 		for (int i=0; i<cycle.sizeTerm(); i++) {
 			TP_DirectedEdge dedge = (TP_DirectedEdge)cycle.getTerm(i);
 			System.out.println("    identifiant du brin : "+dedge.getId());
-			System.out.println("        identifiant du feature du brin : "+dedge.topo().getFeature().getId());
+			//System.out.println("        identifiant du feature du brin : "+dedge.topo().getFeature().getId());
 		}
 
 	}
@@ -333,7 +333,7 @@ public class TestTopo {
 		for (int i=0; i<ext.sizeTerm(); i++) {
 			TP_DirectedEdge theEdge = (TP_DirectedEdge)ext.getTerm(i);
 			System.out.println("    identifiant du brin : "+theEdge.getId());
-			System.out.println("     identifiant du feature : "+theEdge.topo().getFeature().getId());
+			//System.out.println("     identifiant du feature : "+theEdge.topo().getFeature().getId());
 		}
 		for (int j=0; j<face_bdy.sizeInterior(); j++) {
 			System.out.println("boundary interior: ");
@@ -341,7 +341,7 @@ public class TestTopo {
 			for (int i=0; i<inte.sizeTerm(); i++) {
 				TP_DirectedEdge theEdge = (TP_DirectedEdge)inte.getTerm(i);
 				System.out.println("    identifiant du brin : "+theEdge.getId());
-				System.out.println("     identifiant du feature : "+theEdge.topo().getFeature().getId());
+				//System.out.println("     identifiant du feature : "+theEdge.topo().getFeature().getId());
 			}
 		}
 
@@ -364,7 +364,7 @@ public class TestTopo {
 		for (int i=0; i<ext.sizeTerm(); i++) {
 			TP_DirectedEdge theEdge = (TP_DirectedEdge)ext.getTerm(i);
 			System.out.println("    identifiant du brin : "+theEdge.getId());
-			System.out.println("     identifiant du feature : "+theEdge.topo().getFeature().getId());
+			//System.out.println("     identifiant du feature : "+theEdge.topo().getFeature().getId());
 		}
 		for (int j=0; j<face_bdy.sizeInterior(); j++) {
 			System.out.println("boundary interior: ");
@@ -372,7 +372,7 @@ public class TestTopo {
 			for (int i=0; i<inte.sizeTerm(); i++) {
 				TP_DirectedEdge theEdge = (TP_DirectedEdge)inte.getTerm(i);
 				System.out.println("    identifiant du brin : "+theEdge.getId());
-				System.out.println("     identifiant du feature : "+theEdge.topo().getFeature().getId());
+				//System.out.println("     identifiant du feature : "+theEdge.topo().getFeature().getId());
 			}
 		}
 
@@ -457,7 +457,7 @@ public class TestTopo {
 		for (int i=0; i<bdy.sizeTerm(); i++) {
 			TP_DirectedTopo dt = bdy.getTerm(i);
 			System.out.println(dt.getClass().getName()+"    "+dt.getId());
-			System.out.println(" feature : "+((TP_DirectedEdge)dt).topo().getFeature().getId());
+			//System.out.println(" feature : "+((TP_DirectedEdge)dt).topo().getFeature().getId());
 		}
 
 

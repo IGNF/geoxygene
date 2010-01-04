@@ -1,40 +1,33 @@
-/**
+/*
  * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
- * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
- * National Mapping Agency).
- * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at
+ * the Institut Géographique National (the French National Mapping Agency).
  * See: http://oxygene-project.sourceforge.net
- * 
  * Copyright (C) 2005 Institut Géographique National
- *
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License along with
- * this library (see file LICENSE if present); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or any later
+ * version.
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details. You should have received a copy of the GNU Lesser General
+ * Public License along with this library (see file LICENSE if present); if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place,
+ * Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
-import org.apache.log4j.Logger;
-
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-
 
 /**
  * Point connu par ses coordonnées.
  * <p>
- * Les coordonnées sont connues par un tableau, de longueur la dimension des géométries (2D ou 3D).
+ * Les coordonnées sont connues par un tableau, de longueur la dimension des
+ * géométries (2D ou 3D).
  * Dans cette version, tous les DirectPosition sont en 3D.
  * Si on est en 2D, la 3ieme coordonnée vaut NaN.
  * TODO Ajouter la méthode hashCode()
@@ -44,29 +37,29 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  * @author Julien Perret
  */
 public class DirectPosition {
-	static Logger logger=Logger.getLogger(DirectPosition.class.getName());
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Attribut CRS //////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////
 	/** 
 	 * Identifiant du systeme de coordonnees de reference (CRS en anglais).
-	 * Lorsque les DirectPosition servent à definir un GM_Object, cet attribut doit etre null.
+	 * Lorsque les DirectPosition servent à definir un GM_Object, cet attribut
+	 * doit etre null.
 	 * En effet, il est alors porte par le GM_Object.
 	 * <p>
-	 * FIXME Dans la norme ISO, cet attribut est une relation qui pointe vers la classe SC_CRS (non implementee) 
+	 * FIXME Dans la norme ISO, cet attribut est une relation qui pointe vers la
+	 * classe SC_CRS (non implementee). 
 	 */
 	protected int CRS;
 	/** Renvoie l' identifiant du systeme de coordonnees de reference. */
-	public int getCRS() {return this.CRS;}
+	public int getCRS() { return this.CRS; }
 	/** Affecte une valeur au systeme de coordonnees de reference. */
-	public void setCRS(int crs) {this.CRS = crs; }
+	public void setCRS(int crs) { this.CRS = crs;  }
 
 	/** Tableau des coordonnees du point. */
 	protected double[] coordinate = new double[3];
-	/** Dimension des coordonnees (2D ou 3D) - dimension = coordinate.length  */
+	/** Dimension des coordonnees (2D ou 3D) - dimension = coordinate.length.*/
 	protected int dimension = 3;
-	/** Constructeur par defaut (3D): cree un tableau de coordonees à 3 dimensions, vide.*/
+	/**
+	 * Constructeur par defaut (3D): cree un tableau de coordonees à 3 dimensions,
+	 * vide.
+	 */
 	public DirectPosition() {
 		this.coordinate[0] = Double.NaN;
 		this.coordinate[1] = Double.NaN;
