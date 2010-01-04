@@ -28,7 +28,7 @@ public class AttributeType implements	GF_AttributeType {
 
 	/**Identifiant d'un objet*/
 	protected int id;
-	public int getId() {return id;}
+	public int getId() {return this.id;}
 	public void setId(int id) {this.id = id;}
 
 	/** nom de l'attribut. */
@@ -97,7 +97,7 @@ public class AttributeType implements	GF_AttributeType {
 	 * @return the definitionReference
 	 */
 	public Object getDefinitionReference() {
-		return definitionReference;
+		return this.definitionReference;
 	}
 
 	/**
@@ -158,7 +158,7 @@ public class AttributeType implements	GF_AttributeType {
 	protected boolean isSpatial;
 
 	public boolean getIsSpatial() {
-		return isSpatial;
+		return this.isSpatial;
 	}
 
 	public void setIsSpatial(boolean isSpatial) {
@@ -171,7 +171,7 @@ public class AttributeType implements	GF_AttributeType {
 	protected boolean isTopologic;
 
 	public boolean getIsTopologic() {
-		return isTopologic;
+		return this.isTopologic;
 	}
 
 	public void setIsTopologic(boolean isTopo) {
@@ -228,7 +228,7 @@ public class AttributeType implements	GF_AttributeType {
 
 	/** Renvoie le domaine de valeurs. */
 	public String getDomainOfValues() {
-		return domainOfValues;
+		return this.domainOfValues;
 	}
 
 	/** Affecte un domaine de valeurs. */

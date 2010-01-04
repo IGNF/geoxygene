@@ -18,7 +18,7 @@ public class FeatureAttributeValue implements FC_FeatureAttributeValue {
 
 	/**Identifiant d'un objet*/
 	protected int id;
-	public int getId() {return id;}
+	public int getId() {return this.id;}
 	public void setId(int id) {this.id = id;}
 
 
@@ -88,7 +88,7 @@ public class FeatureAttributeValue implements FC_FeatureAttributeValue {
 	 * @return the definitionReference
 	 */
 	public Object getDefinitionReference() {
-		return definitionReference;
+		return this.definitionReference;
 	}
 
 	/**

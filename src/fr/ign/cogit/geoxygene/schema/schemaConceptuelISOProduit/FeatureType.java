@@ -70,10 +70,10 @@ public class FeatureType implements GF_FeatureType {
 	/**
 	 * @return the schema of this FeatureType
 	 */
-	public SchemaConceptuelProduit getSchema() {return schema;}
+	public SchemaConceptuelProduit getSchema() {return this.schema;}
 	/**Identifiant d'un objet*/
 	protected int id;
-	public int getId() {return id;}
+	public int getId() {return this.id;}
 	public void setId(int id) {this.id = id;}
 	/** Liste des roles associés par lien 1:n */
 	protected List<GF_AssociationRole> roles;
@@ -90,7 +90,7 @@ public class FeatureType implements GF_FeatureType {
 	/**
 	 *
 	 */
-	public AssociationRole getRoleI(int i) {return (AssociationRole) roles.get(i);}
+	public AssociationRole getRoleI(int i) {return (AssociationRole) this.roles.get(i);}
 	/**
 	 * @param nomRole
 	 * @return an AssociationRole with the given name
@@ -207,7 +207,7 @@ public class FeatureType implements GF_FeatureType {
 	/**
 	 * @return the definitionReference
 	 */
-	public Object getDefinitionReference() {return definitionReference;}
+	public Object getDefinitionReference() {return this.definitionReference;}
 	/**
 	 * @param definitionReference the definitionReference to set
 	 */
@@ -232,7 +232,7 @@ public class FeatureType implements GF_FeatureType {
 	}
 
 	// /////////////////////////Ajout Nathalie////////////////////////////////////
-	public AttributeType getFeatureAttributeI(int i) {return (AttributeType)featureAttributes.get(i);}
+	public AttributeType getFeatureAttributeI(int i) {return (AttributeType)this.featureAttributes.get(i);}
 	public AttributeType getFeatureAttributeByName(String nomAttribut){
 		List<GF_AttributeType> listAttrib = this.getFeatureAttributes();
 		for (int i=0 ; i<listAttrib.size() ; i++){
@@ -249,7 +249,7 @@ public class FeatureType implements GF_FeatureType {
 		ftatt.setFeatureType(null);
 	}
 
-	public void emptyFeatureAttributes() {featureAttributes.clear();}
+	public void emptyFeatureAttributes() {this.featureAttributes.clear();}
 	// //////////////////////////////////////////////////////////////////////////
 	public List<GF_Operation> getFeatureOperations() {return this.featureOperations;}
 	public void setFeatureOperations(List<GF_Operation> L) {this.featureOperations = L;}
@@ -281,7 +281,7 @@ public class FeatureType implements GF_FeatureType {
 		// bi-direction
 	}
 	// /////////////////////////Ajout Nathalie////////////////////////////////////
-	public GF_InheritanceRelation getGeneralizationI(int i) {return generalization.get(i);}
+	public GF_InheritanceRelation getGeneralizationI(int i) {return this.generalization.get(i);}
 	public void removeGeneralization(GF_InheritanceRelation value) {
 		if (value == null) return;
 		this.generalization.remove(value);
@@ -312,7 +312,7 @@ public class FeatureType implements GF_FeatureType {
 	}
 	// /////////////////////////Ajout
 	// Nathalie////////////////////////////////////
-	public GF_InheritanceRelation getSpecializationI(int i) {return specialization.get(i);}
+	public GF_InheritanceRelation getSpecializationI(int i) {return this.specialization.get(i);}
 	public void removeSpecialization(GF_InheritanceRelation value) {
 		if (value == null) return;
 		this.specialization.remove(value);
@@ -323,7 +323,7 @@ public class FeatureType implements GF_FeatureType {
 	public List<GF_AssociationType> getMemberOf() {return this.memberOf;}
 	/** Affecte une liste d'associations */
 	public void setMemberOf(List<GF_AssociationType> L) {
-		List<GF_AssociationType> old = new ArrayList<GF_AssociationType>(memberOf);
+		List<GF_AssociationType> old = new ArrayList<GF_AssociationType>(this.memberOf);
 		Iterator<GF_AssociationType> it1=old.iterator();
 		while (it1.hasNext()){
 			GF_AssociationType scfa=it1.next();
@@ -342,14 +342,14 @@ public class FeatureType implements GF_FeatureType {
 	/** Ajoute une association. */
 	public void addMemberOf(GF_AssociationType value) {
 		if (value==null) return;
-		memberOf.add(value);
+		this.memberOf.add(value);
 		if (!value.getLinkBetween().contains(this))
 			value.getLinkBetween().add(this);
 	}
 
 	// /////////////////////////Ajout
 	// Nathalie////////////////////////////////////
-	public GF_AssociationType getMemberOfI(int i) {return memberOf.get(i);}
+	public GF_AssociationType getMemberOfI(int i) {return this.memberOf.get(i);}
 	public void removeMemberOf(GF_AssociationType value) {
 		if (value == null)
 			return;

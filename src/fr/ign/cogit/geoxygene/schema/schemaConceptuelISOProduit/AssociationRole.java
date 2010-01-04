@@ -29,7 +29,7 @@ public class AssociationRole implements GF_AssociationRole {
 
 	/**Identifiant d'un objet*/
 	protected int id;
-	public int getId() {return id;}
+	public int getId() {return this.id;}
 	public void setId(int id) {this.id = id;}
 
 
@@ -82,12 +82,12 @@ public class AssociationRole implements GF_AssociationRole {
 
 	/**nom du champ Java representant le role dans la classe Java correspondante*/
 	protected String nomFieldClasse;
-	public String getNomFieldClasse(){return nomFieldClasse;}
+	public String getNomFieldClasse(){return this.nomFieldClasse;}
 	public void setNomFieldClasse(String value){this.nomFieldClasse = value;}
 
 	/**nom du champ Java representant le role dans l'eventuelle classe-association Java correspondante */
 	protected String nomFieldAsso;
-	public String getNomFieldAsso(){return nomFieldAsso;}
+	public String getNomFieldAsso(){return this.nomFieldAsso;}
 	public void setNomFieldAsso(String value){this.nomFieldAsso = value;}
 
 

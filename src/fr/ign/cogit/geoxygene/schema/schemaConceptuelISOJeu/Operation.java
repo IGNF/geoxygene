@@ -87,7 +87,7 @@ public class Operation implements GF_Operation {
 		if (this.getFeatureType()!=null){
 			return ((FeatureType)this.getFeatureType()).getSchema();
 		}
-		else return null;
+		return null;
 	}
 
 

@@ -22,7 +22,7 @@ public class Operation implements GF_Operation {
 
 	/**Identifiant d'un objet*/
 	protected int id;
-	public int getId() {return id;}
+	public int getId() {return this.id;}
 	public void setId(int id) {this.id = id;}
 
 	/** FC_featureType auquel se rapporte l'operation*/

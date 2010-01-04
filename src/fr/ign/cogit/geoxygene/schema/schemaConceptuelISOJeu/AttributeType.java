@@ -47,7 +47,7 @@ public class AttributeType implements GF_AttributeType {
 	 * Renvoie l'identifiant d'un objet
 	 * @return l'Identifiant d'un objet
 	 */
-	public int getId() {return id;}
+	public int getId() {return this.id;}
 	/**
 	 * Affecte l'identifiant d'un objet
 	 * @param id l'identifiant d'un objet
@@ -94,7 +94,7 @@ public class AttributeType implements GF_AttributeType {
 	/**
 	 * @return the definitionReference
 	 */
-	public Object getDefinitionReference() {return definitionReference;}
+	public Object getDefinitionReference() {return this.definitionReference;}
 	/**
 	 * @param definitionReference the definitionReference to set
 	 */
@@ -116,7 +116,7 @@ public class AttributeType implements GF_AttributeType {
 	 **/
 	protected String domainOfValues;
 	/** Renvoie le domaine de valeurs. */
-	public String getDomainOfValues() {return domainOfValues;}
+	public String getDomainOfValues() {return this.domainOfValues;}
 	/** Affecte un domaine de valeurs. */
 	public void setDomainOfValues(String domain) {this.domainOfValues = domain;}
 	/**
@@ -138,18 +138,18 @@ public class AttributeType implements GF_AttributeType {
 	public void setNomField(String value) {this.nomField = value;}
 	/** booleen indiquant si l'attribut est de type spatial */
 	protected boolean isSpatial;
-	public boolean getIsSpatial() {return isSpatial;}
+	public boolean getIsSpatial() {return this.isSpatial;}
 	public void setIsSpatial(boolean isSpatial) {this.isSpatial = isSpatial;}
 	/** booleen indiquant si l'attribut est de type topologique */
 	protected boolean isTopologic;
-	public boolean getIsTopologic() {return isTopologic;}
+	public boolean getIsTopologic() {return this.isTopologic;}
 	public void setTopologic(boolean isTopologic) {this.isTopologic = isTopologic;}
 	/**L'élément de schéma conceptuel de produit dont provient cet attribut*/
 	protected fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType elementSchemaProduitOrigine;
 	/**
 	 * @return the elementSchemaProduitOrigine
 	 */
-	public fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType getElementSchemaProduitOrigine() {return elementSchemaProduitOrigine;}
+	public fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType getElementSchemaProduitOrigine() {return this.elementSchemaProduitOrigine;}
 	/**
 	 * @param elementSchemaProduitOrigine the elementSchemaProduitOrigine to set
 	 */

@@ -67,7 +67,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 
 	/**Identifiant d'un objet*/
 	protected int id;
-	public int getId() {return id;}
+	public int getId() {return this.id;}
 	public void setId(int id) {this.id = id;}
 
 
@@ -75,7 +75,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 	/**
 	 * @return the sujet
 	 */
-	public String getSujet() {return sujet;}
+	public String getSujet() {return this.sujet;}
 	/**
 	 * @param sujet the sujet to set
 	 */
@@ -86,7 +86,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 	/**
 	 * @return the version
 	 */
-	public String getVersion() {return version;}
+	public String getVersion() {return this.version;}
 	/**
 	 * @param version the version to set
 	 */
@@ -97,7 +97,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 	/**
 	 * @return the date
 	 */
-	public String getDate() {return date;}
+	public String getDate() {return this.date;}
 	/**
 	 * @param date the date to set
 	 */
@@ -108,7 +108,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 	/**
 	 * @return the source
 	 */
-	public String getSource() {return source;}
+	public String getSource() {return this.source;}
 	/**
 	 * @param source the source to set
 	 */
@@ -240,9 +240,8 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 							"Erreur : il existe déjà dans cette base une classe de ce nom.",
 							"Conflit de nom", JOptionPane.ERROR_MESSAGE);
 					return;
-				} else {
-					continue;
 				}
+				continue;
 			}// Fin du while
 		}// Fin du premier if
 		else {
@@ -524,7 +523,6 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 					"Erreur : On ne peut établir de relation de généralisation entre classes issues de BD différentes.",
 					"Erreur!", JOptionPane.ERROR_MESSAGE);
 			return;
-		} else {
 		}
 
 		InheritanceRelation generalisation = new InheritanceRelation();
@@ -550,9 +548,9 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 						"Relation redondante.",
 						JOptionPane.ERROR_MESSAGE);
 				return;
-			} else {
-				continue;
-			}// Sinon, on teste la suivante
+			}
+			continue;
+			// Sinon, on teste la suivante
 		}// Fin du while
 
 		/*
@@ -584,8 +582,8 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 				classeCurr.removeGeneralization(relGeneral);
 				classeMere.removeSpecialization(relGeneral);
 				return;
-			} else {
-			}// Sinon, on passe à la suivante
+			}
+			// Sinon, on passe à la suivante
 		}// Fin du while
 	}
 
@@ -602,7 +600,6 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 					"Erreur : On ne peut établir de relation de spécialisation entre classes issues de BD différentes.",
 					"Erreur!", JOptionPane.ERROR_MESSAGE);
 			return;
-		} else {
 		}
 
 		InheritanceRelation specialisation = new InheritanceRelation();
@@ -627,9 +624,9 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 						"Relation redondante.",
 						JOptionPane.ERROR_MESSAGE);
 				return;
-			} else {
-				continue;
-			}// Sinon, on teste la suivante
+			}
+			continue;
+			// Sinon, on teste la suivante
 		}// Fin du while
 
 		/*
@@ -661,7 +658,6 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 				classeCurr.removeSpecialization(relSpecial);
 				classeFille.removeGeneralization(relSpecial);
 				return;
-			} else {
 			}// Sinon, on passe à la suivante
 		}// Fin du while
 	}
@@ -678,7 +674,6 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 					"Erreur : On ne peut établir de lien entre classes issues de schémas différents.",
 					"Erreur!", JOptionPane.ERROR_MESSAGE);
 			return;
-		} else {
 		}
 
 		/*
@@ -705,7 +700,6 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 						"Relation redondante.",
 						JOptionPane.ERROR_MESSAGE);
 				return;
-			} else {
 			}
 		}
 
@@ -759,9 +753,8 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 					scft.removeRole(monRole);
 					fa.removeRole(monRole);
 					break;
-				} else {
-					continue;
 				}
+				continue;
 			}// Fin du while interne
 		}// Fin du while externe
 
@@ -784,9 +777,8 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 			if (ftList.contains(ft2)) {
 				monAsso = (AssociationType) scfa;
 				break;
-			} else {
-				continue;
 			}
+			continue;
 		}
 
 		// Si l'association existe, on continue
@@ -798,7 +790,6 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 					"Suppression impossible!",
 					JOptionPane.ERROR_MESSAGE);
 			return;
-		} else {
 		}
 
 		// Récupération des roles

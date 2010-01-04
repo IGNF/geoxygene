@@ -66,7 +66,7 @@ public class ParserSchemaConceptuel {
 
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			db = dbf.newDocumentBuilder();
+			this.db = dbf.newDocumentBuilder();
 		} catch (FactoryConfigurationError e) {
 			e.printStackTrace();
 		} catch (ParserConfigurationException e) {
@@ -96,7 +96,7 @@ public class ParserSchemaConceptuel {
 
 		try {
 			Document doc;
-			doc = db.parse(is);
+			doc = this.db.parse(is);
 			System.out.println("parsing inputStream");
 			System.out.println(doc.toString());
 			System.out.println(doc.getDocumentElement().getTagName());
@@ -246,7 +246,7 @@ public class ParserSchemaConceptuel {
 		try {
 			Document doc;
 
-			doc = db.parse(file);
+			doc = this.db.parse(file);
 			System.out.println("parsing file");
 			System.out.println(doc.toString());
 			System.out.println(doc.getDocumentElement().getTagName());
@@ -397,7 +397,7 @@ public class ParserSchemaConceptuel {
 		try {
 			Document doc;
 
-			doc = db.parse(file);
+			doc = this.db.parse(file);
 			System.out.println("parsing file");
 			System.out.println(doc.toString());
 			System.out.println(doc.getDocumentElement().getTagName());
@@ -544,7 +544,7 @@ public class ParserSchemaConceptuel {
 
 		try {
 			Document doc;
-			doc = db.parse(is);
+			doc = this.db.parse(is);
 			System.out.println("parsing inputStream");
 
 			//ici ajouter la validation par xmlSchema

@@ -217,7 +217,7 @@ public class ChargeurGMLSchema {
 		for (int i=0 ; i<list.getLength() ; i++){
 			//System.out.println(list.item(i).getNodeName());
 		}
-		NodeList list2 = docXSD.getElementsByTagName("element");
+		NodeList list2 = this.docXSD.getElementsByTagName("element");
 		for (int i=0 ; i<list2.getLength() ; i++){
 			//System.out.println(list2.item(i).getNodeName());
 			if (list2.item(i).getAttributes().getNamedItem("ref")!=null){

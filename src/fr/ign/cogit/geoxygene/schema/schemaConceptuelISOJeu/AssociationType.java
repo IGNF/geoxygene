@@ -93,17 +93,17 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 
 	/** Affecte une liste de feature types */
 	public void setLinkBetween(List<GF_FeatureType> L) {
-		List<GF_FeatureType> old = new ArrayList<GF_FeatureType>(linkBetween);
+		List<GF_FeatureType> old = new ArrayList<GF_FeatureType>(this.linkBetween);
 		Iterator<GF_FeatureType> it1 = old.iterator();
 		while (it1.hasNext()) {
 			GF_FeatureType scft = it1.next();
-			linkBetween.remove(scft);
+			this.linkBetween.remove(scft);
 			scft.getMemberOf().remove(this);
 		}
 		Iterator<GF_FeatureType> it2 = L.iterator();
 		while (it2.hasNext()) {
 			GF_FeatureType scft = it2.next();
-			linkBetween.add(scft);
+			this.linkBetween.add(scft);
 			scft.getMemberOf().add(this);
 		}
 	}
@@ -123,7 +123,7 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 
 	// ////////Ajout Nathalie////////////////////////////////////
 	public GF_FeatureType getLinkBetweenI(int i) {
-		return linkBetween.get(i);
+		return this.linkBetween.get(i);
 	}
 
 	public void removeLinkBetwenn(GF_FeatureType value) {
@@ -167,7 +167,7 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 	// Nathalie////////////////////////////////////
 	@Override
 	public AssociationRole getRoleI(int i) {
-		return (AssociationRole) roles.get(i);
+		return (AssociationRole) this.roles.get(i);
 	}
 
 	@Override
@@ -235,7 +235,7 @@ public class AssociationType extends FeatureType implements	GF_AssociationType {
 			}
 			return schemaConceptuel;
 		}
-		else return null;
+		return null;
 	}
 
 

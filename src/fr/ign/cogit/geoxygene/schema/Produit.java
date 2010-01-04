@@ -20,7 +20,7 @@ public class Produit {
 
 	/**Identifiant d'un objet*/
 	protected int id;
-	public int getId() {return id;}
+	public int getId() {return this.id;}
 	public void setId(int id) {this.id = id;}
 
 	protected String nom;
@@ -29,7 +29,7 @@ public class Produit {
 	 * @return the nom
 	 */
 	public String getNom() {
-		return nom;
+		return this.nom;
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class Produit {
 	 * @return the type
 	 */
 	public int getType() {
-		return type;
+		return this.type;
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class Produit {
 	 * @return the producteur
 	 */
 	public String getProducteur() {
-		return producteur;
+		return this.producteur;
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class Produit {
 	 * @return the echelleMin
 	 */
 	public double getEchelleMin() {
-		return echelleMin;
+		return this.echelleMin;
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class Produit {
 	 * @return the echelleMax
 	 */
 	public double getEchelleMax() {
-		return echelleMax;
+		return this.echelleMax;
 	}
 
 	/**
@@ -131,7 +131,7 @@ public class Produit {
 	 */
 
 	public SchemaConceptuelProduit getSchemaConceptuel() {
-		return schemaConceptuel;
+		return this.schemaConceptuel;
 	}
 
 	/**
@@ -152,7 +152,7 @@ public class Produit {
 	 * @return the jeuxDisponibles
 	 */
 	public List<DataSet> getJeuxDisponibles() {
-		return jeuxDisponibles;
+		return this.jeuxDisponibles;
 	}
 	/**
 	 * @param jeuxDisponibles the jeuxDisponibles to set
