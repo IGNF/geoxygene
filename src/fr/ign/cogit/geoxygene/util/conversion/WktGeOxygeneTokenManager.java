@@ -2,7 +2,7 @@
 package fr.ign.cogit.geoxygene.util.conversion;
 
 /** Token Manager. */
-@SuppressWarnings({"unqualified-field-access","unused"})
+@SuppressWarnings({"unqualified-field-access", "unused", "nls"})
 public class WktGeOxygeneTokenManager implements WktGeOxygeneConstants
 {
 
@@ -761,9 +761,7 @@ private int jjMoveNfa_0(int startState, int curPos)
       }
       else
       {
-    	 @SuppressWarnings("unused")
     	 int i2 = (curChar & 0xff) >> 6;
-         @SuppressWarnings("unused")
          long l2 = 1L << (curChar & 077);
          do
          {

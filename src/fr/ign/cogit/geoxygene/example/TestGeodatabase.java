@@ -61,7 +61,6 @@ public class TestGeodatabase {
 	private String nomClasse = "donnees.defaut.Bdc38_troncon_route";
 
 
-	@SuppressWarnings("unchecked")
 	public TestGeodatabase() {
 
 		//iniatilsation de la Geodatabase

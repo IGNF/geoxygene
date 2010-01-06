@@ -758,10 +758,8 @@ private int jjMoveNfa_0(int startState, int curPos)
       }
       else
       {
-        @SuppressWarnings("unused")
-		int i2 = (curChar & 0xff) >> 6;
-        @SuppressWarnings("unused")
- 		long l2 = 1L << (curChar & 077);
+        int i2 = (curChar & 0xff) >> 6;
+        long l2 = 1L << (curChar & 077);
          do
          {
             switch(jjstateSet[--i])

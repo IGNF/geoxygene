@@ -22,10 +22,13 @@ public class HibernateUtil {
         try {
         	configuration = new AnnotationConfiguration();
             // Create the SessionFactory from hibernate.cfg.xml
-            sessionFactory = configuration.configure().setInterceptor(new BirdProxyInterceptor()).buildSessionFactory();
+            sessionFactory = configuration.configure().setInterceptor(
+                    new BirdProxyInterceptor()).buildSessionFactory();
         } catch (Throwable ex) {
             // Make sure you log the exception, as it might be swallowed
-            System.err.println("Initial SessionFactory creation failed." + ex);
+            System.err.println(
+                    "Initial SessionFactory creation failed." //$NON-NLS-1$
+                    + ex);
             throw new ExceptionInInitializerError(ex);
         }
     }
@@ -33,10 +36,10 @@ public class HibernateUtil {
     /**
      * @return the unique session factory.
      */
-    public static SessionFactory getSessionFactory() {return sessionFactory;}
+    public static SessionFactory getSessionFactory() { return sessionFactory; }
 
     /**
      * @return the unique configuration.
      */
-    public static Configuration getConfiguration() {return configuration;}
+    public static Configuration getConfiguration() { return configuration; }
 }
