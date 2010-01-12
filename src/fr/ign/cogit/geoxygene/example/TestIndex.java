@@ -48,7 +48,6 @@ public class TestIndex {
     private GM_Envelope emprise;
     private long t1, t2;
 
-
     private TestIndex() {
 
         // Classe geographique a charger

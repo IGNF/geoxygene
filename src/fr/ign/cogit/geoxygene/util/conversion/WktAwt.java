@@ -10,7 +10,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 
-@SuppressWarnings({"unchecked","unqualified-field-access","unused","nls"})
+@SuppressWarnings({"unchecked","unqualified-field-access","nls"})
 public class WktAwt implements WktAwtConstants {
     static class EndOfFile extends Exception {private static final long serialVersionUID = 1L;}
     static class EmptyLine extends Exception {private static final long serialVersionUID = 1L;}

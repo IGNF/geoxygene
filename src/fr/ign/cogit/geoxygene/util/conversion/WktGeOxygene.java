@@ -29,7 +29,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
-@SuppressWarnings({"unchecked","unqualified-field-access","unused","nls"})
+@SuppressWarnings({"unchecked","unqualified-field-access","nls"})
 public class WktGeOxygene implements WktGeOxygeneConstants {
     static class EndOfFile extends Exception {private static final long serialVersionUID = 1L;}
     static class EmptyLine extends Exception {private static final long serialVersionUID = 1L;}

@@ -35,7 +35,6 @@ import org.apache.ojb.broker.core.PersistenceBrokerImpl;
  * @author Thierry Badard & Arnaud Braun
  * @version 1.1
  */
-@SuppressWarnings("unused")
 public class GeOxygenePersistenceBrokerImpl extends PersistenceBrokerImpl
 implements PBState {
     protected GeOxygeneBrokerHelper geOxygeneBrokerHelper;

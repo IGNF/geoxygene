@@ -6,7 +6,7 @@ package fr.ign.cogit.geoxygene.util.conversion;
  * An implementation of interface CharStream, where the stream is assumed to
  * contain only ASCII characters (without unicode processing).
  */
-@SuppressWarnings({"unqualified-field-access","unused"})
+@SuppressWarnings({"unqualified-field-access"})
 public class SimpleCharStream
 {
 /** Whether parser is static. */
