@@ -31,115 +31,113 @@ import javax.swing.ImageIcon;
  * @author Julien Perret
  */
 public class GeOxygeneApplication {
-        /**
-         * The splash Image used when running the application.
-         */
-        private static ImageIcon splashImage;
+    /**
+     * The splash Image used when running the application.
+     */
+    private static ImageIcon splashImage;
 
-        /**
-         * @return The splash image
-         */
-        public static synchronized ImageIcon splashImage() {
-            if (splashImage == null) {
-                synchronized (GeOxygeneApplication.class) {
-                    splashImage = new ImageIcon(
-                        GeOxygeneApplication.class
+    /**
+     * @return The splash image
+     */
+    public static synchronized ImageIcon splashImage() {
+        if (splashImage == null) {
+            synchronized (GeOxygeneApplication.class) {
+                splashImage = new ImageIcon(
+                            GeOxygeneApplication.class
                             .getResource("/geoxygene-logo.png")); //$NON-NLS-1$
-                }
             }
-            return splashImage;
         }
+        return splashImage;
+    }
 
-        /**
-         * The icon of the icon, i.e. the GeOxygene icon by default. Also used
-         * by {@link LayerViewPanel}
-         */
-        private ImageIcon applicationIcon = new ImageIcon(
-                        GeOxygeneApplication.class.
-                                getResource("/icone.gif")); //$NON-NLS-1$
+    /**
+     * The icon of the icon, i.e. the GeOxygene icon by default. Also used
+     * by {@link LayerViewPanel}
+     */
+    private ImageIcon applicationIcon = new ImageIcon(
+                GeOxygeneApplication.class.
+                getResource("/icone.gif")); //$NON-NLS-1$
 
-        /**
-         *
-         * @return the icon of the application
-         * @see ImageIcon
-         */
-        public final ImageIcon getIcon() {
-                return this.applicationIcon;
-        }
+    /**
+     *
+     * @return the icon of the application
+     * @see ImageIcon
+     */
+    public final ImageIcon getIcon() {
+        return this.applicationIcon;
+    }
 
-        /**
-         * Default font size.
-         */
-        private final int fontSize = 10;
+    /**
+     * Default font size.
+     */
+    private final int fontSize = 10;
 
-        /**
-         * The font used by the application.
-         */
-        private Font font = new Font(
-                        "Arial", //$NON-NLS-1$
-                        Font.PLAIN,
-                        this.fontSize);
+    /**
+     * The font used by the application.
+     */
+    private Font font = new Font(
+                "Arial", //$NON-NLS-1$
+                Font.PLAIN,
+                this.fontSize);
 
-        /**
-         * @return The font to be used for all menus, etc.
-         */
-        public final Font getFont() {
-                return this.font;
-        }
+    /**
+     * @return The font to be used for all menus, etc.
+     */
+    public final Font getFont() {
+        return this.font;
+    }
 
-        /**
-         * private main frame of the application.
-         */
-        private MainFrame frame;
+    /**
+     * private main frame of the application.
+     */
+    private MainFrame frame;
 
-        /**
-         * @return The main frame of the application.
-         */
-        public final MainFrame getFrame() {
-                return this.frame;
-        }
+    /**
+     * @return The main frame of the application.
+     */
+    public MainFrame getFrame() {return this.frame;}
 
-        /**
-         * Constructor.
-         */
-        public GeOxygeneApplication() {
-                this.frame = new MainFrame("GeOxygene", this); //$NON-NLS-1$
-                this.frame.setVisible(true);
-        }
+    /**
+     * Constructor.
+     */
+    public GeOxygeneApplication() {
+        this.frame = new MainFrame("GeOxygene", this); //$NON-NLS-1$
+        this.frame.setVisible(true);
+    }
 
-        /**
-         * Constructor.
-         * @param title title of the application
-         * @param theApplicationIcon the application icon
-         */
-        public GeOxygeneApplication(
-                        final String title,
-                        final ImageIcon theApplicationIcon) {
-                this.applicationIcon = theApplicationIcon;
-                this.frame = new MainFrame(title, this);
-                this.frame.setVisible(true);
-        }
+    /**
+     * Constructor.
+     * @param title title of the application
+     * @param theApplicationIcon the application icon
+     */
+    public GeOxygeneApplication(
+                final String title,
+                final ImageIcon theApplicationIcon) {
+        this.applicationIcon = theApplicationIcon;
+        this.frame = new MainFrame(title, this);
+        this.frame.setVisible(true);
+    }
 
-        /**
-         * Exit the application.
-         */
-        public final void exit() {
-                this.frame.setVisible(false);
-                this.frame.dispose();
-        }
+    /**
+     * Exit the application.
+     */
+    public final void exit() {
+        this.frame.setVisible(false);
+        this.frame.dispose();
+    }
 
-        /**
-         * Main GeOxygene Application.
-         * @param args arguments of the application
-         */
-        public static void main(final String[] args) {
-                SplashScreen splashScreen = new SplashScreen(splashImage(),
-                                "GeOxygene"); //$NON-NLS-1$
-                splashScreen.setVisible(true);
-                GeOxygeneApplication application = new GeOxygeneApplication();
-                application.getFrame().newProjectFrame();
-                application.getFrame().setVisible(true);
-                splashScreen.setVisible(false);
-                splashScreen.dispose();
-        }
+    /**
+     * Main GeOxygene Application.
+     * @param args arguments of the application
+     */
+    public static void main(final String[] args) {
+        SplashScreen splashScreen = new SplashScreen(splashImage(),
+        "GeOxygene"); //$NON-NLS-1$
+        splashScreen.setVisible(true);
+        GeOxygeneApplication application = new GeOxygeneApplication();
+        application.getFrame().newProjectFrame();
+        application.getFrame().setVisible(true);
+        splashScreen.setVisible(false);
+        splashScreen.dispose();
+    }
 }

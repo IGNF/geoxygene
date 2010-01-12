@@ -212,13 +212,15 @@ public class LayerRenderer implements Renderer {
      */
     public final Runnable createRunnable() {
         if (this.getImage() != null) {
-            return null;
+            return null; // No image, can't render
         }
         this.setCancelled(false);
         return new Runnable() {
             public void run() {
                 try {
+                    // now, we are rendering
                     LayerRenderer.this.setRendering(true);
+                    // and it's not finished yet
                     LayerRenderer.this.setRendered(false);
                     // it the rendering is cancel, stop
                     if (LayerRenderer.this.isCancelled()) {
@@ -237,10 +239,6 @@ public class LayerRenderer implements Renderer {
                             LayerRenderer.this.getLayerViewPanel().getWidth(),
                             LayerRenderer.this.getLayerViewPanel().getHeight(),
                             BufferedImage.TYPE_INT_ARGB));
-                    ((Graphics2D) LayerRenderer.this.getImage().getGraphics()).
-                    setRenderingHint(
-                            RenderingHints.KEY_ANTIALIASING,
-                            RenderingHints.VALUE_ANTIALIAS_ON);
                     // do the actual rendering
                     try { renderHook(
                             LayerRenderer.this.getImage(),
@@ -276,6 +274,7 @@ public class LayerRenderer implements Renderer {
      */
     final void renderHook(final BufferedImage theImage,
             final GM_Envelope envelope) {
+        // if rendering has been cancelled or there is nothing to render, stop
         if (this.isCancelled() || (this.features == null)) {
             return;
         }
@@ -426,8 +425,11 @@ public class LayerRenderer implements Renderer {
         if (theImage == null) {
             return;
         }
+        Graphics2D graphics = theImage.createGraphics();
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
         symbolizer.paint(feature, this.getLayerViewPanel().getViewport(),
-                (Graphics2D) theImage.getGraphics());
+                    graphics);
     }
 
     /**

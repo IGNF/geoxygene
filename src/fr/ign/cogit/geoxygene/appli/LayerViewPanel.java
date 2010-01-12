@@ -49,7 +49,7 @@ public class LayerViewPanel extends JPanel {
      * logger.
      */
     private static Logger logger = Logger.getLogger(LayerViewPanel.class
-            .getName());
+                .getName());
     /**
      * serial uid.
      */
@@ -144,7 +144,7 @@ public class LayerViewPanel extends JPanel {
     public final void paintComponent(final Graphics g) {
         try {
             ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
+                        RenderingHints.VALUE_ANTIALIAS_ON);
             super.paintComponent(g);
             // clear the graphics
             g.setColor(getBackground());
@@ -153,8 +153,7 @@ public class LayerViewPanel extends JPanel {
             this.renderingManager.copyTo((Graphics2D) g);
             firePainted(g);
         } catch (Throwable t) {
-            logger.error(
-                    I18N.getString("LayerViewPanel.PaintError")); //$NON-NLS-1$
+            logger.error(I18N.getString("LayerViewPanel.PaintError")); //$NON-NLS-1$
             // TODO HANDLE EXCEPTIONS
         }
     }
@@ -185,12 +184,12 @@ public class LayerViewPanel extends JPanel {
      */
     public final GM_Envelope getEnvelope() {
         Iterator<Layer> layerIterator = this.getRenderingManager().getLayers()
-                .iterator();
+                    .iterator();
         GM_Envelope envelope = layerIterator.next().getFeatureCollection()
-                .envelope();
+                    .envelope();
         while (layerIterator.hasNext()) {
             envelope.expand(layerIterator.next().getFeatureCollection()
-                    .envelope());
+                        .envelope());
         }
         return envelope;
     }

@@ -33,39 +33,39 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
  * @author Julien Perret
  */
 public class LayerLegendPanel extends JPanel implements ChangeListener {
-        /**
-         * serial version uid.
-         */
-        private static final long serialVersionUID = -6860364246334166387L;
-        /**
-         * sld of the layer legend panel.
-         */
-        private StyledLayerDescriptor sld = null;
+    /**
+     * serial version uid.
+     */
+    private static final long serialVersionUID = -6860364246334166387L;
+    /**
+     * sld of the layer legend panel.
+     */
+    private StyledLayerDescriptor sld = null;
 
-        /**
-         *
-         * @param theSld sld of the layer legend panel.
-         */
-        public LayerLegendPanel(final StyledLayerDescriptor theSld) {
-                super();
-                this.sld = theSld;
-                this.sld.addChangeListener(this);
-        }
+    /**
+     * @param theSld
+     *            sld of the layer legend panel.
+     */
+    public LayerLegendPanel(final StyledLayerDescriptor theSld) {
+        super();
+        this.sld = theSld;
+        this.sld.addChangeListener(this);
+    }
 
-        @Override
-        public final void stateChanged(final ChangeEvent e) {
-                this.update();
-        }
+    @Override
+    public final void stateChanged(final ChangeEvent e) {
+        this.update();
+    }
 
-        /**
-         * Update and repaint the layer legend panel.
-         */
-        private void update() {
-                this.removeAll();
-                for (Layer layer : this.sld.getLayers()) {
-                        this.add(new JLabel(layer.getName()));
-                }
-                this.validate();
-                this.repaint();
+    /**
+     * Update and repaint the layer legend panel.
+     */
+    private void update() {
+        this.removeAll();
+        for (Layer layer : this.sld.getLayers()) {
+            this.add(new JLabel(layer.getName()));
         }
+        this.validate();
+        this.repaint();
+    }
 }
