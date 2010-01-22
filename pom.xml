@@ -6,6 +6,13 @@
   <version>1.4-SNAPSHOT</version>
   <description>GeOxygene is an open framework which implements OGC/ISO specifications for the development and deployment of geographic (GIS) applications.</description>
   <url>http://oxygene-project.sourceforge.net/</url>
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License</name>
+      <url>http://www.fsf.org/licensing/licenses/lgpl.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <ciManagement>
   	<system>hudson</system>
   	<url>http://localhost:8080/hudson/job/geoxygene</url>
