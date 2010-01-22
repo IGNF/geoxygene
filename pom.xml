@@ -6,6 +6,10 @@
   <version>1.4-SNAPSHOT</version>
   <description>GeOxygene is an open framework which implements OGC/ISO specifications for the development and deployment of geographic (GIS) applications.</description>
   <url>http://oxygene-project.sourceforge.net/</url>
+  <scm>
+    <connection>scm:svn:http://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project</connection>
+  	<url>http://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project</url>
+  </scm>
   <licenses>
     <license>
       <name>GNU Lesser General Public License</name>
@@ -13,10 +17,6 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-  <ciManagement>
-  	<system>hudson</system>
-  	<url>http://localhost:8080/hudson/job/geoxygene</url>
-  </ciManagement>
   <developers>
   	<developer>
   		<id>julien-perret</id>
@@ -77,9 +77,6 @@
   		<organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
   	</developer>
   </developers>
-  <scm>
-  	<url>https://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project/main/trunk/geoxygene</url>
-  </scm>
   <organization>
   	<name>Laboratoire COGIT, IGN</name>
   	<url>http://recherche.ign.fr/labos/cogit</url>
