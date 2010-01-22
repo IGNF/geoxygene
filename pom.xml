@@ -97,6 +97,9 @@
 					<include>src/**/*.java</include>
 					<include>data/**/*.java</include>
 				</includes>
+				<excludes>
+					<exclude>src/fr/ign/cogit/geoxygene/datatools/oracle/*.java</exclude>
+				</excludes>
   			</configuration>
   		</plugin>
   		<plugin>
@@ -115,7 +118,7 @@
   	<repository>
   		<id>snapshots</id>
   		<name>Nexus Snapshots Repository</name>
-  		<url>http://localhost:8080/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
+  		<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
   		<releases>
   			<enabled>false</enabled>
   		</releases>
@@ -266,7 +269,7 @@
   	<snapshotRepository>
   		<id>snapshots</id>
   		<name>Nexus Snapshots Repository</name>
-  		<url>http://localhost:8080/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
+  		<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
   	</snapshotRepository>
   	<site>
   		<id>GeOxygene-website</id>
