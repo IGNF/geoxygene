@@ -25,10 +25,18 @@
 
 package fr.ign.cogit.geoxygene.filter;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+
 /**
  * @author Julien Perret
  * 
  */
+@XmlSeeAlso({
+    BinaryLogicOpsType.class,
+    UnaryLogicOpsType.class
+})
+@XmlRootElement
 public abstract class LogicOpsType extends Filter {
 
 }

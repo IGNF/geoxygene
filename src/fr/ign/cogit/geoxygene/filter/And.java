@@ -25,10 +25,16 @@
 
 package fr.ign.cogit.geoxygene.filter;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * @author Julien Perret
  * 
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "And")
 public class And extends BinaryLogicOpsType {
 
 	@Override

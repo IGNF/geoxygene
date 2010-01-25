@@ -91,4 +91,12 @@ public interface Layer {
 	 * @param selectable
 	 */
 	public void setSelectable(boolean selectable);
+    /**
+     * @return <code>true</code> if the layer is symbolized; <code>false</code> otherwise.
+     */
+    public boolean isSymbolized();
+    /**
+     * @param symbolized
+     */
+    public void setSymbolized(boolean symbolized);
 }

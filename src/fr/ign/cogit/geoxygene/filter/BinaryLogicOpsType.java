@@ -32,12 +32,26 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * @author Julien Perret
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso({
+    PropertyIsEqualTo.class,
+    PropertyIsGreaterThan.class,
+    PropertyIsGreaterThanOrEqualTo.class,
+    PropertyIsLessThan.class,
+    PropertyIsLessThanOrEqualTo.class,
+    PropertyIsNotEqualTo.class,
+    And.class,
+    Or.class,
+    Not.class
+})
+@XmlRootElement
 public abstract class BinaryLogicOpsType extends LogicOpsType {
 
 	@XmlElements( {

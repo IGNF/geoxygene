@@ -98,9 +98,21 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
 	}
 	private void drawPolygon(GM_Polygon polygon, Viewport viewport, Graphics2D graphics) {
 	    if (polygon==null) return;
+        if (logger.isTraceEnabled()) {
+            logger.trace("draw polygon "); //$NON-NLS-1$
+        }
 	    try {
 	    	Shape shape = viewport.toShape(polygon.exteriorLineString());
-	    	if (shape!=null) graphics.draw(shape);
+	    	if (shape!=null) {
+                if (logger.isTraceEnabled()) {
+                    logger.trace("draw(shape) "+graphics.getColor()); //$NON-NLS-1$
+                }
+                graphics.draw(shape);
+	    	} else {
+	            if (logger.isDebugEnabled()) {
+	                logger.debug("null shape"); //$NON-NLS-1$
+	            }
+	    	}
 	    } catch (NoninvertibleTransformException e) {e.printStackTrace();}
 	    for(int i = 0 ; i < polygon.sizeInterior() ; i++)
 		try {

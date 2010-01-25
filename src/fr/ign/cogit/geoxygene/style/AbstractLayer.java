@@ -76,7 +76,17 @@ public abstract class AbstractLayer implements Layer {
 	@XmlTransient
 	private boolean selectable = true;
 	@Override
-	public boolean isSelectable() {return this.selectable;}
+	public boolean isSelectable() { return this.selectable; }
 	@Override
-	public void setSelectable(boolean selectable) {this.selectable = selectable;}
+	public void setSelectable(boolean newSelectable) {
+	    this.selectable = newSelectable;
+	}
+    @XmlTransient
+    private boolean symbolized = true;
+    @Override
+    public boolean isSymbolized() { return this.symbolized; }
+    @Override
+    public void setSymbolized(boolean newSymbolized) {
+        this.symbolized = newSymbolized;
+    }
 }

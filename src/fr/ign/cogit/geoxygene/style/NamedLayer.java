@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.feature.Population;
 
 /**
  * @author Julien Perret
@@ -60,13 +61,26 @@ public class NamedLayer extends AbstractLayer {
 		this.setName(layerName);
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	public FT_FeatureCollection<? extends FT_Feature> getFeatureCollection() {
 		/*
 		 *  TODO Récupèrer la population à partir d'un vrai DataSet
 		 *  Pour l'instant, on utilise un singleton de DataSet qu'il faut donc avoir remplit au préalable...
 		 */
-		return DataSet.getInstance().getPopulation(this.getName());
+	    FT_FeatureCollection<FT_Feature> pop
+	            = (FT_FeatureCollection<FT_Feature>) DataSet.getInstance()
+	            .getPopulation(this.getName());
+	    if (pop == null) {
+	        pop = new FT_FeatureCollection<FT_Feature>();
+	        DataSet dataSet = DataSet.getInstance()
+	        .getComposant(this.getName());
+	        for (Population<? extends FT_Feature> population : dataSet
+	                .getPopulations()) {
+	            pop.addCollection((FT_FeatureCollection<FT_Feature>) population);
+	        }
+	    }
+		return pop;
 	}
 	@Override
 	public String toString() {
