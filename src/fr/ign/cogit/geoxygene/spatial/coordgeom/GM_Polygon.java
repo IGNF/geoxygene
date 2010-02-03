@@ -235,12 +235,23 @@ public class GM_Polygon extends GM_SurfacePatch {
 
 
 
+    /**
+     * Constructor by copy.
+     * @param geom geometry to copy
+     */
+    public GM_Polygon(GM_Polygon geom) {
+        this(new GM_Ring(geom.getExterior()));
+        for (GM_Ring ring : geom.getInterior()) {
+            this.addInterior(new GM_Ring(ring));
+        }
+    }
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	//// Methode implementant une methode de GM_SurfacePatch ///////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
-	/** Renvoie un GM_Polygon en "retournant" la frontiere (inverse l'ordre du trace des points).*/
+
+    /** Renvoie un GM_Polygon en "retournant" la frontiere (inverse l'ordre du trace des points).*/
 	// Implementation d'une methode abstraite de GM_SurfacePatch.
 	@Override
 	public GM_SurfacePatch reverse() {

@@ -376,8 +376,8 @@ public class GM_Envelope {
 		coords.add(new DirectPosition(minX(), maxY()));
 		coords.add(new DirectPosition(maxX(), maxY()));
 		coords.add(new DirectPosition(maxX(), minY()));
-		coords.add(new DirectPosition(minX(), minY()));
-		return new GM_Polygon( new GM_Ring( new GM_LineString(coords) ) );
+		coords.add(coords.get(0));
+		return new GM_Polygon(new GM_Ring(new GM_LineString(coords)));
 	}
 
 	

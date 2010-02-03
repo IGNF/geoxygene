@@ -216,7 +216,7 @@ abstract public class GM_Object implements Cloneable {
      */
     public GM_Envelope envelope() {
         DirectPositionList list = coord();
-        if (list.size() == 0) { return new GM_Envelope(); }
+        if (list.isEmpty()) { return new GM_Envelope(); }
         double xmin = Double.POSITIVE_INFINITY;
         double xmax = Double.NEGATIVE_INFINITY;
         double ymin = Double.POSITIVE_INFINITY;

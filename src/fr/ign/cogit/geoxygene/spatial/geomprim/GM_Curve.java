@@ -405,5 +405,4 @@ public class GM_Curve extends GM_OrientableCurve
 		}
 		return result;
 	}
-
 }

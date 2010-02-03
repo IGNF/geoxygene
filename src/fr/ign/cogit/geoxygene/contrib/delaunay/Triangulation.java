@@ -51,7 +51,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * @version 1.1
  */
 
-public class Triangulation extends CarteTopo{
+public class Triangulation extends CarteTopo {
     /**
      * Logger.
      */

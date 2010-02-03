@@ -27,7 +27,6 @@
 package fr.ign.cogit.geoxygene.spatial.geomaggr;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeSurface;
@@ -76,11 +75,15 @@ public class GM_MultiSurface<GeomType extends GM_OrientableSurface> extends GM_M
 	}
 
 	/** Constructeur à partir d'une liste de GM_OrientableSurface. */
-	@SuppressWarnings("unchecked")
-	public GM_MultiSurface(ArrayList<GM_OrientableSurface> lOS) {
+	public GM_MultiSurface(List<GeomType> lOS) {
 		this.element = new ArrayList <GeomType>();
-		this.element.addAll((Collection<? extends GeomType>) lOS);
+		this.element.addAll(lOS);
 	}
+
+	/** Constructeur par copie. */
+    public GM_MultiSurface(GM_MultiSurface<GeomType> multiSurface) {
+        this(multiSurface.getList());
+    }
 
 	@Override
 	public boolean isMultiSurface() {return true;}

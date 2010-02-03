@@ -43,9 +43,12 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateFilter;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
@@ -86,6 +89,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			logger.error(I18N.getString("JtsAlgorithms.CentroidError")); //$NON-NLS-1$
 			logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 			if (logger.isDebugEnabled()) logger.debug(e.getMessage());
+            e.printStackTrace();
 			return null;
 		}
 	}
@@ -99,7 +103,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		} catch (Exception e) {
 			logger.error(I18N.getString("JtsAlgorithms.ConvexHullError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) logger.debug(e.getMessage());
-			//e.printStackTrace();
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -117,6 +121,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return null;
 		}
 	}
@@ -134,8 +139,28 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return null;
 		}
+	}
+
+	public GM_Object buffer (GM_Object geom, double distance, int nSegments, int cap) {
+	    try {
+	        Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
+	        Geometry jtsBuffer=jtsGeom.buffer(distance,nSegments,cap);
+	        return JtsGeOxygene.makeGeOxygeneGeom(jtsBuffer);
+	    } catch (Exception e) {
+	        logger.error(I18N.getString("JtsAlgorithms.BufferError")); //$NON-NLS-1$
+	        if (logger.isDebugEnabled()) {
+	            logger.debug(I18N.getString("JtsAlgorithms.BufferDistance")+distance); //$NON-NLS-1$ 
+	            logger.debug(I18N.getString("JtsAlgorithms.BufferSegments")+nSegments); //$NON-NLS-1$ 
+                logger.debug(I18N.getString("JtsAlgorithms.Cap")+cap); //$NON-NLS-1$ 
+	            logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+	            logger.debug(e.getMessage());
+	        }
+	        e.printStackTrace();
+	        return null;
+	    }
 	}
 
 	public GM_Object buffer10 (GM_Object geom) {
@@ -153,6 +178,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return null;
 		}
 	}
@@ -170,6 +196,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return null;
 		}
 	}
@@ -181,14 +208,13 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			Geometry jtsInter=jtsGeom1.intersection(jtsGeom2);
 			return JtsGeOxygene.makeGeOxygeneGeom(jtsInter);
 		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-			    logger.error(I18N.getString("JtsAlgorithms.IntersectionError")); //$NON-NLS-1$
-				if (logger.isDebugEnabled()) {
-					logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-					logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-					logger.debug(e.getMessage());
-				}
-			}
+		    logger.error(I18N.getString("JtsAlgorithms.IntersectionError")); //$NON-NLS-1$
+		    if (logger.isDebugEnabled()) {
+		        logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+		        logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+		        logger.debug(e.getMessage());
+		    }
+            e.printStackTrace();
 			return null;
 		}
 	}
@@ -207,6 +233,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return null;
 		}
 	}
@@ -224,6 +251,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return null;
 		}
 	}
@@ -240,6 +268,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return false;
 		}
 	}
@@ -256,6 +285,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return false;
 		}
 	}
@@ -273,6 +303,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return false;
 		}
 	}
@@ -289,6 +320,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return false;
 		}
 	}
@@ -305,6 +337,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return false;
 		}
 	}
@@ -321,6 +354,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return false;
 		}
 	}
@@ -337,6 +371,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return false;
 		}
 	}
@@ -354,6 +389,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return false;
 		}
 	}
@@ -370,6 +406,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return false;
 		}
 	}
@@ -386,6 +423,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return false;
 		}
 	}
@@ -402,6 +440,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return false;
 		}
 	}
@@ -416,6 +455,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return true;
 		}
 	}
@@ -430,6 +470,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return false;
 		}
 	}
@@ -444,6 +485,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return false;
 		}
 	}
@@ -460,6 +502,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return 0.0;
 		}
 	}
@@ -474,6 +517,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return 0.0;
 		}
 	}
@@ -488,6 +532,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return 0.0;
 		}
 	}
@@ -502,6 +547,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return 0;
 		}
 	}
@@ -517,6 +563,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return 0;
 		}
 	}
@@ -540,6 +587,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return null;
 		}
 	}
@@ -556,6 +604,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return "ERROR"; //$NON-NLS-1$
 		}
 	}
@@ -565,7 +614,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	 * @param listeGeometries liste des géométries à unir
 	 * @return union d'une liste de géométries
 	 */
-	public GM_Object union(List<GM_Object> listeGeometries) {
+	public static GM_Object union(List<GM_Object> listeGeometries) {
 		List<Geometry> listeGeometriesJts = new ArrayList<Geometry>();
 		for(GM_Object geom:listeGeometries) {
 			try {listeGeometriesJts.add(JtsGeOxygene.makeJtsGeom(geom));}
@@ -585,6 +634,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((union!=null)?union.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
+            e.printStackTrace();
 			return null;
 		}
 	}
@@ -766,20 +816,33 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			treeSet.addAll(newGeometryCollection);
 			newGeometryCollection = union(treeSet, 4);
 		}
-		List<Polygon> polygons = new ArrayList<Polygon>();
-		for (Geometry geom:newGeometryCollection) {
-			if (geom instanceof Polygon) polygons.add((Polygon) geom);
-			else if (geom instanceof MultiPolygon) {
-				MultiPolygon multiPolygon = (MultiPolygon) geom;
-				for (int index = 0;index < multiPolygon.getNumGeometries();index++)
-					polygons.add((Polygon)multiPolygon.getGeometryN(index));
-			} else
-				logger.error(I18N.getString("JtsAlgorithms.UnhandledGeometryType")+geom.getGeometryType()); //$NON-NLS-1$
+		List<Geometry> geometries = new ArrayList<Geometry>();
+		for (Geometry geom : newGeometryCollection) {
+			if (geom instanceof Polygon || geom instanceof LineString || geom instanceof Point) {
+			    geometries.add(geom);
+			} else {
+			    if (geom instanceof MultiPolygon || geom instanceof MultiLineString || geom instanceof MultiPoint) {
+			        GeometryCollection collection = (GeometryCollection) geom;
+			        for (int index = 0;index < collection.getNumGeometries();index++)
+			            geometries.add(collection.getGeometryN(index));
+			    } else {
+			        logger.error(I18N.getString("JtsAlgorithms.UnhandledGeometryType")+geom.getGeometryType()); //$NON-NLS-1$
+			    }
+			}
 		}
 		fireActionPerformed(new ActionEvent(singleton,4,I18N.getString("JtsAlgorithms.UnionFinishedAction"))); //$NON-NLS-1$
-		if (polygons.size()==1) return polygons.get(0);
+		if (geometries.size()==1) return geometries.get(0);
 		if (newGeometryCollection.isEmpty()) return new GeometryFactory().createGeometryCollection(new Geometry[0]);
-		return newGeometryCollection.iterator().next().getFactory().createMultiPolygon(polygons.toArray(new Polygon[0]));
+		if (geometries.get(0) instanceof Polygon) {
+		    return newGeometryCollection.iterator().next().getFactory().createMultiPolygon(geometries.toArray(new Polygon[0]));
+		}
+        if (geometries.get(0) instanceof LineString) {
+            return newGeometryCollection.iterator().next().getFactory().createMultiLineString(geometries.toArray(new LineString[0]));
+        }
+        if (geometries.get(0) instanceof Point) {
+            return newGeometryCollection.iterator().next().getFactory().createMultiPoint(geometries.toArray(new Point[0]));
+        }
+		return newGeometryCollection.iterator().next().getFactory().createGeometryCollection(geometries.toArray(new Geometry[0]));
 	}
 
 	/**

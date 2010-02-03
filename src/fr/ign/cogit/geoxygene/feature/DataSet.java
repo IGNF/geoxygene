@@ -259,7 +259,6 @@ public class DataSet {
                         if (DS.getNom().equals(themeACharger.get(0))) {
                             aCharger = true;
                             if (themeACharger.size() == 1) {
-                                populationsACharger = null;
                                 break;
                             }
                             extraitThemes = new ArrayList<String>(themeACharger);

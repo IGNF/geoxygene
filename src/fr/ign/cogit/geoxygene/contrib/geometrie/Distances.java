@@ -1,27 +1,22 @@
 /*
  * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
- * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
- * National Mapping Agency).
- * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at
+ * the Institut Géographique National (the French National Mapping Agency).
  * See: http://oxygene-project.sourceforge.net
- * 
  * Copyright (C) 2005 Institut Géographique National
- *
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License along with
- * this library (see file LICENSE if present); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or any later
+ * version.
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details. You should have received a copy of the GNU Lesser General
+ * Public License along with this library (see file LICENSE if present); if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place,
+ * Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.geometrie;
@@ -35,6 +30,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
@@ -101,20 +97,52 @@ public abstract class Distances {
 		return distance(M,Operateurs.projection(M,A,B));
 	}
 
-	/** Distance euclidienne d'un point P à une ligne. */
-	public static double distance(DirectPosition  M, GM_LineString L) {
-		DirectPositionList listePoints = L.coord();
-		double distmin, dist;
-
-		distmin = distance(listePoints.get(0),M);
-		for (int i=0;i<listePoints.size()-1;i++) {
-			dist = distancePointSegment(M,listePoints.get(i),listePoints.get(i+1));
-			if ( dist < distmin ) distmin = dist;
-		}
-		return(distmin);
+	/**
+	 * Distance euclidienne d'un point P à une ligne.
+	 * @param point point
+	 * @param line ligne
+	 * @return Distance euclidienne d'un point P à une ligne
+	 */
+	public static double distance(DirectPosition point, GM_LineString line) {
+        return distance(point, line.coord());
 	}
 
+    /**
+     * Distance euclidienne d'un point P à un anneau.
+     * @param point point
+     * @param ring un anneau
+     * @return distance euclidienne
+     */
+    public static double distance(DirectPosition  point, GM_Ring ring) {
+        return distance(point, ring.coord());
+    }
 
+    /**
+     * @param point
+     * @param surface
+     * @return
+     */
+    public static double distance(DirectPosition point,
+            GM_OrientableSurface surface) {
+        return distance(point, surface.coord());
+    }
+
+    /**
+     * Distance euclidienne d'un point P à une liste de points.
+     * @param point point
+     * @param pointList une liste de points
+     * @return distance euclidienne
+     */
+    public static double distance(DirectPosition  point,
+            DirectPositionList pointList) {
+        double distmin = distance(pointList.get(0),point);
+        for (int i = 0; i < pointList.size() - 1; i++) {
+            double dist = distancePointSegment(point,pointList.get(i),
+                    pointList.get(i + 1));
+            if ( dist < distmin ) { distmin = dist; }
+        }
+        return distmin;
+    }
 
 	///////////////////////////////////////////////////////////
 	//                                                       //
@@ -435,5 +463,4 @@ public abstract class Distances {
 		if (interArea > B.area()*coeff) return true;
 		return false;
 	}
-
 }

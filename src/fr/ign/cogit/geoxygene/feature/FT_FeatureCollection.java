@@ -36,8 +36,15 @@ import fr.ign.cogit.geoxygene.feature.event.FeatureCollectionListener;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 import fr.ign.cogit.geoxygene.util.index.SpatialIndex;
 
 /**
@@ -203,16 +210,18 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      */
     @SuppressWarnings("unchecked")
     public void setElements(Collection<Feat> liste) {
-        List<Feat> old = new ArrayList<Feat>(this.elements);
-        for (Feat O : old) {
-            this.elements.remove(O);
-            O.getFeatureCollections().remove(this);
-        }
-        for (Feat O : liste) {
-            this.elements.add(O);
-            if (!O.getFeatureCollections().contains(this)) { O
-                        .getFeatureCollections().add(
-                                    (FT_FeatureCollection<FT_Feature>) this);
+        synchronized (this.elements) {
+            List<Feat> old = new ArrayList<Feat>(this.elements);
+            for (Feat O : old) {
+                this.elements.remove(O);
+                O.getFeatureCollections().remove(this);
+            }
+            for (Feat O : liste) {
+                this.elements.add(O);
+                if (!O.getFeatureCollections().contains(this)) { O
+                    .getFeatureCollections().add(
+                            (FT_FeatureCollection<FT_Feature>) this);
+                }
             }
         }
         if (this.isIndexed) { removeSpatialIndex(); }
@@ -226,7 +235,9 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      * @return le i-eme element de la liste des composants de this.
      */
     public Feat get(int i) {
-        return this.elements.get(i);
+        synchronized (this.elements) {
+            return this.elements.get(i);
+        }
     }
 
     /**
@@ -236,7 +247,10 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
     @SuppressWarnings("unchecked")
     public boolean add(Feat value) {
         if (value == null) { return false; }
-        boolean result = this.elements.add(value);
+        boolean result = false;
+        synchronized (this.elements) {
+            result = this.elements.add(value);
+        }
         result = value.getFeatureCollections().add(
                     (FT_FeatureCollection<FT_Feature>) this)
                     && result;
@@ -255,8 +269,10 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      */
     public void addCollection(FT_FeatureCollection<Feat> value) {
         if (value == null) { return; }
-        for (Feat element : value.elements) {
-            this.add(element);
+        synchronized (value.elements) {
+            for (Feat element : value.elements) {
+                this.add(element);
+            }
         }
     }
 
@@ -267,7 +283,10 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      */
     public boolean remove(Feat value) {
         if (value == null) { return false; }
-        boolean result = this.elements.remove(value);
+        boolean result = false;
+        synchronized (this.elements) {
+            result = this.elements.remove(value);
+        }
         value.getFeatureCollections().remove(this);
         if (this.isIndexed && this.spatialindex.hasAutomaticUpdate()) {
             this.spatialindex.update(value, -1);
@@ -287,9 +306,20 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
         if (coll == null) { return false; }
         if (coll.size() == 0) { return false; }
         boolean result = true;
-        for (Object o : coll) {
-            result = this.remove(o) && result;
+        List<GM_Object> removedCollectionGeometry = new ArrayList<GM_Object>();
+        synchronized (this.elements) {
+            for (Object o : coll) {
+                result = this.remove(o) && result;
+                if (o instanceof FT_Feature) {
+                    FT_Feature feature = (FT_Feature) o;
+                    if (feature.getGeom() != null) {
+                        removedCollectionGeometry.add(feature.getGeom());
+                    }
+                }
+            }
         }
+        this.fireActionPerformed(new FeatureCollectionEvent(this, null,
+                    FeatureCollectionEvent.Type.REMOVED, JtsAlgorithms.union(removedCollectionGeometry)));
         return result;
     }
 
@@ -300,11 +330,19 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      */
     @Override
     public void clear() {
-        for (Feat O : this) {
-            O.getFeatureCollections().remove(this);
+        List<GM_Object> removedCollectionGeometry = new ArrayList<GM_Object>();
+        synchronized (this.elements) {
+            for (Feat feature : this) {
+                feature.getFeatureCollections().remove(this);
+                if (feature.getGeom() != null) {
+                    removedCollectionGeometry.add(feature.getGeom());
+                }
+            }
+            this.elements.clear();
         }
-        this.elements.clear();
         if (this.isIndexed) { removeSpatialIndex(); }
+        this.fireActionPerformed(new FeatureCollectionEvent(this, null,
+                    FeatureCollectionEvent.Type.REMOVED, JtsAlgorithms.union(removedCollectionGeometry)));
     }
 
     @Override
@@ -319,7 +357,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
     public GM_Envelope envelope() {
         if (this.hasGeom()) { return this.getGeomAggregate().envelope(); }
         logger
-                    .warn("ATTENTION appel de envelope() sur une FT_FeatureCollection sans geometrie ! (renvoie null) "); //$NON-NLS-1$
+        .warn("ATTENTION appel de envelope() sur une FT_FeatureCollection sans geometrie ! (renvoie null) "); //$NON-NLS-1$
         return null;
     }
 
@@ -328,16 +366,46 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      *
      * @return toutes les geometries sous la forme d'un GM_Aggregate.
      */
-    public GM_Aggregate<GM_Object> getGeomAggregate() {
+    @SuppressWarnings("unchecked")
+    public GM_Aggregate<? extends GM_Object> getGeomAggregate() {
         if (this.hasGeom()) {
-            GM_Aggregate<GM_Object> aggr = new GM_Aggregate<GM_Object>();
-            for (Feat f : this) {
-                if (f.getGeom() != null) aggr.add(f.getGeom());
+            List<GM_Object> list = new ArrayList<GM_Object>();
+            Class<?> geomType = null;
+            boolean mixedGeom = false;
+            for (FT_Feature f : this.getElements().toArray(new FT_Feature[0])) {
+                if (f.getGeom() != null) {
+                    list.add(f.getGeom());
+                    if (geomType == null) {
+                        geomType = f.getGeom().getClass();
+                    } else {
+                        if (geomType != f.getGeom().getClass()) {
+                            mixedGeom = true;
+                        }
+                    }
+                }
             }
-            return aggr;
+            if (mixedGeom || geomType == null) {
+                GM_Aggregate<GM_Object> aggr = new GM_Aggregate<GM_Object>(list);
+                return aggr;
+            }
+            if (geomType.equals(GM_LineString.class)) {
+                GM_MultiCurve aggr = new GM_MultiCurve(list);
+                return aggr;
+            }
+            if (geomType.equals(GM_Polygon.class)) {
+                GM_MultiSurface aggr = new GM_MultiSurface(list);
+                return aggr;
+            }
+            if (geomType.equals(GM_Point.class)) {
+                GM_MultiPoint aggr = new GM_MultiPoint();
+                for (GM_Object geom : list) {
+                    aggr.add((GM_Point) geom);
+                }
+                return aggr;
+            }
         }
         logger
-                    .warn("ATTENTION appel de getGeom() sur une FT_FeatureCollection sans geometrie ! (renvoie null) "); //$NON-NLS-1$
+        .warn("ATTENTION appel de getGeom() sur une FT_FeatureCollection sans geometrie ! (renvoie null) "); //$NON-NLS-1$
         return null;
     }
 
@@ -553,9 +621,11 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
     public FT_FeatureCollection<Feat> select(DirectPosition P, double D) {
         if (!this.isIndexed) {
             FT_FeatureCollection<Feat> selectedFeatures = new FT_FeatureCollection<Feat>();
-            for (Feat feature : this) {
-                if (feature.getGeom().distance(P.toGM_Point()) <= D) selectedFeatures
-                            .add(feature);
+            synchronized (this.elements) {
+                for (Feat feature : this) {
+                    if (feature.getGeom().distance(P.toGM_Point()) <= D) selectedFeatures
+                    .add(feature);
+                }
             }
             return selectedFeatures;
         }
@@ -570,11 +640,20 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      * @return objets qui intersectent un rectangle
      */
     public FT_FeatureCollection<Feat> select(GM_Envelope env) {
+        if (env.width() == 0 || env.length() == 0 || env.isEmpty()) {
+            return new FT_FeatureCollection<Feat>();
+        }
+        GM_Object envGeom = env.getGeom();
         if (!this.isIndexed) {
             FT_FeatureCollection<Feat> selectedFeatures = new FT_FeatureCollection<Feat>();
-            for (Feat feature : this) {
-                if (feature.getGeom().intersects(env.getGeom())) selectedFeatures
-                            .add(feature);
+            synchronized (this.elements) {
+                selectedFeatures.addAll(this.elements);
+            }
+            for (Iterator<Feat> it = selectedFeatures.iterator(); it.hasNext();) {
+                Feat feature = it.next();
+                if (!feature.getGeom().intersects(envGeom)) {
+                    it.remove();
+                }
             }
             return selectedFeatures;
         }
@@ -591,9 +670,11 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
     public FT_FeatureCollection<Feat> select(GM_Object geometry) {
         if (!this.isIndexed) {
             FT_FeatureCollection<Feat> selectedFeatures = new FT_FeatureCollection<Feat>();
-            for (Feat feature : this) {
-                if (feature.getGeom().intersects(geometry)) selectedFeatures
-                            .add(feature);
+            synchronized (this.elements) {
+                for (Feat feature : this) {
+                    if (feature.getGeom().intersects(geometry)) selectedFeatures
+                    .add(feature);
+                }
             }
             return selectedFeatures;
         }
@@ -619,9 +700,11 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
                 boolean strictlyCrosses) {
         if (!this.isIndexed) {
             FT_FeatureCollection<Feat> selectedFeatures = new FT_FeatureCollection<Feat>();
-            for (Feat feature : this) {
-                if (feature.getGeom().intersectsStrictement(geometry)) selectedFeatures
-                            .add(feature);
+            synchronized (this.elements) {
+                for (Feat feature : this) {
+                    if (feature.getGeom().intersectsStrictement(geometry)) selectedFeatures
+                    .add(feature);
+                }
             }
             return selectedFeatures;
         }
@@ -643,9 +726,11 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
         if (!this.isIndexed) {
             FT_FeatureCollection<Feat> selectedFeatures
             = new FT_FeatureCollection<Feat>();
-            for (Feat feature : this) {
-                if (feature.getGeom().distance(geometry) <= distance) {
-                    selectedFeatures.add(feature);
+            synchronized (this.elements) {
+                for (Feat feature : this) {
+                    if (feature.getGeom().distance(geometry) <= distance) {
+                        selectedFeatures.add(feature);
+                    }
                 }
             }
             return selectedFeatures;
@@ -664,7 +749,9 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      * @return vrai si la collection contient la valeur, faux sinon
      */
     public boolean contains(Feat value) {
-        return this.elements.contains(value);
+        synchronized (this.elements) {
+            return this.elements.contains(value);
+        }
     }
 
     /**
@@ -678,7 +765,9 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
     public void addUnique(Feat feature) {
         if (feature == null) { return; }
         if (this.elements.contains(feature)) { return; }
-        this.elements.add(feature);
+        synchronized (this.elements) {
+            this.elements.add(feature);
+        }
         feature.getFeatureCollections().add(
                     (FT_FeatureCollection<FT_Feature>) this);
         if (this.isIndexed) {
@@ -700,7 +789,9 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
     public void remove(int i) {
         if (i > this.size()) { return; }
         Feat value = this.get(i);
-        this.elements.remove(value);
+        synchronized (this.elements) {
+            this.elements.remove(value);
+        }
         value.getFeatureCollections().remove(this);
         if (this.isIndexed) {
             if (this.spatialindex.hasAutomaticUpdate()) {
@@ -735,23 +826,26 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      */
     public void addUniqueCollection(
                 FT_FeatureCollection<? extends Feat> value) {
-        Feat elem;
         if (value == null) { return; }
-        Iterator<? extends Feat> iter = value.elements.iterator();
-        while (iter.hasNext()) {
-            elem = iter.next();
-            this.addUnique(elem);
+        synchronized (value.elements) {
+            for (Feat elem : value.elements) {
+                this.addUnique(elem);
+            }
         }
     }
 
     @Override
     public Iterator<Feat> iterator() {
-        return this.elements.iterator();
+        synchronized (this.elements) {
+            return this.elements.iterator();
+        }
     }
 
     @Override
     public boolean contains(Object obj) {
-        return this.elements.contains(obj);
+        synchronized (this.elements) {
+            return this.elements.contains(obj);
+        }
     }
 
     @Override
@@ -778,15 +872,19 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
     @Override
     public boolean retainAll(Collection<?> coll) {
         List<Feat> toRemove = new ArrayList<Feat>();
-        for (Feat feature : this.elements) {
-            if (!coll.contains(feature)) { toRemove.add(feature); }
+        synchronized (this.elements) {
+            for (Feat feature : this.elements) {
+                if (!coll.contains(feature)) { toRemove.add(feature); }
+            }
         }
         return removeAll(toRemove);
     }
 
     @Override
     public Object[] toArray() {
-        return this.elements.toArray();
+        synchronized (this.elements) {
+            return this.elements.toArray();
+        }
     }
 
     @Override
@@ -804,7 +902,9 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
 
     @Override
     public <T> T[] toArray(T[] a) {
-        return this.elements.toArray(a);
+        synchronized (this.elements) {
+            return this.elements.toArray(a);
+        }
     }
 
     // ---------------------------------------

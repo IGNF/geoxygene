@@ -22,6 +22,7 @@
 package fr.ign.cogit.geoxygene.contrib.delaunay;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -288,18 +289,14 @@ public class ChargeurTriangulation extends Chargeur {
         if (logger.isDebugEnabled()) logger.debug(I18N.getString("ChargeurTriangulation.ImportedPolygonsAsPoints")); //$NON-NLS-1$
     }
     /**
-     * @param listeFeatures
+     * @param features
      * @param carte
      * @throws Exception
      */
-    public static void importCentroidesPolygones(FT_FeatureCollection listeFeatures, Triangulation carte) throws Exception {
-        FT_Feature objGeo;
+    public static void importCentroidesPolygones(Collection<? extends FT_Feature> features, Triangulation carte) throws Exception {
         NoeudDelaunay noeud;
-        int i;
-
         if (logger.isDebugEnabled()) logger.debug(I18N.getString("ChargeurTriangulation.ImportPolygonCentroids")); //$NON-NLS-1$
-        for(i=0 ; i<listeFeatures.size() ; i++) {
-            objGeo = listeFeatures.get(i);
+        for(FT_Feature objGeo : features) {
             if ( objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon ) {
                 GM_Point p = new GM_Point(objGeo.getGeom().centroid());
                 noeud = (NoeudDelaunay)carte.getPopNoeuds().nouvelElement(p);

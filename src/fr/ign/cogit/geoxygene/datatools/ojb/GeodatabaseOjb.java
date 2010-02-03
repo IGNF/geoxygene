@@ -255,6 +255,8 @@ public class GeodatabaseOjb {
         try {
             this._tx.commit();
         } catch (Exception e) {
+            System.out.println(e.getCause());
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }

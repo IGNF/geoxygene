@@ -1,28 +1,24 @@
 /*
  * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
- * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
- * National Mapping Agency).
- * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at
+ * the Institut Géographique National (the French National Mapping Agency).
  * See: http://oxygene-project.sourceforge.net
- * 
  * Copyright (C) 2005 Institut Géographique National
- *
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License along with
- * this library (see file LICENSE if present); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or any later
+ * version.
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details. You should have received a copy of the GNU Lesser General
+ * Public License along with this library (see file LICENSE if present); if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place,
+ * Suite 330, Boston, MA 02111-1307 USA
  */
+
 package fr.ign.cogit.geoxygene.util.conversion;
 
 import java.util.ArrayList;
@@ -66,9 +62,9 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * mais transpose directement les structures de données. néanmoins, tous les objets sont dupliqués (notamment les points).
  * Une autre méthode consisterait à faire de vrais adaptateurs qui ne dupliquent pas la géométrie mais se font passer pour des objets d'une autre classe.
  * Elle n'est pas implémentée et il reste à voir si c'est possible.
- * 
+ *
  * TODO : gérer toutes les géométries, notamment {@link GM_Complex}, {@link GM_Solid}, etc.
- * 
+ *
  * @author Julien Perret
  */
 public class AdapterFactory  {
@@ -78,7 +74,7 @@ public class AdapterFactory  {
 	 * Transforme une géométrie GeOxygene ({@link GM_Object}) en géométrie JTS ({@link Geometry}).
 	 * Toutes les géométries ne sont pas gérées. Une géométrie non gérées renvoie une exception.
 	 * TODO Doit-on renvoyer une exception si la GM_Ring contient 1 ou 2 points ?
-	 * 
+	 *
 	 * @param factory factory JTS pour construire les nouvelles géométries JTS.
 	 * @param geom géométrie GeOxygene
 	 * @return géométrie JTS équivalente
@@ -140,7 +136,7 @@ public class AdapterFactory  {
 
 	/**
 	 * Transforme une position GeOxygene ({@link DirectPosition}) en coordonnée JTS ({@link Coordinate}).
-	 * 
+	 *
 	 * @param directPosition position GeOxygene
 	 * @return coordonnée JTS équivalente
 	 */
@@ -182,7 +178,7 @@ public class AdapterFactory  {
 	/**
 	 * Transforme une géométrie JTS ({@link Geometry}) en géométrie GeOxygene ({@link GM_Object}).
 	 * Toutes les géométries ne sont pas gérées. Une géométrie non gérée renvoie une exception.
-	 * 
+	 *
 	 * @param geom géométrie JTS
 	 * @return géométrie GeOxygene équivalente
 	 * @throws Exception renvoie une exception si le type de géométrie n'est pas géré.
@@ -250,7 +246,7 @@ public class AdapterFactory  {
 
 	/**
 	 * Transforme une coordonnée JTS ({@link Coordinate}) en position GeOxygene ({@link DirectPosition}).
-	 * 
+	 *
 	 * @param coord coordonnée JTS
 	 * @return position GeOxygene équivalente
 	 */
@@ -260,13 +256,13 @@ public class AdapterFactory  {
 
 	/**
 	 * Transforme un tableau de coordonnées JTS ({@link Coordinate}) en liste de positions GeOxygene ({@link DirectPositionList}).
-	 * 
+	 *
 	 * @param coords tableau de coordonnées JTS
 	 * @return liste de positions GeOxygene équivalente
 	 */
 	public static DirectPositionList toDirectPositionList(Coordinate[] coords) {
 		DirectPositionList list = new DirectPositionList();
-		
+
 		//verifie si coords est fermee, cad si les deux coordonnees extremes sont a la meme position
 		boolean ferme;
 		if(coords[0].x == coords[coords.length-1].x && coords[0].y == coords[coords.length-1].y)
@@ -275,7 +271,7 @@ public class AdapterFactory  {
 
 		//copie de toutes les coodonnees sauf la derniere
 		for (int i=0; i<coords.length-1; i++) {
-			list.add(toDirectPosition(coords[i]));			
+			list.add(toDirectPosition(coords[i]));
 		}
 		//si ferme, ajout ajout de la premiere coordonnee au debut, sinon ajout de la derniere
 		if (ferme) list.add(list.get(0)); else list.add(toDirectPosition(coords[coords.length-1]));
@@ -285,7 +281,7 @@ public class AdapterFactory  {
 
 	/**
 	 * Transforme la dimension des coordonnées d'un tableau de coordonnées JTS ({@link Coordinate}) en 2D.
-	 * 
+	 *
 	 * @param coords tableau de coordonnées JTS
 	 * @return séquence de coordonnées JTS en 2D
 	 */
@@ -299,7 +295,7 @@ public class AdapterFactory  {
 
 	/**
 	 * Transforme la dimension de coordonnées JTS ({@link Coordinate}) en 2D.
-	 * 
+	 *
 	 * @param coord coordonnées JTS
 	 * @return coordonnées JTS en 2D
 	 */
@@ -309,7 +305,7 @@ public class AdapterFactory  {
 
 	/**
 	 * Transforme la dimension de {@link DirectPosition}s en 2D.
-	 * 
+	 *
 	 * @param position position
 	 * @return psotion en 2D
 	 */
@@ -319,7 +315,7 @@ public class AdapterFactory  {
 
 	/**
 	 * Transforme la dimension d'une liste de positions GeOxygene ({@link DirectPositionList}).
-	 * 
+	 *
 	 * @param directPositionList liste de positions GeOxygene
 	 * @return liste de positions GeOxygene équivalente en 2D
 	 */
@@ -384,7 +380,7 @@ public class AdapterFactory  {
 		throw new Exception(I18N.getString("AdapterFactory.Type")+geom.getClass()+I18N.getString("AdapterFactory.Unhandled")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	/**
-	 * Traduit un type de géométrie JTS {@link Geometry} et renvoie le type de 
+	 * Traduit un type de géométrie JTS {@link Geometry} et renvoie le type de
 	 * géométrie GeOxygene {@link GM_Object} équivalent.
 	 * TODO gérer tous les types de géométrie.
 	 * @param geometryType type de géométrie JTS
@@ -400,7 +396,7 @@ public class AdapterFactory  {
 		return GM_Object.class;
 	}
 	/**
-	 * Traduit un type de géométrie GeOxygene {@link GM_Object} et renvoie le type de 
+	 * Traduit un type de géométrie GeOxygene {@link GM_Object} et renvoie le type de
 	 * géométrie JTS {@link Geometry} équivalent.
 	 * TODO gérer tous les types de géométrie.
 	 * @param geometryType type de géométrie GeOxygene

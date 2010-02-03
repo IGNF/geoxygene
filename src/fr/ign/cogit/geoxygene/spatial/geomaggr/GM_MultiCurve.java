@@ -27,11 +27,9 @@
 package fr.ign.cogit.geoxygene.spatial.geomaggr;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeCurve;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Curve;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
 
 /**
@@ -56,13 +54,20 @@ public class GM_MultiCurve<CurveType extends GM_OrientableCurve> extends GM_Mult
 		this.addAll((List<CurveType>) compCurve.getGenerator());
 	}
 	/** Constructeur à partir d'une liste de GM_Curve. */
-	@SuppressWarnings("unchecked")
-	public GM_MultiCurve(ArrayList<GM_Curve> lCurve) {
+    public GM_MultiCurve(List<CurveType> lCurve) {
 		this.element = new ArrayList<CurveType>();
-		this.element.addAll((Collection<? extends CurveType>) lCurve);
+		this.element.addAll(lCurve);
 
 	}
-	@Override
+	/**
+	 * Constructeur par copie.
+	 * @param geom geometrie à copier
+	 */
+	public GM_MultiCurve(GM_MultiCurve<CurveType> geom) {
+	    this(geom.getList());
+    }
+
+    @Override
 	public boolean isMultiCurve() {return true;}
 	/** Longueur totale. */
 	// Dans la norme, ceci est un attribut et non une méthode.

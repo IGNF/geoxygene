@@ -102,7 +102,7 @@ public class ShapefileReader implements Runnable {
      * en utilisant la méthode <code> read </code>.
      * <p>
      * Pour utiliser le chargement synchrone, utiliser l'une des méthode
-     * statique <code> read </code>. 
+     * statique <code> read </code>.
      *
      * @see #read()
      * @see #read(String)
@@ -133,12 +133,12 @@ public class ShapefileReader implements Runnable {
      * Utilisée pour lancer le chargement asynchrone.
      * @see #ShapefileReader(String, String, DataSet, boolean)
      */
-    public void read() { new Thread(this).start(); }	
+    public void read() { new Thread(this).start(); }
     /**
      * Lit les features contenus dans le fichier en paramètre.
      * Ce chargement est synchrone
      * <p>
-     * Pour utiliser le chargement asynchrone, utiliser le constructeur. 
+     * Pour utiliser le chargement asynchrone, utiliser le constructeur.
      *
      * @see #read()
      * @see #read(String, String, DataSet, boolean)
@@ -155,7 +155,7 @@ public class ShapefileReader implements Runnable {
      * Lit les features contenus dans le fichier en paramètre et ajoute la
      * population chargée à un dataset.
      * Ce chargement est synchrone
-     * Pour utiliser le chargement asynchrone, utiliser le constructeur. 
+     * Pour utiliser le chargement asynchrone, utiliser le constructeur.
      * Si le paramètre initSpatialIndex est vrai, alors on initialise aussi
      * l'index spatial de la population.
      *
@@ -209,7 +209,7 @@ public class ShapefileReader implements Runnable {
      * Ouvre une fenetre (JFileChooser) afin de choisir le fichier et le
      * charge.
      * Ce chargement est synchrone.
-     * Pour utiliser le chargement asynchrone, utiliser le constructeur. 
+     * Pour utiliser le chargement asynchrone, utiliser le constructeur.
      *
      * @see #read()
      * @see #read(String)
@@ -271,8 +271,8 @@ public class ShapefileReader implements Runnable {
         double minY=reader.getMinY();
         double maxY=reader.getMaxY();
         if (initSpatialIndex) { population.initSpatialIndex(
-                Tiling.class, 
-                true, 
+                Tiling.class,
+                true,
                 new GM_Envelope(minX, maxX, minY, maxY),
                 10);
         }
@@ -319,7 +319,7 @@ public class ShapefileReader implements Runnable {
         newFeatureType.setSchema(schemaDefaultFeature);
         schemaDefaultFeature.setAttLookup(attLookup);
         population.setFeatureType(newFeatureType);
-        if(logger.isDebugEnabled()) 
+        if(logger.isDebugEnabled())
             for(GF_AttributeType fa : newFeatureType.getFeatureAttributes()) {
                 logger.debug("FeatureAttibute = " //$NON-NLS-1$
                         + fa.getMemberName()
@@ -343,14 +343,37 @@ public class ShapefileReader implements Runnable {
             defaultFeature.setFeatureType(schema.getFeatureType());
             defaultFeature.setSchema(schema);
             defaultFeature.setAttributes(reader.fieldValues[indexFeature]);
+            Class<? extends GM_Object>  geometryType = schema.getFeatureType().
+                    getGeometryType();
             try {
                 if (reader.geometries[indexFeature] == null) {
                     logger.error(I18N.getString(
                     "ShapefileReader" + //$NON-NLS-1$
                     ".NullGeometryObjectIGnored")); //$NON-NLS-1$
                 } else {
-                    defaultFeature.setGeom(AdapterFactory.toGM_Object(
-                            reader.geometries[indexFeature]));
+                    GM_Object geometry = AdapterFactory.toGM_Object(
+                                reader.geometries[indexFeature]);
+                    if (!geometryType.isAssignableFrom(geometry.getClass())) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Geometry of type " //$NON-NLS-1$
+                                    + geometry.getClass().getSimpleName()
+                                    + " instead of " //$NON-NLS-1$
+                                    + geometryType.getSimpleName());
+                        }
+                        // TODO make it more robust: a lot of assumptions here
+                        if (geometry instanceof GM_MultiSurface<?>) {
+                            geometry = ((GM_MultiSurface<?>) geometry).get(0);
+                        } else {
+                            if (geometry instanceof GM_MultiCurve<?>) {
+                                geometry = ((GM_MultiCurve<?>) geometry).get(0);
+                            } else {
+                                if (geometry instanceof GM_MultiPoint) {
+                                    geometry = ((GM_MultiPoint) geometry).get(0);
+                                }
+                            }
+                        }
+                    }
+                    defaultFeature.setGeom(geometry);
                     population.add(defaultFeature);
                 }
             } catch (Exception e) {
@@ -417,7 +440,7 @@ class Reader {
                         "ShapefileReader.Malformed")); //$NON-NLS-1$
             }
             return;
-        } 
+        }
         try {
             shapefileReader
             = new org.geotools.data.shapefile.shp.ShapefileReader(shpf, true,

@@ -1,27 +1,25 @@
 /*******************************************************************************
  * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
- * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
- * National Mapping Agency).
- * 
+/*
+ * This file is part of the GeOxygene project source files.
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at
+ * the Institut Géographique National (the French National Mapping Agency).
  * See: http://oxygene-project.sourceforge.net
- * 
  * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License along with
- * this library (see file LICENSE if present); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *******************************************************************************/
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or any later
+ * version.
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details. You should have received a copy of the GNU Lesser General
+ * Public License along with this library (see file LICENSE if present); if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place,
+ * Suite 330, Boston, MA 02111-1307 USA
+ */
 
 package fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu;
 
@@ -88,12 +86,16 @@ public class FeatureType implements GF_FeatureType {
 		ft.nomClasse = this.nomClasse;
 		return ft;
 	}
-	
+
 	Class<? extends GM_Object> geometryType = GM_Object.class;
 	@Override
-	public void setGeometryType(Class<? extends GM_Object> geometryType	) {this.geometryType=geometryType;}
+	public void setGeometryType(Class<? extends GM_Object> geometryType	) {
+	    this.geometryType = geometryType;
+	}
 	@Override
-	public Class<? extends GM_Object> getGeometryType() {return this.geometryType;}
+	public Class<? extends GM_Object> getGeometryType() {
+	    return this.geometryType;
+	}
 	// /////////////////////////////////////////////////////
 	// Ajout Nathalie///////////////////////////////////////
 	// /////////////////////////////////////////////////////
@@ -262,7 +264,7 @@ public class FeatureType implements GF_FeatureType {
 				return (AttributeType)listAttrib.get(i);
 			}
 		}
-		System.err.println("L'attribut "+nomAttribut+" n'a pas été trouvé pour la classe "+this.getTypeName());
+		//System.err.println("L'attribut "+nomAttribut+" n'a pas été trouvé pour la classe "+this.getTypeName());
 		return null;
 	}
 
@@ -306,7 +308,7 @@ public class FeatureType implements GF_FeatureType {
 				return (AssociationRole)listRoles.get(i);
 			}
 		}
-		System.err.println("Le role "+nomRole+" n'a pas été trouvé pour la classe "+this.getTypeName());
+		//System.err.println("Le role "+nomRole+" n'a pas été trouvé pour la classe "+this.getTypeName());
 		return null;
 	}
 
