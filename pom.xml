@@ -122,7 +122,7 @@
   	<repository>
   		<id>snapshots</id>
   		<name>Nexus Snapshots Repository</name>
-  		<url>https://dionysos2/nexus-webapp-1.4.1/content/repositories/snapshots</url>
+  		<url>https://dionysos2.ign.fr/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
   	</repository>
   	<repository>
   		<id>Central</id>
@@ -247,7 +247,7 @@
   	<dependency>
   		<groupId>postgresql</groupId>
   		<artifactId>postgresql</artifactId>
-  		<version>8.3-603.jdbc4</version>
+  		<version>8.4-701.jdbc4</version>
   	</dependency>
   	<dependency>
   		<groupId>xml-apis</groupId>
@@ -273,7 +273,7 @@
   	<snapshotRepository>
   		<id>snapshots</id>
   		<name>Nexus Snapshots Repository</name>
-  		<url>https://dionysos2/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
+  		<url>https://dionysos2.ign.fr/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
   	</snapshotRepository>
   	<site>
   		<id>GeOxygene-website</id>
