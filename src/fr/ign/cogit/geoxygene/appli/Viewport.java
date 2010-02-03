@@ -209,8 +209,14 @@ public class Viewport {
         public final Shape toShape(final GM_Object geometry)
         throws NoninvertibleTransformException {
             GM_Envelope envelope = this.getEnvelopeInModelCoordinates();
+            if (logger.isTraceEnabled()) {
+                logger.trace("model envelope = "+envelope); //$NON-NLS-1$
+            }
             try {
                 GM_Envelope geometryEnvelope = geometry.envelope();
+                if (logger.isTraceEnabled()) {
+                    logger.trace("geometry envelope = "+geometryEnvelope); //$NON-NLS-1$
+                }
                 // if the geometry does not intersect the envelope of
                 // the view, return a null shape
                 if (!envelope.intersects(geometryEnvelope)) {
@@ -274,6 +280,9 @@ public class Viewport {
                                 p.getInterior(i).coord()));
                 viewDirectPositionList
                 .add(lastExteriorRingDirectPosition);
+            }
+            if (logger.isTraceEnabled()) {
+                logger.trace("geometry points = "+viewDirectPositionList); //$NON-NLS-1$
             }
             return toPolygonShape(viewDirectPositionList);
         }
@@ -428,7 +437,7 @@ public class Viewport {
          */
         public final void zoom(final GM_Envelope extent)
         throws NoninvertibleTransformException {
-            if (extent.isEmpty()) {
+            if ((extent == null) || extent.isEmpty()) {
                 return;
             }
             this.scale = Math.min(this.layerViewPanel.getWidth()

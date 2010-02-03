@@ -21,6 +21,7 @@
 
 package fr.ign.cogit.geoxygene.appli.mode;
 
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -29,6 +30,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.geom.NoninvertibleTransformException;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
@@ -40,7 +42,7 @@ public abstract class AbstractMode implements Mode {
     /**
      * MainFrame.
      */
-    private MainFrame mainFrame;
+    protected MainFrame mainFrame;
     /**
      * Mode Selector.
      */
@@ -214,6 +216,9 @@ public abstract class AbstractMode implements Mode {
 
     @Override
     public void mouseEntered(final MouseEvent e) {
+        if (e.getSource() instanceof JComponent) {
+            ((JComponent) e.getSource()).requestFocus();
+        }
     }
 
     @Override
@@ -252,5 +257,13 @@ public abstract class AbstractMode implements Mode {
         } catch (NoninvertibleTransformException e1) {
             e1.printStackTrace();
         }
+    }
+
+    @Override
+    public Cursor getCursor() {
+        return Cursor.getDefaultCursor();
+    }
+    @Override
+    public void activated() {
     }
 }

@@ -196,7 +196,14 @@ public class LayerRenderer implements Renderer {
      */
     public final void copyTo(final Graphics2D graphics) {
         if (this.getImage() != null) {
+            if (logger.isTraceEnabled()) {
+                logger.trace("drawImage"); //$NON-NLS-1$
+            }
             graphics.drawImage(this.getImage(), 0, 0, null);
+        } else {
+            if (logger.isDebugEnabled()) {
+                logger.debug("this.getImage() = null"); //$NON-NLS-1$
+            }
         }
     }
 
@@ -275,7 +282,8 @@ public class LayerRenderer implements Renderer {
     final void renderHook(final BufferedImage theImage,
             final GM_Envelope envelope) {
         // if rendering has been cancelled or there is nothing to render, stop
-        if (this.isCancelled() || (this.features == null)) {
+        if (this.isCancelled() || (this.features == null)
+                || !this.layer.isVisible()) {
             return;
         }
         FT_FeatureCollection<? extends FT_Feature> collection =
@@ -296,26 +304,28 @@ public class LayerRenderer implements Renderer {
                     for (Rule rule : featureTypeStyle.getRules()) {
                         filteredFeatures.put(rule, new HashSet<FT_Feature>());
                     }
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(collection.size()
+                    if (logger.isTraceEnabled()) {
+                        logger.trace(collection.size()
                                 + " features"); //$NON-NLS-1$
                     }
-                    for (FT_Feature feature : collection) {
-                        for (Rule rule : featureTypeStyle.getRules()) {
-                            if ((rule.getFilter() == null) || rule.getFilter().
-                                    evaluate(feature)) {
+                    synchronized (collection) {
+                        for (FT_Feature feature : collection) {
+                            for (Rule rule : featureTypeStyle.getRules()) {
+                                if ((rule.getFilter() == null) || rule.getFilter().
+                                            evaluate(feature)) {
+                                    if (logger.isDebugEnabled()) {
+                                        logger.debug(feature
+                                                    + " filtered in " + //$NON-NLS-1$
+                                                    rule.getFilter());
+                                    }
+                                    filteredFeatures.get(rule).add(feature);
+                                    break;
+                                }
                                 if (logger.isDebugEnabled()) {
                                     logger.debug(feature
-                                            + " filtered in " + //$NON-NLS-1$
-                                            rule.getFilter());
+                                                + " filtered out " + //$NON-NLS-1$
+                                                rule.getFilter());
                                 }
-                                filteredFeatures.get(rule).add(feature);
-                                break;
-                            }
-                            if (logger.isDebugEnabled()) {
-                                logger.debug(feature
-                                        + " filtered out " + //$NON-NLS-1$
-                                        rule.getFilter());
                             }
                         }
                     }
@@ -326,18 +336,18 @@ public class LayerRenderer implements Renderer {
                             return;
                         }
                         Rule rule = featureTypeStyle.getRules().get(indexRule);
-                        if (logger.isDebugEnabled()) {
+                        if (logger.isTraceEnabled()) {
                             logger.debug(filteredFeatures.get(rule)
                                     + "  for rule " + rule); //$NON-NLS-1$
                             for (Symbolizer symbolizer
                                     : rule.getSymbolizers()) {
-                                logger.debug("symbolizer =  " + //$NON-NLS-1$
+                                logger.trace("symbolizer =  " + //$NON-NLS-1$
                                         symbolizer);
-                                logger.debug("stroke =  " + //$NON-NLS-1$
+                                logger.trace("stroke =  " + //$NON-NLS-1$
                                         symbolizer.getStroke());
-                                logger.debug("awt stroke =  " + //$NON-NLS-1$
+                                logger.trace("awt stroke =  " + //$NON-NLS-1$
                                         symbolizer.getStroke().toAwtStroke());
-                                logger.debug("color =  " + //$NON-NLS-1$
+                                logger.trace("color =  " + //$NON-NLS-1$
                                         symbolizer.getStroke().getColor());
                             }
                         }
@@ -425,6 +435,10 @@ public class LayerRenderer implements Renderer {
         if (theImage == null) {
             return;
         }
+        if (logger.isTraceEnabled()) {
+            logger.trace("rendering feature  " + //$NON-NLS-1$
+                    feature);
+        }
         Graphics2D graphics = theImage.createGraphics();
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                     RenderingHints.VALUE_ANTIALIAS_ON);
@@ -448,6 +462,9 @@ public class LayerRenderer implements Renderer {
             for (int j = Math.max(y, 0);
             j < Math.min(y + height, this.getLayerViewPanel().getHeight());
             j++) {
+                if (this.getImage() == null) {
+                    return;
+                }
                 synchronized (this.getImage()) {
                     if (this.getImage() == null) {
                         return;
@@ -578,7 +595,7 @@ public class LayerRenderer implements Renderer {
      * @param geom the geometry to render
      */
     final void renderHook(final BufferedImage theImage, final GM_Object geom) {
-        if (this.isCancelled() || (geom == null)) { return; }
+        if (this.isCancelled() || geom == null || geom.isEmpty()) { return; }
         GM_Envelope envelope = geom.envelope();
         DirectPosition lowerCornerPosition = envelope.getLowerCorner();
         lowerCornerPosition.move(-1, -1);

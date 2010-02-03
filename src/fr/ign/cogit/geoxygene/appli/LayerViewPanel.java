@@ -21,6 +21,7 @@
 
 package fr.ign.cogit.geoxygene.appli;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -33,9 +34,19 @@ import javax.swing.JPanel;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.appli.mode.AbstractGeometryEditMode;
+import fr.ign.cogit.geoxygene.appli.mode.CreateInteriorRingMode;
+import fr.ign.cogit.geoxygene.appli.mode.CreateLineStringMode;
+import fr.ign.cogit.geoxygene.appli.mode.CreatePolygonMode;
+import fr.ign.cogit.geoxygene.appli.mode.Mode;
+import fr.ign.cogit.geoxygene.appli.render.RenderUtil;
 import fr.ign.cogit.geoxygene.appli.render.RenderingManager;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.style.Layer;
 
@@ -54,6 +65,7 @@ public class LayerViewPanel extends JPanel {
      * serial uid.
      */
     private static final long serialVersionUID = 1L;
+
     /**
      * Rendering manager.
      */
@@ -64,6 +76,12 @@ public class LayerViewPanel extends JPanel {
      */
     public final RenderingManager getRenderingManager() {
         return this.renderingManager;
+    }
+    /**
+     * The rendering manager handling the rendering of the layers
+     */
+    public final void setRenderingManager(RenderingManager manager) {
+        this.renderingManager = manager;
     }
 
     /**
@@ -85,10 +103,15 @@ public class LayerViewPanel extends JPanel {
         return this.viewport;
     }
 
+    private ProjectFrame projectFrame = null;
+    public ProjectFrame getProjectFrame() {
+        return this.projectFrame;
+    }
     /**
      * Default Constructor.
      */
-    public LayerViewPanel() {
+    public LayerViewPanel(final ProjectFrame frame) {
+        this.projectFrame = frame;
     }
 
     @Override
@@ -151,21 +174,52 @@ public class LayerViewPanel extends JPanel {
             g.fillRect(0, 0, getWidth(), getHeight());
             // copy the result of the rendering manager to the panel
             this.renderingManager.copyTo((Graphics2D) g);
-            firePainted(g);
+            Mode mode = this.getProjectFrame().getMainFrame()
+            .getMode().getCurrentMode();
+            g.setColor(new Color(1f,0f,0f));
+            if (mode instanceof AbstractGeometryEditMode) {
+                DirectPositionList points
+                = new DirectPositionList();
+                points.addAll(((AbstractGeometryEditMode) mode).getPoints());
+                if (mode instanceof CreateLineStringMode) {
+                    if (!points.isEmpty()) {
+                        points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
+                        RenderUtil.draw(new GM_LineString(points),
+                                    this.getViewport(),
+                                    (Graphics2D) g);
+                    }
+                } else {
+                    if (mode instanceof CreatePolygonMode) {
+                        if (!points.isEmpty()) {
+                            DirectPosition start = points.get(0);
+                            points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
+                            if (points.size() > 2) {
+                                points.add(start);
+                                RenderUtil.draw(new GM_Polygon(new GM_LineString(points)),
+                                            this.getViewport(),
+                                            (Graphics2D) g);
+                            } else {
+                                if (points.size() == 2) {
+                                    points.add(start);
+                                    RenderUtil.draw(new GM_LineString(points),
+                                                this.getViewport(),
+                                                (Graphics2D) g);
+                                }
+                            }
+                        }
+                    } else {
+                        if (mode instanceof CreateInteriorRingMode) {
+
+                        } else {
+
+                        }
+                    }
+                }
+            }
         } catch (Throwable t) {
             logger.error(I18N.getString("LayerViewPanel.PaintError")); //$NON-NLS-1$
             // TODO HANDLE EXCEPTIONS
         }
-    }
-
-    /**
-     * Notify the listeners that the panel has just finished repainting.
-     *
-     * @param graphics
-     *            the graphics that was just painted
-     */
-    private void firePainted(final Graphics graphics) {
-        // TODO NOTIFY LISTENERS
     }
 
     /**
@@ -183,6 +237,9 @@ public class LayerViewPanel extends JPanel {
      * @return The envelope of all layers of the panel in model coordinates
      */
     public final GM_Envelope getEnvelope() {
+        if (this.getRenderingManager().getLayers().isEmpty()) {
+            return null;
+        }
         Iterator<Layer> layerIterator = this.getRenderingManager().getLayers()
                     .iterator();
         GM_Envelope envelope = layerIterator.next().getFeatureCollection()

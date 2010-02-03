@@ -21,6 +21,7 @@
 
 package fr.ign.cogit.geoxygene.appli.mode;
 
+import java.awt.Cursor;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -36,7 +37,18 @@ import javax.swing.JButton;
 public interface Mode extends KeyListener, MouseListener, MouseMotionListener,
 MouseWheelListener {
     /**
-     * @return The button trigger the mode.
+     * @return The button triggering the mode.
      */
     JButton getButton();
+    
+    /**
+     * @return The cursor associated with this mode.
+     */
+    Cursor getCursor();
+
+    /**
+     * Activate the mode.
+     * This is a hook in case a mode needs special initilising.
+     */
+    void activated();
 }

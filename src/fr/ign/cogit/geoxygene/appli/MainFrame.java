@@ -301,7 +301,9 @@ public class MainFrame extends JFrame {
      * @return the selected (current) project frame
      */
     public final ProjectFrame getSelectedProjectFrame() {
-        if (this.desktopPane.getSelectedFrame() == null) {
+        if ((this.desktopPane.getSelectedFrame() == null)
+                || !(this.desktopPane.getSelectedFrame()
+                instanceof ProjectFrame)) {
             return null;
         }
         return (ProjectFrame) this.desktopPane.getSelectedFrame();
@@ -329,7 +331,7 @@ public class MainFrame extends JFrame {
      * @return the newly created project frame
      */
     public final ProjectFrame newProjectFrame() {
-        ProjectFrame projectFrame = new ProjectFrame(
+        ProjectFrame projectFrame = new ProjectFrame(this,
                 this.application.getIcon());
         projectFrame.setSize(this.desktopPane.getSize());
         projectFrame.setVisible(true);

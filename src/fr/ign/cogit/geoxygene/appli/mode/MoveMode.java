@@ -21,6 +21,7 @@
 
 package fr.ign.cogit.geoxygene.appli.mode;
 
+import java.awt.Cursor;
 import java.awt.event.MouseEvent;
 import java.awt.geom.NoninvertibleTransformException;
 
@@ -58,5 +59,9 @@ public class MoveMode extends AbstractMode {
         try {
             frame.getLayerViewPanel().getViewport().moveTo(e.getPoint());
         } catch (NoninvertibleTransformException e1) { e1.printStackTrace(); }
+    }
+    @Override
+    public Cursor getCursor() {
+        return Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
     }
 }

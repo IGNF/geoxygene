@@ -51,9 +51,7 @@ public class RenderingManager {
     /**
      * @return The logger
      */
-    public static Logger getLogger() {
-        return LOGGER;
-    }
+    public static Logger getLogger() { return LOGGER; }
     /**
      * The managed {@link LayerViewPanel} panel.
      */
@@ -77,9 +75,15 @@ public class RenderingManager {
     private LinkedHashMap<Layer, LayerRenderer> rendererMap =
         new LinkedHashMap<Layer, LayerRenderer>();
     /**
-     * The selection rendere used to render the selected features.
+     * The selection renderer used to render the selected features.
      */
     private SelectionRenderer selectionRenderer = null;
+    /**
+     * @return The selection renderer used to render the selected features
+     */
+    public SelectionRenderer getSelectionRenderer() {
+        return this.selectionRenderer;
+    }
     /**
      * The current daemon.
      */
@@ -123,15 +127,16 @@ public class RenderingManager {
                                     RenderingManager.this.getRunnableQueue().
                                     wait(DAEMON_MAXIMUM_WAITING_TIME);
                                 } catch (InterruptedException ie) {
-                                    if (getLogger().isDebugEnabled()) {
-                                        getLogger().debug(ie.getMessage());
+                                    if (getLogger().isTraceEnabled()) {
+                                        getLogger().trace(ie.getMessage());
+                                        ie.printStackTrace();
                                     }
                                 }
                             }
                             runnable = RenderingManager.this.
                             getRunnableQueue().poll();
-                            if (getLogger().isDebugEnabled()) {
-                                getLogger().debug(
+                            if (getLogger().isTraceEnabled()) {
+                                getLogger().trace(
                                         RenderingManager.this.
                                         getRunnableQueue().size()
                                         +
@@ -283,6 +288,10 @@ public class RenderingManager {
     public final Collection<Layer> getLayers() {
         return this.rendererMap.keySet();
     }
+    
+    public final Renderer getRenderer(Layer layer) {
+        return this.rendererMap.get(layer);
+    }
 
     /**
      * Copy the rendered images to a 2D graphics in the same order the layers
@@ -316,7 +325,7 @@ public class RenderingManager {
     public final void render(final Layer layer, final FT_Feature feature) {
         Renderer renderer = this.rendererMap.get(layer);
         // if the renderer is not already finished, do nothing
-        if (!renderer.isRendered()) { return; }
+        if (renderer == null || !renderer.isRendered()) { return; }
         // create a new runnable for the rendering
         Runnable runnable = renderer.createFeatureRunnable(feature);
         if (runnable != null) {
@@ -335,6 +344,7 @@ public class RenderingManager {
             // start the timer
             this.getRepaintTimer().start();
         }
+        this.render(this.selectionRenderer);
     }
 
     /**
@@ -364,5 +374,6 @@ public class RenderingManager {
             // start the timer
             this.getRepaintTimer().start();
         }
+        this.render(this.selectionRenderer);
     }
 }

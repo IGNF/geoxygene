@@ -22,10 +22,7 @@
 package fr.ign.cogit.geoxygene.appli.mode;
 
 import java.awt.Cursor;
-import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
-import java.awt.geom.NoninvertibleTransformException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -33,49 +30,33 @@ import javax.swing.JButton;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 
-
 /**
- * Zoom mode. Allows the user to zoom.
  * @author Julien Perret
  *
  */
-public class ZoomMode extends AbstractMode {
+public class GeometryEditingMode extends AbstractGeometryEditMode {
+
     /**
+     * Constructor.
      * @param theMainFrame the main frame
      * @param theModeSelector the mode selector
      */
-    public ZoomMode(final MainFrame theMainFrame,
-            final ModeSelector theModeSelector) {
+    public GeometryEditingMode(MainFrame theMainFrame,
+            ModeSelector theModeSelector) {
         super(theMainFrame, theModeSelector);
     }
 
     @Override
     protected final JButton createButton() {
         return new JButton(new ImageIcon(this.getClass().
-                getResource("/icons/16x16/zoom.png"))); //$NON-NLS-1$
-    }
-
-    @Override
-    public final void leftMouseButtonClicked(final MouseEvent e,
-            final ProjectFrame frame) {
-        try {
-            frame.getLayerViewPanel().getViewport().zoomInTo(e.getPoint());
-        } catch (NoninvertibleTransformException e1) { e1.printStackTrace(); }
-    }
-    @Override
-    public final void rightMouseButtonClicked(final MouseEvent e,
-            final ProjectFrame frame) {
-        try {
-            frame.getLayerViewPanel().getViewport().zoomOutTo(e.getPoint());
-        } catch (NoninvertibleTransformException e1) { e1.printStackTrace(); }
+                getResource("/icons/16x16/edit.png"))); //$NON-NLS-1$
     }
     @Override
     public Cursor getCursor() {
-        Toolkit toolkit = Toolkit.getDefaultToolkit(); 
-        Cursor cursor = toolkit.createCustomCursor(
-                toolkit.getImage(
-                "images/cursors/32x32/zoomCursor.gif"), //$NON-NLS-1$
-                new Point(16, 16), "Zoom"); //$NON-NLS-1$
-        return cursor;
+        return Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
+    }
+    @Override
+    public void leftMouseButtonClicked(final MouseEvent e,
+            final ProjectFrame frame) {
     }
 }

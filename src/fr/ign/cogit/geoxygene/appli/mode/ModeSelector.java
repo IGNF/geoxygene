@@ -42,11 +42,13 @@ import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 
@@ -68,6 +70,10 @@ public class ModeSelector implements ContainerListener, KeyListener,
      * The current mode.
      */
     private Mode currentMode = null;
+    public Mode getCurrentMode() {
+        return this.currentMode;
+    }
+
     /**
      * The toolbar.
      */
@@ -138,6 +144,27 @@ public class ModeSelector implements ContainerListener, KeyListener,
         });
         this.toolBar.add(zoomToFullExtentButton);
 
+        this.toolBar.addSeparator();
+
+        final JToggleButton showGeometryToolsButton = new JToggleButton(new ImageIcon(
+                ModeSelector.class.getResource(
+                        "/icons/16x16/edit.png"))); //$NON-NLS-1$
+        showGeometryToolsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                ProjectFrame projectFrame = ModeSelector.this
+                .getMainFrame().getSelectedProjectFrame();
+                if (projectFrame != null) {
+                    if (!showGeometryToolsButton.isSelected()) {
+                        projectFrame.setGeometryToolsVisible(false);
+                    } else {
+                        projectFrame.setGeometryToolsVisible(true);
+                    }
+                }
+            }
+        });
+        this.toolBar.add(showGeometryToolsButton);
+
         this.setCurrentMode(this.modes.get(0));
     }
 
@@ -205,7 +232,14 @@ public class ModeSelector implements ContainerListener, KeyListener,
             this.currentMode.getButton().setEnabled(true);
         }
         this.currentMode = mode;
-        mode.getButton().setEnabled(false);
+        this.currentMode.getButton().setEnabled(false);
+        if (this.getMainFrame() != null && this.getMainFrame()
+                .getSelectedProjectFrame() != null) {
+            LayerViewPanel layerViewPanel = this.getMainFrame()
+            .getSelectedProjectFrame().getLayerViewPanel();
+            layerViewPanel.setCursor(this.currentMode.getCursor());
+        }
+        this.currentMode.activated();
     }
 
     @Override
