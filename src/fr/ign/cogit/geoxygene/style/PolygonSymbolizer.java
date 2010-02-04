@@ -60,8 +60,12 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
 	public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics) {
 		if (feature.getGeom()==null) return;
 		Color fillColor = null;
-		if (this.getFill()!=null) fillColor = this.getFill().getColor();
-		if (fillColor!=null) {
+		float fillOpacity = 1f;
+		if (this.getFill()!=null) {
+		    fillColor = this.getFill().getColor();
+	        fillOpacity = this.getFill().getFillOpacity();
+		}
+		if (fillColor != null && fillOpacity > 0f) {
 			graphics.setColor(fillColor);
 			if (feature.getGeom().isPolygon()) this.fillPolygon((GM_Polygon) feature.getGeom(), viewport, graphics);
 			else if (feature.getGeom().isMultiSurface()) 
@@ -70,7 +74,8 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
 			    }
 		}
 		if (this.getStroke()!=null) {
-			if (this.getStroke().getGraphicType()==null) {
+		    float strokeOpacity = this.getStroke().getStrokeOpacity();
+			if (this.getStroke().getGraphicType()==null &&  strokeOpacity > 0f) {
 				// Solid color
 				Color color = this.getStroke().getColor();
 				java.awt.Stroke bs = this.getStroke().toAwtStroke();
@@ -104,8 +109,8 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
                 }
                 graphics.draw(shape);
 	    	} else {
-	            if (logger.isDebugEnabled()) {
-	                logger.debug("null shape for " + polygon); //$NON-NLS-1$
+	            if (logger.isTraceEnabled()) {
+	                logger.trace("null shape for " + polygon); //$NON-NLS-1$
 	            }
 	    	}
 	    } catch (NoninvertibleTransformException e) {e.printStackTrace();}

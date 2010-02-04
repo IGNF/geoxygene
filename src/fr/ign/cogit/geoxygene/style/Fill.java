@@ -75,20 +75,22 @@ public class Fill {
 	 * Affecte la valeur de l'attribut cssParameters.
 	 * @param svgParameters l'attribut cssParameters à affecter
 	 */
-	public void setSvgParameters(List<SvgParameter> svgParameters) {
+	public synchronized void setSvgParameters(List<SvgParameter> svgParameters) {
 		this.svgParameters = svgParameters;
 		this.updateValues();
 	}
-	private void updateValues() {
-		for (SvgParameter parameter:this.svgParameters) {
-			if (parameter.getName().equalsIgnoreCase("fill")) { //$NON-NLS-1$
-				this.setFill(Color.decode(parameter.getValue()));
-			} else {
-				if (parameter.getName().equalsIgnoreCase("fill-opacity")) { //$NON-NLS-1$
-					this.setFillOpacity(Float.parseFloat(parameter.getValue()));
-				}
-			}
-		}		
+	private synchronized void updateValues() {
+        synchronized (this) {
+	        for (SvgParameter parameter:this.svgParameters) {
+	            if (parameter.getName().equalsIgnoreCase("fill")) { //$NON-NLS-1$
+	                this.setFill(Color.decode(parameter.getValue()));
+	            } else {
+	                if (parameter.getName().equalsIgnoreCase("fill-opacity")) { //$NON-NLS-1$
+	                    this.setFillOpacity(Float.parseFloat(parameter.getValue()));
+	                }
+	            }
+	        }
+	    }
 	}
 
 	@XmlTransient
@@ -104,14 +106,26 @@ public class Fill {
 	 * Affecte la valeur de l'attribut fill.
 	 * @param fill l'attribut fill à affecter
 	 */
-	public void setFill(Color fill) {
+	public synchronized void setFill(Color fill) {
 		this.fill = fill;
-		for (SvgParameter parameter:this.svgParameters) {
-			if (parameter.getName().equalsIgnoreCase("fill")) { //$NON-NLS-1$
-				String rgb = Integer.toHexString(fill.getRGB());
-				rgb = rgb.substring(2, rgb.length());
-				parameter.setValue("#"+rgb); //$NON-NLS-1$
-			}
+		boolean found = false;
+		synchronized (this) {
+		    for (SvgParameter parameter:this.svgParameters) {
+		        if (parameter.getName().equalsIgnoreCase("fill")) { //$NON-NLS-1$
+		            String rgb = Integer.toHexString(fill.getRGB());
+		            rgb = rgb.substring(2, rgb.length());
+		            parameter.setValue("#"+rgb); //$NON-NLS-1$
+		            found = true;
+		        }
+		    }
+		    if (!found) {
+		        SvgParameter parameter = new SvgParameter();
+		        parameter.setName("fill"); //$NON-NLS-1$
+		        String rgb = Integer.toHexString(fill.getRGB());
+		        rgb = rgb.substring(2, rgb.length());
+		        parameter.setValue("#"+rgb); //$NON-NLS-1$
+		        this.svgParameters.add(parameter);
+		    }
 		}
 	}
 	
@@ -128,22 +142,32 @@ public class Fill {
 	 * Affecte la valeur de l'attribut fillOpacity.
 	 * @param fillOpacity l'attribut fillOpacity à affecter
 	 */
-	public void setFillOpacity(float fillOpacity) {
+	public synchronized void setFillOpacity(float fillOpacity) {
 		this.fillOpacity = fillOpacity;
-		for (SvgParameter parameter:this.svgParameters) {
-			if (parameter.getName().equalsIgnoreCase("fillOpacity")) { //$NON-NLS-1$
-				parameter.setValue(Float.toString(fillOpacity));
-			}
+		boolean found = false;
+		synchronized (this) {
+		    for (SvgParameter parameter:this.svgParameters) {
+		        if (parameter.getName().equalsIgnoreCase("fill-opacity")) { //$NON-NLS-1$
+		            parameter.setValue(Float.toString(fillOpacity));
+		            found = true;
+		        }
+		    }
+		    if (!found) {
+		        SvgParameter parameter = new SvgParameter();
+		        parameter.setName("fill-opacity"); //$NON-NLS-1$
+		        parameter.setValue(Float.toString(fillOpacity));
+		        this.svgParameters.add(parameter);
+		    }
 		}
 	}
 
 	@XmlTransient
 	private Color color = null;
-	public Color getColor() {
+	public synchronized Color getColor() {
 		if (this.color==null) {
 			this.updateValues();
 			if (this.fillOpacity==1.0f) this.color = this.fill;
-			else this.color = new Color(this.fill.getRed(),this.fill.getGreen(),this.fill.getBlue(),(int)(this.fillOpacity*255));
+			else this.color = new Color(this.fill.getRed(),this.fill.getGreen(),this.fill.getBlue(),(int)(this.fillOpacity*255f));
 		}
 		return this.color;
 	}
@@ -153,6 +177,6 @@ public class Fill {
 	public void setColor(Color newColor) {
 		this.setFill(newColor);
 		if (this.fillOpacity==1.0f) this.color = this.fill;
-		else this.color = new Color(this.fill.getRed(),this.fill.getGreen(),this.fill.getBlue(),(int)(this.fillOpacity*255));
+		else this.color = new Color(this.fill.getRed(),this.fill.getGreen(),this.fill.getBlue(),(int)(this.fillOpacity*255f));
 	}
 }

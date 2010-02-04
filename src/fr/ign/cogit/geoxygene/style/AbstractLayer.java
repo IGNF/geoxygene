@@ -45,10 +45,17 @@ public abstract class AbstractLayer implements Layer {
     @XmlElement(name = "Name", required = true)
 	private String name;
 	@Override
-	public String getName() {return this.name;}
+	public String getName() { return this.name; }
 	@Override
-	public void setName(String name) {this.name = name;}
-	
+	public void setName(String name) { this.name = name; }
+
+    @XmlElement(name = "Description", required = false)
+    private String description;
+    @Override
+    public String getDescription() { return this.description; }
+    @Override
+    public void setDescription(String d) { this.description = d; }
+
     //@XmlElement(name = "Description")
     //protected Description description;
     //@XmlElement(name = "LayerFeatureConstraints")

@@ -54,7 +54,9 @@ public interface Layer {
 	 * @param name l'attribut name à affecter
 	 */
 	public void setName(String name);
-	
+	public String getDescription();
+	public void setDescription(String description);
+
 	List<Style> styles = new ArrayList<Style>();
 
 	/**

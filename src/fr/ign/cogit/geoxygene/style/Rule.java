@@ -57,7 +57,7 @@ import fr.ign.cogit.geoxygene.filter.PropertyIsNotEqualTo;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "name",
-    //"description",
+    "description",
     //"legendGraphic",
     "filter",
     "elseFilter",
@@ -70,8 +70,8 @@ public class Rule {
 
     @XmlElement(name = "Name")
     protected String name;
-    //@XmlElement(name = "Description")
-    //protected Description description;
+    @XmlElement(name = "Description")
+    protected String description;
     //@XmlElement(name = "LegendGraphic")
     //protected LegendGraphic legendGraphic;
     //protected FilterType filter;
@@ -93,18 +93,26 @@ public class Rule {
 	 * @param name l'attribut name à affecter
 	 */
 	public void setName(String name) {this.name = name;}
+    public String getDescription() {return this.description;}
+    public void setDescription(String d) {this.description = d;}
 	
 	//private String title;
 	//public String getTitle() {return this.title;}
 	//public void setTitle(String title) {this.title = title;}
 	
     @XmlElements({
-    	        @XmlElement(name = "PropertyIsEqualTo", type = PropertyIsEqualTo.class),
-    	        @XmlElement(name = "PropertyIsGreaterThan", type = PropertyIsGreaterThan.class),
-    	        @XmlElement(name = "PropertyIsGreaterThanOrEqualTo", type = PropertyIsGreaterThanOrEqualTo.class),
-    	        @XmlElement(name = "PropertyIsLessThan", type = PropertyIsLessThan.class),
-    	        @XmlElement(name = "PropertyIsLessThanOrEqualTo", type = PropertyIsLessThanOrEqualTo.class),
-    	        @XmlElement(name = "PropertyIsNotEqualTo", type = PropertyIsNotEqualTo.class),
+    	        @XmlElement(name = "PropertyIsEqualTo",
+    	                type = PropertyIsEqualTo.class),
+    	        @XmlElement(name = "PropertyIsGreaterThan",
+    	                type = PropertyIsGreaterThan.class),
+    	        @XmlElement(name = "PropertyIsGreaterThanOrEqualTo",
+    	                type = PropertyIsGreaterThanOrEqualTo.class),
+    	        @XmlElement(name = "PropertyIsLessThan",
+    	                type = PropertyIsLessThan.class),
+    	        @XmlElement(name = "PropertyIsLessThanOrEqualTo",
+    	                type = PropertyIsLessThanOrEqualTo.class),
+    	        @XmlElement(name = "PropertyIsNotEqualTo",
+    	                type = PropertyIsNotEqualTo.class),
     	        @XmlElement(name = "And", type = And.class),
     	        @XmlElement(name = "Or", type = Or.class),
     	        @XmlElement(name = "Not", type = Not.class)
@@ -117,7 +125,9 @@ public class Rule {
 	 * Renvoie la valeur de l'attribut filter.
 	 * @return la valeur de l'attribut filter
 	 */
-	public Filter getFilter() {return (this.filter == null)?null:this.filter[0];}
+	public Filter getFilter() {
+	    return (this.filter == null) ? null : this.filter[0];
+	}
 
 	/**
 	 * Affecte la valeur de l'attribut filter.
@@ -150,21 +160,27 @@ public class Rule {
 	 * Renvoie la valeur de l'attribut symbolizers.
 	 * @return la valeur de l'attribut symbolizers
 	 */
-	public List<Symbolizer> getSymbolizers() {return this.symbolizers;}
+	public List<Symbolizer> getSymbolizers() { return this.symbolizers; }
 
 	/**
 	 * Affecte la valeur de l'attribut symbolizers.
 	 * @param symbolizers l'attribut symbolizers à affecter
 	 */
-	public void setSymbolizers(List<Symbolizer> symbolizers) {this.symbolizers = symbolizers;}
+	public void setSymbolizers(List<Symbolizer> symbolizers) {
+	    this.symbolizers = symbolizers;
+	}
 
 	@Override
 	public String toString() {
-		String result = "Rule "+this.getName()+"\n"; //$NON-NLS-1$ //$NON-NLS-2$
-		result+="\tFilter "+this.getFilter()+"\n";  //$NON-NLS-1$//$NON-NLS-2$
+		String result = "Rule " + this.getName() //$NON-NLS-1$
+		+ "\n"; //$NON-NLS-1$
+		result += "\tFilter " + this.getFilter() //$NON-NLS-1$
+		+ "\n"; //$NON-NLS-1$
+		/*
 		for (Symbolizer symbolizer:this.getSymbolizers()) {
 			result+="\tSymbolizer "+symbolizer+"\n"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
+		*/
 		return result;
 	}
 }

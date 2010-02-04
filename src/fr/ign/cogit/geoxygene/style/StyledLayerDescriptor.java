@@ -294,12 +294,11 @@ public class StyledLayerDescriptor {
                             || geometryType.equals(GM_MultiSurface.class)) {
                         for (Rule rule : rules) {
                             Stroke ruleStroke = rule.getSymbolizers().get(0)
-                            .getStroke();
+                                    .getStroke();
                             if (ruleStroke == null) {
                                 ruleStroke = new Stroke();
                             }
-                            PolygonSymbolizer polygonSymbolizer
-                            = new PolygonSymbolizer();
+                            PolygonSymbolizer polygonSymbolizer = new PolygonSymbolizer();
                             polygonSymbolizer.setStroke(ruleStroke);
                             Color color = ruleStroke.getColor();
                             color = color.brighter();
@@ -312,12 +311,11 @@ public class StyledLayerDescriptor {
                             || geometryType.equals(GM_MultiCurve.class)) {
                         for (Rule rule : rules) {
                             Stroke ruleStroke = rule.getSymbolizers().get(0)
-                            .getStroke();
+                                    .getStroke();
                             if (ruleStroke == null) {
                                 ruleStroke = new Stroke();
                             }
-                            LineSymbolizer lineSymbolizer
-                            = new LineSymbolizer();
+                            LineSymbolizer lineSymbolizer = new LineSymbolizer();
                             lineSymbolizer.setStroke(ruleStroke);
                             rule.getSymbolizers().add(lineSymbolizer);
                         }
@@ -325,12 +323,11 @@ public class StyledLayerDescriptor {
                             || geometryType.equals(GM_MultiPoint.class)) {
                         for (Rule rule : rules) {
                             Stroke ruleStroke = rule.getSymbolizers().get(0)
-                            .getStroke();
+                                    .getStroke();
                             if (ruleStroke == null) {
                                 ruleStroke = new Stroke();
                             }
-                           PointSymbolizer pointSymbolizer
-                            = new PointSymbolizer();
+                            PointSymbolizer pointSymbolizer = new PointSymbolizer();
                             Graphic graphic = new Graphic();
                             Mark mark = new Mark();
                             mark.setStroke(ruleStroke);
@@ -348,35 +345,42 @@ public class StyledLayerDescriptor {
             }
         }
     }
+
     /**
      * Crée un nouveau layer portant le nom donné en paramètre et un symbolizer
      * adapté au type de géométrie en paramètre.
      * <p>
      * Les couleurs associées au symbolizer du layer sont créées aléatoirement.
-     * TODO choisir les couleur de la nouvelle couche dans une palette
-     * ou à partir de la couche la plus proche
+     * TODO choisir les couleur de la nouvelle couche dans une palette ou à
+     * partir de la couche la plus proche
      * @param layerName nom du layer cherché
      * @param geometryType type de géométrie porté par le layer
      * @return layer portant le nom et la géométrie en paramètre
      */
-    public Layer createLayerRandomColor(String layerName, Class<? extends GM_Object> geometryType) {
-        return createLayer(layerName, geometryType, new Color((float)Math.random(),(float)Math.random(),(float)Math.random(),0.5f));
+    public Layer createLayerRandomColor(String layerName,
+            Class<? extends GM_Object> geometryType) {
+        return createLayer(layerName, geometryType, new Color((float) Math
+                .random(), (float) Math.random(), (float) Math.random(), 0.5f));
     }
 
     /**
-     * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de trait.
+     * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de
+     * trait.
      * <p>
      * @param layerName nom du layer cherché
      * @param geometryType type de géométrie porté par le layer
      * @param strokeColor la couleur du trait
      * @return layer portant le nom et la géométrie en paramètre
      */
-    public Layer createLayer(String layerName, Class<? extends GM_Object> geometryType, Color strokeColor) {
-        return createLayer(layerName, geometryType, strokeColor, strokeColor.brighter().brighter());
+    public Layer createLayer(String layerName,
+            Class<? extends GM_Object> geometryType, Color strokeColor) {
+        return createLayer(layerName, geometryType, strokeColor, strokeColor
+                .brighter().brighter());
     }
 
     /**
-     * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de trait, la couleur de remplissage.
+     * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de
+     * trait, la couleur de remplissage.
      * <p>
      * @param layerName nom du layer cherché
      * @param geometryType type de géométrie porté par le layer
@@ -384,12 +388,16 @@ public class StyledLayerDescriptor {
      * @param fillColor la couleur de remplissage
      * @return layer portant le nom et la géométrie en paramètre
      */
-    public Layer createLayer(String layerName, Class<? extends GM_Object> geometryType, Color strokeColor, Color fillColor) {
-        return createLayer(layerName, geometryType, strokeColor, fillColor, 0.5f);
+    public Layer createLayer(String layerName,
+            Class<? extends GM_Object> geometryType, Color strokeColor,
+            Color fillColor) {
+        return createLayer(layerName, geometryType, strokeColor, fillColor,
+                0.5f);
     }
 
     /**
-     * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de trait, la couleur de remplissage,
+     * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de
+     * trait, la couleur de remplissage,
      * l'opacité donnés en paramètre.
      * <p>
      * @param layerName nom du layer cherché
@@ -399,12 +407,16 @@ public class StyledLayerDescriptor {
      * @param opacity l'opacité des objets de la couche
      * @return layer portant le nom et la géométrie en paramètre
      */
-    public Layer createLayer(String layerName, Class<? extends GM_Object> geometryType, Color strokeColor, Color fillColor, float opacity) {
-        return createLayer(layerName, geometryType, strokeColor, fillColor, opacity, 1.0f);
+    public Layer createLayer(String layerName,
+            Class<? extends GM_Object> geometryType, Color strokeColor,
+            Color fillColor, float opacity) {
+        return createLayer(layerName, geometryType, strokeColor, fillColor,
+                opacity, 1.0f);
     }
 
     /**
-     * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de trait, la couleur de remplissage,
+     * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de
+     * trait, la couleur de remplissage,
      * l'opacité et la largeur de trait donnés en paramètre.
      * <p>
      * @param layerName nom du layer cherché
@@ -415,31 +427,47 @@ public class StyledLayerDescriptor {
      * @param strokeWidth la largeur du trait
      * @return layer portant le nom et la géométrie en paramètre
      */
-    public Layer createLayer(String layerName, Class<? extends GM_Object> geometryType, Color strokeColor, Color fillColor, float opacity, float strokeWidth) {
+    public Layer createLayer(String layerName,
+            Class<? extends GM_Object> geometryType, Color strokeColor,
+            Color fillColor, float opacity, float strokeWidth) {
         Layer layer = new NamedLayer(layerName);
         UserStyle style = new UserStyle();
-        style.setName("Style créé pour le layer "+layerName);
+        style.setName("Style créé pour le layer " + layerName);
         FeatureTypeStyle fts = new FeatureTypeStyle();
+        fts.getRules().add(
+                createRule(geometryType, strokeColor, fillColor, opacity,
+                        opacity, strokeWidth));
+        style.getFeatureTypeStyles().add(fts);
+        layer.getStyles().add(style);
+        return layer;
+    }
+
+    public Rule createRule(Class<? extends GM_Object> geometryType,
+            Color strokeColor, Color fillColor, float strokeOpacity,
+            float fillOpacity, float strokeWidth) {
         Rule rule = new Rule();
         Stroke stroke = new Stroke();
         stroke.setStroke(strokeColor);
-        stroke.setStrokeOpacity(opacity);
+        stroke.setStrokeOpacity(strokeOpacity);
         stroke.setStrokeWidth(strokeWidth);
         Fill fill = new Fill();
         fill.setFill(fillColor);
-        fill.setFillOpacity(opacity);
-        if (geometryType.equals(GM_Polygon.class)||geometryType.equals(GM_MultiSurface.class)) {
+        fill.setFillOpacity(fillOpacity);
+        if (geometryType.equals(GM_Polygon.class)
+                || geometryType.equals(GM_MultiSurface.class)) {
             /** Ajoute un polygone symbolizer */
             PolygonSymbolizer polygonSymbolizer = new PolygonSymbolizer();
             polygonSymbolizer.setStroke(stroke);
             polygonSymbolizer.setFill(fill);
             rule.getSymbolizers().add(polygonSymbolizer);
-        } else if (geometryType.equals(GM_LineString.class)||geometryType.equals(GM_MultiCurve.class)) {
+        } else if (geometryType.equals(GM_LineString.class)
+                || geometryType.equals(GM_MultiCurve.class)) {
             /** Ajoute un line symbolizer */
             LineSymbolizer lineSymbolizer = new LineSymbolizer();
             lineSymbolizer.setStroke(stroke);
             rule.getSymbolizers().add(lineSymbolizer);
-        } else if (geometryType.equals(GM_Point.class)||geometryType.equals(GM_MultiPoint.class)) {
+        } else if (geometryType.equals(GM_Point.class)
+                || geometryType.equals(GM_MultiPoint.class)) {
             /** Ajoute un point symbolizer */
             PointSymbolizer pointSymbolizer = new PointSymbolizer();
             Graphic graphic = new Graphic();
@@ -450,29 +478,34 @@ public class StyledLayerDescriptor {
             pointSymbolizer.setGraphic(graphic);
             rule.getSymbolizers().add(pointSymbolizer);
         }
-        fts.getRules().add(rule);
-        style.getFeatureTypeStyles().add(fts);
-        layer.getStyles().add(style);
-        return layer;
+        return rule;
     }
 
     /**
-     * Créer un layer pour représenter une ligne utilisant deux styles: le premier pour la bordure de la ligne, le deuxième pour le trait central
+     * Créer un layer pour représenter une ligne utilisant deux styles: le
+     * premier pour la bordure de la ligne, le deuxième pour le trait central
      * @param layerName le nom de la couche
      * @param mainStrokeColor la couleur du trait central
      * @param borderStrokeColor la couleur du trait de bordure
      * @param mainStrokeWidth l'épaisseur du trait central
      * @param borderStrokeWidth l'épaisseur du trait de bordure
-     * @return un nouveau layer permettant de représenter des lignes avec bordure
+     * @return un nouveau layer permettant de représenter des lignes avec
+     *         bordure
      */
-    public Layer createLayerWithBorder(String layerName, Color mainStrokeColor, Color borderStrokeColor,  float mainStrokeWidth, float borderStrokeWidth) {
+    public Layer createLayerWithBorder(String layerName, Color mainStrokeColor,
+            Color borderStrokeColor, float mainStrokeWidth,
+            float borderStrokeWidth) {
         if (mainStrokeWidth > borderStrokeWidth) {
-            System.out.println("Le layer n'a pas été créé: La largeur du trait central ne peut pas être plus grande que celle du trait de bordure");
+            System.out
+                    .println("Le layer n'a pas été créé: " +
+                    		"La largeur du trait central ne peut " +
+                    		"pas être plus grande que celle du " +
+                    		"trait de bordure");
             return null;
         }
         Layer layer = new NamedLayer(layerName);
 
-        //Creation de la ligne de bord
+        // Creation de la ligne de bord
         FeatureTypeStyle borderFts = new FeatureTypeStyle();
         Rule borderRule = new Rule();
         UserStyle borderStyle = new UserStyle();
@@ -487,7 +520,7 @@ public class StyledLayerDescriptor {
         borderStyle.getFeatureTypeStyles().add(borderFts);
         layer.getStyles().add(borderStyle);
 
-        //Creation de la ligne centrale
+        // Creation de la ligne centrale
         FeatureTypeStyle mainFts = new FeatureTypeStyle();
         Rule mainRule = new Rule();
         UserStyle mainStyle = new UserStyle();
@@ -511,10 +544,11 @@ public class StyledLayerDescriptor {
      * @param strokeColor
      * @param fillColor
      */
-    public Layer createPointLayer(String layerName, String wellKnownText, Color strokeColor, Color fillColor) {
+    public Layer createPointLayer(String layerName, String wellKnownText,
+            Color strokeColor, Color fillColor) {
         Layer layer = new NamedLayer(layerName);
         UserStyle style = new UserStyle();
-        style.setName("Style créé pour le layer "+layerName);
+        style.setName("Style créé pour le layer " + layerName);
         FeatureTypeStyle fts = new FeatureTypeStyle();
         Rule rule = new Rule();
         Stroke stroke = new Stroke();
@@ -533,7 +567,6 @@ public class StyledLayerDescriptor {
         fts.getRules().add(rule);
         style.getFeatureTypeStyles().add(fts);
         layer.getStyles().add(style);
-
         return layer;
     }
 }
