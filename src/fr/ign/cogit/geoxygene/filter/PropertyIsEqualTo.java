@@ -52,12 +52,15 @@ public class PropertyIsEqualTo extends BinaryComparisonOpsType {
 	@Override
 	public boolean evaluate(Object object) {
 		Object property = this.getPropertyName().evaluate(object);
-		if (property == null)
+		if (property == null) {
 			return false;
+		}
 		if (property instanceof String) {
-			if (!this.isMatchCase())
+			if (!this.isMatchCase()) {
 				return (String.CASE_INSENSITIVE_ORDER.compare(
 						((String) property), this.getLiteral().getValue()) == 0);
+			}
+			return (((String) property).compareTo(this.getLiteral().getValue()) == 0);
 			// FIXME voir cas sensitif à la case
 		}
 		if (property instanceof Number) {

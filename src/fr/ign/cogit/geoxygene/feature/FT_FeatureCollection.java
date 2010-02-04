@@ -384,7 +384,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
                     }
                 }
             }
-            if (mixedGeom || geomType == null) {
+            if (mixedGeom || geomType == null || GM_Aggregate.class.isAssignableFrom(geomType)) {
                 GM_Aggregate<GM_Object> aggr = new GM_Aggregate<GM_Object>(list);
                 return aggr;
             }
@@ -403,6 +403,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
                 }
                 return aggr;
             }
+            logger.info(geomType);
         }
         logger
         .warn("ATTENTION appel de getGeom() sur une FT_FeatureCollection sans geometrie ! (renvoie null) "); //$NON-NLS-1$
