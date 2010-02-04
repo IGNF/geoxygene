@@ -27,6 +27,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
@@ -76,8 +77,11 @@ public class SelectionMode extends AbstractMode {
                             select(p, this.selectionRadius));
                 }
             }
-            frame.getLayerViewPanel().getSelectedFeatures().addAll(features);
-            frame.getLayerViewPanel().repaint();
+            LayerViewPanel lvPanel = frame.getLayerViewPanel();
+            lvPanel.getSelectedFeatures().addAll(features);
+            lvPanel.getRenderingManager().render(lvPanel.getRenderingManager().
+                    getSelectionRenderer());
+            lvPanel.superRepaint();
         } catch (NoninvertibleTransformException e1) { e1.printStackTrace(); }
     }
 
@@ -96,13 +100,16 @@ public class SelectionMode extends AbstractMode {
                             select(p, this.selectionRadius));
                 }
             }
+            LayerViewPanel lvPanel = frame.getLayerViewPanel();
             if (features.isEmpty()) {
-                frame.getLayerViewPanel().getSelectedFeatures().clear();
+                lvPanel.getSelectedFeatures().clear();
             } else {
-                frame.getLayerViewPanel().getSelectedFeatures().
+                lvPanel.getSelectedFeatures().
                 removeAll(features);
             }
-            frame.getLayerViewPanel().repaint();
+            lvPanel.getRenderingManager().render(lvPanel.getRenderingManager().
+                    getSelectionRenderer());
+            lvPanel.superRepaint();
         } catch (NoninvertibleTransformException e1) { e1.printStackTrace(); }
     }
 }

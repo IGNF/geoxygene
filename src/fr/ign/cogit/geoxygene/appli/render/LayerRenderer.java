@@ -196,9 +196,11 @@ public class LayerRenderer implements Renderer {
      */
     public final void copyTo(final Graphics2D graphics) {
         if (this.getImage() != null) {
+            /*
             if (logger.isTraceEnabled()) {
                 logger.trace("drawImage"); //$NON-NLS-1$
             }
+            */
             graphics.drawImage(this.getImage(), 0, 0, null);
         } else {
             if (logger.isDebugEnabled()) {
@@ -299,6 +301,8 @@ public class LayerRenderer implements Renderer {
                     if (this.isCancelled()) {
                         return;
                     }
+                    // creating a map between each rule and the 
+                    // corresponding features (filtered in)
                     Map<Rule, Set<FT_Feature>> filteredFeatures =
                         new HashMap<Rule, Set<FT_Feature>>();
                     for (Rule rule : featureTypeStyle.getRules()) {
@@ -308,26 +312,43 @@ public class LayerRenderer implements Renderer {
                         logger.trace(collection.size()
                                 + " features"); //$NON-NLS-1$
                     }
+                    FT_Feature[] list = new FT_Feature[0];
                     synchronized (collection) {
-                        for (FT_Feature feature : collection) {
-                            for (Rule rule : featureTypeStyle.getRules()) {
-                                if ((rule.getFilter() == null) || rule.getFilter().
-                                            evaluate(feature)) {
-                                    if (logger.isDebugEnabled()) {
-                                        logger.debug(feature
-                                                    + " filtered in " + //$NON-NLS-1$
-                                                    rule.getFilter());
-                                    }
-                                    filteredFeatures.get(rule).add(feature);
-                                    break;
+                        list = collection.toArray(list);
+                    }
+                    for (FT_Feature feature : list) {
+                        for (Rule rule : featureTypeStyle.getRules()) {
+                            if ((rule.getFilter() == null) || rule.getFilter().
+                                    evaluate(feature)) {
+                                /*
+                                if (logger.isTraceEnabled()) {
+                                    logger.trace(feature
+                                            + " filtered in " + //$NON-NLS-1$
+                                            rule.getFilter());
                                 }
-                                if (logger.isDebugEnabled()) {
-                                    logger.debug(feature
-                                                + " filtered out " + //$NON-NLS-1$
-                                                rule.getFilter());
-                                }
+                                */
+                                filteredFeatures.get(rule).add(feature);
+                                break;
                             }
+                            /*
+                            if (logger.isTraceEnabled()) {
+                                logger.trace(feature
+                                        + " filtered out " + //$NON-NLS-1$
+                                        rule.getFilter());
+                            }
+                            */
                         }
+                    }
+                    if (logger.isTraceEnabled()) {
+                        int nbFeatures = 0;
+                        for (Rule rule : filteredFeatures.keySet()) {
+                            logger.trace(filteredFeatures.get(rule).size()
+                                    + " features for " + rule); //$NON-NLS-1$
+                            nbFeatures += filteredFeatures.get(rule).size();
+                        }
+                        logger.trace(nbFeatures
+                                + "features filtered in over " //$NON-NLS-1$
+                                + list.length);
                     }
                     for (int indexRule =
                         featureTypeStyle.getRules().size() - 1;
@@ -337,19 +358,8 @@ public class LayerRenderer implements Renderer {
                         }
                         Rule rule = featureTypeStyle.getRules().get(indexRule);
                         if (logger.isTraceEnabled()) {
-                            logger.debug(filteredFeatures.get(rule)
+                            logger.trace(filteredFeatures.get(rule).size()
                                     + "  for rule " + rule); //$NON-NLS-1$
-                            for (Symbolizer symbolizer
-                                    : rule.getSymbolizers()) {
-                                logger.trace("symbolizer =  " + //$NON-NLS-1$
-                                        symbolizer);
-                                logger.trace("stroke =  " + //$NON-NLS-1$
-                                        symbolizer.getStroke());
-                                logger.trace("awt stroke =  " + //$NON-NLS-1$
-                                        symbolizer.getStroke().toAwtStroke());
-                                logger.trace("color =  " + //$NON-NLS-1$
-                                        symbolizer.getStroke().getColor());
-                            }
                         }
                         for (FT_Feature feature : filteredFeatures.get(rule)) {
                             for (Symbolizer symbolizer
@@ -435,10 +445,12 @@ public class LayerRenderer implements Renderer {
         if (theImage == null) {
             return;
         }
+        /*
         if (logger.isTraceEnabled()) {
             logger.trace("rendering feature  " + //$NON-NLS-1$
                     feature);
         }
+        */
         Graphics2D graphics = theImage.createGraphics();
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                     RenderingHints.VALUE_ANTIALIAS_ON);

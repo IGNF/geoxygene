@@ -129,7 +129,7 @@ public class RenderingManager {
                                 } catch (InterruptedException ie) {
                                     if (getLogger().isTraceEnabled()) {
                                         getLogger().trace(ie.getMessage());
-                                        ie.printStackTrace();
+                                        //ie.printStackTrace();
                                     }
                                 }
                             }
@@ -253,7 +253,7 @@ public class RenderingManager {
      * @param renderer the renderer to run
      * @see LayerRenderer
      */
-    private void render(final Renderer renderer) {
+    public void render(final Renderer renderer) {
         // if the renderer is already rendering, interrupt the current
         // rendering to start a new one
         if (renderer.isRendering()) { renderer.cancel(); }

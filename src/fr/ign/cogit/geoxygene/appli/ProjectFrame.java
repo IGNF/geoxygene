@@ -155,11 +155,6 @@ public class ProjectFrame extends JInternalFrame implements
         layer.getFeatureCollection().addFeatureCollectionListener(this);
         this.sld.add(layer);
         this.layerViewPanel.getRenderingManager().addLayer(layer);
-        /*
-         * this.layerLegendPanel.add(new JLabel(layer.getName()));
-         * this.layerLegendPanel.repaint();
-         * this.layerLegendPanel.validate();
-         */
         this.featureCollectionToLayerMap.put(layer.getFeatureCollection(),
                 layer);
         this.layerViewPanel.repaint();
@@ -287,9 +282,10 @@ public class ProjectFrame extends JInternalFrame implements
     /**
      * Cette méthode génère un nom de couche du type: "Nouvelle couche ('n') où n indique le nombre de couche portant déjà ce nom
      * @return Le nom de la nouvelle couche
+     * TODO create I18N text
      */
     public String generateNewLayerName() {
-        return checkLayerName("Nouvelle couche");
+        return checkLayerName("Nouvelle couche"); //$NON-NLS-1$
     }
 
     public String checkLayerName(String layerName) {
