@@ -1,0 +1,980 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<StyledLayerDescriptor>
+    <NamedLayer>
+        <Name>Corine Land Cover</Name>
+        <Description>Corine Land Cover Style created from the official legend clc_legend.csv</Description>
+        <UserStyle>
+            <name>Corine Land Cover Style</name>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Name>Continuous urban fabric</Name>
+                    <Description>Artificial surfaces, Urban fabric</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>111</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#e6004d</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Discontinuous urban fabric</Name>
+                    <Description>Artificial surfaces, Urban fabric</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>112</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ff0000</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Industrial or commercial units</Name>
+                    <Description>Artificial surfaces, Industrial, commercial and transport units</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>121</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#cc4df2</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Road and rail networks and associated land</Name>
+                    <Description>Artificial surfaces, Industrial, commercial and transport units</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>122</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#cc0000</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Port areas</Name>
+                    <Description>Artificial surfaces, Industrial, commercial and transport units</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>123</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#e6cccc</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Airports</Name>
+                    <Description>Artificial surfaces, Industrial, commercial and transport units</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>124</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#e6cce6</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Mineral extraction sites</Name>
+                    <Description>Artificial surfaces, Mine, dump and construction sites</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>131</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#a600cc</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Dump sites</Name>
+                    <Description>Artificial surfaces, Mine, dump and construction sites</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>132</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#a64d00</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Construction sites</Name>
+                    <Description>Artificial surfaces, Mine, dump and construction sites</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>133</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ff4dff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Green urban areas</Name>
+                    <Description>Artificial surfaces, Artificial, non-agricultural vegetated areas</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>141</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ffa6ff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Sport and leisure facilities</Name>
+                    <Description>Artificial surfaces, Artificial, non-agricultural vegetated areas</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>142</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ffe6ff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Non-irrigated arable land</Name>
+                    <Description>Agricultural areas, Arable land</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>211</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ffffa8</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Permanently irrigated land</Name>
+                    <Description>Agricultural areas, Arable land</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>212</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ffff00</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Rice fields</Name>
+                    <Description>Agricultural areas, Arable land</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>213</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#e6e600</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Vineyards</Name>
+                    <Description>Agricultural areas, Permanent crops</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>221</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#e68000</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Fruit trees and berry plantations</Name>
+                    <Description>Agricultural areas, Permanent crops</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>222</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#f2a64d</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Olive groves</Name>
+                    <Description>Agricultural areas, Permanent crops</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>223</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#e6a600</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Pastures</Name>
+                    <Description>Agricultural areas, Pastures</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>231</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#e6e64d</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Annual crops associated with permanent crops</Name>
+                    <Description>Agricultural areas, Heterogeneous agricultural areas</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>241</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ffe6a6</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Complex cultivation patterns</Name>
+                    <Description>Agricultural areas, Heterogeneous agricultural areas</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>242</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ffe64d</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Land principally occupied by agriculture, with significant areas of natural vegetation</Name>
+                    <Description>Agricultural areas, Heterogeneous agricultural areas</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>243</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#e6cc4d</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Agro-forestry areas</Name>
+                    <Description>Agricultural areas, Heterogeneous agricultural areas</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>244</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#f2cca6</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Broad-leaved forest</Name>
+                    <Description>Forest and semi natural areas, Forests</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>311</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#80ff00</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Coniferous forest</Name>
+                    <Description>Forest and semi natural areas, Forests</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>312</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#00a600</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Mixed forest</Name>
+                    <Description>Forest and semi natural areas, Forests</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>313</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#4dff00</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Natural grasslands</Name>
+                    <Description>Forest and semi natural areas, Scrub and/or herbaceous vegetation associations</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>321</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ccf24d</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Moors and heathland</Name>
+                    <Description>Forest and semi natural areas, Scrub and/or herbaceous vegetation associations</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>322</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#a6ff80</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Sclerophyllous vegetation</Name>
+                    <Description>Forest and semi natural areas, Scrub and/or herbaceous vegetation associations</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>323</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#a6e64d</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Transitional woodland-shrub</Name>
+                    <Description>Forest and semi natural areas, Scrub and/or herbaceous vegetation associations</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>324</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#a6f200</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Beaches, dunes, sands</Name>
+                    <Description>Forest and semi natural areas, Open spaces with little or no vegetation</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>331</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#e6e6e6</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Bare rocks</Name>
+                    <Description>Forest and semi natural areas, Open spaces with little or no vegetation</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>332</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#cccccc</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Sparsely vegetated areas</Name>
+                    <Description>Forest and semi natural areas, Open spaces with little or no vegetation</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>333</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ccffcc</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Burnt areas</Name>
+                    <Description>Forest and semi natural areas, Open spaces with little or no vegetation</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>334</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#000000</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Glaciers and perpetual snow</Name>
+                    <Description>Forest and semi natural areas, Open spaces with little or no vegetation</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>335</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#a6e6cc</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Inland marshes</Name>
+                    <Description>Wetlands, Inland wetlands</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>411</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#a6a6ff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Peat bogs</Name>
+                    <Description>Wetlands, Inland wetlands</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>412</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#4d4dff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Salt marshes</Name>
+                    <Description>Wetlands, Maritime wetlands</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>421</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ccccff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Salines</Name>
+                    <Description>Wetlands, Maritime wetlands</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>422</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#e6e6ff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Intertidal flats</Name>
+                    <Description>Wetlands, Maritime wetlands</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>423</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#a6a6e6</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Water courses</Name>
+                    <Description>Water bodies, Inland waters</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>511</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#00ccf2</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Water bodies</Name>
+                    <Description>Water bodies, Inland waters</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>512</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#80f2e6</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Coastal lagoons</Name>
+                    <Description>Water bodies, Marine waters</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>521</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#00ffa6</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Estuaries</Name>
+                    <Description>Water bodies, Marine waters</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>522</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#a6ffe6</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Sea and ocean</Name>
+                    <Description>Water bodies, Marine waters</Description>
+                    <Filter>
+                        <PropertyIsEqualTo matchCase="true">
+                            <PropertyName>CODE_00</PropertyName>
+                            <Literal>523</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#e6f2ff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+</StyledLayerDescriptor>
