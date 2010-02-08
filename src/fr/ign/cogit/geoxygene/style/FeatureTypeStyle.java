@@ -74,4 +74,7 @@ public class FeatureTypeStyle {
 		for(Rule rule:this.getRules()) result+="Rule "+rule+"\n";  //$NON-NLS-1$//$NON-NLS-2$
 		return result;
 	}
+	public Symbolizer getSymbolizer() {
+	    return this.getRules().get(0).getSymbolizers().get(0);
+	}
 }

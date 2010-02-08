@@ -26,10 +26,17 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
 
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 
 /**
  * @author Julien Perret
@@ -37,11 +44,26 @@ import fr.ign.cogit.geoxygene.feature.FT_Feature;
  */
 public class RasterSymbolizer extends AbstractSymbolizer {
 	@Override
-	public boolean isRasterSymbolizer() {return true;}
+	public boolean isRasterSymbolizer() { return true; }
 
 	@Override
 	public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics) {
-		// TODO
+        BufferedImage image = viewport.getLayerViewPanel().getProjectFrame().getImage(feature);
+        if (image == null) {
+            return;
+        }
+        GM_Envelope envelope = feature.getGeom().envelope();
+        try {
+            Shape shape = viewport.toShape(envelope.getGeom());
+            double minX = shape.getBounds().getMinX();
+            double minY = shape.getBounds().getMinY();
+            double maxX = shape.getBounds().getMaxX();
+            double maxY = shape.getBounds().getMaxY();
+            graphics.drawImage(image, (int) minX, (int) minY,
+                    (int) (maxX - minX), (int) (maxY - minY), null);
+        } catch (NoninvertibleTransformException e) {
+            e.printStackTrace();
+            return;
+        }
 	}
-
 }

@@ -51,4 +51,5 @@ public interface Style {
 	 * @return vrai si le style est un style utilisateur, faux sinon.
 	 */
 	public boolean isUserStyle();
+    public Symbolizer getSymbolizer();
 }

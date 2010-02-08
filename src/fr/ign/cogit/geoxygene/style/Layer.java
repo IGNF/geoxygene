@@ -26,6 +26,7 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,4 +102,7 @@ public interface Layer {
      * @param symbolized
      */
     public void setSymbolized(boolean symbolized);
+    public Symbolizer getSymbolizer();
+    public void setImage(RasterSymbolizer symbolizer, BufferedImage image);
+    public BufferedImage getImage(RasterSymbolizer symbolizer);
 }

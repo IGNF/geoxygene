@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.NoninvertibleTransformException;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,7 @@ import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
+import fr.ign.cogit.geoxygene.util.conversion.GeoTiffReader;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 /**
@@ -259,6 +261,91 @@ public class MainFrame extends JFrame {
                         }
                     }
                 });
+        JMenuItem openGeoTiffMenuItem = new JMenuItem("Open GeoTiff Image"); //$NON-NLS-1$
+        openGeoTiffMenuItem
+                .addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(final ActionEvent e) {
+                        ProjectFrame projectFrame = (ProjectFrame)
+                            MainFrame.this.getDesktopPane().getSelectedFrame();
+                        if (projectFrame == null) {
+                            if (MainFrame.this.getDesktopPane()
+                                    .getAllFrames().length != 0) {
+                                // TODO ask the user in which frame (s)he
+                                // wants to load into?
+                                projectFrame = (ProjectFrame) MainFrame.this
+                                        .getDesktopPane().getAllFrames()[0];
+                            } else {
+                                // TODO create a new project frame?
+                                getLogger().info(I18N.getString(
+                                 "MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
+                                return;
+                            }
+                        }
+                        JFileChooser choixFichierGeoTiff = new JFileChooser();
+                        /*
+                         * crée un filtre qui n'accepte
+                         * que les fichier GeoTiff ou les répertoires
+                         */
+                        choixFichierGeoTiff.setFileFilter(new FileFilter() {
+                            @Override
+                            public boolean accept(final File f) {
+                                return (f.isFile()
+                                        && (f.getAbsolutePath()
+                                                .endsWith(".tif") //$NON-NLS-1$
+                                                ||
+                                                f.getAbsolutePath()
+                                                .endsWith(".TIF") //$NON-NLS-1$
+                                                )
+                                                || f.isDirectory());
+                            }
+                            @Override
+                            public String getDescription() {
+                                return "GeoTiff Image"; //$NON-NLS-1$
+                            }
+                        });
+                        choixFichierGeoTiff
+                                .setFileSelectionMode(JFileChooser.FILES_ONLY);
+                        choixFichierGeoTiff.setMultiSelectionEnabled(false);
+                        JFrame frame = new JFrame();
+                        frame.setVisible(true);
+                        int returnVal = choixFichierGeoTiff.showOpenDialog(frame);
+                        frame.dispose();
+                        if (returnVal == JFileChooser.APPROVE_OPTION) {
+                            if (getLogger().isDebugEnabled()) {
+                                getLogger().debug(I18N.getString(
+                                    "MainFrame.FileChosenDebug" //$NON-NLS-1$
+                                        ) + choixFichierGeoTiff
+                                        .getSelectedFile()
+                                        .getAbsolutePath());
+                            }
+                            String shapefileName = choixFichierGeoTiff
+                                    .getSelectedFile().getAbsolutePath();
+                            String populationName = shapefileName
+                                    .substring(
+                                            shapefileName.
+                                            lastIndexOf("/") + 1, //$NON-NLS-1$
+                                            shapefileName.
+                                            lastIndexOf(".")); //$NON-NLS-1$
+                            double[][] range = new double[2][2];
+                            BufferedImage image =
+                                GeoTiffReader.loadGeoTiffImage(shapefileName, range);
+                            projectFrame.addImage(populationName, image, range);
+                            if (projectFrame.getLayers().size() == 1) {
+                                try {
+                                    projectFrame.getLayerViewPanel()
+                                    .getViewport().zoom(
+                                            new GM_Envelope(
+                                                    range[0][0],
+                                                    range[0][1],
+                                                    range[1][0],
+                                                    range[1][1]));
+                                } catch (NoninvertibleTransformException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                });
         JMenuItem exitMenuItem = new JMenuItem(I18N
                 .getString("MainFrame.Exit")); //$NON-NLS-1$
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -268,6 +355,7 @@ public class MainFrame extends JFrame {
             }
         });
         fileMenu.add(openShapefileMenuItem);
+        fileMenu.add(openGeoTiffMenuItem);
         fileMenu.addSeparator();
         fileMenu.add(exitMenuItem);
         this.menuBar.setFont(this.application.getFont());

@@ -26,8 +26,11 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -95,5 +98,16 @@ public abstract class AbstractLayer implements Layer {
     @Override
     public void setSymbolized(boolean newSymbolized) {
         this.symbolized = newSymbolized;
+    }
+    public Symbolizer getSymbolizer() {
+        return this.getStyles().get(0).getSymbolizer();
+    }
+    @XmlTransient
+    private Map<RasterSymbolizer, BufferedImage> rasterImage = new HashMap<RasterSymbolizer, BufferedImage>();
+    public void setImage(RasterSymbolizer symbolizer, BufferedImage image) {
+        this.rasterImage.put(symbolizer, image);
+    }
+    public BufferedImage getImage(RasterSymbolizer symbolizer) {
+        return this.rasterImage.get(symbolizer);
     }
 }

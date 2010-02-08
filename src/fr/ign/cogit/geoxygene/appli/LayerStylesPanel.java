@@ -28,15 +28,18 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
 import fr.ign.cogit.geoxygene.style.ExternalGraphic;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
+import fr.ign.cogit.geoxygene.style.RasterSymbolizer;
 import fr.ign.cogit.geoxygene.style.Rule;
 import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
@@ -96,93 +99,25 @@ public class LayerStylesPanel extends JPanel {
                     for (Symbolizer symbolizer : rule.getSymbolizers()) {
                         //g.setColor(symbolizer.getStroke().getColor());
                         if (symbolizer.isLineSymbolizer()) {
-                            g2.setStroke(symbolizer.getStroke()
-                                    .toAwtStroke());
-                            g.setColor(symbolizer.getStroke().getColor());
-                            g.drawLine(
-                                    currentColumn
-                                    * (columnsWidth + this.margin)
-                                    + this.margin,
-                                    currentRow
-                                    * (rowHeight + this.margin)
-                                    + rowHeight / 2,
-                                    (currentColumn + 1) * (columnsWidth
-                                            + this.margin) - 1,
-                                    currentRow * (rowHeight + this.margin)
-                                    + rowHeight / 2);
+                            this.paintLine((LineSymbolizer) symbolizer, g2,
+                                    currentColumn, currentRow,
+                                    columnsWidth, rowHeight);
                         } else {
                             if (symbolizer.isPointSymbolizer()) {
-                                PointSymbolizer ps
-                                = (PointSymbolizer) symbolizer;
-                                for(Mark mark:ps.getGraphic().getMarks()) {
-                                    Shape markShape = mark.toShape();
-                                    float size = ps.getGraphic().getSize();
-                                    AffineTransform at = AffineTransform
-                                    .getTranslateInstance(
-                                            this.margin + currentColumn
-                                            * (columnsWidth + this.margin)
-                                            + columnsWidth / 2,
-                                            this.margin + currentRow
-                                            * (rowHeight + this.margin)
-                                            + rowHeight / 2);
-                                    at.rotate(ps.getGraphic().getRotation());
-                                    at.scale(size,size);
-                                    markShape = at.createTransformedShape(
-                                            markShape);
-                                    g.setColor((mark.getFill() == null)
-                                            ? Color.gray : mark.getFill()
-                                                    .getColor());
-                                    g2.fill(markShape);
-                                    g2.setStroke(mark.getStroke()
-                                            .toAwtStroke());
-                                    g.setColor((mark.getStroke() == null)
-                                            ? Color.black : mark.getStroke()
-                                                    .getColor());
-                                    g2.draw(markShape);
-                                }
-                                for (ExternalGraphic theGraphic
-                                        : ps.getGraphic()
-                                        .getExternalGraphics()) {
-                                    Image onlineImage = theGraphic
-                                    .getOnlineResource();
-                                    g2.drawImage(
-                                            onlineImage,
-                                            this.margin + currentColumn
-                                            * (columnsWidth + this.margin)
-                                            + columnsWidth / 2
-                                            - onlineImage.getWidth(null) / 2,
-                                            this.margin + currentRow
-                                            * (rowHeight + this.margin)
-                                            + rowHeight / 2
-                                            - onlineImage.getHeight(null) / 2,
-                                            null);
-                                }
+                                this.paintPoint((PointSymbolizer) symbolizer, g2,
+                                        currentColumn, currentRow,
+                                        columnsWidth, rowHeight);
                             } else {
                                 if (symbolizer.isPolygonSymbolizer()) {
-                                    PolygonSymbolizer ps
-                                    = (PolygonSymbolizer) symbolizer;
-                                    g.setColor(ps.getFill().getColor());
-                                    g.fillRect(
-                                            currentColumn
-                                            * (columnsWidth + this.margin)
-                                            + this.margin,
-                                            currentRow
-                                            * (rowHeight + this.margin)
-                                            + this.margin,
-                                            columnsWidth,
-                                            rowHeight);
-                                    g.setColor(ps.getStroke().getColor());
-                                    g2.setStroke(symbolizer.getStroke()
-                                            .toAwtStroke());
-                                    g.drawRect(
-                                            currentColumn
-                                            * (columnsWidth + this.margin)
-                                            + this.margin,
-                                            currentRow
-                                            * (rowHeight + this.margin)
-                                            + this.margin,
-                                            columnsWidth,
-                                            rowHeight);
+                                    this.paintPolygon((PolygonSymbolizer) symbolizer, g2,
+                                            currentColumn, currentRow,
+                                            columnsWidth, rowHeight);
+                                } else {
+                                    if (symbolizer.isRasterSymbolizer()) {
+                                        this.paintRaster((RasterSymbolizer) symbolizer, g2,
+                                                currentColumn, currentRow,
+                                                columnsWidth, rowHeight);
+                                    }
                                 }
                             }
                         }
@@ -197,9 +132,111 @@ public class LayerStylesPanel extends JPanel {
         }
         g.setColor(originalColor);
     }
+
+    private void paintLine(LineSymbolizer symbolizer, Graphics2D g2,
+            int currentColumn, int currentRow,
+            int columnsWidth, int rowHeight) {
+        g2.setStroke(symbolizer.getStroke()
+                .toAwtStroke());
+        g2.setColor(symbolizer.getStroke().getColor());
+        g2.drawLine(
+                currentColumn
+                * (columnsWidth + this.margin)
+                + this.margin,
+                currentRow
+                * (rowHeight + this.margin)
+                + rowHeight / 2,
+                (currentColumn + 1) * (columnsWidth
+                        + this.margin) - 1,
+                currentRow * (rowHeight + this.margin)
+                + rowHeight / 2);
+    }
+
     @Override
     public void setBounds(int x, int y, int w, int h) {
         super.setBounds(x, y, w, h);
         validate();
+    }
+    private void paintPoint(PointSymbolizer symbolizer, Graphics2D g2,
+            int currentColumn, int currentRow, int columnsWidth, int rowHeight) {
+        for(Mark mark:symbolizer.getGraphic().getMarks()) {
+            Shape markShape = mark.toShape();
+            float size = symbolizer.getGraphic().getSize();
+            AffineTransform at = AffineTransform
+            .getTranslateInstance(
+                    this.margin + currentColumn
+                    * (columnsWidth + this.margin)
+                    + columnsWidth / 2,
+                    this.margin + currentRow
+                    * (rowHeight + this.margin)
+                    + rowHeight / 2);
+            at.rotate(symbolizer.getGraphic().getRotation());
+            at.scale(size,size);
+            markShape = at.createTransformedShape(
+                    markShape);
+            g2.setColor((mark.getFill() == null)
+                    ? Color.gray : mark.getFill()
+                            .getColor());
+            g2.fill(markShape);
+            g2.setStroke(mark.getStroke()
+                    .toAwtStroke());
+            g2.setColor((mark.getStroke() == null)
+                    ? Color.black : mark.getStroke()
+                            .getColor());
+            g2.draw(markShape);
+        }
+        for (ExternalGraphic theGraphic
+                : symbolizer.getGraphic()
+                .getExternalGraphics()) {
+            Image onlineImage = theGraphic
+            .getOnlineResource();
+            g2.drawImage(
+                    onlineImage,
+                    this.margin + currentColumn
+                    * (columnsWidth + this.margin)
+                    + columnsWidth / 2
+                    - onlineImage.getWidth(null) / 2,
+                    this.margin + currentRow
+                    * (rowHeight + this.margin)
+                    + rowHeight / 2
+                    - onlineImage.getHeight(null) / 2,
+                    null);
+        }
+    }
+
+    private void paintPolygon(PolygonSymbolizer symbolizer, Graphics2D g2,
+            int currentColumn, int currentRow, int columnsWidth, int rowHeight) {
+        g2.setColor(symbolizer.getFill().getColor());
+        g2.fillRect(
+                currentColumn
+                * (columnsWidth + this.margin)
+                + this.margin,
+                currentRow
+                * (rowHeight + this.margin)
+                + this.margin,
+                columnsWidth,
+                rowHeight);
+        g2.setColor(symbolizer.getStroke().getColor());
+        g2.setStroke(symbolizer.getStroke()
+                .toAwtStroke());
+        g2.drawRect(
+                currentColumn
+                * (columnsWidth + this.margin)
+                + this.margin,
+                currentRow
+                * (rowHeight + this.margin)
+                + this.margin,
+                columnsWidth,
+                rowHeight);
+    }
+
+    private void paintRaster(RasterSymbolizer symbolizer, Graphics2D g2,
+            int currentColumn, int currentRow, int columnsWidth, int rowHeight) {
+        int x = currentColumn * (columnsWidth + this.margin) + this.margin;
+        int y = currentRow * (rowHeight + this.margin) + this.margin;
+        int width = columnsWidth;
+        int height = rowHeight;
+        BufferedImage image = this.layer.getImage(symbolizer);
+        g2.drawImage(image, x, y, width, height, null);
     }
 }

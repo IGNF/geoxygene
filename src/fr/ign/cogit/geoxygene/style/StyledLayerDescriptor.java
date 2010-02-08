@@ -76,10 +76,10 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = { "name",
-// "description",
+        // "description",
         // "environmentVariables",
         // "useSLDLibrary",
-        "layers" })
+"layers" })
 @XmlRootElement(name = "StyledLayerDescriptor")
 public class StyledLayerDescriptor {
     static Logger logger = Logger.getLogger(StyledLayerDescriptor.class
@@ -104,8 +104,8 @@ public class StyledLayerDescriptor {
     }
 
     @XmlElements( { @XmlElement(name = "NamedLayer", type = NamedLayer.class),
-            @XmlElement(name = "UserLayer", type = UserLayer.class) })
-    private List<Layer> layers = new ArrayList<Layer>();
+        @XmlElement(name = "UserLayer", type = UserLayer.class) })
+        private List<Layer> layers = new ArrayList<Layer>();
 
     public List<Layer> getLayers() {
         return this.layers;
@@ -197,7 +197,7 @@ public class StyledLayerDescriptor {
 
     public static void main(String[] args) {
         StyledLayerDescriptor sld = StyledLayerDescriptor
-                .unmarshall("geopensimSLD.xml"); //$NON-NLS-1$
+        .unmarshall("geopensimSLD.xml"); //$NON-NLS-1$
         System.out.println(sld);
     }
 
@@ -208,7 +208,7 @@ public class StyledLayerDescriptor {
                     NamedStyle.class);
             Unmarshaller m = context.createUnmarshaller();
             StyledLayerDescriptor sld = (StyledLayerDescriptor) m
-                    .unmarshal(stream);
+            .unmarshal(stream);
             return sld;
         } catch (JAXBException e) {
             e.printStackTrace();
@@ -286,7 +286,7 @@ public class StyledLayerDescriptor {
             if (style.isUserStyle()) {
                 UserStyle userStyle = (UserStyle) style;
                 List<FeatureTypeStyle> ftsList = userStyle
-                        .getFeatureTypeStyles();
+                .getFeatureTypeStyles();
                 userStyle.setFeatureTypeStyles(ftsList);
                 for (FeatureTypeStyle fts : ftsList) {
                     List<Rule> rules = fts.getRules();
@@ -294,7 +294,7 @@ public class StyledLayerDescriptor {
                             || geometryType.equals(GM_MultiSurface.class)) {
                         for (Rule rule : rules) {
                             Stroke ruleStroke = rule.getSymbolizers().get(0)
-                                    .getStroke();
+                            .getStroke();
                             if (ruleStroke == null) {
                                 ruleStroke = new Stroke();
                             }
@@ -311,7 +311,7 @@ public class StyledLayerDescriptor {
                             || geometryType.equals(GM_MultiCurve.class)) {
                         for (Rule rule : rules) {
                             Stroke ruleStroke = rule.getSymbolizers().get(0)
-                                    .getStroke();
+                            .getStroke();
                             if (ruleStroke == null) {
                                 ruleStroke = new Stroke();
                             }
@@ -323,7 +323,7 @@ public class StyledLayerDescriptor {
                             || geometryType.equals(GM_MultiPoint.class)) {
                         for (Rule rule : rules) {
                             Stroke ruleStroke = rule.getSymbolizers().get(0)
-                                    .getStroke();
+                            .getStroke();
                             if (ruleStroke == null) {
                                 ruleStroke = new Stroke();
                             }
@@ -390,7 +390,7 @@ public class StyledLayerDescriptor {
      */
     public Layer createLayer(String layerName,
             Class<? extends GM_Object> geometryType, Color strokeColor,
-            Color fillColor) {
+                    Color fillColor) {
         return createLayer(layerName, geometryType, strokeColor, fillColor,
                 0.5f);
     }
@@ -409,7 +409,7 @@ public class StyledLayerDescriptor {
      */
     public Layer createLayer(String layerName,
             Class<? extends GM_Object> geometryType, Color strokeColor,
-            Color fillColor, float opacity) {
+                    Color fillColor, float opacity) {
         return createLayer(layerName, geometryType, strokeColor, fillColor,
                 opacity, 1.0f);
     }
@@ -429,7 +429,7 @@ public class StyledLayerDescriptor {
      */
     public Layer createLayer(String layerName,
             Class<? extends GM_Object> geometryType, Color strokeColor,
-            Color fillColor, float opacity, float strokeWidth) {
+                    Color fillColor, float opacity, float strokeWidth) {
         Layer layer = new NamedLayer(layerName);
         UserStyle style = new UserStyle();
         style.setName("Style créé pour le layer " + layerName);
@@ -453,6 +453,13 @@ public class StyledLayerDescriptor {
         Fill fill = new Fill();
         fill.setFill(fillColor);
         fill.setFillOpacity(fillOpacity);
+        if (geometryType == null) {
+            /** Ajoute un raster symbolizer */
+            RasterSymbolizer rasterSymbolizer = new RasterSymbolizer();
+            rasterSymbolizer.setStroke(stroke);
+            rule.getSymbolizers().add(rasterSymbolizer);
+            return rule;
+        }
         if (geometryType.equals(GM_Polygon.class)
                 || geometryType.equals(GM_MultiSurface.class)) {
             /** Ajoute un polygone symbolizer */
@@ -460,13 +467,17 @@ public class StyledLayerDescriptor {
             polygonSymbolizer.setStroke(stroke);
             polygonSymbolizer.setFill(fill);
             rule.getSymbolizers().add(polygonSymbolizer);
-        } else if (geometryType.equals(GM_LineString.class)
+            return rule;
+        }
+        if (geometryType.equals(GM_LineString.class)
                 || geometryType.equals(GM_MultiCurve.class)) {
             /** Ajoute un line symbolizer */
             LineSymbolizer lineSymbolizer = new LineSymbolizer();
             lineSymbolizer.setStroke(stroke);
             rule.getSymbolizers().add(lineSymbolizer);
-        } else if (geometryType.equals(GM_Point.class)
+            return rule;
+        }
+        if (geometryType.equals(GM_Point.class)
                 || geometryType.equals(GM_MultiPoint.class)) {
             /** Ajoute un point symbolizer */
             PointSymbolizer pointSymbolizer = new PointSymbolizer();
@@ -477,6 +488,7 @@ public class StyledLayerDescriptor {
             graphic.getMarks().add(mark);
             pointSymbolizer.setGraphic(graphic);
             rule.getSymbolizers().add(pointSymbolizer);
+            return rule;
         }
         return rule;
     }
@@ -497,10 +509,10 @@ public class StyledLayerDescriptor {
             float borderStrokeWidth) {
         if (mainStrokeWidth > borderStrokeWidth) {
             System.out
-                    .println("Le layer n'a pas été créé: " +
-                    		"La largeur du trait central ne peut " +
-                    		"pas être plus grande que celle du " +
-                    		"trait de bordure");
+            .println("Le layer n'a pas été créé: " +
+                    "La largeur du trait central ne peut " +
+                    "pas être plus grande que celle du " +
+            "trait de bordure");
             return null;
         }
         Layer layer = new NamedLayer(layerName);

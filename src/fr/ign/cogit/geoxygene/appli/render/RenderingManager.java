@@ -355,7 +355,7 @@ public class RenderingManager {
     public final void render(final Layer layer, final GM_Object geom) {
         Renderer renderer = this.rendererMap.get(layer);
         // if the renderer is not already finished, do nothing
-        if (!renderer.isRendered()) { return; }
+        if (renderer == null || !renderer.isRendered()) { return; }
         // create a new runnable for the rendering
         Runnable runnable = renderer.createLocalRunnable(geom);
         if (runnable != null) {

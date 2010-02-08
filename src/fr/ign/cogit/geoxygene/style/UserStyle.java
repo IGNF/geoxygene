@@ -65,4 +65,7 @@ public class UserStyle extends AbstractStyle {
 			result+="FeatureTypeStyle "+fts+"\n";  //$NON-NLS-1$//$NON-NLS-2$
 		return result;
 	}
+    public Symbolizer getSymbolizer() {
+        return this.featureTypeStyles.get(0).getSymbolizer();
+    }
 }

@@ -131,6 +131,30 @@ public class Viewport {
          * Compute the {@link AffineTransform} corresponding to the
          * transformation from model to view coordinates.
          *
+         * @param xScale the X scale of the view
+         * @param yScale the Y scale of the view
+         * @param viewOrigin the origin of the view
+         * @param height the height of the view
+         * @return The {@link AffineTransform} corresponding to the
+         *         transformation from model to view coordinates.
+         * @see #getEnvelopeInModelCoordinates()
+         * @see #update()
+         */
+        public static AffineTransform modelToViewTransform(final double xScale,
+                double yScale, final Point2D viewOrigin, final double height) {
+            AffineTransform modelToViewTransform = new AffineTransform();
+            modelToViewTransform.translate(0, height);
+            modelToViewTransform.scale(1, -1);
+            modelToViewTransform.scale(xScale, yScale);
+            modelToViewTransform.translate(-viewOrigin.getX(), -viewOrigin
+                    .getY());
+            return modelToViewTransform;
+        }
+
+        /**
+         * Compute the {@link AffineTransform} corresponding to the
+         * transformation from model to view coordinates.
+         *
          * @param scale the scale of the view
          * @param viewOrigin the origin of the view
          * @param height the height of the view
@@ -141,13 +165,7 @@ public class Viewport {
          */
         public static AffineTransform modelToViewTransform(final double scale,
                 final Point2D viewOrigin, final double height) {
-            AffineTransform modelToViewTransform = new AffineTransform();
-            modelToViewTransform.translate(0, height);
-            modelToViewTransform.scale(1, -1);
-            modelToViewTransform.scale(scale, scale);
-            modelToViewTransform.translate(-viewOrigin.getX(), -viewOrigin
-                    .getY());
-            return modelToViewTransform;
+            return modelToViewTransform(scale, scale, viewOrigin, height);
         }
 
         /**

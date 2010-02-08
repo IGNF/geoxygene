@@ -89,6 +89,9 @@ public class AdapterFactory  {
 		if (geom instanceof GM_Ring) {
 			if (geom.coord().size()<=3&&geom.coord().size()!=0) {
 				//logger.error("Une GM_Ring contenant "+geom.coord().size()+" points ne peut être transformée en LinearRing.");
+			    if (logger.isDebugEnabled()) {
+			        logger.debug(geom);
+			    }
 				throw new Exception(I18N.getString("AdapterFactory.RingWithLessThan4Points")); //$NON-NLS-1$
 			}
 			return factory.createLinearRing(toCoordinateSequence(factory, geom.coord()));
