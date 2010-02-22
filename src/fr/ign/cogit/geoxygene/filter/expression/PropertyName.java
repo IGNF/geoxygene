@@ -73,7 +73,12 @@ public class PropertyName extends Expression {
 		if (object instanceof FT_Feature) {
 			FT_Feature feature = (FT_Feature) object;
 			Object resultat = feature.getAttribute(this.getPropertyName());
-			if (resultat instanceof Number) return new BigDecimal(((Number)resultat).doubleValue());
+			if (resultat instanceof Number) {
+	            if (logger.isTraceEnabled()) {
+	                logger.trace("result = "+resultat);
+	            }
+			    return new BigDecimal(((Number)resultat).doubleValue());
+			}
 			//if (resultat instanceof Boolean) return new BigDecimal(((Boolean)resultat).booleanValue()?0:1);
 			return resultat;
 		}

@@ -134,6 +134,14 @@ public class AdapterFactory  {
 			}
 			return factory.createGeometryCollection(geometries);
 		}
+        if (geom instanceof GM_Solid) {
+            GM_Solid solid = (GM_Solid) geom;
+            Geometry[] geometries = new Geometry[solid.sizeComplex()];
+            for (int index = 0 ; index < solid.sizeComplex() ; index++) {
+                geometries[index] = toGeometry(factory,solid.getListeFacettes().get(index));
+            }
+            return factory.createGeometryCollection(geometries);
+        }
 		throw new Exception(I18N.getString("AdapterFactory.Type")+geom.getClass()+I18N.getString("AdapterFactory.Unhandled")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 

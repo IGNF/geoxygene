@@ -40,7 +40,11 @@ class GM_Position
 	 * DirectPosition du point.
 	 */
 	protected DirectPosition direct;
-	public DirectPosition getDirect () {
+	public GM_Position(DirectPosition controlPoint) {
+	    this.direct = controlPoint;
+	}
+
+    public DirectPosition getDirect () {
 		return this.direct;
 	}
 

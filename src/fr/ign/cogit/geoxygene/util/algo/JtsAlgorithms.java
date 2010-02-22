@@ -832,7 +832,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		}
 		fireActionPerformed(new ActionEvent(singleton,4,I18N.getString("JtsAlgorithms.UnionFinishedAction"))); //$NON-NLS-1$
 		if (geometries.size()==1) return geometries.get(0);
-		if (newGeometryCollection.isEmpty()) return new GeometryFactory().createGeometryCollection(new Geometry[0]);
+		if (geometries.isEmpty()) return new GeometryFactory().createGeometryCollection(new Geometry[0]);
 		if (geometries.get(0) instanceof Polygon) {
 		    return newGeometryCollection.iterator().next().getFactory().createMultiPolygon(geometries.toArray(new Polygon[0]));
 		}

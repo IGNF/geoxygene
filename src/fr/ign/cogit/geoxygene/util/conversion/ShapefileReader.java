@@ -184,6 +184,9 @@ public class ShapefileReader implements Runnable {
             /** Initialise le schéma */
             Reader reader = initSchema(shapefileName, schemaDefaultFeature,
                     population, initSpatialIndex);
+            if (reader == null) {
+                return null;
+            }
             /**
              * Parcours de features du fichier et création de Default features
              * équivalents */
@@ -265,7 +268,15 @@ public class ShapefileReader implements Runnable {
     public static Reader initSchema(String shapefileName,
             SchemaDefaultFeature schemaDefaultFeature,
             Population<DefaultFeature> population, boolean initSpatialIndex) {
-        Reader reader = new Reader(shapefileName);
+        Reader reader = null;
+        try {
+            reader = new Reader(shapefileName);
+        } catch (MalformedURLException e) {
+            logger.error("URL " + shapefileName //$NON-NLS-1$
+                    + I18N.getString(
+                    "ShapefileReader.Malformed")); //$NON-NLS-1$
+            return null;
+        }
         double minX=reader.getMinX();
         double maxX=reader.getMaxX();
         double minY=reader.getMinY();
@@ -425,22 +436,13 @@ class Reader {
     Class<?>[] fieldClasses;
     Geometry[] geometries;
     Class<? extends GM_Object> shapeType;
-    public Reader(String shapefileName) {
+    public Reader(String shapefileName) throws MalformedURLException {
         this.shapefileName = shapefileName;
         org.geotools.data.shapefile.shp.ShapefileReader shapefileReader = null;
         org.geotools.data.shapefile.dbf.DbaseFileReader dbaseFileReader = null;
         PrjFileReader prjFileReader = null;
         ShpFiles shpf;
-        try {
-            shpf = new ShpFiles(shapefileName);
-        } catch (MalformedURLException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("URL " + shapefileName //$NON-NLS-1$
-                        + I18N.getString(
-                        "ShapefileReader.Malformed")); //$NON-NLS-1$
-            }
-            return;
-        }
+        shpf = new ShpFiles(shapefileName);
         try {
             shapefileReader
             = new org.geotools.data.shapefile.shp.ShapefileReader(shpf, true,
@@ -457,18 +459,14 @@ class Reader {
             }
             return;
         } catch (ShapefileException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug(I18N.getString(
-                        "ShapefileReader.ErrorReadingShapefile") //$NON-NLS-1$
-                        + shapefileName);
-            }
+            logger.error(I18N.getString(
+                    "ShapefileReader.ErrorReadingShapefile") //$NON-NLS-1$
+                    + shapefileName);
             return;
         } catch (IOException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug(I18N.getString(
-                        "ShapefileReader.ErrorReadingFile") //$NON-NLS-1$
-                        + shapefileName);
-            }
+            logger.error(I18N.getString(
+                    "ShapefileReader.ErrorReadingFile") //$NON-NLS-1$
+                    + shapefileName);
             return;
         }
         try {

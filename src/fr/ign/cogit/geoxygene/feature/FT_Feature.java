@@ -439,35 +439,63 @@ public abstract class FT_Feature implements Cloneable {
             this.setTopo((TP_Object) valeur);
         }
         else {
+            String nomFieldMaj2;
+            if (attribute.getNomField().length() == 0) {
+                nomFieldMaj2 = attribute.getNomField();
+            } else {
+                nomFieldMaj2 = Character.toUpperCase(attribute
+                        .getNomField().charAt(0))
+                + attribute.getNomField().substring(1);
+            }
+            String nomSetFieldMethod = "set" + nomFieldMaj2; //$NON-NLS-1$
             try {
-                String nomFieldMaj2;
-                if (attribute.getNomField().length() == 0) {
-                    nomFieldMaj2 = attribute.getNomField();
-                } else {
-                    nomFieldMaj2 = Character.toUpperCase(attribute
-                            .getNomField().charAt(0))
-                    + attribute.getNomField().substring(1);
-                }
-                String nomSetFieldMethod = "set" + nomFieldMaj2; //$NON-NLS-1$
                 Method methodSetter = this.getClass().getDeclaredMethod(
                         nomSetFieldMethod, valeur.getClass());
-                // Method methodGetter =
-                // this.getClass().getSuperclass().getDeclaredMethod(
-                // nomGetFieldMethod,
-                // null);
                 methodSetter.invoke(this, valeur);
             } catch (SecurityException e) {
                 e.printStackTrace();
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             } catch (NoSuchMethodException e) {
-                e.printStackTrace();
+                try {
+                    Method methodSetter = this.getClass().getDeclaredMethod(
+                            nomSetFieldMethod, class2PrimitiveClass(valeur.getClass()));
+                    methodSetter.invoke(this, valeur);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
             }
         }
+    }
+    /**
+     * Renvoie la classe primitive correspondant à la classe donnée, 
+     * null si le paramètre ne correspond pas à un type primitif ou 
+     * s'il n'est pas géré.
+     * @param classe classe
+     * @return la classe correspondant à un type primitif ou 
+     * null si le paramètre ne correspond pas à un type primitif ou 
+     * s'il n'est pas géré.
+     */
+    public static Class<?> class2PrimitiveClass(Class<?> classe) {
+        String simpleName = classe.getSimpleName();
+        if(simpleName.equalsIgnoreCase("integer")) { //$NON-NLS-1$
+            return int.class;
+        }
+        if(simpleName.equalsIgnoreCase("double")) { //$NON-NLS-1$
+            return double.class;
+        }
+        if(simpleName.equalsIgnoreCase("long")) { //$NON-NLS-1$
+            return long.class;
+        }
+        if(simpleName.equalsIgnoreCase("boolean")) { //$NON-NLS-1$
+            return boolean.class;
+        }
+        return null;
     }
     /**
      * Methode reflexive pour Récupèrer les features en relation par

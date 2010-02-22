@@ -34,10 +34,18 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
  * 
  */
 
-class GM_Triangle extends GM_Polygon {
+public class GM_Triangle extends GM_Polygon {
 
 	protected GM_Position[] corners = new GM_Position[3];
-	public GM_Position getCorners (int i) {
+	public GM_Triangle(GM_LineString gmLineString) {
+	    if (gmLineString.sizeControlPoint() < 3) {
+	        return;
+	    }
+	    for (int i = 0; i < 3; i++) {
+	        this.corners[i] = new GM_Position(gmLineString.getControlPoint(i));
+	    }
+    }
+    public GM_Position getCorners (int i) {
 		return this.corners[i];
 	}
 	public GM_Position[] getCorners () {

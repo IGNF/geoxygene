@@ -129,7 +129,7 @@ public class GM_Solid extends GM_Primitive {
 	/**
 	 * Boundary auquel est lié le solide
 	 */
-	private GM_SolidBoundary boundary = null;
+	protected GM_SolidBoundary boundary = null;
 
 	/**
 	 * Constructeur à partir d'une liste de faces extérieures
