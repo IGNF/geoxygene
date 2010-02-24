@@ -135,8 +135,30 @@ public class MainFrame extends JFrame {
      * The default height of the frame.
      */
     private final int defaultFrameHeight = 800;
-
+    
     /**
+     * The previous opened directory.
+     */
+    private File previousDirectory = new File("D:/");
+    
+    /**
+     * Return the previous opened directory.
+     *
+     * @return the previous opened directory
+     */
+    public File getPreviousDirectory() {
+		return previousDirectory;
+	}
+    
+    /**
+	 * Affect the previous opened directory.
+	 * @param previousDirectory the previous opened directory
+	 */
+	public void setPreviousDirectory(File previousDirectory) {
+		this.previousDirectory = previousDirectory;
+	}
+
+	/**
      * Constructor using a title and an associated application.
      *
      * @param title
@@ -210,6 +232,7 @@ public class MainFrame extends JFrame {
                         choixFichierShape
                                 .setFileSelectionMode(JFileChooser.FILES_ONLY);
                         choixFichierShape.setMultiSelectionEnabled(false);
+                        choixFichierShape.setCurrentDirectory(previousDirectory);
                         JFrame frame = new JFrame();
                         frame.setVisible(true);
                         int returnVal = choixFichierShape.showOpenDialog(frame);
@@ -222,6 +245,10 @@ public class MainFrame extends JFrame {
                                         .getSelectedFile()
                                         .getAbsolutePath());
                             }
+                            setPreviousDirectory(
+                            		new File(choixFichierShape
+                            				.getSelectedFile()
+                            				.getAbsolutePath()));
                             String shapefileName = choixFichierShape
                                     .getSelectedFile().getAbsolutePath();
                             String populationName = shapefileName
@@ -306,6 +333,7 @@ public class MainFrame extends JFrame {
                         choixFichierGeoTiff
                                 .setFileSelectionMode(JFileChooser.FILES_ONLY);
                         choixFichierGeoTiff.setMultiSelectionEnabled(false);
+                        choixFichierGeoTiff.setCurrentDirectory(previousDirectory);
                         JFrame frame = new JFrame();
                         frame.setVisible(true);
                         int returnVal = choixFichierGeoTiff.showOpenDialog(frame);
@@ -318,6 +346,10 @@ public class MainFrame extends JFrame {
                                         .getSelectedFile()
                                         .getAbsolutePath());
                             }
+                            setPreviousDirectory(
+                            		new File(choixFichierGeoTiff
+                            				.getSelectedFile()
+                            				.getAbsolutePath()));
                             String shapefileName = choixFichierGeoTiff
                                     .getSelectedFile().getAbsolutePath();
                             String populationName = shapefileName
