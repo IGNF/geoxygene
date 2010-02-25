@@ -98,11 +98,10 @@
 				<complianceLevel>1.6</complianceLevel>
 				<target>1.6</target>
 				<includes>
-					<include>src/**/*.java</include>
-					<include>data/**/*.java</include>
+					<include>**/*.java</include>
 				</includes>
 				<excludes>
-					<exclude>src/fr/ign/cogit/geoxygene/datatools/oracle/*.java</exclude>
+					<exclude>fr/ign/cogit/geoxygene/datatools/oracle/*.java</exclude>
 				</excludes>
   			</configuration>
   		</plugin>
