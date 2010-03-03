@@ -26,12 +26,9 @@
 
 package fr.ign.cogit.geoxygene.style;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 import fr.ign.cogit.geoxygene.appli.Viewport;

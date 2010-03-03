@@ -203,8 +203,8 @@ public class LayerRenderer implements Renderer {
             */
             graphics.drawImage(this.getImage(), 0, 0, null);
         } else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("this.getImage() = null"); //$NON-NLS-1$
+            if (logger.isTraceEnabled()) {
+                logger.trace("this.getImage() = null"); //$NON-NLS-1$
             }
         }
     }

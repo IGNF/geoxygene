@@ -34,7 +34,7 @@ import java.util.List;
  *
  */
 public class Graphic {
-	
+
 	private List<ExternalGraphic> externalGraphics = new ArrayList<ExternalGraphic>();
 	/**
 	 * Renvoie la valeur de l'attribut externalGraphics.
