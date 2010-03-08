@@ -449,7 +449,7 @@ class Reader {
                     false);
             dbaseFileReader
             = new org.geotools.data.shapefile.dbf.DbaseFileReader(shpf, true,
-                    Charset.defaultCharset());
+                    Charset.forName("ISO-8859-1")); //$NON-NLS-1$
         } catch (FileNotFoundException e) {
             if (logger.isDebugEnabled()) {
                 logger.debug(I18N.getString(
