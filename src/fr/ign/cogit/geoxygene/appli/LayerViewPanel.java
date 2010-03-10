@@ -131,8 +131,10 @@ public class LayerViewPanel extends JPanel {
      *            feature to repaint
      */
     public final void repaint(final Layer layer, final FT_Feature feature) {
-        if (this.renderingManager != null) {
-            this.renderingManager.render(layer, feature);
+        if (layer.isVisible()) {
+            if (this.renderingManager != null) {
+                this.renderingManager.render(layer, feature);
+            }
         }
         superRepaint();
     }
@@ -146,8 +148,10 @@ public class LayerViewPanel extends JPanel {
      *            a geometry
      */
     public final void repaint(final Layer layer, final GM_Object geom) {
-        if (this.renderingManager != null) {
-            this.renderingManager.render(layer, geom);
+        if (layer.isVisible()) {
+            if (this.renderingManager != null) {
+                this.renderingManager.render(layer, geom);
+            }
         }
         superRepaint();
     }

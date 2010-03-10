@@ -225,8 +225,10 @@ public class RenderingManager {
         // start the new daemon
         this.daemon.start();
         // render all layers
-        for (Renderer renderer : this.rendererMap.values()) {
-            this.render(renderer);
+        for (LayerRenderer renderer : this.rendererMap.values()) {
+            if (renderer.getLayer().isVisible()) {
+                this.render(renderer);
+            }
         }
         this.render(this.selectionRenderer);
     }
@@ -288,7 +290,7 @@ public class RenderingManager {
     public final Collection<Layer> getLayers() {
         return this.rendererMap.keySet();
     }
-    
+
     public final Renderer getRenderer(Layer layer) {
         return this.rendererMap.get(layer);
     }
@@ -300,7 +302,9 @@ public class RenderingManager {
      */
     public final void copyTo(final Graphics2D destination) {
         for (Layer layer : this.rendererMap.keySet()) {
-            this.rendererMap.get(layer).copyTo(destination);
+            if (layer.isVisible()) {
+                this.rendererMap.get(layer).copyTo(destination);
+            }
         }
         this.selectionRenderer.copyTo(destination);
     }

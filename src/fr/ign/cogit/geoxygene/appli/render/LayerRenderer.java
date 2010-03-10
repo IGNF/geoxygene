@@ -70,6 +70,9 @@ public class LayerRenderer implements Renderer {
      * Layer to render.
      */
     private Layer layer = null;
+    public Layer getLayer() {
+        return this.layer;
+    }
     /**
      * Layer view panel.
      */
@@ -301,7 +304,7 @@ public class LayerRenderer implements Renderer {
                     if (this.isCancelled()) {
                         return;
                     }
-                    // creating a map between each rule and the 
+                    // creating a map between each rule and the
                     // corresponding features (filtered in)
                     Map<Rule, Set<FT_Feature>> filteredFeatures =
                         new HashMap<Rule, Set<FT_Feature>>();
@@ -445,12 +448,6 @@ public class LayerRenderer implements Renderer {
         if (theImage == null) {
             return;
         }
-        /*
-        if (logger.isTraceEnabled()) {
-            logger.trace("rendering feature  " + //$NON-NLS-1$
-                    feature);
-        }
-        */
         Graphics2D graphics = theImage.createGraphics();
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                     RenderingHints.VALUE_ANTIALIAS_ON);
