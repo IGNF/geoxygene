@@ -134,14 +134,15 @@ public class AdapterFactory  {
 			}
 			return factory.createGeometryCollection(geometries);
 		}
-        if (geom instanceof GM_Solid) {
-            GM_Solid solid = (GM_Solid) geom;
-            Geometry[] geometries = new Geometry[solid.sizeComplex()];
-            for (int index = 0 ; index < solid.sizeComplex() ; index++) {
-                geometries[index] = toGeometry(factory,solid.getListeFacettes().get(index));
-            }
-            return factory.createGeometryCollection(geometries);
-        }
+		if (geom instanceof GM_Solid) {
+			List<GM_OrientableSurface> lOS = ((GM_Solid)geom).getListeFacettes();
+			GM_MultiSurface<GM_OrientableSurface> multiSurface = new GM_MultiSurface(lOS);
+			Polygon[] polygons = new Polygon[multiSurface.size()];
+			for (int index = 0 ; index < multiSurface.size() ; index++) {
+				polygons[index] = (Polygon) toGeometry(factory,multiSurface.get(index));
+			}
+			return factory.createMultiPolygon(polygons);
+		}
 		throw new Exception(I18N.getString("AdapterFactory.Type")+geom.getClass()+I18N.getString("AdapterFactory.Unhandled")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 

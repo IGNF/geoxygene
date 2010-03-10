@@ -26,26 +26,28 @@
 
 package fr.ign.cogit.geoxygene.spatial.geomprim;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeSurface;
 
 /**
- * Représente un composant de GM_SolidBoundary. Un GM_Shell est un GM_CompositeSurface fermé.
- * TODO à implémenter.
+ * Représente un composant de GM_SolidBoundary. Un GM_Shell est un
+ * GM_CompositeSurface fermé. TODO à implémenter.
  * 
  * @author Thierry Badard
  * @author Arnaud Braun
  */
 
 public class GM_Shell extends GM_CompositeSurface {
-	
+
 	/**
-	 * Permet de créer un Shell à partir d'une liste de face
-	 * ATTENTION : Ne permet pas de vérifier qu'il s'agit d'un objet fermé
-	 * @param lOS la liste des facettes composant la surface
+	 * Permet de créer un Shell à partir d'une liste de face ATTENTION : Ne
+	 * permet pas de vérifier qu'il s'agit d'un objet fermé
+	 * 
+	 * @param lOS
+	 *            la liste des facettes composant la surface
 	 */
-	public GM_Shell(ArrayList<GM_OrientableSurface> lOS) {
+	public GM_Shell(List<GM_OrientableSurface> lOS) {
 		super();
 		this.setListeFaces(lOS);
 	}
@@ -54,21 +56,26 @@ public class GM_Shell extends GM_CompositeSurface {
 	 * TODO A implémenter
 	 */
 	@Override
-	public boolean isSimple() {return true;}
+	public boolean isSimple() {
+		return true;
+	}
 
 	/**
 	 * Renvoie la liste des facettes composant la surface
+	 * 
 	 * @return la liste des facettes composant la surface
 	 */
-	public ArrayList<GM_OrientableSurface> getlisteFaces() {
-		return (ArrayList<GM_OrientableSurface>) this.getGenerator();
+	public List<GM_OrientableSurface> getlisteFaces() {
+		return this.getGenerator();
 	}
 
 	/**
 	 * Renseigne la liste des facettes composant la surface
-	 * @param lOS la liste des facettes composant la surface
+	 * 
+	 * @param lOS
+	 *            la liste des facettes composant la surface
 	 */
-	private void setListeFaces(ArrayList<GM_OrientableSurface> lOS) {
+	private void setListeFaces(List<GM_OrientableSurface> lOS) {
 		this.generator.clear();
 		this.generator.addAll(lOS);
 	}

@@ -30,29 +30,38 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 /**
- * Classe pour le calcul avec des vecteurs (2D ou 3D).
- * Supporte la plupart des opérations classiques.
- * Les coordonnees des vecteurs sont stockees dans des DirectPosition.
- * Les vecteurs 2D ont NaN comme troisieme coordonnee.
+ * Classe pour le calcul avec des vecteurs (2D ou 3D). Supporte la plupart des
+ * opérations classiques. Les coordonnees des vecteurs sont stockees dans des
+ * DirectPosition. Les vecteurs 2D ont NaN comme troisieme coordonnee.
  * 
- * English: Class for computations with vectors (either 2D or 3D).
- * Coordinates are stored into DirectPosition. 2D vectors
- * are given Nan As third coordinate).
+ * English: Class for computations with vectors (either 2D or 3D). Coordinates
+ * are stored into DirectPosition. 2D vectors are given Nan As third
+ * coordinate).
  * 
- * @author  Mustière/Bonin
+ * @author Mustière/Bonin
  * @version 1.0
  */
 
 public class Vecteur {
 	protected DirectPosition coord = null;
-	public DirectPosition getCoord() { return this.coord; }
-	public void setCoord(DirectPosition coord) { this.coord = coord; }
 
-	/* Helpers pour la programmation : vecteurs nuls en 2D et 3D*/
-	public static final Vecteur vecteurNul2D = new Vecteur(new DirectPosition(0,0,Double.NaN));
-	public static final Vecteur vecteurNul3D = new Vecteur(new DirectPosition(0,0,0));
+	public DirectPosition getCoord() {
+		return this.coord;
+	}
 
-	public Vecteur() { this.coord = new DirectPosition(); }
+	public void setCoord(DirectPosition coord) {
+		this.coord = coord;
+	}
+
+	/* Helpers pour la programmation : vecteurs nuls en 2D et 3D */
+	public static final Vecteur vecteurNul2D = new Vecteur(new DirectPosition(
+			0, 0, Double.NaN));
+	public static final Vecteur vecteurNul3D = new Vecteur(new DirectPosition(
+			0, 0, 0));
+
+	public Vecteur() {
+		this.coord = new DirectPosition();
+	}
 
 	/** Initialise le vecteur 0 -> dp1 (a dp1) */
 	public Vecteur(DirectPosition dp1) {
@@ -61,132 +70,157 @@ public class Vecteur {
 
 	/** Initialise le vecteur dp1 -> dp2 (a dp2-dp1) */
 	public Vecteur(DirectPosition dp1, DirectPosition dp2) {
-		if ( !Double.isNaN(dp1.getZ()) && !Double.isNaN(dp2.getZ()) ) {
-			this.coord = new DirectPosition (dp2.getX()-dp1.getX(),
-					dp2.getY()-dp1.getY(),
-					dp2.getZ()-dp1.getZ());
-		}
-		else {
-			this.coord = new DirectPosition (dp2.getX()-dp1.getX(),
-					dp2.getY()-dp1.getY(),
-					Double.NaN);
+		if (!Double.isNaN(dp1.getZ()) && !Double.isNaN(dp2.getZ())) {
+			this.coord = new DirectPosition(dp2.getX() - dp1.getX(), dp2.getY()
+					- dp1.getY(), dp2.getZ() - dp1.getZ());
+		} else {
+			this.coord = new DirectPosition(dp2.getX() - dp1.getX(), dp2.getY()
+					- dp1.getY(), Double.NaN);
 		}
 	}
-
 
 	public Vecteur(double a, double b, double c) {
-		if ( c != 0 ) this.coord = new DirectPosition (a, b, c);
-		else this.coord = new DirectPosition (a, b, Double.NaN);
+		if (Double.isNaN(c)) {
+			this.coord = new DirectPosition(a, b, 0);
+		} else {
+			this.coord = new DirectPosition(a, b, c);
+		}
 	}
 
-	public double getX() { return this.coord.getX(); }
-	public double getY() { return this.coord.getY(); }
-	public double getZ() { return this.coord.getZ(); }
-	public void setX(double X) { this.coord.setX(X); }
-	public void setY(double Y) { this.coord.setY(Y); }
-	public void setZ(double Z) { this.coord.setZ(Z); }
+	public double getX() {
+		return this.coord.getX();
+	}
+
+	public double getY() {
+		return this.coord.getY();
+	}
+
+	public double getZ() {
+		return this.coord.getZ();
+	}
+
+	public void setX(double X) {
+		this.coord.setX(X);
+	}
+
+	public void setY(double Y) {
+		this.coord.setY(Y);
+	}
+
+	public void setZ(double Z) {
+		this.coord.setZ(Z);
+	}
 
 	/** Renvoie la norme de this */
 	public double norme() {
-		if ( !Double.isNaN(this.getZ()) ) return Math.sqrt(Math.pow(this.getX(),2) + Math.pow(this.getY(),2) + Math.pow(this.getZ(),2));
-		return Math.sqrt(Math.pow(this.getX(),2) + Math.pow(this.getY(),2));
+		if (!Double.isNaN(this.getZ()))
+			return Math.sqrt(Math.pow(this.getX(), 2)
+					+ Math.pow(this.getY(), 2) + Math.pow(this.getZ(), 2));
+		return Math.sqrt(Math.pow(this.getX(), 2) + Math.pow(this.getY(), 2));
 	}
 
 	/** Renvoie un NOUVEAU vecteur égal au vecteur normé porté par this */
 	public Vecteur vectNorme() {
 		double normev = this.norme();
-		if ( !Double.isNaN(this.getZ()) ) {
-			return new Vecteur(new DirectPosition(this.getX() / normev,
-					this.getY() / normev,
-					this.getZ() / normev));
+		if (!Double.isNaN(this.getZ())) {
+			return new Vecteur(new DirectPosition(this.getX() / normev, this
+					.getY()
+					/ normev, this.getZ() / normev));
 		}
-		return new Vecteur(new DirectPosition(this.getX() / normev, this.getY() / normev, Double.NaN));
+		return new Vecteur(new DirectPosition(this.getX() / normev, this.getY()
+				/ normev, Double.NaN));
 	}
 
-	/** Norme le vecteur this (MODIFIE le this)*/
+	/** Norme le vecteur this (MODIFIE le this) */
 	public void normalise() {
 		double normev = this.norme();
-		if ( !Double.isNaN(this.getZ()) ) {
+		if (!Double.isNaN(this.getZ())) {
 			this.setX((this.getX() / normev));
 			this.setY((this.getY() / normev));
 			this.setZ((this.getZ() / normev));
-		}
-		else {
+		} else {
 			this.setX((this.getX() / normev));
 			this.setY((this.getY() / normev));
 		}
 	}
 
-
 	/** Renvoie un NOUVEAU vecteur égal à (this + v1) */
 	public Vecteur ajoute(Vecteur v1) {
-		if ( !Double.isNaN(this.getZ()) && !Double.isNaN(v1.getZ()) ) {
-			return new Vecteur(new DirectPosition(this.getX() + v1.getX(),
-					this.getY() + v1.getY(),
-					this.getZ() + v1.getZ()));
+		if (!Double.isNaN(this.getZ()) && !Double.isNaN(v1.getZ())) {
+			return new Vecteur(new DirectPosition(this.getX() + v1.getX(), this
+					.getY()
+					+ v1.getY(), this.getZ() + v1.getZ()));
 		}
-		return new Vecteur(new DirectPosition(this.getX() + v1.getX(), this.getY() + v1.getY(), Double.NaN));
+		return new Vecteur(new DirectPosition(this.getX() + v1.getX(), this
+				.getY()
+				+ v1.getY(), Double.NaN));
 	}
 
 	/** Renvoie un NOUVEAU vecteur égal à (this - v1) */
 	public Vecteur soustrait(Vecteur v1) {
-		if ( !Double.isNaN(this.getZ()) && !Double.isNaN(v1.getZ()) ) {
-			return new Vecteur(new DirectPosition(this.getX() - v1.getX(),
-					this.getY() - v1.getY(),
-					this.getZ() - v1.getZ()));
+		if (!Double.isNaN(this.getZ()) && !Double.isNaN(v1.getZ())) {
+			return new Vecteur(new DirectPosition(this.getX() - v1.getX(), this
+					.getY()
+					- v1.getY(), this.getZ() - v1.getZ()));
 		}
-		return new Vecteur(new DirectPosition(this.getX() - v1.getX(), this.getY() - v1.getY(), Double.NaN));
+		return new Vecteur(new DirectPosition(this.getX() - v1.getX(), this
+				.getY()
+				- v1.getY(), Double.NaN));
 	}
 
 	/** Renvoie un NOUVEAU vecteur égal à (lambda.this) */
 	public Vecteur multConstante(double lambda) {
-		if ( !Double.isNaN(this.getZ()) ) {
-			return new Vecteur(new DirectPosition(lambda * this.getX(),
-					lambda * this.getY(),
-					lambda * this.getZ()));
+		if (!Double.isNaN(this.getZ())) {
+			return new Vecteur(new DirectPosition(lambda * this.getX(), lambda
+					* this.getY(), lambda * this.getZ()));
 		}
-		return new Vecteur(new DirectPosition(lambda * this.getX(), lambda * this.getY(), Double.NaN));
+		return new Vecteur(new DirectPosition(lambda * this.getX(), lambda
+				* this.getY(), Double.NaN));
 	}
 
 	/** Renvoie le point translaté de P par le vecteur this */
 	public DirectPosition translate(DirectPosition P) {
 		DirectPosition P2 = new DirectPosition();
-		P2.setX(P.getX()+this.getX());
-		P2.setY(P.getY()+this.getY());
-		if ( Double.isNaN(this.getZ()) || Double.isNaN(P.getZ()) ) P2.setZ(Double.NaN);
-		else P2.setZ(P.getZ()+this.getZ());
+		P2.setX(P.getX() + this.getX());
+		P2.setY(P.getY() + this.getY());
+		if (Double.isNaN(this.getZ()) || Double.isNaN(P.getZ()))
+			P2.setZ(Double.NaN);
+		else
+			P2.setZ(P.getZ() + this.getZ());
 		return P2;
 	}
 
 	/** Renvoie la ligne translatée de L par le vecteur this */
 	public GM_LineString translate(GM_LineString L) {
 		GM_LineString L2 = new GM_LineString();
-		for (int i=0;i<L.sizeControlPoint(); i++) {
+		for (int i = 0; i < L.sizeControlPoint(); i++) {
 			DirectPosition pt = L.getControlPoint(i);
 			L2.addControlPoint(translate(pt));
 		}
 		return L2;
 	}
 
-	/** Renvoie le produit vectoriel this^v1 ;
-	 * NB: le produit vectoriel renvoie toujours un vecteur 3D,
-	 * même à partir de vecteurs 2D */
+	/**
+	 * Renvoie le produit vectoriel this^v1 ; NB: le produit vectoriel renvoie
+	 * toujours un vecteur 3D, même à partir de vecteurs 2D
+	 */
 	public Vecteur prodVectoriel(Vecteur v1) {
-		if ( !Double.isNaN(this.getZ()) && !Double.isNaN(v1.getZ()) ) {
-			return new Vecteur(new DirectPosition
-					(this.getY() * v1.getZ() - this.getZ() * v1.getY(),
-							this.getZ() * v1.getX() - this.getX() * v1.getZ(),
-							this.getX() * v1.getY() - this.getY() * v1.getX()));
+		if (!Double.isNaN(this.getZ()) && !Double.isNaN(v1.getZ())) {
+			return new Vecteur(new DirectPosition(this.getY() * v1.getZ()
+					- this.getZ() * v1.getY(), this.getZ() * v1.getX()
+					- this.getX() * v1.getZ(), this.getX() * v1.getY()
+					- this.getY() * v1.getX()));
 		}
-		return new Vecteur(new DirectPosition(0, 0, this.getX() * v1.getY() - this.getY() * v1.getX()));
+		return new Vecteur(new DirectPosition(0, 0, this.getX() * v1.getY()
+				- this.getY() * v1.getX()));
 	}
 
 	/** Renvoie le produit scalaire this.v1 */
 	public double prodScalaire(Vecteur v1) {
-		if ( !Double.isNaN(this.getZ()) && !Double.isNaN(v1.getZ()) ) {
-			return (this.getX() * v1.getX() +
-					this.getY() * v1.getY() +
-					this.getZ() * v1.getZ());
+		if (!Double.isNaN(this.getZ()) && !Double.isNaN(v1.getZ())) {
+			return (this.getX() * v1.getX() + this.getY() * v1.getY() + this
+					.getZ()
+					* v1.getZ());
 
 		}
 		return (this.getX() * v1.getX() + this.getY() * v1.getY());
@@ -194,14 +228,15 @@ public class Vecteur {
 
 	/** Angle entre l'axe des X et le vecteur this projeté sur le plan XY */
 	public Angle direction() {
-		return new Angle(Math.atan2(this.getY(),this.getX()));
+		return new Angle(Math.atan2(this.getY(), this.getX()));
 	}
 
 	/** Angle entre this et v1 */
 	public Angle angleVecteur(Vecteur V1) {
 		double angle = 0;
-		angle = Math.acos(this.prodScalaire(V1)/(this.norme()*V1.norme()));
-		if(Double.isNaN(angle)) angle = 0;
+		angle = Math.acos(this.prodScalaire(V1) / (this.norme() * V1.norme()));
+		if (Double.isNaN(angle))
+			angle = 0;
 		return new Angle(angle);
 	}
 }

@@ -120,7 +120,7 @@ public abstract class FT_Feature implements Cloneable {
                         else fc.getSpatialIndex().update(this, 1);
                     }
                 }
-                if ((previousGeometry != null)&&((this.geom==null)||!previousGeometry.equals(this.geom))) fc.fireActionPerformed(new FeatureCollectionEvent(fc, this, FeatureCollectionEvent.Type.CHANGED,previousGeometry));
+                if ((previousGeometry != null)&&((this.geom==null)||!(previousGeometry == this.geom))) fc.fireActionPerformed(new FeatureCollectionEvent(fc, this, FeatureCollectionEvent.Type.CHANGED,previousGeometry));
             }
         }
     }

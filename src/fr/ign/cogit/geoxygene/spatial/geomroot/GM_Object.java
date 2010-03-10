@@ -24,6 +24,9 @@ package fr.ign.cogit.geoxygene.spatial.geomroot;
 
 import java.awt.Color;
 
+import org.apache.log4j.Logger;
+
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
@@ -67,6 +70,7 @@ import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
  *
  */
 abstract public class GM_Object implements Cloneable {
+    static Logger logger=Logger.getLogger(JtsAlgorithms.class.getName());
     /** Identifiant de l'objet géométrique, dans la table du SGBD.
      * Cet identifiant n'est pas spécifié dans la norme ISO.
      * Non utilise a ce jour. */
@@ -126,8 +130,26 @@ abstract public class GM_Object implements Cloneable {
     //}
 
     /** Dimension du système de coordonnées (1D, 2D ou 3D). */
-    //public int coordinateDimension() {
-    //}
+    public int coordinateDimension() {
+        DirectPositionList dplTemp = this.coord();
+        if(dplTemp == null || dplTemp.size() ==0) {
+            
+            logger.error(I18N.getString("JtsAlgorithms.CoordinateDimensionError")); //$NON-NLS-1$
+            return 0;
+        }
+        DirectPosition dp = dplTemp.get(0);
+        
+        if(Double.isNaN(dp.getY())) {
+            return 1;
+            
+        }
+        
+        if(Double.isNaN(dp.getZ())) {
+            return 2;
+            
+        }
+        return 3;
+    }
 
     /////////////////////////////////////////////////////////////////////
     // diverses methodes utiles /////////////////////////////////////////

@@ -26,6 +26,7 @@
 
 package fr.ign.cogit.geoxygene.spatial.geomprim;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -135,7 +136,7 @@ public class GM_Solid extends GM_Primitive {
 	 * Constructeur à partir d'une liste de faces extérieures
 	 * @param lOS une liste de faces extérieures
 	 */
-	public GM_Solid(ArrayList<GM_OrientableSurface> lOS) {
+	public GM_Solid(List<GM_OrientableSurface> lOS) {
 
 		this.boundary = new GM_SolidBoundary(lOS);
 
@@ -146,7 +147,7 @@ public class GM_Solid extends GM_Primitive {
 	 * @param multiSurf multisurface
 	 */
 	public GM_Solid(GM_MultiSurface<? extends GM_OrientableSurface> multiSurf) {
-		ArrayList<GM_OrientableSurface> lOS = new ArrayList<GM_OrientableSurface>();
+		List<GM_OrientableSurface> lOS = new ArrayList<GM_OrientableSurface>();
 		List<? extends GM_OrientableSurface> lGMObj = multiSurf.getList();
 		int nbElements = lGMObj.size();
 		for (int i = 0; i < nbElements; i++) lOS.add(lGMObj.get(i));
@@ -158,7 +159,7 @@ public class GM_Solid extends GM_Primitive {
 	 * 
 	 * @return la liste des faces extérieures d'un solide
 	 */
-	public ArrayList<GM_OrientableSurface> getListeFacettes() {
+	public List<GM_OrientableSurface> getListeFacettes() {
 		return this.boundary().exterior.getlisteFaces();
 	}
 	
@@ -169,7 +170,7 @@ public class GM_Solid extends GM_Primitive {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		
-		ArrayList<GM_OrientableSurface> lOS =  this.getListeFacettes();
+		List<GM_OrientableSurface> lOS =  this.getListeFacettes();
 		int nbElement =lOS.size();
 		sb.append("Solid("); //$NON-NLS-1$
 		for(int i=0;i<nbElement;i++) {

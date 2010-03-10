@@ -26,33 +26,62 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
-/** NON IMPLEMENTE, A FAIRE.
- * Triangle. résultat d'un constructeur du type : GM_Polygon(GM_LineString(<P1,P2,P3,P1>))
+import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
+
+/**
  * 
- * @author Thierry Badard & Arnaud Braun
+ * @author Thierry Badard & Arnaud Braun & Brasebin Mickael
  * @version 1.0
  * 
  */
 
 public class GM_Triangle extends GM_Polygon {
 
-	protected GM_Position[] corners = new GM_Position[3];
-	public GM_Triangle(GM_LineString gmLineString) {
-	    if (gmLineString.sizeControlPoint() < 3) {
-	        return;
-	    }
-	    for (int i = 0; i < 3; i++) {
-	        this.corners[i] = new GM_Position(gmLineString.getControlPoint(i));
-	    }
-    }
-    public GM_Position getCorners (int i) {
-		return this.corners[i];
+
+	public DirectPosition getCorners(int i) {
+		DirectPositionList dpl = this.coord();
+		return dpl.get(i);
 	}
-	public GM_Position[] getCorners () {
-		return this.corners;
+
+	public DirectPositionList getCorners() {
+		return this.coord();
 	}
-	/*   public int cardCorners () {
-        return this.corners.length;
-    }*/
+
+	@Override
+	public double area() {
+
+		DirectPositionList dpl = this.coord();
+
+		Vecteur v1 = new Vecteur(dpl.get(0), dpl.get(1));
+		Vecteur v2 = new Vecteur(dpl.get(0), dpl.get(2));
+
+		return Math.abs(0.5 * v1.prodVectoriel(v2).norme());
+
+	}
+
+	public int cardCorners() {
+		DirectPositionList dpl = this.coord();
+		return dpl.size() - 1;// car les géométries sont fermées
+	}
+
+	public GM_Triangle(DirectPosition dp1,DirectPosition dp2, DirectPosition dp3) {
+		super();
+		
+		DirectPositionList dpl = new DirectPositionList();
+		dpl.add(dp1);
+		dpl.add(dp2);
+		dpl.add(dp3);
+		dpl.add(dp1);
+		
+		this.patch.add(this);
+		this.interpolation = "planar"; //$NON-NLS-1$
+		GM_Ring ring = new GM_Ring(new GM_LineString(dpl));
+		this.exterior = ring;
+
+	}
+	public GM_Triangle(GM_LineString ls) {
+		super(ls);
+	}
 
 }
