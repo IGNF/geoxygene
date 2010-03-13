@@ -103,7 +103,7 @@ public class DefaultFeature extends FT_Feature {
 			if ((tabNoms!=null)&&(tabNoms[0]!=null)&&(tabNoms[0].equals(nom))) return this.getAttribute(key.intValue());
 		}
 		if (getLogger().isDebugEnabled()) {
-    getLogger().warn("!!! le nom '"+nom+"' ne correspond pas à un attribut de ce feature !!!");  //$NON-NLS-1$//$NON-NLS-2$
+		    getLogger().warn("!!! le nom '"+nom+"' ne correspond pas à un attribut de ce feature !!!");  //$NON-NLS-1$//$NON-NLS-2$
 		}
 		return null;
 	}

@@ -1067,7 +1067,7 @@ public class GeometryToolBar extends JToolBar {
             newSurface.add(newPoly);
             FT_Feature newFeature = new DefaultFeature(newSurface);
             /**
-             * TODO A v�rifier..;
+             * TODO A vérifier..;
              */
             newFeature.setFeatureType(features.getFeatureType());
             features.add(newFeature);

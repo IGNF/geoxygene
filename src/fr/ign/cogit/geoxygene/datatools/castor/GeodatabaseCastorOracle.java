@@ -77,15 +77,15 @@ public class GeodatabaseCastorOracle/* implements Geodatabase */{
 		try {
 			initWriter(writer);
 			initEnv();
-			if (writer != null) writer.println("Convertisseur de g?om?trie pour Oracle initialis?.");
+			if (writer != null) writer.println("Convertisseur de g?om?trie pour Oracle initialisé.");
 			initJDO(_databaseName, writer);
-			if (writer != null) writer.println("Moteur JDO de Castor initialis?.");
+			if (writer != null) writer.println("Moteur JDO de Castor initialisé.");
 			initDatabase();
-			if (writer != null) writer.println("Geodatabase initialis?e.");
+			if (writer != null) writer.println("Geodatabase initialisée.");
 			initConnection();
-			if (writer != null) writer.println("Connection JDBC initialis?e.");
+			if (writer != null) writer.println("Connection JDBC initialisée.");
 			initMetadata();
-			if (writer != null) writer.println("M?tadonn?es initialis?es.");
+			if (writer != null) writer.println("M?tadonn?es initialisées.");
 		} catch (Exception e) {this._writer.println(e.getMessage());}
 	}
 
@@ -94,7 +94,7 @@ public class GeodatabaseCastorOracle/* implements Geodatabase */{
 		this(null);
 	}
 
-	/** Constructeur sans initialiser la Geodatabase si le boolean en param?tre vaut false.
+	/** Constructeur sans initialiser la Geodatabase si le boolean en paramètre vaut false.
         Utilise uniquement dans EasyLoader pour creer le fichier de mapping. */
 	public GeodatabaseCastorOracle(boolean Castor) {
 		try {
@@ -712,7 +712,7 @@ public class GeodatabaseCastorOracle/* implements Geodatabase */{
     }
 
    /** Renvoie l'identifiant minimum de la classe theClass.
-       ATTENTION : La classe pass?e en param?tre doit avoir un champ "id" de type int (marche pour les FT_Feature).
+       ATTENTION : La classe pass?e en paramètre doit avoir un champ "id" de type int (marche pour les FT_Feature).
        A appeler ? l'int?rieur d'une transaction ouverte. */
 	/*   public int minId(Class theClass)  {
         BigDecimal nn = null;

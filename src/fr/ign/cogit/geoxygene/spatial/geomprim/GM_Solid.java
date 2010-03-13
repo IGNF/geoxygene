@@ -156,7 +156,7 @@ public class GM_Solid extends GM_Primitive {
 
 	/**
 	 * Renvoie la liste des faces extérieures d'un solide
-	 * 
+	 *
 	 * @return la liste des faces extérieures d'un solide
 	 */
 	public List<GM_OrientableSurface> getListeFacettes() {
@@ -174,8 +174,6 @@ public class GM_Solid extends GM_Primitive {
 		int nbElement =lOS.size();
 		sb.append("Solid("); //$NON-NLS-1$
 		for(int i=0;i<nbElement;i++) {
-			
-			
 			sb.append(lOS.get(i).toString());
 			sb.append("\n"); //$NON-NLS-1$
 		}
