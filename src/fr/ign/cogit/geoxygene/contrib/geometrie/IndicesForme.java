@@ -73,13 +73,13 @@ public abstract class IndicesForme {
 		return perimetre/2*(Math.sqrt(Math.PI*surface));
 	}
 
-	/** Diamêtre d'une surface: plus grande distance entre 2 points de la
+	/** Diamètre d'une surface: plus grande distance entre 2 points de la
 	 * frontière de la surface considérée.
 	 * 
 	 * English: diameter of a surface
 	 * 
 	 * @param A GM_Object
-	 * @return -1 si A n'est pas une surface, le diamêtre sinon
+	 * @return -1 si A n'est pas une surface, le diamètre sinon
 	 */
 	public static double diametreSurface(GM_Object A) {
 		if (A.area()==0) return -1;

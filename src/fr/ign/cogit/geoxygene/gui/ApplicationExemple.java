@@ -71,7 +71,7 @@ public class ApplicationExemple {
 		fr.getMenu().add(menuChargement,0);
 
 		/**
-		 * Ajout d'un menu pour éditer la làgende de l'affichage
+		 * Ajout d'un menu pour éditer la légende de l'affichage
 		 */
 		JMenu menu = new JMenu("Légende");
 		JMenuItem menuItem = new JMenuItem("Editeur de SLD");

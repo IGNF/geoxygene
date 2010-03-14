@@ -88,7 +88,7 @@ public class StringOperation {
 	Result.add( car );            /* '\u00DC'   à   alt-0220  */
 	car = new java.lang.String("Y"); //$NON-NLS-1$
 	Result.add( car );            /* '\u00DD'   à   alt-0221  */
-	car = new java.lang.String("�"); //$NON-NLS-1$
+	car = new java.lang.String("Þ"); //$NON-NLS-1$
 	Result.add( car );            /* '\u00DE'   à   alt-0222  */
 	car = new java.lang.String("B"); //$NON-NLS-1$
 	Result.add( car );            /* '\u00DF'   à   alt-0223  */
@@ -134,7 +134,7 @@ public class StringOperation {
 	Result.add( car );            /* '\u00FC'   à   alt-0252  */
 	car = new java.lang.String("y"); //$NON-NLS-1$
 	Result.add( car );            /* '\u00FD'   à   alt-0253  */
-	car = new java.lang.String("�"); //$NON-NLS-1$
+	car = new java.lang.String("þ"); //$NON-NLS-1$
 	Result.add( car );            /* '\u00FE'   à   alt-0254  */
 	car = new java.lang.String("y"); //$NON-NLS-1$
 	Result.add( car );            /* '\u00FF'   à   alt-0255  */
