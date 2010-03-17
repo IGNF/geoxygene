@@ -156,6 +156,10 @@
   		<name>Apache Releases Repository</name>
   		<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/apache-releases</url>
   	</repository>
+  	<repository>
+			<id>Cemagref</id>
+			<url>http://trac.clermont.cemagref.fr/nexus/content/groups/public/</url>
+	</repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
@@ -306,6 +310,11 @@
     	<artifactId>jai_imageio</artifactId>
     	<version>1.1</version>
 	</dependency>
+	  	  	<dependency>
+  	  	  	  <groupId>java3d</groupId>
+  <artifactId>vecmath</artifactId>
+  <version>1.5.2</version>
+  	  	</dependency>
   </dependencies>
   <reporting>
   	<outputDirectory>target/reports</outputDirectory>
