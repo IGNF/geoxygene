@@ -139,7 +139,7 @@ public class MainFrame extends JFrame {
     /**
      * The previous opened directory.
      */
-    private File previousDirectory = new File("D:/");
+    private File previousDirectory = new File(""); //$NON-NLS-1$
     
     /**
      * Return the previous opened directory.
@@ -147,7 +147,7 @@ public class MainFrame extends JFrame {
      * @return the previous opened directory
      */
     public File getPreviousDirectory() {
-		return previousDirectory;
+		return this.previousDirectory;
 	}
     
     /**
@@ -232,7 +232,8 @@ public class MainFrame extends JFrame {
                         choixFichierShape
                                 .setFileSelectionMode(JFileChooser.FILES_ONLY);
                         choixFichierShape.setMultiSelectionEnabled(false);
-                        choixFichierShape.setCurrentDirectory(previousDirectory);
+                        choixFichierShape.setCurrentDirectory(
+                                getPreviousDirectory());
                         JFrame frame = new JFrame();
                         frame.setVisible(true);
                         int returnVal = choixFichierShape.showOpenDialog(frame);
@@ -333,7 +334,8 @@ public class MainFrame extends JFrame {
                         choixFichierGeoTiff
                                 .setFileSelectionMode(JFileChooser.FILES_ONLY);
                         choixFichierGeoTiff.setMultiSelectionEnabled(false);
-                        choixFichierGeoTiff.setCurrentDirectory(previousDirectory);
+                        choixFichierGeoTiff.setCurrentDirectory(
+                                getPreviousDirectory());
                         JFrame frame = new JFrame();
                         frame.setVisible(true);
                         int returnVal = choixFichierGeoTiff.showOpenDialog(frame);

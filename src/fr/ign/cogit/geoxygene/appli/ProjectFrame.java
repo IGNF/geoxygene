@@ -135,6 +135,7 @@ public class ProjectFrame extends JInternalFrame implements
         this.splitPane
                 .setDividerLocation(ProjectFrame.DEFAULT_DIVIDER_LOCATION);
         this.splitPane.setOneTouchExpandable(true);
+        this.pack();
     }
 
     /**

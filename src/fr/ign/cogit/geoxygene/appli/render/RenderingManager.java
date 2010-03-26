@@ -251,6 +251,19 @@ public class RenderingManager {
     }
 
     /**
+     * Remove a layer from the manager.
+     * @param layer the layer to remove
+     * @see Layer
+     * @see LayerRenderer
+     */
+    public final void removeLayer(final Layer layer) {
+        if (this.rendererMap.get(layer) == null) {
+            return;
+        }
+        this.rendererMap.remove(layer);
+    }
+
+    /**
      * Render a layer using the given renderer.
      * @param renderer the renderer to run
      * @see LayerRenderer
