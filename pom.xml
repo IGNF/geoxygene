@@ -160,6 +160,11 @@
 			<id>Cemagref</id>
 			<url>http://trac.clermont.cemagref.fr/nexus/content/groups/public/</url>
 	</repository>
+  	<repository>
+  		<id>Cogit-releases</id>
+  		<name>Cogit-releases Repository</name>
+  		<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/releases</url>
+  	</repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
@@ -183,8 +188,7 @@
   		<groupId>org.apache</groupId>
   		<artifactId>ojb</artifactId>
   		<version>1.0.rc6</version>
-  		<scope>system</scope>
-  		<systemPath>${basedir}/lib/ojb-1.0.rc6.jar</systemPath>
+  		<classifier>COGIT</classifier>
   	</dependency>
   	<dependency>
   		<groupId>org.postgis</groupId>
@@ -195,8 +199,6 @@
   		<groupId>jama</groupId>
   		<artifactId>jama</artifactId>
   		<version>1.0.2</version>
-  		<scope>system</scope>
-  		<systemPath>${basedir}/lib/Jama-1.0.2.jar</systemPath>
   	</dependency>
   	<dependency>
   		<groupId>org.hibernate</groupId>
@@ -251,9 +253,8 @@
   	<dependency>
   		<groupId>uk.ac.leeds.ccg</groupId>
   		<artifactId>geotools</artifactId>
-  		<version>1</version>
-  		<scope>system</scope>
-  		<systemPath>${basedir}/lib/geotools1-cogit.jar</systemPath>
+  		<version>1.0</version>
+  		<classifier>COGIT</classifier>
   	</dependency>
   	<dependency>
   		<groupId>com.thoughtworks.xstream</groupId>
@@ -291,6 +292,11 @@
   		<version>2.5.4</version>
   	</dependency>
   	<dependency>
+  		<groupId>org.geotools</groupId>
+  		<artifactId>gt-arcgrid</artifactId>
+  		<version>2.5.4</version>
+  	</dependency>
+   	<dependency>
   		<groupId>org.geotools</groupId>
   		<artifactId>gt-metadata</artifactId>
   		<version>2.5.4</version>
