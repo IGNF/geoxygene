@@ -34,6 +34,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
+import org.apache.batik.gvt.GraphicsNode;
+
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
@@ -149,8 +151,15 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
         float size = graphic.getSize();
         graphics.setClip(shape);
         for (ExternalGraphic external : graphic.getExternalGraphics()) {
-            Image image = external.getOnlineResource();
-            this.graphicFillPolygon(shape, image, size, graphics);
+            if (external.getFormat().contains("png")) { //$NON-NLS-1$
+                Image image = external.getOnlineResource();
+                this.graphicFillPolygon(shape, image, size, graphics);
+            } else {
+                if (external.getFormat().contains("svg")) { //$NON-NLS-1$
+                    GraphicsNode node = external.getGraphicsNode();
+                    this.graphicFillPolygon(shape, node, size, graphics);
+                }
+            }
             return;
         }
         List<Shape> shapes = new ArrayList<Shape>();
@@ -197,6 +206,29 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
                         j * size + shape.getBounds2D().getMinY());
                 transform.concatenate(scaleTransform);
                 graphics.drawImage(image, transform, null);
+            }
+        }
+    }
+
+    private void graphicFillPolygon(Shape shape, GraphicsNode node,
+            float size, Graphics2D graphics) {
+        double width = shape.getBounds2D().getWidth();
+        double height = shape.getBounds2D().getHeight();
+        double shapeHeight = size;
+        double factor = shapeHeight / node.getBounds().getHeight();
+        double shapeWidth = node.getBounds().getWidth() * factor;
+        int xSize = (int) Math.ceil(width / shapeWidth);
+        int ySize = (int) Math.ceil(height / shapeHeight);
+        AffineTransform scaleTransform = AffineTransform.getScaleInstance(factor, factor);
+        for (int i = 0; i < xSize; i++) {
+            for (int j = 0; j < ySize; j++) {
+                AffineTransform transform = AffineTransform.
+                getTranslateInstance(
+                        i * size + shape.getBounds2D().getMinX(),
+                        j * size + shape.getBounds2D().getMinY());
+                transform.concatenate(scaleTransform);
+                node.setTransform(transform);
+                node.paint(graphics);
             }
         }
     }

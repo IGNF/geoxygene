@@ -40,7 +40,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
  * 
  */
 
-abstract public class GM_SurfacePatch   extends GM_Surface
+abstract public class GM_SurfacePatch extends GM_Surface
 /*implements GM_GenericSurface*/ {
 
 

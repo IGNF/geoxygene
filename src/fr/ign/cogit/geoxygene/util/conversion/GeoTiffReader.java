@@ -14,6 +14,11 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.DataSourceException;
 import org.opengis.geometry.Envelope;
 
+/**
+ * GeoTiff reader.
+ * @author Julien Perret
+ *
+ */
 public class GeoTiffReader {
     public static BufferedImage loadGeoTiffImage(String fileName,
             double[][] range) {

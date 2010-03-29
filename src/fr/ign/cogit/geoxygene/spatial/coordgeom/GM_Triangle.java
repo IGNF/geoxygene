@@ -26,8 +26,9 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
+import java.util.Arrays;
+
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 
 /**
  * 
@@ -66,19 +67,7 @@ public class GM_Triangle extends GM_Polygon {
 	}
 
 	public GM_Triangle(DirectPosition dp1,DirectPosition dp2, DirectPosition dp3) {
-		super();
-		
-		DirectPositionList dpl = new DirectPositionList();
-		dpl.add(dp1);
-		dpl.add(dp2);
-		dpl.add(dp3);
-		dpl.add(dp1);
-		
-		this.patch.add(this);
-		this.interpolation = "planar"; //$NON-NLS-1$
-		GM_Ring ring = new GM_Ring(new GM_LineString(dpl));
-		this.exterior = ring;
-
+		this(new GM_LineString(new DirectPositionList(Arrays.asList(dp1, dp2, dp3, dp1))));
 	}
 	public GM_Triangle(GM_LineString ls) {
 		super(ls);

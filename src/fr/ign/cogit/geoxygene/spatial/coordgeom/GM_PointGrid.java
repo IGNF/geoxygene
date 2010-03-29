@@ -26,27 +26,47 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
-/** NON UTILISE, A FAIRE.
+/**
  * Grille de points.
- * 
+ * <p>
+ * Point Grid.
+ * TODO see other uses
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
- * 
  */
-class GM_PointGrid
-{
+public class GM_PointGrid {
 	/**
 	 * Les lignes de self (liste de listes).
 	 */
-	protected List<DirectPositionList> row;
+	private List<DirectPositionList> row = new ArrayList<DirectPositionList>();
+	/**
+	 * Get row i.
+	 * <p>
+	 * Récupère la ligne i.
+	 * @param i index of the row
+	 * @return row with the given index
+	 */
 	public DirectPositionList getRow (int i) {
 		return this.row.get(i);
 	}
+	/**
+	 * Number of rows.
+	 * <p>
+	 * Nombre de lignes
+	 * @return
+	 */
 	public int cardRow () {
 		return this.row.size();
 	}
 
+	/**
+	 * Add a new Row.
+	 * @param newRow the new row to add to the grid
+	 */
+	public void addRow(DirectPositionList newRow) {
+	    this.row.add(newRow);
+	}
 }

@@ -51,6 +51,7 @@ import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
+import fr.ign.cogit.geoxygene.util.conversion.ArcGridReader;
 import fr.ign.cogit.geoxygene.util.conversion.GeoTiffReader;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
@@ -380,6 +381,98 @@ public class MainFrame extends JFrame {
                         }
                     }
                 });
+        JMenuItem openArcGridMenuItem = new JMenuItem("Open ArcGrid file"); //$NON-NLS-1$
+        openArcGridMenuItem
+                .addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(final ActionEvent e) {
+                        ProjectFrame projectFrame = (ProjectFrame)
+                            MainFrame.this.getDesktopPane().getSelectedFrame();
+                        if (projectFrame == null) {
+                            if (MainFrame.this.getDesktopPane()
+                                    .getAllFrames().length != 0) {
+                                // TODO ask the user in which frame (s)he
+                                // wants to load into?
+                                projectFrame = (ProjectFrame) MainFrame.this
+                                        .getDesktopPane().getAllFrames()[0];
+                            } else {
+                                // TODO create a new project frame?
+                                getLogger().info(I18N.getString(
+                                 "MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
+                                return;
+                            }
+                        }
+                        JFileChooser choixFichierArcGrid = new JFileChooser();
+                        /*
+                         * crée un filtre qui n'accepte
+                         * que les fichier GeoTiff ou les répertoires
+                         */
+                        choixFichierArcGrid.setFileFilter(new FileFilter() {
+                            @Override
+                            public boolean accept(final File f) {
+                                return (f.isFile()
+                                        && (f.getAbsolutePath()
+                                                .endsWith(".asc") //$NON-NLS-1$
+                                                ||
+                                                f.getAbsolutePath()
+                                                .endsWith(".ASC") //$NON-NLS-1$
+                                                )
+                                                || f.isDirectory());
+                            }
+                            @Override
+                            public String getDescription() {
+                                return "Arc/Info ASCII Grid"; //$NON-NLS-1$
+                            }
+                        });
+                        choixFichierArcGrid
+                                .setFileSelectionMode(JFileChooser.FILES_ONLY);
+                        choixFichierArcGrid.setMultiSelectionEnabled(false);
+                        choixFichierArcGrid.setCurrentDirectory(
+                                getPreviousDirectory());
+                        JFrame frame = new JFrame();
+                        frame.setVisible(true);
+                        int returnVal = choixFichierArcGrid.showOpenDialog(frame);
+                        frame.dispose();
+                        if (returnVal == JFileChooser.APPROVE_OPTION) {
+                            if (getLogger().isDebugEnabled()) {
+                                getLogger().debug(I18N.getString(
+                                    "MainFrame.FileChosenDebug" //$NON-NLS-1$
+                                        ) + choixFichierArcGrid
+                                        .getSelectedFile()
+                                        .getAbsolutePath());
+                            }
+                            setPreviousDirectory(
+                                    new File(choixFichierArcGrid
+                                            .getSelectedFile()
+                                            .getAbsolutePath()));
+                            String shapefileName = choixFichierArcGrid
+                                    .getSelectedFile().getAbsolutePath();
+                            String populationName = shapefileName
+                                    .substring(
+                                            shapefileName.
+                                            lastIndexOf("/") + 1, //$NON-NLS-1$
+                                            shapefileName.
+                                            lastIndexOf(".")); //$NON-NLS-1$
+                            double[][] range = new double[2][2];
+                            BufferedImage grid =
+                                ArcGridReader.loadAsc(shapefileName, range);
+                            //projectFrame.addImage(populationName, grid, range);
+                            projectFrame.addGrid(populationName, grid, range);
+                            if (projectFrame.getLayers().size() == 1) {
+                                try {
+                                    projectFrame.getLayerViewPanel()
+                                    .getViewport().zoom(
+                                            new GM_Envelope(
+                                                    range[0][0],
+                                                    range[0][1],
+                                                    range[1][0],
+                                                    range[1][1]));
+                                } catch (NoninvertibleTransformException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                });
         JMenuItem exitMenuItem = new JMenuItem(I18N
                 .getString("MainFrame.Exit")); //$NON-NLS-1$
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -390,6 +483,7 @@ public class MainFrame extends JFrame {
         });
         fileMenu.add(openShapefileMenuItem);
         fileMenu.add(openGeoTiffMenuItem);
+        fileMenu.add(openArcGridMenuItem);
         fileMenu.addSeparator();
         fileMenu.add(exitMenuItem);
         this.menuBar.setFont(this.application.getFont());

@@ -153,14 +153,34 @@ public class StyledLayerDescriptor {
     public Layer createLayer(String layerName,
             Class<? extends GM_Object> geometryType) {
         return this.createLayer(layerName, geometryType, new Color((float) Math
-                .random(), (float) Math.random(), (float) Math.random(), 0.5f));
+                .random(), (float) Math.random(), (float) Math.random(), 0f));
     }
 
     /**
-     * @param layer
+     * Add a layer at the end of the sld.
+     * @param layer the new layer
      */
     public void add(Layer layer) {
         this.layers.add(layer);
+        this.fireActionPerformed(new ChangeEvent(this));
+    }
+
+    /**
+     * Add a layer at position i of the sld.
+     * @param i the position of the new layer
+     * @param layer the new layer
+     */
+    public void add(int i, Layer layer) {
+        this.layers.add(i, layer);
+        this.fireActionPerformed(new ChangeEvent(this));
+    }
+
+    /**
+     * Remove a layer from the sld.
+     * @param layer the layer to remove
+     */
+    public void remove(Layer layer) {
+        this.layers.remove(layer);
         this.fireActionPerformed(new ChangeEvent(this));
     }
 
@@ -360,7 +380,7 @@ public class StyledLayerDescriptor {
     public Layer createLayerRandomColor(String layerName,
             Class<? extends GM_Object> geometryType) {
         return createLayer(layerName, geometryType, new Color((float) Math
-                .random(), (float) Math.random(), (float) Math.random(), 0.5f));
+                .random(), (float) Math.random(), (float) Math.random(), 0f));
     }
 
     /**

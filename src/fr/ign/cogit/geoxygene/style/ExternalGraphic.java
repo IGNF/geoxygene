@@ -28,9 +28,20 @@ package fr.ign.cogit.geoxygene.style;
 
 import java.awt.Image;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
+
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.DocumentLoader;
+import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.UserAgent;
+import org.apache.batik.bridge.UserAgentAdapter;
+import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.util.XMLResourceDescriptor;
+import org.w3c.dom.svg.SVGDocument;
 
 /**
  * @author Julien Perret
@@ -68,16 +79,38 @@ public class ExternalGraphic {
 	 * @return la valeur de l'attribut onlineResource
 	 */
 	public Image getOnlineResource() {
-		if (this.onlineResource==null)
-			try {this.onlineResource=ImageIO.read(new URL(this.href));}
-			catch (IOException e) {e.printStackTrace();}
+		if (this.onlineResource == null) {
+            try {
+                this.onlineResource = ImageIO.read(new URL(this.href));
+            } catch (Exception e) {e.printStackTrace();}
+		}
 		return this.onlineResource;
 	}
 
+	public GraphicsNode getGraphicsNode() {
+	    try {
+	        String xmlParser = XMLResourceDescriptor.getXMLParserClassName();
+	        SAXSVGDocumentFactory df = new SAXSVGDocumentFactory(xmlParser);
+	        SVGDocument doc = df.createSVGDocument(new URL(this.href).toString());
+	        UserAgent userAgent = new UserAgentAdapter();
+	        DocumentLoader loader = new DocumentLoader(userAgent);
+	        BridgeContext ctx = new BridgeContext(userAgent, loader);
+	        ctx.setDynamicState(BridgeContext.DYNAMIC);
+	        GVTBuilder builder = new GVTBuilder();
+	        GraphicsNode rootGN = builder.build(ctx, doc);
+	        return rootGN;
+	    } catch (MalformedURLException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	    } catch (IOException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
 	/**
 	 * Affecte la valeur de l'attribut onlineResource.
 	 * @param onlineResource l'attribut onlineResource à affecter
 	 */
 	public void setOnlineResource(Image onlineResource) {this.onlineResource = onlineResource;}
-
 }

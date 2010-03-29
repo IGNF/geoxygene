@@ -34,12 +34,29 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
  * 
  */
 
-class GM_GriddedSurface extends GM_ParametricCurveSurface {
+public class GM_GriddedSurface extends GM_ParametricCurveSurface {
+
+    public GM_GriddedSurface() {
+        super();
+    }
+    public GM_GriddedSurface(GM_PointGrid pointGrid) {
+        super();
+        this.controlPoint = pointGrid;
+    }
+    @Override
+    public DirectPositionList coord ()  {
+        DirectPositionList coord = new DirectPositionList();
+        int numberOfRows = this.controlPoint.cardRow();
+        for (int row = 0; row < numberOfRows; row++) {
+            coord.addAll(this.controlPoint.getRow(row));
+        }
+        return coord;
+    }
 
 	/**
 	 * Tableau à deux dimension de points constituant la grille.
 	 */
-	protected GM_PointGrid controlPoint;
+	private GM_PointGrid controlPoint;
 	public GM_PointGrid getControlPoint () {
 		return this.controlPoint;
 	}
@@ -47,17 +64,21 @@ class GM_GriddedSurface extends GM_ParametricCurveSurface {
 	/**
 	 * Nombre de lignes dans la grille.
 	 */
-	private int rows;
 	protected int getRows () {
-		return this.rows;
+		return this.controlPoint.cardRow();
 	}
 
 	/**
 	 * Nombre de colonnes dans la grille.
+	 * On prend l'hypothèse que toutes les lignes ont le même nombre de colonnes.
+	 * <p>
+	 * Number of columns in the grid.
+	 * We assume that all rows have the same number of columns.
 	 */
-	private int columns;
 	protected int getColumns () {
-		return this.columns;
+	    if (this.getRows() > 0) {
+	        return this.controlPoint.getRow(0).size();
+	    }
+		return 0;
 	}
-
 }

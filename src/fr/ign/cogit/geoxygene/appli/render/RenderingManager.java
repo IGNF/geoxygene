@@ -225,9 +225,10 @@ public class RenderingManager {
         // start the new daemon
         this.daemon.start();
         // render all layers
-        for (LayerRenderer renderer : this.rendererMap.values()) {
-            if (renderer.getLayer().isVisible()) {
-                this.render(renderer);
+        for(Layer layer : this.getLayerViewPanel().getProjectFrame().
+                getSld().getLayers()) {
+            if (layer.isVisible()) {
+                this.render(this.rendererMap.get(layer));
             }
         }
         this.render(this.selectionRenderer);
@@ -314,7 +315,8 @@ public class RenderingManager {
      * @param destination a 2D graphics to copy the images to
      */
     public final void copyTo(final Graphics2D destination) {
-        for (Layer layer : this.rendererMap.keySet()) {
+        for(Layer layer : this.getLayerViewPanel().getProjectFrame().
+                getSld().getLayers()) {
             if (layer.isVisible()) {
                 this.rendererMap.get(layer).copyTo(destination);
             }

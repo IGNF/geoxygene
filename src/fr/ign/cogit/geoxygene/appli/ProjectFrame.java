@@ -22,7 +22,9 @@
 package fr.ign.cogit.geoxygene.appli;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +46,12 @@ import fr.ign.cogit.geoxygene.feature.event.FeatureCollectionListener;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.style.ColorMap;
+import fr.ign.cogit.geoxygene.style.Interpolate;
+import fr.ign.cogit.geoxygene.style.InterpolationPoint;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.RasterSymbolizer;
+import fr.ign.cogit.geoxygene.style.ShadedRelief;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 
 /**
@@ -366,13 +372,15 @@ public class ProjectFrame extends JInternalFrame implements
         }
     }
 
-    Map<FT_Feature, BufferedImage> featureToImageMap = new HashMap<FT_Feature, BufferedImage>();
+    Map<FT_Feature, BufferedImage> featureToImageMap =
+        new HashMap<FT_Feature, BufferedImage>();
 
     public void addImage(String name, BufferedImage image, double[][] range) {
         DefaultFeature feature = new DefaultFeature(new GM_Envelope(
                 range[0][0], range[0][1], range[1][0], range[1][1]).getGeom());
         this.featureToImageMap.put(feature, image);
-        Population<DefaultFeature> population = new Population<DefaultFeature>(name);
+        Population<DefaultFeature> population =
+            new Population<DefaultFeature>(name);
         population.add(feature);
         DataSet.getInstance().addPopulation(population);
         Layer layer = this.sld.createLayer(name, null);
@@ -382,5 +390,42 @@ public class ProjectFrame extends JInternalFrame implements
 
     public BufferedImage getImage(FT_Feature feature) {
         return this.featureToImageMap.get(feature);
+    }
+
+    public void addGrid(String name, BufferedImage image, double[][] range) {
+        DefaultFeature feature = new DefaultFeature(new GM_Envelope(
+                range[0][0], range[0][1], range[1][0], range[1][1]).getGeom());
+        this.featureToImageMap.put(feature, image);
+        Population<DefaultFeature> population =
+            new Population<DefaultFeature>(name);
+        population.add(feature);
+        DataSet.getInstance().addPopulation(population);
+        Layer layer = this.sld.createLayer(name, null);
+        RasterSymbolizer symbolizer = (RasterSymbolizer) layer.getSymbolizer();
+        symbolizer.setShadedRelief(new ShadedRelief());
+        double min = Double.MAX_VALUE;
+        double max = Double.MIN_VALUE;
+        Raster raster = image.getData();
+        for (int x = 0; x < image.getWidth(); x++) {
+            System.out.println("x = "+x);
+            for (int y = 0; y < image.getHeight(); y++) {
+                double[] value = raster.getPixel(x, y, new double[1]);
+                min = Math.min(min, value[0]);
+                max = Math.max(max, value[0]);
+            }
+        }
+        System.out.println("min = "+min);
+        System.out.println("max = "+max);
+        ColorMap colorMap = new ColorMap();
+        Interpolate interpolate = new Interpolate();
+        double diff = max - min;
+        interpolate.getInterpolationPoint().add(new InterpolationPoint(min, Color.blue));
+        interpolate.getInterpolationPoint().add(new InterpolationPoint(min + diff / 3, Color.cyan));
+        interpolate.getInterpolationPoint().add(new InterpolationPoint(min + 2 * diff / 3, Color.yellow));
+        interpolate.getInterpolationPoint().add(new InterpolationPoint(max, Color.red));
+        colorMap.setInterpolate(interpolate);
+        symbolizer.setColorMap(colorMap);
+        layer.setImage(symbolizer, image);
+        this.addLayer(layer);
     }
 }

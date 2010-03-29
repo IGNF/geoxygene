@@ -34,5 +34,5 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
  * 
  */
 
-class GM_BSplineSurface extends GM_GriddedSurface {
+public class GM_BSplineSurface extends GM_GriddedSurface {
 }

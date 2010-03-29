@@ -270,7 +270,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
      * Update and repaint the layer legend panel.
      */
     void update() {
-        boolean isSelectionEmpty = this.layersTable.getSelectedRows().length == 0;
+        boolean isSelectionEmpty = 
+            this.layersTable.getSelectedRows().length == 0;
         this.minusButton.setEnabled(
                 !isSelectionEmpty
                 && this.layersTable.getRowCount() > 0);
@@ -293,6 +294,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         this.repaint();
     }
 
+    /**
+     * Remove the selected layers.
+     */
     public void removeSelectedLayers() {
        List<Layer> toRemove = new ArrayList<Layer>();
        List<Integer> rowsToRemove = new ArrayList<Integer>();
@@ -301,14 +305,97 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
            rowsToRemove.add(0, new Integer(row));
        }
        for (Integer row : rowsToRemove) {
-           this.layersTable.removeRowSelectionInterval(row.intValue(),row.intValue());
+           this.layersTable.removeRowSelectionInterval(row.intValue(),
+                   row.intValue());
        }
        this.sld.getLayers().removeAll(toRemove);
+       // TODO we shouldn't have to do that
        for (Layer layer : toRemove) {
            this.layerViewPanel.getRenderingManager().removeLayer(layer);
        }
        this.update();
        this.layerViewPanel.superRepaint();
+    }
+
+    /**
+     * Move the selected layers up.
+     */
+    private void moveSelectedLayersUp() {
+        for (int row : this.layersTable.getSelectedRows()) {
+            Layer layer = this.getLayer(row);
+            int sldIndex = this.getSld().getLayers().size() - row;
+            this.layerViewPanel.getProjectFrame().getSld().remove(layer);
+            this.layerViewPanel.getProjectFrame().getSld().add(sldIndex,
+                    layer);
+        }
+        this.tablemodel.fireTableDataChanged();
+        this.layersTable.repaint();
+        this.update();
+        this.layerViewPanel.superRepaint();
+    }
+
+    /**
+     * Move the selected layers down.
+     */
+    private void moveSelectedLayersDown() {
+        List<Integer> rowsToMove = new ArrayList<Integer>();
+        for (int row : this.layersTable.getSelectedRows()) {
+            rowsToMove.add(0, new Integer(row));
+        }
+        for (Integer row : rowsToMove) {
+            Layer layer = this.getLayer(row.intValue());
+            int sldIndex = this.getSld().getLayers().size() - 2 - row.
+            intValue();
+            this.layerViewPanel.getProjectFrame().getSld().remove(layer);
+            this.layerViewPanel.getProjectFrame().getSld().add(sldIndex,
+                    layer);
+        }
+        this.tablemodel.fireTableDataChanged();
+        this.layersTable.repaint();
+        this.update();
+        this.layerViewPanel.superRepaint();
+    }
+
+    /**
+     * Move the Selected Layers To the Top.
+     */
+    private void moveSelectedLayersToTop() {
+        int n = 0;
+        for (int row : this.layersTable.getSelectedRows()) {
+            Layer layer = this.getLayer(row);
+            int sldIndex = this.getSld().getLayers().size() - 1 - n;
+            n++;
+            this.layerViewPanel.getProjectFrame().getSld().remove(layer);
+            this.layerViewPanel.getProjectFrame().getSld().add(sldIndex,
+                    layer);
+        }
+        this.tablemodel.fireTableDataChanged();
+        this.layersTable.repaint();
+        this.update();
+        this.layerViewPanel.superRepaint();
+    }
+
+    /**
+     * Move the Selected Layers To the Bottom.
+     */
+    private void moveSelectedLayersToBottom() {
+        List<Integer> rowsToMove = new ArrayList<Integer>();
+        for (int row : this.layersTable.getSelectedRows()) {
+            rowsToMove.add(0, new Integer(row));
+        }
+        int n = 0;
+        for (Integer row : rowsToMove) {
+            Layer layer = this.getLayer(row.intValue());
+            int sldIndex = n;
+            n++;
+            this.layerViewPanel.getProjectFrame().getSld().remove(layer);
+            this.layerViewPanel.getProjectFrame().getSld().add(sldIndex,
+                    layer);
+        }
+        this.tablemodel.fireTableDataChanged();
+        this.layersTable.repaint();
+        this.update();
+        this.layerViewPanel.superRepaint();
     }
 
     /**
@@ -323,12 +410,14 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
     /**
      * Le tableModel du panneauLegende
      */
-    public class LayersTableModel extends DefaultTableModel{
+    public class LayersTableModel extends DefaultTableModel {
         private static final long serialVersionUID = 1L;
         @Override
         public int getColumnCount() { return 5; }
         @Override
-        public int getRowCount() { return LayerLegendPanel.this.getSld().getLayers().size(); }
+        public int getRowCount() {
+            return LayerLegendPanel.this.getSld().getLayers().size();
+        }
         @Override
         public Object getValueAt(int row, int col) {
             Layer layer = LayerLegendPanel.this.getLayer(row);
@@ -531,8 +620,33 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
     }
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals("add")) { //$NON-NLS-1$
+            this.addLayer();
+            return;
+        }
         if (e.getActionCommand().equals("remove")) { //$NON-NLS-1$
             this.removeSelectedLayers();
+            return;
         }
+        if (e.getActionCommand().equals("up")) { //$NON-NLS-1$
+            this.moveSelectedLayersUp();
+            return;
+        }
+        if (e.getActionCommand().equals("down")) { //$NON-NLS-1$
+            this.moveSelectedLayersDown();
+            return;
+        }
+        if (e.getActionCommand().equals("top")) { //$NON-NLS-1$
+            this.moveSelectedLayersToTop();
+            return;
+        }
+        if (e.getActionCommand().equals("bottom")) { //$NON-NLS-1$
+            this.moveSelectedLayersToBottom();
+            return;
+        }
+    }
+
+    private void addLayer() {
+        
     }
 }
