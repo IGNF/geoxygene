@@ -24,9 +24,14 @@ package fr.ign.cogit.geoxygene.style;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.TriColorGradientPaint;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlElement;
 
@@ -54,7 +59,7 @@ public class RasterSymbolizer extends AbstractSymbolizer {
     public void setShadedRelief(ShadedRelief shadedRelief) {
         this.shadedRelief = shadedRelief;
     }
-    
+
     @XmlElement(name = "ColorMap")
     ColorMap colorMap = null;
 
@@ -69,51 +74,92 @@ public class RasterSymbolizer extends AbstractSymbolizer {
     @Override
 	public boolean isRasterSymbolizer() { return true; }
 
+    Map<FT_Feature, GM_MultiSurface<GM_Triangle>> map = new HashMap<FT_Feature, GM_MultiSurface<GM_Triangle>>();
+    Map<GM_Triangle, Vecteur> normalMap = new HashMap<GM_Triangle, Vecteur>();
+    Map<DirectPosition, List<GM_Triangle>> triangleMap = new HashMap<DirectPosition, List<GM_Triangle>>();
+    Map<DirectPosition, Vecteur> positionMap = new HashMap<DirectPosition, Vecteur>();
+
 	@Override
 	public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics) {
+	    System.out.println("paint");
         BufferedImage image = viewport.getLayerViewPanel().getProjectFrame().getImage(feature);
         if (image == null) {
+            System.out.println("null image");
             return;
         }
         GM_Envelope envelope = feature.getGeom().envelope();
+        int dimensionX = image.getWidth();
+        int dimensionY = image.getHeight();
 
         if (this.shadedRelief != null) {
-            //double reliefFactor = this.shadedRelief.getReliefFactor();
-            // TODO use reliefFactor
-            int dimensionX = image.getWidth();
-            int dimensionY = image.getHeight();
-            double width = envelope.width();
-            double height = envelope.length();
-            double dx = width / dimensionX;
-            double dy = height / dimensionY;
-            Raster raster = image.getData();
-            GM_MultiSurface<GM_Triangle> multi = new GM_MultiSurface<GM_Triangle>();
-            //GM_PointGrid pointGrid = new GM_PointGrid();
-            DirectPosition[][] positions= new DirectPosition[dimensionX][dimensionY];
-            for (int x = 0; x < dimensionX; x++) {
-                //DirectPositionList row = new DirectPositionList();
-                double pointx = envelope.minX() + (0.5 + x) * dx;
-                for (int y = 0; y < dimensionY; y++) {
-                    double pointy = envelope.maxY() - (0.5 + y) * dy;
-                    double[] value = raster.getPixel(x, y, new double[1]);
-//                    System.out.println("-> " + pointx + " " + pointy+ " " + value[0]);
-                    //row.add(new DirectPosition(pointx, pointy, value[0]));
-                    positions[x][y] = new DirectPosition(pointx, pointy, value[0]);
-                    if (y > 0 && x > 0) {
-                        multi.add(new GM_Triangle(positions[x -1][y - 1], positions[x - 1][y], positions[x][y]));
-                        multi.add(new GM_Triangle(positions[x -1][y - 1], positions[x][y], positions[x][y - 1]));
-                   }
+            System.out.println("shaded "+dimensionX+" "+dimensionY);
+            GM_MultiSurface<GM_Triangle> multi = this.map.get(feature);
+            if (multi == null) {
+                synchronized (this.map) {
+                    System.out.println("initializing triangles");
+                    multi = new GM_MultiSurface<GM_Triangle>();
+                    //double reliefFactor = this.shadedRelief.getReliefFactor();
+                    // TODO use reliefFactor
+
+                    double width = envelope.width();
+                    double height = envelope.length();
+                    double dx = width / dimensionX;
+                    double dy = height / dimensionY;
+                    Raster raster = image.getData();
+                    DirectPosition[][] positions= new DirectPosition[dimensionX][dimensionY];
+                    for (int x = 0; x < dimensionX; x++) {
+                        double pointx = envelope.minX() + (0.5 + x) * dx;
+                        for (int y = 0; y < dimensionY; y++) {
+                            double pointy = envelope.maxY() - (0.5 + y) * dy;
+                            double[] value = raster.getPixel(x, y, new double[1]);
+                            positions[x][y] = new DirectPosition(pointx, pointy, value[0]);
+                            if (y > 0 && x > 0) {
+                                GM_Triangle triangle = new GM_Triangle(positions[x -1][y - 1], positions[x][y], positions[x][y - 1]);
+                                addNeighbour(positions[x -1][y - 1], triangle);
+                                addNeighbour(positions[x][y], triangle);
+                                addNeighbour(positions[x][y - 1], triangle);
+                                multi.add(triangle);
+                                Vecteur v1 = new Vecteur(triangle.getCorners(0), triangle.getCorners(1));
+                                Vecteur v2 = new Vecteur(triangle.getCorners(0), triangle.getCorners(2));
+                                Vecteur normal = v1.prodVectoriel(v2);
+                                normal.normalise();
+                                this.normalMap.put(triangle, normal);
+                                GM_Triangle triangle2 = new GM_Triangle(positions[x][y], positions[x -1][y - 1], positions[x - 1][y]);
+                                addNeighbour(positions[x -1][y - 1], triangle2);
+                                addNeighbour(positions[x - 1][y], triangle2);
+                                addNeighbour(positions[x][y], triangle2);
+                                Vecteur v3 = new Vecteur(triangle2.getCorners(0), triangle2.getCorners(1));
+                                Vecteur v4 = new Vecteur(triangle2.getCorners(0), triangle2.getCorners(2));
+                                Vecteur normal2 = v3.prodVectoriel(v4);
+                                normal2.normalise();
+                                this.normalMap.put(triangle2, normal2);
+                                multi.add(triangle2);
+                            }
+                        }
+                    }
+                    this.map.put(feature, multi);
+                    for (int x = 0; x < dimensionX; x++) {
+                        for (int y = 0; y < dimensionY; y++) {
+                            Vecteur normal = new Vecteur(0,0,0);
+                            for (GM_Triangle neighbour : this.triangleMap.get(positions[x][y])) {
+                                normal = normal.ajoute(this.normalMap.get(neighbour));
+                            }
+                            normal.normalise();
+                            this.positionMap.put(positions[x][y], normal);
+                        }
+                    }
                 }
-                //pointGrid.addRow(row);
             }
-            //GM_GriddedSurface grid = new GM_GriddedSurface(pointGrid);
+            System.out.println("triangles created");
             for (GM_Triangle triangle : multi) {
-                draw(viewport, graphics, triangle);
+                //draw(viewport, graphics, triangle);
+                drawWithNormals(viewport, graphics, triangle);
             }
             return;
         }
         BufferedImage imageToDraw = image;
         if (this.colorMap != null) {
+            System.out.println("colorMap");
             imageToDraw = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
             Raster raster = image.getData();
             for (int x = 0; x < image.getWidth(); x++) {
@@ -123,8 +169,9 @@ public class RasterSymbolizer extends AbstractSymbolizer {
                 }
             }
         }
-        
+
         try {
+            System.out.println("drawImage");
             Shape shape = viewport.toShape(envelope.getGeom());
             double minX = shape.getBounds().getMinX();
             double minY = shape.getBounds().getMinY();
@@ -138,33 +185,65 @@ public class RasterSymbolizer extends AbstractSymbolizer {
         }
 	}
 
-    private void draw(Viewport viewport, Graphics2D graphics, GM_Triangle triangle) {
+    private void drawWithNormals(Viewport viewport, Graphics2D graphics,
+            GM_Triangle triangle) {
         if (!viewport.getEnvelopeInModelCoordinates().getGeom().intersects(triangle)) {
             return;
         }
-        Vecteur light1 = new Vecteur(1,1,-1);
-        light1.normalise();
-        Vecteur v1 = new Vecteur(triangle.getCorners(0), triangle.getCorners(1)); 
-        Vecteur v2 = new Vecteur(triangle.getCorners(0), triangle.getCorners(2));
-        Vecteur normal = v2.prodVectoriel(v1);
-        normal.normalise();
-        double diffuseIntesity1 = light1.prodScalaire(normal);
-        if (diffuseIntesity1 < 0) {
-            diffuseIntesity1 = 0;
-        }
-        Vecteur light2 = new Vecteur(-1,1,-1);
-        light2.normalise();
-        double diffuseIntesity2 = light2.prodScalaire(normal);
         try {
             Shape shape = viewport.toShape(triangle);
-            graphics.setColor(new Color(
-                    (float)(diffuseIntesity1+diffuseIntesity2)/2,
-                    (float)(diffuseIntesity1+diffuseIntesity2)/2,
-                    (float)diffuseIntesity1/2));
+            Vecteur normal0 = this.positionMap.get(triangle.getCorners(0));
+            Color color0 = getColor(normal0);
+            Vecteur normal1 = this.positionMap.get(triangle.getCorners(1));
+            Color color1 = getColor(normal1);
+            Vecteur normal2 = this.positionMap.get(triangle.getCorners(2));
+            Color color2 = getColor(normal2);
+            graphics.setPaint(new TriColorGradientPaint(
+                    viewport.toViewPoint(triangle.getCorners(0)), color0,
+                    viewport.toViewPoint(triangle.getCorners(1)), color1,
+                    viewport.toViewPoint(triangle.getCorners(2)), color2));
+            graphics.draw(shape);
             graphics.fill(shape);
+
         } catch (NoninvertibleTransformException e) {
             e.printStackTrace();
             return;
         }
+    }
+
+    private Color getColor(Vecteur normal) {
+        int  transparence = 255;
+        double dirShadeBlackX = 1;
+        double dirShadeBlackY = -1;
+        double dirShadeBlackZ = -1;
+
+        double dirShadeYellowX = -1;
+        double dirShadeYellowY = -1;
+        double dirShadeYellowZ = -1;
+
+        double[] or = {normal.getX(), normal.getY(), normal.getZ()};
+
+        double shadeBlack=-(or[0]*dirShadeBlackX+or[1]*dirShadeBlackY+or[2]*dirShadeBlackZ)/Math.sqrt(dirShadeBlackX*dirShadeBlackX+dirShadeBlackY*dirShadeBlackY+dirShadeBlackZ*dirShadeBlackZ);
+        double shadeYellow=-(or[0]*dirShadeYellowX+or[1]*dirShadeYellowY+or[2]*dirShadeYellowZ)/Math.sqrt(dirShadeYellowX*dirShadeYellowX+dirShadeYellowY*dirShadeYellowY+dirShadeYellowZ*dirShadeYellowZ);
+
+        double intensityBlack=0.5, intensityYellow=0.8;
+        shadeBlack=intensityBlack+shadeBlack*(1-intensityBlack);
+        shadeYellow=intensityYellow+shadeYellow*(1-intensityYellow);
+
+        Color color = null;
+        if (shadeBlack<=0) color = Color.BLACK ;
+        else if (shadeYellow<=0) color = new Color((int)(255.0*shadeBlack),(int)(255.0*shadeBlack),0 );
+        else color = new Color((int)(255.0*shadeBlack),(int)(255.0*shadeBlack),(int)(255.0*shadeYellow*shadeBlack), transparence);
+        return color;
+    }
+
+    private void addNeighbour(DirectPosition directPosition,
+            GM_Triangle triangle) {
+        List<GM_Triangle> list = this.triangleMap.get(directPosition);
+        if (list == null) {
+            list = new ArrayList<GM_Triangle>();
+            this.triangleMap.put(directPosition, list);
+        }
+        list.add(triangle);
     }
 }
