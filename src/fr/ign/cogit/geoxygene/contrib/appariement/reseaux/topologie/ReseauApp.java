@@ -28,6 +28,7 @@ package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie;
 
 import java.util.Iterator;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.feature.Population;
@@ -54,13 +55,13 @@ public class ReseauApp extends CarteTopo {
 		this.ojbConcreteClass = this.getClass().getName(); // nécessaire pour ojb
 		this.setNom(nom_logique);
 		this.setPersistant(false);
-		Population<ArcApp> arcs = new Population<ArcApp>(false, "Arc", ArcApp.class,true); //$NON-NLS-1$
+		Population<ArcApp> arcs = new Population<ArcApp>(false, I18N.getString("CarteTopo.Edge"), ArcApp.class,true); //$NON-NLS-1$
 		this.addPopulation(arcs);
-		Population<NoeudApp> noeuds = new Population<NoeudApp>(false, "Noeud", NoeudApp.class,true); //$NON-NLS-1$
+		Population<NoeudApp> noeuds = new Population<NoeudApp>(false, I18N.getString("CarteTopo.Node"), NoeudApp.class,true); //$NON-NLS-1$
 		this.addPopulation(noeuds);
-		Population<FaceApp> faces = new Population<FaceApp>(false, "Face", FaceApp.class,true); //$NON-NLS-1$
+		Population<FaceApp> faces = new Population<FaceApp>(false, I18N.getString("CarteTopo.Face"), FaceApp.class,true); //$NON-NLS-1$
 		this.addPopulation(faces);
-		Population<GroupeApp> groupes = new Population<GroupeApp>(false, "Groupe", GroupeApp.class,false); //$NON-NLS-1$
+		Population<GroupeApp> groupes = new Population<GroupeApp>(false, I18N.getString("CarteTopo.Group"), GroupeApp.class,false); //$NON-NLS-1$
 		this.addPopulation(groupes);
 	}
 
