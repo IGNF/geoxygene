@@ -98,18 +98,18 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
      */
     private JTable layersTable = null;
 
-    JButton plusButton = new JButton(
-            new ImageIcon("images/icons/16x16/plus.png")); //$NON-NLS-1$
-    JButton topButton = new JButton(
-            new ImageIcon("images/icons/16x16/top.png")); //$NON-NLS-1$
-    JButton upButton = new JButton(
-            new ImageIcon("images/icons/16x16/up.png")); //$NON-NLS-1$
-    JButton downButton = new JButton(
-            new ImageIcon("images/icons/16x16/down.png")); //$NON-NLS-1$
-    JButton bottomButton = new JButton(
-            new ImageIcon("images/icons/16x16/bottom.png")); //$NON-NLS-1$
-    JButton minusButton = new JButton(
-            new ImageIcon("images/icons/16x16/minus.png")); //$NON-NLS-1$
+	JButton plusButton = new JButton(new ImageIcon(this.getClass().getResource(
+			"/icons/16x16/plus.png"))); //$NON-NLS-1$
+	JButton topButton = new JButton(new ImageIcon(this.getClass().getResource(
+			"/icons/16x16/top.png"))); //$NON-NLS-1$
+	JButton upButton = new JButton(new ImageIcon(this.getClass().getResource(
+			"/icons/16x16/up.png"))); //$NON-NLS-1$
+	JButton downButton = new JButton(new ImageIcon(this.getClass().getResource(
+			"/icons/16x16/down.png"))); //$NON-NLS-1$
+	JButton bottomButton = new JButton(new ImageIcon(this.getClass()
+			.getResource("/icons/16x16/bottom.png"))); //$NON-NLS-1$
+	JButton minusButton = new JButton(new ImageIcon(this.getClass()
+			.getResource("/icons/16x16/minus.png"))); //$NON-NLS-1$
 
     /**
      * @param theSld
