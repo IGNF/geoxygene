@@ -5,9 +5,9 @@ import java.awt.Color;
 import javax.xml.bind.annotation.XmlElement;
 
 public class ColorMap {
-    @XmlElement(name = "Interpolate")
     Interpolate interpolate = null;
 
+    @XmlElement(name = "Interpolate")
     public Interpolate getInterpolate() {
         return this.interpolate;
     }

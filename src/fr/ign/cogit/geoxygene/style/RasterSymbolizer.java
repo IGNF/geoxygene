@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
@@ -73,10 +74,13 @@ public class RasterSymbolizer extends AbstractSymbolizer {
 
     @Override
 	public boolean isRasterSymbolizer() { return true; }
-
+    @XmlTransient
     Map<FT_Feature, GM_MultiSurface<GM_Triangle>> map = new HashMap<FT_Feature, GM_MultiSurface<GM_Triangle>>();
+    @XmlTransient
     Map<GM_Triangle, Vecteur> normalMap = new HashMap<GM_Triangle, Vecteur>();
+    @XmlTransient
     Map<DirectPosition, List<GM_Triangle>> triangleMap = new HashMap<DirectPosition, List<GM_Triangle>>();
+    @XmlTransient
     Map<DirectPosition, Vecteur> positionMap = new HashMap<DirectPosition, Vecteur>();
 
 	@Override
