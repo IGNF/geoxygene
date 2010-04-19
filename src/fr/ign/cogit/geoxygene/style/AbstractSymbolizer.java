@@ -28,6 +28,7 @@ package fr.ign.cogit.geoxygene.style;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.log4j.Logger;
@@ -66,8 +67,31 @@ public abstract class AbstractSymbolizer implements Symbolizer {
 	@XmlElement(name = "GeometryPropertyName")
 	private String geometryPropertyName = "geom"; //$NON-NLS-1$
 
-	@Override
-	public String getGeometryPropertyName() {return this.geometryPropertyName;}
-	@Override
-	public void setGeometryPropertyName(String geometryPropertyName) {this.geometryPropertyName = geometryPropertyName;}
+    @Override
+    public String getGeometryPropertyName() {
+        return this.geometryPropertyName;
+    }
+
+    @Override
+    public void setGeometryPropertyName(String geometryPropertyName) {
+        this.geometryPropertyName = geometryPropertyName;
+    }
+
+    @XmlAttribute(name = "uom")
+    private String uom = Symbolizer.METRE;
+    public String getUnitOfMeasure() {
+        return this.uom;
+    }
+    public void setUnitOfMeasure(String uom) {
+        this.uom = uom;
+    }
+    public void setUnitOfMeasureMetre() {
+        this.setUnitOfMeasure(METRE);
+    }
+    public void setUnitOfMeasureFoot() {
+        this.setUnitOfMeasure(FOOT);
+    }
+    public void setUnitOfMeasurePixel() {
+        this.setUnitOfMeasure(PIXEL);
+    }
 }

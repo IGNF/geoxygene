@@ -346,8 +346,16 @@ public class Stroke {
 	 */
 	public void setColor(Color newColor) {
 		this.setStroke(newColor);
-		if (this.strokeOpacity==1.0f) this.color = this.stroke;
-		else this.color = new Color(this.stroke.getRed(),this.stroke.getGreen(),this.stroke.getBlue(),(int)(this.strokeOpacity*255f));
+		if (this.strokeOpacity == 1.0f) {
+		    this.color = this.stroke;
+		}
+		else {
+		    this.color = new Color(
+		            this.stroke.getRed(),
+		            this.stroke.getGreen(),
+		            this.stroke.getBlue(),
+		            (int) (this.strokeOpacity * 255f));
+		}
 	}
 
     @XmlTransient
@@ -356,10 +364,22 @@ public class Stroke {
 	 * @return the AWT Stroke properties to be used for drawing
 	 */
 	public java.awt.Stroke toAwtStroke() {
-		if (this.awtStroke==null) {
-			updateValues();
-			this.awtStroke=new BasicStroke(this.getStrokeWidth(),this.getStrokeLineCap(),this.getStrokeLineJoin(),10.0f,this.getStrokeDashArray(),this.getStrokeDashOffset());
-		}
-		return this.awtStroke;
+		return this.toAwtStroke(1.0f);
 	}
+    /**
+     * @return the AWT Stroke properties to be used for drawing
+     */
+    public java.awt.Stroke toAwtStroke(float scale) {
+        if (this.awtStroke == null) {
+            updateValues();
+        }
+        this.awtStroke = new BasicStroke(
+                this.getStrokeWidth() * scale,
+                this.getStrokeLineCap(),
+                this.getStrokeLineJoin(),
+                10.0f,
+                this.getStrokeDashArray(),
+                this.getStrokeDashOffset());
+        return this.awtStroke;
+    }
 }

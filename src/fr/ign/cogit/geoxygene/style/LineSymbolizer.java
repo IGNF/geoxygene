@@ -50,7 +50,15 @@ public class LineSymbolizer extends AbstractSymbolizer {
             if (this.getStroke().getGraphicType() == null) {
                 // if (logger.isDebugEnabled())
                 // logger.debug("stroke "+shape.getBounds2D());
-                graphics.setStroke(this.getStroke().toAwtStroke());
+                double scale = 1;
+                if (this.getUnitOfMeasure() != PIXEL) {
+                    try {
+                        scale = viewport.getModelToViewTransform().getScaleX();
+                    } catch (NoninvertibleTransformException e) {
+                        e.printStackTrace();
+                    }
+                }
+                graphics.setStroke(this.getStroke().toAwtStroke((float) scale));
                 graphics.setColor(this.getStroke().getColor());
                 if (feature.getGeom().isLineString() || feature.getGeom().isPolygon()) {
                     try {

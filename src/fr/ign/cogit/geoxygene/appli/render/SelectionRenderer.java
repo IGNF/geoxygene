@@ -230,6 +230,27 @@ public class SelectionRenderer implements Renderer {
 
         @Override
         public void setStroke(final Stroke stroke) { }
+
+        @Override
+        public String getUnitOfMeasure() {
+            return PIXEL;
+        }
+
+        @Override
+        public void setUnitOfMeasure(String uom) {
+        }
+
+        @Override
+        public void setUnitOfMeasureFoot() {
+        }
+
+        @Override
+        public void setUnitOfMeasureMetre() {
+        }
+
+        @Override
+        public void setUnitOfMeasurePixel() {
+        }
     };
 
     /**

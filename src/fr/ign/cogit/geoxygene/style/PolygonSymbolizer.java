@@ -125,7 +125,15 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
                     && strokeOpacity > 0f) {
                 // Solid color
                 Color color = this.getStroke().getColor();
-                java.awt.Stroke bs = this.getStroke().toAwtStroke();
+                double scale = 1;
+                if (this.getUnitOfMeasure() != PIXEL) {
+                    try {
+                        scale = viewport.getModelToViewTransform().getScaleX();
+                    } catch (NoninvertibleTransformException e) {
+                        e.printStackTrace();
+                    }
+                }
+                java.awt.Stroke bs = this.getStroke().toAwtStroke((float) scale);
                 graphics.setColor(color);
                 graphics.setStroke(bs);
                 if (feature.getGeom().isPolygon()) {

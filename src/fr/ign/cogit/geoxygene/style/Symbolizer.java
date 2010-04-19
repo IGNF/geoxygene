@@ -65,11 +65,30 @@ public interface Symbolizer {
 	 * @param geometryPropertyName l'attribut geometryPropertyName à affecter
 	 */
 	public void setGeometryPropertyName(String geometryPropertyName);
+	
+	/**
+	 * Returns the Unit of Measure used by the symbolizer.
+	 * @return Unit of Measure used by the symbolizer
+	 */
+	public String getUnitOfMeasure();
+    /**
+     * Set the Unit of Measure used by the symbolizer.
+     * @param uom Unit of Measure used by the symbolizer
+     */
+    public void setUnitOfMeasure(String uom);
+	public void setUnitOfMeasureMetre();
+	public void setUnitOfMeasureFoot();
+	public void setUnitOfMeasurePixel();
+
+	public static String METRE = "http://www.opengeospatial.org/se/units/metre"; //$NON-NLS-1$
+    public static String FOOT = "http://www.opengeospatial.org/se/units/foot"; //$NON-NLS-1$
+    public static String PIXEL = "http://www.opengeospatial.org/se/units/pixel"; //$NON-NLS-1$
 
 	/**
-	 * @param feature
-	 * @param viewport
-	 * @param graphics
+	 * Paint a feature using a viewport and a graphics.
+	 * @param feature the feature to paint
+	 * @param viewport the viewport in which to paint
+	 * @param graphics the graphics used to paint into
 	 */
 	public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics);
 }
