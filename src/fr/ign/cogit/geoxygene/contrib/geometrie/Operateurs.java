@@ -1077,4 +1077,142 @@ public abstract class Operateurs {
         }
         return (surf <= 0);
     }
+	/**
+	 * Compute the surface defined by 2 lineStrings.
+	 * @param lineString1 line1
+	 * @param lineString2 line2
+	 * @return a polygon
+	 */
+	public static GM_Polygon surfaceFromLineStrings(
+			GM_LineString lineString1,
+			GM_LineString lineString2) {
+		//fabrication de la surface delimitée par les lignes
+		GM_LineString perimetre = new GM_LineString();
+		//Initialisation de Distance1 = Somme des côtés à créer
+		double sommeDistance1 = Distances.distance(lineString1.startPoint(), lineString2.startPoint()) + 
+					Distances.distance(lineString1.endPoint(), lineString2.endPoint());
+		
+		//Initialisation de Distance2 = Somme des diagonales à créer
+		double sommeDistance2 = Distances.distance(lineString1.startPoint(), lineString2.endPoint()) + 
+					Distances.distance(lineString1.endPoint(), lineString2.startPoint());
+		
+		//Construction du périmètre sur le JDD de référence
+		Iterator<DirectPosition> itPoints=lineString1.coord().getList().iterator();
+		while (itPoints.hasNext()) {
+			DirectPosition pt = itPoints.next();
+			perimetre.addControlPoint(pt);
+		}
+		
+		//Construction du périmètre sur le JDD à comparer en passant par les côtés
+		//On considère que la somme des côtés est inférieure à la somme des diagonales
+		itPoints=lineString2.coord().getList().iterator();
+		while (itPoints.hasNext()) {
+			DirectPosition pt = itPoints.next();
+			if (sommeDistance1<sommeDistance2){
+				perimetre.addControlPoint(0,pt);
+			}
+			else{
+				perimetre.addControlPoint(pt);
+			}
+		}
+		
+		//Bouclage du périmètre
+		perimetre.addControlPoint(perimetre.startPoint());		
+		//Création d'un polygone à partir du périmètre
+		GM_Polygon polygone = new GM_Polygon(perimetre);
+		return polygone;
+	}
+	/**
+	 * Fusionne bout à bout un ensemble de LineStrings en une seule.
+	 * <p>
+	 * Pour que l'algorithme fonctionne, il faut que, dans la liste, toutes les
+	 * linestrings soient connexes. L'algorithme comment par remettre les
+	 * linestrings dans l'ordre et dans le même sens.
+	 *
+	 * @param linestringList
+	 *            ensemble de LineStrings
+	 * @return fusion de LineStrings
+	 */
+	public static GM_LineString union(
+			List<GM_LineString> linestringList) {
+		// Si il n'y a pas de polylignes dans la liste, arrêt de la procédure
+		if (linestringList.isEmpty()) {
+			return null;
+		}
+		GM_LineString lineStringCourante = null;
+		// Si il n'y a qu'une seule polyligne dans la liste, alors on retourne
+		// uniquement cette polyligne
+		if (linestringList.size() == 1) {
+			lineStringCourante = linestringList.get(0);
+			return lineStringCourante;
+		}
+		// Sinon, il faud comparer toutes les polylignes de la liste (toutes les
+		// combinaisons point de départ, point d'arrivée) et les fusionner au
+		// fur et à mesure en les orientant.
+		// Initialisation de la polyligne de référence.
+		lineStringCourante = linestringList.remove(0);
+		for (int i = 0; i < linestringList.size(); i++) {
+			GM_LineString lineStringSuivante = linestringList.get(i);
+			GM_LineString lineStringCopie = new GM_LineString(lineStringSuivante
+					.getControlPoint());
+			DirectPositionList pointsLiaison = new DirectPositionList();
+			// Si le point de départ de la polyligne courante = point de départ
+			// de la polyligne suivante
+			if (lineStringCourante.startPoint().equals2D(
+					lineStringSuivante.startPoint(), 0)) {
+				pointsLiaison.addAll(((GM_LineString) lineStringCourante
+						.reverse()).getControlPoint());
+				lineStringCopie
+						.removeControlPoint(lineStringCopie.startPoint());
+				pointsLiaison.addAll(lineStringCopie.getControlPoint());
+				lineStringCourante = new GM_LineString(pointsLiaison);
+				pointsLiaison.removeAll(pointsLiaison);
+				linestringList.remove(i);
+				i = -1;
+			}
+
+			// Si le point d'arriv�e de la polyligne courante = point d'arriv�e
+			// de la polyligne suivante
+			else if (lineStringCourante.endPoint().equals2D(
+					lineStringSuivante.endPoint(), 0)) {
+				pointsLiaison.addAll(lineStringCourante.getControlPoint());
+				lineStringCopie.removeControlPoint(lineStringCopie.endPoint());
+				pointsLiaison
+						.addAll(((GM_LineString) lineStringCopie.reverse())
+								.getControlPoint());
+				lineStringCourante = new GM_LineString(pointsLiaison);
+				pointsLiaison.removeAll(pointsLiaison);
+				linestringList.remove(i);
+				i = -1;
+			}
+
+			// Si le point d'arriv�e de la polyligne courante = point de d�part
+			// de la polyligne suivante
+			else if (lineStringCourante.endPoint().equals2D(
+					lineStringSuivante.startPoint(), 0)) {
+				pointsLiaison.addAll(lineStringCourante.getControlPoint());
+				lineStringCopie
+						.removeControlPoint(lineStringCopie.startPoint());
+				pointsLiaison.addAll(lineStringCopie.getControlPoint());
+				lineStringCourante = new GM_LineString(pointsLiaison);
+				pointsLiaison.removeAll(pointsLiaison);
+				linestringList.remove(i);
+				i = -1;
+			}
+
+			// Si le point de départ de la polyligne courant = point d'arrivée
+			// de la polyligne suivante
+			else if (lineStringCourante.startPoint().equals2D(
+					lineStringSuivante.endPoint(), 0)) {
+				lineStringCopie.removeControlPoint(lineStringCopie.endPoint());
+				pointsLiaison.addAll(lineStringCopie.getControlPoint());
+				pointsLiaison.addAll(lineStringCourante.getControlPoint());
+				lineStringCourante = new GM_LineString(pointsLiaison);
+				pointsLiaison.removeAll(pointsLiaison);
+				linestringList.remove(i);
+				i = -1;
+			}
+		}
+		return lineStringCourante;
+	}
 }
