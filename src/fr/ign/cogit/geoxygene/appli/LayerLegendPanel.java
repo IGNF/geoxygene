@@ -30,7 +30,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -317,6 +319,15 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
        this.layerViewPanel.superRepaint();
     }
 
+    public Set<Layer> getSelectedLayers() {
+    	Set<Layer> selectedLayers = new HashSet<Layer>();
+        for (int row : this.layersTable.getSelectedRows()) {
+            Layer layer = this.getLayer(row);
+            selectedLayers.add(layer);
+        }
+        return selectedLayers;
+    }
+    
     /**
      * Move the selected layers up.
      */
