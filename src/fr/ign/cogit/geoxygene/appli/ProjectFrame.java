@@ -32,7 +32,6 @@ import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import fr.ign.cogit.geoxygene.appli.plugin.GeometryToolBar;
@@ -79,8 +78,15 @@ public class ProjectFrame extends JInternalFrame implements
     /**
      * The layer legend panel.
      */
-    private JPanel layerLegendPanel = null;
+    private LayerLegendPanel layerLegendPanel = null;
     /**
+     * @return The layer legend panel.
+     */
+    public LayerLegendPanel getLayerLegendPanel() {
+		return this.layerLegendPanel;
+	}
+
+	/**
      * The split pane.
      */
     private JSplitPane splitPane = new JSplitPane();
@@ -150,7 +156,7 @@ public class ProjectFrame extends JInternalFrame implements
      * @param name the name of the population
      */
     public final void addFeatureCollection(
-            final Population<DefaultFeature> population, final String name) {
+            final Population<? extends FT_Feature> population, final String name) {
         Layer layer = this.sld.createLayer(name, population.getFeatureType()
                 .getGeometryType());
         this.addLayer(layer);
