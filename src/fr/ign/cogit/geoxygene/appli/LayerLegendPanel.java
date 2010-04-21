@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -658,6 +659,23 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
     }
 
     private void addLayer() {
-        
+        File file = MainFrame.fc.getFile(this.layerViewPanel.getProjectFrame().
+                getMainFrame());
+        if (file != null) {
+            String fileName = file.getAbsolutePath();
+            String extention = fileName.substring(fileName.lastIndexOf('.') + 1);
+            if (extention.equalsIgnoreCase("shp")) { //$NON-NLS-1$
+                this.layerViewPanel.getProjectFrame().addShapefileLayer(fileName);
+                return;
+            }
+            if (extention.equalsIgnoreCase("tif")) { //$NON-NLS-1$
+                this.layerViewPanel.getProjectFrame().addGeotiffLayer(fileName);
+                return;
+            }
+            if (extention.equalsIgnoreCase("asc")) { //$NON-NLS-1$
+                this.layerViewPanel.getProjectFrame().addAscLayer(fileName);
+                return;
+            }
+        }
     }
 }

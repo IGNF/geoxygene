@@ -26,34 +26,23 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultDesktopManager;
 import javax.swing.JDesktopPane;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.filechooser.FileFilter;
 
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
-import fr.ign.cogit.geoxygene.feature.DataSet;
-import fr.ign.cogit.geoxygene.feature.DefaultFeature;
-import fr.ign.cogit.geoxygene.feature.Population;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
-import fr.ign.cogit.geoxygene.util.conversion.ArcGridReader;
-import fr.ign.cogit.geoxygene.util.conversion.GeoTiffReader;
-import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 /**
  * @author Julien Perret
@@ -136,28 +125,8 @@ public class MainFrame extends JFrame {
      * The default height of the frame.
      */
     private final int defaultFrameHeight = 800;
-    
-    /**
-     * The previous opened directory.
-     */
-    private File previousDirectory = new File(""); //$NON-NLS-1$
-    
-    /**
-     * Return the previous opened directory.
-     *
-     * @return the previous opened directory
-     */
-    public File getPreviousDirectory() {
-		return this.previousDirectory;
-	}
-    
-    /**
-	 * Affect the previous opened directory.
-	 * @param previousDirectory the previous opened directory
-	 */
-	public void setPreviousDirectory(File previousDirectory) {
-		this.previousDirectory = previousDirectory;
-	}
+
+    public static FileChooser fc = new FileChooser();
 
 	/**
      * Constructor using a title and an associated application.
@@ -185,9 +154,9 @@ public class MainFrame extends JFrame {
                 .getString("MainFrame.Configuration")); //$NON-NLS-1$
         JMenu helpMenu = new JMenu(I18N
                 .getString("MainFrame.Help")); //$NON-NLS-1$
-        JMenuItem openShapefileMenuItem = new JMenuItem(I18N
-                .getString("MainFrame.OpenShapefile")); //$NON-NLS-1$
-        openShapefileMenuItem
+        JMenuItem openFileMenuItem = new JMenuItem(I18N
+                .getString("MainFrame.OpenFile")); //$NON-NLS-1$
+        openFileMenuItem
                 .addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(final ActionEvent e) {
                         ProjectFrame projectFrame = (ProjectFrame)
@@ -206,269 +175,21 @@ public class MainFrame extends JFrame {
                                 return;
                             }
                         }
-                        JFileChooser choixFichierShape = new JFileChooser();
-                        /*
-                         * crée un filtre qui n'accepte
-                         * que les fichier shp ou les répertoires
-                         */
-                        choixFichierShape.setFileFilter(new FileFilter() {
-                            @Override
-                            public boolean accept(final File f) {
-                                return (f.isFile()
-                                        && (f.getAbsolutePath()
-                                                .endsWith(".shp") //$NON-NLS-1$
-                                                ||
-                                                f.getAbsolutePath()
-                                                .endsWith(".SHP") //$NON-NLS-1$
-                                                )
-                                                || f.isDirectory());
-                            }
-                            @Override
-                            public String getDescription() {
-                                return I18N.getString(
-                                 "MainFrame.ShapefileDescription" //$NON-NLS-1$
-                                );
-                            }
-                        });
-                        choixFichierShape
-                                .setFileSelectionMode(JFileChooser.FILES_ONLY);
-                        choixFichierShape.setMultiSelectionEnabled(false);
-                        choixFichierShape.setCurrentDirectory(
-                                getPreviousDirectory());
-                        JFrame frame = new JFrame();
-                        frame.setVisible(true);
-                        int returnVal = choixFichierShape.showOpenDialog(frame);
-                        frame.dispose();
-                        if (returnVal == JFileChooser.APPROVE_OPTION) {
-                            if (getLogger().isDebugEnabled()) {
-                                getLogger().debug(I18N.getString(
-                                    "MainFrame.FileChosenDebug" //$NON-NLS-1$
-                                        ) + choixFichierShape
-                                        .getSelectedFile()
-                                        .getAbsolutePath());
-                            }
-                            setPreviousDirectory(
-                            		new File(choixFichierShape
-                            				.getSelectedFile()
-                            				.getAbsolutePath()));
-                            String shapefileName = choixFichierShape
-                                    .getSelectedFile().getAbsolutePath();
-                            String populationName = shapefileName
-                                    .substring(
-                                            shapefileName.
-                                            lastIndexOf("/") + 1, //$NON-NLS-1$
-                                            shapefileName.
-                                            lastIndexOf(".")); //$NON-NLS-1$
-                            ShapefileReader shapefileReader =
-                                new ShapefileReader(
-                                    shapefileName, populationName, DataSet
-                                            .getInstance(), true);
-
-                            Population<DefaultFeature> population =
-                                shapefileReader.getPopulation();
-                            if (population != null) {
-                                getLogger().info(I18N.getString(
-                                   "MainFrame.LoadingPopulation") //$NON-NLS-1$
-                                                        + population.getNom());
-                                projectFrame.addFeatureCollection(population,
-                                        population.getNom());
-                            }
-                            shapefileReader.read();
-                            if (projectFrame.getLayers().size() == 1) {
-                                try {
-                                    projectFrame.getLayerViewPanel()
-                                    .getViewport().zoom(
-                                            new GM_Envelope(
-                                                    shapefileReader.getMinX(),
-                                                    shapefileReader.getMaxX(),
-                                                    shapefileReader.getMinY(),
-                                                    shapefileReader.getMaxY()));
-                                } catch (NoninvertibleTransformException e1) {
-                                    e1.printStackTrace();
-                                }
-                            }
-                        }
-                    }
-                });
-        JMenuItem openGeoTiffMenuItem = new JMenuItem("Open GeoTiff Image"); //$NON-NLS-1$
-        openGeoTiffMenuItem
-                .addActionListener(new java.awt.event.ActionListener() {
-                    public void actionPerformed(final ActionEvent e) {
-                        ProjectFrame projectFrame = (ProjectFrame)
-                            MainFrame.this.getDesktopPane().getSelectedFrame();
-                        if (projectFrame == null) {
-                            if (MainFrame.this.getDesktopPane()
-                                    .getAllFrames().length != 0) {
-                                // TODO ask the user in which frame (s)he
-                                // wants to load into?
-                                projectFrame = (ProjectFrame) MainFrame.this
-                                        .getDesktopPane().getAllFrames()[0];
-                            } else {
-                                // TODO create a new project frame?
-                                getLogger().info(I18N.getString(
-                                 "MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
+                        File file = fc.getFile(MainFrame.this);
+                        if (file != null) {
+                            String fileName = file.getAbsolutePath();
+                            String extention = fileName.substring(fileName.lastIndexOf('.') + 1);
+                            if (extention.equalsIgnoreCase("shp")) { //$NON-NLS-1$
+                                projectFrame.addShapefileLayer(fileName);
                                 return;
                             }
-                        }
-                        JFileChooser choixFichierGeoTiff = new JFileChooser();
-                        /*
-                         * crée un filtre qui n'accepte
-                         * que les fichier GeoTiff ou les répertoires
-                         */
-                        choixFichierGeoTiff.setFileFilter(new FileFilter() {
-                            @Override
-                            public boolean accept(final File f) {
-                                return (f.isFile()
-                                        && (f.getAbsolutePath()
-                                                .endsWith(".tif") //$NON-NLS-1$
-                                                ||
-                                                f.getAbsolutePath()
-                                                .endsWith(".TIF") //$NON-NLS-1$
-                                                )
-                                                || f.isDirectory());
-                            }
-                            @Override
-                            public String getDescription() {
-                                return "GeoTiff Image"; //$NON-NLS-1$
-                            }
-                        });
-                        choixFichierGeoTiff
-                                .setFileSelectionMode(JFileChooser.FILES_ONLY);
-                        choixFichierGeoTiff.setMultiSelectionEnabled(false);
-                        choixFichierGeoTiff.setCurrentDirectory(
-                                getPreviousDirectory());
-                        JFrame frame = new JFrame();
-                        frame.setVisible(true);
-                        int returnVal = choixFichierGeoTiff.showOpenDialog(frame);
-                        frame.dispose();
-                        if (returnVal == JFileChooser.APPROVE_OPTION) {
-                            if (getLogger().isDebugEnabled()) {
-                                getLogger().debug(I18N.getString(
-                                    "MainFrame.FileChosenDebug" //$NON-NLS-1$
-                                        ) + choixFichierGeoTiff
-                                        .getSelectedFile()
-                                        .getAbsolutePath());
-                            }
-                            setPreviousDirectory(
-                            		new File(choixFichierGeoTiff
-                            				.getSelectedFile()
-                            				.getAbsolutePath()));
-                            String shapefileName = choixFichierGeoTiff
-                                    .getSelectedFile().getAbsolutePath();
-                            String populationName = shapefileName
-                                    .substring(
-                                            shapefileName.
-                                            lastIndexOf("/") + 1, //$NON-NLS-1$
-                                            shapefileName.
-                                            lastIndexOf(".")); //$NON-NLS-1$
-                            double[][] range = new double[2][2];
-                            BufferedImage image =
-                                GeoTiffReader.loadGeoTiffImage(shapefileName, range);
-                            projectFrame.addImage(populationName, image, range);
-                            if (projectFrame.getLayers().size() == 1) {
-                                try {
-                                    projectFrame.getLayerViewPanel()
-                                    .getViewport().zoom(
-                                            new GM_Envelope(
-                                                    range[0][0],
-                                                    range[0][1],
-                                                    range[1][0],
-                                                    range[1][1]));
-                                } catch (NoninvertibleTransformException e1) {
-                                    e1.printStackTrace();
-                                }
-                            }
-                        }
-                    }
-                });
-        JMenuItem openArcGridMenuItem = new JMenuItem("Open ArcGrid file"); //$NON-NLS-1$
-        openArcGridMenuItem
-                .addActionListener(new java.awt.event.ActionListener() {
-                    public void actionPerformed(final ActionEvent e) {
-                        ProjectFrame projectFrame = (ProjectFrame)
-                            MainFrame.this.getDesktopPane().getSelectedFrame();
-                        if (projectFrame == null) {
-                            if (MainFrame.this.getDesktopPane()
-                                    .getAllFrames().length != 0) {
-                                // TODO ask the user in which frame (s)he
-                                // wants to load into?
-                                projectFrame = (ProjectFrame) MainFrame.this
-                                        .getDesktopPane().getAllFrames()[0];
-                            } else {
-                                // TODO create a new project frame?
-                                getLogger().info(I18N.getString(
-                                 "MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
+                            if (extention.equalsIgnoreCase("tif")) { //$NON-NLS-1$
+                                projectFrame.addGeotiffLayer(fileName);
                                 return;
                             }
-                        }
-                        JFileChooser choixFichierArcGrid = new JFileChooser();
-                        /*
-                         * crée un filtre qui n'accepte
-                         * que les fichier GeoTiff ou les répertoires
-                         */
-                        choixFichierArcGrid.setFileFilter(new FileFilter() {
-                            @Override
-                            public boolean accept(final File f) {
-                                return (f.isFile()
-                                        && (f.getAbsolutePath()
-                                                .endsWith(".asc") //$NON-NLS-1$
-                                                ||
-                                                f.getAbsolutePath()
-                                                .endsWith(".ASC") //$NON-NLS-1$
-                                                )
-                                                || f.isDirectory());
-                            }
-                            @Override
-                            public String getDescription() {
-                                return "Arc/Info ASCII Grid"; //$NON-NLS-1$
-                            }
-                        });
-                        choixFichierArcGrid
-                                .setFileSelectionMode(JFileChooser.FILES_ONLY);
-                        choixFichierArcGrid.setMultiSelectionEnabled(false);
-                        choixFichierArcGrid.setCurrentDirectory(
-                                getPreviousDirectory());
-                        JFrame frame = new JFrame();
-                        frame.setVisible(true);
-                        int returnVal = choixFichierArcGrid.showOpenDialog(frame);
-                        frame.dispose();
-                        if (returnVal == JFileChooser.APPROVE_OPTION) {
-                            if (getLogger().isDebugEnabled()) {
-                                getLogger().debug(I18N.getString(
-                                    "MainFrame.FileChosenDebug" //$NON-NLS-1$
-                                        ) + choixFichierArcGrid
-                                        .getSelectedFile()
-                                        .getAbsolutePath());
-                            }
-                            setPreviousDirectory(
-                                    new File(choixFichierArcGrid
-                                            .getSelectedFile()
-                                            .getAbsolutePath()));
-                            String shapefileName = choixFichierArcGrid
-                                    .getSelectedFile().getAbsolutePath();
-                            String populationName = shapefileName
-                                    .substring(
-                                            shapefileName.
-                                            lastIndexOf("/") + 1, //$NON-NLS-1$
-                                            shapefileName.
-                                            lastIndexOf(".")); //$NON-NLS-1$
-                            double[][] range = new double[2][2];
-                            BufferedImage grid =
-                                ArcGridReader.loadAsc(shapefileName, range);
-                            //projectFrame.addImage(populationName, grid, range);
-                            projectFrame.addGrid(populationName, grid, range);
-                            if (projectFrame.getLayers().size() == 1) {
-                                try {
-                                    projectFrame.getLayerViewPanel()
-                                    .getViewport().zoom(
-                                            new GM_Envelope(
-                                                    range[0][0],
-                                                    range[0][1],
-                                                    range[1][0],
-                                                    range[1][1]));
-                                } catch (NoninvertibleTransformException e1) {
-                                    e1.printStackTrace();
-                                }
+                            if (extention.equalsIgnoreCase("asc")) { //$NON-NLS-1$
+                                projectFrame.addAscLayer(fileName);
+                                return;
                             }
                         }
                     }
@@ -481,9 +202,7 @@ public class MainFrame extends JFrame {
                 MainFrame.this.getApplication().exit();
             }
         });
-        fileMenu.add(openShapefileMenuItem);
-        fileMenu.add(openGeoTiffMenuItem);
-        fileMenu.add(openArcGridMenuItem);
+        fileMenu.add(openFileMenuItem);
         fileMenu.addSeparator();
         fileMenu.add(exitMenuItem);
         this.menuBar.setFont(this.application.getFont());

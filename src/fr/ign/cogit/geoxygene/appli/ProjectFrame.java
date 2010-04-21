@@ -23,6 +23,7 @@ package fr.ign.cogit.geoxygene.appli;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.util.HashMap;
@@ -52,6 +53,9 @@ import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.RasterSymbolizer;
 import fr.ign.cogit.geoxygene.style.ShadedRelief;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
+import fr.ign.cogit.geoxygene.util.conversion.ArcGridReader;
+import fr.ign.cogit.geoxygene.util.conversion.GeoTiffReader;
+import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 /**
  * Project Frame.
@@ -174,6 +178,90 @@ public class ProjectFrame extends JInternalFrame implements
         this.featureCollectionToLayerMap.put(layer.getFeatureCollection(),
                 layer);
         this.layerViewPanel.repaint();
+    }
+
+    public void addAscLayer(String fileName) {
+        String populationName = fileName
+        .substring(
+                fileName.
+                lastIndexOf("/") + 1, //$NON-NLS-1$
+                fileName.
+                lastIndexOf(".")); //$NON-NLS-1$
+        double[][] range = new double[2][2];
+        BufferedImage grid =
+            ArcGridReader.loadAsc(fileName, range);
+        //projectFrame.addImage(populationName, grid, range);
+        this.addGrid(populationName, grid, range);
+        if (this.getLayers().size() == 1) {
+            try {
+                this.layerViewPanel.getViewport().zoom(
+                        new GM_Envelope(
+                                range[0][0],
+                                range[0][1],
+                                range[1][0],
+                                range[1][1]));
+            } catch (NoninvertibleTransformException e1) {
+                e1.printStackTrace();
+            }
+        }        
+    }
+
+    public void addGeotiffLayer(String fileName) {
+        String populationName = fileName
+        .substring(
+                fileName.
+                lastIndexOf("/") + 1, //$NON-NLS-1$
+                fileName.
+                lastIndexOf(".")); //$NON-NLS-1$
+        double[][] range = new double[2][2];
+        BufferedImage image =
+            GeoTiffReader.loadGeoTiffImage(fileName, range);
+        this.addImage(populationName, image, range);
+        if (this.getLayers().size() == 1) {
+            try {
+                this.layerViewPanel.getViewport().zoom(
+                        new GM_Envelope(
+                                range[0][0],
+                                range[0][1],
+                                range[1][0],
+                                range[1][1]));
+            } catch (NoninvertibleTransformException e1) {
+                e1.printStackTrace();
+            }
+        }        
+    }
+
+    public void addShapefileLayer(String fileName) {
+        String populationName = fileName
+        .substring(
+                fileName.
+                lastIndexOf("/") + 1, //$NON-NLS-1$
+                fileName.
+                lastIndexOf(".")); //$NON-NLS-1$
+        ShapefileReader shapefileReader =
+            new ShapefileReader(
+                    fileName, populationName, DataSet
+                    .getInstance(), true);
+
+        Population<DefaultFeature> population =
+            shapefileReader.getPopulation();
+        if (population != null) {
+            this.addFeatureCollection(population,
+                    population.getNom());
+        }
+        shapefileReader.read();
+        if (this.getLayers().size() == 1) {
+            try {
+                this.layerViewPanel.getViewport().zoom(
+                        new GM_Envelope(
+                                shapefileReader.getMinX(),
+                                shapefileReader.getMaxX(),
+                                shapefileReader.getMinY(),
+                                shapefileReader.getMaxY()));
+            } catch (NoninvertibleTransformException e1) {
+                e1.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -413,15 +501,12 @@ public class ProjectFrame extends JInternalFrame implements
         double max = Double.MIN_VALUE;
         Raster raster = image.getData();
         for (int x = 0; x < image.getWidth(); x++) {
-            System.out.println("x = "+x);
             for (int y = 0; y < image.getHeight(); y++) {
                 double[] value = raster.getPixel(x, y, new double[1]);
                 min = Math.min(min, value[0]);
                 max = Math.max(max, value[0]);
             }
         }
-        System.out.println("min = "+min);
-        System.out.println("max = "+max);
         ColorMap colorMap = new ColorMap();
         Interpolate interpolate = new Interpolate();
         double diff = max - min;
