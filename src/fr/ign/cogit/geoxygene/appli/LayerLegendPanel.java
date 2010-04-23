@@ -137,13 +137,13 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             I18N.getString("LayerLegendPanel." + //$NON-NLS-1$
             		"EditLayerAttributes"), //$NON-NLS-1$
             new ImageIcon(this.getClass().getResource(
-                    "/icons/visualiserAttributs.png"))); //$NON-NLS-1$
+                    "/icons/16x16/editAttributes.png"))); //$NON-NLS-1$
     JMenuItem deleteMenuItem = new JMenuItem(
             I18N.getString("LayerLegendPanel.DeleteLayer")); //$NON-NLS-1$
     JMenuItem editSldMenuItem = new JMenuItem(
             I18N.getString("LayerLegendPanel.EditStyle"), //$NON-NLS-1$
             new ImageIcon(this.getClass().getResource(
-                    "/icons/editSld.png"))); //$NON-NLS-1$
+                    "/icons/16x16/editStyles.png"))); //$NON-NLS-1$
     JMenuItem centerViewMenuItem = new JMenuItem(
             I18N.getString("LayerLegendPanel." + //$NON-NLS-1$
             		"CenterViewOnLayer")); //$NON-NLS-1$
