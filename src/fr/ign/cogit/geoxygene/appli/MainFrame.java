@@ -194,6 +194,14 @@ public class MainFrame extends JFrame {
                         }
                     }
                 });
+        JMenuItem newProjectFrameMenuItem = new JMenuItem(I18N
+                .getString("MainFrame.NewProject")); //$NON-NLS-1$
+        newProjectFrameMenuItem
+                .addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(final ActionEvent e) {
+                    	MainFrame.this.newProjectFrame();
+                    }
+                });
         JMenuItem exitMenuItem = new JMenuItem(I18N
                 .getString("MainFrame.Exit")); //$NON-NLS-1$
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -203,6 +211,7 @@ public class MainFrame extends JFrame {
             }
         });
         fileMenu.add(openFileMenuItem);
+        fileMenu.add(newProjectFrameMenuItem);
         fileMenu.addSeparator();
         fileMenu.add(exitMenuItem);
         this.menuBar.setFont(this.application.getFont());
