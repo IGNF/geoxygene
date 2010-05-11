@@ -35,6 +35,10 @@ public class GM_Triangle extends GM_Polygon {
         DirectPositionList dpl = this.coord();
         return dpl.get(i);
     }
+    
+    public GM_Triangle() {
+        
+    }
 
     public DirectPositionList getCorners() {
         return this.coord();
