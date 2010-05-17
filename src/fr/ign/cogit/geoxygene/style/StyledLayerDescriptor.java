@@ -486,6 +486,7 @@ public class StyledLayerDescriptor {
             PolygonSymbolizer polygonSymbolizer = new PolygonSymbolizer();
             polygonSymbolizer.setStroke(stroke);
             polygonSymbolizer.setFill(fill);
+            polygonSymbolizer.setUnitOfMeasurePixel();
             rule.getSymbolizers().add(polygonSymbolizer);
             return rule;
         }

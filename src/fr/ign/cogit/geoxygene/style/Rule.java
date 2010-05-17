@@ -176,11 +176,9 @@ public class Rule {
 		+ "\n"; //$NON-NLS-1$
 		result += "\tFilter " + this.getFilter() //$NON-NLS-1$
 		+ "\n"; //$NON-NLS-1$
-		/*
 		for (Symbolizer symbolizer:this.getSymbolizers()) {
 			result+="\tSymbolizer "+symbolizer+"\n"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
-		*/
 		return result;
 	}
 }

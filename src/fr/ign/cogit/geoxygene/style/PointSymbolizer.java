@@ -58,6 +58,15 @@ public class PointSymbolizer extends AbstractSymbolizer {
 		for(Mark mark:this.getGraphic().getMarks()) {
 			Shape markShape = mark.toShape();
 			float size = this.getGraphic().getSize();
+            double scale = 1;
+            if (this.getUnitOfMeasure() != PIXEL) {
+                try {
+                    scale = viewport.getModelToViewTransform().getScaleX();
+                } catch (NoninvertibleTransformException e) {
+                    e.printStackTrace();
+                }
+            }
+            size *= scale;
 			AffineTransform at = AffineTransform.getTranslateInstance(point.getX(),point.getY());
 			at.rotate(this.getGraphic().getRotation());
 			at.scale(size,size);

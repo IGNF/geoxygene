@@ -257,6 +257,7 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
             } else {
                 if (logger.isTraceEnabled()) {
                     logger.trace("null shape for " + polygon); //$NON-NLS-1$
+                    logger.trace("ring = " + polygon.exteriorLineString());
                 }
             }
         } catch (NoninvertibleTransformException e) {
