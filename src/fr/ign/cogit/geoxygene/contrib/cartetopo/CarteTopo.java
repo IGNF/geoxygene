@@ -24,6 +24,7 @@ package fr.ign.cogit.geoxygene.contrib.cartetopo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
@@ -370,15 +371,15 @@ public class CarteTopo extends DataSet {
      */
     public void creeTopologieArcsNoeuds(double tolerance) {
         Arc arc;
-        FT_FeatureCollection<Noeud> selection;
+        Collection<Noeud> selection;
         // initialisation de l'index au besoin
         if (!this.getPopNoeuds().hasSpatialIndex()) this.getPopNoeuds().initSpatialIndex(Tiling.class, true, 20 );
         for(Object a:this.getPopArcs()) {
             arc = (Arc)a;
             selection = this.getPopNoeuds().select(arc.getGeometrie().startPoint(), tolerance);
-            if (selection.getElements().size() != 0) arc.setNoeudIni(selection.getElements().get(0));
+            if (!selection.isEmpty()) arc.setNoeudIni(selection.iterator().next());
             selection = this.getPopNoeuds().select(arc.getGeometrie().endPoint(), tolerance);
-            if (selection.getElements().size() != 0) arc.setNoeudFin(selection.getElements().get(0));
+            if (!selection.isEmpty()) arc.setNoeudFin(selection.iterator().next());
         }
 
     }
@@ -422,22 +423,22 @@ public class CarteTopo extends DataSet {
                 continue;
             }
             //noeud initial
-            FT_FeatureCollection<Noeud> selection = this.getPopNoeuds().select(arc.getGeometrie().startPoint(),tolerance);
-            if (selection.getElements().size() == 0) {
+            Collection<Noeud> selection = this.getPopNoeuds().select(arc.getGeometrie().startPoint(),tolerance);
+            if (selection.isEmpty()) {
                 noeud = this.getPopNoeuds().nouvelElement(new GM_Point(arc.getGeometrie().startPoint()));
             }
             else {
-                noeud = selection.getElements().get(0);
+                noeud = selection.iterator().next();
                 arc.getGeometrie().coord().set(0,noeud.getGeometrie().getPosition());
             }
             arc.setNoeudIni(noeud);
             //noeud final
             selection = this.getPopNoeuds().select(arc.getGeometrie().endPoint(),tolerance);
-            if (selection.getElements().size() == 0) {
+            if (selection.isEmpty()) {
                 noeud = this.getPopNoeuds().nouvelElement(new GM_Point(arc.getGeometrie().endPoint()));
             }
             else {
-                noeud = selection.getElements().get(0);
+                noeud = selection.iterator().next();
                 arc.getGeometrie().coord().set(arc.getGeometrie().sizeControlPoint()-1,noeud.getGeometrie().getPosition());
             }
             arc.setNoeudFin(noeud);
@@ -477,7 +478,7 @@ public class CarteTopo extends DataSet {
      */
     public void filtreDoublons(double tolerance) {
         List<Noeud> aJeter = new ArrayList<Noeud>();
-        FT_FeatureCollection<Noeud> selection;
+        Collection<Noeud> selection;
 
         // initialisation de l'index au besoin
         if (!this.getPopNoeuds().hasSpatialIndex()) this.getPopNoeuds().initSpatialIndex(Tiling.class, true, 20);
@@ -718,7 +719,7 @@ public class CarteTopo extends DataSet {
             if (arcsEnleves.contains(arc)||dejaTraites.contains(arc)) continue;
             //les arcs qui croisent l'arc courant
             // Optimisation et blindage pour tous les cas non garanti (Seb)
-            FT_FeatureCollection<Arc> selection = this.getPopArcs().select(arc.getGeometrie());
+            Collection<Arc> selection = this.getPopArcs().select(arc.getGeometrie());
             //on enlève l'arc courant et les arcs déjà enlevés
             selection.remove(arc);
             selection.removeAll(arcsEnleves);
@@ -844,13 +845,13 @@ public class CarteTopo extends DataSet {
          */
         for (Noeud noeud:this.getPopNoeuds()) {
             if (noeud.arcs().size()==1) {
-                FT_FeatureCollection<Arc> arcs = this.getPopArcs().select(noeud.getGeom().buffer(tolerance));
+                Collection<Arc> arcs = this.getPopArcs().select(noeud.getGeom().buffer(tolerance));
                 arcs.removeAll(noeud.arcs());
                 if (!arcs.isEmpty()) {
                     if (logger.isDebugEnabled()) logger.debug(I18N.getString("CarteTopo.HandlingNode")+noeud); //$NON-NLS-1$
                     if (logger.isDebugEnabled()) logger.debug(I18N.getString("CarteTopo.NumberOfNeighborNodes")+this.getPopNoeuds().select(noeud.getGeom().buffer(tolerance)).size()); //$NON-NLS-1$
                     if (logger.isDebugEnabled()) logger.debug(I18N.getString("CarteTopo.NumberOfNeighborEdges")+arcs.size()); //$NON-NLS-1$
-                    Arc arc=arcs.get(0);
+                    Arc arc=arcs.iterator().next();
                     if (logger.isDebugEnabled()) logger.debug(I18N.getString("CarteTopo.EdgeSplitting")+arc); //$NON-NLS-1$
                     arc.projeteEtDecoupe(noeud);
                 }
@@ -881,7 +882,7 @@ public class CarteTopo extends DataSet {
         for(int index=0;index<this.getPopNoeuds().size();index++) {
             Noeud noeud = this.getPopNoeuds().get(index);
             //On cherche les noeuds voisins
-            FT_FeatureCollection<Noeud> noeudsProches = this.getPopNoeuds().select(noeud.getGeometrie(), tolerance);
+            Collection<Noeud> noeudsProches = this.getPopNoeuds().select(noeud.getGeometrie(), tolerance);
             //On enlève les noeuds déjà sélectionnés comme à enlever
             noeudsProches.removeAll(aEnlever);
             if (noeudsProches.size() < 2) continue;// s'il n'y a qu'un seul noeud, c'est le noeud courant
@@ -976,7 +977,7 @@ public class CarteTopo extends DataSet {
         Noeud noeud, nouveauNoeud, noeudProche;
         Arc arc;
         List<FT_Feature> aEnlever = new ArrayList<FT_Feature>();
-        FT_FeatureCollection<Noeud> noeudsProches;
+        Collection<Noeud> noeudsProches;
         List<Arc> arcsModifies;
         if ( ! this.getPopNoeuds().hasSpatialIndex() )
             this.getPopNoeuds().initSpatialIndex(Tiling.class, true);
@@ -989,7 +990,7 @@ public class CarteTopo extends DataSet {
 
             //Si il y a plusieurs noeuds dans la surface, on crée un nouveau noeud
             GM_MultiPoint points = new GM_MultiPoint();
-            itNoeudsProches = noeudsProches.getElements().iterator();
+            itNoeudsProches = noeudsProches.iterator();
             while (itNoeudsProches.hasNext()) {
                 noeudProche =  itNoeudsProches.next();
                 points.add(noeudProche.getGeometrie());
@@ -1000,7 +1001,7 @@ public class CarteTopo extends DataSet {
 
             //On raccroche tous les arcs à ce nouveau noeud
             arcsModifies = new ArrayList<Arc>();
-            itNoeudsProches = noeudsProches.getElements().iterator();
+            itNoeudsProches = noeudsProches.iterator();
             while (itNoeudsProches.hasNext()) {
                 noeudProche =  itNoeudsProches.next();
                 nouveauNoeud.addAllCorrespondants(noeudProche.getCorrespondants());
@@ -1072,7 +1073,7 @@ public class CarteTopo extends DataSet {
         while (itNoeuds.hasNext()) {
             noeud =  itNoeuds.next();
             if (impassesSeulement && ( noeud.arcs().size() != 1 )) continue;
-            itArcs = this.getPopArcs().select(noeud.getGeom(),distanceMaxNoeudArc).getElements().iterator();
+            itArcs = this.getPopArcs().select(noeud.getGeom(),distanceMaxNoeudArc).iterator();
             while (itArcs.hasNext()) {
                 arc =  itArcs.next();
                 if ( Distances.distance(arc.getGeometrie().startPoint(),
@@ -1116,7 +1117,7 @@ public class CarteTopo extends DataSet {
                 DirectPosition dp = itPointsCT.next();
                 if ( Distances.distance(arcCT.getGeometrie().startPoint(), dp) < distanceMaxProjectionNoeud ) continue;
                 if ( Distances.distance(arcCT.getGeometrie().endPoint(), dp) < distanceMaxProjectionNoeud ) continue;
-                itArcs = this.getPopArcs().select(dp,distanceMaxNoeudArc).getElements().iterator();
+                itArcs = this.getPopArcs().select(dp,distanceMaxNoeudArc).iterator();
                 while (itArcs.hasNext()) {
                     arc =  itArcs.next();
                     if ( Distances.distance(arc.getGeometrie().startPoint(),
@@ -1145,7 +1146,7 @@ public class CarteTopo extends DataSet {
         Iterator<Arc> itArcs ;
         while (itPts.hasNext()) {
             GM_Point point = itPts.next();
-            itArcs = this.getPopArcs().select(point,distanceMaxNoeudArc).getElements().iterator();
+            itArcs = this.getPopArcs().select(point,distanceMaxNoeudArc).iterator();
             while (itArcs.hasNext()) {
                 arc = itArcs.next();
                 if ( Distances.distance(arc.getGeometrie().startPoint(),
@@ -1287,19 +1288,24 @@ public class CarteTopo extends DataSet {
                     (!cycle.isAGauche()&&!cycle.getOrientationsArcs().get(0).booleanValue()))?
                             cycle.getArcs().get(0).getFaceGauche():cycle.getArcs().get(0).getFaceDroite();
                             if (face==null) {
-                                FT_FeatureCollection<Face> selection = this.getPopFaces().select(cycle.getGeometrie());
+                                Collection<Face> selection = this.getPopFaces().select(cycle.getGeometrie());
                                 if (selection.isEmpty()) {face = faceInfinie;} else {
                                     selection.removeAll(cycle.getListeFacesInterieuresDuCycle());
                                     Iterator<Face> it = selection.iterator();
                                     while(it.hasNext()) {if(!it.next().getGeometrie().contains(cycle.getGeometrie())) it.remove();}
                                     if (selection.isEmpty()) {face = faceInfinie;}
-                                    else {face = selection.get(0);}
+                                    else {face = selection.iterator().next();}
                                 }
                             }
                             marquerCycle(cycle,face);
                             // on ajoute un trous à la géométrie de la face infinie
-                            GM_Ring trou = new GM_Ring(cycle.getGeometrie());
-                            if ((trou.coord().size()!=0)&&face.getGeometrie().contains(trou)) face.getGeometrie().addInterior(trou);
+                            if (cycle.getGeometrie().sizeControlPoint() > 3) { 
+                            	GM_Ring trou = new GM_Ring(cycle.getGeometrie());
+                            	if ((trou.coord().size() != 0) 
+                            			&& face.getGeometrie().contains(trou)) {
+                            		face.getGeometrie().addInterior(trou);
+                            	}
+                            }
                             fireActionPerformed(new ActionEvent(this,3,I18N.getString("CarteTopo.FaceTopologyCycle"),iteration++)); //$NON-NLS-1$
         }
         fireActionPerformed(new ActionEvent(this,4,I18N.getString("CarteTopo.FaceTopologyEnd"))); //$NON-NLS-1$
@@ -1524,8 +1530,8 @@ public class CarteTopo extends DataSet {
             Arc arc = itArcs.next();
             if ( !arcsNonTraites.contains(arc) ) continue;
             arcsNonTraites.remove(arc);
-            FT_FeatureCollection<Arc> arcsProches = arcsNonTraites.select(arc.getGeometrie().startPoint(),0);
-            Iterator<Arc> itArcsProches = arcsProches.getElements().iterator();
+            Collection<Arc> arcsProches = arcsNonTraites.select(arc.getGeometrie().startPoint(),0);
+            Iterator<Arc> itArcsProches = arcsProches.iterator();
             while (itArcsProches.hasNext()) {
                 Arc arc2 = itArcsProches.next();
                 if ( arc2.getGeometrie().startPoint().equals(arc.getGeometrie().startPoint(),0)

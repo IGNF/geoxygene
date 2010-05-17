@@ -21,6 +21,8 @@
 
 package fr.ign.cogit.geoxygene.example;
 
+import java.util.Collection;
+
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
@@ -44,7 +46,7 @@ public class TestIndex {
     private Class<FT_Feature> featureClass;
     private String nomClasse = "geoxygene.geodata.Troncon_route"; //$NON-NLS-1$
     private FT_FeatureCollection< FT_Feature> featureList;
-    private FT_FeatureCollection<?> sublist;
+    private Collection<?> sublist;
     private GM_Envelope emprise;
     private long t1, t2;
 

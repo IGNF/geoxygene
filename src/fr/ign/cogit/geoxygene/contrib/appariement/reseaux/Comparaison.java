@@ -27,6 +27,7 @@
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -79,7 +80,7 @@ public class Comparaison {
 		double ltotArc, dtotArc, dmaxArc, l1, l2, l;
 		int n = 0;
 		Iterator<?> itArcsRef, itArcsComp;
-		FT_FeatureCollection<?> arcsCompProches;
+		Collection<?> arcsCompProches;
 		FT_FeatureCollection<?> arcsRef = reseau1.getPopArcs();
 		FT_FeatureCollection<?> arcsComp = reseau2.getPopArcs();
 
@@ -101,7 +102,7 @@ public class Comparaison {
 				else l2 = Distances.distance(dp.get(i),dp.get(i+1));
 				l = l1+l2;
 				double dmin = Double.MAX_VALUE;
-				itArcsComp = arcsCompProches.getElements().iterator();
+				itArcsComp = arcsCompProches.iterator();
 				while (itArcsComp.hasNext()) {
 					FT_Feature objetComp = (FT_Feature) itArcsComp.next();
 					GM_LineString geomComp = (GM_LineString)objetComp.getGeom();
@@ -201,7 +202,7 @@ public class Comparaison {
 		GM_LineString geom1, geom2;
 		Vecteur v12, vmin, vPourUnArc1, vTotal;
 		DirectPosition pt1, projete;
-		FT_FeatureCollection<?> arcs2proches;
+		Collection<?> arcs2proches;
 		double longArc1, poids, d12, ecartQuadratiquePourUnArc1, l1, l2,
 		poidsPourUnArc1, ecartPourUnArc1, ecartMaxArc1, poidsTotal;
 
@@ -259,7 +260,7 @@ public class Comparaison {
 				poids = l1+l2;
 				// projection du point sur le réseau2
 				double dmin = Double.MAX_VALUE;
-				itArcs2 = arcs2proches.getElements().iterator();
+				itArcs2 = arcs2proches.iterator();
 				while (itArcs2.hasNext()) { // pour chaque arc du réseau 2
 					arc2 = (Arc) itArcs2.next();
 					geom2 = (GM_LineString)arc2.getGeom();

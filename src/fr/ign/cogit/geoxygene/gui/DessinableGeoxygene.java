@@ -40,7 +40,9 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +54,6 @@ import org.apache.batik.ext.awt.geom.Polygon2D;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
@@ -222,7 +223,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	}
 
 	boolean useCache = false;
-	Map<Layer,FT_FeatureCollection<? extends FT_Feature>> cachedFeatures = new HashMap<Layer,FT_FeatureCollection<? extends FT_Feature>>();
+	Map<Layer, Collection<? extends FT_Feature>> cachedFeatures = new HashMap<Layer, Collection<? extends FT_Feature>>();
 	/**
 	 * @param layer
 	 */
@@ -237,9 +238,9 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @param layer
 	 * @return the features in cache
 	 */
-	private FT_FeatureCollection<? extends FT_Feature> getCachedFeatures(Layer layer) {return this.cachedFeatures.get(layer);}
+	private Collection<? extends FT_Feature> getCachedFeatures(Layer layer) {return this.cachedFeatures.get(layer);}
 	
-	public void dessiner(Graphics2D g, Layer layer,FT_FeatureCollection<? extends FT_Feature> features) throws InterruptedException {
+	public void dessiner(Graphics2D g, Layer layer, Collection<? extends FT_Feature> features) throws InterruptedException {
 		if (features == null) return;
 		if (logger.isTraceEnabled()) {logger.trace("dessiner() sur "+features.size()+" features");}
 		double debut = System.currentTimeMillis();
@@ -256,7 +257,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @param features
 	 * @throws InterruptedException
 	 */
-	public void dessiner(Graphics2D g, Style style,FT_FeatureCollection<? extends FT_Feature> features) throws InterruptedException {
+	public void dessiner(Graphics2D g, Style style, Collection<? extends FT_Feature> features) throws InterruptedException {
 		if (style.isUserStyle()) {
 			UserStyle userStyle = (UserStyle) style;
 			for (FeatureTypeStyle featureTypeStyle:userStyle.getFeatureTypeStyles()) {
@@ -271,10 +272,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 					if (rule.getFilter()==null) {
 						for (Symbolizer symbolizer:rule.getSymbolizers()) this.dessiner(g, symbolizer,features);
 					} else {
-						FT_FeatureCollection<FT_Feature> filteredFeatures = new FT_FeatureCollection<FT_Feature>();
-						int size = features.size();
-						for (int index = 0; index < size ; index++) {
-							FT_Feature feature=features.get(index);
+						Collection<FT_Feature> filteredFeatures = new HashSet<FT_Feature>();
+						for (FT_Feature feature : features) {
 							if (rule.getFilter().evaluate(feature)) filteredFeatures.add(feature);
 						}
 						if (logger.isTraceEnabled()) logger.trace(filteredFeatures.size()+" features filtered");
@@ -294,7 +293,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 	 * @throws InterruptedException 
 	 */
 	@SuppressWarnings("unchecked")
-	public void dessiner(Graphics2D g, Symbolizer symbolizer,FT_FeatureCollection<? extends FT_Feature> features)  throws InterruptedException {
+	public void dessiner(Graphics2D g, Symbolizer symbolizer, Collection<? extends FT_Feature> features)  throws InterruptedException {
 		if (symbolizer.isRasterSymbolizer()) {
 			RasterSymbolizer rasterSymbolizer=(RasterSymbolizer)symbolizer;
 			this.dessiner(rasterSymbolizer);
@@ -316,9 +315,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 				haloRadius = textSymbolizer.getHalo().getRadius();
 			}
 
-			int size = features.size();
-			for (int index = 0; index < size ; index++) {
-				FT_Feature feature=features.get(index);
+			for (FT_Feature feature : features) {
 				String texte = (String) feature.getAttribute(textSymbolizer.getLabel());
 				if (feature.getGeom() instanceof GM_Point) {
 					this.dessinerText(g, fillColor, haloColor, haloRadius, font, texte, ((GM_Point)feature.getGeom()).getPosition());
@@ -338,9 +335,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 		}
 		if (symbolizer.isPointSymbolizer()) {
 			PointSymbolizer pointSymbolizer=(PointSymbolizer)symbolizer;
-			int size = features.size();
-			for (int index = 0; index < size ; index++) {
-				FT_Feature feature=features.get(index);
+			for (FT_Feature feature : features) {
 				if (feature.getGeom() instanceof GM_Point)
 					this.dessiner(g, pointSymbolizer, ((GM_Point)feature.getGeom()).getPosition());
 				else this.dessiner(g, pointSymbolizer, (feature.getGeom()).centroid());
@@ -351,9 +346,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 			PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) symbolizer;
 			Color fillColor = null;
 			if (polygonSymbolizer.getFill()!=null) fillColor = polygonSymbolizer.getFill().getColor();
-			int size = features.size();
-			for (int index = 0; index < size ; index++) {
-				FT_Feature feature=features.get(index);
+			for (FT_Feature feature : features) {
 				if (feature.getGeom()==null) continue;
 				if (feature.getGeom().isPolygon()) {
 					if (fillColor!=null) this.remplir(g, fillColor, (GM_Polygon)feature.getGeom());
@@ -382,9 +375,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 			if (symbolizer.getStroke()!=null) {
 				if (symbolizer.getStroke().getGraphicType()==null) {
 					// Solid color
-					int size = features.size();
-					for (int index = 0; index < size ; index++) {
-						FT_Feature feature=features.get(index);
+					for (FT_Feature feature : features) {
 						if (feature.getGeom()==null) continue;
 						if (feature.getGeom().isLineString()) {
 							this.dessiner(g, symbolizer.getStroke(), (GM_LineString) feature.getGeom());

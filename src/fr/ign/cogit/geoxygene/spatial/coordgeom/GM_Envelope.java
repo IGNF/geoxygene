@@ -177,8 +177,13 @@ public class GM_Envelope {
 		for (int i=0; i<n; i++) {
 			double theMin = this.lowerCorner.getCoordinate(i);
 			double theMax = this.upperCorner.getCoordinate(i);
-			result.setCoordinate(i,theMin+(theMax-theMin)/2);
-			if (logger.isTraceEnabled()) logger.trace("Center "+i+" "+theMin+" "+theMax+" = "+(theMin+(theMax-theMin)/2)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			double val = theMin+(theMax-theMin)/2;
+			if (!Double.isNaN(val)) {
+				result.setCoordinate(i,val);
+				if (logger.isTraceEnabled())
+					logger
+							.trace("Center " + i + " " + theMin + " " + theMax + " = " + (theMin + (theMax - theMin) / 2)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			}
 		}
 		return result;
 	}

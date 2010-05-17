@@ -291,7 +291,7 @@ public class LayerRenderer implements Renderer {
                 || !this.layer.isVisible()) {
             return;
         }
-        FT_FeatureCollection<? extends FT_Feature> collection =
+        Collection<? extends FT_Feature> collection =
             this.features.select(envelope);
         for (Style style : this.layer.getStyles()) {
             if (this.isCancelled()) {
@@ -389,13 +389,12 @@ public class LayerRenderer implements Renderer {
             return;
         }
         //logger.info("using rule "+rule.getName());
-        FT_FeatureCollection<? extends FT_Feature> collection =
+        Collection<? extends FT_Feature> collection =
             this.features.select(envelope);
         if (collection == null) {
             return;
         }
-        Collection<FT_Feature> filteredCollection =
-            (Collection<FT_Feature>) collection.getElements();
+        Collection<FT_Feature> filteredCollection = null;
         if (rule.getFilter() != null) {
             if (this.isCancelled()) {
                 return;
@@ -619,10 +618,10 @@ public class LayerRenderer implements Renderer {
             toViewPoint(envelope.getLowerCorner());
             this.clearImageCache((int) lowerCorner.getX(),
                     (int) upperCorner.getY(),
-                    (int) (upperCorner.getX() - lowerCorner.getX()),
-                    (int) (lowerCorner.getY() - upperCorner.getY()));
+                    (int) (upperCorner.getX() - lowerCorner.getX() + 2),
+                    (int) (lowerCorner.getY() - upperCorner.getY() + 2));
         } catch (NoninvertibleTransformException e) { e.printStackTrace(); }
-        FT_FeatureCollection<? extends FT_Feature> visibleFeatures =
+        Collection<? extends FT_Feature> visibleFeatures =
             this.features.select(envelope);
         for (Style style : this.layer.getStyles()) {
             if (this.isCancelled()) { return; }

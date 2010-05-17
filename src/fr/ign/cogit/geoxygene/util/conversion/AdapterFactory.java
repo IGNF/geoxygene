@@ -87,14 +87,15 @@ public class AdapterFactory  {
 			return factory.createPoint(toCoordinateSequence(factory,geom.coord()));
 		}
 		if (geom instanceof GM_Ring) {
-			if (geom.coord().size()<=3&&geom.coord().size()!=0) {
-				//logger.error("Une GM_Ring contenant "+geom.coord().size()+" points ne peut être transformée en LinearRing.");
+			DirectPositionList coord = geom.coord();
+			if (coord.size() <= 3 && !coord.isEmpty()) {
 			    if (logger.isDebugEnabled()) {
 			        logger.debug(geom);
+			        logger.debug(coord);
 			    }
 				throw new Exception(I18N.getString("AdapterFactory.RingWithLessThan4Points")); //$NON-NLS-1$
 			}
-			return factory.createLinearRing(toCoordinateSequence(factory, geom.coord()));
+			return factory.createLinearRing(toCoordinateSequence(factory, coord));
 		}
 		if (geom instanceof GM_LineString) {
 			return factory.createLineString(toCoordinateSequence(factory, geom.coord()));

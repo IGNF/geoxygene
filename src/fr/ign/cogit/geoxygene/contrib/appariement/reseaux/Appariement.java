@@ -23,6 +23,7 @@ package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -410,9 +411,9 @@ public abstract class Appariement {
             }
             nbRef++;
             // Détermination des noeuds comp dans le rayon de recherche
-            List<Noeud> candidats = reseau2.getPopNoeuds().select(
+            Collection<Noeud> candidats = reseau2.getPopNoeuds().select(
                     noeudRef.getGeometrie(),
-                    noeudRef.getTaille()).getElements();
+                    noeudRef.getTaille());
             if (candidats.size() != 0) {
                 LienReseaux lien = (LienReseaux) liens.nouvelElement();
                 lien.addNoeuds1(noeudRef);
@@ -474,9 +475,9 @@ public abstract class Appariement {
         while (itArcs.hasNext()) {
             ArcApp arcComp = (ArcApp) itArcs.next();
             // On recherche les arcs dans l'entourage proche, grosso modo
-            List<Arc> arcsProches = reseau1.getPopArcs().select(
+            Collection<Arc> arcsProches = reseau1.getPopArcs().select(
                     arcComp.getGeometrie(),
-                    param.distanceArcsMax).getElements();
+                    param.distanceArcsMax);
             if (arcsProches.size() == 0) { continue; }
             // On calcule leur distance à arccomp et
             // on recherche le plus proche
@@ -497,9 +498,12 @@ public abstract class Appariement {
             double dmax = Math.min(dmin + param.distanceArcsMin,
                     param.distanceArcsMax);
             List<Arc> candidats = new ArrayList<Arc>();
-            for (int i = 0; i < arcsProches.size(); i++) {
-                double d = distances.get(i).doubleValue();
-                if (d < dmax) { candidats.add(arcsProches.get(i)); }
+            Iterator<Arc> itArc = arcsProches.iterator();
+    		Iterator<Double> itDistance = distances.iterator();
+            while (itArc.hasNext() && itDistance.hasNext()) {
+            	Double distance = itDistance.next();
+            	Arc arc = itArc.next();
+                if (distance < dmax) { candidats.add(arc); }
             }
             // Si pas de candidat pour l'arccomp, on s'arrête là
             if (candidats.size() == 0) { continue; }
@@ -2238,7 +2242,7 @@ public abstract class Appariement {
         double distancePtCourantVersArcADecoupe;
         ArcApp arcDecoupant, arcADecouper;
         Iterator<?> itArcsDecoupes, itArcsDecoupants;
-        FT_FeatureCollection<?> arcsDecoupantsRes2;
+        Collection<?> arcsDecoupantsRes2;
         List<GM_Point> pointsDeDecoupage;
         int indiceDernierPtProche;
 
@@ -2259,7 +2263,7 @@ public abstract class Appariement {
                         arcADecouper.getGeometrie(), distanceMaxNoeudArc);
             if (arcsDecoupantsRes2.size() == 0) { continue; }
             // on traite chaque arc découpant à son tour
-            itArcsDecoupants = arcsDecoupantsRes2.getElements().iterator();
+            itArcsDecoupants = arcsDecoupantsRes2.iterator();
             while (itArcsDecoupants.hasNext()) {
                 arcDecoupant = (ArcApp) itArcsDecoupants.next();
                 // ré échantillonage de la géométrie de l'arc découpant à

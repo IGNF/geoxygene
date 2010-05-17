@@ -23,8 +23,10 @@ package fr.ign.cogit.geoxygene.feature;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
@@ -95,6 +97,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      * Constructeur
      */
     public FT_FeatureCollection() {
+    	//System.out.println("New FeatureCollection");
     }
 
     /**
@@ -105,6 +108,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      *            collection à recopier
      */
     public FT_FeatureCollection(FT_FeatureCollection<Feat> listeACopier) {
+    	this();
         this.setFlagGeom(listeACopier.getFlagGeom());
         this.setFlagTopo(listeACopier.flagTopo);
         this.getElements().addAll(listeACopier.getElements());
@@ -117,6 +121,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      *            collection à recopier
      */
     public FT_FeatureCollection(Collection<Feat> collectionACopier) {
+    	this();
         this.getElements().addAll(collectionACopier);
     }
 
@@ -619,9 +624,10 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      *            cote
      * @return objets qui intersectent le carre dont P est le centre, de cote D.
      */
-    public FT_FeatureCollection<Feat> select(DirectPosition P, double D) {
+    public Collection<Feat> select(DirectPosition P, double D) {
         if (!this.isIndexed) {
-            FT_FeatureCollection<Feat> selectedFeatures = new FT_FeatureCollection<Feat>();
+            Set<Feat> selectedFeatures =
+                new HashSet<Feat>();
             synchronized (this.elements) {
                 for (Feat feature : this) {
                     if (feature.getGeom().distance(P.toGM_Point()) <= D) selectedFeatures
@@ -640,13 +646,13 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      *            rectangle
      * @return objets qui intersectent un rectangle
      */
-    public FT_FeatureCollection<Feat> select(GM_Envelope env) {
+    public Collection<Feat> select(GM_Envelope env) {
         if (env.width() == 0 || env.length() == 0 || env.isEmpty()) {
-            return new FT_FeatureCollection<Feat>();
+            return new HashSet<Feat>();
         }
         GM_Object envGeom = env.getGeom();
         if (!this.isIndexed) {
-            FT_FeatureCollection<Feat> selectedFeatures = new FT_FeatureCollection<Feat>();
+            Collection<Feat> selectedFeatures = new HashSet<Feat>();
             synchronized (this.elements) {
                 selectedFeatures.addAll(this.elements);
             }
@@ -668,9 +674,9 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      *            geometrie quelconque
      * @return objets qui intersectent un objet geometrique quelconque.
      */
-    public FT_FeatureCollection<Feat> select(GM_Object geometry) {
+    public Collection<Feat> select(GM_Object geometry) {
         if (!this.isIndexed) {
-            FT_FeatureCollection<Feat> selectedFeatures = new FT_FeatureCollection<Feat>();
+            Collection<Feat> selectedFeatures = new HashSet<Feat>();
             synchronized (this.elements) {
                 for (Feat feature : this) {
                     if (feature.getGeom().intersects(geometry)) selectedFeatures
@@ -697,10 +703,10 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      * @return objets qui intersectent strictement un objet geometrique
      *         quelconque
      */
-    public FT_FeatureCollection<Feat> select(GM_Object geometry,
+    public Collection<Feat> select(GM_Object geometry,
                 boolean strictlyCrosses) {
         if (!this.isIndexed) {
-            FT_FeatureCollection<Feat> selectedFeatures = new FT_FeatureCollection<Feat>();
+            Collection<Feat> selectedFeatures = new HashSet<Feat>();
             synchronized (this.elements) {
                 for (Feat feature : this) {
                     if (feature.getGeom().intersectsStrictement(geometry)) selectedFeatures
@@ -722,11 +728,11 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      * @return objets à moins d'une certaine distance d'un objet geometrique
      *         quelconque.
      */
-    public FT_FeatureCollection<Feat> select(GM_Object geometry,
+    public Collection<Feat> select(GM_Object geometry,
                 double distance) {
         if (!this.isIndexed) {
-            FT_FeatureCollection<Feat> selectedFeatures
-            = new FT_FeatureCollection<Feat>();
+            Collection<Feat> selectedFeatures
+            = new HashSet<Feat>();
             synchronized (this.elements) {
                 for (Feat feature : this) {
                     if (feature.getGeom().distance(geometry) <= distance) {

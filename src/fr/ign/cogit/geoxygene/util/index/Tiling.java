@@ -27,6 +27,7 @@
 package fr.ign.cogit.geoxygene.util.index;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -235,8 +236,8 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 
 	// ===============================================
 	/** Selection a l'aide d'un rectangle. */
-	public FT_FeatureCollection<Feature> select(GM_Envelope env) {
-		if (env==null) return new FT_FeatureCollection<Feature>();
+	public Collection<Feature> select(GM_Envelope env) {
+		if (env==null) return new HashSet<Feature>();
 		int tab[];
 		Set<Feature> result = new HashSet<Feature>();
 		GM_Object geometry = new GM_Polygon(env);
@@ -261,9 +262,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 			    }
 			}
 		}
-		FT_FeatureCollection<Feature> collectionresult = new FT_FeatureCollection<Feature>();
-		collectionresult.setElements(result);
-		return collectionresult;
+		return result;
 	}
 
 	// ===============================================
@@ -271,13 +270,13 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	 * Selection dans le carre dont P est le centre, de cote D. NB: distance
 	 * peut être nul.
 	 */
-	public FT_FeatureCollection<Feature> select(DirectPosition P, double distance) {
+	public Collection<Feature> select(DirectPosition P, double distance) {
 		return select(new GM_Envelope(P, distance));
 	}
 
 	// ===============================================
 	/** Selection des objets qui intersectent un objet geometrique quelconque. */
-	public FT_FeatureCollection<Feature> select(GM_Object geometry) {
+	public Collection<Feature> select(GM_Object geometry) {
 		int tab[];
 		Set<Feature> result = new HashSet<Feature>();
 		GM_Envelope envGeometry = geometry.envelope();
@@ -296,9 +295,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 				}
 			}
 		}
-		FT_FeatureCollection<Feature> collectionresult = new FT_FeatureCollection<Feature>();
-		collectionresult.setElements(result);
-		return collectionresult;
+		return result;
 	}
 
 	/**
@@ -312,7 +309,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	 *            touche "geometry" juste sur une extrémité, alors avec TRUE
 	 *            cela ne renvoie pas la ligne, avec FALSE cela la renvoie
 	 */
-	public FT_FeatureCollection<Feature> select(GM_Object geometry,	boolean strictlyCrosses) {
+	public Collection<Feature> select(GM_Object geometry,	boolean strictlyCrosses) {
 		int tab[];
 		Set<Feature> result = new HashSet<Feature>();
 		GM_Envelope envGeometry = geometry.envelope();
@@ -332,9 +329,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 				}
 			}
 		}
-		FT_FeatureCollection<Feature> collectionresult = new FT_FeatureCollection<Feature>();
-		collectionresult.setElements(result);
-		return collectionresult;
+		return result;
 	}
 
 	// ===============================================
@@ -342,13 +337,13 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	 * Selection a l'aide d'un objet geometrique quelconque et d'une distance.
 	 * NB: distance peut être nul.
 	 */
-	public FT_FeatureCollection<Feature> select(GM_Object geometry, double distance) {
+	public Collection<Feature> select(GM_Object geometry, double distance) {
 		if (distance == 0) return select(geometry);
 		try {return select(geometry.buffer(distance));}
 		catch (Exception e) {
 			System.out.println("PROBLEME AVEC LA FABRICATION DU BUFFER LORS D'UNE REQUETE SPATIALE");
 			e.printStackTrace();
-			return new FT_FeatureCollection<Feature>();
+			return new HashSet<Feature>();
 		}
 	}
 

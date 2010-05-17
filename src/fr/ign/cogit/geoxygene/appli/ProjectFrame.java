@@ -298,7 +298,7 @@ public class ProjectFrame extends JInternalFrame implements
         //System.out.println("changed received "+event.getType());
         Layer layer = this.featureCollectionToLayerMap.get(event.getSource());
         if (layer == null) { return; }
-        // this.layerViewPanel.superRepaint();
+       // this.layerViewPanel.superRepaint();
         if (event.getType() == FeatureCollectionEvent.Type.ADDED) {
             this.layerViewPanel.repaint(layer, event.getFeature());
         } else {
@@ -308,7 +308,8 @@ public class ProjectFrame extends JInternalFrame implements
                 repaintGeometry = event.getFeature().getGeom().union(
                         event.getGeometry());
             }
-            this.layerViewPanel.repaint(layer, repaintGeometry);
+            //this.layerViewPanel.repaint(layer, repaintGeometry);
+            this.layerViewPanel.repaint(layer, event.getFeature());
         }
 
         /*

@@ -22,6 +22,7 @@
 package fr.ign.cogit.geoxygene.contrib.geometrie;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -966,8 +967,7 @@ public abstract class Operateurs {
         while (itSurf.hasNext()) {
             objSurf = (FT_Feature) itSurf.next();
             if (aEnlever.contains(objSurf)) continue;
-            List surfAdjacentes = popSurf.select(objSurf.getGeom())
-                    .getElements();
+            Collection surfAdjacentes = popSurf.select(objSurf.getGeom());
             surfAdjacentes.remove(objSurf);
             if (surfAdjacentes.size() == 0) continue;
             aEnlever.addAll(surfAdjacentes);

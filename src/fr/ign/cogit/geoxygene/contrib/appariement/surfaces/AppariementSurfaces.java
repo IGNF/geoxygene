@@ -23,6 +23,7 @@ package fr.ign.cogit.geoxygene.contrib.appariement.surfaces;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -160,7 +161,7 @@ public abstract class AppariementSurfaces {
 
         EnsembleDeLiens preAppLiens = new EnsembleDeLiens();
         Lien lien ;
-        FT_FeatureCollection<?> candidatComp;
+        Collection<? extends FT_Feature> candidatComp;
         FT_Feature featureRef, featureComp;
         GM_Object geomRef, geomComp;
         double surfaceIntersection, pourcentageRecouvrement;
@@ -382,8 +383,8 @@ public abstract class AppariementSurfaces {
         Iterator<?> itRef = popRef.getElements().iterator();
         Iterator<Lien> itLiens = liens.getElements().iterator();
         Set<FT_Feature> objetsRefLies = new HashSet<FT_Feature>();
-        FT_FeatureCollection<?> objetsAdjacents;
-        Lien lienAdjacent, lien2;
+        Collection<? extends FT_Feature> objetsAdjacents;
+        Lien lienAdjacent;
         double surfAdj;
         boolean tousPareils;
 
@@ -405,17 +406,21 @@ public abstract class AppariementSurfaces {
             if (objetsAdjacents == null) continue;
             if (objetsAdjacents.size() == 1) continue;
             objetsAdjacents.remove(objetRef);
-            lienAdjacent = liensDeObj(objetsAdjacents.get(0), liens);
-            surfAdj = ((FT_Feature)objetsAdjacents.get(0)).getGeom().area();
+            Iterator<? extends FT_Feature> iterator = objetsAdjacents.iterator();
+            lienAdjacent = liensDeObj(iterator.next(), liens);
+            surfAdj = objetsAdjacents.iterator().next().getGeom().area();
             if (lienAdjacent == null) continue;
             tousPareils=true;
-            for(int i=1;i<objetsAdjacents.size();i++) {
-                lien2 = liensDeObj(objetsAdjacents.get(i), liens);
-                if (lienAdjacent!=lien2) {
+            while (iterator.hasNext()) {
+            	FT_Feature feature = iterator.next();
+                Lien lien2 = liensDeObj(feature, liens);
+                if (lienAdjacent != lien2) {
                     tousPareils=false;
                     break;
                 }
-                surfAdj = surfAdj + ((FT_Feature)objetsAdjacents.get(i)).getGeom().area();
+                surfAdj = surfAdj + feature.getGeom().area();
+            }
+            for(int i=1;i<objetsAdjacents.size();i++) {
             }
             if (!tousPareils) continue;
             if ( objetRef.getGeom().area() / surfAdj > param.seuilPourcentageTaillePetitesSurfaces) continue;

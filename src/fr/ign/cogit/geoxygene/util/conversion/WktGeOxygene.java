@@ -233,7 +233,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
 
     private static String ringTaggedText(GM_Ring ring) {
                 StringBuffer result=new StringBuffer();
-                result.append("RING ");
+                result.append("LINEARRING ");
                 if (IsEmptyUtil.isEmpty(ring)) result.append("EMPTY");
                 else result.append(ringText(ring));
                 return result.toString();

@@ -614,7 +614,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	 * @param listeGeometries liste des géométries à unir
 	 * @return union d'une liste de géométries
 	 */
-	public static GM_Object union(List<GM_Object> listeGeometries) {
+	public static GM_Object union(List<? extends GM_Object> listeGeometries) {
 		List<Geometry> listeGeometriesJts = new ArrayList<Geometry>();
 		for(GM_Object geom:listeGeometries) {
 			try {listeGeometriesJts.add(JtsGeOxygene.makeJtsGeom(geom));}

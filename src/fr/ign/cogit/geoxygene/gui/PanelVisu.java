@@ -47,6 +47,8 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -578,7 +580,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener, Feat
 	 * @param liste
 	 * @param pointClic
 	 */
-	void ajouterSelection(FT_FeatureCollection<?> liste, GM_Point pointClic) {
+	void ajouterSelection(Collection<? extends FT_Feature> liste, GM_Point pointClic) {
 		//parcours des objets de la liste
 		for(FT_Feature obj : liste) {
 			if(obj.getGeom()==null || obj.getGeom().isEmpty()) continue;
@@ -891,10 +893,10 @@ class MouseListenerGeox implements MouseListener {
 			GM_Point p = new GM_Point(new DirectPosition(x,y));
 
 			if (pv.getSld()!=null) {
-				FT_FeatureCollection<FT_Feature> selectionTotale = new FT_FeatureCollection<FT_Feature>();
+				Collection<FT_Feature> selectionTotale = new HashSet<FT_Feature>();
 				for(Layer l:pv.getSld().getLayers()) {
 					if (l.getFeatureCollection()!=null) {
-						FT_FeatureCollection<? extends FT_Feature> selection = l.getFeatureCollection().select(p);
+						Collection<? extends FT_Feature> selection = l.getFeatureCollection().select(p);
 						pv.ajouterSelection(selection,p);
 						selectionTotale.addAll(selection);
 					}

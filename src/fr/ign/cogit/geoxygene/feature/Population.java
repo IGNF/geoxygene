@@ -88,7 +88,11 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	 * Constructeur à partir du nom de la population
 	 * @param nom nom de la population.
 	 */
-	public Population(String nom) {this.setNom(nom);}
+	public Population(String nom) {
+		super();
+		this.setNom(nom);
+		System.out.println("New Population");
+	}
 	/**
 	 * Constructeur d'une population.
 	 *  Une population peut être persistante ou non (la population elle-même est alors rendue persistante dans ce constructeur).
@@ -255,8 +259,8 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 			double ymin = enveloppe.getLowerCorner().getY()-dist;
 			double ymax = enveloppe.getUpperCorner().getY()+dist;
 			enveloppe = new GM_Envelope(xmin,xmax,ymin,ymax);
-			FT_FeatureCollection<Feat> selection = popTemporaire.select(enveloppe);
-			Iterator<Feat> itSel = selection.getElements().iterator();
+			Collection<Feat> selection = popTemporaire.select(enveloppe);
+			Iterator<Feat> itSel = selection.iterator();
 			selectionUnObjet = new HashSet<Feat>();
 			while (itSel.hasNext()) {
 				Feat objetSel = itSel.next();
@@ -287,9 +291,9 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 			double ymin = enveloppe.getLowerCorner().getY()-dist;
 			double ymax = enveloppe.getUpperCorner().getY()+dist;
 			enveloppe = new GM_Envelope(xmin,xmax,ymin,ymax);
-			FT_FeatureCollection<Feat> selection = popTemporaire.select(enveloppe);
-			popTemporaire.getElements().removeAll(selection.getElements());
-			popResultat.addCollection(selection);
+			Collection<Feat> selection = popTemporaire.select(enveloppe);
+			popTemporaire.getElements().removeAll(selection);
+			popResultat.addAll(selection);
 		}
 		return popResultat;
 	}

@@ -26,10 +26,10 @@
 
 package fr.ign.cogit.geoxygene.util.index;
 
+import java.util.Collection;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
@@ -82,13 +82,13 @@ public interface SpatialIndex<Feature extends FT_Feature> {
 
 	/** Selection dans le carre dont P est le centre, de cote D.
 	 * NB: D peut être nul. */
-	public FT_FeatureCollection<Feature> select (DirectPosition P, double D) ;
+	public Collection<Feature> select (DirectPosition P, double D) ;
 
 	/** Selection a l'aide d'un rectangle. */
-	public FT_FeatureCollection<Feature> select (GM_Envelope env) ;
+	public Collection<Feature> select (GM_Envelope env) ;
 
 	/** Selection des objets qui intersectent un objet geometrique quelconque. */
-	public FT_FeatureCollection<Feature> select (GM_Object geometry) ;
+	public Collection<Feature> select (GM_Object geometry) ;
 
 	/** Selection des objets qui croisent ou intersectent un objet geometrique quelconque.
 	 * 
@@ -98,12 +98,11 @@ public interface SpatialIndex<Feature extends FT_Feature> {
 	 * Exemple : si 1 ligne touche "geometry" juste sur une extrémité,
 	 * alors avec TRUE cela ne renvoie pas la ligne, avec FALSE cela la renvoie
 	 */
-	public FT_FeatureCollection<Feature> select(GM_Object geometry, boolean strictlyCrosses) ;
+	public Collection<Feature> select(GM_Object geometry, boolean strictlyCrosses) ;
 
 
 	/** Selection a l'aide d'un objet geometrique quelconque et d'une distance.
 	 * NB: D peut être nul*/
-	public FT_FeatureCollection<Feature> select (GM_Object geometry, double distance) ;
-
+	public Collection<Feature> select (GM_Object geometry, double distance) ;
 
 }

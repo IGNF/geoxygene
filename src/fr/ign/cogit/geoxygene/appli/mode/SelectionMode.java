@@ -23,6 +23,8 @@ package fr.ign.cogit.geoxygene.appli.mode;
 
 import java.awt.event.MouseEvent;
 import java.awt.geom.NoninvertibleTransformException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -68,8 +70,8 @@ public class SelectionMode extends AbstractMode {
         try {
             DirectPosition p = frame.getLayerViewPanel().getViewport().
             toModelDirectPosition(e.getPoint());
-            FT_FeatureCollection<FT_Feature> features =
-                new FT_FeatureCollection<FT_Feature>();
+            Set<FT_Feature> features =
+                new HashSet<FT_Feature>();
             for (Layer layer : frame.getLayerViewPanel().
                     getRenderingManager().getLayers()) {
                 if (layer.isVisible() && layer.isSelectable()) {
@@ -91,8 +93,8 @@ public class SelectionMode extends AbstractMode {
         try {
             DirectPosition p = frame.getLayerViewPanel().getViewport().
             toModelDirectPosition(e.getPoint());
-            FT_FeatureCollection<FT_Feature> features =
-                new FT_FeatureCollection<FT_Feature>();
+            Set<FT_Feature> features =
+                new HashSet<FT_Feature>();
             for (Layer layer : frame.getLayerViewPanel().
                     getRenderingManager().getLayers()) {
                 if (layer.isVisible() && layer.isSelectable()) {
