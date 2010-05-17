@@ -800,4 +800,14 @@ public class Arc extends ElementCarteTopo {
 		return "Arc "+this.getId()+" - "+this.getOrientation()+" - "+ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		((this.getNoeudIni()==null)?"null":""+this.getNoeudIni().getId())+" - "+((this.getNoeudFin()==null)?"null":""+this.getNoeudFin().getId())+" - "+this.getGeometrie(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 	}
+	/**
+	 * Renvoie le noeud de l'autre coté de l'arc.
+	 * @param n a node
+	 * @return the node on the other side of the edge
+	 */
+	public Noeud getOtherSide(Noeud n) {
+		if (n == this.noeudFin) { return this.noeudIni; }
+		if (n == this.noeudIni) { return this.noeudFin; }
+		return null;
+	}
 }

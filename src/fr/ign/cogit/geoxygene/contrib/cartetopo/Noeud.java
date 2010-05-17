@@ -22,9 +22,11 @@
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
@@ -210,6 +212,29 @@ public class Noeud extends ElementCarteTopo {
         }
         return arcs;
     }
+    
+    /** Retourne les noeuds accessibles depuis ce noeud, au sens de l'orientation et non de la géometrie,
+     */
+    public Map<Noeud, Arc> noeudsSortantsOrientes() {
+        List<Arc> arcsEntrants = this.getEntrants();
+        List<Arc> arcsSortants = this.getSortants();
+        Map<Noeud, Arc> noeuds = new HashMap<Noeud, Arc>();
+        Arc arc;
+        int i;
+
+        for (i = 0; i < arcsEntrants.size(); i++) {
+            arc = arcsEntrants.get(i);
+            if ((arc.getOrientation() == -1)
+                    || (arc.getOrientation() == 2)) { noeuds.put(arc.getOtherSide(this), arc);}
+        }
+        for (i = 0; i < arcsSortants.size(); i++) {
+            arc = arcsSortants.get(i);
+            if ((arc.getOrientation() == 1)
+                    || (arc.getOrientation() == 2)) { noeuds.put(arc.getOtherSide(this), arc);}
+        }
+        return noeuds;
+    }
+
 
     //////////////////////////////////////////////////////////////////////////
     //	Gestion de type carte topologique
