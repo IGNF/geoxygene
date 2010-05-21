@@ -107,16 +107,19 @@ public class LayerStylesPanel extends JPanel {
                                 this.paintPoint((PointSymbolizer) symbolizer, g2,
                                         currentColumn, currentRow,
                                         columnsWidth, rowHeight);
+                                currentRow++;
                             } else {
                                 if (symbolizer.isPolygonSymbolizer()) {
                                     this.paintPolygon((PolygonSymbolizer) symbolizer, g2,
                                             currentColumn, currentRow,
                                             columnsWidth, rowHeight);
+                                    currentRow++;
                                 } else {
                                     if (symbolizer.isRasterSymbolizer()) {
                                         this.paintRaster((RasterSymbolizer) symbolizer, g2,
                                                 currentColumn, currentRow,
                                                 columnsWidth, rowHeight);
+                                        currentRow++;
                                     }
                                 }
                             }
@@ -125,7 +128,6 @@ public class LayerStylesPanel extends JPanel {
                     currentColumn++;
                     if (currentColumn >= numberOfColumns) {
                         currentColumn = 0;
-                        currentRow++;
                     }
                 }
             }
@@ -145,11 +147,11 @@ public class LayerStylesPanel extends JPanel {
                 + this.margin,
                 currentRow
                 * (rowHeight + this.margin)
-                + rowHeight / 2,
+                + rowHeight,
                 (currentColumn + 1) * (columnsWidth
                         + this.margin) - 1,
                 currentRow * (rowHeight + this.margin)
-                + rowHeight / 2);
+                + rowHeight);
     }
 
     @Override
