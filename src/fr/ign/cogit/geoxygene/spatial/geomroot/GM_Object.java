@@ -31,6 +31,9 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSolid;
+import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeSolid;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 import fr.ign.cogit.geoxygene.util.conversion.ImgUtil;
 import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
@@ -538,10 +541,25 @@ abstract public class GM_Object implements Cloneable {
      */
     public double length() { return new JtsAlgorithms().length(this); }
     /**
-     * Dimension maximale de l'objet (point 0, courbe 1, surface 2) (avec JTS).
+     * Dimension maximale de l'objet (point 0, courbe 1, surface 2, volume 3) (avec JTS).
      * @return dimension of the geometry
      */
-    public int dimension() {return new JtsAlgorithms().dimension(this);}
+    public int dimension() {
+        if (this instanceof GM_Solid) {
+            return 3;
+
+        }
+
+        if (this instanceof GM_MultiSolid) {
+            return 3;
+
+        }
+        
+        if(this instanceof GM_CompositeSolid) {
+            return 3;
+        }
+        
+        return new JtsAlgorithms().dimension(this);}
     /**
      * Nombre de points de l'objet (avec JTS).
      * @return number of points
