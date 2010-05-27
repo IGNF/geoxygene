@@ -47,13 +47,13 @@ public class ParametresApp implements Cloneable {
 	/////////////////////////////////////////////////////////////////////////////////
 
 	/** Liste des classes d'arcs de la BD 1 (la moins détaillée) concernés par l'appariement */
-	public List<FT_FeatureCollection<Arc>> populationsArcs1 = new ArrayList<FT_FeatureCollection<Arc>>();
+	public List<FT_FeatureCollection<? extends Arc>> populationsArcs1 = new ArrayList<FT_FeatureCollection<? extends Arc>>();
 
 	/** Liste des classes de noeuds de la BD 1 (la moins détaillée) concernés par l'appariement */
 	public List<FT_FeatureCollection<Noeud>> populationsNoeuds1 = new ArrayList<FT_FeatureCollection<Noeud>>();
 
 	/** Liste des classes d'arcs de la BD 2 (la plus détaillée) concernés par l'appariement */
-	public List<FT_FeatureCollection<Arc>> populationsArcs2 = new ArrayList<FT_FeatureCollection<Arc>>();
+	public List<FT_FeatureCollection<? extends Arc>> populationsArcs2 = new ArrayList<FT_FeatureCollection<? extends Arc>>();
 
 	/** Liste des classes de noeuds de la BD 2 (la plus détaillée) concernés par l'appariement */
 	public List<FT_FeatureCollection<Noeud>> populationsNoeuds2 = new ArrayList<FT_FeatureCollection<Noeud>>();

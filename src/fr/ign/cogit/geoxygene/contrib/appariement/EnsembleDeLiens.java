@@ -186,8 +186,8 @@ public class EnsembleDeLiens extends Population<Lien> {
      * @return set of links
      */
     public final EnsembleDeLiens regroupeLiens(
-            final Population<FT_Feature> popRef,
-            final Population<FT_Feature> popComp) {
+            final Population<? extends FT_Feature> popRef,
+            final Population<? extends FT_Feature> popComp) {
         EnsembleDeLiens liensGroupes;
         Lien lienGroupe;
         CarteTopo grapheDesLiens;
@@ -238,8 +238,8 @@ public class EnsembleDeLiens extends Population<Lien> {
      * @return set of links
      */
     public final EnsembleDeLiens regroupeLiens(
-            final FT_FeatureCollection<FT_Feature> popRef,
-            final FT_FeatureCollection<FT_Feature> popComp) {
+    		final FT_FeatureCollection<? extends FT_Feature> popRef,
+            final FT_FeatureCollection<? extends FT_Feature> popComp) {
         EnsembleDeLiens liensGroupes;
         Lien lienGroupe;
         CarteTopo grapheDesLiens;
@@ -288,9 +288,9 @@ public class EnsembleDeLiens extends Population<Lien> {
      * @return topological map
      */
     public final CarteTopo transformeEnCarteTopo(
-            final FT_FeatureCollection<FT_Feature> popRef,
-            final FT_FeatureCollection<FT_Feature> popComp) {
-        Iterator<FT_Feature> itObjetsRef, itObjetsComp, itNoeudsRef,
+            final FT_FeatureCollection<? extends FT_Feature> popRef,
+            final FT_FeatureCollection<? extends FT_Feature> popComp) {
+        Iterator<FT_Feature> itNoeudsRef,
         itNoeudsComp;
         List<FT_Feature> noeudsRef = new ArrayList<FT_Feature>(),
         noeudsComp = new ArrayList<FT_Feature>(); // listes de Noeud
@@ -303,13 +303,13 @@ public class EnsembleDeLiens extends Population<Lien> {
         Arc arc;
 
         // création de noeuds du graphe = les objets ref et comp
-        itObjetsRef = popRef.getElements().iterator();
+        Iterator<? extends FT_Feature> itObjetsRef = popRef.iterator();
         while (itObjetsRef.hasNext()) {
             objetRef = itObjetsRef.next();
             noeudRef = grapheDesLiens.getPopNoeuds().nouvelElement();
             noeudRef.addCorrespondant(objetRef);
         }
-        itObjetsComp = popComp.getElements().iterator();
+        Iterator<? extends FT_Feature> itObjetsComp = popComp.iterator();
         while (itObjetsComp.hasNext()) {
             objetComp = itObjetsComp.next();
             noeudComp = grapheDesLiens.getPopNoeuds().nouvelElement();
@@ -692,8 +692,8 @@ public class EnsembleDeLiens extends Population<Lien> {
      */
     public static List<Population<FT_Feature>> objetsApparies(
             final EnsembleDeLiens ensemble,
-            final FT_FeatureCollection<FT_Feature> popRef,
-            final FT_FeatureCollection<FT_Feature> popComp) {
+            final FT_FeatureCollection<? extends FT_Feature> popRef,
+            final FT_FeatureCollection<? extends FT_Feature> popComp) {
         List<Population<FT_Feature>> listPopulation =
             new ArrayList<Population<FT_Feature>>();
         Population<FT_Feature> popCompAppariee = new Population<FT_Feature>(),
@@ -708,8 +708,8 @@ public class EnsembleDeLiens extends Population<Lien> {
             List<FT_Feature> elementsComp = lien.getObjetsComp();
             List<FT_Feature> elementsRef = lien.getObjetsRef();
 
-            Iterator<FT_Feature> itComp = elementsComp.iterator();
-            Iterator<FT_Feature> itRef = elementsRef.iterator();
+            Iterator<? extends FT_Feature> itComp = elementsComp.iterator();
+            Iterator<? extends FT_Feature> itRef = elementsRef.iterator();
 
             while (itComp.hasNext()) {
                 elementPopComp = itComp.next();
@@ -725,8 +725,8 @@ public class EnsembleDeLiens extends Population<Lien> {
         //copie des populations comp et ref dans les populations non appariées
         //popCompNonAppariee.copiePopulation(popComp);
         //popRefNonAppariee.copiePopulation(popRef);
-        popCompNonAppariee.setElements(popComp.getElements());
-        popRefNonAppariee.setElements(popRef.getElements());
+        popCompNonAppariee.setElements(popComp);
+        popRefNonAppariee.setElements(popRef);
 
         Iterator<FT_Feature> itPopCompApp =
             popCompAppariee.getElements().iterator();

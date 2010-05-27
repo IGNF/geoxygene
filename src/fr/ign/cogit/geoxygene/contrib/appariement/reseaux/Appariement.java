@@ -45,6 +45,7 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.IndicesForme;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
+import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -2241,7 +2242,7 @@ public abstract class Appariement {
         double distancePtCourantVersArcADecoupe;
         ArcApp arcDecoupant, arcADecouper;
         Iterator<?> itArcsDecoupes, itArcsDecoupants;
-        Collection<?> arcsDecoupantsRes2;
+        Collection<? extends FT_Feature> arcsDecoupantsRes2;
         List<GM_Point> pointsDeDecoupage;
         int indiceDernierPtProche;
 

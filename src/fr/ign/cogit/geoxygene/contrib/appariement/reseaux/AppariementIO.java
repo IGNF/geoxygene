@@ -257,10 +257,9 @@ public final class AppariementIO {
         }
         popArcApp = reseau.getPopArcs();
         popNoeudApp = reseau.getPopNoeuds();
-
         ///////////////////////////
         // import des arcs
-        Iterator<FT_FeatureCollection<Arc>> itPopArcs = null;
+        Iterator<FT_FeatureCollection<? extends Arc>> itPopArcs = null;
         if (ref) { itPopArcs = paramApp.populationsArcs1.iterator();
         } else { itPopArcs = paramApp.populationsArcs2.iterator(); }
         while (itPopArcs.hasNext()) {

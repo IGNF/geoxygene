@@ -48,7 +48,6 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * @version 1.0
  */
 public class Lien extends FT_Feature {
-
     /**
      * Les objets d'une BD pointés par le lien.
      */

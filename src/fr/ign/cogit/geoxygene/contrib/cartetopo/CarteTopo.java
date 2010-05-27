@@ -373,18 +373,21 @@ public class CarteTopo extends DataSet {
         Arc arc;
         Collection<Noeud> selection;
         // initialisation de l'index au besoin
-        if (!this.getPopNoeuds().hasSpatialIndex()) this.getPopNoeuds().initSpatialIndex(Tiling.class, true, 20 );
+        if (!this.getPopNoeuds().hasSpatialIndex()) {
+        	this.getPopNoeuds().initSpatialIndex(Tiling.class, true, 20 );
+        }
         for(Object a:this.getPopArcs()) {
             arc = (Arc)a;
             selection = this.getPopNoeuds().select(arc.getGeometrie().startPoint(), tolerance);
-            if (!selection.isEmpty()) arc.setNoeudIni(selection.iterator().next());
+            if (!selection.isEmpty()) {
+            	arc.setNoeudIni(selection.iterator().next());
+            }
             selection = this.getPopNoeuds().select(arc.getGeometrie().endPoint(), tolerance);
-            if (!selection.isEmpty()) arc.setNoeudFin(selection.iterator().next());
+            if (!selection.isEmpty()) {
+            	arc.setNoeudFin(selection.iterator().next());
+            }
         }
-
     }
-
-
     /**  crée un nouveau noeud à l'extrémité de chaque arc si il n'y en a pas.
      *   Les noeuds existants sont tous conservés.
      * <ul>
@@ -392,7 +395,7 @@ public class CarteTopo extends DataSet {
      *  <li>NB: si cela n'avait pas été fait avant,
      *  la population des noeuds est indexée dans cette méthode.
      * 	<li>paramètres de l'index = le même que celui des arcs si il existe,
-     *  sinon Dallage avec à peu prés 50 noeuds par dalle.
+     *  sinon Dallage avec à peu près 50 noeuds par dalle.
      *  </ul>
      * @param tolerance tolérance utilisée pour chercher des noeuds existants auxquels se raccrocher au lieu d'en créer de nouveaux.
      */
@@ -426,8 +429,7 @@ public class CarteTopo extends DataSet {
             Collection<Noeud> selection = this.getPopNoeuds().select(arc.getGeometrie().startPoint(),tolerance);
             if (selection.isEmpty()) {
                 noeud = this.getPopNoeuds().nouvelElement(new GM_Point(arc.getGeometrie().startPoint()));
-            }
-            else {
+            } else {
                 noeud = selection.iterator().next();
                 arc.getGeometrie().coord().set(0,noeud.getGeometrie().getPosition());
             }
@@ -436,8 +438,7 @@ public class CarteTopo extends DataSet {
             selection = this.getPopNoeuds().select(arc.getGeometrie().endPoint(),tolerance);
             if (selection.isEmpty()) {
                 noeud = this.getPopNoeuds().nouvelElement(new GM_Point(arc.getGeometrie().endPoint()));
-            }
-            else {
+            } else {
                 noeud = selection.iterator().next();
                 arc.getGeometrie().coord().set(arc.getGeometrie().sizeControlPoint()-1,noeud.getGeometrie().getPosition());
             }
@@ -979,15 +980,15 @@ public class CarteTopo extends DataSet {
         List<FT_Feature> aEnlever = new ArrayList<FT_Feature>();
         Collection<Noeud> noeudsProches;
         List<Arc> arcsModifies;
-        if ( ! this.getPopNoeuds().hasSpatialIndex() )
-            this.getPopNoeuds().initSpatialIndex(Tiling.class, true);
-
-        for(Object f:popSurfaces) {
-            FT_Feature surf = (FT_Feature) f;
+        if (!this.getPopNoeuds().hasSpatialIndex()) {
+        	this.getPopNoeuds().initSpatialIndex(Tiling.class, true);
+        }
+        for(FT_Feature surf : popSurfaces) {
             noeudsProches = this.getPopNoeuds().select(surf.getGeom());
             noeudsProches.removeAll(aEnlever);
-            if (noeudsProches.size() < 2) continue;
-
+            if (noeudsProches.size() < 2) {
+            	continue;
+            }
             //Si il y a plusieurs noeuds dans la surface, on crée un nouveau noeud
             GM_MultiPoint points = new GM_MultiPoint();
             itNoeudsProches = noeudsProches.iterator();
@@ -1287,14 +1288,23 @@ public class CarteTopo extends DataSet {
                     (cycle.isAGauche()&&cycle.getOrientationsArcs().get(0).booleanValue())||
                     (!cycle.isAGauche()&&!cycle.getOrientationsArcs().get(0).booleanValue()))?
                             cycle.getArcs().get(0).getFaceGauche():cycle.getArcs().get(0).getFaceDroite();
-                            if (face==null) {
+                            if (face == null) {
                                 Collection<Face> selection = this.getPopFaces().select(cycle.getGeometrie());
-                                if (selection.isEmpty()) {face = faceInfinie;} else {
+                                if (selection.isEmpty()) {
+                                	face = faceInfinie;
+                                } else {
                                     selection.removeAll(cycle.getListeFacesInterieuresDuCycle());
                                     Iterator<Face> it = selection.iterator();
-                                    while(it.hasNext()) {if(!it.next().getGeometrie().contains(cycle.getGeometrie())) it.remove();}
-                                    if (selection.isEmpty()) {face = faceInfinie;}
-                                    else {face = selection.iterator().next();}
+                                    while(it.hasNext()) {
+                                    	if (!it.next().getGeometrie().contains(cycle.getGeometrie())) {
+                                    		it.remove();
+                                    	}
+                                    }
+                                    if (selection.isEmpty()) {
+                                    	face = faceInfinie;
+                                    } else {
+                                    	face = selection.iterator().next();
+                                    }
                                 }
                             }
                             marquerCycle(cycle,face);

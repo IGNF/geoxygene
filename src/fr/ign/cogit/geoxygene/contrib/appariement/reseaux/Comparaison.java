@@ -80,10 +80,9 @@ public class Comparaison {
 		double ltotArc, dtotArc, dmaxArc, l1, l2, l;
 		int n = 0;
 		Iterator<?> itArcsRef, itArcsComp;
-		Collection<?> arcsCompProches;
-		FT_FeatureCollection<?> arcsRef = reseau1.getPopArcs();
-		FT_FeatureCollection<?> arcsComp = reseau2.getPopArcs();
-
+		Collection<Arc> arcsCompProches;
+		FT_FeatureCollection<Arc> arcsRef = reseau1.getPopArcs();
+		FT_FeatureCollection<Arc> arcsComp = reseau2.getPopArcs();
 		itArcsRef = arcsRef.getElements().iterator();
 		while (itArcsRef.hasNext()) { //pour chaque arc de this
 			FT_Feature objetRef = (FT_Feature) itArcsRef.next();
@@ -195,23 +194,20 @@ public class Comparaison {
 	public static List<?> evaluationEcartPosition(CarteTopo reseau1, CarteTopo reseau2, double distanceMax, boolean affichage) {
 
 		List<Double> resultats = new ArrayList<Double>();
-		FT_FeatureCollection<?> arcs1 = reseau1.getPopArcs();
-		FT_FeatureCollection<?> arcs2 = reseau2.getPopArcs();
+		FT_FeatureCollection<Arc> arcs1 = reseau1.getPopArcs();
+		FT_FeatureCollection<Arc> arcs2 = reseau2.getPopArcs();
 		Iterator<?> itArcs1, itArcs2;
 		Arc arc1, arc2;
 		GM_LineString geom1, geom2;
 		Vecteur v12, vmin, vPourUnArc1, vTotal;
 		DirectPosition pt1, projete;
-		Collection<?> arcs2proches;
+		Collection<Arc> arcs2proches;
 		double longArc1, poids, d12, ecartQuadratiquePourUnArc1, l1, l2,
 		poidsPourUnArc1, ecartPourUnArc1, ecartMaxArc1, poidsTotal;
-
 		// indicateurs finaux
 		double longTotal1, longPrisEnCompte1, longTotal2;
 		double ecartTotal , ecartQuadratiqueTotal, ecartTypeArcs;
 		int nbArcsTotal1, nbArcsPrisEnCompte1, nbArcsTotal2;
-
-
 		///////////////// EVALUATION SUR LES ARCS ////////////////////
 		// indexation des arcs du réseau 2
 		if ( !reseau2.getPopArcs().hasSpatialIndex()) {

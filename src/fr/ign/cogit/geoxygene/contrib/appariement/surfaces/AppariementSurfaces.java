@@ -304,7 +304,6 @@ public abstract class AppariementSurfaces {
             groupesDecomposes = groupeConnexe.decomposeConnexes(); //création des groupes finaux gardés
             groupesGardes.addAll(groupesDecomposes);
         }
-
         // création des liens retenus (passage de structure graphe à liens):
         // les groupes qui restent dans la carte topo représentent les liens finaux.
         liensGroupes = new EnsembleDeLiens();
@@ -328,7 +327,6 @@ public abstract class AppariementSurfaces {
         }
         return liensGroupes;
     }
-
     /** Distance surfacique ou complétude "étendue" sur un groupe.
      * Attention: vide le groupe au passage.
      * MESURE NON SATISFAISANTE POUR LIENS N-M : moyenne entre parties connexes A REVOIR */
@@ -341,8 +339,6 @@ public abstract class AppariementSurfaces {
         Groupe groupeConnnexe;
         Noeud noeud;
         FT_Feature feat;
-
-
         // on décompose le groupe en parties connexes
         groupesConnexes = groupe.decomposeConnexes();
         itGroupes = groupesConnexes.iterator();
@@ -368,10 +364,8 @@ public abstract class AppariementSurfaces {
             // on combine les mesures des parties connexes
             distTot = distTot + dist;
         }
-
         return distTot; //    / groupesConnexes.size();
     }
-
     /**
      * Bourrin: a optimiser
      * @param liens
@@ -380,86 +374,70 @@ public abstract class AppariementSurfaces {
      * @param param
      */
     public static void ajoutPetitesSurfaces(EnsembleDeLiens liens, FT_FeatureCollection<?> popRef, FT_FeatureCollection<?> popComp, ParametresAppSurfaces param) {
-        Iterator<?> itRef = popRef.getElements().iterator();
-        Iterator<Lien> itLiens = liens.getElements().iterator();
         Set<FT_Feature> objetsRefLies = new HashSet<FT_Feature>();
         Collection<? extends FT_Feature> objetsAdjacents;
         Lien lienAdjacent;
         double surfAdj;
         boolean tousPareils;
-
-        if ( ! popRef.hasSpatialIndex() ) {
+        if (! popRef.hasSpatialIndex()) {
             System.out.println(I18N.getString("AppariementSurfaces.SpatialIndexReferenceSurfaces")+new Time(System.currentTimeMillis())); //$NON-NLS-1$
             popRef.initSpatialIndex(Tiling.class, true);
         }
-
-        while (itLiens.hasNext()) {
-            Lien lien = itLiens.next();
+        for (Lien lien : liens) {
             objetsRefLies.addAll(lien.getObjetsRef());
         }
-
-        while (itRef.hasNext()) {
-            FT_Feature objetRef = (FT_Feature) itRef.next();
-            if (objetsRefLies.contains(objetRef)) continue;
+        for (FT_Feature objetRef : popRef) {
+            if (objetsRefLies.contains(objetRef)) { continue; }
             // cas d'un objet non apparié
             objetsAdjacents=popRef.select(objetRef.getGeom());
-            if (objetsAdjacents == null) continue;
-            if (objetsAdjacents.size() == 1) continue;
+            if (objetsAdjacents == null) { continue; }
+            if (objetsAdjacents.size() == 1) { continue; }
             objetsAdjacents.remove(objetRef);
             Iterator<? extends FT_Feature> iterator = objetsAdjacents.iterator();
-            lienAdjacent = liensDeObj(iterator.next(), liens);
-            surfAdj = objetsAdjacents.iterator().next().getGeom().area();
-            if (lienAdjacent == null) continue;
-            tousPareils=true;
+            FT_Feature feature = iterator.next();
+            lienAdjacent = liensDeObj(feature, liens);
+            surfAdj = feature.getGeom().area();
+            if (lienAdjacent == null) { continue; }
+            tousPareils = true;
             while (iterator.hasNext()) {
-            	FT_Feature feature = iterator.next();
+            	feature = iterator.next();
                 Lien lien2 = liensDeObj(feature, liens);
                 if (lienAdjacent != lien2) {
-                    tousPareils=false;
+                    tousPareils = false;
                     break;
                 }
                 surfAdj = surfAdj + feature.getGeom().area();
             }
-            for(int i=1;i<objetsAdjacents.size();i++) {
+            if (!tousPareils) { continue; }
+            if ( objetRef.getGeom().area() / surfAdj > param.seuilPourcentageTaillePetitesSurfaces) {
+            	continue;
             }
-            if (!tousPareils) continue;
-            if ( objetRef.getGeom().area() / surfAdj > param.seuilPourcentageTaillePetitesSurfaces) continue;
             lienAdjacent.addObjetRef(objetRef);
         }
     }
-
     private static Lien liensDeObj(FT_Feature objet, EnsembleDeLiens liens) {
-        Iterator<Lien> itLiens = liens.getElements().iterator();
-
-        while (itLiens.hasNext()) {
-            Lien lien = itLiens.next();
-            if (lien.getObjetsRef().contains(objet))return lien;
+        for (Lien lien : liens) {
+            if (lien.getObjetsRef().contains(objet)) {
+            	return lien;
+            }
         }
         return null;
     }
-
-
     public static EnsembleDeLiens filtreLiens(EnsembleDeLiens liensRegroupes,ParametresAppSurfaces param) {
         EnsembleDeLiens liensFiltres = new EnsembleDeLiens();
-        Lien lien, lienOK ;
-        double distSurf;
-
-        Iterator<Lien> itGroupes = liensRegroupes.getElements().iterator();
-        while (itGroupes.hasNext()) {
-            lien = itGroupes.next();
+        for (Lien lien : liensRegroupes) {
             // si on depasse le seuil acceptable: on refuse.
             if ( param.minimiseDistanceSurfacique) {
-                distSurf = lien.distanceSurfaciqueRobuste();
+            	double distSurf = lien.distanceSurfaciqueRobuste();
                 if (distSurf < param.distSurfMaxFinal ) {
-                    lienOK = liensFiltres.nouvelElement();
+                	Lien lienOK = liensFiltres.nouvelElement();
                     lienOK.copie(lien);
                     lienOK.setEvaluation(distSurf);
                 }
-            }
-            else {
+            } else {
                 if ((lien.exactitude() > param.completudeExactitudeMinFinal )
-                        && (lien.completude() > param.completudeExactitudeMinFinal)){
-                    lienOK = liensFiltres.nouvelElement();
+                        && (lien.completude() > param.completudeExactitudeMinFinal)) {
+                	Lien lienOK = liensFiltres.nouvelElement();
                     lienOK.copie(lien);
                 }
             }
@@ -467,78 +445,47 @@ public abstract class AppariementSurfaces {
         System.out.println(I18N.getString("AppariementSurfaces.NumberOfRemainingLinksAfterFiltering")+liensFiltres.size()); //$NON-NLS-1$
         return liensFiltres;
     }
-
-
     public static void creeGeometrieDesLiens(EnsembleDeLiens liens, boolean persistant) {
-        FT_FeatureCollection<FT_Feature> objetsRef;
-        FT_FeatureCollection<FT_Feature> objetsComp;
-        FT_Feature objetComp;
-        GM_Point pointAccrocheRef, pointAccrocheComp;
-        CarteTopo armRef, armComp;
-        Iterator<Lien> itLiens = liens.getElements().iterator();
-        Iterator<?> itArcs, itNoeuds, itObjetsComp;
-        Arc arc;
-        Noeud noeud;
-        GM_Aggregate<GM_Object> geomLien;
-
-
-        if (persistant) DataSet.db.begin();
+        if (persistant) { DataSet.db.begin(); }
         System.out.println(I18N.getString("AppariementSurfaces.LinkGeometryCreation")); //$NON-NLS-1$
-        while (itLiens.hasNext()) {
-            Lien lien = itLiens.next();
-            if (lien.getObjetsRef().size() == 0) {
+        for (Lien lien : liens) {
+            if (lien.getObjetsRef().isEmpty()) {
                 System.out.println(I18N.getString("AppariementSurfaces.WarningLinkWithoutReferenceObject")); //$NON-NLS-1$
                 continue;
             }
-            if (lien.getObjetsComp().size() == 0) {
+            if (lien.getObjetsComp().isEmpty()) {
                 System.out.println(I18N.getString("AppariementSurfaces.WarningLinkWithoutComparisonObject")); //$NON-NLS-1$
                 continue;
             }
-
-            if (persistant) DataSet.db.makePersistent(lien);
-            geomLien = new GM_Aggregate<GM_Object>();
+            if (persistant) { DataSet.db.makePersistent(lien); }
+            GM_Aggregate<GM_Object> geomLien = new GM_Aggregate<GM_Object>();
             lien.setGeom(geomLien);
-
-
-            objetsRef = new FT_FeatureCollection<FT_Feature>();
+            FT_FeatureCollection<FT_Feature> objetsRef = new FT_FeatureCollection<FT_Feature>();
             objetsRef.getElements().addAll(lien.getObjetsRef());
-            armRef=ARM.creeARMsurObjetsQuelconques(objetsRef);
+            CarteTopo armRef = ARM.creeARMsurObjetsQuelconques(objetsRef);
             // ajout des traits reliant les objets ref
-            itArcs=armRef.getPopArcs().getElements().iterator();
-            while (itArcs.hasNext()) {
-                arc = (Arc) itArcs.next();
+            for (Arc arc : armRef.getPopArcs()) {
                 geomLien.add(arc.getGeometrie());
             }
             // ajout des points centroides des objets ref
-            itNoeuds=armRef.getPopNoeuds().getElements().iterator();
-            while (itNoeuds.hasNext()) {
-                noeud = (Noeud) itNoeuds.next();
+            for (Noeud noeud : armRef.getPopNoeuds()) {
                 geomLien.add(noeud.getGeometrie());
             }
-
-            objetsComp = new FT_FeatureCollection<FT_Feature>();
+            FT_FeatureCollection<FT_Feature> objetsComp = new FT_FeatureCollection<FT_Feature>();
             objetsComp.getElements().addAll(lien.getObjetsComp());
-            armComp=ARM.creeARMsurObjetsQuelconques(objetsComp);
+            CarteTopo armComp = ARM.creeARMsurObjetsQuelconques(objetsComp);
             // ajout des traits reliant les objets ref
-            itArcs=armComp.getPopArcs().getElements().iterator();
-            while (itArcs.hasNext()) {
-                arc = (Arc) itArcs.next();
+            for (Arc arc : armComp.getPopArcs()) {
                 geomLien.add(arc.getGeometrie());
             }
             // ajout des points centroides des objets ref
-            itNoeuds=armComp.getPopNoeuds().getElements().iterator();
-            while (itNoeuds.hasNext()) {
-                noeud = (Noeud) itNoeuds.next();
+            for (Noeud noeud : armComp.getPopNoeuds()) {
                 geomLien.add(noeud.getGeometrie());
             }
-
-
             //ajout des traits reliant les objets comp au point d'accroche ref
-            pointAccrocheRef=(armRef.getPopNoeuds().getElements().get(0)).getGeometrie();
-            itObjetsComp = lien.getObjetsComp().iterator();
-            while (itObjetsComp.hasNext()) {
-                objetComp = (FT_Feature) itObjetsComp.next();
-                pointAccrocheComp = new GM_Point(objetComp.getGeom().centroid());
+            GM_Point pointAccrocheRef=(armRef.getPopNoeuds().getElements().get(0)).getGeometrie();
+            for (FT_Feature objetComp : lien.getObjetsComp()) {
+            	GM_Point pointAccrocheComp = new GM_Point(objetComp.getGeom().centroid());
                 // if (pointAccrocheComp==null) continue;
                 GM_LineString trait = new GM_LineString();
                 trait.addControlPoint(pointAccrocheRef.getPosition());
@@ -549,12 +496,10 @@ public abstract class AppariementSurfaces {
                 //V.setX(0.1);V.setY(0);
                 //geomLien.add(V.translate(trait));
             }
-
         }
         if (persistant) {
             System.out.println(I18N.getString("AppariementSurfaces.Commit")+new Time(System.currentTimeMillis())); //$NON-NLS-1$
             DataSet.db.commit();
         }
     }
-
 }
