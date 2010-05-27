@@ -45,7 +45,6 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.IndicesForme;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;

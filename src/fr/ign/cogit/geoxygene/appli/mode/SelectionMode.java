@@ -33,7 +33,6 @@ import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.style.Layer;
 

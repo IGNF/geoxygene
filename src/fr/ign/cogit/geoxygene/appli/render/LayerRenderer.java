@@ -382,7 +382,7 @@ public class LayerRenderer implements Renderer {
      * @param theImage the image
      * @param envelope the envelope
      */
-    @SuppressWarnings({ "unchecked", "unused" })
+    @SuppressWarnings({ "unused" })
     private void render(final Rule rule, final BufferedImage theImage,
             final GM_Envelope envelope) {
         if (this.isCancelled()) {
