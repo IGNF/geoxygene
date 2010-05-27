@@ -27,7 +27,6 @@
 package fr.ign.cogit.geoxygene.contrib.operateurs;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /** Classe supportant les opérations sur les ensembles
@@ -36,33 +35,31 @@ import java.util.List;
  */
 public class Ensemble {
 
-	private static List<List<Object>> combinaisons;
+	//private static List<List<Object>> combinaisons;
 
 	/** Renvoie une liste de liste contenant l'ensemble des
 	 * combinaisons des éléments de la liste en entrée.
 	 * Exemple : si la liste contient A, B, C en entrée ça renvoie :
 	 * [[], [A], [A, B], [A, B, C], [A, C], [B], [B, C], [C]]
+	 * @param <T>
 	 */
-	public static List<List<Object>> combinaisons(List<Object> listeIN) {
-		combinaisons = new ArrayList<List<Object>>();
-		List<Object> currentList = new ArrayList<Object>();
+	public static <T> List<List<T>> combinaisons(final List<T> listeIN) {
+		List<List<T>> combinaisons = new ArrayList<List<T>>();
+		List<T> currentList = new ArrayList<T>();
 		combinaisons.add(currentList);
-		List<Object> toBeAddedList = new ArrayList<Object>(listeIN);
-		ajouteSuite(currentList, toBeAddedList);
+		ajouteSuite(combinaisons, currentList, listeIN);
 		return combinaisons;
 	}
 
-	private static void ajouteSuite(List<Object> currentList, List<Object> toBeAddedList) {
-		Iterator<Object> itToAdd = toBeAddedList.iterator();
-		List<Object> copieAjout = new ArrayList<Object>(toBeAddedList);
-		while (itToAdd.hasNext()) {
-			Object ajout = itToAdd.next();
-			List<Object> nouvelleCombinaison = new ArrayList<Object>(currentList);
+	private static <T> void ajouteSuite(List<List<T>> combinaisons, final List<T> currentList, final List<T> toBeAddedList) {
+		List<T> copieAjout = new ArrayList<T>(toBeAddedList);
+		for (T ajout : toBeAddedList) {
+			List<T> nouvelleCombinaison = new ArrayList<T>(currentList);
 			nouvelleCombinaison.add(ajout);
 			combinaisons.add(nouvelleCombinaison);
 			copieAjout.remove(ajout);
-			ajouteSuite(nouvelleCombinaison,copieAjout);
+			ajouteSuite(combinaisons, nouvelleCombinaison, copieAjout);
 		}
+		copieAjout.clear();
 	}
-
 }

@@ -77,14 +77,14 @@ public class Angle
 		this.setValeur(Math.atan2(y,x));
 	}
 
-	/** crée un angle à pi prés (entre O et pi),
-	 * à partir d'un angle à 2pi prés (entre 0 et pi) */
+	/** crée un angle à pi près (entre O et pi),
+	 * à partir d'un angle à 2pi près (entre 0 et pi) */
 	public static Angle angleAPiPres(Angle angle2pi) {
 		if (angle2pi.valeur > Math.PI ) return new Angle(angle2pi.valeur-Math.PI);
 		return new Angle(angle2pi.valeur);
 	}
 
-	/** crée un angle à pi prés (entre O et pi),
+	/** crée un angle à pi près (entre O et pi),
 	 * à partir de this */
 	public Angle angleAPiPres() {
 		if (this.valeur > Math.PI ) return new Angle(this.valeur-Math.PI);
@@ -106,7 +106,7 @@ public class Angle
 		return new Angle(a.valeur+ecarttrigo(a,b).valeur/2);
 	}
 
-	/** Moyenne de deux angles (défini à pi prés). */
+	/** Moyenne de deux angles (défini à pi près). */
 	public static Angle moyenne(Angle a, Angle b) {
 		return angleAPiPres(new Angle((a.valeur+b.valeur)/2));
 	}

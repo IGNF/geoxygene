@@ -46,7 +46,7 @@ public class TestIndex {
     private Class<FT_Feature> featureClass;
     private String nomClasse = "geoxygene.geodata.Troncon_route"; //$NON-NLS-1$
     private FT_FeatureCollection< FT_Feature> featureList;
-    private Collection<?> sublist;
+    private Collection<? extends FT_Feature> sublist;
     private GM_Envelope emprise;
     private long t1, t2;
 

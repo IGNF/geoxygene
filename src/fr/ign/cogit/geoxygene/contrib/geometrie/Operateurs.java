@@ -719,7 +719,7 @@ public abstract class Operateurs {
      * Methode qui donne l'angle (radians) par rapport à l'axe des x de la
      * droite passant
      * au mieux au milieu d'un nuage de points (regression par moindres carrés).
-     * Cet angle (défini à pi prés) est entre 0 et pi.
+     * Cet angle (défini à pi près) est entre 0 et pi.
      * English: Linear approximation
      * author: grosso
      */
@@ -778,7 +778,7 @@ public abstract class Operateurs {
      * (regression par moindres carrés).
      * L'ordre des points en entrée est important, c'est lui qui permet de
      * donner
-     * l'angle à 2.pi prés.
+     * l'angle à 2.pi près.
      * Exemple: la liste des points peut correspondre à n points d'un arc,
      * l'angle
      * représente alors l'orientation générale de ces points, en prenant le
@@ -967,7 +967,7 @@ public abstract class Operateurs {
         while (itSurf.hasNext()) {
             objSurf = (FT_Feature) itSurf.next();
             if (aEnlever.contains(objSurf)) continue;
-            Collection surfAdjacentes = popSurf.select(objSurf.getGeom());
+            Collection<FT_Feature> surfAdjacentes = popSurf.select(objSurf.getGeom());
             surfAdjacentes.remove(objSurf);
             if (surfAdjacentes.size() == 0) continue;
             aEnlever.addAll(surfAdjacentes);

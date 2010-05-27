@@ -256,36 +256,36 @@ public abstract class Distances {
 	////////////////////////////////////////////////////////////
 
 	/** Distance surfacique entre deux GM_Polygon.
-	 * 
+	 *
 	 * définition : 1 - surface(intersection)/surface(union)
 	 * Ref [Vauglin 97]
-	 * 
+	 *
 	 * NB: renvoie 2 en cas de problème lors du calcul d'intersection avec JTS
 	 *     (bug en particulier si les surfaces sont dégénérées ou trop complexes).
 	 */
 	public static double distanceSurfacique(GM_Polygon A, GM_Polygon B)   {
 		GM_Object inter = A.intersection(B);
-		if ( inter == null ) return 2;
+		if (inter == null) { return 2; }
 		GM_Object union = A.union(B);
-		if ( union == null ) return 1;
-		return 1 - inter.area()/union.area();
+		if (union == null) { return 1; }
+		return 1 - inter.area() / union.area();
 	}
 
 	/** Distance surfacique entre deux GM_MultiSurface.
-	 * 
+	 *
 	 * définition : 1 - surface(intersection)/surface(union)
 	 * Ref [Vauglin 97]
-	 * 
+	 *
 	 * NB: renvoie 2 en cas de problème lors du calcul d'intersection avec JTS
 	 *     (bug en particulier si les surfaces sont dégénérées ou trop complexes).
 	 */
 	public static double distanceSurfacique(GM_MultiSurface<GM_OrientableSurface> A, GM_MultiSurface<GM_OrientableSurface> B)   {
 		GM_Object inter = A.intersection(B);
 		//en cas de problème d'intersection avec JTS, la méthode retourne 2
-		if ( inter == null ) return 2;
+		if (inter == null) { return 2; }
 		GM_Object union = A.union(B);
-		if ( union == null ) return 1;
-		return 1 - inter.area()/union.area();
+		if (union == null) { return 1; }
+		return 1 - inter.area() / union.area();
 	}
 
 	/** Distance surfacique "robuste" entre deux polygones.
