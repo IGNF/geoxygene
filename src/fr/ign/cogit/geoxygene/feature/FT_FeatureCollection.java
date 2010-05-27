@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
@@ -214,7 +213,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      *            liste de <code>Feature</code>s à affecter
      */
     @SuppressWarnings("unchecked")
-    public void setElements(Collection<Feat> liste) {
+    public void setElements(Collection<? extends Feat> liste) {
         synchronized (this.elements) {
             List<Feat> old = new ArrayList<Feat>(this.elements);
             for (Feat O : old) {
@@ -272,10 +271,10 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      * composants
      * de this, et met à jour le lien inverse.
      */
-    public void addCollection(FT_FeatureCollection<Feat> value) {
+    public void addCollection(Collection<Feat> value) {
         if (value == null) { return; }
-        synchronized (value.elements) {
-            for (Feat element : value.elements) {
+        synchronized (value) {
+            for (Feat element : value) {
                 this.add(element);
             }
         }
@@ -626,8 +625,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
      */
     public Collection<Feat> select(DirectPosition P, double D) {
         if (!this.isIndexed) {
-            Set<Feat> selectedFeatures =
-                new HashSet<Feat>();
+        	Collection<Feat> selectedFeatures = new HashSet<Feat>();
             synchronized (this.elements) {
                 for (Feat feature : this) {
                     if (feature.getGeom().distance(P.toGM_Point()) <= D) selectedFeatures
