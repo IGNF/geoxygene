@@ -29,7 +29,7 @@ import fr.ign.cogit.geoxygene.schema.SchemaConceptuel;
  * 
  * Cette classe est similaire à la classe
  * fr.ign.cogit.appli.commun.metadata.schemaConceptuel.schemaJeu.schemaConceptuelJeu
- * à quelques nuances prés : elle utilise notamment des classes implémentant le GFM
+ * à quelques nuances près : elle utilise notamment des classes implémentant le GFM
  * mais dédiées aux produits et non pas aux jeux de données.
  * 
  */

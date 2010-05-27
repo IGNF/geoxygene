@@ -31,7 +31,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -230,36 +229,35 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 
 	// ===============================================
 	/** Features appartenant a la dalle d'indice i,j. */
-	public FT_FeatureCollection<Feature> select(int i, int j) {
-		return new FT_FeatureCollection<Feature>(this.index[i][j]);
+	public Collection<Feature> select(int i, int j) {
+		return new HashSet<Feature>(this.index[i][j]);
 	}
 
 	// ===============================================
 	/** Selection a l'aide d'un rectangle. */
 	public Collection<Feature> select(GM_Envelope env) {
-		if (env==null) return new HashSet<Feature>();
-		int tab[];
-		Set<Feature> result = new HashSet<Feature>();
+		Collection<Feature> result = new HashSet<Feature>();
+		if (env == null) { return result; }
 		GM_Object geometry = new GM_Polygon(env);
-		if (env.getUpperCorner().getX() == env.getLowerCorner().getX())
-			if (env.getUpperCorner().getY() == env.getLowerCorner().getY())
-				geometry = new GM_Point(env.getUpperCorner());
-
-		tab = this.dallesIntersectees(env);
+		if (env.getUpperCorner().getX() == env.getLowerCorner().getX()
+				&& env.getUpperCorner().getY() == env.getLowerCorner().getY()) {
+			geometry = new GM_Point(env.getUpperCorner());
+		}
+		int tab[] = this.dallesIntersectees(env);
 		for (int i = tab[0]; i <= tab[1]; i++) {
 			for (int j = tab[2]; j <= tab[3]; j++) {
-			    synchronized (this.index) {
-				int tileSize = this.index[i][j].size();
-				for (int ind = 0 ; ind < tileSize ; ind++) {
-					Feature feature = this.index[i][j].get(ind);
-					GM_Object geom = feature.getGeom();
-					if (geom==null) continue;
-					GM_Envelope envCourante = geom.envelope();
-					if (env.overlaps(envCourante))
-						if (geometry.intersects(geom))
+				synchronized (this.index) {
+					int tileSize = this.index[i][j].size();
+					for (int ind = 0 ; ind < tileSize ; ind++) {
+						Feature feature = this.index[i][j].get(ind);
+						GM_Object geom = feature.getGeom();
+						if (geom == null) { continue; }
+						GM_Envelope envCourante = geom.envelope();
+						if (env.overlaps(envCourante) && geometry.intersects(geom)) {
 							result.add(feature);
+						}
+					}
 				}
-			    }
 			}
 		}
 		return result;
@@ -278,7 +276,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	/** Selection des objets qui intersectent un objet geometrique quelconque. */
 	public Collection<Feature> select(GM_Object geometry) {
 		int tab[];
-		Set<Feature> result = new HashSet<Feature>();
+		Collection<Feature> result = new HashSet<Feature>();
 		GM_Envelope envGeometry = geometry.envelope();
 		tab = this.dallesIntersectees(envGeometry);
 		for (int i = tab[0]; i <= tab[1]; i++) {
@@ -288,8 +286,9 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 						for(Feature feature : this.index[i][j]) {
 							GM_Object geom = feature.getGeom();
 							GM_Envelope envCourante = geom.envelope();
-							if (envGeometry.overlaps(envCourante)&&geometry.intersects(geom))
+							if (envGeometry.overlaps(envCourante) && geometry.intersects(geom)) {
 								result.add(feature);
+							}
 						}
 					}
 				}
@@ -311,7 +310,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	 */
 	public Collection<Feature> select(GM_Object geometry,	boolean strictlyCrosses) {
 		int tab[];
-		Set<Feature> result = new HashSet<Feature>();
+		Collection<Feature> result = new HashSet<Feature>();
 		GM_Envelope envGeometry = geometry.envelope();
 		tab = this.dallesIntersectees(envGeometry);
 		for (int i = tab[0]; i <= tab[1]; i++) {
@@ -338,8 +337,8 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	 * NB: distance peut être nul.
 	 */
 	public Collection<Feature> select(GM_Object geometry, double distance) {
-		if (distance == 0) return select(geometry);
-		try {return select(geometry.buffer(distance));}
+		if (distance == 0) { return select(geometry); }
+		try { return select(geometry.buffer(distance)); }
 		catch (Exception e) {
 			System.out.println("PROBLEME AVEC LA FABRICATION DU BUFFER LORS D'UNE REQUETE SPATIALE");
 			e.printStackTrace();
