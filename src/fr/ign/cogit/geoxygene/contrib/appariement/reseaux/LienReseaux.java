@@ -49,61 +49,50 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
- * Resultats de l'appariement, qui sont des liens entre objets de BDref et objets de BDcomp.
- * Un lien a aussi une géométrie qui est sa représentation graphique.
- * 
- * @author Mustiere - IGN / Laboratoire COGIT
- * @version 1.0
- * 
+ * Resultats de l'appariement, qui sont des liens entre objets de BDref et
+ * objets de BDcomp. Un lien a aussi une géométrie qui est sa représentation
+ * graphique.
+ * @author Sébastien Mustiere
  */
-
 public class LienReseaux extends Lien {
-	static Logger logger=Logger.getLogger(LienReseaux.class.getName());
-
+	static Logger logger = Logger.getLogger(LienReseaux.class.getName());
 	/** Les Arc1 pointés par le lien */
 	private List<Arc> arcs1 = new ArrayList<Arc>();
-	public List<Arc> getArcs1() {return this.arcs1;}
-	public void setArcs1(List<Arc> arcs) { this.arcs1=arcs; }
+	public List<Arc> getArcs1() { return this.arcs1; }
+	public void setArcs1(List<Arc> arcs) { this.arcs1 = arcs; }
 	public void addArcs1(Arc arc) { this.arcs1.add(arc); }
-
 	/** Les Noeud1 pointés par le lien */
 	private List<Noeud> noeuds1 = new ArrayList<Noeud>();
-	public List<Noeud> getNoeuds1() {return this.noeuds1;}
-	public void setNoeuds1(List<Noeud> noeuds) { this.noeuds1=noeuds; }
+	public List<Noeud> getNoeuds1() { return this.noeuds1; }
+	public void setNoeuds1(List<Noeud> noeuds) { this.noeuds1 = noeuds; }
 	public void addNoeuds1(Noeud noeud) { this.noeuds1.add(noeud); }
-
 	/** Les Groupe1 pointés par le lien */
 	private List<Groupe> groupes1 = new ArrayList<Groupe>();
-	public List<Groupe> getGroupes1() {return this.groupes1;}
-	public void setGroupes1(List<Groupe> groupes) { this.groupes1=groupes; }
+	public List<Groupe> getGroupes1() { return this.groupes1; }
+	public void setGroupes1(List<Groupe> groupes) { this.groupes1 = groupes; }
 	public void addGroupes1(Groupe groupe) { this.groupes1.add(groupe); }
-
 	/** Les Arc2 pointés par le lien */
 	private List<Arc> arcs2 = new ArrayList<Arc>();
 	public List<Arc> getArcs2() {return this.arcs2;}
-	public void setArcs2(List<Arc> arcs) { this.arcs2=arcs; }
+	public void setArcs2(List<Arc> arcs) { this.arcs2 = arcs; }
 	public void addArcs2(Arc arc) { this.arcs2.add(arc); }
-
 	/** Les Noeud2 pointés par le lien */
 	private List<Noeud> noeuds2 = new ArrayList<Noeud>();
-	public List<Noeud> getNoeuds2() {return this.noeuds2;}
-	public void setNoeuds2(List<Noeud> noeuds) { this.noeuds2=noeuds; }
+	public List<Noeud> getNoeuds2() { return this.noeuds2; }
+	public void setNoeuds2(List<Noeud> noeuds) { this.noeuds2 = noeuds; }
 	public void addNoeuds2(Noeud noeud) { this.noeuds2.add(noeud); }
-
 	/** Les Groupe2 pointés par le lien */
 	private List<Groupe> groupes2 = new ArrayList<Groupe>();
-	public List<Groupe> getGroupes2() {return this.groupes2;}
-	public void setGroupes2(List<Groupe> groupes) { this.groupes2=groupes; }
+	public List<Groupe> getGroupes2() { return this.groupes2; }
+	public void setGroupes2(List<Groupe> groupes) { this.groupes2 = groupes; }
 	public void addGroupes2(Groupe groupe) { this.groupes2.add(groupe); }
-
-
-	/** Methode qui affecte la valeur 'eval' comme évaluation du lien et
+	/**
+	 * Methode qui affecte la valeur 'eval' comme évaluation du lien et
 	 * le commentaire 'commentaire' à tous les objets liés par ce lien.
 	 */
 	public void affecteEvaluationAuxObjetsLies(double eval, String commentaireEvaluation) {
 		this.setEvaluation(eval);
 		Iterator<?> itObj;
-
 		itObj = this.getArcs2().iterator();
 		while (itObj.hasNext()) {
 			ArcApp arc = (ArcApp) itObj.next();
@@ -135,29 +124,26 @@ public class LienReseaux extends Lien {
 			groupe.setResultatAppariement(commentaireEvaluation);
 		}
 	}
-
-
-	/** méthode qui renvoie en sortie des liens génériques (appariement.Lien, liens 1-1 uniquement)
-	 * correspondant aux lienReseaux en entrée.
-	 * Cette méthode crée une géoémtrie aux liens au passage
+	/**
+	 * Méthode qui renvoie en sortie des liens génériques (appariement.Lien,
+	 * liens 1-1 uniquement) correspondant aux lienReseaux en entrée. Cette
+	 * méthode crée une géoémtrie aux liens au passage.
 	 * @param liensReseaux
 	 * @param ctRef
 	 * @param param
 	 * @return a set of links between the two networks given as arguments
 	 */
 	@SuppressWarnings("unchecked")
-	public static EnsembleDeLiens exportLiensAppariement(EnsembleDeLiens liensReseaux, ReseauApp ctRef, ParametresApp param) {
+	public static EnsembleDeLiens exportLiensAppariement(
+			EnsembleDeLiens liensReseaux, ReseauApp ctRef, ParametresApp param) {
 		EnsembleDeLiens liensGeneriques;
-
 		liensGeneriques = new EnsembleDeLiens();
 		liensGeneriques.setNom(liensReseaux.getNom());
-
 		// On compile toutes les populations du reseau 1 [resp. 2] dans une liste
 		List pops1 = new ArrayList(param.populationsArcs1);
 		pops1.addAll(param.populationsNoeuds1);
 		List pops2 = new ArrayList(param.populationsArcs2);
 		pops2.addAll(param.populationsNoeuds2);
-
 		//boucle sur les liens entre cartes topo
 		Iterator<Lien> itLiensReseaux = liensReseaux.iterator();
 		while (itLiensReseaux.hasNext()) {
@@ -179,7 +165,6 @@ public class LienReseaux extends Lien {
 				objetsCT2PourUnLien.addAll(groupe2.getListeArcs());
 				objetsCT2PourUnLien.addAll(groupe2.getListeNoeuds());
 			}
-
 			// On parcours chaque couple d'objets de cartes topos appariés
 			Iterator itObjetsCT1PourUnLien = objetsCT1PourUnLien.iterator();
 			while (itObjetsCT1PourUnLien.hasNext()) {
@@ -189,39 +174,51 @@ public class LienReseaux extends Lien {
 				while (itObjetsCT2PourUnLien.hasNext()) {
 					FT_Feature objetCT2 = (FT_Feature) itObjetsCT2PourUnLien.next();
 					List<FT_Feature> objets2 = getCorrespondants(objetCT2, pops2);
-					if (objets1.size() == 0 && objets2.size()==0 ) {
+					if (objets1.isEmpty() && objets2.isEmpty()) {
 						//cas où il n'y a pas de correspondant dans les données de départ des 2 côtés
 						Lien lienG = liensGeneriques.nouvelElement();
 						lienG.setEvaluation(lienReseau.getEvaluation());
-						lienG.setCommentaire(I18N.getString("LienReseaux.NoCorrespondentInBothDatabases")); //$NON-NLS-1$
-						if (param.exportGeometrieLiens2vers1) lienG.setGeom(creeGeometrieLienSimple(objetCT1, objetCT2));
-						else lienG.setGeom(creeGeometrieLienSimple(objetCT2, objetCT1));
+						lienG.setCommentaire(I18N.getString(
+								"LienReseaux.NoCorrespondentInBothDatabases")); //$NON-NLS-1$
+						if (param.exportGeometrieLiens2vers1) {
+							lienG.setGeom(creeGeometrieLienSimple(objetCT1, objetCT2));
+						} else {
+							lienG.setGeom(creeGeometrieLienSimple(objetCT2, objetCT1));
+						}
 						continue;
 					}
-					if (objets1.size() == 0 ) {
+					if (objets1.isEmpty()) {
 						//cas où il n'y a pas de correspondant dans les données de BD1
 						Iterator<FT_Feature> itObjets2 = objets2.iterator();
 						while (itObjets2.hasNext()) {
 							FT_Feature objet2 = itObjets2.next();
 							Lien lienG = liensGeneriques.nouvelElement();
 							lienG.setEvaluation(lienReseau.getEvaluation());
-							lienG.setCommentaire(I18N.getString("LienReseaux.NoCorrespondentInDB1")); //$NON-NLS-1$
-							if (param.exportGeometrieLiens2vers1) lienG.setGeom(creeGeometrieLienSimple(objetCT1, objet2));
-							else lienG.setGeom(creeGeometrieLienSimple(objet2, objetCT1));
+							lienG.setCommentaire(I18N.getString(
+									"LienReseaux.NoCorrespondentInDB1")); //$NON-NLS-1$
+							if (param.exportGeometrieLiens2vers1) {
+								lienG.setGeom(creeGeometrieLienSimple(objetCT1, objet2));
+							} else {
+								lienG.setGeom(creeGeometrieLienSimple(objet2, objetCT1));
+							}
 							lienG.addObjetComp(objet2);
 						}
 						continue;
 					}
-					if (objets2.size() == 0 ) {
+					if (objets2.isEmpty()) {
 						//cas où il n'y a pas de correspondant dans les données de BD2
 						Iterator<FT_Feature> itObjets1 = objets1.iterator();
 						while (itObjets1.hasNext()) {
 							FT_Feature objet1 = itObjets1.next();
 							Lien lienG = liensGeneriques.nouvelElement();
 							lienG.setEvaluation(lienReseau.getEvaluation());
-							lienG.setCommentaire(I18N.getString("LienReseaux.NoCorrespondentInDB1")); //$NON-NLS-1$
-							if (param.exportGeometrieLiens2vers1) lienG.setGeom(creeGeometrieLienSimple(objet1, objetCT2));
-							else lienG.setGeom(creeGeometrieLienSimple(objetCT2, objet1));
+							lienG.setCommentaire(I18N.getString(
+									"LienReseaux.NoCorrespondentInDB1")); //$NON-NLS-1$
+							if (param.exportGeometrieLiens2vers1) {
+								lienG.setGeom(creeGeometrieLienSimple(objet1, objetCT2));
+							} else {
+								lienG.setGeom(creeGeometrieLienSimple(objetCT2, objet1));
+							}
 							lienG.addObjetRef(objet1);
 						}
 						continue;
@@ -236,8 +233,11 @@ public class LienReseaux extends Lien {
 							Lien lienG = liensGeneriques.nouvelElement();
 							lienG.setEvaluation(lienReseau.getEvaluation());
 							lienG.setCommentaire(""); //$NON-NLS-1$
-							if (param.exportGeometrieLiens2vers1)lienG.setGeom(creeGeometrieLienSimple(objet1, objet2));
-							else lienG.setGeom(creeGeometrieLienSimple(objet2, objet1));
+							if (param.exportGeometrieLiens2vers1) {
+								lienG.setGeom(creeGeometrieLienSimple(objet1, objet2));
+							} else {
+								lienG.setGeom(creeGeometrieLienSimple(objet2, objet1));
+							}
 							lienG.addObjetRef(objet1);
 							lienG.addObjetComp(objet2);
 						}
@@ -245,55 +245,59 @@ public class LienReseaux extends Lien {
 				}
 			}
 		}
-		if ( param.debugAffichageCommentaires > 1 ) System.out.println("  "+liensGeneriques.size()+I18N.getString("LienReseaux.Link1-1exported")); //$NON-NLS-1$ //$NON-NLS-2$
-
+		if (param.debugAffichageCommentaires > 1) {
+			logger.info("  " + liensGeneriques.size() //$NON-NLS-1$
+					+ I18N.getString("LienReseaux." + //$NON-NLS-1$
+							"Link1-1exported")); //$NON-NLS-1$
+		}
 		return liensGeneriques;
 	}
-
-
-	/** Renvoie les correspondants appartenant à une des FT_FeatureCollection de la liste passée en parametre. */
-	private static List<FT_Feature> getCorrespondants(FT_Feature ft, List<FT_FeatureCollection<FT_Feature>> populations) {
+	/**
+	 * Renvoie les correspondants appartenant à une des FT_FeatureCollection de
+	 * la liste passée en parametre.
+	 */
+	private static List<FT_Feature> getCorrespondants(FT_Feature ft,
+			List<FT_FeatureCollection<FT_Feature>> populations) {
 		List<FT_Feature> resultats = new ArrayList<FT_Feature>();
-		Iterator<FT_FeatureCollection<FT_Feature>> itPop = populations.iterator();
-		while (itPop.hasNext()) {
-			FT_FeatureCollection<FT_Feature> pop = itPop.next();
+		for (FT_FeatureCollection<FT_Feature> pop : populations) {
 			resultats.addAll(ft.getCorrespondants(pop));
 		}
 		return resultats;
 	}
-
-	/** Methode créant une géométrie au lien 1-1 en reliant les
-	 * deux objets concerné par un simple trait
+	/**
+	 * Methode créant une géométrie au lien 1-1 en reliant les
+	 * deux objets concerné par un simple trait.
 	 */
-	private static GM_Object creeGeometrieLienSimple(FT_Feature obj1, FT_Feature obj2) {
-		if (logger.isDebugEnabled()) logger.debug(obj1+" - "+obj2); //$NON-NLS-1$
-		
+	private static GM_Object creeGeometrieLienSimple(FT_Feature obj1,
+			FT_Feature obj2) {
+		if (logger.isDebugEnabled()) {
+			logger.debug(obj1+" - "+obj2); //$NON-NLS-1$		
+		}
 		GM_LineString ligne = new GM_LineString();
 		DirectPosition DP2 = null;
 		if ( obj2.getGeom() instanceof GM_Point) {
-			GM_Point point2 = (GM_Point)obj2.getGeom()  ;
+			GM_Point point2 = (GM_Point)obj2.getGeom();
 			DP2 = point2.getPosition();
 			ligne.addControlPoint(DP2);
 		}
 		if ( obj2.getGeom() instanceof GM_LineString) {
-			GM_LineString ligne2 = (GM_LineString)obj2.getGeom()  ;
+			GM_LineString ligne2 = (GM_LineString)obj2.getGeom();
 			DP2 = Operateurs.milieu(ligne2);
 			ligne.addControlPoint(DP2);
 		}
-
 		if ( obj1.getGeom() instanceof GM_Point) {
-			GM_Point point1 = (GM_Point)obj1.getGeom()  ;
+			GM_Point point1 = (GM_Point)obj1.getGeom();
 			ligne.addControlPoint(point1.getPosition());
 		}
 		if ( obj1.getGeom() instanceof GM_LineString) {
-			GM_LineString ligne1 = (GM_LineString)obj1.getGeom()  ;
+			GM_LineString ligne1 = (GM_LineString)obj1.getGeom();
 			ligne.addControlPoint(Operateurs.projection(DP2,ligne1));
 		}
-		if (logger.isDebugEnabled()) logger.debug(ligne);
-
+		if (logger.isDebugEnabled()) {
+			logger.debug(ligne);
+		}
 		return ligne;
 	}
-
 	//////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////
 	//                         ATTENTION
@@ -306,28 +310,19 @@ public class LienReseaux extends Lien {
 	// A UTILSER AVEC PRECAUTION DONC
 	//////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////
-
-	/** méthode qui affecte une geometrie aux liens de réseau et remplit les commentaires des liens.
-	 * UTILE POUR CODE / DEBUG UNIQUEMENT
+	/**
+	 * Méthode qui affecte une geometrie aux liens de réseau et remplit les
+	 * commentaires des liens. UTILE POUR CODE / DEBUG UNIQUEMENT
 	 */
-	public static void exportAppCarteTopo(EnsembleDeLiens liensReseaux,ParametresApp param) {
-//		EnsembleDeLiens liensGeneriques ;
-//		LienReseaux lienR;
-//		Lien lienG;
-//		List<FT_Feature> tousobjetsRef,tousobjetsComp ;
-//		Iterator<Groupe> itGroupe;
-//		Groupe groupe;
-		LienReseaux lienR;
-		Iterator<Lien> itLiens;
-
-		/////////////////////////////////////////
+	public static void exportAppCarteTopo(EnsembleDeLiens liensReseaux,
+			ParametresApp param) {
 		// création de la géométrie des liens
-		itLiens = liensReseaux.getElements().iterator();
-		while (itLiens.hasNext()) {
-			lienR = (LienReseaux) itLiens.next();
-			lienR.setGeom(lienR.creeGeometrieLien(param.debugTirets, param.debugPasTirets, param.debugBuffer, param.debugTailleBuffer));
+		for (Lien lien : liensReseaux) {
+			LienReseaux lienR = (LienReseaux) lien;
+			lienR.setGeom(lienR.creeGeometrieLien(param.debugTirets,
+					param.debugPasTirets, param.debugBuffer,
+					param.debugTailleBuffer));
 		}
-
 //		if ( param.debugAffichageCommentaires > 1 ) System.out.println("BILAN de l'appariement sur le réseau 1");
 //		if ( param.debugAffichageCommentaires > 1 ) System.out.println("NB : bilan sur les objets des réseaux créés, et non sur les objets initiaux, il peut y avoir quelques nuances");
 //
@@ -408,33 +403,30 @@ public class LienReseaux extends Lien {
 //		}
 //		return liensGeneriques;
 	}
-
-	/** Methode créant une géométrie pour les liens de réseau.
-	 * 
+	/**
+	 * Methode créant une géométrie pour les liens de réseau.
 	 * 1/ Pour chaque noeud du réseau 1 apparié, cette géométrie est constituée...
 	 *      - d'un buffer entourant les objets homolgues dans le réseau ,
 	 *      - d'un trait reliant le noeud à ce buffer.
-	 * 
 	 * 2/ Pour chaque arc du réseau 1 apparié, cette géométrie est constituée...
 	 *      - d'un ensemble de tirets reliant les arcs homologues de manière régulière
 	 *        (intervalle entre les tirets en paramètre),
 	 *      - ou alors d'un ensemble de traits reliant le milieu des arcs appariés.
-	 * 
 	 *  @param tirets
 	 *  spécifie si on veut une géométrie faite de tirets (true),
 	 *  ou plutôt d'un unique trait pour chaque couple d'arcs (false)
-	 * 
+	 *
 	 *  @param pasTirets
 	 *  Si on veut des tirets réguliers, distance entre ces tirets.
-	 * 
+	 *
 	 *  @param tailleBuffer
 	 *  Taille du buffer autour des objets appariés à un noeud.
-	 * 
 	 */
-	private GM_Object creeGeometrieLien(boolean tirets, double pasTirets, boolean buffer, double tailleBuffer) {
-
-		if (logger.isDebugEnabled()) logger.debug(tirets+" - "+pasTirets+" - "+buffer+" - "+tailleBuffer); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
+	private GM_Object creeGeometrieLien(boolean tirets, double pasTirets,
+			boolean buffer, double tailleBuffer) {
+		if (logger.isDebugEnabled()) {
+			logger.debug(tirets+" - "+pasTirets+" - "+buffer+" - "+tailleBuffer); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
 		Iterator<Groupe> itGroupes;
 		Iterator<Noeud> itNoeuds;
 		Iterator<Noeud> itNoeudsComp;
@@ -445,28 +437,28 @@ public class LienReseaux extends Lien {
 		GroupeApp groupeComp;
 		GM_LineString ligne, chemin;
 		GM_Aggregate<GM_Object> geomLien;
-
 		// LIEN D'UN NOEUD REF VERS DES NOEUDS COMP ET/OU DES GROUPES COMP
-		if ( this.getNoeuds1().size() == 1 ) {
-			if (logger.isDebugEnabled()) logger.debug(I18N.getString("LienReseaux.Nodes1")+this.getNoeuds1().size()); //$NON-NLS-1$
-			
+		if (this.getNoeuds1().size() == 1) {
+			if (logger.isDebugEnabled()) {
+				logger.debug(I18N.getString("LienReseaux.Nodes1")+this.getNoeuds1().size()); //$NON-NLS-1$
+			}
 			noeudRef = (NoeudApp)this.getNoeuds1().get(0);
 			geomLien = new GM_Aggregate<GM_Object>();
-
 			// 1 noeud ref - n noeuds comp isolés --> 1 aggrégat de traits et de surfaces
 			itNoeuds = this.getNoeuds2().iterator();
-			while ( itNoeuds.hasNext() ) {
+			while (itNoeuds.hasNext()) {
 				noeudComp = (NoeudApp)itNoeuds.next();
 				ligne = new GM_LineString();
 				ligne.addControlPoint(noeudRef.getCoord());
 				ligne.addControlPoint(noeudComp.getCoord());
 				geomLien.add(ligne);
-				if (buffer) geomLien.add(noeudComp.getGeometrie().buffer(tailleBuffer));
+				if (buffer) {
+					geomLien.add(noeudComp.getGeometrie().buffer(tailleBuffer));
+				}
 			}
-
 			// 1 noeud ref - n groupes --> aggrégat de traits et de surface autour du groupe
 			itGroupes = this.getGroupes2().iterator();
-			while ( itGroupes.hasNext() ) {
+			while (itGroupes.hasNext()) {
 				groupeComp = (GroupeApp)itGroupes.next();
 				itArcsComp = groupeComp.getListeArcs().iterator();
 				while ( itArcsComp.hasNext() ) {
@@ -478,59 +470,74 @@ public class LienReseaux extends Lien {
 					noeudComp = (NoeudApp)itNoeudsComp.next();
 					geomLien.add( noeudComp.getGeometrie().buffer(tailleBuffer) );
 				}
-
 				// on fait le trait entre le noeud ref et le groupe comp
 				ligne = new GM_LineString();
 				ligne.addControlPoint( noeudRef.getCoord() );
 				ligne.addControlPoint( noeudRef.noeudLePlusProche(groupeComp).getCoord() );
 				geomLien.add(ligne);
 			}
-
-			if (logger.isDebugEnabled()) logger.debug(I18N.getString("LienReseaux.LinkGeometry")+geomLien); //$NON-NLS-1$
-			if (geomLien.coord().size() > 1 ) return geomLien;
-			System.out.println(I18N.getString("LienReseaux.NodeLinkNotCreated")); //$NON-NLS-1$
+			if (logger.isDebugEnabled()) {
+				logger.debug(I18N.getString("LienReseaux.LinkGeometry")+geomLien); //$NON-NLS-1$
+			}
+			if (geomLien.coord().size() > 1) {
+				return geomLien;
+			}
+			logger.info(I18N.getString("LienReseaux.NodeLinkNotCreated")); //$NON-NLS-1$
 			return null;
 		}
-
 		// LIEN D'ARCS REF VERS DES ARCS OU DES GROUPES COMP
 		Iterator<Arc> itArcsRef = this.getArcs1().iterator();
 		geomLien = new GM_Aggregate<GM_Object>();
 		while (itArcsRef.hasNext()) {
 			arcRef = (ArcApp)itArcsRef.next();
-
 			// 1 arc ref directement vers des noeuds
 			itNoeuds = this.getNoeuds2().iterator();
 			while (itNoeuds.hasNext()) {
 				noeudComp = (NoeudApp) itNoeuds.next();
-				if ( tirets) geomLien.add(Lien.tirets(arcRef.getGeometrie(), noeudComp.getGeometrie(), pasTirets));
-				else geomLien.add(Lien.tiret(arcRef.getGeometrie(), noeudComp.getGeometrie()));
+				if (tirets) {
+					geomLien.add(Lien.tirets(arcRef.getGeometrie(), noeudComp
+							.getGeometrie(), pasTirets));
+				} else {
+					geomLien.add(Lien.tiret(arcRef.getGeometrie(), noeudComp
+							.getGeometrie()));
+				}
 			}
-
 			// 1 arc ref vers des groupes comp (groupes en parrallèle) --> plusieurs séries de tirets
 			itGroupes = this.getGroupes2().iterator();
-			while ( itGroupes.hasNext() ) {
+			while (itGroupes.hasNext()) {
 				// 1 arc ref vers un groupe comp (des arcs en série) --> des tirets
 				groupeComp = (GroupeApp)itGroupes.next();
 				chemin = groupeComp.compileArcs(arcRef);
-				if ( chemin != null ) {
-					if ( tirets) geomLien.add(Lien.tirets(arcRef.getGeometrie(), chemin, pasTirets));
-					else geomLien.add(Lien.tiret(arcRef.getGeometrie(), chemin));
+				if (chemin != null) {
+					if (tirets) {
+						geomLien.add(Lien.tirets(arcRef.getGeometrie(), chemin,
+								pasTirets));
+					} else {
+						geomLien.add(Lien.tiret(arcRef.getGeometrie(), chemin));
+					}
 				}
 			}
-
 			// 1 arc ref vers des arcs comp en série --> des tirets (utile pour le pre-appariement uniquement)
 			itArcs = this.getArcs2().iterator();
 			while ( itArcs.hasNext() ) {
 				arcComp = (ArcApp)itArcs.next();
-				if (tirets) geomLien.add(Lien.tirets(arcRef.getGeometrie(), arcComp.getGeometrie(), 25));
-				else geomLien.add(Lien.tiret(arcRef.getGeometrie(), arcComp.getGeometrie()));
+				if (tirets) {
+					geomLien.add(Lien.tirets(arcRef.getGeometrie(), arcComp
+							.getGeometrie(), 25));
+				} else {
+					geomLien.add(Lien.tiret(arcRef.getGeometrie(), arcComp
+							.getGeometrie()));
+				}
 			}
 
 		}
-		if (logger.isDebugEnabled()) logger.debug(I18N.getString("LienReseaux.LinkGeometry")+geomLien); //$NON-NLS-1$
-		if (geomLien.coord().size() > 1 ) return geomLien;
-		System.out.println(I18N.getString("LienReseaux.EdgeLinkNotCreated")); //$NON-NLS-1$
+		if (logger.isDebugEnabled()) {
+			logger.debug(I18N.getString(
+					"LienReseaux.LinkGeometry")+geomLien); //$NON-NLS-1$
+		}
+		if (geomLien.coord().size() > 1 ) { return geomLien; }
+		logger.info(I18N.getString(
+				"LienReseaux.EdgeLinkNotCreated")); //$NON-NLS-1$
 		return null;
 	}
-
 }

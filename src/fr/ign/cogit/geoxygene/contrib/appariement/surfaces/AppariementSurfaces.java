@@ -29,6 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
@@ -53,91 +55,111 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
- * Appariement de surfaces.
- * Processus défini dans la thèse de Atef Bel Hadj Ali (2001),
- * et resume dans le rapport [Mustiere 2002]:
- * ("Description des processus d'appariement mis en oeuvre au COGIT",SR/2002.0072, chap.6).
- * 
- * @author Braun & Mustière - Laboratoire COGIT
- * version 1.0
- * 
+ * Appariement de surfaces. Processus défini dans la thèse de Atef Bel Hadj Ali
+ * (2001), et resume dans le rapport [Mustiere 2002] :
+ * ("Description des processus d'appariement mis en oeuvre au COGIT"
+ * ,SR/2002.0072, chap.6).
+ * @author Arnaud Braun
+ * @author Sébastien Mustière
  */
-
 public abstract class AppariementSurfaces {
-
+	public static Logger LOGGER = Logger.getLogger(AppariementSurfaces.class.getName());
     /**
      * Appariement entre deux ensembles de surfaces.
      * Processus inspiré de celui défini dans la thèse de Atef Bel Hadj Ali (2001),
      * et résumé dans le rapport de Seb
      * ("Description des processus d'appariement mise en oeuvre au COGIT",SR/2002.0072, chap.6).
-     * 
+     *
      * NB 1 : LE CAS DES LIENS N-M N'EST PAS VRAIMENT SATIFAISANT
      * ET DOIT ENCORE ETRE REVU (reflechir aux mesures). néanmoins...
      * le processus a été amélioré pour mieux raffiner le traitement des liens n-m :
      * un lien n-m issu du regroupement des liens 1-1 peut être redécoupé en
      * plusieurs liens n'-m', alors que le processus d'Atef ne semble permettre
      * que de simplifier ce groupe n-m en UN seul groupe n'-m' (n'<=n, m'<=m)
-     * 
+     *
      * NB 2 :Les liens finaux sont qualifiés (evaluation) par la mesure de
      * distance surfacique entre groupes de surfaces.
-     * 
+     *
      * NB 3 : si la population de référence n'est pas indexée, elle le sera pendant le calcul
-     * 
+     *
      * NB 4 : l'appariement est symétrique (si ref et comp sont échangés, les résultats sont identiques)
-     * 
+     *
      * @param popRef : population des objets de référence.
      * 		Ces objets doivent avoir une géométrie "geom" de type GM_Polygon
      * @param popComp : population des objets de comparaison
      * 		Ces objets doivent avoir une géométrie "geom" de type GM_Polygon
      * @param param : paramètres de l'appariement
-     * 
-     * 
-     * @return : liens d'appariement calculés. Ces liens peuvent être de type n-m.
+     * @return liens d'appariement calculés. Ces liens peuvent être de type n-m.
      */
     public static EnsembleDeLiens appariementSurfaces(FT_FeatureCollection<FT_Feature> popRef, FT_FeatureCollection<FT_Feature> popComp, ParametresAppSurfaces param) {
         EnsembleDeLiens liensPreApp, liensRegroupes, liensFiltres;
-
         // indexation au besoin des surfaces de comparaison
-        if ( ! popComp.hasSpatialIndex() ) {
-            System.out.println(I18N.getString("AppariementSurfaces.SpatialIndexComparisonSurfaces")+new Time(System.currentTimeMillis())); //$NON-NLS-1$
+        if (!popComp.hasSpatialIndex()) {
+        	if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug(I18N.getString(
+						"AppariementSurfaces." + //$NON-NLS-1$
+						"SpatialIndexComparisonSurfaces" //$NON-NLS-1$
+						) + new Time(System.currentTimeMillis()));
+        	}
             popComp.initSpatialIndex(Tiling.class, true);
         }
-
         // pré-appariement selon un test sur la surface de l'intersection
         // entre les surfaces de référence et de comparaison
-        System.out.println(I18N.getString("AppariementSurfaces.PrematchingUsingIntersectionCriteria")+new Time(System.currentTimeMillis())); //$NON-NLS-1$
+        if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug(I18N.getString(
+					"AppariementSurfaces." + //$NON-NLS-1$
+					"PrematchingUsingIntersectionCriteria" //$NON-NLS-1$
+					)+new Time(System.currentTimeMillis()));
+        }
         liensPreApp = preAppariementSurfaces(popRef, popComp, param);
 
         // appariement par recherche des regroupements optimaux
         if ( param.regroupementOptimal ) {
-            System.out.println(I18N.getString("AppariementSurfaces.MatchingBySearchingOptimalGroups")+new Time(System.currentTimeMillis())); //$NON-NLS-1$
+        	if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug(I18N.getString(
+						"AppariementSurfaces." + //$NON-NLS-1$
+						"MatchingBySearchingOptimalGroups" //$NON-NLS-1$
+						)+new Time(System.currentTimeMillis()));
+        	}
             liensRegroupes = rechercheRegroupementsOptimaux(liensPreApp, popRef, popComp, param);
         }
         else liensRegroupes = liensPreApp;
 
         // recollage des petites surfaces non encore appariées
         if ( param.ajoutPetitesSurfaces ) {
-            System.out.println(I18N.getString("AppariementSurfaces.MergingUnmatchedSmallSurfaces")+new Time(System.currentTimeMillis())); //$NON-NLS-1$
+        	if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug(I18N.getString(
+						"AppariementSurfaces." + //$NON-NLS-1$
+						"MergingUnmatchedSmallSurfaces" //$NON-NLS-1$
+						)+new Time(System.currentTimeMillis()));
+        	}
             ajoutPetitesSurfaces(liensRegroupes, popRef, popComp, param);
         }
 
         // filtrage final pour n'accepter que les appariements suffisament bons
         if ( param.filtrageFinal) {
-            System.out.println(I18N.getString("AppariementSurfaces.FinalFiltering")+new Time(System.currentTimeMillis())); //$NON-NLS-1$
+        	if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug(I18N.getString(
+						"AppariementSurfaces." + //$NON-NLS-1$
+						"FinalFiltering" //$NON-NLS-1$
+						)+new Time(System.currentTimeMillis()));
+        	}
             liensFiltres = filtreLiens(liensRegroupes, param);
         }
-        else liensFiltres = liensRegroupes;
-
-
-        System.out.println(I18N.getString("AppariementSurfaces.LinkGeometryCreation")+new Time(System.currentTimeMillis())); //$NON-NLS-1$
+        else { liensFiltres = liensRegroupes; }
+        if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug(I18N.getString(
+					"AppariementSurfaces." + //$NON-NLS-1$
+					"LinkGeometryCreation" //$NON-NLS-1$
+					)+new Time(System.currentTimeMillis()));
+        }
         creeGeometrieDesLiens(liensFiltres, param.persistant);
-
-        System.out.println(I18N.getString("AppariementSurfaces.ProcessEnd")); //$NON-NLS-1$
-
+        if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug(I18N.getString(
+					"AppariementSurfaces.ProcessEnd")); //$NON-NLS-1$
+        }
         return liensFiltres;
     }
-
-
     /** 2 surfaces sont pré-appariées si elles respectent le "test d'association"
      * défini par Atef Bel Hadj Ali (2001). c'est-à-dire si :
      * 1/ l'intersection des surfaces a une taille supérieure au seuil "surface_min"
@@ -158,16 +180,18 @@ public abstract class AppariementSurfaces {
      * @return : liens de pré-appariement calculés.
      */
     public static EnsembleDeLiens preAppariementSurfaces(FT_FeatureCollection<?> popRef, FT_FeatureCollection<?> popComp, ParametresAppSurfaces param) {
-
         EnsembleDeLiens preAppLiens = new EnsembleDeLiens();
         Lien lien ;
         Collection<? extends FT_Feature> candidatComp;
         FT_Feature featureRef, featureComp;
         GM_Object geomRef, geomComp;
         double surfaceIntersection, pourcentageRecouvrement;
-
-        if ( ! popComp.hasSpatialIndex() ) {
-            System.out.println(I18N.getString("AppariementSurfaces.SpatialIndexComparisonSurfacesPopulation")); //$NON-NLS-1$
+        if (!popComp.hasSpatialIndex()) {
+        	if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug(I18N.getString(
+						"AppariementSurfaces." + //$NON-NLS-1$
+						"SpatialIndexComparisonSurfacesPopulation")); //$NON-NLS-1$
+        	}
             popComp.initSpatialIndex(Tiling.class, true);
         }
 
@@ -176,10 +200,14 @@ public abstract class AppariementSurfaces {
             featureRef = iterator.next();
             geomRef = featureRef.getGeom();
             if ( !(geomRef instanceof GM_Surface)) {
-                System.out.println(I18N.getString("AppariementSurfaces.ReferenceObjectWithNoSurfaceGeometry")+featureRef.getId()); //$NON-NLS-1$
+            	if (LOGGER.isDebugEnabled()) {
+    				LOGGER.debug(I18N.getString(
+    						"AppariementSurfaces." +
+    						"ReferenceObjectWithNoSurfaceGeometry"
+    						)+featureRef.getId()); //$NON-NLS-1$
+            	}
                 continue;
             }
-
             // Test d'association sur tous les objets comp intersectant l'objet ref
             candidatComp = popComp.select(geomRef);
             Iterator<? extends FT_Feature> iteratorComp = candidatComp.iterator();
@@ -187,34 +215,43 @@ public abstract class AppariementSurfaces {
                 featureComp = iteratorComp.next();
                 geomComp = featureComp.getGeom();
                 if ( !(geomComp instanceof GM_Surface)) {
-                    System.out.println(I18N.getString("AppariementSurfaces.ComparisonObjectWithNoSurfaceGeometry")+featureComp.getId()); //$NON-NLS-1$
+                	if (LOGGER.isDebugEnabled()) {
+        				LOGGER.debug(I18N.getString("AppariementSurfaces.ComparisonObjectWithNoSurfaceGeometry")+featureComp.getId()); //$NON-NLS-1$
+                	}
                     continue;
                 }
                 // création éventuelle d'un nouveau lien de pré-appariement
                 GM_Object inter = Operateurs.intersectionRobuste(geomRef,geomComp,param.resolutionMin,param.resolutionMax);
                 if (inter == null) continue; // si plantage aux calculs d'intersection
                 surfaceIntersection = inter.area();
-                if (surfaceIntersection<=param.surface_min_intersection) continue;
+                if (surfaceIntersection <= param.surface_min_intersection) {
+                	continue;
+                }
                 pourcentageRecouvrement= Math.max(surfaceIntersection/geomRef.area(), surfaceIntersection/geomComp.area());
-                if ( pourcentageRecouvrement<param.pourcentage_min_intersection) continue; //intersection pas suffisante
+                if (pourcentageRecouvrement < param.pourcentage_min_intersection) {
+                	continue; //intersection pas suffisante
+                }
                 lien = preAppLiens.nouvelElement();
                 lien.addObjetRef(featureRef);
                 lien.addObjetComp(featureComp);
                 lien.setEvaluation(pourcentageRecouvrement);
             }
         }
-        System.out.println(I18N.getString("AppariementSurfaces.NumberOf1-1LinksCreatedDuringPrematching")+preAppLiens.size()); //$NON-NLS-1$
+        if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug(I18N.getString("AppariementSurfaces.NumberOf1-1LinksCreatedDuringPrematching")+preAppLiens.size()); //$NON-NLS-1$
+        }
         return preAppLiens;
     }
 
-    /** On recherche les regroupements optimaux de liens de pré-appariement, pour
+    /**
+     * On recherche les regroupements optimaux de liens de pré-appariement, pour
      * maximiser la distance surfacique entre les groupes de référence et de comparaison.
-     * 
+     *
      * NB : l'appariement est symétrique
-     * 
+     *
      * @param param : paramètres de l'appariement
      * @param liensPreApp : liens issus du pré-appariement
-     * @return : liens d'appariement calculés (contient des objets de la classe Lien).
+     * @return liens d'appariement calculés (contient des objets de la classe Lien).
      * Ces liens sont des liens n-m.
      */
     public static EnsembleDeLiens rechercheRegroupementsOptimaux(EnsembleDeLiens liensPreApp, FT_FeatureCollection<FT_Feature> popRef, FT_FeatureCollection<FT_Feature> popComp, ParametresAppSurfaces param) {
@@ -242,22 +279,29 @@ public abstract class AppariementSurfaces {
         groupeTotal.setListeArcs(grapheDesLiens.getListeArcs());
         groupeTotal.setListeNoeuds(grapheDesLiens.getListeNoeuds());
         groupesConnexes = groupeTotal.decomposeConnexes();
-        System.out.println(I18N.getString("AppariementSurfaces.NumberOfN-MLinksToHandle")+groupesConnexes.size()); //$NON-NLS-1$
-
+        if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug(I18N.getString("AppariementSurfaces.NumberOfN-MLinksToHandle")+groupesConnexes.size()); //$NON-NLS-1$
+        }
         // on parcours tous les liens n-m créés
         itGroupes = groupesConnexes.iterator();
         while (itGroupes.hasNext()) {
             i++;
-            if ( i % 10000  == 0 ) System.out.println(I18N.getString("AppariementSurfaces.NumberOfHandledGroups")+i+"     "+new Time(System.currentTimeMillis())); //$NON-NLS-1$ //$NON-NLS-2$
+            if (LOGGER.isDebugEnabled()) {
+            	if (i % 10000 == 0) {
+            		LOGGER.debug(I18N.getString(
+            				"AppariementSurfaces." +
+            				"NumberOfHandledGroups"
+            				)+i+"     "+
+            				new Time(System.currentTimeMillis())); //$NON-NLS-1$ //$NON-NLS-2$
+            	}
+            }
             groupeConnexe = itGroupes.next();
-
             // pour les objets isolés ou les liens 1-1, on ne fait rien de plus
-            if ( groupeConnexe.getListeArcs().size() == 0 ) continue;
+            if ( groupeConnexe.getListeArcs().isEmpty()) { continue; }
             if ( groupeConnexe.getListeArcs().size() == 1 ) {
                 groupesGardes.add(groupeConnexe);
                 continue;
             }
-
             // pour les groupes n-m, on va essayer d'enlever des arcs
             // mais on garde à coup sûr les liens avec suffisament de recouvremnt
             arcsEnlevables =  new ArrayList<Arc>(groupeConnexe.getListeArcs());
@@ -265,15 +309,16 @@ public abstract class AppariementSurfaces {
             itArcs = arcsEnlevables.iterator();
             while (itArcs.hasNext()) {
                 Arc arc =  itArcs.next();
-                lienArc= (Lien)arc.getCorrespondant(0);
-                if (lienArc.getEvaluation()>param.pourcentage_intersection_sur) arcsNonEnlevables.add(arc);
+                lienArc = (Lien) arc.getCorrespondant(0);
+                if (lienArc.getEvaluation() > param.pourcentage_intersection_sur) {
+                	arcsNonEnlevables.add(arc);
+                }
             }
             arcsEnlevables.removeAll(arcsNonEnlevables);
             if (arcsEnlevables.size() == 0) { //si on ne peut rien enlever, on s'arrête là
                 groupesGardes.add(groupeConnexe);
                 continue;
             }
-
             //on cherche à enlever toutes les combinaisons possibles d'arcs virables
             itCombinaisons = Ensemble.combinaisons(new ArrayList<Object>(arcsEnlevables)).iterator();
             distSurfMin = 2; //	cas de distance surfacique à minimiser
@@ -380,7 +425,9 @@ public abstract class AppariementSurfaces {
         double surfAdj;
         boolean tousPareils;
         if (! popRef.hasSpatialIndex()) {
-            System.out.println(I18N.getString("AppariementSurfaces.SpatialIndexReferenceSurfaces")+new Time(System.currentTimeMillis())); //$NON-NLS-1$
+        	if (LOGGER.isDebugEnabled()) {
+        		LOGGER.debug(I18N.getString("AppariementSurfaces.SpatialIndexReferenceSurfaces")+new Time(System.currentTimeMillis())); //$NON-NLS-1$
+        	}
             popRef.initSpatialIndex(Tiling.class, true);
         }
         for (Lien lien : liens) {
@@ -442,19 +489,27 @@ public abstract class AppariementSurfaces {
                 }
             }
         }
-        System.out.println(I18N.getString("AppariementSurfaces.NumberOfRemainingLinksAfterFiltering")+liensFiltres.size()); //$NON-NLS-1$
+        if (LOGGER.isDebugEnabled()) {
+    		LOGGER.debug(I18N.getString("AppariementSurfaces.NumberOfRemainingLinksAfterFiltering")+liensFiltres.size()); //$NON-NLS-1$
+        }
         return liensFiltres;
     }
     public static void creeGeometrieDesLiens(EnsembleDeLiens liens, boolean persistant) {
         if (persistant) { DataSet.db.begin(); }
-        System.out.println(I18N.getString("AppariementSurfaces.LinkGeometryCreation")); //$NON-NLS-1$
+        if (LOGGER.isDebugEnabled()) {
+    		LOGGER.debug(I18N.getString("AppariementSurfaces.LinkGeometryCreation")); //$NON-NLS-1$
+        }
         for (Lien lien : liens) {
             if (lien.getObjetsRef().isEmpty()) {
-                System.out.println(I18N.getString("AppariementSurfaces.WarningLinkWithoutReferenceObject")); //$NON-NLS-1$
+            	if (LOGGER.isDebugEnabled()) {
+            		LOGGER.debug(I18N.getString("AppariementSurfaces.WarningLinkWithoutReferenceObject")); //$NON-NLS-1$
+            	}
                 continue;
             }
             if (lien.getObjetsComp().isEmpty()) {
-                System.out.println(I18N.getString("AppariementSurfaces.WarningLinkWithoutComparisonObject")); //$NON-NLS-1$
+            	if (LOGGER.isDebugEnabled()) {
+            		LOGGER.debug(I18N.getString("AppariementSurfaces.WarningLinkWithoutComparisonObject")); //$NON-NLS-1$
+            	}
                 continue;
             }
             if (persistant) { DataSet.db.makePersistent(lien); }
@@ -498,7 +553,9 @@ public abstract class AppariementSurfaces {
             }
         }
         if (persistant) {
-            System.out.println(I18N.getString("AppariementSurfaces.Commit")+new Time(System.currentTimeMillis())); //$NON-NLS-1$
+        	if (LOGGER.isDebugEnabled()) {
+        		LOGGER.debug(I18N.getString("AppariementSurfaces.Commit")+new Time(System.currentTimeMillis())); //$NON-NLS-1$
+        	}
             DataSet.db.commit();
         }
     }
