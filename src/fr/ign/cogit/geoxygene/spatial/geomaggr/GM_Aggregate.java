@@ -124,7 +124,10 @@ public class GM_Aggregate<GeomType extends GM_Object> extends GM_Object implemen
 	@Override
 	public DirectPositionList coord() {
 		DirectPositionList result = new DirectPositionList();
-		if (!this.isEmpty()) for(GM_Object o:this) result.addAll(o.coord());
+		if(this.element != null && this.element.size()!=0) {
+		    for(GM_Object o:this) result.addAll(o.coord());
+		}
+
 		return result;
 	}
 
