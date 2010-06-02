@@ -37,5 +37,5 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * @version 1.0
  * 
  */
-abstract class GM_MultiPrimitive<GeomType extends GM_Object> extends GM_Aggregate<GeomType> {
+public abstract class GM_MultiPrimitive<GeomType extends GM_Object> extends GM_Aggregate<GeomType> {
 }

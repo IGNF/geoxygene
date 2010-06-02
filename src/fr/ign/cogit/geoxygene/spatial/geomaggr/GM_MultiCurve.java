@@ -76,4 +76,13 @@ public class GM_MultiCurve<CurveType extends GM_OrientableCurve> extends GM_Mult
 	/*   public double length()  {
         return SpatialQuery.length(this);
     }*/
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public Object clone() {
+        GM_MultiCurve<CurveType> agg = new GM_MultiCurve<CurveType>();
+        for (CurveType elt : this.element)
+            agg.add((CurveType) elt.clone());
+        return agg;
+    }
 }

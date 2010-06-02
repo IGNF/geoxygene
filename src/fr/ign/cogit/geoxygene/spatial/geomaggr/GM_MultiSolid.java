@@ -43,7 +43,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  * 
  */
 
-public class GM_MultiSolid extends GM_MultiPrimitive<GM_Solid> {
+public class GM_MultiSolid<GM_Sol extends GM_Solid> extends GM_MultiPrimitive<GM_Solid> {
 	static Logger logger=Logger.getLogger(GM_MultiSolid.class.getName());
 
 	/** NON IMPLEMENTE (renvoie 0.0).
@@ -80,5 +80,13 @@ public class GM_MultiSolid extends GM_MultiPrimitive<GM_Solid> {
 		this.element = new ArrayList<GM_Solid>();
 		this.element.addAll(lOS);
 	}
+
+	    @Override
+	    public Object clone() {
+	       GM_MultiSolid<GM_Sol> agg = new GM_MultiSolid<GM_Sol>();
+	        for (GM_Solid elt : this.element)
+	            agg.add((GM_Solid) elt.clone());
+	        return agg;
+	    }
 
 }
