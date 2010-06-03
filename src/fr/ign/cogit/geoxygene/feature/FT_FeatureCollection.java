@@ -345,8 +345,8 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
             this.elements.clear();
         }
         if (this.isIndexed) { removeSpatialIndex(); }
-        this.fireActionPerformed(new FeatureCollectionEvent(this, null,
-                    FeatureCollectionEvent.Type.REMOVED, JtsAlgorithms.union(removedCollectionGeometry)));
+       /* this.fireActionPerformed(new FeatureCollectionEvent(this, null,
+                    FeatureCollectionEvent.Type.REMOVED, JtsAlgorithms.union(removedCollectionGeometry)));*/
     }
 
     @Override
