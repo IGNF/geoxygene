@@ -26,6 +26,7 @@
 
 package fr.ign.cogit.geoxygene.util.conversion;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -164,9 +165,24 @@ public class ImgUtil {
 	public static BufferedImage make(Color bg, int width, int height)
 	{
 		BufferedImage image=
-			new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+			new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g=image.createGraphics();
 		g.setColor(bg);
+		g.fillRect(0,0,width,height);
+		g.dispose();
+		return image;
+	}
+	
+	
+	public static BufferedImage makeWithoutBackground(int width, int height)
+	{
+		BufferedImage image=
+			new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g=image.createGraphics();
+		// make sure the background is filled with transparent pixels when cleared !
+		g.setBackground(new Color(0,0,0,0));
+		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_IN, 0.0f));
+		
 		g.fillRect(0,0,width,height);
 		g.dispose();
 		return image;
@@ -243,6 +259,19 @@ public class ImgUtil {
 	{
 		AffineTransform transform=ImgUtil.makeScaleTransform(geoms,width,height);
 		BufferedImage image=ImgUtil.make(background,width,height);
+		Graphics2D g=image.createGraphics();
+		ImgUtil.drawGeom(g,geoms,foregrounds,transform);
+		ImgUtil.saveImage(image,path);
+	}
+	
+	public static void saveImageWithoutBackground(
+			GM_Object[] geoms, String path,
+			Color[] foregrounds,
+			int width, int height)
+	throws Exception
+	{
+		AffineTransform transform=ImgUtil.makeScaleTransform(geoms,width,height);
+		BufferedImage image=ImgUtil.makeWithoutBackground(width,height);
 		Graphics2D g=image.createGraphics();
 		ImgUtil.drawGeom(g,geoms,foregrounds,transform);
 		ImgUtil.saveImage(image,path);
