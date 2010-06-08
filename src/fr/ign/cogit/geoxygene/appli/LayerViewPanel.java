@@ -220,6 +220,20 @@ public class LayerViewPanel extends JPanel {
                     }
                 }
             }
+            if (true) {
+                int shift = 10;
+                int barWidth = 5;
+                double dist = (getWidth() / 3) / this.getViewport().getScale();
+                int log = (int) Math.log10(dist);
+                dist = Math.pow(10, log);
+                int barLength = (int) (dist * this.getViewport().getScale());
+                g.setColor(Color.BLACK);
+                g.drawString(Double.toString(dist), shift + 1, getHeight() - shift - barWidth - 1);
+                g.fillRect(shift, getHeight() - shift - barWidth, barLength, barWidth);
+                // FIXME
+                //int scale = (int) (1 / this.getViewport().getScale());
+                //g.drawString("1:" + Integer.toString(scale), 1, 10); //$NON-NLS-1$
+            }
         } catch (Throwable t) {
             logger.error(I18N.getString("LayerViewPanel.PaintError")); //$NON-NLS-1$
             // TODO HANDLE EXCEPTIONS
