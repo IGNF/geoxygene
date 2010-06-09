@@ -227,8 +227,11 @@ public class LayerViewPanel extends JPanel {
                 int log = (int) Math.log10(dist);
                 dist = Math.pow(10, log);
                 int barLength = (int) (dist * this.getViewport().getScale());
+                g.setColor(Color.WHITE);
+                g.fillRect(0, getHeight() - 3 * shift - barWidth, barLength + 4 * shift, barWidth + 3 * shift);
                 g.setColor(Color.BLACK);
-                g.drawString(Double.toString(dist), shift + 1, getHeight() - shift - barWidth - 1);
+                g.drawRect(0, getHeight() - 3 * shift - barWidth, barLength + 4 * shift, barWidth + 3 * shift - 1);
+                g.drawString(Double.toString(dist) + " m", shift + 1, getHeight() - shift - barWidth - 1);
                 g.fillRect(shift, getHeight() - shift - barWidth, barLength, barWidth);
                 // FIXME
                 //int scale = (int) (1 / this.getViewport().getScale());
