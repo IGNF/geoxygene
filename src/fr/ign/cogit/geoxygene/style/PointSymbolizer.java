@@ -34,6 +34,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 
@@ -42,13 +46,16 @@ import fr.ign.cogit.geoxygene.feature.FT_Feature;
  * @author Julien Perret
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class PointSymbolizer extends AbstractSymbolizer {
 	@Override
 	public boolean isPointSymbolizer() {return true;}
 	
+	@XmlElement(name = "Graphic")
 	private Graphic graphic=null;
 	public Graphic getGraphic() {return this.graphic;}
 	public void setGraphic(Graphic graphic) {this.graphic=graphic;}
+	
 	@Override
 	public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics) {
 		if (this.getGraphic()==null) return;

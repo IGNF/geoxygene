@@ -91,7 +91,6 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	public Population(String nom) {
 		super();
 		this.setNom(nom);
-		System.out.println("New Population");
 	}
 	/**
 	 * Constructeur d'une population.

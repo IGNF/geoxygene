@@ -25,6 +25,9 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.NoninvertibleTransformException;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
@@ -35,6 +38,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
 /**
  * @author Julien Perret
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class LineSymbolizer extends AbstractSymbolizer {
     @Override
     public boolean isLineSymbolizer() {

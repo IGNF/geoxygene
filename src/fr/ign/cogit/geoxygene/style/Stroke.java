@@ -91,10 +91,12 @@ public class Stroke {
 	        for (SvgParameter parameter:this.svgParameters) {
 	            if (parameter.getName().equalsIgnoreCase("stroke")) { //$NON-NLS-1$
 	                this.stroke = Color.decode(parameter.getValue());
+	            } else if (parameter.getName().equalsIgnoreCase("color")) { //$NON-NLS-1$
+	                this.stroke = new Color(Integer.parseInt(parameter.getValue()));
 	            } else if (parameter.getName().equalsIgnoreCase("stroke-opacity")) { //$NON-NLS-1$
 	                this.strokeOpacity = Float.parseFloat(parameter.getValue());
 	            } else if (parameter.getName().equalsIgnoreCase("stroke-width")) { //$NON-NLS-1$
-	                this.strokeWidth = Float.parseFloat(parameter.getValue());
+	                this.setStrokeWidth(Float.parseFloat(parameter.getValue()));
 	            } else if (parameter.getName().equalsIgnoreCase("stroke-linejoin")) { //$NON-NLS-1$
 	                this.setStrokeLineJoin(parameter.getValue());
 	            } else if (parameter.getName().equalsIgnoreCase("stroke-linecap")) { //$NON-NLS-1$
@@ -131,6 +133,10 @@ public class Stroke {
 		            rgb = rgb.substring(2, rgb.length());
 		            parameter.setValue("#"+rgb); //$NON-NLS-1$
 		            found = true;
+		        } else if (parameter.getName().equalsIgnoreCase("stroke")){
+		        	String sRGB = Integer.toString(stroke.getRGB());
+		        	parameter.setValue(sRGB);
+		        	found = true;
 		        }
 		    }
 		    if (!found) {
@@ -329,7 +335,7 @@ public class Stroke {
     private Color color = null;
 	public synchronized Color getColor() {
 		if (this.color==null) {
-			updateValues();
+			this.updateValues();
 			if (this.strokeOpacity==1.0f) {
 			    this.color = this.stroke;
 			} else {

@@ -30,14 +30,19 @@ import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 import org.apache.batik.ext.awt.geom.Polygon2D;
 
 /**
  * @author Julien Perret
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Mark {
-
+    @XmlElement(name = "WellKnownName")
 	private String wellKnownName = "square"; //$NON-NLS-1$
 	/**
 	 * Renvoie la valeur de l'attribut wellKnownName.
@@ -50,6 +55,7 @@ public class Mark {
 	 */
 	public void setWellKnownName(String wellKnownName) {this.wellKnownName = wellKnownName;}
 	
+    @XmlElement(name = "Fill")
 	private Fill fill = null;
 	/**
 	 * Renvoie la valeur de l'attribut fill.
@@ -62,6 +68,7 @@ public class Mark {
 	 */
 	public void setFill(Fill fill) {this.fill = fill;}
 
+    @XmlElement(name = "Stroke")
 	private Stroke stroke = null;
 	/**
 	 * Renvoie la valeur de l'attribut stroke.

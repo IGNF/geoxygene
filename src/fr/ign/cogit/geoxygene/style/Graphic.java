@@ -29,10 +29,15 @@ package fr.ign.cogit.geoxygene.style;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * @author Julien Perret
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Graphic {
 
 	private List<ExternalGraphic> externalGraphics = new ArrayList<ExternalGraphic>();
@@ -47,6 +52,7 @@ public class Graphic {
 	 */
 	public void setExternalGraphics(List<ExternalGraphic> externalGraphics) {this.externalGraphics = externalGraphics;}
 
+	@XmlElement(name = "Mark")
 	private List<Mark> marks = new ArrayList<Mark>();
 	/**
 	 * Renvoie la valeur de l'attribut marks.

@@ -152,8 +152,22 @@ public class StyledLayerDescriptor {
      */
     public Layer createLayer(String layerName,
             Class<? extends GM_Object> geometryType) {
-        return this.createLayer(layerName, geometryType, new Color((float) Math
-                .random(), (float) Math.random(), (float) Math.random(), 0f));
+    	
+    	Color adaptedColor = new Color((float) Math
+                .random(), (float) Math.random(), (float) Math.random(), 0.5f);
+    	
+//    	List<Layer> layers = this.getLayers();
+//    	List<Color> couleursLyr = new ArrayList<Color>();
+//    	for (Layer lyr : layers) {
+//			couleursLyr.add(lyr.getStyles().get(0).getSymbolizer().getStroke().getColor());
+//		}
+//    	if (layers.size()!=0){
+//	    	System.out.println("Les couches s'appellent" + layers);
+//	    	System.out.println("Première couleur" + layers.get(0).getStyles().get(0).getSymbolizer().getStroke().getColor());
+//	    	System.out.println("Liste couleurs" + couleursLyr);
+//    	}
+        return this.createLayer(layerName, geometryType, adaptedColor );
+
     }
 
     /**
@@ -224,7 +238,8 @@ public class StyledLayerDescriptor {
     public static StyledLayerDescriptor unmarshall(InputStream stream) {
         try {
             JAXBContext context = JAXBContext.newInstance(
-                    StyledLayerDescriptor.class, NamedLayer.class,
+                    StyledLayerDescriptor.class,
+                    NamedLayer.class,
                     NamedStyle.class);
             Unmarshaller m = context.createUnmarshaller();
             StyledLayerDescriptor sld = (StyledLayerDescriptor) m
@@ -255,7 +270,8 @@ public class StyledLayerDescriptor {
     public void marshall(Writer writer) {
         try {
             JAXBContext context = JAXBContext.newInstance(
-                    StyledLayerDescriptor.class, NamedLayer.class,
+                    StyledLayerDescriptor.class,
+                    NamedLayer.class,
                     NamedStyle.class);
             Marshaller m = context.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -450,16 +466,20 @@ public class StyledLayerDescriptor {
     public Layer createLayer(String layerName,
             Class<? extends GM_Object> geometryType, Color strokeColor,
                     Color fillColor, float opacity, float strokeWidth) {
-        Layer layer = new NamedLayer(layerName);
-        UserStyle style = new UserStyle();
-        style.setName("Style créé pour le layer " + layerName);
-        FeatureTypeStyle fts = new FeatureTypeStyle();
-        fts.getRules().add(
-                createRule(geometryType, strokeColor, fillColor, opacity,
-                        opacity, strokeWidth));
-        style.getFeatureTypeStyles().add(fts);
-        layer.getStyles().add(style);
-        return layer;
+//    	if(this.getLayer(layerName)==null){
+	        Layer layer = new NamedLayer(layerName);
+	        UserStyle style = new UserStyle();
+	        style.setName("Style créé pour le layer " + layerName);
+	        FeatureTypeStyle fts = new FeatureTypeStyle();
+	        fts.getRules().add(
+	                createRule(geometryType, strokeColor, fillColor, opacity,
+	                        opacity, strokeWidth));
+	        style.getFeatureTypeStyles().add(fts);
+	        layer.getStyles().add(style);
+	        return layer;
+//    	}else{
+//    		return this.getLayer(layerName);
+//    	}
     }
 
     public Rule createRule(Class<? extends GM_Object> geometryType,

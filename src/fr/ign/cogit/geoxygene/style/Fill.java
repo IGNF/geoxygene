@@ -84,10 +84,10 @@ public class Fill {
 	        for (SvgParameter parameter:this.svgParameters) {
 	            if (parameter.getName().equalsIgnoreCase("fill")) { //$NON-NLS-1$
 	                this.setFill(Color.decode(parameter.getValue()));
-	            } else {
-	                if (parameter.getName().equalsIgnoreCase("fill-opacity")) { //$NON-NLS-1$
-	                    this.setFillOpacity(Float.parseFloat(parameter.getValue()));
-	                }
+	            } else if (parameter.getName().equalsIgnoreCase("fill-opacity")) { //$NON-NLS-1
+	            		this.setFillOpacity(Float.parseFloat(parameter.getValue()));
+            	} else if (parameter.getName().equalsIgnoreCase("color")){
+		            	this.setFill(new Color(Integer.parseInt(parameter.getValue())));
 	            }
 	        }
 	    }
@@ -116,6 +116,10 @@ public class Fill {
 		            rgb = rgb.substring(2, rgb.length());
 		            parameter.setValue("#"+rgb); //$NON-NLS-1$
 		            found = true;
+		        } else if(parameter.getName().equalsIgnoreCase("color")) {
+		        	String sRGB = Integer.toString(fill.getRGB());
+		        	parameter.setValue(sRGB);
+		        	found = true;
 		        }
 		    }
 		    if (!found) {
@@ -167,7 +171,11 @@ public class Fill {
 		if (this.color==null) {
 			this.updateValues();
 			if (this.fillOpacity==1.0f) this.color = this.fill;
-			else this.color = new Color(this.fill.getRed(),this.fill.getGreen(),this.fill.getBlue(),(int)(this.fillOpacity*255f));
+			else this.color = new Color(
+					this.fill.getRed(),
+					this.fill.getGreen(),
+					this.fill.getBlue(),
+					(int)(this.fillOpacity*255f));
 		}
 		return this.color;
 	}
@@ -176,7 +184,14 @@ public class Fill {
 	 */
 	public void setColor(Color newColor) {
 		this.setFill(newColor);
-		if (this.fillOpacity==1.0f) this.color = this.fill;
-		else this.color = new Color(this.fill.getRed(),this.fill.getGreen(),this.fill.getBlue(),(int)(this.fillOpacity*255f));
+		if (this.fillOpacity==1.0f){
+			this.color = this.fill;
+		} else {
+			this.color = new Color(
+					this.fill.getRed(),
+					this.fill.getGreen(),
+					this.fill.getBlue(),
+					(int)(this.fillOpacity*255f));
+		}
 	}
 }
