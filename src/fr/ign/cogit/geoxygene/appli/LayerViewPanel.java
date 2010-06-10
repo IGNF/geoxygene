@@ -25,6 +25,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -222,27 +223,41 @@ public class LayerViewPanel extends JPanel {
             }
             if (true) {
                 int shift = 10;
+                int rightShift = 80;
                 int barWidth = 5;
                 double dist = (getWidth() / 3) / this.getViewport().getScale();
                 int log = (int) Math.log10(dist);
                 dist = Math.pow(10, log);
                 int barLength = (int) (dist * this.getViewport().getScale());
                 g.setColor(Color.WHITE);
-                g.fillRect(0, getHeight() - 3 * shift - barWidth, barLength + 4 * shift, barWidth + 3 * shift);
+                g.fillRect(0, this.getHeight() - 3 * shift - barWidth, barLength + 4 * shift, barWidth + 3 * shift);
+                g.fillRect(this.getWidth() - rightShift, this.getHeight() - 3 * shift, rightShift, 3 * shift);
                 g.setColor(Color.BLACK);
                 g.drawRect(0, getHeight() - 3 * shift - barWidth, barLength + 4 * shift, barWidth + 3 * shift - 1);
+                g.drawRect(this.getWidth() - rightShift, this.getHeight() - 3 * shift, rightShift - 1, 3 * shift -1);
                 g.drawString(Double.toString(dist) + " m", shift + 1, getHeight() - shift - barWidth - 1);
                 g.fillRect(shift, getHeight() - shift - barWidth, barLength, barWidth);
-                // FIXME
-                //int scale = (int) (1 / this.getViewport().getScale());
-                //g.drawString("1:" + Integer.toString(scale), 1, 10); //$NON-NLS-1$
+                int scale = (int) (1.0d / (this.getViewport().getScale() * getMETERS_PER_PIXEL()));
+                g.drawString("1:" + Integer.toString(scale), this.getWidth() - rightShift + shift, getHeight() - shift); //$NON-NLS-1$
             }
         } catch (Throwable t) {
             logger.error(I18N.getString("LayerViewPanel.PaintError")); //$NON-NLS-1$
             // TODO HANDLE EXCEPTIONS
         }
     }
-
+	/**
+	 * Returns the size of a pixel in meters.
+	 * @return Taille d'un pixel en mètres (la longueur d'un coté de pixel de l'écran).
+	 */
+	public static double getMETERS_PER_PIXEL() { return METERS_PER_PIXEL; }
+	/**
+	 * Taille d'un pixel en mètres (la longueur d'un coté de pixel de l'écran)
+	 * utilisé pour le calcul de l'echelle courante de la vue. Elle est calculée
+	 * à partir de la résolution de l'écran en DPI. Par exemple si la résolution
+	 * est 90DPI, c'est: 90 pix/inch = 1/90 inch/pix = 0.0254/90 meter/pix.
+	 */
+    private final static double METERS_PER_PIXEL = 0.02540005
+    / Toolkit.getDefaultToolkit().getScreenResolution();
     /**
      * Dispose of the panel and its rendering manager.
      */

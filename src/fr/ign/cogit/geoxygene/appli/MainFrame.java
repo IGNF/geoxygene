@@ -221,6 +221,51 @@ public class MainFrame extends JFrame {
         this.menuBar.setFont(this.application.getFont());
         this.menuBar.add(fileMenu);
         this.menuBar.add(viewMenu);
+    	JMenuItem mScale6250=new JMenuItem("1:6250"); //$NON-NLS-1$
+    	mScale6250.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+            	LayerViewPanel layerViewPanel = MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
+            	layerViewPanel.getViewport().setScale(1 / (6250 * LayerViewPanel.getMETERS_PER_PIXEL()));
+            	layerViewPanel.repaint();
+            }
+        });
+    	JMenuItem mScale12500=new JMenuItem("1:12500"); //$NON-NLS-1$
+    	mScale12500.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+            	LayerViewPanel layerViewPanel = MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
+            	layerViewPanel.getViewport().setScale(1 / (12500 * LayerViewPanel.getMETERS_PER_PIXEL()));
+            	layerViewPanel.repaint();
+            }
+        });
+    	JMenuItem mScale25k=new JMenuItem("1:25k"); //$NON-NLS-1$
+    	mScale25k.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+            	LayerViewPanel layerViewPanel = MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
+            	layerViewPanel.getViewport().setScale(1 / (25000 * LayerViewPanel.getMETERS_PER_PIXEL()));
+            	layerViewPanel.repaint();
+            }
+        });
+    	JMenuItem mScale50k=new JMenuItem("1:50k"); //$NON-NLS-1$
+    	mScale50k.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+            	LayerViewPanel layerViewPanel = MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
+            	layerViewPanel.getViewport().setScale(1 / (50000 * LayerViewPanel.getMETERS_PER_PIXEL()));
+            	layerViewPanel.repaint();
+            }
+        });
+    	JMenuItem mScale100k=new JMenuItem("1:100k"); //$NON-NLS-1$
+    	mScale100k.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+            	LayerViewPanel layerViewPanel = MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
+            	layerViewPanel.getViewport().setScale(1 / (100000 * LayerViewPanel.getMETERS_PER_PIXEL()));
+            	layerViewPanel.repaint();
+            }
+        });
+    	viewMenu.add(mScale6250);
+    	viewMenu.add(mScale12500);
+    	viewMenu.add(mScale25k);
+    	viewMenu.add(mScale50k);
+    	viewMenu.add(mScale100k);
         this.menuBar.add(configurationMenu);
         this.menuBar.add(helpMenu);
         this.setJMenuBar(this.menuBar);

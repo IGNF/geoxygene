@@ -731,4 +731,25 @@ public class Viewport {
             this.viewOrigin.setLocation(modelPoint);
             update();
         }
+
+		/**
+		 * Set a new Scale to the viewport.
+		 * @param newScale new scale of the viewport
+		 */
+		public final void setScale(double newScale) {
+			DirectPosition center = this.getEnvelopeInModelCoordinates().center();
+			this.scale = newScale;
+			Point2D modelPoint = new Point2D.Double(center.getX(), center.getY());
+            modelPoint.setLocation(modelPoint.getX()
+                    - this.layerViewPanel.getWidth()
+                    / (2 * this.scale), modelPoint.getY()
+                    - this.layerViewPanel.getHeight()
+                    / (2 * this.scale));
+			this.viewOrigin.setLocation(modelPoint);
+			try {
+				update();
+			} catch (NoninvertibleTransformException e) {
+				e.printStackTrace();
+			}
+		}
 }
