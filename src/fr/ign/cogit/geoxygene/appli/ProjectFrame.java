@@ -26,6 +26,7 @@ import java.awt.Color;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -232,10 +233,10 @@ public class ProjectFrame extends JInternalFrame implements
     }
 
     public void addShapefileLayer(String fileName) {
+    	int lastIndexOfSeparator = fileName.lastIndexOf(File.separatorChar);
         String populationName = fileName
         .substring(
-                fileName.
-                lastIndexOf("/") + 1, //$NON-NLS-1$
+        		lastIndexOfSeparator + 1, //$NON-NLS-1$
                 fileName.
                 lastIndexOf(".")); //$NON-NLS-1$
         ShapefileReader shapefileReader =
