@@ -103,7 +103,11 @@ public class MainFrame extends JFrame {
      * The frame menu bar.
      */
     private JMenuBar menuBar;
-    /**
+    public JMenuBar getmenuBar() {
+		return this.menuBar;
+	}
+
+	/**
      * The mode selector.
      */
     private ModeSelector modeSelector = null;

@@ -49,6 +49,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -67,6 +68,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
@@ -271,7 +273,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         col.setWidth(width-126);
         col.setResizable(true);
         col.setCellRenderer(new LayersNameCellRenderer());
-        col.setCellEditor(new DefaultCellEditor(new JTextField()));
+        JTextField txtField = new JTextField();
+        txtField.setEditable(false);
+        col.setCellEditor(new DefaultCellEditor(txtField));
         this.layersTable.getTableHeader().setResizingColumn(col);
 
         this.layersTable.setFillsViewportHeight(true);
@@ -346,6 +350,21 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
                         lvPanel.superRepaint();
                     }
                 }
+            }
+        });
+        this.renameMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	if(LayerLegendPanel.this.getSelectedLayers().size()==1){
+            		Layer layer = LayerLegendPanel.this.getSelectedLayers().iterator().next();
+            		
+            		String newName = JOptionPane.showInputDialog(LayerLegendPanel.this, "Test");
+            		DataSet.getInstance().getPopulation(layer.getName()).setNom(newName);
+            		layer.setName(newName);
+            		
+            		LayerLegendPanel.this.getLayerViewPanel().superRepaint();
+            		LayerLegendPanel.this.repaint();
+            	}
             }
         });
         this.deleteMenuItem.addActionListener(new ActionListener() {

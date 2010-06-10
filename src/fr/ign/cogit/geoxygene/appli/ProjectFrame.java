@@ -302,7 +302,8 @@ public class ProjectFrame extends JInternalFrame implements
         if (event.getType() == FeatureCollectionEvent.Type.ADDED) {
             this.layerViewPanel.repaint(layer, event.getFeature());
         } else {
-            GM_Object repaintGeometry = event.getGeometry();
+            @SuppressWarnings("unused")
+			GM_Object repaintGeometry = event.getGeometry();
             if (event.getFeature() != null
                         && event.getFeature().getGeom() != null) {
                 repaintGeometry = event.getFeature().getGeom().union(
