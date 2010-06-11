@@ -274,7 +274,19 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         col.setResizable(true);
         col.setCellRenderer(new LayersNameCellRenderer());
         JTextField txtField = new JTextField();
-        txtField.setEditable(false);
+        txtField.setEditable(true);
+        txtField.addKeyListener(new KeyListener(){
+        	 public void keyPressed(KeyEvent e) {}
+             public void keyReleased(KeyEvent e) {
+            	 if(LayerLegendPanel.this.getSelectedLayers().size()==1){
+             		Layer layer = LayerLegendPanel.this.getSelectedLayers().iterator().next();
+             		String newName = ((JTextField)e.getSource()).getText();
+             		DataSet.getInstance().getPopulation(layer.getName()).setNom(newName);
+             		layer.setName(newName);
+             	}
+             }
+             public void keyTyped(KeyEvent e) {}
+        });
         col.setCellEditor(new DefaultCellEditor(txtField));
         this.layersTable.getTableHeader().setResizingColumn(col);
 
@@ -290,13 +302,12 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             public void keyReleased(KeyEvent e) {}
             public void keyTyped(KeyEvent e) {}
         });
-        this.layersTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                update();
-            }
-            
+        this.layersTable.getSelectionModel().addListSelectionListener(
+        		new ListSelectionListener() {
+		            @Override
+		            public void valueChanged(ListSelectionEvent e) {
+		                update();
+		            }
         });
         add(scrollpane);
         this.newLayerMenuItem.addActionListener(new ActionListener() {
@@ -362,7 +373,6 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             		DataSet.getInstance().getPopulation(layer.getName()).setNom(newName);
             		layer.setName(newName);
             		
-            		LayerLegendPanel.this.getLayerViewPanel().superRepaint();
             		LayerLegendPanel.this.repaint();
             	}
             }
