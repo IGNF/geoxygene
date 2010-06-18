@@ -550,7 +550,7 @@ abstract public class GM_Object implements Cloneable {
 
         }
 
-        if (this instanceof GM_MultiSolid) {
+        if (this instanceof GM_MultiSolid<?>) {
             return 3;
 
         }

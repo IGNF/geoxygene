@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
  * the development and deployment of geographic (GIS) applications. It is a open source 
- * contribution of the COGIT laboratory at the Institut Géographique National (the French 
+ * contribution of the COGIT laboratory at the Institut Gï¿½ographique National (the French 
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net 
  *  
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut Gï¿½ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation; 
@@ -228,7 +228,7 @@ public class WktGeOxygene
 
     /*- GM_Point ------------------------------------------*/
 
-//TODO déterminer la dimension de la géométrie attendue par postgis
+//TODO dï¿½terminer la dimension de la gï¿½omï¿½trie attendue par postgis
     static String point(GM_Point point)
     {
         DirectPosition position=point.getPosition();
@@ -454,7 +454,7 @@ TOKEN:
             |<INTEGER>("."<INTEGER>)?
             |"."<INTEGER>
     >
-    | <#INTEGER: (<DIGIT>)+>
+    | <INTEGER: (<DIGIT>)+>
     | <#DIGIT: ["0" - "9"]>
 }
 
@@ -485,14 +485,16 @@ DirectPosition point():
         String xStr=tkz.nextToken();
         String yStr=tkz.nextToken();
         if (tkz.hasMoreTokens()) {
-        	// récupération de la 3ème coordonnée si elle existe
+        	// rÃ©cupÃ©ration de la 3Ã¨me coordonnÃ©e si elle existe
         	String zStr=tkz.nextToken();
         	if (tkz.hasMoreTokens()) {
-        		// si il y en a une 4ème, alors on est en XYZM et on prend Z
-        		// sinon, on est en XYM et on ignore la mesure car elle n'est pas gérée par le type DirectPosition
+        		// si il y en a une 4Ã¨me, alors on est en XYZM et on prend Z
+        		// sinon, on est en XYM et on ignore la mesure car elle n'est pas gÃ©rÃ©e par le type DirectPosition
         		p=new DirectPosition(Double.parseDouble(xStr), Double.parseDouble(yStr), Double.parseDouble(zStr));
 				return p;
 			}
+        	p=new DirectPosition(Double.parseDouble(xStr), Double.parseDouble(yStr), Double.parseDouble(zStr));
+            return p;
 		}        
         p=new DirectPosition(
             Double.parseDouble(xStr), Double.parseDouble(yStr));
@@ -664,10 +666,26 @@ GM_Aggregate geometrycollectionTaggedText():
     )
 }
 
+int sridText():
+{Token srid;}
+{
+	"SRID="
+    srid=<CONSTANT>
+    ";"
+    {
+        StringTokenizer tkz=new StringTokenizer(srid.image);
+	    String str=tkz.nextToken();
+		return Integer.parseInt(str);
+	}
+}
 
 GM_Object geometryTaggedText():
-{GM_Object o;}
 {
+GM_Object o;
+int srid = -1;
+}
+{
+	(srid=sridText())?
     (
     o=pointTaggedText()
     | o=linestringTaggedText()
@@ -677,7 +695,10 @@ GM_Object geometryTaggedText():
     | o=multipolygonTaggedText()
     | o=geometrycollectionTaggedText()
     )
-    {try {return o;} catch (Exception e) {System.out.println(e);}}
+    {try {
+    	if (srid != -1) { o.setCRS(srid); }
+    	return o;
+    } catch (Exception e) {System.out.println(e);}}
 }
 
 GM_Object parseOneLine() throws EmptyLine,EndOfFile:

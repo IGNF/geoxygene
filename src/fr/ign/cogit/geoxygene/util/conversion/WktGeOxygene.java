@@ -29,7 +29,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
-@SuppressWarnings({"unchecked","unqualified-field-access","nls"})
+@SuppressWarnings("unchecked")
 public class WktGeOxygene implements WktGeOxygeneConstants {
     static class EndOfFile extends Exception {private static final long serialVersionUID = 1L;}
     static class EmptyLine extends Exception {private static final long serialVersionUID = 1L;}
@@ -196,7 +196,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
 
     /*- GM_Point ------------------------------------------*/
 
-//TODO déterminer la dimension de la géométrie attendue par postgis
+//TODO d�terminer la dimension de la g�om�trie attendue par postgis
     static String point(GM_Point point)
     {
         DirectPosition position=point.getPosition();
@@ -233,7 +233,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
 
     private static String ringTaggedText(GM_Ring ring) {
                 StringBuffer result=new StringBuffer();
-                result.append("LINEARRING ");
+                result.append("RING ");
                 if (IsEmptyUtil.isEmpty(ring)) result.append("EMPTY");
                 else result.append(ringText(ring));
                 return result.toString();
@@ -285,7 +285,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
                 GM_Object geom=(GM_Object)i.next();
                 String wkt=makeWkt(geom);
                 result.append(wkt);
-                result.append('\n');
+                result.append('\u005cn');
         }
         return result.toString();
     }
@@ -415,7 +415,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
         String xStr=tkz.nextToken();
         String yStr=tkz.nextToken();
         if (tkz.hasMoreTokens()) {
-                // Récupération de la 3ème coordonnée si elle existe
+                // récupération de la 3ème coordonnée si elle existe
                 String zStr=tkz.nextToken();
                 if (tkz.hasMoreTokens()) {
                         // si il y en a une 4ème, alors on est en XYZM et on prend Z
@@ -423,6 +423,8 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
                         p=new DirectPosition(Double.parseDouble(xStr), Double.parseDouble(yStr), Double.parseDouble(zStr));
                                 {if (true) return p;}
                         }
+                p=new DirectPosition(Double.parseDouble(xStr), Double.parseDouble(yStr), Double.parseDouble(zStr));
+            {if (true) return p;}
                 }
         p=new DirectPosition(
             Double.parseDouble(xStr), Double.parseDouble(yStr));
@@ -462,7 +464,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          
+          ;
           break;
         default:
           jj_la1[1] = jj_gen;
@@ -498,7 +500,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          
+          ;
           break;
         default:
           jj_la1[3] = jj_gen;
@@ -534,7 +536,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          
+          ;
           break;
         default:
           jj_la1[5] = jj_gen;
@@ -570,7 +572,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          
+          ;
           break;
         default:
           jj_la1[7] = jj_gen;
@@ -606,7 +608,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          
+          ;
           break;
         default:
           jj_la1[9] = jj_gen;
@@ -642,7 +644,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 12:
-          
+          ;
           break;
         default:
           jj_la1[11] = jj_gen;
@@ -687,7 +689,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       break;
     default:
       jj_la1[14] = jj_gen;
-      
+      ;
     }
     p = pointText();
      try {{if (true) return new GM_Point(p);}} catch (Exception e) {System.out.println(e);}
@@ -715,7 +717,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       break;
     default:
       jj_la1[16] = jj_gen;
-      
+      ;
     }
     mp = multipointText();
      try {{if (true) return mp;}} catch (Exception e) {System.out.println(e);}
@@ -743,7 +745,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       break;
     default:
       jj_la1[18] = jj_gen;
-      
+      ;
     }
     lineString = linestringText();
      try {{if (true) return lineString;}} catch (Exception e) {System.out.println(e);}
@@ -771,7 +773,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       break;
     default:
       jj_la1[20] = jj_gen;
-      
+      ;
     }
     multiLineString = multilinestringText();
      try {{if (true) return multiLineString;}} catch (Exception e) {System.out.println(e);}
@@ -799,7 +801,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       break;
     default:
       jj_la1[22] = jj_gen;
-      
+      ;
     }
     poly = polygonText();
      try {{if (true) return poly;}} catch (Exception e) {System.out.println(e);}
@@ -827,7 +829,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       break;
     default:
       jj_la1[24] = jj_gen;
-      
+      ;
     }
     mp = multipolygonText();
      try {{if (true) return mp;}} catch (Exception e) {System.out.println(e);}
@@ -842,8 +844,28 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     throw new Error("Missing return statement in function");
   }
 
+  final public int sridText() throws ParseException {
+ Token srid;
+    jj_consume_token(22);
+    srid = jj_consume_token(CONSTANT);
+    jj_consume_token(23);
+        StringTokenizer tkz=new StringTokenizer(srid.image);
+            String str=tkz.nextToken();
+                {if (true) return Integer.parseInt(str);}
+    throw new Error("Missing return statement in function");
+  }
+
   final public GM_Object geometryTaggedText() throws ParseException {
- GM_Object o;
+GM_Object o;
+int srid = -1;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case 22:
+      srid = sridText();
+      break;
+    default:
+      jj_la1[25] = jj_gen;
+      ;
+    }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 13:
       o = pointTaggedText();
@@ -867,11 +889,14 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       o = geometrycollectionTaggedText();
       break;
     default:
-      jj_la1[25] = jj_gen;
+      jj_la1[26] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
-     try {{if (true) return o;}} catch (Exception e) {System.out.println(e);}
+     try {
+        if (srid != -1) { o.setCRS(srid); }
+        {if (true) return o;}
+    } catch (Exception e) {System.out.println(e);}
     throw new Error("Missing return statement in function");
   }
 
@@ -885,6 +910,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     case 19:
     case 20:
     case 21:
+    case 22:
       o = geometryTaggedText();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case EOL:
@@ -894,7 +920,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
         jj_consume_token(0);
         break;
       default:
-        jj_la1[26] = jj_gen;
+        jj_la1[27] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -909,7 +935,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
              try {{if (true) return null;}} catch (Exception e) {System.out.println(e);}
       break;
     default:
-      jj_la1[27] = jj_gen;
+      jj_la1[28] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -925,13 +951,13 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[28];
+  final private int[] jj_la1 = new int[29];
   static private int[] jj_la1_0;
   static {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0xa00,0x1000,0xa00,0x1000,0xa00,0x1000,0xa00,0x1000,0xa00,0x1000,0xa00,0x1000,0xa00,0xc000,0xc000,0xc000,0xc000,0xc000,0xc000,0xc000,0xc000,0xc000,0xc000,0xc000,0xc000,0x3f2000,0x41,0x3f2041,};
+      jj_la1_0 = new int[] {0xa00,0x1000,0xa00,0x1000,0xa00,0x1000,0xa00,0x1000,0xa00,0x1000,0xa00,0x1000,0xa00,0xc000,0xc000,0xc000,0xc000,0xc000,0xc000,0xc000,0xc000,0xc000,0xc000,0xc000,0xc000,0x400000,0x3f2000,0x41,0x7f2041,};
    }
 
   /** Constructor with InputStream. */
@@ -945,7 +971,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -959,7 +985,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -969,7 +995,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -979,7 +1005,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -988,7 +1014,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -997,7 +1023,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 29; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -1037,22 +1063,23 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
   private int jj_ntk() {
     if ((jj_nt=token.next) == null)
       return (jj_ntk = (token.next=token_source.getNextToken()).kind);
-    return (jj_ntk = jj_nt.kind);
+    else
+      return (jj_ntk = jj_nt.kind);
   }
 
-  private java.util.List jj_expentries = new java.util.ArrayList();
+  private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
   private int[] jj_expentry;
   private int jj_kind = -1;
 
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[22];
+    boolean[] la1tokens = new boolean[24];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 28; i++) {
+    for (int i = 0; i < 29; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -1061,7 +1088,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
         }
       }
     }
-    for (int i = 0; i < 22; i++) {
+    for (int i = 0; i < 24; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
@@ -1070,7 +1097,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     }
     int[][] exptokseq = new int[jj_expentries.size()][];
     for (int i = 0; i < jj_expentries.size(); i++) {
-      exptokseq[i] = (int[])jj_expentries.get(i);
+      exptokseq[i] = jj_expentries.get(i);
     }
     return new ParseException(token, exptokseq, tokenImage);
   }

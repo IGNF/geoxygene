@@ -98,7 +98,7 @@ TOKEN:
             |<INTEGER>("."<INTEGER>)?
             |"."<INTEGER>
     >
-    | <#INTEGER: (<DIGIT>)+>
+    | <INTEGER: (<DIGIT>)+>
     | <#DIGIT: ["0" - "9"]>
 }
 
@@ -295,11 +295,26 @@ AwtShape geometrycollectionTaggedText():
     {try {return collec;} catch (Exception e) {System.out.println(e);}}
 }
 
+int sridText():
+{Token srid;}
+{
+	"SRID="
+    srid=<CONSTANT>
+    ";"
+    {
+        StringTokenizer tkz=new StringTokenizer(srid.image);
+	    String str=tkz.nextToken();
+		return Integer.parseInt(str);
+	}
+}
+
 AwtShape geometryTaggedText():
 {
     AwtShape geom;
+    int srid = -1;
 }
 {
+	(srid=sridText())?
     (geom=pointTaggedText()
     | geom=linestringTaggedText()
     | geom=polygonTaggedText()
@@ -318,5 +333,5 @@ AwtShape parseOneLine() throws EmptyLine,EndOfFile:
     (geom=geometryTaggedText())(<EOF>|<EOL>)
     {try {return geom;} catch (Exception e) {System.out.println(e);}}
     | <EOL> {throw new EmptyLine(); return null;}
-    | <EOF> {throw new EndOfLine(); return null;}
+    | <EOF> {throw new EmptyLine(); return null;}
 }
