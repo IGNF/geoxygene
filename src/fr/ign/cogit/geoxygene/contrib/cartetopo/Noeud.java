@@ -225,12 +225,16 @@ public class Noeud extends ElementCarteTopo {
         for (i = 0; i < arcsEntrants.size(); i++) {
             arc = arcsEntrants.get(i);
             if ((arc.getOrientation() == -1)
-                    || (arc.getOrientation() == 2)) { noeuds.put(arc.getOtherSide(this), arc);}
+                    || (arc.getOrientation() == 2)) {
+                noeuds.put(arc.getOtherSide(this), arc);
+            }
         }
         for (i = 0; i < arcsSortants.size(); i++) {
             arc = arcsSortants.get(i);
             if ((arc.getOrientation() == 1)
-                    || (arc.getOrientation() == 2)) { noeuds.put(arc.getOtherSide(this), arc);}
+                    || (arc.getOrientation() == 2)) {
+                noeuds.put(arc.getOtherSide(this), arc);
+            }
         }
         return noeuds;
     }

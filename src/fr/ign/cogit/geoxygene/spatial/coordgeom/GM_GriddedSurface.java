@@ -64,7 +64,7 @@ public class GM_GriddedSurface extends GM_ParametricCurveSurface {
 	/**
 	 * Nombre de lignes dans la grille.
 	 */
-	protected int getRows () {
+	public int getRows () {
 		return this.controlPoint.cardRow();
 	}
 
@@ -75,7 +75,7 @@ public class GM_GriddedSurface extends GM_ParametricCurveSurface {
 	 * Number of columns in the grid.
 	 * We assume that all rows have the same number of columns.
 	 */
-	protected int getColumns () {
+	public int getColumns () {
 	    if (this.getRows() > 0) {
 	        return this.controlPoint.getRow(0).size();
 	    }

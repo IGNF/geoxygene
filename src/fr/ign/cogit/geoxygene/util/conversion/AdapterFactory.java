@@ -275,20 +275,21 @@ public class AdapterFactory  {
 	 */
 	public static DirectPositionList toDirectPositionList(Coordinate[] coords) {
 		DirectPositionList list = new DirectPositionList();
-
+		if (coords.length == 0) {
+		    return list;
+		}
 		//verifie si coords est fermee, cad si les deux coordonnees extremes sont a la meme position
-		boolean ferme;
-		if(coords[0].x == coords[coords.length-1].x && coords[0].y == coords[coords.length-1].y)
-			ferme=true;
-		else ferme=false;
-
+		boolean closed = (coords[0].x == coords[coords.length-1].x && coords[0].y == coords[coords.length-1].y);
 		//copie de toutes les coodonnees sauf la derniere
-		for (int i=0; i<coords.length-1; i++) {
+		for (int i = 0; i < coords.length - 1; i++) {
 			list.add(toDirectPosition(coords[i]));
 		}
 		//si ferme, ajout ajout de la premiere coordonnee au debut, sinon ajout de la derniere
-		if (ferme) list.add(list.get(0)); else list.add(toDirectPosition(coords[coords.length-1]));
-
+		if (closed) {
+		    list.add(list.get(0));
+		} else {
+		    list.add(toDirectPosition(coords[coords.length - 1]));
+		}
 		return list;
 	}
 

@@ -29,12 +29,14 @@ package fr.ign.cogit.geoxygene.util.algo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 
 import javax.swing.event.EventListenerList;
+import javax.vecmath.Vector3d;
 
 import org.apache.log4j.Logger;
 
@@ -1001,17 +1003,132 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		return new Polygon((LinearRing)poly.getExteriorRing(), null, poly.getFactory());
 	}
 
-	/**
-	 * Supprime les trous d'un multipolygone, i.e. supprime les trous de tous les polygones d'un multipolygone.
-	 * Remove the holes from a multipolygon.
-	 * @see #supprimeTrous(Polygon)
-	 * 
-	 * @param mp un multipolyone, a multipolygon
-	 */
+    /**
+     * Supprime les trous d'un multipolygone, i.e. supprime les trous de tous
+     * les polygones d'un multipolygone.
+     * Remove the holes from a multipolygon.
+     * @see #supprimeTrous(Polygon)
+     * @param mp un multipolyone, a multipolygon
+     */
 	public static MultiPolygon supprimeTrous(MultiPolygon mp){
 		Polygon[] polys = new Polygon[mp.getNumGeometries()];
-		for(int i=0; i<mp.getNumGeometries(); i++) polys[i] = supprimeTrous((Polygon)mp.getGeometryN(i));
+		for (int i = 0; i < mp.getNumGeometries(); i++) {
+		    polys[i] = supprimeTrous((Polygon) mp.getGeometryN(i));
+		}
 		return (new GeometryFactory()).createMultiPolygon(polys);
 	}
-	
+
+	/**
+	 * Builds on offset curve for the given linestring. A positive offset
+	 * builds an offset curve on the left-hand side of the reference
+	 * linestring. Negative means right.
+	 * @param line reference linestring
+	 * @param distance offset
+	 * @return a linestring at the given offset of the reference linestring
+	 */
+	public static GM_LineString offsetCurve(GM_LineString line,
+	        double distance) {
+	    boolean left = (distance > 0);
+	    distance = Math.abs(distance);
+	    try {
+            LineString lineString =
+                (LineString) JtsGeOxygene.makeJtsGeom(line);
+            List<Coordinate> coordinates =
+                Arrays.asList(lineString.getCoordinates());
+            Geometry buffer = lineString.buffer(distance, 4,
+                    BufferParameters.CAP_FLAT);
+            int start = -1; int end = -1;
+            boolean previousOnTheLeft = false;
+            for (int i = 0; i < buffer.getCoordinates().length; i++) {
+                boolean toTheLeft = toTheLeft(buffer.getCoordinates()[i],
+                        coordinates);
+                if (toTheLeft && !previousOnTheLeft) {
+                    if (left) { start = i; } else { end = i; }
+                } else {
+                    if (!toTheLeft && previousOnTheLeft) {
+                        if (left) { end = i; } else { start = i; }
+                    }
+                }
+                previousOnTheLeft = toTheLeft;
+            }
+            List<Coordinate> offsetCoordinates = new ArrayList<Coordinate>();
+            for (int i = start; i != end; i = (i + 1) % buffer.getCoordinates().length) {
+                offsetCoordinates.add(0, buffer.getCoordinates()[i]);
+            }
+            return new GM_LineString(AdapterFactory.toDirectPositionList(
+                    offsetCoordinates.toArray(new Coordinate[0])));
+        } catch (Exception e) { e.printStackTrace(); }
+	    return null;
+	}
+
+    /**
+     * Determine is a coordinate lies on the left of the linestring defined
+     * by a list of coodinates.
+     * @param c coordinate
+     * @param coordinates list of coordinates defining the reference linestring
+     * @return true if c is on the left of the linestring defined by
+     * coordinates
+     */
+    private static boolean toTheLeft(Coordinate c,
+            List<Coordinate> coordinates) {
+        double distanceMin = Double.MAX_VALUE;
+        Coordinate coordMin = null;
+        for (Coordinate coordinate : coordinates) {
+            double d = coordinate.distance(c);
+            if (d < distanceMin) {
+                distanceMin = d;
+                coordMin = coordinate;
+            }
+        }
+        if (coordMin == null) { return false; }
+        int index = coordinates.indexOf(coordMin);
+        if (index < 0) { return false; }
+        if (index == 0) {
+            Coordinate coord2 = coordinates.get(1);
+            Vector3d v1 = new Vector3d(new double[]{
+                    coord2.x - coordMin.x,
+                    coord2.y - coordMin.y, 0});
+            v1.normalize();
+            Vector3d v2 = new Vector3d(new double[]{
+                    c.x - coordMin.x,
+                    c.y - coordMin.y, 0});
+            v2.normalize();
+            Vector3d cross = new Vector3d();
+            cross.cross(v1, v2);
+            return (cross.z >= 0);
+        }
+        if (index == coordinates.size() - 1) {
+            Coordinate coord2 = coordinates.get(coordinates.size() - 2);
+            Vector3d v1 = new Vector3d(new double[]{
+                    coordMin.x - coord2.x,
+                    coordMin.y - coord2.y, 0});
+            v1.normalize();
+            Vector3d v2 = new Vector3d(new double[]{
+                    c.x - coordMin.x,
+                    c.y - coordMin.y, 0});
+            v2.normalize();
+            Vector3d cross = new Vector3d();
+            cross.cross(v1, v2);
+            return (cross.z >= 0);
+        }
+        Coordinate coord1 = coordinates.get(index - 1);
+        Coordinate coord2 = coordinates.get(index + 1);
+        Vector3d v1 = new Vector3d(new double[]{
+                coordMin.x - coord1.x,
+                coordMin.y - coord1.y, 0});
+        v1.normalize();
+        Vector3d v2 = new Vector3d(new double[]{
+                c.x - coordMin.x,
+                c.y - coordMin.y, 0});
+        v2.normalize();
+        Vector3d cross = new Vector3d();
+        cross.cross(v1, v2);
+        v1 = new Vector3d(new double[]{
+                coord2.x - coordMin.x,
+                coord2.y - coordMin.y, 0});
+        v1.normalize();
+        Vector3d cross2 = new Vector3d();
+        cross2.cross(v1, v2);
+        return (cross.z + cross2.z >= 0);
+    }
 } // class

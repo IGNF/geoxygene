@@ -75,35 +75,31 @@ public class CarteTopoFactory {
 		Arc arc;
 
 		// Import des arcs de la collection dans la carteTopo
-
-		
 		while (it.hasNext()) {
 			feature = it.next();
 			List<GM_LineString> lineStrings = null;
 			if (feature.getGeom().isLineString()) {
 				lineStrings = getLineStrings((GM_LineString) feature.getGeom());
 			} else {
-				if (feature.getGeom().isMultiCurve()) {
-					lineStrings = getLineStrings((GM_LineString) JtsAlgorithms
-							.union(((GM_MultiCurve<GM_LineString>) feature
-									.getGeom()).getList()));
-				}
+			    if (feature.getGeom().isMultiCurve()) {
+			        lineStrings = getLineStrings((GM_LineString) JtsAlgorithms
+			                .union(((GM_MultiCurve<GM_LineString>) feature
+			                        .getGeom()).getList()));
+			    }
 			}
 			if (lineStrings != null) {
+			    for(GM_LineString line : lineStrings) {
+			        // création d'un nouvel élément
+			        arc = arcs.nouvelElement();
 
-				for(GM_LineString line : lineStrings) {
-					// création d'un nouvel élément
-					arc = arcs.nouvelElement();
-					
-					//arc.setOrientation(orientation);
-					// affectation de la géométrie de l'objet issu de la collection
-					// à l'arc de la carteTopo
-					arc.setGeometrie(line);
-					// instanciation de la relation entre l'arc créé et l'objet
-					// issu de la collection
-					arc.addCorrespondant(feature);
-				}
-
+			        //arc.setOrientation(orientation);
+			        // affectation de la géométrie de l'objet issu de la collection
+			        // à l'arc de la carteTopo
+			        arc.setGeometrie(line);
+			        // instanciation de la relation entre l'arc créé et l'objet
+			        // issu de la collection
+			        arc.addCorrespondant(feature);
+			    }
 			}
 		}
 
@@ -119,6 +115,8 @@ public class CarteTopoFactory {
 		// La carteTopo est rendue planaire
 		logger.info("La carte topologique est rendue planaire"); //$NON-NLS-1$
 		carteTopo.rendPlanaire(2);
+        logger.info("Fusion des noeuds"); //$NON-NLS-1$
+        carteTopo.fusionNoeuds(2);
 		logger.info("création des faces de la carte topologique"); //$NON-NLS-1$
 		// création des faces de la carteTopo
 		carteTopo.creeTopologieFaces();

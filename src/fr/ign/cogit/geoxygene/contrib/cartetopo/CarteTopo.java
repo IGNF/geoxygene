@@ -1284,41 +1284,47 @@ public class CarteTopo extends DataSet {
         fireActionPerformed(new ActionEvent(this,2,I18N.getString("CarteTopo.FaceTopologyCycles"),cycles.size())); //$NON-NLS-1$
         iteration=0;
         for(Cycle cycle:cycles) {			
-            Face face=(
-                    (cycle.isAGauche()&&cycle.getOrientationsArcs().get(0).booleanValue())||
-                    (!cycle.isAGauche()&&!cycle.getOrientationsArcs().get(0).booleanValue()))?
-                            cycle.getArcs().get(0).getFaceGauche():cycle.getArcs().get(0).getFaceDroite();
-                            if (face == null) {
-                                Collection<Face> selection = this.getPopFaces().select(cycle.getGeometrie());
-                                if (selection.isEmpty()) {
-                                	face = faceInfinie;
-                                } else {
-                                    selection.removeAll(cycle.getListeFacesInterieuresDuCycle());
-                                    Iterator<Face> it = selection.iterator();
-                                    while(it.hasNext()) {
-                                    	if (!it.next().getGeometrie().contains(cycle.getGeometrie())) {
-                                    		it.remove();
-                                    	}
-                                    }
-                                    if (selection.isEmpty()) {
-                                    	face = faceInfinie;
-                                    } else {
-                                    	face = selection.iterator().next();
-                                    }
-                                }
-                            }
-                            marquerCycle(cycle,face);
-                            // on ajoute un trous à la géométrie de la face infinie
-                            if (cycle.getGeometrie().sizeControlPoint() > 3) { 
-                            	GM_Ring trou = new GM_Ring(cycle.getGeometrie());
-                            	if ((trou.coord().size() != 0) 
-                            			&& face.getGeometrie().contains(trou)) {
-                            		face.getGeometrie().addInterior(trou);
-                            	}
-                            }
-                            fireActionPerformed(new ActionEvent(this,3,I18N.getString("CarteTopo.FaceTopologyCycle"),iteration++)); //$NON-NLS-1$
+            Face face = ((cycle.isAGauche() && cycle.getOrientationsArcs().get(
+                    0).booleanValue()) || (!cycle.isAGauche() && !cycle
+                            .getOrientationsArcs().get(0).booleanValue())) ? cycle
+                                    .getArcs().get(0).getFaceGauche() : cycle.getArcs().get(0)
+                                    .getFaceDroite();
+            if (face == null) {
+                Collection<Face> selection = this.getPopFaces()
+                        .select(cycle.getGeometrie());
+                if (selection.isEmpty()) {
+                    face = faceInfinie;
+                } else {
+                    selection
+                            .removeAll(cycle.getListeFacesInterieuresDuCycle());
+                    Iterator<Face> it = selection.iterator();
+                    while (it.hasNext()) {
+                        if (!it.next().getGeometrie().contains(
+                                cycle.getGeometrie())) {
+                            it.remove();
+                        }
+                    }
+                    if (selection.isEmpty()) {
+                        face = faceInfinie;
+                    } else {
+                        face = selection.iterator().next();
+                    }
+                }
+            }
+            marquerCycle(cycle, face);
+            // on ajoute un trous à la géométrie de la face infinie
+            if (cycle.getGeometrie().sizeControlPoint() > 3) { 
+                GM_Ring trou = new GM_Ring(cycle.getGeometrie());
+                if (!trou.coord().isEmpty()
+                        && face.getGeometrie().contains(trou)) {
+                    face.getGeometrie().addInterior(trou);
+                }
+            }
+            fireActionPerformed(new ActionEvent(this, 3, I18N
+                    .getString("CarteTopo.FaceTopologyCycle"), iteration++)); //$NON-NLS-1$
         }
-        fireActionPerformed(new ActionEvent(this,4,I18N.getString("CarteTopo.FaceTopologyEnd"))); //$NON-NLS-1$
+        fireActionPerformed(new ActionEvent(this, 4, I18N
+                .getString("CarteTopo.FaceTopologyEnd"))); //$NON-NLS-1$
     }
 
     /**
