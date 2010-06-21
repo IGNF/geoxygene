@@ -24,6 +24,7 @@ package fr.ign.cogit.geoxygene.appli;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Shape;
+import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
@@ -32,6 +33,7 @@ import java.awt.geom.Point2D;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
@@ -80,6 +82,25 @@ public class Viewport {
         public final LayerViewPanel getLayerViewPanel() {
                 return this.layerViewPanel;
         }
+
+        /**
+         * Taille d'un pixel en m (la longueur d'un cote de pixel de l'ecran)
+         * utilise pour le calcul de l'echelle courante de la vue.
+         * Elle est calculée à partir de la résolution de l'écran en DPI.
+         * par exemple si la résolution est 90DPI, c'est: 90 pix/inch = 1/90
+         * inch/pix = 0.0254/90 meter/pix.
+         */
+        private final static double METERS_PER_PIXEL;
+        static {
+            METERS_PER_PIXEL = 0.02540005 / Toolkit.getDefaultToolkit()
+            .getScreenResolution();
+        }
+
+        /**
+         * @return Taille d'un pixel en m (la longueur d'un cote de pixel de
+         * l'ecran) utilise pour le calcul de l'echelle courante de la vue.
+         */
+        public static double getMETERS_PER_PIXEL() { return METERS_PER_PIXEL; }
 
         /**
          * Default scale.
@@ -169,6 +190,17 @@ public class Viewport {
         }
 
         /**
+         * The affine transformation from view to model.
+         */
+        private AffineTransform viewToModelTransform = null;
+        public final AffineTransform getViewToModelTransform()
+        throws NoninvertibleTransformException {
+            if (this.viewToModelTransform == null) {
+                this.viewToModelTransform = getModelToViewTransform().createInverse();
+            }
+            return this.viewToModelTransform;
+        }
+        /**
          * Constructor of viewport with a {@link LayerViewPanel}.
          *
          * @param theLayerViewPanel
@@ -226,6 +258,9 @@ public class Viewport {
          */
         public final Shape toShape(final GM_Object geometry)
         throws NoninvertibleTransformException {
+            if (geometry == null) {
+                return null;
+            }
             GM_Envelope envelope = this.getEnvelopeInModelCoordinates();
             /*
             if (logger.isTraceEnabled()) {
@@ -479,6 +514,39 @@ public class Viewport {
         }
 
         /**
+         * Center on the given point.
+         * @param center point to center on 
+         * @throws NoninvertibleTransformException throws an exception
+         * when the transformation fails
+         */
+        public final void center(final DirectPosition center)
+        throws NoninvertibleTransformException {
+            double xCenteringOffset = ((this.layerViewPanel.getWidth()
+                    / this.scale)) / 2d;
+            double yCenteringOffset = ((this.layerViewPanel.getHeight()
+                    / this.scale)) / 2d;
+            this.viewOrigin = new Point2D.Double(center.getX()
+                    - xCenteringOffset, center.getY()
+                    - yCenteringOffset);
+            update();
+        }
+
+        /**
+         * Center on the given feature.
+         * @param feature feature to center on 
+         * @throws NoninvertibleTransformException throws an exception
+         * when the transformation fails
+         */
+        public final void center(final FT_Feature feature)
+        throws NoninvertibleTransformException {
+            if ((feature == null) || feature.getGeom() == null) {
+                return;
+            }
+            DirectPosition centroid = feature.getGeom().centroid();
+            this.center(centroid);
+        }
+
+        /**
          * A constant holding the value 0.5.
          */
         private static final double ZERO_POINT_FIVE = 0.5d;
@@ -658,6 +726,14 @@ public class Viewport {
         public final void zoomOutTo(final Point2D p)
         throws NoninvertibleTransformException {
             this.zoom(p, 1 / ZOOM_FACTOR);
+        }
+
+        public final void zoomToScale(final double scale)
+        throws NoninvertibleTransformException {
+            DirectPosition p = this.getEnvelopeInModelCoordinates().center();
+            this.scale = scale;
+            this.update();
+            this.center(p);
         }
 
         /**
