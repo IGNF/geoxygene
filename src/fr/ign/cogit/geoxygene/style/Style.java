@@ -26,6 +26,8 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlTransient;
 
 
@@ -39,17 +41,18 @@ public interface Style {
 	 * Renvoie la valeur de l'attribut name.
 	 * @return la valeur de l'attribut name
 	 */
-	public String getName();
+	String getName();
 
 	/**
 	 * Affecte la valeur de l'attribut name.
 	 * @param name l'attribut name à affecter
 	 */
-	public void setName(String name);
+	void setName(String name);
 
 	/**
 	 * @return vrai si le style est un style utilisateur, faux sinon.
 	 */
-	public boolean isUserStyle();
-    public Symbolizer getSymbolizer();
+	boolean isUserStyle();
+    Symbolizer getSymbolizer();
+    List<FeatureTypeStyle> getFeatureTypeStyles();
 }

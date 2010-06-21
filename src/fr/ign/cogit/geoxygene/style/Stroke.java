@@ -133,7 +133,7 @@ public class Stroke {
 		            rgb = rgb.substring(2, rgb.length());
 		            parameter.setValue("#"+rgb); //$NON-NLS-1$
 		            found = true;
-		        } else if (parameter.getName().equalsIgnoreCase("stroke")){
+		        } else if (parameter.getName().equalsIgnoreCase("stroke")){ //$NON-NLS-1$
 		        	String sRGB = Integer.toString(stroke.getRGB());
 		        	parameter.setValue(sRGB);
 		        	found = true;
@@ -242,7 +242,7 @@ public class Stroke {
 	}
     
 	@XmlTransient
-	private int strokeLineCap = BasicStroke.CAP_ROUND;
+	private int strokeLineCap = BasicStroke.CAP_BUTT;
 	/**
 	 * Renvoie la valeur de l'attribut strokeLineCap.
 	 * @return la valeur de l'attribut strokeLineCap

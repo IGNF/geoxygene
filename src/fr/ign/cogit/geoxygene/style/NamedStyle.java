@@ -26,6 +26,8 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 
@@ -36,4 +38,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class NamedStyle extends AbstractStyle {
     public Symbolizer getSymbolizer() { return null; }
+
+    @Override
+    public List<FeatureTypeStyle> getFeatureTypeStyles() {
+        return null;
+    }
 }
