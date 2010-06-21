@@ -738,7 +738,7 @@ public class GeodatabaseOjb {
         }
     }
 
-    /** 
+    /**
      * Execute les commandes SQL contenues dans un fichier.
      * @param fileName fichier contenant des commandes SQL
      */
@@ -829,10 +829,10 @@ public class GeodatabaseOjb {
     // //////////////////////////////////////////////////////////////
     /*
      * @author Balley
-     * 
+     *
      * méthodes de chargement de données (loadAll, loadAllFeatures) qui prennent
      * en entrée des élémentsde schéma conceptuel
-     * 
+     *
      */
     // ///////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
@@ -961,5 +961,9 @@ public class GeodatabaseOjb {
         }
         List<T> coll = DataSet.db.loadAll(theClass);
         return coll;
+    }
+
+    public void setMapping(Class<?> classe, String tableName) {
+
     }
 }

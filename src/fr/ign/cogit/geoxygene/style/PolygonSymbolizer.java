@@ -159,7 +159,7 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
         float size = graphic.getSize();
         graphics.setClip(shape);
         for (ExternalGraphic external : graphic.getExternalGraphics()) {
-            if (external.getFormat().contains("png")) { //$NON-NLS-1$
+            if (external.getFormat().contains("png")||external.getFormat().contains("gif")) { //$NON-NLS-1$
                 Image image = external.getOnlineResource();
                 this.graphicFillPolygon(shape, image, size, graphics);
             } else {

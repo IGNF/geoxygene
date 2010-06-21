@@ -129,13 +129,13 @@ public final class AppariementIO {
         if (cartesTopo != null) { cartesTopo.add(reseauComp); }
 
         // NB: l'ordre dans lequel les projections sont faites n'est pas neutre
-        if (paramApp.projeteNoeud2surReseau1) {
+        if (paramApp.projeteNoeuds2SurReseau1) {
             if (LOGGER.isDebugEnabled()) { LOGGER.debug(I18N.getString(
             "AppariementIO.ProjectionOfNetwork2OnNetwork1" //$NON-NLS-1$
             ) + (new Time(System.currentTimeMillis())).toString());
             }
             reseauRef.projete(reseauComp,
-                    paramApp.projeteNoeud2surReseau1DistanceNoeudArc,
+                    paramApp.projeteNoeuds2SurReseau1DistanceNoeudArc,
                     paramApp.projeteNoeud2surReseau1DistanceProjectionNoeud,
                     paramApp.projeteNoeud2surReseau1ImpassesSeulement);
         }

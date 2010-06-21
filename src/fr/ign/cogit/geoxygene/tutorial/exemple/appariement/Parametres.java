@@ -99,8 +99,8 @@ public class Parametres {
 		param.projeteNoeuds1SurReseau2DistanceNoeudArc = 0;
 		param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = 0;
 		param.projeteNoeuds1SurReseau2ImpassesSeulement = false;
-		param.projeteNoeud2surReseau1 = false;
-		param.projeteNoeud2surReseau1DistanceNoeudArc = 0;
+		param.projeteNoeuds2SurReseau1 = false;
+		param.projeteNoeuds2SurReseau1DistanceNoeudArc = 0;
 		param.projeteNoeud2surReseau1DistanceProjectionNoeud = 0;
 		param.projeteNoeud2surReseau1ImpassesSeulement = false;
 
@@ -204,8 +204,8 @@ public class Parametres {
 		param.projeteNoeuds1SurReseau2DistanceNoeudArc = 0;
 		param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = 0;
 		param.projeteNoeuds1SurReseau2ImpassesSeulement = false;
-		param.projeteNoeud2surReseau1 = false;
-		param.projeteNoeud2surReseau1DistanceNoeudArc = 0;
+		param.projeteNoeuds2SurReseau1 = false;
+		param.projeteNoeuds2SurReseau1DistanceNoeudArc = 0;
 		param.projeteNoeud2surReseau1DistanceProjectionNoeud = 0;
 		param.projeteNoeud2surReseau1ImpassesSeulement = false;
 		

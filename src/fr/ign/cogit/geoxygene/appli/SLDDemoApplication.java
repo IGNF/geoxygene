@@ -80,6 +80,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
         graphicTree.setSize(30);
         ExternalGraphic tree = new ExternalGraphic();
         tree.setHref("http://terrapreta.bioenergylists.org/files/images/tree.gif"); //$NON-NLS-1$
+        tree.setFormat("gif");
         graphicTree.getExternalGraphics().add(tree);
         graphicFill.getGraphics().add(graphicTree);
         symbolizer.getFill().setGraphicFill(graphicFill);

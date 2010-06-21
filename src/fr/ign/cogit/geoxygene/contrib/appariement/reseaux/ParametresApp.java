@@ -206,12 +206,12 @@ public class ParametresApp implements Cloneable {
 	 * à l'encontre de la philosophie générale du processus d'appariement.
 	 * A utiliser avec modération donc.
 	 */
-	public boolean projeteNoeud2surReseau1 = false;
+	public boolean projeteNoeuds2SurReseau1 = false;
 
 	/** Distance max de la projection des noeuds 1 sur le réseau 2.
 	 *  Utile uniquement si projeteNoeuds2SurReseau1 = true.
 	 */
-	public double projeteNoeud2surReseau1DistanceNoeudArc = 0;
+	public double projeteNoeuds2SurReseau1DistanceNoeudArc = 0;
 
 	/** Distance min entre la projection d'un noeud sur un arc et les extrémités de cet arc
 	 * pour créer un nouveau noeud sur le réseau 1.

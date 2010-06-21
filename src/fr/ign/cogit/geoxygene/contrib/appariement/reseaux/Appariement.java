@@ -2237,7 +2237,7 @@ public abstract class Appariement {
             final ReseauApp reseauADecouper, final ReseauApp reseauDecoupant,
             final EnsembleDeLiens liens, final ParametresApp param) {
         double distanceMaxNoeudArc =
-            param.projeteNoeud2surReseau1DistanceNoeudArc;
+            param.projeteNoeuds2SurReseau1DistanceNoeudArc;
         //param.distanceArcsMax;
         double distancePtCourantVersArcADecoupe;
         ArcApp arcDecoupant, arcADecouper;
