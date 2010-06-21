@@ -366,10 +366,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         this.renameMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	if(LayerLegendPanel.this.getSelectedLayers().size()==1){
+            	if(LayerLegendPanel.this.getSelectedLayers().size() == 1) {
             		Layer layer = LayerLegendPanel.this.getSelectedLayers().iterator().next();
-            		
-            		String newName = JOptionPane.showInputDialog(LayerLegendPanel.this, "Test");
+            		String newName = JOptionPane.showInputDialog(LayerLegendPanel.this, "Rename");
             		DataSet.getInstance().getPopulation(layer.getName()).setNom(newName);
             		layer.setName(newName);
             		
@@ -381,6 +380,18 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             @Override
             public void actionPerformed(ActionEvent e) {
                 LayerLegendPanel.this.removeSelectedLayers();
+            }
+        });
+        this.editMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AttributeTable ta = new AttributeTable(LayerLegendPanel.this
+                        .getLayerViewPanel().getProjectFrame(),
+                        I18N.getString(
+                        "LayerLegendPanel.EditAttributes"), //$NON-NLS-1$
+                        LayerLegendPanel.this.getLayerViewPanel()
+                                .getSelectedFeatures());
+                ta.setVisible(true);
             }
         });
         this.update();
