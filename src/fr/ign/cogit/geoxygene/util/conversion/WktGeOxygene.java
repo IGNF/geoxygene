@@ -22,6 +22,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
@@ -274,6 +275,8 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
                         result=geometryCollectionTaggedText((GM_Aggregate)object);
                 else if (object instanceof GM_Ring)
                         result=ringTaggedText((GM_Ring)object);
+                else if (object instanceof GM_Solid)
+                    result=multiPolygonTaggedText(new GM_MultiSurface(((GM_Solid)object).getListeFacettes()));
                 return result;
         }
 
