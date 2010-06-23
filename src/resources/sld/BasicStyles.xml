@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StyledLayerDescriptor version="1.0.20">
+	
+	
+	<NamedLayer>
+		<Name>Polygon</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Polygon</Name>
+					<PolygonSymbolizer>
+						<Fill>
+							<CssParameter name="fill">#ffffff</CssParameter>
+						</Fill>
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">2.0</CssParameter>
+						</Stroke>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>Point</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Point</Name>
+					<PointSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Graphic>
+							<Mark>
+								<WellKnownName>circle</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#ffffff</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#000000</CssParameter>
+									<CssParameter name="stroke-width">2.0</CssParameter>
+								</Stroke>
+							</Mark>
+						</Graphic>
+					</PointSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	
+	<NamedLayer>
+		<Name>Basic Line</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Line</Name>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">3.0</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	
+	<NamedLayer>
+		<Name>Line Dasharray</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Line axis</Name>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">4.0</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Line rail</Name>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">10.0</CssParameter>
+							<CssParameter name="stroke-dasharray">3 15</CssParameter>
+							<CssParameter name="stroke-linecap">butt</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	
+	<NamedLayer>
+		<Name>Line with contour</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Line stroke</Name>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">6.0</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Line fill</Name>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#ffff00</CssParameter>
+							<CssParameter name="stroke-width">4.0</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	
+	<NamedLayer>
+		<Name>Line Dasharray</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Line axis</Name>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">4.0</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Line rail</Name>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">10.0</CssParameter>
+							<CssParameter name="stroke-dasharray">3 15</CssParameter>
+							<CssParameter name="stroke-linecap">butt</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>	
+</StyledLayerDescriptor>

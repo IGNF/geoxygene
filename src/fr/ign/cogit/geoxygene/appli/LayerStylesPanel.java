@@ -26,6 +26,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -55,7 +56,12 @@ public class LayerStylesPanel extends JPanel {
      */
     private static final long serialVersionUID = 1L;
     private Layer layer;
-    private int margin = 2;
+    
+    public Layer getLayer() {
+		return layer;
+	}
+
+	private int margin = 2;
 
     /**
      * Constructor.
@@ -66,7 +72,7 @@ public class LayerStylesPanel extends JPanel {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         Color originalColor = g.getColor();
@@ -141,17 +147,33 @@ public class LayerStylesPanel extends JPanel {
         g2.setStroke(symbolizer.getStroke()
                 .toAwtStroke());
         g2.setColor(symbolizer.getStroke().getColor());
-        g2.drawLine(
-                currentColumn
-                * (columnsWidth + this.margin)
-                + this.margin,
-                currentRow
-                * (rowHeight + this.margin)
-                + rowHeight,
-                (currentColumn + 1) * (columnsWidth
-                        + this.margin) - 1,
-                currentRow * (rowHeight + this.margin)
-                + rowHeight);
+        if(this.layer.getStyles().size()==1){
+        	g2.drawLine(
+	                currentColumn
+		                * (columnsWidth + this.margin),
+	                currentRow
+		                * (rowHeight + this.margin)
+		                + rowHeight/2,
+	                (currentColumn + 1)
+	                	* (columnsWidth + this.margin)
+	                	+ this.margin,
+	                currentRow
+	                	* (rowHeight + this.margin)
+	                	+ rowHeight/2);
+        } else {
+	        g2.drawLine(
+	                currentColumn
+		                * (columnsWidth + this.margin),
+	                currentRow
+		                * (rowHeight + this.margin)
+		                + rowHeight,
+	                (currentColumn + 1)
+	                	* (columnsWidth + this.margin)
+	                	+ this.margin,
+	                currentRow
+		                * (rowHeight + this.margin)
+		                + rowHeight);
+        }
     }
 
     @Override
@@ -173,7 +195,7 @@ public class LayerStylesPanel extends JPanel {
                     * (rowHeight + this.margin)
                     + rowHeight / 2);
             at.rotate(symbolizer.getGraphic().getRotation());
-            at.scale(size,size);
+            at.scale(3 * size,3 * size);
             markShape = at.createTransformedShape(
                     markShape);
             g2.setColor((mark.getFill() == null)
@@ -185,6 +207,8 @@ public class LayerStylesPanel extends JPanel {
             g2.setColor((mark.getStroke() == null)
                     ? Color.black : mark.getStroke()
                             .getColor());
+            g2.setRenderingHint
+					(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.draw(markShape);
         }
         for (ExternalGraphic theGraphic

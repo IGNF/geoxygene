@@ -77,6 +77,7 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
  * Panel displaying layer legends.
  * @author Julien Perret
  * @author Sylvain Becuwe
+ * @author Charlotte Hoarau
  */
 public class LayerLegendPanel extends JPanel implements ChangeListener, ActionListener {
     /**
@@ -88,7 +89,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
      */
     private StyledLayerDescriptor sld = null;
     /**
-     * Get sld of the layer legend panel.
+     * Get the sld of the layer legend panel.
      * @return sld of the layer legend panel
      */
     public StyledLayerDescriptor getSld() { return this.sld; }
@@ -98,7 +99,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
      */
     private LayerViewPanel layerViewPanel = null;
     /**
-     * @return
+     * Get the layerViewPanel of the layer legend panel.
+     * @return the layerViewPanel of the layer legend panel.
      */
     public LayerViewPanel getLayerViewPanel() { return this.layerViewPanel; }
 
@@ -268,14 +270,16 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         col.setWidth(60);
         col.setResizable(false);
         col.setCellRenderer(new StyleRenderer());
-        //col.setCellEditor(new CouleursEditor(new JTextField()));
+        JTextField txtStyle = new JTextField();
+        txtStyle.setEditable(false);
+        col.setCellEditor(new StyleEditor(txtStyle));
         col = this.layersTable.getColumnModel().getColumn(4);
         col.setWidth(width-126);
         col.setResizable(true);
         col.setCellRenderer(new LayersNameCellRenderer());
-        JTextField txtField = new JTextField();
-        txtField.setEditable(true);
-        txtField.addKeyListener(new KeyListener(){
+        JTextField txtName = new JTextField();
+        txtName.setEditable(true);
+        txtName.addKeyListener(new KeyListener(){
         	 public void keyPressed(KeyEvent e) {}
              public void keyReleased(KeyEvent e) {
             	 if(LayerLegendPanel.this.getSelectedLayers().size()==1){
@@ -287,7 +291,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
              }
              public void keyTyped(KeyEvent e) {}
         });
-        col.setCellEditor(new DefaultCellEditor(txtField));
+        col.setCellEditor(new DefaultCellEditor(txtName));
         this.layersTable.getTableHeader().setResizingColumn(col);
 
         this.layersTable.setFillsViewportHeight(true);
@@ -368,7 +372,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             public void actionPerformed(ActionEvent e) {
             	if(LayerLegendPanel.this.getSelectedLayers().size() == 1) {
             		Layer layer = LayerLegendPanel.this.getSelectedLayers().iterator().next();
-            		String newName = JOptionPane.showInputDialog(LayerLegendPanel.this, "Rename");
+            		String newName = JOptionPane.showInputDialog(
+            				LayerLegendPanel.this, 
+            				I18N.getString("LayerLegendPanel.RenameLayer")); //$NON-NLS-1$
             		DataSet.getInstance().getPopulation(layer.getName()).setNom(newName);
             		layer.setName(newName);
 
@@ -376,6 +382,13 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             	}
             }
         });
+        this.editSldMenuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+            	StyleEditionFrame styleEditionFrame = new StyleEditionFrame(LayerLegendPanel.this);
+            	styleEditionFrame.setVisible(true);
+			}
+		});
         this.deleteMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -556,7 +569,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
     }
 
     /**
-     * Return the layer corresponding to the given row
+     * Return the layer corresponding to the given row.
      * @param row row of the layer
      * @return the layer corresponding to the given row
      */
@@ -565,7 +578,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
                 this.getSld().getLayers().size() - 1 - row);
     }
     /**
-     * Le tableModel du panneauLegende
+     * The TableModel of the Layer Legend Panel
      */
     public class LayersTableModel extends DefaultTableModel {
         private static final long serialVersionUID = 1L;
@@ -764,6 +777,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             return null;
         }
     }
+    /**
+     */
     class StyleRenderer extends JLabel implements TableCellRenderer {
         private static final long serialVersionUID = 1L;
         @Override
@@ -775,6 +790,44 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             return panel;
         }
     }
+    /**
+     */
+    class StyleEditor extends DefaultCellEditor {
+    	
+    	private static final long serialVersionUID = 1L;
+    	protected JPanel panel;
+
+    	/**
+    	 * Constructor
+    	 * @param textField JTextField of the Layer Styles Panel.
+    	 */
+    	public StyleEditor(JTextField textField){
+    		super(textField);
+    		panel = new JPanel();
+    	}
+    	
+    	@Override
+    	public Component getTableCellEditorComponent(
+    			JTable table,
+    			Object value,
+    			boolean isSelected,
+    			int row,
+    			int column) {
+    		LayerLegendPanel layerLegendPanel = LayerLegendPanel.this;
+    		
+    		StyleEditionFrame styleEditionFrame = new StyleEditionFrame(layerLegendPanel);
+        	
+        	layerLegendPanel.getSelectedLayers().iterator().next().setStyles(
+        			styleEditionFrame.getLayer().getStyles());
+        	
+        	JPanel pan = new LayerStylesPanel(styleEditionFrame.getLayer());
+    		
+    		layerLegendPanel.repaint();
+    		layerLegendPanel.getLayerViewPanel().superRepaint();
+        	return pan;
+    	}
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("add")) { //$NON-NLS-1$

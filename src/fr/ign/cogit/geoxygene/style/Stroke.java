@@ -236,13 +236,17 @@ public class Stroke {
 	 * @param strokeLineJoin l'attribut strokeLineJoin à affecter
 	 */
 	private void setStrokeLineJoin(String strokeLineJoin) {
-		if (strokeLineJoin.equalsIgnoreCase("mitre")) this.strokeLineJoin=BasicStroke.JOIN_MITER; //$NON-NLS-1$
-		else if (strokeLineJoin.equalsIgnoreCase("bevel")) this.strokeLineJoin=BasicStroke.JOIN_BEVEL; //$NON-NLS-1$
+		if (strokeLineJoin.equalsIgnoreCase("mitre")) { //$NON-NLS-1$
+			this.strokeLineJoin=BasicStroke.JOIN_MITER; 
+		}
+		else if (strokeLineJoin.equalsIgnoreCase("bevel")) { //$NON-NLS-1$
+			this.strokeLineJoin=BasicStroke.JOIN_BEVEL;
+		}
 		// sinon, c'est la valeur par defaut
 	}
     
 	@XmlTransient
-	private int strokeLineCap = BasicStroke.CAP_BUTT;
+	private int strokeLineCap = BasicStroke.CAP_ROUND;
 	/**
 	 * Renvoie la valeur de l'attribut strokeLineCap.
 	 * @return la valeur de l'attribut strokeLineCap
