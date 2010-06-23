@@ -102,6 +102,7 @@
 				</includes>
 				<excludes>
 					<exclude>fr/ign/cogit/geoxygene/datatools/oracle/*.java</exclude>
+					<exclude>resources/</exclude>
 				</excludes>
   			</configuration>
   		</plugin>
