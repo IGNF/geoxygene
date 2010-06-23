@@ -44,7 +44,7 @@ public class GeOxygeneApplication {
             synchronized (GeOxygeneApplication.class) {
                 splashImage = new ImageIcon(
                             GeOxygeneApplication.class
-                            .getResource("/geoxygene-logo.png")); //$NON-NLS-1$
+                            .getResource("/images/geoxygene-logo.png")); //$NON-NLS-1$
             }
         }
         return splashImage;
@@ -56,7 +56,7 @@ public class GeOxygeneApplication {
      */
     private ImageIcon applicationIcon = new ImageIcon(
                 GeOxygeneApplication.class.
-                getResource("/icone.gif")); //$NON-NLS-1$
+                getResource("/images/icone.gif")); //$NON-NLS-1$
 
     /**
      *

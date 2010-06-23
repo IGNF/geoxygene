@@ -126,7 +126,7 @@ public class ModeSelector implements ContainerListener, KeyListener,
 
         JButton zoomToFullExtentButton = new JButton(new ImageIcon(
                 ModeSelector.class.getResource(
-                        "/icons/16x16/zoomToFullExtent.png"))); //$NON-NLS-1$
+                        "/images/icons/16x16/zoomToFullExtent.png"))); //$NON-NLS-1$
         zoomToFullExtentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -148,7 +148,7 @@ public class ModeSelector implements ContainerListener, KeyListener,
 
         final JToggleButton showGeometryToolsButton = new JToggleButton(new ImageIcon(
                 ModeSelector.class.getResource(
-                        "/icons/16x16/edit.png"))); //$NON-NLS-1$
+                        "/images/icons/16x16/edit.png"))); //$NON-NLS-1$
         showGeometryToolsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {

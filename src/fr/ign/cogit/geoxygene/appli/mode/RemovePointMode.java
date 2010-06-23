@@ -23,7 +23,7 @@ public class RemovePointMode extends AbstractGeometryEditMode {
     @Override
     protected final JButton createButton() {
         return new JButton(new ImageIcon(this.getClass().
-                getResource("/icons/16x16/remove.png"))); //$NON-NLS-1$
+                getResource("/images/icons/16x16/remove.png"))); //$NON-NLS-1$
     }
     @Override
     public void leftMouseButtonClicked(final MouseEvent e,

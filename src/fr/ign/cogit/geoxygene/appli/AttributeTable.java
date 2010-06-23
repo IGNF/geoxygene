@@ -175,7 +175,7 @@ class AttributeTable extends JDialog {
                             attribute.setValueType(valueType);
                             featureType.addFeatureAttribute(attribute);
                         }
-                    }			
+                    }
                 }
                 Layer layer
                 = getProjectFrame().getLayerFromFeature(features.get(0));
@@ -196,7 +196,7 @@ class AttributeTable extends JDialog {
                 this.attributeNames.add(nomAttribut);
             }
             //On ajoute les lignes
-            for (int i = 0 ; i < features.size() ; i++) { 
+            for (int i = 0 ; i < features.size() ; i++) {
                 FT_Feature ft = features.get(i);
                 Object[] objs = new Object[this.attributeNames.size()];
                 objs[0] = new Integer(ft.getId());
@@ -310,13 +310,13 @@ class AttributeTable extends JDialog {
                             "ImpossibleToAffectValue"), //$NON-NLS-1$
                             JOptionPane.ERROR_MESSAGE);
                 }
-            }				
+            }
         }
 
     }
 
     /**
-     *	Listener permettant d'écouter les cliques de la souris sur une ligne, une colonnes 
+     *	Listener permettant d'écouter les cliques de la souris sur une ligne, une colonnes
      *	ainsi que le clique droit.
      */
     class MouseListener extends MouseAdapter {
@@ -328,7 +328,7 @@ class AttributeTable extends JDialog {
             this.tableModel = tableModel;
         }
         @Override
-        public void mousePressed(MouseEvent e) {	    		
+        public void mousePressed(MouseEvent e) {
             //Identifie la ligne sélectionnée
             this.selectedRow = e.getY() / this.table.getRowHeight();
             //Identifie la colonne sélectionnée
@@ -349,7 +349,7 @@ class AttributeTable extends JDialog {
             } else { this.selectedCol = i; }
             if (this.tableModel.getRowCount() != 0) {
                 this.table.clearSelection();
-                if (this.selectedRow < this.tableModel.getRowCount()) {			       		
+                if (this.selectedRow < this.tableModel.getRowCount()) {
                     this.table.addRowSelectionInterval(this.selectedRow, this.selectedRow);
                     AttributeTable.this.setSelectedFeature(this.tableModel.getFeatures().get(this.selectedRow));
                     AttributeTable.this.setSelectedTable(this.table);
@@ -705,7 +705,7 @@ class AttributeTable extends JDialog {
                 if (featuresOfThisLayer.contains(ft)) { features.add(ft); }
             }
             features.setFeatureType(layer.getFeatureCollection().getFeatureType());
-            //On crée la table avec le tableModel qui correspond aux features 
+            //On crée la table avec le tableModel qui correspond aux features
             //et on l'ajoute au panel de table
             AttributsTableModel tableModel = new AttributsTableModel(features);
             JTable table = new JTable(tableModel);
@@ -777,7 +777,7 @@ class AttributeTable extends JDialog {
     }
     class ConfirmChangeDialog extends JDialog {
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
         final JCheckBox forceChange = new JCheckBox(
@@ -807,7 +807,7 @@ class AttributeTable extends JDialog {
             message.setAutoscrolls(true);
             JLabel icon = new JLabel(new ImageIcon(this.getClass()
                     .getResource(
-                    "/icons/64x64/warning.png"))); //$NON-NLS-1$
+                    "/images/icons/64x64/warning.png"))); //$NON-NLS-1$
             this.setBackground(color);
             this.setSize(new Dimension(400, 200));
             this.setResizable(false);

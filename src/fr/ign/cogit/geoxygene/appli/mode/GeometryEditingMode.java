@@ -49,7 +49,7 @@ public class GeometryEditingMode extends AbstractGeometryEditMode {
     @Override
     protected final JButton createButton() {
         return new JButton(new ImageIcon(this.getClass().
-                getResource("/icons/16x16/edit.png"))); //$NON-NLS-1$
+                getResource("/images/icons/16x16/edit.png"))); //$NON-NLS-1$
     }
     @Override
     public Cursor getCursor() {

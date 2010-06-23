@@ -94,35 +94,35 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
     public StyledLayerDescriptor getSld() { return this.sld; }
 
     /**
-     * 
+     *
      */
     private LayerViewPanel layerViewPanel = null;
     /**
      * @return
      */
     public LayerViewPanel getLayerViewPanel() { return this.layerViewPanel; }
-    
+
     /**
-     * 
+     *
      */
     DefaultTableModel tablemodel = null;
     /**
-     * 
+     *
      */
     JTable layersTable = null;
 
 	JButton plusButton = new JButton(new ImageIcon(this.getClass().getResource(
-			"/icons/16x16/plus.png"))); //$NON-NLS-1$
+			"/images/icons/16x16/plus.png"))); //$NON-NLS-1$
 	JButton topButton = new JButton(new ImageIcon(this.getClass().getResource(
-			"/icons/16x16/top.png"))); //$NON-NLS-1$
+			"/images/icons/16x16/top.png"))); //$NON-NLS-1$
 	JButton upButton = new JButton(new ImageIcon(this.getClass().getResource(
-			"/icons/16x16/up.png"))); //$NON-NLS-1$
+			"/images/icons/16x16/up.png"))); //$NON-NLS-1$
 	JButton downButton = new JButton(new ImageIcon(this.getClass().getResource(
-			"/icons/16x16/down.png"))); //$NON-NLS-1$
+			"/images/icons/16x16/down.png"))); //$NON-NLS-1$
 	JButton bottomButton = new JButton(new ImageIcon(this.getClass()
-			.getResource("/icons/16x16/bottom.png"))); //$NON-NLS-1$
+			.getResource("/images/icons/16x16/bottom.png"))); //$NON-NLS-1$
 	JButton minusButton = new JButton(new ImageIcon(this.getClass()
-			.getResource("/icons/16x16/minus.png"))); //$NON-NLS-1$
+			.getResource("/images/icons/16x16/minus.png"))); //$NON-NLS-1$
 
     JPopupMenu popupMenu = new JPopupMenu();
     JMenuItem newLayerMenuItem = new JMenuItem(
@@ -139,13 +139,13 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             I18N.getString("LayerLegendPanel." + //$NON-NLS-1$
             		"EditLayerAttributes"), //$NON-NLS-1$
             new ImageIcon(this.getClass().getResource(
-                    "/icons/16x16/editAttributes.png"))); //$NON-NLS-1$
+                    "/images/icons/16x16/editAttributes.png"))); //$NON-NLS-1$
     JMenuItem deleteMenuItem = new JMenuItem(
             I18N.getString("LayerLegendPanel.DeleteLayer")); //$NON-NLS-1$
     JMenuItem editSldMenuItem = new JMenuItem(
             I18N.getString("LayerLegendPanel.EditStyle"), //$NON-NLS-1$
             new ImageIcon(this.getClass().getResource(
-                    "/icons/16x16/editStyles.png"))); //$NON-NLS-1$
+                    "/images/icons/16x16/editStyles.png"))); //$NON-NLS-1$
     JMenuItem centerViewMenuItem = new JMenuItem(
             I18N.getString("LayerLegendPanel." + //$NON-NLS-1$
             		"CenterViewOnLayer")); //$NON-NLS-1$
@@ -214,12 +214,12 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
                 ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         JScrollPane scrollpane = new JScrollPane(this.layersTable);
 
-        Icon selectionIcon = new ImageIcon(
-                "images/icons/16x16/selection.png"); //$NON-NLS-1$
-        Icon visibleIcon = new ImageIcon(
-                "images/icons/16x16/visible.png"); //$NON-NLS-1$
-        Icon symbolizeIcon = new ImageIcon(
-                "images/icons/16x16/symbolize.png"); //$NON-NLS-1$
+        Icon selectionIcon = new ImageIcon(this.getClass().getResource(
+                "/images/icons/16x16/selection.png")); //$NON-NLS-1$
+        Icon visibleIcon = new ImageIcon(this.getClass().getResource(
+                "/images/icons/16x16/visible.png")); //$NON-NLS-1$
+        Icon symbolizeIcon = new ImageIcon(this.getClass().getResource(
+                "/images/icons/16x16/symbolize.png")); //$NON-NLS-1$
         JLabel selectionLabel = new JLabel("", selectionIcon, //$NON-NLS-1$
                 SwingConstants.CENTER);
         selectionLabel.setBorder(UIManager.getBorder(
@@ -371,7 +371,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             		String newName = JOptionPane.showInputDialog(LayerLegendPanel.this, "Rename");
             		DataSet.getInstance().getPopulation(layer.getName()).setNom(newName);
             		layer.setName(newName);
-            		
+
             		LayerLegendPanel.this.repaint();
             	}
             }
@@ -418,7 +418,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
      * Update and repaint the layer legend panel.
      */
     void update() {
-        boolean isSelectionEmpty = 
+        boolean isSelectionEmpty =
             this.layersTable.getSelectedRows().length == 0;
         this.minusButton.setEnabled(
                 !isSelectionEmpty
@@ -473,7 +473,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         }
         return selectedLayers;
     }
-    
+
     /**
      * Move the selected layers up.
      */
@@ -641,7 +641,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
                 getLayerViewPanel().repaint();
                 fireTableCellUpdated(row,col);
             }
-            else if (col == 2) {                    
+            else if (col == 2) {
                 layer.setSymbolized(((Boolean)value).booleanValue());
                 fireTableCellUpdated(row,col);
             }
@@ -660,7 +660,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
                         layer.setName(newLayerName);
                         //frame.getPanelVisu().getDataset().getPopulations().
                         //get(i).setNom(newLayerName);
-                        fireTableCellUpdated(i,col);    
+                        fireTableCellUpdated(i,col);
                     }
                 }
                 //String fileName = frame.session.getFichiers().get(oldLayerName);
@@ -668,7 +668,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
                 //fichiers.put(newLayerName, fileName);
             } else {
                 //couleurs.set(row, (JPanel)value);
-                fireTableCellUpdated(row,col);                  
+                fireTableCellUpdated(row,col);
             }
         }
     }
@@ -718,7 +718,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
                                 "LayerLegendPanel." + //$NON-NLS-1$
                                 "VisibleToolTip")); //$NON-NLS-1$
                         setSelected(layer.isVisible());
-                    } else { 
+                    } else {
                         if (col == 2) {
                             setToolTipText(I18N.getString(
                                     "LayerLegendPanel." + //$NON-NLS-1$
@@ -833,12 +833,12 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         @Override
         public void mouseReleased(MouseEvent e) { maybeShowPopup(e); }
         /**
-         * Affiche un menu popup si l'évènement souris est l'évènement 
+         * Affiche un menu popup si l'évènement souris est l'évènement
          * d'affichage du menu popup.
          * @param e évènement souris
          */
         private void maybeShowPopup(MouseEvent e) {
-            int selectedRow = 
+            int selectedRow =
                 e.getY() / LayerLegendPanel.this.layersTable.getRowHeight();
             if (SwingUtilities.isRightMouseButton(e)) {
                 if (selectedRow < LayerLegendPanel.this.layersTable.

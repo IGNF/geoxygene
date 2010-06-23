@@ -38,7 +38,7 @@ public class MovePointMode extends AbstractGeometryEditMode {
     @Override
     protected final JButton createButton() {
         return new JButton(new ImageIcon(this.getClass().
-                getResource("/icons/16x16/move2.png"))); //$NON-NLS-1$
+                getResource("/images/icons/16x16/move2.png"))); //$NON-NLS-1$
     }
     @Override
     public void mousePressed(final MouseEvent e) {
@@ -228,7 +228,7 @@ public class MovePointMode extends AbstractGeometryEditMode {
     DirectPosition previousPoint;
     DirectPosition nextPoint;
     FT_Feature currentFeature;
-    
+
     private void selectPoint(DirectPosition point, GM_LineString line) {
         int index = closestPointIndex(point, line.getControlPoint());
         this.sourcePoint = line.getControlPoint(index);

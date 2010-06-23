@@ -55,7 +55,7 @@ public class SelectionMode extends AbstractMode {
     @Override
     protected final JButton createButton() {
         return new JButton(new ImageIcon(this.getClass().
-                getResource("/icons/16x16/selection.png"))); //$NON-NLS-1$
+                getResource("/images/icons/16x16/selection.png"))); //$NON-NLS-1$
     }
 
     /**

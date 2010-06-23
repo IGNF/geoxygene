@@ -52,7 +52,7 @@ public class ZoomMode extends AbstractMode {
     @Override
     protected final JButton createButton() {
         return new JButton(new ImageIcon(this.getClass().
-                getResource("/icons/16x16/zoom.png"))); //$NON-NLS-1$
+                getResource("/images/icons/16x16/zoom.png"))); //$NON-NLS-1$
     }
 
     @Override
@@ -71,7 +71,7 @@ public class ZoomMode extends AbstractMode {
     }
     @Override
     public Cursor getCursor() {
-        Toolkit toolkit = Toolkit.getDefaultToolkit(); 
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
         Cursor cursor = toolkit.createCustomCursor(
                 toolkit.getImage(
                 "images/cursors/32x32/zoomCursor.gif"), //$NON-NLS-1$
