@@ -85,7 +85,7 @@
   	<sourceDirectory>src</sourceDirectory>
   	<resources>
   		<resource>
-  			<directory>images</directory>
+  			<directory>src/resources</directory>
   		</resource>
   	</resources>
   	<plugins>
@@ -133,6 +133,11 @@
 				</execution>
 			</executions>
   		</plugin>
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-jar-plugin</artifactId>
+  			<version>2.3</version>
+  		</plugin>
   	</plugins>
   </build>
   <repositories>
@@ -150,6 +155,11 @@
   		<id>osgeo</id>
   		<name>Open Source Geospatial Foundation Repository</name>
   		<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/osgeo</url>
+  	</repository>
+  	<repository>
+  		<id>osgeo-geotools</id>
+  		<name>Open Source Geospatial Foundation Repository</name>
+  		<url>dav:http://download.osgeo.org/webdav/geotools/</url>
   	</repository>
   	<repository>
   		<id>apache-releases</id>
@@ -182,7 +192,7 @@
   	<dependency>
   		<groupId>com.vividsolutions</groupId>
   		<artifactId>jts</artifactId>
-  		<version>1.10</version>
+  		<version>1.11</version>
   	</dependency>
   	<dependency>
   		<groupId>org.apache</groupId>
@@ -316,11 +326,11 @@
     	<artifactId>jai_imageio</artifactId>
     	<version>1.1</version>
 	</dependency>
-	  	  	<dependency>
-  	  	  	  <groupId>java3d</groupId>
-  <artifactId>vecmath</artifactId>
-  <version>1.5.2</version>
-  	  	</dependency>
+	<dependency>
+  	  	<groupId>java3d</groupId>
+  		<artifactId>vecmath</artifactId>
+  		<version>1.5.2</version>
+  	</dependency>
   </dependencies>
   <reporting>
   	<outputDirectory>target/reports</outputDirectory>
@@ -330,7 +340,7 @@
   	<snapshotRepository>
   		<id>snapshots</id>
   		<name>Nexus Snapshots Repository</name>
-  		<url>https://dionysos2.ign.fr/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
+  		<url>https://dionysos2/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
   	</snapshotRepository>
   	<site>
   		<id>GeOxygene-website</id>
