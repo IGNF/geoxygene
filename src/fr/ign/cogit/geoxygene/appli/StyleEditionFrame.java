@@ -168,7 +168,7 @@ public class StyleEditionFrame
 		add(visuPanel, BorderLayout.WEST);
 		
 		JLabel titleLabel = new JLabel(I18N.getString("StyleEditionFrame.PolygonNewStyle"));  //$NON-NLS-1$
-		titleLabel.setFont(new Font(I18N.getString("StyleEditionFrame.teswt"),Font.ROMAN_BASELINE,24)); //$NON-NLS-1$
+		titleLabel.setFont(new Font("Verdana",Font.ROMAN_BASELINE,24)); //$NON-NLS-1$
 		
 		fillPanel = new JPanel();
 		TitledBorder fillTitleBorder = BorderFactory.createTitledBorder(""); //$NON-NLS-1$
@@ -898,23 +898,21 @@ public class StyleEditionFrame
 		
 		if(arg0.getSource()==fillColorLabel){
 			fillColorChooser = new JColorChooser();
-//			fillColorChooser.addChooserPanel();
-			//TODO Voir si on peut ajouter une forme du LucilColorChooser
-			
+			fillColorChooser.addChooserPanel(new COGITColorChooserPanel());
 			fillDialog = JColorChooser.createDialog(
 					this, I18N.getString("StyleEditionFrame.PickAColor"), true, fillColorChooser, this, null);  //$NON-NLS-1$
 			fillDialog.setVisible(true);
 		}
 		if(arg0.getSource()==strokeColorLabel){
 			strokeColorChooser = new JColorChooser();
-//			strokeColorChooser.addChooserPanel();
+			strokeColorChooser.addChooserPanel(new COGITColorChooserPanel());
 			strokeDialog = JColorChooser.createDialog(
 					this, I18N.getString("StyleEditionFrame.PickAColor"), true, strokeColorChooser, this, null);  //$NON-NLS-1$
 			strokeDialog.setVisible(true);
 		}
 		if(arg0.getSource()==strokeColorLabel2){
 			strokeColorChooser2 = new JColorChooser();
-//			strokeColorChooser2.addChooserPanel();
+			strokeColorChooser2.addChooserPanel(new COGITColorChooserPanel());
 			strokeDialog2 = JColorChooser.createDialog(
 					this, I18N.getString("StyleEditionFrame.PickAColor"), true, strokeColorChooser2, this, null);  //$NON-NLS-1$
 			strokeDialog2.setVisible(true);
