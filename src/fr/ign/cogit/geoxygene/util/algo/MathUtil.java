@@ -120,5 +120,47 @@ public class MathUtil {
 		java.util.Arrays.sort(listeTriee);
 		return listeTriee[liste.size()/2].doubleValue();
 	}
+	
+	/**
+	 * Calcul de la distance euclidienne entre deux points.
+	 * La distance Euclidienne n'est calculée que si les 2 listes ont le même nombre de coordonnées.
+	 * @param x1 Liste de coordonnées
+	 * @param x2 Liste de coordonnées
+	 * @return
+	 */
+	public static float distEucl(float[] x1, float[] x2){
+		float distEucl = 0;
+		
+		for (int i = 0; i < x1.length; i++) {
+			distEucl = distEucl + (float)Math.pow(x2[i] - x1[i], 2);
+		}
+		distEucl = (float)Math.pow(distEucl,0.5);
+		if(x1.length != x2.length){
+			return Float.NaN;
+		}else{
+			return distEucl;
+		}
+	}
+	
+	/**
+	 * Calcul de la distance de Manhattan entre deux points.
+	 * La distance de Manhattan n'est calculée que si les 2 listes ont le même nombre de coordonnées.
+	 * @param x1 Liste de coordonnées
+	 * @param x2 Liste de coordonnées
+	 * @return
+	 */
+	public static float distManhattan(List<Float> x1, List<Float> x2){
+		float distManhattan = 0;
+		
+		for (int i = 0; i < x1.size(); i++) {
+			distManhattan = distManhattan + Math.abs(x2.get(i) - x1.get(i));
+		}
+		
+		if(x1.size() != x2.size()){
+			return Float.NaN;
+		}else{
+			return distManhattan;
+		}
+	}
 
 }
