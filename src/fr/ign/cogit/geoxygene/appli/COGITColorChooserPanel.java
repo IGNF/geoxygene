@@ -346,17 +346,14 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 	 * @return
 	 */
 	public static Color showDialog(Component component, String title, Color initialColor){
-		JColorChooser colorChooser = new JColorChooser(initialColor);
+		JColorChooser colorChooser = new JColorChooser(initialColor != null?
+                initialColor : Color.white);
 		
 		colorChooser.addChooserPanel(new COGITColorChooserPanel());
-		for (int i = 0; i < colorChooser.getChooserPanels().length; i++) {
-			colorChooser.removeChooserPanel(colorChooser.getChooserPanels()[i]);
-		}
-		colorChooser.removeChooserPanel(colorChooser.getChooserPanels()[0]);
-		
+
 		JDialog dialog = JColorChooser.createDialog(
 				component, title, true, colorChooser, null, null);
-		dialog.setVisible(true);
+		dialog.show();
 		Color c = colorChooser.getColor();
 		
 		return c;
