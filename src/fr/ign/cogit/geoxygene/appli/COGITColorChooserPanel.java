@@ -1,11 +1,13 @@
 package fr.ign.cogit.geoxygene.appli;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorReferenceSystem;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -20,6 +22,8 @@ import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -327,10 +331,36 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		COGITColorChooserPanel frameColor = new COGITColorChooserPanel();
-		frameColor.setVisible(true);
+		Color c = COGITColorChooserPanel.showDialog(new JButton(), I18N.getString("StyleEditionFrame.PickAColor"), Color.BLUE);
+		System.out.println(c);
 	}
 
+	/**
+	 * Creates and returns a new dialog containing the specified ColorChooser pane 
+	 * along with "OK", "Cancel", and "Reset" buttons. 
+	 * If the "OK" or "Cancel" buttons are pressed, the dialog is automatically hidden (but not disposed). 
+	 * If the "Reset" button is pressed, the color-chooser's color will be reset to the color 
+	 * which was set the last time show was invoked on the dialog and the dialog will remain showing. 
+	 * @param component
+	 * @param initialColor
+	 * @return
+	 */
+	public static Color showDialog(Component component, String title, Color initialColor){
+		JColorChooser colorChooser = new JColorChooser(initialColor);
+		
+		colorChooser.addChooserPanel(new COGITColorChooserPanel());
+		for (int i = 0; i < colorChooser.getChooserPanels().length; i++) {
+			colorChooser.removeChooserPanel(colorChooser.getChooserPanels()[i]);
+		}
+		colorChooser.removeChooserPanel(colorChooser.getChooserPanels()[0]);
+		
+		JDialog dialog = JColorChooser.createDialog(
+				component, title, true, colorChooser, null, null);
+		dialog.setVisible(true);
+		Color c = colorChooser.getColor();
+		
+		return c;
+	}
 	@Override
 	// We did this work in the constructor so we can skip it here.
 	protected void buildChooser() {}
