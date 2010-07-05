@@ -59,7 +59,7 @@ public class GM_Solid extends GM_Primitive {
 
 	@Override
 	public DirectPositionList coord() {
-		List<GM_OrientableSurface> lFaces = this.getListeFacettes();
+		List<GM_OrientableSurface> lFaces = this.getFacesList();
 
 		int n = lFaces.size();
 
@@ -159,7 +159,7 @@ public class GM_Solid extends GM_Primitive {
 	 *
 	 * @return la liste des faces extérieures d'un solide
 	 */
-	public List<GM_OrientableSurface> getListeFacettes() {
+	public List<GM_OrientableSurface> getFacesList() {
 		return this.boundary().exterior.getlisteFaces();
 	}
 	
@@ -170,7 +170,7 @@ public class GM_Solid extends GM_Primitive {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		
-		List<GM_OrientableSurface> lOS =  this.getListeFacettes();
+		List<GM_OrientableSurface> lOS =  this.getFacesList();
 		int nbElement =lOS.size();
 		sb.append("Solid("); //$NON-NLS-1$
 		for(int i=0;i<nbElement;i++) {

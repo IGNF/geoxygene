@@ -276,7 +276,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
                 else if (object instanceof GM_Ring)
                         result=ringTaggedText((GM_Ring)object);
                 else if (object instanceof GM_Solid)
-                    result=multiPolygonTaggedText(new GM_MultiSurface(((GM_Solid)object).getListeFacettes()));
+                    result=multiPolygonTaggedText(new GM_MultiSurface(((GM_Solid)object).getFacesList()));
                 return result;
         }
 

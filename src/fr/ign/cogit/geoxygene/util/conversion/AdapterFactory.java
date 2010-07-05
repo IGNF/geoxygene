@@ -136,7 +136,7 @@ public class AdapterFactory  {
 			return factory.createGeometryCollection(geometries);
 		}
 		if (geom instanceof GM_Solid) {
-			List<GM_OrientableSurface> lOS = ((GM_Solid)geom).getListeFacettes();
+			List<GM_OrientableSurface> lOS = ((GM_Solid)geom).getFacesList();
 			GM_MultiSurface<GM_OrientableSurface> multiSurface = new GM_MultiSurface(lOS);
 			Polygon[] polygons = new Polygon[multiSurface.size()];
 			for (int index = 0 ; index < multiSurface.size() ; index++) {
