@@ -57,8 +57,10 @@ public abstract class Distances {
 	//                Distances entre points                    //
 	//                                    	                    //
 	//////////////////////////////////////////////////////////////
-
-	/** Distance euclidienne entre 2 points (en 2D ou 3D si les points ont un Z). */
+    @Deprecated
+	/** Distance euclidienne entre 2 points (en 2D ou 3D si les points ont un Z). 
+	 *  @Deprecated La méthode .distance de DirectPosition fait la même chose
+	 * */
 	public static double distance (DirectPosition dp1, DirectPosition dp2)   {
 		if (!Double.isNaN(dp1.getZ()) && !Double.isNaN(dp2.getZ())) {
 			return Math.sqrt(Math.pow(dp1.getX()-dp2.getX(),2) +
@@ -69,7 +71,9 @@ public abstract class Distances {
 				Math.pow(dp1.getY()-dp2.getY(),2));
 	}
 
-	/** Distance euclidienne calculée en 2 dimensions XY, même sur des objets 3D. */
+	/** Distance euclidienne calculée en 2 dimensions XY, même sur des objets 3D. 
+	 *  @Deprecated La méthode .distance de DirectPosition fait la même chose
+	 * */
 	public static double distance2D (DirectPosition dp1, DirectPosition dp2)   {
 		return Math.sqrt(Math.pow(dp1.getX()-dp2.getX(),2) +
 				Math.pow(dp1.getY()-dp2.getY(),2));

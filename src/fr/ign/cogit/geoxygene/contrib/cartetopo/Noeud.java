@@ -394,7 +394,7 @@ public class Noeud extends ElementCarteTopo {
     //////////////////////////////////////////////////////////////////////////
     /** Distance euclidienne. Valable pour des coordonnées en 2 ou 3D. */
     public double distance (Noeud noeud) {
-        return Distances.distance(this.getCoord(), noeud.getCoord());
+        return this.getCoord().distance(noeud.getCoord());
     }
 
     /** Distance euclidienne dans le plan (x,y). */

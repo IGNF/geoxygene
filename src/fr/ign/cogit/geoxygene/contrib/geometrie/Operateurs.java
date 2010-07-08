@@ -70,14 +70,14 @@ public abstract class Operateurs {
      */
     public static DirectPosition projection(DirectPosition M, DirectPosition A,
             DirectPosition B) {
-        if (Distances.distance(A, B) == 0) return A; // cas ou A et B sont
+        if (A.distance(B) == 0) return A; // cas ou A et B sont
                                                      // confondus
         Vecteur uAB = new Vecteur(A, B).vectNorme();
         Vecteur AM = new Vecteur(A, M);
         double lambda = AM.prodScalaire(uAB);
         if (lambda <= 0) return A; // Cas ou M se projete en A sur le segment
                                    // [AB]
-        if (lambda >= Distances.distance(A, B)) return B; // Cas ou M se projete
+        if (lambda >= A.distance( B)) return B; // Cas ou M se projete
                                                           // en B sur le segment
                                                           // [AB]
         return translate(A, uAB.multConstante(lambda)); // Cas ou M se projete
@@ -99,10 +99,10 @@ public abstract class Operateurs {
         DirectPosition pt, ptmin;
         if (listePoints.size() <= 1) return listePoints.get(0);
         ptmin = projection(dp, listePoints.get(0), listePoints.get(1));
-        dmin = Distances.distance(dp, ptmin);
+        dmin =dp.distance( ptmin);
         for (int i = 0; i < listePoints.size() - 1; i++) {
             pt = projection(dp, listePoints.get(i), listePoints.get(i + 1));
-            d = Distances.distance(dp, pt);
+            d = dp.distance(pt);
             if (d < dmin) {
                 ptmin = pt;
                 dmin = d;
@@ -137,11 +137,11 @@ public abstract class Operateurs {
             DirectPositionList points) {
         if (points.size() < 2) { return; }
         DirectPosition ptmin = projection(point, points.get(0), points.get(1));
-        double dmin = Distances.distance(point, ptmin);
+        double dmin = point.distance( ptmin);
         int imin = 0;
         for (int i = 0; i < points.size() - 1; i++) {
             DirectPosition pt = projection(point, points.get(i), points.get(i + 1));
-            double d = Distances.distance(point, pt);
+            double d = point.distance( pt);
             if (d < dmin) {
                 ptmin = pt;
                 dmin = d;
@@ -172,12 +172,12 @@ public abstract class Operateurs {
             geomOK = false;
             if (composant instanceof GM_Point) {
                 pt = ((GM_Point) composant).getPosition();
-                d = Distances.distance(pt, dp);
+                d = pt.distance( dp);
                 geomOK = true;
             }
             if (composant instanceof GM_LineString) {
                 pt = projection(dp, (GM_LineString) composant);
-                d = Distances.distance(pt, dp);
+                d = pt.distance(dp);
                 geomOK = true;
             }
             if (!geomOK) {
@@ -217,7 +217,7 @@ public abstract class Operateurs {
         pt1 = ls.coord().get(0);
         for (i = 1; i < ls.coord().size(); i++) {
             pt2 = ls.coord().get(i);
-            d = Distances.distance(pt1, pt2);
+            d = pt1.distance(pt2);
             if (d != 0) {
                 if (l + d > abscisse) {
                     v1 = new Vecteur(pt1, pt2);
@@ -240,7 +240,7 @@ public abstract class Operateurs {
         double abs = 0;
         for (int j = 0; j < i; j++) {
             abs = abs
-                    + Distances.distance(ls.getControlPoint(j), ls
+                    + ls.getControlPoint(j).distance( ls
                             .getControlPoint(j + 1));
         }
         return abs;
@@ -293,7 +293,7 @@ public abstract class Operateurs {
         listePts.add(ls.getControlPoint(0));
         for (i = 1; i < ls.coord().size(); i++) {
             l = l
-                    + Distances.distance(ls.getControlPoint(i - 1), ls
+                    + ls.getControlPoint(i - 1).distance( ls
                             .getControlPoint(i));
             if (l > longueur) break;
             listePts.add(ls.getControlPoint(i));
@@ -324,7 +324,7 @@ public abstract class Operateurs {
         listePts.add(ls.getControlPoint(nbPts - 1));
         for (i = nbPts - 2; i >= 0; i--) {
             l = l
-                    + Distances.distance(ls.getControlPoint(i), ls
+                    + ls.getControlPoint(i).distance( ls
                             .getControlPoint(i + 1));
             if (l > longueur) break;
             listePts.add(ls.getControlPoint(i));
@@ -492,7 +492,7 @@ public abstract class Operateurs {
             point1 = listePoints.get(j - 1);
             listePointsEchant.add(point1);
             point2 = listePoints.get(j);
-            longTronc = Distances.distance(point1, point2);
+            longTronc = point1.distance(point2);
             fseg = new Double(longTronc / pas);
             nseg = fseg.intValue();
             u1 = new Vecteur(point1, point2);
@@ -532,7 +532,7 @@ public abstract class Operateurs {
             point1 = listePoints.get(j - 1);
             listePointsEchant.add(point1);
             point2 = listePoints.get(j);
-            longTronc = Distances.distance(point1, point2);
+            longTronc = point1.distance( point2);
             fseg = new Double(longTronc / pas);
             nseg = fseg.intValue();
             double epsilonPas = 0;
@@ -937,7 +937,7 @@ public abstract class Operateurs {
         for (int j = 1; j < listePoints.size() - 1; j++) {
             pointRoute = listePoints.get(j);
             pointRoute1 = listePoints.get(j - 1);
-            longueur = longueur + Distances.distance(pointRoute, pointRoute1);
+            longueur = longueur + pointRoute.distance(pointRoute1);
             zCalc = z_ini + (z_fin - z_ini) * longueur / ligne.length();
             pointRoute.setZ(zCalc);
             ligne.setControlPoint(j, pointRoute);
@@ -1089,12 +1089,12 @@ public abstract class Operateurs {
 		//fabrication de la surface delimitée par les lignes
 		GM_LineString perimetre = new GM_LineString();
 		//Initialisation de Distance1 = Somme des côtés à créer
-		double sommeDistance1 = Distances.distance(lineString1.startPoint(), lineString2.startPoint()) + 
-					Distances.distance(lineString1.endPoint(), lineString2.endPoint());
+		double sommeDistance1 = lineString1.startPoint().distance( lineString2.startPoint()) + 
+					lineString1.endPoint().distance(lineString2.endPoint());
 		
 		//Initialisation de Distance2 = Somme des diagonales à créer
-		double sommeDistance2 = Distances.distance(lineString1.startPoint(), lineString2.endPoint()) + 
-					Distances.distance(lineString1.endPoint(), lineString2.startPoint());
+		double sommeDistance2 =lineString1.startPoint().distance( lineString2.endPoint()) + 
+					lineString1.endPoint().distance( lineString2.startPoint());
 		
 		//Construction du périmètre sur le JDD de référence
 		Iterator<DirectPosition> itPoints=lineString1.coord().getList().iterator();

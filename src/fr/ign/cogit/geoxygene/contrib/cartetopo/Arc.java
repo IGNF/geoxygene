@@ -140,18 +140,18 @@ public class Arc extends ElementCarteTopo {
 
 		if (listePoints.size() < 2 ) return;
 		ptmin = Operateurs.projection(P.getPosition(),listePoints.get(0),listePoints.get(1));
-		dmin = Distances.distance(P.getPosition(),ptmin);
+		dmin = P.getPosition().distance(ptmin);
 		for (i=1;i<listePoints.size()-1;i++) {
 			pt = Operateurs.projection(P.getPosition(),listePoints.get(i),listePoints.get(i+1));
-			d = Distances.distance(P.getPosition(),pt);
+			d = P.getPosition().distance(pt);
 			if ( d < dmin ) {
 				ptmin = pt;
 				dmin = d;
 				positionMin = i;
 			}
 		}
-		if (Distances.distance(ptmin, listePoints.get(0)) == 0) return;
-		if (Distances.distance(ptmin, listePoints.get(listePoints.size()-1)) == 0) return;
+		if (ptmin.distance(listePoints.get(0)) == 0) return;
+		if (ptmin.distance(listePoints.get(listePoints.size()-1)) == 0) return;
 
 		// création du nouveau noeud
 		nouveauNoeud = popNoeuds.nouvelElement();
@@ -166,7 +166,7 @@ public class Arc extends ElementCarteTopo {
 		arcAvant = popArcs.nouvelElement();
 		arcAvant.setGeometrie(new GM_LineString(ptsAvant));
 
-		if ( Distances.distance(ptmin, listePoints.get(positionMin+1)) != 0) ptsApres.add(ptmin);
+		if ( ptmin.distance(listePoints.get(positionMin+1)) != 0) ptsApres.add(ptmin);
 		for (i=positionMin+1;i<listePoints.size();i++) ptsApres.add(listePoints.get(i));
 		arcApres = popArcs.nouvelElement();
 		arcApres.setGeometrie(new GM_LineString(ptsApres));
@@ -211,18 +211,18 @@ public class Arc extends ElementCarteTopo {
 
 		if (listePoints.size() < 2 ) return;
 		ptmin = Operateurs.projection(n.getGeometrie().getPosition(),listePoints.get(0),listePoints.get(1));
-		dmin = Distances.distance(n.getGeometrie().getPosition(),ptmin);
+		dmin = n.getGeometrie().getPosition().distance(ptmin);
 		for (i=1;i<listePoints.size()-1;i++) {
 			pt = Operateurs.projection(n.getGeometrie().getPosition(),listePoints.get(i),listePoints.get(i+1));
-			d = Distances.distance(n.getGeometrie().getPosition(),pt);
+			d = n.getGeometrie().getPosition().distance(pt);
 			if ( d < dmin ) {
 				ptmin = pt;
 				dmin = d;
 				positionMin = i;
 			}
 		}
-		if (Distances.distance(ptmin, listePoints.get(0)) == 0) return;
-		if (Distances.distance(ptmin, listePoints.get(listePoints.size()-1)) == 0) return;
+		if (ptmin.distance(listePoints.get(0)) == 0) return;
+		if (ptmin.distance(listePoints.get(listePoints.size()-1)) == 0) return;
 
 		// modification de la géométrie du noeud et de ses arcs
 		for(Arc arc:n.arcs()) {
@@ -240,7 +240,7 @@ public class Arc extends ElementCarteTopo {
 		arcAvant = popArcs.nouvelElement();
 		arcAvant.setGeometrie(new GM_LineString(ptsAvant));
 
-		if ( Distances.distance(ptmin, listePoints.get(positionMin+1)) != 0) ptsApres.add(ptmin);
+		if ( ptmin.distance(listePoints.get(positionMin+1)) != 0) ptsApres.add(ptmin);
 		for (i=positionMin+1;i<listePoints.size();i++) ptsApres.add(listePoints.get(i));
 		arcApres = popArcs.nouvelElement();
 		arcApres.setGeometrie(new GM_LineString(ptsApres));

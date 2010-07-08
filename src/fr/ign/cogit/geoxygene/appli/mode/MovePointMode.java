@@ -166,10 +166,10 @@ public class MovePointMode extends AbstractGeometryEditMode {
      */
     private int closestPointIndex(DirectPosition point, DirectPositionList points) {
         int indexPointMin = 0;
-        double distanceMin = Distances.distance(point, points.get(0));
+        double distanceMin = point.distance( points.get(0));
         for (int index = 1; index < points.size(); index++) {
             DirectPosition currentPoint = points.get(index);
-            double distance = Distances.distance(point, currentPoint);
+            double distance = point.distance(currentPoint);
             if (distance < distanceMin) {
                 distanceMin = distance;
                 indexPointMin = index;
@@ -183,7 +183,7 @@ public class MovePointMode extends AbstractGeometryEditMode {
         double distanceMin = Double.MAX_VALUE;
         for (GM_LineString line : multiCurve) {
             int index = closestPointIndex(point, line.getControlPoint());
-            double distance = Distances.distance(point,
+            double distance = point.distance(
                     line.getControlPoint(index));
             if (distance < distanceMin) {
                 this.sourcePoint = line.getControlPoint(index);
