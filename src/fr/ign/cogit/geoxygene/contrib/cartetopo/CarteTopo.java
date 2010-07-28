@@ -62,7 +62,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * <p>
  * English: a topological map is an oriented graph, with arcs sorted around the
  * nodes;
- * 
+ *
  * @author Sébastien Mustière
  * @author Olivier Bonin
  * @author Julien Perret
@@ -75,7 +75,7 @@ public class CarteTopo extends DataSet {
 
     /**
      * Adds an <code>ActionListener</code> to the carteTopo.
-     * 
+     *
      * @param l
      *            the <code>ActionListener</code> to be added
      */
@@ -85,7 +85,7 @@ public class CarteTopo extends DataSet {
 
     /**
      * Sets the list of action listeners.
-     * 
+     *
      * @param listenerList
      *            list of action listeners
      */
@@ -97,7 +97,7 @@ public class CarteTopo extends DataSet {
      * Notifies all listeners that have registered interest for
      * notification on this event type. The event instance
      * is lazily created.
-     * 
+     *
      * @see EventListenerList
      */
     protected void fireActionPerformed(ActionEvent event) {
@@ -225,7 +225,7 @@ public class CarteTopo extends DataSet {
      * Par ce constructeur, la carte topo contient des arcs/noeuds/faces/groupes
      * des classes CarteTopo.Arc, CarteTopo.Noeud, CarteTopo.Face,
      * CarteTopo.Groupe.
-     * 
+     *
      * @param nomLogique
      *            nom de la carte topo
      */
@@ -292,7 +292,7 @@ public class CarteTopo extends DataSet {
      * spécialisée
      * (i.e. avec carteTopo.Arc, carte.Noeud...).</strong>
      * En effet, les objets copiés appartiendront au package cartetopo.
-     * 
+     *
      * @param nomLogique
      *            nom de la carte topo
      * @return une copie d'une carte topologique avec toutes les relations
@@ -379,7 +379,7 @@ public class CarteTopo extends DataSet {
      * enlève des arcs de la carteTopo, en enlevant aussi les relations
      * topologiques
      * les concernant (avec les faces et noeuds).
-     * 
+     *
      * @param arcsAEnlever
      *            liste des arcs à enlever de la carte topo
      */
@@ -413,7 +413,7 @@ public class CarteTopo extends DataSet {
      * enlève des noeuds de la carteTopo, en enlevant aussi les relations
      * topologiques
      * les concernant (avec les arcs et par conséquent avec les faces).
-     * 
+     *
      * @param noeudsAEnlever
      *            noeuds à enlever de la carte topo
      */
@@ -442,7 +442,7 @@ public class CarteTopo extends DataSet {
      * enlève des faces de la carteTopo, en enlevant aussi les relations
      * topologiques
      * les concernant (avec les arcs et par conséquent avec les noeuds).
-     * 
+     *
      * @param facesAEnlever
      *            liste des face à enlever de la carte topo
      */
@@ -488,7 +488,7 @@ public class CarteTopo extends DataSet {
      * <li>NB: si cela n'avait pas été fait avant, la population des noeuds est
      * indexée dans cette méthode (dallage, paramètre = 20).
      * </ul>
-     * 
+     *
      * @param tolerance
      *            Le paramètre "tolerance" spécifie la distance maximale
      *            acceptée entre
@@ -529,7 +529,7 @@ public class CarteTopo extends DataSet {
      * <li>paramètres de l'index = le même que celui des arcs si il existe,
      * sinon Dallage avec à peu près 50 noeuds par dalle.
      * </ul>
-     * 
+     *
      * @param tolerance
      *            tolérance utilisée pour chercher des noeuds existants auxquels
      *            se raccrocher au lieu d'en créer de nouveaux.
@@ -624,7 +624,7 @@ public class CarteTopo extends DataSet {
      * <li>Cette méthode gère aussi les conséquences sur les correspondants (un
      * noeud gardé a pour correspondants tous les correspondants des doublons).
      * </ul>
-     * 
+     *
      * @param tolerance
      *            Le paramètre tolérance spécifie la distance maximale pour
      *            considérer deux
@@ -884,7 +884,7 @@ public class CarteTopo extends DataSet {
      * <li>- la topologie des faces est détruite aussi
      * </ul>
      * </ul>
-     * 
+     *
      * @param tolerance
      *            paramètre de tolérance sur la localisation des noeuds:
      *            deux extrémités d'arc à moins de cette distance sont
@@ -896,21 +896,24 @@ public class CarteTopo extends DataSet {
     public void rendPlanaire(double tolerance) {
         List<FT_Feature> dejaTraites = new ArrayList<FT_Feature>();
         List<Arc> arcsEnleves = new ArrayList<Arc>();
-        if (this.getPopArcs().size() == 0)
-            return;
+        // si pas d'arc, c'est planaire
+        if (this.getPopArcs().isEmpty()) { return; }
         // initialisation de l'index des arcs au besoin
-        if (!this.getPopArcs().hasSpatialIndex())
+        if (!this.getPopArcs().hasSpatialIndex()) {
             this.getPopArcs().initSpatialIndex(Tiling.class, true);
+        }
         fireActionPerformed(new ActionEvent(
                 this,
                 0,
                 I18N.getString("CarteTopo.PlanarGraphCreation"), this.getPopArcs().size())); //$NON-NLS-1$
         for (int indexArc = 0; indexArc < this.getPopArcs().size(); indexArc++) {
             Arc arc = this.getPopArcs().get(indexArc);
-            if (logger.isDebugEnabled())
+            if (logger.isDebugEnabled()) {
                 logger.debug(I18N.getString("CarteTopo.Handling") + arc); //$NON-NLS-1$
-            if (arcsEnleves.contains(arc) || dejaTraites.contains(arc))
+            }
+            if (arcsEnleves.contains(arc) || dejaTraites.contains(arc)) {
                 continue;
+            }
             // les arcs qui croisent l'arc courant
             // Optimisation et blindage pour tous les cas non garanti (Seb)
             Collection<Arc> selection = this.getPopArcs().select(
@@ -956,8 +959,9 @@ public class CarteTopo extends DataSet {
                 // si l'intersection trouvée fait partie des extrémités des 2
                 // arcs, alors on passe à l'arc suivant
                 if (frontiereArc.contains(intersection)
-                        && frontiereArcSel.contains(intersection))
+                        && frontiereArcSel.contains(intersection)) {
                     continue;
+                }
                 // on a une intersection ailleurs que sur une extrémité
                 listeInter.add(arcSel);
             }
@@ -969,12 +973,13 @@ public class CarteTopo extends DataSet {
             // on découpe tout
             GM_Object nodedLineStrings = arc.getGeometrie();
             for (Arc a : listeInter) {
-                if (a.getGeometrie().isEmpty())
+                if (a.getGeometrie().isEmpty()) {
                     logger
                             .error(I18N
                                     .getString("CarteTopo.EmptyGeometryEdge") + a.getGeometrie().toString()); //$NON-NLS-1$
-                else
+                } else {
                     nodedLineStrings = nodedLineStrings.union(a.getGeometrie());
+                }
             }
             listeInter.add(arc); // on le rajoute pour la suite
             if (nodedLineStrings instanceof GM_LineString) {
@@ -1057,9 +1062,10 @@ public class CarteTopo extends DataSet {
                                 dejaTraites.add(arcNouveau);
                         }
                     }
-                    if (logger.isDebugEnabled())
+                    if (logger.isDebugEnabled()) {
                         logger
                                 .debug(I18N.getString("CarteTopo.NewEdge") + arcNouveau); //$NON-NLS-1$
+                    }
                 }
                 // 2: on virera les arcs initiaux qui ont été découpés
                 for (Arc arcSel : listeInter) {
@@ -1131,7 +1137,7 @@ public class CarteTopo extends DataSet {
      * Un index spatial (dallage) est créé si cela n'avait pas été fait avant,
      * mais il est toujours conseillé de le faire en dehors de cette méthode,
      * pour controler la taille du dallage.
-     * 
+     *
      * @param tolerance
      *            tolérance en dessous de laquelle les noeuds sont fusionés
      */
@@ -1258,7 +1264,7 @@ public class CarteTopo extends DataSet {
      * Un index spatial (dallage) est créé si cela n'avait pas été fait avant,
      * mais il est toujours conseillé de le faire en dehors de cette méthode,
      * pour controler la taille du dallage.
-     * 
+     *
      * @param popSurfaces
      *            population contenant les surface à fusionner en un seul noeud
      */
@@ -1536,7 +1542,9 @@ public class CarteTopo extends DataSet {
                 // face = null;
                 if (cycle == null) {
                     logger
-                            .error(I18N.getString("CarteTopo.RightNullCycle") + arc.getId());continue;} //$NON-NLS-1$
+                            .error(I18N.getString("CarteTopo.RightNullCycle") + arc.getId()); //$NON-NLS-1$
+                    continue;
+                }
                 arcsDuCycle = cycle.getArcs();
                 orientationsArcsDuCycle = cycle.getOrientationsArcs();
                 geometrieDuCycle = cycle.getGeometrie();
@@ -1688,7 +1696,7 @@ public class CarteTopo extends DataSet {
                 }
             }
             marquerCycle(cycle, face);
-            // on ajoute un trous à la géométrie de la face infinie
+            // on ajoute un trou à la géométrie de la face infinie
             if (cycle.getGeometrie().sizeControlPoint() > 3) {
                 GM_Ring trou = new GM_Ring(cycle.getGeometrie());
                 if (!trou.coord().isEmpty()
@@ -1699,13 +1707,38 @@ public class CarteTopo extends DataSet {
             fireActionPerformed(new ActionEvent(this, 3, I18N
                     .getString("CarteTopo.FaceTopologyCycle"), iteration++)); //$NON-NLS-1$
         }
+        // détection des arcs pendants ie des culs-de-sac de la face Infinie
+        for (Arc arcCourant : faceInfinie.arcs()) {
+            if ((arcCourant.getFaceDroite() == null)
+                    || (arcCourant.getFaceGauche() == null)) {
+                continue;
+            }
+            if (arcCourant.getFaceDroite() == arcCourant.getFaceGauche()) {
+                arcCourant.setPendant(true);
+            }
+        }
         fireActionPerformed(new ActionEvent(this, 4, I18N
                 .getString("CarteTopo.FaceTopologyEnd"))); //$NON-NLS-1$
+        // détection des arcs pendants ie des culs-de-sac de la face Infinie
+        for (Arc arcCourant : this.getPopArcs()) {
+            if (arcCourant.getFaceDroite() == null) {
+                arcCourant.setFaceDroite(faceInfinie);
+                if (arcCourant.getFaceGauche() == faceInfinie) {
+                    arcCourant.setPendant(true);
+                }
+            }
+            if (arcCourant.getFaceGauche() == null) {
+                arcCourant.setFaceGauche(faceInfinie);
+                if (arcCourant.getFaceDroite() == faceInfinie) {
+                    arcCourant.setPendant(true);
+                }
+            }
+        }
     }
 
     /**
-     * Construire la liste des géométries corrigées d'un cycle
-     * 
+     * Construire la liste des géométries corrigées d'un cycle.
+     *
      * @param arcInitial
      *            premier arc du cycle
      * @param aGauche
@@ -1863,7 +1896,9 @@ public class CarteTopo extends DataSet {
                         : arcCourant.arcSuivantDebut();
             }
             if (arcOriente == null) {
-                logger.error(I18N.getString("CarteTopo.Error"));return null;} //$NON-NLS-1$
+                logger.error(I18N.getString("CarteTopo.Error")); //$NON-NLS-1$
+                return null;
+            }
             // au suivant...
             arcCourant = (Arc) arcOriente.get(0); // l'arc
             sensEnCours = !((Boolean) arcOriente.get(1)).booleanValue(); // le
@@ -1875,12 +1910,12 @@ public class CarteTopo extends DataSet {
                                                                          // au
                                                                          // cycle
             // c'est fini ?
-            if (arcCourant == arcInitial && sensEnCours)
-                break;
+            if (arcCourant == arcInitial && sensEnCours) { break; }
         }
         if (pilePoints.isEmpty()) {
-            logger.error(I18N.getString("CarteTopo.EmptyBoundary"));return null;} //$NON-NLS-1$
-
+            logger.error(I18N.getString("CarteTopo.EmptyBoundary")); //$NON-NLS-1$
+            return null;
+        }
         // ajout du dernier point pour finir la boucle du polygone
         boolean dangle = false;
         List<DirectPosition> pointsCycle = new ArrayList<DirectPosition>();
@@ -1920,7 +1955,7 @@ public class CarteTopo extends DataSet {
     /**
      * détruit les relations topologique d'une face avec tous ses arcs
      * entourants
-     * 
+     *
      * @param face
      *            face dont la topologie doit être vidée
      */
@@ -1944,7 +1979,7 @@ public class CarteTopo extends DataSet {
      * dans les polygones des faces :
      * les relations topologiques sont donc bien gérés uniquement si les
      * polygones ont des géométrie "compatibles".
-     * 
+     *
      * @param filtrageNoeudsSimples
      *            Si ce paramètre est égal à false, alors on crée un arc et deux
      *            noeuds
@@ -2087,7 +2122,7 @@ public class CarteTopo extends DataSet {
     /**
      * Charge en mémoire les éléments de la classe 'nomClasseGeo' et remplit
      * 'this' avec des correspondants de ces éléments.
-     * 
+     *
      * @param nomClasseGeo
      *            nom de la classe des éléments à importer
      */
@@ -2097,7 +2132,7 @@ public class CarteTopo extends DataSet {
 
     /**
      * Remplit 'this' avec des correspondants des éléments de 'listeFeature'.
-     * 
+     *
      * @param listeFeatures
      *            liste des éléments à importer
      */
@@ -2108,7 +2143,7 @@ public class CarteTopo extends DataSet {
     /**
      * Remplit 'this' avec des correspondants des éléments de 'listeFeature'.
      * Cette version de la méthode autorise la conversion des données en 2D.
-     * 
+     *
      * @param listeFeatures
      *            liste des éléments à importer
      * @param is2d
@@ -2121,7 +2156,7 @@ public class CarteTopo extends DataSet {
 
     /**
      * Affecter la face passée en paramètre aux arcs du cycle
-     * 
+     *
      * @param cycle
      *            cycle à parcourir afin d'affecter une face à ses arcs
      * @param face
@@ -2134,7 +2169,7 @@ public class CarteTopo extends DataSet {
 
     /**
      * Affecter la face passée en paramètre aux arcs parcourus
-     * 
+     *
      * @param arcs
      *            arcs à parcourir
      * @param orientations
@@ -2161,12 +2196,14 @@ public class CarteTopo extends DataSet {
             if ((orientationOk.booleanValue() && !aGauche)
                     || (!orientationOk.booleanValue() && aGauche)) {
                 arcCycle.setFaceDroite(face);
-                if (arcsDejaTraitesADroite != null)
+                if (arcsDejaTraitesADroite != null) {
                     arcsDejaTraitesADroite.add(arcCycle);
+                }
             } else {
                 arcCycle.setFaceGauche(face);
-                if (arcsDejaTraitesAGauche != null)
+                if (arcsDejaTraitesAGauche != null) {
                     arcsDejaTraitesAGauche.add(arcCycle);
+                }
             }
         }
     }

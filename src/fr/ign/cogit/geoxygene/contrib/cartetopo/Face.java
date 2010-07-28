@@ -143,13 +143,13 @@ public class Face  extends ElementCarteTopo   {
      * Dans l'esprit de la méthode arcsorientés d'un noeud, les arcs sont
      * classés en tournant autour de la face dans l'ordre trigonométrique,
      * et qualifiés d'entrants ou sortants.
-     * 
+     *
      *
      * ATTENTION : renvoie une liste de liste:
      *      Liste.get(0) = liste des arcs (de la classe 'Arc')
      *      Liste.get(1) = liste des orientations de type Boolean (classe Boolean et non type boolean),
      *                    true = entrant, false = sortant)
-     * 
+     *
      * NB : Le classement est recalculé en fonction de la géométrie à chaque appel de la méthode.
      */
     @SuppressWarnings("unchecked")
@@ -296,4 +296,17 @@ public class Face  extends ElementCarteTopo   {
     protected List<Arc> arcsPendants = new ArrayList<Arc>();
     public List<Arc> getArcsPendants() {return this.arcsPendants;}
     public void setArcsPendants(List<Arc> arcsPendants) {this.arcsPendants = arcsPendants;}
+
+    public boolean isInfinie() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Face" + " " + this.getId() + " - " //$NON-NLS-2$ //$NON-NLS-3$
+        + this.getGeometrie();
+    }
 }

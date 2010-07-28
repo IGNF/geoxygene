@@ -42,7 +42,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  * Classe des arcs de la carte topo.
  * Les arcs ont pour géométrie une GM_LineString, et peuvent être orientés.
  * Des méthodes sont prévues pour une gestion de réseau, de graphe, et de carte topologique.
- * 
+ *
  * English: arcs of a topological map
  * @author Sébastien Mustière
  * @author Olivier Bonin
@@ -118,7 +118,7 @@ public class Arc extends ElementCarteTopo {
 		return noeuds;
 	}
 
-	/** 
+	/**
 	 * Projete le point P sur l'arc et découpe l'arc en 2 avec ce point projeté.
 	 * NB: si la projection tombe sur une extrémité de l'arc : ne fait rien.
 	 * @param P point projeté sur l'arc this afin de le découper
@@ -190,7 +190,7 @@ public class Arc extends ElementCarteTopo {
 		popArcs.enleveElement(this);
 	}
 
-	/** 
+	/**
 	 * Projete le point P sur l'arc et découpe l'arc en 2 avec ce noeud projeté.
 	 * NB: si la projection tombe sur une extrémité de l'arc : ne fait rien.
 	 * TODO ATTENTION : il reste du nettoyage à faire !!!
@@ -320,7 +320,7 @@ public class Arc extends ElementCarteTopo {
 	 * <ul>
 	 *  <li> la liste des arcs dans l'ordre de parcours du cycle. Cette Liste est classée dans le sens anti-trigonometrique (sauf pour la face exterieure).
 	 *              (liste de type "ArrayList", contenant elle-même des Arcs).
-	 *  <li> la liste des orientations des arc : true si l'arc à sa face à gauche, false sinon. 
+	 *  <li> la liste des orientations des arc : true si l'arc à sa face à gauche, false sinon.
 	 *              (liste de type "ArrayList", contenant elle-même des objets Booleans).
 	 *  <li> la géométrie du polygone faisant le tour du cycle (de type GM_Polygon).
 	 *  </ul>
@@ -384,10 +384,10 @@ public class Arc extends ElementCarteTopo {
 	 *  NB: un cycle passe 2 fois (une fois dans chaque sens) par les cul-de-sac si il y en a.
 	 * @return un cycle du réseau. Un cycle contient :
 	 * <ul>
-	 *  <li> la liste des arcs dans l'ordre de parcours du cycle. Cette Liste est classée 
+	 *  <li> la liste des arcs dans l'ordre de parcours du cycle. Cette Liste est classée
 	 *  dans le sens trigonometrique (sauf pour la face exterieure).
 	 *              (liste de type "ArrayList", contenant elle-même des Arcs).
-	 *  <li> la liste des orientations des arc : true si l'arc à sa face à gauche, false sinon. 
+	 *  <li> la liste des orientations des arc : true si l'arc à sa face à gauche, false sinon.
 	 *              (liste de type "ArrayList", contenant elle-même des objets Booleans).
 	 *  <li> la géométrie du polygone faisant le tour du cycle (de type GM_Polygon).
 	 *  </ul>
@@ -441,7 +441,7 @@ public class Arc extends ElementCarteTopo {
 
 	/**
 	 * Recherche du cycle du réseau à gauche de l'arc en se basant sur la topologie de RESEAU uniquement.
-	 * NB: le résultat est null si on n'a pas trouvé de cycle 
+	 * NB: le résultat est null si on n'a pas trouvé de cycle
 	 * (cas pouvant arriver si la topologie arcs/noeuds n'est pas complète.
 	 * NB: ne nécessite PAS d'avoir une topologie arcs/faces instanciée.
 	 * NB: nécessite d'avoir une topologie arcs/noeuds instanciée.
@@ -477,14 +477,14 @@ public class Arc extends ElementCarteTopo {
 				}
 				arcOriente = (aGauche)?arcEnCours.arcPrecedentDebut():arcEnCours.arcSuivantDebut();
 			}
-			if ( arcOriente == null ) {return null;}
+			if ( arcOriente == null ) { return null; }
 
 			// au suivant...
 			arcEnCours = (Arc)arcOriente.get(0); //l'arc
 			sensEnCours = !((Boolean)arcOriente.get(1)).booleanValue(); //le sens de l'arc par rapport au cycle
 
 			//c'est fini ?
-			if ( arcEnCours==this && sensEnCours ) break;
+			if ( arcEnCours==this && sensEnCours ) { break; }
 		}
 
 		// ajout du dernier point pour finir la boucle du polygone
@@ -787,12 +787,14 @@ public class Arc extends ElementCarteTopo {
 	public boolean isPendant() {return this.pendant;}
 
 	/**
-	 * Affecte la valeur de l'attribut pendant de l'arc : 
+	 * Affecte la valeur de l'attribut pendant de l'arc :
 	 * @param pendant vrai si l'arc est pendant, i.e. si sa face droite est la même que sa face gauche. En d'autres mots, c'est une impasse.
 	 */
 	public void setPendant(boolean pendant) {
 		this.pendant = pendant;
-		if (pendant) this.getFaceDroite().getArcsPendants().add(this);
+		if (pendant && !this.getFaceDroite().getArcsPendants().contains(this)) {
+		    this.getFaceDroite().getArcsPendants().add(this);
+		}
 	}
 
 	@Override
