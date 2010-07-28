@@ -75,11 +75,11 @@ public class SLDDemoApplication extends GeOxygeneApplication {
         fillStar.setColor(new Color(1.f,0.4f,0.4f));
         markStar.setFill(fillStar);
         graphicStar.getMarks().add(markStar);
-        //graphicFill.getGraphics().add(graphicStar);
+        graphicFill.getGraphics().add(graphicStar);
         Graphic graphicTree = new Graphic();
         graphicTree.setSize(30);
         ExternalGraphic tree = new ExternalGraphic();
-        tree.setHref("http://terrapreta.bioenergylists.org/files/images/tree.gif"); //$NON-NLS-1$
+        tree.setHref("http://recherche.ign.fr/labos/cogit/img/LOGO_COGIT.gif"); //$NON-NLS-1$
         tree.setFormat("gif");
         graphicTree.getExternalGraphics().add(tree);
         graphicFill.getGraphics().add(graphicTree);
