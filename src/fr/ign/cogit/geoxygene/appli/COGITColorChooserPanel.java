@@ -1,10 +1,5 @@
 package fr.ign.cogit.geoxygene.appli;
 
-import fr.ign.cogit.geoxygene.I18N;
-import fr.ign.cogit.geoxygene.style.colorimetry.ColorReferenceSystem;
-import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
-
-import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -12,11 +7,9 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.Robot;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.lang.Math;
 import java.util.List;
 
 import javax.swing.Icon;
@@ -30,6 +23,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import javax.swing.table.TableColumn;
+
+import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.style.colorimetry.ColorReferenceSystem;
+import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 
 /**
  * @author Charlotte Hoarau
@@ -48,12 +45,13 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 	JPanel panneauBtn;
 	JButton btnOK;
 	JButton btnCancel;
+	BufferedImage cerclesImage;
 	
 	public COGITColorChooserPanel(){
 //		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //		setTitle("Cercles Chromatiques Lucil");
 		
-		BufferedImage cerclesImage = createCercleImage();
+		cerclesImage = createCercleImage();
 		lblCerclesImage = new JLabel(new ImageIcon(cerclesImage));
 		lblCerclesImage.setName(new String("Label contenant l'image des cercles chromatiques"));
 		lblCerclesImage.addMouseListener(this);		
@@ -180,7 +178,7 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 		g.fillRect(0, 0, 1100, 450);
 		
 		ColorReferenceSystem crs = ColorReferenceSystem.unmarshall(
-				ColorReferenceSystem.class.getResource("/color/ColorReferenceSystem.xml").getPath());
+				ColorReferenceSystem.class.getResource("/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
 		
 		//Création de l'image du cercle principal (Couleurs pures)
 		for (int j=0;j<12;j++){
@@ -268,21 +266,12 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getSource() == lblCerclesImage){
-			try {
-				//Getting the coordinates of the mouse click on the Screen
-				int xClickScreen = e.getXOnScreen();
-				int yClickScreen = e.getYOnScreen();
-				
-				//Getting the Color of the pixel of the mouse click
-				Robot copieEcran = new Robot();
-				Color couleurClick =
-					copieEcran.getPixelColor(xClickScreen, yClickScreen);
-				ColorimetricColor lucilColor = ColorReferenceSystem.searchColor(couleurClick);
-				
-				updateTable(lucilColor);
-			} catch (AWTException e1) {
-				e1.printStackTrace();
-			}
+		    int xpos = e.getX();
+		    int ypos = e.getY();
+		    int rgb = cerclesImage.getRGB(xpos, ypos);
+		    Color color = new Color(rgb);
+		    ColorimetricColor newColor = ColorReferenceSystem.searchColor(color);
+		    updateTable(newColor);
 		}
 	}
 	
@@ -331,7 +320,8 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Color c = COGITColorChooserPanel.showDialog(new JButton(), I18N.getString("StyleEditionFrame.PickAColor"), Color.BLUE);
+        Color c = COGITColorChooserPanel.showDialog(new JButton(),
+                    I18N.getString("StyleEditionFrame.PickAColor"), Color.BLUE); //$NON-NLS-1$
 		System.out.println(c);
 	}
 
@@ -353,7 +343,7 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 
 		JDialog dialog = JColorChooser.createDialog(
 				component, title, true, colorChooser, null, null);
-		dialog.show();
+		dialog.setVisible(true);
 		Color c = colorChooser.getColor();
 		
 		return c;
