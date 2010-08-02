@@ -555,6 +555,36 @@ public abstract class Operateurs {
     }
 
     /**
+     * Méthode pour rééchantillonner une GM_LineString.
+     * English: Resampling of a line
+     */
+    public static GM_LineString resamping(GM_LineString ls, double pas) {
+        DirectPositionList listePoints = ls.coord();
+        DirectPositionList resampledList = new DirectPositionList();
+        DirectPosition prevPoint = listePoints.get(0);
+        resampledList.add(prevPoint);
+        for (int j = 1; j < listePoints.size(); j++) {
+            DirectPosition curPoint = listePoints.get(j);
+            double distance = prevPoint.distance(curPoint);
+            Double fseg = new Double(distance / pas);
+            int nseg = fseg.intValue();
+            if (nseg >= 1) {
+                Vecteur u1 = new Vecteur(prevPoint, curPoint);
+                for (int i = 0; i < nseg ; i++) {
+                    curPoint = new DirectPosition(prevPoint.getX() + (i + 1) * pas
+                                * u1.vectNorme().getX(), prevPoint.getY() + (i + 1) * pas
+                                * u1.vectNorme().getY(), prevPoint.getZ() + (i + 1) * pas
+                                * u1.vectNorme().getZ());
+                    resampledList.add(curPoint );
+                }
+                prevPoint = curPoint;
+            }
+        }
+        resampledList.add(listePoints.get(listePoints.size() - 1));
+        return new GM_LineString(resampledList);
+    }
+
+    /**
      * Renvoie le point translaté de P avec le vecteur V;
      * Contrairement au "move" de DirectPosition, on ne deplace pas le point P
      * English : Shift of a point
