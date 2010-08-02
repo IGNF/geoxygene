@@ -26,10 +26,21 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Julien Perret
  *
  */
 public class GraphicStroke implements GraphicType {
+    private List<Graphic> graphics = new ArrayList<Graphic>();
+    
+    public final List<Graphic> getGraphics() {
+        return this.graphics;
+    }
 
+    public final void setGraphics(List<Graphic> graphics) {
+        this.graphics = graphics;
+    }
 }
