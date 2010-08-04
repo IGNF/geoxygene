@@ -681,7 +681,8 @@ public class StyleEditionFrame
 		 * to the selected value and returns the label, set up
 		 * to display the text and image.
 		 */
-		public Component getListCellRendererComponent(
+		@Override
+        public Component getListCellRendererComponent(
 				JList list, Object value, int index,
 				boolean isSelected, boolean cellHasFocus) {
 			
@@ -893,7 +894,6 @@ public class StyleEditionFrame
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		
 		getDialogElements();
 		
 		if(arg0.getSource()==fillColorLabel){

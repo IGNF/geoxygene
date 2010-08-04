@@ -236,7 +236,7 @@ public class ProjectFrame extends JInternalFrame implements
     	int lastIndexOfSeparator = fileName.lastIndexOf(File.separatorChar);
         String populationName = fileName
         .substring(
-        		lastIndexOfSeparator + 1, //$NON-NLS-1$
+        		lastIndexOfSeparator + 1,
                 fileName.
                 lastIndexOf(".")); //$NON-NLS-1$
         ShapefileReader shapefileReader =

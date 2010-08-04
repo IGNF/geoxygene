@@ -280,8 +280,10 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         JTextField txtName = new JTextField();
         txtName.setEditable(true);
         txtName.addKeyListener(new KeyListener(){
-        	 public void keyPressed(KeyEvent e) {}
-             public void keyReleased(KeyEvent e) {
+        	 @Override
+            public void keyPressed(KeyEvent e) {}
+             @Override
+            public void keyReleased(KeyEvent e) {
             	 if(LayerLegendPanel.this.getSelectedLayers().size()==1){
              		Layer layer = LayerLegendPanel.this.getSelectedLayers().iterator().next();
              		String newName = ((JTextField)e.getSource()).getText();
@@ -289,7 +291,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
              		layer.setName(newName);
              	}
              }
-             public void keyTyped(KeyEvent e) {}
+             @Override
+            public void keyTyped(KeyEvent e) {}
         });
         col.setCellEditor(new DefaultCellEditor(txtName));
         this.layersTable.getTableHeader().setResizingColumn(col);
@@ -298,12 +301,15 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         this.layersTable.setRowHeight(40);
         this.layersTable.setRowMargin(3);
         this.layersTable.addKeyListener(new KeyListener() {
+            @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_DELETE) {
                     removeSelectedLayers();
                 }
             }
+            @Override
             public void keyReleased(KeyEvent e) {}
+            @Override
             public void keyTyped(KeyEvent e) {}
         });
         this.layersTable.getSelectionModel().addListSelectionListener(

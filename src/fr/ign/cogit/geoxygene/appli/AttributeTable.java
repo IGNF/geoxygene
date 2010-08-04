@@ -388,6 +388,7 @@ class AttributeTable extends JDialog {
         public void setAttributeName(String newAttributeName) {
             this.attributeName = newAttributeName;
         }
+        @Override
         public void actionPerformed(ActionEvent event) {
             AttributeType attribute = AttributeTable.this.getSelectedFeature()
             .getFeatureType().getFeatureAttributeByName(this.attributeName);

@@ -162,6 +162,7 @@ public class MainFrame extends JFrame {
                 .getString("MainFrame.OpenFile")); //$NON-NLS-1$
         openFileMenuItem
                 .addActionListener(new java.awt.event.ActionListener() {
+                    @Override
                     public void actionPerformed(final ActionEvent e) {
                         ProjectFrame projectFrame = (ProjectFrame)
                             MainFrame.this.getDesktopPane().getSelectedFrame();
@@ -202,6 +203,7 @@ public class MainFrame extends JFrame {
                 .getString("MainFrame.NewProject")); //$NON-NLS-1$
         newProjectFrameMenuItem
                 .addActionListener(new java.awt.event.ActionListener() {
+                    @Override
                     public void actionPerformed(final ActionEvent e) {
                     	MainFrame.this.newProjectFrame();
                     }
@@ -209,6 +211,7 @@ public class MainFrame extends JFrame {
         JMenuItem exitMenuItem = new JMenuItem(I18N
                 .getString("MainFrame.Exit")); //$NON-NLS-1$
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(final ActionEvent e) {
                 dispose();
                 MainFrame.this.getApplication().exit();
@@ -223,6 +226,7 @@ public class MainFrame extends JFrame {
         this.menuBar.add(viewMenu);
     	JMenuItem mScale6250=new JMenuItem("1:6250"); //$NON-NLS-1$
     	mScale6250.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(final ActionEvent e) {
             	LayerViewPanel layerViewPanel = MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
             	layerViewPanel.getViewport().setScale(1 / (6250 * LayerViewPanel.getMETERS_PER_PIXEL()));
@@ -231,6 +235,7 @@ public class MainFrame extends JFrame {
         });
     	JMenuItem mScale12500=new JMenuItem("1:12500"); //$NON-NLS-1$
     	mScale12500.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(final ActionEvent e) {
             	LayerViewPanel layerViewPanel = MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
             	layerViewPanel.getViewport().setScale(1 / (12500 * LayerViewPanel.getMETERS_PER_PIXEL()));
@@ -239,6 +244,7 @@ public class MainFrame extends JFrame {
         });
     	JMenuItem mScale25k=new JMenuItem("1:25k"); //$NON-NLS-1$
     	mScale25k.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(final ActionEvent e) {
             	LayerViewPanel layerViewPanel = MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
             	layerViewPanel.getViewport().setScale(1 / (25000 * LayerViewPanel.getMETERS_PER_PIXEL()));
@@ -247,6 +253,7 @@ public class MainFrame extends JFrame {
         });
     	JMenuItem mScale50k=new JMenuItem("1:50k"); //$NON-NLS-1$
     	mScale50k.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(final ActionEvent e) {
             	LayerViewPanel layerViewPanel = MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
             	layerViewPanel.getViewport().setScale(1 / (50000 * LayerViewPanel.getMETERS_PER_PIXEL()));
@@ -255,6 +262,7 @@ public class MainFrame extends JFrame {
         });
     	JMenuItem mScale100k=new JMenuItem("1:100k"); //$NON-NLS-1$
     	mScale100k.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(final ActionEvent e) {
             	LayerViewPanel layerViewPanel = MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
             	layerViewPanel.getViewport().setScale(1 / (100000 * LayerViewPanel.getMETERS_PER_PIXEL()));
