@@ -309,6 +309,19 @@ public class Stroke {
 	 * @return la valeur de l'attribut strokeDashArray
 	 */
 	public float[] getStrokeDashArray() {return this.strokeDashArray;}
+    /**
+     * Renvoie le strokeDashArray avec un facteur d'échelle.
+     * @param scale facteur d'échelle
+     * @return le strokeDashArray avec un facteur d'échelle
+     */
+    public float[] getStrokeDashArray(float scale) {
+        if (this.strokeDashArray == null) { return null; }
+        float[] scaledStrokeDashArray = new float[this.strokeDashArray.length];
+        for (int i = 0; i < this.strokeDashArray.length; i++) {
+            scaledStrokeDashArray[i] = this.strokeDashArray[i] * scale;
+        }
+        return scaledStrokeDashArray;
+    }
 	/**
 	 * Affecte la valeur de l'attribut strokeDashArray.
 	 * @param strokeDashArray l'attribut strokeDashArray à affecter
@@ -388,8 +401,8 @@ public class Stroke {
                 this.getStrokeLineCap(),
                 this.getStrokeLineJoin(),
                 10.0f,
-                this.getStrokeDashArray(),
-                this.getStrokeDashOffset());
+                this.getStrokeDashArray(scale),
+                this.getStrokeDashOffset()* scale);
         return this.awtStroke;
     }
 }
