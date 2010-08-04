@@ -982,12 +982,11 @@ public abstract class Operateurs {
      * avec ses attributs et sa géométrie est remplacée par celle fusionée.
      * English: aggregation of surfaces
      */
-    @SuppressWarnings("unchecked")
-    public static void fusionneSurfaces(Population popSurf) {
+    public static void fusionneSurfaces(Population<FT_Feature> popSurf) {
 
-        Iterator itSurf = popSurf.getElements().iterator();
-        Iterator itSurfAdjacentes;
-        List aEnlever = new ArrayList();
+        Iterator<FT_Feature> itSurf = popSurf.getElements().iterator();
+        Iterator<FT_Feature> itSurfAdjacentes;
+        List<FT_Feature> aEnlever = new ArrayList<FT_Feature>();
         GM_Object surfaceAfusionner, surfFusionnee;
         FT_Feature objSurf, objAfusionner, objetAEnlever;
 
@@ -995,7 +994,7 @@ public abstract class Operateurs {
             popSurf.initSpatialIndex(Tiling.class, true);
 
         while (itSurf.hasNext()) {
-            objSurf = (FT_Feature) itSurf.next();
+            objSurf = itSurf.next();
             if (aEnlever.contains(objSurf)) continue;
             Collection<FT_Feature> surfAdjacentes = popSurf.select(objSurf.getGeom());
             surfAdjacentes.remove(objSurf);
@@ -1007,15 +1006,15 @@ public abstract class Operateurs {
             surfFusionnee = new GM_Polygon(((GM_Polygon) objSurf.getGeom())
                     .boundary());
             while (itSurfAdjacentes.hasNext()) {
-                objAfusionner = (FT_Feature) itSurfAdjacentes.next();
+                objAfusionner = itSurfAdjacentes.next();
                 surfaceAfusionner = objAfusionner.getGeom();
                 surfFusionnee = surfFusionnee.union(surfaceAfusionner);
             }
             objSurf.setGeom(surfFusionnee);
         }
-        Iterator itAEnlever = aEnlever.iterator();
+        Iterator<FT_Feature> itAEnlever = aEnlever.iterator();
         while (itAEnlever.hasNext()) {
-            objetAEnlever = (FT_Feature) itAEnlever.next();
+            objetAEnlever = itAEnlever.next();
             popSurf.enleveElement(objetAEnlever);
         }
 

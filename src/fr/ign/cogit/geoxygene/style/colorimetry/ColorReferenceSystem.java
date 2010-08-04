@@ -289,9 +289,10 @@ public class ColorReferenceSystem {
 	 */
 	public static List<ColorimetricColor> getCOGITColors(){
 		List<ColorimetricColor> listCouleurs = new ArrayList<ColorimetricColor>();
-		ColorReferenceSystem crs = ColorReferenceSystem.unmarshall(
-				ColorReferenceSystem.class.getResource("/color/ColorReferenceSystem.xml").getPath());
-		
+        ColorReferenceSystem crs = ColorReferenceSystem
+                    .unmarshall(ColorReferenceSystem.class.getResource(
+                                "/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
+
 		listCouleurs = crs.getAllColors();
 		
 		return listCouleurs;
@@ -355,8 +356,9 @@ public class ColorReferenceSystem {
 	 */
 	public static List<ColorimetricColor> getPureColors(){
 		List<ColorimetricColor> pureColors = new ArrayList<ColorimetricColor>();
-		ColorReferenceSystem crs = ColorReferenceSystem.unmarshall(
-				ColorReferenceSystem.class.getResource("ColorReferenceSystem.xml").getPath());
+        ColorReferenceSystem crs = ColorReferenceSystem
+                    .unmarshall(ColorReferenceSystem.class.getResource(
+                                "ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
 		for (int j = 0; j < 12; j++) {
 
 			List<ColorimetricColor> sliceCOGIT = crs.getSlice(0,j);
