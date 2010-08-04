@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class NamedStyle extends AbstractStyle {
+    @Override
     public Symbolizer getSymbolizer() { return null; }
 
     @Override

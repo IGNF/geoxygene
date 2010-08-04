@@ -47,7 +47,8 @@ public class UserStyle extends AbstractStyle {
 	 * Renvoie la valeur de l'attribut featureTypeStyles.
 	 * @return la valeur de l'attribut featureTypeStyles
 	 */
-	public List<FeatureTypeStyle> getFeatureTypeStyles() {return this.featureTypeStyles;}
+	@Override
+    public List<FeatureTypeStyle> getFeatureTypeStyles() {return this.featureTypeStyles;}
 
 	/**
 	 * Affecte la valeur de l'attribut featureTypeStyles.
@@ -65,6 +66,7 @@ public class UserStyle extends AbstractStyle {
 			result+="FeatureTypeStyle "+fts+"\n";  //$NON-NLS-1$//$NON-NLS-2$
 		return result;
 	}
+    @Override
     public Symbolizer getSymbolizer() {
         return this.featureTypeStyles.get(0).getSymbolizer();
     }
