@@ -27,9 +27,13 @@ import java.awt.Image;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
+import java.awt.image.BufferedImage;
+import java.awt.image.renderable.ParameterBlock;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.media.jai.JAI;
+import javax.media.jai.RenderedOp;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -74,6 +78,45 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
     public void paint(FT_Feature feature, Viewport viewport,
             Graphics2D graphics) {
         if (feature.getGeom() == null || viewport == null) { return; }
+        if (this.getShadow() != null) {
+            Color shadowColor = this.getShadow().getColor();
+            double translate_x = -5;
+            double translate_y = -5;
+            if (this.getShadow().getDisplacement() != null) {
+                translate_x = this.getShadow().getDisplacement().getDisplacementX();
+                translate_y = this.getShadow().getDisplacement().getDisplacementY();
+            }
+            graphics.setColor(shadowColor);
+            List<Shape> shapes = new ArrayList<Shape>();
+            if (feature.getGeom().isPolygon()) {
+                try {
+                    Shape shape = viewport.toShape(feature.getGeom().translate(translate_x, translate_y, 0));
+                    if (shape != null) {
+                        shapes.add(shape);
+                    }
+                } catch (NoninvertibleTransformException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                if (feature.getGeom().isMultiSurface()) {
+                    for (GM_OrientableSurface surface :
+                        ((GM_MultiSurface<GM_OrientableSurface>) feature
+                                .getGeom())) {
+                        try {
+                            Shape shape = viewport.toShape(surface.translate(translate_x, translate_y, 0));
+                            if (shape != null) {
+                                shapes.add(shape);
+                            }
+                        } catch (NoninvertibleTransformException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            for (Shape shape : shapes) {
+                this.fillPolygon(shape, viewport, graphics);
+            }
+        }
         Color fillColor = null;
         float fillOpacity = 1f;
         if (this.getFill() != null) {
@@ -159,7 +202,7 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
         float size = graphic.getSize();
         graphics.setClip(shape);
         for (ExternalGraphic external : graphic.getExternalGraphics()) {
-            if (external.getFormat().contains("png")||external.getFormat().contains("gif")) { //$NON-NLS-1$
+            if (external.getFormat().contains("png")||external.getFormat().contains("gif")) { //$NON-NLS-1$ //$NON-NLS-2$
                 Image image = external.getOnlineResource();
                 this.graphicFillPolygon(shape, image, size, graphics);
             } else {
@@ -170,75 +213,71 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
             }
             return;
         }
-        List<Shape> shapes = new ArrayList<Shape>();
+        int markShapeSize = 200;
         for (Mark mark : graphic.getMarks()) {
-            shapes.add(mark.toShape());
-            graphics.setColor(mark.getFill().getColor());
-        }
-        double width = shape.getBounds2D().getWidth();
-        double height = shape.getBounds2D().getHeight();
-        int xSize = (int) Math.ceil(width / size);
-        int ySize = (int) Math.ceil(height / size);
-        AffineTransform scaleTransform = AffineTransform.getScaleInstance(size, size);
-        for (int i = 0; i < xSize; i++) {
-            for (int j = 0; j < ySize; j++) {
-                AffineTransform transform = AffineTransform.
-                getTranslateInstance(
-                        (i + 0.5) * size + shape.getBounds2D().getMinX(),
-                        (j + 0.5) * size + shape.getBounds2D().getMinY());
-                transform.concatenate(scaleTransform);
-                for (Shape markShape : shapes) {
-                    Shape tranlatedShape = transform.
-                    createTransformedShape(markShape);
-                    graphics.fill(tranlatedShape);
-                }
+            Shape markShape = mark.toShape();
+            AffineTransform translate = AffineTransform.getTranslateInstance(
+                        markShapeSize / 2, markShapeSize / 2);
+            if (graphic.getRotation() != 0) {
+                AffineTransform rotate = AffineTransform
+                            .getRotateInstance(Math.PI * graphic.getRotation()
+                                        / 180.0);
+                translate.concatenate(rotate);
             }
+            AffineTransform scaleTransform = AffineTransform.getScaleInstance(
+                        markShapeSize, markShapeSize);
+            translate.concatenate(scaleTransform);
+            Shape tranlatedShape = translate.createTransformedShape(markShape);
+            BufferedImage buff = new BufferedImage(markShapeSize,
+                        markShapeSize, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = (Graphics2D) buff.getGraphics();
+            g.setColor(mark.getFill().getColor());
+            g.fill(tranlatedShape);
+            this.graphicFillPolygon(shape, buff, size, graphics);
         }
     }
 
     private void graphicFillPolygon(Shape shape, Image image,
             float size, Graphics2D graphics) {
-        double width = shape.getBounds2D().getWidth();
-        double height = shape.getBounds2D().getHeight();
-        double shapeHeight = size;
+        Double width = new Double(Math.max(1, shape.getBounds2D().getWidth()));
+        Double height = new Double(Math.max(1, shape.getBounds2D().getHeight()));
+        Double shapeHeight = new Double(size);
         double factor = shapeHeight / image.getHeight(null);
-        double shapeWidth = image.getWidth(null) * factor;
-        int xSize = (int) Math.ceil(width / shapeWidth);
-        int ySize = (int) Math.ceil(height / shapeHeight);
-        AffineTransform scaleTransform = AffineTransform.getScaleInstance(factor, factor);
-        for (int i = 0; i < xSize; i++) {
-            for (int j = 0; j < ySize; j++) {
-                AffineTransform transform = AffineTransform.
-                getTranslateInstance(
-                        i * size + shape.getBounds2D().getMinX(),
-                        j * size + shape.getBounds2D().getMinY());
-                transform.concatenate(scaleTransform);
-                graphics.drawImage(image, transform, null);
-            }
-        }
+        Double shapeWidth = new Double(Math.max(image.getWidth(null) * factor,1));
+        AffineTransform transform = AffineTransform.
+        getTranslateInstance(
+                    shape.getBounds2D().getMinX(),
+                    shape.getBounds2D().getMinY());
+        Image scaledImage = image.getScaledInstance(shapeWidth.intValue(),
+                    shapeHeight.intValue(), Image.SCALE_FAST);
+        BufferedImage buff = new BufferedImage(shapeWidth.intValue(),
+                    shapeHeight.intValue(), BufferedImage.TYPE_INT_ARGB);
+        buff.getGraphics().drawImage(scaledImage, 0, 0, null);
+        ParameterBlock p = new ParameterBlock();
+        p.addSource(buff);
+        p.add(width.intValue());
+        p.add(height.intValue());
+        RenderedOp im = JAI.create("pattern", p);//$NON-NLS-1$
+        BufferedImage bufferedImage = im.getAsBufferedImage();
+        graphics.drawImage(bufferedImage, transform, null);
+        bufferedImage.flush();
+        im.dispose();
+        scaledImage.flush();
+        buff.flush();
     }
 
     private void graphicFillPolygon(Shape shape, GraphicsNode node,
             float size, Graphics2D graphics) {
-        double width = shape.getBounds2D().getWidth();
-        double height = shape.getBounds2D().getHeight();
-        double shapeHeight = size;
-        double factor = shapeHeight / node.getBounds().getHeight();
-        double shapeWidth = node.getBounds().getWidth() * factor;
-        int xSize = (int) Math.ceil(width / shapeWidth);
-        int ySize = (int) Math.ceil(height / shapeHeight);
-        AffineTransform scaleTransform = AffineTransform.getScaleInstance(factor, factor);
-        for (int i = 0; i < xSize; i++) {
-            for (int j = 0; j < ySize; j++) {
-                AffineTransform transform = AffineTransform.
-                getTranslateInstance(
-                        i * size + shape.getBounds2D().getMinX(),
-                        j * size + shape.getBounds2D().getMinY());
-                transform.concatenate(scaleTransform);
-                node.setTransform(transform);
-                node.paint(graphics);
-            }
-        }
+        AffineTransform translate = AffineTransform.
+        getTranslateInstance(
+                    -node.getBounds().getMinX(),
+                    -node.getBounds().getMinY());
+        node.setTransform(translate);
+        BufferedImage buff = new BufferedImage((int) node.getBounds()
+                    .getWidth(), (int) node.getBounds().getHeight(),
+                    BufferedImage.TYPE_INT_ARGB);
+        node.paint((Graphics2D) buff.getGraphics());
+        this.graphicFillPolygon(shape, buff, size, graphics);
     }
 
     private void fillPolygon(Shape shape, Viewport viewport,
@@ -257,7 +296,7 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
             } else {
                 if (logger.isTraceEnabled()) {
                     logger.trace("null shape for " + polygon); //$NON-NLS-1$
-                    logger.trace("ring = " + polygon.exteriorLineString());
+                    logger.trace("ring = " + polygon.exteriorLineString()); //$NON-NLS-1$
                 }
             }
         } catch (NoninvertibleTransformException e) {
