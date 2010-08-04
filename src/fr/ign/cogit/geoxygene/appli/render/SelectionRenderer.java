@@ -36,6 +36,7 @@ import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.style.Shadow;
 import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 
@@ -251,6 +252,15 @@ public class SelectionRenderer implements Renderer {
         @Override
         public void setUnitOfMeasurePixel() {
         }
+
+        @Override
+        public Shadow getShadow() {
+            return null;
+        }
+
+        @Override
+        public void setShadow(Shadow shadow) {
+        }
     };
 
     /**
@@ -269,12 +279,14 @@ public class SelectionRenderer implements Renderer {
      * @see Runnable
      * @see Thread
      */
+    @Override
     public final void cancel() { this.cancelled = true; }
 
     /**
      * Copy the rendered image the a 2D graphics.
      * @param graphics the 2D graphics to draw into
      */
+    @Override
     public final void copyTo(final Graphics2D graphics) {
         if (this.getImage() != null) {
             graphics.drawImage(this.getImage(), 0, 0, null);
@@ -291,10 +303,12 @@ public class SelectionRenderer implements Renderer {
      * @see #cancel()
      * @see #isRendering()
      */
+    @Override
     public final Runnable createRunnable() {
         if (this.getImage() != null) { return null; }
         this.cancelled = false;
         return new Runnable() {
+            @Override
             public void run() {
                 SelectionRenderer.this.setRendering(true);
                 SelectionRenderer.this.setRendered(false);
@@ -326,6 +340,7 @@ public class SelectionRenderer implements Renderer {
                     }
                     // when time comes, repaint the panel
                     SwingUtilities.invokeLater(new Runnable() {
+                        @Override
                         public void run() {
                             SelectionRenderer.this.getLayerViewPanel().
                             superRepaint();
@@ -373,6 +388,7 @@ public class SelectionRenderer implements Renderer {
     /**
      * Clear the image cache, i.e. delete the current image.
      */
+    @Override
     public final void clearImageCache() { this.setImage(null); }
 
     @Override

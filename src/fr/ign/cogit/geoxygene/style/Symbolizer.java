@@ -1,13 +1,13 @@
 /**
  * This file is part of the GeOxygene project source files.
- * 
+ *
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
  * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
- * 
+ *
  * See: http://oxygene-project.sourceforge.net
- * 
+ *
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
@@ -21,7 +21,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  */
 
 package fr.ign.cogit.geoxygene.style;
@@ -48,7 +48,9 @@ public interface Symbolizer {
 	 * @param stroke l'attribut stroke à affecter
 	 */
 	public void setStroke(Stroke stroke);
-	
+    public Shadow getShadow();
+    public void setShadow(Shadow shadow);
+
 	public boolean isTextSymbolizer();
 	public boolean isPointSymbolizer();
 	public boolean isPolygonSymbolizer();
@@ -65,7 +67,7 @@ public interface Symbolizer {
 	 * @param geometryPropertyName l'attribut geometryPropertyName à affecter
 	 */
 	public void setGeometryPropertyName(String geometryPropertyName);
-	
+
 	/**
 	 * Returns the Unit of Measure used by the symbolizer.
 	 * @return Unit of Measure used by the symbolizer

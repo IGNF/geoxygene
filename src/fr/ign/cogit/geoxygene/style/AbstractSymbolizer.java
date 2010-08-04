@@ -1,13 +1,13 @@
 /**
  * This file is part of the GeOxygene project source files.
- * 
+ *
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
  * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
- * 
+ *
  * See: http://oxygene-project.sourceforge.net
- * 
+ *
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
@@ -21,7 +21,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  */
 
 package fr.ign.cogit.geoxygene.style;
@@ -48,6 +48,14 @@ public abstract class AbstractSymbolizer implements Symbolizer {
 	public Stroke getStroke() {return this.stroke;}
 	@Override
 	public void setStroke(Stroke stroke) {this.stroke = stroke;}
+
+    @XmlElement(name = "Shadow")
+    private Shadow shadow = null;
+
+    @Override
+    public Shadow getShadow() {return this.shadow;}
+    @Override
+    public void setShadow(Shadow shadow) {this.shadow = shadow;}
 
 	@Override
 	public boolean isLineSymbolizer() {return false;}
@@ -79,18 +87,23 @@ public abstract class AbstractSymbolizer implements Symbolizer {
 
     @XmlAttribute(name = "uom")
     private String uom = Symbolizer.METRE;
+    @Override
     public String getUnitOfMeasure() {
         return this.uom;
     }
+    @Override
     public void setUnitOfMeasure(String uom) {
         this.uom = uom;
     }
+    @Override
     public void setUnitOfMeasureMetre() {
         this.setUnitOfMeasure(METRE);
     }
+    @Override
     public void setUnitOfMeasureFoot() {
         this.setUnitOfMeasure(FOOT);
     }
+    @Override
     public void setUnitOfMeasurePixel() {
         this.setUnitOfMeasure(PIXEL);
     }
