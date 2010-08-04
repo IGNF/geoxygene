@@ -95,8 +95,12 @@ public class LineSymbolizer extends AbstractSymbolizer {
 
             if (this.getShadow() != null) {
                 Color shadowColor = this.getShadow().getColor();
-                double translate_x = this.getShadow().getDisplacement().getDisplacementX();
-                double translate_y = this.getShadow().getDisplacement().getDisplacementY();
+                double translate_x = -5;
+                double translate_y = -5;
+                if (this.getShadow().getDisplacement() != null) {
+                    translate_x = this.getShadow().getDisplacement().getDisplacementX();
+                    translate_y = this.getShadow().getDisplacement().getDisplacementY();
+                }
                 graphics.setColor(shadowColor);
                 List<Shape> shapes = new ArrayList<Shape>();
                 if (feature.getGeom().isLineString()) {
