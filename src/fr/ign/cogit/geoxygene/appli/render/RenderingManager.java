@@ -169,6 +169,7 @@ public class RenderingManager {
     private Timer repaintTimer = new Timer(
             REPAINT_TIMER_DELAY,
             new ActionListener() {
+        @Override
         public void actionPerformed(final ActionEvent e) {
             for (Renderer renderer : getRenderers()) {
                 // while a layer is being rendered, repaint the panel

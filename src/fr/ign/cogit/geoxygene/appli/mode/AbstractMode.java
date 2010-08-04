@@ -70,6 +70,7 @@ public abstract class AbstractMode implements Mode {
     /**
      * @return the button giving access to this mode
      */
+    @Override
     public final JButton getButton() {
         return this.button;
     }

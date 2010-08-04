@@ -123,6 +123,7 @@ public class LayerRenderer implements Renderer {
     /**
      * @return true if rendering is finished, false otherwise
      */
+    @Override
     public final boolean isRendered() {
         return this.rendered;
     }
@@ -159,6 +160,7 @@ public class LayerRenderer implements Renderer {
      * @see #createRunnable()
      * @see #renderHook(BufferedImage,GM_Envelope)
      */
+    @Override
     public final boolean isRendering() {
         return this.rendering;
     }
@@ -174,6 +176,7 @@ public class LayerRenderer implements Renderer {
      * @see Runnable
      * @see Thread
      */
+    @Override
     public final void cancel() {
         this.setCancelled(true);
     }
@@ -197,6 +200,7 @@ public class LayerRenderer implements Renderer {
      * Copy the rendered image the a 2D graphics.
      * @param graphics the 2D graphics to draw into
      */
+    @Override
     public final void copyTo(final Graphics2D graphics) {
         if (this.getImage() != null) {
             /*
@@ -222,12 +226,14 @@ public class LayerRenderer implements Renderer {
      * @see #cancel()
      * @see #isRendering()
      */
+    @Override
     public final Runnable createRunnable() {
         if (this.getImage() != null) {
             return null; // No image, can't render
         }
         this.setCancelled(false);
         return new Runnable() {
+            @Override
             public void run() {
                 try {
                     // now, we are rendering
@@ -263,6 +269,7 @@ public class LayerRenderer implements Renderer {
                     }
                     // when time comes, repaint the panel
                     SwingUtilities.invokeLater(new Runnable() {
+                        @Override
                         public void run() {
                             LayerRenderer.this.getLayerViewPanel().
                             superRepaint();
@@ -457,6 +464,7 @@ public class LayerRenderer implements Renderer {
     /**
      * Clear the image cache, i.e. delete the current image.
      */
+    @Override
     public final void clearImageCache() { this.setImage(null); }
 
     @Override
@@ -488,6 +496,7 @@ public class LayerRenderer implements Renderer {
         if (this.getImage() == null) { return null; }
         this.setCancelled(false);
         return new Runnable() {
+            @Override
             public void run() {
                 try {
                     LayerRenderer.this.setRendering(true);
@@ -513,6 +522,7 @@ public class LayerRenderer implements Renderer {
                     }
                     // when time comes, repaint the panel
                     SwingUtilities.invokeLater(new Runnable() {
+                        @Override
                         public void run() {
                             LayerRenderer.this.getLayerViewPanel().
                             superRepaint();
@@ -532,6 +542,7 @@ public class LayerRenderer implements Renderer {
         this.setCancelled(false);
 
         return new Runnable() {
+            @Override
             public void run() {
                 try {
                     LayerRenderer.this.setRendering(true);
@@ -553,6 +564,7 @@ public class LayerRenderer implements Renderer {
                     }
                     // when time comes, repaint the panel
                     SwingUtilities.invokeLater(new Runnable() {
+                        @Override
                         public void run() {
                             LayerRenderer.this.getLayerViewPanel().
                             superRepaint();
