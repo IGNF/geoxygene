@@ -103,6 +103,14 @@ public class Mark {
 			new float[]{0.0f,sqrt2over2*(1-xShapeHalfWidth),sqrt2over2*(1+xShapeHalfWidth),xShapeHalfWidth,sqrt2over2*(1+xShapeHalfWidth),sqrt2over2*(1-xShapeHalfWidth),0,-sqrt2over2*(1-xShapeHalfWidth),-sqrt2over2*(1+xShapeHalfWidth),-xShapeHalfWidth,-sqrt2over2*(1+xShapeHalfWidth),-sqrt2over2*(1-xShapeHalfWidth),0.0f},
 			new float[]{-xShapeHalfWidth,-sqrt2over2*(1+xShapeHalfWidth),-sqrt2over2*(1-xShapeHalfWidth),0.0f,sqrt2over2*(1-xShapeHalfWidth),sqrt2over2*(1+xShapeHalfWidth),xShapeHalfWidth,sqrt2over2*(1+xShapeHalfWidth),sqrt2over2*(1-xShapeHalfWidth),0.0f,-sqrt2over2*(1-xShapeHalfWidth),-sqrt2over2*(1+xShapeHalfWidth),-xShapeHalfWidth},
 			13);
+    private static Shape hLine = new Polygon2D(
+                new float[]{-0.5f, -0.5f, 0.5f, 0.5f},
+                new float[]{0.1f, -0.1f, -0.1f, 0.1f},
+                4);
+    private static Shape vLine = new Polygon2D(
+                new float[]{0.1f, -0.1f, -0.1f, 0.1f},
+                new float[]{-0.5f, -0.5f, 0.5f, 0.5f},
+                4);
 	
 	/**
 	 * @return the AWT shape used to draw this Mark
@@ -114,6 +122,8 @@ public class Mark {
 		if (this.wellKnownName.equalsIgnoreCase("star")) return star; //$NON-NLS-1$
 		if (this.wellKnownName.equalsIgnoreCase("cross")) return cross; //$NON-NLS-1$
 		if (this.wellKnownName.equalsIgnoreCase("x")) return xShape; //$NON-NLS-1$
+		if (this.wellKnownName.equalsIgnoreCase("hLine")) return hLine; //$NON-NLS-1$
+        if (this.wellKnownName.equalsIgnoreCase("vLine")) return vLine; //$NON-NLS-1$
 		return null;
 	}
 }
