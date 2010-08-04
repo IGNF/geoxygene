@@ -99,14 +99,17 @@ public abstract class AbstractLayer implements Layer {
     public void setSymbolized(boolean newSymbolized) {
         this.symbolized = newSymbolized;
     }
+    @Override
     public Symbolizer getSymbolizer() {
         return this.getStyles().get(0).getSymbolizer();
     }
     @XmlTransient
     private Map<RasterSymbolizer, BufferedImage> rasterImage = new HashMap<RasterSymbolizer, BufferedImage>();
+    @Override
     public void setImage(RasterSymbolizer symbolizer, BufferedImage image) {
         this.rasterImage.put(symbolizer, image);
     }
+    @Override
     public BufferedImage getImage(RasterSymbolizer symbolizer) {
         return this.rasterImage.get(symbolizer);
     }

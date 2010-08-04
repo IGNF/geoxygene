@@ -1,13 +1,13 @@
 /**
  * This file is part of the GeOxygene project source files.
- * 
+ *
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
  * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
- * 
+ *
  * See: http://oxygene-project.sourceforge.net
- * 
+ *
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
@@ -21,7 +21,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  */
 
 package fr.ign.cogit.geoxygene.style;
@@ -48,7 +48,7 @@ import org.w3c.dom.svg.SVGDocument;
  *
  */
 public class ExternalGraphic {
-	
+
 	private String href;
 	/**
 	 * Renvoie la valeur de l'attribut href.
@@ -82,7 +82,8 @@ public class ExternalGraphic {
 		if (this.onlineResource == null) {
             try {
                 this.onlineResource = ImageIO.read(new URL(this.href));
-            } catch (Exception e) {e.printStackTrace();}
+            } catch (IOException e) {e.printStackTrace();}
+            catch (Exception e) {e.printStackTrace();}
 		}
 		return this.onlineResource;
 	}

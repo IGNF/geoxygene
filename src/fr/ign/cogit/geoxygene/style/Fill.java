@@ -84,9 +84,9 @@ public class Fill {
 	        for (SvgParameter parameter:this.svgParameters) {
 	            if (parameter.getName().equalsIgnoreCase("fill")) { //$NON-NLS-1$
 	                this.setFill(Color.decode(parameter.getValue()));
-	            } else if (parameter.getName().equalsIgnoreCase("fill-opacity")) { //$NON-NLS-1
+	            } else if (parameter.getName().equalsIgnoreCase("fill-opacity")) { //$NON-NLS-1$
 	            		this.setFillOpacity(Float.parseFloat(parameter.getValue()));
-            	} else if (parameter.getName().equalsIgnoreCase("color")){
+            	} else if (parameter.getName().equalsIgnoreCase("color")){ //$NON-NLS-1$
 		            	this.setFill(new Color(Integer.parseInt(parameter.getValue())));
 	            }
 	        }
@@ -116,7 +116,7 @@ public class Fill {
 		            rgb = rgb.substring(2, rgb.length());
 		            parameter.setValue("#"+rgb); //$NON-NLS-1$
 		            found = true;
-		        } else if(parameter.getName().equalsIgnoreCase("color")) {
+		        } else if(parameter.getName().equalsIgnoreCase("color")) { //$NON-NLS-1$
 		        	String sRGB = Integer.toString(fill.getRGB());
 		        	parameter.setValue(sRGB);
 		        	found = true;
