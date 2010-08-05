@@ -26,8 +26,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.JPanel;
@@ -35,6 +37,8 @@ import javax.swing.JPanel;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.appli.event.PaintListener;
+import fr.ign.cogit.geoxygene.appli.event.ScalePaintListener;
 import fr.ign.cogit.geoxygene.appli.mode.AbstractGeometryEditMode;
 import fr.ign.cogit.geoxygene.appli.mode.CreateInteriorRingMode;
 import fr.ign.cogit.geoxygene.appli.mode.CreateLineStringMode;
@@ -66,6 +70,16 @@ public class LayerViewPanel extends JPanel {
      * serial uid.
      */
     private static final long serialVersionUID = 1L;
+
+    List<PaintListener> overlayListeners = new ArrayList<PaintListener>();
+    public void addPaintListener(PaintListener listener) {
+        this.overlayListeners.add(listener);
+    }
+    private void paintOverlays(final Graphics graphics) {
+        for (PaintListener listener : this.overlayListeners) {
+            listener.paint(this, graphics);
+        }
+    }
 
     /**
      * Rendering manager.
@@ -113,6 +127,7 @@ public class LayerViewPanel extends JPanel {
      */
     public LayerViewPanel(final ProjectFrame frame) {
         this.projectFrame = frame;
+        this.addPaintListener(new ScalePaintListener());
     }
 
     @Override
@@ -221,25 +236,7 @@ public class LayerViewPanel extends JPanel {
                     }
                 }
             }
-            if (true) {
-                int shift = 10;
-                int rightShift = 80;
-                int barWidth = 5;
-                double dist = (getWidth() / 3) / this.getViewport().getScale();
-                int log = (int) Math.log10(dist);
-                dist = Math.pow(10, log);
-                int barLength = (int) (dist * this.getViewport().getScale());
-                g.setColor(Color.WHITE);
-                g.fillRect(0, this.getHeight() - 3 * shift - barWidth, barLength + 4 * shift, barWidth + 3 * shift);
-                g.fillRect(this.getWidth() - rightShift, this.getHeight() - 3 * shift, rightShift, 3 * shift);
-                g.setColor(Color.BLACK);
-                g.drawRect(0, getHeight() - 3 * shift - barWidth, barLength + 4 * shift, barWidth + 3 * shift - 1);
-                g.drawRect(this.getWidth() - rightShift, this.getHeight() - 3 * shift, rightShift - 1, 3 * shift -1);
-                g.drawString(Double.toString(dist) + " m", shift + 1, getHeight() - shift - barWidth - 1);
-                g.fillRect(shift, getHeight() - shift - barWidth, barLength, barWidth);
-                int scale = (int) (1.0d / (this.getViewport().getScale() * getMETERS_PER_PIXEL()));
-                g.drawString("1:" + Integer.toString(scale), this.getWidth() - rightShift + shift, getHeight() - shift); //$NON-NLS-1$
-            }
+            paintOverlays(g);
         } catch (Throwable t) {
             logger.error(I18N.getString("LayerViewPanel.PaintError")); //$NON-NLS-1$
             // TODO HANDLE EXCEPTIONS
