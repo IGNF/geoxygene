@@ -78,6 +78,9 @@ public class ShapefileWriter {
             = new ShapefileDataStore(new File(shapefileName).toURI().toURL());
             String specs="geom:"; //$NON-NLS-1$
             if (featureCollection.getFeatureType() != null) {
+            	if (logger.isDebugEnabled()) {
+            		logger.debug("Using the collection's featureType");
+            	}
                 specs += AdapterFactory.toJTSGeometryType(
                         featureCollection.getFeatureType().getGeometryType())
                         .getSimpleName();
@@ -89,6 +92,9 @@ public class ShapefileWriter {
                     + valueType2Class(attributeType.getValueType()).getSimpleName();
                 }
             } else {
+            	if (logger.isDebugEnabled()) {
+            		logger.debug("Using the features' featureType");
+            	}
                 specs += AdapterFactory.toJTSGeometryType(
                         featureCollection.get(0).getGeom().getClass())
                         .getSimpleName();
@@ -103,6 +109,9 @@ public class ShapefileWriter {
                     }
                 }
             }
+        	if (logger.isDebugEnabled()) {
+        		logger.debug("Specs = " + specs);
+        	}
             String featureTypeName
             = shapefileName.substring(
                     shapefileName.lastIndexOf("/") + 1, //$NON-NLS-1$
@@ -124,8 +133,15 @@ public class ShapefileWriter {
                     for(GF_AttributeType attributeType
                             : feature.getFeatureType()
                             .getFeatureAttributes()) {
-                        liste.add(feature.getAttribute(
-                                attributeType.getMemberName()));
+                    	liste.add(feature.getAttribute(
+                    			attributeType.getMemberName()));
+                    	if (logger.isTraceEnabled()) {
+                    		logger.trace("Attribute "
+                    				+ attributeType.getMemberName()
+                    				+ " = "
+                    				+ feature.getAttribute(attributeType
+                    						.getMemberName()));
+                    	}
                     }
                 }
                 SimpleFeature simpleFeature
