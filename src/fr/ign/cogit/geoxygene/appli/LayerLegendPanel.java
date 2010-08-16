@@ -72,6 +72,7 @@ import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
+import fr.ign.cogit.geoxygene.style.UserLayer;
 
 /**
  * Panel displaying layer legends.
@@ -379,7 +380,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             	if(LayerLegendPanel.this.getSelectedLayers().size() == 1) {
             		Layer layer = LayerLegendPanel.this.getSelectedLayers().iterator().next();
             		String newName = JOptionPane.showInputDialog(
-            				LayerLegendPanel.this, 
+            				LayerLegendPanel.this,
             				I18N.getString("LayerLegendPanel.RenameLayer")); //$NON-NLS-1$
             		DataSet.getInstance().getPopulation(layer.getName()).setNom(newName);
             		layer.setName(newName);
@@ -476,6 +477,13 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
                    row.intValue());
        }
        this.sld.getLayers().removeAll(toRemove);
+       for (Layer layer : toRemove) {
+           if (layer instanceof UserLayer) {
+               layer.getFeatureCollection().clear();
+           } else {
+               DataSet.getInstance().removePopulation(DataSet.getInstance().getPopulation(layer.getName()));
+           }
+       }
        // TODO we shouldn't have to do that
        for (Layer layer : toRemove) {
            this.layerViewPanel.getRenderingManager().removeLayer(layer);
@@ -799,7 +807,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
     /**
      */
     class StyleEditor extends DefaultCellEditor {
-    	
+
     	private static final long serialVersionUID = 1L;
     	protected JPanel panel;
 
@@ -811,7 +819,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
     		super(textField);
     		panel = new JPanel();
     	}
-    	
+
     	@Override
     	public Component getTableCellEditorComponent(
     			JTable table,
@@ -820,20 +828,20 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
     			int row,
     			int column) {
     		LayerLegendPanel layerLegendPanel = LayerLegendPanel.this;
-    		
+
     		StyleEditionFrame styleEditionFrame = new StyleEditionFrame(layerLegendPanel);
-        	
+
         	layerLegendPanel.getSelectedLayers().iterator().next().setStyles(
         			styleEditionFrame.getLayer().getStyles());
-        	
+
         	JPanel pan = new LayerStylesPanel(styleEditionFrame.getLayer());
-    		
+
     		layerLegendPanel.repaint();
     		layerLegendPanel.getLayerViewPanel().superRepaint();
         	return pan;
     	}
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("add")) { //$NON-NLS-1$
