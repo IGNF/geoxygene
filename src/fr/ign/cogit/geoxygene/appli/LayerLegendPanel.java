@@ -71,8 +71,8 @@ import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.NamedLayer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
-import fr.ign.cogit.geoxygene.style.UserLayer;
 
 /**
  * Panel displaying layer legends.
@@ -478,9 +478,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
        }
        this.sld.getLayers().removeAll(toRemove);
        for (Layer layer : toRemove) {
-           if (layer instanceof UserLayer) {
-               layer.getFeatureCollection().clear();
-           } else {
+           layer.getFeatureCollection().clear();
+           if (layer instanceof NamedLayer) {
                DataSet.getInstance().removePopulation(DataSet.getInstance().getPopulation(layer.getName()));
            }
        }
