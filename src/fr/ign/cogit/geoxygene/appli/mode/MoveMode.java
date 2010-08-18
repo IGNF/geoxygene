@@ -28,6 +28,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 
@@ -63,5 +64,9 @@ public class MoveMode extends AbstractMode {
     @Override
     public Cursor getCursor() {
         return Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
+    }
+    @Override
+    protected String getToolTipText() {
+        return I18N.getString("MoveMode.ToolTip"); //$NON-NLS-1$
     }
 }

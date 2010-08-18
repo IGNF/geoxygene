@@ -29,6 +29,7 @@ import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
@@ -112,5 +113,9 @@ public class SelectionMode extends AbstractMode {
                     getSelectionRenderer());
             lvPanel.superRepaint();
         } catch (NoninvertibleTransformException e1) { e1.printStackTrace(); }
+    }
+    @Override
+    protected String getToolTipText() {
+        return I18N.getString("SelectionMode.ToolTip"); //$NON-NLS-1$
     }
 }

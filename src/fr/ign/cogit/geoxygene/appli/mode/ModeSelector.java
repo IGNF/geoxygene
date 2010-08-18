@@ -142,6 +142,8 @@ public class ModeSelector implements ContainerListener, KeyListener,
                 }
             }
         });
+        zoomToFullExtentButton.setToolTipText(I18N
+                .getString("ModeSelector.zoomToFullExtent.ToolTip")); //$NON-NLS-1$
         this.toolBar.add(zoomToFullExtentButton);
 
         this.toolBar.addSeparator();
@@ -163,6 +165,8 @@ public class ModeSelector implements ContainerListener, KeyListener,
                 }
             }
         });
+        showGeometryToolsButton.setToolTipText(I18N
+                .getString("ModeSelector.showGeometryTools.ToolTip")); //$NON-NLS-1$
         this.toolBar.add(showGeometryToolsButton);
 
         this.setCurrentMode(this.modes.get(0));

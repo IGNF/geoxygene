@@ -27,6 +27,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 
@@ -58,5 +59,9 @@ public class GeometryEditingMode extends AbstractGeometryEditMode {
     @Override
     public void leftMouseButtonClicked(final MouseEvent e,
             final ProjectFrame frame) {
+    }
+    @Override
+    protected String getToolTipText() {
+        return I18N.getString("GeometryEditingMode.ToolTip"); //$NON-NLS-1$
     }
 }

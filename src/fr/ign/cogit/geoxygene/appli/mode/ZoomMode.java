@@ -30,6 +30,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 
@@ -77,5 +78,9 @@ public class ZoomMode extends AbstractMode {
                 "images/cursors/32x32/zoomCursor.gif"), //$NON-NLS-1$
                 new Point(16, 16), "Zoom"); //$NON-NLS-1$
         return cursor;
+    }
+    @Override
+    protected String getToolTipText() {
+        return I18N.getString("ZoomMode.ToolTip"); //$NON-NLS-1$
     }
 }

@@ -86,6 +86,7 @@ public abstract class AbstractMode implements Mode {
         this.setModeSelector(theModeSelector);
         final Mode currentMode = this;
         this.button = this.createButton();
+        this.button.setToolTipText(this.getToolTipText());
         this.button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -94,6 +95,11 @@ public abstract class AbstractMode implements Mode {
         });
         this.getModeSelector().getToolBar().add(this.getButton());
     }
+
+    /**
+     * @return The ToolTipText associated with the button
+     */
+    protected abstract String getToolTipText();
 
     /**
      * Create a button.

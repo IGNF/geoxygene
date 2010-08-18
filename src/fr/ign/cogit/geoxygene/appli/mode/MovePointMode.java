@@ -11,6 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingUtilities;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.render.RenderUtil;
@@ -383,5 +384,9 @@ public class MovePointMode extends AbstractGeometryEditMode {
                 }
             }
         }
+    }
+    @Override
+    protected String getToolTipText() {
+        return I18N.getString("MovePointMode.ToolTip"); //$NON-NLS-1$
     }
 }

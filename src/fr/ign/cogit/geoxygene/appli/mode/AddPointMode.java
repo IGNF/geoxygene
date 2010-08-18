@@ -6,6 +6,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
@@ -33,5 +34,9 @@ public class AddPointMode extends AbstractGeometryEditMode {
             toModelDirectPosition(e.getPoint());
             this.getGeometryToolBar().addPoint(p);
         } catch (NoninvertibleTransformException e1) { e1.printStackTrace(); }
+    }
+    @Override
+    protected String getToolTipText() {
+        return I18N.getString("AddPointMode.ToolTip"); //$NON-NLS-1$
     }
 }

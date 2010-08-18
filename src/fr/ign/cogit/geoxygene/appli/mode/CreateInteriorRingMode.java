@@ -2,6 +2,7 @@ package fr.ign.cogit.geoxygene.appli.mode;
 
 import javax.swing.JButton;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 
 public class CreateInteriorRingMode extends AbstractGeometryEditMode {
@@ -17,5 +18,9 @@ public class CreateInteriorRingMode extends AbstractGeometryEditMode {
     @Override
     protected final JButton createButton() {
         return new JButton("Ring"); //$NON-NLS-1$
+    }
+    @Override
+    protected String getToolTipText() {
+        return I18N.getString("CreateInteriorRingMode.ToolTip"); //$NON-NLS-1$
     }
 }

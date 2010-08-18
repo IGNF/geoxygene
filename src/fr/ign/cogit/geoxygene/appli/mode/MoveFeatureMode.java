@@ -9,6 +9,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import javax.swing.JButton;
 import javax.swing.SwingUtilities;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.render.RenderUtil;
@@ -99,5 +100,9 @@ public class MoveFeatureMode extends AbstractGeometryEditMode {
                 this.dragCount++;
             } catch (NoninvertibleTransformException e1) { e1.printStackTrace(); }
         }
+    }
+    @Override
+    protected String getToolTipText() {
+        return I18N.getString("MoveFeatureMode.ToolTip"); //$NON-NLS-1$
     }
 }
