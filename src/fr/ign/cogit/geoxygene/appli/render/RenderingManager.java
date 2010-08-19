@@ -273,6 +273,7 @@ public class RenderingManager {
     public void render(final Renderer renderer) {
         // if the renderer is already rendering, interrupt the current
         // rendering to start a new one
+    	if (renderer == null) { return; }
         if (renderer.isRendering()) { renderer.cancel(); }
         // clear the image cache
         renderer.clearImageCache();

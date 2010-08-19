@@ -884,6 +884,8 @@ public class StyleEditionFrame
 		
 		updateLayer();
 		
+		layerLegendPanel.getSld().fireActionPerformed(null);
+
 		//When the user validate the styles in the main interface
 		if(e.getSource() == this.btnValid){
 			((JFrame)StyleEditionFrame.this).dispose();

@@ -432,6 +432,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
     @Override
     public final void stateChanged(final ChangeEvent e) {
         this.update();
+        this.getLayerViewPanel().repaint();
     }
 
     /**
