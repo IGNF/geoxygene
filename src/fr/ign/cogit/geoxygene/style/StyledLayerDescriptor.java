@@ -64,6 +64,8 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.style.colorimetry.ColorReferenceSystem;
+import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 
 /**
  * Descripteur de couches stylisées.
@@ -112,6 +114,42 @@ public class StyledLayerDescriptor {
     }
 
     /**
+     * Return the list of the colors of the layers of this SLD.
+     * @return List of the colors of the layers of this SLD
+     */
+    public List<ColorimetricColor> getColors(){
+    	List<ColorimetricColor> colors = new ArrayList<ColorimetricColor>();
+    	for (Layer layer : this.getLayers()) {
+    		if (layer.getSymbolizer().isLineSymbolizer()) {
+				colors.add(new ColorimetricColor(layer.getSymbolizer().getStroke().getStroke()));
+			} else if (layer.getSymbolizer().isPolygonSymbolizer()) {
+				colors.add(new ColorimetricColor(((PolygonSymbolizer)layer.getSymbolizer())
+								.getFill().getFill()));
+			} else if (layer.getSymbolizer().isPointSymbolizer()) {
+				colors.add(new ColorimetricColor(((PointSymbolizer)layer.getSymbolizer())
+								.getGraphic().getMarks().get(0).getFill().getFill()));
+			}
+		}
+    	return colors;    	
+    }
+    
+	/**
+	 * Test if the given color exist in the existing layers of this SLD.
+	 * @param c The color to be tested.
+	 * @return false if the color do not exist, true otherwise.
+	 */
+	public boolean existColor(ColorimetricColor c){
+		boolean exist = false;
+		
+		for (ColorimetricColor color : this.getColors()) {
+			if (c.equals(color)) {
+				exist = true;
+			}
+		}
+		return exist;
+	}
+     
+    /**
      * Affecte la valeur de l'attribut layers.
      * @param layers l'attribut layers à affecter
      */
@@ -152,22 +190,7 @@ public class StyledLayerDescriptor {
      */
     public Layer createLayer(String layerName,
             Class<? extends GM_Object> geometryType) {
-    	
-    	Color adaptedColor = new Color((float) Math
-                .random(), (float) Math.random(), (float) Math.random(), 0.5f);
-    	
-//    	List<Layer> layers = this.getLayers();
-//    	List<Color> couleursLyr = new ArrayList<Color>();
-//    	for (Layer lyr : layers) {
-//			couleursLyr.add(lyr.getStyles().get(0).getSymbolizer().getStroke().getColor());
-//		}
-//    	if (layers.size()!=0){
-//	    	System.out.println("Les couches s'appellent" + layers);
-//	    	System.out.println("Première couleur" + layers.get(0).getStyles().get(0).getSymbolizer().getStroke().getColor());
-//	    	System.out.println("Liste couleurs" + couleursLyr);
-//    	}
-        return this.createLayer(layerName, geometryType, adaptedColor );
-
+    	return this.createLayerRandomColor(layerName, geometryType);
     }
 
     /**
@@ -395,8 +418,37 @@ public class StyledLayerDescriptor {
      */
     public Layer createLayerRandomColor(String layerName,
             Class<? extends GM_Object> geometryType) {
-        return createLayer(layerName, geometryType, new Color((float) Math
-                .random(), (float) Math.random(), (float) Math.random(), 0f));
+    	
+    	//Selection of suitables colors from the COGIT reference colors.
+    	 ColorReferenceSystem crs = ColorReferenceSystem
+         .unmarshall(ColorReferenceSystem.class.getResource(
+                     "/color/ColorReferenceSystem.xml").getPath());
+    	 
+    	 List<ColorimetricColor> colors = new ArrayList<ColorimetricColor>();
+    	 for (int i = 0; i < 12; i++) {
+    		 for (ColorimetricColor c : crs.getSlice(0, i)) {
+				if (c.getLightness() != 1) {
+					colors.add(c);
+				}
+    		 }
+    	 }
+    	 for (int i = 0; i < 7; i++) {
+    		 for (ColorimetricColor c : crs.getSlice(1, i)) {
+				if (c.getLightness() != 1) {
+					colors.add(c);
+				}
+    		 }
+    	 }
+    	 
+    	 //The color will differ from the colors of the existing layers.
+    	 List<Integer>	randoms = new ArrayList<Integer>();
+    	 randoms.add((int)(colors.size() * Math.random()));
+    	 while (this.existColor(colors.get(randoms.size() - 1))) {
+    		 randoms.add((int)(colors.size() * Math.random()));
+    	 }
+    	 
+    	 return createLayer(layerName, geometryType, 
+    			 colors.get(randoms.get(randoms.size() - 1)).toColor());
     }
 
     /**
@@ -405,13 +457,12 @@ public class StyledLayerDescriptor {
      * <p>
      * @param layerName nom du layer cherché
      * @param geometryType type de géométrie porté par le layer
-     * @param strokeColor la couleur du trait
+     * @param fillColor la couleur de l'intérieur
      * @return layer portant le nom et la géométrie en paramètre
      */
     public Layer createLayer(String layerName,
-            Class<? extends GM_Object> geometryType, Color strokeColor) {
-        return createLayer(layerName, geometryType, strokeColor, strokeColor
-                .brighter().brighter());
+            Class<? extends GM_Object> geometryType, Color fillColor) {
+    	return createLayer(layerName, geometryType, fillColor.darker(), fillColor);
     }
 
     /**
@@ -428,7 +479,7 @@ public class StyledLayerDescriptor {
             Class<? extends GM_Object> geometryType, Color strokeColor,
                     Color fillColor) {
         return createLayer(layerName, geometryType, strokeColor, fillColor,
-                0.5f);
+                0.8f);
     }
 
     /**

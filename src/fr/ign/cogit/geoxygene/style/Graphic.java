@@ -32,12 +32,17 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author Julien Perret
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Graphic",
+		propOrder = {
+			"marks", "opacity", "size", "rotation", "externalGraphics"
+		})
 public class Graphic {
 
 	private List<ExternalGraphic> externalGraphics = new ArrayList<ExternalGraphic>();
