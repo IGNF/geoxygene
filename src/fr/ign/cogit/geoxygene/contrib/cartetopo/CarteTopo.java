@@ -47,6 +47,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
@@ -1691,7 +1692,16 @@ public class CarteTopo extends DataSet {
                     if (selection.isEmpty()) {
                         face = faceInfinie;
                     } else {
-                        face = selection.iterator().next();
+                        it = selection.iterator();
+                        face = it.next();
+                        // s'il y a plus d'une face qui contient celle-ci
+                        while (it.hasNext()) {
+                            Face f = it.next();
+                            // on sélectionne la plus petite
+                            if (f.getGeometrie().area() < face.getGeometrie().area()) {
+                                face = f;
+                            }
+                        }
                     }
                 }
             }
@@ -1699,9 +1709,35 @@ public class CarteTopo extends DataSet {
             // on ajoute un trou à la géométrie de la face infinie
             if (cycle.getGeometrie().sizeControlPoint() > 3) {
                 GM_Ring trou = new GM_Ring(cycle.getGeometrie());
-                if (!trou.coord().isEmpty()
-                        && face.getGeometrie().contains(trou)) {
-                    face.getGeometrie().addInterior(trou);
+                if (!trou.coord().isEmpty()) {
+                    if (face.getGeometrie().getInterior().isEmpty()) {
+                        face.getGeometrie().addInterior(trou);
+                    } else {
+                        // union des trous
+                        GM_Polygon polygonHole = new GM_Polygon(trou);
+                        List<GM_Polygon> trous = new ArrayList<GM_Polygon>();
+                        for (GM_Ring ring : face.getGeometrie().getInterior()) {
+                            trous.add(new GM_Polygon(ring));
+                        }
+                        // suppression des trous existants
+                        face.getGeometrie().getInterior().clear();
+                        // ajout du nouveau trou à la liste
+                        trous.add(polygonHole);
+                        GM_Object union = JtsAlgorithms.union(trous);
+                        if (union.isPolygon()) {
+                            GM_Polygon polygon = (GM_Polygon) union;
+                            face.getGeometrie().addInterior(polygon.getExterior());
+                        } else {
+                            if (union.isMultiSurface()) {
+                                GM_MultiSurface<GM_Polygon> multipolygon = (GM_MultiSurface<GM_Polygon>) union;
+                                for (GM_Polygon polygon : multipolygon) {
+                                    face.getGeometrie().addInterior(polygon.getExterior());
+                                }
+                            } else {
+                                logger.error(union);
+                            }
+                        }
+                    }
                 }
             }
             fireActionPerformed(new ActionEvent(this, 3, I18N
