@@ -26,9 +26,6 @@
 
 package fr.ign.cogit.geoxygene.contrib.delaunay;
 
-import java.util.Iterator;
-import java.util.List;
-
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
@@ -50,13 +47,7 @@ public class TriangleDelaunay extends Face {
 		dpl.add(n3.getCoord());
 		dpl.add(n1.getCoord());
 		setCoord(dpl);
-		Arc arc;
-		List<?> arcs;
-		Iterator<?> iterarcs;
-		arcs = n1.arcs();
-		iterarcs = arcs.iterator();
-		while (iterarcs.hasNext()) {
-			arc = (Arc) iterarcs.next();
+		for (Arc arc : n1.arcs()) {
 			if ((arc.getNoeudIni() == n1) && (arc.getNoeudFin() == n2)) {
 				arc.setFaceGauche(this);
 				break;
@@ -65,10 +56,7 @@ public class TriangleDelaunay extends Face {
 				break;
 			}
 		}
-		arcs = n2.arcs();
-		iterarcs = arcs.iterator();
-		while (iterarcs.hasNext()) {
-			arc = (Arc) iterarcs.next();
+		for (Arc arc : n2.arcs()) {
 			if ((arc.getNoeudIni() == n2) && (arc.getNoeudFin() == n3)) {
 				arc.setFaceGauche(this);
 				break;
@@ -77,10 +65,7 @@ public class TriangleDelaunay extends Face {
 				break;
 			}
 		}
-		arcs = n3.arcs();
-		iterarcs = arcs.iterator();
-		while (iterarcs.hasNext()) {
-			arc = (Arc) iterarcs.next();
+		for (Arc arc : n3.arcs()) {
 			if ((arc.getNoeudIni() == n3) && (arc.getNoeudFin() == n1)) {
 				arc.setFaceGauche(this);
 				break;
@@ -90,5 +75,4 @@ public class TriangleDelaunay extends Face {
 			}
 		}
 	}
-
 }

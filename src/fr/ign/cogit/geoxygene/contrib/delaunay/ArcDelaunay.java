@@ -47,5 +47,4 @@ public class ArcDelaunay extends Arc {
 		setNoeudIni(n1);
 		setNoeudFin(n2);
 	}
-
 }

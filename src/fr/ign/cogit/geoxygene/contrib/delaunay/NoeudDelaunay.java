@@ -41,9 +41,10 @@ public class NoeudDelaunay extends Noeud {
 	public void setNomclasseligne(String nom) {this.nomclasseligne = nom;}
 
 	public NoeudDelaunay(){
+		super();
 	}
 
 	public NoeudDelaunay(DirectPosition dp) {
-		this.setCoord(dp);
+		super(dp);
 	}
 }

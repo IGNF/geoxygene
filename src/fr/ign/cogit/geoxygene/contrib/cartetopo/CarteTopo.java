@@ -2275,10 +2275,12 @@ public class CarteTopo extends DataSet {
             face.setArcsPendants(null);
             face.setListeGroupes(null);
         }
-        for (Groupe gr : getPopGroupes()) {
-            gr.setListeArcs(null);
-            gr.setListeNoeuds(null);
-            gr.setListeFaces(null);
+        if (getPopGroupes() != null) {
+        	for (Groupe gr : getPopGroupes()) {
+        		gr.setListeArcs(null);
+        		gr.setListeNoeuds(null);
+        		gr.setListeFaces(null);
+        	}
         }
         emptyComposants();
         emptyPopulations();
