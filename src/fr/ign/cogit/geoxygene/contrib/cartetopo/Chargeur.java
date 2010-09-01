@@ -23,6 +23,7 @@ package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
@@ -200,7 +201,7 @@ public class Chargeur {
 	 * @param listeFeatures
 	 * @param carteTopo
 	 */
-	public static void importAsNodes(FT_FeatureCollection<?> listeFeatures,
+	public static void importAsNodes(Collection<? extends FT_Feature> listeFeatures,
 			CarteTopo carteTopo) {
 		Class<Noeud> nodeClass = carteTopo.getPopNoeuds().getClasse();
 		try {

@@ -23,6 +23,7 @@ package fr.ign.cogit.geoxygene.contrib.delaunay;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -598,7 +599,7 @@ public class Triangulation extends CarteTopo {
      * @return the characteristic shape of the input feature collection
      */
     public static GM_Polygon getCharacteristicShape(
-            FT_FeatureCollection<? extends FT_Feature> featureCollection,
+            Collection<? extends FT_Feature> featureCollection,
             double alpha) {
         if (logger.isDebugEnabled()) {
             logger.debug("Creating the triangulation");
@@ -617,5 +618,24 @@ public class Triangulation extends CarteTopo {
         // cleaning up
         t.nettoyer();
         return shape;
+    }
+    /**
+     * Computes the characteristic shape of the triangulation created using the
+     * points of the input feature collection.
+     * <p>
+     * This algorithm implements the method described in: "Efficient generation
+     * of simple polygons for characterizing the shape of a set of points in the
+     * plane", Matt Duckham, Lars Kulik, Mike Worboys, Antony Galton, 2008.
+     *
+     * @param featureCollection
+     *            a feature collection
+     * @param alpha
+     *            the length threshold for the characteristic shape algorithm
+     * @return the characteristic shape of the input feature collection
+     */
+    public static GM_Polygon getCharacteristicShape(
+    		FT_FeatureCollection<? extends FT_Feature> featureCollection,
+            double alpha) {
+    	return getCharacteristicShape(featureCollection.getElements(), alpha);
     }
 }
