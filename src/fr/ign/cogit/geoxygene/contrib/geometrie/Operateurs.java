@@ -26,6 +26,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import Jama.Matrix;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.Population;
@@ -35,6 +37,8 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
@@ -58,7 +62,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  */
 
 public abstract class Operateurs {
-
+	private static Logger logger=Logger.getLogger(Operateurs.class.getName());
     // ////////////////////////////////////////////////////////////////////
     // Projections d'un point
     // ////////////////////////////////////////////////////////////////////
@@ -982,42 +986,58 @@ public abstract class Operateurs {
      * avec ses attributs et sa géométrie est remplacée par celle fusionée.
      * English: aggregation of surfaces
      */
-    public static void fusionneSurfaces(Population<FT_Feature> popSurf) {
-
-        Iterator<FT_Feature> itSurf = popSurf.getElements().iterator();
-        Iterator<FT_Feature> itSurfAdjacentes;
-        List<FT_Feature> aEnlever = new ArrayList<FT_Feature>();
-        GM_Object surfaceAfusionner, surfFusionnee;
-        FT_Feature objSurf, objAfusionner, objetAEnlever;
-
-        if (!popSurf.hasSpatialIndex())
-            popSurf.initSpatialIndex(Tiling.class, true);
-
-        while (itSurf.hasNext()) {
-            objSurf = itSurf.next();
-            if (aEnlever.contains(objSurf)) continue;
-            Collection<FT_Feature> surfAdjacentes = popSurf.select(objSurf.getGeom());
-            surfAdjacentes.remove(objSurf);
-            if (surfAdjacentes.size() == 0) continue;
-            aEnlever.addAll(surfAdjacentes);
-            itSurfAdjacentes = surfAdjacentes.iterator();
-            // ATTENTION: bidouille ci-dessous pour pallier l'absence de "copie"
-            // générique de géométrie
-            surfFusionnee = new GM_Polygon(((GM_Polygon) objSurf.getGeom())
-                    .boundary());
-            while (itSurfAdjacentes.hasNext()) {
-                objAfusionner = itSurfAdjacentes.next();
-                surfaceAfusionner = objAfusionner.getGeom();
-                surfFusionnee = surfFusionnee.union(surfaceAfusionner);
-            }
-            objSurf.setGeom(surfFusionnee);
+    public static void fusionneSurfaces(Population<? extends FT_Feature> pop) {
+        if (!pop.hasSpatialIndex()) {
+            pop.initSpatialIndex(Tiling.class, true);
         }
-        Iterator<FT_Feature> itAEnlever = aEnlever.iterator();
-        while (itAEnlever.hasNext()) {
-            objetAEnlever = itAEnlever.next();
-            popSurf.enleveElement(objetAEnlever);
+        if (!pop.getSpatialIndex().hasAutomaticUpdate()) {
+        	pop.getSpatialIndex().setAutomaticUpdate(true);
         }
-
+        List<FT_Feature> toRemove = new ArrayList<FT_Feature>();
+        for (FT_Feature feature : pop) {
+        	// did we already deal with this feature?
+            if (toRemove.contains(feature)) { continue; }
+        	if (logger.isDebugEnabled()) {
+        		logger.debug("dealing with feature " + feature.getId());
+        	}
+        	boolean changed = true;
+        	while (changed) {
+        		changed = false;
+        		// get the others intersecting features
+        		Collection<? extends FT_Feature> intersectingFeatures = pop
+        				.select(feature.getGeom());
+        		// remove the current feature
+        		intersectingFeatures.remove(feature);
+        		intersectingFeatures.removeAll(toRemove);
+        		if (logger.isDebugEnabled()) {
+        			logger.debug("intersercting " + intersectingFeatures.size() + " features");
+        		}
+        		// no intersecting feature
+        		if (intersectingFeatures.isEmpty()) { continue; }
+        		// we remove them from the features  we have to deal with
+        		toRemove.addAll(intersectingFeatures);
+        		GM_Object union = feature.getGeom();
+        		GM_Object initialGeometry = feature.getGeom();
+        		for (FT_Feature objAfusionner : intersectingFeatures) {
+        			GM_Object surfaceToUnion = objAfusionner.getGeom();
+        			union = union.union(surfaceToUnion);
+        		}
+        		if (logger.isDebugEnabled()) {
+        			logger.debug("union = " + union);
+        		}           
+        		if (!initialGeometry.equals(union)) {
+        			changed = true;
+            		if (union.isMultiSurface()) {
+            			if (logger.isDebugEnabled()) {
+            				logger.debug("multisurface = " + union);
+            			}
+            			union = ((GM_MultiSurface<GM_OrientableSurface>) union).get(0);
+            		}
+                    feature.setGeom(union);
+        		}
+        	}
+        }
+        pop.removeAll(toRemove);
     }
 
     /**

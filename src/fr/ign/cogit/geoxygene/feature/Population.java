@@ -83,7 +83,9 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	//      Constructeurs / Chargement / persistance
 	///////////////////////////////////////////////////////
 	/** Constructeur par défaut. Sauf besoins particuliers, utiliser plutôt l'autre constructeur */
-	public Population() {}
+	public Population() {
+		this.persistant = false;
+	}
 	/**
 	 * Constructeur à partir du nom de la population
 	 * @param nom nom de la population.
