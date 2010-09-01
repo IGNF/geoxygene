@@ -58,6 +58,12 @@ public class Noeud extends ElementCarteTopo {
      */
     public Noeud(GM_Point point) { this.setGeom(point); }
 
+    /**
+     * Constructor.
+     * @param p a position
+     */
+    public Noeud(DirectPosition p) { this.setCoord(p); }
+
     //////////////////////////////////////////////////////////////////////////
     //	géométrie
     //////////////////////////////////////////////////////////////////////////

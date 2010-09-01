@@ -2191,6 +2191,16 @@ public class CarteTopo extends DataSet {
     }
 
     /**
+     * Remplit 'this' avec des correspondants des éléments de 'listeFeature'.
+     * Seuls les points des éléments sont importés comme noeuds de la carte.
+     * @param listeFeatures
+     *            liste des éléments à importer
+     */
+    public void importAsNodes(FT_FeatureCollection<?> listeFeatures) {
+        Chargeur.importAsNodes(listeFeatures, this);
+    }
+
+    /**
      * Affecter la face passée en paramètre aux arcs du cycle
      *
      * @param cycle

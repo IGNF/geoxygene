@@ -21,6 +21,9 @@
 
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
@@ -28,6 +31,7 @@ import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
@@ -190,4 +194,37 @@ public class Chargeur {
             nouvelElement.addCorrespondant(feature);
         } catch (Exception e) { e.printStackTrace(); }
     }
+
+	/**
+	 * Seuls les points des éléments sont importés comme noeuds de la carte.
+	 * @param listeFeatures
+	 * @param carteTopo
+	 */
+	public static void importAsNodes(FT_FeatureCollection<?> listeFeatures,
+			CarteTopo carteTopo) {
+		Class<Noeud> nodeClass = carteTopo.getPopNoeuds().getClasse();
+		try {
+			Constructor<Noeud> constructor = nodeClass.getConstructor(DirectPosition.class);
+			for (FT_Feature f : listeFeatures) {
+	    		for (DirectPosition p : f.getGeom().coord()) {
+	    			try {
+						Noeud n = constructor.newInstance(p);
+						carteTopo.getPopNoeuds().add(n);
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (InstantiationException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					}
+	    		}
+			}
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		}
+	}
 }
