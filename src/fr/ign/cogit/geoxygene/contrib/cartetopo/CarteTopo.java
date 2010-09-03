@@ -1664,7 +1664,7 @@ public class CarteTopo extends DataSet {
                         new GM_Polygon(new GM_Envelope(envelope.minX() - 1,
                                 envelope.maxX() + 1, envelope.minY() - 1,
                                 envelope.maxY() + 1)));
-
+        faceInfinie.setInfinite(true);
         fireActionPerformed(new ActionEvent(this, 2, I18N
                 .getString("CarteTopo.FaceTopologyCycles"), cycles.size())); //$NON-NLS-1$
         iteration = 0;
