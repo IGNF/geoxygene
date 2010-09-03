@@ -82,6 +82,7 @@ public class Graphic {
 	 */
 	public void setOpacity(float opacity) {this.opacity = opacity;}
 
+	@XmlElement(name = "Size")
 	private float size=6.0f;
 	/**
 	 * Renvoie la valeur de l'attribut size.
