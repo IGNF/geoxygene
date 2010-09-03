@@ -50,23 +50,26 @@ public class Face  extends ElementCarteTopo   {
     //                                      géométrie
     /////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /** Renvoie le GM_Polygon qui définit la géométrie de self */
+    /**
+     * Vrai s'il s'agit d'une face infinie.
+     * True if the face is infinite.
+     */
+    private boolean infinite = false;
+    /** Renvoie le GM_Polygon qui définit la géométrie de self. */
     public GM_Polygon getGeometrie() {return (GM_Polygon)this.geom;}
-    /** définit le GM_Polygon qui définit la géométrie de self */
+    /** définit le GM_Polygon qui définit la géométrie de self. */
     public void setGeometrie(GM_Polygon geometrie) {this.setGeom(geometrie);}
     /** Renvoie la liste de DirectPosition qui définit les coordonnées de self */
     public DirectPositionList getCoord() {return this.getGeometrie().exteriorCoord();}
     // On suppose que exteriorCoordList() donne deux fois le point de départ
     /** définit la liste de DirectPosition qui définit les coordonnées de self */
-    public void setCoord(DirectPositionList dpl) {this.geom = new GM_Polygon(new GM_LineString(dpl));}
-
-
-
+    public void setCoord(DirectPositionList dpl) {
+        this.geom = new GM_Polygon(new GM_LineString(dpl));
+    }
     /////////////////////////////////////////////////////////////////////////////////////////////////
     //                              Gestion des groupes
     /////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /* Groupes auquels self appartient */
+    /** Groupes auquels self appartient */
     private Collection<Groupe> listeGroupes = new ArrayList<Groupe>();
     /** Renvoie la liste des groupes de self*/
     public Collection<Groupe> getListeGroupes() {return this.listeGroupes;}
@@ -80,9 +83,6 @@ public class Face  extends ElementCarteTopo   {
                 groupe.addFace(this);
         }
     }
-
-
-
     /////////////////////////////////////////////////////////////////////////////////////////////////
     //                         Gestion de la topologie arcs / faces
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -254,8 +254,6 @@ public class Face  extends ElementCarteTopo   {
         }
         return noeuds;
     }
-
-
     /////////////////////////////////////////////////////////////////////////////////////////////////
     //                         Topologie faces / faces
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -274,9 +272,6 @@ public class Face  extends ElementCarteTopo   {
         voisins.remove(this);
         return new ArrayList<Face>(voisins);
     }
-
-
-
     /////////////////////////////////////////////////////////////////////////////////////////////////
     //                      opérateurs de calcul sur les faces
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -296,11 +291,18 @@ public class Face  extends ElementCarteTopo   {
     protected List<Arc> arcsPendants = new ArrayList<Arc>();
     public List<Arc> getArcsPendants() {return this.arcsPendants;}
     public void setArcsPendants(List<Arc> arcsPendants) {this.arcsPendants = arcsPendants;}
-
-    public boolean isInfinie() {
-        // TODO Auto-generated method stub
-        return false;
+    /**
+     * Set a face as infinite or not.
+     * @param infinite
+     *            new infinite parameter value
+     */
+    public void setInfinite(final boolean infinite) {
+        this.infinite = infinite;
     }
+    /**
+     * @return True if the face is the infinite face, false otherwise.
+     */
+    public boolean isInfinite() { return infinite; }
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
