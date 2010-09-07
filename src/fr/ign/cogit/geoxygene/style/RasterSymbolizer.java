@@ -86,7 +86,8 @@ public class RasterSymbolizer extends AbstractSymbolizer {
 	@Override
 	public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics) {
 	    System.out.println("paint");
-        BufferedImage image = viewport.getLayerViewPanel().getProjectFrame().getImage(feature);
+	    // FIXME c'est tout juste horrible !!!
+        BufferedImage image = viewport.getLayerViewPanels().iterator().next().getProjectFrame().getImage(feature);
         if (image == null) {
             System.out.println("null image");
             return;

@@ -64,6 +64,7 @@ public class PointSymbolizer extends AbstractSymbolizer {
         GM_Object geometry = (this.getGeometryPropertyName() != null) ? (GM_Object) feature
                 .getAttribute(this.getGeometryPropertyName())
                 : feature.getGeom();
+        if (geometry == null) { return; }
 		try {point = viewport.toViewPoint(geometry.centroid());}
 		catch (NoninvertibleTransformException e) {e.printStackTrace();return;}
 		for(Mark mark:this.getGraphic().getMarks()) {
