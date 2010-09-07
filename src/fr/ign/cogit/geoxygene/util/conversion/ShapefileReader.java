@@ -21,6 +21,8 @@
 
 package fr.ign.cogit.geoxygene.util.conversion;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,6 +33,7 @@ import java.util.Map;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.event.EventListenerList;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.log4j.Logger;
@@ -42,6 +45,8 @@ import org.geotools.data.shapefile.shp.ShapefileException;
 import org.geotools.data.shapefile.shp.ShapefileReader.Record;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+
+import sun.net.ProgressEvent;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -338,6 +343,33 @@ public class ShapefileReader implements Runnable {
             }
         return reader;
     }
+    protected static EventListenerList listenerList = new EventListenerList();
+    /**
+     * Adds an <code>ActionListener</code>.
+     * @param l the <code>ActionListener</code> to be added
+     */
+    public static void addActionListener(ActionListener l) {
+        listenerList.add(ActionListener.class, l);
+    }
+
+    /**
+     * Notifies all listeners that have registered interest for
+     * notification on this event type.  The event instance
+     * is lazily created.
+     * @see EventListenerList
+     */
+    protected static void fireActionPerformed(ActionEvent event) {
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==ActionListener.class) {
+                // Lazily create the event:
+                ((ActionListener)listeners[i+1]).actionPerformed(event);
+            }
+        }
+    }
     /**
      * Lit la collection de features GeoTools <code> source </code> et crée
      * des default features correspondant en utilisant le schéma <code> schema
@@ -348,6 +380,7 @@ public class ShapefileReader implements Runnable {
      */
     public static void read(Reader reader, SchemaDefaultFeature schema,
             Population<DefaultFeature> population) throws IOException {
+        fireActionPerformed(new ActionEvent(population,0,"Read",reader.getNbFeatures())); //$NON-NLS-1$
         for (int indexFeature = 0; indexFeature < reader.getNbFeatures();
         indexFeature++) {
             DefaultFeature defaultFeature = new DefaultFeature();
@@ -386,6 +419,7 @@ public class ShapefileReader implements Runnable {
                     }
                     defaultFeature.setGeom(geometry);
                     population.add(defaultFeature);
+                    fireActionPerformed(new ActionEvent(population,1,"Read",indexFeature)); //$NON-NLS-1$
                 }
             } catch (Exception e) {
                 logger.error(I18N.getString(
@@ -395,6 +429,7 @@ public class ShapefileReader implements Runnable {
                         "ShapefileReader.ObjectIgnored")); //$NON-NLS-1$
             }
         }
+        fireActionPerformed(new ActionEvent(population,2,"Finished",reader.getNbFeatures())); //$NON-NLS-1$
     }
     @Override
     public void run() {
