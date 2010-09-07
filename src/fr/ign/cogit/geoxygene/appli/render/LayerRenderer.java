@@ -34,13 +34,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.SwingUtilities;
-
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
@@ -65,7 +62,6 @@ public class LayerRenderer implements Renderer {
      */
     private static Logger logger =
         Logger.getLogger(LayerRenderer.class.getName());
-
     /**
      * Layer to render.
      */
@@ -77,10 +73,6 @@ public class LayerRenderer implements Renderer {
      * Layer view panel.
      */
     private LayerViewPanel layerViewPanel = null;
-    /**
-     * Features to render.
-     */
-    private FT_FeatureCollection<? extends FT_Feature> features = null;
     /**
      * Set the image.
      * @param theImage the image to render
@@ -185,15 +177,11 @@ public class LayerRenderer implements Renderer {
      * Constructor of renderer using a {@link Layer} and a
      * {@link LayerViewPanel}.
      * @param theLayer a layer to render
-     * @param theFeatures the feature to render
      * @param theLayerViewPanel the panel to draws into
      */
-    public LayerRenderer(final Layer theLayer,
-            final FT_FeatureCollection<? extends FT_Feature> theFeatures,
-                    final LayerViewPanel theLayerViewPanel) {
+    public LayerRenderer(final Layer theLayer, final LayerViewPanel theLayerViewPanel) {
         this.layer = theLayer;
         this.setLayerViewPanel(theLayerViewPanel);
-        this.features = theFeatures;
     }
 
     /**
@@ -267,19 +255,13 @@ public class LayerRenderer implements Renderer {
                         t.printStackTrace(System.err);
                         return;
                     }
-                    // when time comes, repaint the panel
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            LayerRenderer.this.getLayerViewPanel().
-                            superRepaint();
-                        }
-                    });
                 } finally {
                     // the renderer is not rendering anymore
                     // ( used by isRendering() )
                     LayerRenderer.this.setRendering(false);
                     LayerRenderer.this.setRendered(true);
+                    logger.debug("Renderer "+LayerRenderer.this.getLayer().getName()+ " finished");
+                    LayerRenderer.this.getLayerViewPanel().getRenderingManager().repaint();
                 }
             }
         };
@@ -294,12 +276,12 @@ public class LayerRenderer implements Renderer {
     final void renderHook(final BufferedImage theImage,
             final GM_Envelope envelope) {
         // if rendering has been cancelled or there is nothing to render, stop
-        if (this.isCancelled() || (this.features == null)
+        if (this.isCancelled() || (this.layer.getFeatureCollection() == null)
                 || !this.layer.isVisible()) {
             return;
         }
         Collection<? extends FT_Feature> collection =
-            this.features.select(envelope);
+            this.layer.getFeatureCollection().select(envelope);
         for (Style style : this.layer.getStyles()) {
             if (this.isCancelled()) {
                 return;
@@ -397,11 +379,12 @@ public class LayerRenderer implements Renderer {
         }
         //logger.info("using rule "+rule.getName());
         Collection<? extends FT_Feature> collection =
-            this.features.select(envelope);
+            this.layer.getFeatureCollection().select(envelope);
         if (collection == null) {
             return;
         }
-        Collection<FT_Feature> filteredCollection = null;
+        Collection<FT_Feature> filteredCollection =
+            (Collection<FT_Feature>) collection;
         if (rule.getFilter() != null) {
             if (this.isCancelled()) {
                 return;
@@ -490,95 +473,6 @@ public class LayerRenderer implements Renderer {
             }
         }
     }
-
-    @Override
-    public final Runnable createFeatureRunnable(final FT_Feature feature) {
-        if (this.getImage() == null) { return null; }
-        this.setCancelled(false);
-        return new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    LayerRenderer.this.setRendering(true);
-                    // it the rendering is cancel, stop
-                    if (LayerRenderer.this.isCancelled()) {
-                        return;
-                    }
-                    // if either the width or the height of the panel is lesser
-                    // or equal to 0, stop
-                    if (Math.min(
-                            LayerRenderer.this.getLayerViewPanel().getWidth(),
-                            LayerRenderer.this.getLayerViewPanel().getHeight())
-                            <= 0) {
-                        return;
-                    }
-                    // do the actual rendering
-                    try {
-                        renderHook(LayerRenderer.this.getImage(), feature);
-                    } catch (Throwable t) {
-                        // TODO WARN THE USER?
-                        t.printStackTrace(System.err);
-                        return;
-                    }
-                    // when time comes, repaint the panel
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            LayerRenderer.this.getLayerViewPanel().
-                            superRepaint();
-                        }
-                    });
-                } finally {
-                    // the renderer is not rendering anymore
-                    // ( used by isRendering() )
-                    LayerRenderer.this.setRendering(false);
-                }
-            }
-        };
-    }
-    @Override
-    public final Runnable createLocalRunnable(final GM_Object geom) {
-        if (this.getImage() == null) { return null; }
-        this.setCancelled(false);
-
-        return new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    LayerRenderer.this.setRendering(true);
-                    // it the rendering is cancel, stop
-                    if (LayerRenderer.this.isCancelled()) { return; }
-                    // if either the width or the height of the panel is lesser
-                    // or equal to 0, stop
-                    if (Math.min(
-                            LayerRenderer.this.getLayerViewPanel().getWidth(),
-                            LayerRenderer.this.getLayerViewPanel().getHeight())
-                            <= 0) { return; }
-                    // do the actual rendering
-                    try {
-                        renderHook(LayerRenderer.this.getImage(), geom);
-                    } catch (Throwable t) {
-                        // TODO WARN THE USER?
-                        t.printStackTrace(System.err);
-                        return;
-                    }
-                    // when time comes, repaint the panel
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            LayerRenderer.this.getLayerViewPanel().
-                            superRepaint();
-                        }
-                    });
-                } finally {
-                    // the renderer is not rendering anymore
-                    // ( used by isRendering() )
-                    LayerRenderer.this.setRendering(false);
-                }
-            }
-        };
-    }
-
     /**
      * @param theImage the image
      * @param feature the feature
@@ -634,7 +528,7 @@ public class LayerRenderer implements Renderer {
                     (int) (lowerCorner.getY() - upperCorner.getY() + 2));
         } catch (NoninvertibleTransformException e) { e.printStackTrace(); }
         Collection<? extends FT_Feature> visibleFeatures =
-            this.features.select(envelope);
+            this.layer.getFeatureCollection().select(envelope);
         for (Style style : this.layer.getStyles()) {
             if (this.isCancelled()) { return; }
             if (style.isUserStyle()) {

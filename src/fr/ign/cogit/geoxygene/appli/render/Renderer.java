@@ -23,9 +23,6 @@ package fr.ign.cogit.geoxygene.appli.render;
 
 import java.awt.Graphics2D;
 
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
-
 /**
  * Renderer interface.
  * @author Julien Perret
@@ -83,15 +80,4 @@ public interface Renderer {
      * @param height height of the region to clear
      */
     void clearImageCache(int x, int y, int width, int height);
-
-    /**
-     * @param feature feature to render
-     * @return a featureRunnable to draw the given Feature
-     */
-    Runnable createFeatureRunnable(FT_Feature feature);
-    /**
-     * @param geom geometry of the region to render
-     * @return a localRunnable to draw the given region
-     */
-    Runnable createLocalRunnable(GM_Object geom);
 }

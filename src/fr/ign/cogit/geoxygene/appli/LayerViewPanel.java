@@ -52,7 +52,6 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
@@ -102,9 +101,13 @@ public class LayerViewPanel extends JPanel {
     /**
      * Private viewport. Use getter or setter.
      */
-    private Viewport viewport = new Viewport(this);
+    private Viewport viewport = null;
 
-    /**
+    public void setViewport(Viewport viewport) {
+		this.viewport = viewport;
+	}
+
+	/**
      * Private selected features. Use getter and setter.
      */
     private Set<FT_Feature> selectedFeatures = new HashSet<FT_Feature>();
@@ -127,51 +130,19 @@ public class LayerViewPanel extends JPanel {
      */
     public LayerViewPanel(final ProjectFrame frame) {
         this.projectFrame = frame;
+        this.viewport = new Viewport(this);
         this.addPaintListener(new ScalePaintListener());
+        this.setOpaque(true);
     }
 
     @Override
     public final void repaint() {
+        logger.debug("repaint");
         if (this.renderingManager != null) {
             this.renderingManager.renderAll();
         }
-        superRepaint();
+        logger.debug("repaint finished");
     }
-
-    /**
-     * Repaint the feature in the given layer.
-     *
-     * @param layer
-     *            layer in which to repaint the feature
-     * @param feature
-     *            feature to repaint
-     */
-    public final void repaint(final Layer layer, final FT_Feature feature) {
-        if (layer.isVisible()) {
-            if (this.renderingManager != null) {
-                this.renderingManager.render(layer, feature);
-            }
-        }
-        superRepaint();
-    }
-
-    /**
-     * Repaint.
-     *
-     * @param layer
-     *            a layer
-     * @param geom
-     *            a geometry
-     */
-    public final void repaint(final Layer layer, final GM_Object geom) {
-        if (layer.isVisible()) {
-            if (this.renderingManager != null) {
-                this.renderingManager.render(layer, geom);
-            }
-        }
-        superRepaint();
-    }
-
     /**
      * Repaint the panel using the repaint method of the super class
      * {@link JPanel}.
@@ -180,69 +151,75 @@ public class LayerViewPanel extends JPanel {
      * @see #paintComponent(Graphics)
      */
     public final void superRepaint() {
+        logger.debug("superRepaint");
         super.repaint();
+        logger.debug("superRepaint finished");
     }
 
     @Override
     public final void paintComponent(final Graphics g) {
         try {
+            logger.debug("paintComponent");
             ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                         RenderingHints.VALUE_ANTIALIAS_ON);
-            super.paintComponent(g);
+            //super.paintComponent(g);
             // clear the graphics
             g.setColor(getBackground());
             g.fillRect(0, 0, getWidth(), getHeight());
             // copy the result of the rendering manager to the panel
             this.renderingManager.copyTo((Graphics2D) g);
-            Mode mode = this.getProjectFrame().getMainFrame()
-            .getMode().getCurrentMode();
-            g.setColor(new Color(1f,0f,0f));
-            if (mode instanceof AbstractGeometryEditMode) {
-                DirectPositionList points
-                = new DirectPositionList();
-                points.addAll(((AbstractGeometryEditMode) mode).getPoints());
-                if (mode instanceof CreateLineStringMode) {
-                    if (!points.isEmpty()) {
-                        points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
-                        RenderUtil.draw(new GM_LineString(points),
-                                    this.getViewport(),
-                                    (Graphics2D) g);
-                    }
-                } else {
-                    if (mode instanceof CreatePolygonMode) {
-                        if (!points.isEmpty()) {
-                            DirectPosition start = points.get(0);
-                            points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
-                            if (points.size() > 2) {
-                                points.add(start);
-                                RenderUtil.draw(new GM_Polygon(new GM_LineString(points)),
-                                            this.getViewport(),
-                                            (Graphics2D) g);
-                            } else {
-                                if (points.size() == 2) {
-                                    points.add(start);
-                                    RenderUtil.draw(new GM_LineString(points),
-                                                this.getViewport(),
-                                                (Graphics2D) g);
-                                }
-                            }
-                        }
-                    } else {
-                        if (mode instanceof CreateInteriorRingMode) {
-
-                        } else {
-
-                        }
-                    }
-                }
-            }
-            paintOverlays(g);
+            // if currently editing geometry
+            this.paintGeometryEdition(g);
+            this.paintOverlays(g);
+            logger.debug("paintComponent finished");
         } catch (Throwable t) {
             logger.error(I18N.getString("LayerViewPanel.PaintError")); //$NON-NLS-1$
             // TODO HANDLE EXCEPTIONS
         }
     }
-	/**
+	private void paintGeometryEdition(Graphics g) {
+        Mode mode = this.getProjectFrame().getMainFrame()
+        .getMode().getCurrentMode();
+        g.setColor(new Color(1f,0f,0f));
+        if (mode instanceof AbstractGeometryEditMode) {
+            DirectPositionList points
+            = new DirectPositionList();
+            points.addAll(((AbstractGeometryEditMode) mode).getPoints());
+            if (mode instanceof CreateLineStringMode) {
+                if (!points.isEmpty()) {
+                    points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
+                    RenderUtil.draw(new GM_LineString(points),
+                                this.getViewport(),
+                                (Graphics2D) g);
+                }
+            } else {
+                if (mode instanceof CreatePolygonMode) {
+                    if (!points.isEmpty()) {
+                        DirectPosition start = points.get(0);
+                        points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
+                        if (points.size() > 2) {
+                            points.add(start);
+                            RenderUtil.draw(new GM_Polygon(new GM_LineString(points)),
+                                        this.getViewport(),
+                                        (Graphics2D) g);
+                        } else {
+                            if (points.size() == 2) {
+                                points.add(start);
+                                RenderUtil.draw(new GM_LineString(points),
+                                            this.getViewport(),
+                                            (Graphics2D) g);
+                            }
+                        }
+                    }
+                } else {
+                    if (mode instanceof CreateInteriorRingMode) {
+                    } else {
+                    }
+                }
+            }
+        }
+    }
+    /**
 	 * Returns the size of a pixel in meters.
 	 * @return Taille d'un pixel en mètres (la longueur d'un coté de pixel de l'écran).
 	 */

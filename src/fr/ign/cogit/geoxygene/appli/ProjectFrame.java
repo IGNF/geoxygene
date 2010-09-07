@@ -23,6 +23,8 @@ package fr.ign.cogit.geoxygene.appli;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
@@ -63,7 +65,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
  * @author Julien Perret
  */
 public class ProjectFrame extends JInternalFrame implements
-        FeatureCollectionListener {
+        FeatureCollectionListener, ActionListener {
     /**
      * Serial version id.
      */
@@ -104,7 +106,11 @@ public class ProjectFrame extends JInternalFrame implements
      */
     private StyledLayerDescriptor sld = new StyledLayerDescriptor();
 
-    /**
+    public void setSld(StyledLayerDescriptor sld) {
+		this.sld = sld;
+	}
+
+	/**
      * @return The project styled layer descriptor
      */
     public StyledLayerDescriptor getSld() {
@@ -153,6 +159,7 @@ public class ProjectFrame extends JInternalFrame implements
                 .setDividerLocation(ProjectFrame.DEFAULT_DIVIDER_LOCATION);
         this.splitPane.setOneTouchExpandable(true);
         this.pack();
+        ShapefileReader.addActionListener(this);
     }
 
     /**
@@ -296,42 +303,15 @@ public class ProjectFrame extends JInternalFrame implements
 
     @Override
     public final void changed(final FeatureCollectionEvent event) {
-        //System.out.println("changed received "+event.getType());
-        Layer layer = this.featureCollectionToLayerMap.get(event.getSource());
-        if (layer == null) { return; }
-       // this.layerViewPanel.superRepaint();
-        if (event.getType() == FeatureCollectionEvent.Type.ADDED) {
-            this.layerViewPanel.repaint(layer, event.getFeature());
-        } else {
-            @SuppressWarnings("unused")
-			GM_Object repaintGeometry = event.getGeometry();
-            if (event.getFeature() != null
-                        && event.getFeature().getGeom() != null) {
-                repaintGeometry = event.getFeature().getGeom().union(
-                        event.getGeometry());
-            }
-            //this.layerViewPanel.repaint(layer, repaintGeometry);
-            this.layerViewPanel.repaint(layer, event.getFeature());
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getID() == 2) {
+            Population<?> p = (Population<?>) e.getSource();
+            Layer l = this.getLayer(p.getNom());
+            this.getLayerViewPanel().getRenderingManager().render(this.getLayerViewPanel().getRenderingManager().getRenderer(l));
+            this.getLayerViewPanel().superRepaint();
         }
-
-        /*
-         * GM_Envelope envelope =
-         * event.getFeature().getGeom().envelope();
-         * try {
-         * Point2D upperCorner =
-         * layerViewPanel.getViewport().toViewPoint
-         * (envelope.getUpperCorner());
-         * Point2D lowerCorner =
-         * layerViewPanel.getViewport().toViewPoint
-         * (envelope.getLowerCorner());
-         * this.layerViewPanel.repaint(layer,
-         * (int)lowerCorner.getX(),(int
-         * )upperCorner.getY(),(int)(upperCorner
-         * .getX()-lowerCorner.getX(
-         * )),(int)(lowerCorner.getY()-upperCorner.getY()));
-         * } catch (NoninvertibleTransformException e)
-         * {e.printStackTrace();}
-         */
     }
 
     /**

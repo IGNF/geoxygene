@@ -29,13 +29,12 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 
-import javax.swing.SwingUtilities;
+import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.style.Shadow;
 import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
@@ -50,6 +49,11 @@ import fr.ign.cogit.geoxygene.style.Symbolizer;
  * @see LayerViewPanel
  */
 public class SelectionRenderer implements Renderer {
+    /**
+     * The logger.
+     */
+    private static Logger logger =
+        Logger.getLogger(SelectionRenderer.class.getName());
     /**
      * The layer view panel.
      */
@@ -338,19 +342,13 @@ public class SelectionRenderer implements Renderer {
                         t.printStackTrace(System.err);
                         return;
                     }
-                    // when time comes, repaint the panel
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            SelectionRenderer.this.getLayerViewPanel().
-                            superRepaint();
-                        }
-                    });
                 } finally {
                     // the renderer is not rendering anymore
                     // ( used by isRendering() )
                     SelectionRenderer.this.setRendering(false);
                     SelectionRenderer.this.setRendered(true);
+                    logger.debug("Selection Renderer finished");
+                    SelectionRenderer.this.getLayerViewPanel().getRenderingManager().repaint();
                 }
             }
         };
@@ -407,13 +405,5 @@ public class SelectionRenderer implements Renderer {
                 this.getImage().setRGB(i, j, Transparency.TRANSLUCENT);
             }
         }
-    }
-    @Override
-    public final Runnable createFeatureRunnable(final FT_Feature feature) {
-        return null;
-    }
-    @Override
-    public final Runnable createLocalRunnable(final GM_Object geom) {
-        return null;
     }
 }

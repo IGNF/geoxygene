@@ -23,6 +23,7 @@ package fr.ign.cogit.geoxygene.appli;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -286,6 +287,21 @@ public class MainFrame extends JFrame {
             }
         });
         this.modeSelector = new ModeSelector(this);
+        JMenuItem organizeMenuItem = new JMenuItem("Organize"); //$NON-NLS-1$
+        organizeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+            	ProjectFrame[] projectFrames = MainFrame.this.getAllProjectFrames();;
+            	MainFrame.this.getDesktopPane().removeAll();
+            	GridLayout layout = new GridLayout(0, 2);
+            	MainFrame.this.getDesktopPane().setLayout(layout);
+            	for (ProjectFrame frame : projectFrames) {
+                	MainFrame.this.getDesktopPane().add(frame);
+            	}
+            	MainFrame.this.getDesktopPane().doLayout();
+            }
+        });
+        configurationMenu.add(organizeMenuItem);
     }
 
     @Override

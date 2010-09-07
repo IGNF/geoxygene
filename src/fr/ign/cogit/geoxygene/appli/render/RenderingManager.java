@@ -22,19 +22,13 @@
 package fr.ign.cogit.geoxygene.appli.render;
 
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import javax.swing.Timer;
-
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
@@ -93,10 +87,6 @@ public class RenderingManager {
      */
     public static final long DAEMON_MAXIMUM_WAITING_TIME = 5000L;
     /**
-     * Time between 2 repaintings of the panel during the rendering.
-     */
-    private static final int REPAINT_TIMER_DELAY = 400;
-    /**
      * Queue containg the runnables, one for each layer.
      */
     private LinkedBlockingQueue<Runnable> runnableQueue =
@@ -143,7 +133,9 @@ public class RenderingManager {
                                         " runnables in the queue" //$NON-NLS-1$
                                 );
                             }
-                            if (runnable == null) { return; }
+                            if (runnable == null) {
+                                return;
+                            }
                         }
                         try {
                             runnable.run();
@@ -160,48 +152,14 @@ public class RenderingManager {
         newDaemon.setDaemon(true);
         return newDaemon;
     }
-
-    /**
-     * The repaint timer used to repaint the panel during the rendering.
-     * It allows for a progressive rendering.
-     * @see Timer
-     */
-    private Timer repaintTimer = new Timer(
-            REPAINT_TIMER_DELAY,
-            new ActionListener() {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            for (Renderer renderer : getRenderers()) {
-                // while a layer is being rendered, repaint the panel
-                if (renderer.isRendering()) {
-                    RenderingManager.this.getLayerViewPanel().superRepaint();
-                    return;
-                }
-            }
-            // when no more layer is being rendered, stop the timer
-            RenderingManager.this.getRepaintTimer().stop();
-            // repaint the panel
-            RenderingManager.this.getLayerViewPanel().superRepaint();
-        }
-    });
-
-    /**
-     * @return The repaint timer
-     */
-    public final Timer getRepaintTimer() { return this.repaintTimer; }
-
     /**
      * Constructor of Rendering manager.
      * @param theLayerViewPanel the panel the rendering manager draws into
      */
     public RenderingManager(final LayerViewPanel theLayerViewPanel) {
         this.setLayerViewPanel(theLayerViewPanel);
-        // set the repaint timer to coalesce multiple pending events in case
-        // the application does not keep up
-        this.getRepaintTimer().setCoalesce(true);
         this.selectionRenderer = new SelectionRenderer(theLayerViewPanel);
     }
-
     /**
      * Return the collection of managed renderers.
      * @return the collection of managed renderers
@@ -247,7 +205,6 @@ public class RenderingManager {
                     layer,
                     new LayerRenderer(
                             layer,
-                            layer.getFeatureCollection(),
                             this.getLayerViewPanel()));
         }
     }
@@ -288,15 +245,7 @@ public class RenderingManager {
                 this.getRunnableQueue().notify();
             }
         }
-        // if the repaint timer is not running yet, start it
-        if (!this.getRepaintTimer().isRunning()) {
-            // repaint the panel
-            this.getLayerViewPanel().superRepaint();
-            // start the timer
-            this.getRepaintTimer().start();
-        }
     }
-
     /**
      * Return the collection of managed layers in the same order they were
      * added.
@@ -331,70 +280,33 @@ public class RenderingManager {
      */
     public final void dispose() {
         this.rendererMap.clear();
-        this.getRepaintTimer().stop();
         this.getRunnableQueue().clear();
         if (this.daemon != null) {
             synchronized (this.daemon) { this.daemon.interrupt(); }
         }
     }
-
-    /**
-     * Render a feature using a layer.
-     * @param layer layer to render
-     * @param feature feature to render
-     */
-    public final void render(final Layer layer, final FT_Feature feature) {
-        Renderer renderer = this.rendererMap.get(layer);
-        // if the renderer is not already finished, do nothing
-        if (renderer == null || !renderer.isRendered()) { return; }
-        // create a new runnable for the rendering
-        Runnable runnable = renderer.createFeatureRunnable(feature);
-        if (runnable != null) {
-            synchronized (this.getRunnableQueue()) {
-                // add it to the queue
-                this.getRunnableQueue().add(runnable);
-                // notify the queue which should wake the daemon up as it
-                // should be waiting on it
-                this.getRunnableQueue().notify();
+    public void repaint() {
+        LOGGER.debug(this.getRenderers().size() + " renderers");
+        // we check if there is still something being rendererd
+        // the fastest way is to check for renderers in the queue
+        if (!this.getRunnableQueue().isEmpty()) {
+            return;
+        }
+        // then we check if there is still a renderer working
+        for (Renderer r : this.getRenderers()) {
+            if (r.isRendering() || !r.isRendered()) {
+                LOGGER.debug("Renderer " + r.isRendering() + " - " + r.isRendered());
+                return;
             }
         }
-        // if the repaint timer is not running yet, start it
-        if (!this.getRepaintTimer().isRunning()) {
-            // repaint the panel
-            this.getLayerViewPanel().superRepaint();
-            // start the timer
-            this.getRepaintTimer().start();
+        if (this.selectionRenderer != null
+                && (this.selectionRenderer.isRendering() || !this.selectionRenderer
+                        .isRendered())) {
+            LOGGER.debug("Renderer " + this.selectionRenderer.isRendering() + " - " + this.selectionRenderer.isRendered());
+            return;
         }
-        this.render(this.selectionRenderer);
-    }
-
-    /**
-     * Render part of a layer.
-     * @param layer layer to render
-     * @param geom geometry of the envelope to render
-     */
-    public final void render(final Layer layer, final GM_Object geom) {
-        Renderer renderer = this.rendererMap.get(layer);
-        // if the renderer is not already finished, do nothing
-        if (renderer == null || !renderer.isRendered()) { return; }
-        // create a new runnable for the rendering
-        Runnable runnable = renderer.createLocalRunnable(geom);
-        if (runnable != null) {
-            synchronized (this.getRunnableQueue()) {
-                // add it to the queue
-                this.getRunnableQueue().add(runnable);
-                // notify the queue which should wake the daemon up as it
-                // should be waiting on it
-                this.getRunnableQueue().notify();
-            }
-        }
-        // if the repaint timer is not running yet, start it
-        if (!this.getRepaintTimer().isRunning()) {
-            // repaint the panel
-            this.getLayerViewPanel().superRepaint();
-            // start the timer
-            this.getRepaintTimer().start();
-        }
-        this.render(this.selectionRenderer);
+        LOGGER.debug("Repaint");
+        // nothing is being rendered, we can actually repaint the panel
+        RenderingManager.this.getLayerViewPanel().superRepaint();
     }
 }
