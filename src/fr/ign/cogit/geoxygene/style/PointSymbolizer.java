@@ -40,6 +40,7 @@ import javax.xml.bind.annotation.XmlElement;
 
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
+import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 
 /**
@@ -60,7 +61,10 @@ public class PointSymbolizer extends AbstractSymbolizer {
 	public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics) {
 		if (this.getGraphic()==null) return;
 		Point2D point;
-		try {point = viewport.toViewPoint(feature.getGeom().centroid());}
+        GM_Object geometry = (this.getGeometryPropertyName() != null) ? (GM_Object) feature
+                .getAttribute(this.getGeometryPropertyName())
+                : feature.getGeom();
+		try {point = viewport.toViewPoint(geometry.centroid());}
 		catch (NoninvertibleTransformException e) {e.printStackTrace();return;}
 		for(Mark mark:this.getGraphic().getMarks()) {
 			Shape markShape = mark.toShape();

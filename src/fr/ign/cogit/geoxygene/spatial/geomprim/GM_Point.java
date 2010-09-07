@@ -95,4 +95,8 @@ public class GM_Point extends GM_Primitive {
 	@Override
 	public boolean isPoint() {return true;}
 	
+	@Override
+	public DirectPosition centroid() {
+	    return this.position;
+	}
 }
