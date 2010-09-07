@@ -21,7 +21,9 @@
 
 package fr.ign.cogit.geoxygene.contrib.geometrie;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
@@ -258,6 +260,27 @@ public abstract class Distances {
 	//          Distances entre surfaces                      //
 	//                                                        //
 	////////////////////////////////////////////////////////////
+	@SuppressWarnings("unchecked")
+	private static GM_MultiSurface<GM_OrientableSurface> toMultiSurface(GM_Object geom) {
+		if (geom instanceof GM_MultiSurface<?>) {
+			return (GM_MultiSurface<GM_OrientableSurface>) geom;
+		}
+		List<GM_OrientableSurface> list = new ArrayList<GM_OrientableSurface>();
+		list.add((GM_OrientableSurface) geom);
+		GM_MultiSurface<GM_OrientableSurface> multiSurface = new GM_MultiSurface<GM_OrientableSurface>(list);
+		return multiSurface;
+	}
+
+	public static double distanceSurfacique(GM_Object geom, GM_Object geom2) {
+		if (geom instanceof GM_MultiSurface<?> || geom2 instanceof GM_MultiSurface<?>) {
+			return Distances.distanceSurfacique(
+					toMultiSurface(geom),
+					toMultiSurface(geom2));
+		}
+		return Distances.distanceSurfacique(
+					(GM_Polygon) geom,
+					(GM_Polygon) geom2);
+	}
 
 	/** Distance surfacique entre deux GM_Polygon.
 	 *

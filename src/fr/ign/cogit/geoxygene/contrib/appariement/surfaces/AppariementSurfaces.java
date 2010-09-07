@@ -112,7 +112,6 @@ public abstract class AppariementSurfaces {
 					)+new Time(System.currentTimeMillis()));
         }
         liensPreApp = preAppariementSurfaces(popRef, popComp, param);
-
         // appariement par recherche des regroupements optimaux
         if ( param.regroupementOptimal ) {
         	if (LOGGER.isDebugEnabled()) {
@@ -122,9 +121,9 @@ public abstract class AppariementSurfaces {
 						)+new Time(System.currentTimeMillis()));
         	}
             liensRegroupes = rechercheRegroupementsOptimaux(liensPreApp, popRef, popComp, param);
+        } else {
+        	liensRegroupes = liensPreApp;
         }
-        else liensRegroupes = liensPreApp;
-
         // recollage des petites surfaces non encore appariées
         if ( param.ajoutPetitesSurfaces ) {
         	if (LOGGER.isDebugEnabled()) {
@@ -135,7 +134,6 @@ public abstract class AppariementSurfaces {
         	}
             ajoutPetitesSurfaces(liensRegroupes, popRef, popComp, param);
         }
-
         // filtrage final pour n'accepter que les appariements suffisament bons
         if ( param.filtrageFinal) {
         	if (LOGGER.isDebugEnabled()) {
@@ -145,8 +143,7 @@ public abstract class AppariementSurfaces {
 						)+new Time(System.currentTimeMillis()));
         	}
             liensFiltres = filtreLiens(liensRegroupes, param);
-        }
-        else { liensFiltres = liensRegroupes; }
+        } else { liensFiltres = liensRegroupes; }
         if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug(I18N.getString(
 					"AppariementSurfaces." + //$NON-NLS-1$
@@ -194,7 +191,6 @@ public abstract class AppariementSurfaces {
         	}
             popComp.initSpatialIndex(Tiling.class, true);
         }
-
         Iterator<? extends FT_Feature> iterator = popRef.iterator();
         while (iterator.hasNext()) {
             featureRef = iterator.next();

@@ -102,6 +102,20 @@ public class Lien extends FT_Feature {
         this.objetsComp.addAll(objets);
     }
 
+    public final String getFeatureListAsString(List<FT_Feature> features) {
+    	String result = "";
+    	for (FT_Feature feature : features) {
+    		result += feature.getId() + " ";
+    	}
+    	return result;
+    }
+    public final String getObjetsCompAsString() {
+    	return getFeatureListAsString(this.objetsComp);
+    }
+    public final String getObjetsRefAsString() {
+    	return getFeatureListAsString(this.objetsRef);
+    }
+
     /**
      * Estimation de la qualité du lien d'appariement.
      * Entre 0 et 1 en général

@@ -614,60 +614,52 @@ public abstract class Operateurs {
      * author: Mustière
      */
     public static GM_LineString compileArcs(List<GM_LineString> geometries) {
-        DirectPositionList pointsFinaux = new DirectPositionList();
-        DirectPosition pointCourant;
-        GM_LineString LSCourante, LSSuivante, LSCopie;
-        if (geometries.size() == 0) {
-            System.out
-                    .println("ATTENTION. Erreur à la compilation de lignes : aucune ligne en entrée");
+        DirectPositionList finalPoints = new DirectPositionList();
+        if (geometries.isEmpty()) {
+        	logger.error("ATTENTION. Erreur à la compilation de lignes : aucune ligne en entrée");
             return null;
         }
-
-        LSCourante = geometries.get(0);
-
-        if (geometries.size() == 1) { return LSCourante; }
-
-        LSSuivante = geometries.get(1);
-
-        if (Distances.proche(LSCourante.startPoint(), LSSuivante.startPoint(),
-                0)
-                || Distances.proche(LSCourante.startPoint(), LSSuivante
+        GM_LineString currentLine = geometries.get(0);
+        if (geometries.size() == 1) { return currentLine; }
+        GM_LineString nextLine = geometries.get(1);
+        DirectPosition currentPoint = null;
+        if (Distances.proche(currentLine.startPoint(), nextLine.startPoint(),
+        		0)
+                || Distances.proche(currentLine.startPoint(), nextLine
                         .endPoint(), 0)) {
             // premier point = point finale de la premiere ligne
-            pointsFinaux.addAll(((GM_LineString) LSCourante.reverse())
+            finalPoints.addAll(((GM_LineString) currentLine.reverse())
                     .getControlPoint());
-            pointCourant = LSCourante.startPoint();
-        } else if (Distances.proche(LSCourante.endPoint(), LSSuivante
+            currentPoint = currentLine.startPoint();
+        } else if (Distances.proche(currentLine.endPoint(), nextLine
                 .startPoint(), 0)
-                || Distances.proche(LSCourante.endPoint(), LSSuivante
+                || Distances.proche(currentLine.endPoint(), nextLine
                         .endPoint(), 0)) {
             // premier point = point initial de la premiere ligne
-            pointsFinaux.addAll(LSCourante.getControlPoint());
-            pointCourant = LSCourante.endPoint();
+            finalPoints.addAll(currentLine.getControlPoint());
+            currentPoint = currentLine.endPoint();
         } else {
-            System.out
-                    .println("ATTENTION. Erreur à la compilation de lignes (Operateurs) : les lignes ne se touchent pas");
+        	logger.error("ATTENTION. Erreur à la compilation de lignes (Operateurs) : les lignes ne se touchent pas");
             return null;
         }
-
         for (int i = 1; i < geometries.size(); i++) {
-            LSSuivante = geometries.get(i);
-            LSCopie = new GM_LineString(LSSuivante.getControlPoint());
-            if (Distances.proche(pointCourant, LSSuivante.startPoint(), 0)) {
+            nextLine = geometries.get(i);
+            GM_LineString lineCopy = new GM_LineString(nextLine.getControlPoint());
+            if (Distances.proche(currentPoint, nextLine.startPoint(), 0)) {
                 // LSSuivante dans le bon sens
-                LSCopie.removeControlPoint(LSCopie.startPoint());
-                pointsFinaux.addAll(LSCopie.getControlPoint());
+                lineCopy.removeControlPoint(lineCopy.startPoint());
+                finalPoints.addAll(lineCopy.getControlPoint());
 
                 // quel intérêt à cette ligne???
-                pointCourant = LSCopie.endPoint();
-            } else if (Distances.proche(pointCourant, LSSuivante.endPoint(), 0)) {
+                currentPoint = lineCopy.endPoint();
+            } else if (Distances.proche(currentPoint, nextLine.endPoint(), 0)) {
                 // LSSuivante dans le bon sens
-                LSCopie.removeControlPoint(LSCopie.endPoint());
-                pointsFinaux.addAll(((GM_LineString) LSCopie.reverse())
+                lineCopy.removeControlPoint(lineCopy.endPoint());
+                finalPoints.addAll(((GM_LineString) lineCopy.reverse())
                         .getControlPoint());
 
                 // quel intérêt à cette ligne???
-                pointCourant = LSCopie.startPoint();
+                currentPoint = lineCopy.startPoint();
             } else {
                 System.out
                         .println("ATTENTION. Erreur à la compilation de lignes (Operateurs) : les lignes ne se touchent pas");
@@ -675,7 +667,7 @@ public abstract class Operateurs {
             }
         }
 
-        return new GM_LineString(pointsFinaux);
+        return new GM_LineString(finalPoints);
     }
 
     /**
@@ -685,30 +677,33 @@ public abstract class Operateurs {
      * Douglas et Peucker,
      * progressivement avec 10 seuils entre min et max.
      * English: Robust intersection of objects (to bypass JTS bugs)
-     * author: Mustière
+     * @param A a geometry
+     * @param B another geometry
+     * @param min minimum threshold for Douglas-Peucker algorithm
+     * @param max maximum threshold for Douglas-Peucker algorithm
+     * @return the intersection of geometries A and B
      */
     public static GM_Object intersectionRobuste(GM_Object A, GM_Object B,
             double min, double max) {
         GM_Object intersection, Amodif, Bmodif;
         double seuilDouglas;
         intersection = A.intersection(B);
-
-        if (intersection != null) return intersection;
+        if (intersection != null) { return intersection; }
         for (int i = 0; i < 10; i++) {
             seuilDouglas = min + i * (max - min) / 10;
             Amodif = Filtering.DouglasPeucker(A, seuilDouglas);
             Bmodif = Filtering.DouglasPeucker(B, seuilDouglas);
             intersection = Amodif.intersection(Bmodif);
             if (intersection != null) {
-                System.out
-                        .println("Calcul d'intersection fait après filtrage avec Douglas Peucker à "
-                                + seuilDouglas
-                                + "m, pour cause de plantage de JTS");
+            	if (logger.isDebugEnabled()) {
+            		logger.debug("Calcul d'intersection fait après filtrage avec Douglas Peucker à "
+            				+ seuilDouglas
+            				+ "m, pour cause de plantage de JTS");
+            	}
                 return intersection;
             }
         }
-        System.out
-                .println("ATTENTION : Plantage du calcul d'intersection, même après nettoyage de la géométrie avec Douglas Peucker");
+        logger.error("ATTENTION : Plantage du calcul d'intersection, même après nettoyage de la géométrie avec Douglas Peucker");
         return null;
     }
 
