@@ -432,10 +432,11 @@ public class ColorimetricColor {
 	}
 	
 	/**
-	 * Conversion of a COGIT reference color to a CIEXYZ Color.
+	 * Conversion of a color to a CIEXYZ Color.
+	 * The conversion is made from the RGB components.
      * @return The corresponding CIEXYZ color components.
      */
-    public float[] toXyz() {
+    public float[] toXYZ() {
     	float[] xyz = this.toColor().getColorComponents(
     			ColorSpace.getInstance(ColorSpace.CS_CIEXYZ),
     			null
@@ -444,12 +445,39 @@ public class ColorimetricColor {
     }
     
     /**
+     * Conversion of a color to a CIEXYZ Color.
+	 * The conversion is made from the CIELab components.
+     * @param lab CIELab components.
+     * @return The corresponding CIEXYZ color components.
+     */
+    public static float[] toXYZ(float[] lab) {
+
+		float fy = (lab[0]+16f)/116f;
+		float[] f = new float[3];
+	    f[0] = fy+lab[1]/500f;
+	    f[1] = fy;
+	    f[2] = fy-lab[2]/200f;
+	     
+		float delta = 6f/29f;
+		float[] xyz = new float[3];
+		
+	    for (int i = 0 ; i < 3 ; i++){
+	    	if(f[i]>delta){
+	    		xyz[i]=f[i]*f[i]*f[i];
+	    	}else{
+	    		xyz[i]=(f[i]-16f/116f)*delta*delta*3f;
+	    	}
+	    }
+	    
+	    return xyz;
+    }
+    /**
      * Return the CIELab color components.
      * @return The CIELab color components.
      */
     public float[] getLab() {
 
-    	float[] xyz = this.toXyz();
+    	float[] xyz = this.toXYZ();
 	    float x = xyz[0];
 		float y = xyz[1];
 		float z = xyz[2];
@@ -499,6 +527,131 @@ public class ColorimetricColor {
      */
     public float getCIELabB() {
     	return this.getLab()[2];
+    }
+
+	/**
+	 * Constructor with the CIELab component.
+	 * 
+	 * FIXME Warning ! 
+	 * This constructor must be use with an existence test (like in the Simplex class)
+	 * if the existence is not sure!!
+	 * 
+	 * Cette méthode doit s'utiliser avec des tests (comme dans la classe Simplex)
+	 * si on n'est pas sûrs de l'existance d'une couleur!!
+	 * 
+	 * @param l The lightness in the CIELab color reference system.
+	 * @param a First chromatic component in the CIELab color reference system.
+	 * @param b Second chromatic component in the CIELab color reference system.
+	 */
+	public ColorimetricColor(float l, float a, float b) {
+		float[] lab = new float[]{l, a, b};
+		float[] xyz = toXYZ(lab);
+	    
+		Color c = new Color(ColorSpace.getInstance(ColorSpace.CS_CIEXYZ),xyz,1f);
+		
+	    this.redRGB	= c.getRed();
+	    this.greenRGB	= c.getGreen();
+	    this.blueRGB	= c.getBlue();
+	}
+	
+	public ColorimetricColor(float[] lab) {
+		ColorimetricColor c = new ColorimetricColor(lab[0], lab[1], lab[2]);
+		this.redRGB	= c.getRedRGB();
+	    this.greenRGB	= c.getGreenRGB();
+	    this.blueRGB	= c.getBlueRGB();
+	}
+	 
+	/**
+	 * This method test if this CIELab coordinates describe an existing color. 
+	 * @param l The lightness in the CIELab color reference system.
+	 * @param a First chromatic component in the CIELab color reference system.
+	 * @param b Second chromatic component in the CIELab color reference system.
+	 * @return True if the color exists, false otherwise.
+	 * FIXME This method should be tested once again.
+	 */
+	public static boolean labExistance(float l, float a, float b) {
+		float[] lab = new float[]{l, a, b};
+
+		float fy = (lab[0]+16f)/116f;
+		float[] f = new float[3];
+	    f[0] = fy+lab[1]/500f;
+	    f[1] = fy;
+	    f[2] = fy-lab[2]/200f;
+	    
+		float delta = 6f/29f;
+		float[] xyz = new float[3];
+		
+	    for (int i = 0 ; i < 3 ; i++) {
+	    	if(f[i]>delta){
+	    		xyz[i]=f[i]*f[i]*f[i];
+	    	}else{
+	    		xyz[i]=(f[i]-16f/116f)*delta*delta*3f;
+	    	}
+	    }
+	    
+	    float[] rgb = new float[3];
+	    
+	    float[][] m = new float[][]{{3.2404542f,-1.5371385f,-0.4985314f},
+	    							{-0.9692660f,1.8760108f,0.0415560f},
+	    							{0.0556434f,-0.2040259f,1.0572252f}};
+
+	    for (int i = 0; i < 3; i++) {
+			rgb[i] = m[i][0] * xyz[i] + m[i][1] * xyz[i] + m[i][2] * xyz[i];
+			
+			if(rgb[i] > 0.0031308 ){
+				rgb[i] = 1.055f * (float)Math.pow(rgb[i], 1 / 2.4 ) - 0.055f;
+			}else{
+				rgb[i] = 12.92f * rgb[i];
+			}
+	    }
+	    
+	    if(rgb[0]<=0.99 && rgb[0]>0.01 && rgb[1]<=0.99 && rgb[1]>0.01 && rgb[2]<=0.99 && rgb[2]>0.01){
+		    return true;
+	    }else{
+	    	return false;
+	    }
+	}
+	
+    /**
+     * Set the lightness in the CIELab color reference system.
+     * @param l The lightness in the CIELab color reference system.
+     */
+    public void setL(float l) {
+    	float[] lab = this.getLab();
+    	lab[0] = l;
+    	ColorimetricColor c = new ColorimetricColor(lab[0], lab[1], lab[2]);
+    	this.redRGB = c.getRedRGB();
+	    this.greenRGB = c.getGreenRGB();
+	    this.blueRGB = c.getBlueRGB();
+    }
+    
+    
+    /**
+     * Set the first chromatic component in the CIELab color reference system.
+     * @param a First chromatic component in the CIELab color reference system.
+     */
+    public void setA(float a) {
+    	float[] lab = this.getLab();
+    	lab[1] = a;
+    	ColorimetricColor c = new ColorimetricColor(lab[0], lab[1], lab[2]);
+    	
+    	this.redRGB = c.getRedRGB();
+	    this.greenRGB = c.getGreenRGB();
+	    this.blueRGB = c.getBlueRGB();
+    }
+    
+    /**
+     * Set the second chromatic component in the CIELab color reference system.
+     * @param b The second chromatic component in the CIELab color reference system.
+     */
+    public void setB(float b) {
+    	float[] lab = this.getLab();
+    	lab[2] = b;
+    	ColorimetricColor c = new ColorimetricColor(lab[0], lab[1], lab[2]);
+    	
+    	this.redRGB = c.getRedRGB();
+	    this.greenRGB = c.getGreenRGB();
+	    this.blueRGB = c.getBlueRGB();
     }
     
     /**
@@ -583,12 +736,18 @@ public class ColorimetricColor {
 	
 	@Override
 	public String toString(){
-		return "Couleur : R=" + this.getRedRGB()
+		String txtColor = "Couleur : R=" + this.getRedRGB()
 						+ " V=" + this.getGreenRGB()
 						+ " B=" + this.getBlueRGB()
 						+ " l=" + this.getLab()[0]
 						+ " a=" + this.getLab()[1]
 						+ " b=" + this.getLab()[2];
+		
+		if (this.getCleCoul() != null) {
+			txtColor += " Key : " + this.getCleCoul();
+		}
+		
+		return txtColor;
 	}
 	
 	public static void basicColorsComponents() {
