@@ -25,12 +25,17 @@ import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.print.PrinterJob;
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
 import javax.swing.DefaultDesktopManager;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -39,6 +44,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
@@ -229,8 +235,10 @@ public class MainFrame extends JFrame {
     	mScale6250.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-            	LayerViewPanel layerViewPanel = MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
-            	layerViewPanel.getViewport().setScale(1 / (6250 * LayerViewPanel.getMETERS_PER_PIXEL()));
+                LayerViewPanel layerViewPanel = MainFrame.this
+                        .getSelectedProjectFrame().getLayerViewPanel();
+                layerViewPanel.getViewport().setScale(
+                        1 / (6250 * LayerViewPanel.getMETERS_PER_PIXEL()));
             	layerViewPanel.repaint();
             }
         });
@@ -238,8 +246,10 @@ public class MainFrame extends JFrame {
     	mScale12500.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-            	LayerViewPanel layerViewPanel = MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
-            	layerViewPanel.getViewport().setScale(1 / (12500 * LayerViewPanel.getMETERS_PER_PIXEL()));
+                LayerViewPanel layerViewPanel = MainFrame.this
+                        .getSelectedProjectFrame().getLayerViewPanel();
+                layerViewPanel.getViewport().setScale(
+                        1 / (12500 * LayerViewPanel.getMETERS_PER_PIXEL()));
             	layerViewPanel.repaint();
             }
         });
@@ -247,8 +257,10 @@ public class MainFrame extends JFrame {
     	mScale25k.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-            	LayerViewPanel layerViewPanel = MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
-            	layerViewPanel.getViewport().setScale(1 / (25000 * LayerViewPanel.getMETERS_PER_PIXEL()));
+                LayerViewPanel layerViewPanel = MainFrame.this
+                        .getSelectedProjectFrame().getLayerViewPanel();
+                layerViewPanel.getViewport().setScale(
+                        1 / (25000 * LayerViewPanel.getMETERS_PER_PIXEL()));
             	layerViewPanel.repaint();
             }
         });
@@ -256,8 +268,10 @@ public class MainFrame extends JFrame {
     	mScale50k.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-            	LayerViewPanel layerViewPanel = MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
-            	layerViewPanel.getViewport().setScale(1 / (50000 * LayerViewPanel.getMETERS_PER_PIXEL()));
+                LayerViewPanel layerViewPanel = MainFrame.this
+                        .getSelectedProjectFrame().getLayerViewPanel();
+                layerViewPanel.getViewport().setScale(
+                        1 / (50000 * LayerViewPanel.getMETERS_PER_PIXEL()));
             	layerViewPanel.repaint();
             }
         });
@@ -265,8 +279,10 @@ public class MainFrame extends JFrame {
     	mScale100k.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-            	LayerViewPanel layerViewPanel = MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
-            	layerViewPanel.getViewport().setScale(1 / (100000 * LayerViewPanel.getMETERS_PER_PIXEL()));
+                LayerViewPanel layerViewPanel = MainFrame.this
+                        .getSelectedProjectFrame().getLayerViewPanel();
+                layerViewPanel.getViewport().setScale(
+                        1 / (100000 * LayerViewPanel.getMETERS_PER_PIXEL()));
             	layerViewPanel.repaint();
             }
         });
@@ -275,6 +291,40 @@ public class MainFrame extends JFrame {
     	viewMenu.add(mScale25k);
     	viewMenu.add(mScale50k);
     	viewMenu.add(mScale100k);
+        JMenuItem printMenu = new JMenuItem(
+                I18N.getString("MainFrame.Print")); //$NON-NLS-1$
+        printMenu.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent arg0) {
+                Thread th=new Thread(new Runnable(){
+                    public void run() {
+                        try {
+                            PrinterJob printJob = PrinterJob.getPrinterJob();
+                            printJob.setPrintable(getSelectedProjectFrame()
+                                    .getLayerViewPanel());
+                            PrintRequestAttributeSet aset
+                            = new HashPrintRequestAttributeSet();
+                            if (printJob.printDialog(aset)) {
+                                printJob.print(aset);
+                            }
+                        } catch (java.security.AccessControlException ace) {
+                            JOptionPane.showMessageDialog(
+                                    getSelectedProjectFrame()
+                                    .getLayerViewPanel(),
+                                    I18N.getString("MainFrame.ImpossibleToPrint") //$NON-NLS-1$
+                                    + ";" //$NON-NLS-1$
+                                    + I18N.getString("MainFrame.AccessControlProblem") //$NON-NLS-1$
+                                    + ace.getMessage(),
+                                    I18N.getString("MainFrame.ImpossibleToPrint"), //$NON-NLS-1$
+                                    JOptionPane.ERROR_MESSAGE);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
+                th.start();
+            }});
+        viewMenu.addSeparator();
+        viewMenu.add(printMenu);
         this.menuBar.add(configurationMenu);
         this.menuBar.add(helpMenu);
         this.setJMenuBar(this.menuBar);
@@ -353,7 +403,12 @@ public class MainFrame extends JFrame {
         projectFrame.setSize(this.desktopPane.getSize());
         projectFrame.setVisible(true);
         this.desktopPane.add(projectFrame, JLayeredPane.DEFAULT_LAYER);
-        this.desktopPane.setSelectedFrame(projectFrame);
+        try {
+            projectFrame.setSelected(true);
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        }
+        projectFrame.setToolTipText(projectFrame.getTitle());
         return projectFrame;
     }
 }

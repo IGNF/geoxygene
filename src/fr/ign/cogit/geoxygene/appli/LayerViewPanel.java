@@ -22,10 +22,14 @@
 package fr.ign.cogit.geoxygene.appli;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -59,7 +63,7 @@ import fr.ign.cogit.geoxygene.style.Layer;
  *
  * @author Julien Perret
  */
-public class LayerViewPanel extends JPanel {
+public class LayerViewPanel extends JPanel implements Printable {
     /**
      * logger.
      */
@@ -129,9 +133,11 @@ public class LayerViewPanel extends JPanel {
      * Default Constructor.
      */
     public LayerViewPanel(final ProjectFrame frame) {
+        super();
         this.projectFrame = frame;
         this.viewport = new Viewport(this);
         this.addPaintListener(new ScalePaintListener());
+        this.setDoubleBuffered(true);
         this.setOpaque(true);
     }
 
@@ -250,8 +256,8 @@ public class LayerViewPanel extends JPanel {
         if (this.getRenderingManager().getLayers().isEmpty()) {
             return null;
         }
-        Iterator<Layer> layerIterator = this.getRenderingManager().getLayers()
-                    .iterator();
+        List<Layer> copy = new ArrayList<Layer>(this.getRenderingManager().getLayers());
+        Iterator<Layer> layerIterator = copy.iterator();
         GM_Envelope envelope = layerIterator.next().getFeatureCollection()
                     .envelope();
         while (layerIterator.hasNext()) {
@@ -268,5 +274,28 @@ public class LayerViewPanel extends JPanel {
      */
     public final Set<FT_Feature> getSelectedFeatures() {
         return this.selectedFeatures;
+    }
+    @Override
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
+            throws PrinterException {
+        if (pageIndex >= 1) { return Printable.NO_SUCH_PAGE; }
+        Graphics2D g2d = (Graphics2D) graphics;
+        // translate to the upper left corner of the page format
+        g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+        // translate to the middle of the page format
+        g2d.translate(
+                pageFormat.getImageableWidth() / 2,
+                pageFormat.getImageableHeight() / 2);
+        Dimension d = getSize();
+        double scale=Math.min(
+                pageFormat.getImageableWidth() / d.width,
+                pageFormat.getImageableHeight() / d.height);
+        if (scale < 1.0) { g2d.scale(scale, scale); }
+        // translate of half the size of the graphics to paint for it to be
+        // centered
+        g2d.translate(-d.width / 2.0, -d.height / 2.0);
+        // copy the rendered layers into the graphics
+        this.getRenderingManager().copyTo(g2d);
+        return Printable.PAGE_EXISTS;
     }
 }

@@ -23,6 +23,7 @@ package fr.ign.cogit.geoxygene.appli;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.NoninvertibleTransformException;
@@ -35,8 +36,11 @@ import java.util.Map;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JSplitPane;
+
+import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.plugin.GeometryToolBar;
 import fr.ign.cogit.geoxygene.feature.DataSet;
@@ -66,6 +70,11 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
  */
 public class ProjectFrame extends JInternalFrame implements
         FeatureCollectionListener, ActionListener {
+    /**
+     * Logger of the application.
+     */
+    private static Logger logger = Logger.getLogger(ProjectFrame.class.getName());
+
     /**
      * Serial version id.
      */
@@ -133,21 +142,27 @@ public class ProjectFrame extends JInternalFrame implements
     private MainFrame mainFrame = null;
     public MainFrame getMainFrame() { return this.mainFrame; }
 
+    private static int PFID = 1;
     /**
      * Constructor.
      * @param iconImage the project icon image
      */
     public ProjectFrame(final MainFrame frame, final ImageIcon iconImage) {
+        super("ProjectFrame " + PFID++, true, true, true, true); //$NON-NLS-1$
+        // Setting the tool tip text to the frame and its sub components
+        this.setToolTipText(this.getTitle());
+        this.getDesktopIcon().setToolTipText(this.getTitle());
+        for (Component c : this.getDesktopIcon().getComponents()) {
+            if (c instanceof JComponent) {
+                ((JComponent) c).setToolTipText(this.getTitle());
+            }
+        }
+        this.setSize(ProjectFrame.DEFAULT_WIDTH, ProjectFrame.DEFAULT_HEIGHT);
+        this.setFrameIcon(iconImage);
         this.mainFrame = frame;
         this.layerViewPanel = new LayerViewPanel(this);
         this.layerLegendPanel = new LayerLegendPanel(this.sld,
                 this.layerViewPanel);
-        this.setSize(ProjectFrame.DEFAULT_WIDTH, ProjectFrame.DEFAULT_HEIGHT);
-        this.setResizable(true);
-        this.setClosable(true);
-        this.setMaximizable(true);
-        this.setIconifiable(true);
-        this.setFrameIcon(iconImage);
         this.getContentPane().setLayout(new BorderLayout());
         this.splitPane.setBorder(null);
         this.layerLegendPanel.setLayout(new BoxLayout(this.layerLegendPanel,
@@ -168,7 +183,8 @@ public class ProjectFrame extends JInternalFrame implements
      * @param name the name of the population
      */
     public final void addFeatureCollection(
-            final Population<? extends FT_Feature> population, final String name) {
+            final Population<? extends FT_Feature> population,
+                    final String name) {
         Layer layer = this.sld.createLayer(name, population.getFeatureType()
                 .getGeometryType());
         this.addLayer(layer);
@@ -275,7 +291,9 @@ public class ProjectFrame extends JInternalFrame implements
     /**
      * The map from feature collection to layer.
      */
-    private Map<FT_FeatureCollection<? extends FT_Feature>, Layer> featureCollectionToLayerMap = new HashMap<FT_FeatureCollection<? extends FT_Feature>, Layer>();
+    private Map<FT_FeatureCollection<? extends FT_Feature>, Layer>
+    featureCollectionToLayerMap
+    = new HashMap<FT_FeatureCollection<? extends FT_Feature>, Layer>();
 
     /**
      * Dispose of the frame an its {@link LayerViewPanel}.
@@ -319,17 +337,20 @@ public class ProjectFrame extends JInternalFrame implements
      */
     public void clearSelection() {
         this.getLayerViewPanel().getSelectedFeatures().clear();
-        this.getLayerViewPanel().repaint();
+        this.getLayerViewPanel().getRenderingManager().getSelectionRenderer().clearImageCache();
+        this.getLayerViewPanel().superRepaint();
     }
 
     /**
      * Créer une nouvelle couche avec le type de géométrie envoyé en paramètre
      * et l'ajoute au panneau de gauche.
-     * Retourne le nom de la couche (null si on a cliqué sur annuler).
+     * @return le nom de la couche (null si on a cliqué sur annuler).
      * @param newLayerName the new layer name
      * @param geomType geometry type of the new layer
      */
-    public Layer createLayer(String newLayerName, Class<? extends GM_Object> geomType) {
+    public Layer createLayer(
+            String newLayerName,
+            Class<? extends GM_Object> geomType) {
         /*
         String newLayerName = (String) JOptionPane.showInputDialog(this,
                 "Saisissez le nom de la couche",
@@ -339,7 +360,6 @@ public class ProjectFrame extends JInternalFrame implements
                 */
         if (newLayerName == null) {
             // TODO
-            //getPanelVisu().stopEditing();
             return null;
         }
 
@@ -366,10 +386,12 @@ public class ProjectFrame extends JInternalFrame implements
 
         return layer;
     }
+
     /**
-     * Cette méthode génère un nom de couche du type: "Nouvelle couche ('n') où n indique le nombre de couche portant déjà ce nom
+     * Cette méthode génère un nom de couche du type: "Nouvelle couche ('n') où
+     * n indique le nombre de couche portant déjà ce nom.
      * @return Le nom de la nouvelle couche
-     * TODO create I18N text
+     *         TODO create I18N text
      */
     public String generateNewLayerName() {
         return checkLayerName("Nouvelle couche"); //$NON-NLS-1$
@@ -385,14 +407,21 @@ public class ProjectFrame extends JInternalFrame implements
         }
         return layerName;
     }
+
     /**
-     * Créer une nouvelle population en fonction du nom et du type de géométrie envoyés en paramètre.
-     * Initialise l'index spatial, ajoute le PanelVisu comme ChangeListener et met à jour le FeatureType de la population
+     * Créer une nouvelle population en fonction du nom et du type de géométrie
+     * envoyés en paramètre.
+     * <p>
+     * Initialise l'index spatial, ajoute le PanelVisu comme ChangeListener et
+     * met à jour le FeatureType de la population.
      * @param popName Le nom de la population à créer
      * @param geomType Le type de géométrie de la population
-     * @return Une nouvelle population à partir du nom et du type de géométrie envoyés en paramètre.
+     * @return Une nouvelle population à partir du nom et du type de géométrie
+     *         envoyés en paramètre.
      */
-    public Population<FT_Feature> generateNewPopulation(String popName, Class<? extends GM_Object>geomType) {
+    public Population<FT_Feature> generateNewPopulation(
+            String popName,
+            Class<? extends GM_Object>geomType) {
         Population<FT_Feature> newPop = new Population<FT_Feature>(popName);
         newPop.addFeatureCollectionListener(this);
         FeatureType type = new FeatureType();
@@ -402,14 +431,20 @@ public class ProjectFrame extends JInternalFrame implements
     }
 
     /**
-     * Créer une nouvelle population en fonction du layer et d'une collection de features envoyés en paramètre.
-     * Initialise l'index spatial, ajoute le PanelVisu comme ChangeListener et met à jour le FeatureType de la population
+     * Créer une nouvelle population en fonction du layer et d'une collection
+     * de features envoyés en paramètre.
+     * <p>
+     * Initialise l'index spatial, ajoute le PanelVisu comme ChangeListener et
+     * met à jour le FeatureType de la population.
      * @param layer Le layer à partir duquel on souhaite créer la population
      * @param features Les features que l'on souhaite ajouter à la population
-     * @return Une nouvelle population à partir du layer et des features envoyés en paramètre.
+     * @return Une nouvelle population à partir du layer et des features
+     * envoyés en paramètre.
      */
-    public Population<FT_Feature> generateNewPopulation(FT_FeatureCollection<? extends FT_Feature> features, Layer layer) {
-        Population<FT_Feature> newPop = new Population<FT_Feature>(layer.getName());
+    public Population<FT_Feature> generateNewPopulation(
+            FT_FeatureCollection<? extends FT_Feature> features, Layer layer) {
+        Population<FT_Feature> newPop
+        = new Population<FT_Feature>(layer.getName());
         if (features == null || features.isEmpty()) return null;
         newPop.addAll(features);
         newPop.addFeatureCollectionListener(this);
@@ -493,10 +528,14 @@ public class ProjectFrame extends JInternalFrame implements
         ColorMap colorMap = new ColorMap();
         Interpolate interpolate = new Interpolate();
         double diff = max - min;
-        interpolate.getInterpolationPoint().add(new InterpolationPoint(min, Color.blue));
-        interpolate.getInterpolationPoint().add(new InterpolationPoint(min + diff / 3, Color.cyan));
-        interpolate.getInterpolationPoint().add(new InterpolationPoint(min + 2 * diff / 3, Color.yellow));
-        interpolate.getInterpolationPoint().add(new InterpolationPoint(max, Color.red));
+        interpolate.getInterpolationPoint().add(
+                new InterpolationPoint(min, Color.blue));
+        interpolate.getInterpolationPoint().add(
+                new InterpolationPoint(min + diff / 3, Color.cyan));
+        interpolate.getInterpolationPoint().add(
+                new InterpolationPoint(min + 2 * diff / 3, Color.yellow));
+        interpolate.getInterpolationPoint().add(
+                new InterpolationPoint(max, Color.red));
         colorMap.setInterpolate(interpolate);
         symbolizer.setColorMap(colorMap);
         layer.setImage(symbolizer, image);
