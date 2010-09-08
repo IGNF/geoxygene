@@ -247,6 +247,19 @@ public class RenderingManager {
         }
     }
     /**
+     * Render a layer.
+     * @param layerName the name of the layer to run
+     * @see LayerRenderer
+     */
+    public void render(final String layerName) {
+        for (Layer layer : this.getLayers()) {
+            if (layer.getName().equalsIgnoreCase(layerName.toLowerCase())) {
+                this.render(this.getRenderer(layer));
+                return;
+            }
+        }
+    }
+    /**
      * Return the collection of managed layers in the same order they were
      * added.
      * @return the collection of managed layers
