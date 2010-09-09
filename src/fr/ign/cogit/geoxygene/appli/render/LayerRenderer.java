@@ -24,6 +24,8 @@ package fr.ign.cogit.geoxygene.appli.render;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
@@ -33,6 +35,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import javax.swing.event.EventListenerList;
 
 import org.apache.log4j.Logger;
 
@@ -62,6 +66,33 @@ public class LayerRenderer implements Renderer {
      */
     private static Logger logger =
         Logger.getLogger(LayerRenderer.class.getName());
+    protected EventListenerList listenerList = new EventListenerList();
+    /**
+     * Adds an <code>ActionListener</code>.
+     * @param l the <code>ActionListener</code> to be added
+     */
+    public void addActionListener(ActionListener l) {
+        this.listenerList.add(ActionListener.class, l);
+    }
+
+    /**
+     * Notifies all listeners that have registered interest for
+     * notification on this event type.  The event instance
+     * is lazily created.
+     * @see EventListenerList
+     */
+    protected void fireActionPerformed(ActionEvent event) {
+        // Guaranteed to return a non-null array
+        Object[] listeners = this.listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==ActionListener.class) {
+                // Lazily create the event:
+                ((ActionListener)listeners[i+1]).actionPerformed(event);
+            }
+        }
+    }
     /**
      * Layer to render.
      */
@@ -260,7 +291,7 @@ public class LayerRenderer implements Renderer {
                     // ( used by isRendering() )
                     LayerRenderer.this.setRendering(false);
                     LayerRenderer.this.setRendered(true);
-                    logger.debug("Renderer "+LayerRenderer.this.getLayer().getName()+ " finished");
+                    LayerRenderer.logger.debug("Renderer "+LayerRenderer.this.getLayer().getName()+ " finished");
                     LayerRenderer.this.getLayerViewPanel().getRenderingManager().repaint();
                 }
             }
@@ -282,6 +313,17 @@ public class LayerRenderer implements Renderer {
         }
         Collection<? extends FT_Feature> collection =
             this.layer.getFeatureCollection().select(envelope);
+        int numberOfFeatureTypeStyle = 0;
+        for (Style style : this.layer.getStyles()) {
+            if (style.isUserStyle()) {
+                numberOfFeatureTypeStyle += ((UserStyle) style)
+                        .getFeatureTypeStyles().size();
+            }
+        }
+        //logger.info(numberOfFeatureTypeStyle + " fts");
+        fireActionPerformed(new ActionEvent(this, 3,
+                "Rendering start", numberOfFeatureTypeStyle * collection.size())); //$NON-NLS-1$
+        int featureRenderIndex = 0;
         for (Style style : this.layer.getStyles()) {
             if (this.isCancelled()) {
                 return;
@@ -290,19 +332,13 @@ public class LayerRenderer implements Renderer {
                 UserStyle userStyle = (UserStyle) style;
                 for (FeatureTypeStyle featureTypeStyle
                         : userStyle.getFeatureTypeStyles()) {
-                    if (this.isCancelled()) {
-                        return;
-                    }
+                    if (this.isCancelled()) { return; }
                     // creating a map between each rule and the
                     // corresponding features (filtered in)
                     Map<Rule, Set<FT_Feature>> filteredFeatures =
                         new HashMap<Rule, Set<FT_Feature>>();
                     for (Rule rule : featureTypeStyle.getRules()) {
                         filteredFeatures.put(rule, new HashSet<FT_Feature>());
-                    }
-                    if (logger.isTraceEnabled()) {
-                        logger.trace(collection.size()
-                                + " features"); //$NON-NLS-1$
                     }
                     FT_Feature[] list = new FT_Feature[0];
                     synchronized (collection) {
@@ -312,57 +348,32 @@ public class LayerRenderer implements Renderer {
                         for (Rule rule : featureTypeStyle.getRules()) {
                             if ((rule.getFilter() == null) || rule.getFilter().
                                     evaluate(feature)) {
-                                /*
-                                if (logger.isTraceEnabled()) {
-                                    logger.trace(feature
-                                            + " filtered in " + //$NON-NLS-1$
-                                            rule.getFilter());
-                                }
-                                */
                                 filteredFeatures.get(rule).add(feature);
                                 break;
                             }
-                            /*
-                            if (logger.isTraceEnabled()) {
-                                logger.trace(feature
-                                        + " filtered out " + //$NON-NLS-1$
-                                        rule.getFilter());
-                            }
-                            */
                         }
-                    }
-                    if (logger.isTraceEnabled()) {
-                        int nbFeatures = 0;
-                        for (Rule rule : filteredFeatures.keySet()) {
-                            logger.trace(filteredFeatures.get(rule).size()
-                                    + " features for " + rule); //$NON-NLS-1$
-                            nbFeatures += filteredFeatures.get(rule).size();
-                        }
-                        logger.trace(nbFeatures
-                                + "features filtered in over " //$NON-NLS-1$
-                                + list.length);
                     }
                     for (int indexRule =
                         featureTypeStyle.getRules().size() - 1;
                     indexRule >= 0; indexRule--) {
-                        if (this.isCancelled()) {
-                            return;
-                        }
+                        if (this.isCancelled()) { return; }
                         Rule rule = featureTypeStyle.getRules().get(indexRule);
-                        if (logger.isTraceEnabled()) {
-                            logger.trace(filteredFeatures.get(rule).size()
-                                    + "  for rule " + rule); //$NON-NLS-1$
-                        }
                         for (FT_Feature feature : filteredFeatures.get(rule)) {
                             for (Symbolizer symbolizer
                                     : rule.getSymbolizers()) {
                                 render(symbolizer, feature, theImage);
                             }
+                            fireActionPerformed(new ActionEvent(this, 4,
+                                    "Rendering feature",
+                                    100 * featureRenderIndex++ /
+                                    (numberOfFeatureTypeStyle * collection.size()))); //$NON-NLS-1$
                         }
                     }
                 }
             }
         }
+        fireActionPerformed(new ActionEvent(this, 5,
+                "Rendering finished", featureRenderIndex)); //$NON-NLS-1$
     }
 
     /**

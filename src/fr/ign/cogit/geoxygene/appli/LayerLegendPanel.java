@@ -35,8 +35,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.Box;
@@ -68,6 +70,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.style.Layer;
@@ -153,6 +156,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             I18N.getString("LayerLegendPanel." + //$NON-NLS-1$
             		"CenterViewOnLayer")); //$NON-NLS-1$
 
+    ImageIcon[] images = new ImageIcon[21];
     /**
      * @param theSld
      *            sld of the layer legend panel.
@@ -165,6 +169,15 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         this.sld = theSld;
         this.sld.addChangeListener(this);
         this.layerViewPanel = theLayerViewPanel;
+
+        for (int n = 0; n < 20; n++) {
+            ImageIcon image = new ImageIcon(LayerLegendPanel.class
+                    .getResource("/images/icons/32x32/munsellcolorwheel_" + n + ".png"));
+            this.images[n] = image;
+        }
+        ImageIcon image = new ImageIcon(LayerLegendPanel.class
+                .getResource("/images/icons/32x32/munsellcolorwheel.png"));
+        this.images[20] = image;
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
@@ -428,7 +441,6 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         this.popupMenu.add(this.deleteMenuItem);
         this.layersTable.addMouseListener(new PopupListener());
     }
-
     @Override
     public final void stateChanged(final ChangeEvent e) {
         this.update();
@@ -591,13 +603,14 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         return this.getSld().getLayers().get(
                 this.getSld().getLayers().size() - 1 - row);
     }
+    Map<Layer, ImageIcon> map = new HashMap<Layer, ImageIcon>();
     /**
      * The TableModel of the Layer Legend Panel
      */
     public class LayersTableModel extends DefaultTableModel {
         private static final long serialVersionUID = 1L;
         @Override
-        public int getColumnCount() { return 5; }
+        public int getColumnCount() { return 6; }
         @Override
         public int getRowCount() {
             return LayerLegendPanel.this.getSld().getLayers().size();
@@ -617,6 +630,14 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
                 }
                 if (col == 4) {
                     return layer.getName();
+                }
+                if (col == 5) {
+                    ImageIcon image = map.get(layer);
+                    if (image == null) {
+                        image = images[20];
+                        map.put(layer, image);
+                    }
+                    return image;
                 }
                 return new JPanel();
             }
@@ -643,6 +664,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
             if (column == 4) {
                 return I18N.getString(
                         "LayerLegendPanel.LayerName"); //$NON-NLS-1$
+            }
+            if (column == 5) {
+                return "Rendering Progress"; //$NON-NLS-1$
             }
             return I18N.getString(
                     "LayerLegendPanel.Styles"); //$NON-NLS-1$
@@ -817,7 +841,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
     	 */
     	public StyleEditor(JTextField textField){
     		super(textField);
-    		panel = new JPanel();
+    		this.panel = new JPanel();
     	}
 
     	@Override
@@ -867,6 +891,23 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
         if (e.getActionCommand().equals("bottom")) { //$NON-NLS-1$
             this.moveSelectedLayersToBottom();
             return;
+        }
+        if (e.getID() == 3) { //rendering starts
+        }
+        if (e.getID() == 4) { //rendering a feature
+            LayerRenderer renderer = (LayerRenderer) e.getSource();
+            int n = e.getModifiers() * 2 / 10;
+            this.map.put(renderer.getLayer(), this.images[n]);
+            this.tablemodel.fireTableDataChanged();
+            this.layersTable.repaint();
+            this.update();
+        }
+        if (e.getID() == 5) { //rendering finished
+            LayerRenderer renderer = (LayerRenderer) e.getSource();
+            this.map.put(renderer.getLayer(), this.images[20]);
+            this.tablemodel.fireTableDataChanged();
+            this.layersTable.repaint();
+            this.update();
         }
     }
 

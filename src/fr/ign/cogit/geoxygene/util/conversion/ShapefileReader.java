@@ -46,8 +46,6 @@ import org.geotools.data.shapefile.shp.ShapefileReader.Record;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import sun.net.ProgressEvent;
-
 import com.vividsolutions.jts.geom.Geometry;
 
 import fr.ign.cogit.geoxygene.I18N;

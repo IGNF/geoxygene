@@ -201,11 +201,14 @@ public class RenderingManager {
      */
     public final void addLayer(final Layer layer) {
         if (this.rendererMap.get(layer) == null) {
+            LayerRenderer renderer = new LayerRenderer(
+                    layer,
+                    this.getLayerViewPanel());
             this.rendererMap.put(
                     layer,
-                    new LayerRenderer(
-                            layer,
-                            this.getLayerViewPanel()));
+                    renderer);
+            // Adding the layer legend panel to the listeners of the renderer
+            renderer.addActionListener(this.getLayerViewPanel().getProjectFrame().getLayerLegendPanel());
         }
     }
 

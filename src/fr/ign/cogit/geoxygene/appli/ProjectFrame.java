@@ -325,6 +325,7 @@ public class ProjectFrame extends JInternalFrame implements
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getID() == 2) {
+            // loading finished
             Population<?> p = (Population<?>) e.getSource();
             Layer l = this.getLayer(p.getNom());
             this.getLayerViewPanel().getRenderingManager().render(this.getLayerViewPanel().getRenderingManager().getRenderer(l));
