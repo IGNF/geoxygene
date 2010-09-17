@@ -31,8 +31,16 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSolid;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
+import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeCurve;
 import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeSolid;
+import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeSurface;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 import fr.ign.cogit.geoxygene.util.conversion.ImgUtil;
@@ -558,6 +566,47 @@ abstract public class GM_Object implements Cloneable {
         if(this instanceof GM_CompositeSolid) {
             return 3;
         }
+        
+        if (this instanceof GM_OrientableSurface) {
+            return 2;
+
+        }
+
+        if (this instanceof GM_MultiSurface<?>) {
+            return 2;
+
+        }
+        
+        if(this instanceof GM_CompositeSurface) {
+            return 2;
+        }
+        
+        if (this instanceof GM_OrientableCurve) {
+            return 1;
+
+        }
+
+        if (this instanceof GM_MultiCurve<?>) {
+            return 1;
+
+        }
+        
+        if(this instanceof GM_CompositeCurve) {
+            return 1;
+        }
+        
+
+        if (this instanceof GM_MultiPoint) {
+            return 0;
+
+        }
+        
+        if(this instanceof GM_Point) {
+            return 0;
+        }
+        
+        
+        
         
         return new JtsAlgorithms().dimension(this);}
     /**
