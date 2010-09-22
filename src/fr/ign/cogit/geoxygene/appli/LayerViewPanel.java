@@ -27,9 +27,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -57,6 +59,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.util.conversion.ImgUtil;
 
 /**
  * Panel displaying layers.
@@ -143,11 +146,9 @@ public class LayerViewPanel extends JPanel implements Printable {
 
     @Override
     public final void repaint() {
-        logger.debug("repaint");
         if (this.renderingManager != null) {
             this.renderingManager.renderAll();
         }
-        logger.debug("repaint finished");
     }
     /**
      * Repaint the panel using the repaint method of the super class
@@ -157,15 +158,12 @@ public class LayerViewPanel extends JPanel implements Printable {
      * @see #paintComponent(Graphics)
      */
     public final void superRepaint() {
-        logger.debug("superRepaint");
         super.repaint();
-        logger.debug("superRepaint finished");
     }
 
     @Override
     public final void paintComponent(final Graphics g) {
         try {
-            logger.debug("paintComponent");
             ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                         RenderingHints.VALUE_ANTIALIAS_ON);
             //super.paintComponent(g);
@@ -177,7 +175,6 @@ public class LayerViewPanel extends JPanel implements Printable {
             // if currently editing geometry
             this.paintGeometryEdition(g);
             this.paintOverlays(g);
-            logger.debug("paintComponent finished");
         } catch (Throwable t) {
             logger.error(I18N.getString("LayerViewPanel.PaintError")); //$NON-NLS-1$
             // TODO HANDLE EXCEPTIONS
@@ -297,5 +294,27 @@ public class LayerViewPanel extends JPanel implements Printable {
         // copy the rendered layers into the graphics
         this.getRenderingManager().copyTo(g2d);
         return Printable.PAGE_EXISTS;
+    }
+
+    /**
+     * Save the map into an image file. The file format is determined by the
+     * given file extension. If there is none or if the given extension is
+     * unsupported, the image is saved in PNG format.
+     * @param fileName the image file to save into.
+     */
+    public void saveAsImage(String fileName) {
+        Color bg = this.getBackground();
+        BufferedImage image = new BufferedImage(this.getWidth(), this
+                .getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics = image.createGraphics();
+        graphics.setColor(bg);
+        graphics.fillRect(0, 0, this.getWidth(), this.getHeight());
+        this.getRenderingManager().copyTo(graphics);
+        graphics.dispose();
+        try {
+            ImgUtil.saveImage(image, fileName);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
     }
 }

@@ -542,4 +542,14 @@ public class ProjectFrame extends JInternalFrame implements
         layer.setImage(symbolizer, image);
         this.addLayer(layer);
     }
+
+    /**
+     * Save the map into an image file. The file format is determined by the
+     * given file extension. If there is none or if the given extension is
+     * unsupported, the image is saved in PNG format.
+     * @param fileName the image file to save into.
+     */
+    public void saveAsImage(String fileName) {
+        this.getLayerViewPanel().saveAsImage(fileName);
+    }
 }

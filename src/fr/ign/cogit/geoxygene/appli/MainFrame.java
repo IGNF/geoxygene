@@ -38,6 +38,7 @@ import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.swing.DefaultDesktopManager;
 import javax.swing.JDesktopPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLayeredPane;
@@ -215,6 +216,66 @@ public class MainFrame extends JFrame {
                     	MainFrame.this.newProjectFrame();
                     }
                 });
+        JMenuItem saveAsImageMenuItem = new JMenuItem(I18N
+                .getString("MainFrame.SaveAsImage")); //$NON-NLS-1$
+        saveAsImageMenuItem
+                .addActionListener(new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(final ActionEvent e) {
+                        ProjectFrame projectFrame = (ProjectFrame)
+                            MainFrame.this.getDesktopPane().getSelectedFrame();
+                        if (projectFrame == null) {
+                            if (MainFrame.this.getDesktopPane()
+                                    .getAllFrames().length != 0) {
+                                projectFrame = (ProjectFrame) MainFrame.this
+                                        .getDesktopPane().getAllFrames()[0];
+                            } else {
+                                return;
+                            }
+                        }
+                        JFileChooser chooser = new JFileChooser(fc.getPreviousDirectory());
+                        int result = chooser.showSaveDialog(MainFrame.this);
+                        if (result == JFileChooser.APPROVE_OPTION) {
+                            File file = chooser.getSelectedFile();
+                            if (file != null) {
+                                String fileName = file.getAbsolutePath();
+                                projectFrame.saveAsImage(fileName);
+                            }
+                        }
+                    }
+                });
+        JMenuItem printMenu = new JMenuItem(
+                I18N.getString("MainFrame.Print")); //$NON-NLS-1$
+        printMenu.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent arg0) {
+                Thread th=new Thread(new Runnable(){
+                    public void run() {
+                        try {
+                            PrinterJob printJob = PrinterJob.getPrinterJob();
+                            printJob.setPrintable(getSelectedProjectFrame()
+                                    .getLayerViewPanel());
+                            PrintRequestAttributeSet aset
+                            = new HashPrintRequestAttributeSet();
+                            if (printJob.printDialog(aset)) {
+                                printJob.print(aset);
+                            }
+                        } catch (java.security.AccessControlException ace) {
+                            JOptionPane.showMessageDialog(
+                                    getSelectedProjectFrame()
+                                    .getLayerViewPanel(),
+                                    I18N.getString("MainFrame.ImpossibleToPrint") //$NON-NLS-1$
+                                    + ";" //$NON-NLS-1$
+                                    + I18N.getString("MainFrame.AccessControlProblem") //$NON-NLS-1$
+                                    + ace.getMessage(),
+                                    I18N.getString("MainFrame.ImpossibleToPrint"), //$NON-NLS-1$
+                                    JOptionPane.ERROR_MESSAGE);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
+                th.start();
+            }});
         JMenuItem exitMenuItem = new JMenuItem(I18N
                 .getString("MainFrame.Exit")); //$NON-NLS-1$
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -226,6 +287,9 @@ public class MainFrame extends JFrame {
         });
         fileMenu.add(openFileMenuItem);
         fileMenu.add(newProjectFrameMenuItem);
+        fileMenu.addSeparator();
+        fileMenu.add(saveAsImageMenuItem);
+        fileMenu.add(printMenu);
         fileMenu.addSeparator();
         fileMenu.add(exitMenuItem);
         this.menuBar.setFont(this.application.getFont());
@@ -291,40 +355,6 @@ public class MainFrame extends JFrame {
     	viewMenu.add(mScale25k);
     	viewMenu.add(mScale50k);
     	viewMenu.add(mScale100k);
-        JMenuItem printMenu = new JMenuItem(
-                I18N.getString("MainFrame.Print")); //$NON-NLS-1$
-        printMenu.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent arg0) {
-                Thread th=new Thread(new Runnable(){
-                    public void run() {
-                        try {
-                            PrinterJob printJob = PrinterJob.getPrinterJob();
-                            printJob.setPrintable(getSelectedProjectFrame()
-                                    .getLayerViewPanel());
-                            PrintRequestAttributeSet aset
-                            = new HashPrintRequestAttributeSet();
-                            if (printJob.printDialog(aset)) {
-                                printJob.print(aset);
-                            }
-                        } catch (java.security.AccessControlException ace) {
-                            JOptionPane.showMessageDialog(
-                                    getSelectedProjectFrame()
-                                    .getLayerViewPanel(),
-                                    I18N.getString("MainFrame.ImpossibleToPrint") //$NON-NLS-1$
-                                    + ";" //$NON-NLS-1$
-                                    + I18N.getString("MainFrame.AccessControlProblem") //$NON-NLS-1$
-                                    + ace.getMessage(),
-                                    I18N.getString("MainFrame.ImpossibleToPrint"), //$NON-NLS-1$
-                                    JOptionPane.ERROR_MESSAGE);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                });
-                th.start();
-            }});
-        viewMenu.addSeparator();
-        viewMenu.add(printMenu);
         this.menuBar.add(configurationMenu);
         this.menuBar.add(helpMenu);
         this.setJMenuBar(this.menuBar);
