@@ -78,7 +78,8 @@ public class SingleLinkageHierarchicalClusterer {
 	}
 	Edge[] edgeArray = this.edges.toArray(new Edge[0]);
 	Arrays.sort(edgeArray,new Comparator<Edge>() {
-	    public int compare(Edge e1, Edge e2) {
+	    @Override
+		public int compare(Edge e1, Edge e2) {
 		float w =e1.weight-e2.weight;
 		if (w<0) return -1;
 		if (w>0) return 1;
@@ -393,7 +394,8 @@ public class SingleLinkageHierarchicalClusterer {
 	// cutting the links to obtain k groups (numberOfClusters)
 	//TODO revoir cette distance entre clusters !!!
 	Arrays.sort(leaves, new Comparator<Cluster>() {
-	    public int compare(Cluster c1, Cluster c2) {
+	    @Override
+		public int compare(Cluster c1, Cluster c2) {
 	    //if (c1.depth==c2.depth) {
 	    Cluster parent1 = c1.parentCluster;
 	    Cluster parent2 = c2.parentCluster;

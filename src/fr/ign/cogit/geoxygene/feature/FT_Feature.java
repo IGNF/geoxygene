@@ -516,7 +516,7 @@ public abstract class FT_Feature implements Cloneable {
     @SuppressWarnings("unchecked")
     public List<? extends FT_Feature> getRelatedFeatures(
             FeatureType ftt, AssociationRole role) {
-        List<FT_Feature> listResult = new ArrayList();
+        List<FT_Feature> listResult = new ArrayList<FT_Feature>();
         if (logger.isDebugEnabled()) {
             logger.debug(
             "\n**recherche des features en relation**"); //$NON-NLS-1$
@@ -573,7 +573,7 @@ public abstract class FT_Feature implements Cloneable {
                         nomGetMethod, (Class[]) null);
                 String nomClasseAsso = ((AssociationType) role
                         .getAssociationType()).getNomClasseAsso();
-                Class classeAsso = Class.forName(nomClasseAsso);
+                Class<?> classeAsso = Class.forName(nomClasseAsso);
                 if (logger.isDebugEnabled()) logger.debug(
                         "cardMax de " //$NON-NLS-1$
                         + role.getMemberName() + " = " //$NON-NLS-1$
@@ -588,9 +588,9 @@ public abstract class FT_Feature implements Cloneable {
                 }
                 // je cherche le (ou les) role(s) allant de l'association à
                 // l'autre featureType
-                List listRoles = role.getAssociationType().getRoles();
+                List<?> listRoles = role.getAssociationType().getRoles();
                 listRoles.remove(role);
-                List listRolesAGarder = role.getAssociationType().getRoles();
+                List<?> listRolesAGarder = role.getAssociationType().getRoles();
                 listRolesAGarder.remove(role);
                 for (int i = 0; i < listRoles.size(); i++) {
                     if (!((AssociationRole) listRoles.get(i)).getFeatureType()

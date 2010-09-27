@@ -66,6 +66,7 @@ public class DirectPositionList implements Collection<DirectPosition> {
 	public void set (int i, DirectPosition value) {this.list.set(i, value);}
 
 	/** Ajoute un element en fin de liste */
+	@Override
 	public boolean add (DirectPosition value) {return this.list.add(value);}
 
 	/** Ajoute un element au i-eme rang de la liste */
@@ -84,9 +85,11 @@ public class DirectPositionList implements Collection<DirectPosition> {
 	public void removeAll (DirectPositionList theList) {this.list.removeAll(theList.getList());}
 
 	/** Efface toute la liste */
+	@Override
 	public void clear() {this.list.clear();}
 
 	/** Renvoie le nombre de elements */
+	@Override
 	public int size () {return this.list.size();}
 
 	/** Constructeur par defaut. */

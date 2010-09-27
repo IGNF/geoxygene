@@ -40,7 +40,6 @@ import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
  * @version 1.0
  * 
  */
-@SuppressWarnings("unused")
 public class GeosAlgorithms implements GeomAlgorithms {
 
 	public GeosAlgorithms() {
@@ -48,6 +47,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 	}
 
 	private native String intersection(String wkt1, String wkt2);
+	@Override
 	public GM_Object intersection(GM_Object geom1, GM_Object geom2)  {
 		try {
 			String wkt1=WktGeOxygene.makeWkt(geom1);
@@ -61,6 +61,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 	}
 
 	private native String union(String wkt1, String wkt2);
+	@Override
 	public GM_Object union(GM_Object geom1, GM_Object geom2) {
 		try {
 			String wkt1=WktGeOxygene.makeWkt(geom1);
@@ -74,6 +75,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 	}
 
 	private native String difference(String wkt1, String wkt2);
+	@Override
 	public GM_Object difference(GM_Object geom1, GM_Object geom2) {
 		try {
 			String wkt1=WktGeOxygene.makeWkt(geom1);
@@ -87,6 +89,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 	}
 
 	private native String symDifference(String wkt1, String wkt2);
+	@Override
 	public GM_Object symDifference(GM_Object geom1, GM_Object geom2) {
 		try {
 			String wkt1=WktGeOxygene.makeWkt(geom1);
@@ -100,6 +103,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 	}
 
 	private native String buffer(String wkt, double distance);
+	@Override
 	public GM_Object buffer(GM_Object geom, double distance) {
 		try {
 			String wkt=WktGeOxygene.makeWkt(geom);
@@ -111,11 +115,13 @@ public class GeosAlgorithms implements GeomAlgorithms {
 		}
 	}
 
+	@Override
 	public GM_Object buffer10(GM_Object geOxyGeom)  {
 		return buffer(geOxyGeom,10);
 	}
 
 	private native String convexHull(String wkt);
+	@Override
 	public GM_Object convexHull(GM_Object geOxyGeom)  {
 		try {
 			String wkt=WktGeOxygene.makeWkt(geOxyGeom);
@@ -128,6 +134,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 	}
 
 	private native boolean contains(String wkt1, String wkt2);
+	@Override
 	public boolean contains(GM_Object geOxyGeom1, GM_Object geOxyGeom2)  {
 		String wkt1=WktGeOxygene.makeWkt(geOxyGeom1);
 		String wkt2=WktGeOxygene.makeWkt(geOxyGeom2);
@@ -136,6 +143,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 	}
 
 	private native boolean intersects(String wkt1, String wkt2);
+	@Override
 	public boolean intersects(GM_Object geOxyGeom1, GM_Object geOxyGeom2)  {
 		String wkt1=WktGeOxygene.makeWkt(geOxyGeom1);
 		String wkt2=WktGeOxygene.makeWkt(geOxyGeom2);
@@ -144,6 +152,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 	}
 
 	private native double distance(String wkt1, String wkt2);
+	@Override
 	public double distance(GM_Object geOxyGeom1, GM_Object geOxyGeom2) {
 		String wkt1=WktGeOxygene.makeWkt(geOxyGeom1);
 		String wkt2=WktGeOxygene.makeWkt(geOxyGeom2);
@@ -152,6 +161,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 	}
 
 	private native double area(String wkt);
+	@Override
 	public double area(GM_Object geOxyGeom1) {
 		String wkt1=WktGeOxygene.makeWkt(geOxyGeom1);
 		double result=area(wkt1);
@@ -174,6 +184,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 	}
 
 	private native boolean equals(String wkt1, String wkt2);
+	@Override
 	public boolean equals(GM_Object geOxyGeom1, GM_Object geOxyGeom2) {
 		return false;
 	}
@@ -227,6 +238,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 		return 0;
 	}
 
+	@Override
 	public double length(GM_Object geOxyGeom) {
 		return 0;
 	}
@@ -239,6 +251,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 		return null;
 	}
 
+	@Override
 	public DirectPosition centroid(GM_Object geom)  {
 		return null;
 	}

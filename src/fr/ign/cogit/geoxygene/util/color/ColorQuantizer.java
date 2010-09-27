@@ -621,7 +621,8 @@ MouseListener, MouseWheelListener {
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() { createAndShowGUI(); }
+            @Override
+			public void run() { createAndShowGUI(); }
         });
     }
 
@@ -645,6 +646,7 @@ MouseListener, MouseWheelListener {
 
         private BasicStroke stroke = new BasicStroke(4);
 
+        @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
             Graphics2D g2d = (Graphics2D) g.create();
 
@@ -665,7 +667,10 @@ MouseListener, MouseWheelListener {
             g2d.dispose();
         }
 
+        @Override
         public int getIconWidth() { return this.width; }
+
+        @Override
         public int getIconHeight() { return this.height; }
     }
 
@@ -793,7 +798,8 @@ MouseListener, MouseWheelListener {
          * Shows the full image in the main area and sets the application
          * title.
          */
-        public void actionPerformed(ActionEvent e) {
+        @Override
+		public void actionPerformed(ActionEvent e) {
             if (this.displayPhoto instanceof ImageIcon) {
                 displayImageLabel((ImageIcon) this.displayPhoto);
             }

@@ -43,6 +43,7 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
@@ -393,11 +394,11 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
                 return aggr;
             }
             if (geomType.equals(GM_LineString.class)) {
-                GM_MultiCurve aggr = new GM_MultiCurve(list);
+                GM_MultiCurve<?> aggr = new GM_MultiCurve(list);
                 return aggr;
             }
             if (geomType.equals(GM_Polygon.class)) {
-                GM_MultiSurface aggr = new GM_MultiSurface(list);
+                GM_MultiSurface<?> aggr = new GM_MultiSurface(list);
                 return aggr;
             }
             if (geomType.equals(GM_Point.class)) {

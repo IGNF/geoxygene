@@ -67,6 +67,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	 * 
 	 * 
 	 */
+	@Override
 	public List<Object> getParametres() {
 		List<Object> param = new ArrayList<Object>();
 		param.add(Tiling.class);
@@ -115,12 +116,14 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	/** Indique si l'on a demande une mise a jour automatique. */
 	private boolean automaticUpdate;
 	/** Indique si l'on a demande une mise a jour automatique. */
+	@Override
 	public boolean hasAutomaticUpdate() {return this.automaticUpdate;}
 	/**
 	 * Demande une mise a jour automatique. NB: Cette méthode ne fait pas les
 	 * éventuelles MAJ qui auriant ete faites alors que le mode MAJ automatique
 	 * n'était pas activé.
 	 */
+	@Override
 	public void setAutomaticUpdate(boolean auto) {this.automaticUpdate = auto;}
 
 	// ===============================================
@@ -235,6 +238,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 
 	// ===============================================
 	/** Selection a l'aide d'un rectangle. */
+	@Override
 	public Collection<Feature> select(GM_Envelope env) {
 		Collection<Feature> result = new HashSet<Feature>();
 		if (env == null) { return result; }
@@ -268,12 +272,14 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	 * Selection dans le carre dont P est le centre, de cote D. NB: distance
 	 * peut être nul.
 	 */
+	@Override
 	public Collection<Feature> select(DirectPosition P, double distance) {
 		return select(new GM_Envelope(P, distance));
 	}
 
 	// ===============================================
 	/** Selection des objets qui intersectent un objet geometrique quelconque. */
+	@Override
 	public Collection<Feature> select(GM_Object geometry) {
 		int tab[];
 		Collection<Feature> result = new HashSet<Feature>();
@@ -308,6 +314,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	 *            touche "geometry" juste sur une extrémité, alors avec TRUE
 	 *            cela ne renvoie pas la ligne, avec FALSE cela la renvoie
 	 */
+	@Override
 	public Collection<Feature> select(GM_Object geometry,	boolean strictlyCrosses) {
 		int tab[];
 		Collection<Feature> result = new HashSet<Feature>();
@@ -336,6 +343,7 @@ public class Tiling<Feature extends FT_Feature> implements SpatialIndex<Feature>
 	 * Selection a l'aide d'un objet geometrique quelconque et d'une distance.
 	 * NB: distance peut être nul.
 	 */
+	@Override
 	public Collection<Feature> select(GM_Object geometry, double distance) {
 		if (distance == 0) { return select(geometry); }
 		try { return select(geometry.buffer(distance)); }

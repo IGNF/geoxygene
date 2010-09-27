@@ -82,6 +82,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 
 	public JtsAlgorithms() {}
 
+	@Override
 	public DirectPosition centroid(GM_Object geom) {
 		try {
 			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
@@ -96,6 +97,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		}
 	}
 
+	@Override
 	public GM_Object convexHull(GM_Object geom)  {
 		try {
 			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
@@ -110,6 +112,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		}
 	}
 
+	@Override
 	public GM_Object buffer (GM_Object geom, double distance) {
 		if ((distance==0)&&(geom instanceof GM_Point)) return geom;
 		try {
@@ -165,6 +168,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	    }
 	}
 
+	@Override
 	public GM_Object buffer10 (GM_Object geom) {
 		return buffer(geom,10);
 	}
@@ -185,6 +189,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		}
 	}
 
+	@Override
 	public GM_Object union(GM_Object g1, GM_Object g2)  {
 		try {
 			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
@@ -203,6 +208,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		}
 	}
 
+	@Override
 	public GM_Object intersection(GM_Object g1, GM_Object g2) {
 		try {
 			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
@@ -221,6 +227,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		}
 	}
 
+	@Override
 	public GM_Object difference(GM_Object g1, GM_Object g2) {
 		try {
 			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
@@ -240,6 +247,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		}
 	}
 
+	@Override
 	public GM_Object symDifference(GM_Object g1, GM_Object g2) {
 		try {
 			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
@@ -258,6 +266,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		}
 	}
 
+	@Override
 	public boolean equals(GM_Object g1, GM_Object g2) {
 		try {
 			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
@@ -310,6 +319,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		}
 	}
 
+	@Override
 	public boolean contains(GM_Object g1, GM_Object g2) {
 		try {
 			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
@@ -396,6 +406,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		}
 	}
 
+	@Override
 	public boolean intersects(GM_Object g1, GM_Object g2) {
 		try {
 			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
@@ -492,6 +503,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		}
 	}
 
+	@Override
 	public double distance(GM_Object g1, GM_Object g2)  {
 		try {
 			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
@@ -509,6 +521,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		}
 	}
 
+	@Override
 	public double area(GM_Object geom) {
 		try {
 			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(geom);
@@ -524,6 +537,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		}
 	}
 
+	@Override
 	public double length(GM_Object geom) {
 		try {
 			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
@@ -574,6 +588,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		try {
 			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
 			CoordinateFilter translateCoord=new CoordinateFilter() {
+				@Override
 				public void filter(Coordinate coord) {
 					coord.x+=tx;
 					coord.y+=ty;
@@ -797,6 +812,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		Collection<Geometry> newGeometryCollection = geometryCollection;
 		final int cellSize = 1 + (int)Math.sqrt(newGeometryCollection.size());
 		Comparator<Geometry> comparator =  new Comparator<Geometry>(){
+			@Override
 			public int compare(Geometry o1, Geometry o2) {
 				if (o1==null || o2==null) return 0;
 				Envelope env1 = o1.getEnvelopeInternal();
@@ -885,6 +901,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		List<Geometry> newGeometryCollection = geometryCollection;
 		final int cellSize = 1 + (int)Math.sqrt(newGeometryCollection.size());
 		Comparator<Geometry> comparator =  new Comparator<Geometry>(){
+			@Override
 			public int compare(Geometry o1, Geometry o2) {
 				if (o1==null || o2==null) return 0;
 				Envelope env1 = o1.getEnvelopeInternal();

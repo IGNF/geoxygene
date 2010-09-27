@@ -63,6 +63,7 @@ public class GM_Aggregate<GeomType extends GM_Object> extends GM_Object implemen
 	public GeomType set (int i, GeomType value) {return this.element.set(i, value);}
 
 	/** Ajoute un element en fin de liste */
+	@Override
 	public boolean add (GeomType value) {return this.element.add(value);}
 
 	/** Ajoute une liste d'elements en fin de liste */
@@ -78,12 +79,15 @@ public class GM_Aggregate<GeomType extends GM_Object> extends GM_Object implemen
 	public void remove (int i)  {this.element.remove(i);}
 
 	/** Efface toute la liste */
+	@Override
 	public void clear() {this.element.clear();}
 
 	/** Renvoie le nombre de elements */
+	@Override
 	public int size () {return this.element.size();}
 
 	/** Convertit l'agregat en un tableau de GM_Obect. */
+	@Override
 	public GM_Object[] toArray() {
 		GM_Object[] result = new GM_Object[size()];
 		int i=0;
