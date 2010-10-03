@@ -22,8 +22,11 @@
 package fr.ign.cogit.geoxygene.appli;
 
 import java.awt.Font;
+import java.net.URL;
 
 import javax.swing.ImageIcon;
+
+import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
 
 /**
  * Base class for GeOxygene applications.
@@ -96,13 +99,21 @@ public class GeOxygeneApplication {
      * @return The main frame of the application.
      */
     public MainFrame getFrame() {return this.frame;}
-
+    private URL pluginFile = GeOxygeneApplication.class.
+    getResource("/plugins.xml");
     /**
      * Constructor.
      */
     public GeOxygeneApplication() {
-        this.frame = new MainFrame("GeOxygene", this); //$NON-NLS-1$
-        this.frame.setVisible(true);
+        this("GeOxygene"); //$NON-NLS-1$
+    }
+
+    /**
+     * Constructor.
+     * @param title title of the application
+     */
+    public GeOxygeneApplication(final String title) {
+        this(title, null);
     }
 
     /**
@@ -113,9 +124,35 @@ public class GeOxygeneApplication {
     public GeOxygeneApplication(
                 final String title,
                 final ImageIcon theApplicationIcon) {
-        this.applicationIcon = theApplicationIcon;
+        if (theApplicationIcon != null) {
+            this.applicationIcon = theApplicationIcon;
+        }
         this.frame = new MainFrame(title, this);
         this.frame.setVisible(true);
+        this.initializePlugins();
+    }
+
+    /**
+     * Initialize the application plugins.
+     */
+    private void initializePlugins() {
+        GeOxygeneApplicationProperties plugins = GeOxygeneApplicationProperties
+                .unmarshall(this.pluginFile.getFile());
+        for (String pluginName : plugins.getPlugins()) {
+            System.out.println("plugin : " + pluginName);
+            try {
+                Class<?> pluginClass = Class.forName(pluginName);
+                GeOxygeneApplicationPlugin plugin = (GeOxygeneApplicationPlugin) pluginClass
+                        .newInstance();
+                plugin.initialize(this);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
