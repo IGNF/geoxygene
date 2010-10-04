@@ -169,7 +169,6 @@ public class Rule {
 	public void setSymbolizers(List<Symbolizer> symbolizers) {
 	    this.symbolizers = symbolizers;
 	}
-
 	@Override
 	public String toString() {
 		String result = "Rule " + this.getName() //$NON-NLS-1$
@@ -177,7 +176,7 @@ public class Rule {
 		result += "\tFilter " + this.getFilter() //$NON-NLS-1$
 		+ "\n"; //$NON-NLS-1$
 		for (Symbolizer symbolizer:this.getSymbolizers()) {
-			result+="\tSymbolizer "+symbolizer+"\n"; //$NON-NLS-1$ //$NON-NLS-2$
+			result += "\t" + symbolizer + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return result;
 	}

@@ -33,7 +33,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * @author Julien Perret
- *
  */
 @XmlTransient
 public interface Style {

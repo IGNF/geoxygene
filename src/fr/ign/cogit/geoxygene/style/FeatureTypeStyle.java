@@ -70,8 +70,10 @@ public class FeatureTypeStyle {
 
 	@Override
 	public String toString() {
-		String result = "FeatureTypeStyle "+this.getName()+"\n";  //$NON-NLS-1$//$NON-NLS-2$
-		for(Rule rule:this.getRules()) result+="Rule "+rule+"\n";  //$NON-NLS-1$//$NON-NLS-2$
+		String result = "FeatureTypeStyle " + this.getName() + "\n";  //$NON-NLS-1$//$NON-NLS-2$
+		for(Rule rule : this.getRules()) {
+		    result += "\t" + rule + "\n";  //$NON-NLS-1$//$NON-NLS-2$
+		}
 		return result;
 	}
 	public Symbolizer getSymbolizer() {

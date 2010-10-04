@@ -63,7 +63,7 @@ public class UserStyle extends AbstractStyle {
 	public String toString() {
 		String result = "UserStyle "+this.getName()+"\n";  //$NON-NLS-1$//$NON-NLS-2$
 		for(FeatureTypeStyle fts:this.getFeatureTypeStyles())
-			result+="FeatureTypeStyle "+fts+"\n";  //$NON-NLS-1$//$NON-NLS-2$
+			result += "\t" + fts + "\n";  //$NON-NLS-1$//$NON-NLS-2$
 		return result;
 	}
     @Override

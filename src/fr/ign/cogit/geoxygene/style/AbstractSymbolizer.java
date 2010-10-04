@@ -107,4 +107,11 @@ public abstract class AbstractSymbolizer implements Symbolizer {
     public void setUnitOfMeasurePixel() {
         this.setUnitOfMeasure(PIXEL);
     }
+    @Override
+    public String toString() {
+        String result = this.getClass().getSimpleName() + ":"; //$NON-NLS-1$
+        result += this.getGeometryPropertyName() + " ("; //$NON-NLS-1$
+        result += this.getUnitOfMeasure() + ")"; //$NON-NLS-1$
+        return result;
+    }
 }

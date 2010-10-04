@@ -26,22 +26,25 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 
 /**
  * @author Julien Perret
- *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractStyle implements Style {
-
+	/**
+	 * Name of the style.
+	 */
+    @XmlElement(name = "Name", required = false)
 	private String name;
-	
 	@Override
 	public String getName() {return this.name;}
-
 	@Override
 	public void setName(String name) {this.name=name;}
-
 	@Override
 	public boolean isUserStyle() {return false;}
-
 }
