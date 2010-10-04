@@ -27,6 +27,7 @@
 package fr.ign.cogit.geoxygene.spatial.geomaggr;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -44,49 +45,48 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  */
 
 public class GM_MultiSolid<GM_Sol extends GM_Solid> extends GM_MultiPrimitive<GM_Solid> {
-	static Logger logger=Logger.getLogger(GM_MultiSolid.class.getName());
+    static Logger logger=Logger.getLogger(GM_MultiSolid.class.getName());
 
-	/** NON IMPLEMENTE (renvoie 0.0).
-	 * Volume total. */
-	// Dans la norme, ceci est un attribut et non une méthode.
-	// Dans la norme, cet attribut est de type Volume et non double
-	public double volume()  {
-		logger.error("Non implémentée, utiliser : return CalculSansJava3D.CalculVolume(this); (renvoie 0.0)"); //$NON-NLS-1$
-		return 0.0;
-	}
+    /** NON IMPLEMENTE (renvoie 0.0).
+     * Volume total. */
+    // Dans la norme, ceci est un attribut et non une méthode.
+    // Dans la norme, cet attribut est de type Volume et non double
+    public double volume()  {
+        logger.error("Non implémentée, utiliser : return CalculSansJava3D.CalculVolume(this); (renvoie 0.0)"); //$NON-NLS-1$
+        return 0.0;
+    }
 
-	/** NON IMPLEMENTE (renvoie 0.0).
-	 * Aire totale. */
-	// Dans la norme, ceci est un attribut et non une méthode.
-	// Dans la norme, cet attribut est de type Area et non double
-	@Override
-	public double area()  {
-		logger.error("Non implémentée, utiliser : return CalculSansJava3D.CalculAire(this); (renvoie 0.0)"); //$NON-NLS-1$
-		return 0.0;
-	}
-	/** Constructeur par défaut. */
-	public GM_MultiSolid() {
-		this.element = new ArrayList<GM_Solid>();
-	}
+    /** NON IMPLEMENTE (renvoie 0.0).
+     * Aire totale. */
+    // Dans la norme, ceci est un attribut et non une méthode.
+    // Dans la norme, cet attribut est de type Area et non double
+    @Override
+    public double area()  {
+        logger.error("Non implémentée, utiliser : return CalculSansJava3D.CalculAire(this); (renvoie 0.0)"); //$NON-NLS-1$
+        return 0.0;
+    }
+    /** Constructeur par défaut. */
+    public GM_MultiSolid() {
+        this.element = new ArrayList<GM_Solid>();
+    }
 
-	/** Constructeur à partir d'un GM_CompositeSolid. */
-	public GM_MultiSolid(GM_CompositeSolid compSolid) {
-		this.element = new ArrayList<GM_Solid>();
-		this.addAll(compSolid.getGenerator());
-	}
+    /** Constructeur à partir d'un GM_CompositeSolid. */
+    public GM_MultiSolid(GM_CompositeSolid compSolid) {
+        this.element = new ArrayList<GM_Solid>();
+        this.addAll(compSolid.getGenerator());
+    }
 
-	/** Constructeur à partir d'une liste de GM_Solid. */
-	public GM_MultiSolid(ArrayList<GM_Solid> lOS) {
-		this.element = new ArrayList<GM_Solid>();
-		this.element.addAll(lOS);
-	}
+    /** Constructeur à partir d'une liste de GM_Solid. */
+    public GM_MultiSolid(List<GM_Solid> lOS) {
+        this.element = new ArrayList<GM_Solid>();
+        this.element.addAll(lOS);
+    }
 
-	    @Override
-	    public Object clone() {
-	       GM_MultiSolid<GM_Sol> agg = new GM_MultiSolid<GM_Sol>();
-	        for (GM_Solid elt : this.element)
-	            agg.add((GM_Solid) elt.clone());
-	        return agg;
-	    }
-
+    @Override
+    public Object clone() {
+        GM_MultiSolid<GM_Sol> agg = new GM_MultiSolid<GM_Sol>();
+        for (GM_Solid elt : this.element)
+            agg.add((GM_Solid) elt.clone());
+        return agg;
+    }
 }
