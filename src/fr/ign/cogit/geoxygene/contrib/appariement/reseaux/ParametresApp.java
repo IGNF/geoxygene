@@ -29,8 +29,6 @@ package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
-import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
 
@@ -47,16 +45,16 @@ public class ParametresApp implements Cloneable {
 	/////////////////////////////////////////////////////////////////////////////////
 
 	/** Liste des classes d'arcs de la BD 1 (la moins détaillée) concernés par l'appariement */
-	public List<FT_FeatureCollection<? extends Arc>> populationsArcs1 = new ArrayList<FT_FeatureCollection<? extends Arc>>();
+	public List<FT_FeatureCollection<?>> populationsArcs1 = new ArrayList<FT_FeatureCollection<?>>();
 
 	/** Liste des classes de noeuds de la BD 1 (la moins détaillée) concernés par l'appariement */
-	public List<FT_FeatureCollection<Noeud>> populationsNoeuds1 = new ArrayList<FT_FeatureCollection<Noeud>>();
+	public List<FT_FeatureCollection<?>> populationsNoeuds1 = new ArrayList<FT_FeatureCollection<?>>();
 
 	/** Liste des classes d'arcs de la BD 2 (la plus détaillée) concernés par l'appariement */
-	public List<FT_FeatureCollection<? extends Arc>> populationsArcs2 = new ArrayList<FT_FeatureCollection<? extends Arc>>();
+	public List<FT_FeatureCollection<?>> populationsArcs2 = new ArrayList<FT_FeatureCollection<?>>();
 
 	/** Liste des classes de noeuds de la BD 2 (la plus détaillée) concernés par l'appariement */
-	public List<FT_FeatureCollection<Noeud>> populationsNoeuds2 = new ArrayList<FT_FeatureCollection<Noeud>>();
+	public List<FT_FeatureCollection<?>> populationsNoeuds2 = new ArrayList<FT_FeatureCollection<?>>();
 
 	/** Prise en compte de l'orientation des arcs sur le terrain (sens de circulation).
 	 * Si true : on suppose tous les arcs en double sens.

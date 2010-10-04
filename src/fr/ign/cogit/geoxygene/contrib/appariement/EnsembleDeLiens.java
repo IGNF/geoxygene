@@ -36,9 +36,11 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
@@ -55,6 +57,20 @@ public class EnsembleDeLiens extends Population<Lien> {
      */
     public EnsembleDeLiens() {
         super(false, "Ensemble de liens", Lien.class, true); //$NON-NLS-1$
+        /** créer un featuretype pour les arcs */
+        fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType
+        newFeatureType= new fr.ign.cogit.geoxygene.schema
+        .schemaConceptuelISOJeu.FeatureType();
+        AttributeType type = new AttributeType();
+        String memberName = "evaluation";
+        String valueType = "Double";
+        type.setNomField(memberName);
+        type.setMemberName(memberName);
+        type.setValueType(valueType);
+        newFeatureType.addFeatureAttribute(type);
+        /** création d'un schéma associé au featureType */
+        newFeatureType.setGeometryType(GM_MultiCurve.class);
+        this.setFeatureType(newFeatureType);
     }
 
     /**

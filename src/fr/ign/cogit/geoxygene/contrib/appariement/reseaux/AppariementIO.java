@@ -34,7 +34,6 @@ import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.NoeudApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
-import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
@@ -242,31 +241,33 @@ public final class AppariementIO {
     private static ReseauApp importData(final ParametresApp paramApp,
             final boolean ref) {
         switch(paramApp.debugAffichageCommentaires) {
-        case 0 : LOGGER.setLevel(Level.ERROR); break;
-        case 1 : LOGGER.setLevel(Level.INFO); break;
-        default : LOGGER.setLevel(Level.DEBUG); break;
+            case 0 : LOGGER.setLevel(Level.ERROR); break;
+            case 1 : LOGGER.setLevel(Level.INFO); break;
+            default : LOGGER.setLevel(Level.DEBUG); break;
         }
-        FT_FeatureCollection<?> popGeo;
-        Population<?> popArcApp, popNoeudApp;
-        ArcApp arc;
         ReseauApp reseau = null;
-        if (ref) { reseau = new ReseauApp(I18N.getString(
-        "AppariementIO.ReferenceNetwork")); //$NON-NLS-1$
-        }  else { reseau = new ReseauApp(I18N.getString(
-        "AppariementIO.ComparisonNetwork")); //$NON-NLS-1$
+        if (ref) {
+            reseau = new ReseauApp(I18N
+                    .getString("AppariementIO.ReferenceNetwork")); //$NON-NLS-1$
+        } else {
+            reseau = new ReseauApp(I18N
+                    .getString("AppariementIO.ComparisonNetwork")); //$NON-NLS-1$
         }
-        popArcApp = reseau.getPopArcs();
-        popNoeudApp = reseau.getPopNoeuds();
+        Population<?> popArcApp = reseau.getPopArcs();
+        Population<?> popNoeudApp = reseau.getPopNoeuds();
         ///////////////////////////
         // import des arcs
-        Iterator<FT_FeatureCollection<? extends Arc>> itPopArcs = null;
-        if (ref) { itPopArcs = paramApp.populationsArcs1.iterator();
-        } else { itPopArcs = paramApp.populationsArcs2.iterator(); }
+        Iterator<FT_FeatureCollection<?>> itPopArcs = null;
+        if (ref) {
+            itPopArcs = paramApp.populationsArcs1.iterator();
+        } else {
+            itPopArcs = paramApp.populationsArcs2.iterator();
+        }
         while (itPopArcs.hasNext()) {
-            popGeo = itPopArcs.next();
+            FT_FeatureCollection<?> popGeo = itPopArcs.next();
             //import d'une population d'arcs
             for (FT_Feature element : popGeo.getElements()) {
-                arc = (ArcApp) popArcApp.nouvelElement();
+                ArcApp arc = (ArcApp) popArcApp.nouvelElement();
                 GM_LineString ligne = new GM_LineString(
                         (DirectPositionList) element.getGeom().coord()
                         .clone());
@@ -304,7 +305,7 @@ public final class AppariementIO {
             itPopNoeuds = paramApp.populationsNoeuds1.iterator();
         } else { itPopNoeuds = paramApp.populationsNoeuds2.iterator(); }
         while (itPopNoeuds.hasNext()) {
-            popGeo = (Population<?>) itPopNoeuds.next();
+            Population<?> popGeo = (Population<?>) itPopNoeuds.next();
             //import d'une population de noeuds
             for (FT_Feature element : popGeo.getElements()) {
                 NoeudApp noeud = (NoeudApp) popNoeudApp.nouvelElement();
