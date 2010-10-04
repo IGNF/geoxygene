@@ -182,12 +182,13 @@ public class ProjectFrame extends JInternalFrame implements
      * @param population the population to add
      * @param name the name of the population
      */
-    public final void addFeatureCollection(
+    public final Layer addFeatureCollection(
             final Population<? extends FT_Feature> population,
                     final String name) {
         Layer layer = this.sld.createLayer(name, population.getFeatureType()
                 .getGeometryType());
         this.addLayer(layer);
+        return layer;
     }
 
     /**
