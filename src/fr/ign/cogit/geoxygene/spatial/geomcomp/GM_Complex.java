@@ -143,10 +143,19 @@ public class GM_Complex extends GM_Object {
     //       return null;
     //   }
 
-    /** Marche pas. Renvoie null.  */
+
     @Override
     public DirectPositionList coord() {
-        System.out.println("coord() : marche pas pour un complexe. Renvoie null"); //$NON-NLS-1$
-        return null;
+        DirectPositionList dpl = new DirectPositionList();
+        
+        Set<GM_Object> sObjects = this.getElement();
+   
+        
+        for(GM_Object o:sObjects) {
+            dpl.addAll(o.coord());
+        }
+      
+        return dpl;
+      
     }
 }
