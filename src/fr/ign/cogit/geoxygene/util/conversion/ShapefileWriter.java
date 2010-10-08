@@ -54,99 +54,102 @@ import fr.ign.cogit.geoxygene.feature.type.GF_AttributeType;
 /**
  * Classe permettant d'écrire des shapefiles à partir d'une collection de
  * Features.
- *
+ * 
  * @author Julien Perret
- *
  */
 public class ShapefileWriter {
-    private final static Logger logger
-    = Logger.getLogger(ShapefileWriter.class.getName());
+    private final static Logger logger = Logger.getLogger(ShapefileWriter.class
+            .getName());
+
     /**
      * Sauve une collection de features dans un fichier.
-     * @param <Feature> type des features contenu dans la collection
-     * @param featureCollection collection de features à sauver dans le fichier
-     * shape
-     * @param shapefileName nom du fichier dans lequel sauver les shapes
+     * 
+     * @param <Feature>
+     *            type des features contenu dans la collection
+     * @param featureCollection
+     *            collection de features à sauver dans le fichier
+     *            shape
+     * @param shapefileName
+     *            nom du fichier dans lequel sauver les shapes
      */
     @SuppressWarnings("unchecked")
     public static <Feature extends FT_Feature> void write(
             FT_FeatureCollection<Feature> featureCollection,
             String shapefileName) {
-        if (featureCollection.isEmpty()) { return; }
+        if (featureCollection.isEmpty()) {
+            return;
+        }
         try {
-            ShapefileDataStore store
-            = new ShapefileDataStore(new File(shapefileName).toURI().toURL());
-            String specs="geom:"; //$NON-NLS-1$
+            ShapefileDataStore store = new ShapefileDataStore(new File(
+                    shapefileName).toURI().toURL());
+            String specs = "geom:"; //$NON-NLS-1$
             if (featureCollection.getFeatureType() != null) {
-            	if (logger.isDebugEnabled()) {
-            		logger.debug("Using the collection's featureType");
-            	}
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Using the collection's featureType");
+                }
                 specs += AdapterFactory.toJTSGeometryType(
                         featureCollection.getFeatureType().getGeometryType())
                         .getSimpleName();
-                for(GF_AttributeType attributeType
-                        : featureCollection.getFeatureType()
-                        .getFeatureAttributes()) {
+                for (GF_AttributeType attributeType : featureCollection
+                        .getFeatureType().getFeatureAttributes()) {
                     specs += "," + attributeType.getMemberName() //$NON-NLS-1$
-                    + ":" //$NON-NLS-1$
-                    + valueType2Class(attributeType.getValueType()).getSimpleName();
+                            + ":" //$NON-NLS-1$
+                            + valueType2Class(attributeType.getValueType())
+                                    .getSimpleName();
                 }
             } else {
-            	if (logger.isDebugEnabled()) {
-            		logger.debug("Using the features' featureType");
-            	}
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Using the features' featureType");
+                }
                 specs += AdapterFactory.toJTSGeometryType(
                         featureCollection.get(0).getGeom().getClass())
                         .getSimpleName();
                 if (featureCollection.get(0).getFeatureType() != null) {
-                    for(GF_AttributeType attributeType
-                            : featureCollection.get(0).getFeatureType()
-                            .getFeatureAttributes()) {
+                    for (GF_AttributeType attributeType : featureCollection
+                            .get(0).getFeatureType().getFeatureAttributes()) {
                         specs += "," //$NON-NLS-1$
-                            + attributeType.getMemberName() + ":" //$NON-NLS-1$
-                            + valueType2Class(attributeType.getValueType())
-                            .getSimpleName();
+                                + attributeType.getMemberName()
+                                + ":" //$NON-NLS-1$
+                                + valueType2Class(attributeType.getValueType())
+                                        .getSimpleName();
                     }
                 }
             }
-        	if (logger.isDebugEnabled()) {
-        		logger.debug("Specs = " + specs);
-        	}
-            String featureTypeName
-            = shapefileName.substring(
-                    shapefileName.lastIndexOf("/") + 1, //$NON-NLS-1$
+            if (logger.isDebugEnabled()) {
+                logger.debug("Specs = " + specs);
+            }
+            String featureTypeName = shapefileName.substring(shapefileName
+                    .lastIndexOf("/") + 1, //$NON-NLS-1$
                     shapefileName.lastIndexOf(".")); //$NON-NLS-1$
-            featureTypeName=featureTypeName.replace('.', '_');
+            featureTypeName = featureTypeName.replace('.', '_');
             SimpleFeatureType type = DataUtilities.createType(featureTypeName,
                     specs);
             store.createSchema(type);
-            FeatureStore featureStore = (FeatureStore) store.getFeatureSource(
-                    featureTypeName);
+            FeatureStore featureStore = (FeatureStore) store
+                    .getFeatureSource(featureTypeName);
             Transaction t = new DefaultTransaction();
             FeatureCollection collection = FeatureCollections.newCollection();
             int i = 1;
-            for(Feature feature : featureCollection) {
+            for (Feature feature : featureCollection) {
                 List<Object> liste = new ArrayList<Object>();
                 liste.add(AdapterFactory.toGeometry(new GeometryFactory(),
                         feature.getGeom()));
                 if (feature.getFeatureType() != null) {
-                    for(GF_AttributeType attributeType
-                            : feature.getFeatureType()
-                            .getFeatureAttributes()) {
-                    	liste.add(feature.getAttribute(
-                    			attributeType.getMemberName()));
-                    	if (logger.isTraceEnabled()) {
-                    		logger.trace("Attribute "
-                    				+ attributeType.getMemberName()
-                    				+ " = "
-                    				+ feature.getAttribute(attributeType
-                    						.getMemberName()));
-                    	}
+                    for (GF_AttributeType attributeType : feature
+                            .getFeatureType().getFeatureAttributes()) {
+                        liste.add(feature.getAttribute(attributeType
+                                .getMemberName()));
+                        if (logger.isTraceEnabled()) {
+                            logger.trace("Attribute "
+                                    + attributeType.getMemberName()
+                                    + " = "
+                                    + feature.getAttribute(attributeType
+                                            .getMemberName()));
+                        }
                     }
                 }
-                SimpleFeature simpleFeature
-                = SimpleFeatureBuilder.build(type, liste.toArray(),
-                        String.valueOf(i++));
+                SimpleFeature simpleFeature = SimpleFeatureBuilder.build(type,
+                        liste.toArray(), String.valueOf(i++));
                 collection.add(simpleFeature);
             }
             featureStore.addFeatures(collection);
@@ -154,81 +157,88 @@ public class ShapefileWriter {
             t.close();
             store.dispose();
         } catch (MalformedURLException e) {
-            logger.error(I18N.getString(
-                    "ShapefileWriter.FileName") //$NON-NLS-1$
-                    + shapefileName + I18N.getString(
-                    "ShapefileWriter.Malformed")); //$NON-NLS-1$
+            logger.error(I18N.getString("ShapefileWriter.FileName") //$NON-NLS-1$
+                    + shapefileName
+                    + I18N.getString("ShapefileWriter.Malformed")); //$NON-NLS-1$
             e.printStackTrace();
         } catch (IOException e) {
-            logger.error(I18N.getString(
-                    "ShapefileWriter.ErrorWritingFile") //$NON-NLS-1$
+            logger.error(I18N.getString("ShapefileWriter.ErrorWritingFile") //$NON-NLS-1$
                     + shapefileName);
             e.printStackTrace();
         } catch (SchemaException e) {
-            logger.error(I18N.getString(
-                    "ShapefileWriter.SchemeUsedForWritingFile") //$NON-NLS-1$
-                    + shapefileName + I18N.getString(
-                    "ShapefileWriter.Incorrect")); //$NON-NLS-1$
+            logger.error(I18N
+                    .getString("ShapefileWriter.SchemeUsedForWritingFile") //$NON-NLS-1$
+                    + shapefileName
+                    + I18N.getString("ShapefileWriter.Incorrect")); //$NON-NLS-1$
             e.printStackTrace();
         } catch (Exception e) {
-            logger.error(I18N.getString(
-            "ShapefileWriter.ErrorWritingFile") //$NON-NLS-1$
-            + shapefileName);
+            logger.error(I18N.getString("ShapefileWriter.ErrorWritingFile") //$NON-NLS-1$
+                    + shapefileName);
             e.printStackTrace();
         }
     }
+
     /**
-     * Renvoie la classe correspondant au nom d'un type primitif, 
-     * null si le paramètre ne correspond pas à un type primitif ou 
+     * Renvoie la classe correspondant au nom d'un type primitif,
+     * null si le paramètre ne correspond pas à un type primitif ou
      * s'il n'est pas géré.
-     * @param valueType nom d'un type primitif
-     * @return la classe correspondant au nom d'un type primitif ou 
-     * null si le paramètre ne correspond pas à un type primitif ou 
-     * s'il n'est pas géré. <b>Attention : les booléans sont convertis en
-     * strings car les format ESRI shapefile ne les gère pas</b>
+     * 
+     * @param valueType
+     *            nom d'un type primitif
+     * @return la classe correspondant au nom d'un type primitif ou
+     *         null si le paramètre ne correspond pas à un type primitif ou
+     *         s'il n'est pas géré. <b>Attention : les booléans sont convertis
+     *         en
+     *         strings car les format ESRI shapefile ne les gère pas</b>
      */
     public static Class<?> valueType2Class(String valueType) {
-        if(valueType.equalsIgnoreCase("string")) { //$NON-NLS-1$
+        if (valueType.equalsIgnoreCase("string")) { //$NON-NLS-1$
             return String.class;
         }
-        if(valueType.equalsIgnoreCase("integer")) { //$NON-NLS-1$
+        if (valueType.equalsIgnoreCase("integer")) { //$NON-NLS-1$
             return Integer.class;
         }
-        if(valueType.equalsIgnoreCase("double")) { //$NON-NLS-1$
+        if (valueType.equalsIgnoreCase("double")) { //$NON-NLS-1$
             return Double.class;
         }
-        if(valueType.equalsIgnoreCase("long")) { //$NON-NLS-1$
+        if (valueType.equalsIgnoreCase("long")) { //$NON-NLS-1$
             return Integer.class;
         }
-        if(valueType.equalsIgnoreCase("boolean")) { //$NON-NLS-1$
+        if (valueType.equalsIgnoreCase("boolean")) { //$NON-NLS-1$
             return String.class;
         }
         return null;
     }
+
     /**
      * Ouvre une fenêtre permettant à l'utilisateur de choisir le fichier
      * dans lequel il souhaite sauver ses features.
-     * @param <Feature> type des features contenu dans la collection
-     * @param featureCollection collection de features à sauver dans un
-     * fichier shape.
+     * TODO faire en sorte que l'utilisateur puisse récupérer des
+     *            fichiers sans extensions
+     *            fichier shape.
+     * @param <Feature>
+     *            type des features contenu dans la collection
+     * @param featureCollection
+     *            collection de features à sauver dans un
+     *         
      */
     public static <Feature extends FT_Feature> void chooseAndWriteShapefile(
             FT_FeatureCollection<Feature> featureCollection) {
         JFileChooser choixFichierShape = new JFileChooser();
-        choixFichierShape.setFileFilter(new FileFilter(){
+        choixFichierShape.setFileFilter(new FileFilter() {
             @Override
             public boolean accept(File f) {
-                return (f.isFile()
-                        && f.getAbsolutePath().endsWith(".shp") //$NON-NLS-1$
-                        || f.isDirectory());}
+                return (f.isFile() && f.getAbsolutePath().endsWith(".shp") //$NON-NLS-1$
+                || f.isDirectory());
+            }
+
             @Override
             public String getDescription() {
-                return I18N.getString(
-                "ShapefileWriter.ESRIShapefiles"); //$NON-NLS-1$
+                return I18N.getString("ShapefileWriter.ESRIShapefiles"); //$NON-NLS-1$
             }
         });
-        choixFichierShape.setFileSelectionMode(
-                JFileChooser.FILES_AND_DIRECTORIES);
+        choixFichierShape
+                .setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         choixFichierShape.setMultiSelectionEnabled(false);
         JFrame frame = new JFrame();
         frame.setVisible(true);
@@ -236,12 +246,13 @@ public class ShapefileWriter {
         frame.dispose();
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             if (logger.isDebugEnabled()) {
-                logger.debug(I18N.getString(
-                "ShapefileWriter.YouChoseToSaveThisFile") //$NON-NLS-1$
-                + choixFichierShape.getSelectedFile()
-                .getAbsolutePath());
+                logger
+                        .debug(I18N
+                                .getString("ShapefileWriter.YouChoseToSaveThisFile") //$NON-NLS-1$
+                                + choixFichierShape.getSelectedFile()
+                                        .getAbsolutePath());
             }
-            write(featureCollection,choixFichierShape.getSelectedFile()
+            write(featureCollection, choixFichierShape.getSelectedFile()
                     .getAbsolutePath());
         }
     }
