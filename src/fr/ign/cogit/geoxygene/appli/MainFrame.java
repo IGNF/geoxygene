@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.print.PrinterJob;
 import java.beans.PropertyVetoException;
 import java.io.File;
@@ -51,6 +52,7 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 
 /**
  * @author Julien Perret
@@ -350,11 +352,47 @@ public class MainFrame extends JFrame {
             	layerViewPanel.repaint();
             }
         });
+    	JMenuItem mScaleCustom=new JMenuItem(I18N
+                .getString("MainFrame.CustomScale")); //$NON-NLS-1$
+    	mScaleCustom.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+            	int scale = Integer.parseInt(JOptionPane.showInputDialog(I18N
+                        .getString("MainFrame.NewScale")));
+            	LayerViewPanel layerViewPanel = MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
+            	layerViewPanel.getViewport().setScale(1 / (scale * LayerViewPanel.getMETERS_PER_PIXEL()));
+            	layerViewPanel.repaint();
+            }
+        });
     	viewMenu.add(mScale6250);
     	viewMenu.add(mScale12500);
     	viewMenu.add(mScale25k);
     	viewMenu.add(mScale50k);
     	viewMenu.add(mScale100k);
+    	viewMenu.add(mScaleCustom);
+    	viewMenu.addSeparator();
+    	
+    	JMenuItem mGoTo=new JMenuItem(I18N
+                .getString("MainFrame.GoTo")); //$NON-NLS-1$
+    	mGoTo.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+            	LayerViewPanel layerViewPanel = MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
+            	System.out.println(layerViewPanel.getViewport().getEnvelopeInModelCoordinates());
+
+            	double latitude = Double.parseDouble(JOptionPane.showInputDialog("Latitude"));
+            	double longitude = Double.parseDouble(JOptionPane.showInputDialog("Longitude"));
+
+            	try {
+					layerViewPanel.getViewport().center(new DirectPosition(latitude, longitude));
+				} catch (NoninvertibleTransformException e1) {
+					e1.printStackTrace();
+				}
+            	layerViewPanel.repaint();
+            }
+        });
+    	viewMenu.add(mGoTo);
+    	
         this.menuBar.add(configurationMenu);
         this.menuBar.add(helpMenu);
         this.setJMenuBar(this.menuBar);
