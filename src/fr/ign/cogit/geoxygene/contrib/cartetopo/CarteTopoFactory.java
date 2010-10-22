@@ -56,4 +56,13 @@ public class CarteTopoFactory {
 		logger.info("Nombre de faces créées : " + carteTopo.getPopFaces().size());
 		return carteTopo;
 	}
+	
+	public static CarteTopo newCarteTopo(String name,
+			FT_FeatureCollection<? extends FT_Feature> collection) {
+		return newCarteTopo(name, collection, 1.0);
+	}
+	public static CarteTopo newCarteTopo(
+			FT_FeatureCollection<? extends FT_Feature> collection) {
+		return newCarteTopo("TopoMap", collection);
+	}
 }
