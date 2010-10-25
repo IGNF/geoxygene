@@ -75,7 +75,7 @@ public class ZoomMode extends AbstractMode {
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Cursor cursor = toolkit.createCustomCursor(
                 toolkit.getImage(
-                "images/cursors/32x32/zoomCursor.gif"), //$NON-NLS-1$
+                "src/resources/images/cursors/32x32/zoomCursor.gif"), //$NON-NLS-1$
                 new Point(16, 16), "Zoom"); //$NON-NLS-1$
         return cursor;
     }
