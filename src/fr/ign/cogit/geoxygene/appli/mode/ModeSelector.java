@@ -119,6 +119,7 @@ public class ModeSelector implements ContainerListener, KeyListener,
         this.addComponent(this.getMainFrame());
 
         this.modes.add(new ZoomMode(this.getMainFrame(), this));
+        this.modes.add(new ZoomBoxMode(this.getMainFrame(), this));
         this.modes.add(new MoveMode(this.getMainFrame(), this));
         this.modes.add(new SelectionMode(this.getMainFrame(), this));
 
