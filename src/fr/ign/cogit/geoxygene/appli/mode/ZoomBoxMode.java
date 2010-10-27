@@ -66,7 +66,6 @@ public class ZoomBoxMode extends AbstractMode {
 
                 GM_Envelope envelope = getEnvelope(initialPoint, p);
                 GM_Polygon rect = new GM_Polygon(envelope);
-                FT_Feature feature = new DefaultFeature(rect);
 
                 Graphics2D graphics2D = (Graphics2D) frame.getLayerViewPanel().getGraphics();
                 graphics2D.setXORMode(new Color(4, 52, 87));
@@ -74,12 +73,11 @@ public class ZoomBoxMode extends AbstractMode {
                 if (lastPoint != null) {
                     GM_Envelope lastEnvelope = getEnvelope(initialPoint, lastPoint);
                     GM_Polygon lastRect = new GM_Polygon(lastEnvelope);
-                    FT_Feature lastFeature = new DefaultFeature(lastRect);
-                    RenderUtil.draw(lastFeature.getGeom(),
+                    RenderUtil.draw(lastRect,
                                 frame.getLayerViewPanel().getViewport(),
                                 graphics2D);
                 }
-                RenderUtil.draw(feature.getGeom(),
+                RenderUtil.draw(rect,
                         frame.getLayerViewPanel().getViewport(),
                         graphics2D);
                 lastPoint = p;
