@@ -27,7 +27,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
  * @author Charlotte Hoarau
  *
  */
-public class ZoomBoxMode extends AbstractGeometryEditMode {
+public class ZoomBoxMode extends AbstractMode {
     /**
      * @param theMainFrame the main frame
      * @param theModeSelector the mode selector
@@ -38,8 +38,8 @@ public class ZoomBoxMode extends AbstractGeometryEditMode {
     }
 
     private DirectPosition initialPoint = null;
-    int dragCount = 0;
-    
+    private DirectPosition lastPoint = null;
+
     @Override
     protected final JButton createButton() {
         return new JButton(new ImageIcon(this.getClass().
@@ -64,46 +64,39 @@ public class ZoomBoxMode extends AbstractGeometryEditMode {
                 DirectPosition p = frame.getLayerViewPanel().getViewport().
                 							toModelDirectPosition(e.getPoint());
 
-                double x = this.initialPoint.getX();
-                double y = this.initialPoint.getY();
-                double x2 = p.getX();
-                double y2 = p.getY();
-                double temp = 0;
-
-	            if (x > x2) {
-	                temp = x2;
-	                x2 = x;
-	                x = temp;
-	            }
-	            if (y > y2) {
-	                temp = y2;
-	                y2 = y;
-	                y = temp;
-	            }
-
-                GM_Envelope env = new GM_Envelope(x, x2, y, y2);
-                GM_Polygon rect = new GM_Polygon(env);
+                GM_Envelope envelope = getEnvelope(initialPoint, p);
+                GM_Polygon rect = new GM_Polygon(envelope);
                 FT_Feature feature = new DefaultFeature(rect);
-                
-                Graphics2D graphics2D = (Graphics2D) frame.getLayerViewPanel().getGraphics();
-                
-                graphics2D.setColor(new Color(156, 180, 193));
-                graphics2D.setStroke(new BasicStroke(2));
-                RenderUtil.fill(feature.getGeom(),
-                      frame.getLayerViewPanel().getViewport(),
-                      graphics2D);
 
-                graphics2D.setColor(new Color(4, 52, 87));
+                Graphics2D graphics2D = (Graphics2D) frame.getLayerViewPanel().getGraphics();
+                graphics2D.setXORMode(new Color(4, 52, 87));
                 graphics2D.setStroke(new BasicStroke(2));
+                if (lastPoint != null) {
+                    GM_Envelope lastEnvelope = getEnvelope(initialPoint, lastPoint);
+                    GM_Polygon lastRect = new GM_Polygon(lastEnvelope);
+                    FT_Feature lastFeature = new DefaultFeature(lastRect);
+                    RenderUtil.draw(lastFeature.getGeom(),
+                                frame.getLayerViewPanel().getViewport(),
+                                graphics2D);
+                }
                 RenderUtil.draw(feature.getGeom(),
                         frame.getLayerViewPanel().getViewport(),
                         graphics2D);
+                lastPoint = p;
             } catch (NoninvertibleTransformException e1) {
             	e1.printStackTrace();
             }
         }
     }
-    
+
+    private GM_Envelope getEnvelope(DirectPosition p1,
+                DirectPosition p2) {
+        double xmin = Math.min(p1.getX(), p2.getX());
+        double ymin = Math.min(p1.getY(), p2.getY());
+        double xmax = Math.max(p1.getX(), p2.getX());
+        double ymax = Math.max(p1.getY(), p2.getY());
+        return new GM_Envelope(xmin, xmax, ymin, ymax);
+    }
     @Override
 	public void mouseReleased(final MouseEvent e) {
     	 ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
@@ -111,23 +104,9 @@ public class ZoomBoxMode extends AbstractGeometryEditMode {
              try {
                 DirectPosition p = frame.getLayerViewPanel().getViewport()
                 			.toModelDirectPosition(e.getPoint());
-                double x = this.initialPoint.getX();
-                double y = this.initialPoint.getY();
-                double x2 = p.getX();
-                double y2 = p.getY();
-                double temp = 0;
-
-	            if (x > x2) {
-	                temp = x2;
-	                x2 = x;
-	                x = temp;
-	            }
-	            if (y > y2) {
-	                temp = y2;
-	                y2 = y;
-	                y = temp;
-	            }                   
-	            GM_Envelope env = new GM_Envelope(x, x2, y, y2);
+	            GM_Envelope env = getEnvelope(initialPoint, p);
+	            initialPoint = null;
+	            lastPoint = null;
 	            frame.getLayerViewPanel().getViewport().zoom(env);
 	            frame.getLayerViewPanel().superRepaint();
              } catch (NoninvertibleTransformException e1) {
