@@ -1,23 +1,23 @@
 /*
  * This file is part of the GeOxygene project source files.
- * 
+ *
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
  * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
- * 
+ *
  * See: http://oxygene-project.sourceforge.net
- * 
+ *
  * Copyright (C) 2005 Institut Géographique National
- * 
+ *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with
  * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -36,7 +36,7 @@ import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
  * Les attributs sont représentés dans une table et ne peuvent
  * pas être accèdés autrement -(pas de getter ou setter spécifique à un attribut
  * comme getNbVoies() pour les TronconRoute.java par exemple).
- * 
+ *
  * Un defaultFeature est cependant associé à un FeatureType avec toutes les
  * descriptions des ses attributs, types de valeurs etc. C'est au développeur de
  * s'assurer que le defaultFeature reste conforme à la définition de son featureType.
@@ -44,12 +44,12 @@ import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
  * est généré automatiquement grâce aux colonnes de la table. Mais cela ne constitue pas
  * un schéma conceptuel, il doit donc être précisé manuellement dès que possible pour
  * les utilisations ultérieures (notamment pour identifier les relatios entre objets etc.)
- * 
+ *
  * Stockage et chargement par OJB : un seul mapping pour toutes les tables
- * 
+ *
  * Ou plus simple : chargement par JDBC en utilisant soit une connexion neuve soit la
  * java.sql.Connexion de Geodatabase (Geodatabase.getConnexion())
- * 
+ *
  * @author Sandrine Balley
  * @author Nathalie Abadie
  * @author Julien Perret
@@ -85,8 +85,14 @@ public class DefaultFeature extends FT_Feature {
 	public Object getAttribute(int rang){return this.attributes[rang];}
 	@Override
 	public Object getAttribute(String nom){
+        if (nom.equals("geom")) { //$NON-NLS-1$
+            return this.getGeom();
+        }
+        if (nom.equals("topo")) { //$NON-NLS-1$
+            return this.getTopo();
+        }
 		/**
-		 * on regarde en priorité si le nom correspond à un nom 
+		 * on regarde en priorité si le nom correspond à un nom
 		 * d'attributeType (métadonnées de niveau conceptuel)
 		 */
 		String[] tabNoms;
@@ -95,7 +101,7 @@ public class DefaultFeature extends FT_Feature {
 			if ((tabNoms!=null)&&(tabNoms[1]!=null)&&(tabNoms[1].equals(nom))) return this.getAttribute(key.intValue());
 		}
 		/**
-		 * si on n'a pas trouvé au niveau conceptuel, 
+		 * si on n'a pas trouvé au niveau conceptuel,
 		 * on regarde s'il correspond à un nom de colonne (métadonnées de niveau logique)
 		 */
 		for(Integer key:getSchema().getAttLookup().keySet()) {
@@ -139,10 +145,10 @@ public class DefaultFeature extends FT_Feature {
 					this.setAttribute(key.intValue(), value);
 					return;
 				}
-			}			
+			}
 		}
 		/**
-		 * si on n'a pas trouvé au niveau conceptuel, 
+		 * si on n'a pas trouvé au niveau conceptuel,
 		 * on regarde s'il correspond à un nom de colonne (métadonnées de niveau logique)
 		 */
 		for(Integer key:getSchema().getAttLookup().keySet()) {
@@ -227,5 +233,5 @@ public class DefaultFeature extends FT_Feature {
 			*/
 		}
 	}
-	
+
 }
