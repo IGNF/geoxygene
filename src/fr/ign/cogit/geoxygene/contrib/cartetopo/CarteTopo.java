@@ -40,6 +40,7 @@ import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
@@ -251,6 +252,20 @@ public class CarteTopo extends DataSet {
                 .addPopulation(new Population<Groupe>(
                         false,
                         I18N.getString("CarteTopo.Group"), fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe.class, false)); //$NON-NLS-1$
+        /** créer un featuretype pour les arcs */
+        fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType
+        newFeatureType= new fr.ign.cogit.geoxygene.schema
+        .schemaConceptuelISOJeu.FeatureType();
+        AttributeType type = new AttributeType();
+        String memberName = "orientation";
+        String valueType = "Integer";
+        type.setNomField(memberName);
+        type.setMemberName(memberName);
+        type.setValueType(valueType);
+        newFeatureType.addFeatureAttribute(type);
+        /** création d'un schéma associé au featureType */
+        newFeatureType.setGeometryType(GM_LineString.class);
+        this.getPopArcs().setFeatureType(newFeatureType);
     }
 
     // ///////////////////////////////////////////////////////////////////////////////////////////
