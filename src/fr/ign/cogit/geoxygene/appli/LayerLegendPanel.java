@@ -912,7 +912,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener, ActionLi
     }
 
     void addLayer() {
-        File file = MainFrame.fc.getFile(this.layerViewPanel.getProjectFrame().
+        File file = MainFrame.getFilechooser().getFile(this.layerViewPanel.getProjectFrame().
                 getMainFrame());
         if (file != null) {
             String fileName = file.getAbsolutePath();

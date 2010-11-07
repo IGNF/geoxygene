@@ -140,9 +140,13 @@ public class MainFrame extends JFrame {
      */
     private final int defaultFrameHeight = 800;
 
-    public static FileChooser fc = new FileChooser();
+    private static FileChooser fc = new FileChooser();
 
-	/**
+	public static FileChooser getFilechooser() {
+        return fc;
+    }
+
+    /**
      * Constructor using a title and an associated application.
      *
      * @param title

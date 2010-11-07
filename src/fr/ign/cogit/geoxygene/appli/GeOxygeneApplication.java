@@ -22,6 +22,8 @@
 package fr.ign.cogit.geoxygene.appli;
 
 import java.awt.Font;
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
@@ -99,8 +101,7 @@ public class GeOxygeneApplication {
      * @return The main frame of the application.
      */
     public MainFrame getFrame() {return this.frame;}
-    private URL pluginFile = GeOxygeneApplication.class.
-    getResource("/plugins.xml");
+    private URL propertiesFile = null;
     /**
      * Constructor.
      */
@@ -129,17 +130,26 @@ public class GeOxygeneApplication {
         }
         this.frame = new MainFrame(title, this);
         this.frame.setVisible(true);
-        this.initializePlugins();
+        this.initializeProperties();
     }
 
+    private GeOxygeneApplicationProperties properties = null;
     /**
      * Initialize the application plugins.
      */
-    private void initializePlugins() {
-        GeOxygeneApplicationProperties plugins = GeOxygeneApplicationProperties
-                .unmarshall(this.pluginFile.getFile());
-        for (String pluginName : plugins.getPlugins()) {
-            System.out.println("plugin : " + pluginName);
+    private void initializeProperties() {
+        try {
+            this.propertiesFile = new URL("file","","./src/resources/plugins.xml");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        this.properties = GeOxygeneApplicationProperties
+                .unmarshall(this.propertiesFile.getFile());
+        if (this.properties.getLastOpenedFile() != null) {
+            MainFrame.getFilechooser().setPreviousDirectory(
+                    new File(this.properties.getLastOpenedFile()));
+        }
+        for (String pluginName : properties.getPlugins()) {
             try {
                 Class<?> pluginClass = Class.forName(pluginName);
                 GeOxygeneApplicationPlugin plugin = (GeOxygeneApplicationPlugin) pluginClass
@@ -159,6 +169,11 @@ public class GeOxygeneApplication {
      * Exit the application.
      */
     public final void exit() {
+        File previous = MainFrame.getFilechooser().getPreviousDirectory();
+        if (previous != null) {
+            this.properties.setLastOpenedFile(previous.getAbsolutePath());
+            this.properties.marshall(this.propertiesFile.getFile());
+        }
         this.frame.setVisible(false);
         this.frame.dispose();
     }

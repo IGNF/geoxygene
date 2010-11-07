@@ -32,6 +32,13 @@ public class GeOxygeneApplicationProperties {
     public List<String> getPlugins() {
         return this.plugins;
     }
+    private String lastOpenedFile = "";
+    public String getLastOpenedFile() {
+        return this.lastOpenedFile;
+    }
+    public void setLastOpenedFile(String lastOpenedFile) {
+        this.lastOpenedFile = lastOpenedFile;
+    }
 
     /**
      * Load the properties from the specified stream.
@@ -65,7 +72,7 @@ public class GeOxygeneApplicationProperties {
         try {
             return unmarshall(new FileInputStream(fileName));
         } catch (FileNotFoundException e) {
-            logger.error("File " + fileName + " could not be read"); //$NON-NLS-1$//$NON-NLS-2$
+            logger.error("File " + fileName + " could not be found"); //$NON-NLS-1$//$NON-NLS-2$
             return new GeOxygeneApplicationProperties();
         }
     }

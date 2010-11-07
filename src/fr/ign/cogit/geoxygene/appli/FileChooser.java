@@ -98,6 +98,7 @@ public class FileChooser {
     }
     JFileChooser fileChooser;
     public File getFile(Component parent) {
+        this.fileChooser.setCurrentDirectory(getPreviousDirectory());
         int returnVal = this.fileChooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             setPreviousDirectory(
