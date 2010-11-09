@@ -29,7 +29,6 @@ package fr.ign.cogit.geoxygene.util.algo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -78,7 +77,7 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  */
 
 public class JtsAlgorithms implements GeomAlgorithms {
-	static Logger logger=Logger.getLogger(JtsAlgorithms.class.getName());
+	static Logger logger = Logger.getLogger(JtsAlgorithms.class.getName());
 
 	public JtsAlgorithms() {}
 
@@ -90,8 +89,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			return new DirectPosition(jtsCentroid.getX(),jtsCentroid.getY());
 		} catch (Exception e) {
 			logger.error(I18N.getString("JtsAlgorithms.CentroidError")); //$NON-NLS-1$
-			logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-			if (logger.isDebugEnabled()) logger.debug(e.getMessage());
+			logger.error(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+			if (logger.isDebugEnabled()) {
+			    logger.debug(e.getMessage());
+			}
             e.printStackTrace();
 			return null;
 		}
@@ -106,7 +107,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			return result;
 		} catch (Exception e) {
 			logger.error(I18N.getString("JtsAlgorithms.ConvexHullError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) logger.debug(e.getMessage());
+			if (logger.isDebugEnabled()) {
+			    logger.debug(e.getMessage());
+			}
 			e.printStackTrace();
 			return null;
 		}
@@ -756,7 +759,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			return listePoints;
 		} catch (Exception e) {
 			logger.error(I18N.getString("JtsAlgorithms.ClosestPointsError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) logger.debug(e.getMessage());
+			if (logger.isDebugEnabled()) {
+			    logger.debug(e.getMessage());
+			}
 		}
 		return null;
 	}
@@ -829,7 +834,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		fireActionPerformed(new ActionEvent(singleton,0,I18N.getString("JtsAlgorithms.UnionAction"),nbIteration)); //$NON-NLS-1$
 		while (newGeometryCollection.size() > 1) {
 			fireActionPerformed(new ActionEvent(singleton,1,I18N.getString("JtsAlgorithms.UnionIterationAction"),iteration++)); //$NON-NLS-1$
-			if (logger.isTraceEnabled()) logger.trace("Union (" + iteration + "/" + nbIteration + ")");  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+			if (logger.isTraceEnabled()) {
+			    logger.trace("Union (" + iteration + "/" + nbIteration + ")");  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+			}
 			TreeSet<Geometry> treeSet = new TreeSet<Geometry>(comparator);
 			treeSet.addAll(newGeometryCollection);
 			newGeometryCollection = union(treeSet, 4);
@@ -884,7 +891,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				if (groupSize-count%groupSize==1) unionGeometryList.add(currUnion);
 			}
 			fireActionPerformed(new ActionEvent(singleton,3,I18N.getString("JtsAlgorithms.UnionDetailIterationAction"),++count)); //$NON-NLS-1$
-			if (logger.isTraceEnabled()) logger.trace(" "+(count)+" - "+size+" features");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+			if (logger.isTraceEnabled()) {
+			    logger.trace(" "+(count)+" - "+size+" features");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+			}
 		}
 		if (groupSize-count%groupSize!=0) {
 			unionGeometryList.add(currUnion);
@@ -918,7 +927,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		fireActionPerformed(new ActionEvent(singleton,0,I18N.getString("JtsAlgorithms.UnionAction"),nbIteration)); //$NON-NLS-1$
 		while (newGeometryCollection.size() > 1) {
 			fireActionPerformed(new ActionEvent(singleton,1,I18N.getString("JtsAlgorithms.UnionIterationAction"),iteration++)); //$NON-NLS-1$
-			if (logger.isTraceEnabled()) logger.trace("Union (" + iteration + "/" + nbIteration + ")");  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+			if (logger.isTraceEnabled()) {
+			    logger.trace("Union (" + iteration + "/" + nbIteration + ")");  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+			}
 			TreeSet<Geometry> treeSet = new TreeSet<Geometry>(comparator);
 			treeSet.addAll(newGeometryCollection);
 			newGeometryCollection = unionLineString(treeSet, 4);
@@ -947,7 +958,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 				if (groupSize-count%groupSize==1) unionGeometryList.add(currUnion);
 			}
 			fireActionPerformed(new ActionEvent(singleton,3,I18N.getString("JtsAlgorithms.UnionDetailIterationAction"),++count)); //$NON-NLS-1$
-			if (logger.isTraceEnabled()) logger.trace(" "+(count)+" - "+size+" features");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+			if (logger.isTraceEnabled()) {
+			    logger.trace(" "+(count)+" - "+size+" features");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+			}
 		}
 		if (groupSize-count%groupSize!=0) {
 			unionGeometryList.add(currUnion);
@@ -1050,15 +1063,27 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	    try {
             LineString lineString =
                 (LineString) JtsGeOxygene.makeJtsGeom(line);
-            List<Coordinate> coordinates =
-                Arrays.asList(lineString.getCoordinates());
+            Coordinate[] coordinateArray = lineString.getCoordinates();
+            List<Coordinate> coordinates = new ArrayList<Coordinate>();
+            // build a list of linestring coordinates and remove duplicates
+            Coordinate previous = coordinateArray[0];
+            coordinates.add(previous);
+            for (int i = 1; i < coordinateArray.length; i++) {
+                if (!coordinateArray[i].equals2D(previous)) {
+                    coordinates.add(coordinateArray[i]);
+                    previous = coordinateArray[i];
+                }
+            }
             Geometry buffer = lineString.buffer(distance, 4,
                     BufferParameters.CAP_FLAT);
             int start = -1; int end = -1;
             boolean previousOnTheLeft = false;
+            // go through the coordinates of the buffer and select the range
+            // of coordinates of the right side
             for (int i = 0; i < buffer.getCoordinates().length; i++) {
                 boolean toTheLeft = toTheLeft(buffer.getCoordinates()[i],
                         coordinates);
+                // if there is a change of side, set the start or end marker
                 if (toTheLeft && !previousOnTheLeft) {
                     if (left) { start = i; } else { end = i; }
                 } else {
@@ -1068,6 +1093,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
                 }
                 previousOnTheLeft = toTheLeft;
             }
+            // build the linestring using the determined range of coordinates
             List<Coordinate> offsetCoordinates = new ArrayList<Coordinate>();
             for (int i = start; i != end; i = (i + 1) % buffer.getCoordinates().length) {
                 offsetCoordinates.add(0, buffer.getCoordinates()[i]);
@@ -1079,7 +1105,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	}
 
     /**
-     * Determine is a coordinate lies on the left of the linestring defined
+     * Determine if a coordinate lies on the left of the linestring defined
      * by a list of coodinates.
      * @param c coordinate
      * @param coordinates list of coordinates defining the reference linestring
@@ -1088,7 +1114,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
      */
     private static boolean toTheLeft(Coordinate c,
             List<Coordinate> coordinates) {
-        double distanceMin = Double.MAX_VALUE;
+        // find the closest coordinate in the list
+        double distanceMin = Double.POSITIVE_INFINITY;
         Coordinate coordMin = null;
         for (Coordinate coordinate : coordinates) {
             double d = coordinate.distance(c);
@@ -1099,7 +1126,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
         }
         if (coordMin == null) { return false; }
         int index = coordinates.indexOf(coordMin);
-        if (index < 0) { return false; }
+        if (index < 0) { return false; } // shoulnd't happen but...
         if (index == 0) {
             Coordinate coord2 = coordinates.get(1);
             Vector3d v1 = new Vector3d(new double[]{
