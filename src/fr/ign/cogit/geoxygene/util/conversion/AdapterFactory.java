@@ -285,7 +285,7 @@ public class AdapterFactory  {
 			list.add(toDirectPosition(coords[i]));
 		}
 		//si ferme, ajout ajout de la premiere coordonnee au debut, sinon ajout de la derniere
-		if (closed) {
+		if (closed && !list.isEmpty()) {
 		    list.add(list.get(0));
 		} else {
 		    list.add(toDirectPosition(coords[coords.length - 1]));
