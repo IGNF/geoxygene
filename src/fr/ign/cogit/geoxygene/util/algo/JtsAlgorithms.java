@@ -1052,6 +1052,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	 * Builds on offset curve for the given linestring. A positive offset
 	 * builds an offset curve on the left-hand side of the reference
 	 * linestring. Negative means right.
+	 * <p>
+	 * In case there are holes in the computed buffer, they are removed
+	 * before computing the offset curve.
 	 * @param line reference linestring
 	 * @param distance offset
 	 * @return a linestring at the given offset of the reference linestring
@@ -1078,6 +1081,11 @@ public class JtsAlgorithms implements GeomAlgorithms {
                     BufferParameters.CAP_FLAT);
             int start = -1; int end = -1;
             boolean previousOnTheLeft = false;
+            if (buffer instanceof Polygon) {
+            	buffer = ((Polygon) buffer).getExteriorRing();
+            } else {
+            	System.out.println("Can't compute offsetcurve of " + buffer.getGeometryType());
+            }
             // go through the coordinates of the buffer and select the range
             // of coordinates of the right side
             for (int i = 0; i < buffer.getCoordinates().length; i++) {
@@ -1098,8 +1106,12 @@ public class JtsAlgorithms implements GeomAlgorithms {
             for (int i = start; i != end; i = (i + 1) % buffer.getCoordinates().length) {
                 offsetCoordinates.add(0, buffer.getCoordinates()[i]);
             }
-            return new GM_LineString(AdapterFactory.toDirectPositionList(
+            GM_LineString result = new GM_LineString(AdapterFactory.toDirectPositionList(
                     offsetCoordinates.toArray(new Coordinate[0])));
+            if (logger.isTraceEnabled()) {
+            	logger.trace("Result (" + distance + " ) = " + result);
+            }
+            return result;
         } catch (Exception e) { e.printStackTrace(); }
 	    return null;
 	}
