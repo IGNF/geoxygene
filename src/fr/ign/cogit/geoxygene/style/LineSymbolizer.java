@@ -54,6 +54,7 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
+import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 
 /**
@@ -76,132 +77,158 @@ public class LineSymbolizer extends AbstractSymbolizer {
         this.perpendicularOffset = perpendicularOffset;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void paint(FT_Feature feature, Viewport viewport,
                 Graphics2D graphics) {
-        if (feature.getGeom() == null) { return; }
-        if (this.getStroke() != null) {
-            double scale = 1;
-            if (this.getUnitOfMeasure() != PIXEL) {
+        GM_Object geometry = feature.getGeom();
+        if (this.getGeometryPropertyName() != null
+                && !this.getGeometryPropertyName().equalsIgnoreCase("geom")) { //$NON-NLS-1$
+            geometry = (GM_Object) feature.getAttribute(this
+                    .getGeometryPropertyName());
+        }
+        if (geometry == null) { return; }
+        if (this.getStroke() == null) { return; }
+        double scale = 1;
+        if (this.getUnitOfMeasure() != PIXEL) {
+            try {
+                scale = viewport.getModelToViewTransform().getScaleX();
+            } catch (NoninvertibleTransformException e) {
+                e.printStackTrace();
+            }
+        }
+        graphics.setStroke(this.getStroke().
+                toAwtStroke((float) scale));
+        this.paintShadow(geometry, viewport, graphics);
+        if (this.getStroke().getGraphicType() == null) {
+            List<Shape> shapes = getShapeList(geometry, viewport, false);
+            graphics.setColor(this.getStroke().getColor());
+            for (Shape shape : shapes) {
+                graphics.draw(shape);
+            }
+        } else {
+            if (this.getStroke().getGraphicType().getClass().isAssignableFrom(GraphicFill.class)) {                    
+                List<Shape> shapes = getShapeList(geometry, viewport, true);
+                // GraphicFill
+                List<Graphic> graphicList = ((GraphicFill) this.getStroke().getGraphicType()).getGraphics();
+                for (Graphic graphic : graphicList) {
+                    for (Shape shape : shapes) {
+                        this.graphicFillLineString(shape, graphic, viewport, graphics);
+                    }
+                }
+            } else {
+                // GraphicStroke
+                List<Shape> shapes = getShapeList(geometry, viewport, false);
+                List<Graphic> graphicList = ((GraphicStroke) this.getStroke().getGraphicType()).getGraphics();
+                for (Graphic graphic : graphicList) {
+                    for (Shape shape : shapes) {
+                        this.graphicStrokeLineString(shape, graphic, viewport, graphics);
+                    }
+                }                                    
+            }
+        }
+    }
+
+    /**
+     * @param geometry a geometry
+     * @param viewport the viewport in which to view it
+     * @return the list of awt shapes corresponding to the given geometry
+     */
+    @SuppressWarnings("unchecked")
+    private List<Shape> getShapeList(GM_Object geometry, Viewport viewport, boolean fill) {
+        if (geometry.isLineString()
+                || geometry.isPolygon()) {
+            GM_LineString line = (GM_LineString) ((geometry
+                    .isLineString()) ? geometry
+                            : ((GM_Polygon) geometry)
+                            .exteriorLineString());
+            if (this.getPerpendicularOffset() != 0) {
+                GM_MultiCurve<GM_LineString> offsetCurve = JtsAlgorithms.offsetCurve(
+                        line, this.getPerpendicularOffset());
+                List<Shape> shapes = new ArrayList<Shape>();
+                for (GM_LineString l : offsetCurve) {
+                    shapes.addAll(this.getLineStringShapeList(l, viewport, fill));
+                }
+                return shapes;
+            }
+            return this.getLineStringShapeList(line, viewport, fill);
+        }
+        if (geometry.isMultiCurve()) {
+            List<Shape> shapes = new ArrayList<Shape>();
+            for (GM_OrientableCurve line :
+                (GM_MultiCurve<GM_OrientableCurve>) geometry) {
+                if (this.getPerpendicularOffset() != 0) {
+                    GM_MultiCurve<GM_LineString> offsetCurve = JtsAlgorithms.offsetCurve(
+                            (GM_LineString) line,
+                            this.getPerpendicularOffset());
+                    for (GM_LineString l : offsetCurve) {
+                        shapes.addAll(this.getLineStringShapeList(l, viewport, fill));
+                    }
+                } else {
+                    shapes.addAll(this.getLineStringShapeList(line, viewport, fill));
+                }
+            }
+            return shapes;
+        }
+        if (geometry.isMultiSurface()) {
+            List<Shape> shapes = new ArrayList<Shape>();
+            for (GM_OrientableSurface surface :
+                (GM_MultiSurface<GM_OrientableSurface>) geometry) {
                 try {
-                    scale = viewport.getModelToViewTransform().getScaleX();
+                    Shape shape = viewport.toShape(fill ? surface.buffer(this
+                            .getStroke().getStrokeWidth() / 2) : surface);
+                    if (shape != null) {
+                        shapes.add(shape);
+                    }
                 } catch (NoninvertibleTransformException e) {
                     e.printStackTrace();
                 }
             }
-            graphics.setStroke(this.getStroke().
-                        toAwtStroke((float) scale));
+            return shapes;
+        }
+        return null;
+    }
 
-            if (this.getShadow() != null) {
-                Color shadowColor = this.getShadow().getColor();
-                double translate_x = -5;
-                double translate_y = -5;
-                if (this.getShadow().getDisplacement() != null) {
-                    translate_x = this.getShadow().getDisplacement().getDisplacementX();
-                    translate_y = this.getShadow().getDisplacement().getDisplacementY();
-                }
-                graphics.setColor(shadowColor);
-                List<Shape> shapes = new ArrayList<Shape>();
-                if (feature.getGeom().isLineString()) {
-                    try {
-                        Shape shape = viewport.toShape(feature.getGeom().translate(translate_x, translate_y, 0));
-                        if (shape != null) {
-                            shapes.add(shape);
-                        }
-                    } catch (NoninvertibleTransformException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    if (feature.getGeom().isMultiCurve()) {
-                        for (GM_OrientableCurve line :
-                            (GM_MultiCurve<GM_OrientableCurve>) feature
-                            .getGeom()) {
-                            try {
-                                Shape shape = viewport.toShape(line.translate(translate_x, translate_y, 0));
-                                if (shape != null) {
-                                    shapes.add(shape);
-                                }
-                            } catch (NoninvertibleTransformException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-                for (Shape shape : shapes) {
-                    graphics.draw(shape);
-                }
+    private List<Shape> getLineStringShapeList(GM_OrientableCurve line,
+            Viewport viewport, boolean fill) {
+        List<Shape> shapes = new ArrayList<Shape>();
+        try {
+            Shape shape = viewport.toShape(fill ? line.buffer(this.getStroke()
+                    .getStrokeWidth() / 2) : line);
+            if (shape != null) { shapes.add(shape); }
+        } catch (NoninvertibleTransformException e) {
+            e.printStackTrace();
+        }
+        return shapes;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void paintShadow(GM_Object geometry, Viewport viewport,
+            Graphics2D graphics) {
+        if (this.getShadow() != null) {
+            Color shadowColor = this.getShadow().getColor();
+            double translate_x = -5;
+            double translate_y = -5;
+            if (this.getShadow().getDisplacement() != null) {
+                translate_x = this.getShadow().getDisplacement().getDisplacementX();
+                translate_y = this.getShadow().getDisplacement().getDisplacementY();
             }
-            if (this.getStroke().getGraphicType() == null) {
-
-                List<Shape> shapes = new ArrayList<Shape>();
-                if (feature.getGeom().isLineString()
-                            || feature.getGeom().isPolygon()) {
-                    GM_LineString line = (GM_LineString) ((feature.getGeom()
-                                .isLineString()) ? feature.getGeom()
-                                            : ((GM_Polygon) feature.getGeom())
-                                            .exteriorLineString());
-                    GM_LineString newLine = null;
-                    if (this.getPerpendicularOffset() != 0) {
-                        newLine = JtsAlgorithms.offsetCurve(
-                                    line, this.getPerpendicularOffset());
+            graphics.setColor(shadowColor);
+            List<Shape> shapes = new ArrayList<Shape>();
+            if (geometry.isLineString()) {
+                try {
+                    Shape shape = viewport.toShape(geometry.translate(translate_x, translate_y, 0));
+                    if (shape != null) {
+                        shapes.add(shape);
                     }
-                    DirectPositionList list = (newLine == null) ?
-                                line.coord() : newLine.coord();
-                                newLine = new GM_LineString(list);
-                                try {
-                                    Shape shape = viewport.toShape(newLine);
-                                    if (shape != null) {
-                                        shapes.add(shape);
-                                    }
-                                } catch (NoninvertibleTransformException e) {
-                                    e.printStackTrace();
-                                }
+                } catch (NoninvertibleTransformException e) {
+                    e.printStackTrace();
                 }
-                if (feature.getGeom().isMultiCurve()) {
+            } else {
+                if (geometry.isMultiCurve()) {
                     for (GM_OrientableCurve line :
-                        (GM_MultiCurve<GM_OrientableCurve>) feature
-                        .getGeom()) {
-                        GM_LineString newLine = null;
-                        if (this.getPerpendicularOffset() != 0) {
-                            newLine = JtsAlgorithms.offsetCurve(
-                                        (GM_LineString) line,
-                                        this.getPerpendicularOffset());
-                        }
-                        DirectPositionList list = (newLine == null) ?
-                                    line.coord() : newLine.coord();
-                                    /*
-                        DirectPosition p0 = list.get(list.size() - 2);
-                        DirectPosition p2 = list.get(list.size() - 1);
-                        double dx = p2.getX() - p0.getX();
-                        double dy = p2.getY() - p0.getY();
-                        double length = Math.sqrt(dx * dx + dy * dy);
-                        DirectPosition p1 = new DirectPosition(
-                                p2.getX() - 2 * dx / length,
-                                p2.getY() - 2 * dy / length);
-                        DirectPosition p3 = new DirectPosition(
-                                p2.getX() - 2 * dy / length - 2 * dx / length,
-                                p2.getY() + 2 * dx / length - 2 * dy / length);
-                        list.add(p3);
-                        list.add(p1);
-                                     */
-                                    newLine = new GM_LineString(list);
-                                    try {
-                                        Shape shape = viewport.toShape(newLine);
-                                        if (shape != null) {
-                                            shapes.add(shape);
-                                        }
-                                    } catch (NoninvertibleTransformException e) {
-                                        e.printStackTrace();
-                                    }
-                    }
-                }
-                if (feature.getGeom().isMultiSurface()) {
-                    for (GM_OrientableSurface surface :
-                        (GM_MultiSurface<GM_OrientableSurface>) feature
-                        .getGeom()) {
+                        (GM_MultiCurve<GM_OrientableCurve>) geometry) {
                         try {
-                            Shape shape = viewport.toShape(surface);
+                            Shape shape = viewport.toShape(line.translate(translate_x, translate_y, 0));
                             if (shape != null) {
                                 shapes.add(shape);
                             }
@@ -210,184 +237,9 @@ public class LineSymbolizer extends AbstractSymbolizer {
                         }
                     }
                 }
-
-                graphics.setColor(this.getStroke().getColor());
-                for (Shape shape : shapes) {
-                    graphics.draw(shape);
-                }
-            } else {
-                if (this.getStroke().getGraphicType().getClass().isAssignableFrom(GraphicFill.class)) {                    
-                    List<Shape> shapes = new ArrayList<Shape>();
-                    if (feature.getGeom().isLineString()
-                                || feature.getGeom().isPolygon()) {
-                        GM_LineString line = (GM_LineString) ((feature.getGeom()
-                                    .isLineString()) ? feature.getGeom()
-                                                : ((GM_Polygon) feature.getGeom())
-                                                .exteriorLineString());
-                        GM_LineString newLine = null;
-                        if (this.getPerpendicularOffset() != 0) {
-                            newLine = JtsAlgorithms.offsetCurve(
-                                        line, this.getPerpendicularOffset());
-                        }
-                        DirectPositionList list = (newLine == null) ?
-                                    line.coord() : newLine.coord();
-                                    newLine = new GM_LineString(list);
-                                    try {
-                                        Shape shape = viewport.toShape(newLine.buffer(this.getStroke().getStrokeWidth()/2));
-                                        if (shape != null) {
-                                            shapes.add(shape);
-                                        }
-                                    } catch (NoninvertibleTransformException e) {
-                                        e.printStackTrace();
-                                    }
-                    }
-                    if (feature.getGeom().isMultiCurve()) {
-                        for (GM_OrientableCurve line :
-                            (GM_MultiCurve<GM_OrientableCurve>) feature
-                            .getGeom()) {
-                            GM_LineString newLine = null;
-                            if (this.getPerpendicularOffset() != 0) {
-                                newLine = JtsAlgorithms.offsetCurve(
-                                            (GM_LineString) line,
-                                            this.getPerpendicularOffset());
-                            }
-                            DirectPositionList list = (newLine == null) ?
-                                        line.coord() : newLine.coord();
-                                        /*
-                            DirectPosition p0 = list.get(list.size() - 2);
-                            DirectPosition p2 = list.get(list.size() - 1);
-                            double dx = p2.getX() - p0.getX();
-                            double dy = p2.getY() - p0.getY();
-                            double length = Math.sqrt(dx * dx + dy * dy);
-                            DirectPosition p1 = new DirectPosition(
-                                    p2.getX() - 2 * dx / length,
-                                    p2.getY() - 2 * dy / length);
-                            DirectPosition p3 = new DirectPosition(
-                                    p2.getX() - 2 * dy / length - 2 * dx / length,
-                                    p2.getY() + 2 * dx / length - 2 * dy / length);
-                            list.add(p3);
-                            list.add(p1);
-                                         */
-                                        newLine = new GM_LineString(list);
-                                        try {
-                                            Shape shape = viewport.toShape(newLine.buffer(this.getStroke().getStrokeWidth()/2));
-                                            if (shape != null) {
-                                                shapes.add(shape);
-                                            }
-                                        } catch (NoninvertibleTransformException e) {
-                                            e.printStackTrace();
-                                        }
-                        }
-                    }
-                    if (feature.getGeom().isMultiSurface()) {
-                        for (GM_OrientableSurface surface :
-                            (GM_MultiSurface<GM_OrientableSurface>) feature
-                            .getGeom()) {
-                            try {
-                                Shape shape = viewport.toShape(surface.buffer(this.getStroke().getStrokeWidth()/2));
-                                if (shape != null) {
-                                    shapes.add(shape);
-                                }
-                            } catch (NoninvertibleTransformException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-
-                    
-                    // GraphicFill
-                    List<Graphic> graphicList = ((GraphicFill) this.getStroke().getGraphicType()).getGraphics();
-                    for (Graphic graphic : graphicList) {
-                        for (Shape shape : shapes) {
-                            this.graphicFillLineString(shape, graphic, viewport, graphics);
-                        }
-                    }
-                } else {
-                    // GraphicStroke
-                    List<Shape> shapes = new ArrayList<Shape>();
-                    if (feature.getGeom().isLineString()
-                                || feature.getGeom().isPolygon()) {
-                        GM_LineString line = (GM_LineString) ((feature.getGeom()
-                                    .isLineString()) ? feature.getGeom()
-                                                : ((GM_Polygon) feature.getGeom())
-                                                .exteriorLineString());
-                        GM_LineString newLine = null;
-                        if (this.getPerpendicularOffset() != 0) {
-                            newLine = JtsAlgorithms.offsetCurve(
-                                        line, this.getPerpendicularOffset());
-                        }
-                        DirectPositionList list = (newLine == null) ?
-                                    line.coord() : newLine.coord();
-                                    newLine = new GM_LineString(list);
-                                    try {
-                                        Shape shape = viewport.toShape(newLine);
-                                        if (shape != null) {
-                                            shapes.add(shape);
-                                        }
-                                    } catch (NoninvertibleTransformException e) {
-                                        e.printStackTrace();
-                                    }
-                    }
-                    if (feature.getGeom().isMultiCurve()) {
-                        for (GM_OrientableCurve line :
-                            (GM_MultiCurve<GM_OrientableCurve>) feature
-                            .getGeom()) {
-                            GM_LineString newLine = null;
-                            if (this.getPerpendicularOffset() != 0) {
-                                newLine = JtsAlgorithms.offsetCurve(
-                                            (GM_LineString) line,
-                                            this.getPerpendicularOffset());
-                            }
-                            DirectPositionList list = (newLine == null) ?
-                                        line.coord() : newLine.coord();
-                                        /*
-                            DirectPosition p0 = list.get(list.size() - 2);
-                            DirectPosition p2 = list.get(list.size() - 1);
-                            double dx = p2.getX() - p0.getX();
-                            double dy = p2.getY() - p0.getY();
-                            double length = Math.sqrt(dx * dx + dy * dy);
-                            DirectPosition p1 = new DirectPosition(
-                                    p2.getX() - 2 * dx / length,
-                                    p2.getY() - 2 * dy / length);
-                            DirectPosition p3 = new DirectPosition(
-                                    p2.getX() - 2 * dy / length - 2 * dx / length,
-                                    p2.getY() + 2 * dx / length - 2 * dy / length);
-                            list.add(p3);
-                            list.add(p1);
-                                         */
-                                        newLine = new GM_LineString(list);
-                                        try {
-                                            Shape shape = viewport.toShape(newLine);
-                                            if (shape != null) {
-                                                shapes.add(shape);
-                                            }
-                                        } catch (NoninvertibleTransformException e) {
-                                            e.printStackTrace();
-                                        }
-                        }
-                    }
-                    if (feature.getGeom().isMultiSurface()) {
-                        for (GM_OrientableSurface surface :
-                            (GM_MultiSurface<GM_OrientableSurface>) feature
-                            .getGeom()) {
-                            try {
-                                Shape shape = viewport.toShape(surface);
-                                if (shape != null) {
-                                    shapes.add(shape);
-                                }
-                            } catch (NoninvertibleTransformException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-
-                    List<Graphic> graphicList = ((GraphicStroke) this.getStroke().getGraphicType()).getGraphics();
-                    for (Graphic graphic : graphicList) {
-                        for (Shape shape : shapes) {
-                            this.graphicStrokeLineString(shape, graphic, viewport, graphics);
-                        }
-                    }                                    
-                }
+            }
+            for (Shape shape : shapes) {
+                graphics.draw(shape);
             }
         }
     }
@@ -454,7 +306,7 @@ public class LineSymbolizer extends AbstractSymbolizer {
         Double width = new Double(Math.max(1, shape.getBounds2D().getWidth()));
         Double height = new Double(Math.max(1, shape.getBounds2D().getHeight()));
         Double shapeHeight = new Double(size);
-        double factor = shapeHeight / image.getHeight(null);
+        double factor = shapeHeight.doubleValue() / image.getHeight(null);
         Double shapeWidth = new Double(image.getWidth(null) * factor);
         AffineTransform transform = AffineTransform.
         getTranslateInstance(

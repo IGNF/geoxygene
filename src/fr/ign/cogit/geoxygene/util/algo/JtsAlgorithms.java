@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.TreeSet;
 
 import javax.swing.event.EventListenerList;
-import javax.vecmath.Vector3d;
 
 import org.apache.log4j.Logger;
 
@@ -46,6 +45,7 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineSegment;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.MultiLineString;
@@ -62,6 +62,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
@@ -1048,143 +1049,183 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		return (new GeometryFactory()).createMultiPolygon(polys);
 	}
 
-	/**
-	 * Builds on offset curve for the given linestring. A positive offset
-	 * builds an offset curve on the left-hand side of the reference
-	 * linestring. Negative means right.
-	 * <p>
-	 * In case there are holes in the computed buffer, they are removed
-	 * before computing the offset curve.
-	 * @param line reference linestring
-	 * @param distance offset
-	 * @return a linestring at the given offset of the reference linestring
-	 */
-	public static GM_LineString offsetCurve(GM_LineString line,
-	        double distance) {
-	    boolean left = (distance > 0);
-	    distance = Math.abs(distance);
-	    try {
-            LineString lineString =
-                (LineString) JtsGeOxygene.makeJtsGeom(line);
-            Coordinate[] coordinateArray = lineString.getCoordinates();
-            List<Coordinate> coordinates = new ArrayList<Coordinate>();
-            // build a list of linestring coordinates and remove duplicates
-            Coordinate previous = coordinateArray[0];
-            coordinates.add(previous);
-            for (int i = 1; i < coordinateArray.length; i++) {
-                if (!coordinateArray[i].equals2D(previous)) {
-                    coordinates.add(coordinateArray[i]);
-                    previous = coordinateArray[i];
+    /**
+     * Builds on offset curve for the given linestring. A positive offset
+     * builds an offset curve on the left-hand side of the reference
+     * linestring. Negative means right.
+     * @param line reference linestring
+     * @param distance offset
+     * @return a multi linestring at the given offset of the reference linestring
+     */
+    public static GM_MultiCurve<GM_LineString> offsetCurve(GM_LineString line,
+            double distance) {
+        //boolean left = (distance > 0);
+        double d = Math.abs(distance);
+        int orientationIndex = (int) (d / distance);
+        try {
+            LineString lineString = getLineStringWithoutDuplicates(
+                    (LineString) JtsGeOxygene.makeJtsGeom(line));
+            Geometry buffer = lineString.buffer(d, 4,
+                    BufferParameters.CAP_FLAT);
+            List<LineString> holes = new ArrayList<LineString>();
+            if (buffer instanceof Polygon) {
+                for (int i = 0; i < ((Polygon) buffer).getNumInteriorRing(); i++) {
+                    holes.add(((Polygon) buffer).getInteriorRingN(i));
+                }
+                buffer = ((Polygon) buffer).getExteriorRing();
+            } else {
+                logger.error("Can't compute offsetcurve of " + buffer.getGeometryType());
+            }
+            GM_MultiCurve<GM_LineString> result = new GM_MultiCurve<GM_LineString>();
+            List<Coordinate> coords = new ArrayList<Coordinate>();
+            for (Coordinate c : buffer.getCoordinates()) {
+                if (!lineString.isCoordinate(c)) {
+                    coords.add(c);
                 }
             }
-            Geometry buffer = lineString.buffer(distance, 4,
-                    BufferParameters.CAP_FLAT);
-            int start = -1; int end = -1;
-            boolean previousOnTheLeft = false;
-            if (buffer instanceof Polygon) {
-            	buffer = ((Polygon) buffer).getExteriorRing();
-            } else {
-            	System.out.println("Can't compute offsetcurve of " + buffer.getGeometryType());
-            }
-            // go through the coordinates of the buffer and select the range
-            // of coordinates of the right side
-            for (int i = 0; i < buffer.getCoordinates().length; i++) {
-                boolean toTheLeft = toTheLeft(buffer.getCoordinates()[i],
-                        coordinates);
-                // if there is a change of side, set the start or end marker
-                if (toTheLeft && !previousOnTheLeft) {
-                    if (left) { start = i; } else { end = i; }
-                } else {
-                    if (!toTheLeft && previousOnTheLeft) {
-                        if (left) { end = i; } else { start = i; }
+            GM_LineString r = getOffsetCurveFromRing(coords, lineString, orientationIndex);
+            if ((r != null) && !r.isEmpty()) { result.add(r); }
+            for (LineString l : holes) {
+                coords = new ArrayList<Coordinate>();
+                for (Coordinate c : l.getCoordinates()) {
+                    if (!lineString.isCoordinate(c)) {
+                        coords.add(c);
                     }
                 }
-                previousOnTheLeft = toTheLeft;
+                r = getOffsetCurveFromRing(coords, lineString, orientationIndex);
+                if ((r != null) && !r.isEmpty()) { result.add(r); }
             }
-            // build the linestring using the determined range of coordinates
-            List<Coordinate> offsetCoordinates = new ArrayList<Coordinate>();
-            for (int i = start; i != end; i = (i + 1) % buffer.getCoordinates().length) {
-                offsetCoordinates.add(0, buffer.getCoordinates()[i]);
-            }
-            GM_LineString result = new GM_LineString(AdapterFactory.toDirectPositionList(
-                    offsetCoordinates.toArray(new Coordinate[0])));
             if (logger.isTraceEnabled()) {
-            	logger.trace("Result (" + distance + " ) = " + result);
+                logger.trace("Result (" + distance + " ) = " + result);
             }
             return result;
         } catch (Exception e) { e.printStackTrace(); }
-	    return null;
-	}
+        return null;
+    }
 
-    /**
-     * Determine if a coordinate lies on the left of the linestring defined
-     * by a list of coodinates.
-     * @param c coordinate
-     * @param coordinates list of coordinates defining the reference linestring
-     * @return true if c is on the left of the linestring defined by
-     * coordinates
-     */
-    private static boolean toTheLeft(Coordinate c,
-            List<Coordinate> coordinates) {
-        // find the closest coordinate in the list
-        double distanceMin = Double.POSITIVE_INFINITY;
-        Coordinate coordMin = null;
-        for (Coordinate coordinate : coordinates) {
-            double d = coordinate.distance(c);
-            if (d < distanceMin) {
-                distanceMin = d;
-                coordMin = coordinate;
+    private static LineString getLineStringWithoutDuplicates(
+            LineString lineString) {
+        Coordinate[] coordinateArray = lineString.getCoordinates();
+        List<Coordinate> coordinates = new ArrayList<Coordinate>();
+        // build a list of linestring coordinates and remove duplicates
+        Coordinate previous = coordinateArray[0];
+        coordinates.add(previous);
+        for (int i = 1; i < coordinateArray.length; i++) {
+            if (!coordinateArray[i].equals2D(previous)) {
+                coordinates.add(coordinateArray[i]);
+                previous = coordinateArray[i];
             }
         }
-        if (coordMin == null) { return false; }
-        int index = coordinates.indexOf(coordMin);
-        if (index < 0) { return false; } // shoulnd't happen but...
-        if (index == 0) {
-            Coordinate coord2 = coordinates.get(1);
-            Vector3d v1 = new Vector3d(new double[]{
-                    coord2.x - coordMin.x,
-                    coord2.y - coordMin.y, 0});
-            v1.normalize();
-            Vector3d v2 = new Vector3d(new double[]{
-                    c.x - coordMin.x,
-                    c.y - coordMin.y, 0});
-            v2.normalize();
-            Vector3d cross = new Vector3d();
-            cross.cross(v1, v2);
-            return (cross.z >= 0);
-        }
-        if (index == coordinates.size() - 1) {
-            Coordinate coord2 = coordinates.get(coordinates.size() - 2);
-            Vector3d v1 = new Vector3d(new double[]{
-                    coordMin.x - coord2.x,
-                    coordMin.y - coord2.y, 0});
-            v1.normalize();
-            Vector3d v2 = new Vector3d(new double[]{
-                    c.x - coordMin.x,
-                    c.y - coordMin.y, 0});
-            v2.normalize();
-            Vector3d cross = new Vector3d();
-            cross.cross(v1, v2);
-            return (cross.z >= 0);
-        }
-        Coordinate coord1 = coordinates.get(index - 1);
-        Coordinate coord2 = coordinates.get(index + 1);
-        Vector3d v1 = new Vector3d(new double[]{
-                coordMin.x - coord1.x,
-                coordMin.y - coord1.y, 0});
-        v1.normalize();
-        Vector3d v2 = new Vector3d(new double[]{
-                c.x - coordMin.x,
-                c.y - coordMin.y, 0});
-        v2.normalize();
-        Vector3d cross = new Vector3d();
-        cross.cross(v1, v2);
-        v1 = new Vector3d(new double[]{
-                coord2.x - coordMin.x,
-                coord2.y - coordMin.y, 0});
-        v1.normalize();
-        Vector3d cross2 = new Vector3d();
-        cross2.cross(v1, v2);
-        return (cross.z + cross2.z >= 0);
+        return lineString.getFactory().createLineString(
+                coordinates.toArray(new Coordinate[0]));
     }
+
+    /**
+     * @param coords coordinates used to build the offsetcurve. These come
+     * from a linear ring
+     * @param line the reference linestring
+     * @param orientationIndex orientation of the offset curve to build
+     * @return the offsetcurve
+     */
+    private static GM_LineString getOffsetCurveFromRing(
+            List<Coordinate> coords, LineString line,
+            int orientationIndex) {
+        int start = -1; int end = -1;
+        // go through the coordinates of the buffer and select the range
+        // of coordinates of the right side
+        int previousOrientation = orientationIndex(coords.get(0),
+                line);
+        int lastNonNullOrientation = previousOrientation;
+        for (int i = 1; i < coords.size(); i++) {
+            int currentOrientation = orientationIndex(coords.get(i),
+                    line);
+            // if there is a change of side, set the start or end marker
+            if (currentOrientation != previousOrientation) {
+                if (currentOrientation == orientationIndex) {
+                    start = i;
+                    if (previousOrientation == 0) {
+                        start -= 1;
+                    }
+                } else {
+                    if (currentOrientation == -orientationIndex) {
+                        end = i;
+                    }
+                }
+            }
+            previousOrientation = currentOrientation;
+            if (currentOrientation != 0) {
+                lastNonNullOrientation = currentOrientation;
+            }
+        }
+        boolean cycle = true;
+        // if we didn't find any change in direction, all points are on the
+        // same side
+        if ((start == -1 || end == -1) && (lastNonNullOrientation == orientationIndex)) {
+            start = 0;
+            end = coords.size();
+            // we will not cycle through the coordinates
+            cycle = false;
+        }
+        if (start == -1 || end == -1) {
+            return null;
+        }
+        int numberOfCoordinates = end - start;
+        if (numberOfCoordinates < 0) {
+            numberOfCoordinates += coords.size();
+        }
+        // build the linestring using the determined range of coordinates
+        List<Coordinate> offsetCoordinates = new ArrayList<Coordinate>();
+        if (numberOfCoordinates > 1) {
+            for (int i = start; i != end; i = cycle ? (i + 1) % coords.size() : i + 1) {
+                offsetCoordinates.add(0, coords.get(i));
+            }
+        } else {
+            return null;
+        }
+        // 2 coordinates are the same
+        if (numberOfCoordinates == 2
+                && offsetCoordinates.get(0).equals2D(offsetCoordinates.get(1))) {
+            return null;
+        }
+        GM_LineString result = new GM_LineString(AdapterFactory
+                .toDirectPositionList(offsetCoordinates
+                        .toArray(new Coordinate[0])));
+        return result;
+    }
+
+    /**
+     * Determine the orientation of a coordinate to a linestring.
+     * @param c coordinate
+     * @param line the reference linestring
+     * @return +1 if the coordinate is on the left, -1 if it is on the right,
+     * 0 otherwise.
+     */
+    private static int orientationIndex(Coordinate c,
+            LineString line) {
+        double tolerance = 0.00000001;
+        double distanceMin = Double.POSITIVE_INFINITY;
+        // build a list of line segments
+        List<LineSegment> closestLineSegments = new ArrayList<LineSegment>();
+        for (int i = 0; i< line.getNumPoints()-1; i++) {
+            Coordinate coordinate1  = line.getCoordinateN(i);
+            Coordinate coordinate2  = line.getCoordinateN(i+1);
+            LineSegment segment = new LineSegment(coordinate1, coordinate2);
+            double d = segment.distance(c);
+            if (d <= distanceMin + tolerance) {
+                if (d < distanceMin - tolerance) {
+                    distanceMin = d;
+                    closestLineSegments.clear();
+                }
+                closestLineSegments.add(segment);
+            }
+        }
+        int orientation = closestLineSegments.get(0).orientationIndex(c);
+        for (int i = 1; i < closestLineSegments.size(); i++) {
+            LineSegment segment = closestLineSegments.get(i);
+            if (segment.orientationIndex(c) != orientation) {
+                return 0;
+            }
+        }
+        return orientation;
+     }
 } // class
