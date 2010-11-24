@@ -83,11 +83,17 @@
   </organization>
   <build>
   	<sourceDirectory>src</sourceDirectory>
+  	<testSourceDirectory>test/java</testSourceDirectory>
   	<resources>
   		<resource>
   			<directory>src/resources</directory>
   		</resource>
   	</resources>
+  	<testResources>
+      <testResource>
+  			<directory>test/resources</directory>
+      </testResource>
+    </testResources>
   	<plugins>
   		<plugin>
   			<groupId>org.apache.maven.plugins</groupId>
@@ -103,6 +109,7 @@
 				<excludes>
 					<exclude>fr/ign/cogit/geoxygene/datatools/oracle/*.java</exclude>
 					<exclude>resources/</exclude>
+					<exclude>site/</exclude>
 				</excludes>
   			</configuration>
   		</plugin>
@@ -139,6 +146,14 @@
   			<artifactId>maven-jar-plugin</artifactId>
   			<version>2.3</version>
   		</plugin>
+  		<plugin>
+        	<groupId>org.apache.maven.plugins</groupId>
+        	<artifactId>maven-site-plugin</artifactId>
+        	<version>2.1.1</version>
+        	<configuration>
+          		<locales>en,fr</locales>
+        	</configuration>
+      	</plugin>
   	</plugins>
   </build>
   <repositories>
@@ -332,6 +347,11 @@
   		<artifactId>vecmath</artifactId>
   		<version>1.5.2</version>
   	</dependency>
+  	<dependency>
+    	<groupId>jfree</groupId>
+    	<artifactId>jfreechart</artifactId>
+    	<version>1.0.12</version>
+	</dependency>
   </dependencies>
   <reporting>
   	<outputDirectory>target/reports</outputDirectory>

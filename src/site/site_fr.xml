@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="GeOxygene">
+  <bannerLeft>
+    <name>GeOxygene</name>
+    <src>http://oxygene-project.sourceforge.net/images/geoxygene-logo.png</src>
+    <href>http://oxygene-project.sourceforge.net/</href>
+  </bannerLeft>
+  <bannerRight>
+    <name>Hosted by SourceForge</name>
+    <src>http://sourceforge.net/sflogo.php?group_id=70002&amp;type=1</src>
+	<href>http://sourceforge.net/projects/oxygene-project/</href>
+  </bannerRight>
+  <body>
+    <links>
+      <item name="COGIT" href="http://recherche.ign.fr/labos/cogit/" />
+      <item name="GeoTools" href="http://www.geotools.org/"/>
+      <item name="GeoApi" href="http://geoapi.sourceforge.net/"/>
+    </links>
+
+    <menu name="GeOxygene Liens Rapides">
+      <item name="Introduction" href="index.html"/>
+      <item name="Téléchargement" href="download.html"/>
+      <item name="Changements" href="release-notes.html" />
+      <item name="Informations Générales" href="about.html"/>
+      <item name="Road Map" href="roadmap.html" />
+    </menu>
+
+    <menu name="Modules">
+      <item name="Sémiologie Graphique" href="semiology.html"/>
+      <item name="Appariement" href="data-matching.html"/>
+      <item name="Noyau" href="core.html"/>
+    </menu>
+
+    <menu name="Documentation du Projet">
+      <item name="Informations sur le projet" href="information.html"/>
+      <item name="Rapports sur le projet" href="reports.html"/>
+    </menu>
+  </body>
+</project>
