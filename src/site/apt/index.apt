@@ -1,34 +1,55 @@
 Introduction
 
-  GeOxygene aims at providing an open framework which implements {{{http://www.opengeospatial.org/}OGC}}/ISO specifications for the development and deployment of geographic (GIS) applications. It is a open source contribution of the COGIT laboratory at the IGN (Institut Géographique National), the French National Mapping Agency. It is released under the terms of the LGPL (GNU Lesser General Public License) license.
+  GeOxygene aims at providing an open framework which implements
+  {{{http://www.opengeospatial.org/}OGC}}/{{{http://www.isotc211.org/}ISO}} specifications for the
+  development and deployment of geographic (GIS) applications.
+  It is a open source contribution of the {{{http://recherche.ign.fr/cogit/}COGIT laboratory}} at the
+  {{{http://www.ign.fr/}IGN}} (Institut Géographique National), the French National Mapping Agency.
+  It is released under the terms of the {{{http://www.fsf.org/licensing/licenses/lgpl.html#SEC1}LGPL (GNU Lesser General Public License) license}}.
 
-  GeOxygene is based on Java and open source technologies and provides users with an extensible object data model (geographic features, geometry, topology and metadata) which implements OGC specifications and ISO standards in the geographic information domain. The support of the Java interfaces developped by the open source GeoAPI project is planned.
+  GeOxygene is based on Java and open source technologies and provides users with an extensible
+  object data model (geographic features, geometry, topology and metadata) which implements
+  OGC specifications and ISO standards in the geographic information domain.
+  The support of the Java interfaces developped by the open source
+  {{{http://geoapi.sourceforge.net/}GeoAPI project}} is planned.
 
-  Data are stored in a relational DBMS (RDBMS) to ensure a rapid and reliable access to the system but users do not have to worry about any SQL statements: they model their applications in UML and code in Java. Mapping between object and relational environments is performed with open source software. At present, OJB is supported and the mapping files for the storage of geographic information in Oracle or PostGIS are provided to users.
+  Data are stored in a relational DBMS (RDBMS) to ensure a rapid and reliable access to the system
+  but users do not have to worry about any SQL statements: they model their applications in UML and code in Java.
+  Mapping between object and relational environments is performed with open source software.
+  At present, {{{http://db.apache.org/ojb/}OJB}} is supported and the mapping files for the storage of
+  geographic information in {{{http://www.oracle.com/}Oracle}} or {{{http://postgis.refractions.net/}PostGIS}}
+  are provided to users.
 
 News
 
-    * June 22, 2009 - Version 1.4 released
+    * June 22, 2009 - <<Version 1.4 released>>
 
-      This version provides an ISO1909 General Feature Model implementation, a SLD (Styled Layer Descriptor) implementation based on the OGC 02-070 implementation specification, an Hibernate support, a first version of the new GeOxygene interface, some code examples to learn how to use the topoligical map and the data matching tool, and a complete Java 6 support in regard to Java 6 specifications (types, annotations, etc.).
+      This version provides an ISO1909 General Feature Model implementation, a SLD (Styled Layer Descriptor)
+      implementation based on the OGC 02-070 implementation specification, an Hibernate support,
+      a first version of the new GeOxygene interface, some code examples to learn how to use the
+      topoligical map and the data matching tool, and a complete Java 6 support in regard to
+      Java 6 specifications (types, annotations, etc.).
 
-    * January 31, 2008 - Version 1.3 released
+    * January 31, 2008 - <<Version 1.3 released>>
 
       This version provides a data matching tool.
 
-    * August 8, 2007 - Version 1.2 released
+    * August 8, 2007 - <<Version 1.2 released>>
 
-      This version provides new tools (topological map, geometric tools, Delaunay's triangulation) and corrects some minor bugs.
+      This version provides new tools (topological map, geometric tools, Delaunay's triangulation)
+      and corrects some minor bugs.
 
-    * September 12-15, 2006 - GeOxygene will be at FOSS4G !!!
+    * September 12-15, 2006 - <<GeOxygene will be at FOSS4G !!!>>
 
-      A technical workshop on GeOxygene is organised during the 4th edition of the Free and Open Source Software for Geoinformatics conference, FOSS4G 2006, Lausanne, Switzerland, September 12-15, 2006. Do not hesitate to register and discover GeOxygene, there are few available places yet !
+      A technical workshop on GeOxygene is organised during the 4th edition of the Free and Open Source Software
+      for Geoinformatics conference, {{{http://www.foss4g2006.org/}FOSS4G 2006}}, Lausanne, Switzerland,
+      September 12-15, 2006.
 
-    * June 12, 2006 - Version 1.1 released !!!
+    * June 12, 2006 - <<Version 1.1 released !!!>>
 
       This version corrects some minor bugs and enhances the support of PostGIS.
 
-    * May 8, 2005 - GeOxygene 1.0 released !!!
+    * May 8, 2005 - <<GeOxygene 1.0 released !!!>>
 
       After two years of development, testing and debug, version 1.0 of GeOxygene is released.
 
