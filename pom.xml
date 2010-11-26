@@ -11,7 +11,7 @@
   <url>http://oxygene-project.sourceforge.net/</url>
 
   <description>
-    GeOxygene is an open framework which implements OGC/ISO specifications for the development 
+    GeOxygene is an open framework which implements OGC/ISO specifications for the development
     and deployment of geographic (GIS) applications.
   </description>
 
@@ -159,7 +159,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>2.1</version>
+        <version>2.1.1</version>
         <configuration>
           <locales>en</locales>
           <inputEncoding>UTF-8</inputEncoding>
@@ -173,7 +173,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.1</version> <!-- Version 2.2 doesn't work. See http://www.mail-archive.com/users@maven.apache.org/msg109241.html -->
+        <version>2.1.2</version> <!-- Version 2.2 doesn't work. See http://www.mail-archive.com/users@maven.apache.org/msg109241.html -->
         	<configuration>
         	  <outputDirectory>target/reports</outputDirectory>
               <links>
@@ -182,11 +182,13 @@
           	  <webAccessUrl>http://oxygene-project.svn.sourceforge.net/viewvc/oxygene-project/main/trunk/geoxygene/</webAccessUrl>
           	  <anonymousConnection>scm:svn:http://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project/main/trunk/geoxygene/</anonymousConnection>
           	  <developerConnection>scm:svn:https://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project/main/trunk/geoxygene/</developerConnection>
+          	  <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+		      <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
         	</configuration>
         	<reportSets>
           		<reportSet>
             		<reports>
-              			<report>javadoc</report>            		
+              			<report>javadoc</report>
             			<report>summary</report>
               			<report>project-team</report>
 	           			<report>mailing-list</report>
@@ -247,7 +249,7 @@
       </plugin>
     </plugins>
   </reporting>
-  
+
   <!--
   <reporting>
   	<outputDirectory>target/reports</outputDirectory>
@@ -277,7 +279,7 @@
         	<reportSets>
           		<reportSet>
             		<reports>
-              			<report>javadoc</report>            		
+              			<report>javadoc</report>
             			<report>summary</report>
               			<report>dependencies</report>
               			<report>project-team</report>
@@ -297,7 +299,7 @@
   			<reportSets>
   				<reportSet>
   					<reports>
-  						<report>javadoc</report>  We want API javadoc only, not tests javadoc. 
+  						<report>javadoc</report>  We want API javadoc only, not tests javadoc.
   					</reports>
   				</reportSet>
   			</reportSets>
@@ -522,10 +524,11 @@
   		<url>https://dionysos2/nexus-webapp-1.4.1/content/repositories/snapshots/</url>
   	</snapshotRepository>
   	<site>
-  		<id>GeOxygene-website</id>
+  		<id>oxygene-project.sf.net</id>
   		<name>GeOxygene website</name>
-  		<url>http://oxygene-project.sourceforge.net/</url>
-  	</site>
+        <url>scp://shell.sourceforge.net/home/groups/o/ox/oxygene-project/htdocs/maven</url>
+    </site>
+
   </distributionManagement>
   <properties>
   	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
