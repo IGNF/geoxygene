@@ -416,6 +416,7 @@ public class ShapefileReader implements Runnable {
                         }
                     }
                     defaultFeature.setGeom(geometry);
+                    defaultFeature.setId(indexFeature);
                     population.add(defaultFeature);
                     fireActionPerformed(new ActionEvent(population,1,"Read",indexFeature)); //$NON-NLS-1$
                 }
