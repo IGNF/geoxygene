@@ -2,7 +2,7 @@
 <project name="GeOxygene">
   <bannerLeft>
     <name>GeOxygene</name>
-    <src>http://oxygene-project.sourceforge.net/images/geoxygene-logo.png</src>
+    <src>../images/geoxygene-logo.png</src>
     <href>http://oxygene-project.sourceforge.net/</href>
   </bannerLeft>
   <bannerRight>
@@ -19,21 +19,24 @@
 
     <menu name="GeOxygene Liens Rapides">
       <item name="Introduction" href="index.html"/>
+      <item name="Documentation" href="documentation.html"></item>
       <item name="Téléchargement" href="download.html"/>
+      <item name="FAQ" href="faq.html" />
       <item name="Changements" href="release-notes.html" />
-      <item name="Informations Générales" href="about.html"/>
-      <item name="Road Map" href="roadmap.html" />
     </menu>
 
-    <menu name="Modules">
+    <menu name="GeOxygene 1.4 Downloads">
+      <item name="Binary (jar)" href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.4/geoxygene-1.4.jar/download"/>
+      <item name="Source (zip)" href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.4/geoxygene-1.4-src.zip/download"/>
+      <item name="Javadoc (zip)" href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.4/geoxygene-1.4-javadoc.zip/download"/>
+      <item name="Plugin for OpenJump" href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene%20Plugin%20for%20OpenJUMP/0.1/geoxygene-plugin-0.1.zip/download"/>
+    </menu>
+
+    <menu name="Applications">
       <item name="Sémiologie Graphique" href="semiology.html"/>
       <item name="Appariement" href="data-matching.html"/>
-      <item name="Noyau" href="core.html"/>
     </menu>
 
-    <menu name="Documentation du Projet">
-      <item name="Informations sur le projet" href="information.html"/>
-      <item name="Rapports sur le projet" href="reports.html"/>
-    </menu>
+    <menu ref="reports"/> <!-- Replaced by menus for any configured reports (mailing lists, etc.) -->
   </body>
 </project>
