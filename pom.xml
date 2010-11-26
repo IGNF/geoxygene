@@ -128,10 +128,15 @@
 					<exclude>fr/ign/cogit/geoxygene/datatools/oracle/*.java</exclude>
 					<exclude>resources/</exclude>
 					<exclude>site/</exclude>
-					<exclude>main/javadoc</exclude>
+					<exclude>main/</exclude>
 				</excludes>
   			</configuration>
   		</plugin>
+      	<plugin>
+        	<groupId>org.apache.maven.plugins</groupId>
+        	<artifactId>maven-resources-plugin</artifactId>
+        	<version>2.4.3</version>
+      	</plugin>
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-source-plugin</artifactId>
