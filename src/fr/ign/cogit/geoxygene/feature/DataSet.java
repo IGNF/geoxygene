@@ -634,7 +634,7 @@ public class DataSet {
      * relation inverse.
      */
     public void addPopulation(Population<? extends FT_Feature> O) {
-        if (O == null) return;
+        if (O == null) { return; }
         this.populations.add(O);
         O.setDataSet(this);
     }

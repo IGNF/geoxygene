@@ -190,7 +190,7 @@ class AttributeTable extends JDialog {
                 .getFeatureAttributes();
             }
             //On récupère tout les noms d'attribut
-            this.attributeNames.add("FID"); //$NON-NLS-1$
+            this.attributeNames.add("id"); //$NON-NLS-1$
             for(GF_AttributeType attribute : featureAttributes) {
                 String nomAttribut = attribute.getMemberName();
                 this.attributeNames.add(nomAttribut);

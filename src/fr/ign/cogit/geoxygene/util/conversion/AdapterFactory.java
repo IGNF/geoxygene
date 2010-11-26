@@ -95,10 +95,15 @@ public class AdapterFactory  {
 			    }
 				throw new Exception(I18N.getString("AdapterFactory.RingWithLessThan4Points")); //$NON-NLS-1$
 			}
-			return factory.createLinearRing(toCoordinateSequence(factory, coord));
+			CoordinateSequence sequence = toCoordinateSequence(factory, coord);
+			if (sequence.getCoordinate(0).equals(sequence.getCoordinate(sequence.size() -1))) {
+			    return factory.createLinearRing(sequence);
+			} else {
+			    return null;
+			}
 		}
 		if (geom instanceof GM_LineString) {
-			return factory.createLineString(toCoordinateSequence(factory, geom.coord()));
+			return toLineString(factory, (GM_LineString) geom);
 		}
 		if (geom instanceof GM_Polygon) {
 			return factory.createPolygon((LinearRing) toGeometry(factory, ((GM_Polygon)geom).getExterior()), toLinearRingArray(factory,((GM_Polygon)geom).getInterior()));
@@ -146,6 +151,9 @@ public class AdapterFactory  {
 		}
 		throw new Exception(I18N.getString("AdapterFactory.Type")+geom.getClass()+I18N.getString("AdapterFactory.Unhandled")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
+	public static LineString toLineString(GeometryFactory factory, GM_LineString line) {
+	    return factory.createLineString(toCoordinateSequence(factory, line.coord()));
+	}
 
 	/**
 	 * Transforme une position GeOxygene ({@link DirectPosition}) en coordonnée JTS ({@link Coordinate}).
@@ -153,7 +161,7 @@ public class AdapterFactory  {
 	 * @param directPosition position GeOxygene
 	 * @return coordonnée JTS équivalente
 	 */
-	public static Coordinate toCoordinate(DirectPosition directPosition) {
+ 	public static Coordinate toCoordinate(DirectPosition directPosition) {
 		return new Coordinate(directPosition.getX(),directPosition.getY(),directPosition.getZ());
 	}
 
