@@ -2,7 +2,7 @@
 <project name="GeOxygene">
   <bannerLeft>
     <name>GeOxygene</name>
-    <src>http://oxygene-project.sourceforge.net/images/geoxygene-logo.png</src>
+    <src>images/geoxygene-logo.png</src>
     <href>http://oxygene-project.sourceforge.net/</href>
   </bannerLeft>
   <bannerRight>
@@ -19,7 +19,6 @@
 
     <menu name="GeOxygene Quick links">
       <item name="Introduction" href="index.html"/>
-      <item name="License" href="http://www.fsf.org/licensing/licenses/lgpl.html#SEC1"/>
       <item name="Documentation" href="documentation.html"></item>
       <item name="Download" href="download.html"/>
       <item name="FAQ" href="faq.html" />
@@ -29,22 +28,18 @@
     </menu>
 
     <menu name="GeOxygene 1.4 Downloads">
-      <item name="Binary" href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.4/geoxygene-1.4.jar/download"/>
-      <item name="Source" href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.4/geoxygene-1.4-src.zip/download"/>
-      <item name="Javadoc" href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.4/geoxygene-1.4-javadoc.zip/download"/>
+      <item name="Binary (jar)" href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.4/geoxygene-1.4.jar/download"/>
+      <item name="Source (zip)" href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.4/geoxygene-1.4-src.zip/download"/>
+      <item name="Javadoc (zip)" href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.4/geoxygene-1.4-javadoc.zip/download"/>
       <item name="Plugin for OpenJump" href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene%20Plugin%20for%20OpenJUMP/0.1/geoxygene-plugin-0.1.zip/download"/>
     </menu>
 
-    <menu name="Modules">
+    <menu name="Applications">
       <item name="Semiology" href="semiology.html"/>
       <item name="Data Matching" href="data-matching.html"/>
       <item name="Core" href="core.html"/>
     </menu>
 
-    <menu name="Project Documentation">
-      <item name="Project Information" href="information.html"/>
-      <item name="Project Reports" href="reports.html"/>
-    </menu>
-    <menu ref="reports"/>
+    <menu ref="reports"/> <!-- Replaced by menus for any configured reports (mailing lists, etc.) -->
   </body>
 </project>
