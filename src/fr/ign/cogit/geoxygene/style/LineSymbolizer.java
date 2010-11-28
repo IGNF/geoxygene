@@ -142,8 +142,8 @@ public class LineSymbolizer extends AbstractSymbolizer {
                             : ((GM_Polygon) geometry)
                             .exteriorLineString());
             if (this.getPerpendicularOffset() != 0) {
-                GM_MultiCurve<GM_LineString> offsetCurve = JtsAlgorithms.offsetCurve(
-                        line, this.getPerpendicularOffset());
+                GM_MultiCurve<GM_LineString> offsetCurve = JtsAlgorithms
+                        .offsetCurve(line, this.getPerpendicularOffset());
                 List<Shape> shapes = new ArrayList<Shape>();
                 for (GM_LineString l : offsetCurve) {
                     shapes.addAll(this.getLineStringShapeList(l, viewport, fill));
@@ -157,9 +157,9 @@ public class LineSymbolizer extends AbstractSymbolizer {
             for (GM_OrientableCurve line :
                 (GM_MultiCurve<GM_OrientableCurve>) geometry) {
                 if (this.getPerpendicularOffset() != 0) {
-                    GM_MultiCurve<GM_LineString> offsetCurve = JtsAlgorithms.offsetCurve(
-                            (GM_LineString) line,
-                            this.getPerpendicularOffset());
+                    GM_MultiCurve<GM_LineString> offsetCurve = JtsAlgorithms
+                            .offsetCurve((GM_LineString) line,
+                                    this.getPerpendicularOffset());
                     for (GM_LineString l : offsetCurve) {
                         shapes.addAll(this.getLineStringShapeList(l, viewport, fill));
                     }

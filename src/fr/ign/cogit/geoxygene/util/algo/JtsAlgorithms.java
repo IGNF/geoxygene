@@ -1,13 +1,13 @@
 /*
  * This file is part of the GeOxygene project source files.
- * 
+ *
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
  * the development and deployment of geographic (GIS) applications. It is a open source
  * contribution of the COGIT laboratory at the Institut Géographique National (the French
  * National Mapping Agency).
- * 
+ *
  * See: http://oxygene-project.sourceforge.net
- * 
+ *
  * Copyright (C) 2005 Institut Géographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
@@ -21,7 +21,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this library (see file LICENSE if present); if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  */
 
 package fr.ign.cogit.geoxygene.util.algo;
@@ -31,6 +31,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -74,7 +75,7 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  *
  * @author Thierry Badard, Arnaud Braun & Christophe Pele
  * @version 1.0
- * 
+ *
  */
 
 public class JtsAlgorithms implements GeomAlgorithms {
@@ -126,7 +127,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		} catch (Exception e) {
 			logger.error(I18N.getString("JtsAlgorithms.BufferError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.BufferDistance")+distance); //$NON-NLS-1$ 
+				logger.debug(I18N.getString("JtsAlgorithms.BufferDistance")+distance); //$NON-NLS-1$
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
@@ -143,8 +144,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		} catch (Exception e) {
 			logger.error(I18N.getString("JtsAlgorithms.BufferError")); //$NON-NLS-1$
 			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.BufferDistance")+distance); //$NON-NLS-1$ 
-				logger.debug(I18N.getString("JtsAlgorithms.BufferSegments")+nSegments); //$NON-NLS-1$ 
+				logger.debug(I18N.getString("JtsAlgorithms.BufferDistance")+distance); //$NON-NLS-1$
+				logger.debug(I18N.getString("JtsAlgorithms.BufferSegments")+nSegments); //$NON-NLS-1$
 				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 				logger.debug(e.getMessage());
 			}
@@ -161,9 +162,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	    } catch (Exception e) {
 	        logger.error(I18N.getString("JtsAlgorithms.BufferError")); //$NON-NLS-1$
 	        if (logger.isDebugEnabled()) {
-	            logger.debug(I18N.getString("JtsAlgorithms.BufferDistance")+distance); //$NON-NLS-1$ 
-	            logger.debug(I18N.getString("JtsAlgorithms.BufferSegments")+nSegments); //$NON-NLS-1$ 
-                logger.debug(I18N.getString("JtsAlgorithms.Cap")+cap); //$NON-NLS-1$ 
+	            logger.debug(I18N.getString("JtsAlgorithms.BufferDistance")+distance); //$NON-NLS-1$
+	            logger.debug(I18N.getString("JtsAlgorithms.BufferSegments")+nSegments); //$NON-NLS-1$
+                logger.debug(I18N.getString("JtsAlgorithms.Cap")+cap); //$NON-NLS-1$
 	            logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
 	            logger.debug(e.getMessage());
 	        }
@@ -629,7 +630,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			return "ERROR"; //$NON-NLS-1$
 		}
 	}
-	
+
 	/**
 	 * Calcul de l'union d'une liste de géométries
 	 * @param listeGeometries liste des géométries à unir
@@ -659,13 +660,13 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * détermine le point d'un polygone le plus loin d'un autre point.
 	 * Le polygone doit être convexe et sans trou.
 	 * Determine the farest point of a polygon to another given point.
 	 * The polygon must be convex and without hole.
-	 * 
+	 *
 	 * @param pt un point, a point
 	 * @param poly un polygone convexe sans trou, a convex polygon without hole
 	 */
@@ -685,7 +686,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	/**
 	 * détermine le point d'un polygone le plus proche d'un autre point.
 	 * Determine the closest point of a polygon to another given point.
-	 * 
+	 *
 	 * @param pt un point, a point
 	 * @param poly un polygone, a polygon
 	 */
@@ -696,7 +697,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	/**
 	 * détermine le point d'une ligne le plus proche d'un autre point.
 	 * Determine the closest point of a line to another given point.
-	 * 
+	 *
 	 * @param pt un point, a point
 	 * @param l une ligne, a line
 	 */
@@ -713,7 +714,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	/**
 	 * détermine le point d'une ligne le plus loin d'une ligne de base.
 	 * Determine the closest point of a line to another given line.
-	 * 
+	 *
 	 * @param base la ligne de comparaison, the base line
 	 * @param l une ligne, a line
 	 */
@@ -738,11 +739,11 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	}
 
 	/**
-	 * détermine les points les plus proches deux géométries. 
+	 * détermine les points les plus proches deux géométries.
 	 * Les points sont donnés dans le même ordre que les deux géométries d'entrée.
 	 * Compute the nearest points of two geometries.
-	 * The points are presented in the same order as the input Geometries. 
-	 * 
+	 * The points are presented in the same order as the input Geometries.
+	 *
 	 * @param g1 une géométrie
 	 * @param g2 une autre géométrie
 	 * @return la liste des 2 points les plus proches
@@ -874,7 +875,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	/**
 	 * Union des éléments d'un ensemble de Polygones triés par groupes.
 	 * Par exemple, si la taille des groupes vaut 4, on effectue l'union des Polygones 4 par 4.
-	 * 
+	 *
 	 * @param treeSet ensemble de Polygones triés
 	 * @param groupSize taille des groupes sur lesquels on effectue l'union
 	 * @return liste des unions
@@ -941,7 +942,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	/**
 	 * Union des éléments d'un ensemble de LineStrings triées par groupes.
 	 * Par exemple, si la taille des groupes vaut 4, on effectue l'union des LineStrings 4 par 4.
-	 * 
+	 *
 	 * @param treeSet ensemble de LineStrings triées
 	 * @param groupSize taille des groupes sur lesquels on effectue l'union
 	 * @return liste des unions
@@ -994,7 +995,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 			logger.warn(I18N.getString("JtsAlgorithms.DouglasPeuckerError")); //$NON-NLS-1$
 			logger.warn(I18N.getString("JtsAlgorithms.DouglasPeuckerThreshold")+seuil); //$NON-NLS-1$
 			logger.warn(I18N.getString("JtsAlgorithms.Geometry")+geom); //$NON-NLS-1$
-			logger.warn(I18N.getString("JtsAlgorithms.Result")+g); //$NON-NLS-1$ 
+			logger.warn(I18N.getString("JtsAlgorithms.Result")+g); //$NON-NLS-1$
 			return geom;
 		}
 		else if ( g.getGeometryType() != geom.getGeometryType()) {
@@ -1027,7 +1028,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 	/**
 	 * Supprime les trous d'un polygone.
 	 * Remove the holes from a polygon.
-	 * 
+	 *
 	 * @param poly un polygone, a polygon
 	 */
 	public static Polygon supprimeTrous(Polygon poly){
@@ -1048,61 +1049,55 @@ public class JtsAlgorithms implements GeomAlgorithms {
 		}
 		return (new GeometryFactory()).createMultiPolygon(polys);
 	}
-
     /**
-     * Builds on offset curve for the given linestring. A positive offset
+     * Builds on offset curve for the given {@link GM_LineString}. A positive offset
      * builds an offset curve on the left-hand side of the reference
-     * linestring. Negative means right.
-     * @param line reference linestring
-     * @param distance offset
-     * @return a multi linestring at the given offset of the reference linestring
+     * {@link GM_LineString}. Negative means right.
+     * @param line reference {@link GM_LineString}
+     * @param distance offset distance
+     * @return
+     *         a {@link GM_MultiCurve} at the given offset of the reference
+     *         {@link GM_LineString}
      */
     public static GM_MultiCurve<GM_LineString> offsetCurve(GM_LineString line,
             double distance) {
-        //boolean left = (distance > 0);
         double d = Math.abs(distance);
         int orientationIndex = (int) (d / distance);
         try {
+            // removing duplicate coordinates from the input linestring.
             LineString lineString = getLineStringWithoutDuplicates(
                     (LineString) JtsGeOxygene.makeJtsGeom(line));
             Geometry buffer = lineString.buffer(d, 4,
-                    BufferParameters.CAP_FLAT);
-            List<LineString> holes = new ArrayList<LineString>();
-            if (buffer instanceof Polygon) {
-                for (int i = 0; i < ((Polygon) buffer).getNumInteriorRing(); i++) {
-                    holes.add(((Polygon) buffer).getInteriorRingN(i));
-                }
-                buffer = ((Polygon) buffer).getExteriorRing();
-            } else {
-                logger.error("Can't compute offsetcurve of " + buffer.getGeometryType());
+                    BufferParameters.CAP_ROUND);
+            Polygon polygon = null;
+            if (!(buffer instanceof Polygon)) {
+                logger.error("Can't compute offsetcurve of " + //$NON-NLS-1$
+                        buffer.getGeometryType());
+                return null;
             }
+            polygon = (Polygon) buffer;
             GM_MultiCurve<GM_LineString> result = new GM_MultiCurve<GM_LineString>();
-            List<Coordinate> coords = new ArrayList<Coordinate>();
-            for (Coordinate c : buffer.getCoordinates()) {
-                if (!lineString.isCoordinate(c)) {
-                    coords.add(c);
-                }
-            }
-            GM_LineString r = getOffsetCurveFromRing(coords, lineString, orientationIndex);
+            // build the offset curve for the exterior ring
+            GM_LineString r = getOffsetCurveFromRing(polygon.getExteriorRing(), lineString,
+                    orientationIndex, d);
             if ((r != null) && !r.isEmpty()) { result.add(r); }
-            for (LineString l : holes) {
-                coords = new ArrayList<Coordinate>();
-                for (Coordinate c : l.getCoordinates()) {
-                    if (!lineString.isCoordinate(c)) {
-                        coords.add(c);
-                    }
-                }
-                r = getOffsetCurveFromRing(coords, lineString, orientationIndex);
+            // go through all interior rings
+            for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
+                LineString ring = polygon.getInteriorRingN(i);
+                // build the offset curve for the interior ring
+                r = getOffsetCurveFromRing(ring, lineString,
+                        orientationIndex, d);
                 if ((r != null) && !r.isEmpty()) { result.add(r); }
-            }
-            if (logger.isTraceEnabled()) {
-                logger.trace("Result (" + distance + " ) = " + result);
             }
             return result;
         } catch (Exception e) { e.printStackTrace(); }
         return null;
     }
-
+    /**
+     * Remove duplicate coordinates from the input {@link GM_LineString}.
+     * @param lineString input {@link GM_LineString}
+     * @return a {@link GM_LineString} without duplicated coordinates
+     */
     private static LineString getLineStringWithoutDuplicates(
             LineString lineString) {
         Coordinate[] coordinateArray = lineString.getCoordinates();
@@ -1117,115 +1112,470 @@ public class JtsAlgorithms implements GeomAlgorithms {
             }
         }
         return lineString.getFactory().createLineString(
-                coordinates.toArray(new Coordinate[0]));
+                coordinates.toArray(new Coordinate[coordinates.size()]));
+    }
+    /**
+     * Measure the maximum error in the buffer computation. This error is
+     * measured by computing the distance between all point in the buffer
+     * {@link LineString} and the input {@link LineString} used to compute
+     * the buffer.
+     * @param bufferRing one of the buffer rings
+     * @param line input {@link LineString} used to compute the buffer
+     * @param distance distance used to compute the buffer
+     * @return maximum error in the buffer computation
+     */
+    public static double bufferError(LineString bufferRing, LineString line,
+            double distance) {
+        double maxError = 0;
+        for (Coordinate c : bufferRing.getCoordinates()) {
+            double d = line.distance(line.getFactory().createPoint(c));
+            maxError = Math.max(maxError, Math.abs(d - distance));
+        }
+        return maxError;
     }
 
     /**
-     * @param coords coordinates used to build the offsetcurve. These come
-     * from a linear ring
-     * @param line the reference linestring
+     * Build an offset curve using the given {@link LineString} and the
+     * reference {@link LineString}.
+     * @param ring {@link LineString} used to build the offsetcurve. These come
+     *            from a linear ring (exterior or interior)
+     * @param line the reference {@link LineString}
      * @param orientationIndex orientation of the offset curve to build
+     * @param distance offset distance
+     * @param tolerance tolerance used to determine on which side of the
+     *            linestring a point lies
      * @return the offsetcurve
      */
     private static GM_LineString getOffsetCurveFromRing(
-            List<Coordinate> coords, LineString line,
-            int orientationIndex) {
-        int start = -1; int end = -1;
+            LineString ring, LineString line,
+            int orientationIndex, double distance) {
         // go through the coordinates of the buffer and select the range
         // of coordinates of the right side
-        int previousOrientation = orientationIndex(coords.get(0),
-                line);
+        List<Coordinate> coordinateBuffer = null;
+        List<Coordinate> coordinateList = new ArrayList<Coordinate>();
+        Coordinate previousCoordinate = ring.getCoordinateN(0);
+        double tolerance = bufferError(ring, line, distance);
+        if (tolerance > 0) {
+            double e = Math.pow(10,Math.floor(Math.log10(tolerance)));
+            tolerance = e * Math.ceil(tolerance / e);
+        }
+        int previousOrientation = orientationIndex(previousCoordinate,
+                line, tolerance);
+        if (previousOrientation == orientationIndex) {
+            coordinateList.add(previousCoordinate);
+        }
         int lastNonNullOrientation = previousOrientation;
-        for (int i = 1; i < coords.size(); i++) {
-            int currentOrientation = orientationIndex(coords.get(i),
-                    line);
-            // if there is a change of side, set the start or end marker
-            if (currentOrientation != previousOrientation) {
+        for (int i = 1; i < ring.getNumPoints(); i++) {
+            Coordinate currentCoordinate = ring.getCoordinateN(i);
+            int currentOrientation = orientationIndex(currentCoordinate,
+                    line, tolerance);
+            if (currentOrientation == 0) {
+                if (lastNonNullOrientation == orientationIndex) {
+                    // undetermied orientation but the last determined
+                    // orientation was the proper one
+                    coordinateList.add(currentCoordinate);
+                }
+            } else {
                 if (currentOrientation == orientationIndex) {
-                    start = i;
-                    if (previousOrientation == 0) {
-                        start -= 1;
+                    // the new orientation is the targetted one
+                    if (previousOrientation == 0
+                            && lastNonNullOrientation != orientationIndex) {
+                        // the previous coordinate was undetermined
+                        coordinateList.add(previousCoordinate);
                     }
+                    coordinateList.add(currentCoordinate);
                 } else {
-                    if (currentOrientation == -orientationIndex) {
-                        end = i;
+                    if (currentOrientation == -orientationIndex
+                            && !coordinateList.isEmpty()) {
+                        // we switched to the other side
+                        // we used a buffer in case we started in the
+                        // middle of the targeted offset curve
+                        coordinateBuffer = coordinateList;
+                        coordinateList = new ArrayList<Coordinate>();
                     }
                 }
             }
             previousOrientation = currentOrientation;
+            previousCoordinate = currentCoordinate;
             if (currentOrientation != 0) {
                 lastNonNullOrientation = currentOrientation;
             }
         }
-        boolean cycle = true;
-        // if we didn't find any change in direction, all points are on the
-        // same side
-        if ((start == -1 || end == -1) && (lastNonNullOrientation == orientationIndex)) {
-            start = 0;
-            end = coords.size();
-            // we will not cycle through the coordinates
-            cycle = false;
-        }
-        if (start == -1 || end == -1) {
+        if (coordinateList.isEmpty() && coordinateBuffer == null) {
             return null;
         }
-        int numberOfCoordinates = end - start;
-        if (numberOfCoordinates < 0) {
-            numberOfCoordinates += coords.size();
+        if (coordinateBuffer != null && !coordinateBuffer.isEmpty()) {
+            coordinateList.addAll(coordinateBuffer);
         }
         // build the linestring using the determined range of coordinates
-        List<Coordinate> offsetCoordinates = new ArrayList<Coordinate>();
-        if (numberOfCoordinates > 1) {
-            for (int i = start; i != end; i = cycle ? (i + 1) % coords.size() : i + 1) {
-                offsetCoordinates.add(0, coords.get(i));
+        if (coordinateList.size() < 2) { return null; }
+        // remove the points on the round caps
+        boolean cap = true;
+        while (cap) {
+            if (coordinateList.size() < 2) {
+                return null;
             }
-        } else {
-            return null;
+            Coordinate c1 = coordinateList.get(0);
+            Coordinate c2 = coordinateList.get(1);
+            cap = ((c1.distance(line.getCoordinateN(0)) < distance + tolerance) && (c2
+                    .distance(line.getCoordinateN(0)) < distance + tolerance))
+                    || ((c1.distance(line.getCoordinateN(line.getNumPoints() - 1)) < distance
+                            + tolerance) && (c2.distance(line
+                            .getCoordinateN(line.getNumPoints() - 1)) < distance
+                            + tolerance));
+            if (cap) {
+                coordinateList.remove(0);
+            }
+        }
+        cap = true;
+        while (cap) {
+            if (coordinateList.size() < 2) {
+                return null;
+            }
+            Coordinate c1 = coordinateList.get(coordinateList.size() - 1);
+            Coordinate c2 = coordinateList.get(coordinateList.size() - 2);
+            cap = ((c1.distance(line.getCoordinateN(0)) < distance + tolerance) && (c2
+                    .distance(line.getCoordinateN(0)) < distance + tolerance))
+                    || ((c1.distance(line.getCoordinateN(line.getNumPoints() - 1)) < distance
+                            + tolerance) && (c2.distance(line
+                            .getCoordinateN(line.getNumPoints() - 1)) < distance
+                            + tolerance));
+            if (cap) {
+                coordinateList.remove(coordinateList.size() - 1);
+            }
         }
         // 2 coordinates are the same
-        if (numberOfCoordinates == 2
-                && offsetCoordinates.get(0).equals2D(offsetCoordinates.get(1))) {
+        if (coordinateList.size() == 2
+                && coordinateList.get(0).equals2D(coordinateList.get(1))) {
             return null;
         }
         GM_LineString result = new GM_LineString(AdapterFactory
-                .toDirectPositionList(offsetCoordinates
-                        .toArray(new Coordinate[0])));
+                .toDirectPositionList(coordinateList
+                        .toArray(new Coordinate[coordinateList.size()])));
         return result;
     }
 
     /**
-     * Determine the orientation of a coordinate to a linestring.
+     * Determine if the {@link Coordinate} is on the round cap of the buffer
+     * computed from the input {@link LineString} and the input distance.
+     * To determine that, it has to be at the given distance to the first or
+     * last point of the input {@link LineString} but closer to the first or
+     * last line segments.
+     * @param c a {@link Coordinate}
+     * @param line the input {@link LineString}
+     * @param distance distance used to compute the buffer
+     * @param tolerance tolerance used to compare distances
+     * @param startCoordinate if true, used the first point of the input
+     *            {@link LineString}
+     * @return true if the input {@link Coordinate} is on the round cap
+     */
+    private static boolean isOnRoundCap(Coordinate c, LineString line,
+            double distance, double tolerance, boolean startCoordinate) {
+        Coordinate c1 = startCoordinate ? line.getCoordinateN(0) : line.getCoordinateN(line
+                .getNumPoints() - 1);
+        double d = c.distance(c1);
+        if (d > distance - tolerance && d < distance + tolerance) {
+            Coordinate c2 = startCoordinate ? line.getCoordinateN(1) : line.getCoordinateN(line
+                    .getNumPoints() - 2);
+            LineSegment l = new LineSegment(c2, c1);
+            d = l.distancePerpendicular(c);
+            return (d < distance - tolerance);
+        }
+        return false;
+    }
+    /**
+     * Determine the orientation of a {@link Coordinate} relative to a
+     * {@link LineString}.
      * @param c coordinate
      * @param line the reference linestring
+     * @param tolerance tolerance used to determine the closest line segments
      * @return +1 if the coordinate is on the left, -1 if it is on the right,
      * 0 otherwise.
      */
-    private static int orientationIndex(Coordinate c,
-            LineString line) {
-        double tolerance = 0.00000001;
-        double distanceMin = Double.POSITIVE_INFINITY;
-        // build a list of line segments
-        List<LineSegment> closestLineSegments = new ArrayList<LineSegment>();
+    public static int orientationIndex(Coordinate c,
+            LineString line, double tolerance) {
+        double distanceMin = line.distance(line.getFactory().createPoint(c));
+        List<Integer> orientations = new ArrayList<Integer>();
+        int previousOrientation = 0;
+        Coordinate previousCoordinate = null;
+        for (int i = 0; i < line.getNumPoints() - 1; i++) {
+            Coordinate coordinate1  = line.getCoordinateN(i);
+            Coordinate coordinate2  = line.getCoordinateN(i+1);
+            // test if the coordinate is duplicated in the linestring
+            if (!coordinate1.equals2D(coordinate2)) {
+                LineSegment segment = new LineSegment(coordinate1, coordinate2);
+                Coordinate closestPoint = segment.closestPoint(c);
+                double d = closestPoint.distance(c);
+                if (d <= distanceMin + tolerance) {
+                    int orientation = segment.orientationIndex(c);
+                    if (line.isCoordinate(closestPoint)) {
+                        // the closest coordinate is on the line
+                        // if it is the second point (i+1), we will deal with
+                        // it next iteration
+                        if (closestPoint.equals2D(coordinate1)) {
+                            // if there was a line segment before and it had a different orientation
+                            if (previousCoordinate != null && orientation != previousOrientation) {
+                                orientations.add(new Integer(-CGAlgorithms
+                                        .orientationIndex(coordinate1,
+                                                coordinate2,
+                                                line.getCoordinateN(i + 2))));
+                            } else {
+                                orientations.add(new Integer(orientation));
+                            }
+                        } else {
+                            // the closest point is the second point but there
+                            // is no next iteration
+                            if (closestPoint.equals2D(coordinate2)
+                                    && i == line.getNumPoints() - 2) {
+                                orientations.add(new Integer(orientation));
+                            }
+                        }
+                    } else {
+                        // the closest coordinate is not on the line
+                        orientations.add(new Integer(orientation));
+                    }
+                    previousCoordinate = coordinate1;
+                    previousOrientation = orientation;
+                }
+            }
+        }
+        Iterator<Integer> orientationIterator = orientations.iterator();
+        int orientationIndex = orientationIterator.next().intValue();
+        while (orientationIterator.hasNext()) {
+            int orientation = orientationIterator.next().intValue();
+            if (orientation != orientationIndex) {
+                return 0;
+            }
+        }
+        return orientationIndex;
+        /*
+        // build a list of line segments and determine the closest ones
+        Map<Coordinate, List<LineSegment>> closestLineSegments =
+            new HashMap<Coordinate, List<LineSegment>>();
         for (int i = 0; i< line.getNumPoints()-1; i++) {
             Coordinate coordinate1  = line.getCoordinateN(i);
             Coordinate coordinate2  = line.getCoordinateN(i+1);
-            LineSegment segment = new LineSegment(coordinate1, coordinate2);
-            double d = segment.distance(c);
-            if (d <= distanceMin + tolerance) {
-                if (d < distanceMin - tolerance) {
-                    distanceMin = d;
-                    closestLineSegments.clear();
+            // test if the coordinate is duplicated in the linestring
+            if (!coordinate1.equals2D(coordinate2)) {
+                LineSegment segment = new LineSegment(coordinate1, coordinate2);
+                Coordinate closestPoint = segment.closestPoint(c);
+                double d = closestPoint.distance(c);
+                if (d <= distanceMin + tolerance) {
+                    if (d < distanceMin - tolerance) {
+                        distanceMin = d;
+                        // clearing the previously found groups
+                        closestLineSegments.clear();
+                    }
+                    List<LineSegment> segmentList = closestLineSegments
+                            .get(closestPoint);
+                    if (segmentList == null) {
+                        // this is the first segment of the group
+                        segmentList = new ArrayList<LineSegment>();
+                        closestLineSegments.put(closestPoint, segmentList);
+                    }
+                    segmentList.add(segment);
                 }
-                closestLineSegments.add(segment);
             }
         }
-        int orientation = closestLineSegments.get(0).orientationIndex(c);
-        for (int i = 1; i < closestLineSegments.size(); i++) {
-            LineSegment segment = closestLineSegments.get(i);
-            if (segment.orientationIndex(c) != orientation) {
+        Iterator<Coordinate> coordinateIterator = closestLineSegments.keySet()
+                .iterator();
+        // determine if coordinate c is on the same side of all line segments
+        Coordinate closestPoint = coordinateIterator.next();
+        List<LineSegment> segmentList = closestLineSegments.get(closestPoint);
+        int orientation = orientationIndex(c, segmentList);
+        while(coordinateIterator.hasNext()) {
+            closestPoint = coordinateIterator.next();
+            segmentList = closestLineSegments.get(closestPoint);
+            if (orientation != orientationIndex(c, segmentList)) {
+                // c in not on the same side of at least 2 groups
                 return 0;
             }
         }
         return orientation;
-     }
+        */
+
+
+        /*
+        // build a list of line segments and determine the closest ones
+        List<LineSegment> closestLineSegments = new ArrayList<LineSegment>();
+        for (int i = 0; i< line.getNumPoints()-1; i++) {
+            Coordinate coordinate1  = line.getCoordinateN(i);
+            Coordinate coordinate2  = line.getCoordinateN(i+1);
+            if (!coordinate1.equals2D(coordinate2)) {
+                LineSegment segment = new LineSegment(coordinate1, coordinate2);
+                double d = segment.distance(c);
+                if (d <= distanceMin + tolerance) {
+                    if (d < distanceMin - tolerance) {
+                        distanceMin = d;
+                        closestLineSegments.clear();
+                    }
+                    closestLineSegments.add(segment);
+                }
+            }
+        }
+        boolean conflict = false;
+        // determine if coordinate c is on the same side of all line segments
+        int orientation = closestLineSegments.get(0).orientationIndex(c);
+        for (int i = 1; i < closestLineSegments.size(); i++) {
+            LineSegment segment = closestLineSegments.get(i);
+            if (segment.orientationIndex(c) != orientation) {
+                conflict = true;
+            }
+        }
+        if (!conflict) {
+            // coordinate c is on the same side of all line segments
+            return orientation;
+        }
+        // build groups of line segments 
+        HashMap<Coordinate, Set<LineSegment>> map = new HashMap<Coordinate, Set<LineSegment>>(0);
+        for (LineSegment segment : closestLineSegments) {
+            Coordinate closest = segment.closestPoint(c);
+            if (map.get(closest) == null) {
+                Set<LineSegment> list = new HashSet<LineSegment>();
+                list.add(segment);
+                map.put(closest, list);
+            } else {
+                map.get(closest).add(segment);
+            }
+        }
+        logger.trace(map.keySet().size() + " keys");
+        // solve if for each cluster
+        Set<Integer> indices = new HashSet<Integer>();
+        for (Coordinate closest : map.keySet()) {
+            Set<LineSegment> list = map.get(closest);
+            logger.trace(list.size() + " linesegments");
+            Iterator<LineSegment> it = list.iterator();
+            LineSegment l1 = it.next();
+            if (!it.hasNext()) {
+                indices.add(new Integer(l1.orientationIndex(c)));
+            } else {
+                LineSegment l2 = it.next();
+                if (l1.p0.equals2D(l2.p1)) {
+                    LineSegment temp = l1;
+                    l1 = l2;
+                    l2 = temp;
+                } else {
+                    if (!l1.p1.equals2D(l2.p0)) {
+                        logger.error("pas de raccord entre " + l1 + " et "+ l2 + " pour le point "+c);
+                    }
+                }
+                double dx1 = l1.p1.x - l1.p0.x;
+                double dy1 = l1.p1.y - l1.p0.y;
+                double dx2 = l2.p1.x - l2.p0.x;
+                double dy2 = l2.p1.y - l2.p0.y;
+                int index = -RobustDeterminant.signOfDet2x2(dx1, dy1, dx2, dy2);
+                indices.add(new Integer(index));
+            }
+        }
+        Iterator<Integer> iterator = indices.iterator();
+        int index = iterator.next().intValue();
+        while (iterator.hasNext()) {
+            if (iterator.next().intValue() != index) {
+                logger.trace("conflict for coordinate " + c);
+                logger.trace("closest linesegments :");
+                for (Coordinate closest : map.keySet()) {
+                    logger.trace(" on coordinate " + closest);
+                    Set<LineSegment> list = map.get(closest);
+                    for (LineSegment segment : list) {
+                        logger.trace("\t" + segment);
+                    }
+                }
+                return 0;
+            }
+        }
+        if (index == 0) {
+            logger.trace("no conflict but result is 0 for coordinate " + c);
+            logger.trace("closest linesegments :");
+            for (Coordinate closest : map.keySet()) {
+                logger.trace(" on coordinate " + closest);
+                Set<LineSegment> list = map.get(closest);
+                for (LineSegment segment : list) {
+                    logger.trace("\t" + segment);
+                }
+            }
+        }
+        return index;
+        */
+    }
+    public static GM_LineString cap(GM_LineString line,
+            double distance, boolean start) {
+        double d = Math.abs(distance);
+        try {
+            // removing duplicate coordinates from the input linestring.
+            LineString lineString = getLineStringWithoutDuplicates(
+                    (LineString) JtsGeOxygene.makeJtsGeom(line));
+            Geometry buffer = lineString.buffer(d, 4,
+                    BufferParameters.CAP_ROUND);
+            Polygon polygon = null;
+            if (!(buffer instanceof Polygon)) {
+                logger.error("Can't compute offsetcurve of " + //$NON-NLS-1$
+                        buffer.getGeometryType());
+                return null;
+            }
+            polygon = (Polygon) buffer;
+            // build the offset curve for the exterior ring
+            GM_LineString r = getCapFromRing(polygon.getExteriorRing(),
+                    lineString, d, start);
+            return r;
+        } catch (Exception e) { e.printStackTrace(); }
+        return null;
+    }
+
+    private static GM_LineString getCapFromRing(LineString ring,
+            LineString line, double distance,
+            boolean start) {
+        // go through the coordinates of the buffer and select the range
+        // of coordinates of the right side
+        List<Coordinate> coordinateList = new ArrayList<Coordinate>();
+        Coordinate previousCoordinate = ring.getCoordinateN(0);
+        double tolerance = bufferError(ring, line, distance);
+        if (tolerance > 0) {
+            double e = Math.pow(10,Math.floor(Math.log10(tolerance)));
+            tolerance = e * Math.ceil(tolerance / e);
+        }
+        boolean previousRoundCap = isOnRoundCap(previousCoordinate, line, distance,
+                tolerance, start);
+        if (previousRoundCap) {
+            coordinateList.add(previousCoordinate);
+        }
+        for (int i = 1; i < ring.getNumPoints(); i++) {
+            Coordinate currentCoordinate = ring.getCoordinateN(i);
+            boolean currentRoundCap = isOnRoundCap(currentCoordinate, line, distance,
+                    tolerance, start);
+            if (previousRoundCap
+                    && currentCoordinate.distance(start ? line
+                            .getCoordinateN(0) : line.getCoordinateN(line
+                            .getNumPoints() - 1)) < distance + tolerance) {
+                coordinateList.add(currentCoordinate);
+            } else {
+                if (currentRoundCap) {
+                    // the new orientation is the targetted one
+                    if (!previousRoundCap
+                            && previousCoordinate.distance(start ? line
+                                    .getCoordinateN(0) : line
+                                    .getCoordinateN(line.getNumPoints() - 1)) < distance
+                                    + tolerance) {
+                        // the previous coordinate was undetermined
+                        coordinateList.add(previousCoordinate);
+                    }
+                    coordinateList.add(currentCoordinate);
+                }
+            }
+            previousRoundCap = currentRoundCap;
+            previousCoordinate = currentCoordinate;
+        }
+        if (coordinateList.isEmpty() || coordinateList.size() < 2) {
+            return null;
+        }
+        // build the linestring using the determined range of coordinates
+        // 2 coordinates are the same
+        if (coordinateList.size() == 2
+                && coordinateList.get(0).equals2D(coordinateList.get(1))) {
+            return null;
+        }
+        GM_LineString result = new GM_LineString(AdapterFactory
+                .toDirectPositionList(coordinateList
+                        .toArray(new Coordinate[coordinateList.size()])));
+        return result;
+    }
 } // class
