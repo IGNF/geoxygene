@@ -1314,11 +1314,12 @@ public class JtsAlgorithms implements GeomAlgorithms {
                         // it next iteration
                         if (closestPoint.equals2D(coordinate1)) {
                             // if there was a line segment before and it had a different orientation
-                            if (previousCoordinate != null && orientation != previousOrientation) {
+							if (previousCoordinate != null
+									&& orientation != previousOrientation) {
                                 orientations.add(new Integer(-CGAlgorithms
-                                        .orientationIndex(coordinate1,
-                                                coordinate2,
-                                                line.getCoordinateN(i + 2))));
+                                        .orientationIndex(previousCoordinate,
+                                        		coordinate1,
+                                                coordinate2)));
                             } else {
                                 orientations.add(new Integer(orientation));
                             }
@@ -1338,6 +1339,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
                     previousOrientation = orientation;
                 }
             }
+        }
+        if (orientations.isEmpty()) {
+        	logger.info("orientations empty for " + line.getFactory().createPoint(c));
+        	return 0;
         }
         Iterator<Integer> orientationIterator = orientations.iterator();
         int orientationIndex = orientationIterator.next().intValue();
