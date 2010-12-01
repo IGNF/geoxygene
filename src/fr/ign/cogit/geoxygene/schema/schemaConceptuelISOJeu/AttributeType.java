@@ -43,7 +43,7 @@ public class AttributeType implements GF_AttributeType {
 
 	/**Identifiant d'un objet*/
 	protected int id;
-	/** 
+	/**
 	 * Renvoie l'identifiant d'un objet
 	 * @return l'Identifiant d'un objet
 	 */
@@ -55,12 +55,12 @@ public class AttributeType implements GF_AttributeType {
 	public void setId(int id) {this.id = id;}
 	/**nom de la propriete*/
 	protected String memberName;
-	/** 
+	/**
 	 * Renvoie le nom de la propriété.
 	 * @return le nom de la propriété.
 	 */
 	public String getMemberName() {return this.memberName;}
-	/** 
+	/**
 	 * Affecte un nom de propriété.
 	 * @param MemberName un nom de propriété
 	 */
@@ -174,7 +174,7 @@ public class AttributeType implements GF_AttributeType {
 		if (this.getFeatureType()!=null) return ((FeatureType)this.getFeatureType()).getSchema();
 		return null;
 	}
-	
+
 	// //////////////////////////////////////////////////////
 	// Modifications Nathalie
 	// //////////////////////////////////////////////////////
@@ -237,7 +237,7 @@ public class AttributeType implements GF_AttributeType {
 	public GF_AttributeType getCharacterize() {return this.characterize;}
 	/** Affecte un attribut que self caractérise. */
 	public void setCharacterize(GF_AttributeType Characterize) {this.characterize = Characterize;}
-	/** 
+	/**
 	 * Renvoie la liste des contraintes.
 	 * TODO non implémenté
 	 */
@@ -249,14 +249,14 @@ public class AttributeType implements GF_AttributeType {
 	public void setConstraint(List<GF_Constraint> L) {}
 	/** Ajoute une contrainte. */
 	public void addConstraint(GF_Constraint value) {}
-	/** 
+	/**
 	 * Renvoie le nombre de contraintes.
 	 * TODO non implémenté
 	 */
 	public int sizeConstraint() {return 0;}
 	@Override
 	public String toString() {
-		String resultat = "AttributeType "+this.getMemberName()+" avec une valeur de type "+this.getValueType();
+		String resultat = this.getMemberName()+" ("+this.getValueType()+")";  //$NON-NLS-1$//$NON-NLS-2$
 		return resultat;
 	}
 }
