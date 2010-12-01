@@ -1,27 +1,23 @@
-/*******************************************************************************
+/*
  * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
- * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
- * National Mapping Agency).
- * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at
+ * the Institut Géographique National (the French National Mapping Agency).
  * See: http://oxygene-project.sourceforge.net
- * 
  * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License along with
- * this library (see file LICENSE if present); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *******************************************************************************/
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or any later
+ * version.
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details. You should have received a copy of the GNU Lesser General
+ * Public License along with this library (see file LICENSE if present); if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place,
+ * Suite 330, Boston, MA 02111-1307 USA
+ */
 
 package fr.ign.cogit.geoxygene.util.color;
 
@@ -114,7 +110,7 @@ public class SingleLinkageHierarchicalClusterer {
     /**
      * @param cluster1
      * @param cluster2
-     * @return
+     * @return the squared distance between clusters
      */
     public float sqDistance(Cluster cluster1, Cluster cluster2) {
 	if (cluster1.leaf) return sqDistance(cluster1.getColor(), cluster2);
@@ -133,7 +129,7 @@ public class SingleLinkageHierarchicalClusterer {
     /**
      * @param sqDistance1
      * @param sqDistance2
-     * @return
+     * @return the distance between 2 clusters
      */
     private float distanceClusterCluster(float sqDistance1, float sqDistance2) {
 	//if (logger.isDebugEnabled()) logger.debug((distanceClusterCluster == MIN)?"MIN":(distanceClusterCluster == MAX)?"MAX":"AVG");
@@ -241,7 +237,7 @@ public class SingleLinkageHierarchicalClusterer {
 	    clusterPool.remove(cluster2);
 	    clusterPool.add(cluster);
 	    if (logger.isDebugEnabled()) logger.debug(clusterPool.size()+" clusters");
-	}	
+	}
 
 	t = System.currentTimeMillis()-t;
 	logger.info("Hierarchy building took "+t+" ms");
@@ -318,7 +314,7 @@ public class SingleLinkageHierarchicalClusterer {
 		c1 = e.initialVertex.color;
 		c2 = e.finalVertex.color;
 		cluster1 = topCluster(map.get(c1));
-		cluster2 = topCluster(map.get(c2));		
+		cluster2 = topCluster(map.get(c2));
 	    }
 	    Cluster cluster = mergeClusters(cluster1,cluster2);
 	    clusterPool.remove(cluster1);
@@ -470,7 +466,7 @@ public class SingleLinkageHierarchicalClusterer {
 		    } else {
 			lastClusterParent.parentCluster.leftCluster=brotherCluster;
 		    }
-		} else {} 
+		} else {}
 		brotherCluster.parentCluster=lastClusterParent.parentCluster;
 		markDepth(brotherCluster, lastClusterParent.depth);
 	    }
@@ -593,7 +589,7 @@ public class SingleLinkageHierarchicalClusterer {
 
     public static void writeSingleLinkageHierarchicalClustering(SingleLinkageHierarchicalClusterer graph, String imageName) {
 	ColorUtil.writeImage(graph.buildImage(), imageName);
-    }     
+    }
 }
 
 // TODO inclure les différences de colorspace dans le cluster et la fonction inverse RGB -> LAB
@@ -654,7 +650,7 @@ class Cluster {
 	return false;
     }
     public boolean equals(Cluster cluster) {
-	boolean leafValues = 
+	boolean leafValues =
 	    (ColorUtil.getColorSpace()==ColorUtil.RGB)?
 		    (this.red==cluster.red)&&(this.green==cluster.green)&&(this.blue==cluster.blue)&&(this.level==cluster.level)&&(this.size==cluster.size)://&&(this.depth==cluster.depth);
 			(this.l==cluster.l)&&(this.a==cluster.a)&&(this.b==cluster.b)&&(this.level==cluster.level)&&(this.size==cluster.size);

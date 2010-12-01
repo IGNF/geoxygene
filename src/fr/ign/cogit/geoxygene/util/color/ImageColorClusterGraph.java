@@ -1,27 +1,23 @@
-/*******************************************************************************
+/*
  * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
- * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
- * National Mapping Agency).
- * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at
+ * the Institut Géographique National (the French National Mapping Agency).
  * See: http://oxygene-project.sourceforge.net
- * 
  * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License along with
- * this library (see file LICENSE if present); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *******************************************************************************/
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or any later
+ * version.
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details. You should have received a copy of the GNU Lesser General
+ * Public License along with this library (see file LICENSE if present); if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place,
+ * Suite 330, Boston, MA 02111-1307 USA
+ */
 
 package fr.ign.cogit.geoxygene.util.color;
 
@@ -127,7 +123,7 @@ public class ImageColorClusterGraph {
 	}
 
 	/**
-	 * @param clusterImage 
+	 * @param clusterImage
 	 * @param x
 	 * @param y
 	 * @return
@@ -137,8 +133,8 @@ public class ImageColorClusterGraph {
 		for (int i = -neighborhoodSize ; i <= neighborhoodSize ; i++) {
 			for (int j = -neighborhoodSize ; j <= neighborhoodSize ; j++) {
 				if ((i==0)&&(j==0)) continue;
-				if ( 
-						(x+i>=0) && (x+i<clusterImage.getWidth()) && 
+				if (
+						(x+i>=0) && (x+i<clusterImage.getWidth()) &&
 						(y+j>=0) && (y+j<clusterImage.getHeight()) &&
 						(clusterImage.getRGB(x, y) == clusterImage.getRGB(x+i, y+j)) )
 					neighbors.add(new Integer(x+i+(y+j)*clusterImage.getWidth()));
@@ -152,8 +148,8 @@ public class ImageColorClusterGraph {
 		for (int i = -neighborhoodSize ; i <= neighborhoodSize ; i++) {
 			for (int j = -neighborhoodSize ; j <= neighborhoodSize ; j++) {
 				if ((i==0)&&(j==0)) continue;
-				if ( 
-						(x+i>=0) && (x+i<clusterImage.getWidth()) && 
+				if (
+						(x+i>=0) && (x+i<clusterImage.getWidth()) &&
 						(y+j>=0) && (y+j<clusterImage.getHeight()) )
 					neighbors.add(new Integer(x+i+(y+j)*clusterImage.getWidth()));
 			}
@@ -167,8 +163,8 @@ public class ImageColorClusterGraph {
 	for (int i = -neighborhoodSize ; i <= neighborhoodSize ; i++) {
 	    for (int j = -neighborhoodSize ; j <= neighborhoodSize ; j++) {
 		if ((i==0)&&(j==0)) continue;
-		if ( 
-			(x+i>=0) && (x+i<clusterImage.getWidth()) && 
+		if (
+			(x+i>=0) && (x+i<clusterImage.getWidth()) &&
 			(y+j>=0) && (y+j<clusterImage.getHeight()) &&
 			(clusterImage.getRGB(x, y) != clusterImage.getRGB(x+i, y+j)) ) {
 		    int neighborIndex = x+i+(y+j)*clusterImage.getWidth();
@@ -246,7 +242,7 @@ public class ImageColorClusterGraph {
 		this.clusterSizeStandardDeviation=MathUtil.ecartType(this.clusterSize, this.clusterSizeAverage);
 		logger.info("The average cluster is "+this.clusterSizeAverage+" pixels large");
 		logger.info("The standard deviation in the cluster size is "+this.clusterSizeStandardDeviation +" pixels"); //$NON-NLS-2$
-		
+
 		KMeansClusterer clusterer = new KMeansClusterer(this.numberOfClusters,sizes);
 		this.clusterSizes = new float[this.numberOfClusters];
 		int i = 0;
@@ -255,9 +251,9 @@ public class ImageColorClusterGraph {
 		}
 		Arrays.sort(this.clusterSizes);
 		for (float size : this.clusterSizes) logger.info("size "+size);
-		
+
 		this.clusterColors = new List[this.clusterSizes.length];
-		
+
 		for(Color color:occurrenceMap.keySet()) {
 			logger.info(this.colorNumberOfClusters.get(color)+" clusters for color "+Integer.toHexString(color.getRGB())+" with an average of "+this.colorClusterAverageSize.get(color)+" pixels per cluster    ---   "+occurrenceMap.get(color)+" pixels   --- "+this.colorProportion.get(color)+" %");
 			int[] listNumbers = getNumbers(this.colorVertices.get(color));
@@ -281,7 +277,7 @@ public class ImageColorClusterGraph {
 		Arrays.sort(sizeList);
 		int maxOccurence = 0;
 		for(Integer occurence:sizeMap.values()) maxOccurence=Math.max(maxOccurence, occurence.intValue());
-		
+
 		logger.info(sizeList[sizeList.length-1]+" x "+maxOccurence);
 		BufferedImage graphImage = new BufferedImage(sizeList[sizeList.length-1].intValue(), maxOccurence/10,BufferedImage.TYPE_INT_RGB);
 		Graphics2D graphics = graphImage.createGraphics();
@@ -343,7 +339,7 @@ public class ImageColorClusterGraph {
 	}
 
 	/**
-	 * @return
+	 * @return the graph image
 	 */
 	public BufferedImage buildGraphImage() {
 		int vertexSize = 1;
@@ -381,7 +377,7 @@ public class ImageColorClusterGraph {
 	}
 
 	/**
-	 * @return
+	 * @return the cluster image
 	 */
 	@SuppressWarnings("unchecked")
 	public BufferedImage buildGraphClusterImage() {
@@ -408,10 +404,10 @@ public class ImageColorClusterGraph {
 			averageSizePerColor.put(color, averageSize);
 		}
 		for(List<Color> list:this.clusterColors) maxNumberOfColorsPerCluster=Math.max(maxNumberOfColorsPerCluster, list.size());
-		
+
 		logger.info("sizeOfMaxCluster = "+sizeOfMaxCluster);
 		logger.info("maxNumberOfColorsPerCluster = "+maxNumberOfColorsPerCluster);
-		
+
 		int[][][] positionAndSizeArray = new int[this.numberOfClusters][][];
 		int maxIndex = 0;
 		for(int i = 0 ; i < this.numberOfClusters ; i++) {
@@ -431,11 +427,11 @@ public class ImageColorClusterGraph {
 			}
 			maxIndex=Math.max(maxIndex, index);
 		}
-		
+
 		float factor = 1024f/maxIndex;
-		
+
 		logger.info("Creating image of "+maxIndex*factor+" x "+(int)sizeOfMaxCluster*this.numberOfClusters*factor);
-		
+
 		BufferedImage graphImage = new BufferedImage((int)(maxIndex*factor), (int)(sizeOfMaxCluster*this.numberOfClusters*factor),BufferedImage.TYPE_INT_ARGB);
 		Graphics2D graphics = graphImage.createGraphics();
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

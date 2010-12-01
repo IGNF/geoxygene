@@ -1,27 +1,23 @@
-/*******************************************************************************
+/*
  * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
- * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
- * National Mapping Agency).
- * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at
+ * the Institut Géographique National (the French National Mapping Agency).
  * See: http://oxygene-project.sourceforge.net
- * 
  * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License along with
- * this library (see file LICENSE if present); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *******************************************************************************/
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or any later
+ * version.
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details. You should have received a copy of the GNU Lesser General
+ * Public License along with this library (see file LICENSE if present); if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place,
+ * Suite 330, Boston, MA 02111-1307 USA
+ */
 
 package fr.ign.cogit.geoxygene.util.color;
 
@@ -72,8 +68,8 @@ public class ColorUtil {
     }
 
     /**
-     * @param color
-     * @return
+     * @param color a color
+     * @return the color in LAB reference system
      */
     public static float[] toLab(Color color) {
 	float[] lab = labMap.get(color);
@@ -85,14 +81,17 @@ public class ColorUtil {
     }
 
     /**
-     * @param color
-     * @return
+     * @param color a color
+     * @return the color in XYZ reference system
      */
-    public static float[] toXyz(Color color) {return color.getColorComponents(ColorSpace.getInstance(ColorSpace.CS_CIEXYZ), null);}
+    public static float[] toXyz(Color color) {
+        return color.getColorComponents(ColorSpace
+                    .getInstance(ColorSpace.CS_CIEXYZ), null);
+    }
 
     /**
-     * @param xyz
-     * @return
+     * @param xyz a color in XYZ reference system
+     * @return the color in LAB reference system
      */
     public static float[] toLab(float[] xyz) {
 	float x = xyz[0];
@@ -104,13 +103,14 @@ public class ColorUtil {
 	return new float[]{l,a,b};
     }
     /**
-     * @param t
-     * @return
+     * Helper function for the translation of XYZ to LAB
+     * @param t parameter
+     * @return result of the helper function
      */
-    public static float f(float t) {return (t>delta*delta*delta)?(float) Math.pow(t, 1f/3f):t/(3f*delta*delta)+4f/29f;}
+    private static float f(float t) {return (t>delta*delta*delta)?(float) Math.pow(t, 1f/3f):t/(3f*delta*delta)+4f/29f;}
 
     private static float delta = 6f/29f;
-    
+
     public static Color toColor(float[] lab) {
 	float fy = (lab[0]+16f)/116f;
 	float[] f = new float[]{fy+lab[1]/500f,fy,fy-lab[2]/200f};
@@ -142,7 +142,7 @@ public class ColorUtil {
 	}
 	return result;
     }
-        
+
     /**
      * Square Euclidean distance between 2 colors
      * @param color1 first color
@@ -154,7 +154,7 @@ public class ColorUtil {
     	else if (colorSpace == LAB) return sqDistanceLab(color1,color2);
     	else return sqDistanceXyz(color1,color2);
     }
-    
+
     /**
      * Square Euclidean distance between 2 colors in LAB
      * @param color1 first color
@@ -162,7 +162,7 @@ public class ColorUtil {
      * @return the square Euclidean distance between the 2 colors in parameter
      */
     public static float sqDistanceLab(Color color1, Color color2) {return sqDistance(toLab(color1), toLab(color2));}
-    
+
     /**
      * Square Euclidean distance between 2 colors in RGB
      * @param color1 first color
@@ -208,12 +208,12 @@ public class ColorUtil {
 	}
 	return clusterImage;
     }
-    
+
     public static void writePaletteImage(Color[] colors, int sizeElement, String imageName) {
 	BufferedImage image = buildPaletteImage(colors, sizeElement);
 	writeImage(image, imageName);
     }
-    
+
     /**
      * Build an image representing the palette.
      * @param colors the palette's list of colors
@@ -234,7 +234,7 @@ public class ColorUtil {
 	}
 	return image;
     }
-    
+
     public static void writeProportionalPaletteImage(BufferedImage image, String imageName) {
 	BufferedImage paletteImage = buildProportionalPaletteImage(image);
 	writeImage(paletteImage, imageName);
@@ -264,7 +264,7 @@ public class ColorUtil {
 
     /**
      * @param image
-     * @return
+     * @return a map containing the number of occurences for all colors found
      */
     public static Map<Color, Integer> occurrenceMap(BufferedImage image) {
 	Map<Color, Integer> map = new HashMap<Color, Integer>();
@@ -277,7 +277,7 @@ public class ColorUtil {
 	}
 	return map;
     }
-    
+
     /**
      * Remaps the given image using the given colors.
      * @param imageToReMap image to remap
@@ -286,14 +286,14 @@ public class ColorUtil {
     BufferedImage remappedImage=new BufferedImage(imageToReMap.getWidth(), imageToReMap.getHeight(),BufferedImage.TYPE_INT_RGB);
 	for(int y = 0 ; y < imageToReMap.getHeight() ; y++) {
 	    for(int x = 0 ; x < imageToReMap.getWidth() ; x++) {
-		Color color = new Color(imageToReMap.getRGB(x, y)); 
+		Color color = new Color(imageToReMap.getRGB(x, y));
 		color = findClosestColor(colors, color);
 		remappedImage.setRGB(x, y, color.getRGB());
 	    }
 	}
 	return remappedImage;
     }
-    
+
     /**
 	 * @param colors
 	 * @param color
@@ -311,23 +311,23 @@ public class ColorUtil {
 		}
 		return bestColor;
 	}
-	
+
 	/**
 	 * @param image
 	 * @param imageName
 	 */
 	public static void writeImage(BufferedImage image, String imageName) {
 	if (logger.isDebugEnabled()) logger.debug("Writing image "+imageName);
-	try {ImageIO.write(image, "PNG", new File(imageName));} catch (IOException e) {e.printStackTrace();}	
+	try {ImageIO.write(image, "PNG", new File(imageName));} catch (IOException e) {e.printStackTrace();}
     }
-    
+
     public static Set<Color> getColors(BufferedImage image) {
 	Set<Color> allColors = new HashSet<Color>();
 	// For each pixel of the input image, insert the color into the octree
 	for(int y = 0 ; y < image.getHeight() ; y++) {
 	    for(int x = 0 ; x < image.getWidth() ; x++) {
 		Color color = new Color(image.getRGB(x, y));
-		allColors.add(color);		
+		allColors.add(color);
 	    }
 	}
 	return allColors;

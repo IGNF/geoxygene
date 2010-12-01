@@ -105,13 +105,16 @@ public class ImgUtil {
             int width, int height) throws Exception {
         GeneralPath all = new GeneralPath();
         for (int i = 0; i < geoms.length; i++) {
+            System.out.println("scale " + i + " / " + geoms.length);
             if (!isEmpty(geoms[i])) {
                 all.append(WktAwt.makeAwtShape(WktGeOxygene.makeWkt(geoms[i]))
                         .getBounds(), false);
             }
         }
+        System.out.println("scale all");
         AffineTransform transform = ImgUtil.makeScaleTransform(all, width,
                 height);
+        System.out.println("scale finished");
         return transform;
     }
 
@@ -248,7 +251,9 @@ public class ImgUtil {
                 height);
         BufferedImage image = ImgUtil.make(background, width, height);
         Graphics2D g = image.createGraphics();
+        System.out.println("draw");
         ImgUtil.drawGeom(g, geoms, foregrounds, transform);
+        System.out.println("saving the actual image");
         ImgUtil.saveImage(image, path);
     }
 
@@ -425,6 +430,8 @@ public class ImgUtil {
         double heightReal = envelope.length() / scale;
         int width = new Double(widthReal).intValue();
         int height = new Double(heightReal).intValue();
+        System.out.println("Envelope " + envelope.width() + " x " + envelope.length());
+        System.out.println("Envelope out " + width + " x " + height);
         int i = 0, j = 0;
         GM_Object[] geometries = new GM_Object[totalSize];
         for (FT_FeatureCollection<Feature> c : collections) {
@@ -435,6 +442,7 @@ public class ImgUtil {
             }
             j++;
         }
+        System.out.println("save");
         ImgUtil.saveImage(geometries, path, foregrounds, background, width,
                 height);
     }

@@ -27,7 +27,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */ 
+ */
 
 package fr.ign.cogit.geoxygene.util.color;
 
@@ -122,7 +122,7 @@ MouseListener, MouseWheelListener {
     String[] imageFileNames = null;
 
     /**
-     * 
+     *
      */
     public ColorQuantizer() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -182,12 +182,12 @@ MouseListener, MouseWheelListener {
         SpinnerModel model = new SpinnerNumberModel(64, //initial value
                 1, //min
                 128, //max
-                1);       
+                1);
         this.numberOfColorsOctreeSpinner = new JSpinner(model);
         model = new SpinnerNumberModel(16, //initial value
                 1, //min
                 128, //max
-                1);       
+                1);
         this.finalNumberOfColorsSpinner = new JSpinner(model);
 
         this.computeButton.setMnemonic(KeyEvent.VK_C);
@@ -211,7 +211,7 @@ MouseListener, MouseWheelListener {
     }
 
     /**
-     * 
+     *
      */
     private void initializeGroup() {
         this.group.removeAll();
@@ -244,7 +244,7 @@ MouseListener, MouseWheelListener {
     }
 
     /**
-     * 
+     *
      */
     private void compute() {
         if (this.image==null) {
@@ -563,7 +563,7 @@ MouseListener, MouseWheelListener {
                         ? ColorUtil.toColor(location)
                                 : new Color(ColorSpace.getInstance(
                                         ColorSpace.CS_CIEXYZ), location, 1));
-            }		
+            }
 
             ColorUtil.writeChromaticityImage(initialColors, 512, 3,initialChromaticityImageName);
             ColorUtil.writeChromaticityImage(colors, 512, 16, finalChromaticityImageName);
@@ -578,7 +578,7 @@ MouseListener, MouseWheelListener {
     }
 
     /**
-     * 
+     *
      */
     private void open() {
         JFileChooser chooser = new JFileChooser();
@@ -743,8 +743,8 @@ MouseListener, MouseWheelListener {
 
     /**
      * Creates an ImageIcon if the path is valid.
-     * @param String - absolute path
-     * @param String - description of the file
+     * @param path - absolute path
+     * @param description - description of the file
      */
     protected ImageIcon createImageIcon(String path, String description) {
         return new ImageIcon(path, description);

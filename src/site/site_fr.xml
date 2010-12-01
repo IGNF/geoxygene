@@ -38,5 +38,6 @@
     </menu>
 
     <menu ref="reports"/> <!-- Replaced by menus for any configured reports (mailing lists, etc.) -->
+
   </body>
 </project>

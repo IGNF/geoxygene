@@ -1,28 +1,24 @@
 /*
  * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
- * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
- * National Mapping Agency).
- * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at
+ * the Institut Géographique National (the French National Mapping Agency).
  * See: http://oxygene-project.sourceforge.net
- * 
  * Copyright (C) 2005 Institut Géographique National
- *
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License along with
- * this library (see file LICENSE if present); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or any later
+ * version.
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details. You should have received a copy of the GNU Lesser General
+ * Public License along with this library (see file LICENSE if present); if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place,
+ * Suite 330, Boston, MA 02111-1307 USA
  */
+
 package fr.ign.cogit.geoxygene.util.algo;
 
 import java.util.List;
@@ -120,17 +116,17 @@ public class MathUtil {
 		java.util.Arrays.sort(listeTriee);
 		return listeTriee[liste.size()/2].doubleValue();
 	}
-	
+
 	/**
 	 * Calcul de la distance euclidienne entre deux points.
 	 * La distance Euclidienne n'est calculée que si les 2 listes ont le même nombre de coordonnées.
 	 * @param x1 Liste de coordonnées
 	 * @param x2 Liste de coordonnées
-	 * @return
+	 * @return the euclidian distance between x1 and x2
 	 */
 	public static float distEucl(float[] x1, float[] x2){
 		float distEucl = 0;
-		
+
 		for (int i = 0; i < x1.length; i++) {
 			distEucl = distEucl + (float)Math.pow(x2[i] - x1[i], 2);
 		}
@@ -141,21 +137,21 @@ public class MathUtil {
 			return distEucl;
 		}
 	}
-	
+
 	/**
 	 * Calcul de la distance de Manhattan entre deux points.
 	 * La distance de Manhattan n'est calculée que si les 2 listes ont le même nombre de coordonnées.
 	 * @param x1 Liste de coordonnées
 	 * @param x2 Liste de coordonnées
-	 * @return
+	 * @return the manhattan distance between x1 and x2
 	 */
 	public static float distManhattan(List<Float> x1, List<Float> x2){
 		float distManhattan = 0;
-		
+
 		for (int i = 0; i < x1.size(); i++) {
 			distManhattan = distManhattan + Math.abs(x2.get(i) - x1.get(i));
 		}
-		
+
 		if(x1.size() != x2.size()){
 			return Float.NaN;
 		}else{
