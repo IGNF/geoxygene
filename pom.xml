@@ -41,7 +41,7 @@
   	<developer>
   		<id>julien-perret</id>
   		<name>Julien Perret</name>
-  		<email>julien.perret@ign.fr</email>
+  		<email>julien.perret(at)gmail.com</email>
   		<url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=Julien&amp;nom=Perret</url>
   		<organization>Laboratoire COGIT, IGN</organization>
   		<organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
@@ -52,7 +52,7 @@
   	<developer>
   		<id>jgaffuri</id>
   		<name>Julien Gaffuri</name>
-  		<email>julien.gaffuri@ign.fr</email>
+  		<email>julien.gaffuri(at)ign.fr</email>
   		<url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=Julien&amp;nom=Gaffuri</url>
   		<organization>Laboratoire COGIT, IGN</organization>
   		<organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
@@ -60,7 +60,7 @@
   	<developer>
   		<id>egrosso</id>
   		<name>Eric Grosso</name>
-  		<email>eric.grosso@ign.fr</email>
+  		<email>eric.grosso(at)ign.fr</email>
   		<url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=Eric&amp;nom=Grosso</url>
   		<organization>Laboratoire COGIT, IGN</organization>
   		<organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
@@ -68,7 +68,7 @@
   	<developer>
   		<id>tbadard</id>
   		<name>Thierry Badard</name>
-  		<email>Thierry.Badard@scg.ulaval.ca</email>
+  		<email>Thierry.Badard(at)scg.ulaval.ca</email>
   		<url>http://geosoa.scg.ulaval.ca/fr/index.php</url>
   		<organization>Département des sciences géomatiques, Université Laval, Québec, Canada</organization>
   		<organizationUrl>http://www.scg.ulaval.ca/</organizationUrl>
@@ -76,7 +76,7 @@
   	<developer>
   		<id>abraun</id>
   		<name>Arnaud Braun </name>
-  		<email>arnaud.braun@ign.fr</email>
+  		<email>arnaud.braun(at)ign.fr</email>
   		<url>http://recherche.ign.fr/labos/cogit/english/cv.php?prenom=Arnaud&amp;nom=Braun</url>
   		<organization>IGN</organization>
   		<organizationUrl>http://www.ign.fr/</organizationUrl>
@@ -84,20 +84,66 @@
   	<developer>
   		<id>mustiere</id>
   		<name>Sebastien Mustiere</name>
-  		<email>Sebastien.Mustiere@ign.fr</email>
+  		<email>Sebastien.Mustiere(at)ign.fr</email>
   		<url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=S%E9bastien&amp;nom=Musti%E8re</url>
   		<organization>Laboratoire COGIT, IGN</organization>
   		<organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
   	</developer>
   	<developer>
   		<id>choarau</id>
-  		<name>Charlotte Hoarau </name>
-  		<email>Charlotte.Hoarau@ign.fr</email>
+  		<name>Charlotte Hoarau</name>
+  		<email>Charlotte.Hoarau(at)ign.fr</email>
   		<url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=Charlotte&amp;nom=Hoarau</url>
   		<organization>Laboratoire COGIT, IGN</organization>
   		<organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
   	</developer>
+  	<developer>
+  		<id>mbrasebin</id>
+  		<name>Mickaël Brasebin</name>
+  		<email>Mickael.Brasebin(at)ign.fr</email>
+  		<url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=Mickael&amp;nom=Brasebin</url>
+  		<organization>Laboratoire COGIT, IGN</organization>
+  		<organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
+  	</developer>
+  	<developer>
+  		<id>bdumenieu</id>
+  		<name>Bertrand Dumenieu</name>
+  		<email>bertranddumenieu(at)gmail.com</email>
+  		<organization>Laboratoire LaDéHiS, EHESS</organization>
+  		<organizationUrl>http://www.ehess.fr/ldh/</organizationUrl>
+  	</developer>
+  	<developer>
+  		<id>jeremy-renard</id>
+  		<name>Jeremy Renard</name>
+  		<email>Jeremy.Renard(at)ign.fr</email>
+  		<url>http://recherche.ign.fr/labos/cogit/cv.php?prenom=Jeremy&amp;nom=Renard</url>
+  		<organization>Laboratoire COGIT, IGN</organization>
+  		<organizationUrl>http://recherche.ign.fr/labos/cogit</organizationUrl>
+  	</developer>
   </developers>
+  <contributors>
+  	<contributor>
+  		<name>Olivier Bonin</name>
+  		<email>olivier.bonin(at)enpc.fr</email>
+  		<url>http://www.lvmt.fr/spip.php?article202</url>
+  		<organization>Laboratoire Ville Mobilité Transport</organization>
+  		<organizationUrl>http://www.lvmt.fr</organizationUrl>
+  	</contributor>
+  	<contributor>
+  		<name>Sandrine Balley</name>
+  		<email>sandrine.balley(at)gmail.com</email>
+  		<organization>Ordnance Survey</organization>
+  		<organizationUrl>http://www.ordnancesurvey.co.uk</organizationUrl>
+  	</contributor>
+  	<contributor>
+  		<name>Ana-Maria Olteanu-Raimond</name>
+  		<email>anamaria.raimond(at)yahoo.fr</email>
+  	</contributor>
+  	<contributor>
+  		<name>Sylvain Becuwe</name>
+  		<email>sylvainbounty(at)msn.com</email>
+  	</contributor>
+  </contributors>
   <build>
   	<sourceDirectory>src</sourceDirectory>
   	<testSourceDirectory>test/java</testSourceDirectory>
@@ -139,7 +185,6 @@
         	<executions>
         		<execution>
         			<goals>
-         				<goal>compile</goal>
 						<goal>resources</goal>
        				</goals>
         		</execution>
