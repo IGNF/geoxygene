@@ -37,9 +37,9 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /** méthodes statiques de calcul de distance.
- * 
+ *
  * English: Computation of distances (static methods)
- * 
+ *
  * @author  Mustière/Bonin
  * @version 1.0
  */
@@ -60,7 +60,7 @@ public abstract class Distances {
 	//                                    	                    //
 	//////////////////////////////////////////////////////////////
     @Deprecated
-	/** Distance euclidienne entre 2 points (en 2D ou 3D si les points ont un Z). 
+	/** Distance euclidienne entre 2 points (en 2D ou 3D si les points ont un Z).
 	 *  @Deprecated La méthode .distance de DirectPosition fait la même chose
 	 * */
 	public static double distance (DirectPosition dp1, DirectPosition dp2)   {
@@ -73,8 +73,9 @@ public abstract class Distances {
 				Math.pow(dp1.getY()-dp2.getY(),2));
 	}
 
-	/** Distance euclidienne calculée en 2 dimensions XY, même sur des objets 3D. 
-	 *  @Deprecated La méthode .distance de DirectPosition fait la même chose
+	/** Distance euclidienne calculée en 2 dimensions XY, même sur des objets 3D.
+	 *  @deprecated La méthode .distance de DirectPosition fait la même chose
+	 *  @return the 2d distance between 2 points
 	 * */
 	public static double distance2D (DirectPosition dp1, DirectPosition dp2)   {
 		return Math.sqrt(Math.pow(dp1.getX()-dp2.getX(),2) +
@@ -126,7 +127,7 @@ public abstract class Distances {
     /**
      * @param point
      * @param surface
-     * @return
+     * @return the distance between a point and a surface
      */
     public static double distance(DirectPosition point,
             GM_OrientableSurface surface) {
@@ -203,7 +204,7 @@ public abstract class Distances {
 	/** Distance moyenne entre deux polylignes,
 	 * définie comme le rapport de l'aire séparant deux polylignes
 	 * sur la moyenne de leurs longueurs.
-	 * 
+	 *
 	 * IMPORTANT: la méthode suppose que les lignes sont orientées globalement
 	 * dans le même sens.
 	 */
@@ -234,7 +235,7 @@ public abstract class Distances {
 	 * surface séparant les polylignes.
 	 * Plus précisément, cet écart est égal à la somme, pour chaque point P de L1,
 	 * de (distance de P à L2) * (moyenne des longueurs des segments autour de P)
-	 * 
+	 *
 	 * NB: Ce n'est pas une distance au sens mathématique du terme,
 	 * et en particulier cet écart n'est pas symétrique: ecart(L1,L2) != ecart(L2,L1)
 	 */
@@ -316,15 +317,15 @@ public abstract class Distances {
 	}
 
 	/** Distance surfacique "robuste" entre deux polygones.
-	 * 
+	 *
 	 * Il s'agit ici d'une pure bidouille pour contourner certains bugs de JTS:
 	 * Si JTS plante au calcul d'intersection, on filtre les surfaces avec Douglas et Peucker,
 	 * progressivement avec 10 seuils entre min et max. Min et Max doivent être fixer donc de
 	 * l'ordre de grandeur de la précision des données sinon le calcul risque d'être trop faussé.
-	 * 
+	 *
 	 * définition : 1 - surface(intersection)/surface(union)
 	 * Ref [Vauglin 97]
-	 * 
+	 *
 	 * NB: renvoie 2 en cas de problème lors du calcul d'intersection avec JTS
 	 *     (bug en particulier si les surfaces sont dégénérées ou trop complexes).
 	 * */
@@ -338,14 +339,14 @@ public abstract class Distances {
 	}
 
 	/** Distance surfacique entre deux GM_MultiSurface.
-	 * 
+	 *
 	 * Cette méthode contourne des bugs de JTS, qui sont trop nombreux sur les agrégats.
 	 * En contrepartie, cette méthode n'est valable que si les GM_Polygon composant A [resp. B]
 	 * ne s'intersectent pas entre elles.
-	 * 
+	 *
 	 * définition : 1 - surface(intersection)/surface(union)
 	 * Ref [Vauglin 97]
-	 * 
+	 *
 	 * NB: renvoie 2 en cas de problème résiduer lors du calcul d'intersection avec JTS
 	 *     (bug en particulier si les surfaces sont dégénérées ou trop complexes).
 	 */
@@ -359,11 +360,11 @@ public abstract class Distances {
 	}
 
 	/** Surface de l'intersection.
-	 * 
+	 *
 	 * Cette méthode contourne des bugs de JTS, qui sont trop nombreux sur les agrégats.
 	 * En contrepartie, cette méthode n'est valable que si les GM_Polygon composant A [resp. B]
 	 * ne s'intersectent pas entre elles.
-	 * 
+	 *
 	 * NB: renvoie -1 en cas de problème résiduer lors du calcul d'intersection avec JTS
 	 *     (bug en particulier si les surfaces sont dégénérées ou trop complexes).
 	 */
@@ -388,11 +389,11 @@ public abstract class Distances {
 	}
 
 	/** Surface de l'union.
-	 * 
+	 *
 	 * Cette méthode contourne des bugs de JTS, qui sont trop nombreux sur les agrégats.
 	 * En contrepartie, cette méthode n'est valable que si les GM_Polygon composant A [resp. B]
 	 * ne s'intersectent pas entre elles.
-	 * 
+	 *
 	 * NB: renvoie -1 en cas de problème résiduer lors du calcul d'intersection avec JTS
 	 *     (bug en particulier si les surfaces sont dégénérées ou trop complexes).
 	 */
@@ -407,7 +408,7 @@ public abstract class Distances {
 
 	/** Mesure dite "Exactitude" entre 2 surfaces.
 	 * Ref : [Bel Hadj Ali 2001]
-	 * 
+	 *
 	 * définition : Surface(A inter B) / Surface(A)
 	 */
 	public static double exactitude(GM_Polygon A, GM_Polygon B) {
@@ -418,7 +419,7 @@ public abstract class Distances {
 
 	/** Mesure dite "Complétude" entre 2 surfaces.
 	 * Ref : [Bel Hadj Ali 2001]
-	 * 
+	 *
 	 * définition : Surface(A inter B) / Surface(B)
 	 */
 	public static double completude(GM_Polygon A, GM_Polygon B) {
@@ -436,7 +437,7 @@ public abstract class Distances {
 	}
 
 	/** Mesure dite "Complétude" entre 2 GM_MultiSurface.
-	 * 
+	 *
 	 * Ref : [Bel Hadj Ali 2001]
 	 * définition : Surface(A inter B) / Surface(B)
 	 */
@@ -466,12 +467,12 @@ public abstract class Distances {
 
 
 	/** Test d'association "robuste" entre deux surfaces (cf. [Bel Hadj Ali 2001]).
-	 * 
+	 *
 	 * Il s'agit ici d'une pure bidouille pour contourner certains bugs de JTS:
 	 * Si JTS plante au calcul , on filtre les surfaces avec Douglas et Peucker,
 	 * progressivement avec 10 seuils entre min et max. Min et Max doivent être fixer donc de
 	 * l'ordre de grandeur de la précision des données sinon le calcul risque d'être trop faussé.
-	 * 
+	 *
 	 *  <BR> <STRONG> Definition :  </STRONG> associationSurfaces(A,B) = vrai si
 	 * <UL>
 	 * <LI> Surface(intersection) > min  (min etant la resolution minimum des deux bases) </LI>

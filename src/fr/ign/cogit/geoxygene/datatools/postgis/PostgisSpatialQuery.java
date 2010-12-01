@@ -145,7 +145,7 @@ public class PostgisSpatialQuery {
      * @param data
      * @param theClass
      * @param geom
-     * @return
+     * @return the features of the given class in the given geometry
      */
     public static List<?> loadAllFeatures(Geodatabase data, Class<?> theClass,
             GM_Object geom) {

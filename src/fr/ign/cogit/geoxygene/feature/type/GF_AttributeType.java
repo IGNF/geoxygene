@@ -1,9 +1,24 @@
 /*
- * créé le 30 sept. 2004
- *
- * Pour changer le Modèle de ce fichier généré, allez à :
- * Fenêtre&gt;Préférences&gt;Java&gt;Génération de code&gt;Code et commentaires
+ * This file is part of the GeOxygene project source files.
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at
+ * the Institut Géographique National (the French National Mapping Agency).
+ * See: http://oxygene-project.sourceforge.net
+ * Copyright (C) 2005 Institut Géographique National
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or any later
+ * version.
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details. You should have received a copy of the GNU Lesser General
+ * Public License along with this library (see file LICENSE if present); if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place,
+ * Suite 330, Boston, MA 02111-1307 USA
  */
+
 package fr.ign.cogit.geoxygene.feature.type;
 
 
@@ -74,12 +89,11 @@ public interface GF_AttributeType extends GF_PropertyType{
 	/**renvoie la définition semantique de l'AttributeType (sous la forme d'un String
 	 * ou d'une classe d'ontologie)
 	 * ou un pointeur vers cette définition (sous la forme d'une URI)
-	 * 
+	 *
 	 * Correspond à FC_DescriptionReference et FC_DescriptionSource proposés
 	 * dans la norme ISO19110
 	 * @return Object
 	 */
 	public Object getDefinitionReference();
 	public void setDefinitionReference(Object ref);
-
 }

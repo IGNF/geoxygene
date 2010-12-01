@@ -936,7 +936,7 @@ public class GeodatabaseOjb {
      * une population (une RegleExtraction +/- complexe a été spécifiée).
      * @param <T>
      * @param featureType
-     * @return
+     * @return all features of the given featuretype
      */
     public <T extends FT_Feature> FT_FeatureCollection<T>
     loadAllFeaturesCasComplexe(FeatureType featureType) {

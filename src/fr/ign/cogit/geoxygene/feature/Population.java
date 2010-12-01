@@ -1,27 +1,22 @@
 /*
  * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
- * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
- * National Mapping Agency).
- * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at
+ * the Institut Géographique National (the French National Mapping Agency).
  * See: http://oxygene-project.sourceforge.net
- * 
  * Copyright (C) 2005 Institut Géographique National
- *
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License along with
- * this library (see file LICENSE if present); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2.1 of the License, or any later
+ * version.
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details. You should have received a copy of the GNU Lesser General
+ * Public License along with this library (see file LICENSE if present); if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place,
+ * Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.feature;
@@ -51,7 +46,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  *
  *  <P> NB: une population existe indépendamment des ses éléments.
  *  Avant de charger ses éléments, la population existe mais ne contient aucun élément.
- * 
+ *
  * <P> Difference avec FT_FeatureCollection :
  * une Population est une FT_FeatureCollection possedant les proprietes suivantes.
  * <UL>
@@ -63,10 +58,10 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * <LI> Possede quelques attributs (nom classe, etc.). </LI>
  * </UL>
  * TODO Finir les annotations pour la persistance
- * 
+ *
  * @author Sébastien Mustière
  * @author Sandrine Balley
- * @author Julien Perret 
+ * @author Julien Perret
  */
 @Entity
 public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Feat> {
@@ -118,7 +113,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	/**
 	 * Constructeur le plus adapté à l'utilisation des Populations dotées d'un
 	 * lien vers le FeatureType correspondant.
-	 * 
+	 *
 	 * @param ft
 	 */
 	public Population(FeatureType ft) {
@@ -131,7 +126,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	 * non (la population elle-même est alors rendue persistante dans ce
 	 * constructeur). Une population a un nom logique (utile pour naviguer entre
 	 * populations). Les éléments d'une population se réalisent dans une classe
-	 * concrete (nom_classe_elements). 
+	 * concrete (nom_classe_elements).
 	 * <p>
 	 * <b>NB :</b> lors la construction, auncun élément
 	 * n'est affecté à la population, cela doit être fait à partir d'elements
@@ -360,7 +355,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	//////////////////////////////////////////////////
 	// Methodes surchargeant des trucs de FT_FeatureCollection, avec une gestion de la persistance
 
-	/** 
+	/**
 	 * enlève, ET DETRUIT si il est persistant, un élément de la liste des elements de la population,
 	 * met également à jour la relation inverse, et eventuellement l'index.
 	 * <p>
@@ -371,13 +366,13 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 		if ( this.getPersistant() ) DataSet.db.deletePersistent(O);
 	}
 	private static int idNouvelElement = 1;
-	/** 
+	/**
 	 * crée un nouvel élément de la population, instance de sa classe par défaut, et l'ajoute à la population.
 	 * <p>
 	 *  Si la population est persistante, alors le nouvel élément est rendu persistant dans cette méthode
 	 * <b>NB :</b> différent de add (hérité de FT_FeatureCollection) qui ajoute un élément déjà existant.
 	 */
-	public Feat nouvelElement() {return nouvelElement(null);}
+	public Feat nouvelElement() { return nouvelElement(null); }
 	/**
 	 * crée un nouvel élément de la population (avec la géométrie geom),
 	 *  instance de sa classe par défaut, et l'ajoute à la population.
@@ -388,7 +383,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	public Feat nouvelElement(GM_Object geom) {
 		try {
 			Feat elem = this.getClasse().newInstance();
-			elem.setId(++idNouvelElement);
+			elem.setId(idNouvelElement++);
 			elem.setGeom(geom);
 			//elem.setPopulation(this);
 			super.add(elem);
@@ -418,6 +413,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 	public Feat nouvelElement(Class<?>[] signature, Object[] param) {
 		try {
 			Feat elem = this.getClasse().getConstructor(signature).newInstance(param);
+	         elem.setId(idNouvelElement++);
 			super.add(elem);
 			if ( this.getPersistant() ) DataSet.db.makePersistent(elem);
 			return elem;
@@ -431,7 +427,7 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 
 	//////////////////////////////////////////////////
 	// Copie de population
-	/** 
+	/**
 	 * Copie la population passée en argument dans la population traitée (this).
 	 * <p>
 	 * <b>NB :<b>
@@ -502,5 +498,5 @@ public class Population<Feat extends FT_Feature> extends FT_FeatureCollection<Fe
 		}
 		if (logger.isInfoEnabled()) logger.info("-- "+this.size()+" instances chargees dans la population"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
-	
+
 }

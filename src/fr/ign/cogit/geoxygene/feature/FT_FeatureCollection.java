@@ -43,10 +43,8 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
-import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 import fr.ign.cogit.geoxygene.util.index.SpatialIndex;
 
 /**
@@ -311,20 +309,23 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
         if (coll == null) { return false; }
         if (coll.size() == 0) { return false; }
         boolean result = true;
-        List<GM_Object> removedCollectionGeometry = new ArrayList<GM_Object>();
+        GM_Envelope envelope = this.envelope();
+        //List<GM_Object> removedCollectionGeometry = new ArrayList<GM_Object>();
         synchronized (this.elements) {
             for (Object o : coll) {
                 result = this.remove(o) && result;
+                /*
                 if (o instanceof FT_Feature) {
                     FT_Feature feature = (FT_Feature) o;
                     if (feature.getGeom() != null) {
                         removedCollectionGeometry.add(feature.getGeom());
                     }
                 }
+                */
             }
         }
         this.fireActionPerformed(new FeatureCollectionEvent(this, null,
-                    FeatureCollectionEvent.Type.REMOVED, JtsAlgorithms.union(removedCollectionGeometry)));
+                    FeatureCollectionEvent.Type.REMOVED, envelope.getGeom()));
         return result;
     }
 
