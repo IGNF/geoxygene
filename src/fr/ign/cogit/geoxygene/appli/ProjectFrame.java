@@ -228,7 +228,7 @@ public class ProjectFrame extends JInternalFrame implements
             } catch (NoninvertibleTransformException e1) {
                 e1.printStackTrace();
             }
-        }        
+        }
     }
 
     public void addGeotiffLayer(String fileName) {
@@ -253,7 +253,7 @@ public class ProjectFrame extends JInternalFrame implements
             } catch (NoninvertibleTransformException e1) {
                 e1.printStackTrace();
             }
-        }        
+        }
     }
 
     public void addShapefileLayer(String fileName) {
@@ -503,6 +503,10 @@ public class ProjectFrame extends JInternalFrame implements
     }
 
     public BufferedImage getImage(FT_Feature feature) {
+        if (feature == null) {
+            if (this.featureToImageMap.isEmpty()) { return null; }
+            return this.featureToImageMap.values().iterator().next();
+        }
         return this.featureToImageMap.get(feature);
     }
 
