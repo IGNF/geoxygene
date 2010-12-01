@@ -66,6 +66,18 @@ public class LineSymbolizer extends AbstractSymbolizer {
     public boolean isLineSymbolizer() {
         return true;
     }
+
+    @XmlElement(name = "ColorMap")
+    ColorMap colorMap = null;
+
+    public ColorMap getColorMap() {
+        return this.colorMap;
+    }
+
+    public void setColorMap(ColorMap colorMap) {
+        this.colorMap = colorMap;
+    }
+
     @XmlElement(name = "PerpendicularOffset")
     double perpendicularOffset = 0;
 
@@ -101,12 +113,16 @@ public class LineSymbolizer extends AbstractSymbolizer {
         this.paintShadow(geometry, viewport, graphics);
         if (this.getStroke().getGraphicType() == null) {
             List<Shape> shapes = getShapeList(geometry, viewport, false);
-            graphics.setColor(this.getStroke().getColor());
+            if (this.getColorMap() != null) {
+                graphics.setColor(new Color(this.getColorMap().getColor(((Double)feature.getAttribute(this.getColorMap().getPropertyName())).doubleValue())));
+            } else {
+                graphics.setColor(this.getStroke().getColor());
+            }
             for (Shape shape : shapes) {
                 graphics.draw(shape);
             }
         } else {
-            if (this.getStroke().getGraphicType().getClass().isAssignableFrom(GraphicFill.class)) {                    
+            if (this.getStroke().getGraphicType().getClass().isAssignableFrom(GraphicFill.class)) {
                 List<Shape> shapes = getShapeList(geometry, viewport, true);
                 // GraphicFill
                 List<Graphic> graphicList = ((GraphicFill) this.getStroke().getGraphicType()).getGraphics();
@@ -123,7 +139,7 @@ public class LineSymbolizer extends AbstractSymbolizer {
                     for (Shape shape : shapes) {
                         this.graphicStrokeLineString(shape, graphic, viewport, graphics);
                     }
-                }                                    
+                }
             }
         }
     }
@@ -187,7 +203,6 @@ public class LineSymbolizer extends AbstractSymbolizer {
         }
         return null;
     }
-
     private List<Shape> getLineStringShapeList(GM_OrientableCurve line,
             Viewport viewport, boolean fill) {
         List<Shape> shapes = new ArrayList<Shape>();

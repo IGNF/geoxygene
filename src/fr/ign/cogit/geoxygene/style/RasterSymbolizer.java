@@ -85,11 +85,9 @@ public class RasterSymbolizer extends AbstractSymbolizer {
 
 	@Override
 	public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics) {
-	    System.out.println("paint");
 	    // FIXME c'est tout juste horrible !!!
         BufferedImage image = viewport.getLayerViewPanels().iterator().next().getProjectFrame().getImage(feature);
         if (image == null) {
-            System.out.println("null image");
             return;
         }
         GM_Envelope envelope = feature.getGeom().envelope();
@@ -97,11 +95,9 @@ public class RasterSymbolizer extends AbstractSymbolizer {
         int dimensionY = image.getHeight();
 
         if (this.shadedRelief != null) {
-            System.out.println("shaded "+dimensionX+" "+dimensionY);
             GM_MultiSurface<GM_Triangle> multi = this.map.get(feature);
             if (multi == null) {
                 synchronized (this.map) {
-                    System.out.println("initializing triangles");
                     multi = new GM_MultiSurface<GM_Triangle>();
                     //double reliefFactor = this.shadedRelief.getReliefFactor();
                     // TODO use reliefFactor
@@ -155,7 +151,6 @@ public class RasterSymbolizer extends AbstractSymbolizer {
                     }
                 }
             }
-            System.out.println("triangles created");
             for (GM_Triangle triangle : multi) {
                 //draw(viewport, graphics, triangle);
                 drawWithNormals(viewport, graphics, triangle);
@@ -164,7 +159,6 @@ public class RasterSymbolizer extends AbstractSymbolizer {
         }
         BufferedImage imageToDraw = image;
         if (this.colorMap != null) {
-            System.out.println("colorMap");
             imageToDraw = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
             Raster raster = image.getData();
             for (int x = 0; x < image.getWidth(); x++) {
@@ -176,7 +170,6 @@ public class RasterSymbolizer extends AbstractSymbolizer {
         }
 
         try {
-            System.out.println("drawImage");
             Shape shape = viewport.toShape(envelope.getGeom());
             double minX = shape.getBounds().getMinX();
             double minY = shape.getBounds().getMinY();
@@ -203,10 +196,18 @@ public class RasterSymbolizer extends AbstractSymbolizer {
             Color color1 = getColor(normal1);
             Vecteur normal2 = this.positionMap.get(triangle.getCorners(2));
             Color color2 = getColor(normal2);
+
             graphics.setPaint(new TriColorGradientPaint(
                     viewport.toViewPoint(triangle.getCorners(0)), color0,
                     viewport.toViewPoint(triangle.getCorners(1)), color1,
                     viewport.toViewPoint(triangle.getCorners(2)), color2));
+            /*
+            graphics.setColor(new Color(
+                        (color0.getRed() + color1.getRed() + color2.getRed() )/3,
+                        (color0.getGreen() + color1.getGreen() + color2.getGreen() )/3,
+                        (color0.getBlue() + color1.getBlue() + color2.getBlue() )/3
+                        ));
+                        */
             graphics.draw(shape);
             graphics.fill(shape);
 
