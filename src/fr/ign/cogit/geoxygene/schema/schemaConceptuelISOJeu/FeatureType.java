@@ -524,5 +524,10 @@ public class FeatureType implements GF_FeatureType {
 	 * TODO Non implémenté
 	 */
 	public void addConstraint(GF_Constraint value) {}
+	
+	@Override
+	public String toString(){
+		return this.getTypeName();
+	}
 
 }

@@ -119,5 +119,10 @@ public class FeatureAttributeValue implements FC_FeatureAttributeValue {
 		}
 		return null;
 	}
+	
+	@Override
+	public String toString(){
+		return this.getLabel();
+	}
 
 }
