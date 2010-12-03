@@ -139,7 +139,7 @@ public class GeOxygeneApplication {
      */
     private void initializeProperties() {
         try {
-            this.propertiesFile = new URL("file","","./src/resources/plugins.xml");
+            this.propertiesFile = new URL("file","","./plugins.xml");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
