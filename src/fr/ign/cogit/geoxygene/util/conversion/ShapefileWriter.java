@@ -80,6 +80,11 @@ public class ShapefileWriter {
             return;
         }
         try {
+            
+            if(!shapefileName.contains(".shp")) {
+                
+                shapefileName = shapefileName +".shp";
+            }
             ShapefileDataStore store = new ShapefileDataStore(new File(
                     shapefileName).toURI().toURL());
             String specs = "geom:"; //$NON-NLS-1$
@@ -245,15 +250,19 @@ public class ShapefileWriter {
         int returnVal = choixFichierShape.showSaveDialog(frame);
         frame.dispose();
         if (returnVal == JFileChooser.APPROVE_OPTION) {
+            String shapefileName = choixFichierShape.getSelectedFile().getAbsolutePath();
+            if(!shapefileName.contains(".shp")) {
+                
+                shapefileName = shapefileName +".shp";
+            }
+            
             if (logger.isDebugEnabled()) {
                 logger
                         .debug(I18N
                                 .getString("ShapefileWriter.YouChoseToSaveThisFile") //$NON-NLS-1$
-                                + choixFichierShape.getSelectedFile()
-                                        .getAbsolutePath());
+                                + shapefileName);
             }
-            write(featureCollection, choixFichierShape.getSelectedFile()
-                    .getAbsolutePath());
+            write(featureCollection, shapefileName);
         }
     }
 }
