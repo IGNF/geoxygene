@@ -26,6 +26,7 @@ import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.NoninvertibleTransformException;
@@ -38,6 +39,7 @@ import java.util.List;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.swing.DefaultDesktopManager;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -51,6 +53,7 @@ import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.appli.event.CoordPaintListener;
 import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 
@@ -396,6 +399,27 @@ public class MainFrame extends JFrame {
             }
         });
     	viewMenu.add(mGoTo);
+    	
+    	JMenuItem mCoord=new JCheckBoxMenuItem(
+    			I18N.getString("MainFrame.Coordinate"));
+    	mCoord.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LayerViewPanel layerViewPanel = 
+					MainFrame.this.getSelectedProjectFrame().getLayerViewPanel();
+				if (((JCheckBoxMenuItem) e.getSource()).isSelected()) {
+					layerViewPanel.addMouseMotionListener(new CoordPaintListener());
+				} else {
+					for (MouseMotionListener m : layerViewPanel.getMouseMotionListeners()) {
+						if (m.getClass().equals(CoordPaintListener.class)) {
+							layerViewPanel.removeMouseMotionListener(m);
+							layerViewPanel.repaint();
+						}
+					}
+				}
+			}
+    	});
+    	viewMenu.add(mCoord);
     	
         this.menuBar.add(configurationMenu);
         this.menuBar.add(helpMenu);
