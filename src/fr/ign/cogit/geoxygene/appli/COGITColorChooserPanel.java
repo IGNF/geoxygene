@@ -1,5 +1,6 @@
 package fr.ign.cogit.geoxygene.appli;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -42,9 +43,21 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 	JPanel tablePanel;
 	BufferedImage cerclesImage;
 	
+	private ColorReferenceSystem crs;
+	
+	//Properties of the last selected color.
+	private ColorimetricColor lastColor;
+	private int lastX;
+	private int lastY;
+	
 	public COGITColorChooserPanel(){
+		cerclesImage =
+			new BufferedImage(1100,450,java.awt.image.BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = cerclesImage.createGraphics();
+		g.setRenderingHint
+			(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		createCercleImage(g);
 		
-		cerclesImage = createCercleImage();
 		lblCerclesImage = new JLabel(new ImageIcon(cerclesImage));
 		lblCerclesImage.addMouseListener(this);		
 		
@@ -120,86 +133,69 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 		add(mainPanel);
 	}
 	
-	public BufferedImage createCercleImage(){
-		BufferedImage cerclesImage =
-			new BufferedImage(1100,450,java.awt.image.BufferedImage.TYPE_INT_RGB);
-		Graphics2D g = cerclesImage.createGraphics();
+	public void createCercleImage(Graphics2D g){
 		g.setRenderingHint
-			(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setColor(new Color(225,225,225));
 		g.fillRect(0, 0, 1100, 450);
 		
-		ColorReferenceSystem crs = ColorReferenceSystem.unmarshall(
+		crs = ColorReferenceSystem.unmarshall(
 				ColorReferenceSystem.class.getResource(
 						"/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
 		
+		//Creating the image of the main wheel (pure colors)
 		//Création de l'image du cercle principal (Couleurs pures)
 		for (int j=0;j<12;j++){
 			List<ColorimetricColor> listCouleurs = crs.getSlice(0, j);	
 			for (int i=0;i<listCouleurs.size();i++){
 				ColorimetricColor couleur = listCouleurs.get(listCouleurs.size()-1-i);
-				g.setColor(
-						new Color(
-								couleur.getRedRGB(),
-								couleur.getGreenRGB(),
-								couleur.getBlueRGB()));
+				g.setColor(couleur.toColor());
 				g.fillArc(50+i*15, 50+i*15, 300-30*i, 300-30*i, 30*(j+1), 30);
 			}
 		}
 		
+		//Creating the image of the wheel of grey colors
 		//Création de l'image du cercle des Couleurs grisées
 		for (int j=0;j<7;j++){
 			List<ColorimetricColor> listCouleurs = crs.getSlice(1,j);	
 			for (int i=0;i<listCouleurs.size();i++){
 				ColorimetricColor couleur = listCouleurs.get(listCouleurs.size()-1-i);
-				g.setColor(
-						new Color(
-								couleur.getRedRGB(),
-								couleur.getGreenRGB(),
-								couleur.getBlueRGB()));
+				g.setColor(couleur.toColor());
 				g.fillArc(400+i*15, 50+i*15, 300-30*i, 300-30*i, 52*j, 52);
 			}
 		}	
 		
+		//Creating the image of the wheel of coloured greys
 		//Création de l'image du cercle des Gris colorés
 		for (int j=0;j<7;j++){
 			List<ColorimetricColor> listCouleurs = crs.getSlice(2,j);	
 			for (int i=0;i<listCouleurs.size();i++){
 				ColorimetricColor couleur = listCouleurs.get(listCouleurs.size()-1-i);
-				g.setColor(
-						new Color(
-								couleur.getRedRGB(),
-								couleur.getGreenRGB(),
-								couleur.getBlueRGB()));
+				g.setColor(couleur.toColor());
 				g.fillArc(750+i*15, 50+i*15, 300-30*i, 300-30*i, 52*j, 52);
 			}
 		}
 		
+		//Creating the image of the white, grey and black bar
 		//Création de l'image de la gamme de Gris, Noir et Blanc
 		List<ColorimetricColor> listCouleurs = crs.getSlice(3,0);	
 		for (int i=0;i<listCouleurs.size();i++){
 			ColorimetricColor couleur = listCouleurs.get(listCouleurs.size()-1-i);
-			g.setColor(
-					new Color(
-							couleur.getRedRGB(),
-							couleur.getGreenRGB(),
-							couleur.getBlueRGB()));
+			g.setColor(couleur.toColor());
 			g.fillRect(550+i*40, 400, 40, 25);
 		}
 		
+		//Creating the image of the wheel of brown colors
 		//Création de l'image de la gamme de Marrons
 		List<ColorimetricColor> listCouleursM = crs.getSlice(3,1);	
 		for (int i=0;i<listCouleursM.size();i++){
 			ColorimetricColor couleur = listCouleursM.get(listCouleursM.size()-1-i);
-			g.setColor(
-					new Color(
-							couleur.getRedRGB(),
-							couleur.getGreenRGB(),
-							couleur.getBlueRGB()));
+			g.setColor(couleur.toColor());
 			g.fillRect(220+i*40, 400, 40, 25);
 		}
 
-		// Création des bords pour marquer les deux gammes horizontaux et
+		//Creating the contours of the bars and the wheel centers
+		//Création des bords pour marquer les deux gammes horizontaux et
 			// le centre des cercles
 		g.setColor(new Color(225,225,225));
 		g.fillArc(155, 155, 90, 90, 0, 360);
@@ -211,20 +207,140 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 		g.drawRect(550, 400, 40*9, 25);
 		g.drawArc(155, 155, 90, 90, 0, 360);
 		g.drawArc(460, 110, 180, 180, 0, 360);
-		g.drawArc(810, 110, 180, 180, 0, 360);
-		
-		return cerclesImage;
+		g.drawArc(810, 110, 180, 180, 0, 360);		
 	}
 	
 	@Override
-	public void mouseClicked(MouseEvent e) {
+	public void mouseClicked(MouseEvent e) {		
 		if (e.getSource() == lblCerclesImage){
 		    int xpos = e.getX();
 		    int ypos = e.getY();
+		    
 		    int rgb = cerclesImage.getRGB(xpos, ypos);
 		    Color color = new Color(rgb);
 		    ColorimetricColor newColor = ColorReferenceSystem.searchColor(color);
-		    updateTable(newColor);
+		    
+		    Color backgroundColor = new Color(225, 225, 225);
+		    if (rgb != backgroundColor.getRGB()) {
+			    updateTable(newColor);
+			    markColor(newColor);
+			    updateCircleColor(newColor);
+			    lastColor = newColor;
+		    }
+		}
+	}
+
+	/**
+	 * Method to mark the selected color.
+	 * It erase the last cross and draw a new one.
+	 * @param c Selected Color.
+	 */
+	public void markColor(ColorimetricColor c){
+		Graphics2D g = (Graphics2D)lblCerclesImage.getGraphics();
+		g.setRenderingHint
+		(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		int x = c.getXScreen();
+		int y = c.getYScreen();
+		if (lastColor != null) {
+			g.setColor(lastColor.toColor());
+			g.drawLine(lastX, lastY-3, lastX, lastY+3);
+			g.drawLine(lastX-3, lastY, lastX+3, lastY);
+		}
+		
+		if (c.getLightness()>5){
+			g.setColor(Color.WHITE);
+		} else {
+			g.setColor(Color.BLACK);
+		}
+		
+		g.drawLine(x, y-3, x, y+3);
+		g.drawLine(x-3, y, x+3, y);
+		lastX = x;
+		lastY = y;
+	}
+	
+	/**
+	 * Method to update the graphic around the selected color.
+	 * It erase the last one and draw a new one.
+	 * @param c Selected color.
+	 */
+	public void updateCircleColor(ColorimetricColor c){
+		if (lastColor != null) {
+			circleColor(lastColor, lastColor.toColor(), 1.8f);
+		}
+		if (c.getLightness()>5){
+			circleColor(c, Color.WHITE, 0.8f);
+		} else {
+			circleColor(c, Color.BLACK, 0.8f);
+		}
+	}
+	
+	/**
+	 * Method which surround the section of the selected color by a graphic.
+	 * @param c1 Selected color.
+	 * @param c2 Color of the surrounding graphic.
+	 * @param stroke Width of the stroke of the graphic.
+	 */
+	public void circleColor(ColorimetricColor c1, Color c2, float stroke){
+		Graphics2D g = (Graphics2D)lblCerclesImage.getGraphics();
+		g.setRenderingHint
+			(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setColor(c2);
+		g.setStroke(new BasicStroke(stroke));
+		
+		//If c is in the main wheel
+		for (int j=0;j<12;j++){
+			List<ColorimetricColor> listCP = crs.getSlice(0, j);	
+			for (int i=0;i<listCP.size();i++){
+				ColorimetricColor couleur = listCP.get(listCP.size()-1-i);
+				if (couleur.equals(c1)){
+					g.drawArc(50+i*15, 50+i*15, 300-30*i, 300-30*i, 30*(j+1), 30);
+					g.drawArc(50+(i+1)*15, 50+(i+1)*15, 300-30*(i+1), 300-30*(i+1), 30*(j+1), 30);
+				}
+			}
+		}
+		
+		//If c is in the wheel of color with grey
+		for (int j=0;j<7;j++){
+			List<ColorimetricColor> listCG = crs.getSlice(1,j);	
+			for (int i=0;i<listCG.size();i++){
+				ColorimetricColor couleur = listCG.get(listCG.size()-1-i);
+				if (couleur.equals(c1)){
+					g.drawArc(400+i*15, 50+i*15, 300-30*i, 300-30*i, 52*j, 52);
+					g.drawArc(400+(i+1)*15, 50+(i+1)*15, 300-30*(i+1), 300-30*(i+1), 52*j, 52);
+				}
+			}
+		}	
+		
+		//If c is in the wheel of grey with color
+		for (int j=0;j<7;j++){
+			List<ColorimetricColor> listGC = crs.getSlice(2,j);	
+			for (int i=0;i<listGC.size();i++){
+				ColorimetricColor couleur = listGC.get(listGC.size()-1-i);
+				if (couleur.equals(c1)){
+					g.drawArc(750+i*15, 50+i*15, 300-30*i, 300-30*i, 52*j, 52);
+					g.drawArc(750+(i+1)*15, 50+(i+1)*15, 300-30*(i+1), 300-30*(i+1), 52*j, 52);
+				}
+			}
+		}
+		
+		//If c is in the black to white bar
+		List<ColorimetricColor> listGNB = crs.getSlice(3,0);	
+		for (int i=0;i<listGNB.size();i++){
+			ColorimetricColor couleur = listGNB.get(listGNB.size()-1-i);
+			if (couleur.equals(c1)){
+				g.drawRect(550+i*40, 400, 40, 25);
+			}
+		}
+		
+		//If c is in the brown bar
+		List<ColorimetricColor> listM = crs.getSlice(3,1);	
+		for (int i=0;i<listM.size();i++){
+			ColorimetricColor couleur = listM.get(listM.size()-1-i);
+			if (couleur.equals(c1)){
+				g.drawRect(220+i*40, 400, 40, 25);
+			}
 		}
 	}
 	
@@ -275,7 +391,7 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 	public static void main(String[] args) {
         Color c = COGITColorChooserPanel.showDialog(new JButton(),
                     I18N.getString("StyleEditionFrame.PickAColor"), Color.BLUE); //$NON-NLS-1$
-		System.out.println(c);
+		System.out.println("Selected Color : " + c);
 	}
 
 	/**

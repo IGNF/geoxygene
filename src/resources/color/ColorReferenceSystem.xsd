@@ -34,6 +34,8 @@
       <xs:element name="redRGB" type="xs:int"/>
       <xs:element name="greenRGB" type="xs:int"/>
       <xs:element name="blueRGB" type="xs:int"/>
+      <xs:element name="xScreen" type="xs:int"/>
+      <xs:element name="xScreen" type="xs:int"/>
     </xs:sequence>
   </xs:complexType>
 </xs:schema>

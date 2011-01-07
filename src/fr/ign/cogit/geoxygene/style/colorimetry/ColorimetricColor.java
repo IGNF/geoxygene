@@ -31,7 +31,9 @@ import fr.ign.cogit.geoxygene.util.algo.MathUtil;
     "cleCoul",
     "redRGB",
     "greenRGB",
-    "blueRGB"
+    "blueRGB",
+    "xScreen",
+    "yScreen"
 })
 public class ColorimetricColor {
 	private static final long serialVersionUID = 1L;
@@ -278,6 +280,55 @@ public class ColorimetricColor {
 		this.blueRGB = blueRGB;
 	}
 
+	//////////////////////////////////////////////////////////////////////////
+	//------  Coordinates on the COGITColorChooserPanel  -------------------//
+	//////////////////////////////////////////////////////////////////////////
+	/**
+	 * The X Coordinate of the center of this color on the COGITColorChooserPanel.
+	 */
+	@XmlElement(name="xScreen")
+	protected int xScreen;
+	
+	
+	/**
+	 * Return the X Coordinate of the center of this color on the COGITColorChooserPanel.
+	 * @return The X Coordinate of the center of this color on the COGITColorChooserPanel.
+	 */
+	public int getXScreen() {
+		return this.xScreen;
+	}
+	
+	/**
+	 * Set the X Coordinate of the center of this color on the COGITColorChooserPanel.
+	 * @param x The X Coordinate of the center of this color on the COGITColorChooserPanel.
+	 */
+	public void setXScreen(int x) {
+		this.xScreen = x;
+	}
+	
+	/**
+	 * The Y Coordinate of the center of this color on the COGITColorChooserPanel.
+	 */
+	@XmlElement(name="yScreen")
+	protected int yScreen;
+	
+	
+	/**
+	 * Return the Y Coordinate of the center of this color on the COGITColorChooserPanel.
+	 * @return The Y Coordinate of the center of this color on the COGITColorChooserPanel.
+	 */
+	public int getYScreen() {
+		return this.yScreen;
+	}
+	
+	/**
+	 * Set the Y Coordinate of the center of this color on the COGITColorChooserPanel.
+	 * @param y The Y Coordinate of the center of this color on the COGITColorChooserPanel.
+	 */
+	public void setYScreen(int y) {
+		this.yScreen = y;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////
 	//-------------------------  Constructeurs  ----------------------------//
 	//////////////////////////////////////////////////////////////////////////
