@@ -354,7 +354,10 @@ public class ColorimetricColor {
 				this.cleCoul = cogitColors.get(i).getCleCoul();
 				this.hue = cogitColors.get(i).getHue();
 				this.lightness = cogitColors.get(i).getLightness();
-				this.usualName = cogitColors.get(i).getUsualName();		}
+				this.usualName = cogitColors.get(i).getUsualName();
+				this.xScreen = cogitColors.get(i).getXScreen();
+				this.yScreen = cogitColors.get(i).getYScreen();
+			}
 		}
 	}
 	
@@ -377,6 +380,8 @@ public class ColorimetricColor {
 				this.hue = cogitColors.get(i).getHue();
 				this.lightness = cogitColors.get(i).getLightness();
 				this.usualName = cogitColors.get(i).getUsualName();
+				this.xScreen = cogitColors.get(i).getXScreen();
+				this.yScreen = cogitColors.get(i).getYScreen();
 			}
 		}
 	}
@@ -398,6 +403,8 @@ public class ColorimetricColor {
 				this.hue = cogitColors.get(i).getHue();
 				this.lightness = cogitColors.get(i).getLightness();
 				this.usualName = cogitColors.get(i).getUsualName();
+				this.xScreen = cogitColors.get(i).getXScreen();
+				this.yScreen = cogitColors.get(i).getYScreen();
 			}
 		}
 	}
@@ -433,6 +440,8 @@ public class ColorimetricColor {
 			this.hue = nearestColor.getHue();
 			this.lightness = nearestColor.getLightness();
 			this.usualName = nearestColor.getUsualName();
+			this.xScreen = nearestColor.getXScreen();
+			this.yScreen = nearestColor.getYScreen();
 		} else {
 			this.redRGB = r;
 			this.greenRGB = g;
@@ -467,6 +476,8 @@ public class ColorimetricColor {
 			this.hue = nearestColor.getHue();
 			this.lightness = nearestColor.getLightness();
 			this.usualName = nearestColor.getUsualName();
+			this.xScreen = nearestColor.getXScreen();
+			this.yScreen = nearestColor.getYScreen();
 		} else {
 			this.redRGB 	= c.getRed();
 			this.greenRGB	= c.getGreen();

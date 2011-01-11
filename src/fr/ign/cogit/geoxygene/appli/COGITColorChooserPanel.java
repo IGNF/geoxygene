@@ -37,11 +37,11 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 									implements MouseListener{
 	private static final long serialVersionUID = 1L;
 
-	JLabel lblCerclesImage;
-	JPanel mainPanel;
-	JTable tCodesCouleur;
-	JPanel tablePanel;
-	BufferedImage cerclesImage;
+	private JLabel lblCerclesImage;
+	private JPanel mainPanel;
+	private JTable tCodesCouleur;
+	private JPanel tablePanel;
+	private BufferedImage cerclesImage;
 	
 	private ColorReferenceSystem crs;
 	
@@ -50,6 +50,11 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 	private int lastX;
 	private int lastY;
 	
+	/**
+	 * Contructor.
+	 * It creates a COGITColorChooserPanel with the chromatic wheels
+	 * and the corresponding information table.
+	 */
 	public COGITColorChooserPanel(){
 		cerclesImage =
 			new BufferedImage(1100,450,java.awt.image.BufferedImage.TYPE_INT_RGB);
@@ -133,6 +138,10 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 		add(mainPanel);
 	}
 	
+	/**
+	 * Method to draw the three chromatic wheels of the {@link ColorReferenceSystem}.
+	 * @param g The {@link Graphics2D} to be modified
+	 */
 	public void createCercleImage(Graphics2D g){
 		g.setRenderingHint
 		(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -231,14 +240,42 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 	}
 
 	/**
+	 * Method to point a color on the chromatic wheels.
+	 * @param g the {@link Graphics2D} to be modified
+	 * @param c the {@link ColorimetricColor} to point
+	 */
+	public void displayColor(Graphics2D g, ColorimetricColor c){
+		g.setRenderingHint
+			(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		int x = c.getXScreen();
+		int y = c.getYScreen();
+		
+		if (c.getLightness()>5){
+			g.setColor(Color.BLACK);
+		} else {
+			g.setColor(Color.WHITE);
+		}
+		g.fillOval(x-3, y-3, 6, 6);
+		
+		if (c.getLightness()>5){
+			g.setColor(Color.WHITE);
+		} else {
+			g.setColor(Color.BLACK);
+		}
+		g.setStroke(new BasicStroke(1.5f));
+		g.drawOval(x-3, y-3, 6, 6);
+	}
+	
+	/**
 	 * Method to mark the selected color.
 	 * It erase the last cross and draw a new one.
 	 * @param c Selected Color.
 	 */
 	public void markColor(ColorimetricColor c){
 		Graphics2D g = (Graphics2D)lblCerclesImage.getGraphics();
-		g.setRenderingHint
-		(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(
+				RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		int x = c.getXScreen();
 		int y = c.getYScreen();
@@ -284,8 +321,8 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 	 */
 	public void circleColor(ColorimetricColor c1, Color c2, float stroke){
 		Graphics2D g = (Graphics2D)lblCerclesImage.getGraphics();
-		g.setRenderingHint
-			(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(
+				RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setColor(c2);
 		g.setStroke(new BasicStroke(stroke));
 		
@@ -344,6 +381,10 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 		}
 	}
 	
+	/**
+	 * Updating the information table with the new selected color information.
+	 * @param c The selected {@link ColorimetricColor}
+	 */
 	public void updateTable(ColorimetricColor c){
 
 		float[] labCodes = new float[3];
@@ -419,6 +460,50 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 		
 		return c;
 	}
+	
+	/**
+	 * Creates and returns a new dialog containing the specified ColorChooser
+	 * pane along with "OK", "Cancel", and "Reset" buttons. 
+	 * If the "OK" or "Cancel" buttons are pressed,
+	 * the dialog is automatically hidden (but not disposed). 
+	 * If the "Reset" button is pressed,
+	 * the color-chooser's color will be reset to the color which was set the
+	 * last time show was invoked on the dialog and the dialog will remain showing.
+	 * It also points the given list of colors on the chromatic wheels.
+	 * @param component
+	 * @param colors The {@link ColorimetricColor}s to be pointed on the wheels.
+	 * @return
+	 */
+	public static Color show(Component component, String title, List<ColorimetricColor> colors){
+		JColorChooser colorChooser = new JColorChooser(colors.get(0).toColor());
+		COGITColorChooserPanel cogitChooser = new COGITColorChooserPanel();
+		colorChooser.addChooserPanel(cogitChooser);
+		for (int i = 0; i < colorChooser.getChooserPanels().length; i++) {
+			colorChooser.removeChooserPanel(colorChooser.getChooserPanels()[i]);
+		 }
+		colorChooser.removeChooserPanel(colorChooser.getChooserPanels()[0]);
+		
+		JDialog dialog = JColorChooser.createDialog(
+				component, title, true, colorChooser, null, null);
+		
+		JLabel label = (JLabel)((JPanel)colorChooser.getChooserPanels()[0].getComponent(0)).getComponent(0);
+		
+		for (ColorimetricColor c : colors) {
+			cogitChooser.displayColor((Graphics2D)((ImageIcon)label.getIcon()).getImage().getGraphics(), c);
+			if (c.getLightness()>5){
+				cogitChooser.circleColor(c, Color.WHITE, 0.8f);
+			} else {
+				cogitChooser.circleColor(c, Color.BLACK, 0.8f);
+			}
+		}
+		cogitChooser.repaint();
+		cogitChooser.validate();
+		dialog.setVisible(true);
+
+		Color c = colorChooser.getColor();
+		return c;
+	}
+	
 	@Override
 	// We did this work in the constructor so we can skip it here.
 	protected void buildChooser() {}
