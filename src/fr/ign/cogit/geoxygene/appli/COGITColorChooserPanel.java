@@ -43,7 +43,7 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 	private JPanel tablePanel;
 	private BufferedImage cerclesImage;
 	
-	private ColorReferenceSystem crs;
+	private static ColorReferenceSystem crs;
 	
 	//Properties of the last selected color.
 	private ColorimetricColor lastColor;
@@ -142,7 +142,7 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 	 * Method to draw the three chromatic wheels of the {@link ColorReferenceSystem}.
 	 * @param g The {@link Graphics2D} to be modified
 	 */
-	public void createCercleImage(Graphics2D g){
+	public static void createCercleImage(Graphics2D g){
 		g.setRenderingHint
 		(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setColor(new Color(225,225,225));
@@ -244,7 +244,7 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 	 * @param g the {@link Graphics2D} to be modified
 	 * @param c the {@link ColorimetricColor} to point
 	 */
-	public void displayColor(Graphics2D g, ColorimetricColor c){
+	public static void displayColor(Graphics2D g, ColorimetricColor c){
 		g.setRenderingHint
 			(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -264,6 +264,24 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 			g.setColor(Color.BLACK);
 		}
 		g.setStroke(new BasicStroke(1.5f));
+		g.drawOval(x-3, y-3, 6, 6);
+	}
+	
+	/**
+	 * Method to point a color on the chromatic wheels.
+	 * @param g the {@link Graphics2D} to be modified
+	 * @param c the {@link ColorimetricColor} to point
+	 */
+	public static void clearDisplayColor(Graphics2D g, ColorimetricColor c){
+		g.setRenderingHint
+			(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		int x = c.getXScreen();
+		int y = c.getYScreen();
+		
+		g.setColor(c.toColor());
+		g.fillOval(x-3, y-3, 6, 6);
+		g.setStroke(new BasicStroke(2f));
 		g.drawOval(x-3, y-3, 6, 6);
 	}
 	
@@ -489,7 +507,7 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel
 		JLabel label = (JLabel)((JPanel)colorChooser.getChooserPanels()[0].getComponent(0)).getComponent(0);
 		
 		for (ColorimetricColor c : colors) {
-			cogitChooser.displayColor((Graphics2D)((ImageIcon)label.getIcon()).getImage().getGraphics(), c);
+			COGITColorChooserPanel.displayColor((Graphics2D)((ImageIcon)label.getIcon()).getImage().getGraphics(), c);
 			if (c.getLightness()>5){
 				cogitChooser.circleColor(c, Color.WHITE, 0.8f);
 			} else {
