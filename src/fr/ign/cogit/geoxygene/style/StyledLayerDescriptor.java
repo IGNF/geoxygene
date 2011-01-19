@@ -36,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -120,15 +121,20 @@ public class StyledLayerDescriptor {
     public List<ColorimetricColor> getColors(){
     	List<ColorimetricColor> colors = new ArrayList<ColorimetricColor>();
     	for (Layer layer : this.getLayers()) {
-    		if (layer.getSymbolizer().isLineSymbolizer()) {
-				colors.add(new ColorimetricColor(layer.getSymbolizer().getStroke().getStroke()));
-			} else if (layer.getSymbolizer().isPolygonSymbolizer()) {
-				colors.add(new ColorimetricColor(((PolygonSymbolizer)layer.getSymbolizer())
-								.getFill().getFill()));
-			} else if (layer.getSymbolizer().isPointSymbolizer()) {
-				colors.add(new ColorimetricColor(((PointSymbolizer)layer.getSymbolizer())
-								.getGraphic().getMarks().get(0).getFill().getFill()));
-			}
+    		for (Style style : layer.getStyles()) {
+				for (Rule rule : style.getFeatureTypeStyles().get(0).getRules()) {
+					Symbolizer symbolizer = rule.getSymbolizers().get(0);
+		    		if (symbolizer.isLineSymbolizer()) {
+						colors.add(new ColorimetricColor(symbolizer.getStroke().getStroke()));
+					} else if (symbolizer.isPolygonSymbolizer()) {
+						colors.add(new ColorimetricColor(((PolygonSymbolizer)symbolizer)
+										.getFill().getFill()));
+					} else if (symbolizer.isPointSymbolizer()) {
+						colors.add(new ColorimetricColor(((PointSymbolizer)symbolizer)
+										.getGraphic().getMarks().get(0).getFill().getFill()));
+					}
+				}
+    		}
 		}
     	return colors;    	
     }
@@ -267,6 +273,22 @@ public class StyledLayerDescriptor {
             Unmarshaller m = context.createUnmarshaller();
             StyledLayerDescriptor sld = (StyledLayerDescriptor) m
             .unmarshal(stream);
+            return sld;
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        return new StyledLayerDescriptor();
+    }
+    
+    public static StyledLayerDescriptor unmarshall(Reader reader) {
+        try {
+            JAXBContext context = JAXBContext.newInstance(
+                    StyledLayerDescriptor.class,
+                    NamedLayer.class,
+                    NamedStyle.class);
+            Unmarshaller m = context.createUnmarshaller();
+            StyledLayerDescriptor sld = (StyledLayerDescriptor) m
+            .unmarshal(reader);
             return sld;
         } catch (JAXBException e) {
             e.printStackTrace();

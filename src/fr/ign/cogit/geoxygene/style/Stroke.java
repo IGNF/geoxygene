@@ -148,6 +148,7 @@ public class Stroke {
 		        this.svgParameters.add(parameter);
 		    }
 		}
+		this.color = null;
 	}
 
     @XmlTransient
