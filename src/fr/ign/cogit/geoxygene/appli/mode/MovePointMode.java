@@ -27,366 +27,369 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 
 public class MovePointMode extends AbstractGeometryEditMode {
-    /**
-     * @param theMainFrame the main frame
-     * @param theModeSelector the mode selector
-     */
-    public MovePointMode(final MainFrame theMainFrame,
-            final ModeSelector theModeSelector) {
-        super(theMainFrame, theModeSelector);
-    }
+  /**
+   * @param theMainFrame the main frame
+   * @param theModeSelector the mode selector
+   */
+  public MovePointMode(final MainFrame theMainFrame,
+      final ModeSelector theModeSelector) {
+    super(theMainFrame, theModeSelector);
+  }
 
-    @Override
-    protected final JButton createButton() {
-        return new JButton(new ImageIcon(this.getClass().
-                getResource("/images/icons/16x16/move2.png"))); //$NON-NLS-1$
-    }
-    @Override
-    public void mousePressed(final MouseEvent e) {
-        ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
-        if((SwingUtilities.isLeftMouseButton(e))) {
-            try {
-                DirectPosition p = frame.getLayerViewPanel().getViewport().
-                toModelDirectPosition(e.getPoint());
-                this.selectPoint(p);
-                this.dragCount = 0;
-            } catch (NoninvertibleTransformException e1) { e1.printStackTrace(); }
-        }
-    }
-    @Override
-    public void mouseReleased(final MouseEvent e) {
-        ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
-        if((SwingUtilities.isLeftMouseButton(e))) {
-            try {
-                DirectPosition p = frame.getLayerViewPanel().getViewport().
-                toModelDirectPosition(e.getPoint());
-                this.movePoint(p);
-                frame.getLayerViewPanel().repaint();
-            } catch (NoninvertibleTransformException e1) { e1.printStackTrace(); }
-        }
-    }
-    @Override
-    public void mouseMoved(final MouseEvent e) {
-    }
-    int dragCount = 0;
-    @Override
-    public void mouseDragged(final MouseEvent e) {
-        ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
-        if((SwingUtilities.isLeftMouseButton(e))) {
-            try {
-                Graphics2D graphics2D = (Graphics2D) frame.getLayerViewPanel().getGraphics();
-                graphics2D.setColor(Color.red);
-                graphics2D.setStroke(new BasicStroke(2));
-                graphics2D.setXORMode(Color.white);
-                DirectPosition p = frame.getLayerViewPanel().getViewport().
-                toModelDirectPosition(e.getPoint());
-                if (this.dragCount > 0) {
-                    RenderUtil.draw(new GM_LineString(new DirectPositionList(
-                            Arrays.asList(this.previousPoint, this.currentPoint, this.nextPoint))),
-                            frame.getLayerViewPanel().getViewport(),
-                            graphics2D);
-                }
-                this.currentPoint = p;
-                RenderUtil.draw(new GM_LineString(new DirectPositionList(
-                        Arrays.asList(this.previousPoint, this.currentPoint, this.nextPoint))),
-                        frame.getLayerViewPanel().getViewport(),
-                        graphics2D);
-                this.dragCount++;
-            } catch (NoninvertibleTransformException e1) { e1.printStackTrace(); }
-        }
-    }
-    /**
-     * @param p
-     */
-    public void selectPoint(DirectPosition p) {
-        GM_Point point = new GM_Point(p);
-        double minDistance = Double.POSITIVE_INFINITY;
-        FT_Feature closestFeature = null;
-        for (FT_Feature feature : this.mainFrame.getSelectedProjectFrame().getLayerViewPanel()
-                .getSelectedFeatures()) {
-            double distance = feature.getGeom().distance(point);
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestFeature = feature;
-            }
-        }
-        if (closestFeature == null) { return; }
-        this.currentFeature = closestFeature;
-        selectPoint(p, closestFeature);
-    }
+  @Override
+  protected final JButton createButton() {
+    return new JButton(new ImageIcon(this.getClass().getResource(
+        "/images/icons/16x16/move2.png"))); //$NON-NLS-1$
+  }
 
-    /**
-     * @param point
-     * @param feature
-     */
-    @SuppressWarnings("unchecked")
-    private void selectPoint(DirectPosition point, FT_Feature feature) {
-        if (feature.getGeom().isPolygon()) {
-            GM_Polygon polygon = new GM_Polygon(
-                    (GM_Polygon) feature.getGeom());
-            selectPoint(point, polygon);
-            feature.setGeom(polygon);
+  @Override
+  public void mousePressed(final MouseEvent e) {
+    ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
+    if ((SwingUtilities.isLeftMouseButton(e))) {
+      try {
+        DirectPosition p = frame.getLayerViewPanel().getViewport()
+            .toModelDirectPosition(e.getPoint());
+        this.selectPoint(p);
+        this.dragCount = 0;
+      } catch (NoninvertibleTransformException e1) {
+        e1.printStackTrace();
+      }
+    }
+  }
+
+  @Override
+  public void mouseReleased(final MouseEvent e) {
+    ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
+    if ((SwingUtilities.isLeftMouseButton(e))) {
+      try {
+        DirectPosition p = frame.getLayerViewPanel().getViewport()
+            .toModelDirectPosition(e.getPoint());
+        this.movePoint(p);
+        frame.getLayerViewPanel().repaint();
+      } catch (NoninvertibleTransformException e1) {
+        e1.printStackTrace();
+      }
+    }
+  }
+
+  @Override
+  public void mouseMoved(final MouseEvent e) {
+  }
+
+  int dragCount = 0;
+
+  @Override
+  public void mouseDragged(final MouseEvent e) {
+    ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
+    if ((SwingUtilities.isLeftMouseButton(e))) {
+      try {
+        Graphics2D graphics2D = (Graphics2D) frame.getLayerViewPanel()
+            .getGraphics();
+        graphics2D.setColor(Color.red);
+        graphics2D.setStroke(new BasicStroke(2));
+        graphics2D.setXORMode(Color.white);
+        DirectPosition p = frame.getLayerViewPanel().getViewport()
+            .toModelDirectPosition(e.getPoint());
+        if (this.dragCount > 0) {
+          RenderUtil.draw(new GM_LineString(new DirectPositionList(Arrays
+              .asList(this.previousPoint, this.currentPoint, this.nextPoint))),
+              frame.getLayerViewPanel().getViewport(), graphics2D);
+        }
+        this.currentPoint = p;
+        RenderUtil.draw(new GM_LineString(new DirectPositionList(Arrays.asList(
+            this.previousPoint, this.currentPoint, this.nextPoint))), frame
+            .getLayerViewPanel().getViewport(), graphics2D);
+        this.dragCount++;
+      } catch (NoninvertibleTransformException e1) {
+        e1.printStackTrace();
+      }
+    }
+  }
+
+  /**
+   * @param p
+   */
+  public void selectPoint(DirectPosition p) {
+    GM_Point point = new GM_Point(p);
+    double minDistance = Double.POSITIVE_INFINITY;
+    FT_Feature closestFeature = null;
+    for (FT_Feature feature : this.mainFrame.getSelectedProjectFrame()
+        .getLayerViewPanel().getSelectedFeatures()) {
+      double distance = feature.getGeom().distance(point);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestFeature = feature;
+      }
+    }
+    if (closestFeature == null) {
+      return;
+    }
+    this.currentFeature = closestFeature;
+    this.selectPoint(p, closestFeature);
+  }
+
+  /**
+   * @param point
+   * @param feature
+   */
+  @SuppressWarnings("unchecked")
+  private void selectPoint(DirectPosition point, FT_Feature feature) {
+    if (feature.getGeom().isPolygon()) {
+      GM_Polygon polygon = new GM_Polygon((GM_Polygon) feature.getGeom());
+      this.selectPoint(point, polygon);
+      feature.setGeom(polygon);
+    } else {
+      if (feature.getGeom().isLineString()) {
+        if (!feature.getGeom().coord().contains(point)) {
+          GM_LineString line = new GM_LineString(feature.getGeom().coord());
+          this.selectPoint(point, line);
+          feature.setGeom(line);
+        }
+      } else {
+        if (feature.getGeom().isMultiSurface()) {
+          if (!feature.getGeom().coord().contains(point)) {
+            GM_MultiSurface<GM_Polygon> multiSurface = new GM_MultiSurface<GM_Polygon>(
+                (GM_MultiSurface<GM_Polygon>) feature.getGeom());
+            this.selectPoint(point, multiSurface);
+            feature.setGeom(multiSurface);
+          }
         } else {
-            if (feature.getGeom().isLineString()) {
-                if (!feature.getGeom().coord().contains(point)) {
-                    GM_LineString line = new GM_LineString(
-                            feature.getGeom().coord());
-                    selectPoint(point, line);
-                    feature.setGeom(line);
-                }
-            } else {
-                if (feature.getGeom().isMultiSurface()) {
-                    if (!feature.getGeom().coord().contains(point)) {
-                        GM_MultiSurface<GM_Polygon> multiSurface
-                        = new GM_MultiSurface<GM_Polygon>(
-                                (GM_MultiSurface<GM_Polygon>) feature
-                                        .getGeom());
-                        selectPoint(point, multiSurface);
-                        feature.setGeom(multiSurface);
-                    }
-                } else {
-                    if (feature.getGeom().isMultiCurve()) {
-                        if (!feature.getGeom().coord().contains(point)) {
-                            GM_MultiCurve<GM_LineString> multiCurve
-                            = new GM_MultiCurve<GM_LineString>(
-                                    (GM_MultiCurve<GM_LineString>) feature
-                                            .getGeom());
-                            selectPoint(point, multiCurve);
-                            feature.setGeom(multiCurve);
-                        }
-                    } else {
-                    }
-                }
+          if (feature.getGeom().isMultiCurve()) {
+            if (!feature.getGeom().coord().contains(point)) {
+              GM_MultiCurve<GM_LineString> multiCurve = new GM_MultiCurve<GM_LineString>(
+                  (GM_MultiCurve<GM_LineString>) feature.getGeom());
+              this.selectPoint(point, multiCurve);
+              feature.setGeom(multiCurve);
             }
+          } else {
+          }
         }
-        this.currentPoint = point;
+      }
     }
-    /**
-     * @param point
-     * @param points
-     */
-    private int closestPointIndex(DirectPosition point, DirectPositionList points) {
-        int indexPointMin = 0;
-        double distanceMin = point.distance( points.get(0));
-        for (int index = 1; index < points.size(); index++) {
-            DirectPosition currentPoint = points.get(index);
-            double distance = point.distance(currentPoint);
-            if (distance < distanceMin) {
-                distanceMin = distance;
-                indexPointMin = index;
-            }
-        }
-        return indexPointMin;
+    this.currentPoint = point;
+  }
+
+  /**
+   * @param point
+   * @param points
+   */
+  private int closestPointIndex(DirectPosition point, DirectPositionList points) {
+    int indexPointMin = 0;
+    double distanceMin = point.distance(points.get(0));
+    for (int index = 1; index < points.size(); index++) {
+      DirectPosition currentPoint = points.get(index);
+      double distance = point.distance(currentPoint);
+      if (distance < distanceMin) {
+        distanceMin = distance;
+        indexPointMin = index;
+      }
     }
+    return indexPointMin;
+  }
 
-    private void selectPoint(DirectPosition point,
-            GM_MultiCurve<GM_LineString> multiCurve) {
-        double distanceMin = Double.MAX_VALUE;
-        for (GM_LineString line : multiCurve) {
-            int index = closestPointIndex(point, line.getControlPoint());
-            double distance = point.distance(
-                    line.getControlPoint(index));
-            if (distance < distanceMin) {
-                this.sourcePoint = line.getControlPoint(index);
-                if (index == 0) {
-                    this.previousPoint = line.getControlPoint(
-                            line.sizeControlPoint() - 2);
-                    this.nextPoint = line.getControlPoint(1);
-                    return;
-                }
-                this.previousPoint = line.getControlPoint(index - 1);
-                this.nextPoint = line.getControlPoint(index + 1);
-            }
-        }
-    }
-
-    private void selectPoint(DirectPosition point,
-            GM_MultiSurface<GM_Polygon> multiSurface) {
-        GM_Ring ringMin = null;
-        double distanceMin = Double.MAX_VALUE;
-        for (GM_Polygon polygon : multiSurface) {
-            double distance = Distances.distance(point, polygon.getExterior());
-            if (distance < distanceMin) {
-                distanceMin = distance;
-                ringMin = polygon.getExterior();
-            }
-            for (int index = 0; index < polygon.sizeInterior(); index++) {
-                GM_Ring interiorRing = polygon.getInterior().get(index);
-                distance = Distances.distance(point, interiorRing);
-                if (distance < distanceMin) {
-                    distanceMin = distance;
-                    ringMin = interiorRing;
-                }
-            }
-        }
-        if (ringMin != null) {
-            DirectPositionList points = ringMin.coord();
-            selectPoint(point, points);
-        }
-    }
-
-    DirectPosition sourcePoint;
-    DirectPosition previousPoint;
-    DirectPosition nextPoint;
-    FT_Feature currentFeature;
-
-    private void selectPoint(DirectPosition point, GM_LineString line) {
-        int index = closestPointIndex(point, line.getControlPoint());
+  private void selectPoint(DirectPosition point,
+      GM_MultiCurve<GM_LineString> multiCurve) {
+    double distanceMin = Double.MAX_VALUE;
+    for (GM_LineString line : multiCurve) {
+      int index = this.closestPointIndex(point, line.getControlPoint());
+      double distance = point.distance(line.getControlPoint(index));
+      if (distance < distanceMin) {
         this.sourcePoint = line.getControlPoint(index);
         if (index == 0) {
-            this.previousPoint = line.getControlPoint(line.sizeControlPoint()
-                    - 2);
-            this.nextPoint = line.getControlPoint(1);
-            return;
+          this.previousPoint = line
+              .getControlPoint(line.sizeControlPoint() - 2);
+          this.nextPoint = line.getControlPoint(1);
+          return;
         }
         this.previousPoint = line.getControlPoint(index - 1);
         this.nextPoint = line.getControlPoint(index + 1);
+      }
     }
+  }
 
-    private void selectPoint(DirectPosition point, GM_Polygon polygon) {
-        GM_Ring ringMin = polygon.getExterior();
-        double distanceMin = Distances.distance(point, ringMin);
-        for (int index = 0; index < polygon.sizeInterior(); index++) {
-            GM_Ring interiorRing = polygon.getInterior().get(index);
-            double distance = Distances.distance(point, interiorRing);
-            if (distance < distanceMin) {
-                distanceMin = distance;
-                ringMin = interiorRing;
-            }
+  private void selectPoint(DirectPosition point,
+      GM_MultiSurface<GM_Polygon> multiSurface) {
+    GM_Ring ringMin = null;
+    double distanceMin = Double.MAX_VALUE;
+    for (GM_Polygon polygon : multiSurface) {
+      double distance = Distances.distance(point, polygon.getExterior());
+      if (distance < distanceMin) {
+        distanceMin = distance;
+        ringMin = polygon.getExterior();
+      }
+      for (int index = 0; index < polygon.sizeInterior(); index++) {
+        GM_Ring interiorRing = polygon.getInterior().get(index);
+        distance = Distances.distance(point, interiorRing);
+        if (distance < distanceMin) {
+          distanceMin = distance;
+          ringMin = interiorRing;
         }
-        DirectPositionList points = ringMin.coord();
-        selectPoint(point, points);
+      }
     }
+    if (ringMin != null) {
+      DirectPositionList points = ringMin.coord();
+      this.selectPoint(point, points);
+    }
+  }
 
-    private void selectPoint(DirectPosition point, DirectPositionList points) {
-        int index = closestPointIndex(point, points);
-        this.sourcePoint = points.get(index);
-        if (index == 0) {
-            this.previousPoint = points.get(points.size() - 1);
-            this.nextPoint = points.get(1);
-            System.out.println(this.sourcePoint);
-            System.out.println(this.previousPoint);
-            System.out.println(this.nextPoint);
-            return;
+  DirectPosition sourcePoint;
+  DirectPosition previousPoint;
+  DirectPosition nextPoint;
+  FT_Feature currentFeature;
+
+  private void selectPoint(DirectPosition point, GM_LineString line) {
+    int index = this.closestPointIndex(point, line.getControlPoint());
+    this.sourcePoint = line.getControlPoint(index);
+    if (index == 0) {
+      this.previousPoint = line.getControlPoint(line.sizeControlPoint() - 2);
+      this.nextPoint = line.getControlPoint(1);
+      return;
+    }
+    this.previousPoint = line.getControlPoint(index - 1);
+    this.nextPoint = line.getControlPoint(index + 1);
+  }
+
+  private void selectPoint(DirectPosition point, GM_Polygon polygon) {
+    GM_Ring ringMin = polygon.getExterior();
+    double distanceMin = Distances.distance(point, ringMin);
+    for (int index = 0; index < polygon.sizeInterior(); index++) {
+      GM_Ring interiorRing = polygon.getInterior().get(index);
+      double distance = Distances.distance(point, interiorRing);
+      if (distance < distanceMin) {
+        distanceMin = distance;
+        ringMin = interiorRing;
+      }
+    }
+    DirectPositionList points = ringMin.coord();
+    this.selectPoint(point, points);
+  }
+
+  private void selectPoint(DirectPosition point, DirectPositionList points) {
+    int index = this.closestPointIndex(point, points);
+    this.sourcePoint = points.get(index);
+    if (index == 0) {
+      this.previousPoint = points.get(points.size() - 1);
+      this.nextPoint = points.get(1);
+      System.out.println(this.sourcePoint);
+      System.out.println(this.previousPoint);
+      System.out.println(this.nextPoint);
+      return;
+    }
+    this.previousPoint = points.get(index - 1);
+    this.nextPoint = points.get(index + 1);
+    System.out.println(this.sourcePoint);
+    System.out.println(this.previousPoint);
+    System.out.println(this.nextPoint);
+  }
+
+  @SuppressWarnings("unchecked")
+  public void movePoint(DirectPosition p) {
+    if (this.currentFeature.getGeom().isPolygon()) {
+      GM_Polygon polygon = new GM_Polygon((GM_Polygon) this.currentFeature
+          .getGeom());
+      this.movePoint(p, polygon);
+      this.currentFeature.setGeom(polygon);
+    } else {
+      if (this.currentFeature.getGeom().isLineString()) {
+        if (!this.currentFeature.getGeom().coord().contains(p)) {
+          GM_LineString line = new GM_LineString(this.currentFeature.getGeom()
+              .coord());
+          this.movePoint(p, line);
+          this.currentFeature.setGeom(line);
         }
-        this.previousPoint = points.get(index - 1);
-        this.nextPoint = points.get(index + 1);
-        System.out.println(this.sourcePoint);
-        System.out.println(this.previousPoint);
-        System.out.println(this.nextPoint);
-    }
-
-    @SuppressWarnings("unchecked")
-    public void movePoint(DirectPosition p) {
-        if (this.currentFeature.getGeom().isPolygon()) {
-            GM_Polygon polygon = new GM_Polygon(
-                    (GM_Polygon) this.currentFeature.getGeom());
-            movePoint(p, polygon);
-            this.currentFeature.setGeom(polygon);
+      } else {
+        if (this.currentFeature.getGeom().isMultiSurface()) {
+          if (!this.currentFeature.getGeom().coord().contains(p)) {
+            GM_MultiSurface<GM_Polygon> multiSurface = new GM_MultiSurface<GM_Polygon>(
+                (GM_MultiSurface<GM_Polygon>) this.currentFeature.getGeom());
+            this.movePoint(p, multiSurface);
+            this.currentFeature.setGeom(multiSurface);
+          }
         } else {
-            if (this.currentFeature.getGeom().isLineString()) {
-                if (!this.currentFeature.getGeom().coord().contains(p)) {
-                    GM_LineString line = new GM_LineString(
-                            this.currentFeature.getGeom().coord());
-                    movePoint(p, line);
-                    this.currentFeature.setGeom(line);
-                }
-            } else {
-                if (this.currentFeature.getGeom().isMultiSurface()) {
-                    if (!this.currentFeature.getGeom().coord().contains(p)) {
-                        GM_MultiSurface<GM_Polygon> multiSurface
-                        = new GM_MultiSurface<GM_Polygon>(
-                                (GM_MultiSurface<GM_Polygon>) this.currentFeature
-                                        .getGeom());
-                        movePoint(p, multiSurface);
-                        this.currentFeature.setGeom(multiSurface);
-                    }
-                } else {
-                    if (this.currentFeature.getGeom().isMultiCurve()) {
-                        if (!this.currentFeature.getGeom().coord().contains(p)) {
-                            GM_MultiCurve<GM_LineString> multiCurve
-                            = new GM_MultiCurve<GM_LineString>(
-                                    (GM_MultiCurve<GM_LineString>) this.currentFeature
-                                            .getGeom());
-                            movePoint(p, multiCurve);
-                            this.currentFeature.setGeom(multiCurve);
-                        }
-                    } else {
-                    }
-                }
+          if (this.currentFeature.getGeom().isMultiCurve()) {
+            if (!this.currentFeature.getGeom().coord().contains(p)) {
+              GM_MultiCurve<GM_LineString> multiCurve = new GM_MultiCurve<GM_LineString>(
+                  (GM_MultiCurve<GM_LineString>) this.currentFeature.getGeom());
+              this.movePoint(p, multiCurve);
+              this.currentFeature.setGeom(multiCurve);
             }
+          } else {
+          }
         }
+      }
     }
+  }
 
-    private void movePoint(DirectPosition p,
-            GM_MultiCurve<GM_LineString> multiCurve) {
-        for (GM_LineString line : multiCurve) {
-            for (DirectPosition point : line.getControlPoint()) {
-                if (point.equals(this.sourcePoint)) {
-                    point.setCoordinate(p.getCoordinate());
-                }
-            }
+  private void movePoint(DirectPosition p,
+      GM_MultiCurve<GM_LineString> multiCurve) {
+    for (GM_LineString line : multiCurve) {
+      for (DirectPosition point : line.getControlPoint()) {
+        if (point.equals(this.sourcePoint)) {
+          point.setCoordinate(p.getCoordinate());
         }
+      }
     }
+  }
 
-    private void movePoint(DirectPosition p,
-            GM_MultiSurface<GM_Polygon> multiSurface) {
-        for (GM_Polygon polygon : multiSurface) {
-            GM_Ring ring = polygon.getExterior();
-            DirectPositionList points = ring.coord();
-            for (DirectPosition point : points) {
-                if (point.equals(this.sourcePoint)) {
-                    point.setCoordinate(p.getCoordinate());
-                    polygon.setExterior(new GM_Ring(new GM_LineString(points)));
-                    return;
-                }
-            }
-            for (int i = 0; i < polygon.sizeInterior(); i++) {
-                ring = polygon.getInterior(i);
-                points = ring.coord();
-                for (DirectPosition point : points) {
-                    if (point.equals(this.sourcePoint)) {
-                        point.setCoordinate(p.getCoordinate());
-                        polygon.setInterior(i, new GM_Ring(new GM_LineString(points)));
-                        return;
-                    }
-                }
-            }
+  private void movePoint(DirectPosition p,
+      GM_MultiSurface<GM_Polygon> multiSurface) {
+    for (GM_Polygon polygon : multiSurface) {
+      GM_Ring ring = polygon.getExterior();
+      DirectPositionList points = ring.coord();
+      for (DirectPosition point : points) {
+        if (point.equals(this.sourcePoint)) {
+          point.setCoordinate(p.getCoordinate());
+          polygon.setExterior(new GM_Ring(new GM_LineString(points)));
+          return;
         }
-    }
-
-    private void movePoint(DirectPosition p, GM_LineString line) {
-        for (DirectPosition point : line.getControlPoint()) {
-            if (point.equals(this.sourcePoint)) {
-                point.setCoordinate(p.getCoordinate());
-            }
-        }
-    }
-
-    private void movePoint(DirectPosition p, GM_Polygon polygon) {
-        GM_Ring ring = polygon.getExterior();
-        DirectPositionList points = ring.coord();
+      }
+      for (int i = 0; i < polygon.sizeInterior(); i++) {
+        ring = polygon.getInterior(i);
+        points = ring.coord();
         for (DirectPosition point : points) {
-            if (point.equals(this.sourcePoint)) {
-                point.setCoordinate(p.getCoordinate());
-                polygon.setExterior(new GM_Ring(new GM_LineString(points)));
-                return;
-            }
+          if (point.equals(this.sourcePoint)) {
+            point.setCoordinate(p.getCoordinate());
+            polygon.setInterior(i, new GM_Ring(new GM_LineString(points)));
+            return;
+          }
         }
-        for (int i = 0; i < polygon.sizeInterior(); i++) {
-            ring = polygon.getInterior(i);
-            points = ring.coord();
-            for (DirectPosition point : points) {
-                if (point.equals(this.sourcePoint)) {
-                    point.setCoordinate(p.getCoordinate());
-                    polygon.setInterior(i, new GM_Ring(new GM_LineString(points)));
-                    return;
-                }
-            }
+      }
+    }
+  }
+
+  private void movePoint(DirectPosition p, GM_LineString line) {
+    for (DirectPosition point : line.getControlPoint()) {
+      if (point.equals(this.sourcePoint)) {
+        point.setCoordinate(p.getCoordinate());
+      }
+    }
+  }
+
+  private void movePoint(DirectPosition p, GM_Polygon polygon) {
+    GM_Ring ring = polygon.getExterior();
+    DirectPositionList points = ring.coord();
+    for (DirectPosition point : points) {
+      if (point.equals(this.sourcePoint)) {
+        point.setCoordinate(p.getCoordinate());
+        polygon.setExterior(new GM_Ring(new GM_LineString(points)));
+        return;
+      }
+    }
+    for (int i = 0; i < polygon.sizeInterior(); i++) {
+      ring = polygon.getInterior(i);
+      points = ring.coord();
+      for (DirectPosition point : points) {
+        if (point.equals(this.sourcePoint)) {
+          point.setCoordinate(p.getCoordinate());
+          polygon.setInterior(i, new GM_Ring(new GM_LineString(points)));
+          return;
         }
+      }
     }
-    @Override
-    protected String getToolTipText() {
-        return I18N.getString("MovePointMode.ToolTip"); //$NON-NLS-1$
-    }
+  }
+
+  @Override
+  protected String getToolTipText() {
+    return I18N.getString("MovePointMode.ToolTip"); //$NON-NLS-1$
+  }
 }

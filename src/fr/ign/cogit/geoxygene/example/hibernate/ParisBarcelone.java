@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 
 /**
  * @author Julien Perret
- *
+ * 
  */
 @Entity
 public class ParisBarcelone extends Flight {

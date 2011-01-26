@@ -1,27 +1,28 @@
 /*
  * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
- * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
- * National Mapping Agency).
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
  * Copyright (C) 2005 Institut Géographique National
- *
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License along with
- * this library (see file LICENSE if present); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.example;
@@ -36,190 +37,206 @@ import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
-
 /**
- * Exemple et test d'utilisation de l'interface Geodatabase.
- * On suppose qu'il existe une classe persistante "donnees.defaut.Troncon_route".
- * (sinon changer le nom de la classe dans le code).
- * Si la classe a charger contient beaucoup d'objet, lancer le programme avec l'option '-Xmx512M'
- * (java -Xmx512M exemple.FirstExample) .
- *
+ * Exemple et test d'utilisation de l'interface Geodatabase. On suppose qu'il
+ * existe une classe persistante "donnees.defaut.Troncon_route". (sinon changer
+ * le nom de la classe dans le code). Si la classe a charger contient beaucoup
+ * d'objet, lancer le programme avec l'option '-Xmx512M' (java -Xmx512M
+ * exemple.FirstExample) .
+ * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.1
  * 
  */
 
-@SuppressWarnings({"unchecked","unqualified-field-access"})
+@SuppressWarnings( { "unchecked", "unqualified-field-access" })
 public class TestGeodatabase {
 
-	//la bd
-	private Geodatabase db;
+  // la bd
+  private Geodatabase db;
 
-	//classe de troncons
-	private Class<? extends FT_Feature> tronconClass;
-	//nom de la classe de troncons
-	private String nomClasse = "donnees.defaut.Bdc38_troncon_route";
+  // classe de troncons
+  private Class<? extends FT_Feature> tronconClass;
+  // nom de la classe de troncons
+  private String nomClasse = "donnees.defaut.Bdc38_troncon_route";
 
+  public TestGeodatabase() {
 
-	public TestGeodatabase() {
+    // iniatilsation de la Geodatabase
+    this.db = GeodatabaseOjbFactory.newInstance();
 
-		//iniatilsation de la Geodatabase
-		db=GeodatabaseOjbFactory.newInstance();
+    try {
+      this.tronconClass = (Class<? extends FT_Feature>) Class
+          .forName(this.nomClasse);
+    } catch (ClassNotFoundException e) {
+      System.out.println(this.nomClasse + " : non trouvee");
+      System.exit(0);
+    }
 
-		try {
-			tronconClass = (Class<? extends FT_Feature>) Class.forName(nomClasse);
-		} catch (ClassNotFoundException e) {
-			System.out.println(nomClasse+" : non trouvee");
-			System.exit(0);
-		}
+  }
 
-	}
+  public static void main(String args[]) {
+    TestGeodatabase test = new TestGeodatabase();
+    test.testJDO();
+    test.testMetadata();
+    test.testSpatial();
+    test.testSQL();
+  }
 
+  // Test des methodes JDO (ou ODMG)
+  public void testJDO() {
 
-	public static void main(String args[]) {
-		TestGeodatabase test = new TestGeodatabase();
-		test.testJDO();
-		test.testMetadata();
-		test.testSpatial();
-		test.testSQL();
-	}
+    // identifiant
+    Integer gid = new Integer(this.db.maxId(this.tronconClass));
+    // distance buffer
+    int seuil = 100;
 
+    // ouvre une transaction
+    this.db.begin();
+    System.out.println("debut transaction");
 
+    // teste l'ouverture de la transaction
+    System.out.println("transaction ouverte ? : " + this.db.isOpen());
 
-	//Test des methodes JDO (ou ODMG)
-	public void testJDO()  {
+    // charge un objet par son identifiant
+    FT_Feature feature = this.db.load(this.tronconClass, gid);
+    if (feature != null) {
+      System.out.println("objet charge : " + feature.getClass() + " - id : "
+          + feature.getId());
+    }
 
-		// identifiant
-		Integer gid = new Integer ( db.maxId(tronconClass) );
-		// distance buffer
-		int seuil = 100;
+    // chargement de tous les FT_Feature d'une classe
+    FT_FeatureCollection<?> featList = this.db
+        .loadAllFeatures(this.tronconClass);
+    System.out.println("nombre de feature charges : " + featList.size());
 
-		// ouvre une transaction
-		db.begin();
-		System.out.println("debut transaction");
+    feature = featList.get(0);
+    GM_Object geom = feature.getGeom();
+    System.out.println(geom);
+    Resultat result = new Resultat();
+    result.setGeom(geom);
+    this.db.makePersistent(result);
+    System.out.println("objet resultat cree - id : " + result.getId());
 
-		// teste l'ouverture de la transaction
-		System.out.println("transaction ouverte ? : "+db.isOpen());
+    // commit intermediaire
+    this.db.checkpoint();
+    System.out.println("checkpoint");
 
-		// charge un objet par son identifiant
-		FT_Feature feature = db.load(tronconClass, gid );
-		if (feature != null) System.out.println("objet charge : "+feature.getClass()+" - id : "+feature.getId());
+    // re-chargement de tous les FT_Feature d'une classe
+    // ils sont en fait deja charges, donc c'est instantane !
+    featList = this.db.loadAllFeatures(this.tronconClass);
+    System.out.println("nombre de feature charges : " + featList.size());
 
-		// chargement de tous les FT_Feature d'une classe
-		FT_FeatureCollection<?> featList = db.loadAllFeatures(tronconClass) ;
-		System.out.println("nombre de feature charges : "+featList.size());
+    // chargement de tous les troncons intersectant la geometrie "geom"
+    featList = this.db.loadAllFeatures(this.tronconClass, geom);
+    System.out.println("nombre de feature charges : " + featList.size());
 
-		feature = featList.get(0);
-		GM_Object geom = feature.getGeom();
-		System.out.println(geom);
-		Resultat result = new Resultat();
-		result.setGeom(geom);
-		db.makePersistent(result);
-		System.out.println("objet resultat cree - id : "+result.getId());
+    // chargement de tous les troncons dans un buffer autour de "geom"
+    featList = this.db.loadAllFeatures(this.tronconClass, geom, seuil);
+    System.out.println("nombre de feature charges : " + featList.size());
 
-		// commit intermediaire
-		db.checkpoint();
-		System.out.println("checkpoint");
+    // chargement d'objets par une requete OQL simple
+    String query = "select x from " + Resultat.class.getName()
+        + " where int1 = $0";
+    System.out.println(query);
+    List<?> list = this.db.loadOQL(query, new Integer(0));
+    System.out.println("nombre d'objets trouves par la requete : "
+        + list.size());
 
-		// re-chargement de tous les FT_Feature d'une classe
-		// ils sont en fait deja charges, donc c'est instantane !
-		featList = db.loadAllFeatures(tronconClass) ;
-		System.out.println("nombre de feature charges : "+featList.size());
+    // destruction d'un objet
+    this.db.deletePersistent(result);
+    System.out.println("objet result detruit - id : " + result.getId());
 
-		// chargement de tous les troncons intersectant la geometrie "geom"
-		featList = db.loadAllFeatures(tronconClass, geom) ;
-		System.out.println("nombre de feature charges : "+featList.size());
+    // Commite et ferme la transaction. */
+    this.db.commit();
+    System.out.println("fin transaction");
 
-		// chargement de tous les troncons dans un buffer autour de "geom"
-		featList = db.loadAllFeatures(tronconClass, geom, seuil) ;
-		System.out.println("nombre de feature charges : "+featList.size());
+    // teste l'ouverture de la transaction
+    System.out.println("transaction ouverte ? : " + this.db.isOpen());
 
-		// chargement d'objets par une requete OQL simple
-		String query = "select x from "+Resultat.class.getName()+" where int1 = $0";
-		System.out.println(query);
-		List<?> list = db.loadOQL(query, new Integer(0) );
-		System.out.println("nombre d'objets trouves par la requete : "+list.size());
+  }
 
-		// destruction d'un objet
-		db.deletePersistent(result);
-		System.out.println("objet result detruit - id : "+result.getId());
+  // test des metadonnees
+  public void testMetadata() {
 
-		// Commite et ferme la transaction. */
-		db.commit() ;
-		System.out.println("fin transaction");
+    // liste des metadonnees issues du mapping
+    List<Metadata> metadataList = this.db.getMetadata();
+    for (Metadata metadata : metadataList) {
+      if (metadata.getClassName() != null) {
+        System.out.println(metadata.getClassName());
+      }
+      if (metadata.getJavaClass() != null) {
+        System.out.println(metadata.getJavaClass());
+      }
+      if (metadata.getTableName() != null) {
+        System.out.println(metadata.getTableName());
+      }
+      if (metadata.getGeomColumnName() != null) {
+        System.out.println(metadata.getGeomColumnName());
+      }
+      if (metadata.getIdColumnName() != null) {
+        System.out.println(metadata.getIdColumnName());
+      }
+      if (metadata.getSRID() != 0) {
+        System.out.println(metadata.getSRID());
+      }
+      if (metadata.getEnvelope() != null) {
+        System.out.println(metadata.getEnvelope());
+      }
+      if (metadata.getTolerance() != null) {
+        System.out.println(metadata.getTolerance(0));
+      }
+      if (metadata.getDimension() != 0) {
+        System.out.println(metadata.getDimension());
+      }
+      System.out.println("");
+    }
 
-		// teste l'ouverture de la transaction
-		System.out.println("transaction ouverte ? : "+db.isOpen());
+    // acces direct aux metadonnees
+    String tableName = this.db.getMetadata(this.tronconClass).getTableName();
+    System.out.println(tableName);
+    System.out.println("");
+    System.out.println(this.db.getMetadata(tableName).getJavaClass().getName());
+    System.out.println("");
+  }
 
-	}
+  // Test des fonctionnalites spatiales
+  public void testSpatial() {
 
+    // affectation d'une emprise
+    this.db.mbr(this.tronconClass);
+    System.out.println("emprise ok");
 
+    // calcul d'un index spatial
+    this.db.spatialIndex(this.tronconClass);
+    System.out.println("index spatial ok");
+  }
 
-	//test des metadonnees
-	public void testMetadata() {
+  // Teste les fonctionnalites SQL
+  public void testSQL() {
 
-		// liste des metadonnees issues du mapping
-		List<Metadata> metadataList = db.getMetadata();
-		for(Metadata metadata:metadataList) {
-			if (metadata.getClassName() != null) System.out.println(metadata.getClassName());
-			if (metadata.getJavaClass() != null) System.out.println(metadata.getJavaClass());
-			if (metadata.getTableName() != null) System.out.println(metadata.getTableName());
-			if (metadata.getGeomColumnName() != null) System.out.println(metadata.getGeomColumnName());
-			if (metadata.getIdColumnName() != null) System.out.println(metadata.getIdColumnName());
-			if (metadata.getSRID() != 0) System.out.println(metadata.getSRID());
-			if (metadata.getEnvelope() != null) System.out.println(metadata.getEnvelope());
-			if (metadata.getTolerance() != null) System.out.println(metadata.getTolerance(0));
-			if (metadata.getDimension() != 0) System.out.println(metadata.getDimension());
-			System.out.println("");
-		}
+    // execution directe d'une requete SQL
+    List<?> list = this.db.exeSQLQuery("SELECT COGITID FROM RESULTAT");
+    for (Object obj : list) {
+      int featureId = ((BigDecimal) ((Object[]) obj)[0]).intValue();
+      System.out.println("feature : " + featureId);
+    }
+    System.out.println("Requete directe SQL ok");
 
-		// acces direct aux metadonnees
-		String tableName = db.getMetadata(tronconClass).getTableName();
-		System.out.println(tableName);
-		System.out.println("");
-		System.out.println(db.getMetadata(tableName).getJavaClass().getName());
-		System.out.println("");
-	}
+    // execution d'une commande SQL
+    this.db.exeSQL("DELETE FROM RESULTAT");
+    System.out.println("delete ok");
 
+    // nombre d'objets d'une classe
+    System.out.println("nombre d'objets : "
+        + this.db.countObjects(this.tronconClass));
 
-	//Test des fonctionnalites spatiales
-	public void testSpatial() {
+    // identifiant minimum
+    System.out.println("min id : " + this.db.minId(this.tronconClass));
 
-		// affectation d'une emprise
-		db.mbr(tronconClass);
-		System.out.println("emprise ok");
+    // identifiant maximum
+    System.out.println("max id : " + this.db.maxId(this.tronconClass));
 
-		// calcul d'un index spatial
-		db.spatialIndex(tronconClass);
-		System.out.println("index spatial ok");
-	}
-
-
-
-	//Teste les fonctionnalites SQL
-	public void testSQL() {
-
-		// execution directe d'une requete SQL
-		List<?> list = db.exeSQLQuery("SELECT COGITID FROM RESULTAT");
-		for (Object obj : list) {
-			int featureId = ( (BigDecimal) ((Object[]) obj)[0] ).intValue();
-			System.out.println("feature : "+featureId);
-		}
-		System.out.println("Requete directe SQL ok");
-
-		// execution d'une commande SQL
-		db.exeSQL("DELETE FROM RESULTAT");
-		System.out.println("delete ok");
-
-		// nombre d'objets d'une classe
-		System.out.println("nombre d'objets : "+db.countObjects(tronconClass) );
-
-		// identifiant minimum
-		System.out.println("min id : "+db.minId(tronconClass) );
-
-		// identifiant maximum
-		System.out.println("max id : "+db.maxId(tronconClass) );
-
-	}
+  }
 
 }

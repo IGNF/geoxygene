@@ -1,26 +1,28 @@
 /*******************************************************************************
  * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
- * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
- * National Mapping Agency).
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
  * Copyright (C) 2005 Institut Géographique National
  * 
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or any later version.
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
  * 
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  * 
- * You should have received a copy of the GNU Lesser General Public License along with
- * this library (see file LICENSE if present); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  *******************************************************************************/
 
 package fr.ign.cogit.geoxygene.gui;
@@ -67,217 +69,285 @@ import fr.ign.cogit.geoxygene.style.UserStyle;
 
 /**
  * @author Julien Perret
- *
+ * 
  */
-public class FrameEditeurLayer extends JFrame implements TreeSelectionListener, ChangeListener {
-	private static final long serialVersionUID = -2594439123489828985L;
+public class FrameEditeurLayer extends JFrame implements TreeSelectionListener,
+    ChangeListener {
+  private static final long serialVersionUID = -2594439123489828985L;
 
-	static Logger logger=Logger.getLogger(FrameEditeurLayer.class.getName());
+  static Logger logger = Logger.getLogger(FrameEditeurLayer.class.getName());
 
-	private FrameEditeurSLD frameEditeurSLD;
-	private JTree tree;
+  private FrameEditeurSLD frameEditeurSLD;
+  private JTree tree;
 
-	private StyledLayerDescriptor sld;
-	DataSet dataset;
-	
-	/**
-	 * Renvoie la valeur de l'attribut sld.
-	 * @return la valeur de l'attribut sld
-	 */
-	public StyledLayerDescriptor getSld() {return this.sld;}
+  private StyledLayerDescriptor sld;
+  DataSet dataset;
 
-	/**
-	 * Affecte la valeur de l'attribut sld.
-	 * @param sld l'attribut sld à affecter
-	 */
-	public void setSld(StyledLayerDescriptor sld) {this.sld = sld;sld.addChangeListener(this);}
-	
-	Layer layer;
-	/**
-	 * Renvoie la valeur de l'attribut layer.
-	 * @return la valeur de l'attribut layer
-	 */
-	public Layer getLayer() {return this.layer;}
+  /**
+   * Renvoie la valeur de l'attribut sld.
+   * @return la valeur de l'attribut sld
+   */
+  public StyledLayerDescriptor getSld() {
+    return this.sld;
+  }
 
-	/**
-	 * Affecte la valeur de l'attribut layer.
-	 * @param layer l'attribut layer à affecter
-	 */
-	public void setLayer(Layer layer) {this.layer = layer;}
+  /**
+   * Affecte la valeur de l'attribut sld.
+   * @param sld l'attribut sld à affecter
+   */
+  public void setSld(StyledLayerDescriptor sld) {
+    this.sld = sld;
+    sld.addChangeListener(this);
+  }
 
-	public FrameEditeurLayer(FrameEditeurSLD frame,Layer layer) {
-		this.frameEditeurSLD=frame;
-		setSld(this.frameEditeurSLD.getSld());
-		setLayer(layer);
-		this.dataset=frame.dataset;
-		
-		enableEvents(AWTEvent.WINDOW_EVENT_MASK);
-		setLayout(new BorderLayout());
-		setResizable(true);
-		setSize(new Dimension(500,500));
-		setExtendedState(Frame.MAXIMIZED_BOTH);
-		setTitle("Editeur de Layers de GeOxygene");
-		setIconImage(this.frameEditeurSLD.getIconImage());
+  Layer layer;
 
-	    DefaultMutableTreeNode top = new DefaultMutableTreeNode("Styled Layer Descriptor");
-	    this.tree = new JTree(top);
-	    createNodes(top);
-	    this.tree.setCellRenderer(new LayerRenderer(this.sld));
-	    //tree.setEditable(true);
-	    this.tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-	    this.tree.addTreeSelectionListener(this);
-	    this.tree.setShowsRootHandles(false);
-	    this.tree.setExpandsSelectedPaths(true);
-	    this.tree.expandRow(0);
-		//Enable tool tips.
-	    ToolTipManager.sharedInstance().registerComponent(this.tree);
+  /**
+   * Renvoie la valeur de l'attribut layer.
+   * @return la valeur de l'attribut layer
+   */
+  public Layer getLayer() {
+    return this.layer;
+  }
 
-		JScrollPane scroll = new JScrollPane(this.tree,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		add(scroll,BorderLayout.CENTER);
-	}
+  /**
+   * Affecte la valeur de l'attribut layer.
+   * @param layer l'attribut layer à affecter
+   */
+  public void setLayer(Layer layer) {
+    this.layer = layer;
+  }
 
-	/**
-	 * @param top
-	 */
-	private void createNodes(DefaultMutableTreeNode top) {
-		if (this.layer==null) return;
-		int nbStyle = 0;
-		for (Style style : this.layer.getStyles()) {
-			String name = style.getName();
-			if ((name==null)||(name.length()==0)) name=style.getClass().getSimpleName()+" "+nbStyle++; //$NON-NLS-1$
-			style.setName(name);
-			DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode(style);
-			top.add(styleNode);
-		}
-	}
-	class LayerRenderer extends DefaultTreeCellRenderer {
-		private static final long serialVersionUID = 3819934049264771686L;
-		private StyledLayerDescriptor sldRenderer;
-	    public LayerRenderer(StyledLayerDescriptor sld) {this.sldRenderer=sld;}
+  public FrameEditeurLayer(FrameEditeurSLD frame, Layer layer) {
+    this.frameEditeurSLD = frame;
+    this.setSld(this.frameEditeurSLD.getSld());
+    this.setLayer(layer);
+    this.dataset = frame.dataset;
 
-	    @Override
-		public Component getTreeCellRendererComponent(JTree treeRenderer,Object value,boolean sel,boolean expanded,boolean leaf,int row,boolean hasFocusRenderer) {
+    this.enableEvents(AWTEvent.WINDOW_EVENT_MASK);
+    this.setLayout(new BorderLayout());
+    this.setResizable(true);
+    this.setSize(new Dimension(500, 500));
+    this.setExtendedState(Frame.MAXIMIZED_BOTH);
+    this.setTitle("Editeur de Layers de GeOxygene");
+    this.setIconImage(this.frameEditeurSLD.getIconImage());
 
-	        super.getTreeCellRendererComponent(treeRenderer, value, sel,expanded, leaf, row,hasFocusRenderer);
-	        if (leaf && isStyle(value)) {
-	            setToolTipText("Ceci est un style.");
-	            Style style = (Style) ((DefaultMutableTreeNode)value).getUserObject();
-	            setText(style.getName());
-	            setIcon(new StyleIcon(style,this.sldRenderer));
-	        } else {
-	            setToolTipText(null); //no tool tip
-	        } 
+    DefaultMutableTreeNode top = new DefaultMutableTreeNode(
+        "Styled Layer Descriptor");
+    this.tree = new JTree(top);
+    this.createNodes(top);
+    this.tree.setCellRenderer(new LayerRenderer(this.sld));
+    // tree.setEditable(true);
+    this.tree.getSelectionModel().setSelectionMode(
+        TreeSelectionModel.SINGLE_TREE_SELECTION);
+    this.tree.addTreeSelectionListener(this);
+    this.tree.setShowsRootHandles(false);
+    this.tree.setExpandsSelectedPaths(true);
+    this.tree.expandRow(0);
+    // Enable tool tips.
+    ToolTipManager.sharedInstance().registerComponent(this.tree);
 
-	        return this;
-	    }
+    JScrollPane scroll = new JScrollPane(this.tree,
+        ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    this.add(scroll, BorderLayout.CENTER);
+  }
 
-	    protected boolean isStyle(Object value) {
-	        DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
-	        return (Style.class.isAssignableFrom(node.getUserObject().getClass()));
-	    }
-	}
-	class StyleIcon implements Icon {
-		Style style;
-		DessinableGeoxygene d;
-		public StyleIcon(Style s, StyledLayerDescriptor sld) {
-			this.style = s;
-			this.d = new DessinableGeoxygene(sld);
-			this.d.setCentreGeo(new DirectPosition(50.0,50.0));
-		}
-		@Override
-		public int getIconHeight() {return 50;}
-		@Override
-		public int getIconWidth() {return 100;}
-		@Override
-		public void paintIcon(Component c, Graphics g, int x, int y) {
-			try {
-				this.d.majLimitesAffichage(this.getIconWidth(),this.getIconHeight());
-				if (FrameEditeurLayer.this.dataset.getPopulation(FrameEditeurLayer.this.layer.getName())!=null)
-					this.d.dessiner((Graphics2D)g,this.style, FrameEditeurLayer.this.dataset.getPopulation(FrameEditeurLayer.this.layer.getName()));
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	@Override
-	public void valueChanged(TreeSelectionEvent e) {
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-		this.tree.getLastSelectedPathComponent();
+  /**
+   * @param top
+   */
+  private void createNodes(DefaultMutableTreeNode top) {
+    if (this.layer == null) {
+      return;
+    }
+    int nbStyle = 0;
+    for (Style style : this.layer.getStyles()) {
+      String name = style.getName();
+      if ((name == null) || (name.length() == 0)) {
+        name = style.getClass().getSimpleName() + " " + nbStyle++; //$NON-NLS-1$
+      }
+      style.setName(name);
+      DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode(style);
+      top.add(styleNode);
+    }
+  }
 
-		//Nothing is selected.	
-		if (node == null) return;
+  class LayerRenderer extends DefaultTreeCellRenderer {
+    private static final long serialVersionUID = 3819934049264771686L;
+    private StyledLayerDescriptor sldRenderer;
 
-		Object nodeInfo = node.getUserObject();
-		if (node.isLeaf()) {
-			Style style = (Style)nodeInfo;
-			if (logger.isDebugEnabled()) logger.debug(style.getClass().getSimpleName()+ " sélectionné");
-			int nbColor = 0;
-			Stroke stroke = null;
-			Color strokeColor = null;
-			Fill fill = null;
-			Color fillColor = null;
-			Fill textFill = null;
-			Color textColor = null;
-			Fill haloFill = null;
-			Color haloColor = null;
-			UserStyle userStyle = (UserStyle) style;
-			for(FeatureTypeStyle fts:userStyle.getFeatureTypeStyles()) {
-				for (Rule rule:fts.getRules()) {
-					for(Symbolizer symbolizer:rule.getSymbolizers()) {
-						if (symbolizer.getStroke()!=null) {
-							strokeColor = symbolizer.getStroke().getColor();
-							stroke = symbolizer.getStroke();
-							nbColor++;
-						}
-						if (symbolizer.isPolygonSymbolizer()) {
-							PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) symbolizer;
-							if (polygonSymbolizer.getFill()!=null) {
-								fillColor = polygonSymbolizer.getFill().getColor();
-								fill = polygonSymbolizer.getFill();
-								nbColor++;
-							}
-						} else if (symbolizer.isTextSymbolizer()) {
-							TextSymbolizer textSymbolizer = (TextSymbolizer) symbolizer;
-							if (textSymbolizer.getFill()!=null) {
-								textColor = textSymbolizer.getFill().getColor();
-								textFill = textSymbolizer.getFill();
-								nbColor++;
-							}
-							if ((textSymbolizer.getHalo()!=null)&&(textSymbolizer.getHalo().getFill()!=null)) {
-								haloColor = textSymbolizer.getHalo().getFill().getColor();
-								haloFill = textSymbolizer.getHalo().getFill();
-								nbColor++;
-							}
-						}
-					}
-				}
-			}
-			if (nbColor>0) {
-				if (logger.isDebugEnabled()) logger.debug(nbColor+" couleurs");
-				if (stroke!=null) {
-					Color newColor = JColorChooser.showDialog(this, "Choisir une couleur pour le trait", strokeColor);
-					if (logger.isDebugEnabled()) logger.debug("couleur pour le trait = "+strokeColor);
-					stroke.setColor(newColor);
-				}
-				if (fill!=null) {
-					Color newColor = JColorChooser.showDialog(this, "Choisir une couleur pour le remplissage", fillColor);
-					if (logger.isDebugEnabled()) logger.debug("couleur pour le remplissage = "+fillColor);
-					fill.setColor(newColor);
-				}
-				if (textFill!=null) {
-					Color newColor = JColorChooser.showDialog(this, "Choisir une couleur pour le texte", textColor);
-					if (logger.isDebugEnabled()) logger.debug("couleur pour le texte = "+textColor);
-					textFill.setColor(newColor);
-				}
-				if (haloFill!=null) {
-					Color newColor = JColorChooser.showDialog(this, "Choisir une couleur pour le halo du texte", haloColor);
-					if (logger.isDebugEnabled()) logger.debug("couleur pour le halo du texte = "+haloColor);
-					haloFill.setColor(newColor);
-				}
-				this.sld.fireActionPerformed(new ChangeEvent(this));
-			}
-		} else {}
-	}
-	@Override
-	public void stateChanged(ChangeEvent e) {this.repaint();}
+    public LayerRenderer(StyledLayerDescriptor sld) {
+      this.sldRenderer = sld;
+    }
+
+    @Override
+    public Component getTreeCellRendererComponent(JTree treeRenderer,
+        Object value, boolean sel, boolean expanded, boolean leaf, int row,
+        boolean hasFocusRenderer) {
+
+      super.getTreeCellRendererComponent(treeRenderer, value, sel, expanded,
+          leaf, row, hasFocusRenderer);
+      if (leaf && this.isStyle(value)) {
+        this.setToolTipText("Ceci est un style.");
+        Style style = (Style) ((DefaultMutableTreeNode) value).getUserObject();
+        this.setText(style.getName());
+        this.setIcon(new StyleIcon(style, this.sldRenderer));
+      } else {
+        this.setToolTipText(null); // no tool tip
+      }
+
+      return this;
+    }
+
+    protected boolean isStyle(Object value) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+      return (Style.class.isAssignableFrom(node.getUserObject().getClass()));
+    }
+  }
+
+  class StyleIcon implements Icon {
+    Style style;
+    DessinableGeoxygene d;
+
+    public StyleIcon(Style s, StyledLayerDescriptor sld) {
+      this.style = s;
+      this.d = new DessinableGeoxygene(sld);
+      this.d.setCentreGeo(new DirectPosition(50.0, 50.0));
+    }
+
+    @Override
+    public int getIconHeight() {
+      return 50;
+    }
+
+    @Override
+    public int getIconWidth() {
+      return 100;
+    }
+
+    @Override
+    public void paintIcon(Component c, Graphics g, int x, int y) {
+      try {
+        this.d.majLimitesAffichage(this.getIconWidth(), this.getIconHeight());
+        if (FrameEditeurLayer.this.dataset
+            .getPopulation(FrameEditeurLayer.this.layer.getName()) != null) {
+          this.d.dessiner((Graphics2D) g, this.style,
+              FrameEditeurLayer.this.dataset
+                  .getPopulation(FrameEditeurLayer.this.layer.getName()));
+        }
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  @Override
+  public void valueChanged(TreeSelectionEvent e) {
+    DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.tree
+        .getLastSelectedPathComponent();
+
+    // Nothing is selected.
+    if (node == null) {
+      return;
+    }
+
+    Object nodeInfo = node.getUserObject();
+    if (node.isLeaf()) {
+      Style style = (Style) nodeInfo;
+      if (FrameEditeurLayer.logger.isDebugEnabled()) {
+        FrameEditeurLayer.logger.debug(style.getClass().getSimpleName()
+            + " sélectionné");
+      }
+      int nbColor = 0;
+      Stroke stroke = null;
+      Color strokeColor = null;
+      Fill fill = null;
+      Color fillColor = null;
+      Fill textFill = null;
+      Color textColor = null;
+      Fill haloFill = null;
+      Color haloColor = null;
+      UserStyle userStyle = (UserStyle) style;
+      for (FeatureTypeStyle fts : userStyle.getFeatureTypeStyles()) {
+        for (Rule rule : fts.getRules()) {
+          for (Symbolizer symbolizer : rule.getSymbolizers()) {
+            if (symbolizer.getStroke() != null) {
+              strokeColor = symbolizer.getStroke().getColor();
+              stroke = symbolizer.getStroke();
+              nbColor++;
+            }
+            if (symbolizer.isPolygonSymbolizer()) {
+              PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) symbolizer;
+              if (polygonSymbolizer.getFill() != null) {
+                fillColor = polygonSymbolizer.getFill().getColor();
+                fill = polygonSymbolizer.getFill();
+                nbColor++;
+              }
+            } else if (symbolizer.isTextSymbolizer()) {
+              TextSymbolizer textSymbolizer = (TextSymbolizer) symbolizer;
+              if (textSymbolizer.getFill() != null) {
+                textColor = textSymbolizer.getFill().getColor();
+                textFill = textSymbolizer.getFill();
+                nbColor++;
+              }
+              if ((textSymbolizer.getHalo() != null)
+                  && (textSymbolizer.getHalo().getFill() != null)) {
+                haloColor = textSymbolizer.getHalo().getFill().getColor();
+                haloFill = textSymbolizer.getHalo().getFill();
+                nbColor++;
+              }
+            }
+          }
+        }
+      }
+      if (nbColor > 0) {
+        if (FrameEditeurLayer.logger.isDebugEnabled()) {
+          FrameEditeurLayer.logger.debug(nbColor + " couleurs");
+        }
+        if (stroke != null) {
+          Color newColor = JColorChooser.showDialog(this,
+              "Choisir une couleur pour le trait", strokeColor);
+          if (FrameEditeurLayer.logger.isDebugEnabled()) {
+            FrameEditeurLayer.logger.debug("couleur pour le trait = "
+                + strokeColor);
+          }
+          stroke.setColor(newColor);
+        }
+        if (fill != null) {
+          Color newColor = JColorChooser.showDialog(this,
+              "Choisir une couleur pour le remplissage", fillColor);
+          if (FrameEditeurLayer.logger.isDebugEnabled()) {
+            FrameEditeurLayer.logger.debug("couleur pour le remplissage = "
+                + fillColor);
+          }
+          fill.setColor(newColor);
+        }
+        if (textFill != null) {
+          Color newColor = JColorChooser.showDialog(this,
+              "Choisir une couleur pour le texte", textColor);
+          if (FrameEditeurLayer.logger.isDebugEnabled()) {
+            FrameEditeurLayer.logger.debug("couleur pour le texte = "
+                + textColor);
+          }
+          textFill.setColor(newColor);
+        }
+        if (haloFill != null) {
+          Color newColor = JColorChooser.showDialog(this,
+              "Choisir une couleur pour le halo du texte", haloColor);
+          if (FrameEditeurLayer.logger.isDebugEnabled()) {
+            FrameEditeurLayer.logger.debug("couleur pour le halo du texte = "
+                + haloColor);
+          }
+          haloFill.setColor(newColor);
+        }
+        this.sld.fireActionPerformed(new ChangeEvent(this));
+      }
+    } else {
+    }
+  }
+
+  @Override
+  public void stateChanged(ChangeEvent e) {
+    this.repaint();
+  }
 }

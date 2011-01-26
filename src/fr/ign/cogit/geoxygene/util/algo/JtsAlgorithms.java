@@ -1,22 +1,20 @@
 /*
- * This file is part of the GeOxygene project source files.
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at
- * the Institut Géographique National (the French National Mapping Agency).
- * See: http://oxygene-project.sourceforge.net
- * Copyright (C) 2005 Institut Géographique National
- * This library is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or any later
- * version.
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
- * for more details. You should have received a copy of the GNU Lesser General
- * Public License along with this library (see file LICENSE if present); if
- * not, write to the Free Software Foundation, Inc., 59 Temple Place,
- * Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.util.algo;
@@ -65,1369 +63,1540 @@ import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
 
 /**
- * Appel des methodes JTS sur des GM_Object.
- * cf. http://www.vividsolutions.com/jts/jtshome.htm
- *
+ * Appel des methodes JTS sur des GM_Object. cf.
+ * http://www.vividsolutions.com/jts/jtshome.htm
+ * 
  * @author Thierry Badard, Arnaud Braun & Christophe Pele
  * @version 1.0
- *
+ * 
  */
 
 public class JtsAlgorithms implements GeomAlgorithms {
-	static Logger logger = Logger.getLogger(JtsAlgorithms.class.getName());
+  static Logger logger = Logger.getLogger(JtsAlgorithms.class.getName());
 
-	public JtsAlgorithms() {}
+  public JtsAlgorithms() {
+  }
 
-	@Override
-	public DirectPosition centroid(GM_Object geom) {
-		try {
-			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
-			Point jtsCentroid=jtsGeom.getCentroid();
-			return new DirectPosition(jtsCentroid.getX(),jtsCentroid.getY());
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.CentroidError")); //$NON-NLS-1$
-			logger.error(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-			if (logger.isDebugEnabled()) {
-			    logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return null;
-		}
-	}
+  @Override
+  public DirectPosition centroid(GM_Object geom) {
+    try {
+      Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
+      Point jtsCentroid = jtsGeom.getCentroid();
+      return new DirectPosition(jtsCentroid.getX(), jtsCentroid.getY());
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.CentroidError")); //$NON-NLS-1$
+      JtsAlgorithms.logger
+          .error(I18N.getString("JtsAlgorithms.Geometry") + ((geom != null) ? geom.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return null;
+    }
+  }
 
-	@Override
-	public GM_Object convexHull(GM_Object geom)  {
-		try {
-			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
-			Geometry jtsHull=jtsGeom.convexHull();
-			GM_Object result=JtsGeOxygene.makeGeOxygeneGeom(jtsHull);
-			return result;
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.ConvexHullError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-			    logger.debug(e.getMessage());
-			}
-			e.printStackTrace();
-			return null;
-		}
-	}
+  @Override
+  public GM_Object convexHull(GM_Object geom) {
+    try {
+      Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
+      Geometry jtsHull = jtsGeom.convexHull();
+      GM_Object result = JtsGeOxygene.makeGeOxygeneGeom(jtsHull);
+      return result;
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N
+          .getString("JtsAlgorithms.ConvexHullError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return null;
+    }
+  }
 
-	@Override
-	public GM_Object buffer (GM_Object geom, double distance) {
-		if ((distance==0)&&(geom instanceof GM_Point)) return geom;
-		try {
-			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
-			Geometry jtsBuffer=jtsGeom.buffer(distance);
-			return JtsGeOxygene.makeGeOxygeneGeom(jtsBuffer);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.BufferError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.BufferDistance")+distance); //$NON-NLS-1$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return null;
-		}
-	}
+  @Override
+  public GM_Object buffer(GM_Object geom, double distance) {
+    if ((distance == 0) && (geom instanceof GM_Point)) {
+      return geom;
+    }
+    try {
+      Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
+      Geometry jtsBuffer = jtsGeom.buffer(distance);
+      return JtsGeOxygene.makeGeOxygeneGeom(jtsBuffer);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.BufferError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger.debug(I18N
+            .getString("JtsAlgorithms.BufferDistance") + distance); //$NON-NLS-1$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry") + ((geom != null) ? geom.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return null;
+    }
+  }
 
-	public GM_Object buffer (GM_Object geom, double distance, int nSegments) {
-		try {
-			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
-			Geometry jtsBuffer=jtsGeom.buffer(distance,nSegments);
-			return JtsGeOxygene.makeGeOxygeneGeom(jtsBuffer);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.BufferError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.BufferDistance")+distance); //$NON-NLS-1$
-				logger.debug(I18N.getString("JtsAlgorithms.BufferSegments")+nSegments); //$NON-NLS-1$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return null;
-		}
-	}
+  public GM_Object buffer(GM_Object geom, double distance, int nSegments) {
+    try {
+      Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
+      Geometry jtsBuffer = jtsGeom.buffer(distance, nSegments);
+      return JtsGeOxygene.makeGeOxygeneGeom(jtsBuffer);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.BufferError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger.debug(I18N
+            .getString("JtsAlgorithms.BufferDistance") + distance); //$NON-NLS-1$
+        JtsAlgorithms.logger.debug(I18N
+            .getString("JtsAlgorithms.BufferSegments") + nSegments); //$NON-NLS-1$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry") + ((geom != null) ? geom.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return null;
+    }
+  }
 
-	public GM_Object buffer (GM_Object geom, double distance, int nSegments, int cap) {
-	    try {
-	        Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
-	        Geometry jtsBuffer=jtsGeom.buffer(distance,nSegments,cap);
-	        return JtsGeOxygene.makeGeOxygeneGeom(jtsBuffer);
-	    } catch (Exception e) {
-	        logger.error(I18N.getString("JtsAlgorithms.BufferError")); //$NON-NLS-1$
-	        if (logger.isDebugEnabled()) {
-	            logger.debug(I18N.getString("JtsAlgorithms.BufferDistance")+distance); //$NON-NLS-1$
-	            logger.debug(I18N.getString("JtsAlgorithms.BufferSegments")+nSegments); //$NON-NLS-1$
-                logger.debug(I18N.getString("JtsAlgorithms.Cap")+cap); //$NON-NLS-1$
-	            logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-	            logger.debug(e.getMessage());
-	        }
-	        e.printStackTrace();
-	        return null;
-	    }
-	}
+  public GM_Object buffer(GM_Object geom, double distance, int nSegments,
+      int cap) {
+    try {
+      Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
+      Geometry jtsBuffer = jtsGeom.buffer(distance, nSegments, cap);
+      return JtsGeOxygene.makeGeOxygeneGeom(jtsBuffer);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.BufferError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger.debug(I18N
+            .getString("JtsAlgorithms.BufferDistance") + distance); //$NON-NLS-1$
+        JtsAlgorithms.logger.debug(I18N
+            .getString("JtsAlgorithms.BufferSegments") + nSegments); //$NON-NLS-1$
+        JtsAlgorithms.logger.debug(I18N.getString("JtsAlgorithms.Cap") + cap); //$NON-NLS-1$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry") + ((geom != null) ? geom.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return null;
+    }
+  }
 
-	@Override
-	public GM_Object buffer10 (GM_Object geom) {
-		return buffer(geom,10);
-	}
+  @Override
+  public GM_Object buffer10(GM_Object geom) {
+    return this.buffer(geom, 10);
+  }
 
-	public GM_Object boundary(GM_Object geom) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(geom);
-			Geometry jtsResult=jtsGeom1.getBoundary();
-			return JtsGeOxygene.makeGeOxygeneGeom(jtsResult);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.BoundaryError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return null;
-		}
-	}
+  public GM_Object boundary(GM_Object geom) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(geom);
+      Geometry jtsResult = jtsGeom1.getBoundary();
+      return JtsGeOxygene.makeGeOxygeneGeom(jtsResult);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.BoundaryError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry") + ((geom != null) ? geom.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return null;
+    }
+  }
 
-	@Override
-	public GM_Object union(GM_Object g1, GM_Object g2)  {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			Geometry jtsUnion=jtsGeom1.union(jtsGeom2);
-			return JtsGeOxygene.makeGeOxygeneGeom(jtsUnion);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.UnionError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return null;
-		}
-	}
+  @Override
+  public GM_Object union(GM_Object g1, GM_Object g2) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      Geometry jtsUnion = jtsGeom1.union(jtsGeom2);
+      return JtsGeOxygene.makeGeOxygeneGeom(jtsUnion);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.UnionError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry1") + ((g1 != null) ? g1.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return null;
+    }
+  }
 
-	@Override
-	public GM_Object intersection(GM_Object g1, GM_Object g2) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			Geometry jtsInter=jtsGeom1.intersection(jtsGeom2);
-			return JtsGeOxygene.makeGeOxygeneGeom(jtsInter);
-		} catch (Exception e) {
-		    logger.error(I18N.getString("JtsAlgorithms.IntersectionError")); //$NON-NLS-1$
-		    if (logger.isDebugEnabled()) {
-		        logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-		        logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-		        logger.debug(e.getMessage());
-		    }
-            e.printStackTrace();
-			return null;
-		}
-	}
+  @Override
+  public GM_Object intersection(GM_Object g1, GM_Object g2) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      Geometry jtsInter = jtsGeom1.intersection(jtsGeom2);
+      return JtsGeOxygene.makeGeOxygeneGeom(jtsInter);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N
+          .getString("JtsAlgorithms.IntersectionError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry1") + ((g1 != null) ? g1.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return null;
+    }
+  }
 
-	@Override
-	public GM_Object difference(GM_Object g1, GM_Object g2) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			Geometry jtsResult=jtsGeom1.difference(jtsGeom2);
-			//if (jtsResult.isEmpty()||jtsResult.getArea()==0.0) return null;
-			return JtsGeOxygene.makeGeOxygeneGeom(jtsResult);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.DifferenceError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return null;
-		}
-	}
+  @Override
+  public GM_Object difference(GM_Object g1, GM_Object g2) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      Geometry jtsResult = jtsGeom1.difference(jtsGeom2);
+      // if (jtsResult.isEmpty()||jtsResult.getArea()==0.0) return null;
+      return JtsGeOxygene.makeGeOxygeneGeom(jtsResult);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N
+          .getString("JtsAlgorithms.DifferenceError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry1") + ((g1 != null) ? g1.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return null;
+    }
+  }
 
-	@Override
-	public GM_Object symDifference(GM_Object g1, GM_Object g2) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			Geometry jtsSymDiff=jtsGeom1.symDifference(jtsGeom2);
-			return JtsGeOxygene.makeGeOxygeneGeom(jtsSymDiff);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.SymDifferenceError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return null;
-		}
-	}
+  @Override
+  public GM_Object symDifference(GM_Object g1, GM_Object g2) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      Geometry jtsSymDiff = jtsGeom1.symDifference(jtsGeom2);
+      return JtsGeOxygene.makeGeOxygeneGeom(jtsSymDiff);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N
+          .getString("JtsAlgorithms.SymDifferenceError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry1") + ((g1 != null) ? g1.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return null;
+    }
+  }
 
-	@Override
-	public boolean equals(GM_Object g1, GM_Object g2) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			return jtsGeom1.equals(jtsGeom2);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.EqualsError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return false;
-		}
-	}
+  @Override
+  public boolean equals(GM_Object g1, GM_Object g2) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      return jtsGeom1.equals(jtsGeom2);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.EqualsError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry1") + ((g1 != null) ? g1.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return false;
+    }
+  }
 
-	public boolean equalsExact(GM_Object g1, GM_Object g2) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			return jtsGeom1.equalsExact(jtsGeom2);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.EqualsExactError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return false;
-		}
-	}
+  public boolean equalsExact(GM_Object g1, GM_Object g2) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      return jtsGeom1.equalsExact(jtsGeom2);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N
+          .getString("JtsAlgorithms.EqualsExactError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry1") + ((g1 != null) ? g1.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return false;
+    }
+  }
 
-	public boolean equalsExact(GM_Object g1, GM_Object g2, double tol) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			return jtsGeom1.equalsExact(jtsGeom2,tol);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.EqualsExactError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Tolerance")+tol); //$NON-NLS-1$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return false;
-		}
-	}
+  public boolean equalsExact(GM_Object g1, GM_Object g2, double tol) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      return jtsGeom1.equalsExact(jtsGeom2, tol);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N
+          .getString("JtsAlgorithms.EqualsExactError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Tolerance") + tol); //$NON-NLS-1$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry1") + ((g1 != null) ? g1.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return false;
+    }
+  }
 
-	@Override
-	public boolean contains(GM_Object g1, GM_Object g2) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			return jtsGeom1.contains(jtsGeom2);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.ContainsError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return false;
-		}
-	}
+  @Override
+  public boolean contains(GM_Object g1, GM_Object g2) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      return jtsGeom1.contains(jtsGeom2);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.ContainsError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry1") + ((g1 != null) ? g1.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return false;
+    }
+  }
 
-	public boolean crosses(GM_Object g1, GM_Object g2) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			return jtsGeom1.crosses(jtsGeom2);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.CrossesError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return false;
-		}
-	}
+  public boolean crosses(GM_Object g1, GM_Object g2) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      return jtsGeom1.crosses(jtsGeom2);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.CrossesError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry1") + ((g1 != null) ? g1.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return false;
+    }
+  }
 
-	public boolean disjoint(GM_Object g1, GM_Object g2) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			return jtsGeom1.disjoint(jtsGeom2);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.DisjointError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return false;
-		}
-	}
+  public boolean disjoint(GM_Object g1, GM_Object g2) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      return jtsGeom1.disjoint(jtsGeom2);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.DisjointError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry1") + ((g1 != null) ? g1.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return false;
+    }
+  }
 
-	public boolean within(GM_Object g1, GM_Object g2) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			return jtsGeom1.within(jtsGeom2);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.WithinError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return false;
-		}
-	}
+  public boolean within(GM_Object g1, GM_Object g2) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      return jtsGeom1.within(jtsGeom2);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.WithinError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry1") + ((g1 != null) ? g1.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return false;
+    }
+  }
 
-	public boolean isWithinDistance (GM_Object g1, GM_Object g2, double dist) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			return jtsGeom1.isWithinDistance(jtsGeom2,dist);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.IsWithinDistanceError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Distance")+dist); //$NON-NLS-1$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return false;
-		}
-	}
+  public boolean isWithinDistance(GM_Object g1, GM_Object g2, double dist) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      return jtsGeom1.isWithinDistance(jtsGeom2, dist);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N
+          .getString("JtsAlgorithms.IsWithinDistanceError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Distance") + dist); //$NON-NLS-1$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry1") + ((g1 != null) ? g1.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return false;
+    }
+  }
 
-	@Override
-	public boolean intersects(GM_Object g1, GM_Object g2) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			return jtsGeom1.intersects(jtsGeom2);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.IntersectsError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return false;
-		}
-	}
+  @Override
+  public boolean intersects(GM_Object g1, GM_Object g2) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      return jtsGeom1.intersects(jtsGeom2);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N
+          .getString("JtsAlgorithms.IntersectsError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry1") + ((g1 != null) ? g1.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return false;
+    }
+  }
 
-	public boolean overlaps(GM_Object g1, GM_Object g2) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			return jtsGeom1.overlaps(jtsGeom2);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.OverlapsError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return false;
-		}
-	}
+  public boolean overlaps(GM_Object g1, GM_Object g2) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      return jtsGeom1.overlaps(jtsGeom2);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.OverlapsError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry1") + ((g1 != null) ? g1.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return false;
+    }
+  }
 
-	public boolean touches(GM_Object g1, GM_Object g2) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			return jtsGeom1.touches(jtsGeom2);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.TouchesError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return false;
-		}
-	}
+  public boolean touches(GM_Object g1, GM_Object g2) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      return jtsGeom1.touches(jtsGeom2);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.TouchesError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry1") + ((g1 != null) ? g1.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return false;
+    }
+  }
 
-	public boolean isEmpty(GM_Object geom) {
-		try {
-			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
-			return jtsGeom.isEmpty();
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.IsEmptyError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return true;
-		}
-	}
+  public boolean isEmpty(GM_Object geom) {
+    try {
+      Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
+      return jtsGeom.isEmpty();
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.IsEmptyError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry") + ((geom != null) ? geom.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return true;
+    }
+  }
 
-	public boolean isSimple(GM_Object geom) {
-		try {
-			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
-			return jtsGeom.isSimple();
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.IsSimpleError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return false;
-		}
-	}
+  public boolean isSimple(GM_Object geom) {
+    try {
+      Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
+      return jtsGeom.isSimple();
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.IsSimpleError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry") + ((geom != null) ? geom.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return false;
+    }
+  }
 
-	public boolean isValid(GM_Object geom) {
-		try {
-			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
-			return jtsGeom.isValid();
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.IsValidError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return false;
-		}
-	}
+  public boolean isValid(GM_Object geom) {
+    try {
+      Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
+      return jtsGeom.isValid();
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.IsValidError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry") + ((geom != null) ? geom.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return false;
+    }
+  }
 
-	@Override
-	public double distance(GM_Object g1, GM_Object g2)  {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			return jtsGeom1.distance(jtsGeom2);
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.DistanceError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return 0.0;
-		}
-	}
+  @Override
+  public double distance(GM_Object g1, GM_Object g2) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      return jtsGeom1.distance(jtsGeom2);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.DistanceError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry1") + ((g1 != null) ? g1.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return 0.0;
+    }
+  }
 
-	@Override
-	public double area(GM_Object geom) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(geom);
-			return jtsGeom1.getArea();
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.AreaError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return 0.0;
-		}
-	}
+  @Override
+  public double area(GM_Object geom) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(geom);
+      return jtsGeom1.getArea();
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.AreaError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry") + ((geom != null) ? geom.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return 0.0;
+    }
+  }
 
-	@Override
-	public double length(GM_Object geom) {
-		try {
-			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
-			return jtsGeom.getLength();
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.LengthError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return 0.0;
-		}
-	}
+  @Override
+  public double length(GM_Object geom) {
+    try {
+      Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
+      return jtsGeom.getLength();
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.LengthError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry") + ((geom != null) ? geom.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return 0.0;
+    }
+  }
 
-	public int dimension(GM_Object geom) {
-		try {
-			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
-			return jtsGeom.getDimension();
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.DimensionError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return 0;
-		}
-	}
+  public int dimension(GM_Object geom) {
+    try {
+      Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
+      return jtsGeom.getDimension();
+    } catch (Exception e) {
+      JtsAlgorithms.logger
+          .error(I18N.getString("JtsAlgorithms.DimensionError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry") + ((geom != null) ? geom.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return 0;
+    }
+  }
 
-	public int numPoints(GM_Object geom) {
-		try {
-			if (geom.isEmpty()) return 0;
-			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
-			return jtsGeom.getNumPoints();
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.NumPointsError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return 0;
-		}
-	}
+  public int numPoints(GM_Object geom) {
+    try {
+      if (geom.isEmpty()) {
+        return 0;
+      }
+      Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
+      return jtsGeom.getNumPoints();
+    } catch (Exception e) {
+      JtsAlgorithms.logger
+          .error(I18N.getString("JtsAlgorithms.NumPointsError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry") + ((geom != null) ? geom.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return 0;
+    }
+  }
 
-	public GM_Object translate(GM_Object geom, final double tx, final double ty, final double tz)  {
-		try {
-			Geometry jtsGeom=JtsGeOxygene.makeJtsGeom(geom);
-			CoordinateFilter translateCoord=new CoordinateFilter() {
-				@Override
-				public void filter(Coordinate coord) {
-					coord.x+=tx;
-					coord.y+=ty;
-					coord.z+=tz;
-				}
-			};
-			jtsGeom.apply(translateCoord);
-			GM_Object result=JtsGeOxygene.makeGeOxygeneGeom(jtsGeom);
-			return result;
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.TranslateError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return null;
-		}
-	}
-
-	public String relate(GM_Object g1, GM_Object g2) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			return jtsGeom1.relate(jtsGeom2).toString();
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.RelateError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry1")+((g1!=null)?g1.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry2")+((g2!=null)?g2.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return "ERROR"; //$NON-NLS-1$
-		}
-	}
-
-	/**
-	 * Calcul de l'union d'une liste de géométries
-	 * @param listeGeometries liste des géométries à unir
-	 * @return union d'une liste de géométries
-	 */
-	public static GM_Object union(List<? extends GM_Object> listeGeometries) {
-		List<Geometry> listeGeometriesJts = new ArrayList<Geometry>();
-		for(GM_Object geom:listeGeometries) {
-			try {listeGeometriesJts.add(JtsGeOxygene.makeJtsGeom(geom));}
-			catch(Exception e){
-				logger.error(I18N.getString("JtsAlgorithms.GeometryConversionError")); //$NON-NLS-1$
-				if (logger.isDebugEnabled()) {
-					logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((geom!=null)?geom.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-					logger.debug(e.getMessage());
-				}
-			}
-		}
-		Geometry union = union(listeGeometriesJts);
-		try {return JtsGeOxygene.makeGeOxygeneGeom(union);}
-		catch(Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.GeometryConversionError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-				logger.debug(I18N.getString("JtsAlgorithms.Geometry")+((union!=null)?union.toString():I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
-				logger.debug(e.getMessage());
-			}
-            e.printStackTrace();
-			return null;
-		}
-	}
-
-	/**
-	 * détermine le point d'un polygone le plus loin d'un autre point.
-	 * Le polygone doit être convexe et sans trou.
-	 * Determine the farest point of a polygon to another given point.
-	 * The polygon must be convex and without hole.
-	 *
-	 * @param pt un point, a point
-	 * @param poly un polygone convexe sans trou, a convex polygon without hole
-	 */
-	public static Point getFurthestPoint(Point pt, Polygon poly){
-		Point pt_max=poly.getExteriorRing().getPointN(0);
-		double dist_max=pt.distance(pt_max);
-		for (int i=1; i<poly.getExteriorRing().getNumPoints(); i++){
-			double dist=pt.distance(poly.getExteriorRing().getPointN(i));
-			if (dist>dist_max) {
-				pt_max=poly.getExteriorRing().getPointN(i);
-				dist_max=dist;
-			}
-		}
-		return pt_max;
-	}
-
-	/**
-	 * détermine le point d'un polygone le plus proche d'un autre point.
-	 * Determine the closest point of a polygon to another given point.
-	 *
-	 * @param pt un point, a point
-	 * @param poly un polygone, a polygon
-	 */
-	public static DirectPosition getClosestPoint(DirectPosition pt, GM_Polygon poly){
-		return getClosestPoint(pt, poly.exteriorLineString());
-	}
-
-	/**
-	 * détermine le point d'une ligne le plus proche d'un autre point.
-	 * Determine the closest point of a line to another given point.
-	 *
-	 * @param pt un point, a point
-	 * @param l une ligne, a line
-	 */
-	public static DirectPosition getClosestPoint(DirectPosition pt, GM_LineString l) {
-		Point point = new GeometryFactory().createPoint(AdapterFactory.toCoordinate(pt));
-		LineString line;
-		try {
-			line = (LineString) AdapterFactory.toGeometry(new GeometryFactory(), l);
-			Coordinate[] cp=(new DistanceOp(line, point)).nearestPoints();
-			return AdapterFactory.toDirectPosition(line.getFactory().createPoint(cp[0]).getCoordinate());
-		} catch (Exception e) {}
-		return null;
-	}
-	/**
-	 * détermine le point d'une ligne le plus loin d'une ligne de base.
-	 * Determine the closest point of a line to another given line.
-	 *
-	 * @param base la ligne de comparaison, the base line
-	 * @param l une ligne, a line
-	 */
-	public static DirectPosition getFurthestPoint(GM_LineString base, GM_LineString l) {
-		try {
-			LineString baseLine = (LineString) AdapterFactory.toGeometry(new GeometryFactory(), base);
-			LineString line = (LineString) AdapterFactory.toGeometry(new GeometryFactory(), l);
-			double distanceMax = Double.MIN_VALUE;
-			Point pointLePlusLoin = null;
-			for (int i=0 ; i<line.getNumPoints() ; i++) {
-				Point p = line.getPointN(i);
-				double distance = p.distance(baseLine);
-				if (distance>distanceMax) {
-					distanceMax=distance;
-					pointLePlusLoin = p;
-				}
-			}
-			if (pointLePlusLoin!=null) return AdapterFactory.toDirectPosition(pointLePlusLoin.getCoordinate());
-			//return AdapterFactory.toDirectPosition(JtsUtil.getPointLePlusProche(point, line).getCoordinate());
-		} catch (Exception e) {}
-		return null;
-	}
-
-	/**
-	 * détermine les points les plus proches deux géométries.
-	 * Les points sont donnés dans le même ordre que les deux géométries d'entrée.
-	 * Compute the nearest points of two geometries.
-	 * The points are presented in the same order as the input Geometries.
-	 *
-	 * @param g1 une géométrie
-	 * @param g2 une autre géométrie
-	 * @return la liste des 2 points les plus proches
-	 */
-	public static DirectPositionList getClosestPoints(GM_Object g1, GM_Object g2) {
-		try {
-			Geometry jtsGeom1=JtsGeOxygene.makeJtsGeom(g1);
-			Geometry jtsGeom2=JtsGeOxygene.makeJtsGeom(g2);
-			Coordinate[] coord = DistanceOp.nearestPoints(jtsGeom1, jtsGeom2);
-			DirectPosition dp1 = new DirectPosition(coord[0].x,coord[0].y);
-			DirectPosition dp2 = new DirectPosition(coord[1].x,coord[1].y);
-			DirectPositionList listePoints =new DirectPositionList();
-			listePoints.add(dp1);
-			listePoints.add(dp2);
-			return listePoints;
-		} catch (Exception e) {
-			logger.error(I18N.getString("JtsAlgorithms.ClosestPointsError")); //$NON-NLS-1$
-			if (logger.isDebugEnabled()) {
-			    logger.debug(e.getMessage());
-			}
-		}
-		return null;
-	}
-
-	static JtsAlgorithms singleton = new JtsAlgorithms();
-	protected static EventListenerList listenerList = new EventListenerList();
-
-	/**
-	 * Adds an <code>ActionListener</code>.
-	 * @param l the <code>ActionListener</code> to be added
-	 */
-	public static void addActionListener(ActionListener l) {
-		listenerList.add(ActionListener.class, l);
-	}
-
-	/**
-	 * Notifies all listeners that have registered interest for
-	 * notification on this event type.  The event instance
-	 * is lazily created.
-	 * @see EventListenerList
-	 */
-	protected static void fireActionPerformed(ActionEvent event) {
-		// Guaranteed to return a non-null array
-		Object[] listeners = listenerList.getListenerList();
-		// Process the listeners last to first, notifying
-		// those that are interested in this event
-		for (int i = listeners.length-2; i>=0; i-=2) {
-			if (listeners[i]==ActionListener.class) {
-				// Lazily create the event:
-				((ActionListener)listeners[i+1]).actionPerformed(event);
-			}
-		}
-	}
-
-	/**
-	 * Union d'un tableau de Polygones
-	 * @param geometryArray tableau de Polygones JTS
-	 * @return union des Polygones
-	 */
-	public static Geometry union(Geometry[] geometryArray) {
-		List<Geometry> liste = new ArrayList<Geometry>();
-		for (int index=0; index <geometryArray.length;index++)
-			liste.add(geometryArray[index]);
-		return union(liste);
-	}
-
-	/**
-	 * Union d'une collection de Polygones
-	 * @param geometryCollection collection de Polygones JTS
-	 * @return union des Polygones
-	 */
-	public static Geometry union(Collection<Geometry> geometryCollection) {
-		Collection<Geometry> newGeometryCollection = geometryCollection;
-		final int cellSize = 1 + (int)Math.sqrt(newGeometryCollection.size());
-		Comparator<Geometry> comparator =  new Comparator<Geometry>(){
-			@Override
-			public int compare(Geometry o1, Geometry o2) {
-				if (o1==null || o2==null) return 0;
-				Envelope env1 = o1.getEnvelopeInternal();
-				Envelope env2 = o2.getEnvelopeInternal();
-				double indice1 = env1.getMinX()/cellSize + cellSize*((int)env1.getMinY()/cellSize);
-				double indice2 = env2.getMinX()/cellSize + cellSize*((int)env2.getMinY()/cellSize);
-				return indice1>=indice2?1:indice1<indice2?-1:0;
-			}
-			@Override
-			public boolean equals(Object obj) {return this.equals(obj);}
-		};
-		int iteration = 1;
-		int nbIteration = 1 + (int)(Math.log(newGeometryCollection.size())/Math.log(4));
-		fireActionPerformed(new ActionEvent(singleton,0,I18N.getString("JtsAlgorithms.UnionAction"),nbIteration)); //$NON-NLS-1$
-		while (newGeometryCollection.size() > 1) {
-			fireActionPerformed(new ActionEvent(singleton,1,I18N.getString("JtsAlgorithms.UnionIterationAction"),iteration++)); //$NON-NLS-1$
-			if (logger.isTraceEnabled()) {
-			    logger.trace("Union (" + iteration + "/" + nbIteration + ")");  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
-			}
-			TreeSet<Geometry> treeSet = new TreeSet<Geometry>(comparator);
-			treeSet.addAll(newGeometryCollection);
-			newGeometryCollection = union(treeSet, 4);
-		}
-		List<Geometry> geometries = new ArrayList<Geometry>();
-		for (Geometry geom : newGeometryCollection) {
-			if (geom instanceof Polygon || geom instanceof LineString || geom instanceof Point) {
-			    geometries.add(geom);
-			} else {
-			    if (geom instanceof MultiPolygon || geom instanceof MultiLineString || geom instanceof MultiPoint) {
-			        GeometryCollection collection = (GeometryCollection) geom;
-			        for (int index = 0;index < collection.getNumGeometries();index++)
-			            geometries.add(collection.getGeometryN(index));
-			    } else {
-			        logger.error(I18N.getString("JtsAlgorithms.UnhandledGeometryType")+geom.getGeometryType()); //$NON-NLS-1$
-			    }
-			}
-		}
-		fireActionPerformed(new ActionEvent(singleton,4,I18N.getString("JtsAlgorithms.UnionFinishedAction"))); //$NON-NLS-1$
-		if (geometries.size()==1) return geometries.get(0);
-		if (geometries.isEmpty()) return new GeometryFactory().createGeometryCollection(new Geometry[0]);
-		if (geometries.get(0) instanceof Polygon) {
-		    return newGeometryCollection.iterator().next().getFactory().createMultiPolygon(geometries.toArray(new Polygon[0]));
-		}
-        if (geometries.get(0) instanceof LineString) {
-            return newGeometryCollection.iterator().next().getFactory().createMultiLineString(geometries.toArray(new LineString[0]));
+  public GM_Object translate(GM_Object geom, final double tx, final double ty,
+      final double tz) {
+    try {
+      Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
+      CoordinateFilter translateCoord = new CoordinateFilter() {
+        @Override
+        public void filter(Coordinate coord) {
+          coord.x += tx;
+          coord.y += ty;
+          coord.z += tz;
         }
-        if (geometries.get(0) instanceof Point) {
-            return newGeometryCollection.iterator().next().getFactory().createMultiPoint(geometries.toArray(new Point[0]));
+      };
+      jtsGeom.apply(translateCoord);
+      GM_Object result = JtsGeOxygene.makeGeOxygeneGeom(jtsGeom);
+      return result;
+    } catch (Exception e) {
+      JtsAlgorithms.logger
+          .error(I18N.getString("JtsAlgorithms.TranslateError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry") + ((geom != null) ? geom.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  public String relate(GM_Object g1, GM_Object g2) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      return jtsGeom1.relate(jtsGeom2).toString();
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.RelateError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry1") + ((g1 != null) ? g1.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry2") + ((g2 != null) ? g2.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return "ERROR"; //$NON-NLS-1$
+    }
+  }
+
+  /**
+   * Calcul de l'union d'une liste de géométries
+   * @param listeGeometries liste des géométries à unir
+   * @return union d'une liste de géométries
+   */
+  public static GM_Object union(List<? extends GM_Object> listeGeometries) {
+    List<Geometry> listeGeometriesJts = new ArrayList<Geometry>();
+    for (GM_Object geom : listeGeometries) {
+      try {
+        listeGeometriesJts.add(JtsGeOxygene.makeJtsGeom(geom));
+      } catch (Exception e) {
+        JtsAlgorithms.logger.error(I18N
+            .getString("JtsAlgorithms.GeometryConversionError")); //$NON-NLS-1$
+        if (JtsAlgorithms.logger.isDebugEnabled()) {
+          JtsAlgorithms.logger
+              .debug(I18N.getString("JtsAlgorithms.Geometry") + ((geom != null) ? geom.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+          JtsAlgorithms.logger.debug(e.getMessage());
         }
-		return newGeometryCollection.iterator().next().getFactory().createGeometryCollection(geometries.toArray(new Geometry[0]));
-	}
+      }
+    }
+    Geometry union = JtsAlgorithms.union(listeGeometriesJts);
+    try {
+      return JtsGeOxygene.makeGeOxygeneGeom(union);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N
+          .getString("JtsAlgorithms.GeometryConversionError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry") + ((union != null) ? union.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return null;
+    }
+  }
 
-	/**
-	 * Union des éléments d'un ensemble de Polygones triés par groupes.
-	 * Par exemple, si la taille des groupes vaut 4, on effectue l'union des Polygones 4 par 4.
-	 *
-	 * @param treeSet ensemble de Polygones triés
-	 * @param groupSize taille des groupes sur lesquels on effectue l'union
-	 * @return liste des unions
-	 */
-	private static List<Geometry> union(TreeSet<Geometry> treeSet, int groupSize) {
-		List<Geometry> unionGeometryList = new ArrayList<Geometry>();
-		Geometry currUnion = null;
-		int size = treeSet.size();
-		int count = 0;
-		fireActionPerformed(new ActionEvent(singleton,2,I18N.getString("JtsAlgorithms.UnionDetailAction"),size)); //$NON-NLS-1$
-		for (Geometry geom:treeSet) {
-			if ((currUnion==null)||(count%groupSize==0)) currUnion = geom;
-			else {
-				currUnion = currUnion.union(geom);
-				if (groupSize-count%groupSize==1) unionGeometryList.add(currUnion);
-			}
-			fireActionPerformed(new ActionEvent(singleton,3,I18N.getString("JtsAlgorithms.UnionDetailIterationAction"),++count)); //$NON-NLS-1$
-			if (logger.isTraceEnabled()) {
-			    logger.trace(" "+(count)+" - "+size+" features");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-			}
-		}
-		if (groupSize-count%groupSize!=0) {
-			unionGeometryList.add(currUnion);
-		}
-		return unionGeometryList;
-	}
+  /**
+   * détermine le point d'un polygone le plus loin d'un autre point. Le polygone
+   * doit être convexe et sans trou. Determine the farest point of a polygon to
+   * another given point. The polygon must be convex and without hole.
+   * 
+   * @param pt un point, a point
+   * @param poly un polygone convexe sans trou, a convex polygon without hole
+   */
+  public static Point getFurthestPoint(Point pt, Polygon poly) {
+    Point pt_max = poly.getExteriorRing().getPointN(0);
+    double dist_max = pt.distance(pt_max);
+    for (int i = 1; i < poly.getExteriorRing().getNumPoints(); i++) {
+      double dist = pt.distance(poly.getExteriorRing().getPointN(i));
+      if (dist > dist_max) {
+        pt_max = poly.getExteriorRing().getPointN(i);
+        dist_max = dist;
+      }
+    }
+    return pt_max;
+  }
 
-	/**
-	 * Union d'une collection de LineStrings.
-	 * @param geometryCollection collection de LineStrings
-	 * @return Union des LineString (une LineString)
-	 */
-	public static Geometry unionLineString(List<Geometry> geometryCollection) {
-		List<Geometry> newGeometryCollection = geometryCollection;
-		final int cellSize = 1 + (int)Math.sqrt(newGeometryCollection.size());
-		Comparator<Geometry> comparator =  new Comparator<Geometry>(){
-			@Override
-			public int compare(Geometry o1, Geometry o2) {
-				if (o1==null || o2==null) return 0;
-				Envelope env1 = o1.getEnvelopeInternal();
-				Envelope env2 = o2.getEnvelopeInternal();
-				double indice1 = env1.getMinX()/cellSize + cellSize*((int)env1.getMinY()/cellSize);
-				double indice2 = env2.getMinX()/cellSize + cellSize*((int)env2.getMinY()/cellSize);
-				return indice1>=indice2?1:indice1<indice2?-1:0;
-			}
-			@Override
-			public boolean equals(Object obj) {return this.equals(obj);}
-		};
-		int iteration = 1;
-		int nbIteration = 1 + (int)(Math.log(newGeometryCollection.size())/Math.log(4));
-		fireActionPerformed(new ActionEvent(singleton,0,I18N.getString("JtsAlgorithms.UnionAction"),nbIteration)); //$NON-NLS-1$
-		while (newGeometryCollection.size() > 1) {
-			fireActionPerformed(new ActionEvent(singleton,1,I18N.getString("JtsAlgorithms.UnionIterationAction"),iteration++)); //$NON-NLS-1$
-			if (logger.isTraceEnabled()) {
-			    logger.trace("Union (" + iteration + "/" + nbIteration + ")");  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
-			}
-			TreeSet<Geometry> treeSet = new TreeSet<Geometry>(comparator);
-			treeSet.addAll(newGeometryCollection);
-			newGeometryCollection = unionLineString(treeSet, 4);
-		}
-		fireActionPerformed(new ActionEvent(singleton,4,I18N.getString("JtsAlgorithms.UnionFinishedAction"))); //$NON-NLS-1$
-		return newGeometryCollection.get(0);
-	}
-	/**
-	 * Union des éléments d'un ensemble de LineStrings triées par groupes.
-	 * Par exemple, si la taille des groupes vaut 4, on effectue l'union des LineStrings 4 par 4.
-	 *
-	 * @param treeSet ensemble de LineStrings triées
-	 * @param groupSize taille des groupes sur lesquels on effectue l'union
-	 * @return liste des unions
-	 */
-	private static List<Geometry> unionLineString(TreeSet<Geometry> treeSet, int groupSize) {
-		List<Geometry> unionGeometryList = new ArrayList<Geometry>();
-		Geometry currUnion = null;
-		int size = treeSet.size();
-		int count = 0;
-		fireActionPerformed(new ActionEvent(singleton,2,I18N.getString("JtsAlgorithms.UnionDetailAction"),size)); //$NON-NLS-1$
-		for (Geometry geom:treeSet) {
-			if ((currUnion==null)||(count%groupSize==0)) currUnion = geom;
-			else {
-				currUnion = currUnion.union(geom);
-				if (groupSize-count%groupSize==1) unionGeometryList.add(currUnion);
-			}
-			fireActionPerformed(new ActionEvent(singleton,3,I18N.getString("JtsAlgorithms.UnionDetailIterationAction"),++count)); //$NON-NLS-1$
-			if (logger.isTraceEnabled()) {
-			    logger.trace(" "+(count)+" - "+size+" features");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-			}
-		}
-		if (groupSize-count%groupSize!=0) {
-			unionGeometryList.add(currUnion);
-		}
-		return unionGeometryList;
-	}
+  /**
+   * détermine le point d'un polygone le plus proche d'un autre point. Determine
+   * the closest point of a polygon to another given point.
+   * 
+   * @param pt un point, a point
+   * @param poly un polygone, a polygon
+   */
+  public static DirectPosition getClosestPoint(DirectPosition pt,
+      GM_Polygon poly) {
+    return JtsAlgorithms.getClosestPoint(pt, poly.exteriorLineString());
+  }
 
-	public static boolean isCCW(GM_LineString line) {
-		Coordinate[] coords = AdapterFactory.toCoordinateSequence(new GeometryFactory(), line.coord()).toCoordinateArray();
-		return CGAlgorithms.isCCW(coords);
-	}
+  /**
+   * détermine le point d'une ligne le plus proche d'un autre point. Determine
+   * the closest point of a line to another given point.
+   * 
+   * @param pt un point, a point
+   * @param l une ligne, a line
+   */
+  public static DirectPosition getClosestPoint(DirectPosition pt,
+      GM_LineString l) {
+    Point point = new GeometryFactory().createPoint(AdapterFactory
+        .toCoordinate(pt));
+    LineString line;
+    try {
+      line = (LineString) AdapterFactory.toGeometry(new GeometryFactory(), l);
+      Coordinate[] cp = (new DistanceOp(line, point)).nearestPoints();
+      return AdapterFactory.toDirectPosition(line.getFactory().createPoint(
+          cp[0]).getCoordinate());
+    } catch (Exception e) {
+    }
+    return null;
+  }
 
-	/**
-	 * tente d'appliquer filtre de douglas peucker a une geometrie.
-	 * en cas d'echec, renvoie la geometrie initiale
-	 * @param geom
-	 * @param seuil
-	 * @return the resulting Geometry after the application of the DouglasPeucker filter
-	 */
-	public static Geometry filtreDouglasPeucker(Geometry geom, double seuil){
-		if (seuil == 0.0) return (Geometry)geom.clone();
-		if (seuil <0.0) {
-			logger.warn(I18N.getString("JtsAlgorithms.DouglasPeuckerWithNegativeThreshold")+seuil); //$NON-NLS-1$
-			return geom;
-		}
+  /**
+   * détermine le point d'une ligne le plus loin d'une ligne de base. Determine
+   * the closest point of a line to another given line.
+   * 
+   * @param base la ligne de comparaison, the base line
+   * @param l une ligne, a line
+   */
+  public static DirectPosition getFurthestPoint(GM_LineString base,
+      GM_LineString l) {
+    try {
+      LineString baseLine = (LineString) AdapterFactory.toGeometry(
+          new GeometryFactory(), base);
+      LineString line = (LineString) AdapterFactory.toGeometry(
+          new GeometryFactory(), l);
+      double distanceMax = Double.MIN_VALUE;
+      Point pointLePlusLoin = null;
+      for (int i = 0; i < line.getNumPoints(); i++) {
+        Point p = line.getPointN(i);
+        double distance = p.distance(baseLine);
+        if (distance > distanceMax) {
+          distanceMax = distance;
+          pointLePlusLoin = p;
+        }
+      }
+      if (pointLePlusLoin != null) {
+        return AdapterFactory.toDirectPosition(pointLePlusLoin.getCoordinate());
+        // return
+        // AdapterFactory.toDirectPosition(JtsUtil.getPointLePlusProche(point,
+        // line).getCoordinate());
+      }
+    } catch (Exception e) {
+    }
+    return null;
+  }
 
-		Geometry g = DouglasPeuckerSimplifier.simplify(geom, seuil);
+  /**
+   * détermine les points les plus proches deux géométries. Les points sont
+   * donnés dans le même ordre que les deux géométries d'entrée. Compute the
+   * nearest points of two geometries. The points are presented in the same
+   * order as the input Geometries.
+   * 
+   * @param g1 une géométrie
+   * @param g2 une autre géométrie
+   * @return la liste des 2 points les plus proches
+   */
+  public static DirectPositionList getClosestPoints(GM_Object g1, GM_Object g2) {
+    try {
+      Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
+      Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
+      Coordinate[] coord = DistanceOp.nearestPoints(jtsGeom1, jtsGeom2);
+      DirectPosition dp1 = new DirectPosition(coord[0].x, coord[0].y);
+      DirectPosition dp2 = new DirectPosition(coord[1].x, coord[1].y);
+      DirectPositionList listePoints = new DirectPositionList();
+      listePoints.add(dp1);
+      listePoints.add(dp2);
+      return listePoints;
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N
+          .getString("JtsAlgorithms.ClosestPointsError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+    }
+    return null;
+  }
 
-		if ((g==null)||g.isEmpty()||!g.isValid()) {
-			logger.warn(I18N.getString("JtsAlgorithms.DouglasPeuckerError")); //$NON-NLS-1$
-			logger.warn(I18N.getString("JtsAlgorithms.DouglasPeuckerThreshold")+seuil); //$NON-NLS-1$
-			logger.warn(I18N.getString("JtsAlgorithms.Geometry")+geom); //$NON-NLS-1$
-			logger.warn(I18N.getString("JtsAlgorithms.Result")+g); //$NON-NLS-1$
-			return geom;
-		}
-		else if ( g.getGeometryType() != geom.getGeometryType()) {
-			logger.warn(I18N.getString("JtsAlgorithms.DouglasPeuckerWithDifferentTypesError")); //$NON-NLS-1$
-			logger.warn(I18N.getString("JtsAlgorithms.DouglasPeuckerThreshold")+seuil); //$NON-NLS-1$
-			logger.warn(I18N.getString("JtsAlgorithms.Geometry")+geom); //$NON-NLS-1$
-			logger.warn(I18N.getString("JtsAlgorithms.Result")+g); //$NON-NLS-1$
-			return geom;
-		}
-		else return g;
-	}
+  static JtsAlgorithms singleton = new JtsAlgorithms();
+  protected static EventListenerList listenerList = new EventListenerList();
 
-	/**
-	 * calcule fermeture de geometrie (juste buffer externe, puis interne)
-	 * @param geometry géométrie de départ
-	 * @param distance distance utilisée pour le buffer positif puis pour le buffer négatif
-	 * @param quadrantSegments nombre de segments utilisés pour la simplification par l'algorithme de Douglas-Peucker
-	 * @param endCapStyle type d'approximation utilisée pour la simplification par l'algorithme de Douglas-Peucker
-	 * @return la fermeture de la géométrie passée en paramètre
-	 */
-	public static Geometry fermeture(Geometry geometry, double distance, int quadrantSegments, int endCapStyle ) {
-		Geometry geom = geometry.buffer(distance,quadrantSegments,endCapStyle);
-		geom = geom.buffer(-distance,quadrantSegments,endCapStyle);
-		return geom;
-	}
-	public static Geometry fermeture(Geometry geometry, double distance, int quadrantSegments) {
-		return fermeture(geometry, distance, quadrantSegments, BufferParameters.CAP_ROUND);
-	}
+  /**
+   * Adds an <code>ActionListener</code>.
+   * @param l the <code>ActionListener</code> to be added
+   */
+  public static void addActionListener(ActionListener l) {
+    JtsAlgorithms.listenerList.add(ActionListener.class, l);
+  }
 
-	/**
-	 * Supprime les trous d'un polygone.
-	 * Remove the holes from a polygon.
-	 *
-	 * @param poly un polygone, a polygon
-	 */
-	public static Polygon supprimeTrous(Polygon poly){
-		return new Polygon((LinearRing)poly.getExteriorRing(), null, poly.getFactory());
-	}
+  /**
+   * Notifies all listeners that have registered interest for notification on
+   * this event type. The event instance is lazily created.
+   * @see EventListenerList
+   */
+  protected static void fireActionPerformed(ActionEvent event) {
+    // Guaranteed to return a non-null array
+    Object[] listeners = JtsAlgorithms.listenerList.getListenerList();
+    // Process the listeners last to first, notifying
+    // those that are interested in this event
+    for (int i = listeners.length - 2; i >= 0; i -= 2) {
+      if (listeners[i] == ActionListener.class) {
+        // Lazily create the event:
+        ((ActionListener) listeners[i + 1]).actionPerformed(event);
+      }
+    }
+  }
 
-    /**
-     * Supprime les trous d'un multipolygone, i.e. supprime les trous de tous
-     * les polygones d'un multipolygone.
-     * Remove the holes from a multipolygon.
-     * @see #supprimeTrous(Polygon)
-     * @param mp un multipolyone, a multipolygon
-     */
-	public static MultiPolygon supprimeTrous(MultiPolygon mp){
-		Polygon[] polys = new Polygon[mp.getNumGeometries()];
-		for (int i = 0; i < mp.getNumGeometries(); i++) {
-		    polys[i] = supprimeTrous((Polygon) mp.getGeometryN(i));
-		}
-		return (new GeometryFactory()).createMultiPolygon(polys);
-	}
-    /**
-     * Builds on offset curve for the given {@link GM_LineString}. A positive offset
-     * builds an offset curve on the left-hand side of the reference
-     * {@link GM_LineString}. Negative means right.
-     * @param line reference {@link GM_LineString}
-     * @param distance offset distance
-     * @return
-     *         a {@link GM_MultiCurve} at the given offset of the reference
-     *         {@link GM_LineString}
-     */
-    public static GM_MultiCurve<GM_LineString> offsetCurve(GM_LineString line,
-            double distance) {
-        double d = Math.abs(distance);
-        int orientationIndex = (int) (d / distance);
-        try {
-            // removing duplicate coordinates from the input linestring.
-            LineString lineString = getLineStringWithoutDuplicates(
-                    (LineString) JtsGeOxygene.makeJtsGeom(line));
-            Geometry buffer = lineString.buffer(d, 4,
-                    BufferParameters.CAP_ROUND);
-            Polygon polygon = null;
-            if (!(buffer instanceof Polygon)) {
-                logger.error("Can't compute offsetcurve of " + //$NON-NLS-1$
-                        buffer.getGeometryType());
-                return null;
-            }
-            polygon = (Polygon) buffer;
-            GM_MultiCurve<GM_LineString> result = new GM_MultiCurve<GM_LineString>();
-            // build the offset curve for the exterior ring
-            GM_LineString r = getOffsetCurveFromRing(polygon.getExteriorRing(), lineString,
-                    orientationIndex, d);
-            if ((r != null) && !r.isEmpty()) { result.add(r); }
-            // go through all interior rings
-            for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
-                LineString ring = polygon.getInteriorRingN(i);
-                // build the offset curve for the interior ring
-                r = getOffsetCurveFromRing(ring, lineString,
-                        orientationIndex, d);
-                if ((r != null) && !r.isEmpty()) { result.add(r); }
-            }
-            return result;
-        } catch (Exception e) { e.printStackTrace(); }
+  /**
+   * Union d'un tableau de Polygones
+   * @param geometryArray tableau de Polygones JTS
+   * @return union des Polygones
+   */
+  public static Geometry union(Geometry[] geometryArray) {
+    List<Geometry> liste = new ArrayList<Geometry>();
+    for (Geometry element : geometryArray) {
+      liste.add(element);
+    }
+    return JtsAlgorithms.union(liste);
+  }
+
+  /**
+   * Union d'une collection de Polygones
+   * @param geometryCollection collection de Polygones JTS
+   * @return union des Polygones
+   */
+  public static Geometry union(Collection<Geometry> geometryCollection) {
+    Collection<Geometry> newGeometryCollection = geometryCollection;
+    final int cellSize = 1 + (int) Math.sqrt(newGeometryCollection.size());
+    Comparator<Geometry> comparator = new Comparator<Geometry>() {
+      @Override
+      public int compare(Geometry o1, Geometry o2) {
+        if (o1 == null || o2 == null) {
+          return 0;
+        }
+        Envelope env1 = o1.getEnvelopeInternal();
+        Envelope env2 = o2.getEnvelopeInternal();
+        double indice1 = env1.getMinX() / cellSize + cellSize
+            * ((int) env1.getMinY() / cellSize);
+        double indice2 = env2.getMinX() / cellSize + cellSize
+            * ((int) env2.getMinY() / cellSize);
+        return indice1 >= indice2 ? 1 : indice1 < indice2 ? -1 : 0;
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+        return this.equals(obj);
+      }
+    };
+    int iteration = 1;
+    int nbIteration = 1 + (int) (Math.log(newGeometryCollection.size()) / Math
+        .log(4));
+    JtsAlgorithms.fireActionPerformed(new ActionEvent(JtsAlgorithms.singleton,
+        0, I18N.getString("JtsAlgorithms.UnionAction"), nbIteration)); //$NON-NLS-1$
+    while (newGeometryCollection.size() > 1) {
+      JtsAlgorithms.fireActionPerformed(new ActionEvent(
+          JtsAlgorithms.singleton, 1, I18N
+              .getString("JtsAlgorithms.UnionIterationAction"), iteration++)); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isTraceEnabled()) {
+        JtsAlgorithms.logger
+            .trace("Union (" + iteration + "/" + nbIteration + ")"); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+      }
+      TreeSet<Geometry> treeSet = new TreeSet<Geometry>(comparator);
+      treeSet.addAll(newGeometryCollection);
+      newGeometryCollection = JtsAlgorithms.union(treeSet, 4);
+    }
+    List<Geometry> geometries = new ArrayList<Geometry>();
+    for (Geometry geom : newGeometryCollection) {
+      if (geom instanceof Polygon || geom instanceof LineString
+          || geom instanceof Point) {
+        geometries.add(geom);
+      } else {
+        if (geom instanceof MultiPolygon || geom instanceof MultiLineString
+            || geom instanceof MultiPoint) {
+          GeometryCollection collection = (GeometryCollection) geom;
+          for (int index = 0; index < collection.getNumGeometries(); index++) {
+            geometries.add(collection.getGeometryN(index));
+          }
+        } else {
+          JtsAlgorithms.logger
+              .error(I18N.getString("JtsAlgorithms.UnhandledGeometryType") + geom.getGeometryType()); //$NON-NLS-1$
+        }
+      }
+    }
+    JtsAlgorithms.fireActionPerformed(new ActionEvent(JtsAlgorithms.singleton,
+        4, I18N.getString("JtsAlgorithms.UnionFinishedAction"))); //$NON-NLS-1$
+    if (geometries.size() == 1) {
+      return geometries.get(0);
+    }
+    if (geometries.isEmpty()) {
+      return new GeometryFactory().createGeometryCollection(new Geometry[0]);
+    }
+    if (geometries.get(0) instanceof Polygon) {
+      return newGeometryCollection.iterator().next().getFactory()
+          .createMultiPolygon(geometries.toArray(new Polygon[0]));
+    }
+    if (geometries.get(0) instanceof LineString) {
+      return newGeometryCollection.iterator().next().getFactory()
+          .createMultiLineString(geometries.toArray(new LineString[0]));
+    }
+    if (geometries.get(0) instanceof Point) {
+      return newGeometryCollection.iterator().next().getFactory()
+          .createMultiPoint(geometries.toArray(new Point[0]));
+    }
+    return newGeometryCollection.iterator().next().getFactory()
+        .createGeometryCollection(geometries.toArray(new Geometry[0]));
+  }
+
+  /**
+   * Union des éléments d'un ensemble de Polygones triés par groupes. Par
+   * exemple, si la taille des groupes vaut 4, on effectue l'union des Polygones
+   * 4 par 4.
+   * 
+   * @param treeSet ensemble de Polygones triés
+   * @param groupSize taille des groupes sur lesquels on effectue l'union
+   * @return liste des unions
+   */
+  private static List<Geometry> union(TreeSet<Geometry> treeSet, int groupSize) {
+    List<Geometry> unionGeometryList = new ArrayList<Geometry>();
+    Geometry currUnion = null;
+    int size = treeSet.size();
+    int count = 0;
+    JtsAlgorithms.fireActionPerformed(new ActionEvent(JtsAlgorithms.singleton,
+        2, I18N.getString("JtsAlgorithms.UnionDetailAction"), size)); //$NON-NLS-1$
+    for (Geometry geom : treeSet) {
+      if ((currUnion == null) || (count % groupSize == 0)) {
+        currUnion = geom;
+      } else {
+        currUnion = currUnion.union(geom);
+        if (groupSize - count % groupSize == 1) {
+          unionGeometryList.add(currUnion);
+        }
+      }
+      JtsAlgorithms.fireActionPerformed(new ActionEvent(
+          JtsAlgorithms.singleton, 3, I18N
+              .getString("JtsAlgorithms.UnionDetailIterationAction"), ++count)); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isTraceEnabled()) {
+        JtsAlgorithms.logger.trace(" " + (count) + " - " + size + " features"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+      }
+    }
+    if (groupSize - count % groupSize != 0) {
+      unionGeometryList.add(currUnion);
+    }
+    return unionGeometryList;
+  }
+
+  /**
+   * Union d'une collection de LineStrings.
+   * @param geometryCollection collection de LineStrings
+   * @return Union des LineString (une LineString)
+   */
+  public static Geometry unionLineString(List<Geometry> geometryCollection) {
+    List<Geometry> newGeometryCollection = geometryCollection;
+    final int cellSize = 1 + (int) Math.sqrt(newGeometryCollection.size());
+    Comparator<Geometry> comparator = new Comparator<Geometry>() {
+      @Override
+      public int compare(Geometry o1, Geometry o2) {
+        if (o1 == null || o2 == null) {
+          return 0;
+        }
+        Envelope env1 = o1.getEnvelopeInternal();
+        Envelope env2 = o2.getEnvelopeInternal();
+        double indice1 = env1.getMinX() / cellSize + cellSize
+            * ((int) env1.getMinY() / cellSize);
+        double indice2 = env2.getMinX() / cellSize + cellSize
+            * ((int) env2.getMinY() / cellSize);
+        return indice1 >= indice2 ? 1 : indice1 < indice2 ? -1 : 0;
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+        return this.equals(obj);
+      }
+    };
+    int iteration = 1;
+    int nbIteration = 1 + (int) (Math.log(newGeometryCollection.size()) / Math
+        .log(4));
+    JtsAlgorithms.fireActionPerformed(new ActionEvent(JtsAlgorithms.singleton,
+        0, I18N.getString("JtsAlgorithms.UnionAction"), nbIteration)); //$NON-NLS-1$
+    while (newGeometryCollection.size() > 1) {
+      JtsAlgorithms.fireActionPerformed(new ActionEvent(
+          JtsAlgorithms.singleton, 1, I18N
+              .getString("JtsAlgorithms.UnionIterationAction"), iteration++)); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isTraceEnabled()) {
+        JtsAlgorithms.logger
+            .trace("Union (" + iteration + "/" + nbIteration + ")"); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+      }
+      TreeSet<Geometry> treeSet = new TreeSet<Geometry>(comparator);
+      treeSet.addAll(newGeometryCollection);
+      newGeometryCollection = JtsAlgorithms.unionLineString(treeSet, 4);
+    }
+    JtsAlgorithms.fireActionPerformed(new ActionEvent(JtsAlgorithms.singleton,
+        4, I18N.getString("JtsAlgorithms.UnionFinishedAction"))); //$NON-NLS-1$
+    return newGeometryCollection.get(0);
+  }
+
+  /**
+   * Union des éléments d'un ensemble de LineStrings triées par groupes. Par
+   * exemple, si la taille des groupes vaut 4, on effectue l'union des
+   * LineStrings 4 par 4.
+   * 
+   * @param treeSet ensemble de LineStrings triées
+   * @param groupSize taille des groupes sur lesquels on effectue l'union
+   * @return liste des unions
+   */
+  private static List<Geometry> unionLineString(TreeSet<Geometry> treeSet,
+      int groupSize) {
+    List<Geometry> unionGeometryList = new ArrayList<Geometry>();
+    Geometry currUnion = null;
+    int size = treeSet.size();
+    int count = 0;
+    JtsAlgorithms.fireActionPerformed(new ActionEvent(JtsAlgorithms.singleton,
+        2, I18N.getString("JtsAlgorithms.UnionDetailAction"), size)); //$NON-NLS-1$
+    for (Geometry geom : treeSet) {
+      if ((currUnion == null) || (count % groupSize == 0)) {
+        currUnion = geom;
+      } else {
+        currUnion = currUnion.union(geom);
+        if (groupSize - count % groupSize == 1) {
+          unionGeometryList.add(currUnion);
+        }
+      }
+      JtsAlgorithms.fireActionPerformed(new ActionEvent(
+          JtsAlgorithms.singleton, 3, I18N
+              .getString("JtsAlgorithms.UnionDetailIterationAction"), ++count)); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isTraceEnabled()) {
+        JtsAlgorithms.logger.trace(" " + (count) + " - " + size + " features"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+      }
+    }
+    if (groupSize - count % groupSize != 0) {
+      unionGeometryList.add(currUnion);
+    }
+    return unionGeometryList;
+  }
+
+  public static boolean isCCW(GM_LineString line) {
+    Coordinate[] coords = AdapterFactory.toCoordinateSequence(
+        new GeometryFactory(), line.coord()).toCoordinateArray();
+    return CGAlgorithms.isCCW(coords);
+  }
+
+  /**
+   * tente d'appliquer filtre de douglas peucker a une geometrie. en cas
+   * d'echec, renvoie la geometrie initiale
+   * @param geom
+   * @param seuil
+   * @return the resulting Geometry after the application of the DouglasPeucker
+   *         filter
+   */
+  public static Geometry filtreDouglasPeucker(Geometry geom, double seuil) {
+    if (seuil == 0.0) {
+      return (Geometry) geom.clone();
+    }
+    if (seuil < 0.0) {
+      JtsAlgorithms.logger
+          .warn(I18N
+              .getString("JtsAlgorithms.DouglasPeuckerWithNegativeThreshold") + seuil); //$NON-NLS-1$
+      return geom;
+    }
+
+    Geometry g = DouglasPeuckerSimplifier.simplify(geom, seuil);
+
+    if ((g == null) || g.isEmpty() || !g.isValid()) {
+      JtsAlgorithms.logger.warn(I18N
+          .getString("JtsAlgorithms.DouglasPeuckerError")); //$NON-NLS-1$
+      JtsAlgorithms.logger.warn(I18N
+          .getString("JtsAlgorithms.DouglasPeuckerThreshold") + seuil); //$NON-NLS-1$
+      JtsAlgorithms.logger
+          .warn(I18N.getString("JtsAlgorithms.Geometry") + geom); //$NON-NLS-1$
+      JtsAlgorithms.logger.warn(I18N.getString("JtsAlgorithms.Result") + g); //$NON-NLS-1$
+      return geom;
+    } else if (g.getGeometryType() != geom.getGeometryType()) {
+      JtsAlgorithms.logger.warn(I18N
+          .getString("JtsAlgorithms.DouglasPeuckerWithDifferentTypesError")); //$NON-NLS-1$
+      JtsAlgorithms.logger.warn(I18N
+          .getString("JtsAlgorithms.DouglasPeuckerThreshold") + seuil); //$NON-NLS-1$
+      JtsAlgorithms.logger
+          .warn(I18N.getString("JtsAlgorithms.Geometry") + geom); //$NON-NLS-1$
+      JtsAlgorithms.logger.warn(I18N.getString("JtsAlgorithms.Result") + g); //$NON-NLS-1$
+      return geom;
+    } else {
+      return g;
+    }
+  }
+
+  /**
+   * calcule fermeture de geometrie (juste buffer externe, puis interne)
+   * @param geometry géométrie de départ
+   * @param distance distance utilisée pour le buffer positif puis pour le
+   *          buffer négatif
+   * @param quadrantSegments nombre de segments utilisés pour la simplification
+   *          par l'algorithme de Douglas-Peucker
+   * @param endCapStyle type d'approximation utilisée pour la simplification par
+   *          l'algorithme de Douglas-Peucker
+   * @return la fermeture de la géométrie passée en paramètre
+   */
+  public static Geometry fermeture(Geometry geometry, double distance,
+      int quadrantSegments, int endCapStyle) {
+    Geometry geom = geometry.buffer(distance, quadrantSegments, endCapStyle);
+    geom = geom.buffer(-distance, quadrantSegments, endCapStyle);
+    return geom;
+  }
+
+  public static Geometry fermeture(Geometry geometry, double distance,
+      int quadrantSegments) {
+    return JtsAlgorithms.fermeture(geometry, distance, quadrantSegments,
+        BufferParameters.CAP_ROUND);
+  }
+
+  /**
+   * Supprime les trous d'un polygone. Remove the holes from a polygon.
+   * 
+   * @param poly un polygone, a polygon
+   */
+  public static Polygon supprimeTrous(Polygon poly) {
+    return new Polygon((LinearRing) poly.getExteriorRing(), null, poly
+        .getFactory());
+  }
+
+  /**
+   * Supprime les trous d'un multipolygone, i.e. supprime les trous de tous les
+   * polygones d'un multipolygone. Remove the holes from a multipolygon.
+   * @see #supprimeTrous(Polygon)
+   * @param mp un multipolyone, a multipolygon
+   */
+  public static MultiPolygon supprimeTrous(MultiPolygon mp) {
+    Polygon[] polys = new Polygon[mp.getNumGeometries()];
+    for (int i = 0; i < mp.getNumGeometries(); i++) {
+      polys[i] = JtsAlgorithms.supprimeTrous((Polygon) mp.getGeometryN(i));
+    }
+    return (new GeometryFactory()).createMultiPolygon(polys);
+  }
+
+  /**
+   * Builds on offset curve for the given {@link GM_LineString}. A positive
+   * offset builds an offset curve on the left-hand side of the reference
+   * {@link GM_LineString}. Negative means right.
+   * @param line reference {@link GM_LineString}
+   * @param distance offset distance
+   * @return a {@link GM_MultiCurve} at the given offset of the reference
+   *         {@link GM_LineString}
+   */
+  public static GM_MultiCurve<GM_LineString> offsetCurve(GM_LineString line,
+      double distance) {
+    double d = Math.abs(distance);
+    int orientationIndex = (int) (d / distance);
+    try {
+      // removing duplicate coordinates from the input linestring.
+      LineString lineString = JtsAlgorithms
+          .getLineStringWithoutDuplicates((LineString) JtsGeOxygene
+              .makeJtsGeom(line));
+      Geometry buffer = lineString.buffer(d, 4, BufferParameters.CAP_ROUND);
+      Polygon polygon = null;
+      if (!(buffer instanceof Polygon)) {
+        JtsAlgorithms.logger.error("Can't compute offsetcurve of " + //$NON-NLS-1$
+            buffer.getGeometryType());
         return null;
-    }
-    /**
-     * Remove duplicate coordinates from the input {@link GM_LineString}.
-     * @param lineString input {@link GM_LineString}
-     * @return a {@link GM_LineString} without duplicated coordinates
-     */
-    private static LineString getLineStringWithoutDuplicates(
-            LineString lineString) {
-        Coordinate[] coordinateArray = lineString.getCoordinates();
-        List<Coordinate> coordinates = new ArrayList<Coordinate>();
-        // build a list of linestring coordinates and remove duplicates
-        Coordinate previous = coordinateArray[0];
-        coordinates.add(previous);
-        for (int i = 1; i < coordinateArray.length; i++) {
-            if (!coordinateArray[i].equals2D(previous)) {
-                coordinates.add(coordinateArray[i]);
-                previous = coordinateArray[i];
-            }
+      }
+      polygon = (Polygon) buffer;
+      GM_MultiCurve<GM_LineString> result = new GM_MultiCurve<GM_LineString>();
+      // build the offset curve for the exterior ring
+      GM_LineString r = JtsAlgorithms.getOffsetCurveFromRing(polygon
+          .getExteriorRing(), lineString, orientationIndex, d);
+      if ((r != null) && !r.isEmpty()) {
+        result.add(r);
+      }
+      // go through all interior rings
+      for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
+        LineString ring = polygon.getInteriorRingN(i);
+        // build the offset curve for the interior ring
+        r = JtsAlgorithms.getOffsetCurveFromRing(ring, lineString,
+            orientationIndex, d);
+        if ((r != null) && !r.isEmpty()) {
+          result.add(r);
         }
-        return lineString.getFactory().createLineString(
-                coordinates.toArray(new Coordinate[coordinates.size()]));
+      }
+      return result;
+    } catch (Exception e) {
+      e.printStackTrace();
     }
-    /**
-     * Measure the maximum error in the buffer computation. This error is
-     * measured by computing the distance between all point in the buffer
-     * {@link LineString} and the input {@link LineString} used to compute
-     * the buffer.
-     * @param bufferRing one of the buffer rings
-     * @param line input {@link LineString} used to compute the buffer
-     * @param distance distance used to compute the buffer
-     * @return maximum error in the buffer computation
-     */
-    public static double bufferError(LineString bufferRing, LineString line,
-            double distance) {
-        double maxError = 0;
-        for (Coordinate c : bufferRing.getCoordinates()) {
-            double d = line.distance(line.getFactory().createPoint(c));
-            maxError = Math.max(maxError, Math.abs(d - distance));
-        }
-        return maxError;
-    }
+    return null;
+  }
 
-    /**
-     * Build an offset curve using the given {@link LineString} and the
-     * reference {@link LineString}.
-     * @param ring {@link LineString} used to build the offsetcurve. These come
-     *            from a linear ring (exterior or interior)
-     * @param line the reference {@link LineString}
-     * @param orientationIndex orientation of the offset curve to build
-     * @param distance offset distance
-     * @param tolerance tolerance used to determine on which side of the
-     *            linestring a point lies
-     * @return the offsetcurve
-     */
-    private static GM_LineString getOffsetCurveFromRing(
-            LineString ring, LineString line,
-            int orientationIndex, double distance) {
-        // go through the coordinates of the buffer and select the range
-        // of coordinates of the right side
-        List<Coordinate> coordinateBuffer = null;
-        List<Coordinate> coordinateList = new ArrayList<Coordinate>();
-        Coordinate previousCoordinate = ring.getCoordinateN(0);
-        double tolerance = bufferError(ring, line, distance);
-        if (tolerance > 0) {
-            double e = Math.pow(10,Math.floor(Math.log10(tolerance)));
-            tolerance = e * Math.ceil(tolerance / e);
+  /**
+   * Remove duplicate coordinates from the input {@link GM_LineString}.
+   * @param lineString input {@link GM_LineString}
+   * @return a {@link GM_LineString} without duplicated coordinates
+   */
+  private static LineString getLineStringWithoutDuplicates(LineString lineString) {
+    Coordinate[] coordinateArray = lineString.getCoordinates();
+    List<Coordinate> coordinates = new ArrayList<Coordinate>();
+    // build a list of linestring coordinates and remove duplicates
+    Coordinate previous = coordinateArray[0];
+    coordinates.add(previous);
+    for (int i = 1; i < coordinateArray.length; i++) {
+      if (!coordinateArray[i].equals2D(previous)) {
+        coordinates.add(coordinateArray[i]);
+        previous = coordinateArray[i];
+      }
+    }
+    return lineString.getFactory().createLineString(
+        coordinates.toArray(new Coordinate[coordinates.size()]));
+  }
+
+  /**
+   * Measure the maximum error in the buffer computation. This error is measured
+   * by computing the distance between all point in the buffer
+   * {@link LineString} and the input {@link LineString} used to compute the
+   * buffer.
+   * @param bufferRing one of the buffer rings
+   * @param line input {@link LineString} used to compute the buffer
+   * @param distance distance used to compute the buffer
+   * @return maximum error in the buffer computation
+   */
+  public static double bufferError(LineString bufferRing, LineString line,
+      double distance) {
+    double maxError = 0;
+    for (Coordinate c : bufferRing.getCoordinates()) {
+      double d = line.distance(line.getFactory().createPoint(c));
+      maxError = Math.max(maxError, Math.abs(d - distance));
+    }
+    return maxError;
+  }
+
+  /**
+   * Build an offset curve using the given {@link LineString} and the reference
+   * {@link LineString}.
+   * @param ring {@link LineString} used to build the offsetcurve. These come
+   *          from a linear ring (exterior or interior)
+   * @param line the reference {@link LineString}
+   * @param orientationIndex orientation of the offset curve to build
+   * @param distance offset distance
+   * @param tolerance tolerance used to determine on which side of the
+   *          linestring a point lies
+   * @return the offsetcurve
+   */
+  private static GM_LineString getOffsetCurveFromRing(LineString ring,
+      LineString line, int orientationIndex, double distance) {
+    // go through the coordinates of the buffer and select the range
+    // of coordinates of the right side
+    List<Coordinate> coordinateBuffer = null;
+    List<Coordinate> coordinateList = new ArrayList<Coordinate>();
+    Coordinate previousCoordinate = ring.getCoordinateN(0);
+    double tolerance = JtsAlgorithms.bufferError(ring, line, distance);
+    if (tolerance > 0) {
+      double e = Math.pow(10, Math.floor(Math.log10(tolerance)));
+      tolerance = e * Math.ceil(tolerance / e);
+    }
+    int previousOrientation = JtsAlgorithms.orientationIndex(
+        previousCoordinate, line, tolerance);
+    if (previousOrientation == orientationIndex) {
+      coordinateList.add(previousCoordinate);
+    }
+    int lastNonNullOrientation = previousOrientation;
+    for (int i = 1; i < ring.getNumPoints(); i++) {
+      Coordinate currentCoordinate = ring.getCoordinateN(i);
+      int currentOrientation = JtsAlgorithms.orientationIndex(
+          currentCoordinate, line, tolerance);
+      if (currentOrientation == 0) {
+        if (lastNonNullOrientation == orientationIndex) {
+          // undetermied orientation but the last determined
+          // orientation was the proper one
+          coordinateList.add(currentCoordinate);
         }
-        int previousOrientation = orientationIndex(previousCoordinate,
-                line, tolerance);
-        if (previousOrientation == orientationIndex) {
+      } else {
+        if (currentOrientation == orientationIndex) {
+          // the new orientation is the targetted one
+          if (previousOrientation == 0
+              && lastNonNullOrientation != orientationIndex) {
+            // the previous coordinate was undetermined
             coordinateList.add(previousCoordinate);
+          }
+          coordinateList.add(currentCoordinate);
+        } else {
+          if (currentOrientation == -orientationIndex
+              && !coordinateList.isEmpty()) {
+            // we switched to the other side
+            // we used a buffer in case we started in the
+            // middle of the targeted offset curve
+            coordinateBuffer = coordinateList;
+            coordinateList = new ArrayList<Coordinate>();
+          }
         }
-        int lastNonNullOrientation = previousOrientation;
-        for (int i = 1; i < ring.getNumPoints(); i++) {
-            Coordinate currentCoordinate = ring.getCoordinateN(i);
-            int currentOrientation = orientationIndex(currentCoordinate,
-                    line, tolerance);
-            if (currentOrientation == 0) {
-                if (lastNonNullOrientation == orientationIndex) {
-                    // undetermied orientation but the last determined
-                    // orientation was the proper one
-                    coordinateList.add(currentCoordinate);
-                }
-            } else {
-                if (currentOrientation == orientationIndex) {
-                    // the new orientation is the targetted one
-                    if (previousOrientation == 0
-                            && lastNonNullOrientation != orientationIndex) {
-                        // the previous coordinate was undetermined
-                        coordinateList.add(previousCoordinate);
-                    }
-                    coordinateList.add(currentCoordinate);
-                } else {
-                    if (currentOrientation == -orientationIndex
-                            && !coordinateList.isEmpty()) {
-                        // we switched to the other side
-                        // we used a buffer in case we started in the
-                        // middle of the targeted offset curve
-                        coordinateBuffer = coordinateList;
-                        coordinateList = new ArrayList<Coordinate>();
-                    }
-                }
-            }
-            previousOrientation = currentOrientation;
-            previousCoordinate = currentCoordinate;
-            if (currentOrientation != 0) {
-                lastNonNullOrientation = currentOrientation;
-            }
-        }
-        if (coordinateList.isEmpty() && coordinateBuffer == null) {
-            return null;
-        }
-        if (coordinateBuffer != null && !coordinateBuffer.isEmpty()) {
-            coordinateList.addAll(coordinateBuffer);
-        }
-        // build the linestring using the determined range of coordinates
-        if (coordinateList.size() < 2) { return null; }
-        // remove the points on the round caps
-        boolean cap = true;
-        while (cap) {
-            if (coordinateList.size() < 2) {
-                return null;
-            }
-            Coordinate c1 = coordinateList.get(0);
-            Coordinate c2 = coordinateList.get(1);
-            cap = ((c1.distance(line.getCoordinateN(0)) < distance + tolerance) && (c2
-                    .distance(line.getCoordinateN(0)) < distance + tolerance))
-                    || ((c1.distance(line.getCoordinateN(line.getNumPoints() - 1)) < distance
-                            + tolerance) && (c2.distance(line
-                            .getCoordinateN(line.getNumPoints() - 1)) < distance
-                            + tolerance));
-            if (cap) {
-                coordinateList.remove(0);
-            }
-        }
-        cap = true;
-        while (cap) {
-            if (coordinateList.size() < 2) {
-                return null;
-            }
-            Coordinate c1 = coordinateList.get(coordinateList.size() - 1);
-            Coordinate c2 = coordinateList.get(coordinateList.size() - 2);
-            cap = ((c1.distance(line.getCoordinateN(0)) < distance + tolerance) && (c2
-                    .distance(line.getCoordinateN(0)) < distance + tolerance))
-                    || ((c1.distance(line.getCoordinateN(line.getNumPoints() - 1)) < distance
-                            + tolerance) && (c2.distance(line
-                            .getCoordinateN(line.getNumPoints() - 1)) < distance
-                            + tolerance));
-            if (cap) {
-                coordinateList.remove(coordinateList.size() - 1);
-            }
-        }
-        // 2 coordinates are the same
-        if (coordinateList.size() == 2
-                && coordinateList.get(0).equals2D(coordinateList.get(1))) {
-            return null;
-        }
-        GM_LineString result = new GM_LineString(AdapterFactory
-                .toDirectPositionList(coordinateList
-                        .toArray(new Coordinate[coordinateList.size()])));
-        return result;
+      }
+      previousOrientation = currentOrientation;
+      previousCoordinate = currentCoordinate;
+      if (currentOrientation != 0) {
+        lastNonNullOrientation = currentOrientation;
+      }
     }
-
-    /**
-     * Determine if the {@link Coordinate} is on the round cap of the buffer
-     * computed from the input {@link LineString} and the input distance.
-     * To determine that, it has to be at the given distance to the first or
-     * last point of the input {@link LineString} but closer to the first or
-     * last line segments.
-     * @param c a {@link Coordinate}
-     * @param line the input {@link LineString}
-     * @param distance distance used to compute the buffer
-     * @param tolerance tolerance used to compare distances
-     * @param startCoordinate if true, used the first point of the input
-     *            {@link LineString}
-     * @return true if the input {@link Coordinate} is on the round cap
-     */
-    private static boolean isOnRoundCap(Coordinate c, LineString line,
-            double distance, double tolerance, boolean startCoordinate) {
-        Coordinate c1 = startCoordinate ? line.getCoordinateN(0) : line.getCoordinateN(line
-                .getNumPoints() - 1);
-        double d = c.distance(c1);
-        if (d > distance - tolerance && d < distance + tolerance) {
-            Coordinate c2 = startCoordinate ? line.getCoordinateN(1) : line.getCoordinateN(line
-                    .getNumPoints() - 2);
-            LineSegment l = new LineSegment(c2, c1);
-            d = l.distancePerpendicular(c);
-            return (d < distance - tolerance);
-        }
-        return false;
+    if (coordinateList.isEmpty() && coordinateBuffer == null) {
+      return null;
     }
-    /**
-     * Determine the orientation of a {@link Coordinate} relative to a
-     * {@link LineString}.
-     * @param c coordinate
-     * @param line the reference linestring
-     * @param tolerance tolerance used to determine the closest line segments
-     * @return +1 if the coordinate is on the left, -1 if it is on the right,
-     * 0 otherwise.
-     */
-    public static int orientationIndex(Coordinate c,
-            LineString line, double tolerance) {
-        double distanceMin = line.distance(line.getFactory().createPoint(c));
-        List<Integer> orientations = new ArrayList<Integer>();
-        int previousOrientation = 0;
-        Coordinate previousCoordinate = null;
-        for (int i = 0; i < line.getNumPoints() - 1; i++) {
-            Coordinate coordinate1  = line.getCoordinateN(i);
-            Coordinate coordinate2  = line.getCoordinateN(i+1);
-            // test if the coordinate is duplicated in the linestring
-            if (!coordinate1.equals2D(coordinate2)) {
-                LineSegment segment = new LineSegment(coordinate1, coordinate2);
-                Coordinate closestPoint = segment.closestPoint(c);
-                double d = closestPoint.distance(c);
-                if (d <= distanceMin + tolerance) {
-                    int orientation = segment.orientationIndex(c);
-                    if (line.isCoordinate(closestPoint)) {
-                        // the closest coordinate is on the line
-                        // if it is the second point (i+1), we will deal with
-                        // it next iteration
-                        if (closestPoint.equals2D(coordinate1)) {
-                            // if there was a line segment before and it had a different orientation
-							if (previousCoordinate != null
-									&& orientation != previousOrientation) {
-                                orientations.add(new Integer(-CGAlgorithms
-                                        .orientationIndex(previousCoordinate,
-                                        		coordinate1,
-                                                coordinate2)));
-                            } else {
-                                orientations.add(new Integer(orientation));
-                            }
-                        } else {
-                            // the closest point is the second point but there
-                            // is no next iteration
-                            if (closestPoint.equals2D(coordinate2)
-                                    && i == line.getNumPoints() - 2) {
-                                orientations.add(new Integer(orientation));
-                            }
-                        }
-                    } else {
-                        // the closest coordinate is not on the line
-                        orientations.add(new Integer(orientation));
-                    }
-                    previousCoordinate = coordinate1;
-                    previousOrientation = orientation;
-                }
-            }
-        }
-        if (orientations.isEmpty()) {
-        	logger.info("orientations empty for " + line.getFactory().createPoint(c));
-        	return 0;
-        }
-        Iterator<Integer> orientationIterator = orientations.iterator();
-        int orientationIndex = orientationIterator.next().intValue();
-        while (orientationIterator.hasNext()) {
-            int orientation = orientationIterator.next().intValue();
-            if (orientation != orientationIndex) {
-                return 0;
-            }
-        }
-        return orientationIndex;
+    if (coordinateBuffer != null && !coordinateBuffer.isEmpty()) {
+      coordinateList.addAll(coordinateBuffer);
     }
-    public static GM_LineString cap(GM_LineString line,
-            double distance, boolean start) {
-        double d = Math.abs(distance);
-        try {
-            // removing duplicate coordinates from the input linestring.
-            LineString lineString = getLineStringWithoutDuplicates(
-                    (LineString) JtsGeOxygene.makeJtsGeom(line));
-            Geometry buffer = lineString.buffer(d, 4,
-                    BufferParameters.CAP_ROUND);
-            Polygon polygon = null;
-            if (!(buffer instanceof Polygon)) {
-                logger.error("Can't compute offsetcurve of " + //$NON-NLS-1$
-                        buffer.getGeometryType());
-                return null;
-            }
-            polygon = (Polygon) buffer;
-            // build the offset curve for the exterior ring
-            GM_LineString r = getCapFromRing(polygon.getExteriorRing(),
-                    lineString, d, start);
-            return r;
-        } catch (Exception e) { e.printStackTrace(); }
+    // build the linestring using the determined range of coordinates
+    if (coordinateList.size() < 2) {
+      return null;
+    }
+    // remove the points on the round caps
+    boolean cap = true;
+    while (cap) {
+      if (coordinateList.size() < 2) {
         return null;
+      }
+      Coordinate c1 = coordinateList.get(0);
+      Coordinate c2 = coordinateList.get(1);
+      cap = ((c1.distance(line.getCoordinateN(0)) < distance + tolerance) && (c2
+          .distance(line.getCoordinateN(0)) < distance + tolerance))
+          || ((c1.distance(line.getCoordinateN(line.getNumPoints() - 1)) < distance
+              + tolerance) && (c2.distance(line.getCoordinateN(line
+              .getNumPoints() - 1)) < distance + tolerance));
+      if (cap) {
+        coordinateList.remove(0);
+      }
     }
+    cap = true;
+    while (cap) {
+      if (coordinateList.size() < 2) {
+        return null;
+      }
+      Coordinate c1 = coordinateList.get(coordinateList.size() - 1);
+      Coordinate c2 = coordinateList.get(coordinateList.size() - 2);
+      cap = ((c1.distance(line.getCoordinateN(0)) < distance + tolerance) && (c2
+          .distance(line.getCoordinateN(0)) < distance + tolerance))
+          || ((c1.distance(line.getCoordinateN(line.getNumPoints() - 1)) < distance
+              + tolerance) && (c2.distance(line.getCoordinateN(line
+              .getNumPoints() - 1)) < distance + tolerance));
+      if (cap) {
+        coordinateList.remove(coordinateList.size() - 1);
+      }
+    }
+    // 2 coordinates are the same
+    if (coordinateList.size() == 2
+        && coordinateList.get(0).equals2D(coordinateList.get(1))) {
+      return null;
+    }
+    GM_LineString result = new GM_LineString(AdapterFactory
+        .toDirectPositionList(coordinateList
+            .toArray(new Coordinate[coordinateList.size()])));
+    return result;
+  }
 
-    private static GM_LineString getCapFromRing(LineString ring,
-            LineString line, double distance,
-            boolean start) {
-        // go through the coordinates of the buffer and select the range
-        // of coordinates of the right side
-        List<Coordinate> coordinateList = new ArrayList<Coordinate>();
-        Coordinate previousCoordinate = ring.getCoordinateN(0);
-        double tolerance = bufferError(ring, line, distance);
-        if (tolerance > 0) {
-            double e = Math.pow(10,Math.floor(Math.log10(tolerance)));
-            tolerance = e * Math.ceil(tolerance / e);
-        }
-        boolean previousRoundCap = isOnRoundCap(previousCoordinate, line, distance,
-                tolerance, start);
-        if (previousRoundCap) {
-            coordinateList.add(previousCoordinate);
-        }
-        for (int i = 1; i < ring.getNumPoints(); i++) {
-            Coordinate currentCoordinate = ring.getCoordinateN(i);
-            boolean currentRoundCap = isOnRoundCap(currentCoordinate, line, distance,
-                    tolerance, start);
-            if (previousRoundCap
-                    && currentCoordinate.distance(start ? line
-                            .getCoordinateN(0) : line.getCoordinateN(line
-                            .getNumPoints() - 1)) < distance + tolerance) {
-                coordinateList.add(currentCoordinate);
-            } else {
-                if (currentRoundCap) {
-                    // the new orientation is the targetted one
-                    if (!previousRoundCap
-                            && previousCoordinate.distance(start ? line
-                                    .getCoordinateN(0) : line
-                                    .getCoordinateN(line.getNumPoints() - 1)) < distance
-                                    + tolerance) {
-                        // the previous coordinate was undetermined
-                        coordinateList.add(previousCoordinate);
-                    }
-                    coordinateList.add(currentCoordinate);
-                }
-            }
-            previousRoundCap = currentRoundCap;
-            previousCoordinate = currentCoordinate;
-        }
-        if (coordinateList.isEmpty() || coordinateList.size() < 2) {
-            return null;
-        }
-        // build the linestring using the determined range of coordinates
-        // 2 coordinates are the same
-        if (coordinateList.size() == 2
-                && coordinateList.get(0).equals2D(coordinateList.get(1))) {
-            return null;
-        }
-        GM_LineString result = new GM_LineString(AdapterFactory
-                .toDirectPositionList(coordinateList
-                        .toArray(new Coordinate[coordinateList.size()])));
-        return result;
+  /**
+   * Determine if the {@link Coordinate} is on the round cap of the buffer
+   * computed from the input {@link LineString} and the input distance. To
+   * determine that, it has to be at the given distance to the first or last
+   * point of the input {@link LineString} but closer to the first or last line
+   * segments.
+   * @param c a {@link Coordinate}
+   * @param line the input {@link LineString}
+   * @param distance distance used to compute the buffer
+   * @param tolerance tolerance used to compare distances
+   * @param startCoordinate if true, used the first point of the input
+   *          {@link LineString}
+   * @return true if the input {@link Coordinate} is on the round cap
+   */
+  private static boolean isOnRoundCap(Coordinate c, LineString line,
+      double distance, double tolerance, boolean startCoordinate) {
+    Coordinate c1 = startCoordinate ? line.getCoordinateN(0) : line
+        .getCoordinateN(line.getNumPoints() - 1);
+    double d = c.distance(c1);
+    if (d > distance - tolerance && d < distance + tolerance) {
+      Coordinate c2 = startCoordinate ? line.getCoordinateN(1) : line
+          .getCoordinateN(line.getNumPoints() - 2);
+      LineSegment l = new LineSegment(c2, c1);
+      d = l.distancePerpendicular(c);
+      return (d < distance - tolerance);
     }
+    return false;
+  }
+
+  /**
+   * Determine the orientation of a {@link Coordinate} relative to a
+   * {@link LineString}.
+   * @param c coordinate
+   * @param line the reference linestring
+   * @param tolerance tolerance used to determine the closest line segments
+   * @return +1 if the coordinate is on the left, -1 if it is on the right, 0
+   *         otherwise.
+   */
+  public static int orientationIndex(Coordinate c, LineString line,
+      double tolerance) {
+    double distanceMin = line.distance(line.getFactory().createPoint(c));
+    List<Integer> orientations = new ArrayList<Integer>();
+    int previousOrientation = 0;
+    Coordinate previousCoordinate = null;
+    for (int i = 0; i < line.getNumPoints() - 1; i++) {
+      Coordinate coordinate1 = line.getCoordinateN(i);
+      Coordinate coordinate2 = line.getCoordinateN(i + 1);
+      // test if the coordinate is duplicated in the linestring
+      if (!coordinate1.equals2D(coordinate2)) {
+        LineSegment segment = new LineSegment(coordinate1, coordinate2);
+        Coordinate closestPoint = segment.closestPoint(c);
+        double d = closestPoint.distance(c);
+        if (d <= distanceMin + tolerance) {
+          int orientation = segment.orientationIndex(c);
+          if (line.isCoordinate(closestPoint)) {
+            // the closest coordinate is on the line
+            // if it is the second point (i+1), we will deal with
+            // it next iteration
+            if (closestPoint.equals2D(coordinate1)) {
+              // if there was a line segment before and it had a different
+              // orientation
+              if (previousCoordinate != null
+                  && orientation != previousOrientation) {
+                orientations.add(new Integer(-CGAlgorithms.orientationIndex(
+                    previousCoordinate, coordinate1, coordinate2)));
+              } else {
+                orientations.add(new Integer(orientation));
+              }
+            } else {
+              // the closest point is the second point but there
+              // is no next iteration
+              if (closestPoint.equals2D(coordinate2)
+                  && i == line.getNumPoints() - 2) {
+                orientations.add(new Integer(orientation));
+              }
+            }
+          } else {
+            // the closest coordinate is not on the line
+            orientations.add(new Integer(orientation));
+          }
+          previousCoordinate = coordinate1;
+          previousOrientation = orientation;
+        }
+      }
+    }
+    if (orientations.isEmpty()) {
+      JtsAlgorithms.logger.info("orientations empty for "
+          + line.getFactory().createPoint(c));
+      return 0;
+    }
+    Iterator<Integer> orientationIterator = orientations.iterator();
+    int orientationIndex = orientationIterator.next().intValue();
+    while (orientationIterator.hasNext()) {
+      int orientation = orientationIterator.next().intValue();
+      if (orientation != orientationIndex) {
+        return 0;
+      }
+    }
+    return orientationIndex;
+  }
+
+  public static GM_LineString cap(GM_LineString line, double distance,
+      boolean start) {
+    double d = Math.abs(distance);
+    try {
+      // removing duplicate coordinates from the input linestring.
+      LineString lineString = JtsAlgorithms
+          .getLineStringWithoutDuplicates((LineString) JtsGeOxygene
+              .makeJtsGeom(line));
+      Geometry buffer = lineString.buffer(d, 4, BufferParameters.CAP_ROUND);
+      Polygon polygon = null;
+      if (!(buffer instanceof Polygon)) {
+        JtsAlgorithms.logger.error("Can't compute offsetcurve of " + //$NON-NLS-1$
+            buffer.getGeometryType());
+        return null;
+      }
+      polygon = (Polygon) buffer;
+      // build the offset curve for the exterior ring
+      GM_LineString r = JtsAlgorithms.getCapFromRing(polygon.getExteriorRing(),
+          lineString, d, start);
+      return r;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  private static GM_LineString getCapFromRing(LineString ring, LineString line,
+      double distance, boolean start) {
+    // go through the coordinates of the buffer and select the range
+    // of coordinates of the right side
+    List<Coordinate> coordinateList = new ArrayList<Coordinate>();
+    Coordinate previousCoordinate = ring.getCoordinateN(0);
+    double tolerance = JtsAlgorithms.bufferError(ring, line, distance);
+    if (tolerance > 0) {
+      double e = Math.pow(10, Math.floor(Math.log10(tolerance)));
+      tolerance = e * Math.ceil(tolerance / e);
+    }
+    boolean previousRoundCap = JtsAlgorithms.isOnRoundCap(previousCoordinate,
+        line, distance, tolerance, start);
+    if (previousRoundCap) {
+      coordinateList.add(previousCoordinate);
+    }
+    for (int i = 1; i < ring.getNumPoints(); i++) {
+      Coordinate currentCoordinate = ring.getCoordinateN(i);
+      boolean currentRoundCap = JtsAlgorithms.isOnRoundCap(currentCoordinate,
+          line, distance, tolerance, start);
+      if (previousRoundCap
+          && currentCoordinate.distance(start ? line.getCoordinateN(0) : line
+              .getCoordinateN(line.getNumPoints() - 1)) < distance + tolerance) {
+        coordinateList.add(currentCoordinate);
+      } else {
+        if (currentRoundCap) {
+          // the new orientation is the targetted one
+          if (!previousRoundCap
+              && previousCoordinate.distance(start ? line.getCoordinateN(0)
+                  : line.getCoordinateN(line.getNumPoints() - 1)) < distance
+                  + tolerance) {
+            // the previous coordinate was undetermined
+            coordinateList.add(previousCoordinate);
+          }
+          coordinateList.add(currentCoordinate);
+        }
+      }
+      previousRoundCap = currentRoundCap;
+      previousCoordinate = currentCoordinate;
+    }
+    if (coordinateList.isEmpty() || coordinateList.size() < 2) {
+      return null;
+    }
+    // build the linestring using the determined range of coordinates
+    // 2 coordinates are the same
+    if (coordinateList.size() == 2
+        && coordinateList.get(0).equals2D(coordinateList.get(1))) {
+      return null;
+    }
+    GM_LineString result = new GM_LineString(AdapterFactory
+        .toDirectPositionList(coordinateList
+            .toArray(new Coordinate[coordinateList.size()])));
+    return result;
+  }
 } // class

@@ -3,13 +3,11 @@
 package fr.ign.cogit.geoxygene.util.conversion;
 
 /** Token Manager Error. */
-public class TokenMgrError extends Error
-{
+public class TokenMgrError extends Error {
 
   /**
-   * The version identifier for this Serializable class.
-   * Increment only if the <i>serialized</i> form of the
-   * class changes.
+   * The version identifier for this Serializable class. Increment only if the
+   * <i>serialized</i> form of the class changes.
    */
   private static final long serialVersionUID = 1L;
 
@@ -38,8 +36,8 @@ public class TokenMgrError extends Error
   static final int LOOP_DETECTED = 3;
 
   /**
-   * Indicates the reason why the exception is thrown. It will have
-   * one of the above 4 values.
+   * Indicates the reason why the exception is thrown. It will have one of the
+   * above 4 values.
    */
   int errorCode;
 
@@ -51,9 +49,8 @@ public class TokenMgrError extends Error
     StringBuffer retval = new StringBuffer();
     char ch;
     for (int i = 0; i < str.length(); i++) {
-      switch (str.charAt(i))
-      {
-        case 0 :
+      switch (str.charAt(i)) {
+        case 0:
           continue;
         case '\b':
           retval.append("\\b");
@@ -93,34 +90,37 @@ public class TokenMgrError extends Error
   }
 
   /**
-   * Returns a detailed message for the Error when it is thrown by the
-   * token manager to indicate a lexical error.
-   * Parameters :
-   *    EOFSeen     : indicates if EOF caused the lexical error
-   *    curLexState : lexical state in which this error occurred
-   *    errorLine   : line number when the error occurred
-   *    errorColumn : column number when the error occurred
-   *    errorAfter  : prefix that was seen before this error occurred
-   *    curchar     : the offending character
-   * Note: You can customize the lexical error message by modifying this method.
+   * Returns a detailed message for the Error when it is thrown by the token
+   * manager to indicate a lexical error. Parameters : EOFSeen : indicates if
+   * EOF caused the lexical error curLexState : lexical state in which this
+   * error occurred errorLine : line number when the error occurred errorColumn
+   * : column number when the error occurred errorAfter : prefix that was seen
+   * before this error occurred curchar : the offending character Note: You can
+   * customize the lexical error message by modifying this method.
    */
-  protected static String LexicalError(boolean EOFSeen, int lexState, int errorLine, int errorColumn, String errorAfter, char curChar) {
-    return("Lexical error at line " +
-          errorLine + ", column " +
-          errorColumn + ".  Encountered: " +
-          (EOFSeen ? "<EOF> " : ("\"" + addEscapes(String.valueOf(curChar)) + "\"") + " (" + (int)curChar + "), ") +
-          "after : \"" + addEscapes(errorAfter) + "\"");
+  protected static String LexicalError(boolean EOFSeen, int lexState,
+      int errorLine, int errorColumn, String errorAfter, char curChar) {
+    return ("Lexical error at line "
+        + errorLine
+        + ", column "
+        + errorColumn
+        + ".  Encountered: "
+        + (EOFSeen ? "<EOF> " : ("\""
+            + TokenMgrError.addEscapes(String.valueOf(curChar)) + "\"")
+            + " (" + (int) curChar + "), ") + "after : \""
+        + TokenMgrError.addEscapes(errorAfter) + "\"");
   }
 
   /**
-   * You can also modify the body of this method to customize your error messages.
-   * For example, cases like LOOP_DETECTED and INVALID_LEXICAL_STATE are not
-   * of end-users concern, so you can return something like :
-   *
-   *     "Internal Error : Please file a bug report .... "
-   *
+   * You can also modify the body of this method to customize your error
+   * messages. For example, cases like LOOP_DETECTED and INVALID_LEXICAL_STATE
+   * are not of end-users concern, so you can return something like :
+   * 
+   * "Internal Error : Please file a bug report .... "
+   * 
    * from this method for such cases in the release version of your parser.
    */
+  @Override
   public String getMessage() {
     return super.getMessage();
   }
@@ -136,12 +136,17 @@ public class TokenMgrError extends Error
   /** Constructor with message and reason. */
   public TokenMgrError(String message, int reason) {
     super(message);
-    errorCode = reason;
+    this.errorCode = reason;
   }
 
   /** Full Constructor. */
-  public TokenMgrError(boolean EOFSeen, int lexState, int errorLine, int errorColumn, String errorAfter, char curChar, int reason) {
-    this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
+  public TokenMgrError(boolean EOFSeen, int lexState, int errorLine,
+      int errorColumn, String errorAfter, char curChar, int reason) {
+    this(TokenMgrError.LexicalError(EOFSeen, lexState, errorLine, errorColumn,
+        errorAfter, curChar), reason);
   }
 }
-/* JavaCC - OriginalChecksum=89689fe6a790a4f846dc824a852f8cbc (do not edit this line) */
+/*
+ * JavaCC - OriginalChecksum=89689fe6a790a4f846dc824a852f8cbc (do not edit this
+ * line)
+ */

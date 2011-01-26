@@ -7,11 +7,11 @@ import javax.persistence.PrimaryKeyJoinColumn;
 
 /**
  * @author Julien Perret
- *
+ * 
  */
 @Entity
-@PrimaryKeyJoinColumn(name="BOAT_ID")
-@AttributeOverride(name="id", column = @Column(name="BOAT_ID"))
+@PrimaryKeyJoinColumn(name = "BOAT_ID")
+@AttributeOverride(name = "id", column = @Column(name = "BOAT_ID"))
 public class AmericaCupClass extends Boat {
-	
+
 }

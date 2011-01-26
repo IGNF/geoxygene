@@ -12,21 +12,40 @@ import javax.persistence.OneToMany;
 
 /**
  * @author Julien Perret
- *
+ * 
  */
 @Entity
 public class Hunter {
-	protected int id;
-	@Id @GeneratedValue
-	public int getId() {return this.id;}	
-	public void setId(int id) {this.id = id;}
+  protected int id;
 
-	protected String name;
-	public String getName() {return this.name;}
-	public void setName(String name) {this.name = name;}
-	
-	protected List<Bird> kills = new ArrayList<Bird>();
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	public List<Bird> getKills() {return this.kills;}
-	public void setKills(List<Bird> kills) {this.kills = kills;}
+  @Id
+  @GeneratedValue
+  public int getId() {
+    return this.id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  protected String name;
+
+  public String getName() {
+    return this.name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  protected List<Bird> kills = new ArrayList<Bird>();
+
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  public List<Bird> getKills() {
+    return this.kills;
+  }
+
+  public void setKills(List<Bird> kills) {
+    this.kills = kills;
+  }
 }

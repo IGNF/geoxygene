@@ -6,29 +6,30 @@ import javax.persistence.MappedSuperclass;
 
 /**
  * @author Julien Perret
- *
+ * 
  */
 @MappedSuperclass
 public abstract class Flight {
-	protected int id;
+  protected int id;
 
-	@Id @GeneratedValue
-	public int getId() {
-		return this.id;
-	}
+  @Id
+  @GeneratedValue
+  public int getId() {
+    return this.id;
+  }
 
-	public void setId(int id) {
-		this.id = id;
-	}
-	
-	protected String name;
+  public void setId(int id) {
+    this.id = id;
+  }
 
-	public String getName() {
-		return this.name;
-	}
+  protected String name;
 
-	public void setName(String name) {
-		this.name = name;
-	}
-	
+  public String getName() {
+    return this.name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
 }

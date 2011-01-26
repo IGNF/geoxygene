@@ -6,66 +6,71 @@ import fr.ign.cogit.geoxygene.feature.type.GF_FeatureType;
 
 /**
  * 
- * @author Abadie, Balley
- * Interface pour tout schéma conceptuel.
- * (Application schema dans les normes ISO)
+ * @author Abadie, Balley Interface pour tout schéma conceptuel. (Application
+ *         schema dans les normes ISO)
  * 
- * Il n'a pas de type de données standard ApplicationSchema.
- * Nous le définissons comme un ensemble d'éléments standards
- * définis dans le package fr.ign.cogit.appli.commun.metadonnees.schemaConceptuel.interfacesISO.
+ *         Il n'a pas de type de données standard ApplicationSchema. Nous le
+ *         définissons comme un ensemble d'éléments standards définis dans le
+ *         package fr.ign.cogit.appli.commun.metadonnees.schemaConceptuel.
+ *         interfacesISO.
  */
 public interface SchemaConceptuel {
 
+  /**
+   * dèsignation usuelle du schéma
+   */
+  public String getNomSchema();
 
-	/**
-	 * dèsignation usuelle du schéma
-	 */
-	public String getNomSchema();
-	public void setNomSchema(String nom);
+  public void setNomSchema(String nom);
 
+  /**
+   * Description du schéma
+   */
+  public String getDefinition();
 
-	/**
-	 * Description du schéma
-	 */
-	public String getDefinition();
-	public void setDefinition(String def);
+  public void setDefinition(String def);
 
-	/**
-	 * Liste des classes appartenant au schéma
-	 */
-	public List<GF_FeatureType> getFeatureTypes();
-	public void setFeatureTypes(List<GF_FeatureType> ftList);
-	public void addFeatureType(GF_FeatureType ft);
-	public void removeFeatureTypeFromSchema(GF_FeatureType ft);
-	public GF_FeatureType getFeatureTypeByName(String name);
+  /**
+   * Liste des classes appartenant au schéma
+   */
+  public List<GF_FeatureType> getFeatureTypes();
 
-	/*
-	 * ******************************************************************
-	 * méthodes pour manipuler mon schéma
-	 * ******************************************************************
-	 */
+  public void setFeatureTypes(List<GF_FeatureType> ftList);
 
-	//méthodes enlevées, descendues dans schemaISOJeu et SchemaISOProduit
+  public void addFeatureType(GF_FeatureType ft);
 
-	/*
-	 * ******************************************************************
-	 * méthodes pour lister les différents éléments du schéma
-	 * ******************************************************************
-	 */
+  public void removeFeatureTypeFromSchema(GF_FeatureType ft);
 
-	//	méthodes enlevées, descendues dans schemaISOJeu et SchemaISOProduit
+  public GF_FeatureType getFeatureTypeByName(String name);
 
-	/*
-	 * ******************************************************************
-	 * méthodes pour sauvegarder mon schéma
-	 * ******************************************************************
-	 */
+  /*
+   * ******************************************************************
+   * méthodes pour manipuler mon schéma
+   * ******************************************************************
+   */
 
-	/*	méthodes enlevées car elles obligeaient un import de classe "outil"
-	 * dans le modele. Les méthodes save et delete sont implementees de façon
-	 * statique dans SchemaPersistentOJB
-	 */
+  // méthodes enlevées, descendues dans schemaISOJeu et SchemaISOProduit
 
-	public void initNM();
+  /*
+   * ******************************************************************
+   * méthodes pour lister les différents éléments du schéma
+   * ******************************************************************
+   */
+
+  // méthodes enlevées, descendues dans schemaISOJeu et SchemaISOProduit
+
+  /*
+   * ******************************************************************
+   * méthodes pour sauvegarder mon schéma
+   * ******************************************************************
+   */
+
+  /*
+   * méthodes enlevées car elles obligeaient un import de classe "outil" dans le
+   * modele. Les méthodes save et delete sont implementees de façon statique
+   * dans SchemaPersistentOJB
+   */
+
+  public void initNM();
 
 }

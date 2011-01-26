@@ -7,14 +7,13 @@ package fr.ign.cogit.geoxygene.util.conversion;
  * contain only ASCII characters (without unicode processing).
  */
 
-public class SimpleCharStream
-{
-/** Whether parser is static. */
+public class SimpleCharStream {
+  /** Whether parser is static. */
   public static final boolean staticFlag = false;
   int bufsize;
   int available;
   int tokenBegin;
-/** Position in buffer. */
+  /** Position in buffer. */
   public int bufpos = -1;
   protected int bufline[];
   protected int bufcolumn[];
@@ -32,172 +31,166 @@ public class SimpleCharStream
   protected int inBuf = 0;
   protected int tabSize = 8;
 
-  protected void setTabSize(int i) { tabSize = i; }
-  protected int getTabSize(int i) { return tabSize; }
+  protected void setTabSize(int i) {
+    this.tabSize = i;
+  }
 
+  protected int getTabSize(int i) {
+    return this.tabSize;
+  }
 
-  protected void ExpandBuff(boolean wrapAround)
-  {
-    char[] newbuffer = new char[bufsize + 2048];
-    int newbufline[] = new int[bufsize + 2048];
-    int newbufcolumn[] = new int[bufsize + 2048];
+  protected void ExpandBuff(boolean wrapAround) {
+    char[] newbuffer = new char[this.bufsize + 2048];
+    int newbufline[] = new int[this.bufsize + 2048];
+    int newbufcolumn[] = new int[this.bufsize + 2048];
 
-    try
-    {
-      if (wrapAround)
-      {
-        System.arraycopy(buffer, tokenBegin, newbuffer, 0, bufsize - tokenBegin);
-        System.arraycopy(buffer, 0, newbuffer, bufsize - tokenBegin, bufpos);
-        buffer = newbuffer;
+    try {
+      if (wrapAround) {
+        System.arraycopy(this.buffer, this.tokenBegin, newbuffer, 0,
+            this.bufsize - this.tokenBegin);
+        System.arraycopy(this.buffer, 0, newbuffer, this.bufsize
+            - this.tokenBegin, this.bufpos);
+        this.buffer = newbuffer;
 
-        System.arraycopy(bufline, tokenBegin, newbufline, 0, bufsize - tokenBegin);
-        System.arraycopy(bufline, 0, newbufline, bufsize - tokenBegin, bufpos);
-        bufline = newbufline;
+        System.arraycopy(this.bufline, this.tokenBegin, newbufline, 0,
+            this.bufsize - this.tokenBegin);
+        System.arraycopy(this.bufline, 0, newbufline, this.bufsize
+            - this.tokenBegin, this.bufpos);
+        this.bufline = newbufline;
 
-        System.arraycopy(bufcolumn, tokenBegin, newbufcolumn, 0, bufsize - tokenBegin);
-        System.arraycopy(bufcolumn, 0, newbufcolumn, bufsize - tokenBegin, bufpos);
-        bufcolumn = newbufcolumn;
+        System.arraycopy(this.bufcolumn, this.tokenBegin, newbufcolumn, 0,
+            this.bufsize - this.tokenBegin);
+        System.arraycopy(this.bufcolumn, 0, newbufcolumn, this.bufsize
+            - this.tokenBegin, this.bufpos);
+        this.bufcolumn = newbufcolumn;
 
-        maxNextCharInd = (bufpos += (bufsize - tokenBegin));
+        this.maxNextCharInd = (this.bufpos += (this.bufsize - this.tokenBegin));
+      } else {
+        System.arraycopy(this.buffer, this.tokenBegin, newbuffer, 0,
+            this.bufsize - this.tokenBegin);
+        this.buffer = newbuffer;
+
+        System.arraycopy(this.bufline, this.tokenBegin, newbufline, 0,
+            this.bufsize - this.tokenBegin);
+        this.bufline = newbufline;
+
+        System.arraycopy(this.bufcolumn, this.tokenBegin, newbufcolumn, 0,
+            this.bufsize - this.tokenBegin);
+        this.bufcolumn = newbufcolumn;
+
+        this.maxNextCharInd = (this.bufpos -= this.tokenBegin);
       }
-      else
-      {
-        System.arraycopy(buffer, tokenBegin, newbuffer, 0, bufsize - tokenBegin);
-        buffer = newbuffer;
-
-        System.arraycopy(bufline, tokenBegin, newbufline, 0, bufsize - tokenBegin);
-        bufline = newbufline;
-
-        System.arraycopy(bufcolumn, tokenBegin, newbufcolumn, 0, bufsize - tokenBegin);
-        bufcolumn = newbufcolumn;
-
-        maxNextCharInd = (bufpos -= tokenBegin);
-      }
-    }
-    catch (Throwable t)
-    {
+    } catch (Throwable t) {
       throw new Error(t.getMessage());
     }
 
-
-    bufsize += 2048;
-    available = bufsize;
-    tokenBegin = 0;
+    this.bufsize += 2048;
+    this.available = this.bufsize;
+    this.tokenBegin = 0;
   }
 
-  protected void FillBuff() throws java.io.IOException
-  {
-    if (maxNextCharInd == available)
-    {
-      if (available == bufsize)
-      {
-        if (tokenBegin > 2048)
-        {
-          bufpos = maxNextCharInd = 0;
-          available = tokenBegin;
+  protected void FillBuff() throws java.io.IOException {
+    if (this.maxNextCharInd == this.available) {
+      if (this.available == this.bufsize) {
+        if (this.tokenBegin > 2048) {
+          this.bufpos = this.maxNextCharInd = 0;
+          this.available = this.tokenBegin;
+        } else if (this.tokenBegin < 0) {
+          this.bufpos = this.maxNextCharInd = 0;
+        } else {
+          this.ExpandBuff(false);
         }
-        else if (tokenBegin < 0)
-          bufpos = maxNextCharInd = 0;
-        else
-          ExpandBuff(false);
+      } else if (this.available > this.tokenBegin) {
+        this.available = this.bufsize;
+      } else if ((this.tokenBegin - this.available) < 2048) {
+        this.ExpandBuff(true);
+      } else {
+        this.available = this.tokenBegin;
       }
-      else if (available > tokenBegin)
-        available = bufsize;
-      else if ((tokenBegin - available) < 2048)
-        ExpandBuff(true);
-      else
-        available = tokenBegin;
     }
 
     int i;
     try {
-      if ((i = inputStream.read(buffer, maxNextCharInd, available - maxNextCharInd)) == -1)
-      {
-        inputStream.close();
+      if ((i = this.inputStream.read(this.buffer, this.maxNextCharInd,
+          this.available - this.maxNextCharInd)) == -1) {
+        this.inputStream.close();
         throw new java.io.IOException();
+      } else {
+        this.maxNextCharInd += i;
       }
-      else
-        maxNextCharInd += i;
       return;
-    }
-    catch(java.io.IOException e) {
-      --bufpos;
-      backup(0);
-      if (tokenBegin == -1)
-        tokenBegin = bufpos;
+    } catch (java.io.IOException e) {
+      --this.bufpos;
+      this.backup(0);
+      if (this.tokenBegin == -1) {
+        this.tokenBegin = this.bufpos;
+      }
       throw e;
     }
   }
 
-/** Start. */
-  public char BeginToken() throws java.io.IOException
-  {
-    tokenBegin = -1;
-    char c = readChar();
-    tokenBegin = bufpos;
+  /** Start. */
+  public char BeginToken() throws java.io.IOException {
+    this.tokenBegin = -1;
+    char c = this.readChar();
+    this.tokenBegin = this.bufpos;
 
     return c;
   }
 
-  protected void UpdateLineColumn(char c)
-  {
-    column++;
+  protected void UpdateLineColumn(char c) {
+    this.column++;
 
-    if (prevCharIsLF)
-    {
-      prevCharIsLF = false;
-      line += (column = 1);
-    }
-    else if (prevCharIsCR)
-    {
-      prevCharIsCR = false;
-      if (c == '\n')
-      {
-        prevCharIsLF = true;
+    if (this.prevCharIsLF) {
+      this.prevCharIsLF = false;
+      this.line += (this.column = 1);
+    } else if (this.prevCharIsCR) {
+      this.prevCharIsCR = false;
+      if (c == '\n') {
+        this.prevCharIsLF = true;
+      } else {
+        this.line += (this.column = 1);
       }
-      else
-        line += (column = 1);
     }
 
-    switch (c)
-    {
-      case '\r' :
-        prevCharIsCR = true;
+    switch (c) {
+      case '\r':
+        this.prevCharIsCR = true;
         break;
-      case '\n' :
-        prevCharIsLF = true;
+      case '\n':
+        this.prevCharIsLF = true;
         break;
-      case '\t' :
-        column--;
-        column += (tabSize - (column % tabSize));
+      case '\t':
+        this.column--;
+        this.column += (this.tabSize - (this.column % this.tabSize));
         break;
-      default :
+      default:
         break;
     }
 
-    bufline[bufpos] = line;
-    bufcolumn[bufpos] = column;
+    this.bufline[this.bufpos] = this.line;
+    this.bufcolumn[this.bufpos] = this.column;
   }
 
-/** Read a character. */
-  public char readChar() throws java.io.IOException
-  {
-    if (inBuf > 0)
-    {
-      --inBuf;
+  /** Read a character. */
+  public char readChar() throws java.io.IOException {
+    if (this.inBuf > 0) {
+      --this.inBuf;
 
-      if (++bufpos == bufsize)
-        bufpos = 0;
+      if (++this.bufpos == this.bufsize) {
+        this.bufpos = 0;
+      }
 
-      return buffer[bufpos];
+      return this.buffer[this.bufpos];
     }
 
-    if (++bufpos >= maxNextCharInd)
-      FillBuff();
+    if (++this.bufpos >= this.maxNextCharInd) {
+      this.FillBuff();
+    }
 
-    char c = buffer[bufpos];
+    char c = this.buffer[this.bufpos];
 
-    UpdateLineColumn(c);
+    this.UpdateLineColumn(c);
     return c;
   }
 
@@ -206,9 +199,8 @@ public class SimpleCharStream
    * @deprecated
    * @see #getEndColumn
    */
-
   public int getColumn() {
-    return bufcolumn[bufpos];
+    return this.bufcolumn[this.bufpos];
   }
 
   @Deprecated
@@ -216,256 +208,250 @@ public class SimpleCharStream
    * @deprecated
    * @see #getEndLine
    */
-
   public int getLine() {
-    return bufline[bufpos];
+    return this.bufline[this.bufpos];
   }
 
   /** Get token end column number. */
   public int getEndColumn() {
-    return bufcolumn[bufpos];
+    return this.bufcolumn[this.bufpos];
   }
 
   /** Get token end line number. */
   public int getEndLine() {
-     return bufline[bufpos];
+    return this.bufline[this.bufpos];
   }
 
   /** Get token beginning column number. */
   public int getBeginColumn() {
-    return bufcolumn[tokenBegin];
+    return this.bufcolumn[this.tokenBegin];
   }
 
   /** Get token beginning line number. */
   public int getBeginLine() {
-    return bufline[tokenBegin];
+    return this.bufline[this.tokenBegin];
   }
 
-/** Backup a number of characters. */
+  /** Backup a number of characters. */
   public void backup(int amount) {
 
-    inBuf += amount;
-    if ((bufpos -= amount) < 0)
-      bufpos += bufsize;
+    this.inBuf += amount;
+    if ((this.bufpos -= amount) < 0) {
+      this.bufpos += this.bufsize;
+    }
   }
 
   /** Constructor. */
   public SimpleCharStream(java.io.Reader dstream, int startline,
-  int startcolumn, int buffersize)
-  {
-    inputStream = dstream;
-    line = startline;
-    column = startcolumn - 1;
+      int startcolumn, int buffersize) {
+    this.inputStream = dstream;
+    this.line = startline;
+    this.column = startcolumn - 1;
 
-    available = bufsize = buffersize;
-    buffer = new char[buffersize];
-    bufline = new int[buffersize];
-    bufcolumn = new int[buffersize];
+    this.available = this.bufsize = buffersize;
+    this.buffer = new char[buffersize];
+    this.bufline = new int[buffersize];
+    this.bufcolumn = new int[buffersize];
   }
 
   /** Constructor. */
-  public SimpleCharStream(java.io.Reader dstream, int startline,
-                          int startcolumn)
-  {
+  public SimpleCharStream(java.io.Reader dstream, int startline, int startcolumn) {
     this(dstream, startline, startcolumn, 4096);
   }
 
   /** Constructor. */
-  public SimpleCharStream(java.io.Reader dstream)
-  {
+  public SimpleCharStream(java.io.Reader dstream) {
     this(dstream, 1, 1, 4096);
   }
 
   /** Reinitialise. */
-  public void ReInit(java.io.Reader dstream, int startline,
-  int startcolumn, int buffersize)
-  {
-    inputStream = dstream;
-    line = startline;
-    column = startcolumn - 1;
+  public void ReInit(java.io.Reader dstream, int startline, int startcolumn,
+      int buffersize) {
+    this.inputStream = dstream;
+    this.line = startline;
+    this.column = startcolumn - 1;
 
-    if (buffer == null || buffersize != buffer.length)
-    {
-      available = bufsize = buffersize;
-      buffer = new char[buffersize];
-      bufline = new int[buffersize];
-      bufcolumn = new int[buffersize];
+    if (this.buffer == null || buffersize != this.buffer.length) {
+      this.available = this.bufsize = buffersize;
+      this.buffer = new char[buffersize];
+      this.bufline = new int[buffersize];
+      this.bufcolumn = new int[buffersize];
     }
-    prevCharIsLF = prevCharIsCR = false;
-    tokenBegin = inBuf = maxNextCharInd = 0;
-    bufpos = -1;
+    this.prevCharIsLF = this.prevCharIsCR = false;
+    this.tokenBegin = this.inBuf = this.maxNextCharInd = 0;
+    this.bufpos = -1;
   }
 
   /** Reinitialise. */
-  public void ReInit(java.io.Reader dstream, int startline,
-                     int startcolumn)
-  {
-    ReInit(dstream, startline, startcolumn, 4096);
+  public void ReInit(java.io.Reader dstream, int startline, int startcolumn) {
+    this.ReInit(dstream, startline, startcolumn, 4096);
   }
 
   /** Reinitialise. */
-  public void ReInit(java.io.Reader dstream)
-  {
-    ReInit(dstream, 1, 1, 4096);
+  public void ReInit(java.io.Reader dstream) {
+    this.ReInit(dstream, 1, 1, 4096);
   }
+
   /** Constructor. */
-  public SimpleCharStream(java.io.InputStream dstream, String encoding, int startline,
-  int startcolumn, int buffersize) throws java.io.UnsupportedEncodingException
-  {
-    this(encoding == null ? new java.io.InputStreamReader(dstream) : new java.io.InputStreamReader(dstream, encoding), startline, startcolumn, buffersize);
+  public SimpleCharStream(java.io.InputStream dstream, String encoding,
+      int startline, int startcolumn, int buffersize)
+      throws java.io.UnsupportedEncodingException {
+    this(encoding == null ? new java.io.InputStreamReader(dstream)
+        : new java.io.InputStreamReader(dstream, encoding), startline,
+        startcolumn, buffersize);
   }
 
   /** Constructor. */
   public SimpleCharStream(java.io.InputStream dstream, int startline,
-  int startcolumn, int buffersize)
-  {
-    this(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
+      int startcolumn, int buffersize) {
+    this(new java.io.InputStreamReader(dstream), startline, startcolumn,
+        buffersize);
   }
 
   /** Constructor. */
-  public SimpleCharStream(java.io.InputStream dstream, String encoding, int startline,
-                          int startcolumn) throws java.io.UnsupportedEncodingException
-  {
+  public SimpleCharStream(java.io.InputStream dstream, String encoding,
+      int startline, int startcolumn)
+      throws java.io.UnsupportedEncodingException {
     this(dstream, encoding, startline, startcolumn, 4096);
   }
 
   /** Constructor. */
   public SimpleCharStream(java.io.InputStream dstream, int startline,
-                          int startcolumn)
-  {
+      int startcolumn) {
     this(dstream, startline, startcolumn, 4096);
   }
 
   /** Constructor. */
-  public SimpleCharStream(java.io.InputStream dstream, String encoding) throws java.io.UnsupportedEncodingException
-  {
+  public SimpleCharStream(java.io.InputStream dstream, String encoding)
+      throws java.io.UnsupportedEncodingException {
     this(dstream, encoding, 1, 1, 4096);
   }
 
   /** Constructor. */
-  public SimpleCharStream(java.io.InputStream dstream)
-  {
+  public SimpleCharStream(java.io.InputStream dstream) {
     this(dstream, 1, 1, 4096);
   }
 
   /** Reinitialise. */
-  public void ReInit(java.io.InputStream dstream, String encoding, int startline,
-                          int startcolumn, int buffersize) throws java.io.UnsupportedEncodingException
-  {
-    ReInit(encoding == null ? new java.io.InputStreamReader(dstream) : new java.io.InputStreamReader(dstream, encoding), startline, startcolumn, buffersize);
+  public void ReInit(java.io.InputStream dstream, String encoding,
+      int startline, int startcolumn, int buffersize)
+      throws java.io.UnsupportedEncodingException {
+    this.ReInit(encoding == null ? new java.io.InputStreamReader(dstream)
+        : new java.io.InputStreamReader(dstream, encoding), startline,
+        startcolumn, buffersize);
   }
 
   /** Reinitialise. */
   public void ReInit(java.io.InputStream dstream, int startline,
-                          int startcolumn, int buffersize)
-  {
-    ReInit(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
+      int startcolumn, int buffersize) {
+    this.ReInit(new java.io.InputStreamReader(dstream), startline, startcolumn,
+        buffersize);
   }
 
   /** Reinitialise. */
-  public void ReInit(java.io.InputStream dstream, String encoding) throws java.io.UnsupportedEncodingException
-  {
-    ReInit(dstream, encoding, 1, 1, 4096);
+  public void ReInit(java.io.InputStream dstream, String encoding)
+      throws java.io.UnsupportedEncodingException {
+    this.ReInit(dstream, encoding, 1, 1, 4096);
   }
 
   /** Reinitialise. */
-  public void ReInit(java.io.InputStream dstream)
-  {
-    ReInit(dstream, 1, 1, 4096);
+  public void ReInit(java.io.InputStream dstream) {
+    this.ReInit(dstream, 1, 1, 4096);
   }
+
   /** Reinitialise. */
-  public void ReInit(java.io.InputStream dstream, String encoding, int startline,
-                     int startcolumn) throws java.io.UnsupportedEncodingException
-  {
-    ReInit(dstream, encoding, startline, startcolumn, 4096);
+  public void ReInit(java.io.InputStream dstream, String encoding,
+      int startline, int startcolumn)
+      throws java.io.UnsupportedEncodingException {
+    this.ReInit(dstream, encoding, startline, startcolumn, 4096);
   }
+
   /** Reinitialise. */
-  public void ReInit(java.io.InputStream dstream, int startline,
-                     int startcolumn)
-  {
-    ReInit(dstream, startline, startcolumn, 4096);
+  public void ReInit(java.io.InputStream dstream, int startline, int startcolumn) {
+    this.ReInit(dstream, startline, startcolumn, 4096);
   }
+
   /** Get token literal value. */
-  public String GetImage()
-  {
-    if (bufpos >= tokenBegin)
-      return new String(buffer, tokenBegin, bufpos - tokenBegin + 1);
-    else
-      return new String(buffer, tokenBegin, bufsize - tokenBegin) +
-                            new String(buffer, 0, bufpos + 1);
+  public String GetImage() {
+    if (this.bufpos >= this.tokenBegin) {
+      return new String(this.buffer, this.tokenBegin, this.bufpos
+          - this.tokenBegin + 1);
+    } else {
+      return new String(this.buffer, this.tokenBegin, this.bufsize
+          - this.tokenBegin)
+          + new String(this.buffer, 0, this.bufpos + 1);
+    }
   }
 
   /** Get the suffix. */
-  public char[] GetSuffix(int len)
-  {
+  public char[] GetSuffix(int len) {
     char[] ret = new char[len];
 
-    if ((bufpos + 1) >= len)
-      System.arraycopy(buffer, bufpos - len + 1, ret, 0, len);
-    else
-    {
-      System.arraycopy(buffer, bufsize - (len - bufpos - 1), ret, 0,
-                                                        len - bufpos - 1);
-      System.arraycopy(buffer, 0, ret, len - bufpos - 1, bufpos + 1);
+    if ((this.bufpos + 1) >= len) {
+      System.arraycopy(this.buffer, this.bufpos - len + 1, ret, 0, len);
+    } else {
+      System.arraycopy(this.buffer, this.bufsize - (len - this.bufpos - 1),
+          ret, 0, len - this.bufpos - 1);
+      System.arraycopy(this.buffer, 0, ret, len - this.bufpos - 1,
+          this.bufpos + 1);
     }
 
     return ret;
   }
 
   /** Reset buffer when finished. */
-  public void Done()
-  {
-    buffer = null;
-    bufline = null;
-    bufcolumn = null;
+  public void Done() {
+    this.buffer = null;
+    this.bufline = null;
+    this.bufcolumn = null;
   }
 
   /**
    * Method to adjust line and column numbers for the start of a token.
    */
-  public void adjustBeginLineColumn(int newLine, int newCol)
-  {
-    int start = tokenBegin;
+  public void adjustBeginLineColumn(int newLine, int newCol) {
+    int start = this.tokenBegin;
     int len;
 
-    if (bufpos >= tokenBegin)
-    {
-      len = bufpos - tokenBegin + inBuf + 1;
-    }
-    else
-    {
-      len = bufsize - tokenBegin + bufpos + 1 + inBuf;
+    if (this.bufpos >= this.tokenBegin) {
+      len = this.bufpos - this.tokenBegin + this.inBuf + 1;
+    } else {
+      len = this.bufsize - this.tokenBegin + this.bufpos + 1 + this.inBuf;
     }
 
     int i = 0, j = 0, k = 0;
     int nextColDiff = 0, columnDiff = 0;
 
-    while (i < len && bufline[j = start % bufsize] == bufline[k = ++start % bufsize])
-    {
-      bufline[j] = newLine;
-      nextColDiff = columnDiff + bufcolumn[k] - bufcolumn[j];
-      bufcolumn[j] = newCol + columnDiff;
+    while (i < len
+        && this.bufline[j = start % this.bufsize] == this.bufline[k = ++start
+            % this.bufsize]) {
+      this.bufline[j] = newLine;
+      nextColDiff = columnDiff + this.bufcolumn[k] - this.bufcolumn[j];
+      this.bufcolumn[j] = newCol + columnDiff;
       columnDiff = nextColDiff;
       i++;
     }
 
-    if (i < len)
-    {
-      bufline[j] = newLine++;
-      bufcolumn[j] = newCol + columnDiff;
+    if (i < len) {
+      this.bufline[j] = newLine++;
+      this.bufcolumn[j] = newCol + columnDiff;
 
-      while (i++ < len)
-      {
-        if (bufline[j = start % bufsize] != bufline[++start % bufsize])
-          bufline[j] = newLine++;
-        else
-          bufline[j] = newLine;
+      while (i++ < len) {
+        if (this.bufline[j = start % this.bufsize] != this.bufline[++start
+            % this.bufsize]) {
+          this.bufline[j] = newLine++;
+        } else {
+          this.bufline[j] = newLine;
+        }
       }
     }
 
-    line = bufline[j];
-    column = bufcolumn[j];
+    this.line = this.bufline[j];
+    this.column = this.bufcolumn[j];
   }
 
 }
-/* JavaCC - OriginalChecksum=ccc3a7f86c4cebe880096bbaf3bce9de (do not edit this line) */
+/*
+ * JavaCC - OriginalChecksum=ccc3a7f86c4cebe880096bbaf3bce9de (do not edit this
+ * line)
+ */

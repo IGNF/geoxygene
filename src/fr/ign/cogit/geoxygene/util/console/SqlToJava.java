@@ -1,27 +1,28 @@
 /*
  * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
- * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
- * National Mapping Agency).
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
  * Copyright (C) 2005 Institut Géographique National
- *
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License along with
- * this library (see file LICENSE if present); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.util.console;
@@ -42,7 +43,7 @@ import fr.ign.cogit.geoxygene.util.loader.gui.GUICompileMessage;
 import fr.ign.cogit.geoxygene.util.loader.gui.GUIConfigOJBXMLJava;
 
 /**
- *
+ * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.1
  * 
@@ -50,94 +51,97 @@ import fr.ign.cogit.geoxygene.util.loader.gui.GUIConfigOJBXMLJava;
 
 class SqlToJava extends JPanel {
 
-
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	// liste des noms de tables geographiques a traiter
-	private static List<String> allTables = new ArrayList<String>();
-	// nom du fichier de mapping
-	private static String mappingFileName = "repository_geo.xml";
-	// classe mere des classes chargees
-	private static String extentClassName = "fr.ign.cogit.geoxygene.feature.FT_Feature";
-	// fichier de mapping classe mere (pour OJB)
-	private static String extentMappingFileName = null;
-	// generation automatique ou pas ?
-	//private static boolean flagInterroTable = false;
-	// nom du package
-	private static String packageName = "geoxygene.geodata";
-	// repertoire d'accueil des packages Java
-	private static String geOxygeneData;
-	// repertoire d'accueil des fichiers de mapping
-	private static String geOxygeneMapping ;
+  private static final long serialVersionUID = 1L;
+  // liste des noms de tables geographiques a traiter
+  private static List<String> allTables = new ArrayList<String>();
+  // nom du fichier de mapping
+  private static String mappingFileName = "repository_geo.xml";
+  // classe mere des classes chargees
+  private static String extentClassName = "fr.ign.cogit.geoxygene.feature.FT_Feature";
+  // fichier de mapping classe mere (pour OJB)
+  private static String extentMappingFileName = null;
+  // generation automatique ou pas ?
+  // private static boolean flagInterroTable = false;
+  // nom du package
+  private static String packageName = "geoxygene.geodata";
+  // repertoire d'accueil des packages Java
+  private static String geOxygeneData;
+  // repertoire d'accueil des fichiers de mapping
+  private static String geOxygeneMapping;
 
+  protected static void action(int mapping) {
 
+    System.out.println("Generation de mapping XML  et de classes java ... ");
 
-	protected static void action(int mapping) {
+    if (mapping == GeOxygeneConsole.CASTOR) {
+      System.out.println("CASTOR : marche pas !");
+      return;
+    }
 
-		System.out.println("Generation de mapping XML  et de classes java ... ");
+    try {
 
-		if (mapping == GeOxygeneConsole.CASTOR) {
-			System.out.println("CASTOR : marche pas !");
-			return;
-		}
+      // repertoire d'accueil des fichiers de mapping
+      OjbConfiguration config = new OjbConfiguration();
+      File fileMapping = new File(config.getRepositoryFilename());
 
-		try {
+      // initialisation
+      Geodatabase data = GeodatabaseOjbFactory.newInstance();
 
-			// repertoire d'accueil des fichiers de mapping
-			OjbConfiguration config = new OjbConfiguration();
-			File fileMapping = new File(config.getRepositoryFilename());
+      // choix des tables a charger
+      MetadataReader theMetadataReader = new MetadataReader(data);
+      SqlToJava.allTables = theMetadataReader.getSelectedTables();
 
-			// initialisation
-			Geodatabase data = GeodatabaseOjbFactory.newInstance();
+      if (SqlToJava.allTables.size() == 0) {
+        System.out.println("Aucune table selectionnee ...");
+        return;
+      }
 
-			// choix des tables a charger
-			MetadataReader theMetadataReader = new MetadataReader(data);
-			allTables = theMetadataReader.getSelectedTables();
+      System.out
+          .println("Generation du mapping, des classes java et du dico ...");
 
-			if (allTables.size() == 0) {
-				System.out.println("Aucune table selectionnee ...");
-				return;
-			}
+      // determine valeur par defaut de geOxygeneData
+      File tryFileData = new File(fileMapping.getParentFile().getParentFile()
+          .getParentFile(), "data");
+      if (tryFileData.exists()) {
+        SqlToJava.geOxygeneData = tryFileData.getPath();
+      } else {
+        tryFileData = new File(fileMapping.getParentFile().getParentFile()
+            .getParentFile().getParentFile(), "data");
+        if (tryFileData.exists()) {
+          SqlToJava.geOxygeneData = tryFileData.getPath();
+        }
+      }
 
-			System.out.println("Generation du mapping, des classes java et du dico ...");
+      // determine valeur par defaut de geOxygeneMapping
+      SqlToJava.geOxygeneMapping = fileMapping.getParentFile().getPath();
 
-			// determine valeur par defaut de geOxygeneData
-			File tryFileData = new File (fileMapping.getParentFile().getParentFile().getParentFile(),"data");
-			if (tryFileData.exists()) {
-				geOxygeneData = tryFileData.getPath();
-			} else {
-				tryFileData = new File (fileMapping.getParentFile().getParentFile().getParentFile().getParentFile(),"data");
-				if (tryFileData.exists()) {
-					geOxygeneData = tryFileData.getPath();
-				}
-			}
+      GUIConfigOJBXMLJava configuration = new GUIConfigOJBXMLJava(
+          SqlToJava.packageName, SqlToJava.geOxygeneData,
+          SqlToJava.geOxygeneMapping, SqlToJava.extentClassName,
+          SqlToJava.mappingFileName, SqlToJava.extentMappingFileName);
+      String[] selectedValues = configuration.showDialog();
 
-			// determine valeur par defaut de geOxygeneMapping
-			geOxygeneMapping = fileMapping.getParentFile().getPath();
+      // ceci permet d'utiliser le cancel
+      if (selectedValues[2] == null) {
+        return;
+      }
 
+      XMLJavaDicoGenerator generator = new XMLJavaDicoGenerator(null, data,
+          false, SqlToJava.allTables, selectedValues[0], selectedValues[1],
+          selectedValues[2], selectedValues[3], selectedValues[4],
+          selectedValues[5]);
+      generator.writeAll();
 
-			GUIConfigOJBXMLJava configuration = new GUIConfigOJBXMLJava(packageName,geOxygeneData,geOxygeneMapping,extentClassName,
-					mappingFileName,extentMappingFileName);
-			String[] selectedValues = configuration.showDialog();
+      GUICompileMessage message = new GUICompileMessage();
+      message.showDialog();
 
-			// ceci permet d'utiliser le cancel
-			if (selectedValues[2] == null) return;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
-			XMLJavaDicoGenerator generator = new XMLJavaDicoGenerator(null,data,false,allTables,
-					selectedValues[0],selectedValues[1],
-					selectedValues[2],selectedValues[3],
-					selectedValues[4],selectedValues[5]);
-			generator.writeAll();
-
-			GUICompileMessage message = new GUICompileMessage();
-			message.showDialog();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
+  }
 
 }

@@ -1,27 +1,28 @@
 /*
  * This file is part of the GeOxygene project source files.
  * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for
- * the development and deployment of geographic (GIS) applications. It is a open source
- * contribution of the COGIT laboratory at the Institut Géographique National (the French
- * National Mapping Agency).
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
  * Copyright (C) 2005 Institut Géographique National
- *
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License along with
- * this library (see file LICENSE if present); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.util.browser;
@@ -41,9 +42,11 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 /**
- *  Cette classe permet l'affichage d'une fenêtre graphique contenant un message d'avertissement lorsqu'un accès non autorisé à un attribut est tenté ou
- *  ou qu'une exception de type IllegalAccess est renvoyée par une méthode déclenchée depuis le navigateur d'objet graphique de GeOxygene.
- *
+ * Cette classe permet l'affichage d'une fenêtre graphique contenant un message
+ * d'avertissement lorsqu'un accès non autorisé à un attribut est tenté ou ou
+ * qu'une exception de type IllegalAccess est renvoyée par une méthode
+ * déclenchée depuis le navigateur d'objet graphique de GeOxygene.
+ * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
  * 
@@ -51,57 +54,65 @@ import javax.swing.SwingConstants;
 
 public class ObjectBrowserIllegalAccessFrame extends JFrame {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	/** Localisation des fichiers d'internationalisation de l'interface. */
-	private static final String I18N_LANGUAGE_FILE_LOCATION = "fr.ign.cogit.geoxygene.util.browser.ObjectBrowserLanguageFile"; //$NON-NLS-1$
-	/** Locale courante. */
-	private Locale currentLocale;
-	/** RessourceBundle lié à la Locale et au fichier d'internationalisation. */
-	private ResourceBundle i18nLanguageFile;
+  private static final long serialVersionUID = 1L;
+  /** Localisation des fichiers d'internationalisation de l'interface. */
+  private static final String I18N_LANGUAGE_FILE_LOCATION = "fr.ign.cogit.geoxygene.util.browser.ObjectBrowserLanguageFile"; //$NON-NLS-1$
+  /** Locale courante. */
+  private Locale currentLocale;
+  /** RessourceBundle lié à la Locale et au fichier d'internationalisation. */
+  private ResourceBundle i18nLanguageFile;
 
-	/**
-	 * Constructeur principal de ObjectBrowserIllegalAccessFrame.
-	 * 
-	 * @throws HeadlessException
-	 */
-	public ObjectBrowserIllegalAccessFrame() throws HeadlessException {
+  /**
+   * Constructeur principal de ObjectBrowserIllegalAccessFrame.
+   * 
+   * @throws HeadlessException
+   */
+  public ObjectBrowserIllegalAccessFrame() throws HeadlessException {
 
-		super();
+    super();
 
-		this.currentLocale = Locale.getDefault();
-		this.i18nLanguageFile = ResourceBundle.getBundle(I18N_LANGUAGE_FILE_LOCATION,this.currentLocale);
-		/* i18nLanguageFile = ResourceBundle.getBundle(I18N_LANGUAGE_FILE_LOCATION,new Locale("en", "US")); */
+    this.currentLocale = Locale.getDefault();
+    this.i18nLanguageFile = ResourceBundle.getBundle(
+        ObjectBrowserIllegalAccessFrame.I18N_LANGUAGE_FILE_LOCATION,
+        this.currentLocale);
+    /*
+     * i18nLanguageFile =
+     * ResourceBundle.getBundle(I18N_LANGUAGE_FILE_LOCATION,new Locale("en",
+     * "US"));
+     */
 
-		setTitle(this.i18nLanguageFile.getString("IllegalAccessFrameDefaultTitle")); //$NON-NLS-1$
+    this.setTitle(this.i18nLanguageFile
+        .getString("IllegalAccessFrameDefaultTitle")); //$NON-NLS-1$
 
-		try {
-			URL imageUrl = this.getClass().getResource("images/stop.gif"); //$NON-NLS-1$
+    try {
+      URL imageUrl = this.getClass().getResource("images/stop.gif"); //$NON-NLS-1$
 
-			JLabel illegalAccessLabel = new JLabel(this.i18nLanguageFile.getString("IllegalAccessFrameDefaultLabel"),new ImageIcon(imageUrl),SwingConstants.CENTER); //$NON-NLS-1$
+      JLabel illegalAccessLabel = new JLabel(
+          this.i18nLanguageFile.getString("IllegalAccessFrameDefaultLabel"), new ImageIcon(imageUrl), SwingConstants.CENTER); //$NON-NLS-1$
 
-			this.getContentPane().add(illegalAccessLabel, BorderLayout.CENTER);
+      this.getContentPane().add(illegalAccessLabel, BorderLayout.CENTER);
 
-			//Dimension frameSize = new Dimension(this.getPreferredSize());
+      // Dimension frameSize = new Dimension(this.getPreferredSize());
 
-			this.setSize(new Dimension(375, 80));
+      this.setSize(new Dimension(375, 80));
 
-			this.setResizable(false);
+      this.setResizable(false);
 
-			this.addWindowListener(new WindowAdapter() {
-				@Override
-				public void windowClosing(WindowEvent e) {
-					dispose();
-				}
-			});
+      this.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent e) {
+          ObjectBrowserIllegalAccessFrame.this.dispose();
+        }
+      });
 
-			this.setVisible(true);
-		} catch (NullPointerException e) {
+      this.setVisible(true);
+    } catch (NullPointerException e) {
 
-		}
+    }
 
-	}
+  }
 
 }

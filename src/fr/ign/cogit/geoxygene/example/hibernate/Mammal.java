@@ -18,28 +18,25 @@ import javax.persistence.OneToMany;
 
 /**
  * @author Julien Perret
- *
+ * 
  */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(
-    name="mammalType",
-    discriminatorType=DiscriminatorType.STRING
-)
+@DiscriminatorColumn(name = "mammalType", discriminatorType = DiscriminatorType.STRING)
 public interface Mammal {
-	@Id @GeneratedValue
-	public int getId();	
-	public void setId(int id);
+  @Id
+  @GeneratedValue
+  public int getId();
 
-	public String getName();
-	public void setName(String name);
-	
-	@OneToMany
-    @JoinTable(
-            name="Predators",
-            joinColumns = @JoinColumn( name="prey_id"),
-            inverseJoinColumns = @JoinColumn( name="predator_id")
-    )
-	public List<Mammal> getPredators();
-	public void setPredators(List<Mammal> predators);
+  public void setId(int id);
+
+  public String getName();
+
+  public void setName(String name);
+
+  @OneToMany
+  @JoinTable(name = "Predators", joinColumns = @JoinColumn(name = "prey_id"), inverseJoinColumns = @JoinColumn(name = "predator_id"))
+  public List<Mammal> getPredators();
+
+  public void setPredators(List<Mammal> predators);
 }

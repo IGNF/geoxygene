@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 
 /**
  * @author Julien Perret
- *
+ * 
  */
 @Entity
 @DiscriminatorValue("Boeing747")

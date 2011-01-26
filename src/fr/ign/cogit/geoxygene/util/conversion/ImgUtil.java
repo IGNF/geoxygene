@@ -1,22 +1,20 @@
 /*
- * This file is part of the GeOxygene project source files.
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at
- * the Institut Géographique National (the French National Mapping Agency).
- * See: http://oxygene-project.sourceforge.net
- * Copyright (C) 2005 Institut Géographique National
- * This library is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; either version 2.1 of the License, or any later
- * version.
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
- * for more details. You should have received a copy of the GNU Lesser General
- * Public License along with this library (see file LICENSE if present); if
- * not, write to the Free Software Foundation, Inc., 59 Temple Place,
- * Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.util.conversion;
@@ -66,384 +64,394 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  */
 public class ImgUtil {
 
-    /*--------------------------------------------------------------*/
-    /*-- drawGeom() ------------------------------------------------*/
-    /*--------------------------------------------------------------*/
+  /*--------------------------------------------------------------*/
+  /*-- drawGeom() ------------------------------------------------*/
+  /*--------------------------------------------------------------*/
 
-    private static void drawGeom(Graphics2D g, GM_Object[] geoms,
-            Color[] colors, AffineTransform transform) throws Exception {
-        if (geoms.length != colors.length)
-            throw new IllegalArgumentException("geoms.length!=colors.length"); //$NON-NLS-1$
-        for (int i = 0; i < geoms.length; i++) {
-            drawGeom(g, geoms[i], colors[i], transform);
-        }
+  private static void drawGeom(Graphics2D g, GM_Object[] geoms, Color[] colors,
+      AffineTransform transform) throws Exception {
+    if (geoms.length != colors.length) {
+      throw new IllegalArgumentException("geoms.length!=colors.length"); //$NON-NLS-1$
     }
-
-    private static void drawGeom(Graphics2D g, GM_Object geom, Color color,
-            AffineTransform transform) throws Exception {
-        if (isEmpty(geom)) return;
-        drawGeom(g, WktGeOxygene.makeWkt(geom), color, transform);
+    for (int i = 0; i < geoms.length; i++) {
+      ImgUtil.drawGeom(g, geoms[i], colors[i], transform);
     }
+  }
 
-    private static void drawGeom(Graphics2D g, String wkt, Color color,
-            AffineTransform transform) throws Exception {
-        drawGeom(g, WktAwt.makeAwtShape(wkt), color, transform);
+  private static void drawGeom(Graphics2D g, GM_Object geom, Color color,
+      AffineTransform transform) throws Exception {
+    if (ImgUtil.isEmpty(geom)) {
+      return;
     }
+    ImgUtil.drawGeom(g, WktGeOxygene.makeWkt(geom), color, transform);
+  }
 
-    private static void drawGeom(Graphics2D g, AwtShape geom, Color color,
-            AffineTransform transform) {
-        g.setTransform(transform);
-        g.setColor(color);
-        geom.draw(g);
+  private static void drawGeom(Graphics2D g, String wkt, Color color,
+      AffineTransform transform) throws Exception {
+    ImgUtil.drawGeom(g, WktAwt.makeAwtShape(wkt), color, transform);
+  }
+
+  private static void drawGeom(Graphics2D g, AwtShape geom, Color color,
+      AffineTransform transform) {
+    g.setTransform(transform);
+    g.setColor(color);
+    geom.draw(g);
+  }
+
+  /*--------------------------------------------------------------*/
+  /*-- makeScaleTransform() --------------------------------------*/
+  /*--------------------------------------------------------------*/
+
+  private static AffineTransform makeScaleTransform(GM_Object[] geoms,
+      int width, int height) throws Exception {
+    GeneralPath all = new GeneralPath();
+    for (int i = 0; i < geoms.length; i++) {
+      System.out.println("scale " + i + " / " + geoms.length);
+      if (!ImgUtil.isEmpty(geoms[i])) {
+        all.append(WktAwt.makeAwtShape(WktGeOxygene.makeWkt(geoms[i]))
+            .getBounds(), false);
+      }
     }
+    System.out.println("scale all");
+    AffineTransform transform = ImgUtil.makeScaleTransform(all, width, height);
+    System.out.println("scale finished");
+    return transform;
+  }
 
-    /*--------------------------------------------------------------*/
-    /*-- makeScaleTransform() --------------------------------------*/
-    /*--------------------------------------------------------------*/
+  private static AffineTransform makeScaleTransform(Shape geom, int width,
+      int height) {
+    Rectangle2D bbox = geom.getBounds2D();
+    bbox.setRect(bbox.getX(), bbox.getY(), bbox.getWidth(), bbox.getHeight());
 
-    private static AffineTransform makeScaleTransform(GM_Object[] geoms,
-            int width, int height) throws Exception {
-        GeneralPath all = new GeneralPath();
-        for (int i = 0; i < geoms.length; i++) {
-            System.out.println("scale " + i + " / " + geoms.length);
-            if (!isEmpty(geoms[i])) {
-                all.append(WktAwt.makeAwtShape(WktGeOxygene.makeWkt(geoms[i]))
-                        .getBounds(), false);
-            }
-        }
-        System.out.println("scale all");
-        AffineTransform transform = ImgUtil.makeScaleTransform(all, width,
-                height);
-        System.out.println("scale finished");
-        return transform;
+    double scaleX = width / bbox.getWidth();
+    double scaleY = height / bbox.getHeight();
+    double scale = (scaleX < scaleY) ? scaleX : scaleY;
+    double offsetX = -bbox.getX();
+    double offsetY = -bbox.getY() - bbox.getHeight();
+    AffineTransform transform = new AffineTransform();
+    transform.scale(scale, -scale);
+    transform.translate(offsetX, offsetY);
+    return transform;
+  }
+
+  @SuppressWarnings("unused")
+  private static AffineTransform makeScaleTransform(Shape[] geoms, int width,
+      int height) {
+    GeneralPath geom = new GeneralPath();
+    for (Shape geom2 : geoms) {
+      geom.append(geom2, false);
     }
+    return ImgUtil.makeScaleTransform(geom, width, height);
+  }
 
-    private static AffineTransform makeScaleTransform(Shape geom, int width,
-            int height) {
-        Rectangle2D bbox = geom.getBounds2D();
-        bbox.setRect(bbox.getX(), bbox.getY(), bbox.getWidth(), bbox
-                .getHeight());
+  /*--------------------------------------------------------------*/
+  /*--------------------------------------------------------------*/
+  /*--------------------------------------------------------------*/
 
-        double scaleX = width / bbox.getWidth();
-        double scaleY = height / bbox.getHeight();
-        double scale = (scaleX < scaleY) ? scaleX : scaleY;
-        double offsetX = -bbox.getX();
-        double offsetY = -bbox.getY() - bbox.getHeight();
-        AffineTransform transform = new AffineTransform();
-        transform.scale(scale, -scale);
-        transform.translate(offsetX, offsetY);
-        return transform;
+  public static BufferedImage make(Color bg, int width, int height) {
+    BufferedImage image = new BufferedImage(width, height,
+        BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g = image.createGraphics();
+    g.setColor(bg);
+    g.fillRect(0, 0, width, height);
+    g.dispose();
+    return image;
+  }
+
+  public static BufferedImage makeWithoutBackground(int width, int height) {
+    BufferedImage image = new BufferedImage(width, height,
+        BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g = image.createGraphics();
+    // make sure the background is filled with transparent pixels when
+    // cleared !
+    g.setBackground(new Color(0, 0, 0, 0));
+    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_IN, 0.0f));
+
+    g.fillRect(0, 0, width, height);
+    g.dispose();
+    return image;
+  }
+
+  /*-----------------------------------------------------------*/
+  /*-- save() -------------------------------------------------*/
+  /*-----------------------------------------------------------*/
+
+  /**
+   * Save an image with the given file name. The method tries to save the image
+   * using the file extension. If the file name is not supported or if there is
+   * none, the image is saved as PNG.
+   * @param image image to save
+   * @param path file name
+   * @throws IOException
+   */
+  public static void saveImage(BufferedImage image, String path)
+      throws IOException {
+    String format = ""; //$NON-NLS-1$
+    String[] formatNames = ImageIO.getWriterFormatNames();
+    for (String formatName : formatNames) {
+      if (path.endsWith("." + formatName)) { //$NON-NLS-1$
+        format = formatName;
+      }
     }
-
-    @SuppressWarnings("unused")
-    private static AffineTransform makeScaleTransform(Shape[] geoms, int width,
-            int height) {
-        GeneralPath geom = new GeneralPath();
-        for (int i = 0; i < geoms.length; i++) {
-            geom.append(geoms[i], false);
-        }
-        return makeScaleTransform(geom, width, height);
+    String newPath = path;
+    if (format.equals("")) { //$NON-NLS-1$
+      newPath += ".png"; //$NON-NLS-1$
+      format = "png"; //$NON-NLS-1$
     }
+    ImageIO.write(image, format, new File(newPath));
+  }
 
-    /*--------------------------------------------------------------*/
-    /*--------------------------------------------------------------*/
-    /*--------------------------------------------------------------*/
+  public static void saveImage(GM_Object geom, String path) throws Exception {
+    ImgUtil.saveImage(geom, path, Color.BLACK, Color.WHITE, 800, 800);
+  }
 
-    public static BufferedImage make(Color bg, int width, int height) {
-        BufferedImage image = new BufferedImage(width, height,
-                BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = image.createGraphics();
-        g.setColor(bg);
-        g.fillRect(0, 0, width, height);
-        g.dispose();
-        return image;
-    }
+  public static void saveImage(List<GM_Object> geomList, String path)
+      throws Exception {
+    ImgUtil.saveImage(geomList, path, Color.BLACK, Color.WHITE, 800, 800);
+  }
 
-    public static BufferedImage makeWithoutBackground(int width, int height) {
-        BufferedImage image = new BufferedImage(width, height,
-                BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = image.createGraphics();
-        // make sure the background is filled with transparent pixels when
-        // cleared !
-        g.setBackground(new Color(0, 0, 0, 0));
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_IN, 0.0f));
+  public static void saveImage(List<GM_Object> geomList, String path, Color fg,
+      Color bg, int width, int height) throws Exception {
+    ImgUtil.saveImage(new GM_Aggregate<GM_Object>(geomList), path, fg, bg,
+        width, height);
+  }
 
-        g.fillRect(0, 0, width, height);
-        g.dispose();
-        return image;
-    }
+  public static void saveImage(GM_Object geom, String path, Color fg, Color bg,
+      int width, int height) throws Exception {
+    String wkt = WktGeOxygene.makeWkt(geom);
+    AwtShape awt;
 
-    /*-----------------------------------------------------------*/
-    /*-- save() -------------------------------------------------*/
-    /*-----------------------------------------------------------*/
+    awt = WktAwt.makeAwtShape(wkt);
 
-    /**
-     * Save an image with the given file name. The method tries to save the
-     * image using the file extension. If the file name is not supported or if
-     * there is none, the image is saved as PNG.
-     * @param image image to save
-     * @param path file name
-     * @throws IOException
-     */
-    public static void saveImage(BufferedImage image, String path)
-            throws IOException {
-        String format = ""; //$NON-NLS-1$
-        String[] formatNames = ImageIO.getWriterFormatNames();
-        for (int i = 0; i < formatNames.length; i++) {
-            if (path.endsWith("." + formatNames[i])) { //$NON-NLS-1$
-                format = formatNames[i];
-            }
-        }
-        String newPath = path;
-        if (format.equals("")) { //$NON-NLS-1$
-            newPath += ".png"; //$NON-NLS-1$
-            format = "png"; //$NON-NLS-1$
-        }
-        ImageIO.write(image, format, new File(newPath));
-    }
+    Rectangle2D bbox = awt.getBounds();
 
-    public static void saveImage(GM_Object geom, String path) throws Exception {
-        saveImage(geom, path, Color.BLACK, Color.WHITE, 800, 800);
-    }
+    AffineTransform transform = ImgUtil.makeScaleTransform(bbox, width, height);
+    BufferedImage image = ImgUtil.make(bg, width, height);
+    ImgUtil.drawGeom(image.createGraphics(), awt, fg, transform);
 
-    public static void saveImage(List<GM_Object> geomList, String path)
-            throws Exception {
-        saveImage(geomList, path, Color.BLACK, Color.WHITE, 800, 800);
-    }
+    ImgUtil.saveImage(image, path);
+  }
 
-    public static void saveImage(List<GM_Object> geomList, String path,
-            Color fg, Color bg, int width, int height) throws Exception {
-        saveImage(new GM_Aggregate<GM_Object>(geomList), path, fg, bg, width,
-                height);
-    }
+  /**
+   * Save a collection of geometries in the given image file.
+   * @param geoms geometries
+   * @param path image file
+   * @param foregrounds colors associated with each geometry
+   * @param background background color
+   * @param width width of the image
+   * @param height height of the image
+   * @throws Exception
+   */
+  public static void saveImage(GM_Object[] geoms, String path,
+      Color[] foregrounds, Color background, int width, int height)
+      throws Exception {
+    AffineTransform transform = ImgUtil
+        .makeScaleTransform(geoms, width, height);
+    BufferedImage image = ImgUtil.make(background, width, height);
+    Graphics2D g = image.createGraphics();
+    System.out.println("draw");
+    ImgUtil.drawGeom(g, geoms, foregrounds, transform);
+    System.out.println("saving the actual image");
+    ImgUtil.saveImage(image, path);
+  }
 
-    public static void saveImage(GM_Object geom, String path, Color fg,
-            Color bg, int width, int height) throws Exception {
-        String wkt = WktGeOxygene.makeWkt(geom);
-        AwtShape awt;
+  public static void saveImageWithoutBackground(GM_Object[] geoms, String path,
+      Color[] foregrounds, int width, int height) throws Exception {
+    AffineTransform transform = ImgUtil
+        .makeScaleTransform(geoms, width, height);
+    BufferedImage image = ImgUtil.makeWithoutBackground(width, height);
+    Graphics2D g = image.createGraphics();
+    ImgUtil.drawGeom(g, geoms, foregrounds, transform);
+    ImgUtil.saveImage(image, path);
+  }
 
-        awt = WktAwt.makeAwtShape(wkt);
+  /**
+   * @param geoms
+   * @param path
+   * @param foregrounds
+   * @param background
+   * @param width
+   * @param height
+   * @throws Exception
+   */
+  public static void savePdf(GM_Object[] geoms, String path,
+      Color[] foregrounds, Color background, int width, int height)
+      throws Exception {
+    DOMImplementation impl = GenericDOMImplementation.getDOMImplementation();
+    Document svgDoc = impl.createDocument(null, "svg", null); //$NON-NLS-1$
 
-        Rectangle2D bbox = awt.getBounds();
+    AffineTransform transform = ImgUtil
+        .makeScaleTransform(geoms, width, height);
+    final SVGGraphics2D svgGenerator = new SVGGraphics2D(svgDoc);
+    svgGenerator.setSVGCanvasSize(new Dimension(width, height));
+    ImgUtil.drawGeom(svgGenerator, geoms, foregrounds, transform);
 
-        AffineTransform transform = ImgUtil.makeScaleTransform(bbox, width,
-                height);
-        BufferedImage image = ImgUtil.make(bg, width, height);
-        ImgUtil.drawGeom(image.createGraphics(), awt, fg, transform);
+    final PipedWriter svgGenOut = new PipedWriter();
+    final PipedReader pdfTransIn = new PipedReader(svgGenOut);
+    final OutputStream pdfOut = new FileOutputStream(path);
 
-        ImgUtil.saveImage(image, path);
-    }
-
-    /**
-     * Save a collection of geometries in the given image file.
-     * @param geoms geometries
-     * @param path image file
-     * @param foregrounds colors associated with each geometry
-     * @param background background color
-     * @param width width of the image
-     * @param height height of the image
-     * @throws Exception
-     */
-    public static void saveImage(GM_Object[] geoms, String path,
-            Color[] foregrounds, Color background, int width, int height)
-            throws Exception {
-        AffineTransform transform = ImgUtil.makeScaleTransform(geoms, width,
-                height);
-        BufferedImage image = ImgUtil.make(background, width, height);
-        Graphics2D g = image.createGraphics();
-        System.out.println("draw");
-        ImgUtil.drawGeom(g, geoms, foregrounds, transform);
-        System.out.println("saving the actual image");
-        ImgUtil.saveImage(image, path);
-    }
-
-    public static void saveImageWithoutBackground(GM_Object[] geoms,
-            String path, Color[] foregrounds, int width, int height)
-            throws Exception {
-        AffineTransform transform = ImgUtil.makeScaleTransform(geoms, width,
-                height);
-        BufferedImage image = ImgUtil.makeWithoutBackground(width, height);
-        Graphics2D g = image.createGraphics();
-        ImgUtil.drawGeom(g, geoms, foregrounds, transform);
-        ImgUtil.saveImage(image, path);
-    }
-
-    /**
-     * @param geoms
-     * @param path
-     * @param foregrounds
-     * @param background
-     * @param width
-     * @param height
-     * @throws Exception
-     */
-    public static void savePdf(GM_Object[] geoms, String path,
-            Color[] foregrounds, Color background, int width, int height)
-            throws Exception {
-        DOMImplementation impl = GenericDOMImplementation
-                .getDOMImplementation();
-        Document svgDoc = impl.createDocument(null, "svg", null); //$NON-NLS-1$
-
-        AffineTransform transform = ImgUtil.makeScaleTransform(geoms, width,
-                height);
-        final SVGGraphics2D svgGenerator = new SVGGraphics2D(svgDoc);
-        svgGenerator.setSVGCanvasSize(new Dimension(width, height));
-        ImgUtil.drawGeom(svgGenerator, geoms, foregrounds, transform);
-
-        final PipedWriter svgGenOut = new PipedWriter();
-        final PipedReader pdfTransIn = new PipedReader(svgGenOut);
-        final OutputStream pdfOut = new FileOutputStream(path);
-
-        Thread generateSvg = new Thread() {
-            @Override
-            public void run() {
-                boolean useCss = true;
-                try {
-                    svgGenerator.stream(svgGenOut, useCss);
-                    svgGenOut.flush();
-                    svgGenOut.close();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        };
-
-        Thread transcodeToPdf = new Thread() {
-            @Override
-            public void run() {
-                PDFTranscoder pdfTranscoder = new PDFTranscoder();
-                TranscoderInput tIn = new TranscoderInput(pdfTransIn);
-                TranscoderOutput tOut = new TranscoderOutput(pdfOut);
-                try {
-                    pdfTranscoder.transcode(tIn, tOut);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        };
-
-        generateSvg.start();
-        transcodeToPdf.start();
-        generateSvg.join();
-        transcodeToPdf.join();
-    }
-
-    /**
-     * @param geoms
-     * @param path
-     * @param foregrounds
-     * @param background
-     * @param width
-     * @param height
-     * @throws Exception
-     */
-    public static void saveSvgz(GM_Object[] geoms, String path,
-            Color[] foregrounds, Color background, int width, int height)
-            throws Exception {
-        DOMImplementation impl = GenericDOMImplementation
-                .getDOMImplementation();
-        Document svgDoc = impl.createDocument(null, "svg", null); //$NON-NLS-1$
-
-        AffineTransform transform = ImgUtil.makeScaleTransform(geoms, width,
-                height);
-
-        final SVGGraphics2D svgGenerator = new SVGGraphics2D(svgDoc);
-        svgGenerator.setSVGCanvasSize(new Dimension(width, height));
-
-        // Stroke stroke=new BasicStroke(.4f);
-        // svgGenerator.setStroke(stroke);
-
-        ImgUtil.drawGeom(svgGenerator, geoms, foregrounds, transform);
-        svgGenerator.setTransform(new AffineTransform());
-
-        Writer svgGenOut = new OutputStreamWriter(new GZIPOutputStream(
-                new FileOutputStream(path)), "UTF-8"); //$NON-NLS-1$
-
+    Thread generateSvg = new Thread() {
+      @Override
+      public void run() {
         boolean useCss = true;
-        svgGenerator.stream(svgGenOut, useCss);
-        svgGenOut.flush();
-        svgGenOut.close();
-    }
+        try {
+          svgGenerator.stream(svgGenOut, useCss);
+          svgGenOut.flush();
+          svgGenOut.close();
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+    };
 
-    // utils //
-    @SuppressWarnings("unchecked")
-    public static boolean isEmpty(GM_Object geom) {
-        if (geom == null) return true;
-        if (geom instanceof GM_Point) return isEmpty((GM_Point) geom);
-        if (geom instanceof GM_Polygon) return isEmpty((GM_Polygon) geom);
-        if (geom instanceof GM_LineString)
-            return isEmpty((GM_LineString) geom);
-        if (geom instanceof GM_Aggregate) return isEmpty((GM_Aggregate) geom);
+    Thread transcodeToPdf = new Thread() {
+      @Override
+      public void run() {
+        PDFTranscoder pdfTranscoder = new PDFTranscoder();
+        TranscoderInput tIn = new TranscoderInput(pdfTransIn);
+        TranscoderOutput tOut = new TranscoderOutput(pdfOut);
+        try {
+          pdfTranscoder.transcode(tIn, tOut);
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+    };
+
+    generateSvg.start();
+    transcodeToPdf.start();
+    generateSvg.join();
+    transcodeToPdf.join();
+  }
+
+  /**
+   * @param geoms
+   * @param path
+   * @param foregrounds
+   * @param background
+   * @param width
+   * @param height
+   * @throws Exception
+   */
+  public static void saveSvgz(GM_Object[] geoms, String path,
+      Color[] foregrounds, Color background, int width, int height)
+      throws Exception {
+    DOMImplementation impl = GenericDOMImplementation.getDOMImplementation();
+    Document svgDoc = impl.createDocument(null, "svg", null); //$NON-NLS-1$
+
+    AffineTransform transform = ImgUtil
+        .makeScaleTransform(geoms, width, height);
+
+    final SVGGraphics2D svgGenerator = new SVGGraphics2D(svgDoc);
+    svgGenerator.setSVGCanvasSize(new Dimension(width, height));
+
+    // Stroke stroke=new BasicStroke(.4f);
+    // svgGenerator.setStroke(stroke);
+
+    ImgUtil.drawGeom(svgGenerator, geoms, foregrounds, transform);
+    svgGenerator.setTransform(new AffineTransform());
+
+    Writer svgGenOut = new OutputStreamWriter(new GZIPOutputStream(
+        new FileOutputStream(path)), "UTF-8"); //$NON-NLS-1$
+
+    boolean useCss = true;
+    svgGenerator.stream(svgGenOut, useCss);
+    svgGenOut.flush();
+    svgGenOut.close();
+  }
+
+  // utils //
+  @SuppressWarnings("unchecked")
+  public static boolean isEmpty(GM_Object geom) {
+    if (geom == null) {
+      return true;
+    }
+    if (geom instanceof GM_Point) {
+      return ImgUtil.isEmpty((GM_Point) geom);
+    }
+    if (geom instanceof GM_Polygon) {
+      return ImgUtil.isEmpty((GM_Polygon) geom);
+    }
+    if (geom instanceof GM_LineString) {
+      return ImgUtil.isEmpty((GM_LineString) geom);
+    }
+    if (geom instanceof GM_Aggregate) {
+      return ImgUtil.isEmpty((GM_Aggregate) geom);
+    }
+    return false;
+  }
+
+  public static boolean isEmpty(GM_Point point) {
+    DirectPosition position = point.getPosition();
+    double x = position.getX();
+    double y = position.getY();
+    double z = position.getZ();
+    return (x == Double.NaN || y == Double.NaN || z == Double.NaN);
+  }
+
+  public static boolean isEmpty(GM_Polygon poly) {
+    return poly.coord().size() == 0;
+  }
+
+  public static boolean isEmpty(GM_LineString lineString) {
+    return lineString.sizeControlPoint() == 0;
+  }
+
+  static boolean isEmpty(GM_Aggregate<GM_Object> aggr) {
+    for (GM_Object geom : aggr) {
+      if (!ImgUtil.isEmpty(geom)) {
         return false;
+      }
     }
+    return true;
+  }
 
-    public static boolean isEmpty(GM_Point point) {
-        DirectPosition position = point.getPosition();
-        double x = position.getX();
-        double y = position.getY();
-        double z = position.getZ();
-        return (x == Double.NaN || y == Double.NaN || z == Double.NaN);
+  /**
+   * Save collections of features in an image file.
+   * @param <Feature> Type of the features to save
+   * @param collections collections of features
+   * @param colors colors associated with each collection
+   * @param background background color
+   * @param path file name
+   * @param scale scale used for the rendering
+   * @throws Exception
+   */
+  public static <Feature extends FT_Feature> void collectionsToImage(
+      List<FT_FeatureCollection<Feature>> collections, List<Color> colors,
+      Color background, String path, double scale) throws Exception {
+    int totalSize = 0; // number of features
+    GM_Envelope envelope = null;
+    for (FT_FeatureCollection<Feature> c : collections) {
+      GM_Envelope env = c.envelope();
+      if (envelope == null) {
+        envelope = env;
+      } else {
+        envelope.expand(env);
+      }
+      totalSize = totalSize + c.size();
     }
-
-    public static boolean isEmpty(GM_Polygon poly) {
-        return poly.coord().size() == 0;
+    if (envelope == null) {
+      return;
     }
-
-    public static boolean isEmpty(GM_LineString lineString) {
-        return lineString.sizeControlPoint() == 0;
+    Color[] foregrounds = new Color[totalSize];
+    double widthReal = envelope.width() / scale;
+    double heightReal = envelope.length() / scale;
+    int width = new Double(widthReal).intValue();
+    int height = new Double(heightReal).intValue();
+    System.out.println("Envelope " + envelope.width() + " x "
+        + envelope.length());
+    System.out.println("Envelope out " + width + " x " + height);
+    int i = 0, j = 0;
+    GM_Object[] geometries = new GM_Object[totalSize];
+    for (FT_FeatureCollection<Feature> c : collections) {
+      for (FT_Feature f : c) {
+        geometries[i] = f.getGeom();
+        foregrounds[i] = colors.get(j);
+        i++;
+      }
+      j++;
     }
-
-    static boolean isEmpty(GM_Aggregate<GM_Object> aggr) {
-        for (GM_Object geom : aggr)
-            if (!isEmpty(geom)) return false;
-        return true;
-    }
-
-    /**
-     * Save collections of features in an image file.
-     * @param <Feature> Type of the features to save
-     * @param collections collections of features
-     * @param colors colors associated with each collection
-     * @param background background color
-     * @param path file name
-     * @param scale scale used for the rendering
-     * @throws Exception
-     */
-    public static <Feature extends FT_Feature> void collectionsToImage(
-            List<FT_FeatureCollection<Feature>> collections,
-            List<Color> colors, Color background, String path, double scale)
-            throws Exception {
-        int totalSize = 0; // number of features
-        GM_Envelope envelope = null;
-        for (FT_FeatureCollection<Feature> c : collections) {
-            GM_Envelope env = c.envelope();
-            if (envelope == null) {
-                envelope = env;
-            } else {
-                envelope.expand(env);
-            }
-            totalSize = totalSize + c.size();
-        }
-        if (envelope == null) { return; }
-        Color[] foregrounds = new Color[totalSize];
-        double widthReal = envelope.width() / scale;
-        double heightReal = envelope.length() / scale;
-        int width = new Double(widthReal).intValue();
-        int height = new Double(heightReal).intValue();
-        System.out.println("Envelope " + envelope.width() + " x " + envelope.length());
-        System.out.println("Envelope out " + width + " x " + height);
-        int i = 0, j = 0;
-        GM_Object[] geometries = new GM_Object[totalSize];
-        for (FT_FeatureCollection<Feature> c : collections) {
-            for (FT_Feature f : c) {
-                geometries[i] = f.getGeom();
-                foregrounds[i] = colors.get(j);
-                i++;
-            }
-            j++;
-        }
-        System.out.println("save");
-        ImgUtil.saveImage(geometries, path, foregrounds, background, width,
-                height);
-    }
+    System.out.println("save");
+    ImgUtil.saveImage(geometries, path, foregrounds, background, width, height);
+  }
 } // class

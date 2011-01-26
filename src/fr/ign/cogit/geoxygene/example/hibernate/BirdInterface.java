@@ -8,15 +8,18 @@ import javax.persistence.InheritanceType;
 
 /**
  * @author Julien Perret
- *
+ * 
  */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public interface BirdInterface {
-	@Id @GeneratedValue
-	public int getId();	
-	public void setId(int id);
+  @Id
+  @GeneratedValue
+  public int getId();
 
-	public String getName();
-	public void setName(String name);
+  public void setId(int id);
+
+  public String getName();
+
+  public void setName(String name);
 }
