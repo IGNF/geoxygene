@@ -940,9 +940,7 @@ public class Noeud extends ElementCarteTopo {
         return Operateurs.directionPrincipaleOrientee(arcEchantillone);
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
+
     @Override
     public String toString() {
         return "Noeud" + " " + this.getId() + " - " //$NON-NLS-2$ //$NON-NLS-3$

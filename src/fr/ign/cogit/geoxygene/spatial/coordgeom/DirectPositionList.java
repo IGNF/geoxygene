@@ -172,57 +172,39 @@ public class DirectPositionList implements Collection<DirectPosition> {
 	@Override
 	public Iterator<DirectPosition> iterator() {return this.list.iterator();}
 
-	/* (non-Javadoc)
-	 * @see java.util.Collection#addAll(java.util.Collection)
-	 */
+
 	@Override
 	public boolean addAll(Collection<? extends DirectPosition> c) {return this.addAll((DirectPositionList)c);}
 
-	/* (non-Javadoc)
-	 * @see java.util.Collection#contains(java.lang.Object)
-	 */
+
 	@Override
 	public boolean contains(Object o) {return this.list.contains(o);}
 
-	/* (non-Javadoc)
-	 * @see java.util.Collection#containsAll(java.util.Collection)
-	 */
+
 	@Override
 	public boolean containsAll(Collection<?> c) {return this.list.containsAll(c);}
 
-	/* (non-Javadoc)
-	 * @see java.util.Collection#isEmpty()
-	 */
+
 	@Override
 	public boolean isEmpty() {return this.list.isEmpty();}
 
-	/* (non-Javadoc)
-	 * @see java.util.Collection#remove(java.lang.Object)
-	 */
+
 	@Override
 	public boolean remove(Object o) {return this.list.remove(o);}
 
-	/* (non-Javadoc)
-	 * @see java.util.Collection#removeAll(java.util.Collection)
-	 */
+
 	@Override
 	public boolean removeAll(Collection<?> c) {return this.list.removeAll(c);}
 
-	/* (non-Javadoc)
-	 * @see java.util.Collection#retainAll(java.util.Collection)
-	 */
+
 	@Override
 	public boolean retainAll(Collection<?> c) {return this.list.retainAll(c);}
 
-	/* (non-Javadoc)
-	 * @see java.util.Collection#toArray()
-	 */
+
 	@Override
 	public Object[] toArray() {return this.list.toArray();}
 
-	/* (non-Javadoc)
-	 * @see java.util.Collection#toArray(T[])
-	 */
+
 	@Override
 	public <T> T[] toArray(T[] a) {return this.list.toArray(a);}
 

@@ -303,9 +303,7 @@ public class Face  extends ElementCarteTopo   {
      * @return True if the face is the infinite face, false otherwise.
      */
     public boolean isInfinite() { return infinite; }
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
+
     @Override
     public String toString() {
         return "Face" + " " + this.getId() + " - " //$NON-NLS-2$ //$NON-NLS-3$

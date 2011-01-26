@@ -39,9 +39,7 @@ import javax.swing.filechooser.FileFilter;
 
 class GIFImageFileFilter extends FileFilter {
 
-	/* (non-Javadoc)
-	 * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
-	 */
+
 	@Override
 	public boolean accept(File f) {
 		if (f.isDirectory()) {
@@ -55,9 +53,7 @@ class GIFImageFileFilter extends FileFilter {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.swing.filechooser.FileFilter#getDescription()
-	 */
+
 	@Override
 	public String getDescription() {
 		return "Gif image (*.gif)";
