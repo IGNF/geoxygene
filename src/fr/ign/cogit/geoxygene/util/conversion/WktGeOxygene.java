@@ -197,7 +197,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
 
     /*- GM_Point ------------------------------------------*/
 
-//TODO d�terminer la dimension de la g�om�trie attendue par postgis
+//TODO déterminer la dimension de la géométrie attendue par postgis
     static String point(GM_Point point)
     {
         DirectPosition position=point.getPosition();

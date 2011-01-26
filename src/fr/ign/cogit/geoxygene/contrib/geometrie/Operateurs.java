@@ -1215,7 +1215,7 @@ public abstract class Operateurs {
 				i = -1;
 			}
 
-			// Si le point d'arriv�e de la polyligne courante = point d'arriv�e
+			// Si le point d'arrivée de la polyligne courante = point d'arrivée
 			// de la polyligne suivante
 			else if (lineStringCourante.endPoint().equals2D(
 					lineStringSuivante.endPoint(), 0)) {
@@ -1230,7 +1230,7 @@ public abstract class Operateurs {
 				i = -1;
 			}
 
-			// Si le point d'arriv�e de la polyligne courante = point de d�part
+			// Si le point d'arrivée de la polyligne courante = point de départ
 			// de la polyligne suivante
 			else if (lineStringCourante.endPoint().equals2D(
 					lineStringSuivante.startPoint(), 0)) {
