@@ -984,4 +984,17 @@ public class Noeud extends ElementCarteTopo {
     return "Noeud" + " " + this.getId() + " - " //$NON-NLS-2$ //$NON-NLS-3$
         + this.getGeometrie();
   }
+  
+  /**
+	 * @return the distance
+	 */
+	public double getDistance() {
+		return distance;
+	}
+	/**
+	 * @param distance the distance to set
+	 */
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
 }
