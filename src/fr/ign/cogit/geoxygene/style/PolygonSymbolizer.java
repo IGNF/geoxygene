@@ -245,8 +245,8 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
         .getBounds2D().getMinX(), shape.getBounds2D().getMinY());
     Image scaledImage = image.getScaledInstance(shapeWidth.intValue(),
         shapeHeight.intValue(), Image.SCALE_FAST);
-    BufferedImage buff = new BufferedImage(shapeWidth.intValue(), shapeHeight
-        .intValue(), BufferedImage.TYPE_INT_ARGB);
+    BufferedImage buff = new BufferedImage(shapeWidth.intValue(),
+        shapeHeight.intValue(), BufferedImage.TYPE_INT_ARGB);
     buff.getGraphics().drawImage(scaledImage, 0, 0, null);
     ParameterBlock p = new ParameterBlock();
     p.addSource(buff);
@@ -285,7 +285,7 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
       return;
     }
     try {
-      Shape shape = viewport.toShape(polygon.exteriorLineString());
+      Shape shape = viewport.toShape(polygon);
       if (shape != null) {
         graphics.draw(shape);
       } else {
@@ -298,15 +298,11 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
     } catch (NoninvertibleTransformException e) {
       e.printStackTrace();
     }
-    for (int i = 0; i < polygon.sizeInterior(); i++) {
-      try {
-        Shape shape = viewport.toShape(polygon.interiorLineString(i));
-        if (shape != null) {
-          graphics.draw(shape);
-        }
-      } catch (NoninvertibleTransformException e) {
-        e.printStackTrace();
-      }
-    }
+    /*
+     * for (int i = 0; i < polygon.sizeInterior(); i++) { try { Shape shape =
+     * viewport.toShape(polygon.interiorLineString(i)); if (shape != null) {
+     * graphics.draw(shape); } } catch (NoninvertibleTransformException e) {
+     * e.printStackTrace(); } }
+     */
   }
 }
