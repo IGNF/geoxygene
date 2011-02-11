@@ -106,8 +106,9 @@ public class AdapterFactory {
       }
       CoordinateSequence sequence = AdapterFactory.toCoordinateSequence(
           factory, coord);
-      if (sequence.getCoordinate(0).equals(
-          sequence.getCoordinate(sequence.size() - 1))) {
+      if (sequence.size() > 3
+          && sequence.getCoordinate(0).equals(
+              sequence.getCoordinate(sequence.size() - 1))) {
         return factory.createLinearRing(sequence);
       } else {
         return null;
