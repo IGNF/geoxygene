@@ -137,25 +137,22 @@ public class Mark {
           Mark.crossHalfWidth, Mark.crossHalfWidth, -Mark.crossHalfWidth,
           -Mark.crossHalfWidth, -0.5f, -0.5f }, 13);
   static float sqrt2over2 = 0.5f * (float) Math.sqrt(2);
-  static float xShapeHalfWidth = 0.1f;
-  private static Shape xShape = new Polygon2D(new float[] { 0.0f,
-      Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth),
-      Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth), Mark.xShapeHalfWidth,
-      Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth),
-      Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth), 0,
-      -Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth),
-      -Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth), -Mark.xShapeHalfWidth,
-      -Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth),
-      -Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth), 0.0f }, new float[] {
-      -Mark.xShapeHalfWidth, -Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth),
-      -Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth), 0.0f,
-      Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth),
-      Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth), Mark.xShapeHalfWidth,
-      Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth),
-      Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth), 0.0f,
-      -Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth),
-      -Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth), -Mark.xShapeHalfWidth },
-      13);
+  static float xShapeRadius = 0.5f;
+  static float xShapeRatio = 0.25f;
+  // static float xShapeP = sqrt2over2 * xShapeRadius * (1 - xShapeRatio);
+  static float xShapeP = (float) (Mark.sqrt2over2 * (Math.sqrt(Math.pow(
+      Mark.xShapeRadius, 2)
+      - (Math.pow(Mark.xShapeRatio * Mark.xShapeRadius, 2) / 2)) - (Mark.xShapeRadius
+      * Mark.xShapeRatio / Math.sqrt(2))));
+  static float xShapeR = Mark.xShapeRadius * Mark.xShapeRatio;
+  private static Shape xShape = new Polygon2D(new float[] { 0.0f, Mark.xShapeP,
+      Mark.xShapeP + Mark.xShapeR, Mark.xShapeR, Mark.xShapeP + Mark.xShapeR,
+      Mark.xShapeP, 0.0f, -Mark.xShapeP, -(Mark.xShapeP + Mark.xShapeR),
+      -Mark.xShapeR, -(Mark.xShapeP + Mark.xShapeR), -Mark.xShapeP, 0.0f },
+      new float[] { -Mark.xShapeR, -(Mark.xShapeP + Mark.xShapeR),
+          -Mark.xShapeP, 0.0f, Mark.xShapeP, Mark.xShapeP + Mark.xShapeR,
+          Mark.xShapeR, Mark.xShapeP + Mark.xShapeR, Mark.xShapeP, 0.0f,
+          -Mark.xShapeP, -(Mark.xShapeP + Mark.xShapeR), -Mark.xShapeR }, 13);
   private static Shape hLine = new Polygon2D(new float[] { -0.5f, -0.5f, 0.5f,
       0.5f }, new float[] { 0.1f, -0.1f, -0.1f, 0.1f }, 4);
   private static Shape vLine = new Polygon2D(new float[] { 0.1f, -0.1f, -0.1f,
