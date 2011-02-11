@@ -72,9 +72,12 @@ public class PointSymbolizer extends AbstractSymbolizer {
       return;
     }
     Point2D point;
-    GM_Object geometry = (this.getGeometryPropertyName() != null) ? (GM_Object) feature
-        .getAttribute(this.getGeometryPropertyName())
-        : feature.getGeom();
+    GM_Object geometry = feature.getGeom();
+    if (this.getGeometryPropertyName() != null
+        && !this.getGeometryPropertyName().equalsIgnoreCase("geom")) { //$NON-NLS-1$
+      geometry = (GM_Object) feature.getAttribute(this
+          .getGeometryPropertyName());
+    }
     if (geometry == null) {
       return;
     }
@@ -101,18 +104,20 @@ public class PointSymbolizer extends AbstractSymbolizer {
       at.rotate(this.getGraphic().getRotation());
       at.scale(size, size);
       markShape = at.createTransformedShape(markShape);
+
       graphics.setColor((mark.getFill() == null) ? Color.gray : mark.getFill()
           .getColor());
       graphics.fill(markShape);
+      graphics.setStroke(mark.getStroke().toAwtStroke((float) scale));
       graphics.setColor((mark.getStroke() == null) ? Color.black : mark
           .getStroke().getColor());
       graphics.draw(markShape);
     }
     for (ExternalGraphic theGraphic : this.getGraphic().getExternalGraphics()) {
       Image onlineImage = theGraphic.getOnlineResource();
-      graphics.drawImage(onlineImage, (int) point.getX()
-          - onlineImage.getWidth(null) / 2, (int) point.getY()
-          - onlineImage.getHeight(null) / 2, null);
+      graphics.drawImage(onlineImage,
+          (int) point.getX() - onlineImage.getWidth(null) / 2,
+          (int) point.getY() - onlineImage.getHeight(null) / 2, null);
     }
   }
 }
