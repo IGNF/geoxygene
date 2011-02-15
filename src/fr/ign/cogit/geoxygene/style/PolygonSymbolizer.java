@@ -43,6 +43,7 @@ import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 
 /**
  * @author Julien Perret
@@ -284,10 +285,11 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
     if (polygon == null || viewport == null) {
       return;
     }
+    List<Shape> shapes = new ArrayList<Shape>();
     try {
-      Shape shape = viewport.toShape(polygon);
+      Shape shape = viewport.toShape(polygon.getExterior().coord());
       if (shape != null) {
-        graphics.draw(shape);
+        shapes.add(shape);
       } else {
         if (AbstractSymbolizer.logger.isTraceEnabled()) {
           AbstractSymbolizer.logger.trace("null shape for " + polygon); //$NON-NLS-1$
@@ -295,14 +297,23 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
               .trace("ring = " + polygon.exteriorLineString()); //$NON-NLS-1$
         }
       }
+      for (GM_Ring ring : polygon.getInterior()) {
+        shape = viewport.toShape(ring.coord());
+        if (shape != null) {
+          shapes.add(shape);
+        } else {
+          if (AbstractSymbolizer.logger.isTraceEnabled()) {
+            AbstractSymbolizer.logger.trace("null shape for " + polygon); //$NON-NLS-1$
+            AbstractSymbolizer.logger
+                .trace("ring = " + ring); //$NON-NLS-1$
+          }
+        }
+      }
     } catch (NoninvertibleTransformException e) {
       e.printStackTrace();
     }
-    /*
-     * for (int i = 0; i < polygon.sizeInterior(); i++) { try { Shape shape =
-     * viewport.toShape(polygon.interiorLineString(i)); if (shape != null) {
-     * graphics.draw(shape); } } catch (NoninvertibleTransformException e) {
-     * e.printStackTrace(); } }
-     */
+    for (Shape shape : shapes) {
+      graphics.draw(shape);
+    }
   }
 }
