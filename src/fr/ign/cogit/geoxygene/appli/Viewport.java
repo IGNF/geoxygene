@@ -427,8 +427,20 @@ public class Viewport {
    */
   private GeneralPath toShape(final GM_LineString lineString)
       throws NoninvertibleTransformException {
+    return this.toShape(lineString.coord());
+  }
+
+  /**
+   * Transform a DirectPosition list to an awt general path.
+   * @param list a DirectPosition list 
+   * @return a GeneralPath representing the given linestring as an AWT shape
+   * @throws NoninvertibleTransformException throws an exception when the
+   *           transformation fails
+   */
+  public GeneralPath toShape(DirectPositionList list)
+      throws NoninvertibleTransformException {
     DirectPositionList viewPositionList = this
-        .toViewDirectPositionList(lineString.coord());
+        .toViewDirectPositionList(list);
     GeneralPath shape = new GeneralPath();
     DirectPosition p = viewPositionList.get(0);
     shape.moveTo(p.getX(), p.getY());
