@@ -196,11 +196,13 @@ public class LayerStylesPanel extends JPanel {
     g2.fillRect(currentColumn * (columnsWidth + this.margin) + this.margin,
         currentRow * (rowHeight + this.margin) + this.margin, columnsWidth,
         rowHeight);
-    g2.setColor(symbolizer.getStroke().getColor());
-    g2.setStroke(symbolizer.getStroke().toAwtStroke());
-    g2.drawRect(currentColumn * (columnsWidth + this.margin) + this.margin,
-        currentRow * (rowHeight + this.margin) + this.margin, columnsWidth,
-        rowHeight);
+    if (symbolizer.getStroke() != null) {
+      g2.setColor(symbolizer.getStroke().getColor());
+      g2.setStroke(symbolizer.getStroke().toAwtStroke());
+      g2.drawRect(currentColumn * (columnsWidth + this.margin) + this.margin,
+          currentRow * (rowHeight + this.margin) + this.margin, columnsWidth,
+          rowHeight);
+    }
   }
 
   private void paintRaster(RasterSymbolizer symbolizer, Graphics2D g2,
