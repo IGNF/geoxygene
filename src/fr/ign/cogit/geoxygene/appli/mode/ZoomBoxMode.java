@@ -123,8 +123,8 @@ public class ZoomBoxMode extends AbstractMode {
   @Override
   public Cursor getCursor() {
     Toolkit toolkit = Toolkit.getDefaultToolkit();
-    Cursor cursor = toolkit.createCustomCursor(toolkit
-        .getImage("src/resources/images/cursors/32x32/zoomCursor.gif"), //$NON-NLS-1$
+    Cursor cursor = toolkit.createCustomCursor(toolkit.getImage(this.getClass()
+        .getResource("/images/cursors/32x32/zoomCursor.gif").getFile()), //$NON-NLS-1$
         new Point(16, 16), "Zoom"); //$NON-NLS-1$
     return cursor;
   }
