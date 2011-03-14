@@ -19,7 +19,29 @@ public class AttributeType implements GF_AttributeType {
    */
   public AttributeType() {
     super();
-    this.valuesDomain = new ArrayList<FC_FeatureAttributeValue>();
+    this.valuesDomain = new ArrayList<FC_FeatureAttributeValue>(0);
+  }
+
+  /**
+   * Constructeur
+   */
+  public AttributeType(String name, String valueType) {
+    super();
+    this.valuesDomain = new ArrayList<FC_FeatureAttributeValue>(0);
+    this.memberName = name;
+    this.nomField = name;
+    this.valueType = valueType;
+  }
+
+  /**
+   * Constructeur
+   */
+  public AttributeType(String memberName, String fieldName, String valueType) {
+    super();
+    this.valuesDomain = new ArrayList<FC_FeatureAttributeValue>(0);
+    this.memberName = memberName;
+    this.nomField = fieldName;
+    this.valueType = valueType;
   }
 
   /**
@@ -37,7 +59,7 @@ public class AttributeType implements GF_AttributeType {
     this.domainOfValues = ori.getDomainOfValues();
     this.valueDomainType = ori.getValueDomainType();
     this.valueType = ori.getValueType();
-    this.valuesDomain = new ArrayList<FC_FeatureAttributeValue>();
+    this.valuesDomain = new ArrayList<FC_FeatureAttributeValue>(0);
     this.nomField = ori.getNomField();
     this.isExplicite = ori.getIsExplicite();
   }
