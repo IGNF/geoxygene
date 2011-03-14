@@ -150,6 +150,9 @@ public class Chargeur {
       final Population<?> population, final boolean convert2d) {
     int nbElements = 0;
     for (FT_Feature feature : listeFeatures) {
+      if (feature.getGeom() == null) {
+        continue;
+      }
       if (feature.getGeom() instanceof GM_Primitive) {
         Chargeur.creeElement(feature, feature.getGeom(), population, convert2d);
         nbElements++;
