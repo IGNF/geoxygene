@@ -322,7 +322,16 @@ public class LayerRenderer implements Renderer {
     Collection<? extends FT_Feature> collection = this.layer
         .getFeatureCollection().select(envelope);
     int numberOfFeatureTypeStyle = 0;
-    for (Style style : this.layer.getStyles()) {
+    Collection<Style> activeStyles = this.layer.getStyles();
+    if (!(this.layer.getActiveGroup() == null||this.layer.getActiveGroup().isEmpty())) {
+      activeStyles = new ArrayList<Style>(0);
+      for (Style style : this.layer.getStyles()) {
+        if (style.getGroup().equalsIgnoreCase(this.layer.getActiveGroup())) {
+          activeStyles.add(style);
+        }
+      }
+    }
+    for (Style style : activeStyles) {
       if (style.isUserStyle()) {
         numberOfFeatureTypeStyle += ((UserStyle) style).getFeatureTypeStyles()
             .size();
@@ -332,7 +341,7 @@ public class LayerRenderer implements Renderer {
     this.fireActionPerformed(new ActionEvent(this, 3,
         "Rendering start", numberOfFeatureTypeStyle * collection.size())); //$NON-NLS-1$
     int featureRenderIndex = 0;
-    for (Style style : this.layer.getStyles()) {
+    for (Style style : activeStyles) {
       if (this.isCancelled()) {
         return;
       }
@@ -345,9 +354,9 @@ public class LayerRenderer implements Renderer {
           }
           // creating a map between each rule and the
           // corresponding features (filtered in)
-          Map<Rule, Set<FT_Feature>> filteredFeatures = new HashMap<Rule, Set<FT_Feature>>();
+          Map<Rule, Set<FT_Feature>> filteredFeatures = new HashMap<Rule, Set<FT_Feature>>(0);
           for (Rule rule : featureTypeStyle.getRules()) {
-            filteredFeatures.put(rule, new HashSet<FT_Feature>());
+            filteredFeatures.put(rule, new HashSet<FT_Feature>(0));
           }
           FT_Feature[] list = new FT_Feature[0];
           synchronized (collection) {
