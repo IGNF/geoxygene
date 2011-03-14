@@ -67,25 +67,28 @@ public abstract class Operateurs {
    */
   public static DirectPosition projection(DirectPosition M, DirectPosition A,
       DirectPosition B) {
-    if (A.distance(B) == 0) {
-      return A; // cas ou A et B sont
+    Vecteur AB = new Vecteur(A, B);
+    boolean to2d = Double.isNaN(M.getZ()) || Double.isNaN(A.getZ()) || Double.isNaN(B.getZ());
+    if (to2d) {
+      AB.setZ(Double.NaN);
     }
-    // confondus
-    Vecteur uAB = new Vecteur(A, B).vectNorme();
+    if (AB.norme() == 0) {
+      return A; // cas ou A et B sont confondus
+    }
+    Vecteur uAB = AB.vectNorme();
     Vecteur AM = new Vecteur(A, M);
+    if (to2d) {
+      AM.setZ(Double.NaN);
+    }
     double lambda = AM.prodScalaire(uAB);
     if (lambda <= 0) {
-      return A; // Cas ou M se projete en A sur le segment
+      return A; // Cas ou M se projete en A sur le segment [AB]
     }
-    // [AB]
     if (lambda >= A.distance(B)) {
-      return B; // Cas ou M se projete
+      return B; // Cas ou M se projete en B sur le segment [AB]
     }
-    // en B sur le segment
-    // [AB]
-    return Operateurs.translate(A, uAB.multConstante(lambda)); // Cas ou M se
-                                                               // projete
-    // entre A et B
+    // Cas ou M se projete entre A et B
+    return Operateurs.translate(A, uAB.multConstante(lambda));
   }
 
   /**
