@@ -70,7 +70,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  */
 @Entity
 public class Population<Feat extends FT_Feature> extends
-    FT_FeatureCollection<Feat> {
+    FT_FeatureCollection<Feat> implements Collection<Feat> {
   /** logger */
   // static Logger logger=Logger.getLogger(Population.class.getName());
   /** Identifiant. Correspond au "cogitID" des tables du SGBD. */

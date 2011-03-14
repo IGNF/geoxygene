@@ -55,7 +55,7 @@ import fr.ign.cogit.geoxygene.util.index.SpatialIndex;
 public class FT_FeatureCollection<Feat extends FT_Feature> implements
     Collection<Feat> {
   static Logger logger = Logger.getLogger(FT_FeatureCollection.class.getName());
-  protected List<FeatureCollectionListener> listenerList = new ArrayList<FeatureCollectionListener>();
+  protected List<FeatureCollectionListener> listenerList = new ArrayList<FeatureCollectionListener>(0);
 
   /**
    * Ajoute un {@link FeatureCollectionListener}.
@@ -182,7 +182,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
   /**
    * La liste des <code>Feature</code>s composant this.
    */
-  protected List<Feat> elements = new ArrayList<Feat>();
+  protected List<Feat> elements = new ArrayList<Feat>(0);
 
   /**
    * Renvoie la liste de <code>Feature</code>s composant this.
@@ -331,7 +331,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
    */
   @Override
   public void clear() {
-    List<GM_Object> removedCollectionGeometry = new ArrayList<GM_Object>();
+    List<GM_Object> removedCollectionGeometry = new ArrayList<GM_Object>(0);
     synchronized (this.elements) {
       for (Feat feature : this) {
         feature.getFeatureCollections().remove(this);
@@ -377,7 +377,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
   @SuppressWarnings("unchecked")
   public GM_Aggregate<? extends GM_Object> getGeomAggregate() {
     if (this.hasGeom()) {
-      List<GM_Object> list = new ArrayList<GM_Object>();
+      List<GM_Object> list = new ArrayList<GM_Object>(0);
       Class<?> geomType = null;
       boolean mixedGeom = false;
       for (FT_Feature f : this.getElements().toArray(new FT_Feature[0])) {
@@ -612,7 +612,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
    */
   public Collection<Feat> select(DirectPosition P, double D) {
     if (!this.isIndexed) {
-      Collection<Feat> selectedFeatures = new HashSet<Feat>();
+      Collection<Feat> selectedFeatures = new HashSet<Feat>(0);
       synchronized (this.elements) {
         for (Feat feature : this) {
           if (feature.getGeom().distance(P.toGM_Point()) <= D) {
@@ -633,11 +633,11 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
    */
   public Collection<Feat> select(GM_Envelope env) {
     if (env.width() == 0 || env.length() == 0 || env.isEmpty()) {
-      return new HashSet<Feat>();
+      return new HashSet<Feat>(0);
     }
     GM_Object envGeom = env.getGeom();
     if (!this.isIndexed) {
-      Collection<Feat> selectedFeatures = new HashSet<Feat>();
+      Collection<Feat> selectedFeatures = new HashSet<Feat>(0);
       synchronized (this.elements) {
         selectedFeatures.addAll(this.elements);
       }
@@ -660,7 +660,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
    */
   public Collection<Feat> select(GM_Object geometry) {
     if (!this.isIndexed) {
-      Collection<Feat> selectedFeatures = new HashSet<Feat>();
+      Collection<Feat> selectedFeatures = new HashSet<Feat>(0);
       synchronized (this.elements) {
         for (Feat feature : this) {
           if (feature.getGeom().intersects(geometry)) {
@@ -687,7 +687,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
    */
   public Collection<Feat> select(GM_Object geometry, boolean strictlyCrosses) {
     if (!this.isIndexed) {
-      Collection<Feat> selectedFeatures = new HashSet<Feat>();
+      Collection<Feat> selectedFeatures = new HashSet<Feat>(0);
       synchronized (this.elements) {
         for (Feat feature : this) {
           if (feature.getGeom().intersectsStrictement(geometry)) {
@@ -710,7 +710,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
    */
   public Collection<Feat> select(GM_Object geometry, double distance) {
     if (!this.isIndexed) {
-      Collection<Feat> selectedFeatures = new HashSet<Feat>();
+      Collection<Feat> selectedFeatures = new HashSet<Feat>(0);
       synchronized (this.elements) {
         for (Feat feature : this) {
           if (feature.getGeom().distance(geometry) <= distance) {
