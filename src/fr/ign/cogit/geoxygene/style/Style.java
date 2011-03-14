@@ -49,6 +49,8 @@ public interface Style {
    */
   void setName(String name);
 
+  String getGroup();
+
   /**
    * @return vrai si le style est un style utilisateur, faux sinon.
    */
@@ -57,4 +59,6 @@ public interface Style {
   Symbolizer getSymbolizer();
 
   List<FeatureTypeStyle> getFeatureTypeStyles();
+
+  void setGroup(String string);
 }

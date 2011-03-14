@@ -62,6 +62,45 @@ public class UserStyle extends AbstractStyle {
     this.featureTypeStyles = featureTypeStyles;
   }
 
+  /**
+   * Title of the style.
+   */
+  @XmlElement(name = "Title", required = false)
+  private String title;
+
+  public String getTitle() {
+    return title;
+  }
+  public void setTitle(String title) {
+    this.title = title;
+  }
+  /**
+   * Abstract description of the style.
+   */
+  @XmlElement(name = "Abstract", required = false)
+  private String abstractDescription;
+
+  public String getAbstractDescription() {
+    return abstractDescription;
+  }
+
+  public void setAbstractDescription(String abstractDescription) {
+    this.abstractDescription = abstractDescription;
+  }
+
+  /**
+   * True if the style is the default style of the layer.
+   */
+  @XmlElement(name = "IsDefault", required = false)
+  private boolean defaultStyle = false;
+  public boolean isDefaultStyle() {
+    return defaultStyle;
+  }
+
+  public void setDefaultStyle(boolean defaultStyle) {
+    this.defaultStyle = defaultStyle;
+  }
+
   @Override
   public boolean isUserStyle() {
     return true;

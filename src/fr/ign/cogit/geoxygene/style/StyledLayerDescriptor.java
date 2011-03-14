@@ -420,7 +420,7 @@ public class StyledLayerDescriptor {
     // Selection of suitables colors from the COGIT reference colors.
     ColorReferenceSystem crs = ColorReferenceSystem
         .unmarshall(ColorReferenceSystem.class.getResource(
-            "/color/ColorReferenceSystem.xml").getPath());
+            "/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
 
     List<ColorimetricColor> colors = new ArrayList<ColorimetricColor>();
     for (int i = 0; i < 12; i++) {
@@ -531,6 +531,32 @@ public class StyledLayerDescriptor {
     // }
   }
 
+  /**
+   * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de
+   * trait, la couleur de remplissage, l'opacité et la largeur de trait donnés
+   * en paramètre.
+   * <p>
+   * @param groupName nom du groupe
+   * @param geometryType type de géométrie porté par le layer
+   * @param strokeColor la couleur du trait
+   * @param fillColor la couleur de remplissage
+   * @param opacity l'opacité des objets de la couche
+   * @param strokeWidth la largeur du trait
+   * @return style
+   */
+  public Style createStyle(String groupName,
+      Class<? extends GM_Object> geometryType, Color strokeColor,
+      Color fillColor, float opacity, float strokeWidth) {
+    UserStyle style = new UserStyle();
+    style.setGroup(groupName);
+    FeatureTypeStyle fts = new FeatureTypeStyle();
+    fts.getRules().add(
+        this.createRule(geometryType, strokeColor, fillColor, opacity, opacity,
+            strokeWidth));
+    style.getFeatureTypeStyles().add(fts);
+    return style;
+  }
+  
   public Rule createRule(Class<? extends GM_Object> geometryType,
       Color strokeColor, Color fillColor, float strokeOpacity,
       float fillOpacity, float strokeWidth) {

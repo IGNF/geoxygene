@@ -52,6 +52,18 @@ public abstract class AbstractStyle implements Style {
   public void setName(String name) {
     this.name = name;
   }
+  /**
+   * Group of the style.
+   */
+  @XmlElement(name = "Group", required = false)
+  private String group;
+  public String getGroup() {
+    return group;
+  }
+
+  public void setGroup(String group) {
+    this.group = group;
+  }
 
   @Override
   public boolean isUserStyle() {

@@ -30,9 +30,12 @@ package fr.ign.cogit.geoxygene.style;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -147,5 +150,25 @@ public abstract class AbstractLayer implements Layer {
   @Override
   public BufferedImage getImage(RasterSymbolizer symbolizer) {
     return this.rasterImage.get(symbolizer);
+  }
+  
+  @XmlTransient
+  private String activeGroup;
+
+  public String getActiveGroup() {
+    return activeGroup;
+  }
+
+  public void setActiveGroup(String activeGroup) {
+    this.activeGroup = activeGroup;
+  }
+  public Collection<String> getGroups() {
+    Set<String> groups = new HashSet<String>(0);
+    for(Style style : this.getStyles()) {
+      if (style.getGroup() != null) {
+        groups.add(style.getGroup());
+      }
+    }
+    return groups;
   }
 }
