@@ -73,7 +73,7 @@ public class Tiling<Feature extends FT_Feature> implements
    */
   @Override
   public List<Object> getParametres() {
-    List<Object> param = new ArrayList<Object>();
+    List<Object> param = new ArrayList<Object>(0);
     param.add(Tiling.class);
     param.add(new Boolean(this.automaticUpdate));
     param.add(new GM_Envelope(this.xmin, this.xmax, this.ymin, this.ymax));
@@ -152,7 +152,7 @@ public class Tiling<Feature extends FT_Feature> implements
 
   /** Tableau des dalles contenant le feature. */
   public GM_Envelope[] getDallage(FT_Feature feat) {
-    List<GM_Envelope> result = new ArrayList<GM_Envelope>();
+    List<GM_Envelope> result = new ArrayList<GM_Envelope>(0);
     for (int i = 0; i < this.size; i++) {
       for (int j = 0; j < this.size; j++) {
         if (this.index[i][j].contains(feat)) {
@@ -169,11 +169,11 @@ public class Tiling<Feature extends FT_Feature> implements
 
   /** Tableau des numéros des dalles contenant le feature. */
   public List<List<Integer>> getNumDallage(Feature feat) {
-    List<List<Integer>> result = new ArrayList<List<Integer>>();
+    List<List<Integer>> result = new ArrayList<List<Integer>>(0);
     for (int i = 0; i < this.size; i++) {
       for (int j = 0; j < this.size; j++) {
         if (this.index[i][j].contains(feat)) {
-          List<Integer> couple = new ArrayList<Integer>();
+          List<Integer> couple = new ArrayList<Integer>(0);
           couple.add(new Integer(i));
           couple.add(new Integer(j));
           result.add(couple);
@@ -313,7 +313,7 @@ public class Tiling<Feature extends FT_Feature> implements
   @Override
   public Collection<Feature> select(GM_Object geometry) {
     int tab[];
-    Collection<Feature> result = new HashSet<Feature>();
+    Collection<Feature> result = new HashSet<Feature>(0);
     GM_Envelope envGeometry = geometry.envelope();
     tab = this.dallesIntersectees(envGeometry);
     for (int i = tab[0]; i <= tab[1]; i++) {
@@ -348,7 +348,7 @@ public class Tiling<Feature extends FT_Feature> implements
   @Override
   public Collection<Feature> select(GM_Object geometry, boolean strictlyCrosses) {
     int tab[];
-    Collection<Feature> result = new HashSet<Feature>();
+    Collection<Feature> result = new HashSet<Feature>(0);
     GM_Envelope envGeometry = geometry.envelope();
     tab = this.dallesIntersectees(envGeometry);
     for (int i = tab[0]; i <= tab[1]; i++) {
@@ -421,7 +421,7 @@ public class Tiling<Feature extends FT_Feature> implements
     this.index = new List[this.size][this.size];
     for (int i = 0; i < this.size; i++) {
       for (int j = 0; j < this.size; j++) {
-        this.index[i][j] = new ArrayList<Feature>();
+        this.index[i][j] = new ArrayList<Feature>(0);
       }
     }
 
@@ -438,7 +438,6 @@ public class Tiling<Feature extends FT_Feature> implements
     // calcul de dX et dY
     this.dX = (this.xmax - this.xmin) / this.size;
     this.dY = (this.ymax - this.ymin) / this.size;
-
     // ecriture des dalles
     for (int i = 0; i < this.size; i++) {
       for (int j = 0; j < this.size; j++) {
@@ -450,7 +449,6 @@ public class Tiling<Feature extends FT_Feature> implements
         this.dallage[i][j] = env;
       }
     }
-
     // initialisation d'un tableau de polygones
     this.dallesPolygones = new GM_Polygon[this.size][this.size];
     for (int i = 0; i < this.size; i++) {
@@ -458,7 +456,6 @@ public class Tiling<Feature extends FT_Feature> implements
         this.dallesPolygones[i][j] = new GM_Polygon(this.dallage[i][j]);
       }
     }
-
     // calcul de l'index
     Iterator<Feature> iterator = fc.iterator();
     while (iterator.hasNext()) {
