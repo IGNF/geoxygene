@@ -41,6 +41,7 @@ import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Shadow;
+import fr.ign.cogit.geoxygene.style.Style;
 
 /**
  * Base class for GeOxygene applications.
@@ -84,6 +85,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
 
     Layer layer2 = projectFrame.getSld().createLayer("Batiment", //$NON-NLS-1$
         GM_Polygon.class, Color.blue, Color.gray, 1f, 2);
+    layer2.getStyles().get(0).setGroup("default");
     PolygonSymbolizer symbolizer2 = (PolygonSymbolizer) layer2.getSymbolizer();
     Shadow shadow = new Shadow();
     shadow.setColor(Color.black);
@@ -92,6 +94,10 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     d.setDisplacementY(-5);
     shadow.setDisplacement(d);
     symbolizer2.setShadow(shadow);
+    Style style2 = projectFrame.getSld().createStyle("Red", //$NON-NLS-1$
+        GM_Polygon.class, Color.red, Color.gray, 1f, 2);
+    layer2.getStyles().add(style2);
+    layer2.setActiveGroup("default");
     Population<DefaultFeature> pop2 = new Population<DefaultFeature>("Batiment"); //$NON-NLS-1$
     pop2.add(new DefaultFeature(new GM_Polygon(new GM_Envelope(110, 200, 110,
         200))));

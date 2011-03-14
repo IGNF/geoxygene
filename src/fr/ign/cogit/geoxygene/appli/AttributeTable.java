@@ -59,6 +59,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
@@ -77,6 +79,8 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
  * @author Julien Perret
  */
 class AttributeTable extends JDialog {
+  static Logger logger = Logger.getLogger(AttributeTable.class.getName());
+
   private static final long serialVersionUID = 1L;
   private ProjectFrame frame;
   private Set<? extends FT_Feature> objectsToDraw;
@@ -142,7 +146,8 @@ class AttributeTable extends JDialog {
     @SuppressWarnings("null")
     public AttributsTableModel(FT_FeatureCollection<FT_Feature> features) {
       this.setFeatures(features);
-      List<GF_AttributeType> featureAttributes = new ArrayList<GF_AttributeType>();
+      List<GF_AttributeType> featureAttributes = new ArrayList<GF_AttributeType>(
+          0);
       if (this.getFeatures().getFeatureType() == null) {
         // ProjectFrame.logger.info("Le featureType n'existe pas. Création d'un feature type...");
         FeatureType featureType = new FeatureType();
@@ -162,11 +167,15 @@ class AttributeTable extends JDialog {
             } else {
               if (method.getName().startsWith("is")) { //$NON-NLS-1$
                 attributeName = methodName.substring(2);
+              } else {
+                AttributeTable.logger.error("method name = " + methodName);
               }
             }
-            attributeName = attributeName.replace(attributeName.charAt(0),
-                Character.toLowerCase(attributeName.charAt(0)));
+            AttributeTable.logger.debug("method name = " + methodName
+                + " attribute name = " + attributeName);
             if (attributeName != null) {
+              attributeName = attributeName.replace(attributeName.charAt(0),
+                  Character.toLowerCase(attributeName.charAt(0)));
               attribute.setMemberName(attributeName);
               attribute.setNomField(attributeName);
               Class<?> returnType = method.getReturnType();
@@ -206,7 +215,7 @@ class AttributeTable extends JDialog {
             .getFeatureAttributes();
       }
       // On récupère tout les noms d'attribut
-      this.attributeNames.add("id"); //$NON-NLS-1$
+      this.attributeNames.add("FID"); //$NON-NLS-1$
       for (GF_AttributeType attribute : featureAttributes) {
         String nomAttribut = attribute.getMemberName();
         this.attributeNames.add(nomAttribut);

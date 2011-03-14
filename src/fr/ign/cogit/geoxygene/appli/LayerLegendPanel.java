@@ -48,6 +48,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -155,6 +156,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
       .getString("LayerLegendPanel.EditStyle"), //$NON-NLS-1$
       new ImageIcon(this.getClass().getResource(
           "/images/icons/16x16/editStyles.png"))); //$NON-NLS-1$
+  JMenu changeStyleMenu = new JMenu("Change Style"); //$NON-NLS-1$
   JMenuItem centerViewMenuItem = new JMenuItem(I18N
       .getString("LayerLegendPanel." + //$NON-NLS-1$
           "CenterViewOnLayer")); //$NON-NLS-1$
@@ -175,11 +177,12 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
 
     for (int n = 0; n < 20; n++) {
       ImageIcon image = new ImageIcon(LayerLegendPanel.class
-          .getResource("/images/icons/32x32/munsellcolorwheel_" + n + ".png"));
+          .getResource("/images/icons/32x32/munsellcolorwheel_" //$NON-NLS-1$
+             + n + ".png")); //$NON-NLS-1$
       this.images[n] = image;
     }
     ImageIcon image = new ImageIcon(LayerLegendPanel.class
-        .getResource("/images/icons/32x32/munsellcolorwheel.png"));
+        .getResource("/images/icons/32x32/munsellcolorwheel.png")); //$NON-NLS-1$
     this.images[20] = image;
 
     JPanel panel = new JPanel();
@@ -437,6 +440,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     this.popupMenu.add(this.editMenuItem);
     this.popupMenu.add(this.renameMenuItem);
     this.popupMenu.add(this.editSldMenuItem);
+    this.popupMenu.add(this.changeStyleMenu);
     this.popupMenu.addSeparator();
     this.popupMenu.add(this.deleteMenuItem);
     this.layersTable.addMouseListener(new PopupListener());
@@ -958,6 +962,29 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
           LayerLegendPanel.this.renameMenuItem.setEnabled(true);
           LayerLegendPanel.this.editSldMenuItem.setEnabled(true);
           LayerLegendPanel.this.editMenuItem.setEnabled(true);
+          LayerLegendPanel.this.changeStyleMenu.removeAll();
+          LayerLegendPanel.this.changeStyleMenu.setEnabled(false);
+          if (!LayerLegendPanel.this.getSelectedLayers().isEmpty()) {
+            Layer layer = LayerLegendPanel.this.getSelectedLayers().iterator()
+            .next();
+            if (layer.getGroups().size() > 1) {
+              LayerLegendPanel.this.changeStyleMenu.setEnabled(true);
+            }
+            for (final String group : layer.getGroups()) {
+              JMenuItem item = new JMenuItem(group);
+              LayerLegendPanel.this.changeStyleMenu.add(item);
+              item.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                  Layer layer = LayerLegendPanel.this.getSelectedLayers().iterator()
+                  .next();
+                  layer.setActiveGroup(group);
+                  LayerViewPanel lvPanel = LayerLegendPanel.this.getLayerViewPanel();
+                  lvPanel.repaint();
+                }
+              });
+            }
+          }
           LayerLegendPanel.this.layersTable.setRowSelectionInterval(
               selectedRow, selectedRow);
           LayerLegendPanel.this.popupMenu.show(e.getComponent(), e.getX(), e
