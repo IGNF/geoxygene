@@ -396,8 +396,8 @@ public class ChargeurTriangulation extends Chargeur {
       Collection<? extends FT_Feature> features, Triangulation carte)
       throws Exception {
     NoeudDelaunay noeud;
-    if (ChargeurTriangulation.logger.isDebugEnabled()) {
-      ChargeurTriangulation.logger.debug(I18N
+    if (ChargeurTriangulation.logger.isTraceEnabled()) {
+      ChargeurTriangulation.logger.trace(I18N
           .getString("ChargeurTriangulation.ImportPolygonCentroids")); //$NON-NLS-1$
     }
     for (FT_Feature objGeo : features) {
@@ -405,14 +405,14 @@ public class ChargeurTriangulation extends Chargeur {
         GM_Point p = new GM_Point(objGeo.getGeom().centroid());
         noeud = (NoeudDelaunay) carte.getPopNoeuds().nouvelElement(p);
         noeud.addCorrespondant(objGeo);
-        if (ChargeurTriangulation.logger.isDebugEnabled()) {
-          ChargeurTriangulation.logger.debug(I18N
+        if (ChargeurTriangulation.logger.isTraceEnabled()) {
+          ChargeurTriangulation.logger.trace(I18N
               .getString("ChargeurTriangulation.ImportedCentroid") + p); //$NON-NLS-1$
         }
       }
     }
-    if (ChargeurTriangulation.logger.isDebugEnabled()) {
-      ChargeurTriangulation.logger.debug(I18N
+    if (ChargeurTriangulation.logger.isTraceEnabled()) {
+      ChargeurTriangulation.logger.trace(I18N
           .getString("ChargeurTriangulation.ImportedPolygonCentroids")); //$NON-NLS-1$
     }
   }
