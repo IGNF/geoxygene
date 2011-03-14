@@ -51,10 +51,10 @@ public class FeatureType implements GF_FeatureType {
    */
   public FeatureType() {
     super();
-    this.memberOf = new ArrayList<GF_AssociationType>();
-    this.featureAttributes = new ArrayList<GF_AttributeType>();
-    this.featureOperations = new ArrayList<GF_Operation>();
-    this.roles = new ArrayList<GF_AssociationRole>();
+    this.memberOf = new ArrayList<GF_AssociationType>(0);
+    this.featureAttributes = new ArrayList<GF_AttributeType>(0);
+    this.featureOperations = new ArrayList<GF_Operation>(0);
+    this.roles = new ArrayList<GF_AssociationRole>(0);
   }
 
   /**
@@ -67,11 +67,11 @@ public class FeatureType implements GF_FeatureType {
     this.elementSchemaProduitOrigine = ori;
     this.definition = ori.getDefinition();
     this.typeName = ori.getTypeName();
-    this.memberOf = new ArrayList<GF_AssociationType>();
+    this.memberOf = new ArrayList<GF_AssociationType>(0);
     this.isExplicite = ori.getIsExplicite();
-    this.featureAttributes = new ArrayList<GF_AttributeType>();
-    this.featureOperations = new ArrayList<GF_Operation>();
-    this.roles = new ArrayList<GF_AssociationRole>();
+    this.featureAttributes = new ArrayList<GF_AttributeType>(0);
+    this.featureOperations = new ArrayList<GF_Operation>(0);
+    this.roles = new ArrayList<GF_AssociationRole>(0);
     this.nomClasse = ori.getNomClasse();
     this.isAbstract = ori.getIsAbstract();
   }
