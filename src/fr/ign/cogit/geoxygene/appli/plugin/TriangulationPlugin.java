@@ -74,14 +74,14 @@ public class TriangulationPlugin implements GeOxygeneApplicationPlugin,
         .getSelectedLayers();
     if (selectedLayers.size() != 1) {
       TriangulationPlugin.logger
-          .error("You need to select one (and only one) layer.");
+          .error("You need to select one (and only one) layer."); //$NON-NLS-1$
       return;
     }
     Layer layer = selectedLayers.iterator().next();
     double alpha = 100;
     GM_Polygon characteristicShape = Triangulation.getCharacteristicShape(layer
         .getFeatureCollection(), alpha);
-    Population<Face> popExterieurs = new Population<Face>("CharacteristicShape");
+    Population<Face> popExterieurs = new Population<Face>("CharacteristicShape"); //$NON-NLS-1$
     popExterieurs.setClasse(Face.class);
     popExterieurs.setPersistant(false);
     popExterieurs.nouvelElement(characteristicShape);

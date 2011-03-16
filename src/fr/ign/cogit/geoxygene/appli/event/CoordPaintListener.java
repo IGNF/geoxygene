@@ -49,7 +49,7 @@ public class CoordPaintListener implements MouseMotionListener {
       graphics.drawRect(layerViewPanel.getWidth() - numericScaleLength
           - coordRectLength, layerViewPanel.getHeight() - 3 * shift,
           coordRectLength, 3 * shift - 1);
-      graphics.drawString("X : " + Math.round(point.getX()) + "     -     Y : "
+      graphics.drawString("X : " + Math.round(point.getX()) + "     -     Y : " //$NON-NLS-1$ //$NON-NLS-2$
           + Math.round(point.getY()), layerViewPanel.getWidth()
           - numericScaleLength - coordRectLength + shift, layerViewPanel
           .getHeight()

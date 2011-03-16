@@ -298,8 +298,8 @@ public class LayerRenderer implements Renderer {
           // ( used by isRendering() )
           LayerRenderer.this.setRendering(false);
           LayerRenderer.this.setRendered(true);
-          LayerRenderer.logger.debug("Renderer "
-              + LayerRenderer.this.getLayer().getName() + " finished");
+          LayerRenderer.logger.debug("Renderer " //$NON-NLS-1$
+              + LayerRenderer.this.getLayer().getName() + " finished"); //$NON-NLS-1$
           LayerRenderer.this.getLayerViewPanel().getRenderingManager()
               .repaint();
         }
@@ -381,7 +381,7 @@ public class LayerRenderer implements Renderer {
                 this.render(symbolizer, feature, theImage);
               }
               this.fireActionPerformed(new ActionEvent(this, 4,
-                  "Rendering feature", 100 * featureRenderIndex++
+                  "Rendering feature", 100 * featureRenderIndex++ //$NON-NLS-1$
                       / (numberOfFeatureTypeStyle * collection.size())));
             }
           }
@@ -398,7 +398,7 @@ public class LayerRenderer implements Renderer {
    * @param theImage the image
    * @param envelope the envelope
    */
-  @SuppressWarnings( { "unused" })
+  @SuppressWarnings( { "unused", "unchecked" })
   private void render(final Rule rule, final BufferedImage theImage,
       final GM_Envelope envelope) {
     if (this.isCancelled()) {

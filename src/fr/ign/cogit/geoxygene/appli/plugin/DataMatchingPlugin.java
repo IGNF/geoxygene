@@ -114,10 +114,10 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
     EnsembleDeLiens liens = AppariementIO.appariementDeJeuxGeo(param, reseaux);
     for (Lien feature : liens) {
       Lien lien = feature;
-      DataMatchingPlugin.LOGGER.info("Lien = " + lien);
-      DataMatchingPlugin.LOGGER.info("Ref = " + lien.getObjetsRef());
-      DataMatchingPlugin.LOGGER.info("Comp = " + lien.getObjetsComp());
-      DataMatchingPlugin.LOGGER.info("Evaluation = " + lien.getEvaluation());
+      DataMatchingPlugin.LOGGER.info("Lien = " + lien); //$NON-NLS-1$
+      DataMatchingPlugin.LOGGER.info("Ref = " + lien.getObjetsRef()); //$NON-NLS-1$
+      DataMatchingPlugin.LOGGER.info("Comp = " + lien.getObjetsComp()); //$NON-NLS-1$
+      DataMatchingPlugin.LOGGER.info("Evaluation = " + lien.getEvaluation()); //$NON-NLS-1$
     }
     CarteTopo reseauRecale = Recalage.recalage(reseaux.get(0), reseaux.get(1),
         liens);
@@ -147,27 +147,27 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
     DataMatchingPlugin.LOGGER.info(arcs.getNom());
     DataSet.getInstance().addPopulation(liens);
     ProjectFrame p1 = this.application.getFrame().newProjectFrame();
-    p1.setTitle("Reference Pop");
+    p1.setTitle("Reference Pop"); //$NON-NLS-1$
     p1.addFeatureCollection(popRef, popRef.getNom());
     Viewport viewport = p1.getLayerViewPanel().getViewport();
     ProjectFrame p2 = this.application.getFrame().newProjectFrame();
-    p2.setTitle("Comparison Pop");
+    p2.setTitle("Comparison Pop"); //$NON-NLS-1$
     p2.addFeatureCollection(popComp, popComp.getNom());
     p2.getLayerViewPanel().setViewport(viewport);
     viewport.getLayerViewPanels().add(p2.getLayerViewPanel());
     ProjectFrame p3 = this.application.getFrame().newProjectFrame();
-    p3.setTitle("Corrected Pop");
+    p3.setTitle("Corrected Pop"); //$NON-NLS-1$
     p3.addFeatureCollection(arcs, arcs.getNom());
     p3.getLayerViewPanel().setViewport(viewport);
     viewport.getLayerViewPanels().add(p3.getLayerViewPanel());
     ProjectFrame p4 = this.application.getFrame().newProjectFrame();
     p4.getLayerViewPanel().setViewport(viewport);
     viewport.getLayerViewPanels().add(p4.getLayerViewPanel());
-    p4.setTitle("Links");
+    p4.setTitle("Links"); //$NON-NLS-1$
     p4.addFeatureCollection(popRef, popRef.getNom());
     p4.addFeatureCollection(popComp, popComp.getNom());
     Layer layer = p4.addFeatureCollection(liens, liens.getNom());
     layer.getSymbolizer().getStroke().setStrokeWidth(2);
-    DataMatchingPlugin.LOGGER.info("Finished");
+    DataMatchingPlugin.LOGGER.info("Finished"); //$NON-NLS-1$
   }
 }
