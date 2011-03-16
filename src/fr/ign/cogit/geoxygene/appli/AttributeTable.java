@@ -143,7 +143,6 @@ class AttributeTable extends JDialog {
       return this.features;
     }
 
-    @SuppressWarnings("null")
     public AttributsTableModel(FT_FeatureCollection<FT_Feature> features) {
       this.setFeatures(features);
       List<GF_AttributeType> featureAttributes = new ArrayList<GF_AttributeType>(
@@ -168,11 +167,11 @@ class AttributeTable extends JDialog {
               if (method.getName().startsWith("is")) { //$NON-NLS-1$
                 attributeName = methodName.substring(2);
               } else {
-                AttributeTable.logger.error("method name = " + methodName);
+                AttributeTable.logger.error("method name = " + methodName); //$NON-NLS-1$
               }
             }
-            AttributeTable.logger.debug("method name = " + methodName
-                + " attribute name = " + attributeName);
+            AttributeTable.logger.debug("method name = " + methodName //$NON-NLS-1$
+                + " attribute name = " + attributeName); //$NON-NLS-1$
             if (attributeName != null) {
               attributeName = attributeName.replace(attributeName.charAt(0),
                   Character.toLowerCase(attributeName.charAt(0)));
