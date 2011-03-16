@@ -590,11 +590,13 @@ public class ColorimetricColor {
   /**
    * Constructor with the CIELab component.
    * 
-   * FIXME Warning ! This constructor must be use with an existence test (like
-   * in the Simplex class) if the existence is not sure!!
-   * 
-   * Cette méthode doit s'utiliser avec des tests (comme dans la classe Simplex)
+   * FIXME Warning !
+   * This constructor must be use with an existence test
+   * if the existence is not sure!!
+   * FRENCH : Cette méthode doit s'utiliser avec des tests
    * si on n'est pas sûrs de l'existance d'une couleur!!
+   * 
+   * TODO : Create a unit testing method to give an exemple
    * 
    * @param l The lightness in the CIELab color reference system.
    * @param a First chromatic component in the CIELab color reference system.
@@ -623,8 +625,8 @@ public class ColorimetricColor {
    * @param l The lightness in the CIELab color reference system.
    * @param a First chromatic component in the CIELab color reference system.
    * @param b Second chromatic component in the CIELab color reference system.
-   * @return True if the color exists, false otherwise. FIXME This method should
-   *         be tested once again.
+   * @return True if the color exists, false otherwise.
+   * FIXME This method should be tested once again.
    */
   public static boolean labExistance(float l, float a, float b) {
     float[] lab = new float[] { l, a, b };
@@ -795,18 +797,20 @@ public class ColorimetricColor {
 
   @Override
   public String toString() {
-    String txtColor = "Couleur : R=" + this.getRedRGB() + " V="
-        + this.getGreenRGB() + " B=" + this.getBlueRGB() + " l="
-        + this.getLab()[0] + " a=" + this.getLab()[1] + " b="
+    String txtColor = "Color : R=" + this.getRedRGB() + " V="    //$NON-NLS-1$ //$NON-NLS-2$
+        + this.getGreenRGB() + " B=" + this.getBlueRGB() + " l=" //$NON-NLS-1$ //$NON-NLS-2$
+        + this.getLab()[0] + " a=" + this.getLab()[1] + " b="    //$NON-NLS-1$ //$NON-NLS-2$
         + this.getLab()[2];
 
     if (this.getCleCoul() != null) {
-      txtColor += " Key : " + this.getCleCoul();
+      txtColor += " Key : " + this.getCleCoul();                 //$NON-NLS-1$
     }
 
     return txtColor;
   }
 
+  @SuppressWarnings("nls")
+  //TODO : Create a unit testing method to do that
   public static void basicColorsComponents() {
     ColorimetricColor rouge = new ColorimetricColor(255, 0, 0);
     ColorimetricColor vert = new ColorimetricColor(0, 255, 0);
@@ -845,20 +849,5 @@ public class ColorimetricColor {
     System.out.println("noir\t" + noir.getRedRGB() + "\t" + noir.getGreenRGB()
         + "\t" + noir.getBlueRGB() + "\t" + noir.getCIELabL() + "\t"
         + noir.getCIELabA() + "\t" + noir.getCIELabB());
-  }
-
-  public static void referenceCOGITColorComponents() {
-    ColorReferenceSystem crs = ColorReferenceSystem
-        .unmarshall(ColorimetricColor.class.getResource(
-            "/color/ColorReferenceSystem.xml").getPath());
-
-    List<ColorimetricColor> cogitColors = crs.getAllColors();
-
-    for (ColorimetricColor couleurXml : cogitColors) {
-      System.out.println(couleurXml.getUsualName() + "\t"
-          + couleurXml.getRedRGB() + "\t" + couleurXml.getGreenRGB() + "\t"
-          + couleurXml.getBlueRGB() + "\t" + couleurXml.getCIELabL() + "\t"
-          + couleurXml.getCIELabA() + "\t" + couleurXml.getCIELabB());
-    }
   }
 }

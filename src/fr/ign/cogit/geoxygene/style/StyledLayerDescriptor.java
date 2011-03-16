@@ -518,7 +518,7 @@ public class StyledLayerDescriptor {
     // if(this.getLayer(layerName)==null){
     Layer layer = new NamedLayer(layerName);
     UserStyle style = new UserStyle();
-    style.setName("Style créé pour le layer " + layerName);
+    style.setName("Style créé pour le layer " + layerName);//$NON-NLS-1$
     FeatureTypeStyle fts = new FeatureTypeStyle();
     fts.getRules().add(
         this.createRule(geometryType, strokeColor, fillColor, opacity, opacity,
@@ -621,9 +621,9 @@ public class StyledLayerDescriptor {
   public Layer createLayerWithBorder(String layerName, Color mainStrokeColor,
       Color borderStrokeColor, float mainStrokeWidth, float borderStrokeWidth) {
     if (mainStrokeWidth > borderStrokeWidth) {
-      System.out.println("Le layer n'a pas été créé: "
-          + "La largeur du trait central ne peut "
-          + "pas être plus grande que celle du " + "trait de bordure");
+      System.out.println("Le layer n'a pas été créé: "                  //$NON-NLS-1$
+          + "La largeur du trait central ne peut "                      //$NON-NLS-1$
+          + "pas être plus grande que celle du " + "trait de bordure"); //$NON-NLS-1$ //$NON-NLS-2$
       return null;
     }
     Layer layer = new NamedLayer(layerName);
@@ -632,7 +632,7 @@ public class StyledLayerDescriptor {
     FeatureTypeStyle borderFts = new FeatureTypeStyle();
     Rule borderRule = new Rule();
     UserStyle borderStyle = new UserStyle();
-    borderStyle.setName("Style de la bordure");
+    borderStyle.setName("Style de la bordure"); //$NON-NLS-1$
     Stroke borderStroke = new Stroke();
     borderStroke.setStroke(borderStrokeColor);
     borderStroke.setStrokeWidth(borderStrokeWidth);
@@ -647,7 +647,7 @@ public class StyledLayerDescriptor {
     FeatureTypeStyle mainFts = new FeatureTypeStyle();
     Rule mainRule = new Rule();
     UserStyle mainStyle = new UserStyle();
-    mainStyle.setName("Style de la ligne centrale");
+    mainStyle.setName("Style de la ligne centrale"); //$NON-NLS-1$
     Stroke mainStroke = new Stroke();
     mainStroke.setStroke(mainStrokeColor);
     mainStroke.setStrokeWidth(mainStrokeWidth);
@@ -671,7 +671,7 @@ public class StyledLayerDescriptor {
       Color strokeColor, Color fillColor) {
     Layer layer = new NamedLayer(layerName);
     UserStyle style = new UserStyle();
-    style.setName("Style créé pour le layer " + layerName);
+    style.setName("Style créé pour le layer " + layerName); //$NON-NLS-1$
     FeatureTypeStyle fts = new FeatureTypeStyle();
     Rule rule = new Rule();
     Stroke stroke = new Stroke();

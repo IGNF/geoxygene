@@ -100,8 +100,8 @@ public class ColorReferenceSystem {
     try {
       return ColorReferenceSystem.unmarshall(new FileInputStream(fileName));
     } catch (FileNotFoundException e) {
-      ColorReferenceSystem.logger.error("File " + fileName
-          + " could not be read");
+      ColorReferenceSystem.logger.error("File " + fileName  //$NON-NLS-1$
+          + " could not be read");                          //$NON-NLS-1$
       return new ColorReferenceSystem();
     }
   }
@@ -144,8 +144,8 @@ public class ColorReferenceSystem {
     try {
       this.marshall(new FileOutputStream(fileName));
     } catch (FileNotFoundException e) {
-      ColorReferenceSystem.logger.error("File " + fileName
-          + " could not be written to");
+      ColorReferenceSystem.logger.error("File " + fileName  //$NON-NLS-1$
+          + " could not be written to");                    //$NON-NLS-1$
     }
   }
 
@@ -241,31 +241,32 @@ public class ColorReferenceSystem {
 
   /**
    * Tests different methods dealing with colors.
+   * TODO : Create a unit testing method to do that
    * @param args
    */
   public static void main(String[] args) {
     // Test of the method getHueNeighborColors
-    ColorimetricColor c = new ColorimetricColor("JAUNE ORANGE", 5);
-    System.out.println("Couleur Origine : " + c.usualName);
+    ColorimetricColor c = new ColorimetricColor("JAUNE ORANGE", 5);         //$NON-NLS-1$
+    System.out.println("Couleur Origine : " + c.usualName);                 //$NON-NLS-1$
     System.out.println();
 
     ColorReferenceSystem crs = ColorReferenceSystem
         .unmarshall(ColorReferenceSystem.class.getResource(
-            "ColorReferenceSystem.xml").getPath());
+            "/color/ColorReferenceSystem.xml").getPath());                  //$NON-NLS-1$
     List<ColorimetricColor> voisins = crs.getHueNeighborColors(c);
 
-    System.out.println("Liste des voisins : ");
+    System.out.println("Liste des voisins : ");                             //$NON-NLS-1$
     System.out.println(voisins.get(0).usualName);
     System.out.println(voisins.get(1).usualName);
     System.out.println();
 
     // Test of the method searchColor
     Color cJava = Color.yellow;
-    System.out.println("Couleur Origine : " + cJava.toString());
+    System.out.println("Couleur Origine : " + cJava.toString());            //$NON-NLS-1$
     System.out.println();
 
     // Test of the method getSliceColors
-    List<ColorimetricColor> sliceColors = crs.getSliceColors(0, "BLEU");
+    List<ColorimetricColor> sliceColors = crs.getSliceColors(0, "BLEU");    //$NON-NLS-1$
     System.out.println(sliceColors);
   }
 

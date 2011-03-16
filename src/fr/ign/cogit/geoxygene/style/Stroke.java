@@ -265,6 +265,7 @@ public class Stroke {
       this.strokeLineJoin = BasicStroke.JOIN_BEVEL;
     }
     // sinon, c'est la valeur par defaut
+    // otherwise, setting the default value.
   }
 
   @XmlTransient
@@ -298,12 +299,13 @@ public class Stroke {
    * @param strokeLineCap l'attribut strokeLineCap à affecter
    */
   private void setStrokeLineCap(String strokeLineCap) {
-    if (strokeLineCap.equalsIgnoreCase("butt")) {
-      this.strokeLineCap = BasicStroke.CAP_BUTT; //$NON-NLS-1$
-    } else if (strokeLineCap.equalsIgnoreCase("square")) {
-      this.strokeLineCap = BasicStroke.CAP_SQUARE; //$NON-NLS-1$
-      // sinon, c'est la valeur par défaut
+    if (strokeLineCap.equalsIgnoreCase("butt")) { //$NON-NLS-1$
+      this.strokeLineCap = BasicStroke.CAP_BUTT; 
+    } else if (strokeLineCap.equalsIgnoreCase("square")) { //$NON-NLS-1$
+      this.strokeLineCap = BasicStroke.CAP_SQUARE; 
     }
+    // sinon, c'est la valeur par défaut
+    // otherwise, setting the default value.
   }
 
   @XmlTransient

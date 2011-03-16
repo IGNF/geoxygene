@@ -163,29 +163,29 @@ public class Mark {
    */
   public Shape toShape() {
     if ((this.wellKnownName == null)
-        || (this.wellKnownName.equalsIgnoreCase("square"))) {
-      return Mark.square; //$NON-NLS-1$
+        || (this.wellKnownName.equalsIgnoreCase("square"))) {//$NON-NLS-1$
+      return Mark.square; 
     }
-    if (this.wellKnownName.equalsIgnoreCase("circle")) {
-      return Mark.circle; //$NON-NLS-1$
+    if (this.wellKnownName.equalsIgnoreCase("circle")) {//$NON-NLS-1$
+      return Mark.circle; 
     }
-    if (this.wellKnownName.equalsIgnoreCase("triangle")) {
-      return Mark.triangle; //$NON-NLS-1$
+    if (this.wellKnownName.equalsIgnoreCase("triangle")) {//$NON-NLS-1$
+      return Mark.triangle; 
     }
-    if (this.wellKnownName.equalsIgnoreCase("star")) {
-      return Mark.star; //$NON-NLS-1$
+    if (this.wellKnownName.equalsIgnoreCase("star")) {//$NON-NLS-1$
+      return Mark.star; 
     }
-    if (this.wellKnownName.equalsIgnoreCase("cross")) {
-      return Mark.cross; //$NON-NLS-1$
+    if (this.wellKnownName.equalsIgnoreCase("cross")) {//$NON-NLS-1$
+      return Mark.cross; 
     }
-    if (this.wellKnownName.equalsIgnoreCase("x")) {
-      return Mark.xShape; //$NON-NLS-1$
+    if (this.wellKnownName.equalsIgnoreCase("x")) {//$NON-NLS-1$
+      return Mark.xShape; 
     }
-    if (this.wellKnownName.equalsIgnoreCase("hLine")) {
-      return Mark.hLine; //$NON-NLS-1$
+    if (this.wellKnownName.equalsIgnoreCase("hLine")) {//$NON-NLS-1$
+      return Mark.hLine; 
     }
-    if (this.wellKnownName.equalsIgnoreCase("vLine")) {
-      return Mark.vLine; //$NON-NLS-1$
+    if (this.wellKnownName.equalsIgnoreCase("vLine")) {//$NON-NLS-1$
+      return Mark.vLine; 
     }
     return null;
   }
