@@ -352,7 +352,7 @@ public class MainFrame extends JFrame {
       @Override
       public void actionPerformed(final ActionEvent e) {
         int scale = Integer.parseInt(JOptionPane.showInputDialog(I18N
-            .getString("MainFrame.NewScale")));
+            .getString("MainFrame.NewScale"))); //$NON-NLS-1$
         LayerViewPanel layerViewPanel = MainFrame.this
             .getSelectedProjectFrame().getLayerViewPanel();
         layerViewPanel.getViewport().setScale(
@@ -378,9 +378,9 @@ public class MainFrame extends JFrame {
             .getEnvelopeInModelCoordinates());
 
         double latitude = Double.parseDouble(JOptionPane
-            .showInputDialog("Latitude"));
+            .showInputDialog("Latitude")); //$NON-NLS-1$
         double longitude = Double.parseDouble(JOptionPane
-            .showInputDialog("Longitude"));
+            .showInputDialog("Longitude")); //$NON-NLS-1$
 
         try {
           layerViewPanel.getViewport().center(
@@ -394,7 +394,7 @@ public class MainFrame extends JFrame {
     viewMenu.add(mGoTo);
 
     JMenuItem mCoord = new JCheckBoxMenuItem(I18N
-        .getString("MainFrame.Coordinate"));
+        .getString("MainFrame.Coordinate")); //$NON-NLS-1$
     mCoord.addActionListener(new java.awt.event.ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {

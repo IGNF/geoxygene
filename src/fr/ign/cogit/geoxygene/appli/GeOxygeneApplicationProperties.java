@@ -34,7 +34,7 @@ public class GeOxygeneApplicationProperties {
     return this.plugins;
   }
 
-  private String lastOpenedFile = "";
+  private String lastOpenedFile = ""; //$NON-NLS-1$
 
   public String getLastOpenedFile() {
     return this.lastOpenedFile;
@@ -134,8 +134,8 @@ public class GeOxygeneApplicationProperties {
 
   public static void main(String[] args) {
     GeOxygeneApplicationProperties newPlugins = new GeOxygeneApplicationProperties();
-    newPlugins.getPlugins().add("test1");
-    String fileName = GeOxygeneApplication.class.getResource("/plugins.xml")
+    newPlugins.getPlugins().add("test1"); //$NON-NLS-1$
+    String fileName = GeOxygeneApplication.class.getResource("/plugins.xml") //$NON-NLS-1$
         .getFile();
     System.out.println(fileName);
     newPlugins.marshall(fileName);

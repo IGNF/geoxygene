@@ -138,7 +138,7 @@ public class GeOxygeneApplication {
    */
   private void initializeProperties() {
     try {
-      this.propertiesFile = new URL("file", "", "./plugins.xml");
+      this.propertiesFile = new URL("file", "", "./plugins.xml"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     } catch (MalformedURLException e) {
       e.printStackTrace();
     }

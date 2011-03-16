@@ -77,7 +77,7 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel implements
     this.tCodesCouleur.setForeground(new Color(100, 100, 100));// Couleur du
                                                                // texte
 
-    this.tCodesCouleur.setValueAt("COGIT", 0, 0);
+    this.tCodesCouleur.setValueAt("COGIT", 0, 0); //$NON-NLS-1$
 
     this.tCodesCouleur.setValueAt(I18N
         .getString("COGITColorChooserPanel.UsualColor"), 1, 0); //$NON-NLS-1$
@@ -90,9 +90,9 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel implements
         .getString("COGITColorChooserPanel.Others"), 0, 2); //$NON-NLS-1$
     this.tCodesCouleur.setValueAt(
         I18N.getString("COGITColorChooserPanel.Hexa"), 1, 2); //$NON-NLS-1$
-    this.tCodesCouleur.setValueAt("sRGB", 2, 2);
+    this.tCodesCouleur.setValueAt("sRGB", 2, 2); //$NON-NLS-1$
 
-    this.tCodesCouleur.setValueAt("RGB", 0, 4);
+    this.tCodesCouleur.setValueAt("RGB", 0, 4); //$NON-NLS-1$
     this.tCodesCouleur.setValueAt(
         I18N.getString("COGITColorChooserPanel.Red"), 1, 4); //$NON-NLS-1$
     this.tCodesCouleur.setValueAt(I18N
@@ -100,10 +100,10 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel implements
     this.tCodesCouleur.setValueAt(
         I18N.getString("COGITColorChooserPanel.Blue"), 3, 4); //$NON-NLS-1$
 
-    this.tCodesCouleur.setValueAt("CIELab", 0, 6);
-    this.tCodesCouleur.setValueAt("L", 1, 6);
-    this.tCodesCouleur.setValueAt("a", 2, 6);
-    this.tCodesCouleur.setValueAt("b", 3, 6);
+    this.tCodesCouleur.setValueAt("CIELab", 0, 6); //$NON-NLS-1$
+    this.tCodesCouleur.setValueAt("L", 1, 6); //$NON-NLS-1$
+    this.tCodesCouleur.setValueAt("a", 2, 6); //$NON-NLS-1$
+    this.tCodesCouleur.setValueAt("b", 3, 6); //$NON-NLS-1$
 
     for (int i = 0; i < 6; i++) {
       TableColumn colonne = this.tCodesCouleur.getColumnModel().getColumn(i);
@@ -477,7 +477,7 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel implements
   public static void main(String[] args) {
     Color c = COGITColorChooserPanel.showDialog(new JButton(), I18N
         .getString("StyleEditionFrame.PickAColor"), Color.BLUE); //$NON-NLS-1$
-    System.out.println("Selected Color : " + c);
+    System.out.println("Selected Color : " + c); //$NON-NLS-1$
   }
 
   /**

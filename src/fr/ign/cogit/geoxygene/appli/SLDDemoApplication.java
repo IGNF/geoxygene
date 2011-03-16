@@ -85,7 +85,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
 
     Layer layer2 = projectFrame.getSld().createLayer("Batiment", //$NON-NLS-1$
         GM_Polygon.class, Color.blue, Color.gray, 1f, 2);
-    layer2.getStyles().get(0).setGroup("default");
+    layer2.getStyles().get(0).setGroup("default"); //$NON-NLS-1$
     PolygonSymbolizer symbolizer2 = (PolygonSymbolizer) layer2.getSymbolizer();
     Shadow shadow = new Shadow();
     shadow.setColor(Color.black);
@@ -97,7 +97,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     Style style2 = projectFrame.getSld().createStyle("Red", //$NON-NLS-1$
         GM_Polygon.class, Color.red, Color.gray, 1f, 2);
     layer2.getStyles().add(style2);
-    layer2.setActiveGroup("default");
+    layer2.setActiveGroup("default"); //$NON-NLS-1$
     Population<DefaultFeature> pop2 = new Population<DefaultFeature>("Batiment"); //$NON-NLS-1$
     pop2.add(new DefaultFeature(new GM_Polygon(new GM_Envelope(110, 200, 110,
         200))));
