@@ -104,11 +104,16 @@ public class ZoomBoxMode extends AbstractMode {
       try {
         DirectPosition p = frame.getLayerViewPanel().getViewport()
             .toModelDirectPosition(e.getPoint());
-        GM_Envelope env = this.getEnvelope(this.initialPoint, p);
+        GM_Envelope env = null;
+        if (this.initialPoint != null && p != null) {
+          this.getEnvelope(this.initialPoint, p);
+        }
         this.initialPoint = null;
         this.lastPoint = null;
-        frame.getLayerViewPanel().getViewport().zoom(env);
-        frame.getLayerViewPanel().superRepaint();
+        if (env != null) {
+          frame.getLayerViewPanel().getViewport().zoom(env);
+          frame.getLayerViewPanel().superRepaint();
+        }
       } catch (NoninvertibleTransformException e1) {
         e1.printStackTrace();
       }
