@@ -350,7 +350,7 @@ public class ColorReferenceSystem {
     List<ColorimetricColor> pureColors = new ArrayList<ColorimetricColor>();
     ColorReferenceSystem crs = ColorReferenceSystem
         .unmarshall(ColorReferenceSystem.class.getResource(
-            "ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
+            "/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
     for (int j = 0; j < 12; j++) {
 
       List<ColorimetricColor> sliceCOGIT = crs.getSlice(0, j);
