@@ -106,7 +106,7 @@ public class ZoomBoxMode extends AbstractMode {
             .toModelDirectPosition(e.getPoint());
         GM_Envelope env = null;
         if (this.initialPoint != null && p != null) {
-          this.getEnvelope(this.initialPoint, p);
+          env = this.getEnvelope(this.initialPoint, p);
         }
         this.initialPoint = null;
         this.lastPoint = null;
