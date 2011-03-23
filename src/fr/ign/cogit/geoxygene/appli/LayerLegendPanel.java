@@ -93,6 +93,11 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
    */
   private StyledLayerDescriptor sld = null;
 
+  public void setSld(StyledLayerDescriptor sld) {
+    this.sld = sld;
+    this.sld.fireActionPerformed(new ChangeEvent(this.sld));
+  }
+
   /**
    * Get the sld of the layer legend panel.
    * @return sld of the layer legend panel

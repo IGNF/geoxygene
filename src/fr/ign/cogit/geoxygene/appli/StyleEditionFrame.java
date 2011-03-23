@@ -34,6 +34,9 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.CharArrayReader;
+import java.io.CharArrayWriter;
+import java.io.Reader;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -60,6 +63,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.type.GF_AttributeType;
@@ -71,6 +76,7 @@ import fr.ign.cogit.geoxygene.style.Interpolate;
 import fr.ign.cogit.geoxygene.style.InterpolationPoint;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
+import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
@@ -85,7 +91,10 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     MouseListener, ChangeListener {
 
   private static final long serialVersionUID = 1L;
-
+  
+  @SuppressWarnings("unused")
+  private static Logger logger = Logger.getLogger(StyleEditionFrame.class.getName());
+  
   // Main GeOxygene application elements
   private LayerLegendPanel layerLegendPanel;
   private LayerViewPanel layerViewPanel;
@@ -99,6 +108,25 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     return this.layer;
   }
 
+  /**
+   * The initial SLD styles before modifications
+   */
+  private StyledLayerDescriptor initialSLD = null;
+
+  /**
+   * @return The initial SLD styles before modifications
+   */
+  public StyledLayerDescriptor getInitialSLD() {
+    return this.initialSLD;
+  }
+
+  /**
+   * @param initialSLD The initial SLD styles before modifications
+   */
+  public void setInitialSLD(StyledLayerDescriptor initialSLD) {
+    this.initialSLD = initialSLD;
+  }
+
   // Main Dialog Elements
   private JPanel visuPanel;
   private LayerStylesPanel stylePanel;
@@ -109,7 +137,9 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
   private JPanel symbolPanel;
 
   private JButton btnAddStyle;
+  private JButton btnApply;
   private JButton btnValid;
+  private JButton btnCancel;
   private JPanel mainPanel;
 
   // Work variables
@@ -155,12 +185,26 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
   private JSpinner symbolSizeSpinner;
 
   private ImageIcon[] images;
-  private String[] symbols = { I18N.getString("StyleEditionFrame.Square"), //$NON-NLS-1$
+  private String[] symbolsDescription = {
+      I18N.getString("StyleEditionFrame.Square"), //$NON-NLS-1$
       I18N.getString("StyleEditionFrame.Circle"), //$NON-NLS-1$
       I18N.getString("StyleEditionFrame.Triangle"), //$NON-NLS-1$
       I18N.getString("StyleEditionFrame.Star"), //$NON-NLS-1$
       I18N.getString("StyleEditionFrame.Cross"), //$NON-NLS-1$
-      I18N.getString("StyleEditionFrame.X") }; //$NON-NLS-1$
+      I18N.getString("StyleEditionFrame.X"), //$NON-NLS-1$
+      I18N.getString("StyleEditionFrame.hline"), //$NON-NLS-1$
+      I18N.getString("StyleEditionFrame.vline") //$NON-NLS-1$
+  };
+  private String[] symbols = {
+      "square", //$NON-NLS-1$
+      "circle", //$NON-NLS-1$
+      "triangle", //$NON-NLS-1$
+      "star", //$NON-NLS-1$
+      "cross", //$NON-NLS-1$
+      "x", //$NON-NLS-1$
+      "hline", //$NON-NLS-1$
+      "vline" //$NON-NLS-1$
+  };
 
   private JButton addColorMapButton;
 
@@ -170,12 +214,19 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
    */
   public StyleEditionFrame(LayerLegendPanel layerLegendPanel) {
     this.layerLegendPanel = layerLegendPanel;
-    this.layerViewPanel = layerLegendPanel.getLayerViewPanel();
+    this.layerViewPanel = this.layerLegendPanel.getLayerViewPanel();
 
     if (layerLegendPanel.getSelectedLayers().size() == 1) {
       this.layer = layerLegendPanel.getSelectedLayers().iterator().next();
     }
 
+    //Saving the initial SLD
+    this.setInitialSLD(new StyledLayerDescriptor());
+    CharArrayWriter writer = new CharArrayWriter();
+    layerLegendPanel.getSld().marshall(writer);
+    Reader reader = new CharArrayReader(writer.toCharArray());
+    this.setInitialSLD(StyledLayerDescriptor.unmarshall(reader));
+    
     if (this.layer.getSymbolizer().isPolygonSymbolizer()) {
       this.init_Polygon();
     } else if (this.layer.getSymbolizer().isLineSymbolizer()) {
@@ -237,15 +288,13 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
         this.strokeOpacity));
     this.strokePanel.add(this.createWidthPanel(this.strokeWidth, this.unit));
 
-    this.btnValid = new JButton(I18N.getString("StyleEditionFrame.Apply")); //$NON-NLS-1$
-    this.btnValid.addActionListener(this);
-    this.btnValid.setBounds(50, 50, 100, 20);
-
     this.mainPanel = new JPanel();
     this.mainPanel.add(titleLabel);
     this.mainPanel.add(this.fillPanel);
     this.mainPanel.add(this.strokePanel);
-    this.mainPanel.add(this.btnValid);
+    this.mainPanel.add(this.createButtonApply());
+    this.mainPanel.add(this.createButtonValid());
+    this.mainPanel.add(this.createButtonCancel());
     this.add(this.mainPanel, BorderLayout.CENTER);
 
     this.pack();
@@ -278,7 +327,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     strokeTitleBorder.setTitleFont(new Font("Verdana", Font.BOLD, 16)); //$NON-NLS-1$
     strokeTitleBorder.setTitle(I18N.getString("StyleEditionFrame.LineStroke")); //$NON-NLS-1$
     this.strokePanel.setBorder(strokeTitleBorder);
-    this.strokePanel.setPreferredSize(new Dimension(500, 500));
+    this.strokePanel.setPreferredSize(new Dimension(420, 250));
 
     this.strokeColor = ((LineSymbolizer) this.layer.getStyles().get(0)
         .getSymbolizer()).getStroke().getStroke();
@@ -293,7 +342,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
         this.strokeOpacity));
     this.strokePanel.add(this.createWidthPanel(this.strokeWidth, this.unit));
 
-    this.addColorMapButton = new JButton("Add ColorMap");
+    this.addColorMapButton = new JButton(I18N.getString("StyleEditionFrame.AddColorMap")); //$NON-NLS-1$
     this.addColorMapButton.addActionListener(this);
     this.strokePanel.add(this.addColorMapButton);
 
@@ -307,7 +356,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       strokeTitleBorder2.setTitle(I18N
           .getString("StyleEditionFrame.LineStroke")); //$NON-NLS-1$
       this.strokePanel2.setBorder(strokeTitleBorder2);
-      this.strokePanel2.setPreferredSize(new Dimension(500, 500));
+      this.strokePanel2.setPreferredSize(new Dimension(420, 250));
 
       this.strokeColor2 = ((LineSymbolizer) this.layer.getStyles().get(1)
           .getSymbolizer()).getStroke().getStroke();
@@ -330,10 +379,6 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.btnAddStyle.addActionListener(this);
     this.btnAddStyle.setBounds(50, 50, 100, 20);
 
-    this.btnValid = new JButton(I18N.getString("StyleEditionFrame.Apply")); //$NON-NLS-1$
-    this.btnValid.addActionListener(this);
-    this.btnValid.setBounds(50, 50, 100, 20);
-
     this.mainPanel = new JPanel();
     this.mainPanel.add(titleLabel);
     this.mainPanel.add(this.strokePanel2);
@@ -342,7 +387,10 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     if (this.layer.getStyles().size() == 2) {
       this.btnAddStyle.setEnabled(false);
     }
-    this.mainPanel.add(this.btnValid);
+
+    this.mainPanel.add(this.createButtonApply());
+    this.mainPanel.add(this.createButtonValid());
+    this.mainPanel.add(this.createButtonCancel());
     this.add(this.mainPanel, BorderLayout.CENTER);
 
     this.pack();
@@ -424,16 +472,14 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.symbolPanel.add(this.createSymbolPanel(this.symbolShape));
     this.symbolPanel.add(this.createSizePanel(this.symbolSize));
 
-    this.btnValid = new JButton(I18N.getString("StyleEditionFrame.Apply")); //$NON-NLS-1$
-    this.btnValid.addActionListener(this);
-    this.btnValid.setBounds(50, 50, 100, 20);
-
     this.mainPanel = new JPanel();
     this.mainPanel.add(titleLabel);
     this.mainPanel.add(this.fillPanel);
     this.mainPanel.add(this.strokePanel);
     this.mainPanel.add(this.symbolPanel);
-    this.mainPanel.add(this.btnValid);
+    this.mainPanel.add(this.createButtonApply());
+    this.mainPanel.add(this.createButtonValid());
+    this.mainPanel.add(this.createButtonCancel());
     this.add(this.mainPanel, BorderLayout.CENTER);
 
     this.pack();
@@ -632,7 +678,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     comboSymbol.setSelectedIndex(indexShape);
 
     ComboBoxRenderer renderer = new ComboBoxRenderer();
-    renderer.setPreferredSize(new Dimension(100, 20));
+    renderer.setPreferredSize(new Dimension(200, 20));
     comboSymbol.setRenderer(renderer);
     comboSymbol.setMaximumRowCount(3);
     comboSymbol.addActionListener(this);
@@ -707,6 +753,27 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     return distPanel;
   }
 
+  public JButton createButtonValid() {
+    this.btnValid = new JButton("Ok"); //$NON-NLS-1$
+    this.btnValid.addActionListener(this);
+    this.btnValid.setBounds(50, 50, 100, 20);
+    return this.btnValid;
+  }
+
+  public JButton createButtonApply() {
+    this.btnApply = new JButton(I18N.getString("StyleEditionFrame.Apply")); //$NON-NLS-1$
+    this.btnApply.addActionListener(this);
+    this.btnApply.setBounds(50, 50, 100, 20);
+    return this.btnApply;
+  }
+
+  public JButton createButtonCancel() {
+    this.btnCancel = new JButton(I18N.getString("StyleEditionFrame.Cancel")); //$NON-NLS-1$
+    this.btnCancel.addActionListener(this);
+    this.btnCancel.setBounds(50, 50, 100, 20);
+    return this.btnCancel;
+  }
+
   /**
    * Renderer class to display the ComboBox with all the symbols.
    */
@@ -741,7 +808,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
 
       // Set the icon and text.
       ImageIcon icon = StyleEditionFrame.this.images[selectedIndex];
-      String pet = StyleEditionFrame.this.symbols[selectedIndex];
+      String pet = StyleEditionFrame.this.symbolsDescription[selectedIndex];
       this.setIcon(icon);
       this.setText(pet);
       this.setFont(list.getFont());
@@ -799,7 +866,9 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
         }
         Object[] possibilities = attributes.toArray();
         String attributeName = ((GF_AttributeType) JOptionPane.showInputDialog(
-            this, "Choose an Attribute\"", "Customized Dialog",
+            this,
+            I18N.getString("StyleEditionFrame.ChooseAttribute"), //$NON-NLS-1$
+            I18N.getString("StyleEditionFrame.ChooseAttributeWindowTitle"), //$NON-NLS-1$
             JOptionPane.PLAIN_MESSAGE, null, possibilities, attributes.get(0)
                 .toString())).getMemberName();
 
@@ -866,7 +935,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       strokeTitleBorder
           .setTitle(I18N.getString("StyleEditionFrame.LineStroke")); //$NON-NLS-1$
       this.strokePanel2.setBorder(strokeTitleBorder);
-      this.strokePanel2.setPreferredSize(new Dimension(500, 500));
+      this.strokePanel2.setPreferredSize(new Dimension(420, 250));
 
       StyledLayerDescriptor sld = StyledLayerDescriptor
           .unmarshall(StyleEditionFrame.class.getResource(
@@ -974,18 +1043,35 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
           g2.fillRect(0, 0, 50, 40);
           this.strokeFinalColorLabel2.setIcon(new ImageIcon(buffImFinalColor));
         }
+        this.updateLayer();
       }
     }
-
-    this.updateLayer();
-
-    this.layerLegendPanel.getSld().fireActionPerformed(null);
-
-    // When the user validate the styles in the main interface
-    if (e.getSource() == this.btnValid) {
-      ((JFrame) StyleEditionFrame.this).dispose();
+    
+    // When the user apply style modifications to the map and the legend
+    if (e.getSource() == this.btnApply) {
+      this.layerLegendPanel.getSld().fireActionPerformed(null);
       this.layerLegendPanel.repaint();
       this.layerViewPanel.repaint();
+      
+      this.updateLayer();
+    }
+    
+    // When the user cancel style modifications in the main interface
+    if (e.getSource() == this.btnCancel) {
+      this.reset();
+      this.updateLayer();
+      this.layerLegendPanel.repaint();
+      this.layerViewPanel.repaint();
+      
+      ((JFrame)StyleEditionFrame.this).dispose();
+    }
+    
+    // When the user validate style modifications
+    if (e.getSource() == this.btnValid) {
+      this.layerLegendPanel.getSld().fireActionPerformed(null);
+      this.layerLegendPanel.repaint();
+      this.layerViewPanel.repaint();
+      ((JFrame) StyleEditionFrame.this).dispose();
     }
   }
 
@@ -999,7 +1085,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       this.fillDialog = JColorChooser
           .createDialog(
               this,
-              I18N.getString("StyleEditionFrame.PickAColor"), true, this.fillColorChooser, this, null); //$NON-NLS-1$
+              I18N.getString("StyleEditionFrame.PickAColor"), //$NON-NLS-1$
+              true, this.fillColorChooser, this, null);
       this.fillDialog.setVisible(true);
     }
     if (arg0.getSource() == this.strokeColorLabel) {
@@ -1008,7 +1095,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       this.strokeDialog = JColorChooser
           .createDialog(
               this,
-              I18N.getString("StyleEditionFrame.PickAColor"), true, this.strokeColorChooser, this, null); //$NON-NLS-1$
+              I18N.getString("StyleEditionFrame.PickAColor"), //$NON-NLS-1$
+              true, this.strokeColorChooser, this, null);
       this.strokeDialog.setVisible(true);
     }
     if (arg0.getSource() == this.strokeColorLabel2) {
@@ -1017,7 +1105,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       this.strokeDialog2 = JColorChooser
           .createDialog(
               this,
-              I18N.getString("StyleEditionFrame.PickAColor"), true, this.strokeColorChooser2, this, null); //$NON-NLS-1$
+              I18N.getString("StyleEditionFrame.PickAColor"), //$NON-NLS-1$
+              true, this.strokeColorChooser2, this, null);
       this.strokeDialog2.setVisible(true);
     }
   }
@@ -1116,89 +1205,112 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
   }
 
   public void updateLayer() {
+    Symbolizer symbolizer = this.layer.getStyles().get(0).getSymbolizer();
+
     // Updating the layer style
-    if (this.layer.getStyles().get(0).getSymbolizer().isPolygonSymbolizer()) {
-
-      ((PolygonSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .getFill().setColor(this.fillColor);
-
-      ((PolygonSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .getFill().setFillOpacity(this.fillOpacity);
-
-      ((PolygonSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .getStroke().setColor(this.strokeColor);
-
-      ((PolygonSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .getStroke().setStrokeOpacity(this.strokeOpacity);
-
-      ((PolygonSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .getStroke().setStrokeWidth((float) this.strokeWidth);
-
-      ((PolygonSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .setUnitOfMeasure(this.unit);
-    } else if (this.layer.getStyles().get(0).getSymbolizer().isLineSymbolizer()) {
-
-      ((LineSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .getStroke().setColor(this.strokeColor);
-
-      ((LineSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .getStroke().setStrokeOpacity(this.strokeOpacity);
-
-      ((LineSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .getStroke().setStrokeWidth((float) this.strokeWidth);
-
-      ((LineSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .setUnitOfMeasure(this.unit);
+    if (symbolizer.isPolygonSymbolizer()) {
+      PolygonSymbolizer polygonSymbolizer =
+        (PolygonSymbolizer) this.layer.getStyles().get(0).getSymbolizer();
+      
+      polygonSymbolizer.getFill().setColor(this.fillColor);
+      polygonSymbolizer.getFill().setFillOpacity(this.fillOpacity);
+      polygonSymbolizer.getStroke().setColor(this.strokeColor);
+      polygonSymbolizer.getStroke().setStrokeOpacity(this.strokeOpacity);
+      polygonSymbolizer.getStroke().setStrokeWidth((float) this.strokeWidth);
+      polygonSymbolizer.setUnitOfMeasure(this.unit);
+      
+    } else if (symbolizer.isLineSymbolizer()) {
+      LineSymbolizer lineSymbolizer =
+        (LineSymbolizer) this.layer.getStyles().get(0).getSymbolizer();
+      
+      lineSymbolizer.getStroke().setColor(this.strokeColor);
+      lineSymbolizer.getStroke().setStrokeOpacity(this.strokeOpacity);
+      lineSymbolizer.getStroke().setStrokeWidth((float) this.strokeWidth);
+      lineSymbolizer.setUnitOfMeasure(this.unit);
 
       if (this.layer.getStyles().size() == 2) {
-        ((LineSymbolizer) this.layer.getStyles().get(1).getSymbolizer())
-            .getStroke().setColor(this.strokeColor2);
-
-        ((LineSymbolizer) this.layer.getStyles().get(1).getSymbolizer())
-            .getStroke().setStrokeOpacity(this.strokeOpacity2);
-
-        ((LineSymbolizer) this.layer.getStyles().get(1).getSymbolizer())
-            .getStroke().setStrokeWidth((float) this.strokeWidth2);
-
-        ((LineSymbolizer) this.layer.getStyles().get(1).getSymbolizer())
-            .setUnitOfMeasure(this.unit);
+        LineSymbolizer lineSymbolizer2 =
+          (LineSymbolizer) this.layer.getStyles().get(1).getSymbolizer();
+        
+        lineSymbolizer2.getStroke().setColor(this.strokeColor2);
+        lineSymbolizer2.getStroke().setStrokeOpacity(this.strokeOpacity2);
+        lineSymbolizer2.getStroke().setStrokeWidth((float) this.strokeWidth2);
+        lineSymbolizer2.setUnitOfMeasure(this.unit);
       }
-    } else if (this.layer.getStyles().get(0).getSymbolizer()
-        .isPointSymbolizer()) {
-
-      ((PointSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .getGraphic().getMarks().get(0).getFill().setColor(this.fillColor);
-
-      ((PointSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .getGraphic().getMarks().get(0).getFill().setFillOpacity(
-              this.fillOpacity);
-
-      ((PointSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .getGraphic().getMarks().get(0).getStroke()
-          .setColor(this.strokeColor);
-
-      ((PointSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .getGraphic().getMarks().get(0).getStroke().setStrokeOpacity(
-              this.strokeOpacity);
-
-      ((PointSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .getGraphic().getMarks().get(0).getStroke().setStrokeWidth(
-              (float) this.strokeWidth);
-
-      ((PointSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .setUnitOfMeasure(this.unit);
-
-      ((PointSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .getGraphic().getMarks().get(0).setWellKnownName(this.symbolShape);
-
-      ((PointSymbolizer) this.layer.getStyles().get(0).getSymbolizer())
-          .getGraphic().setSize(this.symbolSize);
+    } else if (symbolizer.isPointSymbolizer()) {
+      PointSymbolizer pointSymbolizer =
+        (PointSymbolizer) this.layer.getStyles().get(0).getSymbolizer();
+      Mark mark = pointSymbolizer.getGraphic().getMarks().get(0);
+      mark.getFill().setColor(this.fillColor);
+      mark.getFill().setFillOpacity(this.fillOpacity);
+      mark.getStroke().setColor(this.strokeColor);
+      mark.getStroke().setStrokeOpacity(this.strokeOpacity);
+      mark.getStroke().setStrokeWidth((float) this.strokeWidth);
+      mark.setWellKnownName(this.symbolShape);
+      pointSymbolizer.setUnitOfMeasure(this.unit);
+      pointSymbolizer.getGraphic().setSize(this.symbolSize);
     }
 
     // Updating the preview style panel
     this.stylePanel.paintComponent(this.stylePanel.getGraphics());
   }
 
+  public void reset() {
+    Symbolizer symbolizer = this.layer.getStyles().get(0).getSymbolizer();
+    
+    // Reset style modifications using the initialSLD.
+    if (symbolizer.isPolygonSymbolizer()) {
+      PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this.initialSLD
+            .getLayer(this.layer.getName()).getStyles().get(0).getSymbolizer();
+      
+      this.fillColor = polygonSymbolizer.getFill().getColor();
+      this.fillOpacity = polygonSymbolizer.getFill().getFillOpacity();
+      this.strokeColor = polygonSymbolizer.getStroke().getColor();
+      this.strokeOpacity = polygonSymbolizer.getStroke().getStrokeOpacity();
+      this.strokeWidth = polygonSymbolizer.getStroke().getStrokeWidth();
+      this.unit = polygonSymbolizer.getUnitOfMeasure();
+      
+    } else if (symbolizer.isLineSymbolizer()) {
+      LineSymbolizer lineSymbolizer = (LineSymbolizer) this.getInitialSLD()
+            .getLayer(this.layer.getName()).getStyles().get(0).getSymbolizer();
+      
+      this.strokeColor = lineSymbolizer.getStroke().getColor();
+      this.strokeOpacity = lineSymbolizer.getStroke().getStrokeOpacity();
+      this.strokeWidth = lineSymbolizer.getStroke().getStrokeWidth();
+      this.unit = lineSymbolizer.getUnitOfMeasure();
+
+      if (this.layer.getStyles().size() == 2) {
+          LineSymbolizer lineSymbolizer2 = (LineSymbolizer) this.getInitialSLD()
+            .getLayer(this.layer.getName()).getStyles().get(1).getSymbolizer();
+
+          this.strokeColor2 = lineSymbolizer2.getStroke().getColor();
+          this.strokeOpacity2 = lineSymbolizer2.getStroke().getStrokeOpacity();
+          this.strokeOpacitySlider2.setValue((int)this.strokeOpacity2 * 100);
+          this.strokeWidth2 = lineSymbolizer2.getStroke().getStrokeWidth();
+          this.strokeWidthSpinner2.setValue(this.strokeWidth2);
+          this.unit = lineSymbolizer2.getUnitOfMeasure();
+      }
+    } else if (symbolizer.isPointSymbolizer()) {
+      PointSymbolizer pointSymbolizer = (PointSymbolizer) this.getInitialSLD()
+            .getLayer(this.layer.getName()).getStyles().get(0).getSymbolizer();
+      Mark mark = pointSymbolizer.getGraphic().getMarks().get(0);
+      this.fillColor = mark.getFill().getColor();
+      this.fillOpacity = mark.getFill().getFillOpacity();
+      this.fillOpacitySlider.setValue((int)this.fillOpacity * 100);
+      this.strokeColor = mark.getStroke().getColor();
+      this.strokeOpacity = mark.getStroke().getStrokeOpacity();
+      this.strokeOpacitySlider.setValue((int)this.strokeOpacity * 100);
+      this.strokeWidth = mark.getStroke().getStrokeWidth();
+      this.strokeWidthSpinner.setValue(this.strokeWidth);
+      this.symbolShape = mark.getWellKnownName();
+      this.unit = pointSymbolizer.getUnitOfMeasure();
+      this.symbolSize = pointSymbolizer.getGraphic().getSize();
+    }
+
+    // Updating the preview style panel
+    this.stylePanel.paintComponent(this.stylePanel.getGraphics());
+  }
+  
   public void getDialogElements() {
     if (this.layer.getStyles().get(0).getSymbolizer().isPolygonSymbolizer()
         || this.layer.getStyles().get(0).getSymbolizer().isLineSymbolizer()
