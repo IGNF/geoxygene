@@ -36,15 +36,11 @@ public class TriangulationJTS extends AbstractTriangulation {
         logger.info(this.getPopFaces().size() + " triangles créés");
         this.ajouteArcsEtNoeudsAuxFaces(true);
         if (this.getOptions().indexOf('v') != -1) {
-          //this.filtreArcsDoublons();
-          VoronoiDiagramBuilder vb = new VoronoiDiagramBuilder();
-          vb.setTolerance(1.0);
-          vb.setSites(geomSites);
-          GeometryCollection cells = (GeometryCollection) vb.getDiagram(geomFact);;
-          for (int i = 0; i < cells.getNumGeometries(); i++) {
-            Polygon cell = (Polygon) cells.getGeometryN(i);
+          GeometryCollection diagram = (GeometryCollection) tb.getSubdivision().getVoronoiDiagram(geomFact);
+          for (int i = 0; i < diagram.getNumGeometries(); i++) {
+            Polygon cell = (Polygon) diagram.getGeometryN(i);
             this.getPopVoronoiFaces().nouvelElement(AdapterFactory.toGM_Object(cell));
-          }
+          }        
           logger.info(this.getPopVoronoiFaces().size() + " cellules créés");
           this.voronoiDiagram.ajouteArcsEtNoeudsAuxFaces(true);
         }
