@@ -367,7 +367,7 @@ public class Arc extends ElementCarteTopo {
       }
     } else {
       if (this.getFaceGauche() != null) {
-        this.getFaceGauche().getArcsDirects().remove(face);
+        this.getFaceGauche().getArcsDirects().remove(this);
       }
       this.faceGauche = null;
     }
@@ -392,7 +392,7 @@ public class Arc extends ElementCarteTopo {
       }
     } else {
       if (this.getFaceDroite() != null) {
-        this.getFaceDroite().getArcsIndirects().remove(face);
+        this.getFaceDroite().getArcsIndirects().remove(this);
       }
       this.faceDroite = null;
     }
