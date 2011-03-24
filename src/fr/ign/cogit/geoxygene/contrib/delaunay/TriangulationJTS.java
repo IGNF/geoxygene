@@ -5,6 +5,7 @@ import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.triangulate.ConformingDelaunayTriangulationBuilder;
+import com.vividsolutions.jts.triangulate.VoronoiDiagramBuilder;
 
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
@@ -17,7 +18,7 @@ public class TriangulationJTS extends AbstractTriangulation {
     }
 
     @Override
-    public void triangule() throws Exception {
+    public void create() throws Exception {
         ConformingDelaunayTriangulationBuilder tb = new ConformingDelaunayTriangulationBuilder();
         GM_MultiPoint sites = new GM_MultiPoint();
         for (Noeud n : this.getPopNoeuds()) {
@@ -33,17 +34,19 @@ public class TriangulationJTS extends AbstractTriangulation {
             this.getPopFaces().nouvelElement(AdapterFactory.toGM_Object(triangle));
         }
         logger.info(this.getPopFaces().size() + " triangles créés");
-        /*
-        GeometryCollection edges = (GeometryCollection) tb.getEdges(geomFact);
-        for (int i = 0; i < edges.getNumGeometries(); i++) {
-            LineString edge = (LineString) edges.getGeometryN(i);
-            this.getPopArcs().nouvelElement(AdapterFactory.toGM_Object(edge));
-        }
-        logger.info(this.getPopArcs().size() + " arcs créés");
-        this.creeTopologieArcsNoeuds(1.0);
-        this.creeTopologieFaces();
-        */
         this.ajouteArcsEtNoeudsAuxFaces(true);
-        //this.filtreArcsDoublons();
+        if (this.getOptions().indexOf('v') != -1) {
+          //this.filtreArcsDoublons();
+          VoronoiDiagramBuilder vb = new VoronoiDiagramBuilder();
+          vb.setTolerance(1.0);
+          vb.setSites(geomSites);
+          GeometryCollection cells = (GeometryCollection) vb.getDiagram(geomFact);;
+          for (int i = 0; i < cells.getNumGeometries(); i++) {
+            Polygon cell = (Polygon) cells.getGeometryN(i);
+            this.getPopVoronoiFaces().nouvelElement(AdapterFactory.toGM_Object(cell));
+          }
+          logger.info(this.getPopVoronoiFaces().size() + " cellules créés");
+          this.voronoiDiagram.ajouteArcsEtNoeudsAuxFaces(true);
+        }
     }
 }

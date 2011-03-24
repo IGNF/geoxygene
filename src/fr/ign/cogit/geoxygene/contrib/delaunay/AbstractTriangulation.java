@@ -15,8 +15,6 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
 
 public abstract class AbstractTriangulation extends CarteTopo {
     public AbstractTriangulation(String nom_logique) {
@@ -36,27 +34,126 @@ public abstract class AbstractTriangulation extends CarteTopo {
                     false, I18N.getString("CarteTopo.Face"), //$NON-NLS-1$
                     TriangleDelaunay.class, true);
         this.addPopulation(faces);
+        this.voronoiDiagram = new CarteTopo(this.getNom() + "_voronoiDiagram");
     }
-    Population<Arc> voronoiEdges = new Population<Arc>();
-
+    protected CarteTopo voronoiDiagram = null;
+    private String options = null;
+    /**
+     * Set the triangulation options
+     * 
+     * @param options triangulation options.
+     * @see #triangule(String)
+     */
+    public void setOptions(String options) {
+      this.options = options;
+    }
+    /**
+     * @return the options
+     */
+    public String getOptions() {
+      return this.options;
+    }
     /** Population des arcs de voronoi de la triangulation. */
     public Population<Arc> getPopVoronoiEdges() {
-        return this.voronoiEdges;
+        return this.voronoiDiagram.getPopArcs();
     }
-
-    Population<Noeud> voronoiVertices = new Population<Noeud>();
-
     /** Population des noeuds de voronoi de la triangulation. */
     public Population<Noeud> getPopVoronoiVertices() {
-        return this.voronoiVertices;
+        return this.voronoiDiagram.getPopNoeuds();
+    }
+    /** Population des cellules de voronoi de la triangulation. */
+    public Population<Face> getPopVoronoiFaces() {
+        return this.voronoiDiagram.getPopFaces();
+    }
+    /**
+     * Run the triangulation with default parameters.
+     * @throws Exception
+     */
+    public void triangule() throws Exception {
+      this.triangule("czeBQ"); //$NON-NLS-1$
     }
 
     /**
-     * Run the triangulation with default parameters:
-     * @throws Exception 
+     * Run the triangulation with the given parameters. Lance la triangulation
+     * avec les paramètres donnés.
+     *
+     * @param trianguleOptions paramètres de la triangulation :
+     *          <ul>
+     *          <li><b>z Zero:</b> points are numbered from zero
+     *          <li><b>e Edges:</b> export edges
+     *          <li><b>c Convex Hull:</b> Creates segments on the convex hull of
+     *          the triangulation. If you are triangulating a vertex set, this
+     *          switch causes the creation of all edges in the convex hull. If you
+     *          are triangulating a PSLG, this switch specifies that the whole
+     *          convex hull of the PSLG should be triangulated, regardless of what
+     *          segments the PSLG has. If you do not use this switch when
+     *          triangulating a PSLG, it is assumed that you have identified the
+     *          region to be triangulated by surrounding it with segments of the
+     *          input PSLG. Beware: if you are not careful, this switch can cause
+     *          the introduction of an extremely thin angle between a PSLG segment
+     *          and a convex hull segment, which can cause overrefinement (and
+     *          possibly failure if Triangle runs out of precision). If you are
+     *          refining a mesh, the -c switch works differently; it generates the
+     *          set of boundary edges of the mesh.
+     *          <li><b>B Boundary:</b> No boundary markers in the output.
+     *          <li><b>Q Quiet:</b> Suppresses all explanation of what Triangle is
+     *          doing, unless an error occurs.
+     *          <li>v for exporting a Voronoi diagram. This implementation does
+     *          not use exact arithmetic to compute the Voronoi vertices, and does
+     *          not check whether neighboring vertices are identical. Be
+     *          forewarned that if the Delaunay triangulation is degenerate or
+     *          near-degenerate, the Voronoi diagram may have duplicate vertices,
+     *          crossing edges, or infinite rays whose direction vector is zero.
+     *          The result is a valid Voronoi diagram only if Triangle's output is
+     *          a true Delaunay triangulation. The Voronoi output is usually
+     *          meaningless (and may contain crossing edges and other pathology)
+     *          if the output is a CDT or CCDT, or if it has holes or concavities.
+     *          If the triangulation is convex and has no holes, this can be fixed
+     *          by using the -L switch to ensure a conforming Delaunay
+     *          triangulation is constructed.
+     *          <li>p for reading a Planar Straight Line Graph
+     *          <li>r for refining a previously generated mesh
+     *          <li>q for Quality mesh generation by my variant of Jim Ruppert's
+     *          Delaunay refinement algorithm. Adds vertices to the mesh to ensure
+     *          that no angles smaller than 20 degrees occur. An alternative
+     *          minimum angle may be specified after the `q'. If the minimum angle
+     *          is 20.7 degrees or smaller, the triangulation algorithm is
+     *          mathematically guaranteed to terminate (assuming infinite
+     *          precision arithmetic-- Triangle may fail to terminate if you run
+     *          out of precision). In practice, the algorithm often succeeds for
+     *          minimum angles up to 33.8 degrees. For some meshes, however, it
+     *          may be necessary to reduce the minimum angle to avoid problems
+     *          associated with insufficient floating-point precision. The
+     *          specified angle may include a decimal point.
+     *          <li>V Verbose: Gives detailed information about what Triangle is
+     *          doing. Add more `V's for increasing amount of detail. `-V' gives
+     *          information on algorithmic progress and more detailed statistics.
+     *          `-VV' gives vertex-by-vertex details, and prints so much that
+     *          Triangle runs much more slowly. `-VVVV' gives information only a
+     *          debugger could love.
+     *          </ul>
+     * @throws Exception
      */
-    public abstract void triangule() throws Exception;
+    public void triangule(String trianguleOptions) throws Exception {
+      if (this.getPopNoeuds().size() < 3) {
+          CarteTopo.logger.error(I18N.getString("Triangulation.Cancelled") //$NON-NLS-1$
+            + this.getPopNoeuds().size()
+            + I18N.getString("Triangulation.NeedsAtLeast3Points")); //$NON-NLS-1$
+        return;
+      }
+      if (CarteTopo.logger.isDebugEnabled()) {
+          CarteTopo.logger.debug(I18N
+            .getString("Triangulation.StartedWithOptions") //$NON-NLS-1$
+            + trianguleOptions);
+      }
+      this.setOptions(trianguleOptions);
+      this.create();
+      if (CarteTopo.logger.isDebugEnabled()) {
+          CarteTopo.logger.debug(I18N.getString("Triangulation.Finished")); //$NON-NLS-1$
+      }
+    }
 
+    abstract void create() throws Exception;
 
     /**
      * Map used to mark nodes as belonging to the boundary or not.

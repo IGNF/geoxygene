@@ -68,7 +68,6 @@ public class Triangulation extends AbstractTriangulation {
   private Triangulateio jin = new Triangulateio();
   private Triangulateio jout = new Triangulateio();
   private Triangulateio jvorout = new Triangulateio();
-  private String options = null;
 
   /**
    * Convert the node collection into an array
@@ -156,10 +155,10 @@ public class Triangulation extends AbstractTriangulation {
         }
         GM_Envelope envelope = this.getPopNoeuds().envelope();
         envelope.expandBy(100);
-        this.voronoiVertices.initSpatialIndex(Tiling.class, true, envelope, 10);
+        this.getPopVoronoiVertices().initSpatialIndex(Tiling.class, true, envelope, 10);
         // l'export du diagramme de voronoi
         for (int i = 0; i < this.jvorout.numberofpoints; i++) {
-          this.voronoiVertices.add(new Noeud(
+          this.getPopVoronoiVertices().add(new Noeud(
               new GM_Point(new DirectPosition(this.jvorout.pointlist[2 * i],
                   this.jvorout.pointlist[2 * i + 1]))));
         }
@@ -170,7 +169,7 @@ public class Triangulation extends AbstractTriangulation {
             // infinite edge
             double vx = this.jvorout.normlist[2 * i];
             double vy = this.jvorout.normlist[2 * i + 1];
-            Noeud c1 = this.voronoiVertices.getElements().get(indexIni);
+            Noeud c1 = this.getPopVoronoiVertices().getElements().get(indexIni);
             Noeud c2 = new Noeud();
             double vectorSize = 10000000;
             c2.setGeometrie(new GM_Point(new DirectPosition(c1.getGeometrie()
@@ -185,11 +184,11 @@ public class Triangulation extends AbstractTriangulation {
             if (list.size() > 1) {
               c2.setGeometrie(list.get(1).toGM_Point());
             }
-            indexFin = this.voronoiVertices.size();
-            this.voronoiVertices.add(c2);
+            indexFin = this.getPopVoronoiVertices().size();
+            this.getPopVoronoiVertices().add(c2);
           }
-          this.voronoiEdges.add(new Arc(this.voronoiVertices.getElements().get(
-              indexIni), this.voronoiVertices.getElements().get(indexFin)));
+          this.getPopVoronoiEdges().add(new Arc(this.getPopVoronoiVertices().getElements().get(
+              indexIni), this.getPopVoronoiVertices().getElements().get(indexFin)));
         }
       }
     } catch (Exception e) {
@@ -216,140 +215,19 @@ public class Triangulation extends AbstractTriangulation {
   static {
     System.loadLibrary("trianguledll");} //$NON-NLS-1$
 
-  /**
-   * Run the triangulation with the given parameters. Lance la triangulation
-   * avec les paramètres donnés
-   * 
-   * @param trianguleOptions paramètres de la triangulation :
-   *          <ul>
-   *          <li><b>z Zero:</b> points are numbered from zero
-   *          <li><b>e Edges:</b> export edges
-   *          <li><b>c Convex Hull:</b> Creates segments on the convex hull of
-   *          the triangulation. If you are triangulating a vertex set, this
-   *          switch causes the creation of all edges in the convex hull. If you
-   *          are triangulating a PSLG, this switch specifies that the whole
-   *          convex hull of the PSLG should be triangulated, regardless of what
-   *          segments the PSLG has. If you do not use this switch when
-   *          triangulating a PSLG, it is assumed that you have identified the
-   *          region to be triangulated by surrounding it with segments of the
-   *          input PSLG. Beware: if you are not careful, this switch can cause
-   *          the introduction of an extremely thin angle between a PSLG segment
-   *          and a convex hull segment, which can cause overrefinement (and
-   *          possibly failure if Triangle runs out of precision). If you are
-   *          refining a mesh, the -c switch works differently; it generates the
-   *          set of boundary edges of the mesh.
-   *          <li><b>B Boundary:</b> No boundary markers in the output.
-   *          <li><b>Q Quiet:</b> Suppresses all explanation of what Triangle is
-   *          doing, unless an error occurs.
-   *          <li>v for exporting a Voronoi diagram. This implementation does
-   *          not use exact arithmetic to compute the Voronoi vertices, and does
-   *          not check whether neighboring vertices are identical. Be
-   *          forewarned that if the Delaunay triangulation is degenerate or
-   *          near-degenerate, the Voronoi diagram may have duplicate vertices,
-   *          crossing edges, or infinite rays whose direction vector is zero.
-   *          The result is a valid Voronoi diagram only if Triangle's output is
-   *          a true Delaunay triangulation. The Voronoi output is usually
-   *          meaningless (and may contain crossing edges and other pathology)
-   *          if the output is a CDT or CCDT, or if it has holes or concavities.
-   *          If the triangulation is convex and has no holes, this can be fixed
-   *          by using the -L switch to ensure a conforming Delaunay
-   *          triangulation is constructed.
-   *          <li>p for reading a Planar Straight Line Graph
-   *          <li>r for refining a previously generated mesh
-   *          <li>q for Quality mesh generation by my variant of Jim Ruppert's
-   *          Delaunay refinement algorithm. Adds vertices to the mesh to ensure
-   *          that no angles smaller than 20 degrees occur. An alternative
-   *          minimum angle may be specified after the `q'. If the minimum angle
-   *          is 20.7 degrees or smaller, the triangulation algorithm is
-   *          mathematically guaranteed to terminate (assuming infinite
-   *          precision arithmetic-- Triangle may fail to terminate if you run
-   *          out of precision). In practice, the algorithm often succeeds for
-   *          minimum angles up to 33.8 degrees. For some meshes, however, it
-   *          may be necessary to reduce the minimum angle to avoid problems
-   *          associated with insufficient floating-point precision. The
-   *          specified angle may include a decimal point.
-   *          <li>V Verbose: Gives detailed information about what Triangle is
-   *          doing. Add more `V's for increasing amount of detail. `-V' gives
-   *          information on algorithmic progress and more detailed statistics.
-   *          `-VV' gives vertex-by-vertex details, and prints so much that
-   *          Triangle runs much more slowly. `-VVVV' gives information only a
-   *          debugger could love.
-   *          </ul>
-   * @throws Exception
-   */
-  public void triangule(String trianguleOptions) throws Exception {
-    if (this.getPopNoeuds().size() < 3) {
-        CarteTopo.logger.error(I18N.getString("Triangulation.Cancelled") //$NON-NLS-1$
-          + this.getPopNoeuds().size()
-          + I18N.getString("Triangulation.NeedsAtLeast3Points")); //$NON-NLS-1$
-      return;
-    }
-    if (CarteTopo.logger.isDebugEnabled()) {
-        CarteTopo.logger.debug(I18N
-          .getString("Triangulation.StartedWithOptions") //$NON-NLS-1$
-          + trianguleOptions);
-    }
-    this.setOptions(trianguleOptions);
+  @Override
+  public void create() throws Exception {
     this.convertJin();
-    if (trianguleOptions.indexOf('p') != -1) {
+    if (this.getOptions().indexOf('p') != -1) {
       this.convertJinSegments();
       this.getPopArcs().setElements(new ArrayList<Arc>());
     }
     if (this.getOptions().indexOf('v') != -1) {
-      this.trianguleC(trianguleOptions, this.jin, this.jout, this.jvorout);
+      this.trianguleC(this.getOptions(), this.jin, this.jout, this.jvorout);
     } else {
-      this.trianguleC(trianguleOptions, this.jin, this.jout, null);
+      this.trianguleC(this.getOptions(), this.jin, this.jout, null);
     }
     this.convertJout();
-    if (CarteTopo.logger.isDebugEnabled()) {
-        CarteTopo.logger.debug(I18N.getString("Triangulation.Finished")); //$NON-NLS-1$
-    }
-  }
-
-  /**
-   * Run the triangulation with default parameters:
-   * <ul>
-   * <li><b>z Zero:</b> points are numbered from zero
-   * <li><b>e Edges:</b> export edges
-   * <li><b>c Convex Hull:</b> Creates segments on the convex hull of the
-   * triangulation. If you are triangulating a vertex set, this switch causes
-   * the creation of all edges in the convex hull. If you are triangulating a
-   * PSLG, this switch specifies that the whole convex hull of the PSLG should
-   * be triangulated, regardless of what segments the PSLG has. If you do not
-   * use this switch when triangulating a PSLG, it is assumed that you have
-   * identified the region to be triangulated by surrounding it with segments of
-   * the input PSLG. Beware: if you are not careful, this switch can cause the
-   * introduction of an extremely thin angle between a PSLG segment and a convex
-   * hull segment, which can cause overrefinement (and possibly failure if
-   * Triangle runs out of precision). If you are refining a mesh, the -c switch
-   * works differently; it generates the set of boundary edges of the mesh.
-   * <li><b>B Boundary:</b> No boundary markers in the output.
-   * <li><b>Q Quiet:</b> Suppresses all explanation of what Triangle is doing,
-   * unless an error occurs.
-   * </ul>
-   * 
-   * @throws Exception
-   */
-  @Override
-public void triangule() throws Exception {
-    this.triangule("czeBQ"); //$NON-NLS-1$
-  }
-
-  /**
-   * Set the triangulation options
-   * 
-   * @param options triangulation options.
-   * @see #triangule(String)
-   */
-  public void setOptions(String options) {
-    this.options = options;
-  }
-
-  /**
-   * @return the options
-   */
-  public String getOptions() {
-    return this.options;
   }
 
   /**
