@@ -104,7 +104,7 @@ public class Face extends ElementCarteTopo {
   // Gestion de la topologie arcs / faces
   // ///////////////////////////////////////////////////////////////////////////////////////////////
 
-  private List<Arc> arcsDirects = new ArrayList<Arc>();
+  private List<Arc> arcsDirects = new ArrayList<Arc>(0);
 
   /** Renvoie la liste des arcs directs de self */
   public List<Arc> getArcsDirects() {
@@ -133,7 +133,7 @@ public class Face extends ElementCarteTopo {
     arc.setFaceGauche(null);
   }
 
-  private List<Arc> arcsIndirects = new ArrayList<Arc>();
+  private List<Arc> arcsIndirects = new ArrayList<Arc>(0);
 
   /** Renvoie la liste des arcs indirects de self */
   public List<Arc> getArcsIndirects() {
@@ -170,7 +170,8 @@ public class Face extends ElementCarteTopo {
    * méthode qui renvoie ces arcs dans le bon ordre de parcours
    */
   public List<Arc> arcs() {
-    List<Arc> Arcs = new ArrayList<Arc>();
+    List<Arc> Arcs = new ArrayList<Arc>(this.getArcsDirects().size()
+        + this.getArcsIndirects().size());
     Arcs.addAll(this.getArcsDirects());
     Arcs.addAll(this.getArcsIndirects());
     return Arcs;
