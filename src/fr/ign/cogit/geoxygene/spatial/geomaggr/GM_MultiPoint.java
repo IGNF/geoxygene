@@ -43,18 +43,18 @@ public class GM_MultiPoint extends GM_MultiPrimitive<GM_Point> {
 
   /** Constructeur par defaut. */
   public GM_MultiPoint() {
-    this.element = new ArrayList<GM_Point>();
+    this.element = new ArrayList<GM_Point>(0);
   }
 
   /** Constructeur à partir d'un GM_Point. */
   public GM_MultiPoint(GM_Point aGM_Point) {
-    this.element = new ArrayList<GM_Point>();
+    this.element = new ArrayList<GM_Point>(1);
     this.add(aGM_Point);
   }
 
   /** Constructeur à partir d'une liste de GM_Point. */
   public GM_MultiPoint(List<GM_Point> fromGM_Point) {
-    this.element = new ArrayList<GM_Point>();
+    this.element = new ArrayList<GM_Point>(fromGM_Point.size());
     for (GM_Point point : fromGM_Point) {
       this.add(point);
     }
@@ -62,7 +62,7 @@ public class GM_MultiPoint extends GM_MultiPrimitive<GM_Point> {
 
   /** Constructeur à partir d'une liste de DirectPosition. */
   public GM_MultiPoint(DirectPositionList L) {
-    this.element = new ArrayList<GM_Point>();
+    this.element = new ArrayList<GM_Point>(L.size());
     for (DirectPosition position : L) {
       this.add(position.toGM_Point());
     }
