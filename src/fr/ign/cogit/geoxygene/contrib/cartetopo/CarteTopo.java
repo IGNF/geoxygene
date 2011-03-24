@@ -68,7 +68,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  */
 
 public class CarteTopo extends DataSet {
-  static Logger logger = Logger.getLogger(CarteTopo.class.getName());
+  protected static Logger logger = Logger.getLogger(CarteTopo.class.getName());
 
   protected EventListenerList listenerList = new EventListenerList();
 
@@ -550,9 +550,8 @@ public class CarteTopo extends DataSet {
             0,
             I18N.getString("CarteTopo.MissingNodesCreation"), this.getPopArcs().size())); //$NON-NLS-1$
     int index = 0;
-    List<Arc> arcsVides = new ArrayList<Arc>();
-    for (Object a : this.getPopArcs()) {
-      Arc arc = (Arc) a;
+    List<Arc> arcsVides = new ArrayList<Arc>(0);
+    for (Arc arc : this.getPopArcs()) {
       if (arc.getGeometrie().sizeControlPoint() == 0) {
         CarteTopo.logger.error(I18N.getString("CarteTopo.EmptyEdge")); //$NON-NLS-1$
         arcsVides.add(arc);
@@ -1956,25 +1955,19 @@ public class CarteTopo extends DataSet {
    *          3 arcs incidents ou qui servent de point initial/final à une face.
    */
   public void ajouteArcsEtNoeudsAuxFaces(boolean filtrageNoeudsSimples) {
-    DirectPosition pt1, pt2;
-    Iterator<DirectPosition> itPts;
-    boolean sensDirect;
-
     // On crée un arc pour chaque segment reliant deux points intermédiaires
     // d'une surface
     // Pour deux faces adjacentes, on duplique ces arcs. On fait le ménage
     // après.
-    Iterator<Face> itFaces = this.getPopFaces().getElements().iterator();
-    while (itFaces.hasNext()) {
-      Face face = itFaces.next();
+    for (Face face : this.getPopFaces()) {
       GM_Polygon geomFace = face.getGeometrie();
       // gestion du contour
       DirectPositionList ptsDeLaSurface = geomFace.exteriorCoord();
-      sensDirect = Operateurs.sensDirect(ptsDeLaSurface);
-      itPts = ptsDeLaSurface.getList().iterator();
-      pt1 = itPts.next();
+      boolean sensDirect = Operateurs.sensDirect(ptsDeLaSurface);
+      Iterator<DirectPosition> itPts = ptsDeLaSurface.getList().iterator();
+      DirectPosition pt1 = itPts.next();
       while (itPts.hasNext()) {
-        pt2 = itPts.next();
+        DirectPosition pt2 = itPts.next();
         Arc arc = this.getPopArcs().nouvelElement();
         GM_LineString segment = new GM_LineString();
         segment.addControlPoint(pt1);
@@ -1996,7 +1989,7 @@ public class CarteTopo extends DataSet {
         itPts = geomTrou.getList().iterator();
         pt1 = itPts.next();
         while (itPts.hasNext()) {
-          pt2 = itPts.next();
+          DirectPosition pt2 = itPts.next();
           Arc arc = this.getPopArcs().nouvelElement();
           GM_LineString segment = new GM_LineString();
           segment.addControlPoint(pt1);
@@ -2023,48 +2016,102 @@ public class CarteTopo extends DataSet {
     arcsNonTraites.initSpatialIndex(Tiling.class, true, nb);
 
     // filtrage des arcs en double dus aux surfaces adjacentes
-    List<Arc> arcsAEnlever = new ArrayList<Arc>();
-    Iterator<Arc> itArcs = this.getPopArcs().getElements().iterator();
-    while (itArcs.hasNext()) {
-      Arc arc = itArcs.next();
+    List<Arc> arcsAEnlever = new ArrayList<Arc>(0);
+    for (Arc arc : this.getPopArcs()) {
       if (!arcsNonTraites.contains(arc)) {
         continue;
       }
       arcsNonTraites.remove(arc);
-      Collection<Arc> arcsProches = arcsNonTraites.select(arc.getGeometrie()
-          .startPoint(), 0);
-      Iterator<Arc> itArcsProches = arcsProches.iterator();
-      while (itArcsProches.hasNext()) {
-        Arc arc2 = itArcsProches.next();
-        if (arc2.getGeometrie().startPoint().equals(
-            arc.getGeometrie().startPoint(), 0)
-            && arc2.getGeometrie().endPoint().equals(
-                arc.getGeometrie().endPoint(), 0)) {
+      Collection<Arc> arcsProches = arcsNonTraites.select(arc.getGeometrie(), 0.1);
+//      logger.info("checking edge " + arc);
+      for (Arc arc2 : arcsProches) {
+//        logger.info("\t with edge " + arc2);
+        // if both edges are in the same direction
+        if (arc2.getGeometrie().startPoint().equals2D(
+            arc.getGeometrie().startPoint(), 0.1)
+            && arc2.getGeometrie().endPoint().equals2D(
+                arc.getGeometrie().endPoint(), 0.1)) {
           arcsAEnlever.add(arc2);
           arcsNonTraites.remove(arc2);
           if (arc2.getFaceDroite() != null) {
-            arc.setFaceDroite(arc2.getFaceDroite());
+            Face face = arc2.getFaceDroite();
+//            logger.info("Changing edge associated with " + face);
+            arc.setFaceDroite(face);
+            arc2.setFaceDroite(null);
+            if (face.getArcsDirects().contains(arc2)) {
+              logger.error("edge still in directedges AND IT SHOULD NEVER HAVE BEEN HERE");
+            }
+            if (face.getArcsIndirects().contains(arc2)) {
+              logger.error("edge still in indirectedges");
+            }
           }
           if (arc2.getFaceGauche() != null) {
-            arc.setFaceGauche(arc2.getFaceGauche());
+            Face face = arc2.getFaceGauche();
+//            logger.info("Changing edge associated with " + face);
+            arc.setFaceGauche(face);
+            arc2.setFaceGauche(null);
+            if (face.getArcsIndirects().contains(arc2)) {
+              logger.error("edge still in indirectedges AND IT SHOULD NEVER HAVE BEEN HERE");
+            }
+            if (face.getArcsDirects().contains(arc2)) {
+              logger.error("edge still in directedges");
+            }
           }
+//          logger.info("same direction");
         }
-        if (arc2.getGeometrie().startPoint().equals(
-            arc.getGeometrie().endPoint(), 0)
-            && arc2.getGeometrie().endPoint().equals(
-                arc.getGeometrie().startPoint(), 0)) {
+        // if both edges are in opposite directions
+        if (arc2.getGeometrie().startPoint().equals2D(
+            arc.getGeometrie().endPoint(), 0.1)
+            && arc2.getGeometrie().endPoint().equals2D(
+                arc.getGeometrie().startPoint(), 0.1)) {
           arcsAEnlever.add(arc2);
           arcsNonTraites.remove(arc2);
           if (arc2.getFaceDroite() != null) {
-            arc.setFaceGauche(arc2.getFaceDroite());
+            Face face = arc2.getFaceDroite();
+//            logger.info("Changing edge associated with " + face);
+            arc.setFaceGauche(face);
+            arc2.setFaceDroite(null);
+            if (face.getArcsDirects().contains(arc2)) {
+              logger.error("edge still in directedges AND IT SHOULD NEVER HAVE BEEN HERE");
+            }
+            if (face.getArcsIndirects().contains(arc2)) {
+              logger.error("edge still in indirectedges");
+            }
           }
           if (arc2.getFaceGauche() != null) {
-            arc.setFaceDroite(arc2.getFaceGauche());
+            Face face = arc2.getFaceGauche();
+//            logger.info("Changing edge associated with " + face);
+            arc.setFaceDroite(face);
+            arc2.setFaceGauche(null);
+            if (face.getArcsIndirects().contains(arc2)) {
+              logger.error("edge still in indirectedges AND IT SHOULD NEVER HAVE BEEN HERE");
+            }
+            if (face.getArcsDirects().contains(arc2)) {
+              logger.error("edge still in directedges");
+            }
           }
+//          logger.info("opposite directions");
         }
       }
     }
+//    logger.info(this.getPopArcs().size() + " edges");
+//    logger.info(arcsAEnlever.size() + " edges to remove");
     this.getPopArcs().removeAll(arcsAEnlever);
+//    logger.info(this.getPopArcs().size() + " edges");
+//    for (Arc arc : this.getPopArcs()) {
+//        arc.getFeatureCollections().remove(arcsNonTraites);
+//    }
+    for (Face face : this.getPopFaces()) {
+        List<Arc> list = face.arcs();
+        list.retainAll(arcsAEnlever);
+        if (!list.isEmpty()) {
+            logger.error("remaining " + list.size() +" edges in face " + face);
+            for (Arc arc : list) {
+                logger.error(arc);
+            }
+        }
+    }
+    arcsNonTraites.clear();
     // ajout des noeuds et des relations topologiqes arc/noeud
     this.creeNoeudsManquants(0);
     // filtrage de tous les noeuds simples (degré=2)
@@ -2196,13 +2243,11 @@ public class CarteTopo extends DataSet {
    * la memoire A utiliser lorsque'on souhaite effacer une carte topo.
    */
   public void nettoyer() {
-
     for (Population<? extends FT_Feature> pop : this.getPopulations()) {
       for (FT_Feature f : pop) {
         f.setCorrespondants(new ArrayList<FT_Feature>());
       }
     }
-
     for (Arc arc : this.getPopArcs()) {
       arc.setNoeudFin(null);
       arc.setNoeudIni(null);
@@ -2222,6 +2267,5 @@ public class CarteTopo extends DataSet {
     }
     this.emptyComposants();
     this.emptyPopulations();
-
   }
 }
