@@ -303,7 +303,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
     if (coll == null) {
       return false;
     }
-    if (coll.size() == 0) {
+    if (coll.isEmpty()) {
       return false;
     }
     boolean result = true;
