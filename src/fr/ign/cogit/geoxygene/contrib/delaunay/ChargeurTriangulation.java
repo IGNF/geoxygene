@@ -55,7 +55,7 @@ public class ChargeurTriangulation extends Chargeur {
   }
 
   public static void importLigneEnPoints(String nomClasseGeo,
-      Triangulation carte) throws Exception {
+      AbstractTriangulation carte) throws Exception {
     FT_Feature objGeo;
     Class<?> clGeo = Class.forName(nomClasseGeo);
     NoeudDelaunay noeud;
@@ -97,7 +97,7 @@ public class ChargeurTriangulation extends Chargeur {
   }
 
   public static void importLigneEnPoints(FT_FeatureCollection<?> listeFeatures,
-      Triangulation carte) throws Exception {
+      AbstractTriangulation carte) throws Exception {
     FT_Feature objGeo;
     NoeudDelaunay noeud;
     DirectPositionList listePoints;
@@ -143,7 +143,7 @@ public class ChargeurTriangulation extends Chargeur {
     }
   }
 
-  public static void importSegments(String nomClasseGeo, Triangulation carte)
+  public static void importSegments(String nomClasseGeo, AbstractTriangulation carte)
       throws Exception {
     FT_Feature objGeo;
     Class<?> clGeo = Class.forName(nomClasseGeo);
@@ -235,21 +235,18 @@ public class ChargeurTriangulation extends Chargeur {
     }
   }
 
-  public static void importSegments(FT_FeatureCollection listeFeatures,
-      Triangulation carte) throws Exception {
-    FT_Feature objGeo;
-
+  public static void importSegments(Collection<? extends FT_Feature> listeFeatures,
+      AbstractTriangulation carte) throws Exception {
     Class[] signaturea = { carte.getPopNoeuds().getClasse(),
         carte.getPopNoeuds().getClasse() };
     Object[] parama = new Object[2];
 
-    for (int i = 0; i < listeFeatures.size(); i++) {
+    int i = 0;
+    for (FT_Feature objGeo : listeFeatures) {
       if (ChargeurTriangulation.logger.isDebugEnabled()) {
         ChargeurTriangulation.logger.debug(I18N
-            .getString("ChargeurTriangulation.NumberOfImportedLines") + i); //$NON-NLS-1$
+            .getString("ChargeurTriangulation.NumberOfImportedLines") + (i++)); //$NON-NLS-1$
       }
-      objGeo = listeFeatures.get(i);
-
       if (objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString) {
         DirectPositionList listePoints = ((GM_LineString) objGeo.getGeom())
             .coord();
@@ -349,7 +346,7 @@ public class ChargeurTriangulation extends Chargeur {
    * @throws Exception
    */
   public static void importPolygoneEnPoints(FT_FeatureCollection listeFeatures,
-      Triangulation carte) throws Exception {
+      AbstractTriangulation carte) throws Exception {
     FT_Feature objGeo;
     NoeudDelaunay noeud;
     DirectPositionList listePoints;
@@ -393,7 +390,7 @@ public class ChargeurTriangulation extends Chargeur {
    * @throws Exception
    */
   public static void importCentroidesPolygones(
-      Collection<? extends FT_Feature> features, Triangulation carte)
+      Collection<? extends FT_Feature> features, AbstractTriangulation carte)
       throws Exception {
     NoeudDelaunay noeud;
     if (ChargeurTriangulation.logger.isTraceEnabled()) {
