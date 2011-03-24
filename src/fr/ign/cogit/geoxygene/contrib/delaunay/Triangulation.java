@@ -22,22 +22,14 @@ package fr.ign.cogit.geoxygene.contrib.delaunay;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
-import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
-import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
@@ -57,73 +49,26 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * @version 1.1
  */
 
-public class Triangulation extends CarteTopo {
-  /**
-   * Logger.
-   */
-  static Logger logger = Logger.getLogger(Triangulation.class.getName());
+public class Triangulation extends AbstractTriangulation {
 
   /**
    * Constructor.
    */
   public Triangulation() {
-    // nécessaire pour ojb
-    this.ojbConcreteClass = this.getClass().getName();
-    this.setPersistant(false);
-    Population<ArcDelaunay> arcs = new Population<ArcDelaunay>(false, I18N
-        .getString("CarteTopo.Edge"), //$NON-NLS-1$
-        ArcDelaunay.class, true);
-    this.addPopulation(arcs);
-    Population<NoeudDelaunay> noeuds = new Population<NoeudDelaunay>(false,
-        I18N.getString("CarteTopo.Node"), //$NON-NLS-1$
-        NoeudDelaunay.class, true);
-    this.addPopulation(noeuds);
-    Population<TriangleDelaunay> faces = new Population<TriangleDelaunay>(
-        false, I18N.getString("CarteTopo.Face"), //$NON-NLS-1$
-        TriangleDelaunay.class, true);
-    this.addPopulation(faces);
+      super("Triangulation"); //$NON-NLS-1$
   }
 
   /**
    * @param nom_logique
    */
   public Triangulation(String nom_logique) {
-    // nécessaire pour ojb
-    this.ojbConcreteClass = this.getClass().getName();
-    this.setNom(nom_logique);
-    this.setPersistant(false);
-    Population<ArcDelaunay> arcs = new Population<ArcDelaunay>(false, I18N
-        .getString("CarteTopo.Edge"), //$NON-NLS-1$
-        ArcDelaunay.class, true);
-    this.addPopulation(arcs);
-    Population<NoeudDelaunay> noeuds = new Population<NoeudDelaunay>(false,
-        I18N.getString("CarteTopo.Node"), //$NON-NLS-1$
-        NoeudDelaunay.class, true);
-    this.addPopulation(noeuds);
-    Population<TriangleDelaunay> faces = new Population<TriangleDelaunay>(
-        false, I18N.getString("CarteTopo.Face"), //$NON-NLS-1$
-        TriangleDelaunay.class, true);
-    this.addPopulation(faces);
+    super(nom_logique);
   }
 
   private Triangulateio jin = new Triangulateio();
   private Triangulateio jout = new Triangulateio();
   private Triangulateio jvorout = new Triangulateio();
   private String options = null;
-
-  Population<Arc> voronoiEdges = new Population<Arc>();
-
-  /** Population des arcs de voronoi de la triangulation. */
-  public Population<Arc> getPopVoronoiEdges() {
-    return this.voronoiEdges;
-  }
-
-  Population<Noeud> voronoiVertices = new Population<Noeud>();
-
-  /** Population des noeuds de voronoi de la triangulation. */
-  public Population<Noeud> getPopVoronoiVertices() {
-    return this.voronoiVertices;
-  }
 
   /**
    * Convert the node collection into an array
@@ -164,12 +109,12 @@ public class Triangulation extends CarteTopo {
    * Convert back the result into vertices, edges and triangles.
    */
   private void convertJout() {
-    if (Triangulation.logger.isDebugEnabled()) {
-      Triangulation.logger.debug(I18N.getString("Triangulation.ExportStart")); //$NON-NLS-1$
+    if (CarteTopo.logger.isDebugEnabled()) {
+        CarteTopo.logger.debug(I18N.getString("Triangulation.ExportStart")); //$NON-NLS-1$
     }
     try {
-      if (Triangulation.logger.isDebugEnabled()) {
-        Triangulation.logger.debug(I18N
+      if (CarteTopo.logger.isDebugEnabled()) {
+          CarteTopo.logger.debug(I18N
             .getString("Triangulation.NodeExportStart")); //$NON-NLS-1$
       }
       for (int i = this.jin.numberofpoints; i < this.jout.numberofpoints; i++) {
@@ -182,8 +127,8 @@ public class Triangulation extends CarteTopo {
       Class<?>[] signaturea = { this.getPopNoeuds().getClasse(),
           this.getPopNoeuds().getClasse() };
       Object[] parama = new Object[2];
-      if (Triangulation.logger.isDebugEnabled()) {
-        Triangulation.logger.debug(I18N
+      if (CarteTopo.logger.isDebugEnabled()) {
+          CarteTopo.logger.debug(I18N
             .getString("Triangulation.EdgeExportStart")); //$NON-NLS-1$
       }
       for (int i = 0; i < this.jout.numberofedges; i++) {
@@ -205,8 +150,8 @@ public class Triangulation extends CarteTopo {
         this.getPopFaces().nouvelElement(signaturef, paramf).setId(i);
       }
       if (this.getOptions().indexOf('v') != -1) {
-        if (Triangulation.logger.isDebugEnabled()) {
-          Triangulation.logger.debug(I18N
+        if (CarteTopo.logger.isDebugEnabled()) {
+            CarteTopo.logger.debug(I18N
               .getString("Triangulation.VoronoiDiagramExportStart")); //$NON-NLS-1$
         }
         GM_Envelope envelope = this.getPopNoeuds().envelope();
@@ -250,8 +195,8 @@ public class Triangulation extends CarteTopo {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    if (Triangulation.logger.isDebugEnabled()) {
-      Triangulation.logger.debug(I18N.getString("Triangulation.ExportEnd")); //$NON-NLS-1$
+    if (CarteTopo.logger.isDebugEnabled()) {
+        CarteTopo.logger.debug(I18N.getString("Triangulation.ExportEnd")); //$NON-NLS-1$
     }
   }
 
@@ -334,13 +279,13 @@ public class Triangulation extends CarteTopo {
    */
   public void triangule(String trianguleOptions) throws Exception {
     if (this.getPopNoeuds().size() < 3) {
-      Triangulation.logger.error(I18N.getString("Triangulation.Cancelled") //$NON-NLS-1$
+        CarteTopo.logger.error(I18N.getString("Triangulation.Cancelled") //$NON-NLS-1$
           + this.getPopNoeuds().size()
           + I18N.getString("Triangulation.NeedsAtLeast3Points")); //$NON-NLS-1$
       return;
     }
-    if (Triangulation.logger.isDebugEnabled()) {
-      Triangulation.logger.debug(I18N
+    if (CarteTopo.logger.isDebugEnabled()) {
+        CarteTopo.logger.debug(I18N
           .getString("Triangulation.StartedWithOptions") //$NON-NLS-1$
           + trianguleOptions);
     }
@@ -356,8 +301,8 @@ public class Triangulation extends CarteTopo {
       this.trianguleC(trianguleOptions, this.jin, this.jout, null);
     }
     this.convertJout();
-    if (Triangulation.logger.isDebugEnabled()) {
-      Triangulation.logger.debug(I18N.getString("Triangulation.Finished")); //$NON-NLS-1$
+    if (CarteTopo.logger.isDebugEnabled()) {
+        CarteTopo.logger.debug(I18N.getString("Triangulation.Finished")); //$NON-NLS-1$
     }
   }
 
@@ -385,7 +330,8 @@ public class Triangulation extends CarteTopo {
    * 
    * @throws Exception
    */
-  public void triangule() throws Exception {
+  @Override
+public void triangule() throws Exception {
     this.triangule("czeBQ"); //$NON-NLS-1$
   }
 
@@ -407,173 +353,6 @@ public class Triangulation extends CarteTopo {
   }
 
   /**
-   * Map used to mark nodes as belonging to the boundary or not.
-   */
-  private HashMap<Noeud, Boolean> boundaryNodes = new HashMap<Noeud, Boolean>();
-  /**
-   * Map used to mark edges as belonging to the boundary or not.
-   */
-  private HashMap<Arc, Boolean> boundaryEdges = new HashMap<Arc, Boolean>();
-
-  /**
-   * Regularity Algorithm.
-   * 
-   * @param edge An edge of the triangulation
-   * @return True is the triangulation with edge removed is regular. False
-   *         otherwise
-   */
-  private boolean regular(Arc edge) {
-    // if longestArc is a boundary edge
-    if (this.boundaryEdges.get(edge)) {
-      Face face = (edge.getFaceDroite() == null) ? edge.getFaceGauche() : edge
-          .getFaceDroite();
-      if (face == null) {
-        System.out.println("ERROR : not regular anymore");
-        return false;
-      }
-      List<Noeud> nodes = face.noeuds();
-      nodes.remove(edge.getNoeudIni());
-      nodes.remove(edge.getNoeudFin());
-      Noeud n = nodes.get(0);
-      return (!this.boundaryNodes.get(n));
-    }
-    return false;
-  }
-
-  /**
-   * Remove the longest edge in the set if it is longer than the threshold and
-   * that the resulting triangulation is regular.
-   * 
-   * @param orderedEdgeSet an order set of edges.
-   * @param alpha the threshold
-   * @return true if the edge was removed, false otherwise
-   */
-  private boolean removeLongestEdge(TreeSet<Arc> orderedEdgeSet, double alpha) {
-    // the set is ordered so the longest is the first
-    Arc edge = orderedEdgeSet.iterator().next();
-    // remove it from the set
-    orderedEdgeSet.remove(edge);
-    double length = edge.getGeometrie().length();
-    if (length > alpha && this.regular(edge)) {
-      // get the face we have to remove
-      Face face = (edge.getFaceDroite() == null) ? edge.getFaceGauche() : edge
-          .getFaceDroite();
-      if (face != null) {
-        // remove the edge from the face
-        face.enleveArcDirect(edge);
-        face.enleveArcIndirect(edge);
-        // get the revealed node
-        List<Noeud> nodes = face.noeuds();
-        nodes.remove(edge.getNoeudIni());
-        nodes.remove(edge.getNoeudFin());
-        Noeud revealedNode = nodes.get(0);
-        // mark it as belonging to the boundary
-        this.boundaryNodes.put(revealedNode, Boolean.TRUE);
-        // get the revealed edges,
-        // i.e. the remaing edges of the triangle
-        List<Arc> revealedEdges = face.arcs();
-        // add them to the boundary
-        orderedEdgeSet.addAll(revealedEdges);
-        // mark the as belonging to the boundary
-        for (Arc arc : revealedEdges) {
-          this.boundaryEdges.put(arc, Boolean.TRUE);
-        }
-        // remove the triangle from the revealed edges
-        for (Arc arc : face.getArcsDirects()) {
-          arc.setFaceGauche(null);
-        }
-        for (Arc arc : face.getArcsIndirects()) {
-          arc.setFaceDroite(null);
-        }
-        // remove the triangle from the triangulation
-        this.getPopFaces().remove(face);
-      } else {
-        Triangulation.logger.error("NULL FACE");
-      }
-      // remove the edge from the triangulation
-      edge.setNoeudIni(null);
-      edge.setNoeudFin(null);
-      this.getPopArcs().remove(edge);
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Computes the characteristic shape of the triangulation. Warning. This does
-   * actually modify the triangulation by removing triangles and edges.
-   * <p>
-   * This algorithm implements the method described in "Efficient generation of
-   * simple polygons for characterizing the shape of a set of points in the
-   * plane", Matt Duckham, Lars Kulik, Mike Worboys, Antony Galton, 2008.
-   * 
-   * @param alpha the length threshold
-   * @return the characteristic shape of the triangulation
-   */
-  public GM_Polygon getCharacteristicShape(double alpha) {
-    // initilize the nodes as not belonging to the boundary
-    for (Noeud n : this.getPopNoeuds()) {
-      this.boundaryNodes.put(n, Boolean.FALSE);
-    }
-    // create a comparator to sort the boundary edges
-    Comparator<Arc> comparator = new Comparator<Arc>() {
-      public int compare(Arc o1, Arc o2) {
-        if (o1 == null || o2 == null) {
-          return 0;
-        }
-        double l1 = o1.getGeometrie().length();
-        double l2 = o2.getGeometrie().length();
-        return l1 > l2 ? 1 : l1 < l2 ? -1 : 0;
-      }
-
-      @Override
-      public boolean equals(Object obj) {
-        return this.equals(obj);
-      }
-    };
-    TreeSet<Arc> orderedEdgeSet = new TreeSet<Arc>(comparator);
-    // initialize the boundary edges and adding them to the set
-    for (Arc edge : this.getPopArcs()) {
-      // if the edge has no face either on the right or the left, it
-      // belongs to the boundary
-      if (edge.getFaceDroite() == null || edge.getFaceGauche() == null) {
-        orderedEdgeSet.add(edge);
-        this.boundaryEdges.put(edge, Boolean.TRUE);
-        this.boundaryNodes.put(edge.getNoeudIni(), Boolean.TRUE);
-        this.boundaryNodes.put(edge.getNoeudFin(), Boolean.TRUE);
-      } else {
-        this.boundaryEdges.put(edge, Boolean.FALSE);
-      }
-      if (edge.getFaceDroite() == null && edge.getFaceGauche() == null) {
-        Triangulation.logger.error("Edge without face " + edge);
-      }
-    }
-    if (Triangulation.logger.isDebugEnabled()) {
-      Triangulation.logger.debug("Running the alpha shape");
-    }
-    // while the list of boundary edges is not empty, try to remove the
-    // longest edge
-    while (!orderedEdgeSet.isEmpty()) {
-      this.removeLongestEdge(orderedEdgeSet, alpha);
-    }
-    if (Triangulation.logger.isDebugEnabled()) {
-      Triangulation.logger.debug("Alpha shape finished");
-    }
-    List<GM_LineString> list = new ArrayList<GM_LineString>();
-    // built the list of all boundary edges at the end of the process
-    for (Arc arc : this.getPopArcs()) {
-      if (arc.getFaceDroite() == null || arc.getFaceGauche() == null) {
-        list.add(arc.getGeometrie());
-      }
-    }
-    // cleaning up
-    this.boundaryEdges.clear();
-    this.boundaryNodes.clear();
-    // return the simple polygon formed by the union of boundary edges
-    return new GM_Polygon(Operateurs.union(list));
-  }
-
-  /**
    * Computes the characteristic shape of the triangulation created using the
    * points of the input feature collection.
    * <p>
@@ -587,8 +366,8 @@ public class Triangulation extends CarteTopo {
    */
   public static GM_Polygon getCharacteristicShape(
       Collection<? extends FT_Feature> featureCollection, double alpha) {
-    if (Triangulation.logger.isDebugEnabled()) {
-      Triangulation.logger.debug("Creating the triangulation");
+    if (CarteTopo.logger.isDebugEnabled()) {
+        CarteTopo.logger.debug("Creating the triangulation");
     }
     Triangulation t = new Triangulation("Triangulation");
     t.importAsNodes(featureCollection);
@@ -597,8 +376,8 @@ public class Triangulation extends CarteTopo {
     } catch (Exception exception) {
       exception.printStackTrace();
     }
-    if (Triangulation.logger.isDebugEnabled()) {
-      Triangulation.logger.debug("Creation of the triangulation finished");
+    if (CarteTopo.logger.isDebugEnabled()) {
+        CarteTopo.logger.debug("Creation of the triangulation finished");
     }
     GM_Polygon shape = t.getCharacteristicShape(alpha);
     // cleaning up
