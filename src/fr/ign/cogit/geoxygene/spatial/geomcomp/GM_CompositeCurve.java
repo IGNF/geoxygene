@@ -187,7 +187,7 @@ public class GM_CompositeCurve extends GM_Composite {
    * L'orientation vaut +1.
    */
   public GM_CompositeCurve(GM_OrientableCurve oCurve) {
-    this.generator = new ArrayList<GM_OrientableCurve>();
+    this.generator = new ArrayList<GM_OrientableCurve>(1);
     this.generator.add(oCurve);
     this.primitive = new GM_Curve();
     this.simplifyPrimitive();
