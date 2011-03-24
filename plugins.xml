@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <GeOxygeneApplicationProperties>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.DataMatchingPlugin</plugin>
-    <plugin>fr.ign.cogit.geoxygene.appli.plugin.TriangulationPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.TriangulationJTSPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.CharacteristicShapeJTSPlugin</plugin>
+    <lastOpenedFile>D:\Users\JulienPerret\workspace\geoxygene-CLEAN</lastOpenedFile>
 </GeOxygeneApplicationProperties>
