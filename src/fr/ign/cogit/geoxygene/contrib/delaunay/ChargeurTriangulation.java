@@ -406,6 +406,16 @@ public class ChargeurTriangulation extends Chargeur {
           ChargeurTriangulation.logger.trace(I18N
               .getString("ChargeurTriangulation.ImportedCentroid") + p); //$NON-NLS-1$
         }
+      } else {
+          if (objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface<?>) {
+              GM_Point p = new GM_Point(objGeo.getGeom().centroid());
+              noeud = (NoeudDelaunay) carte.getPopNoeuds().nouvelElement(p);
+              noeud.addCorrespondant(objGeo);
+              if (ChargeurTriangulation.logger.isTraceEnabled()) {
+                ChargeurTriangulation.logger.trace(I18N
+                    .getString("ChargeurTriangulation.ImportedCentroid") + p); //$NON-NLS-1$
+              }
+            }
       }
     }
     if (ChargeurTriangulation.logger.isTraceEnabled()) {
