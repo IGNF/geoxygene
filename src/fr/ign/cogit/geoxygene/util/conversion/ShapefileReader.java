@@ -193,6 +193,8 @@ public class ShapefileReader implements Runnable {
     }
     try {
       SchemaDefaultFeature schemaDefaultFeature = new SchemaDefaultFeature();
+      schemaDefaultFeature.setNom(populationName);
+      schemaDefaultFeature.setNomSchema(populationName);
       /** Initialise le schéma */
       Reader reader = ShapefileReader.initSchema(shapefileName,
           schemaDefaultFeature, population, initSpatialIndex);
@@ -303,6 +305,7 @@ public class ShapefileReader implements Runnable {
     }
     /** créer un featuretype de jeu correspondant */
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+    newFeatureType.setTypeName(population.getNom());
     int nbFields = reader.getNbFields();
     Map<Integer, String[]> attLookup = new HashMap<Integer, String[]>();
     for (int i = 0; i < nbFields; i++) {
