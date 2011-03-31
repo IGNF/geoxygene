@@ -247,7 +247,7 @@ public class Stroke {
     this.strokeLineJoin = strokeLineJoin;
     synchronized (this.svgParameters) {
       for (SvgParameter parameter : this.svgParameters) {
-        if (parameter.getName().equalsIgnoreCase("strokeLineJoin")) { //$NON-NLS-1$
+        if (parameter.getName().equalsIgnoreCase("stroke-linejoin")) { //$NON-NLS-1$
           parameter.setValue(Integer.toString(strokeLineJoin));
         }
       }
@@ -287,7 +287,7 @@ public class Stroke {
     this.strokeLineCap = strokeLineCap;
     synchronized (this.svgParameters) {
       for (SvgParameter parameter : this.svgParameters) {
-        if (parameter.getName().equalsIgnoreCase("strokeLineCap")) { //$NON-NLS-1$
+        if (parameter.getName().equalsIgnoreCase("stroke-linecap")) { //$NON-NLS-1$
           parameter.setValue(Integer.toString(strokeLineCap));
         }
       }

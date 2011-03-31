@@ -19,6 +19,7 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -164,6 +165,15 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
       }
     }
     if (this.getStroke() != null) {
+      if (this.getStroke().getStrokeLineJoin() == BasicStroke.JOIN_MITER) {
+        this.getStroke().setStrokeLineCap(BasicStroke.CAP_SQUARE);
+      } else if (this.getStroke().getStrokeLineJoin() == BasicStroke.JOIN_BEVEL) {
+        this.getStroke().setStrokeLineCap(BasicStroke.CAP_BUTT);
+      } else if (this.getStroke().getStrokeLineJoin() == BasicStroke.JOIN_ROUND) {
+        this.getStroke().setStrokeLineCap(BasicStroke.CAP_ROUND);
+      } else {
+        logger.error("Stroke Line Join undefined."); //$NON-NLS-1$
+      }
       float strokeOpacity = this.getStroke().getStrokeOpacity();
       if (this.getStroke().getGraphicType() == null && strokeOpacity > 0f) {
         // Solid color
@@ -176,16 +186,18 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
             e.printStackTrace();
           }
         }
-        java.awt.Stroke bs = this.getStroke().toAwtStroke((float) scale);
+        
+        BasicStroke bs = (BasicStroke)this.getStroke().toAwtStroke((float) scale);
         graphics.setColor(color);
-        graphics.setStroke(bs);
         if (feature.getGeom().isPolygon()) {
-          this.drawPolygon((GM_Polygon) feature.getGeom(), viewport, graphics);
+          logger.info(((GM_Polygon)feature.getGeom()).coord());
+          this.drawPolygon((GM_Polygon) feature.getGeom(), viewport, graphics, bs);
         } else {
           if (feature.getGeom().isMultiSurface()) {
             for (GM_OrientableSurface surface : ((GM_MultiSurface<GM_OrientableSurface>) feature
                 .getGeom())) {
-              this.drawPolygon((GM_Polygon) surface, viewport, graphics);
+
+              this.drawPolygon((GM_Polygon) surface, viewport, graphics, bs);
             }
           }
         }
@@ -281,13 +293,13 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
   }
 
   private void drawPolygon(GM_Polygon polygon, Viewport viewport,
-      Graphics2D graphics) {
+      Graphics2D graphics, BasicStroke stroke) {
     if (polygon == null || viewport == null) {
       return;
     }
     List<Shape> shapes = new ArrayList<Shape>();
     try {
-      Shape shape = viewport.toShape(polygon.getExterior().coord());
+      Shape shape = viewport.toShape(polygon);
       if (shape != null) {
         shapes.add(shape);
       } else {
@@ -298,7 +310,7 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
         }
       }
       for (GM_Ring ring : polygon.getInterior()) {
-        shape = viewport.toShape(ring.coord());
+        shape = viewport.toShape(ring);
         if (shape != null) {
           shapes.add(shape);
         } else {
@@ -313,7 +325,10 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
       e.printStackTrace();
     }
     for (Shape shape : shapes) {
+      Shape outline = stroke.createStrokedShape(shape);
       graphics.draw(shape);
+      graphics.setColor(this.getStroke().getStroke());
+      graphics.fill(outline);
     }
   }
 }
