@@ -287,9 +287,7 @@ public class Viewport {
         return this.toShape((GM_LineString) geometry);
       }
       if (geometry instanceof GM_Ring) {
-          GM_Curve c = ((GM_Ring) geometry).getPrimitive();
-          GM_LineString ls = c.asLineString(0.0, 0.0, 0.0);
-          return this.toShape(ls);
+          return this.toShape(new GM_Polygon((GM_Ring) geometry));
         }
       if (geometry.isMultiCurve()) {
         return null;
