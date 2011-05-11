@@ -150,6 +150,20 @@ public class ColorReferenceSystem {
   }
 
   /**
+   * This method return a list of the slices of this ColorReferenceSystem.
+   * @return A list of the slices of this ColorReferenceSystem.
+   */
+  public List<ColorSlice> getSlices(){
+    List<ColorSlice> sliceList = new ArrayList<ColorSlice>();
+    for (ColorWheel wheel : this.getWheels()) {
+      for (ColorSlice colorSlice : wheel.getSlices()) {
+        sliceList.add(colorSlice);
+      }
+    }
+    return sliceList;
+  }
+  
+  /**
    * This method return a list of the colors of a slice.
    * @param saturationWheel Saturation level of the wheel of the slice.
    * @param hueSlice Hue of the slice.
@@ -236,6 +250,7 @@ public class ColorReferenceSystem {
         }
       }
     }
+    System.out.println(neighborColors);
     return neighborColors;
   }
 
