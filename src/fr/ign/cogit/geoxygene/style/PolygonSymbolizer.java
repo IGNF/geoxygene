@@ -190,13 +190,11 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
         BasicStroke bs = (BasicStroke)this.getStroke().toAwtStroke((float) scale);
         graphics.setColor(color);
         if (feature.getGeom().isPolygon()) {
-          logger.info(((GM_Polygon)feature.getGeom()).coord());
           this.drawPolygon((GM_Polygon) feature.getGeom(), viewport, graphics, bs);
         } else {
           if (feature.getGeom().isMultiSurface()) {
             for (GM_OrientableSurface surface : ((GM_MultiSurface<GM_OrientableSurface>) feature
                 .getGeom())) {
-
               this.drawPolygon((GM_Polygon) surface, viewport, graphics, bs);
             }
           }
@@ -299,7 +297,7 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
     }
     List<Shape> shapes = new ArrayList<Shape>();
     try {
-      Shape shape = viewport.toShape(polygon);
+      Shape shape = viewport.toShape(polygon.getExterior());
       if (shape != null) {
         shapes.add(shape);
       } else {

@@ -40,7 +40,9 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Curve;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
@@ -284,6 +286,11 @@ public class Viewport {
       if (geometry.isLineString()) {
         return this.toShape((GM_LineString) geometry);
       }
+      if (geometry instanceof GM_Ring) {
+          GM_Curve c = ((GM_Ring) geometry).getPrimitive();
+          GM_LineString ls = c.asLineString(0.0, 0.0, 0.0);
+          return this.toShape(ls);
+        }
       if (geometry.isMultiCurve()) {
         return null;
       }
