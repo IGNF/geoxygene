@@ -14,27 +14,29 @@ import fr.ign.cogit.geoxygene.contrib.clustering.minimalspanningtree.triangulati
 import fr.ign.cogit.geoxygene.contrib.clustering.minimalspanningtree.triangulationmodel.NodeSpecific;
 import fr.ign.cogit.geoxygene.contrib.clustering.minimalspanningtree.triangulationmodel.TriangulationModel;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
+import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.util.viewer.ObjectViewer;
 
-/** 
+/**
  * Class to create a Minimal Spanning Tree based on a Delaunay's triangulation.
  * 
  * @author Eric Grosso - IGN / Laboratoire COGIT
  */
 public class MinimalSpanningTreeTriangulation {
-	
+
 	/**
 	 * Logger
 	 */
-	private static final Logger logger = Logger.getLogger(MinimalSpanningTreeTriangulation.class);
+	private static final Logger logger = Logger
+			.getLogger(MinimalSpanningTreeTriangulation.class);
 
 	/**
 	 * Triangulation model.
 	 */
 	private TriangulationModel triangulationModel;
-	
+
 	/**
 	 * Returns the triangulation model.
 	 * 
@@ -43,7 +45,7 @@ public class MinimalSpanningTreeTriangulation {
 	public TriangulationModel getTriangulationModel() {
 		return this.triangulationModel;
 	}
-	
+
 	/**
 	 * Set a new triangulation model.
 	 * 
@@ -58,54 +60,60 @@ public class MinimalSpanningTreeTriangulation {
 	 */
 	public MinimalSpanningTreeTriangulation() {
 	}
-	
-	
-	/** 
+
+	/**
 	 * A Delaunay triangulation based method to create the minimal spanning tree
-	 * from a collection of points.
+	 * from a population of points.
 	 * 
-	 * @param populationPoints population of the points to cluster
-	 * @param threshold the maximum distance to link two nodes in the same cluster
+	 * @param populationPoints
+	 *            population of the points to cluster
+	 * @param threshold
+	 *            the maximum distance to link two nodes in the same cluster
 	 * @return the list of the computed clusters
 	 */
 	@SuppressWarnings("null")
-	public <F extends FT_Feature> List<Cluster> creationMST(Population<F> populationPoints, double threshold) {
-		
+	public <F extends FT_Feature> List<Cluster> creationMST(
+			Population<F> populationPoints, double threshold) {
+
 		this.triangulationModel = triangle(populationPoints);
-				
-		// computation of the square of the threshold to optimise the implementation the euclidian distance computation
+
+		// computation of the square of the threshold to optimise the
+		// implementation the euclidian distance computation
 		double thresholdSquare = threshold * threshold;
-		
+
 		List<Cluster> clusters = new ArrayList<Cluster>();
 		@SuppressWarnings("unchecked")
-		List<NodeSpecific> nodes = ((Population<NodeSpecific>)this.triangulationModel.getPopulation(I18N.getString("CarteTopo.Node"))).getElements(); //$NON-NLS-1$
-		
+		List<NodeSpecific> nodes = ((Population<NodeSpecific>) this.triangulationModel
+				.getPopulation(I18N.getString("CarteTopo.Node"))).getElements(); //$NON-NLS-1$
+
 		Cluster cluster = null;
 		List<NodeSpecific> adjacentNodes;
 		List<NodeSpecific> clusterNodes;
-		List<NodeSpecific> adjacentNodesCluster;		
+		List<NodeSpecific> adjacentNodesCluster;
 		double distance;
-		boolean flag; 
-		
-		for (NodeSpecific node:nodes) {
+		boolean flag;
+
+		for (NodeSpecific node : nodes) {
 			node.setClusterLinked(false);
 		}
-		
-		for (NodeSpecific node:nodes) {
-			
-			// if the node has already be fully tested, then process the next node
-			if (!node.isFullyTested()){
+
+		for (NodeSpecific node : nodes) {
+
+			// if the node has already be fully tested, then process the next
+			// node
+			if (!node.isFullyTested()) {
 				adjacentNodes = getAdjacentNodes(this.triangulationModel, node);
-				
+
 				flag = false;
 				// test with the closest neighbors
-				for(NodeSpecific adjacentNode:adjacentNodes) {
+				for (NodeSpecific adjacentNode : adjacentNodes) {
 					if (!adjacentNode.isFullyTested()) {
-						distance = distanceSquared(node,adjacentNode);
-						
-						if (distance < thresholdSquare){
+						distance = distanceSquared(node, adjacentNode);
 
-							if (!node.isClusterLinked()) { // creation of a new cluster
+						if (distance < thresholdSquare) {
+
+							if (!node.isClusterLinked()) { // creation of a new
+															// cluster
 								cluster = new Cluster();
 								clusters.add(cluster);
 								cluster.addNode(node);
@@ -119,24 +127,30 @@ public class MinimalSpanningTreeTriangulation {
 						}
 					}
 				} // end of the clusters creation if the node is not isolated
-				
+
 				if (flag) {
 					boolean creation = true;
-					
+
 					while (creation) {
 						creation = false;
 						clusterNodes = cluster.getNodes();
 						List<NodeSpecific> addedNodes = new ArrayList<NodeSpecific>();
-						
-						for (NodeSpecific nodeCluster:clusterNodes){
-							if(!nodeCluster.isFullyTested()){
-								adjacentNodesCluster = getAdjacentNodes(triangulationModel, nodeCluster);
-								
-								for(NodeSpecific adjacentNode:adjacentNodesCluster) {
-									if (!adjacentNode.isFullyTested()) {
-										distance = distanceSquared(nodeCluster,adjacentNode);
 
-										if (distance < thresholdSquare) { // creation of a new cluster
+						for (NodeSpecific nodeCluster : clusterNodes) {
+							if (!nodeCluster.isFullyTested()) {
+								adjacentNodesCluster = getAdjacentNodes(
+										triangulationModel, nodeCluster);
+
+								for (NodeSpecific adjacentNode : adjacentNodesCluster) {
+									if (!adjacentNode.isFullyTested()) {
+										distance = distanceSquared(nodeCluster,
+												adjacentNode);
+
+										if (distance < thresholdSquare) { // creation
+																			// of
+																			// a
+																			// new
+																			// cluster
 											addedNodes.add(adjacentNode);
 											adjacentNode.setClusterLinked(true);
 										}
@@ -145,7 +159,7 @@ public class MinimalSpanningTreeTriangulation {
 								nodeCluster.setFullyTested(true);
 							}
 						}
-						
+
 						if (addedNodes.size() != 0) {
 							cluster.addNodes(addedNodes);
 							creation = true;
@@ -160,94 +174,106 @@ public class MinimalSpanningTreeTriangulation {
 				}
 			}
 		}
-		
-		int k=0; 
-		for(Cluster group:clusters){
-			if(group.getNodes().size() == 1) {
+
+		int k = 0;
+		for (Cluster group : clusters) {
+			if (group.getNodes().size() == 1) {
 				k++;
 			}
 		}
-		
+
 		logger.info("--------------------------------------------------"); //$NON-NLS-1$
 		logger.info("Summary of the clustering:"); //$NON-NLS-1$
 		logger.info(" - " + clusters.size() + " clusters have been created,"); //$NON-NLS-1$ //$NON-NLS-2$
 		logger.info(" - " + k + " clusters contain a single node."); //$NON-NLS-1$ //$NON-NLS-2$
 		logger.info("--------------------------------------------------"); //$NON-NLS-1$
-		
+
 		return clusters;
 	}
 
 	/**
 	 * Display the triangulation model in a new {@link ObjectViewer}
 	 * 
-	 * @param triangulation the triangulation model to display
+	 * @param triangulation
+	 *            the triangulation model to display
 	 */
-	public static void display(TriangulationModel triangulation){
+	public static void display(TriangulationModel triangulation) {
 		ObjectViewer obj = new ObjectViewer();
 		obj.addFeatureCollection(triangulation.getPopFaces(), "Faces"); //$NON-NLS-1$
 		obj.addFeatureCollection(triangulation.getPopArcs(), "Edges"); //$NON-NLS-1$
 		obj.addFeatureCollection(triangulation.getPopNoeuds(), "Nodes"); //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * Display the triangulation model in the specified{@link ObjectViewer}.
 	 * 
-	 * @param triangulation the triangulation model to display
+	 * @param triangulation
+	 *            the triangulation model to display
 	 * @param viewer
 	 */
-	public static void display(TriangulationModel triangulation, ObjectViewer viewer){
+	public static void display(TriangulationModel triangulation,
+			ObjectViewer viewer) {
 		viewer.addFeatureCollection(triangulation.getPopFaces(), "Faces"); //$NON-NLS-1$
 		viewer.addFeatureCollection(triangulation.getPopArcs(), "Edges"); //$NON-NLS-1$
-		viewer.addFeatureCollection(triangulation.getPopNoeuds(), "Nodes");	 //$NON-NLS-1$
+		viewer.addFeatureCollection(triangulation.getPopNoeuds(), "Nodes"); //$NON-NLS-1$
 	}
 
-	
 	/**
- 	 * Computes the square of the euclidian distance between two nodes.
- 	 * 
- 	 * @param node first node
- 	 * @param node2 second node
+	 * Computes the square of the euclidian distance between two nodes.
+	 * 
+	 * @param node
+	 *            first node
+	 * @param node2
+	 *            second node
 	 */
 	private static double distanceSquared(Noeud node, Noeud node2) {
 		DirectPosition dp = node.getGeometrie().coord().get(0);
 		DirectPosition dp2 = node2.getGeometrie().coord().get(0);
-		
-		return (Math.pow(dp.getX()-dp2.getX(),2) + Math.pow(dp.getY()-dp2.getY(),2));
+
+		return (Math.pow(dp.getX() - dp2.getX(), 2) + Math.pow(dp.getY()
+				- dp2.getY(), 2));
 	}
-	
+
 	/**
-	 * Returns all the adjacent nodes in link with the considered node of the topological map.
+	 * Returns all the adjacent nodes in link with the considered node of the
+	 * topological map.
 	 * 
-	 * @param topoMap topological map
-	 * @param node node to compute
-	 * @return all the adjacent nodes in link with the considered node of the topological map
+	 * @param topoMap
+	 *            topological map
+	 * @param node
+	 *            node to compute
+	 * @return all the adjacent nodes in link with the considered node of the
+	 *         topological map
 	 */
-	private static List<NodeSpecific> getAdjacentNodes(CarteTopo topoMap, Noeud node) {
-		
+	private static List<NodeSpecific> getAdjacentNodes(CarteTopo topoMap,
+			Noeud node) {
+
 		List<NodeSpecific> adjacentNodes = new ArrayList<NodeSpecific>();
-		
+
 		// adjacent nodes based on the inner edges
-		for(Arc edge:node.getEntrants()) {
-			adjacentNodes.add((NodeSpecific)edge.getNoeudIni());
+		for (Arc edge : node.getEntrants()) {
+			adjacentNodes.add((NodeSpecific) edge.getNoeudIni());
 		}
-		
+
 		// adjacent nodes based on the outer edges
-		for(Arc edge:node.getSortants()) {
-			adjacentNodes.add((NodeSpecific)edge.getNoeudFin());
+		for (Arc edge : node.getSortants()) {
+			adjacentNodes.add((NodeSpecific) edge.getNoeudFin());
 		}
 
 		return adjacentNodes;
 	}
-	
+
 	/**
 	 * Computes the triangulation model in link to the input population.
 	 * 
-	 * @param population to triangulate
+	 * @param population
+	 *            to triangulate
 	 * @return the triangulation model in link to the input population
 	 */
-	private static <F extends FT_Feature> TriangulationModel triangle(Population<F> population){
-		TriangulationModel triangulation = new TriangulationModel("Triangulation model"); //$NON-NLS-1$
-		
+	private static <F extends FT_Feature> TriangulationModel triangle(
+			Population<F> population) {
+		TriangulationModel triangulation = new TriangulationModel(
+				"Triangulation model"); //$NON-NLS-1$
 		Chargeur.importClasseGeo(population, triangulation);
 
 		try {
@@ -256,6 +282,24 @@ public class MinimalSpanningTreeTriangulation {
 			e.printStackTrace();
 		}
 		return triangulation;
+	}
+
+	/**
+	 * A Delaunay triangulation based method to create the minimal spanning tree
+	 * from a collection of points.
+	 * 
+	 * @param collectionPoints
+	 *            population of the points to cluster
+	 * @param threshold
+	 *            the maximum distance to link two nodes in the same cluster
+	 * @return the list of the computed clusters
+	 */
+	public <F extends FT_Feature> List<Cluster> creationMST(
+			FT_FeatureCollection<F> collectionPoints, double threshold) {
+		Population<F> populationPoints = new Population<F>();
+		populationPoints.addUniqueCollection(collectionPoints);
+		List<Cluster> clusters = creationMST(populationPoints, threshold);
+		return clusters;
 	}
 
 }
