@@ -10,9 +10,13 @@ import java.nio.channels.FileChannel;
 import javax.imageio.ImageIO;
 import javax.media.jai.PlanarImage;
 
+import org.apache.log4j.Logger;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.DataSourceException;
 import org.opengis.geometry.Envelope;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 
 /**
  * GeoTiff reader.
@@ -20,7 +24,13 @@ import org.opengis.geometry.Envelope;
  * 
  */
 public class GeoTiffReader {
-  public static BufferedImage loadGeoTiffImage(String fileName, double[][] range) {
+	/**
+	 * Logger.
+	 */
+	private static Logger logger = Logger.getLogger(GeoTiffReader.class
+			.getName());
+
+  public static BufferedImage loadGeoTiffImage(String fileName, double[][] range, CoordinateReferenceSystem[] crs) {
 
     // Get the file
     FileInputStream file = null;
@@ -41,10 +51,10 @@ public class GeoTiffReader {
     org.geotools.gce.geotiff.GeoTiffReader reader;
     try {
       // This function always allocates about 23Mb, both for 2Mb and 225Mb
-      System.out.println("Start reading " + fileName); //$NON-NLS-1$
+      logger.info("Start reading " + fileName); //$NON-NLS-1$
       ImageIO.setUseCache(false);
       reader = new org.geotools.gce.geotiff.GeoTiffReader(fc);
-      System.out.println("Done reading"); //$NON-NLS-1$
+      logger.info("Done reading"); //$NON-NLS-1$
     } catch (DataSourceException ex) {
       ex.printStackTrace();
       return null;
@@ -60,10 +70,6 @@ public class GeoTiffReader {
     }
     RenderedImage renderedImage = coverage.getRenderedImage();
     Envelope env = coverage.getEnvelope();
-    /*
-     * CoordinateReferenceSystem crs = coverage
-     * .getCoordinateReferenceSystem2D(); System.out.println(crs.toString());
-     */
 
     // Range
     range[0][0] = env.getMinimum(0);
@@ -71,8 +77,8 @@ public class GeoTiffReader {
     range[1][0] = env.getMinimum(1);
     range[1][1] = env.getMaximum(1);
 
-    // Get the coordinate system information
-    // parseCoordinateSystem(crs.toWKT(), coordSys);
+    crs[0] = coverage
+    .getCoordinateReferenceSystem2D();
 
     // Return image
     return PlanarImage.wrapRenderedImage(renderedImage).getAsBufferedImage();

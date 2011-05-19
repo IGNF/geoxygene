@@ -39,6 +39,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JSplitPane;
 
 import org.apache.log4j.Logger;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import fr.ign.cogit.geoxygene.appli.plugin.GeometryToolBar;
 import fr.ign.cogit.geoxygene.feature.DataSet;
@@ -233,7 +234,7 @@ public class ProjectFrame extends JInternalFrame implements
     String populationName = fileName.substring(fileName.lastIndexOf("/") + 1, //$NON-NLS-1$
         fileName.lastIndexOf(".")); //$NON-NLS-1$
     double[][] range = new double[2][2];
-    BufferedImage image = GeoTiffReader.loadGeoTiffImage(fileName, range);
+    BufferedImage image = GeoTiffReader.loadGeoTiffImage(fileName, range, new CoordinateReferenceSystem [1]);
     this.addImage(populationName, image, range);
     if (this.getLayers().size() == 1) {
       try {
