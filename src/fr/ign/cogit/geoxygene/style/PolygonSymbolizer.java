@@ -325,7 +325,8 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
     for (Shape shape : shapes) {
       Shape outline = stroke.createStrokedShape(shape);
       graphics.draw(shape);
-      graphics.setColor(this.getStroke().getStroke());
+      graphics.setColor(this.getStroke().getColor());
+
       graphics.fill(outline);
     }
   }
