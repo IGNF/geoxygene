@@ -14,8 +14,6 @@ import org.geotools.coverage.grid.GridCoverageFactory;
 import org.geotools.geometry.Envelope2D;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import fr.ign.cogit.geoxygene.appli.ProjectFrame;
-
 /**
  * GeoTiff writer.
  * 
@@ -45,9 +43,9 @@ public class GeoTiffWriter {
 		// create a coverage
 		GridCoverageFactory factory = CoverageFactoryFinder
 				.getGridCoverageFactory(null);
-		Envelope2D envelope = new Envelope2D(crs, range[0][0], range[0][1],
-				range[1][0], range[1][1]);
-		GridCoverage2D coverage = factory.create(null, image, envelope);
+        Envelope2D envelope = new Envelope2D(crs, range[0][0], range[1][0],
+                    range[0][1] - range[0][0], range[1][1] - range[1][0]);
+		GridCoverage2D coverage = factory.create("coverage", image, envelope); //$NON-NLS-1$
 
 		// Get the file
 		FileOutputStream fileName = null;
