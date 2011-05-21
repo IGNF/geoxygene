@@ -75,15 +75,13 @@ public class Viewport {
   /**
    * The layer view panels.
    */
-  private Collection<LayerViewPanel> layerViewPanels = new ArrayList<LayerViewPanel>();
-
+  private Collection<LayerViewPanel> layerViewPanels = new ArrayList<LayerViewPanel>(0);
   /**
    * @return The {@link LayerViewPanel} associated with the viewport
    */
   public final Collection<LayerViewPanel> getLayerViewPanels() {
     return this.layerViewPanels;
   }
-
   /**
    * Taille d'un pixel en m (la longueur d'un cote de pixel de l'ecran) utilise
    * pour le calcul de l'echelle courante de la vue. Elle est calculée à partir

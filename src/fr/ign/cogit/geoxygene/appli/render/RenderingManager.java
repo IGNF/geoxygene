@@ -149,6 +149,7 @@ public class RenderingManager {
           if (RenderingManager.getLogger().isTraceEnabled()) {
             RenderingManager.getLogger().trace("Deamon thread finished"); //$NON-NLS-1$
           }
+          //RenderingManager.this.getLayerViewPanel().superRepaint();
         }
       }
     };
@@ -315,7 +316,9 @@ public class RenderingManager {
   }
 
   public void repaint() {
-    RenderingManager.LOGGER.debug(this.getRenderers().size() + " renderers"); //$NON-NLS-1$
+    if (RenderingManager.LOGGER.isTraceEnabled()) {
+      RenderingManager.LOGGER.trace(this.getRenderers().size() + " renderers"); //$NON-NLS-1$
+    }
     // we check if there is still something being rendererd
     // the fastest way is to check for renderers in the queue
     if (!this.getRunnableQueue().isEmpty()) {
@@ -332,13 +335,31 @@ public class RenderingManager {
     if (this.selectionRenderer != null
         && (this.selectionRenderer.isRendering() || !this.selectionRenderer
             .isRendered())) {
-      RenderingManager.LOGGER.debug("Renderer " //$NON-NLS-1$
-          + this.selectionRenderer.isRendering() + " - " //$NON-NLS-1$
-          + this.selectionRenderer.isRendered());
+      if (RenderingManager.LOGGER.isTraceEnabled()) {
+        RenderingManager.LOGGER.trace("Renderer " //$NON-NLS-1$
+            + this.selectionRenderer.isRendering() + " - " //$NON-NLS-1$
+            + this.selectionRenderer.isRendered());
+      }
       return;
     }
-    RenderingManager.LOGGER.debug("Repaint"); //$NON-NLS-1$
+    if (RenderingManager.LOGGER.isTraceEnabled()) {
+      RenderingManager.LOGGER.trace("Repaint"); //$NON-NLS-1$
+    }
     // nothing is being rendered, we can actually repaint the panel
     RenderingManager.this.getLayerViewPanel().superRepaint();
+  }
+  public boolean isRendering() {
+    // we check if there is still something being rendererd
+    // the fastest way is to check for renderers in the queue
+    if (!this.getRunnableQueue().isEmpty()) {
+      return true;
+    }
+    // then we check if there is still a renderer working
+    for (Renderer r : this.getRenderers()) {
+      if (r.isRendering() || !r.isRendered()) {
+        return true;
+      }
+    }
+    return false;
   }
 }

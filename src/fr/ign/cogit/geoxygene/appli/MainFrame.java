@@ -374,14 +374,17 @@ public class MainFrame extends JFrame {
       public void actionPerformed(final ActionEvent e) {
         LayerViewPanel layerViewPanel = MainFrame.this
             .getSelectedProjectFrame().getLayerViewPanel();
-        System.out.println(layerViewPanel.getViewport()
-            .getEnvelopeInModelCoordinates());
 
-        double latitude = Double.parseDouble(JOptionPane
-            .showInputDialog("Latitude")); //$NON-NLS-1$
-        double longitude = Double.parseDouble(JOptionPane
-            .showInputDialog("Longitude")); //$NON-NLS-1$
-
+        String lat = JOptionPane.showInputDialog("Latitude"); //$NON-NLS-1$
+        if (lat == null) {
+          return;
+        }
+        double latitude = Double.parseDouble(lat);
+        String lon = JOptionPane.showInputDialog("Longitude"); //$NON-NLS-1$
+        if (lon == null) {
+          return;
+        }
+        double longitude = Double.parseDouble(lon);
         try {
           layerViewPanel.getViewport().center(
               new DirectPosition(latitude, longitude));

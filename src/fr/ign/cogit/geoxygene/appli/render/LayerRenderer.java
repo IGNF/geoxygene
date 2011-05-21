@@ -298,8 +298,10 @@ public class LayerRenderer implements Renderer {
           // ( used by isRendering() )
           LayerRenderer.this.setRendering(false);
           LayerRenderer.this.setRendered(true);
-          LayerRenderer.logger.debug("Renderer " //$NON-NLS-1$
-              + LayerRenderer.this.getLayer().getName() + " finished"); //$NON-NLS-1$
+          if (LayerRenderer.logger.isTraceEnabled()) {
+            LayerRenderer.logger.trace("Renderer " //$NON-NLS-1$
+                + LayerRenderer.this.getLayer().getName() + " finished"); //$NON-NLS-1$
+          }
           LayerRenderer.this.getLayerViewPanel().getRenderingManager()
               .repaint();
         }
@@ -326,7 +328,7 @@ public class LayerRenderer implements Renderer {
     if (!(this.layer.getActiveGroup() == null||this.layer.getActiveGroup().isEmpty())) {
       activeStyles = new ArrayList<Style>(0);
       for (Style style : this.layer.getStyles()) {
-        if (style.getGroup().equalsIgnoreCase(this.layer.getActiveGroup())) {
+        if (style.getGroup() == null || style.getGroup().equalsIgnoreCase(this.layer.getActiveGroup())) {
           activeStyles.add(style);
         }
       }

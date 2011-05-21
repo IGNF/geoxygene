@@ -389,7 +389,9 @@ public class SelectionRenderer implements Renderer {
           // ( used by isRendering() )
           SelectionRenderer.this.setRendering(false);
           SelectionRenderer.this.setRendered(true);
-          SelectionRenderer.logger.debug("Selection Renderer finished"); //$NON-NLS-1$
+          if (SelectionRenderer.logger.isTraceEnabled()) {
+            SelectionRenderer.logger.trace("Selection Renderer finished"); //$NON-NLS-1$
+          }
           SelectionRenderer.this.getLayerViewPanel().getRenderingManager()
               .repaint();
         }

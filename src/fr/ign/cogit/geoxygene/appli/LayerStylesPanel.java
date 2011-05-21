@@ -192,10 +192,12 @@ public class LayerStylesPanel extends JPanel {
 
   private void paintPolygon(PolygonSymbolizer symbolizer, Graphics2D g2,
       int currentColumn, int currentRow, int columnsWidth, int rowHeight) {
-    g2.setColor(symbolizer.getFill().getColor());
-    g2.fillRect(currentColumn * (columnsWidth + this.margin) + this.margin,
-        currentRow * (rowHeight + this.margin) + this.margin, columnsWidth,
-        rowHeight);
+    if (symbolizer.getFill() != null) {
+      g2.setColor(symbolizer.getFill().getColor());
+      g2.fillRect(currentColumn * (columnsWidth + this.margin) + this.margin,
+          currentRow * (rowHeight + this.margin) + this.margin, columnsWidth,
+          rowHeight);
+    }
     if (symbolizer.getStroke() != null) {
       g2.setColor(symbolizer.getStroke().getColor());
       g2.setStroke(symbolizer.getStroke().toAwtStroke());
