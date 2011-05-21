@@ -33,16 +33,21 @@ public class TriangulationJTS extends AbstractTriangulation {
             Polygon triangle = (Polygon) triangles.getGeometryN(i);
             this.getPopFaces().nouvelElement(AdapterFactory.toGM_Object(triangle));
         }
-        logger.info(this.getPopFaces().size() + " triangles créés");
+//        logger.info(this.getPopFaces().size() + " triangles créés");
         this.ajouteArcsEtNoeudsAuxFaces(true);
         if (this.getOptions().indexOf('v') != -1) {
           GeometryCollection diagram = (GeometryCollection) tb.getSubdivision().getVoronoiDiagram(geomFact);
           for (int i = 0; i < diagram.getNumGeometries(); i++) {
             Polygon cell = (Polygon) diagram.getGeometryN(i);
             this.getPopVoronoiFaces().nouvelElement(AdapterFactory.toGM_Object(cell));
-          }        
-          logger.info(this.getPopVoronoiFaces().size() + " cellules créés");
+          }
+//          logger.info(this.getPopVoronoiFaces().size() + " cellules créés");
           this.voronoiDiagram.ajouteArcsEtNoeudsAuxFaces(true);
         }
+    }
+    @Override
+    public void nettoyer() {
+      this.voronoiDiagram.nettoyer();
+      super.nettoyer();
     }
 }
