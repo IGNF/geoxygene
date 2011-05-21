@@ -72,7 +72,7 @@ public class Stroke {
   @XmlElements( {
       @XmlElement(name = "SvgParameter", type = SvgParameter.class),
       @XmlElement(name = "CssParameter", type = SvgParameter.class) })
-  private List<SvgParameter> svgParameters = new ArrayList<SvgParameter>();
+  private List<SvgParameter> svgParameters = new ArrayList<SvgParameter>(0);
 
   /**
    * Renvoie la valeur de l'attribut cssParameters.
@@ -92,6 +92,7 @@ public class Stroke {
   }
 
   private synchronized void updateValues() {
+//    this.setStrokeLineCap(BasicStroke.CAP_BUTT);
     synchronized (this.svgParameters) {
       for (SvgParameter parameter : this.svgParameters) {
         if (parameter.getName().equalsIgnoreCase("stroke")) { //$NON-NLS-1$

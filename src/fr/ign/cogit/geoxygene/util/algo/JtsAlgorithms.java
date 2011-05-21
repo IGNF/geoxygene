@@ -118,8 +118,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
     if ((distance == 0) && (geom instanceof GM_Point)) {
       return geom;
     }
+    Geometry jtsGeom = null;
     try {
-      Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
+      jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
       Geometry jtsBuffer = jtsGeom.buffer(distance);
       return JtsGeOxygene.makeGeOxygeneGeom(jtsBuffer);
     } catch (Exception e) {
@@ -130,6 +131,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
         JtsAlgorithms.logger
             .debug(I18N.getString("JtsAlgorithms.Geometry") + ((geom != null) ? geom.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
         JtsAlgorithms.logger.debug(e.getMessage());
+        JtsAlgorithms.logger.debug("Geometry JTS = " + jtsGeom);
       }
       e.printStackTrace();
       return null;

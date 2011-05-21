@@ -72,6 +72,14 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
   public void setFill(Fill fill) {
     this.fill = fill;
   }
+  @XmlElement(name = "ColorMap")
+  ColorMap colorMap = null;
+  public ColorMap getColorMap() {
+    return this.colorMap;
+  }
+  public void setColorMap(ColorMap colorMap) {
+    this.colorMap = colorMap;
+  }
 
   @SuppressWarnings("unchecked")
   @Override
@@ -125,6 +133,11 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
       fillColor = this.getFill().getColor();
       fillOpacity = this.getFill().getFillOpacity();
     }
+    if (this.getColorMap() != null && this.getColorMap().getInterpolate() != null) {
+      double value = ((Number) feature.getAttribute(this.getColorMap().getInterpolate().getLookupvalue())).doubleValue();
+      int rgb = this.getColorMap().getColor(value);
+      fillColor = new Color(rgb);
+    }
     if (fillColor != null && fillOpacity > 0f) {
       graphics.setColor(fillColor);
       List<Shape> shapes = new ArrayList<Shape>();
@@ -153,7 +166,7 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
         }
       }
       for (Shape shape : shapes) {
-        if (this.getFill().getGraphicFill() == null) {
+        if (this.getFill() == null || this.getFill().getGraphicFill() == null) {
           this.fillPolygon(shape, viewport, graphics);
         } else {
           List<Graphic> graphicList = this.getFill().getGraphicFill()
@@ -295,7 +308,7 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
     if (polygon == null || viewport == null) {
       return;
     }
-    List<Shape> shapes = new ArrayList<Shape>();
+    List<Shape> shapes = new ArrayList<Shape>(0);
     try {
       Shape shape = viewport.toShape(polygon.getExterior());
       if (shape != null) {

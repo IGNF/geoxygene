@@ -41,7 +41,7 @@ import org.apache.log4j.Logger;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractSymbolizer implements Symbolizer {
-  static Logger logger = Logger.getLogger(AbstractSymbolizer.class.getName());
+  protected static Logger logger = Logger.getLogger(AbstractSymbolizer.class.getName());
 
   @XmlElement(name = "Stroke")
   private Stroke stroke = null;

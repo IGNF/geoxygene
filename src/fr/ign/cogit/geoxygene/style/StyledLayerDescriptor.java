@@ -48,6 +48,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
@@ -57,6 +58,10 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorReferenceSystem;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
+import fr.ign.cogit.geoxygene.style.thematic.DiagramRadius;
+import fr.ign.cogit.geoxygene.style.thematic.DiagramSymbolizer;
+import fr.ign.cogit.geoxygene.style.thematic.ThematicClass;
+import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
 
 /**
  * Descripteur de couches stylisées. Implémente la norme OGC 02-070 sur les
@@ -96,7 +101,7 @@ public class StyledLayerDescriptor {
 
   @XmlElements( { @XmlElement(name = "NamedLayer", type = NamedLayer.class),
       @XmlElement(name = "UserLayer", type = UserLayer.class) })
-  private List<Layer> layers = new ArrayList<Layer>();
+  private List<Layer> layers = new ArrayList<Layer>(0);
 
   public List<Layer> getLayers() {
     return this.layers;
@@ -246,8 +251,23 @@ public class StyledLayerDescriptor {
   }
 
   public static void main(String[] args) {
-    StyledLayerDescriptor sld = StyledLayerDescriptor
-        .unmarshall("geopensimSLD.xml"); //$NON-NLS-1$
+    StyledLayerDescriptor sld = new StyledLayerDescriptor();
+    Layer layer = sld.createLayerRandomColor("Test", GM_Polygon.class);
+    ThematicSymbolizer s = new ThematicSymbolizer();
+    DiagramSymbolizer d = new DiagramSymbolizer();
+    DiagramRadius r = new DiagramRadius();
+    r.setValue(15.0);
+    d.getDiagramSize().add(r);
+    d.setDiagramType("piechart");
+    ThematicClass t = new ThematicClass();
+    t.setClassLabel("sold");
+    t.setClassValue(new PropertyName("sold"));
+    t.setFill(new Fill());
+    t.getFill().setFill(Color.blue);
+    d.getThematicClass().add(t);
+    s.getSymbolizers().add(d);
+    layer.getStyles().get(0).getFeatureTypeStyles().get(0).getRules().get(0).getSymbolizers().add(s);
+    sld.add(layer);
     System.out.println(sld);
   }
 
@@ -418,35 +438,38 @@ public class StyledLayerDescriptor {
       Class<? extends GM_Object> geometryType) {
 
     // Selection of suitables colors from the COGIT reference colors.
+//      ColorReferenceSystem crs = ColorReferenceSystem
+//          .unmarshall(ColorReferenceSystem.class.getResource(
+//              "/ColorReferenceSystem.xml").getFile());
     ColorReferenceSystem crs = ColorReferenceSystem
         .unmarshall(ColorReferenceSystem.class.getResource(
             "/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
 
-    List<ColorimetricColor> colors = new ArrayList<ColorimetricColor>();
-    for (int i = 0; i < 12; i++) {
-      for (ColorimetricColor c : crs.getSlice(0, i)) {
-        if (c.getLightness() != 1) {
-          colors.add(c);
+      List<ColorimetricColor> colors = new ArrayList<ColorimetricColor>(0);
+      for (int i = 0; i < 12; i++) {
+        for (ColorimetricColor c : crs.getSlice(0, i)) {
+          if (c.getLightness() != 1) {
+            colors.add(c);
+          }
         }
       }
-    }
-    for (int i = 0; i < 7; i++) {
-      for (ColorimetricColor c : crs.getSlice(1, i)) {
-        if (c.getLightness() != 1) {
-          colors.add(c);
+      for (int i = 0; i < 7; i++) {
+        for (ColorimetricColor c : crs.getSlice(1, i)) {
+          if (c.getLightness() != 1) {
+            colors.add(c);
+          }
         }
       }
-    }
 
-    // The color will differ from the colors of the existing layers.
-    List<Integer> randoms = new ArrayList<Integer>();
-    randoms.add((int) (colors.size() * Math.random()));
-    while (this.existColor(colors.get(randoms.size() - 1))) {
+      // The color will differ from the colors of the existing layers.
+      List<Integer> randoms = new ArrayList<Integer>(0);
       randoms.add((int) (colors.size() * Math.random()));
-    }
+      while (this.existColor(colors.get(randoms.size() - 1))) {
+        randoms.add((int) (colors.size() * Math.random()));
+      }
 
-    return this.createLayer(layerName, geometryType, colors.get(
-        randoms.get(randoms.size() - 1)).toColor());
+      return this.createLayer(layerName, geometryType, colors.get(
+          randoms.get(randoms.size() - 1)).toColor());
   }
 
   /**
@@ -561,6 +584,8 @@ public class StyledLayerDescriptor {
       Color strokeColor, Color fillColor, float strokeOpacity,
       float fillOpacity, float strokeWidth) {
     Rule rule = new Rule();
+    rule.setLegendGraphic(new LegendGraphic());
+    rule.getLegendGraphic().setGraphic(new Graphic());
     Stroke stroke = new Stroke();
     stroke.setStroke(strokeColor);
     stroke.setStrokeOpacity(strokeOpacity);

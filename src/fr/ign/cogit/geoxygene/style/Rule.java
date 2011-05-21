@@ -51,14 +51,15 @@ import fr.ign.cogit.geoxygene.filter.PropertyIsGreaterThanOrEqualTo;
 import fr.ign.cogit.geoxygene.filter.PropertyIsLessThan;
 import fr.ign.cogit.geoxygene.filter.PropertyIsLessThanOrEqualTo;
 import fr.ign.cogit.geoxygene.filter.PropertyIsNotEqualTo;
+import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
 
 /**
  * @author Julien Perret
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "name", "description",
-    // "legendGraphic",
+@XmlType(name = "", propOrder = { "name", "title", "description",
+    "legendGraphic",
     "filter", "elseFilter", "minScaleDenominator", "maxScaleDenominator",
     "symbolizers" })
 @XmlRootElement(name = "Rule")
@@ -68,15 +69,20 @@ public class Rule {
   protected String name;
   @XmlElement(name = "Description")
   protected String description;
-  // @XmlElement(name = "LegendGraphic")
-  // protected LegendGraphic legendGraphic;
+  @XmlElement(name = "LegendGraphic")
+  protected LegendGraphic legendGraphic = null;
+  public LegendGraphic getLegendGraphic() {
+    return this.legendGraphic;
+  }
+  public void setLegendGraphic(LegendGraphic legendGraphic) {
+    this.legendGraphic = legendGraphic;
+  }
+
   // protected FilterType filter;
   @XmlElement(name = "MinScaleDenominator")
   protected Double minScaleDenominator;
   @XmlElement(name = "MaxScaleDenominator")
   protected Double maxScaleDenominator;
-
-  // private String name;
 
   /**
    * Renvoie la valeur de l'attribut name.
@@ -102,9 +108,14 @@ public class Rule {
     this.description = d;
   }
 
-  // private String title;
-  // public String getTitle() {return this.title;}
-  // public void setTitle(String title) {this.title = title;}
+  @XmlElement(name = "Title")
+  private String title;
+  public String getTitle() {
+    return this.title;
+  }
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
   @XmlElements( {
       @XmlElement(name = "PropertyIsEqualTo", type = PropertyIsEqualTo.class),
@@ -154,9 +165,9 @@ public class Rule {
       @XmlElement(name = "PointSymbolizer", type = PointSymbolizer.class),
       @XmlElement(name = "PolygonSymbolizer", type = PolygonSymbolizer.class),
       @XmlElement(name = "RasterSymbolizer", type = RasterSymbolizer.class),
-      @XmlElement(name = "TextSymbolizer", type = TextSymbolizer.class) })
-  private List<Symbolizer> symbolizers = new ArrayList<Symbolizer>();
-
+      @XmlElement(name = "TextSymbolizer", type = TextSymbolizer.class),
+      @XmlElement(name = "ThematicSymbolizer", type = ThematicSymbolizer.class)})
+  private List<Symbolizer> symbolizers = new ArrayList<Symbolizer>(0);
   /**
    * Renvoie la valeur de l'attribut symbolizers.
    * @return la valeur de l'attribut symbolizers

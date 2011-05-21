@@ -34,6 +34,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.DocumentLoader;
@@ -49,8 +53,9 @@ import org.w3c.dom.svg.SVGDocument;
  * @author Julien Perret
  * 
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ExternalGraphic {
-
+  @XmlElement(name = "href")
   private String href;
 
   /**
@@ -69,6 +74,7 @@ public class ExternalGraphic {
     this.href = href;
   }
 
+  @XmlElement(name = "Format")
   private String format;
 
   /**
@@ -87,6 +93,7 @@ public class ExternalGraphic {
     this.format = format;
   }
 
+  @XmlTransient
   private Image onlineResource = null;
 
   /**
@@ -96,7 +103,11 @@ public class ExternalGraphic {
   public Image getOnlineResource() {
     if (this.onlineResource == null) {
       try {
-        this.onlineResource = ImageIO.read(new URL(this.href));
+        URL url = ExternalGraphic.class.getResource(this.href);
+        if (url == null) {
+          url = new URL(this.href);
+        }
+        this.onlineResource = ImageIO.read(url);
       } catch (IOException e) {
         e.printStackTrace();
       } catch (Exception e) {

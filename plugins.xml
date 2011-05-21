@@ -3,5 +3,5 @@
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.DataMatchingPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.TriangulationJTSPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.CharacteristicShapeJTSPlugin</plugin>
-    <lastOpenedFile>D:\Users\JulienPerret\workspace\geoxygene-CLEAN</lastOpenedFile>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.VoronoiDiagramJTSPlugin</plugin>
 </GeOxygeneApplicationProperties>

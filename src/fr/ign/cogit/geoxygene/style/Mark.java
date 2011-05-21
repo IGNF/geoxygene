@@ -30,6 +30,7 @@ package fr.ign.cogit.geoxygene.style;
 
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -157,6 +158,7 @@ public class Mark {
       0.5f }, new float[] { 0.1f, -0.1f, -0.1f, 0.1f }, 4);
   private static Shape vLine = new Polygon2D(new float[] { 0.1f, -0.1f, -0.1f,
       0.1f }, new float[] { -0.5f, -0.5f, 0.5f, 0.5f }, 4);
+  private static Shape minus = new Line2D.Float(-0.5f, 0.0f, 0.5f, 0.0f);
 
   /**
    * @return the AWT shape used to draw this Mark
@@ -186,6 +188,9 @@ public class Mark {
     }
     if (this.wellKnownName.equalsIgnoreCase("vLine")) {//$NON-NLS-1$
       return Mark.vLine; 
+    }
+    if (this.wellKnownName.equalsIgnoreCase("-")) {//$NON-NLS-1$
+      return Mark.minus; 
     }
     return null;
   }

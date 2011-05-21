@@ -21,41 +21,39 @@ package fr.ign.cogit.geoxygene.style;
 import java.awt.Color;
 
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ColorMap {
+  @XmlElement(name = "PropertyName")
   String propertyName = null;
-
   @Transient
   public String getPropertyName() {
     return this.propertyName;
   }
-
   public void setPropertyName(String propertyName) {
     this.propertyName = propertyName;
   }
-
-  Interpolate interpolate = null;
-
   @XmlElement(name = "Interpolate")
+  Interpolate interpolate = null;
   public Interpolate getInterpolate() {
     return this.interpolate;
   }
-
   public void setInterpolate(Interpolate interpolate) {
     this.interpolate = interpolate;
   }
-
   public int getColor(double value) {
     if (this.interpolate != null) {
       InterpolationPoint previous = null;
       for (InterpolationPoint point : this.interpolate.getInterpolationPoint()) {
         if (value <= point.getData()) {
           if (previous == null) {
-            return point.getValue().getRGB();
+            return point.getColor().getRGB();
           }
           return this.interpolateColor(value, previous.getData(),
-              previous.getValue(), point.getData(), point.getValue()).getRGB();
+              previous.getColor(), point.getData(), point.getColor()).getRGB();
         }
         previous = point;
       }
