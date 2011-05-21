@@ -30,6 +30,7 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -41,6 +42,8 @@ import javax.swing.JPanel;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.appli.event.CompassPaintListener;
+import fr.ign.cogit.geoxygene.appli.event.LegendPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.PaintListener;
 import fr.ign.cogit.geoxygene.appli.event.ScalePaintListener;
 import fr.ign.cogit.geoxygene.appli.mode.AbstractGeometryEditMode;
@@ -75,13 +78,12 @@ public class LayerViewPanel extends JPanel implements Printable {
    */
   private static final long serialVersionUID = 1L;
 
-  List<PaintListener> overlayListeners = new ArrayList<PaintListener>();
+  protected Set<PaintListener> overlayListeners = new HashSet<PaintListener>(0);
 
   public void addPaintListener(PaintListener listener) {
     this.overlayListeners.add(listener);
   }
-
-  private void paintOverlays(final Graphics graphics) {
+  public void paintOverlays(final Graphics graphics) {
     for (PaintListener listener : this.overlayListeners) {
       listener.paint(this, graphics);
     }
@@ -118,7 +120,7 @@ public class LayerViewPanel extends JPanel implements Printable {
   /**
    * Private selected features. Use getter and setter.
    */
-  private Set<FT_Feature> selectedFeatures = new HashSet<FT_Feature>();
+  private Set<FT_Feature> selectedFeatures = new HashSet<FT_Feature>(0);
 
   /**
    * The viewport of the panel.
@@ -143,8 +145,11 @@ public class LayerViewPanel extends JPanel implements Printable {
     this.projectFrame = frame;
     this.viewport = new Viewport(this);
     this.addPaintListener(new ScalePaintListener());
+    this.addPaintListener(new CompassPaintListener());
+    this.addPaintListener(new LegendPaintListener());
     this.setDoubleBuffered(true);
     this.setOpaque(true);
+    this.setBackground(Color.WHITE);
   }
 
   @Override
@@ -161,12 +166,14 @@ public class LayerViewPanel extends JPanel implements Printable {
    * @see #paintComponent(Graphics)
    */
   public final void superRepaint() {
+//    logger.info("superRepaint");
     super.repaint();
   }
 
   @Override
   public final void paintComponent(final Graphics g) {
     try {
+      logger.trace("paintComponent");
       ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
           RenderingHints.VALUE_ANTIALIAS_ON);
       // super.paintComponent(g);
@@ -178,8 +185,31 @@ public class LayerViewPanel extends JPanel implements Printable {
       // if currently editing geometry
       this.paintGeometryEdition(g);
       this.paintOverlays(g);
+
+      if (this.recording) {
+        logger.trace("record");
+        Color bg = this.getBackground();
+        BufferedImage image = new BufferedImage(this.getWidth(), this.getHeight(),
+            BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics = image.createGraphics();
+        graphics.setColor(bg);
+        graphics.fillRect(0, 0, this.getWidth(), this.getHeight());
+        this.getRenderingManager().copyTo(graphics);
+        this.recording = false;
+//        this.paintOverlays(graphics);
+        graphics.dispose();
+        try {
+          NumberFormat format = NumberFormat.getInstance();
+          format.setMinimumIntegerDigits(3);
+          ImgUtil.saveImage(image, this.recordFileName + format.format(this.recordIndex) + ".png");
+          this.recordIndex++;
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      }
     } catch (Throwable t) {
       LayerViewPanel.logger.error(I18N.getString("LayerViewPanel.PaintError")); //$NON-NLS-1$
+      t.printStackTrace();
       // TODO HANDLE EXCEPTIONS
     }
   }
@@ -319,6 +349,7 @@ public class LayerViewPanel extends JPanel implements Printable {
     graphics.setColor(bg);
     graphics.fillRect(0, 0, this.getWidth(), this.getHeight());
     this.getRenderingManager().copyTo(graphics);
+    this.paintOverlays(graphics);
     graphics.dispose();
     try {
       ImgUtil.saveImage(image, fileName);
@@ -326,4 +357,20 @@ public class LayerViewPanel extends JPanel implements Printable {
       e1.printStackTrace();
     }
   }
+  private boolean recording = false;
+  public boolean isRecording() {
+    return this.recording;
+  }
+  public void setRecord(boolean b) {
+    this.recording = b;
+  }
+  private String recordFileName = ""; //$NON-NLS-1$
+  public String getRecordFileName() {
+    return this.recordFileName;
+  }
+  public void setRecordFileName(String recordFileName) {
+    this.recordFileName = recordFileName;
+    this.recordIndex = 0;
+  }
+  private int recordIndex = 0;
 }
