@@ -333,13 +333,10 @@ public class DirectPosition {
   public double distance(DirectPosition d) {
     double dx = this.getX() - d.getX();
     double dy = this.getY() - d.getY();
-
     if (!Double.isNaN(this.getZ()) && !Double.isNaN(d.getZ())) {
-
       double dz = this.getZ() - d.getZ();
       return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
-
     return Math.sqrt(dx * dx + dy * dy);
   }
 

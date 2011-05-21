@@ -28,6 +28,8 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 // import operateur.OpDirectPosition;
@@ -170,6 +172,12 @@ public class GM_LineString extends GM_CurveSegment {
   @Override
   public Object clone() {
     return new GM_LineString((DirectPositionList) this.controlPoint.clone());
+  }
+  @Override
+  public GM_LineString getNegative() {
+    List<DirectPosition> list = new ArrayList<DirectPosition>(this.controlPoint.getList());
+    Collections.reverse(list);
+    return new GM_LineString(new DirectPositionList(list));
   }
 
   @Override

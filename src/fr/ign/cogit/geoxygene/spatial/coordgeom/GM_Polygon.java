@@ -62,7 +62,7 @@ public class GM_Polygon extends GM_SurfacePatch {
   // ////////////////////////////////////////////////////////////////////////////////////////////
 
   /** Anneau exterieur. */
-  protected GM_Ring exterior;
+  protected GM_Ring exterior = null;
 
   /** Renvoie l'anneau exterieur */
   public GM_Ring getExterior() {
@@ -87,7 +87,7 @@ public class GM_Polygon extends GM_SurfacePatch {
   }
 
   /** Anneau(x) interieur(s) en cas de trou(s) : liste de GM_Ring */
-  protected List<GM_Ring> interior = new ArrayList<GM_Ring>();
+  protected List<GM_Ring> interior = new ArrayList<GM_Ring>(0);
 
   /** Renvoie la liste des anneaux interieurs */
   public List<GM_Ring> getInterior() {

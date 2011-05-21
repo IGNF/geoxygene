@@ -803,6 +803,17 @@ public abstract class FT_Feature implements Cloneable {
       // return null;
     }
     AttributeType attribute = ft.getFeatureAttributeByName(nomAttribut);
+    if (attribute == null) {
+      AttributeType type = new AttributeType();
+      type.setNomField(nomAttribut);
+      type.setMemberName(nomAttribut);
+      // FIXME c'est un peu une bidouille
+      return this.getAttribute(type);
+      // logger.error("Le FeatureType correspondant à ce FT_Feature est
+      // introuvable: Impossible de remonter au AttributeType à partir de
+      // son nom.");
+      // return null;
+    }
     return (this.getAttribute(attribute));
   }
 

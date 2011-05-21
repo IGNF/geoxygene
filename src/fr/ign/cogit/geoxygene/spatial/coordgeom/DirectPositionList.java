@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Liste de DirectPosition. On reprend les methodes standards de
@@ -49,7 +50,7 @@ import java.util.List;
 public class DirectPositionList implements Collection<DirectPosition> {
 
   /** La liste des DirectPosition. */
-  protected List<DirectPosition> list = new ArrayList<DirectPosition>();
+  protected List<DirectPosition> list = new ArrayList<DirectPosition>(0);
 
   /**
    * Affecte une liste à this. Attention, ne verifie pas que la liste passee en
@@ -215,12 +216,16 @@ public class DirectPositionList implements Collection<DirectPosition> {
       result = result + this.get(i).toString() + "\n"; //$NON-NLS-1$
     }
     return result.substring(0, result.length() - 1); // on enleve le dernier
-                                                     // "\n"
+    // "\n"
   }
 
   @Override
   public Iterator<DirectPosition> iterator() {
     return this.list.iterator();
+  }
+
+  public ListIterator<DirectPosition> listIterator() {
+    return this.list.listIterator();
   }
 
   @Override

@@ -94,5 +94,8 @@ public class FunctionImpl extends Function {
     }
     return this.getFallbackValue();
   }
-
+  @Override
+  public String toString() {
+    return this.getName();
+  }
 }

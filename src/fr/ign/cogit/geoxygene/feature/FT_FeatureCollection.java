@@ -331,13 +331,13 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
    */
   @Override
   public void clear() {
-    List<GM_Object> removedCollectionGeometry = new ArrayList<GM_Object>(0);
+//    List<GM_Object> removedCollectionGeometry = new ArrayList<GM_Object>(0);
     synchronized (this.elements) {
       for (Feat feature : this) {
         feature.getFeatureCollections().remove(this);
-        if (feature.getGeom() != null) {
-          removedCollectionGeometry.add(feature.getGeom());
-        }
+//        if (feature.getGeom() != null) {
+//          removedCollectionGeometry.add(feature.getGeom());
+//        }
       }
       this.elements.clear();
     }

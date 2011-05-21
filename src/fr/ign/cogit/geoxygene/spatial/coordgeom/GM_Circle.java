@@ -28,6 +28,8 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+
 /**
  * NON IMPLEMENTE.
  * 
@@ -37,4 +39,7 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
  */
 
 class GM_Circle extends GM_Arc {
+  public GM_Circle(GM_Point startPoint, GM_Point midPoint, GM_Point endPoint) {
+    super(startPoint, midPoint, endPoint);
+  }
 }
