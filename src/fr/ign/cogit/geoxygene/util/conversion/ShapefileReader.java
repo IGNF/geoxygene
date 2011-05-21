@@ -396,6 +396,7 @@ public class ShapefileReader implements Runnable {
           .getGeometryType();
       try {
         if (reader.geometries[indexFeature] == null) {
+          logger.error("null geometry for object " + indexFeature);
           ShapefileReader.logger.error(I18N.getString("ShapefileReader" + //$NON-NLS-1$
               ".NullGeometryObjectIGnored")); //$NON-NLS-1$
         } else {
@@ -432,6 +433,7 @@ public class ShapefileReader implements Runnable {
             + I18N.getString("ShapefileReader.ObjectIgnored")); //$NON-NLS-1$
       }
     }
+    logger.debug(population.size() + " features created for " + reader.getNbFeatures());
     ShapefileReader.fireActionPerformed(new ActionEvent(population, 2,
         "Finished", reader.getNbFeatures())); //$NON-NLS-1$
   }
@@ -515,6 +517,7 @@ class Reader {
     } catch (IOException e) {
       Reader.logger.error(I18N.getString("ShapefileReader.ErrorReadingFile") //$NON-NLS-1$
           + shapefileName);
+      e.printStackTrace();
       return;
     }
     try {
@@ -553,6 +556,7 @@ class Reader {
     for (int i = 0; i < this.nbFields; i++) {
       this.fieldNames[i] = dbaseFileReader.getHeader().getFieldName(i);
       this.fieldClasses[i] = dbaseFileReader.getHeader().getFieldClass(i);
+      logger.debug("field " + i + " = " + this.fieldNames[i]);
     }
     // FIXME gère le SRID
     // System.out.println("code = "
@@ -575,6 +579,7 @@ class Reader {
         try {
           this.geometries[indexFeatures] = (Geometry) record.shape();
         } catch (Exception e) {
+          //logger.error("Error for geometry of object " + entry[2]);
           this.geometries[indexFeatures] = null;
         }
         for (int index = 0; index < this.nbFields; index++) {
@@ -582,6 +587,7 @@ class Reader {
         }
         indexFeatures++;
       }
+      logger.debug("Stopped at index " + indexFeatures + " with " + shapefileReader.hasNext() + " and " + dbaseFileReader.hasNext());
       shapefileReader.close();
       dbaseFileReader.close();
       if (prjFileReader != null) {

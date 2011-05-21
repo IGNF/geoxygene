@@ -48,6 +48,7 @@ import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.type.GF_AttributeType;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 
 /**
  * Classe permettant d'écrire des shapefiles à partir d'une collection de
@@ -74,23 +75,21 @@ public class ShapefileWriter {
       return;
     }
     try {
-
       if (!shapefileName.contains(".shp")) {
-
         shapefileName = shapefileName + ".shp";
       }
       ShapefileDataStore store = new ShapefileDataStore(new File(shapefileName)
           .toURI().toURL());
       String specs = "geom:"; //$NON-NLS-1$
-      if (featureCollection.getFeatureType() != null) {
+      FeatureType featureType = featureCollection.getFeatureType();
+      if (featureType != null) {
         if (ShapefileWriter.logger.isDebugEnabled()) {
           ShapefileWriter.logger.debug("Using the collection's featureType");
         }
         specs += AdapterFactory.toJTSGeometryType(
-            featureCollection.getFeatureType().getGeometryType())
+            featureType.getGeometryType())
             .getSimpleName();
-        for (GF_AttributeType attributeType : featureCollection
-            .getFeatureType().getFeatureAttributes()) {
+        for (GF_AttributeType attributeType : featureType.getFeatureAttributes()) {
           specs += "," + attributeType.getMemberName() //$NON-NLS-1$
               + ":" //$NON-NLS-1$
               + ShapefileWriter.valueType2Class(attributeType.getValueType())
@@ -103,8 +102,8 @@ public class ShapefileWriter {
         specs += AdapterFactory.toJTSGeometryType(
             featureCollection.get(0).getGeom().getClass()).getSimpleName();
         if (featureCollection.get(0).getFeatureType() != null) {
-          for (GF_AttributeType attributeType : featureCollection.get(0)
-              .getFeatureType().getFeatureAttributes()) {
+          featureType = featureCollection.get(0).getFeatureType();
+          for (GF_AttributeType attributeType : featureType.getFeatureAttributes()) {
             specs += "," //$NON-NLS-1$
                 + attributeType.getMemberName()
                 + ":" //$NON-NLS-1$
@@ -128,11 +127,11 @@ public class ShapefileWriter {
       FeatureCollection collection = FeatureCollections.newCollection();
       int i = 1;
       for (Feature feature : featureCollection) {
-        List<Object> liste = new ArrayList<Object>();
+        List<Object> liste = new ArrayList<Object>(0);
         liste.add(AdapterFactory.toGeometry(new GeometryFactory(), feature
             .getGeom()));
-        if (feature.getFeatureType() != null) {
-          for (GF_AttributeType attributeType : feature.getFeatureType()
+        if (featureType != null) {
+          for (GF_AttributeType attributeType : featureType
               .getFeatureAttributes()) {
             liste.add(feature.getAttribute(attributeType.getMemberName()));
             if (ShapefileWriter.logger.isTraceEnabled()) {
@@ -191,6 +190,9 @@ public class ShapefileWriter {
     }
     if (valueType.equalsIgnoreCase("double")) { //$NON-NLS-1$
       return Double.class;
+    }
+    if (valueType.equalsIgnoreCase("float")) { //$NON-NLS-1$
+      return Float.class;
     }
     if (valueType.equalsIgnoreCase("long")) { //$NON-NLS-1$
       return Integer.class;
