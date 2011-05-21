@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Stack;
 
 import javax.swing.event.EventListenerList;
@@ -44,6 +45,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
@@ -244,12 +246,7 @@ public class CarteTopo extends DataSet {
             I18N.getString("CarteTopo.Group"), fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe.class, false)); //$NON-NLS-1$
     /** créer un featuretype pour les arcs */
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
-    AttributeType type = new AttributeType();
-    String memberName = "orientation";
-    String valueType = "Integer";
-    type.setNomField(memberName);
-    type.setMemberName(memberName);
-    type.setValueType(valueType);
+    AttributeType type = new AttributeType("orient", "orientation", "Integer");
     newFeatureType.addFeatureAttribute(type);
     /** création d'un schéma associé au featureType */
     newFeatureType.setGeometryType(GM_LineString.class);
@@ -813,9 +810,48 @@ public class CarteTopo extends DataSet {
    */
   public void filtreArcsDoublons() {
     List<Arc> arcs = this.getListeArcs();
-    List<Arc> arcsAEnlever = new ArrayList<Arc>();
+    List<Arc> arcsAEnlever = new ArrayList<Arc>(0);
     this.fireActionPerformed(new ActionEvent(this, 0, I18N
         .getString("CarteTopo.DoubleEdgesFiltering"), arcs.size() - 1)); //$NON-NLS-1$
+    // clean geometries
+    for (Arc arc : arcs) {
+      GM_LineString line  = arc.getGeometrie();
+      if (line.sizeControlPoint() == 2) {
+        continue;
+      }
+      DirectPositionList controlPoint = line.getControlPoint();
+      ListIterator<DirectPosition> iterator = controlPoint.listIterator();
+      DirectPosition previous = iterator.next();
+      int numberOfPointsRemoved = 0;
+      while (iterator.hasNext()) {
+        DirectPosition current = iterator.next();
+        if (current.distance(previous) < 0.01) {
+          logger.info(new GM_Point(current));
+          logger.info(new GM_Point(previous));
+          if (iterator.hasNext()) {
+            // this is not the last point
+            iterator.remove();
+          } else {
+            logger.info("last");
+            // go back and remove the point before
+            iterator.previous();
+            previous = iterator.previous();
+            current = iterator.next();
+            iterator.remove();
+          }
+          numberOfPointsRemoved++;
+          if (controlPoint.size() == 2) {
+            break;
+          }
+        } else {
+          previous = current;
+        }
+      }
+      if (numberOfPointsRemoved > 0) {
+        logger.info(numberOfPointsRemoved + " points removed");
+        logger.info(line);
+      }
+    }
     for (int i = 0; i < arcs.size() - 1; i++) {
       Arc arci = arcs.get(i);
       if (arcsAEnlever.contains(arci)) {
@@ -832,13 +868,16 @@ public class CarteTopo extends DataSet {
           continue;
         }
         if (!arcj.getGeom().equals(arci.getGeom())) {
-          continue;
+          double dist = Distances.hausdorff(arci.getGeometrie(), arcj.getGeometrie());
+          if (dist > 0.5) {
+            continue;
+          }
         }
         arcsAEnlever.add(arcj);
         for (FT_Feature corresp : arcj.getCorrespondants()) {
           arci.addCorrespondant(corresp);
         }
-        arcj.setCorrespondants(new ArrayList<FT_Feature>());
+        arcj.setCorrespondants(new ArrayList<FT_Feature>(0));
         arcj.setNoeudFin(null);
         arcj.setNoeudIni(null);
       }
@@ -891,12 +930,12 @@ public class CarteTopo extends DataSet {
    */
   @SuppressWarnings("unchecked")
   public void rendPlanaire(double tolerance) {
-    List<FT_Feature> dejaTraites = new ArrayList<FT_Feature>();
-    List<Arc> arcsEnleves = new ArrayList<Arc>();
     // si pas d'arc, c'est planaire
     if (this.getPopArcs().isEmpty()) {
       return;
     }
+    List<FT_Feature> dejaTraites = new ArrayList<FT_Feature>(0);
+    List<Arc> arcsEnleves = new ArrayList<Arc>(0);
     // initialisation de l'index des arcs au besoin
     if (!this.getPopArcs().hasSpatialIndex()) {
       this.getPopArcs().initSpatialIndex(Tiling.class, true);
@@ -906,9 +945,11 @@ public class CarteTopo extends DataSet {
     for (int indexArc = 0; indexArc < this.getPopArcs().size(); indexArc++) {
       Arc arc = this.getPopArcs().get(indexArc);
       if (CarteTopo.logger.isDebugEnabled()) {
+        CarteTopo.logger.debug(indexArc + " / " + (this.getPopArcs().size() - 1));
         CarteTopo.logger.debug(I18N.getString("CarteTopo.Handling") + arc); //$NON-NLS-1$
       }
       if (arcsEnleves.contains(arc) || dejaTraites.contains(arc)) {
+        // si on a déjà traité l'arc ou qu'on l'a déjà découpé, passer au suivant
         continue;
       }
       // les arcs qui croisent l'arc courant
@@ -917,7 +958,7 @@ public class CarteTopo extends DataSet {
       // on enlève l'arc courant et les arcs déjà enlevés
       selection.remove(arc);
       selection.removeAll(arcsEnleves);
-      List<Arc> listeInter = new ArrayList<Arc>();
+      List<Arc> listeInter = new ArrayList<Arc>(0);
       // On construit un multipoint contenant les extrémités de l'arc
       // courant
       GM_MultiPoint frontiereArc = new GM_MultiPoint();
@@ -927,6 +968,9 @@ public class CarteTopo extends DataSet {
       for (Arc arcSel : selection) {
         // On construit un multipoint contenant les extrémités de l'arc
         // de la sélection
+        if (CarteTopo.logger.isDebugEnabled()) {
+          CarteTopo.logger.debug("Treating selected edge " + arcSel); //$NON-NLS-1$
+        }
         GM_MultiPoint frontiereArcSel = new GM_MultiPoint();
         frontiereArcSel.add(new GM_Point(arcSel.getGeometrie().startPoint()));
         frontiereArcSel.add(new GM_Point(arcSel.getGeometrie().endPoint()));
@@ -945,14 +989,14 @@ public class CarteTopo extends DataSet {
          */
         // si l'intersection trouvée fait partie des extrémités des 2
         // arcs, alors on passe à l'arc suivant
-        if (frontiereArc.contains(intersection)
+        if ((!(intersection instanceof GM_Aggregate) || (intersection instanceof GM_MultiPoint)) && frontiereArc.contains(intersection)
             && frontiereArcSel.contains(intersection)) {
           continue;
         }
         // on a une intersection ailleurs que sur une extrémité
         listeInter.add(arcSel);
       }
-      if (listeInter.size() == 0) {
+      if (listeInter.isEmpty()) {
         this.fireActionPerformed(new ActionEvent(this, 1, I18N
             .getString("CarteTopo.EdgeHandled"), indexArc + 1)); //$NON-NLS-1$
         continue; // pas d'intersection avec cet arc
@@ -971,8 +1015,7 @@ public class CarteTopo extends DataSet {
       if (nodedLineStrings instanceof GM_LineString) {
         boolean toutesEgales = true;
         for (Arc arcSel : listeInter) {
-          toutesEgales = arcSel.getGeometrie().equals(nodedLineStrings)
-              && toutesEgales;
+          toutesEgales = toutesEgales && arcSel.getGeometrie().equals(nodedLineStrings);
         }
         if (toutesEgales) {
           if (CarteTopo.logger.isDebugEnabled()) {
@@ -1121,7 +1164,7 @@ public class CarteTopo extends DataSet {
    * @param tolerance tolérance en dessous de laquelle les noeuds sont fusionés
    */
   public void fusionNoeuds(double tolerance) {
-    List<Noeud> aEnlever = new ArrayList<Noeud>();
+    List<Noeud> aEnlever = new ArrayList<Noeud>(0);
     // initialisation de l'index spatial sur les arcs avec mise à jour
     // automatique
     if (!this.getPopArcs().hasSpatialIndex()) {
@@ -1155,7 +1198,7 @@ public class CarteTopo extends DataSet {
       for (Noeud noeudProche : noeudsProches) {
         // on associe le nouveau noeud aux correspondants du noeud
         nouveauNoeud.addAllCorrespondants(noeudProche.getCorrespondants());
-        noeudProche.setCorrespondants(new ArrayList<FT_Feature>());
+        noeudProche.setCorrespondants(new ArrayList<FT_Feature>(0));
         // on ajoute le noeud à la liste des noeuds à enlever
         if (!aEnlever.contains(noeudProche)) {
           aEnlever.add(noeudProche);
@@ -1176,7 +1219,7 @@ public class CarteTopo extends DataSet {
         }
         // On enlève les arcs qui n'ont plus lieu d'être
         // (tout petit autour du nouveau noeud)
-        List<Arc> listeArcsAEnlever = new ArrayList<Arc>();
+        List<Arc> listeArcsAEnlever = new ArrayList<Arc>(0);
         for (Arc arc : noeudProche.arcs()) {
           if (arc.getNoeudIni() == nouveauNoeud
               && arc.getNoeudFin() == nouveauNoeud) {
@@ -1184,7 +1227,7 @@ public class CarteTopo extends DataSet {
                 .getGeometrie()) <= tolerance)
                 || (arc.getGeometrie().length() < tolerance)) {
               nouveauNoeud.addAllCorrespondants(arc.getCorrespondants());
-              arc.setCorrespondants(new ArrayList<FT_Feature>());
+              arc.setCorrespondants(new ArrayList<FT_Feature>(0));
               arc.setNoeudIni(null);
               arc.setNoeudFin(null);
               if (!listeArcsAEnlever.contains(arc)) {
@@ -1203,7 +1246,7 @@ public class CarteTopo extends DataSet {
     if (!aEnlever.isEmpty() && !this.getPopNoeuds().removeAll(aEnlever)) {
       CarteTopo.logger.warn(I18N.getString("CarteTopo.RemovalFailed")); //$NON-NLS-1$
     }
-    List<Arc> listeArcsAEnlever = new ArrayList<Arc>();
+    List<Arc> listeArcsAEnlever = new ArrayList<Arc>(0);
     // suppression des arcs trop petits
     this.fireActionPerformed(new ActionEvent(this, 2, I18N
         .getString("CarteTopo.SmallEdgesDeletion"), this.getPopArcs().size())); //$NON-NLS-1$
@@ -1214,7 +1257,7 @@ public class CarteTopo extends DataSet {
             .getGeometrie()) <= tolerance)
             || (arc.getGeometrie().length() < tolerance)) {
           arc.getNoeudIni().addAllCorrespondants(arc.getCorrespondants());
-          arc.setCorrespondants(new ArrayList<FT_Feature>());
+          arc.setCorrespondants(new ArrayList<FT_Feature>(0));
           arc.setNoeudIni(null);
           arc.setNoeudFin(null);
           if (!listeArcsAEnlever.contains(arc)) {
@@ -1661,7 +1704,7 @@ public class CarteTopo extends DataSet {
       // on ajoute un trou à la géométrie de la face infinie
       if (cycle.getGeometrie().sizeControlPoint() > 3) {
         GM_Ring trou = new GM_Ring(cycle.getGeometrie());
-        if (!trou.coord().isEmpty()) {
+        if (!trou.coord().isEmpty() && trou.isValid()) {
           if (face.getGeometrie().getInterior().isEmpty()) {
             face.getGeometrie().addInterior(trou);
           } else {
@@ -1671,23 +1714,40 @@ public class CarteTopo extends DataSet {
             for (GM_Ring ring : face.getGeometrie().getInterior()) {
               trous.add(new GM_Polygon(ring));
             }
-            // suppression des trous existants
-            face.getGeometrie().getInterior().clear();
             // ajout du nouveau trou à la liste
             trous.add(polygonHole);
-            GM_Object union = JtsAlgorithms.union(trous);
-            if (union.isPolygon()) {
-              GM_Polygon polygon = (GM_Polygon) union;
-              face.getGeometrie().addInterior(polygon.getExterior());
-            } else {
-              if (union.isMultiSurface()) {
-                GM_MultiSurface<GM_Polygon> multipolygon = (GM_MultiSurface<GM_Polygon>) union;
-                for (GM_Polygon polygon : multipolygon) {
-                  face.getGeometrie().addInterior(polygon.getExterior());
-                }
-              } else {
-                CarteTopo.logger.error(union);
+            if (CarteTopo.logger.isDebugEnabled()) {
+              CarteTopo.logger.debug("Union de " + trous.size() + " trous");
+              for (GM_Polygon t : trous) {
+                CarteTopo.logger.debug("trou " + t);
               }
+            }
+            try {
+              GM_Object union = JtsAlgorithms.union(trous);
+              if (union.isPolygon()) {
+                GM_Polygon polygon = (GM_Polygon) union;
+                // suppression des trous existants
+                face.getGeometrie().getInterior().clear();
+                face.getGeometrie().addInterior(polygon.getExterior());
+              } else {
+                if (union.isMultiSurface()) {
+                  GM_MultiSurface<GM_Polygon> multipolygon = (GM_MultiSurface<GM_Polygon>) union;
+                  // suppression des trous existants
+                  face.getGeometrie().getInterior().clear();
+                  for (GM_Polygon polygon : multipolygon) {
+                    face.getGeometrie().addInterior(polygon.getExterior());
+                  }
+                } else {
+                  CarteTopo.logger.error(union);
+                }
+              }
+            } catch (Exception e) {
+              CarteTopo.logger.debug("Cycle " + cycle.getGeometrie());
+              CarteTopo.logger.debug(cycle.getArcs().size() + " arcs");
+              for (Arc arc : cycle.getArcs()) {
+                CarteTopo.logger.debug("arc " + arc);
+              }
+              CarteTopo.logger.debug("face " + face);
             }
           }
         }
@@ -2023,9 +2083,9 @@ public class CarteTopo extends DataSet {
       }
       arcsNonTraites.remove(arc);
       Collection<Arc> arcsProches = arcsNonTraites.select(arc.getGeometrie(), 0.1);
-//      logger.info("checking edge " + arc);
+      logger.trace("checking edge " + arc);
       for (Arc arc2 : arcsProches) {
-//        logger.info("\t with edge " + arc2);
+        logger.trace("\t with edge " + arc2);
         // if both edges are in the same direction
         if (arc2.getGeometrie().startPoint().equals2D(
             arc.getGeometrie().startPoint(), 0.1)
@@ -2035,7 +2095,7 @@ public class CarteTopo extends DataSet {
           arcsNonTraites.remove(arc2);
           if (arc2.getFaceDroite() != null) {
             Face face = arc2.getFaceDroite();
-//            logger.info("Changing edge associated with " + face);
+            logger.trace("Changing edge associated with " + face);
             arc.setFaceDroite(face);
             arc2.setFaceDroite(null);
             if (face.getArcsDirects().contains(arc2)) {
@@ -2047,7 +2107,7 @@ public class CarteTopo extends DataSet {
           }
           if (arc2.getFaceGauche() != null) {
             Face face = arc2.getFaceGauche();
-//            logger.info("Changing edge associated with " + face);
+            logger.trace("Changing edge associated with " + face);
             arc.setFaceGauche(face);
             arc2.setFaceGauche(null);
             if (face.getArcsIndirects().contains(arc2)) {
@@ -2057,7 +2117,7 @@ public class CarteTopo extends DataSet {
               logger.error("edge still in directedges");
             }
           }
-//          logger.info("same direction");
+          logger.trace("same direction");
         }
         // if both edges are in opposite directions
         if (arc2.getGeometrie().startPoint().equals2D(
@@ -2068,7 +2128,7 @@ public class CarteTopo extends DataSet {
           arcsNonTraites.remove(arc2);
           if (arc2.getFaceDroite() != null) {
             Face face = arc2.getFaceDroite();
-//            logger.info("Changing edge associated with " + face);
+            logger.trace("Changing edge associated with " + face);
             arc.setFaceGauche(face);
             arc2.setFaceDroite(null);
             if (face.getArcsDirects().contains(arc2)) {
@@ -2080,7 +2140,7 @@ public class CarteTopo extends DataSet {
           }
           if (arc2.getFaceGauche() != null) {
             Face face = arc2.getFaceGauche();
-//            logger.info("Changing edge associated with " + face);
+            logger.trace("Changing edge associated with " + face);
             arc.setFaceDroite(face);
             arc2.setFaceGauche(null);
             if (face.getArcsIndirects().contains(arc2)) {
@@ -2090,10 +2150,11 @@ public class CarteTopo extends DataSet {
               logger.error("edge still in directedges");
             }
           }
-//          logger.info("opposite directions");
+          logger.trace("opposite directions");
         }
       }
     }
+    arcsNonTraites.clear();
 //    logger.info(this.getPopArcs().size() + " edges");
 //    logger.info(arcsAEnlever.size() + " edges to remove");
     this.getPopArcs().removeAll(arcsAEnlever);
@@ -2108,10 +2169,15 @@ public class CarteTopo extends DataSet {
             logger.error("remaining " + list.size() +" edges in face " + face);
             for (Arc arc : list) {
                 logger.error(arc);
+                face.getArcsDirects().remove(arc);
+                face.getArcsIndirects().remove(arc);
             }
         }
     }
-    arcsNonTraites.clear();
+    arcsAEnlever.clear();
+    Runtime runtime = Runtime.getRuntime();
+    runtime.runFinalization();
+    runtime.gc();
     // ajout des noeuds et des relations topologiqes arc/noeud
     this.creeNoeudsManquants(0);
     // filtrage de tous les noeuds simples (degré=2)
@@ -2245,7 +2311,7 @@ public class CarteTopo extends DataSet {
   public void nettoyer() {
     for (Population<? extends FT_Feature> pop : this.getPopulations()) {
       for (FT_Feature f : pop) {
-        f.setCorrespondants(new ArrayList<FT_Feature>());
+        f.setCorrespondants(new ArrayList<FT_Feature>(0));
       }
     }
     for (Arc arc : this.getPopArcs()) {
@@ -2267,5 +2333,91 @@ public class CarteTopo extends DataSet {
     }
     this.emptyComposants();
     this.emptyPopulations();
+  }
+
+  public void decoupeArcs(double distance) {
+    List<Arc> edgesToRemove = new ArrayList<Arc>(0);
+    List<Arc> edgesToAdd = new ArrayList<Arc>(0);
+    for (Arc arc : this.getPopArcs()) {
+      Collection<Noeud> intersectedNodes = this.getPopNoeuds().select(arc.getGeometrie(), distance);
+      intersectedNodes.remove(arc.getNoeudIni());
+      intersectedNodes.remove(arc.getNoeudFin());
+      if (!intersectedNodes.isEmpty()) {
+        logger.error("Remaing " + intersectedNodes.size() + " nodes");
+        logger.error("edge " + arc.getGeometrie());
+        List<GM_LineString> lines = new ArrayList<GM_LineString>(0);
+        lines.add(arc.getGeometrie());
+        for (Noeud node : intersectedNodes) {
+          DirectPosition point = node.getGeometrie().getPosition();
+          // force the node to be 2d
+          point.setCoordinate(2, Double.NaN);
+          logger.error("node " + node.getGeometrie());
+          GM_LineString line = null;
+          double min = Double.POSITIVE_INFINITY;
+          for (GM_LineString l : lines) {
+            double d = l.distance(node.getGeometrie());
+            if (/*d < distance && */d < min) {
+              min = d;
+              line = l;
+            }
+          }
+          GM_LineString nodedLine = Operateurs.projectionEtInsertion(point, line);
+          DirectPosition projectNode = null;
+          min = Double.POSITIVE_INFINITY;
+          for (DirectPosition p : nodedLine.getControlPoint()) {
+            double d = p.distance(point);
+            if (d < min) {
+              min = d;
+              projectNode = p;
+            }
+          }
+          logger.error("projectNode = " + new GM_Point(projectNode));
+          projectNode.setCoordinate(point.getCoordinate());
+          logger.error("projectNode = " + new GM_Point(projectNode));
+          logger.error("nodedLine = " + nodedLine);
+          DirectPositionList list1 = new DirectPositionList();
+          DirectPositionList list2 = new DirectPositionList();
+          boolean found = false;
+          for (DirectPosition p : nodedLine.getControlPoint()) {
+            if (!found) {
+              list1.add(p);
+            }
+            if (!found && p.equals2D(projectNode)) {
+              found = true;
+            }
+            if (found) {
+              list2.add(p);
+            }
+          }
+          lines.remove(line);
+          if (list1.size() > 1) {
+            lines.add(new GM_LineString(list1));
+          }
+          if (list2.size() > 1) {
+            lines.add(new GM_LineString(list2));
+          }
+        }
+        logger.error("Decomposed into " + lines.size() + " lines");
+        edgesToRemove.add(arc);
+        for (GM_LineString l : lines) {
+          logger.error(l);
+          Arc edge = new Arc();// this.getPopArcs().nouvelElement(l);
+          edge.setGeometrie(l);
+          Collection<Noeud> nodes = this.getPopNoeuds().select(new GM_Point(l.getControlPoint(0)), distance);
+          edge.setNoeudIni(nodes.iterator().next());
+          nodes = this.getPopNoeuds().select(new GM_Point(l.getControlPoint(l.sizeControlPoint() - 1)), distance);
+          edge.setNoeudFin(nodes.iterator().next());
+          edge.setCorrespondants(arc.getCorrespondants());
+          edgesToAdd.add(edge);
+        }
+      }
+    }
+    for (Arc edge : edgesToRemove) {
+      edge.setCorrespondants(new ArrayList<FT_Feature>(0));
+      edge.setNoeudIni(null);
+      edge.setNoeudFin(null);
+      this.getPopArcs().remove(edge);
+    }
+    this.getPopArcs().addAll(edgesToAdd);
   }
 }

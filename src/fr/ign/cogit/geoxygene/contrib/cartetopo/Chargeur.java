@@ -224,4 +224,34 @@ public class Chargeur {
       e.printStackTrace();
     }
   }
+  /**
+   * Seuls les points des éléments sont importés comme noeuds de la carte.
+   * @param feature
+   * @param carteTopo
+   */
+  public static void importAsNodes(FT_Feature feature, CarteTopo carteTopo) {
+    Class<Noeud> nodeClass = carteTopo.getPopNoeuds().getClasse();
+    try {
+      Constructor<Noeud> constructor = nodeClass
+      .getConstructor(DirectPosition.class);
+      for (DirectPosition p : feature.getGeom().coord()) {
+        try {
+          Noeud n = constructor.newInstance(p);
+          carteTopo.getPopNoeuds().add(n);
+        } catch (IllegalArgumentException e) {
+          e.printStackTrace();
+        } catch (InstantiationException e) {
+          e.printStackTrace();
+        } catch (IllegalAccessException e) {
+          e.printStackTrace();
+        } catch (InvocationTargetException e) {
+          e.printStackTrace();
+        }
+      }
+    } catch (SecurityException e) {
+      e.printStackTrace();
+    } catch (NoSuchMethodException e) {
+      e.printStackTrace();
+    }
+  }
 }
