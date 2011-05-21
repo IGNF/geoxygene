@@ -2,7 +2,7 @@
 
 <jdbc-connection-descriptor
    		jcd-alias="ORACLE_ALIAS"
-   		default-connection="true"
+   		default-connection="false"
    		platform="Oracle9i"
    		jdbc-level="2.0"
    		driver="oracle.jdbc.driver.OracleDriver"
@@ -21,13 +21,13 @@
      
 <jdbc-connection-descriptor
    		jcd-alias="POSTGRES_ALIAS"
-   		default-connection="false"   		
+   		default-connection="true"   		
    		platform="PostgreSQL"
    		jdbc-level="2.0"
    		driver="org.postgresql.Driver"
    		protocol="jdbc"
    		subprotocol="postgresql"
-   		dbalias="//HOSTNAME:5432/DBNAME"
+   		dbalias="//localhost:5432/DBNAME"
    		username="USERNAME"
    		password="PASSWORD"
         eager-release="false"

@@ -146,6 +146,25 @@ public class ModeSelector implements ContainerListener, KeyListener,
 
     this.toolBar.addSeparator();
 
+    JButton refreshButton = new JButton(new ImageIcon(
+        ModeSelector.class
+            .getResource("/images/icons/16x16/refresh.png"))); //$NON-NLS-1$
+    refreshButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        ProjectFrame projectFrame = ModeSelector.this.getMainFrame()
+            .getSelectedProjectFrame();
+        if (projectFrame != null) {
+          projectFrame.getLayerViewPanel().repaint();
+        }
+      }
+    });
+    refreshButton.setToolTipText(I18N
+        .getString("ModeSelector.refresh.ToolTip")); //$NON-NLS-1$
+    this.toolBar.add(refreshButton);
+
+    this.toolBar.addSeparator();
+
     final JToggleButton showGeometryToolsButton = new JToggleButton(
         new ImageIcon(ModeSelector.class
             .getResource("/images/icons/16x16/edit.png"))); //$NON-NLS-1$
@@ -214,9 +233,12 @@ public class ModeSelector implements ContainerListener, KeyListener,
   public final void mouseWheelMoved(final MouseWheelEvent e) {
     this.currentMode.mouseWheelMoved(e);
   }
-
+//private long s = System.currentTimeMillis();
   @Override
   public final void mouseDragged(final MouseEvent e) {
+    //long f = System.currentTimeMillis();
+    //System.out.println("mouse dragged " + (f - s) + " "+ e.getSource().getClass().getSimpleName() + " " + e.getPoint());
+    //s = f;
     this.currentMode.mouseDragged(e);
   }
 
@@ -246,6 +268,7 @@ public class ModeSelector implements ContainerListener, KeyListener,
 
   @Override
   public final void componentAdded(final ContainerEvent e) {
+    //System.out.println("added component " + e.getChild().getClass().getSimpleName());
     this.addComponent(e.getChild());
   }
 
@@ -272,5 +295,6 @@ public class ModeSelector implements ContainerListener, KeyListener,
 
   @Override
   public final void componentRemoved(final ContainerEvent e) {
+    //System.out.println("removed component " + e.getChild().getClass().getSimpleName());
   }
 }
