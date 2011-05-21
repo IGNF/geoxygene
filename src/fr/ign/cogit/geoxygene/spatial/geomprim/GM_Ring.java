@@ -86,8 +86,8 @@ public class GM_Ring extends GM_CompositeCurve {
     super();
     this.generator = compCurve.getGenerator();
     this.primitive = compCurve.getPrimitive();
-    this.proxy[0] = compCurve.getPositive();
-    this.proxy[1] = compCurve.getNegative();
+    // this.proxy[0] = compCurve.getPositive();
+    // this.proxy[1] = compCurve.getNegative();
   }
 
   /**
@@ -99,8 +99,8 @@ public class GM_Ring extends GM_CompositeCurve {
     super();
     this.generator = compCurve.getGenerator();
     this.primitive = compCurve.getPrimitive();
-    this.proxy[0] = compCurve.getPositive();
-    this.proxy[1] = compCurve.getNegative();
+    // this.proxy[0] = compCurve.getPositive();
+    // this.proxy[1] = compCurve.getNegative();
     if (!super.validate(tolerance)) {
       throw new Exception(
           "new GM_Ring(): La courbe composée passée en paramètre n'est pas chaînée"); //$NON-NLS-1$
@@ -131,5 +131,4 @@ public class GM_Ring extends GM_CompositeCurve {
     return new GM_Ring(new GM_LineString((DirectPositionList) this.coord()
         .clone()));
   }
-
 }

@@ -19,7 +19,6 @@
 
 package fr.ign.cogit.geoxygene.spatial.geomcomp;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
@@ -43,17 +42,16 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  */
 public class GM_Complex extends GM_Object {
   /** Set de primitives constituant self. */
-  protected Set<GM_Object> element = new HashSet<GM_Object>();
-
+  // protected Set<GM_Object> element = new HashSet<GM_Object>();
   /** Renvoie le set des primitives. */
   public Set<GM_Object> getElement() {
-    return this.element;
-  }
+    return null;
+  } // this.element; }
 
   /** Ajoute une primitive (ajoute aussi un complexe à la primitive). */
   public void addElement(GM_Primitive value) {
-    this.element.add(value);
-    value.complex.add(this);
+    this.getElement().add(value);
+    value.getComplex().add(this);
   }
 
   /**
@@ -61,13 +59,13 @@ public class GM_Complex extends GM_Object {
    * primitive).
    */
   public void removeElement(GM_Primitive value) {
-    this.element.remove(value);
-    value.complex.remove(this);
+    this.getElement().remove(value);
+    value.getComplex().remove(this);
   }
 
   /** Nombre de primitives constituant self. */
   public int sizeElement() {
-    return this.element.size();
+    return this.getElement().size();
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -78,32 +76,32 @@ public class GM_Complex extends GM_Object {
   // Met a jour automatiquement : le super-complexe, et la liste des elements
 
   /** Les sous-complexes constituant self. */
-  protected Set<GM_Complex> subComplex = new HashSet<GM_Complex>();
+  // protected Set<GM_Complex> subComplex = new HashSet<GM_Complex>();
 
   /** Renvoie la liste des sous-complexes */
   public Set<GM_Complex> getSubComplex() {
-    return this.subComplex;
-  }
+    return null;
+  }// this.subComplex; }
 
   /** Ajoute un sous-complexe en fin de liste. */
   public void addSubComplex(GM_Complex value) {
-    this.subComplex.add(value);
-    value.superComplex.add(this);
-    this.element.add(value);
-    value.element.add(this);
+    this.getSubComplex().add(value);
+    value.getSuperComplex().add(this);
+    this.getElement().add(value);
+    value.getElement().add(this);
   }
 
   /** Efface le (ou les) sous-complexes passé en paramètre. */
   public void removeSubComplex(GM_Complex value) {
-    this.subComplex.remove(value);
-    value.superComplex.remove(this);
-    this.element.remove(value);
-    value.element.remove(this);
+    this.getSubComplex().remove(value);
+    value.getSuperComplex().remove(this);
+    this.getElement().remove(value);
+    value.getElement().remove(this);
   }
 
   /** Nombre de sous-complexes constituant self. */
   public int sizeSubComplex() {
-    return this.subComplex.size();
+    return this.getSubComplex().size();
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -112,26 +110,26 @@ public class GM_Complex extends GM_Object {
   // //////////////////////////////////////////////////////////////////////
   // //////////////////////////////////////////////////////////////////////
   /** Les super-complexes constituant self. */
-  protected Set<GM_Complex> superComplex = new HashSet<GM_Complex>();
+  // protected Set<GM_Complex> superComplex = new HashSet<GM_Complex>();
 
   /** Renvoie la liste des super-complexes */
   public Set<GM_Complex> getSuperComplex() {
-    return this.superComplex;
-  }
+    return null;
+  }// this.superComplex; }
 
   /** Ajoute un super-complexe en fin de liste. */
   public void addSuperComplex(GM_Complex value) {
-    this.superComplex.add(value);
+    this.getSuperComplex().add(value);
   }
 
   /** Efface le (ou les) super-complexes passé en paramètre. */
   public void removeSuperComplex(GM_Complex value) {
-    this.superComplex.remove(value);
+    this.getSuperComplex().remove(value);
   }
 
   /** Nombre de super-complexes constituant self. */
   public int sizeSuperComplex() {
-    return this.superComplex.size();
+    return this.getSuperComplex().size();
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -142,9 +140,8 @@ public class GM_Complex extends GM_Object {
 
   /** Un complexe est maximal s'il n'est le subcomplexe de personne. */
   public boolean isMaximal() {
-    if (this.sizeSuperComplex() == 0) {
+    if (this.sizeSuperComplex() == 0)
       return true;
-    }
     return false;
   }
 
@@ -161,14 +158,9 @@ public class GM_Complex extends GM_Object {
   @Override
   public DirectPositionList coord() {
     DirectPositionList dpl = new DirectPositionList();
-
-    Set<GM_Object> sObjects = this.getElement();
-
-    for (GM_Object o : sObjects) {
+    for (GM_Object o : this.getElement()) {
       dpl.addAll(o.coord());
     }
-
     return dpl;
-
   }
 }

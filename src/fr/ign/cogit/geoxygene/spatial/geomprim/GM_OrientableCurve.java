@@ -61,27 +61,26 @@ public class GM_OrientableCurve extends GM_OrientablePrimitive {
    * celle orientée positivement. Proxy[1] est celle orientée négativement. On
    * accède aux primitives orientées par getPositive() et getNegative().
    */
-  public GM_OrientableCurve[] proxy = new GM_OrientableCurve[2];
+  // public GM_OrientableCurve[] proxy = new GM_OrientableCurve[2];
 
   /** Renvoie la primitive orientée positivement correspondant à self. */
   public GM_OrientableCurve getPositive() {
-    return this.proxy[0];
-  }
+    return this.primitive;
+  }// proxy[0];}
 
   /** Renvoie la primitive orientée négativement correspondant à self. */
   public GM_OrientableCurve getNegative() {
-    GM_Curve proxy1prim = this.proxy[1].primitive;
-    proxy1prim.getSegment().clear();
-    GM_Curve proxy0 = (GM_Curve) this.proxy[1].proxy[0];
-    int n = proxy0.sizeSegment();
-    if (n > 1) {
-      for (int i = 0; i < n; i++) {
-        proxy1prim.addSegment(proxy0.getSegment(n - 1 - i).reverse());
-      }
-    } else if (n == 1) {
-      proxy1prim.segment.add(proxy0.getSegment(0).reverse());
-    }
-    return this.proxy[1];
+    return null;
+    /*
+     * GM_Curve proxy1prim = this.proxy[1].primitive;
+     * proxy1prim.getSegment().clear(); GM_Curve proxy0 =
+     * (GM_Curve)this.proxy[1].proxy[0]; int n = proxy0.sizeSegment(); if (n>1)
+     * for (int i=0; i<n; i++)
+     * proxy1prim.addSegment(proxy0.getSegment(n-1-i).reverse()); else if (n==1)
+     * // Braun - 14/06/02 : modif ajoutee suite a l'heritage de GM_CurveSegment
+     * sur GM_Curve proxy1prim.segment.add(proxy0.getSegment(0).reverse());
+     * return this.proxy[1];
+     */
   }
 
   /**

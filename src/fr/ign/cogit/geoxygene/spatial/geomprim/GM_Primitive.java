@@ -27,7 +27,6 @@
 
 package fr.ign.cogit.geoxygene.spatial.geomprim;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_Complex;
@@ -59,16 +58,15 @@ abstract public class GM_Primitive extends GM_Object {
   // Le constructeur a partir d'une GM_Envelope est defini dans GM_Poygon
 
   /** Association avec les GM_Complex, instanciée du côté du complexe. */
-  public Set<GM_Complex> complex = new HashSet<GM_Complex>();
+  // public Set<GM_Complex> complex = new HashSet<GM_Complex>();
 
   /** Renvoie le set des complexes auxquels appartient this */
   public Set<GM_Complex> getComplex() {
-    return this.complex;
+    return null;// this.complex;
   }
 
   /** Nombre de complexes auxquels appartient this */
   public int sizeComplex() {
-    return this.complex.size();
+    return 0;// this.complex.size();
   }
-
 }

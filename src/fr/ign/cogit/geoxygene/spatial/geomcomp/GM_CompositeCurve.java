@@ -53,7 +53,7 @@ public class GM_CompositeCurve extends GM_Composite {
   // Attribut "generator" et méthodes pour le traiter ////////////////////
   // //////////////////////////////////////////////////////////////////////
   /** Les GM_OrientableCurve constituant self. */
-  protected List<GM_OrientableCurve> generator;
+  protected List<GM_OrientableCurve> generator = null;
 
   /** Renvoie la liste des GM_OrientableCurve. */
   public List<GM_OrientableCurve> getGenerator() {
@@ -171,15 +171,14 @@ public class GM_CompositeCurve extends GM_Composite {
    * Constructeur par défaut.
    */
   public GM_CompositeCurve() {
-    this.generator = new ArrayList<GM_OrientableCurve>();
+    this.generator = new ArrayList<GM_OrientableCurve>(0);
     this.primitive = new GM_Curve();
-    this.proxy[0] = this.primitive;
-    GM_OrientableCurve proxy1 = new GM_OrientableCurve();
-    proxy1.orientation = -1;
-    proxy1.proxy[0] = this.primitive;
-    proxy1.proxy[1] = proxy1;
-    proxy1.primitive = new GM_Curve(this.primitive);
-    this.proxy[1] = proxy1;
+    // this.proxy[0] = this.primitive;
+    /*
+     * GM_OrientableCurve proxy1 = new GM_OrientableCurve(); proxy1.orientation
+     * = -1; proxy1.proxy[0] = this.primitive; proxy1.proxy[1] = proxy1;
+     * proxy1.primitive = new GM_Curve(this.primitive); this.proxy[1] = proxy1;
+     */
   }
 
   /**
@@ -191,13 +190,12 @@ public class GM_CompositeCurve extends GM_Composite {
     this.generator.add(oCurve);
     this.primitive = new GM_Curve();
     this.simplifyPrimitive();
-    this.proxy[0] = this.primitive;
-    GM_OrientableCurve proxy1 = new GM_OrientableCurve();
-    proxy1.orientation = -1;
-    proxy1.proxy[0] = this.primitive;
-    proxy1.proxy[1] = proxy1;
-    proxy1.primitive = new GM_Curve(this.primitive);
-    this.proxy[1] = proxy1;
+    // this.proxy[0] = this.primitive;
+    /*
+     * GM_OrientableCurve proxy1 = new GM_OrientableCurve(); proxy1.orientation
+     * = -1; proxy1.proxy[0] = this.primitive; proxy1.proxy[1] = proxy1;
+     * proxy1.primitive = new GM_Curve(this.primitive); this.proxy[1] = proxy1;
+     */
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -227,22 +225,20 @@ public class GM_CompositeCurve extends GM_Composite {
    * celle orientée positivement. Proxy[1] est celle orientée négativement. On
    * accède aux primitives orientées par getPositive() et getNegative().
    */
-  protected GM_OrientableCurve[] proxy = new GM_OrientableCurve[2];
+  // protected GM_OrientableCurve[] proxy = new GM_OrientableCurve[2];
 
   /**
    * Renvoie la primitive orientée positivement.
    */
   public GM_OrientableCurve getPositive() {
-    this.simplifyPrimitive();
-    return this.primitive; // equivaut a return this.proxy[0]
+    return this.getPrimitive(); // equivaut a return this.proxy[0]
   }
 
   /**
    * Renvoie la primitive orientée négativement.
    */
   public GM_OrientableCurve getNegative() {
-    this.simplifyPrimitive();
-    return this.primitive.getNegative();
+    return this.getPrimitive().getNegative();
   }
 
   /**
@@ -250,8 +246,7 @@ public class GM_CompositeCurve extends GM_Composite {
    * GM_CurveBoundary, c'est-à-dire deux GM_Point.
    */
   public GM_CurveBoundary boundary() {
-    this.simplifyPrimitive();
-    return this.primitive.boundary();
+    return this.getPrimitive().boundary();
   }
 
   // //////////////////////////////////////////////////////////////////////

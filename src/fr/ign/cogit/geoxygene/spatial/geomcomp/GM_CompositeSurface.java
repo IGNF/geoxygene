@@ -145,15 +145,14 @@ public class GM_CompositeSurface extends GM_Composite {
   // les constructeurs sont calques sur ceux de GM_Surface
   /** Constructeur par défaut. */
   public GM_CompositeSurface() {
-    this.generator = new ArrayList<GM_OrientableSurface>();
+    this.generator = new ArrayList<GM_OrientableSurface>(0);
     this.primitive = new GM_Surface();
-    this.proxy[0] = this.primitive;
-    GM_OrientableSurface proxy1 = new GM_OrientableSurface();
-    proxy1.orientation = -1;
-    proxy1.proxy[0] = this.primitive;
-    proxy1.proxy[1] = proxy1;
-    proxy1.primitive = new GM_Surface(this.primitive);
-    this.proxy[1] = proxy1;
+    /*
+     * this.proxy[0] = this.primitive; GM_OrientableSurface proxy1 = new
+     * GM_OrientableSurface(); proxy1.orientation = -1; proxy1.proxy[0] =
+     * this.primitive; proxy1.proxy[1] = proxy1; proxy1.primitive = new
+     * GM_Surface(this.primitive); this.proxy[1] = proxy1;
+     */
   }
 
   /**
@@ -161,17 +160,16 @@ public class GM_CompositeSurface extends GM_Composite {
    * L'orientation vaut +1.
    */
   public GM_CompositeSurface(GM_OrientableSurface oCurve) {
-    this.generator = new ArrayList<GM_OrientableSurface>();
+    this.generator = new ArrayList<GM_OrientableSurface>(0);
     this.generator.add(oCurve);
     this.primitive = new GM_Surface();
     // this.simplifyPrimitive(); -> creer la primitive
-    this.proxy[0] = this.primitive;
-    GM_OrientableSurface proxy1 = new GM_OrientableSurface();
-    proxy1.orientation = -1;
-    proxy1.proxy[0] = this.primitive;
-    proxy1.proxy[1] = proxy1;
-    proxy1.primitive = new GM_Surface(this.primitive);
-    this.proxy[1] = proxy1;
+    /*
+     * this.proxy[0] = this.primitive; GM_OrientableSurface proxy1 = new
+     * GM_OrientableSurface(); proxy1.orientation = -1; proxy1.proxy[0] =
+     * this.primitive; proxy1.proxy[1] = proxy1; proxy1.primitive = new
+     * GM_Surface(this.primitive); this.proxy[1] = proxy1;
+     */
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -199,7 +197,7 @@ public class GM_CompositeSurface extends GM_Composite {
    * celle orientée positivement. Proxy[1] est celle orientée négativement. On
    * accède aux primitives orientées par getPositive() et getNegative().
    */
-  protected GM_OrientableSurface[] proxy = new GM_OrientableSurface[2];
+  // protected GM_OrientableSurface[] proxy = new GM_OrientableSurface[2];
 
   /** Renvoie la primitive orientée positivement. */
   public GM_OrientableSurface getPositive() {
@@ -208,10 +206,10 @@ public class GM_CompositeSurface extends GM_Composite {
   }
 
   /** Renvoie la primitive orientée négativement. */
-  public GM_OrientableSurface getNegative() {
-    this.simplifyPrimitive();
-    return this.primitive.getNegative();
-  }
+  /*
+   * public GM_OrientableSurface getNegative() { return
+   * this.getPrimitive().getNegative(); }
+   */
 
   /**
    * Redéfinition de l'opérateur "boundary" sur GM_OrientableSurface. Renvoie

@@ -59,7 +59,6 @@ public class GM_Curve extends GM_OrientableCurve
 
   // ////////////////////////////////////////////////////////////////////////////////
   // Attribut "segment" et méthodes pour le traiter
-  // ////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////////////
   /** Liste de tous les segment de courbe (GM_CurveSegment) constituant self. */
   protected List<GM_CurveSegment> segment;
@@ -239,9 +238,10 @@ public class GM_Curve extends GM_OrientableCurve
   // ////////////////////////////////////////////////////////////////////////////////
   /** Constructeur par défaut */
   public GM_Curve() {
-    this.segment = new ArrayList<GM_CurveSegment>();
+    this.segment = new ArrayList<GM_CurveSegment>(0);
     this.orientation = +1;
     this.primitive = this;
+    /*
     this.proxy[0] = this;
     GM_OrientableCurve proxy1 = new GM_OrientableCurve();
     proxy1.orientation = -1;
@@ -249,6 +249,7 @@ public class GM_Curve extends GM_OrientableCurve
     proxy1.proxy[1] = proxy1;
     proxy1.primitive = new GM_Curve(this);
     this.proxy[1] = proxy1;
+    */
   }
 
   /** Constructeur à partir d'un et d'un seul GM_CurveSegment */
@@ -266,9 +267,10 @@ public class GM_Curve extends GM_OrientableCurve
    * methode getNegative().
    */
   public GM_Curve(GM_Curve curve) {
-    this.segment = new ArrayList<GM_CurveSegment>();
+    this.segment = new ArrayList<GM_CurveSegment>(0);
     this.orientation = +1;
     this.primitive = this;
+    /*
     this.proxy[0] = this;
     GM_OrientableCurve proxy1 = new GM_OrientableCurve();
     proxy1.orientation = -1;
@@ -276,6 +278,7 @@ public class GM_Curve extends GM_OrientableCurve
     proxy1.proxy[1] = proxy1;
     proxy1.primitive = curve;
     this.proxy[1] = proxy1;
+     */
   }
 
   // ////////////////////////////////////////////////////////////////////////////////

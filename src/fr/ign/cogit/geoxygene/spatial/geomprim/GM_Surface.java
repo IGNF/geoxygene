@@ -48,7 +48,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_SurfacePatch;
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
- * 
+ *
  */
 
 public class GM_Surface extends GM_OrientableSurface
@@ -157,9 +157,10 @@ public class GM_Surface extends GM_OrientableSurface
   // ////////////////////////////////////////////////////////////////////////////////
   /** Constructeur par défaut */
   public GM_Surface() {
-    this.patch = new ArrayList<GM_SurfacePatch>();
+    this.patch = new ArrayList<GM_SurfacePatch>(0);
     this.orientation = +1;
     this.primitive = this;
+    /*
     this.proxy[0] = this;
     GM_OrientableSurface proxy1 = new GM_OrientableSurface();
     proxy1.orientation = -1;
@@ -167,6 +168,7 @@ public class GM_Surface extends GM_OrientableSurface
     proxy1.proxy[1] = proxy1;
     proxy1.primitive = new GM_Surface(this);
     this.proxy[1] = proxy1;
+    */
   }
 
   /** Constructeur à partir d'un et d'un seul surface patch */
@@ -184,9 +186,10 @@ public class GM_Surface extends GM_OrientableSurface
    * l'appel a la methode getNegative().
    */
   public GM_Surface(GM_Surface surface) {
-    this.patch = new ArrayList<GM_SurfacePatch>();
+    this.patch = new ArrayList<GM_SurfacePatch>(0);
     this.orientation = +1;
     this.primitive = this;
+    /*
     this.proxy[0] = this;
     GM_OrientableSurface proxy1 = new GM_OrientableSurface();
     proxy1.orientation = -1;
@@ -194,6 +197,7 @@ public class GM_Surface extends GM_OrientableSurface
     proxy1.proxy[1] = proxy1;
     proxy1.primitive = surface;
     this.proxy[1] = proxy1;
+    */
   }
 
   // ////////////////////////////////////////////////////////////////////////////////
