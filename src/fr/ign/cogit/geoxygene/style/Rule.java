@@ -50,6 +50,7 @@ import fr.ign.cogit.geoxygene.filter.PropertyIsGreaterThan;
 import fr.ign.cogit.geoxygene.filter.PropertyIsGreaterThanOrEqualTo;
 import fr.ign.cogit.geoxygene.filter.PropertyIsLessThan;
 import fr.ign.cogit.geoxygene.filter.PropertyIsLessThanOrEqualTo;
+import fr.ign.cogit.geoxygene.filter.PropertyIsLike;
 import fr.ign.cogit.geoxygene.filter.PropertyIsNotEqualTo;
 import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
 
@@ -124,6 +125,7 @@ public class Rule {
       @XmlElement(name = "PropertyIsLessThan", type = PropertyIsLessThan.class),
       @XmlElement(name = "PropertyIsLessThanOrEqualTo", type = PropertyIsLessThanOrEqualTo.class),
       @XmlElement(name = "PropertyIsNotEqualTo", type = PropertyIsNotEqualTo.class),
+      @XmlElement(name = "PropertyIsLike", type = PropertyIsLike.class),
       @XmlElement(name = "And", type = And.class),
       @XmlElement(name = "Or", type = Or.class),
       @XmlElement(name = "Not", type = Not.class) })
