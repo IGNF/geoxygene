@@ -211,6 +211,8 @@ class OjbXMLGenerator {
       return "DOUBLE"; //$NON-NLS-1$//$NON-NLS-2$
     } else if (postgis.compareToIgnoreCase("float4") == 0) {
       return "FLOAT"; //$NON-NLS-1$//$NON-NLS-2$
+    } else if (postgis.compareToIgnoreCase("int2") == 0) {
+        return "INTEGER"; //$NON-NLS-1$ //$NON-NLS-2$
     } else if (postgis.compareToIgnoreCase("int4") == 0) {
       return "INTEGER"; //$NON-NLS-1$ //$NON-NLS-2$
     } else if (postgis.compareToIgnoreCase("int8") == 0) {

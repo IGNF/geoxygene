@@ -361,6 +361,8 @@ public class XMLJavaDicoGenerator {
       return "double"; //$NON-NLS-1$//$NON-NLS-2$
     } else if (postgis.compareToIgnoreCase("float4") == 0) {
       return "float"; //$NON-NLS-1$//$NON-NLS-2$
+    } else if (postgis.compareToIgnoreCase("int2") == 0) {
+        return "int"; //$NON-NLS-1$//$NON-NLS-2$
     } else if (postgis.compareToIgnoreCase("int4") == 0) {
       return "int"; //$NON-NLS-1$//$NON-NLS-2$
     } else if (postgis.compareToIgnoreCase("int8") == 0) {
