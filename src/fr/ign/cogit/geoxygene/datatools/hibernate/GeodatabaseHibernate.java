@@ -289,7 +289,7 @@ public class GeodatabaseHibernate implements Geodatabase {
   public <T> T loadAllFeatures(Class<?> featureClass,
       Class<T> featureListClass, String param, String value) {
     return (T) this.session.createSQLQuery(
-        "select x from " + featureClass.getName() //$NON-NLS-1$
+        "select * from " + this.getMetadata(featureClass).getTableName() //$NON-NLS-1$
             + " where " + param //$NON-NLS-1$
             + " = " + value).list(); //$NON-NLS-1$
   }

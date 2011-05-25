@@ -618,7 +618,7 @@ public class CarteTopo extends DataSet {
    *          considérer deux noeuds positionnés au même endroit.
    */
   public void filtreDoublons(double tolerance) {
-    List<Noeud> aJeter = new ArrayList<Noeud>();
+    List<Noeud> aJeter = new ArrayList<Noeud>(0);
     Collection<Noeud> selection;
 
     // initialisation de l'index au besoin
@@ -637,10 +637,10 @@ public class CarteTopo extends DataSet {
         // correspondants
         aJeter.add(doublon);
         noeud.addAllCorrespondants(doublon.getCorrespondants());
-        for (Arc a : doublon.getEntrants()) {
+        for (Arc a : new ArrayList<Arc>(doublon.getEntrants())) {
           noeud.addEntrant(a);
         }
-        for (Arc a : doublon.getSortants()) {
+        for (Arc a : new ArrayList<Arc>(doublon.getSortants())) {
           noeud.addSortant(a);
         }
       }

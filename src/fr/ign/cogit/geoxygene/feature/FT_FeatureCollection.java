@@ -643,7 +643,7 @@ public class FT_FeatureCollection<Feat extends FT_Feature> implements
       }
       for (Iterator<Feat> it = selectedFeatures.iterator(); it.hasNext();) {
         Feat feature = it.next();
-        if (!feature.getGeom().intersects(envGeom)) {
+        if (feature.getGeom() == null || !feature.getGeom().intersects(envGeom)) {
           it.remove();
         }
       }

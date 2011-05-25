@@ -310,14 +310,14 @@ public class Noeud extends ElementCarteTopo {
    * chaque appel de la méthode.
    */
   public List<Object> arcsClasses() {
-    List<Arc> arcsClasses = new ArrayList<Arc>();
-    List<Boolean> arcsClassesOrientation = new ArrayList<Boolean>();
+    List<Arc> arcsClasses = new ArrayList<Arc>(0);
+    List<Boolean> arcsClassesOrientation = new ArrayList<Boolean>(0);
     List<Arc> arcsEntrants = new ArrayList<Arc>(this.getEntrants());
     List<Arc> arcsSortants = new ArrayList<Arc>(this.getSortants());
-    List<Arc> arcs = new ArrayList<Arc>();
-    List<Angle> angles = new ArrayList<Angle>();
-    List<Boolean> orientations = new ArrayList<Boolean>();
-    List<Object> resultat = new ArrayList<Object>();
+    List<Arc> arcs = new ArrayList<Arc>(0);
+    List<Angle> angles = new ArrayList<Angle>(0);
+    List<Boolean> orientations = new ArrayList<Boolean>(0);
+    List<Object> resultat = new ArrayList<Object>(0);
     Arc arc;
     Angle angle;
     double angleMin, angleCourant;

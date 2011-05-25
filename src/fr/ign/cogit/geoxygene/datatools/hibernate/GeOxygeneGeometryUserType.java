@@ -12,12 +12,15 @@ import org.hibernate.HibernateException;
 import org.hibernate.usertype.UserType;
 import org.postgis.PGgeometry;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.conversion.ParseException;
 import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
 
@@ -44,8 +47,18 @@ public class GeOxygeneGeometryUserType implements UserType {
    */
   @SuppressWarnings("unchecked")
   public GM_Object convert2GM_Object(Object object) {
+	  //logger.error(object.toString());
+	  //logger.error(object.getClass());
     if (object == null) {
       return null;
+    }
+    if (object instanceof org.postgresql.util.PGobject) {
+    	try {
+			object = new PGgeometry(object.toString());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     // in some cases, Postgis returns not PGgeometry objects
     // but org.postgis.Geometry instances.
@@ -164,9 +177,19 @@ public class GeOxygeneGeometryUserType implements UserType {
     if (value == null) {
       st.setNull(index, this.sqlTypes()[0]);
     } else {
-      GM_Object geom = (GM_Object) value;
-      Object dbGeom = this.conv2DBGeometry(geom, st.getConnection());
-      st.setObject(index, dbGeom);
+    	if (value instanceof GM_Object) {
+    		GM_Object geom = (GM_Object) value;
+    		Object dbGeom = this.conv2DBGeometry(geom, st.getConnection());
+    		st.setObject(index, dbGeom);
+    	} else {
+			try {
+				GM_Object geom = AdapterFactory.toGM_Object((Geometry) value);
+	    		Object dbGeom = this.conv2DBGeometry(geom, st.getConnection());
+	    		st.setObject(index, dbGeom);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+    	}
     }
   }
 
