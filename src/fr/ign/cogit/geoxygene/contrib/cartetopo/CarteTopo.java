@@ -2332,6 +2332,9 @@ public class CarteTopo extends DataSet {
       }
     }
     this.emptyComposants();
+    for (Population<? extends FT_Feature> p : this.getPopulations()) {
+      p.clear();
+    }
     this.emptyPopulations();
   }
 

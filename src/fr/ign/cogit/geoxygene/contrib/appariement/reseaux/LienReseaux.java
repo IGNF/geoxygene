@@ -55,7 +55,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 public class LienReseaux extends Lien {
   static Logger logger = Logger.getLogger(LienReseaux.class.getName());
   /** Les Arc1 pointés par le lien */
-  private List<Arc> arcs1 = new ArrayList<Arc>();
+  private List<Arc> arcs1 = new ArrayList<Arc>(0);
 
   public List<Arc> getArcs1() {
     return this.arcs1;
@@ -70,7 +70,7 @@ public class LienReseaux extends Lien {
   }
 
   /** Les Noeud1 pointés par le lien */
-  private List<Noeud> noeuds1 = new ArrayList<Noeud>();
+  private List<Noeud> noeuds1 = new ArrayList<Noeud>(0);
 
   public List<Noeud> getNoeuds1() {
     return this.noeuds1;
@@ -85,7 +85,7 @@ public class LienReseaux extends Lien {
   }
 
   /** Les Groupe1 pointés par le lien */
-  private List<Groupe> groupes1 = new ArrayList<Groupe>();
+  private List<Groupe> groupes1 = new ArrayList<Groupe>(0);
 
   public List<Groupe> getGroupes1() {
     return this.groupes1;
@@ -100,7 +100,7 @@ public class LienReseaux extends Lien {
   }
 
   /** Les Arc2 pointés par le lien */
-  private List<Arc> arcs2 = new ArrayList<Arc>();
+  private List<Arc> arcs2 = new ArrayList<Arc>(0);
 
   public List<Arc> getArcs2() {
     return this.arcs2;
@@ -115,7 +115,7 @@ public class LienReseaux extends Lien {
   }
 
   /** Les Noeud2 pointés par le lien */
-  private List<Noeud> noeuds2 = new ArrayList<Noeud>();
+  private List<Noeud> noeuds2 = new ArrayList<Noeud>(0);
 
   public List<Noeud> getNoeuds2() {
     return this.noeuds2;
@@ -130,7 +130,7 @@ public class LienReseaux extends Lien {
   }
 
   /** Les Groupe2 pointés par le lien */
-  private List<Groupe> groupes2 = new ArrayList<Groupe>();
+  private List<Groupe> groupes2 = new ArrayList<Groupe>(0);
 
   public List<Groupe> getGroupes2() {
     return this.groupes2;
@@ -620,5 +620,14 @@ public class LienReseaux extends Lien {
     }
     LienReseaux.logger.info(I18N.getString("LienReseaux.EdgeLinkNotCreated")); //$NON-NLS-1$
     return null;
+  }
+  public void clear() {
+    this.arcs1.clear();
+    this.arcs2.clear();
+    this.noeuds1.clear();
+    this.noeuds2.clear();
+    this.groupes1.clear();
+    this.groupes2.clear();
+    this.clearCorrespondants();
   }
 }

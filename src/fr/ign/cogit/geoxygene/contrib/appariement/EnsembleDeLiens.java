@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe;
@@ -470,7 +469,7 @@ public class EnsembleDeLiens extends Population<Lien> {
    */
   public final List<EnsembleDeLiens> classeSelonSeuilEvaluation(
       final List<Double> valeursClassement) {
-    List<EnsembleDeLiens> liensClasses = new ArrayList<EnsembleDeLiens>();
+    List<EnsembleDeLiens> liensClasses = new ArrayList<EnsembleDeLiens>(0);
     Iterator<Lien> itLiens = this.getElements().iterator();
     Lien lien, lienClasse;
     double seuil;
@@ -524,7 +523,6 @@ public class EnsembleDeLiens extends Population<Lien> {
   public final void creeGeometrieDesLiens() {
     Iterator<FT_Feature> itRef, itComp;
     FT_Feature ref, comp;
-
     for (Lien lien : this.getElements()) {
       itRef = lien.getObjetsRef().iterator();
       GM_Aggregate<GM_Object> geom = new GM_Aggregate<GM_Object>();
@@ -760,7 +758,7 @@ public class EnsembleDeLiens extends Population<Lien> {
    */
   public final List<EnsembleDeLiens> scindeSelonValeursCommentaires(
       final List<String> valeursClassement) {
-    List<EnsembleDeLiens> liensClasses = new ArrayList<EnsembleDeLiens>();
+    List<EnsembleDeLiens> liensClasses = new ArrayList<EnsembleDeLiens>(0);
     int i;
     for (i = 0; i < valeursClassement.size(); i++) {
       liensClasses.add(new EnsembleDeLiens());
@@ -776,5 +774,9 @@ public class EnsembleDeLiens extends Population<Lien> {
       }
     }
     return liensClasses;
+  }
+  @Override
+  public void clear() {
+    super.clear();
   }
 }

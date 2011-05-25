@@ -328,7 +328,7 @@ public final class AppariementIO {
       itPopNoeuds = paramApp.populationsNoeuds2.iterator();
     }
     while (itPopNoeuds.hasNext()) {
-      Population<?> popGeo = (Population<?>) itPopNoeuds.next();
+      FT_FeatureCollection<?> popGeo = (FT_FeatureCollection<?>) itPopNoeuds.next();
       // import d'une population de noeuds
       for (FT_Feature element : popGeo.getElements()) {
         NoeudApp noeud = (NoeudApp) popNoeudApp.nouvelElement();
@@ -388,6 +388,8 @@ public final class AppariementIO {
       reseau.filtreDoublons(0);
       reseau.creeTopologieArcsNoeuds(0);
     }
+    
+
     // 2- On fusionne les noeuds proches
     if (ref) {
       if (paramApp.topologieSeuilFusionNoeuds1 >= 0) {
@@ -442,6 +444,7 @@ public final class AppariementIO {
       reseau.filtreNoeudsSimples();
     }
 
+    
     // 5- On fusionne des arcs en double
     if (ref && paramApp.topologieFusionArcsDoubles1) {
       if (AppariementIO.LOGGER.isDebugEnabled()) {
