@@ -19,7 +19,7 @@
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.I18N;
@@ -29,6 +29,7 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.NoeudApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
@@ -62,43 +63,85 @@ public class Recalage {
    */
   public static CarteTopo recalage(ReseauApp ctARecaler,
       ReseauApp ctSurLaquelleRecaler, EnsembleDeLiens liens) {
-    CarteTopo ctRecale = new CarteTopo(I18N
-        .getString("Recalage.CorrectedNetwork")); //$NON-NLS-1$
+    CarteTopo ctRecale = new CarteTopo(
+        I18N.getString("Recalage.CorrectedNetwork")); //$NON-NLS-1$
     // On ajoute dans le réseau recalé les arcs sur lesquels on recale qui
     // sont appariés.
-    Iterator<?> itArcsSurLesquelsRecaler = ctSurLaquelleRecaler.getPopArcs()
-        .getElements().iterator();
-    while (itArcsSurLesquelsRecaler.hasNext()) {
-      ArcApp arc = (ArcApp) itArcsSurLesquelsRecaler.next();
-      if (arc.getListeGroupes().size() == 0) {
+    List<Noeud> noeudsCopies = new ArrayList<Noeud>(0);
+    for (Arc a : ctSurLaquelleRecaler.getPopArcs()) {
+      ArcApp arc = (ArcApp) a;
+      if (arc.getListeGroupes().isEmpty()) {
         continue;
       }
       if (!arc.aUnCorrespondantGeneralise(liens)) {
         continue;
       }
+      // construction du nouvel arc recalé
       Arc nouvelArc = ctRecale.getPopArcs().nouvelElement();
       nouvelArc.setGeometrie(arc.getGeometrie());
       nouvelArc.setCorrespondants(arc.objetsGeoRefEnCorrespondance(liens));
+      NoeudApp noeud = (NoeudApp) arc.getNoeudIni();
+      if (!noeudsCopies.contains(noeud)) {
+        // construction du nouveau noeud ini
+        Noeud nouveauNoeud = ctRecale.getPopNoeuds().nouvelElement();
+        nouveauNoeud.setGeom(nouvelArc.getGeometrie().getControlPoint(0)
+            .toGM_Point());
+        nouveauNoeud.setCorrespondants(noeud
+            .objetsGeoRefEnCorrespondance(liens));
+        noeudsCopies.add(noeud);
+        // List<Noeud> noeudsCorr = noeud.noeudsCompEnCorrespondance(liens);
+        // for (Noeud n : noeudsCorr) {
+        // nouveauNoeud.setCorrespondants(n.getCorrespondants());
+        // }
+      }
+      noeud = (NoeudApp) arc.getNoeudFin();
+      if (!noeudsCopies.contains(noeud)) {
+        // construction du nouveau noeud fin
+        Noeud nouveauNoeud = ctRecale.getPopNoeuds().nouvelElement();
+        nouveauNoeud.setGeom(nouvelArc.getGeometrie()
+            .getControlPoint(nouvelArc.getGeometrie().sizeControlPoint() - 1)
+            .toGM_Point());
+        nouveauNoeud.setCorrespondants(noeud
+            .objetsGeoRefEnCorrespondance(liens));
+        noeudsCopies.add(noeud);
+      }
     }
-
     // On ajoute dans le réseau recalé les arcs à recaler qui ne sont pas
     // appariés,
     // en modifiant la géométrie pour assurer un raccord amorti avec le
     // reste.
-    Iterator<?> itArcsARecaler = ctARecaler.getPopArcs().getElements()
-        .iterator();
-    while (itArcsARecaler.hasNext()) {
-      ArcApp arc = (ArcApp) itArcsARecaler.next();
-      if (arc.getLiens(liens.getElements()).size() != 0) {
+    for (Arc a : ctARecaler.getPopArcs()) {
+      ArcApp arc = (ArcApp) a;
+      if (!arc.getLiens(liens.getElements()).isEmpty()) {
         continue;
       }
+      // construction du nouvel arc
       Arc nouvelArc = ctRecale.getPopArcs().nouvelElement();
       nouvelArc.setGeometrie(new GM_LineString((DirectPositionList) arc
           .getGeom().coord().clone())); // vraie duplication de
-      // géométrie (un peu tordu,
-      // certes)
+      // géométrie (un peu tordu, certes)
       Recalage.geometrieRecalee(arc, nouvelArc, liens);
+      if (!noeudsCopies.contains(arc.getNoeudIni())) {
+        // construction du nouveau noeud ini
+        Noeud nouveauNoeud = ctRecale.getPopNoeuds().nouvelElement();
+        nouveauNoeud.setGeom(nouvelArc.getGeometrie().getControlPoint(0)
+            .toGM_Point());
+        nouveauNoeud.setCorrespondants(arc.getNoeudIni().getCorrespondants());
+        noeudsCopies.add(arc.getNoeudIni());
+      }
+      if (!noeudsCopies.contains(arc.getNoeudFin())) {
+        // construction du nouveau noeud fin
+        Noeud nouveauNoeud = ctRecale.getPopNoeuds().nouvelElement();
+        nouveauNoeud.setGeom(nouvelArc.getGeometrie()
+            .getControlPoint(nouvelArc.getGeometrie().sizeControlPoint() - 1)
+            .toGM_Point());
+        nouveauNoeud.setCorrespondants(arc.getNoeudFin().getCorrespondants());
+        noeudsCopies.add(arc.getNoeudFin());
+      }
     }
+    noeudsCopies.clear();
+    // ctRecale.creeNoeudsManquants(0);
+    // ctRecale.fusionNoeuds(0);
     return ctRecale;
   }
 
@@ -118,33 +161,26 @@ public class Recalage {
         .getElements());
     GM_LineString nouvelleGeometrie = new GM_LineString(
         (DirectPositionList) arcARecaler.getGeom().coord().clone());
-    GM_LineString geomTmp;
-    double longueur, abscisse;
-    Vecteur decalage, decalageCourant;
-    DirectPosition ptCourant;
-    int i;
-
+    // si le noeud initial de l'arc à recalé est apparié avec le réseau comp
     if (liensDuNoeudARecalerIni.size() == 1) {
-      // si le noeud initial de l'arc à recalé est apparié avec le réseau
-      // comp
       if ((liensDuNoeudARecalerIni.get(0)).getNoeuds2().size() == 1) {
         noeudRecaleIni = (NoeudApp) (liensDuNoeudARecalerIni.get(0))
-            .getNoeuds2().get(0);
+        .getNoeuds2().get(0);
         nouvelleGeometrie.setControlPoint(0, noeudRecaleIni.getGeometrie()
             .getPosition());
 
-        decalage = new Vecteur(noeudARecalerIni.getCoord(), noeudRecaleIni
+        Vecteur decalage = new Vecteur(noeudARecalerIni.getCoord(), noeudRecaleIni
             .getCoord());
-        geomTmp = new GM_LineString((DirectPositionList) nouvelleGeometrie
+        GM_LineString geomTmp = new GM_LineString((DirectPositionList) nouvelleGeometrie
             .coord().clone());
-        longueur = nouvelleGeometrie.length();
-        abscisse = 0;
-        for (i = 1; i < nouvelleGeometrie.coord().size() - 1; i++) {
-          ptCourant = geomTmp.coord().get(i);
+        double longueur = nouvelleGeometrie.length();
+        double abscisse = 0;
+        for (int i = 1; i < nouvelleGeometrie.coord().size() - 1; i++) {
+          DirectPosition ptCourant = geomTmp.coord().get(i);
           abscisse = abscisse
-              + geomTmp.getControlPoint(i).distance(
-                  geomTmp.getControlPoint(i - 1));
-          decalageCourant = decalage.multConstante(1 - abscisse / longueur);
+          + geomTmp.getControlPoint(i).distance(
+              geomTmp.getControlPoint(i - 1));
+          Vecteur decalageCourant = decalage.multConstante(1 - abscisse / longueur);
           nouvelleGeometrie.setControlPoint(i, decalageCourant
               .translate(ptCourant));
         }
@@ -155,29 +191,27 @@ public class Recalage {
     if (liensDuNoeudARecalerFin.size() == 1) {
       if ((liensDuNoeudARecalerFin.get(0)).getNoeuds2().size() == 1) {
         noeudRecaleFin = (NoeudApp) (liensDuNoeudARecalerFin.get(0))
-            .getNoeuds2().get(0);
+        .getNoeuds2().get(0);
         nouvelleGeometrie.setControlPoint(nouvelleGeometrie.coord().size() - 1,
             noeudRecaleFin.getGeometrie().getPosition());
 
-        decalage = new Vecteur(noeudARecalerFin.getCoord(), noeudRecaleFin
+        Vecteur decalage = new Vecteur(noeudARecalerFin.getCoord(), noeudRecaleFin
             .getCoord());
-        geomTmp = new GM_LineString((DirectPositionList) nouvelleGeometrie
+        GM_LineString geomTmp = new GM_LineString((DirectPositionList) nouvelleGeometrie
             .coord().clone());
-        longueur = nouvelleGeometrie.length();
-        abscisse = 0;
-        for (i = nouvelleGeometrie.coord().size() - 2; i > 0; i--) {
-          ptCourant = geomTmp.coord().get(i);
+        double longueur = nouvelleGeometrie.length();
+        double abscisse = 0;
+        for (int i = nouvelleGeometrie.coord().size() - 2; i > 0; i--) {
+          DirectPosition ptCourant = geomTmp.coord().get(i);
           abscisse = abscisse
-              + geomTmp.getControlPoint(i).distance(
-                  geomTmp.getControlPoint(i + 1));
-          decalageCourant = decalage.multConstante(1 - abscisse / longueur);
+          + geomTmp.getControlPoint(i).distance(
+              geomTmp.getControlPoint(i + 1));
+          Vecteur decalageCourant = decalage.multConstante(1 - abscisse / longueur);
           nouvelleGeometrie.setControlPoint(i, decalageCourant
               .translate(ptCourant));
         }
       }
     }
-
     arcRecale.setGeom(nouvelleGeometrie);
   }
-
 }
