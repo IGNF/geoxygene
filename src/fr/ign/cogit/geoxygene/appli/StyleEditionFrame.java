@@ -519,8 +519,12 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
 
   /**
    * This method creates and return the color preview panel. It contains 3
-   * components : - the raw color, - the level of transparency, - the final
-   * color (raw color + transparency)
+   * components :
+   * <ul>
+   * <li>- the raw color,</li>
+   * <li>- the level of transparency,</li>
+   * <li>- the final color (raw color + transparency)</li>
+   * </ul>
    * @param c the raw color of the style to be modified.
    * @param transparency the transparency of the style to be modified.
    * @return the color preview panel.
@@ -1071,6 +1075,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       this.layerLegendPanel.getSld().fireActionPerformed(null);
       this.layerLegendPanel.repaint();
       this.layerViewPanel.repaint();
+      this.updateLayer();
       ((JFrame) StyleEditionFrame.this).dispose();
     }
   }
