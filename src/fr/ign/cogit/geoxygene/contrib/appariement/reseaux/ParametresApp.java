@@ -79,6 +79,8 @@ public class ParametresApp implements Cloneable {
    * Utile ensuite pour l'appariement des arcs.
    */
   public boolean populationsArcsAvecOrientationDouble = true;
+  public String attributOrientation1 = "orientation"; //$NON-NLS-1$
+  public String attributOrientation2 = "orientation"; //$NON-NLS-1$
 
   // ///////////////////////////////////////////////////////////////////////////////
   // /////////////// TAILLES DE RECHERCHE ///////////////////////

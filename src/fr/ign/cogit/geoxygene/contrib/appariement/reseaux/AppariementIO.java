@@ -294,7 +294,39 @@ public final class AppariementIO {
         if (paramApp.populationsArcsAvecOrientationDouble) {
           arc.setOrientation(2);
         } else {
-          arc.setOrientation(1);
+          String attribute = (ref) ? paramApp.attributOrientation1 : paramApp.attributOrientation2;
+          if (attribute.isEmpty()) {
+            arc.setOrientation(1);
+          } else {
+            Object value = element.getAttribute(attribute);
+            System.out.println(value);
+            if (value instanceof Number) {
+              Number v = (Number) value;
+              arc.setOrientation(v.intValue());
+            } else {
+              if (value instanceof String) {
+                String v = (String) value;
+                try {
+                  arc.setOrientation(Integer.parseInt(v));
+                } catch (Exception e) {
+                  // FIXME Pretty specfific to BDTOPO Schema... no time to
+                  // make it better
+                  if (v.equalsIgnoreCase("direct")) {
+                    arc.setOrientation(1);
+                  } else {
+                    if (v.equalsIgnoreCase("inverse")) {
+                      arc.setOrientation(-1);
+                    } else {
+                      arc.setOrientation(2);
+                    }
+                  }
+                }
+              } else {
+                LOGGER.error("Attribute " + attribute
+                    + " is neither Number nor String. It can't be used as an orientation");
+              }
+            }
+          }
         }
         arc.addCorrespondant(element);
         // Le code ci-dessous permet un import plus fin mais a été
