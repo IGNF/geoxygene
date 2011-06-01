@@ -378,18 +378,23 @@ public class CarteTopo extends DataSet {
    */
   public void enleveArcs(List<Arc> arcsAEnlever) {
     for (Arc arc : arcsAEnlever) {
-      if (!this.getPopArcs().remove(arc)) {
-        if (CarteTopo.logger.isDebugEnabled()) {
-          CarteTopo.logger
-              .debug(I18N.getString("CarteTopo.DeletionFailed") + arc); //$NON-NLS-1$
-        }
-      }
-      arc.setNoeudFin(null);
-      arc.setNoeudIni(null);
-      arc.setFaceDroite(null);
-      arc.setFaceGauche(null);
+    	this.enleveArc(arc);
     }
   }
+  
+  public void enleveArc(Arc arcAEnlever) {
+      if (!this.getPopArcs().remove(arcAEnlever)) {
+        if (CarteTopo.logger.isDebugEnabled()) {
+          CarteTopo.logger
+              .debug(I18N.getString("CarteTopo.DeletionFailed") + arcAEnlever); //$NON-NLS-1$
+        }
+      }
+      arcAEnlever.setNoeudFin(null);
+      arcAEnlever.setNoeudIni(null);
+      arcAEnlever.setFaceDroite(null);
+      arcAEnlever.setFaceGauche(null);
+
+	  }
 
   /**
    * enlève les arcs qui forment une boucle, i.e. dont le noeud ini est égal au
@@ -413,21 +418,14 @@ public class CarteTopo extends DataSet {
    * @param noeudsAEnlever noeuds à enlever de la carte topo
    */
   public void enleveNoeuds(List<Noeud> noeudsAEnlever) {
-    Iterator<Noeud> itNoeuds = noeudsAEnlever.iterator();
-    Iterator<Arc> itArcs;
-    Noeud noeud;
-    Arc arc;
-    while (itNoeuds.hasNext()) {
-      noeud = itNoeuds.next();
+    for (Noeud noeud : noeudsAEnlever) {
       this.getPopNoeuds().remove(noeud);
-      itArcs = noeud.getEntrants().iterator();
-      while (itArcs.hasNext()) {
-        arc = itArcs.next();
+      List<Arc> entrants = new ArrayList<Arc>(noeud.getEntrants());
+      for (Arc arc : entrants) {
         arc.setNoeudFin(null);
       }
-      itArcs = noeud.getSortants().iterator();
-      while (itArcs.hasNext()) {
-        arc = itArcs.next();
+      List<Arc> sortants = new ArrayList<Arc>(noeud.getSortants());
+      for (Arc arc : sortants) {
         arc.setNoeudIni(null);
       }
     }
@@ -2338,6 +2336,12 @@ public class CarteTopo extends DataSet {
     this.emptyPopulations();
   }
 
+public void enleveNoeud(Noeud n) {
+	this.getPopNoeuds().remove(n);
+	this.enleveArcs(n.arcs());
+	
+}
+
   public void decoupeArcs(double distance) {
     List<Arc> edgesToRemove = new ArrayList<Arc>(0);
     List<Arc> edgesToAdd = new ArrayList<Arc>(0);
@@ -2346,15 +2350,15 @@ public class CarteTopo extends DataSet {
       intersectedNodes.remove(arc.getNoeudIni());
       intersectedNodes.remove(arc.getNoeudFin());
       if (!intersectedNodes.isEmpty()) {
-        logger.error("Remaing " + intersectedNodes.size() + " nodes");
-        logger.error("edge " + arc.getGeometrie());
+        logger.error("Remaing " + intersectedNodes.size() + " nodes"); //$NON-NLS-1$ //$NON-NLS-2$
+        logger.error("edge " + arc.getGeometrie()); //$NON-NLS-1$
         List<GM_LineString> lines = new ArrayList<GM_LineString>(0);
         lines.add(arc.getGeometrie());
         for (Noeud node : intersectedNodes) {
           DirectPosition point = node.getGeometrie().getPosition();
           // force the node to be 2d
           point.setCoordinate(2, Double.NaN);
-          logger.error("node " + node.getGeometrie());
+          logger.error("node " + node.getGeometrie()); //$NON-NLS-1$
           GM_LineString line = null;
           double min = Double.POSITIVE_INFINITY;
           for (GM_LineString l : lines) {
@@ -2374,10 +2378,13 @@ public class CarteTopo extends DataSet {
               projectNode = p;
             }
           }
-          logger.error("projectNode = " + new GM_Point(projectNode));
+          logger.error("projectNode = " + new GM_Point(projectNode)); //$NON-NLS-1$
           projectNode.setCoordinate(point.getCoordinate());
-          logger.error("projectNode = " + new GM_Point(projectNode));
-          logger.error("nodedLine = " + nodedLine);
+          logger.error("projectNode = " + new GM_Point(projectNode)); //$NON-NLS-1$
+          logger.error("nodedLine = " + nodedLine); //$NON-NLS-1$
+          if (projectNode == null) {
+        	  continue;
+          }
           DirectPositionList list1 = new DirectPositionList();
           DirectPositionList list2 = new DirectPositionList();
           boolean found = false;
@@ -2400,7 +2407,7 @@ public class CarteTopo extends DataSet {
             lines.add(new GM_LineString(list2));
           }
         }
-        logger.error("Decomposed into " + lines.size() + " lines");
+        logger.error("Decomposed into " + lines.size() + " lines"); //$NON-NLS-1$ //$NON-NLS-2$
         edgesToRemove.add(arc);
         for (GM_LineString l : lines) {
           logger.error(l);

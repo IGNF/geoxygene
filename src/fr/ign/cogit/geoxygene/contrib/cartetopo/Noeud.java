@@ -997,4 +997,15 @@ public class Noeud extends ElementCarteTopo {
 	public void setDistance(double distance) {
 		this.distance = distance;
 	}
+	
+	/**
+	 * Supprime un arc du noeud.
+	 * @param arc
+	 */
+	public void enleveArc(Arc arc) {
+		if(this.entrants.contains(arc))
+			this.entrants.remove(arc);
+		else
+			this.sortants.remove(arc);
+	}
 }
