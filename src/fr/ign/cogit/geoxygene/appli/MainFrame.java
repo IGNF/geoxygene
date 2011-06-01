@@ -33,6 +33,7 @@ import java.beans.PropertyVetoException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
@@ -53,7 +54,10 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.event.CoordPaintListener;
 import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
+import fr.ign.cogit.geoxygene.feature.FT_Feature;
+import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
  * @author Julien Perret
@@ -216,6 +220,38 @@ public class MainFrame extends JFrame {
             MainFrame.this.newProjectFrame();
           }
         });
+    
+    JMenuItem saveAsShpMenuItem = new JMenuItem(I18N.getString("MainFrame.SaveAsShp")); //$NON-NLS-1$
+    saveAsShpMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        @Override
+		public void actionPerformed(final ActionEvent e) {
+			ProjectFrame project = MainFrame.this.getSelectedProjectFrame();
+			Set<Layer> selectedLayers = project.getLayerLegendPanel().getSelectedLayers();
+			if (selectedLayers.size() != 1) {
+				logger.error("You must select one (and only one) layer."); //$NON-NLS-1$
+				return;
+			}
+			Layer layer = selectedLayers.iterator().next();
+		
+			FT_FeatureCollection<? extends FT_Feature> layerfeatures = layer
+					.getFeatureCollection();
+			if (layerfeatures == null) {
+				logger.error("The layer selected does not contain any feature."); //$NON-NLS-1$
+				return;
+			}
+	        JFileChooser chooser = new JFileChooser(MainFrame.fc
+	                .getPreviousDirectory());
+	            int result = chooser.showSaveDialog(MainFrame.this);
+	            if (result == JFileChooser.APPROVE_OPTION) {
+	              File file = chooser.getSelectedFile();
+	              if (file != null) {
+	                String fileName = file.getAbsolutePath();
+	                project.saveAsShp(fileName, layer);
+	              }
+	            }
+        }
+    });
+    
     JMenuItem saveAsImageMenuItem = new JMenuItem(I18N
         .getString("MainFrame.SaveAsImage")); //$NON-NLS-1$
     saveAsImageMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -243,11 +279,15 @@ public class MainFrame extends JFrame {
         }
       }
     });
+    
+    
     JMenuItem printMenu = new JMenuItem(I18N.getString("MainFrame.Print")); //$NON-NLS-1$
     printMenu.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent arg0) {
+      @Override
+	public void actionPerformed(ActionEvent arg0) {
         Thread th = new Thread(new Runnable() {
-          public void run() {
+          @Override
+		public void run() {
             try {
               PrinterJob printJob = PrinterJob.getPrinterJob();
               printJob.setPrintable(MainFrame.this.getSelectedProjectFrame()
@@ -284,6 +324,7 @@ public class MainFrame extends JFrame {
     fileMenu.add(openFileMenuItem);
     fileMenu.add(newProjectFrameMenuItem);
     fileMenu.addSeparator();
+    fileMenu.add(saveAsShpMenuItem);
     fileMenu.add(saveAsImageMenuItem);
     fileMenu.add(printMenu);
     fileMenu.addSeparator();

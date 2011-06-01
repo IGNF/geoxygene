@@ -41,6 +41,7 @@ import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.GeometryFactory;
 
@@ -70,7 +71,7 @@ public class ShapefileWriter {
    */
   @SuppressWarnings("unchecked")
   public static <Feature extends FT_Feature> void write(
-      FT_FeatureCollection<Feature> featureCollection, String shapefileName) {
+      FT_FeatureCollection<Feature> featureCollection, String shapefileName, CoordinateReferenceSystem crs) {
     if (featureCollection.isEmpty()) {
       return;
     }
@@ -146,6 +147,8 @@ public class ShapefileWriter {
         collection.add(simpleFeature);
       }
       featureStore.addFeatures(collection);
+      if(crs != null)
+    	  store.forceSchemaCRS(crs);
       t.commit();
       t.close();
       store.dispose();
@@ -212,7 +215,7 @@ public class ShapefileWriter {
    * 
    */
   public static <Feature extends FT_Feature> void chooseAndWriteShapefile(
-      FT_FeatureCollection<Feature> featureCollection) {
+      FT_FeatureCollection<Feature> featureCollection, CoordinateReferenceSystem crs) {
     JFileChooser choixFichierShape = new JFileChooser();
     choixFichierShape.setFileFilter(new FileFilter() {
       @Override
@@ -245,7 +248,7 @@ public class ShapefileWriter {
             .getString("ShapefileWriter.YouChoseToSaveThisFile") //$NON-NLS-1$
             + shapefileName);
       }
-      ShapefileWriter.write(featureCollection, shapefileName);
+      ShapefileWriter.write(featureCollection, shapefileName, crs);
     }
   }
 }

@@ -25,6 +25,8 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 
@@ -112,4 +114,7 @@ public interface Layer {
   public String getActiveGroup();
   public void setActiveGroup(String activeGroup);
   public Collection<String> getGroups();
+
+  public void setCRS(CoordinateReferenceSystem crs);
+  public CoordinateReferenceSystem getCRS();
 }

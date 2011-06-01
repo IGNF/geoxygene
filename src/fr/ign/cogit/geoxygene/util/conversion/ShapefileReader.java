@@ -43,8 +43,10 @@ import org.geotools.data.shapefile.shp.ShapefileException;
 import org.geotools.data.shapefile.shp.ShapefileReader.Record;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
 
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.feature.DataSet;
@@ -83,11 +85,12 @@ public class ShapefileReader implements Runnable {
   String shapefileName;
   String populationName;
   DataSet dataset;
+  CoordinateReferenceSystem crs;
   SchemaDefaultFeature schemaDefaultFeature;
   FeatureSource<SimpleFeatureType, SimpleFeature> source;
   Population<DefaultFeature> population;
   Reader reader = null;
-
+  
   public Reader getReader() {
     return this.reader;
   }
@@ -124,6 +127,7 @@ public class ShapefileReader implements Runnable {
    */
   public ShapefileReader(String shapefileName, String populationName,
       DataSet dataset, boolean initSpatialIndex) {
+	
     this.shapefileName = shapefileName;
     this.populationName = populationName;
     this.dataset = dataset;
@@ -135,6 +139,7 @@ public class ShapefileReader implements Runnable {
     /** Initialise le schéma */
     this.reader = ShapefileReader.initSchema(shapefileName,
         this.schemaDefaultFeature, this.population, initSpatialIndex);
+    this.crs = this.reader.getCRS();
   }
 
   /**
@@ -469,6 +474,11 @@ public class ShapefileReader implements Runnable {
   public double getMinY() {
     return this.reader.getMinY();
   }
+  
+  public CoordinateReferenceSystem getCRS(){
+	  return this.crs;
+  }
+
 }
 
 /**
@@ -489,6 +499,7 @@ class Reader {
   Class<?>[] fieldClasses;
   Geometry[] geometries;
   Class<? extends GM_Object> shapeType;
+  CoordinateReferenceSystem localCRS;
 
   public Reader(String shapefileName) throws MalformedURLException {
     this.shapefileName = shapefileName;
@@ -498,8 +509,7 @@ class Reader {
     ShpFiles shpf;
     shpf = new ShpFiles(shapefileName);
     try {
-      shapefileReader = new org.geotools.data.shapefile.shp.ShapefileReader(
-          shpf, true, false);
+      shapefileReader = new org.geotools.data.shapefile.shp.ShapefileReader(shpf, true, false, new GeometryFactory());
       dbaseFileReader = new org.geotools.data.shapefile.dbf.DbaseFileReader(
           shpf, true, Charset.forName("ISO-8859-1")); //$NON-NLS-1$
     } catch (FileNotFoundException e) {
@@ -541,7 +551,7 @@ class Reader {
             + shapefileName);
       }
     }
-
+    
     this.minX = shapefileReader.getHeader().minX();
     this.maxX = shapefileReader.getHeader().maxX();
     this.minY = shapefileReader.getHeader().minY();
@@ -557,19 +567,33 @@ class Reader {
       this.fieldNames[i] = dbaseFileReader.getHeader().getFieldName(i);
       this.fieldClasses[i] = dbaseFileReader.getHeader().getFieldClass(i);
       logger.debug("field " + i + " = " + this.fieldNames[i]);
-    }
-    // FIXME gère le SRID
-    // System.out.println("code = "
-    // + prjFileReader.getCoodinateSystem().getName().getCode());
-    // System.out.println("SRS="
-    // + CRS.toSRS(prjFileReader.getCoodinateSystem()));
+    }    
     /*
-     * try { System.out.println("SRS="+CRS.lookupIdentifier(prjFileReader
-     * .getCoodinateSystem(),true));
-     * System.out.println("SRS="+CRS.lookupEpsgCode(prjFileReader
-     * .getCoodinateSystem(),true)); } catch (FactoryException e1) {
-     * e1.printStackTrace(); }
-     */
+    // FIXME gère le SRID
+    String wkt = "PROJCS[\"unnamed\",GEOGCS[\"DHDN\",DATUM[\"Deutsches_Hauptdreiecksnetz\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],TOWGS84[606,23,413,0,0,0,0],AUTHORITY[\"EPSG\",\"6314\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4314\"]],PROJECTION[\"Cassini_Soldner\"],PARAMETER[\"latitude_of_origin\",52.41864827777778],PARAMETER[\"central_meridian\",13.62720366666667],PARAMETER[\"false_easting\",40000],PARAMETER[\"false_northing\",10000],UNIT[\"Meter\",1]]";
+    // String wkt ="PROJCS[\"NAD_1983_StatePlane_Massachusetts_Mainland_FIPS_2001\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\", 6378137.0, 298.257222101]],PRIMEM[\"Greenwich\", 0.0], UNIT[\"degree\", 0.017453292519943295],AXIS[\"Longitude\", EAST],AXIS[\"Latitude\", NORTH]],PROJECTION[\"Lambert_Conformal_Conic\"], PARAMETER[\"central_meridian\", -71.5],PARAMETER[\"latitude_of_origin\", 41.0],PARAMETER[\"standard_parallel_1\", 41.71666666666667],PARAMETER[\"scale_factor\", 1.0],PARAMETER[\"false_easting\", 200000.0],PARAMETER[\"false_northing\", 750000.0],PARAMETER[\"standard_parallel_2\", 42.68333333333334],UNIT[\"m\", 1.0],AXIS[\"x\", EAST],AXIS[\"y\", NORTH]] ";
+    	CoordinateReferenceSystem example;
+		try {
+			System.out.println(GeoTools.getVersion());
+			example = CRS.parseWKT(wkt);
+		} catch (FactoryException e3) {
+			// TODO Auto-generated catch block
+			e3.printStackTrace();
+		}
+  System.out.println(prjFileReader.getCoodinateSystem());
+    System.out.println("code = "
+     + prjFileReader.getCoodinateSystem().getName().getCode());
+     System.out.println("SRS="
+     + CRS.toSRS(prjFileReader.getCoodinateSystem()));
+
+      try { System.out.println("SRS="+CRS.lookupIdentifier(prjFileReader
+      .getCoodinateSystem(),true));
+      System.out.println("SRS="+CRS.lookupEpsgCode(prjFileReader
+      .getCoodinateSystem(),true)); } catch (FactoryException e1) {
+      e1.printStackTrace(); }
+      */
+    if(prjFileReader != null)
+    	this.localCRS = prjFileReader.getCoodinateSystem();
     this.geometries = new Geometry[this.nbFeatures];
     int indexFeatures = 0;
     try {
@@ -687,5 +711,8 @@ class Reader {
       return GM_MultiSurface.class;
     }
     return GM_MultiSurface.class;
+  }
+  public CoordinateReferenceSystem getCRS(){
+	  return this.localCRS;
   }
 }

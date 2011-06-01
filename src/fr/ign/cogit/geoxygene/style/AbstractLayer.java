@@ -43,12 +43,17 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
 /**
  * @author Julien Perret
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractLayer implements Layer {
+
+
 
   @XmlElement(name = "Name", required = true)
   private String name;
@@ -155,6 +160,11 @@ public abstract class AbstractLayer implements Layer {
   @XmlTransient
   private String activeGroup;
 
+  //XXX Maybe move the CRS in FeatureTypeStyle.
+  @XmlTransient
+  private CoordinateReferenceSystem ftscrs;
+ 
+  @Override
   public String getActiveGroup() {
     return activeGroup;
   }
@@ -170,5 +180,29 @@ public abstract class AbstractLayer implements Layer {
       }
     }
     return groups;
+  }
+
+  /**
+   * Affecte la valeur de l'attribut CRS
+   */
+  @Override
+public void setCRS(CoordinateReferenceSystem crs){
+	  this.ftscrs = crs;
+  }
+  
+  /**
+   * Crée un CRS a partir d'un crs sous forme de chaine de caractère WKT.
+   * @param scrs
+   */
+  public void setCRSFromWKTString(String scrs){
+	  try{
+		  this.ftscrs = CRS.parseWKT(scrs);
+	  }catch (Exception e) {
+		  e.printStackTrace();
+	  }
+  }
+  
+  public CoordinateReferenceSystem getCRS(){
+	  return this.ftscrs;
   }
 }

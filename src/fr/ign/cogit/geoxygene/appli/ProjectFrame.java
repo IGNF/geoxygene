@@ -62,6 +62,7 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.util.conversion.ArcGridReader;
 import fr.ign.cogit.geoxygene.util.conversion.GeoTiffReader;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
+import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 
 /**
  * Project Frame.
@@ -189,11 +190,23 @@ public class ProjectFrame extends JInternalFrame implements
    * @param name the name of the population
    */
   public final Layer addFeatureCollection(
-      final Population<? extends FT_Feature> population, final String name) {
+      final Population<? extends FT_Feature> population, final String name, CoordinateReferenceSystem crs) {
     Layer layer = this.sld.createLayer(name, population.getFeatureType()
         .getGeometryType());
+    layer.setCRS(crs);
     this.addLayer(layer);
     return layer;
+  }
+  
+  /**
+   * @author Bertrand Dumenieu
+   * @deprecated
+   * This function should not be longer used since layers include now a CRS.
+   * Only here to ensure backward compatibility 
+   */
+  public final Layer addFeatureCollection(
+	      final Population<? extends FT_Feature> population, final String name){
+	  return this.addFeatureCollection(population, name, null);
   }
 
   /**
@@ -257,7 +270,7 @@ public class ProjectFrame extends JInternalFrame implements
 
     Population<DefaultFeature> population = shapefileReader.getPopulation();
     if (population != null) {
-      this.addFeatureCollection(population, population.getNom());
+      this.addFeatureCollection(population, population.getNom(), shapefileReader.getCRS());
     }
     shapefileReader.read();
     if (this.getLayers().size() == 1) {
@@ -533,5 +546,19 @@ public class ProjectFrame extends JInternalFrame implements
    */
   public void saveAsImage(String fileName) {
     this.getLayerViewPanel().saveAsImage(fileName);
+  }
+  
+  /**
+   * Saves a layer into an ESRI Shapefile
+   * @param fileName
+   * @param layer
+   */
+  public void saveAsShp(String fileName, Layer layer) {
+	try{
+		ShapefileWriter.write(layer.getFeatureCollection(), fileName, layer.getCRS());
+	}catch (Exception e) {
+		logger.error("Shapefile export failed! See stack trace below : "); //$NON-NLS-1$
+		e.printStackTrace();
+	}
   }
 }
