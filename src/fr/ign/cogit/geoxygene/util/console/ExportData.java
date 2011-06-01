@@ -188,7 +188,7 @@ public class ExportData extends JPanel {
 
       FT_FeatureCollection<?> ftfc = data.loadAllFeatures(javaClass);
 
-      ShapefileWriter.write(ftfc, shapefileName);
+      ShapefileWriter.write(ftfc, shapefileName,null);
 
       ObjectViewer.flagWindowClosing = false;
       ObjectViewer viewer = new ObjectViewer(data);
