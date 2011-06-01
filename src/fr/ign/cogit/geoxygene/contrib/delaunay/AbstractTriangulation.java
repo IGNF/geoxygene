@@ -65,6 +65,11 @@ public abstract class AbstractTriangulation extends CarteTopo {
     public Population<Face> getPopVoronoiFaces() {
         return this.voronoiDiagram.getPopFaces();
     }
+    
+    /** Le diagramme de Voronoi sous la forme d'une carte Topo*/
+    public CarteTopo getVoronoiDiagram(){
+    	return this.voronoiDiagram;
+    }
     /**
      * Run the triangulation with default parameters.
      * @throws Exception
