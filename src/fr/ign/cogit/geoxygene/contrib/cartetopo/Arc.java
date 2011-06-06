@@ -45,6 +45,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  * @author Sébastien Mustière
  * @author Olivier Bonin
  * @author Julien Perret
+ * @author Jean-François Girres
  */
 
 public class Arc extends ElementCarteTopo {
@@ -1009,7 +1010,8 @@ public class Arc extends ElementCarteTopo {
    */
   public void setPendant(boolean pendant) {
     this.pendant = pendant;
-    if (pendant && !this.getFaceDroite().getArcsPendants().contains(this)) {
+    if (this.getFaceDroite() != null && pendant
+        && !this.getFaceDroite().getArcsPendants().contains(this)) {
       this.getFaceDroite().getArcsPendants().add(this);
     }
   }
