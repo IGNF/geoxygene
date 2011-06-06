@@ -81,6 +81,12 @@ public class Arc extends ElementCarteTopo {
   }
 
   /** définit la liste de DirectPosition qui définit les coordonnées de self */
+  public void setCoord(DirectPosition dp1, DirectPosition dp2) {
+    this.setGeometrie(new GM_LineString(new DirectPositionList(Arrays.asList(
+        dp1, dp2))));
+  }
+
+  /** définit la liste de DirectPosition qui définit les coordonnées de self */
   public void setCoord(DirectPositionList dpl) {
     this.geom = new GM_LineString(dpl);
   }
