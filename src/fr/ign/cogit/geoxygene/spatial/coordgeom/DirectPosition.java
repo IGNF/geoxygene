@@ -331,12 +331,22 @@ public class DirectPosition {
    * @return the distance between this DirectPosition and <code>d</code>
    */
   public double distance(DirectPosition d) {
-    double dx = this.getX() - d.getX();
-    double dy = this.getY() - d.getY();
     if (!Double.isNaN(this.getZ()) && !Double.isNaN(d.getZ())) {
+      double dx = this.getX() - d.getX();
+      double dy = this.getY() - d.getY();
       double dz = this.getZ() - d.getZ();
       return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
+    return distance2D(d);
+  }
+  /**
+   * Calcul de la distance 2D entre deux directPosition
+   * @param d a DirectPosition
+   * @return the distance between this DirectPosition and <code>d</code>
+   */
+  public double distance2D(DirectPosition d) {
+    double dx = this.getX() - d.getX();
+    double dy = this.getY() - d.getY();
     return Math.sqrt(dx * dx + dy * dy);
   }
 

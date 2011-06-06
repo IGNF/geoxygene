@@ -29,6 +29,7 @@
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -105,6 +106,11 @@ public class GM_LineString extends GM_CurveSegment {
   /** Constructeur par defaut. */
   public GM_LineString() {
     this(new DirectPositionList());
+  }
+
+  /** Constructeur par defaut. */
+  public GM_LineString(DirectPosition... list) {
+    this(new DirectPositionList(Arrays.asList(list)));
   }
 
   /** Constructeur à partir d'une liste de DirectPosition. */
