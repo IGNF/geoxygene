@@ -16,12 +16,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.persister.entity.AbstractEntityPersister;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.hibernatespatial.criterion.SpatialRestrictions;
 import org.odmg.OQLQuery;
+
+import com.vividsolutions.jts.geom.GeometryFactory;
 
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.datatools.Metadata;
@@ -30,6 +34,7 @@ import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 
 /**
  * @author Julien Perret
@@ -294,9 +299,22 @@ public class GeodatabaseHibernate implements Geodatabase {
             + " = " + value).list(); //$NON-NLS-1$
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public <T extends FT_Feature> FT_FeatureCollection<T> loadAllFeatures(
       Class<T> featureClass, GM_Object geom) {
+    Criteria criteria = session.createCriteria(featureClass);
+    try {
+      criteria.add(SpatialRestrictions.within("geom", AdapterFactory.toGeometry(new GeometryFactory(), geom))); //$NON-NLS-1$
+      FT_FeatureCollection<T> result = new FT_FeatureCollection<T>();
+      List<?> list = criteria.list();
+      for (Object o : list) {
+        result.add((T) o);
+      }
+      return result;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     return null;
   }
 
@@ -305,7 +323,7 @@ public class GeodatabaseHibernate implements Geodatabase {
    * liste d'identifants. Usage interne.
    */
   private String createInQuery(List<?> idList, String className) {
-    String result = "select x from " //$NON-NLS-1$
+    String result = "select * from " //$NON-NLS-1$
         + className + " where id in ("; //$NON-NLS-1$
     StringBuffer strbuff = new StringBuffer(result);
     Iterator<?> i = idList.iterator();
