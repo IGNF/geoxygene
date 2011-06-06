@@ -35,6 +35,13 @@ import fr.ign.cogit.geoxygene.feature.Population;
  * @version 1.0
  */
 public class Groupe extends ElementCarteTopo {
+  private double length = 0.0;
+  public double getLength() {
+    return this.length;
+  }
+  public void setLength(double length) {
+    this.length = length;
+  }
 
   public Groupe() {
   }
@@ -46,7 +53,7 @@ public class Groupe extends ElementCarteTopo {
   // /////////////////////////////////////////////////
 
   /* Noeuds composants du groupe */
-  private List<Noeud> listeNoeuds = new ArrayList<Noeud>();
+  private List<Noeud> listeNoeuds = new ArrayList<Noeud>(0);
 
   /** Renvoie la liste des noeuds de self */
   public List<Noeud> getListeNoeuds() {
@@ -78,7 +85,7 @@ public class Groupe extends ElementCarteTopo {
   }
 
   /* Arcs composants du groupe */
-  private List<Arc> listeArcs = new ArrayList<Arc>();
+  private List<Arc> listeArcs = new ArrayList<Arc>(0);
 
   /** Renvoie la liste des arcs de self */
   public List<Arc> getListeArcs() {
@@ -108,7 +115,7 @@ public class Groupe extends ElementCarteTopo {
   }
 
   /* Faces composants du groupe */
-  private List<Face> listeFaces = new ArrayList<Face>();
+  private List<Face> listeFaces = new ArrayList<Face>(0);
 
   /** Renvoie la liste des faces de self */
   public List<Face> getListeFaces() {
@@ -132,10 +139,8 @@ public class Groupe extends ElementCarteTopo {
 
   /** Ajoute une liste de faces à self **/
   public void addAllFaces(List<Face> liste) {
-    Iterator<Face> itObj = liste.iterator();
-    while (itObj.hasNext()) {
-      Face objet = itObj.next();
-      this.addFace(objet);
+    for (Face face : liste) {
+      this.addFace(face);
     }
   }
 
@@ -148,13 +153,10 @@ public class Groupe extends ElementCarteTopo {
    * hyper-noeud)
    */
   public List<Arc> getEntrants() {
-    List<Arc> arcs = new ArrayList<Arc>();
-    List<Arc> arcsDuNoeud = new ArrayList<Arc>();
-    int i, j;
-
-    for (i = 0; i < this.getListeNoeuds().size(); i++) {
-      arcsDuNoeud = (this.getListeNoeuds().get(i)).getEntrants();
-      for (j = 0; j < arcsDuNoeud.size(); j++) {
+    List<Arc> arcs = new ArrayList<Arc>(0);
+    for (int i = 0; i < this.getListeNoeuds().size(); i++) {
+      List<Arc> arcsDuNoeud = (this.getListeNoeuds().get(i)).getEntrants();
+      for (int j = 0; j < arcsDuNoeud.size(); j++) {
         if (!this.getListeArcs().contains(arcsDuNoeud.get(j))) {
           arcs.add(arcsDuNoeud.get(j));
         }
@@ -168,13 +170,10 @@ public class Groupe extends ElementCarteTopo {
    * hyper-noeud)
    */
   public List<Arc> getSortants() {
-    List<Arc> arcs = new ArrayList<Arc>();
-    List<Arc> arcsDuNoeud = new ArrayList<Arc>();
-    int i, j;
-
-    for (i = 0; i < this.getListeNoeuds().size(); i++) {
-      arcsDuNoeud = (this.getListeNoeuds().get(i)).getSortants();
-      for (j = 0; j < arcsDuNoeud.size(); j++) {
+    List<Arc> arcs = new ArrayList<Arc>(0);
+    for (int i = 0; i < this.getListeNoeuds().size(); i++) {
+      List<Arc> arcsDuNoeud = (this.getListeNoeuds().get(i)).getSortants();
+      for (int j = 0; j < arcsDuNoeud.size(); j++) {
         if (!this.getListeArcs().contains(arcsDuNoeud.get(j))) {
           arcs.add(arcsDuNoeud.get(j));
         }
@@ -189,7 +188,7 @@ public class Groupe extends ElementCarteTopo {
    * est 2 fois dans la liste
    */
   public List<Arc> getAdjacents() {
-    List<Arc> arcs = new ArrayList<Arc>();
+    List<Arc> arcs = new ArrayList<Arc>(this.getSortants().size() + this.getEntrants().size());
     arcs.addAll(this.getSortants());
     arcs.addAll(this.getEntrants());
     return arcs;
@@ -204,13 +203,10 @@ public class Groupe extends ElementCarteTopo {
    * hyper-noeud)
    */
   public List<Arc> entrantsOrientes() {
-    List<Arc> arcs = new ArrayList<Arc>();
-    List<Arc> arcsDuNoeud = new ArrayList<Arc>();
-    int i, j;
-
-    for (i = 0; i < this.getListeNoeuds().size(); i++) {
-      arcsDuNoeud = (this.getListeNoeuds().get(i)).entrantsOrientes();
-      for (j = 0; j < arcsDuNoeud.size(); j++) {
+    List<Arc> arcs = new ArrayList<Arc>(0);
+    for (int i = 0; i < this.getListeNoeuds().size(); i++) {
+      List<Arc> arcsDuNoeud = (this.getListeNoeuds().get(i)).entrantsOrientes();
+      for (int j = 0; j < arcsDuNoeud.size(); j++) {
         if (!this.getListeArcs().contains(arcsDuNoeud.get(j))) {
           arcs.add(arcsDuNoeud.get(j));
         }
@@ -224,13 +220,10 @@ public class Groupe extends ElementCarteTopo {
    * hyper-noeud)
    */
   public List<Arc> sortantsOrientes() {
-    List<Arc> arcs = new ArrayList<Arc>();
-    List<Arc> arcsDuNoeud = new ArrayList<Arc>();
-    int i, j;
-
-    for (i = 0; i < this.getListeNoeuds().size(); i++) {
-      arcsDuNoeud = (this.getListeNoeuds().get(i)).sortantsOrientes();
-      for (j = 0; j < arcsDuNoeud.size(); j++) {
+    List<Arc> arcs = new ArrayList<Arc>(0);
+    for (int i = 0; i < this.getListeNoeuds().size(); i++) {
+      List<Arc> arcsDuNoeud = (this.getListeNoeuds().get(i)).sortantsOrientes();
+      for (int j = 0; j < arcsDuNoeud.size(); j++) {
         if (!this.getListeArcs().contains(arcsDuNoeud.get(j))) {
           arcs.add(arcsDuNoeud.get(j));
         }
@@ -253,21 +246,17 @@ public class Groupe extends ElementCarteTopo {
    * chaque appel de la méthode.
    */
   public List<Object> arcsClasses() {
-    List<Arc> arcsClasses = new ArrayList<Arc>();
-    List<Boolean> arcsClassesOrientation = new ArrayList<Boolean>();
+    List<Arc> arcsClasses = new ArrayList<Arc>(0);
+    List<Boolean> arcsClassesOrientation = new ArrayList<Boolean>(0);
     List<Arc> arcsEntrants = new ArrayList<Arc>(this.getEntrants());
     List<Arc> arcsSortants = new ArrayList<Arc>(this.getSortants());
-    List<Arc> arcs = new ArrayList<Arc>();
-    List<Angle> angles = new ArrayList<Angle>();
-    List<Boolean> orientations = new ArrayList<Boolean>();
-    List<Object> resultat = new ArrayList<Object>();
+    List<Arc> arcs = new ArrayList<Arc>(0);
+    List<Angle> angles = new ArrayList<Angle>(0);
+    List<Boolean> orientations = new ArrayList<Boolean>(0);
+    List<Object> resultat = new ArrayList<Object>(0);
     Arc arc;
     Angle angle;
-    double angleMin, angleCourant;
-    int imin;
     Iterator<Arc> itArcs;
-    int i;
-
     // recherche de l'angle de départ de chaque arc sortant
     itArcs = arcsSortants.iterator();
     while (itArcs.hasNext()) {
@@ -288,11 +277,11 @@ public class Groupe extends ElementCarteTopo {
       orientations.add(new Boolean(true));
     }
     // classement des arcs
-    while (!(arcs.isEmpty())) {
-      angleMin = (angles.get(0)).getValeur();
-      imin = 0;
-      for (i = 1; i < arcs.size(); i++) {
-        angleCourant = (angles.get(i)).getValeur();
+    while (!arcs.isEmpty()) {
+      double angleMin = angles.get(0).getValeur();
+      int imin = 0;
+      for (int i = 1; i < arcs.size(); i++) {
+        double angleCourant = angles.get(i).getValeur();
         if (angleCourant < angleMin) {
           angleMin = angleCourant;
           imin = i;
@@ -322,9 +311,7 @@ public class Groupe extends ElementCarteTopo {
     for (Arc arc : this.getListeArcs()) {
       arc.getListeGroupes().remove(this);
     }
-    Iterator<Noeud> itNoeuds = this.getListeNoeuds().iterator();
-    while (itNoeuds.hasNext()) {
-      Noeud noeud = itNoeuds.next();
+    for (Noeud noeud : this.getListeNoeuds()) {
       noeud.getListeGroupes().remove(this);
     }
     this.getListeArcs().clear();
@@ -371,12 +358,11 @@ public class Groupe extends ElementCarteTopo {
    * EST VIDE AU COURS DE LA METHODE PUIS ENLEVE DE LA CARTE TOPO.
    */
   public List<Groupe> decomposeConnexes() {
-    List<Groupe> groupesConnexes = new ArrayList<Groupe>();
+    List<Groupe> groupesConnexes = new ArrayList<Groupe>(0);
     Groupe groupeConnexe;
     Noeud amorce;
     Arc arc;
     int i;
-
     try {
       if (this.getPopulation() == null) {
         System.out.println("ATTENTION : le groupe " + this
@@ -407,7 +393,7 @@ public class Groupe extends ElementCarteTopo {
         return null;
       }
 
-      while (this.getListeNoeuds().size() != 0) {
+      while (!this.getListeNoeuds().isEmpty()) {
         groupeConnexe = (Groupe) this.getPopulation().nouvelElement();
         groupesConnexes.add(groupeConnexe);
         // le premier noeud de la liste des noeuds, vidée au fur et à mesure,
@@ -441,9 +427,8 @@ public class Groupe extends ElementCarteTopo {
   // ajoute le noeud au groupe connexe, cherche ses voisins, puis l'enlève du
   // goupe total
   private void ajouteVoisins(Noeud noeud, Groupe groupeTotal) {
-    List<Noeud> noeudsVoisins = new ArrayList<Noeud>();
+    List<Noeud> noeudsVoisins = new ArrayList<Noeud>(0);
     int i;
-
     if (this.getListeNoeuds().contains(noeud)) {
       return;
     }
@@ -475,10 +460,9 @@ public class Groupe extends ElementCarteTopo {
 
   /** somme des longueurs des arcs du groupe. */
   public double longueur() {
-    int i;
     double longueur = 0;
-    for (i = 0; i < this.getListeArcs().size(); i++) {
-      longueur = longueur + (this.getListeArcs().get(i)).longueur();
+    for (int i = 0; i < this.getListeArcs().size(); i++) {
+      longueur += this.getListeArcs().get(i).longueur();
     }
     return longueur;
   }
@@ -503,14 +487,10 @@ public class Groupe extends ElementCarteTopo {
    * fin de ses arcs dans le groupe. La topologie doit avoir été instanciée.
    */
   public void ajouteNoeuds() {
-    int i;
-    Noeud ini, fin;
-    Arc arc;
-
-    for (i = 0; i < this.getListeArcs().size(); i++) {
-      arc = this.getListeArcs().get(i);
-      ini = arc.getNoeudIni();
-      fin = arc.getNoeudFin();
+    for (int i = 0; i < this.getListeArcs().size(); i++) {
+      Arc arc = this.getListeArcs().get(i);
+      Noeud ini = arc.getNoeudIni();
+      Noeud fin = arc.getNoeudFin();
       if (ini != null) {
         if (!this.getListeNoeuds().contains(ini)) {
           this.addNoeud(ini);
@@ -524,5 +504,9 @@ public class Groupe extends ElementCarteTopo {
         }
       }
     }
+  }
+  @Override
+  public String toString() {
+    return this.getClass().getSimpleName() + " " + this.getGeom() + " " + this.longueur(); //$NON-NLS-1$ //$NON-NLS-2$
   }
 }
