@@ -106,7 +106,7 @@ public class Population<Feat extends FT_Feature> extends
    * @param nom nom de la population.
    */
   public Population(String nom) {
-    super();
+    this();
     this.setNom(nom);
   }
 
@@ -557,6 +557,7 @@ public class Population<Feat extends FT_Feature> extends
           .error("            Soit problème à la mise à jour de l'index "); //$NON-NLS-1$
       FT_FeatureCollection.logger
           .error("               Causes possibles : mise à jour automatique de l'index, mais l'objet n'a pas encore de géométrie"); //$NON-NLS-1$
+      e.printStackTrace();
       return null;
     }
   }
