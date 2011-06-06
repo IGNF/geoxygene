@@ -405,6 +405,16 @@
   		<name>Cogit-releases Repository</name>
   		<url>https://cogit-services.ign.fr/nexus-webapp-1.4.1/content/repositories/releases</url>
   	</repository>
+    <repository>
+        <id>hibernatespatial</id>
+        <name>hibernatespatial Repository</name>
+        <url>http://www.hibernatespatial.org/repository</url>
+    </repository>
+    <repository>
+        <id>jboss</id>
+        <name>jboss Repository</name>
+        <url>http://repository.jboss.org/maven2/</url>
+    </repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
@@ -572,6 +582,31 @@
     	<artifactId>jfreechart</artifactId>
     	<version>1.0.12</version>
 	</dependency>
+    <dependency>
+        <groupId>org.hibernatespatial</groupId>
+        <artifactId>hibernate-spatial</artifactId>
+        <version>1.0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.hibernatespatial</groupId>
+        <artifactId>hibernate-spatial-postgis</artifactId>
+        <version>1.0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.6.1</version>
+    </dependency>
+    <dependency>
+        <groupId>dom4j</groupId>
+        <artifactId>dom4j</artifactId>
+        <version>1.6.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.slf4j</groupId>
+    	<artifactId>slf4j-simple</artifactId>
+    	<version>1.6.0</version>
+    </dependency>
   </dependencies>
   <distributionManagement>
   	<downloadUrl>http://sourceforge.net/projects/oxygene-project/files/</downloadUrl>
