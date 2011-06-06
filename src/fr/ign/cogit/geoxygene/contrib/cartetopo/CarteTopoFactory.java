@@ -27,6 +27,7 @@ public class CarteTopoFactory {
       FT_FeatureCollection<? extends FT_Feature> collection, double threshold) {
     // Initialisation d'une nouvelle CarteTopo
     CarteTopo carteTopo = new CarteTopo(name);
+    carteTopo.setBuildInfiniteFace(false);
     // Récupération des arcs de la carteTopo
     Population<Arc> arcs = carteTopo.getPopArcs();
     // Import des arcs de la collection dans la carteTopo
