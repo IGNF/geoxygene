@@ -275,14 +275,20 @@ public class AdapterFactory {
     GM_Object result = null;
     if (geom instanceof Point) {
       result = new GM_Point(AdapterFactory.toDirectPosition(geom.getCoordinate()));
+      result.setCRS(geom.getSRID());
+      return result;
     }
     if (geom instanceof LinearRing) {
       result = new GM_Ring(new GM_LineString(AdapterFactory
           .toDirectPositionList(geom.getCoordinates())));
+      result.setCRS(geom.getSRID());
+      return result;
     }
     if (geom instanceof LineString) {
       result = new GM_LineString(AdapterFactory.toDirectPositionList(geom
           .getCoordinates()));
+      result.setCRS(geom.getSRID());
+      return result;
     }
     if (geom instanceof Polygon) {
       if (geom.isEmpty()) {
@@ -296,6 +302,8 @@ public class AdapterFactory {
           polygon.addInterior((GM_Ring) AdapterFactory.toGM_Object(ring));
         }
         result = polygon;
+        result.setCRS(geom.getSRID());
+        return result;
       }
     }
     if (geom instanceof MultiPoint) {
@@ -307,6 +315,8 @@ public class AdapterFactory {
         multiPoint.add(point);
       }
       result = multiPoint;
+      result.setCRS(geom.getSRID());
+      return result;
     }
     if (geom instanceof MultiLineString) {
       MultiLineString mls = (MultiLineString) geom;
@@ -318,6 +328,8 @@ public class AdapterFactory {
         multiLineString.add(lineString);
       }
       result = multiLineString;
+      result.setCRS(geom.getSRID());
+      return result;
     }
     if (geom instanceof MultiPolygon) {
       MultiPolygon mp = (MultiPolygon) geom;
@@ -328,6 +340,8 @@ public class AdapterFactory {
         multiPolygon.add(polygon);
       }
       result = multiPolygon;
+      result.setCRS(geom.getSRID());
+      return result;
     }
     if (geom instanceof GeometryCollection) {
       GeometryCollection gc = (GeometryCollection) geom;
@@ -336,6 +350,8 @@ public class AdapterFactory {
         aggregate.add(AdapterFactory.toGM_Object(gc.getGeometryN(i)));
       }
       result = aggregate;
+      result.setCRS(geom.getSRID());
+      return result;
     }
     if (result != null) {
       result.setCRS(geom.getSRID());
