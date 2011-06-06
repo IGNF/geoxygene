@@ -29,6 +29,7 @@ package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
@@ -81,6 +82,8 @@ public class ParametresApp implements Cloneable {
   public boolean populationsArcsAvecOrientationDouble = true;
   public String attributOrientation1 = "orientation"; //$NON-NLS-1$
   public String attributOrientation2 = "orientation"; //$NON-NLS-1$
+  public Map<Object, Integer> orientationMap1 = null;
+  public Map<Object, Integer> orientationMap2 = null;
 
   // ///////////////////////////////////////////////////////////////////////////////
   // /////////////// TAILLES DE RECHERCHE ///////////////////////

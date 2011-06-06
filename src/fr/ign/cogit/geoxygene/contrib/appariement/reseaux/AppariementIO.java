@@ -23,6 +23,7 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -295,35 +296,43 @@ public final class AppariementIO {
           arc.setOrientation(2);
         } else {
           String attribute = (ref) ? paramApp.attributOrientation1 : paramApp.attributOrientation2;
+          Map<Object, Integer> orientationMap = (ref) ? paramApp.orientationMap1 : paramApp.orientationMap2;
           if (attribute.isEmpty()) {
             arc.setOrientation(1);
           } else {
             Object value = element.getAttribute(attribute);
-            System.out.println(value);
-            if (value instanceof Number) {
-              Number v = (Number) value;
-              arc.setOrientation(v.intValue());
+//            System.out.println(attribute + " = " + value);
+            if (orientationMap != null) {
+              Integer orientation = orientationMap.get(value);
+              if (orientation != null) {
+                arc.setOrientation(orientation.intValue());
+              }
             } else {
-              if (value instanceof String) {
-                String v = (String) value;
-                try {
-                  arc.setOrientation(Integer.parseInt(v));
-                } catch (Exception e) {
-                  // FIXME Pretty specfific to BDTOPO Schema... no time to
-                  // make it better
-                  if (v.equalsIgnoreCase("direct")) {
-                    arc.setOrientation(1);
-                  } else {
-                    if (v.equalsIgnoreCase("inverse")) {
-                      arc.setOrientation(-1);
+              if (value instanceof Number) {
+                Number v = (Number) value;
+                arc.setOrientation(v.intValue());
+              } else {
+                if (value instanceof String) {
+                  String v = (String) value;
+                  try {
+                    arc.setOrientation(Integer.parseInt(v));
+                  } catch (Exception e) {
+                    // FIXME Pretty specfific to BDTOPO Schema... no time to
+                    // make it better
+                    if (v.equalsIgnoreCase("direct")) {
+                      arc.setOrientation(1);
                     } else {
-                      arc.setOrientation(2);
+                      if (v.equalsIgnoreCase("inverse")) {
+                        arc.setOrientation(-1);
+                      } else {
+                        arc.setOrientation(2);
+                      }
                     }
                   }
+                } else {
+                  LOGGER.error("Attribute " + attribute
+                      + " is neither Number nor String. It can't be used as an orientation");
                 }
-              } else {
-                LOGGER.error("Attribute " + attribute
-                    + " is neither Number nor String. It can't be used as an orientation");
               }
             }
           }
