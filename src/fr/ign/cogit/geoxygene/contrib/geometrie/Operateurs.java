@@ -159,6 +159,30 @@ public abstract class Operateurs {
   }
 
   /**
+   */
+  public static int insertionIndex(DirectPosition point,
+      DirectPositionList points) {
+    if (points.size() < 2) {
+      return -1;
+    }
+    DirectPosition ptmin = Operateurs.projection(point, points.get(0), points
+        .get(1));
+    double dmin = point.distance(ptmin);
+    int imin = 0;
+    for (int i = 1; i < points.size() - 1; i++) {
+      DirectPosition pt = Operateurs.projection(point, points.get(i), points
+          .get(i + 1));
+      double d = point.distance(pt);
+      if (d < dmin) {
+        ptmin = pt;
+        dmin = d;
+        imin = i;
+      }
+    }
+    return imin + 1;
+  }
+
+  /**
    * Projection du point sur l'aggregat; ATTENTION: ne fonctionne que si
    * l'aggregat ne contient que des GM_Point et GM_LineString. En théorie, il
    * peut y avoir plusieurs points projetés, mais dans ce cas cette méthode n'en
