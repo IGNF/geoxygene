@@ -66,7 +66,10 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  * Appel des methodes JTS sur des GM_Object. cf.
  * http://www.vividsolutions.com/jts/jtshome.htm
  * 
- * @author Thierry Badard, Arnaud Braun & Christophe Pele
+ * @author Thierry Badard
+ * @author Arnaud Braun
+ * @author Christophe Pele
+ * @author Jean-François Girres
  * @version 1.0
  * 
  */
@@ -1227,32 +1230,34 @@ public class JtsAlgorithms implements GeomAlgorithms {
       LineString lineString = JtsAlgorithms
           .getLineStringWithoutDuplicates((LineString) JtsGeOxygene
               .makeJtsGeom(line));
-      Geometry buffer = lineString.buffer(d, 4, BufferParameters.CAP_ROUND);
-      Polygon polygon = null;
-      if (!(buffer instanceof Polygon)) {
-        JtsAlgorithms.logger.error("Can't compute offsetcurve of " + //$NON-NLS-1$
-            buffer.getGeometryType());
-        return null;
-      }
-      polygon = (Polygon) buffer;
-      GM_MultiCurve<GM_LineString> result = new GM_MultiCurve<GM_LineString>();
-      // build the offset curve for the exterior ring
-      GM_LineString r = JtsAlgorithms.getOffsetCurveFromRing(polygon
-          .getExteriorRing(), lineString, orientationIndex, d);
-      if ((r != null) && !r.isEmpty()) {
-        result.add(r);
-      }
-      // go through all interior rings
-      for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
-        LineString ring = polygon.getInteriorRingN(i);
-        // build the offset curve for the interior ring
-        r = JtsAlgorithms.getOffsetCurveFromRing(ring, lineString,
-            orientationIndex, d);
-        if ((r != null) && !r.isEmpty()) {
-          result.add(r);
+      if (lineString != null) {
+        Geometry buffer = lineString.buffer(d, 4, BufferParameters.CAP_ROUND);
+        Polygon polygon = null;
+        if (!(buffer instanceof Polygon)) {
+          JtsAlgorithms.logger.error("Can't compute offsetcurve of " + //$NON-NLS-1$
+              buffer.getGeometryType());
+          return null;
         }
+        polygon = (Polygon) buffer;
+        GM_MultiCurve<GM_LineString> result = new GM_MultiCurve<GM_LineString>();
+        // build the offset curve for the exterior ring
+        GM_LineString r = JtsAlgorithms.getOffsetCurveFromRing(polygon
+            .getExteriorRing(), lineString, orientationIndex, d);
+        if ((r != null) && !r.isEmpty() && (r.coord().size() != 1)) {
+          result.add(r);
+        } // modif JFG
+        // go through all interior rings
+        for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
+          LineString ring = polygon.getInteriorRingN(i);
+          // build the offset curve for the interior ring
+          r = JtsAlgorithms.getOffsetCurveFromRing(ring, lineString,
+              orientationIndex, d);
+          if ((r != null) && !r.isEmpty() && (r.coord().size() != 1)) {
+            result.add(r);
+          } // modif JFG
+        }
+        return result;
       }
-      return result;
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -1276,8 +1281,12 @@ public class JtsAlgorithms implements GeomAlgorithms {
         previous = coordinateArray[i];
       }
     }
-    return lineString.getFactory().createLineString(
-        coordinates.toArray(new Coordinate[coordinates.size()]));
+    if (coordinates.size() >= 2) { // modif JFG
+      return lineString.getFactory().createLineString(
+          coordinates.toArray(new Coordinate[coordinates.size()]));
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -1506,8 +1515,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
       }
     }
     if (orientations.isEmpty()) {
-      JtsAlgorithms.logger.info("orientations empty for "
-          + line.getFactory().createPoint(c));
+      //JtsAlgorithms.logger.info("orientations empty for "
+          //+ line.getFactory().createPoint(c));
       return 0;
     }
     Iterator<Integer> orientationIterator = orientations.iterator();
