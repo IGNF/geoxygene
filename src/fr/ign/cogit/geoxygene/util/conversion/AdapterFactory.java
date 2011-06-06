@@ -94,6 +94,8 @@ public class AdapterFactory {
     if (geom instanceof GM_Point) {
       result = factory.createPoint(AdapterFactory.toCoordinateSequence(factory,
           geom.coord()));
+      result.setSRID(geom.getCRS());
+      return result;
     }
     if (geom instanceof GM_Ring) {
       DirectPositionList coord = geom.coord();
@@ -111,17 +113,23 @@ public class AdapterFactory {
           && sequence.getCoordinate(0).equals(
               sequence.getCoordinate(sequence.size() - 1))) {
         result = factory.createLinearRing(sequence);
+        result.setSRID(geom.getCRS());
+        return result;
       } else {
         result = null;
       }
     }
     if (geom instanceof GM_LineString) {
       result = AdapterFactory.toLineString(factory, (GM_LineString) geom);
+      result.setSRID(geom.getCRS());
+      return result;
     }
     if (geom instanceof GM_Polygon) {
       result = factory.createPolygon((LinearRing) AdapterFactory.toGeometry(
           factory, ((GM_Polygon) geom).getExterior()), AdapterFactory
           .toLinearRingArray(factory, ((GM_Polygon) geom).getInterior()));
+      result.setSRID(geom.getCRS());
+      return result;
     }
     if (geom instanceof GM_MultiPoint) {
       GM_MultiPoint multiPoint = (GM_MultiPoint) geom;
@@ -131,6 +139,8 @@ public class AdapterFactory {
             .get(index));
       }
       result = factory.createMultiPoint(points);
+      result.setSRID(geom.getCRS());
+      return result;
     }
     if (geom instanceof GM_MultiCurve) {
       GM_MultiCurve<GM_OrientableCurve> multiCurve = (GM_MultiCurve<GM_OrientableCurve>) geom;
@@ -140,6 +150,8 @@ public class AdapterFactory {
             multiCurve.get(index));
       }
       result = factory.createMultiLineString(lineStrings);
+      result.setSRID(geom.getCRS());
+      return result;
     }
     if (geom instanceof GM_MultiSurface) {
       GM_MultiSurface<GM_OrientableSurface> multiSurface = (GM_MultiSurface<GM_OrientableSurface>) geom;
@@ -149,6 +161,8 @@ public class AdapterFactory {
             multiSurface.get(index));
       }
       result = factory.createMultiPolygon(polygons);
+      result.setSRID(geom.getCRS());
+      return result;
     }
     if (geom instanceof GM_Aggregate) {
       GM_Aggregate<GM_Object> aggregate = (GM_Aggregate<GM_Object>) geom;
@@ -158,6 +172,8 @@ public class AdapterFactory {
             .get(index));
       }
       result = factory.createGeometryCollection(geometries);
+      result.setSRID(geom.getCRS());
+      return result;
     }
     if (geom instanceof GM_Solid) {
       List<GM_OrientableSurface> lOS = ((GM_Solid) geom).getFacesList();
@@ -169,6 +185,8 @@ public class AdapterFactory {
             multiSurface.get(index));
       }
       result = factory.createMultiPolygon(polygons);
+      result.setSRID(geom.getCRS());
+      return result;
     }
     if (result != null) {
       result.setSRID(geom.getCRS());
