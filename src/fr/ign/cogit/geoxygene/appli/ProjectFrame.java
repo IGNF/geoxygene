@@ -204,6 +204,7 @@ public class ProjectFrame extends JInternalFrame implements
    * This function should not be longer used since layers include now a CRS.
    * Only here to ensure backward compatibility 
    */
+  @Deprecated
   public final Layer addFeatureCollection(
 	      final Population<? extends FT_Feature> population, final String name){
 	  return this.addFeatureCollection(population, name, null);
@@ -261,6 +262,11 @@ public class ProjectFrame extends JInternalFrame implements
     }
   }
 
+  public void addShapefileLayer(String fileName, StyledLayerDescriptor sld, String styleName) {    
+    this.addShapefileLayer(fileName);
+    this.getLayers().get(this.getLayers().size()-1).setStyles(sld.getLayer(styleName).getStyles());
+  }
+  
   public void addShapefileLayer(String fileName) {
     int lastIndexOfSeparator = fileName.lastIndexOf(File.separatorChar);
     String populationName = fileName.substring(lastIndexOfSeparator + 1,
