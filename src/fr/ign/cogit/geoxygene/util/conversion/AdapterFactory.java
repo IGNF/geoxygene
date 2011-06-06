@@ -90,8 +90,9 @@ public class AdapterFactory {
     if (geom == null) {
       return null;
     }
+    Geometry result = null;
     if (geom instanceof GM_Point) {
-      return factory.createPoint(AdapterFactory.toCoordinateSequence(factory,
+      result = factory.createPoint(AdapterFactory.toCoordinateSequence(factory,
           geom.coord()));
     }
     if (geom instanceof GM_Ring) {
@@ -109,16 +110,16 @@ public class AdapterFactory {
       if (sequence.size() > 3
           && sequence.getCoordinate(0).equals(
               sequence.getCoordinate(sequence.size() - 1))) {
-        return factory.createLinearRing(sequence);
+        result = factory.createLinearRing(sequence);
       } else {
-        return null;
+        result = null;
       }
     }
     if (geom instanceof GM_LineString) {
-      return AdapterFactory.toLineString(factory, (GM_LineString) geom);
+      result = AdapterFactory.toLineString(factory, (GM_LineString) geom);
     }
     if (geom instanceof GM_Polygon) {
-      return factory.createPolygon((LinearRing) AdapterFactory.toGeometry(
+      result = factory.createPolygon((LinearRing) AdapterFactory.toGeometry(
           factory, ((GM_Polygon) geom).getExterior()), AdapterFactory
           .toLinearRingArray(factory, ((GM_Polygon) geom).getInterior()));
     }
@@ -129,7 +130,7 @@ public class AdapterFactory {
         points[index] = (Point) AdapterFactory.toGeometry(factory, multiPoint
             .get(index));
       }
-      return factory.createMultiPoint(points);
+      result = factory.createMultiPoint(points);
     }
     if (geom instanceof GM_MultiCurve) {
       GM_MultiCurve<GM_OrientableCurve> multiCurve = (GM_MultiCurve<GM_OrientableCurve>) geom;
@@ -138,7 +139,7 @@ public class AdapterFactory {
         lineStrings[index] = (LineString) AdapterFactory.toGeometry(factory,
             multiCurve.get(index));
       }
-      return factory.createMultiLineString(lineStrings);
+      result = factory.createMultiLineString(lineStrings);
     }
     if (geom instanceof GM_MultiSurface) {
       GM_MultiSurface<GM_OrientableSurface> multiSurface = (GM_MultiSurface<GM_OrientableSurface>) geom;
@@ -147,7 +148,7 @@ public class AdapterFactory {
         polygons[index] = (Polygon) AdapterFactory.toGeometry(factory,
             multiSurface.get(index));
       }
-      return factory.createMultiPolygon(polygons);
+      result = factory.createMultiPolygon(polygons);
     }
     if (geom instanceof GM_Aggregate) {
       GM_Aggregate<GM_Object> aggregate = (GM_Aggregate<GM_Object>) geom;
@@ -156,7 +157,7 @@ public class AdapterFactory {
         geometries[index] = AdapterFactory.toGeometry(factory, aggregate
             .get(index));
       }
-      return factory.createGeometryCollection(geometries);
+      result = factory.createGeometryCollection(geometries);
     }
     if (geom instanceof GM_Solid) {
       List<GM_OrientableSurface> lOS = ((GM_Solid) geom).getFacesList();
@@ -167,7 +168,11 @@ public class AdapterFactory {
         polygons[index] = (Polygon) AdapterFactory.toGeometry(factory,
             multiSurface.get(index));
       }
-      return factory.createMultiPolygon(polygons);
+      result = factory.createMultiPolygon(polygons);
+    }
+    if (result != null) {
+      result.setSRID(geom.getCRS());
+      return result;
     }
     throw new Exception(
         I18N.getString("AdapterFactory.Type") + geom.getClass() + I18N.getString("AdapterFactory.Unhandled")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -249,29 +254,31 @@ public class AdapterFactory {
     if (geom == null) {
       return null;
     }
+    GM_Object result = null;
     if (geom instanceof Point) {
-      return new GM_Point(AdapterFactory.toDirectPosition(geom.getCoordinate()));
+      result = new GM_Point(AdapterFactory.toDirectPosition(geom.getCoordinate()));
     }
     if (geom instanceof LinearRing) {
-      return new GM_Ring(new GM_LineString(AdapterFactory
+      result = new GM_Ring(new GM_LineString(AdapterFactory
           .toDirectPositionList(geom.getCoordinates())));
     }
     if (geom instanceof LineString) {
-      return new GM_LineString(AdapterFactory.toDirectPositionList(geom
+      result = new GM_LineString(AdapterFactory.toDirectPositionList(geom
           .getCoordinates()));
     }
     if (geom instanceof Polygon) {
       if (geom.isEmpty()) {
-        return new GM_Polygon();
+        result = new GM_Polygon();
+      } else {
+        GM_Polygon polygon = new GM_Polygon(new GM_Ring(new GM_LineString(
+            AdapterFactory.toDirectPositionList(((Polygon) geom)
+                .getExteriorRing().getCoordinates()))));
+        for (int index = 0; index < ((Polygon) geom).getNumInteriorRing(); index++) {
+          LineString ring = ((Polygon) geom).getInteriorRingN(index);
+          polygon.addInterior((GM_Ring) AdapterFactory.toGM_Object(ring));
+        }
+        result = polygon;
       }
-      GM_Polygon polygon = new GM_Polygon(new GM_Ring(new GM_LineString(
-          AdapterFactory.toDirectPositionList(((Polygon) geom)
-              .getExteriorRing().getCoordinates()))));
-      for (int index = 0; index < ((Polygon) geom).getNumInteriorRing(); index++) {
-        LineString ring = ((Polygon) geom).getInteriorRingN(index);
-        polygon.addInterior((GM_Ring) AdapterFactory.toGM_Object(ring));
-      }
-      return polygon;
     }
     if (geom instanceof MultiPoint) {
       MultiPoint mp = (MultiPoint) geom;
@@ -281,7 +288,7 @@ public class AdapterFactory {
         GM_Point point = (GM_Point) AdapterFactory.toGM_Object(p);
         multiPoint.add(point);
       }
-      return multiPoint;
+      result = multiPoint;
     }
     if (geom instanceof MultiLineString) {
       MultiLineString mls = (MultiLineString) geom;
@@ -292,7 +299,7 @@ public class AdapterFactory {
             .toGM_Object(p);
         multiLineString.add(lineString);
       }
-      return multiLineString;
+      result = multiLineString;
     }
     if (geom instanceof MultiPolygon) {
       MultiPolygon mp = (MultiPolygon) geom;
@@ -302,7 +309,7 @@ public class AdapterFactory {
         GM_Polygon polygon = (GM_Polygon) AdapterFactory.toGM_Object(p);
         multiPolygon.add(polygon);
       }
-      return multiPolygon;
+      result = multiPolygon;
     }
     if (geom instanceof GeometryCollection) {
       GeometryCollection gc = (GeometryCollection) geom;
@@ -310,7 +317,11 @@ public class AdapterFactory {
       for (int i = 0; i < gc.getNumGeometries(); i++) {
         aggregate.add(AdapterFactory.toGM_Object(gc.getGeometryN(i)));
       }
-      return aggregate;
+      result = aggregate;
+    }
+    if (result != null) {
+      result.setCRS(geom.getSRID());
+      return result;
     }
     throw new Exception(
         I18N.getString("AdapterFactory.Type") + geom.getClass() + I18N.getString("AdapterFactory.Unhandled")); //$NON-NLS-1$ //$NON-NLS-2$
