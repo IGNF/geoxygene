@@ -204,6 +204,16 @@ public class CarteTopo extends DataSet {
     this.getPopGroupes().add(groupe);
   }
 
+  private boolean buildInfiniteFace = true;
+
+  public boolean isBuildInfiniteFace() {
+    return this.buildInfiniteFace;
+  }
+
+  public void setBuildInfiniteFace(boolean buildInfiniteFace) {
+    this.buildInfiniteFace = buildInfiniteFace;
+  }
+
   // ///////////////////////////////////////////////////////////////////////////////////////////
   // Constructeurs
   // ///////////////////////////////////////////////////////////////////////////////////////////
@@ -1670,11 +1680,14 @@ public class CarteTopo extends DataSet {
      * chaque requête select.
      */
     this.getPopFaces().initSpatialIndex(Tiling.class, false);
-    GM_Envelope envelope = this.getPopArcs().envelope();
-    Face faceInfinie = this.getPopFaces().nouvelElement(
-        new GM_Polygon(new GM_Envelope(envelope.minX() - 1,
-            envelope.maxX() + 1, envelope.minY() - 1, envelope.maxY() + 1)));
-    faceInfinie.setInfinite(true);
+    Face faceInfinie = null;
+    if (this.buildInfiniteFace) {
+      GM_Envelope envelope = this.getPopArcs().envelope();
+      faceInfinie = this.getPopFaces().nouvelElement(
+          new GM_Polygon(new GM_Envelope(envelope.minX() - 1,
+              envelope.maxX() + 1, envelope.minY() - 1, envelope.maxY() + 1)));
+      faceInfinie.setInfinite(true);
+    }
     this.fireActionPerformed(new ActionEvent(this, 2, I18N
         .getString("CarteTopo.FaceTopologyCycles"), cycles.size())); //$NON-NLS-1$
     iteration = 0;
@@ -1714,52 +1727,55 @@ public class CarteTopo extends DataSet {
       }
       this.marquerCycle(cycle, face);
       // on ajoute un trou à la géométrie de la face infinie
-      if (cycle.getGeometrie().sizeControlPoint() > 3) {
-        GM_Ring trou = new GM_Ring(cycle.getGeometrie());
-        if (!trou.coord().isEmpty() && trou.isValid()) {
-          if (face.getGeometrie().getInterior().isEmpty()) {
-            face.getGeometrie().addInterior(trou);
-          } else {
-            // union des trous
-            GM_Polygon polygonHole = new GM_Polygon(trou);
-            List<GM_Polygon> trous = new ArrayList<GM_Polygon>();
-            for (GM_Ring ring : face.getGeometrie().getInterior()) {
-              trous.add(new GM_Polygon(ring));
-            }
-            // ajout du nouveau trou à la liste
-            trous.add(polygonHole);
-            if (CarteTopo.logger.isDebugEnabled()) {
-              CarteTopo.logger.debug("Union de " + trous.size() + " trous");
-              for (GM_Polygon t : trous) {
-                CarteTopo.logger.debug("trou " + t);
+      if (this.buildInfiniteFace && faceInfinie != null) {
+        if (cycle.getGeometrie().sizeControlPoint() > 3) {
+          GM_Ring trou = new GM_Ring(cycle.getGeometrie());
+          if (!trou.coord().isEmpty() && trou.coord().size() > 3
+              && trou.isValid()) {
+            if (face.getGeometrie().getInterior().isEmpty()) {
+              face.getGeometrie().addInterior(trou);
+            } else {
+              // union des trous
+              GM_Polygon polygonHole = new GM_Polygon(trou);
+              List<GM_Polygon> trous = new ArrayList<GM_Polygon>();
+              for (GM_Ring ring : face.getGeometrie().getInterior()) {
+                trous.add(new GM_Polygon(ring));
               }
-            }
-            try {
-              GM_Object union = JtsAlgorithms.union(trous);
-              if (union.isPolygon()) {
-                GM_Polygon polygon = (GM_Polygon) union;
-                // suppression des trous existants
-                face.getGeometrie().getInterior().clear();
-                face.getGeometrie().addInterior(polygon.getExterior());
-              } else {
-                if (union.isMultiSurface()) {
-                  GM_MultiSurface<GM_Polygon> multipolygon = (GM_MultiSurface<GM_Polygon>) union;
-                  // suppression des trous existants
-                  face.getGeometrie().getInterior().clear();
-                  for (GM_Polygon polygon : multipolygon) {
-                    face.getGeometrie().addInterior(polygon.getExterior());
-                  }
-                } else {
-                  CarteTopo.logger.error(union);
+              // ajout du nouveau trou à la liste
+              trous.add(polygonHole);
+              if (CarteTopo.logger.isDebugEnabled()) {
+                CarteTopo.logger.debug("Union de " + trous.size() + " trous");
+                for (GM_Polygon t : trous) {
+                  CarteTopo.logger.debug("trou " + t);
                 }
               }
-            } catch (Exception e) {
-              CarteTopo.logger.debug("Cycle " + cycle.getGeometrie());
-              CarteTopo.logger.debug(cycle.getArcs().size() + " arcs");
-              for (Arc arc : cycle.getArcs()) {
-                CarteTopo.logger.debug("arc " + arc);
+              try {
+                GM_Object union = JtsAlgorithms.union(trous);
+                if (union.isPolygon()) {
+                  GM_Polygon polygon = (GM_Polygon) union;
+                  // suppression des trous existants
+                  face.getGeometrie().getInterior().clear();
+                  face.getGeometrie().addInterior(polygon.getExterior());
+                } else {
+                  if (union.isMultiSurface()) {
+                    GM_MultiSurface<GM_Polygon> multipolygon = (GM_MultiSurface<GM_Polygon>) union;
+                    // suppression des trous existants
+                    face.getGeometrie().getInterior().clear();
+                    for (GM_Polygon polygon : multipolygon) {
+                      face.getGeometrie().addInterior(polygon.getExterior());
+                    }
+                  } else {
+                    CarteTopo.logger.error(union);
+                  }
+                }
+              } catch (Exception e) {
+                CarteTopo.logger.debug("Cycle " + cycle.getGeometrie());
+                CarteTopo.logger.debug(cycle.getArcs().size() + " arcs");
+                for (Arc arc : cycle.getArcs()) {
+                  CarteTopo.logger.debug("arc " + arc);
+                }
+                CarteTopo.logger.debug("face " + face);
               }
-              CarteTopo.logger.debug("face " + face);
             }
           }
         }
@@ -1768,13 +1784,15 @@ public class CarteTopo extends DataSet {
           .getString("CarteTopo.FaceTopologyCycle"), iteration++)); //$NON-NLS-1$
     }
     // détection des arcs pendants ie des culs-de-sac de la face Infinie
-    for (Arc arcCourant : faceInfinie.arcs()) {
-      if ((arcCourant.getFaceDroite() == null)
-          || (arcCourant.getFaceGauche() == null)) {
-        continue;
-      }
-      if (arcCourant.getFaceDroite() == arcCourant.getFaceGauche()) {
-        arcCourant.setPendant(true);
+    if (this.buildInfiniteFace && faceInfinie != null) {
+      for (Arc arcCourant : faceInfinie.arcs()) {
+        if ((arcCourant.getFaceDroite() == null)
+            || (arcCourant.getFaceGauche() == null)) {
+          continue;
+        }
+        if (arcCourant.getFaceDroite() == arcCourant.getFaceGauche()) {
+          arcCourant.setPendant(true);
+        }
       }
     }
     this.fireActionPerformed(new ActionEvent(this, 4, I18N
