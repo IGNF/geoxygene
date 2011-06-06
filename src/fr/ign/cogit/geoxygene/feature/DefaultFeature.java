@@ -107,6 +107,9 @@ public class DefaultFeature extends FT_Feature {
     if (nom.equals("topo")) { //$NON-NLS-1$
       return this.getTopo();
     }
+    if (nom.equals("id")) { //$NON-NLS-1$
+      return this.getId();
+    }
     /**
      * on regarde en priorité si le nom correspond à un nom d'attributeType
      * (métadonnées de niveau conceptuel)
