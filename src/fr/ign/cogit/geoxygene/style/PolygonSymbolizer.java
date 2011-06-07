@@ -192,14 +192,13 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
         // Solid color
         Color color = this.getStroke().getColor();
         double scale = 1;
-        if (this.getUnitOfMeasure() != Symbolizer.PIXEL) {
+        if (!this.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
           try {
             scale = viewport.getModelToViewTransform().getScaleX();
           } catch (NoninvertibleTransformException e) {
             e.printStackTrace();
           }
         }
-        
         BasicStroke bs = (BasicStroke)this.getStroke().toAwtStroke((float) scale);
         graphics.setColor(color);
         if (feature.getGeom().isPolygon()) {

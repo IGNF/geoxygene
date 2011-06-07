@@ -102,7 +102,7 @@ public class LineSymbolizer extends AbstractSymbolizer {
       return;
     }
     double scale = 1;
-    if (this.getUnitOfMeasure() != Symbolizer.PIXEL) {
+    if (!this.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
       try {
         scale = viewport.getModelToViewTransform().getScaleX();
       } catch (NoninvertibleTransformException e) {
