@@ -359,8 +359,7 @@ abstract public class GM_Object implements Cloneable {
   /**
    * Calcule de buffer sur l'objet (avec JTS) en indiquant le nombre de segments
    * approximant la partie courbe. Les distances negatives sont acceptees (pour
-   * faire une erosion). La forme du "chapeau" (cap) utilsee est celle par
-   * defaut de JTS, i.e. CAP_ROUND : une courbe.
+   * faire une erosion).
    * @param distance distance utilisee pour le calcul du buffer
    * @param nSegments nombre de segments utilises pour approximer les parties
    *          courbes du buffer
@@ -370,6 +369,22 @@ abstract public class GM_Object implements Cloneable {
    */
   public GM_Object buffer(double distance, int nSegments, int cap) {
     return new JtsAlgorithms().buffer(this, distance, nSegments, cap);
+  }
+  
+  /**
+   * Calcule de buffer sur l'objet (avec JTS) en indiquant le nombre de segments
+   * approximant la partie courbe. Les distances negatives sont acceptees (pour
+   * faire une erosion).
+   * @param distance distance utilisee pour le calcul du buffer
+   * @param nSegments nombre de segments utilises pour approximer les parties
+   *          courbes du buffer
+   * @param cap forme du chapeau à utiliser pour les extrémités
+   * @param join forme du chapeau à utiliser pour les jointures
+   * @return buffer sur l'objet
+   * @see #buffer(double)
+   */
+  public GM_Object buffer(double distance, int nSegments, int cap, int join) {
+    return new JtsAlgorithms().buffer(this, distance, nSegments, cap, join);
   }
 
   /**

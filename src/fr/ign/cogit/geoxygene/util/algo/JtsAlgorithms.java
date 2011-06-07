@@ -47,6 +47,7 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.operation.buffer.BufferOp;
 import com.vividsolutions.jts.operation.buffer.BufferParameters;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
 import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;
@@ -167,6 +168,30 @@ public class JtsAlgorithms implements GeomAlgorithms {
     try {
       Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
       Geometry jtsBuffer = jtsGeom.buffer(distance, nSegments, cap);
+      return JtsGeOxygene.makeGeOxygeneGeom(jtsBuffer);
+    } catch (Exception e) {
+      JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.BufferError")); //$NON-NLS-1$
+      if (JtsAlgorithms.logger.isDebugEnabled()) {
+        JtsAlgorithms.logger.debug(I18N
+            .getString("JtsAlgorithms.BufferDistance") + distance); //$NON-NLS-1$
+        JtsAlgorithms.logger.debug(I18N
+            .getString("JtsAlgorithms.BufferSegments") + nSegments); //$NON-NLS-1$
+        JtsAlgorithms.logger.debug(I18N.getString("JtsAlgorithms.Cap") + cap); //$NON-NLS-1$
+        JtsAlgorithms.logger
+            .debug(I18N.getString("JtsAlgorithms.Geometry") + ((geom != null) ? geom.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
+        JtsAlgorithms.logger.debug(e.getMessage());
+      }
+      e.printStackTrace();
+      return null;
+    }
+  }
+  
+  public GM_Object buffer(GM_Object geom, double distance, int nSegments,
+      int cap, int join) {
+    try {
+      Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
+      BufferParameters bufferParam = new BufferParameters(nSegments, cap, join, BufferParameters.DEFAULT_MITRE_LIMIT);
+      Geometry jtsBuffer = BufferOp.bufferOp(jtsGeom, distance, bufferParam);
       return JtsGeOxygene.makeGeOxygeneGeom(jtsBuffer);
     } catch (Exception e) {
       JtsAlgorithms.logger.error(I18N.getString("JtsAlgorithms.BufferError")); //$NON-NLS-1$
@@ -707,7 +732,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
    * @return union d'une liste de géométries
    */
   public static GM_Object union(List<? extends GM_Object> listeGeometries) {
-    List<Geometry> listeGeometriesJts = new ArrayList<Geometry>();
+    List<Geometry> listeGeometriesJts = new ArrayList<Geometry>(0);
     for (GM_Object geom : listeGeometries) {
       try {
         listeGeometriesJts.add(JtsGeOxygene.makeJtsGeom(geom));
