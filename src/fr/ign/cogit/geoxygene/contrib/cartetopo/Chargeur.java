@@ -21,7 +21,10 @@ package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -31,6 +34,8 @@ import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
@@ -40,6 +45,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Primitive;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
+import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
  * Chargeur permettant de créer une carte topo à partir de classes de
@@ -224,6 +230,7 @@ public class Chargeur {
       e.printStackTrace();
     }
   }
+
   /**
    * Seuls les points des éléments sont importés comme noeuds de la carte.
    * @param feature
@@ -233,7 +240,7 @@ public class Chargeur {
     Class<Noeud> nodeClass = carteTopo.getPopNoeuds().getClasse();
     try {
       Constructor<Noeud> constructor = nodeClass
-      .getConstructor(DirectPosition.class);
+          .getConstructor(DirectPosition.class);
       for (DirectPosition p : feature.getGeom().coord()) {
         try {
           Noeud n = constructor.newInstance(p);
@@ -253,5 +260,142 @@ public class Chargeur {
     } catch (NoSuchMethodException e) {
       e.printStackTrace();
     }
+  }
+
+  /**
+   * @param edges
+   * @param map
+   * @param orientationAttribute
+   * @param orientationMap
+   * @param groundPositionAttribute
+   * @param tolerance
+   */
+  public static void importAsEdges(FT_FeatureCollection<? extends FT_Feature> edges,
+      CarteTopo map, String orientationAttribute,
+      Map<Object, Integer> orientationMap, String groundPositionAttribute,
+      double tolerance) {
+    // import des arcs
+    for (FT_Feature element : edges) {
+      Arc arc = map.getPopArcs().nouvelElement();
+      GM_LineString ligne = new GM_LineString((DirectPositionList) element
+          .getGeom().coord().clone());
+      arc.setGeometrie(ligne);
+      if (orientationAttribute.isEmpty()) {
+        arc.setOrientation(2);
+      } else {
+        Object value = element.getAttribute(orientationAttribute);
+        if (orientationMap != null) {
+          Integer orientation = orientationMap.get(value);
+          if (orientation != null) {
+            // LOGGER.debug(value + " -> " + orientation);
+            arc.setOrientation(orientation.intValue());
+          } else {
+            logger.error(value + " not found in map");
+          }
+        } else {
+          if (value instanceof Number) {
+            Number v = (Number) value;
+            arc.setOrientation(v.intValue());
+          } else {
+            if (value instanceof String) {
+              String v = (String) value;
+              try {
+                arc.setOrientation(Integer.parseInt(v));
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
+            } else {
+              logger
+                  .error("Attribute "
+                      + orientationAttribute
+                      + " is neither Number nor String. It can't be used as an orientation");
+            }
+          }
+        }
+      }
+      arc.addCorrespondant(element);
+      arc.setPoids(arc.getGeometrie().length());
+    }
+    // initialisation de l'index au besoin
+    // si on peut, on prend les mêmes paramètres que le dallage des arcs
+    if (!map.getPopNoeuds().hasSpatialIndex()) {
+      if (map.getPopArcs().hasSpatialIndex()) {
+        map.getPopNoeuds().initSpatialIndex(map.getPopArcs().getSpatialIndex());
+        map.getPopNoeuds().getSpatialIndex().setAutomaticUpdate(true);
+      } else {
+        GM_Envelope enveloppe = map.getPopArcs().envelope();
+        int nb = (int) Math.sqrt(map.getPopArcs().size() / 20);
+        if (nb == 0) {
+          nb = 1;
+        }
+        map.getPopNoeuds().initSpatialIndex(Tiling.class, true, enveloppe, nb);
+      }
+    }
+    for (Arc arc : map.getPopArcs()) {
+      DirectPosition p1 = arc.getGeometrie().getControlPoint(0);
+      DirectPosition p2 = arc.getGeometrie().getControlPoint(
+          arc.getGeometrie().sizeControlPoint() - 1);
+      int posSol = ((Integer) arc.getCorrespondant(0).getAttribute(
+          groundPositionAttribute)).intValue();
+      Collection<Noeud> candidates = map.getPopNoeuds().select(p1, tolerance);
+      if (candidates.isEmpty()) {
+        Noeud n1 = map.getPopNoeuds().nouvelElement(p1.toGM_Point());
+        arc.setNoeudIni(n1);
+        n1.setDistance(posSol);
+      } else {
+        for (Noeud n : candidates) {
+          if (n.getDistance() == posSol) {
+            arc.setNoeudIni(n);
+            break;
+          }
+        }
+        if (arc.getNoeudIni() == null) {
+          Noeud n1 = map.getPopNoeuds().nouvelElement(p1.toGM_Point());
+          arc.setNoeudIni(n1);
+          n1.setDistance(posSol);
+        }
+      }
+      candidates = map.getPopNoeuds().select(p2, tolerance);
+      if (candidates.isEmpty()) {
+        Noeud n1 = map.getPopNoeuds().nouvelElement(p2.toGM_Point());
+        arc.setNoeudFin(n1);
+        n1.setDistance(posSol);
+      } else {
+        for (Noeud n : candidates) {
+          if (n.getDistance() == posSol) {
+            arc.setNoeudFin(n);
+            break;
+          }
+        }
+        if (arc.getNoeudFin() == null) {
+          Noeud n1 = map.getPopNoeuds().nouvelElement(p2.toGM_Point());
+          arc.setNoeudFin(n1);
+          n1.setDistance(posSol);
+        }
+      }
+    }
+    List<Noeud> toRemove = new ArrayList<Noeud>(0);
+    // connect the single nodes
+    for (Noeud n : map.getPopNoeuds()) {
+      if (n.arcs().size() == 1) {
+        Collection<Noeud> candidates = map.getPopNoeuds().select(n.getCoord(),
+            tolerance);
+        candidates.remove(n);
+        candidates.removeAll(toRemove);
+        if (candidates.size() == 1) {
+          Noeud candidate = candidates.iterator().next();
+          // LOGGER.info("connecting node " + n + " (" + n.getDistance() +
+          // ") to node " + candidate + " (" + candidate.getDistance() + ")");
+          for (Arc a : new ArrayList<Arc>(n.getEntrants())) {
+            candidate.addEntrant(a);
+          }
+          for (Arc a : new ArrayList<Arc>(n.getSortants())) {
+            candidate.addSortant(a);
+          }
+          toRemove.add(n);
+        }
+      }
+    }
+    map.enleveNoeuds(toRemove);
   }
 }

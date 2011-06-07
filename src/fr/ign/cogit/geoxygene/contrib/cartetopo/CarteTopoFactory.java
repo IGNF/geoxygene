@@ -7,9 +7,13 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
+/**
+ * Simple factory for topological map creation.
+ * @author Eric Grosso
+ * @author Julien Perret
+ */
 public class CarteTopoFactory {
   static Logger logger = Logger.getLogger(CarteTopoFactory.class);
-
   /**
    * Create a topological map from a feature collection, a name and a threshold.
    * The threshold is used for node creation as well as for topology and planar
@@ -60,11 +64,31 @@ public class CarteTopoFactory {
     return carteTopo;
   }
 
+  /**
+   * Create a topological map from a feature collection and a name. A threshold
+   * of 1m is used for node creation as well as for topology and planar map
+   * creations.
+   * <p>
+   * Création d'une CarteTopo à partir d'une FT_FeatureCollection et d'un nom.
+   * @see #newCarteTopo(String, FT_FeatureCollection, double)
+   * @param name name of the topo map
+   * @param collection collection de features
+   * @return a topological map
+   */
   public static CarteTopo newCarteTopo(String name,
       FT_FeatureCollection<? extends FT_Feature> collection) {
     return CarteTopoFactory.newCarteTopo(name, collection, 1.0);
   }
-
+  /**
+   * Create a topological map from a feature collection. A threshold
+   * of 1m is used for node creation as well as for topology and planar map
+   * creations.
+   * <p>
+   * Création d'une CarteTopo à partir d'une FT_FeatureCollection.
+   * @see #newCarteTopo(String, FT_FeatureCollection, double)
+   * @param collection collection de features
+   * @return a topological map
+   */
   public static CarteTopo newCarteTopo(
       FT_FeatureCollection<? extends FT_Feature> collection) {
     return CarteTopoFactory.newCarteTopo("TopoMap", collection);
