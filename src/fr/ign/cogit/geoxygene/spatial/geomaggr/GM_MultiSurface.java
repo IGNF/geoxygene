@@ -63,20 +63,19 @@ public class GM_MultiSurface<GeomType extends GM_OrientableSurface> extends
 
   /** Constructeur par défaut. */
   public GM_MultiSurface() {
-    this.element = new ArrayList<GeomType>();
+    this.element = new ArrayList<GeomType>(0);
   }
 
   /** Constructeur à partir d'un GM_CompositeSurface. */
   @SuppressWarnings("unchecked")
   public GM_MultiSurface(GM_CompositeSurface compSurf) {
-    this.element = new ArrayList<GeomType>();
-    this.addAll((List<GeomType>) compSurf.getGenerator());
+    this.element = new ArrayList<GeomType>((List<GeomType>) compSurf
+        .getGenerator());
   }
 
   /** Constructeur à partir d'une liste de GM_OrientableSurface. */
   public GM_MultiSurface(List<GeomType> lOS) {
-    this.element = new ArrayList<GeomType>();
-    this.element.addAll(lOS);
+    this.element = new ArrayList<GeomType>(lOS);
   }
 
   /** Constructeur par copie. */
