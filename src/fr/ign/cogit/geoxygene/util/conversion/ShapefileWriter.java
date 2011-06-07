@@ -54,8 +54,8 @@ import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 /**
  * Classe permettant d'écrire des shapefiles à partir d'une collection de
  * Features.
- * 
  * @author Julien Perret
+ * @author Bertrand Dumenieu
  */
 public class ShapefileWriter {
   private final static Logger logger = Logger.getLogger(ShapefileWriter.class
@@ -63,11 +63,26 @@ public class ShapefileWriter {
 
   /**
    * Sauve une collection de features dans un fichier.
-   * 
+   *
    * @param <Feature> type des features contenu dans la collection
    * @param featureCollection collection de features à sauver dans le fichier
    *          shape
    * @param shapefileName nom du fichier dans lequel sauver les shapes
+   * @see #write(FT_FeatureCollection, String, CoordinateReferenceSystem)
+   */
+  public static <Feature extends FT_Feature> void write(
+      FT_FeatureCollection<Feature> featureCollection, String shapefileName) {
+      ShapefileWriter.write(featureCollection, shapefileName, null);
+  }
+
+  /**
+   * Sauve une collection de features dans un fichier.
+   *
+   * @param <Feature> type des features contenu dans la collection
+   * @param featureCollection collection de features à sauver dans le fichier
+   *          shape
+   * @param shapefileName nom du fichier dans lequel sauver les shapes
+   * @param crs système de coordonnées
    */
   @SuppressWarnings("unchecked")
   public static <Feature extends FT_Feature> void write(
@@ -212,7 +227,19 @@ public class ShapefileWriter {
    * l'utilisateur puisse récupérer des fichiers sans extensions fichier shape.
    * @param <Feature> type des features contenu dans la collection
    * @param featureCollection collection de features à sauver dans un
-   * 
+   */
+  public static <Feature extends FT_Feature> void chooseAndWriteShapefile(
+      FT_FeatureCollection<Feature> featureCollection) {
+      ShapefileWriter.chooseAndWriteShapefile(featureCollection, null);
+  }
+
+  /**
+   * Ouvre une fenêtre permettant à l'utilisateur de choisir le fichier dans
+   * lequel il souhaite sauver ses features. TODO faire en sorte que
+   * l'utilisateur puisse récupérer des fichiers sans extensions fichier shape.
+   * @param <Feature> type des features contenu dans la collection
+   * @param featureCollection collection de features à sauver dans un
+   * @param crs système de coordonnées
    */
   public static <Feature extends FT_Feature> void chooseAndWriteShapefile(
       FT_FeatureCollection<Feature> featureCollection, CoordinateReferenceSystem crs) {

@@ -77,7 +77,7 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * read ou chooseAndReadShapefile.
  * </ul>
  * @author Julien Perret
- * 
+ * @author Bertrand Dumenieu
  */
 public class ShapefileReader implements Runnable {
   private final static Logger logger = Logger.getLogger(ShapefileReader.class
@@ -312,7 +312,7 @@ public class ShapefileReader implements Runnable {
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
     newFeatureType.setTypeName(population.getNom());
     int nbFields = reader.getNbFields();
-    Map<Integer, String[]> attLookup = new HashMap<Integer, String[]>();
+    Map<Integer, String[]> attLookup = new HashMap<Integer, String[]>(0);
     for (int i = 0; i < nbFields; i++) {
       AttributeType type = new AttributeType();
       String nomField = reader.getFieldName(i);
