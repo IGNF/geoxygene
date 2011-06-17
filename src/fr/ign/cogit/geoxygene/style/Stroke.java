@@ -116,12 +116,16 @@ public class Stroke {
     }
   }
 
+  /**
+   * The raw color of the stroke, without opacity information.
+   */
   @XmlTransient
   private Color stroke = Color.black;
 
   /**
-   * Renvoie la valeur de l'attribut stroke.
-   * @return la valeur de l'attribut stroke
+   * Returns the raw color of the stroke, without opacity information.
+   * Renvoie la valeur de l'attribut stroke, sans considération de l'opacité.
+   * @return The raw color of the stroke, without opacity information.
    */
   public Color getStroke() {
     return this.stroke;
@@ -399,9 +403,16 @@ public class Stroke {
     }
   }
 
+  /**
+   * The color of the stroke, considering the opacity attribute.
+   */
   @XmlTransient
   private Color color = null;
 
+  /**
+   * Returns the color of the stroke, considering the opacity attribute.
+   * @return The color of the stroke, considering the opacity attribute.
+   */
   public synchronized Color getColor() {
     if (this.color == null) {
       this.updateValues();
