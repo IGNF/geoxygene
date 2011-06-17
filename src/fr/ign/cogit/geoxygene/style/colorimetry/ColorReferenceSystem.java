@@ -250,7 +250,6 @@ public class ColorReferenceSystem {
         }
       }
     }
-    System.out.println(neighborColors);
     return neighborColors;
   }
 

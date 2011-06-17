@@ -10,12 +10,16 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.util.algo.MathUtil;
 
 /**
  * The ColorimetricColor class represent a color by different colorimetric
  * systems. It aims to deal with the RGB, CIELab, CIEXYZ, Java and COGIT
  * reference systems.
+ * TODO : synchroniser les paramètres de couleurs!
+ * Modifier la teinte devrait également modifier les codes RVB par exemple !!
  * 
  * @author Charlotte Hoarau
  * @author Elodie Buard
@@ -27,7 +31,8 @@ import fr.ign.cogit.geoxygene.util.algo.MathUtil;
     "xScreen", "yScreen" })
 public class ColorimetricColor {
   private static final long serialVersionUID = 1L;
-
+  static Logger logger = Logger.getLogger(ColorimetricColor.class);
+  
   /**
    * Color identifier in the COGIT reference system.
    */
@@ -359,26 +364,100 @@ public class ColorimetricColor {
    * @param hue The name of the hue of the corresponding {@link ColorSlice}
    * @param lightness The lightness level of the color
    **/
+  @SuppressWarnings("null")
   public ColorimetricColor(String hue, int lightness) {
     List<ColorimetricColor> cogitColors = ColorReferenceSystem.getCOGITColors();
-
+    ColorimetricColor color = null;
+    
     for (int i = 0; i < cogitColors.size(); i++) {
       if (cogitColors.get(i).getHue().equalsIgnoreCase(hue)
           && cogitColors.get(i).getLightness() == lightness) {
-        this.redRGB = cogitColors.get(i).getRedRGB();
-        this.greenRGB = cogitColors.get(i).getGreenRGB();
-        this.blueRGB = cogitColors.get(i).getBlueRGB();
-        this.idColor = cogitColors.get(i).getIdColor();
-        this.cleCoul = cogitColors.get(i).getCleCoul();
-        this.hue = cogitColors.get(i).getHue();
-        this.lightness = cogitColors.get(i).getLightness();
-        this.usualName = cogitColors.get(i).getUsualName();
-        this.xScreen = cogitColors.get(i).getXScreen();
-        this.yScreen = cogitColors.get(i).getYScreen();
+        color = cogitColors.get(i);
       }
     }
+    if (color == null) {
+      if (!hue.equalsIgnoreCase("GRIS") //$NON-NLS-1$
+        && !hue.equalsIgnoreCase("NOIR") //$NON-NLS-1$
+        && !hue.equalsIgnoreCase("BLANC")) { //$NON-NLS-1$
+      
+        if (lightness == 0) {
+          color = new ColorimetricColor(hue.toUpperCase(),1);
+        } else if (lightness == 8) {
+          color = new ColorimetricColor(hue.toUpperCase(), 7);
+        }
+      } else if (hue.equalsIgnoreCase("GRIS")) { //$NON-NLS-1$
+        if (lightness == 0) {
+          color = new ColorimetricColor(85);
+        } else if (lightness == 8) {
+          color = new ColorimetricColor(86);
+        }
+      } else if (hue.equalsIgnoreCase("NOIR")) { //$NON-NLS-1$
+        if (lightness == 0) {
+          color = new ColorimetricColor(85);
+        } else  {
+          color = new ColorimetricColor("GRIS", lightness); //$NON-NLS-1$
+        } 
+      } else if (hue.equalsIgnoreCase("BLANC")) { //$NON-NLS-1$
+        if (lightness == 8) {
+          color = new ColorimetricColor(86);
+        } else  {
+          color = new ColorimetricColor("GRIS", lightness); //$NON-NLS-1$
+        } 
+      }
+    }
+    this.redRGB = color.getRedRGB();
+    this.greenRGB = color.getGreenRGB();
+    this.blueRGB = color.getBlueRGB();
+    this.idColor = color.getIdColor();
+    this.cleCoul = color.getCleCoul();
+    this.hue = color.getHue();
+    this.lightness = color.getLightness();
+    this.usualName = color.getUsualName();
+    this.xScreen = color.getXScreen();
+    this.yScreen = color.getYScreen();
   }
 
+  public static void main(String[] args) {
+    ColorimetricColor c = new ColorimetricColor("RoUge", 0); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    c = new ColorimetricColor("RoUge",1); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    c = new ColorimetricColor("Rouge",7); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    c = new ColorimetricColor("Rouge",8); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    logger.info(""); //$NON-NLS-1$
+    
+    c = new ColorimetricColor("Gris",0); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    c = new ColorimetricColor("Gris",1); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    c = new ColorimetricColor("Gris",7); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    c = new ColorimetricColor("Gris",8); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    logger.info(""); //$NON-NLS-1$
+    
+    c = new ColorimetricColor("Noir",0); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    c = new ColorimetricColor("Noir",1); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    c = new ColorimetricColor("Noir",7); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    c = new ColorimetricColor("Noir",8); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    logger.info(""); //$NON-NLS-1$
+    
+    c = new ColorimetricColor("Blanc",0); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    c = new ColorimetricColor("Blanc",1); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    c = new ColorimetricColor("Blanc",7); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    c = new ColorimetricColor("Blanc",8); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+  }
+  
   /**
    * Constructor with the usual name of the color
    * @param usualName The usual name of the color in the COGIT
@@ -403,6 +482,7 @@ public class ColorimetricColor {
     }
   }
 
+  
   /**
    * Constructor with the RGB color components
    * @param r The Red component in the RGB color system.
