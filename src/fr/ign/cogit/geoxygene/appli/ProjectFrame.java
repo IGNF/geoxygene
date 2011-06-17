@@ -264,7 +264,16 @@ public class ProjectFrame extends JInternalFrame implements
 
   public void addShapefileLayer(String fileName, StyledLayerDescriptor sld, String styleName) {    
     this.addShapefileLayer(fileName);
-    this.getLayers().get(this.getLayers().size()-1).setStyles(sld.getLayer(styleName).getStyles());
+    Layer lastLayer = this.getLayers().get(this.getLayers().size()-1);
+    
+    int lastIndexOfSeparator = fileName.lastIndexOf(File.separatorChar);
+    String populationName = fileName.substring(lastIndexOfSeparator + 1,
+        fileName.lastIndexOf(".")); //$NON-NLS-1$
+    
+    DataSet.getInstance().getPopulation(populationName).setNom(populationName+styleName);
+    lastLayer.setName(populationName+styleName);
+    lastLayer.setStyles(sld.getLayer(styleName).getStyles());
+    
   }
   
   public void addShapefileLayer(String fileName) {
