@@ -84,7 +84,11 @@ public class FileChooser {
     this.fileChooser.setCurrentDirectory(this.getPreviousDirectory());
   }
 
-  JFileChooser fileChooser;
+  private JFileChooser fileChooser;
+
+  public JFileChooser getFileChooser() {
+    return fileChooser;
+  }
 
   public File getFile(Component parent) {
     this.fileChooser.setCurrentDirectory(this.getPreviousDirectory());
