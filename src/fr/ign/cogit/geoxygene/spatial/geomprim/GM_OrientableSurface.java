@@ -28,6 +28,7 @@
 package fr.ign.cogit.geoxygene.spatial.geomprim;
 
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
 /**
  * Surface orientée. A de l'intérêt pour traiter les trous : un trou est une
@@ -108,15 +109,15 @@ public class GM_OrientableSurface extends GM_OrientablePrimitive {
    * polygone.
    */
   public GM_SurfaceBoundary boundary() {
-    // GM_Surface s = this.getPrimitive();
-    // int n = s.sizePatch();
-    // if (n == 1) {
-    // GM_Polygon poly = (GM_Polygon)s.getPatch(0);
-    // GM_SurfaceBoundary bdy = new GM_SurfaceBoundary();
-    // bdy.exterior = poly.getExterior();
-    // bdy.interior = poly.getInterior();
-    // return bdy;
-    // }
+    GM_Surface s = this.getPrimitive();
+    int n = s.sizePatch();
+    if (n == 1) {
+      GM_Polygon poly = (GM_Polygon) s.getPatch(0);
+      GM_SurfaceBoundary bdy = new GM_SurfaceBoundary();
+      bdy.exterior = poly.getExterior();
+      bdy.interior = poly.getInterior();
+      return bdy;
+    }
     System.out
         .println("GM_OrientableSurface::boundary() : cette méthode ne fonctionne que pour les surfaces composées d'un et d'un seul patch."); //$NON-NLS-1$
     return null;
