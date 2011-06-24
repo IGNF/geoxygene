@@ -144,7 +144,30 @@ public class Vecteur {
       this.setY((this.getY() / normev));
     }
   }
+  
+  /**
+   * Renvoie un vecteur normé et ne modifie pas le this
+   * @return renvoie le vecteur normalisé
+   */
+  public Vecteur getNormalised(){
+    
+    double x,y,z;
+    double normev = this.norme();
+    x = (this.getX() / normev);
+    y = (this.getY() / normev);
+    if (!Double.isNaN(this.getZ())) {
+      z = this.getZ() / normev;
+      
+      return new Vecteur(x,y,z);
+    } 
+    
+    
+    return new Vecteur(x,y,Double.NaN);
+    
+  }
 
+  
+  
   /** Renvoie un NOUVEAU vecteur égal à (this + v1) */
   public Vecteur ajoute(Vecteur v1) {
     if (!Double.isNaN(this.getZ()) && !Double.isNaN(v1.getZ())) {
