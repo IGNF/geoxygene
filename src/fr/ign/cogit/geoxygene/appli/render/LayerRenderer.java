@@ -379,7 +379,13 @@ public class LayerRenderer implements Renderer {
             }
             Rule rule = featureTypeStyle.getRules().get(indexRule);
             for (FT_Feature feature : filteredFeatures.get(rule)) {
+              if (this.isCancelled()) {
+                return;
+              }
               for (Symbolizer symbolizer : rule.getSymbolizers()) {
+                if (this.isCancelled()) {
+                  return;
+                }
                 this.render(symbolizer, feature, theImage);
               }
               this.fireActionPerformed(new ActionEvent(this, 4,
