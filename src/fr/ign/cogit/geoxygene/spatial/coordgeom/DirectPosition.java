@@ -96,6 +96,10 @@ public class DirectPosition {
     this.setCoordinate(X, Y, Z);
   }
 
+  public DirectPosition(DirectPosition p) {
+    this.setCoordinate(p.getCoordinate());
+  }
+
   // ////////////////////////////////////////////////////////////////////////////////////////
   // Methodes get
   // //////////////////////////////////////////////////////////////////////////
@@ -218,6 +222,14 @@ public class DirectPosition {
     this.coordinate[1] += offsetY;
     if (this.coordinate.length == 3) {
       this.coordinate[2] += offsetZ;
+    }
+  }
+  public void move(double[] v) {
+    this.move(v, 1.0);
+  }
+  public void move(double[] v, double factor) {
+    for (int i = 0; i < v.length && i < this.coordinate.length; i++) {
+      this.coordinate[i] += factor * v[i];
     }
   }
 
@@ -378,5 +390,16 @@ public class DirectPosition {
     }
     return new String(
         "DirectPosition - X : " + this.getX() + "     Y : " + this.getY() + "     Z : " + this.getZ()); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+  }
+
+  public double[] minus(DirectPosition p) {
+    return this.minus(p, 1.0d);
+  }
+  public double[] minus(DirectPosition p, double factor) {
+    double[] difference = new double[Math.min(this.coordinate.length, p.coordinate.length)];
+    for (int i = 0; i < difference.length; i++) {
+      difference[i] = (this.coordinate[i] - p.coordinate[i]) * factor;
+    }
+    return difference;
   }
 }
