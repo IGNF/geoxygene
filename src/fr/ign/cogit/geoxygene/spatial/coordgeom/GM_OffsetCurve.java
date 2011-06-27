@@ -37,7 +37,6 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
  */
 
 class GM_OffsetCurve extends GM_CurveSegment {
-
   /**
    * Courbe de base à partir de laquelle est generee self.
    */
@@ -89,4 +88,8 @@ class GM_OffsetCurve extends GM_CurveSegment {
     return null;
   }
 
+  @Override
+  public String getInterpolation() {
+    return this.getBaseCurve().getInterpolation();
+  }
 }

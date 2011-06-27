@@ -55,8 +55,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 public class GM_Curve extends GM_OrientableCurve
 /* implements GM_GenericCurve */{
-  static Logger logger = Logger.getLogger(GM_Curve.class.getName());
-
+  protected static Logger logger = Logger.getLogger(GM_Curve.class.getName());
   // ////////////////////////////////////////////////////////////////////////////////
   // Attribut "segment" et méthodes pour le traiter
   // ////////////////////////////////////////////////////////////////////////////////

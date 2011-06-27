@@ -27,28 +27,23 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
+import java.util.List;
+
 /**
- * NON IMPLEMENTE. Classe mère pour les splines.
- * 
- * @author Thierry Badard & Arnaud Braun
- * @version 1.0
- * 
+ * Classe mère pour les splines.
+ * @author Thierry Badard
+ * @author Arnaud Braun
+ * @author Julien Perret
  */
-
-class GM_SplineCurve extends GM_CurveSegment {
-
-  /** NON IMPLEMENTE. */
-  // implemente une methode de GM_CurveSegment
+abstract class GM_SplineCurve extends GM_CurveSegment {
+  DirectPositionList controlPoints;
   @Override
   public DirectPositionList coord() {
-    return null;
+    return this.controlPoints;
   }
-
-  /** NON IMPLEMENTE. */
-  // implemente une methode de GM_CurveSegment
-  @Override
-  public GM_CurveSegment reverse() {
-    return null;
+  abstract public int getDegree();
+  List<GM_Knot> knot = null;
+  public List<GM_Knot> getKnot() {
+    return this.knot;
   }
-
 }

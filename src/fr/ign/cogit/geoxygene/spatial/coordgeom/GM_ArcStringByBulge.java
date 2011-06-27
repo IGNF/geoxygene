@@ -51,4 +51,8 @@ class GM_ArcStringByBulge extends GM_CurveSegment {
     return null;
   }
 
+  @Override
+  public String getInterpolation() {
+    return "circularArc2PointWithBuldge"; //$NON-NLS-1$
+  }
 }

@@ -53,4 +53,9 @@ class GM_ArcString extends GM_CurveSegment {
     return null;
   }
 
+  @Override
+  public String getInterpolation() {
+    return "circularArc3points"; //$NON-NLS-1$
+  }
+
 }

@@ -52,4 +52,9 @@ class GM_Clothoid extends GM_CurveSegment {
     return null;
   }
 
+  @Override
+  public String getInterpolation() {
+    return "clothoid"; //$NON-NLS-1$
+  }
+
 }

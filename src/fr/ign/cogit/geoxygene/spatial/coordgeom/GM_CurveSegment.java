@@ -58,46 +58,42 @@ abstract public class GM_CurveSegment extends GM_Curve
    * circularArc2PointsWithBulge, elliptical, clothoid, conic, polynomialSpline,
    * cubicSpline, rationalSpline}.
    */
-  protected String interpolation = "linear"; //$NON-NLS-1$
+//  protected String interpolation = "linear"; //$NON-NLS-1$
 
   /** Renvoie l'attribut interpolation. */
-  public String getInterpolation() {
-    return this.interpolation;
-  }
-
+  abstract public String getInterpolation();
   /**
    * Type de continuite entre un segment et son predecesseur (ignore pour le
    * premier segment). Pour des polylignes on aura une continuite C0.
    */
-  protected int numDerivativesAtStart = 0;
+//  protected int numDerivativesAtStart = 0;
 
   /** Renvoie l'attribut numDerivativesAtStart. */
   public int getNumDerivativesAtStart() {
-    return this.numDerivativesAtStart;
+    return 0;
   }
 
   /**
    * Type de continuite entre un segment et son successeur (ignore pour le
    * dernier segment). Pour des polylignes on aura une continuite C0.
    */
-  protected int numDerivativeAtEnd = 0;
+//  protected int numDerivativeAtEnd = 0;
 
   /** Renvoie l'attribut numDerivativeAtEnd. */
   public int getNumDerivativeAtEnd() {
-    return this.numDerivativeAtEnd;
+    return 0;
   }
 
   /**
    * Type de continuite garantie à l'interieur de la courbe. Pour des polylignes
    * on aura une continuite C0.
    */
-  protected int numDerivativeInterior = 0;
+//  protected int numDerivativeInterior = 0;
 
   /** Renvoie l'attribut numDerivativeInterior. */
   public int getNumDerivativeInterior() {
-    return this.numDerivativeInterior;
+    return 0;
   }
-
   // ////////////////////////////////////////////////////////////////////////////////
   // Methodes (abstaites, implementee dans les
   // sous-classes)////////////////////////
@@ -107,5 +103,4 @@ abstract public class GM_CurveSegment extends GM_Curve
    * dans les sous-classes.
    */
   abstract public GM_CurveSegment reverse();
-
 }

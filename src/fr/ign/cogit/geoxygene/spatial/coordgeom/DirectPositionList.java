@@ -29,7 +29,9 @@
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -132,9 +134,13 @@ public class DirectPositionList implements Collection<DirectPosition> {
     this.setList(theList);
   }
 
+  public DirectPositionList(DirectPosition... list) {
+    this(new ArrayList<DirectPosition>(Arrays.asList(list)));
+  }
+
   /** Clone this */
   @Override
-  public Object clone() {
+  public DirectPositionList clone() {
     DirectPositionList dpl = new DirectPositionList();
     for (DirectPosition p : this.list) {
       dpl.add((DirectPosition) p.clone());
@@ -304,4 +310,9 @@ public class DirectPositionList implements Collection<DirectPosition> {
 
   }
 
+  public DirectPositionList reverse() {
+    DirectPositionList list = this.clone();
+    Collections.reverse(list.getList());
+    return list;
+  }
 }

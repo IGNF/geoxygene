@@ -33,19 +33,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-// import operateur.OpDirectPosition;
-
 /**
  * Polyligne. L'attribut "interpolation" est egal à "linear".
- * 
- * @author Thierry Badard & Arnaud Braun
- * @version 1.1
- * 
- *          19.02.2007 : correction de bug constructeur à partir d'une liste de
- *          DirectPosition
- * 
+ *
+ * @author Thierry Badard
+ * @author Arnaud Braun
+ * @author Julien Perret
  */
-
 public class GM_LineString extends GM_CurveSegment {
 
   // ////////////////////////////////////////////////////////////////////////
@@ -108,9 +102,13 @@ public class GM_LineString extends GM_CurveSegment {
     this(new DirectPositionList());
   }
 
+  public GM_LineString(List<DirectPosition> list) {
+    this(new DirectPositionList(list));
+  }
+
   /** Constructeur par defaut. */
   public GM_LineString(DirectPosition... list) {
-    this(new DirectPositionList(Arrays.asList(list)));
+    this(Arrays.asList(list));
   }
 
   /** Constructeur à partir d'une liste de DirectPosition. */
@@ -119,7 +117,7 @@ public class GM_LineString extends GM_CurveSegment {
     this.segment.add(this);
     this.controlPoint = new DirectPositionList();
     this.controlPoint.addAll(points);
-    this.interpolation = "linear"; //$NON-NLS-1$
+//    this.interpolation = "linear"; //$NON-NLS-1$
   }
 
   // ////////////////////////////////////////////////////////////////////////
@@ -176,8 +174,8 @@ public class GM_LineString extends GM_CurveSegment {
   }
 
   @Override
-  public Object clone() {
-    return new GM_LineString((DirectPositionList) this.controlPoint.clone());
+  public GM_LineString clone() {
+    return new GM_LineString(this.controlPoint.clone());
   }
   @Override
   public GM_LineString getNegative() {
@@ -191,4 +189,8 @@ public class GM_LineString extends GM_CurveSegment {
     return true;
   }
 
+  @Override
+  public String getInterpolation() {
+    return "linear"; //$NON-NLS-1$
+  }
 }

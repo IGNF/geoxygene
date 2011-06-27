@@ -37,4 +37,21 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
  */
 
 class GM_BSplineCurve extends GM_SplineCurve {
+  @Override
+  public GM_CurveSegment reverse() {
+    return null;
+  }
+  int degree;
+  @Override
+  public int getDegree() {
+    return this.degree;
+  }
+  /**
+   * Interpolation is either polynomialSpline or rationalSpline
+   */
+  String interpolation = null;
+  @Override
+  public String getInterpolation() {
+    return this.interpolation;
+  }
 }

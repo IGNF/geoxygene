@@ -52,4 +52,8 @@ class GM_GeodesicString extends GM_CurveSegment {
     return null;
   }
 
+  @Override
+  public String getInterpolation() {
+    return "geodesic"; //$NON-NLS-1$
+  }
 }

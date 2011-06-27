@@ -28,13 +28,74 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
+
+
 /**
- * NON IMPLEMENTE.
- * 
- * @author Thierry Badard & Arnaud Braun
- * @version 1.0
- * 
+ * @author Thierry Badard
+ * @author Arnaud Braun
+ * @author Julien Perret
  */
 
-class GM_Bezier extends GM_BSplineCurve {
+public class GM_Bezier extends GM_BSplineCurve {
+  public GM_Bezier(List<DirectPosition> points) {
+    this(new DirectPositionList(points));
+  }
+  public GM_Bezier(DirectPositionList points) {
+    this.interpolation = "polynomial"; //$NON-NLS-1$
+    this.controlPoints = points;
+    this.degree = this.controlPoints.size() - 1;
+  }
+  /**
+   * Use De Casteljau's algorithm.
+   * <p>
+   * The offset is not used.
+   * <p>
+   * Gerald Farin and Dianne Hansford, The Essentials of CAGD, A K Peters, 2000. 
+   * @param spacing max distance between 2 points when subdividing
+   * @param offset distance between the linestring and the curve
+   * @return a linestring representing the curve
+   */
+  public GM_LineString asLineString(double spacing, double offset) {
+    if (offset != 0) {
+      return null;
+    }
+    if (this.controlPoints.size() > 1) {
+      DirectPositionList list = piecewiseBezier(this.controlPoints.getList(), spacing);
+      return new GM_LineString(list);
+    }
+    return new GM_LineString(this.controlPoints);
+  }
+  DirectPositionList piecewiseBezier(List<DirectPosition> p, double spacing) {
+    double length = new GM_LineString(p).length();
+    if (length <= spacing) {
+      return new DirectPositionList(p.get(0), p.get(p.size() - 1));
+    } else {
+      DirectPosition[][] T = new DirectPosition[p.size()][p.size()];
+      for (int i = 0; i < p.size(); i++) {
+        T[0][i] = p.get(i);
+      }
+      for (int i = 1; i <  p.size(); i++) {
+        for (int j = 0; j < p.size() - i; j++) {
+          T[i][j] = Operateurs.milieu(T[i - 1][j], T[i -1][j + 1]);
+        }
+      }
+      List<DirectPosition> left = new ArrayList<DirectPosition> (p.size());
+      List<DirectPosition> right = new ArrayList<DirectPosition> (p.size());
+      for (int i = 0; i < p.size(); i++) {
+        left.add(T[i][0]);
+        right.add(T[p.size() - 1 - i][i]);
+      }
+      DirectPositionList leftList = piecewiseBezier(left, spacing);
+      DirectPositionList rightList = piecewiseBezier(right, spacing);
+      DirectPositionList list = new DirectPositionList();
+      list.addAll(leftList);
+      list.remove(list.size() - 1);
+      list.addAll(rightList);
+      return list;
+    }
+  }
 }

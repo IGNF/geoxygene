@@ -52,4 +52,9 @@ class GM_Conic extends GM_CurveSegment {
     return null;
   }
 
+  @Override
+  public String getInterpolation() {
+    return "conic"; //$NON-NLS-1$
+  }
+
 }
