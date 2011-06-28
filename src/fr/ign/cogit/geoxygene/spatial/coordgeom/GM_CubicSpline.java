@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * Cubic Splines.
  * <p>
- * Gerald Farin and Dianne Hansford, The Essentials of CAGD, A K Peters, 2000. 
+ * Gerald Farin and Dianne Hansford, The Essentials of CAGD, A K Peters, 2000.
  * @author Thierry Badard
  * @author Arnaud Braun
  * @author Julien Perret
@@ -42,53 +42,80 @@ import java.util.List;
 public class GM_CubicSpline extends GM_PolynomialSpline {
   @Override
   public GM_CubicSpline reverse() {
-    return new GM_CubicSpline(this.controlPoints.reverse(), this.vectorAtEnd[0], this.vectorAtStart[0]);
+    return new GM_CubicSpline(this.controlPoints.reverse(),
+        this.vectorAtEnd[0], this.vectorAtStart[0]);
   }
+
   @Override
   public int getDegree() {
     return 3;
   }
+
   @Override
   public String getInterpolation() {
     return "cubicSpline"; //$NON-NLS-1$
   }
-  public GM_CubicSpline(DirectPositionList points, double[] vectorAtStart, double[] vectorAtEnd) {
+
+  public GM_CubicSpline(DirectPositionList points, double[] vectorAtStart,
+      double[] vectorAtEnd) {
     this.controlPoints = points;
     this.vectorAtStart = new double[][] { vectorAtStart };
     this.vectorAtEnd = new double[][] { vectorAtEnd };
   }
+
   public GM_CubicSpline(DirectPositionList points) {
     this.controlPoints = points;
     this.vectorAtStart = new double[][] {};
     this.vectorAtEnd = new double[][] {};
   }
+
   String tangentMethod = "finiteDifference"; //$NON-NLS-1$
+
   public String getTangentMethod() {
     return this.tangentMethod;
   }
+
   public void setTangentMethod(String tangentMethod) {
     this.tangentMethod = tangentMethod;
   }
+
   double tension = 0.0;
+
   public void setTension(double tension) {
     this.tension = tension;
   }
+
   double bias = 0.0;
+
   public void setBias(double bias) {
     this.bias = bias;
   }
+
   double continuity = 0.0;
+
   public void setContinuity(double continuity) {
     this.continuity = continuity;
   }
+
   /**
    * @param spacing max distance between 2 points when subdividing
    * @param offset distance between the linestring and the curve
    * @return a linestring representing the curve
    */
   public GM_LineString asLineString(double spacing, double offset) {
-//    logger.info("using " + this.tangentMethod);
     // for each segment, generate tangents
+    // if (this.knot == null) {
+    // double length = new GM_LineString(this.controlPoints).length();
+    // this.knot = new ArrayList<GM_Knot>(this.controlPoints.size());
+    // double accumulatedLength = 0.0d;
+    // this.knot.add(new GM_Knot(accumulatedLength, 1, 1));
+    // for (int i = 0; i < this.controlPoints.size() - 1; i++) {
+    // DirectPosition p0 = this.controlPoints.get(i);
+    // DirectPosition p1 = this.controlPoints.get(i + 1);
+    // accumulatedLength += p0.distance(p1);
+    // this.knot.add(new GM_Knot(accumulatedLength / length, 1, 1));
+    // }
+    // }
     List<DirectPosition> list = new ArrayList<DirectPosition>();
     for (int i = 0; i < this.controlPoints.size() - 1; i++) {
       DirectPosition p0 = this.controlPoints.get(i);
@@ -113,111 +140,78 @@ public class GM_CubicSpline extends GM_PolynomialSpline {
     }
     return new GM_LineString(list);
   }
+
   private double[] outgoingTangent(int i) {
     if (this.tangentMethod.equalsIgnoreCase("finiteDifference")) { //$NON-NLS-1$
-      double[] v = {0.0d, 0.0d, 0.0d};
-      if (i < this.controlPoints.size() - 1) {
-        DirectPosition p0 = this.controlPoints.get(i);
-        DirectPosition p1 = this.controlPoints.get(i + 1);
-        double interval = 1.0d / (this.controlPoints.size() - 1);
-        if (this.knot != null) {
-          interval = 1.0d / (this.knot.get(i + 1).getValue() - this.knot.get(i).getValue());
-        }
-        v = p1.minus(p0, interval / 2);
-      }
-      if (i > 0) {
-        DirectPosition p0 = this.controlPoints.get(i - 1);
-        DirectPosition p1 = this.controlPoints.get(i);
-        double interval = 1.0d / (this.controlPoints.size() - 1);
-        if (this.knot != null) {
-          interval = 1.0d / (this.knot.get(i).getValue() - this.knot.get(i - 1).getValue());
-        }
-        double[] v1 = p1.minus(p0, interval / 2);
-        for (int j = 0; j < v1.length; j++) {
-          v[j] += v1[j];
-        }
-      }
-      return v;
+      double[] v1 = this.twoPointsDifference(i + 1, i);
+      double[] v2 = this.twoPointsDifference(i, i - 1);
+      return avg(v1, v2);
     }
     if (this.tangentMethod.equalsIgnoreCase("cardinalSpline")) { //$NON-NLS-1$
-      if (i > 0 && i < this.controlPoints.size() - 1) {
-        DirectPosition p0 = this.controlPoints.get(i - 1);
-        DirectPosition p1 = this.controlPoints.get(i + 1);
-        double interval = 1.0d / ( 2.0d * (this.controlPoints.size() - 1));
-        if (this.knot != null) {
-          interval = 1.0d / (this.knot.get(i + 1).getValue() - this.knot.get(i - 1).getValue());
-        }
-        double[] v = p1.minus(p0, (1 - this.tension) * interval);
-        return v;
-      } else {
-        if (i > 0) {
-          DirectPosition p0 = this.controlPoints.get(i - 1);
-          DirectPosition p1 = this.controlPoints.get(i);
-          double interval = 1.0d / (this.controlPoints.size() - 1);
-          if (this.knot != null) {
-            interval = 1.0d / (this.knot.get(i).getValue() - this.knot.get(i - 1).getValue());
-          }
-          double[] v = p1.minus(p0, (1 - this.tension) * interval);
-          return v;
-        } else {
-          DirectPosition p0 = this.controlPoints.get(i);
-          DirectPosition p1 = this.controlPoints.get(i + 1);
-          double interval = 1.0d / (this.controlPoints.size() - 1);
-          if (this.knot != null) {
-            interval = 1.0d / (this.knot.get(i + 1).getValue() - this.knot.get(i).getValue());
-          }
-          double[] v = p1.minus(p0, (1.0d - this.tension) * interval);
-          return v;
-        }
-      }
+      int i1 = Math.min(this.controlPoints.size() - 1, i + 1);
+      int i2 = Math.max(0, i - 1);
+      double[] v = this.twoPointsDifference(i1, i2);
+      return mul(v, (1 - this.tension));
     }
     if (this.tangentMethod.equalsIgnoreCase("kochanekBartels")) { //$NON-NLS-1$
-      double[] v = {0.0d, 0.0d, 0.0d};
-      if (i < this.controlPoints.size() - 1) {
-        DirectPosition p0 = this.controlPoints.get(i);
-        DirectPosition p1 = this.controlPoints.get(i + 1);
-        double interval = (1.0d - this.tension) * (1.0d - this.bias) * (1.0d - this.continuity);
-        v = p1.minus(p0, interval / 2.0d);
-      }
-      if (i > 0) {
-        DirectPosition p0 = this.controlPoints.get(i - 1);
-        DirectPosition p1 = this.controlPoints.get(i);
-        double interval = (1.0d - this.tension) * (1.0d + this.bias) * (1.0d + this.continuity);
-        double[] v1 = p1.minus(p0, interval / 2.0d);
-        for (int j = 0; j < v1.length; j++) {
-          v[j] += v1[j];
-        }
-      }
-      return v;
+      double[] v1 = this.twoPointsDifference(i + 1, i);
+      double numerator = (1.0d - this.tension) * (1.0d - this.bias)
+          * (1.0d - this.continuity);
+      v1 = mul(v1, numerator);
+      double[] v2 = this.twoPointsDifference(i, i - 1);
+      numerator = (1.0d - this.tension) * (1.0d + this.bias)
+          * (1.0d + this.continuity);
+      v2 = mul(v2, numerator);
+      return avg(v1, v2);
     }
     return null;
   }
   private double[] incomingTangent(int i) {
-    if (this.tangentMethod.equalsIgnoreCase("finiteDifference")) { //$NON-NLS-1$
+    if (!this.tangentMethod.equalsIgnoreCase("kochanekBartels")) { //$NON-NLS-1$
       return this.outgoingTangent(i);
     }
-    if (this.tangentMethod.equalsIgnoreCase("cardinalSpline")) { //$NON-NLS-1$
-      return this.outgoingTangent(i);
+    double[] v1 = this.twoPointsDifference(i + 1, i);
+    double numerator = (1.0d - this.tension) * (1.0d - this.bias)
+    * (1.0d + this.continuity);
+    v1 = mul(v1, numerator);
+    double[] v2 = this.twoPointsDifference(i, i - 1);
+    numerator = (1.0d - this.tension) * (1.0d + this.bias)
+    * (1.0d - this.continuity);
+    v2 = mul(v2, numerator);
+    return avg(v1, v2);
+  }
+  private double[] twoPointsDifference(int i1, int i2) {
+    if (i2 < 0 || i1 > this.controlPoints.size() - 1) {
+      return null;
     }
-    if (this.tangentMethod.equalsIgnoreCase("kochanekBartels")) { //$NON-NLS-1$
-      double[] v = {0.0d, 0.0d, 0.0d};
-      if (i < this.controlPoints.size() - 1) {
-        DirectPosition p0 = this.controlPoints.get(i);
-        DirectPosition p1 = this.controlPoints.get(i + 1);
-        double interval = (1.0d - this.tension) * (1.0d - this.bias) * (1.0d + this.continuity);
-        v = p1.minus(p0, interval / 2.0d);
-      }
-      if (i > 0) {
-        DirectPosition p0 = this.controlPoints.get(i - 1);
-        DirectPosition p1 = this.controlPoints.get(i);
-        double interval = (1.0d - this.tension) * (1.0d + this.bias) * (1.0d - this.continuity);
-        double[] v1 = p1.minus(p0, interval / 2.0d);
-        for (int j = 0; j < v1.length; j++) {
-          v[j] += v1[j];
-        }
-      }
+    DirectPosition p1 = this.controlPoints.get(i1);
+    DirectPosition p2 = this.controlPoints.get(i2);
+    double denominator = 1.0d;
+    if (this.knot != null) {
+      denominator = this.knot.get(i2).getValue() - this.knot.get(i1).getValue();
+    }
+    return p1.minus(p2, 1.0d / denominator);
+  }
+  private double[] mul(double[] v, double d) {
+    if (v == null) {
       return v;
     }
-    return null;
+    for (int j = 0; j < v.length; j++) {
+      v[j] *= d;
+    }
+    return v;
+  }
+  private double[] avg(double[] v1, double[] v2) {
+    if (v1 == null) {
+      return v2;
+    }
+    if (v2 == null) {
+      return v1;
+    }
+    double[] result = new double[v1.length];
+    for (int i = 0; i < result.length; i++) {
+      result[i] = (v1[i] + v2[i]) / 2;
+    }
+    return result;
   }
 }
