@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -74,7 +75,6 @@ public class ShapefileWriter {
       FT_FeatureCollection<Feature> featureCollection, String shapefileName) {
       ShapefileWriter.write(featureCollection, shapefileName, null);
   }
-
   /**
    * Sauve une collection de features dans un fichier.
    *
@@ -91,8 +91,8 @@ public class ShapefileWriter {
       return;
     }
     try {
-      if (!shapefileName.contains(".shp")) {
-        shapefileName = shapefileName + ".shp";
+      if (!shapefileName.contains(".shp")) { //$NON-NLS-1$
+        shapefileName = shapefileName + ".shp"; //$NON-NLS-1$
       }
       ShapefileDataStore store = new ShapefileDataStore(new File(shapefileName)
           .toURI().toURL());
@@ -106,10 +106,11 @@ public class ShapefileWriter {
             featureType.getGeometryType())
             .getSimpleName();
         for (GF_AttributeType attributeType : featureType.getFeatureAttributes()) {
+          Class<?> attributeClass = ShapefileWriter.valueType2Class(attributeType.getValueType());
+          //ShapefileWriter.logger.info("Class = " + attributeClass.getName());
           specs += "," + attributeType.getMemberName() //$NON-NLS-1$
               + ":" //$NON-NLS-1$
-              + ShapefileWriter.valueType2Class(attributeType.getValueType())
-                  .getSimpleName();
+              + attributeClass.getName();
         }
       } else {
         if (ShapefileWriter.logger.isDebugEnabled()) {
@@ -120,11 +121,12 @@ public class ShapefileWriter {
         if (featureCollection.get(0).getFeatureType() != null) {
           featureType = featureCollection.get(0).getFeatureType();
           for (GF_AttributeType attributeType : featureType.getFeatureAttributes()) {
+            Class<?> attributeClass = ShapefileWriter.valueType2Class(attributeType.getValueType());
+            //ShapefileWriter.logger.info("Class = " + attributeClass.getName());
             specs += "," //$NON-NLS-1$
                 + attributeType.getMemberName()
                 + ":" //$NON-NLS-1$
-                + ShapefileWriter.valueType2Class(attributeType.getValueType())
-                    .getSimpleName();
+                + attributeClass.getName();
           }
         }
       }
@@ -203,7 +205,7 @@ public class ShapefileWriter {
     if (valueType.equalsIgnoreCase("string")) { //$NON-NLS-1$
       return String.class;
     }
-    if (valueType.equalsIgnoreCase("integer")) { //$NON-NLS-1$
+    if (valueType.equalsIgnoreCase("int") || valueType.equalsIgnoreCase("integer")) { //$NON-NLS-1$ //$NON-NLS-2$
       return Integer.class;
     }
     if (valueType.equalsIgnoreCase("double")) { //$NON-NLS-1$
@@ -217,6 +219,9 @@ public class ShapefileWriter {
     }
     if (valueType.equalsIgnoreCase("boolean")) { //$NON-NLS-1$
       return String.class;
+    }
+    if (valueType.equalsIgnoreCase("date")) { //$NON-NLS-1$
+      return Date.class;
     }
     return null;
   }
@@ -232,7 +237,6 @@ public class ShapefileWriter {
       FT_FeatureCollection<Feature> featureCollection) {
       ShapefileWriter.chooseAndWriteShapefile(featureCollection, null);
   }
-
   /**
    * Ouvre une fenêtre permettant à l'utilisateur de choisir le fichier dans
    * lequel il souhaite sauver ses features. TODO faire en sorte que

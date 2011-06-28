@@ -164,9 +164,28 @@ public class ShapefileReader implements Runnable {
    * @return une population contenant les features contenues dans le fichier.
    */
   public static Population<DefaultFeature> read(String shapefileName) {
+    return ShapefileReader.read(shapefileName, false);
+  }
+
+  /**
+   * Lit les features contenus dans le fichier en paramètre. Ce chargement est
+   * synchrone
+   * <p>
+   * Pour utiliser le chargement asynchrone, utiliser le constructeur.
+   * 
+   * @see #read()
+   * @see #read(String, String, DataSet, boolean)
+   * @see #chooseAndReadShapefile()
+   * 
+   * @param shapefileName un shapefile
+   * @return une population contenant les features contenues dans le fichier.
+   */
+  public static Population<DefaultFeature> read(String shapefileName,
+      boolean initSpatialIndex) {
     return ShapefileReader.read(shapefileName, shapefileName.substring(
-        shapefileName.lastIndexOf("/") + 1, //$NON-NLS-1$
-        shapefileName.lastIndexOf(".")), null, false);} //$NON-NLS-1$
+        shapefileName.lastIndexOf(File.pathSeparator) + 1,
+        shapefileName.lastIndexOf(".")), null, initSpatialIndex); //$NON-NLS-1$
+  }
 
   /**
    * Lit les features contenus dans le fichier en paramètre et ajoute la
