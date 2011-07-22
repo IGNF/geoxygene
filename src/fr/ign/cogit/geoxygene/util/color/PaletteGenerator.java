@@ -1,9 +1,13 @@
 package fr.ign.cogit.geoxygene.util.color;
 
 import java.awt.Color;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JFileChooser;
+
+import fr.ign.cogit.geoxygene.appli.FileChooser;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_CubicSpline;
@@ -80,7 +84,12 @@ public class PaletteGenerator {
     for(Color c : palette) {
       System.out.println(c.toString());
     }
-    ColorUtil.writePaletteImage(palette.toArray(new Color[palette.size()]),
-        100, "/home/julien/paletteGreenRed3.png", 1, palette.size());
+    JFileChooser f = new JFileChooser();
+    int result = f.showSaveDialog(null);
+    if (result == JFileChooser.APPROVE_OPTION) {
+      File file = f.getSelectedFile();
+      ColorUtil.writePaletteImage(palette.toArray(new Color[palette.size()]),
+          100, file.getAbsolutePath(), 1, palette.size());
+    }
   }
 }
