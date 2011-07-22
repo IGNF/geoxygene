@@ -141,6 +141,32 @@ public class GM_CubicSpline extends GM_PolynomialSpline {
     return new GM_LineString(list);
   }
 
+  public GM_LineString asLineString(int numberOfPoints) {
+    List<DirectPosition> list = new ArrayList<DirectPosition>();
+    for (int i = 0; i < this.controlPoints.size() - 1; i++) {
+      DirectPosition p0 = this.controlPoints.get(i);
+      DirectPosition p1 = this.controlPoints.get(i + 1);
+      double[] m0 = this.outgoingTangent(i);
+      double[] m1 = this.incomingTangent(i + 1);
+      List<DirectPosition> l = new ArrayList<DirectPosition>(4);
+      l.add(p0);
+      DirectPosition pt0 = new DirectPosition(p0);
+      pt0.move(m0, 1.0d / 3.0d);
+      l.add(pt0);
+      DirectPosition pt1 = new DirectPosition(p1);
+      pt1.move(m1, -1.0d / 3.0d);
+      l.add(pt1);
+      l.add(p1);
+      GM_Bezier bezier = new GM_Bezier(l);
+      GM_LineString line = bezier.asLineString(numberOfPoints);
+      if (i > 0) {
+        line.getControlPoint().remove(0);
+      }
+      list.addAll(line.getControlPoint());
+    }
+    return new GM_LineString(list);
+  }
+
   private double[] outgoingTangent(int i) {
     if (this.tangentMethod.equalsIgnoreCase("finiteDifference")) { //$NON-NLS-1$
       double[] v1 = this.twoPointsDifference(i + 1, i);

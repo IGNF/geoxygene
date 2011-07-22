@@ -98,4 +98,40 @@ public class GM_Bezier extends GM_BSplineCurve {
       return list;
     }
   }
+  public GM_LineString asLineString(int numberOfPoints) {
+    if (this.controlPoints.size() > 1) {
+      DirectPositionList list = piecewiseBezier(this.controlPoints.getList(), numberOfPoints);
+      return new GM_LineString(list);
+    }
+    return new GM_LineString(this.controlPoints);
+  }
+
+  DirectPositionList piecewiseBezier(List<DirectPosition> p, int numberOfPoints) {
+    if (numberOfPoints <= 2) {
+      return new DirectPositionList(p.get(0), p.get(p.size() - 1));
+    } else {
+      DirectPosition[][] T = new DirectPosition[p.size()][p.size()];
+      for (int i = 0; i < p.size(); i++) {
+        T[0][i] = p.get(i);
+      }
+      for (int i = 1; i <  p.size(); i++) {
+        for (int j = 0; j < p.size() - i; j++) {
+          T[i][j] = Operateurs.milieu(T[i - 1][j], T[i -1][j + 1]);
+        }
+      }
+      List<DirectPosition> left = new ArrayList<DirectPosition> (p.size());
+      List<DirectPosition> right = new ArrayList<DirectPosition> (p.size());
+      for (int i = 0; i < p.size(); i++) {
+        left.add(T[i][0]);
+        right.add(T[p.size() - 1 - i][i]);
+      }
+      DirectPositionList leftList = piecewiseBezier(left, (numberOfPoints + 1) / 2);
+      DirectPositionList rightList = piecewiseBezier(right, (numberOfPoints + 1) / 2);
+      DirectPositionList list = new DirectPositionList();
+      list.addAll(leftList);
+      list.remove(list.size() - 1);
+      list.addAll(rightList);
+      return list;
+    }
+  }
 }
