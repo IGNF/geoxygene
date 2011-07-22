@@ -259,6 +259,13 @@ public class ColorUtil {
     ColorUtil.writeImage(image, imageName);
   }
 
+  public static void writePaletteImage(Color[] colors, int sizeElement,
+      String imageName, int numberOfLines, int numberOfColumns) {
+    BufferedImage image = ColorUtil.buildPaletteImage(colors, sizeElement,
+        numberOfLines, numberOfColumns);
+    ColorUtil.writeImage(image, imageName);
+  }
+
   /**
    * Build an image representing the palette.
    * @param colors the palette's list of colors
@@ -274,6 +281,17 @@ public class ColorUtil {
     if (numberOfColors > numberOfColumns * numberOfLines) {
       numberOfLines++;
     }
+    return buildPaletteImage(colors, sizeElement, numberOfLines, numberOfColumns);
+  }
+
+  /**
+   * Build an image representing the palette.
+   * @param colors the palette's list of colors
+   * @param sizeElement size of the palette elements
+   * @return an image representing the palette
+   */
+  public static BufferedImage buildPaletteImage(Color[] colors,
+      int sizeElement, int numberOfLines, int numberOfColumns) {
     BufferedImage image = new BufferedImage(numberOfColumns * sizeElement,
         numberOfLines * sizeElement, BufferedImage.TYPE_INT_ARGB);
     for (int index = 0; index < colors.length; index++) {
