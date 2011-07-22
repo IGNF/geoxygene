@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.swing.JFileChooser;
 
-import fr.ign.cogit.geoxygene.appli.FileChooser;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_CubicSpline;
