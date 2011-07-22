@@ -135,7 +135,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
         JtsAlgorithms.logger
             .debug(I18N.getString("JtsAlgorithms.Geometry") + ((geom != null) ? geom.toString() : I18N.getString("JtsAlgorithms.NullGeometry"))); //$NON-NLS-1$ //$NON-NLS-2$
         JtsAlgorithms.logger.debug(e.getMessage());
-        JtsAlgorithms.logger.debug("Geometry JTS = " + jtsGeom);
+        JtsAlgorithms.logger.debug("Geometry JTS = " + jtsGeom); //$NON-NLS-1$
       }
       e.printStackTrace();
       return null;
@@ -1637,22 +1637,24 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
   
   /**
+   * Minimum Bounding Rectangle of a geometry.
    * Plus Petit Rectangle Englobant d'une géométrie.
-   * Smallest Enclosing Rectangle of a geometry.
    * 
-   * @param geom une géométrie, a geometry
-   * @return le Plus Petit Rectangle Englobant, the Smallest Enclosing Rectangle
+   * 
+   * @param geom a geometry, une géométrie.
+   * @return the Minimum Bounding Rectangle, le Plus Petit Rectangle Englobant.
    */
-  public static Polygon PPRE(Geometry geom){
+  public static Polygon MBR(Geometry geom){
       //recupere l'enveloppe convexe
       Geometry convexHull=geom.convexHull();
-      //si ce n'est pas un polygone, le MBR n'est pas defini: on revoit null
+      //si ce n'est pas un polygone, le MBR n'est pas defini: on renvoit null
       if (!(convexHull instanceof Polygon)) {
-          logger.error("Le PPRE calculé n'est pas un polygone. Son type est "+convexHull.getGeometryType());
+          logger.error("Le PPRE calculé n'est pas un polygone. " + //$NON-NLS-1$
+          		"Son type est " + convexHull.getGeometryType()); //$NON-NLS-1$
           return null;
       }
       Polygon env=(Polygon)convexHull;
-      //prend les coordonnes de l'enveloppe convexe
+      //prend les coordonnees de l'enveloppe convexe
       Coordinate[] coord=env.getExteriorRing().getCoordinates();
       Coordinate centre=geom.getCentroid().getCoordinate();
       //parcours les segments
@@ -1660,7 +1662,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
       Polygon ppre=null;
       for(int i=0;i<coord.length-1;i++){
           //calcul de la rotation de l'enveloppe convexe
-          double angle=Math.atan2(coord[i+1].y-coord[i].y, coord[i+1].x-coord[i].x);
+          double angle=Math.atan2(
+              coord[i+1].y-coord[i].y,
+              coord[i+1].x-coord[i].x);
           try {
           Polygon rot=(Polygon)rotation(env, centre, -1.0*angle).getEnvelope();
           //calcul l'aire de l'enveloppe rectangulaire
@@ -1675,9 +1679,11 @@ public class JtsAlgorithms implements GeomAlgorithms {
       }
       return rotation(ppre, centre, angle_);
   }
+  
   /**
-   * Effectue une rotation sur une géométrie.
    * Rotate a geometry.
+   * Effectue une rotation sur une géométrie.
+   * 
    * 
    * @param geom une géométrie, a geometry
    * @param c centre de la rotation, center of the rotation
@@ -1691,7 +1697,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
       Coordinate[] coord_=new Coordinate[coord.length];
       for(int i=0;i<coord.length;i++){
           double x=coord[i].x, y=coord[i].y;
-          coord_[i]=new Coordinate(c.x+cos*(x-c.x)-sin*(y-c.y), c.y+sin*(x-c.x)+cos*(y-c.y));
+          coord_[i]=new Coordinate(
+              c.x+cos*(x-c.x)-sin*(y-c.y),
+              c.y+sin*(x-c.x)+cos*(y-c.y));
       }
       LinearRing shell=geom.getFactory().createLinearRing(coord_);
 
@@ -1702,7 +1710,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
           Coordinate[] coord2_=new Coordinate[coord2.length];
           for(int i=0;i<coord2.length;i++){
               double x=coord2[i].x, y=coord2[i].y;
-              coord2_[i]=new Coordinate(c.x+cos*(x-c.x)-sin*(y-c.y), c.y+sin*(x-c.x)+cos*(y-c.y));
+              coord2_[i]=new Coordinate(
+                  c.x+cos*(x-c.x)-sin*(y-c.y),
+                  c.y+sin*(x-c.x)+cos*(y-c.y));
           }
           trous[j]=geom.getFactory().createLinearRing(coord2);
       }
