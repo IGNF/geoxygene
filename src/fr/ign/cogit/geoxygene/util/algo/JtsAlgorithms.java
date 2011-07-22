@@ -1635,4 +1635,77 @@ public class JtsAlgorithms implements GeomAlgorithms {
             .toArray(new Coordinate[coordinateList.size()])));
     return result;
   }
+  
+  /**
+   * Plus Petit Rectangle Englobant d'une géométrie.
+   * Smallest Enclosing Rectangle of a geometry.
+   * 
+   * @param geom une géométrie, a geometry
+   * @return le Plus Petit Rectangle Englobant, the Smallest Enclosing Rectangle
+   */
+  public static Polygon PPRE(Geometry geom){
+      //recupere l'enveloppe convexe
+      Geometry convexHull=geom.convexHull();
+      //si ce n'est pas un polygone, le MBR n'est pas defini: on revoit null
+      if (!(convexHull instanceof Polygon)) {
+          logger.error("Le PPRE calculé n'est pas un polygone. Son type est "+convexHull.getGeometryType());
+          return null;
+      }
+      Polygon env=(Polygon)convexHull;
+      //prend les coordonnes de l'enveloppe convexe
+      Coordinate[] coord=env.getExteriorRing().getCoordinates();
+      Coordinate centre=geom.getCentroid().getCoordinate();
+      //parcours les segments
+      double aire_min=Double.MAX_VALUE, angle_=0.0;
+      Polygon ppre=null;
+      for(int i=0;i<coord.length-1;i++){
+          //calcul de la rotation de l'enveloppe convexe
+          double angle=Math.atan2(coord[i+1].y-coord[i].y, coord[i+1].x-coord[i].x);
+          try {
+          Polygon rot=(Polygon)rotation(env, centre, -1.0*angle).getEnvelope();
+          //calcul l'aire de l'enveloppe rectangulaire
+          double aire=rot.getArea();
+          //verifie si elle est minimum
+          if (aire<aire_min) {aire_min=aire; ppre=rot; angle_=angle; }
+          } catch (ClassCastException e) {
+              logger.error(geom);
+              logger.error(env);
+              logger.error(rotation(env, centre, -1.0*angle).getEnvelope());
+          }
+      }
+      return rotation(ppre, centre, angle_);
+  }
+  /**
+   * Effectue une rotation sur une géométrie.
+   * Rotate a geometry.
+   * 
+   * @param geom une géométrie, a geometry
+   * @param c centre de la rotation, center of the rotation
+   * @param angle angle de rotation, angle of rotation
+   * @return polygone résultant de la rotation, resulting polygon.
+   */
+  public static Polygon rotation(Polygon geom, Coordinate c, double angle){
+      double cos=Math.cos(angle), sin=Math.sin(angle);
+      //rotation de l'enveloppe
+      Coordinate[] coord=geom.getExteriorRing().getCoordinates();
+      Coordinate[] coord_=new Coordinate[coord.length];
+      for(int i=0;i<coord.length;i++){
+          double x=coord[i].x, y=coord[i].y;
+          coord_[i]=new Coordinate(c.x+cos*(x-c.x)-sin*(y-c.y), c.y+sin*(x-c.x)+cos*(y-c.y));
+      }
+      LinearRing shell=geom.getFactory().createLinearRing(coord_);
+
+      //rotation des trous
+      LinearRing[] trous=new LinearRing[geom.getNumInteriorRing()];
+      for(int j=0;j<geom.getNumInteriorRing();j++){
+          Coordinate[] coord2=geom.getInteriorRingN(j).getCoordinates();
+          Coordinate[] coord2_=new Coordinate[coord2.length];
+          for(int i=0;i<coord2.length;i++){
+              double x=coord2[i].x, y=coord2[i].y;
+              coord2_[i]=new Coordinate(c.x+cos*(x-c.x)-sin*(y-c.y), c.y+sin*(x-c.x)+cos*(y-c.y));
+          }
+          trous[j]=geom.getFactory().createLinearRing(coord2);
+      }
+      return geom.getFactory().createPolygon(shell, trous);
+  }
 } // class
