@@ -132,6 +132,7 @@ public class ColorUtil {
     for (int i = 0; i < 3; i++) {
       xyz[i] = (f[i] > ColorUtil.delta) ? f[i] * f[i] * f[i]
           : (f[i] - 16f / 116f) * ColorUtil.delta * ColorUtil.delta * 3f;
+      xyz[i] = Math.max(0.0f, Math.min(1.0f, xyz[i]));
     }
     return new Color(ColorSpace.getInstance(ColorSpace.CS_CIEXYZ), xyz, 1f);
   }
