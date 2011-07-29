@@ -71,6 +71,7 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  * @author Arnaud Braun
  * @author Christophe Pele
  * @author Jean-François Girres
+ * @author Charlotte Hoarau
  * @version 1.0
  * 
  */
@@ -1708,6 +1709,105 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
   
   /**
+   * Minimum bounding square of a rectangle envelope.
+   * 
+   * @param env the envelope to enclose by a square.
+   * @return The minimum bounding square of a rectangle envelope
+   */
+  public static Polygon squareEnveloppe(Envelope env) {
+    Polygon square = null;
+    GeometryFactory factory = new GeometryFactory();
+    
+    double height = env.getHeight();
+    double width = env.getWidth();
+    
+    if (height > width) {
+      double diff = height - width;
+      Coordinate[] coord = {
+          new Coordinate(env.getMinX() - diff/2, env.getMinY()),
+          new Coordinate(env.getMaxX() + diff/2, env.getMinY()),
+          new Coordinate(env.getMaxX() + diff/2, env.getMaxY()),
+          new Coordinate(env.getMinX() - diff/2, env.getMaxY()),
+          new Coordinate(env.getMinX() - diff/2, env.getMinY())
+      };
+      
+      LinearRing lr = factory.createLinearRing(coord);
+      square = factory.createPolygon(lr, null);
+    } else {
+      double diff = width - height;
+      Coordinate[] coord = {
+          new Coordinate(env.getMinX(), env.getMinY() - diff/2),
+          new Coordinate(env.getMaxX(), env.getMinY() - diff/2),
+          new Coordinate(env.getMaxX(), env.getMaxY() + diff/2),
+          new Coordinate(env.getMinX(), env.getMaxY() + diff/2),
+          new Coordinate(env.getMinX(), env.getMinY() - diff/2)
+      };
+      
+      LinearRing lr = factory.createLinearRing(coord);
+      square = factory.createPolygon(lr, null);
+    }
+    
+    return square;
+  }
+  
+  /**
+   * Minimum Bounding Square of a geometry.
+   * Plus Petit Carré Englobant d'une géométrie.
+   * 
+   * 
+   * @param geom a geometry, une géométrie.
+   * @return the Minimum Bounding Square, le Plus Petit Carré Englobant.
+   */
+  public static Polygon MBS(Geometry geom){
+      //recupere l'enveloppe convexe
+      Geometry convexHull=geom.convexHull();
+      //si ce n'est pas un polygone, le MBR n'est pas defini: on renvoit null
+      if (!(convexHull instanceof Polygon)) {
+          logger.error("Le PPRE calculé n'est pas un polygone. " + //$NON-NLS-1$
+                "Son type est " + convexHull.getGeometryType()); //$NON-NLS-1$
+          return null;
+      }
+      Polygon env=(Polygon)convexHull;
+      //prend les coordonnees de l'enveloppe convexe
+      Coordinate[] coord=env.getExteriorRing().getCoordinates();
+      Coordinate centre=geom.getCentroid().getCoordinate();
+      //parcours les segments
+      double aire_min=Double.MAX_VALUE, angle_=0.0;
+      Polygon ppre=null;
+      for(int i=0;i<coord.length-1;i++){
+          //calcul de la rotation de l'enveloppe convexe
+          double angle=Math.atan2(
+              coord[i+1].y-coord[i].y,
+              coord[i+1].x-coord[i].x);
+          try {
+          Polygon rot=JtsAlgorithms.squareEnveloppe(
+              rotation(env, centre, -1.0*angle).getEnvelopeInternal());
+          //calcul l'aire de l'enveloppe carrée
+          double aire=rot.getArea();
+          //verifie si elle est minimum
+          if (aire<aire_min) {aire_min=aire; ppre=rot; angle_=angle; }
+          } catch (ClassCastException e) {
+              logger.error(geom);
+              logger.error(env);
+              logger.error(rotation(env, centre, -1.0*angle).getEnvelope());
+          }
+      }
+      return rotation(ppre, centre, angle_);
+  }
+  
+  /**
+   * Plus Petit Carré Englobant d'une géométrie préservant son aire.
+   * Smallest Enclosing Suare of a geometry preserving its area.
+   * 
+   * @param geom une géométrie, a geometry
+   * @return le Plus Petit Carré Englobant, the Smallest Enclosing Square
+   */
+  public static Polygon MBSAirePreservee(Geometry geom){
+      Polygon out=MBS(geom);
+      return homothetie(out, (float) Math.sqrt(geom.getArea()/out.getArea()));
+  }
+  
+  /**
    * Rotate a geometry.
    * Effectue une rotation sur une géométrie.
    * 
@@ -1819,4 +1919,5 @@ public class JtsAlgorithms implements GeomAlgorithms {
   public static Polygon homothetie(Polygon geom, double scale){
       return homothetie(geom, geom.getCentroid().getX(), geom.getCentroid().getY(), scale);
   }
+
 } // class
