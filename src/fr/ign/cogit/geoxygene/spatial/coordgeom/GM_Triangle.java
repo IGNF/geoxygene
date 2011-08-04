@@ -67,5 +67,12 @@ public class GM_Triangle extends GM_Polygon {
   public GM_Triangle(GM_LineString ls) {
     super(ls);
   }
+  
+  
+  @Override
+  public GM_SurfacePatch reverse() {
+    
+    return new GM_Triangle(this.getCorners(0),this.getCorners(2),this.getCorners(1));
+  }
 
 }
