@@ -427,11 +427,13 @@ public class ColorUtil {
     return allColors;
   }
 
-/**
- * @param color
- * @return
- */
-public static int toGray(Color color) {
-    return (int) (0.299d * color.getRed() + 0.587d * color.getGreen() + 0.114d * color.getBlue());
-}
+  /**
+   * Convert a color to grayscale.
+   * @param color a rgb color
+   * @return a grayscale color
+   */
+  public static int toGray(Color color) {
+    return (int) (0.299d * color.getRed() + 0.587d * color.getGreen() + 0.114d * color
+        .getBlue());
+  }
 }
