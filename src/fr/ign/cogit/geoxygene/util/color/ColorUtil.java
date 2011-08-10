@@ -426,4 +426,12 @@ public class ColorUtil {
     }
     return allColors;
   }
+
+/**
+ * @param color
+ * @return
+ */
+public static int toGray(Color color) {
+    return (int) (0.299d * color.getRed() + 0.587d * color.getGreen() + 0.114d * color.getBlue());
+}
 }
