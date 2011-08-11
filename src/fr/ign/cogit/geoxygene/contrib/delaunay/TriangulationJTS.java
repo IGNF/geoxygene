@@ -7,8 +7,11 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.triangulate.ConformingDelaunayTriangulationBuilder;
 import com.vividsolutions.jts.triangulate.VoronoiDiagramBuilder;
 
+import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Curve;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 
 public class TriangulationJTS extends AbstractTriangulation {
@@ -24,10 +27,22 @@ public class TriangulationJTS extends AbstractTriangulation {
         for (Noeud n : this.getPopNoeuds()) {
             sites.add(n.getGeometrie());
         }
+        
+        GM_MultiCurve<GM_Curve> linesConstraints =  new  GM_MultiCurve<GM_Curve>();
+        for (Arc a : this.getPopArcs()) {
+          linesConstraints.add(a.getGeometrie());
+
+      }
+        
+        
+        
         GeometryFactory geomFact = new GeometryFactory();
         Geometry geomSites = AdapterFactory.toGeometry(geomFact, sites);
+        Geometry lineConstraints = AdapterFactory.toGeometry(geomFact, linesConstraints);
         tb.setTolerance(1.0);
         tb.setSites(geomSites);
+        tb.setConstraints(lineConstraints);
+        
         GeometryCollection triangles = (GeometryCollection) tb.getTriangles(geomFact);
         for (int i = 0; i < triangles.getNumGeometries(); i++) {
             Polygon triangle = (Polygon) triangles.getGeometryN(i);
