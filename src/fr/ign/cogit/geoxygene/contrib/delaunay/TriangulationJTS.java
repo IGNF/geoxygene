@@ -5,13 +5,13 @@ import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.triangulate.ConformingDelaunayTriangulationBuilder;
-import com.vividsolutions.jts.triangulate.VoronoiDiagramBuilder;
 
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Curve;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 
 public class TriangulationJTS extends AbstractTriangulation {
@@ -28,7 +28,7 @@ public class TriangulationJTS extends AbstractTriangulation {
             sites.add(n.getGeometrie());
         }
         
-        GM_MultiCurve<GM_Curve> linesConstraints =  new  GM_MultiCurve<GM_Curve>();
+        IMultiCurve<ICurve> linesConstraints =  new  GM_MultiCurve<ICurve>();
         for (Arc a : this.getPopArcs()) {
           linesConstraints.add(a.getGeometrie());
 
