@@ -28,6 +28,7 @@
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +41,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
@@ -978,5 +980,18 @@ public class Noeud extends ElementCarteTopo {
 			this.entrants.remove(arc);
 		else
 			this.sortants.remove(arc);
+	}
+	
+	/**
+	 * Copie un noeud
+	 * @return
+	 * @throws CloneNotSupportedException
+	 */
+	public Noeud copy() {
+	  Noeud noeud = new Noeud(this.getCoord());
+	  for(Arc a:this.getEntrants()) noeud.addEntrant(a);
+	  for(Arc a:this.getSortants()) noeud.addSortant(a);
+	  noeud.setGeometrie(new GM_Point(this.getCoord()));
+	  return noeud;
 	}
 }

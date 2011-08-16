@@ -1042,4 +1042,16 @@ public void construireGeom() {
 	list.add(this.noeudFin.getCoord());
 	this.setGeom(new GM_LineString(list));
 }
+
+public Arc copy() {
+  Arc arc = new Arc();
+  arc.setNoeudIni(this.getNoeudIni());
+  arc.setNoeudFin(this.getNoeudFin());
+  arc.setGeometrie(new GM_LineString(new DirectPositionList(Arrays.asList(
+      this.getNoeudIni().getGeometrie().getPosition(), 
+      this.getNoeudFin().getGeometrie().getPosition()))));
+  return arc;
+}
+
+
 }
