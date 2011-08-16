@@ -33,10 +33,10 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.datatools.Metadata;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 
 /**
  * This class defines actions for access to GeOxygene repository (menu bar and
@@ -93,7 +93,7 @@ class GeOxygeneViewerOpenGeOxygeneAction implements ActionListener {
       if (theClass != null) {
         System.out
             .println("Loading " + selectedClasse + " ... please wait ...");
-        FT_FeatureCollection<?> coll = this.db.loadAllFeatures(theClass);
+        IFeatureCollection<?> coll = this.db.loadAllFeatures(theClass);
         System.out
             .println("   Loading finished. Displaying theme in viewer ...");
         this.objectViewerInterface.addAFeatureCollectionTheme(coll, themeName);

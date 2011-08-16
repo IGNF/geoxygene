@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO
@@ -23,16 +23,18 @@
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
- * 
  */
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
  * Rectangle englobant minimum en 2D, ou pave englobant minimium en 3D. Un
@@ -43,7 +45,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * 
  */
 
-public class GM_Envelope {
+public class GM_Envelope implements IEnvelope {
   protected final static Logger logger = Logger.getLogger(GM_Envelope.class
       .getName());
 
@@ -53,28 +55,28 @@ public class GM_Envelope {
   // //////////////////////////////////////////////////////////////////////////////////////////////
 
   /** Coin superieur : Xmax, Ymax, (Zmax). */
-  protected DirectPosition upperCorner;
+  protected IDirectPosition upperCorner;
 
   /** Affecte le coin superieur. */
-  public void setUpperCorner(DirectPosition UpperCorner) {
-    this.upperCorner = (DirectPosition) UpperCorner.clone();
+  public void setUpperCorner(IDirectPosition UpperCorner) {
+    this.upperCorner = (IDirectPosition) UpperCorner.clone();
   }
 
-  /** Renvoie le coin superieur. */
-  public DirectPosition getUpperCorner() {
+  /** Affecte le coin superieur. */
+  public IDirectPosition getUpperCorner() {
     return this.upperCorner;
   }
 
   /** Coin inferieur : Xmin, Ymin, (Zmin). */
-  protected DirectPosition lowerCorner;
+  protected IDirectPosition lowerCorner;
 
   /** Affecte le coin inferieur. */
-  public void setLowerCorner(DirectPosition LowerCorner) {
-    this.lowerCorner = (DirectPosition) LowerCorner.clone();
+  public void setLowerCorner(IDirectPosition LowerCorner) {
+    this.lowerCorner = (IDirectPosition) LowerCorner.clone();
   }
 
   /** Renvoie le coin inferieur. */
-  public DirectPosition getLowerCorner() {
+  public IDirectPosition getLowerCorner() {
     return this.lowerCorner;
   }
 
@@ -90,7 +92,7 @@ public class GM_Envelope {
   }
 
   /** Constructeur a partir des 2 coins. Attention a l'ordre des points. */
-  public GM_Envelope(DirectPosition UpperCorner, DirectPosition LowerCorner) {
+  public GM_Envelope(IDirectPosition UpperCorner, IDirectPosition LowerCorner) {
     this.upperCorner = UpperCorner;
     this.lowerCorner = LowerCorner;
   }
@@ -109,7 +111,7 @@ public class GM_Envelope {
   }
 
   /** Construit un carre dont P est le centre, de cote d. */
-  public GM_Envelope(DirectPosition P, double d) {
+  public GM_Envelope(IDirectPosition P, double d) {
     double c = d / 2;
     this.upperCorner = new DirectPosition(P.getX() + c, P.getY() + c, P.getZ()
         + c);
@@ -128,7 +130,7 @@ public class GM_Envelope {
       return this.upperCorner.getDimension();
     }
     System.out
-        .println("GM_Enveloppe::getDimension() : Les points upperCorner et lowerCorner n'ont pas la même dimension."); //$NON-NLS-1$
+        .println("GM_Enveloppe::getDimension() : Les points upperCorner et lowerCorner n'ont pas la même dimension.");
     return 0;
   }
 
@@ -178,19 +180,16 @@ public class GM_Envelope {
   }
 
   /** Renvoie le centre de l'enveloppe. */
-  public DirectPosition center() {
+  public IDirectPosition center() {
     int n = this.getDimension();
     DirectPosition result = new DirectPosition();
     for (int i = 0; i < n; i++) {
       double theMin = this.lowerCorner.getCoordinate(i);
       double theMax = this.upperCorner.getCoordinate(i);
-      double val = theMin + (theMax - theMin) / 2;
-      if (!Double.isNaN(val)) {
-        result.setCoordinate(i, val);
-        if (GM_Envelope.logger.isTraceEnabled()) {
-          GM_Envelope.logger
-              .trace("Center " + i + " " + theMin + " " + theMax + " = " + (theMin + (theMax - theMin) / 2)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-        }
+      result.setCoordinate(i, theMin + (theMax - theMin) / 2);
+      if (GM_Envelope.logger.isTraceEnabled()) {
+        GM_Envelope.logger.trace("Center " + i + " " + theMin + " " + theMax
+            + " = " + (theMin + (theMax - theMin) / 2));
       }
     }
     return result;
@@ -206,9 +205,9 @@ public class GM_Envelope {
    * uniquement.
    * @param dp le point
    * @return <code>true</code> if this Envelope contains the given
-   *         DirectPosition; <code>false</code> otherwise.
+   *         IDirectPosition; <code>false</code> otherwise.
    */
-  public boolean contains(DirectPosition dp) {
+  public boolean contains(IDirectPosition dp) {
     return this.contains(dp.getX(), dp.getY());
   }
 
@@ -219,7 +218,7 @@ public class GM_Envelope {
    * @return <code>true</code> if this Envelope contains the given Point;
    *         <code>false</code> otherwise.
    */
-  public boolean contains(GM_Point point) {
+  public boolean contains(IPoint point) {
     return this.contains(point.getPosition());
   }
 
@@ -255,11 +254,29 @@ public class GM_Envelope {
     double Ymax = this.upperCorner.getY();
     double Zmin = this.lowerCorner.getZ();
     double Zmax = this.upperCorner.getZ();
-    return !((x < Xmin) || (x > Xmax) || (y < Ymin) || (y > Ymax) || (z < Zmin) || (z > Zmax));
+    if (x < Xmin) {
+      return false;
+    }
+    if (x > Xmax) {
+      return false;
+    }
+    if (y < Ymin) {
+      return false;
+    }
+    if (y > Ymax) {
+      return false;
+    }
+    if (z < Zmin) {
+      return false;
+    }
+    if (z > Zmax) {
+      return false;
+    }
+    return true;
   }
 
   /** Indique si self contient entierement l'enveloppe passee en parametre. */
-  public boolean contains(GM_Envelope env) {
+  public boolean contains(IEnvelope env) {
     if (!this.contains(env.getLowerCorner())) {
       return false;
     }
@@ -270,7 +287,7 @@ public class GM_Envelope {
   }
 
   /** Indique si self et l'enveloppe passee en parametre se recouvrent, en 2D. */
-  public boolean overlaps(GM_Envelope env) {
+  public boolean overlaps(IEnvelope env) {
     if (this.getUpperCorner().getX() < env.getLowerCorner().getX()) {
       return false;
     }
@@ -286,7 +303,7 @@ public class GM_Envelope {
     return true;
   }
 
-  public boolean intersects(GM_Envelope env) {
+  public boolean intersects(IEnvelope env) {
     return !(env.minX() > this.maxX() || env.maxX() < this.minX()
         || env.minY() > this.maxY() || env.maxY() < this.minY());
   }
@@ -300,7 +317,7 @@ public class GM_Envelope {
    * Agrandit l'enveloppe pour contenir le point en entree. Si le point est deja
    * dans l'enveloppe, ne fait rien.
    */
-  public void expand(DirectPosition thePoint) {
+  public void expand(IDirectPosition thePoint) {
     if (!this.contains(thePoint)) {
       int n = this.getDimension();
       for (int i = 0; i < n; i++) {
@@ -373,7 +390,7 @@ public class GM_Envelope {
    * Agrandit l'enveloppe pour contenir l'enveloppe en entree. Si elle est deja
    * contenue, ne fait rien.
    */
-  public void expand(GM_Envelope env) {
+  public void expand(IEnvelope env) {
     if (!this.contains(env)) {
       this.expand(env.getUpperCorner());
       this.expand(env.getLowerCorner());
@@ -382,7 +399,7 @@ public class GM_Envelope {
 
   /** Effectue une homothetie de facteur h sur l'enveloppe. */
   public void expandBy(double h) {
-    DirectPosition theCenter = this.center();
+    IDirectPosition theCenter = this.center();
     int n = this.getDimension();
     for (int i = 0; i < n; i++) {
       double center = theCenter.getCoordinate(i);
@@ -394,7 +411,7 @@ public class GM_Envelope {
 
   /** Effectue une homothetie de w sur l'axe des X et de l sur l'axe des Y. */
   public void expandBy(double w, double l) {
-    DirectPosition theCenter = this.center();
+    IDirectPosition theCenter = this.center();
     double centerX = theCenter.getX();
     double deltaX = this.maxX() - centerX;
     this.upperCorner.setX(centerX + w * deltaX);
@@ -411,7 +428,7 @@ public class GM_Envelope {
    * sur l'axe des Z.
    */
   public void expandBy(double w, double l, double h) {
-    DirectPosition theCenter = this.center();
+    IDirectPosition theCenter = this.center();
     double centerX = theCenter.getX();
     double deltaX = this.maxX() - centerX;
     this.upperCorner.setX(centerX + w * deltaX);
@@ -437,13 +454,13 @@ public class GM_Envelope {
    * Construit un GM_object de l'enveloppe
    * @return the Envelope as a Polygon
    */
-  public GM_Object getGeom() {
+  public IPolygon getGeom() {
     DirectPositionList coords = new DirectPositionList();
     coords.add(new DirectPosition(this.minX(), this.minY()));
     coords.add(new DirectPosition(this.minX(), this.maxY()));
     coords.add(new DirectPosition(this.maxX(), this.maxY()));
     coords.add(new DirectPosition(this.maxX(), this.minY()));
-    coords.add(coords.get(0));
+    coords.add(new DirectPosition(this.minX(), this.minY()));
     return new GM_Polygon(new GM_Ring(new GM_LineString(coords)));
   }
 
@@ -478,7 +495,7 @@ public class GM_Envelope {
   }
 
   /** Renvoie la liste des DirectPosition de l'objet. */
-  public DirectPositionList samplePoint() {
+  public IDirectPositionList samplePoint() {
     DirectPositionList dpl = new DirectPositionList();
     DirectPosition dp;
     dpl.add(this.lowerCorner);

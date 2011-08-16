@@ -27,7 +27,8 @@
 
 package fr.ign.cogit.geoxygene.spatial.geomaggr;
 
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPrimitive;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPrimitive;
 
 /**
  * Classe mère abstraite pour les agrégations de primitives homogènes. Il n'y a
@@ -37,6 +38,6 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * @version 1.0
  * 
  */
-public abstract class GM_MultiPrimitive<GeomType extends GM_Object> extends
-    GM_Aggregate<GeomType> {
+abstract class GM_MultiPrimitive<GeomType extends IPrimitive> extends
+    GM_Aggregate<GeomType> implements IMultiPrimitive<GeomType> {
 }

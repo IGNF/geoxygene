@@ -32,7 +32,7 @@ import java.awt.event.ActionListener;
 import java.lang.reflect.Method;
 
 /**
- * Cette classe fournit l'implémentation de l'écouteur d'évènement pour les
+ * Cette classe fournit l'implémentation de l'écouteur d'événement pour les
  * objets cliquables de type méthode. <BR/>
  * Elle permet l'invocation générique des méthodes, sans paramètres, en
  * utilisant le package reflection du J2SDK.
@@ -46,13 +46,13 @@ public class ObjectBrowserMethodListener implements ActionListener {
 
   /** Objet porteur de la méthode qui doit être invoquée. */
   private Object obj;
-  /** méthode qui doit être invoquée. */
+  /** Méthode qui doit être invoquée. */
   private Method method;
   /** Nom de la méthode qui doit être invoquée. */
   private String methodName;
 
   /**
-   * Constructeur principal de l'écouteur d'évènement
+   * Constructeur principal de l'écouteur d'événement
    * ObjectBrowserMethodListener.
    * 
    * @param obj l'objet porteur de la méthode qui doit être invoquée.
@@ -76,7 +76,7 @@ public class ObjectBrowserMethodListener implements ActionListener {
     Class<?> methodReturnType = this.method.getReturnType();
     String returnedStringValue;
 
-    if ((methodReturnType.getName() == "java.lang.String") //$NON-NLS-1$
+    if ((methodReturnType.getName() == "java.lang.String")
         || (methodReturnType.isPrimitive())) {
       try {
         try {

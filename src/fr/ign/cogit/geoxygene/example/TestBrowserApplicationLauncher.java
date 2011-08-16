@@ -47,21 +47,21 @@ public class TestBrowserApplicationLauncher {
    * Constructeur par défaut de TestLanceurAppli.
    */
   public TestBrowserApplicationLauncher() {
-    this.status = ""; //$NON-NLS-1$
+    this.status = "";
   }
 
   protected String lanceProgramme1() {
-    this.status = "Programme 1 exécuté.";
+    this.status = "Programme 1 executé.";
     return "Programme 1 lancé !!!";
   }
 
   protected String lanceProgramme2() {
-    this.status = "Programme 2 exécuté.";
+    this.status = "Programme 2 executé.";
     return "Programme 2 lancé !!!";
   }
 
   protected String lanceProgramme3() {
-    this.status = "Programme 3 exécuté.";
+    this.status = "Programme 3 executé.";
     return "Programme 3 lancé !!!";
   }
 
@@ -69,5 +69,4 @@ public class TestBrowserApplicationLauncher {
     TestBrowserApplicationLauncher obj = new TestBrowserApplicationLauncher();
     ObjectBrowser.browse(obj, true, false, true, false, true);
   }
-
 }

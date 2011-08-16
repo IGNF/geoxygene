@@ -14,20 +14,16 @@ import org.postgis.PGgeometry;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.conversion.ParseException;
 import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
 
-/**
- * @author Julien Perret
- * 
- */
 public class GeOxygeneGeometryUserType implements UserType {
   static Logger logger = Logger.getLogger(GeOxygeneGeometryUserType.class
       .getName());
@@ -39,26 +35,26 @@ public class GeOxygeneGeometryUserType implements UserType {
   }
 
   /**
-   * Converts the native geometry object to a GeOxygene <code>GM_Object</code>.
+   * Converts the native geometry object to a GeOxygene <code>GM_Object</code> .
    * 
    * @param object native database geometry object (depends on the JDBC spatial
    *          extension of the database)
    * @return GeOxygene geometry corresponding to geomObj.
    */
   @SuppressWarnings("unchecked")
-  public GM_Object convert2GM_Object(Object object) {
-    // logger.error(object.toString());
-    // logger.error(object.getClass());
+  public IGeometry convert2GM_Object(Object object) {
     if (object == null) {
       return null;
     }
-    if (object instanceof org.postgresql.util.PGobject) {
+
+  if (object instanceof org.postgresql.util.PGobject) {
       try {
         object = new PGgeometry(object.toString());
       } catch (SQLException e) {
         e.printStackTrace();
       }
     }
+
     // in some cases, Postgis returns not PGgeometry objects
     // but org.postgis.Geometry instances.
     // This has been observed when retrieving GeometryCollections
@@ -66,50 +62,57 @@ public class GeOxygeneGeometryUserType implements UserType {
     if (object instanceof org.postgis.Geometry) {
       object = new PGgeometry((org.postgis.Geometry) object);
     }
+
     if (object instanceof PGgeometry) {
       PGgeometry pgGeom = (PGgeometry) object;
+
       try {
         /*
          * In version 1.0.x of PostGIS, SRID is added to the beginning of the
          * pgGeom string
          */
+
         String geom = pgGeom.toString();
         // logger.info(geom);
         String subString = geom.substring(
             geom.indexOf("=") + 1, geom.indexOf(";")); //$NON-NLS-1$ //$NON-NLS-2$
         // logger.info(subString);
         int srid = Integer.parseInt(subString);
-        GM_Object geOxyGeom = WktGeOxygene.makeGeOxygene(geom.substring(geom
-            .indexOf(";") + 1)); //$NON-NLS-1$
-        if (geOxyGeom instanceof GM_MultiPoint) {
-          GM_MultiPoint aggr = (GM_MultiPoint) geOxyGeom;
+        IGeometry geOxyGeom = WktGeOxygene.makeGeOxygene(pgGeom.toString()
+            .substring(pgGeom.toString().indexOf(";") + 1));
+
+        if (geOxyGeom instanceof IMultiPoint) {
+          IMultiPoint aggr = (IMultiPoint) geOxyGeom;
           if (aggr.size() == 1) {
-            geOxyGeom = aggr.get(0);
-            geOxyGeom.setCRS(srid);
-            return geOxyGeom;
+            aggr.get(0);
+            aggr.setCRS(srid);
+            return aggr;
           }
         }
-        if (geOxyGeom instanceof GM_MultiCurve) {
-          GM_MultiCurve<GM_OrientableCurve> aggr = (GM_MultiCurve<GM_OrientableCurve>) geOxyGeom;
+
+        if (geOxyGeom instanceof IMultiCurve) {
+          IMultiCurve<IOrientableCurve> aggr = (IMultiCurve<IOrientableCurve>) geOxyGeom;
           if (aggr.size() == 1) {
-            geOxyGeom = aggr.get(0);
-            geOxyGeom.setCRS(srid);
-            return geOxyGeom;
+            aggr.get(0);
+            aggr.setCRS(srid);
+            return aggr;
           }
         }
-        if (geOxyGeom instanceof GM_MultiSurface) {
-          GM_MultiSurface<GM_OrientableSurface> aggr = (GM_MultiSurface<GM_OrientableSurface>) geOxyGeom;
+
+        if (geOxyGeom instanceof IMultiSurface) {
+          IMultiSurface<IOrientableSurface> aggr = (IMultiSurface<IOrientableSurface>) geOxyGeom;
           if (aggr.size() == 1) {
-            geOxyGeom = aggr.get(0);
-            geOxyGeom.setCRS(srid);
-            return geOxyGeom;
+            aggr.get(0);
+            aggr.setCRS(srid);
+            return aggr;
           }
         }
         geOxyGeom.setCRS(srid);
         return geOxyGeom;
+
       } catch (ParseException e) {
-        GeOxygeneGeometryUserType.logger.warn("## WARNING ## " + //$NON-NLS-1$
-            "Postgis to GeOxygene returns NULL"); //$NON-NLS-1$
+        GeOxygeneGeometryUserType.logger
+            .warn("## WARNING ## Postgis to GeOxygene returns NULL ");
         e.printStackTrace();
         return null;
       }
@@ -124,7 +127,7 @@ public class GeOxygeneGeometryUserType implements UserType {
    * @param connection the current database connection
    * @return native database geometry object corresponding to geom.
    */
-  public Object conv2DBGeometry(GM_Object geom, Connection connection) {
+  public Object conv2DBGeometry(IGeometry geom, Connection connection) {
     try {
       if (geom == null) {
         return null;
@@ -168,7 +171,7 @@ public class GeOxygeneGeometryUserType implements UserType {
     if (x == null || y == null) {
       return false;
     }
-    return ((GM_Object) x).equalsExact((GM_Object) y);
+    return ((IGeometry) x).equalsExact((IGeometry) y);
   }
 
   @Override
@@ -194,13 +197,13 @@ public class GeOxygeneGeometryUserType implements UserType {
     if (value == null) {
       st.setNull(index, this.sqlTypes()[0]);
     } else {
-      if (value instanceof GM_Object) {
-        GM_Object geom = (GM_Object) value;
+      if (value instanceof IGeometry) {
+        IGeometry geom = (IGeometry) value;
         Object dbGeom = this.conv2DBGeometry(geom, st.getConnection());
         st.setObject(index, dbGeom);
       } else {
         try {
-          GM_Object geom = AdapterFactory.toGM_Object((Geometry) value);
+          IGeometry geom = AdapterFactory.toGM_Object((Geometry) value);
           Object dbGeom = this.conv2DBGeometry(geom, st.getConnection());
           st.setObject(index, dbGeom);
         } catch (Exception e) {
@@ -216,9 +219,8 @@ public class GeOxygeneGeometryUserType implements UserType {
     return original;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
-  public Class returnedClass() {
-    return GM_Object.class;
+  public Class<IGeometry> returnedClass() {
+    return IGeometry.class;
   }
 }

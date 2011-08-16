@@ -59,7 +59,7 @@ public class ObjectBrowserIllegalAccessFrame extends JFrame {
 	 */
   private static final long serialVersionUID = 1L;
   /** Localisation des fichiers d'internationalisation de l'interface. */
-  private static final String I18N_LANGUAGE_FILE_LOCATION = "fr.ign.cogit.geoxygene.util.browser.ObjectBrowserLanguageFile"; //$NON-NLS-1$
+  private static final String I18N_LANGUAGE_FILE_LOCATION = "fr.ign.cogit.geoxygene.util.browser.ObjectBrowserLanguageFile";
   /** Locale courante. */
   private Locale currentLocale;
   /** RessourceBundle lié à la Locale et au fichier d'internationalisation. */
@@ -85,13 +85,14 @@ public class ObjectBrowserIllegalAccessFrame extends JFrame {
      */
 
     this.setTitle(this.i18nLanguageFile
-        .getString("IllegalAccessFrameDefaultTitle")); //$NON-NLS-1$
+        .getString("IllegalAccessFrameDefaultTitle"));
 
     try {
-      URL imageUrl = this.getClass().getResource("images/stop.gif"); //$NON-NLS-1$
+      URL imageUrl = this.getClass().getResource("images/stop.gif");
 
-      JLabel illegalAccessLabel = new JLabel(
-          this.i18nLanguageFile.getString("IllegalAccessFrameDefaultLabel"), new ImageIcon(imageUrl), SwingConstants.CENTER); //$NON-NLS-1$
+      JLabel illegalAccessLabel = new JLabel(this.i18nLanguageFile
+          .getString("IllegalAccessFrameDefaultLabel"),
+          new ImageIcon(imageUrl), SwingConstants.CENTER);
 
       this.getContentPane().add(illegalAccessLabel, BorderLayout.CENTER);
 

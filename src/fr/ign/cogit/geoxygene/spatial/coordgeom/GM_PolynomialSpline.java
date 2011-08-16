@@ -27,18 +27,16 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolynomialSpline;
 
 /**
- * Abstract class for Polynomial Splines.
- * @author Thierry Badard
- * @author Arnaud Braun
- * @author Julien Perret
+ * NON IMPLEMENTE.
+ * 
+ * @author Thierry Badard & Arnaud Braun
+ * @version 1.0
+ * 
  */
-abstract class GM_PolynomialSpline extends GM_SplineCurve {
-  @Override
-  public String getInterpolation() {
-    return "polynomialSpline"; //$NON-NLS-1$
-  }
+abstract class GM_PolynomialSpline extends GM_SplineCurve implements IPolynomialSpline {
   double[][] vectorAtStart;
   double[][] vectorAtEnd;
 }

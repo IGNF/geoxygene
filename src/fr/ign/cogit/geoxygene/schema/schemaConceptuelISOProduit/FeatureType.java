@@ -1,18 +1,37 @@
+/*
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
 package fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.feature.type.GF_AssociationRole;
-import fr.ign.cogit.geoxygene.feature.type.GF_AssociationType;
-import fr.ign.cogit.geoxygene.feature.type.GF_AttributeType;
-import fr.ign.cogit.geoxygene.feature.type.GF_Constraint;
-import fr.ign.cogit.geoxygene.feature.type.GF_FeatureType;
-import fr.ign.cogit.geoxygene.feature.type.GF_InheritanceRelation;
-import fr.ign.cogit.geoxygene.feature.type.GF_Operation;
-import fr.ign.cogit.geoxygene.feature.type.GF_PropertyType;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_AssociationRole;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_AssociationType;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_Constraint;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_InheritanceRelation;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_Operation;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_PropertyType;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
 /**
  * TODO implémenter les méthodes vides
@@ -43,15 +62,15 @@ public class FeatureType implements GF_FeatureType {
     return ft;
   }
 
-  Class<? extends GM_Object> geometryType = GM_Object.class;
+  Class<? extends IGeometry> geometryType = IGeometry.class;
 
   @Override
-  public void setGeometryType(Class<? extends GM_Object> geometryType) {
+  public void setGeometryType(Class<? extends IGeometry> geometryType) {
     this.geometryType = geometryType;
   }
 
   @Override
-  public Class<? extends GM_Object> getGeometryType() {
+  public Class<? extends IGeometry> getGeometryType() {
     return this.geometryType;
   }
 
@@ -99,21 +118,25 @@ public class FeatureType implements GF_FeatureType {
   /** Liste des roles associés par lien 1:n */
   protected List<GF_AssociationRole> roles;
 
+  @Override
   public List<GF_AssociationRole> getRoles() {
     return this.roles;
   }
 
   /** Affecte une liste de roles */
+  @Override
   public void setRoles(List<GF_AssociationRole> L) {
     this.roles = L;
   }
 
   /** Renvoie le nombre de roles. */
+  @Override
   public int sizeRoles() {
     return this.roles.size();
   }
 
   /** Ajoute un role. */
+  @Override
   public void addRole(GF_AssociationRole Role) {
     this.roles.add(Role);
     if (Role.getFeatureType() != this) {
@@ -124,6 +147,7 @@ public class FeatureType implements GF_FeatureType {
   /**
 	 *
 	 */
+  @Override
   public AssociationRole getRoleI(int i) {
     return (AssociationRole) this.roles.get(i);
   }
@@ -147,6 +171,7 @@ public class FeatureType implements GF_FeatureType {
   /**
 	 *
 	 */
+  @Override
   public void removeRole(GF_AssociationRole value) {
     if (value == null) {
       return;
@@ -155,12 +180,12 @@ public class FeatureType implements GF_FeatureType {
     value.setFeatureType(null);// gestion de la bi-direction
   }
 
-  // /** Liste des procedures de representation dans lesquelles le ft intervient
-  // */
+  // /** Liste des procedures de representation dans lesquelles le ft
+  // intervient */
   // protected List <Modelisation> modelisation;
   //
-  // /** Affecte la liste des procedures de representation dans lesquelles le ft
-  // est implique */
+  // /** Affecte la liste des procedures de representation dans lesquelles le
+  // ft est implique */
   // public void setModelisation (List <Modelisation> mod) {
   // List<Modelisation> old = new ArrayList<Modelisation>(modelisation);
   // Iterator<Modelisation> it1=old.iterator();
@@ -177,8 +202,8 @@ public class FeatureType implements GF_FeatureType {
   // }
   // }
   //
-  // /** Renvoie la liste des procedures de representation dans lesquelles le ft
-  // est implique */
+  // /** Renvoie la liste des procedures de representation dans lesquelles le
+  // ft est implique */
   // public List<Modelisation> getModelisation () {return this.modelisation;}
   //
   // /** Ajoute une procedure de representation à la liste */
@@ -264,10 +289,12 @@ public class FeatureType implements GF_FeatureType {
    */
   protected boolean isAbstract;
 
+  @Override
   public boolean getIsAbstract() {
     return this.isAbstract;
   }
 
+  @Override
   public void setIsAbstract(boolean IsAbstract) {
     this.isAbstract = IsAbstract;
   }
@@ -282,6 +309,7 @@ public class FeatureType implements GF_FeatureType {
   /**
    * @return the definitionReference
    */
+  @Override
   public Object getDefinitionReference() {
     return this.definitionReference;
   }
@@ -289,22 +317,27 @@ public class FeatureType implements GF_FeatureType {
   /**
    * @param definitionReference the definitionReference to set
    */
+  @Override
   public void setDefinitionReference(Object definitionReference) {
     this.definitionReference = definitionReference;
   }
 
+  @Override
   public List<GF_AttributeType> getFeatureAttributes() {
     return this.featureAttributes;
   }
 
+  @Override
   public void setFeatureAttributes(List<GF_AttributeType> L) {
     this.featureAttributes = L;
   }
 
+  @Override
   public int sizeFeatureAttributes() {
     return this.featureAttributes.size();
   }
 
+  @Override
   public void addFeatureAttribute(GF_AttributeType value) {
     this.featureAttributes.add(value);
     if (value.getFeatureType() != this) {
@@ -312,7 +345,8 @@ public class FeatureType implements GF_FeatureType {
     }
   }
 
-  // /////////////////////////Ajout Nathalie////////////////////////////////////
+  // /////////////////////////Ajout
+  // Nathalie////////////////////////////////////
   public AttributeType getFeatureAttributeI(int i) {
     return (AttributeType) this.featureAttributes.get(i);
   }
@@ -330,6 +364,7 @@ public class FeatureType implements GF_FeatureType {
     return null;
   }
 
+  @Override
   public void removeFeatureAttribute(GF_AttributeType ftatt) {
     if (ftatt == null) {
       return;
@@ -343,34 +378,42 @@ public class FeatureType implements GF_FeatureType {
   }
 
   // //////////////////////////////////////////////////////////////////////////
+  @Override
   public List<GF_Operation> getFeatureOperations() {
     return this.featureOperations;
   }
 
+  @Override
   public void setFeatureOperations(List<GF_Operation> L) {
     this.featureOperations = L;
   }
 
+  @Override
   public int sizeFeatureOperations() {
     return this.featureOperations.size();
   }
 
+  @Override
   public void addFeatureOperation(GF_Operation value) {
     this.featureOperations.add(value);
   }
 
+  @Override
   public String getTypeName() {
     return this.typeName;
   }
 
+  @Override
   public void setTypeName(String TypeName) {
     this.typeName = TypeName;
   }
 
+  @Override
   public String getDefinition() {
     return this.definition;
   }
 
+  @Override
   public void setDefinition(String Definition) {
     this.definition = Definition;
   }
@@ -379,11 +422,13 @@ public class FeatureType implements GF_FeatureType {
    * Renvoie les relations d'héritage dans lesquelles est impliquée la classe en
    * tant que subType.
    */
+  @Override
   public List<GF_InheritanceRelation> getGeneralization() {
     return this.generalization;
   }
 
   /** Affecte une liste de generalisations */
+  @Override
   public void setGeneralization(List<GF_InheritanceRelation> L) {
     this.generalization = L;
   }
@@ -392,6 +437,7 @@ public class FeatureType implements GF_FeatureType {
    * Renvoie le nombre de relation de généralisation dans lesquelles est
    * impliquée la classe.
    */
+  @Override
   public int sizeGeneralization() {
     return this.generalization.size();
   }
@@ -400,6 +446,7 @@ public class FeatureType implements GF_FeatureType {
    * Ajoute une relation de généralisation. Affecte automatiquement le sous-type
    * de cette relation.
    */
+  @Override
   public void addGeneralization(GF_InheritanceRelation value) {
     this.generalization.add(value);
     if (value.getSubType() != this) {
@@ -408,11 +455,13 @@ public class FeatureType implements GF_FeatureType {
     }
   }
 
-  // /////////////////////////Ajout Nathalie////////////////////////////////////
+  // /////////////////////////Ajout
+  // Nathalie////////////////////////////////////
   public GF_InheritanceRelation getGeneralizationI(int i) {
     return this.generalization.get(i);
   }
 
+  @Override
   public void removeGeneralization(GF_InheritanceRelation value) {
     if (value == null) {
       return;
@@ -426,11 +475,13 @@ public class FeatureType implements GF_FeatureType {
    * Renvoie la liste des relations d'héritage dans lesquelles est impliquée la
    * classeen tant que superType.
    */
+  @Override
   public List<GF_InheritanceRelation> getSpecialization() {
     return this.specialization;
   }
 
   /** Affecte une liste de specialisations */
+  @Override
   public void setSpecialization(List<GF_InheritanceRelation> L) {
     this.specialization = L;
   }
@@ -439,6 +490,7 @@ public class FeatureType implements GF_FeatureType {
    * Renvoie le nombre de relation de spécialisation dans lesquelles est
    * impliquée la classe.
    */
+  @Override
   public int sizeSpecialization() {
     return this.specialization.size();
   }
@@ -447,10 +499,12 @@ public class FeatureType implements GF_FeatureType {
    * Ajoute une relation de spécialisation. Affecte automatiquement le
    * super-type de cette relation.
    */
+  @Override
   public void addSpecialization(GF_InheritanceRelation value) {
     this.specialization.add(value);
     if (value.getSuperType() != this) {
-      value.setSuperType(this); // gestion de la
+      value.setSuperType(this); // gestion
+      // de la
       // bi-direction
     }
   }
@@ -461,6 +515,7 @@ public class FeatureType implements GF_FeatureType {
     return this.specialization.get(i);
   }
 
+  @Override
   public void removeSpecialization(GF_InheritanceRelation value) {
     if (value == null) {
       return;
@@ -471,11 +526,13 @@ public class FeatureType implements GF_FeatureType {
 
   // //////////////////////////////////////////////////////////////////////////
   /** Renvoie les associations dans lesquelles est impliquée cette classe. */
+  @Override
   public List<GF_AssociationType> getMemberOf() {
     return this.memberOf;
   }
 
   /** Affecte une liste d'associations */
+  @Override
   public void setMemberOf(List<GF_AssociationType> L) {
     List<GF_AssociationType> old = new ArrayList<GF_AssociationType>(
         this.memberOf);
@@ -494,11 +551,13 @@ public class FeatureType implements GF_FeatureType {
   }
 
   /** Le nombre d'associations dans lesquelles est impliquée cette classe. */
+  @Override
   public int sizeMemberOf() {
     return this.memberOf.size();
   }
 
   /** Ajoute une association. */
+  @Override
   public void addMemberOf(GF_AssociationType value) {
     if (value == null) {
       return;
@@ -515,6 +574,7 @@ public class FeatureType implements GF_FeatureType {
     return this.memberOf.get(i);
   }
 
+  @Override
   public void removeMemberOf(GF_AssociationType value) {
     if (value == null) {
       return;
@@ -528,6 +588,7 @@ public class FeatureType implements GF_FeatureType {
   /**
    * Non implémenté
    */
+  @Override
   public List<GF_PropertyType> getProperties() {
     return null;
   }
@@ -535,12 +596,14 @@ public class FeatureType implements GF_FeatureType {
   /**
    * Non implémenté
    */
+  @Override
   public void setProperties(List<GF_PropertyType> L) {
   }
 
   /**
    * Non implémenté
    */
+  @Override
   public int sizeProperties() {
     return 0;
   }
@@ -555,6 +618,7 @@ public class FeatureType implements GF_FeatureType {
   /**
    * Non implémenté
    */
+  @Override
   public List<GF_Constraint> getConstraint() {
     return null;
   }
@@ -562,12 +626,14 @@ public class FeatureType implements GF_FeatureType {
   /**
    * Non implémenté
    */
+  @Override
   public void setConstraint(List<GF_Constraint> L) {
   }
 
   /**
    * Non implémenté
    */
+  @Override
   public int sizeConstraint() {
     return 0;
   }
@@ -575,6 +641,7 @@ public class FeatureType implements GF_FeatureType {
   /**
    * Non implémenté
    */
+  @Override
   public void addConstraint(GF_Constraint value) {
   }
 }

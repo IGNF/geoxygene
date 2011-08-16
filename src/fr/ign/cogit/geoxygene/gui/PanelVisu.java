@@ -49,8 +49,6 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -61,21 +59,26 @@ import javax.swing.event.ChangeListener;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IDataSet;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionEvent;
+import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionListener;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.DataSet;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.feature.Population;
-import fr.ign.cogit.geoxygene.feature.event.FeatureCollectionEvent;
-import fr.ign.cogit.geoxygene.feature.event.FeatureCollectionListener;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 
@@ -114,7 +117,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
     return this.frame;
   }
 
-  DessinableGeoxygene dessinable = null;
+  private DessinableGeoxygene dessinable = null;
 
   /**
    * Renvoie la valeur de l'attribut dessinable.
@@ -125,16 +128,16 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
   }
 
   /**
-   * coordonnées Géographiques du centre du panneau. ce champ determine la
+   * coordonnées géographiques du centre du panneau. ce champ determine la
    * localisation de la zone affichee..
    */
-  public DirectPosition getCentreGeo() {
+  public IDirectPosition getCentreGeo() {
     return this.dessinable.getCentreGeo();
   }
 
-  public void setCentreGeo(DirectPosition centreGeo) {
+  public void setCentreGeo(IDirectPosition centreGeo) {
     this.dessinable.setCentreGeo(centreGeo);
-    this.setUpdate(true);
+    this.update = true;
     this.repaint();
   }
 
@@ -171,7 +174,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
   /**
    * @return l'enveloppe affichée
    */
-  public GM_Envelope getEnveloppeAffichage() {
+  public IEnvelope getEnveloppeAffichage() {
     return this.dessinable.getEnveloppeAffichage();
   }
 
@@ -202,7 +205,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
 
   public void setTaillePixel(double tp) {
     this.dessinable.setTaillePixel(tp);
-    this.setUpdate(true);
+    this.update = true;
   }
 
   /**
@@ -245,7 +248,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
   /**
    * les objets selectionnes
    */
-  public FT_FeatureCollection<FT_Feature> objetsSelectionnes = new FT_FeatureCollection<FT_Feature>();
+  public FT_FeatureCollection<IFeature> objetsSelectionnes = new FT_FeatureCollection<IFeature>();
   /**
    * la couleur des objets selectionnes
    */
@@ -317,13 +320,13 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
 
   boolean useChangeListener = false;
 
-  private DataSet dataset = null;
+  private IDataSet dataset = null;
 
   /**
    * Renvoie le DataSet
    * @return le DataSet
    */
-  public DataSet getDataset() {
+  public IDataSet getDataset() {
     return this.dataset;
   }
 
@@ -364,9 +367,9 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
 
     this.setBackground(Color.white);
     /** Charge le SLD par défaut */
-    this.defaultSld = StyledLayerDescriptor.unmarshall("defaultSLD.xml"); //$NON-NLS-1$
+    this.defaultSld = StyledLayerDescriptor.unmarshall("defaultSLD.xml");
     /** Charge le dernier SLD utilisé */
-    this.sld = StyledLayerDescriptor.unmarshall("sld.xml"); //$NON-NLS-1$
+    this.sld = StyledLayerDescriptor.unmarshall("sld.xml");
 
     this.dessinable = new DessinableGeoxygene(this.getSld());
     if (this.useChangeListener) {
@@ -440,18 +443,24 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
   protected Timer repaintTimer = new Timer(
       PanelVisu.tempsRafraichissementAutomatique, new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          // if (logger.isTraceEnabled()) logger.trace("repaintTimer activé");
-          if ((PanelVisu.this.getDessinable() != null)
-              && (PanelVisu.this.getDessinable().getThreadMaj() != null)
+          if (PanelVisu.logger.isTraceEnabled()) {
+            PanelVisu.logger.trace("repaintTimer activé");
+          }
+          if ((PanelVisu.this.dessinable != null)
+              && (PanelVisu.this.dessinable.getThreadMaj() != null)
               && (PanelVisu.this.dessinable.getThreadMaj().get() != null)
-              && (PanelVisu.this.getDessinable().getThreadMaj().get().isAlive())) {
-            // if (logger.isTraceEnabled()) logger.trace("repaintTimer copy");
-            PanelVisu.this.setUpdate(false);
+              && (PanelVisu.this.dessinable.getThreadMaj().get().isAlive())) {
+            if (PanelVisu.logger.isTraceEnabled()) {
+              PanelVisu.logger.trace("repaintTimer copy");
+            }
+            PanelVisu.this.update = false;
             PanelVisu.this.repaint();
             return;
           }
           // repaintTimer.stop();
-          // if (logger.isTraceEnabled()) logger.trace("repaintTimer stop");
+          if (PanelVisu.logger.isTraceEnabled()) {
+            PanelVisu.logger.trace("repaintTimer stop");
+          }
           PanelVisu.this.repaint();
         }
       });
@@ -462,7 +471,9 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * @param facteur
    */
   public void zoom(double facteur) {
-    // if(logger.isTraceEnabled()) logger.trace("zoom");
+    if (PanelVisu.logger.isTraceEnabled()) {
+      PanelVisu.logger.trace("zoom");
+    }
 
     /*
      * BufferedImage imageAux = (BufferedImage)createImage(getWidth(),
@@ -483,18 +494,20 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
 
     // rafraichissement
     // activer();
-    this.setUpdate(true);
+    this.update = true;
     this.repaint();
 
   }
 
   /**
-   * Déplace le centre de la vue au niveau d'une position Géographique donnée.
+   * Déplace le centre de la vue au niveau d'une position géographique donnée.
    * @param xGeoCentre
    * @param yGeoCentre
    */
   public void deplacerVue(int xGeoCentre, int yGeoCentre) {
-    // if(logger.isTraceEnabled()) logger.trace("deplacement");
+    if (PanelVisu.logger.isTraceEnabled()) {
+      PanelVisu.logger.trace("deplacement");
+    }
 
     this.dessinable.interruptMaj();
 
@@ -502,7 +515,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
     this.getCentreGeo().setX(this.pixToCoordX(xGeoCentre));
     this.getCentreGeo().setY(this.pixToCoordY(yGeoCentre));
 
-    this.setUpdate(true);
+    this.update = true;
     // rafraichissement
     this.repaint();
   }
@@ -510,11 +523,10 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
   /**
    * @deprecated
    * @param obj
-   * @return <code>true</code> if the given feature has to be drawn;
-   *         <code>false</code> otherwise.
+   * @return
    */
   @Deprecated
-  public boolean aAfficher(FT_Feature obj) {
+  public boolean aAfficher(IFeature obj) {
     return obj.intersecte(this.getEnveloppeAffichage());
   }
 
@@ -528,7 +540,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    */
   protected synchronized void majLimitesAffichage() {
     this.dessinable.majLimitesAffichage(this.getWidth(), this.getHeight());
-    this.setUpdate(false);
+    this.update = false;
   }
 
   /**
@@ -551,7 +563,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
   public void setAntiAliasing(boolean antiAliasing) {
     this.antiAliasing = antiAliasing;
     this.dessinable.setAntiAliasing(this.antiAliasing);
-    this.setUpdate(true);
+    this.update = true;
   }
 
   protected long start;
@@ -559,7 +571,9 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
   @Override
   public synchronized void paintComponent(Graphics g) {
     this.start = System.currentTimeMillis();
-    // if (logger.isTraceEnabled()) logger.trace("paint()");
+    if (PanelVisu.logger.isTraceEnabled()) {
+      PanelVisu.logger.trace("paint()");
+    }
     Graphics2D g2 = (Graphics2D) g;
     g2.setBackground(this.getBackground());
     g2.clearRect(0, 0, this.getWidth(), this.getHeight());
@@ -568,7 +582,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
         this.antiAliasing ? RenderingHints.VALUE_ANTIALIAS_ON
             : RenderingHints.VALUE_ANTIALIAS_OFF);
 
-    if (this.isUpdate()) {
+    if (this.update) {
       this.majLimitesAffichage();
       this.dessinable.start();
 
@@ -588,8 +602,10 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
         && (!this.repaintTimer.isRunning())) {
       this.repaintTimer.start();
     }
-    // if (logger.isTraceEnabled())
-    // logger.trace("paint() finished in "+(System.currentTimeMillis()-start));
+    if (PanelVisu.logger.isTraceEnabled()) {
+      PanelVisu.logger.trace("paint() finished in "
+          + (System.currentTimeMillis() - this.start));
+    }
   }
 
   /**
@@ -597,7 +613,9 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * @param g graphics dans lequel dessiner l'image
    */
   public void copyBufferedImage(Graphics2D g) {
-    // if (logger.isTraceEnabled()) logger.trace("copy the Image");
+    if (PanelVisu.logger.isTraceEnabled()) {
+      PanelVisu.logger.trace("copy the Image");
+    }
     g.drawImage(this.dessinable.getImage(), 0, 0, null);
     /*
      * try { BufferedImage bi = dessinable.getImage(); // retrieve image File
@@ -607,8 +625,8 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
 
     // la selection
     if (this.getFrame().getPanelDroit().cVoirSelection.isSelected()) {
-      for (FT_Feature obj : this.objetsSelectionnes) {
-        if (obj.estSupprime()) {
+      for (IFeature obj : this.objetsSelectionnes) {
+        if (obj.isDeleted()) {
           continue;
         }
         this.dessinable.dessiner(g, this.COULEUR_SELECTION, obj.getGeom());
@@ -630,13 +648,15 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
       g.setColor(Color.black);
       g.drawString(this.overlayText, 10, 10);
     }
-    // if (logger.isTraceEnabled())
-    // logger.trace("paint+copyBufferedImage() finished in "+(System.currentTimeMillis()-start));
-    // g2.dispose();
+    if (PanelVisu.logger.isTraceEnabled()) {
+      PanelVisu.logger.trace("paint+copyBufferedImage() finished in "
+          + (System.currentTimeMillis() - this.start));
+      // g2.dispose();
+    }
   }
 
-  // les methodes de conversion entre coordonnées écran (pixel) et coordonnées
-  // Géographiques
+  // les methodes de conversion entre coordonnï¿½es ï¿½cran (pixel) et
+  // coordonnï¿½es gï¿½ographiques
   public int coordToPixX(double x) {
     return (int) ((x - (this.getCentreGeo().getX() - this.getWidth() * 0.5
         * this.getTaillePixel())) / this.getTaillePixel());
@@ -663,9 +683,9 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * ajuste la vue sur l'objet (position et zoom)
    * @param obj
    */
-  public void initialiserPositionGeographique(FT_Feature obj) {
+  public void initialiserPositionGeographique(IFeature obj) {
     // recupere une enveloppe
-    GM_Object geom = obj.getGeom().envelope().getGeom();
+    IGeometry geom = obj.getGeom().envelope().getGeom();
 
     // recupere les coordonnees extremes de l'enveloppe
     double xMin = geom.envelope().minX();
@@ -683,7 +703,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
       yMax = yMax + 10;
     }
 
-    DirectPosition pt = obj.getGeom().centroid();
+    IDirectPosition pt = obj.getGeom().centroid();
 
     // ajuste position au centre
     this.setCentreGeo(pt);
@@ -697,11 +717,11 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * centre la vue sur un objet
    * @param obj
    */
-  public void centrer(FT_Feature obj) {
+  public void centrer(IFeature obj) {
     if (obj.getGeom() == null || obj.getGeom().isEmpty()) {
       return;
     }
-    DirectPosition dr = obj.getGeom().centroid();
+    IDirectPosition dr = obj.getGeom().centroid();
     this.deplacerVue(this.coordToPixX(dr.getX()), this.coordToPixY(dr.getY()));
   }
 
@@ -721,8 +741,10 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
     }
     if (nbPop > 0) {
       this.setCentreGeo(new DirectPosition(x / nbPop, y / nbPop));
-      // if (logger.isTraceEnabled())
-      // logger.trace("centrer sur "+x/nbPop+","+y/nbPop+" - "+nbPop);
+      if (PanelVisu.logger.isTraceEnabled()) {
+        PanelVisu.logger.trace("centrer sur " + x / nbPop + "," + y / nbPop
+            + " - " + nbPop);
+      }
     }
   }
 
@@ -730,16 +752,16 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * methode qui permet de centrer la vue sur un objet au pif contenu dans une
    * liste de featurecollections
    */
-  public void initialiserPositionGeographique(ArrayList<Population<?>> popl) {
-    for (Population<?> pop : popl) {
+  public void initialiserPositionGeographique(ArrayList<IPopulation<?>> popl) {
+    for (IPopulation<?> pop : popl) {
       if (pop == null || pop.size() == 0) {
         continue;
       }
-      for (FT_Feature obj : pop) {
+      for (IFeature obj : pop) {
         if (obj.getGeom() == null || obj.getGeom().isEmpty()) {
           continue;
         }
-        DirectPosition dr = obj.getGeom().centroid();
+        IDirectPosition dr = obj.getGeom().centroid();
         this.setCentreGeo(dr);
         return;
       }
@@ -751,16 +773,15 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * @param liste
    * @param pointClic
    */
-  void ajouterSelection(Collection<? extends FT_Feature> liste,
-      GM_Point pointClic) {
+  void ajouterSelection(IFeatureCollection<?> liste, IPoint pointClic) {
     // parcours des objets de la liste
-    for (FT_Feature obj : liste) {
+    for (IFeature obj : liste) {
       if (obj.getGeom() == null || obj.getGeom().isEmpty()) {
         continue;
       }
 
       // si l'objet est supprime, sortir
-      if (obj.estSupprime()) {
+      if (obj.isDeleted()) {
         continue;
       }
 
@@ -799,7 +820,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
         nbLongeurBarre, nbLargeurBarre);
 
     int ech = (int) (this.getTaillePixel() / PanelVisu.METERS_PER_PIXEL);
-    g.drawString("1:" + Integer.toString(ech), 1, 10); //$NON-NLS-1$
+    g.drawString("1:" + Integer.toString(ech), 1, 10);
   }
 
   @Override
@@ -828,7 +849,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
   }
 
   /**
-   * méthode appelée par les objets que le panel surveille lorsque leur état
+   * Méthode appelée par les objets que le panel surveille lorsque leur état
    * change.
    */
   @Override
@@ -837,8 +858,10 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
      * if (e.getSource().getClass().equals(StyledLayerDescriptor.class))
      * repaint(); else copyBufferedImage();
      */
-    // if (logger.isTraceEnabled()) logger.trace("state changed");
-    this.setUpdate(true);
+    if (PanelVisu.logger.isTraceEnabled()) {
+      PanelVisu.logger.trace("state changed");
+    }
+    this.update = true;
     this.repaint();
   }
 
@@ -846,7 +869,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * @param couleur
    * @param geom
    */
-  public void dessiner(Color couleur, GM_Object geom) {
+  public void dessiner(Color couleur, IGeometry geom) {
     this.dessinable.dessiner((Graphics2D) this.getGraphics(), couleur, geom);
   }
 
@@ -854,7 +877,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * @param couleur
    * @param geom
    */
-  public void dessinerLimite(Color couleur, GM_Polygon geom) {
+  public void dessinerLimite(Color couleur, IPolygon geom) {
     this.dessinable.dessiner((Graphics2D) this.getGraphics(), couleur, geom);
   }
 
@@ -862,7 +885,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * @param couleur
    * @param geom
    */
-  public void dessinerLimite(Color couleur, GM_MultiSurface<GM_Polygon> geom) {
+  public void dessinerLimite(Color couleur, IMultiSurface<GM_Polygon> geom) {
     this.dessinable.dessiner((Graphics2D) this.getGraphics(), couleur, geom);
   }
 
@@ -873,7 +896,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * @param cap
    * @param join
    */
-  public void dessiner(Color couleur, GM_LineString geom, float d, int cap,
+  public void dessiner(Color couleur, ILineString geom, float d, int cap,
       int join) {
     this.dessinable.dessiner((Graphics2D) this.getGraphics(), couleur, geom, d,
         cap, join);
@@ -886,8 +909,8 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * @param cap
    * @param join
    */
-  public void dessiner(Color couleur, GM_MultiCurve<GM_LineString> geom,
-      float d, int cap, int join) {
+  public void dessiner(Color couleur, IMultiCurve<ILineString> geom, float d,
+      int cap, int join) {
     this.dessinable.dessiner((Graphics2D) this.getGraphics(), couleur, geom, d,
         cap, join);
   }
@@ -899,7 +922,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * @param cap
    * @param join
    */
-  public void dessinerLimite(Color couleur, GM_Polygon geom, float d, int cap,
+  public void dessinerLimite(Color couleur, IPolygon geom, float d, int cap,
       int join) {
     this.dessinable.dessiner((Graphics2D) this.getGraphics(), couleur, geom, d,
         cap, join);
@@ -914,7 +937,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    */
   @Deprecated
   public void dessinerLimite(Color couleurContour,
-      GM_MultiSurface<GM_Polygon> geom, double d, int cap, int join) {
+      IMultiSurface<IPolygon> geom, double d, int cap, int join) {
     this.dessinable.dessinerLimite((Graphics2D) this.getGraphics(),
         couleurContour, geom, d, cap, join);
   }
@@ -925,7 +948,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * @param largeur
    */
   @Deprecated
-  public void dessinerRond(Color couleur, GM_Point point, int largeur) {
+  public void dessinerRond(Color couleur, IPoint point, int largeur) {
     this.dessinable.dessinerRond((Graphics2D) this.getGraphics(), couleur,
         point, largeur);
   }
@@ -936,7 +959,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * @param largeur
    */
   @Deprecated
-  public void dessinerRond(Color couleur, GM_MultiPoint multiPoint, int largeur) {
+  public void dessinerRond(Color couleur, IMultiPoint multiPoint, int largeur) {
     this.dessinable.dessinerRond((Graphics2D) this.getGraphics(), couleur,
         multiPoint, largeur);
   }
@@ -947,7 +970,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * @param d
    */
   @Deprecated
-  public void dessinerRond(Color couleur, GM_Point point, double d) {
+  public void dessinerRond(Color couleur, IPoint point, double d) {
     this.dessinable.dessinerRond((Graphics2D) this.getGraphics(), couleur,
         point, d);
   }
@@ -958,7 +981,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * @param d
    */
   @Deprecated
-  public void dessinerRond(Color couleur, GM_MultiPoint multiPoint, double d) {
+  public void dessinerRond(Color couleur, IMultiPoint multiPoint, double d) {
     this.dessinable.dessinerRond((Graphics2D) this.getGraphics(), couleur,
         multiPoint, d);
   }
@@ -982,7 +1005,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * @param texte
    */
   @Deprecated
-  public void dessinerTexte(Color couleur, Font font, GM_Object geom,
+  public void dessinerTexte(Color couleur, Font font, IGeometry geom,
       String texte) {
     this.dessinable.dessinerTexte((Graphics2D) this.getGraphics(), couleur,
         font, geom, texte);
@@ -994,7 +1017,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * @param texte
    */
   @Deprecated
-  public void dessinerTexte(Color couleur, GM_Object geom, String texte) {
+  public void dessinerTexte(Color couleur, IGeometry geom, String texte) {
     this.dessinable.dessinerTexte((Graphics2D) this.getGraphics(), couleur,
         geom, texte);
   }
@@ -1017,7 +1040,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * @param i
    */
   @Deprecated
-  public void dessinerSegment(DirectPosition coord1, DirectPosition coord2,
+  public void dessinerSegment(IDirectPosition coord1, IDirectPosition coord2,
       int i) {
     this.dessinable.dessinerSegment((Graphics2D) this.getGraphics(), coord1,
         coord2, i);
@@ -1056,7 +1079,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
    * @param taille
    */
   @Deprecated
-  public void dessiner(Color couleur, DirectPosition directPosition, int taille) {
+  public void dessiner(Color couleur, IDirectPosition directPosition, int taille) {
     this.dessinable.dessiner((Graphics2D) this.getGraphics(), couleur,
         directPosition, taille);
   }
@@ -1064,47 +1087,39 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
   @Override
   public void setBounds(int x, int y, int width, int height) {
     super.setBounds(x, y, width, height);
-    this.setUpdate(true);
+    this.update = true;
   }
 
   @Override
   public void setBounds(Rectangle r) {
     super.setBounds(r);
-    this.setUpdate(true);
+    this.update = true;
   }
 
   @Override
   public void setSize(int width, int height) {
     super.setSize(width, height);
-    this.setUpdate(true);
+    this.update = true;
   }
 
   @Override
   public void setSize(Dimension d) {
     super.setSize(d);
-    this.setUpdate(true);
+    this.update = true;
   }
 
   /**
    * @param b
    */
   public void repaint(boolean b) {
-    this.setUpdate(this.isUpdate() || b);
+    this.update = this.update || b;
     this.repaint();
   }
 
   @Override
   public void changed(FeatureCollectionEvent event) {
-    this.setUpdate(true);
-    this.repaint();
-  }
+    // TODO Auto-generated method stub
 
-  public void setUpdate(boolean update) {
-    this.update = update;
-  }
-
-  public boolean isUpdate() {
-    return this.update;
   }
 }
 
@@ -1113,7 +1128,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
  * 
  */
 class MouseListenerGeox implements MouseListener {
-  private final static Logger logger = Logger.getLogger(MouseListenerGeox.class
+  private final static Logger logger = Logger.getLogger(PanelVisu.class
       .getName());
 
   public void mousePressed(MouseEvent e) {
@@ -1128,10 +1143,10 @@ class MouseListenerGeox implements MouseListener {
       GM_Point p = new GM_Point(new DirectPosition(x, y));
 
       if (pv.getSld() != null) {
-        Collection<FT_Feature> selectionTotale = new HashSet<FT_Feature>();
+        FT_FeatureCollection<IFeature> selectionTotale = new FT_FeatureCollection<IFeature>();
         for (Layer l : pv.getSld().getLayers()) {
           if (l.getFeatureCollection() != null) {
-            Collection<? extends FT_Feature> selection = l
+            IFeatureCollection<? extends IFeature> selection = l
                 .getFeatureCollection().select(p);
             pv.ajouterSelection(selection, p);
             selectionTotale.addAll(selection);
@@ -1143,8 +1158,8 @@ class MouseListenerGeox implements MouseListener {
         }
       }
 
-      pv.getFrame().getPanelDroit().lNbSelection
-          .setText("Nb=" + pv.objetsSelectionnes.size()); //$NON-NLS-1$
+      pv.getFrame().getPanelDroit().lNbSelection.setText("Nb="
+          + pv.objetsSelectionnes.size());
       if (!pv.isRafraichissementAutomatiqueActive()) {
         pv.repaint();
       }
@@ -1163,7 +1178,7 @@ class MouseListenerGeox implements MouseListener {
        * ((distC<bestdistCPoint) && (distC<=distanceSelectionC)) {
        * pointSelectionne=p; bestdistCPoint=distC; } }
        * 
-       * //si on n'a pas trouvé de point (ils sont tous trop loin du clic), on
+       * //si on n'a pas trouvï¿½ de point (ils sont tous trop loin du clic), on
        * sort if (pointSelectionne==null) return;
        * 
        * //si le point est plus proche
@@ -1268,10 +1283,10 @@ class MouseMotionListenerGeox implements MouseMotionListener {
     PanelVisu pv = (PanelVisu) e.getSource();
     if (pv.suivrePositionCurseur) {
       double x = pv.pixToCoordX(e.getX()), y = pv.pixToCoordY(e.getY());
-      pv.getFrame().getPanelBas().lX
-          .setText("X=" + Double.toString(Math.round((float) x * 100) * 0.01)); //$NON-NLS-1$
-      pv.getFrame().getPanelBas().lY
-          .setText("Y=" + Double.toString(Math.round((float) y * 100) * 0.01)); //$NON-NLS-1$
+      pv.getFrame().getPanelBas().lX.setText("X="
+          + Double.toString(Math.round((float) x * 100) * 0.01));
+      pv.getFrame().getPanelBas().lY.setText("Y="
+          + Double.toString(Math.round((float) y * 100) * 0.01));
     }
   }
 
@@ -1284,7 +1299,7 @@ class MouseMotionListenerGeox implements MouseMotionListener {
  * 
  */
 class KeyListenerGeox implements KeyListener {
-  private final static Logger logger = Logger.getLogger(KeyListenerGeox.class
+  private final static Logger logger = Logger.getLogger(PanelVisu.class
       .getName());
 
   public void keyPressed(KeyEvent e) {

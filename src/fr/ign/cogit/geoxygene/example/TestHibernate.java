@@ -22,7 +22,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 public class TestHibernate {
 
   /**
-   * méthode main pour lancer le test. Aucun argument n'est pris en compte.
+   * Méthode main pour lancer le test. Aucun argument n'est pris en compte.
    * @param args arguments d'exécution. Non pris en compte.
    */
   public static void main(String[] args) {

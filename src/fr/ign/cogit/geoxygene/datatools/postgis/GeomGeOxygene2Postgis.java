@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.datatools.postgis;
@@ -24,21 +32,24 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 import org.postgis.PGgeometry;
 
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.conversion.ParseException;
 import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
 
 /**
  * Conversion des geometries PostGIS dans le format GeOxygene, et
  * reciproquement.
+ * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.1
+ * 
  */
+
 public class GeomGeOxygene2Postgis {
   static Logger logger = Logger
       .getLogger(GeomGeOxygene2Postgis.class.getName());
@@ -53,8 +64,8 @@ public class GeomGeOxygene2Postgis {
        * pgGeom string
        */
 
-      GM_Object geOxyGeom = WktGeOxygene.makeGeOxygene(pgGeom.toString()
-          .substring(pgGeom.toString().indexOf(";") + 1)); //$NON-NLS-1$
+      IGeometry geOxyGeom = WktGeOxygene.makeGeOxygene(pgGeom.toString()
+          .substring(pgGeom.toString().indexOf(";") + 1));
       // GM_Object geOxyGeom = WktGeOxygene.makeGeOxygene(pgGeom.toString());
 
       if (geOxyGeom instanceof GM_MultiPoint) {
@@ -81,8 +92,8 @@ public class GeomGeOxygene2Postgis {
       return geOxyGeom;
 
     } catch (ParseException e) {
-      GeomGeOxygene2Postgis.logger.warn("## WARNING ## " + //$NON-NLS-1$
-          "Postgis to GeOxygene returns NULL "); //$NON-NLS-1$
+      GeomGeOxygene2Postgis.logger
+          .warn("## WARNING ## Postgis to GeOxygene returns NULL ");
       e.printStackTrace();
       return null;
     }
@@ -93,13 +104,14 @@ public class GeomGeOxygene2Postgis {
       if (geom == null) {
         return null;
       }
-      PGgeometry pgGeom = new PGgeometry(((GM_Object) geom).toString());
+      PGgeometry pgGeom = new PGgeometry(((IGeometry) geom).toString());
       return pgGeom;
     } catch (SQLException e) {
-      GeomGeOxygene2Postgis.logger.warn("## WARNING ## " + //$NON-NLS-1$
-          "GeOxygene to Postgis returns NULL "); //$NON-NLS-1$
+      GeomGeOxygene2Postgis.logger
+          .warn("## WARNING ## GeOxygene to Postgis returns NULL ");
       e.printStackTrace();
       return null;
     }
   }
+
 }

@@ -26,7 +26,7 @@ public class Rodent implements Mammal {
     return this.id;
   }
 
-  protected String name;
+  protected String name;;
 
   @Override
   public String getName() {

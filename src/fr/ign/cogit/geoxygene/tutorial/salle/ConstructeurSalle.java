@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
 /**
- * méthodes possibles de construction de salles
+ * Méthodes possibles de construction de salles
  * 
  * @author Eric Grosso - IGN / Laboratoire COGIT
  */
@@ -41,7 +41,7 @@ public class ConstructeurSalle {
   static Logger logger = Logger.getLogger(ConstructeurSalle.class);
 
   public static void main(String[] args) {
-    ConstructeurSalle.CreationSalles(10, "Réunion"); //$NON-NLS-1$
+    ConstructeurSalle.CreationSalles(10, "Réunion");
   }
 
   /**
@@ -51,13 +51,13 @@ public class ConstructeurSalle {
    * @param nomGenerique
    */
   public static void CreationSalles(int nbSalles, String nomGenerique) {
-    // création d'une connexion à la base
+    // Création d'une connexion à la base
 
     // Ouverture d'une transaction pour la base définie
 
-    // création de 10 salles avec une géométrie (polygone carré)
+    // Création de 10 salles avec une géométrie (polygone carré)
     // for...
-    // création d'un nouvel objet "salle"
+    // Création d'un nouvel objet "salle"
 
     // L'objet "salle" est rendu persistant dans la base
 
@@ -68,13 +68,13 @@ public class ConstructeurSalle {
   }
 
   /**
-   * création de la géométrie d'une salle en fonction de son numéro
+   * Création de la géométrie d'une salle en fonction de son numéro
    * @param numeroSalle
    * @return un polygone
    */
   public static GM_Polygon creationGeometrie(int numeroSalle) {
 
-    // création des points de la salle
+    // Création des points de la salle
 
     // Ajout des points de manière ordonnée dans une liste de points
 

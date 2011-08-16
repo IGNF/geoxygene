@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of the GeOxygene project source files. GeOxygene aims at
  * providing an open framework which implements OGC/ISO specifications for the
  * development and deployment of geographic (GIS) applications. It is a open
@@ -48,6 +48,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
@@ -55,7 +56,6 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorReferenceSystem;
 import fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor;
 import fr.ign.cogit.geoxygene.style.thematic.DiagramRadius;
@@ -101,7 +101,7 @@ public class StyledLayerDescriptor {
 
   @XmlElements( { @XmlElement(name = "NamedLayer", type = NamedLayer.class),
       @XmlElement(name = "UserLayer", type = UserLayer.class) })
-  private List<Layer> layers = new ArrayList<Layer>(0);
+  private List<Layer> layers = new ArrayList<Layer>();
 
   public List<Layer> getLayers() {
     return this.layers;
@@ -115,7 +115,7 @@ public class StyledLayerDescriptor {
     List<ColorimetricColor> colors = new ArrayList<ColorimetricColor>();
     for (Layer layer : this.getLayers()) {
       for (Style style : layer.getStyles()) {
-        for (Rule rule : style.getFeatureTypeStyles().get(0).getRules()) {
+        for (Rule rule : ((UserStyle) style).getFeatureTypeStyles().get(0).getRules()) {
           Symbolizer symbolizer = rule.getSymbolizers().get(0);
           if (symbolizer.isLineSymbolizer()) {
             colors
@@ -189,13 +189,13 @@ public class StyledLayerDescriptor {
    * @return layer portant le nom et la geometrie en parametre
    */
   public Layer createLayer(String layerName,
-      Class<? extends GM_Object> geometryType) {
-    return this.createLayerRandomColor(layerName, geometryType);
+      Class<? extends IGeometry> geometryType) {
+    return this.createLayer(layerName, geometryType, new Color((float) Math
+        .random(), (float) Math.random(), (float) Math.random(), 0.5f));
   }
 
   /**
-   * Add a layer at the end of the sld.
-   * @param layer the new layer
+   * @param layer
    */
   public void add(Layer layer) {
     this.layers.add(layer);
@@ -266,7 +266,7 @@ public class StyledLayerDescriptor {
     t.getFill().setFill(Color.blue);
     d.getThematicClass().add(t);
     s.getSymbolizers().add(d);
-    layer.getStyles().get(0).getFeatureTypeStyles().get(0).getRules().get(0).getSymbolizers().add(s);
+    ((UserStyle) layer.getStyles().get(0)).getFeatureTypeStyles().get(0).getRules().get(0).getSymbolizers().add(s);
     sld.add(layer);
     System.out.println(sld);
   }
@@ -298,18 +298,18 @@ public class StyledLayerDescriptor {
   }
 
   /**
-   * Charge le SLD decrit dans le fichier XML. Si le fichier n'existe pas, cree
+   * Charge le SLD décrit dans le fichier XML. Si le fichier n'existe pas, crée
    * un nouveau SLD vide.
-   * @param fileName fichier XML decrivant le SLD à charger
-   * @return le SLD decrit dans le fichier XML ou un SLD vide si le fichier
+   * @param fileName fichier XML décrivant le SLD à charger
+   * @return le SLD décrit dans le fichier XML ou un SLD vide si le fichier
    *         n'existe pas.
    */
   public static StyledLayerDescriptor unmarshall(String fileName) {
     try {
       return StyledLayerDescriptor.unmarshall(new FileInputStream(fileName));
     } catch (FileNotFoundException e) {
-      StyledLayerDescriptor.logger
-          .error("File " + fileName + " could not be read"); //$NON-NLS-1$//$NON-NLS-2$
+      StyledLayerDescriptor.logger.error("File " + fileName
+          + " could not be read");
       return new StyledLayerDescriptor();
     }
   }
@@ -319,7 +319,7 @@ public class StyledLayerDescriptor {
       JAXBContext context = JAXBContext.newInstance(
           StyledLayerDescriptor.class, NamedLayer.class, NamedStyle.class);
       Marshaller m = context.createMarshaller();
-      m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+      m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
       m.marshal(this, writer);
     } catch (JAXBException e) {
       e.printStackTrace();
@@ -331,7 +331,7 @@ public class StyledLayerDescriptor {
       JAXBContext context = JAXBContext.newInstance(
           StyledLayerDescriptor.class, NamedLayer.class, NamedStyle.class);
       Marshaller m = context.createMarshaller();
-      m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+      m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
       m.marshal(this, stream);
     } catch (JAXBException e) {
       e.printStackTrace();
@@ -339,18 +339,18 @@ public class StyledLayerDescriptor {
   }
 
   /**
-   * Sauve le SLD dans le fichier en parametre
+   * Sauve le SLD dans le fichier en paramètre
    * @param fileName fichier dans lequel on sauve le SLD
    */
   public void marshall(String fileName) {
     try {
       this.marshall(new FileOutputStream(fileName));
     } catch (FileNotFoundException e) {
-      StyledLayerDescriptor.logger
-          .error("File " + fileName + " could not be written to"); //$NON-NLS-1$//$NON-NLS-2$
+      StyledLayerDescriptor.logger.error("File " + fileName
+          + " could not be written to");
     }
   }
-
+ 
   /**
    * Add a symbolizer.
    * <p>
@@ -360,7 +360,7 @@ public class StyledLayerDescriptor {
    * @param geometryType type of symbolizer
    */
   public void addSymbolizer(String layerName,
-      Class<? extends GM_Object> geometryType) {
+      Class<? extends IGeometry> geometryType) {
     Layer layer = this.getLayer(layerName);
     List<Style> styles = layer.getStyles();
     for (Style style : styles) {
@@ -422,7 +422,7 @@ public class StyledLayerDescriptor {
       }
     }
   }
-
+ 
   /**
    * Crée un nouveau layer portant le nom donné en paramètre et un symbolizer
    * adapté au type de géométrie en paramètre.
@@ -435,7 +435,7 @@ public class StyledLayerDescriptor {
    * @return layer portant le nom et la géométrie en paramètre
    */
   public Layer createLayerRandomColor(String layerName,
-      Class<? extends GM_Object> geometryType) {
+      Class<? extends IGeometry> geometryType) {
 
     // Selection of suitables colors from the COGIT reference colors.
 //      ColorReferenceSystem crs = ColorReferenceSystem
@@ -471,7 +471,7 @@ public class StyledLayerDescriptor {
       return this.createLayer(layerName, geometryType, colors.get(
           randoms.get(randoms.size() - 1)).toColor());
   }
-
+ 
   /**
    * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de
    * trait.
@@ -482,7 +482,7 @@ public class StyledLayerDescriptor {
    * @return layer portant le nom et la géométrie en paramètre
    */
   public Layer createLayer(String layerName,
-      Class<? extends GM_Object> geometryType, Color fillColor) {
+      Class<? extends IGeometry> geometryType, Color fillColor) {
     return this.createLayer(layerName, geometryType, fillColor.darker(),
         fillColor);
   }
@@ -498,7 +498,7 @@ public class StyledLayerDescriptor {
    * @return layer portant le nom et la géométrie en paramètre
    */
   public Layer createLayer(String layerName,
-      Class<? extends GM_Object> geometryType, Color strokeColor,
+      Class<? extends IGeometry> geometryType, Color strokeColor,
       Color fillColor) {
     return this.createLayer(layerName, geometryType, strokeColor, fillColor,
         0.8f);
@@ -516,12 +516,12 @@ public class StyledLayerDescriptor {
    * @return layer portant le nom et la géométrie en paramètre
    */
   public Layer createLayer(String layerName,
-      Class<? extends GM_Object> geometryType, Color strokeColor,
+      Class<? extends IGeometry> geometryType, Color strokeColor,
       Color fillColor, float opacity) {
     return this.createLayer(layerName, geometryType, strokeColor, fillColor,
         opacity, 1.0f);
   }
-
+ 
   /**
    * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de
    * trait, la couleur de remplissage, l'opacité et la largeur de trait donnés
@@ -536,7 +536,7 @@ public class StyledLayerDescriptor {
    * @return layer portant le nom et la géométrie en paramètre
    */
   public Layer createLayer(String layerName,
-      Class<? extends GM_Object> geometryType, Color strokeColor,
+      Class<? extends IGeometry> geometryType, Color strokeColor,
       Color fillColor, float opacity, float strokeWidth) {
     // if(this.getLayer(layerName)==null){
     Layer layer = new NamedLayer(layerName);
@@ -568,7 +568,7 @@ public class StyledLayerDescriptor {
    * @return style
    */
   public Style createStyle(String groupName,
-      Class<? extends GM_Object> geometryType, Color strokeColor,
+      Class<? extends IGeometry> geometryType, Color strokeColor,
       Color fillColor, float opacity, float strokeWidth) {
     UserStyle style = new UserStyle();
     style.setGroup(groupName);
@@ -580,7 +580,7 @@ public class StyledLayerDescriptor {
     return style;
   }
   
-  public Rule createRule(Class<? extends GM_Object> geometryType,
+  public Rule createRule(Class<? extends IGeometry> geometryType,
       Color strokeColor, Color fillColor, float strokeOpacity,
       float fillOpacity, float strokeWidth) {
     Rule rule = new Rule();
@@ -632,7 +632,7 @@ public class StyledLayerDescriptor {
     }
     return rule;
   }
-
+ 
   /**
    * Créer un layer pour représenter une ligne utilisant deux styles: le premier
    * pour la bordure de la ligne, le deuxième pour le trait central
@@ -684,7 +684,7 @@ public class StyledLayerDescriptor {
     layer.getStyles().add(mainStyle);
     return layer;
   }
-
+  
   /**
    * TODO
    * @param layerName

@@ -20,6 +20,7 @@
 package fr.ign.cogit.geoxygene.style;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,15 +28,13 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 
 /**
- * 
  * @see NamedLayer
  * @see UserLayer
  * @author Julien Perret
- * 
  */
 @XmlTransient
 public interface Layer {
@@ -55,6 +54,8 @@ public interface Layer {
 
   public void setDescription(String description);
 
+  List<Style> styles = new ArrayList<Style>();
+
   /**
    * Renvoie la valeur de l'attribut styles.
    * @return la valeur de l'attribut styles
@@ -70,7 +71,7 @@ public interface Layer {
   /**
    * @return les features de la couche
    */
-  public FT_FeatureCollection<? extends FT_Feature> getFeatureCollection();
+  public IFeatureCollection<? extends IFeature> getFeatureCollection();
 
   /**
    * @return <code>true</code> if the layer is visible in the LayerViewPanel by

@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Cette classe fournit l'implémentation de l'écouteur d'évènement pour les
+ * Cette classe fournit l'implémentation de l'écouteur d'événement pour les
  * objets cliquables de type attribut ou mebre d'un attribut (objet ou
  * collection). <br/>
  * Elle permet la navigation générique entre les objets Java d'une application,
@@ -48,7 +48,7 @@ import java.awt.event.ActionListener;
 public class ObjectBrowserAttributeListener implements ActionListener {
 
   /**
-   * Objet portant l'attribut sur lequel on définit l'écouteur d'évènement
+   * Objet portant l'attribut sur lequel on définit l'écouteur d'événement
    * ObjectBrowserAttributeListener.
    */
   private Object obj;
@@ -57,7 +57,7 @@ public class ObjectBrowserAttributeListener implements ActionListener {
    * Constructeur principal de ObjectBrowserAttributeListener.
    * 
    * @param obj l'objet portant l'attribut sur lequel on définit l'écouteur
-   *          d'évènement ObjectBrowserAttributeListener.
+   *          d'événement ObjectBrowserAttributeListener.
    */
   public ObjectBrowserAttributeListener(Object obj) {
     this.obj = obj;

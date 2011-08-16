@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
@@ -27,8 +35,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
@@ -38,6 +47,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
  * @author Olivier Bonin
  * @author Julien Perret
  */
+
 public class Face extends ElementCarteTopo {
   static Logger logger = Logger.getLogger(Face.class.getName());
 
@@ -45,7 +55,7 @@ public class Face extends ElementCarteTopo {
   }
 
   // ///////////////////////////////////////////////////////////////////////////////////////////////
-  // géométrie
+  // Géométrie
   // ///////////////////////////////////////////////////////////////////////////////////////////////
 
   /**
@@ -53,31 +63,32 @@ public class Face extends ElementCarteTopo {
    */
   private boolean infinite = false;
 
-  /** Renvoie le GM_Polygon qui définit la géométrie de self. */
-  public GM_Polygon getGeometrie() {
-    return (GM_Polygon) this.geom;
+  /** Renvoie le GM_Polygon qui définit la géométrie de self */
+  public IPolygon getGeometrie() {
+    return (IPolygon) this.geom;
   }
 
-  /** définit le GM_Polygon qui définit la géométrie de self. */
-  public void setGeometrie(GM_Polygon geometrie) {
+  /** Définit le GM_Polygon qui définit la géométrie de self */
+  public void setGeometrie(IPolygon geometrie) {
     this.setGeom(geometrie);
   }
 
   /** Renvoie la liste de DirectPosition qui définit les coordonnées de self */
-  public DirectPositionList getCoord() {
+  public IDirectPositionList getCoord() {
     return this.getGeometrie().exteriorCoord();
   }
 
   // On suppose que exteriorCoordList() donne deux fois le point de départ
-  /** définit la liste de DirectPosition qui définit les coordonnées de self */
-  public void setCoord(DirectPositionList dpl) {
+  /** Définit la liste de DirectPosition qui définit les coordonnées de self */
+  public void setCoord(IDirectPositionList dpl) {
     this.geom = new GM_Polygon(new GM_LineString(dpl));
   }
 
   // ///////////////////////////////////////////////////////////////////////////////////////////////
   // Gestion des groupes
   // ///////////////////////////////////////////////////////////////////////////////////////////////
-  /** Groupes auquels self appartient */
+
+  /* Groupes auquels self appartient */
   private Collection<Groupe> listeGroupes = new ArrayList<Groupe>();
 
   /** Renvoie la liste des groupes de self */
@@ -85,7 +96,7 @@ public class Face extends ElementCarteTopo {
     return this.listeGroupes;
   }
 
-  /** définit la liste des groupes de self */
+  /** Définit la liste des groupes de self */
   public void setListeGroupes(Collection<Groupe> liste) {
     this.listeGroupes = liste;
   }
@@ -104,7 +115,7 @@ public class Face extends ElementCarteTopo {
   // Gestion de la topologie arcs / faces
   // ///////////////////////////////////////////////////////////////////////////////////////////////
 
-  private List<Arc> arcsDirects = new ArrayList<Arc>(0);
+  private List<Arc> arcsDirects = new ArrayList<Arc>();
 
   /** Renvoie la liste des arcs directs de self */
   public List<Arc> getArcsDirects() {
@@ -121,7 +132,7 @@ public class Face extends ElementCarteTopo {
     }
   }
 
-  /** enlève un arc direct de self */
+  /** Enlève un arc direct de self */
   public void enleveArcDirect(Arc arc) {
     if (arc == null) {
       return;
@@ -133,7 +144,7 @@ public class Face extends ElementCarteTopo {
     arc.setFaceGauche(null);
   }
 
-  private List<Arc> arcsIndirects = new ArrayList<Arc>(0);
+  private List<Arc> arcsIndirects = new ArrayList<Arc>();
 
   /** Renvoie la liste des arcs indirects de self */
   public List<Arc> getArcsIndirects() {
@@ -150,7 +161,7 @@ public class Face extends ElementCarteTopo {
     }
   }
 
-  /** enlève un arc indirect de self */
+  /** Enlève un arc indirect de self */
   public void enleveArcIndirect(Arc arc) {
     if (arc == null) {
       return;
@@ -170,8 +181,7 @@ public class Face extends ElementCarteTopo {
    * méthode qui renvoie ces arcs dans le bon ordre de parcours
    */
   public List<Arc> arcs() {
-    List<Arc> Arcs = new ArrayList<Arc>(this.getArcsDirects().size()
-        + this.getArcsIndirects().size());
+    List<Arc> Arcs = new ArrayList<Arc>();
     Arcs.addAll(this.getArcsDirects());
     Arcs.addAll(this.getArcsIndirects());
     return Arcs;
@@ -180,7 +190,7 @@ public class Face extends ElementCarteTopo {
   /**
    * Liste de liste représentant les arcs incidents à une face (i.e. les arcs
    * des noeuds de la face, sauf les arcs de la face eux-mêmes). Dans l'esprit
-   * de la méthode arcsorientés d'un noeud, les arcs sont classés en tournant
+   * de la méthode arcsOrientés d'un noeud, les arcs sont classés en tournant
    * autour de la face dans l'ordre trigonométrique, et qualifiés d'entrants ou
    * sortants.
    * 
@@ -211,6 +221,7 @@ public class Face extends ElementCarteTopo {
       arcsDuNoeud = noeud.arcsClasses();
       itArcs = ((List<Arc>) arcsDuNoeud.get(0)).iterator();
       itOrientations = ((List<Boolean>) arcsDuNoeud.get(1)).iterator();
+      ;
       while (itArcs.hasNext()) {
         arc = itArcs.next();
         orientation = itOrientations.next();
@@ -269,7 +280,7 @@ public class Face extends ElementCarteTopo {
     if (arcs.size() == 0) {
       // TODO: face infinie ???
       Face.logger
-          .error("problème : gestion d'une face avec zéro arc entourant: ");
+          .error("Problème : gestion d'une face avec zéro arc entourant: ");
       Face.logger
           .error("           la topolgie de face a bien été instanciée?");
       return null;
@@ -284,7 +295,7 @@ public class Face extends ElementCarteTopo {
       renverser = false;
     } else {
       Face.logger
-          .error("problème : incohérence dans la topologie arcs / faces");
+          .error("Problème : incohérence dans la topologie arcs / faces");
       return null;
     }
 
@@ -328,7 +339,7 @@ public class Face extends ElementCarteTopo {
   }
 
   // ///////////////////////////////////////////////////////////////////////////////////////////////
-  // opérateurs de calcul sur les faces
+  // Opérateurs de calcul sur les faces
   // ///////////////////////////////////////////////////////////////////////////////////////////////
   /** Surface d'un polygone. */
   // Le calcul est effectué dans un repère local centré sur le premier point
@@ -366,7 +377,7 @@ public class Face extends ElementCarteTopo {
   public void setArcsPendants(List<Arc> arcsPendants) {
     this.arcsPendants = arcsPendants;
   }
-
+  
   /**
    * Set a face as infinite or not.
    * @param infinite new infinite parameter value
@@ -387,4 +398,5 @@ public class Face extends ElementCarteTopo {
     return "Face" + " " + this.getId() + " - " //$NON-NLS-2$ //$NON-NLS-3$
         + this.getGeometrie();
   }
+
 }

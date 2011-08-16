@@ -1,31 +1,37 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.example;
 
-import java.util.Collection;
-
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
@@ -37,22 +43,23 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * @version 1.1
  * 
  */
-@SuppressWarnings( { "unchecked", "unqualified-field-access" })
+
 public class TestIndex {
 
   private Geodatabase db;
-  private Class<FT_Feature> featureClass;
-  private String nomClasse = "geoxygene.geodata.Troncon_route"; //$NON-NLS-1$
-  private FT_FeatureCollection<FT_Feature> featureList;
-  private Collection<? extends FT_Feature> sublist;
-  private GM_Envelope emprise;
+  private Class<IFeature> featureClass;
+  private String nomClasse = "geoxygene.geodata.Troncon_route";
+  private IFeatureCollection<IFeature> featureList;
+  private IFeatureCollection<?> sublist;
+  private IEnvelope emprise;
   private long t1, t2;
 
+  @SuppressWarnings("unchecked")
   private TestIndex() {
 
     // Classe geographique a charger
     try {
-      this.featureClass = (Class<FT_Feature>) Class.forName(this.nomClasse);
+      this.featureClass = (Class<IFeature>) Class.forName(this.nomClasse);
     } catch (ClassNotFoundException e) {
       System.out.println(this.nomClasse + "classe geographique non trouvee");
       System.exit(0);
@@ -75,7 +82,6 @@ public class TestIndex {
 
     // Fermeture transaction
     this.db.commit();
-
   }
 
   public static void main(String args[]) {
@@ -97,12 +103,12 @@ public class TestIndex {
     // emprise de la couche
     // GM_Envelope empriseIni = db.getMetadata(featureClass).getEnvelope(); //
     // lecture de l'emprise dans le SGBD
-    GM_Envelope empriseIni = this.featureList.envelope(); // calcul direct
+    IEnvelope empriseIni = this.featureList.envelope(); // calcul direct
 
     // boucle pour regler la taille de l'emprise par homotheties successives
     for (double h = 0.1; h < 0.5; h += 0.1) {
       System.out.println("### coefficient d'extension de l'enveloppe " + h);
-      this.emprise = (GM_Envelope) empriseIni.clone();
+      this.emprise = (IEnvelope) empriseIni.clone();
       this.emprise.expandBy(h);
       this.testGM_Envelope();
       this.testGM_Polygon();
@@ -151,19 +157,18 @@ public class TestIndex {
 
     this.featureList.initSpatialIndex(Tiling.class, true, 15);
     Tiling<?> dallage = (Tiling<?>) this.featureList.getSpatialIndex();
-    GM_Envelope env;
 
     // avant mise a jour
-    FT_Feature feature = this.featureList.get(10);
+    IFeature feature = this.featureList.get(10);
     System.out.println("ancienne taille : " + this.featureList.size());
-    env = dallage.getDallage(feature)[0];
+    IEnvelope env = dallage.getDallage(feature)[0];
     System.out.println("dalle contenant le feature : " + env.hashCode());
     System.out.println("nombre d'objets dans cette dalle : "
         + this.featureList.select(env).size());
 
     // ajout
     try {
-      FT_Feature newFeature = feature.cloneGeom();
+      IFeature newFeature = feature.cloneGeom();
       newFeature.setGeom((newFeature.getGeom().translate(1., 1., 0.)));
       this.featureList.add(newFeature);
       System.out.println("nouvelle taille : " + this.featureList.size());
@@ -183,4 +188,5 @@ public class TestIndex {
       e.printStackTrace();
     }
   }
+
 }

@@ -75,7 +75,7 @@ class TP_ExpressionTerm {
       this.coefficient = coeff;
       this.variable = dt;
     } else {
-      System.out.println("coeff = +-1"); //$NON-NLS-1$
+      System.out.println("coeff = +-1");
     }
   }
 

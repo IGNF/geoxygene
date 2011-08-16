@@ -36,7 +36,7 @@ public final class PanelHaut extends JPanel {
 
     // setBackground(new Color(190,190,255));
     this.setLayout(new FlowLayout(FlowLayout.LEFT));
-    this.setFont(new Font("Arial", Font.PLAIN, 9)); //$NON-NLS-1$
+    this.setFont(new Font("Arial", Font.PLAIN, 9));
 
     this.bRafraichir.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) { /*

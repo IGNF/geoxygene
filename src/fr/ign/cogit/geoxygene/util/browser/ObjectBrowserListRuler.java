@@ -52,7 +52,7 @@ public class ObjectBrowserListRuler extends JComponent {
   private static final long serialVersionUID = 1L;
 
   /** Famille de la police de caractères par défaut. */
-  public static final String FONT_FAMILY = "SansSerif"; //$NON-NLS-1$
+  public static final String FONT_FAMILY = "SansSerif";
   /** Taille de la police de caractères par défaut. */
   public static final int FONT_SIZE = 10;
   /** Couleur de fond du composant graphique. */

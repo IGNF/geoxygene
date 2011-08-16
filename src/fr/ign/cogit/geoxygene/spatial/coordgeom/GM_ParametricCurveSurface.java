@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO
@@ -23,22 +23,25 @@
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
- * 
  */
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Curve;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IParametricCurveSurface;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ISurfacePatch;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 
 /**
- * NON IMPLEMENTE. Classe mère pour les surfaces paramètrées par des courbes.
+ * NON IMPLEMENTE. Classe mère pour les surfaces paramétrées par des courbes.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
  * 
  */
 
-class GM_ParametricCurveSurface extends GM_SurfacePatch {
+class GM_ParametricCurveSurface extends GM_SurfacePatch implements
+    IParametricCurveSurface {
 
   protected String horizontalCurveType;
 
@@ -52,34 +55,22 @@ class GM_ParametricCurveSurface extends GM_SurfacePatch {
     return this.verticalCurveType;
   }
 
-  /**
-   * @param t
-   * @return horizontal curve
-   */
-  public GM_Curve horizontalCurve(double t) {
+  public ICurve horizontalCurve(double t) {
     return null;
   }
 
-  /**
-   * @param s
-   * @return vertical curve
-   */
-  public GM_Curve verticalCurve(double s) {
+  public ICurve verticalCurve(double s) {
     return null;
   }
 
-  /**
-   * @param s
-   * @param t
-   * @return surface of the curve surface
-   */
-  public DirectPosition surface(double s, double t) {
+  public IDirectPosition surface(double s, double t) {
     return null;
   }
 
   // Implémentation d'une méthode abstraite de GM_SurfacePatch.
+
   @Override
-  public GM_SurfacePatch reverse() {
+  public ISurfacePatch reverse() {
     return null;
   }
 

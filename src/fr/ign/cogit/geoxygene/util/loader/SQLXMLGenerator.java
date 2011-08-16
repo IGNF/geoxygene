@@ -40,7 +40,7 @@ import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.util.loader.gui.GUISelectionGeometrie;
 
 /**
- * Usage interne. appelé par la Console. Génère à partir d'une classe Java, la
+ * Usage interne. Appelé par la Console. Génére à partir d'une classe Java, la
  * table dans le SGBD et le fichier de mapping correspondants.
  * 
  * @author Eric Grosso - IGN / Laboratoire COGIT
@@ -65,7 +65,7 @@ public class SQLXMLGenerator {
     this.data = Data;
     this.tableName = TableName;
     this.javaFilePath = JavaFilePath;
-    String extentClassName = ""; //$NON-NLS-1$
+    String extentClassName = "";
     this.extentMappingFileName = null;
     this.geOxygeneMapping = mappingDirectory;
     this.theXMLGenerator = new OjbXMLGenerator(this.data,
@@ -78,9 +78,9 @@ public class SQLXMLGenerator {
   public void writeAll() {
 
     // ecriture de la table correspondante à la classe java
-    boolean heritage = true; // à paramètrer par la suite
+    boolean heritage = true; // à paramétrer par la suite
 
-    System.out.println("création de la table");
+    System.out.println("Création de la table");
     try {
       if (this.data.getDBMS() == Geodatabase.ORACLE) {
         this.querySQLOracle(this.javaFilePath, this.tableName, heritage);
@@ -88,7 +88,7 @@ public class SQLXMLGenerator {
         this.querySQLPostgis(this.javaFilePath, this.tableName, heritage);
       } else {
         JOptionPane.showMessageDialog(null,
-            "problème de SGBD non supporté : il apparaît que"
+            "Problème de SGBD non supporté : il apparaît que"
                 + " ce n'est ni Oracle ni PostgreSQL", "SGBD non supporté",
             JOptionPane.WARNING_MESSAGE);
         return;
@@ -99,7 +99,7 @@ public class SQLXMLGenerator {
       e.printStackTrace();
     }
 
-    System.out.println("création de la table terminée");
+    System.out.println("Création de la table terminée");
 
     // ecriture du fichier de mapping correspondant
     try {
@@ -131,19 +131,19 @@ public class SQLXMLGenerator {
           }
 
           // bidouille speciale Oracle pour traiter le cas des entiers et des
-          // Booléens...
+          // booléens...
           if (rs.getObject(3) != null) {
             int dataScale = ((BigDecimal) rs.getObject(3)).intValue();
             // cas des entiers
             if ((sqlDbmsType.compareToIgnoreCase("NUMBER") == 0)
                 && (dataScale == 0)) {
-              sqlDbmsType = "INTEGER"; //$NON-NLS-1$
+              sqlDbmsType = "INTEGER";
             }
             // cas des booleans (ne sont pas reconnus par Oracle JDBC)
             // On suppose que CHAR(1) est un boolean
             if ((sqlDbmsType.compareToIgnoreCase("CHAR") == 0)
                 && (dataScale == 1)) {
-              sqlDbmsType = "BOOLEAN"; //$NON-NLS-1$
+              sqlDbmsType = "BOOLEAN";
             }
           }
           // fin de la bidouille
@@ -208,20 +208,21 @@ public class SQLXMLGenerator {
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////
   private String getQueryColumnNameOracle(String oracleTableName) {
-    return "SELECT COLUMN_NAME, DATA_TYPE, DATA_SCALE FROM USER_TAB_COLUMNS WHERE TABLE_NAME = '" + oracleTableName + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+    return "SELECT COLUMN_NAME, DATA_TYPE, DATA_SCALE FROM USER_TAB_COLUMNS WHERE TABLE_NAME = '"
+        + oracleTableName + "'";
   }
 
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////
   private String getQueryColumnNamePostgis(String postgisTableName, String user) {
-    return "select pg_attribute.attname, pg_type.typname " + //$NON-NLS-1$
-        "from pg_attribute, pg_type, pg_class, pg_user " + //$NON-NLS-1$
-        "where pg_class.oid = pg_attribute.attrelid " + //$NON-NLS-1$
-        "and pg_attribute.attnum>0 " + //$NON-NLS-1$
-        "and pg_attribute.atttypid = pg_type.oid " + //$NON-NLS-1$
-        "and pg_class.relowner = pg_user.usesysid " + //$NON-NLS-1$
-        "and pg_user.usename = '" + user.toLowerCase() + "' " + //$NON-NLS-1$ //$NON-NLS-2$
-        "and pg_class.relname='" + postgisTableName.toLowerCase() + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+    return "select pg_attribute.attname, pg_type.typname "
+        + "from pg_attribute, pg_type, pg_class, pg_user "
+        + "where pg_class.oid = pg_attribute.attrelid "
+        + "and pg_attribute.attnum>0 "
+        + "and pg_attribute.atttypid = pg_type.oid "
+        + "and pg_class.relowner = pg_user.usesysid "
+        + "and pg_user.usename = '" + user.toLowerCase() + "' "
+        + "and pg_class.relname='" + postgisTableName.toLowerCase() + "'";
   }
 
   // /////////////////////////////////////////////////////////////////////
@@ -235,7 +236,7 @@ public class SQLXMLGenerator {
   // n'est hérité de FT_Feature que la géométrie et l'identifiant
   private void querySQLOracle(String cheminClasse, String nomTable,
       boolean flagHeritage) throws Exception {
-    String query = ""; //$NON-NLS-1$
+    String query = "";
     Field[] attributs;
     Class<?> classe = Class.forName(cheminClasse);
 
@@ -246,55 +247,56 @@ public class SQLXMLGenerator {
       if (flagHeritage) {
         // String [][] dataNomAttributs, dataTypeAttributs;
         String nomAttribut, type;
-        query = "CREATE TABLE " + nomTable + " (COGITID INTEGER PRIMARY KEY"; //$NON-NLS-1$ //$NON-NLS-2$
-        while (!classe.getName().equals("java.lang.Object")) { //$NON-NLS-1$
+        query = "CREATE TABLE " + nomTable + " (COGITID INTEGER PRIMARY KEY";
+        while (!classe.getName().equals("java.lang.Object")) {
           attributs = classe.getDeclaredFields();
           // dataNomAttributs = new String[attributs.length][1];
           // dataTypeAttributs = new String[attributs.length][1];
           if (!classe.getName().equals(
-              "fr.ign.cogit.geoxygene.feature.FT_Feature")) { //$NON-NLS-1$
+              "fr.ign.cogit.geoxygene.feature.FT_Feature")) {
             int i = 0;
             while (i != attributs.length) {
-              query = query + ", "; //$NON-NLS-1$
+              query = query + ", ";
               Field attribut = attributs[i];
               nomAttribut = attribut.getName();
-              if (!nomAttribut.equals("id")) { //$NON-NLS-1$
+              if (!nomAttribut.equals("id")) {
                 type = SQLXMLGenerator.javaType2OracleType(attribut.getType()
                     .getName());
-                query = query + attribut.getName() + " " + type; //$NON-NLS-1$
-                if (type.equals("MDSYS.SDO_GEOMETRY")) { //$NON-NLS-1$
+                query = query + attribut.getName() + " " + type;
+                if (type.equals("MDSYS.SDO_GEOMETRY")) {
                   stm
-                      .executeQuery("INSERT INTO USER_SDO_GEOM_METADATA VALUES ('" + nomTable + "','" + nomAttribut + "',NULL,NULL)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                      .executeQuery("INSERT INTO USER_SDO_GEOM_METADATA VALUES ('"
+                          + nomTable + "','" + nomAttribut + "',NULL,NULL)");
                 }
               }
               i++;
             }
           } else {
-            query = query + ",GEOM MDSYS.SDO_GEOMETRY"; //$NON-NLS-1$
-            stm
-                .executeQuery("INSERT INTO USER_SDO_GEOM_METADATA VALUES ('" + nomTable + "','GEOM',NULL,NULL)"); //$NON-NLS-1$ //$NON-NLS-2$
+            query = query + ",GEOM MDSYS.SDO_GEOMETRY";
+            stm.executeQuery("INSERT INTO USER_SDO_GEOM_METADATA VALUES ('"
+                + nomTable + "','GEOM',NULL,NULL)");
           }
           classe = classe.getSuperclass();
         }
-        query = query + ")"; //$NON-NLS-1$
+        query = query + ")";
       } else {
         attributs = classe.getDeclaredFields();
         // String [][] dataNomAttributs = new String[attributs.length][1],
         // dataTypeAttributs = new String[attributs.length][1];
         String nomAttribut, type;
-        query = "CREATE TABLE " + nomTable + " (COGITID INTEGER PRIMARY KEY"; //$NON-NLS-1$ //$NON-NLS-2$
+        query = "CREATE TABLE " + nomTable + " (COGITID INTEGER PRIMARY KEY";
         int i = 0;
         while (i != attributs.length) {
-          query = query + ","; //$NON-NLS-1$
+          query = query + ",";
           Field attribut = attributs[i];
           nomAttribut = attribut.getName();
-          if (!nomAttribut.equals("id")) { //$NON-NLS-1$
+          if (!nomAttribut.equals("id")) {
             type = SQLXMLGenerator.javaType2OracleType(attribut.getType()
                 .getName());
-            query = query + attribut.getName() + " " + type; //$NON-NLS-1$
-            if (type.equals("MDSYS.SDO_GEOMETRY")) { //$NON-NLS-1$
-              stm
-                  .executeQuery("INSERT INTO USER_SDO_GEOM_METADATA VALUES ('" + nomTable + "','" + nomAttribut + "',NULL,NULL)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            query = query + attribut.getName() + " " + type;
+            if (type.equals("MDSYS.SDO_GEOMETRY")) {
+              stm.executeQuery("INSERT INTO USER_SDO_GEOM_METADATA VALUES ('"
+                  + nomTable + "','" + nomAttribut + "',NULL,NULL)");
             }
           }
           i++;
@@ -314,7 +316,7 @@ public class SQLXMLGenerator {
   // /////////////////////////////////////////////////////////////////////
 
   /**
-   * création de la table postgis. L'identifiant COGITID est créé par défaut en
+   * Création de la table postgis. L'identifiant COGITID est créé par défaut en
    * tant que clé primaire de la table. Si flagHeritage est vrai, la fonction
    * parcours les superclasses de la classe cheminClasse jusqu'à
    * java.lang.Object. Ne sont hérités de FT_Feature que la géométrie et
@@ -328,7 +330,7 @@ public class SQLXMLGenerator {
    */
   private void querySQLPostgis(String cheminClasse, String nomTable,
       boolean flagHeritage) throws Exception {
-    String query = ""; //$NON-NLS-1$
+    String query = "";
     Field[] attributs;
     Class<?> classe = Class.forName(cheminClasse);
     boolean flagGeomFeature = false;
@@ -340,23 +342,23 @@ public class SQLXMLGenerator {
       if (flagHeritage) {
         // String [][] dataNomAttributs, dataTypeAttributs;
         String nomAttribut, type;
-        query = "CREATE TABLE " + nomTable + " (COGITID INTEGER PRIMARY KEY"; //$NON-NLS-1$ //$NON-NLS-2$
-        while (!classe.getName().equals("java.lang.Object")) { //$NON-NLS-1$
+        query = "CREATE TABLE " + nomTable + " (COGITID INTEGER PRIMARY KEY";
+        while (!classe.getName().equals("java.lang.Object")) {
           attributs = classe.getDeclaredFields();
           // dataNomAttributs = new String[attributs.length][1];
           // dataTypeAttributs = new String[attributs.length][1];
           if (!classe.getName().equals(
-              "fr.ign.cogit.geoxygene.feature.FT_Feature")) { //$NON-NLS-1$
+              "fr.ign.cogit.geoxygene.feature.FT_Feature")) {
             int i = 0;
             while (i != attributs.length) {
               // query = query+", ";
               Field attribut = attributs[i];
               nomAttribut = attribut.getName();
-              if (!nomAttribut.equals("id")) { //$NON-NLS-1$
+              if (!nomAttribut.equals("id")) {
                 try {
                   type = SQLXMLGenerator.javaType2PostgisType(attribut
                       .getType().getName());
-                  query = query + ", " + attribut.getName() + " " + type; //$NON-NLS-1$ //$NON-NLS-2$
+                  query = query + ", " + attribut.getName() + " " + type;
                   // if (type.equals("GEOMETRY")) {
                   // interface pour connaitre le type de géométrie (impossible à
                   // savoir interactivement)
@@ -374,29 +376,29 @@ public class SQLXMLGenerator {
           }
           classe = classe.getSuperclass();
         }
-        query = query + ")"; //$NON-NLS-1$
+        query = query + ")";
       } else {
         attributs = classe.getDeclaredFields();
         // String [][] dataNomAttributs = new String[attributs.length][1],
         // dataTypeAttributs = new String[attributs.length][1];
         String nomAttribut, type;
-        query = "CREATE TABLE " + nomTable + " (COGITID INTEGER PRIMARY KEY"; //$NON-NLS-1$ //$NON-NLS-2$
+        query = "CREATE TABLE " + nomTable + " (COGITID INTEGER PRIMARY KEY";
         int i = 0;
         while (i != attributs.length) {
-          query = query + ","; //$NON-NLS-1$
+          query = query + ",";
           Field attribut = attributs[i];
           nomAttribut = attribut.getName();
-          if (!nomAttribut.equals("id")) { //$NON-NLS-1$
+          if (!nomAttribut.equals("id")) {
             type = SQLXMLGenerator.javaType2PostgisType(attribut.getType()
                 .getName());
-            query = query + attribut.getName() + " " + type; //$NON-NLS-1$
-            if (type.equals("GEOMETRY")) { //$NON-NLS-1$
+            query = query + attribut.getName() + " " + type;
+            if (type.equals("GEOMETRY")) {
               flagGeomFeature = true;
             }
           }
           i++;
         }
-        query = query + ")"; //$NON-NLS-1$
+        query = query + ")";
       }
 
       try {
@@ -413,43 +415,53 @@ public class SQLXMLGenerator {
         GUISelectionGeometrie sg = new GUISelectionGeometrie();
         switch (sg.getTypeGeometrie()) {
           case 0:
-            stm
-                .executeUpdate("SELECT AddGeometrycolumn ('','" + nomTable + "','geom','-1','MULTIPOINT'," + sg.getDimensionGeometrie() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            stm.executeUpdate("SELECT AddGeometrycolumn ('','" + nomTable
+                + "','geom','-1','MULTIPOINT'," + sg.getDimensionGeometrie()
+                + ")");
             try {
-              stm
-                  .executeUpdate("ALTER TABLE " + nomTable + " DROP CONSTRAINT enforce_geotype_geom"); //$NON-NLS-1$ //$NON-NLS-2$
+              stm.executeUpdate("ALTER TABLE " + nomTable
+                  + " DROP CONSTRAINT enforce_geotype_geom");
             } catch (Exception e) {
             }
             stm
-                .executeUpdate("ALTER TABLE " + nomTable + " ADD CONSTRAINT enforce_geotype_geom CHECK (geometrytype(geom) = 'POINT'::text OR geometrytype(geom) = 'MULTIPOINT'::text OR isempty(geom) OR geom IS NULL)"); //$NON-NLS-1$ //$NON-NLS-2$
+                .executeUpdate("ALTER TABLE "
+                    + nomTable
+                    + " ADD CONSTRAINT enforce_geotype_geom CHECK (geometrytype(geom) = 'POINT'::text OR geometrytype(geom) = 'MULTIPOINT'::text OR isempty(geom) OR geom IS NULL)");
             break;
           case 1:
-            stm
-                .executeUpdate("SELECT AddGeometrycolumn ('','" + nomTable + "','geom','-1','MULTILINESTRING'," + sg.getDimensionGeometrie() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+            stm.executeUpdate("SELECT AddGeometrycolumn ('','" + nomTable
+                + "','geom','-1','MULTILINESTRING',"
+                + sg.getDimensionGeometrie() + ")");
             try {
-              stm
-                  .executeUpdate("ALTER TABLE " + nomTable + " DROP CONSTRAINT enforce_geotype_geom"); //$NON-NLS-1$ //$NON-NLS-2$
+              stm.executeUpdate("ALTER TABLE " + nomTable
+                  + " DROP CONSTRAINT enforce_geotype_geom");
             } catch (Exception e) {
             }
             stm
-                .executeUpdate("ALTER TABLE " + nomTable + " ADD CONSTRAINT enforce_geotype_geom CHECK (geometrytype(geom) = 'LINESTRING'::text OR geometrytype(geom) = 'MULTILINESTRING'::text OR isempty(geom) OR geom IS NULL)"); //$NON-NLS-1$ //$NON-NLS-2$
+                .executeUpdate("ALTER TABLE "
+                    + nomTable
+                    + " ADD CONSTRAINT enforce_geotype_geom CHECK (geometrytype(geom) = 'LINESTRING'::text OR geometrytype(geom) = 'MULTILINESTRING'::text OR isempty(geom) OR geom IS NULL)");
             break;
           case 2:
-            stm
-                .executeUpdate("SELECT AddGeometrycolumn ('','" + nomTable + "','geom','-1','MULTIPOLYGON'," + sg.getDimensionGeometrie() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+            stm.executeUpdate("SELECT AddGeometrycolumn ('','" + nomTable
+                + "','geom','-1','MULTIPOLYGON'," + sg.getDimensionGeometrie()
+                + ")");
             try {
-              stm
-                  .executeUpdate("ALTER TABLE " + nomTable + " DROP CONSTRAINT enforce_geotype_geom"); //$NON-NLS-1$ //$NON-NLS-2$
+              stm.executeUpdate("ALTER TABLE " + nomTable
+                  + " DROP CONSTRAINT enforce_geotype_geom");
             } catch (Exception e) {
             }
             stm
-                .executeUpdate("ALTER TABLE " + nomTable + " ADD CONSTRAINT enforce_geotype_geom CHECK (geometrytype(geom) = 'POLYGON'::text OR geometrytype(geom) = 'MULTIPOLYGON'::text OR isempty(geom) OR geom IS NULL)"); //$NON-NLS-1$ //$NON-NLS-2$
+                .executeUpdate("ALTER TABLE "
+                    + nomTable
+                    + " ADD CONSTRAINT enforce_geotype_geom CHECK (geometrytype(geom) = 'POLYGON'::text OR geometrytype(geom) = 'MULTIPOLYGON'::text OR isempty(geom) OR geom IS NULL)");
             break;
           case 3:
-            stm
-                .executeUpdate("SELECT AddGeometrycolumn ('','" + nomTable + "','geom','-1','GEOMETRYCOLLECTION'," + sg.getDimensionGeometrie() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            stm
-                .executeUpdate("ALTER TABLE " + nomTable + " DROP CONSTRAINT enforce_geotype_geom"); //$NON-NLS-1$//$NON-NLS-2$
+            stm.executeUpdate("SELECT AddGeometrycolumn ('','" + nomTable
+                + "','geom','-1','GEOMETRYCOLLECTION',"
+                + sg.getDimensionGeometrie() + ")");
+            stm.executeUpdate("ALTER TABLE " + nomTable
+                + " DROP CONSTRAINT enforce_geotype_geom");
             break;
           default:
             break;
@@ -467,25 +479,25 @@ public class SQLXMLGenerator {
   private static String javaType2OracleType(String javaType) throws Exception {
 
     if (javaType.compareToIgnoreCase("java.lang.String") == 0) {
-      return "VARCHAR(255)"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "VARCHAR(255)";
     } else if (javaType.compareToIgnoreCase("double") == 0) {
-      return "NUMBER"; //$NON-NLS-1$//$NON-NLS-2$
+      return "NUMBER";
     } else if (javaType.compareToIgnoreCase("int") == 0) {
-      return "INTEGER"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "INTEGER";
     } else if (javaType.compareToIgnoreCase("boolean") == 0) {
-      return "CHAR(1)"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "CHAR(1)";
     } else if (javaType
         .compareToIgnoreCase("fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object") == 0) {
-      return "MDSYS.SDO_GEOMETRY"; //$NON-NLS-1$
+      return "MDSYS.SDO_GEOMETRY";
     } else if (javaType
         .compareToIgnoreCase("fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point") == 0) {
-      return "MDSYS.SDO_GEOMETRY"; //$NON-NLS-1$
+      return "MDSYS.SDO_GEOMETRY";
     } else if (javaType
         .compareToIgnoreCase("fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString") == 0) {
-      return "MDSYS.SDO_GEOMETRY"; //$NON-NLS-1$
+      return "MDSYS.SDO_GEOMETRY";
     } else if (javaType
         .compareToIgnoreCase("fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon") == 0) {
-      return "MDSYS.SDO_GEOMETRY"; //$NON-NLS-1$
+      return "MDSYS.SDO_GEOMETRY";
     } else {
       throw new Exception("type non reconnu : " + javaType);
     }
@@ -496,22 +508,22 @@ public class SQLXMLGenerator {
   private static String javaType2PostgisType(String javaType) throws Exception {
 
     if (javaType.endsWith("GM_LineString")) {
-      return "ligne"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "ligne";
     } else if (javaType.endsWith("String")) {
-      return "VARCHAR"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "VARCHAR";
     } else if (javaType.endsWith("boolean")) {
-      return "boolean"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "boolean";
     } else if (javaType.endsWith("double")) {
-      return "double precision"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "double precision";
     } else if (javaType.endsWith("GM_Point")) {
-      return "point"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "point";
     } else if (javaType.endsWith("int")) {
-      return "INTEGER"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "INTEGER";
     } else if (javaType.endsWith("GM_Polygon")) {
-      return "surface"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "surface";
     } else if (javaType
         .compareToIgnoreCase("fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object") == 0) {
-      return "GEOMETRY"; //$NON-NLS-1$
+      return "GEOMETRY";
     } else {
       throw new Exception("type non reconnu : " + javaType);
     }

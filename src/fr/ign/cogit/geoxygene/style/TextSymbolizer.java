@@ -1,29 +1,20 @@
-/**
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
- * 
+/*
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.style;
@@ -36,12 +27,11 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.NoninvertibleTransformException;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 
 /**
  * @author Julien Perret
- * 
  */
 public class TextSymbolizer extends AbstractSymbolizer {
   @Override
@@ -140,7 +130,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
   }
 
   @Override
-  public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics) {
+  public void paint(IFeature feature, Viewport viewport, Graphics2D graphics) {
     if (this.getLabel() == null) {
       return;
     }
@@ -166,7 +156,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
       awtFont = this.getFont().toAwfFont();
     }
     if (awtFont == null) {
-      awtFont = new java.awt.Font("Default", java.awt.Font.PLAIN, 10); //$NON-NLS-1$
+      awtFont = new java.awt.Font("Default", java.awt.Font.PLAIN, 10);
     }
     Color haloColor = null;
     float haloRadius = 1.0f;
@@ -181,7 +171,8 @@ public class TextSymbolizer extends AbstractSymbolizer {
     if (text == null) {
       return;
     }
-    // Find the size of string s in font f in the current Graphics context g.
+    // Find the size of string s in font f in the current Graphics context
+    // g.
     graphics.setFont(awtFont);
     // Center text horizontally and vertically
 

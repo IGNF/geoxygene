@@ -7,13 +7,14 @@ import java.util.List;
 import java.util.TreeSet;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.feature.Population;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
 public abstract class AbstractTriangulation extends CarteTopo {
@@ -54,15 +55,15 @@ public abstract class AbstractTriangulation extends CarteTopo {
       return this.options;
     }
     /** Population des arcs de voronoi de la triangulation. */
-    public Population<Arc> getPopVoronoiEdges() {
+    public IPopulation<Arc> getPopVoronoiEdges() {
         return this.voronoiDiagram.getPopArcs();
     }
     /** Population des noeuds de voronoi de la triangulation. */
-    public Population<Noeud> getPopVoronoiVertices() {
+    public IPopulation<Noeud> getPopVoronoiVertices() {
         return this.voronoiDiagram.getPopNoeuds();
     }
     /** Population des cellules de voronoi de la triangulation. */
-    public Population<Face> getPopVoronoiFaces() {
+    public IPopulation<Face> getPopVoronoiFaces() {
         return this.voronoiDiagram.getPopFaces();
     }
     
@@ -343,7 +344,7 @@ public abstract class AbstractTriangulation extends CarteTopo {
       if (CarteTopo.logger.isDebugEnabled()) {
           CarteTopo.logger.debug("Alpha shape finished");
       }
-      List<GM_LineString> list = new ArrayList<GM_LineString>(0);
+      List<ILineString> list = new ArrayList<ILineString>(0);
       // built the list of all boundary edges at the end of the process
       for (Arc arc : this.getPopArcs()) {
         if (arc.getFaceDroite() == null || arc.getFaceGauche() == null) {
@@ -357,7 +358,7 @@ public abstract class AbstractTriangulation extends CarteTopo {
 //      for (GM_LineString l : list) {
 //          logger.info(" l = " + l);
 //      }
-      GM_LineString union = Operateurs.union(list);
+      ILineString union = Operateurs.union(list);
       logger.info("union " + union);
       return new GM_Polygon(union);
     }

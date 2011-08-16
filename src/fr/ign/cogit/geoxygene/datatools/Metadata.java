@@ -19,7 +19,9 @@
 
 package fr.ign.cogit.geoxygene.datatools;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
+import org.apache.log4j.Logger;
+
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 
 /**
  * Classe pour décrire les métadonnées des classes java persistantes. S'il
@@ -28,9 +30,11 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
  * (on crée une liste de métadata, une valeur par classe persistante).
  * 
  * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @version 1.0 16/09/2009 : ajout SRID, dimension et envelope (Julien Gaffuri)
+ * 
  */
 public class Metadata {
+  static Logger logger = Logger.getLogger(Metadata.class.getName());
 
   // ///////////////////////////////////////////////////////////////
   // / attributs ///////////////////////////////////////////////////
@@ -59,7 +63,7 @@ public class Metadata {
   protected int _SRID;
 
   /** L'enveloppe de la couche. */
-  protected GM_Envelope _envelope; //
+  protected IEnvelope _envelope; //
 
   /**
    * La tolerance sur les coordonnées. _tolerance[0] = tolerance sur X, etc.
@@ -123,7 +127,7 @@ public class Metadata {
   /**
    * L'enveloppe de la couche. Vaut null si la classe n'est pas Géographique.
    */
-  public GM_Envelope getEnvelope() {
+  public IEnvelope getEnvelope() {
     return this._envelope;
   }
 
@@ -178,7 +182,7 @@ public class Metadata {
     this._SRID = SRID;
   }
 
-  public void setEnvelope(GM_Envelope Envelope) {
+  public void setEnvelope(IEnvelope Envelope) {
     this._envelope = Envelope;
   }
 

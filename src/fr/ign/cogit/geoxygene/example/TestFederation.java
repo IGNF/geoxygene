@@ -29,12 +29,13 @@ package fr.ign.cogit.geoxygene.example;
 
 import java.util.Iterator;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
  * Federation de donnees. Exemple d'utilisation de plusieurs "Geodatabase"
@@ -83,25 +84,25 @@ public class TestFederation {
 
     System.out.print("chargement ... " + featureClass1.getName() + "   ");
     t1 = System.currentTimeMillis();
-    FT_FeatureCollection<? extends FT_Feature> coll1 = db1
+    IFeatureCollection<? extends IFeature> coll1 = db1
         .loadAllFeatures(featureClass1);
     t2 = System.currentTimeMillis();
     System.out.println((t2 - t1) / 1000.);
 
     System.out.print("chargement ... " + featureClass2.getName() + "  ");
     t1 = System.currentTimeMillis();
-    FT_FeatureCollection<? extends FT_Feature> coll2 = db2
+    IFeatureCollection<? extends IFeature> coll2 = db2
         .loadAllFeatures(featureClass2);
     t2 = System.currentTimeMillis();
     System.out.println((t2 - t1) / 1000.);
 
     System.out.println("Calcul buffer 1 ...");
     int i = 0;
-    GM_Aggregate<GM_Object> aggr = new GM_Aggregate<GM_Object>();
-    Iterator<? extends FT_Feature> iterator = coll1.iterator();
+    GM_Aggregate<IGeometry> aggr = new GM_Aggregate<IGeometry>();
+    Iterator<? extends IFeature> iterator = coll1.iterator();
     while (iterator.hasNext()) {
       i++;
-      GM_Object geom = iterator.next().getGeom();
+      IGeometry geom = iterator.next().getGeom();
       geom = geom.buffer(100.);
       aggr.add(geom);
       if (i > 1000) {
@@ -114,7 +115,7 @@ public class TestFederation {
     iterator = coll2.iterator();
     while (iterator.hasNext()) {
       i++;
-      GM_Object geom = iterator.next().getGeom();
+      IGeometry geom = iterator.next().getGeom();
       geom = geom.buffer(50.);
       aggr.add(geom);
       if (i > 1000) {
@@ -127,7 +128,7 @@ public class TestFederation {
 
     System.out.print("ecriture ... ");
     t1 = System.currentTimeMillis();
-    for (GM_Object o : aggr) {
+    for (IGeometry o : aggr) {
       Resultat res = new Resultat();
       db3.makePersistent(res);
       res.setGeom(o);

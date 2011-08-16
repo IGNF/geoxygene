@@ -27,11 +27,12 @@
 
 package fr.ign.cogit.geoxygene.example;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.viewer.ObjectViewer;
 
 /**
@@ -70,21 +71,22 @@ public class TestViewer {
     }
 
     // load and display all features from a class
-    FT_FeatureCollection<FT_Feature> collection1 = db
+    IFeatureCollection<IFeature> collection1 = db
         .loadAllFeatures(TestViewer.class1);
     System.out.println("size of collection 1 : " + collection1.size());
     vwr.addFeatureCollection(collection1, TestViewer.nomTheme1);
 
     // load and display all features from a class
-    FT_FeatureCollection<?> collection2 = db.loadAllFeatures(TestViewer.class2);
+    IFeatureCollection<IFeature> collection2 = db
+        .loadAllFeatures(TestViewer.class2);
     vwr.addFeatureCollection(collection2, TestViewer.nomTheme2);
     System.out.println("size of collection 2 : " + collection2.size());
 
     // add a new feature to a collection and refresh viewer
     System.out.println("Adding new object ...");
-    FT_Feature feat = collection1.get(83);
-    GM_Object newGeom = feat.getGeom().translate(150000, 150000, 0);
-    FT_Feature newFeature = (FT_Feature) TestViewer.class1.newInstance();
+    IFeature feat = collection1.get(83);
+    IGeometry newGeom = feat.getGeom().translate(150000, 150000, 0);
+    IFeature newFeature = (FT_Feature) TestViewer.class1.newInstance();
     newFeature.setGeom(newGeom);
     collection1.add(newFeature);
     System.out.println("size of collection 1 : " + collection1.size());

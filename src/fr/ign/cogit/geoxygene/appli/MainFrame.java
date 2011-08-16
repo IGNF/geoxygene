@@ -54,8 +54,8 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.event.CoordPaintListener;
 import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.style.Layer;
 
@@ -233,7 +233,7 @@ public class MainFrame extends JFrame {
 			}
 			Layer layer = selectedLayers.iterator().next();
 		
-			FT_FeatureCollection<? extends FT_Feature> layerfeatures = layer
+			IFeatureCollection<? extends IFeature> layerfeatures = layer
 					.getFeatureCollection();
 			if (layerfeatures == null) {
 				logger.error("The layer selected does not contain any feature."); //$NON-NLS-1$

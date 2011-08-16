@@ -109,7 +109,7 @@ public class WktAwt implements WktAwtConstants {
         label_1: while (true) {
           switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
             case 12:
-
+              
               break;
             default:
               this.jj_la1[1] = this.jj_gen;
@@ -153,7 +153,7 @@ public class WktAwt implements WktAwtConstants {
         label_2: while (true) {
           switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
             case 12:
-
+              
               break;
             default:
               this.jj_la1[3] = this.jj_gen;
@@ -197,7 +197,7 @@ public class WktAwt implements WktAwtConstants {
         label_3: while (true) {
           switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
             case 12:
-
+              
               break;
             default:
               this.jj_la1[5] = this.jj_gen;
@@ -240,7 +240,7 @@ public class WktAwt implements WktAwtConstants {
         label_4: while (true) {
           switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
             case 12:
-
+              
               break;
             default:
               this.jj_la1[7] = this.jj_gen;
@@ -283,7 +283,7 @@ public class WktAwt implements WktAwtConstants {
         label_5: while (true) {
           switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
             case 12:
-
+              
               break;
             default:
               this.jj_la1[9] = this.jj_gen;
@@ -713,8 +713,9 @@ public class WktAwt implements WktAwtConstants {
   private int jj_ntk() {
     if ((this.jj_nt = this.token.next) == null) {
       return (this.jj_ntk = (this.token.next = this.token_source.getNextToken()).kind);
+    } else {
+      return (this.jj_ntk = this.jj_nt.kind);
     }
-    return (this.jj_ntk = this.jj_nt.kind);
   }
 
   private java.util.List jj_expentries = new java.util.ArrayList();

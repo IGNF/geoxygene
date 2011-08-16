@@ -27,9 +27,9 @@
 
 package fr.ign.cogit.geoxygene.feature;
 
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
 
 /**
@@ -57,7 +57,8 @@ import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
  * @author Julien Perret
  */
 
-public class DefaultFeature extends FT_Feature {
+public class DefaultFeature extends AbstractFeature {
+
   /**
    * Constructeur vide
    */
@@ -69,17 +70,20 @@ public class DefaultFeature extends FT_Feature {
    * Constructeur à partir d'une géométrie
    * @param geometry géométrie de l'objet
    */
-  public DefaultFeature(GM_Object geometry) {
-    super(geometry);
+  public DefaultFeature(IGeometry geometry) {
+    super();
+    this.setGeom(geometry);
   }
 
   // private FeatureType featureType;
+
   /**
    * nom table et colonnes. contient une "lookup table" reliant le numéro de
    * l'attribut dans la table attributes[] du defaultFeature, son nom de colonne
    * et son nom d'attributeType.
    */
   private SchemaDefaultFeature schema;
+
   private Object[] attributes;
 
   /**
@@ -101,7 +105,7 @@ public class DefaultFeature extends FT_Feature {
 
   @Override
   public Object getAttribute(String nom) {
-    if (nom.equals("geom")) { //$NON-NLS-1$
+   if (nom.equals("geom")) { //$NON-NLS-1$
       return this.getGeom();
     }
     if (nom.equals("topo")) { //$NON-NLS-1$
@@ -131,8 +135,8 @@ public class DefaultFeature extends FT_Feature {
         return this.getAttribute(key.intValue());
       }
     }
-    if (FT_Feature.getLogger().isDebugEnabled()) {
-      FT_Feature
+    if (AbstractFeature.getLogger().isDebugEnabled()) {
+      AbstractFeature
           .getLogger()
           .warn(
               "!!! le nom '" + nom + "' ne correspond pas à un attribut de ce feature !!!"); //$NON-NLS-1$//$NON-NLS-2$
@@ -170,7 +174,7 @@ public class DefaultFeature extends FT_Feature {
    * @param value valeur à affecter à l'attribut
    */
   public void setAttribute(String nom, Object value) {
-    /**
+    /*
      * on regarde en priorité si le nom correspond à un nom d'attributeType
      * (métadonnées de niveau conceptuel)
      */
@@ -184,7 +188,7 @@ public class DefaultFeature extends FT_Feature {
         }
       }
     }
-    /**
+    /*
      * si on n'a pas trouvé au niveau conceptuel, on regarde s'il correspond à
      * un nom de colonne (métadonnées de niveau logique)
      */
@@ -192,8 +196,8 @@ public class DefaultFeature extends FT_Feature {
       tabNoms = this.getSchema().getAttLookup().get(key);
       if ((tabNoms != null) && (tabNoms[0] != null)) {
         if (tabNoms[0].equals(nom)) {
-          if (FT_Feature.getLogger().isDebugEnabled()) {
-            FT_Feature.getLogger().debug(
+          if (AbstractFeature.getLogger().isDebugEnabled()) {
+            AbstractFeature.getLogger().debug(
                 "setAttribute " + nom + " =?= " + tabNoms[0]); //$NON-NLS-1$//$NON-NLS-2$
           }
           this.setAttribute(key.intValue(), value);
@@ -201,36 +205,22 @@ public class DefaultFeature extends FT_Feature {
         }
       }
     }
-    if (FT_Feature.getLogger().isDebugEnabled()) {
-      FT_Feature
+    if (AbstractFeature.getLogger().isDebugEnabled()) {
+      AbstractFeature
           .getLogger()
           .warn(
               "!!! le nom '" + nom + "' ne correspond pas à un attribut de ce feature !!!"); //$NON-NLS-1$ //$NON-NLS-2$
       for (Integer key : this.getSchema().getAttLookup().keySet()) {
         tabNoms = this.getSchema().getAttLookup().get(key);
         if (tabNoms == null) {
-          FT_Feature.getLogger().debug("Attribut " + key + " nul"); //$NON-NLS-1$ //$NON-NLS-2$
+          AbstractFeature.getLogger().debug("Attribut " + key + " nul"); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
-          FT_Feature.getLogger().debug(
+          AbstractFeature.getLogger().debug(
               "Attribut " + key + " = " + tabNoms[0] + " - " + tabNoms[1]); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
         }
       }
     }
     return;
-  }
-
-  /**
-   * @return the featureType
-   */
-  public FeatureType getScFeatureType() {
-    return this.featureType;
-  }
-
-  /**
-   * @param featureType the featureType to set
-   */
-  public void setScFeatureType(FeatureType featureType) {
-    this.featureType = featureType;
   }
 
   /**
@@ -251,14 +241,14 @@ public class DefaultFeature extends FT_Feature {
   public void setAttribute(AttributeType attribute, Object valeur) {
     // FIXME changer le comportement !!!!
     if (attribute.getMemberName().equals("geom")) { //$NON-NLS-1$
-      FT_Feature
+      AbstractFeature
           .getLogger()
           .warn(
               "WARNING : Pour affecter la primitive géométrique par défaut, veuillez utiliser " //$NON-NLS-1$
                   + "la méthode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
-      this.setGeom((GM_Object) valeur);
+      this.setGeom((IGeometry) valeur);
     } else if (attribute.getMemberName().equals("topo")) { //$NON-NLS-1$
-      FT_Feature
+      AbstractFeature
           .getLogger()
           .warn(
               "WARNING : Pour affecter la primitive topologique par défaut, veuillez utiliser " //$NON-NLS-1$
@@ -285,5 +275,18 @@ public class DefaultFeature extends FT_Feature {
        */
     }
   }
+  
+    /**
+   * @return the featureType
+   */
+  public FeatureType getScFeatureType() {
+    return (FeatureType) this.featureType;
+  }
 
+  /**
+   * @param featureType the featureType to set
+   */
+  public void setScFeatureType(FeatureType featureType) {
+    this.featureType = featureType;
+  }
 }

@@ -42,9 +42,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -55,18 +53,22 @@ import javax.swing.event.ChangeListener;
 import org.apache.batik.ext.awt.geom.Polygon2D;
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.style.ExternalGraphic;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
@@ -180,57 +182,52 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
     this.sld = sld;
   }
 
-  private GM_Envelope enveloppeAffichage = null;
+  private IEnvelope enveloppeAffichage = null;
 
   @Override
-  public GM_Envelope getEnveloppeAffichage() {
+  public IEnvelope getEnveloppeAffichage() {
     return this.enveloppeAffichage;
   }
 
-  private DirectPosition centreGeo = new DirectPosition(0.0, 0.0);
+  private IDirectPosition centreGeo = new DirectPosition(0.0, 0.0);
 
   @Override
-  public DirectPosition getCentreGeo() {
+  public IDirectPosition getCentreGeo() {
     return this.centreGeo;
   }
 
   @Override
-  public void setCentreGeo(DirectPosition centreGeo) {
+  public void setCentreGeo(IDirectPosition centreGeo) {
     this.centreGeo = centreGeo;
   }
 
   @Override
-  public synchronized void majLimitesAffichage(int newWidth, int newHeight) {
-    this.image = new BufferedImage(newWidth, newHeight,
+  public synchronized void majLimitesAffichage(int width, int height) {
+    this.image = new BufferedImage(width, height,
         BufferedImage.TYPE_INT_ARGB_PRE);
     this.graphics = this.image.createGraphics();
     if (DessinableGeoxygene.logger.isTraceEnabled()) {
-      DessinableGeoxygene.logger.trace("majLimitesAffichage(" + newWidth + ","
-          + newHeight + ")");
+      DessinableGeoxygene.logger.trace("majLimitesAffichage(" + width + ","
+          + height + ")");
     }
     if (this.getGraphics() == null) {
       return;
     }
-    this.width = newWidth;
-    this.height = newHeight;
+    this.width = width;
+    this.height = height;
     if (DessinableGeoxygene.logger.isTraceEnabled()) {
-      DessinableGeoxygene.logger.trace("Limites : " + newWidth + " - "
-          + newHeight);
+      DessinableGeoxygene.logger.trace("Limites : " + width + " - " + height);
     }
     double XMin = this.pixToCoordX(-this.nbPixelsMarge);
-    double XMax = this.pixToCoordX(newWidth + this.nbPixelsMarge);
-    double YMin = this.pixToCoordY(newHeight + this.nbPixelsMarge);
+    double XMax = this.pixToCoordX(width + this.nbPixelsMarge);
+    double YMin = this.pixToCoordY(height + this.nbPixelsMarge);
     double YMax = this.pixToCoordY(-this.nbPixelsMarge);
     this.enveloppeAffichage = new GM_Envelope(XMin, XMax, YMin, YMax);
-    if (DessinableGeoxygene.logger.isTraceEnabled()) {
-      DessinableGeoxygene.logger.trace("enveloppeAffichage : "
-          + this.enveloppeAffichage);
-    }
 
-    this.affineTransform = AffineTransform.getTranslateInstance(0, newHeight);
+    this.affineTransform = AffineTransform.getTranslateInstance(0, height);
     this.affineTransform.scale(1 / this.taillePixel, -1 / this.taillePixel);
-    this.affineTransform.translate(newWidth * 0.5 * this.taillePixel
-        - this.centreGeo.getX(), newHeight * 0.5 * this.taillePixel
+    this.affineTransform.translate(width * 0.5 * this.taillePixel
+        - this.centreGeo.getX(), height * 0.5 * this.taillePixel
         - this.centreGeo.getY());
 
     if (this.useCache) {
@@ -249,7 +246,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
     }
     if (DessinableGeoxygene.logger.isTraceEnabled()) {
       DessinableGeoxygene.logger
-          .trace("début du calcul des features à mettre dans le cache");
+          .trace("Début du calcul des features à mettre dans le cache");
     }
     double debut = System.currentTimeMillis();
     for (Layer layer : this.sld.getLayers()) {
@@ -311,11 +308,12 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
     }
   }
 
-  boolean useCache = false;
-  Map<Layer, Collection<? extends FT_Feature>> cachedFeatures = new HashMap<Layer, Collection<? extends FT_Feature>>();
+  boolean useCache = true;
+  Map<Layer, IFeatureCollection<? extends IFeature>> cachedFeatures = new HashMap<Layer, IFeatureCollection<? extends IFeature>>();
 
   /**
    * @param layer
+   * @param selectedFeatures
    */
   private synchronized void setCachedFeatures(Layer layer) {
     if (layer.getFeatureCollection() == null) {
@@ -336,20 +334,20 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 
   /**
    * @param layer
-   * @return the features in cache
+   * @return
    */
-  private Collection<? extends FT_Feature> getCachedFeatures(Layer layer) {
+  private IFeatureCollection<? extends IFeature> getCachedFeatures(Layer layer) {
     return this.cachedFeatures.get(layer);
   }
 
   public void dessiner(Graphics2D g, Layer layer,
-      Collection<? extends FT_Feature> features) throws InterruptedException {
+      IFeatureCollection<? extends IFeature> features)
+      throws InterruptedException {
+    if (DessinableGeoxygene.logger.isTraceEnabled()) {
+      DessinableGeoxygene.logger.trace("dessiner()");
+    }
     if (features == null) {
       return;
-    }
-    if (DessinableGeoxygene.logger.isTraceEnabled()) {
-      DessinableGeoxygene.logger.trace("dessiner() sur " + features.size()
-          + " features");
     }
     double debut = System.currentTimeMillis();
     for (Style style : layer.getStyles()) {
@@ -369,7 +367,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @throws InterruptedException
    */
   public void dessiner(Graphics2D g, Style style,
-      Collection<? extends FT_Feature> features) throws InterruptedException {
+      IFeatureCollection<? extends IFeature> features)
+      throws InterruptedException {
     if (style.isUserStyle()) {
       UserStyle userStyle = (UserStyle) style;
       for (FeatureTypeStyle featureTypeStyle : userStyle.getFeatureTypeStyles()) {
@@ -388,8 +387,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
               this.dessiner(g, symbolizer, features);
             }
           } else {
-            Collection<FT_Feature> filteredFeatures = new HashSet<FT_Feature>();
-            for (FT_Feature feature : features) {
+            FT_FeatureCollection<IFeature> filteredFeatures = new FT_FeatureCollection<IFeature>();
+            for (IFeature feature : features) {
               if (rule.getFilter().evaluate(feature)) {
                 filteredFeatures.add(feature);
               }
@@ -411,14 +410,14 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
   /**
    * Dessine une liste de Features dans un Graphics2D à l'aide d'un Symbolizer.
    * Tous les parcours de FT_FeatureCollection de cette classe sont effectués
-   * dans cette méthode.
+   * dans cette méthde.
    * @param symbolizer
    * @param features
-   * @throws InterruptedException
    */
   @SuppressWarnings("unchecked")
   public void dessiner(Graphics2D g, Symbolizer symbolizer,
-      Collection<? extends FT_Feature> features) throws InterruptedException {
+      IFeatureCollection<? extends IFeature> features)
+      throws InterruptedException {
     if (symbolizer.isRasterSymbolizer()) {
       RasterSymbolizer rasterSymbolizer = (RasterSymbolizer) symbolizer;
       this.dessiner(rasterSymbolizer);
@@ -438,7 +437,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
         font = textSymbolizer.getFont().toAwfFont();
       }
       if (font == null) {
-        font = new java.awt.Font("Default", java.awt.Font.PLAIN, 10); //$NON-NLS-1$
+        font = new java.awt.Font("Default", java.awt.Font.PLAIN, 10);
       }
       Color haloColor = null;
       float haloRadius = 1.0f;
@@ -451,23 +450,25 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
         haloRadius = textSymbolizer.getHalo().getRadius();
       }
 
-      for (FT_Feature feature : features) {
+      int size = features.size();
+      for (int index = 0; index < size; index++) {
+        IFeature feature = features.get(index);
         String texte = (String) feature.getAttribute(textSymbolizer.getLabel());
-        if (feature.getGeom() instanceof GM_Point) {
+        if (feature.getGeom() instanceof IPoint) {
           this.dessinerText(g, fillColor, haloColor, haloRadius, font, texte,
-              ((GM_Point) feature.getGeom()).getPosition());
-        } else if (feature.getGeom() instanceof GM_Polygon) {
+              ((IPoint) feature.getGeom()).getPosition());
+        } else if (feature.getGeom() instanceof IPolygon) {
           this.dessinerText(g, fillColor, haloColor, haloRadius, font, texte,
-              ((GM_Polygon) feature.getGeom()).centroid());
-        } else if (feature.getGeom() instanceof GM_MultiSurface) {
+              ((IPolygon) feature.getGeom()).centroid());
+        } else if (feature.getGeom() instanceof IMultiSurface) {
           this.dessinerText(g, fillColor, haloColor, haloRadius, font, texte,
-              ((GM_MultiSurface<GM_Polygon>) feature.getGeom()).centroid());
-        } else if (feature.getGeom() instanceof GM_LineString) {
+              ((IMultiSurface<IPolygon>) feature.getGeom()).centroid());
+        } else if (feature.getGeom() instanceof ILineString) {
           this.dessinerText(g, fillColor, haloColor, haloRadius, font, texte,
-              (GM_LineString) feature.getGeom());
-        } else if (feature.getGeom() instanceof GM_MultiCurve) {
+              (ILineString) feature.getGeom());
+        } else if (feature.getGeom() instanceof IMultiCurve) {
           this.dessinerText(g, fillColor, haloColor, haloRadius, font, texte,
-              ((GM_MultiCurve<GM_LineString>) feature.getGeom()).get(0));
+              ((IMultiCurve<ILineString>) feature.getGeom()).get(0));
         } else {
           DessinableGeoxygene.logger.info(feature.getGeom().getClass()
               .getSimpleName());
@@ -477,9 +478,11 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
     }
     if (symbolizer.isPointSymbolizer()) {
       PointSymbolizer pointSymbolizer = (PointSymbolizer) symbolizer;
-      for (FT_Feature feature : features) {
-        if (feature.getGeom() instanceof GM_Point) {
-          this.dessiner(g, pointSymbolizer, ((GM_Point) feature.getGeom())
+      int size = features.size();
+      for (int index = 0; index < size; index++) {
+        IFeature feature = features.get(index);
+        if (feature.getGeom() instanceof IPoint) {
+          this.dessiner(g, pointSymbolizer, ((IPoint) feature.getGeom())
               .getPosition());
         } else {
           this.dessiner(g, pointSymbolizer, (feature.getGeom()).centroid());
@@ -493,24 +496,23 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
       if (polygonSymbolizer.getFill() != null) {
         fillColor = polygonSymbolizer.getFill().getColor();
       }
-      for (FT_Feature feature : features) {
-        if (feature.getGeom() == null) {
-          continue;
-        }
+      int size = features.size();
+      for (int index = 0; index < size; index++) {
+        IFeature feature = features.get(index);
         if (feature.getGeom().isPolygon()) {
           if (fillColor != null) {
-            this.remplir(g, fillColor, (GM_Polygon) feature.getGeom());
+            this.remplir(g, fillColor, (IPolygon) feature.getGeom());
           }
           if (symbolizer.getStroke() != null) {
             if (symbolizer.getStroke().getGraphicType() == null) {
               // Solid color
-              this.dessiner(g, symbolizer.getStroke(), (GM_Polygon) feature
+              this.dessiner(g, symbolizer.getStroke(), (IPolygon) feature
                   .getGeom());
             }
           }
         } else if (feature.getGeom().isMultiSurface()) {
-          for (GM_Polygon element : ((GM_MultiSurface<GM_Polygon>) feature
-              .getGeom()).getList()) {
+          for (IPolygon element : ((IMultiSurface<IPolygon>) feature.getGeom())
+              .getList()) {
             if (fillColor != null) {
               this.remplir(g, fillColor, element);
             }
@@ -530,15 +532,14 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
       if (symbolizer.getStroke() != null) {
         if (symbolizer.getStroke().getGraphicType() == null) {
           // Solid color
-          for (FT_Feature feature : features) {
-            if (feature.getGeom() == null) {
-              continue;
-            }
+          int size = features.size();
+          for (int index = 0; index < size; index++) {
+            IFeature feature = features.get(index);
             if (feature.getGeom().isLineString()) {
-              this.dessiner(g, symbolizer.getStroke(), (GM_LineString) feature
+              this.dessiner(g, symbolizer.getStroke(), (ILineString) feature
                   .getGeom());
             } else if (feature.getGeom().isMultiCurve()) {
-              for (GM_LineString element : ((GM_MultiCurve<GM_LineString>) feature
+              for (ILineString element : ((IMultiCurve<ILineString>) feature
                   .getGeom()).getList()) {
                 this.dessiner(g, symbolizer.getStroke(), element);
               }
@@ -563,7 +564,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param position position du texte à dessiner
    */
   private void dessinerText(Graphics2D g, Color fillColor, Color haloColor,
-      float haloRadius, Font font, String texte, DirectPosition position) {
+      float haloRadius, Font font, String texte, IDirectPosition position) {
     if (texte == null) {
       return;
     }
@@ -605,7 +606,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    *          marche pas encore bien
    */
   private void dessinerText(Graphics2D g, Color fillColor, Color haloColor,
-      float haloRadius, Font font, String texte, GM_LineString line) {
+      float haloRadius, Font font, String texte, ILineString line) {
     if (texte == null) {
       return;
     }
@@ -673,17 +674,17 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param geom
    */
   @SuppressWarnings("unchecked")
-  public void dessiner(Graphics2D g, Color couleur, GM_Object geom) {
+  public void dessiner(Graphics2D g, Color couleur, IGeometry geom) {
     if (geom.isPoint()) {
-      this.remplirCarre(g, ((GM_Point) geom).getPosition());
+      this.remplirCarre(g, ((IPoint) geom).getPosition());
     } else if (geom.isLineString()) {
-      this.dessiner(g, couleur, (GM_LineString) geom);
+      this.dessiner(g, couleur, (ILineString) geom);
     } else if (geom.isMultiCurve()) {
-      this.dessiner(g, couleur, (GM_MultiCurve) geom);
+      this.dessiner(g, couleur, (IMultiCurve) geom);
     } else if (geom.isPolygon()) {
-      this.remplir(g, couleur, (GM_Polygon) geom);
+      this.remplir(g, couleur, (IPolygon) geom);
     } else if (geom.isMultiSurface()) {
-      this.remplir(g, couleur, (GM_MultiSurface<GM_Polygon>) geom);
+      this.remplir(g, couleur, (IMultiSurface<IPolygon>) geom);
     }
   }
 
@@ -693,18 +694,18 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param position le centre du cercle
    * @param radius le rayon du cercle
    */
-  public void remplirCercle(Graphics2D g, DirectPosition position, int radius) {
+  public void remplirCercle(Graphics2D g, IDirectPosition position, int radius) {
     g.fillOval((int) position.getX() - radius, (int) position.getY() - radius,
         2 * radius, 2 * radius);
   }
 
   /**
-   * Remplit un carré de 6 de cété.
-   * @see #remplirCarre(Graphics2D, DirectPosition, int)
+   * Remplit un carré de 6 de côté.
+   * @see #remplirCarre(Graphics2D, IDirectPosition, int)
    * @param g l'objet graphics2D
    * @param position le centre du carré
    */
-  public void remplirCarre(Graphics2D g, DirectPosition position) {
+  public void remplirCarre(Graphics2D g, IDirectPosition position) {
     this.remplirCarre(g, position, 3);
   }
 
@@ -712,9 +713,9 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * Remplit un carré.
    * @param g l'objet graphics2D
    * @param position le centre du carré
-   * @param radius le demi-cété du carré
+   * @param radius le demi-côté du carré
    */
-  public void remplirCarre(Graphics2D g, DirectPosition position, int radius) {
+  public void remplirCarre(Graphics2D g, IDirectPosition position, int radius) {
     g.fillRect((int) position.getX() - radius, (int) position.getY() - radius,
         2 * radius, 2 * radius);
   }
@@ -726,7 +727,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param position le centre du cercle
    * @param radius le rayon du cercle
    */
-  public void dessinerCercle(Graphics2D g, DirectPosition position, int radius) {
+  public void dessinerCercle(Graphics2D g, IDirectPosition position, int radius) {
     this
         .dessinerCercle(g, (int) position.getX(), (int) position.getY(), radius);
   }
@@ -743,11 +744,11 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
   }
 
   /**
-   * Dessine le contour d'un carré de 6 de cété.
+   * Dessine le contour d'un carré de 6 de côté.
    * @param g l'objet graphics2D
    * @param position le centre du carré
    */
-  public void dessinerCarre(Graphics2D g, DirectPosition position) {
+  public void dessinerCarre(Graphics2D g, IDirectPosition position) {
     this.dessinerCarre(g, position, 3);
   }
 
@@ -755,9 +756,9 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * Dessine le contour d'un carré.
    * @param g l'objet graphics2D
    * @param position le centre du carré
-   * @param radius le demi-cété du carré
+   * @param radius le demi-côté du carré
    */
-  public void dessinerCarre(Graphics2D g, DirectPosition position, int radius) {
+  public void dessinerCarre(Graphics2D g, IDirectPosition position, int radius) {
     g.drawRect((int) position.getX() - radius, (int) position.getY() - radius,
         2 * radius, 2 * radius);
   }
@@ -769,7 +770,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param position le centre de la symbolisation
    */
   private void dessiner(Graphics2D g, PointSymbolizer pointSymbolizer,
-      DirectPosition position) {
+      IDirectPosition position) {
     if (pointSymbolizer.getGraphic() == null) {
       return;
     }
@@ -790,10 +791,10 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
     }
     for (ExternalGraphic graphic : pointSymbolizer.getGraphic()
         .getExternalGraphics()) {
-      Image onlineImage = graphic.getOnlineResource();
-      g.drawImage(onlineImage, this.coordToPixX(position.getX())
-          - onlineImage.getWidth(null) / 2, this.coordToPixY(position.getY())
-          - onlineImage.getHeight(null) / 2, null);
+      Image image = graphic.getOnlineResource();
+      g.drawImage(image, this.coordToPixX(position.getX())
+          - image.getWidth(null) / 2, this.coordToPixY(position.getY())
+          - image.getHeight(null) / 2, null);
     }
     // fireObjectChange();
   }
@@ -804,7 +805,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param color couleur du remplissage
    * @param poly géométrie du polygone
    */
-  private void remplir(Graphics2D g, Color color, GM_Polygon poly) {
+  private void remplir(Graphics2D g, Color color, IPolygon poly) {
     g.setColor(color);
     this.remplir(g, poly);
   }
@@ -816,67 +817,55 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param g l'objet graphics2D
    * @param poly géométrie du polygone
    */
-  private void remplir(Graphics2D g, GM_Polygon poly) {
-    GM_Envelope envelope = poly.envelope();
+  private void remplir(Graphics2D g, IPolygon poly) {
+    IEnvelope envelope = poly.envelope();
     if ((envelope.width() <= this.taillePixel)
         && (envelope.height() <= this.taillePixel)) {
       return;
     }
-    // Polygon2D p = (Polygon2D) shapeCache.get(poly);
-    // if (p==null) try {
+    /*
+     * Polygon2D p = (Polygon2D) shapeCache.get(poly); if (p==null) try { int
+     * nb=poly.coord().size(); float[] geoX=new float[nb], geoY=new float[nb];
+     * //enveloppe exterieure GM_Ring ls=poly.getExterior(); for(int
+     * i=0;i<ls.coord().size();i++) { geoX[i]=(float) ls.coord().get(i).getX();
+     * geoY[i]=(float) ls.coord().get(i).getY(); } //trous int
+     * index=ls.coord().size(); for(int j=0;j<poly.getInterior().size();j++) {
+     * ls=poly.getInterior(j); for(int i=index;i<index+ls.coord().size();i++) {
+     * geoX[i]=(float) ls.coord().get(i-index).getX(); geoY[i]=(float)
+     * ls.coord().get(i-index).getY(); }//i index+=ls.coord().size(); }//j p =
+     * new Polygon2D(geoX,geoY,nb);
+     * 
+     * shapeCache.put(poly,p); } catch(Exception e) {
+     * logger.error("Impossible de remplir le polygone "+poly);
+     * e.printStackTrace(); return; } Shape shape = toScreen(p); g.fill(shape);
+     */
+    // fireObjectChange();
     try {
-      int nb = poly.coord().size() + poly.getInterior().size();
-
-      float[] geoX = new float[nb], geoY = new float[nb];
-
-      // int[] x=new int[nb], y=new int[nb];
+      int nb = poly.coord().size();
+      int[] geoX = new int[nb], geoY = new int[nb];
       // enveloppe exterieure
-      GM_Ring ls = poly.getExterior();
-      /*
-       * int x0=coordToPixX(ls.coord().get(0).getX()); int
-       * y0=coordToPixY(ls.coord().get(0).getY()); for(int
-       * i=0;i<ls.coord().size();i++){
-       * x[i]=coordToPixX(ls.coord().get(i).getX());
-       * y[i]=coordToPixY(ls.coord().get(i).getY()); }
-       */
-      double x0 = ls.coord().get(0).getX();
-      double y0 = ls.coord().get(0).getY();
+      IRing ls = poly.getExterior();
       for (int i = 0; i < ls.coord().size(); i++) {
-        geoX[i] = (float) ls.coord().get(i).getX();
-        geoY[i] = (float) ls.coord().get(i).getY();
+        geoX[i] = this.coordToPixX(ls.coord().get(i).getX());
+        geoY[i] = this.coordToPixY(ls.coord().get(i).getY());
       }
       // trous
       int index = ls.coord().size();
-      /*
-       * for(int j=0;j<poly.getInterior().size();j++){ ls=poly.getInterior(j);
-       * for(int i=index;i<index+ls.coord().size();i++){
-       * x[i]=coordToPixX(ls.coord().get(i-index).getX());
-       * y[i]=coordToPixY(ls.coord().get(i-index).getY()); }//i
-       * x[index+ls.coord().size()]=x0; y[index+ls.coord().size()]=y0;
-       * index+=ls.coord().size()+1; }//j
-       */
       for (int j = 0; j < poly.getInterior().size(); j++) {
         ls = poly.getInterior(j);
         for (int i = index; i < index + ls.coord().size(); i++) {
-          geoX[i] = (float) ls.coord().get(i - index).getX();
-          geoY[i] = (float) ls.coord().get(i - index).getY();
+          geoX[i] = this.coordToPixX(ls.coord().get(i - index).getX());
+          geoY[i] = this.coordToPixY(ls.coord().get(i - index).getY());
         }// i
-        geoX[index + ls.coord().size()] = (float) x0;
-        geoY[index + ls.coord().size()] = (float) y0;
-        index += ls.coord().size() + 1;
+        index += ls.coord().size();
       }// j
-      // getG2d().fillPolygon(x,y,nb);
-      Polygon2D p = new Polygon2D(geoX, geoY, nb);
-      // shapeCache.put(poly,p);
-      g.fill(this.toScreen(p));
+      g.fillPolygon(geoX, geoY, nb);
     } catch (Exception e) {
       DessinableGeoxygene.logger.error("Impossible de remplir le polygone "
           + poly);
-      DessinableGeoxygene.logger.debug(e.getCause());
+      e.printStackTrace();
       return;
     }
-    // g.fill(toScreen(p));
-    // fireObjectChange();
   }
 
   /**
@@ -884,8 +873,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param g l'objet graphics2D
    * @param multiPoly géométrie du multi-polygone
    */
-  private void remplir(Graphics2D g, GM_MultiSurface<GM_Polygon> multiPoly) {
-    for (GM_Polygon poly : multiPoly.getList()) {
+  private void remplir(Graphics2D g, IMultiSurface<IPolygon> multiPoly) {
+    for (IPolygon poly : multiPoly.getList()) {
       this.remplir(g, poly);
     }
   }
@@ -897,7 +886,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param multiPoly géométrie du multi-polygone
    */
   public void remplir(Graphics2D g, Color couleur,
-      GM_MultiSurface<GM_Polygon> multiPoly) {
+      IMultiSurface<IPolygon> multiPoly) {
     g.setColor(couleur);
     this.remplir(g, multiPoly);
   }
@@ -908,7 +897,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param stroke le trait utilise pour le dessin
    * @param poly géométrie du polygone
    */
-  public void dessiner(Graphics2D g, Stroke stroke, GM_Polygon poly) {
+  public void dessiner(Graphics2D g, Stroke stroke, IPolygon poly) {
     Color color = stroke.getColor();
     java.awt.Stroke bs = stroke.toAwtStroke();
     g.setColor(color);
@@ -926,10 +915,10 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param join type de join entre les lignes du trait
    */
   public void dessiner(Graphics2D g, Color couleur,
-      GM_MultiSurface<GM_Polygon> multiPoly, float d, int cap, int join) {
+      IMultiSurface<IPolygon> multiPoly, float d, int cap, int join) {
     g.setStroke(new BasicStroke(d, cap, join));
     g.setColor(couleur);
-    for (GM_Polygon poly : multiPoly.getList()) {
+    for (IPolygon poly : multiPoly.getList()) {
       this.dessiner(g, poly);
     }
   }
@@ -941,7 +930,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param multiPoly le multi polygone à dessiner
    */
   public void dessiner(Graphics2D g, Color couleur,
-      GM_MultiSurface<GM_Polygon> multiPoly) {
+      IMultiSurface<IPolygon> multiPoly) {
     g.setColor(couleur);
     this.dessiner(g, multiPoly);
   }
@@ -951,15 +940,15 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param g l'objet graphics2D
    * @param multiPoly le multi polygone à dessiner
    */
-  public void dessiner(Graphics2D g, GM_MultiSurface<GM_Polygon> multiPoly) {
-    for (GM_Polygon poly : multiPoly.getList()) {
+  public void dessiner(Graphics2D g, IMultiSurface<IPolygon> multiPoly) {
+    for (IPolygon poly : multiPoly.getList()) {
       this.dessiner(g, poly);
     }
   }
 
   /**
    * Dessine le contour d'un polygone.
-   * @see #dessiner(Graphics2D, Color, GM_Polygon)
+   * @see #dessiner(Graphics2D, Color, IPolygon)
    * @param g l'objet graphics2D
    * @param couleur la couleur du trait
    * @param poly le polygone à dessiner
@@ -967,7 +956,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param cap type de fin du trait
    * @param join type de join entre les lignes du trait
    */
-  public void dessiner(Graphics2D g, Color couleur, GM_Polygon poly, float d,
+  public void dessiner(Graphics2D g, Color couleur, IPolygon poly, float d,
       int cap, int join) {
     g.setStroke(new BasicStroke(d, cap, join));
     this.dessiner(g, couleur, poly);
@@ -975,12 +964,12 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 
   /**
    * Dessine le contour d'un polygone avec le trait courant.
-   * @see #dessiner(Graphics2D, GM_Polygon)
+   * @see #dessiner(Graphics2D, IPolygon)
    * @param g l'objet graphics2D
    * @param couleur la couleur du trait
    * @param poly le polygone à dessiner
    */
-  public void dessiner(Graphics2D g, Color couleur, GM_Polygon poly) {
+  public void dessiner(Graphics2D g, Color couleur, IPolygon poly) {
     g.setColor(couleur);
     this.dessiner(g, poly);
   }
@@ -988,15 +977,15 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
   /**
    * Dessine le contour d'un polygone en utilisant la couleur et le trait
    * courants.
-   * @see #dessiner(Graphics2D, GM_LineString)
+   * @see #dessiner(Graphics2D, ILineString)
    * @param g l'objet graphics2D
    * @param poly le polygone à dessiner
    */
-  public void dessiner(Graphics2D g, GM_Polygon poly) {
-    GM_Envelope envelope = poly.envelope();
+  public void dessiner(Graphics2D g, IPolygon poly) {
+    IEnvelope envelope = poly.envelope();
     if ((envelope.width() <= this.taillePixel)
         && (envelope.height() <= this.taillePixel)) {
-      DirectPosition p = envelope.center();
+      IDirectPosition p = envelope.center();
       int x = this.coordToPixX(p.getX());
       int y = this.coordToPixY(p.getY());
       g.drawLine(x, y, x, y);
@@ -1011,7 +1000,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
 
   /**
    * Dessine le contour d'une multi ligne.
-   * @see #dessiner(Graphics2D, Color, GM_LineString)
+   * @see #dessiner(Graphics2D, Color, ILineString)
    * @param g l'objet graphics2D
    * @param couleur la couleur du trait
    * @param multiLine la multi ligne à dessiner
@@ -1020,51 +1009,51 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param join type de join entre les lignes du trait
    */
   public void dessiner(Graphics2D g, Color couleur,
-      GM_MultiCurve<GM_LineString> multiLine, float d, int cap, int join) {
+      IMultiCurve<ILineString> multiLine, float d, int cap, int join) {
     g.setStroke(new BasicStroke(d, cap, join));
     this.dessiner(g, couleur, multiLine);
   }
 
   /**
    * Dessine le contour d'une multi ligne.
-   * @see #dessiner(Graphics2D, GM_MultiCurve)
+   * @see #dessiner(Graphics2D, IMultiCurve)
    * @param g l'objet graphics2D
    * @param couleur la couleur du trait
    * @param multiLine la multi ligne à dessiner
    */
   public void dessiner(Graphics2D g, Color couleur,
-      GM_MultiCurve<GM_LineString> multiLine) {
+      IMultiCurve<ILineString> multiLine) {
     g.setColor(couleur);
     this.dessiner(g, multiLine);
   }
 
   /**
    * Dessine le contour d'une multi ligne.
-   * @see #dessiner(Graphics2D, GM_LineString)
+   * @see #dessiner(Graphics2D, ILineString)
    * @param g l'objet graphics2D
    * @param multiLine la multi ligne à dessiner
    */
-  private void dessiner(Graphics2D g, GM_MultiCurve<GM_LineString> multiLine) {
-    for (GM_LineString line : multiLine.getList()) {
+  private void dessiner(Graphics2D g, IMultiCurve<ILineString> multiLine) {
+    for (ILineString line : multiLine.getList()) {
       this.dessiner(g, line);
     }
   }
 
   /**
    * Dessiner le contour d'une ligne.
-   * @see #dessiner(Graphics2D, Color, GM_LineString)
+   * @see #dessiner(Graphics2D, Color, ILineString)
    * @param g l'objet graphics2D
    * @param stroke le trait à utiliser
    * @param line la ligne à dessiner
    */
-  private void dessiner(Graphics2D g, Stroke stroke, GM_LineString line) {
+  private void dessiner(Graphics2D g, Stroke stroke, ILineString line) {
     g.setStroke(stroke.toAwtStroke());
     this.dessiner(g, stroke.getColor(), line);
   }
 
   /**
    * Dessine le contour d'une ligne.
-   * @see #dessiner(Graphics2D, Color, GM_LineString)
+   * @see #dessiner(Graphics2D, Color, ILineString)
    * @param g l'objet graphics2D
    * @param couleur couleur du trait
    * @param line la ligne à dessiner
@@ -1072,20 +1061,20 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param cap type de fin du trait
    * @param join type de join entre les lignes du trait
    */
-  public void dessiner(Graphics2D g, Color couleur, GM_LineString line,
-      float d, int cap, int join) {
+  public void dessiner(Graphics2D g, Color couleur, ILineString line, float d,
+      int cap, int join) {
     g.setStroke(new BasicStroke(d, cap, join));
     this.dessiner(g, couleur, line);
   }
 
   /**
    * Dessine le contour d'une ligne.
-   * @see #dessiner(Graphics2D, GM_LineString)
+   * @see #dessiner(Graphics2D, ILineString)
    * @param g l'objet graphics2D
    * @param couleur couleur du trait
    * @param line la ligne à dessiner
    */
-  public void dessiner(Graphics2D g, Color couleur, GM_LineString line) {
+  public void dessiner(Graphics2D g, Color couleur, ILineString line) {
     g.setColor(couleur);
     this.dessiner(g, line);
   }
@@ -1096,47 +1085,48 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param g l'objet graphics2D
    * @param line la ligne à dessiner
    */
-  private void dessiner(Graphics2D g, GM_LineString line) {
-    // GeneralPath p = (GeneralPath) shapeCache.get(line);
-    // if (p==null) {
-    DirectPositionList coords = line.coord();
-    GeneralPath p = new GeneralPath();
+  private void dessiner(Graphics2D g, ILineString line) {
+    GeneralPath p = (GeneralPath) this.shapeCache.get(line);
+    if (p == null) {
+      IDirectPositionList coords = line.coord();
+      p = new GeneralPath();
 
-    int nb = coords.size();
+      int nb = coords.size();
 
-    /*
-     * int x=coordToPixX(coords.get(0).getX()); int
-     * y=coordToPixY(coords.get(0).getY()); p.moveTo(x,y); for(int j=1;
-     * j<coords.size(); j++){ x=coordToPixX(coords.get(j).getX());
-     * y=coordToPixY(coords.get(j).getY()); p.lineTo(x,y); }
-     */
-    if (nb == 0) {
-      DessinableGeoxygene.logger.error("Impossible de dessiner la ligne "
-          + line);
-      return;
+      /*
+       * int x=coordToPixX(coords.get(0).getX()); int
+       * y=coordToPixY(coords.get(0).getY()); p.moveTo(x,y); for(int j=1;
+       * j<coords.size(); j++){ x=coordToPixX(coords.get(j).getX());
+       * y=coordToPixY(coords.get(j).getY()); p.lineTo(x,y); }
+       */
+      if (nb == 0) {
+        DessinableGeoxygene.logger.error("Impossible de dessiner la ligne "
+            + line);
+        return;
+      }
+      float x = (float) coords.get(0).getX();
+      float y = (float) coords.get(0).getY();
+      p.moveTo(x, y);
+      for (int j = 1; j < coords.size(); j++) {
+        x = (float) coords.get(j).getX();
+        y = (float) coords.get(j).getY();
+        p.lineTo(x, y);
+      }
+
+      this.shapeCache.put(line, p);
     }
-    float x = (float) coords.get(0).getX();
-    float y = (float) coords.get(0).getY();
-    p.moveTo(x, y);
-    for (int j = 1; j < coords.size(); j++) {
-      x = (float) coords.get(j).getX();
-      y = (float) coords.get(j).getY();
-      p.lineTo(x, y);
-    }
-
-    // shapeCache.put(line,p);
     g.draw(this.toScreen(p));
-
-    // }
-    // g.draw(toScreen(p));
     // fireObjectChange();
   }
 
-  // Map<GM_Object,Shape> shapeCache = new HashMap<GM_Object,Shape>();
+  Map<IGeometry, Shape> shapeCache = new HashMap<IGeometry, Shape>();
+
   /**
    * Nettoie le cache contenant les formes pour le dessin.
    */
-  // public void clearShapeCache() {shapeCache.clear();}
+  public void clearShapeCache() {
+    this.shapeCache.clear();
+  }
 
   /**
    * Lance le processus de dessin.
@@ -1182,7 +1172,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
       this.thread = t;
     }
 
-    public synchronized Thread get() {
+    synchronized Thread get() {
       return this.thread;
     }
 
@@ -1207,7 +1197,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
   }
 
   /**
-   * méthode appelée quand le processus est terminé.
+   * Méthode appelée quand le processus est terminé.
    */
   public void finishedMaj() {
     if (DessinableGeoxygene.logger.isTraceEnabled()) {
@@ -1274,12 +1264,12 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
   }
 
   // /////////////////////////////
-  // méthodes pour la compatibilité avec Mirage....
+  // Méthodes pour la compatibilité avec Mirage....
   // /////////////////////////////
   /**
    * Dessine le contour d'un multi polygone.
    * @deprecated
-   * @see #dessiner(Graphics2D, Color, GM_MultiSurface, float, int, int)
+   * @see #dessiner(Graphics2D, Color, IMultiSurface, float, int, int)
    * @param g l'objet graphics2D
    * @param couleur couleur du trait
    * @param multiPoly le multi polygone à dessiner
@@ -1289,51 +1279,50 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    */
   @Deprecated
   public void dessinerLimite(Graphics2D g, Color couleur,
-      GM_MultiSurface<GM_Polygon> multiPoly, double d, int cap, int join) {
+      IMultiSurface<IPolygon> multiPoly, double d, int cap, int join) {
     this.dessiner(g, couleur, multiPoly, (float) d, cap, join);
   }
 
   /**
    * Dessine le contour d'un cercle.
    * @deprecated
-   * @see #dessinerRond(Graphics2D, Color, GM_Point, double)
+   * @see #dessinerRond(Graphics2D, Color, IPoint, double)
    * @param g l'objet graphics2D
    * @param couleur couleur du trait
    * @param point le centre du cercle
    * @param radius le rayon du cercle
    */
   @Deprecated
-  public void dessinerRond(Graphics2D g, Color couleur, GM_Point point,
-      int radius) {
+  public void dessinerRond(Graphics2D g, Color couleur, IPoint point, int radius) {
     this.dessinerRond(g, couleur, point, (double) radius);
   }
 
   /**
    * Dessine le contour d'un cercle pour chaque point du multi point
    * @deprecated
-   * @see #dessinerRond(Graphics2D, Color, GM_MultiPoint, double)
+   * @see #dessinerRond(Graphics2D, Color, IMultiPoint, double)
    * @param g l'objet graphics2D
    * @param couleur couleur du trait
    * @param multiPoint le centre du cercle
    * @param radius le rayon du cercle
    */
   @Deprecated
-  public void dessinerRond(Graphics2D g, Color couleur,
-      GM_MultiPoint multiPoint, int radius) {
+  public void dessinerRond(Graphics2D g, Color couleur, IMultiPoint multiPoint,
+      int radius) {
     this.dessinerRond(g, couleur, multiPoint, (double) radius);
   }
 
   /**
    * Dessine le contour d'un cercle
    * @deprecated
-   * @see #dessinerCercle(Graphics2D, DirectPosition, int)
+   * @see #dessinerCercle(Graphics2D, IDirectPosition, int)
    * @param g l'objet graphics2D
    * @param couleur couleur du trait
    * @param point le centre du cercle
    * @param radius le rayon du cercle
    */
   @Deprecated
-  public void dessinerRond(Graphics2D g, Color couleur, GM_Point point,
+  public void dessinerRond(Graphics2D g, Color couleur, IPoint point,
       double radius) {
     g.setColor(couleur);
     this.dessinerCercle(g, point.getPosition(), (int) radius);
@@ -1342,17 +1331,17 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
   /**
    * Dessine le contour d'un cercle pour chaque point du multi point
    * @deprecated
-   * @see #dessinerCercle(Graphics2D, DirectPosition, int)
+   * @see #dessinerCercle(Graphics2D, IDirectPosition, int)
    * @param g l'objet graphics2D
    * @param couleur couleur du trait
    * @param multiPoint le centre du cercle
    * @param radius le rayon du cercle
    */
   @Deprecated
-  public void dessinerRond(Graphics2D g, Color couleur,
-      GM_MultiPoint multiPoint, double radius) {
+  public void dessinerRond(Graphics2D g, Color couleur, IMultiPoint multiPoint,
+      double radius) {
     g.setColor(couleur);
-    for (GM_Point point : multiPoint) {
+    for (IPoint point : multiPoint) {
       this.dessinerCercle(g, point.getPosition(), (int) radius);
     }
   }
@@ -1377,14 +1366,14 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
   /**
    * Dessine le contour d'un cercle.
    * @deprecated
-   * @see #dessinerCercle(Graphics2D, DirectPosition, int)
+   * @see #dessinerCercle(Graphics2D, IDirectPosition, int)
    * @param g l'objet graphics2D
    * @param couleur couleur du trait
    * @param position le centre du cercle
    * @param radius le rayon du cercle
    */
   @Deprecated
-  public void dessiner(Graphics2D g, Color couleur, DirectPosition position,
+  public void dessiner(Graphics2D g, Color couleur, IDirectPosition position,
       int radius) {
     g.setColor(couleur);
     this.dessinerCercle(g, position, radius);
@@ -1393,9 +1382,9 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
   /**
    * Dessine un texte
    * @see #dessinerText(Graphics2D, Color, Color, float, Font, String,
-   *      DirectPosition)
+   *      IDirectPosition)
    * @see #dessinerText(Graphics2D, Color, Color, float, Font, String,
-   *      GM_LineString)
+   *      ILineString)
    * @deprecated
    * @param g l'objet graphics2D
    * @param couleur couleur du trait
@@ -1405,12 +1394,12 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    */
   @Deprecated
   public void dessinerTexte(Graphics2D g, Color couleur, Font font,
-      GM_Object geom, String texte) {
-    if (geom instanceof GM_Point) {
-      this.dessinerText(g, couleur, null, 0, font, texte, ((GM_Point) geom)
+      IGeometry geom, String texte) {
+    if (geom instanceof IPoint) {
+      this.dessinerText(g, couleur, null, 0, font, texte, ((IPoint) geom)
           .getPosition());
-    } else if (geom instanceof GM_LineString) {
-      this.dessinerText(g, couleur, null, 0, font, texte, (GM_LineString) geom);
+    } else if (geom instanceof ILineString) {
+      this.dessinerText(g, couleur, null, 0, font, texte, (ILineString) geom);
     } else {
       DessinableGeoxygene.logger.error("Ne fonctionne pas");
     }
@@ -1419,9 +1408,9 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
   /**
    * Dessine un texte
    * @see #dessinerText(Graphics2D, Color, Color, float, Font, String,
-   *      DirectPosition)
+   *      IDirectPosition)
    * @see #dessinerText(Graphics2D, Color, Color, float, Font, String,
-   *      GM_LineString)
+   *      ILineString)
    * @deprecated
    * @param g l'objet graphics2D
    * @param couleur couleur du trait
@@ -1429,16 +1418,16 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param texte texte à dessiner
    */
   @Deprecated
-  public void dessinerTexte(Graphics2D g, Color couleur, GM_Object geom,
+  public void dessinerTexte(Graphics2D g, Color couleur, IGeometry geom,
       String texte) {
     this.dessinerTexte(g, couleur,
-        new Font("Default", java.awt.Font.PLAIN, 10), geom, texte); //$NON-NLS-1$
+        new Font("Default", java.awt.Font.PLAIN, 10), geom, texte);
   }
 
   /**
    * Dessine un texte
    * @see #dessinerText(Graphics2D, Color, Color, float, Font, String,
-   *      DirectPosition)
+   *      IDirectPosition)
    * @deprecated
    * @param g l'objet graphics2D
    * @param couleur couleur du trait
@@ -1449,8 +1438,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
   @Deprecated
   public void dessinerTexte(Graphics2D g, Color couleur, double x, double y,
       String texte) {
-    this.dessinerText(g, couleur, null, 0.0f, new Font(
-        "Default", java.awt.Font.PLAIN, 10), texte, new DirectPosition(x, y)); //$NON-NLS-1$
+    this.dessinerText(g, couleur, null, 0.0f, new Font("Default",
+        java.awt.Font.PLAIN, 10), texte, new DirectPosition(x, y));
   }
 
   /**
@@ -1461,8 +1450,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param taille taille du trait
    */
   @Deprecated
-  public void dessinerSegment(Graphics2D g, DirectPosition coord1,
-      DirectPosition coord2, int taille) {
+  public void dessinerSegment(Graphics2D g, IDirectPosition coord1,
+      IDirectPosition coord2, int taille) {
     g.setStroke(new BasicStroke(taille));
     g.drawLine(this.coordToPixX(coord1.getX()),
         this.coordToPixY(coord1.getY()), this.coordToPixX(coord2.getX()), this
@@ -1503,5 +1492,4 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
         / 2), (int) Math.round(largeur / this.taillePixel + 0.5), (int) Math
         .round(largeur / this.taillePixel + 0.5));
   }
-
 }

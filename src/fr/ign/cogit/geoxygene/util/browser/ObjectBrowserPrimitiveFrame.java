@@ -56,7 +56,7 @@ public class ObjectBrowserPrimitiveFrame extends JFrame {
   private static final long serialVersionUID = 1L;
 
   /** Localisation des fichiers d'internationalisation de l'interface. */
-  private static final String I18N_LANGUAGE_FILE_LOCATION = "fr.ign.cogit.geoxygene.util.browser.ObjectBrowserLanguageFile"; //$NON-NLS-1$
+  private static final String I18N_LANGUAGE_FILE_LOCATION = "fr.ign.cogit.geoxygene.util.browser.ObjectBrowserLanguageFile";
   /** Taille par défaut du champ texte affichant le résultat de la méthode. */
   private static final int PRIMITIVE_FRAME_DEFAULT_TEXTFIELD_SIZE = 35;
   /** Locale courante. */
@@ -84,8 +84,8 @@ public class ObjectBrowserPrimitiveFrame extends JFrame {
     // ResourceBundle.getBundle(I18N_LANGUAGE_FILE_LOCATION,new Locale("en",
     // "US"));
 
-    this
-        .setTitle(this.i18nLanguageFile.getString("PrimitiveFrameDefaultTitle") + title + "()"); //$NON-NLS-1$//$NON-NLS-2$
+    this.setTitle(this.i18nLanguageFile.getString("PrimitiveFrameDefaultTitle")
+        + title + "()");
 
     JTextField returnedValue = new JTextField(value,
         ObjectBrowserPrimitiveFrame.PRIMITIVE_FRAME_DEFAULT_TEXTFIELD_SIZE);
@@ -93,7 +93,7 @@ public class ObjectBrowserPrimitiveFrame extends JFrame {
     this.getContentPane().add(returnedValue, BorderLayout.CENTER);
 
     JLabel returnedValueLabel = new JLabel(this.i18nLanguageFile
-        .getString("PrimitiveFrameDefaultLabel")); //$NON-NLS-1$
+        .getString("PrimitiveFrameDefaultLabel"));
     returnedValueLabel.setSize(returnedValueLabel.getPreferredSize());
     this.getContentPane().add(returnedValueLabel, BorderLayout.WEST);
     this.getContentPane().setSize(this.getContentPane().getPreferredSize());

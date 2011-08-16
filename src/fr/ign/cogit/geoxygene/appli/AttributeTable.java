@@ -62,9 +62,10 @@ import javax.swing.table.TableColumn;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.style.Layer;
@@ -83,9 +84,9 @@ class AttributeTable extends JDialog {
 
   private static final long serialVersionUID = 1L;
   private ProjectFrame frame;
-  private Set<? extends FT_Feature> objectsToDraw;
+  private Set<? extends IFeature> objectsToDraw;
   private List<Layer> selectedLayers;
-  private FT_Feature selectedFeature;
+  private IFeature selectedFeature;
   private JTabbedPane tabPane;
   private JPopupMenu popup = new JPopupMenu();
   private JTable selectedTable;
@@ -95,11 +96,11 @@ class AttributeTable extends JDialog {
     return this.frame;
   }
 
-  public void setSelectedFeature(FT_Feature selectedFeature) {
+  public void setSelectedFeature(IFeature selectedFeature) {
     this.selectedFeature = selectedFeature;
   }
 
-  public FT_Feature getSelectedFeature() {
+  public IFeature getSelectedFeature() {
     return this.selectedFeature;
   }
 
@@ -132,18 +133,18 @@ class AttributeTable extends JDialog {
    */
   public class AttributsTableModel extends DefaultTableModel {
     private static final long serialVersionUID = 1L;
-    private FT_FeatureCollection<FT_Feature> features;
+    private IFeatureCollection<IFeature> features;
     private List<String> attributeNames = new ArrayList<String>();
 
-    public void setFeatures(FT_FeatureCollection<FT_Feature> features) {
+    public void setFeatures(IFeatureCollection<IFeature> features) {
       this.features = features;
     }
 
-    public FT_FeatureCollection<FT_Feature> getFeatures() {
+    public IFeatureCollection<IFeature> getFeatures() {
       return this.features;
     }
 
-    public AttributsTableModel(FT_FeatureCollection<FT_Feature> features) {
+    public AttributsTableModel(IFeatureCollection<IFeature> features) {
       this.setFeatures(features);
       List<GF_AttributeType> featureAttributes = new ArrayList<GF_AttributeType>(
           0);
@@ -154,7 +155,7 @@ class AttributeTable extends JDialog {
         String methodName = null;
         String attributeName = null;
         AttributeType attribute = new AttributeType();
-        Class<? extends FT_Feature> classe = features.get(0).getClass();
+        Class<? extends IFeature> classe = features.get(0).getClass();
         for (Method method : classe.getMethods()) {
           if (method.getDeclaringClass() == classe) {
             valueType = null;
@@ -203,7 +204,7 @@ class AttributeTable extends JDialog {
         }
         Layer layer = AttributeTable.this.getProjectFrame()
             .getLayerFromFeature(features.get(0));
-        for (FT_Feature ft : layer.getFeatureCollection()) {
+        for (IFeature ft : layer.getFeatureCollection()) {
           ft.setFeatureType(featureType);
         }
         layer.getFeatureCollection().setFeatureType(featureType);
@@ -221,7 +222,7 @@ class AttributeTable extends JDialog {
       }
       // On ajoute les lignes
       for (int i = 0; i < features.size(); i++) {
-        FT_Feature ft = features.get(i);
+        IFeature ft = features.get(i);
         Object[] objs = new Object[this.attributeNames.size()];
         objs[0] = new Integer(ft.getId());
         for (int j = 1; j < this.attributeNames.size(); j++) {
@@ -265,7 +266,7 @@ class AttributeTable extends JDialog {
 
     @Override
     public Class<?> getColumnClass(int column) {
-      String valueType = this.getFeatures().get(0).getFeatureType()
+      String valueType = ((FeatureType) this.getFeatures().get(0).getFeatureType())
           .getFeatureAttributeByName(this.attributeNames.get(column))
           .getValueType();
       try {
@@ -279,8 +280,8 @@ class AttributeTable extends JDialog {
     public void setValueAt(Object value, int row, int col) {
       if (col != 0) {
         boolean valOk = true;
-        FT_Feature ft = this.getFeatures().get(row);
-        AttributeType attributeType = ft.getFeatureType()
+        IFeature ft = this.getFeatures().get(row);
+        AttributeType attributeType = ((FeatureType) ft.getFeatureType())
             .getFeatureAttributeByName(this.attributeNames.get(col));
         Class<?> type = this.getColumnClass(col);
         if (type == Double.class) {
@@ -441,8 +442,8 @@ class AttributeTable extends JDialog {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-      AttributeType attribute = AttributeTable.this.getSelectedFeature()
-          .getFeatureType().getFeatureAttributeByName(this.attributeName);
+      AttributeType attribute = ((FeatureType) AttributeTable.this.getSelectedFeature()
+          .getFeatureType()).getFeatureAttributeByName(this.attributeName);
       new EditTypeDialog(attribute);
     }
   }
@@ -513,7 +514,7 @@ class AttributeTable extends JDialog {
       String layerName = table.getName();
       Layer layer = AttributeTable.this.getProjectFrame().getSld().getLayer(
           layerName);
-      FT_FeatureCollection<? extends FT_Feature> features = layer
+      IFeatureCollection<? extends IFeature> features = layer
           .getFeatureCollection();
       // both types are the same
       if (newValueType.equals(oldValueType)) {
@@ -521,7 +522,7 @@ class AttributeTable extends JDialog {
       }
       // new type is String, we create a new String containing the value
       if (newValueType.equals("String")) { //$NON-NLS-1$
-        for (FT_Feature ft : features) {
+        for (IFeature ft : features) {
           ft.setAttribute(this.attribute, new String(ft.getAttribute(
               this.attribute).toString()));
         }
@@ -535,7 +536,7 @@ class AttributeTable extends JDialog {
               .forName("java.lang." + newValueType); //$NON-NLS-1$
           Constructor<?> constructor = newValueTypeClass
               .getConstructor(String.class);
-          for (FT_Feature ft : features) {
+          for (IFeature ft : features) {
             Integer oldValue = (Integer) (ft.getAttribute(this.attributeName));
             String stringValue = oldValue.toString();
             if (newValueType.equals("Boolean")) { //$NON-NLS-1$
@@ -557,7 +558,7 @@ class AttributeTable extends JDialog {
               .forName("java.lang." + newValueType); //$NON-NLS-1$
           Constructor<?> constructor = newValueTypeClass
               .getConstructor(String.class);
-          for (FT_Feature ft : features) {
+          for (IFeature ft : features) {
             Boolean oldValue = (Boolean) (ft.getAttribute(this.attributeName));
             Object newValue = null;
             if (newValueType.equals("String")) { //$NON-NLS-1$
@@ -578,7 +579,7 @@ class AttributeTable extends JDialog {
       // old type is Double
       if (oldValueType.equals("Double")) { //$NON-NLS-1$
         if (newValueType.equals("Long")) { //$NON-NLS-1$
-          for (FT_Feature ft : features) {
+          for (IFeature ft : features) {
             Double oldValue = (Double) (ft.getAttribute(this.attributeName));
             Long newValue = new Long(oldValue.longValue());
             ft.setAttribute(this.attribute, newValue);
@@ -593,14 +594,14 @@ class AttributeTable extends JDialog {
           return;
         }
         if (newValueType.equals("Integer")) { //$NON-NLS-1$
-          for (FT_Feature ft : features) {
+          for (IFeature ft : features) {
             Double oldValue = (Double) (ft.getAttribute(this.attributeName));
             Integer newValue = new Integer(oldValue.intValue());
             ft.setAttribute(this.attribute, newValue);
           }
         } else {
           if (newValueType.equals("Boolean")) { //$NON-NLS-1$
-            for (FT_Feature ft : features) {
+            for (IFeature ft : features) {
               Double oldValue = (Double) (ft.getAttribute(this.attributeName));
               Boolean newValue = new Boolean(oldValue.doubleValue() != 0d);
               ft.setAttribute(this.attribute, newValue);
@@ -613,7 +614,7 @@ class AttributeTable extends JDialog {
       // Long
       if (oldValueType.equals("Long")) { //$NON-NLS-1$
         if (newValueType.equals("Double")) { //$NON-NLS-1$
-          for (FT_Feature ft : features) {
+          for (IFeature ft : features) {
             Long oldValue = (Long) (ft.getAttribute(this.attributeName));
             Double newValue = new Double(oldValue.doubleValue());
             ft.setAttribute(this.attribute, newValue);
@@ -628,14 +629,14 @@ class AttributeTable extends JDialog {
           return;
         }
         if (newValueType.equals("Integer")) { //$NON-NLS-1$
-          for (FT_Feature ft : features) {
+          for (IFeature ft : features) {
             Long oldValue = (Long) (ft.getAttribute(this.attributeName));
             Integer newValue = new Integer(oldValue.intValue());
             ft.setAttribute(this.attribute, newValue);
           }
         } else {
           if (newValueType.equals("Boolean")) { //$NON-NLS-1$
-            for (FT_Feature ft : features) {
+            for (IFeature ft : features) {
               Long oldValue = (Long) (ft.getAttribute(this.attributeName));
               Boolean newValue = new Boolean(oldValue.longValue() != 0l);
               ft.setAttribute(this.attribute, newValue);
@@ -658,7 +659,7 @@ class AttributeTable extends JDialog {
               .forName("java.lang." + newValueType); //$NON-NLS-1$
           Constructor<?> constructor = newValueTypeClass
               .getConstructor(String.class);
-          for (FT_Feature ft : features) {
+          for (IFeature ft : features) {
             String oldValue = (String) (ft.getAttribute(this.attributeName));
             try {
               Object newValue = constructor.newInstance(oldValue);
@@ -716,8 +717,8 @@ class AttributeTable extends JDialog {
     this.tabPane = new JTabbedPane(SwingConstants.LEFT);
     // On récupère les couches sélectionnées a partir des objets selectionnes
     for (Layer layer : layers) {
-      FT_FeatureCollection<?> listeFeatures = layer.getFeatureCollection();
-      for (FT_Feature ft : this.objectsToDraw) {
+      IFeatureCollection<?> listeFeatures = layer.getFeatureCollection();
+      for (IFeature ft : this.objectsToDraw) {
         if (listeFeatures.contains(ft)) {
           this.selectedLayers.add(layer);
           break;
@@ -735,7 +736,7 @@ class AttributeTable extends JDialog {
    * @param features La liste des features dont on veut afficher les attributs
    */
   public AttributeTable(ProjectFrame frame, String title,
-      Set<? extends FT_Feature> features) {
+      Set<? extends IFeature> features) {
     super(frame.getMainFrame());
     this.frame = frame;
     this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -757,8 +758,8 @@ class AttributeTable extends JDialog {
     this.tabPane = new JTabbedPane(SwingConstants.LEFT);
     // On récupère les couches sélectionnées a partir des objets selectionnes
     for (Layer layer : layers) {
-      FT_FeatureCollection<?> listeFeatures = layer.getFeatureCollection();
-      for (FT_Feature ft : this.objectsToDraw) {
+      IFeatureCollection<?> listeFeatures = layer.getFeatureCollection();
+      for (IFeature ft : this.objectsToDraw) {
         if (listeFeatures.contains(ft)) {
           this.selectedLayers.add(layer);
           break;
@@ -772,12 +773,12 @@ class AttributeTable extends JDialog {
     for (Layer layer : this.selectedLayers) {
       JPanel tablePanel = new JPanel();
       tablePanel.setLayout(new BorderLayout());
-      FT_FeatureCollection<FT_Feature> features = new FT_FeatureCollection<FT_Feature>();
+      IFeatureCollection<IFeature> features = new FT_FeatureCollection<IFeature>();
       // On récupère tous les features de la couche layer qui sont sélectionnés
-      FT_FeatureCollection<?> featuresOfThisLayer = layer
+      IFeatureCollection<?> featuresOfThisLayer = layer
           .getFeatureCollection();
       // On récupère tous les features de la couche layer qui sont sélectionnés
-      for (FT_Feature ft : this.objectsToDraw) {
+      for (IFeature ft : this.objectsToDraw) {
         if (featuresOfThisLayer.contains(ft)) {
           features.add(ft);
         }

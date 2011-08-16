@@ -75,7 +75,7 @@ public class AAA extends ClasseMere {
     return this.objetBBB_bi11;
   }
 
-  /** définit l'objet en relation */
+  /** Définit l'objet en relation */
   public void setObjetBBB_bi11(BBB O) {
     BBB old = this.objetBBB_bi11;
     this.objetBBB_bi11 = O;
@@ -117,7 +117,7 @@ public class AAA extends ClasseMere {
   }
 
   /**
-   * définit la liste des objets en relation, et met à jour la relation inverse.
+   * Définit la liste des objets en relation, et met à jour la relation inverse.
    */
   public void setListe_objetsBBB_bi1N(List<Object> L) {
     List<Object> old = new ArrayList<Object>(this.liste_objetsBBB_bi1N);
@@ -151,7 +151,7 @@ public class AAA extends ClasseMere {
   }
 
   /**
-   * enlève un élément de la liste des objets en relation, et met à jour la
+   * Enlève un élément de la liste des objets en relation, et met à jour la
    * relation inverse.
    */
   public void removeObjetBBB_bi1N(BBB O) {
@@ -198,7 +198,7 @@ public class AAA extends ClasseMere {
     return this.liste_objetsBBB_biNM;
   }
 
-  /** définit l'objet en relation, et met à jour la relation inverse. */
+  /** Définit l'objet en relation, et met à jour la relation inverse. */
   public void setListe_objetsBBB_biNM(List<Object> L) {
     List<Object> old = new ArrayList<Object>(this.liste_objetsBBB_biNM);
     Iterator<Object> it1 = old.iterator();
@@ -233,7 +233,7 @@ public class AAA extends ClasseMere {
   }
 
   /**
-   * enlève un élément de la liste des objets en relation, et met à jour la
+   * Enlève un élément de la liste des objets en relation, et met à jour la
    * relation inverse.
    */
   public void removeObjetBBB_biNM(BBB O) {

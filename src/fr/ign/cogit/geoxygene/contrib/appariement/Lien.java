@@ -23,19 +23,24 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IAggregate;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
  * Resultat de l'appariement : lien entre des objets homologues de deux bases de
@@ -44,87 +49,69 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * @author Mustiere / IGN Laboratoire COGIT
  * @version 1.0
  */
+
 public class Lien extends FT_Feature {
-  /**
-   * Les objets d'une BD pointés par le lien.
-   */
-  private List<FT_Feature> objetsRef = new ArrayList<FT_Feature>();
+
+  /** Les objets d'une BD pointés par le lien */
+  protected List<IFeature> objetsRef = new ArrayList<IFeature>();
 
   /**
    * @return reference object list
    */
-  public final List<FT_Feature> getObjetsRef() {
+  public List<IFeature> getObjetsRef() {
     return this.objetsRef;
   }
 
   /**
    * @param liste reference object list
    */
-  public final void setObjetsRef(final List<FT_Feature> liste) {
+  public void setObjetsRef(List<IFeature> liste) {
     this.objetsRef = liste;
   }
 
   /**
    * @param objet reference object
    */
-  public final void addObjetRef(final FT_Feature objet) {
+  public void addObjetRef(IFeature objet) {
     this.objetsRef.add(objet);
   }
 
   /**
    * @param objets reference object list
    */
-  public final void addObjetsRef(final List<FT_Feature> objets) {
+  public void addObjetsRef(List<IFeature> objets) {
     this.objetsRef.addAll(objets);
   }
 
-  /**
-   * Les objets de l'autre BD pointés par le lien.
-   */
-  private List<FT_Feature> objetsComp = new ArrayList<FT_Feature>();
-
+  /** Les objets de l'autre BD pointés par le lien */
+  protected List<IFeature> objetsComp = new ArrayList<IFeature>();
+  
   /**
    * @return comparison object list
    */
-  public final List<FT_Feature> getObjetsComp() {
+  public List<IFeature> getObjetsComp() {
     return this.objetsComp;
   }
 
   /**
    * @param liste comparison object list
    */
-  public final void setObjetsComp(final List<FT_Feature> liste) {
+  public void setObjetsComp(List<IFeature> liste) {
     this.objetsComp = liste;
   }
 
   /**
-   * @param objet comparison object
+   * @param objet comparison object to add to the list
    */
-  public final void addObjetComp(final FT_Feature objet) {
+  public void addObjetComp(IFeature objet) {
     this.objetsComp.add(objet);
   }
 
   /**
-   * @param objets comparison object list
+   * @param objets comparison object list to add to the list
    */
-  public final void addObjetsComp(final List<FT_Feature> objets) {
+  public void addObjetsComp(List<IFeature> objets) {
     this.objetsComp.addAll(objets);
-  }
-
-  public final String getFeatureListAsString(List<FT_Feature> features) {
-    String result = "";
-    for (FT_Feature feature : features) {
-      result += feature.getId() + " ";
-    }
-    return result;
-  }
-
-  public final String getObjetsCompAsString() {
-    return this.getFeatureListAsString(this.objetsComp);
-  }
-
-  public final String getObjetsRefAsString() {
-    return this.getFeatureListAsString(this.objetsRef);
   }
 
   /**
@@ -133,138 +120,126 @@ public class Lien extends FT_Feature {
   private double evaluation;
 
   /**
-   * @return link evaluation
+   * @return matching link evaluation
    */
-  public final double getEvaluation() {
+  public double getEvaluation() {
     return this.evaluation;
   }
 
   /**
-   * @param eval link evaluation
+   * @param evaluation matching link evaluation
    */
-  public final void setEvaluation(final double eval) {
-    this.evaluation = eval;
+  public void setEvaluation(double evaluation) {
+    this.evaluation = evaluation;
   }
 
-  /**
-   * Liste d'indicateurs utilisés pendant les calculs d'appariement.
-   */
-  private List<Object> indicateurs = new ArrayList<Object>();
+  /** Liste d'indicateurs utilisés pendant les calculs d'appariement */
+  protected List<Object> indicateurs = new ArrayList<Object>();
 
   /**
    * @return indicators
    */
-  public final List<Object> getIndicateurs() {
+  public List<Object> getIndicateurs() {
     return this.indicateurs;
   }
 
   /**
    * @param liste indicators
    */
-  public final void setIndicateurs(final List<Object> liste) {
+  public void setIndicateurs(List<Object> liste) {
     this.indicateurs = liste;
   }
 
   /**
    * @param objet an indicator
    */
-  public final void addIndicateur(final Object objet) {
+  public void addIndicateur(Object objet) {
     this.indicateurs.add(objet);
   }
 
-  /**
-   * Texte libre pour décrire le lien d'appariement.
-   */
-  private String commentaire = new String();
+  /** Texte libre pour décrire le lien d'appariement */
+  protected String commentaire = new String();
 
   /**
    * @return comment
    */
-  public final String getCommentaire() {
+  public String getCommentaire() {
     return this.commentaire;
   }
 
   /**
-   * @param comment comment
+   * @param commentaire comment
    */
-  public final void setCommentaire(final String comment) {
-    this.commentaire = comment;
+  public void setCommentaire(String commentaire) {
+    this.commentaire = commentaire;
   }
 
-  /**
-   * Texte libre pour décrire le nom du procesus d'appariement.
-   */
-  private String nom = new String();
+  /** Texte libre pour décrire le nom du procesus d'appariement. */
+  protected String nom = new String();
 
   /**
    * @return matching name
    */
-  public final String getNom() {
+  public String getNom() {
     return this.nom;
   }
 
   /**
-   * @param name matching name
+   * @param nom matching name
    */
-  public final void setNom(final String name) {
-    this.nom = name;
+  public void setNom(String nom) {
+    this.nom = nom;
   }
 
-  /**
-   * Texte libre pour décrire le type d'appariement (ex. "Noeud-Noeud").
-   */
-  private String type = new String();
+  /** Texte libre pour décrire le type d'appariement (ex. "Noeud-Noeud"). */
+  protected String type = new String();
 
   /**
    * @return matching type
    */
-  public final String getType() {
+  public String getType() {
     return this.type;
   }
 
   /**
-   * @param aType matching type
+   * @type matching type
    */
-  public final void setType(final String aType) {
-    this.type = aType;
+  public void setType(String type) {
+    this.type = type;
   }
 
-  /**
-   * Texte libre pour décrire les objets de la BD1 pointés.
-   */
-  private String reference = new String();
+  /** Texte libre pour décrire les objets de la BD1 pointés. */
+  protected String reference = new String();
 
   /**
    * @return reference database description
    */
-  public final String getReference() {
+  public String getReference() {
     return this.reference;
   }
 
   /**
-   * @param aReference reference database description
+   * @param reference reference database description
    */
-  public final void setReference(final String aReference) {
-    this.reference = aReference;
+  public void setReference(String reference) {
+    this.reference = reference;
   }
 
-  /**
-   * Texte libre pour décrire les objets de la BD2 pointés.
-   */
-  private String comparaison = new String();
+  /** Texte libre pour décrire les objets de la BD2 pointés. */
+  protected String comparaison = new String();
 
   /**
    * @return comparison database description
    */
-  public final String getComparaison() {
+  public String getComparaison() {
     return this.comparaison;
   }
 
   /**
-   * @param comparison comparison database description
+   * @param comparaison comparison database description
    */
-  public final void setComparaison(final String comparison) {
-    this.comparaison = comparison;
+  public void setComparaison(String comparaison) {
+    this.comparaison = comparaison;
   }
 
   // ////////////////////////////////////////////////////
@@ -275,10 +250,10 @@ public class Lien extends FT_Feature {
   // POUR TOUS LES LIENS
   // ////////////////////////////////////////////////////
   /**
-   * Recopie les valeurs de lienACopier dans this.
+   * recopie les valeurs de lienACopier dans this
    * @param lienACopier link to copy
    */
-  public final void copie(final Lien lienACopier) {
+  public void copie(Lien lienACopier) {
     this.setObjetsComp(lienACopier.getObjetsComp());
     this.setObjetsRef(lienACopier.getObjetsRef());
     this.setEvaluation(lienACopier.getEvaluation());
@@ -311,30 +286,28 @@ public class Lien extends FT_Feature {
 
   /**
    * Définit des petits tirets entre 2 lignes pour représenter un lien
-   * d'appariement.
-   * @param linestring1 a linestring
-   * @param linestring2 a linestring
+   * d'appariement
+   * @param LS1 a linestring
+   * @param LS2 a linestring
    * @param pas step
    * @return link geometry
    */
-  public static GM_MultiCurve<GM_OrientableCurve> tirets(
-      final GM_LineString linestring1, final GM_LineString linestring2,
-      final double pas) {
+  public static IMultiCurve<IOrientableCurve> tirets(ILineString LS1,
+      ILineString LS2, double pas) {
     double long1, long2;
-    int nbTirets;
-    GM_MultiCurve<GM_OrientableCurve> tirets = new GM_MultiCurve<GM_OrientableCurve>();
-    GM_LineString tiret;
-    DirectPosition pt1, pt2;
+    int nb_tirets;
+    GM_MultiCurve<IOrientableCurve> tirets = new GM_MultiCurve<IOrientableCurve>();
+    ILineString tiret;
+    IDirectPosition pt1, pt2;
     int i;
 
-    long1 = linestring1.length();
-    long2 = linestring2.length();
-    nbTirets = (int) (long1 / pas);
-    for (i = 0; i <= nbTirets; i++) {
+    long1 = LS1.length();
+    long2 = LS2.length();
+    nb_tirets = (int) (long1 / pas);
+    for (i = 0; i <= nb_tirets; i++) {
       tiret = new GM_LineString();
-      pt1 = Operateurs.pointEnAbscisseCurviligne(linestring1, i * pas);
-      pt2 = Operateurs.pointEnAbscisseCurviligne(linestring2, i * pas * long2
-          / long1);
+      pt1 = Operateurs.pointEnAbscisseCurviligne(LS1, i * pas);
+      pt2 = Operateurs.pointEnAbscisseCurviligne(LS2, i * pas * long2 / long1);
       if (pt1 == null || pt2 == null) {
         continue;
       }
@@ -347,27 +320,27 @@ public class Lien extends FT_Feature {
 
   /**
    * Définit des petits tirets entre 1 ligne et un point pour représenter un
-   * lien d'appariement.
-   * @param linestring a linestring
-   * @param point a point
+   * lien d'appariement
+   * @param LS1 a linestring
+   * @param PT a point
    * @param pas step
    * @return link geometry
    */
-  public static GM_MultiCurve<GM_OrientableCurve> tirets(
-      final GM_LineString linestring, final GM_Point point, final double pas) {
+  public static IMultiCurve<IOrientableCurve> tirets(ILineString LS1,
+      IPoint PT, double pas) {
     double long1;
-    int nbTirets;
-    GM_MultiCurve<GM_OrientableCurve> tirets = new GM_MultiCurve<GM_OrientableCurve>();
-    GM_LineString tiret;
-    DirectPosition pt1, pt2;
+    int nb_tirets;
+    IMultiCurve<IOrientableCurve> tirets = new GM_MultiCurve<IOrientableCurve>();
+    ILineString tiret;
+    IDirectPosition pt1, pt2;
     int i;
 
-    long1 = linestring.length();
-    nbTirets = (int) (long1 / pas);
-    for (i = 0; i <= nbTirets; i++) {
+    long1 = LS1.length();
+    nb_tirets = (int) (long1 / pas);
+    for (i = 0; i <= nb_tirets; i++) {
       tiret = new GM_LineString();
-      pt1 = Operateurs.pointEnAbscisseCurviligne(linestring, i * pas);
-      pt2 = point.getPosition();
+      pt1 = Operateurs.pointEnAbscisseCurviligne(LS1, i * pas);
+      pt2 = PT.getPosition();
       if (pt1 == null || pt2 == null) {
         continue;
       }
@@ -380,59 +353,56 @@ public class Lien extends FT_Feature {
 
   /**
    * Définit la géométrie d'un lien entre 2 lignes par un trait reliant les
-   * milieux des lignes.
-   * @param linestring1 a linestring
-   * @param linestring2 a linestring
+   * milieux des lignes
+   * @param LS1 a linestring
+   * @param LS2 a linestring
    * @return link geometry
    */
-  public static GM_LineString tiret(final GM_LineString linestring1,
-      final GM_LineString linestring2) {
+  public static ILineString tiret(ILineString LS1, ILineString LS2) {
     GM_LineString tiret = new GM_LineString();
-    tiret.addControlPoint(Operateurs.milieu(linestring1));
-    tiret.addControlPoint(Operateurs.milieu(linestring2));
+    tiret.addControlPoint(Operateurs.milieu(LS1));
+    tiret.addControlPoint(Operateurs.milieu(LS2));
     return tiret;
   }
 
   /**
    * Définit la géométrie d'un lien entre 1 ligne et un point par un trait
-   * reliant le milieu de la ligne au point.
-   * @param linestring a linestring
-   * @param point a point
+   * reliant le milieu de la ligne au point
+   * @param LS1 a linestring
+   * @param PT a point
    * @return link geometry
    */
-  public static GM_LineString tiret(final GM_LineString linestring,
-      final GM_Point point) {
+  public static ILineString tiret(ILineString LS1, IPoint PT) {
     GM_LineString tiret = new GM_LineString();
-    tiret.addControlPoint(Operateurs.milieu(linestring));
-    tiret.addControlPoint(point.getPosition());
+    tiret.addControlPoint(Operateurs.milieu(LS1));
+    tiret.addControlPoint(PT.getPosition());
     return tiret;
   }
 
   /**
    * Définit des petits tirets entre 2 lignes pour représenter un lien
    * d'appariement. NB: projete les points sur l'arc LS2, plutot que de se baser
-   * sur l'abscisse curviligne.
-   * @param linestring1 a linestring
-   * @param linestring2 a linestring
+   * sur l'abscisse curviligne
+   * @param LS1 a linestring
+   * @param LS2 a linestring
    * @param pas step
    * @return link geometry
    */
-  public static GM_MultiCurve<GM_OrientableCurve> tiretsProjetes(
-      final GM_LineString linestring1, final GM_LineString linestring2,
-      final double pas) {
+  public static IMultiCurve<IOrientableCurve> tiretsProjetes(ILineString LS1,
+      ILineString LS2, double pas) {
     double long1;
-    int nbTirets;
-    GM_MultiCurve<GM_OrientableCurve> tirets = new GM_MultiCurve<GM_OrientableCurve>();
-    GM_LineString tiret;
-    DirectPosition pt1, pt2;
+    int nb_tirets;
+    GM_MultiCurve<IOrientableCurve> tirets = new GM_MultiCurve<IOrientableCurve>();
+    ILineString tiret;
+    IDirectPosition pt1, pt2;
     int i;
 
-    long1 = linestring1.length();
-    nbTirets = (int) (long1 / pas);
-    for (i = 0; i <= nbTirets; i++) {
+    long1 = LS1.length();
+    nb_tirets = (int) (long1 / pas);
+    for (i = 0; i <= nb_tirets; i++) {
       tiret = new GM_LineString();
-      pt1 = Operateurs.pointEnAbscisseCurviligne(linestring1, i * pas);
-      pt2 = Operateurs.projection(pt1, linestring2);
+      pt1 = Operateurs.pointEnAbscisseCurviligne(LS1, i * pas);
+      pt2 = Operateurs.projection(pt1, LS2);
       if (pt1 == null || pt2 == null) {
         continue;
       }
@@ -446,27 +416,26 @@ public class Lien extends FT_Feature {
   /**
    * Définit des petits tirets entre 1 ligne et un aggregat pour représenter un
    * lien d'appariement. NB: projete les points sur l'aggregat, plutot que de se
-   * baser sur l'abscisse curviligne.
-   * @param linestring a linestring
+   * baser sur l'abscisse curviligne
+   * @param LS1 a linestring
    * @param aggregat an aggregate
    * @param pas step
    * @return link geometry
    */
-  public static GM_MultiCurve<GM_OrientableCurve> tiretsProjetes(
-      final GM_LineString linestring, final GM_Aggregate<GM_Object> aggregat,
-      final double pas) {
+  public static IMultiCurve<IOrientableCurve> tiretsProjetes(ILineString LS1,
+      IAggregate<IGeometry> aggregat, double pas) {
     double long1;
-    int nbTirets;
-    GM_MultiCurve<GM_OrientableCurve> tirets = new GM_MultiCurve<GM_OrientableCurve>();
-    GM_LineString tiret;
-    DirectPosition pt1, pt2;
+    int nb_tirets;
+    GM_MultiCurve<IOrientableCurve> tirets = new GM_MultiCurve<IOrientableCurve>();
+    ILineString tiret;
+    IDirectPosition pt1, pt2;
     int i;
 
-    long1 = linestring.length();
-    nbTirets = (int) (long1 / pas);
-    for (i = 0; i <= nbTirets; i++) {
+    long1 = LS1.length();
+    nb_tirets = (int) (long1 / pas);
+    for (i = 0; i <= nb_tirets; i++) {
       tiret = new GM_LineString();
-      pt1 = Operateurs.pointEnAbscisseCurviligne(linestring, i * pas);
+      pt1 = Operateurs.pointEnAbscisseCurviligne(LS1, i * pas);
       pt2 = Operateurs.projection(pt1, aggregat);
       if (pt1 == null || pt2 == null) {
         continue;
@@ -480,15 +449,14 @@ public class Lien extends FT_Feature {
 
   /**
    * Définit la géométrie d'un lien entre 2 lignes par un trait reliant les
-   * lignes.
-   * @param linestring1 a linestring
-   * @param linestring2 a linestring
+   * lignes
+   * @param LS1 a linestring
+   * @param LS2 a linestring
    * @return link geometry
    */
-  public static GM_LineString tiretProjete(final GM_LineString linestring1,
-      final GM_LineString linestring2) {
-    DirectPosition milieu = Operateurs.milieu(linestring1);
-    DirectPosition projete = Operateurs.projection(milieu, linestring2);
+  public static ILineString tiretProjete(ILineString LS1, ILineString LS2) {
+    IDirectPosition milieu = Operateurs.milieu(LS1);
+    IDirectPosition projete = Operateurs.projection(milieu, LS2);
     GM_LineString tiret = new GM_LineString();
     tiret.addControlPoint(milieu);
     tiret.addControlPoint(projete);
@@ -497,47 +465,43 @@ public class Lien extends FT_Feature {
 
   /**
    * Définit la géométrie d'un lien entre 2 lignes par un trait reliant la ligne
-   * à l'aggregat.
-   * @param linestring a linestring
+   * à l'aggregat
+   * @param LS1 a linestring
    * @param aggegat an aggregate
    * @return link geometry
    */
-  public static GM_LineString tiretProjete(final GM_LineString linestring,
-      final GM_Aggregate<GM_Object> aggegat) {
-    DirectPosition milieu = Operateurs.milieu(linestring);
-    DirectPosition projete = Operateurs.projection(milieu, aggegat);
+  public static ILineString tiretProjete(ILineString LS1,
+      IAggregate<IGeometry> aggegat) {
+    IDirectPosition milieu = Operateurs.milieu(LS1);
+    IDirectPosition projete = Operateurs.projection(milieu, aggegat);
     GM_LineString tiret = new GM_LineString();
     tiret.addControlPoint(milieu);
     tiret.addControlPoint(projete);
     return tiret;
   }
 
-  /**
-   * Définit la géométrie d'un lien entre 1 point et son projeté sur la ligne.
-   * @param point a point
-   * @param linestring a linestring
+  /** Définit la géométrie d'un lien entre 1 point et son projeté sur la ligne 
+  * @param PT a point
+   * @param LS2 a linestring
    * @return link geometry
    */
-  public static GM_LineString tiretProjete(final GM_Point point,
-      final GM_LineString linestring) {
-    DirectPosition pt = point.getPosition();
-    DirectPosition projete = Operateurs.projection(pt, linestring);
+   public static ILineString tiretProjete(IPoint PT, ILineString LS2) {
+    IDirectPosition pt = PT.getPosition();
+    IDirectPosition projete = Operateurs.projection(pt, LS2);
     GM_LineString tiret = new GM_LineString();
     tiret.addControlPoint(pt);
     tiret.addControlPoint(projete);
     return tiret;
   }
 
-  /**
-   * Définit la géométrie d'un lien entre 1 point et son projeté sur l'aggregat.
-   * @param point a point
+  /** Définit la géométrie d'un lien entre 1 point et son projeté sur l'aggregat * @param point a point
    * @param aggregat an aggregate
    * @return link geometry
    */
-  public static GM_LineString tiretProjete(final GM_Point point,
-      final GM_Aggregate<GM_Object> aggregat) {
-    DirectPosition pt = point.getPosition();
-    DirectPosition projete = Operateurs.projection(pt, aggregat);
+  public static ILineString tiretProjete(IPoint PT,
+      IAggregate<IGeometry> aggregat) {
+    IDirectPosition pt = PT.getPosition();
+    IDirectPosition projete = Operateurs.projection(pt, aggregat);
     GM_LineString tiret = new GM_LineString();
     tiret.addControlPoint(pt);
     tiret.addControlPoint(projete);
@@ -551,38 +515,36 @@ public class Lien extends FT_Feature {
 
   /**
    * Affecte une géométrie au lien. Cette géométrie est principalement adaptée
-   * au cas de l'appariement de réseaux. Attention : peut laisser une geometrie
+   * au cas de l'appariement de réseaux. Attention: peut laisser une geometrie
    * nullle si on ne pointe vers rien (cas des noeuds souvent).
    * 
-   * @param tirets true : crée des petits traits régulièrement espacés pour
-   *          relier les arcs ; false : ne crée pour chaque arc qu'un seul trait
+   * @param tirets true: crée des petits traits régulièrement espacés pour
+   *          relier les arcs; false: ne crée pour chaque arc qu'un seul trait
    *          reliant le milieu de l'arc.
    * 
    * @param pas L'écart entre les tirets, le cas échéant
-   */
-  public final void setGeometrieReseaux(final boolean tirets, final double pas) {
-    Iterator<FT_Feature> itObjRef, itObjComp;
-    GM_Object geomRef = null, geomComp = null;
+   * */
+  public void setGeometrieReseaux(boolean tirets, double pas) {
+    Iterator<IFeature> itObjRef, itObjComp;
+    IGeometry geomRef = null, geomComp = null;
     boolean refPoint;
-    GM_Aggregate<GM_Object> geomLien, groupe;
-    GM_Object buffer;
-    GM_Point centroide;
-    GM_LineString ligne;
-    GM_MultiCurve<GM_OrientableCurve> lignes;
+    IGeometry buffer;
+    IPoint centroide;
+    ILineString ligne;
+    IMultiCurve<IOrientableCurve> lignes;
 
-    geomLien = new GM_Aggregate<GM_Object>();
+    GM_Aggregate<IGeometry> geomLien = new GM_Aggregate<IGeometry>();
     itObjRef = this.getObjetsRef().iterator();
     while (itObjRef.hasNext()) {
-      // determination du côté ref
+      // determination du coté ref
       geomRef = (itObjRef.next()).getGeom();
-      if (geomRef instanceof GM_Point) {
+      if (geomRef instanceof IPoint) {
         refPoint = true;
       } else {
-        if (geomRef instanceof GM_LineString) {
+        if (geomRef instanceof ILineString) {
           refPoint = false;
         } else {
-          System.out.println("géométrie réseau: " + //$NON-NLS-1$
-              "Type de géométrie non géré " //$NON-NLS-1$
+          System.out.println("Géométrie réseau: Type de géométrie non géré "
               + geomRef.getClass());
           continue;
         }
@@ -590,10 +552,10 @@ public class Lien extends FT_Feature {
 
       // cas "1 noeud ref --> d'autres choses": 1 tiret + 1 buffer
       if (refPoint) {
-        groupe = new GM_Aggregate<GM_Object>();
+        GM_Aggregate<IGeometry> groupe = new GM_Aggregate<IGeometry>();
         itObjComp = this.getObjetsComp().iterator();
         while (itObjComp.hasNext()) {
-          // determination du côté comp
+          // determination du coté comp
           geomComp = (itObjComp.next()).getGeom();
           groupe.add(geomComp);
         }
@@ -601,25 +563,25 @@ public class Lien extends FT_Feature {
         centroide = new GM_Point(buffer.centroid());
         ligne = new GM_LineString();
         ligne.addControlPoint(centroide.getPosition());
-        ligne.addControlPoint(((GM_Point) geomRef).getPosition());
+        ligne.addControlPoint(((IPoint) geomRef).getPosition());
         geomLien.add(buffer);
         geomLien.add(ligne);
         continue;
       }
 
       // cas "1 arc ref --> d'autres choses": des tirets
-      GM_Aggregate<GM_Object> aggr = new GM_Aggregate<GM_Object>();
+      GM_Aggregate<IGeometry> aggr = new GM_Aggregate<IGeometry>();
       itObjComp = this.getObjetsComp().iterator();
       while (itObjComp.hasNext()) {
-        // determination du côté comp
+        // determination du coté comp
         geomComp = (itObjComp.next()).getGeom();
         aggr.add(geomComp);
       }
       if (tirets) {
-        lignes = Lien.tiretsProjetes((GM_LineString) geomRef, aggr, pas);
+        lignes = Lien.tiretsProjetes((ILineString) geomRef, aggr, pas);
         geomLien.add(lignes);
       } else {
-        ligne = Lien.tiretProjete((GM_LineString) geomRef, aggr);
+        ligne = Lien.tiretProjete((ILineString) geomRef, aggr);
         geomLien.add(ligne);
       }
     }
@@ -632,23 +594,23 @@ public class Lien extends FT_Feature {
   // POUR LES LIENS VERS DES SURFACES
   // ////////////////////////////////////////////////////
   /**
-   * Distance surfacique entre les surfaces du lien. Methode UNIQUEMENT valable
+   * Distance surfacique entre les surfaces du lien ; Methode UNIQUEMENT valable
    * pour des liens pointant vers 1 ou n objets ref et com avec une géométrie
    * SURFACIQUE.
    * @return surface distance
    */
-  public final double distanceSurfaciqueRobuste() {
-    GM_MultiSurface<GM_OrientableSurface> geomRef = new GM_MultiSurface<GM_OrientableSurface>();
-    GM_MultiSurface<GM_OrientableSurface> geomComp = new GM_MultiSurface<GM_OrientableSurface>();
-    FT_Feature obj;
-    GM_OrientableSurface geometrie;
-    Iterator<FT_Feature> it;
+  public double distanceSurfaciqueRobuste() {
+    GM_MultiSurface<IOrientableSurface> geomRef = new GM_MultiSurface<IOrientableSurface>();
+    GM_MultiSurface<IOrientableSurface> geomComp = new GM_MultiSurface<IOrientableSurface>();
+    IFeature obj;
+    IOrientableSurface geometrie;
+    Iterator<IFeature> it;
 
     it = this.getObjetsRef().iterator();
     while (it.hasNext()) {
       obj = it.next();
-      geometrie = (GM_OrientableSurface) obj.getGeom();
-      if (!(geometrie instanceof GM_Surface)) {
+      geometrie = (IOrientableSurface) obj.getGeom();
+      if (!(geometrie instanceof ISurface)) {
         return 2;
       }
       geomRef.add(geometrie);
@@ -656,8 +618,8 @@ public class Lien extends FT_Feature {
     it = this.getObjetsComp().iterator();
     while (it.hasNext()) {
       obj = it.next();
-      geometrie = (GM_OrientableSurface) obj.getGeom();
-      if (!(geometrie instanceof GM_Surface)) {
+      geometrie = (IOrientableSurface) obj.getGeom();
+      if (!(geometrie instanceof ISurface)) {
         return 2;
       }
       geomComp.add(geometrie);
@@ -667,23 +629,23 @@ public class Lien extends FT_Feature {
   }
 
   /**
-   * Exactitude (définie par Atef) entre les surfaces du lien. Methode
+   * Exactitude (définie par Atef) entre les surfaces du lien ; Methode
    * UNIQUEMENT valable pour des liens pointant vers 1 ou n objets ref et com
    * avec une géométrie SURFACIQUE.
    * @return exactitude
    */
-  public final double exactitude() {
-    GM_MultiSurface<GM_OrientableSurface> geomRef = new GM_MultiSurface<GM_OrientableSurface>();
-    GM_MultiSurface<GM_OrientableSurface> geomComp = new GM_MultiSurface<GM_OrientableSurface>();
-    FT_Feature obj;
-    GM_OrientableSurface geometrie;
-    Iterator<FT_Feature> it;
+  public double exactitude() {
+    GM_MultiSurface<IOrientableSurface> geomRef = new GM_MultiSurface<IOrientableSurface>();
+    GM_MultiSurface<IOrientableSurface> geomComp = new GM_MultiSurface<IOrientableSurface>();
+    IFeature obj;
+    IOrientableSurface geometrie;
+    Iterator<IFeature> it;
 
     it = this.getObjetsRef().iterator();
     while (it.hasNext()) {
       obj = it.next();
-      geometrie = (GM_OrientableSurface) obj.getGeom();
-      if (!(geometrie instanceof GM_Surface)) {
+      geometrie = (IOrientableSurface) obj.getGeom();
+      if (!(geometrie instanceof ISurface)) {
         return 2;
       }
       geomRef.add(geometrie);
@@ -691,8 +653,8 @@ public class Lien extends FT_Feature {
     it = this.getObjetsComp().iterator();
     while (it.hasNext()) {
       obj = it.next();
-      geometrie = (GM_OrientableSurface) obj.getGeom();
-      if (!(geometrie instanceof GM_Surface)) {
+      geometrie = (IOrientableSurface) obj.getGeom();
+      if (!(geometrie instanceof ISurface)) {
         return 2;
       }
       geomComp.add(geometrie);
@@ -702,23 +664,23 @@ public class Lien extends FT_Feature {
   }
 
   /**
-   * Exactitude (définie par Atef) entre les surfaces du lien. Methode
+   * Exactitude (définie par Atef) entre les surfaces du lien ; Methode
    * UNIQUEMENT valable pour des liens pointant vers 1 ou n objets ref et com
    * avec une géométrie SURFACIQUE.
    * @return completeness
    */
-  public final double completude() {
-    GM_MultiSurface<GM_OrientableSurface> geomRef = new GM_MultiSurface<GM_OrientableSurface>();
-    GM_MultiSurface<GM_OrientableSurface> geomComp = new GM_MultiSurface<GM_OrientableSurface>();
-    FT_Feature obj;
-    GM_OrientableSurface geometrie;
-    Iterator<FT_Feature> it;
+  public double completude() {
+    GM_MultiSurface<IOrientableSurface> geomRef = new GM_MultiSurface<IOrientableSurface>();
+    GM_MultiSurface<IOrientableSurface> geomComp = new GM_MultiSurface<IOrientableSurface>();
+    IFeature obj;
+    IOrientableSurface geometrie;
+    Iterator<IFeature> it;
 
     it = this.getObjetsRef().iterator();
     while (it.hasNext()) {
       obj = it.next();
-      geometrie = (GM_OrientableSurface) obj.getGeom();
-      if (!(geometrie instanceof GM_Surface)) {
+      geometrie = (IOrientableSurface) obj.getGeom();
+      if (!(geometrie instanceof ISurface)) {
         return 2;
       }
       geomRef.add(geometrie);
@@ -726,8 +688,8 @@ public class Lien extends FT_Feature {
     it = this.getObjetsComp().iterator();
     while (it.hasNext()) {
       obj = it.next();
-      geometrie = (GM_OrientableSurface) obj.getGeom();
-      if (!(geometrie instanceof GM_Surface)) {
+      geometrie = (IOrientableSurface) obj.getGeom();
+      if (!(geometrie instanceof ISurface)) {
         return 2;
       }
       geomComp.add(geometrie);
@@ -735,4 +697,5 @@ public class Lien extends FT_Feature {
 
     return Distances.exactitude(geomRef, geomComp);
   }
+
 }

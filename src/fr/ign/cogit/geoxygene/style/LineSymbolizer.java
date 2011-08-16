@@ -40,19 +40,24 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.batik.gvt.GraphicsNode;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 
 /**
@@ -88,11 +93,11 @@ public class LineSymbolizer extends AbstractSymbolizer {
   }
 
   @Override
-  public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics) {
-    GM_Object geometry = feature.getGeom();
+  public void paint(IFeature feature, Viewport viewport, Graphics2D graphics) {
+    IGeometry geometry = feature.getGeom();
     if (this.getGeometryPropertyName() != null
         && !this.getGeometryPropertyName().equalsIgnoreCase("geom")) { //$NON-NLS-1$
-      geometry = (GM_Object) feature.getAttribute(this
+      geometry = (IGeometry) feature.getAttribute(this
           .getGeometryPropertyName());
     }
     if (geometry == null) {
@@ -156,16 +161,16 @@ public class LineSymbolizer extends AbstractSymbolizer {
    * @return the list of awt shapes corresponding to the given geometry
    */
   @SuppressWarnings("unchecked")
-  private List<Shape> getShapeList(GM_Object geometry, Viewport viewport,
+  private List<Shape> getShapeList(IGeometry geometry, Viewport viewport,
       boolean fill) {
     if (geometry.isLineString() || geometry.isPolygon()) {
-      GM_LineString line = (GM_LineString) ((geometry.isLineString()) ? geometry
-          : ((GM_Polygon) geometry).exteriorLineString());
+      ILineString line = (ILineString) ((geometry.isLineString()) ? geometry
+          : ((IPolygon) geometry).exteriorLineString());
       if (this.getPerpendicularOffset() != 0) {
-        GM_MultiCurve<GM_LineString> offsetCurve = JtsAlgorithms.offsetCurve(
+        IMultiCurve<ILineString> offsetCurve = JtsAlgorithms.offsetCurve(
             line, this.getPerpendicularOffset());
         List<Shape> shapes = new ArrayList<Shape>();
-        for (GM_LineString l : offsetCurve) {
+        for (ILineString l : offsetCurve) {
           shapes.addAll(this.getLineStringShapeList(l, viewport, fill));
         }
         return shapes;
@@ -176,9 +181,9 @@ public class LineSymbolizer extends AbstractSymbolizer {
       List<Shape> shapes = new ArrayList<Shape>();
       for (GM_OrientableCurve line : (GM_MultiCurve<GM_OrientableCurve>) geometry) {
         if (this.getPerpendicularOffset() != 0) {
-          GM_MultiCurve<GM_LineString> offsetCurve = JtsAlgorithms.offsetCurve(
-              (GM_LineString) line, this.getPerpendicularOffset());
-          for (GM_LineString l : offsetCurve) {
+          IMultiCurve<ILineString> offsetCurve = JtsAlgorithms.offsetCurve(
+              (ILineString) line, this.getPerpendicularOffset());
+          for (ILineString l : offsetCurve) {
             shapes.addAll(this.getLineStringShapeList(l, viewport, fill));
           }
         } else {
@@ -189,7 +194,7 @@ public class LineSymbolizer extends AbstractSymbolizer {
     }
     if (geometry.isMultiSurface()) {
       List<Shape> shapes = new ArrayList<Shape>();
-      for (GM_OrientableSurface surface : (GM_MultiSurface<GM_OrientableSurface>) geometry) {
+      for (IOrientableSurface surface : ((IMultiSurface<IOrientableSurface>) geometry).getList()) {
         try {
           Shape shape = viewport.toShape(fill ? surface.buffer(this.getStroke()
               .getStrokeWidth() / 2) : surface);
@@ -205,7 +210,7 @@ public class LineSymbolizer extends AbstractSymbolizer {
     return null;
   }
 
-  private List<Shape> getLineStringShapeList(GM_OrientableCurve line,
+  private List<Shape> getLineStringShapeList(IOrientableCurve line,
       Viewport viewport, boolean fill) {
     List<Shape> shapes = new ArrayList<Shape>();
     try {
@@ -221,7 +226,7 @@ public class LineSymbolizer extends AbstractSymbolizer {
   }
 
   @SuppressWarnings("unchecked")
-  private void paintShadow(GM_Object geometry, Viewport viewport,
+  private void paintShadow(IGeometry geometry, Viewport viewport,
       Graphics2D graphics) {
     if (this.getShadow() != null) {
       Color shadowColor = this.getShadow().getColor();
@@ -417,7 +422,7 @@ public class LineSymbolizer extends AbstractSymbolizer {
         * width, -(0.5) * height);
     GeneralPath path = (GeneralPath) shape;
     PathIterator pathIterator = path.getPathIterator(null);
-    DirectPositionList points = new DirectPositionList();
+    IDirectPositionList points = new DirectPositionList();
     while (!pathIterator.isDone()) {
       double[] coords = new double[6];
       int type = pathIterator.currentSegment(coords);
@@ -426,12 +431,12 @@ public class LineSymbolizer extends AbstractSymbolizer {
       }
       pathIterator.next();
     }
-    GM_LineString line = Operateurs.resamping(new GM_LineString(points),
+    ILineString line = Operateurs.resampling(new GM_LineString(points),
         shapeWidth);
     for (int i = 0; i < line.sizeControlPoint() - 1; i++) {
-      DirectPosition p1 = line.getControlPoint(i);
-      DirectPosition p2 = line.getControlPoint(i + 1);
-      DirectPosition p = new DirectPosition((p1.getX() + p2.getX()) / 2, (p1
+      IDirectPosition p1 = line.getControlPoint(i);
+      IDirectPosition p2 = line.getControlPoint(i + 1);
+      IDirectPosition p = new DirectPosition((p1.getX() + p2.getX()) / 2, (p1
           .getY() + p2.getY()) / 2);
       AffineTransform transform = AffineTransform.getTranslateInstance(
           p.getX(), p.getY());
@@ -443,4 +448,5 @@ public class LineSymbolizer extends AbstractSymbolizer {
     }
     return transforms;
   }
+
 }

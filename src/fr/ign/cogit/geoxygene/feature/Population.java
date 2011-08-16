@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.feature;
@@ -31,9 +39,15 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import fr.ign.cogit.geoxygene.api.feature.IDataSet;
+import fr.ign.cogit.geoxygene.api.feature.IExtraction;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
@@ -69,8 +83,8 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * @author Julien Perret
  */
 @Entity
-public class Population<Feat extends FT_Feature> extends
-    FT_FeatureCollection<Feat> implements Collection<Feat> {
+public class Population<Feat extends IFeature> extends
+    FT_FeatureCollection<Feat> implements IPopulation<Feat> {
   /** logger */
   // static Logger logger=Logger.getLogger(Population.class.getName());
   /** Identifiant. Correspond au "cogitID" des tables du SGBD. */
@@ -98,7 +112,7 @@ public class Population<Feat extends FT_Feature> extends
    * constructeur
    */
   public Population() {
-    this.persistant = false;
+  	this.persistant = false;
   }
 
   /**
@@ -106,7 +120,7 @@ public class Population<Feat extends FT_Feature> extends
    * @param nom nom de la population.
    */
   public Population(String nom) {
-    this();
+  	this();
     this.setNom(nom);
   }
 
@@ -226,7 +240,7 @@ public class Population<Feat extends FT_Feature> extends
    * été indexée dans le SGBD. ATTENTION AGAIN: seules les populations avec une
    * géométrie sont chargées.
    */
-  public void chargeElementsPartie(GM_Object geom) {
+  public void chargeElementsPartie(IGeometry geom) {
     if (FT_FeatureCollection.logger.isInfoEnabled()) {
       FT_FeatureCollection.logger
           .info("-- Chargement des elements de la population  " + this.getNom()); //$NON-NLS-1$
@@ -268,7 +282,7 @@ public class Population<Feat extends FT_Feature> extends
    * la table correspondante sont chargés. Les données doivent d'abord avoir été
    * indexées. PB: TRES LENT !!!!!!!
    */
-  public void chargeElementsProches(Population<Feat> pop, double dist) {
+  public void chargeElementsProches(IPopulation<Feat> pop, double dist) {
     if (FT_FeatureCollection.logger.isInfoEnabled()) {
       FT_FeatureCollection.logger
           .info("-- Chargement des elements de la population  " + this.getNom()); //$NON-NLS-1$
@@ -287,7 +301,7 @@ public class Population<Feat extends FT_Feature> extends
       Collection<Feat> selectionTotale = new HashSet<Feat>();
       while (itPop.hasNext()) {
         Feat objet = itPop.next();
-        FT_FeatureCollection<Feat> selection = DataSet.db.loadAllFeatures(
+        IFeatureCollection<Feat> selection = DataSet.db.loadAllFeatures(
             this.classe, objet.getGeom(), dist);
         selectionTotale.addAll(selection.getElements());
       }
@@ -311,8 +325,8 @@ public class Population<Feat extends FT_Feature> extends
    * "dist" des éléments de la population Travail sur un index en mémoire (pas
    * celui du SGBD). Rmq : Fonctionne avec des objets de géométrie quelconque
    */
-  public Population<Feat> selectionElementsProchesGenerale(
-      Population<Feat> pop, double dist) {
+  public IPopulation<Feat> selectionElementsProchesGenerale(
+      IPopulation<Feat> pop, double dist) {
     Population<Feat> popTemporaire = new Population<Feat>();
     Population<Feat> popResultat = new Population<Feat>(false, this.getNom(),
         this.getClasse(), true);
@@ -327,14 +341,14 @@ public class Population<Feat extends FT_Feature> extends
     Iterator<Feat> itPop = pop.getElements().iterator();
     while (itPop.hasNext()) {
       Feat objet = itPop.next();
-      GM_Envelope enveloppe = objet.getGeom().envelope();
+      IEnvelope enveloppe = objet.getGeom().envelope();
       double xmin = enveloppe.getLowerCorner().getX() - dist;
       double xmax = enveloppe.getUpperCorner().getX() + dist;
       double ymin = enveloppe.getLowerCorner().getY() - dist;
       double ymax = enveloppe.getUpperCorner().getY() + dist;
       enveloppe = new GM_Envelope(xmin, xmax, ymin, ymax);
-      Collection<Feat> selection = popTemporaire.select(enveloppe);
-      Iterator<Feat> itSel = selection.iterator();
+      IFeatureCollection<Feat> selection = popTemporaire.select(enveloppe);
+      Iterator<Feat> itSel = selection.getElements().iterator();
       selectionUnObjet = new HashSet<Feat>();
       while (itSel.hasNext()) {
         Feat objetSel = itSel.next();
@@ -355,7 +369,7 @@ public class Population<Feat extends FT_Feature> extends
    * Renvoie une population avec tous les éléments de this situés à moins de
    * "dist" des éléments de la population pop.
    */
-  public Population<Feat> selectionLargeElementsProches(Population<Feat> pop,
+  public IPopulation<Feat> selectionLargeElementsProches(IPopulation<Feat> pop,
       double dist) {
     Population<Feat> popTemporaire = new Population<Feat>();
     Population<Feat> popResultat = new Population<Feat>(false, this.getNom(),
@@ -366,15 +380,15 @@ public class Population<Feat extends FT_Feature> extends
     Iterator<Feat> itPop = pop.getElements().iterator();
     while (itPop.hasNext()) {
       Feat objet = itPop.next();
-      GM_Envelope enveloppe = objet.getGeom().envelope();
+      IEnvelope enveloppe = objet.getGeom().envelope();
       double xmin = enveloppe.getLowerCorner().getX() - dist;
       double xmax = enveloppe.getUpperCorner().getX() + dist;
       double ymin = enveloppe.getLowerCorner().getY() - dist;
       double ymax = enveloppe.getUpperCorner().getY() + dist;
       enveloppe = new GM_Envelope(xmin, xmax, ymin, ymax);
-      Collection<Feat> selection = popTemporaire.select(enveloppe);
-      popTemporaire.getElements().removeAll(selection);
-      popResultat.addAll(selection);
+      IFeatureCollection<Feat> selection = popTemporaire.select(enveloppe);
+      popTemporaire.getElements().removeAll(selection.getElements());
+      popResultat.addCollection(selection);
     }
     return popResultat;
   }
@@ -385,7 +399,7 @@ public class Population<Feat extends FT_Feature> extends
    * avoir été indexée dans le SGBD. ATTENTION AGAIN: seules les populations
    * avec une géométrie sont chargées.
    */
-  public void chargeElementsPartie(Extraction zoneExtraction) {
+  public void chargeElementsPartie(IExtraction zoneExtraction) {
     this.chargeElementsPartie(zoneExtraction.getGeom());
   }
 
@@ -456,17 +470,17 @@ public class Population<Feat extends FT_Feature> extends
    * DataSet auquel apparient la population (une population appartient à un seul
    * DataSet).
    */
-  protected DataSet dataSet;
+  protected IDataSet dataSet;
 
   /** Récupère le DataSet de la population. */
   @ManyToOne
-  public DataSet getDataSet() {
+  public IDataSet getDataSet() {
     return this.dataSet;
   }
 
   /** définit le DataSet de la population, et met à jour la relation inverse. */
-  public void setDataSet(DataSet O) {
-    DataSet old = this.dataSet;
+  public void setDataSet(IDataSet O) {
+    IDataSet old = this.dataSet;
     this.dataSet = O;
     if (old != null) {
       old.getPopulations().remove(this);
@@ -535,10 +549,10 @@ public class Population<Feat extends FT_Feature> extends
    * persistant dans cette méthode <b>NB :</b> différent de add (hérité de
    * FT_FeatureCollection) qui ajoute un élément déjà existant.
    */
-  public Feat nouvelElement(GM_Object geom) {
+  public Feat nouvelElement(IGeometry geom) {
     try {
       Feat elem = this.getClasse().newInstance();
-      elem.setId(Population.idNouvelElement++);
+      elem.setId(++Population.idNouvelElement);
       elem.setGeom(geom);
       // elem.setPopulation(this);
       super.add(elem);
@@ -557,7 +571,6 @@ public class Population<Feat extends FT_Feature> extends
           .error("            Soit problème à la mise à jour de l'index "); //$NON-NLS-1$
       FT_FeatureCollection.logger
           .error("               Causes possibles : mise à jour automatique de l'index, mais l'objet n'a pas encore de géométrie"); //$NON-NLS-1$
-      e.printStackTrace();
       return null;
     }
   }
@@ -580,7 +593,6 @@ public class Population<Feat extends FT_Feature> extends
   public Feat nouvelElement(Class<?>[] signature, Object[] param) {
     try {
       Feat elem = this.getClasse().getConstructor(signature).newInstance(param);
-      elem.setId(Population.idNouvelElement++);
       super.add(elem);
       if (this.getPersistant()) {
         DataSet.db.makePersistent(elem);
@@ -611,7 +623,7 @@ public class Population<Feat extends FT_Feature> extends
    * </ul>
    * @param populationACopier
    */
-  public void copiePopulation(Population<Feat> populationACopier) {
+  public void copiePopulation(IPopulation<Feat> populationACopier) {
     this.setElements(populationACopier.getElements());
     this.setClasse(populationACopier.getClasse());
     this.setFlagGeom(populationACopier.getFlagGeom());
@@ -669,7 +681,7 @@ public class Population<Feat extends FT_Feature> extends
       if (FT_FeatureCollection.logger.isTraceEnabled()) {
         FT_FeatureCollection.logger.trace("debut"); //$NON-NLS-1$
       }
-      FT_FeatureCollection<Feat> coll = DataSet.db.loadAllFeatures(this
+      IFeatureCollection<Feat> coll = DataSet.db.loadAllFeatures(this
           .getFeatureType());
       if (FT_FeatureCollection.logger.isTraceEnabled()) {
         FT_FeatureCollection.logger.trace("milieu"); //$NON-NLS-1$
@@ -692,5 +704,4 @@ public class Population<Feat extends FT_Feature> extends
           .info("-- " + this.size() + " instances chargees dans la population"); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
-
 }

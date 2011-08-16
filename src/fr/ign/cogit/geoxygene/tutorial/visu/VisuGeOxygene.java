@@ -34,10 +34,11 @@ package fr.ign.cogit.geoxygene.tutorial.visu;
  */
 public class VisuGeOxygene {
 
-  /** méthode qui lance l'application */
+  /** Méthode qui lance l'application */
+  // TODO
   public static void main(String[] args) {
 
-    // création d'une nouvelle connexion
+    // Création d'une nouvelle connexion
 
     // Chargement des données de la classe Departements
 

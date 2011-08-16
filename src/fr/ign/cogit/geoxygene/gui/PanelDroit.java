@@ -48,7 +48,7 @@ public final class PanelDroit extends JPanel {
     this.frame = frame;
 
     this.setLayout(new GridBagLayout());
-    this.setFont(new Font("Arial", Font.PLAIN, 9)); //$NON-NLS-1$
+    this.setFont(new Font("Arial", Font.PLAIN, 9));
 
     GridBagConstraints c = new GridBagConstraints();
     c.gridwidth = GridBagConstraints.REMAINDER;
@@ -57,7 +57,7 @@ public final class PanelDroit extends JPanel {
 
     // selection
     this.pSelection.setFont(this.getFont());
-    this.pSelection.setBorder(BorderFactory.createTitledBorder("Selection"));
+    this.pSelection.setBorder(BorderFactory.createTitledBorder("Sélection"));
 
     this.lNbSelection.setFont(this.getFont());
     this.pSelection.add(this.lNbSelection, c);

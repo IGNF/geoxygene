@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO
@@ -23,12 +23,12 @@
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
- * 
  */
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ICircle;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPosition;
 
 /**
  * NON IMPLEMENTE.
@@ -38,8 +38,15 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  * 
  */
 
-class GM_Circle extends GM_Arc {
-  public GM_Circle(GM_Point startPoint, GM_Point midPoint, GM_Point endPoint) {
+public class GM_Circle extends GM_Arc implements ICircle {
+
+  public GM_Circle(IPosition startPoint, IPosition midPoint, IPosition endPoint) {
     super(startPoint, midPoint, endPoint);
   }
+
+  @Override
+  public double delta() {
+    return 2 * Math.PI;
+  }
+
 }

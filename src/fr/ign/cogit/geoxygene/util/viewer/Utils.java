@@ -38,11 +38,11 @@ import java.io.File;
 
 class Utils {
 
-  public final static String SHAPEFILE = "shp"; //$NON-NLS-1$
-  public final static String GIF_IMAGE = "gif"; //$NON-NLS-1$
-  public final static String JPG_IMAGE = "jpg"; //$NON-NLS-1$
-  public final static String IMAGE = "image"; //$NON-NLS-1$
-  public final static String GEOXYGENE = "oxy"; //$NON-NLS-1$
+  public final static String SHAPEFILE = "shp";
+  public final static String GIF_IMAGE = "gif";
+  public final static String JPG_IMAGE = "jpg";
+  public final static String IMAGE = "image";
+  public final static String GEOXYGENE = "oxy";
 
   /*
    * Get the extension of a file.

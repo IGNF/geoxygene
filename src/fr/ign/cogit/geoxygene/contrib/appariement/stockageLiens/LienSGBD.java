@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.appariement.stockageLiens;
@@ -24,12 +32,13 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.Population;
 
 /**
- * Liens stockables dans le SGBD. Resultat de l'appariement : lien entre objets
+ * Liens stockables dans le SGBD Resultat de l'appariement : lien entre objets
  * de BDref et objets de BDcomp. Un lien a aussi une géométrie qui est sa
  * représentation graphique.
  * 
@@ -40,46 +49,42 @@ import fr.ign.cogit.geoxygene.feature.Population;
 
 public class LienSGBD extends FT_Feature {
 
-  /**
-   * Les objets de Reference pointés par le lien.
-   */
-  private String objetsRef;
+  /** Les objets de Reference pointés par le lien */
+  protected String objetsRef;
 
   /**
    * @return reference object list
    */
-  public final String getObjetsRef() {
+  public String getObjetsRef() {
     return this.objetsRef;
   }
 
   /**
    * @param liste reference object list
    */
-  public final void setObjetsRef(final String liste) {
+  public void setObjetsRef(String liste) {
     this.objetsRef = liste;
   }
 
-  /**
-   * Les objets de Comparaison pointés par le lien.
-   */
-  private String objetsComp;
+  /** Les objets de Comparaison pointés par le lien */
+  protected String objetsComp;
 
   /**
    * @return comparison object list
    */
-  public final String getObjetsComp() {
+  public String getObjetsComp() {
     return this.objetsComp;
   }
 
   /**
    * @param liste comparison object list
    */
-  public final void setObjetsComp(final String liste) {
+  public void setObjetsComp(String liste) {
     this.objetsComp = liste;
   }
 
   /**
-   * Estimation de la qualité du lien d'appariement. (mapping fait avec la table
+   * Estimation de la qualité du lien d'appariement (mapping fait avec la table
    * Representation_Lien au besoin)
    */
   private double evaluation;
@@ -87,133 +92,124 @@ public class LienSGBD extends FT_Feature {
   /**
    * @return link evaluation
    */
-  public final double getEvaluation() {
+  public double getEvaluation() {
     return this.evaluation;
   }
 
   /**
-   * @param theEvaluation link evaluation
+   * @param evaluation link evaluation
    */
-  public final void setEvaluation(final double theEvaluation) {
-    this.evaluation = theEvaluation;
+  public void setEvaluation(double evaluation) {
+    this.evaluation = evaluation;
   }
 
-  /**
-   * Liste d'indicateurs temporaires utilisés pendant les calculs.
-   * d'appariement.
-   */
-  private String indicateurs;
+  /** Liste d'indicateurs temporaires utilisés pendant les calculs d'appariement */
+  protected String indicateurs;
 
   /**
    * @return indicators
    */
-  public final String getIndicateurs() {
+  public String getIndicateurs() {
     return this.indicateurs;
   }
 
   /**
-   * @param indicators indicators
+   * @param indicateurs indicators
    */
-  public final void setIndicateurs(final String indicators) {
-    this.indicateurs = indicators;
+  public void setIndicateurs(String indicateurs) {
+    this.indicateurs = indicateurs;
   }
 
   /**
-   * Texte libre. (mapping fait avec la table Representation_Lien au besoin)
+   * Texte libre (mapping fait avec la table Representation_Lien au besoin)
    */
-  private String commentaire = new String();
+  protected String commentaire = new String();
 
-  /**
-   * @return comment
-   */
-  public final String getCommentaire() {
+  public String getCommentaire() {
     return this.commentaire;
   }
 
-  /**
-   * @param comment comment
-   */
-  public final void setCommentaire(final String comment) {
-    this.commentaire = comment;
+  public void setCommentaire(String commentaire) {
+    this.commentaire = commentaire;
   }
 
   /**
    * Texte libre pour décrire le nom de l'appariement. (mapping fait avec la
    * table Representation_Lien au besoin)
    */
-  private String nom = new String();
+  protected String nom = new String();
 
   /**
    * @return matching name
    */
-  public final String getNom() {
+  public String getNom() {
     return this.nom;
   }
 
   /**
-   * @param aNom matching name
+   * @param nom matching name
    */
-  public final void setNom(final String aNom) {
-    this.nom = aNom;
+  public void setNom(String nom) {
+    this.nom = nom;
   }
 
   /**
    * Texte libre pour décrire le type d'appariement (ex. "Noeud-Noeud").
    * (mapping fait avec la table Representation_Lien au besoin)
    */
-  private String type = new String();
+  protected String type = new String();
 
   /**
    * @return matching type
    */
-  public final String getType() {
+  public String getType() {
     return this.type;
   }
 
   /**
-   * @param aType matching type
+   * @param type matching type
    */
-  public final void setType(final String aType) {
-    this.type = aType;
+  public void setType(String type) {
+    this.type = type;
   }
 
   /**
    * Texte libre pour décrire les objets de référence pointés. (mapping fait
-   * avec la table Representation_Lien au besoin).
+   * avec la table Representation_Lien au besoin)
    */
-  private String reference = new String();
+  protected String reference = new String();
 
   /**
    * @return reference text
    */
-  public final String getReference() {
+  public String getReference() {
     return this.reference;
   }
 
   /**
-   * @param aReference reference text
+   * @param reference reference text
    */
-  public final void setReference(final String aReference) {
-    this.reference = aReference;
+  public void setReference(String reference) {
+    this.reference = reference;
   }
 
   /**
    * Texte libre pour décrire les objets de comparaison pointés. (mapping fait
    * avec la table Representation_Lien au besoin)
    */
-  private String comparaison = new String();
+  protected String comparaison = new String();
 
   /**
    * @return comparison text
    */
-  public final String getComparaison() {
+  public String getComparaison() {
     return this.comparaison;
   }
 
   /**
    * @param newComparaison comparison text
    */
-  public final void setComparaison(final String newComparaison) {
+  public void setComparaison(String newComparaison) {
     this.comparaison = newComparaison;
   }
 
@@ -222,17 +218,14 @@ public class LienSGBD extends FT_Feature {
    * @param lien matching link
    * @return db link
    */
-  public final LienSGBD conversionLiensVersSGBD(final Lien lien) {
+  public LienSGBD conversionLiensVersSGBD(Lien lien) {
     List<?> listeObjetsRef = lien.getObjetsRef(), listeObjetsComp = lien
         .getObjetsComp(), indic = lien.getIndicateurs();
     Iterator<?> itRef = listeObjetsRef.iterator(), itComp = listeObjetsComp
         .iterator(), itIndic = indic.iterator();
 
     FT_Feature feature;
-    String formatRef = "", //$NON-NLS-1$
-    formatComp = "", //$NON-NLS-1$
-    formatIndic = "", //$NON-NLS-1$
-    classe = ""; //$NON-NLS-1$
+    String formatRef = "", formatComp = "", formatIndic = "", classe = "";
 
     // Reference
     while (itRef.hasNext()) {
@@ -240,9 +233,9 @@ public class LienSGBD extends FT_Feature {
       classe = feature.getClass().getName();
       if (formatRef.contains(classe) && formatRef.length() != 0) {
         formatRef = formatRef
-            .replaceAll(classe, classe + " " + feature.getId()); //$NON-NLS-1$
+            .replaceAll(classe, classe + " " + feature.getId());
       } else {
-        formatRef = formatRef + classe + " " + feature.getId() + "|"; //$NON-NLS-1$ //$NON-NLS-2$
+        formatRef = formatRef + classe + " " + feature.getId() + "|";
         this.getEnsembleLiensSGBD().getListePop().add(classe);
       }
     }
@@ -254,10 +247,10 @@ public class LienSGBD extends FT_Feature {
       feature = (FT_Feature) itComp.next();
       classe = feature.getClass().getName();
       if (formatComp.contains(classe) && formatComp.length() != 0) {
-        formatComp = formatComp.replaceAll(classe, classe
-            + " " + feature.getId()); //$NON-NLS-1$
+        formatComp = formatComp.replaceAll(classe, classe + " "
+            + feature.getId());
       } else {
-        formatComp = formatComp + classe + " " + feature.getId() + "|"; //$NON-NLS-1$ //$NON-NLS-2$
+        formatComp = formatComp + classe + " " + feature.getId() + "|";
         this.getEnsembleLiensSGBD().getListePop().add(classe);
       }
     }
@@ -266,7 +259,7 @@ public class LienSGBD extends FT_Feature {
 
     // Indicateurs
     while (itIndic.hasNext()) {
-      formatIndic = formatIndic + (String) itIndic.next() + "|"; //$NON-NLS-1$
+      formatIndic = formatIndic + (String) itIndic.next() + "|";
     }
     if (formatIndic.length() > 0) {
       this.setIndicateurs(formatIndic.substring(0, formatIndic.length() - 1));
@@ -322,30 +315,29 @@ public class LienSGBD extends FT_Feature {
    * Methode de conversion entre les liens SGBD vers les liens d'appariement.
    * @return matching link
    */
-  @SuppressWarnings("unchecked")
-  public final Lien conversionSGBDVersLiens() {
+  public Lien conversionSGBDVersLiens() {
     Lien lien = new Lien();
 
     // reference
     String formatRef = this.getObjetsRef(), valeurRef, valeurRefClass, valeurRefIds, valeurRefId;
-    StringTokenizer tokenRef = new StringTokenizer(formatRef, "|"); //$NON-NLS-1$
+    StringTokenizer tokenRef = new StringTokenizer(formatRef, "|");
     StringTokenizer tokenRefId;
-    Population populationCourante;
-    FT_Feature feature;
-    List<Population> liste = this.getEnsembleLiensSGBD().getListePopulations();
+    Population<IFeature> populationCourante;
+    IFeature feature;
+    List<Population<IFeature>> liste = this.getEnsembleLiensSGBD().getListePopulations();
     while (tokenRef.hasMoreElements()) {
       valeurRef = tokenRef.nextToken();
-      valeurRefClass = valeurRef.substring(0, valeurRef.indexOf(" ")); //$NON-NLS-1$
-      valeurRefIds = valeurRef.replaceFirst(valeurRefClass, ""); //$NON-NLS-1$
-      tokenRefId = new StringTokenizer(valeurRefIds, " "); //$NON-NLS-1$
-      Iterator<Population> it = liste.iterator();
+      valeurRefClass = valeurRef.substring(0, valeurRef.indexOf(" "));
+      valeurRefIds = valeurRef.replaceFirst(valeurRefClass, "");
+      tokenRefId = new StringTokenizer(valeurRefIds, " ");
+      Iterator<Population<IFeature>> it = liste.iterator();
       while (it.hasNext()) {
         populationCourante = it.next();
         if (valeurRefClass.equals(populationCourante.getNomClasse())) {
           while (tokenRefId.hasMoreElements()) {
             valeurRefId = tokenRefId.nextToken();
             int refId = new Integer(valeurRefId).intValue();
-            Iterator<FT_Feature> itPop = populationCourante.getElements()
+            Iterator<IFeature> itPop = populationCourante.getElements()
                 .iterator();
             while (itPop.hasNext()) {
               feature = itPop.next();
@@ -362,21 +354,21 @@ public class LienSGBD extends FT_Feature {
 
     // comparaison
     String formatComp = this.getObjetsComp(), valeurComp, valeurCompClass, valeurCompIds, valeurCompId;
-    StringTokenizer tokenComp = new StringTokenizer(formatComp, "|"); //$NON-NLS-1$
+    StringTokenizer tokenComp = new StringTokenizer(formatComp, "|");
     StringTokenizer tokenCompId;
     while (tokenComp.hasMoreElements()) {
       valeurComp = tokenComp.nextToken();
-      valeurCompClass = valeurComp.substring(0, valeurComp.indexOf(" ")); //$NON-NLS-1$
-      valeurCompIds = valeurComp.replaceFirst(valeurCompClass, ""); //$NON-NLS-1$
-      tokenCompId = new StringTokenizer(valeurCompIds, " "); //$NON-NLS-1$
-      Iterator<Population> it = liste.iterator();
+      valeurCompClass = valeurComp.substring(0, valeurComp.indexOf(" "));
+      valeurCompIds = valeurComp.replaceFirst(valeurCompClass, "");
+      tokenCompId = new StringTokenizer(valeurCompIds, " ");
+      Iterator<Population<IFeature>> it = liste.iterator();
       while (it.hasNext()) {
         populationCourante = it.next();
         if (valeurCompClass.equals(populationCourante.getNomClasse())) {
           while (tokenCompId.hasMoreElements()) {
             valeurCompId = tokenCompId.nextToken();
             int compId = new Integer(valeurCompId).intValue();
-            Iterator<FT_Feature> itPop = populationCourante.getElements()
+            Iterator<IFeature> itPop = populationCourante.getElements()
                 .iterator();
             while (itPop.hasNext()) {
               feature = itPop.next();
@@ -393,7 +385,7 @@ public class LienSGBD extends FT_Feature {
 
     // Indicateurs
     String formatIndic = this.getIndicateurs(), valeurIndic;
-    StringTokenizer tokenIndic = new StringTokenizer(formatIndic, "|"); //$NON-NLS-1$
+    StringTokenizer tokenIndic = new StringTokenizer(formatIndic, "|");
     while (tokenIndic.hasMoreElements()) {
       valeurIndic = tokenIndic.nextToken();
       lien.addIndicateur(valeurIndic);
@@ -424,26 +416,15 @@ public class LienSGBD extends FT_Feature {
   }
 
   // ////////////////////////////////////
-  /**
-   * The set of links.
-   */
   private EnsembleDeLiensSGBD ensembleLiensSGBD;
 
-  /**
-   * Récupère l'objet en relation.
-   * @return the set of links
-   */
-  public final EnsembleDeLiensSGBD getEnsembleLiensSGBD() {
+  /** Récupère l'objet en relation. */
+  public EnsembleDeLiensSGBD getEnsembleLiensSGBD() {
     return this.ensembleLiensSGBD;
   }
 
-  /**
-   * Define a set of links.
-   * <p>
-   * Définit l'objet en relation, et met à jour la relation inverse.
-   * @param ensemble set of links
-   */
-  public final void setEnsembleLiensSGBD(final EnsembleDeLiensSGBD ensemble) {
+  /** Définit l'objet en relation, et met à jour la relation inverse. */
+  public void setEnsembleLiensSGBD(EnsembleDeLiensSGBD ensemble) {
     EnsembleDeLiensSGBD old = this.ensembleLiensSGBD;
     this.ensembleLiensSGBD = ensemble;
     if (old != null) {
@@ -455,4 +436,5 @@ public class LienSGBD extends FT_Feature {
       }
     }
   }
+
 }

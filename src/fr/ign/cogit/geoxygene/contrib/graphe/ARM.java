@@ -30,16 +30,17 @@ package fr.ign.cogit.geoxygene.contrib.graphe;
 import java.util.Iterator;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 /**
- * méthodes statiques pour la création d'un ARM (Arbre de Recouvrement Minimal,
+ * Méthodes statiques pour la création d'un ARM (Arbre de Recouvrement Minimal,
  * Minimal Spanning Tree)
  * 
  * @author Mustiere - IGN / Laboratoire COGIT version 1.0
@@ -48,7 +49,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 public class ARM {
 
   /**
-   * création d'un ARM à partir d'un ensemble de points
+   * Création d'un ARM à partir d'un ensemble de points
    * 
    * Cette méthode est très brutale: adaptée pour quelques points seulement. On
    * fait des calculs de distance beaucoup trop souvent. L'ARM étant un
@@ -59,18 +60,18 @@ public class ARM {
    *          type point
    * 
    * @return Une carte topo contenant un noeud pour chaque point, et un arc pour
-   *         chaque Tronçon du ARM ("correspondant" est instancié pour relier
+   *         chaque tronçon du ARM ("correspondant" est instancié pour relier
    *         les noeuds et les points).
    */
-  public static CarteTopo creeARM(FT_FeatureCollection<FT_Feature> points) {
+  public static CarteTopo creeARM(IFeatureCollection<IFeature> points) {
     Noeud noeud, nouveauNoeud;
     Arc arc;
-    FT_Feature point;
+    IFeature point;
     double dist, distMin;
     CarteTopo arm = new CarteTopo(I18N.getString("ARM.MST")); //$NON-NLS-1$
     int i, j, imin = 0, jmin = 0;
     GM_LineString trait;
-    FT_FeatureCollection<FT_Feature> pointsCopie = new FT_FeatureCollection<FT_Feature>(
+    FT_FeatureCollection<IFeature> pointsCopie = new FT_FeatureCollection<IFeature>(
         points);
 
     if (pointsCopie.size() == 0) {
@@ -80,7 +81,8 @@ public class ARM {
     // Amorce, on prend un point au hasard: le premier
     point = pointsCopie.get(0);
     if (!(point.getGeom() instanceof GM_Point)) {
-      System.out.println(I18N.getString("ARM.AnObjectIsNotAPoint")); //$NON-NLS-1$
+      System.out
+          .println(I18N.getString("ARM.AnObjectIsNotAPoint")); //$NON-NLS-1$
       return null;
     }
     pointsCopie.remove(point);
@@ -98,7 +100,8 @@ public class ARM {
       for (i = 0; i < pointsCopie.size(); i++) {
         point = pointsCopie.get(i);
         if (!(point.getGeom() instanceof GM_Point)) {
-          System.out.println(I18N.getString("ARM.AnObjectIsNotAPoint")); //$NON-NLS-1$
+          System.out
+              .println(I18N.getString("ARM.AnObjectIsNotAPoint")); //$NON-NLS-1$
           return null;
         }
 
@@ -140,19 +143,20 @@ public class ARM {
    *          quelconque
    * 
    * @return Une carte topo contenant un noeud pour chaque point, et un arc pour
-   *         chaque Tronçon du ARM ("correspondant" est instancié pour relier
+   *         chaque tronçon du ARM ("correspondant" est instancié pour relier
    *         les noeuds et les points).
    * 
    */
   public static CarteTopo creeARMsurObjetsQuelconques(
-      FT_FeatureCollection<FT_Feature> objets) {
-    FT_FeatureCollection<FT_Feature> points = new FT_FeatureCollection<FT_Feature>();
+      IFeatureCollection<IFeature> objets) {
+    FT_FeatureCollection<IFeature> points = new FT_FeatureCollection<IFeature>();
 
-    Iterator<FT_Feature> itObjets = objets.getElements().iterator();
+    Iterator<IFeature> itObjets = objets.getElements().iterator();
     while (itObjets.hasNext()) {
-      FT_Feature objet = itObjets.next();
+      IFeature objet = itObjets.next();
       if (objet.getGeom() == null) {
-        System.out.println(I18N.getString("ARM.AnObjectHasNoGeometry")); //$NON-NLS-1$
+        System.out
+            .println(I18N.getString("ARM.AnObjectHasNoGeometry")); //$NON-NLS-1$
         return null;
       }
       Noeud objet2 = new Noeud();

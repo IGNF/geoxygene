@@ -27,6 +27,8 @@
 
 package fr.ign.cogit.geoxygene.contrib.geometrie;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
@@ -44,13 +46,13 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
  */
 
 public class Vecteur {
-  protected DirectPosition coord = null;
+  protected IDirectPosition coord = null;
 
-  public DirectPosition getCoord() {
+  public IDirectPosition getCoord() {
     return this.coord;
   }
 
-  public void setCoord(DirectPosition coord) {
+  public void setCoord(IDirectPosition coord) {
     this.coord = coord;
   }
 
@@ -65,12 +67,12 @@ public class Vecteur {
   }
 
   /** Initialise le vecteur 0 -> dp1 (a dp1) */
-  public Vecteur(DirectPosition dp1) {
+  public Vecteur(IDirectPosition dp1) {
     this.coord = dp1;
   }
 
   /** Initialise le vecteur dp1 -> dp2 (a dp2-dp1) */
-  public Vecteur(DirectPosition dp1, DirectPosition dp2) {
+  public Vecteur(IDirectPosition dp1, IDirectPosition dp2) {
     if (!Double.isNaN(dp1.getZ()) && !Double.isNaN(dp2.getZ())) {
       this.coord = new DirectPosition(dp2.getX() - dp1.getX(), dp2.getY()
           - dp1.getY(), dp2.getZ() - dp1.getZ());
@@ -81,10 +83,10 @@ public class Vecteur {
   }
 
   public Vecteur(double a, double b, double c) {
-    if (Double.isNaN(c)) {
-      this.coord = new DirectPosition(a, b, 0);
-    } else {
+    if (c != 0) {
       this.coord = new DirectPosition(a, b, c);
+    } else {
+      this.coord = new DirectPosition(a, b, Double.NaN);
     }
   }
 
@@ -166,8 +168,6 @@ public class Vecteur {
     
   }
 
-  
-  
   /** Renvoie un NOUVEAU vecteur égal à (this + v1) */
   public Vecteur ajoute(Vecteur v1) {
     if (!Double.isNaN(this.getZ()) && !Double.isNaN(v1.getZ())) {
@@ -201,7 +201,7 @@ public class Vecteur {
   }
 
   /** Renvoie le point translaté de P par le vecteur this */
-  public DirectPosition translate(DirectPosition P) {
+  public IDirectPosition translate(IDirectPosition P) {
     DirectPosition P2 = new DirectPosition();
     P2.setX(P.getX() + this.getX());
     P2.setY(P.getY() + this.getY());
@@ -214,10 +214,10 @@ public class Vecteur {
   }
 
   /** Renvoie la ligne translatée de L par le vecteur this */
-  public GM_LineString translate(GM_LineString L) {
+  public ILineString translate(ILineString L) {
     GM_LineString L2 = new GM_LineString();
     for (int i = 0; i < L.sizeControlPoint(); i++) {
-      DirectPosition pt = L.getControlPoint(i);
+      IDirectPosition pt = L.getControlPoint(i);
       L2.addControlPoint(this.translate(pt));
     }
     return L2;

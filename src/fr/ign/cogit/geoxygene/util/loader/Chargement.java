@@ -37,7 +37,7 @@ import java.util.Map;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-import fr.ign.cogit.geoxygene.feature.DataSet;
+import fr.ign.cogit.geoxygene.api.feature.IDataSet;
 import fr.ign.cogit.geoxygene.util.loader.gui.GUIChargementDonnees;
 
 /**
@@ -50,13 +50,13 @@ import fr.ign.cogit.geoxygene.util.loader.gui.GUIChargementDonnees;
  */
 public class Chargement {
 
-  private DataSet dataSet = null;
+  private IDataSet dataSet = null;
 
   /**
    * Renvoie la valeur de l'attribut dataSet.
    * @return la valeur de l'attribut dataSet
    */
-  public DataSet getDataSet() {
+  public IDataSet getDataSet() {
     return this.dataSet;
   }
 
@@ -64,7 +64,7 @@ public class Chargement {
    * Affecte la valeur de l'attribut dataSet.
    * @param dataSet l'attribut dataSet à affecter
    */
-  public void setDataSet(DataSet dataSet) {
+  public void setDataSet(IDataSet dataSet) {
     this.dataSet = dataSet;
   }
 

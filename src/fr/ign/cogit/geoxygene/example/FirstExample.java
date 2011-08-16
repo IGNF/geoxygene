@@ -27,6 +27,8 @@
 
 package fr.ign.cogit.geoxygene.example;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
@@ -56,7 +58,7 @@ public class FirstExample {
   // classe de troncons
   private Class<?> tronconClasse;
   // nom de la classe a charger
-  private String nomClasse = "geoxygene.geodata.TronconRoute"; //$NON-NLS-1$
+  private String nomClasse = "geoxygene.geodata.TronconRoute";
 
   // constructeur
   public FirstExample() {
@@ -125,7 +127,7 @@ public class FirstExample {
     FT_FeatureCollection<FT_Feature> bufferColl = new FT_FeatureCollection<FT_Feature>();
     bufferColl.add(buffer);
     viewer.addFeatureCollection(iniColl, "Tronçons");
-    viewer.addFeatureCollection(bufferColl, "résultats");
+    viewer.addFeatureCollection(bufferColl, "Résultats");
 
   }
 
@@ -137,14 +139,14 @@ public class FirstExample {
     this.db.begin();
 
     // Recherche du nombre d'objets a traiter
-    System.out.println("nb: " + this.db.countObjects(this.tronconClasse)); //$NON-NLS-1$
+    System.out.println("nb: " + this.db.countObjects(this.tronconClasse));
 
     // Chargement de tous les objets
-    FT_FeatureCollection<? extends FT_Feature> tronconList = this.db
+    IFeatureCollection<? extends IFeature> tronconList = this.db
         .loadAllFeatures(this.tronconClasse);
     System.out.println("chargement termine");
 
-    // création d'une nouvelle collection pour stocker les résultats
+    // Création d'une nouvelle collection pour stocker les résultats
     FT_FeatureCollection<FT_Feature> allResults = new FT_FeatureCollection<FT_Feature>();
 
     // seuil filtre Douglas-Peucker
@@ -152,7 +154,7 @@ public class FirstExample {
     int compteur = 0;
 
     // Traitement des objets
-    for (FT_Feature troncon : tronconList) {
+    for (IFeature troncon : tronconList) {
       GM_LineString polyligne1 = (GM_LineString) troncon.getGeom();
       GM_LineString polyligne2 = (GM_LineString) Filtering.DouglasPeucker(
           polyligne1, seuil);
@@ -174,7 +176,7 @@ public class FirstExample {
     // Visualisation dans le viewer
     ObjectViewer viewer = new ObjectViewer(this.db);
     viewer.addFeatureCollection(tronconList, "Tronçons");
-    viewer.addFeatureCollection(allResults, "résultats");
+    viewer.addFeatureCollection(allResults, "Résultats");
   }
 
 }

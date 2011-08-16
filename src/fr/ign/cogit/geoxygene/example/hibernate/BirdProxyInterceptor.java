@@ -21,11 +21,11 @@ public class BirdProxyInterceptor extends EmptyInterceptor {
 
   @Override
   public String getEntityName(Object object) {
-    System.out
-        .println("getEntityName " + object.getClass() + " ( " + Proxy.isProxyClass(object.getClass()) + " )"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    System.out.println("getEntityName " + object.getClass() + " ( "
+        + Proxy.isProxyClass(object.getClass()) + " )");
     if (Proxy.isProxyClass(object.getClass())
         && object instanceof BirdInterface) {
-      System.out.println("BirdInterface"); //$NON-NLS-1$
+      System.out.println("BirdInterface");
       return BirdInterface.class.getName();
     }
     return super.getEntityName(object);
@@ -36,7 +36,7 @@ public class BirdProxyInterceptor extends EmptyInterceptor {
       Serializable id) {
     if (entityName.equals(BirdInterface.class.getName())) {
       BirdImpl newBird = new BirdImpl();
-      newBird.setId(((Integer) id).intValue());
+      newBird.setId((Integer) id);
       BirdInterface foo = (BirdInterface) BirdProxy.newInstance(newBird,
           new Class[] { BirdInterface.class });
       return foo;

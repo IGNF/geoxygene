@@ -30,6 +30,9 @@ package fr.ign.cogit.geoxygene.spatial.geomprim;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISurfaceBoundary;
+
 /**
  * Représente la frontière d'un GM_Surface. Un GM_SurfaceBoundary consiste en un
  * anneau extérieur, et éventuellement des anneaux intérieurs pour représenter
@@ -46,17 +49,17 @@ import java.util.List;
  * 
  */
 
-public class GM_SurfaceBoundary extends GM_PrimitiveBoundary {
+public class GM_SurfaceBoundary extends GM_PrimitiveBoundary implements
+    ISurfaceBoundary {
 
   // ////////////////////////////////////////////////////////////////////////////////
   // Attribut "exterior" et accesseurs
   // /////////////////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////////////
   /** Anneau extérieur. */
-  protected GM_Ring exterior;
+  protected IRing exterior;
 
-  /** Renvoie l'anneau extérieur */
-  public GM_Ring getExterior() {
+  public IRing getExterior() {
     return this.exterior;
   }
 
@@ -82,35 +85,35 @@ public class GM_SurfaceBoundary extends GM_PrimitiveBoundary {
   // /////////////////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////////////
   /** Anneau(x) intérieur(s) en cas de trou(s) : liste de GM_Ring */
-  protected List<GM_Ring> interior;
+  protected List<IRing> interior;
 
   /** Renvoie la liste des anneaux intérieurs */
-  public List<GM_Ring> getInterior() {
+  public List<IRing> getInterior() {
     return this.interior;
   }
 
   /** Renvoie l'anneau intérieur de rang i */
-  public GM_Ring getInterior(int i) {
+  public IRing getInterior(int i) {
     return this.interior.get(i);
   }
 
   /** Affecte un GM_Ring au rang i */
-  public void setInterior(int i, GM_Ring value) {
+  public void setInterior(int i, IRing value) {
     this.interior.set(i, value);
   }
 
   /** Ajoute un GM_Ring en fin de liste */
-  public void addInterior(GM_Ring value) {
+  public void addInterior(IRing value) {
     this.interior.add(value);
   }
 
   /** Ajoute un GM_ring au rang i */
-  public void addInterior(int i, GM_Ring value) {
+  public void addInterior(int i, IRing value) {
     this.interior.add(i, value);
   }
 
   /** Efface le (ou les) GM_Ring passé en paramètre */
-  public void removeInterior(GM_Ring value) {
+  public void removeInterior(IRing value) {
     this.interior.remove(value);
   }
 
@@ -131,16 +134,16 @@ public class GM_SurfaceBoundary extends GM_PrimitiveBoundary {
   /** Constructeur par défaut */
   public GM_SurfaceBoundary() {
     this.exterior = null;
-    this.interior = new ArrayList<GM_Ring>();
+    this.interior = new ArrayList<IRing>();
   }
 
   /**
    * Constructeur à partir d'un GM_Ring et d'un seul (pour des surfaces sans
    * trou)
    */
-  public GM_SurfaceBoundary(GM_Ring ring) {
+  public GM_SurfaceBoundary(IRing ring) {
     this.exterior = ring;
-    this.interior = new ArrayList<GM_Ring>();
+    this.interior = new ArrayList<IRing>();
   }
 
 }

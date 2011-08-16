@@ -28,7 +28,7 @@
 package fr.ign.cogit.geoxygene.spatial.topoprim;
 
 /**
- * non utilisé. frontière topologique d'un complexe.
+ * non utilisé. Frontière topologique d'un complexe.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -36,4 +36,5 @@ package fr.ign.cogit.geoxygene.spatial.topoprim;
  */
 
 class TP_ComplexBoundary extends TP_Boundary {
+
 }

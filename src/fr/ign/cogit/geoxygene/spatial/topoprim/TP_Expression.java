@@ -191,7 +191,10 @@ public class TP_Expression {
 
   /** TRUE si la frontière est zéro. */
   public boolean isCycle() {
-    return (this.boundary().isZero());
+    if (this.boundary().isZero()) {
+      return true;
+    }
+    return false;
   }
 
   /**

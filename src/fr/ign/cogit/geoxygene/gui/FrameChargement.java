@@ -103,7 +103,7 @@ public class FrameChargement extends JFrame {
 
   protected List<String> layerNames = new ArrayList<String>();
 
-  String title = "Chargeur de GeOxygene";
+  String title = "Chargeur de GéOxygène";
 
   /**
    * @param sld
@@ -173,7 +173,7 @@ public class FrameChargement extends JFrame {
               index--;
             }
           }
-          FrameChargement.this.shapeFileLayers.set(row, new Integer(index));
+          FrameChargement.this.shapeFileLayers.set(row, index);
           this.fireTableCellUpdated(row, col);
         }
       }
@@ -184,7 +184,7 @@ public class FrameChargement extends JFrame {
   /**
    * Ajout de fichiers shapefiles.
    */
-  void addShapeFiles() {
+  private void addShapeFiles() {
     GUIShapefileChoice sfc = new GUIShapefileChoice(true);
     File[] files = sfc.getSelectedFiles();
     if ((files == null) || (files.length == 0)) {
@@ -198,7 +198,7 @@ public class FrameChargement extends JFrame {
    * sont tous parcourus récursivement et tous les shapefiles qu'ils contiennent
    * sont ajoutés.
    */
-  void addDirectories() {
+  private void addDirectories() {
     GUIShapefileChoice sfc = new GUIShapefileChoice(true);
     File[] files = sfc.getSelectedDirectories();
     if ((files == null) || (files.length == 0)) {
@@ -249,19 +249,19 @@ public class FrameChargement extends JFrame {
                 + layerName);
           }
           this.shapeFiles.add(shapefile);
-          this.shapeFileLayers.add(new Integer(index));
+          this.shapeFileLayers.add(index);
           ((AbstractTableModel) this.dataModel).fireTableDataChanged();
           return;
         }
       }
     }
     this.shapeFiles.add(shapefile);
-    this.shapeFileLayers.add(new Integer(0));
+    this.shapeFileLayers.add(0);
     ((AbstractTableModel) this.dataModel).fireTableDataChanged();
   }
 
   /**
-   * création du JDialog de sélection des fichiers.
+   * Création du JDialog de sélection des fichiers.
    * @param parent Frame parent du JDialog à créer.
    * @return JDialog de sélection des fichiers shapefiles à charger.
    */
@@ -339,7 +339,7 @@ public class FrameChargement extends JFrame {
   }
 
   /**
-   * création du JDialog de sélection des fichiers.
+   * Création du JDialog de sélection des fichiers.
    * @return vrai si le JDialog a été validé (grâce au bouton "Ok"), faux sinon.
    */
   public boolean showDialog() {

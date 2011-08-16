@@ -21,6 +21,7 @@ package fr.ign.cogit.geoxygene.datatools;
 
 import fr.ign.cogit.geoxygene.datatools.hibernate.GeodatabaseHibernate;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
+import fr.ign.cogit.geoxygene.datatools.postgis.GeodatabaseHibernatePostgis;
 
 /**
  * @author Julien Perret
@@ -35,6 +36,10 @@ public class GeodatabaseFactory {
   public static Geodatabase newInstance(int type) {
     if (type == GeodatabaseType.HIBERNATE) {
       return new GeodatabaseHibernate();
+    } else {
+      if (type == GeodatabaseType.HIBERNATE_POSTGIS) {
+        return new GeodatabaseHibernatePostgis();
+      }
     }
     return GeodatabaseOjbFactory.newInstance();
   }

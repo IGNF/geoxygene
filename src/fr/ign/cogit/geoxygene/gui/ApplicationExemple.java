@@ -11,7 +11,7 @@ import javax.swing.JMenuItem;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.feature.DataSet;
+import fr.ign.cogit.geoxygene.api.feature.IDataSet;
 import fr.ign.cogit.geoxygene.util.loader.Chargement;
 
 /**
@@ -45,7 +45,7 @@ public class ApplicationExemple {
       @Override
       public void actionPerformed(ActionEvent e) {
         if (chargement != null) {
-          DataSet dataSet = fr.getPanelVisu().getDataset();
+          IDataSet dataSet = fr.getPanelVisu().getDataset();
           dataSet.setNom(chargement.getDataSet().getNom());
           dataSet.setTypeBD(chargement.getDataSet().getTypeBD());
           dataSet.setModele(chargement.getDataSet().getModele());

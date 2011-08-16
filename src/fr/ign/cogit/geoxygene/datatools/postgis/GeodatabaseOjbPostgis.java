@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.datatools.postgis;
@@ -36,13 +44,14 @@ import org.odmg.DList;
 import org.odmg.OQLQuery;
 import org.postgresql.PGConnection;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.datatools.Metadata;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeOxygenePersistenceBrokerImpl;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjb;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
  * Implementation d'une Geodatabase utilisant OJB comme mappeur et Postgis comme
@@ -50,7 +59,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.2 22/07/2008 : modification des fonctions loadAllFeatures pour
- *          Récupèrer le SRID dans les métadonnées (Julien Perret)
+ *          récupérer le SRID dans les métadonnées (Julien Perret)
  */
 public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
     Geodatabase {
@@ -88,11 +97,9 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
        */
       PGConnection pgConn = (PGConnection) this._conn;
       // pgConn.addDataType("geometry","org.postgis.PGgeometry");
-      pgConn.addDataType("geometry", //$NON-NLS-1$
-          org.postgis.PGgeometry.class);
+      pgConn.addDataType("geometry", org.postgis.PGgeometry.class);
       // pgConn.addDataType("box3d","org.postgis.PGbox3d");
-      pgConn.addDataType("box3d", //$NON-NLS-1$
-          org.postgis.PGbox3d.class);
+      pgConn.addDataType("box3d", org.postgis.PGbox3d.class);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -113,10 +120,10 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
    * FT_Feature, sinon renvoie une liste vide.
    */
   @SuppressWarnings("unchecked")
-  public <T extends FT_Feature> FT_FeatureCollection<T> loadAllFeatures(
-      Class<T> featureClass, GM_Object geom) {
+  public <T extends IFeature> IFeatureCollection<T> loadAllFeatures(
+      Class<T> featureClass, IGeometry geom) {
     FT_FeatureCollection<T> result = new FT_FeatureCollection<T>();
-    if ((FT_Feature.class).isAssignableFrom(featureClass)) {
+    if ((IFeature.class).isAssignableFrom(featureClass)) {
       // on cherche la liste des identifiants
       List<?> idList = PostgisSpatialQuery.loadAllFeatures(this, featureClass,
           geom);
@@ -128,18 +135,15 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
           oqlQuery.create(query);
           DList list = (DList) oqlQuery.execute();
           Iterator<T> iter = list.iterator();
-          // on Récupère le srid attribué à cette classe dans les
-          // métadonnées
+          // on récupère le srid attribué à cette classe dans les métadonnées
           Metadata metadata = this.getMetadata(featureClass);
           int srid = -1;
           if (metadata != null && metadata.getSRID() != 0) {
             srid = metadata.getSRID();
           } else {
-            /*
-             * si cette classe ne contient pas de métadonnées ou si c'est une
-             * classe mère de la classe stockée dans le SGBD on Récupère le
-             * premier élément (s'il existe) et ses métadonnées.
-             */
+            // si cette classe ne contient pas de métadonnées ou si c'est une
+            // classe mère de la classe stockée dans le SGBD
+            // on récupère le premier élément (s'il existe) et ses métadonnées.
             if (iter.hasNext()) {
               T feature = iter.next();
               metadata = this.getMetadata(feature.getClass());
@@ -164,8 +168,8 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
         }
       }
     } else {
-      GeodatabaseOjbPostgis.logger.warn("loadAllFeatures(): " + //$NON-NLS-1$
-          "The given class is not a subclass of FT_Feature"); //$NON-NLS-1$
+      GeodatabaseOjbPostgis.logger
+          .warn("loadAllFeatures() : La classe passee en parametre n'est pas une sous-classe de FT_Feature");
     }
     return result;
   }
@@ -177,18 +181,20 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
    * FT_Feature, sinon renvoie une liste vide. La classe featureListClass doit
    * etre un sous classe de FT_FeatureCollection.
    */
+  @Override
   public <T> T loadAllFeatures(Class<?> featureClass,
-      Class<T> featureListClass, GM_Object geom) {
+      Class<T> featureListClass, IGeometry geom) {
     T result = null;
     try {
       result = featureListClass.newInstance();
     } catch (Exception e) {
-      GeodatabaseOjbPostgis.logger.error("Impossible to create an instance of " //$NON-NLS-1$
-          + featureListClass.getName());
+      GeodatabaseOjbPostgis.logger
+          .error("Impossible de créer une nouvelle instance de la classe "
+              + featureListClass.getName());
       e.printStackTrace();
       return null;
     }
-    if ((FT_Feature.class).isAssignableFrom(featureClass)) {
+    if ((IFeature.class).isAssignableFrom(featureClass)) {
       // on cherche la liste des identifiants
       List<?> idList = PostgisSpatialQuery.loadAllFeatures(this, featureClass,
           geom);
@@ -200,21 +206,17 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
           oqlQuery.create(query);
           DList list = (DList) oqlQuery.execute();
           Iterator<?> iter = list.iterator();
-          /*
-           * on Récupère le srid attribué à cette classe dans les métadonnées
-           */
+          // on récupère le srid attribué à cette classe dans les métadonnées
           Metadata metadata = this.getMetadata(featureClass);
           int srid = -1;
           if (metadata != null && metadata.getSRID() != 0) {
             srid = metadata.getSRID();
           } else {
-            /*
-             * si cette classe ne contient pas de métadonnées ou si c'est une
-             * classe mère de la classe stockée dans le SGBD. on Récupère le
-             * premier élément (s'il existe) et ses métadonnées.
-             */
+            // si cette classe ne contient pas de métadonnées ou si c'est une
+            // classe mère de la classe stockée dans le SGBD
+            // on récupère le premier élément (s'il existe) et ses métadonnées.
             if (iter.hasNext()) {
-              FT_Feature feature = (FT_Feature) iter.next();
+              IFeature feature = (IFeature) iter.next();
               metadata = this.getMetadata(feature.getClass());
               if (metadata != null) {
                 srid = metadata.getSRID();
@@ -222,27 +224,26 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
               if (feature.getGeom() != null) {
                 feature.getGeom().setCRS(srid);
               }
-              result.getClass().getMethod("add", //$NON-NLS-1$
-                  new Class[] { FT_Feature.class }).invoke(result,
-                  new Object[] { feature });
+              result.getClass()
+                  .getMethod("add", new Class[] { IFeature.class }).invoke(
+                      result, new Object[] { feature });
             }
           }
           while (iter.hasNext()) {
-            FT_Feature feature = (FT_Feature) iter.next();
+            IFeature feature = (IFeature) iter.next();
             if (feature.getGeom() != null) {
               feature.getGeom().setCRS(srid);
             }
-            result.getClass().getMethod("add", //$NON-NLS-1$
-                new Class[] { FT_Feature.class }).invoke(result,
-                new Object[] { feature });
+            result.getClass().getMethod("add", new Class[] { IFeature.class })
+                .invoke(result, new Object[] { feature });
           }
         } catch (Exception e) {
           e.printStackTrace();
         }
       }
     } else {
-      GeodatabaseOjbPostgis.logger.warn("loadAllFeatures(): " + //$NON-NLS-1$
-          "The given class is not a subclass of FT_Feature"); //$NON-NLS-1$
+      GeodatabaseOjbPostgis.logger
+          .warn("loadAllFeatures() : La classe passee en parametre n'est pas une sous-classe de FT_Feature");
     }
     return result;
   }
@@ -256,10 +257,10 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
    * vide.
    */
   @SuppressWarnings("unchecked")
-  public <T extends FT_Feature> FT_FeatureCollection<T> loadAllFeatures(
-      Class<T> featureClass, GM_Object geom, double dist) {
+  public <T extends IFeature> IFeatureCollection<T> loadAllFeatures(
+      Class<T> featureClass, IGeometry geom, double dist) {
     FT_FeatureCollection<T> result = new FT_FeatureCollection<T>();
-    if ((FT_Feature.class).isAssignableFrom(featureClass)) {
+    if ((IFeature.class).isAssignableFrom(featureClass)) {
       // on cherche la liste des identifiants
       List<?> idList = PostgisSpatialQuery.loadAllFeatures(this, featureClass,
           geom, dist);
@@ -271,19 +272,15 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
           oqlQuery.create(query);
           DList list = (DList) oqlQuery.execute();
           Iterator<T> iter = list.iterator();
-          /*
-           * on Récupère le srid attribué à cette classe dans les métadonnées
-           */
+          // on récupère le srid attribué à cette classe dans les métadonnées
           Metadata metadata = this.getMetadata(featureClass);
           int srid = -1;
           if (metadata != null && metadata.getSRID() != 0) {
             srid = metadata.getSRID();
           } else {
-            /*
-             * si cette classe ne contient pas de métadonnées ou si c'est une
-             * classe mère de la classe stockée dans le SGBD. on Récupère le
-             * premier élément (s'il existe) et ses métadonnées.
-             */
+            // si cette classe ne contient pas de métadonnées ou si c'est une
+            // classe mère de la classe stockée dans le SGBD
+            // on récupère le premier élément (s'il existe) et ses métadonnées.
             if (iter.hasNext()) {
               T feature = iter.next();
               metadata = this.getMetadata(feature.getClass());
@@ -308,8 +305,8 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
         }
       }
     } else {
-      GeodatabaseOjbPostgis.logger.warn("loadAllFeatures(): " + //$NON-NLS-1$
-          "The given class is not a subclass of FT_Feature"); //$NON-NLS-1$
+      GeodatabaseOjbPostgis.logger
+          .warn("loadAllFeatures() : La classe passee en parametre n'est pas une sous-classe de FT_Feature");
     }
     return result;
   }
@@ -322,18 +319,20 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
    * etre une sous-classe de FT_Feature, sinon renvoie une liste vide. La classe
    * featureListClass doit etre un sous classe de FT_FeatureCollection.
    */
+  @Override
   public <T> T loadAllFeatures(Class<?> featureClass,
-      Class<T> featureListClass, GM_Object geom, double dist) {
+      Class<T> featureListClass, IGeometry geom, double dist) {
     T result = null;
     try {
       result = featureListClass.newInstance();
     } catch (Exception e) {
-      GeodatabaseOjbPostgis.logger.error("Impossible to create an instance of " //$NON-NLS-1$
-          + featureListClass.getName());
+      GeodatabaseOjbPostgis.logger
+          .error("Impossible de créer une nouvelle instance de la classe "
+              + featureListClass.getName());
       e.printStackTrace();
       return null;
     }
-    if ((FT_Feature.class).isAssignableFrom(featureClass)) {
+    if ((IFeature.class).isAssignableFrom(featureClass)) {
       // on cherche la liste des identifiants
       List<?> idList = PostgisSpatialQuery.loadAllFeatures(this, featureClass,
           geom, dist);
@@ -345,21 +344,17 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
           oqlQuery.create(query);
           DList list = (DList) oqlQuery.execute();
           Iterator<?> iter = list.iterator();
-          /*
-           * on Récupère le srid attribué à cette classe dans les métadonnées
-           */
+          // on récupère le srid attribué à cette classe dans les métadonnées
           Metadata metadata = this.getMetadata(featureClass);
           int srid = -1;
           if (metadata != null && metadata.getSRID() != 0) {
             srid = metadata.getSRID();
           } else {
-            /*
-             * si cette classe ne contient pas de métadonnées ou si c'est une
-             * classe mère de la classe stockée dans le SGBD on Récupère le
-             * premier élément (s'il existe) et ses métadonnées.
-             */
+            // si cette classe ne contient pas de métadonnées ou si c'est une
+            // classe mère de la classe stockée dans le SGBD
+            // on récupère le premier élément (s'il existe) et ses métadonnées.
             if (iter.hasNext()) {
-              FT_Feature feature = (FT_Feature) iter.next();
+              IFeature feature = (IFeature) iter.next();
               metadata = this.getMetadata(feature.getClass());
               if (metadata != null) {
                 srid = metadata.getSRID();
@@ -367,27 +362,26 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
               if (feature.getGeom() != null) {
                 feature.getGeom().setCRS(srid);
               }
-              result.getClass().getMethod("add", //$NON-NLS-1$
-                  new Class[] { FT_Feature.class }).invoke(result,
-                  new Object[] { feature });
+              result.getClass()
+                  .getMethod("add", new Class[] { IFeature.class }).invoke(
+                      result, new Object[] { feature });
             }
           }
           while (iter.hasNext()) {
-            FT_Feature feature = (FT_Feature) iter.next();
+            IFeature feature = (IFeature) iter.next();
             if (feature.getGeom() != null) {
               feature.getGeom().setCRS(srid);
             }
-            result.getClass().getMethod("add", //$NON-NLS-1$
-                new Class[] { FT_Feature.class }).invoke(result,
-                new Object[] { feature });
+            result.getClass().getMethod("add", new Class[] { IFeature.class })
+                .invoke(result, new Object[] { feature });
           }
         } catch (Exception e) {
           e.printStackTrace();
         }
       }
     } else {
-      GeodatabaseOjbPostgis.logger.warn("loadAllFeatures(): " + //$NON-NLS-1$
-          "The given class is not a subclass of FT_Feature"); //$NON-NLS-1$
+      GeodatabaseOjbPostgis.logger
+          .warn("loadAllFeatures() : La classe passee en parametre n'est pas une sous-classe de FT_Feature");
     }
     return result;
   }
@@ -397,25 +391,24 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
    * liste d'identifants. Usage interne.
    */
   private String createInQuery(List<?> idList, String className) {
-    String result = "select x from " //$NON-NLS-1$
-        + className + " where id in ("; //$NON-NLS-1$
+    String result = "select x from " + className + " where id in (";
     StringBuffer strbuff = new StringBuffer(result);
     Iterator<?> i = idList.iterator();
     while (i.hasNext()) {
       int k = ((Number) i.next()).intValue();
       strbuff.append(k);
-      strbuff.append(","); //$NON-NLS-1$
+      strbuff.append(",");
     }
     result = strbuff.toString();
     result = result.substring(0, result.length() - 1);
-    result = result + ")"; //$NON-NLS-1$
+    result = result + ")";
     return result;
   }
 
-  /**
-   * Ne fonctionne pas sous POSTGIS.
-   */
+  /** Ne fonctionne pas sous POSTGIS. */
   public void mbr(Class<?> clazz) {
+    GeodatabaseOjbPostgis.logger
+        .warn("GeodatabaseOjbPostgis::mbr() : inutile sous Postgis !");
   }
 
   /**
@@ -432,7 +425,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
    */
   public int countObjects(Class<?> theClass) {
     String tableName = this.getMetadata(theClass).getTableName();
-    String query = "select count(*) from " + tableName; //$NON-NLS-1$
+    String query = "select count(*) from " + tableName;
     Number nn = null;
     try {
       Connection conn = this.getConnection();
@@ -459,8 +452,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
   public int maxId(Class<?> theClass) {
     String idColumnName = this.getMetadata(theClass).getIdColumnName();
     String tableName = this.getMetadata(theClass).getTableName();
-    String query = "select max(" //$NON-NLS-1$
-        + idColumnName + ") from " + tableName; //$NON-NLS-1$
+    String query = "select max(" + idColumnName + ") from " + tableName;
     Number nn = null;
     try {
       Connection conn = this.getConnection();
@@ -487,8 +479,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
   public int minId(Class<?> theClass) {
     String idColumnName = this.getMetadata(theClass).getIdColumnName();
     String tableName = this.getMetadata(theClass).getTableName();
-    String query = "select min(" //$NON-NLS-1$
-        + idColumnName + ") from " + tableName; //$NON-NLS-1$
+    String query = "select min(" + idColumnName + ") from " + tableName;
     Number nn = null;
     try {
       Connection conn = this.getConnection();
@@ -507,9 +498,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
     return 1;
   }
 
-  /**
-   * renvoie le type de SGBD associe.
-   */
+  /** renvoie le type de SGBD associe. */
   public int getDBMS() {
     return Geodatabase.POSTGIS;
   }

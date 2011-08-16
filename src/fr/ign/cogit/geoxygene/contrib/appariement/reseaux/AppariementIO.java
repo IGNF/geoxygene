@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
@@ -29,40 +37,38 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.NoeudApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.feature.Population;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
- * Utilitary class for importing and exporting data and matching them.
- * <p>
- * Méthodes d'import et export pour l'appariement sur des données Géographiques
+ * 
+ * Méthodes d'import et export pour l'appariement sur des données géographiques
  * quelconques (création des réseaux, lancement de l'appariement, export des
  * résultats).
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
+ * @version 1.0
+ * 
  */
-public final class AppariementIO {
-  /**
-   * Private constructor. Not used: this is a utilitary class.
-   */
-  private AppariementIO() {
-  }
 
+public class AppariementIO {
   /**
    * Static logger.
    */
   private static final Logger LOGGER = Logger.getLogger(AppariementIO.class
       .getName());
+
 
   /**
    * Lancement de l'appariement de réseaux sur des objets Géographiques : 1-
@@ -138,7 +144,7 @@ public final class AppariementIO {
     }
 
     // NB: l'ordre dans lequel les projections sont faites n'est pas neutre
-    if (paramApp.projeteNoeuds2SurReseau1) {
+    if (paramApp.projeteNoeud2surReseau1) {
       if (AppariementIO.LOGGER.isDebugEnabled()) {
         AppariementIO.LOGGER.debug(I18N
             .getString("AppariementIO.ProjectionOfNetwork2OnNetwork1" //$NON-NLS-1$
@@ -146,9 +152,9 @@ public final class AppariementIO {
             + (new Time(System.currentTimeMillis())).toString());
       }
       reseauRef.projete(reseauComp,
-          paramApp.projeteNoeuds2SurReseau1DistanceNoeudArc,
-          paramApp.projeteNoeud2surReseau1DistanceProjectionNoeud,
-          paramApp.projeteNoeud2surReseau1ImpassesSeulement);
+          paramApp.projeteNoeud2surReseau1_DistanceNoeudArc,
+          paramApp.projeteNoeud2surReseau1_DistanceProjectionNoeud,
+          paramApp.projeteNoeud2surReseau1_ImpassesSeulement);
     }
     if (paramApp.projeteNoeuds1SurReseau2) {
       if (AppariementIO.LOGGER.isDebugEnabled()) {
@@ -158,9 +164,9 @@ public final class AppariementIO {
             + (new Time(System.currentTimeMillis())).toString());
       }
       reseauComp.projete(reseauRef,
-          paramApp.projeteNoeuds1SurReseau2DistanceNoeudArc,
-          paramApp.projeteNoeuds1SurReseau2DistanceProjectionNoeud,
-          paramApp.projeteNoeuds1SurReseau2ImpassesSeulement);
+          paramApp.projeteNoeuds1SurReseau2_DistanceNoeudArc,
+          paramApp.projeteNoeuds1SurReseau2_DistanceProjectionNoeud,
+          paramApp.projeteNoeuds1SurReseau2_ImpassesSeulement);
     }
     if (AppariementIO.LOGGER.isDebugEnabled()) {
       AppariementIO.LOGGER.debug(I18N
@@ -274,22 +280,22 @@ public final class AppariementIO {
     } else {
       reseau = new ReseauApp(I18N.getString("AppariementIO.ComparisonNetwork")); //$NON-NLS-1$
     }
-    Population<?> popArcApp = reseau.getPopArcs();
-    Population<?> popNoeudApp = reseau.getPopNoeuds();
+    IPopulation<? extends IFeature> popArcApp = reseau.getPopArcs();
+    IPopulation<? extends IFeature> popNoeudApp = reseau.getPopNoeuds();
     // /////////////////////////
     // import des arcs
-    Iterator<FT_FeatureCollection<?>> itPopArcs = null;
+    Iterator<IFeatureCollection<IFeature>> itPopArcs = null;
     if (ref) {
       itPopArcs = paramApp.populationsArcs1.iterator();
     } else {
       itPopArcs = paramApp.populationsArcs2.iterator();
     }
     while (itPopArcs.hasNext()) {
-      FT_FeatureCollection<?> popGeo = itPopArcs.next();
+      IFeatureCollection<?> popGeo = itPopArcs.next();
       // import d'une population d'arcs
-      for (FT_Feature element : popGeo.getElements()) {
+      for (IFeature element : popGeo.getElements()) {
         ArcApp arc = (ArcApp) popArcApp.nouvelElement();
-        GM_LineString ligne = new GM_LineString((DirectPositionList) element
+        ILineString ligne = new GM_LineString((IDirectPositionList) element
             .getGeom().coord().clone());
         arc.setGeometrie(ligne);
         if (paramApp.populationsArcsAvecOrientationDouble) {
@@ -369,12 +375,12 @@ public final class AppariementIO {
       itPopNoeuds = paramApp.populationsNoeuds2.iterator();
     }
     while (itPopNoeuds.hasNext()) {
-      FT_FeatureCollection<?> popGeo = (FT_FeatureCollection<?>) itPopNoeuds.next();
+      IFeatureCollection<?> popGeo = (IFeatureCollection<?>) itPopNoeuds.next();
       // import d'une population de noeuds
-      for (FT_Feature element : popGeo.getElements()) {
+      for (IFeature element : popGeo.getElements()) {
         NoeudApp noeud = (NoeudApp) popNoeudApp.nouvelElement();
         // noeud.setGeometrie((GM_Point)element.getGeom());
-        noeud.setGeometrie(new GM_Point((DirectPosition) ((GM_Point) element
+        noeud.setGeometrie(new GM_Point((IDirectPosition) ((GM_Point) element
             .getGeom()).getPosition().clone()));
         noeud.addCorrespondant(element);
         noeud.setTaille(paramApp.distanceNoeudsMax);

@@ -30,12 +30,13 @@ package fr.ign.cogit.geoxygene.example;
 import java.math.BigDecimal;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.datatools.Metadata;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
  * Exemple et test d'utilisation de l'interface Geodatabase. On suppose qu'il
@@ -49,6 +50,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * 
  */
 
+
 @SuppressWarnings( { "unchecked", "unqualified-field-access" })
 public class TestGeodatabase {
 
@@ -60,6 +62,7 @@ public class TestGeodatabase {
   // nom de la classe de troncons
   private String nomClasse = "donnees.defaut.Bdc38_troncon_route";
 
+  @SuppressWarnings("unchecked")
   public TestGeodatabase() {
 
     // iniatilsation de la Geodatabase
@@ -99,19 +102,18 @@ public class TestGeodatabase {
     System.out.println("transaction ouverte ? : " + this.db.isOpen());
 
     // charge un objet par son identifiant
-    FT_Feature feature = this.db.load(this.tronconClass, gid);
+    IFeature feature = this.db.load(this.tronconClass, new Integer(gid));
     if (feature != null) {
       System.out.println("objet charge : " + feature.getClass() + " - id : "
           + feature.getId());
     }
 
     // chargement de tous les FT_Feature d'une classe
-    FT_FeatureCollection<?> featList = this.db
-        .loadAllFeatures(this.tronconClass);
+    IFeatureCollection<?> featList = this.db.loadAllFeatures(this.tronconClass);
     System.out.println("nombre de feature charges : " + featList.size());
 
     feature = featList.get(0);
-    GM_Object geom = feature.getGeom();
+    IGeometry geom = feature.getGeom();
     System.out.println(geom);
     Resultat result = new Resultat();
     result.setGeom(geom);

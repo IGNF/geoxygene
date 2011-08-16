@@ -26,6 +26,7 @@ package fr.ign.cogit.geoxygene.datatools;
 public class GeodatabaseType {
   public static final int OJB = 1;
   public static final int HIBERNATE = 2;
+  public static final int HIBERNATE_POSTGIS = 3;
 
   public static String toString(int type) {
     switch (type) {
@@ -33,6 +34,8 @@ public class GeodatabaseType {
         return "OJB"; //$NON-NLS-1$
       case HIBERNATE:
         return "HIBERNATE"; //$NON-NLS-1$
+      case HIBERNATE_POSTGIS:
+        return "HIBERNATE_POSTGIS"; //$NON-NLS-1$
       default:
         return "UNKNOWN"; //$NON-NLS-1$
     }

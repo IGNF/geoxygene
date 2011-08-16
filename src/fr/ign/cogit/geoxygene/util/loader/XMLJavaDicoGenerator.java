@@ -113,8 +113,9 @@ public class XMLJavaDicoGenerator {
         System.out.println();
 
         String sqlTableName = this.allTables.get(i);
-        String javaClassName = this.packageName
-            + "." + sqlTableName.substring(0, 1).toUpperCase() + sqlTableName.substring(1).toLowerCase(); //$NON-NLS-1$
+        String javaClassName = this.packageName + "."
+            + sqlTableName.substring(0, 1).toUpperCase()
+            + sqlTableName.substring(1).toLowerCase();
 
         if (this.flagInterroTable) {
           Message m = new Message(this.in, "table : " + sqlTableName
@@ -147,7 +148,7 @@ public class XMLJavaDicoGenerator {
           }
         }
 
-        this.theDicoGenerator.writeAttribute(javaClassName, "id", "int"); //$NON-NLS-1$//$NON-NLS-2$
+        this.theDicoGenerator.writeAttribute(javaClassName, "id", "int");
 
         // Boucle sur les colonnes
         String query = this.getQueryColumnName(sqlTableName, this.userName);
@@ -170,9 +171,9 @@ public class XMLJavaDicoGenerator {
           if (this.data.getDBMS() == Geodatabase.ORACLE) {
             if (rs.getObject(3) != null) {
               int dataScale = ((BigDecimal) rs.getObject(3)).intValue();
-              if ((sqlDbmsType.compareToIgnoreCase("NUMBER") == 0) && //$NON-NLS-1$
-                  (dataScale == 0)) {
-                sqlDbmsType = "INTEGER"; //$NON-NLS-1$
+              if ((sqlDbmsType.compareToIgnoreCase("NUMBER") == 0)
+                  && (dataScale == 0)) {
+                sqlDbmsType = "INTEGER";
               }
             }
             // fin de la bidouille
@@ -184,9 +185,9 @@ public class XMLJavaDicoGenerator {
           if (this.data.getDBMS() == Geodatabase.ORACLE) {
             if (rs.getObject(3) != null) {
               int dataScale = ((BigDecimal) rs.getObject(3)).intValue();
-              if ((sqlDbmsType.compareToIgnoreCase("CHAR") == 0) && //$NON-NLS-1$
-                  (dataScale == 1)) {
-                sqlDbmsType = "BOOLEAN"; //$NON-NLS-1$
+              if ((sqlDbmsType.compareToIgnoreCase("CHAR") == 0)
+                  && (dataScale == 1)) {
+                sqlDbmsType = "BOOLEAN";
               }
             }
             // fin de la bidouille
@@ -205,17 +206,17 @@ public class XMLJavaDicoGenerator {
 
           // attention : le champ portant la geometrie doit s'appeler geom
           // (heritage de FT_Feature")
-          if ((javaType.compareToIgnoreCase("GM_Object") == 0)) { //$NON-NLS-1$
-            javaFieldName = "geom"; //$NON-NLS-1$
+          if ((javaType.compareToIgnoreCase("GM_Object") == 0)) {
+            javaFieldName = "geom";
           }
           // attention : population est un nom de champ de FT_Feature
           if (javaFieldName.equals("population")) {
-            javaFieldName = "population_"; //$NON-NLS-1$ //$NON-NLS-2$
+            javaFieldName = "population_";
           }
 
           if (flagInterroFields) {
-            if ((javaFieldName.compareToIgnoreCase("id") != 0) && //$NON-NLS-1$
-                (javaFieldName.compareToIgnoreCase("geom") != 0)) { //$NON-NLS-1$
+            if ((javaFieldName.compareToIgnoreCase("id") != 0)
+                && (javaFieldName.compareToIgnoreCase("geom") != 0)) {
               Message m = new Message(this.in, "colonne " + sqlColumnName
                   + " : on la charge ?", "o", "n");
               String r = m.getAnswer();
@@ -230,8 +231,8 @@ public class XMLJavaDicoGenerator {
                 }
                 this.theXMLGenerator.writeField(javaFieldName, sqlColumnName,
                     sqlDbmsType);
-                if ((javaFieldName.compareToIgnoreCase("id") != 0) && //$NON-NLS-1$
-                    (javaFieldName.compareToIgnoreCase("geom") != 0)) {
+                if ((javaFieldName.compareToIgnoreCase("id") != 0)
+                    && (javaFieldName.compareToIgnoreCase("geom") != 0)) {
                   aJavaGenerator.writeField(javaType, javaFieldName);
                 }
                 this.theDicoGenerator.writeAttribute(javaClassName,
@@ -294,20 +295,21 @@ public class XMLJavaDicoGenerator {
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////
   private String getQueryColumnNameOracle(String tableName) {
-    return "SELECT COLUMN_NAME, DATA_TYPE, DATA_SCALE FROM USER_TAB_COLUMNS WHERE TABLE_NAME = '" + tableName + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+    return "SELECT COLUMN_NAME, DATA_TYPE, DATA_SCALE FROM USER_TAB_COLUMNS WHERE TABLE_NAME = '"
+        + tableName + "'";
   }
 
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////
   private String getQueryColumnNamePostgis(String tableName, String user) {
-    return "select pg_attribute.attname, pg_type.typname " + //$NON-NLS-1$
-        "from pg_attribute, pg_type, pg_class, pg_user " + //$NON-NLS-1$
-        "where pg_class.oid = pg_attribute.attrelid " + //$NON-NLS-1$
-        "and pg_attribute.attnum>0 " + //$NON-NLS-1$
-        "and pg_attribute.atttypid = pg_type.oid " + //$NON-NLS-1$
-        "and pg_class.relowner = pg_user.usesysid " + //$NON-NLS-1$
-        "and pg_user.usename = '" + user.toLowerCase() + "' " + //$NON-NLS-1$ //$NON-NLS-2$
-        "and pg_class.relname='" + tableName.toLowerCase() + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+    return "select pg_attribute.attname, pg_type.typname "
+        + "from pg_attribute, pg_type, pg_class, pg_user "
+        + "where pg_class.oid = pg_attribute.attrelid "
+        + "and pg_attribute.attnum>0 "
+        + "and pg_attribute.atttypid = pg_type.oid "
+        + "and pg_class.relowner = pg_user.usesysid "
+        + "and pg_user.usename = '" + user.toLowerCase() + "' "
+        + "and pg_class.relname='" + tableName.toLowerCase() + "'";
   }
 
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -330,23 +332,23 @@ public class XMLJavaDicoGenerator {
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////
   private String oracleType2javaType(String oracle) throws Exception {
     if (oracle.compareToIgnoreCase("VARCHAR2") == 0) {
-      return "String"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "String";
     } else if (oracle.compareToIgnoreCase("VARCHAR") == 0) {
-      return "String"; //$NON-NLS-1$//$NON-NLS-2$
+      return "String";
     } else if (oracle.compareToIgnoreCase("CHAR") == 0) {
-      return "String"; //$NON-NLS-1$//$NON-NLS-2$
+      return "String";
     } else if (oracle.compareToIgnoreCase("NUMBER") == 0) {
-      return "double"; //$NON-NLS-1$//$NON-NLS-2$
+      return "double";
     } else if (oracle.compareToIgnoreCase("FLOAT") == 0) {
-      return "double"; //$NON-NLS-1$//$NON-NLS-2$
+      return "double";
     } else if (oracle.compareToIgnoreCase("INTEGER") == 0) {
-      return "int"; //$NON-NLS-1$//$NON-NLS-2$
+      return "int";
     } else if (oracle.compareToIgnoreCase("BOOLEAN") == 0) {
-      return "boolean"; //$NON-NLS-1$//$NON-NLS-2$
+      return "boolean";
     } else if (oracle.compareToIgnoreCase("SDO_GEOMETRY") == 0) {
-      return "GM_Object"; //$NON-NLS-1$//$NON-NLS-2$
+      return "GM_Object";
     } else {
-      throw new Exception("type non reconnu : " + oracle); //$NON-NLS-1$
+      throw new Exception("type non reconnu : " + oracle);
     }
   }
 
@@ -354,25 +356,23 @@ public class XMLJavaDicoGenerator {
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////
   private String postgisType2javaType(String postgis) throws Exception {
     if (postgis.compareToIgnoreCase("varchar") == 0) {
-      return "String"; //$NON-NLS-1$//$NON-NLS-2$
+      return "String";
     } else if (postgis.compareToIgnoreCase("bpchar") == 0) {
-      return "String"; //$NON-NLS-1$//$NON-NLS-2$
+      return "String";
     } else if (postgis.compareToIgnoreCase("float8") == 0) {
-      return "double"; //$NON-NLS-1$//$NON-NLS-2$
+      return "double";
     } else if (postgis.compareToIgnoreCase("float4") == 0) {
-      return "float"; //$NON-NLS-1$//$NON-NLS-2$
-    } else if (postgis.compareToIgnoreCase("int2") == 0) {
-        return "int"; //$NON-NLS-1$//$NON-NLS-2$
+      return "float";
     } else if (postgis.compareToIgnoreCase("int4") == 0) {
-      return "int"; //$NON-NLS-1$//$NON-NLS-2$
+      return "int";
     } else if (postgis.compareToIgnoreCase("int8") == 0) {
-      return "long"; //$NON-NLS-1$//$NON-NLS-2$
+      return "long";
     } else if (postgis.compareToIgnoreCase("bool") == 0) {
-      return "boolean"; //$NON-NLS-1$//$NON-NLS-2$
+      return "boolean";
     } else if (postgis.compareToIgnoreCase("geometry") == 0) {
-      return "GM_Object"; //$NON-NLS-1$//$NON-NLS-2$
+      return "GM_Object";
     } else {
-      throw new Exception("type non reconnu : " + postgis); //$NON-NLS-1$
+      throw new Exception("type non reconnu : " + postgis);
     }
   }
 

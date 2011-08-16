@@ -43,7 +43,7 @@ import fr.ign.cogit.geoxygene.feature.DataSet;
 public class StockageLiens {
 
   /**
-   * méthode permettant de stocker automatiquement un ensemble de liens
+   * Méthode permettant de stocker automatiquement un ensemble de liens
    * d'appariement et les liens correspondants dans le SGBD
    * @param ensembleLiens
    */
@@ -57,7 +57,7 @@ public class StockageLiens {
   }
 
   /**
-   * méthode permettant de déstocker automatiquement un ensemble de liens
+   * Méthode permettant de déstocker automatiquement un ensemble de liens
    * d'appariement SGBD et les liens correspondants, en renvoyant l'ensemble de
    * liens correspondants
    * @param ensembleLiensSGBD

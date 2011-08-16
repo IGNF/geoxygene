@@ -2,9 +2,10 @@ package fr.ign.cogit.geoxygene.appli.mode;
 
 import java.awt.Cursor;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.plugin.GeometryToolBar;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 
 public abstract class AbstractGeometryEditMode extends AbstractMode {
@@ -32,15 +33,16 @@ public abstract class AbstractGeometryEditMode extends AbstractMode {
     this.geometryToolBar = theGeometryToolBar;
   }
 
-  private DirectPositionList points = new DirectPositionList();
+  private IDirectPositionList points = new DirectPositionList();
 
-  public DirectPositionList getPoints() {
+  public IDirectPositionList getPoints() {
     return this.points;
   }
 
-  protected DirectPosition currentPoint = null;
+  protected IDirectPosition currentPoint = null;
 
-  public DirectPosition getCurrentPoint() {
+  public IDirectPosition getCurrentPoint() {
     return this.currentPoint;
   }
+
 }

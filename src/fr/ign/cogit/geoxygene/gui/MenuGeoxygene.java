@@ -30,7 +30,7 @@ public class MenuGeoxygene extends JMenuBar {
   private InterfaceGeoxygene frameMirage = null;
 
   /**
-   * @return la fenêtre à laquelle le menu est eventuellement lié
+   * @return la fenètre à laquelle le menu est eventuellement lié
    */
   InterfaceGeoxygene getFrameMirage() {
     return this.frameMirage;
@@ -38,13 +38,13 @@ public class MenuGeoxygene extends JMenuBar {
 
   // vue
   private JMenu menuVue = new JMenu("Affichage");
-  private JMenuItem mVueEch = new JMenuItem(
-      "1:" + Legende.getECHELLE_SYMBOLISATION()); //$NON-NLS-1$
-  private JMenuItem mVueEch6250 = new JMenuItem("1:6250"); //$NON-NLS-1$
-  private JMenuItem mVueEch12500 = new JMenuItem("1:12500"); //$NON-NLS-1$
-  private JMenuItem mVueEch25k = new JMenuItem("1:25k"); //$NON-NLS-1$
-  private JMenuItem mVueEch50k = new JMenuItem("1:50k"); //$NON-NLS-1$
-  private JMenuItem mVueEch100k = new JMenuItem("1:100k"); //$NON-NLS-1$
+  private JMenuItem mVueEch = new JMenuItem("1:"
+      + Legende.getECHELLE_SYMBOLISATION());
+  private JMenuItem mVueEch6250 = new JMenuItem("1:6250");
+  private JMenuItem mVueEch12500 = new JMenuItem("1:12500");
+  private JMenuItem mVueEch25k = new JMenuItem("1:25k");
+  private JMenuItem mVueEch50k = new JMenuItem("1:50k");
+  private JMenuItem mVueEch100k = new JMenuItem("1:100k");
   private JMenuItem mImprimer = new JMenuItem("Imprimer");
 
   // config
@@ -54,13 +54,13 @@ public class MenuGeoxygene extends JMenuBar {
       "Recharger la configuration du logger");
 
   // infos
-  private JMenu menuInfos = new JMenu("?"); //$NON-NLS-1$
+  private JMenu menuInfos = new JMenu("?");
   public JMenuItem mAPropos = new JMenuItem("A propos...");
 
   public MenuGeoxygene(final InterfaceGeoxygene frameMirage) {
     this.frameMirage = frameMirage;
 
-    this.setFont(new Font("Arial", Font.PLAIN, 9)); //$NON-NLS-1$
+    this.setFont(new Font("Arial", Font.PLAIN, 9));
 
     // menu vue
 
@@ -184,7 +184,7 @@ public class MenuGeoxygene extends JMenuBar {
     this.mRechargerConfigurationLogger.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         MenuGeoxygene.logger.info("Rechargement configuration log");
-        PropertyConfigurator.configure("log4j.properties"); //$NON-NLS-1$
+        PropertyConfigurator.configure("log4j.properties");
       }
     });
     this.mRechargerConfigurationLogger.setFont(this.getFont());
@@ -193,12 +193,12 @@ public class MenuGeoxygene extends JMenuBar {
     // menu infos
     this.mAPropos.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
-        String message = "<html><b>GeOxygene</b><br />http://oxygene-project.sourceforge.net/<br /><br />Laboratoire COGIT<br />http://recherche.ign.fr/labos/cogit<br /><br />Institut Géographique National<br />http://www.ign.fr</html>"; //$NON-NLS-1$
+        String message = "<html><b>GéOxygène</b><br />http://oxygene-project.sourceforge.net/<br /><br />Laboratoire COGIT<br />http://recherche.ign.fr/labos/cogit<br /><br />Institut Géographique National<br />http://www.ign.fr</html>";
         String titre = "A propos de MiraGe";
         JOptionPane
             .showMessageDialog(null, message, titre,
                 JOptionPane.INFORMATION_MESSAGE, new ImageIcon(
-                    "images/splash.png")); //$NON-NLS-1$
+                    "images/splash.png"));
       }
     });
     this.mAPropos.setFont(this.getFont());

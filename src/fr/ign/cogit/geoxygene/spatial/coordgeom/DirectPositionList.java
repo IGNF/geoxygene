@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO
@@ -23,7 +23,6 @@
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
- * 
  */
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
@@ -34,82 +33,92 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
+
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 
 /**
- * Liste de DirectPosition. On reprend les methodes standards de
+ * Liste de DirectPosition. On reprend les méthodes standards de
  * <tt> java.util.List </tt> en les typant.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.1
  * 
- *          19.02.2007 : ajout de la methode removeAll
+ *          19.02.2007 : ajout de la méthode removeAll
  * 
  */
 
 // /////// Dans la norme ISO, cette classe s'appelle GM_PointArray
 
-public class DirectPositionList implements Collection<DirectPosition> {
+public class DirectPositionList implements IDirectPositionList {
 
   /** La liste des DirectPosition. */
-  protected List<DirectPosition> list = new ArrayList<DirectPosition>(0);
+  protected List<IDirectPosition> list = new ArrayList<IDirectPosition>();
 
   /**
    * Affecte une liste à this. Attention, ne verifie pas que la liste passee en
    * parametre ne contient que des DirectPosition. Ne clone pas la liste passee
    * en parametre mais fait une reference.
    */
-  public void setList(List<DirectPosition> theList) {
+  @Override
+  public void setList(List<IDirectPosition> theList) {
     this.list = theList;
   }
 
   /** Renvoie la liste de DirectPosition. */
-  public List<DirectPosition> getList() {
+  @Override
+  public List<IDirectPosition> getList() {
     return this.list;
   }
 
   /** Renvoie l'element de rang i */
-  public DirectPosition get(int i) {
+  @Override
+  public IDirectPosition get(int i) {
     return this.list.get(i);
   }
 
   /** Affecte un element au i-eme rang de la liste */
-  public void set(int i, DirectPosition value) {
+  @Override
+  public void set(int i, IDirectPosition value) {
     this.list.set(i, value);
   }
 
   /** Ajoute un element en fin de liste */
   @Override
-  public boolean add(DirectPosition value) {
+  public boolean add(IDirectPosition value) {
     return this.list.add(value);
   }
 
   /** Ajoute un element au i-eme rang de la liste */
-  public void add(int i, DirectPosition value) {
+  @Override
+  public void add(int i, IDirectPosition value) {
     this.list.add(i, value);
   }
 
   /** Ajoute une liste deDirectPosititon en fin de liste */
-  public boolean addAll(DirectPositionList theList) {
+  @Override
+  public boolean addAll(IDirectPositionList theList) {
     return this.list.addAll(theList.getList());
   }
 
   /** Efface de la liste le (ou les) elements passe en parametre */
-  public void remove(DirectPosition value) {
+  @Override
+  public void remove(IDirectPosition value) {
     this.list.remove(value);
   }
 
   /** Efface le i-eme element de la liste */
+  @Override
   public void remove(int i) {
     this.list.remove(i);
   }
 
-  /** Retire une liste de DirectPosititon */
-  public void removeAll(DirectPositionList theList) {
+   /** Efface toute la liste */
+  @Override
+  public void removeAll(IDirectPositionList theList) {
     this.list.removeAll(theList.getList());
   }
 
-  /** Efface toute la liste */
   @Override
   public void clear() {
     this.list.clear();
@@ -121,38 +130,39 @@ public class DirectPositionList implements Collection<DirectPosition> {
     return this.list.size();
   }
 
-  /** Constructeur par defaut. */
+  /** Constructeur par défaut. */
   public DirectPositionList() {
   }
 
   /**
-   * Constructeur à partir d'une liste de DirectPosition. Attention, ne verifie
-   * pas que la liste passee en parametre ne contient que des DirectPosition. Ne
-   * clone pas la liste passee en parametre mais fait une reference.
+   * Constructeur à partir d'une liste de DirectPosition. Attention, ne vérifie
+   * pas que la liste passée en paramètre ne contient que des DirectPosition. Ne
+   * clone pas la liste passée en paramètre mais fait une référence.
    */
-  public DirectPositionList(List<DirectPosition> theList) {
+  public DirectPositionList(List<IDirectPosition> theList) {
     this.setList(theList);
   }
-
-  public DirectPositionList(DirectPosition... list) {
-    this(new ArrayList<DirectPosition>(Arrays.asList(list)));
+  
+  public DirectPositionList(IDirectPosition... list) {
+    this(new ArrayList<IDirectPosition>(Arrays.asList(list)));
   }
 
   /** Clone this */
   @Override
-  public DirectPositionList clone() {
+  public Object clone() {
     DirectPositionList dpl = new DirectPositionList();
-    for (DirectPosition p : this.list) {
-      dpl.add((DirectPosition) p.clone());
+    for (IDirectPosition p : this.list) {
+      dpl.add((IDirectPosition) p.clone());
     }
     return dpl;
   }
 
   /** Renvoie un tableau de double de la forme [X Y X Y ... X Y] */
+  @Override
   public double[] toArray2D() {
     double[] array = new double[this.list.size() * 2];
     int i = 0;
-    for (DirectPosition p : this) {
+    for (IDirectPosition p : this) {
       array[i++] = p.getX();
       array[i++] = p.getY();
     }
@@ -160,10 +170,11 @@ public class DirectPositionList implements Collection<DirectPosition> {
   }
 
   /** Renvoie un tableau de double de la forme [X Y Z X Y Z ... X Y Z] */
+  @Override
   public double[] toArray3D() {
     double[] array = new double[this.list.size() * 3];
     int i = 0;
-    for (DirectPosition p : this) {
+    for (IDirectPosition p : this) {
       array[i++] = p.getX();
       array[i++] = p.getY();
       array[i++] = p.getZ();
@@ -175,10 +186,11 @@ public class DirectPositionList implements Collection<DirectPosition> {
    * Renvoie un tableau de double contenant tous les X des DirectPosition de la
    * liste.
    */
+  @Override
   public double[] toArrayX() {
     double[] array = new double[this.list.size()];
     int i = 0;
-    for (DirectPosition p : this) {
+    for (IDirectPosition p : this) {
       array[i++] = p.getX();
     }
     return array;
@@ -188,10 +200,11 @@ public class DirectPositionList implements Collection<DirectPosition> {
    * Renvoie un tableau de double contenant tous les Y des DirectPosition de la
    * liste.
    */
+  @Override
   public double[] toArrayY() {
     double[] array = new double[this.list.size()];
     int i = 0;
-    for (DirectPosition p : this) {
+    for (IDirectPosition p : this) {
       array[i++] = p.getY();
     }
     return array;
@@ -201,41 +214,38 @@ public class DirectPositionList implements Collection<DirectPosition> {
    * Renvoie un tableau de double contenant tous les Z des DirectPosition de la
    * liste.
    */
+  @Override
   public double[] toArrayZ() {
     double[] array = new double[this.list.size()];
     int i = 0;
-    for (DirectPosition p : this) {
+    for (IDirectPosition p : this) {
       array[i++] = p.getZ();
     }
     return array;
   }
 
-  /** Affiche les coordonnees des point (2D et 3D). */
+   /** Affiche les coordonnees des point (2D et 3D). */
   @Override
   public String toString() {
     String result = new String();
     if (this.size() == 0) {
-      result = "DirectPositionList : liste vide"; //$NON-NLS-1$
+      result = "DirectPositionList : liste vide";
       return result;
     }
     for (int i = 0; i < this.size(); i++) {
-      result = result + this.get(i).toString() + "\n"; //$NON-NLS-1$
+      result = result + this.get(i).toString() + "\n";
     }
     return result.substring(0, result.length() - 1); // on enleve le dernier
-    // "\n"
+                                                     // "\n"
   }
 
   @Override
-  public Iterator<DirectPosition> iterator() {
+  public Iterator<IDirectPosition> iterator() {
     return this.list.iterator();
   }
 
-  public ListIterator<DirectPosition> listIterator() {
-    return this.list.listIterator();
-  }
-
   @Override
-  public boolean addAll(Collection<? extends DirectPosition> c) {
+  public boolean addAll(Collection<? extends IDirectPosition> c) {
     return this.addAll((DirectPositionList) c);
   }
 
@@ -284,15 +294,16 @@ public class DirectPositionList implements Collection<DirectPosition> {
    * @param i
    * @param j
    */
+  @Override
   public void permuter(int i, int j) {
     if (i == j) {
       return;
     }
     if (i >= this.size() || j >= this.size()) {
-      System.out
-          .println("Erreur dans permutation: index " + i + " ou " + j + " plus grand que " + this.size()); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+      System.out.println("Erreur dans permutation: index " + i + " ou " + j
+          + " plus grand que " + this.size());
     }
-    DirectPosition dpi = this.get(i), dpj = this.get(j);
+    IDirectPosition dpi = this.get(i), dpj = this.get(j);
     this.remove(i);
     this.add(i, dpj);
     this.remove(j);
@@ -302,6 +313,7 @@ public class DirectPositionList implements Collection<DirectPosition> {
   /**
    * inverse l'ordre des directposition de la liste
    */
+  @Override
   public void inverseOrdre() {
     int nb = this.size();
     for (int i = 0; i < nb / 2; i++) {
@@ -309,9 +321,9 @@ public class DirectPositionList implements Collection<DirectPosition> {
     }
 
   }
-
-  public DirectPositionList reverse() {
-    DirectPositionList list = this.clone();
+  
+  public IDirectPositionList reverse() {
+    IDirectPositionList list = (IDirectPositionList) this.clone();
     Collections.reverse(list.getList());
     return list;
   }

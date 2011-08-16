@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
@@ -22,32 +30,39 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Curve;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ISurfacePatch;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISurfaceBoundary;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_SurfaceBoundary;
 
 /**
- * Polygone : morceau de surface plan (les aretes constituant la frontiere sont
- * coplanaires). L'attribut interpolation vaut "planar" par defaut.
+ * Polygone : morceau de surface plan (les arêtes constituant la frontière sont
+ * coplanaires). L'attribut interpolation vaut "planar" par défaut.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
  * 
  */
 
-public class GM_Polygon extends GM_SurfacePatch {
+public class GM_Polygon extends GM_SurfacePatch implements IPolygon {
 
   // ////////////////////////////////////////////////////////////////////////////////////////////
   // // modele original ISO abandonne pour simplification
   // ///////////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////////////////////////
 
-  /** Stocke la frontiere constituant le polygone. */
+  /** Stocke la frontière constituant le polygone. */
   // protected GM_SurfaceBoundary boundary;
 
-  /** Renvoie la frontiere. */
+  /** Renvoie la frontière. */
   // public GM_SurfaceBoundary getBoundary () {return this.boundary;}
 
   /** Optionnel. */
@@ -61,16 +76,18 @@ public class GM_Polygon extends GM_SurfacePatch {
   // ///////////////////////////////////////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////////////////////////
 
-  /** Anneau exterieur. */
-  protected GM_Ring exterior = null;
+  /** Anneau extérieur. */
+  protected IRing exterior;
 
   /** Renvoie l'anneau exterieur */
-  public GM_Ring getExterior() {
+  @Override
+  public IRing getExterior() {
     return this.exterior;
   }
 
   /** Affecte une valeur à l'anneau exterieur */
-  public void setExterior(GM_Ring value) {
+  @Override
+  public void setExterior(IRing value) {
     this.exterior = value;
   }
 
@@ -79,6 +96,7 @@ public class GM_Polygon extends GM_SurfacePatch {
    * existe des cas oe on peut avoir une surface avec que des frontieres
    * interieures.
    */
+  @Override
   public int sizeExterior() {
     if (this.exterior == null) {
       return 0;
@@ -86,45 +104,53 @@ public class GM_Polygon extends GM_SurfacePatch {
     return 1;
   }
 
-  /** Anneau(x) interieur(s) en cas de trou(s) : liste de GM_Ring */
-  protected List<GM_Ring> interior = new ArrayList<GM_Ring>(0);
+  /** Anneau(x) intérieur(s) en cas de trou(s) : liste de GM_Ring */
+  protected List<IRing> interior = new ArrayList<IRing>();
 
   /** Renvoie la liste des anneaux interieurs */
-  public List<GM_Ring> getInterior() {
+  @Override
+  public List<IRing> getInterior() {
     return this.interior;
   }
 
   /** Renvoie l'anneau interieur de rang i */
-  public GM_Ring getInterior(int i) {
+  @Override
+  public IRing getInterior(int i) {
     return this.interior.get(i);
   }
 
   /** Affecte un GM_Ring au rang i */
-  public void setInterior(int i, GM_Ring value) {
+  @Override
+  public void setInterior(int i, IRing value) {
     this.interior.set(i, value);
   }
 
   /** Ajoute un GM_Ring en fin de liste */
-  public void addInterior(GM_Ring value) {
+  @Override
+  public void addInterior(IRing value) {
     this.interior.add(value);
   }
 
   /** Ajoute un GM_ring au rang i */
-  public void addInterior(int i, GM_Ring value) {
+  @Override
+  public void addInterior(int i, IRing value) {
     this.interior.add(i, value);
   }
 
   /** Efface le (ou les) GM_Ring passe en parametre */
-  public void removeInterior(GM_Ring value) {
+  @Override
+  public void removeInterior(IRing value) {
     this.interior.remove(value);
   }
 
   /** Efface le GM_Ring de rang i */
+  @Override
   public void removeInterior(int i) {
     this.interior.remove(i);
   }
 
   /** Nombre d'anneaux interieurs */
+  @Override
   public int sizeInterior() {
     return this.interior.size();
   }
@@ -134,112 +160,112 @@ public class GM_Polygon extends GM_SurfacePatch {
   // /////////////////////////////////////////////////////////////////////////////
   // //////////////////////////////////////////////////////////////////////////////////////////////
 
-  /** Constructeur par defaut */
+  /** Constructeur par défaut */
   public GM_Polygon() {
     super();
     this.patch.add(this);
-    this.interpolation = "planar"; //$NON-NLS-1$
+    this.interpolation = "planar";
   }
 
   /**
-   * NON IMPLEMENTE. Constructeur à partir d'une frontiere et d'une surface.
+   * NON IMPLEMENTE. Constructeur à partir d'une frontière et d'une surface.
    * @param boundary
    * @param spanSurf
    */
-  public GM_Polygon(GM_SurfaceBoundary boundary, GM_Surface spanSurf) {
+  public GM_Polygon(ISurfaceBoundary boundary, ISurface spanSurf) {
     super();
     this.patch.add(this);
-    this.interpolation = "planar"; //$NON-NLS-1$
+    this.interpolation = "planar";
   }
 
-  /** Constructeur à partir d'une frontiere. */
-  public GM_Polygon(GM_SurfaceBoundary bdy) {
+  /** Constructeur à partir d'une frontière. */
+  public GM_Polygon(ISurfaceBoundary bdy) {
     super();
     this.patch.add(this);
-    this.interpolation = "planar"; //$NON-NLS-1$
+    this.interpolation = "planar";
     this.exterior = bdy.getExterior();
     this.interior = bdy.getInterior();
   }
 
   /**
-   * Constructeur à partir d'une GM_LineString fermee sans verifier la
-   * fermeture. ATTENTION : ne verifie pas la fermeture.
+   * Constructeur à partir d'une GM_LineString fermée sans vérifier la
+   * fermeture. ATTENTION : ne vérifie pas la fermeture.
    */
-  public GM_Polygon(GM_LineString ls) {
+  public GM_Polygon(ILineString ls) {
     super();
     this.patch.add(this);
-    this.interpolation = "planar"; //$NON-NLS-1$
+    this.interpolation = "planar";
     GM_Ring ring = new GM_Ring(ls);
     this.exterior = ring;
   }
 
   /**
-   * Constructeur à partir d'une GM_LineString fermee en verifiant la fermeture.
-   * Verifie la fermeture (d'oe le parametre tolerance), sinon exception.
+   * Constructeur à partir d'une GM_LineString fermée en vérifiant la fermeture.
+   * Vérifie la fermeture (d'où le paramètre tolérance), sinon exception.
    */
-  public GM_Polygon(GM_LineString ls, double tolerance) throws Exception {
+  public GM_Polygon(ILineString ls, double tolerance) throws Exception {
     super();
     this.patch.add(this);
-    this.interpolation = "planar"; //$NON-NLS-1$
+    this.interpolation = "planar";
     try {
       GM_Ring ring = new GM_Ring(ls, tolerance);
       this.exterior = ring;
     } catch (Exception e) {
       throw new Exception(
-          "Tentative de creer un polygone avec une LineString non fermee."); //$NON-NLS-1$
+          "Tentative de créer un polygone avec une LineString non fermée.");
     }
   }
 
   /**
-   * Constructeur à partir d'une GM_Curve fermee sans verifier la fermeture.
-   * ATTENTION : ne verifie pas la fermeture.
+   * Constructeur à partir d'une GM_Curve fermée sans vérifier la fermeture.
+   * ATTENTION : ne vérifie pas la fermeture.
    */
-  public GM_Polygon(GM_Curve curve) {
+  public GM_Polygon(ICurve curve) {
     super();
     this.patch.add(this);
-    this.interpolation = "planar"; //$NON-NLS-1$
+    this.interpolation = "planar";
     GM_Ring ring = new GM_Ring(curve);
     this.exterior = ring;
   }
 
   /**
-   * Constructeur à partir d'une GM_Curve fermee en verifiant la fermeture.
-   * Verifie la fermeture (d'oe le parametre tolerance), sinon exception.
+   * Constructeur à partir d'une GM_Curve fermée en vérifiant la fermeture.
+   * Vérifie la fermeture (d'où le paramètre tolérance), sinon exception.
    */
-  public GM_Polygon(GM_Curve curve, double tolerance) throws Exception {
+  public GM_Polygon(ICurve curve, double tolerance) throws Exception {
     super();
     this.patch.add(this);
-    this.interpolation = "planar"; //$NON-NLS-1$
+    this.interpolation = "planar";
     try {
       GM_Ring ring = new GM_Ring(curve, tolerance);
       this.exterior = ring;
     } catch (Exception e) {
       throw new Exception(
-          "Tentative de creer un polygone avec une GM_Curve non fermee."); //$NON-NLS-1$
+          "Tentative de créer un polygone avec une GM_Curve non fermée.");
     }
   }
 
   /** Constructeur à partir d'un GM_Ring. */
-  public GM_Polygon(GM_Ring ring) {
+  public GM_Polygon(IRing ring) {
     super();
     this.patch.add(this);
-    this.interpolation = "planar"; //$NON-NLS-1$
+    this.interpolation = "planar";
     this.exterior = ring;
   }
 
   /** Constructeur à partir d'une enveloppe (2D). */
-  public GM_Polygon(GM_Envelope env) {
+  public GM_Polygon(IEnvelope env) {
     super();
     this.patch.add(this);
-    this.interpolation = "planar"; //$NON-NLS-1$
+    this.interpolation = "planar";
     GM_LineString ls = new GM_LineString();
     boolean flag3D = true;
+    DirectPosition dp;
     Double D = new Double(env.getLowerCorner().getZ());
     if (D.isNaN()) {
       flag3D = false;
     }
     ls.getControlPoint().add(env.getLowerCorner());
-    DirectPosition dp = null;
     if (flag3D) {
       dp = new DirectPosition(env.getUpperCorner().getX(), env.getLowerCorner()
           .getY(), 0.0);
@@ -268,7 +294,7 @@ public class GM_Polygon extends GM_SurfacePatch {
    */
   public GM_Polygon(GM_Polygon geom) {
     this(new GM_Ring(geom.getExterior()));
-    for (GM_Ring ring : geom.getInterior()) {
+    for (IRing ring : geom.getInterior()) {
       this.addInterior(new GM_Ring(ring));
     }
   }
@@ -282,14 +308,14 @@ public class GM_Polygon extends GM_SurfacePatch {
    * Renvoie un GM_Polygon en "retournant" la frontiere (inverse l'ordre du
    * trace des points).
    */
-  // Implementation d'une methode abstraite de GM_SurfacePatch.
+  // Implémentation d'une méthode abstraite de GM_SurfacePatch.
   @Override
-  public GM_SurfacePatch reverse() {
-    GM_Ring oldRing = this.getExterior();
+  public ISurfacePatch reverse() {
+    IRing oldRing = this.getExterior();
     GM_Ring newRing = new GM_Ring();
     int n = oldRing.sizeGenerator();
     for (int i = 0; i < n; i++) {
-      GM_OrientableCurve oriCurve = oldRing.getGenerator(n - i - 1);
+      IOrientableCurve oriCurve = oldRing.getGenerator(n - i - 1);
       if (oriCurve.getOrientation() == +1) {
         newRing.addGenerator(oriCurve.getNegative());
       } else if (oriCurve.getOrientation() == -1) {
@@ -304,7 +330,7 @@ public class GM_Polygon extends GM_SurfacePatch {
         n = oldRing.sizeGenerator();
         newRing = new GM_Ring();
         for (int i = 0; i < n; i++) {
-          GM_OrientableCurve oriCurve = oldRing.getGenerator(n - i - 1);
+          IOrientableCurve oriCurve = oldRing.getGenerator(n - i - 1);
           if (oriCurve.getOrientation() == +1) {
             newRing.addGenerator(oriCurve.getNegative());
           } else if (oriCurve.getOrientation() == -1) {
@@ -320,9 +346,9 @@ public class GM_Polygon extends GM_SurfacePatch {
 
   @Override
   public Object clone() {
-    GM_Polygon poly = new GM_Polygon((GM_Ring) this.getExterior().clone());
+    GM_Polygon poly = new GM_Polygon((IRing) this.getExterior().clone());
     for (int i = 0; i < this.sizeInterior(); i++) {
-      poly.addInterior((GM_Ring) this.getInterior(i).clone());
+      poly.addInterior((IRing) this.getInterior(i).clone());
     }
     return poly;
   }
@@ -337,7 +363,7 @@ public class GM_Polygon extends GM_SurfacePatch {
    */
   public boolean isCounterClockwise() {
     // computation of the signed area
-    DirectPositionList exteriorCoord = this.exteriorCoord();
+    IDirectPositionList exteriorCoord = this.exteriorCoord();
     double signedArea = 0;
     for (int i = 0; i < exteriorCoord.size() - 1; i++) {
       signedArea += (exteriorCoord.get(i).getX()

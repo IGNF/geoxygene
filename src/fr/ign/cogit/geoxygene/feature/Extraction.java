@@ -27,7 +27,8 @@
 
 package fr.ign.cogit.geoxygene.feature;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.api.feature.IExtraction;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 
 /**
  * Zone d'extraction pour pouvoir lancer des traitement sur une partie seulement
@@ -36,7 +37,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
  * @author Sébastien Mustière
  * 
  */
-public class Extraction {
+public class Extraction implements IExtraction {
 
   /** Identifiant de la zone d'extraction */
   protected int id;
@@ -48,7 +49,7 @@ public class Extraction {
   public int getId() {
     return this.id;
   }
-
+  
   /**
    * Affecte un identifiant (ne pas utiliser si l'objet est persistant car cela
    * est automatique)
@@ -58,15 +59,15 @@ public class Extraction {
   }
 
   /** géometrie définissant la zone d'extraction */
-  protected GM_Polygon geom = null;
+  protected IPolygon geom = null;
 
   /** Renvoie une geometrie. */
-  public GM_Polygon getGeom() {
+  public IPolygon getGeom() {
     return this.geom;
   }
 
   /** Affecte une geometrie. */
-  public void setGeom(GM_Polygon g) {
+  public void setGeom(IPolygon g) {
     this.geom = g;
   }
 
@@ -87,12 +88,11 @@ public class Extraction {
    */
   private int dataSetID;
 
-  /** Ne pas utiliser, necessaire au mapping OJB */
+ /** Ne pas utiliser, necessaire au mapping OJB */
   public void setDataSetID(int I) {
     this.dataSetID = I;
   }
 
-  /** Ne pas utiliser, necessaire au mapping OJB */
   public int getDataSetID() {
     return this.dataSetID;
   }
@@ -106,5 +106,4 @@ public class Extraction {
     ex.setNom("Zone complète"); //$NON-NLS-1$
     return ex;
   }
-
 }

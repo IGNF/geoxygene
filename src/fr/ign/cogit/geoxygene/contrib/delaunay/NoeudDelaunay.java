@@ -4,11 +4,11 @@
  * GeOxygene aims at providing an open framework which implements OGC/ISO
  * specifications for the development and deployment of geographic (GIS)
  * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
+ * Institut G�ographique National (the French National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut Géographique National
+ * Copyright (C) 2005 Institut G�ographique National
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -27,16 +27,18 @@
 
 package fr.ign.cogit.geoxygene.contrib.delaunay;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 
 /**
- * Classe des sommets de la triangulation.
+ * Classe des noeuds de la triangulation.
  * @author Bonin
  * @version 1.0
  */
 
 public class NoeudDelaunay extends Noeud {
+
   private String nomclasseligne = null;
 
   public String getNomclasseligne() {
@@ -51,7 +53,11 @@ public class NoeudDelaunay extends Noeud {
     super();
   }
 
-  public NoeudDelaunay(DirectPosition dp) {
+  public NoeudDelaunay(IPoint point) {
+    super(point);
+  }
+
+  public NoeudDelaunay(IDirectPosition dp) {
     super(dp);
   }
 }

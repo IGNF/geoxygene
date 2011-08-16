@@ -27,8 +27,8 @@
 
 package fr.ign.cogit.geoxygene.util.algo;
 
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
  * 
@@ -39,9 +39,9 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 public interface GeomAlgorithms {
 
-  public DirectPosition centroid(GM_Object geom);
+  public DirectPosition centroid(IGeometry geom);
 
-  public GM_Object convexHull(GM_Object geOxyGeom);
+  public IGeometry convexHull(IGeometry geOxyGeom);
 
   /**
    * Calcule de buffer sur l'objet passé en paramètre (avec JTS). Les distances
@@ -53,7 +53,7 @@ public interface GeomAlgorithms {
    * @param distance distance utilisée pour le calcul du buffer
    * @return buffer sur l'objet passé en paramètre
    */
-  public GM_Object buffer(GM_Object geOxyGeom, double distance);
+  public IGeometry buffer(IGeometry geOxyGeom, double distance);
 
   /**
    * Calcule de buffer sur l'objet passé en paramètre (avec JTS). Le nombre de
@@ -63,34 +63,34 @@ public interface GeomAlgorithms {
    * @param geOxyGeom objet autour duquel est construit le buffer
    * @return buffer de 10 autour de l'objet passé en paramètre
    */
-  public GM_Object buffer10(GM_Object geOxyGeom);
+  public IGeometry buffer10(IGeometry geOxyGeom);
 
   /**
    * Calcule la différence entre les deux géométries passées en paramètre. Si la
    * différence est vide, le résultat est null.
    * @param geOxyGeom1 une géométrie
-   * @param geOxyGeom2 la géométrie à soustraire à la Première
+   * @param geOxyGeom2 la géométrie à soustraire à la première
    * @return la différence entre les deux géométries passées en paramètre
    */
-  public GM_Object difference(GM_Object geOxyGeom1, GM_Object geOxyGeom2);
+  public IGeometry difference(IGeometry geOxyGeom1, IGeometry geOxyGeom2);
 
-  public GM_Object intersection(GM_Object geOxyGeom1, GM_Object geOxyGeom2);
+  public IGeometry intersection(IGeometry geOxyGeom1, IGeometry geOxyGeom2);
 
-  public GM_Object union(GM_Object geOxyGeom1, GM_Object geOxyGeom2);
+  public IGeometry union(IGeometry geOxyGeom1, IGeometry geOxyGeom2);
 
-  public GM_Object symDifference(GM_Object geOxyGeom1, GM_Object geOxyGeom2);
+  public IGeometry symDifference(IGeometry geOxyGeom1, IGeometry geOxyGeom2);
 
-  public boolean contains(GM_Object geOxyGeom1, GM_Object geOxyGeom2);
+  public boolean contains(IGeometry geOxyGeom1, IGeometry geOxyGeom2);
 
-  public boolean intersects(GM_Object geOxyGeom1, GM_Object geOxyGeom2);
+  public boolean intersects(IGeometry geOxyGeom1, IGeometry geOxyGeom2);
 
-  public double distance(GM_Object geOxyGeom1, GM_Object geOxyGeom2);
+  public double distance(IGeometry geOxyGeom1, IGeometry geOxyGeom2);
 
-  public double length(GM_Object geOxyGeom1);
+  public double length(IGeometry geOxyGeom1);
 
-  public double area(GM_Object geOxyGeom1);
+  public double area(IGeometry geOxyGeom1);
 
-  public boolean equals(GM_Object geOxyGeom1, GM_Object geOxyGeom2);
+  public boolean equals(IGeometry geOxyGeom1, IGeometry geOxyGeom2);
 
   // public GM_Envelope envelope(GM_Object geOxyGeom) ;
   // public boolean isValid(GM_Object geOxyGeom) ;

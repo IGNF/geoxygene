@@ -29,19 +29,20 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolyhedralSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
 
 /**
- * NON IMPLEMENTE, A FAIRE. GM_Surface composee de surfaces polygonales
- * (GM_Polygon) connectees.
+ * NON IMPLEMENTE, A FAIRE. GM_Surface composée de surfaces polygonales
+ * (GM_Polygon) connectées.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
  * 
  */
-class GM_PolyhedralSurface extends GM_Surface {
+class GM_PolyhedralSurface extends GM_Surface implements IPolyhedralSurface {
 
-  /** Constructeur par defaut. */
+  /** Constructeur par défaut. */
   public GM_PolyhedralSurface() {
   }
 

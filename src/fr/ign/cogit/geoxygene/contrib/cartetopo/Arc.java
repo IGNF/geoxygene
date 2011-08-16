@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
@@ -27,11 +35,14 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Rectangle;
-import fr.ign.cogit.geoxygene.feature.Population;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
@@ -66,29 +77,23 @@ public class Arc extends ElementCarteTopo {
   // ///////////////////////////////////////////////////////////////////////////////////////////////
   // géométrie
   // ///////////////////////////////////////////////////////////////////////////////////////////////
-  /** Renvoie le GM_LineString qui définit la géométrie de self */
-  public GM_LineString getGeometrie() {
-    return (GM_LineString) this.geom;
+  /** Renvoie le ILineString qui définit la géométrie de self */
+  public ILineString getGeometrie() {
+    return (ILineString) this.geom;
   }
 
-  /** définit le GM_LineString qui définit la géométrie de self */
-  public void setGeometrie(GM_LineString geometrie) {
+  /** définit le ILineString qui définit la géométrie de self */
+  public void setGeometrie(ILineString geometrie) {
     this.setGeom(geometrie);
   }
 
-  /** Renvoie la liste de DirectPosition qui définit les coordonnées de self */
-  public DirectPositionList getCoord() {
+  /** Renvoie la liste de IDirectPosition qui d�finit les coordonn�es de self */
+  public IDirectPositionList getCoord() {
     return this.geom.coord();
   }
 
-  /** définit la liste de DirectPosition qui définit les coordonnées de self */
-  public void setCoord(DirectPosition dp1, DirectPosition dp2) {
-    this.setGeometrie(new GM_LineString(new DirectPositionList(Arrays.asList(
-        dp1, dp2))));
-  }
-
-  /** définit la liste de DirectPosition qui définit les coordonnées de self */
-  public void setCoord(DirectPositionList dpl) {
+  /** définit la liste de IDirectPosition qui définit les coordonnées de self */
+  public void setCoord(IDirectPositionList dpl) {
     this.geom = new GM_LineString(dpl);
   }
 
@@ -163,51 +168,51 @@ public class Arc extends ElementCarteTopo {
    * @param P point projeté sur l'arc this afin de le découper
    * @return la liste des arcs créés
    */
-  public List<Arc> projeteEtDecoupe(GM_Point P) {
-    DirectPositionList listePoints = this.getGeometrie().coord();
-    DirectPositionList ptsAvant, ptsApres;
+  public void projeteEtDecoupe(IPoint P) {
+    IDirectPositionList listePoints = this.getGeometrie().coord();
+    IDirectPositionList ptsAvant, ptsApres;
     Arc arcAvant, arcApres;
     double d, dmin;
-    DirectPosition pt, ptmin;
+    IDirectPosition pt, ptmin;
     int positionMin = 0;
     Noeud nouveauNoeud;
 
     if (this.getCarteTopo() == null) {
-      return null;
+      return;
     }
 
-    Population<Noeud> popNoeuds = this.getCarteTopo().getPopNoeuds();
-    Population<Arc> popArcs = this.getCarteTopo().getPopArcs();
+    IPopulation<Noeud> popNoeuds = this.getCarteTopo().getPopNoeuds();
+    IPopulation<Arc> popArcs = this.getCarteTopo().getPopArcs();
     int i;
 
     if (listePoints.size() < 2) {
-      return null;
+      return;
     }
     ptmin = Operateurs.projection(P.getPosition(), listePoints.get(0),
         listePoints.get(1));
-    dmin = P.getPosition().distance(ptmin);
+    dmin = Distances.distance(P.getPosition(), ptmin);
     for (i = 1; i < listePoints.size() - 1; i++) {
       pt = Operateurs.projection(P.getPosition(), listePoints.get(i),
           listePoints.get(i + 1));
-      d = P.getPosition().distance(pt);
+      d = Distances.distance(P.getPosition(), pt);
       if (d < dmin) {
         ptmin = pt;
         dmin = d;
         positionMin = i;
       }
     }
-    if (ptmin.distance(listePoints.get(0)) == 0) {
-      return null;
+    if (Distances.distance(ptmin, listePoints.get(0)) == 0) {
+      return;
     }
-    if (ptmin.distance(listePoints.get(listePoints.size() - 1)) == 0) {
-      return null;
+    if (Distances.distance(ptmin, listePoints.get(listePoints.size() - 1)) == 0) {
+      return;
     }
 
-    // création du nouveau noeud
+    // cr�ation du nouveau noeud
     nouveauNoeud = popNoeuds.nouvelElement();
     nouveauNoeud.setGeometrie(new GM_Point(ptmin));
 
-    // création des nouveaux arcs
+    // cr�ation des nouveaux arcs
     ptsAvant = new DirectPositionList();
     ptsApres = new DirectPositionList();
 
@@ -218,7 +223,7 @@ public class Arc extends ElementCarteTopo {
     arcAvant = popArcs.nouvelElement();
     arcAvant.setGeometrie(new GM_LineString(ptsAvant));
 
-    if (ptmin.distance(listePoints.get(positionMin + 1)) != 0) {
+    if (Distances.distance(ptmin, listePoints.get(positionMin + 1)) != 0) {
       ptsApres.add(ptmin);
     }
     for (i = positionMin + 1; i < listePoints.size(); i++) {
@@ -244,55 +249,50 @@ public class Arc extends ElementCarteTopo {
     this.setNoeudIni(null);
     this.setNoeudFin(null);
     popArcs.enleveElement(this);
-    
-    List<Arc> news = new ArrayList<Arc>(2);
-    news.add(arcAvant);
-    news.add(arcApres);
-    return news;
   }
 
   /**
-   * Projete le point P sur l'arc et découpe l'arc en 2 avec ce noeud projeté.
+   * Projete le point P sur l'arc et découpe l'arc en 2 avec ce noeud projet�.
    * NB: si la projection tombe sur une extrémité de l'arc : ne fait rien. TODO
    * ATTENTION : il reste du nettoyage à faire !!!
-   * @param n noeud projeté sur l'arc this afin de le découper
+   * @param n noeud projeté sur l'arc this afin de le d�couper
    */
-  public  List<Arc> projeteEtDecoupe(Noeud n) {
-    DirectPositionList listePoints = this.getGeometrie().coord();
-    DirectPositionList ptsAvant, ptsApres;
+  public void projeteEtDecoupe(Noeud n) {
+    IDirectPositionList listePoints = this.getGeometrie().coord();
+    IDirectPositionList ptsAvant, ptsApres;
     Arc arcAvant, arcApres;
     double d, dmin;
-    DirectPosition pt, ptmin;
+    IDirectPosition pt, ptmin;
     int positionMin = 0;
 
     if (this.getCarteTopo() == null) {
-      return null;
+      return;
     }
 
-    Population<Arc> popArcs = this.getCarteTopo().getPopArcs();
+    IPopulation<Arc> popArcs = this.getCarteTopo().getPopArcs();
     int i;
 
     if (listePoints.size() < 2) {
-      return null;
+      return;
     }
     ptmin = Operateurs.projection(n.getGeometrie().getPosition(), listePoints
         .get(0), listePoints.get(1));
-    dmin = n.getGeometrie().getPosition().distance(ptmin);
+    dmin = Distances.distance(n.getGeometrie().getPosition(), ptmin);
     for (i = 1; i < listePoints.size() - 1; i++) {
       pt = Operateurs.projection(n.getGeometrie().getPosition(), listePoints
           .get(i), listePoints.get(i + 1));
-      d = n.getGeometrie().getPosition().distance(pt);
+      d = Distances.distance(n.getGeometrie().getPosition(), pt);
       if (d < dmin) {
         ptmin = pt;
         dmin = d;
         positionMin = i;
       }
     }
-    if (ptmin.distance(listePoints.get(0)) == 0) {
-      return null;
+    if (Distances.distance(ptmin, listePoints.get(0)) == 0) {
+      return;
     }
-    if (ptmin.distance(listePoints.get(listePoints.size() - 1)) == 0) {
-      return null;
+    if (Distances.distance(ptmin, listePoints.get(listePoints.size() - 1)) == 0) {
+      return;
     }
 
     // modification de la géométrie du noeud et de ses arcs
@@ -307,7 +307,7 @@ public class Arc extends ElementCarteTopo {
     }
     n.setGeometrie(new GM_Point(ptmin));
 
-    // création des nouveaux arcs
+    // cr�ation des nouveaux arcs
     ptsAvant = new DirectPositionList();
     ptsApres = new DirectPositionList();
 
@@ -318,7 +318,7 @@ public class Arc extends ElementCarteTopo {
     arcAvant = popArcs.nouvelElement();
     arcAvant.setGeometrie(new GM_LineString(ptsAvant));
 
-    if (ptmin.distance(listePoints.get(positionMin + 1)) != 0) {
+    if (Distances.distance(ptmin, listePoints.get(positionMin + 1)) != 0) {
       ptsApres.add(ptmin);
     }
     for (i = positionMin + 1; i < listePoints.size(); i++) {
@@ -344,11 +344,6 @@ public class Arc extends ElementCarteTopo {
     this.setNoeudIni(null);
     this.setNoeudFin(null);
     popArcs.enleveElement(this);
-    
-    List<Arc> news = new ArrayList<Arc>(2);
-    news.add(arcAvant);
-    news.add(arcApres);
-    return news;
   }
 
   // ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -375,7 +370,7 @@ public class Arc extends ElementCarteTopo {
 
   /**
    * définit la face à gauche de self. NB: met à jour la relation inverse
-   * "arsc directs" de face
+   * "arcs directs" de face
    */
   public void setFaceGauche(Face face) {
     if (face != null) {
@@ -385,7 +380,7 @@ public class Arc extends ElementCarteTopo {
       }
     } else {
       if (this.getFaceGauche() != null) {
-        this.getFaceGauche().getArcsDirects().remove(this);
+        this.getFaceGauche().getArcsDirects().remove(face);
       }
       this.faceGauche = null;
     }
@@ -400,7 +395,7 @@ public class Arc extends ElementCarteTopo {
 
   /**
    * définit la face à droite de self. NB: met à jour la relation inverse
-   * "arsc indirects" de face
+   * "arcs indirects" de face
    */
   public void setFaceDroite(Face face) {
     if (face != null) {
@@ -410,7 +405,7 @@ public class Arc extends ElementCarteTopo {
       }
     } else {
       if (this.getFaceDroite() != null) {
-        this.getFaceDroite().getArcsIndirects().remove(this);
+        this.getFaceDroite().getArcsIndirects().remove(face);
       }
       this.faceDroite = null;
     }
@@ -434,7 +429,7 @@ public class Arc extends ElementCarteTopo {
    *         gauche, false sinon. (liste de type "ArrayList", contenant
    *         elle-même des objets Booleans).
    *         <li>la géométrie du polygone faisant le tour du cycle (de type
-   *         GM_Polygon).
+   *         IPolygon).
    *         </ul>
    */
   public Cycle cycleADroite() {
@@ -442,18 +437,19 @@ public class Arc extends ElementCarteTopo {
     boolean sensEnCours;
     List<Object> arcOriente;
     GM_LineString contour = new GM_LineString();
+    ;
     List<Arc> arcsDuCycle = new ArrayList<Arc>();
     List<Boolean> orientationsDuCycle = new ArrayList<Boolean>();
     int i;
 
-    // intialisation avec le premier arc du cycle (this) qui est par définition
+    // intialisation avec le premier arc du cycle (this) qui est par d�finition
     // dans le bon sens
     arcEnCours = this;
     sensEnCours = true;
 
     // on parcours le cycle dans le sens anti-trigonometrique,
     // jusqu'à revenir sur this en le parcourant dans le bon sens
-    // (précision utile à la gestion des cul-de-sac).
+    // (pr�cision utile � la gestion des cul-de-sac).
 
     while (true) {
       // ajout de l'arc en cours au cycle...
@@ -512,7 +508,7 @@ public class Arc extends ElementCarteTopo {
    *         gauche, false sinon. (liste de type "ArrayList", contenant
    *         elle-même des objets Booleans).
    *         <li>la géométrie du polygone faisant le tour du cycle (de type
-   *         GM_Polygon).
+   *         IPolygon).
    *         </ul>
    */
   public Cycle cycleAGauche() {
@@ -520,10 +516,11 @@ public class Arc extends ElementCarteTopo {
     boolean sensEnCours;
     List<Object> arcOriente;
     GM_LineString contour = new GM_LineString();
+    ;
     List<Arc> arcsDuCycle = new ArrayList<Arc>();
     List<Boolean> orientationsDuCycle = new ArrayList<Boolean>();
     int i;
-    // intialisation avec le premier arc du cycle (this) qui est par définition
+    // intialisation avec le premier arc du cycle (this) qui est par d�finition
     // dans le bon sens
     arcEnCours = this;
     sensEnCours = true;
@@ -584,7 +581,7 @@ public class Arc extends ElementCarteTopo {
     GM_LineString contour = new GM_LineString();
     List<Arc> arcsDuCycle = new ArrayList<Arc>();
     List<Boolean> orientationsDuCycle = new ArrayList<Boolean>();
-    // intialisation avec le premier arc du cycle (this) qui est par définition
+    // intialisation avec le premier arc du cycle (this) qui est par d�finition
     // dans le bon sens
     Arc arcEnCours = this;
     boolean sensEnCours = true;
@@ -634,7 +631,7 @@ public class Arc extends ElementCarteTopo {
   // ///////////////////////////////////////////////////////////////////////////////////////////////
   // Gestion de type carte topopolgique
   // ///////////////////////////////////////////////////////////////////////////////////////////////
-  // Les arcs sont classés autour d'un noeud en fonction de leur géométrie.
+  // Les arcs sont class�s autour d'un noeud en fonction de leur g�om�trie.
   // Ceci permet en particulier de parcourir facilement les cycles d'un graphe.
   // ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -663,7 +660,7 @@ public class Arc extends ElementCarteTopo {
     // On parcours la liste des arcs autour du noeud final
     // Quand on y rencontre this en tant qu'entrant, on renvoie le suivant dans
     // la liste
-    // NB: cette notion d'entrant est nécesaire pour bien gérer les boucles
+    // NB: cette notion d'entrant est n�cesaire pour bien g�rer les boucles
     while (itArcs.hasNext()) {
       arc = (Arc) itArcs.next();
       orientationEntrant = (Boolean) itArcsOrientation.next();
@@ -706,7 +703,7 @@ public class Arc extends ElementCarteTopo {
     // On parcours la liste des arcs autour du noeud initial
     // Quand on y rencontre this en tant que sortant, on renvoie le suivant dans
     // la liste
-    // NB: cette notion de sortant est nécessaire pour bien gérer les boucles.
+    // NB: cette notion de sortant est n�cesaire pour bien g�rer les boucles.
     while (itArcs.hasNext()) {
       arc = (Arc) itArcs.next();
       orientationEntrant = (Boolean) itArcsOrientation.next();
@@ -747,9 +744,9 @@ public class Arc extends ElementCarteTopo {
     List<Object> resultat = new ArrayList<Object>();
 
     // On parcours la liste des arcs autour du noeud final
-    // Quand on y rencontre this en tant qu'entrant, on renvoie le précédant
+    // Quand on y rencontre this en tant qu'entrant, on renvoie le pr�c�dant
     // dans la liste
-    // NB: cette notion de précédant est nécessaire pour bien gérer les boucles.
+    // NB: cette notion de pr�c�dant est n�cesaire pour bien g�rer les boucles.
     arc = (Arc) itArcs.next();
     orientationEntrant = (Boolean) itArcsOrientation.next();
     if ((arc == this) && orientationEntrant.booleanValue()) {
@@ -794,9 +791,9 @@ public class Arc extends ElementCarteTopo {
     List<Object> resultat = new ArrayList<Object>();
 
     // On parcours la liste des arcs autour du noeud initial
-    // Quand on y rencontre this en tant que sortant, on renvoie le précédant
+    // Quand on y rencontre this en tant que sortant, on renvoie le pr�c�dant
     // dans la liste
-    // NB: cette notion de précédant est nécessaire pour bien gérer les boucles.
+    // NB: cette notion de pr�c�dant est n�cesaire pour bien g�rer les boucles.
     arc = (Arc) itArcs.next();
     orientationEntrant = (Boolean) itArcsOrientation.next();
     if ((arc == this) && !orientationEntrant.booleanValue()) {
@@ -823,7 +820,7 @@ public class Arc extends ElementCarteTopo {
   // ///////////////////////////////////////////////////////////////////////////////////////////////
   // NB: ne pas confondre orientation définie par l'attribut "orientation"
   // (traité ici),
-  // et l'orientation définie implicitement par le sens de stockage de la
+  // et l'orientation d�finie implicitement par le sens de stockage de la
   // géométrie
 
   private int orientation = 2;
@@ -837,7 +834,7 @@ public class Arc extends ElementCarteTopo {
   }
 
   /**
-   * définit l'orientation. L'orientation vaut 2 dans les deux sens, -1 en sens
+   * Définit l'orientation. L'orientation vaut 2 dans les deux sens, -1 en sens
    * indirect et 1 en sens direct
    */
   public void setOrientation(int orientation) {
@@ -892,7 +889,7 @@ public class Arc extends ElementCarteTopo {
     return this.poids;
   }
 
-  /** définit le poids de l'arc, pour les calculs de plus court chemin */
+  /** Définit le poids de l'arc, pour les calculs de plus court chemin */
   public void setPoids(double d) {
     this.poids = d;
   }
@@ -909,7 +906,7 @@ public class Arc extends ElementCarteTopo {
     return this.listeGroupes;
   }
 
-  /** définit la liste des groupes de self */
+  /** Définit la liste des groupes de self */
   public void setListegroupes(Collection<Groupe> liste) {
     this.listeGroupes = liste;
   }
@@ -942,7 +939,7 @@ public class Arc extends ElementCarteTopo {
     return this.rectangleEnglobant;
   }
 
-  /** Calcule le rectangle englobant x,y en fonction de la géométrie */
+  /** Calcule le rectangle englobant x,y en fonction de la g�om�trie */
   public void calculeRectangleEnglobant() {
     this.rectangleEnglobant = Rectangle.rectangleEnglobant(this.getGeometrie());
   }
@@ -953,7 +950,7 @@ public class Arc extends ElementCarteTopo {
   }
 
   // ///////////////////////////////////////////////////////////////////////////////////////////////
-  // opérateurs de calculs sur les arcs
+  // Opérateurs de calculs sur les arcs
   // ///////////////////////////////////////////////////////////////////////////////////////////////
   /** Distance euclidienne entre le noeud et self */
   public double distance(Noeud noeud) {
@@ -963,7 +960,7 @@ public class Arc extends ElementCarteTopo {
   /**
    * Première composante de la distance de Hausdorff de self vers l'arc. Elle
    * est calculee comme le maximum des distances d'un point intermediaire de
-   * self à l'arc. Cette approximation peut diffèrer sensiblement de la
+   * self à l'arc. Cette approximation peut différer sensiblement de la
    * definition theorique. NB : défini en théorie à 3D, mais non vérifié en
    * profondeur
    */
@@ -986,7 +983,7 @@ public class Arc extends ElementCarteTopo {
   }
 
   /**
-   * Longueur euclidienne de l'arc. Est calculé en 3D si la géométrie est
+   * Longueur euclidienne de l'arc. Est calcul� en 3D si la géométrie est
    * définie en 3D
    */
   public double longueur() {
@@ -996,7 +993,7 @@ public class Arc extends ElementCarteTopo {
   protected boolean pendant = false;
 
   /**
-   * @return vrai si l'arc est pendant, i.e. si sa face droite est la même que
+   * @return vrai si l'arc est pendant, i.e. si sa face droite est la m�me que
    *         sa face gauche. En d'autres mots, c'est une impasse.
    */
   public boolean isPendant() {
@@ -1010,19 +1007,21 @@ public class Arc extends ElementCarteTopo {
    */
   public void setPendant(boolean pendant) {
     this.pendant = pendant;
-    if (this.getFaceDroite() != null && pendant
-        && !this.getFaceDroite().getArcsPendants().contains(this)) {
+    if (pendant && !this.getFaceDroite().getArcsPendants().contains(this)) {
       this.getFaceDroite().getArcsPendants().add(this);
     }
   }
 
   @Override
   public String toString() {
-    return "Arc " + this.getId() + " - " + this.getOrientation() + " - " + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        ((this.getNoeudIni() == null) ? "null" : "" + this.getNoeudIni().getId()) + " - " + ((this.getNoeudFin() == null) ? "null" : "" + this.getNoeudFin().getId()) + " - " + this.getGeometrie(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+    return "Arc " + this.getId() + " - " + this.getOrientation() + " - "
+        + ((this.getNoeudIni() == null) ? "null" : this.getNoeudIni().getId())
+        + " - "
+        + ((this.getNoeudFin() == null) ? "null" : this.getNoeudFin().getId())
+        + " - " + this.getGeometrie();
   }
-
-  /**
+  
+    /**
    * Renvoie le noeud de l'autre coté de l'arc.
    * @param n a node
    * @return the node on the other side of the edge
@@ -1038,7 +1037,7 @@ public class Arc extends ElementCarteTopo {
   }
 
 public void construireGeom() {
-	DirectPositionList list = new DirectPositionList();
+	IDirectPositionList list = new DirectPositionList();
 	list.add(this.noeudIni.getCoord());
 	list.add(this.noeudFin.getCoord());
 	this.setGeom(new GM_LineString(list));

@@ -28,7 +28,7 @@
 package fr.ign.cogit.geoxygene.spatial.topoprim;
 
 /**
- * non utilisé. représente des TP_DirectedFace connectés en un cycle. Il n'y a
+ * non utilisé. Représente des TP_DirectedFace connectés en un cycle. Il n'y a
  * pas d'ordre.
  * 
  * @author Thierry Badard & Arnaud Braun

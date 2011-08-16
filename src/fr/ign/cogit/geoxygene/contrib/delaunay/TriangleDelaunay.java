@@ -38,16 +38,34 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
  */
 
 public class TriangleDelaunay extends Face {
+
   public TriangleDelaunay() {
   }
 
   public TriangleDelaunay(NoeudDelaunay n1, NoeudDelaunay n2, NoeudDelaunay n3) {
+
     DirectPositionList dpl = new DirectPositionList();
     dpl.add(n1.getCoord());
     dpl.add(n2.getCoord());
     dpl.add(n3.getCoord());
     dpl.add(n1.getCoord());
     this.setCoord(dpl);
+
+    // liaison triangle/arcs eventuels
+    this.liaison(n1, n2);
+    this.liaison(n2, n3);
+    this.liaison(n3, n1);
+
+  }
+
+  /**
+   * lie le triangle aux arcs liant eventuellement deux noeuds
+   * 
+   * @param n1
+   * @param n2
+   */
+  private void liaison(NoeudDelaunay n1, NoeudDelaunay n2) {
+
     for (Arc arc : n1.arcs()) {
       if ((arc.getNoeudIni() == n1) && (arc.getNoeudFin() == n2)) {
         arc.setFaceGauche(this);
@@ -57,23 +75,7 @@ public class TriangleDelaunay extends Face {
         break;
       }
     }
-    for (Arc arc : n2.arcs()) {
-      if ((arc.getNoeudIni() == n2) && (arc.getNoeudFin() == n3)) {
-        arc.setFaceGauche(this);
-        break;
-      } else if ((arc.getNoeudIni() == n3) && (arc.getNoeudFin() == n2)) {
-        arc.setFaceDroite(this);
-        break;
-      }
-    }
-    for (Arc arc : n3.arcs()) {
-      if ((arc.getNoeudIni() == n3) && (arc.getNoeudFin() == n1)) {
-        arc.setFaceGauche(this);
-        break;
-      } else if ((arc.getNoeudIni() == n1) && (arc.getNoeudFin() == n3)) {
-        arc.setFaceDroite(this);
-        break;
-      }
-    }
+
   }
+
 }

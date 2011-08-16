@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
 /**
  * Classe geographique. Classe generee automatiquement par le chargeur de la
@@ -58,7 +58,7 @@ public class Point_eau extends fr.ign.cogit.geoxygene.feature.FT_Feature {
   @Override
   @Column(name = "geom")
   @Type(type = "fr.ign.cogit.geoxygene.datatools.hibernate.GeOxygeneGeometryUserType")
-  public GM_Object getGeom() {
+  public IGeometry getGeom() {
     return super.getGeom();
   }
 }

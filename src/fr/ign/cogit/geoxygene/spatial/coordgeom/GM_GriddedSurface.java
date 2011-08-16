@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO
@@ -23,10 +23,13 @@
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
- * 
  */
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
+
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IGriddedSurface;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPointGrid;
 
 /**
  * NON IMPLEMENTE, A FAIRE. Grille.
@@ -36,42 +39,32 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
  * 
  */
 
-public class GM_GriddedSurface extends GM_ParametricCurveSurface {
-
-  public GM_GriddedSurface() {
-    super();
-  }
-
-  public GM_GriddedSurface(GM_PointGrid pointGrid) {
-    super();
-    this.controlPoint = pointGrid;
-  }
-
-  @Override
-  public DirectPositionList coord() {
-    DirectPositionList coord = new DirectPositionList();
-    int numberOfRows = this.controlPoint.cardRow();
-    for (int row = 0; row < numberOfRows; row++) {
-      coord.addAll(this.controlPoint.getRow(row));
-    }
-    return coord;
-  }
+public class GM_GriddedSurface extends GM_ParametricCurveSurface implements
+    IGriddedSurface {
 
   /**
    * Tableau à deux dimension de points constituant la grille.
    */
-  private GM_PointGrid controlPoint;
+  protected IPointGrid controlPoint;
 
-  public GM_PointGrid getControlPoint() {
+  @Override
+  public IPointGrid getControlPoint() {
     return this.controlPoint;
   }
 
   /**
    * Nombre de lignes dans la grille.
    */
-  public int getRows() {
-    return this.controlPoint.cardRow();
+  private int rows;
+
+  protected int getRows() {
+    return this.rows;
   }
+
+  /**
+   * Nombre de colonnes dans la grille.
+   */
+  private int columns;
 
   /**
    * Nombre de colonnes dans la grille. On prend l'hypothèse que toutes les
@@ -80,10 +73,17 @@ public class GM_GriddedSurface extends GM_ParametricCurveSurface {
    * Number of columns in the grid. We assume that all rows have the same number
    * of columns.
    */
-  public int getColumns() {
-    if (this.getRows() > 0) {
-      return this.controlPoint.getRow(0).size();
+  protected int getColumns() {
+    return this.columns;
+  }
+
+  @Override
+  public IDirectPositionList coord() {
+    IDirectPositionList coord = new DirectPositionList();
+    int numberOfRows = this.controlPoint.cardRow();
+    for (int row = 0; row < numberOfRows; row++) {
+      coord.addAll(this.controlPoint.getRow(row));
     }
-    return 0;
+    return coord;
   }
 }

@@ -28,7 +28,7 @@
 package fr.ign.cogit.geoxygene.contrib.appariement.surfaces;
 
 /**
- * paramètres de l'appariement de surfaces.
+ * Paramètres de l'appariement de surfaces.
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
  * @version 1.0
@@ -39,7 +39,7 @@ public class ParametresAppSurfaces implements Cloneable {
 
   /**
    * 2 surfaces, pour être appariées, doivent s'intersecter et l'intersection
-   * doit faire au moins la taille fixée par ce seuil. A l'extrème, ce paramètre
+   * doit faire au moins la taille fixée par ce seuil. A l'extrême, ce paramètre
    * peut être nul. Valeur par défaut : 1 m2
    */
   public double surface_min_intersection = 1;
@@ -47,7 +47,7 @@ public class ParametresAppSurfaces implements Cloneable {
   /**
    * 2 surfaces, pour être appariées, doivent s'intersecter et l'intersection
    * doit faire au moins la taille d'une des surfaces multipliée par ce
-   * paramètre. A l'extrème, ce paramètre peut être nul. Valeur par défaut : 0.2
+   * paramètre. A l'extrême, ce paramètre peut être nul. Valeur par défaut : 0.2
    */
   public double pourcentage_min_intersection = 0.2;
 
@@ -85,18 +85,18 @@ public class ParametresAppSurfaces implements Cloneable {
   public double completudeExactitudeMinFinal = 0.3;
 
   /**
-   * paramètre indiquant si on souhaite faire un regroupement optimal des liens
+   * Paramètre indiquant si on souhaite faire un regroupement optimal des liens
    */
   public boolean regroupementOptimal = true;
 
   /**
-   * paramètre indiquant si on souhaite faire un filtrage final des liens sur
+   * Paramètre indiquant si on souhaite faire un filtrage final des liens sur
    * des critères de distance surfacique ou de complétude
    */
   public boolean filtrageFinal = true;
 
   /**
-   * paramètre indiquant si on souhaite faire un raffinement en essayant
+   * Paramètre indiquant si on souhaite faire un raffinement en essayant
    * d'aparier les petites surfaces non appariées
    */
   public boolean ajoutPetitesSurfaces = false;
@@ -108,7 +108,7 @@ public class ParametresAppSurfaces implements Cloneable {
   public double seuilPourcentageTaillePetitesSurfaces = 0.1;
 
   /**
-   * paramètre indiquant si les liens fianux sont redus persistant ou non. Par
+   * Paramètre indiquant si les liens fianux sont redus persistant ou non. Par
    * défaut: false
    */
   public boolean persistant = false;

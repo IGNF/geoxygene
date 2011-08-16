@@ -53,7 +53,7 @@ public final class PanelGauche extends JPanel {
   public PanelGauche(InterfaceGeoxygene frame) {
     this.frame = frame;
 
-    this.setFont(new Font("Arial", Font.PLAIN, 9)); //$NON-NLS-1$
+    this.setFont(new Font("Arial", Font.PLAIN, 9));
 
     this.getPanneau().setLayout(new GridBagLayout());
     this.getPanneau().setFont(this.getFont());

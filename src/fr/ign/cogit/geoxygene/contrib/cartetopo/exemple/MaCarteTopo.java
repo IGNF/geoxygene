@@ -39,7 +39,7 @@ import fr.ign.cogit.geoxygene.feature.Population;
  * dans cet exemple).
  * 
  * La seule petite difficulté est d'indiquer dans le code que MaCarteTopo est
- * constituée d'objets MonNoeud, MonArc et MaFace plutôt que les génériques
+ * constitueé d'objets MonNoeud, MonArc et MaFace plutôt que les génériques
  * Noeud, Arc et Face. Cette opération doit se faire par un constructeur spécial
  * dans la classe MaCarteTopo.
  * 
@@ -53,7 +53,7 @@ import fr.ign.cogit.geoxygene.feature.Population;
 public class MaCarteTopo extends CarteTopo {
 
   /**
-   * Constructeur d'une carte topo non persistante. Le nom logique peut été
+   * Constructeur d'une carte topo non persistante. Le nom logique peut ête
    * utilisé si la carte topo apparient à un DataSet, il peut être une chaîne
    * vide sinon.
    * 

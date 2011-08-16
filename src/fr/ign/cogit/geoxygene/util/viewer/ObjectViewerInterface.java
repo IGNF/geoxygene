@@ -59,9 +59,9 @@ import uk.ac.leeds.ccg.geotools.ShapefileReader;
 import uk.ac.leeds.ccg.geotools.Theme;
 import uk.ac.leeds.ccg.geotools.Viewer;
 import uk.ac.leeds.ccg.raster.ImageLayer;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 
 /**
  * This class instanciates the GUI of the (Geo)Object Viewer.
@@ -325,7 +325,7 @@ class ObjectViewerInterface extends JFrame implements Observer {
    * name.
    */
   protected void addAFeatureCollectionTheme(
-      FT_FeatureCollection<? extends FT_Feature> fColl, String themeName) {
+      IFeatureCollection<? extends IFeature> fColl, String themeName) {
     GeOxygeneReader geOxyRead = new GeOxygeneReader(fColl);
     final Theme t = geOxyRead.getTheme();
     t.setName(themeName);
@@ -336,7 +336,7 @@ class ObjectViewerInterface extends JFrame implements Observer {
    * Refresh the FeatureCollection displayed in the viewer with this given name.
    */
   protected void refreshAFeatureCollectionTheme(
-      FT_FeatureCollection<? extends FT_Feature> fColl, String themeName) {
+      IFeatureCollection<? extends IFeature> fColl, String themeName) {
     // Get the GeOxygeneReader of this collection
     if (this.themesPropertiesList.size() > 0) {
       for (int i = 0; i < this.themesPropertiesList.size(); i++) {
@@ -372,8 +372,7 @@ class ObjectViewerInterface extends JFrame implements Observer {
    */
   // ATTENTION apres un refresh, le highlight manager continue a etre active
   // meme si le theme est deselectionne ...
-  public void refreshAFeatureCollectionTheme(FT_Feature feature,
-      String themeName) {
+  public void refreshAFeatureCollectionTheme(IFeature feature, String themeName) {
     // Get the GeOxygeneReader of this collection
     if (this.themesPropertiesList.size() > 0) {
       for (int i = 0; i < this.themesPropertiesList.size(); i++) {
@@ -385,7 +384,7 @@ class ObjectViewerInterface extends JFrame implements Observer {
             && theme.getName().equals(themeName)) {
           GeOxygeneReader geOxyRead = (GeOxygeneReader) themeProp
               .getDataSource();
-          FT_FeatureCollection<? extends FT_Feature> fColl = geOxyRead
+          IFeatureCollection<? extends IFeature> fColl = geOxyRead
               .getFeatureCollection();
           if (!fColl.getElements().contains(feature)) {
             System.out
@@ -430,8 +429,12 @@ class ObjectViewerInterface extends JFrame implements Observer {
     return this.activeThemes;
   }
 
-  boolean isActive(Theme t) {
-    return (this.activeThemes.contains(t));
+  private boolean isActive(Theme t) {
+    if (this.activeThemes.contains(t)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   private void setThemeButton(int index, ObjectViewerThemeProperties prop) {

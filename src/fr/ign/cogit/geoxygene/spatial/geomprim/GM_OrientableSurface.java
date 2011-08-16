@@ -27,8 +27,11 @@
 
 package fr.ign.cogit.geoxygene.spatial.geomprim;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISurfaceBoundary;
 
 /**
  * Surface orientée. A de l'intérêt pour traiter les trous : un trou est une
@@ -47,13 +50,13 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
  * 
  */
 
-public class GM_OrientableSurface extends GM_OrientablePrimitive {
+public class GM_OrientableSurface extends GM_OrientablePrimitive implements
+    IOrientableSurface {
 
   /** Primitive */
-  public GM_Surface primitive;
+  public ISurface primitive;
 
-  /** Renvoie la primitive de self */
-  public GM_Surface getPrimitive() {
+  public ISurface getPrimitive() {
     return this.primitive;
   }
 
@@ -62,69 +65,48 @@ public class GM_OrientableSurface extends GM_OrientablePrimitive {
    * celle orientée positivement. Proxy[1] est celle orientée négativement. On
    * accède aux primitives orientées par getPositive() et getNegative().
    */
-  // public GM_OrientableSurface[] proxy = new GM_OrientableSurface[2];
+  public IOrientableSurface[] proxy = new IOrientableSurface[2];
 
   /** Renvoie la primitive orientée positivement correspondant à self. */
-  public GM_OrientableSurface getPositive() {
-    return this.primitive;
+  public IOrientableSurface getPositive() {
+    return this.proxy[0];
   }
 
   /** Renvoie la primitive orientée négativement correspondant à self. */
   // on recalcule en dynamique la primitive de la primitive orientee
   // negativement, qui est "renversee"
   // par rapport a la primitive orientee positivement.
-
-  /*
-   * public GM_OrientableSurface getNegative() { GM_Surface proxy1prim =
-   * this.proxy[1].primitive; proxy1prim.getPatch().clear(); GM_Surface proxy0 =
-   * (GM_Surface)this.proxy[1].proxy[0]; int n = proxy0.sizePatch(); if (n>0)
-   * for (int i=0; i<n; i++)
-   * proxy1prim.addPatch(proxy0.getPatch(n-1-i).reverse()); return
-   * this.proxy[1]; }
-   */
-  public GM_OrientableSurface getNegative() {
-    try {
-      GM_OrientableSurface clone = this.getClass().newInstance();
-      int n = this.getPrimitive().sizePatch();
-      if (n > 0) {
-        for (int i = 0; i < n; i++) {
-          clone.getPrimitive().addPatch(
-              this.getPrimitive().getPatch(n - 1 - i).reverse());
-        }
+  public IOrientableSurface getNegative() {
+    ISurface proxy1prim = this.proxy[1].getPrimitive();
+    proxy1prim.getPatch().clear();
+    ISurface proxy0 = (ISurface) this.proxy[1].getPositive();
+    int n = proxy0.sizePatch();
+    if (n > 0) {
+      for (int i = 0; i < n; i++) {
+        proxy1prim.addPatch(proxy0.getPatch(n - 1 - i).reverse());
       }
-      return clone;
-    } catch (InstantiationException e) {
-      e.printStackTrace();
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
     }
-    return null;
+    return this.proxy[1];
   }
 
-  /**
-   * Redéfinition de l'opérateur "boundary" sur GM_Object. Renvoie une
-   * GM_SurfaceBoundary, c'est-à-dire un GM_Ring pour représenter l'extérieur,
-   * et éventuellement des GM_Ring pour représenter les trous. ATTENTION ne
-   * fonctionne que pour les surfaces composées d'un seul patch, qui est un
-   * polygone.
-   */
-  public GM_SurfaceBoundary boundary() {
-    GM_Surface s = this.getPrimitive();
+  @Override
+  public ISurfaceBoundary boundary() {
+    ISurface s = this.getPrimitive();
     int n = s.sizePatch();
     if (n == 1) {
-      GM_Polygon poly = (GM_Polygon) s.getPatch(0);
+      IPolygon poly = (IPolygon) s.getPatch(0);
       GM_SurfaceBoundary bdy = new GM_SurfaceBoundary();
       bdy.exterior = poly.getExterior();
       bdy.interior = poly.getInterior();
       return bdy;
     }
     System.out
-        .println("GM_OrientableSurface::boundary() : cette méthode ne fonctionne que pour les surfaces composées d'un et d'un seul patch."); //$NON-NLS-1$
+        .println("GM_OrientableSurface::boundary() : cette méthode ne fonctionne que pour les surfaces composées d'un et d'un seul patch.");
     return null;
   }
 
   /**
-   * EXPERIMENTAL. méthode "boundary" à utiliser dans le cas des surfaces en
+   * EXPERIMENTAL. Méthode "boundary" à utiliser dans le cas des surfaces en
    * plusieurs morceaux En effet, dans ce cas, on fait appel à Oracle, d'où le
    * paramètre data.
    */
@@ -148,9 +130,8 @@ public class GM_OrientableSurface extends GM_OrientablePrimitive {
    * } }
    */
 
-  /** Renvoie les coordonnees de la primitive. */
   @Override
-  public DirectPositionList coord() {
+  public IDirectPositionList coord() {
     return this.getPrimitive().coord();
   }
 

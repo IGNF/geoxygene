@@ -13,6 +13,7 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -149,7 +150,7 @@ public class InterfaceGeoxygene extends JFrame {
    */
   public static Image getIcone() {
     if (InterfaceGeoxygene.icone == null) {
-      InterfaceGeoxygene.icone = (new ImageIcon("images/icone.gif")).getImage(); //$NON-NLS-1$
+      InterfaceGeoxygene.icone = (new ImageIcon("images/icone.gif")).getImage();
     }
     return InterfaceGeoxygene.icone;
   }
@@ -166,7 +167,7 @@ public class InterfaceGeoxygene extends JFrame {
     // setLocation(100,100);
     this.setSize(new Dimension(830, 530));
     this.setExtendedState(Frame.MAXIMIZED_BOTH);
-    this.setTitle("GeOxygene"); //$NON-NLS-1$
+    this.setTitle("GéOxygène");
     this.setIconImage(InterfaceGeoxygene.getIcone());
 
     JSplitPane splitPaneGauche = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
@@ -174,8 +175,8 @@ public class InterfaceGeoxygene extends JFrame {
     splitPaneGauche.setContinuousLayout(false);
     splitPaneGauche.setOneTouchExpandable(true);
     splitPaneGauche.setDividerLocation(10000);
-    splitPaneGauche.addPropertyChangeListener(
-        "dividerLocation", new PropertyChangeListener() { //$NON-NLS-1$
+    splitPaneGauche.addPropertyChangeListener("dividerLocation",
+        new PropertyChangeListener() {
           public void propertyChange(PropertyChangeEvent arg0) {
             InterfaceGeoxygene.this.getPanelVisu().repaint();
           }
@@ -246,25 +247,28 @@ public class InterfaceGeoxygene extends JFrame {
       List<Integer> shapeFileLayers = chargeur.shapeFileLayers;
       List<String> layerNames = chargeur.layerNames;
       for (int i = 0; i < shapeFiles.size(); i++) {
-        String populationName = layerNames.get(shapeFileLayers.get(i)
-            .intValue());
+        String populationName = layerNames.get(shapeFileLayers.get(i));
         String shapefileName = shapeFiles.get(i).getAbsolutePath();
-        if (shapeFileLayers.get(i).intValue() == 0) {
+        if (shapeFileLayers.get(i) == 0) {
           populationName = shapeFiles.get(i).getName();
           if (this.getPanelVisu().getDataset().getPopulation(populationName) != null) {
             /** Il existe déjà une population avec ce nom */
             int n = 2;
             while (this.getPanelVisu().getDataset().getPopulation(
-                populationName + " (" + n + ")") != null) {n++;} //$NON-NLS-1$//$NON-NLS-2$
-            populationName = populationName + " (" + n + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                populationName + " (" + n + ")") != null) {
+              n++;
+            }
+            populationName = populationName + " (" + n + ")";
           }
         } else {
           if (this.getPanelVisu().getDataset().getPopulation(populationName) != null) {
             /** Il existe déjà une population avec ce nom */
             int n = 2;
             while (this.getPanelVisu().getDataset().getPopulation(
-                populationName + " (" + n + ")") != null) {n++;} //$NON-NLS-1$ //$NON-NLS-2$
-            populationName = populationName + " (" + n + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                populationName + " (" + n + ")") != null) {
+              n++;
+            }
+            populationName = populationName + " (" + n + ")";
           }
         }
         this.chargeShapefile(shapefileName, populationName);
@@ -273,7 +277,7 @@ public class InterfaceGeoxygene extends JFrame {
   }
 
   public void chargeShapefile(String shapefileName, String populationName) {
-    /** création du ShapefilReader pour le chargement asynchrone des fichiers */
+    /** Création du ShapefilReader pour le chargement asynchrone des fichiers */
     ShapefileReader reader = new ShapefileReader(shapefileName, populationName,
         this.getPanelVisu().getDataset(), true);
     /**
@@ -282,7 +286,7 @@ public class InterfaceGeoxygene extends JFrame {
      */
     reader.getPopulation().addFeatureCollectionListener(this.getPanelVisu());
     /**
-     * Ajoute un layer au SLD du panel de visualisation. On essaye de Récupèrer
+     * Ajoute un layer au SLD du panel de visualisation. On essaye de récupérer
      * les styles existants depuis le sld courant ou depuis le sld par défaut
      */
     Layer layer = this.getPanelVisu().getSld().getLayer(populationName);
@@ -327,7 +331,7 @@ public class InterfaceGeoxygene extends JFrame {
     }
     this.getPanelVisu().getDataset().addPopulation(population);
     /**
-     * Ajoute un layer au SLD du panel de visualisation. On essaye de Récupèrer
+     * Ajoute un layer au SLD du panel de visualisation. On essaye de récupérer
      * les styles existants depuis le sld courant ou depuis le sld par défaut
      */
     Layer layer = this.getPanelVisu().getSld().getLayer(populationName);
@@ -401,10 +405,10 @@ public class InterfaceGeoxygene extends JFrame {
     }
     Population<FT_Feature> population = new Population<FT_Feature>(
         populationName);
-    population.setElements(collection.getElements());
+    population.setElements((Collection<FT_Feature>) collection.getElements());
     this.getPanelVisu().getDataset().addPopulation(population);
     /**
-     * Ajoute un layer au SLD du panel de visualisation. On essaye de Récupèrer
+     * Ajoute un layer au SLD du panel de visualisation. On essaye de récupérer
      * les styles existants depuis le sld courant ou depuis le sld par défaut
      */
     Layer layer = this.getPanelVisu().getSld().getLayer(populationName);

@@ -1,3 +1,22 @@
+/*
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
 package fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu;
 
 import java.util.ArrayList;
@@ -6,14 +25,14 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import fr.ign.cogit.geoxygene.api.feature.type.FC_FeatureAttributeValue;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_AssociationRole;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_AssociationType;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_InheritanceRelation;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_Operation;
 import fr.ign.cogit.geoxygene.feature.DataSet;
-import fr.ign.cogit.geoxygene.feature.type.FC_FeatureAttributeValue;
-import fr.ign.cogit.geoxygene.feature.type.GF_AssociationRole;
-import fr.ign.cogit.geoxygene.feature.type.GF_AssociationType;
-import fr.ign.cogit.geoxygene.feature.type.GF_AttributeType;
-import fr.ign.cogit.geoxygene.feature.type.GF_FeatureType;
-import fr.ign.cogit.geoxygene.feature.type.GF_InheritanceRelation;
-import fr.ign.cogit.geoxygene.feature.type.GF_Operation;
 import fr.ign.cogit.geoxygene.schema.SchemaConceptuel;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.SchemaConceptuelProduit;
 
@@ -100,16 +119,16 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
      */
     /*
      * System.out.println("utilisés : ");
-     * System.out.println(ds.getListfr.ign.cogit
-     * .appli.commun.metadata.schemaConceptuel
-     * .schemaProduit.FeatureTypeUtilises().size()+
+     * System.out.println(ds.getListfr.ign.cogit.appli.commun.metadata.
+     * schemaConceptuel.schemaProduit.FeatureTypeUtilises().size()+
      * " fr.ign.cogit.appli.commun.metadata.schemaConceptuel.schemaProduit.featureType"
-     * );System.out.println(ds.getListfr.ign.cogit.appli.commun.metadata.
+     * ); System.out.println(ds.getListfr.ign.cogit.appli.commun.metadata.
      * schemaConceptuel.schemaProduit.FeatureAssociationUtilises().size()+
      * " fr.ign.cogit.appli.commun.metadata.schemaConceptuel.schemaProduit.featureAsso"
-     * );System.out.println(ds.getListfr.ign.cogit.appli.commun.metadata.
+     * ); System.out.println(ds.getListfr.ign.cogit.appli.commun.metadata.
      * schemaConceptuel.schemaProduit.InheritanceUtilises().size()+
-     * " fr.ign.cogit.appli.commun.metadata.schemaConceptuel.schemaProduit.IR");
+     * " fr.ign.cogit.appli.commun.metadata.schemaConceptuel.schemaProduit.IR"
+     * );
      */
 
     // on cree les SC_FeatureType d'après les
@@ -142,7 +161,8 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
           while (itAttribVal.hasNext()) {
             currentFCAV = (fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureAttributeValue) itAttribVal
                 .next();
-            // System.out.println("valeur possible : "+ currentFCAV.getLabel());
+            // System.out.println("valeur possible : "+
+            // currentFCAV.getLabel());
             currentSCAV = new FeatureAttributeValue(currentFCAV);
             currentSCFA.addValuesDomain(currentSCAV);
             currentSCAV.setFeatureAttribute(currentSCFA);
@@ -153,7 +173,8 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
         currentSCFT.addFeatureAttribute(currentSCFA);
         currentSCFA.setFeatureType(currentSCFT);
       }
-      // on Récupère les operations du catalogue et on crée des SC_Operations
+      // on Récupère les operations du catalogue et on crée des
+      // SC_Operations
       itOp = currentFCFT.getFeatureOperations().iterator();
       while (itOp.hasNext()) {
         currentFCOP = (fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.Operation) itOp
@@ -216,7 +237,8 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
         currentSCFA.setFeatureType(currentSCFASS);
       }
 
-      // on recupere les operations du catalogue et on crée des SC_Operations
+      // on recupere les operations du catalogue et on crée des
+      // SC_Operations
       itOp = currentFCFASS.getFeatureOperations().iterator();
       while (itOp.hasNext()) {
         currentFCOP = (fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.Operation) itOp
@@ -236,7 +258,8 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
             .next();
         // System.out.printl(current)
         currentSCAR = new AssociationRole(currentFCAR);
-        // System.out.println("role courant id = "+ currentSCAR.getId());
+        // System.out.println("role courant id = "+
+        // currentSCAR.getId());
         currentSCAR.setAssociationType(currentSCFASS);
 
         // on recupere le FeatureType lié à ce AssociationRole
@@ -249,7 +272,8 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
           if (currentSCFT.getElementSchemaProduitOrigine().equals(currentFCFT)) {
             // On a trouve le SC_FeatureType correspondant à ce role
             // Le role a donc sa place dans le schema conceptuel
-            // On ajoute ce role au SC_FeatureAssociation correspondant
+            // On ajoute ce role au SC_FeatureAssociation
+            // correspondant
 
             currentSCAR.setFeatureType(currentSCFT);
             currentSCFASS.addRole(currentSCAR);
@@ -269,11 +293,13 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
 
         /*
          * listCreatedSCFASS.add(currentSCFASS);
+         * 
          * System.out.println("création association normale dans liste");
-         * System.out.println("avec "+currentSCFASS.getRoles().size()+" roles");
-         * System
-         * .out.println("avec "+currentSCFASS.getLinkBetween().size()+" membres"
-         * );
+         * System.out.println("avec "+currentSCFASS.getRoles().size()+
+         * " roles");
+         * 
+         * System.out.println("avec "+currentSCFASS.getLinkBetween().size
+         * ()+" membres");
          */
       }
     }
@@ -1014,7 +1040,8 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
       while (iTrole.hasNext()) {
         GF_AssociationRole monRole = iTrole.next();
         if (monRole.getAssociationType() == fa) {
-          // Suppression du role au niveau des FeatureTypes et de l'association
+          // Suppression du role au niveau des FeatureTypes et de
+          // l'association
           scft.removeRole(monRole);
           fa.removeRole(monRole);
           break;

@@ -30,6 +30,10 @@ package fr.ign.cogit.geoxygene.spatial.geomprim;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IShell;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolidBoundary;
+
 /**
  * NON UTILISE. Représente la frontière d'un GM_Solid. Un GM_SolidBoundary est
  * constitué de 0 ou 1 shell extérieur et d'une liste de shells intérieurs pour
@@ -43,22 +47,23 @@ import java.util.List;
  * 
  */
 
-public class GM_SolidBoundary extends GM_PrimitiveBoundary {
+public class GM_SolidBoundary extends GM_PrimitiveBoundary implements
+    ISolidBoundary {
 
   // ////////////////////////////////////////////////////////////////////////////////
   // Attribut "exterior" et accesseurs
   // /////////////////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////////////
   /** Shell extérieur. */
-  protected GM_Shell exterior;
+  protected IShell exterior;
 
   /** Renvoie le shell extérieur. */
-  public GM_Shell getExterior() {
+  public IShell getExterior() {
     return this.exterior;
   }
 
   /** Affecte un shell extérieur. */
-  protected void setExterior(GM_Shell value) {
+  protected void setExterior(IShell value) {
     this.exterior = value;
   }
 
@@ -75,35 +80,34 @@ public class GM_SolidBoundary extends GM_PrimitiveBoundary {
   // /////////////////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////////////
   /** Liste des shells intérieurs. */
-  protected List<GM_Shell> interior = new ArrayList<GM_Shell>();
+  protected List<IShell> interior = new ArrayList<IShell>();
 
-  /** Renvoie la liste des shells intérieurs */
-  public List<GM_Shell> getInterior() {
+  public List<IShell> getInterior() {
     return this.interior;
   }
 
   /** Renvoie le shell intérieur de rang i. */
-  public GM_Shell getInterior(int i) {
+  public IShell getInterior(int i) {
     return this.interior.get(i);
   }
 
   /** Affecte une valeur au shell intérieur de rang i. */
-  protected void setInterior(int i, GM_Shell value) {
+  protected void setInterior(int i, IShell value) {
     this.interior.set(i, value);
   }
 
   /** Ajoute un shell intérieur en fin de liste. */
-  protected void addInterior(GM_Shell value) {
+  protected void addInterior(IShell value) {
     this.interior.add(value);
   }
 
   /** Ajoute un shell intérieur au rang i. */
-  protected void addInterior(int i, GM_Shell value) {
+  protected void addInterior(int i, IShell value) {
     this.interior.add(i, value);
   }
 
   /** Efface le shell intérieur de valeur "value". */
-  protected void removeInterior(GM_Shell value) {
+  protected void removeInterior(IShell value) {
     this.interior.remove(value);
   }
 
@@ -123,11 +127,11 @@ public class GM_SolidBoundary extends GM_PrimitiveBoundary {
   // ///////////////////////////////////////////////////////////////////////////////////////
 
   /**
-   * Permet de créer un GM_SolidBoundary ne possédant pas de trous
+   * Permet de créer un GM_SolidBoundary ne possèdant pas de trous
    */
-  public GM_SolidBoundary(List<GM_OrientableSurface> lOS) {
+  public GM_SolidBoundary(ArrayList<IOrientableSurface> lOS) {
     GM_Shell inShell = new GM_Shell(lOS);
     this.exterior = inShell;
-  }
 
+  }
 }

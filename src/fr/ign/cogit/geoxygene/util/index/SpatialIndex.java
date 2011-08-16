@@ -30,10 +30,10 @@ package fr.ign.cogit.geoxygene.util.index;
 import java.util.Collection;
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
 /**
  * Interface pour un index spatial. Les selections se font au sens large : tout
@@ -43,7 +43,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * @version 1.0
  */
 
-public interface SpatialIndex<Feature extends FT_Feature> {
+public interface SpatialIndex<Feature extends IFeature> {
 
   /**
    * Renvoie les paramètres de l'index. Ce que contient exactement cette liste
@@ -86,13 +86,13 @@ public interface SpatialIndex<Feature extends FT_Feature> {
    * Selection dans le carre dont P est le centre, de cote D. NB: D peut être
    * nul.
    */
-  public Collection<Feature> select(DirectPosition P, double D);
+  public Collection<Feature> select(IDirectPosition P, double D);
 
   /** Selection a l'aide d'un rectangle. */
-  public Collection<Feature> select(GM_Envelope env);
+  public Collection<Feature> select(IEnvelope env);
 
   /** Selection des objets qui intersectent un objet geometrique quelconque. */
-  public Collection<Feature> select(GM_Object geometry);
+  public Collection<Feature> select(IGeometry geometry);
 
   /**
    * Selection des objets qui croisent ou intersectent un objet geometrique
@@ -104,12 +104,12 @@ public interface SpatialIndex<Feature extends FT_Feature> {
    *          ligne touche "geometry" juste sur une extrémité, alors avec TRUE
    *          cela ne renvoie pas la ligne, avec FALSE cela la renvoie
    */
-  public Collection<Feature> select(GM_Object geometry, boolean strictlyCrosses);
+  public Collection<Feature> select(IGeometry geometry, boolean strictlyCrosses);
 
   /**
    * Selection a l'aide d'un objet geometrique quelconque et d'une distance. NB:
    * D peut être nul
    */
-  public Collection<Feature> select(GM_Object geometry, double distance);
+  public Collection<Feature> select(IGeometry geometry, double distance);
 
 }

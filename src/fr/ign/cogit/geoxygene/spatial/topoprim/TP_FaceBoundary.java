@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * frontière d'une face topologique. constituée de plusieurs TP_Ring, l'un étant
+ * Frontière d'une face topologique. Constituée de plusieurs TP_Ring, l'un étant
  * l'extérieur, les autres l'intérieur. Un TP_Ring est orienté de telle sorte
  * que la face est à sa gauche. La frontière d'une face est une expression du
  * type : Face.Boundary() = b : TP_FaceBoundary = b.exterior + b.interior.
@@ -43,7 +43,7 @@ import java.util.List;
 
 public class TP_FaceBoundary extends TP_PrimitiveBoundary {
 
-  /** frontière extérieure. */
+  /** Frontière extérieure. */
   protected TP_Ring exterior;
 
   /** Renvoie la frontière extérieure. */
@@ -51,7 +51,7 @@ public class TP_FaceBoundary extends TP_PrimitiveBoundary {
     return this.exterior;
   }
 
-  /** frontières intérieures. */
+  /** Frontières intérieures. */
   protected List<TP_Ring> interior;
 
   /** Renvoie l'anneau intérieure de rang i. */

@@ -53,20 +53,25 @@ import javax.swing.tree.TreeSelectionModel;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
@@ -85,11 +90,11 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener,
   public static GM_Point point = new GM_Point(new DirectPosition(50, 50));
 
   public static GM_LineString lineString = new GM_LineString(
-      new DirectPositionList(new ArrayList<DirectPosition>(Arrays.asList(
+      new DirectPositionList(new ArrayList<IDirectPosition>(Arrays.asList(
           new DirectPosition(20, 50), new DirectPosition(70, 50)))));
 
   public static GM_Polygon polygon = new GM_Polygon(new GM_LineString(
-      new DirectPositionList(new ArrayList<DirectPosition>(Arrays.asList(
+      new DirectPositionList(new ArrayList<IDirectPosition>(Arrays.asList(
           new DirectPosition(20, 20), new DirectPosition(70, 20),
           new DirectPosition(70, 70), new DirectPosition(20, 70),
           new DirectPosition(20, 20))))));
@@ -130,7 +135,7 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener,
     this.setResizable(true);
     this.setSize(new Dimension(500, 500));
     this.setExtendedState(Frame.MAXIMIZED_BOTH);
-    this.setTitle("Editeur de SLD de GeOxygene");
+    this.setTitle("Editeur de SLD de GéOxygène");
     this.setIconImage(InterfaceGeoxygene.getIcone());
 
     DefaultMutableTreeNode top = new DefaultMutableTreeNode(
@@ -156,30 +161,30 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener,
   }
 
   /**
-   * crée un dataset pour afficher le SLD.
-   * @param newSld SLD à utiliser
+   * Crée un dataset pour afficher le SLD.
+   * @param sld SLD à utiliser
    */
-  private void createDataSetFromSld(StyledLayerDescriptor newSld) {
-    for (Layer layer : newSld.getLayers()) {
+  private void createDataSetFromSld(StyledLayerDescriptor sld) {
+    for (Layer layer : sld.getLayers()) {
       if ((layer.getFeatureCollection() != null)
           && (layer.getFeatureCollection().size() > 0)) {
-        Population<FT_Feature> population = new Population<FT_Feature>();
+        Population<IFeature> population = new Population<IFeature>();
         population.setNom(layer.getName());
         DefaultFeature feature = new DefaultFeature();
         // FIXME ce n'est pas très joli, mais les featuresCollection peuvent ne
         // pas avoir de featuretype
-        Class<? extends GM_Object> geometryType = (layer.getFeatureCollection()
+        Class<? extends IGeometry> geometryType = (layer.getFeatureCollection()
             .getFeatureType() != null) ? layer.getFeatureCollection()
             .getFeatureType().getGeometryType() : layer.getFeatureCollection()
             .get(0).getGeom().getClass();
-        if ((geometryType.equals(GM_MultiCurve.class))
-            || (geometryType.equals(GM_LineString.class))) {
+        if ((geometryType.equals(IMultiCurve.class))
+            || (geometryType.equals(ILineString.class))) {
           feature.setGeom(FrameEditeurSLD.lineString);
-        } else if ((geometryType.equals(GM_MultiSurface.class))
-            || (geometryType.equals(GM_Polygon.class))) {
+        } else if ((geometryType.equals(IMultiSurface.class))
+            || (geometryType.equals(IPolygon.class))) {
           feature.setGeom(FrameEditeurSLD.polygon);
-        } else if ((geometryType.equals(GM_MultiPoint.class))
-            || (geometryType.equals(GM_Point.class))) {
+        } else if ((geometryType.equals(IMultiPoint.class))
+            || (geometryType.equals(IPoint.class))) {
           feature.setGeom(FrameEditeurSLD.point);
         } else {
           FrameEditeurSLD.logger.error("Aucune géométrie n'a été affectée !!!");
@@ -199,15 +204,14 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener,
           Integer[] keys = feature.getSchema().getAttLookup().keySet().toArray(
               new Integer[0]);
           Arrays.sort(keys);
-          feature
-              .setAttributes(new Object[keys[keys.length - 1].intValue() + 1]);
+          feature.setAttributes(new Object[keys[keys.length - 1] + 1]);
           /**
            * On parcours le schéma et on affecte à tous les attributs de type
            * texte une valeur "texte"
            */
-          for (AttributeType attribute : feature.getFeatureType().getSchema()
-              .getFeatureAttributes()) {
-            if (attribute.getValueType().equalsIgnoreCase("String")) { //$NON-NLS-1$
+          for (AttributeType attribute : ((FeatureType) feature
+              .getFeatureType()).getSchema().getFeatureAttributes()) {
+            if (attribute.getValueType().equalsIgnoreCase("String")) {
               if (FrameEditeurSLD.logger.isTraceEnabled()) {
                 FrameEditeurSLD.logger.trace("affecte la valeur de l'attribut "
                     + attribute);
@@ -216,8 +220,7 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener,
             }
           }
         }
-        population
-            .setElements(new ArrayList<FT_Feature>(Arrays.asList(feature)));
+        population.setElements(new ArrayList<IFeature>(Arrays.asList(feature)));
         population.initSpatialIndex(Tiling.class, false);
         this.dataset.addPopulation(population);
       }
@@ -225,7 +228,7 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener,
   }
 
   /**
-   * crée les noeuds de l'arbre à partir du sld
+   * Crée les noeuds de l'arbre à partir du sld
    * @param top racine de l'arbre à remplir
    */
   private void createNodes(DefaultMutableTreeNode top) {
@@ -248,26 +251,25 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener,
   class SLDRenderer extends DefaultTreeCellRenderer {
     private static final long serialVersionUID = 2130271540227696439L;
 
-    private StyledLayerDescriptor sldRenderer;
+    private StyledLayerDescriptor sld;
 
     public SLDRenderer(StyledLayerDescriptor sld) {
-      this.sldRenderer = sld;
+      this.sld = sld;
     }
 
     @Override
-    public Component getTreeCellRendererComponent(JTree treeRenderer,
-        Object value, boolean sel, boolean expanded, boolean leaf, int row,
-        boolean hasFocusRenderer) {
+    public Component getTreeCellRendererComponent(JTree tree, Object value,
+        boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 
-      super.getTreeCellRendererComponent(treeRenderer, value, sel, expanded,
-          leaf, row, hasFocusRenderer);
+      super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row,
+          hasFocus);
       if (leaf && this.isLayer(value)) {
         this.setToolTipText("Ceci est un layer.");
         Layer layer = (Layer) ((DefaultMutableTreeNode) value).getUserObject();
         this
-            .setText(layer.getClass().getSimpleName() + " - " + layer.getName()); //$NON-NLS-1$
+            .setText(layer.getClass().getSimpleName() + " - " + layer.getName());
         if (FrameEditeurSLD.this.dataset.getPopulation(layer.getName()) != null) {
-          this.setIcon(new LayerIcon(layer, this.sldRenderer));
+          this.setIcon(new LayerIcon(layer, this.sld));
         }
       } else {
         this.setToolTipText(null); // no tool tip
@@ -338,7 +340,7 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener,
       Layer layer = (Layer) nodeInfo;
       if (FrameEditeurSLD.logger.isDebugEnabled()) {
         FrameEditeurSLD.logger.debug("Layer " + layer.getName()
-            + " sélectionné");
+            + " séléctionné");
       }
       FrameEditeurLayer editeur = new FrameEditeurLayer(this, layer);
       editeur.setVisible(true);

@@ -27,8 +27,13 @@
 
 package fr.ign.cogit.geoxygene.spatial.geomprim;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.geomcomp.ICompositeCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurveBoundary;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeCurve;
 
@@ -42,7 +47,7 @@ import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeCurve;
  * 
  */
 
-public class GM_Ring extends GM_CompositeCurve {
+public class GM_Ring extends GM_CompositeCurve implements IRing {
 
   /** Constructeur par défaut */
   public GM_Ring() {
@@ -53,7 +58,7 @@ public class GM_Ring extends GM_CompositeCurve {
    * Constructeur à partir d'une et d'une seule GM_OrientableCurve. Ne vérifie
    * pas la fermeture.
    */
-  public GM_Ring(GM_OrientableCurve oriCurve) {
+  public GM_Ring(IOrientableCurve oriCurve) {
     super(oriCurve);
   }
 
@@ -65,15 +70,14 @@ public class GM_Ring extends GM_CompositeCurve {
    * @param tolerance
    * @throws Exception
    */
-  public GM_Ring(GM_OrientableCurve oriCurve, double tolerance)
-      throws Exception {
+  public GM_Ring(IOrientableCurve oriCurve, double tolerance) throws Exception {
     super(oriCurve);
-    GM_Curve c = oriCurve.getPrimitive();
-    DirectPosition pt1 = c.startPoint();
-    DirectPosition pt2 = c.endPoint();
+    ICurve c = oriCurve.getPrimitive();
+    IDirectPosition pt1 = c.startPoint();
+    IDirectPosition pt2 = c.endPoint();
     if (!pt1.equals(pt2, tolerance)) {
       throw new Exception(
-          "tentative de créer un GM_Ring avec une courbe non fermée"); //$NON-NLS-1$
+          "tentative de créer un GM_Ring avec une courbe non fermée");
     }
   }
 
@@ -82,32 +86,31 @@ public class GM_Ring extends GM_CompositeCurve {
    * fermeture, ni le chainage.
    * @param compCurve
    */
-  public GM_Ring(GM_CompositeCurve compCurve) {
+  public GM_Ring(ICompositeCurve compCurve) {
     super();
     this.generator = compCurve.getGenerator();
     this.primitive = compCurve.getPrimitive();
-    // this.proxy[0] = compCurve.getPositive();
-    // this.proxy[1] = compCurve.getNegative();
+    this.proxy[0] = compCurve.getPositive();
+    this.proxy[1] = compCurve.getNegative();
   }
 
   /**
    * Constructeur à partir d'une courbe composée (cast). Vérifie la fermeture et
    * le chainage sinon exception.
    */
-  public GM_Ring(GM_CompositeCurve compCurve, double tolerance)
-      throws Exception {
+  public GM_Ring(ICompositeCurve compCurve, double tolerance) throws Exception {
     super();
     this.generator = compCurve.getGenerator();
     this.primitive = compCurve.getPrimitive();
-    // this.proxy[0] = compCurve.getPositive();
-    // this.proxy[1] = compCurve.getNegative();
+    this.proxy[0] = compCurve.getPositive();
+    this.proxy[1] = compCurve.getNegative();
     if (!super.validate(tolerance)) {
       throw new Exception(
-          "new GM_Ring(): La courbe composée passée en paramètre n'est pas chaînée"); //$NON-NLS-1$
+          "new GM_Ring(): La courbe composée passée en paramètre n'est pas chaînée");
     }
     if (!this.validate(tolerance)) {
       throw new Exception(
-          "new GM_Ring(): La courbe composée passée en paramètre ne ferme pas."); //$NON-NLS-1$
+          "new GM_Ring(): La courbe composée passée en paramètre ne ferme pas.");
     }
   }
 
@@ -121,14 +124,18 @@ public class GM_Ring extends GM_CompositeCurve {
     if (!super.validate(tolerance)) {
       return false;
     }
-    GM_CurveBoundary bdy = this.boundary();
-    return (bdy.getStartPoint().getPosition().equals(bdy.getEndPoint()
-        .getPosition(), tolerance));
+    ICurveBoundary bdy = this.boundary();
+    if (bdy.getStartPoint().getPosition().equals(
+        bdy.getEndPoint().getPosition(), tolerance)) {
+      return true;
+    }
+    return false;
   }
 
   @Override
   public Object clone() {
-    return new GM_Ring(new GM_LineString((DirectPositionList) this.coord()
+    return new GM_Ring(new GM_LineString((IDirectPositionList) this.coord()
         .clone()));
   }
+
 }

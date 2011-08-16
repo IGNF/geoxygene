@@ -99,13 +99,12 @@ public class GeOxygeneApplication {
     return this.frame;
   }
 
-  private URL propertiesFile = null;
-
   /**
    * Constructor.
    */
   public GeOxygeneApplication() {
-    this("GeOxygene"); //$NON-NLS-1$
+    this.frame = new MainFrame("GeOxygene", this);
+    this.frame.setVisible(true);
   }
 
   /**
@@ -132,7 +131,8 @@ public class GeOxygeneApplication {
   }
 
   private GeOxygeneApplicationProperties properties = null;
-
+  private URL propertiesFile = null;
+  
   /**
    * Initialize the application plugins.
    */

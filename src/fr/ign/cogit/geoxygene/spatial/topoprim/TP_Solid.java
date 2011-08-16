@@ -72,7 +72,7 @@ class TP_Solid extends TP_DirectedSolid {
     this.proxy[1].setId(-Id);
     if (Id < 0) {
       System.out
-          .println("TP_Solid::setId(id) : L'identifiant doit être positif"); //$NON-NLS-1$
+          .println("TP_Solid::setId(id) : L'identifiant doit être positif");
     }
   }
 
@@ -91,7 +91,7 @@ class TP_Solid extends TP_DirectedSolid {
       return this.proxy[1];
     } else {
       System.out
-          .println("TP_Solid::asTP_DirectedTopo(sign) : Passer +1 ou -1 en paramètre."); //$NON-NLS-1$
+          .println("TP_Solid::asTP_DirectedTopo(sign) : Passer +1 ou -1 en paramètre.");
       return null;
     }
   }

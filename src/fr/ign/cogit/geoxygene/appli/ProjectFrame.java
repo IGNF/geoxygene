@@ -44,14 +44,15 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import fr.ign.cogit.geoxygene.appli.plugin.GeometryToolBar;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
-import fr.ign.cogit.geoxygene.feature.event.FeatureCollectionEvent;
-import fr.ign.cogit.geoxygene.feature.event.FeatureCollectionListener;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionEvent;
+import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionListener;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.style.ColorMap;
 import fr.ign.cogit.geoxygene.style.Interpolate;
 import fr.ign.cogit.geoxygene.style.InterpolationPoint;
@@ -190,7 +191,7 @@ public class ProjectFrame extends JInternalFrame implements
    * @param name the name of the population
    */
   public final Layer addFeatureCollection(
-      final Population<? extends FT_Feature> population, final String name, CoordinateReferenceSystem crs) {
+      final IPopulation<? extends IFeature> population, final String name, CoordinateReferenceSystem crs) {
     Layer layer = this.sld.createLayer(name, population.getFeatureType()
         .getGeometryType());
     layer.setCRS(crs);
@@ -206,7 +207,7 @@ public class ProjectFrame extends JInternalFrame implements
    */
   @Deprecated
   public final Layer addFeatureCollection(
-	      final Population<? extends FT_Feature> population, final String name){
+	      final IPopulation<? extends IFeature> population, final String name){
 	  return this.addFeatureCollection(population, name, null);
   }
 
@@ -283,7 +284,7 @@ public class ProjectFrame extends JInternalFrame implements
     ShapefileReader shapefileReader = new ShapefileReader(fileName,
         populationName, DataSet.getInstance(), true);
 
-    Population<DefaultFeature> population = shapefileReader.getPopulation();
+    IPopulation<IFeature> population = shapefileReader.getPopulation();
     if (population != null) {
       this.addFeatureCollection(population, population.getNom(), shapefileReader.getCRS());
     }
@@ -303,7 +304,7 @@ public class ProjectFrame extends JInternalFrame implements
   /**
    * The map from feature collection to layer.
    */
-  private Map<FT_FeatureCollection<? extends FT_Feature>, Layer> featureCollectionToLayerMap = new HashMap<FT_FeatureCollection<? extends FT_Feature>, Layer>();
+  private Map<IFeatureCollection<? extends IFeature>, Layer> featureCollectionToLayerMap = new HashMap<IFeatureCollection<? extends IFeature>, Layer>();
 
   /**
    * Dispose of the frame an its {@link LayerViewPanel}.
@@ -337,7 +338,7 @@ public class ProjectFrame extends JInternalFrame implements
   public void actionPerformed(ActionEvent e) {
     if (e.getID() == 2) {
       // loading finished
-      Population<?> p = (Population<?>) e.getSource();
+      IPopulation<?> p = (IPopulation<?>) e.getSource();
       Layer l = this.getLayer(p.getNom());
       this.getLayerViewPanel().getRenderingManager().render(
           this.getLayerViewPanel().getRenderingManager().getRenderer(l));
@@ -363,7 +364,7 @@ public class ProjectFrame extends JInternalFrame implements
    * @param geomType geometry type of the new layer
    */
   public Layer createLayer(String newLayerName,
-      Class<? extends GM_Object> geomType) {
+      Class<? extends IGeometry> geomType) {
     /*
      * String newLayerName = (String) JOptionPane.showInputDialog(this,
      * "Saisissez le nom de la couche", "Créer une nouvelle couche",
@@ -381,7 +382,7 @@ public class ProjectFrame extends JInternalFrame implements
     }
 
     // Initialisation de la nouvelle population
-    Population<FT_Feature> newPop = this.generateNewPopulation(newLayerName,
+    IPopulation<IFeature> newPop = this.generateNewPopulation(newLayerName,
         geomType);
 
     // Initialisation du nouveau layer
@@ -428,9 +429,9 @@ public class ProjectFrame extends JInternalFrame implements
    * @return Une nouvelle population à partir du nom et du type de géométrie
    *         envoyés en paramètre.
    */
-  public Population<FT_Feature> generateNewPopulation(String popName,
-      Class<? extends GM_Object> geomType) {
-    Population<FT_Feature> newPop = new Population<FT_Feature>(popName);
+  public IPopulation<IFeature> generateNewPopulation(String popName,
+      Class<? extends IGeometry> geomType) {
+    IPopulation<IFeature> newPop = new Population<IFeature>(popName);
     newPop.addFeatureCollectionListener(this);
     FeatureType type = new FeatureType();
     type.setGeometryType(geomType);
@@ -449,9 +450,9 @@ public class ProjectFrame extends JInternalFrame implements
    * @return Une nouvelle population à partir du layer et des features envoyés
    *         en paramètre.
    */
-  public Population<FT_Feature> generateNewPopulation(
-      FT_FeatureCollection<? extends FT_Feature> features, Layer layer) {
-    Population<FT_Feature> newPop = new Population<FT_Feature>(layer.getName());
+  public IPopulation<IFeature> generateNewPopulation(
+      IFeatureCollection<? extends IFeature> features, Layer layer) {
+    IPopulation<IFeature> newPop = new Population<IFeature>(layer.getName());
     if (features == null || features.isEmpty()) {
       return null;
     }
@@ -467,7 +468,7 @@ public class ProjectFrame extends JInternalFrame implements
     return newPop;
   }
 
-  public Layer getLayerFromFeature(FT_Feature ft) {
+  public Layer getLayerFromFeature(IFeature ft) {
     for (Layer layer : this.getSld().getLayers()) {
       if (layer.getFeatureCollection().contains(ft)) {
         return layer;
@@ -492,7 +493,7 @@ public class ProjectFrame extends JInternalFrame implements
     }
   }
 
-  Map<FT_Feature, BufferedImage> featureToImageMap = new HashMap<FT_Feature, BufferedImage>();
+  Map<IFeature, BufferedImage> featureToImageMap = new HashMap<IFeature, BufferedImage>();
 
   public void addImage(String name, BufferedImage image, double[][] range) {
     DefaultFeature feature = new DefaultFeature(new GM_Envelope(range[0][0],
@@ -506,7 +507,7 @@ public class ProjectFrame extends JInternalFrame implements
     this.addLayer(layer);
   }
 
-  public BufferedImage getImage(FT_Feature feature) {
+  public BufferedImage getImage(IFeature feature) {
     if (feature == null) {
       if (this.featureToImageMap.isEmpty()) {
         return null;

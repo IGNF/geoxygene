@@ -1,24 +1,36 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.spatial.geomprim;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IBoundary;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 
@@ -28,37 +40,35 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
  * @author Thierry Badard & Arnaud Braun
  * 
  *         19.02.2007 : correction de bug constructeur à partir d'une
- *         DirectPosition.
+ *         DirectPosition
  * 
  * @version 1.1
  * 
  */
-
-public class GM_Point extends GM_Primitive {
+public class GM_Point extends GM_Primitive implements IPoint {
 
   /**
    * DirectPosition du point (DirectPosition étant la classe stockant les
    * coordonnées).
    */
-  protected DirectPosition position;
+  protected IDirectPosition position;
 
-  /** Renvoie le DirectPosition du point. */
-  public DirectPosition getPosition() {
+  public IDirectPosition getPosition() {
     return this.position;
   }
 
   /**
-   * Affecte un DirectPosition au point. Le DirectPosition et le GM_Point
+   * Affecte un IDirectPosition au point. Le DirectPosition et le GM_Point
    * doivent avoir la même dimension.
-   * @param pos DirectPosition : coordonnées du point
+   * @param pos IDirectPosition : coordonnées du point
    */
-  public void setPosition(DirectPosition pos) {
+  public void setPosition(IDirectPosition pos) {
     this.position = pos;
   }
 
   /**
    * NON IMPLEMENTE (renvoie null). Direction entre self et le GM_Point passé en
-   * paramètre, en suivant une courbe qui dépend du système de coordonnées
+   * paramètre, en suivant une courbe qui dépend du sytème de coordonnées
    * (courbe géodésique par exemple). Le bearing retourné est un vecteur.
    */
   /*
@@ -66,7 +76,7 @@ public class GM_Point extends GM_Primitive {
    */
   /**
    * NON IMPLEMENTE (renvoie null). Direction entre self et le DirectPosition
-   * passé en paramètre, en suivant une courbe qui dépend du système de
+   * passé en paramètre, en suivant une courbe qui dépend du sytème de
    * coordonnées (courbe géodésique par exemple). Le bearing retourné est un
    * vecteur.
    */
@@ -83,8 +93,8 @@ public class GM_Point extends GM_Primitive {
    * Constructeur à partir de coordonnées.
    * @param pos DirectPosition : coordonnées du point
    */
-  public GM_Point(DirectPosition pos) {
-    this.position = (DirectPosition) pos.clone();
+  public GM_Point(IDirectPosition pos) {
+    this.position = (IDirectPosition) pos.clone();
   }
 
   /** Affiche les coordonnées du point (2D et 3D). */
@@ -93,12 +103,8 @@ public class GM_Point extends GM_Primitive {
    * getPosition().toString(); else return "GM_Point : geometrie vide"; }
    */
 
-  /**
-   * Renvoie la liste des coordonnées, qui est constituée d'un seul
-   * DirectPosition.
-   */
   @Override
-  public DirectPositionList coord() {
+  public IDirectPositionList coord() {
     DirectPositionList dpl = new DirectPositionList();
     if (this.position != null) {
       dpl.add(this.position);
@@ -108,7 +114,7 @@ public class GM_Point extends GM_Primitive {
 
   @Override
   public Object clone() {
-    return new GM_Point((DirectPosition) this.position.clone());
+    return new GM_Point((IDirectPosition) this.position.clone());
   }
 
   @Override
@@ -117,7 +123,7 @@ public class GM_Point extends GM_Primitive {
   }
 
   @Override
-  public DirectPosition centroid() {
-    return this.position;
+  public IBoundary boundary() {
+    return null;
   }
 }

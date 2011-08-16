@@ -230,5 +230,5 @@ public class GUIConfigSqlOJBXML extends JFrame {
     }
     return pathFileJava;
   }
-
+  
 }

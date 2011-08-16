@@ -29,14 +29,14 @@ package fr.ign.cogit.geoxygene.contrib.geometrie;
 
 import java.util.Iterator;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
 /**
- * méthodes statiques de calcul d'indices de forme (de lignes et de surfaces).
+ * Méthodes statiques de calcul d'indices de forme (de lignes et de surfaces).
  * 
  * English : Measures of shapes
  * 
@@ -52,10 +52,10 @@ public abstract class IndicesForme {
   /**
    * Indice de circularité de Miller (pour des surfaces) Valeur entre 0 et 1.
    * Vaut 1 si le polygone est un cercle, 0 si il est de surface nulle.
-   * définition = 4*pi*surface/perimetre^2 Conseil : le seuil de 0.95 est adapté
+   * Définition = 4*pi*surface/perimetre^2 Conseil : le seuil de 0.95 est adapté
    * pour des ronds points dans un réseau routier.
    */
-  public static double indiceCompacite(GM_Polygon poly) {
+  public static double indiceCompacite(IPolygon poly) {
     if (Operateurs.surface(poly) == 0) {
       return 0;
     }
@@ -72,10 +72,10 @@ public abstract class IndicesForme {
 
   /**
    * Coefficient de compacité de Gravelius (pour des surfaces) Non borné :
-   * supérieur ou égal à 1 (cercle) . définition =
+   * supérieur ou égal à 1 (cercle) . Définition =
    * perimetre/2*Racine(Pi*surface)
    */
-  public static double indiceCompaciteGravelius(GM_Polygon poly) {
+  public static double indiceCompaciteGravelius(IPolygon poly) {
     double perimetre = poly.length();
     double surface = poly.area();
     return perimetre / 2 * (Math.sqrt(Math.PI * surface));
@@ -90,20 +90,20 @@ public abstract class IndicesForme {
    * @param A GM_Object
    * @return -1 si A n'est pas une surface, le diamètre sinon
    */
-  public static double diametreSurface(GM_Object A) {
+  public static double diametreSurface(IGeometry A) {
     if (A.area() == 0) {
       return -1;
     }
 
-    DirectPositionList pts = A.coord();
+    IDirectPositionList pts = A.coord();
     double dist, diametre = 0;
 
-    Iterator<DirectPosition> itPts = pts.getList().iterator();
+    Iterator<IDirectPosition> itPts = pts.getList().iterator();
     while (itPts.hasNext()) {
-      DirectPosition dp = itPts.next();
-      Iterator<DirectPosition> itPts2 = pts.getList().iterator();
+      IDirectPosition dp = itPts.next();
+      Iterator<IDirectPosition> itPts2 = pts.getList().iterator();
       while (itPts2.hasNext()) {
-        DirectPosition dp2 = itPts2.next();
+        IDirectPosition dp2 = itPts2.next();
         dist = Distances.distance2D(dp, dp2);
         if (dist > diametre) {
           diametre = dist;
@@ -117,22 +117,21 @@ public abstract class IndicesForme {
   // INDICES SUR DES LIGNES
   // ////////////////////////////////////////
   /**
-   * méthode qui détermine si la liste de points passée en entrée est
+   * Méthode qui détermine si la liste de points passée en entrée est
    * rectiligne. Une ligne est considérée rectiligne si les angles entre les
    * segments qui la constitue ne sont pas trop forts (inférieur au seuil en
-   * paramètre en radians). défaut : dépend de l'échantillonage des courbes, des
+   * paramètre en radians). Défaut : dépend de l'échantillonage des courbes, des
    * critères de courbure seraient plus stables.
    * 
    * English: is the line straight?
    */
-  public static boolean rectiligne(GM_LineString ligne,
-      double toleranceAngulaire) {
+  public static boolean rectiligne(ILineString ligne, double toleranceAngulaire) {
     int i;
     Angle ecartTrigo;
     double angle;
     double angleMin = Math.PI - toleranceAngulaire;
     double angleMax = Math.PI + toleranceAngulaire;
-    DirectPositionList listePts = ligne.getControlPoint();
+    IDirectPositionList listePts = ligne.getControlPoint();
     for (i = 0; i < listePts.size() - 2; i++) {
       ecartTrigo = Angle.angleTroisPoints(listePts.get(i), listePts.get(i + 1),
           listePts.get(i + 2));

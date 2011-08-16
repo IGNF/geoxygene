@@ -35,7 +35,7 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.feature.Population;
 
 /**
- * réseau à apparier, spécialisation d'une carte topo, utile quasi-uniquement
+ * Réseau à apparier, spécialisation d'une carte topo, utile quasi-uniquement
  * pour spécifier un constructeur adhoc.
  * 
  * @author Mustiere - IGN / Laboratoire COGIT

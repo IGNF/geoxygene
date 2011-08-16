@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO
@@ -23,7 +23,6 @@
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
- * 
  */
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
@@ -31,18 +30,23 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ICubicSpline;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+
 /**
- * Cubic Splines.
- * <p>
- * Gerald Farin and Dianne Hansford, The Essentials of CAGD, A K Peters, 2000.
- * @author Thierry Badard
- * @author Arnaud Braun
- * @author Julien Perret
+ * NON IMPLEMENTE.
+ * 
+ * @author Thierry Badard & Arnaud Braun
+ * @version 1.0
+ * 
  */
-public class GM_CubicSpline extends GM_PolynomialSpline {
+
+public class GM_CubicSpline extends GM_PolynomialSpline implements ICubicSpline {
   @Override
   public GM_CubicSpline reverse() {
-    return new GM_CubicSpline(this.controlPoints.reverse(),
+    return new GM_CubicSpline(((DirectPositionList) this.controlPoints).reverse(),
         this.vectorAtEnd[0], this.vectorAtStart[0]);
   }
 
@@ -56,14 +60,14 @@ public class GM_CubicSpline extends GM_PolynomialSpline {
     return "cubicSpline"; //$NON-NLS-1$
   }
 
-  public GM_CubicSpline(DirectPositionList points, double[] vectorAtStart,
+  public GM_CubicSpline(IDirectPositionList points, double[] vectorAtStart,
       double[] vectorAtEnd) {
     this.controlPoints = points;
     this.vectorAtStart = new double[][] { vectorAtStart };
     this.vectorAtEnd = new double[][] { vectorAtEnd };
   }
 
-  public GM_CubicSpline(DirectPositionList points) {
+  public GM_CubicSpline(IDirectPositionList points) {
     this.controlPoints = points;
     this.vectorAtStart = new double[][] {};
     this.vectorAtEnd = new double[][] {};
@@ -116,22 +120,22 @@ public class GM_CubicSpline extends GM_PolynomialSpline {
     // this.knot.add(new GM_Knot(accumulatedLength / length, 1, 1));
     // }
     // }
-    List<DirectPosition> list = new ArrayList<DirectPosition>();
+    List<IDirectPosition> list = new ArrayList<IDirectPosition>();
     for (int i = 0; i < this.controlPoints.size() - 1; i++) {
-      DirectPosition p0 = this.controlPoints.get(i);
-      DirectPosition p1 = this.controlPoints.get(i + 1);
+      IDirectPosition p0 = this.controlPoints.get(i);
+      IDirectPosition p1 = this.controlPoints.get(i + 1);
       double[] m0 = this.outgoingTangent(i);
       double[] m1 = this.incomingTangent(i + 1);
-      List<DirectPosition> l = new ArrayList<DirectPosition>(4);
+      List<IDirectPosition> l = new ArrayList<IDirectPosition>(4);
       l.add(p0);
-      DirectPosition pt0 = new DirectPosition(p0);
-      pt0.move(m0, 1.0d / 3.0d);
+      IDirectPosition pt0 = new DirectPosition(p0.getCoordinate());
+      ((DirectPosition)pt0).move(m0, 1.0d / 3.0d);
       l.add(pt0);
-      DirectPosition pt1 = new DirectPosition(p1);
-      pt1.move(m1, -1.0d / 3.0d);
+      IDirectPosition pt1 = new DirectPosition(p1.getCoordinate());
+      ((DirectPosition)pt1).move(m1, -1.0d / 3.0d);
       l.add(pt1);
       l.add(p1);
-      GM_Bezier bezier = new GM_Bezier(l);
+      GM_Bezier bezier = new GM_Bezier(new DirectPositionList(l));
       GM_LineString line = bezier.asLineString(spacing, offset);
       if (i > 0) {
         line.getControlPoint().remove(0);
@@ -141,23 +145,23 @@ public class GM_CubicSpline extends GM_PolynomialSpline {
     return new GM_LineString(list);
   }
 
-  public GM_LineString asLineString(int numberOfPoints) {
-    List<DirectPosition> list = new ArrayList<DirectPosition>();
+  public ILineString asLineString(int numberOfPoints) {
+    List<IDirectPosition> list = new ArrayList<IDirectPosition>();
     for (int i = 0; i < this.controlPoints.size() - 1; i++) {
-      DirectPosition p0 = this.controlPoints.get(i);
-      DirectPosition p1 = this.controlPoints.get(i + 1);
+      IDirectPosition p0 = this.controlPoints.get(i);
+      IDirectPosition p1 = this.controlPoints.get(i + 1);
       double[] m0 = this.outgoingTangent(i);
       double[] m1 = this.incomingTangent(i + 1);
-      List<DirectPosition> l = new ArrayList<DirectPosition>(4);
+      List<IDirectPosition> l = new ArrayList<IDirectPosition>(4);
       l.add(p0);
-      DirectPosition pt0 = new DirectPosition(p0);
+      DirectPosition pt0 = new DirectPosition(p0.getCoordinate());
       pt0.move(m0, 1.0d / 3.0d);
       l.add(pt0);
-      DirectPosition pt1 = new DirectPosition(p1);
+      DirectPosition pt1 = new DirectPosition(p1.getCoordinate());
       pt1.move(m1, -1.0d / 3.0d);
       l.add(pt1);
       l.add(p1);
-      GM_Bezier bezier = new GM_Bezier(l);
+      GM_Bezier bezier = new GM_Bezier(new DirectPositionList(l));
       GM_LineString line = bezier.asLineString(numberOfPoints);
       if (i > 0) {
         line.getControlPoint().remove(0);
@@ -210,13 +214,13 @@ public class GM_CubicSpline extends GM_PolynomialSpline {
     if (i2 < 0 || i1 > this.controlPoints.size() - 1) {
       return null;
     }
-    DirectPosition p1 = this.controlPoints.get(i1);
-    DirectPosition p2 = this.controlPoints.get(i2);
+    IDirectPosition p1 = this.controlPoints.get(i1);
+    IDirectPosition p2 = this.controlPoints.get(i2);
     double denominator = 1.0d;
     if (this.knot != null) {
       denominator = this.knot.get(i2).getValue() - this.knot.get(i1).getValue();
     }
-    return p1.minus(p2, 1.0d / denominator);
+    return ((DirectPosition) p1).minus(p2, 1.0d / denominator);
   }
   private double[] mul(double[] v, double d) {
     if (v == null) {

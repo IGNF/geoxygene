@@ -1,3 +1,22 @@
+/*
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
 package fr.ign.cogit.geoxygene.schema;
 
 import java.util.List;
@@ -6,13 +25,10 @@ import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.SchemaConceptuelProduit;
 
 /**
- * 
- * @author Balley
- * 
- *         Un produit qui a un producteur, des métadonnées minimales et
- *         notamment un schéma conceptuel (de type SchemaISOProduit) D'autres
- *         métadonnées sont à venir, notamment des MD ISO 19115 et des
- *         spécifications Cogit complètes
+ * Un produit qui a un producteur, des métadonnées minimales et notamment un
+ * schéma conceptuel (de type SchemaISOProduit) D'autres métadonnées sont à
+ * venir, notamment des MD ISO 19115 et des spécifications Cogit complètes
+ * @author Sandrine Balley
  */
 
 public class Produit {
@@ -45,7 +61,7 @@ public class Produit {
   }
 
   /**
-   * 1 = BD 2 = sûrie de cartes
+   * 1 = BD 2 = série de cartes
    */
   protected int type;
 
@@ -57,7 +73,7 @@ public class Produit {
   }
 
   /**
-   * @param type the type to set 1 = BD 2 = sûrie de cartes
+   * @param type the type to set 1 = BD 2 = série de cartes
    */
   public void setType(int type) {
     this.type = type;

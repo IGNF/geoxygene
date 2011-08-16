@@ -28,7 +28,7 @@
 package fr.ign.cogit.geoxygene.spatial.topoprim;
 
 /**
- * frontière d'un brin topologique. Contient 2 référence vers des
+ * Frontière d'un brin topologique. Contient 2 référence vers des
  * TP_DirectedNode, le startNode est orienté négativement, le endNode
  * positivement. Comme TP_Expression, le TP_EdgeBoundary se présente comme ceci
  * : Edge.boundary()=+endNode-startNode.

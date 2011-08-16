@@ -23,6 +23,7 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.NoninvertibleTransformException;
 
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
@@ -30,25 +31,11 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
  * @author Julien Perret
- * 
  */
-public final class RenderUtil {
-  /**
-   * Private constructor. Should not be used.
-   */
-  private RenderUtil() {
-
-  }
-
-  /**
-   * Draw a geometry on the given graphics.
-   * @param geometry the geometry
-   * @param viewport the viewport
-   * @param graphics the graphics
-   */
+public class RenderUtil {
   @SuppressWarnings("unchecked")
-  public static void draw(final GM_Object geometry, final Viewport viewport,
-      final Graphics2D graphics) {
+  public static void draw(IGeometry geometry, Viewport viewport,
+      Graphics2D graphics) {
     if (geometry.isPolygon()) {
       GM_Polygon polygon = (GM_Polygon) geometry;
       try {
@@ -69,33 +56,32 @@ public final class RenderUtil {
           e.printStackTrace();
         }
       }
-    } else {
-      if (geometry.isMultiSurface() || geometry.isMultiCurve()) {
-        GM_Aggregate<GM_Object> aggregate = (GM_Aggregate<GM_Object>) geometry;
-        for (GM_Object element : aggregate) {
-          RenderUtil.draw(element, viewport, graphics);
-        }
-      } else {
-        try {
-          Shape shape = viewport.toShape(geometry);
-          if (shape != null) {
-            graphics.draw(shape);
-          }
-        } catch (NoninvertibleTransformException e) {
-          e.printStackTrace();
-        }
+    } else if (geometry.isMultiSurface() || geometry.isMultiCurve()) {
+      GM_Aggregate<GM_Object> aggregate = (GM_Aggregate<GM_Object>) geometry;
+      for (GM_Object element : aggregate) {
+        RenderUtil.draw(element, viewport, graphics);
       }
+    } else {
+      try {
+        Shape shape = viewport.toShape(geometry);
+        if (shape != null) {
+          graphics.draw(shape);
+        }
+      } catch (NoninvertibleTransformException e) {
+        e.printStackTrace();
+      }
+
     }
   }
 
   /**
-   * @param geometry geometry to fill
-   * @param viewport viewport
-   * @param graphics graphics to draw into
+   * @param geometry
+   * @param viewport
+   * @param graphics
    */
   @SuppressWarnings("unchecked")
-  public static void fill(final GM_Object geometry, final Viewport viewport,
-      final Graphics2D graphics) {
+  public static void fill(IGeometry geometry, Viewport viewport,
+      Graphics2D graphics) {
     if (geometry.isPolygon()) {
       try {
         Shape shape = viewport.toShape(geometry);
@@ -105,12 +91,10 @@ public final class RenderUtil {
       } catch (NoninvertibleTransformException e) {
         e.printStackTrace();
       }
-    } else {
-      if (geometry.isMultiSurface()) {
-        GM_Aggregate<GM_Object> aggregate = (GM_Aggregate<GM_Object>) geometry;
-        for (GM_Object element : aggregate) {
-          RenderUtil.fill(element, viewport, graphics);
-        }
+    } else if (geometry.isMultiSurface()) {
+      GM_Aggregate<IGeometry> aggregate = (GM_Aggregate<IGeometry>) geometry;
+      for (IGeometry element : aggregate) {
+        RenderUtil.fill(element, viewport, graphics);
       }
     }
   }

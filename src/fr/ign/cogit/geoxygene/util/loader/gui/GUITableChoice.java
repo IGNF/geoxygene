@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO
@@ -23,7 +23,6 @@
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
- * 
  */
 
 package fr.ign.cogit.geoxygene.util.loader.gui;
@@ -98,17 +97,19 @@ public class GUITableChoice extends JFrame {
 
     JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
-    JButton okButton = new JButton("Ok"); //$NON-NLS-1$
-    okButton.setActionCommand("Ok"); //$NON-NLS-1$
+    JButton okButton = new JButton("Ok");
+    okButton.setActionCommand("Ok");
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         GUITableChoice.this.getSelectedValues();
         dialog.dispose();
       }
     });
 
-    JButton cancelButton = new JButton("Cancel"); //$NON-NLS-1$
+    JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         dialog.dispose();
       }

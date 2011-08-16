@@ -27,15 +27,16 @@
 
 package fr.ign.cogit.geoxygene.example;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.geomcomp.ICompositeCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurveBoundary;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPrimitive;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeCurve;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Curve;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_CurveBoundary;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Primitive;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 
 /**
@@ -49,7 +50,6 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
  * 
  */
 
-@SuppressWarnings( { "unqualified-field-access" })
 public class TestGeomCurve {
 
   /* Attributs */
@@ -117,11 +117,11 @@ public class TestGeomCurve {
     // /////////////////////////////////////////////////////////////////////////////////////////////
 
     // Declaration des variables
-    FT_Feature tron;
+    IFeature tron;
     Integer gid;
-    GM_Curve curve;
-    GM_Primitive prim;
-    GM_OrientableCurve oriCurve;
+    ICurve curve;
+    IPrimitive prim;
+    IOrientableCurve oriCurve;
 
     System.out.println("#### test orientation");
 
@@ -132,11 +132,11 @@ public class TestGeomCurve {
     // On charge un FT_Feature par son identifiant, avec OJB
     // Remarque : l'identifiant doit etre de type Integer et non int
     gid = new Integer(this.identifiant1);
-    tron = (FT_Feature) this.db.load(this.tronconClass, gid);
+    tron = (IFeature) this.db.load(this.tronconClass, gid);
     System.out.println("identifiant de l'objet charge : " + tron.getId());
 
     // Examinons la geometrie du FT_Feature
-    curve = (GM_Curve) tron.getGeom();
+    curve = (ICurve) tron.getGeom();
     System.out.println(curve);
     System.out.println("orientation : " + curve.getOrientation());
     // l'orientation vaut +1 : c'est normal, c'est une GM_Curve
@@ -168,7 +168,7 @@ public class TestGeomCurve {
     // Examinons la primitive de la courbe orientee negativement
     prim = oriCurve.getPrimitive();
     System.out.println("type de la primitive :" + prim.getClass().getName());
-    curve = (GM_Curve) prim; // cast - on reutilise le nom de variable curve
+    curve = (ICurve) prim; // cast - on reutilise le nom de variable curve
     System.out.println(curve);
     // la primitive renvoie une courbe renversee par rapport a tout a l'heure
     System.out
@@ -221,11 +221,11 @@ public class TestGeomCurve {
   public void testBoundary() {
 
     // Declaration des variables
-    FT_Feature tron;
+    IFeature tron;
     Integer gid;
-    GM_Curve curve;
-    GM_OrientableCurve oriCurve;
-    GM_CurveBoundary curveBdy;
+    ICurve curve;
+    IOrientableCurve oriCurve;
+    ICurveBoundary curveBdy;
 
     System.out.println("#### test boundary");
 
@@ -235,9 +235,9 @@ public class TestGeomCurve {
 
     // On charge un FT_Feature et sa geometrie
     gid = new Integer(this.identifiant1);
-    tron = (FT_Feature) this.db.load(this.tronconClass, gid);
+    tron = (IFeature) this.db.load(this.tronconClass, gid);
     System.out.println("identifiant de l'objet charge : " + tron.getId());
-    curve = (GM_Curve) tron.getGeom();
+    curve = (ICurve) tron.getGeom();
 
     // Frontiere de la courbe en passant par GM_CurveBoundary
     // l'operation "boundary" recupere un GM_CurveBoundary
@@ -256,9 +256,8 @@ public class TestGeomCurve {
 
     // Une petite experience...
     // On change la valeur de la coordonnees Y du premier point de la courbe
-    double oldY = ((GM_LineString) curve.getSegment(0)).getControlPoint(0)
-        .getY();
-    ((GM_LineString) curve.getSegment(0)).getControlPoint(0).setY(100000.0);
+    double oldY = ((ILineString) curve.getSegment(0)).getControlPoint(0).getY();
+    ((ILineString) curve.getSegment(0)).getControlPoint(0).setY(100000.0);
     // On regarde
     System.out.println("nouveau start point(Y)  : "
         + curveBdy.getStartPoint().getPosition().getY()); // ca n'a pas change
@@ -277,7 +276,7 @@ public class TestGeomCurve {
         + curveBdy.getStartPoint().getPosition().getY()); // OK maintenant
 
     // on reaffecte l'ancienne valeur ...
-    ((GM_LineString) curve.getSegment(0)).getControlPoint(0).setY(oldY);
+    ((ILineString) curve.getSegment(0)).getControlPoint(0).setY(oldY);
 
     // Rejouons avec les courbes orientees
     oriCurve = curve.getNegative();
@@ -302,13 +301,13 @@ public class TestGeomCurve {
   public void testComposite() {
 
     // Declaration des variables
-    FT_Feature tron;
+    IFeature tron;
     Integer gid;
-    GM_Curve curve;
+    ICurve curve;
     // GM_Primitive prim;
-    GM_OrientableCurve oriCurve;
-    GM_CompositeCurve compCurve;
-    GM_CurveBoundary curveBdy;
+    IOrientableCurve oriCurve;
+    ICompositeCurve compCurve;
+    ICurveBoundary curveBdy;
 
     System.out.println("#### test composite");
 
@@ -324,9 +323,9 @@ public class TestGeomCurve {
 
     // On charge un FT_Feature et sa geometrie
     gid = new Integer(this.identifiant1);
-    tron = (FT_Feature) this.db.load(this.tronconClass, gid);
+    tron = (IFeature) this.db.load(this.tronconClass, gid);
     System.out.println("identifiant de l'objet charge : " + tron.getId());
-    curve = (GM_Curve) tron.getGeom();
+    curve = (ICurve) tron.getGeom();
     System.out.println(curve);
 
     // On cree une composite curve a partir d'une courbe orientee (positivement
@@ -336,9 +335,9 @@ public class TestGeomCurve {
 
     // On charge un FT_Feature et sa geometrie
     gid = new Integer(this.identifiant2);
-    tron = (FT_Feature) this.db.load(this.tronconClass, gid);
+    tron = (IFeature) this.db.load(this.tronconClass, gid);
     System.out.println("identifiant de l'objet charge : " + tron.getId());
-    curve = (GM_Curve) tron.getGeom();
+    curve = (ICurve) tron.getGeom();
     System.out.println(curve);
 
     // On ajoute un element a la composite curve
@@ -360,9 +359,9 @@ public class TestGeomCurve {
 
     // On charge un FT_Feature et sa geometrie
     gid = new Integer(this.identifiant3);
-    tron = (FT_Feature) this.db.load(this.tronconClass, gid);
+    tron = (IFeature) this.db.load(this.tronconClass, gid);
     System.out.println("identifiant de l'objet charge : " + tron.getId());
-    curve = (GM_Curve) tron.getGeom();
+    curve = (ICurve) tron.getGeom();
     System.out.println(curve);
 
     // On ajoute encore
@@ -374,9 +373,9 @@ public class TestGeomCurve {
 
     // On charge un FT_Feature et sa geometrie
     gid = new Integer(this.identifiant4);
-    tron = (FT_Feature) this.db.load(this.tronconClass, gid);
+    tron = (IFeature) this.db.load(this.tronconClass, gid);
     System.out.println("identifiant de l'objet charge : " + tron.getId());
-    curve = (GM_Curve) tron.getGeom();
+    curve = (ICurve) tron.getGeom();
     System.out.println(curve);
 
     // On ajoute encore
@@ -406,7 +405,7 @@ public class TestGeomCurve {
     System.out.println("nombre de segments de la primitive : "
         + curve.sizeSegment());
     // pour eliminer les doublons : caster en une seule linestring
-    GM_LineString theLinestring = curve.asLineString(0.0, 0.0, tolerance);
+    ILineString theLinestring = curve.asLineString(0.0, 0.0, tolerance);
     System.out.println("linestring : ");
     System.out.println(theLinestring);
 

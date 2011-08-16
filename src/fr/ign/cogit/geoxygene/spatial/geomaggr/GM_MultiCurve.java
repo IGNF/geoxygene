@@ -1,4 +1,4 @@
-/*
+/**
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO
@@ -23,15 +23,19 @@
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
+ * 
  */
 
 package fr.ign.cogit.geoxygene.spatial.geomaggr;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeCurve;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomcomp.ICompositeCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 
 /**
  * Agrégation de courbes orientées.
@@ -41,11 +45,12 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
  * 
  */
 
-public class GM_MultiCurve<CurveType extends GM_OrientableCurve> extends
-    GM_MultiPrimitive<CurveType> {
-  /** Périmètre totale. */
+public class GM_MultiCurve<CurveType extends IOrientableCurve> extends
+    GM_MultiPrimitive<CurveType> implements IMultiCurve<CurveType> {
+
   // Dans la norme, ceci est un attribut et non une méthode.
   // Dans la norme, cet attribut est de type Length et non double
+  @Override
   public double perimeter() {
     return this.length();
   }
@@ -57,15 +62,16 @@ public class GM_MultiCurve<CurveType extends GM_OrientableCurve> extends
 
   /** Constructeur à partir d'un GM_CompositeCurve. */
   @SuppressWarnings("unchecked")
-  public GM_MultiCurve(GM_CompositeCurve compCurve) {
+  public GM_MultiCurve(ICompositeCurve compCurve) {
     this.element = new ArrayList<CurveType>();
     this.addAll((List<CurveType>) compCurve.getGenerator());
   }
 
   /** Constructeur à partir d'une liste de GM_Curve. */
-  public GM_MultiCurve(List<CurveType> lCurve) {
+  @SuppressWarnings("unchecked")
+  public GM_MultiCurve(ArrayList<ICurve> lCurve) {
     this.element = new ArrayList<CurveType>();
-    this.element.addAll(lCurve);
+    this.element.addAll((Collection<? extends CurveType>) lCurve);
 
   }
 
@@ -74,14 +80,13 @@ public class GM_MultiCurve<CurveType extends GM_OrientableCurve> extends
    * @param geom geometrie à copier
    */
   public GM_MultiCurve(GM_MultiCurve<CurveType> geom) {
-    this(geom.getList());
+    this((ICompositeCurve) geom.getList());
   }
-
+  
   @Override
   public boolean isMultiCurve() {
     return true;
   }
-
   /** Longueur totale. */
   // Dans la norme, ceci est un attribut et non une méthode.
   // Dans la norme, cet attribut est de type Length.
@@ -89,7 +94,8 @@ public class GM_MultiCurve<CurveType extends GM_OrientableCurve> extends
   /*
    * public double length() { return SpatialQuery.length(this); }
    */
-
+   
+   
   @SuppressWarnings("unchecked")
   @Override
   public Object clone() {

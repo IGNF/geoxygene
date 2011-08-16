@@ -35,10 +35,11 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
  * Conversions entre les GM_Object GeOxygene et les Geometry JTS.
@@ -68,28 +69,28 @@ public class JtsGeOxygene {
   /*------------------------------------------------------------*/
 
   /**
-   * Conversion d'une géométrie GeOxygene {@link GM_Object} en géométrie JTS
+   * Conversion d'une géométrie Géoxygène {@link IGeometry} en géométrie JTS
    * {@link Geometry}.
-   * @param geOxyGeom une géométrie GeOxygene
+   * @param geOxyGeom une géométrie Géoxygène
    * @return une géométrie JTS équivalente
    * @throws Exception renvoie une exception si la géométrie en entrée n'est pas
    *           valide
    */
-  public static Geometry makeJtsGeom(GM_Object geOxyGeom) throws Exception {
+  public static Geometry makeJtsGeom(IGeometry geOxyGeom) throws Exception {
     return JtsGeOxygene.makeJtsGeom(geOxyGeom, true);
   }
 
   /**
-   * Conversion d'une géométrie GeOxygene {@link GM_Object} en géométrie JTS
+   * Conversion d'une géométrie Géoxygène {@link IGeometry} en géométrie JTS
    * {@link Geometry}.
-   * @param geOxyGeom une géométrie GeOxygene
+   * @param geOxyGeom une géométrie Géoxygène
    * @param adapter si adapter est vrai, on utiliser la factory
    *          {@link AdapterFactory}, sinon, on passe par WKT
    * @return une géométrie JTS équivalente
    * @throws Exception Exception renvoie une exception si la géométrie en entrée
    *           n'est pas valide
    */
-  public static Geometry makeJtsGeom(GM_Object geOxyGeom, boolean adapter)
+  public static Geometry makeJtsGeom(IGeometry geOxyGeom, boolean adapter)
       throws Exception {
     if (adapter) {
       return AdapterFactory.toGeometry(new GeometryFactory(
@@ -104,28 +105,28 @@ public class JtsGeOxygene {
   }
 
   /**
-   * Conversion d'une géométrie JTS {@link Geometry} en géométrie GeOxygene
-   * {@link GM_Object}.
+   * Conversion d'une géométrie JTS {@link Geometry} en géométrie Géoxygène
+   * {@link IGeometry}.
    * @param jtsGeom une géométrie JTS
-   * @return une géométrie GeOxygene équivalente
+   * @return une géométrie Géoxygène équivalente
    * @throws Exception Exception renvoie une exception si la géométrie en entrée
    *           n'est pas valide
    */
-  public static GM_Object makeGeOxygeneGeom(Geometry jtsGeom) throws Exception {
+  public static IGeometry makeGeOxygeneGeom(Geometry jtsGeom) throws Exception {
     return JtsGeOxygene.makeGeOxygeneGeom(jtsGeom, true);
   }
 
   /**
-   * Conversion d'une géométrie JTS {@link Geometry} en géométrie GeOxygene
-   * {@link GM_Object}.
+   * Conversion d'une géométrie JTS {@link Geometry} en géométrie Géoxygène
+   * {@link IGeometry}.
    * @param adapter si adapter est vrai, on utiliser la factory
    *          {@link AdapterFactory}, sinon, on passe par WKT
    * @param jtsGeom une géométrie JTS
-   * @return une géométrie GeOxygene équivalente
+   * @return une géométrie Géoxygène équivalente
    * @throws Exception Exception renvoie une exception si la géométrie en entrée
    *           n'est pas valide
    */
-  public static GM_Object makeGeOxygeneGeom(Geometry jtsGeom, boolean adapter)
+  public static IGeometry makeGeOxygeneGeom(Geometry jtsGeom, boolean adapter)
       throws Exception {
     if (adapter) {
       return AdapterFactory.toGM_Object(jtsGeom);
@@ -138,31 +139,31 @@ public class JtsGeOxygene {
 
   /**
    * Conversion d'une coordonnée JTS {@link CoordinateSequence} en position
-   * GeOxygene {@link DirectPosition}.
+   * Géoxygène {@link IDirectPosition}.
    * @param jtsCoord une coordonnée JTS
-   * @return une position GeOxygene équivalente
+   * @return une position Géoxygène équivalente
    * @throws Exception Exception renvoie une exception si la géométrie en entrée
    *           n'est pas valide
    */
-  public static DirectPosition makeDirectPosition(CoordinateSequence jtsCoord)
+  public static IDirectPosition makeDirectPosition(CoordinateSequence jtsCoord)
       throws Exception {
     GeometryFactory jtsGeomFactory = new GeometryFactory(
         JtsGeOxygene.jtsPrecision, 0);
     Geometry jtsPoint = new Point(jtsCoord, jtsGeomFactory);
-    GM_Point geOxyPoint = (GM_Point) JtsGeOxygene.makeGeOxygeneGeom(jtsPoint);
-    DirectPosition geOxyDirectPos = geOxyPoint.getPosition();
+    IPoint geOxyPoint = (IPoint) JtsGeOxygene.makeGeOxygeneGeom(jtsPoint);
+    IDirectPosition geOxyDirectPos = geOxyPoint.getPosition();
     return geOxyDirectPos;
   }
 
   /**
    * Conversion d'un tableau de coordonnées JTS {@link CoordinateSequence} en
-   * liste de positions GeOxygene {@link DirectPositionList}.
+   * liste de positions Géoxygène {@link IDirectPositionList}.
    * @param jtsCoords un tableau de coordonnées JTS
-   * @return une list de positions GeOxygene équivalente
+   * @return une list de positions Géoxygène équivalente
    * @throws Exception Exception renvoie une exception si la géométrie en entrée
    *           n'est pas valide
    */
-  public static DirectPositionList makeDirectPositionList(
+  public static IDirectPositionList makeDirectPositionList(
       CoordinateSequence[] jtsCoords) throws Exception {
     DirectPositionList list = new DirectPositionList();
     for (CoordinateSequence jtsCoord : jtsCoords) {

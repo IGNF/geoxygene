@@ -1,29 +1,20 @@
-/**
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
- * 
+/*
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.style;
@@ -41,10 +32,10 @@ import org.apache.batik.ext.awt.geom.Polygon2D;
 
 /**
  * @author Julien Perret
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Mark {
+
   @XmlElement(name = "WellKnownName")
   private String wellKnownName = "square"; //$NON-NLS-1$
 
@@ -138,59 +129,48 @@ public class Mark {
           Mark.crossHalfWidth, Mark.crossHalfWidth, -Mark.crossHalfWidth,
           -Mark.crossHalfWidth, -0.5f, -0.5f }, 13);
   static float sqrt2over2 = 0.5f * (float) Math.sqrt(2);
-  static float xShapeRadius = 0.5f;
-  static float xShapeRatio = 0.25f;
-  // static float xShapeP = sqrt2over2 * xShapeRadius * (1 - xShapeRatio);
-  static float xShapeP = (float) (Mark.sqrt2over2 * (Math.sqrt(Math.pow(
-      Mark.xShapeRadius, 2)
-      - (Math.pow(Mark.xShapeRatio * Mark.xShapeRadius, 2) / 2)) - (Mark.xShapeRadius
-      * Mark.xShapeRatio / Math.sqrt(2))));
-  static float xShapeR = Mark.xShapeRadius * Mark.xShapeRatio;
-  private static Shape xShape = new Polygon2D(new float[] { 0.0f, Mark.xShapeP,
-      Mark.xShapeP + Mark.xShapeR, Mark.xShapeR, Mark.xShapeP + Mark.xShapeR,
-      Mark.xShapeP, 0.0f, -Mark.xShapeP, -(Mark.xShapeP + Mark.xShapeR),
-      -Mark.xShapeR, -(Mark.xShapeP + Mark.xShapeR), -Mark.xShapeP, 0.0f },
-      new float[] { -Mark.xShapeR, -(Mark.xShapeP + Mark.xShapeR),
-          -Mark.xShapeP, 0.0f, Mark.xShapeP, Mark.xShapeP + Mark.xShapeR,
-          Mark.xShapeR, Mark.xShapeP + Mark.xShapeR, Mark.xShapeP, 0.0f,
-          -Mark.xShapeP, -(Mark.xShapeP + Mark.xShapeR), -Mark.xShapeR }, 13);
-  private static Shape hLine = new Polygon2D(new float[] { -0.5f, -0.5f, 0.5f,
-      0.5f }, new float[] { 0.1f, -0.1f, -0.1f, 0.1f }, 4);
-  private static Shape vLine = new Polygon2D(new float[] { 0.1f, -0.1f, -0.1f,
-      0.1f }, new float[] { -0.5f, -0.5f, 0.5f, 0.5f }, 4);
-  private static Shape minus = new Line2D.Float(-0.5f, 0.0f, 0.5f, 0.0f);
+  static float xShapeHalfWidth = 0.1f;
+  private static Shape xShape = new Polygon2D(new float[] { 0.0f,
+      Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth),
+      Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth), Mark.xShapeHalfWidth,
+      Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth),
+      Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth), 0,
+      -Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth),
+      -Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth), -Mark.xShapeHalfWidth,
+      -Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth),
+      -Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth), 0.0f }, new float[] {
+      -Mark.xShapeHalfWidth, -Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth),
+      -Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth), 0.0f,
+      Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth),
+      Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth), Mark.xShapeHalfWidth,
+      Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth),
+      Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth), 0.0f,
+      -Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth),
+      -Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth), -Mark.xShapeHalfWidth },
+      13);
 
   /**
    * @return the AWT shape used to draw this Mark
    */
   public Shape toShape() {
     if ((this.wellKnownName == null)
-        || (this.wellKnownName.equalsIgnoreCase("square"))) {//$NON-NLS-1$
-      return Mark.square; 
+        || (this.wellKnownName.equalsIgnoreCase("square"))) {
+      return Mark.square;
     }
-    if (this.wellKnownName.equalsIgnoreCase("circle")) {//$NON-NLS-1$
-      return Mark.circle; 
+    if (this.wellKnownName.equalsIgnoreCase("circle")) {
+      return Mark.circle;
     }
-    if (this.wellKnownName.equalsIgnoreCase("triangle")) {//$NON-NLS-1$
-      return Mark.triangle; 
+    if (this.wellKnownName.equalsIgnoreCase("triangle")) {
+      return Mark.triangle;
     }
-    if (this.wellKnownName.equalsIgnoreCase("star")) {//$NON-NLS-1$
-      return Mark.star; 
+    if (this.wellKnownName.equalsIgnoreCase("star")) {
+      return Mark.star;
     }
-    if (this.wellKnownName.equalsIgnoreCase("cross")) {//$NON-NLS-1$
-      return Mark.cross; 
+    if (this.wellKnownName.equalsIgnoreCase("cross")) {
+      return Mark.cross;
     }
-    if (this.wellKnownName.equalsIgnoreCase("x")) {//$NON-NLS-1$
-      return Mark.xShape; 
-    }
-    if (this.wellKnownName.equalsIgnoreCase("hLine")) {//$NON-NLS-1$
-      return Mark.hLine; 
-    }
-    if (this.wellKnownName.equalsIgnoreCase("vLine")) {//$NON-NLS-1$
-      return Mark.vLine; 
-    }
-    if (this.wellKnownName.equalsIgnoreCase("-")) {//$NON-NLS-1$
-      return Mark.minus; 
+    if (this.wellKnownName.equalsIgnoreCase("x")) {
+      return Mark.xShape;
     }
     return null;
   }

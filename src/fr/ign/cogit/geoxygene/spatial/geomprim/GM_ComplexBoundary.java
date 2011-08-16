@@ -27,6 +27,8 @@
 
 package fr.ign.cogit.geoxygene.spatial.geomprim;
 
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IComplexBoundary;
+
 /**
  * L'opération "bounday" appliquée à un GM_Complex renvoie un GM_ComplexBounday,
  * qui est un GM_Complex de dimension inférieure à 1 à celle de l'objet initial.
@@ -36,5 +38,5 @@ package fr.ign.cogit.geoxygene.spatial.geomprim;
  * 
  */
 
-class GM_ComplexBoundary extends GM_Boundary {
+class GM_ComplexBoundary extends GM_Boundary implements IComplexBoundary {
 }

@@ -5,18 +5,21 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.geom.NoninvertibleTransformException;
-import java.util.Arrays;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingUtilities;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.render.RenderUtil;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -91,13 +94,13 @@ public class MovePointMode extends AbstractGeometryEditMode {
         DirectPosition p = frame.getLayerViewPanel().getViewport()
             .toModelDirectPosition(e.getPoint());
         if (this.dragCount > 0) {
-          RenderUtil.draw(new GM_LineString(new DirectPositionList(Arrays
-              .asList(this.previousPoint, this.currentPoint, this.nextPoint))),
+          RenderUtil.draw(new GM_LineString(new DirectPositionList(
+              this.previousPoint, this.currentPoint, this.nextPoint)),
               frame.getLayerViewPanel().getViewport(), graphics2D);
         }
         this.currentPoint = p;
-        RenderUtil.draw(new GM_LineString(new DirectPositionList(Arrays.asList(
-            this.previousPoint, this.currentPoint, this.nextPoint))), frame
+        RenderUtil.draw(new GM_LineString(new DirectPositionList(
+            this.previousPoint, this.currentPoint, this.nextPoint)), frame
             .getLayerViewPanel().getViewport(), graphics2D);
         this.dragCount++;
       } catch (NoninvertibleTransformException e1) {
@@ -109,11 +112,11 @@ public class MovePointMode extends AbstractGeometryEditMode {
   /**
    * @param p
    */
-  public void selectPoint(DirectPosition p) {
-    GM_Point point = new GM_Point(p);
+  public void selectPoint(IDirectPosition p) {
+    IPoint point = new GM_Point(p);
     double minDistance = Double.POSITIVE_INFINITY;
-    FT_Feature closestFeature = null;
-    for (FT_Feature feature : this.mainFrame.getSelectedProjectFrame()
+    IFeature closestFeature = null;
+    for (IFeature feature : this.mainFrame.getSelectedProjectFrame()
         .getLayerViewPanel().getSelectedFeatures()) {
       double distance = feature.getGeom().distance(point);
       if (distance < minDistance) {
@@ -133,7 +136,7 @@ public class MovePointMode extends AbstractGeometryEditMode {
    * @param feature
    */
   @SuppressWarnings("unchecked")
-  private void selectPoint(DirectPosition point, FT_Feature feature) {
+  private void selectPoint(IDirectPosition point, IFeature feature) {
     if (feature.getGeom().isPolygon()) {
       GM_Polygon polygon = new GM_Polygon((GM_Polygon) feature.getGeom());
       this.selectPoint(point, polygon);
@@ -173,11 +176,11 @@ public class MovePointMode extends AbstractGeometryEditMode {
    * @param point
    * @param points
    */
-  private int closestPointIndex(DirectPosition point, DirectPositionList points) {
+  private int closestPointIndex(IDirectPosition point, IDirectPositionList points) {
     int indexPointMin = 0;
     double distanceMin = point.distance(points.get(0));
     for (int index = 1; index < points.size(); index++) {
-      DirectPosition currentPoint = points.get(index);
+      IDirectPosition currentPoint = points.get(index);
       double distance = point.distance(currentPoint);
       if (distance < distanceMin) {
         distanceMin = distance;
@@ -187,7 +190,7 @@ public class MovePointMode extends AbstractGeometryEditMode {
     return indexPointMin;
   }
 
-  private void selectPoint(DirectPosition point,
+  private void selectPoint(IDirectPosition point,
       GM_MultiCurve<GM_LineString> multiCurve) {
     double distanceMin = Double.MAX_VALUE;
     for (GM_LineString line : multiCurve) {
@@ -207,9 +210,9 @@ public class MovePointMode extends AbstractGeometryEditMode {
     }
   }
 
-  private void selectPoint(DirectPosition point,
+  private void selectPoint(IDirectPosition point,
       GM_MultiSurface<GM_Polygon> multiSurface) {
-    GM_Ring ringMin = null;
+    IRing ringMin = null;
     double distanceMin = Double.MAX_VALUE;
     for (GM_Polygon polygon : multiSurface) {
       double distance = Distances.distance(point, polygon.getExterior());
@@ -218,7 +221,7 @@ public class MovePointMode extends AbstractGeometryEditMode {
         ringMin = polygon.getExterior();
       }
       for (int index = 0; index < polygon.sizeInterior(); index++) {
-        GM_Ring interiorRing = polygon.getInterior().get(index);
+        IRing interiorRing = polygon.getInterior().get(index);
         distance = Distances.distance(point, interiorRing);
         if (distance < distanceMin) {
           distanceMin = distance;
@@ -227,17 +230,17 @@ public class MovePointMode extends AbstractGeometryEditMode {
       }
     }
     if (ringMin != null) {
-      DirectPositionList points = ringMin.coord();
+      IDirectPositionList points = ringMin.coord();
       this.selectPoint(point, points);
     }
   }
 
-  DirectPosition sourcePoint;
-  DirectPosition previousPoint;
-  DirectPosition nextPoint;
-  FT_Feature currentFeature;
+  IDirectPosition sourcePoint;
+  IDirectPosition previousPoint;
+  IDirectPosition nextPoint;
+  IFeature currentFeature;
 
-  private void selectPoint(DirectPosition point, GM_LineString line) {
+  private void selectPoint(IDirectPosition point, GM_LineString line) {
     int index = this.closestPointIndex(point, line.getControlPoint());
     this.sourcePoint = line.getControlPoint(index);
     if (index == 0) {
@@ -249,22 +252,22 @@ public class MovePointMode extends AbstractGeometryEditMode {
     this.nextPoint = line.getControlPoint(index + 1);
   }
 
-  private void selectPoint(DirectPosition point, GM_Polygon polygon) {
-    GM_Ring ringMin = polygon.getExterior();
+  private void selectPoint(IDirectPosition point, GM_Polygon polygon) {
+    IRing ringMin = polygon.getExterior();
     double distanceMin = Distances.distance(point, ringMin);
     for (int index = 0; index < polygon.sizeInterior(); index++) {
-      GM_Ring interiorRing = polygon.getInterior().get(index);
+      IRing interiorRing = polygon.getInterior().get(index);
       double distance = Distances.distance(point, interiorRing);
       if (distance < distanceMin) {
         distanceMin = distance;
         ringMin = interiorRing;
       }
     }
-    DirectPositionList points = ringMin.coord();
+    IDirectPositionList points = ringMin.coord();
     this.selectPoint(point, points);
   }
 
-  private void selectPoint(DirectPosition point, DirectPositionList points) {
+  private void selectPoint(IDirectPosition point, IDirectPositionList points) {
     int index = this.closestPointIndex(point, points);
     this.sourcePoint = points.get(index);
     if (index == 0) {
@@ -320,10 +323,10 @@ public class MovePointMode extends AbstractGeometryEditMode {
     }
   }
 
-  private void movePoint(DirectPosition p,
+  private void movePoint(IDirectPosition p,
       GM_MultiCurve<GM_LineString> multiCurve) {
     for (GM_LineString line : multiCurve) {
-      for (DirectPosition point : line.getControlPoint()) {
+      for (IDirectPosition point : line.getControlPoint()) {
         if (point.equals(this.sourcePoint)) {
           point.setCoordinate(p.getCoordinate());
         }
@@ -331,12 +334,12 @@ public class MovePointMode extends AbstractGeometryEditMode {
     }
   }
 
-  private void movePoint(DirectPosition p,
+  private void movePoint(IDirectPosition p,
       GM_MultiSurface<GM_Polygon> multiSurface) {
     for (GM_Polygon polygon : multiSurface) {
-      GM_Ring ring = polygon.getExterior();
-      DirectPositionList points = ring.coord();
-      for (DirectPosition point : points) {
+      IRing ring = polygon.getExterior();
+      IDirectPositionList points = ring.coord();
+      for (IDirectPosition point : points) {
         if (point.equals(this.sourcePoint)) {
           point.setCoordinate(p.getCoordinate());
           polygon.setExterior(new GM_Ring(new GM_LineString(points)));
@@ -346,7 +349,7 @@ public class MovePointMode extends AbstractGeometryEditMode {
       for (int i = 0; i < polygon.sizeInterior(); i++) {
         ring = polygon.getInterior(i);
         points = ring.coord();
-        for (DirectPosition point : points) {
+        for (IDirectPosition point : points) {
           if (point.equals(this.sourcePoint)) {
             point.setCoordinate(p.getCoordinate());
             polygon.setInterior(i, new GM_Ring(new GM_LineString(points)));
@@ -357,18 +360,18 @@ public class MovePointMode extends AbstractGeometryEditMode {
     }
   }
 
-  private void movePoint(DirectPosition p, GM_LineString line) {
-    for (DirectPosition point : line.getControlPoint()) {
+  private void movePoint(IDirectPosition p, GM_LineString line) {
+    for (IDirectPosition point : line.getControlPoint()) {
       if (point.equals(this.sourcePoint)) {
         point.setCoordinate(p.getCoordinate());
       }
     }
   }
 
-  private void movePoint(DirectPosition p, GM_Polygon polygon) {
-    GM_Ring ring = polygon.getExterior();
-    DirectPositionList points = ring.coord();
-    for (DirectPosition point : points) {
+  private void movePoint(IDirectPosition p, GM_Polygon polygon) {
+    IRing ring = polygon.getExterior();
+    IDirectPositionList points = ring.coord();
+    for (IDirectPosition point : points) {
       if (point.equals(this.sourcePoint)) {
         point.setCoordinate(p.getCoordinate());
         polygon.setExterior(new GM_Ring(new GM_LineString(points)));
@@ -378,7 +381,7 @@ public class MovePointMode extends AbstractGeometryEditMode {
     for (int i = 0; i < polygon.sizeInterior(); i++) {
       ring = polygon.getInterior(i);
       points = ring.coord();
-      for (DirectPosition point : points) {
+      for (IDirectPosition point : points) {
         if (point.equals(this.sourcePoint)) {
           point.setCoordinate(p.getCoordinate());
           polygon.setInterior(i, new GM_Ring(new GM_LineString(points)));

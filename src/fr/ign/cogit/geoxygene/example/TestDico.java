@@ -30,16 +30,22 @@ package fr.ign.cogit.geoxygene.example;
 import java.util.Iterator;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.feature.type.GF_AssociationRole;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_AssociationType;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_Constraint;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_InheritanceRelation;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_Operation;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_PropertyType;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
-import fr.ign.cogit.geoxygene.dico.GF_AssociationRole;
-import fr.ign.cogit.geoxygene.dico.GF_AssociationType;
-import fr.ign.cogit.geoxygene.dico.GF_AttributeType;
-import fr.ign.cogit.geoxygene.dico.GF_Constraint;
-import fr.ign.cogit.geoxygene.dico.GF_FeatureType;
-import fr.ign.cogit.geoxygene.dico.GF_InheritanceRelation;
-import fr.ign.cogit.geoxygene.dico.GF_Operation;
-import fr.ign.cogit.geoxygene.dico.GF_PropertyType;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AssociationRole;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AssociationType;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.InheritanceRelation;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.Operation;
 
 /**
  * Utilisation du dictionnaire de données : exemple de code.
@@ -98,57 +104,57 @@ public class TestDico {
     TestDico.db.begin();
 
     // creation d'un nouveau Feature Type "entite"
-    GF_FeatureType entite = new GF_FeatureType();
+    GF_FeatureType entite = new FeatureType();
     TestDico.db.makePersistent(entite); // on le rend persistent
     entite.setTypeName("entite_adm");
     entite.setDefinition("Entite administrative");
     entite.setIsAbstract(true); // abstrait
 
     // creation d'un nouvel attribut "nom" sur entite
-    GF_AttributeType nom = new GF_AttributeType();
+    GF_AttributeType nom = new AttributeType();
     TestDico.db.makePersistent(nom); // on le rend persistent
     nom.setMemberName("nom");
     nom.setDefinition("Nom de l'entite administrative");
     nom.setValueType("String");
     nom.setCardMin(1);
     nom.setCardMax(1);
-    entite.addProperty(nom); // on ajoute nom a la liste des attributs de entite
+    entite.addFeatureAttribute(nom); // on ajoute nom a la liste des attributs de entite
     // remarque : tel qu'est code le dico,
     // "entite.addProperty(nom)" execute automatiquement
     // "nom.setFeatureType(entite)"
 
     // creation d'un nouvel attribut "geom" sur entite
-    GF_AttributeType geom = new GF_AttributeType();
+    GF_AttributeType geom = new AttributeType();
     TestDico.db.makePersistent(geom); // on le rend persistent
     geom.setMemberName("geom");
     geom.setDefinition("Geometrie de l'entite administrative");
     geom.setValueType("GM_Surface");
     geom.setCardMin(1);
     geom.setCardMax(3); // peut avoir jusqu'a 3 geometries (multirepresentation)
-    entite.addProperty(geom);
+    entite.addFeatureAttribute(geom);
 
     // creation d'un nouvel attribut "topo" sur entite
-    GF_AttributeType topo = new GF_AttributeType();
+    GF_AttributeType topo = new AttributeType();
     TestDico.db.makePersistent(topo); // on le rend persistent
     topo.setMemberName("topo");
     topo.setDefinition("Topologie de l'entite administrative");
     topo.setValueType("TP_Object");
     topo.setCardMin(0); // on n'est pas oblige de fournir une topologie
     topo.setCardMax(1);
-    entite.addProperty(topo);
+    entite.addFeatureAttribute(topo);
 
     // creation d'une operation "getSurface" sur entite
-    GF_Operation op = new GF_Operation();
+    GF_Operation op = new Operation();
     TestDico.db.makePersistent(op); // on le rend persistent
-    op.setMemberName("getSurface");
-    op
+    ((Operation) op).setMemberName("getSurface");
+    ((Operation) op)
         .setDefinition("Renvoie la valeur de la surface de l'entite administrative");
     op.setSignature("entite_adm.getSurface(unit : UnitOfMeasure) : int");
-    entite.addProperty(op); // meme remarque que pour un attribut : executer
+    entite.addFeatureOperation(op); // meme remarque que pour un attribut : executer
                             // automatiquement "op.setFeatureType(entite)"
 
     // creation d'un nouveau Feature Type "departement"
-    GF_FeatureType dept = new GF_FeatureType();
+    GF_FeatureType dept = new FeatureType();
     TestDico.db.makePersistent(dept); // on le rend persistent
     dept.setTypeName("departement");
     dept.setDefinition("Departement");
@@ -156,13 +162,13 @@ public class TestDico {
                                // false par defaut
 
     // creation d'un nouveau Feature Type "commune"
-    GF_FeatureType commune = new GF_FeatureType();
+    GF_FeatureType commune = new FeatureType();
     TestDico.db.makePersistent(commune); // on le rend persistent
     commune.setTypeName("commune");
     commune.setDefinition("Commune");
 
     // creation d'une relation d'heritage entre "entite" et "dept"
-    GF_InheritanceRelation herite = new GF_InheritanceRelation();
+    GF_InheritanceRelation herite = new InheritanceRelation();
     TestDico.db.makePersistent(herite);
     herite.setName("entite_adm/department");
     herite.setDescription("Un departement est une entite administrative");
@@ -175,7 +181,7 @@ public class TestDico {
                                       // "herite.addSuperType(entite)
 
     // creation d'une relation d'heritage entre "entite" et "commune"
-    herite = new GF_InheritanceRelation(); // on re-utilise et on re-instancie
+    herite = new InheritanceRelation(); // on re-utilise et on re-instancie
                                            // l'objet "herite" qui a deja ete
                                            // dclare
     TestDico.db.makePersistent(herite);
@@ -188,7 +194,7 @@ public class TestDico {
     entite.addSpecialization(herite);
 
     // creation d'une association "prefecture" entre commune et departement
-    GF_AssociationType prefecture = new GF_AssociationType();
+    GF_AssociationType prefecture = new AssociationType();
     TestDico.db.makePersistent(prefecture);
     prefecture.setTypeName("prefecture");
     prefecture.setDefinition("Prefecture d'un departement");
@@ -198,43 +204,43 @@ public class TestDico {
     // creation d'un attribut "habitant" sur l'association pour donner le nombre
     // d'habitants de la prefecture
     // ceci est permis car GF_AssociationType herite de GF_FeatureType
-    GF_AttributeType hab = new GF_AttributeType();
+    GF_AttributeType hab = new AttributeType();
     TestDico.db.makePersistent(hab);
     hab.setMemberName("habitants");
     hab.setDefinition("Nombre d'habitants de la prefecture");
     hab.setValueType("int");
     hab.setCardMin(1);
     hab.setCardMax(1);
-    prefecture.addProperty(hab);
+    prefecture.addFeatureAttribute(hab);
 
     // creation du role "est prefecture de " sur commune
-    GF_AssociationRole est_pref_de = new GF_AssociationRole();
+    GF_AssociationRole est_pref_de = new AssociationRole();
     TestDico.db.makePersistent(est_pref_de);
     est_pref_de.setMemberName("est_prefecture_de");
     est_pref_de.setDefinition("La commune est prefecture de ");
-    est_pref_de.setValueType("departement");
-    est_pref_de.setCardMin(1);
-    est_pref_de.setCardMax(1);
-    commune.addProperty(est_pref_de); // execute automatiquement
+    ((AssociationRole) est_pref_de).setFeatureType(dept);
+    est_pref_de.setCardMin("1");
+    est_pref_de.setCardMax("1");
+    commune.addRole(est_pref_de); // execute automatiquement
                                       // "est_pref_de.setFeatureType(commune)
     prefecture.addRole(est_pref_de); // execute automatiquement
                                      // "est_pref_de.setAssociationType(prefecture)
 
     // creation du role " a pour prefecture " sur departement
-    GF_AssociationRole a_pour_pref = new GF_AssociationRole();
+    GF_AssociationRole a_pour_pref = new AssociationRole();
     TestDico.db.makePersistent(a_pour_pref);
     a_pour_pref.setMemberName("a_pour_prefecture");
     a_pour_pref.setDefinition("Le departement a pour prefecture");
-    a_pour_pref.setValueType("commune");
-    a_pour_pref.setCardMin(1);
-    a_pour_pref.setCardMax(1);
-    dept.addProperty(a_pour_pref); // execute automatiquement
+    a_pour_pref.setFeatureType(commune);
+    a_pour_pref.setCardMin("1");
+    a_pour_pref.setCardMax("1");
+    dept.addRole(a_pour_pref); // execute automatiquement
                                    // "a_pour_pref.setFeatureType(dept)
     prefecture.addRole(a_pour_pref); // execute automatiquement
                                      // "a_pour_pref.setAssociationType(prefecture)
 
     // creation d'une association "compose" entre commune et departement
-    GF_AssociationType compose = new GF_AssociationType();
+    GF_AssociationType compose = new AssociationType();
     TestDico.db.makePersistent(compose);
     compose.setTypeName("compose");
     compose.setDefinition("Communes composant un departement");
@@ -243,46 +249,46 @@ public class TestDico {
 
     // creation d'une operation "getNumber" sur "compose"
     // ceci est permis car GF_AssociationType herite de GF_FeatureType
-    op = new GF_Operation();
+    op = new Operation();
     TestDico.db.makePersistent(op);
-    op.setMemberName("getNumber");
-    op
+    ((Operation) op).setMemberName("getNumber");
+    ((Operation) op)
         .setDefinition("Renvoie le nombre de communes constituant le departement");
     op.setSignature("compose.getNumber() : int");
-    compose.addProperty(op); // meme remarque que pour un attribut : executer
+    compose.addFeatureOperation(op); // meme remarque que pour un attribut : executer
                              // automatiquement "op.setFeatureType(compose)"
 
     // creation du role "compose" sur commune
-    GF_AssociationRole compose_ = new GF_AssociationRole();
+    GF_AssociationRole compose_ = new AssociationRole();
     TestDico.db.makePersistent(compose_);
     compose_.setMemberName("compose_");
     compose_.setDefinition("La commune compose");
-    compose_.setValueType("departement");
-    compose_.setCardMin(1);
-    compose_.setCardMax(1);
-    commune.addProperty(compose_);
+    compose_.setFeatureType(dept);
+    compose_.setCardMin("1");
+    compose_.setCardMax("1");
+    commune.addRole(compose_);
     compose.addRole(compose_);
 
     // creation du role " est_compose_de " sur departement
-    GF_AssociationRole est_compose_de = new GF_AssociationRole();
+    GF_AssociationRole est_compose_de = new AssociationRole();
     TestDico.db.makePersistent(est_compose_de);
     est_compose_de.setMemberName("est_compose_de");
     est_compose_de.setDefinition("Le departement est compose de");
-    est_compose_de.setValueType("commune");
-    est_compose_de.setCardMin(1);
-    est_compose_de.setCardMax(1000); // au plus 1000 communes dans un
+    est_compose_de.setFeatureType(commune);
+    est_compose_de.setCardMin("1");
+    est_compose_de.setCardMax("1000"); // au plus 1000 communes dans un
                                      // departement
-    dept.addProperty(est_compose_de);
+    dept.addRole(est_compose_de);
     compose.addRole(est_compose_de);
 
     // creation d'une contrainte "ct_geom" sur l'attribut "geom"
-    GF_Constraint ct_geom = new GF_Constraint();
+    /*GF_Constraint ct_geom = new Constraint();
     TestDico.db.makePersistent(ct_geom);
     ct_geom.setDescription("bla bla");
-    geom.addConstraint(ct_geom);
+    geom.addConstraint(ct_geom);*/
 
     // creation d'un attribut "age_moyen" sur "habitant"
-    GF_AttributeType age = new GF_AttributeType();
+    GF_AttributeType age = new AttributeType();
     TestDico.db.makePersistent(age);
     age.setMemberName("age_moyen");
     age.setDefinition("Age moyen des habitants");
@@ -311,7 +317,7 @@ public class TestDico {
     Iterator<?> it = results.iterator();
     // On parcourt le resultat de la requete (un seul resultat ici !)
     while (it.hasNext()) {
-      GF_FeatureType ft1 = (GF_FeatureType) it.next();
+      FeatureType ft1 = (FeatureType) it.next();
       System.out.println("identifiant de l'objet chargé : " + ft1.getId());
       System.out.println("nom de l'objet chargé : " + ft1.getTypeName());
       System.out
@@ -342,7 +348,7 @@ public class TestDico {
     it = results.iterator();
     // On parcourt le resultat de la requete (un seul resultat ici !)
     while (it.hasNext()) {
-      GF_FeatureType ft1 = (GF_FeatureType) it.next();
+      FeatureType ft1 = (FeatureType) it.next();
       System.out.println("identifiant de l'objet chargé : " + ft1.getId());
       System.out.println("nom de l'objet chargé : " + ft1.getTypeName());
       System.out

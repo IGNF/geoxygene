@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.feature;
@@ -32,18 +40,23 @@ import javax.persistence.Transient;
 import org.apache.log4j.Logger;
 import org.apache.ojb.broker.metadata.MetadataManager;
 
+import fr.ign.cogit.geoxygene.api.feature.IDataSet;
+import fr.ign.cogit.geoxygene.api.feature.IExtraction;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_Constraint;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
-import fr.ign.cogit.geoxygene.feature.type.GF_Constraint;
 import fr.ign.cogit.geoxygene.schema.Produit;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.SchemaConceptuelJeu;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
  * Classe mère pour tout jeu de données. Un DataSet peut par exemple
  * correspondre à une zone d'une BD, ou seulement un thème. Un DataSet est
  * constitué de manière récursive d'un ensemble de jeux de données, et d'un
  * ensemble de populations, elles mêmes constituées d'un ensemble d'éléments.
+ * 
  * TODO Finir les annotations pour la persistance
  * 
  * @author Sébastien Mustière
@@ -52,9 +65,20 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * @author Julien Perret
  */
 @Entity
-public class DataSet {
-  /** logger */
-  static Logger logger = Logger.getLogger(DataSet.class.getName());
+public class DataSet implements IDataSet {
+  /**
+   * The logger.
+   */
+  private static final Logger LOGGER = Logger
+      .getLogger(DataSet.class.getName());
+
+  /**
+   * @return The static logger.
+   */
+  public static final Logger getLogger() {
+    return DataSet.LOGGER;
+  }
+
   /** l'identifiant */
   protected int id;
 
@@ -116,22 +140,22 @@ public class DataSet {
    */
   public void chargeElements() {
     if (!this.getPersistant()) {
-      DataSet.logger
+      DataSet.LOGGER
           .warn("----- ATTENTION : Probleme au chargement du jeu de donnees " + this.getNom()); //$NON-NLS-1$
-      DataSet.logger
+      DataSet.LOGGER
           .warn("----- Impossible de charger les elements d'un jeu de donnees non persistant"); //$NON-NLS-1$
       return;
     }
     // chargement recursif des dataset composants this
-    for (DataSet DS : this.getComposants()) {
+    for (IDataSet DS : this.getComposants()) {
       if (DS.getPersistant()) {
         DS.chargeElements();
       }
     }
     // chargement recursif des populations de this
-    DataSet.logger
-        .info("###### Chargement des elements du DataSet " + this.getNom()); //$NON-NLS-1$
-    for (Population<? extends FT_Feature> pop : this.getPopulations()) {
+    DataSet.LOGGER.info("###### Chargement des elements du DataSet "
+        + this.getNom());
+    for (IPopulation<? extends IFeature> pop : this.getPopulations()) {
       if (pop.getPersistant()) {
         pop.chargeElements();
       }
@@ -141,27 +165,27 @@ public class DataSet {
   /**
    * Chargement des instances des populations persistantes d'un jeu de données
    * qui intersectent une géométrie donnée (extraction géométrique).
-   * 
    * @param geom géométrie utilisée pour l'extraction géométrique.
    */
-  public void chargeElementsPartie(GM_Object geom) {
+  public void chargeElementsPartie(IGeometry geom) {
     if (!this.getPersistant()) {
-      DataSet.logger
-          .warn("----- ATTENTION : Probleme au chargement du jeu de donnees " + this.getNom()); //$NON-NLS-1$
-      DataSet.logger
-          .warn("----- Impossible de charger les elements d'un jeu de donnees non persistant"); //$NON-NLS-1$
+      DataSet.LOGGER
+          .warn("----- ATTENTION : Probleme au chargement du jeu de donnees "
+              + this.getNom());
+      DataSet.LOGGER
+          .warn("----- Impossible de charger les elements d'un jeu de donnees non persistant");
       return;
     }
     // chargement recursif des dataset composants this
-    for (DataSet DS : this.getComposants()) {
+    for (IDataSet DS : this.getComposants()) {
       if (DS.getPersistant()) {
         DS.chargeElementsPartie(geom);
       }
     }
     // chargement recursif des populations de this
-    DataSet.logger
-        .info("###### Chargement des elements du DataSet " + this.getNom()); //$NON-NLS-1$
-    for (Population<? extends FT_Feature> pop : this.getPopulations()) {
+    DataSet.LOGGER.info("###### Chargement des elements du DataSet "
+        + this.getNom());
+    for (IPopulation<? extends IFeature> pop : this.getPopulations()) {
       if (pop.getPersistant()) {
         pop.chargeElementsPartie(geom);
       }
@@ -173,10 +197,9 @@ public class DataSet {
    * qui intersectent une géométrie donnée. ATTENTION: les tables qui stockent
    * les éléments doivent avoir été indexées dans Oracle. ATTENTION AGAIN:
    * seules les populations avec une géométrie sont chargées.
-   * 
    * @param zoneExtraction zone utilisée pour l'extraction géométrique
    */
-  public void chargeElementsPartie(Extraction zoneExtraction) {
+  public void chargeElementsPartie(IExtraction zoneExtraction) {
     this.chargeElementsPartie(zoneExtraction.getGeom());
   }
 
@@ -188,6 +211,7 @@ public class DataSet {
    * appartiennent à certains thèmes et populations précisés en entrée.
    * 
    * @param geom définit la zone d'extraction.
+   * 
    * @param themes définit les sous-DS du DS à charger. Pour le DS lui-même, et
    *          pour chaque sous-DS, on précise également quelles populations sont
    *          chargées. Ce paramètre est une liste de liste de String composée
@@ -203,6 +227,7 @@ public class DataSet {
    *          populations du sous-DS, soit le nom des populations du sous-DS que
    *          l'on veut charger.
    *          </ul>
+   * 
    *          <b>NB :</b> Attention aux majuscules et aux accents.
    *          <p>
    *          <b>EXEMPLE</b> de parametre themes pour un DS représentant la
@@ -219,13 +244,14 @@ public class DataSet {
    *          <li>liste3 = {"ferré"}.
    *          </ul
    */
-  public void chargeExtractionThematiqueEtSpatiale(GM_Object geom,
+  public void chargeExtractionThematiqueEtSpatiale(IGeometry geom,
       List<List<String>> themes) {
     if (!this.getPersistant()) {
-      DataSet.logger
-          .warn("----- ATTENTION : Probleme au chargement du jeu de donnees " + this.getNom()); //$NON-NLS-1$
-      DataSet.logger
-          .warn("----- Impossible de charger les elements d'un jeu de donnees non persistant"); //$NON-NLS-1$
+      DataSet.LOGGER
+          .warn("----- ATTENTION : Probleme au chargement du jeu de donnees "
+              + this.getNom());
+      DataSet.LOGGER
+          .warn("----- Impossible de charger les elements d'un jeu de donnees non persistant");
       return;
     }
 
@@ -237,7 +263,7 @@ public class DataSet {
     boolean aCharger;
 
     // chargement recursif des dataset composants this
-    for (DataSet DS : this.getComposants()) {
+    for (IDataSet DS : this.getComposants()) {
       populationsACharger = null;
       if (themes == null) {
         aCharger = true;
@@ -253,6 +279,7 @@ public class DataSet {
             if (DS.getNom().equals(themeACharger.get(0))) {
               aCharger = true;
               if (themeACharger.size() == 1) {
+                populationsACharger = null;
                 break;
               }
               extraitThemes = new ArrayList<String>(themeACharger);
@@ -275,9 +302,9 @@ public class DataSet {
       itThemes = themes.iterator();
       populationsACharger2 = itThemes.next();
     }
-    DataSet.logger
-        .info("###### Chargement des elements du DataSet " + this.getNom()); //$NON-NLS-1$
-    for (Population<? extends FT_Feature> pop : this.getPopulations()) {
+    DataSet.LOGGER.info("###### Chargement des elements du DataSet "
+        + this.getNom());
+    for (IPopulation<? extends IFeature> pop : this.getPopulations()) {
       if (populationsACharger2 == null) {
         aCharger = true;
       } else {
@@ -310,31 +337,32 @@ public class DataSet {
    */
   public void detruitJeu() {
     if (!this.getPersistant()) {
-      DataSet.logger
-          .warn("----- ATTENTION : Probleme à la destruction du jeu de donnees " + this.getNom()); //$NON-NLS-1$
-      DataSet.logger.warn("----- Le jeu de données n'est pas persistant"); //$NON-NLS-1$
+      DataSet.LOGGER
+          .warn("----- ATTENTION : Probleme � la destruction du jeu de donnees "
+              + this.getNom());
+      DataSet.LOGGER.warn("----- Le jeu de donn�es n'est pas persistant");
       return;
     }
     // destruction des populations de this
-    for (Population<? extends FT_Feature> pop : this.getPopulations()) {
+    for (IPopulation<? extends IFeature> pop : this.getPopulations()) {
       if (pop.getPersistant()) {
         pop.detruitPopulation();
       }
     }
     // destruction recursive des dataset composants this
-    for (DataSet DS : this.getComposants()) {
+    for (IDataSet DS : this.getComposants()) {
       if (DS.getPersistant()) {
         DS.detruitJeu();
       }
     }
     // destruction des zones d'extraction associées à this
-    for (Extraction ex : this.getExtractions()) {
-      DataSet.logger
-          .info("###### Destruction de la zone d'extraction " + ex.getNom()); //$NON-NLS-1$
+    for (IExtraction ex : this.getExtractions()) {
+      DataSet.LOGGER.info("###### Destruction de la zone d'extraction "
+          + ex.getNom());
       DataSet.db.deletePersistent(ex);
     }
     // destruction de this
-    DataSet.logger.info("###### Destruction du DataSet " + this.getNom()); //$NON-NLS-1$
+    DataSet.LOGGER.info("###### Destruction du DataSet " + this.getNom());
     DataSet.db.deletePersistent(this);
   }
 
@@ -355,7 +383,6 @@ public class DataSet {
    * <b>ATTENTION :</b> pour des raisons propres à OJB, même si la classe
    * DataSet est concrète, il n'est pas possible de créer un objet PERSISTANT de
    * cette classe, il faut utiliser les sous-classes.
-   * 
    * @return vrai si le jeu de donné est persistant, faux sinon
    */
   public boolean getPersistant() {
@@ -372,7 +399,6 @@ public class DataSet {
    * <b>ATTENTION :</b> pour des raisons propres à OJB, même si la classe
    * DataSet est concrète, il n'est pas possible de créer un objet PERSISTANT de
    * cette classe, il faut utiliser les sous-classes.
-   * 
    * @param b vrai si le jeu de donné est persistant, faux sinon
    */
   public void setPersistant(boolean b) {
@@ -474,11 +500,11 @@ public class DataSet {
    * "null". Pour casser toutes les relations, faire setListe(new ArrayList())
    * ou emptyListe().
    */
-  protected List<DataSet> composants = new ArrayList<DataSet>();
+  protected List<IDataSet> composants = new ArrayList<IDataSet>();
 
   /** Récupère la liste des DataSet composant this. */
   @OneToMany
-  public List<DataSet> getComposants() {
+  public List<IDataSet> getComposants() {
     return this.composants;
   }
 
@@ -486,15 +512,15 @@ public class DataSet {
    * définit la liste des DataSet composant le DataSet, et met à jour la
    * relation inverse.
    */
-  public void setComposants(List<DataSet> L) {
+  public void setComposants(List<IDataSet> L) {
     this.emptyComposants();
-    for (DataSet dataset : L) {
+    for (IDataSet dataset : L) {
       dataset.setAppartientA(this);
     }
   }
 
   /** Récupère le ième élément de la liste des DataSet composant this. */
-  public DataSet getComposant(int i) {
+  public IDataSet getComposant(int i) {
     return this.composants.get(i);
   }
 
@@ -502,7 +528,7 @@ public class DataSet {
    * Ajoute un objet à la liste des DataSet composant le DataSet, et met à jour
    * la relation inverse.
    */
-  public void addComposant(DataSet O) {
+  public void addComposant(IDataSet O) {
     if (O == null) {
       return;
     }
@@ -514,7 +540,7 @@ public class DataSet {
    * enlève un élément de la liste DataSet composant this, et met à jour la
    * relation inverse.
    */
-  public void removeComposant(DataSet O) {
+  public void removeComposant(IDataSet O) {
     if (O == null) {
       return;
     }
@@ -527,8 +553,8 @@ public class DataSet {
    * inverse.
    */
   public void emptyComposants() {
-    List<DataSet> old = new ArrayList<DataSet>(this.composants);
-    for (DataSet dataset : old) {
+    List<IDataSet> old = new ArrayList<IDataSet>(this.composants);
+    for (IDataSet dataset : old) {
       dataset.setAppartientA(null);
     }
     this.composants.clear();
@@ -536,27 +562,26 @@ public class DataSet {
 
   /**
    * Récupère le DataSet composant de this avec le nom donné.
-   * 
    * @param nomComposant nom du dataset à Récupèrer
    * @return le DataSet composant de this avec le nom donné.
    */
-  public DataSet getComposant(String nomComposant) {
-    for (DataSet dataset : this.getComposants()) {
+  public IDataSet getComposant(String nomComposant) {
+    for (IDataSet dataset : this.getComposants()) {
       if (dataset.getNom().equals(nomComposant)) {
         return dataset;
       }
     }
-    DataSet.logger
-        .warn("----- ATTENTION : DataSet composant #" + nomComposant + "# introuvable dans le DataSet " + this.getNom()); //$NON-NLS-1$ //$NON-NLS-2$
+    DataSet.LOGGER.warn("----- ATTENTION : DataSet composant #" + nomComposant
+        + "# introuvable dans le DataSet " + this.getNom());
     return null;
   }
 
   /** Relation inverse à Composants */
-  private DataSet appartientA;
+  private IDataSet appartientA;
 
   /** Récupère le DataSet dont this est composant. */
   @ManyToOne
-  public DataSet getAppartientA() {
+  public IDataSet getAppartientA() {
     return this.appartientA;
   }
 
@@ -564,8 +589,8 @@ public class DataSet {
    * définit le DataSet dont this est composant., et met à jour la relation
    * inverse.
    */
-  public void setAppartientA(DataSet O) {
-    DataSet old = this.appartientA;
+  public void setAppartientA(IDataSet O) {
+    IDataSet old = this.appartientA;
     this.appartientA = O;
     if (old != null) {
       old.getComposants().remove(this);
@@ -582,12 +607,10 @@ public class DataSet {
 
   private int appartientAID;
 
-  /** Ne pas utiliser, necessaire au mapping OJB */
   public void setAppartientAID(int I) {
     this.appartientAID = I;
   }
 
-  /** Ne pas utiliser, necessaire au mapping OJB */
   @Transient
   public int getAppartientAID() {
     return this.appartientAID;
@@ -605,11 +628,11 @@ public class DataSet {
    * n'est pas "null". Pour casser toutes les relations, faire setListe(new
    * ArrayList()) ou emptyListe().
    */
-  protected List<Population<? extends FT_Feature>> populations = new ArrayList<Population<? extends FT_Feature>>();
+  protected List<IPopulation<? extends IFeature>> populations = new ArrayList<IPopulation<? extends IFeature>>();
 
   /** Récupère la liste des populations en relation. */
   @OneToMany
-  public List<Population<? extends FT_Feature>> getPopulations() {
+  public List<IPopulation<? extends IFeature>> getPopulations() {
     return this.populations;
   }
 
@@ -617,19 +640,19 @@ public class DataSet {
    * définit la liste des populations en relation, et met à jour la relation
    * inverse.
    */
-  public void setPopulations(List<Population<? extends FT_Feature>> L) {
-    List<Population<? extends FT_Feature>> old = new ArrayList<Population<? extends FT_Feature>>(
+  public void setPopulations(List<IPopulation<? extends IFeature>> L) {
+    List<IPopulation<? extends IFeature>> old = new ArrayList<IPopulation<? extends IFeature>>(
         this.populations);
-    for (Population<? extends FT_Feature> pop : old) {
+    for (IPopulation<? extends IFeature> pop : old) {
       pop.setDataSet(null);
     }
-    for (Population<? extends FT_Feature> pop : L) {
+    for (IPopulation<? extends IFeature> pop : L) {
       pop.setDataSet(this);
     }
   }
 
   /** Récupère le ième élément de la liste des populations en relation. */
-  public Population<? extends FT_Feature> getPopulation(int i) {
+  public IPopulation<? extends IFeature> getPopulation(int i) {
     return this.populations.get(i);
   }
 
@@ -637,7 +660,7 @@ public class DataSet {
    * Ajoute un objet à la liste des populations en relation, et met à jour la
    * relation inverse.
    */
-  public void addPopulation(Population<? extends FT_Feature> O) {
+  public void addPopulation(IPopulation<? extends IFeature> O) {
     if (O == null) {
       return;
     }
@@ -648,10 +671,9 @@ public class DataSet {
   /**
    * enlève un élément de la liste des populations en relation, et met à jour la
    * relation inverse.
-   * 
    * @param O élément à enlever
    */
-  public void removePopulation(Population<? extends FT_Feature> O) {
+  public void removePopulation(IPopulation<? extends IFeature> O) {
     if (O == null) {
       return;
     }
@@ -664,9 +686,9 @@ public class DataSet {
    * inverse.
    */
   public void emptyPopulations() {
-    List<Population<? extends FT_Feature>> old = new ArrayList<Population<? extends FT_Feature>>(
+    List<IPopulation<? extends IFeature>> old = new ArrayList<IPopulation<? extends IFeature>>(
         this.populations);
-    for (Population<? extends FT_Feature> pop : old) {
+    for (IPopulation<? extends IFeature> pop : old) {
       pop.setDataSet(null);
     }
     this.populations.clear();
@@ -674,12 +696,11 @@ public class DataSet {
 
   /**
    * Récupère la population avec le nom donné.
-   * 
    * @param nomPopulation nom de la population à Récupèrer
    * @return la population avec le nom donné.
    */
-  public Population<? extends FT_Feature> getPopulation(String nomPopulation) {
-    for (Population<? extends FT_Feature> pop : this.getPopulations()) {
+  public IPopulation<? extends IFeature> getPopulation(String nomPopulation) {
+    for (IPopulation<? extends IFeature> pop : this.getPopulations()) {
       if (pop.getNom().equals(nomPopulation)) {
         return pop;
       }
@@ -691,22 +712,22 @@ public class DataSet {
   }
 
   /** Liste des zones d'extraction définies pour ce DataSt */
-  protected List<Extraction> extractions = new ArrayList<Extraction>();
+  protected List<IExtraction> extractions = new ArrayList<IExtraction>();
 
   /** Récupère la liste des extractions en relation. */
   // @OneToMany
   @Transient
-  public List<Extraction> getExtractions() {
+  public List<IExtraction> getExtractions() {
     return this.extractions;
   }
 
   /** définit la liste des extractions en relation. */
-  public void setExtractions(List<Extraction> L) {
+  public void setExtractions(List<IExtraction> L) {
     this.extractions = L;
   }
 
   /** Ajoute un élément de la liste des extractions en relation. */
-  public void addExtraction(Extraction O) {
+  public void addExtraction(IExtraction O) {
     this.extractions.add(O);
   }
 
@@ -715,10 +736,12 @@ public class DataSet {
    * méthodes permettant de créer un jeu de données:
    * <ul>
    * <li>relié à un produit, donc potentiellement à de nombreuses métadonnées</li>
-   * <li>relié à 0 ou 1 schémaConceptuelJeu (un schémaConceptuelJeu est associé
-   * à 0 ou 1 jeu)</li>
+   * <li>
+   * relié à 0 ou 1 schémaConceptuelJeu (un schémaConceptuelJeu est associé à 0
+   * ou 1 jeu)</li>
    * <li>composé de Populations dotées de métadonnées</li>
    * </ul>
+   * 
    * Comme indiqué dans la classe Population, les populations d'un DataSet ne
    * sont pas destinées à être persistantes. Elles peuvent être initialisées à
    * partir du schéma conceptuel, qui lui est persitent, grâce à la méthode
@@ -733,18 +756,12 @@ public class DataSet {
    **************************************************************************/
   protected Produit produit;
 
-  /**
-   * @return the produit
-   */
   // @OneToOne
   @Transient
   public Produit getProduit() {
     return this.produit;
   }
 
-  /**
-   * @param produit the produit to set
-   */
   public void setProduit(Produit produit) {
     this.produit = produit;
   }
@@ -754,20 +771,10 @@ public class DataSet {
    */
   protected SchemaConceptuelJeu schemaConceptuel;
 
-  /**
-   * Affecte le schema conceptuel correspondant au jeu de donnees
-   * 
-   * @param schema le schema conceptuel correspondant au jeu de donnees
-   */
   public void setSchemaConceptuel(SchemaConceptuelJeu schema) {
     this.schemaConceptuel = schema;
   }
 
-  /**
-   * Renvoie le schema conceptuel correspondant au jeu de donnees
-   * 
-   * @return le schema conceptuel correspondant au jeu de donnees
-   */
   // @OneToOne
   @Transient
   public SchemaConceptuelJeu getSchemaConceptuel() {
@@ -779,25 +786,12 @@ public class DataSet {
    */
   public List<GF_Constraint> contraintes;
 
-  /**
-   * Renvoie la liste des contraintes d'integrite s'appliquant a ce jeu de
-   * donnees
-   * 
-   * @return liste des contraintes d'integrite s'appliquant a ce jeu de donnees
-   */
   // @OneToMany
   @Transient
   public List<GF_Constraint> getContraintes() {
     return this.contraintes;
   }
 
-  /**
-   * Affecte la liste des contraintes d'integrite s'appliquant a ce jeu de
-   * donnees
-   * 
-   * @param contraintes la liste des contraintes d'integrite s'appliquant a ce
-   *          jeu de donnees
-   */
   public void setContraintes(List<GF_Constraint> contraintes) {
     this.contraintes = contraintes;
   }
@@ -812,9 +806,9 @@ public class DataSet {
    */
   public void initPopulations() {
     SchemaConceptuelJeu schema = this.getSchemaConceptuel();
-    List<Population<? extends FT_Feature>> listPop = new ArrayList<Population<? extends FT_Feature>>();
+    List<IPopulation<? extends IFeature>> listPop = new ArrayList<IPopulation<? extends IFeature>>();
     for (int i = 0; i < schema.getFeatureTypes().size(); i++) {
-      listPop.add(new Population<FT_Feature>((FeatureType) schema
+      listPop.add(new Population<IFeature>((FeatureType) schema
           .getFeatureTypeI(i)));
     }
     this.setPopulations(listPop);
@@ -824,7 +818,7 @@ public class DataSet {
    * @param nomFeatureType nom du featuretype
    * @return population dont le featuretype correspond au nom donné
    */
-  public Population<? extends FT_Feature> getPopulationByFeatureTypeName(
+  public IPopulation<? extends IFeature> getPopulationByFeatureTypeName(
       String nomFeatureType) {
     for (int i = 0; i < this.getPopulations().size(); i++) {
       if (this.getPopulations().get(i).getFeatureType().getTypeName().equals(
@@ -832,8 +826,8 @@ public class DataSet {
         return this.getPopulations().get(i);
       }
     }
-    DataSet.logger
-        .error("La Population " + nomFeatureType + " n'a pas été trouvée."); //$NON-NLS-1$//$NON-NLS-2$
+    DataSet.LOGGER.error("La Population " + nomFeatureType
+        + " n'a pas �t� trouv�e.");
     return null;
   }
 
@@ -852,5 +846,4 @@ public class DataSet {
     }
     return DataSet.dataSet;
   }
-
 }

@@ -27,9 +27,9 @@
 
 package fr.ign.cogit.geoxygene.contrib.geometrie;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 
 /**
  * Rectangle.
@@ -52,9 +52,9 @@ public class Rectangle {
   public Rectangle() {
   }
 
-  public static Rectangle rectangleEnglobant(GM_LineString L) {
-    DirectPositionList listepoints = L.coord();
-    DirectPosition point;
+  public static Rectangle rectangleEnglobant(ILineString L) {
+    IDirectPositionList listepoints = L.coord();
+    IDirectPosition point;
     Rectangle R = new Rectangle();
     R.xmin = listepoints.get(0).getX();
     R.xmax = listepoints.get(0).getX();
@@ -76,6 +76,7 @@ public class Rectangle {
         R.ymax = point.getY();
       }
     }
+    ;
     return R;
   }
 
@@ -86,7 +87,7 @@ public class Rectangle {
     R.ymin = this.ymin - dilatation;
     R.ymax = this.ymax + dilatation;
     return R;
-  }
+  };
 
   public boolean intersecte(Rectangle R) {
     boolean intersecteX = false;

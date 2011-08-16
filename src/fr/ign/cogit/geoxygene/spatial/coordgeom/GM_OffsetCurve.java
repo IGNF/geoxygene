@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO
@@ -23,10 +23,11 @@
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
- * 
  */
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
+
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IOffsetCurve;
 
 /**
  * NON IMPLEMENTE. Courbe qui est à une distance constante d'une courbe de base.
@@ -36,9 +37,10 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
  * 
  */
 
-class GM_OffsetCurve extends GM_CurveSegment {
+class GM_OffsetCurve extends GM_CurveSegment implements IOffsetCurve {
+
   /**
-   * Courbe de base à partir de laquelle est generee self.
+   * Courbe de base à partir de laquelle est générée self.
    */
   protected GM_CurveSegment baseCurve;
 
@@ -74,6 +76,7 @@ class GM_OffsetCurve extends GM_CurveSegment {
    * protected Vecteur refDirection; public Vecteur getRefDirection () { return
    * this.refDirection; }
    */
+
   /** NON IMPLEMENTE. */
   // implemente une methode de GM_CurveSegment
   @Override
@@ -88,8 +91,4 @@ class GM_OffsetCurve extends GM_CurveSegment {
     return null;
   }
 
-  @Override
-  public String getInterpolation() {
-    return this.getBaseCurve().getInterpolation();
-  }
 }

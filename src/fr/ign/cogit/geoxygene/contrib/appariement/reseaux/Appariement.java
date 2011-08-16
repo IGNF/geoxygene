@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
@@ -28,6 +36,11 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
@@ -43,10 +56,6 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.IndicesForme;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.Population;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
@@ -72,10 +81,10 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * @see CarteTopo
  */
 
-// /////////////////////////////////////////////////////////////////////////////
-// NOTE AUX CODEURS, dans le code parfois :
-// reseau 1 = reseau ref, reseau 2 = reseau comp.
-// /////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////////////////////////
+// NOTE AUX CODEURS, dans le code parfois : reseau 1 = reseau ref, reseau 2 =
+// reseau comp.
+// ///////////////////////////////////////////////////////////////////////////////////////////////
 
 public abstract class Appariement {
   /**
@@ -525,16 +534,15 @@ public abstract class Appariement {
    * @param param matching parameters
    * @return resulting set of links
    */
-  @SuppressWarnings("unchecked")
   public static EnsembleDeLiens appariementNoeuds(final CarteTopo reseau1,
       final CarteTopo reseau2, final EnsembleDeLiens liensPreAppNN,
       final EnsembleDeLiens liensPreAppAA, final ParametresApp param) {
-    Population groupesComp = reseau2.getPopGroupes();
+    IPopulation<Groupe> groupesComp = reseau2.getPopGroupes();
     int nbSansHomologue = 0, nbNonTraite = 0, nbPlusieursNoeudsComplets = 0, nbPlusieursGroupesComplets = 0, nbNoeudNoeud = 0, nbNoeudGroupe = 0, nbNoeudGroupeIncertain = 0, nbNoeudNoeudIncertain = 0;
     EnsembleDeLiens liens = new EnsembleDeLiens(LienReseaux.class);
     liens.setNom(I18N.getString("Appariement.NodeMatching")); //$NON-NLS-1$
     // On initialise le resultat à "non apparié" pour les noeuds comp
-    Iterator itNoeuds = reseau2.getPopNoeuds().getElements().iterator();
+    Iterator<Noeud> itNoeuds = reseau2.getPopNoeuds().getElements().iterator();
     while (itNoeuds.hasNext()) {
       NoeudApp noeudComp = (NoeudApp) itNoeuds.next();
       noeudComp.setResultatAppariement(I18N.getString("Appariement.Unmatched")); //$NON-NLS-1$
@@ -552,7 +560,7 @@ public abstract class Appariement {
         nbNonTraite++;
         continue;
       }
-      List<LienReseaux> liensDuNoeudRef = new ArrayList(noeudRef
+      List<LienReseaux> liensDuNoeudRef = new ArrayList<LienReseaux>(noeudRef
           .getLiens(liensPreAppNN.getElements()));
       // Noeud ref qui n'a aucun noeud comp candidat
       // dans le pré-appariement
@@ -2045,7 +2053,7 @@ public abstract class Appariement {
   public static void decoupeNoeudsNonApparies(final ReseauApp ref,
       final ReseauApp comp, final EnsembleDeLiens liens,
       final ParametresApp param) {
-    List<GM_Point> noeudsNonApparies = new ArrayList<GM_Point>();
+    List<IPoint> noeudsNonApparies = new ArrayList<IPoint>();
     Iterator<?> itNoeuds = ref.getPopNoeuds().getElements().iterator();
     while (itNoeuds.hasNext()) {
       NoeudApp noeud = (NoeudApp) itNoeuds.next();
@@ -2078,17 +2086,17 @@ public abstract class Appariement {
   public static void decoupeNonApparies(final ReseauApp reseauADecouper,
       final ReseauApp reseauDecoupant, final EnsembleDeLiens liens,
       final ParametresApp param) {
-    double distanceMaxNoeudArc = param.projeteNoeuds2SurReseau1DistanceNoeudArc;
+    double distanceMaxNoeudArc = param.projeteNoeud2surReseau1_DistanceNoeudArc;
     // param.distanceArcsMax;
     double distancePtCourantVersArcADecoupe;
     ArcApp arcDecoupant, arcADecouper;
     Iterator<?> itArcsDecoupes, itArcsDecoupants;
-    Collection<? extends FT_Feature> arcsDecoupantsRes2;
-    List<GM_Point> pointsDeDecoupage;
+    Collection<? extends IFeature> arcsDecoupantsRes2;
+    List<IPoint> pointsDeDecoupage;
     int indiceDernierPtProche;
 
     itArcsDecoupes = reseauADecouper.getPopArcs().getElements().iterator();
-    pointsDeDecoupage = new ArrayList<GM_Point>();
+    pointsDeDecoupage = new ArrayList<IPoint>();
     // recherche des points de découpage pour chaque arc à découper
     while (itArcsDecoupes.hasNext()) {
       arcADecouper = (ArcApp) itArcsDecoupes.next();
@@ -2111,8 +2119,8 @@ public abstract class Appariement {
         // ré échantillonage de la géométrie de l'arc découpant à
         // environ 1m
 
-        GM_LineString lineStringDecoupant = arcDecoupant.getGeometrie();
-        for (DirectPosition dp : arcADecouper.getGeometrie().coord().getList()) {
+        ILineString lineStringDecoupant = arcDecoupant.getGeometrie();
+        for (IDirectPosition dp : arcADecouper.getGeometrie().coord().getList()) {
           lineStringDecoupant = Operateurs.projectionEtInsertion(dp,
               lineStringDecoupant);
         }
@@ -2125,7 +2133,7 @@ public abstract class Appariement {
         }
         // parcour des points de l'arc découpant
         for (int i = 1; i < lineStringDecoupant.getControlPoint().size(); i++) {
-          DirectPosition ptCourantArcDecoupant = lineStringDecoupant
+          IDirectPosition ptCourantArcDecoupant = lineStringDecoupant
               .getControlPoint(i);
           distancePtCourantVersArcADecoupe = Distances.distance(
               ptCourantArcDecoupant, arcADecouper.getGeometrie());
@@ -2141,7 +2149,7 @@ public abstract class Appariement {
               // indiceDernierPtProche),
               // arcADecouper.getGeometrie());
               // pointsDeDecoupage.add(new GM_Point(ptDecoupage));
-              DirectPosition ptDecoupage = Operateurs.projection(
+              IDirectPosition ptDecoupage = Operateurs.projection(
                   lineStringDecoupant.getControlPoint(i - 1), arcADecouper
                       .getGeometrie());
               pointsDeDecoupage.add(new GM_Point(ptDecoupage));
@@ -2156,7 +2164,7 @@ public abstract class Appariement {
             // intialisation des compteurs
             proche = true;
             indiceDernierPtProche = i;
-            DirectPosition ptDecoupage = Operateurs.projection(
+            IDirectPosition ptDecoupage = Operateurs.projection(
                 lineStringDecoupant.getControlPoint(indiceDernierPtProche),
                 arcADecouper.getGeometrie());
             pointsDeDecoupage.add(new GM_Point(ptDecoupage));

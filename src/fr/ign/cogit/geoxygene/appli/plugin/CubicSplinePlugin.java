@@ -30,12 +30,12 @@ import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 import fr.ign.cogit.geoxygene.contrib.delaunay.Triangulation;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_CubicSpline;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -81,6 +81,7 @@ public final void initialize(final GeOxygeneApplication application) {
         application.getFrame().getJMenuBar().getMenuCount() - 2);
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public void actionPerformed(final ActionEvent e) {
     ProjectFrame project = this.application.getFrame()
@@ -114,7 +115,7 @@ public final void initialize(final GeOxygeneApplication application) {
         "Hermite " + tangentMethod + " " + tension + " " + bias + " " + continuity); //$NON-NLS-1$
     popHermite.setClasse(DefaultFeature.class);
     popHermite.setPersistant(false);
-    for (FT_Feature f : layer.getFeatureCollection()) {
+    for (IFeature f : layer.getFeatureCollection()) {
       GM_CubicSpline s = new GM_CubicSpline(f.getGeom().coord());
       s.setTangentMethod(tangentMethod);
       s.setTension(tension);

@@ -30,6 +30,6 @@ public interface WktAwtConstants {
       "<DIGIT>", "<POINT>", "\"\\n\"", "\"\\t\"", "\" \"", "\"(\"", "\")\"",
       "\"EMPTY\"", "\",\"", "\"POINT\"", "\"LINESTRING\"", "\"MULTIPOINT\"",
       "\"MULTILINESTRING\"", "\"POLYGON\"", "\"MULTIPOLYGON\"",
-      "\"GEOMETRYCOLLECTION\"", "\"SRID=\"", "\";\"", };
+      "\"GEOMETRYCOLLECTION\"", };
 
 }

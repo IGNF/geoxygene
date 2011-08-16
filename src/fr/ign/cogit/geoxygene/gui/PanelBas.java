@@ -24,12 +24,12 @@ public final class PanelBas extends JPanel {
     return this.frameMirage;
   }
 
-  public JButton b_ = new JButton("-"); //$NON-NLS-1$
+  public JButton b_ = new JButton("-");
   public JCheckBox cAffichageEchelle = new JCheckBox("Echelle", false);
   public JCheckBox cVoirPositionCurseur = new JCheckBox("Voir position", false);
-  public JLabel lX = new JLabel("X="); //$NON-NLS-1$
-  public JLabel lY = new JLabel("Y="); //$NON-NLS-1$
-  public JLabel lZ = new JLabel("Z="); //$NON-NLS-1$
+  public JLabel lX = new JLabel("X=");
+  public JLabel lY = new JLabel("Y=");
+  public JLabel lZ = new JLabel("Z=");
   public JLabel lValPente = new JLabel("ValPente=");
   public JLabel lOrPente = new JLabel("OrPente=");
 
@@ -38,13 +38,13 @@ public final class PanelBas extends JPanel {
 
     // setBackground(new Color(190,190,255));
     this.setLayout(new FlowLayout(FlowLayout.LEFT));
-    this.setFont(new Font("Arial", Font.PLAIN, 9)); //$NON-NLS-1$
+    this.setFont(new Font("Arial", Font.PLAIN, 9));
 
     this.b_.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
-        System.out.println(""); //$NON-NLS-1$
-        System.out.println("============================================="); //$NON-NLS-1$
-        System.out.println(""); //$NON-NLS-1$
+        System.out.println("");
+        System.out.println("=============================================");
+        System.out.println("");
       }
     });
     this.b_.setFont(this.getFont());

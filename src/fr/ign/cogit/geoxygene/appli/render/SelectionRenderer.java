@@ -27,166 +27,50 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.Viewport;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Shadow;
 import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
 
 /**
- * A renderer to render a {@link fr.ign.cogit.geoxygene.style.Layer} into a
- * {@link LayerViewPanel}.
+ * A renderer to render a {@link Layer} into a {@link LayerViewPanel}.
  * 
  * @author Julien Perret
  * @see RenderingManager
- * @see fr.ign.cogit.geoxygene.style.Layer
+ * @see Layer
  * @see LayerViewPanel
  */
 public class SelectionRenderer implements Renderer {
-  /**
-   * The logger.
-   */
-  private static Logger logger = Logger.getLogger(SelectionRenderer.class
-      .getName());
-  /**
-   * The layer view panel.
-   */
-  private LayerViewPanel layerViewPanel = null;
+  static Logger logger = Logger.getLogger(SelectionRenderer.class.getName());
 
-  /**
-   * @param theLayerViewPanel The layer view panel
-   */
-  public final void setLayerViewPanel(final LayerViewPanel theLayerViewPanel) {
-    this.layerViewPanel = theLayerViewPanel;
-  }
-
-  /**
-   * @return The layer view panel
-   */
-  public final LayerViewPanel getLayerViewPanel() {
-    return this.layerViewPanel;
-  }
-
-  /**
-   * True if rendering is cancelled.
-   */
-  private volatile boolean cancelled = false;
-
-  /**
-   * @return True if rendering is cancelled
-   */
-  public final boolean isCancelled() {
-    return this.cancelled;
-  }
-
-  /**
-   * True if rendering is ongoing.
-   */
-  private volatile boolean rendering = false;
-
-  @Override
-  public final boolean isRendering() {
-    return this.rendering;
-  }
-
-  /**
-   * @param isRendering True if rendering is ongoing
-   */
-  public final void setRendering(final boolean isRendering) {
-    this.rendering = isRendering;
-  }
-
-  /**
-   * True if rendering is finished.
-   */
-  private volatile boolean rendered = false;
-
-  @Override
-  public final boolean isRendered() {
-    return this.rendered;
-  }
-
-  /**
-   * @param isRendered True if rendering is finished
-   */
-  public final void setRendered(final boolean isRendered) {
-    this.rendered = isRendered;
-  }
-
-  /**
-   * The image the renderer renders into.
-   */
-  private BufferedImage image = null;
-
-  /**
-   * @param bufferedImage The image the renderer renders into
-   */
-  public final void setImage(final BufferedImage bufferedImage) {
-    this.image = bufferedImage;
-  }
-
-  /**
-   * @return The image the renderer renders into
-   */
-  public final BufferedImage getImage() {
-    return this.image;
-  }
-
-  /**
-   * Fill color.
-   */
-  private Color fillColor = new Color(1f, 1f, 0f, 1 / 2f);
-
-  /**
-   * @return The fill color
-   */
-  public final Color getFillColor() {
-    return this.fillColor;
-  }
-
-  /**
-   * Stroke color.
-   */
+  LayerViewPanel layerViewPanel = null;
+  protected volatile boolean cancelled = false;
+  protected volatile boolean rendering = false;
+  protected volatile boolean rendered = false;
+  BufferedImage image = null;
+  private Color fillColor = new Color(1f, 1f, 0f, 0.5f);
   private Color strokeColor = new Color(1f, 1f, 0f, 1f);
+  private float strokeWidth = 2f;
 
-  /**
-   * @return the stroke color
-   */
-  public final Color getStrokeColor() {
+  public Color getStrokeColor() {
     return this.strokeColor;
   }
 
-  /**
-   * Stroke width.
-   */
-  private float strokeWidth = 2f;
-
-  /**
-   * @return The stroke width
-   */
-  public final float getStrokeWidth() {
-    return this.strokeWidth;
+  public void setStrokeColor(Color color) {
+    this.strokeColor = color;
   }
 
-  /**
-   * Radius of the rendered points.
-   */
   private int pointRadius = 2;
 
-  /**
-   * @return The point radius
-   */
-  public final int getPointRadius() {
-    return this.pointRadius;
-  }
-
-  /**
-   * The symbolizer.
-   */
   private Symbolizer symbolizer = new Symbolizer() {
     @Override
     public String getGeometryPropertyName() {
@@ -224,118 +108,135 @@ public class SelectionRenderer implements Renderer {
     }
 
     @Override
-    public void paint(final FT_Feature feature, final Viewport viewport,
-        final Graphics2D graphics) {
+    public void paint(IFeature feature, Viewport viewport, Graphics2D graphics) {
       if (feature.getGeom() == null) {
         return;
       }
       if (feature.getGeom().isPolygon() || feature.getGeom().isMultiSurface()) {
-        graphics.setColor(SelectionRenderer.this.getFillColor());
+        graphics.setColor(SelectionRenderer.this.fillColor);
         RenderUtil.fill(feature.getGeom(), viewport, graphics);
       }
-      java.awt.Stroke bs = new BasicStroke(SelectionRenderer.this
-          .getStrokeWidth(), BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
-      graphics.setColor(SelectionRenderer.this.getStrokeColor());
+      java.awt.Stroke bs = new BasicStroke(SelectionRenderer.this.strokeWidth,
+          BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f);
+      graphics.setColor(SelectionRenderer.this.strokeColor);
       graphics.setStroke(bs);
       RenderUtil.draw(feature.getGeom(), viewport, graphics);
       try {
         graphics.setStroke(new BasicStroke(1, BasicStroke.CAP_SQUARE,
-            BasicStroke.JOIN_MITER));
-        for (DirectPosition position : viewport
+            BasicStroke.JOIN_MITER, 10.0f));
+        for (IDirectPosition position : viewport
             .toViewDirectPositionList(feature.getGeom().coord())) {
           GeneralPath shape = new GeneralPath();
-          shape.moveTo(position.getX()
-              - SelectionRenderer.this.getPointRadius(), position.getY()
-              - SelectionRenderer.this.getPointRadius());
-          shape.lineTo(position.getX()
-              + SelectionRenderer.this.getPointRadius(), position.getY()
-              - SelectionRenderer.this.getPointRadius());
-          shape.lineTo(position.getX()
-              + SelectionRenderer.this.getPointRadius(), position.getY()
-              + SelectionRenderer.this.getPointRadius());
-          shape.lineTo(position.getX()
-              - SelectionRenderer.this.getPointRadius(), position.getY()
-              + SelectionRenderer.this.getPointRadius());
-          shape.lineTo(position.getX()
-              - SelectionRenderer.this.getPointRadius(), position.getY()
-              - SelectionRenderer.this.getPointRadius());
-          graphics.setColor(SelectionRenderer.this.getStrokeColor());
+          shape.moveTo(position.getX() - SelectionRenderer.this.pointRadius,
+              position.getY() - SelectionRenderer.this.pointRadius);
+          shape.lineTo(position.getX() + SelectionRenderer.this.pointRadius,
+              position.getY() - SelectionRenderer.this.pointRadius);
+          shape.lineTo(position.getX() + SelectionRenderer.this.pointRadius,
+              position.getY() + SelectionRenderer.this.pointRadius);
+          shape.lineTo(position.getX() - SelectionRenderer.this.pointRadius,
+              position.getY() + SelectionRenderer.this.pointRadius);
+          shape.lineTo(position.getX() - SelectionRenderer.this.pointRadius,
+              position.getY() - SelectionRenderer.this.pointRadius);
+          graphics.setColor(SelectionRenderer.this.strokeColor);
           graphics.fill(shape);
           graphics.setColor(Color.black);
           graphics.draw(shape);
         }
       } catch (NoninvertibleTransformException e) {
-        e.printStackTrace();
       }
     }
 
     @Override
-    public void setGeometryPropertyName(final String geometryPropertyName) {
+    public void setGeometryPropertyName(String geometryPropertyName) {
     }
 
     @Override
-    public void setStroke(final Stroke stroke) {
-    }
-
-    @Override
-    public String getUnitOfMeasure() {
-      return Symbolizer.PIXEL;
-    }
-
-    @Override
-    public void setUnitOfMeasure(String uom) {
-    }
-
-    @Override
-    public void setUnitOfMeasureFoot() {
-    }
-
-    @Override
-    public void setUnitOfMeasureMetre() {
-    }
-
-    @Override
-    public void setUnitOfMeasurePixel() {
+    public void setStroke(Stroke stroke) {
     }
 
     @Override
     public Shadow getShadow() {
+      // TODO Auto-generated method stub
       return null;
     }
 
     @Override
     public void setShadow(Shadow shadow) {
+      // TODO Auto-generated method stub
+      
+    }
+
+    @Override
+    public String getUnitOfMeasure() {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+    @Override
+    public void setUnitOfMeasure(String uom) {
+      // TODO Auto-generated method stub
+      
+    }
+
+    @Override
+    public void setUnitOfMeasureMetre() {
+      // TODO Auto-generated method stub
+      
+    }
+
+    @Override
+    public void setUnitOfMeasureFoot() {
+      // TODO Auto-generated method stub
+      
+    }
+
+    @Override
+    public void setUnitOfMeasurePixel() {
+      // TODO Auto-generated method stub
+      
     }
   };
 
   /**
-   * Constructor of renderer using a {@link fr.ign.cogit.geoxygene.style.Layer}
-   * and a {@link LayerViewPanel}.
+   * Constructor of renderer using a {@link Layer} and a {@link LayerViewPanel}
+   * 
    * @param theLayerViewPanel the panel to draws into
    */
-  public SelectionRenderer(final LayerViewPanel theLayerViewPanel) {
-    this.setLayerViewPanel(theLayerViewPanel);
+  public SelectionRenderer(LayerViewPanel theLayerViewPanel) {
+    this.layerViewPanel = theLayerViewPanel;
+  }
+
+  @Override
+  public boolean isRendering() {
+    return this.rendering;
+  }
+
+  @Override
+  public boolean isRendered() {
+    return this.rendered;
   }
 
   /**
    * Cancel the rendering. This method does not actually interrupt the thread
    * but lets the thread know it should stop.
+   * 
    * @see Runnable
    * @see Thread
    */
   @Override
-  public final void cancel() {
+  public void cancel() {
     this.cancelled = true;
   }
 
   /**
-   * Copy the rendered image the a 2D graphics.
+   * Copy the rendered image the a 2D graphics
+   * 
    * @param graphics the 2D graphics to draw into
    */
   @Override
-  public final void copyTo(final Graphics2D graphics) {
-    if (this.getImage() != null) {
-      graphics.drawImage(this.getImage(), 0, 0, null);
+  public void copyTo(Graphics2D graphics) {
+    if (this.image != null) {
+      graphics.drawImage(this.image, 0, 0, null);
     }
   }
 
@@ -343,57 +244,59 @@ public class SelectionRenderer implements Renderer {
    * Create a runnable for the renderer. A renderer create a new image to draw
    * into. If cancel() is called, the rendering stops as soon as possible. When
    * finished, set the variable rendering to false.
+   * 
    * @return a new runnable
    * @see Runnable
    * @see #cancel()
    * @see #isRendering()
    */
   @Override
-  public final Runnable createRunnable() {
-    if (this.getImage() != null) {
+  public Runnable createRunnable() {
+    if (this.image != null) {
       return null;
     }
     this.cancelled = false;
     return new Runnable() {
       @Override
       public void run() {
-        SelectionRenderer.this.setRendering(true);
-        SelectionRenderer.this.setRendered(false);
+        SelectionRenderer.this.rendering = true;
+        SelectionRenderer.this.rendered = false;
         try {
           // it the rendering is cancel, stop
-          if (SelectionRenderer.this.isCancelled()) {
+          if (SelectionRenderer.this.cancelled) {
             return;
           }
-          // if either the width or the height of the panel is
-          // lesser or equal to 0, stop
-          if (Math.min(SelectionRenderer.this.getLayerViewPanel().getWidth(),
-              SelectionRenderer.this.getLayerViewPanel().getHeight()) <= 0) {
+          // if either the width or the height of the panel is lesser
+          // or equal to 0, stop
+          if (Math.min(SelectionRenderer.this.layerViewPanel.getWidth(),
+              SelectionRenderer.this.layerViewPanel.getHeight()) <= 0) {
             return;
           }
           // create a new image
-          SelectionRenderer.this.setImage(new BufferedImage(
-              SelectionRenderer.this.getLayerViewPanel().getWidth(),
-              SelectionRenderer.this.getLayerViewPanel().getHeight(),
-              BufferedImage.TYPE_INT_ARGB));
+          SelectionRenderer.this.image = new BufferedImage(
+              SelectionRenderer.this.layerViewPanel.getWidth(),
+              SelectionRenderer.this.layerViewPanel.getHeight(),
+              BufferedImage.TYPE_INT_ARGB);
           // do the actual rendering
           try {
-            SelectionRenderer.this
-                .renderHook(SelectionRenderer.this.getImage());
+            SelectionRenderer.this.renderHook(SelectionRenderer.this.image);
           } catch (Throwable t) {
             // TODO WARN THE USER?
             t.printStackTrace(System.err);
             return;
           }
+          // when time comes, repaint the panel
+          SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+              SelectionRenderer.this.layerViewPanel.superRepaint();
+            }
+          });
         } finally {
-          // the renderer is not rendering anymore
-          // ( used by isRendering() )
-          SelectionRenderer.this.setRendering(false);
-          SelectionRenderer.this.setRendered(true);
-          if (SelectionRenderer.logger.isTraceEnabled()) {
-            SelectionRenderer.logger.trace("Selection Renderer finished"); //$NON-NLS-1$
-          }
-          SelectionRenderer.this.getLayerViewPanel().getRenderingManager()
-              .repaint();
+          // the renderer is not rendering anymore ( used by
+          // isRendering() )
+          SelectionRenderer.this.rendering = false;
+          SelectionRenderer.this.rendered = true;
         }
       }
     };
@@ -401,14 +304,15 @@ public class SelectionRenderer implements Renderer {
 
   /**
    * Actually renders the layer in an image. Stop if cancelled is true.
+   * 
    * @param theImage the image to draw into
    * @see #cancel()
    */
-  final void renderHook(final BufferedImage theImage) {
+  private void renderHook(BufferedImage theImage) {
     if (this.cancelled) {
       return;
     }
-    for (FT_Feature feature : this.getLayerViewPanel().getSelectedFeatures()) {
+    for (IFeature feature : this.layerViewPanel.getSelectedFeatures()) {
       if (this.cancelled) {
         return;
       }
@@ -419,12 +323,13 @@ public class SelectionRenderer implements Renderer {
   }
 
   /**
-   * Render a feature into an image using the given symbolizer.
-   * @param feature the feature to render
-   * @param theImage the image to render into
+   * Render a feature into an image using the given symbolizer
+   * 
+   * @param feature
+   * @param theImage
    */
-  private void render(final FT_Feature feature, final BufferedImage theImage) {
-    this.symbolizer.paint(feature, this.getLayerViewPanel().getViewport(),
+  private void render(IFeature feature, BufferedImage theImage) {
+    this.symbolizer.paint(feature, this.layerViewPanel.getViewport(),
         (Graphics2D) theImage.getGraphics());
   }
 
@@ -432,22 +337,31 @@ public class SelectionRenderer implements Renderer {
    * Clear the image cache, i.e. delete the current image.
    */
   @Override
-  public final void clearImageCache() {
-    this.setImage(null);
+  public void clearImageCache() {
+    this.image = null;
   }
 
   @Override
-  public final void clearImageCache(final int x, final int y, final int width,
-      final int height) {
+  public void clearImageCache(int x, int y, int width, int height) {
     if (this.cancelled) {
       return;
     }
-    for (int i = Math.max(x, 0); i < Math.min(x + width, this
-        .getLayerViewPanel().getWidth()); i++) {
-      for (int j = Math.max(y, 0); j < Math.min(y + height, this
-          .getLayerViewPanel().getHeight()); j++) {
-        this.getImage().setRGB(i, j, Transparency.TRANSLUCENT);
+    for (int i = Math.max(x, 0); i < Math.min(x + width, this.layerViewPanel
+        .getWidth()); i++) {
+      for (int j = Math.max(y, 0); j < Math.min(y + height, this.layerViewPanel
+          .getHeight()); j++) {
+        this.image.setRGB(i, j, Transparency.TRANSLUCENT);
       }
     }
+  }
+
+  @Override
+  public Runnable createFeatureRunnable(IFeature feature) {
+    return null;
+  }
+
+  @Override
+  public Runnable createLocalRunnable(IGeometry geom) {
+    return null;
   }
 }

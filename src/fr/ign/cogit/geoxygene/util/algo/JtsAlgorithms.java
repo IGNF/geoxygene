@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.util.algo;
@@ -53,13 +61,17 @@ import com.vividsolutions.jts.operation.distance.DistanceOp;
 import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
 
@@ -67,11 +79,7 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  * Appel des methodes JTS sur des GM_Object. cf.
  * http://www.vividsolutions.com/jts/jtshome.htm
  * 
- * @author Thierry Badard
- * @author Arnaud Braun
- * @author Christophe Pele
- * @author Jean-François Girres
- * @author Charlotte Hoarau
+ * @author Thierry Badard, Arnaud Braun & Christophe Pele
  * @version 1.0
  * 
  */
@@ -83,7 +91,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   @Override
-  public DirectPosition centroid(GM_Object geom) {
+  public DirectPosition centroid(IGeometry geom) {
     try {
       Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
       Point jtsCentroid = jtsGeom.getCentroid();
@@ -101,11 +109,11 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   @Override
-  public GM_Object convexHull(GM_Object geom) {
+  public IGeometry convexHull(IGeometry geom) {
     try {
       Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
       Geometry jtsHull = jtsGeom.convexHull();
-      GM_Object result = JtsGeOxygene.makeGeOxygeneGeom(jtsHull);
+      IGeometry result = JtsGeOxygene.makeGeOxygeneGeom(jtsHull);
       return result;
     } catch (Exception e) {
       JtsAlgorithms.logger.error(I18N
@@ -119,7 +127,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   @Override
-  public GM_Object buffer(GM_Object geom, double distance) {
+  public IGeometry buffer(IGeometry geom, double distance) {
     if ((distance == 0) && (geom instanceof GM_Point)) {
       return geom;
     }
@@ -143,7 +151,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
 
-  public GM_Object buffer(GM_Object geom, double distance, int nSegments) {
+  public IGeometry buffer(IGeometry geom, double distance, int nSegments) {
     try {
       Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
       Geometry jtsBuffer = jtsGeom.buffer(distance, nSegments);
@@ -164,7 +172,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
 
-  public GM_Object buffer(GM_Object geom, double distance, int nSegments,
+  public IGeometry buffer(IGeometry geom, double distance, int nSegments,
       int cap) {
     try {
       Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
@@ -187,7 +195,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
   
-  public GM_Object buffer(GM_Object geom, double distance, int nSegments,
+  public IGeometry buffer(IGeometry geom, double distance, int nSegments,
       int cap, int join) {
     try {
       Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
@@ -212,11 +220,11 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   @Override
-  public GM_Object buffer10(GM_Object geom) {
+  public IGeometry buffer10(IGeometry geom) {
     return this.buffer(geom, 10);
   }
 
-  public GM_Object boundary(GM_Object geom) {
+  public IGeometry boundary(IGeometry geom) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(geom);
       Geometry jtsResult = jtsGeom1.getBoundary();
@@ -234,7 +242,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   @Override
-  public GM_Object union(GM_Object g1, GM_Object g2) {
+  public IGeometry union(IGeometry g1, IGeometry g2) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
@@ -255,7 +263,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   @Override
-  public GM_Object intersection(GM_Object g1, GM_Object g2) {
+  public IGeometry intersection(IGeometry g1, IGeometry g2) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
@@ -277,7 +285,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   @Override
-  public GM_Object difference(GM_Object g1, GM_Object g2) {
+  public IGeometry difference(IGeometry g1, IGeometry g2) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
@@ -300,7 +308,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   @Override
-  public GM_Object symDifference(GM_Object g1, GM_Object g2) {
+  public IGeometry symDifference(IGeometry g1, IGeometry g2) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
@@ -322,7 +330,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   @Override
-  public boolean equals(GM_Object g1, GM_Object g2) {
+  public boolean equals(IGeometry g1, IGeometry g2) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
@@ -341,7 +349,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
 
-  public boolean equalsExact(GM_Object g1, GM_Object g2) {
+  public boolean equalsExact(IGeometry g1, IGeometry g2) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
@@ -361,7 +369,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
 
-  public boolean equalsExact(GM_Object g1, GM_Object g2, double tol) {
+  public boolean equalsExact(IGeometry g1, IGeometry g2, double tol) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
@@ -384,7 +392,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   @Override
-  public boolean contains(GM_Object g1, GM_Object g2) {
+  public boolean contains(IGeometry g1, IGeometry g2) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
@@ -403,7 +411,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
 
-  public boolean crosses(GM_Object g1, GM_Object g2) {
+  public boolean crosses(IGeometry g1, IGeometry g2) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
@@ -422,7 +430,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
 
-  public boolean disjoint(GM_Object g1, GM_Object g2) {
+  public boolean disjoint(IGeometry g1, IGeometry g2) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
@@ -441,7 +449,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
 
-  public boolean within(GM_Object g1, GM_Object g2) {
+  public boolean within(IGeometry g1, IGeometry g2) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
@@ -460,7 +468,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
 
-  public boolean isWithinDistance(GM_Object g1, GM_Object g2, double dist) {
+  public boolean isWithinDistance(IGeometry g1, IGeometry g2, double dist) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
@@ -483,7 +491,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   @Override
-  public boolean intersects(GM_Object g1, GM_Object g2) {
+  public boolean intersects(IGeometry g1, IGeometry g2) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
@@ -503,7 +511,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
 
-  public boolean overlaps(GM_Object g1, GM_Object g2) {
+  public boolean overlaps(IGeometry g1, IGeometry g2) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
@@ -522,7 +530,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
 
-  public boolean touches(GM_Object g1, GM_Object g2) {
+  public boolean touches(IGeometry g1, IGeometry g2) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
@@ -541,7 +549,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
 
-  public boolean isEmpty(GM_Object geom) {
+  public boolean isEmpty(IGeometry geom) {
     try {
       Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
       return jtsGeom.isEmpty();
@@ -557,7 +565,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
 
-  public boolean isSimple(GM_Object geom) {
+  public boolean isSimple(IGeometry geom) {
     try {
       Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
       return jtsGeom.isSimple();
@@ -573,7 +581,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
 
-  public boolean isValid(GM_Object geom) {
+  public boolean isValid(IGeometry geom) {
     try {
       Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
       return jtsGeom.isValid();
@@ -590,7 +598,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   @Override
-  public double distance(GM_Object g1, GM_Object g2) {
+  public double distance(IGeometry g1, IGeometry g2) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
@@ -610,7 +618,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   @Override
-  public double area(GM_Object geom) {
+  public double area(IGeometry geom) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(geom);
       return jtsGeom1.getArea();
@@ -627,7 +635,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   @Override
-  public double length(GM_Object geom) {
+  public double length(IGeometry geom) {
     try {
       Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
       return jtsGeom.getLength();
@@ -643,7 +651,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
 
-  public int dimension(GM_Object geom) {
+  public int dimension(IGeometry geom) {
     try {
       Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
       return jtsGeom.getDimension();
@@ -660,7 +668,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
 
-  public int numPoints(GM_Object geom) {
+  public int numPoints(IGeometry geom) {
     try {
       if (geom.isEmpty()) {
         return 0;
@@ -680,7 +688,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
 
-  public GM_Object translate(GM_Object geom, final double tx, final double ty,
+  public IGeometry translate(IGeometry geom, final double tx, final double ty,
       final double tz) {
     try {
       Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
@@ -693,7 +701,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
         }
       };
       jtsGeom.apply(translateCoord);
-      GM_Object result = JtsGeOxygene.makeGeOxygeneGeom(jtsGeom);
+      IGeometry result = JtsGeOxygene.makeGeOxygeneGeom(jtsGeom);
       return result;
     } catch (Exception e) {
       JtsAlgorithms.logger
@@ -708,7 +716,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     }
   }
 
-  public String relate(GM_Object g1, GM_Object g2) {
+  public String relate(IGeometry g1, IGeometry g2) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
@@ -732,9 +740,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
    * @param listeGeometries liste des géométries à unir
    * @return union d'une liste de géométries
    */
-  public static GM_Object union(List<? extends GM_Object> listeGeometries) {
+  public static IGeometry union(List<? extends IGeometry> listeGeometries) {
     List<Geometry> listeGeometriesJts = new ArrayList<Geometry>(0);
-    for (GM_Object geom : listeGeometries) {
+    for (IGeometry geom : listeGeometries) {
       try {
         listeGeometriesJts.add(JtsGeOxygene.makeJtsGeom(geom));
       } catch (Exception e) {
@@ -791,8 +799,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
    * @param pt un point, a point
    * @param poly un polygone, a polygon
    */
-  public static DirectPosition getClosestPoint(DirectPosition pt,
-      GM_Polygon poly) {
+  public static IDirectPosition getClosestPoint(IDirectPosition pt,
+      IPolygon poly) {
     return JtsAlgorithms.getClosestPoint(pt, poly.exteriorLineString());
   }
 
@@ -803,8 +811,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
    * @param pt un point, a point
    * @param l une ligne, a line
    */
-  public static DirectPosition getClosestPoint(DirectPosition pt,
-      GM_LineString l) {
+  public static IDirectPosition getClosestPoint(IDirectPosition pt,
+      ILineString l) {
     Point point = new GeometryFactory().createPoint(AdapterFactory
         .toCoordinate(pt));
     LineString line;
@@ -825,8 +833,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
    * @param base la ligne de comparaison, the base line
    * @param l une ligne, a line
    */
-  public static DirectPosition getFurthestPoint(GM_LineString base,
-      GM_LineString l) {
+  public static IDirectPosition getFurthestPoint(ILineString base,
+      ILineString l) {
     try {
       LineString baseLine = (LineString) AdapterFactory.toGeometry(
           new GeometryFactory(), base);
@@ -863,14 +871,14 @@ public class JtsAlgorithms implements GeomAlgorithms {
    * @param g2 une autre géométrie
    * @return la liste des 2 points les plus proches
    */
-  public static DirectPositionList getClosestPoints(GM_Object g1, GM_Object g2) {
+  public static IDirectPositionList getClosestPoints(IGeometry g1, IGeometry g2) {
     try {
       Geometry jtsGeom1 = JtsGeOxygene.makeJtsGeom(g1);
       Geometry jtsGeom2 = JtsGeOxygene.makeJtsGeom(g2);
       Coordinate[] coord = DistanceOp.nearestPoints(jtsGeom1, jtsGeom2);
-      DirectPosition dp1 = new DirectPosition(coord[0].x, coord[0].y);
-      DirectPosition dp2 = new DirectPosition(coord[1].x, coord[1].y);
-      DirectPositionList listePoints = new DirectPositionList();
+      IDirectPosition dp1 = new DirectPosition(coord[0].x, coord[0].y);
+      IDirectPosition dp2 = new DirectPosition(coord[1].x, coord[1].y);
+      IDirectPositionList listePoints = new DirectPositionList();
       listePoints.add(dp1);
       listePoints.add(dp2);
       return listePoints;
@@ -1140,7 +1148,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     return unionGeometryList;
   }
 
-  public static boolean isCCW(GM_LineString line) {
+  public static boolean isCCW(ILineString line) {
     Coordinate[] coords = AdapterFactory.toCoordinateSequence(
         new GeometryFactory(), line.coord()).toCoordinateArray();
     return CGAlgorithms.isCCW(coords);
@@ -1239,15 +1247,15 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   /**
-   * Builds on offset curve for the given {@link GM_LineString}. A positive
+   * Builds on offset curve for the given {@link ILineString}. A positive
    * offset builds an offset curve on the left-hand side of the reference
-   * {@link GM_LineString}. Negative means right.
-   * @param line reference {@link GM_LineString}
+   * {@link ILineString}. Negative means right.
+   * @param line reference {@link ILineString}
    * @param distance offset distance
-   * @return a {@link GM_MultiCurve} at the given offset of the reference
-   *         {@link GM_LineString}
+   * @return a {@link IMultiCurve} at the given offset of the reference
+   *         {@link ILineString}
    */
-  public static GM_MultiCurve<GM_LineString> offsetCurve(GM_LineString line,
+  public static IMultiCurve<ILineString> offsetCurve(ILineString line,
       double distance) {
     double d = Math.abs(distance);
     int orientationIndex = (int) (d / distance);
@@ -1265,9 +1273,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
           return null;
         }
         polygon = (Polygon) buffer;
-        GM_MultiCurve<GM_LineString> result = new GM_MultiCurve<GM_LineString>();
+        IMultiCurve<ILineString> result = new GM_MultiCurve<ILineString>();
         // build the offset curve for the exterior ring
-        GM_LineString r = JtsAlgorithms.getOffsetCurveFromRing(polygon
+        ILineString r = JtsAlgorithms.getOffsetCurveFromRing(polygon
             .getExteriorRing(), lineString, orientationIndex, d);
         if ((r != null) && !r.isEmpty() && (r.coord().size() != 1)) {
           result.add(r);
@@ -1347,7 +1355,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
    *          linestring a point lies
    * @return the offsetcurve
    */
-  private static GM_LineString getOffsetCurveFromRing(LineString ring,
+  private static ILineString getOffsetCurveFromRing(LineString ring,
       LineString line, int orientationIndex, double distance) {
     // go through the coordinates of the buffer and select the range
     // of coordinates of the right side
@@ -1449,7 +1457,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
         && coordinateList.get(0).equals2D(coordinateList.get(1))) {
       return null;
     }
-    GM_LineString result = new GM_LineString(AdapterFactory
+    ILineString result = new GM_LineString(AdapterFactory
         .toDirectPositionList(coordinateList
             .toArray(new Coordinate[coordinateList.size()])));
     return result;
@@ -1556,7 +1564,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     return orientationIndex;
   }
 
-  public static GM_LineString cap(GM_LineString line, double distance,
+  public static ILineString cap(ILineString line, double distance,
       boolean start) {
     double d = Math.abs(distance);
     try {

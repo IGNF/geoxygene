@@ -38,7 +38,7 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
  * dans cet exemple).
  * 
  * La seule petite difficulté est d'indiquer dans le code que MaCarteTopo est
- * constituée d'objets MonNoeud, MonArc et MaFace plutôt que les génériques
+ * constitueé d'objets MonNoeud, MonArc et MaFace plutôt que les génériques
  * Noeud, Arc et Face. Cette opération doit se faire par un constructeur spécial
  * dans la classe MaCarteTopo.
  * 

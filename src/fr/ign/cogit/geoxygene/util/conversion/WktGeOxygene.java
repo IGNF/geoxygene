@@ -17,6 +17,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IAggregate;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
@@ -26,8 +37,6 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 @SuppressWarnings("unchecked")
 public class WktGeOxygene implements WktGeOxygeneConstants {
@@ -40,12 +49,13 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
   }
 
   /*-----------------------------------------------------*/
-  /*- Create Wkt object(s) from GM_Object ---------------*/
+  /*- Create Wkt object(s) from IGeometry ---------------*/
   /*-----------------------------------------------------*/
 
-  /*- GM_Aggregate --------------------------------------*/
+  /*- IAggregate --------------------------------------*/
 
-  static String geometryCollectionTaggedText(GM_Aggregate aggregate) {
+  @SuppressWarnings("rawtypes")
+  static String geometryCollectionTaggedText(IAggregate aggregate) {
     StringBuffer result = new StringBuffer();
     result.append("GEOMETRYCOLLECTION ");
     if (IsEmptyUtil.isEmpty(aggregate)) {
@@ -63,10 +73,10 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     return result.toString();
   }
 
-  /*- GM_MultiPoint -------------------------------------*/
+  /*- IMultiPoint -------------------------------------*/
 
-  static String multiPointTaggedText(GM_MultiPoint multiPoint) {
-    GM_Point point;
+  static String multiPointTaggedText(IMultiPoint multiPoint) {
+    IPoint point;
     StringBuffer result = new StringBuffer();
     result.append("MULTIPOINT ");
     if (IsEmptyUtil.isEmpty(multiPoint)) {
@@ -85,10 +95,11 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     return result.toString();
   }
 
-  /*- GM_MultiCurve -------------------------------------*/
+  /*- IMultiCurve -------------------------------------*/
 
-  static String multiLineStringTaggedText(GM_MultiCurve multiCurve) {
-    GM_LineString lineString;
+  @SuppressWarnings("rawtypes")
+  static String multiLineStringTaggedText(IMultiCurve multiCurve) {
+    ILineString lineString;
     StringBuffer result = new StringBuffer();
     result.append("MULTILINESTRING ");
     if (IsEmptyUtil.isEmpty(multiCurve)) {
@@ -96,7 +107,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     } else {
       result.append("(");
       for (int i = 0; i < multiCurve.size(); i++) {
-        lineString = (GM_LineString) multiCurve.get(i);
+        lineString = (ILineString) multiCurve.get(i);
         if (i != 0) {
           result.append(", ");
         }
@@ -107,26 +118,28 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     return result.toString();
   }
 
-  /*- GM_MultiSurface -----------------------------------*/
+  /*- IMultiSurface -----------------------------------*/
 
-  static String multiPolygon(GM_MultiSurface multiSurface) {
+  @SuppressWarnings("rawtypes")
+  static String multiPolygon(IMultiSurface multiSurface) {
     StringBuffer result = new StringBuffer();
     for (int i = 0; i < multiSurface.size(); i++) {
-      GM_Object surface;
+      IGeometry surface;
       surface = multiSurface.get(i);
       if (i != 0) {
         result.append(", ");
       }
-      if (surface instanceof GM_Polygon) {
-        result.append(WktGeOxygene.polygonText((GM_Polygon) surface));
-      } else if (surface instanceof GM_MultiSurface) {
-        result.append(WktGeOxygene.multiPolygon((GM_MultiSurface) surface));
+      if (surface instanceof IPolygon) {
+        result.append(WktGeOxygene.polygonText((IPolygon) surface));
+      } else if (surface instanceof IMultiSurface) {
+        result.append(WktGeOxygene.multiPolygon((IMultiSurface) surface));
       }
     }
     return result.toString();
   }
 
-  static String multiPolygonText(GM_MultiSurface multiSurface) {
+  @SuppressWarnings("rawtypes")
+  static String multiPolygonText(IMultiSurface multiSurface) {
     StringBuffer result = new StringBuffer();
     result.append("(");
     result.append(WktGeOxygene.multiPolygon(multiSurface));
@@ -134,7 +147,8 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     return result.toString();
   }
 
-  static String multiPolygonTaggedText(GM_MultiSurface multiSurface) {
+  @SuppressWarnings("rawtypes")
+  static String multiPolygonTaggedText(IMultiSurface multiSurface) {
     StringBuffer result = new StringBuffer();
     result.append("MULTIPOLYGON ");
     if (IsEmptyUtil.isEmpty(multiSurface)) {
@@ -145,10 +159,10 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     return result.toString();
   }
 
-  /*- GM_LineString -------------------------------------*/
+  /*- ILineString -------------------------------------*/
 
-  static String lineStringText(GM_LineString lineString) {
-    GM_Point point;
+  static String lineStringText(ILineString lineString) {
+    IPoint point;
     StringBuffer result = new StringBuffer();
     result.append("(");
     for (int i = 0; i < lineString.sizeControlPoint(); i++) {
@@ -162,7 +176,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     return result.toString();
   }
 
-  static String lineStringTaggedText(GM_LineString lineString) {
+  static String lineStringTaggedText(ILineString lineString) {
     StringBuffer result = new StringBuffer();
     result.append("LINESTRING ");
     if (IsEmptyUtil.isEmpty(lineString)) {
@@ -174,10 +188,10 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     return result.toString();
   }
 
-  /*- GM_Polygon ----------------------------------------*/
+  /*- IPolygon ----------------------------------------*/
 
-  static String polygonText(GM_Polygon polygon) {
-    GM_LineString lineString;
+  static String polygonText(IPolygon polygon) {
+    ILineString lineString;
 
     StringBuffer result = new StringBuffer();
     result.append("(");
@@ -194,7 +208,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     return result.toString();
   }
 
-  static String polygonTaggedText(GM_Polygon polygon) {
+  static String polygonTaggedText(IPolygon polygon) {
     StringBuffer result = new StringBuffer();
     result.append("POLYGON ");
     if (IsEmptyUtil.isEmpty(polygon)) {
@@ -205,11 +219,11 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     return result.toString();
   }
 
-  /*- GM_Point ------------------------------------------*/
+  /*- IPoint ------------------------------------------*/
 
   // TODO déterminer la dimension de la géométrie attendue par postgis
-  static String point(GM_Point point) {
-    DirectPosition position = point.getPosition();
+  static String point(IPoint point) {
+    IDirectPosition position = point.getPosition();
     StringBuffer result = new StringBuffer();
     result.append(position.getX());
     result.append(" ");
@@ -221,7 +235,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     return result.toString();
   }
 
-  static String pointText(GM_Point point) {
+  static String pointText(IPoint point) {
     StringBuffer result = new StringBuffer();
     result.append("(");
     result.append(WktGeOxygene.point(point));
@@ -229,7 +243,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     return result.toString();
   }
 
-  static String pointTaggedText(GM_Point point) {
+  static String pointTaggedText(IPoint point) {
     StringBuffer result = new StringBuffer();
     result.append("POINT ");
     if (IsEmptyUtil.isEmpty(point)) {
@@ -240,9 +254,9 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     return result.toString();
   }
 
-  /*- GM_Ring -----------------------------------------*/
+  /*- IRing -----------------------------------------*/
 
-  private static String ringTaggedText(GM_Ring ring) {
+  private static String ringTaggedText(IRing ring) {
     StringBuffer result = new StringBuffer();
     result.append("RING ");
     if (IsEmptyUtil.isEmpty(ring)) {
@@ -253,8 +267,8 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     return result.toString();
   }
 
-  private static Object ringText(GM_Ring ring) {
-    GM_Point point;
+  private static Object ringText(IRing ring) {
+    IPoint point;
     StringBuffer result = new StringBuffer();
     result.append("(");
     for (int i = 0; i < ring.coord().size(); i++) {
@@ -268,29 +282,30 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     return result.toString();
   }
 
-  /*- GM_Object -----------------------------------------*/
+  /*- IGeometry -----------------------------------------*/
 
-  public static String makeWkt(GM_Object object) {
+  @SuppressWarnings("rawtypes")
+  public static String makeWkt(IGeometry object) {
     String result = "POINT EMPTY";
-    if (object instanceof GM_Point) {
-      result = WktGeOxygene.pointTaggedText((GM_Point) object);
-    } else if (object instanceof GM_MultiSurface) {
-      result = WktGeOxygene.multiPolygonTaggedText((GM_MultiSurface) object);
-    } else if (object instanceof GM_MultiCurve) {
-      result = WktGeOxygene.multiLineStringTaggedText((GM_MultiCurve) object);
-    } else if (object instanceof GM_MultiPoint) {
-      result = WktGeOxygene.multiPointTaggedText((GM_MultiPoint) object);
-    } else if (object instanceof GM_Polygon) {
-      result = WktGeOxygene.polygonTaggedText((GM_Polygon) object);
-    } else if (object instanceof GM_LineString) {
-      result = WktGeOxygene.lineStringTaggedText((GM_LineString) object);
-    } else if (object instanceof GM_Aggregate) {
-      result = WktGeOxygene.geometryCollectionTaggedText((GM_Aggregate) object);
-    } else if (object instanceof GM_Ring) {
-      result = WktGeOxygene.ringTaggedText((GM_Ring) object);
-    } else if (object instanceof GM_Solid) {
+    if (object instanceof IPoint) {
+      result = WktGeOxygene.pointTaggedText((IPoint) object);
+    } else if (object instanceof IMultiSurface) {
+      result = WktGeOxygene.multiPolygonTaggedText((IMultiSurface) object);
+    } else if (object instanceof IMultiCurve) {
+      result = WktGeOxygene.multiLineStringTaggedText((IMultiCurve) object);
+    } else if (object instanceof IMultiPoint) {
+      result = WktGeOxygene.multiPointTaggedText((IMultiPoint) object);
+    } else if (object instanceof IPolygon) {
+      result = WktGeOxygene.polygonTaggedText((IPolygon) object);
+    } else if (object instanceof ILineString) {
+      result = WktGeOxygene.lineStringTaggedText((ILineString) object);
+    } else if (object instanceof IAggregate) {
+      result = WktGeOxygene.geometryCollectionTaggedText((IAggregate) object);
+    } else if (object instanceof IRing) {
+      result = WktGeOxygene.ringTaggedText((IRing) object);
+    } else if (object instanceof ISolid) {
       result = WktGeOxygene.multiPolygonTaggedText(new GM_MultiSurface(
-          ((GM_Solid) object).getFacesList()));
+          ((ISolid) object).getListeFacettes()));
     }
     return result;
   }
@@ -299,45 +314,45 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     StringBuffer result = new StringBuffer();
     Iterator<?> i = geomList.iterator();
     while (i.hasNext()) {
-      GM_Object geom = (GM_Object) i.next();
+      IGeometry geom = (IGeometry) i.next();
       String wkt = WktGeOxygene.makeWkt(geom);
       result.append(wkt);
-      result.append('\u005cn');
+      result.append('\n');
     }
     return result.toString();
   }
 
   /*- Read from stream ----------------------------------*/
 
-  public static GM_Object readGeOxygeneFromWkt(BufferedReader in)
+  public static IGeometry readGeOxygeneFromWkt(BufferedReader in)
       throws IOException, ParseException {
     String wkt = in.readLine();
     return WktGeOxygene.makeGeOxygene(wkt);
   }
 
-  public static GM_Object readGeOxygeneFromWkt(InputStream in)
+  public static IGeometry readGeOxygeneFromWkt(InputStream in)
       throws IOException, ParseException {
     return WktGeOxygene.readGeOxygeneFromWkt(new BufferedReader(
         new InputStreamReader(in)));
   }
 
-  public static GM_Object readGeOxygeneFromWkt(String path)
+  public static IGeometry readGeOxygeneFromWkt(String path)
       throws FileNotFoundException, IOException, ParseException {
     return WktGeOxygene.readGeOxygeneFromWkt(new FileInputStream(path));
   }
 
   /*- Write to stream -----------------------------------*/
 
-  public static void writeWkt(String path, boolean append, GM_Object geom)
+  public static void writeWkt(String path, boolean append, IGeometry geom)
       throws IOException {
     WktGeOxygene.writeWkt(new FileOutputStream(path, append), geom);
   }
 
-  public static void writeWkt(String path, GM_Object geom) throws IOException {
+  public static void writeWkt(String path, IGeometry geom) throws IOException {
     WktGeOxygene.writeWkt(new FileOutputStream(path), geom);
   }
 
-  public static void writeWkt(OutputStream out, GM_Object geom)
+  public static void writeWkt(OutputStream out, IGeometry geom)
       throws IOException {
     new PrintStream(out).println(WktGeOxygene.makeWkt(geom));
   }
@@ -346,27 +361,27 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       throws IOException {
     Iterator<?> i = geomList.iterator();
     while (i.hasNext()) {
-      GM_Object geom = (GM_Object) i.next();
+      IGeometry geom = (IGeometry) i.next();
       WktGeOxygene.writeWkt(out, geom);
     }
   }
 
   /*-----------------------------------------------------*/
-  /*- Create GM_Object from Wkt object(s) ---------------*/
+  /*- Create IGeometry from Wkt object(s) ---------------*/
   /*-----------------------------------------------------*/
 
   public static List<?> makeGeOxygeneList(String inStrArray[])
       throws ParseException {
-    ArrayList<GM_Object> list = new ArrayList<GM_Object>();
+    ArrayList<IGeometry> list = new ArrayList<IGeometry>();
     for (String element : inStrArray) {
       list.add(WktGeOxygene.makeGeOxygene(element));
     }
     return list;
   }
 
-  static GM_Object makeGeOxygene(InputStream in) throws ParseException {
+  static IGeometry makeGeOxygene(InputStream in) throws ParseException {
     WktGeOxygene parser = new WktGeOxygene(in);
-    GM_Object geom = null;
+    IGeometry geom = null;
 
     try {
       geom = parser.parseOneLine();
@@ -387,12 +402,12 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
   }
 
   public static List<?> makeGeOxygeneList(InputStream in) throws ParseException {
-    ArrayList<GM_Object> list = new ArrayList<GM_Object>();
+    ArrayList<IGeometry> list = new ArrayList<IGeometry>();
     WktGeOxygene parser = new WktGeOxygene(in);
 
     while (true) {
       try {
-        GM_Object geom = parser.parseOneLine();
+        IGeometry geom = parser.parseOneLine();
         list.add(geom);
       } catch (EndOfFile x) {
         break;
@@ -402,13 +417,13 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     return list;
   }
 
-  public static GM_Object makeGeOxygene(String inStr) throws ParseException {
+  public static IGeometry makeGeOxygene(String inStr) throws ParseException {
     InputStream in = new ByteArrayInputStream(inStr.getBytes());
     return WktGeOxygene.makeGeOxygene(in);
   }
 
-  final public DirectPosition point() throws ParseException {
-    DirectPosition p;
+  final public IDirectPosition point() throws ParseException {
+    IDirectPosition p;
     Token xy;
     xy = this.jj_consume_token(WktGeOxygeneConstants.POINT);
     StringTokenizer tkz = new StringTokenizer(xy.image);
@@ -429,13 +444,6 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
           }
         }
       }
-      p = new DirectPosition(Double.parseDouble(xStr),
-          Double.parseDouble(yStr), Double.parseDouble(zStr));
-      {
-        if (true) {
-          return p;
-        }
-      }
     }
     p = new DirectPosition(Double.parseDouble(xStr), Double.parseDouble(yStr));
     try {
@@ -450,8 +458,8 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public DirectPosition pointText() throws ParseException {
-    DirectPosition p = new DirectPosition();
+  final public IDirectPosition pointText() throws ParseException {
+    IDirectPosition p = new DirectPosition();
     switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
       case 9:
         this.jj_consume_token(9);
@@ -478,9 +486,9 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public GM_LineString linestringText() throws ParseException {
-    GM_LineString lineString = new GM_LineString();
-    DirectPosition p;
+  final public ILineString linestringText() throws ParseException {
+    ILineString lineString = new GM_LineString();
+    IDirectPosition p;
     switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
       case 9:
         this.jj_consume_token(9);
@@ -521,9 +529,9 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public GM_Polygon polygonText() throws ParseException {
-    GM_Polygon polygon = new GM_Polygon();
-    GM_LineString lineString;
+  final public IPolygon polygonText() throws ParseException {
+    IPolygon polygon = new GM_Polygon();
+    ILineString lineString;
     switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
       case 9:
         this.jj_consume_token(9);
@@ -564,9 +572,9 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public GM_MultiPoint multipointText() throws ParseException {
-    GM_MultiPoint multiPoint = new GM_MultiPoint();
-    DirectPosition p;
+  final public IMultiPoint multipointText() throws ParseException {
+    IMultiPoint multiPoint = new GM_MultiPoint();
+    IDirectPosition p;
     switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
       case 9:
         this.jj_consume_token(9);
@@ -607,9 +615,10 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public GM_MultiCurve multilinestringText() throws ParseException {
-    GM_MultiCurve multiLineString = new GM_MultiCurve();
-    GM_LineString lineString;
+  @SuppressWarnings("rawtypes")
+  final public IMultiCurve multilinestringText() throws ParseException {
+    IMultiCurve multiLineString = new GM_MultiCurve();
+    ILineString lineString;
     switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
       case 9:
         this.jj_consume_token(9);
@@ -650,9 +659,10 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public GM_MultiSurface multipolygonText() throws ParseException {
-    GM_MultiSurface multiPolygon = new GM_MultiSurface();
-    GM_Polygon polygon;
+  @SuppressWarnings("rawtypes")
+  final public IMultiSurface multipolygonText() throws ParseException {
+    IMultiSurface multiPolygon = new GM_MultiSurface();
+    IPolygon polygon;
     switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
       case 9:
         this.jj_consume_token(9);
@@ -693,9 +703,10 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public GM_Aggregate geometrycollectionText() throws ParseException {
-    GM_Aggregate geometryCollection = new GM_Aggregate();
-    GM_Object geometry;
+  @SuppressWarnings("rawtypes")
+  final public IAggregate geometrycollectionText() throws ParseException {
+    IAggregate geometryCollection = new GM_Aggregate();
+    IGeometry geometry;
     switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
       case 9:
         this.jj_consume_token(9);
@@ -736,8 +747,8 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public GM_Point pointTaggedText() throws ParseException {
-    DirectPosition p;
+  final public IPoint pointTaggedText() throws ParseException {
+    IDirectPosition p;
     this.jj_consume_token(13);
     switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
       case 14:
@@ -772,8 +783,8 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public GM_MultiPoint multipointTaggedText() throws ParseException {
-    GM_MultiPoint mp;
+  final public IMultiPoint multipointTaggedText() throws ParseException {
+    IMultiPoint mp;
     this.jj_consume_token(16);
     switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
       case 14:
@@ -808,8 +819,8 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public GM_LineString linestringTaggedText() throws ParseException {
-    GM_LineString lineString;
+  final public ILineString linestringTaggedText() throws ParseException {
+    ILineString lineString;
     this.jj_consume_token(17);
     switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
       case 14:
@@ -844,8 +855,9 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public GM_MultiCurve multilinestringTaggedText() throws ParseException {
-    GM_MultiCurve multiLineString;
+  @SuppressWarnings("rawtypes")
+  final public IMultiCurve multilinestringTaggedText() throws ParseException {
+    IMultiCurve multiLineString;
     this.jj_consume_token(18);
     switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
       case 14:
@@ -880,8 +892,8 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public GM_Polygon polygonTaggedText() throws ParseException {
-    GM_Polygon poly;
+  final public IPolygon polygonTaggedText() throws ParseException {
+    IPolygon poly;
     this.jj_consume_token(19);
     switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
       case 14:
@@ -916,8 +928,9 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public GM_MultiSurface multipolygonTaggedText() throws ParseException {
-    GM_MultiSurface mp;
+  @SuppressWarnings("rawtypes")
+  final public IMultiSurface multipolygonTaggedText() throws ParseException {
+    IMultiSurface mp;
     this.jj_consume_token(20);
     switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
       case 14:
@@ -952,9 +965,9 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public GM_Aggregate geometrycollectionTaggedText()
-      throws ParseException {
-    GM_Aggregate o;
+  @SuppressWarnings("rawtypes")
+  final public IAggregate geometrycollectionTaggedText() throws ParseException {
+    IAggregate o;
     this.jj_consume_token(21);
     o = this.geometrycollectionText();
     try {
@@ -969,32 +982,8 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public int sridText() throws ParseException {
-    Token srid;
-    this.jj_consume_token(22);
-    srid = this.jj_consume_token(WktGeOxygeneConstants.CONSTANT);
-    this.jj_consume_token(23);
-    StringTokenizer tkz = new StringTokenizer(srid.image);
-    String str = tkz.nextToken();
-    {
-      if (true) {
-        return Integer.parseInt(str);
-      }
-    }
-    throw new Error("Missing return statement in function");
-  }
-
-  final public GM_Object geometryTaggedText() throws ParseException {
-    GM_Object o;
-    int srid = -1;
-    switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
-      case 22:
-        srid = this.sridText();
-        break;
-      default:
-        this.jj_la1[25] = this.jj_gen;
-        ;
-    }
+  final public IGeometry geometryTaggedText() throws ParseException {
+    IGeometry o;
     switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
       case 13:
         o = this.pointTaggedText();
@@ -1018,14 +1007,11 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
         o = this.geometrycollectionTaggedText();
         break;
       default:
-        this.jj_la1[26] = this.jj_gen;
+        this.jj_la1[25] = this.jj_gen;
         this.jj_consume_token(-1);
         throw new ParseException();
     }
     try {
-      if (srid != -1) {
-        o.setCRS(srid);
-      }
       {
         if (true) {
           return o;
@@ -1037,9 +1023,9 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public GM_Object parseOneLine() throws ParseException, EmptyLine,
+  final public IGeometry parseOneLine() throws ParseException, EmptyLine,
       EndOfFile {
-    GM_Object o;
+    IGeometry o;
     switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
       case 13:
       case 16:
@@ -1048,7 +1034,6 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       case 19:
       case 20:
       case 21:
-      case 22:
         o = this.geometryTaggedText();
         switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
           case EOL:
@@ -1123,7 +1108,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     WktGeOxygene.jj_la1_0 = new int[] { 0xa00, 0x1000, 0xa00, 0x1000, 0xa00,
         0x1000, 0xa00, 0x1000, 0xa00, 0x1000, 0xa00, 0x1000, 0xa00, 0xc000,
         0xc000, 0xc000, 0xc000, 0xc000, 0xc000, 0xc000, 0xc000, 0xc000, 0xc000,
-        0xc000, 0xc000, 0x400000, 0x3f2000, 0x41, 0x7f2041, };
+        0xc000, 0xc000, 0x3f2000, 0x41, 0x7f2041, };
   }
 
   /** Constructor with InputStream. */
@@ -1264,7 +1249,8 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     }
   }
 
-  private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
+  @SuppressWarnings("rawtypes")
+  private java.util.List jj_expentries = new java.util.ArrayList();
   private int[] jj_expentry;
   private int jj_kind = -1;
 
@@ -1294,7 +1280,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
     }
     int[][] exptokseq = new int[this.jj_expentries.size()][];
     for (int i = 0; i < this.jj_expentries.size(); i++) {
-      exptokseq[i] = this.jj_expentries.get(i);
+      exptokseq[i] = (int[]) this.jj_expentries.get(i);
     }
     return new ParseException(this.token, exptokseq,
         WktGeOxygeneConstants.tokenImage);

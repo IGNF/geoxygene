@@ -27,8 +27,10 @@
 
 package fr.ign.cogit.geoxygene.spatial.geomprim;
 
-import java.util.List;
+import java.util.ArrayList;
 
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IShell;
 import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeSurface;
 
 /**
@@ -39,15 +41,14 @@ import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeSurface;
  * @author Arnaud Braun
  */
 
-public class GM_Shell extends GM_CompositeSurface {
+public class GM_Shell extends GM_CompositeSurface implements IShell {
 
   /**
    * Permet de créer un Shell à partir d'une liste de face ATTENTION : Ne permet
    * pas de vérifier qu'il s'agit d'un objet fermé
-   * 
    * @param lOS la liste des facettes composant la surface
    */
-  public GM_Shell(List<GM_OrientableSurface> lOS) {
+  public GM_Shell(ArrayList<IOrientableSurface> lOS) {
     super();
     this.setListeFaces(lOS);
   }
@@ -65,16 +66,16 @@ public class GM_Shell extends GM_CompositeSurface {
    * 
    * @return la liste des facettes composant la surface
    */
-  public List<GM_OrientableSurface> getlisteFaces() {
-    return this.getGenerator();
+  @Override
+  public ArrayList<IOrientableSurface> getlisteFaces() {
+    return (ArrayList<IOrientableSurface>) this.getGenerator();
   }
 
   /**
    * Renseigne la liste des facettes composant la surface
-   * 
    * @param lOS la liste des facettes composant la surface
    */
-  private void setListeFaces(List<GM_OrientableSurface> lOS) {
+  private void setListeFaces(ArrayList<IOrientableSurface> lOS) {
     this.generator.clear();
     this.generator.addAll(lOS);
   }

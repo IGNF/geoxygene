@@ -32,9 +32,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolidBoundary;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 
 /**
  * NON UTILISE. Object géométrique de base en 3D.
@@ -44,7 +48,7 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
  * 
  */
 
-public class GM_Solid extends GM_Primitive {
+public class GM_Solid extends GM_Primitive implements ISolid {
   static Logger logger = Logger.getLogger(GM_Solid.class.getName());
 
   /**
@@ -54,39 +58,31 @@ public class GM_Solid extends GM_Primitive {
   @Override
   public double area() {
     GM_Solid.logger
-        .error("Non implémentée, utiliser : return CalculSansJava3D.CalculAire(this); (renvoi 0.0)"); //$NON-NLS-1$
+        .error("Non implémentée, utiliser : return CalculSansJava3D.CalculAire(this); (renvoi 0.0)");
     return 0.0;
   }
 
   @Override
-  public DirectPositionList coord() {
-    List<GM_OrientableSurface> lFaces = this.getFacesList();
-
+  public IDirectPositionList coord() {
+    List<IOrientableSurface> lFaces = this.getListeFacettes();
     int n = lFaces.size();
-
     DirectPositionList dPL = new DirectPositionList();
 
     for (int i = 0; i < n; i++) {
-      GM_OrientableSurface os = lFaces.get(i);
+      IOrientableSurface os = lFaces.get(i);
       dPL.addAll(os.coord());
-
     }
 
-    int nbInt = this.boundary().interior.size();
-
+    int nbInt = this.boundary().getInterior().size();
     for (int i = 0; i < nbInt; i++) {
-
-      lFaces = this.boundary().interior.get(i).getlisteFaces();
+      lFaces = this.boundary().getInterior().get(i).getlisteFaces();
       n = lFaces.size();
 
       for (int j = 0; j < n; j++) {
-        GM_OrientableSurface os = lFaces.get(j);
+        IOrientableSurface os = lFaces.get(j);
         dPL.addAll(os.coord());
-
       }
-
     }
-
     return dPL;
   }
 
@@ -95,12 +91,9 @@ public class GM_Solid extends GM_Primitive {
    * Volume.
    */
   public double volume() {
-
     GM_Solid.logger
-        .error("Non implémentée, utiliser : return CalculSansJava3D.CalculVolume(this);"); //$NON-NLS-1$
-
+        .error("Non implémentée, utiliser : return CalculSansJava3D.CalculVolume(this);");
     return 0.0;
-
   }
 
   /** Constructeur par défaut. */
@@ -110,7 +103,7 @@ public class GM_Solid extends GM_Primitive {
   /**
    * Constructeur à partir de la frontière.
    */
-  public GM_Solid(GM_SolidBoundary bdy) {
+  public GM_Solid(ISolidBoundary bdy) {
     this.boundary = bdy;
   }
 
@@ -118,41 +111,35 @@ public class GM_Solid extends GM_Primitive {
    * NON IMPLEMENTE. Constructeur à partir d'une enveloppe .
    * @param env une enveloppe
    */
-  public GM_Solid(GM_Envelope env) {
-    GM_Solid.logger.error("NON IMPLEMENTE"); //$NON-NLS-1$
+  public GM_Solid(IEnvelope env) {
+    GM_Solid.logger.error("NON IMPLEMENTE");
   }
 
-  /**
-   * Redéfinition de l'opérateur "boundary" sur GM_Object. Renvoie une
-   * GM_SolidBoundary, c'est-à-dire un shell extérieur et éventuellement un
-   * (des) shell(s) intérieur(s).
-   */
-  public GM_SolidBoundary boundary() {
+  @Override
+  public ISolidBoundary boundary() {
     return this.boundary;
   }
 
   /**
    * Boundary auquel est lié le solide
    */
-  protected GM_SolidBoundary boundary = null;
+  private ISolidBoundary boundary = null;
 
   /**
    * Constructeur à partir d'une liste de faces extérieures
    * @param lOS une liste de faces extérieures
    */
-  public GM_Solid(List<GM_OrientableSurface> lOS) {
-
+  public GM_Solid(ArrayList<IOrientableSurface> lOS) {
     this.boundary = new GM_SolidBoundary(lOS);
-
   }
 
   /**
    * Constructeur
    * @param multiSurf multisurface
    */
-  public GM_Solid(GM_MultiSurface<? extends GM_OrientableSurface> multiSurf) {
-    List<GM_OrientableSurface> lOS = new ArrayList<GM_OrientableSurface>();
-    List<? extends GM_OrientableSurface> lGMObj = multiSurf.getList();
+  public GM_Solid(IMultiSurface<? extends IOrientableSurface> multiSurf) {
+    ArrayList<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>();
+    List<? extends IOrientableSurface> lGMObj = multiSurf.getList();
     int nbElements = lGMObj.size();
     for (int i = 0; i < nbElements; i++) {
       lOS.add(lGMObj.get(i));
@@ -160,31 +147,22 @@ public class GM_Solid extends GM_Primitive {
     this.boundary = new GM_SolidBoundary(lOS);
   }
 
-  /**
-   * Renvoie la liste des faces extérieures d'un solide
-   * 
-   * @return la liste des faces extérieures d'un solide
-   */
-  public List<GM_OrientableSurface> getFacesList() {
-    return this.boundary().exterior.getlisteFaces();
+  public ArrayList<IOrientableSurface> getListeFacettes() {
+    return this.boundary().getExterior().getlisteFaces();
   }
 
-  /**
-   * Permet de renvoyer une chaine de caractére décrivant un solide
-   */
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
 
-    List<GM_OrientableSurface> lOS = this.getFacesList();
+    ArrayList<IOrientableSurface> lOS = this.getListeFacettes();
     int nbElement = lOS.size();
-    sb.append("Solid("); //$NON-NLS-1$
+    sb.append("Solid(");
     for (int i = 0; i < nbElement; i++) {
       sb.append(lOS.get(i).toString());
-      sb.append("\n"); //$NON-NLS-1$
+      sb.append("\n");
     }
-    sb.append(");"); //$NON-NLS-1$
+    sb.append(");");
     return sb.toString();
   }
-
 }

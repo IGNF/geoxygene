@@ -27,36 +27,43 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPointRef;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPosition;
+
 /**
- * NON UTILISE. Permet d'obtenir un point soit par ses coordonnees (direct),
- * soit par le type geometrique GM_Point (indirect). L'un de ces deux attributs
- * doit etre nul.
+ * Permet d'obtenir un point soit par ses coordonnées (direct), soit par le type
+ * géométrique GM_Point (indirect). L'un de ces deux attributs doit être nul.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
  * 
  */
-class GM_Position {
+public class GM_Position implements IPosition {
+
   /**
    * DirectPosition du point.
    */
-  protected DirectPosition direct;
+  protected IDirectPosition direct;
 
-  public GM_Position(DirectPosition controlPoint) {
-    this.direct = controlPoint;
-  }
-
-  public DirectPosition getDirect() {
+  public IDirectPosition getDirect() {
     return this.direct;
   }
 
   /**
-   * Reference vers la geometrie du point.
+   * Référence vers la géométrie du point.
    */
-  protected GM_PointRef indirect;
+  protected IPointRef indirect;
 
-  public GM_PointRef getIndirect() {
+  public IPointRef getIndirect() {
     return this.indirect;
+  }
+
+  /**
+   * @param direct
+   */
+  public GM_Position(IDirectPosition direct) {
+    this.direct = direct;
   }
 
 }

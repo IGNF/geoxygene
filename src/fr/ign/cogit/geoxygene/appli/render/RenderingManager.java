@@ -20,92 +20,61 @@
 package fr.ign.cogit.geoxygene.appli.render;
 
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.swing.Timer;
+
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
  * A rendering manager responsible for rendering layers in a
  * {@link LayerViewPanel}.
+ * 
  * @author Julien Perret
  */
 public class RenderingManager {
+  static Logger logger = Logger.getLogger(RenderingManager.class.getName());
   /**
-   * The logger.
-   */
-  private static final Logger LOGGER = Logger.getLogger(RenderingManager.class
-      .getName());
-
-  /**
-   * @return The logger
-   */
-  public static Logger getLogger() {
-    return RenderingManager.LOGGER;
-  }
-
-  /**
-   * The managed {@link LayerViewPanel} panel.
+   * The managed {@link LayerViewPanel} panel
    */
   private LayerViewPanel layerViewPanel = null;
-
-  /**
-   * Set the managed {@link LayerViewPanel} panel.
-   * @param aLayerViewPanel the managed {@link LayerViewPanel} panel.
-   */
-  public final void setLayerViewPanel(final LayerViewPanel aLayerViewPanel) {
-    this.layerViewPanel = aLayerViewPanel;
-  }
-
-  /**
-   * @return The managed {@link LayerViewPanel} panel.
-   */
-  public final LayerViewPanel getLayerViewPanel() {
-    return this.layerViewPanel;
-  }
-
   /**
    * Insertion-ordered map between a layer and its renderer.
    */
-  private LinkedHashMap<Layer, LayerRenderer> rendererMap = new LinkedHashMap<Layer, LayerRenderer>();
+  LinkedHashMap<Layer, LayerRenderer> rendererMap = new LinkedHashMap<Layer, LayerRenderer>();
+  SelectionRenderer selectionRenderer = null;
   /**
-   * The selection renderer used to render the selected features.
-   */
-  private SelectionRenderer selectionRenderer = null;
-
-  /**
-   * @return The selection renderer used to render the selected features
-   */
-  public SelectionRenderer getSelectionRenderer() {
-    return this.selectionRenderer;
-  }
-
-  /**
-   * The current daemon.
+   * The current daemon
    */
   private Thread daemon = null;
   /**
-   * Maximum time a daemon waits for a runnable to be added to the queue.
+   * Maximum time a daemon waits for a runnable to be added to the queue
    */
   public static final long DAEMON_MAXIMUM_WAITING_TIME = 5000L;
+  /**
+   * Time between 2 repaintings of the panel during the rendering
+   */
+  private int repaintTimerDelay = 400;
+  /**
+   * Deque of layers
+   */
   /**
    * Queue containg the runnables, one for each layer.
    */
   private LinkedBlockingQueue<Runnable> runnableQueue = new LinkedBlockingQueue<Runnable>();
 
   /**
-   * @return The queue containg the runnables, one for each layer.
-   */
-  public final LinkedBlockingQueue<Runnable> getRunnableQueue() {
-    return this.runnableQueue;
-  }
-
-  /**
    * Create a new daemon.
+   * 
    * @return the new daemon
    * @see Thread
    */
@@ -116,24 +85,19 @@ public class RenderingManager {
         try {
           for (;;) {
             Runnable runnable;
-            synchronized (RenderingManager.this.getRunnableQueue()) {
-              if (RenderingManager.this.getRunnableQueue().isEmpty()) {
+            synchronized (RenderingManager.this.runnableQueue) {
+              if (RenderingManager.this.runnableQueue.isEmpty()) {
                 try {
-                  RenderingManager.this.getRunnableQueue().wait(
-                      RenderingManager.DAEMON_MAXIMUM_WAITING_TIME);
+                  RenderingManager.this.runnableQueue
+                      .wait(RenderingManager.DAEMON_MAXIMUM_WAITING_TIME);
                 } catch (InterruptedException ie) {
-                  if (RenderingManager.getLogger().isTraceEnabled()) {
-                    RenderingManager.getLogger().trace(ie.getMessage());
-                    // ie.printStackTrace();
-                  }
                 }
               }
-              runnable = RenderingManager.this.getRunnableQueue().poll();
-              if (RenderingManager.getLogger().isTraceEnabled()) {
-                RenderingManager.getLogger().trace(
-                    RenderingManager.this.getRunnableQueue().size()
-                        + " runnables in the queue" //$NON-NLS-1$
-                );
+              runnable = RenderingManager.this.runnableQueue.poll();
+              if (RenderingManager.logger.isDebugEnabled()) {
+                RenderingManager.logger
+                    .debug(RenderingManager.this.runnableQueue.size()
+                        + " runnables in the queue"); //$NON-NLS-1$
               }
               if (runnable == null) {
                 return;
@@ -146,10 +110,6 @@ public class RenderingManager {
             }
           }
         } finally {
-          if (RenderingManager.getLogger().isTraceEnabled()) {
-            RenderingManager.getLogger().trace("Deamon thread finished"); //$NON-NLS-1$
-          }
-          //RenderingManager.this.getLayerViewPanel().superRepaint();
         }
       }
     };
@@ -158,27 +118,57 @@ public class RenderingManager {
   }
 
   /**
+   * The repaint timer used to repaint the panel during the rendering. It allows
+   * for a progressive rendering.
+   * 
+   * @see Timer
+   */
+  private Timer repaintTimer = new Timer(this.repaintTimerDelay,
+      new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          for (Renderer renderer : RenderingManager.this.getRenderers()) {
+            // while a layer is being rendered, repaint the
+            // panel
+            if (renderer.isRendering()) {
+              RenderingManager.this.layerViewPanel.superRepaint();
+              return;
+            }
+          }
+          // when no more layer is being rendered, stop the timer
+          RenderingManager.this.repaintTimer.stop();
+          // repaint the panel
+          RenderingManager.this.layerViewPanel.superRepaint();
+        }
+      });
+
+  /**
    * Constructor of Rendering manager.
+   * 
    * @param theLayerViewPanel the panel the rendering manager draws into
    */
-  public RenderingManager(final LayerViewPanel theLayerViewPanel) {
-    this.setLayerViewPanel(theLayerViewPanel);
+  public RenderingManager(LayerViewPanel theLayerViewPanel) {
+    this.layerViewPanel = theLayerViewPanel;
+    // set the repaint timer to coalesce multiple pending events in case the
+    // application does not keep up
+    this.repaintTimer.setCoalesce(true);
     this.selectionRenderer = new SelectionRenderer(theLayerViewPanel);
   }
 
   /**
-   * Return the collection of managed renderers.
+   * Return the collection of managed renderers
+   * 
    * @return the collection of managed renderers
    * @see LayerRenderer
    */
-  public final Collection<LayerRenderer> getRenderers() {
+  private Collection<LayerRenderer> getRenderers() {
     return this.rendererMap.values();
   }
 
   /**
-   * Render all managed layers.
+   * Render all managed layers
    */
-  public final void renderAll() {
+  public void renderAll() {
     // if the daemon is still alive, interrupt it
     if ((this.daemon != null) && this.daemon.isAlive()) {
       synchronized (this.daemon) {
@@ -188,60 +178,52 @@ public class RenderingManager {
     // create a new daemon
     this.daemon = this.createDaemon();
     // clear the queue of runnables
-    this.getRunnableQueue().clear();
+    this.runnableQueue.clear();
     // start the new daemon
     this.daemon.start();
     // render all layers
-    for (Layer layer : this.getLayerViewPanel().getProjectFrame().getSld()
-        .getLayers()) {
-      if (layer.isVisible()) {
-        this.render(this.rendererMap.get(layer));
-      }
+    for (Renderer renderer : this.rendererMap.values()) {
+      this.render(renderer);
     }
     this.render(this.selectionRenderer);
   }
 
   /**
    * Add a new layer to the manager and create the corresponding renderer.
+   * 
    * @param layer the new layer to manage and render
    * @see Layer
    * @see LayerRenderer
    */
-  public final void addLayer(final Layer layer) {
+  public void addLayer(Layer layer) {
     if (this.rendererMap.get(layer) == null) {
-      LayerRenderer renderer = new LayerRenderer(layer, this
-          .getLayerViewPanel());
-      this.rendererMap.put(layer, renderer);
-      // Adding the layer legend panel to the listeners of the renderer
-      renderer.addActionListener(this.getLayerViewPanel().getProjectFrame()
-          .getLayerLegendPanel());
+      this.rendererMap.put(layer, new LayerRenderer(layer, layer
+          .getFeatureCollection(), this.layerViewPanel));
     }
   }
 
   /**
-   * Remove a layer from the manager.
-   * @param layer the layer to remove
+   * Remove a layer from the manager and the corresponding renderer.
+   * 
+   * @param layer the new layer to manage and render
    * @see Layer
    * @see LayerRenderer
    */
-  public final void removeLayer(final Layer layer) {
-    if (this.rendererMap.get(layer) == null) {
-      return;
+  public void removeLayer(Layer layer) {
+    if (this.rendererMap.get(layer) != null) {
+      this.rendererMap.remove(layer);
     }
-    this.rendererMap.remove(layer);
   }
-
+  
   /**
-   * Render a layer using the given renderer.
+   * Render a layer using the given renderer
+   * 
    * @param renderer the renderer to run
    * @see LayerRenderer
    */
-  public void render(final Renderer renderer) {
-    // if the renderer is already rendering, interrupt the current
-    // rendering to start a new one
-    if (renderer == null) {
-      return;
-    }
+  public void render(Renderer renderer) {
+    // if the renderer is already rendering, interrupt the current rendering
+    // to start a new one
     if (renderer.isRendering()) {
       renderer.cancel();
     }
@@ -250,54 +232,42 @@ public class RenderingManager {
     // create a new runnable for the rendering
     Runnable runnable = renderer.createRunnable();
     if (runnable != null) {
-      synchronized (this.getRunnableQueue()) {
+      synchronized (this.runnableQueue) {
         // add it to the queue
-        this.getRunnableQueue().add(runnable);
-        // notify the queue which should wake the daemon up as it
-        // should be waiting on it
-        this.getRunnableQueue().notify();
+        this.runnableQueue.add(runnable);
+        // notify the queue which should wake the daemon up as it should
+        // be waiting on it
+        this.runnableQueue.notify();
       }
+    }
+    // if the repaint timer is not running yet, start it
+    if (!this.repaintTimer.isRunning()) {
+      // repaint the panel
+      this.layerViewPanel.superRepaint();
+      // start the timer
+      this.repaintTimer.start();
     }
   }
 
   /**
-   * Render a layer.
-   * @param layerName the name of the layer to run
-   * @see LayerRenderer
-   */
-  public void render(final String layerName) {
-    for (Layer layer : this.getLayers()) {
-      if (layer.getName().equalsIgnoreCase(layerName.toLowerCase())) {
-        this.render(this.getRenderer(layer));
-        return;
-      }
-    }
-  }
-
-  /**
-   * Return the collection of managed layers in the same order they were added.
+   * Return the collection of managed layers in the same order they were added
+   * 
    * @return the collection of managed layers
    * @see Layer
    */
-  public final Collection<Layer> getLayers() {
+  public Collection<Layer> getLayers() {
     return this.rendererMap.keySet();
-  }
-
-  public final Renderer getRenderer(Layer layer) {
-    return this.rendererMap.get(layer);
   }
 
   /**
    * Copy the rendered images to a 2D graphics in the same order the layers were
-   * added to the manager.
+   * added to the manager
+   * 
    * @param destination a 2D graphics to copy the images to
    */
-  public final void copyTo(final Graphics2D destination) {
-    for (Layer layer : this.getLayerViewPanel().getProjectFrame().getSld()
-        .getLayers()) {
-      if (layer.isVisible()) {
-        this.rendererMap.get(layer).copyTo(destination);
-      }
+  public void copyTo(Graphics2D destination) {
+    for (Layer layer : this.rendererMap.keySet()) {
+      this.rendererMap.get(layer).copyTo(destination);
     }
     this.selectionRenderer.copyTo(destination);
   }
@@ -305,9 +275,10 @@ public class RenderingManager {
   /**
    * Dispose of the manager. Cleans up all threads, renderers, daemons, etc.
    */
-  public final void dispose() {
+  public void dispose() {
     this.rendererMap.clear();
-    this.getRunnableQueue().clear();
+    this.repaintTimer.stop();
+    this.runnableQueue.clear();
     if (this.daemon != null) {
       synchronized (this.daemon) {
         this.daemon.interrupt();
@@ -315,51 +286,71 @@ public class RenderingManager {
     }
   }
 
-  public void repaint() {
-    if (RenderingManager.LOGGER.isTraceEnabled()) {
-      RenderingManager.LOGGER.trace(this.getRenderers().size() + " renderers"); //$NON-NLS-1$
-    }
-    // we check if there is still something being rendererd
-    // the fastest way is to check for renderers in the queue
-    if (!this.getRunnableQueue().isEmpty()) {
+  /**
+   * @param layer
+   * @param feature
+   */
+  public void render(Layer layer, IFeature feature) {
+    Renderer renderer = this.rendererMap.get(layer);
+    // if the renderer is not already finished, do nothing
+    if (!renderer.isRendered()) {
       return;
     }
-    // then we check if there is still a renderer working
-    for (Renderer r : this.getRenderers()) {
-      if (r.isRendering() || !r.isRendered()) {
-        RenderingManager.LOGGER.debug("Renderer " + r.isRendering() + " - " //$NON-NLS-1$ //$NON-NLS-2$
-            + r.isRendered());
-        return;
+    // create a new runnable for the rendering
+    Runnable runnable = renderer.createFeatureRunnable(feature);
+    if (runnable != null) {
+      synchronized (this.runnableQueue) {
+        // add it to the queue
+        this.runnableQueue.add(runnable);
+        // notify the queue which should wake the daemon up as it should
+        // be waiting on it
+        this.runnableQueue.notify();
       }
     }
-    if (this.selectionRenderer != null
-        && (this.selectionRenderer.isRendering() || !this.selectionRenderer
-            .isRendered())) {
-      if (RenderingManager.LOGGER.isTraceEnabled()) {
-        RenderingManager.LOGGER.trace("Renderer " //$NON-NLS-1$
-            + this.selectionRenderer.isRendering() + " - " //$NON-NLS-1$
-            + this.selectionRenderer.isRendered());
-      }
-      return;
+    // if the repaint timer is not running yet, start it
+    if (!this.repaintTimer.isRunning()) {
+      // repaint the panel
+      this.layerViewPanel.superRepaint();
+      // start the timer
+      this.repaintTimer.start();
     }
-    if (RenderingManager.LOGGER.isTraceEnabled()) {
-      RenderingManager.LOGGER.trace("Repaint"); //$NON-NLS-1$
-    }
-    // nothing is being rendered, we can actually repaint the panel
-    RenderingManager.this.getLayerViewPanel().superRepaint();
   }
-  public boolean isRendering() {
-    // we check if there is still something being rendererd
-    // the fastest way is to check for renderers in the queue
-    if (!this.getRunnableQueue().isEmpty()) {
-      return true;
+
+  /**
+   * @param layer
+   * @param geom
+   */
+  public void render(Layer layer, IGeometry geom) {
+    Renderer renderer = this.rendererMap.get(layer);
+    // if the renderer is not already finished, do nothing
+    if (!renderer.isRendered()) {
+      return;
     }
-    // then we check if there is still a renderer working
-    for (Renderer r : this.getRenderers()) {
-      if (r.isRendering() || !r.isRendered()) {
-        return true;
+    // create a new runnable for the rendering
+    Runnable runnable = renderer.createLocalRunnable(geom);
+    if (runnable != null) {
+      synchronized (this.runnableQueue) {
+        // add it to the queue
+        this.runnableQueue.add(runnable);
+        // notify the queue which should wake the daemon up as it should
+        // be waiting on it
+        this.runnableQueue.notify();
       }
     }
-    return false;
+    // if the repaint timer is not running yet, start it
+    if (!this.repaintTimer.isRunning()) {
+      // repaint the panel
+      this.layerViewPanel.superRepaint();
+      // start the timer
+      this.repaintTimer.start();
+    }
+  }
+
+  public Renderer getRenderer(Layer l) {
+    return this.rendererMap.get(l);
+  }
+
+  public Renderer getSelectionRenderer() {
+    return selectionRenderer;
   }
 }

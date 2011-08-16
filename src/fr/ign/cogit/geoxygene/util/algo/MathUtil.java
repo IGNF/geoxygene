@@ -1,22 +1,29 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
-
 package fr.ign.cogit.geoxygene.util.algo;
 
 import java.util.List;
@@ -24,6 +31,7 @@ import java.util.List;
 /**
  * Fonctions mathématiques utilitaires
  * @author Julien Perret
+ * @author Julien Gaffuri: ajout norme Np (24/06/2009)
  */
 public class MathUtil {
 
@@ -38,7 +46,7 @@ public class MathUtil {
     }
     double somme = 0.0;
     for (Double val : liste) {
-      somme += val.doubleValue();
+      somme += val;
     }
     return somme / liste.size();
   }
@@ -54,7 +62,7 @@ public class MathUtil {
     }
     double somme = 0.0;
     for (Double val : liste) {
-      somme += val.doubleValue() * val.doubleValue();
+      somme += val * val;
     }
     return somme / liste.size();
   }
@@ -106,7 +114,7 @@ public class MathUtil {
     }
     double min = Double.MAX_VALUE;
     for (Double val : liste) {
-      min = Math.min(min, val.doubleValue());
+      min = Math.min(min, val);
     }
     return min;
   }
@@ -122,7 +130,7 @@ public class MathUtil {
     }
     double max = -Double.MAX_VALUE;
     for (Double val : liste) {
-      max = Math.max(max, val.doubleValue());
+      max = Math.max(max, val);
     }
     return max;
   }
@@ -139,7 +147,31 @@ public class MathUtil {
     }
     Double[] listeTriee = liste.toArray(new Double[0]);
     java.util.Arrays.sort(listeTriee);
-    return listeTriee[liste.size() / 2].doubleValue();
+    return listeTriee[liste.size() / 2];
+  }
+
+  /**
+   * Calcul de norme Np
+   * @param liste
+   * @param p
+   * @return
+   */
+  public static double normeP(List<Double> liste, double p) {
+    double somme = 0;
+    for (Double d : liste) {
+      somme += Math.pow(d.doubleValue(), p);
+    }
+    return Math.pow(somme, 1 / p);
+  }
+
+  /**
+   * Calcul de la moyenne p
+   * @param liste
+   * @param p
+   * @return
+   */
+  public static double moyenneP(List<Double> liste, double p) {
+    return MathUtil.normeP(liste, p) / Math.pow(liste.size(), 1 / p);
   }
 
   /**

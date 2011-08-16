@@ -27,10 +27,13 @@
 
 package fr.ign.cogit.geoxygene.spatial.geomprim;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurveBoundary;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 
 /**
- * Courbe orientée. L'orientation traduit le sens de paramètrisation. Utilisée
+ * Courbe orientée. L'orientation traduit le sens de paramétrisation. Utilisée
  * comme frontière d'une surface, la surface dont la courbe est frontière est à
  * gauche de la courbe. Si l'orientation est +1, alors self est une GM_Curve, de
  * primitive elle-même. Si l'orientation est -1, alors self est une
@@ -46,13 +49,14 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
  * 
  */
 
-public class GM_OrientableCurve extends GM_OrientablePrimitive {
+public class GM_OrientableCurve extends GM_OrientablePrimitive implements
+    IOrientableCurve {
 
   /** Primitive */
-  public GM_Curve primitive;
+  public ICurve primitive;
 
   /** Renvoie la primitive de self */
-  public GM_Curve getPrimitive() {
+  public ICurve getPrimitive() {
     return this.primitive;
   }
 
@@ -61,41 +65,37 @@ public class GM_OrientableCurve extends GM_OrientablePrimitive {
    * celle orientée positivement. Proxy[1] est celle orientée négativement. On
    * accède aux primitives orientées par getPositive() et getNegative().
    */
-  // public GM_OrientableCurve[] proxy = new GM_OrientableCurve[2];
+  public IOrientableCurve[] proxy = new IOrientableCurve[2];
 
   /** Renvoie la primitive orientée positivement correspondant à self. */
-  public GM_OrientableCurve getPositive() {
-    return this.primitive;
-  }// proxy[0];}
-
-  /** Renvoie la primitive orientée négativement correspondant à self. */
-  public GM_OrientableCurve getNegative() {
-    return null;
-    /*
-     * GM_Curve proxy1prim = this.proxy[1].primitive;
-     * proxy1prim.getSegment().clear(); GM_Curve proxy0 =
-     * (GM_Curve)this.proxy[1].proxy[0]; int n = proxy0.sizeSegment(); if (n>1)
-     * for (int i=0; i<n; i++)
-     * proxy1prim.addSegment(proxy0.getSegment(n-1-i).reverse()); else if (n==1)
-     * // Braun - 14/06/02 : modif ajoutee suite a l'heritage de GM_CurveSegment
-     * sur GM_Curve proxy1prim.segment.add(proxy0.getSegment(0).reverse());
-     * return this.proxy[1];
-     */
+  public IOrientableCurve getPositive() {
+    return this.proxy[0];
   }
 
-  /**
-   * Redéfinition de l'opérateur "boundary" sur GM_Object. Renvoie une
-   * GM_CurveBoundary, c'est-à-dire deux GM_Point.
-   */
-  public GM_CurveBoundary boundary() {
-    GM_Curve prim = this.getPrimitive();
+  public IOrientableCurve getNegative() {
+    ICurve proxy1prim = this.proxy[1].getPrimitive();
+    proxy1prim.getSegment().clear();
+    ICurve proxy0 = (ICurve) this.proxy[1].getPositive();
+    int n = proxy0.sizeSegment();
+    if (n > 1) {
+      for (int i = 0; i < n; i++) {
+        proxy1prim.addSegment(proxy0.getSegment(n - 1 - i).reverse());
+      }
+    } else if (n == 1) {
+      proxy1prim.getSegment().add(proxy0.getSegment(0).reverse());
+    }
+    return this.proxy[1];
+  }
+
+  @Override
+  public ICurveBoundary boundary() {
+    ICurve prim = this.getPrimitive();
     GM_CurveBoundary bdy = new GM_CurveBoundary(prim);
     return bdy;
   }
 
-  /** Renvoie les coordonnees de la primitive. */
   @Override
-  public DirectPositionList coord() {
+  public IDirectPositionList coord() {
     return this.getPrimitive().coord();
   }
 

@@ -98,6 +98,6 @@ public class MyClass {
 
   /** Affiche "bonjour". */
   public void bonjour() {
-    System.out.println("bonjour"); //$NON-NLS-1$
+    System.out.println("bonjour");
   }
 }

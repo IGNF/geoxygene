@@ -29,8 +29,8 @@ package fr.ign.cogit.geoxygene.gui;
 
 import java.awt.Graphics2D;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 
 /**
  * @author Julien Perret
@@ -39,25 +39,25 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 public interface Dessinable {
 
   /**
-   * géometrie en coordonnées Géographiques de la fenetre d'affichage du cadre :
+   * Géometrie en coordonnées géographiques de la fenetre d'affichage du cadre :
    * tous les objets intersectant ce cadre seront affichés
-   * @return géometrie en coordonnées Géographiques de la fenetre d'affichage du
+   * @return Géometrie en coordonnées géographiques de la fenetre d'affichage du
    *         cadre
    */
-  public GM_Envelope getEnveloppeAffichage();
+  public IEnvelope getEnveloppeAffichage();
 
   /**
-   * @return the center of this Dessinalble in Model coordinates
+   * @return
    */
-  public DirectPosition getCentreGeo();
+  public IDirectPosition getCentreGeo();
 
   /**
    * @param centreGeo
    */
-  public void setCentreGeo(DirectPosition centreGeo);
+  public void setCentreGeo(IDirectPosition centreGeo);
 
   /**
-   * @return the size of one pixel in meters
+   * @return
    */
   public double getTaillePixel();
 

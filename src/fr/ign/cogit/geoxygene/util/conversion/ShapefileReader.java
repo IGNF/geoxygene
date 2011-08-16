@@ -1,21 +1,29 @@
-/*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
+/*******************************************************************************
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
+ *******************************************************************************/
 
 package fr.ign.cogit.geoxygene.util.conversion;
 
@@ -48,12 +56,16 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
+import fr.ign.cogit.geoxygene.api.feature.IDataSet;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
-import fr.ign.cogit.geoxygene.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
@@ -84,13 +96,13 @@ public class ShapefileReader implements Runnable {
       .getName());
   String shapefileName;
   String populationName;
-  DataSet dataset;
+  IDataSet dataset;
   CoordinateReferenceSystem crs;
   SchemaDefaultFeature schemaDefaultFeature;
   FeatureSource<SimpleFeatureType, SimpleFeature> source;
-  Population<DefaultFeature> population;
+  IPopulation<IFeature> population;
   Reader reader = null;
-  
+
   public Reader getReader() {
     return this.reader;
   }
@@ -99,7 +111,7 @@ public class ShapefileReader implements Runnable {
    * Renvoie la population dans laquelle les objets sont chargés.
    * @return la population dans laquelle les objets sont chargés
    */
-  public Population<DefaultFeature> getPopulation() {
+  public IPopulation<IFeature> getPopulation() {
     return this.population;
   }
 
@@ -114,9 +126,9 @@ public class ShapefileReader implements Runnable {
    * 
    * @see #read()
    * @see #read(String)
-   * @see #read(String, String, DataSet, boolean)
+   * @see #read(String, String, IDataSet, boolean)
    * @see #chooseAndReadShapefile()
-   * @see #initSchema(String, SchemaDefaultFeature, Population, boolean)
+   * @see #initSchema(String, SchemaDefaultFeature, IPopulation, boolean)
    * 
    * @param shapefileName nom du fichier à charger
    * @param populationName nom de la population à créer et à l'intérieur de
@@ -126,12 +138,11 @@ public class ShapefileReader implements Runnable {
    *          population et le mettre à jour pendant l'ajout des objets
    */
   public ShapefileReader(String shapefileName, String populationName,
-      DataSet dataset, boolean initSpatialIndex) {
-	
+      IDataSet dataset, boolean initSpatialIndex) {
     this.shapefileName = shapefileName;
     this.populationName = populationName;
     this.dataset = dataset;
-    this.population = new Population<DefaultFeature>(populationName);
+    this.population = new Population<IFeature>(populationName);
     if (dataset != null) {
       dataset.addPopulation(this.population);
     }
@@ -157,13 +168,13 @@ public class ShapefileReader implements Runnable {
    * Pour utiliser le chargement asynchrone, utiliser le constructeur.
    * 
    * @see #read()
-   * @see #read(String, String, DataSet, boolean)
+   * @see #read(String, String, IDataSet, boolean)
    * @see #chooseAndReadShapefile()
    * 
    * @param shapefileName un shapefile
    * @return une population contenant les features contenues dans le fichier.
    */
-  public static Population<DefaultFeature> read(String shapefileName) {
+  public static IPopulation<IFeature> read(String shapefileName) {
     return ShapefileReader.read(shapefileName, false);
   }
 
@@ -174,19 +185,38 @@ public class ShapefileReader implements Runnable {
    * Pour utiliser le chargement asynchrone, utiliser le constructeur.
    * 
    * @see #read()
-   * @see #read(String, String, DataSet, boolean)
+   * @see #read(String, String, IDataSet, boolean)
    * @see #chooseAndReadShapefile()
    * 
    * @param shapefileName un shapefile
    * @return une population contenant les features contenues dans le fichier.
    */
-  public static Population<DefaultFeature> read(String shapefileName,
+  public static IPopulation<IFeature> read2(String shapefileName) {
+    return ShapefileReader.read(shapefileName, shapefileName.substring(
+        shapefileName.lastIndexOf("/") + 1, shapefileName.lastIndexOf(".")),
+        null, false);
+  }
+
+  /**
+   * Lit les features contenus dans le fichier en paramètre. Ce chargement est
+   * synchrone
+   * <p>
+   * Pour utiliser le chargement asynchrone, utiliser le constructeur.
+   * 
+   * @see #read()
+   * @see #read(String, String, IDataSet, boolean)
+   * @see #chooseAndReadShapefile()
+   * 
+   * @param shapefileName un shapefile
+   * @return une population contenant les features contenues dans le fichier.
+   */
+  public static IPopulation<IFeature> read(String shapefileName,
       boolean initSpatialIndex) {
     return ShapefileReader.read(shapefileName, shapefileName.substring(
         shapefileName.lastIndexOf(File.pathSeparator) + 1,
         shapefileName.lastIndexOf(".")), null, initSpatialIndex); //$NON-NLS-1$
   }
-
+  
   /**
    * Lit les features contenus dans le fichier en paramètre et ajoute la
    * population chargée à un dataset. Ce chargement est synchrone Pour utiliser
@@ -197,8 +227,8 @@ public class ShapefileReader implements Runnable {
    * @see #read()
    * @see #read(String)
    * @see #chooseAndReadShapefile()
-   * @see #initSchema(String, SchemaDefaultFeature, Population, boolean)
-   * @see #read(Reader, SchemaDefaultFeature, Population)
+   * @see #initSchema(String, SchemaDefaultFeature, IPopulation, boolean)
+   * @see #read(Reader, SchemaDefaultFeature, IPopulation)
    * 
    * @param shapefileName un shapefile
    * @param populationName non de la population
@@ -207,24 +237,18 @@ public class ShapefileReader implements Runnable {
    *          population.
    * @return une population contenant les features contenues dans le fichier.
    */
-  public static Population<DefaultFeature> read(String shapefileName,
-      String populationName, DataSet dataset, boolean initSpatialIndex) {
+  public static IPopulation<IFeature> read(String shapefileName,
+      String populationName, IDataSet dataset, boolean initSpatialIndex) {
     // creation de la collection de features
-    Population<DefaultFeature> population = new Population<DefaultFeature>(
-        populationName);
+    Population<IFeature> population = new Population<IFeature>(populationName);
     if (dataset != null) {
       dataset.addPopulation(population);
     }
     try {
       SchemaDefaultFeature schemaDefaultFeature = new SchemaDefaultFeature();
-      schemaDefaultFeature.setNom(populationName);
-      schemaDefaultFeature.setNomSchema(populationName);
       /** Initialise le schéma */
       Reader reader = ShapefileReader.initSchema(shapefileName,
           schemaDefaultFeature, population, initSpatialIndex);
-      if (reader == null) {
-        return null;
-      }
       /**
        * Parcours de features du fichier et création de Default features
        * équivalents
@@ -246,16 +270,16 @@ public class ShapefileReader implements Runnable {
 
   /**
    * Ouvre une fenetre (JFileChooser) afin de choisir le fichier et le charge.
-   * Ce chargement est synchrone. Pour utiliser le chargement asynchrone,
+   * Ce chargement est synchrone Pour utiliser le chargement asynchrone,
    * utiliser le constructeur.
    * 
    * @see #read()
    * @see #read(String)
-   * @see #read(String, String, DataSet, boolean)
+   * @see #read(String, String, IDataSet, boolean)
    * 
    * @return une population contenant les features contenues dans le fichier.
    */
-  public static Population<DefaultFeature> chooseAndReadShapefile() {
+  public static IPopulation<IFeature> chooseAndReadShapefile() {
     JFileChooser choixFichierShape = new JFileChooser();
     /**
      * crée un filtre qui n'accepte que les fichier shp ou les répertoires
@@ -263,9 +287,9 @@ public class ShapefileReader implements Runnable {
     choixFichierShape.setFileFilter(new FileFilter() {
       @Override
       public boolean accept(File f) {
-        return (f.isFile() && (f.getAbsolutePath().endsWith(".shp") //$NON-NLS-1$
-            || f.getAbsolutePath().endsWith(".SHP")) //$NON-NLS-1$
-        || f.isDirectory());
+        return (f.isFile()
+            && (f.getAbsolutePath().endsWith(".shp") || f.getAbsolutePath()
+                .endsWith(".SHP")) || f.isDirectory());
       }
 
       @Override
@@ -293,7 +317,7 @@ public class ShapefileReader implements Runnable {
 
   /**
    * Initialise le schéma utilisé pour les nouveaux features.
-   * @see #read(Reader, SchemaDefaultFeature, Population)
+   * @see #read(Reader, SchemaDefaultFeature, IPopulation)
    * @param shapefileName nom du fichier à lire
    * @param schemaDefaultFeature schéma à initialiser
    * @param population population à peupler avec les features
@@ -302,7 +326,7 @@ public class ShapefileReader implements Runnable {
    */
   public static Reader initSchema(String shapefileName,
       SchemaDefaultFeature schemaDefaultFeature,
-      Population<DefaultFeature> population, boolean initSpatialIndex) {
+      IPopulation<IFeature> population, boolean initSpatialIndex) {
     Reader reader = null;
     try {
       reader = new Reader(shapefileName);
@@ -322,16 +346,13 @@ public class ShapefileReader implements Runnable {
     population.setCenter(new DirectPosition((maxX + minX) / 2,
         (maxY + minY) / 2));
     if (ShapefileReader.logger.isTraceEnabled()) {
-      ShapefileReader.logger.trace(I18N
-          .getString("ShapefileReader.SpatialIndexInitialised") //$NON-NLS-1$
-          + minX + "," + maxX + "," //$NON-NLS-1$ //$NON-NLS-2$
-          + minY + "," + maxY); //$NON-NLS-1$
+      ShapefileReader.logger.trace("index spatial initialisé avec " + minX
+          + "," + maxX + "," + minY + "," + maxY);
     }
-    /** créer un featuretype de jeu correspondant */
+    /** Créer un featuretype de jeu correspondant */
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
-    newFeatureType.setTypeName(population.getNom());
     int nbFields = reader.getNbFields();
-    Map<Integer, String[]> attLookup = new HashMap<Integer, String[]>(0);
+    Map<Integer, String[]> attLookup = new HashMap<Integer, String[]>();
     for (int i = 0; i < nbFields; i++) {
       AttributeType type = new AttributeType();
       String nomField = reader.getFieldName(i);
@@ -341,14 +362,13 @@ public class ShapefileReader implements Runnable {
       type.setMemberName(memberName);
       type.setValueType(valueType);
       newFeatureType.addFeatureAttribute(type);
-      attLookup.put(new Integer(i), new String[] { nomField, memberName });
+      attLookup.put(i, new String[] { nomField, memberName });
       if (ShapefileReader.logger.isDebugEnabled()) {
-        ShapefileReader.logger.debug(I18N
-            .getString("ShapefileReader.AddingAttribute") + i //$NON-NLS-1$
-            + " = " + nomField); //$NON-NLS-1$
+        ShapefileReader.logger.debug("Ajout de l'attribut " + i + " = "
+            + nomField);
       }
     }
-    /** création d'un schéma associé au featureType */
+    /** Création d'un schéma associé au featureType */
     newFeatureType
         .setGeometryType((reader.getShapeType() == null) ? GM_Object.class
             : reader.getShapeType());
@@ -363,8 +383,8 @@ public class ShapefileReader implements Runnable {
     population.setFeatureType(newFeatureType);
     if (ShapefileReader.logger.isDebugEnabled()) {
       for (GF_AttributeType fa : newFeatureType.getFeatureAttributes()) {
-        ShapefileReader.logger.debug("FeatureAttibute = " //$NON-NLS-1$
-            + fa.getMemberName() + "-" + fa.getValueType()); //$NON-NLS-1$
+        ShapefileReader.logger.debug("FeatureAttibute = " + fa.getMemberName()
+            + "-" + fa.getValueType());
       }
     }
     return reader;
@@ -408,7 +428,7 @@ public class ShapefileReader implements Runnable {
    * @throws IOException renvoie une exception en cas d'erreur de lecture
    */
   public static void read(Reader reader, SchemaDefaultFeature schema,
-      Population<DefaultFeature> population) throws IOException {
+      IPopulation<IFeature> population) throws IOException {
     ShapefileReader.fireActionPerformed(new ActionEvent(population, 0,
         "Read", reader.getNbFeatures())); //$NON-NLS-1$
     for (int indexFeature = 0; indexFeature < reader.getNbFeatures(); indexFeature++) {
@@ -416,7 +436,7 @@ public class ShapefileReader implements Runnable {
       defaultFeature.setFeatureType(schema.getFeatureType());
       defaultFeature.setSchema(schema);
       defaultFeature.setAttributes(reader.fieldValues[indexFeature]);
-      Class<? extends GM_Object> geometryType = schema.getFeatureType()
+      Class<? extends IGeometry> geometryType = schema.getFeatureType()
           .getGeometryType();
       try {
         if (reader.geometries[indexFeature] == null) {
@@ -424,7 +444,7 @@ public class ShapefileReader implements Runnable {
           ShapefileReader.logger.error(I18N.getString("ShapefileReader" + //$NON-NLS-1$
               ".NullGeometryObjectIGnored")); //$NON-NLS-1$
         } else {
-          GM_Object geometry = AdapterFactory
+          IGeometry geometry = AdapterFactory
               .toGM_Object(reader.geometries[indexFeature]);
           if (!geometryType.isAssignableFrom(geometry.getClass())) {
             if (ShapefileReader.logger.isDebugEnabled()) {
@@ -476,7 +496,7 @@ public class ShapefileReader implements Runnable {
   }
 
   /**
-   * @return maximum X value
+   * @return
    */
   public double getMaxX() {
     return this.reader.getMaxX();
@@ -493,11 +513,11 @@ public class ShapefileReader implements Runnable {
   public double getMinY() {
     return this.reader.getMinY();
   }
-  
+    
   public CoordinateReferenceSystem getCRS(){
 	  return this.crs;
   }
-
+  
 }
 
 /**
@@ -641,6 +661,7 @@ class Reader {
     }
   }
 
+
   /**
    * Renvoie la valeur de l'attribut minX.
    * @return la valeur de l'attribut minX
@@ -691,7 +712,7 @@ class Reader {
 
   /**
    * @param i
-   * @return the name of the given field
+   * @return
    */
   public String getFieldName(int i) {
     return this.fieldNames[i];
@@ -699,7 +720,7 @@ class Reader {
 
   /**
    * @param i
-   * @return the class of the given field
+   * @return
    */
   public Class<?> getFieldClass(int i) {
     return this.fieldClasses[i];
@@ -715,7 +736,7 @@ class Reader {
    */
   private static Class<? extends GM_Object> geometryType(ShapeType type) {
     if (Reader.logger.isDebugEnabled()) {
-      Reader.logger.debug("shapeType = " + type); //$NON-NLS-1$
+      Reader.logger.debug("shapeType = " + type);
     }
     if (type.isPointType()) {
       return GM_Point.class;

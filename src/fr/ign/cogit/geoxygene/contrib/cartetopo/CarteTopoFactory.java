@@ -2,9 +2,9 @@ package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 /**
@@ -33,7 +33,7 @@ public class CarteTopoFactory {
     CarteTopo carteTopo = new CarteTopo(name);
     carteTopo.setBuildInfiniteFace(false);
     // Récupération des arcs de la carteTopo
-    Population<Arc> arcs = carteTopo.getPopArcs();
+    IPopulation<Arc> arcs = carteTopo.getPopArcs();
     // Import des arcs de la collection dans la carteTopo
     for (FT_Feature feature : collection) {
       // création d'un nouvel élément

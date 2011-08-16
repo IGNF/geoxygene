@@ -81,7 +81,7 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener,
   private JTree tree;
 
   private StyledLayerDescriptor sld;
-  DataSet dataset;
+  private DataSet dataset;
 
   /**
    * Renvoie la valeur de l'attribut sld.
@@ -100,7 +100,7 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener,
     sld.addChangeListener(this);
   }
 
-  Layer layer;
+  private Layer layer;
 
   /**
    * Renvoie la valeur de l'attribut layer.
@@ -129,7 +129,7 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener,
     this.setResizable(true);
     this.setSize(new Dimension(500, 500));
     this.setExtendedState(Frame.MAXIMIZED_BOTH);
-    this.setTitle("Editeur de Layers de GeOxygene");
+    this.setTitle("Editeur de Layers de GéOxygène");
     this.setIconImage(this.frameEditeurSLD.getIconImage());
 
     DefaultMutableTreeNode top = new DefaultMutableTreeNode(
@@ -164,7 +164,7 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener,
     for (Style style : this.layer.getStyles()) {
       String name = style.getName();
       if ((name == null) || (name.length() == 0)) {
-        name = style.getClass().getSimpleName() + " " + nbStyle++; //$NON-NLS-1$
+        name = style.getClass().getSimpleName() + " " + nbStyle++;
       }
       style.setName(name);
       DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode(style);
@@ -174,24 +174,23 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener,
 
   class LayerRenderer extends DefaultTreeCellRenderer {
     private static final long serialVersionUID = 3819934049264771686L;
-    private StyledLayerDescriptor sldRenderer;
+    private StyledLayerDescriptor sld;
 
     public LayerRenderer(StyledLayerDescriptor sld) {
-      this.sldRenderer = sld;
+      this.sld = sld;
     }
 
     @Override
-    public Component getTreeCellRendererComponent(JTree treeRenderer,
-        Object value, boolean sel, boolean expanded, boolean leaf, int row,
-        boolean hasFocusRenderer) {
+    public Component getTreeCellRendererComponent(JTree tree, Object value,
+        boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 
-      super.getTreeCellRendererComponent(treeRenderer, value, sel, expanded,
-          leaf, row, hasFocusRenderer);
+      super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row,
+          hasFocus);
       if (leaf && this.isStyle(value)) {
         this.setToolTipText("Ceci est un style.");
         Style style = (Style) ((DefaultMutableTreeNode) value).getUserObject();
         this.setText(style.getName());
-        this.setIcon(new StyleIcon(style, this.sldRenderer));
+        this.setIcon(new StyleIcon(style, this.sld));
       } else {
         this.setToolTipText(null); // no tool tip
       }
@@ -256,7 +255,7 @@ public class FrameEditeurLayer extends JFrame implements TreeSelectionListener,
       Style style = (Style) nodeInfo;
       if (FrameEditeurLayer.logger.isDebugEnabled()) {
         FrameEditeurLayer.logger.debug(style.getClass().getSimpleName()
-            + " sélectionné");
+            + " séléctionné");
       }
       int nbColor = 0;
       Stroke stroke = null;

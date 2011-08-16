@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.datatools.ojb;
@@ -67,6 +75,9 @@ import org.apache.ojb.broker.query.SqlCriteria;
 import org.apache.ojb.broker.util.JdbcTypesHelper;
 import org.postgis.PGgeometry;
 
+// import fr.ign.cogit.geoxygene.datatools.oracle.ArrayGeOxygene2Oracle;
+// import fr.ign.cogit.geoxygene.datatools.oracle.GeomGeOxygene2Oracle;
+
 /**
  * Meme chose que la classe org.apache.ojb.broker.accesslayer.StatementManager.
  * Permet de gerer les structures Oracle en passant un parametre de connection a
@@ -77,14 +88,18 @@ import org.postgis.PGgeometry;
  * bindStatementValue(), changement dans getAllValues, changement dans
  * getKeyValues (2 methodes), changement dans getNonKeyValues modification des
  * " setNull " (plusieurs) pour gerer le cas de l'ecriture de geometries nulles.
+ * 
  * AB 11 juillet 2005 : <br>
  * Utilisation des noms de classes et de la réflection pour permettre la
- * compilation séparée pour Oracle. <br>
+ * compilation sépérée pour Oracle. <br>
  * Patch pour permettre l'utilisation de la meme classe de "FieldConversion"
  * pour Oracle et Postgis.
+ * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.1
+ * 
  */
+
 public class GeOxygeneStatementManager implements StatementManagerIF {
   /**
    * The Logger.
@@ -109,18 +124,16 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   // AJOUT pour GeOxygene ---------------------------------------------------
   // Nom des classes relatives à Oracle,
   // en String pour permettre la compilation séparée
-  private final String GeomGeOxygene2Oracle_CLASS_NAME = "fr.ign.cogit.geoxygene.datatools.oracle" + //$NON-NLS-1$
-      ".GeomGeOxygene2Oracle"; //$NON-NLS-1$
-  private final String ArrayGeOxygene2Oracle_CLASS_NAME = "fr.ign.cogit.geoxygene.datatools.oracle" + //$NON-NLS-1$
-      ".ArrayGeOxygene2Oracle"; //$NON-NLS-1$
-  private final String GeomGeOxygene2Postgis_CLASS_NAME = "fr.ign.cogit.geoxygene.datatools.postgis" + //$NON-NLS-1$
-      ".GeomGeOxygene2Postgis"; //$NON-NLS-1$
+  private final String GeomGeOxygene2Oracle_CLASS_NAME = "fr.ign.cogit.geoxygene.datatools.oracle.GeomGeOxygene2Oracle";
+  private final String ArrayGeOxygene2Oracle_CLASS_NAME = "fr.ign.cogit.geoxygene.datatools.oracle.ArrayGeOxygene2Oracle";
+  private final String GeomGeOxygene2Postgis_CLASS_NAME = "fr.ign.cogit.geoxygene.datatools.postgis.GeomGeOxygene2Postgis";
   private Class<?> arrayGeOxygene2OracleClass;
   private Method geomGeOxygene2OracleMethod;
   private Method arrayGeOxygene2OracleMethod;
   private Method geomGeOxygene2PostgisMethod;
 
-  // FIN AJOUT pour GeOxygene -----------------------------------------------
+  // FIN AJOUT pour GeOxygene
+  // ---------------------------------------------------
 
   public GeOxygeneStatementManager(final PersistenceBroker pBroker) {
     // this.m_broker = pBroker; // initial OJB
@@ -130,7 +143,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
         .getEagerRelease();
     this.m_platform = PlatformFactory.getPlatformFor(this.m_conMan
         .getConnectionDescriptor());
-    // AJOUT pour GeOxygene ----------------------------------------------
+    // AJOUT pour GeOxygene -----------------------------------------------------------
     // ORACLE
     if (this.m_platform instanceof PlatformOracle9iImpl
         || this.m_platform instanceof PlatformOracleImpl) {
@@ -140,11 +153,10 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
         this.arrayGeOxygene2OracleClass = Class
             .forName(this.ArrayGeOxygene2Oracle_CLASS_NAME);
         this.geomGeOxygene2OracleMethod = geomGeOxygene2OracleClass.getMethod(
-            "javaToSql", //$NON-NLS-1$
-            new Class[] { Object.class, Connection.class });
+            "javaToSql", new Class[] { Object.class, Connection.class });
         this.arrayGeOxygene2OracleMethod = this.arrayGeOxygene2OracleClass
-            .getMethod("javaToSql", //$NON-NLS-1$
-                new Class[] { Object.class, Connection.class });
+            .getMethod("javaToSql", new Class[] { Object.class,
+                Connection.class });
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -153,23 +165,23 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
         Class<?> geomGeOxygene2PostgisClass = Class
             .forName(this.GeomGeOxygene2Postgis_CLASS_NAME);
         this.geomGeOxygene2PostgisMethod = geomGeOxygene2PostgisClass
-            .getMethod("javaToSql", //$NON-NLS-1$
-                new Class[] { Object.class });
+            .getMethod("javaToSql", new Class[] { Object.class });
       } catch (Exception e) {
         e.printStackTrace();
       }
     } else {
-      GeOxygeneStatementManager.logger.fatal("Unhandled platform"); //$NON-NLS-1$
-      GeOxygeneStatementManager.logger.fatal("Program will stop"); //$NON-NLS-1$
+      GeOxygeneStatementManager.logger
+          .fatal("## Le SGBD n'est ni Oracle, ni PostgreSQL ##");
+      GeOxygeneStatementManager.logger.fatal("## Le programme s'arrête ##");
       System.exit(0);
     }
-    // FIN AJOUT pour GeOxygene ---------------------------------------
+    // FIN AJOUT pour GeOxygene ---------------------------------------------------
   }
 
   /**
    * return a StatementsForClass object for the given ClassDescriptor\ Note; not
    * important to synchronize completely as a threading issue in this code will
-   * only result in a little extra code being executed.
+   * only result in a little extra code being executed
    */
   protected StatementsForClassIF getStatementsForClass(ClassDescriptor cds)
       throws PersistenceBrokerException {
@@ -177,9 +189,8 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
     if (sfc == null) {
       synchronized (this.m_statementTable) {
         // 07.17.2003 - RB: StatementsForClassImpl is now configurable
-        // sfc = (StatementsForClassIF)
-        // new StatementsForClassImpl(m_conMan.getConnectionDescriptor(),
-        // cds);
+        // sfc = (StatementsForClassIF) new
+        // StatementsForClassImpl(m_conMan.getConnectionDescriptor(), cds);
         sfc = StatementsForClassFactory.getInstance().getStatementsForClass(
             this.m_conMan.getConnectionDescriptor(), cds);
         this.m_statementTable.put(cds, sfc);
@@ -193,6 +204,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
       this.m_platform.beforeStatementClose(stmt, rs);
       // close statement on wrapped statement class, or real statement
       if (stmt != null) {
+        // log.info("## close: "+stmt);
         stmt.close();
         /*
          * ********************************************
@@ -206,17 +218,17 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
       this.m_platform.afterStatementClose(stmt, rs);
     } catch (PlatformException e) {
       GeOxygeneStatementManager.logger.error(
-          "Platform dependent operation failed", e); //$NON-NLS-1$
+          "Platform dependent operation failed", e);
     } catch (SQLException ignored) {
       if (GeOxygeneStatementManager.logger.isDebugEnabled()) {
-        GeOxygeneStatementManager.logger.debug(
-            "Statement closing failed", ignored); //$NON-NLS-1$
+        GeOxygeneStatementManager.logger.debug("Statement closing failed",
+            ignored);
       }
     }
   }
 
   /**
-   * binds the Identities Primary key values to the statement.
+   * binds the Identities Primary key values to the statement
    */
   public void bindDelete(PreparedStatement stmt, Identity oid,
       ClassDescriptor cld) throws SQLException {
@@ -229,16 +241,15 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
             pkFields[i].getJdbcType().getType());
       }
     } catch (SQLException e) {
-      GeOxygeneStatementManager.logger.error("bindDelete failed for: " //$NON-NLS-1$
-          + oid.toString() + ", while set value '" + //$NON-NLS-1$
-          pkValues[i] + "' for column " //$NON-NLS-1$
-          + pkFields[i].getColumnName());
+      GeOxygeneStatementManager.logger.error("bindDelete failed for: "
+          + oid.toString() + ", while set value '" + pkValues[i]
+          + "' for column " + pkFields[i].getColumnName());
       throw e;
     }
   }
 
   /**
-   * binds the objects primary key and locking values to the statement, BRJ.
+   * binds the objects primary key and locking values to the statement, BRJ
    */
   public void bindDelete(PreparedStatement stmt, ClassDescriptor cld, Object obj)
       throws SQLException {
@@ -266,7 +277,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   }
 
   /**
-   * bind attribute and value.
+   * bind attribute and value
    * @param stmt
    * @param index
    * @param attributeOrQuery
@@ -349,7 +360,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
         if (fld.getJdbcType().getType() == Types.STRUCT) {
           try {
             stmt.setNull(index, fld.getJdbcType().getType(),
-                "MDSYS.SDO_GEOMETRY"); //$NON-NLS-1$
+                "MDSYS.SDO_GEOMETRY");
           } catch (Exception e) {
             e.printStackTrace();
           }
@@ -366,11 +377,11 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
         stmt.setNull(index, Types.NULL);
       }
     }
-    return index + 1; // increment before return
+    return ++index; // increment before return
   }
 
   /**
-   * bind SelectionCriteria.
+   * bind SelectionCriteria
    * @param stmt the PreparedStatement
    * @param index the position of the parameter to bind
    * @param crit the Criteria containing the parameter
@@ -384,7 +395,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   }
 
   /**
-   * bind NullCriteria.
+   * bind NullCriteria
    * @param stmt the PreparedStatement
    * @param index the position of the parameter to bind
    * @param crit the Criteria containing the parameter
@@ -397,7 +408,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   }
 
   /**
-   * bind FieldCriteria.
+   * bind FieldCriteria
    * @param stmt , the PreparedStatement
    * @param index , the position of the parameter to bind
    * @param crit , the Criteria containing the parameter
@@ -410,7 +421,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   }
 
   /**
-   * bind SqlCriteria.
+   * bind SqlCriteria
    * @param stmt the PreparedStatement
    * @param index the position of the parameter to bind
    * @param crit the Criteria containing the parameter
@@ -423,7 +434,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   }
 
   /**
-   * bind BetweenCriteria.
+   * bind BetweenCriteria
    * @param stmt the PreparedStatement
    * @param index the position of the parameter to bind
    * @param crit the Criteria containing the parameter
@@ -432,14 +443,14 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
    */
   private int bindStatement(PreparedStatement stmt, int index,
       BetweenCriteria crit, ClassDescriptor cld) throws SQLException {
-    int index2 = this.bindStatementValue(stmt, index, crit.getAttribute(), crit
+    index = this.bindStatementValue(stmt, index, crit.getAttribute(), crit
         .getValue(), cld);
-    return this.bindStatementValue(stmt, index2, crit.getAttribute(), crit
+    return this.bindStatementValue(stmt, index, crit.getAttribute(), crit
         .getValue2(), cld);
   }
 
   /**
-   * bind InCriteria.
+   * bind InCriteria
    * @param stmt the PreparedStatement
    * @param index the position of the parameter to bind
    * @param crit the Criteria containing the parameter
@@ -463,7 +474,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   }
 
   /**
-   * bind ExistsCriteria.
+   * bind ExistsCriteria
    * @param stmt the PreparedStatement
    * @param index the position of the parameter to bind
    * @param crit the Criteria containing the parameter
@@ -478,12 +489,13 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
       return this.bindStatement(stmt, subQuery.getCriteria(), cld
           .getRepository().getDescriptorFor(subQuery.getSearchClass()), index);
       // otherwise, just ignore it
+    } else {
+      return index;
     }
-    return index;
   }
 
   /**
-   * bind a Query based Select Statement.
+   * bind a Query based Select Statement
    */
   public int bindStatement(PreparedStatement stmt, Query query,
       ClassDescriptor cld, int param) throws SQLException {
@@ -494,7 +506,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   }
 
   /**
-   * bind a Query based Select Statement.
+   * bind a Query based Select Statement
    */
   protected int bindStatement(PreparedStatement stmt, Criteria crit,
       ClassDescriptor cld, int param) throws SQLException {
@@ -520,7 +532,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   }
 
   /**
-   * bind SelectionCriteria.
+   * bind SelectionCriteria
    * @param stmt the PreparedStatement
    * @param index the position of the parameter to bind
    * @param crit the Criteria containing the parameter
@@ -549,40 +561,40 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   }
 
   /**
-   * binds the values of the object obj to the statements parameters.
+   * binds the values of the object obj to the statements parameters
    */
   public void bindInsert(PreparedStatement stmt, ClassDescriptor cld, Object obj)
       throws java.sql.SQLException {
     ValueContainer[] values;
-    cld.updateLockingValues(obj);
-    // BRJ : provide useful defaults for
-    // locking fields
+    cld.updateLockingValues(obj); // BRJ : provide useful defaults for locking
+                                  // fields
     if (cld.getInsertProcedure() != null) {
       this.bindProcedure(stmt, cld, obj, cld.getInsertProcedure());
     } else {
       values = this.getAllValues(cld, obj);
       for (int i = 0; i < values.length; i++) {
         ValueContainer val = values[i];
-        // DEBUT AJOUT POUR GEOXYGENE -----------------------
+        // DEBUT AJOUT POUR GEOXYGENE
+        // ----------------------------------------------
         // Pour PostGIS le type JDBC STRUC n'est pas reconnu
         // On caste en un autre type (OTHER)
-        // qui a été ajouté dans le "JDBCTypesHelper" réécrit
-        // pour l'occasion
+        // qui a été ajouté dans le "JDBCTypesHelper" réécrit pour l'occasion
         // ( ce type n'existe pas dans OJB par défaut)
         if (val.getValue() instanceof PGgeometry) {
-          val.setJdbcType(JdbcTypesHelper.getJdbcTypeByName("other")); //$NON-NLS-1$
+          val.setJdbcType(JdbcTypesHelper.getJdbcTypeByName("other"));
+          // FIN AJOUT POUR GEOXYGENE
+          // ----------------------------------------------
         }
-        // FIN AJOUT POUR GEOXYGENE -------------------------
         if (val.getValue() != null) {
           this.m_platform.setObjectForStatement(stmt, i + 1, val.getValue(),
               val.getJdbcType().getType());
         } else {
-          // ======= DEBUT AJOUT POUR GeOxygene ==========
+          // ======= DEBUT AJOUT POUR GeOxygene ====================
           // Gestion des géométries nulles sous Oracle (plante sinon)
           if (val.getJdbcType().getType() == Types.STRUCT) {
             try {
               stmt.setNull(i + 1, val.getJdbcType().getType(),
-                  "MDSYS.SDO_GEOMETRY"); //$NON-NLS-1$
+                  "MDSYS.SDO_GEOMETRY");
             } catch (Exception e) {
               e.printStackTrace();
             }
@@ -596,7 +608,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   }
 
   /**
-   * binds the Identities Primary key values to the statement.
+   * binds the Identities Primary key values to the statement
    */
   public void bindSelect(PreparedStatement stmt, Identity oid,
       ClassDescriptor cld) throws SQLException {
@@ -618,14 +630,15 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
         }
       }
     } catch (SQLException e) {
-      GeOxygeneStatementManager.logger.error("bindSelect failed for: " //$NON-NLS-1$
-          + oid.toString() + ", PK: " + i); //$NON-NLS-1$
+      GeOxygeneStatementManager.logger.error("bindSelect failed for: "
+          + oid.toString() + ", PK: " + i + ", value: "
+          + ((values != null) ? values[i] : "null"));
       throw e;
     }
   }
 
   /**
-   * binds the values of the object obj to the statements parameters.
+   * binds the values of the object obj to the statements parameters
    */
   public void bindUpdate(PreparedStatement stmt, ClassDescriptor cld, Object obj)
       throws java.sql.SQLException {
@@ -641,32 +654,32 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
 
       // parameters for SET-clause
       for (ValueContainer value : values) {
-        // DEBUT AJOUT POUR GEOXYGENE -----------------------
+        // DEBUT AJOUT POUR GEOXYGENE
+        // ----------------------------------------------
         // Pour PostGIS le type JDBC STRUC n'est pas reconnu
         // On caste en un autre type (OTHER)
-        // qui a été ajouté dans le "JDBCTypesHelper" réécrit
-        // pour l'occasion
+        // qui a été ajouté dans le "JDBCTypesHelper" réécrit pour l'occasion
         // ( ce type n'existe pas dans OJB par défaut)
         if (value.getValue() instanceof PGgeometry) {
-          value.setJdbcType(JdbcTypesHelper.getJdbcTypeByName("other")); //$NON-NLS-1$
-          // FIN AJOUT POUR GEOXYGENE --------------------
+          value.setJdbcType(JdbcTypesHelper.getJdbcTypeByName("other"));
+          // FIN AJOUT POUR GEOXYGENE
+          // ----------------------------------------------
         }
 
         if (value.getValue() != null) {
           this.m_platform.setObjectForStatement(stmt, index, value.getValue(),
               value.getJdbcType().getType());
         } else {
-          // ======= DEBUT AJOUT POUR GeOxygene ==========
+          // ======= DEBUT AJOUT POUR GeOxygene ====================
           // Gestion des géométries nulles sous Oracle (plante sinon)
           if (value.getJdbcType().getType() == Types.STRUCT) {
             try {
               stmt.setNull(index, value.getJdbcType().getType(),
-                  "MDSYS.SDO_GEOMETRY"); //$NON-NLS-1$
+                  "MDSYS.SDO_GEOMETRY");
             } catch (Exception e) {
               e.printStackTrace();
             }
           } else {
-            // ======= FIN AJOUT POUR GeOxygene ====
             this.m_platform.setNullForStatement(stmt, index, value
                 .getJdbcType().getType());
           }
@@ -692,17 +705,16 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
           stmt
               .setObject(index, value.getValue(), value.getJdbcType().getType());
         } else {
-          // ======= DEBUT AJOUT POUR GeOxygene ==========
+          // ======= DEBUT AJOUT POUR GeOxygene ====================
           // Gestion des géométries nulles sous Oracle (plante sinon)
           if (value.getJdbcType().getType() == Types.STRUCT) {
             try {
               stmt.setNull(index, value.getJdbcType().getType(),
-                  "MDSYS.SDO_GEOMETRY"); //$NON-NLS-1$
+                  "MDSYS.SDO_GEOMETRY");
             } catch (Exception e) {
               e.printStackTrace();
             }
           } else {
-            // ======= FIN AJOUT POUR GeOxygene ====
             stmt.setNull(index, value.getJdbcType().getType());
           }
         }
@@ -713,7 +725,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
 
   /**
    * binds the given array of values (if not null) starting from the given
-   * parameter index.
+   * parameter index
    * @return the next parameter index
    */
   public int bindValues(PreparedStatement stmt, ValueContainer[] values,
@@ -729,7 +741,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   }
 
   /**
-   * return a prepared DELETE Statement fitting for the given ClassDescriptor.
+   * return a prepared DELETE Statement fitting for the given ClassDescriptor
    */
   public PreparedStatement getDeleteStatement(ClassDescriptor cld)
       throws PersistenceBrokerSQLException, PersistenceBrokerException {
@@ -738,10 +750,10 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
           this.m_conMan.getConnection());
     } catch (SQLException e) {
       throw new PersistenceBrokerSQLException(
-          "Could not build statement ask for", e); //$NON-NLS-1$
+          "Could not build statement ask for", e);
     } catch (LookupException e) {
-      throw new PersistenceBrokerException("Used ConnectionManager instance " + //$NON-NLS-1$
-          "could not obtain a connection", e); //$NON-NLS-1$
+      throw new PersistenceBrokerException(
+          "Used ConnectionManager instance could not obtain a connection", e);
     }
   }
 
@@ -755,13 +767,13 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
       return this.getStatementsForClass(cds).getGenericStmt(
           this.m_conMan.getConnection(), scrollable);
     } catch (LookupException e) {
-      throw new PersistenceBrokerException("Used ConnectionManager instance " + //$NON-NLS-1$
-          "could not obtain a connection", e); //$NON-NLS-1$
+      throw new PersistenceBrokerException(
+          "Used ConnectionManager instance could not obtain a connection", e);
     }
   }
 
   /**
-   * return a prepared Insert Statement fitting for the given ClassDescriptor.
+   * return a prepared Insert Statement fitting for the given ClassDescriptor
    */
   public PreparedStatement getInsertStatement(ClassDescriptor cds)
       throws PersistenceBrokerSQLException, PersistenceBrokerException {
@@ -770,15 +782,15 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
           this.m_conMan.getConnection());
     } catch (SQLException e) {
       throw new PersistenceBrokerSQLException(
-          "Could not build statement ask for", e); //$NON-NLS-1$
+          "Could not build statement ask for", e);
     } catch (LookupException e) {
-      throw new PersistenceBrokerException("Used ConnectionManager instance " + //$NON-NLS-1$
-          "could not obtain a connection", e); //$NON-NLS-1$
+      throw new PersistenceBrokerException(
+          "Used ConnectionManager instance could not obtain a connection", e);
     }
   }
 
   /**
-   * return a generic Statement for the given ClassDescriptor.
+   * return a generic Statement for the given ClassDescriptor
    */
   public PreparedStatement getPreparedStatement(ClassDescriptor cds,
       String sql, boolean scrollable) throws PersistenceBrokerException {
@@ -786,13 +798,13 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
       return this.getStatementsForClass(cds).getPreparedStmt(
           this.m_conMan.getConnection(), sql, scrollable);
     } catch (LookupException e) {
-      throw new PersistenceBrokerException("Used ConnectionManager instance " + //$NON-NLS-1$
-          "could not obtain a connection", e); //$NON-NLS-1$
+      throw new PersistenceBrokerException(
+          "Used ConnectionManager instance could not obtain a connection", e);
     }
   }
 
   /**
-   * return a prepared Select Statement for the given ClassDescriptor.
+   * return a prepared Select Statement for the given ClassDescriptor
    */
   public PreparedStatement getSelectByPKStatement(ClassDescriptor cds)
       throws PersistenceBrokerSQLException, PersistenceBrokerException {
@@ -801,15 +813,15 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
           this.m_conMan.getConnection());
     } catch (SQLException e) {
       throw new PersistenceBrokerSQLException(
-          "Could not build statement ask for", e); //$NON-NLS-1$
+          "Could not build statement ask for", e);
     } catch (LookupException e) {
-      throw new PersistenceBrokerException("Used ConnectionManager instance " + //$NON-NLS-1$
-          "could not obtain a connection", e); //$NON-NLS-1$
+      throw new PersistenceBrokerException(
+          "Used ConnectionManager instance could not obtain a connection", e);
     }
   }
 
   /**
-   * return a prepared Update Statement fitting to the given ClassDescriptor.
+   * return a prepared Update Statement fitting to the given ClassDescriptor
    */
   public PreparedStatement getUpdateStatement(ClassDescriptor cds)
       throws PersistenceBrokerSQLException, PersistenceBrokerException {
@@ -818,15 +830,15 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
           this.m_conMan.getConnection());
     } catch (SQLException e) {
       throw new PersistenceBrokerSQLException(
-          "Could not build statement ask for", e); //$NON-NLS-1$
+          "Could not build statement ask for", e);
     } catch (LookupException e) {
-      throw new PersistenceBrokerException("Used ConnectionManager instance " + //$NON-NLS-1$
-          "could not obtain a connection", e); //$NON-NLS-1$
+      throw new PersistenceBrokerException(
+          "Used ConnectionManager instance could not obtain a connection", e);
     }
   }
 
   /**
-   * returns an array containing values for all the Objects attribute.
+   * returns an array containing values for all the Objects attribute
    * @throws PersistenceBrokerException if there is an erros accessing obj field
    *           values
    */
@@ -843,7 +855,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   }
 
   /**
-   * returns an Array with an Objects PK VALUES.
+   * returns an Array with an Objects PK VALUES
    * @throws PersistenceBrokerException if there is an erros accessing o field
    *           values
    */
@@ -861,7 +873,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   }
 
   /**
-   * returns an Array with an Identities PK VALUES.
+   * returns an Array with an Identities PK VALUES
    * @throws PersistenceBrokerException if there is an erros accessing o field
    *           values
    */
@@ -878,7 +890,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   }
 
   /**
-   * returns an Array with an Objects NON-PK VALUES.
+   * returns an Array with an Objects NON-PK VALUES
    * @throws PersistenceBrokerException if there is an erros accessing o field
    *           values
    */

@@ -31,21 +31,25 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 
 /**
- * Classe des aretes de la triangulation.
+ * Classe des arcs de la triangulation.
  * @author Bonin
  * @version 1.0
  */
 
 public class ArcDelaunay extends Arc {
+
   public ArcDelaunay() {
   }
 
   public ArcDelaunay(NoeudDelaunay n1, NoeudDelaunay n2) {
+
     DirectPositionList dpl = new DirectPositionList();
     dpl.add(n1.getCoord());
     dpl.add(n2.getCoord());
     this.setCoord(dpl);
+
     this.setNoeudIni(n1);
     this.setNoeudFin(n2);
   }
+
 }

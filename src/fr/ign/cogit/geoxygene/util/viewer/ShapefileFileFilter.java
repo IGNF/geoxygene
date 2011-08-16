@@ -49,7 +49,11 @@ class ShapefileFileFilter extends FileFilter {
 
     String extension = Utils.getExtension(f);
     if (extension != null) {
-      return (extension.equals(Utils.SHAPEFILE));
+      if (extension.equals(Utils.SHAPEFILE)) {
+        return true;
+      } else {
+        return false;
+      }
     }
     return false;
   }
@@ -57,7 +61,6 @@ class ShapefileFileFilter extends FileFilter {
   // The description of this filter
   @Override
   public String getDescription() {
-    return "ESRI Shapefile (*.shp)"; //$NON-NLS-1$
+    return "ESRI Shapefile (*.shp)";
   }
-
 }

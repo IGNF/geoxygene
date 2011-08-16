@@ -1,6 +1,22 @@
-/**
- * 
+/*
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+
 package fr.ign.cogit.geoxygene.schema.util.persistance;
 
 import java.io.File;
@@ -51,7 +67,8 @@ public class ChargeurGMLSchema {
       // File fichierXSD = new
       // File("D:/Users/Balley/données/terranumerica/rge/bdtopo/TRONCON_ROUTE.xsd");
       File fichierXSD = new File("D:/Users/Balley/données/gml/commune.xsd");
-      // File fichierXSD = new File("D:/Users/Balley/données/gml/route.xsd");
+      // File fichierXSD = new
+      // File("D:/Users/Balley/données/gml/route.xsd");
       URL urlFichierXSD = fichierXSD.toURI().toURL();
       // System.out.println(urlFichierXSD);
 
@@ -122,7 +139,8 @@ public class ChargeurGMLSchema {
         System.out.println("le type : " + nomType
             + " etend AbstractFeatureType");
 
-        // je cherche le nom des élements de ce type : ca me donnera le nom du
+        // je cherche le nom des élements de ce type : ca me donnera le
+        // nom du
         // FeatureType à mettre dans mon schemaConceptuel
         System.out.println("\nLecture des attributs...");
         NodeList listElements = newDocXSD.getElementsByTagName("element");
@@ -139,8 +157,8 @@ public class ChargeurGMLSchema {
                   .getNamedItem("name").getNodeValue();
               // System.out.println("nom des elements de ce type : "+nomElementsDeCeType);
 
-              // ce type est effectivement utilisé dans le jeu, je crée un
-              // featureType
+              // ce type est effectivement utilisé dans le jeu, je
+              // crée un featureType
               FeatureType ft = new FeatureType();
               ft.setTypeName(nomElementsDeCeType);
 
@@ -173,14 +191,16 @@ public class ChargeurGMLSchema {
 
                   // je cherche le type de l'attribut
 
-                  // soit c'est un type simple mis directement en attribut
+                  // soit c'est un type simple mis directement
+                  // en attribut
                   if (noeudAttribut.getAttributes().getNamedItem("type") != null) {
                     fa.setValueType(noeudAttribut.getAttributes().getNamedItem(
                         "type").getNodeValue());
                     // System.out.println("type direct : "+noeudAttribut.getAttributes().getNamedItem("type").getNodeValue());
                   }
 
-                  // soit c'est un type simple en étendant un autre
+                  // soit c'est un type simple en étendant un
+                  // autre
                   else if (noeudAttribut.hasChildNodes()) {
                     // System.out.println("le type a "+noeudAttribut.getChildNodes().getLength()+" childNodes : il doit etendre un type");
                     for (int l = 0; l < noeudAttribut.getChildNodes()
@@ -284,20 +304,15 @@ public class ChargeurGMLSchema {
    * Génère une structure goexygene complete : schéma conceptuel persistant,
    * bibliothèques de classes, tables et mapping. Utilise la méthode
    * gmlSchema2schemaConceptuel(docXSD) et les utilitaires du package
-   * fr.ign.cogit
-   * .appli.sissi.outils.transfoschema.donnees.classesGenerees.outils
-   * 
-   * 
+   * fr.ign.cogit.appli.sissi.outils.transfoschema.donnees.classesGenerees.
+   * outils
    * @param GMLType
    */
   /*
-   * public void gmlSchema2structureGeoxygene(Document docXSD){
-   * 
-   * DataSetCommun ds = new DataSetCommun(); DataSetCommun.db = new
-   * GeodatabaseCommun();
+   * public void gmlSchema2structureGeoxygene(Document docXSD){ DataSetCommun ds
+   * = new DataSetCommun(); DataSetCommun.db = new GeodatabaseCommun();
    * ds.setSchemaConceptuel(gmlSchema2schemaConceptuel(docXSD));
    * System.out.println("objet SchemaConceptuel créé");
-   * 
    * GenerationSL.sc2schemaLogiqueGeoxygene(ds.getSchemaConceptuel(), false);
    * System.out.println("classes et tables du schéma logique créées");
    * ds.getSchemaConceptuel().ecritSchemaConceptuel();

@@ -27,53 +27,53 @@
 
 package fr.ign.cogit.geoxygene.util.conversion;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IAggregate;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
 public class IsEmptyUtil {
 
   @SuppressWarnings("unchecked")
-  public static boolean isEmpty(GM_Object geom) {
+  public static boolean isEmpty(IGeometry geom) {
     if (geom == null) {
       return true;
     }
-    if (geom instanceof GM_Point) {
-      return IsEmptyUtil.isEmpty((GM_Point) geom);
+    if (geom instanceof IPoint) {
+      return IsEmptyUtil.isEmpty((IPoint) geom);
     }
-    if (geom instanceof GM_Polygon) {
-      return IsEmptyUtil.isEmpty((GM_Polygon) geom);
+    if (geom instanceof IPolygon) {
+      return IsEmptyUtil.isEmpty((IPolygon) geom);
     }
-    if (geom instanceof GM_LineString) {
-      return IsEmptyUtil.isEmpty((GM_LineString) geom);
+    if (geom instanceof ILineString) {
+      return IsEmptyUtil.isEmpty((ILineString) geom);
     }
-    if (geom instanceof GM_Aggregate) {
-      return IsEmptyUtil.isEmpty((GM_Aggregate) geom);
+    if (geom instanceof IAggregate) {
+      return IsEmptyUtil.isEmpty((IAggregate) geom);
     }
     return false;
   }
 
-  public static boolean isEmpty(GM_Point point) {
-    DirectPosition position = point.getPosition();
+  public static boolean isEmpty(IPoint point) {
+    IDirectPosition position = point.getPosition();
     double x = position.getX();
     double y = position.getY();
     double z = position.getZ();
     return (x == Double.NaN || y == Double.NaN || z == Double.NaN);
   }
 
-  public static boolean isEmpty(GM_Polygon poly) {
+  public static boolean isEmpty(IPolygon poly) {
     return poly.coord().size() == 0;
   }
 
-  public static boolean isEmpty(GM_LineString lineString) {
+  public static boolean isEmpty(ILineString lineString) {
     return lineString.sizeControlPoint() == 0;
   }
 
-  static boolean isEmpty(GM_Aggregate<GM_Object> aggr) {
-    for (GM_Object geom : aggr) {
+  static boolean isEmpty(IAggregate<IGeometry> aggr) {
+    for (IGeometry geom : aggr) {
       if (!IsEmptyUtil.isEmpty(geom)) {
         return false;
       }

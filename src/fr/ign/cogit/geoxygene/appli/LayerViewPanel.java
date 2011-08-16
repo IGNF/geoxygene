@@ -41,6 +41,11 @@ import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.event.CompassPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.LegendPaintListener;
@@ -53,10 +58,7 @@ import fr.ign.cogit.geoxygene.appli.mode.CreatePolygonMode;
 import fr.ign.cogit.geoxygene.appli.mode.Mode;
 import fr.ign.cogit.geoxygene.appli.render.RenderUtil;
 import fr.ign.cogit.geoxygene.appli.render.RenderingManager;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.style.Layer;
@@ -97,7 +99,7 @@ public class LayerViewPanel extends JPanel implements Printable {
   /**
    * @return The rendering manager handling the rendering of the layers
    */
-  public final RenderingManager getRenderingManager() {
+  public RenderingManager getRenderingManager() {
     return this.renderingManager;
   }
 
@@ -120,14 +122,14 @@ public class LayerViewPanel extends JPanel implements Printable {
   /**
    * Private selected features. Use getter and setter.
    */
-  private Set<FT_Feature> selectedFeatures = new HashSet<FT_Feature>(0);
+  private Set<IFeature> selectedFeatures = new HashSet<IFeature>();
 
   /**
    * The viewport of the panel.
    * 
    * @return the viewport of the panel
    */
-  public final Viewport getViewport() {
+  public Viewport getViewport() {
     return this.viewport;
   }
 
@@ -157,6 +159,29 @@ public class LayerViewPanel extends JPanel implements Printable {
     if (this.renderingManager != null) {
       this.renderingManager.renderAll();
     }
+    this.superRepaint();
+  }
+
+  /**
+   * @param layer
+   * @param feature
+   */
+  public void repaint(Layer layer, IFeature feature) {
+    if (this.renderingManager != null) {
+      this.renderingManager.render(layer, feature);
+    }
+    this.superRepaint();
+  }
+
+  /**
+   * @param layer
+   * @param geom
+   */
+  public void repaint(Layer layer, IGeometry geom) {
+    if (this.renderingManager != null) {
+      this.renderingManager.render(layer, geom);
+    }
+    this.superRepaint();
   }
 
   /**
@@ -173,10 +198,10 @@ public class LayerViewPanel extends JPanel implements Printable {
   @Override
   public final void paintComponent(final Graphics g) {
     try {
-      logger.trace("paintComponent");
+      logger.trace("paintComponent"); //$NON-NLS-1$
       ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
           RenderingHints.VALUE_ANTIALIAS_ON);
-      // super.paintComponent(g);
+      super.paintComponent(g);
       // clear the graphics
       g.setColor(this.getBackground());
       g.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -187,7 +212,7 @@ public class LayerViewPanel extends JPanel implements Printable {
       this.paintOverlays(g);
 
       if (this.recording) {
-        logger.trace("record");
+        logger.trace("record"); //$NON-NLS-1$
         Color bg = this.getBackground();
         BufferedImage image = new BufferedImage(this.getWidth(), this.getHeight(),
             BufferedImage.TYPE_INT_ARGB);
@@ -201,7 +226,7 @@ public class LayerViewPanel extends JPanel implements Printable {
         try {
           NumberFormat format = NumberFormat.getInstance();
           format.setMinimumIntegerDigits(3);
-          ImgUtil.saveImage(image, this.recordFileName + format.format(this.recordIndex) + ".png");
+          ImgUtil.saveImage(image, this.recordFileName + format.format(this.recordIndex) + ".png"); //$NON-NLS-1$
           this.recordIndex++;
         } catch (IOException e1) {
           e1.printStackTrace();
@@ -219,7 +244,7 @@ public class LayerViewPanel extends JPanel implements Printable {
         .getCurrentMode();
     g.setColor(new Color(1f, 0f, 0f));
     if (mode instanceof AbstractGeometryEditMode) {
-      DirectPositionList points = new DirectPositionList();
+      IDirectPositionList points = new DirectPositionList();
       points.addAll(((AbstractGeometryEditMode) mode).getPoints());
       if (mode instanceof CreateLineStringMode) {
         if (!points.isEmpty()) {
@@ -230,11 +255,11 @@ public class LayerViewPanel extends JPanel implements Printable {
       } else {
         if (mode instanceof CreatePolygonMode) {
           if (!points.isEmpty()) {
-            DirectPosition start = points.get(0);
+            IDirectPosition start = points.get(0);
             points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
             if (points.size() > 2) {
               points.add(start);
-              RenderUtil.draw(new GM_Polygon(new GM_LineString(points)), this
+              RenderUtil.draw((IGeometry) new GM_Polygon(new GM_LineString(points)), this
                   .getViewport(), (Graphics2D) g);
             } else {
               if (points.size() == 2) {
@@ -253,6 +278,15 @@ public class LayerViewPanel extends JPanel implements Printable {
     }
   }
 
+  /**
+   * Notify the listeners that the panel has just finished repainting
+   * @param graphics
+   */
+  @SuppressWarnings("unused")
+  private void firePainted(Graphics graphics) {
+    // TODO NOTIFY LISTENERS
+  }
+  
   /**
    * Returns the size of a pixel in meters.
    * @return Taille d'un pixel en mètres (la longueur d'un coté de pixel de
@@ -285,14 +319,14 @@ public class LayerViewPanel extends JPanel implements Printable {
    * 
    * @return The envelope of all layers of the panel in model coordinates
    */
-  public final GM_Envelope getEnvelope() {
+  public final IEnvelope getEnvelope() {
     if (this.getRenderingManager().getLayers().isEmpty()) {
       return null;
     }
     List<Layer> copy = new ArrayList<Layer>(this.getRenderingManager()
         .getLayers());
     Iterator<Layer> layerIterator = copy.iterator();
-    GM_Envelope envelope = layerIterator.next().getFeatureCollection()
+    IEnvelope envelope = layerIterator.next().getFeatureCollection()
         .envelope();
     while (layerIterator.hasNext()) {
       envelope.expand(layerIterator.next().getFeatureCollection().envelope());
@@ -305,7 +339,7 @@ public class LayerViewPanel extends JPanel implements Printable {
    * 
    * @return the features selected by the user
    */
-  public final Set<FT_Feature> getSelectedFeatures() {
+  public Set<IFeature> getSelectedFeatures() {
     return this.selectedFeatures;
   }
 

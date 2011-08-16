@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.geometrie;
@@ -23,19 +31,23 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomcomp.ICompositeSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
- * méthodes statiques de calcul de distance.
+ * Méthodes statiques de calcul de distance.
  * 
  * English: Computation of distances (static methods)
  * 
@@ -47,7 +59,7 @@ public abstract class Distances {
 
   // Organisation du code:
   // - Distances entre points
-  // - Distances entre un point et un autre type de géométrie
+  // - Distances entre un point et un autre type de géoémtrie
   // - Distances entre lignes
   // - Distances entre surfaces
 
@@ -56,36 +68,30 @@ public abstract class Distances {
   // Distances entre points //
   // //
   // ////////////////////////////////////////////////////////////
-  @Deprecated
-  /** Distance euclidienne entre 2 points (en 2D ou 3D si les points ont un Z).
-   *  @Deprecated La méthode .distance de DirectPosition fait la même chose
-   * */
-  public static double distance(DirectPosition dp1, DirectPosition dp2) {
+
+  /** Distance euclidienne entre 2 points (en 2D ou 3D si les points ont un Z). */
+  public static double distance(IDirectPosition dp1, IDirectPosition dp2) {
     if (!Double.isNaN(dp1.getZ()) && !Double.isNaN(dp2.getZ())) {
       return Math.sqrt(Math.pow(dp1.getX() - dp2.getX(), 2)
           + Math.pow(dp1.getY() - dp2.getY(), 2)
           + Math.pow(dp1.getZ() - dp2.getZ(), 2));
+    } else {
+      return Math.sqrt(Math.pow(dp1.getX() - dp2.getX(), 2)
+          + Math.pow(dp1.getY() - dp2.getY(), 2));
     }
-    return Math.sqrt(Math.pow(dp1.getX() - dp2.getX(), 2)
-        + Math.pow(dp1.getY() - dp2.getY(), 2));
   }
 
-  /**
-   * Distance euclidienne calculée en 2 dimensions XY, même sur des objets 3D.
-   * @deprecated La méthode .distance de DirectPosition fait la même chose
-   * @return the 2d distance between 2 points
-   * */
-  @Deprecated
-  public static double distance2D(DirectPosition dp1, DirectPosition dp2) {
+  /** Distance euclidienne calculée en 2 dimensions XY, même sur des objets 3D. */
+  public static double distance2D(IDirectPosition dp1, IDirectPosition dp2) {
     return Math.sqrt(Math.pow(dp1.getX() - dp2.getX(), 2)
         + Math.pow(dp1.getY() - dp2.getY(), 2));
   }
 
   /**
    * Est-ce que les deux points sont distants de moins du seuil passé en
-   * paramètre ? méthode optimisée pour accélérer les requêtes spatiales.
+   * paramètre ? Méthode optimisée pour accélérer les requêtes spatiales.
    */
-  public static boolean proche(DirectPosition dp1, DirectPosition dp2,
+  public static boolean proche(IDirectPosition dp1, IDirectPosition dp2,
       double distance) {
     if (Math.abs(dp1.getX() - dp2.getX()) > distance) {
       return false;
@@ -106,28 +112,60 @@ public abstract class Distances {
   // ////////////////////////////////////////////////////////////
 
   /** Distance euclidienne du point M au segment [A,B] */
-  public static double distancePointSegment(DirectPosition M, DirectPosition A,
-      DirectPosition B) {
+  public static double distancePointSegment(IDirectPosition M,
+      IDirectPosition A, IDirectPosition B) {
     return Distances.distance(M, Operateurs.projection(M, A, B));
   }
 
   /**
    * Distance euclidienne d'un point P à une ligne.
-   * @param point point
-   * @param line ligne
+   * @param M point
+   * @param L ligne
    * @return Distance euclidienne d'un point P à une ligne
    */
-  public static double distance(DirectPosition point, GM_LineString line) {
-    return Distances.distance(point, line.coord());
+  public static double distance(IDirectPosition M, ILineString L) {
+    IDirectPositionList listePoints = L.coord();
+    double distmin, dist;
+
+    distmin = Distances.distance(listePoints.get(0), M);
+    for (int i = 0; i < listePoints.size() - 1; i++) {
+      dist = Distances.distancePointSegment(M, listePoints.get(i), listePoints
+          .get(i + 1));
+      if (dist < distmin) {
+        distmin = dist;
+      }
+    }
+    ;
+    return (distmin);
   }
 
+  /**
+   * Distance euclidienne d'un point P à une ligne.
+   * @param point point
+   * @param list liste de coordonnées
+   * @return Distance euclidienne d'un point P à une ligne
+   */
+  public static double distance(IDirectPosition point, IDirectPositionList list) {
+    double distmin, dist;
+
+    distmin = Distances.distance(list.get(0), point);
+    for (int i = 0; i < list.size() - 1; i++) {
+      dist = Distances.distancePointSegment(point, list.get(i), list.get(i + 1));
+      if (dist < distmin) {
+        distmin = dist;
+      }
+    }
+    ;
+    return (distmin);
+  }
+  
   /**
    * Distance euclidienne d'un point P à un anneau.
    * @param point point
    * @param ring un anneau
    * @return distance euclidienne
    */
-  public static double distance(DirectPosition point, GM_Ring ring) {
+  public static double distance(IDirectPosition point, IRing ring) {
     return Distances.distance(point, ring.coord());
   }
 
@@ -136,28 +174,9 @@ public abstract class Distances {
    * @param surface
    * @return the distance between a point and a surface
    */
-  public static double distance(DirectPosition point,
-      GM_OrientableSurface surface) {
+  public static double distance(IDirectPosition point,
+      IOrientableSurface surface) {
     return Distances.distance(point, surface.coord());
-  }
-
-  /**
-   * Distance euclidienne d'un point P à une liste de points.
-   * @param point point
-   * @param pointList une liste de points
-   * @return distance euclidienne
-   */
-  public static double distance(DirectPosition point,
-      DirectPositionList pointList) {
-    double distmin = Distances.distance(pointList.get(0), point);
-    for (int i = 0; i < pointList.size() - 1; i++) {
-      double dist = Distances.distancePointSegment(point, pointList.get(i),
-          pointList.get(i + 1));
-      if (dist < distmin) {
-        distmin = dist;
-      }
-    }
-    return distmin;
   }
 
   // /////////////////////////////////////////////////////////
@@ -167,13 +186,13 @@ public abstract class Distances {
   // /////////////////////////////////////////////////////////
 
   /**
-   * Approximation de la Première composante de Hausdorff d'une ligne vers une
+   * Approximation de la première composante de Hausdorff d'une ligne vers une
    * autre. Elle est calculee comme le maximum des distances des points
-   * intermédiaires de la Première ligne L1 à l'autre ligne L2.
+   * intermédiaires de la première ligne L1 à l'autre ligne L2.
    */
-  public static double premiereComposanteHausdorff(GM_LineString L1,
-      GM_LineString L2) {
-    DirectPositionList listePoints = L1.coord();
+  public static double premiereComposanteHausdorff(ILineString L1,
+      ILineString L2) {
+    IDirectPositionList listePoints = L1.coord();
     double dist, distmax = 0;
 
     for (int i = 0; i < listePoints.size(); i++) {
@@ -182,6 +201,7 @@ public abstract class Distances {
         distmax = dist;
       }
     }
+    ;
     return distmax;
   }
 
@@ -194,19 +214,19 @@ public abstract class Distances {
    * sur des données réelles. Cette implementation est un bon compromis entre
    * simplicité et précision.
    */
-  public static double hausdorff(GM_LineString L1, GM_LineString L2) {
+  public static double hausdorff(ILineString L1, ILineString L2) {
     return Math.max(Distances.premiereComposanteHausdorff(L1, L2), Distances
         .premiereComposanteHausdorff(L2, L1));
   }
 
   /**
-   * Distance de Hausdorff entre un point P et une ligne L. c'est-à-dire
+   * Distance de Hausdorff entre un point P et une ligne L. C'est-à-dire
    * distance au point P du point intermédiaire de la ligne L le plus éloigné du
    * point P.
    */
-  public static double hausdorff(GM_LineString L, GM_Point P) {
-    Iterator<DirectPosition> itPts = L.coord().getList().iterator();
-    DirectPosition point;
+  public static double hausdorff(ILineString L, IPoint P) {
+    Iterator<IDirectPosition> itPts = L.coord().getList().iterator();
+    IDirectPosition point;
     double distmax = 0, dist;
 
     while (itPts.hasNext()) {
@@ -216,6 +236,7 @@ public abstract class Distances {
         distmax = dist;
       }
     }
+    ;
     return distmax;
   }
 
@@ -226,25 +247,23 @@ public abstract class Distances {
    * IMPORTANT: la méthode suppose que les lignes sont orientées globalement
    * dans le même sens.
    */
-  public static double distanceMoyenne(GM_LineString L1, GM_LineString L2) {
-    GM_Polygon poly;
-    GM_LineString perimetre;
-    Iterator<DirectPosition> itPts;
+  public static double distanceMoyenne(ILineString L1, ILineString L2) {
+    Iterator<IDirectPosition> itPts;
 
     // fabrication de la surface delimitée par les lignes
-    perimetre = new GM_LineString();
+    GM_LineString perimetre = new GM_LineString();
     itPts = L1.coord().getList().iterator();
     while (itPts.hasNext()) {
-      DirectPosition pt = itPts.next();
+      IDirectPosition pt = itPts.next();
       perimetre.addControlPoint(0, pt);
     }
     itPts = L2.coord().getList().iterator();
     while (itPts.hasNext()) {
-      DirectPosition pt = itPts.next();
+      IDirectPosition pt = itPts.next();
       perimetre.addControlPoint(0, pt);
     }
     perimetre.addControlPoint(L1.endPoint());
-    poly = new GM_Polygon(perimetre);
+    GM_Polygon poly = new GM_Polygon(perimetre);
 
     return 2 * poly.area() / (L1.length() + L2.length());
   }
@@ -258,9 +277,9 @@ public abstract class Distances {
    * NB: Ce n'est pas une distance au sens mathématique du terme, et en
    * particulier cet écart n'est pas symétrique: ecart(L1,L2) != ecart(L2,L1)
    */
-  public static double ecartSurface(GM_LineString L1, GM_LineString L2) {
+  public static double ecartSurface(ILineString L1, ILineString L2) {
     double ecartTotal = 0, distPt, long1, long2;
-    DirectPositionList pts = L1.coord();
+    IDirectPositionList pts = L1.coord();
     for (int i = 0; i < pts.size(); i++) {
       distPt = Distances.distance(pts.get(i), L2);
       if (i == 0) {
@@ -284,42 +303,49 @@ public abstract class Distances {
   // Distances entre surfaces //
   // //
   // //////////////////////////////////////////////////////////
+
+   /**
+   * Transforme une géométrie générique en multisurface.
+   */
   @SuppressWarnings("unchecked")
-  private static GM_MultiSurface<GM_OrientableSurface> toMultiSurface(
-      GM_Object geom) {
-    if (geom instanceof GM_MultiSurface<?>) {
-      return (GM_MultiSurface<GM_OrientableSurface>) geom;
+  private static IMultiSurface<IOrientableSurface> toMultiSurface(
+      IGeometry geom) {
+    if (geom instanceof IMultiSurface<?>) {
+      return (IMultiSurface<IOrientableSurface>) geom;
     }
-    List<GM_OrientableSurface> list = new ArrayList<GM_OrientableSurface>();
-    list.add((GM_OrientableSurface) geom);
-    GM_MultiSurface<GM_OrientableSurface> multiSurface = new GM_MultiSurface<GM_OrientableSurface>(
-        list);
+    List<IOrientableSurface> list = new ArrayList<IOrientableSurface>();
+    list.add((IOrientableSurface) geom);
+    IMultiSurface<IOrientableSurface> multiSurface = new GM_MultiSurface<IOrientableSurface>(
+        (ICompositeSurface) list);
     return multiSurface;
   }
 
-  public static double distanceSurfacique(GM_Object geom, GM_Object geom2) {
-    if (geom instanceof GM_MultiSurface<?>
-        || geom2 instanceof GM_MultiSurface<?>) {
+   /**
+   * Distance surfacique entre deux IGeometry.
+   */
+  public static double distanceSurfacique(IGeometry geom, IGeometry geom2) {
+    if (geom instanceof IMultiSurface<?>
+        || geom2 instanceof IMultiSurface<?>) {
       return Distances.distanceSurfacique(Distances.toMultiSurface(geom),
           Distances.toMultiSurface(geom2));
     }
-    return Distances.distanceSurfacique((GM_Polygon) geom, (GM_Polygon) geom2);
+    return Distances.distanceSurfacique((IPolygon) geom, (IPolygon) geom2);
   }
 
   /**
    * Distance surfacique entre deux GM_Polygon.
    * 
-   * définition : 1 - surface(intersection)/surface(union) Ref [Vauglin 97]
+   * Définition : 1 - surface(intersection)/surface(union) Ref [Vauglin 97]
    * 
    * NB: renvoie 2 en cas de problème lors du calcul d'intersection avec JTS
    * (bug en particulier si les surfaces sont dégénérées ou trop complexes).
    */
-  public static double distanceSurfacique(GM_Polygon A, GM_Polygon B) {
-    GM_Object inter = A.intersection(B);
+  public static double distanceSurfacique(IPolygon A, IPolygon B) {
+    IGeometry inter = A.intersection(B);
     if (inter == null) {
       return 2;
     }
-    GM_Object union = A.union(B);
+    IGeometry union = A.union(B);
     if (union == null) {
       return 1;
     }
@@ -327,22 +353,21 @@ public abstract class Distances {
   }
 
   /**
-   * Distance surfacique entre deux GM_MultiSurface.
+   * Distance surfacique entre deux IMultiSurface.
    * 
-   * définition : 1 - surface(intersection)/surface(union) Ref [Vauglin 97]
+   * Définition : 1 - surface(intersection)/surface(union) Ref [Vauglin 97]
    * 
    * NB: renvoie 2 en cas de problème lors du calcul d'intersection avec JTS
    * (bug en particulier si les surfaces sont dégénérées ou trop complexes).
    */
-  public static double distanceSurfacique(
-      GM_MultiSurface<GM_OrientableSurface> A,
-      GM_MultiSurface<GM_OrientableSurface> B) {
-    GM_Object inter = A.intersection(B);
+  public static double distanceSurfacique(IMultiSurface<IOrientableSurface> A,
+      IMultiSurface<IOrientableSurface> B) {
+    IGeometry inter = A.intersection(B);
     // en cas de problème d'intersection avec JTS, la méthode retourne 2
     if (inter == null) {
       return 2;
     }
-    GM_Object union = A.union(B);
+    IGeometry union = A.union(B);
     if (union == null) {
       return 1;
     }
@@ -358,19 +383,19 @@ public abstract class Distances {
    * doivent être fixer donc de l'ordre de grandeur de la précision des données
    * sinon le calcul risque d'être trop faussé.
    * 
-   * définition : 1 - surface(intersection)/surface(union) Ref [Vauglin 97]
+   * Définition : 1 - surface(intersection)/surface(union) Ref [Vauglin 97]
    * 
    * NB: renvoie 2 en cas de problème lors du calcul d'intersection avec JTS
    * (bug en particulier si les surfaces sont dégénérées ou trop complexes).
    * */
-  public static double distanceSurfaciqueRobuste(GM_Polygon A, GM_Polygon B,
+  public static double distanceSurfaciqueRobuste(IPolygon A, IPolygon B,
       double min, double max) {
-    GM_Object inter = Operateurs.intersectionRobuste(A, B, min, max);
+    IGeometry inter = Operateurs.intersectionRobuste(A, B, min, max);
     // en cas de problème d'intersection avec JTS, la méthode retourne 2
     if (inter == null) {
       return 2;
     }
-    GM_Object union = A.union(B);
+    IGeometry union = A.union(B);
     if (union == null) {
       return 1;
     }
@@ -378,21 +403,20 @@ public abstract class Distances {
   }
 
   /**
-   * Distance surfacique entre deux GM_MultiSurface.
+   * Distance surfacique entre deux IMultiSurface.
    * 
    * Cette méthode contourne des bugs de JTS, qui sont trop nombreux sur les
    * agrégats. En contrepartie, cette méthode n'est valable que si les
-   * GM_Polygon composant A [resp. B] ne s'intersectent pas entre elles.
+   * IPolygon composant A [resp. B] ne s'intersectent pas entre elles.
    * 
-   * définition : 1 - surface(intersection)/surface(union) Ref [Vauglin 97]
+   * Définition : 1 - surface(intersection)/surface(union) Ref [Vauglin 97]
    * 
    * NB: renvoie 2 en cas de problème résiduer lors du calcul d'intersection
    * avec JTS (bug en particulier si les surfaces sont dégénérées ou trop
    * complexes).
    */
   public static double distanceSurfaciqueRobuste(
-      GM_MultiSurface<GM_OrientableSurface> A,
-      GM_MultiSurface<GM_OrientableSurface> B) {
+      IMultiSurface<IOrientableSurface> A, IMultiSurface<IOrientableSurface> B) {
     double inter = Distances.surfaceIntersection(A, B);
     if (inter == -1) {
       System.out
@@ -413,18 +437,17 @@ public abstract class Distances {
    * avec JTS (bug en particulier si les surfaces sont dégénérées ou trop
    * complexes).
    */
-  public static double surfaceIntersection(
-      GM_MultiSurface<GM_OrientableSurface> A,
-      GM_MultiSurface<GM_OrientableSurface> B) {
-    Iterator<GM_OrientableSurface> itA = A.getList().iterator();
-    Iterator<GM_OrientableSurface> itB;
+  public static double surfaceIntersection(IMultiSurface<IOrientableSurface> A,
+      IMultiSurface<IOrientableSurface> B) {
+    Iterator<IOrientableSurface> itA = A.getList().iterator();
+    Iterator<IOrientableSurface> itB;
     double inter = 0;
 
     while (itA.hasNext()) {
-      GM_Surface surfA = (GM_Surface) itA.next();
+      ISurface surfA = (ISurface) itA.next();
       itB = B.getList().iterator();
       while (itB.hasNext()) {
-        GM_Surface surfB = (GM_Surface) itB.next();
+        ISurface surfB = (ISurface) itB.next();
         if (surfB.intersection(surfA) == null) {
           System.out
               .println("Plantage JTS, renvoi -1 à l'intersection de deux multi_surfaces");
@@ -447,8 +470,8 @@ public abstract class Distances {
    * avec JTS (bug en particulier si les surfaces sont dégénérées ou trop
    * complexes).
    */
-  public static double surfaceUnion(GM_MultiSurface<GM_OrientableSurface> A,
-      GM_MultiSurface<GM_OrientableSurface> B) {
+  public static double surfaceUnion(IMultiSurface<IOrientableSurface> A,
+      IMultiSurface<IOrientableSurface> B) {
     double inter = Distances.surfaceIntersection(A, B);
     if (inter == -1) {
       System.out
@@ -461,10 +484,10 @@ public abstract class Distances {
   /**
    * Mesure dite "Exactitude" entre 2 surfaces. Ref : [Bel Hadj Ali 2001]
    * 
-   * définition : Surface(A inter B) / Surface(A)
+   * Définition : Surface(A inter B) / Surface(A)
    */
-  public static double exactitude(GM_Polygon A, GM_Polygon B) {
-    GM_Object inter = A.intersection(B);
+  public static double exactitude(IPolygon A, IPolygon B) {
+    IGeometry inter = A.intersection(B);
     if (inter == null) {
       return 0;
     }
@@ -474,19 +497,19 @@ public abstract class Distances {
   /**
    * Mesure dite "Complétude" entre 2 surfaces. Ref : [Bel Hadj Ali 2001]
    * 
-   * définition : Surface(A inter B) / Surface(B)
+   * Définition : Surface(A inter B) / Surface(B)
    */
-  public static double completude(GM_Polygon A, GM_Polygon B) {
+  public static double completude(IPolygon A, IPolygon B) {
     return Distances.exactitude(B, A);
   }
 
   /**
-   * Mesure dite "Exactitude" entre 2 GM_MultiSurface. Ref : [Bel Hadj Ali 2001]
-   * définition : Surface(A inter B) / Surface(A)
+   * Mesure dite "Exactitude" entre 2 IMultiSurface. Ref : [Bel Hadj Ali 2001]
+   * Définition : Surface(A inter B) / Surface(A)
    */
-  public static double exactitude(GM_MultiSurface<GM_OrientableSurface> A,
-      GM_MultiSurface<GM_OrientableSurface> B) {
-    GM_Object inter = A.intersection(B);
+  public static double exactitude(IMultiSurface<IOrientableSurface> A,
+      IMultiSurface<IOrientableSurface> B) {
+    IGeometry inter = A.intersection(B);
     if (inter == null) {
       return 0;
     }
@@ -494,12 +517,12 @@ public abstract class Distances {
   }
 
   /**
-   * Mesure dite "Complétude" entre 2 GM_MultiSurface.
+   * Mesure dite "Complétude" entre 2 IMultiSurface.
    * 
-   * Ref : [Bel Hadj Ali 2001] définition : Surface(A inter B) / Surface(B)
+   * Ref : [Bel Hadj Ali 2001] Définition : Surface(A inter B) / Surface(B)
    */
-  public static double completude(GM_MultiSurface<GM_OrientableSurface> A,
-      GM_MultiSurface<GM_OrientableSurface> B) {
+  public static double completude(IMultiSurface<IOrientableSurface> A,
+      IMultiSurface<IOrientableSurface> B) {
     return Distances.exactitude(B, A);
   }
 
@@ -516,9 +539,9 @@ public abstract class Distances {
    * associationSurfaces(A,B) = faux sinon.
    * 
    */
-  public static boolean associationSurfaces(GM_Object A, GM_Object B,
+  public static boolean associationSurfaces(IGeometry A, IGeometry B,
       double min, double coeff) {
-    GM_Object inter = A.intersection(B);
+    IGeometry inter = A.intersection(B);
     if (inter == null) {
       return false;
     }
@@ -556,9 +579,9 @@ public abstract class Distances {
    * associationSurfaces(A,B) = faux sinon.
    * 
    */
-  public static boolean associationSurfacesRobuste(GM_Object A, GM_Object B,
+  public static boolean associationSurfacesRobuste(IGeometry A, IGeometry B,
       double min, double coeff, double minDouglas, double maxDouglas) {
-    GM_Object inter = Operateurs.intersectionRobuste(A, B, minDouglas,
+    IGeometry inter = Operateurs.intersectionRobuste(A, B, minDouglas,
         maxDouglas);
     if (inter == null) {
       return false;
@@ -575,4 +598,5 @@ public abstract class Distances {
     }
     return false;
   }
+
 }

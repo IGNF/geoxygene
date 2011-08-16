@@ -65,7 +65,7 @@ public class TestMyClass {
   public void creation() {
 
     // ouverture d'une transaction
-    System.out.println("ouverture"); //$NON-NLS-1$
+    System.out.println("ouverture");
     this.db.begin();
 
     // creation d'un objet persistent
@@ -74,7 +74,7 @@ public class TestMyClass {
 
     obj.bonjour();
     obj.setField0(123);
-    obj.setField1("M. et Mme. PIC ont une fille"); //$NON-NLS-1$
+    obj.setField1("M. et Mme. PIC ont une fille");
     obj.setField2(true);
     obj.setField3(3.14159);
 
@@ -84,60 +84,60 @@ public class TestMyClass {
     // commit et fermeture de la transaction
     // valide toutes les creations et modifications
     // une modif meme apres le "db.makePersistent" est repercutee
-    System.out.println("commit"); //$NON-NLS-1$
+    System.out.println("commit");
     this.db.commit();
-    System.out.println("commit ok"); //$NON-NLS-1$
+    System.out.println("commit ok");
   }
 
   // charge les objets de la base
   public void chargement() {
 
     // ouverture d'une transaction
-    System.out.println("ouverture"); //$NON-NLS-1$
+    System.out.println("ouverture");
     this.db.begin();
 
     // chargement de tous objets de Maclasse
     List<?> list = this.db.loadAll(MyClass.class);
 
     // parcours de tous les objets
-    System.out.println("nb: " + list.size()); //$NON-NLS-1$
+    System.out.println("nb: " + list.size());
     for (Object obj_ : list) {
       MyClass obj = (MyClass) obj_;
-      System.out.println("id : " + obj.getId()); //$NON-NLS-1$
-      System.out.println("classe : " + obj.getClass().getName()); //$NON-NLS-1$
-      System.out.println("field0 : " + obj.getField0()); //$NON-NLS-1$
-      System.out.println("field1 : " + obj.getField1()); //$NON-NLS-1$
-      System.out.println("field2 : " + obj.getField2()); //$NON-NLS-1$
-      System.out.println("field3 : " + obj.getField3()); //$NON-NLS-1$
+      System.out.println("id : " + obj.getId());
+      System.out.println("classe : " + obj.getClass().getName());
+      System.out.println("field0 : " + obj.getField0());
+      System.out.println("field1 : " + obj.getField1());
+      System.out.println("field2 : " + obj.getField2());
+      System.out.println("field3 : " + obj.getField3());
     }
 
-    System.out.println("commit"); //$NON-NLS-1$
+    System.out.println("commit");
     this.db.commit();
-    System.out.println("commit ok"); //$NON-NLS-1$
+    System.out.println("commit ok");
   }
 
   //
   public void interroge() {
 
     // ouverture d'une transaction
-    System.out.println("ouverture"); //$NON-NLS-1$
+    System.out.println("ouverture");
     this.db.begin();
 
     // la requete
-    String requete = "select x from fr.ign.cogit.geoxygene.example.tutorial.MyClass where field0 > $1"; //$NON-NLS-1$
+    String requete = "select x from fr.ign.cogit.geoxygene.example.tutorial.MyClass where field0 > $1";
     // $1 represente un parametre (200 ici)
     List<?> list = this.db.loadOQL(requete, new Integer(100));
 
     // parcours de tous les objets
-    System.out.println("nb: " + list.size()); //$NON-NLS-1$
+    System.out.println("nb: " + list.size());
     for (Object obj_ : list) {
       MyClass obj = (MyClass) obj_;
-      System.out.println("id : " + obj.getId()); //$NON-NLS-1$
+      System.out.println("id : " + obj.getId());
     }
 
-    System.out.println("commit"); //$NON-NLS-1$
+    System.out.println("commit");
     this.db.commit();
-    System.out.println("commit ok"); //$NON-NLS-1$
+    System.out.println("commit ok");
   }
 
 }

@@ -14,6 +14,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Chargeur;
@@ -21,9 +24,7 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.contrib.delaunay.TriangulationJTS;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.Population;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
@@ -42,11 +43,12 @@ public class ThematicSymbolizer extends AbstractSymbolizer {
     this.symbolizers = symbolizers;
   }
   @XmlTransient
-  private Map<FT_Feature, DirectPosition> points = new HashMap<FT_Feature, DirectPosition>();
+  private Map<IFeature, IDirectPosition> points = new HashMap<IFeature, IDirectPosition>();
   @XmlTransient
-  private Map<FT_Feature, Double> radius = new HashMap<FT_Feature, Double>();
+  private Map<IFeature, Double> radius = new HashMap<IFeature, Double>();
+  @SuppressWarnings("unchecked")
   @Override
-  public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics) {
+  public void paint(IFeature feature, Viewport viewport, Graphics2D graphics) {
     if (feature.getGeom() == null || viewport == null) {
       return;
     }
@@ -58,7 +60,7 @@ public class ThematicSymbolizer extends AbstractSymbolizer {
 //            size = element.getValue();
 //          }
 //        }
-        DirectPosition position = points.get(feature);
+        IDirectPosition position = points.get(feature);
         Double size = radius.get(feature);
         if (position == null || size == null) {
           TriangulationJTS t = new TriangulationJTS("TRIANGLE");
@@ -70,10 +72,10 @@ public class ThematicSymbolizer extends AbstractSymbolizer {
           }
           GM_MultiCurve<GM_OrientableCurve> contour = new GM_MultiCurve<GM_OrientableCurve>();
           if (feature.getGeom() instanceof GM_Polygon) {
-            contour.add(((GM_Polygon) feature.getGeom()).exteriorLineString());
+            contour.add((GM_OrientableCurve) ((IPolygon) feature.getGeom()).exteriorLineString());
           } else {
             for (GM_Polygon surface : (GM_MultiSurface<GM_Polygon>) feature.getGeom()) {
-              contour.add(surface.exteriorLineString());           
+              contour.add((GM_OrientableCurve) surface.exteriorLineString());           
             }
           }
           for (Arc a : t.getPopArcs()) {
@@ -142,4 +144,5 @@ public class ThematicSymbolizer extends AbstractSymbolizer {
       }
     }
   }
+
 }

@@ -11,7 +11,7 @@ public class DepartementAlgorithmie {
    * cette valeur dans la table "departements"
    */
   public static void calculSuperficieDepartements() {
-    // création d'une nouvelle connexion
+    // Création d'une nouvelle connexion
 
     // Ouverture d'une transaction relative à la connexion
 

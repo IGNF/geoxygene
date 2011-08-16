@@ -29,8 +29,10 @@ package fr.ign.cogit.geoxygene.util.loader;
 
 import java.util.Iterator;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
@@ -64,13 +66,11 @@ public class TypeGeom {
     this.db = DB;
   }
 
-  // /////////////////////////////////////////////////////////////////////////////////////////////////////
-  // /////////////////////////////////////////////////////////////////////////////////////////////////////
   public void multi() {
     try {
       this.db.begin();
       try {
-        FT_FeatureCollection<FT_Feature> list;
+        IFeatureCollection<IFeature> list;
         try {
           list = this.db.loadAllFeatures(this.theClass);
         } catch (java.lang.OutOfMemoryError mem) {
@@ -79,24 +79,24 @@ public class TypeGeom {
                   + this.theClass.getName());
           System.out
               .println(" Pour cette classe, relancer le traitement avec l'option -Xmx ");
-          list = new FT_FeatureCollection<FT_Feature>();
+          list = new FT_FeatureCollection<IFeature>();
         }
-        Iterator<FT_Feature> iterator = list.iterator();
+        Iterator<IFeature> iterator = list.iterator();
         int i = 0;
         while (iterator.hasNext()) {
           i++;
-          FT_Feature f = iterator.next();
-          GM_Object o = f.getGeom();
+          IFeature f = iterator.next();
+          IGeometry o = f.getGeom();
           if (o instanceof GM_MultiSurface<?>) {
-            FT_Feature f1 = f.cloneGeom();
+            IFeature f1 = f.cloneGeom();
             this.db.deletePersistent(f);
             this.multiSurface(f1);
           } else if (o instanceof GM_MultiCurve<?>) {
-            FT_Feature f1 = f.cloneGeom();
+            IFeature f1 = f.cloneGeom();
             this.db.deletePersistent(f);
             this.multiCurve(f1);
           } else if (o instanceof GM_MultiPoint) {
-            FT_Feature f1 = f.cloneGeom();
+            IFeature f1 = f.cloneGeom();
             this.db.deletePersistent(f);
             this.multiPoint(f1);
           } else if (!((o instanceof GM_Point) || (o instanceof GM_LineString) || (o instanceof GM_Polygon))) {
@@ -125,14 +125,14 @@ public class TypeGeom {
   // /////////////////////////////////////////////////////////////////////////////////////////////////////
   // /////////////////////////////////////////////////////////////////////////////////////////////////////
   @SuppressWarnings("unchecked")
-  private void multiSurface(FT_Feature theFeature) {
+  private void multiSurface(IFeature theFeature) {
     System.out.println(" GM_MultiSurface detecte dans "
         + this.theClass.getName() + " - id = " + theFeature.getId());
     try {
       GM_MultiSurface<GM_OrientableSurface> ms = (GM_MultiSurface<GM_OrientableSurface>) theFeature
           .getGeom();
       for (GM_Object p : ms) {
-        FT_Feature newFeature = theFeature.cloneGeom();
+        IFeature newFeature = theFeature.cloneGeom();
         newFeature.setGeom(p);
         newFeature.setId(0);
         this.db.makePersistent(newFeature);
@@ -142,17 +142,15 @@ public class TypeGeom {
     }
   }
 
-  // /////////////////////////////////////////////////////////////////////////////////////////////////////
-  // /////////////////////////////////////////////////////////////////////////////////////////////////////
   @SuppressWarnings("unchecked")
-  private void multiCurve(FT_Feature theFeature) {
+  private void multiCurve(IFeature theFeature) {
     System.out.println(" GM_MultiCurve detecte dans " + this.theClass.getName()
         + " - id = " + theFeature.getId());
     try {
       GM_MultiCurve<GM_OrientableCurve> mc = (GM_MultiCurve<GM_OrientableCurve>) theFeature
           .getGeom();
       for (GM_Object c : mc) {
-        FT_Feature newFeature = theFeature.cloneGeom();
+        IFeature newFeature = theFeature.cloneGeom();
         newFeature.setGeom(c);
         newFeature.setId(0);
         this.db.makePersistent(newFeature);
@@ -164,13 +162,13 @@ public class TypeGeom {
 
   // /////////////////////////////////////////////////////////////////////////////////////////////////////
   // /////////////////////////////////////////////////////////////////////////////////////////////////////
-  private void multiPoint(FT_Feature theFeature) {
+  private void multiPoint(IFeature theFeature) {
     System.out.println(" GM_MultiPoint detecte dans " + this.theClass.getName()
         + " - id = " + theFeature.getId());
     try {
       GM_MultiPoint mp = (GM_MultiPoint) theFeature.getGeom();
-      for (GM_Object p : mp) {
-        FT_Feature newFeature = theFeature.cloneGeom();
+      for (IGeometry p : mp) {
+        IFeature newFeature = theFeature.cloneGeom();
         newFeature.setGeom(p);
         newFeature.setId(0);
         this.db.makePersistent(newFeature);

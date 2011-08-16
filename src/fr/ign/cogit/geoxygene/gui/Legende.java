@@ -3,7 +3,7 @@ package fr.ign.cogit.geoxygene.gui;
 import java.awt.Color;
 
 /**
- * la legende: defini la symbolisation des objets
+ * la legende
  * @author julien Gaffuri 29 janv. 2009
  * 
  */
@@ -19,7 +19,7 @@ public class Legende {
   public static void setECHELLE_SYMBOLISATION(double echelle_cible) {
     Legende.ECHELLE_SYMBOLISATI0N = echelle_cible;
   }
-
+  
   // courbes de niveau
   public static Color CN_COULEUR = Color.ORANGE;
   public static double CN_LARGEUR_NORMALE = 0.15;
@@ -40,5 +40,6 @@ public class Legende {
   public static final Color ADMIN_COULEUR = new Color(200, 200, 200);
   public static final double ADMIN_LARGEUR = 0.15;
   public static final float[] ADMIN_POINTILLES = new float[] { 0, 6, 0, 6 };
+  
 
 }

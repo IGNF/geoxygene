@@ -27,10 +27,10 @@
 
 package fr.ign.cogit.geoxygene.util.algo;
 
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
 
 /**
@@ -40,16 +40,16 @@ import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
  * @version 1.0
  * 
  */
+@SuppressWarnings("unused")
 public class GeosAlgorithms implements GeomAlgorithms {
 
   public GeosAlgorithms() {
-    System.loadLibrary("GeosAlgorithms"); //$NON-NLS-1$
+    System.loadLibrary("GeosAlgorithms");
   }
 
   private native String intersection(String wkt1, String wkt2);
 
-  @Override
-  public GM_Object intersection(GM_Object geom1, GM_Object geom2) {
+  public IGeometry intersection(IGeometry geom1, IGeometry geom2) {
     try {
       String wkt1 = WktGeOxygene.makeWkt(geom1);
       String wkt2 = WktGeOxygene.makeWkt(geom2);
@@ -63,8 +63,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 
   private native String union(String wkt1, String wkt2);
 
-  @Override
-  public GM_Object union(GM_Object geom1, GM_Object geom2) {
+  public IGeometry union(IGeometry geom1, IGeometry geom2) {
     try {
       String wkt1 = WktGeOxygene.makeWkt(geom1);
       String wkt2 = WktGeOxygene.makeWkt(geom2);
@@ -78,8 +77,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 
   private native String difference(String wkt1, String wkt2);
 
-  @Override
-  public GM_Object difference(GM_Object geom1, GM_Object geom2) {
+  public IGeometry difference(IGeometry geom1, IGeometry geom2) {
     try {
       String wkt1 = WktGeOxygene.makeWkt(geom1);
       String wkt2 = WktGeOxygene.makeWkt(geom2);
@@ -93,8 +91,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 
   private native String symDifference(String wkt1, String wkt2);
 
-  @Override
-  public GM_Object symDifference(GM_Object geom1, GM_Object geom2) {
+  public IGeometry symDifference(IGeometry geom1, IGeometry geom2) {
     try {
       String wkt1 = WktGeOxygene.makeWkt(geom1);
       String wkt2 = WktGeOxygene.makeWkt(geom2);
@@ -108,8 +105,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 
   private native String buffer(String wkt, double distance);
 
-  @Override
-  public GM_Object buffer(GM_Object geom, double distance) {
+  public IGeometry buffer(IGeometry geom, double distance) {
     try {
       String wkt = WktGeOxygene.makeWkt(geom);
       String wktResult = this.buffer(wkt, distance);
@@ -120,15 +116,13 @@ public class GeosAlgorithms implements GeomAlgorithms {
     }
   }
 
-  @Override
-  public GM_Object buffer10(GM_Object geOxyGeom) {
+  public IGeometry buffer10(IGeometry geOxyGeom) {
     return this.buffer(geOxyGeom, 10);
   }
 
   private native String convexHull(String wkt);
 
-  @Override
-  public GM_Object convexHull(GM_Object geOxyGeom) {
+  public IGeometry convexHull(IGeometry geOxyGeom) {
     try {
       String wkt = WktGeOxygene.makeWkt(geOxyGeom);
       String wktResult = this.convexHull(wkt);
@@ -141,8 +135,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 
   private native boolean contains(String wkt1, String wkt2);
 
-  @Override
-  public boolean contains(GM_Object geOxyGeom1, GM_Object geOxyGeom2) {
+  public boolean contains(IGeometry geOxyGeom1, IGeometry geOxyGeom2) {
     String wkt1 = WktGeOxygene.makeWkt(geOxyGeom1);
     String wkt2 = WktGeOxygene.makeWkt(geOxyGeom2);
     boolean result = this.contains(wkt1, wkt2);
@@ -151,8 +144,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 
   private native boolean intersects(String wkt1, String wkt2);
 
-  @Override
-  public boolean intersects(GM_Object geOxyGeom1, GM_Object geOxyGeom2) {
+  public boolean intersects(IGeometry geOxyGeom1, IGeometry geOxyGeom2) {
     String wkt1 = WktGeOxygene.makeWkt(geOxyGeom1);
     String wkt2 = WktGeOxygene.makeWkt(geOxyGeom2);
     boolean result = this.intersects(wkt1, wkt2);
@@ -161,8 +153,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 
   private native double distance(String wkt1, String wkt2);
 
-  @Override
-  public double distance(GM_Object geOxyGeom1, GM_Object geOxyGeom2) {
+  public double distance(IGeometry geOxyGeom1, IGeometry geOxyGeom2) {
     String wkt1 = WktGeOxygene.makeWkt(geOxyGeom1);
     String wkt2 = WktGeOxygene.makeWkt(geOxyGeom2);
     double result = this.distance(wkt1, wkt2);
@@ -171,8 +162,7 @@ public class GeosAlgorithms implements GeomAlgorithms {
 
   private native double area(String wkt);
 
-  @Override
-  public double area(GM_Object geOxyGeom1) {
+  public double area(IGeometry geOxyGeom1) {
     String wkt1 = WktGeOxygene.makeWkt(geOxyGeom1);
     double result = this.area(wkt1);
     return result;
@@ -180,102 +170,99 @@ public class GeosAlgorithms implements GeomAlgorithms {
 
   private native String boundary(String wkt);
 
-  public GM_Object boundary(GM_Object geOxyGeom1) {
+  public IGeometry boundary(IGeometry geOxyGeom1) {
     return null;
   }
 
   private native String coordinates(String wkt);
 
-  public DirectPositionList coordinates(GM_Object geOxyGeom1) {
+  public DirectPositionList coordinates(IGeometry geOxyGeom1) {
     return null;
   }
 
   private native String envelope(String wkt);
 
-  public GM_Envelope envelope(GM_Object geOxyGeom) {
+  public GM_Envelope envelope(IGeometry geOxyGeom) {
     return null;
   }
 
   private native boolean equals(String wkt1, String wkt2);
 
-  @Override
-  public boolean equals(GM_Object geOxyGeom1, GM_Object geOxyGeom2) {
+  public boolean equals(IGeometry geOxyGeom1, IGeometry geOxyGeom2) {
     return false;
   }
 
   private native boolean equalsExact(String wkt1, String wkt2);
 
-  public boolean equalsExact(GM_Object geOxyGeom1, GM_Object geOxyGeom2) {
+  public boolean equalsExact(IGeometry geOxyGeom1, IGeometry geOxyGeom2) {
     return false;
   }
 
   private native boolean crosses(String wkt1, String wkt2);
 
-  public boolean crosses(GM_Object geOxyGeom1, GM_Object geOxyGeom2) {
+  public boolean crosses(IGeometry geOxyGeom1, IGeometry geOxyGeom2) {
     return false;
   }
 
   private native boolean disjoint(String wkt1, String wkt2);
 
-  public boolean disjoint(GM_Object geOxyGeom1, GM_Object geOxyGeom2) {
+  public boolean disjoint(IGeometry geOxyGeom1, IGeometry geOxyGeom2) {
     return false;
   }
 
   private native boolean within(String wkt1, String wkt2);
 
-  public boolean within(GM_Object geOxyGeom1, GM_Object geOxyGeom2) {
+  public boolean within(IGeometry geOxyGeom1, IGeometry geOxyGeom2) {
     return false;
   }
 
   private native boolean overlaps(String wkt1, String wkt2);
 
-  public boolean overlaps(GM_Object geOxyGeom1, GM_Object geOxyGeom2) {
+  public boolean overlaps(IGeometry geOxyGeom1, IGeometry geOxyGeom2) {
     return false;
   }
 
   private native boolean touches(String wkt1, String wkt2);
 
-  public boolean touches(GM_Object geOxyGeom1, GM_Object geOxyGeom2) {
+  public boolean touches(IGeometry geOxyGeom1, IGeometry geOxyGeom2) {
     return false;
   }
 
   private native boolean isEmpty(String wkt);
 
-  public boolean isEmpty(GM_Object geOxyGeom) {
+  public boolean isEmpty(IGeometry geOxyGeom) {
     return false;
   }
 
   private native boolean isSimple(String wkt);
 
-  public boolean isSimple(GM_Object geOxyGeom) {
+  public boolean isSimple(IGeometry geOxyGeom) {
     return false;
   }
 
   private native boolean isValid(String wkt);
 
-  public boolean isValid(GM_Object geOxyGeom) {
+  public boolean isValid(IGeometry geOxyGeom) {
     return false;
   }
 
-  public int dimension(GM_Object geOxyGeom) {
+  public int dimension(IGeometry geOxyGeom) {
     return 0;
   }
 
-  @Override
-  public double length(GM_Object geOxyGeom) {
+  public double length(IGeometry geOxyGeom) {
     return 0;
   }
 
-  public int numPoints(GM_Object geOxyGeom) {
+  public int numPoints(IGeometry geOxyGeom) {
     return 0;
   }
 
-  public GM_Object translate(GM_Object geom, double tx, double ty, double tz) {
+  public IGeometry translate(IGeometry geom, double tx, double ty, double tz) {
     return null;
   }
 
-  @Override
-  public DirectPosition centroid(GM_Object geom) {
+  public DirectPosition centroid(IGeometry geom) {
     return null;
   }
 

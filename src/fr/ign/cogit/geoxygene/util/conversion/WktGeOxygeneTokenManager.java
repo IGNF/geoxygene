@@ -100,7 +100,7 @@ public class WktGeOxygeneTokenManager implements WktGeOxygeneConstants {
     }
     switch (this.curChar) {
       case 73:
-        return this.jjMoveStringLiteralDfa3_0(active0, 0x402000L);
+        return this.jjMoveStringLiteralDfa3_0(active0, 0x2000L);
       case 76:
         return this.jjMoveStringLiteralDfa3_0(active0, 0x1d0000L);
       case 78:
@@ -870,7 +870,9 @@ public class WktGeOxygeneTokenManager implements WktGeOxygeneConstants {
           }
         } while (i != startsAt);
       } else {
+        @SuppressWarnings("unused")
         int i2 = (this.curChar & 0xff) >> 6;
+        @SuppressWarnings("unused")
         long l2 = 1L << (this.curChar & 077);
         do {
           switch (this.jjstateSet[--i]) {

@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Chargeur;
@@ -16,7 +17,6 @@ import fr.ign.cogit.geoxygene.contrib.clustering.minimalspanningtree.triangulati
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.util.viewer.ObjectViewer;
 
 /**
@@ -227,8 +227,8 @@ public class MinimalSpanningTreeTriangulation {
 	 *            second node
 	 */
 	private static double distanceSquared(Noeud node, Noeud node2) {
-		DirectPosition dp = node.getGeometrie().coord().get(0);
-		DirectPosition dp2 = node2.getGeometrie().coord().get(0);
+		IDirectPosition dp = node.getGeometrie().coord().get(0);
+		IDirectPosition dp2 = node2.getGeometrie().coord().get(0);
 
 		return (Math.pow(dp.getX() - dp2.getX(), 2) + Math.pow(dp.getY()
 				- dp2.getY(), 2));

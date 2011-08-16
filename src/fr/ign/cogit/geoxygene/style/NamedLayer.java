@@ -1,29 +1,20 @@
-/**
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
- * 
+/*
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.style;
@@ -32,14 +23,15 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import fr.ign.cogit.geoxygene.api.feature.IDataSet;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.feature.DataSet;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.feature.Population;
 
 /**
  * @author Julien Perret
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 /*
@@ -64,20 +56,20 @@ public class NamedLayer extends AbstractLayer {
 
   @SuppressWarnings("unchecked")
   @Override
-  public FT_FeatureCollection<? extends FT_Feature> getFeatureCollection() {
+  public IFeatureCollection<? extends IFeature> getFeatureCollection() {
     /*
      * TODO Récupèrer la population à partir d'un vrai DataSet Pour l'instant,
      * on utilise un singleton de DataSet qu'il faut donc avoir remplit au
      * préalable...
      */
-    FT_FeatureCollection<FT_Feature> pop = (FT_FeatureCollection<FT_Feature>) DataSet
+    IFeatureCollection<IFeature> pop = (IFeatureCollection<IFeature>) DataSet
         .getInstance().getPopulation(this.getName());
     if (pop == null) {
-      pop = new FT_FeatureCollection<FT_Feature>();
-      DataSet dataSet = DataSet.getInstance().getComposant(this.getName());
-      for (Population<? extends FT_Feature> population : dataSet
+      pop = new FT_FeatureCollection<IFeature>();
+      IDataSet dataSet = DataSet.getInstance().getComposant(this.getName());
+      for (IPopulation<? extends IFeature> population : dataSet
           .getPopulations()) {
-        pop.addCollection((FT_FeatureCollection<FT_Feature>) population);
+        pop.addCollection((FT_FeatureCollection<IFeature>) population);
       }
     }
     return pop;
@@ -85,10 +77,12 @@ public class NamedLayer extends AbstractLayer {
 
   @Override
   public String toString() {
-    String result = "NamedLayer " + this.getName() + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
+    String result = "NamedLayer " //$NON-NLS-1$
+        + this.getName() + "\n"; //$NON-NLS-1$
     for (Style style : this.getStyles()) {
       result += "\tStyle " + style + "\n"; //$NON-NLS-1$//$NON-NLS-2$
     }
     return result;
   }
+
 }

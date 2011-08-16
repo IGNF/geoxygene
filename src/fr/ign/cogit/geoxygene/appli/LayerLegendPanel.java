@@ -69,9 +69,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.feature.DataSet;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.NamedLayer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
@@ -355,7 +355,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
       @Override
       public void actionPerformed(ActionEvent e) {
         LayerViewPanel lvPanel = LayerLegendPanel.this.getLayerViewPanel();
-        Collection<FT_Feature> features = lvPanel.getSelectedFeatures();
+        Collection<IFeature> features = lvPanel.getSelectedFeatures();
         for (Layer layer : LayerLegendPanel.this.getSelectedLayers()) {
           features.addAll(layer.getFeatureCollection());
         }
@@ -368,7 +368,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
       @Override
       public void actionPerformed(ActionEvent e) {
         LayerViewPanel lvPanel = LayerLegendPanel.this.getLayerViewPanel();
-        Collection<FT_Feature> features = lvPanel.getSelectedFeatures();
+        Collection<IFeature> features = lvPanel.getSelectedFeatures();
         for (Layer layer : LayerLegendPanel.this.getSelectedLayers()) {
           features.removeAll(layer.getFeatureCollection());
         }

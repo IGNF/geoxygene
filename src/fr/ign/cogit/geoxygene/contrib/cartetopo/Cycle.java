@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
@@ -25,7 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 
 /**
  * Classe représentant un cycle dans une carte topologique.
@@ -35,7 +43,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 public class Cycle {
   protected List<Arc> arcs;
   protected List<Boolean> orientationsArcs;
-  protected GM_LineString geometrie;
+  protected ILineString geometrie;
   protected boolean aGauche;
 
   /**
@@ -47,7 +55,7 @@ public class Cycle {
    *          faux sinon.
    */
   public Cycle(List<Arc> arcs, List<Boolean> orientationsArcs,
-      GM_LineString geometrie, boolean aGauche) {
+      ILineString geometrie, boolean aGauche) {
     this.arcs = arcs;
     this.orientationsArcs = orientationsArcs;
     this.geometrie = geometrie;
@@ -63,7 +71,7 @@ public class Cycle {
   }
 
   /**
-   * définit la liste des arcs du cycle
+   * Définit la liste des arcs du cycle
    * @param arcs la liste des arcs du cycle
    */
   public void setArcs(List<Arc> arcs) {
@@ -79,7 +87,7 @@ public class Cycle {
   }
 
   /**
-   * définit la liste des orientations du cycle
+   * Définit la liste des orientations du cycle
    * @param orientationsArcs les orientations des arcs du cycle
    */
   public void setOrientationsArcs(List<Boolean> orientationsArcs) {
@@ -90,15 +98,15 @@ public class Cycle {
    * Récupère la géométrie du cycle
    * @return la géométrie du cycle
    */
-  public GM_LineString getGeometrie() {
+  public ILineString getGeometrie() {
     return this.geometrie;
   }
 
   /**
-   * définit la géométrie du cycle
+   * Définit la géométrie du cycle
    * @param geometrie la géométrie du cycle
    */
-  public void setGeometrie(GM_LineString geometrie) {
+  public void setGeometrie(ILineString geometrie) {
     this.geometrie = geometrie;
   }
 
@@ -112,7 +120,7 @@ public class Cycle {
   }
 
   /**
-   * définit le sens de parcours du premier arc du cycle
+   * Définit le sens de parcours du premier arc du cycle
    * @param gauche le sens de parcours du premier arc du cycle : vrai s'il est
    *          parcours par la gauche, faux sinon.
    */
@@ -131,8 +139,7 @@ public class Cycle {
     Set<Face> listeFacesInterieuresDuCycle = new HashSet<Face>();
     for (int index = 0; index < this.getArcs().size(); index++) {
       Arc arc = this.getArcs().get(index);
-      boolean orientation = this.getOrientationsArcs().get(index)
-          .booleanValue();
+      boolean orientation = this.getOrientationsArcs().get(index);
       if (((orientation && !this.isAGauche()) || (!orientation && this
           .isAGauche()))
           && (arc.getFaceGauche() != null)) {

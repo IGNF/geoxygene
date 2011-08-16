@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.util.browser;
@@ -84,8 +92,8 @@ public class ObjectBrowser {
    */
   protected static final boolean HIDE_WHEN_REFRESH = false;
 
-  /** référence vers l'interface graphique du navigateur d'objet. */
-  static ObjectBrowserGUI browserInterface;
+  /** Référence vers l'interface graphique du navigateur d'objet. */
+  private static ObjectBrowserGUI browserInterface;
 
   /**
    * Teste si l'objet passé en paramètre est une instance de Collection (au sens
@@ -103,7 +111,7 @@ public class ObjectBrowser {
   }
 
   /**
-   * méthode statique de conversion d'une Collection en tableau d'Object.
+   * Méthode statique de conversion d'une Collection en tableau d'Object.
    * 
    * @param obj l'objet instance de collection à convertir.
    * @return le tableau d'object correspondant à la collection passée en
@@ -138,16 +146,17 @@ public class ObjectBrowser {
    *         les autres cas.
    */
   private static int getArrayClassComponentType(Class<?> classObject) {
-    // Faudrait peut-être intercepter le fait que ce soit pas un Array
+    // Faudrait peut-être intercepter le fait que ce soit pas un Array !!! ;-))
     Class<?> componentType = classObject.getComponentType();
     if (componentType.isPrimitive()) {
       return ObjectBrowser.PRIMITIVE;
+    } else {
+      return ObjectBrowser.OBJECT;
     }
-    return ObjectBrowser.OBJECT;
   }
 
   /**
-   * méthode statique permettant de tester si la classe passée en argument est
+   * Méthode statique permettant de tester si la classe passée en argument est
    * de type tableau d'un type primitif (int, short, long, boolean, char, etc.).
    * 
    * @param classObject la classe à tester.
@@ -155,29 +164,30 @@ public class ObjectBrowser {
    *         primitif, faux sinon.
    */
   private static boolean isArrayClassComponentTypePrimitive(Class<?> classObject) {
-    // Faudrait peut-être intercepter le fait que ce soit pas un Array
+    // Faudrait peut-être intercepter le fait que ce soit pas un Array !!! ;-))
     if (ObjectBrowser.getArrayClassComponentType(classObject) == ObjectBrowser.PRIMITIVE) {
       return true;
+    } else {
+      return false;
     }
-    return false;
   }
 
   /**
-   * méthode statique renvoyant la dimension de l'objet de type tableau passé en
+   * Méthode statique renvoyant la dimension de l'objet de type tableau passé en
    * argument.
    * @param obj l'objet de type tableau pour lequel on cherche la dimension.
    * @return la dimension de l'objet de type tableau passé en argument.
    */
   private static int getArrayLevel(Object obj) {
-    // Faudrait peut-être intercepter le fait que ce soit pas un Array
+    // Faudrait peut-être intercepter le fait que ce soit pas un Array !!! ;-))
     String arrayValueString;
 
     arrayValueString = obj.toString();
-    return (arrayValueString.lastIndexOf("[") + 1); //$NON-NLS-1$
+    return (arrayValueString.lastIndexOf("[") + 1);
   }
 
   /**
-   * méthode statique retournant la dimension de l'attribut field sur l'objet
+   * Méthode statique retournant la dimension de l'attribut field sur l'objet
    * obj.
    * 
    * @param field l'attribut dont on cherche la dimension (tableau).
@@ -186,12 +196,12 @@ public class ObjectBrowser {
    *         pas d'un attribut de type tableau (Array).
    */
   private static int getArrayLevel(Field field, Object obj) {
-    // Faudrait peut-être intercepter le fait que ce soit pas un Array
+    // Faudrait peut-être intercepter le fait que ce soit pas un Array !!! ;-))
     String arrayValueString;
 
     try {
       arrayValueString = field.get(obj).toString();
-      return (arrayValueString.lastIndexOf("[") + 1); //$NON-NLS-1$
+      return (arrayValueString.lastIndexOf("[") + 1);
     } catch (IllegalAccessException e) {
       return 0;
     }
@@ -199,7 +209,7 @@ public class ObjectBrowser {
   }
 
   /**
-   * méthode statique retournant le type du contenu d'un champ de type tableau
+   * Méthode statique retournant le type du contenu d'un champ de type tableau
    * (Array), passé en argument de la méthode.
    * 
    * @param field le champ de type tableau pour lequel on cherche le type de
@@ -209,24 +219,25 @@ public class ObjectBrowser {
    *         type primitif, et ObjectBrowser.OBJECT sinon.
    */
   private static int getArrayComponentType(Field field) {
-    // Faudrait peut-être intercepter le fait que ce soit pas un Array
+    // Faudrait peut-être intercepter le fait que ce soit pas un Array !!! ;-))
     Class<?> fieldType = field.getType();
     String fieldTypeName = fieldType.getName();
     String underlyingFieldTypeName;
     char underlyingType;
     int typeIndex;
 
-    typeIndex = fieldTypeName.lastIndexOf("[") + 1; //$NON-NLS-1$
+    typeIndex = fieldTypeName.lastIndexOf("[") + 1;
     underlyingType = fieldTypeName.charAt(typeIndex);
 
     switch (underlyingType) {
       case 'L':
         underlyingFieldTypeName = fieldTypeName.substring(typeIndex + 1,
             fieldTypeName.length() - 1);
-        if (underlyingFieldTypeName.equals("java.lang.String")) { //$NON-NLS-1$
+        if (underlyingFieldTypeName.equals("java.lang.String")) {
           return ObjectBrowser.STRING;
+        } else {
+          return ObjectBrowser.OBJECT;
         }
-        return ObjectBrowser.OBJECT;
       default:
         return ObjectBrowser.PRIMITIVE;
     }
@@ -234,20 +245,20 @@ public class ObjectBrowser {
   }
 
   /**
-   * méthode statique renvoyant le nom du type ou de la classe de l'objet
+   * Méthode statique renvoyant le nom du type ou de la classe de l'objet
    * tableau passé en paramètre.
    * 
    * @param obj l'objet dont on cherche le type.
    * @return le nom de la classe ou du type de contenu du tableau.
    */
   private static String getArrayComponentTypeName(Object obj) {
-    // Faudrait peut-être intercepter le fait que ce soit pas un Array
+    // Faudrait peut-être intercepter le fait que ce soit pas un Array !!! ;-))
     String typeName = obj.toString();
     String underlyingTypeName;
     char underlyingType;
     int typeIndex;
 
-    typeIndex = typeName.lastIndexOf("[") + 1; //$NON-NLS-1$
+    typeIndex = typeName.lastIndexOf("[") + 1;
     underlyingType = typeName.charAt(typeIndex);
 
     switch (underlyingType) {
@@ -256,23 +267,23 @@ public class ObjectBrowser {
             .length() - 1);
         return underlyingTypeName;
       case 'B':
-        return "byte"; //$NON-NLS-1$
+        return "byte";
       case 'C':
-        return "char"; //$NON-NLS-1$
+        return "char";
       case 'D':
-        return "double"; //$NON-NLS-1$
+        return "double";
       case 'F':
-        return "float"; //$NON-NLS-1$
+        return "float";
       case 'I':
-        return "int"; //$NON-NLS-1$
+        return "int";
       case 'J':
-        return "long"; //$NON-NLS-1$
+        return "long";
       case 'S':
-        return "short"; //$NON-NLS-1$
+        return "short";
       case 'Z':
-        return "boolean"; //$NON-NLS-1$
+        return "boolean";
       default:
-        return "void"; //$NON-NLS-1$
+        return "void";
     }
   }
 
@@ -286,14 +297,14 @@ public class ObjectBrowser {
    * @return le nom de la classe ou du type de contenu du tableau.
    */
   private static String getArrayComponentTypeName(Field field) {
-    // Faudrait peut-être intercepter le fait que ce soit pas un Array
+    // Faudrait peut-être intercepter le fait que ce soit pas un Array !!! ;-))
     Class<?> fieldType = field.getType();
     String fieldTypeName = fieldType.getName();
     String underlyingFieldTypeName;
     char underlyingType;
     int typeIndex;
 
-    typeIndex = fieldTypeName.lastIndexOf("[") + 1; //$NON-NLS-1$
+    typeIndex = fieldTypeName.lastIndexOf("[") + 1;
     underlyingType = fieldTypeName.charAt(typeIndex);
 
     switch (underlyingType) {
@@ -302,23 +313,23 @@ public class ObjectBrowser {
             fieldTypeName.length() - 1);
         return underlyingFieldTypeName;
       case 'B':
-        return "byte"; //$NON-NLS-1$
+        return "byte";
       case 'C':
-        return "char"; //$NON-NLS-1$
+        return "char";
       case 'D':
-        return "double"; //$NON-NLS-1$
+        return "double";
       case 'F':
-        return "float"; //$NON-NLS-1$
+        return "float";
       case 'I':
-        return "int"; //$NON-NLS-1$
+        return "int";
       case 'J':
-        return "long"; //$NON-NLS-1$
+        return "long";
       case 'S':
-        return "short"; //$NON-NLS-1$
+        return "short";
       case 'Z':
-        return "boolean"; //$NON-NLS-1$
+        return "boolean";
       default:
-        return "void"; //$NON-NLS-1$
+        return "void";
     }
   }
 
@@ -334,16 +345,16 @@ public class ObjectBrowser {
    *         type objet).
    */
   private static int getCollectionComponentType(Field field, Object obj) {
-    // Faudrait peut-être intercepter le fait que ce soit*
-    // pas une Collection !!! ;-))
+    // Faudrait peut-être intercepter le fait que ce soit pas une Collection !!!
+    // ;-))
 
     String fieldValue;
 
     try {
       fieldValue = field.get(obj).toString();
-      if (fieldValue.indexOf("@") > -1) { //$NON-NLS-1$
+      if (fieldValue.indexOf("@") > -1) {
         return ObjectBrowser.OBJECT;
-      } else if (fieldValue.lastIndexOf("[") > 0) { //$NON-NLS-1$
+      } else if (fieldValue.lastIndexOf("[") > 0) {
         return ObjectBrowser.OBJECT;
       } else {
         return ObjectBrowser.PRIMITIVE;
@@ -372,10 +383,10 @@ public class ObjectBrowser {
     String fieldClass;
     int index;
 
-    if ((index = fieldTypeName.lastIndexOf(".")) > -1) { //$NON-NLS-1$
+    if ((index = fieldTypeName.lastIndexOf(".")) > -1) {
       fieldClass = fieldTypeName.substring(index + 1);
     } else {
-      fieldClass = ""; //$NON-NLS-1$
+      fieldClass = "";
     }
 
     try {
@@ -387,16 +398,24 @@ public class ObjectBrowser {
       } else if (fieldType.isArray()) {
         return ObjectBrowser.ARRAY;
       } else {
-        if (fieldValueString.indexOf(fieldClass + "@") > -1) { //$NON-NLS-1$
+        if (fieldValueString.indexOf(fieldClass + "@") > -1) {
           return ObjectBrowser.OBJECT;
+        } else {
+          if (fieldTypeName.equals("java.lang.String")) {
+            return ObjectBrowser.STRING;
+          } else {
+            if (fieldValue.getClass().isInstance(Collection.class)) {
+              return ObjectBrowser.COLLECTION;
+            } else {
+              return ObjectBrowser.OBJECT;
+              /*
+               * try { Collection testCollection = (Collection) fieldValue;
+               * return COLLECTION; } catch (ClassCastException cce) { return
+               * OBJECT; }
+               */
+            }
+          }
         }
-        if (fieldTypeName.equals("java.lang.String")) { //$NON-NLS-1$
-          return ObjectBrowser.STRING;
-        }
-        if (fieldValue.getClass().isInstance(Collection.class)) {
-          return ObjectBrowser.COLLECTION;
-        }
-        return ObjectBrowser.OBJECT;
       }
     } catch (IllegalAccessException e) {
       return ObjectBrowser.NULL;
@@ -413,8 +432,9 @@ public class ObjectBrowser {
   private static boolean isFieldTypePrimitive(Field field, Object obj) {
     if (ObjectBrowser.getFieldType(field, obj) == ObjectBrowser.PRIMITIVE) {
       return true;
+    } else {
+      return false;
     }
-    return false;
   }
 
   /**
@@ -428,8 +448,9 @@ public class ObjectBrowser {
   private static boolean isFieldTypeArray(Field field, Object obj) {
     if (ObjectBrowser.getFieldType(field, obj) == ObjectBrowser.ARRAY) {
       return true;
+    } else {
+      return false;
     }
-    return false;
   }
 
   /**
@@ -442,8 +463,9 @@ public class ObjectBrowser {
   private static boolean isFieldTypeObject(Field field, Object obj) {
     if (ObjectBrowser.getFieldType(field, obj) == ObjectBrowser.OBJECT) {
       return true;
+    } else {
+      return false;
     }
-    return false;
   }
 
   /**
@@ -458,8 +480,9 @@ public class ObjectBrowser {
   private static boolean isFieldTypeString(Field field, Object obj) {
     if (ObjectBrowser.getFieldType(field, obj) == ObjectBrowser.STRING) {
       return true;
+    } else {
+      return false;
     }
-    return false;
   }
 
   /**
@@ -473,8 +496,9 @@ public class ObjectBrowser {
   private static boolean isFieldTypeCollection(Field field, Object obj) {
     if (ObjectBrowser.getFieldType(field, obj) == ObjectBrowser.COLLECTION) {
       return true;
+    } else {
+      return false;
     }
-    return false;
   }
 
   /**
@@ -538,8 +562,9 @@ public class ObjectBrowser {
     }
 
     // /////////////////////////////////////////////////////////
-    // // debut ajout Arnaud pour recuperer les champs "primitive"
-    // // protected herites en fait on fait ceci pour recuper l'id !
+    // // debut ajout Arnaud pour recuperer les champs "primitive" protected
+    // herites
+    // // en fait on fait ceci pour recuper l'id !
     Class<?> superClass = classObj.getSuperclass();
     while (superClass != Object.class) {
       Field[] superAccessibleFields = superClass.getDeclaredFields();
@@ -663,7 +688,7 @@ public class ObjectBrowser {
           break;
         }
       }
-      if (!isInVector) {
+      if (!(isInVector)) {
         allAccessibleMethodsVector.add(publicMethods[i]);
       }
     }
@@ -682,22 +707,21 @@ public class ObjectBrowser {
 
       if (Modifier.isPublic(methodModifier)
           && (!(Modifier.isStatic(methodModifier))) && retrievePublicMethods) {
-        if ((nbParameters == 0) && (!methodReturnType.getName().equals("void"))) { //$NON-NLS-1$
+        if ((nbParameters == 0)
+            && (!(methodReturnType.getName().equals("void")))) {
           accessibleMethods.add(allAccessibleMethods[i]);
         }
-      } else {
-        if (Modifier.isProtected(methodModifier)
-            && (!Modifier.isStatic(methodModifier)) && retrieveProtectedMethods) {
-          if ((nbParameters == 0)
-              && (!methodReturnType.getName().equals("void"))) { //$NON-NLS-1$
-            accessibleMethods.add(allAccessibleMethods[i]);
-            try {
-              if (!allAccessibleMethods[i].isAccessible()) {
-                allAccessibleMethods[i].setAccessible(true);
-              }
-            } catch (Exception e) {
-              e.printStackTrace();
+      } else if (Modifier.isProtected(methodModifier)
+          && (!(Modifier.isStatic(methodModifier))) && retrieveProtectedMethods) {
+        if ((nbParameters == 0)
+            && (!(methodReturnType.getName().equals("void")))) {
+          accessibleMethods.add(allAccessibleMethods[i]);
+          try {
+            if (!(allAccessibleMethods[i].isAccessible())) {
+              allAccessibleMethods[i].setAccessible(true);
             }
+          } catch (Exception e) {
+            e.printStackTrace();
           }
         }
       }
@@ -798,14 +822,14 @@ public class ObjectBrowser {
           }
           if (showClassName) {
             arrayLevel = ObjectBrowser.getArrayLevel(obj);
-            String arrayObjectClassName = ""; //$NON-NLS-1$
+            String arrayObjectClassName = "";
             for (int i = 0; i < arrayLevel; i++) {
-              arrayObjectClassName += "["; //$NON-NLS-1$
+              arrayObjectClassName += "[";
             }
             arrayObjectClassName += ObjectBrowser
                 .getArrayComponentTypeName(obj);
             for (int i = 0; i < arrayLevel; i++) {
-              arrayObjectClassName += "]"; //$NON-NLS-1$
+              arrayObjectClassName += "]";
             }
             ObjectBrowser.browserInterface
                 .addClassNameLabel(arrayObjectClassName);
@@ -819,10 +843,8 @@ public class ObjectBrowser {
             ObjectBrowser.browserInterface
                 .addObjectAttributeList(arrayElements);
           }
-        } else {
-          if (showClassName) {
-            ObjectBrowser.browserInterface.addClassNameLabel(objectClassName);
-          }
+        } else if (showClassName) {
+          ObjectBrowser.browserInterface.addClassNameLabel(objectClassName);
         }
 
         // Special Case of Collection classes.
@@ -908,11 +930,9 @@ public class ObjectBrowser {
             }
           } catch (NullPointerException npex) {
 
-            // browserInterface.add_attribute(
-            // currentFieldName,"NULL");
+            // browserInterface.add_attribute(currentFieldName,"NULL");
             ObjectBrowser.browserInterface.addObjectAttribute(currentFieldName,
-                "null", //$NON-NLS-1$
-                null);
+                "null", null);
           }
         }
 
@@ -957,8 +977,9 @@ public class ObjectBrowser {
    * constante ObjectBrowser.HIDE_WHEN_REFRESH.
    * <p>
    * De plus, Le nouvel affichage de l'objet est régi par les valeurs des
-   * constantes SHOW_CLASSNAME, SHOW_PUBLIC_ATTRIBUTES,
-   * SHOW_PROTECTED_ATTRIBUTES, SHOW_PUBLIC_METHODS et SHOW_PROTECTED_METHODS.
+   * constantes SHOW_CLASSNAME,
+   * SHOW_PUBLIC_ATTRIBUTES,SHOW_PROTECTED_ATTRIBUTES, SHOW_PUBLIC_METHODS et
+   * SHOW_PROTECTED_METHODS.
    * </p>
    * 
    * @param obj objet dont on veut rafrîchir la représentation graphique.
@@ -1010,4 +1031,5 @@ public class ObjectBrowser {
     ObjectBrowser.browse(obj, showClassName, showPublicAttributes,
         showProtectedAttributes, showPublicMethods, showProtectedMethods);
   }
+
 }

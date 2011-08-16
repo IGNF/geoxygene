@@ -25,10 +25,10 @@ import java.util.List;
 
 import org.odmg.OQLQuery;
 
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 // / A revoir plus tard : compatiblite avec la norme JDO...
 
@@ -115,7 +115,7 @@ public interface Geodatabase {
    * classe featureClass doit etre une sous-classe de FT_Feature, sinon renvoie
    * une liste vide.
    */
-  public <T extends FT_Feature> FT_FeatureCollection<T> loadAllFeatures(
+  public <T extends IFeature> IFeatureCollection<T> loadAllFeatures(
       Class<?> featureClass);
 
   /**
@@ -148,8 +148,8 @@ public interface Geodatabase {
    * l'interieur d'une transaction ouverte. La classe featureClass doit etre une
    * sous-classe de FT_Feature, sinon renvoie une liste vide.
    */
-  public <T extends FT_Feature> FT_FeatureCollection<T> loadAllFeatures(
-      Class<T> featureClass, GM_Object geom);
+  public <T extends IFeature> IFeatureCollection<T> loadAllFeatures(
+      Class<T> featureClass, IGeometry geom);
 
   /**
    * Charge tous les FT_Feature de la classe featureClass intersectant le
@@ -159,7 +159,7 @@ public interface Geodatabase {
    * doit etre un sous classe de FT_FeatureCollection.
    */
   public <T> T loadAllFeatures(Class<?> featureClass,
-      Class<T> featureListClass, GM_Object geom);
+      Class<T> featureListClass, IGeometry geom);
 
   /**
    * Charge tous les FT_Feature de la classe theClass a une distance dist du
@@ -169,8 +169,8 @@ public interface Geodatabase {
    * featureClass doit etre une sous-classe de FT_Feature, sinon renvoie une
    * liste vide.
    */
-  public <T extends FT_Feature> FT_FeatureCollection<T> loadAllFeatures(
-      Class<T> featureClass, GM_Object geom, double dist);
+  public <T extends IFeature> IFeatureCollection<T> loadAllFeatures(
+      Class<T> featureClass, IGeometry geom, double dist);
 
   /**
    * Charge tous les FT_Feature de la classe featureClass a une distance dist du
@@ -181,7 +181,7 @@ public interface Geodatabase {
    * classe featureListClass doit etre un sous classe de FT_FeatureCollection.
    */
   public <T> T loadAllFeatures(Class<?> featureClass,
-      Class<T> featureListClass, GM_Object geom, double dist);
+      Class<T> featureListClass, IGeometry geom, double dist);
 
   /**
    * Charge tous les features correspondant à une même classe de schéma
@@ -190,7 +190,7 @@ public interface Geodatabase {
    * MdFeatures sont en même temps affectés à une MdPopulation propre à leur
    * classe de schéma conceptuel.
    */
-  public <T extends FT_Feature> FT_FeatureCollection<T> loadAllFeatures(
+  public <T extends IFeature> IFeatureCollection<T> loadAllFeatures(
       FeatureType featureType);
 
   /**

@@ -35,6 +35,7 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.Population;
@@ -70,7 +71,7 @@ public class ChargementConverter implements Converter {
     writer.startNode("Commentaire");
     writer.setValue(chargement.getDataSet().getCommentaire());
     writer.endNode();
-    for (Population<?> population : chargement.getDataSet().getPopulations()) {
+    for (IPopulation<?> population : chargement.getDataSet().getPopulations()) {
       writer.startNode("Population");
       writer.startNode("Nom");
       writer.setValue(population.getNom());

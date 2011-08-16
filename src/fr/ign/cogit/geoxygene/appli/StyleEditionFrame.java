@@ -66,8 +66,8 @@ import javax.swing.event.ChangeListener;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.type.GF_AttributeType;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
@@ -880,7 +880,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
         if ((attributeName != null) && (attributeName.length() > 0)) {
           double min = Double.MAX_VALUE;
           double max = Double.MIN_VALUE;
-          for (FT_Feature f : this.layer.getFeatureCollection()) {
+          for (IFeature f : this.layer.getFeatureCollection()) {
             Double v = (Double) f.getAttribute(attributeName);
             min = Math.min(min, v);
             max = Math.max(max, v);

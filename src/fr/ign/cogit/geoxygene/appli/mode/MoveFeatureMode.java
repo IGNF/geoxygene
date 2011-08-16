@@ -10,10 +10,10 @@ import javax.swing.JButton;
 import javax.swing.SwingUtilities;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.render.RenderUtil;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 
 public class MoveFeatureMode extends AbstractGeometryEditMode {
@@ -66,7 +66,7 @@ public class MoveFeatureMode extends AbstractGeometryEditMode {
 
   private void moveFeaturesToPoint(DirectPosition p) {
     ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
-    for (FT_Feature feature : frame.getLayerViewPanel().getSelectedFeatures()) {
+    for (IFeature feature : frame.getLayerViewPanel().getSelectedFeatures()) {
       feature.setGeom(feature.getGeom().translate(
           p.getX() - this.initialPoint.getX(),
           p.getY() - this.initialPoint.getY(), 0));
@@ -92,7 +92,7 @@ public class MoveFeatureMode extends AbstractGeometryEditMode {
         DirectPosition p = frame.getLayerViewPanel().getViewport()
             .toModelDirectPosition(e.getPoint());
         if (this.dragCount > 0) {
-          for (FT_Feature feature : frame.getLayerViewPanel()
+          for (IFeature feature : frame.getLayerViewPanel()
               .getSelectedFeatures()) {
             RenderUtil.draw(feature.getGeom().translate(
                 this.currentPoint.getX() - this.initialPoint.getX(),
@@ -101,7 +101,7 @@ public class MoveFeatureMode extends AbstractGeometryEditMode {
           }
         }
         this.currentPoint = p;
-        for (FT_Feature feature : frame.getLayerViewPanel()
+        for (IFeature feature : frame.getLayerViewPanel()
             .getSelectedFeatures()) {
           RenderUtil.draw(feature.getGeom().translate(
               this.currentPoint.getX() - this.initialPoint.getX(),

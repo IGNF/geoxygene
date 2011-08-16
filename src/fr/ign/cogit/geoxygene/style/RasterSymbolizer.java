@@ -33,11 +33,12 @@ import java.util.Map;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Triangle;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.style.gradient.TriColorGradientPaint;
@@ -47,7 +48,6 @@ import fr.ign.cogit.geoxygene.style.gradient.TriColorGradientPaint;
  * 
  */
 public class RasterSymbolizer extends AbstractSymbolizer {
-
   @XmlElement(name = "ShadedRelief")
   ShadedRelief shadedRelief = null;
 
@@ -76,23 +76,23 @@ public class RasterSymbolizer extends AbstractSymbolizer {
   }
 
   @XmlTransient
-  Map<FT_Feature, GM_MultiSurface<GM_Triangle>> map = new HashMap<FT_Feature, GM_MultiSurface<GM_Triangle>>();
+  Map<IFeature, GM_MultiSurface<GM_Triangle>> map = new HashMap<IFeature, GM_MultiSurface<GM_Triangle>>();
   @XmlTransient
   Map<GM_Triangle, Vecteur> normalMap = new HashMap<GM_Triangle, Vecteur>();
   @XmlTransient
-  Map<DirectPosition, List<GM_Triangle>> triangleMap = new HashMap<DirectPosition, List<GM_Triangle>>();
+  Map<IDirectPosition, List<GM_Triangle>> triangleMap = new HashMap<IDirectPosition, List<GM_Triangle>>();
   @XmlTransient
-  Map<DirectPosition, Vecteur> positionMap = new HashMap<DirectPosition, Vecteur>();
+  Map<IDirectPosition, Vecteur> positionMap = new HashMap<IDirectPosition, Vecteur>();
 
   @Override
-  public void paint(FT_Feature feature, Viewport viewport, Graphics2D graphics) {
+  public void paint(IFeature feature, Viewport viewport, Graphics2D graphics) {
     // FIXME c'est tout juste horrible !!!
     BufferedImage image = viewport.getLayerViewPanels().iterator().next()
         .getProjectFrame().getImage(feature);
     if (image == null) {
       return;
     }
-    GM_Envelope envelope = feature.getGeom().envelope();
+    IEnvelope envelope = feature.getGeom().envelope();
     int dimensionX = image.getWidth();
     int dimensionY = image.getHeight();
 
@@ -109,7 +109,7 @@ public class RasterSymbolizer extends AbstractSymbolizer {
           double dx = width / dimensionX;
           double dy = height / dimensionY;
           Raster raster = image.getData();
-          DirectPosition[][] positions = new DirectPosition[dimensionX][dimensionY];
+          IDirectPosition[][] positions = new DirectPosition[dimensionX][dimensionY];
           for (int x = 0; x < dimensionX; x++) {
             double pointx = envelope.minX() + (0.5 + x) * dx;
             for (int y = 0; y < dimensionY; y++) {
@@ -123,10 +123,10 @@ public class RasterSymbolizer extends AbstractSymbolizer {
                 this.addNeighbour(positions[x][y], triangle);
                 this.addNeighbour(positions[x][y - 1], triangle);
                 multi.add(triangle);
-                Vecteur v1 = new Vecteur(triangle.getCorners(0), triangle
-                    .getCorners(1));
-                Vecteur v2 = new Vecteur(triangle.getCorners(0), triangle
-                    .getCorners(2));
+                Vecteur v1 = new Vecteur(triangle.getCorners(0).getDirect(), 
+                    triangle.getCorners(1).getDirect());
+                Vecteur v2 = new Vecteur(triangle.getCorners(0).getDirect(), 
+                    triangle.getCorners(2).getDirect());
                 Vecteur normal = v1.prodVectoriel(v2);
                 normal.normalise();
                 this.normalMap.put(triangle, normal);
@@ -135,10 +135,10 @@ public class RasterSymbolizer extends AbstractSymbolizer {
                 this.addNeighbour(positions[x - 1][y - 1], triangle2);
                 this.addNeighbour(positions[x - 1][y], triangle2);
                 this.addNeighbour(positions[x][y], triangle2);
-                Vecteur v3 = new Vecteur(triangle2.getCorners(0), triangle2
-                    .getCorners(1));
-                Vecteur v4 = new Vecteur(triangle2.getCorners(0), triangle2
-                    .getCorners(2));
+                Vecteur v3 = new Vecteur(triangle2.getCorners(0).getDirect(), triangle2
+                    .getCorners(1).getDirect());
+                Vecteur v4 = new Vecteur(triangle2.getCorners(0).getDirect(), triangle2
+                    .getCorners(2).getDirect());
                 Vecteur normal2 = v3.prodVectoriel(v4);
                 normal2.normalise();
                 this.normalMap.put(triangle2, normal2);
@@ -209,9 +209,9 @@ public class RasterSymbolizer extends AbstractSymbolizer {
       Color color2 = this.getColor(normal2);
 
       graphics.setPaint(new TriColorGradientPaint(viewport.toViewPoint(triangle
-          .getCorners(0)), color0,
-          viewport.toViewPoint(triangle.getCorners(1)), color1, viewport
-              .toViewPoint(triangle.getCorners(2)), color2));
+          .getCorners(0).getDirect()), color0,
+          viewport.toViewPoint(triangle.getCorners(1).getDirect()), color1, viewport
+              .toViewPoint(triangle.getCorners(2).getDirect()), color2));
       /*
        * graphics.setColor(new Color( (color0.getRed() + color1.getRed() +
        * color2.getRed() )/3, (color0.getGreen() + color1.getGreen() +
@@ -265,7 +265,7 @@ public class RasterSymbolizer extends AbstractSymbolizer {
     return color;
   }
 
-  private void addNeighbour(DirectPosition directPosition, GM_Triangle triangle) {
+  private void addNeighbour(IDirectPosition directPosition, GM_Triangle triangle) {
     List<GM_Triangle> list = this.triangleMap.get(directPosition);
     if (list == null) {
       list = new ArrayList<GM_Triangle>();

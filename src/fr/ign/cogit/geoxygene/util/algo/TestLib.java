@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
 import fr.ign.cogit.geoxygene.example.Resultat;
@@ -38,7 +39,6 @@ import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
  * Test de toutes les methodes d'une bibliotheque de geometrie algorithmique.
@@ -60,7 +60,7 @@ public class TestLib {
 
   // Alias de Connection a Oracle (dans le fichier de mapping
   // repository_database.xml)
-  private String ORACLE_ALIAS = "ORACLE_ALIAS"; //$NON-NLS-1$
+  private String ORACLE_ALIAS = "ORACLE_ALIAS";
 
   private Geodatabase db; // connection a la base de donnees
   private Class<?> featureClass1, featureClass2; // classes de FT_Feature a
@@ -71,10 +71,9 @@ public class TestLib {
                                                        // issu du chargement
   private GM_MultiSurface<GM_OrientableSurface> aggr2; // agregat geometrique
                                                        // issu du chargement
-  private GM_Object geom; // ceci sera le resultat geometrique des algos
+  private IGeometry geom; // ceci sera le resultat geometrique des algos
   private Resultat result; // resultat a rendre persistant
 
-  @SuppressWarnings("nls")
   public TestLib() {
 
     this.db = GeodatabaseOjbFactory.newInstance(this.ORACLE_ALIAS);
@@ -117,7 +116,7 @@ public class TestLib {
     test.testAll();
   }
 
-  @SuppressWarnings( { "unchecked", "nls" })
+  @SuppressWarnings("unchecked")
   public void testAll() {
 
     // Debut d'une transaction

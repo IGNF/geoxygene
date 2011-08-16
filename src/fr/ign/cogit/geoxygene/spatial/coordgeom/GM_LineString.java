@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO
@@ -23,73 +23,85 @@
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
- * 
  */
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ICurveSegment;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+
+// import operateur.OpDirectPosition;
+
 /**
- * Polyligne. L'attribut "interpolation" est egal à "linear".
- *
- * @author Thierry Badard
- * @author Arnaud Braun
- * @author Julien Perret
+ * Polyligne. L'attribut "interpolation" est égal à "linear".
+ * 
+ * @author Thierry Badard & Arnaud Braun
+ * @version 1.1
+ * 
+ *          19.02.2007 : correction de bug constructeur à partir d'une liste de
+ *          DirectPosition
+ * 
  */
-public class GM_LineString extends GM_CurveSegment {
+
+public class GM_LineString extends GM_CurveSegment implements ILineString {
 
   // ////////////////////////////////////////////////////////////////////////
-  // Attribut "controlPoint" et methodes pour le traiter ///////////////////
+  // Attribut "controlPoint" et méthodes pour le traiter ///////////////////
   // ////////////////////////////////////////////////////////////////////////
   /**
-   * Points pour le dessin de la polyligne : sequence de DirectPosition. Le
+   * Points pour le dessin de la polyligne : séquence de DirectPosition. Le
    * premier point est le startPoint de la polyligne.
    */
-  protected DirectPositionList controlPoint;
+  protected IDirectPositionList controlPoint;
 
-  /**
-   * Renvoie la liste conbtrolPoint. Equivalent de samplePoint() et de coord().
-   * A laisser ?
-   */
-  public DirectPositionList getControlPoint() {
+  @Override
+  public IDirectPositionList getControlPoint() {
     return this.controlPoint;
   }
 
   /** Renvoie le DirectPosition de rang i. */
-  public DirectPosition getControlPoint(int i) {
+  @Override
+  public IDirectPosition getControlPoint(int i) {
     return this.controlPoint.get(i);
   }
 
   /** Affecte un DirectPosition au i-eme rang de la liste. */
-  public void setControlPoint(int i, DirectPosition value) {
+  @Override
+  public void setControlPoint(int i, IDirectPosition value) {
     this.controlPoint.set(i, value);
   }
 
   /** Ajoute un DirectPosition en fin de liste */
-  public void addControlPoint(DirectPosition value) {
+  @Override
+  public void addControlPoint(IDirectPosition value) {
     this.controlPoint.add(value);
   }
 
-  /** Ajoute un DirectPosition au i-eme rang de la liste. */
-  public void addControlPoint(int i, DirectPosition value) {
+  /** Ajoute un DirectPosition au i-ème rang de la liste. */
+  @Override
+  public void addControlPoint(int i, IDirectPosition value) {
     this.controlPoint.add(i, value);
   }
 
   /** Efface de la liste le DirectPosition passe en parametre. */
-  public void removeControlPoint(DirectPosition value) {
+  @Override
+  public void removeControlPoint(IDirectPosition value) {
     this.controlPoint.remove(value);
   }
 
   /** Efface le i-eme DirectPosition de la liste. */
+  @Override
   public void removeControlPoint(int i) {
     this.controlPoint.remove(i);
   }
 
   /** Renvoie le nombre de DirectPosition. */
+  @Override
   public int sizeControlPoint() {
     return this.controlPoint.size();
   }
@@ -97,51 +109,45 @@ public class GM_LineString extends GM_CurveSegment {
   // ////////////////////////////////////////////////////////////////////////
   // Constructeurs /////////////////////////////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////
-  /** Constructeur par defaut. */
+  /** Constructeur par défaut. */
   public GM_LineString() {
     this(new DirectPositionList());
   }
-
-  public GM_LineString(List<DirectPosition> list) {
+  
+  public GM_LineString(List<IDirectPosition> list) {
     this(new DirectPositionList(list));
   }
 
-  /** Constructeur par defaut. */
-  public GM_LineString(DirectPosition... list) {
-    this(Arrays.asList(list));
-  }
-
   /** Constructeur à partir d'une liste de DirectPosition. */
-  public GM_LineString(DirectPositionList points) {
+  public GM_LineString(IDirectPositionList points) {
     super();
     this.segment.add(this);
     this.controlPoint = new DirectPositionList();
     this.controlPoint.addAll(points);
-//    this.interpolation = "linear"; //$NON-NLS-1$
+    this.interpolation = "linear";
   }
 
   // ////////////////////////////////////////////////////////////////////////
-  // Methode de la norme ///////////////////////////////////////////////////
+  // Méthode de la norme ///////////////////////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////
-  /**
-   * TODO Renvoie null. Decompose une polyligne en une sequence de segments.
-   */
-  public List<GM_LineSegment> asGM_LineSegment() {
+
+  @Override
+  public List<ILineSegment> asGM_LineSegment() {
     return null;
   }
 
   // ////////////////////////////////////////////////////////////////////////
-  // Implementation de methodes abstraites /////////////////////////////////
+  // Implémentation de méthodes abstraites /////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////
-  /** Renvoie la liste ordonnee des points de contrele (idem que coord()). */
+
   @Override
-  public DirectPositionList coord() {
+  public IDirectPositionList coord() {
     return this.controlPoint;
   }
 
   /** Renvoie un GM_CurveSegment de sens oppose. */
   @Override
-  public GM_CurveSegment reverse() {
+  public ICurveSegment reverse() {
     GM_LineString result = new GM_LineString();
     int n = this.controlPoint.size();
     for (int i = 0; i < n; i++) {
@@ -157,6 +163,7 @@ public class GM_LineString extends GM_CurveSegment {
    *         tolerance (<code>distance(startpoint,endpoint) < tolerance</code>);
    *         <code>false</code> otherwise.
    */
+  @Override
   public boolean isClosed(double tolerance) {
     if (this.isEmpty()) {
       return false;
@@ -169,19 +176,14 @@ public class GM_LineString extends GM_CurveSegment {
    * @return <code>true</code> if this LineString is closed (start point=end
    *         point); <code>false</code> otherwise.
    */
+  @Override
   public boolean isClosed() {
     return this.isClosed(0);
   }
 
   @Override
-  public GM_LineString clone() {
-    return new GM_LineString(this.controlPoint.clone());
-  }
-  @Override
-  public GM_LineString getNegative() {
-    List<DirectPosition> list = new ArrayList<DirectPosition>(this.controlPoint.getList());
-    Collections.reverse(list);
-    return new GM_LineString(new DirectPositionList(list));
+  public Object clone() {
+    return new GM_LineString((IDirectPositionList) this.controlPoint.clone());
   }
 
   @Override
@@ -189,8 +191,4 @@ public class GM_LineString extends GM_CurveSegment {
     return true;
   }
 
-  @Override
-  public String getInterpolation() {
-    return "linear"; //$NON-NLS-1$
-  }
 }

@@ -27,6 +27,8 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ISphere;
+
 /**
  * NON IMPLEMENTE.
  * 
@@ -35,5 +37,5 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
  * 
  */
 
-class GM_Sphere extends GM_GriddedSurface {
+class GM_Sphere extends GM_GriddedSurface implements ISphere {
 }

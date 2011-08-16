@@ -1,72 +1,67 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.generalisation;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IAggregate;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Curve;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
  * Methodes statiques de generalisation par filtrage (Douglas-Peucker).
- * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
- * 
  */
-
 public class Filtering {
   static Logger logger = Logger.getLogger(Filtering.class.getName());
 
   public Filtering() {
   }
 
-  // //////////////////////////////////////////////////////////////////////////////
+  // ///////////////////////////////////////////////////////////////////
   // /// DouglasPeucker
   // ///////////////////////////////////////////////////////////
-  // //////////////////////////////////////////////////////////////////////////////
+  // ///////////////////////////////////////////////////////////////////
   /** Filtrage de Douglas-Peucker sur une polyligne. */
   // On constitue une liste de points, et appelle la méthode
   // "DouglasPeuckerListe" sur cette liste
-  public static GM_LineString DouglasPeuckerLineString(GM_Curve G0, double seuil) {
+  public static ILineString DouglasPeuckerLineString(ICurve G0, double seuil) {
 
     // linéarise la courbe
-    GM_LineString theLineString = null;
+    ILineString theLineString = null;
     theLineString = G0.asLineString(0.0, 0.0, 0.0);
     if (theLineString == null) {
       Filtering.logger.error("La création de la ligne a échouée");
@@ -74,15 +69,15 @@ public class Filtering {
     }
 
     // constitue une liste de points avec la polyligne
-    DirectPositionList initList = theLineString.coord();
+    IDirectPositionList initList = theLineString.coord();
 
     // appelle la méthode qui agit sur la liste - on Récupère une liste de
     // points
-    DirectPositionList resultList = Filtering.DouglasPeuckerList(initList,
+    IDirectPositionList resultList = Filtering.DouglasPeuckerList(initList,
         seuil);
 
     // crée une polyligne avec cette liste de points
-    GM_LineString theResult = new GM_LineString(resultList);
+    ILineString theResult = new GM_LineString(resultList);
     return theResult;
   }
 
@@ -93,17 +88,17 @@ public class Filtering {
    * @param seuil seuil à utiliser pour le filtrage
    * @return résultat du filtrage de Douglas-Peucker sur un polygone
    */
-  public static GM_Polygon DouglasPeuckerPoly(GM_Polygon polygone, double seuil) {
+  public static IPolygon DouglasPeuckerPoly(IPolygon polygone, double seuil) {
 
     // filtre la frontiere exterieure
-    GM_Curve ext = Filtering.DouglasPeuckerLineString(polygone.getExterior()
+    ICurve ext = Filtering.DouglasPeuckerLineString(polygone.getExterior()
         .getPrimitive(), seuil);
-    GM_Polygon poly = new GM_Polygon(ext);
+    IPolygon poly = new GM_Polygon(ext);
 
     // filtre les anneaux
     if (polygone.sizeInterior() != 0) {
       for (int i = 0; i < polygone.sizeInterior(); i++) {
-        GM_Curve inte = Filtering.DouglasPeuckerLineString(polygone
+        ICurve inte = Filtering.DouglasPeuckerLineString(polygone
             .getInterior(i).getPrimitive(), seuil);
         if (inte.numPoints() > 4) {
           poly.addInterior(new GM_Ring(inte));
@@ -121,41 +116,43 @@ public class Filtering {
    * Polyligne, Polygon.
    */
   @SuppressWarnings("unchecked")
-  public static GM_Object DouglasPeucker(GM_Object geom, double seuil) {
+  public static IGeometry DouglasPeucker(IGeometry geom, double seuil) {
 
-    if ((geom instanceof GM_Curve) || (geom instanceof GM_LineString)) {
-      return Filtering.DouglasPeuckerLineString((GM_Curve) geom, seuil);
-    } else if (geom instanceof GM_Polygon) {
-      return Filtering.DouglasPeuckerPoly((GM_Polygon) geom, seuil);
-    } else if (geom instanceof GM_MultiCurve) {
-      GM_MultiCurve<GM_OrientableCurve> aggr = (GM_MultiCurve<GM_OrientableCurve>) geom;
-      GM_MultiCurve<GM_OrientableCurve> result = new GM_MultiCurve<GM_OrientableCurve>();
+    if ((geom instanceof ICurve) || (geom instanceof ILineString)) {
+      return Filtering.DouglasPeuckerLineString((ICurve) geom, seuil);
+    }
+    if (geom instanceof IPolygon) {
+      return Filtering.DouglasPeuckerPoly((IPolygon) geom, seuil);
+    }
+
+    if (geom instanceof IMultiCurve) {
+      IMultiCurve<IOrientableCurve> aggr = (IMultiCurve<IOrientableCurve>) geom;
+      IMultiCurve<IOrientableCurve> result = new GM_MultiCurve<IOrientableCurve>();
       for (int i = 0; i < aggr.size(); i++) {
-        GM_Curve elt = (GM_Curve) aggr.get(i);
+        ICurve elt = (ICurve) aggr.get(i);
         result.add(Filtering.DouglasPeuckerLineString(elt, seuil));
       }
       return result;
     }
 
-    else if (geom instanceof GM_MultiSurface) {
-      GM_MultiSurface<GM_OrientableSurface> aggr = (GM_MultiSurface<GM_OrientableSurface>) geom;
-      GM_MultiSurface<GM_OrientableSurface> result = new GM_MultiSurface<GM_OrientableSurface>();
+    if (geom instanceof IMultiSurface) {
+      IMultiSurface<IOrientableSurface> aggr = (IMultiSurface<IOrientableSurface>) geom;
+      IMultiSurface<IOrientableSurface> result = new GM_MultiSurface<IOrientableSurface>();
       for (int i = 0; i < aggr.size(); i++) {
-        GM_Polygon elt = (GM_Polygon) aggr.get(i);
+        IPolygon elt = (IPolygon) aggr.get(i);
         result.add(Filtering.DouglasPeuckerPoly(elt, seuil));
       }
       return result;
     }
 
-    else { // GM_Aggregat
-      GM_Aggregate<GM_Object> aggr = (GM_Aggregate<GM_Object>) geom;
-      GM_Aggregate<GM_Object> result = new GM_Aggregate<GM_Object>();
-      for (int i = 0; i < aggr.size(); i++) {
-        GM_Object elt = aggr.get(i);
-        result.add(Filtering.DouglasPeucker(elt, seuil));
-      }
-      return result;
+    // GM_Aggregat
+    IAggregate<IGeometry> aggr = (IAggregate<IGeometry>) geom;
+    IAggregate<IGeometry> result = new GM_Aggregate<IGeometry>();
+    for (int i = 0; i < aggr.size(); i++) {
+      IGeometry elt = aggr.get(i);
+      result.add(Filtering.DouglasPeucker(elt, seuil));
     }
+    return result;
   }
 
   /**
@@ -166,24 +163,24 @@ public class Filtering {
    * @param seuil seuil utilisé
    * @return la liste de points filtrée
    */
-  public static DirectPositionList DouglasPeuckerList(
-      DirectPositionList PtList, double seuil) {
+  public static IDirectPositionList DouglasPeuckerList(
+      IDirectPositionList PtList, double seuil) {
 
-    DirectPositionList douglasVector = new DirectPositionList();
+    IDirectPositionList douglasVector = new DirectPositionList();
     if (PtList.isEmpty()) {
       return douglasVector;
     }
-    DirectPositionList filtreVector = new DirectPositionList();
+    IDirectPositionList filtreVector = new DirectPositionList();
 
     int i = 0;
     int k = 0;
     double dist = 0.0;
     double max = 0.0;
-    DirectPosition Pt;
+    IDirectPosition Pt;
 
     int nbpts = PtList.size();
-    DirectPosition PtIni = PtList.get(0);
-    DirectPosition PtFin = PtList.get(nbpts - 1);
+    IDirectPosition PtIni = PtList.get(0);
+    IDirectPosition PtFin = PtList.get(nbpts - 1);
     if (nbpts > 2) {
       for (k = 1; k < nbpts - 1; k++) {
         Pt = PtList.get(k);
@@ -206,7 +203,7 @@ public class Filtering {
     }
 
     /* elimination des doublons */
-    DirectPosition ptmul = douglasVector.get(0);
+    IDirectPosition ptmul = douglasVector.get(0);
     filtreVector.add(ptmul);
     for (k = 0; k < douglasVector.size(); k++) {
       Pt = douglasVector.get(k);
@@ -220,13 +217,13 @@ public class Filtering {
   }
 
   /** distance du point P a la droite [AB] */
-  private static double distLigne(DirectPosition P, DirectPosition A,
-      DirectPosition B) {
+  private static double distLigne(IDirectPosition P, IDirectPosition A,
+      IDirectPosition B) {
     // equation de (AB): y = m1x + p1
     // on appelle H le projete de P sur [AB]
     // equation de (PH) : y = m2x + p2
-    // on a (PH) perpendicualire a (AB) ce qui permet de trouver les coordonnees
-    // de H
+    // on a (PH) perpendicualire a (AB) ce qui permet de trouver les
+    // coordonnees de H
     // on en deduit la longueur [PH]
     double Ax = A.getX();
     double Ay = A.getY();
@@ -257,8 +254,6 @@ public class Filtering {
       Hx = Ax;
       Hy = Ay;
     }
-
     return Math.sqrt((Py - Hy) * (Py - Hy) + (Px - Hx) * (Px - Hx));
   }
-
 }

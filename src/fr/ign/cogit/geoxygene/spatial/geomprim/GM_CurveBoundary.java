@@ -27,10 +27,13 @@
 
 package fr.ign.cogit.geoxygene.spatial.geomprim;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurveBoundary;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 
 /**
- * frontière d'une courbe orientée, définie par une référence vers un point
+ * Frontière d'une courbe orientée, définie par une référence vers un point
  * initial et une référence vers un point final.
  * 
  * @author Thierry Badard & Arnaud Braun
@@ -38,21 +41,22 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
  * 
  */
 
-public class GM_CurveBoundary extends GM_PrimitiveBoundary {
+public class GM_CurveBoundary extends GM_PrimitiveBoundary implements
+    ICurveBoundary {
 
   /** Le point initial. */
-  protected GM_Point startPoint;
+  protected IPoint startPoint;
 
   /** Renvoie le point initial. */
-  public GM_Point getStartPoint() {
+  public IPoint getStartPoint() {
     return this.startPoint;
   }
 
   /** Le point final. */
-  protected GM_Point endPoint;
+  protected IPoint endPoint;
 
   /** Renvoie le point final. */
-  public GM_Point getEndPoint() {
+  public IPoint getEndPoint() {
     return this.endPoint;
   }
 
@@ -62,11 +66,10 @@ public class GM_CurveBoundary extends GM_PrimitiveBoundary {
 
   /** Constructeur à partir d'une GM_Curve. */
   // c'est ce qui est utilisé dans GM_OrientableCurve::boundary();
-  public GM_CurveBoundary(GM_Curve c) {
-    DirectPosition startPt = c.startPoint();
+  public GM_CurveBoundary(ICurve c) {
+    IDirectPosition startPt = c.startPoint();
     this.startPoint = new GM_Point(startPt);
-    DirectPosition endPt = c.endPoint();
+    IDirectPosition endPt = c.endPoint();
     this.endPoint = new GM_Point(endPt);
   }
-
 }

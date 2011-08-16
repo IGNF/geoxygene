@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO
@@ -23,28 +23,28 @@
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
- * 
  */
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPointRef;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 
 /**
- * NON UTILISE. référence vers un GM_Point.
+ * NON UTILISE. Référence vers un GM_Point.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
  * 
  */
-class GM_PointRef {
-  protected GM_Point point;
+public class GM_PointRef implements IPointRef {
+  protected IPoint point;
 
-  public GM_Point getPoint() {
+  public IPoint getPoint() {
     return this.point;
   }
 
-  protected void setPoint(GM_Point value) {
+  protected void setPoint(IPoint value) {
     this.point = value;
   }
 

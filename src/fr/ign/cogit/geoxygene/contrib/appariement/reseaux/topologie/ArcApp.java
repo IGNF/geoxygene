@@ -33,6 +33,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.LienReseaux;
@@ -41,8 +43,6 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.ElementCarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 
 /**
  * Arc d'un reseau à apparier.
@@ -69,7 +69,7 @@ public class ArcApp extends Arc {
    * Liens qui référencent les objets auquel l'arc est apparié dans un autre
    * réseau.
    */
-  private List<LienReseaux> liens = new ArrayList<LienReseaux>(0);
+  private List<LienReseaux> liens = new ArrayList<LienReseaux>();
 
   public List<LienReseaux> getLiens() {
     return this.liens;
@@ -108,9 +108,9 @@ public class ArcApp extends Arc {
       EnsembleDeLiens liensNoeuds, EnsembleDeLiens liensArcs) {
     List<Noeud> tousNoeuds;
     Iterator<Groupe> itTousGroupes;
-    List<Noeud> noeudsDebutIn = new ArrayList<Noeud>(0), noeudsDebutOut = new ArrayList<Noeud>(0);
-    List<Noeud> noeudsFinIn = new ArrayList<Noeud>(0), noeudsFinOut = new ArrayList<Noeud>(0);
-    List<List<Noeud>> resultat = new ArrayList<List<Noeud>>(0);
+    List<Noeud> noeudsDebutIn = new ArrayList<Noeud>(), noeudsDebutOut = new ArrayList<Noeud>();
+    List<Noeud> noeudsFinIn = new ArrayList<Noeud>(), noeudsFinOut = new ArrayList<Noeud>();
+    List<List<Noeud>> resultat = new ArrayList<List<Noeud>>();
     NoeudApp noeudRef;
     GroupeApp groupeComp;
 
@@ -175,7 +175,7 @@ public class ArcApp extends Arc {
    */
   public List<Arc> arcsCompEnCorrespondance(EnsembleDeLiens liensArcs) {
     List<LienReseaux> liensOK;
-    Collection<Arc> arcs = new HashSet<Arc>(0);
+    Collection<Arc> arcs = new HashSet<Arc>();
     LienReseaux lien;
     Iterator<LienReseaux> itLiensOK;
 
@@ -194,7 +194,7 @@ public class ArcApp extends Arc {
    * des Arc_Ref.
    */
   public List<Arc> arcsRefEnCorrespondance(EnsembleDeLiens liensArcs) {
-    List<Arc> arcs = new ArrayList<Arc>(0);
+    List<Arc> arcs = new ArrayList<Arc>();
     List<LienReseaux> liensOK;
     LienReseaux lien;
     int i;
@@ -213,9 +213,8 @@ public class ArcApp extends Arc {
    * qui est en correspondance avec this (un arc_comp) à travers liens, soit
    * directement, soit par l'intermédiaire d'un groupe.
    */
-  public List<FT_Feature> objetsGeoRefEnCorrespondance(EnsembleDeLiens liensArc) {
-    List<ElementCarteTopo> objetsCtEnCorrespondance = new ArrayList<ElementCarteTopo>(0);
-    List<FT_Feature> objetsGeoEnCorrespondance = new ArrayList<FT_Feature>(0);
+  public List<IFeature> objetsGeoRefEnCorrespondance(EnsembleDeLiens liensArc) {
+    List<ElementCarteTopo> objetsCtEnCorrespondance = new ArrayList<ElementCarteTopo>();
     List<LienReseaux> liensOK;
     LienReseaux lien;
     Iterator<Groupe> itGroupes;
@@ -247,9 +246,10 @@ public class ArcApp extends Arc {
     }
 
     // objets geo correspondants
+    List<IFeature> objetsGeoEnCorrespondance = new ArrayList<IFeature>();
     itObjetsCT = objetsCtEnCorrespondance.iterator();
     while (itObjetsCT.hasNext()) {
-      FT_Feature objetCT = itObjetsCT.next();
+      IFeature objetCT = itObjetsCT.next();
       objetsGeoEnCorrespondance.addAll(objetCT.getCorrespondants());
     }
 
@@ -258,7 +258,7 @@ public class ArcApp extends Arc {
 
   /** A un correspondant par l'appariement passé en paramètre ? */
   public boolean aUnCorrespondant(EnsembleDeLiens ensembleDeLiens) {
-    List<LienReseaux> liensOK = new ArrayList<LienReseaux>(0);
+    List<LienReseaux> liensOK = new ArrayList<LienReseaux>();
     liensOK = new ArrayList<LienReseaux>(this.getLiens());
     liensOK.retainAll(ensembleDeLiens.getElements());
     if (liensOK.size() != 0) {
@@ -298,17 +298,26 @@ public class ArcApp extends Arc {
 
   /** L'arc est il une impasse au début (noeud ini fond de l'impasse) ? */
   public boolean impasseDebut() {
-    return ((this.getNoeudIni().arcs().size()) == 1);
+    if ((this.getNoeudIni().arcs().size()) == 1) {
+      return true;
+    }
+    return false;
   }
 
   /** L'arc est il une impasse à la fin (noeud fin fond de l'impasse) ? */
   public boolean impasseFin() {
-    return ((this.getNoeudFin().arcs().size()) == 1);
+    if ((this.getNoeudFin().arcs().size()) == 1) {
+      return true;
+    }
+    return false;
   }
 
   /** L'arc est il une boucle (noeud ini = noeud fin) ? */
   public boolean boucle() {
-    return (this.getNoeudFin() == this.getNoeudIni());
+    if (this.getNoeudFin() == this.getNoeudIni()) {
+      return true;
+    }
+    return false;
   }
 
   /** L'arc est il une impasse au sein du groupe ? */
@@ -321,10 +330,13 @@ public class ArcApp extends Arc {
    * l'impasse) ?
    */
   public boolean impasseDebut(GroupeApp groupe) {
-    List<Arc> arcs = new ArrayList<Arc>(0);
+    List<Arc> arcs = new ArrayList<Arc>();
     arcs = new ArrayList<Arc>(this.getNoeudIni().arcs());
     arcs.retainAll(groupe.getListeArcs());
-    return (arcs.size() == 1);
+    if (arcs.size() == 1) {
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -332,10 +344,13 @@ public class ArcApp extends Arc {
    * de l'impasse) ?
    */
   public boolean impasseFin(GroupeApp groupe) {
-    List<Arc> arcs = new ArrayList<Arc>(0);
+    List<Arc> arcs = new ArrayList<Arc>();
     arcs = new ArrayList<Arc>(this.getNoeudFin().arcs());
     arcs.retainAll(groupe.getListeArcs());
-    return (arcs.size() == 1);
+    if (arcs.size() == 1) {
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -345,10 +360,10 @@ public class ArcApp extends Arc {
    */
   public double premiereComposanteHausdorff(Arc arc, double dmax) {
     double dist, hausdorff = 0;
-    Iterator<DirectPosition> itPts = this.getGeometrie().coord().getList()
+    Iterator<IDirectPosition> itPts = this.getGeometrie().coord().getList()
         .iterator();
     while (itPts.hasNext()) {
-      DirectPosition pt = itPts.next();
+      IDirectPosition pt = itPts.next();
       dist = Distances.distance(pt, arc.getGeometrie());
       if (dist > dmax) {
         return Double.MAX_VALUE;
@@ -359,4 +374,5 @@ public class ArcApp extends Arc {
     }
     return hausdorff;
   }
+
 }

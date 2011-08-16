@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.util.browser;
@@ -61,7 +69,7 @@ public class ObjectBrowserGUI extends JFrame {
    */
   private static final long serialVersionUID = 1L;
   /** Localisation des fichiers d'internationalisation de l'interface. */
-  private static final String I18N_LANGUAGE_FILE_LOCATION = "fr.ign.cogit.geoxygene.util.browser.ObjectBrowserLanguageFile"; //$NON-NLS-1$
+  private static final String I18N_LANGUAGE_FILE_LOCATION = "fr.ign.cogit.geoxygene.util.browser.ObjectBrowserLanguageFile";
   /**
    * Nombre de lignes visibles dans l'interface pour les attributs de type
    * tableau ou Collection.
@@ -89,29 +97,29 @@ public class ObjectBrowserGUI extends JFrame {
 
   /**
    * Flag définissant si l'affichage d'un bandeau contenant le nom du type de
-   * l'objet a été demandé par le Modèle (ObjectBrowser).
+   * l'objet a été demandé par le modèle (ObjectBrowser).
    */
-  boolean showClassName;
+  private boolean showClassName;
   /**
    * Flag définissant si l'affichage des attributs publics de l'objet a été
-   * demandé par le Modèle (ObjectBrowser).
+   * demandé par le modèle (ObjectBrowser).
    */
-  boolean showPublicAttributes;
+  private boolean showPublicAttributes;
   /**
    * Flag définissant si l'affichage des attributs protected de l'objet a été
-   * demandé par le Modèle (ObjectBrowser).
+   * demandé par le modèle (ObjectBrowser).
    */
-  boolean showProtectedAttributes;
+  private boolean showProtectedAttributes;
   /**
    * Flag définissant si l'affichage des méthodes publiques, locales et héritées
-   * de l'objet a été demandé par le Modèle (ObjectBrowser).
+   * de l'objet a été demandé par le modèle (ObjectBrowser).
    */
-  boolean showPublicMethods;
+  private boolean showPublicMethods;
   /**
    * Flag définissant si l'affichage des méthodes protected, locales et héritées
-   * de l'objet a été demandé par le Modèle (ObjectBrowser).
+   * de l'objet a été demandé par le modèle (ObjectBrowser).
    */
-  boolean showProtectedMethods;
+  private boolean showProtectedMethods;
   /** Locale courante. */
   private Locale currentLocale;
   /**
@@ -143,7 +151,7 @@ public class ObjectBrowserGUI extends JFrame {
     this.i18nLanguageFile = ResourceBundle.getBundle(
         ObjectBrowserGUI.I18N_LANGUAGE_FILE_LOCATION, this.currentLocale);
 
-    this.setTitle(this.i18nLanguageFile.getString("DefaultFrameTitle")); //$NON-NLS-1$
+    this.setTitle(this.i18nLanguageFile.getString("DefaultFrameTitle"));
     this.browsedObject = browsedObject;
     this.showClassName = showClassName;
     this.showPublicAttributes = showPublicAttributes;
@@ -179,9 +187,12 @@ public class ObjectBrowserGUI extends JFrame {
     this.currentLocale = Locale.getDefault();
     this.i18nLanguageFile = ResourceBundle.getBundle(
         ObjectBrowserGUI.I18N_LANGUAGE_FILE_LOCATION, this.currentLocale);
+    // i18nLanguageFile =
+    // ResourceBundle.getBundle(I18N_LANGUAGE_FILE_LOCATION,new Locale("en",
+    // "US"));
 
-    this.setTitle(this.i18nLanguageFile.getString("DefaultFrameTitle") //$NON-NLS-1$
-        + " " + className); //$NON-NLS-1$
+    this.setTitle(this.i18nLanguageFile.getString("DefaultFrameTitle") + " "
+        + className);
     this.browsedObject = browsedObject;
     this.showClassName = showClassName;
     this.showPublicAttributes = showPublicAttributes;
@@ -192,15 +203,15 @@ public class ObjectBrowserGUI extends JFrame {
   }
 
   /**
-   * méthode permettant le changement du titre de la fenêtre d'interface
+   * Méthode permettant le changement du titre de la fenêtre d'interface
    * représentant l'objet courant.
    * 
    * @param className le nom du type de l'objet représenté par l'interface du
    *          navigateur d'objet.
    */
   protected void changeTitle(String className) {
-    this.setTitle(this.i18nLanguageFile.getString("DefaultFrameTitle") //$NON-NLS-1$
-        + " " + className); //$NON-NLS-1$
+    this.setTitle(this.i18nLanguageFile.getString("DefaultFrameTitle") + " "
+        + className);
   }
 
   /**
@@ -214,10 +225,10 @@ public class ObjectBrowserGUI extends JFrame {
     JScrollPane scrolling_panel = new JScrollPane(this.panel);
     JMenuBar jmb = new JMenuBar();
     // Definition of the "File" menu and of the "Close" attached item.
-    JMenu file = new JMenu(this.i18nLanguageFile.getString("MenuFileLabel")); //$NON-NLS-1$
+    JMenu file = new JMenu(this.i18nLanguageFile.getString("MenuFileLabel"));
     JMenuItem item;
     file.add(item = new JMenuItem(this.i18nLanguageFile
-        .getString("MenuFileCloseItemLabel"))); //$NON-NLS-1$
+        .getString("MenuFileCloseItemLabel")));
     item.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         ObjectBrowserGUI.this.dispose();
@@ -227,7 +238,7 @@ public class ObjectBrowserGUI extends JFrame {
     // Definition of the "Exit" item.
     file.addSeparator();
     file.add(item = new JMenuItem(this.i18nLanguageFile
-        .getString("MenuFileExitItemLabel"))); //$NON-NLS-1$
+        .getString("MenuFileExitItemLabel")));
     item.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         ObjectBrowserGUI.this.dispose();
@@ -237,9 +248,9 @@ public class ObjectBrowserGUI extends JFrame {
     jmb.add(file);
 
     // Definition of the "Edit" menu and of the "Refresh" attached item.
-    JMenu edit = new JMenu(this.i18nLanguageFile.getString("MenuEditLabel")); //$NON-NLS-1$
+    JMenu edit = new JMenu(this.i18nLanguageFile.getString("MenuEditLabel"));
     edit.add(item = new JMenuItem(this.i18nLanguageFile
-        .getString("MenuEditRefreshItemLabel"))); //$NON-NLS-1$
+        .getString("MenuEditRefreshItemLabel")));
     item.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         ObjectBrowser.refresh(ObjectBrowserGUI.this.getBrowsedObject(),
@@ -270,7 +281,7 @@ public class ObjectBrowserGUI extends JFrame {
     label.setOpaque(true);
     label.setBackground(Color.GRAY);
 
-    label.setFont(new Font("SansSerif", Font.BOLD, 16)); //$NON-NLS-1$
+    label.setFont(new Font("SansSerif", Font.BOLD, 16));
 
     this.gbc.fill = GridBagConstraints.BOTH;
     this.gbc.gridy = this.ncc;
@@ -294,7 +305,7 @@ public class ObjectBrowserGUI extends JFrame {
    * @param attrib_value la valeur de l'attribut.
    */
   public void addAttribute(String attrib_label, String attrib_value) {
-    JLabel label = new JLabel(attrib_label + " :", SwingConstants.RIGHT); //$NON-NLS-1$
+    JLabel label = new JLabel(attrib_label + " :", SwingConstants.RIGHT);
     JTextField txtfld = new JTextField(attrib_value);
 
     this.gbc.fill = GridBagConstraints.BOTH;
@@ -326,10 +337,10 @@ public class ObjectBrowserGUI extends JFrame {
    */
   public void addObjectAttribute(String attrib_label, String attrib_type,
       Object attrib_obj) {
-    JLabel label = new JLabel(attrib_label + " :", SwingConstants.RIGHT); //$NON-NLS-1$
+    JLabel label = new JLabel(attrib_label + " :", SwingConstants.RIGHT);
     JButton object_button = new JButton(attrib_type);
-    object_button.setToolTipText("Visualiser l'objet de type " //$NON-NLS-1$
-        + attrib_type + "."); //$NON-NLS-1$
+    object_button.setToolTipText("Visualiser l'objet de type " + attrib_type
+        + ".");
     object_button.addActionListener(new ObjectBrowserAttributeListener(
         attrib_obj));
 
@@ -357,15 +368,16 @@ public class ObjectBrowserGUI extends JFrame {
    * contenu d'un tableau ou d'une collection de type primitif ou chaîne de
    * caractères.
    * <p>
-   * ATTENTION: méthode vouée à disparaêtre, car remplacée par
+   * ATTENTION: méthode vouée à disparaître, car remplacée par
    * addObjectAttributeList() !
    * </p>
    * @param attrib_values un vecteur contenant l'ensemble des valeurs de l'objet
    *          de type tableau ou collection.
    */
   public void addAttributeList(Vector<Object> attrib_values) {
+    // addAttributeList(i18nLanguageFile.getString("DefaultCollectionClassesContentLabel"),attrib_values);
     this.addObjectAttributeList(this.i18nLanguageFile
-        .getString("DefaultCollectionClassesContentLabel"), attrib_values); //$NON-NLS-1$
+        .getString("DefaultCollectionClassesContentLabel"), attrib_values);
   }
 
   /**
@@ -373,7 +385,7 @@ public class ObjectBrowserGUI extends JFrame {
    * contenu d'un attribut de type tableau ou collection de type primitif ou
    * chaîne de caractères.
    * <p>
-   * ATTENTION: méthode vouée à disparaêtre, car remplacée par
+   * ATTENTION: méthode vouée à disparaître, car remplacée par
    * addObjectAttributeList() !
    * </p>
    * @param attrib_label le nom de l'attribut.
@@ -392,8 +404,8 @@ public class ObjectBrowserGUI extends JFrame {
    */
   public void addObjectAttributeList(Vector<Object> attrib_objects) {
     this.addObjectAttributeList(this.i18nLanguageFile
-        .getString("DefaultCollectionClassesContentLabel"), attrib_objects, //$NON-NLS-1$
-        1, ""); //$NON-NLS-1$
+        .getString("DefaultCollectionClassesContentLabel"), attrib_objects, 1,
+        "");
   }
 
   /**
@@ -405,7 +417,7 @@ public class ObjectBrowserGUI extends JFrame {
    */
   public void addObjectAttributeList(String attrib_label,
       Vector<Object> attrib_objects) {
-    this.addObjectAttributeList(attrib_label, attrib_objects, 1, ""); //$NON-NLS-1$
+    this.addObjectAttributeList(attrib_label, attrib_objects, 1, "");
   }
 
   /**
@@ -421,7 +433,7 @@ public class ObjectBrowserGUI extends JFrame {
   public void addObjectAttributeList(String attrib_label,
       Vector<Object> attrib_objects, int attrib_level,
       String attrib_underlyingType) {
-    JLabel label = new JLabel(attrib_label + " :", SwingConstants.RIGHT); //$NON-NLS-1$
+    JLabel label = new JLabel(attrib_label + " :", SwingConstants.RIGHT);
     JPanel attribListPanel = new JPanel();
     int NbElemAttribList = attrib_objects.size();
     GridLayout gl_attribListPanel = new GridLayout(NbElemAttribList, 1);
@@ -443,28 +455,28 @@ public class ObjectBrowserGUI extends JFrame {
       attribValue = attrib_objects.get(i).toString();
       isTextPrintableField = false;
 
-      if (attrib_underlyingType.equals("")) { //$NON-NLS-1$
+      if (attrib_underlyingType.equals("")) {
         attribTypeName = attribType.getName();
       } else {
-        attribTypeName = ""; //$NON-NLS-1$
+        attribTypeName = "";
         for (int j = 0; j < attrib_level; j++) {
-          attribTypeName += "["; //$NON-NLS-1$
+          attribTypeName += "[";
         }
         attribTypeName += attrib_underlyingType;
         for (int j = 0; j < attrib_level; j++) {
-          attribTypeName += "]"; //$NON-NLS-1$
+          attribTypeName += "]";
         }
       }
 
-      if (attribTypeName.equals("java.lang.String") //$NON-NLS-1$
-          || attribTypeName.equals("java.lang.Boolean") //$NON-NLS-1$
-          || attribTypeName.equals("java.lang.Byte") //$NON-NLS-1$
-          || attribTypeName.equals("java.lang.Character") //$NON-NLS-1$
-          || attribTypeName.equals("java.lang.Double") //$NON-NLS-1$
-          || attribTypeName.equals("java.lang.Float") //$NON-NLS-1$
-          || attribTypeName.equals("java.lang.Integer") //$NON-NLS-1$
-          || attribTypeName.equals("java.lang.Long") //$NON-NLS-1$
-          || attribTypeName.equals("java.lang.Short")) { //$NON-NLS-1$
+      if (attribTypeName.equals("java.lang.String")
+          || attribTypeName.equals("java.lang.Boolean")
+          || attribTypeName.equals("java.lang.Byte")
+          || attribTypeName.equals("java.lang.Character")
+          || attribTypeName.equals("java.lang.Double")
+          || attribTypeName.equals("java.lang.Float")
+          || attribTypeName.equals("java.lang.Integer")
+          || attribTypeName.equals("java.lang.Long")
+          || attribTypeName.equals("java.lang.Short")) {
         isTextPrintableField = true;
       }
 
@@ -483,10 +495,10 @@ public class ObjectBrowserGUI extends JFrame {
         JButton object_button = new JButton(attribTypeName);
 
         Object[] msgArguments = { new Integer(i), attribTypeName };
-        MessageFormat formatter = new MessageFormat(""); //$NON-NLS-1$
+        MessageFormat formatter = new MessageFormat("");
         formatter.setLocale(this.currentLocale);
         formatter.applyPattern(this.i18nLanguageFile
-            .getString("AttributeToolTipLabel")); //$NON-NLS-1$
+            .getString("AttributeToolTipLabel"));
         object_button.setToolTipText(formatter.format(msgArguments));
 
         object_button.addActionListener(new ObjectBrowserAttributeListener(
@@ -540,17 +552,17 @@ public class ObjectBrowserGUI extends JFrame {
    * 
    * @param obj l'objet portant la méthode à représenter au sein de l'interface
    *          du navigateur d'objet de GeOxygene.
-   * @param method la méthode qui doit être représenté par ce composant
+   * @param method la méthde qui doit être représenté par ce composant
    *          graphique.
    */
   public void addMethod(Object obj, Method method) {
     JButton method_button = new JButton(method.getName());
 
     Object[] msgArguments = { method.getName() };
-    MessageFormat formatter = new MessageFormat(""); //$NON-NLS-1$
+    MessageFormat formatter = new MessageFormat("");
     formatter.setLocale(this.currentLocale);
     formatter.applyPattern(this.i18nLanguageFile
-        .getString("MethodToolTipLabel")); //$NON-NLS-1$
+        .getString("MethodToolTipLabel"));
     method_button.setToolTipText(formatter.format(msgArguments));
 
     method_button
@@ -585,4 +597,5 @@ public class ObjectBrowserGUI extends JFrame {
   public ResourceBundle getI18nLanguageFile() {
     return this.i18nLanguageFile;
   }
+
 }

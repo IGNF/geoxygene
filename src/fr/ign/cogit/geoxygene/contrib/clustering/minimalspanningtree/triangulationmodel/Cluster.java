@@ -3,11 +3,11 @@ package fr.ign.cogit.geoxygene.contrib.clustering.minimalspanningtree.triangulat
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.Population;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
@@ -110,7 +110,7 @@ public class Cluster {
 				true
 				);
 		
-		FT_Feature feature;
+		IFeature feature;
 		for(NodeSpecific node:this.getNodes()) {
 			feature = population.nouvelElement();
 			feature.setGeom(node.getGeom());
@@ -160,7 +160,7 @@ public class Cluster {
 	 */
 	private boolean isStraightLine(GM_LineString line) {
 		
-		DirectPositionList coords = line.coord();
+		IDirectPositionList coords = line.coord();
 		for (int i = 1 ; i < coords.size() - 1 ; i++) {
 			if (Angle.angleTroisPoints(
 					coords.get(i - 1),
@@ -184,7 +184,7 @@ public class Cluster {
 	 */
 	private boolean isReducedToAPoint(GM_LineString line) {
 		
-		DirectPositionList coords = line.coord();
+		IDirectPositionList coords = line.coord();
 		for (int i = 0 ; i < coords.size() - 1 ; i++) {
 			if (coords.get(i).getX() != coords.get(i + 1).getX()) {
 				return false;

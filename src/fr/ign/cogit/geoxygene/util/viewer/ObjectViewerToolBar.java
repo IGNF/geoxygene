@@ -46,8 +46,8 @@ import uk.ac.leeds.ccg.geotools.OneClickZoomInTool;
 import uk.ac.leeds.ccg.geotools.OneClickZoomOutTool;
 import uk.ac.leeds.ccg.geotools.SelectTool;
 import uk.ac.leeds.ccg.geotools.ZoomTool;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.util.browser.ObjectBrowser;
 import fr.ign.cogit.geoxygene.util.viewer.ObjectViewerInterface.ObjectsIDAndSource;
 
@@ -250,7 +250,7 @@ class ObjectViewerToolBar extends JToolBar {
 
           System.out.println("Show attributes selected !!!");
 
-          List<FT_Feature> selectedFeatures = new ArrayList<FT_Feature>();
+          List<IFeature> selectedFeatures = new ArrayList<IFeature>();
           Vector<ObjectsIDAndSource> selectedObjects = ObjectViewerToolBar.this
               .getObjectViewerInterface().getSelectedObjects();
           if (selectedObjects != null) {
@@ -262,7 +262,7 @@ class ObjectViewerToolBar extends JToolBar {
                     .getDataSource();
                 int[] selectedIDs = aSelectedObjectAndSource.getObjectsID();
                 for (int selectedID : selectedIDs) {
-                  FT_Feature feature = geOxyRd.getFeatureById(selectedID);
+                  IFeature feature = geOxyRd.getFeatureById(selectedID);
                   if (feature != null) {
                     selectedFeatures.add(feature);
                   }
@@ -302,7 +302,7 @@ class ObjectViewerToolBar extends JToolBar {
 
     for (int i = 0; i < nbtbcomp; i++) {
       classname = tbcomp[i].getClass().getName();
-      if ((classname == "javax.swing.JToggleButton") //$NON-NLS-1$
+      if ((classname == "javax.swing.JToggleButton")
           && (tbcomp[i] != tb_button)) {
         ((JToggleButton) tbcomp[i]).setSelected(false);
       }

@@ -22,7 +22,6 @@ package fr.ign.cogit.geoxygene.appli;
 import java.awt.Color;
 import java.awt.geom.NoninvertibleTransformException;
 import java.net.URL;
-import java.util.Arrays;
 
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
@@ -32,6 +31,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.style.AbstractStyle;
 import fr.ign.cogit.geoxygene.style.Displacement;
 import fr.ign.cogit.geoxygene.style.ExternalGraphic;
 import fr.ign.cogit.geoxygene.style.Graphic;
@@ -85,7 +85,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
 
     Layer layer2 = projectFrame.getSld().createLayer("Batiment", //$NON-NLS-1$
         GM_Polygon.class, Color.blue, Color.gray, 1f, 2);
-    layer2.getStyles().get(0).setGroup("default"); //$NON-NLS-1$
+    ((AbstractStyle) layer2.getStyles().get(0)).setGroup("default"); //$NON-NLS-1$
     PolygonSymbolizer symbolizer2 = (PolygonSymbolizer) layer2.getSymbolizer();
     Shadow shadow = new Shadow();
     shadow.setColor(Color.black);
@@ -129,9 +129,8 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     symbolizer3.getStroke().setGraphicType(graphicStroke);
 
     Population<DefaultFeature> pop3 = new Population<DefaultFeature>("Route"); //$NON-NLS-1$
-    pop3.add(new DefaultFeature(new GM_LineString(new DirectPositionList(Arrays
-        .asList(new DirectPosition(110, 0), new DirectPosition(110, 100),
-            new DirectPosition(200, 100))))));
+    pop3.add(new DefaultFeature(new GM_LineString(new DirectPositionList(new DirectPosition(110, 0), new DirectPosition(110, 100),
+            new DirectPosition(200, 100)))));
     DataSet.getInstance().addPopulation(pop3);
     projectFrame.addLayer(layer3);
 
@@ -160,9 +159,8 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     symbolizer4.getStroke().setGraphicType(graphicFill2);
 
     Population<DefaultFeature> pop4 = new Population<DefaultFeature>("Chemin"); //$NON-NLS-1$
-    pop4.add(new DefaultFeature(new GM_LineString(new DirectPositionList(Arrays
-        .asList(new DirectPosition(0, 110), new DirectPosition(100, 110),
-            new DirectPosition(100, 200))))));
+    pop4.add(new DefaultFeature(new GM_LineString(new DirectPositionList(new DirectPosition(0, 110), new DirectPosition(100, 110),
+            new DirectPosition(100, 200)))));
     DataSet.getInstance().addPopulation(pop4);
     projectFrame.addLayer(layer4);
 

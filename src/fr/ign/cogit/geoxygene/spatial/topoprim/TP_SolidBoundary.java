@@ -39,14 +39,14 @@ import java.util.List;
 
 class TP_SolidBoundary extends TP_PrimitiveBoundary {
 
-  /** frontière extérieure. */
+  /** Frontière extérieure. */
   protected TP_Shell exterior;
 
   public TP_Shell getExterior() {
     return this.exterior;
   }
 
-  /** frontière intérieure. */
+  /** Frontière intérieure. */
   protected List<TP_Shell> interior;
 
   public TP_Shell getInterior(int i) {

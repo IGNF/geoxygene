@@ -27,9 +27,9 @@
 
 package fr.ign.cogit.geoxygene.tutorial.exemple.appariement;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 
 /**
  * Exemple de paramètres pour l'appariement
@@ -40,22 +40,21 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 public class Parametres {
 
   /**
-   * paramètres d'appariement par défaut avec utilisation de deux collections de
-   * Tronçons en entrée
+   * Paramètres d'appariement par défaut avec utilisation de deux collections de
+   * tronçons en entrée
    * 
    * @param populationsArcs1
    * @param populationsArcs2
-   * @return a set of default parameters to be used with two sets of edges
+   * @return
    */
-  @SuppressWarnings("unchecked")
   public static ParametresApp parametresDefaut(
-      FT_FeatureCollection<? extends FT_Feature> populationsArcs1,
-      FT_FeatureCollection<? extends FT_Feature> populationsArcs2) {
+      IFeatureCollection<IFeature> populationsArcs1,
+      IFeatureCollection<IFeature> populationsArcs2) {
 
     ParametresApp param = new ParametresApp();
 
     // ///////////////////////////////////////////////////////////////////////////////
-    // /////////// PARAMETRES SPECIFIANT QUELLE DONNEES SONT TRAITEES
+    // //////////// PARAMETRES SPECIFIANT QUELLE DONNEES SONT TRAITEES
     // ////////////
     // ///////////////////////////////////////////////////////////////////////////////
 
@@ -99,13 +98,13 @@ public class Parametres {
     // ///////////////////////////////////////////////////////////////////////////////
 
     param.projeteNoeuds1SurReseau2 = false;
-    param.projeteNoeuds1SurReseau2DistanceNoeudArc = 0;
-    param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = 0;
-    param.projeteNoeuds1SurReseau2ImpassesSeulement = false;
-    param.projeteNoeuds2SurReseau1 = false;
-    param.projeteNoeuds2SurReseau1DistanceNoeudArc = 0;
-    param.projeteNoeud2surReseau1DistanceProjectionNoeud = 0;
-    param.projeteNoeud2surReseau1ImpassesSeulement = false;
+    param.projeteNoeuds1SurReseau2_DistanceNoeudArc = 0;
+    param.projeteNoeuds1SurReseau2_DistanceProjectionNoeud = 0;
+    param.projeteNoeuds1SurReseau2_ImpassesSeulement = false;
+    param.projeteNoeud2surReseau1 = false;
+    param.projeteNoeud2surReseau1_DistanceNoeudArc = 0;
+    param.projeteNoeud2surReseau1_DistanceProjectionNoeud = 0;
+    param.projeteNoeud2surReseau1_ImpassesSeulement = false;
 
     // ///////////////////////////////////////////////////////////////////////////////
     // /////////// VARIANTES DU PROCESSUS GENERAL //////////////////////
@@ -140,22 +139,20 @@ public class Parametres {
   }
 
   /**
-   * paramètres d'appariement par défaut avec utilisation de deux collections de
-   * Tronçons et deux collections de noeuds en entrée
+   * Paramètres d'appariement par défaut avec utilisation de deux collections de
+   * tronçons et deux collections de noeuds en entrée
    * 
    * @param populationsArcs1
    * @param populationsNoeuds1
    * @param populationsArcs2
    * @param populationsNoeuds2
-   * @return default parameters to be used with two collections of edges and
-   *         nodes
+   * @return
    */
-  @SuppressWarnings("unchecked")
   public static ParametresApp parametresAvecNoeudsDefaut(
-      FT_FeatureCollection<? extends FT_Feature> populationsArcs1,
-      FT_FeatureCollection<? extends FT_Feature> populationsNoeuds1,
-      FT_FeatureCollection<? extends FT_Feature> populationsArcs2,
-      FT_FeatureCollection<? extends FT_Feature> populationsNoeuds2) {
+      IFeatureCollection<IFeature> populationsArcs1,
+      IFeatureCollection<IFeature> populationsNoeuds1,
+      IFeatureCollection<IFeature> populationsArcs2,
+      IFeatureCollection<IFeature> populationsNoeuds2) {
 
     ParametresApp param = new ParametresApp();
 
@@ -210,13 +207,13 @@ public class Parametres {
     // ///////////////////////////////////////////////////////////////////////////////
 
     param.projeteNoeuds1SurReseau2 = false;
-    param.projeteNoeuds1SurReseau2DistanceNoeudArc = 0;
-    param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = 0;
-    param.projeteNoeuds1SurReseau2ImpassesSeulement = false;
-    param.projeteNoeuds2SurReseau1 = false;
-    param.projeteNoeuds2SurReseau1DistanceNoeudArc = 0;
-    param.projeteNoeud2surReseau1DistanceProjectionNoeud = 0;
-    param.projeteNoeud2surReseau1ImpassesSeulement = false;
+    param.projeteNoeuds1SurReseau2_DistanceNoeudArc = 0;
+    param.projeteNoeuds1SurReseau2_DistanceProjectionNoeud = 0;
+    param.projeteNoeuds1SurReseau2_ImpassesSeulement = false;
+    param.projeteNoeud2surReseau1 = false;
+    param.projeteNoeud2surReseau1_DistanceNoeudArc = 0;
+    param.projeteNoeud2surReseau1_DistanceProjectionNoeud = 0;
+    param.projeteNoeud2surReseau1_ImpassesSeulement = false;
 
     // ///////////////////////////////////////////////////////////////////////////////
     // /////////// VARIANTES DU PROCESSUS GENERAL //////////////////////

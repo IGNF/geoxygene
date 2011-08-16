@@ -56,7 +56,7 @@ public class TestRelationsMonoPersistantes {
   private static Geodatabase db = GeodatabaseOjbFactory.newInstance();
 
   public static void main(String args[]) {
-    System.out.println("DEBUT DES TESTS"); //$NON-NLS-1$
+    System.out.println("DEBUT DES TESTS");
     TestRelationsMonoPersistantes.test_mono11();
     TestRelationsMonoPersistantes.test_mono1N();
     TestRelationsMonoPersistantes.test_monoNN();
@@ -68,19 +68,19 @@ public class TestRelationsMonoPersistantes {
 
     TestRelationsMonoPersistantes.db.begin();
 
-    System.out.println("Creation des objets AAA, BBB"); //$NON-NLS-1$
+    System.out.println("Creation des objets AAA, BBB");
     AAA a1 = new AAA();
-    a1.setNom("a1"); //$NON-NLS-1$
+    a1.setNom("a1");
     AAA a2 = new AAA();
-    a2.setNom("a2"); //$NON-NLS-1$
+    a2.setNom("a2");
     AAA a3 = new AAA();
-    a3.setNom("a3"); //$NON-NLS-1$
+    a3.setNom("a3");
     BBB b1 = new BBB();
-    b1.setNom("b1"); //$NON-NLS-1$
+    b1.setNom("b1");
     BBB b2 = new BBB();
-    b2.setNom("b2"); //$NON-NLS-1$
+    b2.setNom("b2");
     BBB b3 = new BBB();
-    b3.setNom("b3"); //$NON-NLS-1$
+    b3.setNom("b3");
 
     TestRelationsMonoPersistantes.db.makePersistent(a1);
     TestRelationsMonoPersistantes.db.makePersistent(a2);
@@ -89,41 +89,41 @@ public class TestRelationsMonoPersistantes {
     TestRelationsMonoPersistantes.db.makePersistent(b2);
     TestRelationsMonoPersistantes.db.makePersistent(b3);
 
-    System.out.println(""); //$NON-NLS-1$
-    System.out.println("TEST RELATION 1-1 MONODIRECTIONNELLE"); //$NON-NLS-1$
-    System.out
-        .println("objet BBB en relation avec a1 (null) : " + a1.getObjetBBB_mono11()); //$NON-NLS-1$
-    System.out
-        .println("objet BBB en relation avec a2 (null) : " + a2.getObjetBBB_mono11()); //$NON-NLS-1$
-    System.out.println("--"); //$NON-NLS-1$
-    System.out.println("instanciation sur a1 de a1 R b1 "); //$NON-NLS-1$
+    System.out.println("");
+    System.out.println("TEST RELATION 1-1 MONODIRECTIONNELLE");
+    System.out.println("objet BBB en relation avec a1 (null) : "
+        + a1.getObjetBBB_mono11());
+    System.out.println("objet BBB en relation avec a2 (null) : "
+        + a2.getObjetBBB_mono11());
+    System.out.println("--");
+    System.out.println("instanciation sur a1 de a1 R b1 ");
     a1.setObjetBBB_mono11(b1);
-    System.out
-        .println("objet BBB en relation avec a1 (b1) : " + a1.getObjetBBB_mono11().getNom()); //$NON-NLS-1$
-    System.out
-        .println("objet BBB en relation avec a2 (null) : " + a2.getObjetBBB_mono11()); //$NON-NLS-1$
+    System.out.println("objet BBB en relation avec a1 (b1) : "
+        + a1.getObjetBBB_mono11().getNom());
+    System.out.println("objet BBB en relation avec a2 (null) : "
+        + a2.getObjetBBB_mono11());
     /* decommenter si on veut consulter l'etat de la base ici */
     // db.commit();
     // System.exit(0);
 
-    System.out.println("--"); //$NON-NLS-1$
-    System.out.println("instanciation sur a1 de a1 R b2 "); //$NON-NLS-1$
+    System.out.println("--");
+    System.out.println("instanciation sur a1 de a1 R b2 ");
     a1.setObjetBBB_mono11(b2);
-    System.out
-        .println("objet BBB en relation avec a1 (b2) : " + a1.getObjetBBB_mono11().getNom()); //$NON-NLS-1$
-    System.out
-        .println("objet BBB en relation avec a2 (null) : " + a2.getObjetBBB_mono11()); //$NON-NLS-1$
+    System.out.println("objet BBB en relation avec a1 (b2) : "
+        + a1.getObjetBBB_mono11().getNom());
+    System.out.println("objet BBB en relation avec a2 (null) : "
+        + a2.getObjetBBB_mono11());
     /* decommenter si on veut consulter l'etat de la base ici */
     // db.commit();
     // System.exit(0);
 
-    System.out.println("--"); //$NON-NLS-1$
-    System.out.println("instanciation sur a1 de a1 R b2 (2eme fois)"); //$NON-NLS-1$
+    System.out.println("--");
+    System.out.println("instanciation sur a1 de a1 R b2 (2eme fois)");
     a1.setObjetBBB_mono11(b2);
-    System.out
-        .println("objet BBB en relation avec a1 (b2) : " + a1.getObjetBBB_mono11().getNom()); //$NON-NLS-1$
-    System.out
-        .println("objet BBB en relation avec a2 (null) : " + a2.getObjetBBB_mono11()); //$NON-NLS-1$
+    System.out.println("objet BBB en relation avec a1 (b2) : "
+        + a1.getObjetBBB_mono11().getNom());
+    System.out.println("objet BBB en relation avec a2 (null) : "
+        + a2.getObjetBBB_mono11());
     /* decommenter si on veut consulter l'etat de la base ici */
     // db.commit();
     // System.exit(0);

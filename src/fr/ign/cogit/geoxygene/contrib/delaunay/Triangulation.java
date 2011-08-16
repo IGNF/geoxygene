@@ -1,20 +1,29 @@
-/*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+/**
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
+ * 
  */
 
 package fr.ign.cogit.geoxygene.contrib.delaunay;
@@ -25,25 +34,26 @@ import java.util.Collection;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
  * Classe mère de la triangulation construite sur la bibliothèque Triangle de
  * Jonathan Richard Shewchuk. Triangulation class used on top of Jonathan
  * Richard Shewchuk's Triangle library.
- * 
  * @author Bonin
  * @author Julien Perret
  * @version 1.1
@@ -74,7 +84,7 @@ public class Triangulation extends AbstractTriangulation {
    */
   private void convertJin() {
     NoeudDelaunay node;
-    DirectPosition coord;
+    IDirectPosition coord;
     List<Noeud> noeuds = new ArrayList<Noeud>(this.getListeNoeuds());
     this.jin.numberofpoints = noeuds.size();
     this.jin.pointlist = new double[2 * this.jin.numberofpoints];
@@ -90,9 +100,9 @@ public class Triangulation extends AbstractTriangulation {
    * Convert the edges into an array.
    */
   private void convertJinSegments() {
-    ArrayList<FT_Feature> noeuds = new ArrayList<FT_Feature>(this
+    ArrayList<IFeature> noeuds = new ArrayList<IFeature>(this
         .getListeNoeuds());
-    ArrayList<FT_Feature> aretes = new ArrayList<FT_Feature>(this
+    ArrayList<IFeature> aretes = new ArrayList<IFeature>(this
         .getListeArcs());
     this.jin.numberofsegments = aretes.size();
     this.jin.segmentlist = new int[2 * this.jin.numberofsegments];
@@ -121,7 +131,7 @@ public class Triangulation extends AbstractTriangulation {
             new DirectPosition(this.jout.pointlist[2 * i],
                 this.jout.pointlist[2 * i + 1]));
       }
-      ArrayList<FT_Feature> noeuds = new ArrayList<FT_Feature>(this
+      ArrayList<IFeature> noeuds = new ArrayList<IFeature>(this
           .getListeNoeuds());
       Class<?>[] signaturea = { this.getPopNoeuds().getClasse(),
           this.getPopNoeuds().getClasse() };
@@ -153,7 +163,7 @@ public class Triangulation extends AbstractTriangulation {
             CarteTopo.logger.debug(I18N
               .getString("Triangulation.VoronoiDiagramExportStart")); //$NON-NLS-1$
         }
-        GM_Envelope envelope = this.getPopNoeuds().envelope();
+        IEnvelope envelope = this.getPopNoeuds().envelope();
         envelope.expandBy(100);
         this.getPopVoronoiVertices().initSpatialIndex(Tiling.class, true, envelope, 10);
         // l'export du diagramme de voronoi
@@ -179,8 +189,8 @@ public class Triangulation extends AbstractTriangulation {
             GM_LineString line = new GM_LineString(new DirectPositionList(
                 Arrays.asList(c1.getGeometrie().getPosition(), c2
                     .getGeometrie().getPosition())));
-            GM_Object intersection = line.intersection(envelope.getGeom());
-            DirectPositionList list = intersection.coord();
+            IGeometry intersection = line.intersection(envelope.getGeom());
+            IDirectPositionList list = intersection.coord();
             if (list.size() > 1) {
               c2.setGeometrie(list.get(1).toGM_Point());
             }
@@ -243,7 +253,7 @@ public class Triangulation extends AbstractTriangulation {
    * @return the characteristic shape of the input feature collection
    */
   public static GM_Polygon getCharacteristicShape(
-      Collection<? extends FT_Feature> featureCollection, double alpha) {
+      Collection<? extends IFeature> featureCollection, double alpha) {
     if (CarteTopo.logger.isDebugEnabled()) {
         CarteTopo.logger.debug("Creating the triangulation");
     }
@@ -276,7 +286,7 @@ public class Triangulation extends AbstractTriangulation {
    * @return the characteristic shape of the input feature collection
    */
   public static GM_Polygon getCharacteristicShape(
-      FT_FeatureCollection<? extends FT_Feature> featureCollection, double alpha) {
+      IFeatureCollection<? extends IFeature> featureCollection, double alpha) {
     return Triangulation.getCharacteristicShape(
         featureCollection.getElements(), alpha);
   }

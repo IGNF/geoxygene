@@ -32,10 +32,14 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ISurfacePatch;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISurface;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_SurfacePatch;
 
 /**
  * Surface, composée de morceaux de surface. L'orientation vaut nécessairement
@@ -48,10 +52,10 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_SurfacePatch;
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
- *
+ * 
  */
 
-public class GM_Surface extends GM_OrientableSurface
+public class GM_Surface extends GM_OrientableSurface implements ISurface
 /* implements GM_GenericSurface */{
   static Logger logger = Logger.getLogger(GM_Surface.class.getName());
 
@@ -64,19 +68,19 @@ public class GM_Surface extends GM_OrientableSurface
   // GM_MultiSurface
 
   /** Liste des morceaux constituant la surface. */
-  protected List<GM_SurfacePatch> patch;
+  protected List<ISurfacePatch> patch;
 
   /** Renvoie la liste des patch. */
-  public List<GM_SurfacePatch> getPatch() {
+  public List<ISurfacePatch> getPatch() {
     return this.patch;
   }
-
+ 
   /** Renvoie le patch de rang i. */
-  public GM_SurfacePatch getPatch(int i) {
-    if ((GM_SurfacePatch.class).isAssignableFrom(this.getClass())) {
+  public ISurfacePatch getPatch(int i) {
+    if ((ISurfacePatch.class).isAssignableFrom(this.getClass())) {
       if (i != 0) {
         GM_Surface.logger
-            .error("Recherche d'un patch avec i<>0 alors qu'un GM_SurfacePatch ne contient qu'un segment qui est lui-meme"); //$NON-NLS-1$
+            .error("Recherche d'un patch avec i<>0 alors qu'un GM_SurfacePatch ne contient qu'un segment qui est lui-meme");
         return null;
       }
       return this.patch.get(i);
@@ -85,11 +89,11 @@ public class GM_Surface extends GM_OrientableSurface
   }
 
   /** Affecte un patch au rang i. */
-  public void setPatch(int i, GM_SurfacePatch value) {
-    if ((GM_SurfacePatch.class).isAssignableFrom(this.getClass())) {
+  public void setPatch(int i, ISurfacePatch value) {
+    if ((ISurfacePatch.class).isAssignableFrom(this.getClass())) {
       if (i != 0) {
         GM_Surface.logger
-            .error("Affection d'un patch avec i<>0 alors qu'un GM_SurfacePatch ne contient qu'un segment qui est lui-meme. La méthode ne fait rien."); //$NON-NLS-1$
+            .error("Affection d'un patch avec i<>0 alors qu'un GM_SurfacePatch ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
       } else {
         this.patch.set(i, value);
       }
@@ -99,11 +103,11 @@ public class GM_Surface extends GM_OrientableSurface
   }
 
   /** Ajoute un patch en fin de liste. */
-  public void addPatch(GM_SurfacePatch value) {
-    if ((GM_SurfacePatch.class).isAssignableFrom(this.getClass())) {
+  public void addPatch(ISurfacePatch value) {
+    if ((ISurfacePatch.class).isAssignableFrom(this.getClass())) {
       if (this.sizePatch() > 0) {
         GM_Surface.logger
-            .error("Ajout d'un patch alors qu'un GM_SurfacePatch ne contient qu'un segment qui est lui-meme. La méthode ne fait rien."); //$NON-NLS-1$
+            .error("Ajout d'un patch alors qu'un GM_SurfacePatch ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
       } else {
         this.patch.add(value);
       }
@@ -113,11 +117,11 @@ public class GM_Surface extends GM_OrientableSurface
   }
 
   /** Ajoute un patch au rang i. */
-  public void addPatch(int i, GM_SurfacePatch value) {
-    if ((GM_SurfacePatch.class).isAssignableFrom(this.getClass())) {
+  public void addPatch(int i, ISurfacePatch value) {
+    if ((ISurfacePatch.class).isAssignableFrom(this.getClass())) {
       if (i != 0) {
         GM_Surface.logger
-            .error("Ajout d'un patch avec i<>0 alors qu'un GM_SurfacePatch ne contient qu'un segment qui est lui-meme. La méthode ne fait rien."); //$NON-NLS-1$
+            .error("Ajout d'un patch avec i<>0 alors qu'un GM_SurfacePatch ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
       } else {
         this.patch.add(value);
       }
@@ -127,10 +131,10 @@ public class GM_Surface extends GM_OrientableSurface
   }
 
   /** Efface le patch de valeur value. */
-  public void removePatch(GM_SurfacePatch value) {
-    if ((GM_SurfacePatch.class).isAssignableFrom(this.getClass())) {
+  public void removePatch(ISurfacePatch value) {
+    if ((ISurfacePatch.class).isAssignableFrom(this.getClass())) {
       GM_Surface.logger
-          .error("removePatch() : Ne fait rien car un GM_SurfacePatch ne contient qu'un segment qui est lui-meme."); //$NON-NLS-1$
+          .error("removePatch() : Ne fait rien car un GM_SurfacePatch ne contient qu'un segment qui est lui-meme.");
     } else {
       this.patch.remove(value);
     }
@@ -138,9 +142,9 @@ public class GM_Surface extends GM_OrientableSurface
 
   /** Efface le patch de rang i. */
   public void removePatch(int i) {
-    if ((GM_SurfacePatch.class).isAssignableFrom(this.getClass())) {
+    if ((ISurfacePatch.class).isAssignableFrom(this.getClass())) {
       GM_Surface.logger
-          .error("removePatch() : Ne fait rien car un GM_SurfacePatch ne contient qu'un segment qui est lui-meme."); //$NON-NLS-1$
+          .error("removePatch() : Ne fait rien car un GM_SurfacePatch ne contient qu'un segment qui est lui-meme.");
     } else {
       this.patch.remove(i);
     }
@@ -157,10 +161,9 @@ public class GM_Surface extends GM_OrientableSurface
   // ////////////////////////////////////////////////////////////////////////////////
   /** Constructeur par défaut */
   public GM_Surface() {
-    this.patch = new ArrayList<GM_SurfacePatch>(0);
+    this.patch = new ArrayList<ISurfacePatch>();
     this.orientation = +1;
     this.primitive = this;
-    /*
     this.proxy[0] = this;
     GM_OrientableSurface proxy1 = new GM_OrientableSurface();
     proxy1.orientation = -1;
@@ -168,11 +171,10 @@ public class GM_Surface extends GM_OrientableSurface
     proxy1.proxy[1] = proxy1;
     proxy1.primitive = new GM_Surface(this);
     this.proxy[1] = proxy1;
-    */
   }
 
   /** Constructeur à partir d'un et d'un seul surface patch */
-  public GM_Surface(GM_SurfacePatch thePatch) {
+  public GM_Surface(ISurfacePatch thePatch) {
     this();
     this.addPatch(thePatch);
   }
@@ -185,11 +187,10 @@ public class GM_Surface extends GM_OrientableSurface
    * surface. La frontiere de la surface est calculee en dynamique lors de
    * l'appel a la methode getNegative().
    */
-  public GM_Surface(GM_Surface surface) {
-    this.patch = new ArrayList<GM_SurfacePatch>(0);
+  public GM_Surface(ISurface surface) {
+    this.patch = new ArrayList<ISurfacePatch>();
     this.orientation = +1;
     this.primitive = this;
-    /*
     this.proxy[0] = this;
     GM_OrientableSurface proxy1 = new GM_OrientableSurface();
     proxy1.orientation = -1;
@@ -197,7 +198,6 @@ public class GM_Surface extends GM_OrientableSurface
     proxy1.proxy[1] = proxy1;
     proxy1.primitive = surface;
     this.proxy[1] = proxy1;
-    */
   }
 
   // ////////////////////////////////////////////////////////////////////////////////
@@ -227,26 +227,27 @@ public class GM_Surface extends GM_OrientableSurface
   // Méthodes d'accès aux coordonnées
   // //////////////////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////////////
+
   /**
    * Renvoie la frontière extérieure sous forme d'une polyligne (on a
    * linéarisé). Ne fonctionne que si la surface est composée d'un et d'un seul
    * patch, qui est un polygone. (sinon renvoie null).
    */
-  public GM_LineString exteriorLineString() {
+  public ILineString exteriorLineString() {
     if (this.sizePatch() == 1) {
-      GM_Polygon poly = (GM_Polygon) this.getPatch(0);
-      GM_Ring ext = poly.getExterior();
+      IPolygon poly = (IPolygon) this.getPatch(0);
+      IRing ext = poly.getExterior();
       if (ext != null) {
-        GM_Curve c = ext.getPrimitive();
-        GM_LineString ls = c.asLineString(0.0, 0.0, 0.0);
+        ICurve c = ext.getPrimitive();
+        ILineString ls = c.asLineString(0.0, 0.0, 0.0);
         return ls;
       }
       GM_Surface.logger
-          .error("GM_Surface::exteriorLineString() : ATTENTION frontiere null"); //$NON-NLS-1$
+          .error("GM_Surface::exteriorLineString() : ATTENTION frontiere null");
       return null;
     }
     GM_Surface.logger
-        .error("GM_Surface::exteriorLineString() : cette méthode ne fonctionne que si la surface est composée d'un seul patch."); //$NON-NLS-1$
+        .error("GM_Surface::exteriorLineString() : cette méthode ne fonctionne que si la surface est composée d'un seul patch.");
     return null;
   }
 
@@ -255,19 +256,19 @@ public class GM_Surface extends GM_OrientableSurface
    * que si la surface est composée d'un et d'un seul patch, qui est un
    * polygone. (sinon renvoie null).
    */
-  public GM_Curve exteriorCurve() {
+  public ICurve exteriorCurve() {
     if (this.sizePatch() == 1) {
-      GM_Polygon poly = (GM_Polygon) this.getPatch(0);
-      GM_Ring ext = poly.getExterior();
+      IPolygon poly = (IPolygon) this.getPatch(0);
+      IRing ext = poly.getExterior();
       if (ext != null) {
         return ext.getPrimitive();
       }
       GM_Surface.logger
-          .error("GM_Surface::exteriorCurve() : ATTENTION frontiere null"); //$NON-NLS-1$
+          .error("GM_Surface::exteriorCurve() : ATTENTION frontiere null");
       return null;
     }
     GM_Surface.logger
-        .error("GM_Surface::exteriorCurve() : cette méthode ne fonctionne que si la surface est composée d'un seul patch."); //$NON-NLS-1$
+        .error("GM_Surface::exteriorCurve() : cette méthode ne fonctionne que si la surface est composée d'un seul patch.");
     return null;
   }
 
@@ -275,8 +276,8 @@ public class GM_Surface extends GM_OrientableSurface
    * Renvoie la liste des coordonnées de la frontière EXTERIEURE d'une surface,
    * sous forme d'une DirectPositionList.
    */
-  public DirectPositionList exteriorCoord() {
-    GM_Curve c = this.exteriorCurve();
+  public IDirectPositionList exteriorCoord() {
+    ICurve c = this.exteriorCurve();
     if (c != null) {
       return c.coord();
     }
@@ -288,21 +289,21 @@ public class GM_Surface extends GM_OrientableSurface
    * linéarisé). Ne fonctionne que si la surface est composée d'un et d'un seul
    * patch, qui est un polygone (sinon renvoie null).
    */
-  public GM_LineString interiorLineString(int i) {
+  public ILineString interiorLineString(int i) {
     if (this.sizePatch() == 1) {
-      GM_Polygon poly = (GM_Polygon) this.getPatch(0);
-      GM_Ring inte = poly.getInterior(i);
+      IPolygon poly = (IPolygon) this.getPatch(0);
+      IRing inte = poly.getInterior(i);
       if (inte != null) {
-        GM_Curve c = inte.getPrimitive();
-        GM_LineString ls = c.asLineString(0.0, 0.0, 0.0);
+        ICurve c = inte.getPrimitive();
+        ILineString ls = c.asLineString(0.0, 0.0, 0.0);
         return ls;
       }
       GM_Surface.logger
-          .error("GM_Surface::interiorLineString() : ATTENTION frontiere null"); //$NON-NLS-1$
+          .error("GM_Surface::interiorLineString() : ATTENTION frontiere null");
       return null;
     }
     GM_Surface.logger
-        .error("GM_Surface::interiorLineString() : cette méthode ne fonctionne que si la surface est composée d'un seul patch"); //$NON-NLS-1$
+        .error("GM_Surface::interiorLineString() : cette méthode ne fonctionne que si la surface est composée d'un seul patch");
     return null;
   }
 
@@ -311,19 +312,20 @@ public class GM_Surface extends GM_OrientableSurface
    * fonctionne que si la surface est composée d'un et d'un seul patch, qui est
    * un polygone (sinon renvoie null).
    */
-  public GM_Curve interiorCurve(int i) {
+  public ICurve interiorCurve(int i) {
     if (this.sizePatch() == 1) {
-      GM_Polygon poly = (GM_Polygon) this.getPatch(0);
-      GM_Ring inte = poly.getInterior(i);
+      IPolygon poly = (IPolygon) this.getPatch(0);
+      IRing inte = poly.getInterior(i);
       if (inte != null) {
         return inte.getPrimitive();
       }
+
       GM_Surface.logger
-          .error("GM_Surface::interiorCurve() : ATTENTION frontiere null"); //$NON-NLS-1$
+          .error("GM_Surface::interiorCurve() : ATTENTION frontiere null");
       return null;
     }
     GM_Surface.logger
-        .error("GM_Surface::interiorCurve() : cette méthode ne fonctionne que si la surface est composée d'un seul patch"); //$NON-NLS-1$
+        .error("GM_Surface::interiorCurve() : cette méthode ne fonctionne que si la surface est composée d'un seul patch");
     return null;
   }
 
@@ -331,8 +333,8 @@ public class GM_Surface extends GM_OrientableSurface
    * Renvoie la liste des coordonnées de la frontière intérieure de rang i d'une
    * surface, sous forme d'un GM_PointArray.
    */
-  public DirectPositionList interiorCoord(int i) {
-    GM_Curve c = this.interiorCurve(i);
+  public IDirectPositionList interiorCoord(int i) {
+    ICurve c = this.interiorCurve(i);
     if (c != null) {
       return c.coord();
     }
@@ -345,17 +347,17 @@ public class GM_Surface extends GM_OrientableSurface
    * concatenees.
    */
   @Override
-  public DirectPositionList coord() {
+  public IDirectPositionList coord() {
     if (this.sizePatch() == 1) {
-      GM_Polygon poly = (GM_Polygon) this.getPatch(0);
-      DirectPositionList dpl = this.exteriorCurve().coord();
+      IPolygon poly = (IPolygon) this.getPatch(0);
+      IDirectPositionList dpl = this.exteriorCurve().coord();
       for (int i = 0; i < poly.sizeInterior(); i++) {
         dpl.addAll(this.interiorCurve(i).coord());
       }
       return dpl;
     }
     GM_Surface.logger
-        .error("GM_Surface::coord() : cette méthode ne fonctionne que si la surface est composée d'un seul patch"); //$NON-NLS-1$
+        .error("GM_Surface::coord() : cette méthode ne fonctionne que si la surface est composée d'un seul patch");
     return null;
   }
 

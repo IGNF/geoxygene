@@ -44,16 +44,17 @@ import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.TopologyException;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequenceFactory;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.conversion.ImgUtil;
@@ -79,7 +80,6 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  * 
  */
 
-@SuppressWarnings("nls")
 public class CompareLib {
 
   private static IndentedPrintStream out;
@@ -89,15 +89,15 @@ public class CompareLib {
 
   // Alias de Connection a Oracle (dans le fichier de mapping
   // repository_database.xml)
-  private String ORACLE_ALIAS = "ORACLE_ALIAS"; //$NON-NLS-1$
+  private String ORACLE_ALIAS = "ORACLE_ALIAS";
 
   // classes a charger
-  private Class<? extends FT_Feature> featClass1;
-  private Class<? extends FT_Feature> featClass2;
+  private Class<? extends IFeature> featClass1;
+  private Class<? extends IFeature> featClass2;
 
   // emprise maximale des geometries, recuperees dans les metadonnees du
   // chargement
-  private GM_Envelope baseEnvelope;
+  private IEnvelope baseEnvelope;
 
   // les bibliotheques a tester
   private GeomAlgorithms jts;
@@ -136,20 +136,20 @@ public class CompareLib {
    * agregats geometriques issus du chargement des classes ; definir ici si
    * c'est des GM_MultiCurve ou des GM_MultiSurface
    */
-  private GM_Aggregate<GM_OrientableSurface> geom1 = new GM_MultiSurface<GM_OrientableSurface>(); /*
-                                                                                                   * new
-                                                                                                   * GM_MultiCurve
-                                                                                                   * (
-                                                                                                   * )
-                                                                                                   * ;
-                                                                                                   */
-  private GM_Aggregate<GM_OrientableSurface> geom2 = new GM_MultiSurface<GM_OrientableSurface>(); /*
-                                                                                                   * new
-                                                                                                   * GM_MultiCurve
-                                                                                                   * (
-                                                                                                   * )
-                                                                                                   * ;
-                                                                                                   */
+  private GM_Aggregate<IOrientableSurface> geom1 = new GM_MultiSurface<IOrientableSurface>(); /*
+                                                                                               * new
+                                                                                               * GM_MultiCurve
+                                                                                               * (
+                                                                                               * )
+                                                                                               * ;
+                                                                                               */
+  private GM_Aggregate<IOrientableSurface> geom2 = new GM_MultiSurface<IOrientableSurface>(); /*
+                                                                                               * new
+                                                                                               * GM_MultiCurve
+                                                                                               * (
+                                                                                               * )
+                                                                                               * ;
+                                                                                               */
 
   /* Le repertoire de sauvegarde des resultats */
   private String path = "/home/users/braun/testJtsOracle";
@@ -190,9 +190,9 @@ public class CompareLib {
     }
 
     try {
-      this.featClass1 = (Class<? extends FT_Feature>) Class
+      this.featClass1 = (Class<? extends IFeature>) Class
           .forName(this.featClassName1);
-      this.featClass2 = (Class<? extends FT_Feature>) Class
+      this.featClass2 = (Class<? extends IFeature>) Class
           .forName(this.featClassName2);
     } catch (Exception e) {
       CompareLib.err.println("## Classes geographiques non trouvées ##");
@@ -204,13 +204,13 @@ public class CompareLib {
     CompareLib.out.println("Computing envelope...");
 
     try {
-      GM_Envelope baseEnvelope1 = this.db.getMetadata(this.featClass1)
+      IEnvelope baseEnvelope1 = this.db.getMetadata(this.featClass1)
           .getEnvelope();
-      GM_Envelope baseEnvelope2 = this.db.getMetadata(this.featClass2)
+      IEnvelope baseEnvelope2 = this.db.getMetadata(this.featClass2)
           .getEnvelope();
       // on prend l'enveloppe maximale des deux enveloppes
       baseEnvelope1.expand(baseEnvelope2);
-      this.baseEnvelope = (GM_Envelope) baseEnvelope1.clone();
+      this.baseEnvelope = (IEnvelope) baseEnvelope1.clone();
     } catch (Exception e) {
       CompareLib.err
           .println("## Problemes en recuperant l'emprise des couches dans les metadonnees ##");
@@ -231,7 +231,7 @@ public class CompareLib {
 
     for (int i = 0; i < numAlgos; i++) {
       String algoName = this.algorithmsName[i];
-      String outDirPath = outDirPathTab[i] = this.path + "/" + algoName + "/"; //$NON-NLS-1$ //$NON-NLS-2$
+      String outDirPath = outDirPathTab[i] = this.path + "/" + algoName + "/";
       File outDirFile = new File(outDirPath);
       outDirFile.mkdirs();
       PrintStream dataOut = dataOutTab[i] = new PrintStream(
@@ -272,25 +272,25 @@ public class CompareLib {
     long time;
     time = this.time();
 
-    GM_Envelope envelope = (GM_Envelope) this.baseEnvelope.clone();
-    envelope.expandBy(factor);
-    GM_Polygon bbox = new GM_Polygon(envelope);
+    IEnvelope baseEnvelope = (IEnvelope) this.baseEnvelope.clone();
+    baseEnvelope.expandBy(factor);
+    GM_Polygon bbox = new GM_Polygon(baseEnvelope);
 
-    FT_FeatureCollection<?> featList1 = this.db.loadAllFeatures(
-        this.featClass1, bbox);
-    FT_FeatureCollection<?> featList2 = this.db.loadAllFeatures(
-        this.featClass2, bbox);
+    IFeatureCollection<?> featList1 = this.db.loadAllFeatures(this.featClass1,
+        bbox);
+    IFeatureCollection<?> featList2 = this.db.loadAllFeatures(this.featClass2,
+        bbox);
 
     // creation des agregats
     this.geom1.clear();
-    Iterator<? extends FT_Feature> iterator = featList1.iterator();
+    Iterator<? extends IFeature> iterator = featList1.iterator();
     while (iterator.hasNext()) {
-      this.geom1.add((GM_OrientableSurface) iterator.next().getGeom());
+      this.geom1.add((IOrientableSurface) iterator.next().getGeom());
     }
     this.geom2.clear();
     iterator = featList2.iterator();
     while (iterator.hasNext()) {
-      this.geom2.add((GM_OrientableSurface) iterator.next().getGeom());
+      this.geom2.add((IOrientableSurface) iterator.next().getGeom());
     }
 
     CompareLib.out.println("Creation: " + (this.time() - time) / 1000.
@@ -321,22 +321,22 @@ public class CompareLib {
     Color colorResult = Color.RED;
     Color bg = Color.WHITE;
 
-    GM_Object[] geomsJts;
-    GM_Object[] geomsOracle;
-    GM_Object[] geomsGeos;
+    IGeometry[] geomsJts;
+    IGeometry[] geomsOracle;
+    IGeometry[] geomsGeos;
 
     Color[] colors;
     if (nbParameters == 1) {
-      geomsJts = new GM_Object[] { (GM_Object) this.resultJts, this.geom1 };
-      geomsOracle = new GM_Object[] { (GM_Object) this.resultOracle, this.geom1 };
-      geomsGeos = new GM_Object[] { (GM_Object) this.resultGeos, this.geom1 };
+      geomsJts = new IGeometry[] { (IGeometry) this.resultJts, this.geom1 };
+      geomsOracle = new IGeometry[] { (IGeometry) this.resultOracle, this.geom1 };
+      geomsGeos = new IGeometry[] { (IGeometry) this.resultGeos, this.geom1 };
       colors = new Color[] { colorResult, colorG1 };
     } else /* if (nbParameters==2) */{
-      geomsJts = new GM_Object[] { (GM_Object) this.resultJts, this.geom1,
+      geomsJts = new IGeometry[] { (IGeometry) this.resultJts, this.geom1,
           this.geom2 };
-      geomsOracle = new GM_Object[] { (GM_Object) this.resultOracle,
+      geomsOracle = new IGeometry[] { (IGeometry) this.resultOracle,
           this.geom1, this.geom2 };
-      geomsGeos = new GM_Object[] { (GM_Object) this.resultGeos, this.geom1,
+      geomsGeos = new IGeometry[] { (IGeometry) this.resultGeos, this.geom1,
           this.geom2 };
       colors = new Color[] { colorG1, colorG2, colorResult };
     }
@@ -404,7 +404,8 @@ public class CompareLib {
               .instance().create(
                   new Coordinate[] { ((TopologyException) cause)
                       .getCoordinate() });
-          DirectPosition geOxyCoord = JtsGeOxygene.makeDirectPosition(jtsCoord);
+          IDirectPosition geOxyCoord = JtsGeOxygene
+              .makeDirectPosition(jtsCoord);
           this.resultJts = new GM_Point(geOxyCoord);
         }
       }
@@ -494,10 +495,10 @@ public class CompareLib {
         }
       }
       if (nbParameters == 1) {
-        algoParamTypes = new Class[] { GM_Object.class };
+        algoParamTypes = new Class[] { IGeometry.class };
         algoParameters = new Object[] { this.geom1 };
       } else if (nbParameters == 2) {
-        algoParamTypes = new Class[] { GM_Object.class, GM_Object.class };
+        algoParamTypes = new Class[] { IGeometry.class, IGeometry.class };
         algoParameters = new Object[] { this.geom1, this.geom2 };
       } else {
         CompareLib.err.println(" ## Probleme dans le choix des parametres ## ");
@@ -615,7 +616,7 @@ public class CompareLib {
 
   // ########################################################################################
   private class IndentedPrintStream extends PrintStream {
-    private String indent = ""; //$NON-NLS-1$
+    private String indent = "";
 
     public IndentedPrintStream(OutputStream out) {
       super(out);
@@ -632,7 +633,7 @@ public class CompareLib {
 
     @Override
     public void println(String x) {
-      StringTokenizer tkz = new StringTokenizer(x, "\n"); //$NON-NLS-1$
+      StringTokenizer tkz = new StringTokenizer(x, "\n");
       while (tkz.hasMoreTokens()) {
         String line = tkz.nextToken();
         super.print(this.indent);
@@ -641,10 +642,12 @@ public class CompareLib {
     }
 
     public void indentRight() {
-      this.indent += "\t";} //$NON-NLS-1$
+      this.indent += "\t";
+    }
 
     public void indentLeft() {
-      this.indent = this.indent.replaceFirst("\t$", "");} //$NON-NLS-1$//$NON-NLS-2$
+      this.indent = this.indent.replaceFirst("\t$", "");
+    }
   }
 
 }

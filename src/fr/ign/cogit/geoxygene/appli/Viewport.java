@@ -33,7 +33,7 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
@@ -43,7 +43,10 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Curve;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
 /**
  * Viewport associated with a {@link LayerViewPanel}. This class is responsible
@@ -251,18 +254,18 @@ public class Viewport {
    * @throws NoninvertibleTransformException throws an exception when the
    *           transformation fails
    */
-  public final Shape toShape(final GM_Object geometry)
+  public final Shape toShape(final IGeometry geometry)
       throws NoninvertibleTransformException {
     if (geometry == null) {
       return null;
     }
-    GM_Envelope envelope = this.getEnvelopeInModelCoordinates();
+    IEnvelope envelope = this.getEnvelopeInModelCoordinates();
     /*
      * if (logger.isTraceEnabled()) {
      * logger.trace("model envelope = "+envelope); //$NON-NLS-1$ }
      */
     try {
-      GM_Envelope geometryEnvelope = geometry.envelope();
+      IEnvelope geometryEnvelope = geometry.envelope();
       /*
        * if (logger.isTraceEnabled()) {
        * logger.trace("geometry envelope = "+geometryEnvelope); //$NON-NLS-1$ }
@@ -317,12 +320,12 @@ public class Viewport {
    */
   private Shape toShape(final GM_Polygon p)
       throws NoninvertibleTransformException {
-    DirectPositionList viewDirectPositionList = this.toViewDirectPositionList(p
+    IDirectPositionList viewDirectPositionList = this.toViewDirectPositionList(p
         .getExterior().coord());
     if (viewDirectPositionList.isEmpty()) {
       return null;
     }
-    DirectPosition lastExteriorRingDirectPosition = viewDirectPositionList
+    IDirectPosition lastExteriorRingDirectPosition = viewDirectPositionList
         .get(viewDirectPositionList.size() - 1);
     for (int i = 0; i < p.sizeInterior(); i++) {
       viewDirectPositionList.addAll(this.toViewDirectPositionList(p
@@ -342,12 +345,12 @@ public class Viewport {
    * @param viewDirectPositionList a direct position list in view coordinates
    * @return A shape representing the polygon in view coordinates
    */
-  private Shape toPolygonShape(final DirectPositionList viewDirectPositionList) {
+  private Shape toPolygonShape(final IDirectPositionList viewDirectPositionList) {
     int numPoints = viewDirectPositionList.size();
     int[] xpoints = new int[numPoints];
     int[] ypoints = new int[numPoints];
     for (int i = 0; i < viewDirectPositionList.size(); i++) {
-      DirectPosition p = viewDirectPositionList.get(i);
+      IDirectPosition p = viewDirectPositionList.get(i);
       xpoints[i] = (int) p.getX();
       ypoints[i] = (int) p.getY();
     }
@@ -368,19 +371,19 @@ public class Viewport {
    * @throws NoninvertibleTransformException throws an exception when the
    *           transformation fails
    */
-  public final DirectPositionList toViewDirectPositionList(
-      final DirectPositionList modelDirectPositionList)
+  public final IDirectPositionList toViewDirectPositionList(
+      final IDirectPositionList modelDirectPositionList)
       throws NoninvertibleTransformException {
-    DirectPositionList viewDirectPositionList = new DirectPositionList();
+    IDirectPositionList viewDirectPositionList = new DirectPositionList();
     if (modelDirectPositionList.isEmpty()) {
       return viewDirectPositionList;
     }
     double threshold = 1 / (this.getScale() * 2); // convert in model units
-    DirectPosition previousPoint = modelDirectPositionList.get(0);
+    IDirectPosition previousPoint = modelDirectPositionList.get(0);
     int numberOfPoints = 0;
     int numberOfModelPoints = modelDirectPositionList.size();
     for (int i = 0; i < numberOfModelPoints; i++) {
-      DirectPosition pi = modelDirectPositionList.get(i);
+      IDirectPosition pi = modelDirectPositionList.get(i);
       // inline Decimator
       double xDifference = Math.abs(previousPoint.getX() - pi.getX());
       double yDifference = Math.abs(previousPoint.getY() - pi.getY());
@@ -414,7 +417,7 @@ public class Viewport {
    * @throws NoninvertibleTransformException throws an exception when the
    *           transformation fails
    */
-  public final Point2D toViewPoint(final DirectPosition modelDirectPosition)
+  public final Point2D toViewPoint(final IDirectPosition modelDirectPosition)
       throws NoninvertibleTransformException {
     Point2D.Double pt = new Point2D.Double(modelDirectPosition.getX(),
         modelDirectPosition.getY());
@@ -440,12 +443,12 @@ public class Viewport {
    * @throws NoninvertibleTransformException throws an exception when the
    *           transformation fails
    */
-  public GeneralPath toShape(DirectPositionList list)
+  public GeneralPath toShape(IDirectPositionList list)
       throws NoninvertibleTransformException {
-    DirectPositionList viewPositionList = this
+    IDirectPositionList viewPositionList = this
         .toViewDirectPositionList(list);
     GeneralPath shape = new GeneralPath();
-    DirectPosition p = viewPositionList.get(0);
+    IDirectPosition p = viewPositionList.get(0);
     shape.moveTo(p.getX(), p.getY());
     for (int i = 1; i < viewPositionList.size(); i++) {
       p = viewPositionList.get(i);
@@ -485,7 +488,7 @@ public class Viewport {
    * @throws NoninvertibleTransformException throws an exception when the
    *           transformation fails
    */
-  public final void zoom(final GM_Envelope extent)
+  public final void zoom(final IEnvelope extent)
       throws NoninvertibleTransformException {
     if ((extent == null) || extent.isEmpty()) {
       return;
@@ -502,17 +505,17 @@ public class Viewport {
 
   /**
    * Center on the given point.
-   * @param center point to center on
+   * @param centroid point to center on
    * @throws NoninvertibleTransformException throws an exception when the
    *           transformation fails
    */
-  public final void center(final DirectPosition center)
+  public final void center(final IDirectPosition centroid)
       throws NoninvertibleTransformException {
     LayerViewPanel lvp = this.layerViewPanels.iterator().next();
     double xCenteringOffset = ((lvp.getWidth() / this.scale)) / 2d;
     double yCenteringOffset = ((lvp.getHeight() / this.scale)) / 2d;
-    this.viewOrigin = new Point2D.Double(center.getX() - xCenteringOffset,
-        center.getY() - yCenteringOffset);
+    this.viewOrigin = new Point2D.Double(centroid.getX() - xCenteringOffset,
+        centroid.getY() - yCenteringOffset);
     this.update();
   }
 
@@ -522,12 +525,12 @@ public class Viewport {
    * @throws NoninvertibleTransformException throws an exception when the
    *           transformation fails
    */
-  public final void center(final FT_Feature feature)
+  public final void center(final IFeature feature)
       throws NoninvertibleTransformException {
     if ((feature == null) || feature.getGeom() == null) {
       return;
     }
-    DirectPosition centroid = feature.getGeom().centroid();
+    IDirectPosition centroid = feature.getGeom().centroid();
     this.center(centroid);
   }
 
@@ -547,7 +550,7 @@ public class Viewport {
       throws NoninvertibleTransformException {
     Point2D zoomPoint = this.toModelPoint(p);
     GM_Envelope modelEnvelope = this.getEnvelopeInModelCoordinates();
-    DirectPosition centre = modelEnvelope.center();
+    IDirectPosition centre = modelEnvelope.center();
     double width = modelEnvelope.width();
     double height = modelEnvelope.length();
     double dx = (zoomPoint.getX() - centre.getX()) / factor;
@@ -698,7 +701,7 @@ public class Viewport {
 
   public final void zoomToScale(final double scale)
       throws NoninvertibleTransformException {
-    DirectPosition p = this.getEnvelopeInModelCoordinates().center();
+    IDirectPosition p = this.getEnvelopeInModelCoordinates().center();
     this.scale = scale;
     this.update();
     this.center(p);
@@ -781,7 +784,7 @@ public class Viewport {
    * @param newScale new scale of the viewport
    */
   public final void setScale(double newScale) {
-    DirectPosition center = this.getEnvelopeInModelCoordinates().center();
+    IDirectPosition center = this.getEnvelopeInModelCoordinates().center();
     this.scale = newScale;
     Point2D modelPoint = new Point2D.Double(center.getX(), center.getY());
     LayerViewPanel lvp = this.layerViewPanels.iterator().next();

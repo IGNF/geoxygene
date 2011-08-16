@@ -27,7 +27,7 @@
 
 package fr.ign.cogit.geoxygene.contrib.geometrie;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 
 /**
  * Classe des angles en radian. Supporte quelques opérations de base. La classe
@@ -73,14 +73,13 @@ public class Angle {
   }
 
   /** Angle entre 2 points dans le plan X,Y (valeur comprise entre 0 et 2*pi) */
-  public Angle(DirectPosition pt1, DirectPosition pt2) {
-    double x = pt2.getX() - pt1.getX();
-    double y = pt2.getY() - pt1.getY();
-    this.setValeur(Math.atan2(y, x));
+  public Angle(IDirectPosition pt1, IDirectPosition pt2) {
+    this
+        .setValeur(Math.atan2(pt2.getY() - pt1.getY(), pt2.getX() - pt1.getX()));
   }
 
   /**
-   * crée un angle à pi près (entre O et pi), à partir d'un angle à 2pi près
+   * Crée un angle à pi près (entre O et pi), à partir d'un angle à 2pi près
    * (entre 0 et pi)
    */
   public static Angle angleAPiPres(Angle angle2pi) {
@@ -91,7 +90,7 @@ public class Angle {
   }
 
   /**
-   * crée un angle à pi près (entre O et pi), à partir de this
+   * Crée un angle à pi près (entre O et pi), à partir de this
    */
   public Angle angleAPiPres() {
     if (this.valeur > Math.PI) {
@@ -141,8 +140,8 @@ public class Angle {
   }
 
   /** Angle entre 3 points; pt2 est le point central: angle(pt2pt1,pt2pt3). */
-  public static Angle angleTroisPoints(DirectPosition pt1, DirectPosition pt2,
-      DirectPosition pt3) {
+  public static Angle angleTroisPoints(IDirectPosition pt1,
+      IDirectPosition pt2, IDirectPosition pt3) {
     Angle angle1 = new Angle(pt2, pt1);
     Angle angle2 = new Angle(pt2, pt3);
     Angle angle = Angle.ecarttrigo(angle1, angle2);

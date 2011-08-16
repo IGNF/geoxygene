@@ -1,3 +1,22 @@
+/*
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
 package fr.ign.cogit.geoxygene.schema.util.persistance;
 
 import java.io.File;
@@ -10,12 +29,9 @@ import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.SchemaConceptuelJeu;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.SchemaConceptuelProduit;
 
 /**
- * 
- * @author Balley
- * 
- *         Pour tester la persistence des MdDataset, Produit,
- *         SchemaConceptuelJeu et schémaConceptuelProduit dans Oracle ou
- *         Postgis.
+ * Pour tester la persistence des MdDataset, Produit, SchemaConceptuelJeu et
+ * schémaConceptuelProduit dans Oracle ou Postgis.
+ * @author Sandrine Balley
  */
 
 public class Test {
@@ -42,38 +58,35 @@ public class Test {
    **/
   /*
    * public static void ecritureSchemaJeu(){ SchemaConceptuelJeu schemaJeu = new
-   * SchemaConceptuelJeu(); schemaJeu.createFeatureType("route!");
-   * 
-   * FeatureType ft = new FeatureType(); ft.setTypeName("batiment!");
+   * SchemaConceptuelJeu(); schemaJeu.createFeatureType("route!"); FeatureType
+   * ft = new FeatureType(); ft.setTypeName("batiment!");
    * ft.setSchema(schemaJeu); schemaJeu.createFeatureAttribute(ft, "nature!",
    * "String", true);
+   * 
+   * 
    * schemaJeu.createFeatureAttributeValue((AttributeType)ft.getFeatureAttributeI
    * (0), "valeur1 !");
+   * 
+   * 
    * schemaJeu.createFeatureAttributeValue((AttributeType)ft.getFeatureAttributeI
    * (0), "valeur2 !");
    * System.out.println("ft dans ce schema : "+schemaJeu.getFeatureTypes());
-   * schemaJeu
-   * .createFeatureAssociation("acces!",(FeatureType)schemaJeu.getFeatureTypeI
-   * (0), (FeatureType)schemaJeu.getFeatureTypeI(1), "donne acces à !",
-   * "est accedé par !");
+   * schemaJeu.createFeatureAssociation("acces!",(FeatureType)schemaJeu.
+   * getFeatureTypeI(0), (FeatureType)schemaJeu.getFeatureTypeI(1),
+   * "donne acces à !", "est accedé par !");
    * 
    * 
    * System.out.println("asso dans ce schéma : "+schemaJeu.getFeatureAssociations
    * ()); System.out.println("schema produit cree");
-   * System.out.println("att dans ce schéma : "
-   * +schemaJeu.getFeatureAttributes().size());
-   * System.out.println("val enumerees de cet attribut = "
-   * +schemaJeu.getFeatureAttributes().get(0).getValuesDomain().size());
-   * System.out
-   * .println("att Values dans ce schéma : "+schemaJeu.getFeatureAttributeValues
-   * ().size());
    * 
-   * System.out.println("schema jeu cree");
+   * System.out.println("att dans ce schéma : "+schemaJeu.getFeatureAttributes(
+   * ).size()); System.out.println("val enumerees de cet attribut = "+schemaJeu.
+   * getFeatureAttributes().get(0).getValuesDomain().size());
+   * System.out.println("att Values dans ce schéma : "+schemaJeu.
+   * getFeatureAttributeValues().size()); System.out.println("schema jeu cree");
    * schemaJeu.setDefinition("créé a la volée pdt un test"); MdDataSet.db = new
    * MdGeodatabase(); MdDataSet.db.begin();
-   * MdDataSet.db.makePersistent(schemaJeu); MdDataSet.db.commit();
-   * 
-   * }
+   * MdDataSet.db.makePersistent(schemaJeu); MdDataSet.db.commit(); }
    */
 
   /**
@@ -82,29 +95,25 @@ public class Test {
   /*
    * public static void ecritureSchemaProduit(){ SchemaConceptuelProduit
    * schemaProduit = new SchemaConceptuelProduit();
-   * schemaProduit.createFeatureType("route !");
+   * schemaProduit.createFeatureType("route !"); FeatureType ft = new
+   * FeatureType(); ft.setTypeName("batiment !"); ft.setSchema(schemaProduit);
+   * schemaProduit.createFeatureAttribute(ft, "nature!", "String", true);
+   * schemaProduit.createFeatureAttributeValue((AttributeType)ft.
+   * getFeatureAttributeI(0), "valeur1 !");
+   * schemaProduit.createFeatureAttributeValue((AttributeType)ft.
+   * getFeatureAttributeI(0), "valeur2 !");
    * 
-   * FeatureType ft = new FeatureType(); ft.setTypeName("batiment !");
-   * ft.setSchema(schemaProduit); schemaProduit.createFeatureAttribute(ft,
-   * "nature!", "String", true);
-   * schemaProduit.createFeatureAttributeValue((AttributeType
-   * )ft.getFeatureAttributeI(0), "valeur1 !");
-   * schemaProduit.createFeatureAttributeValue
-   * ((AttributeType)ft.getFeatureAttributeI(0), "valeur2 !");
-   * System.out.println("ft dans ce schema : "+schemaProduit.getFeatureTypes());
-   * schemaProduit
-   * .createFeatureAssociation("acces !",(FeatureType)schemaProduit.
-   * getFeatureTypeI(0), (FeatureType)schemaProduit.getFeatureTypeI(1),
+   * System.out.println("ft dans ce schema : "+schemaProduit.getFeatureTypes())
+   * ;
+   * 
+   * schemaProduit.createFeatureAssociation("acces !",(FeatureType)schemaProduit
+   * .getFeatureTypeI(0), (FeatureType)schemaProduit.getFeatureTypeI(1),
    * "donne acces à !", "est accedé par !");
-   * 
    * System.out.println("asso dans ce schéma : "+schemaProduit.
    * getFeatureAssociations()); System.out.println("schema produit cree");
-   * 
    * schemaProduit.setDefinition("créé a la volée pdt un test"); MdDataSet.db =
    * new MdGeodatabase(); MdDataSet.db.begin();
-   * MdDataSet.db.makePersistent(schemaProduit); MdDataSet.db.commit();
-   * 
-   * }
+   * MdDataSet.db.makePersistent(schemaProduit); MdDataSet.db.commit(); }
    */
 
   /**
@@ -114,28 +123,22 @@ public class Test {
   /*
    * public static void creationSchemaProduitJeuVolee(){ SchemaISOProduit
    * schemaProd = new SchemaISOProduit(); schemaProd.createFeatureType("route");
-   * 
    * FeatureType ft = new FeatureType(); ft.setTypeName("batiment");
    * ft.setSchema(schemaProd); schemaProd.createFeatureAttribute(ft, "nature",
    * "String");
    * System.out.println("ft dans ce schema : "+schemaProd.getFeatureTypes());
-   * schemaProd
-   * .createFeatureAssociation("acces",(FeatureType)schemaProd.getFeatureTypeI
-   * (0), (FeatureType)schemaProd.getFeatureTypeI(1), "donne acces à",
-   * "est accedé par");
+   * schemaProd.createFeatureAssociation("acces",(FeatureType)schemaProd.
+   * getFeatureTypeI(0), (FeatureType)schemaProd.getFeatureTypeI(1),
+   * "donne acces à", "est accedé par");
    * 
    * 
    * System.out.println("asso dans ce schéma : "+schemaProd.getFeatureAssociations
-   * ()); System.out.println("schema produit cree");
-   * 
-   * SchemaISOJeu schemaJeu = new SchemaISOJeu(schemaProd);
-   * System.out.println("schema jeu cree");
+   * ()); System.out.println("schema produit cree"); SchemaISOJeu schemaJeu =
+   * new SchemaISOJeu(schemaProd); System.out.println("schema jeu cree");
    * schemaJeu.setDefinition("créé à la volée pdt un test");
    * //schemaJeu.setId(2); DataSetCommun.db = new GeodatabaseCommun();
    * DataSetCommun.db.begin(); DataSetCommun.db.makePersistent(schemaJeu);
-   * DataSetCommun.db.commit();
-   * 
-   * }
+   * DataSetCommun.db.commit(); }
    */
 
   /**
@@ -205,47 +208,41 @@ public class Test {
     schemaJeu.initNM();
     /*
      * System.out.println("\nroles de ft 1 : ");
-     * System.out.println(schemaJeu.getFeatureTypeI
-     * (0).getRoleI(0).getMemberName());
      * 
-     * System.out.println("\nassos de ft 1 : ");
-     * System.out.println(schemaJeu.getFeatureTypeI
-     * (0).getMemberOf().get(0).getTypeName());
-     * 
-     * System.out.println("\nmembres de asso 1 : ");
-     * System.out.println(schemaJeu
-     * .getFeatureAssociations().get(0).getLinkBetweenI(0).getTypeName());
-     * System
-     * .out.println(schemaJeu.getFeatureAssociations().get(0).getLinkBetweenI
-     * (1).getTypeName());
-     * 
+     * System.out.println(schemaJeu.getFeatureTypeI(0).getRoleI(0).getMemberName
+     * ()); System.out.println("\nassos de ft 1 : ");
+     * System.out.println(schemaJeu.getFeatureTypeI(0).getMemberOf().get(0).
+     * getTypeName()); System.out.println("\nmembres de asso 1 : ");
+     * System.out.println(schemaJeu.getFeatureAssociations().get(0).
+     * getLinkBetweenI(0).getTypeName());
+     * System.out.println(schemaJeu.getFeatureAssociations().get(0).
+     * getLinkBetweenI(1).getTypeName());
      * System.out.println("\nasso et ft de role 1 : ");
-     * System.out.println(schemaJeu
-     * .getAssociationRoles().get(0).getAssociationType().getTypeName());
-     * System.
-     * out.println(schemaJeu.getAssociationRoles().get(0).getFeatureType()
-     * .getTypeName());
+     * System.out.println(schemaJeu.getAssociationRoles().get(0).
+     * getAssociationType().getTypeName());
+     * 
+     * System.out.println(schemaJeu.getAssociationRoles().get(0).getFeatureType
+     * ().getTypeName());
      */
 
     /*
      * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(3).getTypeName
-     * ());
-     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(4).getTypeName
-     * ());
-     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(5).getTypeName
-     * ());
-     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(6).getTypeName
-     * ());
-     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(7).getTypeName
-     * ());
-     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(8).getTypeName
-     * ());
-     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(9).getTypeName
-     * ());
-     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(10).getTypeName
-     * ());
-     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(11).getTypeName
-     * ());
+     * ()); System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(4).
+     * getTypeName());
+     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(5).
+     * getTypeName());
+     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(6).
+     * getTypeName());
+     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(7).
+     * getTypeName());
+     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(8).
+     * getTypeName());
+     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(9).
+     * getTypeName());
+     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(10).
+     * getTypeName());
+     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(11).
+     * getTypeName());
      */
 
     System.out.println("maintenant je l'efface");
@@ -303,23 +300,22 @@ public class Test {
         .getFeatureType().getTypeName());
     /*
      * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(3).getTypeName
-     * ());
-     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(4).getTypeName
-     * ());
-     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(5).getTypeName
-     * ());
-     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(6).getTypeName
-     * ());
-     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(7).getTypeName
-     * ());
-     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(8).getTypeName
-     * ());
-     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(9).getTypeName
-     * ());
-     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(10).getTypeName
-     * ());
-     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(11).getTypeName
-     * ());
+     * ()); System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(4).
+     * getTypeName());
+     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(5).
+     * getTypeName());
+     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(6).
+     * getTypeName());
+     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(7).
+     * getTypeName());
+     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(8).
+     * getTypeName());
+     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(9).
+     * getTypeName());
+     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(10).
+     * getTypeName());
+     * System.out.println("featureTypes "+schemaJeu.getFeatureTypeI(11).
+     * getTypeName());
      */
 
     System.out.println("maintenant je l'efface");

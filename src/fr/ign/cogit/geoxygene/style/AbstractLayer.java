@@ -1,29 +1,20 @@
-/**
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
- * 
+/*
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.style;
@@ -48,12 +39,9 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * @author Julien Perret
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractLayer implements Layer {
-
-
 
   @XmlElement(name = "Name", required = true)
   private String name;
@@ -68,23 +56,21 @@ public abstract class AbstractLayer implements Layer {
     this.name = name;
   }
 
-  @XmlElement(name = "Description", required = false)
-  private String description;
+  @XmlElement(name = "Description")
+  protected String description;
+  
+  // @XmlElement(name = "LayerFeatureConstraints")
+  // protected LayerFeatureConstraints layerFeatureConstraints;
 
   @Override
   public String getDescription() {
-    return this.description;
+    return description;
   }
 
   @Override
-  public void setDescription(String d) {
-    this.description = d;
+  public void setDescription(String description) {
+    this.description = description;
   }
-
-  // @XmlElement(name = "Description")
-  // protected Description description;
-  // @XmlElement(name = "LayerFeatureConstraints")
-  // protected LayerFeatureConstraints layerFeatureConstraints;
 
   @XmlElements( { @XmlElement(name = "UserStyle", type = UserStyle.class),
       @XmlElement(name = "NamedStyle", type = NamedStyle.class) })
@@ -122,10 +108,10 @@ public abstract class AbstractLayer implements Layer {
   }
 
   @Override
-  public void setSelectable(boolean newSelectable) {
-    this.selectable = newSelectable;
+  public void setSelectable(boolean selectable) {
+    this.selectable = selectable;
   }
-
+  
   @XmlTransient
   private boolean symbolized = true;
 
@@ -169,14 +155,16 @@ public abstract class AbstractLayer implements Layer {
     return activeGroup;
   }
 
+  @Override
   public void setActiveGroup(String activeGroup) {
     this.activeGroup = activeGroup;
   }
+  @Override
   public Collection<String> getGroups() {
     Set<String> groups = new HashSet<String>(0);
     for(Style style : this.getStyles()) {
-      if (style.getGroup() != null) {
-        groups.add(style.getGroup());
+      if (((AbstractStyle) style).getGroup() != null) {
+        groups.add(((AbstractStyle) style).getGroup());
       }
     }
     return groups;
@@ -202,6 +190,7 @@ public void setCRS(CoordinateReferenceSystem crs){
 	  }
   }
   
+  @Override
   public CoordinateReferenceSystem getCRS(){
 	  return this.ftscrs;
   }

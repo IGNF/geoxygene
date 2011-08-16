@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie;
@@ -23,13 +31,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.LienReseaux;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
+import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 /**
@@ -39,6 +48,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
  * @version 1.0
+ * 
  */
 
 public class GroupeApp extends Groupe {
@@ -217,7 +227,7 @@ public class GroupeApp extends Groupe {
   // FILTRAGES DES GROUPES LORS DE L'APPARIEMENT
   // /////////////////////////////////////////////////////////////////////////////////////////////////////
   /**
-   * méthode permettant de filtrer un groupe du graphe de comparaison, supposé
+   * Méthode permettant de filtrer un groupe du graphe de comparaison, supposé
    * apparié avec un noeud du graphe de référence. D'après thèse de Thomas
    * Devogèle (1997), avec ajouts de Sébastien Mustière (2002). S'appuie
    * principalement sur des recherches d'impasses et des calculs de plus courts
@@ -228,8 +238,7 @@ public class GroupeApp extends Groupe {
     int nbArcs;
     boolean complet;
 
-    // le traitement diffère pour les groupes complets à l'origine et les
-    // autres
+    // le traitement diffère pour les groupes complets à l'origine et les autres
     if (noeudRef.correspCommunicants(this, liensPreappArcs) == 1) {
       complet = true;
     } else {
@@ -250,10 +259,9 @@ public class GroupeApp extends Groupe {
 
     // 2. Elimination des impasses au sein du groupe (sans tenir compte des
     // autres arcs de BDcomp)
-    // ET dont l'extrémité (à l'extérieure du groupe) n'a pas d'autre
-    // troncon apparié avec des arcs
-    // de la BDRef par le préappariement. Recursif tant qu'on en enleve
-    // encore
+    // ET dont l'extrémité (à l'extérieure du groupe) n'a pas d'autre troncon
+    // apparié avec des arcs
+    // de la BDRef par le préappariement. Recursif tant qu'on en enleve encore
     while (true) {
       nbArcs = this.getListeArcs().size();
       if (nbArcs == 1) {
@@ -266,8 +274,8 @@ public class GroupeApp extends Groupe {
     }
 
     // 3. Pour les groupes incomplets :
-    // Elimination des impasses au sein du groupe (sans tenir compte des
-    // autres arcs de BDcomp)
+    // Elimination des impasses au sein du groupe (sans tenir compte des autres
+    // arcs de BDcomp)
     // ET dont l'extrémité (à l'extérieure du groupe) a tous ses troncons
     // adjacents (y compris l'impasse)
     // appariés avec le même arc de BDcomp. Recursif.
@@ -286,8 +294,8 @@ public class GroupeApp extends Groupe {
     }
 
     // 3. Pour les groupes complets :
-    // Elimination des impasses au sein du groupe (sans tenir compte des
-    // autres arcs de BDcomp)
+    // Elimination des impasses au sein du groupe (sans tenir compte des autres
+    // arcs de BDcomp)
     // qui laissent le groupe complet si on les enlève
     if (complet) {
       while (true) {
@@ -461,8 +469,7 @@ public class GroupeApp extends Groupe {
     for (i = 0; i < this.getListeArcs().size(); i++) {
       arcComp = (ArcApp) this.getListeArcs().get(i);
       if (arcComp.impasseDebut(this)) {
-        // on cherche si tous les entrants/sortants du noeud ini de
-        // Arc_Comp
+        // on cherche si tous les entrants/sortants du noeud ini de Arc_Comp
         // sont appariés avec au moins un même arc de BDref commun
         communs = true;
         arcsCompCommuniquants = arcComp.getNoeudIni().arcs();
@@ -484,8 +491,7 @@ public class GroupeApp extends Groupe {
         }
       }
       if (arcComp.impasseFin(this)) {
-        // on cherche si tous les entrants/sortants du noeud fin de
-        // arcComp
+        // on cherche si tous les entrants/sortants du noeud fin de arcComp
         // sont appariés avec au moins un même arc de BDref commun
         communs = true;
         arcsCompCommuniquants = arcComp.getNoeudFin().arcs();
@@ -534,15 +540,15 @@ public class GroupeApp extends Groupe {
     int i;
     ArcApp arccomp;
     int correspondance;
-    List<FT_Feature> arcsATester = new ArrayList<FT_Feature>();
+    List<IFeature> arcsATester = new ArrayList<IFeature>();
 
     // Recherche des arcs à éliminer
     arcsATester.addAll(this.getListeArcs());
     for (i = 0; i < arcsATester.size(); i++) {
       arccomp = (ArcApp) arcsATester.get(i);
       if (arccomp.impasseDebut(this)) {
-        // on enlève l'arc, et on vérifie si le goupe est toujours
-        // complet, sinon on remet l'arc
+        // on enlève l'arc, et on vérifie si le goupe est toujours complet,
+        // sinon on remet l'arc
         this.getListeArcs().remove(arccomp);
         arccomp.getListeGroupes().remove(this);
         this.getListeNoeuds().remove(arccomp.getNoeudIni());
@@ -557,8 +563,8 @@ public class GroupeApp extends Groupe {
         ((NoeudApp) arccomp.getNoeudIni()).getListeGroupes().add(this);
       }
       if (arccomp.impasseFin(this)) {
-        // on enlève l'arc, et on vérifie si le goupe est toujours
-        // complet, sinon on remet l'arc
+        // on enlève l'arc, et on vérifie si le goupe est toujours complet,
+        // sinon on remet l'arc
         this.getListeArcs().remove(arccomp);
         arccomp.getListeGroupes().remove(this);
         this.getListeNoeuds().remove(arccomp.getNoeudFin());
@@ -575,7 +581,7 @@ public class GroupeApp extends Groupe {
     }
   }
 
-  /** méthode utile pour le filtrage des groupes */
+  /** Méthode utile pour le filtrage des groupes */
   private void filtragePlusCourtChemin(NoeudApp noeudRef,
       EnsembleDeLiens liensPreappArcs) {
 
@@ -593,8 +599,7 @@ public class GroupeApp extends Groupe {
     noeudsIn = this.noeudsEntree(noeudRef, liensPreappArcs);
     noeudsOut = this.noeudsSortie(noeudRef, liensPreappArcs);
 
-    // Quand il n'y que des entrants ou que des sortants, on les garde ainsi
-    // que
+    // Quand il n'y que des entrants ou que des sortants, on les garde ainsi que
     // les arcs qui les relient (bidouille, j'en conviens)
     if (noeudsIn.size() == 0) {
       noeudsIn.addAll(noeudsOut);
@@ -608,11 +613,8 @@ public class GroupeApp extends Groupe {
         in = (NoeudApp) noeudsIn.get(i);
         out = (NoeudApp) noeudsOut.get(j);
         // if ( in == out ) continue;
-        pcc = (GroupeApp) in.plusCourtChemin(out, this, 0); // plus
-        // court
-        // chemin
-        // dans le
-        // groupe
+        pcc = (GroupeApp) in.plusCourtChemin(out, this, 0); // plus court chemin
+                                                            // dans le groupe
         if (pcc == null) {
           continue;
         }
@@ -703,10 +705,14 @@ public class GroupeApp extends Groupe {
     }
 
     // on inverse l'arc au besoin.
-    d1 = chemin.startPoint().distance(arcRef.getGeometrie().startPoint())
-        + chemin.endPoint().distance(arcRef.getGeometrie().endPoint());
-    d2 = chemin.startPoint().distance(arcRef.getGeometrie().endPoint())
-        + chemin.endPoint().distance(arcRef.getGeometrie().startPoint());
+    d1 = Distances.distance(chemin.startPoint(), arcRef.getGeometrie()
+        .startPoint())
+        + Distances.distance(chemin.endPoint(), arcRef.getGeometrie()
+            .endPoint());
+    d2 = Distances.distance(chemin.startPoint(), arcRef.getGeometrie()
+        .endPoint())
+        + Distances.distance(chemin.endPoint(), arcRef.getGeometrie()
+            .startPoint());
     if (d1 < d2) {
       chemin2 = chemin;
     } else {

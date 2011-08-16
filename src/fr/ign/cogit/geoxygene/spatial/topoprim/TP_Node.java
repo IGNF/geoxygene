@@ -32,8 +32,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 
 /**
  * Noeud topologique (orientation positive).
@@ -83,7 +83,7 @@ public class TP_Node extends TP_DirectedNode {
     this.proxy[1].setId(-Id);
     if (Id < 0) {
       System.out
-          .println("TP_Node::setId(id) : L'identifiant doit être positif"); //$NON-NLS-1$
+          .println("TP_Node::setId(id) : L'identifiant doit être positif");
     }
   }
 
@@ -102,7 +102,7 @@ public class TP_Node extends TP_DirectedNode {
       return this.proxy[1];
     } else {
       System.out
-          .println("TP_Node::asTP_DirectedTopo(sign) : Passer +1 ou -1 en paramètre."); //$NON-NLS-1$
+          .println("TP_Node::asTP_DirectedTopo(sign) : Passer +1 ou -1 en paramètre.");
       return null;
     }
   }
@@ -237,11 +237,11 @@ public class TP_Node extends TP_DirectedNode {
       // negatif
       // directed negatif => sortant : OK
       // directed positif => entrant : il faut le retourner
-      GM_LineString geom_ = null;
+      ILineString geom_ = null;
       if (diredge.getId() <= 0) {
-        geom_ = (GM_LineString) diredge.topo().getGeom();
+        geom_ = (ILineString) diredge.topo().getGeom();
       } else {
-        geom_ = (GM_LineString) ((GM_LineString) (diredge.topo().getGeom()))
+        geom_ = (ILineString) ((ILineString) (diredge.topo().getGeom()))
             .reverse();
       }
       listOfAngles[i] = this.calculeAngle(geom_);
@@ -267,9 +267,9 @@ public class TP_Node extends TP_DirectedNode {
   }
 
   /* calcule l'angle forme par les 2 PREMIERS points de la ligne (dans [0, 2.pi] */
-  private double calculeAngle(GM_LineString line) {
-    DirectPosition pt1 = line.getControlPoint().get(0);
-    DirectPosition pt2 = line.getControlPoint().get(1);
+  private double calculeAngle(ILineString line) {
+    IDirectPosition pt1 = line.getControlPoint().get(0);
+    IDirectPosition pt2 = line.getControlPoint().get(1);
     double deltaX = pt2.getX() - pt1.getX();
     double deltaY = pt2.getY() - pt1.getY();
     if (deltaX > 0 && deltaY >= 0) {

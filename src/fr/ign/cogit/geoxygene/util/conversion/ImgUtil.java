@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.util.conversion;
@@ -49,14 +57,16 @@ import org.apache.fop.svg.PDFTranscoder;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IAggregate;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
@@ -68,22 +78,23 @@ public class ImgUtil {
   /*-- drawGeom() ------------------------------------------------*/
   /*--------------------------------------------------------------*/
 
-  private static void drawGeom(Graphics2D g, GM_Object[] geoms, Color[] colors,
+  private static void drawGeom(Graphics2D g, IGeometry[] geoms, Color[] colors,
       AffineTransform transform) throws Exception {
     if (geoms.length != colors.length) {
-      throw new IllegalArgumentException("geoms.length!=colors.length"); //$NON-NLS-1$
+      throw new IllegalArgumentException("geoms.length!=colors.length");
     }
     for (int i = 0; i < geoms.length; i++) {
       ImgUtil.drawGeom(g, geoms[i], colors[i], transform);
     }
   }
 
-  private static void drawGeom(Graphics2D g, GM_Object geom, Color color,
+  private static void drawGeom(Graphics2D g, IGeometry geom, Color color,
       AffineTransform transform) throws Exception {
     if (ImgUtil.isEmpty(geom)) {
       return;
+    } else {
+      ImgUtil.drawGeom(g, WktGeOxygene.makeWkt(geom), color, transform);
     }
-    ImgUtil.drawGeom(g, WktGeOxygene.makeWkt(geom), color, transform);
   }
 
   private static void drawGeom(Graphics2D g, String wkt, Color color,
@@ -102,11 +113,10 @@ public class ImgUtil {
   /*-- makeScaleTransform() --------------------------------------*/
   /*--------------------------------------------------------------*/
 
-  private static AffineTransform makeScaleTransform(GM_Object[] geoms,
+  private static AffineTransform makeScaleTransform(IGeometry[] geoms,
       int width, int height) throws Exception {
     GeneralPath all = new GeneralPath();
     for (int i = 0; i < geoms.length; i++) {
-      System.out.println("scale " + i + " / " + geoms.length);
       if (!ImgUtil.isEmpty(geoms[i])) {
         all.append(WktAwt.makeAwtShape(WktGeOxygene.makeWkt(geoms[i]))
             .getBounds(), false);
@@ -150,7 +160,7 @@ public class ImgUtil {
 
   public static BufferedImage make(Color bg, int width, int height) {
     BufferedImage image = new BufferedImage(width, height,
-        BufferedImage.TYPE_INT_ARGB);
+        BufferedImage.TYPE_INT_RGB);
     Graphics2D g = image.createGraphics();
     g.setColor(bg);
     g.fillRect(0, 0, width, height);
@@ -186,37 +196,36 @@ public class ImgUtil {
    */
   public static void saveImage(BufferedImage image, String path)
       throws IOException {
-    String format = ""; //$NON-NLS-1$
+    String format = "";
     String[] formatNames = ImageIO.getWriterFormatNames();
     for (String formatName : formatNames) {
-      if (path.endsWith("." + formatName)) { //$NON-NLS-1$
+      if (path.endsWith("." + formatName)) {
         format = formatName;
       }
     }
-    String newPath = path;
-    if (format.equals("")) { //$NON-NLS-1$
-      newPath += ".png"; //$NON-NLS-1$
-      format = "png"; //$NON-NLS-1$
+    if (format.equals("")) {
+      path += ".png";
+      format = "png";
     }
-    ImageIO.write(image, format, new File(newPath));
+    ImageIO.write(image, format, new File(path));
   }
 
-  public static void saveImage(GM_Object geom, String path) throws Exception {
+  public static void saveImage(IGeometry geom, String path) throws Exception {
     ImgUtil.saveImage(geom, path, Color.BLACK, Color.WHITE, 800, 800);
   }
 
-  public static void saveImage(List<GM_Object> geomList, String path)
+  public static void saveImage(List<IGeometry> geomList, String path)
       throws Exception {
     ImgUtil.saveImage(geomList, path, Color.BLACK, Color.WHITE, 800, 800);
   }
 
-  public static void saveImage(List<GM_Object> geomList, String path, Color fg,
+  public static void saveImage(List<IGeometry> geomList, String path, Color fg,
       Color bg, int width, int height) throws Exception {
-    ImgUtil.saveImage(new GM_Aggregate<GM_Object>(geomList), path, fg, bg,
+    ImgUtil.saveImage(new GM_Aggregate<IGeometry>(geomList), path, fg, bg,
         width, height);
   }
 
-  public static void saveImage(GM_Object geom, String path, Color fg, Color bg,
+  public static void saveImage(IGeometry geom, String path, Color fg, Color bg,
       int width, int height) throws Exception {
     String wkt = WktGeOxygene.makeWkt(geom);
     AwtShape awt;
@@ -242,7 +251,7 @@ public class ImgUtil {
    * @param height height of the image
    * @throws Exception
    */
-  public static void saveImage(GM_Object[] geoms, String path,
+  public static void saveImage(IGeometry[] geoms, String path,
       Color[] foregrounds, Color background, int width, int height)
       throws Exception {
     AffineTransform transform = ImgUtil
@@ -274,11 +283,11 @@ public class ImgUtil {
    * @param height
    * @throws Exception
    */
-  public static void savePdf(GM_Object[] geoms, String path,
+  public static void savePdf(IGeometry[] geoms, String path,
       Color[] foregrounds, Color background, int width, int height)
       throws Exception {
     DOMImplementation impl = GenericDOMImplementation.getDOMImplementation();
-    Document svgDoc = impl.createDocument(null, "svg", null); //$NON-NLS-1$
+    Document svgDoc = impl.createDocument(null, "svg", null);
 
     AffineTransform transform = ImgUtil
         .makeScaleTransform(geoms, width, height);
@@ -333,11 +342,11 @@ public class ImgUtil {
    * @param height
    * @throws Exception
    */
-  public static void saveSvgz(GM_Object[] geoms, String path,
+  public static void saveSvgz(IGeometry[] geoms, String path,
       Color[] foregrounds, Color background, int width, int height)
       throws Exception {
     DOMImplementation impl = GenericDOMImplementation.getDOMImplementation();
-    Document svgDoc = impl.createDocument(null, "svg", null); //$NON-NLS-1$
+    Document svgDoc = impl.createDocument(null, "svg", null);
 
     AffineTransform transform = ImgUtil
         .makeScaleTransform(geoms, width, height);
@@ -361,44 +370,44 @@ public class ImgUtil {
   }
 
   // utils //
-  @SuppressWarnings("unchecked")
-  public static boolean isEmpty(GM_Object geom) {
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  public static boolean isEmpty(IGeometry geom) {
     if (geom == null) {
       return true;
     }
-    if (geom instanceof GM_Point) {
-      return ImgUtil.isEmpty((GM_Point) geom);
+    if (geom instanceof IPoint) {
+      return ImgUtil.isEmpty((IPoint) geom);
     }
-    if (geom instanceof GM_Polygon) {
-      return ImgUtil.isEmpty((GM_Polygon) geom);
+    if (geom instanceof IPolygon) {
+      return ImgUtil.isEmpty((IPolygon) geom);
     }
-    if (geom instanceof GM_LineString) {
-      return ImgUtil.isEmpty((GM_LineString) geom);
+    if (geom instanceof ILineString) {
+      return ImgUtil.isEmpty((ILineString) geom);
     }
-    if (geom instanceof GM_Aggregate) {
-      return ImgUtil.isEmpty((GM_Aggregate) geom);
+    if (geom instanceof IAggregate) {
+      return ImgUtil.isEmpty((IAggregate) geom);
     }
     return false;
   }
 
-  public static boolean isEmpty(GM_Point point) {
-    DirectPosition position = point.getPosition();
+  public static boolean isEmpty(IPoint point) {
+    IDirectPosition position = point.getPosition();
     double x = position.getX();
     double y = position.getY();
     double z = position.getZ();
     return (x == Double.NaN || y == Double.NaN || z == Double.NaN);
   }
 
-  public static boolean isEmpty(GM_Polygon poly) {
+  public static boolean isEmpty(IPolygon poly) {
     return poly.coord().size() == 0;
   }
 
-  public static boolean isEmpty(GM_LineString lineString) {
+  public static boolean isEmpty(ILineString lineString) {
     return lineString.sizeControlPoint() == 0;
   }
 
-  static boolean isEmpty(GM_Aggregate<GM_Object> aggr) {
-    for (GM_Object geom : aggr) {
+  static boolean isEmpty(IAggregate<IGeometry> aggr) {
+    for (IGeometry geom : aggr) {
       if (!ImgUtil.isEmpty(geom)) {
         return false;
       }
@@ -416,13 +425,13 @@ public class ImgUtil {
    * @param scale scale used for the rendering
    * @throws Exception
    */
-  public static <Feature extends FT_Feature> void collectionsToImage(
-      List<FT_FeatureCollection<Feature>> collections, List<Color> colors,
+  public static <Feature extends IFeature> void collectionsToImage(
+      List<IFeatureCollection<Feature>> collections, List<Color> colors,
       Color background, String path, double scale) throws Exception {
     int totalSize = 0; // number of features
-    GM_Envelope envelope = null;
-    for (FT_FeatureCollection<Feature> c : collections) {
-      GM_Envelope env = c.envelope();
+    IEnvelope envelope = null;
+    for (IFeatureCollection<Feature> c : collections) {
+      IEnvelope env = c.envelope();
       if (envelope == null) {
         envelope = env;
       } else {
@@ -442,9 +451,9 @@ public class ImgUtil {
         + envelope.length());
     System.out.println("Envelope out " + width + " x " + height);
     int i = 0, j = 0;
-    GM_Object[] geometries = new GM_Object[totalSize];
-    for (FT_FeatureCollection<Feature> c : collections) {
-      for (FT_Feature f : c) {
+    IGeometry[] geometries = new IGeometry[totalSize];
+    for (IFeatureCollection<Feature> c : collections) {
+      for (IFeature f : c) {
         geometries[i] = f.getGeom();
         foregrounds[i] = colors.get(j);
         i++;

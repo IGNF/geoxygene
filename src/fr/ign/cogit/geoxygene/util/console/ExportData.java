@@ -1,20 +1,28 @@
 /*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Gï¿½ographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.util.console;
@@ -37,10 +45,10 @@ import org.apache.ojb.broker.util.configuration.impl.OjbConfiguration;
 import org.apache.ojb.odmg.HasBroker;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjb;
 import fr.ign.cogit.geoxygene.datatools.ojb.GeodatabaseOjbFactory;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 import fr.ign.cogit.geoxygene.util.loader.gui.GUIExportData;
 import fr.ign.cogit.geoxygene.util.viewer.ObjectViewer;
@@ -52,8 +60,8 @@ import fr.ign.cogit.geoxygene.util.viewer.ObjectViewer;
 public class ExportData extends JPanel {
 
   /**
-     * 
-     */
+	 * 
+	 */
   private static final long serialVersionUID = 2282858491554958977L;
 
   protected EventListenerList listenerList = new EventListenerList();
@@ -85,8 +93,8 @@ public class ExportData extends JPanel {
   }
 
   /**
-     * 
-     */
+	 * 
+	 */
   protected void action() {
 
     System.out.println(I18N.getString("ExportData.ESRIShapefileExport")); //$NON-NLS-1$
@@ -132,12 +140,12 @@ public class ExportData extends JPanel {
       data.refreshRepository(fileMapping);
       // Metadata metadonnees = data.getMetadata(tableName);
       ResultSet rs = data.getConnection().getMetaData().getColumns(null, null,
-          tableName, "*"); //$NON-NLS-1$
+          tableName, "*");
 
       int columnNameIndex = -1;
       int typeNameIndex = -1;
       int nbCol = rs.getMetaData().getColumnCount();
-      System.out.println(nbCol + " " + I18N.getString("ExportData.Columns")); //$NON-NLS-1$ //$NON-NLS-2$
+      System.out.println("il y a " + nbCol + " colonnes");
       for (int i = 1; i < nbCol + 1; i++) {
         System.out.println(i + " " //$NON-NLS-1$
             + "columnName = " + rs.getMetaData().getColumnName(i)); //$NON-NLS-1$
@@ -152,8 +160,8 @@ public class ExportData extends JPanel {
       rs.absolute(1);
       while (!rs.isAfterLast()) {
         rs.next();
-        System.out.println("column name = " + rs.getString(columnNameIndex)); //$NON-NLS-1$
-        System.out.println(" ----- type = " + rs.getString(typeNameIndex)); //$NON-NLS-1$
+        System.out.println("column name = " + rs.getString(columnNameIndex));
+        System.out.println(" ----- type = " + rs.getString(typeNameIndex));
       }
 
       System.exit(0);
@@ -175,20 +183,20 @@ public class ExportData extends JPanel {
       DescriptorRepository desc = broker.getDescriptorRepository();
       ClassDescriptor cd = desc.getDescriptorFor(javaClassName);
       System.out.println(javaClassName);
-      System.out.println("\t table " + cd.getFullTableName()); //$NON-NLS-1$
+      System.out.println("\t table : " + cd.getFullTableName());
       FieldDescriptor[] fields = cd.getFieldDescriptions();
       Map<String, String> columnNames = new HashMap<String, String>();
       for (FieldDescriptor field : fields) {
         if (field != null) {
-          System.out
-              .println("\t\t " + field.getAttributeName() + " -- " + field.getColumnName()); //$NON-NLS-1$//$NON-NLS-2$
+          System.out.println("\t\t " + field.getAttributeName() + " -- "
+              + field.getColumnName());
           columnNames.put(field.getAttributeName(), field.getColumnName());
         }
       }
 
-      FT_FeatureCollection<?> ftfc = data.loadAllFeatures(javaClass);
+      IFeatureCollection<?> ftfc = data.loadAllFeatures(javaClass);
 
-      ShapefileWriter.write(ftfc, shapefileName,null);
+      ShapefileWriter.write(ftfc, shapefileName);
 
       ObjectViewer.flagWindowClosing = false;
       ObjectViewer viewer = new ObjectViewer(data);
@@ -202,4 +210,5 @@ public class ExportData extends JPanel {
       e.printStackTrace();
     }
   }
+
 }

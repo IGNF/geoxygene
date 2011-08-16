@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO
@@ -23,54 +23,58 @@
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
- * 
  */
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IArc;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPosition;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
- * NON IMPLEMENTE. Un segment d'arc, défini par 3 points.
+ * Un segment d'arc de cercle il est défini par 3 points.
  * 
- * @author Thierry Badard & Arnaud Braun
- * @version 1.0
+ * @author Thierry Badard & Arnaud Braun & julien Gaffuri
+ * @version 1.1
  * 
  */
-
-class GM_Arc extends GM_ArcString {
+public class GM_Arc extends GM_ArcString implements IArc {
   private static Logger logger = Logger.getLogger(GM_Arc.class.getName());
-  private GM_Point startPoint;
 
-  public GM_Point getStartPoint() {
-    return startPoint;
+  private IPosition startPoint;
+
+  public IPosition getStartPoint() {
+    return this.startPoint;
   }
 
-  public void setStartPoint(GM_Point startPoint) {
+  public void setStartPoint(IPosition startPoint) {
     this.startPoint = startPoint;
   }
 
-  private GM_Point midPoint;
+  private IPosition midPoint;
 
-  public GM_Point getMidPoint() {
-    return midPoint;
+  public IPosition getMidPoint() {
+    return this.midPoint;
   }
 
-  public void setMidPoint(GM_Point midPoint) {
+  public void setMidPoint(IPosition midPoint) {
     this.midPoint = midPoint;
   }
 
-  private GM_Point endPoint;
+  private IPosition endPoint;
 
-  public GM_Point getEndPoint() {
-    return endPoint;
+  public IPosition getEndPoint() {
+    return this.endPoint;
   }
 
-  public void setEndPoint(GM_Point endPoint) {
+  public void setEndPoint(IPosition endPoint) {
     this.endPoint = endPoint;
   }
 
@@ -81,54 +85,53 @@ class GM_Arc extends GM_ArcString {
    * @param midPoint
    * @param endPoint
    */
-  public GM_Arc(GM_Point startPoint, GM_Point midPoint, GM_Point endPoint) {
-    setStartPoint(startPoint);
-    setMidPoint(midPoint);
-    setEndPoint(endPoint);
+  public GM_Arc(IPosition startPoint, IPosition midPoint, IPosition endPoint) {
+    this.setStartPoint(startPoint);
+    this.setMidPoint(midPoint);
+    this.setEndPoint(endPoint);
   }
 
   /**
    * cree un arc de cercle a partir de deux point et la distance du cercle au
    * milieu du segment quand la distance est positive, l'arc de cercle est a
-   * gauche, et � droite sinon (on ne suit pas la norme, qui traite le cas 3D)
+   * gauche, et à droite sinon (on ne suit pas la norme, qui traite le cas 3D)
    * 
    * @param startPoint
    * @param endPoint
    * @param offset
    */
-  public GM_Arc(GM_Point startPoint, GM_Point endPoint, double offset) {
-    setStartPoint(startPoint);
-    setEndPoint(endPoint);
+  public GM_Arc(IPosition startPoint, IPosition endPoint, double offset) {
+    this.setStartPoint(startPoint);
+    this.setEndPoint(endPoint);
 
-    double dx = endPoint.getPosition().getX() - startPoint.getPosition().getX();
-    double dy = endPoint.getPosition().getY() - startPoint.getPosition().getY();
+    double dx = endPoint.getDirect().getX() - startPoint.getDirect().getX();
+    double dy = endPoint.getDirect().getY() - startPoint.getDirect().getY();
     double n = Math.sqrt(dx * dx + dy * dy);
 
-    double midx = (startPoint.getPosition().getX() + endPoint.getPosition()
-        .getX())
+    double midx = (startPoint.getDirect().getX() + endPoint.getDirect().getX())
         * 0.5 - offset * dy / n;
-    double midy = (startPoint.getPosition().getY() + endPoint.getPosition()
-        .getY())
+    double midy = (startPoint.getDirect().getY() + endPoint.getDirect().getY())
         * 0.5 + offset * dx / n;
 
-    setMidPoint(new GM_Point(new DirectPosition(midx, midy)));
+    this.setMidPoint(new GM_Position(new DirectPosition(midx, midy)));
   }
 
-  public DirectPosition getCenter() {
+  public IDirectPosition getCenter() {
 
     // retrieve the points coodinates
-    double xa = getStartPoint().getPosition().getX();
-    double ya = getStartPoint().getPosition().getY();
-    double xb = getEndPoint().getPosition().getX();
-    double yb = getEndPoint().getPosition().getY();
-    double xc = getMidPoint().getPosition().getX();
-    double yc = getMidPoint().getPosition().getY();
+    double xa = this.getStartPoint().getDirect().getX();
+    double ya = this.getStartPoint().getDirect().getY();
+    double xb = this.getEndPoint().getDirect().getX();
+    double yb = this.getEndPoint().getDirect().getY();
+    double xc = this.getMidPoint().getDirect().getX();
+    double yc = this.getMidPoint().getDirect().getY();
 
     double q = ya + yb - 2 * yc;
 
     // no circle center can be computed; 3 points are aligned
-    if (q == 0)
+    if (q == 0) {
       return null;
+    }
 
     double t = (xb - xa) / (2 * q);
     return new DirectPosition((xa + xc) * 0.5 + t * (ya - yc), (ya + yc) * 0.5
@@ -138,12 +141,12 @@ class GM_Arc extends GM_ArcString {
   public double getRadius() {
 
     // retrieve the points coodinates
-    double xa = getStartPoint().getPosition().getX();
-    double ya = getStartPoint().getPosition().getY();
-    double xb = getMidPoint().getPosition().getX();
-    double yb = getMidPoint().getPosition().getY();
-    double xc = getEndPoint().getPosition().getX();
-    double yc = getEndPoint().getPosition().getY();
+    double xa = this.getStartPoint().getDirect().getX();
+    double ya = this.getStartPoint().getDirect().getY();
+    double xb = this.getMidPoint().getDirect().getX();
+    double yb = this.getMidPoint().getDirect().getY();
+    double xc = this.getEndPoint().getDirect().getX();
+    double yc = this.getEndPoint().getDirect().getY();
 
     double ab2 = (xa - xb) * (xa - xb) + (ya - yb) * (ya - yb);
     double ac2 = (xa - xc) * (xa - xc) + (ya - yc) * (ya - yc);
@@ -157,9 +160,9 @@ class GM_Arc extends GM_ArcString {
    * 
    */
   public double startOfArc() {
-    DirectPosition center = getCenter();
-    return Math.atan2(getStartPoint().getPosition().getY() - center.getY(),
-        getStartPoint().getPosition().getX() - center.getX());
+    IDirectPosition center = this.getCenter();
+    return Math.atan2(this.getStartPoint().getDirect().getY() - center.getY(),
+        this.getStartPoint().getDirect().getX() - center.getX());
   }
 
   /**
@@ -168,9 +171,9 @@ class GM_Arc extends GM_ArcString {
    * 
    */
   public double endOfArc() {
-    DirectPosition center = getCenter();
-    return Math.atan2(getEndPoint().getPosition().getY() - center.getY(),
-        getEndPoint().getPosition().getX() - center.getX());
+    IDirectPosition center = this.getCenter();
+    return Math.atan2(this.getEndPoint().getDirect().getY() - center.getY(),
+        this.getEndPoint().getDirect().getX() - center.getX());
   }
 
   /**
@@ -179,9 +182,9 @@ class GM_Arc extends GM_ArcString {
    * 
    */
   public double midOfArc() {
-    DirectPosition center = getCenter();
-    return Math.atan2(getMidPoint().getPosition().getY() - center.getY(),
-        getMidPoint().getPosition().getX() - center.getX());
+    IDirectPosition center = this.getCenter();
+    return Math.atan2(this.getMidPoint().getDirect().getY() - center.getY(),
+        this.getMidPoint().getDirect().getX() - center.getX());
   }
 
   /**
@@ -189,33 +192,34 @@ class GM_Arc extends GM_ArcString {
    */
   public double delta() {
     // half delta within [-Pi, Pi]
-    double demidelta = midOfArc() - startOfArc();
-    if (demidelta > Math.PI)
+    double demidelta = this.midOfArc() - this.startOfArc();
+    if (demidelta > Math.PI) {
       demidelta -= 2 * Math.PI;
-    else if (demidelta < -Math.PI)
+    } else if (demidelta < -Math.PI) {
       demidelta += 2 * Math.PI;
+    }
 
     return 2 * demidelta;
   }
 
   @Override
-  public GM_Object intersection(GM_Object geom) {
+  public IGeometry intersection(IGeometry geom) {
 
     // compute intersection between two arcs
-    if (geom instanceof GM_Arc) {
+    if (geom instanceof IArc) {
       return new GM_Point();
     }
 
     // compute intersection between an arc and a segment
-    if (geom instanceof GM_LineSegment) {
+    if (geom instanceof ILineSegment) {
 
       // retrieve segment's coordinates
-      GM_LineSegment ls = (GM_LineSegment) geom;
-      DirectPosition dp0 = ls.getControlPoint(0);
-      DirectPosition dp1 = ls.getControlPoint(1);
+      ILineSegment ls = (ILineSegment) geom;
+      IDirectPosition dp0 = ls.getStartPoint();
+      IDirectPosition dp1 = ls.getEndPoint();
 
       // center of the arc
-      DirectPosition c = getCenter();
+      IDirectPosition c = this.getCenter();
 
       // projection of the center on the line
       double dx = dp1.getX() - dp0.getX();
@@ -232,22 +236,24 @@ class GM_Arc extends GM_ArcString {
       double dist = dpp.distance(c);
 
       // compute the radius
-      double r = getRadius();
+      double r = this.getRadius();
 
       // if that distance is greater than the radius, no intersection possible,
       // return an empty geometry
-      if (dist > r)
+      if (dist > r) {
         return new GM_Point();
+      }
 
       // if that distance is equal to the radius, a candidate to be the
       // intersection is the projection
       // (the circle is tangent to the line)
       if (dist == r) {
         GM_Point pt = new GM_Point(dpp);
-        if (contains(pt) && ls.contains(pt))
+        if (this.contains(pt) && ls.contains(pt)) {
           return pt;
-        else
+        } else {
           return new GM_Point();
+        }
       }
 
       // two points could be at the intersection
@@ -267,8 +273,8 @@ class GM_Arc extends GM_ArcString {
           * (+sin * u.getX() + cos * u.getY())));
 
       // check if these points are contained in the arc and the line segment
-      boolean cont1 = contains(pt1) && ls.contains(pt1);
-      boolean cont2 = contains(pt2) && ls.contains(pt2);
+      boolean cont1 = this.contains(pt1) && ls.contains(pt1);
+      boolean cont2 = this.contains(pt2) && ls.contains(pt2);
 
       // return one of the point, both or none
       if (cont1 && cont2) {
@@ -276,54 +282,62 @@ class GM_Arc extends GM_ArcString {
         mp.add(pt1);
         mp.add(pt2);
         return mp;
-      } else if (cont1 && !cont2)
+      } else if (cont1 && !cont2) {
         return pt1;
-      else if (!cont1 && cont2)
+      } else if (!cont1 && cont2) {
         return pt2;
-      else
+      } else {
         return new GM_Point();
+      }
     }
-    logger.error("Error in intersection computation of " + this + " and "
-        + geom);
+    GM_Arc.logger.error("Error in intersection computation of " + this
+        + " and " + geom);
     return null;
   }
 
   @Override
-  public boolean contains(GM_Object geom) {
-    if (geom instanceof GM_Point) {
-      DirectPosition pt = ((GM_Point) geom).getPosition();
+  public boolean contains(IGeometry geom) {
+    if (geom instanceof IPoint) {
+      IDirectPosition pt = ((IPoint) geom).getPosition();
 
       // retrieve the center and the radius of the arc
-      DirectPosition c = getCenter();
-      double r = getRadius();
+      IDirectPosition c = this.getCenter();
+      double r = this.getRadius();
 
       // if the point is not on the circle, return false
-      if (pt.distance(c) != r)
+      if (pt.distance(c) != r) {
         return false;
+      }
 
       // the angle, in radian, within [-Pi, Pi], between the [O, x] axis and the
       // line [O, pt]
       double angle = Math.atan2(pt.getY() - c.getY(), pt.getX() - c.getX());
 
-      double delta = delta();
-      double startAngle = startOfArc();
-      double endAngle = endOfArc();
+      double delta = this.delta();
+      double startAngle = this.startOfArc();
+      double endAngle = this.endOfArc();
       if (delta > 0) {
-        if (endAngle > startAngle)
+        if (endAngle > startAngle) {
           return (angle >= startAngle) && (angle <= endAngle);
-        if (endAngle < startAngle)
+        }
+        if (endAngle < startAngle) {
           return (angle >= startAngle) || (angle <= endAngle);
+        }
       } else if (delta < 0) {
-        if (endAngle > startAngle)
+        if (endAngle > startAngle) {
           return (angle <= startAngle) || (angle >= endAngle);
-        if (endAngle < startAngle)
+        }
+        if (endAngle < startAngle) {
           return (angle <= startAngle) && (angle >= endAngle);
+        }
       } else {
-        return (pt.getX() == getStartPoint().getPosition().getX() && pt.getY() == getStartPoint()
-            .getPosition().getY());
+        return (pt.getX() == this.getStartPoint().getDirect().getX() && pt
+            .getY() == this.getStartPoint().getDirect().getY());
       }
     }
-    logger.error("Error in contains computation of " + this + " and " + geom);
+    GM_Arc.logger.error("Error in contains computation of " + this + " and "
+        + geom);
     return true;
   }
+
 }

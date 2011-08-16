@@ -27,16 +27,17 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ISurfacePatch;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
 
 /**
- * Portion homogene d'une GM_Surface.
+ * Portion homogène d'une GM_Surface.
  * 
  * <P>
- * Modification de la norme : cette classe herite de GM_Surface. Du coup on a
- * fait sauter le lien d'implementation de GM_GenericSurface. Un GM_SurfacePatch
- * sera une GM_Surface composee d'un et d'un seul segment qui sera lui-meme. Les
- * methodes addSegment, removeSegment, etc... seront interdites.
+ * Modification de la norme : cette classe hérite de GM_Surface. Du coup on a
+ * fait sauter le lien d'implémentation de GM_GenericSurface. Un GM_SurfacePatch
+ * sera une GM_Surface composée d'un et d'un seul segment qui sera lui-même. Les
+ * méthodes addSegment, removeSegment, etc... seront interdites.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -44,14 +45,14 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
  */
 
 abstract public class GM_SurfacePatch extends GM_Surface
-/* implements GM_GenericSurface */{
+/* implements GM_GenericSurface */implements ISurfacePatch {
 
   // ////////////////////////////////////////////////////////////////////////////////
   // Attributs
   // /////////////////////////////////////////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////////////
   /**
-   * Mecanisme d'interpolation, selon une liste de codes. La liste de codes est
+   * Mécanisme d'interpolation, selon une liste de codes. La liste de codes est
    * la suivante : {none, planar, spherical, elliptical, conic, tin,
    * parametricCurve, polynomialSpline, rationalSpline, triangulatedSpline}.
    */
@@ -63,8 +64,8 @@ abstract public class GM_SurfacePatch extends GM_Surface
   }
 
   /**
-   * Continuite entre self et ses voisins qui partagent une frontiere commune.
-   * Vaut 0 par defaut.
+   * Continuité entre self et ses voisins qui partagent une frontière commune.
+   * Vaut 0 par défaut.
    */
   protected int numDerivativesOnBoundary = 0;
 
@@ -74,14 +75,15 @@ abstract public class GM_SurfacePatch extends GM_Surface
   }
 
   // ////////////////////////////////////////////////////////////////////////////////
-  // Methodes (abstaites, implementee dans les
+  // Méthodes (abstaites, implémentée dans les
   // sous-classes)////////////////////////
   // ////////////////////////////////////////////////////////////////////////////////
+
   /**
    * Renvoie un GM_SurfacePatch de sens oppose. Methode abstraite implementee
    * dans les sous-classes
    */
-  abstract public GM_SurfacePatch reverse();
+  abstract public ISurfacePatch reverse();
 
   // ////////////////////////////////////////////////////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////////////
@@ -96,10 +98,10 @@ abstract public class GM_SurfacePatch extends GM_Surface
    * GM_SurfacePatch ne contient qu'un patch qui est lui-meme.
    */
   @Override
-  public GM_SurfacePatch getPatch(int i) {
+  public ISurfacePatch getPatch(int i) {
     if (i != 0) {
       System.out
-          .println("Recherche d'un segment avec i<>0 alors qu'un GM_SurfacePatch ne contient qu'un patch qui est lui-meme."); //$NON-NLS-1$
+          .println("Recherche d'un segment avec i<>0 alors qu'un GM_SurfacePatch ne contient qu'un patch qui est lui-meme.");
       return null;
     }
     return this.patch.get(i);
@@ -110,9 +112,9 @@ abstract public class GM_SurfacePatch extends GM_Surface
    * lui-meme.
    */
   @Override
-  public void setPatch(int i, GM_SurfacePatch value) {
+  public void setPatch(int i, ISurfacePatch value) {
     System.out
-        .println("Methode inapplicable sur un GM_SurfacePatch. La methode ne fait rien."); //$NON-NLS-1$
+        .println("Méthode inapplicable sur un GM_SurfacePatch. La méthode ne fait rien.");
   }
 
   /**
@@ -120,9 +122,9 @@ abstract public class GM_SurfacePatch extends GM_Surface
    * lui-meme.
    */
   @Override
-  public void addPatch(GM_SurfacePatch value) {
+  public void addPatch(ISurfacePatch value) {
     System.out
-        .println("Methode inapplicable sur un GM_SurfacePatch. La methode ne fait rien."); //$NON-NLS-1$
+        .println("Méthode inapplicable sur un GM_SurfacePatch. La méthode ne fait rien.");
   }
 
   /**
@@ -130,9 +132,9 @@ abstract public class GM_SurfacePatch extends GM_Surface
    * lui-meme.
    */
   @Override
-  public void addPatch(int i, GM_SurfacePatch value) {
+  public void addPatch(int i, ISurfacePatch value) {
     System.out
-        .println("Methode inapplicable sur un GM_SurfacePatch. La methode ne fait rien."); //$NON-NLS-1$
+        .println("Méthode inapplicable sur un GM_SurfacePatch. La méthode ne fait rien.");
   }
 
   /**
@@ -140,9 +142,9 @@ abstract public class GM_SurfacePatch extends GM_Surface
    * lui-meme.
    */
   @Override
-  public void removePatch(GM_SurfacePatch value) {
+  public void removePatch(ISurfacePatch value) {
     System.out
-        .println("Methode inapplicable sur un GM_SurfacePatch. La methode ne fait rien."); //$NON-NLS-1$
+        .println("Méthode inapplicable sur un GM_SurfacePatch. La méthode ne fait rien.");
   }
 
   /**
@@ -152,7 +154,7 @@ abstract public class GM_SurfacePatch extends GM_Surface
   @Override
   public void removePatch(int i) {
     System.out
-        .println("Methode inapplicable sur un GM_SurfacePatch. La methode ne fait rien."); //$NON-NLS-1$
+        .println("Méthode inapplicable sur un GM_SurfacePatch. La méthode ne fait rien.");
   }
 
 }
