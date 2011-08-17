@@ -166,7 +166,7 @@ public class GM_CompositeSolid extends GM_Solid implements ICompositeSolid {
   }
 
   @Override
-  public ArrayList<IOrientableSurface> getListeFacettes() {
+  public ArrayList<IOrientableSurface> getFacesList() {
     GM_CompositeSolid.logger.error("non implemented method");
     return null;
   }

@@ -31,7 +31,7 @@ public interface ISolid extends IPrimitive {
    * 
    * @return la liste des faces extérieures d'un solide
    */
-  public abstract ArrayList<IOrientableSurface> getListeFacettes();
+  public abstract ArrayList<IOrientableSurface> getFacesList();
 
   /**
    * Permet de renvoyer une chaine de caractère décrivant un solide
