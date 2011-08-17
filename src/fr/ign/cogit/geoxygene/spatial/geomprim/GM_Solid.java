@@ -130,7 +130,7 @@ public class GM_Solid extends GM_Primitive implements ISolid {
    * Constructeur à partir d'une liste de faces extérieures
    * @param lOS une liste de faces extérieures
    */
-  public GM_Solid(ArrayList<IOrientableSurface> lOS) {
+  public GM_Solid(List<IOrientableSurface> lOS) {
     this.boundary = new GM_SolidBoundary(lOS);
   }
 
@@ -149,7 +149,7 @@ public class GM_Solid extends GM_Primitive implements ISolid {
   }
 
   @Override
-  public ArrayList<IOrientableSurface> getFacesList() {
+  public List<IOrientableSurface> getFacesList() {
     return this.boundary().getExterior().getlisteFaces();
   }
 
@@ -157,7 +157,7 @@ public class GM_Solid extends GM_Primitive implements ISolid {
   public String toString() {
     StringBuffer sb = new StringBuffer();
 
-    ArrayList<IOrientableSurface> lOS = this.getFacesList();
+    List<IOrientableSurface> lOS = this.getFacesList();
     int nbElement = lOS.size();
     sb.append("Solid("); //$NON-NLS-1$
     for (int i = 0; i < nbElement; i++) {

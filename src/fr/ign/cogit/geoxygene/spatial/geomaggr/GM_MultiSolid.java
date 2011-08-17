@@ -28,6 +28,7 @@
 package fr.ign.cogit.geoxygene.spatial.geomaggr;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -81,7 +82,7 @@ public class GM_MultiSolid<SolidType extends ISolid> extends
    */
 
   /** Constructeur à partir d'une liste de GM_Solid. */
-  public GM_MultiSolid(ArrayList<SolidType> lOS) {
+  public GM_MultiSolid(List<SolidType> lOS) {
     this.element = new ArrayList<SolidType>();
     this.element.addAll(lOS);
   }

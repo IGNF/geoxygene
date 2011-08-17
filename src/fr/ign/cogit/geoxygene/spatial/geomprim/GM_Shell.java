@@ -27,7 +27,7 @@
 
 package fr.ign.cogit.geoxygene.spatial.geomprim;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IShell;
@@ -48,7 +48,7 @@ public class GM_Shell extends GM_CompositeSurface implements IShell {
    * pas de vérifier qu'il s'agit d'un objet fermé
    * @param lOS la liste des facettes composant la surface
    */
-  public GM_Shell(ArrayList<IOrientableSurface> lOS) {
+  public GM_Shell(List<IOrientableSurface> lOS) {
     super();
     this.setListeFaces(lOS);
   }
@@ -67,15 +67,15 @@ public class GM_Shell extends GM_CompositeSurface implements IShell {
    * @return la liste des facettes composant la surface
    */
   @Override
-  public ArrayList<IOrientableSurface> getlisteFaces() {
-    return (ArrayList<IOrientableSurface>) this.getGenerator();
+  public List<IOrientableSurface> getlisteFaces() {
+    return this.getGenerator();
   }
 
   /**
    * Renseigne la liste des facettes composant la surface
    * @param lOS la liste des facettes composant la surface
    */
-  private void setListeFaces(ArrayList<IOrientableSurface> lOS) {
+  private void setListeFaces(List<IOrientableSurface> lOS) {
     this.generator.clear();
     this.generator.addAll(lOS);
   }

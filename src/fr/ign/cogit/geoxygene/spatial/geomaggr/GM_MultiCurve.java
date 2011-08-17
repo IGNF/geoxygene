@@ -29,12 +29,10 @@
 package fr.ign.cogit.geoxygene.spatial.geomaggr;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomcomp.ICompositeCurve;
-import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 
 /**
@@ -68,10 +66,9 @@ public class GM_MultiCurve<CurveType extends IOrientableCurve> extends
   }
 
   /** Constructeur à partir d'une liste de GM_Curve. */
-  @SuppressWarnings("unchecked")
-  public GM_MultiCurve(ArrayList<ICurve> lCurve) {
+  public GM_MultiCurve(List<CurveType> lCurve) {
     this.element = new ArrayList<CurveType>();
-    this.element.addAll((Collection<? extends CurveType>) lCurve);
+    this.element.addAll(lCurve);
 
   }
 
