@@ -43,7 +43,6 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.util.index.SpatialIndex;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
@@ -62,8 +61,10 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  *          {@link Tiling#select(IGeometry, double)}
  */
 
-public class Tiling<Feat extends IFeature> implements 
-	SpatialIndex<Feat> {
+
+public class Tiling<Feat extends IFeature> implements
+    SpatialIndex<Feat> {
+
   static Logger logger = Logger.getLogger(Tiling.class.getName());
 
   /** ===============================================
@@ -157,7 +158,7 @@ public class Tiling<Feat extends IFeature> implements
 
   /** Tableau des dalles contenant le feature. */
   public IEnvelope[] getDallage(IFeature feat) {
-    List<IEnvelope> result = new ArrayList<IEnvelope>();
+    List<IEnvelope> result = new ArrayList<IEnvelope>(0);
     for (int i = 0; i < this.size; i++) {
       for (int j = 0; j < this.size; j++) {
         if (this.index[i][j].contains(feat)) {
@@ -350,7 +351,7 @@ public class Tiling<Feat extends IFeature> implements
    *          ligne touche "geometry" juste sur une extrémité, alors avec TRUE
    *          cela ne renvoie pas la ligne, avec FALSE cela la renvoie
    */
-   @Override
+  @Override
   public Collection<Feat> select(IGeometry geometry,
       boolean strictlyCrosses) {
     int tab[];
@@ -390,7 +391,7 @@ public class Tiling<Feat extends IFeature> implements
       return this.select(geometry.buffer(distance));
     } catch (Exception e) {
       System.out
-          .println("PROBLEME AVEC LA FABRICATION DU BUFFER LORS D'UNE REQUETE SPATIALE");
+          .println("PROBLEME AVEC LA FABRICATION DU BUFFER LORS D'UNE REQUETE SPATIALE"); //$NON-NLS-1$
       e.printStackTrace();
       return new FT_FeatureCollection<Feat>();
     }
@@ -437,8 +438,8 @@ public class Tiling<Feat extends IFeature> implements
     this.ymax = envelope.maxY();
 
     if (Tiling.logger.isTraceEnabled()) {
-      Tiling.logger.trace("envelope = " + this.xmin + "," + this.xmax + ","
-          + this.ymin + "," + this.ymax + " - size = " + this.size);
+      Tiling.logger.trace("envelope = " + this.xmin + "," + this.xmax + "," //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+          + this.ymin + "," + this.ymax + " - size = " + this.size); //$NON-NLS-1$ //$NON-NLS-2$
     }
     // calcul de dX et dY
     this.dX = (this.xmax - this.xmin) / this.size;
@@ -582,7 +583,7 @@ public class Tiling<Feat extends IFeature> implements
       this.update(value, +1);
     } else {
       System.out
-          .println("spatialIndex.update(value, cas) : \"cas\" doit valoir +1, -1 ou 0.");
+          .println("spatialIndex.update(value, cas) : \"cas\" doit valoir +1, -1 ou 0."); //$NON-NLS-1$
     }
   }
 }
