@@ -58,13 +58,13 @@ public class GM_Solid extends GM_Primitive implements ISolid {
   @Override
   public double area() {
     GM_Solid.logger
-        .error("Non implémentée, utiliser : return CalculSansJava3D.CalculAire(this); (renvoi 0.0)");
+        .error("Non implémentée, utiliser : return CalculSansJava3D.CalculAire(this); (renvoi 0.0)"); //$NON-NLS-1$
     return 0.0;
   }
 
   @Override
   public IDirectPositionList coord() {
-    List<IOrientableSurface> lFaces = this.getListeFacettes();
+    List<IOrientableSurface> lFaces = this.getFacesList();
     int n = lFaces.size();
     DirectPositionList dPL = new DirectPositionList();
 
@@ -90,9 +90,10 @@ public class GM_Solid extends GM_Primitive implements ISolid {
    * NON IMPLEMETE (renvoie 0.0). Volume. Dans la norme, le résultat est de type
    * Volume.
    */
+  @Override
   public double volume() {
     GM_Solid.logger
-        .error("Non implémentée, utiliser : return CalculSansJava3D.CalculVolume(this);");
+        .error("Non implémentée, utiliser : return CalculSansJava3D.CalculVolume(this);"); //$NON-NLS-1$
     return 0.0;
   }
 
@@ -112,7 +113,7 @@ public class GM_Solid extends GM_Primitive implements ISolid {
    * @param env une enveloppe
    */
   public GM_Solid(IEnvelope env) {
-    GM_Solid.logger.error("NON IMPLEMENTE");
+    GM_Solid.logger.error("NON IMPLEMENTE"); //$NON-NLS-1$
   }
 
   @Override
@@ -147,7 +148,8 @@ public class GM_Solid extends GM_Primitive implements ISolid {
     this.boundary = new GM_SolidBoundary(lOS);
   }
 
-  public ArrayList<IOrientableSurface> getListeFacettes() {
+  @Override
+  public ArrayList<IOrientableSurface> getFacesList() {
     return this.boundary().getExterior().getlisteFaces();
   }
 
@@ -155,14 +157,14 @@ public class GM_Solid extends GM_Primitive implements ISolid {
   public String toString() {
     StringBuffer sb = new StringBuffer();
 
-    ArrayList<IOrientableSurface> lOS = this.getListeFacettes();
+    ArrayList<IOrientableSurface> lOS = this.getFacesList();
     int nbElement = lOS.size();
-    sb.append("Solid(");
+    sb.append("Solid("); //$NON-NLS-1$
     for (int i = 0; i < nbElement; i++) {
       sb.append(lOS.get(i).toString());
-      sb.append("\n");
+      sb.append("\n"); //$NON-NLS-1$
     }
-    sb.append(");");
+    sb.append(");"); //$NON-NLS-1$
     return sb.toString();
   }
 }

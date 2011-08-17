@@ -305,7 +305,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       result = WktGeOxygene.ringTaggedText((IRing) object);
     } else if (object instanceof ISolid) {
       result = WktGeOxygene.multiPolygonTaggedText(new GM_MultiSurface(
-          ((ISolid) object).getListeFacettes()));
+          ((ISolid) object).getFacesList()));
     }
     return result;
   }
