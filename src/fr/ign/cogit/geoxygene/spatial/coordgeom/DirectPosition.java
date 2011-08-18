@@ -433,10 +433,6 @@ public class DirectPosition implements IDirectPosition {
     }
   }
 
-  @Override
-  public int hashCode() {
-    return (int) this.getX();
-  }
   
     public double[] minus(DirectPosition p) {
     return this.minus(p, 1.0d);

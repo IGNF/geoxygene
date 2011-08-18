@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
@@ -14,7 +15,6 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.contrib.clustering.minimalspanningtree.triangulationmodel.Cluster;
 import fr.ign.cogit.geoxygene.contrib.clustering.minimalspanningtree.triangulationmodel.NodeSpecific;
 import fr.ign.cogit.geoxygene.contrib.clustering.minimalspanningtree.triangulationmodel.TriangulationModel;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.util.viewer.ObjectViewer;
@@ -72,7 +72,7 @@ public class MinimalSpanningTreeTriangulation {
 	 * @return the list of the computed clusters
 	 */
 	@SuppressWarnings("null")
-	public <F extends FT_Feature> List<Cluster> creationMST(
+	public <F extends IFeature> List<Cluster> creationMST(
 			Population<F> populationPoints, double threshold) {
 
 		this.triangulationModel = triangle(populationPoints);
@@ -270,7 +270,7 @@ public class MinimalSpanningTreeTriangulation {
 	 *            to triangulate
 	 * @return the triangulation model in link to the input population
 	 */
-	private static <F extends FT_Feature> TriangulationModel triangle(
+	private static <F extends IFeature> TriangulationModel triangle(
 			Population<F> population) {
 		TriangulationModel triangulation = new TriangulationModel(
 				"Triangulation model"); //$NON-NLS-1$
@@ -294,7 +294,7 @@ public class MinimalSpanningTreeTriangulation {
 	 *            the maximum distance to link two nodes in the same cluster
 	 * @return the list of the computed clusters
 	 */
-	public <F extends FT_Feature> List<Cluster> creationMST(
+	public <F extends IFeature> List<Cluster> creationMST(
 			FT_FeatureCollection<F> collectionPoints, double threshold) {
 		Population<F> populationPoints = new Population<F>();
 		populationPoints.addUniqueCollection(collectionPoints);
