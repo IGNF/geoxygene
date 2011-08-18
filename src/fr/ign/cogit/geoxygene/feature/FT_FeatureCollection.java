@@ -237,6 +237,15 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
       this.add(element);
     }
   }
+  
+  public void addCollection(Collection<Feat> value) {
+    if (value == null) {
+      return;
+    }
+    for (Feat element : value) {
+      this.add(element);
+    }
+  }
 
   /**
    * Efface de la liste l'element passe en parametre. Attention, si l'élément

@@ -124,7 +124,7 @@ public class GM_Solid extends GM_Primitive implements ISolid {
   /**
    * Boundary auquel est lié le solide
    */
-  private ISolidBoundary boundary = null;
+  protected ISolidBoundary boundary = null;
 
   /**
    * Constructeur à partir d'une liste de faces extérieures

@@ -48,4 +48,6 @@ public interface Style {
   public Symbolizer getSymbolizer();
 
   List<FeatureTypeStyle> getFeatureTypeStyles();
+
+  public String getGroup();
 }

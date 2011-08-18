@@ -55,12 +55,11 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.GeometryFactory;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
-import fr.ign.cogit.geoxygene.I18N;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 
 /**
@@ -111,7 +110,7 @@ public class ShapefileWriter {
       FeatureType featureType = featureCollection.getFeatureType();
       if (featureType != null) {
         if (ShapefileWriter.logger.isDebugEnabled()) {
-          ShapefileWriter.logger.debug("Using the collection's featureType");
+          ShapefileWriter.logger.debug("Using the collection's featureType"); //$NON-NLS-1$
         }
         specs += AdapterFactory.toJTSGeometryType(
             featureType.getGeometryType())
@@ -125,7 +124,7 @@ public class ShapefileWriter {
         }
       } else {
         if (ShapefileWriter.logger.isDebugEnabled()) {
-          ShapefileWriter.logger.debug("Using the features' featureType");
+          ShapefileWriter.logger.debug("Using the features' featureType"); //$NON-NLS-1$
         }
         specs += AdapterFactory.toJTSGeometryType(
             featureCollection.get(0).getGeom().getClass()).getSimpleName();
@@ -142,7 +141,7 @@ public class ShapefileWriter {
         }
       }
       if (ShapefileWriter.logger.isDebugEnabled()) {
-        ShapefileWriter.logger.debug("Specs = " + specs);
+        ShapefileWriter.logger.debug("Specs = " + specs); //$NON-NLS-1$
       }
       String featureTypeName = shapefileName.substring(shapefileName
           .lastIndexOf("/") + 1, //$NON-NLS-1$
@@ -164,8 +163,8 @@ public class ShapefileWriter {
               .getFeatureAttributes()) {
             liste.add(feature.getAttribute(attributeType.getMemberName()));
             if (ShapefileWriter.logger.isTraceEnabled()) {
-              ShapefileWriter.logger.trace("Attribute "
-                  + attributeType.getMemberName() + " = "
+              ShapefileWriter.logger.trace("Attribute " //$NON-NLS-1$
+                  + attributeType.getMemberName() + " = " //$NON-NLS-1$
                   + feature.getAttribute(attributeType.getMemberName()));
             }
           }
@@ -211,19 +210,19 @@ public class ShapefileWriter {
    *         géré.
    */
   public static Class<?> valueType2Class(String valueType) {
-    if (valueType.equalsIgnoreCase("string")) {
+    if (valueType.equalsIgnoreCase("string")) { //$NON-NLS-1$
       return String.class;
     }
-    if (valueType.equalsIgnoreCase("integer")) {
+    if (valueType.equalsIgnoreCase("integer")) { //$NON-NLS-1$
       return Integer.class;
     }
-    if (valueType.equalsIgnoreCase("double")) {
+    if (valueType.equalsIgnoreCase("double")) { //$NON-NLS-1$
       return Double.class;
     }
     if (valueType.equalsIgnoreCase("float")) { //$NON-NLS-1$
       return Float.class;
     }
-    if (valueType.equalsIgnoreCase("long")) {
+    if (valueType.equalsIgnoreCase("long")) { //$NON-NLS-1$
       return Integer.class;
     }
     if (valueType.equalsIgnoreCase("boolean")) { //$NON-NLS-1$
@@ -241,13 +240,13 @@ public class ShapefileWriter {
    * @param <Feature> type des features contenu dans la collection
    * @param collection collection de features à sauver dans un fichier shape.
    */
-  public static <Feature extends FT_Feature> void chooseAndWriteShapefile(
+  public static <Feature extends IFeature> void chooseAndWriteShapefile(
       IPopulation<IFeature> collection) {
     JFileChooser choixFichierShape = new JFileChooser();
     choixFichierShape.setFileFilter(new FileFilter() {
       @Override
       public boolean accept(File f) {
-        return (f.isFile() && f.getAbsolutePath().endsWith(".shp") || f
+        return (f.isFile() && f.getAbsolutePath().endsWith(".shp") || f //$NON-NLS-1$
             .isDirectory());
       }
 

@@ -86,6 +86,10 @@ public class GM_Triangle extends GM_Polygon implements ITriangle {
     super(ls);
   }
   
+  public GM_Triangle() {
+    super();
+  }
+  
   
   @Override
   public GM_SurfacePatch reverse() {
