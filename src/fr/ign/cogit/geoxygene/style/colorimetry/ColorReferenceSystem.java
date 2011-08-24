@@ -40,7 +40,10 @@ import org.apache.log4j.Logger;
 public class ColorReferenceSystem {
 
   static Logger logger = Logger.getLogger(ColorReferenceSystem.class.getName());
-
+  
+  public final static ColorReferenceSystem COGITcrs = ColorReferenceSystem
+            .unmarshall(ColorReferenceSystem.class.getResource(
+                  "/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
   /**
    * List of the Color Wheels of the COGIT Reference System.
    */
