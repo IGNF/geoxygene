@@ -4,6 +4,7 @@
 package fr.ign.cogit.geoxygene.shemageo.bati;
 
 import fr.ign.cogit.geoxygene.api.schemageo.bati.Batiment;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.shemageo.support.elementsIndependants.MicroImpl;
 
@@ -13,10 +14,25 @@ import fr.ign.cogit.geoxygene.shemageo.support.elementsIndependants.MicroImpl;
  */
 public class BatimentImpl extends MicroImpl implements Batiment {
 
+  /**
+   * Constructeur simple avec seulement la géométrie
+   * @param geom
+   */
   public BatimentImpl(IGeometry geom) {
     super(geom);
   }
 
+  /**
+   * Constructeur à partir des caractaréristiques du bâtiment (nature et hauteur)
+   * et de sa géométrie.
+   * @param geom
+   * @param nature
+   * @param hauteur
+   */
+  public BatimentImpl(IPolygon geom, String nature, double hauteur) {
+    super(geom);
+  }
+  
   /**
    * l'altitude maximale de l'objet
    */
@@ -55,5 +71,16 @@ public class BatimentImpl extends MicroImpl implements Batiment {
   public void setHauteur(double hauteur) {
     this.hauteur = hauteur;
   }
+
+  /**
+   * la nature du bâtiment
+   */
+  private String nature;
+  
+  @Override
+  public String getNature() {return nature;}
+
+  @Override
+  public void setNature(String nature) {this.nature = nature;}
 
 }

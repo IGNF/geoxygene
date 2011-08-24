@@ -20,12 +20,15 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
+import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
+import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
 
 /**
  * @author julien Gaffuri 2 févr. 07
@@ -459,4 +462,53 @@ public class CommonAlgorithms {
     return dl;
   }
 
+  /**
+   * Rotates a vector object.
+   *  
+   * @param v the vector to be rotated
+   * @param angle the angle of rotation is radians
+   * @return the rotated vector
+   * @author GTouya
+   */
+  public static Vecteur rotateVector(Vecteur v, double angle){
+      DirectPositionList points = new DirectPositionList();
+      points.add(new DirectPosition(0.0,0.0));
+      points.add(new DirectPosition(v.getX(),v.getY()));
+      GM_LineString lsG = new GM_LineString(points);
+      LineString ls = null;
+      try {ls = (LineString) JtsGeOxygene.makeJtsGeom(lsG, true);
+      } catch (Exception e) {e.printStackTrace();}
+      ls = CommonAlgorithms.rotation(ls, new Coordinate(0.0,0.0), angle);
+      DirectPosition endPoint = new DirectPosition(ls.getEndPoint().getX(),
+              ls.getEndPoint().getY());
+      return new Vecteur(new DirectPosition(0.0,0.0),endPoint);
+  }
+
+  public static double getSidelongMaxDist(IPolygon poly, double orientation){
+    IPolygon mbr = SmallestSurroundingRectangleComputation.getSSR(poly);
+
+       // Shift the segment to make sure it passes through the intersection 
+    IDirectPosition centreHull = mbr.centroid();
+    double norm = poly.perimeter();
+    Vecteur vectHoriz = new Vecteur(norm,0.0,0.0);
+    Vecteur vect = rotateVector(vectHoriz,orientation);
+    IDirectPosition mid = Operateurs.milieu(poly.centroid(), 
+        vect.translate(poly.centroid()));
+
+    // build a small segment between the two centres of gravity 
+    DirectPositionList list = new DirectPositionList();
+    list.add(poly.centroid());
+    list.add(vect.translate(poly.centroid()));
+    GM_LineString segment = new GM_LineString(list);
+    segment = (GM_LineString) new Vecteur(centreHull.getX()-mid.getX(), 
+            centreHull.getY()-mid.getY(),0.0).translate(segment);
+
+    // combine the segment with the intersection of the two geometries  
+    IGeometry inter2 = segment.intersection(mbr);
+
+    if (inter2.isEmpty()) return 0.0;
+
+    // the length of the intersection represents the length of overlap  
+    return inter2.length();
+  }
 }
