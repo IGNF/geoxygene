@@ -41,39 +41,38 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 /**
  * Un segment d'arc de cercle il est défini par 3 points.
  * 
- * @author Thierry Badard & Arnaud Braun & julien Gaffuri
- * @version 1.1
+ * @author Thierry Badard
+ * @author Arnaud Braun
+ * @author Julien Gaffuri
  * 
  */
 public class GM_Arc extends GM_ArcString implements IArc {
   private static Logger logger = Logger.getLogger(GM_Arc.class.getName());
 
   private IPosition startPoint;
-
+  @Override
   public IPosition getStartPoint() {
     return this.startPoint;
   }
-
+  @Override
   public void setStartPoint(IPosition startPoint) {
     this.startPoint = startPoint;
   }
-
   private IPosition midPoint;
-
+  @Override
   public IPosition getMidPoint() {
     return this.midPoint;
   }
-
+  @Override
   public void setMidPoint(IPosition midPoint) {
     this.midPoint = midPoint;
   }
-
   private IPosition endPoint;
-
+  @Override
   public IPosition getEndPoint() {
     return this.endPoint;
   }
-
+  @Override
   public void setEndPoint(IPosition endPoint) {
     this.endPoint = endPoint;
   }
@@ -116,6 +115,7 @@ public class GM_Arc extends GM_ArcString implements IArc {
     this.setMidPoint(new GM_Position(new DirectPosition(midx, midy)));
   }
 
+  @Override
   public IDirectPosition getCenter() {
 
     // retrieve the points coodinates
@@ -138,6 +138,7 @@ public class GM_Arc extends GM_ArcString implements IArc {
         + t * (xc - xa));
   }
 
+  @Override
   public double getRadius() {
 
     // retrieve the points coodinates
@@ -159,6 +160,7 @@ public class GM_Arc extends GM_ArcString implements IArc {
    *         the line [O, startpoint]
    * 
    */
+  @Override
   public double startOfArc() {
     IDirectPosition center = this.getCenter();
     return Math.atan2(this.getStartPoint().getDirect().getY() - center.getY(),
@@ -170,6 +172,7 @@ public class GM_Arc extends GM_ArcString implements IArc {
    *         the line [O, endpoint]
    * 
    */
+  @Override
   public double endOfArc() {
     IDirectPosition center = this.getCenter();
     return Math.atan2(this.getEndPoint().getDirect().getY() - center.getY(),
@@ -190,6 +193,7 @@ public class GM_Arc extends GM_ArcString implements IArc {
   /**
    * @return the angle value of the arc, within [-2Pi, 2Pi]
    */
+  @Override
   public double delta() {
     // half delta within [-Pi, Pi]
     double demidelta = this.midOfArc() - this.startOfArc();
@@ -204,23 +208,18 @@ public class GM_Arc extends GM_ArcString implements IArc {
 
   @Override
   public IGeometry intersection(IGeometry geom) {
-
     // compute intersection between two arcs
     if (geom instanceof IArc) {
       return new GM_Point();
     }
-
     // compute intersection between an arc and a segment
     if (geom instanceof ILineSegment) {
-
       // retrieve segment's coordinates
       ILineSegment ls = (ILineSegment) geom;
       IDirectPosition dp0 = ls.getStartPoint();
       IDirectPosition dp1 = ls.getEndPoint();
-
       // center of the arc
       IDirectPosition c = this.getCenter();
-
       // projection of the center on the line
       double dx = dp1.getX() - dp0.getX();
       double dy = dp1.getY() - dp0.getY();
@@ -230,20 +229,16 @@ public class GM_Arc extends GM_ArcString implements IArc {
       double ps = dx * (c.getX() - dp0.getX()) + dy * (c.getY() - dp0.getY());
       DirectPosition dpp = new DirectPosition(dp0.getX() + dx * ps, dp0.getY()
           + dy * ps);
-
       // compute the distance between the center and the projection of the
       // center on the line
       double dist = dpp.distance(c);
-
       // compute the radius
       double r = this.getRadius();
-
       // if that distance is greater than the radius, no intersection possible,
       // return an empty geometry
       if (dist > r) {
         return new GM_Point();
       }
-
       // if that distance is equal to the radius, a candidate to be the
       // intersection is the projection
       // (the circle is tangent to the line)
@@ -255,7 +250,6 @@ public class GM_Arc extends GM_ArcString implements IArc {
           return new GM_Point();
         }
       }
-
       // two points could be at the intersection
       double d = dpp.distance(c);
       double cos = d / r;
@@ -263,7 +257,6 @@ public class GM_Arc extends GM_ArcString implements IArc {
       DirectPosition u = new DirectPosition((dpp.getX() - c.getX()) / d, (dpp
           .getY() - c.getY())
           / d);
-
       // the two candidate points
       GM_Point pt1 = new GM_Point(new DirectPosition(c.getX() + r
           * (cos * u.getX() + sin * u.getY()), c.getY() + r
@@ -271,11 +264,9 @@ public class GM_Arc extends GM_ArcString implements IArc {
       GM_Point pt2 = new GM_Point(new DirectPosition(c.getX() + r
           * (cos * u.getX() - sin * u.getY()), c.getY() + r
           * (+sin * u.getX() + cos * u.getY())));
-
       // check if these points are contained in the arc and the line segment
       boolean cont1 = this.contains(pt1) && ls.contains(pt1);
       boolean cont2 = this.contains(pt2) && ls.contains(pt2);
-
       // return one of the point, both or none
       if (cont1 && cont2) {
         GM_MultiPoint mp = new GM_MultiPoint();
@@ -339,5 +330,4 @@ public class GM_Arc extends GM_ArcString implements IArc {
         + geom);
     return true;
   }
-
 }

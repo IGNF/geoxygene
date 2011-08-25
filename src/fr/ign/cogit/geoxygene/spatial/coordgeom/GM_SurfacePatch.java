@@ -47,10 +47,6 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
 abstract public class GM_SurfacePatch extends GM_Surface
 /* implements GM_GenericSurface */implements ISurfacePatch {
 
-  // ////////////////////////////////////////////////////////////////////////////////
-  // Attributs
-  // /////////////////////////////////////////////////////////////////////
-  // ////////////////////////////////////////////////////////////////////////////////
   /**
    * Mécanisme d'interpolation, selon une liste de codes. La liste de codes est
    * la suivante : {none, planar, spherical, elliptical, conic, tin,
@@ -58,7 +54,7 @@ abstract public class GM_SurfacePatch extends GM_Surface
    */
   protected String interpolation;
 
-  /** Renvoie l'attribut interpolation. */
+  @Override
   public String getInterpolation() {
     return this.interpolation;
   }
@@ -68,93 +64,55 @@ abstract public class GM_SurfacePatch extends GM_Surface
    * Vaut 0 par défaut.
    */
   protected int numDerivativesOnBoundary = 0;
-
-  /** Renvoie l'attribut numDerivativesOnBoundary. */
+  @Override
   public int getNumDerivativesOnBoundary() {
     return this.numDerivativesOnBoundary;
   }
-
-  // ////////////////////////////////////////////////////////////////////////////////
-  // Méthodes (abstaites, implémentée dans les
-  // sous-classes)////////////////////////
-  // ////////////////////////////////////////////////////////////////////////////////
 
   /**
    * Renvoie un GM_SurfacePatch de sens oppose. Methode abstraite implementee
    * dans les sous-classes
    */
+  @Override
   abstract public ISurfacePatch reverse();
 
-  // ////////////////////////////////////////////////////////////////////////////////
-  // ////////////////////////////////////////////////////////////////////////////////
-  // Redefinition des methodes sur l'attribut "patch"
-  // //////////////////////////////
-  // ////////////////////////////////////////////////////////////////////////////////
-  // ////////////////////////////////////////////////////////////////////////////////
-  // le but est d'interdire l'acces a certaines methodes pour un GM_SurfacePatch
-
-  /**
-   * Renvoie le patch de rang i. Passer necessairement 0 en parametre car un
-   * GM_SurfacePatch ne contient qu'un patch qui est lui-meme.
-   */
   @Override
   public ISurfacePatch getPatch(int i) {
     if (i != 0) {
       System.out
-          .println("Recherche d'un segment avec i<>0 alors qu'un GM_SurfacePatch ne contient qu'un patch qui est lui-meme.");
+          .println("Recherche d'un segment avec i<>0 alors qu'un GM_SurfacePatch ne contient qu'un patch qui est lui-meme."); //$NON-NLS-1$
       return null;
     }
     return this.patch.get(i);
   }
 
-  /**
-   * Ne fait rien car un GM_SurfacePatch ne contient qu'un patch qui est
-   * lui-meme.
-   */
   @Override
   public void setPatch(int i, ISurfacePatch value) {
     System.out
-        .println("Méthode inapplicable sur un GM_SurfacePatch. La méthode ne fait rien.");
+        .println("Méthode inapplicable sur un GM_SurfacePatch. La méthode ne fait rien."); //$NON-NLS-1$
   }
 
-  /**
-   * Ne fait rien car un GM_SurfacePatch ne contient qu'un patch qui est
-   * lui-meme.
-   */
   @Override
   public void addPatch(ISurfacePatch value) {
     System.out
-        .println("Méthode inapplicable sur un GM_SurfacePatch. La méthode ne fait rien.");
+        .println("Méthode inapplicable sur un GM_SurfacePatch. La méthode ne fait rien."); //$NON-NLS-1$
   }
 
-  /**
-   * Ne fait rien car un GM_SurfacePatch ne contient qu'un patch qui est
-   * lui-meme.
-   */
   @Override
   public void addPatch(int i, ISurfacePatch value) {
     System.out
-        .println("Méthode inapplicable sur un GM_SurfacePatch. La méthode ne fait rien.");
+        .println("Méthode inapplicable sur un GM_SurfacePatch. La méthode ne fait rien."); //$NON-NLS-1$
   }
 
-  /**
-   * Ne fait rien car un GM_SurfacePatch ne contient qu'un patch qui est
-   * lui-meme.
-   */
   @Override
   public void removePatch(ISurfacePatch value) {
     System.out
-        .println("Méthode inapplicable sur un GM_SurfacePatch. La méthode ne fait rien.");
+        .println("Méthode inapplicable sur un GM_SurfacePatch. La méthode ne fait rien."); //$NON-NLS-1$
   }
 
-  /**
-   * Ne fait rien car un GM_SurfacePatch ne contient qu'un patch qui est
-   * lui-meme.
-   */
   @Override
   public void removePatch(int i) {
     System.out
-        .println("Méthode inapplicable sur un GM_SurfacePatch. La méthode ne fait rien.");
+        .println("Méthode inapplicable sur un GM_SurfacePatch. La méthode ne fait rien."); //$NON-NLS-1$
   }
-
 }

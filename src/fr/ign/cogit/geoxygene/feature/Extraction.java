@@ -41,43 +41,33 @@ public class Extraction implements IExtraction {
 
   /** Identifiant de la zone d'extraction */
   protected int id;
-
-  /**
-   * Renvoie l'identifiant. NB: l'identifiant n'est rempli automatiquement que
-   * pour les objets persistants
-   */
+  @Override
   public int getId() {
     return this.id;
   }
-  
-  /**
-   * Affecte un identifiant (ne pas utiliser si l'objet est persistant car cela
-   * est automatique)
-   */
+  @Override
   public void setId(int Id) {
     this.id = Id;
   }
 
   /** géometrie définissant la zone d'extraction */
   protected IPolygon geom = null;
-
-  /** Renvoie une geometrie. */
+  @Override
   public IPolygon getGeom() {
     return this.geom;
   }
-
-  /** Affecte une geometrie. */
+  @Override
   public void setGeom(IPolygon g) {
     this.geom = g;
   }
 
   /** Nom de la zone d'extraction */
   protected String nom;
-
+  @Override
   public String getNom() {
     return this.nom;
   }
-
+  @Override
   public void setNom(String S) {
     this.nom = S;
   }
@@ -87,12 +77,11 @@ public class Extraction implements IExtraction {
    * ne pas utiliser directement
    */
   private int dataSetID;
-
- /** Ne pas utiliser, necessaire au mapping OJB */
+  @Override
   public void setDataSetID(int I) {
     this.dataSetID = I;
   }
-
+  @Override
   public int getDataSetID() {
     return this.dataSetID;
   }

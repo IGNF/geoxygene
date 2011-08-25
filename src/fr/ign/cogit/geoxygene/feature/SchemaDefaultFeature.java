@@ -1,28 +1,20 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.feature;
@@ -31,6 +23,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +43,7 @@ import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.SchemaConceptuelJeu;
  * 
  * @author Sandrine Balley
  */
+
 public class SchemaDefaultFeature extends SchemaConceptuelJeu {
   /**
    * "postgis" ou "oracle" ou "GML"
@@ -61,7 +55,7 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
   /**
    * nom de la table ou du gml:featureType
    */
-  private String nom; 
+  private String nom;
   /**
    * valable dans les cas POSTGIS et ORACLE
    */
@@ -81,10 +75,12 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
    */
   public SchemaDefaultFeature() {
     this.attLookup = new HashMap<Integer, String[]>();
+    this.colonnes = new ArrayList<String>();
   }
 
   /**
    * Charge le schéma à partir d'une base de données
+   * 
    * @param conn connection à la base de données
    */
   public void chargeLookup(Connection conn) {
@@ -170,6 +166,7 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
 
   /**
    * Le nom du schéma
+   *
    * @return Le nom du schéma
    */
   public String getNom() {
@@ -178,6 +175,7 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
 
   /**
    * Affecte le nom du schéma.
+   *
    * @param nom le nom du schéma
    */
   public void setNom(String nom) {
@@ -186,6 +184,7 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
 
   /**
    * Renvoie le type de Base de données.
+   *
    * @return le type de Base de données
    */
   public int getTypeBD() {
@@ -194,6 +193,7 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
 
   /**
    * Affecte le type de Base de données.
+   *
    * @param typeBD le type de Base de données
    */
   public void setTypeBD(int typeBD) {
@@ -202,6 +202,7 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
 
   /**
    * Le feature type.
+   *
    * @return le feature type
    */
   public FeatureType getFeatureType() {
@@ -210,6 +211,7 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
 
   /**
    * Affecte le feature type.
+   *
    * @param featureType le feature type
    */
   public void setFeatureType(FeatureType featureType) {

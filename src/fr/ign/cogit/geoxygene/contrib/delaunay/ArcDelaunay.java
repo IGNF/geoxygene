@@ -37,19 +37,14 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
  */
 
 public class ArcDelaunay extends Arc {
-
   public ArcDelaunay() {
   }
-
   public ArcDelaunay(NoeudDelaunay n1, NoeudDelaunay n2) {
-
     DirectPositionList dpl = new DirectPositionList();
     dpl.add(n1.getCoord());
     dpl.add(n2.getCoord());
     this.setCoord(dpl);
-
     this.setNoeudIni(n1);
     this.setNoeudFin(n2);
   }
-
 }

@@ -1,9 +1,9 @@
 package fr.ign.cogit.geoxygene.api.util.index;
 
+import java.util.Collection;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
@@ -55,13 +55,13 @@ public interface SpatialIndex<Feat extends IFeature> {
    * Selection dans le carre dont P est le centre, de cote D. NB: D peut être
    * nul.
    */
-  public abstract IFeatureCollection<Feat> select(IDirectPosition P, double D);
+  public abstract Collection<Feat> select(IDirectPosition P, double D);
 
   /** Selection a l'aide d'un rectangle. */
-  public abstract IFeatureCollection<Feat> select(IEnvelope env);
+  public abstract Collection<Feat> select(IEnvelope env);
 
   /** Selection des objets qui intersectent un objet geometrique quelconque. */
-  public abstract IFeatureCollection<Feat> select(IGeometry geometry);
+  public abstract Collection<Feat> select(IGeometry geometry);
 
   /**
    * Selection des objets qui croisent ou intersectent un objet geometrique
@@ -73,13 +73,13 @@ public interface SpatialIndex<Feat extends IFeature> {
    *          ligne touche "geometry" juste sur une extrémité, alors avec TRUE
    *          cela ne renvoie pas la ligne, avec FALSE cela la renvoie
    */
-  public abstract IFeatureCollection<Feat> select(IGeometry geometry,
+  public abstract Collection<Feat> select(IGeometry geometry,
       boolean strictlyCrosses);
 
   /**
    * Selection a l'aide d'un objet geometrique quelconque et d'une distance. NB:
    * D peut être nul
    */
-  public abstract IFeatureCollection<Feat> select(IGeometry geometry,
+  public abstract Collection<Feat> select(IGeometry geometry,
       double distance);
 }

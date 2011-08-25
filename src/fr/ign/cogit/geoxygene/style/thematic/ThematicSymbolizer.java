@@ -25,6 +25,7 @@ import fr.ign.cogit.geoxygene.contrib.delaunay.TriangulationJTS;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
@@ -72,7 +73,7 @@ public class ThematicSymbolizer extends AbstractSymbolizer {
           }
           GM_MultiCurve<GM_OrientableCurve> contour = new GM_MultiCurve<GM_OrientableCurve>();
           if (feature.getGeom() instanceof GM_Polygon) {
-            contour.add((GM_OrientableCurve) ((IPolygon) feature.getGeom()).exteriorLineString());
+            contour.add((GM_OrientableCurve) ((GM_Polygon) feature.getGeom()).exteriorLineString());
           } else {
             for (GM_Polygon surface : (GM_MultiSurface<GM_Polygon>) feature.getGeom()) {
               contour.add((GM_OrientableCurve) surface.exteriorLineString());           
@@ -144,5 +145,4 @@ public class ThematicSymbolizer extends AbstractSymbolizer {
       }
     }
   }
-
 }

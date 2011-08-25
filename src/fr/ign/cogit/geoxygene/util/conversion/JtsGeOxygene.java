@@ -69,9 +69,9 @@ public class JtsGeOxygene {
   /*------------------------------------------------------------*/
 
   /**
-   * Conversion d'une géométrie Géoxygène {@link IGeometry} en géométrie JTS
+   * Conversion d'une géométrie GeOxygene {@link IGeometry} en géométrie JTS
    * {@link Geometry}.
-   * @param geOxyGeom une géométrie Géoxygène
+   * @param geOxyGeom une géométrie GeOxygene
    * @return une géométrie JTS équivalente
    * @throws Exception renvoie une exception si la géométrie en entrée n'est pas
    *           valide
@@ -81,9 +81,9 @@ public class JtsGeOxygene {
   }
 
   /**
-   * Conversion d'une géométrie Géoxygène {@link IGeometry} en géométrie JTS
+   * Conversion d'une géométrie GeOxygene {@link IGeometry} en géométrie JTS
    * {@link Geometry}.
-   * @param geOxyGeom une géométrie Géoxygène
+   * @param geOxyGeom une géométrie GeOxygene
    * @param adapter si adapter est vrai, on utiliser la factory
    *          {@link AdapterFactory}, sinon, on passe par WKT
    * @return une géométrie JTS équivalente
@@ -105,10 +105,10 @@ public class JtsGeOxygene {
   }
 
   /**
-   * Conversion d'une géométrie JTS {@link Geometry} en géométrie Géoxygène
+   * Conversion d'une géométrie JTS {@link Geometry} en géométrie GeOxygene
    * {@link IGeometry}.
    * @param jtsGeom une géométrie JTS
-   * @return une géométrie Géoxygène équivalente
+   * @return une géométrie GeOxygene équivalente
    * @throws Exception Exception renvoie une exception si la géométrie en entrée
    *           n'est pas valide
    */
@@ -117,12 +117,12 @@ public class JtsGeOxygene {
   }
 
   /**
-   * Conversion d'une géométrie JTS {@link Geometry} en géométrie Géoxygène
+   * Conversion d'une géométrie JTS {@link Geometry} en géométrie GeOxygene
    * {@link IGeometry}.
    * @param adapter si adapter est vrai, on utiliser la factory
    *          {@link AdapterFactory}, sinon, on passe par WKT
    * @param jtsGeom une géométrie JTS
-   * @return une géométrie Géoxygène équivalente
+   * @return une géométrie GeOxygene équivalente
    * @throws Exception Exception renvoie une exception si la géométrie en entrée
    *           n'est pas valide
    */
@@ -139,9 +139,9 @@ public class JtsGeOxygene {
 
   /**
    * Conversion d'une coordonnée JTS {@link CoordinateSequence} en position
-   * Géoxygène {@link IDirectPosition}.
+   * GeOxygene {@link IDirectPosition}.
    * @param jtsCoord une coordonnée JTS
-   * @return une position Géoxygène équivalente
+   * @return une position GeOxygene équivalente
    * @throws Exception Exception renvoie une exception si la géométrie en entrée
    *           n'est pas valide
    */
@@ -157,9 +157,9 @@ public class JtsGeOxygene {
 
   /**
    * Conversion d'un tableau de coordonnées JTS {@link CoordinateSequence} en
-   * liste de positions Géoxygène {@link IDirectPositionList}.
+   * liste de positions GeOxygene {@link IDirectPositionList}.
    * @param jtsCoords un tableau de coordonnées JTS
-   * @return une list de positions Géoxygène équivalente
+   * @return une list de positions GeOxygene équivalente
    * @throws Exception Exception renvoie une exception si la géométrie en entrée
    *           n'est pas valide
    */

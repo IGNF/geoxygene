@@ -38,12 +38,10 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
  */
 
 public class TriangleDelaunay extends Face {
-
   public TriangleDelaunay() {
   }
 
   public TriangleDelaunay(NoeudDelaunay n1, NoeudDelaunay n2, NoeudDelaunay n3) {
-
     DirectPositionList dpl = new DirectPositionList();
     dpl.add(n1.getCoord());
     dpl.add(n2.getCoord());
@@ -57,9 +55,8 @@ public class TriangleDelaunay extends Face {
     this.liaison(n3, n1);
 
   }
-
   /**
-   * lie le triangle aux arcs liant eventuellement deux noeuds
+   * Lie le triangle aux arcs liant eventuellement deux noeuds.
    * 
    * @param n1
    * @param n2
@@ -75,7 +72,5 @@ public class TriangleDelaunay extends Face {
         break;
       }
     }
-
   }
-
 }

@@ -32,22 +32,24 @@ public interface Style {
    * Renvoie la valeur de l'attribut name.
    * @return la valeur de l'attribut name
    */
-  public String getName();
+  String getName();
 
   /**
    * Affecte la valeur de l'attribut name.
    * @param name l'attribut name à affecter
    */
-  public void setName(String name);
+  void setName(String name);
+
+  String getGroup();
 
   /**
    * @return vrai si le style est un style utilisateur, faux sinon.
    */
-  public boolean isUserStyle();
+  boolean isUserStyle();
 
-  public Symbolizer getSymbolizer();
+  Symbolizer getSymbolizer();
 
   List<FeatureTypeStyle> getFeatureTypeStyles();
 
-  public String getGroup();
+  void setGroup(String string);
 }

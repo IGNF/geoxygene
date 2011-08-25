@@ -45,11 +45,6 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Curve;
 
 abstract public class GM_CurveSegment extends GM_Curve implements ICurveSegment {
   // implements IGenericCurve,
-
-  // ////////////////////////////////////////////////////////////////////////////////
-  // Attributs
-  // /////////////////////////////////////////////////////////////////////
-  // ////////////////////////////////////////////////////////////////////////////////
   /**
    * Mécanisme d'interpolation, selon une liste de codes. Vaut "linear" par
    * défaut.
@@ -58,54 +53,37 @@ abstract public class GM_CurveSegment extends GM_Curve implements ICurveSegment 
    * circularArc2PointsWithBulge, elliptical, clothoid, conic, polynomialSpline,
    * cubicSpline, rationalSpline}.
    */
-  protected String interpolation = "linear";
-
-  public String getInterpolation() {
-    return this.interpolation;
-  }
-
+//  protected String interpolation = "linear"; //$NON-NLS-1$
+  @Override
+  abstract public String getInterpolation();
   /**
    * Type de continuité entre un segment et son prédecesseur (ignoré pour le
    * premier segment). Pour des polylignes on aura une continuité C0.
    */
-  protected int numDerivativesAtStart = 0;
-
-   /** Renvoie l'attribut numDerivativesAtStart. */
+//  protected int numDerivativesAtStart = 0;
+  @Override
   public int getNumDerivativesAtStart() {
-    return this.numDerivativesAtStart;
+    return 0;
   }
-
   /**
    * Type de continuité entre un segment et son successeur (ignoré pour le
    * dernier segment). Pour des polylignes on aura une continuité C0.
    */
-  protected int numDerivativeAtEnd = 0;
-
-  /** Renvoie l'attribut numDerivativeAtEnd. */
+//  protected int numDerivativeAtEnd = 0;
+  @Override
   public int getNumDerivativeAtEnd() {
-    return this.numDerivativeAtEnd;
+    return 0;
   }
-
   /**
    * Type de continuité garantie à l'intérieur de la courbe. Pour des polylignes
    * on aura une continuité C0.
    */
-  protected int numDerivativeInterior = 0;
-
-  /** Renvoie l'attribut numDerivativeInterior. */
+//  protected int numDerivativeInterior = 0;
+  @Override
   public int getNumDerivativeInterior() {
-    return this.numDerivativeInterior;
+    return 0;
   }
 
-  // ////////////////////////////////////////////////////////////////////////////////
-  // Méthodes (abstaites, implémentée dans les
-  // sous-classes)////////////////////////
-  // ////////////////////////////////////////////////////////////////////////////////
-
-    /**
-   * Renvoie un GM_CurveSegment de sens oppose. Methode abstraite implementee
-   * dans les sous-classes.
-   */
+  @Override
   public abstract ICurveSegment reverse();
-
 }

@@ -46,14 +46,11 @@ import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeCurve;
  * @version 1.0
  * 
  */
-
 public class GM_Ring extends GM_CompositeCurve implements IRing {
-
   /** Constructeur par défaut */
   public GM_Ring() {
     super();
   }
-
   /**
    * Constructeur à partir d'une et d'une seule GM_OrientableCurve. Ne vérifie
    * pas la fermeture.
@@ -61,7 +58,6 @@ public class GM_Ring extends GM_CompositeCurve implements IRing {
   public GM_Ring(IOrientableCurve oriCurve) {
     super(oriCurve);
   }
-
   /**
    * Constructeur à partir d'une et d'une seule GM_OrientableCurve. Vérifie la
    * fermeture, d'où le paramètre tolérance. Exception si ca ne ferme pas. TODO
@@ -77,10 +73,9 @@ public class GM_Ring extends GM_CompositeCurve implements IRing {
     IDirectPosition pt2 = c.endPoint();
     if (!pt1.equals(pt2, tolerance)) {
       throw new Exception(
-          "tentative de créer un GM_Ring avec une courbe non fermée");
+          "tentative de créer un GM_Ring avec une courbe non fermée"); //$NON-NLS-1$
     }
   }
-
   /**
    * Constructeur à partir d'une courbe composée (cast). Ne vérifie ni la
    * fermeture, ni le chainage.
@@ -90,10 +85,9 @@ public class GM_Ring extends GM_CompositeCurve implements IRing {
     super();
     this.generator = compCurve.getGenerator();
     this.primitive = compCurve.getPrimitive();
-    this.proxy[0] = compCurve.getPositive();
-    this.proxy[1] = compCurve.getNegative();
+    // this.proxy[0] = compCurve.getPositive();
+    // this.proxy[1] = compCurve.getNegative();
   }
-
   /**
    * Constructeur à partir d'une courbe composée (cast). Vérifie la fermeture et
    * le chainage sinon exception.
@@ -102,40 +96,29 @@ public class GM_Ring extends GM_CompositeCurve implements IRing {
     super();
     this.generator = compCurve.getGenerator();
     this.primitive = compCurve.getPrimitive();
-    this.proxy[0] = compCurve.getPositive();
-    this.proxy[1] = compCurve.getNegative();
+    // this.proxy[0] = compCurve.getPositive();
+    // this.proxy[1] = compCurve.getNegative();
     if (!super.validate(tolerance)) {
       throw new Exception(
-          "new GM_Ring(): La courbe composée passée en paramètre n'est pas chaînée");
+          "new GM_Ring(): La courbe composée passée en paramètre n'est pas chaînée"); //$NON-NLS-1$
     }
     if (!this.validate(tolerance)) {
       throw new Exception(
-          "new GM_Ring(): La courbe composée passée en paramètre ne ferme pas.");
+          "new GM_Ring(): La courbe composée passée en paramètre ne ferme pas."); //$NON-NLS-1$
     }
   }
-
-  /**
-   * Méthode pour vérifier qu'on a un chainage, et que le point initial est bien
-   * égal au point final. Surcharge de la méthode validate sur
-   * GM_CompositeCurve. Renvoie TRUE si c'est le cas, FALSE sinon.
-   */
   @Override
   public boolean validate(double tolerance) {
     if (!super.validate(tolerance)) {
       return false;
     }
     ICurveBoundary bdy = this.boundary();
-    if (bdy.getStartPoint().getPosition().equals(
-        bdy.getEndPoint().getPosition(), tolerance)) {
-      return true;
-    }
-    return false;
+    return (bdy.getStartPoint().getPosition().equals(bdy.getEndPoint()
+        .getPosition(), tolerance));
   }
-
   @Override
   public Object clone() {
     return new GM_Ring(new GM_LineString((IDirectPositionList) this.coord()
         .clone()));
   }
-
 }

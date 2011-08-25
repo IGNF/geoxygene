@@ -32,21 +32,17 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientablePrimitive;
 /**
  * Primitive orientable, classe mère abstraite pour les courbes orientées et les
  * surfaces orientées. Contrainte : orientation = +1 implique primitive = self.
- * 
+ *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
- * 
+ *
  */
-
 abstract public class GM_OrientablePrimitive extends GM_Primitive implements
     IOrientablePrimitive {
-
   /** Orientation de la courbe (+1 ou -1).Vaut +1 par défaut. */
   public int orientation = +1;
-
-  /** Renvoie l'orientation de self */
+  @Override
   public int getOrientation() {
     return this.orientation;
   }
-
 }

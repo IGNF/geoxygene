@@ -56,21 +56,23 @@ public abstract class AbstractLayer implements Layer {
     this.name = name;
   }
 
-  @XmlElement(name = "Description")
-  protected String description;
-  
-  // @XmlElement(name = "LayerFeatureConstraints")
-  // protected LayerFeatureConstraints layerFeatureConstraints;
+  @XmlElement(name = "Description", required = false)
+  private String description;
 
   @Override
   public String getDescription() {
-    return description;
+    return this.description;
   }
 
   @Override
-  public void setDescription(String description) {
-    this.description = description;
+  public void setDescription(String d) {
+    this.description = d;
   }
+
+  // @XmlElement(name = "Description")
+  // protected Description description;
+  // @XmlElement(name = "LayerFeatureConstraints")
+  // protected LayerFeatureConstraints layerFeatureConstraints;
 
   @XmlElements( { @XmlElement(name = "UserStyle", type = UserStyle.class),
       @XmlElement(name = "NamedStyle", type = NamedStyle.class) })
@@ -108,10 +110,10 @@ public abstract class AbstractLayer implements Layer {
   }
 
   @Override
-  public void setSelectable(boolean selectable) {
-    this.selectable = selectable;
+  public void setSelectable(boolean newSelectable) {
+    this.selectable = newSelectable;
   }
-  
+
   @XmlTransient
   private boolean symbolized = true;
 
@@ -163,8 +165,8 @@ public abstract class AbstractLayer implements Layer {
   public Collection<String> getGroups() {
     Set<String> groups = new HashSet<String>(0);
     for(Style style : this.getStyles()) {
-      if (((AbstractStyle) style).getGroup() != null) {
-        groups.add(((AbstractStyle) style).getGroup());
+      if (style.getGroup() != null) {
+        groups.add(style.getGroup());
       }
     }
     return groups;

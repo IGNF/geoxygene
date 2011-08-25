@@ -93,7 +93,7 @@ public class TP_Ring extends TP_Expression {
 
       // probleme ! ca ne chaine pas
       if (compteur == 0) {
-        throw new Exception("Les brins ne sont pas chainés.");
+        throw new Exception("Les brins ne sont pas chaînés."); //$NON-NLS-1$
       }
 
       // pas de probleme !
@@ -149,9 +149,7 @@ public class TP_Ring extends TP_Expression {
 
     // ultime verification du bouclage
     if (theIDStartNode != IDEndNode) {
-      throw new Exception("Les brins ne sont pas chainés.");
+      throw new Exception("Les brins ne sont pas chaînés."); //$NON-NLS-1$
     }
-
   }
-
 }

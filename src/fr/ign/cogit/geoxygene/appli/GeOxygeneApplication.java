@@ -103,8 +103,7 @@ public class GeOxygeneApplication {
    * Constructor.
    */
   public GeOxygeneApplication() {
-    this.frame = new MainFrame("GeOxygene", this);
-    this.frame.setVisible(true);
+    this("GeOxygene"); //$NON-NLS-1$
   }
 
   /**

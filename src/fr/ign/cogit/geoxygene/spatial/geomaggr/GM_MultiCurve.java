@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of the GeOxygene project source files.
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO
@@ -23,7 +23,6 @@
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
- * 
  */
 
 package fr.ign.cogit.geoxygene.spatial.geomaggr;
@@ -55,19 +54,19 @@ public class GM_MultiCurve<CurveType extends IOrientableCurve> extends
 
   /** Constructeur par défaut. */
   public GM_MultiCurve() {
-    this.element = new ArrayList<CurveType>();
+    this.element = new ArrayList<CurveType>(0);
   }
 
   /** Constructeur à partir d'un GM_CompositeCurve. */
   @SuppressWarnings("unchecked")
   public GM_MultiCurve(ICompositeCurve compCurve) {
-    this.element = new ArrayList<CurveType>();
+    this.element = new ArrayList<CurveType>(compCurve.getGenerator().size());
     this.addAll((List<CurveType>) compCurve.getGenerator());
   }
 
   /** Constructeur à partir d'une liste de GM_Curve. */
   public GM_MultiCurve(List<CurveType> lCurve) {
-    this.element = new ArrayList<CurveType>();
+    this.element = new ArrayList<CurveType>(lCurve.size());
     this.element.addAll(lCurve);
 
   }
@@ -79,11 +78,12 @@ public class GM_MultiCurve<CurveType extends IOrientableCurve> extends
   public GM_MultiCurve(GM_MultiCurve<CurveType> geom) {
     this((ICompositeCurve) geom.getList());
   }
-  
+
   @Override
   public boolean isMultiCurve() {
     return true;
   }
+
   /** Longueur totale. */
   // Dans la norme, ceci est un attribut et non une méthode.
   // Dans la norme, cet attribut est de type Length.
@@ -91,8 +91,7 @@ public class GM_MultiCurve<CurveType extends IOrientableCurve> extends
   /*
    * public double length() { return SpatialQuery.length(this); }
    */
-   
-   
+
   @SuppressWarnings("unchecked")
   @Override
   public Object clone() {

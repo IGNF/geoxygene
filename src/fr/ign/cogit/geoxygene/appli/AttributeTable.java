@@ -266,7 +266,7 @@ class AttributeTable extends JDialog {
 
     @Override
     public Class<?> getColumnClass(int column) {
-      String valueType = ((FeatureType) this.getFeatures().get(0).getFeatureType())
+      String valueType = this.getFeatures().get(0).getFeatureType()
           .getFeatureAttributeByName(this.attributeNames.get(column))
           .getValueType();
       try {
@@ -281,7 +281,7 @@ class AttributeTable extends JDialog {
       if (col != 0) {
         boolean valOk = true;
         IFeature ft = this.getFeatures().get(row);
-        AttributeType attributeType = ((FeatureType) ft.getFeatureType())
+        AttributeType attributeType = ft.getFeatureType()
             .getFeatureAttributeByName(this.attributeNames.get(col));
         Class<?> type = this.getColumnClass(col);
         if (type == Double.class) {
@@ -442,8 +442,8 @@ class AttributeTable extends JDialog {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-      AttributeType attribute = ((FeatureType) AttributeTable.this.getSelectedFeature()
-          .getFeatureType()).getFeatureAttributeByName(this.attributeName);
+      AttributeType attribute = AttributeTable.this.getSelectedFeature()
+          .getFeatureType().getFeatureAttributeByName(this.attributeName);
       new EditTypeDialog(attribute);
     }
   }

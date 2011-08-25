@@ -34,16 +34,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
+import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.Rule;
@@ -66,6 +67,17 @@ public class LayerRenderer implements Renderer {
   private static Logger logger = Logger
       .getLogger(LayerRenderer.class.getName());
   protected EventListenerList listenerList = new EventListenerList();
+
+  /**
+   * Layer to render.
+   */
+  private Layer layer = null;
+  /**
+   * @return the Layer to render.
+   */
+  public Layer getLayer() {
+    return this.layer;
+  }
 
   /**
    * Adds an <code>ActionListener</code>.
@@ -91,15 +103,6 @@ public class LayerRenderer implements Renderer {
         ((ActionListener) listeners[i + 1]).actionPerformed(event);
       }
     }
-  }
-
-  /**
-   * Layer to render.
-   */
-  private Layer layer = null;
-
-  public Layer getLayer() {
-    return this.layer;
   }
 
   /**
@@ -612,98 +615,4 @@ public class LayerRenderer implements Renderer {
       }
     }
   }
-  
-
-  @Override
-  public Runnable createFeatureRunnable(final IFeature feature) {
-    if (this.image == null) {
-      return null;
-    }
-    this.cancelled = false;
-
-    return new Runnable() {
-      @Override
-      public void run() {
-        try {
-          LayerRenderer.this.rendering = true;
-          // it the rendering is cancel, stop
-          if (LayerRenderer.this.cancelled) {
-            return;
-          }
-          // if either the width or the height of the panel is lesser
-          // or equal to 0, stop
-          if (Math.min(LayerRenderer.this.layerViewPanel.getWidth(),
-              LayerRenderer.this.layerViewPanel.getHeight()) <= 0) {
-            return;
-          }
-          // do the actual rendering
-          try {
-            LayerRenderer.this.renderHook(LayerRenderer.this.image, feature);
-          } catch (Throwable t) {
-            // TODO WARN THE USER?
-            t.printStackTrace(System.err);
-            return;
-          }
-          // when time comes, repaint the panel
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              LayerRenderer.this.layerViewPanel.superRepaint();
-            }
-          });
-        } finally {
-          // the renderer is not rendering anymore ( used by
-          // isRendering() )
-          LayerRenderer.this.rendering = false;
-        }
-      }
-    };
-  }
-
-  @Override
-  public Runnable createLocalRunnable(final IGeometry geom) {
-    if (this.image == null) {
-      return null;
-    }
-    this.cancelled = false;
-
-    return new Runnable() {
-      @Override
-      public void run() {
-        try {
-          LayerRenderer.this.rendering = true;
-          // it the rendering is cancel, stop
-          if (LayerRenderer.this.cancelled) {
-            return;
-          }
-          // if either the width or the height of the panel is lesser
-          // or equal to 0, stop
-          if (Math.min(LayerRenderer.this.layerViewPanel.getWidth(),
-              LayerRenderer.this.layerViewPanel.getHeight()) <= 0) {
-            return;
-          }
-          // do the actual rendering
-          try {
-            LayerRenderer.this.renderHook(LayerRenderer.this.image, geom);
-          } catch (Throwable t) {
-            // TODO WARN THE USER?
-            t.printStackTrace(System.err);
-            return;
-          }
-          // when time comes, repaint the panel
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              LayerRenderer.this.layerViewPanel.superRepaint();
-            }
-          });
-        } finally {
-          // the renderer is not rendering anymore ( used by
-          // isRendering() )
-          LayerRenderer.this.rendering = false;
-        }
-      }
-    };
-  }
-
 }

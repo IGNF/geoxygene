@@ -194,7 +194,7 @@ public class TestDico {
     entite.addSpecialization(herite);
 
     // creation d'une association "prefecture" entre commune et departement
-    GF_AssociationType prefecture = new AssociationType();
+    AssociationType prefecture = new AssociationType();
     TestDico.db.makePersistent(prefecture);
     prefecture.setTypeName("prefecture");
     prefecture.setDefinition("Prefecture d'un departement");

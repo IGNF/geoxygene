@@ -35,35 +35,28 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 /**
  * Frontière d'une courbe orientée, définie par une référence vers un point
  * initial et une référence vers un point final.
- * 
+ *
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
- * 
+ *
  */
-
 public class GM_CurveBoundary extends GM_PrimitiveBoundary implements
     ICurveBoundary {
-
   /** Le point initial. */
   protected IPoint startPoint;
-
-  /** Renvoie le point initial. */
+  @Override
   public IPoint getStartPoint() {
     return this.startPoint;
   }
-
   /** Le point final. */
   protected IPoint endPoint;
-
-  /** Renvoie le point final. */
+  @Override
   public IPoint getEndPoint() {
     return this.endPoint;
   }
-
   /** Constructeur par défaut. */
   public GM_CurveBoundary() {
   }
-
   /** Constructeur à partir d'une GM_Curve. */
   // c'est ce qui est utilisé dans GM_OrientableCurve::boundary();
   public GM_CurveBoundary(ICurve c) {

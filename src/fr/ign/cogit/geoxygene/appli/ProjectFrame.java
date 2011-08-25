@@ -41,18 +41,18 @@ import javax.swing.JSplitPane;
 import org.apache.log4j.Logger;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import fr.ign.cogit.geoxygene.appli.plugin.GeometryToolBar;
-import fr.ign.cogit.geoxygene.feature.DataSet;
-import fr.ign.cogit.geoxygene.feature.DefaultFeature;
-import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionEvent;
 import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionListener;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.appli.plugin.GeometryToolBar;
+import fr.ign.cogit.geoxygene.feature.DataSet;
+import fr.ign.cogit.geoxygene.feature.DefaultFeature;
+import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
-import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.style.ColorMap;
 import fr.ign.cogit.geoxygene.style.Interpolate;
 import fr.ign.cogit.geoxygene.style.InterpolationPoint;
@@ -207,7 +207,7 @@ public class ProjectFrame extends JInternalFrame implements
    */
   @Deprecated
   public final Layer addFeatureCollection(
-	      final IPopulation<? extends IFeature> population, final String name){
+	      final IPopulation<?> population, final String name){
 	  return this.addFeatureCollection(population, name, null);
   }
 

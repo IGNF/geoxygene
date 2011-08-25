@@ -52,8 +52,9 @@ public class PropertyIsEqualTo extends BinaryComparisonOpsType {
       if (!this.isMatchCase()) {
         return (String.CASE_INSENSITIVE_ORDER.compare(((String) property), this
             .getLiteral().getValue()) == 0);
-        // FIXME voir cas sensitif à la case
       }
+      return (((String) property).compareTo(this.getLiteral().getValue()) == 0);
+      // FIXME voir cas sensitif à la case
     }
     if (property instanceof Number) {
       return (((Number) property).doubleValue() == Double.parseDouble(this
@@ -68,8 +69,7 @@ public class PropertyIsEqualTo extends BinaryComparisonOpsType {
 
   @Override
   public String toString() {
-    return "PropertyIsEqualTo " + this.getPropertyName() //$NON-NLS-1$
-        + "==" //$NON-NLS-1$
+    return this.getPropertyName() + "==" //$NON-NLS-1$
         + this.getLiteral();
   }
 }

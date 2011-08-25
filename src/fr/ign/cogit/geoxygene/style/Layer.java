@@ -20,7 +20,6 @@
 package fr.ign.cogit.geoxygene.style;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -32,6 +31,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 
 /**
+ * The Layer class.
  * @see NamedLayer
  * @see UserLayer
  * @author Julien Perret
@@ -53,8 +53,6 @@ public interface Layer {
   public String getDescription();
 
   public void setDescription(String description);
-
-  List<Style> styles = new ArrayList<Style>();
 
   /**
    * Renvoie la valeur de l'attribut styles.

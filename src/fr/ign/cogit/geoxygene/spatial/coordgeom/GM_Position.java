@@ -46,6 +46,7 @@ public class GM_Position implements IPosition {
    */
   protected IDirectPosition direct;
 
+  @Override
   public IDirectPosition getDirect() {
     return this.direct;
   }
@@ -55,6 +56,7 @@ public class GM_Position implements IPosition {
    */
   protected IPointRef indirect;
 
+  @Override
   public IPointRef getIndirect() {
     return this.indirect;
   }

@@ -8,6 +8,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AssociationRole;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
 
 /**
@@ -119,14 +120,14 @@ public interface IFeature {
    * Affecte le feature type de l'objet
    * @param featureType le feature type de l'objet
    */
-  public abstract void setFeatureType(GF_FeatureType featureType);
+  public abstract void setFeatureType(FeatureType featureType);
 
   /**
    * Utilitaire pour retrouver le type d'un objet (passe par la population)
    * 
    * @return le featureType de ce feature
    */
-  public abstract GF_FeatureType getFeatureType();
+  public abstract FeatureType getFeatureType();
 
   /**
    * Methode reflexive pour recupérer la valeur d'un attribut donné en paramètre
@@ -230,5 +231,6 @@ public interface IFeature {
    */
   public abstract boolean intersecte(IEnvelope env);
 
+  @Override
   public abstract String toString();
 }

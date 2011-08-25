@@ -1,29 +1,20 @@
-/**
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
- * 
+/*
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.util.conversion;
@@ -55,11 +46,12 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.GeometryFactory;
 
-import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
+import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 
 /**
@@ -85,13 +77,14 @@ public class ShapefileWriter {
       IFeatureCollection<Feature> featureCollection, String shapefileName) {
       ShapefileWriter.write(featureCollection, shapefileName, null);
   }
-  
   /**
    * Sauve une collection de features dans un fichier.
+   *
    * @param <Feature> type des features contenu dans la collection
    * @param featureCollection collection de features à sauver dans le fichier
    *          shape
    * @param shapefileName nom du fichier dans lequel sauver les shapes
+   * @param crs système de coordonnées
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static <Feature extends IFeature> void write(
@@ -207,13 +200,14 @@ public class ShapefileWriter {
    * @param valueType nom d'un type primitif
    * @return la classe correspondant au nom d'un type primitif ou null si le
    *         paramètre ne correspond pas à un type primitif ou s'il n'est pas
-   *         géré.
+   *         géré. <b>Attention : les booléans sont convertis en strings car les
+   *         format ESRI shapefile ne les gère pas</b>
    */
   public static Class<?> valueType2Class(String valueType) {
     if (valueType.equalsIgnoreCase("string")) { //$NON-NLS-1$
       return String.class;
     }
-    if (valueType.equalsIgnoreCase("integer")) { //$NON-NLS-1$
+    if (valueType.equalsIgnoreCase("int") || valueType.equalsIgnoreCase("integer")) { //$NON-NLS-1$ //$NON-NLS-2$
       return Integer.class;
     }
     if (valueType.equalsIgnoreCase("double")) { //$NON-NLS-1$
@@ -235,19 +229,32 @@ public class ShapefileWriter {
   }
 
   /**
-   * Ouvre une fenètre permettant à l'utilisateur de choisir le fichier dans
-   * lequel il souhaite sauver ses features.
+   * Ouvre une fenêtre permettant à l'utilisateur de choisir le fichier dans
+   * lequel il souhaite sauver ses features. TODO faire en sorte que
+   * l'utilisateur puisse récupérer des fichiers sans extensions fichier shape.
    * @param <Feature> type des features contenu dans la collection
-   * @param collection collection de features à sauver dans un fichier shape.
+   * @param featureCollection collection de features à sauver dans un
    */
-  public static <Feature extends IFeature> void chooseAndWriteShapefile(
-      IPopulation<IFeature> collection) {
+  public static <Feature extends FT_Feature> void chooseAndWriteShapefile(
+      IFeatureCollection<Feature> featureCollection) {
+      ShapefileWriter.chooseAndWriteShapefile(featureCollection, null);
+  }
+  /**
+   * Ouvre une fenêtre permettant à l'utilisateur de choisir le fichier dans
+   * lequel il souhaite sauver ses features. TODO faire en sorte que
+   * l'utilisateur puisse récupérer des fichiers sans extensions fichier shape.
+   * @param <Feature> type des features contenu dans la collection
+   * @param featureCollection collection de features à sauver dans un
+   * @param crs système de coordonnées
+   */
+  public static <Feature extends FT_Feature> void chooseAndWriteShapefile(
+      IFeatureCollection<Feature> featureCollection, CoordinateReferenceSystem crs) {
     JFileChooser choixFichierShape = new JFileChooser();
     choixFichierShape.setFileFilter(new FileFilter() {
       @Override
       public boolean accept(File f) {
-        return (f.isFile() && f.getAbsolutePath().endsWith(".shp") || f //$NON-NLS-1$
-            .isDirectory());
+        return (f.isFile() && f.getAbsolutePath().endsWith(".shp") //$NON-NLS-1$
+        || f.isDirectory());
       }
 
       @Override
@@ -262,13 +269,17 @@ public class ShapefileWriter {
     int returnVal = choixFichierShape.showSaveDialog(frame);
     frame.dispose();
     if (returnVal == JFileChooser.APPROVE_OPTION) {
+      String shapefileName = choixFichierShape.getSelectedFile()
+          .getAbsolutePath();
+      if (!shapefileName.contains(".shp")) { //$NON-NLS-1$
+        shapefileName = shapefileName + ".shp"; //$NON-NLS-1$
+      }
       if (ShapefileWriter.logger.isDebugEnabled()) {
         ShapefileWriter.logger.debug(I18N
             .getString("ShapefileWriter.YouChoseToSaveThisFile") //$NON-NLS-1$
-            + returnVal);
+            + shapefileName);
       }
-      ShapefileWriter.write(collection, choixFichierShape.getSelectedFile()
-          .getAbsolutePath());
+      ShapefileWriter.write(featureCollection, shapefileName, crs);
     }
   }
 }

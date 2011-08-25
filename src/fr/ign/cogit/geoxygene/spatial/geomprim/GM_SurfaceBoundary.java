@@ -51,99 +51,69 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISurfaceBoundary;
 
 public class GM_SurfaceBoundary extends GM_PrimitiveBoundary implements
     ISurfaceBoundary {
-
-  // ////////////////////////////////////////////////////////////////////////////////
-  // Attribut "exterior" et accesseurs
-  // /////////////////////////////////////////////
-  // ////////////////////////////////////////////////////////////////////////////////
   /** Anneau extérieur. */
   protected IRing exterior;
-
+  @Override
   public IRing getExterior() {
     return this.exterior;
   }
-
   /** Affecte une valeur à l'anneau extérieur */
   protected void setExterior(GM_Ring value) {
     this.exterior = value;
   }
-
-  /**
-   * Renvoie 1 si l'anneau extérieur est affecté, 0 sinon. Il paraît qu'il
-   * existe des cas où on peut avoir une surface avec que des frontières
-   * intérieures.
-   */
+  @Override
   public int sizeExterior() {
     if (this.exterior == null) {
       return 0;
     }
     return 1;
   }
-
-  // ////////////////////////////////////////////////////////////////////////////////
-  // Attribut "interior" et accesseurs
-  // /////////////////////////////////////////////
-  // ////////////////////////////////////////////////////////////////////////////////
   /** Anneau(x) intérieur(s) en cas de trou(s) : liste de GM_Ring */
   protected List<IRing> interior;
-
-  /** Renvoie la liste des anneaux intérieurs */
+  @Override
   public List<IRing> getInterior() {
     return this.interior;
   }
-
-  /** Renvoie l'anneau intérieur de rang i */
+  @Override
   public IRing getInterior(int i) {
     return this.interior.get(i);
   }
-
-  /** Affecte un GM_Ring au rang i */
+  @Override
   public void setInterior(int i, IRing value) {
     this.interior.set(i, value);
   }
-
-  /** Ajoute un GM_Ring en fin de liste */
+  @Override
   public void addInterior(IRing value) {
     this.interior.add(value);
   }
-
-  /** Ajoute un GM_ring au rang i */
+  @Override
   public void addInterior(int i, IRing value) {
     this.interior.add(i, value);
   }
-
-  /** Efface le (ou les) GM_Ring passé en paramètre */
+  @Override
   public void removeInterior(IRing value) {
     this.interior.remove(value);
   }
-
-  /** Efface le GM_Ring de rang i */
+  @Override
   public void removeInterior(int i) {
     this.interior.remove(i);
   }
-
-  /** Nombre d'anneaux intérieurs */
+  @Override
   public int sizeInterior() {
     return this.interior.size();
   }
-
-  // ///////////////////////////////////////////////////////////////////////////////////////
-  // Constructeurs
-  // ////////////////////////////////////////////////////////////////////////
-  // ///////////////////////////////////////////////////////////////////////////////////////
   /** Constructeur par défaut */
   public GM_SurfaceBoundary() {
     this.exterior = null;
-    this.interior = new ArrayList<IRing>();
+    this.interior = new ArrayList<IRing>(0);
   }
-
   /**
    * Constructeur à partir d'un GM_Ring et d'un seul (pour des surfaces sans
    * trou)
    */
   public GM_SurfaceBoundary(IRing ring) {
     this.exterior = ring;
-    this.interior = new ArrayList<IRing>();
+    this.interior = new ArrayList<IRing>(0);
   }
 
 }

@@ -1,28 +1,20 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
@@ -81,10 +73,10 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * @see CarteTopo
  */
 
-// ///////////////////////////////////////////////////////////////////////////////////////////////
-// NOTE AUX CODEURS, dans le code parfois : reseau 1 = reseau ref, reseau 2 =
-// reseau comp.
-// ///////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
+// NOTE AUX CODEURS, dans le code parfois :
+// reseau 1 = reseau ref, reseau 2 = reseau comp.
+// /////////////////////////////////////////////////////////////////////////////
 
 public abstract class Appariement {
   /**
@@ -2053,7 +2045,7 @@ public abstract class Appariement {
   public static void decoupeNoeudsNonApparies(final ReseauApp ref,
       final ReseauApp comp, final EnsembleDeLiens liens,
       final ParametresApp param) {
-    List<IPoint> noeudsNonApparies = new ArrayList<IPoint>();
+    List<IPoint> noeudsNonApparies = new ArrayList<IPoint>(0);
     Iterator<?> itNoeuds = ref.getPopNoeuds().getElements().iterator();
     while (itNoeuds.hasNext()) {
       NoeudApp noeud = (NoeudApp) itNoeuds.next();
@@ -2086,7 +2078,7 @@ public abstract class Appariement {
   public static void decoupeNonApparies(final ReseauApp reseauADecouper,
       final ReseauApp reseauDecoupant, final EnsembleDeLiens liens,
       final ParametresApp param) {
-    double distanceMaxNoeudArc = param.projeteNoeud2surReseau1_DistanceNoeudArc;
+    double distanceMaxNoeudArc = param.projeteNoeuds2SurReseau1DistanceNoeudArc;
     // param.distanceArcsMax;
     double distancePtCourantVersArcADecoupe;
     ArcApp arcDecoupant, arcADecouper;

@@ -42,7 +42,6 @@ import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_CompositeSurface;
  */
 
 public class GM_Shell extends GM_CompositeSurface implements IShell {
-
   /**
    * Permet de créer un Shell à partir d'une liste de face ATTENTION : Ne permet
    * pas de vérifier qu'il s'agit d'un objet fermé
@@ -52,25 +51,14 @@ public class GM_Shell extends GM_CompositeSurface implements IShell {
     super();
     this.setListeFaces(lOS);
   }
-
-  /**
-   * TODO A implémenter
-   */
   @Override
   public boolean isSimple() {
     return true;
   }
-
-  /**
-   * Renvoie la liste des facettes composant la surface
-   * 
-   * @return la liste des facettes composant la surface
-   */
   @Override
   public List<IOrientableSurface> getlisteFaces() {
     return this.getGenerator();
   }
-
   /**
    * Renseigne la liste des facettes composant la surface
    * @param lOS la liste des facettes composant la surface

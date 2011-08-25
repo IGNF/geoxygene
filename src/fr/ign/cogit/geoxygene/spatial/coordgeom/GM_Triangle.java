@@ -1,28 +1,20 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
@@ -31,35 +23,27 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangle;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 
 /**
- * NON IMPLEMENTE, A FAIRE. Triangle. Résultat d'un constructeur du type :
- * GM_Polygon(GM_LineString(<P1,P2,P3,P1>))
- * 
- * @author Thierry Badard & Arnaud Braun
- * @version 1.0
- * 
+ * @author Thierry Badard
+ * @author Arnaud Braun
+ * @author Brasebin Mickael
  */
+
 
 public class GM_Triangle extends GM_Polygon implements ITriangle {
 
   protected GM_Position[] corners = new GM_Position[3];
-
-  @Override
-  public IPosition getCorners(int i) {
-    return this.corners[i];
-  }
-
   @Override
   public IPosition[] getCorners() {
     return this.corners;
   }
-
-  /*
-   * public int cardCorners () { return this.corners.length; }
-   */
+  @Override
+  public IPosition getCorners(int i) {
+    return this.corners[i];
+  }
 
   @Override
   public double area() {
@@ -73,7 +57,7 @@ public class GM_Triangle extends GM_Polygon implements ITriangle {
 
   }
   
-  public GM_Triangle(GM_Ring gmRing) {
+  public GM_Triangle(IRing gmRing) {
     super(gmRing);
   }
 
@@ -93,7 +77,6 @@ public class GM_Triangle extends GM_Polygon implements ITriangle {
   
   @Override
   public GM_SurfacePatch reverse() {
-    
     return new GM_Triangle(this.getCorners(0).getDirect(),
         this.getCorners(2).getDirect(),this.getCorners(1).getDirect());
   }

@@ -40,6 +40,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 public class GM_PointRef implements IPointRef {
   protected IPoint point;
 
+  @Override
   public IPoint getPoint() {
     return this.point;
   }
@@ -48,11 +49,11 @@ public class GM_PointRef implements IPointRef {
     this.point = value;
   }
 
+  @Override
   public int cardPoint() {
     if (this.point == null) {
       return 0;
     }
     return 1;
   }
-
 }

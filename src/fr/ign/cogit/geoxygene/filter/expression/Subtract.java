@@ -44,5 +44,4 @@ public class Subtract extends BinaryExpression {
             .booleanValue() ? 1 : 0);
     return value1.subtract(value2, BinaryExpression.mc);
   }
-
 }

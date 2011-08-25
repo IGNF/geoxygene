@@ -31,7 +31,7 @@ import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
  * @author Nathalie Abadie
  * @author Sandrine Balley
  */
-public interface SchemaConceptuel {
+public interface SchemaConceptuel <FT extends GF_FeatureType> {
 
   /**
    * dèsignation usuelle du schéma
@@ -50,15 +50,15 @@ public interface SchemaConceptuel {
   /**
    * Liste des classes appartenant au schéma
    */
-  public List<GF_FeatureType> getFeatureTypes();
+  public List<FT> getFeatureTypes();
 
-  public void setFeatureTypes(List<GF_FeatureType> ftList);
+  public void setFeatureTypes(List<FT> ftList);
 
-  public void addFeatureType(GF_FeatureType ft);
+  public void addFeatureType(FT ft);
 
-  public void removeFeatureTypeFromSchema(GF_FeatureType ft);
+  public void removeFeatureTypeFromSchema(FT ft);
 
-  public GF_FeatureType getFeatureTypeByName(String name);
+  public FT getFeatureTypeByName(String name);
 
   /*
    * ******************************************************************

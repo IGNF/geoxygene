@@ -89,7 +89,7 @@ public class TP_DirectedNode extends TP_DirectedTopo {
   // coBoundary
   // ///////////////////////////////////////////////////////////////////////
   // ///////////////////////////////////////////////////////////////////////////////////
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public List coBoundary() {
     if (this.orientation == +1) {
       return this.topo().coBoundary();

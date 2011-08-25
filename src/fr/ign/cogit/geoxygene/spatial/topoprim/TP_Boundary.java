@@ -36,5 +36,4 @@ package fr.ign.cogit.geoxygene.spatial.topoprim;
  */
 
 abstract class TP_Boundary extends TP_Expression {
-
 }

@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.api.spatial.coordgeom;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 
 public interface IDirectPosition {
   /** Renvoie l' identifiant du système de coordonnées de référence. */
@@ -89,10 +90,14 @@ public interface IDirectPosition {
    */
   public abstract double orientation(IDirectPosition dp);
 
+  public abstract double[] minus(DirectPosition p);
+  public abstract double[] minus(IDirectPosition p2, double factor);
+
   // ////////////////////////////////////////////////////////////////////////////////////////
   // Méthode equals
   // ////////////////////////////////////////////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////////////////////
+  @Override
   public abstract boolean equals(Object o);
 
   /**
@@ -152,6 +157,12 @@ public interface IDirectPosition {
    * @return
    */
   public abstract double distance(IDirectPosition d);
+  /**
+   * Calcul de la distance 2D entre deux directPosition
+   * @param d a DirectPosition
+   * @return the distance between this DirectPosition and <code>d</code>
+   */
+  public abstract double distance2D(IDirectPosition d);
 
   /** Clone le point. */
   public abstract Object clone();
@@ -168,5 +179,6 @@ public interface IDirectPosition {
   // ///////////////////////////////////////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////////////////////
   /** Affiche les coordonnées du point (2D et 3D). */
+  @Override
   public abstract String toString();
 }

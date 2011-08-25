@@ -42,6 +42,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,11 +51,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.apache.batik.ext.awt.geom.Polygon2D;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
@@ -309,7 +308,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
   }
 
   boolean useCache = true;
-  Map<Layer, IFeatureCollection<? extends IFeature>> cachedFeatures = new HashMap<Layer, IFeatureCollection<? extends IFeature>>();
+  Map<Layer, Collection<? extends IFeature>> cachedFeatures = new HashMap<Layer, Collection<? extends IFeature>>();
 
   /**
    * @param layer
@@ -336,12 +335,12 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param layer
    * @return
    */
-  private IFeatureCollection<? extends IFeature> getCachedFeatures(Layer layer) {
+  private Collection<? extends IFeature> getCachedFeatures(Layer layer) {
     return this.cachedFeatures.get(layer);
   }
 
   public void dessiner(Graphics2D g, Layer layer,
-      IFeatureCollection<? extends IFeature> features)
+      Collection<? extends IFeature> features)
       throws InterruptedException {
     if (DessinableGeoxygene.logger.isTraceEnabled()) {
       DessinableGeoxygene.logger.trace("dessiner()");
@@ -367,7 +366,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @throws InterruptedException
    */
   public void dessiner(Graphics2D g, Style style,
-      IFeatureCollection<? extends IFeature> features)
+      Collection<? extends IFeature> features)
       throws InterruptedException {
     if (style.isUserStyle()) {
       UserStyle userStyle = (UserStyle) style;
@@ -416,7 +415,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    */
   @SuppressWarnings("unchecked")
   public void dessiner(Graphics2D g, Symbolizer symbolizer,
-      IFeatureCollection<? extends IFeature> features)
+      Collection<? extends IFeature> features)
       throws InterruptedException {
     if (symbolizer.isRasterSymbolizer()) {
       RasterSymbolizer rasterSymbolizer = (RasterSymbolizer) symbolizer;
@@ -449,10 +448,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
         }
         haloRadius = textSymbolizer.getHalo().getRadius();
       }
-
-      int size = features.size();
-      for (int index = 0; index < size; index++) {
-        IFeature feature = features.get(index);
+      for (IFeature feature : features) {
         String texte = (String) feature.getAttribute(textSymbolizer.getLabel());
         if (feature.getGeom() instanceof IPoint) {
           this.dessinerText(g, fillColor, haloColor, haloRadius, font, texte,
@@ -478,9 +474,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
     }
     if (symbolizer.isPointSymbolizer()) {
       PointSymbolizer pointSymbolizer = (PointSymbolizer) symbolizer;
-      int size = features.size();
-      for (int index = 0; index < size; index++) {
-        IFeature feature = features.get(index);
+      for (IFeature feature : features) {
         if (feature.getGeom() instanceof IPoint) {
           this.dessiner(g, pointSymbolizer, ((IPoint) feature.getGeom())
               .getPosition());
@@ -496,9 +490,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
       if (polygonSymbolizer.getFill() != null) {
         fillColor = polygonSymbolizer.getFill().getColor();
       }
-      int size = features.size();
-      for (int index = 0; index < size; index++) {
-        IFeature feature = features.get(index);
+      for (IFeature feature : features) {
         if (feature.getGeom().isPolygon()) {
           if (fillColor != null) {
             this.remplir(g, fillColor, (IPolygon) feature.getGeom());
@@ -532,9 +524,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
       if (symbolizer.getStroke() != null) {
         if (symbolizer.getStroke().getGraphicType() == null) {
           // Solid color
-          int size = features.size();
-          for (int index = 0; index < size; index++) {
-            IFeature feature = features.get(index);
+          for (IFeature feature : features) {
             if (feature.getGeom().isLineString()) {
               this.dessiner(g, symbolizer.getStroke(), (ILineString) feature
                   .getGeom());

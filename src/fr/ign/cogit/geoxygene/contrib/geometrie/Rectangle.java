@@ -76,7 +76,6 @@ public class Rectangle {
         R.ymax = point.getY();
       }
     }
-    ;
     return R;
   }
 
@@ -87,7 +86,7 @@ public class Rectangle {
     R.ymin = this.ymin - dilatation;
     R.ymax = this.ymax + dilatation;
     return R;
-  };
+  }
 
   public boolean intersecte(Rectangle R) {
     boolean intersecteX = false;

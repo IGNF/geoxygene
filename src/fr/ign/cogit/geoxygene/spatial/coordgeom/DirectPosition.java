@@ -39,11 +39,6 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  */
 public class DirectPosition implements IDirectPosition {
   static Logger logger = Logger.getLogger(DirectPosition.class.getName());
-
-  // ////////////////////////////////////////////////////////////////////////////////////////
-  // Attribut CRS
-  // //////////////////////////////////////////////////////////////////////////
-  // ////////////////////////////////////////////////////////////////////////////////////////
   /**
    * Identifiant du systeme de coordonnees de reference (CRS en anglais).
    * Lorsque les DirectPosition servent à definir un GM_Object, cet attribut
@@ -53,24 +48,22 @@ public class DirectPosition implements IDirectPosition {
    * classe SC_CRS (non implementee).
    */
   protected int CRS;
-
   @Override
   public int getCRS() {
     return this.CRS;
   }
-
   @Override
   public void setCRS(final int crs) {
     this.CRS = crs;
   }
 
-  /** Tableau des coordonn�es du point. */
+  /** Tableau des coordonnées du point. */
   protected double[] coordinate = new double[3];
-  /** Dimension des coordonn�es (2D ou 3D) - dimension = coordinate.length */
+  /** Dimension des coordonnées (2D ou 3D) - dimension = coordinate.length. */
   protected int dimension = 3;
 
   /**
-   * Constructeur par d�faut (3D): cr�e un tableau de coordon�es � 3 dimensions,
+   * Constructeur par défaut (3D): crée un tableau de coordonées à 3 dimensions,
    * vide.
    */
   public DirectPosition() {
@@ -80,8 +73,8 @@ public class DirectPosition implements IDirectPosition {
   }
 
   /**
-   * Constructeur d'un DirectPosition � n dimensions : cr�e un tableau de
-   * coordon�es � n dimensions, vide.
+   * Constructeur d'un DirectPosition à n dimensions : cree un tableau de
+   * coordonées à n dimensions, vide.
    */
   /*
    * public DirectPosition(int n) { coordinate = new double[n]; dimension = n; }
@@ -96,135 +89,90 @@ public class DirectPosition implements IDirectPosition {
     this.setCoordinate(coord);
   }
 
-  /** Constructeur à partir de 2 coordonn�es. */
+  /** Constructeur à partir de 2 coordonnées. */
   public DirectPosition(final double X, final double Y) {
     this.setCoordinate(X, Y);
   }
 
-  /** Constructeur à partir de 3 coordonn�es. */
+  /** Constructeur à partir de 3 coordonnées. */
   public DirectPosition(final double X, final double Y, final double Z) {
     this.setCoordinate(X, Y, Z);
   }
-  
+
   public DirectPosition(DirectPosition p) {
     this.setCoordinate(p.getCoordinate());
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////
   // Methodes get
-  // //////////////////////////////////////////////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////////////////////
-
-  /** Renvoie le tableau des coordonnees. */
   @Override
   public double[] getCoordinate() {
     return this.coordinate;
   }
-
-  /** Renvoie la dimension (toujours 3). */
   @Override
   public int getDimension() {
     return this.dimension;
   }
-
-  /** Renvoie la i-eme coordonnees (i=0 pour X, i=1 pour Y, i=2 pour Z). */
   @Override
   public double getCoordinate(final int i) {
     return this.coordinate[i];
   }
-
-  /** Renvoie X (1ere coordonnee du tableau, indice 0). */
   @Override
   public double getX() {
     return this.coordinate[0];
   }
-
-  /** Renvoie Y (2ieme coordonnee du tableau, indice 1). */
   @Override
   public double getY() {
     return this.coordinate[1];
   }
-
-  /** Renvoie Z (3ieme coordonnee du tableau, indice 2). */
   @Override
   public double getZ() {
     return this.coordinate[2];
   }
-
-  /**
-   * Affecte les coordonnees d'un tableau des coordonnees (2D ou 3D). Si le
-   * tableau passe en parametre est 2D, la 3ieme coordonnee du DirectPosition
-   * vaudra NaN. Le tableau est recopie et non passe en reference.
-   */
   @Override
   public void setCoordinate(final double[] coord) {
     this.coordinate[0] = coord[0];
     this.coordinate[1] = coord[1];
     this.coordinate[2] = (coord.length == 3) ? coord[2] : Double.NaN;
   }
-
-  /**
-   * Affecte la position d'un point geometrique. Le point passe en parametre
-   * doit avoir la meme dimension que this.
-   */
   @Override
   public void setCoordinate(final IPoint thePoint) {
     final IDirectPosition pt = thePoint.getPosition();
     final double[] coord = pt.getCoordinate();
     this.setCoordinate(coord);
   }
-
-  /**
-   * Affecte une valeur à la i-eme coordonnees (i=0 pour X, i=1 pour Y, i=2 pour
-   * Z.).
-   */
   @Override
   public void setCoordinate(final int i, final double x) {
     this.coordinate[i] = x;
   }
-
-  /** Affecte une valeur à X et Y. */
   @Override
   public void setCoordinate(final double x, final double y) {
     this.coordinate[0] = x;
     this.coordinate[1] = y;
     this.coordinate[2] = Double.NaN;
   }
-
-  /** Affecte une valeur à X, Y et Z. */
   @Override
   public void setCoordinate(final double x, final double y, final double z) {
     this.coordinate[0] = x;
     this.coordinate[1] = y;
     this.coordinate[2] = z;
   }
-
-  /** Affecte une valeur à X (1ere coordonnee du tableau). */
   @Override
   public void setX(final double x) {
     this.coordinate[0] = x;
   }
-
-  /** Affecte une valeur à Y (2ieme coordonnee du tableau). */
   @Override
   public void setY(final double y) {
     this.coordinate[1] = y;
   }
-
-  /** Affecte une valeur à Z (3ieme coordonnee du tableau). */
   @Override
   public void setZ(final double z) {
     this.coordinate[2] = z;
   }
-
   // ////////////////////////////////////////////////////////////////////////////////////////
   // Methodes move
-  // /////////////////////////////////////////////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////////////////////
-  /**
-   * Deplace le point suivant toutes les dimensions. Le point passe en parametre
-   * doit avoir la meme dimension que this.
-   */
   @Override
   public void move(final IDirectPosition offsetPoint) {
     if (this.dimension == offsetPoint.getDimension()) {
@@ -233,17 +181,11 @@ public class DirectPosition implements IDirectPosition {
       }
     }
   }
-
-  /** Deplace le point suivant X et Y. */
   @Override
   public void move(final double offsetX, final double offsetY) {
     this.coordinate[0] += offsetX;
     this.coordinate[1] += offsetY;
   }
-
-  /**
-   * Deplace le point suivant X, Y et Z.
-   */
   @Override
   public void move(final double offsetX, final double offsetY,
       final double offsetZ) {
@@ -253,11 +195,9 @@ public class DirectPosition implements IDirectPosition {
       this.coordinate[2] += offsetZ;
     }
   }
-  
   public void move(double[] v) {
     this.move(v, 1.0);
   }
-  
   public void move(double[] v, double factor) {
     for (int i = 0; i < v.length && i < this.coordinate.length; i++) {
       this.coordinate[i] += factor * v[i];
@@ -265,10 +205,8 @@ public class DirectPosition implements IDirectPosition {
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////
-  // Methodes equals
-  // ////////////////////////////////////////////////////////////////////////
+  // Méthodes equals
   // ////////////////////////////////////////////////////////////////////////////////////////
-
   @Override
   public boolean equals(final Object o) {
     if (this == o) {
@@ -280,34 +218,11 @@ public class DirectPosition implements IDirectPosition {
     return false;
   }
 
-  /**
-   * /** Indique si self et le point passe en parametre sont egaux. Si les 2
-   * points ont une troisieme dimension affectee, on teste cette dimension.
-   * 
-   * @param pt un point
-   * @return vrai si le point this est egal au point passe en parametre
-   * @see #equals(Object)
-   * @see #equals(IDirectPosition, double)
-   * @see #equals2D(IDirectPosition, double)
-   */
   @Override
   public boolean equals(final IDirectPosition pt) {
     return this.equals(pt, 0);
   }
 
-  /**
-   * Indique si self et le point passe en parametre sont egaux, à une tolerance
-   * pres. Si les 2 points ont une troisieme dimension affectee, on teste cette
-   * dimension. Tolerance est un double qui doit etre > 0.
-   * 
-   * @param pt un point
-   * @param tolerance tolerance entre this et le point passe en parametre
-   * @return vrai si le point this est egal au point passe en parametre à la
-   *         tolerance pres
-   * @see #equals(Object)
-   * @see #equals(IDirectPosition)
-   * @see #equals2D(IDirectPosition, double)
-   */
   @Override
   public boolean equals(final IDirectPosition pt, final double tolerance) {
     double x1, x2;
@@ -329,20 +244,7 @@ public class DirectPosition implements IDirectPosition {
     }
     return true;
   }
-  
-  /**
-   * Indique si self et le point passe en parametre sont egaux, à une tolerance
-   * pres. La comparaison est effectuee en 2D, i.e. la troisieme dimension est
-   * ignoree. Tolerance est un double qui doit etre > 0.
-   * 
-   * @param pt un point
-   * @param tolerance tolerance entre this et le point passe en parametre
-   * @return vrai si le point this est egal au point passe en parametre à la
-   *         tolerance pres
-   * @see #equals(Object)
-   * @see #equals(IDirectPosition)
-   * @see #equals(IDirectPosition, double)
-   */
+
   @Override
   public boolean equals2D(final IDirectPosition pt, final double tolerance) {
     double x1, x2;
@@ -356,41 +258,23 @@ public class DirectPosition implements IDirectPosition {
     return true;
   }
 
-  /**
-   * Indique si self et le point passe en parametre sont egaux. La comparaison
-   * est effectuee en 2D, i.e. la troisieme dimension est ignoree.
-   * 
-   * @param pt un point
-   * @return vrai si le point this est egal au point passe en parametre
-   * @see #equals(Object)
-   * @see #equals(IDirectPosition)
-   * @see #equals(IDirectPosition, double)
-   * @see #equals2D(IDirectPosition, double)
-   */
   @Override
   public boolean equals2D(final IDirectPosition pt) {
     return this.equals2D(pt, 0);
   }
 
-  /**
-   * Calcul de la distance entre deux directPosition
-   * 
-   * @param d a IDirectPosition
-   * @return the distance between this DirectPosition and <code>d</code>
-   */
   @Override
   public double distance(final IDirectPosition d) {
-    final double dx = this.getX() - d.getX();
-    final double dy = this.getY() - d.getY();
-    return Math.sqrt(dx * dx + dy * dy);
+    if (!Double.isNaN(this.getZ()) && !Double.isNaN(d.getZ())) {
+      double dx = this.getX() - d.getX();
+      double dy = this.getY() - d.getY();
+      double dz = this.getZ() - d.getZ();
+      return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+    return distance2D(d);
   }
-  
-    /**
-   * Calcul de la distance 2D entre deux directPosition
-   * @param d a DirectPosition
-   * @return the distance between this DirectPosition and <code>d</code>
-   */
-  public double distance2D(DirectPosition d) {
+  @Override
+  public double distance2D(IDirectPosition d) {
     double dx = this.getX() - d.getX();
     double dy = this.getY() - d.getY();
     return Math.sqrt(dx * dx + dy * dy);
@@ -408,10 +292,7 @@ public class DirectPosition implements IDirectPosition {
 
   // ////////////////////////////////////////////////////////////////////////////////////////
   // Methode toGM_Point
-  // ////////////////////////////////////////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////////////////////
-
-  /** Creee un GM_Point à partir de this. */
   @Override
   public GM_Point toGM_Point() {
     return new GM_Point(this);
@@ -419,24 +300,21 @@ public class DirectPosition implements IDirectPosition {
 
   // ////////////////////////////////////////////////////////////////////////////////////////
   // Methode d'affichage
-  // ///////////////////////////////////////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////////////////////
 
   @Override
   public String toString() {
     if (Double.isNaN(this.getZ())) {
-      return new String("DirectPosition - X : " + this.getX() + "     Y : "
-          + this.getY());
-    } else {
-      return new String("DirectPosition - X : " + this.getX() + "     Y : "
-          + this.getY() + "     Z : " + this.getZ());
+      return "DirectPosition - X : " + this.getX() + "     Y : " + this.getY(); //$NON-NLS-1$ //$NON-NLS-2$
     }
+    return "DirectPosition - X : " + this.getX() + "     Y : " + this.getY() + "     Z : " + this.getZ(); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
   }
 
-  
-    public double[] minus(DirectPosition p) {
+  @Override
+  public double[] minus(DirectPosition p) {
     return this.minus(p, 1.0d);
   }
+  @Override
   public double[] minus(IDirectPosition p2, double factor) {
     double[] difference = new double[Math.min(this.coordinate.length, p2.getCoordinate().length)];
     for (int i = 0; i < difference.length; i++) {

@@ -448,5 +448,4 @@ public class LineSymbolizer extends AbstractSymbolizer {
     }
     return transforms;
   }
-
 }

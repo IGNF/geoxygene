@@ -83,10 +83,10 @@ public class Vecteur {
   }
 
   public Vecteur(double a, double b, double c) {
-    if (c != 0) {
-      this.coord = new DirectPosition(a, b, c);
+    if (Double.isNaN(c)) {
+      this.coord = new DirectPosition(a, b, 0);
     } else {
-      this.coord = new DirectPosition(a, b, Double.NaN);
+      this.coord = new DirectPosition(a, b, c);
     }
   }
 
@@ -201,23 +201,23 @@ public class Vecteur {
   }
 
   /** Renvoie le point translaté de P par le vecteur this */
-  public IDirectPosition translate(IDirectPosition P) {
-    DirectPosition P2 = new DirectPosition();
-    P2.setX(P.getX() + this.getX());
-    P2.setY(P.getY() + this.getY());
-    if (Double.isNaN(this.getZ()) || Double.isNaN(P.getZ())) {
-      P2.setZ(Double.NaN);
+  public IDirectPosition translate(IDirectPosition p) {
+    DirectPosition p2 = new DirectPosition();
+    p2.setX(p.getX() + this.getX());
+    p2.setY(p.getY() + this.getY());
+    if (Double.isNaN(this.getZ()) || Double.isNaN(p.getZ())) {
+      p2.setZ(Double.NaN);
     } else {
-      P2.setZ(P.getZ() + this.getZ());
+      p2.setZ(p.getZ() + this.getZ());
     }
-    return P2;
+    return p2;
   }
 
   /** Renvoie la ligne translatée de L par le vecteur this */
-  public ILineString translate(ILineString L) {
+  public ILineString translate(ILineString line) {
     GM_LineString L2 = new GM_LineString();
-    for (int i = 0; i < L.sizeControlPoint(); i++) {
-      IDirectPosition pt = L.getControlPoint(i);
+    for (int i = 0; i < line.sizeControlPoint(); i++) {
+      IDirectPosition pt = line.getControlPoint(i);
       L2.addControlPoint(this.translate(pt));
     }
     return L2;

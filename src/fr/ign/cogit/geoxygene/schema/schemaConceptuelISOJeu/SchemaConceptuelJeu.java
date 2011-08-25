@@ -51,13 +51,13 @@ import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.SchemaConceptuel
  *         d'un jeu de données.
  */
 
-public class SchemaConceptuelJeu implements SchemaConceptuel {
+public class SchemaConceptuelJeu implements SchemaConceptuel <FeatureType> {
 
   /**
    * Constructeur par défaut
    */
   public SchemaConceptuelJeu() {
-    this.featureTypes = new ArrayList<GF_FeatureType>();
+    this.featureTypes = new ArrayList<FeatureType>(0);
   }
 
   /**
@@ -65,7 +65,7 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
    */
   public SchemaConceptuelJeu(String nom, DataSet ds) {
     this.nomSchema = nom;
-    this.featureTypes = new ArrayList<GF_FeatureType>();
+    this.featureTypes = new ArrayList<FeatureType>(0);
     this.dataset = ds;
   }
 
@@ -74,8 +74,6 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
    * resultant est intégralement conforme au schéma du produit)
    */
   public SchemaConceptuelJeu(SchemaConceptuelProduit schemaProduit) {
-
-    System.out.println("\ncoucou1");
     FeatureType currentSCFT;
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType currentFCFT;
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType currentFCFTSuper;
@@ -101,7 +99,7 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
     Iterator<GF_AssociationRole> itRoles;
     Iterator<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.InheritanceRelation> itIR;
     // liste des SC_FeatureType crees, hors associations
-    ArrayList<GF_FeatureType> listCreatedSCFT = new ArrayList<GF_FeatureType>();
+    ArrayList<FeatureType> listCreatedSCFT = new ArrayList<FeatureType>();
     // liste des SC_Inheritance crees
     ArrayList<InheritanceRelation> listCreatedSCIR = new ArrayList<InheritanceRelation>();
 
@@ -119,24 +117,24 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
      */
     /*
      * System.out.println("utilisés : ");
-     * System.out.println(ds.getListfr.ign.cogit.appli.commun.metadata.
-     * schemaConceptuel.schemaProduit.FeatureTypeUtilises().size()+
+     * System.out.println(ds.getListfr.ign.cogit
+     * .appli.commun.metadata.schemaConceptuel
+     * .schemaProduit.FeatureTypeUtilises().size()+
      * " fr.ign.cogit.appli.commun.metadata.schemaConceptuel.schemaProduit.featureType"
-     * ); System.out.println(ds.getListfr.ign.cogit.appli.commun.metadata.
+     * );System.out.println(ds.getListfr.ign.cogit.appli.commun.metadata.
      * schemaConceptuel.schemaProduit.FeatureAssociationUtilises().size()+
      * " fr.ign.cogit.appli.commun.metadata.schemaConceptuel.schemaProduit.featureAsso"
-     * ); System.out.println(ds.getListfr.ign.cogit.appli.commun.metadata.
+     * );System.out.println(ds.getListfr.ign.cogit.appli.commun.metadata.
      * schemaConceptuel.schemaProduit.InheritanceUtilises().size()+
-     * " fr.ign.cogit.appli.commun.metadata.schemaConceptuel.schemaProduit.IR"
-     * );
+     * " fr.ign.cogit.appli.commun.metadata.schemaConceptuel.schemaProduit.IR");
      */
 
     // on cree les SC_FeatureType d'après les
     // fr.ign.cogit.appli.commun.metadata.schemaConceptuel.schemaProduit.FeatureType
-    Iterator<GF_FeatureType> itFT = schemaProduit.getFeatureTypes().iterator();
+    Iterator<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType> itFT = schemaProduit.getFeatureTypes().iterator();
     System.out.println("Les features..");
     while (itFT.hasNext()) {
-      currentFCFT = (fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType) itFT
+      currentFCFT = itFT
           .next();
       // System.out.println("nom = "+ currentFCFT.getTypeName());
       currentSCFT = new FeatureType(currentFCFT);
@@ -161,8 +159,7 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
           while (itAttribVal.hasNext()) {
             currentFCAV = (fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureAttributeValue) itAttribVal
                 .next();
-            // System.out.println("valeur possible : "+
-            // currentFCAV.getLabel());
+            // System.out.println("valeur possible : "+ currentFCAV.getLabel());
             currentSCAV = new FeatureAttributeValue(currentFCAV);
             currentSCFA.addValuesDomain(currentSCAV);
             currentSCAV.setFeatureAttribute(currentSCFA);
@@ -173,8 +170,7 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
         currentSCFT.addFeatureAttribute(currentSCFA);
         currentSCFA.setFeatureType(currentSCFT);
       }
-      // on Récupère les operations du catalogue et on crée des
-      // SC_Operations
+      // on Récupère les operations du catalogue et on crée des SC_Operations
       itOp = currentFCFT.getFeatureOperations().iterator();
       while (itOp.hasNext()) {
         currentFCOP = (fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.Operation) itOp
@@ -237,8 +233,7 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
         currentSCFA.setFeatureType(currentSCFASS);
       }
 
-      // on recupere les operations du catalogue et on crée des
-      // SC_Operations
+      // on recupere les operations du catalogue et on crée des SC_Operations
       itOp = currentFCFASS.getFeatureOperations().iterator();
       while (itOp.hasNext()) {
         currentFCOP = (fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.Operation) itOp
@@ -258,22 +253,20 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
             .next();
         // System.out.printl(current)
         currentSCAR = new AssociationRole(currentFCAR);
-        // System.out.println("role courant id = "+
-        // currentSCAR.getId());
+        // System.out.println("role courant id = "+ currentSCAR.getId());
         currentSCAR.setAssociationType(currentSCFASS);
 
         // on recupere le FeatureType lié à ce AssociationRole
         currentFCFT = (fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType) currentFCAR
             .getFeatureType();
         System.out.println("ft connecté : " + currentFCFT.getTypeName());
-        itFT = listCreatedSCFT.iterator();
-        while (itFT.hasNext()) {
-          currentSCFT = (FeatureType) itFT.next();
+        Iterator<FeatureType> itFTJ = listCreatedSCFT.iterator();
+        while (itFTJ.hasNext()) {
+          currentSCFT =  itFTJ.next();
           if (currentSCFT.getElementSchemaProduitOrigine().equals(currentFCFT)) {
             // On a trouve le SC_FeatureType correspondant à ce role
             // Le role a donc sa place dans le schema conceptuel
-            // On ajoute ce role au SC_FeatureAssociation
-            // correspondant
+            // On ajoute ce role au SC_FeatureAssociation correspondant
 
             currentSCAR.setFeatureType(currentSCFT);
             currentSCFASS.addRole(currentSCAR);
@@ -293,13 +286,11 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
 
         /*
          * listCreatedSCFASS.add(currentSCFASS);
-         * 
          * System.out.println("création association normale dans liste");
-         * System.out.println("avec "+currentSCFASS.getRoles().size()+
-         * " roles");
-         * 
-         * System.out.println("avec "+currentSCFASS.getLinkBetween().size
-         * ()+" membres");
+         * System.out.println("avec "+currentSCFASS.getRoles().size()+" roles");
+         * System
+         * .out.println("avec "+currentSCFASS.getLinkBetween().size()+" membres"
+         * );
          */
       }
     }
@@ -320,9 +311,9 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
           .getSuperType();
       currentFCFTSub = (fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType) currentFCIR
           .getSubType();
-      itFT = listCreatedSCFT.iterator();
-      while (itFT.hasNext()) {
-        currentSCFT = (FeatureType) itFT.next();
+      Iterator<FeatureType> itFTJ = listCreatedSCFT.iterator();
+      while (itFTJ.hasNext()) {
+        currentSCFT = itFTJ.next();
         if (currentSCFT.getElementSchemaProduitOrigine().equals(
             currentFCFTSuper)) {
           // on a trouve le SC_FeatureType correspondant au superType
@@ -404,10 +395,12 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
    */
   protected String nomSchema;
 
+  @Override
   public String getNomSchema() {
     return this.nomSchema;
   }
 
+  @Override
   public void setNomSchema(String nom) {
     this.nomSchema = nom;
   }
@@ -417,10 +410,12 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
    */
   protected String definition;
 
+  @Override
   public void setDefinition(String def) {
     this.definition = def;
   }
 
+  @Override
   public String getDefinition() {
     return this.definition;
   }
@@ -466,43 +461,48 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
   /**
    * Liste des FeatureType du schéma
    */
-  protected List<GF_FeatureType> featureTypes;
+  protected List<FeatureType> featureTypes;
 
-  public List<GF_FeatureType> getFeatureTypes() {
+  @Override
+  public List<FeatureType> getFeatureTypes() {
     return this.featureTypes;
   }
 
-  public void setFeatureTypes(List<GF_FeatureType> ftListValue) {
+  @Override
+  public void setFeatureTypes(List<FeatureType> ftListValue) {
     this.featureTypes = ftListValue;
   }
 
-  public void addFeatureType(GF_FeatureType ft) {
+  @Override
+  public void addFeatureType(FeatureType ft) {
     if (!this.getFeatureTypes().contains(ft)) {
       this.featureTypes.add(ft);
     }
 
-    if ((((FeatureType) ft).getSchema() != this)) {
-      ((FeatureType) ft).setSchema(this);
+    if ((ft.getSchema() != this)) {
+      ft.setSchema(this);
     }
   }
 
-  public GF_FeatureType getFeatureTypeI(int i) {
+  public FeatureType getFeatureTypeI(int i) {
     return this.featureTypes.get(i);
   }
 
-  public void removeFeatureTypeFromSchema(GF_FeatureType ft) {
+  @Override
+  public void removeFeatureTypeFromSchema(FeatureType ft) {
     if (ft == null) {
       return;
     }
     this.featureTypes.remove(ft);
-    ((FeatureType) ft).setSchema(null);
+    ft.setSchema(null);
   }
 
-  public GF_FeatureType getFeatureTypeByName(String name) {
-    GF_FeatureType ft = null;
-    Iterator<GF_FeatureType> it = this.featureTypes.iterator();
+  @Override
+  public FeatureType getFeatureTypeByName(String name) {
+    FeatureType ft = null;
+    Iterator<FeatureType> it = this.featureTypes.iterator();
     while (it.hasNext()) {
-      GF_FeatureType f = it.next();
+      FeatureType f = it.next();
       // Modification Nathalie: on ignore la casse!
       if (f.getTypeName().equalsIgnoreCase(name)) {
         ft = f;
@@ -528,9 +528,9 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
 
     // vérification qu'aucune classe du même nom n'existe dans le schéma
     if (!this.featureTypes.isEmpty()) {
-      Iterator<GF_FeatureType> iTft = this.featureTypes.iterator();
+      Iterator<FeatureType> iTft = this.featureTypes.iterator();
       while (iTft.hasNext()) {
-        GF_FeatureType feature = iTft.next();
+        FeatureType feature = iTft.next();
         if (feature.getTypeName().equalsIgnoreCase(nomClasse)) {
 
           JOptionPane.showMessageDialog(null,
@@ -1040,8 +1040,7 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
       while (iTrole.hasNext()) {
         GF_AssociationRole monRole = iTrole.next();
         if (monRole.getAssociationType() == fa) {
-          // Suppression du role au niveau des FeatureTypes et de
-          // l'association
+          // Suppression du role au niveau des FeatureTypes et de l'association
           scft.removeRole(monRole);
           fa.removeRole(monRole);
           break;
@@ -1120,9 +1119,9 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
    */
   public List<AttributeType> getFeatureAttributes() {
     List<AttributeType> attList = new ArrayList<AttributeType>();
-    Iterator<GF_FeatureType> iT = this.featureTypes.iterator();
+    Iterator<FeatureType> iT = this.featureTypes.iterator();
     while (iT.hasNext()) {
-      GF_FeatureType ft = iT.next();
+      FeatureType ft = iT.next();
       List<GF_AttributeType> ftAttList = ft.getFeatureAttributes();
       Iterator<GF_AttributeType> iTatt = ftAttList.iterator();
       while (iTatt.hasNext()) {
@@ -1162,10 +1161,9 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
   public List<AssociationType> getFeatureAssociations() {
     // System.out.println("** debut getFeatureAssociations **");
     List<AssociationType> assoList = new ArrayList<AssociationType>();
-    Iterator<GF_FeatureType> iT = this.featureTypes.iterator();
+    Iterator<FeatureType> iT = this.featureTypes.iterator();
     while (iT.hasNext()) {
-
-      FeatureType ft = (FeatureType) iT.next();
+      FeatureType ft = iT.next();
       List<GF_AssociationRole> ftRoleList = ft.getRoles();
       // System.out.println("ft : "+ft.getTypeName()+" qui a "+ft.getRoles().size()+" roles");
       Iterator<GF_AssociationRole> iTrole = ftRoleList.iterator();
@@ -1190,9 +1188,9 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
    */
   public List<AssociationRole> getAssociationRoles() {
     List<AssociationRole> roleList = new ArrayList<AssociationRole>();
-    Iterator<GF_FeatureType> iT = this.featureTypes.iterator();
+    Iterator<FeatureType> iT = this.featureTypes.iterator();
     while (iT.hasNext()) {
-      FeatureType ft = (FeatureType) iT.next();
+      FeatureType ft = iT.next();
       List<GF_AssociationRole> ftRoleList = ft.getRoles();
       Iterator<GF_AssociationRole> iTrole = ftRoleList.iterator();
       while (iTrole.hasNext()) {
@@ -1208,9 +1206,9 @@ public class SchemaConceptuelJeu implements SchemaConceptuel {
    */
   public List<InheritanceRelation> getInheritance() {
     List<InheritanceRelation> heritList = new ArrayList<InheritanceRelation>();
-    Iterator<GF_FeatureType> iT = this.featureTypes.iterator();
+    Iterator<FeatureType> iT = this.featureTypes.iterator();
     while (iT.hasNext()) {
-      GF_FeatureType ft = iT.next();
+      FeatureType ft = iT.next();
       List<GF_InheritanceRelation> ftHeritList = ft.getGeneralization();
       Iterator<GF_InheritanceRelation> iTherit = ftHeritList.iterator();
       while (iTherit.hasNext()) {

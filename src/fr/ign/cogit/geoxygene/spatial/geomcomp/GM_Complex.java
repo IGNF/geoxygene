@@ -1,33 +1,24 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.spatial.geomcomp;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -35,6 +26,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomcomp.IComplex;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IComplexBoundary;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPrimitive;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
@@ -56,135 +48,81 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 public class GM_Complex extends GM_Object implements IComplex {
 
   /** Set de primitives constituant self. */
-  protected Set<IGeometry> element = new HashSet<IGeometry>();
-
+  // protected Set<IGeometry> element = new HashSet<IGeometry>();
   @Override
   public Set<IGeometry> getElement() {
-    return this.element;
+    return null;// this.element
   }
-
-  /** Ajoute une primitive (ajoute aussi un complexe à la primitive). */
   @Override
   public void addElement(IPrimitive value) {
-    this.element.add(value);
+    this.getElement().add(value);
     value.getComplex().add(this);
   }
-
-  /**
-   * Efface la primitive passée en paramètre (efface aussi le complexe de la
-   * primitive).
-   */
   @Override
   public void removeElement(IPrimitive value) {
-    this.element.remove(value);
+    this.getElement().remove(value);
     value.getComplex().remove(this);
   }
-
-  /** Nombre de primitives constituant self. */
   @Override
   public int sizeElement() {
-    return this.element.size();
+    return this.getElement().size();
   }
-
-  // //////////////////////////////////////////////////////////////////////
-  // //////////////////////////////////////////////////////////////////////
-  // Attribut "subComplex" et méthodes pour le traiter ///////////////////
-  // //////////////////////////////////////////////////////////////////////
-  // //////////////////////////////////////////////////////////////////////
-  // Met a jour automatiquement : le super-complexe, et la liste des elements.
-
   /** Les sous-complexes constituant self. */
-  protected Set<IComplex> subComplex = new HashSet<IComplex>();
-
-  /** Renvoie la liste des sous-complexes */
+  // protected Set<IComplex> subComplex = new HashSet<IComplex>();
   @Override
   public Set<IComplex> getSubComplex() {
-    return this.subComplex;
+    return null;// this.subComplex;
   }
-
-  /** Ajoute un sous-complexe en fin de liste. */
   @Override
   public void addSubComplex(IComplex value) {
-    this.subComplex.add(value);
+    this.getSubComplex().add(value);
     value.getSuperComplex().add(this);
     this.getElement().add(value);
     value.getElement().add(this);
   }
-
-  /** Efface le (ou les) sous-complexes passé en paramètre. */
   @Override
   public void removeSubComplex(IComplex value) {
-    this.subComplex.remove(value);
+    this.getSubComplex().remove(value);
     value.getSuperComplex().remove(this);
-    this.element.remove(value);
+    this.getElement().remove(value);
     value.getElement().remove(this);
   }
-
-  /** Nombre de sous-complexes constituant self. */
   @Override
   public int sizeSubComplex() {
-    return this.subComplex.size();
+    return this.getSubComplex().size();
   }
-
-  // //////////////////////////////////////////////////////////////////////
-  // //////////////////////////////////////////////////////////////////////
-  // Attribut "superComplex" et méthodes pour le traiter /////////////////
-  // //////////////////////////////////////////////////////////////////////
-  // //////////////////////////////////////////////////////////////////////
   /** Les super-complexes constituant self. */
-  protected Set<IComplex> superComplex = new HashSet<IComplex>();
-
-  /** Renvoie la liste des super-complexes */
+  // protected Set<IComplex> superComplex = new HashSet<IComplex>();
   @Override
   public Set<IComplex> getSuperComplex() {
-    return this.superComplex;
+    return null;// this.superComplex;
   }
-
-  /** Ajoute un super-complexe en fin de liste. */
   @Override
   public void addSuperComplex(IComplex value) {
-    this.superComplex.add(value);
+    this.getSuperComplex().add(value);
   }
-
-  /** Efface le (ou les) super-complexes passé en paramètre. */
   @Override
   public void removeSuperComplex(IComplex value) {
-    this.superComplex.remove(value);
+    this.getSuperComplex().remove(value);
   }
-
-  /** Nombre de super-complexes constituant self. */
   @Override
   public int sizeSuperComplex() {
-    return this.superComplex.size();
+    return this.getSuperComplex().size();
   }
-
-  // //////////////////////////////////////////////////////////////////////
-  // //////////////////////////////////////////////////////////////////////
-  // Méthodes ////////////////////////////////////////////////////////////
-  // //////////////////////////////////////////////////////////////////////
-  // //////////////////////////////////////////////////////////////////////
-
-  /** Un complexe est maximal s'il n'est le subcomplexe de personne. */
   @Override
   public boolean isMaximal() {
     return (this.sizeSuperComplex() == 0);
   }
-
-  /**
-   * NON IMPLEMENTE POUR UN COMPLEXE QUELCONQUE. Collection de GM_Object
-   * représentant la frontière de self. Cette collection d'objets a une
-   * structure de GM_ComplexBoundary, qui est un GM_Complex de dimension
-   * inférieure à 1 à celle de l'objet initial.
-   */
   @Override
   public IComplexBoundary boundary() {
     return null;
   }
-
   @Override
   public IDirectPositionList coord() {
-    System.out.println("coord() : marche pas pour un complexe. Renvoie null");
-    return null;
+    IDirectPositionList dpl = new DirectPositionList();
+    for (IGeometry o : this.getElement()) {
+      dpl.addAll(o.coord());
+    }
+    return dpl;
   }
-
 }

@@ -38,7 +38,7 @@ public class AttributeType implements GF_AttributeType {
    */
   public AttributeType() {
     super();
-    this.valuesDomain = new ArrayList<FC_FeatureAttributeValue>();
+    this.valuesDomain = new ArrayList<FC_FeatureAttributeValue>(0);
   }
 
   /**
@@ -78,7 +78,7 @@ public class AttributeType implements GF_AttributeType {
     this.domainOfValues = ori.getDomainOfValues();
     this.valueDomainType = ori.getValueDomainType();
     this.valueType = ori.getValueType();
-    this.valuesDomain = new ArrayList<FC_FeatureAttributeValue>();
+    this.valuesDomain = new ArrayList<FC_FeatureAttributeValue>(0);
     this.nomField = ori.getNomField();
     this.isExplicite = ori.getIsExplicite();
   }
@@ -90,6 +90,7 @@ public class AttributeType implements GF_AttributeType {
    * Renvoie l'identifiant d'un objet
    * @return l'Identifiant d'un objet
    */
+  @Override
   public int getId() {
     return this.id;
   }
@@ -98,6 +99,7 @@ public class AttributeType implements GF_AttributeType {
    * Affecte l'identifiant d'un objet
    * @param id l'identifiant d'un objet
    */
+  @Override
   public void setId(int id) {
     this.id = id;
   }
@@ -109,6 +111,7 @@ public class AttributeType implements GF_AttributeType {
    * Renvoie le nom de la propriété.
    * @return le nom de la propriété.
    */
+  @Override
   public String getMemberName() {
     return this.memberName;
   }
@@ -117,6 +120,7 @@ public class AttributeType implements GF_AttributeType {
    * Affecte un nom de propriété.
    * @param MemberName un nom de propriété
    */
+  @Override
   public void setMemberName(String MemberName) {
     this.memberName = MemberName;
   }
@@ -125,11 +129,13 @@ public class AttributeType implements GF_AttributeType {
   protected String valueType;
 
   /** Renvoie le type de l'attribut. */
+  @Override
   public String getValueType() {
     return this.valueType;
   }
 
   /** Affecte un type à l'attribut. */
+  @Override
   public void setValueType(String ValueType) {
     this.valueType = ValueType;
   }
@@ -138,11 +144,13 @@ public class AttributeType implements GF_AttributeType {
   protected boolean valueDomainType;
 
   /** Renvoie le type de domaine de valeur de l'attribut. */
+  @Override
   public boolean getValueDomainType() {
     return this.valueDomainType;
   }
 
   /** Affecte un type à l'attribut. */
+  @Override
   public void setValueDomainType(boolean ValueDomainType) {
     this.valueDomainType = ValueDomainType;
   }
@@ -155,11 +163,13 @@ public class AttributeType implements GF_AttributeType {
   protected String definition;
 
   /** Renvoie la définition. */
+  @Override
   public String getDefinition() {
     return this.definition;
   }
 
   /** Affecte une définition. */
+  @Override
   public void setDefinition(String Definition) {
     this.definition = Definition;
   }
@@ -174,6 +184,7 @@ public class AttributeType implements GF_AttributeType {
   /**
    * @return the definitionReference
    */
+  @Override
   public Object getDefinitionReference() {
     return this.definitionReference;
   }
@@ -181,6 +192,7 @@ public class AttributeType implements GF_AttributeType {
   /**
    * @param definitionReference the definitionReference to set
    */
+  @Override
   public void setDefinitionReference(Object definitionReference) {
     this.definitionReference = definitionReference;
   }
@@ -189,11 +201,13 @@ public class AttributeType implements GF_AttributeType {
   protected int cardMin;
 
   /** Renvoie le nombre de valeurs minimal de l'attribut. */
+  @Override
   public int getCardMin() {
     return this.cardMin;
   }
 
   /** Affecte un nombre de valeurs minimal à l'attribut. */
+  @Override
   public void setCardMin(int CardMin) {
     this.cardMin = CardMin;
   }
@@ -202,11 +216,13 @@ public class AttributeType implements GF_AttributeType {
   protected int cardMax;
 
   /** Renvoie le nombre de valeurs maximal de l'attribut. */
+  @Override
   public int getCardMax() {
     return this.cardMax;
   }
 
   /** Affecte un nombre de valeurs maximal à l'attribut. */
+  @Override
   public void setCardMax(int CardMax) {
     this.cardMax = CardMax;
   }
@@ -218,11 +234,13 @@ public class AttributeType implements GF_AttributeType {
   protected String domainOfValues;
 
   /** Renvoie le domaine de valeurs. */
+  @Override
   public String getDomainOfValues() {
     return this.domainOfValues;
   }
 
   /** Affecte un domaine de valeurs. */
+  @Override
   public void setDomainOfValues(String domain) {
     this.domainOfValues = domain;
   }
@@ -324,6 +342,7 @@ public class AttributeType implements GF_AttributeType {
   // Modifications Nathalie
   // //////////////////////////////////////////////////////
   /** Renvoie les valeurs possibles d'un attribut enumere. */
+  @Override
   public List<FC_FeatureAttributeValue> getValuesDomain() {
     return this.valuesDomain;
   }
@@ -332,6 +351,7 @@ public class AttributeType implements GF_AttributeType {
    * Renvoie les valeurs possibles d'un attribut enumere sous forme de liste de
    * chaines de caractères.
    */
+  @Override
   public List<String> getValuesDomainToString() {
     List<String> valeurs = new ArrayList<String>();
     Iterator<FC_FeatureAttributeValue> it = this.valuesDomain.iterator();
@@ -343,6 +363,7 @@ public class AttributeType implements GF_AttributeType {
   }
 
   /** Affecte une liste de valeurs possibles. */
+  @Override
   public void setValuesDomain(List<FC_FeatureAttributeValue> ValuesDomain) {
     List<FC_FeatureAttributeValue> old = new ArrayList<FC_FeatureAttributeValue>(
         this.valuesDomain);
@@ -359,6 +380,7 @@ public class AttributeType implements GF_AttributeType {
   }
 
   /** Ajoute une valeur à la liste des valeurs possibles de l'attribut. */
+  @Override
   public void addValuesDomain(FC_FeatureAttributeValue value) {
     if (value == null) {
       return;
@@ -370,6 +392,7 @@ public class AttributeType implements GF_AttributeType {
   }
 
   /** Enleve une valeur a la liste des valeurs possibles de l'attribut. */
+  @Override
   public void removeValuesDomain(FC_FeatureAttributeValue value) {
     if (value == null) {
       return;
@@ -382,11 +405,13 @@ public class AttributeType implements GF_AttributeType {
   // Champs et Methodes herites et utilises
   // //////////////////////////////////////////////////////
   /** Renvoie le feature type auquel est rattaché la propriété. */
+  @Override
   public GF_FeatureType getFeatureType() {
     return this.featureType;
   }
 
   /** Affecte un feature type à la propriété. */
+  @Override
   public void setFeatureType(GF_FeatureType FeatureType) {
     this.featureType = FeatureType;
   }
@@ -399,11 +424,13 @@ public class AttributeType implements GF_AttributeType {
   protected GF_AttributeType characterize;
 
   /** Renvoie l'attribut que self caractérise. */
+  @Override
   public GF_AttributeType getCharacterize() {
     return this.characterize;
   }
 
   /** Affecte un attribut que self caractérise. */
+  @Override
   public void setCharacterize(GF_AttributeType Characterize) {
     this.characterize = Characterize;
   }
@@ -411,6 +438,7 @@ public class AttributeType implements GF_AttributeType {
   /**
    * Renvoie la liste des contraintes. TODO non implémenté
    */
+  @Override
   public List<GF_Constraint> getConstraint() {
     return null;
   }
@@ -418,24 +446,26 @@ public class AttributeType implements GF_AttributeType {
   /**
    * Affecte une liste de contraintes TODO non implémenté
    */
+  @Override
   public void setConstraint(List<GF_Constraint> L) {
   }
 
   /** Ajoute une contrainte. */
+  @Override
   public void addConstraint(GF_Constraint value) {
   }
 
   /**
    * Renvoie le nombre de contraintes. TODO non implémenté
    */
+  @Override
   public int sizeConstraint() {
     return 0;
   }
 
   @Override
   public String toString() {
-    String resultat = "AttributeType " + this.getMemberName()
-        + " avec une valeur de type " + this.getValueType();
+    String resultat = this.getMemberName() + " (" + this.getValueType() + ")"; //$NON-NLS-1$//$NON-NLS-2$
     return resultat;
   }
 }

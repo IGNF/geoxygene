@@ -1,28 +1,20 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
@@ -46,6 +38,12 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.DataSet;
+import fr.ign.cogit.geoxygene.feature.FT_Feature;
+import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.feature.Population;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
@@ -53,6 +51,7 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Primitive;
+import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
@@ -76,7 +75,8 @@ public class Chargeur {
    * @param nomClasseGeo class name
    * @param carte topological map
    */
-  public static void importClasseGeo(String nomClasseGeo, CarteTopo carte) {
+  public static void importClasseGeo(final String nomClasseGeo,
+      final CarteTopo carte) {
     Class<?> clGeo;
 
     try {
@@ -99,8 +99,8 @@ public class Chargeur {
    * @param listeFeatures éléments
    * @param carte carte topo
    */
-  public static void importClasseGeo(IFeatureCollection<?> listeFeatures,
-      CarteTopo carte) {
+  public static void importClasseGeo(
+      final IFeatureCollection<?> listeFeatures, final CarteTopo carte) {
     Chargeur.importClasseGeo(listeFeatures, carte, false);
   }
 
@@ -111,8 +111,9 @@ public class Chargeur {
    * @param carte carte topo
    * @param convert2d si vrai, alors convertir les géométries en 2d
    */
-  public static void importClasseGeo(IFeatureCollection<?> listeFeatures,
-      CarteTopo carte, boolean convert2d) {
+  public static void importClasseGeo(
+      final IFeatureCollection<?> listeFeatures, final CarteTopo carte,
+      final boolean convert2d) {
     if (listeFeatures.isEmpty()) {
       Chargeur.logger.warn(I18N.getString("Chargeur.NothingImported")); //$NON-NLS-1$
       return;
@@ -122,7 +123,7 @@ public class Chargeur {
           .getPopNoeuds(), convert2d);
       if (Chargeur.logger.isDebugEnabled()) {
         Chargeur.logger
-            .debug(I18N.getString("Chargeur.NumberOfImportedEdges") + nbElements); //$NON-NLS-1$
+            .debug(I18N.getString("Chargeur.NumberOfImportedNodes") + nbElements); //$NON-NLS-1$
       }
       return;
     }
@@ -131,7 +132,8 @@ public class Chargeur {
       int nbElements = Chargeur.importClasseGeo(listeFeatures, carte
           .getPopArcs(), convert2d);
       if (Chargeur.logger.isDebugEnabled()) {
-        Chargeur.logger.debug("Nb d'arcs import�s    : " + nbElements);
+        Chargeur.logger
+            .debug(I18N.getString("Chargeur.NumberOfImportedEdges") + nbElements); //$NON-NLS-1$
       }
       return;
     }
@@ -157,10 +159,14 @@ public class Chargeur {
    * @param convert2d si vrai, alors convertir les géométries en 2d
    */
   @SuppressWarnings("unchecked")
-  private static int importClasseGeo(IFeatureCollection<?> listeFeatures,
-      IPopulation<?> population, boolean convert2d) {
+  private static int importClasseGeo(
+      final IFeatureCollection<?> listeFeatures,
+      final IPopulation<?> population, final boolean convert2d) {
     int nbElements = 0;
     for (IFeature feature : listeFeatures) {
+      if (feature.getGeom() == null) {
+        continue;
+      }
       if (feature.getGeom() instanceof GM_Primitive) {
         Chargeur.creeElement(feature, feature.getGeom(), population, convert2d);
         nbElements++;
@@ -186,8 +192,9 @@ public class Chargeur {
    * @param convert2d si vrai alors la géométrie du nouvel élément est convertie
    *          en 2d
    */
-  private static void creeElement(IFeature feature, IGeometry geom,
-      IPopulation<?> population, boolean convert2d) {
+  private static void creeElement(final IFeature feature,
+      final IGeometry geom, final IPopulation<?> population,
+      final boolean convert2d) {
     IFeature nouvelElement;
     try {
       nouvelElement = population.nouvelElement(convert2d ? AdapterFactory
@@ -231,7 +238,7 @@ public class Chargeur {
       e.printStackTrace();
     }
   }
-  
+
   /**
    * Seuls les points des éléments sont importés comme noeuds de la carte.
    * @param feature

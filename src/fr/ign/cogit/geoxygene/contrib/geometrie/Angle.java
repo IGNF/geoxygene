@@ -74,8 +74,9 @@ public class Angle {
 
   /** Angle entre 2 points dans le plan X,Y (valeur comprise entre 0 et 2*pi) */
   public Angle(IDirectPosition pt1, IDirectPosition pt2) {
-    this
-        .setValeur(Math.atan2(pt2.getY() - pt1.getY(), pt2.getX() - pt1.getX()));
+    double x = pt2.getX() - pt1.getX();
+    double y = pt2.getY() - pt1.getY();
+    this.setValeur(Math.atan2(y, x));
   }
 
   /**

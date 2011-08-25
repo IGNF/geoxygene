@@ -19,20 +19,33 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
+import java.awt.image.BufferedImage;
+import java.awt.image.renderable.ParameterBlock;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.media.jai.JAI;
+import javax.media.jai.RenderedOp;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
+import org.apache.batik.gvt.GraphicsNode;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 
 /**
  * @author Julien Perret
@@ -72,40 +85,130 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
   @SuppressWarnings("unchecked")
   @Override
   public void paint(IFeature feature, Viewport viewport, Graphics2D graphics) {
-    if (feature.getGeom() == null) {
+    if (feature.getGeom() == null || viewport == null) {
       return;
     }
-    Color fillColor = null;
-    if (this.getFill() != null) {
-      fillColor = this.getFill().getColor();
-    }
-    if (fillColor != null) {
-      graphics.setColor(fillColor);
+    if (this.getShadow() != null) {
+      Color shadowColor = this.getShadow().getColor();
+      double translate_x = -5;
+      double translate_y = -5;
+      if (this.getShadow().getDisplacement() != null) {
+        translate_x = this.getShadow().getDisplacement().getDisplacementX();
+        translate_y = this.getShadow().getDisplacement().getDisplacementY();
+      }
+      graphics.setColor(shadowColor);
+      List<Shape> shapes = new ArrayList<Shape>();
       if (feature.getGeom().isPolygon()) {
-        this.fillPolygon((GM_Polygon) feature.getGeom(), viewport, graphics);
+        try {
+          Shape shape = viewport.toShape(feature.getGeom().translate(
+              translate_x, translate_y, 0));
+          if (shape != null) {
+            shapes.add(shape);
+          }
+        } catch (NoninvertibleTransformException e) {
+          e.printStackTrace();
+        }
       } else {
         if (feature.getGeom().isMultiSurface()) {
           for (GM_OrientableSurface surface : ((GM_MultiSurface<GM_OrientableSurface>) feature
               .getGeom())) {
-            this.fillPolygon((GM_Polygon) surface, viewport, graphics);
+            try {
+              Shape shape = viewport.toShape(surface.translate(translate_x,
+                  translate_y, 0));
+              if (shape != null) {
+                shapes.add(shape);
+              }
+            } catch (NoninvertibleTransformException e) {
+              e.printStackTrace();
+            }
+          }
+        }
+      }
+      for (Shape shape : shapes) {
+        this.fillPolygon(shape, viewport, graphics);
+      }
+    }
+    Color fillColor = null;
+    float fillOpacity = 1f;
+    if (this.getFill() != null) {
+      fillColor = this.getFill().getColor();
+      fillOpacity = this.getFill().getFillOpacity();
+    }
+    if (this.getColorMap() != null && this.getColorMap().getInterpolate() != null) {
+      double value = ((Number) feature.getAttribute(this.getColorMap().getInterpolate().getLookupvalue())).doubleValue();
+      int rgb = this.getColorMap().getColor(value);
+      fillColor = new Color(rgb);
+    }
+    if (fillColor != null && fillOpacity > 0f) {
+      graphics.setColor(fillColor);
+      List<Shape> shapes = new ArrayList<Shape>();
+      if (feature.getGeom().isPolygon()) {
+        try {
+          Shape shape = viewport.toShape(feature.getGeom());
+          if (shape != null) {
+            shapes.add(shape);
+          }
+        } catch (NoninvertibleTransformException e) {
+          e.printStackTrace();
+        }
+      } else {
+        if (feature.getGeom().isMultiSurface()) {
+          for (GM_OrientableSurface surface : ((GM_MultiSurface<GM_OrientableSurface>) feature
+              .getGeom())) {
+            try {
+              Shape shape = viewport.toShape(surface);
+              if (shape != null) {
+                shapes.add(shape);
+              }
+            } catch (NoninvertibleTransformException e) {
+              e.printStackTrace();
+            }
+          }
+        }
+      }
+      for (Shape shape : shapes) {
+        if (this.getFill() == null || this.getFill().getGraphicFill() == null) {
+          this.fillPolygon(shape, viewport, graphics);
+        } else {
+          List<Graphic> graphicList = this.getFill().getGraphicFill()
+              .getGraphics();
+          for (Graphic graphic : graphicList) {
+            this.graphicFillPolygon(shape, graphic, viewport, graphics);
           }
         }
       }
     }
     if (this.getStroke() != null) {
-      if (this.getStroke().getGraphicType() == null) {
+      if (this.getStroke().getStrokeLineJoin() == BasicStroke.JOIN_MITER) {
+        this.getStroke().setStrokeLineCap(BasicStroke.CAP_SQUARE);
+      } else if (this.getStroke().getStrokeLineJoin() == BasicStroke.JOIN_BEVEL) {
+        this.getStroke().setStrokeLineCap(BasicStroke.CAP_BUTT);
+      } else if (this.getStroke().getStrokeLineJoin() == BasicStroke.JOIN_ROUND) {
+        this.getStroke().setStrokeLineCap(BasicStroke.CAP_ROUND);
+      } else {
+        logger.error("Stroke Line Join undefined."); //$NON-NLS-1$
+      }
+      float strokeOpacity = this.getStroke().getStrokeOpacity();
+      if (this.getStroke().getGraphicType() == null && strokeOpacity > 0f) {
         // Solid color
         Color color = this.getStroke().getColor();
-        java.awt.Stroke bs = this.getStroke().toAwtStroke();
+        double scale = 1;
+        if (!this.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
+          try {
+            scale = viewport.getModelToViewTransform().getScaleX();
+          } catch (NoninvertibleTransformException e) {
+            e.printStackTrace();
+          }
+        }
+        BasicStroke bs = (BasicStroke)this.getStroke().toAwtStroke((float) scale);
         graphics.setColor(color);
-        graphics.setStroke(bs);
         if (feature.getGeom().isPolygon()) {
-          this.drawPolygon((GM_Polygon) feature.getGeom(), viewport, graphics);
+          this.drawPolygon((GM_Polygon) feature.getGeom(), viewport, graphics, bs);
         } else {
           if (feature.getGeom().isMultiSurface()) {
             for (GM_OrientableSurface surface : ((GM_MultiSurface<GM_OrientableSurface>) feature
                 .getGeom())) {
-              this.drawPolygon((GM_Polygon) surface, viewport, graphics);
+              this.drawPolygon((GM_Polygon) surface, viewport, graphics, bs);
             }
           }
         }
@@ -113,43 +216,131 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
     }
   }
 
-  private void fillPolygon(GM_Polygon polygon, Viewport viewport,
-      Graphics2D graphics) {
-    if (polygon == null) {
+  private void graphicFillPolygon(Shape shape, Graphic graphic,
+      Viewport viewport, Graphics2D graphics) {
+    if (shape == null || viewport == null || graphic == null) {
       return;
     }
-    try {
-      Shape shape = viewport.toShape(polygon);
-      if (shape != null) {
-        graphics.fill(shape);
+    float size = graphic.getSize();
+    graphics.setClip(shape);
+    for (ExternalGraphic external : graphic.getExternalGraphics()) {
+      if (external.getFormat().contains("png") || external.getFormat().contains("gif")) { //$NON-NLS-1$ //$NON-NLS-2$
+        Image image = external.getOnlineResource();
+        this.graphicFillPolygon(shape, image, size, graphics);
+      } else {
+        if (external.getFormat().contains("svg")) { //$NON-NLS-1$
+          GraphicsNode node = external.getGraphicsNode();
+          this.graphicFillPolygon(shape, node, size, graphics);
+        }
       }
-    } catch (NoninvertibleTransformException e) {
-      e.printStackTrace();
+      return;
+    }
+    int markShapeSize = 200;
+    for (Mark mark : graphic.getMarks()) {
+      Shape markShape = mark.toShape();
+      AffineTransform translate = AffineTransform.getTranslateInstance(
+          markShapeSize / 2, markShapeSize / 2);
+      if (graphic.getRotation() != 0) {
+        AffineTransform rotate = AffineTransform.getRotateInstance(Math.PI
+            * graphic.getRotation() / 180.0);
+        translate.concatenate(rotate);
+      }
+      AffineTransform scaleTransform = AffineTransform.getScaleInstance(
+          markShapeSize, markShapeSize);
+      translate.concatenate(scaleTransform);
+      Shape tranlatedShape = translate.createTransformedShape(markShape);
+      BufferedImage buff = new BufferedImage(markShapeSize, markShapeSize,
+          BufferedImage.TYPE_INT_ARGB);
+      Graphics2D g = (Graphics2D) buff.getGraphics();
+      g.setColor(mark.getFill().getColor());
+      g.fill(tranlatedShape);
+      this.graphicFillPolygon(shape, buff, size, graphics);
     }
   }
 
-  private void drawPolygon(GM_Polygon polygon, Viewport viewport,
+  private void graphicFillPolygon(Shape shape, Image image, float size,
       Graphics2D graphics) {
-    if (polygon == null) {
+    Double width = new Double(Math.max(1, shape.getBounds2D().getWidth()));
+    Double height = new Double(Math.max(1, shape.getBounds2D().getHeight()));
+    Double shapeHeight = new Double(size);
+    double factor = shapeHeight / image.getHeight(null);
+    Double shapeWidth = new Double(Math.max(image.getWidth(null) * factor, 1));
+    AffineTransform transform = AffineTransform.getTranslateInstance(shape
+        .getBounds2D().getMinX(), shape.getBounds2D().getMinY());
+    Image scaledImage = image.getScaledInstance(shapeWidth.intValue(),
+        shapeHeight.intValue(), Image.SCALE_FAST);
+    BufferedImage buff = new BufferedImage(shapeWidth.intValue(),
+        shapeHeight.intValue(), BufferedImage.TYPE_INT_ARGB);
+    buff.getGraphics().drawImage(scaledImage, 0, 0, null);
+    ParameterBlock p = new ParameterBlock();
+    p.addSource(buff);
+    p.add(width.intValue());
+    p.add(height.intValue());
+    RenderedOp im = JAI.create("pattern", p);//$NON-NLS-1$
+    BufferedImage bufferedImage = im.getAsBufferedImage();
+    graphics.drawImage(bufferedImage, transform, null);
+    bufferedImage.flush();
+    im.dispose();
+    scaledImage.flush();
+    buff.flush();
+  }
+
+  private void graphicFillPolygon(Shape shape, GraphicsNode node, float size,
+      Graphics2D graphics) {
+    AffineTransform translate = AffineTransform.getTranslateInstance(-node
+        .getBounds().getMinX(), -node.getBounds().getMinY());
+    node.setTransform(translate);
+    BufferedImage buff = new BufferedImage((int) node.getBounds().getWidth(),
+        (int) node.getBounds().getHeight(), BufferedImage.TYPE_INT_ARGB);
+    node.paint((Graphics2D) buff.getGraphics());
+    this.graphicFillPolygon(shape, buff, size, graphics);
+  }
+
+  private void fillPolygon(Shape shape, Viewport viewport, Graphics2D graphics) {
+    if (shape == null || viewport == null) {
       return;
     }
+    graphics.fill(shape);
+  }
+
+  private void drawPolygon(GM_Polygon polygon, Viewport viewport,
+      Graphics2D graphics, BasicStroke stroke) {
+    if (polygon == null || viewport == null) {
+      return;
+    }
+    List<Shape> shapes = new ArrayList<Shape>(0);
     try {
-      Shape shape = viewport.toShape(polygon.exteriorLineString());
+      Shape shape = viewport.toShape(polygon.getExterior());
       if (shape != null) {
-        graphics.draw(shape);
+        shapes.add(shape);
+      } else {
+        if (AbstractSymbolizer.logger.isTraceEnabled()) {
+          AbstractSymbolizer.logger.trace("null shape for " + polygon); //$NON-NLS-1$
+          AbstractSymbolizer.logger
+              .trace("ring = " + polygon.exteriorLineString()); //$NON-NLS-1$
+        }
+      }
+      for (IRing ring : polygon.getInterior()) {
+        shape = viewport.toShape(ring);
+        if (shape != null) {
+          shapes.add(shape);
+        } else {
+          if (AbstractSymbolizer.logger.isTraceEnabled()) {
+            AbstractSymbolizer.logger.trace("null shape for " + polygon); //$NON-NLS-1$
+            AbstractSymbolizer.logger
+                .trace("ring = " + ring); //$NON-NLS-1$
+          }
+        }
       }
     } catch (NoninvertibleTransformException e) {
       e.printStackTrace();
     }
-    for (int i = 0; i < polygon.sizeInterior(); i++) {
-      try {
-        Shape shape = viewport.toShape(polygon.interiorLineString(i));
-        if (shape != null) {
-          graphics.draw(shape);
-        }
-      } catch (NoninvertibleTransformException e) {
-        e.printStackTrace();
-      }
+    for (Shape shape : shapes) {
+      Shape outline = stroke.createStrokedShape(shape);
+      graphics.draw(shape);
+      graphics.setColor(this.getStroke().getColor());
+
+      graphics.fill(outline);
     }
   }
 }

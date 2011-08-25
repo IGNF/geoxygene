@@ -29,7 +29,6 @@ package fr.ign.cogit.geoxygene.feature;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
-import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
 
 /**
@@ -58,7 +57,6 @@ import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
  */
 
 public class DefaultFeature extends AbstractFeature {
-
   /**
    * Constructeur vide
    */
@@ -76,14 +74,12 @@ public class DefaultFeature extends AbstractFeature {
   }
 
   // private FeatureType featureType;
-
   /**
    * nom table et colonnes. contient une "lookup table" reliant le numéro de
    * l'attribut dans la table attributes[] du defaultFeature, son nom de colonne
    * et son nom d'attributeType.
    */
   private SchemaDefaultFeature schema;
-
   private Object[] attributes;
 
   /**
@@ -105,7 +101,7 @@ public class DefaultFeature extends AbstractFeature {
 
   @Override
   public Object getAttribute(String nom) {
-   if (nom.equals("geom")) { //$NON-NLS-1$
+    if (nom.equals("geom")) { //$NON-NLS-1$
       return this.getGeom();
     }
     if (nom.equals("topo")) { //$NON-NLS-1$
@@ -274,19 +270,5 @@ public class DefaultFeature extends AbstractFeature {
        * (InvocationTargetException e) { e.printStackTrace(); }
        */
     }
-  }
-  
-    /**
-   * @return the featureType
-   */
-  public FeatureType getScFeatureType() {
-    return (FeatureType) this.featureType;
-  }
-
-  /**
-   * @param featureType the featureType to set
-   */
-  public void setScFeatureType(FeatureType featureType) {
-    this.featureType = featureType;
   }
 }

@@ -1,28 +1,20 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.spatial.geomprim;
@@ -40,35 +32,29 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
  * @author Thierry Badard & Arnaud Braun
  * 
  *         19.02.2007 : correction de bug constructeur à partir d'une
- *         DirectPosition
+ *         DirectPosition.
  * 
  * @version 1.1
  * 
  */
 public class GM_Point extends GM_Primitive implements IPoint {
-
   /**
    * DirectPosition du point (DirectPosition étant la classe stockant les
    * coordonnées).
    */
   protected IDirectPosition position;
-
+  @Override
   public IDirectPosition getPosition() {
     return this.position;
   }
-
-  /**
-   * Affecte un IDirectPosition au point. Le DirectPosition et le GM_Point
-   * doivent avoir la même dimension.
-   * @param pos IDirectPosition : coordonnées du point
-   */
+  @Override
   public void setPosition(IDirectPosition pos) {
     this.position = pos;
   }
 
   /**
    * NON IMPLEMENTE (renvoie null). Direction entre self et le GM_Point passé en
-   * paramètre, en suivant une courbe qui dépend du sytème de coordonnées
+   * paramètre, en suivant une courbe qui dépend du système de coordonnées
    * (courbe géodésique par exemple). Le bearing retourné est un vecteur.
    */
   /*
@@ -76,7 +62,7 @@ public class GM_Point extends GM_Primitive implements IPoint {
    */
   /**
    * NON IMPLEMENTE (renvoie null). Direction entre self et le DirectPosition
-   * passé en paramètre, en suivant une courbe qui dépend du sytème de
+   * passé en paramètre, en suivant une courbe qui dépend du système de
    * coordonnées (courbe géodésique par exemple). Le bearing retourné est un
    * vecteur.
    */
@@ -121,9 +107,12 @@ public class GM_Point extends GM_Primitive implements IPoint {
   public boolean isPoint() {
     return true;
   }
-
   @Override
   public IBoundary boundary() {
     return null;
+  }
+  @Override
+  public IDirectPosition centroid() {
+    return this.position;
   }
 }

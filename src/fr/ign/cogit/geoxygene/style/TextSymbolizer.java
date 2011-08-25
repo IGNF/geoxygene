@@ -156,7 +156,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
       awtFont = this.getFont().toAwfFont();
     }
     if (awtFont == null) {
-      awtFont = new java.awt.Font("Default", java.awt.Font.PLAIN, 10);
+      awtFont = new java.awt.Font("Default", java.awt.Font.PLAIN, 10); //$NON-NLS-1$
     }
     Color haloColor = null;
     float haloRadius = 1.0f;
@@ -171,8 +171,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
     if (text == null) {
       return;
     }
-    // Find the size of string s in font f in the current Graphics context
-    // g.
+    // Find the size of string s in font f in the current Graphics context g.
     graphics.setFont(awtFont);
     // Center text horizontally and vertically
 

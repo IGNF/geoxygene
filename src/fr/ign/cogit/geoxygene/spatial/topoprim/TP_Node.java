@@ -83,7 +83,7 @@ public class TP_Node extends TP_DirectedNode {
     this.proxy[1].setId(-Id);
     if (Id < 0) {
       System.out
-          .println("TP_Node::setId(id) : L'identifiant doit être positif");
+          .println("TP_Node::setId(id) : L'identifiant doit être positif"); //$NON-NLS-1$
     }
   }
 
@@ -102,7 +102,7 @@ public class TP_Node extends TP_DirectedNode {
       return this.proxy[1];
     } else {
       System.out
-          .println("TP_Node::asTP_DirectedTopo(sign) : Passer +1 ou -1 en paramètre.");
+          .println("TP_Node::asTP_DirectedTopo(sign) : Passer +1 ou -1 en paramètre."); //$NON-NLS-1$
       return null;
     }
   }

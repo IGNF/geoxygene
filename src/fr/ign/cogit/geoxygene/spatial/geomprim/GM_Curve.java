@@ -47,6 +47,10 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
  * l'intérieur d'une courbe peut être défini avec une interpolation différente.
  * Dans la pratique nous n'utiliserons a priori que des polylignes comme
  * segment(GM_LineString).
+ * <P>
+ * Modification de la norme suite au retour d'utilisation : on fait hériter
+ * GM_CurveSegment de GM_Curve. Du coup, on n'implémente plus l'interface
+ * GM_GenericCurve.
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
@@ -54,37 +58,30 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
  */
 public class GM_Curve extends GM_OrientableCurve implements ICurve {
   private static Logger logger = Logger.getLogger(GM_Curve.class.getName());
-
-  // ////////////////////////////////////////////////////////////////////////////////
-  // Attribut "segment" et méthodes pour le traiter
-  // ////////////////////////////////
-  // ////////////////////////////////////////////////////////////////////////////////
   /** Liste de tous les segment de courbe (GM_CurveSegment) constituant self. */
   protected List<ICurveSegment> segment;
-
+  @Override
   public List<ICurveSegment> getSegment() {
     return this.segment;
   }
-
-  /** Renvoie le segment de rang i */
+  @Override
   public ICurveSegment getSegment(int i) {
     if ((ICurveSegment.class).isAssignableFrom(this.getClass())) {
       if (i != 0) {
         GM_Curve.logger
-            .error("Recherche d'un segment avec i<>0 alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme");
+            .error("Recherche d'un segment avec i<>0 alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme"); //$NON-NLS-1$
         return null;
       }
       return this.segment.get(i);
     }
     return this.segment.get(i);
   }
-
-  /** Affecte un segment au i-ème rang de la liste */
+  @Override
   public void setSegment(int i, ICurveSegment value) {
     if ((ICurveSegment.class).isAssignableFrom(this.getClass())) {
       if (i != 0) {
         GM_Curve.logger
-            .error("Affection d'un segment avec i<>0 alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
+            .error("Affection d'un segment avec i<>0 alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien."); //$NON-NLS-1$
       } else {
         this.segment.set(i, value);
       }
@@ -92,13 +89,12 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
       this.segment.set(i, value);
     }
   }
-
-  /** Ajoute un segment en fin de liste sans vérifier la continuité du chaînage. */
+  @Override
   public void addSegment(ICurveSegment value) {
     if ((ICurveSegment.class).isAssignableFrom(this.getClass())) {
       if (this.sizeSegment() > 0) {
         GM_Curve.logger
-            .error("Ajout d'un segment alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
+            .error("Ajout d'un segment alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien."); //$NON-NLS-1$
       } else {
         this.segment.add(value);
       }
@@ -106,18 +102,13 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
       this.segment.add(value);
     }
   }
-
-  /**
-   * A TESTER. Ajoute un segment en fin de liste en vérifiant la continuité du
-   * chaînage. Capte une exception en cas de problème. Nécessité de passer une
-   * tolérance en paramètre.
-   */
+  @Override
   public void addSegment(ICurveSegment value, double tolerance)
       throws Exception {
     if ((ICurveSegment.class).isAssignableFrom(this.getClass())) {
       if (this.sizeSegment() > 0) {
         GM_Curve.logger
-            .error("Ajout d'un segment alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
+            .error("Ajout d'un segment alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien."); //$NON-NLS-1$
       } else {
         this.segment.add(value);
       }
@@ -131,23 +122,18 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
           this.segment.add(value);
         } else {
           throw new Exception(
-              "Rupture de chaînage avec le segment passée en paramètre");
+              "Rupture de chaînage avec le segment passée en paramètre"); //$NON-NLS-1$
         }
       }
     }
   }
-
-  /**
-   * A TESTER. Ajoute un segment en fin de liste en vérifiant la continuité du
-   * chaînage, et en retournant le segment si necessaire. Capte une exception en
-   * cas de problème. Nécessité de passer une tolérance en paramètre.
-   */
+  @Override
   public void addSegmentTry(ICurveSegment value, double tolerance)
       throws Exception {
     if ((ICurveSegment.class).isAssignableFrom(this.getClass())) {
       if (this.sizeSegment() > 0) {
         GM_Curve.logger
-            .error("Ajout d'un segment alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
+            .error("Ajout d'un segment alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien."); //$NON-NLS-1$
       } else {
         this.segment.add(value);
       }
@@ -159,21 +145,17 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
           this.addSegment(value.reverse(), tolerance);
         } catch (Exception e2) {
           throw new Exception(
-              "Rupture de chaînage avec le segment passée en paramètre(après avoir essayé de le retourner).");
+              "Rupture de chaînage avec le segment passée en paramètre(après avoir essayé de le retourner)."); //$NON-NLS-1$
         }
       }
     }
   }
-
-  /**
-   * Ajoute un segment au i-ème rang de la liste, sans vérifier la continuité du
-   * chaînage.
-   */
+  @Override
   public void addSegment(int i, ICurveSegment value) {
     if ((ICurveSegment.class).isAssignableFrom(this.getClass())) {
       if (i != 0) {
         GM_Curve.logger
-            .error("Ajout d'un segment avec i<>0 alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien.");
+            .error("Ajout d'un segment avec i<>0 alors qu'un GM_CurveSegment ne contient qu'un segment qui est lui-meme. La méthode ne fait rien."); //$NON-NLS-1$
       } else {
         this.segment.add(value);
       }
@@ -181,40 +163,34 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
       this.segment.add(i, value);
     }
   }
-
-  /** Efface de la liste le (ou les) segment passé en paramètre */
+  @Override
   public void removeSegment(ICurveSegment value) {
     if ((ICurveSegment.class).isAssignableFrom(this.getClass())) {
       GM_Curve.logger
-          .error("removeSegment() : Ne fait rien car un GM_CurveSegment ne contient qu'un segment qui est lui-meme.");
+          .error("removeSegment() : Ne fait rien car un GM_CurveSegment ne contient qu'un segment qui est lui-meme."); //$NON-NLS-1$
     } else {
       this.segment.remove(value);
     }
   }
-
-  /** Efface le i-ème segment de la liste */
+  @Override
   public void removeSegment(int i) {
     if ((ICurveSegment.class).isAssignableFrom(this.getClass())) {
       GM_Curve.logger
-          .error("removeSegment() : Ne fait rien car un GM_CurveSegment ne contient qu'un segment qui est lui-meme.");
+          .error("removeSegment() : Ne fait rien car un GM_CurveSegment ne contient qu'un segment qui est lui-meme."); //$NON-NLS-1$
     } else {
       this.segment.remove(i);
     }
   }
-
-  /** Renvoie le nombre de segment */
+  @Override
   public int sizeSegment() {
     return this.segment.size();
   }
 
+  @Override
   public void clearSegments() {
     this.segment.clear();
   }
-
-  /**
-   * A TESTER. Vérifie le chaînage des segments. renvoie TRUE s'ils sont
-   * chaînés, FALSE sinon. Nécessité de définir une tolérance.
-   */
+  @Override
   public boolean validate(double tolerance) {
     if (this.sizeSegment() <= 1) {
       return true;
@@ -229,16 +205,12 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
     }
     return true;
   }
-
-  // ////////////////////////////////////////////////////////////////////////////////
-  // Constructeurs
-  // /////////////////////////////////////////////////////////////////
-  // ////////////////////////////////////////////////////////////////////////////////
   /** Constructeur par défaut */
   public GM_Curve() {
-    this.segment = new ArrayList<ICurveSegment>();
+    this.segment = new ArrayList<ICurveSegment>(0);
     this.orientation = +1;
     this.primitive = this;
+    /*
     this.proxy[0] = this;
     GM_OrientableCurve proxy1 = new GM_OrientableCurve();
     proxy1.orientation = -1;
@@ -246,14 +218,13 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
     proxy1.proxy[1] = proxy1;
     proxy1.primitive = new GM_Curve(this);
     this.proxy[1] = proxy1;
+    */
   }
-
   /** Constructeur à partir d'un et d'un seul GM_CurveSegment */
   public GM_Curve(ICurveSegment C) {
     this();
     this.segment.add(C);
   }
-
   /**
    * Usage interne. Utilisé en interne (dans les constructeurs publics) pour
    * construire la courbe opposé, qui est la primitive de proxy[1]. On définit
@@ -263,9 +234,10 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
    * methode getNegative().
    */
   public GM_Curve(ICurve curve) {
-    this.segment = new ArrayList<ICurveSegment>();
+    this.segment = new ArrayList<ICurveSegment>(0);
     this.orientation = +1;
     this.primitive = this;
+    /*
     this.proxy[0] = this;
     GM_OrientableCurve proxy1 = new GM_OrientableCurve();
     proxy1.orientation = -1;
@@ -273,147 +245,24 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
     proxy1.proxy[1] = proxy1;
     proxy1.primitive = curve;
     this.proxy[1] = proxy1;
+     */
   }
-
-  // ////////////////////////////////////////////////////////////////////////////////
-  // Implémentation de GM_GenericCurve
-  // /////////////////////////////////////////////
-  // ////////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Retourne le IDirectPosition du premier point. Différent de l'opérateur
-   * "boundary" car renvoie la valeur du point et non pas l'objet géométrique
-   * représentatif. Méthode d'implémentation de l'interface GM_GenericCurve.
-   */
+  @Override
   public IDirectPosition startPoint() {
     return this.getSegment(0).coord().get(0);
   }
-
-  /**
-   * Retourne le IDirectPosition du dernier point. Différent de l'opérateur
-   * "boundary" car renvoie la valeur du point et non pas l'objet géométrique
-   * représentatif. Méthode d'implémentation de l'interface GM_GenericCurve.
-   */
+  @Override
   public IDirectPosition endPoint() {
     ICurveSegment lastSegment = this.getSegment(this.sizeSegment() - 1);
     IDirectPositionList pointArray = lastSegment.coord();
     return pointArray.get(pointArray.size() - 1);
   }
-
-  /**
-   * NON IMPLEMENTE - A FAIRE. Renvoie un point à l'abcsisse curviligne s.
-   */
-  /*
-   * public DirectPosition param(double s) { return null; }
-   */
-
-  /**
-   * NON IMPLEMENTE. Vecteur tangent a la courbe, à l'abscisse curviligne passée
-   * en paramètre. Le vecteur résultat est normé.
-   */
-  /*
-   * public Vecteur tangent(double s) { return null; }
-   */
-
-  /**
-   * NON IMPLEMENTE. Renvoie 0.0 . Méthode d'implémentation de l'interface
-   * GM_GenericCurve.
-   */
-  /*
-   * public double startParam() { return 0.0; }
-   */
-
-  /**
-   * NON IMPLEMENTE. Longueur de la courbe pour une GM_Curve.
-   */
-  /*
-   * double endParam() { return 0.0; }
-   */
-
-  /**
-   * NON IMPLEMENTE. Renvoie le paramètre au point P (le paramètre étant a
-   * priori la distance). Si P n'est pas sur la courbe, on cherche alors pour le
-   * calcul le point le plus proche de P sur la courbe (qui est aussi renvoyé en
-   * résultat). On renvoie en général une seule distance, sauf si la courbe
-   * n'est pas simple.
-   */
-  /*
-   * List paramForPoint(DirectPosition P) { return null; }
-   */
-
-  /**
-   * NON IMPLEMENTE. Représentation alternative d'une courbe comme l'image
-   * continue d'un intervalle de réels, sans imposer que cette paramétrisation
-   * représente la longueur de la courbe, et sans imposer de restrictions entre
-   * la courbe et ses segments. Utilité : pour les courbes paramétrées, pour
-   * construire une surface paramétrée.
-   */
-  /*
-   * DirectPosition constrParam(double cp) { return null; }
-   */
-
-  /**
-   * NON IMPLEMENTE. Paramètre au startPoint pour une courbe paramétrée,
-   * c'est-à-dire : constrParam(startConstrParam())=startPoint(). Méthode
-   * d'implémentation de l'interface GM_GenericCurve. NON IMPLEMENTE
-   */
-  /*
-   * double startConstrParam() { return 0.0; }
-   */
-
-  /**
-   * NON IMPLEMENTE. Paramètre au endPoint pour une courbe paramétrée,
-   * c'est-à-dire : constrParam(endConstrParam())=endPoint().
-   */
-  /*
-   * double endConstrParam() { return 0.0; }
-   */
-
-  /**
-   * Longueur totale de la courbe. (code au niveau de GM_Object)
-   */
-  /*
-   * public double length() { System.out.println("appel ##"); return
-   * SpatialQuery.length(this); }
-   */
-
-  /**
-   * NON IMPLEMENTE. Longueur entre 2 points.
-   */
-  /*
-   * public double length(GM_Position p1, GM_Position p2) { return 0.0; }
-   */
-
-  /**
-   * NON IMPLEMENTE. Longueur d'une courbe paramétrée "entre 2 réels".
-   */
-  /*
-   * double length(double cparam1, double cparam2) { return 0.0; }
-   */
-
-  /**
-   * Approximation linéaire d'une courbe avec les points de contrôle. Elimine
-   * les points doublons consécutifs (qui apparaissent quand la courbe est
-   * composée de plusieurs segments).
-   * <P>
-   * Le paramètre spacing indique la distance maximum entre 2 points de contrôle
-   * ; le paramètre offset indique la distance maximum entre la polyligne
-   * générée et la courbe originale. Si ces 2 paramètres sont à 0, alors aucune
-   * contrainte n'est imposée. Dans l'IMPLEMENTATION ACTUELLE : on impose que
-   * ces paramètres soient à 0.
-   * <P>
-   * Le paramètre tolérance est nécessaire pour éliminer les doublons. On peut
-   * passer 0.0.
-   * <P>
-   * Méthode d'implémentation de l'interface GM_GenericCurve.
-   */
-  // Dans la norme, les paramètres spacing et offset sont de type Distance.
-  // Dans la norme, il n'y a pas de paramètre tolérance.
+  @Override
   public ILineString asLineString(double spacing, double offset,
       double tolerance) {
     if ((spacing != 0.0) || (offset != 0.0)) {
       GM_Curve.logger
-          .error("GM_Curve::asLineString() : Spacing et Offset ne sont pas implémentés. Passer (0.0, 0.0, tolerance) en paramètres");
+          .error("GM_Curve::asLineString() : Spacing et Offset ne sont pas implémentés. Passer (0.0, 0.0, tolerance) en paramètres"); //$NON-NLS-1$
       return null;
     }
     GM_LineString theLineString = new GM_LineString();
@@ -435,22 +284,6 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
     }
     return theLineString;
   }
-
-  // ////////////////////////////////////////////////////////////////////////////////
-  // Méthodes d'accés aux coordonnées
-  // //////////////////////////////////////////////
-  // ////////////////////////////////////////////////////////////////////////////////
-  /** Méthode pour afficher les coordonnées d'une courbe. */
-  /*
-   * public String toString () { String result = new String(); if (sizeSegment()
-   * == 0) { result = "GM_Curve : geometrie vide"; return result; } for(int i=0;
-   * i<this.sizeSegment(); i++) { GM_CurveSegment theSegment =
-   * this.getSegment(i); DirectPositionList theList = theSegment.coord(); if
-   * (theList.size() != 0) { result = result+theList.toString(); result =
-   * result+"\n"; } else result = "GM_CurveSegment vide\n"; } return
-   * result.substring(0,result.length()-1); // on enleve le dernier "\n"; }
-   */
-
   @Override
   public IDirectPositionList coord() {
     DirectPositionList result = new DirectPositionList();
@@ -465,59 +298,49 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
     }
     return result;
   }
-
   @Override
   public IDirectPosition constrParam(double cp) {
-    GM_Curve.logger.error("non implemented method");
+    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return null;
   }
-
   @Override
   public double endConstrParam() {
-    GM_Curve.logger.error("non implemented method");
+    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return 0;
   }
-
   @Override
   public double endParam() {
-    GM_Curve.logger.error("non implemented method");
+    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return 0;
   }
-
   @Override
   public double length(IPosition p1, IPosition p2) {
-    GM_Curve.logger.error("non implemented method");
+    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return 0;
   }
-
   @Override
   public double length(double cparam1, double cparam2) {
-    GM_Curve.logger.error("non implemented method");
+    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return 0;
   }
-
   @Override
   public IDirectPosition param(double s) {
-    GM_Curve.logger.error("non implemented method");
+    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return null;
   }
-
   @Override
   public List<?> paramForPoint(IDirectPosition P) {
-    GM_Curve.logger.error("non implemented method");
+    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return null;
   }
-
   @Override
   public double startConstrParam() {
-    GM_Curve.logger.error("non implemented method");
+    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return 0;
   }
-
   @Override
   public double startParam() {
-    GM_Curve.logger.error("non implemented method");
+    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return 0;
   }
-
 }

@@ -324,6 +324,7 @@ public class GeodatabaseHibernate implements Geodatabase {
     return result;
   }
 
+  @Override
   public <T> T loadAllFeatures(Class<?> featureClass,
       Class<T> featureListClass, IGeometry geom) {
     // FIXME: code dependant de PostGIS

@@ -31,7 +31,6 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
-import fr.ign.cogit.geoxygene.style.AbstractStyle;
 import fr.ign.cogit.geoxygene.style.Displacement;
 import fr.ign.cogit.geoxygene.style.ExternalGraphic;
 import fr.ign.cogit.geoxygene.style.Graphic;
@@ -85,7 +84,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
 
     Layer layer2 = projectFrame.getSld().createLayer("Batiment", //$NON-NLS-1$
         GM_Polygon.class, Color.blue, Color.gray, 1f, 2);
-    ((AbstractStyle) layer2.getStyles().get(0)).setGroup("default"); //$NON-NLS-1$
+    layer2.getStyles().get(0).setGroup("default"); //$NON-NLS-1$
     PolygonSymbolizer symbolizer2 = (PolygonSymbolizer) layer2.getSymbolizer();
     Shadow shadow = new Shadow();
     shadow.setColor(Color.black);

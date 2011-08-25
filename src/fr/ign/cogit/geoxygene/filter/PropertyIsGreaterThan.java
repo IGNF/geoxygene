@@ -38,8 +38,8 @@ public class PropertyIsGreaterThan extends BinaryComparisonOpsType {
       if (!this.isMatchCase()) {
         return (String.CASE_INSENSITIVE_ORDER.compare(((String) property), this
             .getLiteral().getValue()) > 0);
+        // FIXME voir cas sensitif à la case
       }
-      // FIXME voir cas sensitif à la case
     }
     if (property instanceof Number) {
       return (((Number) property).doubleValue() > Double.parseDouble(this

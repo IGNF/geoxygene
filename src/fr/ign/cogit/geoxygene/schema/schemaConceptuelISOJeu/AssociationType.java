@@ -1,22 +1,3 @@
-/*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-
 package fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu;
 
 import java.util.ArrayList;
@@ -31,26 +12,23 @@ import fr.ign.cogit.geoxygene.api.feature.type.GF_Operation;
 
 /**
  * @author Sandrine Balley
+ * 
  */
 public class AssociationType extends FeatureType implements GF_AssociationType {
-
   /**
-	 * 
-	 */
-
-  /*
-   * attributs hérités de SC_FeatureType protected List fc; protected String
-   * typeName; protected String definition; protected int id; protected List
-   * featureAttributes; protected List memberOf; protected List
-   * featureOperations; protected List generalization = new ArrayList();
-   * protected List specialization = new ArrayList();
+   * attributs hérités de SC_FeatureType
+   * 
+   * protected List fc; protected String typeName; protected String definition;
+   * protected int id; protected List featureAttributes; protected List
+   * memberOf; protected List featureOperations; protected List generalization =
+   * new ArrayList(); protected List specialization = new ArrayList();
    */
   public AssociationType() {
     super();
-    this.featureAttributes = new ArrayList<GF_AttributeType>();
-    this.featureOperations = new ArrayList<GF_Operation>();
-    this.roles = new ArrayList<GF_AssociationRole>();
-    this.linkBetween = new ArrayList<GF_FeatureType>();
+    this.featureAttributes = new ArrayList<GF_AttributeType>(0);
+    this.featureOperations = new ArrayList<GF_Operation>(0);
+    this.roles = new ArrayList<GF_AssociationRole>(0);
+    this.linkBetween = new ArrayList<GF_FeatureType>(0);
   }
 
   public AssociationType(
@@ -59,10 +37,10 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
     this.typeName = ori.getTypeName();
     this.definition = ori.getDefinition();
     this.elementSchemaProduitOrigine = ori;
-    this.featureAttributes = new ArrayList<GF_AttributeType>();
-    this.featureOperations = new ArrayList<GF_Operation>();
-    this.roles = new ArrayList<GF_AssociationRole>();
-    this.linkBetween = new ArrayList<GF_FeatureType>();
+    this.featureAttributes = new ArrayList<GF_AttributeType>(0);
+    this.featureOperations = new ArrayList<GF_Operation>(0);
+    this.roles = new ArrayList<GF_AssociationRole>(0);
+    this.linkBetween = new ArrayList<GF_FeatureType>(0);
     this.nomClasseAsso = ori.getNomClasseAsso();
     this.isAggregation = ori.getIsAggregation();
   }
@@ -78,31 +56,28 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
    * de cardinalité n-m)
    */
   protected String nomClasseAsso;
-
   public String getNomClasseAsso() {
     return this.nomClasseAsso;
   }
-
   public void setNomClasseAsso(String value) {
     this.nomClasseAsso = value;
   }
 
   /** flag agregation : 1 si l'association est de type agregation */
   protected boolean isAggregation;
-
   public void setIsAggregation(boolean value) {
     this.isAggregation = value;
   }
-
   public boolean getIsAggregation() {
     return this.isAggregation;
   }
 
+  @Override
   public List<GF_FeatureType> getLinkBetween() {
     return this.linkBetween;
   }
-
   /** Affecte une liste de feature types */
+  @Override
   public void setLinkBetween(List<GF_FeatureType> L) {
     List<GF_FeatureType> old = new ArrayList<GF_FeatureType>(this.linkBetween);
     Iterator<GF_FeatureType> it1 = old.iterator();
@@ -118,13 +93,13 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
       scft.getMemberOf().add(this);
     }
   }
-
   /** Renvoie le nombre de feature types impliqués dans cette association. */
+  @Override
   public int sizeLinkBetween() {
     return this.linkBetween.size();
   }
-
   /** Ajoute un feature type. Execute un "addMemberOf" sur GF_FeatureType. */
+  @Override
   public void addLinkBetween(GF_FeatureType value) {
     if (value == null) {
       return;
@@ -134,12 +109,11 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
       value.getMemberOf().add(this);
     }
   }
-
-  // ////////Ajout Nathalie////////////////////////////////////
+  @Override
   public GF_FeatureType getLinkBetweenI(int i) {
     return this.linkBetween.get(i);
   }
-
+  @Override
   public void removeLinkBetwenn(GF_FeatureType value) {
     if (value == null) {
       return;
@@ -154,19 +128,16 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
   public List<GF_AssociationRole> getRoles() {
     return this.roles;
   }
-
   /** Affecte une liste de roles */
   @Override
   public void setRoles(List<GF_AssociationRole> L) {
     this.roles = L;
   }
-
   /** Renvoie le nombre de roles. */
   @Override
   public int sizeRoles() {
     return this.roles.size();
   }
-
   /** Ajoute un role. */
   @Override
   public void addRole(GF_AssociationRole role) {
@@ -178,14 +149,10 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
       this.addLinkBetween(role.getFeatureType());
     }
   }
-
-  // /////////////////////////Ajout
-  // Nathalie////////////////////////////////////
   @Override
   public AssociationRole getRoleI(int i) {
     return (AssociationRole) this.roles.get(i);
   }
-
   @Override
   public AssociationRole getRoleByName(String nomRole) {
     List<GF_AssociationRole> listRoles = this.getRoles();
@@ -198,7 +165,6 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
         + " n'a pas été trouvé pour l'association " + this.getTypeName());
     return null;
   }
-
   @Override
   public void removeRole(GF_AssociationRole value) {
     if (value == null) {
@@ -212,22 +178,18 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
 
   /** boolean de valeur 1 si l'association est de nature spatiale */
   protected boolean isSpatial;
-
   public void setIsSpatial(boolean value) {
     this.isSpatial = value;
   }
-
   public boolean getIsSpatial() {
     return this.isSpatial;
   }
 
   /** boolean de valeur 1 si l'association est une aggregation */
   protected boolean isTopologic;
-
   public void setIsTopologic(boolean value) {
     this.isTopologic = value;
   }
-
   public boolean getIsTopologic() {
     return this.isTopologic;
   }
@@ -236,10 +198,9 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
    * commodité pour retrouver à quel schéma conceptuel appartient cette
    * association (en passant par les featureType qu'elle relie). S'il y a
    * incohérence entre les membres de l'association, la méthode renvoie null.
-   *
+   * 
    */
   public SchemaConceptuelJeu getSchemaConceptuel() {
-
     SchemaConceptuelJeu schemaConceptuel;
     if (this.getLinkBetween() != null) {
       schemaConceptuel = ((FeatureType) this.getLinkBetweenI(0)).getSchema();
@@ -253,5 +214,4 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
     }
     return null;
   }
-
 }

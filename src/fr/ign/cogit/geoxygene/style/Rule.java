@@ -49,10 +49,8 @@ import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
  * @author Julien Perret
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "name",
-    // "description",
-    // "legendGraphic",
+@XmlType(name = "", propOrder = { "name", "title", "description",
+    "legendGraphic",
     "filter", "elseFilter", "minScaleDenominator", "maxScaleDenominator",
     "symbolizers" })
 @XmlRootElement(name = "Rule")

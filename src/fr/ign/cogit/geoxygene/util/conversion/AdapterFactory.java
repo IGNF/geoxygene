@@ -16,7 +16,7 @@
  * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
- 
+
 package fr.ign.cogit.geoxygene.util.conversion;
 
 import java.util.ArrayList;
@@ -49,6 +49,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
@@ -60,10 +61,12 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomcomp.GM_Complex;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
+import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
  * Cette factory sert à transformer les géométries JTS en géométrie GeOxygene et
@@ -101,27 +104,46 @@ public class AdapterFactory {
     if (geom == null) {
       return null;
     }
+    Geometry result = null;
     if (geom instanceof IPoint) {
-      return factory.createPoint(AdapterFactory.toCoordinateSequence(factory,
+      result = factory.createPoint(AdapterFactory.toCoordinateSequence(factory,
           geom.coord()));
+      result.setSRID(geom.getCRS());
+      return result;
     }
     if (geom instanceof IRing) {
-      if (geom.coord().size() <= 3 && geom.coord().size() != 0) {
-        // logger.error("Une GM_Ring contenant "+geom.coord().size()+" points ne peut �tre transform�e en LinearRing.");
+      IDirectPositionList coord = geom.coord();
+      if (coord.size() <= 3 && !coord.isEmpty()) {
+        if (AdapterFactory.logger.isDebugEnabled()) {
+          AdapterFactory.logger.debug(geom);
+          AdapterFactory.logger.debug(coord);
+        }
         throw new Exception(I18N
             .getString("AdapterFactory.RingWithLessThan4Points")); //$NON-NLS-1$
       }
-      return factory.createLinearRing(AdapterFactory.toCoordinateSequence(
-          factory, geom.coord()));
+      CoordinateSequence sequence = AdapterFactory.toCoordinateSequence(
+          factory, coord);
+      if (sequence.size() > 3
+          && sequence.getCoordinate(0).equals(
+              sequence.getCoordinate(sequence.size() - 1))) {
+        result = factory.createLinearRing(sequence);
+        result.setSRID(geom.getCRS());
+        return result;
+      } else {
+        result = null;
+      }
     }
     if (geom instanceof ILineString) {
-      return factory.createLineString(AdapterFactory.toCoordinateSequence(
-          factory, geom.coord()));
+      result = AdapterFactory.toLineString(factory, (GM_LineString) geom);
+      result.setSRID(geom.getCRS());
+      return result;
     }
     if (geom instanceof IPolygon) {
-      return factory.createPolygon((LinearRing) AdapterFactory.toGeometry(
+      result = factory.createPolygon((LinearRing) AdapterFactory.toGeometry(
           factory, ((IPolygon) geom).getExterior()), AdapterFactory
           .toLinearRingArray(factory, ((IPolygon) geom).getInterior()));
+      result.setSRID(geom.getCRS());
+      return result;
     }
     if (geom instanceof IMultiPoint) {
       IMultiPoint multiPoint = (IMultiPoint) geom;
@@ -130,7 +152,9 @@ public class AdapterFactory {
         points[index] = (Point) AdapterFactory.toGeometry(factory, multiPoint
             .get(index));
       }
-      return factory.createMultiPoint(points);
+      result = factory.createMultiPoint(points);
+      result.setSRID(geom.getCRS());
+      return result;
     }
     if (geom instanceof IMultiCurve) {
       IMultiCurve<IOrientableCurve> multiCurve = (IMultiCurve<IOrientableCurve>) geom;
@@ -139,7 +163,9 @@ public class AdapterFactory {
         lineStrings[index] = (LineString) AdapterFactory.toGeometry(factory,
             multiCurve.get(index));
       }
-      return factory.createMultiLineString(lineStrings);
+      result = factory.createMultiLineString(lineStrings);
+      result.setSRID(geom.getCRS());
+      return result;
     }
     if (geom instanceof IMultiSurface) {
       IMultiSurface<IOrientableSurface> multiSurface = (IMultiSurface<IOrientableSurface>) geom;
@@ -148,7 +174,9 @@ public class AdapterFactory {
         polygons[index] = (Polygon) AdapterFactory.toGeometry(factory,
             multiSurface.get(index));
       }
-      return factory.createMultiPolygon(polygons);
+      result = factory.createMultiPolygon(polygons);
+      result.setSRID(geom.getCRS());
+      return result;
     }
     if (geom instanceof IAggregate) {
       IAggregate<IGeometry> aggregate = (IAggregate<IGeometry>) geom;
@@ -157,7 +185,22 @@ public class AdapterFactory {
         geometries[index] = AdapterFactory.toGeometry(factory, aggregate
             .get(index));
       }
-      return factory.createGeometryCollection(geometries);
+      result = factory.createGeometryCollection(geometries);
+      result.setSRID(geom.getCRS());
+      return result;
+    }
+    if (geom instanceof ISolid) {
+      List<IOrientableSurface> lOS = ((ISolid) geom).getFacesList();
+      GM_MultiSurface<IOrientableSurface> multiSurface = new GM_MultiSurface<IOrientableSurface>(
+          lOS);
+      Polygon[] polygons = new Polygon[multiSurface.size()];
+      for (int index = 0; index < multiSurface.size(); index++) {
+        polygons[index] = (Polygon) AdapterFactory.toGeometry(factory,
+            multiSurface.get(index));
+      }
+      result = factory.createMultiPolygon(polygons);
+      result.setSRID(geom.getCRS());
+      return result;
     }
     throw new Exception(
         I18N.getString("AdapterFactory.Type") + geom.getClass() + I18N.getString("AdapterFactory.Unhandled")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -239,78 +282,101 @@ public class AdapterFactory {
     if (geom == null) {
       return null;
     }
+    GM_Object result = null;
     if (geom instanceof Point) {
-      return new GM_Point(AdapterFactory.toDirectPosition(geom.getCoordinate()));
+      result = new GM_Point(AdapterFactory.toDirectPosition(geom.getCoordinate()));
+      result.setCRS(geom.getSRID());
+      return result;
     }
     if (geom instanceof LinearRing) {
-      return new GM_Ring(new GM_LineString(AdapterFactory
+      result = new GM_Ring(new GM_LineString(AdapterFactory
           .toDirectPositionList(geom.getCoordinates())));
+      result.setCRS(geom.getSRID());
+      return result;
     }
     if (geom instanceof LineString) {
-      return new GM_LineString(AdapterFactory.toDirectPositionList(geom
+      result = new GM_LineString(AdapterFactory.toDirectPositionList(geom
           .getCoordinates()));
+      result.setCRS(geom.getSRID());
+      return result;
     }
     if (geom instanceof Polygon) {
       if (geom.isEmpty()) {
-        return new GM_Polygon();
+        result = new GM_Polygon();
+      } else {
+        GM_Polygon polygon = new GM_Polygon(new GM_Ring(new GM_LineString(
+            AdapterFactory.toDirectPositionList(((Polygon) geom)
+                .getExteriorRing().getCoordinates()))));
+        for (int index = 0; index < ((Polygon) geom).getNumInteriorRing(); index++) {
+          LineString ring = ((Polygon) geom).getInteriorRingN(index);
+          polygon.addInterior((GM_Ring) AdapterFactory.toGM_Object(ring));
+        }
+        result = polygon;
+        result.setCRS(geom.getSRID());
+        return result;
       }
-      GM_Polygon polygon = new GM_Polygon(new GM_Ring(new GM_LineString(
-          AdapterFactory.toDirectPositionList(((Polygon) geom)
-              .getExteriorRing().getCoordinates()))));
-      for (int index = 0; index < ((Polygon) geom).getNumInteriorRing(); index++) {
-        LineString ring = ((Polygon) geom).getInteriorRingN(index);
-        polygon.addInterior((IRing) AdapterFactory.toGM_Object(ring));
-      }
-      return polygon;
     }
     if (geom instanceof MultiPoint) {
       MultiPoint mp = (MultiPoint) geom;
       GM_MultiPoint multiPoint = new GM_MultiPoint();
       for (int i = 0; i < mp.getNumGeometries(); i++) {
         Point p = (Point) mp.getGeometryN(i);
-        IPoint point = (IPoint) AdapterFactory.toGM_Object(p);
+        GM_Point point = (GM_Point) AdapterFactory.toGM_Object(p);
         multiPoint.add(point);
       }
-      return multiPoint;
+      result = multiPoint;
+      result.setCRS(geom.getSRID());
+      return result;
     }
     if (geom instanceof MultiLineString) {
       MultiLineString mls = (MultiLineString) geom;
-      IMultiCurve<IOrientableCurve> multiLineString = new GM_MultiCurve<IOrientableCurve>();
+      GM_MultiCurve<GM_OrientableCurve> multiLineString = new GM_MultiCurve<GM_OrientableCurve>();
       for (int i = 0; i < mls.getNumGeometries(); i++) {
         LineString p = (LineString) mls.getGeometryN(i);
-        ILineString lineString = (ILineString) AdapterFactory.toGM_Object(p);
+        GM_LineString lineString = (GM_LineString) AdapterFactory
+            .toGM_Object(p);
         multiLineString.add(lineString);
       }
-      return multiLineString;
+      result = multiLineString;
+      result.setCRS(geom.getSRID());
+      return result;
     }
     if (geom instanceof MultiPolygon) {
       MultiPolygon mp = (MultiPolygon) geom;
-      IMultiSurface<IOrientableSurface> multiPolygon = new GM_MultiSurface<IOrientableSurface>();
+      GM_MultiSurface<GM_OrientableSurface> multiPolygon = new GM_MultiSurface<GM_OrientableSurface>();
       for (int i = 0; i < mp.getNumGeometries(); i++) {
         Polygon p = (Polygon) mp.getGeometryN(i);
-        IPolygon polygon = (IPolygon) AdapterFactory.toGM_Object(p);
+        GM_Polygon polygon = (GM_Polygon) AdapterFactory.toGM_Object(p);
         multiPolygon.add(polygon);
       }
-      return multiPolygon;
+      result = multiPolygon;
+      result.setCRS(geom.getSRID());
+      return result;
     }
     if (geom instanceof GeometryCollection) {
       GeometryCollection gc = (GeometryCollection) geom;
-      IAggregate<IGeometry> aggregate = new GM_Aggregate<IGeometry>();
+      GM_Aggregate<IGeometry> aggregate = new GM_Aggregate<IGeometry>();
       for (int i = 0; i < gc.getNumGeometries(); i++) {
         aggregate.add(AdapterFactory.toGM_Object(gc.getGeometryN(i)));
       }
-      return aggregate;
+      result = aggregate;
+      result.setCRS(geom.getSRID());
+      return result;
+    }
+    if (result != null) {
+      result.setCRS(geom.getSRID());
+      return result;
     }
     throw new Exception(
         I18N.getString("AdapterFactory.Type") + geom.getClass() + I18N.getString("AdapterFactory.Unhandled")); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   /**
-   * Transforme une Coordonnée JTS ({@link Coordinate}) en position GéOxygène (
+   * Transforme une coordonnée JTS ({@link Coordinate}) en position GeOxygene (
    * {@link IDirectPosition}).
    * 
    * @param coord coordonnée JTS
-   * @return position GéOxygène équivalente
+   * @return position GeOxygene équivalente
    */
   public static IDirectPosition toDirectPosition(Coordinate coord) {
     return new DirectPosition(coord.x, coord.y, coord.z);
@@ -318,36 +384,30 @@ public class AdapterFactory {
 
   /**
    * Transforme un tableau de coordonnées JTS ({@link Coordinate}) en liste de
-   * positions GéOxygène ({@link IDirectPosition}).
+   * positions GeOxygene ({@link IDirectPositionList}).
    * 
    * @param coords tableau de coordonnées JTS
-   * @return liste de positions GéOxygène équivalente
+   * @return liste de positions GeOxygene équivalente
    */
   public static IDirectPositionList toDirectPositionList(Coordinate[] coords) {
     DirectPositionList list = new DirectPositionList();
-
+    if (coords.length == 0) {
+      return list;
+    }
     // verifie si coords est fermee, cad si les deux coordonnees extremes sont a
     // la meme position
-    boolean ferme;
-    if (coords[0].x == coords[coords.length - 1].x
-        && coords[0].y == coords[coords.length - 1].y) {
-      ferme = true;
-    } else {
-      ferme = false;
-    }
-
+    boolean closed = (coords[0].x == coords[coords.length - 1].x && coords[0].y == coords[coords.length - 1].y);
     // copie de toutes les coodonnees sauf la derniere
     for (int i = 0; i < coords.length - 1; i++) {
       list.add(AdapterFactory.toDirectPosition(coords[i]));
     }
     // si ferme, ajout ajout de la premiere coordonnee au debut, sinon ajout de
     // la derniere
-    if (ferme) {
+    if (closed && !list.isEmpty()) {
       list.add(list.get(0));
     } else {
       list.add(AdapterFactory.toDirectPosition(coords[coords.length - 1]));
     }
-
     return list;
   }
 
@@ -355,7 +415,7 @@ public class AdapterFactory {
    * Transforme la dimension des coordonnées d'un tableau de coordonnées JTS (
    * {@link Coordinate}) en 2D.
    * 
-   * @param coords tableau de coordonn�es JTS
+   * @param coords tableau de coordonnées JTS
    * @return séquence de coordonnées JTS en 2D
    */
   public static CoordinateSequence to2DCoordinateSequence(Coordinate[] coords,
@@ -368,7 +428,7 @@ public class AdapterFactory {
   }
 
   /**
-   * Transforme la dimension de coordonn�es JTS ({@link Coordinate}) en 2D.
+   * Transforme la dimension de coordonnées JTS ({@link Coordinate}) en 2D.
    * 
    * @param coord coordonnées JTS
    * @return coordonnées JTS en 2D
@@ -388,11 +448,11 @@ public class AdapterFactory {
   }
 
   /**
-   * Transforme la dimension d'une liste de positions G�Oxyg�ne (
+   * Transforme la dimension d'une liste de positions GeOxygene (
    * {@link IDirectPositionList}).
    * 
-   * @param directPositionList liste de positions G�Oxyg�ne
-   * @return liste de positions GéOxygène �quivalente en 2D
+   * @param directPositionList liste de positions GeOxygene
+   * @return liste de positions GeOxygene équivalente en 2D
    */
   public static IDirectPositionList to2DDirectPositionList(
       IDirectPositionList directPositionList) {
@@ -404,10 +464,10 @@ public class AdapterFactory {
   }
 
   /**
-   * Transforme une géométrie GeOxygene en g�om�trie 2D.
+   * Transforme une géométrie GeOxygene en géométrie 2D.
    * @param geom une géométrie GeOxygene
    * @return une géométrie GeOxygene 2D
-   * @throws Exception renvoie une exception si le type de g�om�trie n'est pas
+   * @throws Exception renvoie une exception si le type de géométrie n'est pas
    *           géré
    */
   @SuppressWarnings("unchecked")
@@ -427,7 +487,7 @@ public class AdapterFactory {
       return new GM_LineString(AdapterFactory.to2DDirectPositionList(geom
           .coord()));
     }
-    if (geom instanceof IPolygon) {
+    if (geom instanceof GM_Polygon) {
       GM_Polygon polygon = new GM_Polygon(new GM_Ring(new GM_LineString(
           AdapterFactory.to2DDirectPositionList(((GM_Polygon) geom)
               .exteriorCoord()))));

@@ -49,89 +49,62 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolidBoundary;
 
 public class GM_SolidBoundary extends GM_PrimitiveBoundary implements
     ISolidBoundary {
-
-  // ////////////////////////////////////////////////////////////////////////////////
-  // Attribut "exterior" et accesseurs
-  // /////////////////////////////////////////////
-  // ////////////////////////////////////////////////////////////////////////////////
   /** Shell extérieur. */
   protected IShell exterior;
-
-  /** Renvoie le shell extérieur. */
+  @Override
   public IShell getExterior() {
     return this.exterior;
   }
-
   /** Affecte un shell extérieur. */
   protected void setExterior(IShell value) {
     this.exterior = value;
   }
-
-  /** Renvoie 1 si un shell extérieur a été affecté, 0 sinon. */
+  @Override
   public int sizeExterior() {
     if (this.exterior == null) {
       return 0;
     }
     return 1;
   }
-
-  // ////////////////////////////////////////////////////////////////////////////////
-  // Attribut "interior" et accesseurs
-  // /////////////////////////////////////////////
-  // ////////////////////////////////////////////////////////////////////////////////
   /** Liste des shells intérieurs. */
-  protected List<IShell> interior = new ArrayList<IShell>();
-
+  protected List<IShell> interior = new ArrayList<IShell>(0);
+  @Override
   public List<IShell> getInterior() {
     return this.interior;
   }
-
-  /** Renvoie le shell intérieur de rang i. */
+  @Override
   public IShell getInterior(int i) {
     return this.interior.get(i);
   }
-
   /** Affecte une valeur au shell intérieur de rang i. */
   protected void setInterior(int i, IShell value) {
     this.interior.set(i, value);
   }
-
   /** Ajoute un shell intérieur en fin de liste. */
   protected void addInterior(IShell value) {
     this.interior.add(value);
   }
-
   /** Ajoute un shell intérieur au rang i. */
   protected void addInterior(int i, IShell value) {
     this.interior.add(i, value);
   }
-
   /** Efface le shell intérieur de valeur "value". */
   protected void removeInterior(IShell value) {
     this.interior.remove(value);
   }
-
   /** Efface le shell intérieur de rang i. */
   protected void removeInterior(int i) {
     this.interior.remove(i);
   }
-
-  /** Renvoie le nombre de shells intérieurs. */
+  @Override
   public int sizeInterior() {
     return this.interior.size();
   }
-
-  // ///////////////////////////////////////////////////////////////////////////////////////
-  // Constructeurs
-  // ////////////////////////////////////////////////////////////////////////
-  // ///////////////////////////////////////////////////////////////////////////////////////
-
   /**
-   * Permet de créer un GM_SolidBoundary ne possèdant pas de trous
+   * Permet de créer un GM_SolidBoundary ne possédant pas de trous
    */
   public GM_SolidBoundary(List<IOrientableSurface> lOS) {
     GM_Shell inShell = new GM_Shell(lOS);
     this.exterior = inShell;
-
   }
 }

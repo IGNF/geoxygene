@@ -18,7 +18,7 @@
  */
 
 package fr.ign.cogit.geoxygene.style;
- 
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
- 
+
 /**
  * @author Julien Perret
  */
@@ -77,7 +77,7 @@ public class Fill {
    * Affecte la valeur de l'attribut cssParameters.
    * @param svgParameters l'attribut cssParameters à affecter
    */
-  public void setSvgParameters(List<SvgParameter> svgParameters) {
+  public synchronized void setSvgParameters(List<SvgParameter> svgParameters) {
     this.svgParameters = svgParameters;
     this.updateValues();
   }
@@ -175,14 +175,14 @@ public class Fill {
   @XmlTransient
   private Color color = null;
 
-  public Color getColor() {
+  public synchronized Color getColor() {
     if (this.color == null) {
       this.updateValues();
       if (this.fillOpacity == 1.0f) {
         this.color = this.fill;
       } else {
         this.color = new Color(this.fill.getRed(), this.fill.getGreen(),
-            this.fill.getBlue(), (int) (this.fillOpacity * 255));
+            this.fill.getBlue(), (int) (this.fillOpacity * 255f));
       }
     }
     return this.color;
@@ -197,7 +197,7 @@ public class Fill {
       this.color = this.fill;
     } else {
       this.color = new Color(this.fill.getRed(), this.fill.getGreen(),
-          this.fill.getBlue(), (int) (this.fillOpacity * 255));
+          this.fill.getBlue(), (int) (this.fillOpacity * 255f));
     }
   }
 }

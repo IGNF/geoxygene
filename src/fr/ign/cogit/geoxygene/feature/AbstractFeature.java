@@ -72,23 +72,23 @@ public abstract class AbstractFeature implements IFeature {
   }
 
   protected int id;
-
+  @Override
   @Id
   @GeneratedValue
   public int getId() {
     return this.id;
   }
-
+  @Override
   public void setId(int Id) {
     this.id = Id;
   }
 
   protected IGeometry geom = null;
-
+  @Override
   public IGeometry getGeom() {
     return this.geom;
   }
-
+  @Override
   @SuppressWarnings("unchecked")
   public void setGeom(IGeometry g) {
     IGeometry previousGeometry = this.geom;
@@ -96,7 +96,7 @@ public abstract class AbstractFeature implements IFeature {
     this.geom = g;
     synchronized (this.featurecollections) {
       IFeatureCollection<IFeature>[] collections = this.featurecollections
-          .toArray(new FT_FeatureCollection[0]);
+          .toArray(new IFeatureCollection[0]);
       for (IFeatureCollection<IFeature> fc : collections) {
         if (fc.hasSpatialIndex()) {
           if (fc.getSpatialIndex().hasAutomaticUpdate()) {
@@ -116,24 +116,25 @@ public abstract class AbstractFeature implements IFeature {
     }
   }
 
+  @Override
   public boolean hasGeom() {
     return (this.geom != null);
   }
-
   protected TP_Object topo = null;
-
+  @Override
   public TP_Object getTopo() {
     return this.topo;
   }
-
+  @Override
   public void setTopo(TP_Object t) {
     this.topo = t;
   }
-
+  @Override
   public boolean hasTopo() {
     return (this.topo != null);
   }
 
+  @Override
   public FT_Feature cloneGeom() throws CloneNotSupportedException {
     FT_Feature result = (FT_Feature) this.clone();
     result.setGeom((IGeometry) this.getGeom().clone());
@@ -141,58 +142,32 @@ public abstract class AbstractFeature implements IFeature {
   }
 
   /** Lien n-m bidirectionnel vers FT_FeatureCollection. */
-  private List<IFeatureCollection<IFeature>> featurecollections = new ArrayList<IFeatureCollection<IFeature>>();
-
+  private List<IFeatureCollection<IFeature>> featurecollections = new ArrayList<IFeatureCollection<IFeature>>(0);
+  @Override
   public List<IFeatureCollection<IFeature>> getFeatureCollections() {
     return this.featurecollections;
   }
-
+  @Override
   public IFeatureCollection<IFeature> getFeatureCollection(int i) {
     return this.featurecollections.get(i);
   }
 
   /**
-   * Population a laquelle appartient this. Renvoie null si this n'appartient a
-   * aucune population. NB : normalement, this appartient � une seule
-   * collection. Si ce n'est pas le cas, une seule des collections est renvoy�e
-   * au hasard (la premi�re de la liste).
-   */
-  // @SuppressWarnings("unchecked")
-  // public Population<? extends FT_Feature> getPopulation() {
-  // Iterator<FT_FeatureCollection<? extends FT_Feature>> it =
-  // featurecollections
-  // .iterator();
-  // while (it.hasNext()) {
-  // Object o = it.next();
-  // if (o instanceof Population)
-  // return (Population<FT_Feature>) o;
-  // }
-  // return null;
-  // }
-  /**
-   * D�finit la population en relation, et met � jour la relation inverse.
-   * ATTENTION : persistance du FT_Feature non g�r�e dans cette m�thode.
-   */
-
-  // public void setPopulation(Population O) { Population old =
-  // this.getPopulation(); if ( old != null ) old.remove(this); if ( O != null
-  // )
-  // O.add(this); }
-  /**
-   * Lien bidirectionnel n-m des �l�ments vers eux-m�mes. Les m�thodes get (sans
-   * indice) et set sont n�cessaires au mapping. Les autres m�thodes sont l�
+   * Lien bidirectionnel n-m des éléments vers eux-mêmes. Les méthodes get (sans
+   * indice) et set sont nécessaires au mapping. Les autres méthodes sont là
    * seulement pour faciliter l'utilisation de la relation. ATTENTION: Pour
    * assurer la bidirection, il faut modifier les listes uniquement avec ces
    * methodes. NB: si il n'y a pas d'objet en relation, la liste est vide mais
    * n'est pas "null". Pour casser toutes les relations, faire setListe(new
    * ArrayList()) ou emptyListe().
    */
-  private List<IFeature> correspondants = new ArrayList<IFeature>();
+  private List<IFeature> correspondants = new ArrayList<IFeature>(0);
 
+  @Override
   public List<IFeature> getCorrespondants() {
     return this.correspondants;
   }
-
+  @Override
   public void setCorrespondants(List<IFeature> L) {
     List<IFeature> old = new ArrayList<IFeature>(this.correspondants);
     for (IFeature O : old) {
@@ -204,14 +179,14 @@ public abstract class AbstractFeature implements IFeature {
       O.getCorrespondants().add(this);
     }
   }
-
+  @Override
   public IFeature getCorrespondant(int i) {
     if (this.correspondants.size() == 0) {
       return null;
     }
     return this.correspondants.get(i);
   }
-
+  @Override
   public void addCorrespondant(IFeature O) {
     if (O == null) {
       return;
@@ -219,7 +194,7 @@ public abstract class AbstractFeature implements IFeature {
     this.correspondants.add(O);
     O.getCorrespondants().add(this);
   }
-
+  @Override
   public void removeCorrespondant(IFeature O) {
     if (O == null) {
       return;
@@ -227,20 +202,20 @@ public abstract class AbstractFeature implements IFeature {
     this.correspondants.remove(O);
     O.getCorrespondants().remove(this);
   }
-
+  @Override
   public void clearCorrespondants() {
     for (IFeature O : this.correspondants) {
       O.getCorrespondants().remove(this);
     }
     this.correspondants.clear();
   }
-
+  @Override
   public void addAllCorrespondants(Collection<IFeature> c) {
     for (IFeature feature : c) {
       this.addCorrespondant(feature);
     }
   }
-
+  @Override
   public List<IFeature> getCorrespondants(
       IFeatureCollection<? extends IFeature> pop) {
     List<? extends IFeature> elementsPop = pop.getElements();
@@ -252,20 +227,20 @@ public abstract class AbstractFeature implements IFeature {
   // //////////////////////////////////////////////////////////////////////////
   // /////
   /**
-   * M�thodes issues de MdFeature : Permettent de cr�er un Feature dont les
-   * propri�t�s (valeurs d'attributs, op�rations et objets en relation) peuvent
-   * �tre acced�s de fa�on g�n�rique en mentionnant le nom de la propri�t�. Pour
-   * permettre cela chaque feature est rattach� � son featureType.
+   * méthodes issues de MdFeature : Permettent de créer un Feature dont les
+   * propriétés (valeurs d'attributs, opérations et objets en relation) peuvent
+   * être accedés de façon générique en mentionnant le nom de la propriété. Pour
+   * permettre cela chaque feature est rattaché à son featureType.
    */
   // //////////////////////////////////////////////////////////////////////////
   // /////
   /**
-   * Creation d'un feature du type donn� en param�tre, par exemple Route.
-   * L'objet cr�e sera alors une instance de bdcarto.TronconRoute (l'element de
-   * sch�ma logique correspondant au featureType Route) qui �tend FeatureCommun.
-   * Les valeurs d'attributs ne sont pas initialis�es.
-   * @param featureType le feature type de l'objet � cr�er
-   * @return l'objet cr��
+   * Creation d'un feature du type donné en paramètre, par exemple Route.
+   * L'objet crée sera alors une instance de bdcarto.TronconRoute (l'element de
+   * schéma logique correspondant au featureType Route) qui étend FeatureCommun.
+   * Les valeurs d'attributs ne sont pas initialisées.
+   * @param featureType le feature type de l'objet à créer
+   * @return l'objet créé
    */
   public static IFeature createTypedFeature(FeatureType featureType) {
     IFeature feature = null;
@@ -283,10 +258,11 @@ public abstract class AbstractFeature implements IFeature {
   }
 
   /**
-   * L'unique population � laquelle appartient cet objet.
+   * L'unique population à laquelle appartient cet objet.
    */
   protected IPopulation<IFeature> population;
 
+  @Override
   @SuppressWarnings("unchecked")
   public IPopulation<IFeature> getPopulation() {
     if (this.population != null) {
@@ -304,40 +280,44 @@ public abstract class AbstractFeature implements IFeature {
     return null;
   }
 
+  @Override
   public void setPopulation(IPopulation<IFeature> population) {
     this.population = population;
-    // Refuse d'�crire dans ma population car ne peut pas pas v�rifier si
-    // this h�rite bien de FT_Feature...
+    // Refuse d'écrire dans ma population car ne peut pas pas vérifier si
+    // this hérite bien de FT_Feature...
     // this.population.addUnique(this);
   }
 
   /**
    * L'unique featureType auquel appartient cet objet.
    */
-  protected GF_FeatureType featureType;
+  protected FeatureType featureType;
 
-  public void setFeatureType(GF_FeatureType featureType) {
+  @Override
+  public void setFeatureType(FeatureType featureType) {
     this.featureType = featureType;
   }
 
-  public GF_FeatureType getFeatureType() {
+  @Override
+  public FeatureType getFeatureType() {
     if ((this.featureType == null) && (this.getPopulation() != null)) {
       return this.getPopulation().getFeatureType();
     }
     return this.featureType;
   }
 
+  @Override
   public Object getAttribute(AttributeType attribute) {
-    if (attribute.getMemberName().equals("geom")) {
+    if (attribute.getMemberName().equals("geom")) { //$NON-NLS-1$
       AbstractFeature.logger
-          .warn("WARNING : Pour r�cup�rer la primitive g�om�trique par d�faut, veuillez utiliser "
-              + "la m�thode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)");
+      .warn("WARNING : Pour Récupèrer la primitive géométrique par défaut, veuillez utiliser " //$NON-NLS-1$
+          + "la méthode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
       return this.getGeom();
     }
-    if (attribute.getMemberName().equals("topo")) {
+    if (attribute.getMemberName().equals("topo")) { //$NON-NLS-1$
       AbstractFeature.logger
-          .warn("WARNING : Pour r�cup�rer la primitive topologique par d�faut, veuillez utiliser "
-              + "la m�thode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)");
+      .warn("WARNING : Pour Récupèrer la primitive topologique par défaut, veuillez utiliser " //$NON-NLS-1$
+          + "la méthode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
       return this.getTopo();
     }
     Object valeur = null;
@@ -348,7 +328,7 @@ public abstract class AbstractFeature implements IFeature {
       nomFieldMaj = Character.toUpperCase(attribute.getNomField().charAt(0))
           + attribute.getNomField().substring(1);
     }
-    String nomGetFieldMethod = "get" + nomFieldMaj;
+    String nomGetFieldMethod = "get" + nomFieldMaj; //$NON-NLS-1$
     Class<?> classe = this.getClass();
     while (!classe.equals(Object.class)) {
       try {
@@ -359,13 +339,13 @@ public abstract class AbstractFeature implements IFeature {
       } catch (SecurityException e) {
         if (AbstractFeature.logger.isTraceEnabled()) {
           AbstractFeature.logger
-              .trace("SecurityException pendant l'appel de la m�thode "
+              .trace("SecurityException pendant l'appel de la méthode "
                   + nomGetFieldMethod + " sur la classe " + classe);
         }
       } catch (IllegalArgumentException e) {
         if (AbstractFeature.logger.isTraceEnabled()) {
           AbstractFeature.logger
-              .trace("IllegalArgumentException pendant l'appel de la m�thode "
+              .trace("IllegalArgumentException pendant l'appel de la méthode "
                   + nomGetFieldMethod + " sur la classe " + classe);
         }
       } catch (NoSuchMethodException e) {
@@ -374,20 +354,20 @@ public abstract class AbstractFeature implements IFeature {
       } catch (IllegalAccessException e) {
         if (AbstractFeature.logger.isTraceEnabled()) {
           AbstractFeature.logger
-              .trace("IllegalAccessException pendant l'appel de la m�thode "
+              .trace("IllegalAccessException pendant l'appel de la méthode "
                   + nomGetFieldMethod + " sur la classe " + classe);
         }
       } catch (InvocationTargetException e) {
         if (AbstractFeature.logger.isTraceEnabled()) {
           AbstractFeature.logger
-              .trace("InvocationTargetException pendant l'appel de la m�thode "
+              .trace("InvocationTargetException pendant l'appel de la méthode "
                   + nomGetFieldMethod + " sur la classe " + classe);
         }
       }
       classe = classe.getSuperclass();
     }
-    // r�essayer si le getter est du genre isAttribute, ie pour un bool�en
-    nomGetFieldMethod = "is" + nomFieldMaj;
+    // réessayer si le getter est du genre isAttribute, ie pour un booléen
+    nomGetFieldMethod = "is" + nomFieldMaj; //$NON-NLS-1$
     classe = this.getClass();
     while (!classe.equals(Object.class)) {
       try {
@@ -398,48 +378,49 @@ public abstract class AbstractFeature implements IFeature {
       } catch (SecurityException e) {
         if (AbstractFeature.logger.isTraceEnabled()) {
           AbstractFeature.logger
-              .trace("SecurityException pendant l'appel de la m�thode "
+              .trace("SecurityException pendant l'appel de la méthode "
                   + nomGetFieldMethod + " sur la classe " + classe);
         }
       } catch (IllegalArgumentException e) {
         if (AbstractFeature.logger.isTraceEnabled()) {
           AbstractFeature.logger
-              .trace("IllegalArgumentException pendant l'appel de la m�thode "
+              .trace("IllegalArgumentException pendant l'appel de la méthode "
                   + nomGetFieldMethod + " sur la classe " + classe);
         }
       } catch (NoSuchMethodException e) {
         // if (logger.isTraceEnabled())
-        // logger.trace("La m�thode "+nomGetFieldMethod+" n'existe pas dans la classe "+classe);
+        // logger.trace("La méthode "+nomGetFieldMethod+" n'existe pas dans la classe "+classe);
       } catch (IllegalAccessException e) {
         if (AbstractFeature.logger.isTraceEnabled()) {
           AbstractFeature.logger
-              .trace("IllegalAccessException pendant l'appel de la m�thode "
+              .trace("IllegalAccessException pendant l'appel de la méthode "
                   + nomGetFieldMethod + " sur la classe " + classe);
         }
       } catch (InvocationTargetException e) {
         if (AbstractFeature.logger.isTraceEnabled()) {
           AbstractFeature.logger
-              .trace("InvocationTargetException pendant l'appel de la m�thode "
+              .trace("InvocationTargetException pendant l'appel de la méthode "
                   + nomGetFieldMethod + " sur la classe " + classe);
         }
       }
       classe = classe.getSuperclass();
     }
-    AbstractFeature.logger.error("Echec de l'appel � la m�thode "
+    AbstractFeature.logger.error("Echec de l'appel à la méthode "
         + nomGetFieldMethod + " sur la classe " + this.getClass());
     return null;
   }
 
+  @Override
   public void setAttribute(AttributeType attribute, Object valeur) {
-    if (attribute.getMemberName().equals("geom")) {
+    if (attribute.getMemberName().equals("geom")) { //$NON-NLS-1$
       AbstractFeature.logger
-          .warn("WARNING : Pour affecter la primitive g�om�trique par d�faut, veuillez utiliser "
-              + "la m�thode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)");
+      .warn("WARNING : Pour affecter la primitive géométrique par défaut, veuillez utiliser " //$NON-NLS-1$
+          + "la méthode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
       this.setGeom((IGeometry) valeur);
-    } else if (attribute.getMemberName().equals("topo")) {
+    } else if (attribute.getMemberName().equals("topo")) { //$NON-NLS-1$
       AbstractFeature.logger
-          .warn("WARNING : Pour affecter la primitive topologique par d�faut, veuillez utiliser "
-              + "la m�thode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)");
+      .warn("WARNING : Pour affecter la primitive topologique par défaut, veuillez utiliser " //$NON-NLS-1$
+          + "la méthode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
       this.setTopo((TP_Object) valeur);
     } else {
       try {
@@ -451,7 +432,7 @@ public abstract class AbstractFeature implements IFeature {
               .charAt(0))
               + attribute.getNomField().substring(1);
         }
-        String nomSetFieldMethod = "set" + nomFieldMaj2;
+        String nomSetFieldMethod = "set" + nomFieldMaj2; //$NON-NLS-1$
         Method methodSetter = this.getClass().getDeclaredMethod(
             nomSetFieldMethod, valeur.getClass());
         // Method methodGetter =
@@ -473,15 +454,16 @@ public abstract class AbstractFeature implements IFeature {
     }
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public List<? extends FT_Feature> getRelatedFeatures(GF_FeatureType ftt,
       AssociationRole role) {
-    List<FT_Feature> listResult = new ArrayList();
+    List<FT_Feature> listResult = new ArrayList<FT_Feature>();
     if (AbstractFeature.logger.isDebugEnabled()) {
       AbstractFeature.logger.debug("\n**recherche des features en relation**");
     }
     try {
-      // cas 1-1 ou 1-N ou N-1 o� il n'y a pas de classe association
+      // cas 1-1 ou 1-N ou N-1 où il n'y a pas de classe association
       if (role.getNomFieldAsso() == null) {
         if (AbstractFeature.logger.isDebugEnabled()) {
           AbstractFeature.logger.debug("pas de classe association");
@@ -494,7 +476,7 @@ public abstract class AbstractFeature implements IFeature {
               .charAt(0))
               + role.getNomFieldClasse().substring(1);
         }
-        String nomGetMethod = "get" + nomFieldClasseMaj;
+        String nomGetMethod = "get" + nomFieldClasseMaj; //$NON-NLS-1$
         Method methodGetter = this.getClass().getDeclaredMethod(nomGetMethod,
             (Class[]) null);
         // Method methodGetter =
@@ -524,12 +506,12 @@ public abstract class AbstractFeature implements IFeature {
               .charAt(0))
               + role.getNomFieldClasse().substring(1);
         }
-        String nomGetMethod = "get" + nomFieldClasseMaj;
+        String nomGetMethod = "get" + nomFieldClasseMaj; //$NON-NLS-1$
         Method methodGetter = this.getClass().getDeclaredMethod(nomGetMethod,
             (Class[]) null);
         String nomClasseAsso = ((AssociationType) role.getAssociationType())
             .getNomClasseAsso();
-        Class classeAsso = Class.forName(nomClasseAsso);
+        Class<?> classeAsso = Class.forName(nomClasseAsso);
         if (AbstractFeature.logger.isDebugEnabled()) {
           AbstractFeature.logger.debug("cardMax de " + role.getMemberName()
               + " = " + role.getCardMax());
@@ -553,7 +535,7 @@ public abstract class AbstractFeature implements IFeature {
                 + listInstancesAsso.size());
           }
         }
-        // je cherche le (ou les) role(s) allant de l'association �
+        // je cherche le (ou les) role(s) allant de l'association à
         // l'autre featureType
         List listRoles = role.getAssociationType().getRoles();
         listRoles.remove(role);
@@ -566,14 +548,14 @@ public abstract class AbstractFeature implements IFeature {
           }
         }
         /**
-         * pour chaque role concern� (il peut y en avoir plus d'un) je vais
+         * pour chaque role concerné (il peut y en avoir plus d'un) je vais
          * chercher les instances en relation
          */
         AssociationRole roleExplore;
         for (int i = 0; i < listRolesAGarder.size(); i++) {
           roleExplore = (AssociationRole) listRolesAGarder.get(i);
           if (AbstractFeature.logger.isDebugEnabled()) {
-            AbstractFeature.logger.debug("role explor� = "
+            AbstractFeature.logger.debug("role exploré = "
                 + roleExplore.getMemberName());
           }
           String nomFieldAssoMaj;
@@ -648,30 +630,39 @@ public abstract class AbstractFeature implements IFeature {
   // //////////////////////////////////////////////////////////////////////////
   // /
 
+  @Override
   public Object getAttribute(String nomAttribut) {
-    GF_FeatureType ft = this.getFeatureType();
+    FeatureType ft = this.getFeatureType();
     if (ft == null) {
       AttributeType type = new AttributeType();
       type.setNomField(nomAttribut);
       type.setMemberName(nomAttribut);
       // FIXME c'est un peu une bidouille
       return this.getAttribute(type);
-      // logger.error("Le FeatureType correspondant � ce FT_Feature est introuvable: Impossible de remonter au AttributeType � partir de son nom.");
+    }
+    AttributeType attribute = ft.getFeatureAttributeByName(nomAttribut);
+    if (attribute == null) {
+      AttributeType type = new AttributeType();
+      type.setNomField(nomAttribut);
+      type.setMemberName(nomAttribut);
+      // FIXME c'est un peu une bidouille
+      return this.getAttribute(type);
+      // logger.error("Le FeatureType correspondant à ce FT_Feature est
+      // introuvable: Impossible de remonter au AttributeType à partir de
+      // son nom.");
       // return null;
     }
-    AttributeType attribute = ((FeatureType) ft)
-        .getFeatureAttributeByName(nomAttribut);
     return (this.getAttribute(attribute));
   }
-
+  @Override
   public List<? extends FT_Feature> getRelatedFeatures(String nomFeatureType,
       String nomRole) {
-    // Initialisation de la liste des r�sultats
+    // Initialisation de la liste des résultats
     List<? extends FT_Feature> listResultats = null;
-    // On r�cup�re le featuretype nomm� nomFeatureType
-    GF_FeatureType ftt = ((FeatureType) this.getFeatureType()).getSchema()
+    // On récupère le featuretype nommé nomFeatureType
+    FeatureType ftt = this.getFeatureType().getSchema()
         .getFeatureTypeByName(nomFeatureType);
-    // On r�cup�re l'AssociationRole nomm� nomRole
+    // On récupère l'AssociationRole nommé nomRole
     AssociationRole role = null;
     List<GF_AssociationRole> listeRoles = ftt.getRoles();
     for (GF_AssociationRole r : listeRoles) {
@@ -695,31 +686,36 @@ public abstract class AbstractFeature implements IFeature {
   }
 
   /**
-   * La s�miologie de l'objet g�ographique
+   * La sémiologie de l'objet géographique
    */
   private Representation representation = null;
 
+  @Override
   public Representation getRepresentation() {
     return this.representation;
   }
 
+  @Override
   public void setRepresentation(Representation rep) {
     this.representation = rep;
   }
 
   /**
-   * marqueur de suppression d'un objet (utilis� par exemple en g�n�ralisation)
+   * marqueur de suppression d'un objet (utilisé par exemple en généralisation)
    */
   private boolean estSupprime = false;
 
+  @Override
   public boolean isDeleted() {
     return this.estSupprime;
   }
 
+  @Override
   public void setDeleted(boolean estSupprime) {
     this.estSupprime = estSupprime;
   }
 
+  @Override
   public boolean intersecte(IEnvelope env) {
     if (this.getGeom() == null || env == null) {
       return false;
@@ -729,7 +725,7 @@ public abstract class AbstractFeature implements IFeature {
 
   @Override
   public String toString() {
-    return this.getClass().getName() + " " + this.getGeom();
+    return this.getClass().getName() + " " + this.getGeom(); //$NON-NLS-1$
   }
 
   @Override
@@ -754,5 +750,27 @@ public abstract class AbstractFeature implements IFeature {
   public int hashCode() {
     return this.getId();
   }
-
+  /**
+   * Renvoie la classe primitive correspondant à la classe donnée, null si le
+   * paramètre ne correspond pas à un type primitif ou s'il n'est pas géré.
+   * @param classe classe
+   * @return la classe correspondant à un type primitif ou null si le paramètre
+   *         ne correspond pas à un type primitif ou s'il n'est pas géré.
+   */
+  public static Class<?> class2PrimitiveClass(Class<?> classe) {
+    String simpleName = classe.getSimpleName();
+    if (simpleName.equalsIgnoreCase("integer")) { //$NON-NLS-1$
+      return int.class;
+    }
+    if (simpleName.equalsIgnoreCase("double")) { //$NON-NLS-1$
+      return double.class;
+    }
+    if (simpleName.equalsIgnoreCase("long")) { //$NON-NLS-1$
+      return long.class;
+    }
+    if (simpleName.equalsIgnoreCase("boolean")) { //$NON-NLS-1$
+      return boolean.class;
+    }
+    return null;
+  }
 }

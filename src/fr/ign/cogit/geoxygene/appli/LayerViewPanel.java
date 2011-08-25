@@ -41,12 +41,11 @@ import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
-import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.event.CompassPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.LegendPaintListener;
 import fr.ign.cogit.geoxygene.appli.event.PaintListener;
@@ -99,7 +98,7 @@ public class LayerViewPanel extends JPanel implements Printable {
   /**
    * @return The rendering manager handling the rendering of the layers
    */
-  public RenderingManager getRenderingManager() {
+  public final RenderingManager getRenderingManager() {
     return this.renderingManager;
   }
 
@@ -122,14 +121,14 @@ public class LayerViewPanel extends JPanel implements Printable {
   /**
    * Private selected features. Use getter and setter.
    */
-  private Set<IFeature> selectedFeatures = new HashSet<IFeature>();
+  private Set<IFeature> selectedFeatures = new HashSet<IFeature>(0);
 
   /**
    * The viewport of the panel.
    * 
    * @return the viewport of the panel
    */
-  public Viewport getViewport() {
+  public final Viewport getViewport() {
     return this.viewport;
   }
 
@@ -159,29 +158,6 @@ public class LayerViewPanel extends JPanel implements Printable {
     if (this.renderingManager != null) {
       this.renderingManager.renderAll();
     }
-    this.superRepaint();
-  }
-
-  /**
-   * @param layer
-   * @param feature
-   */
-  public void repaint(Layer layer, IFeature feature) {
-    if (this.renderingManager != null) {
-      this.renderingManager.render(layer, feature);
-    }
-    this.superRepaint();
-  }
-
-  /**
-   * @param layer
-   * @param geom
-   */
-  public void repaint(Layer layer, IGeometry geom) {
-    if (this.renderingManager != null) {
-      this.renderingManager.render(layer, geom);
-    }
-    this.superRepaint();
   }
 
   /**
@@ -201,7 +177,7 @@ public class LayerViewPanel extends JPanel implements Printable {
       logger.trace("paintComponent"); //$NON-NLS-1$
       ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
           RenderingHints.VALUE_ANTIALIAS_ON);
-      super.paintComponent(g);
+      // super.paintComponent(g);
       // clear the graphics
       g.setColor(this.getBackground());
       g.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -259,7 +235,7 @@ public class LayerViewPanel extends JPanel implements Printable {
             points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
             if (points.size() > 2) {
               points.add(start);
-              RenderUtil.draw((IGeometry) new GM_Polygon(new GM_LineString(points)), this
+              RenderUtil.draw(new GM_Polygon(new GM_LineString(points)), this
                   .getViewport(), (Graphics2D) g);
             } else {
               if (points.size() == 2) {
@@ -278,15 +254,6 @@ public class LayerViewPanel extends JPanel implements Printable {
     }
   }
 
-  /**
-   * Notify the listeners that the panel has just finished repainting
-   * @param graphics
-   */
-  @SuppressWarnings("unused")
-  private void firePainted(Graphics graphics) {
-    // TODO NOTIFY LISTENERS
-  }
-  
   /**
    * Returns the size of a pixel in meters.
    * @return Taille d'un pixel en mètres (la longueur d'un coté de pixel de
@@ -339,7 +306,7 @@ public class LayerViewPanel extends JPanel implements Printable {
    * 
    * @return the features selected by the user
    */
-  public Set<IFeature> getSelectedFeatures() {
+  public final Set<IFeature> getSelectedFeatures() {
     return this.selectedFeatures;
   }
 

@@ -1,33 +1,26 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.geometrie;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -48,29 +41,35 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
- * En vrac un ensemble de méthodes statiques qui manipulent des géométries:
+ * En vrac un ensemble de méthodes statiques qui manipulent des géométries :
  * projections, abscisse curviligne, décalage, orientation...
- * 
+ * <p>
  * CONTIENT des méthodes de : Projections d'un point Manipulation de l'abscisse
  * curviligne d'une ligne Mesures sur un polygone Offset d'une ligne (décalage)
  * Echantillonage d'une ligne Regression linéaire et beaucoup d'autres choses
  * très diverses
- * 
+ * <p>
  * ATTENTION: certaines méthodes n'ont pas été conçues ni testées pour des
  * coordonnées 3D
- * 
- * 
+ * <p>
  * English: Very very diverse set of methods on geometries
  * 
- * @author Mustière / Bonin / Rousseaux / Grosso / Lafragueta
- * @version 1.0
+ * @author Sébastien Mustière
+ * @author Olivier Bonin
+ * @author Frédéric Rousseaux
+ * @author Eric Grosso
+ * @author Arnaud Lafragueta
  */
 
 public abstract class Operateurs {
-  @SuppressWarnings("unused")
   private static Logger logger = Logger.getLogger(Operateurs.class.getName());
 
   // ////////////////////////////////////////////////////////////////////
@@ -78,55 +77,57 @@ public abstract class Operateurs {
   // ////////////////////////////////////////////////////////////////////
 
   /**
-   * Projection de M sur le segment [A,B]
-   * 
-   * English: Projects M on a [A,B] author Mustière
-   * */
-  public static IDirectPosition projection(IDirectPosition M,
-      IDirectPosition A, IDirectPosition B) {
-    double lambda;
-    Vecteur uAB, AM;
-
-    if (Distances.distance(A, B) == 0) {
-      return A; // cas ou A et B sont confondus
+   * Projection de M sur le segment [A,B].
+   * <p>
+   * English: Projects M on a [A,B].
+   */
+  public static IDirectPosition projection(IDirectPosition m, IDirectPosition a,
+      IDirectPosition b) {
+    Vecteur ab = new Vecteur(a, b);
+    boolean to2d = Double.isNaN(m.getZ()) || Double.isNaN(a.getZ())
+        || Double.isNaN(b.getZ());
+    if (to2d) {
+      ab.setZ(Double.NaN);
     }
-
-    uAB = new Vecteur(A, B).vectNorme();
-    AM = new Vecteur(A, M);
-    lambda = AM.prodScalaire(uAB);
-
+    if (ab.norme() == 0) {
+      return a; // cas ou A et B sont confondus
+    }
+    Vecteur u_ab = ab.vectNorme();
+    Vecteur am = new Vecteur(a, m);
+    if (to2d) {
+      am.setZ(Double.NaN);
+    }
+    double lambda = am.prodScalaire(u_ab);
     if (lambda <= 0) {
-      return A; // Cas ou M se projete en A sur le segment [AB]
+      return a; // Cas ou M se projete en A sur le segment [AB]
     }
-    if (lambda >= Distances.distance(A, B)) {
-      return B; // Cas ou M se projete en B sur le segment [AB]
+    if (lambda >= a.distance(b)) {
+      return b; // Cas ou M se projete en B sur le segment [AB]
     }
-    return Operateurs.translate(A, uAB.multConstante(lambda)); // Cas ou M se
-                                                               // projete entre
-                                                               // A et B
+    // Cas ou M se projete entre A et B
+    return Operateurs.translate(a, u_ab.multConstante(lambda));
   }
 
   /**
    * Projection du point sur la polyligne. En théorie, il peut y avoir plusieurs
    * points projetés, mais dans ce cas cette méthode n'en renvoie qu'un seul (le
    * premier dans le sens de parcours de la ligne).
-   * 
-   * English: Projects M on the lineString author Mustière
+   * <p>
+   * English: Projects M on thelineString.
    */
-  public static IDirectPosition projection(IDirectPosition dp, ILineString LS) {
-    IDirectPositionList listePoints = LS.coord();
+  public static IDirectPosition projection(IDirectPosition dp, ILineString ls) {
+    IDirectPositionList listePoints = ls.coord();
     double d, dmin;
     IDirectPosition pt, ptmin;
-
     if (listePoints.size() <= 1) {
       return listePoints.get(0);
     }
     ptmin = Operateurs.projection(dp, listePoints.get(0), listePoints.get(1));
-    dmin = Distances.distance(dp, ptmin);
+    dmin = dp.distance(ptmin);
     for (int i = 0; i < listePoints.size() - 1; i++) {
       pt = Operateurs
           .projection(dp, listePoints.get(i), listePoints.get(i + 1));
-      d = Distances.distance(dp, pt);
+      d = dp.distance(pt);
       if (d < dmin) {
         ptmin = pt;
         dmin = d;
@@ -137,66 +138,75 @@ public abstract class Operateurs {
 
   /**
    * Projection du point sur la polyligne et insertion du point projeté dans la
-   * ligne
-   * 
+   * ligne.
+   * <P>
    * English: Projects M on the lineString and return the line with the
-   * projected point inserted author Mustière
+   * projected point inserted.
    */
-  public static ILineString projectionEtInsertion(IDirectPosition dp,
-      ILineString lineStringDecoupant) {
-    IDirectPositionList listePoints = lineStringDecoupant.coord();
-    double d, dmin;
-    IDirectPosition pt, ptmin;
+  public static ILineString projectionEtInsertion(IDirectPosition point,
+      ILineString line) {
+    IDirectPositionList points = line.coord();
+    Operateurs.projectAndInsert(point, points);
+    GM_LineString newLine = new GM_LineString(points);
+    return newLine;
+  }
 
-    if (listePoints.size() == 0) {
-      return lineStringDecoupant;
+  /**
+   * Projection du point sur la polyligne et insertion du point projeté dans la
+   * ligne.
+   * <p>
+   * English: Projects M on the lineString and return the line with the
+   * projected point inserted.
+   */
+  public static void projectAndInsert(IDirectPosition point,
+      IDirectPositionList points) {
+    if (points.size() < 2) {
+      return;
     }
-    ptmin = Operateurs.projection(dp, listePoints.get(0), listePoints.get(1));
-    dmin = Distances.distance(dp, ptmin);
+    IDirectPosition ptmin = Operateurs.projection(point, points.get(0), points
+        .get(1));
+    double dmin = point.distance(ptmin);
     int imin = 0;
-    for (int i = 0; i < listePoints.size() - 1; i++) {
-      pt = Operateurs
-          .projection(dp, listePoints.get(i), listePoints.get(i + 1));
-      d = Distances.distance(dp, pt);
+    for (int i = 0; i < points.size() - 1; i++) {
+      IDirectPosition pt = Operateurs.projection(point, points.get(i), points
+          .get(i + 1));
+      double d = point.distance(pt);
       if (d < dmin) {
         ptmin = pt;
         dmin = d;
         imin = i;
       }
     }
-    DirectPositionList pointList = new DirectPositionList(listePoints.getList());
-    pointList.add(imin + 1, ptmin);
-    GM_LineString newLine = new GM_LineString(pointList);
-    return newLine;
+    points.add(imin + 1, ptmin);
   }
 
   /**
    * Projection du point sur l'aggregat; ATTENTION: ne fonctionne que si
    * l'aggregat ne contient que des GM_Point et GM_LineString.
    * 
+   * <p>
    * En théorie, il peut y avoir plusieurs points projetés, mais dans ce cas
    * cette méthode n'en renvoie qu'un seul.
-   * 
-   * English: Projects M on the agregate author Mustière
-   * */
+   * <p>
+   * English: Projects M on the agregate.
+   */
   public static IDirectPosition projection(IDirectPosition dp,
       IAggregate<IGeometry> aggr) {
     Iterator<IGeometry> itComposants = aggr.getList().iterator();
-    double d = 0, dmin = Double.MAX_VALUE;
+    double d = 0, dmin = Double.POSITIVE_INFINITY;
     IDirectPosition pt = null, ptmin = null;
     boolean geomOK;
-
     while (itComposants.hasNext()) {
       IGeometry composant = itComposants.next();
       geomOK = false;
       if (composant instanceof IPoint) {
         pt = ((IPoint) composant).getPosition();
-        d = Distances.distance(pt, dp);
+        d = pt.distance(dp);
         geomOK = true;
       }
       if (composant instanceof ILineString) {
         pt = Operateurs.projection(dp, (ILineString) composant);
-        d = Distances.distance(pt, dp);
+        d = pt.distance(dp);
         geomOK = true;
       }
       if (!geomOK) {
@@ -220,8 +230,8 @@ public abstract class Operateurs {
    * Coordonnées du point situé sur la ligne à l'abscisse curviligne passée en
    * paramètre. Renvoie Null si l'abscisse est négative ou plus grande que la
    * longueur de la ligne.
-   * 
-   * English: Point located at the curvilinear abscisse author Mustière
+   * <p>
+   * English: Point located at the curvilinear abscisse.
    */
   public static IDirectPosition pointEnAbscisseCurviligne(ILineString ls,
       double abscisse) {
@@ -237,7 +247,7 @@ public abstract class Operateurs {
     pt1 = ls.coord().get(0);
     for (i = 1; i < ls.coord().size(); i++) {
       pt2 = ls.coord().get(i);
-      d = Distances.distance(pt1, pt2);
+      d = pt1.distance(pt2);
       if (d != 0) {
         if (l + d > abscisse) {
           v1 = new Vecteur(pt1, pt2);
@@ -252,31 +262,31 @@ public abstract class Operateurs {
   }
 
   /**
-   * Abscisse curviligne du ieme point de la ligne ls. English: curvilinear
-   * abscisse of the ith point author Mustière
+   * Abscisse curviligne du ieme point de la ligne ls.
+   * <p>
+   * English: curvilinear abscisse of the ith point.
    */
   public static double abscisseCurviligne(ILineString ls, int i) {
     double abs = 0;
     for (int j = 0; j < i; j++) {
-      abs = abs
-          + Distances
-              .distance(ls.getControlPoint(j), ls.getControlPoint(j + 1));
+      abs = abs + ls.getControlPoint(j).distance(ls.getControlPoint(j + 1));
     }
     return abs;
   }
 
   /**
-   * Coordonnées du point situé sur au milieu de la ligne. English: Point in the
-   * middle of the line author Mustière
+   * Coordonnées du point situé sur au milieu de la ligne.
+   * <p>
+   * English: Point in the middle of the line.
    */
   public static IDirectPosition milieu(ILineString ls) {
     return Operateurs.pointEnAbscisseCurviligne(ls, ls.length() / 2);
   }
 
   /**
-   * renvoie le milieu de [A,B].
-   * 
-   * English: Point in the middle of [A,B] author Mustière
+   * Renvoie le milieu de [A,B].
+   * <p>
+   * English: Point in the middle of [A,B].
    */
   public static IDirectPosition milieu(IDirectPosition A, IDirectPosition B) {
     IDirectPosition M;
@@ -297,8 +307,8 @@ public abstract class Operateurs {
    * longueur est 0. Renvoie tous les points si la longueur est supérieure à la
    * longueur de la ligne NB: les points sont renvoyés dans l'ordre en partant
    * du premier point.
-   * 
-   * English: First points of the line. author Mustière
+   * <p>
+   * English: First points of the line.
    */
   public static IDirectPositionList premiersPoints(ILineString ls,
       double longueur) {
@@ -311,9 +321,7 @@ public abstract class Operateurs {
     }
     listePts.add(ls.getControlPoint(0));
     for (i = 1; i < ls.coord().size(); i++) {
-      l = l
-          + Distances
-              .distance(ls.getControlPoint(i - 1), ls.getControlPoint(i));
+      l = l + ls.getControlPoint(i - 1).distance(ls.getControlPoint(i));
       if (l > longueur) {
         break;
       }
@@ -328,9 +336,9 @@ public abstract class Operateurs {
    * longueur est négative. Renvoie le dernier point seulement si la longueur
    * est 0. Renvoie tous les points si la longueur est supérieure à la longueur
    * de la ligne. NB: les points sont renvoyés dans l'ordre en partant du
-   * dernier point (ordre inverse par rapport à la géoémtrie initiale).
-   * 
-   * English: Last points of the line. author Mustière
+   * dernier point (ordre inverse par rapport à la géométrie initiale).
+   * <p>
+   * English: Last points of the line.
    */
   public static IDirectPositionList derniersPoints(ILineString ls,
       double longueur) {
@@ -344,9 +352,7 @@ public abstract class Operateurs {
     }
     listePts.add(ls.getControlPoint(nbPts - 1));
     for (i = nbPts - 2; i >= 0; i--) {
-      l = l
-          + Distances
-              .distance(ls.getControlPoint(i), ls.getControlPoint(i + 1));
+      l = l + ls.getControlPoint(i).distance(ls.getControlPoint(i + 1));
       if (l > longueur) {
         break;
       }
@@ -361,8 +367,8 @@ public abstract class Operateurs {
   /**
    * Barycentre 2D (approximatif). Il est défini comme le barycentre des points
    * intermédiaires du contour, ce qui est très approximatif
-   * 
-   * English: Center of the points of the polygon. author Mustière
+   * <p>
+   * English: Center of the points of the polygon.
    */
   public static IDirectPosition barycentre2D(IPolygon poly) {
     IDirectPositionList listePoints = poly.coord();
@@ -376,7 +382,6 @@ public abstract class Operateurs {
       sommeX = sommeX + listePoints.get(i).getX();
       sommeY = sommeY + listePoints.get(i).getY();
     }
-    ;
     moyenneX = sommeX / (listePoints.size() - 1);
     moyenneY = sommeY / (listePoints.size() - 1);
 
@@ -390,10 +395,8 @@ public abstract class Operateurs {
   /**
    * Calcul d'un offset direct (demi-buffer d'une ligne, ou décalage à gauche).
    * Le paramètre offset est la taille du décalage.
-   * 
+   * <p>
    * English: shift of a line on the left
-   * 
-   * author Bonin, Rousseaux.
    */
   public static ILineString directOffset(ILineString ls, double offset) {
     IDirectPositionList listePoints = ls.coord();
@@ -443,10 +446,8 @@ public abstract class Operateurs {
   /**
    * Calcul d'un offset indirect (demi-buffer d'une ligne, ou décalage à
    * droite). Le paramètre offset est la taille du décalage.
-   * 
+   * <p>
    * English: shift of a line on the right
-   * 
-   * author Bonin, Rousseaux.
    */
   public static ILineString indirectOffset(ILineString ls, double offset) {
     IDirectPositionList listePoints = ls.coord();
@@ -501,10 +502,8 @@ public abstract class Operateurs {
    * écartés du pas sont ajoutés sur chaque segment de la ligne ls, à partir du
    * premier point de chaque segment. (voir aussi echantillonePasVariable pour
    * une autre méthode )
-   * 
+   * <p>
    * English: Resampling of a line
-   * 
-   * author Bonin, Rousseaux.
    */
   public static ILineString echantillone(ILineString ls, double pas) {
     IDirectPosition point1, point2, Xins;
@@ -519,7 +518,7 @@ public abstract class Operateurs {
       point1 = listePoints.get(j - 1);
       listePointsEchant.add(point1);
       point2 = listePoints.get(j);
-      longTronc = Distances.distance(point1, point2);
+      longTronc = point1.distance(point2);
       fseg = new Double(longTronc / pas);
       nseg = fseg.intValue();
       u1 = new Vecteur(point1, point2);
@@ -530,7 +529,6 @@ public abstract class Operateurs {
             * u1.vectNorme().getZ());
         listePointsEchant.add(Xins);
       }
-      ;
     }
     listePointsEchant.add(listePoints.get(listePoints.size() - 1));
     routeSurech = new GM_LineString(listePointsEchant);
@@ -543,10 +541,8 @@ public abstract class Operateurs {
    * manière à ce que l'on échantillone chaque segment en différents
    * mini-segments tous de même longueur. Le pas en entrée est le pas maximum
    * autorisé.
-   * 
+   * <p>
    * English : Resampling of a line
-   * 
-   * author Grosso.
    */
   public static ILineString echantillonePasVariable(ILineString ls, double pas) {
     IDirectPosition point1, point2, Xins;
@@ -561,7 +557,7 @@ public abstract class Operateurs {
       point1 = listePoints.get(j - 1);
       listePointsEchant.add(point1);
       point2 = listePoints.get(j);
-      longTronc = Distances.distance(point1, point2);
+      longTronc = point1.distance(point2);
       fseg = new Double(longTronc / pas);
       nseg = fseg.intValue();
       double epsilonPas = 0;
@@ -577,7 +573,6 @@ public abstract class Operateurs {
             * u1.vectNorme().getZ());
         listePointsEchant.add(Xins);
       }
-      ;
     }
     listePointsEchant.add(listePoints.get(listePoints.size() - 1));
     routeSurech = new GM_LineString(listePointsEchant);
@@ -587,7 +582,7 @@ public abstract class Operateurs {
   /**
    * Renvoie le point translaté de P avec le vecteur V; Contrairement au "move"
    * de DirectPosition, on ne deplace pas le point P
-   * 
+   * <p>
    * English : Shift of a point
    */
   public static IDirectPosition translate(IDirectPosition P, Vecteur V) {
@@ -595,101 +590,90 @@ public abstract class Operateurs {
       return new DirectPosition(P.getX() + V.getX(), P.getY() + V.getY(), P
           .getZ()
           + V.getZ());
-    } else {
-      return new DirectPosition(P.getX() + V.getX(), P.getY() + V.getY(),
-          Double.NaN);
     }
+    return new DirectPosition(P.getX() + V.getX(), P.getY() + V.getY(),
+        Double.NaN);
   }
-
-  // ////////////////////////////////////////////////////////////////////
-  // (Très) Divers
-  // ////////////////////////////////////////////////////////////////////
 
   /**
    * Mise bout à bout de plusieurs GM_LineString pour constituer une nouvelle
    * GM_LineString La liste en entrée contient des GM_LineString. La polyligne
    * créée commence sur l'extrémité libre de la première polyligne de la liste.
-   * 
-   * English: Combination of lines author: Mustière
+   * <p>
+   * English: Combination of lines.
    */
   public static ILineString compileArcs(List<ILineString> geometries) {
-    IDirectPositionList pointsFinaux = new DirectPositionList();
-    IDirectPosition pointCourant;
-    ILineString LSCourante, LSSuivante, LSCopie;
-    if (geometries.size() == 0) {
-      System.out
-          .println("ATTENTION. Erreur à la compilation de lignes : aucune ligne en entrée");
+    IDirectPositionList finalPoints = new DirectPositionList();
+    if (geometries.isEmpty()) {
+      Operateurs.logger
+          .error("ATTENTION. Erreur à la compilation de lignes : aucune ligne en entrée");
       return null;
     }
-
-    LSCourante = geometries.get(0);
-
+    ILineString currentLine = geometries.get(0);
     if (geometries.size() == 1) {
-      return LSCourante;
+      return currentLine;
     }
-
-    LSSuivante = geometries.get(1);
-
-    if (Distances.proche(LSCourante.startPoint(), LSSuivante.startPoint(), 0)
-        || Distances.proche(LSCourante.startPoint(), LSSuivante.endPoint(), 0)) {
+    ILineString nextLine = geometries.get(1);
+    IDirectPosition currentPoint = null;
+    if (Distances.proche(currentLine.startPoint(), nextLine.startPoint(), 0)
+        || Distances.proche(currentLine.startPoint(), nextLine.endPoint(), 0)) {
       // premier point = point finale de la premiere ligne
-      pointsFinaux.addAll(((ILineString) LSCourante.reverse())
+      finalPoints.addAll(((ILineString) currentLine.reverse())
           .getControlPoint());
-      pointCourant = LSCourante.startPoint();
-    } else if (Distances.proche(LSCourante.endPoint(), LSSuivante.startPoint(),
+      currentPoint = currentLine.startPoint();
+    } else if (Distances.proche(currentLine.endPoint(), nextLine.startPoint(),
         0)
-        || Distances.proche(LSCourante.endPoint(), LSSuivante.endPoint(), 0)) {
+        || Distances.proche(currentLine.endPoint(), nextLine.endPoint(), 0)) {
       // premier point = point initial de la premiere ligne
-      pointsFinaux.addAll(LSCourante.getControlPoint());
-      pointCourant = LSCourante.endPoint();
+      finalPoints.addAll(currentLine.getControlPoint());
+      currentPoint = currentLine.endPoint();
     } else {
-      System.out
-          .println("ATTENTION. Erreur à la compilation de lignes (Operateurs) : les lignes ne se touchent pas");
+      Operateurs.logger
+          .error("ATTENTION. Erreur à la compilation de lignes (Operateurs) : les lignes ne se touchent pas");
       return null;
     }
-
     for (int i = 1; i < geometries.size(); i++) {
-      LSSuivante = geometries.get(i);
-      LSCopie = new GM_LineString(LSSuivante.getControlPoint());
-      if (Distances.proche(pointCourant, LSSuivante.startPoint(), 0)) {
+      nextLine = geometries.get(i);
+      ILineString lineCopy = new GM_LineString(nextLine.getControlPoint());
+      if (Distances.proche(currentPoint, nextLine.startPoint(), 0)) {
         // LSSuivante dans le bon sens
-        LSCopie.removeControlPoint(LSCopie.startPoint());
-        pointsFinaux.addAll(LSCopie.getControlPoint());
-
-        // quel intéret à cette ligne???
-        pointCourant = LSCopie.endPoint();
-      } else if (Distances.proche(pointCourant, LSSuivante.endPoint(), 0)) {
+        lineCopy.removeControlPoint(lineCopy.startPoint());
+        finalPoints.addAll(lineCopy.getControlPoint());
+        // quel intérêt à cette ligne???
+        currentPoint = lineCopy.endPoint();
+      } else if (Distances.proche(currentPoint, nextLine.endPoint(), 0)) {
         // LSSuivante dans le bon sens
-        LSCopie.removeControlPoint(LSCopie.endPoint());
-        pointsFinaux.addAll(((GM_LineString) LSCopie.reverse())
+        lineCopy.removeControlPoint(lineCopy.endPoint());
+        finalPoints.addAll(((GM_LineString) lineCopy.reverse())
             .getControlPoint());
-
-        // quel intéret à cette ligne???
-        pointCourant = LSCopie.startPoint();
+        // quel intérêt à cette ligne???
+        currentPoint = lineCopy.startPoint();
       } else {
         System.out
             .println("ATTENTION. Erreur à la compilation de lignes (Operateurs) : les lignes ne se touchent pas");
         return null;
       }
     }
-
-    return new GM_LineString(pointsFinaux);
+    return new GM_LineString(finalPoints);
   }
 
   /**
    * Version plus robuste mais aussi potentiellement faussée de l'intersection.
    * Si JTS plante au calcul d'intersection, on filtre les surfaces avec Douglas
    * et Peucker, progressivement avec 10 seuils entre min et max.
-   * 
-   * English: Robust intersection of objects (to bypass JTS bugs) author:
-   * Mustière
+   * <p>
+   * English: Robust intersection of objects (to bypass JTS bugs).
+   * @param A a geometry
+   * @param B another geometry
+   * @param min minimum threshold for Douglas-Peucker algorithm
+   * @param max maximum threshold for Douglas-Peucker algorithm
+   * @return the intersection of geometries A and B
    */
   public static IGeometry intersectionRobuste(IGeometry A, IGeometry B,
       double min, double max) {
     IGeometry intersection, Amodif, Bmodif;
     double seuilDouglas;
     intersection = A.intersection(B);
-
     if (intersection != null) {
       return intersection;
     }
@@ -699,14 +683,16 @@ public abstract class Operateurs {
       Bmodif = Filtering.DouglasPeucker(B, seuilDouglas);
       intersection = Amodif.intersection(Bmodif);
       if (intersection != null) {
-        System.out
-            .println("Calcul d'intersection fait après filtrage avec Douglas Peucker à "
-                + seuilDouglas + "m, pour cause de plantage de JTS");
+        if (Operateurs.logger.isDebugEnabled()) {
+          Operateurs.logger
+              .debug("Calcul d'intersection fait après filtrage avec Douglas Peucker à "
+                  + seuilDouglas + "m, pour cause de plantage de JTS");
+        }
         return intersection;
       }
     }
-    System.out
-        .println("ATTENTION : Plantage du calcul d'intersection, même après nettoyage de la géométrie avec Douglas Peucker");
+    Operateurs.logger
+        .error("ATTENTION : Plantage du calcul d'intersection, même après nettoyage de la géométrie avec Douglas Peucker");
     return null;
   }
 
@@ -714,16 +700,14 @@ public abstract class Operateurs {
    * Version plus robuste mais aussi potentiellement faussée de l'union. Si JTS
    * plante au calcul d'union, on filtre les surfaces avec Douglas et Peucker,
    * progressivement avec 10 seuils entre min et max.
-   * 
-   * English: Robust union of objects (to bypass JTS bugs) author: Mustière
+   * <p>
+   * English: Robust union of objects (to bypass JTS bugs).
    */
   public static IGeometry unionRobuste(IGeometry A, IGeometry B, double min,
       double max) {
     IGeometry union, Amodif, Bmodif;
     double seuilDouglas;
-
     union = A.union(B);
-
     if (union != null) {
       return union;
     }
@@ -751,8 +735,7 @@ public abstract class Operateurs {
    * Methode qui donne l'angle (radians) par rapport à l'axe des x de la droite
    * passant au mieux au milieu d'un nuage de points (regression par moindres
    * carrés). Cet angle (défini à pi près) est entre 0 et pi.
-   * 
-   * English: Linear approximation author: grosso
+   * English: Linear approximation.
    */
   public static Angle directionPrincipale(IDirectPositionList listePts) {
     Angle ang = new Angle();
@@ -768,9 +751,8 @@ public abstract class Operateurs {
       angle = ang.getValeur();
       if (angle >= Math.PI) {
         return new Angle(angle - Math.PI);
-      } else {
-        return new Angle(angle);
       }
+      return new Angle(angle);
     }
 
     // initialisation des matrices
@@ -805,9 +787,8 @@ public abstract class Operateurs {
     // on replace cet angle dans 0 et pi
     if (angle < 0) {
       return new Angle(angle + Math.PI);
-    } else {
-      return new Angle(angle);
     }
+    return new Angle(angle);
   }
 
   /**
@@ -818,8 +799,8 @@ public abstract class Operateurs {
    * liste des points peut correspondre à n points d'un arc, l'angle représente
    * alors l'orientation générale de ces points, en prenant le premier pour
    * point de départ.
-   * 
-   * English: Linear approximation author: grosso
+   * <p>
+   * English: Linear approximation.
    */
   public static Angle directionPrincipaleOrientee(IDirectPositionList listePts) {
     double angle;
@@ -871,9 +852,8 @@ public abstract class Operateurs {
     if (moyenneY < 0) {
       if (angle >= 0) {
         return new Angle(angle + Math.PI);
-      } else {
-        return new Angle(angle + 2 * Math.PI);
       }
+      return new Angle(angle + 2 * Math.PI);
     }
     if (angle < 0) {
       return new Angle(angle + Math.PI);
@@ -921,7 +901,7 @@ public abstract class Operateurs {
 
   /**
    * Teste si 2 <code>GM_Point</code>s ont les mêmes coordonnées.
-   * 
+   * <p>
    * English: Tests the equality of geometries
    */
   public static boolean superposes(IPoint pt1, IPoint pt2) {
@@ -931,7 +911,7 @@ public abstract class Operateurs {
   /**
    * Teste la présence d'un DirectPosition (égalité 2D) dans une
    * DirectPositionList. Renvoie -1 si le directPosition n'est pas dans la liste
-   * 
+   * <p>
    * English: tests if the line contains the point (in 2D)
    */
   public static int indice2D(IDirectPositionList dpl, IDirectPosition dp) {
@@ -949,7 +929,7 @@ public abstract class Operateurs {
   /**
    * Teste la présence d'un DirectPosition (égalité 3D) dans une
    * DirectPositionList. Renvoie -1 si le directPosition n'est pas dans la liste
-   * 
+   * <p>
    * English: tests if the line contains the point (in 3D)
    */
   public static int indice3D(IDirectPositionList dpl, IDirectPosition dp) {
@@ -968,8 +948,8 @@ public abstract class Operateurs {
   /**
    * Attribue par interpolation un Z aux points d'une ligne en connaissant le Z
    * des extrémités.
-   * 
-   * English: Z interpolation author : Arnaud Lafragueta
+   * <p>
+   * English: Z interpolation.
    */
   public static ILineString calculeZ(ILineString ligne) {
 
@@ -984,7 +964,7 @@ public abstract class Operateurs {
     for (int j = 1; j < listePoints.size() - 1; j++) {
       pointRoute = listePoints.get(j);
       pointRoute1 = listePoints.get(j - 1);
-      longueur = longueur + Distances.distance(pointRoute, pointRoute1);
+      longueur = longueur + pointRoute.distance(pointRoute1);
       zCalc = z_ini + (z_fin - z_ini) * longueur / ligne.length();
       pointRoute.setZ(zCalc);
       ligne.setControlPoint(j, pointRoute);
@@ -996,55 +976,73 @@ public abstract class Operateurs {
   /**
    * Fusionne les surfaces adjacentes d'une population. NB: quand X objets sont
    * fusionés, un des objets (au hasard) est gardé avec ses attributs et sa
-   * géoémtrie est remplacée par celle fusionée.
-   * 
+   * géométrie est remplacée par celle fusionée.
+   * <p>
    * English: aggregation of surfaces
    */
-  public static void fusionneSurfaces(IPopulation<IFeature> popSurf) {
-
-    Iterator<IFeature> itSurf = popSurf.getElements().iterator();
-    Iterator<IFeature> itSurfAdjacentes;
-    List<IFeature> aEnlever = new ArrayList<IFeature>();
-    IGeometry surfaceAfusionner, surfFusionnee;
-    IFeature objSurf, objAfusionner, objetAEnlever;
-
-    if (!popSurf.hasSpatialIndex()) {
-      popSurf.initSpatialIndex(Tiling.class, true);
+  @SuppressWarnings("unchecked")
+  public static void fusionneSurfaces(IPopulation<? extends IFeature> pop) {
+    if (!pop.hasSpatialIndex()) {
+      pop.initSpatialIndex(Tiling.class, true);
     }
-
-    while (itSurf.hasNext()) {
-      objSurf = itSurf.next();
-      if (aEnlever.contains(objSurf)) {
+    if (!pop.getSpatialIndex().hasAutomaticUpdate()) {
+      pop.getSpatialIndex().setAutomaticUpdate(true);
+    }
+    List<IFeature> toRemove = new ArrayList<IFeature>();
+    for (IFeature feature : pop) {
+      // did we already deal with this feature?
+      if (toRemove.contains(feature)) {
         continue;
       }
-      List<IFeature> surfAdjacentes = popSurf.select(objSurf.getGeom()).getElements();
-      surfAdjacentes.remove(objSurf);
-      if (surfAdjacentes.size() == 0) {
-        continue;
+      if (Operateurs.logger.isDebugEnabled()) {
+        Operateurs.logger.debug("dealing with feature " + feature.getId());
       }
-      aEnlever.addAll(surfAdjacentes);
-      itSurfAdjacentes = surfAdjacentes.iterator();
-      // ATTENTION: bidouille ci-dessous pour pallier l'absence de "copie"
-      // générique de géométrie
-      surfFusionnee = new GM_Polygon(((IPolygon) objSurf.getGeom()).boundary());
-      while (itSurfAdjacentes.hasNext()) {
-        objAfusionner = itSurfAdjacentes.next();
-        surfaceAfusionner = objAfusionner.getGeom();
-        surfFusionnee = surfFusionnee.union(surfaceAfusionner);
+      boolean changed = true;
+      while (changed) {
+        changed = false;
+        // get the others intersecting features
+        Collection<? extends IFeature> intersectingFeatures = pop
+            .select(feature.getGeom());
+        // remove the current feature
+        intersectingFeatures.remove(feature);
+        intersectingFeatures.removeAll(toRemove);
+        if (Operateurs.logger.isDebugEnabled()) {
+          Operateurs.logger.debug("intersercting "
+              + intersectingFeatures.size() + " features");
+        }
+        // no intersecting feature
+        if (intersectingFeatures.isEmpty()) {
+          continue;
+        }
+        // we remove them from the features we have to deal with
+        toRemove.addAll(intersectingFeatures);
+        IGeometry union = feature.getGeom();
+        IGeometry initialGeometry = feature.getGeom();
+        for (IFeature objAfusionner : intersectingFeatures) {
+          IGeometry surfaceToUnion = objAfusionner.getGeom();
+          union = union.union(surfaceToUnion);
+        }
+        if (Operateurs.logger.isDebugEnabled()) {
+          Operateurs.logger.debug("union = " + union);
+        }
+        if (!initialGeometry.equals(union)) {
+          changed = true;
+          if (union.isMultiSurface()) {
+            if (Operateurs.logger.isDebugEnabled()) {
+              Operateurs.logger.debug("multisurface = " + union);
+            }
+            union = ((GM_MultiSurface<GM_OrientableSurface>) union).get(0);
+          }
+          feature.setGeom(union);
+        }
       }
-      objSurf.setGeom(surfFusionnee);
     }
-    Iterator<IFeature> itAEnlever = aEnlever.iterator();
-    while (itAEnlever.hasNext()) {
-      objetAEnlever = itAEnlever.next();
-      popSurf.enleveElement(objetAEnlever);
-    }
-
+    pop.removeAll(toRemove);
   }
 
   /**
    * Dilate les surfaces de la population.
-   * 
+   * <p>
    * English: dilates surfaces
    */
   public static void bufferSurfaces(IPopulation<IFeature> popSurf,
@@ -1062,11 +1060,11 @@ public abstract class Operateurs {
   /**
    * Surface d'un polygone (trous non gérés). Utile pour pallier aux déficiences
    * de JTS qui n'accèpte pas les géométries dégénérées.
-   * 
+   * <p>
    * Le calcul est effectué dans un repère local centré sur le premier point de
    * la surface, ce qui est utile pour minimiser les erreurs de calcul si on
    * manipule de grandes coordonnées).
-   * 
+   * <p>
    * English: surface of a polygon
    */
   public static double surface(IPolygon poly) {
@@ -1089,7 +1087,7 @@ public abstract class Operateurs {
 
   /**
    * Surface d'un polygone (liste de points supposée fermée).
-   * 
+   * <p>
    * English: surface of a polygon
    */
   public static double surface(IDirectPositionList pts) {
@@ -1158,11 +1156,13 @@ public abstract class Operateurs {
   }
 
   /**
-   * Détermine si une liste de points tourne dans le sens direct ou non. NB : La
-   * liste de points est supposée fermée (premier point = dernier point). NB :
-   * renvoie true pour une surface dégénérée.
-   * 
-   * English : orientation of a polygon (direct rotation?)
+   * Détermine si une liste de points tourne dans le sens direct ou non.
+   * <ul>
+   * <li>NB : La liste de points est supposée fermée (premier point = dernier point).
+   * <li>NB : renvoie true pour une surface dégénérée.
+   * </ul>
+   * <p>
+   * English : orientation of a polygon(direct rotation?).
    */
   public static boolean sensDirect(IDirectPositionList pts) {
     Iterator<IDirectPosition> itPts = pts.getList().iterator();
@@ -1177,18 +1177,14 @@ public abstract class Operateurs {
           + ((pt2.getX() - pt1.getX()) * (pt2.getY() + pt1.getY() - 2 * ymin));
       pt1 = pt2;
     }
-    if (surf > 0) {
-      return false;
-    } else {
-      return true;
-    }
+    return (surf <= 0);
   }
 
   /**
    * Fusionne bout à bout un ensemble de LineStrings en une seule.
    * <p>
    * Pour que l'algorithme fonctionne, il faut que, dans la liste, toutes les
-   * linestrings soient connexes. L'algorithme commence par remettre les
+   * linestrings soient connexes. L'algorithme comment par remettre les
    * linestrings dans l'ordre et dans le même sens.
    * 
    * @param linestringList ensemble de LineStrings
@@ -1230,7 +1226,7 @@ public abstract class Operateurs {
         i = -1;
       }
 
-      // Si le point d'arriv�e de la polyligne courante = point d'arriv�e
+      // Si le point d'arrivée de la polyligne courante = point d'arrivée
       // de la polyligne suivante
       else if (lineStringCourante.endPoint().equals2D(
           lineStringSuivante.endPoint(), 0)) {
@@ -1244,7 +1240,7 @@ public abstract class Operateurs {
         i = -1;
       }
 
-      // Si le point d'arriv�e de la polyligne courante = point de d�part
+      // Si le point d'arrivée de la polyligne courante = point de départ
       // de la polyligne suivante
       else if (lineStringCourante.endPoint().equals2D(
           lineStringSuivante.startPoint(), 0)) {
@@ -1272,7 +1268,7 @@ public abstract class Operateurs {
     }
     return lineStringCourante;
   }
-    
+
   /**
    */
   public static int insertionIndex(IDirectPosition point,
@@ -1296,37 +1292,11 @@ public abstract class Operateurs {
     }
     return imin + 1;
   }
-  
+
   /**
-   * Projection du point sur la polyligne et insertion du point projeté dans la
-   * ligne English: Projects M on the lineString and return the line with the
-   * projected point inserted author Mustière
-   */
-  public static void projectAndInsert(IDirectPosition point,
-      IDirectPositionList points) {
-    if (points.size() < 2) {
-      return;
-    }
-    IDirectPosition ptmin = Operateurs.projection(point, points.get(0), points
-        .get(1));
-    double dmin = point.distance(ptmin);
-    int imin = 0;
-    for (int i = 0; i < points.size() - 1; i++) {
-      IDirectPosition pt = Operateurs.projection(point, points.get(i), points
-          .get(i + 1));
-      double d = point.distance(pt);
-      if (d < dmin) {
-        ptmin = pt;
-        dmin = d;
-        imin = i;
-      }
-    }
-    points.add(imin + 1, ptmin);
-  }
-  
-  /**
-   * Méthode pour rééchantillonner une GM_LineString. English: Resampling of a
-   * line
+   * Méthode pour rééchantillonner une GM_LineString.
+   * <p>
+   * English: Resampling of a line.
    */
   public static ILineString resampling(ILineString ls, double pas) {
     IDirectPositionList listePoints = ls.coord();
@@ -1353,5 +1323,4 @@ public abstract class Operateurs {
     resampledList.add(listePoints.get(listePoints.size() - 1));
     return new GM_LineString(resampledList);
   }
-  
 }

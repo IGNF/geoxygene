@@ -35,7 +35,6 @@ import org.apache.batik.ext.awt.geom.Polygon2D;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Mark {
-
   @XmlElement(name = "WellKnownName")
   private String wellKnownName = "square"; //$NON-NLS-1$
 
@@ -129,48 +128,59 @@ public class Mark {
           Mark.crossHalfWidth, Mark.crossHalfWidth, -Mark.crossHalfWidth,
           -Mark.crossHalfWidth, -0.5f, -0.5f }, 13);
   static float sqrt2over2 = 0.5f * (float) Math.sqrt(2);
-  static float xShapeHalfWidth = 0.1f;
-  private static Shape xShape = new Polygon2D(new float[] { 0.0f,
-      Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth),
-      Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth), Mark.xShapeHalfWidth,
-      Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth),
-      Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth), 0,
-      -Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth),
-      -Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth), -Mark.xShapeHalfWidth,
-      -Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth),
-      -Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth), 0.0f }, new float[] {
-      -Mark.xShapeHalfWidth, -Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth),
-      -Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth), 0.0f,
-      Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth),
-      Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth), Mark.xShapeHalfWidth,
-      Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth),
-      Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth), 0.0f,
-      -Mark.sqrt2over2 * (1 - Mark.xShapeHalfWidth),
-      -Mark.sqrt2over2 * (1 + Mark.xShapeHalfWidth), -Mark.xShapeHalfWidth },
-      13);
+  static float xShapeRadius = 0.5f;
+  static float xShapeRatio = 0.25f;
+  // static float xShapeP = sqrt2over2 * xShapeRadius * (1 - xShapeRatio);
+  static float xShapeP = (float) (Mark.sqrt2over2 * (Math.sqrt(Math.pow(
+      Mark.xShapeRadius, 2)
+      - (Math.pow(Mark.xShapeRatio * Mark.xShapeRadius, 2) / 2)) - (Mark.xShapeRadius
+      * Mark.xShapeRatio / Math.sqrt(2))));
+  static float xShapeR = Mark.xShapeRadius * Mark.xShapeRatio;
+  private static Shape xShape = new Polygon2D(new float[] { 0.0f, Mark.xShapeP,
+      Mark.xShapeP + Mark.xShapeR, Mark.xShapeR, Mark.xShapeP + Mark.xShapeR,
+      Mark.xShapeP, 0.0f, -Mark.xShapeP, -(Mark.xShapeP + Mark.xShapeR),
+      -Mark.xShapeR, -(Mark.xShapeP + Mark.xShapeR), -Mark.xShapeP, 0.0f },
+      new float[] { -Mark.xShapeR, -(Mark.xShapeP + Mark.xShapeR),
+          -Mark.xShapeP, 0.0f, Mark.xShapeP, Mark.xShapeP + Mark.xShapeR,
+          Mark.xShapeR, Mark.xShapeP + Mark.xShapeR, Mark.xShapeP, 0.0f,
+          -Mark.xShapeP, -(Mark.xShapeP + Mark.xShapeR), -Mark.xShapeR }, 13);
+  private static Shape hLine = new Polygon2D(new float[] { -0.5f, -0.5f, 0.5f,
+      0.5f }, new float[] { 0.1f, -0.1f, -0.1f, 0.1f }, 4);
+  private static Shape vLine = new Polygon2D(new float[] { 0.1f, -0.1f, -0.1f,
+      0.1f }, new float[] { -0.5f, -0.5f, 0.5f, 0.5f }, 4);
+  private static Shape minus = new Line2D.Float(-0.5f, 0.0f, 0.5f, 0.0f);
 
   /**
    * @return the AWT shape used to draw this Mark
    */
   public Shape toShape() {
     if ((this.wellKnownName == null)
-        || (this.wellKnownName.equalsIgnoreCase("square"))) {
-      return Mark.square;
+        || (this.wellKnownName.equalsIgnoreCase("square"))) {//$NON-NLS-1$
+      return Mark.square; 
     }
-    if (this.wellKnownName.equalsIgnoreCase("circle")) {
-      return Mark.circle;
+    if (this.wellKnownName.equalsIgnoreCase("circle")) {//$NON-NLS-1$
+      return Mark.circle; 
     }
-    if (this.wellKnownName.equalsIgnoreCase("triangle")) {
-      return Mark.triangle;
+    if (this.wellKnownName.equalsIgnoreCase("triangle")) {//$NON-NLS-1$
+      return Mark.triangle; 
     }
-    if (this.wellKnownName.equalsIgnoreCase("star")) {
-      return Mark.star;
+    if (this.wellKnownName.equalsIgnoreCase("star")) {//$NON-NLS-1$
+      return Mark.star; 
     }
-    if (this.wellKnownName.equalsIgnoreCase("cross")) {
-      return Mark.cross;
+    if (this.wellKnownName.equalsIgnoreCase("cross")) {//$NON-NLS-1$
+      return Mark.cross; 
     }
-    if (this.wellKnownName.equalsIgnoreCase("x")) {
-      return Mark.xShape;
+    if (this.wellKnownName.equalsIgnoreCase("x")) {//$NON-NLS-1$
+      return Mark.xShape; 
+    }
+    if (this.wellKnownName.equalsIgnoreCase("hLine")) {//$NON-NLS-1$
+      return Mark.hLine; 
+    }
+    if (this.wellKnownName.equalsIgnoreCase("vLine")) {//$NON-NLS-1$
+      return Mark.vLine; 
+    }
+    if (this.wellKnownName.equalsIgnoreCase("-")) {//$NON-NLS-1$
+      return Mark.minus; 
     }
     return null;
   }

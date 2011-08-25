@@ -44,5 +44,4 @@ public abstract class AbstractGeometryEditMode extends AbstractMode {
   public IDirectPosition getCurrentPoint() {
     return this.currentPoint;
   }
-
 }

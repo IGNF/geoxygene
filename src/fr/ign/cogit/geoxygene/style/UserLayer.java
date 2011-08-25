@@ -58,8 +58,8 @@ public class UserLayer extends AbstractLayer {
   }
 
   public UserLayer(Layer layer) {
+    this();
     this.setName(layer.getName());
-    this.setFeatures(new FT_FeatureCollection<FT_Feature>());
     this.setStyles(layer.getStyles());
   }
 }

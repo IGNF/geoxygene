@@ -24,6 +24,7 @@ import fr.ign.cogit.geoxygene.api.feature.type.GF_Operation;
 
 /**
  * @author Sandrine Balley
+ *
  */
 public class Operation implements GF_Operation {
 
@@ -46,9 +47,19 @@ public class Operation implements GF_Operation {
 
   /** Identifiant */
   protected int id;
+  /** Renvoie l'identifiant. */
+  public int getId() {
+    return this.id;
+  }
+
+  /** Affecte un identifiant. */
+  public void setId(int Id) {
+    this.id = Id;
+  }
+
   /** FC_featureType auquel se rapporte l'operation */
   protected GF_FeatureType featureType;
-  /** nom de l'operation. */
+  /** le nom de l'opération */
   protected String memberName;
   /** definition de l'opeartion. */
   protected String definition;
@@ -81,16 +92,6 @@ public class Operation implements GF_Operation {
     this.formalDefinition = value;
   }
 
-  /** Renvoie l'identifiant. */
-  public int getId() {
-    return this.id;
-  }
-
-  /** Affecte un identifiant. */
-  public void setId(int Id) {
-    this.id = Id;
-  }
-
   /** Renvoie le feature type auquel est rattaché la propriété. */
   public GF_FeatureType getFeatureType() {
     return this.featureType;
@@ -112,11 +113,13 @@ public class Operation implements GF_Operation {
   }
 
   /** Renvoie la signature. */
+  @Override
   public String getSignature() {
     return this.signature;
   }
 
   /** Affecte une signature. */
+  @Override
   public void setSignature(String Signature) {
     this.signature = Signature;
   }

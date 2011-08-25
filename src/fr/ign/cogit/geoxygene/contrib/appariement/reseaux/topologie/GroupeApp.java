@@ -1,28 +1,20 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie;
@@ -38,7 +30,6 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.LienReseaux;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
-import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
 /**
@@ -48,7 +39,6 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
  * @version 1.0
- * 
  */
 
 public class GroupeApp extends Groupe {
@@ -613,8 +603,8 @@ public class GroupeApp extends Groupe {
         in = (NoeudApp) noeudsIn.get(i);
         out = (NoeudApp) noeudsOut.get(j);
         // if ( in == out ) continue;
-        pcc = (GroupeApp) in.plusCourtChemin(out, this, 0); // plus court chemin
-                                                            // dans le groupe
+     // plus court chemin dans le groupe
+        pcc = (GroupeApp) in.plusCourtChemin(out, this, 0);
         if (pcc == null) {
           continue;
         }
@@ -705,14 +695,10 @@ public class GroupeApp extends Groupe {
     }
 
     // on inverse l'arc au besoin.
-    d1 = Distances.distance(chemin.startPoint(), arcRef.getGeometrie()
-        .startPoint())
-        + Distances.distance(chemin.endPoint(), arcRef.getGeometrie()
-            .endPoint());
-    d2 = Distances.distance(chemin.startPoint(), arcRef.getGeometrie()
-        .endPoint())
-        + Distances.distance(chemin.endPoint(), arcRef.getGeometrie()
-            .startPoint());
+    d1 = chemin.startPoint().distance(arcRef.getGeometrie().startPoint())
+        + chemin.endPoint().distance(arcRef.getGeometrie().endPoint());
+    d2 = chemin.startPoint().distance(arcRef.getGeometrie().endPoint())
+        + chemin.endPoint().distance(arcRef.getGeometrie().startPoint());
     if (d1 < d2) {
       chemin2 = chemin;
     } else {

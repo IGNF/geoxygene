@@ -4,11 +4,11 @@
  * GeOxygene aims at providing an open framework which implements OGC/ISO
  * specifications for the development and deployment of geographic (GIS)
  * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut G�ographique National (the French National Mapping Agency).
+ * Institut Géographique National (the French National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net
  * 
- * Copyright (C) 2005 Institut G�ographique National
+ * Copyright (C) 2005 Institut Géographique National
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -38,25 +38,19 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
  */
 
 public class NoeudDelaunay extends Noeud {
-
   private String nomclasseligne = null;
-
   public String getNomclasseligne() {
     return this.nomclasseligne;
   }
-
   public void setNomclasseligne(String nom) {
     this.nomclasseligne = nom;
   }
-
   public NoeudDelaunay() {
     super();
   }
-
   public NoeudDelaunay(IPoint point) {
     super(point);
   }
-
   public NoeudDelaunay(IDirectPosition dp) {
     super(dp);
   }

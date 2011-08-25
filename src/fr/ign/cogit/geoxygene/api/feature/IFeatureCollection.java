@@ -83,7 +83,7 @@ public interface IFeatureCollection<Feat extends IFeature> extends
    * le reinitialiser si on souhaite l'utiliser.
    * @param liste liste de <code>Feature</code>s à affecter
    */
-  public abstract void setElements(Collection<Feat> liste);
+  public abstract void setElements(Collection<? extends Feat> liste);
 
   /**
    * Renvoie le i-eme element de la liste des composants de this.
@@ -93,16 +93,17 @@ public interface IFeatureCollection<Feat extends IFeature> extends
   public abstract Feat get(int i);
 
   /**
-   * Ajoute un element a la liste des composants de this, et met � jour le lien
+   * Ajoute un element a la liste des composants de this, et met à jour le lien
    * inverse.
    */
+  @Override
   public abstract boolean add(Feat value);
 
   /**
    * Ajoute les éléments d'une FT_FeatureCollection a la liste des composants de
    * this, et met à jour le lien inverse.
    */
-  public abstract void addCollection(IFeatureCollection<Feat> value);
+  public abstract void addCollection(Collection<Feat> value);
 
   /**
    * Efface de la liste l'element passe en parametre. Attention, si l'élément
@@ -115,6 +116,7 @@ public interface IFeatureCollection<Feat extends IFeature> extends
    * Attention, si l'élément est persistant, celui-ci n'est pas détruit, le
    * faire après au besoin.
    */
+  @Override
   public abstract boolean removeAll(Collection<?> coll);
 
   /**
@@ -122,8 +124,10 @@ public interface IFeatureCollection<Feat extends IFeature> extends
    * 
    * @see java.util.Collection#clear()
    */
+  @Override
   public abstract void clear();
 
+  @Override
   public abstract int size();
 
   // ---------------------------------------
@@ -136,7 +140,7 @@ public interface IFeatureCollection<Feat extends IFeature> extends
    * Renvoie toutes les geometries sous la forme d'un GM_Aggregate.
    * @return toutes les geometries sous la forme d'un GM_Aggregate.
    */
-  public abstract IAggregate<IGeometry> getGeomAggregate();
+  public abstract IAggregate<? extends IGeometry> getGeomAggregate();
 
   /**
    * Renvoie la position du centre de l'envelope de la collection.
@@ -213,7 +217,7 @@ public interface IFeatureCollection<Feat extends IFeature> extends
   public abstract void initSpatialIndex(SpatialIndex<?> spIdx);
 
   /**
-   * D�truit l'index spatial.
+   * Détruit l'index spatial.
    */
   public abstract void removeSpatialIndex();
 
@@ -227,7 +231,7 @@ public interface IFeatureCollection<Feat extends IFeature> extends
    * @param D cote
    * @return objets qui intersectent le carre dont P est le centre, de cote D.
    */
-  public abstract IFeatureCollection<Feat> select(IDirectPosition P, double D);
+  public abstract Collection<Feat> select(IDirectPosition P, double D);
 
   /**
    * Selection dans un rectangle.
@@ -235,7 +239,7 @@ public interface IFeatureCollection<Feat extends IFeature> extends
    * @param env rectangle
    * @return objets qui intersectent un rectangle
    */
-  public abstract IFeatureCollection<Feat> select(IEnvelope env);
+  public abstract Collection<Feat> select(IEnvelope env);
 
   /**
    * Selection des objets qui intersectent un objet geometrique quelconque.
@@ -243,7 +247,7 @@ public interface IFeatureCollection<Feat extends IFeature> extends
    * @param geometry geometrie quelconque
    * @return objets qui intersectent un objet geometrique quelconque.
    */
-  public abstract IFeatureCollection<Feat> select(IGeometry geometry);
+  public abstract Collection<Feat> select(IGeometry geometry);
 
   /**
    * Selection des objets qui croisent ou intersectent un objet geometrique
@@ -257,7 +261,7 @@ public interface IFeatureCollection<Feat extends IFeature> extends
    *          cela ne renvoie pas la ligne, avec FALSE cela la renvoie
    * @return objets qui intersectent strictement un objet geometrique quelconque
    */
-  public abstract IFeatureCollection<Feat> select(IGeometry geometry,
+  public abstract Collection<Feat> select(IGeometry geometry,
       boolean strictlyCrosses);
 
   /**
@@ -268,7 +272,7 @@ public interface IFeatureCollection<Feat extends IFeature> extends
    * @return objets à moins d'une certaine distance d'un objet geometrique
    *         quelconque.
    */
-  public abstract IFeatureCollection<Feat> select(IGeometry geometry,
+  public abstract Collection<Feat> select(IGeometry geometry,
       double distance);
 
   // ---------------------------------------
@@ -316,22 +320,31 @@ public interface IFeatureCollection<Feat extends IFeature> extends
   public abstract void addUniqueCollection(
       IFeatureCollection<? extends Feat> value);
 
+  @Override
   public abstract Iterator<Feat> iterator();
 
+  @Override
   public abstract boolean contains(Object obj);
 
+  @Override
   public abstract boolean containsAll(Collection<?> coll);
 
+  @Override
   public abstract boolean isEmpty();
 
+  @Override
   public abstract boolean remove(Object obj);
 
+  @Override
   public abstract boolean retainAll(Collection<?> coll);
 
+  @Override
   public abstract Object[] toArray();
 
+  @Override
   public abstract boolean addAll(Collection<? extends Feat> c);
 
+  @Override
   public abstract <T> T[] toArray(T[] a);
 
   public abstract Class<Feat> getClasse();

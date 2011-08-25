@@ -1,33 +1,26 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.delaunay;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -65,14 +58,15 @@ public class ChargeurTriangulation extends Chargeur {
   }
 
   public static void importLigneEnPoints(String nomClasseGeo,
-      Triangulation carte) throws Exception {
+      AbstractTriangulation carte) throws Exception {
     Class<?> clGeo = Class.forName(nomClasseGeo);
     NoeudDelaunay noeud;
     IDirectPositionList listePoints;
     int i, j;
 
     if (ChargeurTriangulation.logger.isDebugEnabled()) {
-      ChargeurTriangulation.logger.debug("Début importLignesEnPoints");
+      ChargeurTriangulation.logger.debug(I18N
+          .getString("ChargeurTriangulation.ImportLinesAsPoints")); //$NON-NLS-1$
     }
     IFeatureCollection<?> listeFeatures = DataSet.db.loadAllFeatures(clGeo);
     for (i = 0; i < listeFeatures.size(); i++) {
@@ -105,7 +99,7 @@ public class ChargeurTriangulation extends Chargeur {
   }
 
   public static void importLigneEnPoints(IFeatureCollection<?> listeFeatures,
-      Triangulation carte) throws Exception {
+      AbstractTriangulation carte) throws Exception {
     IFeature objGeo;
     NoeudDelaunay noeud;
     IDirectPositionList listePoints;
@@ -151,7 +145,7 @@ public class ChargeurTriangulation extends Chargeur {
     }
   }
 
-  public static void importSegments(String nomClasseGeo, Triangulation carte)
+  public static void importSegments(String nomClasseGeo, AbstractTriangulation carte)
       throws Exception {
     Class<?> clGeo = Class.forName(nomClasseGeo);
 
@@ -159,7 +153,7 @@ public class ChargeurTriangulation extends Chargeur {
     ArcDelaunay arc;
     IDirectPositionList listePoints;
     IDirectPosition dp;
-    ArrayList<NoeudDelaunay> listeTemp, listeNoeuds, listeNoeudsEffaces = null;
+    ArrayList<Noeud> listeTemp, listeNoeuds, listeNoeudsEffaces = null;
     IDirectPositionList tableau = null;
     Iterator<?> it, itEntrants, itSortants = null;
     int i, j;
@@ -178,7 +172,7 @@ public class ChargeurTriangulation extends Chargeur {
 
       if (objGeo.getGeom() instanceof ILineString) {
         listePoints = ((ILineString) objGeo.getGeom()).getControlPoint();
-        listeTemp = new ArrayList<NoeudDelaunay>();
+        listeTemp = new ArrayList<Noeud>();
         for (j = 0; j < listePoints.size(); j++) {
           if ((j % 100) == 0) {
             if (ChargeurTriangulation.logger.isDebugEnabled()) {
@@ -206,11 +200,10 @@ public class ChargeurTriangulation extends Chargeur {
       ChargeurTriangulation.logger.debug(I18N
           .getString("ChargeurTriangulation.DoubleNodesFiltering")); //$NON-NLS-1$
     }
-    listeNoeuds = new ArrayList<NoeudDelaunay>();
-    for(Noeud n:carte.getListeNoeuds()) listeNoeuds.add((NoeudDelaunay) n);
+    listeNoeuds = new ArrayList<Noeud>(carte.getListeNoeuds());
     it = carte.getListeNoeuds().iterator();
     tableau = new DirectPositionList();
-    listeNoeudsEffaces = new ArrayList<NoeudDelaunay>();
+    listeNoeudsEffaces = new ArrayList<Noeud>();
     while (it.hasNext()) {
       noeud1 = (NoeudDelaunay) it.next();
       dp = noeud1.getCoord();
@@ -243,19 +236,17 @@ public class ChargeurTriangulation extends Chargeur {
     }
   }
 
-  public static void importSegments(IFeatureCollection<IFeature> listeFeatures,
-      Triangulation carte) throws Exception {
+  public static void importSegments(Collection<? extends IFeature> listeFeatures,
+      AbstractTriangulation carte) throws Exception {
     Class<?>[] signaturea = { carte.getPopNoeuds().getClasse(),
         carte.getPopNoeuds().getClasse() };
     Object[] parama = new Object[2];
-
-    for (int i = 0; i < listeFeatures.size(); i++) {
+    int i = 0;
+    for (IFeature objGeo : listeFeatures) {
       if (ChargeurTriangulation.logger.isDebugEnabled()) {
         ChargeurTriangulation.logger.debug(I18N
             .getString("ChargeurTriangulation.NumberOfImportedLines") + (i++)); //$NON-NLS-1$
       }
-      IFeature objGeo = listeFeatures.get(i);
-
       if (objGeo.getGeom() instanceof fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString) {
         IDirectPositionList listePoints = ((ILineString) objGeo.getGeom())
             .coord();
@@ -354,7 +345,7 @@ public class ChargeurTriangulation extends Chargeur {
    * @throws Exception
    */
   public static void importPolygoneEnPoints(IFeatureCollection<IFeature> listeFeatures,
-      Triangulation carte) throws Exception {
+      AbstractTriangulation carte) throws Exception {
     NoeudDelaunay noeud;
     IDirectPositionList listePoints;
     int i, j;
@@ -398,7 +389,8 @@ public class ChargeurTriangulation extends Chargeur {
    * @throws Exception
    */
   public static void importCentroidesPolygones(
-      IFeatureCollection<IFeature> features, Triangulation carte) throws Exception {
+      Collection<? extends IFeature> features, AbstractTriangulation carte)
+      throws Exception {
     NoeudDelaunay noeud;
     if (ChargeurTriangulation.logger.isTraceEnabled()) {
       ChargeurTriangulation.logger.trace(I18N

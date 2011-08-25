@@ -1,22 +1,3 @@
-/*
- * This file is part of the GeOxygene project source files. GeOxygene aims at
- * providing an open framework which implements OGC/ISO specifications for the
- * development and deployment of geographic (GIS) applications. It is a open
- * source contribution of the COGIT laboratory at the Institut Géographique
- * National (the French National Mapping Agency). See:
- * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
- * Géographique National This library is free software; you can redistribute it
- * and/or modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of the License,
- * or any later version. This library is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
- * General Public License for more details. You should have received a copy of
- * the GNU Lesser General Public License along with this library (see file
- * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-
 package fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu;
 
 import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
@@ -24,6 +5,7 @@ import fr.ign.cogit.geoxygene.api.feature.type.GF_InheritanceRelation;
 
 /**
  * @author Sandrine Balley
+ * 
  */
 public class InheritanceRelation implements GF_InheritanceRelation {
 
@@ -55,11 +37,13 @@ public class InheritanceRelation implements GF_InheritanceRelation {
   protected String name;
 
   /** Renvoie le nom. */
+  @Override
   public String getName() {
     return this.name;
   }
 
   /** Affecte un nom. */
+  @Override
   public void setName(String Name) {
     this.name = Name;
   }
@@ -68,11 +52,13 @@ public class InheritanceRelation implements GF_InheritanceRelation {
   protected FeatureType superType;
 
   /** Renvoie la classe mère de la relation d'héritage. */
+  @Override
   public GF_FeatureType getSuperType() {
     return this.superType;
   }
 
   /** Affecte une classe mère à la relation d'héritage. */
+  @Override
   public void setSuperType(GF_FeatureType SuperType) {
     FeatureType old = this.superType;
     this.superType = (FeatureType) SuperType;
@@ -90,11 +76,13 @@ public class InheritanceRelation implements GF_InheritanceRelation {
   protected FeatureType subType;
 
   /** Renvoie la classe fille de la relation d'héritage. */
+  @Override
   public GF_FeatureType getSubType() {
     return this.subType;
   }
 
   /** Affecte une classe fille à la relation d'héritage. */
+  @Override
   public void setSubType(GF_FeatureType SubType) {
     FeatureType old = this.subType;
     this.subType = (FeatureType) SubType;
@@ -112,11 +100,13 @@ public class InheritanceRelation implements GF_InheritanceRelation {
   protected String description;
 
   /** Renvoie la description. */
+  @Override
   public String getDescription() {
     return this.description;
   }
 
   /** Affecte une description. */
+  @Override
   public void setDescription(String Description) {
     this.description = Description;
   }
@@ -128,11 +118,13 @@ public class InheritanceRelation implements GF_InheritanceRelation {
   protected boolean uniqueInstance;
 
   /** Renvoie l'attribut uniqueInstance. */
+  @Override
   public boolean getUniqueInstance() {
     return this.uniqueInstance;
   }
 
   /** Affecte l'attribut uniqueInstance.. */
+  @Override
   public void setUniqueInstance(boolean UniqueInstance) {
     this.uniqueInstance = UniqueInstance;
   }
@@ -155,7 +147,7 @@ public class InheritanceRelation implements GF_InheritanceRelation {
    * commodité pour retrouver à quel schéma conceptuel appartient cette relation
    * (en passant par les featureType qu'elle relie). S'il y a incohérence entre
    * les membres de l'héritage, la méthode renvoie null.
-   *
+   * 
    */
   public SchemaConceptuelJeu getSchemaConceptuel() {
 

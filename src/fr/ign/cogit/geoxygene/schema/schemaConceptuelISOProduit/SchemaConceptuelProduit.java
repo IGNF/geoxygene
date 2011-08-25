@@ -34,47 +34,51 @@ import fr.ign.cogit.geoxygene.api.feature.type.GF_InheritanceRelation;
 import fr.ign.cogit.geoxygene.schema.SchemaConceptuel;
 
 /**
- * @author Abadie, Balley 
- *
- *		   schéma conceptuel d'un produit, typiquement une base
- *         de données Géographique. Correspond à la notion "Feature Catalogue"
- *         dans les normes ISO. Un schéma est composé de classes et de relations
+ * 
+ * @author Abadie, Balley
+ * 
+ *         schéma conceptuel d'un produit, typiquement une base de données
+ *         Géographique. Correspond à la notion "Feature Catalogue" dans les
+ *         normes ISO. Un schéma est composé de classes et de relations
  *         (associations et héritage) comportant des proprietés (attributs,
- *         rôles, opérations) et des contraintes. Cette classe est similaire à
- *         la classe
- *         fr.ign.cogit.appli.commun.metadata.schemaConceptuel.schemaJeu.
- *         schemaConceptuelJeu à quelques nuances prés : elle utilise notamment
- *         des classes implémentant le GFM mais dédiées aux produits et non pas
- *         aux jeux de données.
+ *         rôles, opérations) et des contraintes.
+ * 
+ *         Cette classe est similaire à la classe
+ *         fr.ign.cogit.appli.commun.metadata
+ *         .schemaConceptuel.schemaJeu.schemaConceptuelJeu à quelques nuances
+ *         près : elle utilise notamment des classes implémentant le GFM mais
+ *         dédiées aux produits et non pas aux jeux de données.
+ * 
  */
 
-public class SchemaConceptuelProduit implements SchemaConceptuel {
-
+public class SchemaConceptuelProduit implements SchemaConceptuel <FeatureType> {
   /**
    * Constructeur par défaut
    */
 
   public SchemaConceptuelProduit() {
-    this.featureTypes = new ArrayList<GF_FeatureType>();
+    this.featureTypes = new ArrayList<FeatureType>(0);
   }
 
   /**
    * Constructeur
+   * 
    */
   public SchemaConceptuelProduit(String nom, String base) {
     this.nomSchema = nom;
     this.BD = base;
-    this.featureTypes = new ArrayList<GF_FeatureType>();
+    this.featureTypes = new ArrayList<FeatureType>(0);
   }
 
   /**
    * Constructeur
+   * 
    */
   public SchemaConceptuelProduit(String nom, String base, int tag) {
     this.nomSchema = nom;
     this.BD = base;
     this.tagBD = tag;
-    this.featureTypes = new ArrayList<GF_FeatureType>();
+    this.featureTypes = new ArrayList<FeatureType>(0);
   }
 
   /** Identifiant d'un objet */
@@ -183,10 +187,12 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
    */
   protected String nomSchema;
 
+  @Override
   public String getNomSchema() {
     return this.nomSchema;
   }
 
+  @Override
   public void setNomSchema(String nom) {
     this.nomSchema = nom;
   }
@@ -196,10 +202,12 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
    */
   protected String definition;
 
+  @Override
   public void setDefinition(String def) {
     this.definition = def;
   }
 
+  @Override
   public String getDefinition() {
     return this.definition;
   }
@@ -207,43 +215,48 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
   /**
    * Liste des FeatureType du schéma
    */
-  protected List<GF_FeatureType> featureTypes;
+  protected List<FeatureType> featureTypes;
 
-  public List<GF_FeatureType> getFeatureTypes() {
+  @Override
+  public List<FeatureType> getFeatureTypes() {
     return this.featureTypes;
   }
 
-  public void setFeatureTypes(List<GF_FeatureType> ftListValue) {
+  @Override
+  public void setFeatureTypes(List<FeatureType> ftListValue) {
     this.featureTypes = ftListValue;
   }
 
-  public void addFeatureType(GF_FeatureType ft) {
+  @Override
+  public void addFeatureType(FeatureType ft) {
     if (!this.getFeatureTypes().contains(ft)) {
       this.featureTypes.add(ft);
     }
 
-    if (((FeatureType) ft).getSchema() != this) {
-      ((FeatureType) ft).setSchema(this);
+    if (ft.getSchema() != this) {
+      ft.setSchema(this);
     }
   }
 
-  public GF_FeatureType getFeatureTypeI(int i) {
+  public FeatureType getFeatureTypeI(int i) {
     return this.featureTypes.get(i);
   }
 
-  public void removeFeatureTypeFromSchema(GF_FeatureType ft) {
+  @Override
+  public void removeFeatureTypeFromSchema(FeatureType ft) {
     if (ft == null) {
       return;
     }
     this.featureTypes.remove(ft);
-    ((FeatureType) ft).setSchema(null);
+    ft.setSchema(null);
   }
 
-  public GF_FeatureType getFeatureTypeByName(String name) {
-    GF_FeatureType ft = null;
-    Iterator<GF_FeatureType> it = this.featureTypes.iterator();
+  @Override
+  public FeatureType getFeatureTypeByName(String name) {
+    FeatureType ft = null;
+    Iterator<FeatureType> it = this.featureTypes.iterator();
     while (it.hasNext()) {
-      GF_FeatureType f = it.next();
+      FeatureType f = it.next();
       // Modification Nathalie: on ignore la casse!
       if (f.getTypeName().equalsIgnoreCase(name)) {
         ft = f;
@@ -269,9 +282,9 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
 
     // vérification qu'aucune classe du même nom n'existe dans le schéma
     if (!this.featureTypes.isEmpty()) {
-      Iterator<GF_FeatureType> iTft = this.featureTypes.iterator();
+      Iterator<FeatureType> iTft = this.featureTypes.iterator();
       while (iTft.hasNext()) {
-        GF_FeatureType feature = iTft.next();
+        FeatureType feature = iTft.next();
         if (feature.getTypeName().equalsIgnoreCase(nomClasse)) {
 
           JOptionPane.showMessageDialog(null,
@@ -780,8 +793,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
       while (iTrole.hasNext()) {
         GF_AssociationRole monRole = iTrole.next();
         if (monRole.getAssociationType() == fa) {
-          // Suppression du role au niveau des FeatureTypes et de
-          // l'association
+          // Suppression du role au niveau des FeatureTypes et de l'association
           scft.removeRole(monRole);
           fa.removeRole(monRole);
           break;
@@ -860,9 +872,9 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
    */
   public List<AttributeType> getFeatureAttributes() {
     List<AttributeType> attList = new ArrayList<AttributeType>();
-    Iterator<GF_FeatureType> iT = this.featureTypes.iterator();
+    Iterator<FeatureType> iT = this.featureTypes.iterator();
     while (iT.hasNext()) {
-      GF_FeatureType ft = iT.next();
+      FeatureType ft = iT.next();
       List<GF_AttributeType> ftAttList = ft.getFeatureAttributes();
       Iterator<GF_AttributeType> iTatt = ftAttList.iterator();
       while (iTatt.hasNext()) {
@@ -900,9 +912,9 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
    */
   public List<AssociationType> getFeatureAssociations() {
     List<AssociationType> assoList = new ArrayList<AssociationType>();
-    Iterator<GF_FeatureType> iT = this.featureTypes.iterator();
+    Iterator<FeatureType> iT = this.featureTypes.iterator();
     while (iT.hasNext()) {
-      FeatureType ft = (FeatureType) iT.next();
+      FeatureType ft = iT.next();
       List<GF_AssociationRole> ftRoleList = ft.getRoles();
       Iterator<GF_AssociationRole> iTrole = ftRoleList.iterator();
       while (iTrole.hasNext()) {
@@ -923,9 +935,9 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
    */
   public List<AssociationRole> getAssociationRoles() {
     List<AssociationRole> roleList = new ArrayList<AssociationRole>();
-    Iterator<GF_FeatureType> iT = this.featureTypes.iterator();
+    Iterator<FeatureType> iT = this.featureTypes.iterator();
     while (iT.hasNext()) {
-      FeatureType ft = (FeatureType) iT.next();
+      FeatureType ft = iT.next();
       List<GF_AssociationRole> ftRoleList = ft.getRoles();
       Iterator<GF_AssociationRole> iTrole = ftRoleList.iterator();
       while (iTrole.hasNext()) {
@@ -941,9 +953,9 @@ public class SchemaConceptuelProduit implements SchemaConceptuel {
    */
   public List<InheritanceRelation> getInheritance() {
     List<InheritanceRelation> heritList = new ArrayList<InheritanceRelation>();
-    Iterator<GF_FeatureType> iT = this.featureTypes.iterator();
+    Iterator<FeatureType> iT = this.featureTypes.iterator();
     while (iT.hasNext()) {
-      GF_FeatureType ft = iT.next();
+      FeatureType ft = iT.next();
       List<GF_InheritanceRelation> ftHeritList = ft.getGeneralization();
       Iterator<GF_InheritanceRelation> iTherit = ftHeritList.iterator();
       while (iTherit.hasNext()) {

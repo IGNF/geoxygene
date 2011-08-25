@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlType;
 public class Graphic {
 
   @XmlElement(name = "ExternalGraphic")
-  private List<ExternalGraphic> externalGraphics = new ArrayList<ExternalGraphic>();
+  private List<ExternalGraphic> externalGraphics = new ArrayList<ExternalGraphic>(0);
 
   /**
    * Renvoie la valeur de l'attribut externalGraphics.
@@ -55,7 +55,7 @@ public class Graphic {
   }
 
   @XmlElement(name = "Mark")
-  private List<Mark> marks = new ArrayList<Mark>();
+  private List<Mark> marks = new ArrayList<Mark>(0);
 
   /**
    * Renvoie la valeur de l'attribut marks.
@@ -127,7 +127,7 @@ public class Graphic {
   public void setRotation(float rotation) {
     this.rotation = rotation;
   }
-  
+
   public float getWidth() {
     // TODO handle external graphics width according to aspect ratio
     return this.size;

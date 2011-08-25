@@ -37,11 +37,11 @@ public class BatimentImpl extends MicroImpl implements Batiment {
    * l'altitude maximale de l'objet
    */
   private double zMax;
-
+  @Override
   public double getZMax() {
     return this.zMax;
   }
-
+  @Override
   public void setZMax(double zMax) {
     this.zMax = zMax;
   }
@@ -50,11 +50,11 @@ public class BatimentImpl extends MicroImpl implements Batiment {
    * l'altitude minimale de l'objet
    */
   private double zMin;
-
+  @Override
   public double getZMin() {
     return this.zMin;
   }
-
+  @Override
   public void setZMin(double zMin) {
     this.zMin = zMin;
   }
@@ -63,24 +63,24 @@ public class BatimentImpl extends MicroImpl implements Batiment {
    * la hauteur de l'objet
    */
   private double hauteur;
-
+  @Override
   public double getHauteur() {
     return this.hauteur;
   }
-
+  @Override
   public void setHauteur(double hauteur) {
     this.hauteur = hauteur;
   }
-
   /**
    * la nature du bâtiment
    */
   private String nature;
-  
   @Override
-  public String getNature() {return nature;}
-
+  public String getNature() {
+    return this.nature;
+  }
   @Override
-  public void setNature(String nature) {this.nature = nature;}
-
+  public void setNature(String n) {
+    this.nature = n;
+  }
 }

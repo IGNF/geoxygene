@@ -45,7 +45,7 @@ public class Parametres {
    * 
    * @param populationsArcs1
    * @param populationsArcs2
-   * @return
+   * @return a set of default parameters to be used with two sets of edges
    */
   public static ParametresApp parametresDefaut(
       IFeatureCollection<IFeature> populationsArcs1,
@@ -54,7 +54,7 @@ public class Parametres {
     ParametresApp param = new ParametresApp();
 
     // ///////////////////////////////////////////////////////////////////////////////
-    // //////////// PARAMETRES SPECIFIANT QUELLE DONNEES SONT TRAITEES
+    // /////////// PARAMETRES SPECIFIANT QUELLE DONNEES SONT TRAITEES
     // ////////////
     // ///////////////////////////////////////////////////////////////////////////////
 
@@ -98,13 +98,13 @@ public class Parametres {
     // ///////////////////////////////////////////////////////////////////////////////
 
     param.projeteNoeuds1SurReseau2 = false;
-    param.projeteNoeuds1SurReseau2_DistanceNoeudArc = 0;
-    param.projeteNoeuds1SurReseau2_DistanceProjectionNoeud = 0;
-    param.projeteNoeuds1SurReseau2_ImpassesSeulement = false;
-    param.projeteNoeud2surReseau1 = false;
-    param.projeteNoeud2surReseau1_DistanceNoeudArc = 0;
-    param.projeteNoeud2surReseau1_DistanceProjectionNoeud = 0;
-    param.projeteNoeud2surReseau1_ImpassesSeulement = false;
+    param.projeteNoeuds1SurReseau2DistanceNoeudArc = 0;
+    param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = 0;
+    param.projeteNoeuds1SurReseau2ImpassesSeulement = false;
+    param.projeteNoeuds2SurReseau1 = false;
+    param.projeteNoeuds2SurReseau1DistanceNoeudArc = 0;
+    param.projeteNoeud2surReseau1DistanceProjectionNoeud = 0;
+    param.projeteNoeud2surReseau1ImpassesSeulement = false;
 
     // ///////////////////////////////////////////////////////////////////////////////
     // /////////// VARIANTES DU PROCESSUS GENERAL //////////////////////
@@ -146,7 +146,8 @@ public class Parametres {
    * @param populationsNoeuds1
    * @param populationsArcs2
    * @param populationsNoeuds2
-   * @return
+   * @return default parameters to be used with two collections of edges and
+   *         nodes
    */
   public static ParametresApp parametresAvecNoeudsDefaut(
       IFeatureCollection<IFeature> populationsArcs1,
@@ -207,13 +208,13 @@ public class Parametres {
     // ///////////////////////////////////////////////////////////////////////////////
 
     param.projeteNoeuds1SurReseau2 = false;
-    param.projeteNoeuds1SurReseau2_DistanceNoeudArc = 0;
-    param.projeteNoeuds1SurReseau2_DistanceProjectionNoeud = 0;
-    param.projeteNoeuds1SurReseau2_ImpassesSeulement = false;
-    param.projeteNoeud2surReseau1 = false;
-    param.projeteNoeud2surReseau1_DistanceNoeudArc = 0;
-    param.projeteNoeud2surReseau1_DistanceProjectionNoeud = 0;
-    param.projeteNoeud2surReseau1_ImpassesSeulement = false;
+    param.projeteNoeuds1SurReseau2DistanceNoeudArc = 0;
+    param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = 0;
+    param.projeteNoeuds1SurReseau2ImpassesSeulement = false;
+    param.projeteNoeuds2SurReseau1 = false;
+    param.projeteNoeuds2SurReseau1DistanceNoeudArc = 0;
+    param.projeteNoeud2surReseau1DistanceProjectionNoeud = 0;
+    param.projeteNoeud2surReseau1ImpassesSeulement = false;
 
     // ///////////////////////////////////////////////////////////////////////////////
     // /////////// VARIANTES DU PROCESSUS GENERAL //////////////////////
@@ -246,5 +247,4 @@ public class Parametres {
 
     return param;
   }
-
 }

@@ -19,89 +19,103 @@
 
 package fr.ign.cogit.geoxygene.appli.mode;
 
-import java.awt.Cursor;
 import java.awt.event.MouseEvent;
 import java.awt.geom.NoninvertibleTransformException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
+ * Selection Mode. Allow the user to select features.
  * @author Julien Perret
+ * 
  */
 public class SelectionMode extends AbstractMode {
 
   /**
-   * @param theMainFrame
-   * @param theModeSelector
+   * @param theMainFrame the main frame
+   * @param theModeSelector the mode selector
    */
-  public SelectionMode(MainFrame theMainFrame, ModeSelector theModeSelector) {
+  public SelectionMode(final MainFrame theMainFrame,
+      final ModeSelector theModeSelector) {
     super(theMainFrame, theModeSelector);
   }
 
   @Override
-  protected JButton createButton() {
+  protected final JButton createButton() {
     return new JButton(new ImageIcon(this.getClass().getResource(
-        "/icons/16x16/selection.png")));
+        "/images/icons/16x16/selection.png"))); //$NON-NLS-1$
   }
 
+  /**
+   * Selection radius.
+   */
+  private final double selectionRadius = 10.0;
+
   @Override
-  public void leftMouseButtonClicked(MouseEvent e, ProjectFrame frame) {
+  public final void leftMouseButtonClicked(final MouseEvent e,
+      final ProjectFrame frame) {
     try {
       DirectPosition p = frame.getLayerViewPanel().getViewport()
           .toModelDirectPosition(e.getPoint());
-      IFeatureCollection<IFeature> features = new FT_FeatureCollection<IFeature>();
+      Set<IFeature> features = new HashSet<IFeature>();
       for (Layer layer : frame.getLayerViewPanel().getRenderingManager()
           .getLayers()) {
         if (layer.isVisible() && layer.isSelectable()) {
-          features.addAll(layer.getFeatureCollection().select(p, 10.0));
+          features.addAll(layer.getFeatureCollection().select(p,
+              this.selectionRadius));
         }
       }
-      frame.getLayerViewPanel().getSelectedFeatures().addAll(features);
-      frame.getLayerViewPanel().repaint();
+      LayerViewPanel lvPanel = frame.getLayerViewPanel();
+      lvPanel.getSelectedFeatures().addAll(features);
+      lvPanel.getRenderingManager().render(
+          lvPanel.getRenderingManager().getSelectionRenderer());
+      lvPanel.superRepaint();
     } catch (NoninvertibleTransformException e1) {
       e1.printStackTrace();
     }
   }
 
   @Override
-  public void rightMouseButtonClicked(MouseEvent e, ProjectFrame frame) {
+  public final void rightMouseButtonClicked(final MouseEvent e,
+      final ProjectFrame frame) {
     try {
       DirectPosition p = frame.getLayerViewPanel().getViewport()
           .toModelDirectPosition(e.getPoint());
-      IFeatureCollection<IFeature> features = new FT_FeatureCollection<IFeature>();
+      Set<IFeature> features = new HashSet<IFeature>();
       for (Layer layer : frame.getLayerViewPanel().getRenderingManager()
           .getLayers()) {
         if (layer.isVisible() && layer.isSelectable()) {
-          features.addAll(layer.getFeatureCollection().select(p, 10.0));
+          features.addAll(layer.getFeatureCollection().select(p,
+              this.selectionRadius));
         }
       }
+      LayerViewPanel lvPanel = frame.getLayerViewPanel();
       if (features.isEmpty()) {
-        frame.getLayerViewPanel().getSelectedFeatures().clear();
+        lvPanel.getSelectedFeatures().clear();
       } else {
-        frame.getLayerViewPanel().getSelectedFeatures().removeAll(features);
+        lvPanel.getSelectedFeatures().removeAll(features);
       }
-      frame.getLayerViewPanel().repaint();
+      lvPanel.getRenderingManager().render(
+          lvPanel.getRenderingManager().getSelectionRenderer());
+      lvPanel.superRepaint();
     } catch (NoninvertibleTransformException e1) {
       e1.printStackTrace();
     }
-  }
-
-  @Override
-  public Cursor getCursor() {
-    return null;
   }
 
   @Override
   protected String getToolTipText() {
-    return null;
+    return I18N.getString("SelectionMode.ToolTip"); //$NON-NLS-1$
   }
 }

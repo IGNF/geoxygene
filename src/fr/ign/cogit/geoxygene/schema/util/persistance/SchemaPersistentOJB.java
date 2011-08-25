@@ -78,7 +78,7 @@ public abstract class SchemaPersistentOJB {
 
       // Rassemblement de toutes les informations sur le schéma
       List<FeatureType> ftListLocal = new ArrayList<FeatureType>();
-      List<GF_FeatureType> ftList;
+      List<FeatureType> ftList;
       List<AttributeType> attList;
       List<FeatureAttributeValue> valList;
       List<AssociationType> assoList;
@@ -123,7 +123,7 @@ public abstract class SchemaPersistentOJB {
       }
 
       ftList = schema.getFeatureTypes();
-      Iterator<GF_FeatureType> iTft = ftList.iterator();
+      Iterator<FeatureType> iTft = ftList.iterator();
       while (iTft.hasNext()) {
         FeatureType ft = (FeatureType) iTft.next();
         DataSet.db.deletePersistent(ft);
@@ -156,7 +156,7 @@ public abstract class SchemaPersistentOJB {
 
     // Rassemblement de toutes les informations sur le schéma
     List<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType> ftListLocal = new ArrayList<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType>();
-    List<GF_FeatureType> ftList;
+    List<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType> ftList;
     List<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType> attList;
     List<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureAttributeValue> valList;
     List<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AssociationType> assoList;
@@ -211,9 +211,9 @@ public abstract class SchemaPersistentOJB {
     }
 
     ftList = schema.getFeatureTypes();
-    Iterator<GF_FeatureType> iTft = ftList.iterator();
+    Iterator<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType> iTft = ftList.iterator();
     while (iTft.hasNext()) {
-      fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType ft = (fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType) iTft
+      fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType ft = iTft
           .next();
       DataSet.db.deletePersistent(ft);
       ftListLocal.add(ft);

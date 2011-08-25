@@ -36,6 +36,7 @@ public interface IGeometry {
   public abstract Object clone();
 
   /** Ecrit la géométrie dans une chaine de caractere au format WKT. */
+  @Override
   public abstract String toString();
 
   /**
@@ -64,7 +65,7 @@ public interface IGeometry {
    * @param data
    * @return
    */
-  public abstract IPolygon mbRegion(Geodatabase data);
+  public abstract IPolygon mbRegion();
 
   /**
    * Teste l'intersection stricte entre la géométrie manipulée et celle passée

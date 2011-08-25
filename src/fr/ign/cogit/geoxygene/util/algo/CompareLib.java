@@ -80,6 +80,7 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  * 
  */
 
+@SuppressWarnings("nls")
 public class CompareLib {
 
   private static IndentedPrintStream out;
@@ -89,7 +90,7 @@ public class CompareLib {
 
   // Alias de Connection a Oracle (dans le fichier de mapping
   // repository_database.xml)
-  private String ORACLE_ALIAS = "ORACLE_ALIAS";
+  private String ORACLE_ALIAS = "ORACLE_ALIAS"; //$NON-NLS-1$
 
   // classes a charger
   private Class<? extends IFeature> featClass1;
@@ -231,7 +232,7 @@ public class CompareLib {
 
     for (int i = 0; i < numAlgos; i++) {
       String algoName = this.algorithmsName[i];
-      String outDirPath = outDirPathTab[i] = this.path + "/" + algoName + "/";
+      String outDirPath = outDirPathTab[i] = this.path + "/" + algoName + "/"; //$NON-NLS-1$ //$NON-NLS-2$
       File outDirFile = new File(outDirPath);
       outDirFile.mkdirs();
       PrintStream dataOut = dataOutTab[i] = new PrintStream(
@@ -616,7 +617,7 @@ public class CompareLib {
 
   // ########################################################################################
   private class IndentedPrintStream extends PrintStream {
-    private String indent = "";
+    private String indent = ""; //$NON-NLS-1$
 
     public IndentedPrintStream(OutputStream out) {
       super(out);
@@ -633,7 +634,7 @@ public class CompareLib {
 
     @Override
     public void println(String x) {
-      StringTokenizer tkz = new StringTokenizer(x, "\n");
+      StringTokenizer tkz = new StringTokenizer(x, "\n"); //$NON-NLS-1$
       while (tkz.hasMoreTokens()) {
         String line = tkz.nextToken();
         super.print(this.indent);
@@ -642,11 +643,11 @@ public class CompareLib {
     }
 
     public void indentRight() {
-      this.indent += "\t";
+      this.indent += "\t"; //$NON-NLS-1$
     }
 
     public void indentLeft() {
-      this.indent = this.indent.replaceFirst("\t$", "");
+      this.indent = this.indent.replaceFirst("\t$", ""); //$NON-NLS-1$
     }
   }
 

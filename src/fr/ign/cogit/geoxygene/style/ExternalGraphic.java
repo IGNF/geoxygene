@@ -73,7 +73,7 @@ public class ExternalGraphic {
    * @return la valeur de l'attribut format
    */
   public String getFormat() {
-    return this.format; 
+    return this.format;
   }
 
   /**
@@ -137,5 +137,4 @@ public class ExternalGraphic {
   public void setOnlineResource(Image onlineResource) {
     this.onlineResource = onlineResource;
   }
-
 }

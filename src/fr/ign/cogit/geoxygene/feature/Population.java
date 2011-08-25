@@ -1,28 +1,20 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.feature;
@@ -85,21 +77,14 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
 @Entity
 public class Population<Feat extends IFeature> extends
     FT_FeatureCollection<Feat> implements IPopulation<Feat> {
-  /** logger */
-  // static Logger logger=Logger.getLogger(Population.class.getName());
   /** Identifiant. Correspond au "cogitID" des tables du SGBD. */
   protected int id;
-
-  /**
-   * Renvoie l'identifiant. NB: l'ID n'est remplit automatiquement que si la
-   * population est persistante
-   */
+  @Override
   @Id
   public int getId() {
     return this.id;
   }
-
-  /** Affecte une valeur a l'identifiant */
+  @Override
   public void setId(int I) {
     this.id = I;
   }
@@ -112,7 +97,7 @@ public class Population<Feat extends IFeature> extends
    * constructeur
    */
   public Population() {
-  	this.persistant = false;
+    this.persistant = false;
   }
 
   /**
@@ -120,7 +105,7 @@ public class Population<Feat extends IFeature> extends
    * @param nom nom de la population.
    */
   public Population(String nom) {
-  	this();
+    this();
     this.setNom(nom);
   }
 
@@ -201,11 +186,7 @@ public class Population<Feat extends IFeature> extends
       DataSet.db.makePersistent(this);
     }
   }
-
-  /**
-   * Chargement des éléments persistants d'une population. Tous les éléments de
-   * la table correspondante sont chargés.
-   */
+  @Override
   public void chargeElements() {
     if (FT_FeatureCollection.logger.isInfoEnabled()) {
       FT_FeatureCollection.logger
@@ -233,13 +214,7 @@ public class Population<Feat extends IFeature> extends
           .info("-- " + this.size() + " instances chargees dans la population"); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
-
-  /**
-   * Chargement des éléments persistants d'une population qui intersectent une
-   * géométrie donnée. ATTENTION: la table qui stocke les éléments doit avoir
-   * été indexée dans le SGBD. ATTENTION AGAIN: seules les populations avec une
-   * géométrie sont chargées.
-   */
+  @Override
   public void chargeElementsPartie(IGeometry geom) {
     if (FT_FeatureCollection.logger.isInfoEnabled()) {
       FT_FeatureCollection.logger
@@ -276,12 +251,7 @@ public class Population<Feat extends IFeature> extends
           .info("   " + this.size() + " instances chargees dans la population"); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
-
-  /**
-   * Chargement des éléments persistants d'une population. Tous les éléments de
-   * la table correspondante sont chargés. Les données doivent d'abord avoir été
-   * indexées. PB: TRES LENT !!!!!!!
-   */
+  @Override
   public void chargeElementsProches(IPopulation<Feat> pop, double dist) {
     if (FT_FeatureCollection.logger.isInfoEnabled()) {
       FT_FeatureCollection.logger
@@ -319,12 +289,7 @@ public class Population<Feat extends IFeature> extends
           .info("-- " + this.size() + " instances chargees dans la population"); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
-
-  /**
-   * Renvoie une population avec tous les éléments de this situés à moins de
-   * "dist" des éléments de la population Travail sur un index en mémoire (pas
-   * celui du SGBD). Rmq : Fonctionne avec des objets de géométrie quelconque
-   */
+  @Override
   public IPopulation<Feat> selectionElementsProchesGenerale(
       IPopulation<Feat> pop, double dist) {
     Population<Feat> popTemporaire = new Population<Feat>();
@@ -347,8 +312,8 @@ public class Population<Feat extends IFeature> extends
       double ymin = enveloppe.getLowerCorner().getY() - dist;
       double ymax = enveloppe.getUpperCorner().getY() + dist;
       enveloppe = new GM_Envelope(xmin, xmax, ymin, ymax);
-      IFeatureCollection<Feat> selection = popTemporaire.select(enveloppe);
-      Iterator<Feat> itSel = selection.getElements().iterator();
+      Collection<Feat> selection = popTemporaire.select(enveloppe);
+      Iterator<Feat> itSel = selection.iterator();
       selectionUnObjet = new HashSet<Feat>();
       while (itSel.hasNext()) {
         Feat objetSel = itSel.next();
@@ -369,6 +334,7 @@ public class Population<Feat extends IFeature> extends
    * Renvoie une population avec tous les éléments de this situés à moins de
    * "dist" des éléments de la population pop.
    */
+  @Override
   public IPopulation<Feat> selectionLargeElementsProches(IPopulation<Feat> pop,
       double dist) {
     Population<Feat> popTemporaire = new Population<Feat>();
@@ -386,28 +352,17 @@ public class Population<Feat extends IFeature> extends
       double ymin = enveloppe.getLowerCorner().getY() - dist;
       double ymax = enveloppe.getUpperCorner().getY() + dist;
       enveloppe = new GM_Envelope(xmin, xmax, ymin, ymax);
-      IFeatureCollection<Feat> selection = popTemporaire.select(enveloppe);
-      popTemporaire.getElements().removeAll(selection.getElements());
-      popResultat.addCollection(selection);
+      Collection<Feat> selection = popTemporaire.select(enveloppe);
+      popTemporaire.getElements().removeAll(selection);
+      popResultat.addAll(selection);
     }
     return popResultat;
   }
-
-  /**
-   * Chargement des éléments persistants d'une population qui intersectent une
-   * zone d'extraction donnée. ATTENTION: la table qui stocke les éléments doit
-   * avoir été indexée dans le SGBD. ATTENTION AGAIN: seules les populations
-   * avec une géométrie sont chargées.
-   */
+  @Override
   public void chargeElementsPartie(IExtraction zoneExtraction) {
     this.chargeElementsPartie(zoneExtraction.getGeom());
   }
-
-  /**
-   * Detruit la population si elle est persistante, MAIS ne détruit pas les
-   * éléments de cette population (pour cela vider la table correspondante dans
-   * le SGBD).
-   */
+  @Override
   public void detruitPopulation() {
     if (!this.getPersistant()) {
       return;
@@ -418,7 +373,6 @@ public class Population<Feat extends IFeature> extends
     }
     DataSet.db.deletePersistent(this);
   }
-
   // /////////////////////////////////////////////////////
   // Attributs décrivant la population
   // /////////////////////////////////////////////////////
@@ -429,11 +383,11 @@ public class Population<Feat extends IFeature> extends
    * "Tronçon de route"
    */
   protected String nom;
-
+  @Override
   public String getNom() {
     return this.nom;
   }
-
+  @Override
   public void setNom(String S) {
     this.nom = S;
   }
@@ -446,19 +400,11 @@ public class Population<Feat extends IFeature> extends
   // Sinon, cela pose des problèmes au chargement (un thème persistant chargé a
   // son attribut persistant à false).
   protected boolean persistant = true;
-
-  /**
-   * Booléen spécifiant si la population est persistente ou non (vrai par
-   * défaut).
-   */
+  @Override
   public boolean getPersistant() {
     return this.persistant;
   }
-
-  /**
-   * Booléen spécifiant si la population est persistente ou non (vrai par
-   * défaut).
-   */
+  @Override
   public void setPersistant(boolean b) {
     this.persistant = b;
   }
@@ -471,14 +417,12 @@ public class Population<Feat extends IFeature> extends
    * DataSet).
    */
   protected IDataSet dataSet;
-
-  /** Récupère le DataSet de la population. */
+  @Override
   @ManyToOne
   public IDataSet getDataSet() {
     return this.dataSet;
   }
-
-  /** définit le DataSet de la population, et met à jour la relation inverse. */
+  @Override
   public void setDataSet(IDataSet O) {
     IDataSet old = this.dataSet;
     this.dataSet = O;
@@ -496,13 +440,11 @@ public class Population<Feat extends IFeature> extends
   }
 
   private int dataSetID;
-
-  /** Ne pas utiliser, necessaire au mapping OJB */
+  @Override
   public void setDataSetID(int I) {
     this.dataSetID = I;
   }
-
-  /** Ne pas utiliser, necessaire au mapping OJB */
+  @Override
   @Transient
   public int getDataSetID() {
     return this.dataSetID;
@@ -511,15 +453,7 @@ public class Population<Feat extends IFeature> extends
   // ////////////////////////////////////////////////
   // Methodes surchargeant des trucs de FT_FeatureCollection, avec une gestion
   // de la persistance
-
-  /**
-   * enlève, ET DETRUIT si il est persistant, un élément de la liste des
-   * elements de la population, met également à jour la relation inverse, et
-   * eventuellement l'index.
-   * <p>
-   * <b>NB :</b> différent de remove (hérité de FT_FeatureCollection) qui ne
-   * détruit pas l'élément.
-   */
+  @Override
   public void enleveElement(Feat O) {
     super.remove(O);
     if (this.getPersistant()) {
@@ -527,28 +461,12 @@ public class Population<Feat extends IFeature> extends
     }
   }
 
-  private static int idNouvelElement = 1;
-
-  /**
-   * crée un nouvel élément de la population, instance de sa classe par défaut,
-   * et l'ajoute à la population.
-   * <p>
-   * Si la population est persistante, alors le nouvel élément est rendu
-   * persistant dans cette méthode <b>NB :</b> différent de add (hérité de
-   * FT_FeatureCollection) qui ajoute un élément déjà existant.
-   */
+  private static int idNouvelElement = 0;
+  @Override
   public Feat nouvelElement() {
     return this.nouvelElement(null);
   }
-
-  /**
-   * crée un nouvel élément de la population (avec la géométrie geom), instance
-   * de sa classe par défaut, et l'ajoute à la population.
-   * <p>
-   * Si la population est persistante, alors le nouvel élément est rendu
-   * persistant dans cette méthode <b>NB :</b> différent de add (hérité de
-   * FT_FeatureCollection) qui ajoute un élément déjà existant.
-   */
+  @Override
   public Feat nouvelElement(IGeometry geom) {
     try {
       Feat elem = this.getClasse().newInstance();
@@ -571,28 +489,15 @@ public class Population<Feat extends IFeature> extends
           .error("            Soit problème à la mise à jour de l'index "); //$NON-NLS-1$
       FT_FeatureCollection.logger
           .error("               Causes possibles : mise à jour automatique de l'index, mais l'objet n'a pas encore de géométrie"); //$NON-NLS-1$
+      e.printStackTrace();
       return null;
     }
   }
-
-  /**
-   * crée un nouvel élément de la population, instance de sa classe par défaut,
-   * et l'ajoute à la population. La création est effectuée à l'aide du
-   * constructeur spécifié par les tableaux signature(classe des objets du
-   * constructeur), et param (objets eux-mêmes).
-   * <p>
-   * Si la population est persistante, alors le nouvel élément est rendu
-   * persistant dans cette méthode
-   * <p>
-   * <b>NB :</b> différent de add (hérité de FT_FeatureCollection) qui ajoute un
-   * élément déjà existant.
-   * @param signature
-   * @param param
-   * @return a new Feature
-   */
+  @Override
   public Feat nouvelElement(Class<?>[] signature, Object[] param) {
     try {
       Feat elem = this.getClasse().getConstructor(signature).newInstance(param);
+      elem.setId(++Population.idNouvelElement);
       super.add(elem);
       if (this.getPersistant()) {
         DataSet.db.makePersistent(elem);
@@ -611,18 +516,7 @@ public class Population<Feat extends IFeature> extends
 
   // ////////////////////////////////////////////////
   // Copie de population
-  /**
-   * Copie la population passée en argument dans la population traitée (this).
-   * <p>
-   * <b>NB :<b>
-   * <ul>
-   * <li>1/ ne copie pas l'eventuelle indexation spatiale,
-   * <li>2/ n'affecte pas la population au DataSet de la population à copier.
-   * <li>3/ mais recopie les autres infos: éléments, classe, FlagGeom, Nom et
-   * NomClasse
-   * </ul>
-   * @param populationACopier
-   */
+  @Override
   public void copiePopulation(IPopulation<Feat> populationACopier) {
     this.setElements(populationACopier.getElements());
     this.setClasse(populationACopier.getClasse());
@@ -632,12 +526,7 @@ public class Population<Feat extends IFeature> extends
   }
 
   // //////////////////////////////////////////////////////////////////////////////
-  /**
-   * Complète Population.chargeElements(). - On vérifie que la population
-   * correspond à une classe du schéma conceptuel du DataSet. Si non, on initie
-   * les populations du DataSet en y incluant celle-ci. - Chaque FT_Feature
-   * chargé est renseigné avec sa population (donc son featureType).
-   */
+  @Override
   public void chargeElementsAvecMetadonnees() {
     if (FT_FeatureCollection.logger.isInfoEnabled()) {
       FT_FeatureCollection.logger

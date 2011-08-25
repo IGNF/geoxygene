@@ -36,5 +36,4 @@ package fr.ign.cogit.geoxygene.spatial.topoprim;
  */
 
 class TP_ComplexBoundary extends TP_Boundary {
-
 }

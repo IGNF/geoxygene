@@ -1,37 +1,30 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut G�ographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut G�ographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -41,7 +34,6 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
@@ -54,7 +46,6 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  * @author Bonin
  * @version 1.0
  */
-
 public class Noeud extends ElementCarteTopo {
   static Logger logger = Logger.getLogger(Noeud.class.getName());
 
@@ -80,10 +71,10 @@ public class Noeud extends ElementCarteTopo {
     this.setCoord(p);
   }
 
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
+  // ////////////////////////////////////////////////////////////////////////
   // géométrie
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
-  /** Renvoie le IPoint qui d�finit la g�om�trie de self */
+  // ////////////////////////////////////////////////////////////////////////
+  /** Renvoie le IPoint qui définit la géométrie de self */
   public IPoint getGeometrie() {
     return (IPoint) this.geom;
   }
@@ -93,7 +84,7 @@ public class Noeud extends ElementCarteTopo {
     this.setGeom(geometrie);
   }
 
-  /** Renvoie le DirectPosition qui d�finit les coordonn�es de self */
+  /** Renvoie le DirectPosition qui définit les coordonnées de self */
   public IDirectPosition getCoord() {
     return this.getGeometrie().getPosition();
   }
@@ -103,15 +94,15 @@ public class Noeud extends ElementCarteTopo {
     this.geom = new GM_Point(dp);
   }
 
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
+  // ////////////////////////////////////////////////////////////////////////
   // Topologie de réseau arcs / noeuds
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
-  private List<Arc> entrants = new ArrayList<Arc>();
+  // ////////////////////////////////////////////////////////////////////////
+  private List<Arc> entrants = new ArrayList<Arc>(0);
 
   /**
-   * Renvoie la liste (non ordonn�e) des arcs entrants de self. La distinction
-   * entrant/sortant s'entend au sens du codage de la g�om�trie. (et non au sens
-   * de l'orientation du graphe, comme avec les attributs entrantsOrientation)
+   * Renvoie la liste (non ordonnée) des arcs entrants de self. La distinction
+   * entrant/sortant s'entend au sens du codage de la géométrie. (et non au sens
+   * de l'orientation du graphe, comme avec les attributs entrantsOrientation).
    */
   public List<Arc> getEntrants() {
     return this.entrants;
@@ -142,12 +133,12 @@ public class Noeud extends ElementCarteTopo {
   /**
    * Outgoing edges.
    */
-  private List<Arc> sortants = new ArrayList<Arc>();
+  private List<Arc> sortants = new ArrayList<Arc>(0);
 
   /**
    * Renvoie la liste (non ordonnée) des arcs sortants de self La distinction
-   * entrant/sortant s'entend au sens du codage de la g�om�trie. (et non au sens
-   * de l'orientation du graphe, comme avec les attributs entrantsOrientation)
+   * entrant/sortant s'entend au sens du codage de la géométrie (et non au sens
+   * de l'orientation du graphe, comme avec les attributs entrantsOrientation).
    */
   public List<Arc> getSortants() {
     return this.sortants;
@@ -178,7 +169,7 @@ public class Noeud extends ElementCarteTopo {
   /**
    * Renvoie la liste (non ordonnée) de tous les arcs entrants et sortants de
    * self. NB : si un arc est à la fois entrant et sortant (boucle), il est 2
-   * fois dans la liste
+   * fois dans la liste.
    */
   public List<Arc> arcs() {
     List<Arc> Arcs = new ArrayList<Arc>();
@@ -188,8 +179,9 @@ public class Noeud extends ElementCarteTopo {
   }
 
   /**
-   * Renvoie la liste des noeuds voisins de self dans le r�seau sans tenir
-   * compte de l'orientation (i.e. tous les arcs sont consid�r�s en double sens)
+   * Renvoie la liste des noeuds voisins de self dans le réseau sans tenir
+   * compte de l'orientation (i.e. tous les arcs sont considérés en double
+   * sens).
    */
   public List<Noeud> voisins() {
     List<Noeud> voisins = new ArrayList<Noeud>();
@@ -202,9 +194,9 @@ public class Noeud extends ElementCarteTopo {
     return voisins;
   }
 
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
+  // ////////////////////////////////////////////////////////////////////////
   // Gestion de graphe noeuds / faces
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
+  // ////////////////////////////////////////////////////////////////////////
   /** Renvoie la liste des faces s'appuyant sur self */
   public List<Face> faces() {
     HashSet<Face> faces = new HashSet<Face>();
@@ -218,9 +210,9 @@ public class Noeud extends ElementCarteTopo {
     return new ArrayList<Face>(faces);
   }
 
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
+  // ////////////////////////////////////////////////////////////////////////
   // Gestion de réseau orienté
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
+  // ////////////////////////////////////////////////////////////////////////
 
   /**
    * les entrants du noeud, au sens de l'orientation, (alors que pour
@@ -274,35 +266,62 @@ public class Noeud extends ElementCarteTopo {
     return arcs;
   }
 
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
+  /**
+   * Retourne les noeuds accessibles depuis ce noeud, au sens de l'orientation
+   * et non de la géometrie,
+   */
+  public Map<Noeud, Arc> noeudsSortantsOrientes() {
+    List<Arc> arcsEntrants = this.getEntrants();
+    List<Arc> arcsSortants = this.getSortants();
+    Map<Noeud, Arc> noeuds = new HashMap<Noeud, Arc>();
+    Arc arc;
+    int i;
+
+    for (i = 0; i < arcsEntrants.size(); i++) {
+      arc = arcsEntrants.get(i);
+      if ((arc.getOrientation() == -1) || (arc.getOrientation() == 2)) {
+        noeuds.put(arc.getOtherSide(this), arc);
+      }
+    }
+    for (i = 0; i < arcsSortants.size(); i++) {
+      arc = arcsSortants.get(i);
+      if ((arc.getOrientation() == 1) || (arc.getOrientation() == 2)) {
+        noeuds.put(arc.getOtherSide(this), arc);
+      }
+    }
+    return noeuds;
+  }
+
+  // ////////////////////////////////////////////////////////////////////////
   // Gestion de type carte topologique
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
-  // Les arcs sont class�s autour d'un noeud en fonction de leur g�om�trie.
-  // Ceci permet en particulier de parcourir facilement les cycles d'un graphe.
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
+  // ////////////////////////////////////////////////////////////////////////
+  // Les arcs sont classés autour d'un noeud en fonction de leur géométrie.
+  // Ceci permet en particulier de parcourir facilement les cycles d'un
+  // graphe.
+  // ////////////////////////////////////////////////////////////////////////
 
   /**
    * Arcs incidents à un noeuds, classés en tournant autour du noeud dans
    * l'ordre trigonométrique, et qualifiés d'entrants ou sortants, au sens de la
-   * géoémtrie (utile particulièrement à la gestion des boucles).
+   * géométrie (utile particulièrement à la gestion des boucles).
    * 
-   * NB : renvoie une liste de liste: Liste.get(0) = liste des arcs (de la
+   * NB : renvoie une liste de liste : Liste.get(0) = liste des arcs (de la
    * classe 'Arc') Liste.get(1) = liste des orientations de type Boolean, true =
-   * entrant, false = sortant) NB : Classement effectu� sur la direction donn�e
+   * entrant, false = sortant) NB : Classement effectué sur la direction donnée
    * par le premier point de l'arc après le noeud. NB : Le premier arc est celui
    * dont la direction est la plus proche de l'axe des X, en tournant dans le
-   * sens trigo. NB : Ce classement est recalculé en fonction de la g�om�trie �
+   * sens trigo. NB : Ce classement est recalculé en fonction de la géométrie à
    * chaque appel de la méthode.
    */
   public List<Object> arcsClasses() {
-    List<Arc> arcsClasses = new ArrayList<Arc>();
-    List<Boolean> arcsClassesOrientation = new ArrayList<Boolean>();
+    List<Arc> arcsClasses = new ArrayList<Arc>(0);
+    List<Boolean> arcsClassesOrientation = new ArrayList<Boolean>(0);
     List<Arc> arcsEntrants = new ArrayList<Arc>(this.getEntrants());
     List<Arc> arcsSortants = new ArrayList<Arc>(this.getSortants());
-    List<Arc> arcs = new ArrayList<Arc>();
-    List<Angle> angles = new ArrayList<Angle>();
-    List<Boolean> orientations = new ArrayList<Boolean>();
-    List<Object> resultat = new ArrayList<Object>();
+    List<Arc> arcs = new ArrayList<Arc>(0);
+    List<Angle> angles = new ArrayList<Angle>(0);
+    List<Boolean> orientations = new ArrayList<Boolean>(0);
+    List<Object> resultat = new ArrayList<Object>(0);
     Arc arc;
     Angle angle;
     double angleMin, angleCourant;
@@ -310,7 +329,7 @@ public class Noeud extends ElementCarteTopo {
     Iterator<Arc> itArcs;
     int i;
 
-    // recherche de l'angle de d�part de chaque arc sortant
+    // recherche de l'angle de départ de chaque arc sortant
     itArcs = arcsSortants.iterator();
     while (itArcs.hasNext()) {
       arc = itArcs.next();
@@ -319,7 +338,7 @@ public class Noeud extends ElementCarteTopo {
       angles.add(angle);
       orientations.add(new Boolean(false));
     }
-    // recherche de l'angle de d�part de chaque arc entrant
+    // recherche de l'angle de départ de chaque arc entrant
     itArcs = arcsEntrants.iterator();
     while (itArcs.hasNext()) {
       arc = itArcs.next();
@@ -346,29 +365,29 @@ public class Noeud extends ElementCarteTopo {
       angles.remove(imin);
       orientations.remove(imin);
     }
-    // retour du r�sultat
+    // retour du résultat
     resultat.add(arcsClasses);
     resultat.add(arcsClassesOrientation);
     return resultat;
   }
 
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
+  // ////////////////////////////////////////////////////////////////////////
   // Gestion des groupes
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
+  // ////////////////////////////////////////////////////////////////////////
   /** Groupes auquels self appartient */
-  private List<Groupe> listeGroupes = new ArrayList<Groupe>();
+  private List<Groupe> listeGroupes = new ArrayList<Groupe>(0);
 
   /** Renvoie la liste des groupes de self */
   public List<Groupe> getListeGroupes() {
     return this.listeGroupes;
   }
 
-  /** Définit la liste des groupes de self */
+  /** définit la liste des groupes de self */
   public void setListeGroupes(List<Groupe> liste) {
     this.listeGroupes = liste;
   }
 
-  /** Ajoute un groupe � self */
+  /** Ajoute un groupe à self */
   public void addGroupe(Groupe groupe) {
     if (groupe != null && !this.listeGroupes.contains(groupe)) {
       this.listeGroupes.add(groupe);
@@ -380,7 +399,7 @@ public class Noeud extends ElementCarteTopo {
 
   /**
    * Liste des noeuds voisins de self au sein d'un groupe. Renvoie une liste
-   * vide si il n'y en a pas
+   * vide si il n'y en a pas.
    */
   public List<Noeud> voisins(Groupe groupe) {
     List<Arc> arcsDuGroupe = new ArrayList<Arc>();
@@ -425,39 +444,37 @@ public class Noeud extends ElementCarteTopo {
       }
     }
     return noeudsVoisins;
-  };
+  }
 
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
-  // Opérateurs de calculs sur les noeuds
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
-  /** Distance euclidienne. Valable pour des coordonn�es en 2 ou 3D. */
+  // ////////////////////////////////////////////////////////////////////////
+  // opérateurs de calculs sur les noeuds
+  // ////////////////////////////////////////////////////////////////////////
+  /** Distance euclidienne. Valable pour des coordonnées en 2 ou 3D. */
   public double distance(Noeud noeud) {
-    return Distances.distance(this.getCoord(), noeud.getCoord());
+    return this.getCoord().distance(noeud.getCoord());
   }
 
   /** Distance euclidienne dans le plan (x,y). */
   public double distance2D(Noeud noeud) {
-    return Distances.distance2D(this.getCoord(), noeud.getCoord());
+    return this.getCoord().distance2D(noeud.getCoord());
   }
 
-  /** Distance euclidienne � un arc. */
+  /** Distance euclidienne à un arc. */
   public double distance(Arc arc) {
     return Distances.distance(this.getCoord(), arc.getGeometrie());
   }
 
-  // /////////////////////////////////////////////////////////////////////////////////////////////////////
-  // /////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Différentes variantes du plus court chemin
-  // /////////////////////////////////////////////////////////////////////////////////////////////////////
-  // /////////////////////////////////////////////////////////////////////////////////////////////////////
+  // ////////////////////////////////////////////////////////////////////////
+  // différentes variantes du plus court chemin
+  // ////////////////////////////////////////////////////////////////////////
 
   // attributs internes utiles pour les calculs de plus court chemin
   /** utilisation interne : ne pas utiliser */
-  private double _distance;
+  private double distance;
   /** utilisation interne : ne pas utiliser */
-  private Arc _arcPrecedent;
+  private Arc arcPrecedent;
   /** utilisation interne : ne pas utiliser */
-  private Noeud _noeudPrecedent;
+  private Noeud noeudPrecedent;
 
   /**
    * Plus court chemin de this vers arrivée, en tenant compte du sens de
@@ -477,162 +494,163 @@ public class Noeud extends ElementCarteTopo {
    *         contient le noeud de départ et le noeud d'arrivée.
    */
   public Groupe plusCourtChemin(Noeud arrivee, double maxLongueur) {
-    List<Noeud> noeudsFinaux = new ArrayList<Noeud>();
-    List<Arc> arcsFinaux = new ArrayList<Arc>();
-    List<Noeud> noeudsVoisins = new ArrayList<Noeud>();
-    List<Arc> arcsVoisins = new ArrayList<Arc>();
-    List<Double> distancesVoisins = new ArrayList<Double>();
-    List<Noeud> traites = new ArrayList<Noeud>();
-    List<Noeud> aTraiter = new ArrayList<Noeud>();
+    List<Noeud> noeudsFinaux = new ArrayList<Noeud>(0);
+    List<Arc> arcsFinaux = new ArrayList<Arc>(0);
+    List<Noeud> noeudsVoisins = new ArrayList<Noeud>(0);
+    List<Arc> arcsVoisins = new ArrayList<Arc>(0);
+    List<Double> distancesVoisins = new ArrayList<Double>(0);
+    List<Noeud> traites = new ArrayList<Noeud>(0);
+    List<Noeud> aTraiter = new ArrayList<Noeud>(0);
     int i;
     Arc arcVoisin;
     Noeud noeudVoisin, plusProche, suivant;
     double dist;
-
     try {
       if (this.getCarteTopo() == null) {
-        System.out.println("ATTENTION : le noeud " + this
+        logger.error("ATTENTION : le noeud " + this
             + " ne fait pas partie d'une carte topo");
-        System.out
-            .println("            Impossible de calculer un plus court chemin ");
+        logger.error("            Impossible de calculer un plus court chemin");
         return null;
       }
       if (this.getCarteTopo().getPopGroupes() == null) {
-        System.out.println("ATTENTION : le noeud " + this
+        logger.error("ATTENTION : le noeud " + this
             + " fait partie d'une carte topo sans population de groupes");
-        System.out
-            .println("            Impossible de calculer un plus court chemin ");
+        logger.error("            Impossible de calculer un plus court chemin");
         return null;
       }
       Groupe plusCourtChemin = this.getCarteTopo().getPopGroupes()
           .nouvelElement();
 
       if (this == arrivee) {
+//        logger.info("node is arrival");
         plusCourtChemin.addNoeud(this);
         this.addGroupe(plusCourtChemin);
         return plusCourtChemin;
       }
-      this._distance = 0;
+      this.distance = 0;
       this.chercheArcsNoeudsVoisins(noeudsVoisins, distancesVoisins,
           arcsVoisins);
-
+//      logger.info("voisins " + noeudsVoisins.size());
       for (i = 0; i < noeudsVoisins.size(); i++) {
         noeudVoisin = noeudsVoisins.get(i);
         arcVoisin = arcsVoisins.get(i);
         dist = distancesVoisins.get(i).doubleValue();
-        noeudVoisin._distance = dist;
-        noeudVoisin._arcPrecedent = arcVoisin;
-        noeudVoisin._noeudPrecedent = this;
+        noeudVoisin.distance = dist;
+        noeudVoisin.arcPrecedent = arcVoisin;
+        noeudVoisin.noeudPrecedent = this;
       }
       aTraiter.addAll(noeudsVoisins);
 
       // Phase "avant"
-      while (aTraiter.size() != 0) {
-        // choisi le noeud � marquer comme trait� parmi les voisins
+      while (!aTraiter.isEmpty()) {
+        // choisi le noeud à marquer comme traité parmi les voisins
         plusProche = aTraiter.get(0);
         for (i = 1; i < aTraiter.size(); i++) {
-          if (aTraiter.get(i)._distance < plusProche._distance) {
+          if (aTraiter.get(i).distance < plusProche.distance) {
             plusProche = aTraiter.get(i);
           }
         }
+//        logger.info("plus proche " + plusProche);
         traites.add(plusProche);
         aTraiter.remove(plusProche);
+        // il s'agit du noeud d'arrivée
         if (plusProche == arrivee) {
-          break; // il s'agit du noeud d'arriv�e
+//          logger.info("arrivé !!!");
+          break;
         }
         if (maxLongueur != 0) {
-          if (plusProche._distance > maxLongueur) {
+          if (plusProche.distance > maxLongueur) {
+//            logger.info("Trop long, on s'arrête");
             return null; // heuristique pour stopper la recherche
           }
         }
         plusProche.chercheArcsNoeudsVoisins(noeudsVoisins, distancesVoisins,
             arcsVoisins);
+//        logger.info("voisins " + noeudsVoisins.size());
         for (i = 0; i < noeudsVoisins.size(); i++) {
           noeudVoisin = noeudsVoisins.get(i);
           arcVoisin = arcsVoisins.get(i);
           dist = distancesVoisins.get(i).doubleValue();
           if (traites.contains(noeudVoisin)) {
-            continue; // Noeud d�j� trait�
+            continue; // Noeud déjà traité
           }
-          if (aTraiter.contains(noeudVoisin)) { // Noeud d�j� atteint, on voit
-                                                // si on a trouv� un chemin plus
-                                                // court pour y acc�der
-            if (noeudVoisin._distance > (plusProche._distance + dist)) {
-              noeudVoisin._distance = plusProche._distance + dist;
-              noeudVoisin._arcPrecedent = arcVoisin;
-              noeudVoisin._noeudPrecedent = plusProche;
+          if (aTraiter.contains(noeudVoisin)) {
+            // Noeud déjà atteint, on voit si on a trouvé un chemin
+            // plus court pour y accèder
+            if (noeudVoisin.distance > (plusProche.distance + dist)) {
+              noeudVoisin.distance = plusProche.distance + dist;
+              noeudVoisin.arcPrecedent = arcVoisin;
+              noeudVoisin.noeudPrecedent = plusProche;
             }
             continue;
           }
           // Nouveau noeud atteint, on l'initialise
-          noeudVoisin._distance = plusProche._distance + dist;
-          noeudVoisin._arcPrecedent = arcVoisin;
-          noeudVoisin._noeudPrecedent = plusProche;
+          noeudVoisin.distance = plusProche.distance + dist;
+          noeudVoisin.arcPrecedent = arcVoisin;
+          noeudVoisin.noeudPrecedent = plusProche;
           aTraiter.add(noeudVoisin);
         }
       }
 
       // Phase "arriere"
       if (!traites.contains(arrivee)) {
+//        logger.info("couldn't reach it");
         return null;
       }
       suivant = arrivee;
       while (true) {
-        arcsFinaux.add(0, suivant._arcPrecedent);
-        (suivant._arcPrecedent).addGroupe(plusCourtChemin);
-        suivant = suivant._noeudPrecedent;
+        arcsFinaux.add(0, suivant.arcPrecedent);
+        suivant.arcPrecedent.addGroupe(plusCourtChemin);
+        suivant = suivant.noeudPrecedent;
         if (suivant == this) {
           break;
         }
         noeudsFinaux.add(0, suivant);
         suivant.addGroupe(plusCourtChemin);
       }
-
       noeudsFinaux.add(0, this);
       this.addGroupe(plusCourtChemin);
       noeudsFinaux.add(arrivee);
       arrivee.addGroupe(plusCourtChemin);
-
       plusCourtChemin.setListeArcs(arcsFinaux);
       plusCourtChemin.setListeNoeuds(noeudsFinaux);
       return plusCourtChemin;
-
     } catch (Exception e) {
-      System.out.println("----- ERREUR dans calcul de plus court chemin. ");
+      logger.error("----- ERREUR dans calcul de plus court chemin.");
       e.printStackTrace();
       return null;
     }
   }
 
-  // Méthode utile au plus court chemin
+  /**
+   * Méthode utile au plus court chemin.
+   * @param noeudsVoisins
+   * @param distancesVoisins
+   * @param arcsVoisins
+   */
   private void chercheArcsNoeudsVoisins(List<Noeud> noeudsVoisins,
       List<Double> distancesVoisins, List<Arc> arcsVoisins) {
-    List<Arc> arcsEntrants = new ArrayList<Arc>(); // au sens de la geometrie
-    List<Arc> arcsSortants = new ArrayList<Arc>(); // au sens de la geometrie
-    List<Arc> arcsSortants2 = new ArrayList<Arc>(); // au sens de la circulation
-    List<Noeud> noeudsSortants2 = new ArrayList<Noeud>(); // au sens de la
-                                                          // circulation
-    List<Double> distancesSortants2 = new ArrayList<Double>(); // au sens de la
-                                                               // circulation
-    Noeud noeud;
-    Arc arc;
-    Double distance;
-    int i, j;
-
+    // au sens de la geometrie
+    List<Arc> arcsEntrants = new ArrayList<Arc>(0);
+    // au sens de la geometrie
+    List<Arc> arcsSortants = new ArrayList<Arc>(0);
+    // au sens de la circulation
+    List<Arc> arcsSortants2 = new ArrayList<Arc>(0);
+    // au sens de la circulation
+    List<Noeud> noeudsSortants2 = new ArrayList<Noeud>(0);
+    // au sens de la circulation
+    List<Double> distancesSortants2 = new ArrayList<Double>(0);
     noeudsVoisins.clear();
     distancesVoisins.clear();
     arcsVoisins.clear();
-
     try {
       arcsEntrants = this.getEntrants();
       arcsSortants = this.getSortants();
     } catch (Exception e) {
       e.printStackTrace();
     }
-
     // transformation du sens géométrique au sens de circulation
-    for (i = 0; i < arcsEntrants.size(); i++) {
-      arc = arcsEntrants.get(i);
+    for (Arc arc : arcsEntrants) {
       if ((arc.getOrientation() == -1) || (arc.getOrientation() == 2)) {
         if (arc.getNoeudIni() != null) {
           arcsSortants2.add(arc);
@@ -641,8 +659,7 @@ public class Noeud extends ElementCarteTopo {
         }
       }
     }
-    for (i = 0; i < arcsSortants.size(); i++) {
-      arc = arcsSortants.get(i);
+    for (Arc arc : arcsSortants) {
       if ((arc.getOrientation() == 1) || (arc.getOrientation() == 2)) {
         if (arc.getNoeudFin() != null) {
           arcsSortants2.add(arc);
@@ -651,18 +668,17 @@ public class Noeud extends ElementCarteTopo {
         }
       }
     }
-
-    // en choisissant l'arc le plus court, si il existe des arcs parall�les
-    // (mêmes noeuds ini et fin)
-    for (i = 0; i < noeudsSortants2.size(); i++) {
+    // en choisissant l'arc le plus court, si il existe des arcs
+    // parallèles (mêmes noeuds ini et fin)
+    for (int i = 0; i < noeudsSortants2.size(); i++) {
       // choix du plus court arc menant au noeud sortant
-      noeud = noeudsSortants2.get(i);
+      Noeud noeud = noeudsSortants2.get(i);
       if (noeudsVoisins.contains(noeud)) {
         continue;
       }
-      arc = arcsSortants2.get(i);
-      distance = distancesSortants2.get(i);
-      for (j = i + 1; j < noeudsSortants2.size(); j++) {
+      Arc arc = arcsSortants2.get(i);
+      Double distance = distancesSortants2.get(i);
+      for (int j = i + 1; j < noeudsSortants2.size(); j++) {
         if (noeud == noeudsSortants2.get(j)) {
           if (distancesSortants2.get(j).doubleValue() < distance.doubleValue()) {
             distance = distancesSortants2.get(j);
@@ -674,6 +690,12 @@ public class Noeud extends ElementCarteTopo {
       noeudsVoisins.add(noeud);
       distancesVoisins.add(distance);
     }
+//    logger.debug("neighboorhood for node " + this);
+//    for (int i = 0; i < arcsVoisins.size(); i++) {
+//      logger.debug("\t" + arcsVoisins.get(i));
+//      logger.debug("\t" + noeudsVoisins.get(i));
+//      logger.debug("\t" + distancesVoisins.get(i));
+//    }
   }
 
   /**
@@ -694,13 +716,13 @@ public class Noeud extends ElementCarteTopo {
    *         contient le noeud de départ et le noeud d'arrivée.
    */
   public Groupe plusCourtChemin(Noeud arrivee, Groupe groupe, double maxLongueur) {
-    List<Noeud> noeudsFinaux = new ArrayList<Noeud>();
-    List<Arc> arcsFinaux = new ArrayList<Arc>();
-    List<Noeud> noeudsVoisins = new ArrayList<Noeud>();
-    List<Arc> arcsVoisins = new ArrayList<Arc>();
-    List<Double> distancesVoisins = new ArrayList<Double>();
-    List<Noeud> traites = new ArrayList<Noeud>();
-    List<Noeud> aTraiter = new ArrayList<Noeud>();
+    List<Noeud> noeudsFinaux = new ArrayList<Noeud>(0);
+    List<Arc> arcsFinaux = new ArrayList<Arc>(0);
+    List<Noeud> noeudsVoisins = new ArrayList<Noeud>(0);
+    List<Arc> arcsVoisins = new ArrayList<Arc>(0);
+    List<Double> distancesVoisins = new ArrayList<Double>(0);
+    List<Noeud> traites = new ArrayList<Noeud>(0);
+    List<Noeud> aTraiter = new ArrayList<Noeud>(0);
     int i;
     Arc arcVoisin;
     Noeud noeudVoisin, plusProche, suivant;
@@ -711,14 +733,14 @@ public class Noeud extends ElementCarteTopo {
         System.out.println("ATTENTION : le noeud " + this
             + " ne fait pas partie d'une carte topo");
         System.out
-            .println("            Impossible de calculer un plus court chemin ");
+            .println("            Impossible de calculer un plus court chemin");
         return null;
       }
       if (this.getCarteTopo().getPopGroupes() == null) {
         System.out.println("ATTENTION : le noeud " + this
             + " fait partie d'une carte topo sans population de groupes");
         System.out
-            .println("            Impossible de calculer un plus court chemin ");
+            .println("            Impossible de calculer un plus court chemin");
         return null;
       }
       Groupe plusCourtChemin = this.getCarteTopo().getPopGroupes()
@@ -729,26 +751,26 @@ public class Noeud extends ElementCarteTopo {
         this.addGroupe(plusCourtChemin);
         return plusCourtChemin;
       }
-      this._distance = 0;
+      this.distance = 0;
       this.chercheArcsNoeudsVoisins(groupe, noeudsVoisins, distancesVoisins,
           arcsVoisins);
       for (i = 0; i < noeudsVoisins.size(); i++) {
         noeudVoisin = noeudsVoisins.get(i);
         arcVoisin = arcsVoisins.get(i);
         dist = distancesVoisins.get(i).doubleValue();
-        noeudVoisin._distance = dist;
-        noeudVoisin._arcPrecedent = arcVoisin;
-        noeudVoisin._noeudPrecedent = this;
+        noeudVoisin.distance = dist;
+        noeudVoisin.arcPrecedent = arcVoisin;
+        noeudVoisin.noeudPrecedent = this;
       }
       aTraiter.addAll(noeudsVoisins);
 
       // Phase "avant"
       while (aTraiter.size() != 0) {
 
-        // choisi le noeud � marquer comme trait� parmi les voisins
+        // choisi le noeud à marquer comme traité parmi les voisins
         plusProche = aTraiter.get(0);
         for (i = 1; i < aTraiter.size(); i++) {
-          if (aTraiter.get(i)._distance < plusProche._distance) {
+          if (aTraiter.get(i).distance < plusProche.distance) {
             plusProche = aTraiter.get(i);
           }
         }
@@ -756,10 +778,10 @@ public class Noeud extends ElementCarteTopo {
         traites.add(plusProche);
         aTraiter.remove(plusProche);
         if (plusProche == arrivee) {
-          break; // il s'agit du noeud d'arriv�e
+          break; // il s'agit du noeud d'arrivée
         }
         if (maxLongueur != 0) {
-          if (plusProche._distance > maxLongueur) {
+          if (plusProche.distance > maxLongueur) {
             return null; // heuristique pour stopper la recherche
           }
         }
@@ -771,22 +793,22 @@ public class Noeud extends ElementCarteTopo {
           arcVoisin = arcsVoisins.get(i);
           dist = distancesVoisins.get(i).doubleValue();
           if (traites.contains(noeudVoisin)) {
-            continue; // Noeud d�j� trait�
+            continue; // Noeud déjà traité
           }
-          if (aTraiter.contains(noeudVoisin)) { // Noeud d�j� atteint, on voit
-                                                // si on a trouv� un chemin plus
-                                                // court pour y acc�der
-            if (noeudVoisin._distance > (plusProche._distance + dist)) {
-              noeudVoisin._distance = plusProche._distance + dist;
-              noeudVoisin._arcPrecedent = arcVoisin;
-              noeudVoisin._noeudPrecedent = plusProche;
+          if (aTraiter.contains(noeudVoisin)) {
+            // Noeud déjà atteint, on voit si on a trouvé un chemin
+            // plus court pour y accèder
+            if (noeudVoisin.distance > plusProche.distance + dist) {
+              noeudVoisin.distance = plusProche.distance + dist;
+              noeudVoisin.arcPrecedent = arcVoisin;
+              noeudVoisin.noeudPrecedent = plusProche;
             }
             continue;
           }
           // Nouveau noeud atteint, on l'initialise
-          noeudVoisin._distance = plusProche._distance + dist;
-          noeudVoisin._arcPrecedent = arcVoisin;
-          noeudVoisin._noeudPrecedent = plusProche;
+          noeudVoisin.distance = plusProche.distance + dist;
+          noeudVoisin.arcPrecedent = arcVoisin;
+          noeudVoisin.noeudPrecedent = plusProche;
           aTraiter.add(noeudVoisin);
         }
       }
@@ -797,9 +819,9 @@ public class Noeud extends ElementCarteTopo {
       }
       suivant = arrivee;
       while (true) {
-        arcsFinaux.add(0, suivant._arcPrecedent);
-        suivant._arcPrecedent.addGroupe(plusCourtChemin);
-        suivant = suivant._noeudPrecedent;
+        arcsFinaux.add(0, suivant.arcPrecedent);
+        suivant.arcPrecedent.addGroupe(plusCourtChemin);
+        suivant = suivant.noeudPrecedent;
         if (suivant == this) {
           break;
         }
@@ -816,7 +838,7 @@ public class Noeud extends ElementCarteTopo {
       plusCourtChemin.setListeNoeuds(noeudsFinaux);
       return plusCourtChemin;
     } catch (Exception e) {
-      System.out.println("----- ERREUR dans calcul de plus court chemin. ");
+      System.out.println("----- ERREUR dans calcul de plus court chemin.");
       e.printStackTrace();
       return null;
     }
@@ -832,13 +854,16 @@ public class Noeud extends ElementCarteTopo {
   private void chercheArcsNoeudsVoisins(Groupe groupe,
       List<Noeud> noeudsVoisins, List<Double> distancesVoisins,
       List<Arc> arcsVoisins) {
-    List<Arc> arcsEntrants = new ArrayList<Arc>(); // au sens de la geometrie
-    List<Arc> arcsSortants = new ArrayList<Arc>(); // au sens de la geometrie
-    List<Arc> arcsSortants2 = new ArrayList<Arc>(); // au sens de la circulation
-    List<Noeud> noeudsSortants2 = new ArrayList<Noeud>(); // au sens de la
-                                                          // circulation
-    List<Double> distancesSortants2 = new ArrayList<Double>(); // au sens de la
-                                                               // circulation
+    // au sens de la geometrie
+    List<Arc> arcsEntrants = new ArrayList<Arc>(0);
+    // au sens de la geometrie
+    List<Arc> arcsSortants = new ArrayList<Arc>(0);
+    // au sens de la circulation
+    List<Arc> arcsSortants2 = new ArrayList<Arc>(0);
+    // au sens de la circulation
+    List<Noeud> noeudsSortants2 = new ArrayList<Noeud>(0);
+    // au sens de la circulation
+    List<Double> distancesSortants2 = new ArrayList<Double>(0);
     Noeud noeud;
     Arc arc;
     Double distance;
@@ -877,7 +902,7 @@ public class Noeud extends ElementCarteTopo {
       }
     }
 
-    // en choisissant l'arc le plus court, si il existe des arcs parall�les
+    // en choisissant l'arc le plus court, si il existe des arcs parallèles
     // (mêmes noeuds ini et fin)
     for (i = 0; i < noeudsSortants2.size(); i++) {
       // choix du plus court arc menant au noeud sortant
@@ -931,14 +956,16 @@ public class Noeud extends ElementCarteTopo {
         nbPts = arc.getGeometrie().coord().size();
         listePts.add(arc.getGeometrie().coord().get(nbPts - 2));
       }
-    } else if (arc.getNoeudIni() == this) {
-      listePts = Operateurs.premiersPoints(arc.getGeometrie(),
-          longueurEspaceTravail);
-      if (listePts.size() < 2) {
-        listePts.add(arc.getGeometrie().coord().get(1));
-      }
     } else {
-      return null;
+      if (arc.getNoeudIni() == this) {
+        listePts = Operateurs.premiersPoints(arc.getGeometrie(),
+            longueurEspaceTravail);
+        if (listePts.size() < 2) {
+          listePts.add(arc.getGeometrie().coord().get(1));
+        }
+      } else {
+        return null;
+      }
     }
 
     if (pasEchantillonage == 0) {
@@ -952,11 +979,9 @@ public class Noeud extends ElementCarteTopo {
 
   @Override
   public String toString() {
-    return "Noeud" + " " + this.getId() + " - " //$NON-NLS-2$ //$NON-NLS-3$
+    return "Noeud" + " " + this.getId() + " - "  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
         + this.getGeometrie();
   }
-  
-  private double distance = 0.0;
   
   /**
 	 * @return the distance
@@ -970,7 +995,6 @@ public class Noeud extends ElementCarteTopo {
 	public void setDistance(double distance) {
 		this.distance = distance;
 	}
-	
 	/**
 	 * Supprime un arc du noeud.
 	 * @param arc
@@ -981,11 +1005,10 @@ public class Noeud extends ElementCarteTopo {
 		else
 			this.sortants.remove(arc);
 	}
-	
+
 	/**
 	 * Copie un noeud
 	 * @return
-	 * @throws CloneNotSupportedException
 	 */
 	public Noeud copy() {
 	  Noeud noeud = new Noeud(this.getCoord());

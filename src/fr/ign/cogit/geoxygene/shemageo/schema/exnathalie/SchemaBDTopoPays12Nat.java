@@ -1154,7 +1154,7 @@ public class SchemaBDTopoPays12Nat {
     Integer compteurAT = 0;
     Integer compteurV = 0;
     System.out.println("R�capitulons:");
-    List<GF_FeatureType> listeFT = sProduit.getFeatureTypes();
+    List<FeatureType> listeFT = sProduit.getFeatureTypes();
     for (GF_FeatureType type : listeFT) {
       compteurFT = compteurFT + 1;
       System.out.println("Classe: " + type.getTypeName());

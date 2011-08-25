@@ -60,7 +60,7 @@ public class TestLib {
 
   // Alias de Connection a Oracle (dans le fichier de mapping
   // repository_database.xml)
-  private String ORACLE_ALIAS = "ORACLE_ALIAS";
+  private String ORACLE_ALIAS = "ORACLE_ALIAS"; //$NON-NLS-1$
 
   private Geodatabase db; // connection a la base de donnees
   private Class<?> featureClass1, featureClass2; // classes de FT_Feature a
@@ -74,6 +74,7 @@ public class TestLib {
   private IGeometry geom; // ceci sera le resultat geometrique des algos
   private Resultat result; // resultat a rendre persistant
 
+  @SuppressWarnings("nls")
   public TestLib() {
 
     this.db = GeodatabaseOjbFactory.newInstance(this.ORACLE_ALIAS);
@@ -116,7 +117,7 @@ public class TestLib {
     test.testAll();
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings( { "unchecked", "nls" })
   public void testAll() {
 
     // Debut d'une transaction

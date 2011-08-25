@@ -1,34 +1,27 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.appariement.surfaces;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -39,7 +32,6 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
-import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IAggregate;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
@@ -65,21 +57,19 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
  * Appariement de surfaces. Processus défini dans la thèse de Atef Bel Hadj Ali
- * (2001), et resume dans le rapport [Mustiere 2002]:
+ * (2001), et resume dans le rapport [Mustiere 2002] :
  * ("Description des processus d'appariement mis en oeuvre au COGIT"
  * ,SR/2002.0072, chap.6).
- * 
- * @author Braun & Mustière - Laboratoire COGIT version 1.0
- * 
+ * @author Arnaud Braun
+ * @author Sébastien Mustière
  */
-
 public abstract class AppariementSurfaces {
   public static Logger LOGGER = Logger.getLogger(AppariementSurfaces.class
       .getName());
 
   /**
    * Appariement entre deux ensembles de surfaces. Processus inspiré de celui
-   * défini dans la thèse de Atef Bel Hadj Ali (2001), et resumé dans le rapport
+   * défini dans la thèse de Atef Bel Hadj Ali (2001), et résumé dans le rapport
    * de Seb
    * ("Description des processus d'appariement mise en oeuvre au COGIT",SR
    * /2002.0072, chap.6).
@@ -105,15 +95,12 @@ public abstract class AppariementSurfaces {
    * @param popComp : population des objets de comparaison Ces objets doivent
    *          avoir une géométrie "geom" de type GM_Polygon
    * @param param : paramètres de l'appariement
-   * 
-   * 
-   * @return : liens d'appariement calculés. Ces liens peuvent être de type n-m.
+   * @return liens d'appariement calculés. Ces liens peuvent être de type n-m.
    */
   public static EnsembleDeLiens appariementSurfaces(
       IFeatureCollection<IFeature> popRef,
       IFeatureCollection<IFeature> popComp, ParametresAppSurfaces param) {
     EnsembleDeLiens liensPreApp, liensRegroupes, liensFiltres;
-
     // indexation au besoin des surfaces de comparaison
     if (!popComp.hasSpatialIndex()) {
       if (AppariementSurfaces.LOGGER.isDebugEnabled()) {
@@ -123,7 +110,6 @@ public abstract class AppariementSurfaces {
       }
       popComp.initSpatialIndex(Tiling.class, true);
     }
-
     // pré-appariement selon un test sur la surface de l'intersection
     // entre les surfaces de référence et de comparaison
     if (AppariementSurfaces.LOGGER.isDebugEnabled()) {
@@ -133,7 +119,6 @@ public abstract class AppariementSurfaces {
     }
     liensPreApp = AppariementSurfaces.preAppariementSurfaces(popRef, popComp,
         param);
-
     // appariement par recherche des regroupements optimaux
     if (param.regroupementOptimal) {
       if (AppariementSurfaces.LOGGER.isDebugEnabled()) {
@@ -146,7 +131,6 @@ public abstract class AppariementSurfaces {
     } else {
       liensRegroupes = liensPreApp;
     }
-
     // recollage des petites surfaces non encore appariées
     if (param.ajoutPetitesSurfaces) {
       if (AppariementSurfaces.LOGGER.isDebugEnabled()) {
@@ -157,7 +141,6 @@ public abstract class AppariementSurfaces {
       AppariementSurfaces.ajoutPetitesSurfaces(liensRegroupes, popRef, popComp,
           param);
     }
-
     // filtrage final pour n'accepter que les appariements suffisament bons
     if (param.filtrageFinal) {
       if (AppariementSurfaces.LOGGER.isDebugEnabled()) {
@@ -169,7 +152,6 @@ public abstract class AppariementSurfaces {
     } else {
       liensFiltres = liensRegroupes;
     }
-
     if (AppariementSurfaces.LOGGER.isDebugEnabled()) {
       AppariementSurfaces.LOGGER.debug(I18N.getString("AppariementSurfaces." + //$NON-NLS-1$
           "LinkGeometryCreation" //$NON-NLS-1$
@@ -180,22 +162,26 @@ public abstract class AppariementSurfaces {
       AppariementSurfaces.LOGGER.debug(I18N
           .getString("AppariementSurfaces.ProcessEnd")); //$NON-NLS-1$
     }
-    
     return liensFiltres;
   }
 
   /**
    * 2 surfaces sont pré-appariées si elles respectent le "test d'association"
-   * défini par Atef Bel Hadj Ali (2001). C'est-à-dire si : 1/ l'intersection
-   * des surfaces a une taille supérieure au seuil "surface_min" ET 2/
-   * l'intersection fait au moins la taille d'une des surfaces multipliée par le
+   * défini par Atef Bel Hadj Ali (2001). C'est-à-dire si :
+   * <ul>
+   * <li>1/ l'intersection des surfaces a une taille supérieure au seuil "surface_min" ET
+   * <li> 2/ l'intersection fait au moins la taille d'une des surfaces multipliée par le
    * paramètre "pourcentage_min".
-   * 
-   * NB 1 : Par construction : chaque lien pointe vers UN SEUL objet de la
+   * </ul>
+   * NB:
+   * <ul>
+   * <li> NB 1 : Par construction : chaque lien pointe vers UN SEUL objet de la
    * population de référence et vers UN SEUL objet de la population de
-   * comparaison. NB 2 : Aucune géométrie n'est instanciée pour les liens créés.
-   * NB 3 : l'appariement est symétrique. NB 4 : la population de comparaison
-   * est indexée si elle ne l'était pas avant
+   * comparaison.
+   * <li> NB 2 : Aucune géométrie n'est instanciée pour les liens créés.
+   * <li> NB 3 : l'appariement est symétrique.
+   * <li> NB 4 : la population de comparaison est indexée si elle ne l'était pas avant
+   * </ul>
    * 
    * @param popRef : population des objets de référence.
    * @param popComp : population des objets de comparaison.
@@ -206,14 +192,12 @@ public abstract class AppariementSurfaces {
   public static EnsembleDeLiens preAppariementSurfaces(
       IFeatureCollection<?> popRef, IFeatureCollection<?> popComp,
       ParametresAppSurfaces param) {
-
     EnsembleDeLiens preAppLiens = new EnsembleDeLiens();
     Lien lien;
-    IFeatureCollection<?> candidatComp;
+    Collection<? extends IFeature> candidatComp;
     IFeature featureRef, featureComp;
     IGeometry geomRef, geomComp;
     double surfaceIntersection, pourcentageRecouvrement;
-
     if (!popComp.hasSpatialIndex()) {
       if (AppariementSurfaces.LOGGER.isDebugEnabled()) {
         AppariementSurfaces.LOGGER.debug(I18N.getString("AppariementSurfaces." + //$NON-NLS-1$
@@ -221,7 +205,6 @@ public abstract class AppariementSurfaces {
       }
       popComp.initSpatialIndex(Tiling.class, true);
     }
-
     Iterator<? extends IFeature> iterator = popRef.iterator();
     while (iterator.hasNext()) {
       featureRef = iterator.next();
@@ -229,13 +212,12 @@ public abstract class AppariementSurfaces {
       if (!(geomRef instanceof ISurface)) {
         if (AppariementSurfaces.LOGGER.isDebugEnabled()) {
           AppariementSurfaces.LOGGER.debug(I18N
-              .getString("AppariementSurfaces."
-                  + "ReferenceObjectWithNoSurfaceGeometry")
+              .getString("AppariementSurfaces." //$NON-NLS-1$
+                  + "ReferenceObjectWithNoSurfaceGeometry") //$NON-NLS-1$
               + featureRef.getId());
         }
         continue;
       }
-
       // Test d'association sur tous les objets comp intersectant l'objet ref
       candidatComp = popComp.select(geomRef);
       Iterator<? extends IFeature> iteratorComp = candidatComp.iterator();
@@ -289,7 +271,7 @@ public abstract class AppariementSurfaces {
    * 
    * @param param : paramètres de l'appariement
    * @param liensPreApp : liens issus du pré-appariement
-   * @return : liens d'appariement calculés (contient des objets de la classe
+   * @return liens d'appariement calculés (contient des objets de la classe
    *         Lien). Ces liens sont des liens n-m.
    */
   public static EnsembleDeLiens rechercheRegroupementsOptimaux(
@@ -330,21 +312,19 @@ public abstract class AppariementSurfaces {
       if (AppariementSurfaces.LOGGER.isDebugEnabled()) {
         if (i % 10000 == 0) {
           AppariementSurfaces.LOGGER.debug(I18N
-              .getString("AppariementSurfaces." + "NumberOfHandledGroups")
-              + i + "     " + new Time(System.currentTimeMillis()));
+              .getString("AppariementSurfaces." + "NumberOfHandledGroups") //$NON-NLS-1$ //$NON-NLS-2$
+              + i + "     " + new Time(System.currentTimeMillis())); //$NON-NLS-1$
         }
       }
       groupeConnexe = itGroupes.next();
-
       // pour les objets isolés ou les liens 1-1, on ne fait rien de plus
-      if (groupeConnexe.getListeArcs().size() == 0) {
+      if (groupeConnexe.getListeArcs().isEmpty()) {
         continue;
       }
       if (groupeConnexe.getListeArcs().size() == 1) {
         groupesGardes.add(groupeConnexe);
         continue;
       }
-
       // pour les groupes n-m, on va essayer d'enlever des arcs
       // mais on garde à coup sûr les liens avec suffisament de recouvremnt
       arcsEnlevables = new ArrayList<Arc>(groupeConnexe.getListeArcs());
@@ -363,7 +343,6 @@ public abstract class AppariementSurfaces {
         groupesGardes.add(groupeConnexe);
         continue;
       }
-
       // on cherche à enlever toutes les combinaisons possibles d'arcs virables
       itCombinaisons = Ensemble.combinaisons(
           new ArrayList<Object>(arcsEnlevables)).iterator();
@@ -407,7 +386,6 @@ public abstract class AppariementSurfaces {
                                                              // gardés
       groupesGardes.addAll(groupesDecomposes);
     }
-
     // création des liens retenus (passage de structure graphe à liens):
     // les groupes qui restent dans la carte topo représentent les liens finaux.
     liensGroupes = new EnsembleDeLiens();
@@ -433,7 +411,7 @@ public abstract class AppariementSurfaces {
           lienGroupe.addObjetComp(feat);
         }
         // nettoyage de la carteTopo créée
-        noeud.setCorrespondants(new ArrayList<IFeature>());
+        noeud.setCorrespondants(new ArrayList<IFeature>(0));
       }
     }
     return liensGroupes;
@@ -488,7 +466,6 @@ public abstract class AppariementSurfaces {
       // on combine les mesures des parties connexes
       distTot = distTot + dist;
     }
-
     return distTot; // / groupesConnexes.size();
   }
 
@@ -502,14 +479,11 @@ public abstract class AppariementSurfaces {
   public static void ajoutPetitesSurfaces(EnsembleDeLiens liens,
       IFeatureCollection<?> popRef, IFeatureCollection<?> popComp,
       ParametresAppSurfaces param) {
-    Iterator<?> itRef = popRef.getElements().iterator();
-    Iterator<Lien> itLiens = liens.getElements().iterator();
     Set<IFeature> objetsRefLies = new HashSet<IFeature>();
-    IFeatureCollection<?> objetsAdjacents;
-    Lien lienAdjacent, lien2;
+    Collection<? extends IFeature> objetsAdjacents;
+    Lien lienAdjacent;
     double surfAdj;
     boolean tousPareils;
-
     if (!popRef.hasSpatialIndex()) {
       if (AppariementSurfaces.LOGGER.isDebugEnabled()) {
         AppariementSurfaces.LOGGER
@@ -518,14 +492,10 @@ public abstract class AppariementSurfaces {
       }
       popRef.initSpatialIndex(Tiling.class, true);
     }
-
-    while (itLiens.hasNext()) {
-      Lien lien = itLiens.next();
+    for (Lien lien : liens) {
       objetsRefLies.addAll(lien.getObjetsRef());
     }
-
-    while (itRef.hasNext()) {
-      IFeature objetRef = (IFeature) itRef.next();
+    for (IFeature objetRef : popRef) {
       if (objetsRefLies.contains(objetRef)) {
         continue;
       }
@@ -538,21 +508,22 @@ public abstract class AppariementSurfaces {
         continue;
       }
       objetsAdjacents.remove(objetRef);
-      lienAdjacent = AppariementSurfaces.liensDeObj(objetsAdjacents.get(0),
-          liens);
-      surfAdj = ((IFeature) objetsAdjacents.get(0)).getGeom().area();
+      Iterator<? extends IFeature> iterator = objetsAdjacents.iterator();
+      IFeature feature = iterator.next();
+      lienAdjacent = AppariementSurfaces.liensDeObj(feature, liens);
+      surfAdj = feature.getGeom().area();
       if (lienAdjacent == null) {
         continue;
       }
       tousPareils = true;
-      for (int i = 1; i < objetsAdjacents.size(); i++) {
-        lien2 = AppariementSurfaces.liensDeObj(objetsAdjacents.get(i), liens);
+      while (iterator.hasNext()) {
+        feature = iterator.next();
+        Lien lien2 = AppariementSurfaces.liensDeObj(feature, liens);
         if (lienAdjacent != lien2) {
           tousPareils = false;
           break;
         }
-        surfAdj = surfAdj
-            + ((IFeature) objetsAdjacents.get(i)).getGeom().area();
+        surfAdj = surfAdj + feature.getGeom().area();
       }
       if (!tousPareils) {
         continue;
@@ -565,10 +536,7 @@ public abstract class AppariementSurfaces {
   }
 
   private static Lien liensDeObj(IFeature objet, EnsembleDeLiens liens) {
-    Iterator<Lien> itLiens = liens.getElements().iterator();
-
-    while (itLiens.hasNext()) {
-      Lien lien = itLiens.next();
+    for (Lien lien : liens) {
       if (lien.getObjetsRef().contains(objet)) {
         return lien;
       }
@@ -579,24 +547,19 @@ public abstract class AppariementSurfaces {
   public static EnsembleDeLiens filtreLiens(EnsembleDeLiens liensRegroupes,
       ParametresAppSurfaces param) {
     EnsembleDeLiens liensFiltres = new EnsembleDeLiens();
-    Lien lien, lienOK;
-    double distSurf;
-
-    Iterator<Lien> itGroupes = liensRegroupes.getElements().iterator();
-    while (itGroupes.hasNext()) {
-      lien = itGroupes.next();
+    for (Lien lien : liensRegroupes) {
       // si on depasse le seuil acceptable: on refuse.
       if (param.minimiseDistanceSurfacique) {
-        distSurf = lien.distanceSurfaciqueRobuste();
+        double distSurf = lien.distanceSurfaciqueRobuste();
         if (distSurf < param.distSurfMaxFinal) {
-          lienOK = liensFiltres.nouvelElement();
+          Lien lienOK = liensFiltres.nouvelElement();
           lienOK.copie(lien);
           lienOK.setEvaluation(distSurf);
         }
       } else {
         if ((lien.exactitude() > param.completudeExactitudeMinFinal)
             && (lien.completude() > param.completudeExactitudeMinFinal)) {
-          lienOK = liensFiltres.nouvelElement();
+          Lien lienOK = liensFiltres.nouvelElement();
           lienOK.copie(lien);
         }
       }
@@ -611,16 +574,6 @@ public abstract class AppariementSurfaces {
 
   public static void creeGeometrieDesLiens(EnsembleDeLiens liens,
       boolean persistant) {
-    IFeatureCollection<IFeature> objetsRef;
-    IFeatureCollection<IFeature> objetsComp;
-    IFeature objetComp;
-    IPoint pointAccrocheRef;
-    CarteTopo armRef, armComp;
-    Iterator<?> itArcs, itNoeuds, itObjetsComp;
-    Arc arc;
-    Noeud noeud;
-    IAggregate<IGeometry> geomLien;
-
     if (persistant) {
       DataSet.db.begin();
     }
@@ -645,53 +598,40 @@ public abstract class AppariementSurfaces {
         }
         continue;
       }
-
       if (persistant) {
         DataSet.db.makePersistent(lien);
       }
-      geomLien = new GM_Aggregate<IGeometry>();
+      GM_Aggregate<IGeometry> geomLien = new GM_Aggregate<IGeometry>();
       lien.setGeom(geomLien);
-
-      objetsRef = new FT_FeatureCollection<IFeature>();
+      IFeatureCollection<IFeature> objetsRef = new FT_FeatureCollection<IFeature>();
       objetsRef.getElements().addAll(lien.getObjetsRef());
-      armRef = ARM.creeARMsurObjetsQuelconques(objetsRef);
+      CarteTopo armRef = ARM.creeARMsurObjetsQuelconques(objetsRef);
       // ajout des traits reliant les objets ref
-      itArcs = armRef.getPopArcs().getElements().iterator();
-      while (itArcs.hasNext()) {
-        arc = (Arc) itArcs.next();
+      for (Arc arc : armRef.getPopArcs()) {
         geomLien.add(arc.getGeometrie());
       }
       // ajout des points centroides des objets ref
-      itNoeuds = armRef.getPopNoeuds().getElements().iterator();
-      while (itNoeuds.hasNext()) {
-        noeud = (Noeud) itNoeuds.next();
+      for (Noeud noeud : armRef.getPopNoeuds()) {
         geomLien.add(noeud.getGeometrie());
       }
-
-      objetsComp = new FT_FeatureCollection<IFeature>();
+      IFeatureCollection<IFeature> objetsComp = new FT_FeatureCollection<IFeature>();
       objetsComp.getElements().addAll(lien.getObjetsComp());
-      armComp = ARM.creeARMsurObjetsQuelconques(objetsComp);
+      CarteTopo armComp = ARM.creeARMsurObjetsQuelconques(objetsComp);
       // ajout des traits reliant les objets ref
-      itArcs = armComp.getPopArcs().getElements().iterator();
-      while (itArcs.hasNext()) {
-        arc = (Arc) itArcs.next();
+      for (Arc arc : armComp.getPopArcs()) {
         geomLien.add(arc.getGeometrie());
       }
       // ajout des points centroides des objets ref
-      itNoeuds = armComp.getPopNoeuds().getElements().iterator();
-      while (itNoeuds.hasNext()) {
-        noeud = (Noeud) itNoeuds.next();
+      for (Noeud noeud : armComp.getPopNoeuds()) {
         geomLien.add(noeud.getGeometrie());
       }
-
       // ajout des traits reliant les objets comp au point d'accroche ref
-      pointAccrocheRef = (armRef.getPopNoeuds().getElements().get(0))
+      IPoint pointAccrocheRef = (armRef.getPopNoeuds().getElements().get(0))
           .getGeometrie();
-      itObjetsComp = lien.getObjetsComp().iterator();
-      while (itObjetsComp.hasNext()) {
-        objetComp = (IFeature) itObjetsComp.next();
+      for (IFeature objetComp : lien.getObjetsComp()) {
         GM_Point pointAccrocheComp = new GM_Point(objetComp.getGeom()
             .centroid());
+        // if (pointAccrocheComp==null) continue;
         GM_LineString trait = new GM_LineString();
         trait.addControlPoint(pointAccrocheRef.getPosition());
         trait.addControlPoint(pointAccrocheComp.getPosition());
@@ -701,7 +641,6 @@ public abstract class AppariementSurfaces {
         // V.setX(0.1);V.setY(0);
         // geomLien.add(V.translate(trait));
       }
-
     }
     if (persistant) {
       if (AppariementSurfaces.LOGGER.isDebugEnabled()) {
@@ -711,5 +650,4 @@ public abstract class AppariementSurfaces {
       DataSet.db.commit();
     }
   }
-
 }

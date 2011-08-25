@@ -24,6 +24,7 @@ import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 
 /**
  * @author Sandrine Balley
+ * 
  */
 public class FeatureAttributeValue implements FC_FeatureAttributeValue {
 
@@ -171,5 +172,4 @@ public class FeatureAttributeValue implements FC_FeatureAttributeValue {
   public String toString() {
     return this.getLabel();
   }
-  
 }

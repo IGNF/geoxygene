@@ -31,7 +31,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPrimitiveBoundary;
 
 /**
  * Classe mère pour les frontières des primitives géométriques. Les sous-classes
- * concrétes sont GM_CurveBoundary, GM_SurfaceBoundary et GM_SolidBoundary. On
+ * concrètes sont GM_CurveBoundary, GM_SurfaceBoundary et GM_SolidBoundary. On
  * note que les points n'ont évidemment pas de type pour définir leur frontière,
  * puisqu'ils n'ont pas de frontière.
  * 

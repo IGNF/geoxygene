@@ -76,10 +76,7 @@ abstract public class TP_Primitive extends TP_Object {
 
   /** Renvoie 1 si self possède une géométrie, 0 sinon. */
   public int sizeGeom() {
-    if (this.geom == null) {
-      return 0;
-    }
-    return 1;
+    return (this.geom == null) ? 0 : 1;
   }
 
   // ///////////////////////////////////////////////////////////////////////////////////

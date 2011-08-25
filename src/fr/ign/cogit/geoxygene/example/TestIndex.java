@@ -27,6 +27,8 @@
 
 package fr.ign.cogit.geoxygene.example;
 
+import java.util.Collection;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
@@ -50,7 +52,7 @@ public class TestIndex {
   private Class<IFeature> featureClass;
   private String nomClasse = "geoxygene.geodata.Troncon_route";
   private IFeatureCollection<IFeature> featureList;
-  private IFeatureCollection<?> sublist;
+  private Collection<IFeature> sublist;
   private IEnvelope emprise;
   private long t1, t2;
 

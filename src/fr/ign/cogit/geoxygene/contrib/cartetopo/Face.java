@@ -1,28 +1,20 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
@@ -47,7 +39,6 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
  * @author Olivier Bonin
  * @author Julien Perret
  */
-
 public class Face extends ElementCarteTopo {
   static Logger logger = Logger.getLogger(Face.class.getName());
 
@@ -87,16 +78,15 @@ public class Face extends ElementCarteTopo {
   // ///////////////////////////////////////////////////////////////////////////////////////////////
   // Gestion des groupes
   // ///////////////////////////////////////////////////////////////////////////////////////////////
-
-  /* Groupes auquels self appartient */
-  private Collection<Groupe> listeGroupes = new ArrayList<Groupe>();
+  /** Groupes auquels self appartient */
+  private Collection<Groupe> listeGroupes = new ArrayList<Groupe>(0);
 
   /** Renvoie la liste des groupes de self */
   public Collection<Groupe> getListeGroupes() {
     return this.listeGroupes;
   }
 
-  /** Définit la liste des groupes de self */
+  /** définit la liste des groupes de self */
   public void setListeGroupes(Collection<Groupe> liste) {
     this.listeGroupes = liste;
   }
@@ -115,7 +105,7 @@ public class Face extends ElementCarteTopo {
   // Gestion de la topologie arcs / faces
   // ///////////////////////////////////////////////////////////////////////////////////////////////
 
-  private List<Arc> arcsDirects = new ArrayList<Arc>();
+  private List<Arc> arcsDirects = new ArrayList<Arc>(0);
 
   /** Renvoie la liste des arcs directs de self */
   public List<Arc> getArcsDirects() {
@@ -144,7 +134,7 @@ public class Face extends ElementCarteTopo {
     arc.setFaceGauche(null);
   }
 
-  private List<Arc> arcsIndirects = new ArrayList<Arc>();
+  private List<Arc> arcsIndirects = new ArrayList<Arc>(0);
 
   /** Renvoie la liste des arcs indirects de self */
   public List<Arc> getArcsIndirects() {
@@ -181,7 +171,8 @@ public class Face extends ElementCarteTopo {
    * méthode qui renvoie ces arcs dans le bon ordre de parcours
    */
   public List<Arc> arcs() {
-    List<Arc> Arcs = new ArrayList<Arc>();
+    List<Arc> Arcs = new ArrayList<Arc>(this.getArcsDirects().size()
+        + this.getArcsIndirects().size());
     Arcs.addAll(this.getArcsDirects());
     Arcs.addAll(this.getArcsIndirects());
     return Arcs;
@@ -221,7 +212,6 @@ public class Face extends ElementCarteTopo {
       arcsDuNoeud = noeud.arcsClasses();
       itArcs = ((List<Arc>) arcsDuNoeud.get(0)).iterator();
       itOrientations = ((List<Boolean>) arcsDuNoeud.get(1)).iterator();
-      ;
       while (itArcs.hasNext()) {
         arc = itArcs.next();
         orientation = itOrientations.next();
@@ -349,8 +339,8 @@ public class Face extends ElementCarteTopo {
     return Operateurs.surface(this.getGeometrie());
   }
 
-  protected String arcsUtilises = "";
-  protected String arcsIgnores = "";
+  protected String arcsUtilises = ""; //$NON-NLS-1$
+  protected String arcsIgnores = ""; //$NON-NLS-1$
 
   public String getArcsUtilises() {
     return this.arcsUtilises;
@@ -368,7 +358,7 @@ public class Face extends ElementCarteTopo {
     this.arcsIgnores = arcsIgnores;
   }
 
-  protected List<Arc> arcsPendants = new ArrayList<Arc>();
+  protected List<Arc> arcsPendants = new ArrayList<Arc>(0);
 
   public List<Arc> getArcsPendants() {
     return this.arcsPendants;
@@ -377,7 +367,7 @@ public class Face extends ElementCarteTopo {
   public void setArcsPendants(List<Arc> arcsPendants) {
     this.arcsPendants = arcsPendants;
   }
-  
+
   /**
    * Set a face as infinite or not.
    * @param infinite new infinite parameter value
@@ -395,8 +385,7 @@ public class Face extends ElementCarteTopo {
 
   @Override
   public String toString() {
-    return "Face" + " " + this.getId() + " - " //$NON-NLS-2$ //$NON-NLS-3$
+    return "Face" + " " + this.getId() + " - "  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
         + this.getGeometrie();
   }
-
 }

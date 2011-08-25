@@ -20,7 +20,6 @@
 package fr.ign.cogit.geoxygene.spatial.geomcomp;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -56,149 +55,64 @@ public class GM_CompositeSurface extends GM_OrientableSurface implements
     ICompositeSurface {
   private static Logger logger = Logger.getLogger(GM_CompositeSurface.class
       .getName());
-
-  // Attribut "generator" et méthodes pour le traiter ////////////////////
   /** Les GM_OrientableSurface constituant self. */
   protected List<IOrientableSurface> generator;
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * fr.ign.cogit.geoxygene.spatial.geomcomp.ICompositeSurface#getGenerator()
-   */
   @Override
   public List<IOrientableSurface> getGenerator() {
     return this.generator;
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomcomp.ICompositeSurface#getGenerator
-   * (int)
-   */
   @Override
   public IOrientableSurface getGenerator(int i) {
     return this.generator.get(i);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomcomp.ICompositeSurface#setGenerator
-   * (int, fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface)
-   */
   @Override
   public void setGenerator(int i, IOrientableSurface value) {
     this.generator.set(i, value);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomcomp.ICompositeSurface#addGenerator
-   * (fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface)
-   */
   @Override
   public void addGenerator(IOrientableSurface value) {
     this.generator.add(value);
   }
-
-  /**
-   * A FAIRE. Ajoute une GM_OrientableSurface en fin de liste avec un contrôle
-   * de continuité avec la tolérance passée en paramètre. Envoie une exception
-   * en cas de problème.
-   * @param value
-   * @param tolerance
-   * @throws Exception
-   */
   @Override
   public void addGenerator(IOrientableSurface value, double tolerance)
       throws Exception {
   }
-
-  /**
-   * A FAIRE. Ajoute une GM_OrientableSurface en fin de liste avec un contrôle
-   * de continuité avec la tolérance passée en paramètre. Eventuellement change
-   * le sens d'orientation de la surface pour assurer la continuite. Envoie une
-   * exception en cas de problème.
-   * @param value
-   * @param tolerance
-   * @throws Exception
-   */
   @Override
   public void addGeneratorTry(IOrientableSurface value, double tolerance)
       throws Exception {
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomcomp.ICompositeSurface#addGenerator
-   * (int, fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface)
-   */
   @Override
   public void addGenerator(int i, IOrientableSurface value) {
     this.generator.add(i, value);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * fr.ign.cogit.geoxygene.spatial.geomcomp.ICompositeSurface#removeGenerator
-   * (fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface)
-   */
   @Override
   public void removeGenerator(IOrientableSurface value) throws Exception {
     if (this.generator.size() == 1) {
-      throw new Exception("Il n'y a qu'un objet dans l'association.");
+      throw new Exception("Il n'y a qu'un objet dans l'association."); //$NON-NLS-1$
     }
     this.generator.remove(value);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * fr.ign.cogit.geoxygene.spatial.geomcomp.ICompositeSurface#removeGenerator
-   * (int)
-   */
   @Override
   public void removeGenerator(int i) throws Exception {
     if (this.generator.size() == 1) {
-      throw new Exception("Il n'y a qu'un objet dans l'association.");
+      throw new Exception("Il n'y a qu'un objet dans l'association."); //$NON-NLS-1$
     }
     this.generator.remove(i);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * fr.ign.cogit.geoxygene.spatial.geomcomp.ICompositeSurface#sizeGenerator()
-   */
   @Override
   public int sizeGenerator() {
     return this.generator.size();
   }
-
-  // //////////////////////////////////////////////////////////////////////
-  // Constructeurs ///////////////////////////////////////////////////////
-  // //////////////////////////////////////////////////////////////////////
-  // les constructeurs sont calques sur ceux de GM_Surface
-  /** Constructeur par défaut */
+  /** Constructeur par défaut. */
   public GM_CompositeSurface() {
-    this.generator = new ArrayList<IOrientableSurface>();
+    this.generator = new ArrayList<IOrientableSurface>(0);
     this.primitive = new GM_Surface();
-    this.proxy[0] = this.primitive;
-    GM_OrientableSurface proxy1 = new GM_OrientableSurface();
-    proxy1.orientation = -1;
-    proxy1.proxy[0] = this.primitive;
-    proxy1.proxy[1] = proxy1;
-    proxy1.primitive = new GM_Surface(this.primitive);
-    this.proxy[1] = proxy1;
+    /*
+     * this.proxy[0] = this.primitive; GM_OrientableSurface proxy1 = new
+     * GM_OrientableSurface(); proxy1.orientation = -1; proxy1.proxy[0] =
+     * this.primitive; proxy1.proxy[1] = proxy1; proxy1.primitive = new
+     * GM_Surface(this.primitive); this.proxy[1] = proxy1;
+     */
   }
 
   /**
@@ -210,35 +124,18 @@ public class GM_CompositeSurface extends GM_OrientableSurface implements
     this.generator.add(oCurve);
     this.primitive = new GM_Surface();
     // this.simplifyPrimitive(); -> creer la primitive
-    this.proxy[0] = this.primitive;
-    GM_OrientableSurface proxy1 = new GM_OrientableSurface();
-    proxy1.orientation = -1;
-    proxy1.proxy[0] = this.primitive;
-    proxy1.proxy[1] = proxy1;
-    proxy1.primitive = new GM_Surface(this.primitive);
-    this.proxy[1] = proxy1;
+    /*
+     * this.proxy[0] = this.primitive; GM_OrientableSurface proxy1 = new
+     * GM_OrientableSurface(); proxy1.orientation = -1; proxy1.proxy[0] =
+     * this.primitive; proxy1.proxy[1] = proxy1; proxy1.primitive = new
+     * GM_Surface(this.primitive); this.proxy[1] = proxy1;
+     */
   }
-
-  // //////////////////////////////////////////////////////////////////////
-  // Attributs et méthodes héritées de GM_OrientableSurface ////////////////
-  // //////////////////////////////////////////////////////////////////////
-  // On simule l'heritage du modele en reportant les attributs et methodes
-  // de GM_OrientableSurface
-  // On n'a pas repris l'attribut "orientation" qui ne sert a rien ici.
-
   /**
    * Primitive. Elle doit etre recalculée à chaque modification de self : fait
    * dans getPrimitive().
    */
   protected ISurface primitive;
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomcomp.ICompositeSurface#getPrimitive
-   * (fr.ign.cogit.geoxygene.datatools.Geodatabase)
-   */
-  // le calcul est fait en dynamique dans la methode privee simplifyPrimitve.
   @Override
   public ISurface getPrimitive() {
     this.simplifyPrimitive();
@@ -250,53 +147,22 @@ public class GM_CompositeSurface extends GM_OrientableSurface implements
    * celle orientée positivement. Proxy[1] est celle orientée négativement. On
    * accède aux primitives orientées par getPositive() et getNegative().
    */
-  protected IOrientableSurface[] proxy = new IOrientableSurface[2];
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomcomp.ICompositeSurface#getPositive
-   * (fr.ign.cogit.geoxygene.datatools.Geodatabase)
-   */
+  // protected GM_OrientableSurface[] proxy = new GM_OrientableSurface[2];
   @Override
   public IOrientableSurface getPositive() {
     this.simplifyPrimitive();
     return this.primitive; // equivaut a return this.proxy[0]
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomcomp.ICompositeSurface#getNegative
-   * (fr.ign.cogit.geoxygene.datatools.Geodatabase)
-   */
   @Override
   public IOrientableSurface getNegative() {
     this.simplifyPrimitive();
     return this.primitive.getNegative();
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomcomp.ICompositeSurface#boundary(fr
-   * .ign.cogit.geoxygene.datatools.Geodatabase)
-   */
   @Override
   public ISurfaceBoundary boundary() {
     this.simplifyPrimitive();
     return this.primitive.boundary();
   }
-
-  // //////////////////////////////////////////////////////////////////////
-  // Méthodes "validate" /////////////////////////////////////////////////
-  // //////////////////////////////////////////////////////////////////////
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * fr.ign.cogit.geoxygene.spatial.geomcomp.ICompositeSurface#validate(double )
-   */
   @Override
   public boolean validate(double tolerance) {
     /*
@@ -310,13 +176,8 @@ public class GM_CompositeSurface extends GM_OrientableSurface implements
      */
     return true;
   }
-
-  // //////////////////////////////////////////////////////////////////////
-  // Méthodes privées pour usage interne /////////////////////////////////
-  // //////////////////////////////////////////////////////////////////////
   /**
    * Calcule la primitive se self. MARCHE PAS
-   * 
    * @param data
    */
   private void simplifyPrimitive() {
@@ -324,107 +185,89 @@ public class GM_CompositeSurface extends GM_OrientableSurface implements
      * int n = generator.size(); if (n > 1) { GM_Surface prim =
      * (GM_Surface)this.primitive; prim = this.getGenerator(0); // clonage de la
      * primitive GM_Surface union = new GM_Surface(); for (int i=0;
-     * i<prim.cardPatch(); i++) union.appendPatch(prim.getPatch(i)); union =
-     * prim; for (int i=1; i<n; i++) { GM_Surface surf = new
+     * i<prim.cardPatch(); i++) union.appendPatch(prim.getPatch(i));
+     * 
+     * union = prim; for (int i=1; i<n; i++) { GM_Surface surf = new
      * GM_Surface(((GM_Surface)this.getGenerator(i)).getPrimitive()); union =
      * (GM_Surface)union.union(data,0.0000000001,surf); } }
      */
   }
-
   public double volume() {
     GM_CompositeSurface.logger.error("non implemented method");
     return 0;
   }
-
   @Override
   public Set<IComplex> getComplex() {
     GM_CompositeSurface.logger.error("non implemented method");
     return null;
   }
-
   @Override
   public int sizeComplex() {
     GM_CompositeSurface.logger.error("non implemented method");
     return 0;
   }
-
   /** Set de primitives constituant self. */
-  protected Set<IGeometry> element = new HashSet<IGeometry>();
-
+//  protected Set<IGeometry> element = new HashSet<IGeometry>();
   @Override
   public void addElement(IPrimitive value) {
-    this.element.add(value);
+    this.getElement().add(value);
     value.getComplex().add(this);
   }
-
   @Override
   public void removeElement(IPrimitive value) {
-    this.element.remove(value);
+    this.getElement().remove(value);
     value.getComplex().remove(this);
   }
-
   @Override
   public Set<IGeometry> getElement() {
-    return this.element;
+    return null; // this.element;
   }
-
   @Override
   public int sizeElement() {
-    return this.element.size();
+    return this.getElement().size();
   }
-
   /** Les sous-complexes constituant self. */
-  protected Set<IComplex> subComplex = new HashSet<IComplex>();
-
+//  protected Set<IComplex> subComplex = new HashSet<IComplex>();
   @Override
   public Set<IComplex> getSubComplex() {
-    return this.subComplex;
+    return null;//this.subComplex;
   }
-
   @Override
   public int sizeSubComplex() {
-    return this.subComplex.size();
+    return this.getSubComplex().size();
   }
-
   @Override
   public void addSubComplex(IComplex value) {
-    this.subComplex.add(value);
+    this.getSubComplex().add(value);
     value.getSuperComplex().add(this);
     this.getElement().add(value);
     value.getElement().add(this);
   }
-
   @Override
   public void removeSubComplex(IComplex value) {
-    this.subComplex.remove(value);
+    this.getSubComplex().remove(value);
     value.getSuperComplex().remove(this);
-    this.element.remove(value);
+    this.getElement().remove(value);
     value.getElement().remove(this);
   }
-
   /** Les super-complexes constituant self. */
-  protected Set<IComplex> superComplex = new HashSet<IComplex>();
-
+//  protected Set<IComplex> superComplex = new HashSet<IComplex>();
   @Override
   public Set<IComplex> getSuperComplex() {
-    return this.superComplex;
+    return null;//this.superComplex;
   }
-
   @Override
   public void addSuperComplex(IComplex value) {
-    this.superComplex.add(value);
+    this.getSuperComplex().add(value);
   }
-
   @Override
   public void removeSuperComplex(IComplex value) {
-    this.superComplex.remove(value);
+    this.getSuperComplex().remove(value);
   }
-
   @Override
   public int sizeSuperComplex() {
-    return this.superComplex.size();
+    return this.getSuperComplex().size();
   }
-
   @Override
   public boolean isMaximal() {
     return (this.sizeSuperComplex() == 0);

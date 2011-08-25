@@ -98,14 +98,13 @@ public class UserStyle extends AbstractStyle {
 
   @Override
   public String toString() {
-    String result = "UserStyle " + this.getName() //$NON-NLS-1$
-        + "\n"; //$NON-NLS-1$
+    String result = "UserStyle " + this.getName() + "\n"; //$NON-NLS-1$//$NON-NLS-2$
     for (FeatureTypeStyle fts : this.getFeatureTypeStyles()) {
-      result += "FeatureTypeStyle " + fts + "\n"; //$NON-NLS-1$//$NON-NLS-2$
+      result += "\t" + fts + "\n"; //$NON-NLS-1$//$NON-NLS-2$
     }
     return result;
   }
-  
+
   @Override
   public Symbolizer getSymbolizer() {
     return this.featureTypeStyles.get(0).getSymbolizer();

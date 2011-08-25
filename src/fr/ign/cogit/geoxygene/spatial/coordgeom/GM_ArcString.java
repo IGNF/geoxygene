@@ -23,6 +23,7 @@
  * along with this library (see file LICENSE if present); if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
+ * 
  */
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
@@ -42,13 +43,11 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 
 class GM_ArcString extends GM_CurveSegment implements IArcString {
 
-  /** NON IMPLEMENTE. */
   @Override
   public IDirectPositionList coord() {
     return null;
   }
 
-  /** NON IMPLEMENTE. */
   @Override
   public ICurveSegment reverse() {
     return null;
@@ -61,4 +60,8 @@ class GM_ArcString extends GM_CurveSegment implements IArcString {
     return this.numArc;
   }
 
+  @Override
+  public String getInterpolation() {
+    return "circularArc3points"; //$NON-NLS-1$
+  }
 }

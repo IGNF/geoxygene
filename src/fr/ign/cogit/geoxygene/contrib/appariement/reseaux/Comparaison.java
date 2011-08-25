@@ -1,33 +1,26 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,7 +32,6 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
-import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
@@ -50,7 +42,6 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
  * @version 1.0
- * 
  */
 
 public class Comparaison {
@@ -62,14 +53,11 @@ public class Comparaison {
    * 
    * @param reseau1 Un réseau, typiquement un réseau peu précis dont on veut
    *          estimer la qualité par rapport à reseau2.
-   * 
    * @param reseau2 Un autre réseau, typiquement un réseau de bonne qualité qui
    *          sert de référence.
-   * 
    * @param distanceMax Sert à éliminer les aberrations dans le calcul de la
    *          moyenne: les arcs de reseau1 situés au moins en un point à plus de
    *          distanceMax de reseau2 ne sont pas pris en compte dans le calcul.
-   * 
    * @return L'écart moyen. Il est calculé comme la moyenne des distances entre
    *         les points des arcs de reseau1 et reseau2. Cette moyenne est
    *         pondérée par la longueur des segments entourant les points en
@@ -82,10 +70,9 @@ public class Comparaison {
     double ltotArc, dtotArc, dmaxArc, l1, l2, l;
     int n = 0;
     Iterator<?> itArcsRef, itArcsComp;
-    IFeatureCollection<Arc> arcsCompProches;
+    Collection<Arc> arcsCompProches;
     IFeatureCollection<Arc> arcsRef = reseau1.getPopArcs();
     IFeatureCollection<Arc> arcsComp = reseau2.getPopArcs();
-
     itArcsRef = arcsRef.getElements().iterator();
     while (itArcsRef.hasNext()) { // pour chaque arc de this
       IFeature objetRef = (IFeature) itArcsRef.next();
@@ -96,27 +83,26 @@ public class Comparaison {
       dtotArc = 0;
       ltotArc = 0;
       dmaxArc = 0;
-      for (int i = 0; i < dp.size(); i++) { // pour chaque point d'un arc de
-                                            // this
+      for (int i = 0; i < dp.size(); i++) { // pour chaque point d'un arc
         IDirectPosition ptRef = dp.get(i);
         if (i == 0) {
           l1 = 0;
         } else {
-          l1 = Distances.distance(dp.get(i), dp.get(i - 1));
+          l1 = dp.get(i).distance(dp.get(i - 1));
         }
         if (i == dp.size() - 1) {
           l2 = 0;
         } else {
-          l2 = Distances.distance(dp.get(i), dp.get(i + 1));
+          l2 = dp.get(i).distance(dp.get(i + 1));
         }
         l = l1 + l2;
         double dmin = Double.MAX_VALUE;
-        itArcsComp = arcsCompProches.getElements().iterator();
+        itArcsComp = arcsCompProches.iterator();
         while (itArcsComp.hasNext()) {
           IFeature objetComp = (IFeature) itArcsComp.next();
           ILineString geomComp = (ILineString) objetComp.getGeom();
           IDirectPosition ptProjete = Operateurs.projection(ptRef, geomComp);
-          double d = Distances.distance(ptRef, ptProjete);
+          double d = ptRef.distance(ptProjete);
           if (d < dmin) {
             dmin = d;
           }
@@ -138,11 +124,13 @@ public class Comparaison {
       n++;
     }
 
-    System.out.println("distance moyenne entre les arcs" + dtot / ltot);
-    System.out.println("distance max entre les arcs " + dmax);
-    System.out.println("Nb d'arcs de this pris en compte dans le calcul " + n);
-    System.out.println("Nb d'arcs de this non pris en compte dans le calcul "
-        + (arcsRef.size() - n));
+    System.out.println(I18N
+        .getString("Comparaison.AverageDistanceBetweenEdges") + dtot / ltot); //$NON-NLS-1$
+    System.out
+        .println(I18N.getString("Comparaison.MaxDistanceBetweenEdges") + dmax); //$NON-NLS-1$
+    System.out.println(I18N.getString("Comparaison.NumberOfEdgesUsed") + n); //$NON-NLS-1$
+    System.out
+        .println(I18N.getString("Comparaison.NumberOfEdgesNotUsed") + (arcsRef.size() - n)); //$NON-NLS-1$
     return dtot / ltot;
   }
 
@@ -155,30 +143,26 @@ public class Comparaison {
    * longueur des segments entourant les points, pour gommer les effets dus aux
    * pas de découpage variables des lignes.
    * 
-   * @param reseau1 Réseau étudié.
-   * 
-   * @param reseau2 Réseau servant de référence.
-   * 
+   * @param reseau1 réseau étudié.
+   * @param reseau2 réseau servant de référence.
    * @param affichage Si TRUE alors les résultats sont affichés.
-   * 
    * @param distanceMax Sert à éliminer les aberrations dans les calculs. - Les
    *          arcs de reseau1 situés en au moins un point à plus de distanceMax
    *          de reseau2 ne sont pas pris en compte dans le calcul des
    *          indicateurs sur les arcs. - Les noeuds de reseau1 situés à plus de
    *          distanceMax d'un noeud de reseau2 ne sont pas pris en compte dans
    *          le calcul des indicateurs sur les noeuds
-   * 
    * @return Liste (de 'double') contenant un ensemble d'indicateurs sur l'écart
    *         entre les réseaux :
-   * 
-   *         ESTIMATEURS SUR LES ARCS liste(0): longueur des arcs du réseau
-   *         "this" total liste(1): longueur des arcs du réseau "this" pris en
-   *         compte dans les calculs d'évaluation de l'écart liste(2): longueur
-   *         des arcs du réseau "reseau" liste(3): nombre d'arcs du réseau
-   *         "this" total liste(4): nombre d'arcs du réseau "this" pris en
-   *         compte dans les calculs d'évaluation de l'écart liste(5): nombre
-   *         d'arcs du réseau "reseau" liste(6): estimation du biais
-   *         systématique en X sur les arcs (valeur en X de la moyenne des
+   *         <p>
+   *         ESTIMATEURS SUR LES ARCS liste(0): longueur des
+   *         arcs du réseau "this" total liste(1): longueur des arcs du réseau
+   *         "this" pris en compte dans les calculs d'évaluation de l'écart
+   *         liste(2): longueur des arcs du réseau "reseau" liste(3): nombre
+   *         d'arcs du réseau "this" total liste(4): nombre d'arcs du réseau
+   *         "this" pris en compte dans les calculs d'évaluation de l'écart
+   *         liste(5): nombre d'arcs du réseau "reseau" liste(6): estimation du
+   *         biais systématique en X sur les arcs (valeur en X de la moyenne des
    *         vecteurs d'écart entre un point de "this" et son projeté sur
    *         "reseau") liste(7): estimation du biais systématique en Y sur les
    *         arcs (valeur en Y de la moyenne des vecteurs d'écart entre un point
@@ -191,48 +175,45 @@ public class Comparaison {
    *         de l'écart type sur les arcs, i.e. précision une fois le biais
    *         corrigé ( racine(ecart moyen quadratique^2 - biais^2) liste(11):
    *         histogramme de répartition des écarts sur tous les points (en nb de
-   *         points intermédiaires sur les arcs)
-   * 
-   *         ESTIMATEURS SUR LES NOEUDS (si ils existent) liste(12): nombre de
-   *         noeuds du réseau "this" total liste(13): nombre de noeuds du réseau
-   *         "this" pris en compte dans les calculs d'évaluation de l'écart
-   *         liste(14): nombre de noeuds du réseau "reseau" liste(15):
-   *         estimation du biais systématique en X sur les noeuds (valeur en X
-   *         de la moyenne des vecteurs d'écart entre un noeud de "this" et le
-   *         noeud le plus proche de "reseau") liste(16): estimation du biais
-   *         systématique en Y sur les noeuds (valeur en Y de la moyenne des
+   *         points intermédiaires sur les arcs).
+   *         <p>
+   *         ESTIMATEURS SUR LES NOEUDS (si
+   *         ils existent) liste(12): nombre de noeuds du réseau "this" total
+   *         liste(13): nombre de noeuds du réseau "this" pris en compte dans
+   *         les calculs d'évaluation de l'écart liste(14): nombre de noeuds du
+   *         réseau "reseau" liste(15): estimation du biais systématique en X
+   *         sur les noeuds (valeur en X de la moyenne des vecteurs d'écart
+   *         entre un noeud de "this" et le noeud le plus proche de "reseau")
+   *         liste(16): estimation du biais systématique en Y sur les noeuds
+   *         (valeur en Y de la moyenne des vecteurs d'écart entre un noeud de
+   *         "this" et le noeud le plus proche de "reseau") liste(17):
+   *         estimation de l'écart moyen sur les noeuds (moyenne des longueurs
+   *         des vecteurs d'écart entre un noeud de "this" et le noeud le plus
+   *         proche de "reseau") liste(18): estimation de l'écart moyen
+   *         quadratique sur les arcs (moyenne quadratique des longueurs des
    *         vecteurs d'écart entre un noeud de "this" et le noeud le plus
-   *         proche de "reseau") liste(17): estimation de l'écart moyen sur les
-   *         noeuds (moyenne des longueurs des vecteurs d'écart entre un noeud
-   *         de "this" et le noeud le plus proche de "reseau") liste(18):
-   *         estimation de l'écart moyen quadratique sur les arcs (moyenne
-   *         quadratique des longueurs des vecteurs d'écart entre un noeud de
-   *         "this" et le noeud le plus proche de "reseau") liste(19):
-   *         estimation de l'écart type sur les noeuds, i.e. précision une fois
-   *         le biais corrigé ( racine(ecart moyen quadratique^2 - biais^2)
-   *         liste(20): histogramme de répartition des écarts sur tous les
-   *         noeuds (en nb de noeuds)
-   * 
+   *         proche de "reseau") liste(19): estimation de l'écart type sur les
+   *         noeuds, i.e. précision une fois le biais corrigé ( racine(ecart
+   *         moyen quadratique^2 - biais^2) liste(20): histogramme de
+   *         répartition des écarts sur tous les noeuds (en nb de noeuds)
    */
   public static List<?> evaluationEcartPosition(CarteTopo reseau1,
       CarteTopo reseau2, double distanceMax, boolean affichage) {
 
     List<Double> resultats = new ArrayList<Double>();
-    IFeatureCollection<?> arcs1 = reseau1.getPopArcs();
-    IFeatureCollection<?> arcs2 = reseau2.getPopArcs();
+    IFeatureCollection<Arc> arcs1 = reseau1.getPopArcs();
+    IFeatureCollection<Arc> arcs2 = reseau2.getPopArcs();
     Iterator<?> itArcs1, itArcs2;
     Arc arc1, arc2;
     ILineString geom1, geom2;
     Vecteur v12, vmin, vPourUnArc1, vTotal;
     IDirectPosition pt1, projete;
-    IFeatureCollection<? extends IFeature> arcs2proches;
+    Collection<Arc> arcs2proches;
     double longArc1, poids, d12, ecartQuadratiquePourUnArc1, l1, l2, poidsPourUnArc1, ecartPourUnArc1, ecartMaxArc1, poidsTotal;
-
     // indicateurs finaux
     double longTotal1, longPrisEnCompte1, longTotal2;
     double ecartTotal, ecartQuadratiqueTotal, ecartTypeArcs;
     int nbArcsTotal1, nbArcsPrisEnCompte1, nbArcsTotal2;
-
     // /////////////// EVALUATION SUR LES ARCS ////////////////////
     // indexation des arcs du réseau 2
     if (!reseau2.getPopArcs().hasSpatialIndex()) {
@@ -279,23 +260,23 @@ public class Comparaison {
         if (i == 0) {
           l1 = 0;
         } else {
-          l1 = Distances.distance(dp.get(i), dp.get(i - 1));
+          l1 = dp.get(i).distance(dp.get(i - 1));
         }
         if (i == dp.size() - 1) {
           l2 = 0;
         } else {
-          l2 = Distances.distance(dp.get(i), dp.get(i + 1));
+          l2 = dp.get(i).distance(dp.get(i + 1));
         }
         poids = l1 + l2;
         // projection du point sur le réseau2
         double dmin = Double.MAX_VALUE;
-        itArcs2 = arcs2proches.getElements().iterator();
+        itArcs2 = arcs2proches.iterator();
         while (itArcs2.hasNext()) { // pour chaque arc du réseau 2
           arc2 = (Arc) itArcs2.next();
           geom2 = (ILineString) arc2.getGeom();
           projete = Operateurs.projection(pt1, geom2);
           v12 = new Vecteur(pt1, projete);
-          d12 = Distances.distance(pt1, projete);
+          d12 = pt1.distance(projete);
           if (d12 < dmin) {
             dmin = d12;
             vmin = v12;
@@ -400,7 +381,6 @@ public class Comparaison {
       System.out
           .println("*********************************************************"); //$NON-NLS-1$
     }
-    
     return resultats;
   }
 

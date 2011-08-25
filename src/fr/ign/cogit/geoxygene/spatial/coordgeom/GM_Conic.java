@@ -41,16 +41,19 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 
 class GM_Conic extends GM_CurveSegment implements IConic {
 
-  // implemente une methode de GM_CurveSegment
   @Override
   public IDirectPositionList coord() {
     return null;
   }
 
-  // implemente une methode de GM_CurveSegment
   @Override
   public ICurveSegment reverse() {
     return null;
+  }
+
+  @Override
+  public String getInterpolation() {
+    return "conic"; //$NON-NLS-1$
   }
 
 }

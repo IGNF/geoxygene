@@ -81,7 +81,7 @@ public class NoeudApp extends Noeud {
    * Liens qui référencent les objets auquel l'arc est apparié dans un autre
    * réseau.
    */
-  private List<LienReseaux> liens = new ArrayList<LienReseaux>();
+  private List<LienReseaux> liens = new ArrayList<LienReseaux>(0);
 
   public List<LienReseaux> getLiens() {
     return this.liens;
@@ -111,13 +111,9 @@ public class NoeudApp extends Noeud {
    * NB: renvoie une liste vide (et non "Null") si il n'y a pas de tels liens.
    */
   public List<LienReseaux> retrouveLiens(String nom) {
-    List<LienReseaux> liensReseaux = new ArrayList<LienReseaux>();
-    List<LienReseaux> tousLiens = new ArrayList<LienReseaux>();
-
-    tousLiens = this.getLiens();
-    Iterator<LienReseaux> it = tousLiens.iterator();
-    while (it.hasNext()) {
-      LienReseaux lien = it.next();
+    List<LienReseaux> liensReseaux = new ArrayList<LienReseaux>(0);
+    List<LienReseaux> tousLiens = this.getLiens();
+    for (LienReseaux lien : tousLiens) {
       if (lien.getNom().compareToIgnoreCase(nom) == 0) {
         liensReseaux.add(lien);
       }
@@ -130,15 +126,10 @@ public class NoeudApp extends Noeud {
    * contient des NoeudComp.
    */
   public List<Noeud> noeudsCompEnCorrespondance(EnsembleDeLiens ensembleDeLiens) {
-    List<Noeud> noeuds = new ArrayList<Noeud>();
-    List<LienReseaux> liensOK = new ArrayList<LienReseaux>();
-    LienReseaux lien;
-    int i;
-
-    liensOK = new ArrayList<LienReseaux>(this.getLiens());
+    List<Noeud> noeuds = new ArrayList<Noeud>(0);
+    List<LienReseaux> liensOK = new ArrayList<LienReseaux>(this.getLiens());
     liensOK.retainAll(ensembleDeLiens.getElements());
-    for (i = 0; i < liensOK.size(); i++) {
-      lien = liensOK.get(i);
+    for (LienReseaux lien : liensOK) {
       noeuds.addAll(lien.getNoeuds2());
     }
     return noeuds;
@@ -150,15 +141,10 @@ public class NoeudApp extends Noeud {
    */
   public List<Groupe> groupesCompEnCorrespondance(
       EnsembleDeLiens ensembleDeLiens) {
-    List<Groupe> groupes = new ArrayList<Groupe>();
-    List<LienReseaux> liensOK = new ArrayList<LienReseaux>();
-    LienReseaux lien;
-    int i;
-
-    liensOK = new ArrayList<LienReseaux>(this.getLiens());
+    List<Groupe> groupes = new ArrayList<Groupe>(0);
+    List<LienReseaux> liensOK = new ArrayList<LienReseaux>(this.getLiens());
     liensOK.retainAll(ensembleDeLiens.getElements());
-    for (i = 0; i < liensOK.size(); i++) {
-      lien = liensOK.get(i);
+    for (LienReseaux lien : liensOK) {
       groupes.addAll(lien.getGroupes2());
     }
     return groupes;
@@ -170,17 +156,15 @@ public class NoeudApp extends Noeud {
 
   /** Noeud d'un groupe le plus proche d'un noeud donné */
   public NoeudApp noeudLePlusProche(Groupe groupe) {
-    NoeudApp noeud, noeudLePlusProche;
-    Iterator<Noeud> itNoeuds = groupe.getListeNoeuds().iterator();
-    double dist, distmin;
-    if (groupe.getListeNoeuds().size() == 0) {
+    if (groupe.getListeNoeuds().isEmpty()) {
       return null;
     }
-    noeudLePlusProche = (NoeudApp) itNoeuds.next();
-    distmin = this.distance(noeudLePlusProche);
+    Iterator<Noeud> itNoeuds = groupe.getListeNoeuds().iterator();
+    NoeudApp noeudLePlusProche = (NoeudApp) itNoeuds.next();
+    double distmin = this.distance(noeudLePlusProche);
     while (itNoeuds.hasNext()) {
-      noeud = (NoeudApp) itNoeuds.next();
-      dist = this.distance(noeud);
+      NoeudApp noeud = (NoeudApp) itNoeuds.next();
+      double dist = this.distance(noeud);
       if (distmin > dist) {
         distmin = dist;
         noeudLePlusProche = noeud;
@@ -235,7 +219,7 @@ public class NoeudApp extends Noeud {
     // NB: 1er filtrage pour gérer les cas faciles plus vite,
     // mais ne gère pas bien tous les cas
     Iterator<Arc> itArcsRef = arcsRef.iterator();
-    Collection<Arc> arcsCompCandidats = new HashSet<Arc>();
+    Collection<Arc> arcsCompCandidats = new HashSet<Arc>(0);
     while (itArcsRef.hasNext()) {
       arc = (ArcApp) itArcsRef.next();
       arcsCompCandidats.addAll(arc.arcsCompEnCorrespondance(liensPreappArcs));
@@ -249,10 +233,10 @@ public class NoeudApp extends Noeud {
 
     // On crée les listes d'arcs in et out (au sens de la circulation),
     // en tournant autour des noeuds dans le bon sens.
-    inRef = new ArrayList<Arc>();
-    inComp = new ArrayList<Arc>();
-    outRef = new ArrayList<Arc>();
-    outComp = new ArrayList<Arc>();
+    inRef = new ArrayList<Arc>(0);
+    inComp = new ArrayList<Arc>(0);
+    outRef = new ArrayList<Arc>(0);
+    outComp = new ArrayList<Arc>(0);
 
     arcsRefClasses = this.arcsClasses();
     arcsRefClassesArcs = (List<Arc>) arcsRefClasses.get(0);
@@ -484,19 +468,15 @@ public class NoeudApp extends Noeud {
    */
   private boolean correspondantsArcsClasses(List<Arc> ref, List<Arc> comp, int rangRef,
       EnsembleDeLiens ensembleDeLiens) {
-
     ArcApp arcRef, arcComp;
     List<LienReseaux> liensArcRef;
     List<Arc> arcsCompCandidats, compPourProchain;
     boolean OK;
-
     // si on n'a plus d'arc à traiter, c'est gagné
     if (rangRef == ref.size()) {
       return true;
     }
-
     arcRef = (ArcApp) ref.get(rangRef); // arc en cours de traitement
-
     // on cherche les candidats à l'appariement de arcRef
     liensArcRef = new ArrayList<LienReseaux>(arcRef.getLiens(ensembleDeLiens.getElements()));
     arcsCompCandidats = new ArrayList<Arc>();
@@ -504,20 +484,17 @@ public class NoeudApp extends Noeud {
       arcsCompCandidats.addAll(liensArcRef.get(i).getArcs2());
     }
     arcsCompCandidats.retainAll(comp);
-
     // si la liste des candidats est vide, c'est foutu, il faut revenir en
     // arrière
     if (arcsCompCandidats.size() == 0) {
       return false;
     }
-
     // on teste toutes les combinaisons de correspondance possibles
     for (int i = 0; i < comp.size(); i++) {
       arcComp = (ArcApp) comp.get(i);
       if (!arcsCompCandidats.contains(arcComp)) {
         continue; // cet arc n'est pas candidat, on essaye avec le suivant
       }
-
       // on a un candidat sous la main
       compPourProchain = new ArrayList<Arc>();
       if (rangRef == 0) {
@@ -543,7 +520,6 @@ public class NoeudApp extends Noeud {
     }
     return false; // aucune correspondance possible : on remonte d'un cran
   }
-
   /**
    * Renvoie la liste des objets géo initaux reliés à un arc ref ou un noeud ref
    * qui est en correspondance avec this (un arc_comp) à travers liens, soit
@@ -567,7 +543,6 @@ public class NoeudApp extends Noeud {
       objetsCtEnCorrespondance.addAll(lien.getArcs1());
       objetsCtEnCorrespondance.addAll(lien.getNoeuds1());
     }
-
     // objets de reseauRef en correspondance avec this à travers un groupe
     itGroupes = this.getListeGroupes().iterator();
     while (itGroupes.hasNext()) {
@@ -581,15 +556,12 @@ public class NoeudApp extends Noeud {
         objetsCtEnCorrespondance.addAll(lien.getNoeuds1());
       }
     }
-
     // objets geo correspondants
     itObjetsCT = objetsCtEnCorrespondance.iterator();
     while (itObjetsCT.hasNext()) {
       IFeature objetCT = itObjetsCT.next();
       objetsGeoEnCorrespondance.addAll(objetCT.getCorrespondants());
     }
-
     return objetsGeoEnCorrespondance;
   }
-
 }

@@ -33,7 +33,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -43,11 +42,13 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.api.util.index.SpatialIndex;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
 /**
  * Index spatial par simple dallage.
@@ -61,25 +62,15 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  *          {@link Tiling#select(IGeometry, double)}
  */
 
-
-public class Tiling<Feat extends IFeature> implements
-    SpatialIndex<Feat> {
-
+public class Tiling<Feat extends IFeature> implements 
+	SpatialIndex<Feat> {
   static Logger logger = Logger.getLogger(Tiling.class.getName());
 
-  /** ===============================================
-   * Renvoie les paramètres du dallage.
-   * 
-   * ArrayList de 4 éléments: - 1er élément : Class égal à Dallage.class - 2ème
-   * élément : Boolean indiquant si l'index est en mode MAJ automatique ou non -
-   * 3ème élément : GM_Envelope décrivant les limites de la zone couverte - 4ème
-   * élément : Integer exprimant le nombre de cases en X et Y.
-   * 
-   * 
-   */
-   @Override
+  // ===============================================
+
+  @Override
   public List<Object> getParametres() {
-    List<Object> param = new ArrayList<Object>();
+    List<Object> param = new ArrayList<Object>(0);
     param.add(Tiling.class);
     param.add(new Boolean(this.automaticUpdate));
     param.add(new GM_Envelope(this.xmin, this.xmax, this.ymin, this.ymax));
@@ -134,7 +125,7 @@ public class Tiling<Feat extends IFeature> implements
 
   /**
    * Demande une mise a jour automatique. NB: Cette méthode ne fait pas les
-   * éventuelles MAJ qui auriant ête faites alors que le mode MAJ automatique
+   * éventuelles MAJ qui auriant été faites alors que le mode MAJ automatique
    * n'était pas activé.
    */
   @Override
@@ -175,11 +166,11 @@ public class Tiling<Feat extends IFeature> implements
 
   /** Tableau des numéros des dalles contenant le feature. */
   public List<List<Integer>> getNumDallage(Feat feat) {
-    List<List<Integer>> result = new ArrayList<List<Integer>>();
+    List<List<Integer>> result = new ArrayList<List<Integer>>(0);
     for (int i = 0; i < this.size; i++) {
       for (int j = 0; j < this.size; j++) {
         if (this.index[i][j].contains(feat)) {
-          List<Integer> couple = new ArrayList<Integer>();
+          List<Integer> couple = new ArrayList<Integer>(0);
           couple.add(new Integer(i));
           couple.add(new Integer(j));
           result.add(couple);
@@ -265,24 +256,20 @@ public class Tiling<Feat extends IFeature> implements
 
   /** Features appartenant a la dalle d'indice i,j. */
   public Collection<Feat> select(int i, int j) {
-    return new FT_FeatureCollection<Feat>(this.index[i][j]);
+    return new HashSet<Feat>(this.index[i][j]);
   }
-
-  /** Selection a l'aide d'un rectangle. */
   @Override
   public Collection<Feat> select(IEnvelope env) {
+    Collection<Feat> result = new HashSet<Feat>();
     if (env == null) {
-      return new HashSet<Feat>();
+      return result;
     }
-    int tab[];
-    Set<Feat> result = new HashSet<Feat>();
     IGeometry geometry = new GM_Polygon(env);
-    if (env.getUpperCorner().getX() == env.getLowerCorner().getX()) {
-      if (env.getUpperCorner().getY() == env.getLowerCorner().getY()) {
-        geometry = new GM_Point(env.getUpperCorner());
-      }
+    if (env.getUpperCorner().getX() == env.getLowerCorner().getX()
+        && env.getUpperCorner().getY() == env.getLowerCorner().getY()) {
+      geometry = new GM_Point(env.getUpperCorner());
     }
-    tab = this.dallesIntersectees(env);
+    int tab[] = this.dallesIntersectees(env);
     for (int i = tab[0]; i <= tab[1]; i++) {
       for (int j = tab[2]; j <= tab[3]; j++) {
         synchronized (this.index) {
@@ -294,10 +281,8 @@ public class Tiling<Feat extends IFeature> implements
               continue;
             }
             IEnvelope envCourante = geom.envelope();
-            if (env.overlaps(envCourante)) {
-              if (geometry.intersects(geom)) {
-                result.add(feature);
-              }
+            if (env.overlaps(envCourante) && geometry.intersects(geom)) {
+              result.add(feature);
             }
           }
         }
@@ -306,20 +291,15 @@ public class Tiling<Feat extends IFeature> implements
     return result;
   }
 
-  /**
-   * Selection dans le carre dont P est le centre, de cote D. NB: distance peut
-   * être nul.
-   */
   @Override
   public Collection<Feat> select(IDirectPosition P, double distance) {
     return this.select(new GM_Envelope(P, distance));
   }
 
-  /** Selection des objets qui intersectent un objet geometrique quelconque. */
   @Override
   public Collection<Feat> select(IGeometry geometry) {
     int tab[];
-    Set<Feat> result = new HashSet<Feat>();
+    Collection<Feat> result = new HashSet<Feat>(0);
     IEnvelope envGeometry = geometry.envelope();
     tab = this.dallesIntersectees(envGeometry);
     for (int i = tab[0]; i <= tab[1]; i++) {
@@ -340,22 +320,11 @@ public class Tiling<Feat extends IFeature> implements
     }
     return result;
   }
-
-  /**
-   * Selection des objets qui croisent ou intersectent un objet geometrique
-   * quelconque.
-   * 
-   * @param strictlyCrosses Si c'est TRUE : ne retient que les objets qui
-   *          croisent (CROSS au sens JTS). Si c'est FALSE : ne retient que les
-   *          objets qui intersectent (INTERSECT au sens JTS) Exemple : si 1
-   *          ligne touche "geometry" juste sur une extrémité, alors avec TRUE
-   *          cela ne renvoie pas la ligne, avec FALSE cela la renvoie
-   */
-  @Override
+   @Override
   public Collection<Feat> select(IGeometry geometry,
       boolean strictlyCrosses) {
     int tab[];
-    Set<Feat> result = new HashSet<Feat>();
+    Collection<Feat> result = new HashSet<Feat>(0);
     IEnvelope envGeometry = geometry.envelope();
     tab = this.dallesIntersectees(envGeometry);
     for (int i = tab[0]; i <= tab[1]; i++) {
@@ -377,11 +346,6 @@ public class Tiling<Feat extends IFeature> implements
     }
     return result;
   }
-
-  /** ===============================================
-   * Selection a l'aide d'un objet geometrique quelconque et d'une distance. NB:
-   * distance peut être nul.
-   */
   @Override
   public Collection<Feat> select(IGeometry geometry, double distance) {
     if (distance == 0) {
@@ -391,9 +355,9 @@ public class Tiling<Feat extends IFeature> implements
       return this.select(geometry.buffer(distance));
     } catch (Exception e) {
       System.out
-          .println("PROBLEME AVEC LA FABRICATION DU BUFFER LORS D'UNE REQUETE SPATIALE"); //$NON-NLS-1$
+          .println("PROBLEME AVEC LA FABRICATION DU BUFFER LORS D'UNE REQUETE SPATIALE");
       e.printStackTrace();
-      return new FT_FeatureCollection<Feat>();
+      return new HashSet<Feat>(0);
     }
   }
 
@@ -427,7 +391,7 @@ public class Tiling<Feat extends IFeature> implements
     this.index = new List[this.size][this.size];
     for (int i = 0; i < this.size; i++) {
       for (int j = 0; j < this.size; j++) {
-        this.index[i][j] = new ArrayList<Feat>();
+        this.index[i][j] = new ArrayList<Feat>(0);
       }
     }
 

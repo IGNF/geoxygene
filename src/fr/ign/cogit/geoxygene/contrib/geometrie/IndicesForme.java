@@ -37,7 +37,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
 /**
  * Méthodes statiques de calcul d'indices de forme (de lignes et de surfaces).
- * 
+ * <p>
  * English : Measures of shapes
  * 
  * @author Mustière/Sheeren/Grosso
@@ -84,12 +84,13 @@ public abstract class IndicesForme {
   /**
    * Diamètre d'une surface: plus grande distance entre 2 points de la frontière
    * de la surface considérée.
-   * 
+   * <p>
    * English: diameter of a surface
    * 
    * @param A GM_Object
    * @return -1 si A n'est pas une surface, le diamètre sinon
    */
+  @SuppressWarnings("deprecation")
   public static double diametreSurface(IGeometry A) {
     if (A.area() == 0) {
       return -1;
@@ -122,7 +123,7 @@ public abstract class IndicesForme {
    * segments qui la constitue ne sont pas trop forts (inférieur au seuil en
    * paramètre en radians). Défaut : dépend de l'échantillonage des courbes, des
    * critères de courbure seraient plus stables.
-   * 
+   * <p>
    * English: is the line straight?
    */
   public static boolean rectiligne(ILineString ligne, double toleranceAngulaire) {
@@ -142,5 +143,4 @@ public abstract class IndicesForme {
     }
     return true;
   }
-
 }

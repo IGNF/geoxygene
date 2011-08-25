@@ -37,119 +37,57 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
+ *
  */
 public class GM_Aggregate<GeomType extends IGeometry> extends GM_Object
     implements Collection<GeomType>, IAggregate<GeomType> {
-
   /** Liste des éléments constituant self. */
   protected List<GeomType> element;
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#getList()
-   */
+  @Override
   public List<GeomType> getList() {
     return this.element;
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#setList(java.util.
-   * List)
-   */
+  @Override
   public void setList(List<GeomType> L) {
     this.element = L;
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#get(int)
-   */
+  @Override
   public GeomType get(int i) {
     return this.element.get(i);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#set(int, GeomType)
-   */
+  @Override
   public GeomType set(int i, GeomType value) {
     return this.element.set(i, value);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#add(GeomType)
-   */
+  @Override
   public boolean add(GeomType value) {
     return this.element.add(value);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#addAll(java.util.List)
-   */
+  @Override
   public boolean addAll(List<GeomType> theList) {
     return this.element.addAll(theList);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#add(int, GeomType)
-   */
+  @Override
   public void add(int i, GeomType value) {
     this.element.add(i, value);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#remove(GeomType)
-   */
+  @Override
   public boolean remove(GeomType value) {
     return this.element.remove(value);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#remove(int)
-   */
+  @Override
   public void remove(int i) {
     this.element.remove(i);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#clear()
-   */
+  @Override
   public void clear() {
     this.element.clear();
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#size()
-   */
+  @Override
   public int size() {
     return this.element.size();
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#toArray()
-   */
+  @Override
   public IGeometry[] toArray() {
     IGeometry[] result = new IGeometry[this.size()];
     int i = 0;
@@ -158,44 +96,29 @@ public class GM_Aggregate<GeomType extends IGeometry> extends GM_Object
     }
     return result;
   }
-
-  /**
-   * NON IMPLEMENTE (renvoie null). Collection de GM_Object représentant la
-   * frontière de self. Cette collection d'objets a une structure de
-   * GM_Boundary, qui est un sous-type de GM_Complex.
-   */
   @Override
   public IBoundary boundary() {
     return null;
   }
-
   /** Constructeur par défaut. */
   public GM_Aggregate() {
-    this.element = new ArrayList<GeomType>();
+    this.element = new ArrayList<GeomType>(0);
   }
-
   /** Constructeur à partir d'un GM_Object. */
   public GM_Aggregate(GeomType anObject) {
-    this.element = new ArrayList<GeomType>();
+    this.element = new ArrayList<GeomType>(1);
     this.add(anObject);
   }
-
   /** Constructeur à partir d'une liste de GM_Object. */
   public GM_Aggregate(List<GeomType> fromSet) {
-    this.element = new ArrayList<GeomType>();
     int n = fromSet.size();
+    this.element = new ArrayList<GeomType>(n);
     if (n > 0) {
       for (int i = 0; i < n; i++) {
         this.add(fromSet.get(i));
       }
     }
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#coord()
-   */
   @Override
   public IDirectPositionList coord() {
     IDirectPositionList result = new DirectPositionList();
@@ -206,101 +129,39 @@ public class GM_Aggregate<GeomType extends IGeometry> extends GM_Object
     }
     return result;
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @seefr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#addAll(java.util.
-   * Collection)
-   */
   @Override
   public boolean addAll(Collection<? extends GeomType> c) {
     return this.element.addAll(c);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#contains(java.lang
-   * .Object)
-   */
   @Override
   public boolean contains(Object o) {
     return this.element.contains(o);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#containsAll(java.util
-   * .Collection)
-   */
   @Override
   public boolean containsAll(Collection<?> c) {
     return this.element.containsAll(c);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#iterator()
-   */
   @Override
   public Iterator<GeomType> iterator() {
     return this.element.iterator();
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#remove(java.lang.Object
-   * )
-   */
   @SuppressWarnings("unchecked")
   @Override
   public boolean remove(Object o) {
     return this.remove((GeomType) o);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#removeAll(java.util
-   * .Collection)
-   */
   @Override
   public boolean removeAll(Collection<?> c) {
     return this.element.removeAll(c);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#retainAll(java.util
-   * .Collection)
-   */
   @Override
   public boolean retainAll(Collection<?> c) {
     return this.retainAll(c);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#toArray(T[])
-   */
   @Override
   public <T> T[] toArray(T[] a) {
     return this.element.toArray(a);
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see fr.ign.cogit.geoxygene.spatial.geomaggr.IAggregate#clone()
-   */
   @SuppressWarnings("unchecked")
   @Override
   public Object clone() {
@@ -310,13 +171,4 @@ public class GM_Aggregate<GeomType extends IGeometry> extends GM_Object
     }
     return agg;
   }
-
-  /** Pour l'affichage des coordonnees. */
-  /*
-   * public String toString() { String result = new String(); initIterator();
-   * int i=0; while (hasNext()) { result =
-   * result+"\nGM_Aggregate - element "+i+"\n"; result =
-   * result+next().toString(); } return result; }
-   */
-
 }

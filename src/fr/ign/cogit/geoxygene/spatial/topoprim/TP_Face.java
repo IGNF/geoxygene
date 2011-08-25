@@ -40,7 +40,7 @@ import java.util.List;
  * operation est aussi une association. Ceci n'est pas implemente.
  * <P>
  * L'operation "Boundary" redefinie sur TP_Object renvoie une liste de
- * TP_DirectedEdge avec les orientations adequates. Cette liste est structuree
+ * TP_DirectedEdge avec les orientations adequates. Cette liste est structurée
  * en TP_FaceBoundary.
  * 
  * EXPLIQUER LA STRUCTURE DE GRAPHE A REVOIR POUR LES TROUS (ne pas utliser le
@@ -96,7 +96,7 @@ public class TP_Face extends TP_DirectedFace {
       return this.proxy[1];
     } else {
       System.out
-          .println("TP_Face::asTP_DirectedTopo(sign) : Passer +1 ou -1 en paramètre.");
+          .println("TP_Face::asTP_DirectedTopo(sign) : Passer +1 ou -1 en paramètre."); //$NON-NLS-1$
       return null;
     }
   }

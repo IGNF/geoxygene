@@ -191,10 +191,7 @@ public class TP_Expression {
 
   /** TRUE si la frontière est zéro. */
   public boolean isCycle() {
-    if (this.boundary().isZero()) {
-      return true;
-    }
-    return false;
+    return (this.boundary().isZero());
   }
 
   /**
@@ -297,7 +294,7 @@ public class TP_Expression {
    * Cast chaque coBoundary de chaque TP_Primitive de chaque TP_DirectedTopo en
    * TP_Expression, et simplifie le résultat.
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public TP_Expression coBoundary() {
     TP_Expression result = new TP_Expression();
     for (int i = 0; i < this.sizeTerm(); i++) {

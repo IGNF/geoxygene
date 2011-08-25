@@ -139,6 +139,7 @@ public interface IEnvelope {
   public abstract Object clone();
 
   /** Affiche les coordonnees */
+  @Override
   public abstract String toString();
 
   /** Renvoie la liste des DirectPosition de l'objet. */

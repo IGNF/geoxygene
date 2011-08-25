@@ -57,49 +57,16 @@ public interface ICurve extends IOrientableCurve, IGenericCurve {
    * chaînés, FALSE sinon. Nécessité de définir une tolérance.
    */
   public abstract boolean validate(double tolerance);
-
-  // ////////////////////////////////////////////////////////////////////////////////
-  // Implémentation de GM_GenericCurve
-  // /////////////////////////////////////////////
-  // ////////////////////////////////////////////////////////////////////////////////
-  /**
-   * Retourne le DirectPosition du premier point. Différent de l'opérateur
-   * "boundary" car renvoie la valeur du point et non pas l'objet géométrique
-   * représentatif. Méthode d'implémentation de l'interface GM_GenericCurve.
-   */
+  @Override
   public abstract IDirectPosition startPoint();
-
-  /**
-   * Retourne le DirectPosition du dernier point. Différent de l'opérateur
-   * "boundary" car renvoie la valeur du point et non pas l'objet géométrique
-   * représentatif. Méthode d'implémentation de l'interface GM_GenericCurve.
-   */
+  @Override
   public abstract IDirectPosition endPoint();
-
-  /**
-   * Approximation linéaire d'une courbe avec les points de contrôle. Elimine
-   * les points doublons consécutifs (qui apparaissent quand la courbe est
-   * composée de plusieurs segments).
-   * <P>
-   * Le paramètre spacing indique la distance maximum entre 2 points de contrôle
-   * ; le paramètre offset indique la distance maximum entre la polyligne
-   * générée et la courbe originale. Si ces 2 paramètres sont à 0, alors aucune
-   * contrainte n'est imposée. Dans l'IMPLEMENTATION ACTUELLE : on impose que
-   * ces paramètres soient à 0.
-   * <P>
-   * Le paramètre tolérance est nécessaire pour éliminer les doublons. On peut
-   * passer 0.0.
-   * <P>
-   * Méthode d'implémentation de l'interface GM_GenericCurve.
-   */
   // Dans la norme, les paramètres spacing et offset sont de type Distance.
   // Dans la norme, il n'y a pas de paramètre tolérance.
+  @Override
   public abstract ILineString asLineString(double spacing, double offset,
       double tolerance);
-
-  /**
-   * Renvoie la liste des coordonnées d'une courbe sous forme d'une liste de
-   * DirectPosition .
-   */
+  @Override
   public abstract IDirectPositionList coord();
+  public abstract void clearSegments();
 }

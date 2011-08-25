@@ -73,11 +73,11 @@ public class FeatureTypeStyle {
   public String toString() {
     String result = "FeatureTypeStyle " + this.getName() + "\n"; //$NON-NLS-1$//$NON-NLS-2$
     for (Rule rule : this.getRules()) {
-      result += "Rule " + rule + "\n"; //$NON-NLS-1$//$NON-NLS-2$
+      result += "\t" + rule + "\n"; //$NON-NLS-1$//$NON-NLS-2$
     }
     return result;
   }
-  
+
   public Symbolizer getSymbolizer() {
     return this.getRules().get(0).getSymbolizers().get(0);
   }

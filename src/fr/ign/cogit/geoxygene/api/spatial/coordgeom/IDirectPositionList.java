@@ -3,6 +3,7 @@ package fr.ign.cogit.geoxygene.api.spatial.coordgeom;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public interface IDirectPositionList extends Collection<IDirectPosition> {
   /**
@@ -20,8 +21,7 @@ public interface IDirectPositionList extends Collection<IDirectPosition> {
 
   /** Affecte un élément au i-ème rang de la liste */
   public abstract void set(int i, IDirectPosition value);
-
-  /** Ajoute un élément en fin de liste */
+  @Override
   public abstract boolean add(IDirectPosition value);
 
   /** Ajoute un élément au i-ème rang de la liste */
@@ -38,11 +38,9 @@ public interface IDirectPositionList extends Collection<IDirectPosition> {
 
   /** Retire une liste de DirectPosititon */
   public abstract void removeAll(IDirectPositionList theList);
-
-  /** Efface toute la liste */
+  @Override
   public abstract void clear();
-
-  /** Renvoie le nombre de éléments */
+  @Override
   public abstract int size();
 
   /** Clone this */
@@ -71,30 +69,29 @@ public interface IDirectPositionList extends Collection<IDirectPosition> {
    * liste.
    */
   public abstract double[] toArrayZ();
-
-  /** Affiche les coordonnées des point (2D et 3D). */
+  @Override
   public abstract String toString();
-
+  @Override
   public abstract Iterator<IDirectPosition> iterator();
-
+  ListIterator<IDirectPosition> listIterator();
+  @Override
   public abstract boolean addAll(Collection<? extends IDirectPosition> c);
-
+  @Override
   public abstract boolean contains(Object o);
-
+  @Override
   public abstract boolean containsAll(Collection<?> c);
-
+  @Override
   public abstract boolean isEmpty();
-
+  @Override
   public abstract boolean remove(Object o);
-
+  @Override
   public abstract boolean removeAll(Collection<?> c);
-
+  @Override
   public abstract boolean retainAll(Collection<?> c);
-
+  @Override
   public abstract Object[] toArray();
-
+  @Override
   public abstract <T> T[] toArray(T[] a);
-
   /**
    * permuter les elements i et j
    * @param i
@@ -106,4 +103,9 @@ public interface IDirectPositionList extends Collection<IDirectPosition> {
    * inverse l'ordre des directposition de la liste
    */
   public abstract void inverseOrdre();
+  /**
+   * Reverse the list
+   * @return the reversed list
+   */
+  IDirectPositionList reverse();
 }

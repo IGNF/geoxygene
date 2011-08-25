@@ -76,7 +76,7 @@ public class ParametresApp implements Cloneable {
    * circulation). Si true : on suppose tous les arcs en double sens. Si false:
    * on suppose tous les arcs en sens unique, celui défini par la géométrie. NB:
    * ne pas confondre cette orientation 'géographique réelle', avec
-   * l'orientation de la géoémtrie.
+   * l'orientation de la géométrie.
    * 
    * Utile ensuite pour l'appariement des arcs.
    */
@@ -85,7 +85,7 @@ public class ParametresApp implements Cloneable {
   public String attributOrientation2 = "orientation"; //$NON-NLS-1$
   public Map<Object, Integer> orientationMap1 = null;
   public Map<Object, Integer> orientationMap2 = null;
-  
+
   // ///////////////////////////////////////////////////////////////////////////////
   // /////////////// TAILLES DE RECHERCHE ///////////////////////
   // /////////////// Ecarts de distance autorisés ///////////////////////
@@ -120,7 +120,7 @@ public class ParametresApp implements Cloneable {
   /**
    * Distance minimum sous laquelle l'écart de distance pour divers arcs du
    * réseaux 2 (distance vers les arcs du réseau 1) n'a plus aucun sens. Cette
-   * distance est typiquement de l'ordre de la précision géométrique du rééseau
+   * distance est typiquement de l'ordre de la précision géométrique du réseau
    * le moins précis.
    */
   public float distanceArcsMin = 30;
@@ -222,21 +222,21 @@ public class ParametresApp implements Cloneable {
    * Distance max de la projection des noeuds 2 sur le réseau 1. Utile
    * uniquement si projeteNoeuds1SurReseau2 = true.
    */
-  public double projeteNoeuds1SurReseau2_DistanceNoeudArc = 0;
+  public double projeteNoeuds1SurReseau2DistanceNoeudArc = 0;
 
   /**
    * Distance min entre la projection d'un noeud sur un arc et les extrémités de
    * cet arc pour créer un nouveau noeud sur le réseau 2. Utile uniquement si
    * projeteNoeuds1SurReseau2 = true.
    */
-  public double projeteNoeuds1SurReseau2_DistanceProjectionNoeud = 0;
+  public double projeteNoeuds1SurReseau2DistanceProjectionNoeud = 0;
 
   /**
    * Si true: on ne projete que les impasses du réseau 1 sur le réseau 2 Si
    * false: on projete tous les noeuds du réseau 1 sur le réseau 2. Utile
    * uniquement si projeteNoeuds1SurReseau2 = true.
    */
-  public boolean projeteNoeuds1SurReseau2_ImpassesSeulement = false;
+  public boolean projeteNoeuds1SurReseau2ImpassesSeulement = false;
 
   /**
    * Doit on projeter les noeuds du réseau 2 sur le réseau 1 pour découper ce
@@ -245,27 +245,27 @@ public class ParametresApp implements Cloneable {
    * de détail proches), mais qui va aussi un peu à l'encontre de la philosophie
    * générale du processus d'appariement. A utiliser avec modération donc.
    */
-  public boolean projeteNoeud2surReseau1 = false;
+  public boolean projeteNoeuds2SurReseau1 = false;
 
   /**
    * Distance max de la projection des noeuds 1 sur le réseau 2. Utile
    * uniquement si projeteNoeuds2SurReseau1 = true.
    */
-  public double projeteNoeud2surReseau1_DistanceNoeudArc = 0;
+  public double projeteNoeuds2SurReseau1DistanceNoeudArc = 0;
 
   /**
    * Distance min entre la projection d'un noeud sur un arc et les extrémités de
    * cet arc pour créer un nouveau noeud sur le réseau 1. Utile uniquement si
    * projeteNoeuds2SurReseau1 = true.
    */
-  public double projeteNoeud2surReseau1_DistanceProjectionNoeud = 0;
+  public double projeteNoeud2surReseau1DistanceProjectionNoeud = 0;
 
   /**
    * Si true: on ne projete que les impasses du réseau 2 sur le réseau 1 Si
    * false: on projete tous les noeuds du réseau 2 sur le réseau 1. Utile
    * uniquement si projeteNoeuds1SurReseau2 = true.
    */
-  public boolean projeteNoeud2surReseau1_ImpassesSeulement = false;
+  public boolean projeteNoeud2surReseau1ImpassesSeulement = false;
 
   // ///////////////////////////////////////////////////////////////////////////////
   // /////////// VARIANTES DU PROCESSUS GENERAL //////////////////////
@@ -398,7 +398,7 @@ public class ParametresApp implements Cloneable {
 
   /**
    * Pour la représentation graphique des liens d'appariement entre cartes
-   * topos. pour la représetnation des liens d'appariement, taille du buffer
+   * topos. pour la représentation des liens d'appariement, taille du buffer
    * autour des objets appariés à un noeud.
    */
   public double debugTailleBuffer = 10;

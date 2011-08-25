@@ -116,7 +116,7 @@ public class TP_DirectedEdge extends TP_DirectedTopo {
   // ///////////////////////////////////////////////////////////////////////
   // ///////////////////////////////////////////////////////////////////////////////////
   /** Renvoie les TP_DirectedFace associés au TP_DirectedEdge. */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public List coBoundary() {
     if (this.orientation == +1) {
       return this.topo().coBoundary();
@@ -169,7 +169,7 @@ public class TP_DirectedEdge extends TP_DirectedTopo {
    * La liste ordonnee dans le sens trigo des brins suivants. Les entrants sont
    * orientés négativement, les sortants positivement.
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public List nextEdgesList() {
     TP_DirectedNode endNode = this.endNode();
     List coBdy = endNode.coBoundary();
@@ -235,7 +235,7 @@ public class TP_DirectedEdge extends TP_DirectedTopo {
    * sont orientés négativement, les sortants positivement. This n'appartient
    * pas à la liste.
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public List previousEdgesList() {
     TP_DirectedNode startNode = this.startNode();
     List<TP_DirectedEdge> coBdy = startNode.coBoundary();

@@ -51,49 +51,40 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 
 public class GM_OrientableCurve extends GM_OrientablePrimitive implements
     IOrientableCurve {
-
   /** Primitive */
   public ICurve primitive;
-
-  /** Renvoie la primitive de self */
+  @Override
   public ICurve getPrimitive() {
     return this.primitive;
   }
-
   /**
    * Attribut stockant les primitives orientées de cette primitive. Proxy[0] est
    * celle orientée positivement. Proxy[1] est celle orientée négativement. On
    * accède aux primitives orientées par getPositive() et getNegative().
    */
-  public IOrientableCurve[] proxy = new IOrientableCurve[2];
-
-  /** Renvoie la primitive orientée positivement correspondant à self. */
-  public IOrientableCurve getPositive() {
-    return this.proxy[0];
-  }
-
-  public IOrientableCurve getNegative() {
-    ICurve proxy1prim = this.proxy[1].getPrimitive();
-    proxy1prim.getSegment().clear();
-    ICurve proxy0 = (ICurve) this.proxy[1].getPositive();
-    int n = proxy0.sizeSegment();
-    if (n > 1) {
-      for (int i = 0; i < n; i++) {
-        proxy1prim.addSegment(proxy0.getSegment(n - 1 - i).reverse());
-      }
-    } else if (n == 1) {
-      proxy1prim.getSegment().add(proxy0.getSegment(0).reverse());
-    }
-    return this.proxy[1];
-  }
-
+  // public GM_OrientableCurve[] proxy = new GM_OrientableCurve[2];
   @Override
+  public IOrientableCurve getPositive() {
+    return this.primitive;
+  }// proxy[0];}
+  @Override
+  public IOrientableCurve getNegative() {
+    return null;
+    /*
+     * ICurve proxy1prim = this.proxy[1].getPrimitive();
+     * proxy1prim.getSegment().clear(); ICurve proxy0 = (ICurve)
+     * this.proxy[1].getPositive(); int n = proxy0.sizeSegment(); if (n > 1) {
+     * for (int i = 0; i < n; i++) { proxy1prim.addSegment(proxy0.getSegment(n -
+     * 1 - i).reverse()); } } else if (n == 1) {
+     * proxy1prim.getSegment().add(proxy0.getSegment(0).reverse()); } return
+     * this.proxy[1];
+     */
+  }  @Override
   public ICurveBoundary boundary() {
     ICurve prim = this.getPrimitive();
     GM_CurveBoundary bdy = new GM_CurveBoundary(prim);
     return bdy;
   }
-
   @Override
   public IDirectPositionList coord() {
     return this.getPrimitive().coord();

@@ -50,10 +50,10 @@ public class FeatureType implements GF_FeatureType {
    */
   public FeatureType() {
     super();
-    this.memberOf = new ArrayList<GF_AssociationType>();
-    this.featureAttributes = new ArrayList<GF_AttributeType>();
-    this.featureOperations = new ArrayList<GF_Operation>();
-    this.roles = new ArrayList<GF_AssociationRole>();
+    this.memberOf = new ArrayList<GF_AssociationType>(0);
+    this.featureAttributes = new ArrayList<GF_AttributeType>(0);
+    this.featureOperations = new ArrayList<GF_Operation>(0);
+    this.roles = new ArrayList<GF_AssociationRole>(0);
   }
 
   /**
@@ -66,11 +66,11 @@ public class FeatureType implements GF_FeatureType {
     this.elementSchemaProduitOrigine = ori;
     this.definition = ori.getDefinition();
     this.typeName = ori.getTypeName();
-    this.memberOf = new ArrayList<GF_AssociationType>();
+    this.memberOf = new ArrayList<GF_AssociationType>(0);
     this.isExplicite = ori.getIsExplicite();
-    this.featureAttributes = new ArrayList<GF_AttributeType>();
-    this.featureOperations = new ArrayList<GF_Operation>();
-    this.roles = new ArrayList<GF_AssociationRole>();
+    this.featureAttributes = new ArrayList<GF_AttributeType>(0);
+    this.featureOperations = new ArrayList<GF_Operation>(0);
+    this.roles = new ArrayList<GF_AssociationRole>(0);
     this.nomClasse = ori.getNomClasse();
     this.isAbstract = ori.getIsAbstract();
   }
@@ -320,8 +320,7 @@ public class FeatureType implements GF_FeatureType {
     }
   }
 
-  // /////////////////////////Ajout
-  // Nathalie////////////////////////////////////
+  // /////////////////////////Ajout Nathalie////////////////////////////////////
   public AttributeType getFeatureAttributeI(int i) {
     return (AttributeType) this.featureAttributes.get(i);
   }
@@ -334,8 +333,7 @@ public class FeatureType implements GF_FeatureType {
         return (AttributeType) listAttrib.get(i);
       }
     }
-    System.err.println("L'attribut " + nomAttribut
-        + " n'a pas été trouvé pour la classe " + this.getTypeName());
+    // System.err.println("L'attribut "+nomAttribut+" n'a pas été trouvé pour la classe "+this.getTypeName());
     return null;
   }
 
@@ -382,8 +380,8 @@ public class FeatureType implements GF_FeatureType {
   }
 
   @Override
-  public AssociationRole getRoleI(int i) {
-    return (AssociationRole) this.roles.get(i);
+  public GF_AssociationRole getRoleI(int i) {
+    return this.roles.get(i);
   }
 
   public AssociationRole getRoleByName(String nomRole) {
@@ -393,8 +391,7 @@ public class FeatureType implements GF_FeatureType {
         return (AssociationRole) listRoles.get(i);
       }
     }
-    System.err.println("Le role " + nomRole
-        + " n'a pas été trouvé pour la classe " + this.getTypeName());
+    // System.err.println("Le role "+nomRole+" n'a pas été trouvé pour la classe "+this.getTypeName());
     return null;
   }
 
@@ -470,8 +467,7 @@ public class FeatureType implements GF_FeatureType {
     }
   }
 
-  // /////////////////////////Ajout
-  // Nathalie////////////////////////////////////
+  // /////////////////////////Ajout Nathalie////////////////////////////////////
   public GF_InheritanceRelation getGeneralizationI(int i) {
     return this.generalization.get(i);
   }
@@ -521,8 +517,7 @@ public class FeatureType implements GF_FeatureType {
   public void addSpecialization(GF_InheritanceRelation value) {
     this.specialization.add(value);
     if (value.getSuperType() != this) {
-      value.setSuperType(this); // gestion
-      // de la
+      value.setSuperType(this); // gestion de la
       // bi-direction
     }
   }

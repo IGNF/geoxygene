@@ -36,11 +36,12 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 
 /**
- * NON IMPLEMENTE.
- * 
- * @author Thierry Badard & Arnaud Braun
- * @version 1.0
- * 
+ * Cubic Splines.
+ * <p>
+ * Gerald Farin and Dianne Hansford, The Essentials of CAGD, A K Peters, 2000.
+ * @author Thierry Badard
+ * @author Arnaud Braun
+ * @author Julien Perret
  */
 
 public class GM_CubicSpline extends GM_PolynomialSpline implements ICubicSpline {
@@ -161,7 +162,7 @@ public class GM_CubicSpline extends GM_PolynomialSpline implements ICubicSpline 
       pt1.move(m1, -1.0d / 3.0d);
       l.add(pt1);
       l.add(p1);
-      GM_Bezier bezier = new GM_Bezier(new DirectPositionList(l));
+      GM_Bezier bezier = new GM_Bezier(l);
       GM_LineString line = bezier.asLineString(numberOfPoints);
       if (i > 0) {
         line.getControlPoint().remove(0);

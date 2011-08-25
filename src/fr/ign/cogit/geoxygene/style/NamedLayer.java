@@ -77,12 +77,10 @@ public class NamedLayer extends AbstractLayer {
 
   @Override
   public String toString() {
-    String result = "NamedLayer " //$NON-NLS-1$
-        + this.getName() + "\n"; //$NON-NLS-1$
+    String result = "NamedLayer " + this.getName() + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
     for (Style style : this.getStyles()) {
       result += "\tStyle " + style + "\n"; //$NON-NLS-1$//$NON-NLS-2$
     }
     return result;
   }
-
 }

@@ -48,7 +48,6 @@ public class FeatureType implements GF_FeatureType {
     this.memberOf = new ArrayList<GF_AssociationType>();
     this.featureAttributes = new ArrayList<GF_AttributeType>();
     this.featureOperations = new ArrayList<GF_Operation>();
-    this.memberOf = new ArrayList<GF_AssociationType>();
     this.roles = new ArrayList<GF_AssociationRole>();
   }
 
@@ -345,8 +344,7 @@ public class FeatureType implements GF_FeatureType {
     }
   }
 
-  // /////////////////////////Ajout
-  // Nathalie////////////////////////////////////
+  // /////////////////////////Ajout Nathalie////////////////////////////////////
   public AttributeType getFeatureAttributeI(int i) {
     return (AttributeType) this.featureAttributes.get(i);
   }
@@ -455,8 +453,7 @@ public class FeatureType implements GF_FeatureType {
     }
   }
 
-  // /////////////////////////Ajout
-  // Nathalie////////////////////////////////////
+  // /////////////////////////Ajout Nathalie////////////////////////////////////
   public GF_InheritanceRelation getGeneralizationI(int i) {
     return this.generalization.get(i);
   }
@@ -503,8 +500,7 @@ public class FeatureType implements GF_FeatureType {
   public void addSpecialization(GF_InheritanceRelation value) {
     this.specialization.add(value);
     if (value.getSuperType() != this) {
-      value.setSuperType(this); // gestion
-      // de la
+      value.setSuperType(this); // gestion de la
       // bi-direction
     }
   }

@@ -55,19 +55,30 @@ class GM_ParametricCurveSurface extends GM_SurfacePatch implements
     return this.verticalCurveType;
   }
 
+  /**
+   * @param t
+   * @return horizontal curve
+   */
   public ICurve horizontalCurve(double t) {
     return null;
   }
 
+  /**
+   * @param s
+   * @return vertical curve
+   */
   public ICurve verticalCurve(double s) {
     return null;
   }
 
+  /**
+   * @param s
+   * @param t
+   * @return surface of the curve surface
+   */
   public IDirectPosition surface(double s, double t) {
     return null;
   }
-
-  // Implémentation d'une méthode abstraite de GM_SurfacePatch.
 
   @Override
   public ISurfacePatch reverse() {

@@ -69,7 +69,7 @@ public class ArcApp extends Arc {
    * Liens qui référencent les objets auquel l'arc est apparié dans un autre
    * réseau.
    */
-  private List<LienReseaux> liens = new ArrayList<LienReseaux>();
+  private List<LienReseaux> liens = new ArrayList<LienReseaux>(0);
 
   public List<LienReseaux> getLiens() {
     return this.liens;
@@ -108,9 +108,9 @@ public class ArcApp extends Arc {
       EnsembleDeLiens liensNoeuds, EnsembleDeLiens liensArcs) {
     List<Noeud> tousNoeuds;
     Iterator<Groupe> itTousGroupes;
-    List<Noeud> noeudsDebutIn = new ArrayList<Noeud>(), noeudsDebutOut = new ArrayList<Noeud>();
-    List<Noeud> noeudsFinIn = new ArrayList<Noeud>(), noeudsFinOut = new ArrayList<Noeud>();
-    List<List<Noeud>> resultat = new ArrayList<List<Noeud>>();
+    List<Noeud> noeudsDebutIn = new ArrayList<Noeud>(0), noeudsDebutOut = new ArrayList<Noeud>(0);
+    List<Noeud> noeudsFinIn = new ArrayList<Noeud>(0), noeudsFinOut = new ArrayList<Noeud>(0);
+    List<List<Noeud>> resultat = new ArrayList<List<Noeud>>(0);
     NoeudApp noeudRef;
     GroupeApp groupeComp;
 
@@ -175,7 +175,7 @@ public class ArcApp extends Arc {
    */
   public List<Arc> arcsCompEnCorrespondance(EnsembleDeLiens liensArcs) {
     List<LienReseaux> liensOK;
-    Collection<Arc> arcs = new HashSet<Arc>();
+    Collection<Arc> arcs = new HashSet<Arc>(0);
     LienReseaux lien;
     Iterator<LienReseaux> itLiensOK;
 
@@ -194,7 +194,7 @@ public class ArcApp extends Arc {
    * des Arc_Ref.
    */
   public List<Arc> arcsRefEnCorrespondance(EnsembleDeLiens liensArcs) {
-    List<Arc> arcs = new ArrayList<Arc>();
+    List<Arc> arcs = new ArrayList<Arc>(0);
     List<LienReseaux> liensOK;
     LienReseaux lien;
     int i;
@@ -214,7 +214,7 @@ public class ArcApp extends Arc {
    * directement, soit par l'intermédiaire d'un groupe.
    */
   public List<IFeature> objetsGeoRefEnCorrespondance(EnsembleDeLiens liensArc) {
-    List<ElementCarteTopo> objetsCtEnCorrespondance = new ArrayList<ElementCarteTopo>();
+    List<ElementCarteTopo> objetsCtEnCorrespondance = new ArrayList<ElementCarteTopo>(0);
     List<LienReseaux> liensOK;
     LienReseaux lien;
     Iterator<Groupe> itGroupes;
@@ -246,7 +246,7 @@ public class ArcApp extends Arc {
     }
 
     // objets geo correspondants
-    List<IFeature> objetsGeoEnCorrespondance = new ArrayList<IFeature>();
+    List<IFeature> objetsGeoEnCorrespondance = new ArrayList<IFeature>(0);
     itObjetsCT = objetsCtEnCorrespondance.iterator();
     while (itObjetsCT.hasNext()) {
       IFeature objetCT = itObjetsCT.next();
@@ -258,7 +258,7 @@ public class ArcApp extends Arc {
 
   /** A un correspondant par l'appariement passé en paramètre ? */
   public boolean aUnCorrespondant(EnsembleDeLiens ensembleDeLiens) {
-    List<LienReseaux> liensOK = new ArrayList<LienReseaux>();
+    List<LienReseaux> liensOK = new ArrayList<LienReseaux>(0);
     liensOK = new ArrayList<LienReseaux>(this.getLiens());
     liensOK.retainAll(ensembleDeLiens.getElements());
     if (liensOK.size() != 0) {
@@ -298,26 +298,17 @@ public class ArcApp extends Arc {
 
   /** L'arc est il une impasse au début (noeud ini fond de l'impasse) ? */
   public boolean impasseDebut() {
-    if ((this.getNoeudIni().arcs().size()) == 1) {
-      return true;
-    }
-    return false;
+    return ((this.getNoeudIni().arcs().size()) == 1);
   }
 
   /** L'arc est il une impasse à la fin (noeud fin fond de l'impasse) ? */
   public boolean impasseFin() {
-    if ((this.getNoeudFin().arcs().size()) == 1) {
-      return true;
-    }
-    return false;
+    return ((this.getNoeudFin().arcs().size()) == 1);
   }
 
   /** L'arc est il une boucle (noeud ini = noeud fin) ? */
   public boolean boucle() {
-    if (this.getNoeudFin() == this.getNoeudIni()) {
-      return true;
-    }
-    return false;
+    return (this.getNoeudFin() == this.getNoeudIni());
   }
 
   /** L'arc est il une impasse au sein du groupe ? */
@@ -330,13 +321,10 @@ public class ArcApp extends Arc {
    * l'impasse) ?
    */
   public boolean impasseDebut(GroupeApp groupe) {
-    List<Arc> arcs = new ArrayList<Arc>();
+    List<Arc> arcs = new ArrayList<Arc>(0);
     arcs = new ArrayList<Arc>(this.getNoeudIni().arcs());
     arcs.retainAll(groupe.getListeArcs());
-    if (arcs.size() == 1) {
-      return true;
-    }
-    return false;
+    return (arcs.size() == 1);
   }
 
   /**
@@ -344,13 +332,10 @@ public class ArcApp extends Arc {
    * de l'impasse) ?
    */
   public boolean impasseFin(GroupeApp groupe) {
-    List<Arc> arcs = new ArrayList<Arc>();
+    List<Arc> arcs = new ArrayList<Arc>(0);
     arcs = new ArrayList<Arc>(this.getNoeudFin().arcs());
     arcs.retainAll(groupe.getListeArcs());
-    if (arcs.size() == 1) {
-      return true;
-    }
-    return false;
+    return (arcs.size() == 1);
   }
 
   /**
@@ -374,5 +359,4 @@ public class ArcApp extends Arc {
     }
     return hausdorff;
   }
-
 }

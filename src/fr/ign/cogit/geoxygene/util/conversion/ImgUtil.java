@@ -1,28 +1,20 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.util.conversion;
@@ -66,6 +58,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IAggregate;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
@@ -81,7 +74,7 @@ public class ImgUtil {
   private static void drawGeom(Graphics2D g, IGeometry[] geoms, Color[] colors,
       AffineTransform transform) throws Exception {
     if (geoms.length != colors.length) {
-      throw new IllegalArgumentException("geoms.length!=colors.length");
+      throw new IllegalArgumentException("geoms.length!=colors.length"); //$NON-NLS-1$
     }
     for (int i = 0; i < geoms.length; i++) {
       ImgUtil.drawGeom(g, geoms[i], colors[i], transform);
@@ -92,9 +85,8 @@ public class ImgUtil {
       AffineTransform transform) throws Exception {
     if (ImgUtil.isEmpty(geom)) {
       return;
-    } else {
-      ImgUtil.drawGeom(g, WktGeOxygene.makeWkt(geom), color, transform);
     }
+    ImgUtil.drawGeom(g, WktGeOxygene.makeWkt(geom), color, transform);
   }
 
   private static void drawGeom(Graphics2D g, String wkt, Color color,
@@ -160,7 +152,7 @@ public class ImgUtil {
 
   public static BufferedImage make(Color bg, int width, int height) {
     BufferedImage image = new BufferedImage(width, height,
-        BufferedImage.TYPE_INT_RGB);
+        BufferedImage.TYPE_INT_ARGB);
     Graphics2D g = image.createGraphics();
     g.setColor(bg);
     g.fillRect(0, 0, width, height);
@@ -196,18 +188,19 @@ public class ImgUtil {
    */
   public static void saveImage(BufferedImage image, String path)
       throws IOException {
-    String format = "";
+    String format = ""; //$NON-NLS-1$
     String[] formatNames = ImageIO.getWriterFormatNames();
     for (String formatName : formatNames) {
-      if (path.endsWith("." + formatName)) {
+      if (path.endsWith("." + formatName)) { //$NON-NLS-1$
         format = formatName;
       }
     }
-    if (format.equals("")) {
-      path += ".png";
-      format = "png";
+    String newPath = path;
+    if (format.equals("")) { //$NON-NLS-1$
+      newPath += ".png"; //$NON-NLS-1$
+      format = "png"; //$NON-NLS-1$
     }
-    ImageIO.write(image, format, new File(path));
+    ImageIO.write(image, format, new File(newPath));
   }
 
   public static void saveImage(IGeometry geom, String path) throws Exception {
@@ -287,7 +280,7 @@ public class ImgUtil {
       Color[] foregrounds, Color background, int width, int height)
       throws Exception {
     DOMImplementation impl = GenericDOMImplementation.getDOMImplementation();
-    Document svgDoc = impl.createDocument(null, "svg", null);
+    Document svgDoc = impl.createDocument(null, "svg", null); //$NON-NLS-1$
 
     AffineTransform transform = ImgUtil
         .makeScaleTransform(geoms, width, height);
@@ -346,7 +339,7 @@ public class ImgUtil {
       Color[] foregrounds, Color background, int width, int height)
       throws Exception {
     DOMImplementation impl = GenericDOMImplementation.getDOMImplementation();
-    Document svgDoc = impl.createDocument(null, "svg", null);
+    Document svgDoc = impl.createDocument(null, "svg", null); //$NON-NLS-1$
 
     AffineTransform transform = ImgUtil
         .makeScaleTransform(geoms, width, height);
@@ -399,11 +392,11 @@ public class ImgUtil {
   }
 
   public static boolean isEmpty(IPolygon poly) {
-    return poly.coord().size() == 0;
+    return poly.coord().isEmpty();
   }
 
-  public static boolean isEmpty(ILineString lineString) {
-    return lineString.sizeControlPoint() == 0;
+  public static boolean isEmpty(GM_LineString lineString) {
+    return lineString.getControlPoint().isEmpty();
   }
 
   static boolean isEmpty(IAggregate<IGeometry> aggr) {

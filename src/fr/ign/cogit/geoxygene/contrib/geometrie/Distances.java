@@ -1,28 +1,20 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.geometrie;
@@ -48,7 +40,7 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 
 /**
  * Méthodes statiques de calcul de distance.
- * 
+ * <p>
  * English: Computation of distances (static methods)
  * 
  * @author Mustière/Bonin
@@ -59,7 +51,7 @@ public abstract class Distances {
 
   // Organisation du code:
   // - Distances entre points
-  // - Distances entre un point et un autre type de géoémtrie
+  // - Distances entre un point et un autre type de géométrie
   // - Distances entre lignes
   // - Distances entre surfaces
 
@@ -68,20 +60,26 @@ public abstract class Distances {
   // Distances entre points //
   // //
   // ////////////////////////////////////////////////////////////
-
-  /** Distance euclidienne entre 2 points (en 2D ou 3D si les points ont un Z). */
+  @Deprecated
+  /** Distance euclidienne entre 2 points (en 2D ou 3D si les points ont un Z).
+   *  @Deprecated La méthode .distance de DirectPosition fait la même chose
+   * */
   public static double distance(IDirectPosition dp1, IDirectPosition dp2) {
     if (!Double.isNaN(dp1.getZ()) && !Double.isNaN(dp2.getZ())) {
       return Math.sqrt(Math.pow(dp1.getX() - dp2.getX(), 2)
           + Math.pow(dp1.getY() - dp2.getY(), 2)
           + Math.pow(dp1.getZ() - dp2.getZ(), 2));
-    } else {
-      return Math.sqrt(Math.pow(dp1.getX() - dp2.getX(), 2)
-          + Math.pow(dp1.getY() - dp2.getY(), 2));
     }
+    return Math.sqrt(Math.pow(dp1.getX() - dp2.getX(), 2)
+        + Math.pow(dp1.getY() - dp2.getY(), 2));
   }
 
-  /** Distance euclidienne calculée en 2 dimensions XY, même sur des objets 3D. */
+  /**
+   * Distance euclidienne calculée en 2 dimensions XY, même sur des objets 3D.
+   * @deprecated La méthode .distance de DirectPosition fait la même chose
+   * @return the 2d distance between 2 points
+   * */
+  @Deprecated
   public static double distance2D(IDirectPosition dp1, IDirectPosition dp2) {
     return Math.sqrt(Math.pow(dp1.getX() - dp2.getX(), 2)
         + Math.pow(dp1.getY() - dp2.getY(), 2));
@@ -119,46 +117,14 @@ public abstract class Distances {
 
   /**
    * Distance euclidienne d'un point P à une ligne.
-   * @param M point
-   * @param L ligne
-   * @return Distance euclidienne d'un point P à une ligne
-   */
-  public static double distance(IDirectPosition M, ILineString L) {
-    IDirectPositionList listePoints = L.coord();
-    double distmin, dist;
-
-    distmin = Distances.distance(listePoints.get(0), M);
-    for (int i = 0; i < listePoints.size() - 1; i++) {
-      dist = Distances.distancePointSegment(M, listePoints.get(i), listePoints
-          .get(i + 1));
-      if (dist < distmin) {
-        distmin = dist;
-      }
-    }
-    ;
-    return (distmin);
-  }
-
-  /**
-   * Distance euclidienne d'un point P à une ligne.
    * @param point point
-   * @param list liste de coordonnées
+   * @param line ligne
    * @return Distance euclidienne d'un point P à une ligne
    */
-  public static double distance(IDirectPosition point, IDirectPositionList list) {
-    double distmin, dist;
-
-    distmin = Distances.distance(list.get(0), point);
-    for (int i = 0; i < list.size() - 1; i++) {
-      dist = Distances.distancePointSegment(point, list.get(i), list.get(i + 1));
-      if (dist < distmin) {
-        distmin = dist;
-      }
-    }
-    ;
-    return (distmin);
+  public static double distance(IDirectPosition point, ILineString line) {
+    return Distances.distance(point, line.coord());
   }
-  
+
   /**
    * Distance euclidienne d'un point P à un anneau.
    * @param point point
@@ -179,6 +145,25 @@ public abstract class Distances {
     return Distances.distance(point, surface.coord());
   }
 
+  /**
+   * Distance euclidienne d'un point P à une liste de points.
+   * @param point point
+   * @param pointList une liste de points
+   * @return distance euclidienne
+   */
+  public static double distance(IDirectPosition point,
+      IDirectPositionList pointList) {
+    double distmin = Distances.distance(pointList.get(0), point);
+    for (int i = 0; i < pointList.size() - 1; i++) {
+      double dist = Distances.distancePointSegment(point, pointList.get(i),
+          pointList.get(i + 1));
+      if (dist < distmin) {
+        distmin = dist;
+      }
+    }
+    return distmin;
+  }
+
   // /////////////////////////////////////////////////////////
   // //
   // Distances entre lignes //
@@ -190,18 +175,17 @@ public abstract class Distances {
    * autre. Elle est calculee comme le maximum des distances des points
    * intermédiaires de la première ligne L1 à l'autre ligne L2.
    */
-  public static double premiereComposanteHausdorff(ILineString L1,
-      ILineString L2) {
-    IDirectPositionList listePoints = L1.coord();
+  public static double premiereComposanteHausdorff(ILineString l1,
+      ILineString l2) {
+    IDirectPositionList listePoints = l1.coord();
     double dist, distmax = 0;
 
     for (int i = 0; i < listePoints.size(); i++) {
-      dist = Distances.distance(listePoints.get(i), L2);
+      dist = Distances.distance(listePoints.get(i), l2);
       if (dist > distmax) {
         distmax = dist;
       }
     }
-    ;
     return distmax;
   }
 
@@ -224,19 +208,18 @@ public abstract class Distances {
    * distance au point P du point intermédiaire de la ligne L le plus éloigné du
    * point P.
    */
-  public static double hausdorff(ILineString L, IPoint P) {
-    Iterator<IDirectPosition> itPts = L.coord().getList().iterator();
+  public static double hausdorff(ILineString l, IPoint p) {
+    Iterator<IDirectPosition> itPts = l.coord().getList().iterator();
     IDirectPosition point;
     double distmax = 0, dist;
 
     while (itPts.hasNext()) {
       point = itPts.next();
-      dist = Distances.distance(point, P.getPosition());
+      dist = Distances.distance(point, p.getPosition());
       if (dist > distmax) {
         distmax = dist;
       }
     }
-    ;
     return distmax;
   }
 
@@ -303,10 +286,6 @@ public abstract class Distances {
   // Distances entre surfaces //
   // //
   // //////////////////////////////////////////////////////////
-
-   /**
-   * Transforme une géométrie générique en multisurface.
-   */
   @SuppressWarnings("unchecked")
   private static IMultiSurface<IOrientableSurface> toMultiSurface(
       IGeometry geom) {
@@ -334,9 +313,9 @@ public abstract class Distances {
 
   /**
    * Distance surfacique entre deux GM_Polygon.
-   * 
+   * <p>
    * Définition : 1 - surface(intersection)/surface(union) Ref [Vauglin 97]
-   * 
+   * <p>
    * NB: renvoie 2 en cas de problème lors du calcul d'intersection avec JTS
    * (bug en particulier si les surfaces sont dégénérées ou trop complexes).
    */
@@ -376,19 +355,19 @@ public abstract class Distances {
 
   /**
    * Distance surfacique "robuste" entre deux polygones.
-   * 
+   * <p>
    * Il s'agit ici d'une pure bidouille pour contourner certains bugs de JTS: Si
    * JTS plante au calcul d'intersection, on filtre les surfaces avec Douglas et
    * Peucker, progressivement avec 10 seuils entre min et max. Min et Max
    * doivent être fixer donc de l'ordre de grandeur de la précision des données
    * sinon le calcul risque d'être trop faussé.
-   * 
+   * <p>
    * Définition : 1 - surface(intersection)/surface(union) Ref [Vauglin 97]
-   * 
+   * <p>
    * NB: renvoie 2 en cas de problème lors du calcul d'intersection avec JTS
    * (bug en particulier si les surfaces sont dégénérées ou trop complexes).
    * */
-  public static double distanceSurfaciqueRobuste(IPolygon A, IPolygon B,
+  public static double distanceSurfaciqueRobuste(GM_Polygon A, GM_Polygon B,
       double min, double max) {
     IGeometry inter = Operateurs.intersectionRobuste(A, B, min, max);
     // en cas de problème d'intersection avec JTS, la méthode retourne 2
@@ -483,7 +462,7 @@ public abstract class Distances {
 
   /**
    * Mesure dite "Exactitude" entre 2 surfaces. Ref : [Bel Hadj Ali 2001]
-   * 
+   * <p>
    * Définition : Surface(A inter B) / Surface(A)
    */
   public static double exactitude(IPolygon A, IPolygon B) {
@@ -496,7 +475,7 @@ public abstract class Distances {
 
   /**
    * Mesure dite "Complétude" entre 2 surfaces. Ref : [Bel Hadj Ali 2001]
-   * 
+   * <p>
    * Définition : Surface(A inter B) / Surface(B)
    */
   public static double completude(IPolygon A, IPolygon B) {
@@ -504,7 +483,8 @@ public abstract class Distances {
   }
 
   /**
-   * Mesure dite "Exactitude" entre 2 IMultiSurface. Ref : [Bel Hadj Ali 2001]
+   * Mesure dite "Exactitude" entre 2 IMultiSurface. Ref : [Bel Hadj Ali 2001].
+   * <p>
    * Définition : Surface(A inter B) / Surface(A)
    */
   public static double exactitude(IMultiSurface<IOrientableSurface> A,
@@ -518,7 +498,7 @@ public abstract class Distances {
 
   /**
    * Mesure dite "Complétude" entre 2 IMultiSurface.
-   * 
+   * <p>
    * Ref : [Bel Hadj Ali 2001] Définition : Surface(A inter B) / Surface(B)
    */
   public static double completude(IMultiSurface<IOrientableSurface> A,
@@ -598,5 +578,4 @@ public abstract class Distances {
     }
     return false;
   }
-
 }

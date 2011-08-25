@@ -37,22 +37,23 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 /**
  * Segment de droite.
  * 
- * @author Thierry Badard & Arnaud Braun & Julien Gaffuri
- * @version 1.0
+ * @author Thierry Badard
+ * @author Arnaud Braun
+ * @author Julien Gaffuri
  * 
  */
 public class GM_LineSegment extends GM_LineString implements ILineSegment {
-  // private static Logger logger =
-  // Logger.getLogger(GM_LineSegment.class.getName());
 
   private IDirectPosition startPoint;
 
+  @Override
   public IDirectPosition getStartPoint() {
     return this.startPoint;
   };
 
   private IDirectPosition endPoint;
 
+  @Override
   public IDirectPosition getEndPoint() {
     return this.endPoint;
   };

@@ -1,28 +1,20 @@
 /*
- * This file is part of the GeOxygene project source files.
- * 
- * GeOxygene aims at providing an open framework which implements OGC/ISO
- * specifications for the development and deployment of geographic (GIS)
- * applications. It is a open source contribution of the COGIT laboratory at the
- * Institut Géographique National (the French National Mapping Agency).
- * 
- * See: http://oxygene-project.sourceforge.net
- * 
- * Copyright (C) 2005 Institut Géographique National
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or any later version.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library (see file LICENSE if present); if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
+ * This file is part of the GeOxygene project source files. GeOxygene aims at
+ * providing an open framework which implements OGC/ISO specifications for the
+ * development and deployment of geographic (GIS) applications. It is a open
+ * source contribution of the COGIT laboratory at the Institut Géographique
+ * National (the French National Mapping Agency). See:
+ * http://oxygene-project.sourceforge.net Copyright (C) 2005 Institut
+ * Géographique National This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the License,
+ * or any later version. This library is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details. You should have received a copy of
+ * the GNU Lesser General Public License along with this library (see file
+ * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
@@ -52,23 +44,26 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
- * 
- * Méthodes d'import et export pour l'appariement sur des données géographiques
+ * Utilitary class for importing and exporting data and matching them.
+ * <p>
+ * Méthodes d'import et export pour l'appariement sur des données Géographiques
  * quelconques (création des réseaux, lancement de l'appariement, export des
  * résultats).
  * 
  * @author Mustiere - IGN / Laboratoire COGIT
- * @version 1.0
- * 
  */
+public final class AppariementIO {
+  /**
+   * Private constructor. Not used: this is a utilitary class.
+   */
+  private AppariementIO() {
+  }
 
-public class AppariementIO {
   /**
    * Static logger.
    */
   private static final Logger LOGGER = Logger.getLogger(AppariementIO.class
       .getName());
-
 
   /**
    * Lancement de l'appariement de réseaux sur des objets Géographiques : 1-
@@ -144,7 +139,7 @@ public class AppariementIO {
     }
 
     // NB: l'ordre dans lequel les projections sont faites n'est pas neutre
-    if (paramApp.projeteNoeud2surReseau1) {
+    if (paramApp.projeteNoeuds2SurReseau1) {
       if (AppariementIO.LOGGER.isDebugEnabled()) {
         AppariementIO.LOGGER.debug(I18N
             .getString("AppariementIO.ProjectionOfNetwork2OnNetwork1" //$NON-NLS-1$
@@ -152,9 +147,9 @@ public class AppariementIO {
             + (new Time(System.currentTimeMillis())).toString());
       }
       reseauRef.projete(reseauComp,
-          paramApp.projeteNoeud2surReseau1_DistanceNoeudArc,
-          paramApp.projeteNoeud2surReseau1_DistanceProjectionNoeud,
-          paramApp.projeteNoeud2surReseau1_ImpassesSeulement);
+          paramApp.projeteNoeuds2SurReseau1DistanceNoeudArc,
+          paramApp.projeteNoeud2surReseau1DistanceProjectionNoeud,
+          paramApp.projeteNoeud2surReseau1ImpassesSeulement);
     }
     if (paramApp.projeteNoeuds1SurReseau2) {
       if (AppariementIO.LOGGER.isDebugEnabled()) {
@@ -164,9 +159,9 @@ public class AppariementIO {
             + (new Time(System.currentTimeMillis())).toString());
       }
       reseauComp.projete(reseauRef,
-          paramApp.projeteNoeuds1SurReseau2_DistanceNoeudArc,
-          paramApp.projeteNoeuds1SurReseau2_DistanceProjectionNoeud,
-          paramApp.projeteNoeuds1SurReseau2_ImpassesSeulement);
+          paramApp.projeteNoeuds1SurReseau2DistanceNoeudArc,
+          paramApp.projeteNoeuds1SurReseau2DistanceProjectionNoeud,
+          paramApp.projeteNoeuds1SurReseau2ImpassesSeulement);
     }
     if (AppariementIO.LOGGER.isDebugEnabled()) {
       AppariementIO.LOGGER.debug(I18N
@@ -325,10 +320,10 @@ public class AppariementIO {
                   } catch (Exception e) {
                     // FIXME Pretty specfific to BDTOPO Schema... no time to
                     // make it better
-                    if (v.equalsIgnoreCase("direct")) {
+                    if (v.equalsIgnoreCase("direct")) { //$NON-NLS-1$
                       arc.setOrientation(1);
                     } else {
-                      if (v.equalsIgnoreCase("inverse")) {
+                      if (v.equalsIgnoreCase("inverse")) { //$NON-NLS-1$
                         arc.setOrientation(-1);
                       } else {
                         arc.setOrientation(2);
