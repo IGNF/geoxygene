@@ -715,7 +715,7 @@ public class CarteTopo extends DataSet {
       }
 
       arcTotal = this.getPopArcs().nouvelElement();
-      geometries = new ArrayList<ILineString>();
+      geometries = new ArrayList<ILineString>(2);
       arc1 = arcsIncidents.get(0);
       arc2 = arcsIncidents.get(1);
       geometries.add(arc1.getGeometrie());
@@ -844,8 +844,8 @@ public class CarteTopo extends DataSet {
       if (line.sizeControlPoint() == 2) {
         continue;
       }
-      DirectPositionList controlPoint = (DirectPositionList) line.getControlPoint();
-      ListIterator<IDirectPosition> iterator = controlPoint.getList().listIterator();
+      IDirectPositionList controlPoint = line.getControlPoint();
+      ListIterator<IDirectPosition> iterator = controlPoint.listIterator();
       IDirectPosition previous = iterator.next();
       int numberOfPointsRemoved = 0;
       while (iterator.hasNext()) {
@@ -1656,7 +1656,7 @@ public class CarteTopo extends DataSet {
             multiGeometrie = true;
           }
         }
-        if (!multiGeometrie) {
+        if (!multiGeometrie && geometrieDuCycle.sizeControlPoint() > 2) {
           boolean ccw = JtsAlgorithms.isCCW(geometrieDuCycle);
           if (!ccw) {
             cycles.add(new Cycle(arcsDuCycle, orientationsArcsDuCycle,
@@ -2217,6 +2217,10 @@ public class CarteTopo extends DataSet {
         }
       }
     }
+    for (Arc arc : arcsNonTraites) {
+        arc.getFeatureCollections().remove(arcsNonTraites);
+    }
+    arcsNonTraites.clear();
     arcsAEnlever.clear();
     Runtime runtime = Runtime.getRuntime();
     runtime.runFinalization();
@@ -2227,6 +2231,10 @@ public class CarteTopo extends DataSet {
     if (filtrageNoeudsSimples) {
       this.filtreNoeudsSimples();
     }
+    runtime.runFinalization();
+    runtime.gc();
+    long heap6 = runtime.totalMemory () - runtime.freeMemory ();
+    logger.info("heap after creation of nodes " + heap6);
   }
 
   // ///////////////////////////////////////////////////////////////////////////////////////////
@@ -2276,7 +2284,8 @@ public class CarteTopo extends DataSet {
    * @param listeFeatures liste des éléments à importer
    * @param is2d si vrai, alors convertir les géométries en 2d
    */
-  public void importClasseGeo(IFeatureCollection<?> listeFeatures, boolean is2d) {
+  public void importClasseGeo(IFeatureCollection<?> listeFeatures,
+      boolean is2d) {
     Chargeur.importClasseGeo(listeFeatures, this, is2d);
   }
 

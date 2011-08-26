@@ -419,7 +419,7 @@ public class ImgUtil {
    * @throws Exception
    */
   public static <Feature extends IFeature> void collectionsToImage(
-      List<IFeatureCollection<Feature>> collections, List<Color> colors,
+      List<? extends IFeatureCollection<Feature>> collections, List<Color> colors,
       Color background, String path, double scale) throws Exception {
     int totalSize = 0; // number of features
     IEnvelope envelope = null;
