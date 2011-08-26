@@ -41,10 +41,9 @@ public interface ILineString extends ICurveSegment {
   // ////////////////////////////////////////////////////////////////////////
   // Implémentation de méthodes abstraites /////////////////////////////////
   // ////////////////////////////////////////////////////////////////////////
-  /** Renvoie la liste ordonnée des points de contrôle (idem que coord()). */
+  @Override
   public abstract IDirectPositionList coord();
-
-  /** Renvoie un GM_CurveSegment de sens opposé. */
+  @Override
   public abstract ICurveSegment reverse();
 
   /**
@@ -53,10 +52,13 @@ public interface ILineString extends ICurveSegment {
    * @return
    */
   public abstract boolean isClosed(double tolerance);
-
+  /**
+   * @return <code>true</code> if this LineString is closed (start point=end
+   *         point); <code>false</code> otherwise.
+   */
   public abstract boolean isClosed();
-
+  @Override
   public abstract Object clone();
-
+  @Override
   public abstract boolean isLineString();
 }
