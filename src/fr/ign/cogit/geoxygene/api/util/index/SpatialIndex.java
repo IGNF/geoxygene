@@ -81,4 +81,6 @@ public interface SpatialIndex<Feat extends IFeature> {
    * D peut être nul
    */
   public abstract Collection<Feat> select(IGeometry geometry, double distance);
+
+    public abstract void clear();
 }

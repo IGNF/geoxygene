@@ -549,4 +549,19 @@ public class Tiling<Feat extends IFeature> implements SpatialIndex<Feat> {
           .println("spatialIndex.update(value, cas) : \"cas\" doit valoir +1, -1 ou 0."); //$NON-NLS-1$
     }
   }
+
+@Override
+public void clear() {
+    for(int i=0 ; i < this.index.length;i++){
+        for(int j = 0; j < this.index[i].length;j++){
+            this.index[i][j] = null;
+        }
+        this.index[i] = null;
+    }
+    this.index = null;
+    this.dallage = null;
+    this.dallesPolygones = null;
+    System.out.println("Index cleared");
+    
+}
 }

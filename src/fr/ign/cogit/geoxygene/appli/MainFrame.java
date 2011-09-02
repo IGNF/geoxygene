@@ -174,43 +174,30 @@ public class MainFrame extends JFrame {
     JMenu helpMenu = new JMenu(I18N.getString("MainFrame.Help")); //$NON-NLS-1$
     JMenuItem openFileMenuItem = new JMenuItem(
         I18N.getString("MainFrame.OpenFile")); //$NON-NLS-1$
-    openFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        ProjectFrame projectFrame = (ProjectFrame) MainFrame.this
-            .getDesktopPane().getSelectedFrame();
-        if (projectFrame == null) {
-          if (MainFrame.this.getDesktopPane().getAllFrames().length != 0) {
-            // TODO ask the user in which frame (s)he
-            // wants to load into?
-            projectFrame = (ProjectFrame) MainFrame.this.getDesktopPane()
-                .getAllFrames()[0];
-          } else {
-            // TODO create a new project frame?
-            MainFrame.getLogger().info(
-                I18N.getString("MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
-            return;
-          }
-        }
-        File file = MainFrame.fc.getFile(MainFrame.this);
-        if (file != null) {
-          String fileName = file.getAbsolutePath();
-          String extention = fileName.substring(fileName.lastIndexOf('.') + 1);
-          if (extention.equalsIgnoreCase("shp")) { //$NON-NLS-1$
-            projectFrame.addShapefileLayer(fileName);
-            return;
-          }
-          if (extention.equalsIgnoreCase("tif")) { //$NON-NLS-1$
-            projectFrame.addGeotiffLayer(fileName);
-            return;
-          }
-          if (extention.equalsIgnoreCase("asc")) { //$NON-NLS-1$
-            projectFrame.addAscLayer(fileName);
-            return;
-          }
-        }
-      }
-    });
+        openFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                ProjectFrame projectFrame = (ProjectFrame) MainFrame.this
+                        .getDesktopPane().getSelectedFrame();
+                if (projectFrame == null) {
+                    if (MainFrame.this.getDesktopPane().getAllFrames().length != 0) {
+                        // TODO ask the user in which frame (s)he
+                        // wants to load into?
+                        projectFrame = (ProjectFrame) MainFrame.this
+                                .getDesktopPane().getAllFrames()[0];
+                    } else {
+                        // TODO create a new project frame?
+                        MainFrame.getLogger().info(
+                                I18N.getString("MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
+                        return;
+                    }
+                }
+                File file = MainFrame.fc.getFile(MainFrame.this);
+                if (file != null) {
+                    projectFrame.addLayer(file);
+                }
+            }
+        });
     JMenuItem newProjectFrameMenuItem = new JMenuItem(
         I18N.getString("MainFrame.NewProject")); //$NON-NLS-1$
     newProjectFrameMenuItem

@@ -116,6 +116,6 @@ public class CharacteristicShapeJTSPlugin implements
     DataSet.getInstance().addPopulation(popTriangles);
     CharacteristicShapeJTSPlugin.logger.info(popTriangles.size());
     CharacteristicShapeJTSPlugin.logger.info(characteristicShape);
-    project.addFeatureCollection(popTriangles, popTriangles.getNom());
+    project.addFeatureCollection(popTriangles, popTriangles.getNom(), null);
   }
 }

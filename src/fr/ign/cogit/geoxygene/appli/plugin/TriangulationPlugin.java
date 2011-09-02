@@ -93,6 +93,6 @@ public class TriangulationPlugin implements GeOxygeneApplicationPlugin,
     newFeatureTypeExterieurs.setGeometryType(GM_Polygon.class);
     popExterieurs.setFeatureType(newFeatureTypeExterieurs);
     DataSet.getInstance().addPopulation(popExterieurs);
-    project.addFeatureCollection(popExterieurs, popExterieurs.getNom());
+    project.addFeatureCollection(popExterieurs, popExterieurs.getNom(),null);
   }
 }

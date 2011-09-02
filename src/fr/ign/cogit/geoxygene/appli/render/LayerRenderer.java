@@ -305,6 +305,7 @@ public class LayerRenderer implements Renderer {
             LayerRenderer.logger.trace("Renderer " //$NON-NLS-1$
                 + LayerRenderer.this.getLayer().getName() + " finished"); //$NON-NLS-1$
           }
+          //FIXME Is this operation really useful or is a patch?
           LayerRenderer.this.getLayerViewPanel().getRenderingManager()
               .repaint();
         }

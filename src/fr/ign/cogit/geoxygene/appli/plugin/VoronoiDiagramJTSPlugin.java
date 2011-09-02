@@ -107,6 +107,6 @@ public class VoronoiDiagramJTSPlugin implements GeOxygeneApplicationPlugin,
     popVoronoi.setFeatureType(newFeatureTypeExterieurs);
     DataSet.getInstance().addPopulation(popVoronoi);
     VoronoiDiagramJTSPlugin.logger.info(popVoronoi);
-    project.addFeatureCollection(popVoronoi, popVoronoi.getNom());
+    project.addFeatureCollection(popVoronoi, popVoronoi.getNom(),null);
   }
 }

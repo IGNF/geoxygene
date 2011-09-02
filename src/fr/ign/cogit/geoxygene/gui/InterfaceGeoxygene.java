@@ -21,6 +21,7 @@ import javax.swing.JSplitPane;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.appli.LayerFactory;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.feature.Population;
@@ -307,10 +308,7 @@ public class InterfaceGeoxygene extends JFrame {
           InterfaceGeoxygene.logger.debug("Layer " + populationName
               + " non trouvé dans le sld par défaut");
         }
-        layer = this
-            .getPanelVisu()
-            .getSld()
-            .createLayer(populationName,
+        layer = LayerFactory.createLayer(populationName,
                 reader.getPopulation().getFeatureType().getGeometryType());
       }
       this.getPanelVisu().getSld().getLayers().add(layer);

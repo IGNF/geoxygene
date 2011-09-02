@@ -19,6 +19,7 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import javax.swing.ImageIcon;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -34,32 +35,40 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 @XmlRootElement(name = "UserLayer")
 public class UserLayer extends AbstractLayer {
 
-  /*
-   * TODO revoir cette implémentation des userLayers...
-   */
-  @XmlTransient
-  FT_FeatureCollection<? extends FT_Feature> features = null;
+    /*
+     * TODO revoir cette implémentation des userLayers...
+     */
+    @XmlTransient
+    FT_FeatureCollection<? extends FT_Feature> features = null;
 
-  /**
-   * Affecte la valeur de l'attribut features.
-   * @param features l'attribut features à affecter
-   */
-  public void setFeatures(FT_FeatureCollection<? extends FT_Feature> features) {
-    this.features = features;
-  }
+    /**
+     * Affecte la valeur de l'attribut features.
+     * 
+     * @param features
+     *            l'attribut features à affecter
+     */
+    public void setFeatures(FT_FeatureCollection<? extends FT_Feature> features) {
+        this.features = features;
+    }
 
-  @Override
-  public FT_FeatureCollection<? extends FT_Feature> getFeatureCollection() {
-    return this.features;
-  }
+    @Override
+    public FT_FeatureCollection<? extends FT_Feature> getFeatureCollection() {
+        return this.features;
+    }
 
-  public UserLayer() {
-    this.setFeatures(new FT_FeatureCollection<FT_Feature>());
-  }
+    public UserLayer() {
+        this.setFeatures(new FT_FeatureCollection<FT_Feature>());
+    }
 
-  public UserLayer(Layer layer) {
-    this();
-    this.setName(layer.getName());
-    this.setStyles(layer.getStyles());
-  }
+    public UserLayer(Layer layer) {
+        this();
+        this.setName(layer.getName());
+        this.setStyles(layer.getStyles());
+    }
+
+    @Override
+    public void destroy() {
+        this.features.clear();
+    }
+
 }

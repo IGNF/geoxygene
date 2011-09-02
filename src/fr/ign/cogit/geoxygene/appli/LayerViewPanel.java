@@ -25,6 +25,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
@@ -32,6 +34,7 @@ import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -61,6 +64,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.util.conversion.ImgUtil;
 
 /**
@@ -68,7 +72,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ImgUtil;
  * 
  * @author Julien Perret
  */
-public class LayerViewPanel extends JPanel implements Printable {
+public class LayerViewPanel extends JPanel implements Printable, SldListener{
   /**
    * logger.
    */
@@ -90,6 +94,10 @@ public class LayerViewPanel extends JPanel implements Printable {
       listener.paint(this, graphics);
     }
   }
+  /**
+   * Model
+   */
+  private StyledLayerDescriptor sldmodel;
 
   /**
    * Rendering manager.
@@ -144,6 +152,7 @@ public class LayerViewPanel extends JPanel implements Printable {
    */
   public LayerViewPanel(final ProjectFrame frame) {
     super();
+    this.sldmodel = null;
     this.projectFrame = frame;
     this.viewport = new Viewport(this);
     this.addPaintListener(new ScalePaintListener());
@@ -382,4 +391,44 @@ public class LayerViewPanel extends JPanel implements Printable {
   }
 
   private int recordIndex = 0;
+
+public void setModel(StyledLayerDescriptor sld) {
+    this.sldmodel = sld;
+    this.sldmodel.addSldListener(this);
+
+}
+
+    /**
+     * Evenements SLD
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        this.repaint();
+    }
+
+    @Override
+    public synchronized void layerAdded(Layer l) {
+        this.renderingManager.addLayer(l);
+        try {
+            IEnvelope env = l.getFeatureCollection().getEnvelope();
+            if (env == null) {
+                env = l.getFeatureCollection().envelope();
+            }
+            this.viewport.zoom(env);
+        } catch (NoninvertibleTransformException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    @Override
+    public void layerOrderChanged(int oldIndex, int newIndex) {
+        this.repaint();
+
+    }
+
+    @Override
+    public void layersRemoved(Collection<Layer> layers) {
+        this.repaint();
+
+    }
 }

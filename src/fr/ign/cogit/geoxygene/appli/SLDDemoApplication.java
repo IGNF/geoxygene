@@ -79,7 +79,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
         "Vegetation"); //$NON-NLS-1$
     pop.add(new DefaultFeature(new GM_Polygon(new GM_Envelope(0, 100, 0, 100))));
     DataSet.getInstance().addPopulation(pop);
-    projectFrame.addLayer(layer);
+    projectFrame.getSld().add(layer);
 
     Layer layer2 = projectFrame.getSld().createLayer("Batiment", //$NON-NLS-1$
         GM_Polygon.class, Color.blue, Color.gray, 1f, 2);
@@ -100,7 +100,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     pop2.add(new DefaultFeature(new GM_Polygon(new GM_Envelope(110, 200, 110,
         200))));
     DataSet.getInstance().addPopulation(pop2);
-    projectFrame.addLayer(layer2);
+    projectFrame.getSld().add(layer2);
 
     Layer layer3 = projectFrame.getSld().createLayer("Route", //$NON-NLS-1$
         GM_LineString.class, Color.red, Color.red, 1f, 4);
@@ -131,7 +131,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
         new DirectPosition(110, 0), new DirectPosition(110, 100),
         new DirectPosition(200, 100)))));
     DataSet.getInstance().addPopulation(pop3);
-    projectFrame.addLayer(layer3);
+    projectFrame.getSld().add(layer3);
 
     Layer layer4 = projectFrame.getSld().createLayer("Chemin", //$NON-NLS-1$
         GM_LineString.class, Color.red, Color.red, 1f, 4);
@@ -162,7 +162,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
         new DirectPosition(0, 110), new DirectPosition(100, 110),
         new DirectPosition(100, 200)))));
     DataSet.getInstance().addPopulation(pop4);
-    projectFrame.addLayer(layer4);
+    projectFrame.getSld().add(layer4);
 
     try {
       projectFrame.getLayerViewPanel().getViewport().zoomToFullExtent();

@@ -83,12 +83,6 @@ public class GM_LineSegment extends GM_LineString implements ILineSegment {
 
   @Override
   public IGeometry intersection(IGeometry geom) {
-    if (geom instanceof IArc2) {
-      return ((IArc2) geom).intersection(this);
-    }
-    if (geom instanceof IArc) {
-      return ((IArc) geom).intersection(this);
-    }
-    return super.intersection(geom);
+    return this.intersection(geom);
   }
 }

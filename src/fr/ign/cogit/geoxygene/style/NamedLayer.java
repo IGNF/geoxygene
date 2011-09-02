@@ -19,6 +19,7 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -28,6 +29,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.feature.DataSet;
+import fr.ign.cogit.geoxygene.feature.FT_Coverage;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 
 /**
@@ -83,4 +85,23 @@ public class NamedLayer extends AbstractLayer {
     }
     return result;
   }
+@SuppressWarnings("nls")
+@Override
+public void destroy() {
+    
+    System.out.println("Destroying "+this.getName());
+    if(this.getFeatureCollection().hasSpatialIndex())
+        this.getFeatureCollection().getSpatialIndex().clear();
+    for(IFeature feat : this.getFeatureCollection()){
+        if(feat instanceof FT_Coverage){
+            ((FT_Coverage)feat).coverage().dispose(true);
+        }
+        feat.setPopulation(null);
+        feat.setGeom(null);
+        feat.setFeatureType(null);
+    }
+    DataSet.getInstance().removePopulation(DataSet.getInstance().getPopulation(this.getName()));
+    System.out.println("Layer " +this.getName()+" destroyed");
+}
+
 }

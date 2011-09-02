@@ -64,14 +64,16 @@ public class CarteTopoFactory {
     CarteTopo carteTopo = new CarteTopo("Graphe"); //$NON-NLS-1$
 
     // Récupération des arcs de la carteTopo
-    IPopulation<Arc> arcs = carteTopo.getPopArcs();
+    //IPopulation<Arc> arcs = carteTopo.getPopArcs();
 
-    Iterator<IFeature> it = (Iterator<IFeature>) collection.getElements()
-        .iterator();
-    IFeature feature;
-    Arc arc;
+    //Iterator<IFeature> it = (Iterator<IFeature>) collection.getElements()
+    //    .iterator();
+    //IFeature feature;
+    //Arc arc;
+    carteTopo.importClasseGeo(collection, true);
 
     // Import des arcs de la collection dans la carteTopo
+    /*
     while (it.hasNext()) {
       feature = it.next();
       List<GM_LineString> lineStrings = null;
@@ -100,7 +102,7 @@ public class CarteTopoFactory {
           arc.addCorrespondant(feature);
         }
       }
-    }
+    }*/
 
     CarteTopoFactory.logger.info("Nombre d'arcs créés : " //$NON-NLS-1$
         + carteTopo.getPopArcs().size());

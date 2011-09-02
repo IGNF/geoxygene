@@ -54,6 +54,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.appli.LayerFactory;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 import fr.ign.cogit.geoxygene.appli.mode.AddPointMode;
 import fr.ign.cogit.geoxygene.appli.mode.CreateInteriorRingMode;
@@ -945,12 +946,11 @@ public class GeometryToolBar extends JToolBar {
 
   @SuppressWarnings("unchecked")
   public void createPolygonNewLayer(GM_Polygon newPoly) {
-    Layer newLayer = this.getFrame().createLayer(
-        this.newLayerNameText.getText(), GM_MultiSurface.class);
+      Layer newlayer = LayerFactory.createLayer(this.newLayerNameText.getText(), GM_MultiSurface.class);
     this.cBoxCoucheAModifier.setSelectedIndex(this.cBoxCoucheAModifier
         .getItemCount() - 1);
-    if (newLayer != null) {
-      String newLayerName = newLayer.getName();
+    if (newlayer != null) {
+      String newLayerName = newlayer.getName();
       GM_MultiSurface<GM_Polygon> newSurface = new GM_MultiSurface<GM_Polygon>();
       newSurface.add(newPoly);
       DefaultFeature newFeature = new DefaultFeature(newSurface);
@@ -1016,12 +1016,13 @@ public class GeometryToolBar extends JToolBar {
   @SuppressWarnings("unchecked")
   public void creerLineStringNouvelleCouche(GM_LineString newLine) {
     if (newLine.isValid()) {
-      Layer newLayer = this.getFrame().createLayer(
-          this.newLayerNameText.getText(), GM_MultiCurve.class);
-      this.cBoxCoucheAModifier.setSelectedIndex(this.cBoxCoucheAModifier
-          .getItemCount() - 1);
-      if (newLayer != null) {
-        String newLayerName = newLayer.getName();
+        Layer newlayer = LayerFactory.createLayer(
+                this.newLayerNameText.getText(), GM_MultiCurve.class);
+
+        this.cBoxCoucheAModifier.setSelectedIndex(this.cBoxCoucheAModifier
+                .getItemCount() - 1);
+        if (newlayer != null) {
+        String newLayerName = newlayer.getName();
         GM_MultiCurve<GM_LineString> newCurve = new GM_MultiCurve<GM_LineString>();
         newCurve.add(newLine);
         DefaultFeature newFeature = new DefaultFeature(newCurve);
@@ -1087,8 +1088,7 @@ public class GeometryToolBar extends JToolBar {
   @SuppressWarnings("unchecked")
   public void creerPointNouvelleCouche(GM_Point newPoint) {
     if (newPoint.isValid()) {
-      Layer newLayer = this.getFrame().createLayer(
-          this.newLayerNameText.getText(), GM_MultiPoint.class);
+      Layer newLayer = LayerFactory.createLayer(this.newLayerNameText.getText(), GM_MultiPoint.class);
       this.cBoxCoucheAModifier.setSelectedIndex(this.cBoxCoucheAModifier
           .getItemCount() - 1);
       if (newLayer != null) {
@@ -1130,7 +1130,7 @@ public class GeometryToolBar extends JToolBar {
       while (i < features.size() && !isInside) {
         IGeometry geom = features.get(i).getGeom();
         if (geom.isMultiSurface()) {
-          GM_MultiSurface surface = (GM_MultiSurface) geom;
+          GM_MultiSurface<?> surface = (GM_MultiSurface<?>) geom;
           j = 0;
           while (j < surface.size() && !isInside) {
             IGeometry obj = surface.get(j);

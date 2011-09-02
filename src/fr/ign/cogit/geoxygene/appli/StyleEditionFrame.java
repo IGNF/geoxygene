@@ -223,7 +223,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     // Saving the initial SLD
     this.setInitialSLD(new StyledLayerDescriptor());
     CharArrayWriter writer = new CharArrayWriter();
-    layerLegendPanel.getSld().marshall(writer);
+    layerLegendPanel.getModel().marshall(writer);
     Reader reader = new CharArrayReader(writer.toCharArray());
     this.setInitialSLD(StyledLayerDescriptor.unmarshall(reader));
 
@@ -833,27 +833,19 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
             .getResource("/sld/BasicStyles.xml").getPath()); //$NON-NLS-1$
     GeOxygeneApplication geoxAppli = new GeOxygeneApplication();
     geoxAppli.getFrame().newProjectFrame();
-    LayerLegendPanel layerLegendPanel = geoxAppli.getFrame()
-        .getSelectedProjectFrame().getLayerLegendPanel();
-
-    Layer layerPoly = layerLegendPanel.getLayerViewPanel().getProjectFrame()
-        .createLayer("Polygon", GM_Polygon.class); //$NON-NLS-1$
+    Layer layerPoly = LayerFactory.createLayer("Polygon", GM_Polygon.class); //$NON-NLS-1$
     layerPoly.setStyles(sld.getLayer("Polygon").getStyles()); //$NON-NLS-1$
 
-    Layer layerLine = layerLegendPanel.getLayerViewPanel().getProjectFrame()
-        .createLayer("Simple Line", GM_LineString.class); //$NON-NLS-1$
+    Layer layerLine = LayerFactory.createLayer("Simple Line", GM_LineString.class); //$NON-NLS-1$
     layerLine.setStyles(sld.getLayer("Basic Line").getStyles()); //$NON-NLS-1$
 
-    Layer layerLine2 = layerLegendPanel.getLayerViewPanel().getProjectFrame()
-        .createLayer("Double Line", GM_LineString.class); //$NON-NLS-1$
+    Layer layerLine2 = LayerFactory.createLayer("Double Line", GM_LineString.class); //$NON-NLS-1$
     layerLine2.setStyles(sld.getLayer("Line with contour").getStyles()); //$NON-NLS-1$
 
-    Layer layerLine3 = layerLegendPanel.getLayerViewPanel().getProjectFrame()
-        .createLayer("Dasharay Line", GM_LineString.class); //$NON-NLS-1$
+    Layer layerLine3 = LayerFactory.createLayer("Dasharay Line", GM_LineString.class); //$NON-NLS-1$
     layerLine3.setStyles(sld.getLayer("Line Dasharray").getStyles()); //$NON-NLS-1$
 
-    Layer layerPoint = layerLegendPanel.getLayerViewPanel().getProjectFrame()
-        .createLayer("Point", GM_Point.class); //$NON-NLS-1$
+    Layer layerPoint = LayerFactory.createLayer("Point", GM_Point.class); //$NON-NLS-1$
     layerPoint.setStyles(sld.getLayer("Point").getStyles()); //$NON-NLS-1$
   }
 
@@ -1053,7 +1045,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
 
     // When the user apply style modifications to the map and the legend
     if (e.getSource() == this.btnApply) {
-      this.layerLegendPanel.getSld().fireActionPerformed(null);
+      this.layerLegendPanel.getModel().fireActionPerformed(null);
       this.layerLegendPanel.repaint();
       this.layerViewPanel.repaint();
 
@@ -1072,7 +1064,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
 
     // When the user validate style modifications
     if (e.getSource() == this.btnValid) {
-      this.layerLegendPanel.getSld().fireActionPerformed(null);
+      this.layerLegendPanel.getModel().fireActionPerformed(null);
       this.layerLegendPanel.repaint();
       this.layerViewPanel.repaint();
       this.updateLayer();

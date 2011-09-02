@@ -489,7 +489,8 @@ public class Viewport {
    */
   public final void zoom(final IEnvelope extent)
       throws NoninvertibleTransformException {
-    if ((extent == null) || extent.isEmpty()) {
+      if ((extent == null) || extent.isEmpty() || extent.width() == 0
+              || extent.height() == 0) {
       return;
     }
     LayerViewPanel lvp = this.layerViewPanels.iterator().next();

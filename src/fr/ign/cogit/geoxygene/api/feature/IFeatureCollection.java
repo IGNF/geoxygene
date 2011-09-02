@@ -130,6 +130,9 @@ public interface IFeatureCollection<Feat extends IFeature> extends
   @Override
   public abstract int size();
 
+  public abstract IEnvelope getEnvelope();
+  public abstract void setEnvelope(IEnvelope env);
+
   // ---------------------------------------
   // --- Calcul de l'emprise ---------------
   // ---------------------------------------

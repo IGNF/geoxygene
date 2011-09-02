@@ -129,9 +129,14 @@ public class AdapterFactory {
         result = factory.createLinearRing(sequence);
         result.setSRID(geom.getCRS());
         return result;
-      } else {
-        result = null;
       }
+      logger.error(sequence.size() + " " + sequence.getCoordinate(0).equals(
+              sequence.getCoordinate(sequence.size() - 1)));
+      logger.error(sequence.getCoordinate(0));
+      logger.error(sequence.getCoordinate(sequence.size() - 1));
+      System.exit(0);
+      throw new Exception(I18N
+              .getString("AdapterFactory.RingNotClosed")); //$NON-NLS-1$
     }
     if (geom instanceof ILineString) {
       result = AdapterFactory.toLineString(factory, (GM_LineString) geom);

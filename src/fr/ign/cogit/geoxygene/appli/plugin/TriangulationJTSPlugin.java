@@ -107,6 +107,6 @@ public class TriangulationJTSPlugin implements GeOxygeneApplicationPlugin,
     popTriangles.setFeatureType(newFeatureTypeExterieurs);
     DataSet.getInstance().addPopulation(popTriangles);
     TriangulationJTSPlugin.logger.info(popTriangles);
-    project.addFeatureCollection(popTriangles, popTriangles.getNom());
+    project.addFeatureCollection(popTriangles, popTriangles.getNom(),null);
   }
 }

@@ -64,8 +64,7 @@ public class BezierCurvePlugin implements GeOxygeneApplicationPlugin,
     for (Component c : application.getFrame().getJMenuBar().getComponents()) {
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null
-            && aMenu.getText().equalsIgnoreCase("Curve")) {
+        if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Curve")) { //$NON-NLS-1$
           menu = aMenu;
         }
       }
@@ -107,6 +106,6 @@ public class BezierCurvePlugin implements GeOxygeneApplicationPlugin,
     newFeatureTypeBezier.setGeometryType(GM_LineString.class);
     popBezier.setFeatureType(newFeatureTypeBezier);
     DataSet.getInstance().addPopulation(popBezier);
-    project.addFeatureCollection(popBezier, popBezier.getNom());
+    project.addFeatureCollection(popBezier, popBezier.getNom(), null);
   }
 }

@@ -299,9 +299,6 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
   @Override
   public IDirectPositionList coord() {
     DirectPositionList result = new DirectPositionList();
-    if (this.sizeSegment() == 0) {
-      return result;
-    }
     synchronized (this.segment) {
       for (ICurveSegment theSegment : this.segment) {
         IDirectPositionList theList = theSegment.coord();

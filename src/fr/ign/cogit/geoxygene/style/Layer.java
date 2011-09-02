@@ -19,10 +19,10 @@
 
 package fr.ign.cogit.geoxygene.style;
 
-import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -105,11 +105,7 @@ public interface Layer {
   public void setSymbolized(boolean symbolized);
 
   public Symbolizer getSymbolizer();
-
-  public void setImage(RasterSymbolizer symbolizer, BufferedImage image);
-
-  public BufferedImage getImage(RasterSymbolizer symbolizer);
-
+  
   public String getActiveGroup();
 
   public void setActiveGroup(String activeGroup);
@@ -119,4 +115,10 @@ public interface Layer {
   public void setCRS(CoordinateReferenceSystem crs);
 
   public CoordinateReferenceSystem getCRS();
+
+  void destroy();
+    
+    public ImageIcon getIcon();
+    
+    public void setIcon(ImageIcon image);
 }

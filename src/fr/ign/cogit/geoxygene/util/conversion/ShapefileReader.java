@@ -28,6 +28,7 @@ import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -143,6 +144,8 @@ public class ShapefileReader implements Runnable {
     this.reader = ShapefileReader.initSchema(shapefileName,
         this.schemaDefaultFeature, this.population, initSpatialIndex);
     this.crs = this.reader.getCRS();
+    this.population.setEnvelope(new GM_Envelope(this.reader.minX,
+            this.reader.maxX, this.reader.minY, this.reader.maxY));
   }
 
   /**
@@ -150,7 +153,9 @@ public class ShapefileReader implements Runnable {
    * @see #ShapefileReader(String, String, DataSet, boolean)
    */
   public void read() {
+
     new Thread(this).start();
+
   }
 
   /**
@@ -738,4 +743,5 @@ class Reader {
   public CoordinateReferenceSystem getCRS() {
     return this.localCRS;
   }
+  
 }

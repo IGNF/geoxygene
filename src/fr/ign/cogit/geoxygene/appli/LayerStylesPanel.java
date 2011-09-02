@@ -28,9 +28,12 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.lang.ref.WeakReference;
 
+import javax.media.jai.PlanarImage;
 import javax.swing.JPanel;
-
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.feature.FT_Coverage;
 import fr.ign.cogit.geoxygene.style.ExternalGraphic;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
@@ -53,10 +56,10 @@ public class LayerStylesPanel extends JPanel {
    * serial uid.
    */
   private static final long serialVersionUID = 1L;
-  private Layer layer;
+  private WeakReference<Layer> layer;
 
   public Layer getLayer() {
-    return this.layer;
+    return this.layer.get();
   }
 
   private int margin = 2;
@@ -65,7 +68,7 @@ public class LayerStylesPanel extends JPanel {
    * Constructor.
    */
   public LayerStylesPanel(Layer aLayer) {
-    this.layer = aLayer;
+    this.layer = new WeakReference<Layer>(aLayer);
     this.setBackground(Color.white);
   }
 
@@ -79,7 +82,7 @@ public class LayerStylesPanel extends JPanel {
     g.fillRect(0, 0, this.getWidth() - 1, this.getHeight() - 1);
     // count how many rules we have
     int numberOfRules = 0;
-    for (Style style : this.layer.getStyles()) {
+    for (Style style : this.layer.get().getStyles()) {
       UserStyle userStyle = (UserStyle) style;
       for (FeatureTypeStyle fts : userStyle.getFeatureTypeStyles()) {
         numberOfRules += fts.getRules().size();
@@ -96,7 +99,7 @@ public class LayerStylesPanel extends JPanel {
     int currentColumn = 0;
     int currentRow = 0;
 
-    for (Style style : this.layer.getStyles()) {
+    for (Style style : this.layer.get().getStyles()) {
       UserStyle userStyle = (UserStyle) style;
       for (FeatureTypeStyle fts : userStyle.getFeatureTypeStyles()) {
         for (Rule rule : fts.getRules()) {
@@ -139,7 +142,7 @@ public class LayerStylesPanel extends JPanel {
       int currentColumn, int currentRow, int columnsWidth, int rowHeight) {
     g2.setStroke(symbolizer.getStroke().toAwtStroke());
     g2.setColor(symbolizer.getStroke().getColor());
-    if (this.layer.getStyles().size() == 1) {
+    if (this.layer.get().getStyles().size() == 1) {
       g2.drawLine(currentColumn * (columnsWidth + this.margin), currentRow
           * (rowHeight + this.margin) + rowHeight / 2, (currentColumn + 1)
           * (columnsWidth + this.margin) + this.margin, currentRow
@@ -213,7 +216,13 @@ public class LayerStylesPanel extends JPanel {
     int y = currentRow * (rowHeight + this.margin) + this.margin;
     int width = columnsWidth;
     int height = rowHeight;
-    BufferedImage image = this.layer.getImage(symbolizer);
-    g2.drawImage(image, x, y, width, height, null);
+    
+    //FIXME Pour l'instant on considère qu'il n'y a qu'un symbolizer
+    for(IFeature feature : this.layer.get().getFeatureCollection()){
+        FT_Coverage coverage = (FT_Coverage) feature;
+        BufferedImage image =  PlanarImage.wrapRenderedImage(coverage.coverage().getRenderedImage()).getAsBufferedImage();
+        g2.drawImage(image, x, y,width,height, null);
+    }
+    
   }
 }

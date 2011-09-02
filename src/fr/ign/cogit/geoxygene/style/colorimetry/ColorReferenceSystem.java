@@ -295,10 +295,7 @@ public class ColorReferenceSystem {
    */
   public static List<ColorimetricColor> getCOGITColors() {
     List<ColorimetricColor> listCouleurs = new ArrayList<ColorimetricColor>();
-    ColorReferenceSystem crs = ColorReferenceSystem
-        .unmarshall(ColorReferenceSystem.class.getResource(
-            "/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
-
+    ColorReferenceSystem crs = ColorReferenceSystem.defaultColorRS();
     listCouleurs = crs.getAllColors();
 
     return listCouleurs;
@@ -382,5 +379,11 @@ public class ColorReferenceSystem {
     }
     return pureColors;
   }
+  
+    public static ColorReferenceSystem defaultColorRS() {
+        return ColorReferenceSystem.unmarshall(ColorReferenceSystem.class
+                .getResource("/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
+
+    }
 
 }

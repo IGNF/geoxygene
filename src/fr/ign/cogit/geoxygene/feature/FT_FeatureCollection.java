@@ -238,6 +238,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
     if (this.isIndexed && this.spatialindex.hasAutomaticUpdate()) {
       this.spatialindex.update(value, -1);
     }
+
     this.fireActionPerformed(new FeatureCollectionEvent(this, value,
         FeatureCollectionEvent.Type.REMOVED, value.getGeom()));
     return result;
@@ -252,7 +253,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
       return false;
     }
     boolean result = true;
-    IEnvelope envelope = this.envelope();
+//  IEnvelope envelope = this.envelope();
     // List<GM_Object> removedCollectionGeometry = new ArrayList<GM_Object>();
     synchronized (this.elements) {
       for (Object o : coll) {
@@ -264,36 +265,50 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
          */
       }
     }
+
     this.fireActionPerformed(new FeatureCollectionEvent(this, null,
         FeatureCollectionEvent.Type.REMOVED, envelope.getGeom()));
-    return result;
-  }
+        return result;
+    }
 
-  @Override
-  public void clear() {
-    // List<GM_Object> removedCollectionGeometry = new ArrayList<GM_Object>(0);
-    synchronized (this.elements) {
-      for (Feat feature : this) {
-        feature.getFeatureCollections().remove(this);
-        // if (feature.getGeom() != null) {
-        // removedCollectionGeometry.add(feature.getGeom());
-        // }
-      }
-      this.elements.clear();
+    @Override
+    public void clear() {
+        synchronized (this.elements) {
+            for (Feat feature : this) {
+                feature.getFeatureCollections().remove(this);
+            }
+            this.elements.clear();
+        }
+        this.center = null;
+        this.classe = null;
+        this.featureType = null;
+        this.listenerList.clear();
+        if (this.isIndexed) {
+            this.removeSpatialIndex();
+        }
+        /*
+         * this.fireActionPerformed(new FeatureCollectionEvent(this, null,
+         * FeatureCollectionEvent.Type.REMOVED,
+         * JtsAlgorithms.union(removedCollectionGeometry)));
+         */
     }
-    if (this.isIndexed) {
-      this.removeSpatialIndex();
-    }
-    /*
-     * this.fireActionPerformed(new FeatureCollectionEvent(this, null,
-     * FeatureCollectionEvent.Type.REMOVED,
-     * JtsAlgorithms.union(removedCollectionGeometry)));
-     */
-  }
 
   @Override
   public int size() {
     return this.elements.size();
+  }
+
+  IEnvelope envelope = null;
+  @Override
+  public IEnvelope getEnvelope() {
+      if (this.envelope == null) {
+          this.envelope = this.envelope();
+      }
+      return this.envelope;
+  }
+  @Override
+  public void setEnvelope(IEnvelope env) {
+      this.envelope = env;
   }
 
   // ---------------------------------------
@@ -604,8 +619,9 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
         this.spatialindex.update(feature, +1);
       }
     }
-    this.fireActionPerformed(new FeatureCollectionEvent(this, feature,
-        FeatureCollectionEvent.Type.ADDED, feature.getGeom()));
+
+//        this.fireActionPerformed(new FeatureCollectionEvent(this, feature,
+//                FeatureCollectionEvent.Type.ADDED, feature.getGeom()));
   }
 
   /**
@@ -629,6 +645,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
         this.spatialindex.update(value, -1);
       }
     }
+
     this.fireActionPerformed(new FeatureCollectionEvent(this, value,
         FeatureCollectionEvent.Type.REMOVED, value.getGeom()));
   }

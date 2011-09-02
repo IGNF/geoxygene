@@ -131,6 +131,6 @@ public class CubicSplinePlugin implements GeOxygeneApplicationPlugin,
     newFeatureTypeHermite.setGeometryType(GM_LineString.class);
     popHermite.setFeatureType(newFeatureTypeHermite);
     DataSet.getInstance().addPopulation(popHermite);
-    project.addFeatureCollection(popHermite, popHermite.getNom());
+    project.addFeatureCollection(popHermite, popHermite.getNom(), null);
   }
 }

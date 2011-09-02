@@ -29,7 +29,11 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -48,7 +52,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionEvent;
+import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionListener;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.appli.SldListener;
 import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
@@ -77,7 +84,7 @@ import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
     // "useSLDLibrary",
     "layers" })
 @XmlRootElement(name = "StyledLayerDescriptor")
-public class StyledLayerDescriptor {
+public class StyledLayerDescriptor implements FeatureCollectionListener{
   static Logger logger = Logger
       .getLogger(StyledLayerDescriptor.class.getName());
 
@@ -101,7 +108,7 @@ public class StyledLayerDescriptor {
 
   @XmlElements({ @XmlElement(name = "NamedLayer", type = NamedLayer.class),
       @XmlElement(name = "UserLayer", type = UserLayer.class) })
-  private List<Layer> layers = new ArrayList<Layer>(0);
+  private LinkedList<Layer> layers = new LinkedList<Layer>();
 
   public List<Layer> getLayers() {
     return this.layers;
@@ -153,7 +160,7 @@ public class StyledLayerDescriptor {
    * Affecte la valeur de l'attribut layers.
    * @param layers l'attribut layers à affecter
    */
-  public void setLayers(List<Layer> layers) {
+  public void setLayers(LinkedList<Layer> layers) {
     this.layers = layers;
   }
 
@@ -172,34 +179,18 @@ public class StyledLayerDescriptor {
   public Layer getLayer(String layerName) {
     for (Layer layer : this.layers) {
       if (layer.getName().equalsIgnoreCase(layerName.toLowerCase())) {
-        // System.out.println("Recuperation du layer "+layer);
         return layer;
       }
     }
     return null;
   }
-
-  /**
-   * Cree un nouveau layer portant le nom donne en parametre et un symbolizer
-   * adapte au type de geometrie en parametre.
-   * <p>
-   * Les couleurs associees au symbolizer du layer sont creees aleatoirement.
-   * @param layerName nom du layer cherche
-   * @param geometryType type de geometrie porte par le layer
-   * @return layer portant le nom et la geometrie en parametre
-   */
-  public Layer createLayer(String layerName,
-      Class<? extends IGeometry> geometryType) {
-    return this.createLayerRandomColor(layerName, geometryType);
-  }
-
   /**
    * Add a layer at the end of the sld.
    * @param layer the new layer
    */
   public void add(Layer layer) {
-    this.layers.add(layer);
-    this.fireActionPerformed(new ChangeEvent(this));
+    this.layers.addLast(layer);
+    this.fireActionLayerAdded(layer);
   }
 
   /**
@@ -219,11 +210,35 @@ public class StyledLayerDescriptor {
   public void remove(Layer layer) {
     this.layers.remove(layer);
     this.fireActionPerformed(new ChangeEvent(this));
+    ArrayList<Layer> removed = new ArrayList<Layer>();
+    removed.add(layer);
+    this.fireActionLayersRemoved(removed);
   }
 
-  // Event handling
-  @XmlTransient
-  protected List<ChangeListener> listenerList = new ArrayList<ChangeListener>();
+  public void remove(Collection<Layer> layers){
+      this.layers.removeAll(layers);
+      for (Layer layer : layers) {
+          layer.destroy();
+        }
+      this.fireActionPerformed(new ChangeEvent(this));
+      this.fireActionLayersRemoved(layers);
+
+  }
+  public void removeLayersAt(int[] selectedRows) {
+      for(int index : selectedRows){
+          Layer l=this.layers.get(index);
+          l.destroy();
+          this.layers.remove(index);
+      }
+      this.fireActionLayersRemoved(null);
+      
+  }
+
+    // Event handling
+    @XmlTransient
+    protected List<ChangeListener> listenerList = new ArrayList<ChangeListener>();
+    @XmlTransient
+    private Set<SldListener> sldListenerList = new HashSet<SldListener>();
 
   /**
    * Ajout un {@link ChangeListener}. Adds a {@link ChangeListener}.
@@ -422,6 +437,10 @@ public class StyledLayerDescriptor {
         }
       }
     }
+  }
+
+  @Override
+  public void changed(final FeatureCollectionEvent event) {    
   }
 
   /**
@@ -718,4 +737,45 @@ public class StyledLayerDescriptor {
     layer.getStyles().add(style);
     return layer;
   }
+
+  public int layersCount() {
+      return this.layers.size();
+  }
+
+  public void addSldListener(SldListener listener) {
+      this.sldListenerList.add(listener);
+      
+  }
+  
+  private void fireActionLayerAdded(Layer l){
+      for(SldListener listener : this.sldListenerList){
+          listener.layerAdded(l);
+      }
+  }
+
+  private void fireActionLayersRemoved(Collection<Layer> layers) {
+      for(SldListener listener : this.sldListenerList){
+          listener.layersRemoved(layers);
+      }
+  }  
+  
+  private void fireActionLayerMoved(int oldId, int newId) {
+      for(SldListener listener : this.sldListenerList){
+          listener.layerOrderChanged(oldId, newId);
+      }        
+  }
+
+
+  public Layer getLayerAt(int row) {
+      return this.layers.get(row);
+  }
+
+  public void moveLayer(int row, int sldIndex) {
+      if(sldIndex < 0 || sldIndex > this.layersCount() || row == sldIndex){
+          return;
+      }
+      Layer l =this.layers.remove(row);
+      this.layers.add(sldIndex, l);
+      this.fireActionLayerMoved(row, sldIndex);
+}
 }

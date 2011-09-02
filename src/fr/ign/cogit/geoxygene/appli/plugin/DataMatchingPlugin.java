@@ -149,25 +149,25 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
     DataSet.getInstance().addPopulation(liens);
     ProjectFrame p1 = this.application.getFrame().newProjectFrame();
     p1.setTitle("Reference Pop"); //$NON-NLS-1$
-    p1.addFeatureCollection(popRef, popRef.getNom());
+    p1.addFeatureCollection(popRef, popRef.getNom(),null);
     Viewport viewport = p1.getLayerViewPanel().getViewport();
     ProjectFrame p2 = this.application.getFrame().newProjectFrame();
     p2.setTitle("Comparison Pop"); //$NON-NLS-1$
-    p2.addFeatureCollection(popComp, popComp.getNom());
+    p2.addFeatureCollection(popComp, popComp.getNom(),null);
     p2.getLayerViewPanel().setViewport(viewport);
     viewport.getLayerViewPanels().add(p2.getLayerViewPanel());
     ProjectFrame p3 = this.application.getFrame().newProjectFrame();
     p3.setTitle("Corrected Pop"); //$NON-NLS-1$
-    p3.addFeatureCollection(arcs, arcs.getNom());
+    p3.addFeatureCollection(arcs, arcs.getNom(),null);
     p3.getLayerViewPanel().setViewport(viewport);
     viewport.getLayerViewPanels().add(p3.getLayerViewPanel());
     ProjectFrame p4 = this.application.getFrame().newProjectFrame();
     p4.getLayerViewPanel().setViewport(viewport);
     viewport.getLayerViewPanels().add(p4.getLayerViewPanel());
     p4.setTitle("Links"); //$NON-NLS-1$
-    p4.addFeatureCollection(popRef, popRef.getNom());
-    p4.addFeatureCollection(popComp, popComp.getNom());
-    Layer layer = p4.addFeatureCollection(liens, liens.getNom());
+    p4.addFeatureCollection(popRef, popRef.getNom(),null);
+    p4.addFeatureCollection(popComp, popComp.getNom(),null);
+    Layer layer = p4.addFeatureCollection(liens, liens.getNom(),null);
     layer.getSymbolizer().getStroke().setStrokeWidth(2);
     DataMatchingPlugin.LOGGER.info("Finished"); //$NON-NLS-1$
   }

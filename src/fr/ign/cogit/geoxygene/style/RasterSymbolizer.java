@@ -23,8 +23,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.NoninvertibleTransformException;
-import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,12 +31,18 @@ import java.util.Map;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.renderer.lite.gridcoverage2d.GridCoverageRenderer;
+import org.geotools.styling.StyleBuilder;
+
+import com.vividsolutions.jts.geom.Envelope;
+
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
+import fr.ign.cogit.geoxygene.feature.FT_Coverage;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Triangle;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.style.gradient.TriColorGradientPaint;
@@ -84,26 +88,29 @@ public class RasterSymbolizer extends AbstractSymbolizer {
   @XmlTransient
   Map<IDirectPosition, Vecteur> positionMap = new HashMap<IDirectPosition, Vecteur>();
 
-  @Override
-  public void paint(IFeature feature, Viewport viewport, Graphics2D graphics) {
-    // FIXME c'est tout juste horrible !!!
-    BufferedImage image = viewport.getLayerViewPanels().iterator().next()
-        .getProjectFrame().getImage(feature);
-    if (image == null) {
-      return;
-    }
-    IEnvelope envelope = feature.getGeom().envelope();
-    int dimensionX = image.getWidth();
-    int dimensionY = image.getHeight();
+    /**
+     * @param obj The FT_coverage to render
+     * This method shall be reworked.
+     */
+    @Override
+    public void paint(IFeature obj, Viewport viewport, Graphics2D graphics) {
 
-    if (this.shadedRelief != null) {
-      GM_MultiSurface<GM_Triangle> multi = this.map.get(feature);
-      if (multi == null) {
-        synchronized (this.map) {
-          multi = new GM_MultiSurface<GM_Triangle>();
-          // double reliefFactor = this.shadedRelief.getReliefFactor();
-          // TODO use reliefFactor
-
+        FT_Coverage fcoverage = (FT_Coverage) obj;
+        try {
+            GridCoverage2D coverage = fcoverage.coverage();
+            GM_Envelope view = viewport.getEnvelopeInModelCoordinates();
+            Envelope renderEnvelope = new Envelope(view.minX(), view.maxX(),
+                    view.minY(), view.maxY());
+            GridCoverageRenderer renderer = new GridCoverageRenderer(
+                    coverage.getCoordinateReferenceSystem(),
+                    renderEnvelope,
+                    viewport.getLayerViewPanels().iterator().next().getBounds(),
+                    null);
+            renderer.paint(graphics, coverage,
+                    new StyleBuilder().createRasterSymbolizer());
+        } catch (Exception e) {
+            e.printStackTrace();
+/*
           double width = envelope.width();
           double height = envelope.length();
           double dx = width / dimensionX;
@@ -175,23 +182,9 @@ public class RasterSymbolizer extends AbstractSymbolizer {
         for (int y = 0; y < image.getHeight(); y++) {
           double[] value = raster.getPixel(x, y, new double[1]);
           imageToDraw.setRGB(x, y, this.colorMap.getColor(value[0]));
-        }
-      }
+*/        }
+        return;
     }
-
-    try {
-      Shape shape = viewport.toShape(envelope.getGeom());
-      double minX = shape.getBounds().getMinX();
-      double minY = shape.getBounds().getMinY();
-      double maxX = shape.getBounds().getMaxX();
-      double maxY = shape.getBounds().getMaxY();
-      graphics.drawImage(imageToDraw, (int) minX, (int) minY,
-          (int) (maxX - minX), (int) (maxY - minY), null);
-    } catch (NoninvertibleTransformException e) {
-      e.printStackTrace();
-      return;
-    }
-  }
 
   private void drawWithNormals(Viewport viewport, Graphics2D graphics,
       GM_Triangle triangle) {

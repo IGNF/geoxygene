@@ -29,14 +29,11 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.NoninvertibleTransformException;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.swing.Box;
@@ -73,7 +70,6 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.style.Layer;
-import fr.ign.cogit.geoxygene.style.NamedLayer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 
 /**
@@ -82,41 +78,30 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
  * @author Sylvain Becuwe
  * @author Charlotte Hoarau
  */
-public class LayerLegendPanel extends JPanel implements ChangeListener,
-    ActionListener {
+public class LayerLegendPanel extends JPanel implements ChangeListener,ActionListener, SldListener{
   /**
    * serial version uid.
    */
   private static final long serialVersionUID = -6860364246334166387L;
+
+  
   /**
-   * sld of the layer legend panel.
+   * Model for the layerlegendpanel
    */
-  private StyledLayerDescriptor sld = null;
-
-  public void setSld(StyledLayerDescriptor sld) {
-    this.sld = sld;
-    this.sld.fireActionPerformed(new ChangeEvent(this.sld));
-  }
-
+  
+   private StyledLayerDescriptor sldmodel;
+  
   /**
-   * Get the sld of the layer legend panel.
-   * @return sld of the layer legend panel
-   */
-  public StyledLayerDescriptor getSld() {
-    return this.sld;
-  }
-
-  /**
-     *
+     * parent component
      */
-  private LayerViewPanel layerViewPanel = null;
+  private ProjectFrame parent = null;
 
   /**
    * Get the layerViewPanel of the layer legend panel.
    * @return the layerViewPanel of the layer legend panel.
    */
   public LayerViewPanel getLayerViewPanel() {
-    return this.layerViewPanel;
+    return this.parent.getLayerViewPanel();
   }
 
   /**
@@ -169,16 +154,11 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
   ImageIcon[] images = new ImageIcon[21];
 
   /**
-   * @param theSld sld of the layer legend panel.
-   * @param theLayerViewPanel the layer view panel associated with the layer
-   *          legend panel
+   * @param parentPFrame the parent frame for this panel.
    */
-  public LayerLegendPanel(final StyledLayerDescriptor theSld,
-      final LayerViewPanel theLayerViewPanel) {
+  public LayerLegendPanel(final ProjectFrame parentPFrame) {
     super();
-    this.sld = theSld;
-    this.sld.addChangeListener(this);
-    this.layerViewPanel = theLayerViewPanel;
+    this.parent = parentPFrame;
 
     for (int n = 0; n < 20; n++) {
       ImageIcon image = new ImageIcon(
@@ -350,7 +330,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     this.newLayerMenuItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        LayerLegendPanel.this.addLayer();
+        LayerLegendPanel.this.parent.askAndAddNewLayer();
       }
     });
     this.selectMenuItem.addActionListener(new ActionListener() {
@@ -406,6 +386,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
               .next();
           String newName = JOptionPane.showInputDialog(LayerLegendPanel.this,
               I18N.getString("LayerLegendPanel.RenameLayer")); //$NON-NLS-1$
+          if( newName == null || newName.isEmpty()){
+              return;
+          }
           DataSet.getInstance().getPopulation(layer.getName()).setNom(newName);
           layer.setName(newName);
 
@@ -488,31 +471,18 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
   /**
    * Remove the selected layers.
    */
-  public void removeSelectedLayers() {
+  private void removeSelectedLayers() {
+    if(this.layersTable.getRowCount() == 0){
+        return;
+    }
     List<Layer> toRemove = new ArrayList<Layer>();
     List<Integer> rowsToRemove = new ArrayList<Integer>();
     for (int row : this.layersTable.getSelectedRows()) {
       toRemove.add(this.getLayer(row));
       rowsToRemove.add(0, new Integer(row));
     }
-    for (Integer row : rowsToRemove) {
-      this.layersTable.removeRowSelectionInterval(row.intValue(),
-          row.intValue());
-    }
-    this.sld.getLayers().removeAll(toRemove);
-    for (Layer layer : toRemove) {
-      layer.getFeatureCollection().clear();
-      if (layer instanceof NamedLayer) {
-        DataSet.getInstance().removePopulation(
-            DataSet.getInstance().getPopulation(layer.getName()));
-      }
-    }
-    // TODO we shouldn't have to do that
-    for (Layer layer : toRemove) {
-      this.layerViewPanel.getRenderingManager().removeLayer(layer);
-    }
-    this.update();
-    this.layerViewPanel.superRepaint();
+    this.parent.removeLayers(toRemove);   
+
   }
 
   public Set<Layer> getSelectedLayers() {
@@ -524,81 +494,61 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     return selectedLayers;
   }
 
-  /**
-   * Move the selected layers up.
-   */
-  private void moveSelectedLayersUp() {
-    for (int row : this.layersTable.getSelectedRows()) {
-      Layer layer = this.getLayer(row);
-      int sldIndex = this.getSld().getLayers().size() - row;
-      this.layerViewPanel.getProjectFrame().getSld().remove(layer);
-      this.layerViewPanel.getProjectFrame().getSld().add(sldIndex, layer);
+    /**
+     * Move the selected layers up.
+     */
+    private void moveSelectedLayersUp() {
+        for (int row : this.layersTable.getSelectedRows()) {
+            int sldIndex = row - 1;
+            this.sldmodel.moveLayer(row, sldIndex);
+        }
     }
-    this.tablemodel.fireTableDataChanged();
-    this.layersTable.repaint();
-    this.update();
-    this.layerViewPanel.superRepaint();
-  }
 
   /**
    * Move the selected layers down.
    */
   private void moveSelectedLayersDown() {
-    List<Integer> rowsToMove = new ArrayList<Integer>();
-    for (int row : this.layersTable.getSelectedRows()) {
-      rowsToMove.add(0, new Integer(row));
-    }
-    for (Integer row : rowsToMove) {
-      Layer layer = this.getLayer(row.intValue());
-      int sldIndex = this.getSld().getLayers().size() - 2 - row.intValue();
-      this.layerViewPanel.getProjectFrame().getSld().remove(layer);
-      this.layerViewPanel.getProjectFrame().getSld().add(sldIndex, layer);
-    }
-    this.tablemodel.fireTableDataChanged();
-    this.layersTable.repaint();
-    this.update();
-    this.layerViewPanel.superRepaint();
+      int[] liste = this.layersTable.getSelectedRows();
+      for (int i = 0; i < (liste.length / 2); i++) {
+          int temp = liste[i];
+          liste[i] = liste[liste.length - i - 1];
+          liste[liste.length - i - 1] = temp;
+      }
+      for (int row :liste) {
+          int sldIndex = row + 1;
+          this.sldmodel.moveLayer(row, sldIndex);
+      }
   }
 
   /**
    * Move the Selected Layers To the Top.
    */
   private void moveSelectedLayersToTop() {
-    int n = 0;
-    for (int row : this.layersTable.getSelectedRows()) {
-      Layer layer = this.getLayer(row);
-      int sldIndex = this.getSld().getLayers().size() - 1 - n;
-      n++;
-      this.layerViewPanel.getProjectFrame().getSld().remove(layer);
-      this.layerViewPanel.getProjectFrame().getSld().add(sldIndex, layer);
-    }
-    this.tablemodel.fireTableDataChanged();
-    this.layersTable.repaint();
-    this.update();
-    this.layerViewPanel.superRepaint();
+      int begin = 0;
+      for (int row : this.layersTable.getSelectedRows()) {
+          int sldIndex = begin;
+          this.sldmodel.moveLayer(row, sldIndex);
+          begin++;
+      }
   }
 
-  /**
-   * Move the Selected Layers To the Bottom.
-   */
-  private void moveSelectedLayersToBottom() {
-    List<Integer> rowsToMove = new ArrayList<Integer>();
-    for (int row : this.layersTable.getSelectedRows()) {
-      rowsToMove.add(0, new Integer(row));
+    /**
+     * Move the Selected Layers To the Bottom.
+     */
+    private void moveSelectedLayersToBottom() {
+        int end = this.tablemodel.getRowCount() - 1;
+        int[] liste = this.layersTable.getSelectedRows();
+        for (int i = 0; i < (liste.length / 2); i++) {
+            int temp = liste[i];
+            liste[i] = liste[liste.length - i - 1];
+            liste[liste.length - i - 1] = temp;
+        }
+        for (int row : liste) {
+            int sldIndex = end;
+            this.sldmodel.moveLayer(row, sldIndex);
+            end--;
+        }
     }
-    int n = 0;
-    for (Integer row : rowsToMove) {
-      Layer layer = this.getLayer(row.intValue());
-      int sldIndex = n;
-      n++;
-      this.layerViewPanel.getProjectFrame().getSld().remove(layer);
-      this.layerViewPanel.getProjectFrame().getSld().add(sldIndex, layer);
-    }
-    this.tablemodel.fireTableDataChanged();
-    this.layersTable.repaint();
-    this.update();
-    this.layerViewPanel.superRepaint();
-  }
 
   /**
    * Return the layer corresponding to the given row.
@@ -606,32 +556,33 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
    * @return the layer corresponding to the given row
    */
   public Layer getLayer(int row) {
-    return this.getSld().getLayers()
-        .get(this.getSld().getLayers().size() - 1 - row);
-  }
+      return this.sldmodel.getLayerAt(row);
 
-  Map<Layer, ImageIcon> map = new HashMap<Layer, ImageIcon>();
+  }
+  
 
   /**
    * The TableModel of the Layer Legend Panel
    */
-  public class LayersTableModel extends DefaultTableModel {
-    private static final long serialVersionUID = 1L;
+    public class LayersTableModel extends DefaultTableModel {
+        private static final long serialVersionUID = 1L;
 
-    @Override
-    public int getColumnCount() {
-      return 6;
-    }
+        @Override
+        public int getColumnCount() {
+            return 6;
+        }
 
-    @Override
-    public int getRowCount() {
-      return LayerLegendPanel.this.getSld().getLayers().size();
-    }
+        @Override
+        public int getRowCount() {
+            return (LayerLegendPanel.this.sldmodel == null) ? 0
+                    : LayerLegendPanel.this.sldmodel.layersCount();
+
+        }
 
     @Override
     public Object getValueAt(int row, int col) {
-      Layer layer = LayerLegendPanel.this.getLayer(row);
-      if (row < LayerLegendPanel.this.getSld().getLayers().size()) {
+      Layer layer = LayerLegendPanel.this.sldmodel.getLayerAt(row);
+      if (row < LayerLegendPanel.this.sldmodel.layersCount()) {
         if (col == 0) {
           return new Boolean(layer.isSelectable());
         }
@@ -645,10 +596,10 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
           return layer.getName();
         }
         if (col == 5) {
-          ImageIcon image = LayerLegendPanel.this.map.get(layer);
+          ImageIcon image = layer.getIcon();
           if (image == null) {
             image = LayerLegendPanel.this.images[20];
-            LayerLegendPanel.this.map.put(layer, image);
+            layer.setIcon(image);
           }
           return image;
         }
@@ -713,7 +664,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
         }
         layer.setName(newLayerName);
         // frame.getPanelVisu().setSld(sld);
-        for (int i = 0; i < LayerLegendPanel.this.getSld().getLayers().size(); i++) {
+        for (int i = 0; i <LayerLegendPanel.this.sldmodel.layersCount(); i++) {
           String layerName = layer.getName();
           if (layerName.equals(oldLayerName)) {
             layer.setName(newLayerName);
@@ -762,7 +713,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     public Component getTableCellRendererComponent(JTable table, Object value,
         boolean isSelected, boolean hasFocus, int row, int col) {
       Layer layer = LayerLegendPanel.this.getLayer(row);
-      if (row < LayerLegendPanel.this.getSld().getLayers().size()) {
+      if (row < LayerLegendPanel.this.sldmodel.layersCount()) {
         if (isSelected) {
           this.setBackground(new Color(252, 233, 158));
         } else {
@@ -811,7 +762,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     public Component getTableCellRendererComponent(JTable table, Object value,
         boolean isSelected, boolean hasFocus, int row, int col) {
       Layer layer = LayerLegendPanel.this.getLayer(row);
-      if (row < LayerLegendPanel.this.getSld().getLayers().size()) {
+      if (row < LayerLegendPanel.this.sldmodel.layersCount()) {
         if (isSelected) {
           this.setBackground(new Color(252, 233, 158));
         } else {
@@ -876,7 +827,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getActionCommand().equals("add")) { //$NON-NLS-1$
-      this.addLayer();
+      this.parent.askAndAddNewLayer();
       return;
     }
     if (e.getActionCommand().equals("remove")) { //$NON-NLS-1$
@@ -904,41 +855,19 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     if (e.getID() == 4) { // rendering a feature
       LayerRenderer renderer = (LayerRenderer) e.getSource();
       int n = e.getModifiers() * 2 / 10;
-      this.map.put(renderer.getLayer(), this.images[n]);
+      renderer.getLayer().setIcon(this.images[n]);
       this.tablemodel.fireTableDataChanged();
       this.layersTable.repaint();
       this.update();
     }
     if (e.getID() == 5) { // rendering finished
       LayerRenderer renderer = (LayerRenderer) e.getSource();
-      this.map.put(renderer.getLayer(), this.images[20]);
+      renderer.getLayer().setIcon(this.images[20]);
       this.tablemodel.fireTableDataChanged();
       this.layersTable.repaint();
       this.update();
     }
   }
-
-  void addLayer() {
-    File file = MainFrame.getFilechooser().getFile(
-        this.layerViewPanel.getProjectFrame().getMainFrame());
-    if (file != null) {
-      String fileName = file.getAbsolutePath();
-      String extention = fileName.substring(fileName.lastIndexOf('.') + 1);
-      if (extention.equalsIgnoreCase("shp")) { //$NON-NLS-1$
-        this.layerViewPanel.getProjectFrame().addShapefileLayer(fileName);
-        return;
-      }
-      if (extention.equalsIgnoreCase("tif")) { //$NON-NLS-1$
-        this.layerViewPanel.getProjectFrame().addGeotiffLayer(fileName);
-        return;
-      }
-      if (extention.equalsIgnoreCase("asc")) { //$NON-NLS-1$
-        this.layerViewPanel.getProjectFrame().addAscLayer(fileName);
-        return;
-      }
-    }
-  }
-
   /**
      *
      */
@@ -1020,4 +949,42 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
       }
     }
   }
+
+public void setModel(StyledLayerDescriptor sld) {
+    this.sldmodel = sld;
+    this.sldmodel.addSldListener(this);
+}
+
+public StyledLayerDescriptor getModel() {
+    return this.sldmodel;
+}
+
+/**
+ * Listener SLD
+ */
+
+    @Override
+    public void layerOrderChanged(int oldIndex, int newIndex) {
+        this.repaint();
+        this.layersTable.getSelectionModel().clearSelection();
+        System.out.println("layer moved from " + oldIndex + "to " + newIndex
+                + " caught by LayerLegendPane");
+    }
+
+    @Override
+    public void layerAdded(Layer l) {
+        this.repaint();
+        System.out.println("layer addition caught by LayerLegendPane");
+
+    }
+
+    @Override
+    public void layersRemoved(Collection<Layer> layers) {
+        this.repaint();
+        System.out.println("layers deletion caught by LayerLegendPane");
+
+    }
+
+
+
 }

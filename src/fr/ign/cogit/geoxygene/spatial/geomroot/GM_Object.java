@@ -205,7 +205,7 @@ abstract public class GM_Object implements Cloneable, IGeometry {
   public IEnvelope envelope() {
     IDirectPositionList list = this.coord();
     if (list.isEmpty()) {
-      return new GM_Envelope();
+      return null;
     }
     double xmin = Double.POSITIVE_INFINITY;
     double xmax = Double.NEGATIVE_INFINITY;

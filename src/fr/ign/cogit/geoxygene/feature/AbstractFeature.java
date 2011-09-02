@@ -27,6 +27,7 @@
 
 package fr.ign.cogit.geoxygene.feature;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -101,6 +102,10 @@ public abstract class AbstractFeature implements IFeature {
   @Override
   @SuppressWarnings("unchecked")
   public void setGeom(IGeometry g) {
+    if(g == null){
+        this.geom = null;
+        return;
+    }
     IGeometry previousGeometry = this.geom;
     boolean hasPreviousGeometry = (previousGeometry != null);
     this.geom = g;
@@ -150,17 +155,20 @@ public abstract class AbstractFeature implements IFeature {
   }
 
   /** Lien n-m bidirectionnel vers FT_FeatureCollection. */
-  private List<IFeatureCollection<IFeature>> featurecollections = new ArrayList<IFeatureCollection<IFeature>>(
-      0);
-
+  private List<WeakReference<IFeatureCollection<IFeature>>> featurecollections = new ArrayList<WeakReference<IFeatureCollection<IFeature>>>(0);
+ 
   @Override
   public List<IFeatureCollection<IFeature>> getFeatureCollections() {
-    return this.featurecollections;
+    List<IFeatureCollection<IFeature>> liste = new ArrayList<IFeatureCollection<IFeature>>(this.featurecollections.size());
+    for(WeakReference<IFeatureCollection<IFeature>> ref : this.featurecollections){
+       liste.add(ref.get());
+    }
+    return liste;
   }
 
   @Override
   public IFeatureCollection<IFeature> getFeatureCollection(int i) {
-    return this.featurecollections.get(i);
+    return this.featurecollections.get(i).get();
   }
 
   /**
@@ -278,13 +286,13 @@ public abstract class AbstractFeature implements IFeature {
   /**
    * L'unique population à laquelle appartient cet objet.
    */
-  protected IPopulation<IFeature> population;
+  protected WeakReference<IPopulation<IFeature>> population;
 
   @Override
   @SuppressWarnings("unchecked")
   public IPopulation<IFeature> getPopulation() {
     if (this.population != null) {
-      return this.population;
+      return this.population.get();
     }
     synchronized (this.featurecollections) {
       IFeatureCollection<IFeature>[] collections = this.featurecollections
@@ -300,7 +308,7 @@ public abstract class AbstractFeature implements IFeature {
 
   @Override
   public void setPopulation(IPopulation<IFeature> population) {
-    this.population = population;
+    this.population = new WeakReference<IPopulation<IFeature>>(population);
     // Refuse d'écrire dans ma population car ne peut pas pas vérifier si
     // this hérite bien de FT_Feature...
     // this.population.addUnique(this);

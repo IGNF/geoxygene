@@ -131,6 +131,6 @@ public class SwingingArmPlugin implements GeOxygeneApplicationPlugin,
     DataSet.getInstance().addPopulation(popTriangles);
     SwingingArmPlugin.logger.info(popTriangles.size());
     SwingingArmPlugin.logger.info(characteristicShape);
-    project.addFeatureCollection(popTriangles, popTriangles.getNom());
+    project.addFeatureCollection(popTriangles, popTriangles.getNom(),null);
   }
 }
