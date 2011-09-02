@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITin;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
@@ -105,7 +106,7 @@ public class GM_Tin extends GM_TriangulatedSurface implements ITin {
     return this.maxLength;
   }
 
-  protected DirectPositionList controlPoint;
+  protected IDirectPositionList controlPoint;
 
   @Override
   public IDirectPosition getControlPoint(int i) {
@@ -122,7 +123,7 @@ public class GM_Tin extends GM_TriangulatedSurface implements ITin {
    * @param post
    * @param breakLines
    */
-  public GM_Tin(DirectPositionList post, List<ILineString> breakLines) {
+  public GM_Tin(IDirectPositionList post, List<ILineString> breakLines) {
     this(post, null, breakLines, 0);
 
   }
@@ -134,7 +135,7 @@ public class GM_Tin extends GM_TriangulatedSurface implements ITin {
    * @param breakLines
    * @param maxLength not used
    */
-  public GM_Tin(DirectPositionList post, List<ILineString> stopLines,
+  public GM_Tin(IDirectPositionList post, List<ILineString> stopLines,
       List<ILineString> breakLines, float maxLength) {
 
     super();
@@ -181,12 +182,12 @@ public class GM_Tin extends GM_TriangulatedSurface implements ITin {
 
     }
 
-    TriangulationJTS triJTS = new TriangulationJTS("TriangulationJTS");
+    TriangulationJTS triJTS = new TriangulationJTS("TriangulationJTS"); //$NON-NLS-1$
     triJTS.getPopNoeuds().addAll(lNodes);
     triJTS.getPopArcs().addAll(lArcBreakLines);
 
     try {
-      triJTS.triangule("");
+      triJTS.triangule(""); //$NON-NLS-1$
     } catch (Exception e) {
       e.printStackTrace();
 
@@ -211,7 +212,7 @@ public class GM_Tin extends GM_TriangulatedSurface implements ITin {
 
       } else {
 
-        GM_Tin.logger.error(I18N.getString("GMTIN.Error"));
+        GM_Tin.logger.error(I18N.getString("GMTIN.Error")); //$NON-NLS-1$
 
       }
 
