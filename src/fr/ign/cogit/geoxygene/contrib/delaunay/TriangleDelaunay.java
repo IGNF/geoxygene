@@ -55,6 +55,7 @@ public class TriangleDelaunay extends Face {
     this.liaison(n3, n1);
 
   }
+
   /**
    * Lie le triangle aux arcs liant eventuellement deux noeuds.
    * 

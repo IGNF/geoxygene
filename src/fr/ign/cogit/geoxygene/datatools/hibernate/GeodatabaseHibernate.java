@@ -367,9 +367,9 @@ public class GeodatabaseHibernate implements Geodatabase {
               if (feature.getGeom() != null) {
                 feature.getGeom().setCRS(srid);
               }
-              result.getClass().getMethod("add",
-                  new Class[] { FT_Feature.class }).invoke(result,
-                  new Object[] { feature });
+              result.getClass()
+                  .getMethod("add", new Class[] { FT_Feature.class })
+                  .invoke(result, new Object[] { feature });
             }
           }
           while (iter.hasNext()) {
@@ -378,8 +378,8 @@ public class GeodatabaseHibernate implements Geodatabase {
               feature.getGeom().setCRS(srid);
             }
             result.getClass()
-                .getMethod("add", new Class[] { FT_Feature.class }).invoke(
-                    result, new Object[] { feature });
+                .getMethod("add", new Class[] { FT_Feature.class })
+                .invoke(result, new Object[] { feature });
           }
         } catch (Exception e) {
           e.printStackTrace();

@@ -118,7 +118,8 @@ public class TestDico {
     nom.setValueType("String");
     nom.setCardMin(1);
     nom.setCardMax(1);
-    entite.addFeatureAttribute(nom); // on ajoute nom a la liste des attributs de entite
+    entite.addFeatureAttribute(nom); // on ajoute nom a la liste des attributs
+                                     // de entite
     // remarque : tel qu'est code le dico,
     // "entite.addProperty(nom)" execute automatiquement
     // "nom.setFeatureType(entite)"
@@ -150,8 +151,9 @@ public class TestDico {
     ((Operation) op)
         .setDefinition("Renvoie la valeur de la surface de l'entite administrative");
     op.setSignature("entite_adm.getSurface(unit : UnitOfMeasure) : int");
-    entite.addFeatureOperation(op); // meme remarque que pour un attribut : executer
-                            // automatiquement "op.setFeatureType(entite)"
+    entite.addFeatureOperation(op); // meme remarque que pour un attribut :
+                                    // executer
+    // automatiquement "op.setFeatureType(entite)"
 
     // creation d'un nouveau Feature Type "departement"
     GF_FeatureType dept = new FeatureType();
@@ -182,8 +184,8 @@ public class TestDico {
 
     // creation d'une relation d'heritage entre "entite" et "commune"
     herite = new InheritanceRelation(); // on re-utilise et on re-instancie
-                                           // l'objet "herite" qui a deja ete
-                                           // dclare
+                                        // l'objet "herite" qui a deja ete
+                                        // dclare
     TestDico.db.makePersistent(herite);
     herite.setName("entite_adm/commune");
     herite.setDescription("Une commune est une entite administrative");
@@ -222,7 +224,7 @@ public class TestDico {
     est_pref_de.setCardMin("1");
     est_pref_de.setCardMax("1");
     commune.addRole(est_pref_de); // execute automatiquement
-                                      // "est_pref_de.setFeatureType(commune)
+                                  // "est_pref_de.setFeatureType(commune)
     prefecture.addRole(est_pref_de); // execute automatiquement
                                      // "est_pref_de.setAssociationType(prefecture)
 
@@ -235,7 +237,7 @@ public class TestDico {
     a_pour_pref.setCardMin("1");
     a_pour_pref.setCardMax("1");
     dept.addRole(a_pour_pref); // execute automatiquement
-                                   // "a_pour_pref.setFeatureType(dept)
+                               // "a_pour_pref.setFeatureType(dept)
     prefecture.addRole(a_pour_pref); // execute automatiquement
                                      // "a_pour_pref.setAssociationType(prefecture)
 
@@ -255,8 +257,9 @@ public class TestDico {
     ((Operation) op)
         .setDefinition("Renvoie le nombre de communes constituant le departement");
     op.setSignature("compose.getNumber() : int");
-    compose.addFeatureOperation(op); // meme remarque que pour un attribut : executer
-                             // automatiquement "op.setFeatureType(compose)"
+    compose.addFeatureOperation(op); // meme remarque que pour un attribut :
+                                     // executer
+    // automatiquement "op.setFeatureType(compose)"
 
     // creation du role "compose" sur commune
     GF_AssociationRole compose_ = new AssociationRole();
@@ -277,15 +280,16 @@ public class TestDico {
     est_compose_de.setFeatureType(commune);
     est_compose_de.setCardMin("1");
     est_compose_de.setCardMax("1000"); // au plus 1000 communes dans un
-                                     // departement
+    // departement
     dept.addRole(est_compose_de);
     compose.addRole(est_compose_de);
 
     // creation d'une contrainte "ct_geom" sur l'attribut "geom"
-    /*GF_Constraint ct_geom = new Constraint();
-    TestDico.db.makePersistent(ct_geom);
-    ct_geom.setDescription("bla bla");
-    geom.addConstraint(ct_geom);*/
+    /*
+     * GF_Constraint ct_geom = new Constraint();
+     * TestDico.db.makePersistent(ct_geom); ct_geom.setDescription("bla bla");
+     * geom.addConstraint(ct_geom);
+     */
 
     // creation d'un attribut "age_moyen" sur "habitant"
     GF_AttributeType age = new AttributeType();

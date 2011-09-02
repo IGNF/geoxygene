@@ -57,16 +57,21 @@ public interface ICurve extends IOrientableCurve, IGenericCurve {
    * chaînés, FALSE sinon. Nécessité de définir une tolérance.
    */
   public abstract boolean validate(double tolerance);
+
   @Override
   public abstract IDirectPosition startPoint();
+
   @Override
   public abstract IDirectPosition endPoint();
+
   // Dans la norme, les paramètres spacing et offset sont de type Distance.
   // Dans la norme, il n'y a pas de paramètre tolérance.
   @Override
   public abstract ILineString asLineString(double spacing, double offset,
       double tolerance);
+
   @Override
   public abstract IDirectPositionList coord();
+
   public abstract void clearSegments();
 }

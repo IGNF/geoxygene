@@ -53,10 +53,12 @@ public class GM_OrientableCurve extends GM_OrientablePrimitive implements
     IOrientableCurve {
   /** Primitive */
   public ICurve primitive;
+
   @Override
   public ICurve getPrimitive() {
     return this.primitive;
   }
+
   /**
    * Attribut stockant les primitives orientées de cette primitive. Proxy[0] est
    * celle orientée positivement. Proxy[1] est celle orientée négativement. On
@@ -67,6 +69,7 @@ public class GM_OrientableCurve extends GM_OrientablePrimitive implements
   public IOrientableCurve getPositive() {
     return this.primitive;
   }// proxy[0];}
+
   @Override
   public IOrientableCurve getNegative() {
     return null;
@@ -79,12 +82,15 @@ public class GM_OrientableCurve extends GM_OrientablePrimitive implements
      * proxy1prim.getSegment().add(proxy0.getSegment(0).reverse()); } return
      * this.proxy[1];
      */
-  }  @Override
+  }
+
+  @Override
   public ICurveBoundary boundary() {
     ICurve prim = this.getPrimitive();
     GM_CurveBoundary bdy = new GM_CurveBoundary(prim);
     return bdy;
   }
+
   @Override
   public IDirectPositionList coord() {
     return this.getPrimitive().coord();

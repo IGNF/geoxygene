@@ -96,8 +96,8 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
       return null;
     }
     // ORACLE
-    if (geom.getClass().getName().compareTo(
-        GeomGeOxygene2Dbms.ORACLE_GEOM_CLASS_NAME) == 0) {
+    if (geom.getClass().getName()
+        .compareTo(GeomGeOxygene2Dbms.ORACLE_GEOM_CLASS_NAME) == 0) {
       try {
         return this.geomOracle2GeOxygeneMethod.invoke(null,
             new Object[] { geom });
@@ -108,8 +108,8 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
         return null;
       }
     }
-    if (geom.getClass().getName().compareTo(
-        GeomGeOxygene2Dbms.POSTGRES_GEOM_CLASS_NAME) == 0) {
+    if (geom.getClass().getName()
+        .compareTo(GeomGeOxygene2Dbms.POSTGRES_GEOM_CLASS_NAME) == 0) {
       try {
         return this.geomPostgis2GeOxygeneMethod.invoke(null,
             new Object[] { geom });

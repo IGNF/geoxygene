@@ -50,9 +50,8 @@ import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = { "name", "title", "description",
-    "legendGraphic",
-    "filter", "elseFilter", "minScaleDenominator", "maxScaleDenominator",
-    "symbolizers" })
+    "legendGraphic", "filter", "elseFilter", "minScaleDenominator",
+    "maxScaleDenominator", "symbolizers" })
 @XmlRootElement(name = "Rule")
 public class Rule {
 
@@ -62,9 +61,11 @@ public class Rule {
   protected String description;
   @XmlElement(name = "LegendGraphic")
   protected LegendGraphic legendGraphic = null;
+
   public LegendGraphic getLegendGraphic() {
     return this.legendGraphic;
   }
+
   public void setLegendGraphic(LegendGraphic legendGraphic) {
     this.legendGraphic = legendGraphic;
   }
@@ -101,14 +102,16 @@ public class Rule {
 
   @XmlElement(name = "Title")
   private String title;
+
   public String getTitle() {
     return this.title;
   }
+
   public void setTitle(String title) {
     this.title = title;
   }
 
-  @XmlElements( {
+  @XmlElements({
       @XmlElement(name = "PropertyIsEqualTo", type = PropertyIsEqualTo.class),
       @XmlElement(name = "PropertyIsGreaterThan", type = PropertyIsGreaterThan.class),
       @XmlElement(name = "PropertyIsGreaterThanOrEqualTo", type = PropertyIsGreaterThanOrEqualTo.class),
@@ -152,14 +155,15 @@ public class Rule {
   // @XmlElementRef(name = "symbolizers", namespace =
   // "http://www.opengis.net/sld", type = Symbolizer.class)
   // protected List<JAXBElement<? extends SymbolType>> symbol;
-  @XmlElements( {
+  @XmlElements({
       @XmlElement(name = "LineSymbolizer", type = LineSymbolizer.class),
       @XmlElement(name = "PointSymbolizer", type = PointSymbolizer.class),
       @XmlElement(name = "PolygonSymbolizer", type = PolygonSymbolizer.class),
       @XmlElement(name = "RasterSymbolizer", type = RasterSymbolizer.class),
       @XmlElement(name = "TextSymbolizer", type = TextSymbolizer.class),
-      @XmlElement(name = "ThematicSymbolizer", type = ThematicSymbolizer.class)})
+      @XmlElement(name = "ThematicSymbolizer", type = ThematicSymbolizer.class) })
   private List<Symbolizer> symbolizers = new ArrayList<Symbolizer>(0);
+
   /**
    * Renvoie la valeur de l'attribut symbolizers.
    * @return la valeur de l'attribut symbolizers

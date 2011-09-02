@@ -108,8 +108,8 @@ public class SQLXMLGenerator {
 
       System.out.println(""); //$NON-NLS-1$
 
-      this.theXMLGenerator.writeClassHeader(this.javaFilePath, this.tableName
-          .toUpperCase());
+      this.theXMLGenerator.writeClassHeader(this.javaFilePath,
+          this.tableName.toUpperCase());
 
       String query = ""; //$NON-NLS-1$
       if (this.data.getDBMS() == Geodatabase.ORACLE) {
@@ -264,9 +264,8 @@ public class SQLXMLGenerator {
                     .getName());
                 query = query + attribut.getName() + " " + type;
                 if (type.equals("MDSYS.SDO_GEOMETRY")) {
-                  stm
-                      .executeQuery("INSERT INTO USER_SDO_GEOM_METADATA VALUES ('"
-                          + nomTable + "','" + nomAttribut + "',NULL,NULL)");
+                  stm.executeQuery("INSERT INTO USER_SDO_GEOM_METADATA VALUES ('"
+                      + nomTable + "','" + nomAttribut + "',NULL,NULL)");
                 }
               }
               i++;
@@ -423,10 +422,9 @@ public class SQLXMLGenerator {
                   + " DROP CONSTRAINT enforce_geotype_geom");
             } catch (Exception e) {
             }
-            stm
-                .executeUpdate("ALTER TABLE "
-                    + nomTable
-                    + " ADD CONSTRAINT enforce_geotype_geom CHECK (geometrytype(geom) = 'POINT'::text OR geometrytype(geom) = 'MULTIPOINT'::text OR isempty(geom) OR geom IS NULL)");
+            stm.executeUpdate("ALTER TABLE "
+                + nomTable
+                + " ADD CONSTRAINT enforce_geotype_geom CHECK (geometrytype(geom) = 'POINT'::text OR geometrytype(geom) = 'MULTIPOINT'::text OR isempty(geom) OR geom IS NULL)");
             break;
           case 1:
             stm.executeUpdate("SELECT AddGeometrycolumn ('','" + nomTable
@@ -437,10 +435,9 @@ public class SQLXMLGenerator {
                   + " DROP CONSTRAINT enforce_geotype_geom");
             } catch (Exception e) {
             }
-            stm
-                .executeUpdate("ALTER TABLE "
-                    + nomTable
-                    + " ADD CONSTRAINT enforce_geotype_geom CHECK (geometrytype(geom) = 'LINESTRING'::text OR geometrytype(geom) = 'MULTILINESTRING'::text OR isempty(geom) OR geom IS NULL)");
+            stm.executeUpdate("ALTER TABLE "
+                + nomTable
+                + " ADD CONSTRAINT enforce_geotype_geom CHECK (geometrytype(geom) = 'LINESTRING'::text OR geometrytype(geom) = 'MULTILINESTRING'::text OR isempty(geom) OR geom IS NULL)");
             break;
           case 2:
             stm.executeUpdate("SELECT AddGeometrycolumn ('','" + nomTable
@@ -451,10 +448,9 @@ public class SQLXMLGenerator {
                   + " DROP CONSTRAINT enforce_geotype_geom");
             } catch (Exception e) {
             }
-            stm
-                .executeUpdate("ALTER TABLE "
-                    + nomTable
-                    + " ADD CONSTRAINT enforce_geotype_geom CHECK (geometrytype(geom) = 'POLYGON'::text OR geometrytype(geom) = 'MULTIPOLYGON'::text OR isempty(geom) OR geom IS NULL)");
+            stm.executeUpdate("ALTER TABLE "
+                + nomTable
+                + " ADD CONSTRAINT enforce_geotype_geom CHECK (geometrytype(geom) = 'POLYGON'::text OR geometrytype(geom) = 'MULTIPOLYGON'::text OR isempty(geom) OR geom IS NULL)");
             break;
           case 3:
             stm.executeUpdate("SELECT AddGeometrycolumn ('','" + nomTable

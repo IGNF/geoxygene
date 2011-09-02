@@ -272,37 +272,41 @@ public class OrientationMeasure {
 
   /**
    * Computes the orientation of line geometry at a vertex of the line.
-   *  
-    * @param line the line on which orientation is computed
-   * @param point   thr point where orientation is computed
+   * 
+   * @param line the line on which orientation is computed
+   * @param point thr point where orientation is computed
    * @return an Angle object corresponding to the absolute orientation [0,2Pi]
    * @author GTouya
    */
-   public static Angle lineAbsoluteOrientation(ILineString line,
-               IDirectPosition point){
-         
-         // the first point of the angle is the central point staggered in the abscise axis
-         DirectPosition v1 = new DirectPosition(point.getX()+20.0,point.getY());
-         
-         // then get the third point in the line geometry
-         int nbVert = line.numPoints();
-         DirectPosition coordIni = (DirectPosition) line.startPoint();
-         DirectPosition v2 = null;
-         // if nbVert > 2, get the second vertex in geometry
-         if (nbVert>2){
-               if (coordIni.equals(point)) v2 = (DirectPosition) line.coord().get(2);
-               else v2 = (DirectPosition) line.coord().get(nbVert-3);
-         }else{
-               // get the first vertex on geometry
-               if (coordIni.equals(point)) v2 = (DirectPosition) line.coord().get(1);
-               else { v2 = (DirectPosition) line.coord().get(nbVert-2);
-               }
-         }
-         
-         // now, compute interAngle between geom and geomFoll
-         return Angle.angleTroisPoints(v1,point,v2);
-         //return Angle.angleTroisPoints(point,v1,v2); My Test
-   }
+  public static Angle lineAbsoluteOrientation(ILineString line,
+      IDirectPosition point) {
 
+    // the first point of the angle is the central point staggered in the
+    // abscise axis
+    DirectPosition v1 = new DirectPosition(point.getX() + 20.0, point.getY());
+
+    // then get the third point in the line geometry
+    int nbVert = line.numPoints();
+    DirectPosition coordIni = (DirectPosition) line.startPoint();
+    DirectPosition v2 = null;
+    // if nbVert > 2, get the second vertex in geometry
+    if (nbVert > 2) {
+      if (coordIni.equals(point))
+        v2 = (DirectPosition) line.coord().get(2);
+      else
+        v2 = (DirectPosition) line.coord().get(nbVert - 3);
+    } else {
+      // get the first vertex on geometry
+      if (coordIni.equals(point))
+        v2 = (DirectPosition) line.coord().get(1);
+      else {
+        v2 = (DirectPosition) line.coord().get(nbVert - 2);
+      }
+    }
+
+    // now, compute interAngle between geom and geomFoll
+    return Angle.angleTroisPoints(v1, point, v2);
+    // return Angle.angleTroisPoints(point,v1,v2); My Test
+  }
 
 }

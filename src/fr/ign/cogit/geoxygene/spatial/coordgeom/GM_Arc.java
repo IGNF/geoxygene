@@ -50,28 +50,36 @@ public class GM_Arc extends GM_ArcString implements IArc {
   private static Logger logger = Logger.getLogger(GM_Arc.class.getName());
 
   private IPosition startPoint;
+
   @Override
   public IPosition getStartPoint() {
     return this.startPoint;
   }
+
   @Override
   public void setStartPoint(IPosition startPoint) {
     this.startPoint = startPoint;
   }
+
   private IPosition midPoint;
+
   @Override
   public IPosition getMidPoint() {
     return this.midPoint;
   }
+
   @Override
   public void setMidPoint(IPosition midPoint) {
     this.midPoint = midPoint;
   }
+
   private IPosition endPoint;
+
   @Override
   public IPosition getEndPoint() {
     return this.endPoint;
   }
+
   @Override
   public void setEndPoint(IPosition endPoint) {
     this.endPoint = endPoint;
@@ -254,9 +262,8 @@ public class GM_Arc extends GM_ArcString implements IArc {
       double d = dpp.distance(c);
       double cos = d / r;
       double sin = Math.sqrt(r * r - d * d) / r;
-      DirectPosition u = new DirectPosition((dpp.getX() - c.getX()) / d, (dpp
-          .getY() - c.getY())
-          / d);
+      DirectPosition u = new DirectPosition((dpp.getX() - c.getX()) / d,
+          (dpp.getY() - c.getY()) / d);
       // the two candidate points
       GM_Point pt1 = new GM_Point(new DirectPosition(c.getX() + r
           * (cos * u.getX() + sin * u.getY()), c.getY() + r

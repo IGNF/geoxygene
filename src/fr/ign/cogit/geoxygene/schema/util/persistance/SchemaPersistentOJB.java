@@ -211,7 +211,8 @@ public abstract class SchemaPersistentOJB {
     }
 
     ftList = schema.getFeatureTypes();
-    Iterator<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType> iTft = ftList.iterator();
+    Iterator<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType> iTft = ftList
+        .iterator();
     while (iTft.hasNext()) {
       fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType ft = iTft
           .next();

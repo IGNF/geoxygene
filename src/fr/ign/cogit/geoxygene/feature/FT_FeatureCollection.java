@@ -63,11 +63,14 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
    * The logger.
    */
   static Logger logger = Logger.getLogger(FT_FeatureCollection.class.getName());
-  protected List<FeatureCollectionListener> listenerList = new ArrayList<FeatureCollectionListener>(0);
+  protected List<FeatureCollectionListener> listenerList = new ArrayList<FeatureCollectionListener>(
+      0);
+
   @Override
   public void addFeatureCollectionListener(FeatureCollectionListener l) {
     this.listenerList.add(l);
   }
+
   @Override
   public void fireActionPerformed(FeatureCollectionEvent event) {
     // Guaranteed to return a non-null array
@@ -116,14 +119,17 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
    * defaut).
    */
   protected boolean flagGeom = true;
+
   @Override
   public boolean getFlagGeom() {
     return this.flagGeom;
   }
+
   @Override
   public boolean hasGeom() {
     return this.flagGeom;
   }
+
   @Override
   public void setFlagGeom(boolean Geom) {
     this.flagGeom = Geom;
@@ -134,10 +140,12 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
    * defaut).
    */
   protected boolean flagTopo = false;
+
   @Override
   public boolean hasTopo() {
     return this.flagTopo;
   }
+
   @Override
   public void setFlagTopo(boolean Topo) {
     this.flagTopo = Topo;
@@ -150,10 +158,12 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
    * La liste des <code>Feature</code>s composant this.
    */
   protected List<Feat> elements = new ArrayList<Feat>(0);
+
   @Override
   public List<Feat> getElements() {
     return this.elements;
   }
+
   @Override
   @SuppressWarnings("unchecked")
   public void setElements(Collection<? extends Feat> liste) {
@@ -166,8 +176,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
       for (Feat O : liste) {
         this.elements.add(O);
         if (!O.getFeatureCollections().contains(this)) {
-          O.getFeatureCollections()
-              .add((IFeatureCollection<IFeature>) this);
+          O.getFeatureCollections().add((IFeatureCollection<IFeature>) this);
         }
       }
     }
@@ -175,12 +184,14 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
       this.removeSpatialIndex();
     }
   }
+
   @Override
   public Feat get(int i) {
     synchronized (this.elements) {
       return this.elements.get(i);
     }
   }
+
   @Override
   @SuppressWarnings("unchecked")
   public boolean add(Feat value) {
@@ -201,6 +212,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
         FeatureCollectionEvent.Type.ADDED, value.getGeom()));
     return result;
   }
+
   @Override
   public void addCollection(Collection<Feat> value) {
     if (value == null) {
@@ -212,6 +224,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
       }
     }
   }
+
   @Override
   public boolean remove(Feat value) {
     if (value == null) {
@@ -229,6 +242,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
         FeatureCollectionEvent.Type.REMOVED, value.getGeom()));
     return result;
   }
+
   @Override
   public boolean removeAll(Collection<?> coll) {
     if (coll == null) {
@@ -254,15 +268,16 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
         FeatureCollectionEvent.Type.REMOVED, envelope.getGeom()));
     return result;
   }
+
   @Override
   public void clear() {
-//    List<GM_Object> removedCollectionGeometry = new ArrayList<GM_Object>(0);
+    // List<GM_Object> removedCollectionGeometry = new ArrayList<GM_Object>(0);
     synchronized (this.elements) {
       for (Feat feature : this) {
         feature.getFeatureCollections().remove(this);
-//        if (feature.getGeom() != null) {
-//          removedCollectionGeometry.add(feature.getGeom());
-//        }
+        // if (feature.getGeom() != null) {
+        // removedCollectionGeometry.add(feature.getGeom());
+        // }
       }
       this.elements.clear();
     }
@@ -341,6 +356,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
   }
 
   private IDirectPosition center = null;
+
   @Override
   public IDirectPosition getCenter() {
     if (this.center == null) {
@@ -348,6 +364,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
     }
     return this.center;
   }
+
   @Override
   public void setCenter(IDirectPosition dp) {
     this.center = dp;
@@ -360,14 +377,17 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
   private SpatialIndex<Feat> spatialindex;
   /** La collection possede-t-elle un index spatial ? */
   private boolean isIndexed = false;
+
   @Override
   public SpatialIndex<Feat> getSpatialIndex() {
     return this.spatialindex;
   }
+
   @Override
   public boolean hasSpatialIndex() {
     return this.isIndexed;
   }
+
   @Override
   @SuppressWarnings("unchecked")
   public void initSpatialIndex(Class<?> spatialIndexClass,
@@ -389,6 +409,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
       e.printStackTrace();
     }
   }
+
   @Override
   @SuppressWarnings("unchecked")
   public void initSpatialIndex(Class<?> spatialIndexClass,
@@ -412,6 +433,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
       e.printStackTrace();
     }
   }
+
   @Override
   @SuppressWarnings("unchecked")
   public void initSpatialIndex(Class<?> spatialIndexClass,
@@ -435,6 +457,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
       e.printStackTrace();
     }
   }
+
   @Override
   @SuppressWarnings("unchecked")
   public void initSpatialIndex(SpatialIndex<?> spIdx) {
@@ -445,8 +468,10 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
       return;
     }
     try {
-      this.spatialindex = spIdx.getClass().getConstructor(
-          new Class[] { IFeatureCollection.class, spIdx.getClass() })
+      this.spatialindex = spIdx
+          .getClass()
+          .getConstructor(
+              new Class[] { IFeatureCollection.class, spIdx.getClass() })
           .newInstance(new Object[] { this, spIdx });
       this.isIndexed = true;
     } catch (Exception e) {
@@ -455,6 +480,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
       e.printStackTrace();
     }
   }
+
   @Override
   public void removeSpatialIndex() {
     this.spatialindex = null;
@@ -479,6 +505,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
     }
     return this.spatialindex.select(P, D);
   }
+
   @Override
   public Collection<Feat> select(IEnvelope env) {
     if (env.width() == 0 || env.length() == 0 || env.isEmpty()) {
@@ -500,6 +527,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
     }
     return this.spatialindex.select(env);
   }
+
   @Override
   public Collection<Feat> select(IGeometry geometry) {
     if (!this.isIndexed) {
@@ -515,6 +543,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
     }
     return this.spatialindex.select(geometry);
   }
+
   @Override
   public Collection<Feat> select(IGeometry geometry, boolean strictlyCrosses) {
     if (!this.isIndexed) {
@@ -530,6 +559,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
     }
     return this.spatialindex.select(geometry, strictlyCrosses);
   }
+
   @Override
   public Collection<Feat> select(IGeometry geometry, double distance) {
     if (!this.isIndexed) {
@@ -555,6 +585,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
       return this.elements.contains(value);
     }
   }
+
   @Override
   @SuppressWarnings("unchecked")
   public void addUnique(Feat feature) {
@@ -567,8 +598,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
     synchronized (this.elements) {
       this.elements.add(feature);
     }
-    feature.getFeatureCollections()
-        .add((IFeatureCollection<IFeature>) this);
+    feature.getFeatureCollections().add((IFeatureCollection<IFeature>) this);
     if (this.isIndexed) {
       if (this.spatialindex.hasAutomaticUpdate()) {
         this.spatialindex.update(feature, +1);
@@ -602,6 +632,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
     this.fireActionPerformed(new FeatureCollectionEvent(this, value,
         FeatureCollectionEvent.Type.REMOVED, value.getGeom()));
   }
+
   @Override
   public void removeCollection(IFeatureCollection<Feat> value) {
     if (value == null) {
@@ -611,6 +642,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
       this.remove(f);
     }
   }
+
   @Override
   public void addUniqueCollection(IFeatureCollection<? extends Feat> value) {
     if (value == null) {
@@ -709,10 +741,12 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
    * pouvoir savoir dans quelle classe créer de nouvelles instances.
    */
   protected Class<Feat> classe;
+
   @Override
   public Class<Feat> getClasse() {
     return this.classe;
   }
+
   @Override
   public void setClasse(Class<Feat> C) {
     this.classe = C;
@@ -724,10 +758,12 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
    * la population. Pertinent uniquement pour les population peristantes.
    */
   protected String nomClasse = ""; //$NON-NLS-1$
+
   @Override
   public void setNomClasse(String S) {
     this.nomClasse = S;
   }
+
   @Override
   @Transient
   public String getNomClasse() {
@@ -744,11 +780,13 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
    * représentent sont déjà stockées dans le schéma conceptuel du jeu.
    */
   protected FeatureType featureType;
+
   @Override
   @ManyToOne
   public FeatureType getFeatureType() {
     return this.featureType;
   }
+
   @Override
   public void setFeatureType(FeatureType featureType) {
     this.featureType = featureType;

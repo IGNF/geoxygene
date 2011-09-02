@@ -95,8 +95,8 @@ public class CommonAlgorithms {
       coord_[i] = new Coordinate(c.x + coef * (coord[i].x - c.x), coord[i].y);
     }
 
-    return CommonAlgorithms.rotation(new GeometryFactory()
-        .createLineString(coord_), c, angle);
+    return CommonAlgorithms.rotation(
+        new GeometryFactory().createLineString(coord_), c, angle);
   }
 
   // angle: angle de la direction de l'affinite, a partir de l'axe des x
@@ -207,14 +207,14 @@ public class CommonAlgorithms {
   public static Polygon translation(Polygon geom, double dx, double dy) {
 
     // le contour externe
-    LinearRing lr = CommonAlgorithms.translation((LinearRing) geom
-        .getExteriorRing(), dx, dy);
+    LinearRing lr = CommonAlgorithms.translation(
+        (LinearRing) geom.getExteriorRing(), dx, dy);
 
     // les trous
     LinearRing[] trous = new LinearRing[geom.getNumInteriorRing()];
     for (int j = 0; j < geom.getNumInteriorRing(); j++) {
-      trous[j] = CommonAlgorithms.translation((LinearRing) geom
-          .getInteriorRingN(j), dx, dy);
+      trous[j] = CommonAlgorithms.translation(
+          (LinearRing) geom.getInteriorRingN(j), dx, dy);
     }
 
     return new GeometryFactory().createPolygon(lr, trous);
@@ -256,21 +256,20 @@ public class CommonAlgorithms {
   public static IPolygon translation(IPolygon geom, double dx, double dy) {
 
     // le contour externe
-    GM_Polygon poly = new GM_Polygon(CommonAlgorithms.translation(geom
-        .getExterior(), dx, dy));
+    GM_Polygon poly = new GM_Polygon(CommonAlgorithms.translation(
+        geom.getExterior(), dx, dy));
 
     // les trous
     for (int j = 0; j < geom.getInterior().size(); j++) {
-      poly.addInterior(CommonAlgorithms
-          .translation(geom.getInterior(j), dx, dy));
+      poly.addInterior(CommonAlgorithms.translation(geom.getInterior(j), dx, dy));
     }
 
     return poly;
   }
 
   public static IRing translation(IRing ring, double dx, double dy) {
-    return new GM_Ring(new GM_LineString(CommonAlgorithms.translation(ring
-        .coord(), dx, dy)));
+    return new GM_Ring(new GM_LineString(CommonAlgorithms.translation(
+        ring.coord(), dx, dy)));
   }
 
   public static ILineString translation(ILineString ls, double dx, double dy) {
@@ -282,8 +281,7 @@ public class CommonAlgorithms {
     IDirectPositionList coords_ = new DirectPositionList();
     for (int i = 0; i < coords.size(); i++) {
       coords_.add(new DirectPosition(coords.get(i).getX() + dx, coords.get(i)
-          .getY()
-          + dy));
+          .getY() + dy));
     }
     return coords_;
   }
@@ -430,8 +428,8 @@ public class CommonAlgorithms {
         mitre));
     IGeometry geom_ = null;
     try {
-      geom_ = AdapterFactory.toGM_Object(bb.buffer(AdapterFactory.toGeometry(
-          new GeometryFactory(), geom), distance));
+      geom_ = AdapterFactory.toGM_Object(bb.buffer(
+          AdapterFactory.toGeometry(new GeometryFactory(), geom), distance));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -464,51 +462,55 @@ public class CommonAlgorithms {
 
   /**
    * Rotates a vector object.
-   *  
+   * 
    * @param v the vector to be rotated
    * @param angle the angle of rotation is radians
    * @return the rotated vector
    * @author GTouya
    */
-  public static Vecteur rotateVector(Vecteur v, double angle){
-      DirectPositionList points = new DirectPositionList();
-      points.add(new DirectPosition(0.0,0.0));
-      points.add(new DirectPosition(v.getX(),v.getY()));
-      GM_LineString lsG = new GM_LineString(points);
-      LineString ls = null;
-      try {ls = (LineString) JtsGeOxygene.makeJtsGeom(lsG, true);
-      } catch (Exception e) {e.printStackTrace();}
-      ls = CommonAlgorithms.rotation(ls, new Coordinate(0.0,0.0), angle);
-      DirectPosition endPoint = new DirectPosition(ls.getEndPoint().getX(),
-              ls.getEndPoint().getY());
-      return new Vecteur(new DirectPosition(0.0,0.0),endPoint);
+  public static Vecteur rotateVector(Vecteur v, double angle) {
+    DirectPositionList points = new DirectPositionList();
+    points.add(new DirectPosition(0.0, 0.0));
+    points.add(new DirectPosition(v.getX(), v.getY()));
+    GM_LineString lsG = new GM_LineString(points);
+    LineString ls = null;
+    try {
+      ls = (LineString) JtsGeOxygene.makeJtsGeom(lsG, true);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    ls = CommonAlgorithms.rotation(ls, new Coordinate(0.0, 0.0), angle);
+    DirectPosition endPoint = new DirectPosition(ls.getEndPoint().getX(), ls
+        .getEndPoint().getY());
+    return new Vecteur(new DirectPosition(0.0, 0.0), endPoint);
   }
 
-  public static double getSidelongMaxDist(IPolygon poly, double orientation){
+  public static double getSidelongMaxDist(IPolygon poly, double orientation) {
     IPolygon mbr = SmallestSurroundingRectangleComputation.getSSR(poly);
 
-       // Shift the segment to make sure it passes through the intersection 
+    // Shift the segment to make sure it passes through the intersection
     IDirectPosition centreHull = mbr.centroid();
     double norm = poly.perimeter();
-    Vecteur vectHoriz = new Vecteur(norm,0.0,0.0);
-    Vecteur vect = rotateVector(vectHoriz,orientation);
-    IDirectPosition mid = Operateurs.milieu(poly.centroid(), 
+    Vecteur vectHoriz = new Vecteur(norm, 0.0, 0.0);
+    Vecteur vect = rotateVector(vectHoriz, orientation);
+    IDirectPosition mid = Operateurs.milieu(poly.centroid(),
         vect.translate(poly.centroid()));
 
-    // build a small segment between the two centres of gravity 
+    // build a small segment between the two centres of gravity
     DirectPositionList list = new DirectPositionList();
     list.add(poly.centroid());
     list.add(vect.translate(poly.centroid()));
     GM_LineString segment = new GM_LineString(list);
-    segment = (GM_LineString) new Vecteur(centreHull.getX()-mid.getX(), 
-            centreHull.getY()-mid.getY(),0.0).translate(segment);
+    segment = (GM_LineString) new Vecteur(centreHull.getX() - mid.getX(),
+        centreHull.getY() - mid.getY(), 0.0).translate(segment);
 
-    // combine the segment with the intersection of the two geometries  
+    // combine the segment with the intersection of the two geometries
     IGeometry inter2 = segment.intersection(mbr);
 
-    if (inter2.isEmpty()) return 0.0;
+    if (inter2.isEmpty())
+      return 0.0;
 
-    // the length of the intersection represents the length of overlap  
+    // the length of the intersection represents the length of overlap
     return inter2.length();
   }
 }

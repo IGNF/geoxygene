@@ -117,7 +117,7 @@ public class TestLib {
     test.testAll();
   }
 
-  @SuppressWarnings( { "unchecked", "nls" })
+  @SuppressWarnings({ "unchecked", "nls" })
   public void testAll() {
 
     // Debut d'une transaction

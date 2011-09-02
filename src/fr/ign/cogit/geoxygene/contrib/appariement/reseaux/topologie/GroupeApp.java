@@ -603,7 +603,7 @@ public class GroupeApp extends Groupe {
         in = (NoeudApp) noeudsIn.get(i);
         out = (NoeudApp) noeudsOut.get(j);
         // if ( in == out ) continue;
-     // plus court chemin dans le groupe
+        // plus court chemin dans le groupe
         pcc = (GroupeApp) in.plusCourtChemin(out, this, 0);
         if (pcc == null) {
           continue;
@@ -704,8 +704,7 @@ public class GroupeApp extends Groupe {
     } else {
       for (i = 0; i < chemin.sizeControlPoint(); i++) {
         chemin2.addControlPoint(chemin.getControlPoint(chemin
-            .sizeControlPoint()
-            - i - 1));
+            .sizeControlPoint() - i - 1));
       }
     }
 

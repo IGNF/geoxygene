@@ -93,7 +93,7 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * @author Sylvain Becuwe
  * @author Julien Perret
  */
-@SuppressWarnings( { "serial", "nls", "unqualified-field-access" })
+@SuppressWarnings({ "serial", "nls", "unqualified-field-access" })
 public class GeometryToolBar extends JToolBar {
   public final static int WIDTH = 220;
   public final static int HEIGHT = 350;
@@ -185,19 +185,19 @@ public class GeometryToolBar extends JToolBar {
         this.frame.getMainFrame().getMode());
     movePointMode.setGeometryToolBar(this);
     JButton bDeplacerPoint = movePointMode.getButton();
-    MoveFeatureMode moveFeatureMode = new MoveFeatureMode(this.frame
-        .getMainFrame(), this.frame.getMainFrame().getMode());
+    MoveFeatureMode moveFeatureMode = new MoveFeatureMode(
+        this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
     moveFeatureMode.setGeometryToolBar(this);
     JButton bDeplacerObjet = moveFeatureMode.getButton();
     /*
      * Variables pour l'onglet Creation
      */
-    CreatePointMode createPointMode = new CreatePointMode(this.frame
-        .getMainFrame(), this.frame.getMainFrame().getMode());
+    CreatePointMode createPointMode = new CreatePointMode(
+        this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
     createPointMode.setGeometryToolBar(this);
     this.bCreationPoints = createPointMode.getButton();
-    CreatePolygonMode createPolygonMode = new CreatePolygonMode(this.frame
-        .getMainFrame(), this.frame.getMainFrame().getMode());
+    CreatePolygonMode createPolygonMode = new CreatePolygonMode(
+        this.frame.getMainFrame(), this.frame.getMainFrame().getMode());
     createPolygonMode.setGeometryToolBar(this);
     this.bCreationPolygon = createPolygonMode.getButton();
     CreateRectangleMode createRectangleMode = new CreateRectangleMode(
@@ -693,7 +693,8 @@ public class GeometryToolBar extends JToolBar {
    * @param point
    * @param points
    */
-  private int closestPointIndex(IDirectPosition point, IDirectPositionList points) {
+  private int closestPointIndex(IDirectPosition point,
+      IDirectPositionList points) {
     int indexPointMin = 0;
     double distanceMin = point.distance(points.get(0));
     for (int index = 1; index < points.size(); index++) {
@@ -905,8 +906,8 @@ public class GeometryToolBar extends JToolBar {
               JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
           // Si on clique sur oui
           if (reponse == JOptionPane.YES_OPTION) {
-            this.getFrame().getSld().addSymbolizer(layer.getName(),
-                GM_Polygon.class);
+            this.getFrame().getSld()
+                .addSymbolizer(layer.getName(), GM_Polygon.class);
             this.createPolygonExistingLayer(layer, newPoly);
           } else {
             // TODO
@@ -978,8 +979,8 @@ public class GeometryToolBar extends JToolBar {
             JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         // Si on clique sur oui
         if (reponse == JOptionPane.YES_OPTION) {
-          this.getFrame().getSld().addSymbolizer(layer.getName(),
-              GM_LineString.class);
+          this.getFrame().getSld()
+              .addSymbolizer(layer.getName(), GM_LineString.class);
           this.creerLineStringCoucheExistante(layer, newLine);
         } else {
           // TODO
@@ -1047,8 +1048,8 @@ public class GeometryToolBar extends JToolBar {
             JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         // Si on clique sur oui
         if (reponse == JOptionPane.YES_OPTION) {
-          this.getFrame().getSld().addSymbolizer(layer.getName(),
-              GM_Point.class);
+          this.getFrame().getSld()
+              .addSymbolizer(layer.getName(), GM_Point.class);
           this.creerPointCoucheExistante(layer, newPoint);
         } else {
           // TODO

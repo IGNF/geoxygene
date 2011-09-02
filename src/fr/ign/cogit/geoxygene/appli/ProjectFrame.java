@@ -191,24 +191,24 @@ public class ProjectFrame extends JInternalFrame implements
    * @param name the name of the population
    */
   public final Layer addFeatureCollection(
-      final IPopulation<? extends IFeature> population, final String name, CoordinateReferenceSystem crs) {
+      final IPopulation<? extends IFeature> population, final String name,
+      CoordinateReferenceSystem crs) {
     Layer layer = this.sld.createLayer(name, population.getFeatureType()
         .getGeometryType());
     layer.setCRS(crs);
     this.addLayer(layer);
     return layer;
   }
-  
+
   /**
    * @author Bertrand Dumenieu
-   * @deprecated
-   * This function should not be longer used since layers include now a CRS.
-   * Only here to ensure backward compatibility 
+   * @deprecated This function should not be longer used since layers include
+   *             now a CRS. Only here to ensure backward compatibility
    */
   @Deprecated
-  public final Layer addFeatureCollection(
-	      final IPopulation<?> population, final String name){
-	  return this.addFeatureCollection(population, name, null);
+  public final Layer addFeatureCollection(final IPopulation<?> population,
+      final String name) {
+    return this.addFeatureCollection(population, name, null);
   }
 
   /**
@@ -249,7 +249,8 @@ public class ProjectFrame extends JInternalFrame implements
     String populationName = fileName.substring(fileName.lastIndexOf("/") + 1, //$NON-NLS-1$
         fileName.lastIndexOf(".")); //$NON-NLS-1$
     double[][] range = new double[2][2];
-    BufferedImage image = GeoTiffReader.loadGeoTiffImage(fileName, range, new CoordinateReferenceSystem [1]);
+    BufferedImage image = GeoTiffReader.loadGeoTiffImage(fileName, range,
+        new CoordinateReferenceSystem[1]);
     this.addImage(populationName, image, range);
     if (this.getLayers().size() == 1) {
       try {
@@ -263,20 +264,22 @@ public class ProjectFrame extends JInternalFrame implements
     }
   }
 
-  public void addShapefileLayer(String fileName, StyledLayerDescriptor sld, String styleName) {    
+  public void addShapefileLayer(String fileName, StyledLayerDescriptor sld,
+      String styleName) {
     this.addShapefileLayer(fileName);
-    Layer lastLayer = this.getLayers().get(this.getLayers().size()-1);
-    
+    Layer lastLayer = this.getLayers().get(this.getLayers().size() - 1);
+
     int lastIndexOfSeparator = fileName.lastIndexOf(File.separatorChar);
     String populationName = fileName.substring(lastIndexOfSeparator + 1,
         fileName.lastIndexOf(".")); //$NON-NLS-1$
-    
-    DataSet.getInstance().getPopulation(populationName).setNom(populationName+styleName);
-    lastLayer.setName(populationName+styleName);
+
+    DataSet.getInstance().getPopulation(populationName)
+        .setNom(populationName + styleName);
+    lastLayer.setName(populationName + styleName);
     lastLayer.setStyles(sld.getLayer(styleName).getStyles());
-    
+
   }
-  
+
   public void addShapefileLayer(String fileName) {
     int lastIndexOfSeparator = fileName.lastIndexOf(File.separatorChar);
     String populationName = fileName.substring(lastIndexOfSeparator + 1,
@@ -286,7 +289,8 @@ public class ProjectFrame extends JInternalFrame implements
 
     IPopulation<IFeature> population = shapefileReader.getPopulation();
     if (population != null) {
-      this.addFeatureCollection(population, population.getNom(), shapefileReader.getCRS());
+      this.addFeatureCollection(population, population.getNom(),
+          shapefileReader.getCRS());
     }
     shapefileReader.read();
     if (this.getLayers().size() == 1) {
@@ -340,8 +344,9 @@ public class ProjectFrame extends JInternalFrame implements
       // loading finished
       IPopulation<?> p = (IPopulation<?>) e.getSource();
       Layer l = this.getLayer(p.getNom());
-      this.getLayerViewPanel().getRenderingManager().render(
-          this.getLayerViewPanel().getRenderingManager().getRenderer(l));
+      this.getLayerViewPanel()
+          .getRenderingManager()
+          .render(this.getLayerViewPanel().getRenderingManager().getRenderer(l));
       this.getLayerViewPanel().superRepaint();
     }
   }
@@ -563,18 +568,19 @@ public class ProjectFrame extends JInternalFrame implements
   public void saveAsImage(String fileName) {
     this.getLayerViewPanel().saveAsImage(fileName);
   }
-  
+
   /**
    * Saves a layer into an ESRI Shapefile
    * @param fileName
    * @param layer
    */
   public void saveAsShp(String fileName, Layer layer) {
-	try{
-		ShapefileWriter.write(layer.getFeatureCollection(), fileName, layer.getCRS());
-	}catch (Exception e) {
-		logger.error("Shapefile export failed! See stack trace below : "); //$NON-NLS-1$
-		e.printStackTrace();
-	}
+    try {
+      ShapefileWriter.write(layer.getFeatureCollection(), fileName,
+          layer.getCRS());
+    } catch (Exception e) {
+      logger.error("Shapefile export failed! See stack trace below : "); //$NON-NLS-1$
+      e.printStackTrace();
+    }
   }
 }

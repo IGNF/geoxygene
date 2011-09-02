@@ -130,8 +130,8 @@ public class LineSymbolizer extends AbstractSymbolizer {
         graphics.draw(shape);
       }
     } else {
-      if (this.getStroke().getGraphicType().getClass().isAssignableFrom(
-          GraphicFill.class)) {
+      if (this.getStroke().getGraphicType().getClass()
+          .isAssignableFrom(GraphicFill.class)) {
         List<Shape> shapes = this.getShapeList(geometry, viewport, true);
         // GraphicFill
         List<Graphic> graphicList = ((GraphicFill) this.getStroke()
@@ -167,8 +167,8 @@ public class LineSymbolizer extends AbstractSymbolizer {
       ILineString line = (ILineString) ((geometry.isLineString()) ? geometry
           : ((IPolygon) geometry).exteriorLineString());
       if (this.getPerpendicularOffset() != 0) {
-        IMultiCurve<ILineString> offsetCurve = JtsAlgorithms.offsetCurve(
-            line, this.getPerpendicularOffset());
+        IMultiCurve<ILineString> offsetCurve = JtsAlgorithms.offsetCurve(line,
+            this.getPerpendicularOffset());
         List<Shape> shapes = new ArrayList<Shape>();
         for (ILineString l : offsetCurve) {
           shapes.addAll(this.getLineStringShapeList(l, viewport, fill));
@@ -194,7 +194,8 @@ public class LineSymbolizer extends AbstractSymbolizer {
     }
     if (geometry.isMultiSurface()) {
       List<Shape> shapes = new ArrayList<Shape>();
-      for (IOrientableSurface surface : ((IMultiSurface<IOrientableSurface>) geometry).getList()) {
+      for (IOrientableSurface surface : ((IMultiSurface<IOrientableSurface>) geometry)
+          .getList()) {
         try {
           Shape shape = viewport.toShape(fill ? surface.buffer(this.getStroke()
               .getStrokeWidth() / 2) : surface);
@@ -335,8 +336,8 @@ public class LineSymbolizer extends AbstractSymbolizer {
         .getBounds2D().getMinX(), shape.getBounds2D().getMinY());
     Image scaledImage = image.getScaledInstance(shapeWidth.intValue(),
         shapeHeight.intValue(), Image.SCALE_FAST);
-    BufferedImage buff = new BufferedImage(shapeWidth.intValue(), shapeHeight
-        .intValue(), BufferedImage.TYPE_INT_ARGB);
+    BufferedImage buff = new BufferedImage(shapeWidth.intValue(),
+        shapeHeight.intValue(), BufferedImage.TYPE_INT_ARGB);
     buff.getGraphics().drawImage(scaledImage, 0, 0, null);
     ParameterBlock p = new ParameterBlock();
     p.addSource(buff);
@@ -436,8 +437,8 @@ public class LineSymbolizer extends AbstractSymbolizer {
     for (int i = 0; i < line.sizeControlPoint() - 1; i++) {
       IDirectPosition p1 = line.getControlPoint(i);
       IDirectPosition p2 = line.getControlPoint(i + 1);
-      IDirectPosition p = new DirectPosition((p1.getX() + p2.getX()) / 2, (p1
-          .getY() + p2.getY()) / 2);
+      IDirectPosition p = new DirectPosition((p1.getX() + p2.getX()) / 2,
+          (p1.getY() + p2.getY()) / 2);
       AffineTransform transform = AffineTransform.getTranslateInstance(
           p.getX(), p.getY());
       transform.concatenate(scaleTransform);

@@ -60,11 +60,13 @@ public class GM_Surface extends GM_OrientableSurface implements ISurface
   // GM_MultiSurface
   /** Liste des morceaux constituant la surface. */
   protected List<ISurfacePatch> patch;
+
   @Override
   public List<ISurfacePatch> getPatch() {
     return this.patch;
   }
-   @Override
+
+  @Override
   public ISurfacePatch getPatch(int i) {
     if ((ISurfacePatch.class).isAssignableFrom(this.getClass())) {
       if (i != 0) {
@@ -76,6 +78,7 @@ public class GM_Surface extends GM_OrientableSurface implements ISurface
     }
     return this.patch.get(i);
   }
+
   @Override
   public void setPatch(int i, ISurfacePatch value) {
     if ((ISurfacePatch.class).isAssignableFrom(this.getClass())) {
@@ -89,6 +92,7 @@ public class GM_Surface extends GM_OrientableSurface implements ISurface
       this.patch.set(i, value);
     }
   }
+
   @Override
   public void addPatch(ISurfacePatch value) {
     if ((ISurfacePatch.class).isAssignableFrom(this.getClass())) {
@@ -102,6 +106,7 @@ public class GM_Surface extends GM_OrientableSurface implements ISurface
       this.patch.add(value);
     }
   }
+
   @Override
   public void addPatch(int i, ISurfacePatch value) {
     if ((ISurfacePatch.class).isAssignableFrom(this.getClass())) {
@@ -115,6 +120,7 @@ public class GM_Surface extends GM_OrientableSurface implements ISurface
       this.patch.add(i, value);
     }
   }
+
   @Override
   public void removePatch(ISurfacePatch value) {
     if ((ISurfacePatch.class).isAssignableFrom(this.getClass())) {
@@ -124,6 +130,7 @@ public class GM_Surface extends GM_OrientableSurface implements ISurface
       this.patch.remove(value);
     }
   }
+
   @Override
   public void removePatch(int i) {
     if ((ISurfacePatch.class).isAssignableFrom(this.getClass())) {
@@ -133,30 +140,31 @@ public class GM_Surface extends GM_OrientableSurface implements ISurface
       this.patch.remove(i);
     }
   }
+
   @Override
   public int sizePatch() {
     return this.patch.size();
   }
+
   /** Constructeur par défaut */
   public GM_Surface() {
     this.patch = new ArrayList<ISurfacePatch>(0);
     this.orientation = +1;
     this.primitive = this;
     /*
-    this.proxy[0] = this;
-    GM_OrientableSurface proxy1 = new GM_OrientableSurface();
-    proxy1.orientation = -1;
-    proxy1.proxy[0] = this;
-    proxy1.proxy[1] = proxy1;
-    proxy1.primitive = new GM_Surface(this);
-    this.proxy[1] = proxy1;
-    */
+     * this.proxy[0] = this; GM_OrientableSurface proxy1 = new
+     * GM_OrientableSurface(); proxy1.orientation = -1; proxy1.proxy[0] = this;
+     * proxy1.proxy[1] = proxy1; proxy1.primitive = new GM_Surface(this);
+     * this.proxy[1] = proxy1;
+     */
   }
+
   /** Constructeur à partir d'un et d'un seul surface patch */
   public GM_Surface(ISurfacePatch thePatch) {
     this();
     this.addPatch(thePatch);
   }
+
   /**
    * Utilisé en interne (dans les constructeurs publics) pour construire la
    * surface opposée, qui est la primitive de proxy[1]. On définit ici les
@@ -170,15 +178,13 @@ public class GM_Surface extends GM_OrientableSurface implements ISurface
     this.orientation = +1;
     this.primitive = this;
     /*
-    this.proxy[0] = this;
-    GM_OrientableSurface proxy1 = new GM_OrientableSurface();
-    proxy1.orientation = -1;
-    proxy1.proxy[0] = this;
-    proxy1.proxy[1] = proxy1;
-    proxy1.primitive = surface;
-    this.proxy[1] = proxy1;
-    */
+     * this.proxy[0] = this; GM_OrientableSurface proxy1 = new
+     * GM_OrientableSurface(); proxy1.orientation = -1; proxy1.proxy[0] = this;
+     * proxy1.proxy[1] = proxy1; proxy1.primitive = surface; this.proxy[1] =
+     * proxy1;
+     */
   }
+
   /**
    * NON IMPLEMENTE. Vecteur normal à self au point passé en paramètre.
    */
@@ -190,6 +196,7 @@ public class GM_Surface extends GM_OrientableSurface implements ISurface
     // return SpatialQuery.perimeter(this); (ancienne methode avec SDOAPI)
     return this.length();
   }
+
   @Override
   public ILineString exteriorLineString() {
     if (this.sizePatch() == 1) {
@@ -208,6 +215,7 @@ public class GM_Surface extends GM_OrientableSurface implements ISurface
         .error("GM_Surface::exteriorLineString() : cette méthode ne fonctionne que si la surface est composée d'un seul patch."); //$NON-NLS-1$
     return null;
   }
+
   @Override
   public ICurve exteriorCurve() {
     if (this.sizePatch() == 1) {
@@ -224,6 +232,7 @@ public class GM_Surface extends GM_OrientableSurface implements ISurface
         .error("GM_Surface::exteriorCurve() : cette méthode ne fonctionne que si la surface est composée d'un seul patch."); //$NON-NLS-1$
     return null;
   }
+
   @Override
   public IDirectPositionList exteriorCoord() {
     ICurve c = this.exteriorCurve();
@@ -232,6 +241,7 @@ public class GM_Surface extends GM_OrientableSurface implements ISurface
     }
     return new DirectPositionList();
   }
+
   @Override
   public ILineString interiorLineString(int i) {
     if (this.sizePatch() == 1) {
@@ -250,6 +260,7 @@ public class GM_Surface extends GM_OrientableSurface implements ISurface
         .error("GM_Surface::interiorLineString() : cette méthode ne fonctionne que si la surface est composée d'un seul patch"); //$NON-NLS-1$
     return null;
   }
+
   @Override
   public ICurve interiorCurve(int i) {
     if (this.sizePatch() == 1) {
@@ -266,6 +277,7 @@ public class GM_Surface extends GM_OrientableSurface implements ISurface
         .error("GM_Surface::interiorCurve() : cette méthode ne fonctionne que si la surface est composée d'un seul patch"); //$NON-NLS-1$
     return null;
   }
+
   @Override
   public IDirectPositionList interiorCoord(int i) {
     ICurve c = this.interiorCurve(i);
@@ -274,6 +286,7 @@ public class GM_Surface extends GM_OrientableSurface implements ISurface
     }
     return new DirectPositionList();
   }
+
   @Override
   public IDirectPositionList coord() {
     if (this.sizePatch() == 1) {

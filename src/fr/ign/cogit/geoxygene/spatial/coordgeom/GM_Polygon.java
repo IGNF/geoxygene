@@ -71,14 +71,17 @@ public class GM_Polygon extends GM_SurfacePatch implements IPolygon {
 
   /** Anneau extérieur. */
   protected IRing exterior;
+
   @Override
   public IRing getExterior() {
     return this.exterior;
   }
+
   @Override
   public void setExterior(IRing value) {
     this.exterior = value;
   }
+
   @Override
   public int sizeExterior() {
     if (this.exterior == null) {
@@ -89,34 +92,42 @@ public class GM_Polygon extends GM_SurfacePatch implements IPolygon {
 
   /** Anneau(x) intérieur(s) en cas de trou(s) : liste de GM_Ring */
   protected List<IRing> interior = new ArrayList<IRing>(0);
+
   @Override
   public List<IRing> getInterior() {
     return this.interior;
   }
+
   @Override
   public IRing getInterior(int i) {
     return this.interior.get(i);
   }
+
   @Override
   public void setInterior(int i, IRing value) {
     this.interior.set(i, value);
   }
+
   @Override
   public void addInterior(IRing value) {
     this.interior.add(value);
   }
+
   @Override
   public void addInterior(int i, IRing value) {
     this.interior.add(i, value);
   }
+
   @Override
   public void removeInterior(IRing value) {
     this.interior.remove(value);
   }
+
   @Override
   public void removeInterior(int i) {
     this.interior.remove(i);
   }
+
   @Override
   public int sizeInterior() {
     return this.interior.size();

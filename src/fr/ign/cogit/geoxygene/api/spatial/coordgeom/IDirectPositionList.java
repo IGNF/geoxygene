@@ -21,6 +21,7 @@ public interface IDirectPositionList extends Collection<IDirectPosition> {
 
   /** Affecte un élément au i-ème rang de la liste */
   public abstract void set(int i, IDirectPosition value);
+
   @Override
   public abstract boolean add(IDirectPosition value);
 
@@ -38,8 +39,10 @@ public interface IDirectPositionList extends Collection<IDirectPosition> {
 
   /** Retire une liste de DirectPosititon */
   public abstract void removeAll(IDirectPositionList theList);
+
   @Override
   public abstract void clear();
+
   @Override
   public abstract int size();
 
@@ -69,29 +72,42 @@ public interface IDirectPositionList extends Collection<IDirectPosition> {
    * liste.
    */
   public abstract double[] toArrayZ();
+
   @Override
   public abstract String toString();
+
   @Override
   public abstract Iterator<IDirectPosition> iterator();
+
   ListIterator<IDirectPosition> listIterator();
+
   @Override
   public abstract boolean addAll(Collection<? extends IDirectPosition> c);
+
   @Override
   public abstract boolean contains(Object o);
+
   @Override
   public abstract boolean containsAll(Collection<?> c);
+
   @Override
   public abstract boolean isEmpty();
+
   @Override
   public abstract boolean remove(Object o);
+
   @Override
   public abstract boolean removeAll(Collection<?> c);
+
   @Override
   public abstract boolean retainAll(Collection<?> c);
+
   @Override
   public abstract Object[] toArray();
+
   @Override
   public abstract <T> T[] toArray(T[] a);
+
   /**
    * permuter les elements i et j
    * @param i
@@ -103,6 +119,7 @@ public interface IDirectPositionList extends Collection<IDirectPosition> {
    * inverse l'ordre des directposition de la liste
    */
   public abstract void inverseOrdre();
+
   /**
    * Reverse the list
    * @return the reversed list

@@ -522,7 +522,7 @@ public class Noeud extends ElementCarteTopo {
           .nouvelElement();
 
       if (this == arrivee) {
-//        logger.info("node is arrival");
+        // logger.info("node is arrival");
         plusCourtChemin.addNoeud(this);
         this.addGroupe(plusCourtChemin);
         return plusCourtChemin;
@@ -530,7 +530,7 @@ public class Noeud extends ElementCarteTopo {
       this.distance = 0;
       this.chercheArcsNoeudsVoisins(noeudsVoisins, distancesVoisins,
           arcsVoisins);
-//      logger.info("voisins " + noeudsVoisins.size());
+      // logger.info("voisins " + noeudsVoisins.size());
       for (i = 0; i < noeudsVoisins.size(); i++) {
         noeudVoisin = noeudsVoisins.get(i);
         arcVoisin = arcsVoisins.get(i);
@@ -550,23 +550,23 @@ public class Noeud extends ElementCarteTopo {
             plusProche = aTraiter.get(i);
           }
         }
-//        logger.info("plus proche " + plusProche);
+        // logger.info("plus proche " + plusProche);
         traites.add(plusProche);
         aTraiter.remove(plusProche);
         // il s'agit du noeud d'arrivée
         if (plusProche == arrivee) {
-//          logger.info("arrivé !!!");
+          // logger.info("arrivé !!!");
           break;
         }
         if (maxLongueur != 0) {
           if (plusProche.distance > maxLongueur) {
-//            logger.info("Trop long, on s'arrête");
+            // logger.info("Trop long, on s'arrête");
             return null; // heuristique pour stopper la recherche
           }
         }
         plusProche.chercheArcsNoeudsVoisins(noeudsVoisins, distancesVoisins,
             arcsVoisins);
-//        logger.info("voisins " + noeudsVoisins.size());
+        // logger.info("voisins " + noeudsVoisins.size());
         for (i = 0; i < noeudsVoisins.size(); i++) {
           noeudVoisin = noeudsVoisins.get(i);
           arcVoisin = arcsVoisins.get(i);
@@ -594,7 +594,7 @@ public class Noeud extends ElementCarteTopo {
 
       // Phase "arriere"
       if (!traites.contains(arrivee)) {
-//        logger.info("couldn't reach it");
+        // logger.info("couldn't reach it");
         return null;
       }
       suivant = arrivee;
@@ -690,12 +690,12 @@ public class Noeud extends ElementCarteTopo {
       noeudsVoisins.add(noeud);
       distancesVoisins.add(distance);
     }
-//    logger.debug("neighboorhood for node " + this);
-//    for (int i = 0; i < arcsVoisins.size(); i++) {
-//      logger.debug("\t" + arcsVoisins.get(i));
-//      logger.debug("\t" + noeudsVoisins.get(i));
-//      logger.debug("\t" + distancesVoisins.get(i));
-//    }
+    // logger.debug("neighboorhood for node " + this);
+    // for (int i = 0; i < arcsVoisins.size(); i++) {
+    // logger.debug("\t" + arcsVoisins.get(i));
+    // logger.debug("\t" + noeudsVoisins.get(i));
+    // logger.debug("\t" + distancesVoisins.get(i));
+    // }
   }
 
   /**
@@ -979,42 +979,46 @@ public class Noeud extends ElementCarteTopo {
 
   @Override
   public String toString() {
-    return "Noeud" + " " + this.getId() + " - "  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+    return "Noeud" + " " + this.getId() + " - " //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
         + this.getGeometrie();
   }
-  
-  /**
-	 * @return the distance
-	 */
-	public double getDistance() {
-		return distance;
-	}
-	/**
-	 * @param distance the distance to set
-	 */
-	public void setDistance(double distance) {
-		this.distance = distance;
-	}
-	/**
-	 * Supprime un arc du noeud.
-	 * @param arc
-	 */
-	public void enleveArc(Arc arc) {
-		if(this.entrants.contains(arc))
-			this.entrants.remove(arc);
-		else
-			this.sortants.remove(arc);
-	}
 
-	/**
-	 * Copie un noeud
-	 * @return
-	 */
-	public Noeud copy() {
-	  Noeud noeud = new Noeud(this.getCoord());
-	  for(Arc a:this.getEntrants()) noeud.addEntrant(a);
-	  for(Arc a:this.getSortants()) noeud.addSortant(a);
-	  noeud.setGeometrie(new GM_Point(this.getCoord()));
-	  return noeud;
-	}
+  /**
+   * @return the distance
+   */
+  public double getDistance() {
+    return distance;
+  }
+
+  /**
+   * @param distance the distance to set
+   */
+  public void setDistance(double distance) {
+    this.distance = distance;
+  }
+
+  /**
+   * Supprime un arc du noeud.
+   * @param arc
+   */
+  public void enleveArc(Arc arc) {
+    if (this.entrants.contains(arc))
+      this.entrants.remove(arc);
+    else
+      this.sortants.remove(arc);
+  }
+
+  /**
+   * Copie un noeud
+   * @return
+   */
+  public Noeud copy() {
+    Noeud noeud = new Noeud(this.getCoord());
+    for (Arc a : this.getEntrants())
+      noeud.addEntrant(a);
+    for (Arc a : this.getSortants())
+      noeud.addSortant(a);
+    noeud.setGeometrie(new GM_Point(this.getCoord()));
+    return noeud;
+  }
 }

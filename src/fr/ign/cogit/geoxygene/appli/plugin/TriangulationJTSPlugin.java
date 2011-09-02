@@ -62,7 +62,8 @@ public class TriangulationJTSPlugin implements GeOxygeneApplicationPlugin,
     for (Component c : application.getFrame().getJMenuBar().getComponents()) {
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Triangulation")) {
+        if (aMenu.getText() != null
+            && aMenu.getText().equalsIgnoreCase("Triangulation")) {
           menu = aMenu;
         }
       }
@@ -74,8 +75,8 @@ public class TriangulationJTSPlugin implements GeOxygeneApplicationPlugin,
     );
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    application.getFrame().getJMenuBar().add(menu,
-        application.getFrame().getJMenuBar().getMenuCount() - 2);
+    application.getFrame().getJMenuBar()
+        .add(menu, application.getFrame().getJMenuBar().getMenuCount() - 2);
   }
 
   @Override
@@ -93,9 +94,9 @@ public class TriangulationJTSPlugin implements GeOxygeneApplicationPlugin,
     TriangulationJTS triangulation = new TriangulationJTS("TriangulationJTS");
     triangulation.importAsNodes(layer.getFeatureCollection());
     try {
-        triangulation.triangule();
+      triangulation.triangule();
     } catch (Exception e1) {
-        e1.printStackTrace();
+      e1.printStackTrace();
     }
     Population<Face> popTriangles = new Population<Face>("Triangles");
     popTriangles.setElements(triangulation.getPopFaces().getElements());

@@ -33,15 +33,17 @@ public class ZoomBoxMode extends AbstractMode implements PaintListener {
       final ModeSelector theModeSelector) {
     super(theMainFrame, theModeSelector);
   }
+
   private Point initialPointView = null;
   private Point currentPointView = null;
-  //private Point previousPointView = null;
+  // private Point previousPointView = null;
 
-//  private DirectPosition initialPoint = null;
-//  private DirectPosition lastPoint = null;
+  // private DirectPosition initialPoint = null;
+  // private DirectPosition lastPoint = null;
   private Color color = Color.RED;
-//  private Color xorColor = new Color(4, 52, 87);
-//  private Graphics2D graphics2D = null;
+
+  // private Color xorColor = new Color(4, 52, 87);
+  // private Graphics2D graphics2D = null;
   @Override
   protected final JButton createButton() {
     return new JButton(new ImageIcon(this.getClass().getResource(
@@ -54,74 +56,69 @@ public class ZoomBoxMode extends AbstractMode implements PaintListener {
     projectFrame.getLayerViewPanel().addPaintListener(this);
 
     /*
-    ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
-    graphics2D = (Graphics2D) frame.getLayerViewPanel()
-    .getGraphics();
-    graphics2D.setColor(color);
-    graphics2D.setXORMode(xorColor);
-    */
+     * ProjectFrame frame = this.mainFrame.getSelectedProjectFrame(); graphics2D
+     * = (Graphics2D) frame.getLayerViewPanel() .getGraphics();
+     * graphics2D.setColor(color); graphics2D.setXORMode(xorColor);
+     */
     if ((SwingUtilities.isLeftMouseButton(e))) {
-//      try {
-        //DirectPosition p = frame.getLayerViewPanel().getViewport()
-        //    .toModelDirectPosition(e.getPoint());
-        //this.initialPoint = p;
-        this.initialPointView = e.getPoint();
-//      } catch (NoninvertibleTransformException e1) {
-//        e1.printStackTrace();
-//      }
+      // try {
+      // DirectPosition p = frame.getLayerViewPanel().getViewport()
+      // .toModelDirectPosition(e.getPoint());
+      // this.initialPoint = p;
+      this.initialPointView = e.getPoint();
+      // } catch (NoninvertibleTransformException e1) {
+      // e1.printStackTrace();
+      // }
     }
   }
 
   @Override
   public void mouseDragged(final MouseEvent e) {
-    //long s = System.currentTimeMillis();
-//    ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
+    // long s = System.currentTimeMillis();
+    // ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
     if ((SwingUtilities.isLeftMouseButton(e))) {
-//      try {
+      // try {
       Point currentPoint = e.getPoint();
-        //DirectPosition p = frame.getLayerViewPanel().getViewport()
-            //.toModelDirectPosition(e.getPoint());
-        //GM_Envelope envelope = this.getEnvelope(this.initialPoint, p);
-        //GM_Polygon rect = new GM_Polygon(envelope);
-        //graphics2D.setStroke(new BasicStroke(2));
-        if (this.currentPointView != null) {
-//          this.previousPointView = this.currentPointView;
-          //GM_Envelope lastEnvelope = this.getEnvelope(this.initialPoint, this.lastPoint);
-//          long f = System.currentTimeMillis();
-          //GM_Polygon lastRect = new GM_Polygon(lastEnvelope);
-          //RenderUtil.draw(lastRect, frame.getLayerViewPanel().getViewport(),
-              //graphics2D);
-          /*
-          graphics2D.drawRect(
-              Math.min(this.initialPointView.x, this.currentPointView.x),
-              Math.min(this.initialPointView.y, this.currentPointView.y),
-              Math.abs(this.initialPointView.x - this.currentPointView.x),
-              Math.abs(this.initialPointView.y - this.currentPointView.y));
-          long f = System.currentTimeMillis();
-          System.out.println("draw previous= " + (f - s));
-          s = f;
-          */
-        }
-        //RenderUtil.draw(rect, frame.getLayerViewPanel().getViewport(),
-            //graphics2D);
+      // DirectPosition p = frame.getLayerViewPanel().getViewport()
+      // .toModelDirectPosition(e.getPoint());
+      // GM_Envelope envelope = this.getEnvelope(this.initialPoint, p);
+      // GM_Polygon rect = new GM_Polygon(envelope);
+      // graphics2D.setStroke(new BasicStroke(2));
+      if (this.currentPointView != null) {
+        // this.previousPointView = this.currentPointView;
+        // GM_Envelope lastEnvelope = this.getEnvelope(this.initialPoint,
+        // this.lastPoint);
+        // long f = System.currentTimeMillis();
+        // GM_Polygon lastRect = new GM_Polygon(lastEnvelope);
+        // RenderUtil.draw(lastRect, frame.getLayerViewPanel().getViewport(),
+        // graphics2D);
         /*
-        graphics2D.drawRect(
-            Math.min(this.initialPointView.x, currentPoint.x),
-            Math.min(this.initialPointView.y, currentPoint.y),
-            Math.abs(this.initialPointView.x - currentPoint.x),
-            Math.abs(this.initialPointView.y - currentPoint.y));
-        long f = System.currentTimeMillis();
-        System.out.println("draw = " + (f - s));
-        */
-//        s = f;
-        //this.lastPoint = p;
-        //this.previousPointView = this.currentPointView;
-        this.currentPointView = currentPoint;
-//      } catch (NoninvertibleTransformException e1) {
-//        e1.printStackTrace();
-//      }
-        ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
-        frame.getLayerViewPanel().superRepaint();
+         * graphics2D.drawRect( Math.min(this.initialPointView.x,
+         * this.currentPointView.x), Math.min(this.initialPointView.y,
+         * this.currentPointView.y), Math.abs(this.initialPointView.x -
+         * this.currentPointView.x), Math.abs(this.initialPointView.y -
+         * this.currentPointView.y)); long f = System.currentTimeMillis();
+         * System.out.println("draw previous= " + (f - s)); s = f;
+         */
+      }
+      // RenderUtil.draw(rect, frame.getLayerViewPanel().getViewport(),
+      // graphics2D);
+      /*
+       * graphics2D.drawRect( Math.min(this.initialPointView.x, currentPoint.x),
+       * Math.min(this.initialPointView.y, currentPoint.y),
+       * Math.abs(this.initialPointView.x - currentPoint.x),
+       * Math.abs(this.initialPointView.y - currentPoint.y)); long f =
+       * System.currentTimeMillis(); System.out.println("draw = " + (f - s));
+       */
+      // s = f;
+      // this.lastPoint = p;
+      // this.previousPointView = this.currentPointView;
+      this.currentPointView = currentPoint;
+      // } catch (NoninvertibleTransformException e1) {
+      // e1.printStackTrace();
+      // }
+      ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
+      frame.getLayerViewPanel().superRepaint();
     }
   }
 
@@ -144,12 +141,12 @@ public class ZoomBoxMode extends AbstractMode implements PaintListener {
         GM_Envelope env = null;
         if (this.initialPointView != null && p != null) {
           DirectPosition initialPoint = frame.getLayerViewPanel().getViewport()
-          .toModelDirectPosition(this.initialPointView);
+              .toModelDirectPosition(this.initialPointView);
           env = this.getEnvelope(initialPoint, p);
         }
         this.initialPointView = null;
         this.currentPointView = null;
-        //this.previousPointView = null;
+        // this.previousPointView = null;
         if (env != null && env.width() > 0 && env.length() > 0) {
           frame.getLayerViewPanel().getViewport().zoom(env);
           frame.getLayerViewPanel().superRepaint();
@@ -168,23 +165,24 @@ public class ZoomBoxMode extends AbstractMode implements PaintListener {
   @Override
   public Cursor getCursor() {
     Toolkit toolkit = Toolkit.getDefaultToolkit();
-    Cursor cursor = toolkit.createCustomCursor(toolkit.getImage(this.getClass()
-        .getResource("/images/cursors/32x32/zoomCursor.gif").getFile()), //$NON-NLS-1$
+    Cursor cursor = toolkit.createCustomCursor(
+        toolkit.getImage(this.getClass()
+            .getResource("/images/cursors/32x32/zoomCursor.gif").getFile()), //$NON-NLS-1$
         new Point(16, 16), "Zoom"); //$NON-NLS-1$
     return cursor;
   }
+
   @Override
   public void paint(LayerViewPanel layerViewPanel, Graphics graphics) {
-//    graphics.setXORMode(Color.GRAY);
+    // graphics.setXORMode(Color.GRAY);
     /*
-    if (this.initialPointView != null && this.previousPointView != null) {
-      graphics.drawRect(
-          Math.min(this.initialPointView.x, this.previousPointView.x),
-          Math.min(this.initialPointView.y, this.previousPointView.y),
-          Math.abs(this.initialPointView.x - this.previousPointView.x),
-          Math.abs(this.initialPointView.y - this.previousPointView.y));
-    }
-    */
+     * if (this.initialPointView != null && this.previousPointView != null) {
+     * graphics.drawRect( Math.min(this.initialPointView.x,
+     * this.previousPointView.x), Math.min(this.initialPointView.y,
+     * this.previousPointView.y), Math.abs(this.initialPointView.x -
+     * this.previousPointView.x), Math.abs(this.initialPointView.y -
+     * this.previousPointView.y)); }
+     */
     if (this.initialPointView != null && this.currentPointView != null) {
       Color c = graphics.getColor();
       graphics.setColor(this.color);

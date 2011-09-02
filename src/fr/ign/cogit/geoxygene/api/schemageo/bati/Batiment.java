@@ -31,7 +31,7 @@ public interface Batiment extends Micro {
   public double getHauteur();
 
   public void setHauteur(double hauteur);
-  
+
   /**
    * @return la nature de l'objet
    */

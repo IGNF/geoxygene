@@ -51,6 +51,7 @@ public class GM_Ring extends GM_CompositeCurve implements IRing {
   public GM_Ring() {
     super();
   }
+
   /**
    * Constructeur à partir d'une et d'une seule GM_OrientableCurve. Ne vérifie
    * pas la fermeture.
@@ -58,6 +59,7 @@ public class GM_Ring extends GM_CompositeCurve implements IRing {
   public GM_Ring(IOrientableCurve oriCurve) {
     super(oriCurve);
   }
+
   /**
    * Constructeur à partir d'une et d'une seule GM_OrientableCurve. Vérifie la
    * fermeture, d'où le paramètre tolérance. Exception si ca ne ferme pas. TODO
@@ -76,6 +78,7 @@ public class GM_Ring extends GM_CompositeCurve implements IRing {
           "tentative de créer un GM_Ring avec une courbe non fermée"); //$NON-NLS-1$
     }
   }
+
   /**
    * Constructeur à partir d'une courbe composée (cast). Ne vérifie ni la
    * fermeture, ni le chainage.
@@ -88,6 +91,7 @@ public class GM_Ring extends GM_CompositeCurve implements IRing {
     // this.proxy[0] = compCurve.getPositive();
     // this.proxy[1] = compCurve.getNegative();
   }
+
   /**
    * Constructeur à partir d'une courbe composée (cast). Vérifie la fermeture et
    * le chainage sinon exception.
@@ -107,6 +111,7 @@ public class GM_Ring extends GM_CompositeCurve implements IRing {
           "new GM_Ring(): La courbe composée passée en paramètre ne ferme pas."); //$NON-NLS-1$
     }
   }
+
   @Override
   public boolean validate(double tolerance) {
     if (!super.validate(tolerance)) {
@@ -116,6 +121,7 @@ public class GM_Ring extends GM_CompositeCurve implements IRing {
     return (bdy.getStartPoint().getPosition().equals(bdy.getEndPoint()
         .getPosition(), tolerance));
   }
+
   @Override
   public Object clone() {
     return new GM_Ring(new GM_LineString((IDirectPositionList) this.coord()

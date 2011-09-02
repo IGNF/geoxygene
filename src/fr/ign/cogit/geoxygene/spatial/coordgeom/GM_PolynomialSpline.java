@@ -35,11 +35,13 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolynomialSpline;
  * @author Arnaud Braun
  * @author Julien Perret
  */
-abstract class GM_PolynomialSpline extends GM_SplineCurve implements IPolynomialSpline  {
+abstract class GM_PolynomialSpline extends GM_SplineCurve implements
+    IPolynomialSpline {
   @Override
   public String getInterpolation() {
     return "polynomialSpline"; //$NON-NLS-1$
   }
+
   double[][] vectorAtStart;
   double[][] vectorAtEnd;
 }

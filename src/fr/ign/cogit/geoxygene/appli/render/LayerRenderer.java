@@ -72,6 +72,7 @@ public class LayerRenderer implements Renderer {
    * Layer to render.
    */
   private Layer layer = null;
+
   /**
    * @return the Layer to render.
    */
@@ -329,10 +330,12 @@ public class LayerRenderer implements Renderer {
         .getFeatureCollection().select(envelope);
     int numberOfFeatureTypeStyle = 0;
     Collection<Style> activeStyles = this.layer.getStyles();
-    if (!(this.layer.getActiveGroup() == null||this.layer.getActiveGroup().isEmpty())) {
+    if (!(this.layer.getActiveGroup() == null || this.layer.getActiveGroup()
+        .isEmpty())) {
       activeStyles = new ArrayList<Style>(0);
       for (Style style : this.layer.getStyles()) {
-        if (style.getGroup() == null || style.getGroup().equalsIgnoreCase(this.layer.getActiveGroup())) {
+        if (style.getGroup() == null
+            || style.getGroup().equalsIgnoreCase(this.layer.getActiveGroup())) {
           activeStyles.add(style);
         }
       }
@@ -360,7 +363,8 @@ public class LayerRenderer implements Renderer {
           }
           // creating a map between each rule and the
           // corresponding features (filtered in)
-          Map<Rule, Set<IFeature>> filteredFeatures = new HashMap<Rule, Set<IFeature>>(0);
+          Map<Rule, Set<IFeature>> filteredFeatures = new HashMap<Rule, Set<IFeature>>(
+              0);
           for (Rule rule : featureTypeStyle.getRules()) {
             filteredFeatures.put(rule, new HashSet<IFeature>(0));
           }
@@ -410,7 +414,7 @@ public class LayerRenderer implements Renderer {
    * @param theImage the image
    * @param envelope the envelope
    */
-  @SuppressWarnings( { "unused", "unchecked" })
+  @SuppressWarnings({ "unused", "unchecked" })
   private void render(final Rule rule, final BufferedImage theImage,
       final IEnvelope envelope) {
     if (this.isCancelled()) {
@@ -449,8 +453,7 @@ public class LayerRenderer implements Renderer {
    * @param theImage the image
    */
   private void render(final Symbolizer symbolizer,
-      final Collection<IFeature> featureCollection,
-      final BufferedImage theImage) {
+      final Collection<IFeature> featureCollection, final BufferedImage theImage) {
     IFeature[] collection = featureCollection.toArray(new IFeature[0]);
     for (IFeature feature : collection) {
       if (this.isCancelled()) {
@@ -564,10 +567,10 @@ public class LayerRenderer implements Renderer {
     envelope.setLowerCorner(lowerCornerPosition);
     envelope.setUpperCorner(upperCornerPosition);
     try {
-      Point2D upperCorner = this.getLayerViewPanel().getViewport().toViewPoint(
-          envelope.getUpperCorner());
-      Point2D lowerCorner = this.getLayerViewPanel().getViewport().toViewPoint(
-          envelope.getLowerCorner());
+      Point2D upperCorner = this.getLayerViewPanel().getViewport()
+          .toViewPoint(envelope.getUpperCorner());
+      Point2D lowerCorner = this.getLayerViewPanel().getViewport()
+          .toViewPoint(envelope.getLowerCorner());
       this.clearImageCache((int) lowerCorner.getX(), (int) upperCorner.getY(),
           (int) (upperCorner.getX() - lowerCorner.getX() + 2),
           (int) (lowerCorner.getY() - upperCorner.getY() + 2));

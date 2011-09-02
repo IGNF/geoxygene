@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 /**
  * @author Julien Perret
  */
-@XmlSeeAlso( { LogicOpsType.class, ComparisonOpsType.class })
+@XmlSeeAlso({ LogicOpsType.class, ComparisonOpsType.class })
 @XmlRootElement
 public abstract class Filter {
 

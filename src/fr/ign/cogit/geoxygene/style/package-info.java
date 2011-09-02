@@ -24,4 +24,3 @@
  */
 package fr.ign.cogit.geoxygene.style;
 
-

@@ -104,8 +104,8 @@ public class SmallestSurroundingRectangleComputation {
    * @return The smallest surrounding rectangle scaled to preserve its area
    */
   public static Polygon getSSRPreservedArea(Geometry geom) {
-    return SmallestSurroundingRectangleComputation.getSSRGoalArea(geom, geom
-        .getArea());
+    return SmallestSurroundingRectangleComputation.getSSRGoalArea(geom,
+        geom.getArea());
   }
 
   /**
@@ -113,8 +113,8 @@ public class SmallestSurroundingRectangleComputation {
    * @return The smallest surrounding rectangle scaled to preserve its area
    */
   public static IPolygon getSSRPreservedArea(IGeometry geom) {
-    return SmallestSurroundingRectangleComputation.getSSRGoalArea(geom, geom
-        .area());
+    return SmallestSurroundingRectangleComputation.getSSRGoalArea(geom,
+        geom.area());
   }
 
   /**
@@ -133,8 +133,8 @@ public class SmallestSurroundingRectangleComputation {
     if (SmallestSurroundingRectangleComputation.logger.isDebugEnabled()) {
       SmallestSurroundingRectangleComputation.logger.debug("SSR homothetie");
     }
-    return CommonAlgorithms.homothetie(ssr, (float) Math.sqrt(goalArea
-        / ssr.getArea()));
+    return CommonAlgorithms.homothetie(ssr,
+        (float) Math.sqrt(goalArea / ssr.getArea()));
   }
 
   /**
@@ -149,8 +149,8 @@ public class SmallestSurroundingRectangleComputation {
       return null;
     }
 
-    return CommonAlgorithms.homothetie(ppre, (float) Math.sqrt(goalArea
-        / ppre.area()));
+    return CommonAlgorithms.homothetie(ppre,
+        (float) Math.sqrt(goalArea / ppre.area()));
   }
 
 }

@@ -201,8 +201,8 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener,
            * on crée un tableau d'attributs suffisamment grand pour recevoir la
            * clé la plus grande
            */
-          Integer[] keys = feature.getSchema().getAttLookup().keySet().toArray(
-              new Integer[0]);
+          Integer[] keys = feature.getSchema().getAttLookup().keySet()
+              .toArray(new Integer[0]);
           Arrays.sort(keys);
           feature.setAttributes(new Object[keys[keys.length - 1] + 1]);
           /**
@@ -237,8 +237,8 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener,
       return;
     }
     for (Layer layer : this.frameGeoxygene.getPanelVisu().getSld().getLayers()) {
-      DefaultMutableTreeNode layerNode = new DefaultMutableTreeNode(layer
-          .getName());
+      DefaultMutableTreeNode layerNode = new DefaultMutableTreeNode(
+          layer.getName());
       top.add(layerNode);
       layerNode.setUserObject(layer);
     }
@@ -266,8 +266,7 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener,
       if (leaf && this.isLayer(value)) {
         this.setToolTipText("Ceci est un layer.");
         Layer layer = (Layer) ((DefaultMutableTreeNode) value).getUserObject();
-        this
-            .setText(layer.getClass().getSimpleName() + " - " + layer.getName());
+        this.setText(layer.getClass().getSimpleName() + " - " + layer.getName());
         if (FrameEditeurSLD.this.dataset.getPopulation(layer.getName()) != null) {
           this.setIcon(new LayerIcon(layer, this.sld));
         }

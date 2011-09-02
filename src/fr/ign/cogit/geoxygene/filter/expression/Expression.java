@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  * @author Julien Perret
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso( { PropertyName.class, BinaryExpression.class, Function.class })
+@XmlSeeAlso({ PropertyName.class, BinaryExpression.class, Function.class })
 @XmlRootElement
 public abstract class Expression {
   public abstract Object evaluate(Object object);

@@ -30,7 +30,7 @@ import fr.ign.cogit.geoxygene.filter.function.FunctionImpl;
  * @author Julien Perret
  */
 @XmlRootElement(name = "Function")
-@XmlSeeAlso( { FunctionImpl.class })
+@XmlSeeAlso({ FunctionImpl.class })
 public abstract class Function extends Expression {
   /**
    * @return the name of the function

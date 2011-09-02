@@ -250,8 +250,8 @@ class AttributeTable extends JDialog {
       if (col == 0) {
         return new Integer(this.getFeatures().get(row).getId());
       }
-      return this.getFeatures().get(row).getAttribute(
-          this.attributeNames.get(col));
+      return this.getFeatures().get(row)
+          .getAttribute(this.attributeNames.get(col));
     }
 
     @Override
@@ -468,9 +468,9 @@ class AttributeTable extends JDialog {
       this.setModal(true);
       this.attribute = attribute;
       this.attributeName = attribute.getMemberName();
-      JTextArea text = new JTextArea(I18N
-          .getString("AttributeTable.SelectValueType") //$NON-NLS-1$
-          + this.attributeName);
+      JTextArea text = new JTextArea(
+          I18N.getString("AttributeTable.SelectValueType") //$NON-NLS-1$
+              + this.attributeName);
       text.setEditable(false);
       text.setFocusable(false);
       text.setAutoscrolls(true);
@@ -482,8 +482,8 @@ class AttributeTable extends JDialog {
       this.valueType = new JComboBox(possibleValues);
       this.valueType.setSelectedItem(attribute.getValueType());
       JPanel controls = new JPanel();
-      JButton validateButton = new JButton(I18N
-          .getString("AttributeTable.Validate")); //$NON-NLS-1$
+      JButton validateButton = new JButton(
+          I18N.getString("AttributeTable.Validate")); //$NON-NLS-1$
       validateButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -491,8 +491,8 @@ class AttributeTable extends JDialog {
         }
       });
       controls.add(validateButton);
-      JButton cancelButton = new JButton(I18N
-          .getString("AttributeTable.Cancel")); //$NON-NLS-1$
+      JButton cancelButton = new JButton(
+          I18N.getString("AttributeTable.Cancel")); //$NON-NLS-1$
       cancelButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -512,8 +512,8 @@ class AttributeTable extends JDialog {
       final String oldValueType = this.attribute.getValueType();
       JTable table = AttributeTable.this.getSelectedTable();
       String layerName = table.getName();
-      Layer layer = AttributeTable.this.getProjectFrame().getSld().getLayer(
-          layerName);
+      Layer layer = AttributeTable.this.getProjectFrame().getSld()
+          .getLayer(layerName);
       IFeatureCollection<? extends IFeature> features = layer
           .getFeatureCollection();
       // both types are the same
@@ -523,8 +523,8 @@ class AttributeTable extends JDialog {
       // new type is String, we create a new String containing the value
       if (newValueType.equals("String")) { //$NON-NLS-1$
         for (IFeature ft : features) {
-          ft.setAttribute(this.attribute, new String(ft.getAttribute(
-              this.attribute).toString()));
+          ft.setAttribute(this.attribute,
+              new String(ft.getAttribute(this.attribute).toString()));
         }
         this.changeAttributeType(newValueType);
         return;
@@ -775,8 +775,7 @@ class AttributeTable extends JDialog {
       tablePanel.setLayout(new BorderLayout());
       IFeatureCollection<IFeature> features = new FT_FeatureCollection<IFeature>();
       // On récupère tous les features de la couche layer qui sont sélectionnés
-      IFeatureCollection<?> featuresOfThisLayer = layer
-          .getFeatureCollection();
+      IFeatureCollection<?> featuresOfThisLayer = layer.getFeatureCollection();
       // On récupère tous les features de la couche layer qui sont sélectionnés
       for (IFeature ft : this.objectsToDraw) {
         if (featuresOfThisLayer.contains(ft)) {
@@ -809,8 +808,8 @@ class AttributeTable extends JDialog {
     this.add(this.tabPane);
     // Panel de controle
     JPanel control = new JPanel();
-    JButton centrer = new JButton(I18N
-        .getString("AttributeTable.CenterViewOnObject")); //$NON-NLS-1$
+    JButton centrer = new JButton(
+        I18N.getString("AttributeTable.CenterViewOnObject")); //$NON-NLS-1$
     centrer.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -825,15 +824,18 @@ class AttributeTable extends JDialog {
       }
     });
     control.add(centrer);
-    JButton zoomButton = new JButton(I18N
-        .getString("AttributeTable.ZoomOnObject")); //$NON-NLS-1$
+    JButton zoomButton = new JButton(
+        I18N.getString("AttributeTable.ZoomOnObject")); //$NON-NLS-1$
     zoomButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         if (AttributeTable.this.getSelectedFeature() != null) {
           try {
-            AttributeTable.this.getProjectFrame().getLayerViewPanel()
-                .getViewport().zoom(
+            AttributeTable.this
+                .getProjectFrame()
+                .getLayerViewPanel()
+                .getViewport()
+                .zoom(
                     AttributeTable.this.getSelectedFeature().getGeom()
                         .envelope());
           } catch (NoninvertibleTransformException e1) {
@@ -862,8 +864,8 @@ class AttributeTable extends JDialog {
          *
          */
     private static final long serialVersionUID = 1L;
-    final JCheckBox forceChange = new JCheckBox(I18N
-        .getString("AttributeTable.ForceValueTypeChange")); //$NON-NLS-1$
+    final JCheckBox forceChange = new JCheckBox(
+        I18N.getString("AttributeTable.ForceValueTypeChange")); //$NON-NLS-1$
 
     public ConfirmChangeDialog(Dialog owner, String oldValueType,
         String newValueType) {
@@ -879,11 +881,11 @@ class AttributeTable extends JDialog {
           ConfirmChangeDialog.this.dispose();
         }
       });
-      JTextArea message = new JTextArea(I18N
-          .getString("AttributeTable.ImpossibleToConvertFrom") //$NON-NLS-1$
-          + oldValueType
-          + I18N.getString("AttributeTable.ImpossibleToConvertTo") //$NON-NLS-1$
-          + newValueType + ".\n"); //$NON-NLS-1$
+      JTextArea message = new JTextArea(
+          I18N.getString("AttributeTable.ImpossibleToConvertFrom") //$NON-NLS-1$
+              + oldValueType
+              + I18N.getString("AttributeTable.ImpossibleToConvertTo") //$NON-NLS-1$
+              + newValueType + ".\n"); //$NON-NLS-1$
       message.setEditable(false);
       message.setFocusable(false);
       message.setAutoscrolls(true);

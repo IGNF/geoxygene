@@ -315,7 +315,7 @@ public class GUIChargementDonnees extends JPanel {
 
     this.chargementShapefilePanel = new GeoPanel(this.chargementShapefileDesc,
         this.chargementAvanceIgnorerJeuPanel, true);
-    // 
+    //
     final JList liste = new JList(this.listModel);
     final JButton ajouterButton = new JButton("Ajouter des shapefiles",
         new ImageIcon("images/Plus.png"));

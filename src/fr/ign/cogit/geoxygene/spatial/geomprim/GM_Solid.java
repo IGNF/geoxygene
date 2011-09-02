@@ -44,19 +44,21 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
  * 3D Solid.
  * <p>
  * Object géométrique de base en 3D.
- *
+ * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
- *
+ * 
  */
 public class GM_Solid extends GM_Primitive implements ISolid {
   static Logger logger = Logger.getLogger(GM_Solid.class.getName());
+
   @Override
   public double area() {
     GM_Solid.logger
         .error("Non implémentée, utiliser : return CalculSansJava3D.CalculAire(this); (renvoi 0.0)"); //$NON-NLS-1$
     return 0.0;
   }
+
   @Override
   public IDirectPositionList coord() {
     List<IOrientableSurface> lFaces = this.getFacesList();
@@ -77,21 +79,25 @@ public class GM_Solid extends GM_Primitive implements ISolid {
     }
     return dPL;
   }
+
   @Override
   public double volume() {
     GM_Solid.logger
         .error("Non implémentée, utiliser : return CalculSansJava3D.CalculVolume(this);"); //$NON-NLS-1$
     return 0.0;
   }
+
   /** Constructeur par défaut. */
   public GM_Solid() {
   }
+
   /**
    * Constructeur à partir de la frontière.
    */
   public GM_Solid(ISolidBoundary bdy) {
     this.boundary = bdy;
   }
+
   /**
    * NON IMPLEMENTE. Constructeur à partir d'une enveloppe .
    * @param env une enveloppe
@@ -99,14 +105,25 @@ public class GM_Solid extends GM_Primitive implements ISolid {
   public GM_Solid(IEnvelope env) {
     GM_Solid.logger.error("NON IMPLEMENTE"); //$NON-NLS-1$
   }
+
   @Override
   public ISolidBoundary boundary() {
     return this.boundary;
   }
+
   /**
    * Boundary auquel est lié le solide
    */
   private ISolidBoundary boundary = null;
+
+  public ISolidBoundary getBoundary() {
+    return boundary;
+  }
+
+  public void setBoundary(ISolidBoundary boundary) {
+    this.boundary = boundary;
+  }
+
   /**
    * Constructeur à partir d'une liste de faces extérieures
    * @param lOS une liste de faces extérieures
@@ -114,6 +131,7 @@ public class GM_Solid extends GM_Primitive implements ISolid {
   public GM_Solid(List<IOrientableSurface> lOS) {
     this.boundary = new GM_SolidBoundary(lOS);
   }
+
   /**
    * Constructeur
    * @param multiSurf multisurface
@@ -127,10 +145,12 @@ public class GM_Solid extends GM_Primitive implements ISolid {
     }
     this.boundary = new GM_SolidBoundary(lOS);
   }
+
   @Override
   public List<IOrientableSurface> getFacesList() {
     return this.boundary().getExterior().getlisteFaces();
   }
+
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();

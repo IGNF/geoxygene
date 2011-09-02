@@ -16,53 +16,56 @@ import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 
 public class TriangulationJTS extends AbstractTriangulation {
 
-    public TriangulationJTS(String nom_logique) {
-        super(nom_logique);
+  public TriangulationJTS(String nom_logique) {
+    super(nom_logique);
+  }
+
+  @Override
+  public void create() throws Exception {
+    ConformingDelaunayTriangulationBuilder tb = new ConformingDelaunayTriangulationBuilder();
+    GM_MultiPoint sites = new GM_MultiPoint();
+    for (Noeud n : this.getPopNoeuds()) {
+      sites.add(n.getGeometrie());
     }
 
-    @Override
-    public void create() throws Exception {
-        ConformingDelaunayTriangulationBuilder tb = new ConformingDelaunayTriangulationBuilder();
-        GM_MultiPoint sites = new GM_MultiPoint();
-        for (Noeud n : this.getPopNoeuds()) {
-            sites.add(n.getGeometrie());
-        }
-        
-        IMultiCurve<ICurve> linesConstraints =  new  GM_MultiCurve<ICurve>();
-        for (Arc a : this.getPopArcs()) {
-          linesConstraints.add(a.getGeometrie());
+    IMultiCurve<ICurve> linesConstraints = new GM_MultiCurve<ICurve>();
+    for (Arc a : this.getPopArcs()) {
+      linesConstraints.add(a.getGeometrie());
 
+    }
+
+    GeometryFactory geomFact = new GeometryFactory();
+    Geometry geomSites = AdapterFactory.toGeometry(geomFact, sites);
+    Geometry lineConstraints = AdapterFactory.toGeometry(geomFact,
+        linesConstraints);
+    tb.setTolerance(1.0);
+    tb.setSites(geomSites);
+    tb.setConstraints(lineConstraints);
+
+    GeometryCollection triangles = (GeometryCollection) tb
+        .getTriangles(geomFact);
+    for (int i = 0; i < triangles.getNumGeometries(); i++) {
+      Polygon triangle = (Polygon) triangles.getGeometryN(i);
+      this.getPopFaces().nouvelElement(AdapterFactory.toGM_Object(triangle));
+    }
+    // logger.info(this.getPopFaces().size() + " triangles créés");
+    this.ajouteArcsEtNoeudsAuxFaces(true);
+    if (this.getOptions().indexOf('v') != -1) {
+      GeometryCollection diagram = (GeometryCollection) tb.getSubdivision()
+          .getVoronoiDiagram(geomFact);
+      for (int i = 0; i < diagram.getNumGeometries(); i++) {
+        Polygon cell = (Polygon) diagram.getGeometryN(i);
+        this.getPopVoronoiFaces().nouvelElement(
+            AdapterFactory.toGM_Object(cell));
       }
-        
-        
-        
-        GeometryFactory geomFact = new GeometryFactory();
-        Geometry geomSites = AdapterFactory.toGeometry(geomFact, sites);
-        Geometry lineConstraints = AdapterFactory.toGeometry(geomFact, linesConstraints);
-        tb.setTolerance(1.0);
-        tb.setSites(geomSites);
-        tb.setConstraints(lineConstraints);
-        
-        GeometryCollection triangles = (GeometryCollection) tb.getTriangles(geomFact);
-        for (int i = 0; i < triangles.getNumGeometries(); i++) {
-            Polygon triangle = (Polygon) triangles.getGeometryN(i);
-            this.getPopFaces().nouvelElement(AdapterFactory.toGM_Object(triangle));
-        }
-//        logger.info(this.getPopFaces().size() + " triangles créés");
-        this.ajouteArcsEtNoeudsAuxFaces(true);
-        if (this.getOptions().indexOf('v') != -1) {
-          GeometryCollection diagram = (GeometryCollection) tb.getSubdivision().getVoronoiDiagram(geomFact);
-          for (int i = 0; i < diagram.getNumGeometries(); i++) {
-            Polygon cell = (Polygon) diagram.getGeometryN(i);
-            this.getPopVoronoiFaces().nouvelElement(AdapterFactory.toGM_Object(cell));
-          }
-//          logger.info(this.getPopVoronoiFaces().size() + " cellules créés");
-          this.voronoiDiagram.ajouteArcsEtNoeudsAuxFaces(true);
-        }
+      // logger.info(this.getPopVoronoiFaces().size() + " cellules créés");
+      this.voronoiDiagram.ajouteArcsEtNoeudsAuxFaces(true);
     }
-    @Override
-    public void nettoyer() {
-      this.voronoiDiagram.nettoyer();
-      super.nettoyer();
-    }
+  }
+
+  @Override
+  public void nettoyer() {
+    this.voronoiDiagram.nettoyer();
+    super.nettoyer();
+  }
 }

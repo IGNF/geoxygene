@@ -81,8 +81,8 @@ public abstract class Operateurs {
    * <p>
    * English: Projects M on a [A,B].
    */
-  public static IDirectPosition projection(IDirectPosition m, IDirectPosition a,
-      IDirectPosition b) {
+  public static IDirectPosition projection(IDirectPosition m,
+      IDirectPosition a, IDirectPosition b) {
     Vecteur ab = new Vecteur(a, b);
     boolean to2d = Double.isNaN(m.getZ()) || Double.isNaN(a.getZ())
         || Double.isNaN(b.getZ());
@@ -163,13 +163,13 @@ public abstract class Operateurs {
     if (points.size() < 2) {
       return;
     }
-    IDirectPosition ptmin = Operateurs.projection(point, points.get(0), points
-        .get(1));
+    IDirectPosition ptmin = Operateurs.projection(point, points.get(0),
+        points.get(1));
     double dmin = point.distance(ptmin);
     int imin = 0;
     for (int i = 0; i < points.size() - 1; i++) {
-      IDirectPosition pt = Operateurs.projection(point, points.get(i), points
-          .get(i + 1));
+      IDirectPosition pt = Operateurs.projection(point, points.get(i),
+          points.get(i + 1));
       double d = point.distance(pt);
       if (d < dmin) {
         ptmin = pt;
@@ -430,13 +430,12 @@ public abstract class Operateurs {
         ligneResultat.addControlPoint(pointRes);
       }
     }
-    u = new Vecteur(listePoints.get(listePoints.size() - 2), listePoints
-        .get(listePoints.size() - 1));
+    u = new Vecteur(listePoints.get(listePoints.size() - 2),
+        listePoints.get(listePoints.size() - 1));
     u.setZ(0.0);
     pointRes = new DirectPosition(listePoints.get(listePoints.size() - 1)
-        .getX()
-        + offset * u.vectNorme().getY(), listePoints
-        .get(listePoints.size() - 1).getY()
+        .getX() + offset * u.vectNorme().getY(), listePoints.get(
+        listePoints.size() - 1).getY()
         - offset * u.vectNorme().getX(), listePoints
         .get(listePoints.size() - 1).getZ());
     ligneResultat.addControlPoint(pointRes);
@@ -481,13 +480,12 @@ public abstract class Operateurs {
         ligneResultat.addControlPoint(pointRes);
       }
     }
-    u = new Vecteur(listePoints.get(listePoints.size() - 2), listePoints
-        .get(listePoints.size() - 1));
+    u = new Vecteur(listePoints.get(listePoints.size() - 2),
+        listePoints.get(listePoints.size() - 1));
     u.setZ(0);
     pointRes = new DirectPosition(listePoints.get(listePoints.size() - 1)
-        .getX()
-        - offset * u.vectNorme().getY(), listePoints
-        .get(listePoints.size() - 1).getY()
+        .getX() - offset * u.vectNorme().getY(), listePoints.get(
+        listePoints.size() - 1).getY()
         + offset * u.vectNorme().getX(), listePoints
         .get(listePoints.size() - 1).getZ());
     ligneResultat.addControlPoint(pointRes);
@@ -587,9 +585,8 @@ public abstract class Operateurs {
    */
   public static IDirectPosition translate(IDirectPosition P, Vecteur V) {
     if (!Double.isNaN(P.getZ()) && !Double.isNaN(V.getZ())) {
-      return new DirectPosition(P.getX() + V.getX(), P.getY() + V.getY(), P
-          .getZ()
-          + V.getZ());
+      return new DirectPosition(P.getX() + V.getX(), P.getY() + V.getY(),
+          P.getZ() + V.getZ());
     }
     return new DirectPosition(P.getX() + V.getX(), P.getY() + V.getY(),
         Double.NaN);
@@ -622,8 +619,7 @@ public abstract class Operateurs {
           .getControlPoint());
       currentPoint = currentLine.startPoint();
     } else if (Distances.proche(currentLine.endPoint(), nextLine.startPoint(),
-        0)
-        || Distances.proche(currentLine.endPoint(), nextLine.endPoint(), 0)) {
+        0) || Distances.proche(currentLine.endPoint(), nextLine.endPoint(), 0)) {
       // premier point = point initial de la premiere ligne
       finalPoints.addAll(currentLine.getControlPoint());
       currentPoint = currentLine.endPoint();
@@ -734,8 +730,8 @@ public abstract class Operateurs {
   /**
    * Methode qui donne l'angle (radians) par rapport à l'axe des x de la droite
    * passant au mieux au milieu d'un nuage de points (regression par moindres
-   * carrés). Cet angle (défini à pi près) est entre 0 et pi.
-   * English: Linear approximation.
+   * carrés). Cet angle (défini à pi près) est entre 0 et pi. English: Linear
+   * approximation.
    */
   public static Angle directionPrincipale(IDirectPositionList listePts) {
     Angle ang = new Angle();
@@ -1158,7 +1154,8 @@ public abstract class Operateurs {
   /**
    * Détermine si une liste de points tourne dans le sens direct ou non.
    * <ul>
-   * <li>NB : La liste de points est supposée fermée (premier point = dernier point).
+   * <li>NB : La liste de points est supposée fermée (premier point = dernier
+   * point).
    * <li>NB : renvoie true pour une surface dégénérée.
    * </ul>
    * <p>
@@ -1209,8 +1206,8 @@ public abstract class Operateurs {
     lineStringCourante = linestringList.remove(0);
     for (int i = 0; i < linestringList.size(); i++) {
       ILineString lineStringSuivante = linestringList.get(i);
-      ILineString lineStringCopie = new GM_LineString(lineStringSuivante
-          .getControlPoint());
+      ILineString lineStringCopie = new GM_LineString(
+          lineStringSuivante.getControlPoint());
       DirectPositionList pointsLiaison = new DirectPositionList();
       // Si le point de départ de la polyligne courante = point de départ
       // de la polyligne suivante
@@ -1276,13 +1273,13 @@ public abstract class Operateurs {
     if (points.size() < 2) {
       return -1;
     }
-    IDirectPosition ptmin = Operateurs.projection(point, points.get(0), points
-        .get(1));
+    IDirectPosition ptmin = Operateurs.projection(point, points.get(0),
+        points.get(1));
     double dmin = point.distance(ptmin);
     int imin = 0;
     for (int i = 1; i < points.size() - 1; i++) {
-      IDirectPosition pt = Operateurs.projection(point, points.get(i), points
-          .get(i + 1));
+      IDirectPosition pt = Operateurs.projection(point, points.get(i),
+          points.get(i + 1));
       double d = point.distance(pt);
       if (d < dmin) {
         ptmin = pt;

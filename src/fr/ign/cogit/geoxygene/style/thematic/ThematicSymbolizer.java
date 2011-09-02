@@ -36,17 +36,22 @@ import fr.ign.cogit.geoxygene.style.Symbolizer;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ThematicSymbolizer extends AbstractSymbolizer {
   @XmlElement(name = "DiagramSymbolizer")
-  private List<DiagramSymbolizer> symbolizers = new ArrayList<DiagramSymbolizer>(0);
+  private List<DiagramSymbolizer> symbolizers = new ArrayList<DiagramSymbolizer>(
+      0);
+
   public List<DiagramSymbolizer> getSymbolizers() {
     return this.symbolizers;
   }
+
   public void setSymbolizers(List<DiagramSymbolizer> symbolizers) {
     this.symbolizers = symbolizers;
   }
+
   @XmlTransient
   private Map<IFeature, IDirectPosition> points = new HashMap<IFeature, IDirectPosition>();
   @XmlTransient
   private Map<IFeature, Double> radius = new HashMap<IFeature, Double>();
+
   @SuppressWarnings("unchecked")
   @Override
   public void paint(IFeature feature, Viewport viewport, Graphics2D graphics) {
@@ -55,12 +60,12 @@ public class ThematicSymbolizer extends AbstractSymbolizer {
     }
     for (DiagramSymbolizer s : this.getSymbolizers()) {
       if (s.getDiagramType().equalsIgnoreCase("piechart")) { //$NON-NLS-1$
-//        double size = 1.0;
-//        for (DiagramSizeElement element : s.getDiagramSize()) {
-//          if (element instanceof DiagramRadius) {
-//            size = element.getValue();
-//          }
-//        }
+      // double size = 1.0;
+      // for (DiagramSizeElement element : s.getDiagramSize()) {
+      // if (element instanceof DiagramRadius) {
+      // size = element.getValue();
+      // }
+      // }
         IDirectPosition position = points.get(feature);
         Double size = radius.get(feature);
         if (position == null || size == null) {
@@ -73,22 +78,25 @@ public class ThematicSymbolizer extends AbstractSymbolizer {
           }
           GM_MultiCurve<GM_OrientableCurve> contour = new GM_MultiCurve<GM_OrientableCurve>();
           if (feature.getGeom() instanceof GM_Polygon) {
-            contour.add((GM_OrientableCurve) ((GM_Polygon) feature.getGeom()).exteriorLineString());
+            contour.add((GM_OrientableCurve) ((GM_Polygon) feature.getGeom())
+                .exteriorLineString());
           } else {
-            for (GM_Polygon surface : (GM_MultiSurface<GM_Polygon>) feature.getGeom()) {
-              contour.add((GM_OrientableCurve) surface.exteriorLineString());           
+            for (GM_Polygon surface : (GM_MultiSurface<GM_Polygon>) feature
+                .getGeom()) {
+              contour.add((GM_OrientableCurve) surface.exteriorLineString());
             }
           }
           for (Arc a : t.getPopArcs()) {
             ((Population<DefaultFeature>) DataSet.getInstance().getPopulation(
-            "Triangulation")).add(new DefaultFeature(a.getGeometrie()));
+                "Triangulation")).add(new DefaultFeature(a.getGeometrie()));
           }
           double maxDistance = Double.MIN_VALUE;
           Noeud maxNode = null;
           for (Arc a : t.getPopVoronoiEdges().select(feature.getGeom())) {
             if (!a.getGeometrie().intersectsStrictement(feature.getGeom())) {
-              ((Population<DefaultFeature>) DataSet.getInstance().getPopulation(
-              "MedialAxis")).add(new DefaultFeature(a.getGeometrie()));
+              ((Population<DefaultFeature>) DataSet.getInstance()
+                  .getPopulation("MedialAxis")).add(new DefaultFeature(a
+                  .getGeometrie()));
             }
           }
           for (Noeud n : t.getPopVoronoiVertices().select(feature.getGeom())) {
@@ -125,13 +133,16 @@ public class ThematicSymbolizer extends AbstractSymbolizer {
         size *= scale;
         double startAngle = 0.0;
         for (ThematicClass thematicClass : s.getThematicClass()) {
-          double value = ((Number) thematicClass.getClassValue().evaluate(feature)).doubleValue();
-//          AbstractSymbolizer.logger.info(thematicClass.getClassLabel() + " " + value);
+          double value = ((Number) thematicClass.getClassValue().evaluate(
+              feature)).doubleValue();
+          // AbstractSymbolizer.logger.info(thematicClass.getClassLabel() + " "
+          // + value);
           if (value == 0) {
             continue;
           }
-          double arcAngle = 3.6 *  value;
-//          AbstractSymbolizer.logger.info("\t" + startAngle + " - " + arcAngle);
+          double arcAngle = 3.6 * value;
+          // AbstractSymbolizer.logger.info("\t" + startAngle + " - " +
+          // arcAngle);
           graphics.setColor(thematicClass.getFill().getColor());
           graphics.fillArc((int) (point.getX() - size),
               (int) (point.getY() - size), (int) (2 * size), (int) (2 * size),

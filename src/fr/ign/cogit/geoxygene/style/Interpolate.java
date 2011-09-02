@@ -11,17 +11,23 @@ import javax.xml.bind.annotation.XmlElement;
 public class Interpolate {
   @XmlElement(name = "LookupValue")
   String lookupvalue;
+
   public String getLookupvalue() {
     return this.lookupvalue;
   }
+
   public void setLookupvalue(String lookupvalue) {
     this.lookupvalue = lookupvalue;
   }
+
   @XmlElement(name = "InterpolationPoint")
-  private List<InterpolationPoint> interpolationPoint = new ArrayList<InterpolationPoint>(0);
+  private List<InterpolationPoint> interpolationPoint = new ArrayList<InterpolationPoint>(
+      0);
+
   public List<InterpolationPoint> getInterpolationPoint() {
     return this.interpolationPoint;
   }
+
   public void setInterpolationPoint(List<InterpolationPoint> interpolationPoint) {
     this.interpolationPoint = interpolationPoint;
   }

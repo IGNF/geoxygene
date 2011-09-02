@@ -41,10 +41,12 @@ public class Extraction implements IExtraction {
 
   /** Identifiant de la zone d'extraction */
   protected int id;
+
   @Override
   public int getId() {
     return this.id;
   }
+
   @Override
   public void setId(int Id) {
     this.id = Id;
@@ -52,10 +54,12 @@ public class Extraction implements IExtraction {
 
   /** géometrie définissant la zone d'extraction */
   protected IPolygon geom = null;
+
   @Override
   public IPolygon getGeom() {
     return this.geom;
   }
+
   @Override
   public void setGeom(IPolygon g) {
     this.geom = g;
@@ -63,10 +67,12 @@ public class Extraction implements IExtraction {
 
   /** Nom de la zone d'extraction */
   protected String nom;
+
   @Override
   public String getNom() {
     return this.nom;
   }
+
   @Override
   public void setNom(String S) {
     this.nom = S;
@@ -77,10 +83,12 @@ public class Extraction implements IExtraction {
    * ne pas utiliser directement
    */
   private int dataSetID;
+
   @Override
   public void setDataSetID(int I) {
     this.dataSetID = I;
   }
+
   @Override
   public int getDataSetID() {
     return this.dataSetID;

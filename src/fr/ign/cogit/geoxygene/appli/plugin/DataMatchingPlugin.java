@@ -73,21 +73,21 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
     this.application = application;
     JMenu menu = new JMenu(I18N.getString("DataMatchingPlugin.DataMatching" //$NON-NLS-1$
         ));
-    JMenuItem menuItem = new JMenuItem(I18N
-        .getString("DataMatchingPlugin.OpenDataMatchingEnvironment" //$NON-NLS-1$
+    JMenuItem menuItem = new JMenuItem(
+        I18N.getString("DataMatchingPlugin.OpenDataMatchingEnvironment" //$NON-NLS-1$
         ));
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    application.getFrame().getJMenuBar().add(menu,
-        application.getFrame().getJMenuBar().getComponentCount() - 1);
+    application
+        .getFrame()
+        .getJMenuBar()
+        .add(menu, application.getFrame().getJMenuBar().getComponentCount() - 1);
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    IPopulation<IFeature> popRef = ShapefileReader
-        .chooseAndReadShapefile();
-    IPopulation<IFeature> popComp = ShapefileReader
-        .chooseAndReadShapefile();
+    IPopulation<IFeature> popRef = ShapefileReader.chooseAndReadShapefile();
+    IPopulation<IFeature> popComp = ShapefileReader.chooseAndReadShapefile();
     this.application.getFrame().getDesktopPane().removeAll();
     List<ReseauApp> reseaux = new ArrayList<ReseauApp>();
     ParametresApp param = new ParametresApp();

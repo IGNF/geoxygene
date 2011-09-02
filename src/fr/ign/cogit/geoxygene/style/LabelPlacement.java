@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlElements;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LabelPlacement {
 
-  @XmlElements( {
+  @XmlElements({
       @XmlElement(name = "LinePlacement", type = LinePlacement.class),
       @XmlElement(name = "PointPlacement", type = PointPlacement.class) })
   private Placement placement = null;

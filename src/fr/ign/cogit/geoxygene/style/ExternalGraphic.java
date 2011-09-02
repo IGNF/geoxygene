@@ -42,7 +42,7 @@ import org.w3c.dom.svg.SVGDocument;
 
 /**
  * @author Julien Perret
- *
+ * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ExternalGraphic {

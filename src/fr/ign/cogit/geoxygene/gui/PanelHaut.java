@@ -40,7 +40,8 @@ public final class PanelHaut extends JPanel {
 
     this.bRafraichir.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) { /*
-                                                       * getFrameMirage().getPanelVisu
+                                                       * getFrameMirage().
+                                                       * getPanelVisu
                                                        * ().activer();
                                                        */
         PanelHaut.this.getFrameMirage().getPanelVisu().repaint();

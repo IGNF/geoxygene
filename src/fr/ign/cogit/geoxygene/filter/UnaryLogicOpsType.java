@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlElements;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class UnaryLogicOpsType extends LogicOpsType {
 
-  @XmlElements( {
+  @XmlElements({
       @XmlElement(name = "PropertyIsEqualTo", type = PropertyIsEqualTo.class),
       @XmlElement(name = "PropertyIsGreaterThan", type = PropertyIsGreaterThan.class),
       @XmlElement(name = "PropertyIsGreaterThanOrEqualTo", type = PropertyIsGreaterThanOrEqualTo.class),

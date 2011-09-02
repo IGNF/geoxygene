@@ -263,8 +263,8 @@ public class ObjectBrowser {
 
     switch (underlyingType) {
       case 'L':
-        underlyingTypeName = typeName.substring(typeIndex + 1, typeName
-            .length() - 1);
+        underlyingTypeName = typeName.substring(typeIndex + 1,
+            typeName.length() - 1);
         return underlyingTypeName;
       case 'B':
         return "byte";

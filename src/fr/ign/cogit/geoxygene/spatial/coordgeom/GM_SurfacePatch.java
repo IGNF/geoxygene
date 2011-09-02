@@ -64,6 +64,7 @@ abstract public class GM_SurfacePatch extends GM_Surface
    * Vaut 0 par défaut.
    */
   protected int numDerivativesOnBoundary = 0;
+
   @Override
   public int getNumDerivativesOnBoundary() {
     return this.numDerivativesOnBoundary;

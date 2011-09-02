@@ -11,10 +11,12 @@ import javax.xml.bind.annotation.XmlTransient;
 public class InterpolationPoint {
   public InterpolationPoint() {
   }
+
   public InterpolationPoint(double data, String value) {
     this.data = data;
     this.value = value;
   }
+
   public InterpolationPoint(double data, Color color) {
     this.data = data;
     String rgb = Integer.toHexString(color.getRGB());
@@ -44,8 +46,10 @@ public class InterpolationPoint {
   public void setValue(String value) {
     this.value = value;
   }
+
   @XmlTransient
   private Color color = null;
+
   public Color getColor() {
     if (this.color == null) {
       this.color = Color.decode(this.value);

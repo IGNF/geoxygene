@@ -54,10 +54,12 @@ public class GM_OrientableSurface extends GM_OrientablePrimitive implements
     IOrientableSurface {
   /** Primitive */
   public ISurface primitive;
+
   @Override
   public ISurface getPrimitive() {
     return this.primitive;
   }
+
   /**
    * Attribut stockant les primitives orientées de cette primitive. Proxy[0] est
    * celle orientée positivement. Proxy[1] est celle orientée négativement. On
@@ -100,6 +102,7 @@ public class GM_OrientableSurface extends GM_OrientablePrimitive implements
     }
     return null;
   }
+
   @Override
   public ISurfaceBoundary boundary() {
     ISurface s = this.getPrimitive();
@@ -115,6 +118,7 @@ public class GM_OrientableSurface extends GM_OrientablePrimitive implements
         .println("GM_OrientableSurface::boundary() : cette méthode ne fonctionne que pour les surfaces composées d'un et d'un seul patch."); //$NON-NLS-1$
     return null;
   }
+
   @Override
   public IDirectPositionList coord() {
     return this.getPrimitive().coord();

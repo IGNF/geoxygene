@@ -43,10 +43,12 @@ public class GM_Point extends GM_Primitive implements IPoint {
    * coordonnées).
    */
   protected IDirectPosition position;
+
   @Override
   public IDirectPosition getPosition() {
     return this.position;
   }
+
   @Override
   public void setPosition(IDirectPosition pos) {
     this.position = pos;
@@ -107,10 +109,12 @@ public class GM_Point extends GM_Primitive implements IPoint {
   public boolean isPoint() {
     return true;
   }
+
   @Override
   public IBoundary boundary() {
     return null;
   }
+
   @Override
   public IDirectPosition centroid() {
     return this.position;

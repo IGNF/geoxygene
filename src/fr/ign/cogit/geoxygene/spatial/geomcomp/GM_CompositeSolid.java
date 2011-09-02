@@ -57,10 +57,12 @@ public class GM_CompositeSolid extends GM_Solid implements ICompositeSolid {
       .getName());
   /** Les GM_Solid constituant self. */
   protected List<ISolid> generator;
+
   @Override
   public List<ISolid> getGenerator() {
     return this.generator;
   }
+
   /**
    * Efface le GM_Solid de rang i. Attention : aucun contrôle de cohérence n'est
    * effectué.
@@ -71,72 +73,87 @@ public class GM_CompositeSolid extends GM_Solid implements ICompositeSolid {
     }
     this.generator.remove(i);
   }
+
   @Override
   public int sizeGenerator() {
     return this.getGenerator().size();
   }
+
   @Override
   public double area() {
     return 0.0;
   }
+
   @Override
   public double volume() {
     return 0.0;
   }
+
   /** Constructeur par défaut. */
   public GM_CompositeSolid() {
     this.generator = new ArrayList<ISolid>(0);
   }
+
   @Override
   public ISolidBoundary boundary() {
     GM_CompositeSolid.logger.error("non implemented method");
     return null;
   }
+
   @Override
   public ArrayList<IOrientableSurface> getFacesList() {
     GM_CompositeSolid.logger.error("non implemented method");
     return null;
   }
+
   @Override
   public Set<IComplex> getComplex() {
     GM_CompositeSolid.logger.error("non implemented method");
     return null;
   }
+
   @Override
   public int sizeComplex() {
     GM_CompositeSolid.logger.error("non implemented method");
     return 0;
   }
+
   /** Set de primitives constituant self. */
-//  protected Set<IGeometry> element = new HashSet<IGeometry>();
+  // protected Set<IGeometry> element = new HashSet<IGeometry>();
   @Override
   public void addElement(IPrimitive value) {
     this.getElement().add(value);
     value.getComplex().add(this);
   }
+
   @Override
   public void removeElement(IPrimitive value) {
     this.getElement().remove(value);
     value.getComplex().remove(this);
   }
+
   @Override
   public Set<IGeometry> getElement() {
-    return null;//this.element;
+    return null;// this.element;
   }
+
   @Override
   public int sizeElement() {
     return this.getElement().size();
   }
+
   /** Les sous-complexes constituant self. */
-//  protected Set<IComplex> subComplex = new HashSet<IComplex>();
+  // protected Set<IComplex> subComplex = new HashSet<IComplex>();
   @Override
   public Set<IComplex> getSubComplex() {
-    return null;//this.subComplex;
+    return null;// this.subComplex;
   }
+
   @Override
   public int sizeSubComplex() {
     return this.getSubComplex().size();
   }
+
   @Override
   public void addSubComplex(IComplex value) {
     this.getSubComplex().add(value);
@@ -144,6 +161,7 @@ public class GM_CompositeSolid extends GM_Solid implements ICompositeSolid {
     this.getElement().add(value);
     value.getElement().add(this);
   }
+
   @Override
   public void removeSubComplex(IComplex value) {
     this.getSubComplex().remove(value);
@@ -151,24 +169,29 @@ public class GM_CompositeSolid extends GM_Solid implements ICompositeSolid {
     this.getElement().remove(value);
     value.getElement().remove(this);
   }
+
   /** Les super-complexes constituant self. */
-//  protected Set<IComplex> superComplex = new HashSet<IComplex>();
+  // protected Set<IComplex> superComplex = new HashSet<IComplex>();
   @Override
   public Set<IComplex> getSuperComplex() {
-    return null;//this.superComplex;
+    return null;// this.superComplex;
   }
+
   @Override
   public void addSuperComplex(IComplex value) {
     this.getSuperComplex().add(value);
   }
+
   @Override
   public void removeSuperComplex(IComplex value) {
     this.getSuperComplex().remove(value);
   }
+
   @Override
   public int sizeSuperComplex() {
     return this.getSuperComplex().size();
   }
+
   @Override
   public boolean isMaximal() {
     return (this.sizeSuperComplex() == 0);

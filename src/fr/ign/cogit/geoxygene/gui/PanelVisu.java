@@ -835,9 +835,8 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
     g2d.translate(pf.getImageableWidth() / 2, pf.getImageableHeight() / 2);
     Dimension d = this.getSize();
 
-    double scale = Math.min(pf.getImageableWidth() / d.width, pf
-        .getImageableHeight()
-        / d.height);
+    double scale = Math.min(pf.getImageableWidth() / d.width,
+        pf.getImageableHeight() / d.height);
     if (scale < 1.0) {
       g2d.scale(scale, scale);
     }
@@ -1147,8 +1146,8 @@ class MouseListenerGeox implements MouseListener {
         FT_FeatureCollection<IFeature> selectionTotale = new FT_FeatureCollection<IFeature>();
         for (Layer l : pv.getSld().getLayers()) {
           if (l.getFeatureCollection() != null) {
-            Collection<? extends IFeature> selection = l
-                .getFeatureCollection().select(p);
+            Collection<? extends IFeature> selection = l.getFeatureCollection()
+                .select(p);
             pv.ajouterSelection(selection, p);
             selectionTotale.addAll(selection);
           }

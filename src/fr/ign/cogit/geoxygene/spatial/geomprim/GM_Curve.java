@@ -60,10 +60,12 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
   private static Logger logger = Logger.getLogger(GM_Curve.class.getName());
   /** Liste de tous les segment de courbe (GM_CurveSegment) constituant self. */
   protected List<ICurveSegment> segment;
+
   @Override
   public List<ICurveSegment> getSegment() {
     return this.segment;
   }
+
   @Override
   public ICurveSegment getSegment(int i) {
     if ((ICurveSegment.class).isAssignableFrom(this.getClass())) {
@@ -76,6 +78,7 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
     }
     return this.segment.get(i);
   }
+
   @Override
   public void setSegment(int i, ICurveSegment value) {
     if ((ICurveSegment.class).isAssignableFrom(this.getClass())) {
@@ -89,6 +92,7 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
       this.segment.set(i, value);
     }
   }
+
   @Override
   public void addSegment(ICurveSegment value) {
     if ((ICurveSegment.class).isAssignableFrom(this.getClass())) {
@@ -102,6 +106,7 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
       this.segment.add(value);
     }
   }
+
   @Override
   public void addSegment(ICurveSegment value, double tolerance)
       throws Exception {
@@ -127,6 +132,7 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
       }
     }
   }
+
   @Override
   public void addSegmentTry(ICurveSegment value, double tolerance)
       throws Exception {
@@ -150,6 +156,7 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
       }
     }
   }
+
   @Override
   public void addSegment(int i, ICurveSegment value) {
     if ((ICurveSegment.class).isAssignableFrom(this.getClass())) {
@@ -163,6 +170,7 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
       this.segment.add(i, value);
     }
   }
+
   @Override
   public void removeSegment(ICurveSegment value) {
     if ((ICurveSegment.class).isAssignableFrom(this.getClass())) {
@@ -172,6 +180,7 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
       this.segment.remove(value);
     }
   }
+
   @Override
   public void removeSegment(int i) {
     if ((ICurveSegment.class).isAssignableFrom(this.getClass())) {
@@ -181,6 +190,7 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
       this.segment.remove(i);
     }
   }
+
   @Override
   public int sizeSegment() {
     return this.segment.size();
@@ -190,6 +200,7 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
   public void clearSegments() {
     this.segment.clear();
   }
+
   @Override
   public boolean validate(double tolerance) {
     if (this.sizeSegment() <= 1) {
@@ -205,26 +216,26 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
     }
     return true;
   }
+
   /** Constructeur par défaut */
   public GM_Curve() {
     this.segment = new ArrayList<ICurveSegment>(0);
     this.orientation = +1;
     this.primitive = this;
     /*
-    this.proxy[0] = this;
-    GM_OrientableCurve proxy1 = new GM_OrientableCurve();
-    proxy1.orientation = -1;
-    proxy1.proxy[0] = this;
-    proxy1.proxy[1] = proxy1;
-    proxy1.primitive = new GM_Curve(this);
-    this.proxy[1] = proxy1;
-    */
+     * this.proxy[0] = this; GM_OrientableCurve proxy1 = new
+     * GM_OrientableCurve(); proxy1.orientation = -1; proxy1.proxy[0] = this;
+     * proxy1.proxy[1] = proxy1; proxy1.primitive = new GM_Curve(this);
+     * this.proxy[1] = proxy1;
+     */
   }
+
   /** Constructeur à partir d'un et d'un seul GM_CurveSegment */
   public GM_Curve(ICurveSegment C) {
     this();
     this.segment.add(C);
   }
+
   /**
    * Usage interne. Utilisé en interne (dans les constructeurs publics) pour
    * construire la courbe opposé, qui est la primitive de proxy[1]. On définit
@@ -238,25 +249,25 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
     this.orientation = +1;
     this.primitive = this;
     /*
-    this.proxy[0] = this;
-    GM_OrientableCurve proxy1 = new GM_OrientableCurve();
-    proxy1.orientation = -1;
-    proxy1.proxy[0] = this;
-    proxy1.proxy[1] = proxy1;
-    proxy1.primitive = curve;
-    this.proxy[1] = proxy1;
+     * this.proxy[0] = this; GM_OrientableCurve proxy1 = new
+     * GM_OrientableCurve(); proxy1.orientation = -1; proxy1.proxy[0] = this;
+     * proxy1.proxy[1] = proxy1; proxy1.primitive = curve; this.proxy[1] =
+     * proxy1;
      */
   }
+
   @Override
   public IDirectPosition startPoint() {
     return this.getSegment(0).coord().get(0);
   }
+
   @Override
   public IDirectPosition endPoint() {
     ICurveSegment lastSegment = this.getSegment(this.sizeSegment() - 1);
     IDirectPositionList pointArray = lastSegment.coord();
     return pointArray.get(pointArray.size() - 1);
   }
+
   @Override
   public ILineString asLineString(double spacing, double offset,
       double tolerance) {
@@ -284,6 +295,7 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
     }
     return theLineString;
   }
+
   @Override
   public IDirectPositionList coord() {
     DirectPositionList result = new DirectPositionList();
@@ -298,46 +310,55 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
     }
     return result;
   }
+
   @Override
   public IDirectPosition constrParam(double cp) {
     GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return null;
   }
+
   @Override
   public double endConstrParam() {
     GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return 0;
   }
+
   @Override
   public double endParam() {
     GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return 0;
   }
+
   @Override
   public double length(IPosition p1, IPosition p2) {
     GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return 0;
   }
+
   @Override
   public double length(double cparam1, double cparam2) {
     GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return 0;
   }
+
   @Override
   public IDirectPosition param(double s) {
     GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return null;
   }
+
   @Override
   public List<?> paramForPoint(IDirectPosition P) {
     GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return null;
   }
+
   @Override
   public double startConstrParam() {
     GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return 0;
   }
+
   @Override
   public double startParam() {
     GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$

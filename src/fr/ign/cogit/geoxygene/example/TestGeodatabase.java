@@ -50,8 +50,7 @@ import fr.ign.cogit.geoxygene.feature.FT_Feature;
  * 
  */
 
-
-@SuppressWarnings( { "unchecked", "unqualified-field-access" })
+@SuppressWarnings({ "unchecked", "unqualified-field-access" })
 public class TestGeodatabase {
 
   // la bd

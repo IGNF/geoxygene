@@ -58,13 +58,14 @@ public class BezierCurvePlugin implements GeOxygeneApplicationPlugin,
    * @param application the application
    */
   @Override
-public final void initialize(final GeOxygeneApplication application) {
+  public final void initialize(final GeOxygeneApplication application) {
     this.application = application;
     JMenu menu = null;
     for (Component c : application.getFrame().getJMenuBar().getComponents()) {
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Curve")) {
+        if (aMenu.getText() != null
+            && aMenu.getText().equalsIgnoreCase("Curve")) {
           menu = aMenu;
         }
       }
@@ -76,8 +77,8 @@ public final void initialize(final GeOxygeneApplication application) {
     );
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    application.getFrame().getJMenuBar().add(menu,
-        application.getFrame().getJMenuBar().getMenuCount() - 2);
+    application.getFrame().getJMenuBar()
+        .add(menu, application.getFrame().getJMenuBar().getMenuCount() - 2);
   }
 
   @SuppressWarnings("deprecation")
@@ -93,7 +94,8 @@ public final void initialize(final GeOxygeneApplication application) {
       return;
     }
     Layer layer = selectedLayers.iterator().next();
-    Population<DefaultFeature> popBezier = new Population<DefaultFeature>("Bezier"); //$NON-NLS-1$
+    Population<DefaultFeature> popBezier = new Population<DefaultFeature>(
+        "Bezier"); //$NON-NLS-1$
     popBezier.setClasse(DefaultFeature.class);
     popBezier.setPersistant(false);
     for (IFeature f : layer.getFeatureCollection()) {

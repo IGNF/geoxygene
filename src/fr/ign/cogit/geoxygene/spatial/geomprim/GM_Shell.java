@@ -51,14 +51,17 @@ public class GM_Shell extends GM_CompositeSurface implements IShell {
     super();
     this.setListeFaces(lOS);
   }
+
   @Override
   public boolean isSimple() {
     return true;
   }
+
   @Override
   public List<IOrientableSurface> getlisteFaces() {
     return this.getGenerator();
   }
+
   /**
    * Renseigne la liste des facettes composant la surface
    * @param lOS la liste des facettes composant la surface

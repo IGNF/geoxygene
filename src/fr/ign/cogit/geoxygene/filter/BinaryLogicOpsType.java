@@ -34,14 +34,14 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso( { PropertyIsEqualTo.class, PropertyIsGreaterThan.class,
+@XmlSeeAlso({ PropertyIsEqualTo.class, PropertyIsGreaterThan.class,
     PropertyIsGreaterThanOrEqualTo.class, PropertyIsLessThan.class,
     PropertyIsLessThanOrEqualTo.class, PropertyIsNotEqualTo.class, And.class,
     Or.class, Not.class })
 @XmlRootElement
 public abstract class BinaryLogicOpsType extends LogicOpsType {
 
-  @XmlElements( {
+  @XmlElements({
       @XmlElement(name = "PropertyIsEqualTo", type = PropertyIsEqualTo.class),
       @XmlElement(name = "PropertyIsGreaterThan", type = PropertyIsGreaterThan.class),
       @XmlElement(name = "PropertyIsGreaterThanOrEqualTo", type = PropertyIsGreaterThanOrEqualTo.class),

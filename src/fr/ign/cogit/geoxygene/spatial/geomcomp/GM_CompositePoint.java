@@ -52,15 +52,18 @@ public class GM_CompositePoint extends GM_Composite implements ICompositePoint {
    * pas construit).
    */
   protected IPoint generator;
+
   @Override
   public IPoint getGenerator() {
     return this.generator;
   }
+
   @Override
   public void setGenerator(IPoint value) {
     this.generator = value;
     this.position = new DirectPosition(value.getPosition().getCoordinate());
   }
+
   @Override
   public int sizeGenerator() {
     if (this.generator == null) {
@@ -68,33 +71,40 @@ public class GM_CompositePoint extends GM_Composite implements ICompositePoint {
     }
     return 1;
   }
+
   /**
    * DirectPosition du point (DirectPosition étant la classe stockant les
    * coordonnées).
    */
   protected IDirectPosition position;
+
   @Override
   public IDirectPosition getPosition() {
     this.position = this.generator.getPosition();
     return this.position;
   }
+
   /** Constructeur par défaut. */
   public GM_CompositePoint() {
     this.position = new DirectPosition();
   }
+
   /** Constructeur à partir d'un GM_Point. */
   public GM_CompositePoint(IPoint thePoint) {
     this.generator = thePoint;
     this.position = new DirectPosition(thePoint.getPosition().getCoordinate());
   }
+
   @Override
   public void setPosition(IDirectPosition pos) {
     this.getGenerator().setPosition(pos);
   }
+
   @Override
   public Set<IComplex> getComplex() {
     return this.getGenerator().getComplex();
   }
+
   @Override
   public int sizeComplex() {
     return this.getGenerator().sizeComplex();

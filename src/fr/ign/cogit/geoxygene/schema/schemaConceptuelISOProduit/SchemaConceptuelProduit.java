@@ -51,7 +51,7 @@ import fr.ign.cogit.geoxygene.schema.SchemaConceptuel;
  * 
  */
 
-public class SchemaConceptuelProduit implements SchemaConceptuel <FeatureType> {
+public class SchemaConceptuelProduit implements SchemaConceptuel<FeatureType> {
   /**
    * Constructeur par défaut
    */

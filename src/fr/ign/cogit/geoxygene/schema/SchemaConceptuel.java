@@ -31,7 +31,7 @@ import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
  * @author Nathalie Abadie
  * @author Sandrine Balley
  */
-public interface SchemaConceptuel <FT extends GF_FeatureType> {
+public interface SchemaConceptuel<FT extends GF_FeatureType> {
 
   /**
    * dèsignation usuelle du schéma

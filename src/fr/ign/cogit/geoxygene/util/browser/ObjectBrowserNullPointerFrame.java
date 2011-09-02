@@ -90,9 +90,9 @@ public class ObjectBrowserNullPointerFrame extends JFrame {
     try {
       URL imageUrl = this.getClass().getResource("images/exclamation.gif");
 
-      JLabel nullPointerLabel = new JLabel(this.i18nLanguageFile
-          .getString("NullPointerFrameDefaultLabel"), new ImageIcon(imageUrl),
-          SwingConstants.CENTER);
+      JLabel nullPointerLabel = new JLabel(
+          this.i18nLanguageFile.getString("NullPointerFrameDefaultLabel"),
+          new ImageIcon(imageUrl), SwingConstants.CENTER);
 
       this.getContentPane().add(nullPointerLabel, BorderLayout.CENTER);
 

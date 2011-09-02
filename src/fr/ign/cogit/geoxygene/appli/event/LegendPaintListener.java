@@ -47,7 +47,8 @@ public class LegendPaintListener implements PaintListener {
     int maxLineWidth = Integer.MIN_VALUE;
     int maxHeight = 0;
     for (int i = 0; i < rulesWithLegendGraphics.size(); i++) {
-      Layer layer = layerViewPanel.getProjectFrame().getSld().getLayers().get(i);
+      Layer layer = layerViewPanel.getProjectFrame().getSld().getLayers()
+          .get(i);
       List<Rule> rules = rulesWithLegendGraphics.get(i);
       List<Style> styles = stylesWithLegendGraphics.get(i);
       if (rules.size() == 1) {
@@ -56,8 +57,8 @@ public class LegendPaintListener implements PaintListener {
         for (Rule rule : rules) {
           maxGraphicWidth = Math.max(maxGraphicWidth, (int) rule
               .getLegendGraphic().getGraphic().getWidth());
-          maxGraphicHeight = Math.max(maxGraphicHeight,
-              (int) rule.getLegendGraphic().getGraphic().getSize());
+          maxGraphicHeight = Math.max(maxGraphicHeight, (int) rule
+              .getLegendGraphic().getGraphic().getSize());
         }
         String title = layer.getName();
         if (styles.get(0) instanceof UserStyle) {
@@ -66,9 +67,10 @@ public class LegendPaintListener implements PaintListener {
             title = styleTitle;
           }
         }
-        maxLineWidth = Math.max(maxLineWidth, maxGraphicWidth
-            + shift + graphics.getFontMetrics().stringWidth(title));
-        maxHeight += Math.max(maxGraphicHeight, graphics.getFontMetrics().getHeight());
+        maxLineWidth = Math.max(maxLineWidth, maxGraphicWidth + shift
+            + graphics.getFontMetrics().stringWidth(title));
+        maxHeight += Math.max(maxGraphicHeight, graphics.getFontMetrics()
+            .getHeight());
       } else {
         if (rules.size() > 1) {
           String title = layer.getName();
@@ -78,32 +80,37 @@ public class LegendPaintListener implements PaintListener {
               title = styleTitle;
             }
           }
-          maxLineWidth = Math.max(maxLineWidth, graphics.getFontMetrics().stringWidth(title));
+          maxLineWidth = Math.max(maxLineWidth, graphics.getFontMetrics()
+              .stringWidth(title));
           maxHeight += graphics.getFontMetrics().getHeight();
           for (Rule rule : rules) {
-            maxLineWidth = Math.max(maxLineWidth,
-                graphics.getFontMetrics().stringWidth(rule.getTitle())
-                + 2 * shift + (int) rule.getLegendGraphic().getGraphic().getWidth());
-            maxHeight += Math
-            .max((int) rule.getLegendGraphic().getGraphic().getSize(),
-                graphics.getFontMetrics().getHeight());
+            maxLineWidth = Math.max(maxLineWidth, graphics.getFontMetrics()
+                .stringWidth(rule.getTitle())
+                + 2
+                * shift
+                + (int) rule.getLegendGraphic().getGraphic().getWidth());
+            maxHeight += Math.max((int) rule.getLegendGraphic().getGraphic()
+                .getSize(), graphics.getFontMetrics().getHeight());
           }
-//          maxHeight += graphics.getFontMetrics().getHeight();
+          // maxHeight += graphics.getFontMetrics().getHeight();
         }
       }
     }
-//    System.out.println("maxLineWidth = " + maxLineWidth);
+    // System.out.println("maxLineWidth = " + maxLineWidth);
     if (maxLineWidth <= 0) {
       return;
     }
     int textBaseLine = layerViewPanel.getWidth() - maxLineWidth - 2 * shift;
     graphics.setColor(Color.WHITE);
-    graphics.fillRect(textBaseLine - shift, shift, maxLineWidth + 2 * shift, maxHeight + 2 * shift);
+    graphics.fillRect(textBaseLine - shift, shift, maxLineWidth + 2 * shift,
+        maxHeight + 2 * shift);
     graphics.setColor(Color.BLACK);
-    graphics.drawRect(textBaseLine - shift, shift, maxLineWidth + 2 * shift, maxHeight + 2 * shift);
+    graphics.drawRect(textBaseLine - shift, shift, maxLineWidth + 2 * shift,
+        maxHeight + 2 * shift);
     int textCurrentLine = 2 * shift + graphics.getFontMetrics().getHeight();
     for (int i = 0; i < rulesWithLegendGraphics.size(); i++) {
-      Layer layer = layerViewPanel.getProjectFrame().getSld().getLayers().get(i);
+      Layer layer = layerViewPanel.getProjectFrame().getSld().getLayers()
+          .get(i);
       List<Rule> list = rulesWithLegendGraphics.get(i);
       List<Style> styles = stylesWithLegendGraphics.get(i);
       if (list.size() == 1) {
@@ -112,12 +119,13 @@ public class LegendPaintListener implements PaintListener {
         for (Rule rule : list) {
           maxGraphicWidth = Math.max(maxGraphicWidth, (int) rule
               .getLegendGraphic().getGraphic().getWidth());
-          maxGraphicHeight = Math.max(maxGraphicHeight,
-              (int) rule.getLegendGraphic().getGraphic().getSize());
+          maxGraphicHeight = Math.max(maxGraphicHeight, (int) rule
+              .getLegendGraphic().getGraphic().getSize());
         }
         for (Rule rule : list) {
-          this.paint(rule.getLegendGraphic().getGraphic(), (Graphics2D) graphics,
-              textBaseLine + maxGraphicWidth / 2, textCurrentLine - maxGraphicHeight / 2);
+          this.paint(rule.getLegendGraphic().getGraphic(),
+              (Graphics2D) graphics, textBaseLine + maxGraphicWidth / 2,
+              textCurrentLine - maxGraphicHeight / 2);
         }
         String title = layer.getName();
         if (styles.get(0) instanceof UserStyle) {
@@ -126,9 +134,12 @@ public class LegendPaintListener implements PaintListener {
             title = styleTitle;
           }
         }
-//        System.out.println(layer.getName() + " at " + (textBaseLine + maxGraphicWidth) + " - " + textCurrentLine);
-        graphics.drawString(title, textBaseLine + shift + maxGraphicWidth, textCurrentLine);
-        textCurrentLine += Math.max(maxGraphicHeight, graphics.getFontMetrics().getHeight());
+        // System.out.println(layer.getName() + " at " + (textBaseLine +
+        // maxGraphicWidth) + " - " + textCurrentLine);
+        graphics.drawString(title, textBaseLine + shift + maxGraphicWidth,
+            textCurrentLine);
+        textCurrentLine += Math.max(maxGraphicHeight, graphics.getFontMetrics()
+            .getHeight());
       } else {
         if (list.size() > 1) {
           String title = layer.getName();
@@ -146,18 +157,18 @@ public class LegendPaintListener implements PaintListener {
                     + (int) rule.getLegendGraphic().getGraphic().getSize() / 2,
                 textCurrentLine
                     - (int) rule.getLegendGraphic().getGraphic().getSize() / 2);
-            graphics.drawString(rule.getTitle(), textBaseLine + shift
-                + shift + (int) rule.getLegendGraphic().getGraphic().getSize(),
+            graphics.drawString(rule.getTitle(), textBaseLine + shift + shift
+                + (int) rule.getLegendGraphic().getGraphic().getSize(),
                 textCurrentLine);
-            textCurrentLine += Math
-                .max((int) rule.getLegendGraphic().getGraphic().getSize(),
-                    graphics.getFontMetrics().getHeight());
+            textCurrentLine += Math.max((int) rule.getLegendGraphic()
+                .getGraphic().getSize(), graphics.getFontMetrics().getHeight());
           }
-//          textCurrentLine += graphics.getFontMetrics().getHeight();
+          // textCurrentLine += graphics.getFontMetrics().getHeight();
         }
       }
     }
   }
+
   private void paint(Graphic graphic, Graphics2D g2, int x, int y) {
     Color color = g2.getColor();
     for (Mark mark : graphic.getMarks()) {
@@ -177,8 +188,7 @@ public class LegendPaintListener implements PaintListener {
         g2.draw(markShape);
       }
     }
-    for (ExternalGraphic theGraphic : graphic
-        .getExternalGraphics()) {
+    for (ExternalGraphic theGraphic : graphic.getExternalGraphics()) {
       Image onlineImage = theGraphic.getOnlineResource();
       g2.drawImage(onlineImage, x - onlineImage.getWidth(null) / 2, y
           - onlineImage.getHeight(null) / 2, null);

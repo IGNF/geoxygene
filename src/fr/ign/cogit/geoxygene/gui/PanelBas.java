@@ -54,8 +54,8 @@ public final class PanelBas extends JPanel {
     this.cAffichageEchelle.setFont(this.getFont());
     this.cAffichageEchelle.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        PanelBas.this.getFrameMirage().getPanelVisu().setAffichageEchelle(
-            PanelBas.this.cAffichageEchelle.isSelected());
+        PanelBas.this.getFrameMirage().getPanelVisu()
+            .setAffichageEchelle(PanelBas.this.cAffichageEchelle.isSelected());
         PanelBas.this.getFrameMirage().getPanelVisu().repaint();
       }
     });

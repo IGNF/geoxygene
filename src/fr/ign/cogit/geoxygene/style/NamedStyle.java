@@ -32,6 +32,7 @@ public class NamedStyle extends AbstractStyle {
   public Symbolizer getSymbolizer() {
     return null;
   }
+
   @Override
   public List<FeatureTypeStyle> getFeatureTypeStyles() {
     return null;

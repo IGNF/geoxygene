@@ -95,8 +95,8 @@ public class MovePointMode extends AbstractGeometryEditMode {
             .toModelDirectPosition(e.getPoint());
         if (this.dragCount > 0) {
           RenderUtil.draw(new GM_LineString(new DirectPositionList(
-              this.previousPoint, this.currentPoint, this.nextPoint)),
-              frame.getLayerViewPanel().getViewport(), graphics2D);
+              this.previousPoint, this.currentPoint, this.nextPoint)), frame
+              .getLayerViewPanel().getViewport(), graphics2D);
         }
         this.currentPoint = p;
         RenderUtil.draw(new GM_LineString(new DirectPositionList(
@@ -176,7 +176,8 @@ public class MovePointMode extends AbstractGeometryEditMode {
    * @param point
    * @param points
    */
-  private int closestPointIndex(IDirectPosition point, IDirectPositionList points) {
+  private int closestPointIndex(IDirectPosition point,
+      IDirectPositionList points) {
     int indexPointMin = 0;
     double distanceMin = point.distance(points.get(0));
     for (int index = 1; index < points.size(); index++) {
@@ -288,8 +289,8 @@ public class MovePointMode extends AbstractGeometryEditMode {
   @SuppressWarnings("unchecked")
   public void movePoint(DirectPosition p) {
     if (this.currentFeature.getGeom().isPolygon()) {
-      GM_Polygon polygon = new GM_Polygon((GM_Polygon) this.currentFeature
-          .getGeom());
+      GM_Polygon polygon = new GM_Polygon(
+          (GM_Polygon) this.currentFeature.getGeom());
       this.movePoint(p, polygon);
       this.currentFeature.setGeom(polygon);
     } else {

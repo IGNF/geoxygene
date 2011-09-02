@@ -62,8 +62,10 @@ public class TriangulationPlugin implements GeOxygeneApplicationPlugin,
     );
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    application.getFrame().getJMenuBar().add(menu,
-        application.getFrame().getJMenuBar().getComponentCount() - 1);
+    application
+        .getFrame()
+        .getJMenuBar()
+        .add(menu, application.getFrame().getJMenuBar().getComponentCount() - 1);
   }
 
   @Override
@@ -79,8 +81,8 @@ public class TriangulationPlugin implements GeOxygeneApplicationPlugin,
     }
     Layer layer = selectedLayers.iterator().next();
     double alpha = 100;
-    GM_Polygon characteristicShape = Triangulation.getCharacteristicShape(layer
-        .getFeatureCollection(), alpha);
+    GM_Polygon characteristicShape = Triangulation.getCharacteristicShape(
+        layer.getFeatureCollection(), alpha);
     Population<Face> popExterieurs = new Population<Face>("CharacteristicShape"); //$NON-NLS-1$
     popExterieurs.setClasse(Face.class);
     popExterieurs.setPersistant(false);

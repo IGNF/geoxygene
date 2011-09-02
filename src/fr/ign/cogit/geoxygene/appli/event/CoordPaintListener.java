@@ -20,8 +20,8 @@ public class CoordPaintListener implements MouseMotionListener {
 
   @Override
   public void mouseMoved(MouseEvent e) {
-    CoordPaintListener.displayCoord(e.getPoint(), (LayerViewPanel) e
-        .getSource());
+    CoordPaintListener.displayCoord(e.getPoint(),
+        (LayerViewPanel) e.getSource());
   }
 
   @Override
@@ -51,9 +51,8 @@ public class CoordPaintListener implements MouseMotionListener {
           coordRectLength, 3 * shift - 1);
       graphics.drawString("X : " + Math.round(point.getX()) + "     -     Y : " //$NON-NLS-1$ //$NON-NLS-2$
           + Math.round(point.getY()), layerViewPanel.getWidth()
-          - numericScaleLength - coordRectLength + shift, layerViewPanel
-          .getHeight()
-          - shift);
+          - numericScaleLength - coordRectLength + shift,
+          layerViewPanel.getHeight() - shift);
     } catch (NoninvertibleTransformException e1) {
       e1.printStackTrace();
     }

@@ -81,8 +81,7 @@ public class ARM {
     // Amorce, on prend un point au hasard: le premier
     point = pointsCopie.get(0);
     if (!(point.getGeom() instanceof GM_Point)) {
-      System.out
-          .println(I18N.getString("ARM.AnObjectIsNotAPoint")); //$NON-NLS-1$
+      System.out.println(I18N.getString("ARM.AnObjectIsNotAPoint")); //$NON-NLS-1$
       return null;
     }
     pointsCopie.remove(point);
@@ -100,8 +99,7 @@ public class ARM {
       for (i = 0; i < pointsCopie.size(); i++) {
         point = pointsCopie.get(i);
         if (!(point.getGeom() instanceof GM_Point)) {
-          System.out
-              .println(I18N.getString("ARM.AnObjectIsNotAPoint")); //$NON-NLS-1$
+          System.out.println(I18N.getString("ARM.AnObjectIsNotAPoint")); //$NON-NLS-1$
           return null;
         }
 
@@ -155,8 +153,7 @@ public class ARM {
     while (itObjets.hasNext()) {
       IFeature objet = itObjets.next();
       if (objet.getGeom() == null) {
-        System.out
-            .println(I18N.getString("ARM.AnObjectHasNoGeometry")); //$NON-NLS-1$
+        System.out.println(I18N.getString("ARM.AnObjectHasNoGeometry")); //$NON-NLS-1$
         return null;
       }
       Noeud objet2 = new Noeud();

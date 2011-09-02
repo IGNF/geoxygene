@@ -53,14 +53,17 @@ public class GM_SurfaceBoundary extends GM_PrimitiveBoundary implements
     ISurfaceBoundary {
   /** Anneau extérieur. */
   protected IRing exterior;
+
   @Override
   public IRing getExterior() {
     return this.exterior;
   }
+
   /** Affecte une valeur à l'anneau extérieur */
   protected void setExterior(GM_Ring value) {
     this.exterior = value;
   }
+
   @Override
   public int sizeExterior() {
     if (this.exterior == null) {
@@ -68,45 +71,56 @@ public class GM_SurfaceBoundary extends GM_PrimitiveBoundary implements
     }
     return 1;
   }
+
   /** Anneau(x) intérieur(s) en cas de trou(s) : liste de GM_Ring */
   protected List<IRing> interior;
+
   @Override
   public List<IRing> getInterior() {
     return this.interior;
   }
+
   @Override
   public IRing getInterior(int i) {
     return this.interior.get(i);
   }
+
   @Override
   public void setInterior(int i, IRing value) {
     this.interior.set(i, value);
   }
+
   @Override
   public void addInterior(IRing value) {
     this.interior.add(value);
   }
+
   @Override
   public void addInterior(int i, IRing value) {
     this.interior.add(i, value);
   }
+
   @Override
   public void removeInterior(IRing value) {
     this.interior.remove(value);
   }
+
   @Override
   public void removeInterior(int i) {
     this.interior.remove(i);
   }
+
   @Override
   public int sizeInterior() {
     return this.interior.size();
   }
+
   /** Constructeur par défaut */
   public GM_SurfaceBoundary() {
     this.exterior = null;
     this.interior = new ArrayList<IRing>(0);
   }
+
   /**
    * Constructeur à partir d'un GM_Ring et d'un seul (pour des surfaces sans
    * trou)

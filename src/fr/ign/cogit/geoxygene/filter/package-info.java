@@ -22,13 +22,8 @@
  * <p>
  * It contains GeOxygene OGC Filter Implementation.
  */
-@XmlSchema(
-		xmlns = { 
-				@javax.xml.bind.annotation.XmlNs(prefix = "ogc", 
-						namespaceURI="http://www.opengis.net/ogc")
-		},
-		namespace = "http://www.opengis.net/ogc"
-)
+@XmlSchema(xmlns = { @javax.xml.bind.annotation.XmlNs(prefix = "ogc", namespaceURI = "http://www.opengis.net/ogc") }, namespace = "http://www.opengis.net/ogc")
 package fr.ign.cogit.geoxygene.filter;
+
 import javax.xml.bind.annotation.XmlSchema;
 

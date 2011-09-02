@@ -37,6 +37,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISolid;
 public class GM_MultiSolid<SolidType extends ISolid> extends
     GM_MultiPrimitive<SolidType> implements IMultiSolid<SolidType> {
   static Logger logger = Logger.getLogger(GM_MultiSolid.class.getName());
+
   // Dans la norme, ceci est un attribut et non une méthode.
   // Dans la norme, cet attribut est de type Volume et non double
   @Override
@@ -45,6 +46,7 @@ public class GM_MultiSolid<SolidType extends ISolid> extends
         .error("Non implémentée, utiliser : return CalculSansJava3D.CalculVolume(this); (renvoie 0.0)");
     return 0.0;
   }
+
   // Dans la norme, ceci est un attribut et non une méthode.
   // Dans la norme, cet attribut est de type Area et non double
   @Override

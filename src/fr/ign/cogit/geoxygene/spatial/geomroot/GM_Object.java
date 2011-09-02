@@ -102,14 +102,17 @@ abstract public class GM_Object implements Cloneable, IGeometry {
    * implémentée)
    */
   protected int CRS = -1;
+
   @Override
   public int getCRS() {
     return this.CRS;
   }
+
   @Override
   public void setCRS(int crs) {
     this.CRS = crs;
   }
+
   @Override
   abstract public IBoundary boundary();
 
@@ -131,6 +134,7 @@ abstract public class GM_Object implements Cloneable, IGeometry {
   // }
   @Override
   abstract public IDirectPositionList coord();
+
   @Override
   public Object clone() {
     // FIXME j'ai comme un doute que ça marche ça
@@ -141,6 +145,7 @@ abstract public class GM_Object implements Cloneable, IGeometry {
       return null;
     }
   }
+
   @Override
   public String toString() {
     try {
@@ -150,6 +155,7 @@ abstract public class GM_Object implements Cloneable, IGeometry {
       return null;
     }
   }
+
   @Override
   public void exportWkt(String path, boolean append) {
     try {
@@ -158,6 +164,7 @@ abstract public class GM_Object implements Cloneable, IGeometry {
       e.printStackTrace();
     }
   }
+
   /**
    * Exporte des géométries dans une image. Le format de l'image (.jpg ou .png
    * par defaut) est determiné par l'extension du nom de fichier, a mettre dans
@@ -175,6 +182,7 @@ abstract public class GM_Object implements Cloneable, IGeometry {
       e.printStackTrace();
     }
   }
+
   /**
    * Exporte des géométries dans un fichier SVG compressé. Donner dans la
    * variable "path" le chemin et le nom du fichier (avec l'extension .svgz) Le
@@ -192,6 +200,7 @@ abstract public class GM_Object implements Cloneable, IGeometry {
       e.printStackTrace();
     }
   }
+
   @Override
   public IEnvelope envelope() {
     IDirectPositionList list = this.coord();
@@ -218,27 +227,33 @@ abstract public class GM_Object implements Cloneable, IGeometry {
     }
     return new GM_Envelope(xmin, xmax, ymin, ymax);
   }
+
   @Override
   public IPolygon mbRegion() {
     return new GM_Polygon(this.envelope());
   }
+
   @Override
   public boolean intersectsStrictement(IGeometry geom) {
     return (this.intersects(geom) && !this.contains(geom)
         && !geom.contains(this) && !this.touches(geom));
   }
+
   @Override
   public IDirectPosition centroid() {
     return new JtsAlgorithms().centroid(this);
   }
+
   @Override
   public IGeometry convexHull() {
     return new JtsAlgorithms().convexHull(this);
   }
+
   @Override
   public IGeometry buffer(double distance) {
     return new JtsAlgorithms().buffer(this, distance);
   }
+
   @Override
   public IGeometry buffer(double distance, int nSegments) {
     return new JtsAlgorithms().buffer(this, distance, nSegments);
@@ -258,94 +273,117 @@ abstract public class GM_Object implements Cloneable, IGeometry {
   public IGeometry buffer(double distance, int nSegments, int cap) {
     return new JtsAlgorithms().buffer(this, distance, nSegments, cap);
   }
+
   @Override
   public IGeometry buffer(double distance, int nSegments, int cap, int join) {
     return new JtsAlgorithms().buffer(this, distance, nSegments, cap, join);
   }
+
   @Override
   public IGeometry union(IGeometry geom) {
     return new JtsAlgorithms().union(this, geom);
   }
+
   @Override
   public IGeometry intersection(IGeometry geom) {
     return new JtsAlgorithms().intersection(this, geom);
   }
+
   @Override
   public IGeometry difference(IGeometry geom) {
     return new JtsAlgorithms().difference(this, geom);
   }
+
   @Override
   public IGeometry symmetricDifference(IGeometry geom) {
     return new JtsAlgorithms().symDifference(this, geom);
   }
+
   @Override
   public boolean equals(IGeometry geom) {
     return new JtsAlgorithms().equals(this, geom);
   }
+
   @Override
   public boolean equalsExact(IGeometry geom) {
     return new JtsAlgorithms().equalsExact(this, geom);
   }
+
   @Override
   public boolean equalsExact(IGeometry geom, double tolerance) {
     return new JtsAlgorithms().equalsExact(this, geom, tolerance);
   }
+
   @Override
   public boolean contains(IGeometry geom) {
     return new JtsAlgorithms().contains(this, geom);
   }
+
   @Override
   public boolean crosses(IGeometry geom) {
     return new JtsAlgorithms().crosses(this, geom);
   }
+
   @Override
   public boolean disjoint(IGeometry geom) {
     return new JtsAlgorithms().disjoint(this, geom);
   }
+
   @Override
   public boolean within(IGeometry geom) {
     return new JtsAlgorithms().within(this, geom);
   }
+
   @Override
   public boolean isWithinDistance(IGeometry geom, double distance) {
     return new JtsAlgorithms().isWithinDistance(this, geom, distance);
   }
+
   @Override
   public boolean intersects(IGeometry geom) {
     return new JtsAlgorithms().intersects(this, geom);
   }
+
   @Override
   public boolean overlaps(IGeometry geom) {
     return new JtsAlgorithms().overlaps(this, geom);
   }
+
   @Override
   public boolean touches(IGeometry geom) {
     return new JtsAlgorithms().touches(this, geom);
   }
+
   @Override
   public boolean isEmpty() {
     return new JtsAlgorithms().isEmpty(this);
   }
+
   @Override
   public boolean isSimple() {
     return new JtsAlgorithms().isSimple(this);
   }
+
   @Override
   public boolean isValid() {
     return new JtsAlgorithms().isValid(this);
   }
+
   @Override
   public double distance(IGeometry geom) {
     return new JtsAlgorithms().distance(this, geom);
   }
+
   @Override
   public double area() {
     return new JtsAlgorithms().area(this);
   }
+
   @Override
   public double length() {
     return new JtsAlgorithms().length(this);
   }
+
   @Override
   public int dimension() {
     if (this instanceof GM_Solid) {
@@ -383,34 +421,42 @@ abstract public class GM_Object implements Cloneable, IGeometry {
     }
     return new JtsAlgorithms().dimension(this);
   }
+
   @Override
   public int numPoints() {
     return new JtsAlgorithms().numPoints(this);
   }
+
   @Override
   public IGeometry translate(final double tx, final double ty, final double tz) {
     return new JtsAlgorithms().translate(this, tx, ty, tz);
   }
+
   @Override
   public String relate(IGeometry geom) {
     return new JtsAlgorithms().relate(this, geom);
   }
+
   @Override
   public boolean isLineString() {
     return false;
   }
+
   @Override
   public boolean isMultiCurve() {
     return false;
   }
+
   @Override
   public boolean isPolygon() {
     return false;
   }
+
   @Override
   public boolean isMultiSurface() {
     return false;
   }
+
   @Override
   public boolean isPoint() {
     return false;

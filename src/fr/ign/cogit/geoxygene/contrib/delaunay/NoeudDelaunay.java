@@ -39,18 +39,23 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 
 public class NoeudDelaunay extends Noeud {
   private String nomclasseligne = null;
+
   public String getNomclasseligne() {
     return this.nomclasseligne;
   }
+
   public void setNomclasseligne(String nom) {
     this.nomclasseligne = nom;
   }
+
   public NoeudDelaunay() {
     super();
   }
+
   public NoeudDelaunay(IPoint point) {
     super(point);
   }
+
   public NoeudDelaunay(IDirectPosition dp) {
     super(dp);
   }

@@ -94,19 +94,20 @@ public class MoveFeatureMode extends AbstractGeometryEditMode {
         if (this.dragCount > 0) {
           for (IFeature feature : frame.getLayerViewPanel()
               .getSelectedFeatures()) {
-            RenderUtil.draw(feature.getGeom().translate(
-                this.currentPoint.getX() - this.initialPoint.getX(),
-                this.currentPoint.getY() - this.initialPoint.getY(), 0), frame
-                .getLayerViewPanel().getViewport(), graphics2D);
+            RenderUtil.draw(
+                feature.getGeom().translate(
+                    this.currentPoint.getX() - this.initialPoint.getX(),
+                    this.currentPoint.getY() - this.initialPoint.getY(), 0),
+                frame.getLayerViewPanel().getViewport(), graphics2D);
           }
         }
         this.currentPoint = p;
-        for (IFeature feature : frame.getLayerViewPanel()
-            .getSelectedFeatures()) {
-          RenderUtil.draw(feature.getGeom().translate(
-              this.currentPoint.getX() - this.initialPoint.getX(),
-              this.currentPoint.getY() - this.initialPoint.getY(), 0), frame
-              .getLayerViewPanel().getViewport(), graphics2D);
+        for (IFeature feature : frame.getLayerViewPanel().getSelectedFeatures()) {
+          RenderUtil.draw(
+              feature.getGeom().translate(
+                  this.currentPoint.getX() - this.initialPoint.getX(),
+                  this.currentPoint.getY() - this.initialPoint.getY(), 0),
+              frame.getLayerViewPanel().getViewport(), graphics2D);
         }
         this.dragCount++;
       } catch (NoninvertibleTransformException e1) {

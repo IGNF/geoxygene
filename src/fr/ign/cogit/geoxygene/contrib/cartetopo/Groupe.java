@@ -36,9 +36,11 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
  */
 public class Groupe extends ElementCarteTopo {
   private double length = 0.0;
+
   public double getLength() {
     return this.length;
   }
+
   public void setLength(double length) {
     this.length = length;
   }
@@ -188,7 +190,8 @@ public class Groupe extends ElementCarteTopo {
    * est 2 fois dans la liste
    */
   public List<Arc> getAdjacents() {
-    List<Arc> arcs = new ArrayList<Arc>(this.getSortants().size() + this.getEntrants().size());
+    List<Arc> arcs = new ArrayList<Arc>(this.getSortants().size()
+        + this.getEntrants().size());
     arcs.addAll(this.getSortants());
     arcs.addAll(this.getEntrants());
     return arcs;
@@ -505,8 +508,10 @@ public class Groupe extends ElementCarteTopo {
       }
     }
   }
+
   @Override
   public String toString() {
-    return this.getClass().getSimpleName() + " " + this.getGeom() + " " + this.longueur(); //$NON-NLS-1$ //$NON-NLS-2$
+    return this.getClass().getSimpleName()
+        + " " + this.getGeom() + " " + this.longueur(); //$NON-NLS-1$ //$NON-NLS-2$
   }
 }

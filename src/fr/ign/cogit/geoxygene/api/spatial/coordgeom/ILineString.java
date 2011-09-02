@@ -43,6 +43,7 @@ public interface ILineString extends ICurveSegment {
   // ////////////////////////////////////////////////////////////////////////
   @Override
   public abstract IDirectPositionList coord();
+
   @Override
   public abstract ICurveSegment reverse();
 
@@ -52,13 +53,16 @@ public interface ILineString extends ICurveSegment {
    * @return
    */
   public abstract boolean isClosed(double tolerance);
+
   /**
    * @return <code>true</code> if this LineString is closed (start point=end
    *         point); <code>false</code> otherwise.
    */
   public abstract boolean isClosed();
+
   @Override
   public abstract Object clone();
+
   @Override
   public abstract boolean isLineString();
 }

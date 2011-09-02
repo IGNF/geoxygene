@@ -24,13 +24,14 @@ import fr.ign.cogit.geoxygene.appli.ProjectFrame;
  * 
  */
 public class GeoTiffReader {
-	/**
-	 * Logger.
-	 */
-	private static Logger logger = Logger.getLogger(GeoTiffReader.class
-			.getName());
+  /**
+   * Logger.
+   */
+  private static Logger logger = Logger
+      .getLogger(GeoTiffReader.class.getName());
 
-  public static BufferedImage loadGeoTiffImage(String fileName, double[][] range, CoordinateReferenceSystem[] crs) {
+  public static BufferedImage loadGeoTiffImage(String fileName,
+      double[][] range, CoordinateReferenceSystem[] crs) {
 
     // Get the file
     FileInputStream file = null;
@@ -77,8 +78,7 @@ public class GeoTiffReader {
     range[1][0] = env.getMinimum(1);
     range[1][1] = env.getMaximum(1);
 
-    crs[0] = coverage
-    .getCoordinateReferenceSystem2D();
+    crs[0] = coverage.getCoordinateReferenceSystem2D();
 
     // Return image
     return PlanarImage.wrapRenderedImage(renderedImage).getAsBufferedImage();

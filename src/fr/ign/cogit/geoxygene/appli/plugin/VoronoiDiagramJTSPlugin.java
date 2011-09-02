@@ -62,7 +62,8 @@ public class VoronoiDiagramJTSPlugin implements GeOxygeneApplicationPlugin,
     for (Component c : application.getFrame().getJMenuBar().getComponents()) {
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Triangulation")) {
+        if (aMenu.getText() != null
+            && aMenu.getText().equalsIgnoreCase("Triangulation")) {
           menu = aMenu;
         }
       }
@@ -74,8 +75,8 @@ public class VoronoiDiagramJTSPlugin implements GeOxygeneApplicationPlugin,
     );
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    application.getFrame().getJMenuBar().add(menu,
-        application.getFrame().getJMenuBar().getMenuCount() - 2);
+    application.getFrame().getJMenuBar()
+        .add(menu, application.getFrame().getJMenuBar().getMenuCount() - 2);
   }
 
   @Override
@@ -93,9 +94,9 @@ public class VoronoiDiagramJTSPlugin implements GeOxygeneApplicationPlugin,
     TriangulationJTS triangulation = new TriangulationJTS("VoronoiDiagramJTS");
     triangulation.importAsNodes(layer.getFeatureCollection());
     try {
-        triangulation.triangule("v");
+      triangulation.triangule("v");
     } catch (Exception e1) {
-        e1.printStackTrace();
+      e1.printStackTrace();
     }
     Population<Face> popVoronoi = new Population<Face>("Faces");
     popVoronoi.setElements(triangulation.getPopVoronoiFaces().getElements());

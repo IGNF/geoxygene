@@ -146,34 +146,32 @@ public class Vecteur {
       this.setY((this.getY() / normev));
     }
   }
-  
+
   /**
    * Renvoie un vecteur normé et ne modifie pas le this
    * @return renvoie le vecteur normalisé
    */
-  public Vecteur getNormalised(){
-    
-    double x,y,z;
+  public Vecteur getNormalised() {
+
+    double x, y, z;
     double normev = this.norme();
     x = (this.getX() / normev);
     y = (this.getY() / normev);
     if (!Double.isNaN(this.getZ())) {
       z = this.getZ() / normev;
-      
-      return new Vecteur(x,y,z);
-    } 
-    
-    
-    return new Vecteur(x,y,Double.NaN);
-    
+
+      return new Vecteur(x, y, z);
+    }
+
+    return new Vecteur(x, y, Double.NaN);
+
   }
 
   /** Renvoie un NOUVEAU vecteur égal à (this + v1) */
   public Vecteur ajoute(Vecteur v1) {
     if (!Double.isNaN(this.getZ()) && !Double.isNaN(v1.getZ())) {
-      return new Vecteur(new DirectPosition(this.getX() + v1.getX(), this
-          .getY()
-          + v1.getY(), this.getZ() + v1.getZ()));
+      return new Vecteur(new DirectPosition(this.getX() + v1.getX(),
+          this.getY() + v1.getY(), this.getZ() + v1.getZ()));
     }
     return new Vecteur(new DirectPosition(this.getX() + v1.getX(), this.getY()
         + v1.getY(), Double.NaN));
@@ -182,9 +180,8 @@ public class Vecteur {
   /** Renvoie un NOUVEAU vecteur égal à (this - v1) */
   public Vecteur soustrait(Vecteur v1) {
     if (!Double.isNaN(this.getZ()) && !Double.isNaN(v1.getZ())) {
-      return new Vecteur(new DirectPosition(this.getX() - v1.getX(), this
-          .getY()
-          - v1.getY(), this.getZ() - v1.getZ()));
+      return new Vecteur(new DirectPosition(this.getX() - v1.getX(),
+          this.getY() - v1.getY(), this.getZ() - v1.getZ()));
     }
     return new Vecteur(new DirectPosition(this.getX() - v1.getX(), this.getY()
         - v1.getY(), Double.NaN));

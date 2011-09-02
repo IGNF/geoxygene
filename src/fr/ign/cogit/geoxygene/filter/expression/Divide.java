@@ -35,13 +35,11 @@ public class Divide extends BinaryExpression {
   @Override
   public Object evaluate(Object object) {
     BigDecimal value1 = (this.getExpression1().evaluate(object) instanceof BigDecimal) ? (BigDecimal) this
-        .getExpression1().evaluate(object)
-        : new BigDecimal(((Boolean) this.getExpression1().evaluate(object))
-            .booleanValue() ? 1 : 0);
+        .getExpression1().evaluate(object) : new BigDecimal(((Boolean) this
+        .getExpression1().evaluate(object)).booleanValue() ? 1 : 0);
     BigDecimal value2 = (this.getExpression2().evaluate(object) instanceof BigDecimal) ? (BigDecimal) this
-        .getExpression2().evaluate(object)
-        : new BigDecimal(((Boolean) this.getExpression2().evaluate(object))
-            .booleanValue() ? 1 : 0);
+        .getExpression2().evaluate(object) : new BigDecimal(((Boolean) this
+        .getExpression2().evaluate(object)).booleanValue() ? 1 : 0);
     return value1.divide(value2, BinaryExpression.mc);
   }
 }

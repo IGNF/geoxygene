@@ -31,7 +31,8 @@ import org.apache.log4j.Logger;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractSymbolizer implements Symbolizer {
-  protected static Logger logger = Logger.getLogger(AbstractSymbolizer.class.getName());
+  protected static Logger logger = Logger.getLogger(AbstractSymbolizer.class
+      .getName());
 
   @XmlElement(name = "Stroke")
   private Stroke stroke = null;
@@ -83,7 +84,7 @@ public abstract class AbstractSymbolizer implements Symbolizer {
   public void setGeometryPropertyName(String geometryPropertyName) {
     this.geometryPropertyName = geometryPropertyName;
   }
- 
+
   @XmlAttribute(name = "uom")
   private String uom = Symbolizer.METRE;
 
@@ -124,7 +125,7 @@ public abstract class AbstractSymbolizer implements Symbolizer {
   public void setShadow(Shadow shadow) {
     this.shadow = shadow;
   }
-  
+
   @Override
   public String toString() {
     String result = this.getClass().getSimpleName() + ":"; //$NON-NLS-1$

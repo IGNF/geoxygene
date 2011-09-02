@@ -443,8 +443,8 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 
   private String[] getFieldNames() {
     String[] fieldsName = new String[0];
-    if (this.getObjectViewerThemeProperties().getDataSourceType().equals(
-        Utils.SHAPEFILE)) {
+    if (this.getObjectViewerThemeProperties().getDataSourceType()
+        .equals(Utils.SHAPEFILE)) {
       ShapefileReader shpRd = (ShapefileReader) this
           .getObjectViewerThemeProperties().getDataSource();
       Dbf dbf = shpRd.dbf;
@@ -454,8 +454,8 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
       }
     }
 
-    else if (this.getObjectViewerThemeProperties().getDataSourceType().equals(
-        Utils.GEOXYGENE)) {
+    else if (this.getObjectViewerThemeProperties().getDataSourceType()
+        .equals(Utils.GEOXYGENE)) {
       GeOxygeneReader geOxyRd = (GeOxygeneReader) this
           .getObjectViewerThemeProperties().getDataSource();
       fieldsName = geOxyRd.getFieldsNames();
@@ -496,8 +496,8 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
 
   private Class<?> getSelectedFieldClass(String fieldName) {
     Class<?> result = null;
-    if (this.getObjectViewerThemeProperties().getDataSourceType().equals(
-        Utils.GEOXYGENE)) {
+    if (this.getObjectViewerThemeProperties().getDataSourceType()
+        .equals(Utils.GEOXYGENE)) {
       GeOxygeneReader geOxyRd = (GeOxygeneReader) this
           .getObjectViewerThemeProperties().getDataSource();
       result = geOxyRd.getFieldType(fieldName);

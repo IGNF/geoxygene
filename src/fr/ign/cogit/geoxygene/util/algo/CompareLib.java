@@ -554,8 +554,7 @@ public class CompareLib {
         CompareLib.out.println("Saving images...");
         int width = (int) this.baseEnvelope.width() / 100;
         int height = (int) this.baseEnvelope.length() / 100;
-        this
-            .saveImagesCm(nbParameters, outDirPath, factorString, width, height);
+        this.saveImagesCm(nbParameters, outDirPath, factorString, width, height);
         CompareLib.out.indentLeft();
       } else {
         CompareLib.out.indentRight();

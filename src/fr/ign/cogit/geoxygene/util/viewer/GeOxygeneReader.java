@@ -151,7 +151,7 @@ class GeOxygeneReader implements DataSource {
     // init theme
     this.theme = new Theme(this.getLayer());
   }
- 
+
   /** Layer for use in a Theme. */
   public Layer getLayer() {
     return this.layer;
@@ -223,8 +223,8 @@ class GeOxygeneReader implements DataSource {
             || GM_Aggregate.class.isAssignableFrom(geom.getClass())) {
           GM_Aggregate<IGeometry> aggr = (GM_Aggregate<IGeometry>) geom;
           for (IGeometry o : aggr) {
-            pointLayer.addGeoPoint(this.geOxygenePointToGeoPoint(feat
-                .hashCode(), o));
+            pointLayer.addGeoPoint(this.geOxygenePointToGeoPoint(
+                feat.hashCode(), o));
           }
         }
       }
@@ -246,14 +246,14 @@ class GeOxygeneReader implements DataSource {
       IGeometry geom = feat.getGeom();
       if (geom != null) {
         if (GM_LineString.class.isAssignableFrom(geom.getClass())) {
-          lineLayer.addGeoLine(this.geOxygeneLineStringToGeoLine(feat
-              .hashCode(), geom));
+          lineLayer.addGeoLine(this.geOxygeneLineStringToGeoLine(
+              feat.hashCode(), geom));
         } else if (GM_MultiCurve.class.isAssignableFrom(geom.getClass())
             || GM_Aggregate.class.isAssignableFrom(geom.getClass())) {
           GM_Aggregate<IGeometry> aggr = (GM_Aggregate<IGeometry>) geom;
           for (IGeometry o : aggr) {
-            lineLayer.addGeoLine(this.geOxygeneLineStringToGeoLine(feat
-                .hashCode(), o));
+            lineLayer.addGeoLine(this.geOxygeneLineStringToGeoLine(
+                feat.hashCode(), o));
           }
         }
       }
@@ -276,12 +276,12 @@ class GeOxygeneReader implements DataSource {
         if (GM_Polygon.class.isAssignableFrom(geom.getClass())) {
           GM_Polygon poly = (GM_Polygon) geom;
           GM_Polygon ext = new GM_Polygon(poly.getExterior());
-          polygonLayer.addGeoPolygon(this.geOxygenePolygonToGeoPolygon(feat
-              .hashCode(), ext));
+          polygonLayer.addGeoPolygon(this.geOxygenePolygonToGeoPolygon(
+              feat.hashCode(), ext));
           for (int i = 0; i < poly.sizeInterior(); i++) {
             GM_Polygon inter = new GM_Polygon(poly.getInterior(i));
-            polygonLayer.addGeoPolygon(this.geOxygenePolygonToGeoPolygon(feat
-                .hashCode(), inter));
+            polygonLayer.addGeoPolygon(this.geOxygenePolygonToGeoPolygon(
+                feat.hashCode(), inter));
           }
         } else if (GM_MultiSurface.class.isAssignableFrom(geom.getClass())
             || GM_Aggregate.class.isAssignableFrom(geom.getClass())) {
@@ -289,12 +289,12 @@ class GeOxygeneReader implements DataSource {
           for (IGeometry o : aggr) {
             GM_Polygon poly = (GM_Polygon) o;
             GM_Polygon ext = new GM_Polygon(poly.getExterior());
-            polygonLayer.addGeoPolygon(this.geOxygenePolygonToGeoPolygon(feat
-                .hashCode(), ext));
+            polygonLayer.addGeoPolygon(this.geOxygenePolygonToGeoPolygon(
+                feat.hashCode(), ext));
             for (int i = 0; i < poly.sizeInterior(); i++) {
               GM_Polygon inter = new GM_Polygon(poly.getInterior(i));
-              polygonLayer.addGeoPolygon(this.geOxygenePolygonToGeoPolygon(feat
-                  .hashCode(), inter));
+              polygonLayer.addGeoPolygon(this.geOxygenePolygonToGeoPolygon(
+                  feat.hashCode(), inter));
             }
           }
         }
@@ -522,8 +522,8 @@ class GeOxygeneReader implements DataSource {
   }
 
   private Color getRandomColor() {
-    return new Color((float) Math.random(), (float) Math.random(), (float) Math
-        .random());
+    return new Color((float) Math.random(), (float) Math.random(),
+        (float) Math.random());
   }
 
   public IFeatureCollection<? extends IFeature> getFeatureCollection() {

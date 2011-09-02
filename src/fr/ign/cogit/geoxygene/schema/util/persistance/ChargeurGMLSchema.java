@@ -186,16 +186,16 @@ public class ChargeurGMLSchema {
                           .getNodeValue());
                   // System.out.println("nodeValue = "+noeudAttribut.getNodeValue());
                   fa = new AttributeType();
-                  fa.setMemberName(noeudAttribut.getAttributes().getNamedItem(
-                      "name").getNodeValue());
+                  fa.setMemberName(noeudAttribut.getAttributes()
+                      .getNamedItem("name").getNodeValue());
 
                   // je cherche le type de l'attribut
 
                   // soit c'est un type simple mis directement
                   // en attribut
                   if (noeudAttribut.getAttributes().getNamedItem("type") != null) {
-                    fa.setValueType(noeudAttribut.getAttributes().getNamedItem(
-                        "type").getNodeValue());
+                    fa.setValueType(noeudAttribut.getAttributes()
+                        .getNamedItem("type").getNodeValue());
                     // System.out.println("type direct : "+noeudAttribut.getAttributes().getNamedItem("type").getNodeValue());
                   }
 

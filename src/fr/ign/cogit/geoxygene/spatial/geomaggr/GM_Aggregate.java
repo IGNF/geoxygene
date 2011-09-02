@@ -37,56 +37,68 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  * 
  * @author Thierry Badard & Arnaud Braun
  * @version 1.0
- *
+ * 
  */
 public class GM_Aggregate<GeomType extends IGeometry> extends GM_Object
     implements Collection<GeomType>, IAggregate<GeomType> {
   /** Liste des éléments constituant self. */
   protected List<GeomType> element;
+
   @Override
   public List<GeomType> getList() {
     return this.element;
   }
+
   @Override
   public void setList(List<GeomType> L) {
     this.element = L;
   }
+
   @Override
   public GeomType get(int i) {
     return this.element.get(i);
   }
+
   @Override
   public GeomType set(int i, GeomType value) {
     return this.element.set(i, value);
   }
+
   @Override
   public boolean add(GeomType value) {
     return this.element.add(value);
   }
+
   @Override
   public boolean addAll(List<GeomType> theList) {
     return this.element.addAll(theList);
   }
+
   @Override
   public void add(int i, GeomType value) {
     this.element.add(i, value);
   }
+
   @Override
   public boolean remove(GeomType value) {
     return this.element.remove(value);
   }
+
   @Override
   public void remove(int i) {
     this.element.remove(i);
   }
+
   @Override
   public void clear() {
     this.element.clear();
   }
+
   @Override
   public int size() {
     return this.element.size();
   }
+
   @Override
   public IGeometry[] toArray() {
     IGeometry[] result = new IGeometry[this.size()];
@@ -96,19 +108,23 @@ public class GM_Aggregate<GeomType extends IGeometry> extends GM_Object
     }
     return result;
   }
+
   @Override
   public IBoundary boundary() {
     return null;
   }
+
   /** Constructeur par défaut. */
   public GM_Aggregate() {
     this.element = new ArrayList<GeomType>(0);
   }
+
   /** Constructeur à partir d'un GM_Object. */
   public GM_Aggregate(GeomType anObject) {
     this.element = new ArrayList<GeomType>(1);
     this.add(anObject);
   }
+
   /** Constructeur à partir d'une liste de GM_Object. */
   public GM_Aggregate(List<GeomType> fromSet) {
     int n = fromSet.size();
@@ -119,49 +135,59 @@ public class GM_Aggregate<GeomType extends IGeometry> extends GM_Object
       }
     }
   }
+
   @Override
   public IDirectPositionList coord() {
     IDirectPositionList result = new DirectPositionList();
-    if (!this.isEmpty()) {
+    if (this != null) {
       for (IGeometry o : this) {
         result.addAll(o.coord());
       }
     }
     return result;
   }
+
   @Override
   public boolean addAll(Collection<? extends GeomType> c) {
     return this.element.addAll(c);
   }
+
   @Override
   public boolean contains(Object o) {
     return this.element.contains(o);
   }
+
   @Override
   public boolean containsAll(Collection<?> c) {
     return this.element.containsAll(c);
   }
+
   @Override
   public Iterator<GeomType> iterator() {
     return this.element.iterator();
   }
+
   @SuppressWarnings("unchecked")
   @Override
   public boolean remove(Object o) {
     return this.remove((GeomType) o);
   }
+
   @Override
   public boolean removeAll(Collection<?> c) {
     return this.element.removeAll(c);
   }
+
   @Override
   public boolean retainAll(Collection<?> c) {
     return this.retainAll(c);
   }
+
   @Override
   public <T> T[] toArray(T[] a) {
     return this.element.toArray(a);
   }
+
   @SuppressWarnings("unchecked")
   @Override
   public Object clone() {

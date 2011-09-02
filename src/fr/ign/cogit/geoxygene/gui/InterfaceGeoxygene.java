@@ -196,8 +196,9 @@ public class InterfaceGeoxygene extends JFrame {
          * Sauve le sld courant et la liste des fichiers ouverts...
          */
         /*
-         * logger.info("Sauvegarde d'un sld portant "+getPanelVisu().getSld().getLayers
-         * ().size()+" layers"); getPanelVisu().getSld().toXml("sld.xml");
+         * logger.info("Sauvegarde d'un sld portant "+getPanelVisu().getSld().
+         * getLayers ().size()+" layers");
+         * getPanelVisu().getSld().toXml("sld.xml");
          * chargement.setDataSet(getPanelVisu().getDataset());
          * chargement.toXml("chargement.xml");
          */
@@ -254,8 +255,8 @@ public class InterfaceGeoxygene extends JFrame {
           if (this.getPanelVisu().getDataset().getPopulation(populationName) != null) {
             /** Il existe déjà une population avec ce nom */
             int n = 2;
-            while (this.getPanelVisu().getDataset().getPopulation(
-                populationName + " (" + n + ")") != null) {
+            while (this.getPanelVisu().getDataset()
+                .getPopulation(populationName + " (" + n + ")") != null) {
               n++;
             }
             populationName = populationName + " (" + n + ")";
@@ -264,8 +265,8 @@ public class InterfaceGeoxygene extends JFrame {
           if (this.getPanelVisu().getDataset().getPopulation(populationName) != null) {
             /** Il existe déjà une population avec ce nom */
             int n = 2;
-            while (this.getPanelVisu().getDataset().getPopulation(
-                populationName + " (" + n + ")") != null) {
+            while (this.getPanelVisu().getDataset()
+                .getPopulation(populationName + " (" + n + ")") != null) {
               n++;
             }
             populationName = populationName + " (" + n + ")";
@@ -306,8 +307,11 @@ public class InterfaceGeoxygene extends JFrame {
           InterfaceGeoxygene.logger.debug("Layer " + populationName
               + " non trouvé dans le sld par défaut");
         }
-        layer = this.getPanelVisu().getSld().createLayer(populationName,
-            reader.getPopulation().getFeatureType().getGeometryType());
+        layer = this
+            .getPanelVisu()
+            .getSld()
+            .createLayer(populationName,
+                reader.getPopulation().getFeatureType().getGeometryType());
       }
       this.getPanelVisu().getSld().getLayers().add(layer);
     }
@@ -352,11 +356,17 @@ public class InterfaceGeoxygene extends JFrame {
               + " non trouvé dans le sld par défaut");
         }
         if (population.getFeatureType() == null) {
-          layer = this.getPanelVisu().getSld().createLayer(populationName,
-              population.get(0).getGeom().getClass(), color);
+          layer = this
+              .getPanelVisu()
+              .getSld()
+              .createLayer(populationName,
+                  population.get(0).getGeom().getClass(), color);
         } else {
-          layer = this.getPanelVisu().getSld().createLayer(populationName,
-              population.getFeatureType().getGeometryType(), color);
+          layer = this
+              .getPanelVisu()
+              .getSld()
+              .createLayer(populationName,
+                  population.getFeatureType().getGeometryType(), color);
         }
       }
       this.getPanelVisu().getSld().getLayers().add(layer);
@@ -373,8 +383,11 @@ public class InterfaceGeoxygene extends JFrame {
    */
   public void addPopulation(Population<? extends FT_Feature> population,
       String populationName) {
-    this.addPopulation(population, populationName, new Color((float) Math
-        .random(), (float) Math.random(), (float) Math.random(), 0.5f));
+    this.addPopulation(
+        population,
+        populationName,
+        new Color((float) Math.random(), (float) Math.random(), (float) Math
+            .random(), 0.5f));
   }
 
   /**
@@ -429,11 +442,17 @@ public class InterfaceGeoxygene extends JFrame {
               + " non trouvé dans le sld par défaut");
         }
         if (population.getFeatureType() == null) {
-          layer = this.getPanelVisu().getSld().createLayer(populationName,
-              population.get(0).getGeom().getClass(), color);
+          layer = this
+              .getPanelVisu()
+              .getSld()
+              .createLayer(populationName,
+                  population.get(0).getGeom().getClass(), color);
         } else {
-          layer = this.getPanelVisu().getSld().createLayer(populationName,
-              population.getFeatureType().getGeometryType(), color);
+          layer = this
+              .getPanelVisu()
+              .getSld()
+              .createLayer(populationName,
+                  population.getFeatureType().getGeometryType(), color);
         }
       }
       this.getPanelVisu().getSld().getLayers().add(layer);

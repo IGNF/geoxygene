@@ -91,6 +91,7 @@ public interface IDirectPosition {
   public abstract double orientation(IDirectPosition dp);
 
   public abstract double[] minus(DirectPosition p);
+
   public abstract double[] minus(IDirectPosition p2, double factor);
 
   // ////////////////////////////////////////////////////////////////////////////////////////
@@ -157,6 +158,7 @@ public interface IDirectPosition {
    * @return
    */
   public abstract double distance(IDirectPosition d);
+
   /**
    * Calcul de la distance 2D entre deux directPosition
    * @param d a DirectPosition

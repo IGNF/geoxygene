@@ -741,8 +741,7 @@ public class SchemaBDCarto3Nat {
     // Attribut Sens
     sProduit.createFeatureAttribute(tronconDeRoute, "Sens", "string", true);
     AttributeType sens = tronconDeRoute.getFeatureAttributeByName("Sens");
-    sens
-        .setDefinition("Le sens de circulation est g�r� de fa�on obligatoire sur les tron�ons composant les voies � chauss�es �loign�es et sur les tron�ons constituant un �changeur d�taill�; dans les autres cas, le sens est g�r� si l'information est connue.");
+    sens.setDefinition("Le sens de circulation est g�r� de fa�on obligatoire sur les tron�ons composant les voies � chauss�es �loign�es et sur les tron�ons constituant un �changeur d�taill�; dans les autres cas, le sens est g�r� si l'information est connue.");
     sProduit.createFeatureAttributeValue(sens, "Double sens");
     sProduit.createFeatureAttributeValue(sens, "Sens unique (sens du tron�on)");
     sProduit.createFeatureAttributeValue(sens,
@@ -891,8 +890,7 @@ public class SchemaBDCarto3Nat {
     sProduit.createFeatureAttribute(noeudDuReseauRoutier, "Cote", "entier",
         false);
     AttributeType cote = noeudDuReseauRoutier.getFeatureAttributeByName("Cote");
-    cote
-        .setDefinition("Nombre entier donnant l'altitude en m�tres; ceta ttribut peut ne porter aucune valeur (inconnu). La densit� des points cot�s est d'environ 30 par feuille 1:50 000.");
+    cote.setDefinition("Nombre entier donnant l'altitude en m�tres; ceta ttribut peut ne porter aucune valeur (inconnu). La densit� des points cot�s est d'environ 30 par feuille 1:50 000.");
 
     // Classe Equipement
     // routier///////////////////////////////////////////////////

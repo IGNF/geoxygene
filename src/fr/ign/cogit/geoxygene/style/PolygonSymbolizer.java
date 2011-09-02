@@ -73,11 +73,14 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
   public void setFill(Fill fill) {
     this.fill = fill;
   }
+
   @XmlElement(name = "ColorMap")
   ColorMap colorMap = null;
+
   public ColorMap getColorMap() {
     return this.colorMap;
   }
+
   public void setColorMap(ColorMap colorMap) {
     this.colorMap = colorMap;
   }
@@ -134,8 +137,10 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
       fillColor = this.getFill().getColor();
       fillOpacity = this.getFill().getFillOpacity();
     }
-    if (this.getColorMap() != null && this.getColorMap().getInterpolate() != null) {
-      double value = ((Number) feature.getAttribute(this.getColorMap().getInterpolate().getLookupvalue())).doubleValue();
+    if (this.getColorMap() != null
+        && this.getColorMap().getInterpolate() != null) {
+      double value = ((Number) feature.getAttribute(this.getColorMap()
+          .getInterpolate().getLookupvalue())).doubleValue();
       int rgb = this.getColorMap().getColor(value);
       fillColor = new Color(rgb);
     }
@@ -200,10 +205,12 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
             e.printStackTrace();
           }
         }
-        BasicStroke bs = (BasicStroke)this.getStroke().toAwtStroke((float) scale);
+        BasicStroke bs = (BasicStroke) this.getStroke().toAwtStroke(
+            (float) scale);
         graphics.setColor(color);
         if (feature.getGeom().isPolygon()) {
-          this.drawPolygon((GM_Polygon) feature.getGeom(), viewport, graphics, bs);
+          this.drawPolygon((GM_Polygon) feature.getGeom(), viewport, graphics,
+              bs);
         } else {
           if (feature.getGeom().isMultiSurface()) {
             for (GM_OrientableSurface surface : ((GM_MultiSurface<GM_OrientableSurface>) feature
@@ -327,8 +334,7 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
         } else {
           if (AbstractSymbolizer.logger.isTraceEnabled()) {
             AbstractSymbolizer.logger.trace("null shape for " + polygon); //$NON-NLS-1$
-            AbstractSymbolizer.logger
-                .trace("ring = " + ring); //$NON-NLS-1$
+            AbstractSymbolizer.logger.trace("ring = " + ring); //$NON-NLS-1$
           }
         }
       }

@@ -28,11 +28,13 @@ public class CompassPaintListener implements PaintListener {
     graphics.setFont(font);
     int charWidth = graphics.getFontMetrics().charWidth('N');
     int lineHeight = graphics.getFontMetrics().getHeight();
-    graphics.drawImage(compass.getImage(),
-        layerViewPanel.getWidth() - size - shift, layerViewPanel.getHeight() - shift - size,//shift + lineHeight,
+    graphics.drawImage(compass.getImage(), layerViewPanel.getWidth() - size
+        - shift, layerViewPanel.getHeight() - shift - size,// shift +
+                                                           // lineHeight,
         size, size, null);
     AffineTransform at = new AffineTransform(1d, 0d, 0d, 1d,
-        layerViewPanel.getWidth() - (size + charWidth) / 2 - shift, layerViewPanel.getHeight() - shift - size);//shift + lineHeight);
+        layerViewPanel.getWidth() - (size + charWidth) / 2 - shift,
+        layerViewPanel.getHeight() - shift - size);// shift + lineHeight);
     FontRenderContext frc = new FontRenderContext(at, true, true);
     GlyphVector g = font.createGlyphVector(frc, "N"); //$NON-NLS-1$
     Shape shape = g.getOutline();

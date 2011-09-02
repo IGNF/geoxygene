@@ -34,10 +34,10 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  * @author Julien Perret
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso( { Add.class, Divide.class, Multiply.class, Subtract.class })
+@XmlSeeAlso({ Add.class, Divide.class, Multiply.class, Subtract.class })
 public abstract class BinaryExpression extends Expression {
-  static MathContext mc = new MathContext((int) Math.min(9 + (long) Math
-      .ceil(30.0), Integer.MAX_VALUE), RoundingMode.HALF_EVEN);
+  static MathContext mc = new MathContext((int) Math.min(
+      9 + (long) Math.ceil(30.0), Integer.MAX_VALUE), RoundingMode.HALF_EVEN);
 
   @XmlElementRefs(@XmlElementRef)
   private List<Expression> parameters = new ArrayList<Expression>();

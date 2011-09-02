@@ -42,7 +42,6 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.feature.Representation;
-import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionEvent;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AssociationRole;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
@@ -61,7 +60,7 @@ public abstract class AbstractFeature implements IFeature {
   /**
    * Logger.
    */
-  private static final Logger logger = Logger.getLogger(FT_Feature.class
+  private static final Logger logger = Logger.getLogger(AbstractFeature.class
       .getName());
 
   /**
@@ -71,23 +70,34 @@ public abstract class AbstractFeature implements IFeature {
     return AbstractFeature.logger;
   }
 
+  public AbstractFeature() {
+  }
+
+  public AbstractFeature(IGeometry geometry) {
+    this.geom = geometry;
+  }
+
   protected int id;
+
   @Override
   @Id
   @GeneratedValue
   public int getId() {
     return this.id;
   }
+
   @Override
   public void setId(int Id) {
     this.id = Id;
   }
 
   protected IGeometry geom = null;
+
   @Override
   public IGeometry getGeom() {
     return this.geom;
   }
+
   @Override
   @SuppressWarnings("unchecked")
   public void setGeom(IGeometry g) {
@@ -107,11 +117,12 @@ public abstract class AbstractFeature implements IFeature {
             }
           }
         }
-        if ((previousGeometry != null)
-            && ((this.geom == null) || !previousGeometry.equals(this.geom))) {
-          fc.fireActionPerformed(new FeatureCollectionEvent(fc, this,
-              FeatureCollectionEvent.Type.CHANGED, previousGeometry));
-        }
+        /*
+         * if ((previousGeometry != null) && ((this.geom == null) ||
+         * !previousGeometry.equals(this.geom))) { fc.fireActionPerformed(new
+         * FeatureCollectionEvent(fc, this, FeatureCollectionEvent.Type.CHANGED,
+         * previousGeometry)); }
+         */
       }
     }
   }
@@ -120,33 +131,33 @@ public abstract class AbstractFeature implements IFeature {
   public boolean hasGeom() {
     return (this.geom != null);
   }
+
   protected TP_Object topo = null;
+
   @Override
   public TP_Object getTopo() {
     return this.topo;
   }
+
   @Override
   public void setTopo(TP_Object t) {
     this.topo = t;
   }
+
   @Override
   public boolean hasTopo() {
     return (this.topo != null);
   }
 
-  @Override
-  public FT_Feature cloneGeom() throws CloneNotSupportedException {
-    FT_Feature result = (FT_Feature) this.clone();
-    result.setGeom((IGeometry) this.getGeom().clone());
-    return result;
-  }
-
   /** Lien n-m bidirectionnel vers FT_FeatureCollection. */
-  private List<IFeatureCollection<IFeature>> featurecollections = new ArrayList<IFeatureCollection<IFeature>>(0);
+  private List<IFeatureCollection<IFeature>> featurecollections = new ArrayList<IFeatureCollection<IFeature>>(
+      0);
+
   @Override
   public List<IFeatureCollection<IFeature>> getFeatureCollections() {
     return this.featurecollections;
   }
+
   @Override
   public IFeatureCollection<IFeature> getFeatureCollection(int i) {
     return this.featurecollections.get(i);
@@ -167,6 +178,7 @@ public abstract class AbstractFeature implements IFeature {
   public List<IFeature> getCorrespondants() {
     return this.correspondants;
   }
+
   @Override
   public void setCorrespondants(List<IFeature> L) {
     List<IFeature> old = new ArrayList<IFeature>(this.correspondants);
@@ -179,6 +191,7 @@ public abstract class AbstractFeature implements IFeature {
       O.getCorrespondants().add(this);
     }
   }
+
   @Override
   public IFeature getCorrespondant(int i) {
     if (this.correspondants.size() == 0) {
@@ -186,6 +199,7 @@ public abstract class AbstractFeature implements IFeature {
     }
     return this.correspondants.get(i);
   }
+
   @Override
   public void addCorrespondant(IFeature O) {
     if (O == null) {
@@ -194,6 +208,7 @@ public abstract class AbstractFeature implements IFeature {
     this.correspondants.add(O);
     O.getCorrespondants().add(this);
   }
+
   @Override
   public void removeCorrespondant(IFeature O) {
     if (O == null) {
@@ -202,6 +217,7 @@ public abstract class AbstractFeature implements IFeature {
     this.correspondants.remove(O);
     O.getCorrespondants().remove(this);
   }
+
   @Override
   public void clearCorrespondants() {
     for (IFeature O : this.correspondants) {
@@ -209,12 +225,14 @@ public abstract class AbstractFeature implements IFeature {
     }
     this.correspondants.clear();
   }
+
   @Override
   public void addAllCorrespondants(Collection<IFeature> c) {
     for (IFeature feature : c) {
       this.addCorrespondant(feature);
     }
   }
+
   @Override
   public List<IFeature> getCorrespondants(
       IFeatureCollection<? extends IFeature> pop) {
@@ -310,14 +328,14 @@ public abstract class AbstractFeature implements IFeature {
   public Object getAttribute(AttributeType attribute) {
     if (attribute.getMemberName().equals("geom")) { //$NON-NLS-1$
       AbstractFeature.logger
-      .warn("WARNING : Pour Récupèrer la primitive géométrique par défaut, veuillez utiliser " //$NON-NLS-1$
-          + "la méthode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
+          .warn("WARNING : Pour Récupèrer la primitive géométrique par défaut, veuillez utiliser " //$NON-NLS-1$
+              + "la méthode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
       return this.getGeom();
     }
     if (attribute.getMemberName().equals("topo")) { //$NON-NLS-1$
       AbstractFeature.logger
-      .warn("WARNING : Pour Récupèrer la primitive topologique par défaut, veuillez utiliser " //$NON-NLS-1$
-          + "la méthode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
+          .warn("WARNING : Pour Récupèrer la primitive topologique par défaut, veuillez utiliser " //$NON-NLS-1$
+              + "la méthode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
       return this.getTopo();
     }
     Object valeur = null;
@@ -414,13 +432,13 @@ public abstract class AbstractFeature implements IFeature {
   public void setAttribute(AttributeType attribute, Object valeur) {
     if (attribute.getMemberName().equals("geom")) { //$NON-NLS-1$
       AbstractFeature.logger
-      .warn("WARNING : Pour affecter la primitive géométrique par défaut, veuillez utiliser " //$NON-NLS-1$
-          + "la méthode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
+          .warn("WARNING : Pour affecter la primitive géométrique par défaut, veuillez utiliser " //$NON-NLS-1$
+              + "la méthode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
       this.setGeom((IGeometry) valeur);
     } else if (attribute.getMemberName().equals("topo")) { //$NON-NLS-1$
       AbstractFeature.logger
-      .warn("WARNING : Pour affecter la primitive topologique par défaut, veuillez utiliser " //$NON-NLS-1$
-          + "la méthode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
+          .warn("WARNING : Pour affecter la primitive topologique par défaut, veuillez utiliser " //$NON-NLS-1$
+              + "la méthode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
       this.setTopo((TP_Object) valeur);
     } else {
       try {
@@ -429,8 +447,7 @@ public abstract class AbstractFeature implements IFeature {
           nomFieldMaj2 = attribute.getNomField();
         } else {
           nomFieldMaj2 = Character.toUpperCase(attribute.getNomField()
-              .charAt(0))
-              + attribute.getNomField().substring(1);
+              .charAt(0)) + attribute.getNomField().substring(1);
         }
         String nomSetFieldMethod = "set" + nomFieldMaj2; //$NON-NLS-1$
         Method methodSetter = this.getClass().getDeclaredMethod(
@@ -473,8 +490,7 @@ public abstract class AbstractFeature implements IFeature {
           nomFieldClasseMaj = role.getNomFieldClasse();
         } else {
           nomFieldClasseMaj = Character.toUpperCase(role.getNomFieldClasse()
-              .charAt(0))
-              + role.getNomFieldClasse().substring(1);
+              .charAt(0)) + role.getNomFieldClasse().substring(1);
         }
         String nomGetMethod = "get" + nomFieldClasseMaj; //$NON-NLS-1$
         Method methodGetter = this.getClass().getDeclaredMethod(nomGetMethod,
@@ -503,8 +519,7 @@ public abstract class AbstractFeature implements IFeature {
           nomFieldClasseMaj = role.getNomFieldClasse();
         } else {
           nomFieldClasseMaj = Character.toUpperCase(role.getNomFieldClasse()
-              .charAt(0))
-              + role.getNomFieldClasse().substring(1);
+              .charAt(0)) + role.getNomFieldClasse().substring(1);
         }
         String nomGetMethod = "get" + nomFieldClasseMaj; //$NON-NLS-1$
         Method methodGetter = this.getClass().getDeclaredMethod(nomGetMethod,
@@ -654,6 +669,7 @@ public abstract class AbstractFeature implements IFeature {
     }
     return (this.getAttribute(attribute));
   }
+
   @Override
   public List<? extends FT_Feature> getRelatedFeatures(String nomFeatureType,
       String nomRole) {
@@ -728,28 +744,19 @@ public abstract class AbstractFeature implements IFeature {
     return this.getClass().getName() + " " + this.getGeom(); //$NON-NLS-1$
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    IFeature other = (IFeature) obj;
-    if (!other.getClass().equals(this.getClass())) {
-      return false;
-    }
-    if (other.getId() != this.getId()) {
-      return false;
-    }
-    if (other.getGeom() == null) {
-      return false;
-    }
-    if (!other.getGeom().equals(this.getGeom())) {
-      return false;
-    }
-    return true;
-  }
+  /*
+   * @Override public boolean equals(Object obj) { IFeature other = (IFeature)
+   * obj; if (!other.getClass().equals(this.getClass())) { return false; } if
+   * (other.getId() != this.getId()) { return false; } if (other.getGeom() ==
+   * null) { return false; } if (!other.getGeom().equals(this.getGeom())) {
+   * return false; } return true; }
+   */
 
   @Override
   public int hashCode() {
     return this.getId();
   }
+
   /**
    * Renvoie la classe primitive correspondant à la classe donnée, null si le
    * paramètre ne correspond pas à un type primitif ou s'il n'est pas géré.

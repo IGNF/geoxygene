@@ -108,8 +108,10 @@ public class ArcApp extends Arc {
       EnsembleDeLiens liensNoeuds, EnsembleDeLiens liensArcs) {
     List<Noeud> tousNoeuds;
     Iterator<Groupe> itTousGroupes;
-    List<Noeud> noeudsDebutIn = new ArrayList<Noeud>(0), noeudsDebutOut = new ArrayList<Noeud>(0);
-    List<Noeud> noeudsFinIn = new ArrayList<Noeud>(0), noeudsFinOut = new ArrayList<Noeud>(0);
+    List<Noeud> noeudsDebutIn = new ArrayList<Noeud>(0), noeudsDebutOut = new ArrayList<Noeud>(
+        0);
+    List<Noeud> noeudsFinIn = new ArrayList<Noeud>(0), noeudsFinOut = new ArrayList<Noeud>(
+        0);
     List<List<Noeud>> resultat = new ArrayList<List<Noeud>>(0);
     NoeudApp noeudRef;
     GroupeApp groupeComp;
@@ -214,7 +216,8 @@ public class ArcApp extends Arc {
    * directement, soit par l'intermédiaire d'un groupe.
    */
   public List<IFeature> objetsGeoRefEnCorrespondance(EnsembleDeLiens liensArc) {
-    List<ElementCarteTopo> objetsCtEnCorrespondance = new ArrayList<ElementCarteTopo>(0);
+    List<ElementCarteTopo> objetsCtEnCorrespondance = new ArrayList<ElementCarteTopo>(
+        0);
     List<LienReseaux> liensOK;
     LienReseaux lien;
     Iterator<Groupe> itGroupes;

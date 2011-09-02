@@ -6,7 +6,7 @@ package fr.ign.cogit.geoxygene.api.schemageo.routier;
 import fr.ign.cogit.geoxygene.api.schemageo.support.reseau.ElementPonctuelReseau;
 
 /**
- *element ponctuel de reseau routier
+ * element ponctuel de reseau routier
  * 
  * @author julien Gaffuri 26 juin 2009
  * 

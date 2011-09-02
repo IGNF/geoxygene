@@ -57,34 +57,42 @@ public class GM_CompositeSurface extends GM_OrientableSurface implements
       .getName());
   /** Les GM_OrientableSurface constituant self. */
   protected List<IOrientableSurface> generator;
+
   @Override
   public List<IOrientableSurface> getGenerator() {
     return this.generator;
   }
+
   @Override
   public IOrientableSurface getGenerator(int i) {
     return this.generator.get(i);
   }
+
   @Override
   public void setGenerator(int i, IOrientableSurface value) {
     this.generator.set(i, value);
   }
+
   @Override
   public void addGenerator(IOrientableSurface value) {
     this.generator.add(value);
   }
+
   @Override
   public void addGenerator(IOrientableSurface value, double tolerance)
       throws Exception {
   }
+
   @Override
   public void addGeneratorTry(IOrientableSurface value, double tolerance)
       throws Exception {
   }
+
   @Override
   public void addGenerator(int i, IOrientableSurface value) {
     this.generator.add(i, value);
   }
+
   @Override
   public void removeGenerator(IOrientableSurface value) throws Exception {
     if (this.generator.size() == 1) {
@@ -92,6 +100,7 @@ public class GM_CompositeSurface extends GM_OrientableSurface implements
     }
     this.generator.remove(value);
   }
+
   @Override
   public void removeGenerator(int i) throws Exception {
     if (this.generator.size() == 1) {
@@ -99,10 +108,12 @@ public class GM_CompositeSurface extends GM_OrientableSurface implements
     }
     this.generator.remove(i);
   }
+
   @Override
   public int sizeGenerator() {
     return this.generator.size();
   }
+
   /** Constructeur par défaut. */
   public GM_CompositeSurface() {
     this.generator = new ArrayList<IOrientableSurface>(0);
@@ -131,11 +142,13 @@ public class GM_CompositeSurface extends GM_OrientableSurface implements
      * GM_Surface(this.primitive); this.proxy[1] = proxy1;
      */
   }
+
   /**
    * Primitive. Elle doit etre recalculée à chaque modification de self : fait
    * dans getPrimitive().
    */
   protected ISurface primitive;
+
   @Override
   public ISurface getPrimitive() {
     this.simplifyPrimitive();
@@ -153,16 +166,19 @@ public class GM_CompositeSurface extends GM_OrientableSurface implements
     this.simplifyPrimitive();
     return this.primitive; // equivaut a return this.proxy[0]
   }
+
   @Override
   public IOrientableSurface getNegative() {
     this.simplifyPrimitive();
     return this.primitive.getNegative();
   }
+
   @Override
   public ISurfaceBoundary boundary() {
     this.simplifyPrimitive();
     return this.primitive.boundary();
   }
+
   @Override
   public boolean validate(double tolerance) {
     /*
@@ -176,6 +192,7 @@ public class GM_CompositeSurface extends GM_OrientableSurface implements
      */
     return true;
   }
+
   /**
    * Calcule la primitive se self. MARCHE PAS
    * @param data
@@ -192,50 +209,60 @@ public class GM_CompositeSurface extends GM_OrientableSurface implements
      * (GM_Surface)union.union(data,0.0000000001,surf); } }
      */
   }
+
   public double volume() {
     GM_CompositeSurface.logger.error("non implemented method");
     return 0;
   }
+
   @Override
   public Set<IComplex> getComplex() {
     GM_CompositeSurface.logger.error("non implemented method");
     return null;
   }
+
   @Override
   public int sizeComplex() {
     GM_CompositeSurface.logger.error("non implemented method");
     return 0;
   }
+
   /** Set de primitives constituant self. */
-//  protected Set<IGeometry> element = new HashSet<IGeometry>();
+  // protected Set<IGeometry> element = new HashSet<IGeometry>();
   @Override
   public void addElement(IPrimitive value) {
     this.getElement().add(value);
     value.getComplex().add(this);
   }
+
   @Override
   public void removeElement(IPrimitive value) {
     this.getElement().remove(value);
     value.getComplex().remove(this);
   }
+
   @Override
   public Set<IGeometry> getElement() {
     return null; // this.element;
   }
+
   @Override
   public int sizeElement() {
     return this.getElement().size();
   }
+
   /** Les sous-complexes constituant self. */
-//  protected Set<IComplex> subComplex = new HashSet<IComplex>();
+  // protected Set<IComplex> subComplex = new HashSet<IComplex>();
   @Override
   public Set<IComplex> getSubComplex() {
-    return null;//this.subComplex;
+    return null;// this.subComplex;
   }
+
   @Override
   public int sizeSubComplex() {
     return this.getSubComplex().size();
   }
+
   @Override
   public void addSubComplex(IComplex value) {
     this.getSubComplex().add(value);
@@ -243,6 +270,7 @@ public class GM_CompositeSurface extends GM_OrientableSurface implements
     this.getElement().add(value);
     value.getElement().add(this);
   }
+
   @Override
   public void removeSubComplex(IComplex value) {
     this.getSubComplex().remove(value);
@@ -250,24 +278,29 @@ public class GM_CompositeSurface extends GM_OrientableSurface implements
     this.getElement().remove(value);
     value.getElement().remove(this);
   }
+
   /** Les super-complexes constituant self. */
-//  protected Set<IComplex> superComplex = new HashSet<IComplex>();
+  // protected Set<IComplex> superComplex = new HashSet<IComplex>();
   @Override
   public Set<IComplex> getSuperComplex() {
-    return null;//this.superComplex;
+    return null;// this.superComplex;
   }
+
   @Override
   public void addSuperComplex(IComplex value) {
     this.getSuperComplex().add(value);
   }
+
   @Override
   public void removeSuperComplex(IComplex value) {
     this.getSuperComplex().remove(value);
   }
+
   @Override
   public int sizeSuperComplex() {
     return this.getSuperComplex().size();
   }
+
   @Override
   public boolean isMaximal() {
     return (this.sizeSuperComplex() == 0);

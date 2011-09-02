@@ -53,26 +53,31 @@ public class GM_Complex extends GM_Object implements IComplex {
   public Set<IGeometry> getElement() {
     return null;// this.element
   }
+
   @Override
   public void addElement(IPrimitive value) {
     this.getElement().add(value);
     value.getComplex().add(this);
   }
+
   @Override
   public void removeElement(IPrimitive value) {
     this.getElement().remove(value);
     value.getComplex().remove(this);
   }
+
   @Override
   public int sizeElement() {
     return this.getElement().size();
   }
+
   /** Les sous-complexes constituant self. */
   // protected Set<IComplex> subComplex = new HashSet<IComplex>();
   @Override
   public Set<IComplex> getSubComplex() {
     return null;// this.subComplex;
   }
+
   @Override
   public void addSubComplex(IComplex value) {
     this.getSubComplex().add(value);
@@ -80,6 +85,7 @@ public class GM_Complex extends GM_Object implements IComplex {
     this.getElement().add(value);
     value.getElement().add(this);
   }
+
   @Override
   public void removeSubComplex(IComplex value) {
     this.getSubComplex().remove(value);
@@ -87,36 +93,44 @@ public class GM_Complex extends GM_Object implements IComplex {
     this.getElement().remove(value);
     value.getElement().remove(this);
   }
+
   @Override
   public int sizeSubComplex() {
     return this.getSubComplex().size();
   }
+
   /** Les super-complexes constituant self. */
   // protected Set<IComplex> superComplex = new HashSet<IComplex>();
   @Override
   public Set<IComplex> getSuperComplex() {
     return null;// this.superComplex;
   }
+
   @Override
   public void addSuperComplex(IComplex value) {
     this.getSuperComplex().add(value);
   }
+
   @Override
   public void removeSuperComplex(IComplex value) {
     this.getSuperComplex().remove(value);
   }
+
   @Override
   public int sizeSuperComplex() {
     return this.getSuperComplex().size();
   }
+
   @Override
   public boolean isMaximal() {
     return (this.sizeSuperComplex() == 0);
   }
+
   @Override
   public IComplexBoundary boundary() {
     return null;
   }
+
   @Override
   public IDirectPositionList coord() {
     IDirectPositionList dpl = new DirectPositionList();

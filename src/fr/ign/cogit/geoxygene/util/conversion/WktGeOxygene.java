@@ -436,8 +436,8 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
         // si il y en a une 4ème, alors on est en XYZM et on prend Z
         // sinon, on est en XYM et on ignore la mesure car elle n'est pas gérée
         // par le type DirectPosition
-        p = new DirectPosition(Double.parseDouble(xStr), Double
-            .parseDouble(yStr), Double.parseDouble(zStr));
+        p = new DirectPosition(Double.parseDouble(xStr),
+            Double.parseDouble(yStr), Double.parseDouble(zStr));
         {
           if (true) {
             return p;

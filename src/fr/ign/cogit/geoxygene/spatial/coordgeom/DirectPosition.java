@@ -48,10 +48,12 @@ public class DirectPosition implements IDirectPosition {
    * classe SC_CRS (non implementee).
    */
   protected int CRS;
+
   @Override
   public int getCRS() {
     return this.CRS;
   }
+
   @Override
   public void setCRS(final int crs) {
     this.CRS = crs;
@@ -110,66 +112,80 @@ public class DirectPosition implements IDirectPosition {
   public double[] getCoordinate() {
     return this.coordinate;
   }
+
   @Override
   public int getDimension() {
     return this.dimension;
   }
+
   @Override
   public double getCoordinate(final int i) {
     return this.coordinate[i];
   }
+
   @Override
   public double getX() {
     return this.coordinate[0];
   }
+
   @Override
   public double getY() {
     return this.coordinate[1];
   }
+
   @Override
   public double getZ() {
     return this.coordinate[2];
   }
+
   @Override
   public void setCoordinate(final double[] coord) {
     this.coordinate[0] = coord[0];
     this.coordinate[1] = coord[1];
     this.coordinate[2] = (coord.length == 3) ? coord[2] : Double.NaN;
   }
+
   @Override
   public void setCoordinate(final IPoint thePoint) {
     final IDirectPosition pt = thePoint.getPosition();
     final double[] coord = pt.getCoordinate();
     this.setCoordinate(coord);
   }
+
   @Override
   public void setCoordinate(final int i, final double x) {
     this.coordinate[i] = x;
   }
+
   @Override
   public void setCoordinate(final double x, final double y) {
     this.coordinate[0] = x;
     this.coordinate[1] = y;
     this.coordinate[2] = Double.NaN;
   }
+
   @Override
   public void setCoordinate(final double x, final double y, final double z) {
     this.coordinate[0] = x;
     this.coordinate[1] = y;
     this.coordinate[2] = z;
   }
+
   @Override
   public void setX(final double x) {
     this.coordinate[0] = x;
   }
+
   @Override
   public void setY(final double y) {
     this.coordinate[1] = y;
   }
+
   @Override
   public void setZ(final double z) {
     this.coordinate[2] = z;
   }
+
   // ////////////////////////////////////////////////////////////////////////////////////////
   // Methodes move
   // ////////////////////////////////////////////////////////////////////////////////////////
@@ -181,11 +197,13 @@ public class DirectPosition implements IDirectPosition {
       }
     }
   }
+
   @Override
   public void move(final double offsetX, final double offsetY) {
     this.coordinate[0] += offsetX;
     this.coordinate[1] += offsetY;
   }
+
   @Override
   public void move(final double offsetX, final double offsetY,
       final double offsetZ) {
@@ -195,9 +213,11 @@ public class DirectPosition implements IDirectPosition {
       this.coordinate[2] += offsetZ;
     }
   }
+
   public void move(double[] v) {
     this.move(v, 1.0);
   }
+
   public void move(double[] v, double factor) {
     for (int i = 0; i < v.length && i < this.coordinate.length; i++) {
       this.coordinate[i] += factor * v[i];
@@ -273,6 +293,7 @@ public class DirectPosition implements IDirectPosition {
     }
     return distance2D(d);
   }
+
   @Override
   public double distance2D(IDirectPosition d) {
     double dx = this.getX() - d.getX();
@@ -314,9 +335,11 @@ public class DirectPosition implements IDirectPosition {
   public double[] minus(DirectPosition p) {
     return this.minus(p, 1.0d);
   }
+
   @Override
   public double[] minus(IDirectPosition p2, double factor) {
-    double[] difference = new double[Math.min(this.coordinate.length, p2.getCoordinate().length)];
+    double[] difference = new double[Math.min(this.coordinate.length,
+        p2.getCoordinate().length)];
     for (int i = 0; i < difference.length; i++) {
       difference[i] = (this.coordinate[i] - p2.getCoordinate()[i]) * factor;
     }

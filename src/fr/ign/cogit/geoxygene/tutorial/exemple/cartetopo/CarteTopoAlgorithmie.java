@@ -39,6 +39,7 @@ public class CarteTopoAlgorithmie {
    * Logger.
    */
   static Logger logger = Logger.getLogger(CarteTopoAlgorithmie.class);
+
   /**
    * Détection des faces circulaires.
    * 

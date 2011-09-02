@@ -169,11 +169,11 @@ public class MainFrame extends JFrame {
     this.menuBar = new JMenuBar();
     JMenu fileMenu = new JMenu(I18N.getString("MainFrame.File")); //$NON-NLS-1$
     JMenu viewMenu = new JMenu(I18N.getString("MainFrame.View")); //$NON-NLS-1$
-    JMenu configurationMenu = new JMenu(I18N
-        .getString("MainFrame.Configuration")); //$NON-NLS-1$
+    JMenu configurationMenu = new JMenu(
+        I18N.getString("MainFrame.Configuration")); //$NON-NLS-1$
     JMenu helpMenu = new JMenu(I18N.getString("MainFrame.Help")); //$NON-NLS-1$
-    JMenuItem openFileMenuItem = new JMenuItem(I18N
-        .getString("MainFrame.OpenFile")); //$NON-NLS-1$
+    JMenuItem openFileMenuItem = new JMenuItem(
+        I18N.getString("MainFrame.OpenFile")); //$NON-NLS-1$
     openFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -211,8 +211,8 @@ public class MainFrame extends JFrame {
         }
       }
     });
-    JMenuItem newProjectFrameMenuItem = new JMenuItem(I18N
-        .getString("MainFrame.NewProject")); //$NON-NLS-1$
+    JMenuItem newProjectFrameMenuItem = new JMenuItem(
+        I18N.getString("MainFrame.NewProject")); //$NON-NLS-1$
     newProjectFrameMenuItem
         .addActionListener(new java.awt.event.ActionListener() {
           @Override
@@ -220,40 +220,42 @@ public class MainFrame extends JFrame {
             MainFrame.this.newProjectFrame();
           }
         });
-    
-    JMenuItem saveAsShpMenuItem = new JMenuItem(I18N.getString("MainFrame.SaveAsShp")); //$NON-NLS-1$
+
+    JMenuItem saveAsShpMenuItem = new JMenuItem(
+        I18N.getString("MainFrame.SaveAsShp")); //$NON-NLS-1$
     saveAsShpMenuItem.addActionListener(new java.awt.event.ActionListener() {
-        @Override
-		public void actionPerformed(final ActionEvent e) {
-			ProjectFrame project = MainFrame.this.getSelectedProjectFrame();
-			Set<Layer> selectedLayers = project.getLayerLegendPanel().getSelectedLayers();
-			if (selectedLayers.size() != 1) {
-				logger.error("You must select one (and only one) layer."); //$NON-NLS-1$
-				return;
-			}
-			Layer layer = selectedLayers.iterator().next();
-		
-			IFeatureCollection<? extends IFeature> layerfeatures = layer
-					.getFeatureCollection();
-			if (layerfeatures == null) {
-				logger.error("The layer selected does not contain any feature."); //$NON-NLS-1$
-				return;
-			}
-	        JFileChooser chooser = new JFileChooser(MainFrame.fc
-	                .getPreviousDirectory());
-	            int result = chooser.showSaveDialog(MainFrame.this);
-	            if (result == JFileChooser.APPROVE_OPTION) {
-	              File file = chooser.getSelectedFile();
-	              if (file != null) {
-	                String fileName = file.getAbsolutePath();
-	                project.saveAsShp(fileName, layer);
-	              }
-	            }
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        ProjectFrame project = MainFrame.this.getSelectedProjectFrame();
+        Set<Layer> selectedLayers = project.getLayerLegendPanel()
+            .getSelectedLayers();
+        if (selectedLayers.size() != 1) {
+          logger.error("You must select one (and only one) layer."); //$NON-NLS-1$
+          return;
         }
+        Layer layer = selectedLayers.iterator().next();
+
+        IFeatureCollection<? extends IFeature> layerfeatures = layer
+            .getFeatureCollection();
+        if (layerfeatures == null) {
+          logger.error("The layer selected does not contain any feature."); //$NON-NLS-1$
+          return;
+        }
+        JFileChooser chooser = new JFileChooser(MainFrame.fc
+            .getPreviousDirectory());
+        int result = chooser.showSaveDialog(MainFrame.this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+          File file = chooser.getSelectedFile();
+          if (file != null) {
+            String fileName = file.getAbsolutePath();
+            project.saveAsShp(fileName, layer);
+          }
+        }
+      }
     });
-    
-    JMenuItem saveAsImageMenuItem = new JMenuItem(I18N
-        .getString("MainFrame.SaveAsImage")); //$NON-NLS-1$
+
+    JMenuItem saveAsImageMenuItem = new JMenuItem(
+        I18N.getString("MainFrame.SaveAsImage")); //$NON-NLS-1$
     saveAsImageMenuItem.addActionListener(new java.awt.event.ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -279,15 +281,14 @@ public class MainFrame extends JFrame {
         }
       }
     });
-    
-    
+
     JMenuItem printMenu = new JMenuItem(I18N.getString("MainFrame.Print")); //$NON-NLS-1$
     printMenu.addActionListener(new ActionListener() {
       @Override
-	public void actionPerformed(ActionEvent arg0) {
+      public void actionPerformed(ActionEvent arg0) {
         Thread th = new Thread(new Runnable() {
           @Override
-		public void run() {
+          public void run() {
             try {
               PrinterJob printJob = PrinterJob.getPrinterJob();
               printJob.setPrintable(MainFrame.this.getSelectedProjectFrame()
@@ -298,12 +299,12 @@ public class MainFrame extends JFrame {
               }
             } catch (java.security.AccessControlException ace) {
               JOptionPane.showMessageDialog(MainFrame.this
-                  .getSelectedProjectFrame().getLayerViewPanel(), I18N
-                  .getString("MainFrame.ImpossibleToPrint") //$NON-NLS-1$
-                  + ";" //$NON-NLS-1$
-                  + I18N.getString("MainFrame.AccessControlProblem") //$NON-NLS-1$
-                  + ace.getMessage(), I18N
-                  .getString("MainFrame.ImpossibleToPrint"), //$NON-NLS-1$
+                  .getSelectedProjectFrame().getLayerViewPanel(),
+                  I18N.getString("MainFrame.ImpossibleToPrint") //$NON-NLS-1$
+                      + ";" //$NON-NLS-1$
+                      + I18N.getString("MainFrame.AccessControlProblem") //$NON-NLS-1$
+                      + ace.getMessage(), I18N
+                      .getString("MainFrame.ImpossibleToPrint"), //$NON-NLS-1$
                   JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
               ex.printStackTrace();
@@ -387,8 +388,8 @@ public class MainFrame extends JFrame {
         layerViewPanel.repaint();
       }
     });
-    JMenuItem mScaleCustom = new JMenuItem(I18N
-        .getString("MainFrame.CustomScale")); //$NON-NLS-1$
+    JMenuItem mScaleCustom = new JMenuItem(
+        I18N.getString("MainFrame.CustomScale")); //$NON-NLS-1$
     mScaleCustom.addActionListener(new java.awt.event.ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -437,8 +438,8 @@ public class MainFrame extends JFrame {
     });
     viewMenu.add(mGoTo);
 
-    JMenuItem mCoord = new JCheckBoxMenuItem(I18N
-        .getString("MainFrame.Coordinate")); //$NON-NLS-1$
+    JMenuItem mCoord = new JCheckBoxMenuItem(
+        I18N.getString("MainFrame.Coordinate")); //$NON-NLS-1$
     mCoord.addActionListener(new java.awt.event.ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -530,8 +531,8 @@ public class MainFrame extends JFrame {
    * @return the newly created project frame
    */
   public final ProjectFrame newProjectFrame() {
-    ProjectFrame projectFrame = new ProjectFrame(this, this.application
-        .getIcon());
+    ProjectFrame projectFrame = new ProjectFrame(this,
+        this.application.getIcon());
     projectFrame.setSize(this.desktopPane.getSize());
     projectFrame.setVisible(true);
     this.desktopPane.add(projectFrame, JLayeredPane.DEFAULT_LAYER);

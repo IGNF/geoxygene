@@ -60,10 +60,10 @@ public class CarteTopoTest extends TestCase {
 
     arcs.nouvelElement(signaturea,
         new Object[] { noeuds.get(2), noeuds.get(14) });// a5
-    arcs.nouvelElement(signaturea, new Object[] { noeuds.get(14),
-        noeuds.get(15) });// a6
-    arcs.nouvelElement(signaturea, new Object[] { noeuds.get(14),
-        noeuds.get(16) });// a7
+    arcs.nouvelElement(signaturea,
+        new Object[] { noeuds.get(14), noeuds.get(15) });// a6
+    arcs.nouvelElement(signaturea,
+        new Object[] { noeuds.get(14), noeuds.get(16) });// a7
 
     arcs.nouvelElement(signaturea,
         new Object[] { noeuds.get(5), noeuds.get(6) });// a8
@@ -80,12 +80,12 @@ public class CarteTopoTest extends TestCase {
 
     arcs.nouvelElement(signaturea,
         new Object[] { noeuds.get(6), noeuds.get(11) });// a14
-    arcs.nouvelElement(signaturea, new Object[] { noeuds.get(11),
-        noeuds.get(12) });// a15
-    arcs.nouvelElement(signaturea, new Object[] { noeuds.get(12),
-        noeuds.get(10) });// a16
-    arcs.nouvelElement(signaturea, new Object[] { noeuds.get(12),
-        noeuds.get(13) });// a17
+    arcs.nouvelElement(signaturea,
+        new Object[] { noeuds.get(11), noeuds.get(12) });// a15
+    arcs.nouvelElement(signaturea,
+        new Object[] { noeuds.get(12), noeuds.get(10) });// a16
+    arcs.nouvelElement(signaturea,
+        new Object[] { noeuds.get(12), noeuds.get(13) });// a17
 
     carte.creeTopologieFaces();
     for (Face face : carte.getListeFaces()) {

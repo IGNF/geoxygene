@@ -80,6 +80,5 @@ public interface SpatialIndex<Feat extends IFeature> {
    * Selection a l'aide d'un objet geometrique quelconque et d'une distance. NB:
    * D peut être nul
    */
-  public abstract Collection<Feat> select(IGeometry geometry,
-      double distance);
+  public abstract Collection<Feat> select(IGeometry geometry, double distance);
 }

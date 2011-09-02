@@ -32,14 +32,15 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
  * @author Brasebin Mickael
  */
 
-
 public class GM_Triangle extends GM_Polygon implements ITriangle {
 
   protected GM_Position[] corners = new GM_Position[3];
+
   @Override
   public IPosition[] getCorners() {
     return this.corners;
   }
+
   @Override
   public IPosition getCorners(int i) {
     return this.corners[i];
@@ -56,28 +57,27 @@ public class GM_Triangle extends GM_Polygon implements ITriangle {
     return Math.abs(0.5 * v1.prodVectoriel(v2).norme());
 
   }
-  
+
   public GM_Triangle(IRing gmRing) {
     super(gmRing);
   }
 
-  public GM_Triangle(IDirectPosition dp1, IDirectPosition dp2, IDirectPosition dp3) {
-    this(new GM_LineString(new DirectPositionList(dp1, dp2, dp3,
-        dp1)));
+  public GM_Triangle(IDirectPosition dp1, IDirectPosition dp2,
+      IDirectPosition dp3) {
+    this(new GM_LineString(new DirectPositionList(dp1, dp2, dp3, dp1)));
   }
 
   public GM_Triangle(GM_LineString ls) {
     super(ls);
   }
-  
+
   public GM_Triangle() {
     super();
   }
-  
-  
+
   @Override
   public GM_SurfacePatch reverse() {
-    return new GM_Triangle(this.getCorners(0).getDirect(),
-        this.getCorners(2).getDirect(),this.getCorners(1).getDirect());
+    return new GM_Triangle(this.getCorners(0).getDirect(), this.getCorners(2)
+        .getDirect(), this.getCorners(1).getDirect());
   }
 }

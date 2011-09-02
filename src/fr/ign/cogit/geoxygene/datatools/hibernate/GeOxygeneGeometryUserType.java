@@ -47,7 +47,7 @@ public class GeOxygeneGeometryUserType implements UserType {
       return null;
     }
 
-  if (object instanceof org.postgresql.util.PGobject) {
+    if (object instanceof org.postgresql.util.PGobject) {
       try {
         object = new PGgeometry(object.toString());
       } catch (SQLException e) {
@@ -136,7 +136,7 @@ public class GeOxygeneGeometryUserType implements UserType {
       if (geom.getCRS() != -1) {
         srid = "SRID=" + geom.getCRS() + ";";
       }
-//      logger.info("conv2DBGeometry " + srid + geom.toString());
+      // logger.info("conv2DBGeometry " + srid + geom.toString());
       PGgeometry pgGeom = new PGgeometry(srid + geom.toString());
       return pgGeom;
     } catch (SQLException e) {

@@ -466,8 +466,8 @@ public class NoeudApp extends Noeud {
    * @param comp : les arcs du noeud comp qui n'ont pas encore de correspondant
    * @param rangRef : rang de l'arc ref en cours de traitement
    */
-  private boolean correspondantsArcsClasses(List<Arc> ref, List<Arc> comp, int rangRef,
-      EnsembleDeLiens ensembleDeLiens) {
+  private boolean correspondantsArcsClasses(List<Arc> ref, List<Arc> comp,
+      int rangRef, EnsembleDeLiens ensembleDeLiens) {
     ArcApp arcRef, arcComp;
     List<LienReseaux> liensArcRef;
     List<Arc> arcsCompCandidats, compPourProchain;
@@ -478,7 +478,8 @@ public class NoeudApp extends Noeud {
     }
     arcRef = (ArcApp) ref.get(rangRef); // arc en cours de traitement
     // on cherche les candidats à l'appariement de arcRef
-    liensArcRef = new ArrayList<LienReseaux>(arcRef.getLiens(ensembleDeLiens.getElements()));
+    liensArcRef = new ArrayList<LienReseaux>(arcRef.getLiens(ensembleDeLiens
+        .getElements()));
     arcsCompCandidats = new ArrayList<Arc>();
     for (int i = 0; i < liensArcRef.size(); i++) {
       arcsCompCandidats.addAll(liensArcRef.get(i).getArcs2());
@@ -520,13 +521,15 @@ public class NoeudApp extends Noeud {
     }
     return false; // aucune correspondance possible : on remonte d'un cran
   }
+
   /**
    * Renvoie la liste des objets géo initaux reliés à un arc ref ou un noeud ref
    * qui est en correspondance avec this (un arc_comp) à travers liens, soit
    * directement, soit par l'intermédiaire d'un groupe.
    */
   public List<IFeature> objetsGeoRefEnCorrespondance(EnsembleDeLiens liensArc) {
-    List<ElementCarteTopo> objetsCtEnCorrespondance = new ArrayList<ElementCarteTopo>(0);
+    List<ElementCarteTopo> objetsCtEnCorrespondance = new ArrayList<ElementCarteTopo>(
+        0);
     List<IFeature> objetsGeoEnCorrespondance = new ArrayList<IFeature>(0);
     List<LienReseaux> liensOK;
     LienReseaux lien;

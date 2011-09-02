@@ -109,11 +109,14 @@ public interface Layer {
   public void setImage(RasterSymbolizer symbolizer, BufferedImage image);
 
   public BufferedImage getImage(RasterSymbolizer symbolizer);
-  
+
   public String getActiveGroup();
+
   public void setActiveGroup(String activeGroup);
+
   public Collection<String> getGroups();
 
   public void setCRS(CoordinateReferenceSystem crs);
+
   public CoordinateReferenceSystem getCRS();
 }

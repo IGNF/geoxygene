@@ -156,31 +156,31 @@ public class Mark {
   public Shape toShape() {
     if ((this.wellKnownName == null)
         || (this.wellKnownName.equalsIgnoreCase("square"))) {//$NON-NLS-1$
-      return Mark.square; 
+      return Mark.square;
     }
     if (this.wellKnownName.equalsIgnoreCase("circle")) {//$NON-NLS-1$
-      return Mark.circle; 
+      return Mark.circle;
     }
     if (this.wellKnownName.equalsIgnoreCase("triangle")) {//$NON-NLS-1$
-      return Mark.triangle; 
+      return Mark.triangle;
     }
     if (this.wellKnownName.equalsIgnoreCase("star")) {//$NON-NLS-1$
-      return Mark.star; 
+      return Mark.star;
     }
     if (this.wellKnownName.equalsIgnoreCase("cross")) {//$NON-NLS-1$
-      return Mark.cross; 
+      return Mark.cross;
     }
     if (this.wellKnownName.equalsIgnoreCase("x")) {//$NON-NLS-1$
-      return Mark.xShape; 
+      return Mark.xShape;
     }
     if (this.wellKnownName.equalsIgnoreCase("hLine")) {//$NON-NLS-1$
-      return Mark.hLine; 
+      return Mark.hLine;
     }
     if (this.wellKnownName.equalsIgnoreCase("vLine")) {//$NON-NLS-1$
-      return Mark.vLine; 
+      return Mark.vLine;
     }
     if (this.wellKnownName.equalsIgnoreCase("-")) {//$NON-NLS-1$
-      return Mark.minus; 
+      return Mark.minus;
     }
     return null;
   }

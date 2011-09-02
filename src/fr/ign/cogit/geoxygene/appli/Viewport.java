@@ -77,13 +77,16 @@ public class Viewport {
   /**
    * The layer view panels.
    */
-  private Collection<LayerViewPanel> layerViewPanels = new ArrayList<LayerViewPanel>(0);
+  private Collection<LayerViewPanel> layerViewPanels = new ArrayList<LayerViewPanel>(
+      0);
+
   /**
    * @return The {@link LayerViewPanel} associated with the viewport
    */
   public final Collection<LayerViewPanel> getLayerViewPanels() {
     return this.layerViewPanels;
   }
+
   /**
    * Taille d'un pixel en m (la longueur d'un cote de pixel de l'ecran) utilise
    * pour le calcul de l'echelle courante de la vue. Elle est calculée à partir
@@ -222,9 +225,8 @@ public class Viewport {
     double widthAsPerceivedByModel = lvp.getWidth() / this.scale;
     double heightAsPerceivedByModel = lvp.getHeight() / this.scale;
     return new GM_Envelope(this.viewOrigin.getX(), this.viewOrigin.getX()
-        + widthAsPerceivedByModel, this.viewOrigin.getY(), this.viewOrigin
-        .getY()
-        + heightAsPerceivedByModel);
+        + widthAsPerceivedByModel, this.viewOrigin.getY(),
+        this.viewOrigin.getY() + heightAsPerceivedByModel);
   }
 
   /**
@@ -287,8 +289,8 @@ public class Viewport {
         return this.toShape((GM_LineString) geometry);
       }
       if (geometry instanceof GM_Ring) {
-          return this.toShape(new GM_Polygon((GM_Ring) geometry));
-        }
+        return this.toShape(new GM_Polygon((GM_Ring) geometry));
+      }
       if (geometry.isMultiCurve()) {
         return null;
       }
@@ -298,10 +300,9 @@ public class Viewport {
       if (geometry instanceof GM_Aggregate<?>) {
         return null;
       }
-      throw new IllegalArgumentException(I18N
-          .getString("Viewport.UnhandledGeometryClass" //$NON-NLS-1$
-          )
-          + geometry.getClass());
+      throw new IllegalArgumentException(
+          I18N.getString("Viewport.UnhandledGeometryClass" //$NON-NLS-1$
+          ) + geometry.getClass());
     } catch (Exception e) {
       Viewport.logger.info(I18N.getString("Viewport.Geometry") //$NON-NLS-1$
           + geometry);
@@ -319,8 +320,8 @@ public class Viewport {
    */
   private Shape toShape(final GM_Polygon p)
       throws NoninvertibleTransformException {
-    IDirectPositionList viewDirectPositionList = this.toViewDirectPositionList(p
-        .getExterior().coord());
+    IDirectPositionList viewDirectPositionList = this
+        .toViewDirectPositionList(p.getExterior().coord());
     if (viewDirectPositionList.isEmpty()) {
       return null;
     }
@@ -437,15 +438,14 @@ public class Viewport {
 
   /**
    * Transform a DirectPosition list to an awt general path.
-   * @param list a DirectPosition list 
+   * @param list a DirectPosition list
    * @return a GeneralPath representing the given linestring as an AWT shape
    * @throws NoninvertibleTransformException throws an exception when the
    *           transformation fails
    */
   public GeneralPath toShape(IDirectPositionList list)
       throws NoninvertibleTransformException {
-    IDirectPositionList viewPositionList = this
-        .toViewDirectPositionList(list);
+    IDirectPositionList viewPositionList = this.toViewDirectPositionList(list);
     GeneralPath shape = new GeneralPath();
     IDirectPosition p = viewPositionList.get(0);
     shape.moveTo(p.getX(), p.getY());
@@ -574,9 +574,8 @@ public class Viewport {
   public final void zoom(final int x, final int y, final double widthOfNewView,
       final double heightOfNewView) throws NoninvertibleTransformException {
     LayerViewPanel lvp = this.layerViewPanels.iterator().next();
-    double zoomFactor = Math.min(lvp.getWidth() / widthOfNewView, lvp
-        .getHeight()
-        / heightOfNewView);
+    double zoomFactor = Math.min(lvp.getWidth() / widthOfNewView,
+        lvp.getHeight() / heightOfNewView);
     double realWidthOfNewView = lvp.getWidth() / zoomFactor;
     double realHeightOfNewView = lvp.getHeight() / zoomFactor;
     GM_Envelope zoomEnvelope;
@@ -755,9 +754,8 @@ public class Viewport {
    */
   public final void moveOf(final double x, final double y)
       throws NoninvertibleTransformException {
-    this.viewOrigin.setLocation(this.viewOrigin.getX() + x, this.viewOrigin
-        .getY()
-        + y);
+    this.viewOrigin.setLocation(this.viewOrigin.getX() + x,
+        this.viewOrigin.getY() + y);
     this.update();
   }
 

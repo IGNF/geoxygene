@@ -199,8 +199,8 @@ public abstract class Distances {
    * simplicité et précision.
    */
   public static double hausdorff(ILineString L1, ILineString L2) {
-    return Math.max(Distances.premiereComposanteHausdorff(L1, L2), Distances
-        .premiereComposanteHausdorff(L2, L1));
+    return Math.max(Distances.premiereComposanteHausdorff(L1, L2),
+        Distances.premiereComposanteHausdorff(L2, L1));
   }
 
   /**
@@ -287,8 +287,7 @@ public abstract class Distances {
   // //
   // //////////////////////////////////////////////////////////
   @SuppressWarnings("unchecked")
-  private static IMultiSurface<IOrientableSurface> toMultiSurface(
-      IGeometry geom) {
+  private static IMultiSurface<IOrientableSurface> toMultiSurface(IGeometry geom) {
     if (geom instanceof IMultiSurface<?>) {
       return (IMultiSurface<IOrientableSurface>) geom;
     }
@@ -299,12 +298,11 @@ public abstract class Distances {
     return multiSurface;
   }
 
-   /**
+  /**
    * Distance surfacique entre deux IGeometry.
    */
   public static double distanceSurfacique(IGeometry geom, IGeometry geom2) {
-    if (geom instanceof IMultiSurface<?>
-        || geom2 instanceof IMultiSurface<?>) {
+    if (geom instanceof IMultiSurface<?> || geom2 instanceof IMultiSurface<?>) {
       return Distances.distanceSurfacique(Distances.toMultiSurface(geom),
           Distances.toMultiSurface(geom2));
     }
@@ -385,8 +383,8 @@ public abstract class Distances {
    * Distance surfacique entre deux IMultiSurface.
    * 
    * Cette méthode contourne des bugs de JTS, qui sont trop nombreux sur les
-   * agrégats. En contrepartie, cette méthode n'est valable que si les
-   * IPolygon composant A [resp. B] ne s'intersectent pas entre elles.
+   * agrégats. En contrepartie, cette méthode n'est valable que si les IPolygon
+   * composant A [resp. B] ne s'intersectent pas entre elles.
    * 
    * Définition : 1 - surface(intersection)/surface(union) Ref [Vauglin 97]
    * 

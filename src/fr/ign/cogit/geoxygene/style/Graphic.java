@@ -36,7 +36,8 @@ import javax.xml.bind.annotation.XmlType;
 public class Graphic {
 
   @XmlElement(name = "ExternalGraphic")
-  private List<ExternalGraphic> externalGraphics = new ArrayList<ExternalGraphic>(0);
+  private List<ExternalGraphic> externalGraphics = new ArrayList<ExternalGraphic>(
+      0);
 
   /**
    * Renvoie la valeur de l'attribut externalGraphics.

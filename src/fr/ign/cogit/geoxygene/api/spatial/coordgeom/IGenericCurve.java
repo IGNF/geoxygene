@@ -105,6 +105,6 @@ public interface IGenericCurve {
    * composée de plusieurs segments.
    */
   public abstract// NORME : spacing et offset sont de type Distance. tolerance
-                 // n'est pas en paramètre.
+  // n'est pas en paramètre.
   ILineString asLineString(double spacing, double offset, double tolerance);
 }

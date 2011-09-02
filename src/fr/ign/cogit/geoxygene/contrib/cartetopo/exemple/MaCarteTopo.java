@@ -70,10 +70,8 @@ public class MaCarteTopo extends CarteTopo {
     /* Declaration des type de noeuds, arcs et face que la cartetopo va contenir */
     this.addPopulation(new Population<MonNoeud>(false, "Noeud", MonNoeud.class,
         true));
-    this
-        .addPopulation(new Population<MonArc>(false, "Arc", MonArc.class, true));
-    this
-        .addPopulation(new Population<MaFace>(false, "Face", MaFace.class, true));
+    this.addPopulation(new Population<MonArc>(false, "Arc", MonArc.class, true));
+    this.addPopulation(new Population<MaFace>(false, "Face", MaFace.class, true));
   }
 
 }

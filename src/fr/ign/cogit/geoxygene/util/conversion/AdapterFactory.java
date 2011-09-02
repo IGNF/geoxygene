@@ -118,8 +118,8 @@ public class AdapterFactory {
           AdapterFactory.logger.debug(geom);
           AdapterFactory.logger.debug(coord);
         }
-        throw new Exception(I18N
-            .getString("AdapterFactory.RingWithLessThan4Points")); //$NON-NLS-1$
+        throw new Exception(
+            I18N.getString("AdapterFactory.RingWithLessThan4Points")); //$NON-NLS-1$
       }
       CoordinateSequence sequence = AdapterFactory.toCoordinateSequence(
           factory, coord);
@@ -139,9 +139,11 @@ public class AdapterFactory {
       return result;
     }
     if (geom instanceof IPolygon) {
-      result = factory.createPolygon((LinearRing) AdapterFactory.toGeometry(
-          factory, ((IPolygon) geom).getExterior()), AdapterFactory
-          .toLinearRingArray(factory, ((IPolygon) geom).getInterior()));
+      result = factory.createPolygon(
+          (LinearRing) AdapterFactory.toGeometry(factory,
+              ((IPolygon) geom).getExterior()),
+          AdapterFactory.toLinearRingArray(factory,
+              ((IPolygon) geom).getInterior()));
       result.setSRID(geom.getCRS());
       return result;
     }
@@ -149,8 +151,8 @@ public class AdapterFactory {
       IMultiPoint multiPoint = (IMultiPoint) geom;
       Point[] points = new Point[multiPoint.size()];
       for (int index = 0; index < multiPoint.size(); index++) {
-        points[index] = (Point) AdapterFactory.toGeometry(factory, multiPoint
-            .get(index));
+        points[index] = (Point) AdapterFactory.toGeometry(factory,
+            multiPoint.get(index));
       }
       result = factory.createMultiPoint(points);
       result.setSRID(geom.getCRS());
@@ -182,8 +184,8 @@ public class AdapterFactory {
       IAggregate<IGeometry> aggregate = (IAggregate<IGeometry>) geom;
       Geometry[] geometries = new Geometry[aggregate.size()];
       for (int index = 0; index < aggregate.size(); index++) {
-        geometries[index] = AdapterFactory.toGeometry(factory, aggregate
-            .get(index));
+        geometries[index] = AdapterFactory.toGeometry(factory,
+            aggregate.get(index));
       }
       result = factory.createGeometryCollection(geometries);
       result.setSRID(geom.getCRS());
@@ -257,8 +259,8 @@ public class AdapterFactory {
     // LinearRing[] rings = new LinearRing[list.size()];
     List<LinearRing> rings = new ArrayList<LinearRing>();
     for (int i = 0; i < list.size(); i++) {
-      LinearRing ring = (LinearRing) AdapterFactory.toGeometry(factory, list
-          .get(i));
+      LinearRing ring = (LinearRing) AdapterFactory.toGeometry(factory,
+          list.get(i));
       if (ring != null) {
         rings.add(ring);
       } else {
@@ -284,13 +286,14 @@ public class AdapterFactory {
     }
     GM_Object result = null;
     if (geom instanceof Point) {
-      result = new GM_Point(AdapterFactory.toDirectPosition(geom.getCoordinate()));
+      result = new GM_Point(AdapterFactory.toDirectPosition(geom
+          .getCoordinate()));
       result.setCRS(geom.getSRID());
       return result;
     }
     if (geom instanceof LinearRing) {
-      result = new GM_Ring(new GM_LineString(AdapterFactory
-          .toDirectPositionList(geom.getCoordinates())));
+      result = new GM_Ring(new GM_LineString(
+          AdapterFactory.toDirectPositionList(geom.getCoordinates())));
       result.setCRS(geom.getSRID());
       return result;
     }
@@ -480,8 +483,8 @@ public class AdapterFactory {
           .getPosition()));
     }
     if (geom instanceof IRing) {
-      return new GM_Ring(new GM_LineString(AdapterFactory
-          .to2DDirectPositionList(geom.coord())));
+      return new GM_Ring(new GM_LineString(
+          AdapterFactory.to2DDirectPositionList(geom.coord())));
     }
     if (geom instanceof ILineString) {
       return new GM_LineString(AdapterFactory.to2DDirectPositionList(geom

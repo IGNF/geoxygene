@@ -8,7 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.StringTokenizer;
 
-@SuppressWarnings( { "unchecked", "unqualified-field-access", "nls" })
+@SuppressWarnings({ "unchecked", "unqualified-field-access", "nls" })
 public class WktAwt implements WktAwtConstants {
   static class EndOfFile extends Exception {
     private static final long serialVersionUID = 1L;
@@ -109,7 +109,7 @@ public class WktAwt implements WktAwtConstants {
         label_1: while (true) {
           switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
             case 12:
-              
+
               break;
             default:
               this.jj_la1[1] = this.jj_gen;
@@ -153,7 +153,7 @@ public class WktAwt implements WktAwtConstants {
         label_2: while (true) {
           switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
             case 12:
-              
+
               break;
             default:
               this.jj_la1[3] = this.jj_gen;
@@ -197,7 +197,7 @@ public class WktAwt implements WktAwtConstants {
         label_3: while (true) {
           switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
             case 12:
-              
+
               break;
             default:
               this.jj_la1[5] = this.jj_gen;
@@ -240,7 +240,7 @@ public class WktAwt implements WktAwtConstants {
         label_4: while (true) {
           switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
             case 12:
-              
+
               break;
             default:
               this.jj_la1[7] = this.jj_gen;
@@ -283,7 +283,7 @@ public class WktAwt implements WktAwtConstants {
         label_5: while (true) {
           switch ((this.jj_ntk == -1) ? this.jj_ntk() : this.jj_ntk) {
             case 12:
-              
+
               break;
             default:
               this.jj_la1[9] = this.jj_gen;

@@ -14,6 +14,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
  */
 public class CarteTopoFactory {
   static Logger logger = Logger.getLogger(CarteTopoFactory.class);
+
   /**
    * Create a topological map from a feature collection, a name and a threshold.
    * The threshold is used for node creation as well as for topology and planar
@@ -79,10 +80,10 @@ public class CarteTopoFactory {
       IFeatureCollection<? extends IFeature> collection) {
     return CarteTopoFactory.newCarteTopo(name, collection, 1.0);
   }
+
   /**
-   * Create a topological map from a feature collection. A threshold
-   * of 1m is used for node creation as well as for topology and planar map
-   * creations.
+   * Create a topological map from a feature collection. A threshold of 1m is
+   * used for node creation as well as for topology and planar map creations.
    * <p>
    * Création d'une CarteTopo à partir d'une FT_FeatureCollection.
    * @see #newCarteTopo(String, IFeatureCollection, double)

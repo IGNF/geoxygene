@@ -53,32 +53,35 @@ abstract public class GM_CurveSegment extends GM_Curve implements ICurveSegment 
    * circularArc2PointsWithBulge, elliptical, clothoid, conic, polynomialSpline,
    * cubicSpline, rationalSpline}.
    */
-//  protected String interpolation = "linear"; //$NON-NLS-1$
+  //  protected String interpolation = "linear"; //$NON-NLS-1$
   @Override
   abstract public String getInterpolation();
+
   /**
    * Type de continuité entre un segment et son prédecesseur (ignoré pour le
    * premier segment). Pour des polylignes on aura une continuité C0.
    */
-//  protected int numDerivativesAtStart = 0;
+  // protected int numDerivativesAtStart = 0;
   @Override
   public int getNumDerivativesAtStart() {
     return 0;
   }
+
   /**
    * Type de continuité entre un segment et son successeur (ignoré pour le
    * dernier segment). Pour des polylignes on aura une continuité C0.
    */
-//  protected int numDerivativeAtEnd = 0;
+  // protected int numDerivativeAtEnd = 0;
   @Override
   public int getNumDerivativeAtEnd() {
     return 0;
   }
+
   /**
    * Type de continuité garantie à l'intérieur de la courbe. Pour des polylignes
    * on aura une continuité C0.
    */
-//  protected int numDerivativeInterior = 0;
+  // protected int numDerivativeInterior = 0;
   @Override
   public int getNumDerivativeInterior() {
     return 0;

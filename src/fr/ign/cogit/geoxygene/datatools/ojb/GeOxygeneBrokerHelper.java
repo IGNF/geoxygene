@@ -381,16 +381,16 @@ public class GeOxygeneBrokerHelper {
           if (this.m_platform instanceof PlatformOracle9iImpl
               || this.m_platform instanceof PlatformOracleImpl) {
             try {
-              cv = this.geomGeOxygene2OracleMethod.invoke(fd
-                  .getFieldConversion(), new Object[] { cv, conn });
+              cv = this.geomGeOxygene2OracleMethod.invoke(
+                  fd.getFieldConversion(), new Object[] { cv, conn });
             } catch (Exception e) {
               e.printStackTrace();
             }
           } // POSTGIS
           if (this.m_platform instanceof PlatformPostgreSQLImpl) {
             try {
-              cv = this.geomGeOxygene2PostgisMethod.invoke(fd
-                  .getFieldConversion(), new Object[] { cv });
+              cv = this.geomGeOxygene2PostgisMethod.invoke(
+                  fd.getFieldConversion(), new Object[] { cv });
             } catch (Exception e) {
               e.printStackTrace();
             }
@@ -568,14 +568,14 @@ public class GeOxygeneBrokerHelper {
     String eol = SystemUtils.LINE_SEPARATOR;
     StringBuffer buf = new StringBuffer();
     buf.append(eol + "object class[ " //$NON-NLS-1$
-        + (obj != null ? obj.getClass().getName() : null)).append(
-        eol + "target field: " //$NON-NLS-1$
-            + (field != null ? field.getName() : null)).append(
-        eol + "target field type: " //$NON-NLS-1$
-            + (field != null ? field.getType() : null)).append(
-        eol + "object value class: " //$NON-NLS-1$
-            + (value != null ? value.getClass().getName() : null)).append(
-        eol + "object value: " //$NON-NLS-1$
+        + (obj != null ? obj.getClass().getName() : null))
+        .append(eol + "target field: " //$NON-NLS-1$
+            + (field != null ? field.getName() : null))
+        .append(eol + "target field type: " //$NON-NLS-1$
+            + (field != null ? field.getType() : null))
+        .append(eol + "object value class: " //$NON-NLS-1$
+            + (value != null ? value.getClass().getName() : null))
+        .append(eol + "object value: " //$NON-NLS-1$
             + (value != null ? value : null)).append("]"); //$NON-NLS-1$
     return buf.toString();
   }

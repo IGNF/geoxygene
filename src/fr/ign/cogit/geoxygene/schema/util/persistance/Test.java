@@ -348,16 +348,17 @@ public class Test {
 
     ft.setSchema(schemaJeu);
     schemaJeu.createFeatureAttribute(ft, "utilisation", "String", true);
-    schemaJeu.createFeatureAttributeValue(ft
-        .getFeatureAttributeByName("utilisation"), "administratif");
-    schemaJeu.createFeatureAttributeValue(ft
-        .getFeatureAttributeByName("utilisation"), "habitation");
+    schemaJeu.createFeatureAttributeValue(
+        ft.getFeatureAttributeByName("utilisation"), "administratif");
+    schemaJeu.createFeatureAttributeValue(
+        ft.getFeatureAttributeByName("utilisation"), "habitation");
     // le champ java d'implémentation :
 
     // création d'une assoication
-    schemaJeu.createFeatureAssociation("acces", (FeatureType) schemaJeu
-        .getFeatureTypeI(0), (FeatureType) schemaJeu.getFeatureTypeI(1),
-        "donne acces à", "est accedé par");
+    schemaJeu.createFeatureAssociation("acces",
+        (FeatureType) schemaJeu.getFeatureTypeI(0),
+        (FeatureType) schemaJeu.getFeatureTypeI(1), "donne acces à",
+        "est accedé par");
 
     // renseignement des classes et champs java d'implémentation
     ((FeatureType) schemaJeu.getFeatureTypeByName("Tronçon de route"))

@@ -17,9 +17,8 @@ import fr.ign.cogit.geoxygene.util.algo.MathUtil;
 /**
  * The ColorimetricColor class represent a color by different colorimetric
  * systems. It aims to deal with the RGB, CIELab, CIEXYZ, Java and COGIT
- * reference systems.
- * TODO : synchroniser les paramètres de couleurs!
- * Modifier la teinte devrait également modifier les codes RVB par exemple !!
+ * reference systems. TODO : synchroniser les paramètres de couleurs! Modifier
+ * la teinte devrait également modifier les codes RVB par exemple !!
  * 
  * @author Charlotte Hoarau
  * @author Elodie Buard
@@ -32,7 +31,7 @@ import fr.ign.cogit.geoxygene.util.algo.MathUtil;
 public class ColorimetricColor {
   private static final long serialVersionUID = 1L;
   static Logger logger = Logger.getLogger(ColorimetricColor.class);
-  
+
   /**
    * Color identifier in the COGIT reference system.
    */
@@ -368,7 +367,7 @@ public class ColorimetricColor {
   public ColorimetricColor(String hue, int lightness) {
     List<ColorimetricColor> cogitColors = ColorReferenceSystem.getCOGITColors();
     ColorimetricColor color = null;
-    
+
     for (int i = 0; i < cogitColors.size(); i++) {
       if (cogitColors.get(i).getHue().equalsIgnoreCase(hue)
           && cogitColors.get(i).getLightness() == lightness) {
@@ -377,11 +376,11 @@ public class ColorimetricColor {
     }
     if (color == null) {
       if (!hue.equalsIgnoreCase("GRIS") //$NON-NLS-1$
-        && !hue.equalsIgnoreCase("NOIR") //$NON-NLS-1$
-        && !hue.equalsIgnoreCase("BLANC")) { //$NON-NLS-1$
-      
+          && !hue.equalsIgnoreCase("NOIR") //$NON-NLS-1$
+          && !hue.equalsIgnoreCase("BLANC")) { //$NON-NLS-1$
+
         if (lightness == 0) {
-          color = new ColorimetricColor(hue.toUpperCase(),1);
+          color = new ColorimetricColor(hue.toUpperCase(), 1);
         } else if (lightness == 8) {
           color = new ColorimetricColor(hue.toUpperCase(), 7);
         }
@@ -394,15 +393,15 @@ public class ColorimetricColor {
       } else if (hue.equalsIgnoreCase("NOIR")) { //$NON-NLS-1$
         if (lightness == 0) {
           color = new ColorimetricColor(85);
-        } else  {
+        } else {
           color = new ColorimetricColor("GRIS", lightness); //$NON-NLS-1$
-        } 
+        }
       } else if (hue.equalsIgnoreCase("BLANC")) { //$NON-NLS-1$
         if (lightness == 8) {
           color = new ColorimetricColor(86);
-        } else  {
+        } else {
           color = new ColorimetricColor("GRIS", lightness); //$NON-NLS-1$
-        } 
+        }
       }
     }
     this.redRGB = color.getRedRGB();
@@ -420,44 +419,44 @@ public class ColorimetricColor {
   public static void main(String[] args) {
     ColorimetricColor c = new ColorimetricColor("RoUge", 0); //$NON-NLS-1$
     logger.info(c.getCleCoul());
-    c = new ColorimetricColor("RoUge",1); //$NON-NLS-1$
+    c = new ColorimetricColor("RoUge", 1); //$NON-NLS-1$
     logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Rouge",7); //$NON-NLS-1$
+    c = new ColorimetricColor("Rouge", 7); //$NON-NLS-1$
     logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Rouge",8); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
-    logger.info(""); //$NON-NLS-1$
-    
-    c = new ColorimetricColor("Gris",0); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Gris",1); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Gris",7); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Gris",8); //$NON-NLS-1$
+    c = new ColorimetricColor("Rouge", 8); //$NON-NLS-1$
     logger.info(c.getCleCoul());
     logger.info(""); //$NON-NLS-1$
-    
-    c = new ColorimetricColor("Noir",0); //$NON-NLS-1$
+
+    c = new ColorimetricColor("Gris", 0); //$NON-NLS-1$
     logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Noir",1); //$NON-NLS-1$
+    c = new ColorimetricColor("Gris", 1); //$NON-NLS-1$
     logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Noir",7); //$NON-NLS-1$
+    c = new ColorimetricColor("Gris", 7); //$NON-NLS-1$
     logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Noir",8); //$NON-NLS-1$
+    c = new ColorimetricColor("Gris", 8); //$NON-NLS-1$
     logger.info(c.getCleCoul());
     logger.info(""); //$NON-NLS-1$
-    
-    c = new ColorimetricColor("Blanc",0); //$NON-NLS-1$
+
+    c = new ColorimetricColor("Noir", 0); //$NON-NLS-1$
     logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Blanc",1); //$NON-NLS-1$
+    c = new ColorimetricColor("Noir", 1); //$NON-NLS-1$
     logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Blanc",7); //$NON-NLS-1$
+    c = new ColorimetricColor("Noir", 7); //$NON-NLS-1$
     logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Blanc",8); //$NON-NLS-1$
+    c = new ColorimetricColor("Noir", 8); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    logger.info(""); //$NON-NLS-1$
+
+    c = new ColorimetricColor("Blanc", 0); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    c = new ColorimetricColor("Blanc", 1); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    c = new ColorimetricColor("Blanc", 7); //$NON-NLS-1$
+    logger.info(c.getCleCoul());
+    c = new ColorimetricColor("Blanc", 8); //$NON-NLS-1$
     logger.info(c.getCleCoul());
   }
-  
+
   /**
    * Constructor with the usual name of the color
    * @param usualName The usual name of the color in the COGIT
@@ -482,7 +481,6 @@ public class ColorimetricColor {
     }
   }
 
-  
   /**
    * Constructor with the RGB color components
    * @param r The Red component in the RGB color system.
@@ -670,11 +668,9 @@ public class ColorimetricColor {
   /**
    * Constructor with the CIELab component.
    * 
-   * FIXME Warning !
-   * This constructor must be use with an existence test
-   * if the existence is not sure!!
-   * FRENCH : Cette méthode doit s'utiliser avec des tests
-   * si on n'est pas sûrs de l'existance d'une couleur!!
+   * FIXME Warning ! This constructor must be use with an existence test if the
+   * existence is not sure!! FRENCH : Cette méthode doit s'utiliser avec des
+   * tests si on n'est pas sûrs de l'existance d'une couleur!!
    * 
    * TODO : Create a unit testing method to give an exemple
    * 
@@ -705,8 +701,8 @@ public class ColorimetricColor {
    * @param l The lightness in the CIELab color reference system.
    * @param a First chromatic component in the CIELab color reference system.
    * @param b Second chromatic component in the CIELab color reference system.
-   * @return True if the color exists, false otherwise.
-   * FIXME This method should be tested once again.
+   * @return True if the color exists, false otherwise. FIXME This method should
+   *         be tested once again.
    */
   public static boolean labExistance(float l, float a, float b) {
     float[] lab = new float[] { l, a, b };
@@ -877,20 +873,20 @@ public class ColorimetricColor {
 
   @Override
   public String toString() {
-    String txtColor = "Color : R=" + this.getRedRGB() + " V="    //$NON-NLS-1$ //$NON-NLS-2$
+    String txtColor = "Color : R=" + this.getRedRGB() + " V=" //$NON-NLS-1$ //$NON-NLS-2$
         + this.getGreenRGB() + " B=" + this.getBlueRGB() + " l=" //$NON-NLS-1$ //$NON-NLS-2$
-        + this.getLab()[0] + " a=" + this.getLab()[1] + " b="    //$NON-NLS-1$ //$NON-NLS-2$
+        + this.getLab()[0] + " a=" + this.getLab()[1] + " b=" //$NON-NLS-1$ //$NON-NLS-2$
         + this.getLab()[2];
 
     if (this.getCleCoul() != null) {
-      txtColor += " Key : " + this.getCleCoul();                 //$NON-NLS-1$
+      txtColor += " Key : " + this.getCleCoul(); //$NON-NLS-1$
     }
 
     return txtColor;
   }
 
   @SuppressWarnings("nls")
-  //TODO : Create a unit testing method to do that
+  // TODO : Create a unit testing method to do that
   public static void basicColorsComponents() {
     ColorimetricColor rouge = new ColorimetricColor(255, 0, 0);
     ColorimetricColor vert = new ColorimetricColor(0, 255, 0);

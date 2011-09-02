@@ -170,24 +170,25 @@ public class Recalage {
     if (liensDuNoeudARecalerIni.size() == 1) {
       if ((liensDuNoeudARecalerIni.get(0)).getNoeuds2().size() == 1) {
         noeudRecaleIni = (NoeudApp) (liensDuNoeudARecalerIni.get(0))
-        .getNoeuds2().get(0);
+            .getNoeuds2().get(0);
         nouvelleGeometrie.setControlPoint(0, noeudRecaleIni.getGeometrie()
             .getPosition());
 
-        Vecteur decalage = new Vecteur(noeudARecalerIni.getCoord(), noeudRecaleIni
-            .getCoord());
-        GM_LineString geomTmp = new GM_LineString((DirectPositionList) nouvelleGeometrie
-            .coord().clone());
+        Vecteur decalage = new Vecteur(noeudARecalerIni.getCoord(),
+            noeudRecaleIni.getCoord());
+        GM_LineString geomTmp = new GM_LineString(
+            (DirectPositionList) nouvelleGeometrie.coord().clone());
         double longueur = nouvelleGeometrie.length();
         double abscisse = 0;
         for (int i = 1; i < nouvelleGeometrie.coord().size() - 1; i++) {
           IDirectPosition ptCourant = geomTmp.coord().get(i);
           abscisse = abscisse
-          + geomTmp.getControlPoint(i).distance(
-              geomTmp.getControlPoint(i - 1));
-          Vecteur decalageCourant = decalage.multConstante(1 - abscisse / longueur);
-          nouvelleGeometrie.setControlPoint(i, decalageCourant
-              .translate(ptCourant));
+              + geomTmp.getControlPoint(i).distance(
+                  geomTmp.getControlPoint(i - 1));
+          Vecteur decalageCourant = decalage.multConstante(1 - abscisse
+              / longueur);
+          nouvelleGeometrie.setControlPoint(i,
+              decalageCourant.translate(ptCourant));
         }
       }
     }
@@ -196,24 +197,25 @@ public class Recalage {
     if (liensDuNoeudARecalerFin.size() == 1) {
       if ((liensDuNoeudARecalerFin.get(0)).getNoeuds2().size() == 1) {
         noeudRecaleFin = (NoeudApp) (liensDuNoeudARecalerFin.get(0))
-        .getNoeuds2().get(0);
+            .getNoeuds2().get(0);
         nouvelleGeometrie.setControlPoint(nouvelleGeometrie.coord().size() - 1,
             noeudRecaleFin.getGeometrie().getPosition());
 
-        Vecteur decalage = new Vecteur(noeudARecalerFin.getCoord(), noeudRecaleFin
-            .getCoord());
-        GM_LineString geomTmp = new GM_LineString((DirectPositionList) nouvelleGeometrie
-            .coord().clone());
+        Vecteur decalage = new Vecteur(noeudARecalerFin.getCoord(),
+            noeudRecaleFin.getCoord());
+        GM_LineString geomTmp = new GM_LineString(
+            (DirectPositionList) nouvelleGeometrie.coord().clone());
         double longueur = nouvelleGeometrie.length();
         double abscisse = 0;
         for (int i = nouvelleGeometrie.coord().size() - 2; i > 0; i--) {
           IDirectPosition ptCourant = geomTmp.coord().get(i);
           abscisse = abscisse
-          + geomTmp.getControlPoint(i).distance(
-              geomTmp.getControlPoint(i + 1));
-          Vecteur decalageCourant = decalage.multConstante(1 - abscisse / longueur);
-          nouvelleGeometrie.setControlPoint(i, decalageCourant
-              .translate(ptCourant));
+              + geomTmp.getControlPoint(i).distance(
+                  geomTmp.getControlPoint(i + 1));
+          Vecteur decalageCourant = decalage.multConstante(1 - abscisse
+              / longueur);
+          nouvelleGeometrie.setControlPoint(i,
+              decalageCourant.translate(ptCourant));
         }
       }
     }

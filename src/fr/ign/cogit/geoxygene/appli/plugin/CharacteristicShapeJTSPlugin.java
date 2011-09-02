@@ -44,8 +44,8 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * Triangulation plugin.
  * @author Julien Perret
  */
-public class CharacteristicShapeJTSPlugin implements GeOxygeneApplicationPlugin,
-    ActionListener {
+public class CharacteristicShapeJTSPlugin implements
+    GeOxygeneApplicationPlugin, ActionListener {
   /**
    * Logger.
    */
@@ -58,13 +58,14 @@ public class CharacteristicShapeJTSPlugin implements GeOxygeneApplicationPlugin,
    * @param application the application
    */
   @Override
-public final void initialize(final GeOxygeneApplication application) {
+  public final void initialize(final GeOxygeneApplication application) {
     this.application = application;
     JMenu menu = null;
     for (Component c : application.getFrame().getJMenuBar().getComponents()) {
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Triangulation")) {
+        if (aMenu.getText() != null
+            && aMenu.getText().equalsIgnoreCase("Triangulation")) {
           menu = aMenu;
         }
       }
@@ -76,8 +77,8 @@ public final void initialize(final GeOxygeneApplication application) {
     );
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    application.getFrame().getJMenuBar().add(menu,
-        application.getFrame().getJMenuBar().getMenuCount() - 2);
+    application.getFrame().getJMenuBar()
+        .add(menu, application.getFrame().getJMenuBar().getMenuCount() - 2);
   }
 
   @Override
@@ -95,17 +96,19 @@ public final void initialize(final GeOxygeneApplication application) {
     TriangulationJTS triangulation = new TriangulationJTS("TriangulationJTS");
     triangulation.importAsNodes(layer.getFeatureCollection());
     try {
-        triangulation.triangule();
+      triangulation.triangule();
     } catch (Exception e1) {
-        e1.printStackTrace();
+      e1.printStackTrace();
     }
     double alpha = Double.parseDouble(JOptionPane.showInputDialog("alpha")); //$NON-NLS-1$
-    GM_Polygon characteristicShape = triangulation.getCharacteristicShape(alpha);
-    Population<Face> popTriangles = new Population<Face>("CharacteristicShape_"+alpha); //$NON-NLS-1$
+    GM_Polygon characteristicShape = triangulation
+        .getCharacteristicShape(alpha);
+    Population<Face> popTriangles = new Population<Face>(
+        "CharacteristicShape_" + alpha); //$NON-NLS-1$
     popTriangles.setClasse(Face.class);
     popTriangles.setPersistant(false);
     popTriangles.nouvelElement(characteristicShape);
-    //popTriangles.setElements(triangulation.getPopFaces().getElements());
+    // popTriangles.setElements(triangulation.getPopFaces().getElements());
     /** créer un featuretype de jeu correspondant */
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureTypeExterieurs = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
     newFeatureTypeExterieurs.setGeometryType(GM_Polygon.class);

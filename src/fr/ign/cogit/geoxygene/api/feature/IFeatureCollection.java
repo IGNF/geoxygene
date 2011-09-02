@@ -272,8 +272,7 @@ public interface IFeatureCollection<Feat extends IFeature> extends
    * @return objets à moins d'une certaine distance d'un objet geometrique
    *         quelconque.
    */
-  public abstract Collection<Feat> select(IGeometry geometry,
-      double distance);
+  public abstract Collection<Feat> select(IGeometry geometry, double distance);
 
   // ---------------------------------------
   // --- Méthodes nécessaire pour implémenter l'interface Collection

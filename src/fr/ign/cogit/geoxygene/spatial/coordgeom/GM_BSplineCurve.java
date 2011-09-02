@@ -42,15 +42,19 @@ class GM_BSplineCurve extends GM_SplineCurve implements IBSplineCurve {
   public GM_CurveSegment reverse() {
     return null;
   }
+
   int degree;
+
   @Override
   public int getDegree() {
     return this.degree;
   }
+
   /**
    * Interpolation is either polynomialSpline or rationalSpline
    */
   String interpolation = null;
+
   @Override
   public String getInterpolation() {
     return this.interpolation;

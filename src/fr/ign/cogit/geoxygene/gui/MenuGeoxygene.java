@@ -66,9 +66,12 @@ public class MenuGeoxygene extends JMenuBar {
 
     this.mVueEch.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
-        MenuGeoxygene.this.getFrameMirage().getPanelVisu().setTaillePixel(
-            Legende.getECHELLE_SYMBOLISATION()
-                * PanelVisu.getMETERS_PER_PIXEL());
+        MenuGeoxygene.this
+            .getFrameMirage()
+            .getPanelVisu()
+            .setTaillePixel(
+                Legende.getECHELLE_SYMBOLISATION()
+                    * PanelVisu.getMETERS_PER_PIXEL());
         MenuGeoxygene.this.getFrameMirage().getPanelVisu().repaint();
       }
     });
@@ -79,8 +82,8 @@ public class MenuGeoxygene extends JMenuBar {
 
     this.mVueEch6250.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
-        MenuGeoxygene.this.getFrameMirage().getPanelVisu().setTaillePixel(
-            6250 * PanelVisu.getMETERS_PER_PIXEL());
+        MenuGeoxygene.this.getFrameMirage().getPanelVisu()
+            .setTaillePixel(6250 * PanelVisu.getMETERS_PER_PIXEL());
         MenuGeoxygene.this.getFrameMirage().getPanelVisu().repaint();
       }
     });
@@ -89,8 +92,8 @@ public class MenuGeoxygene extends JMenuBar {
 
     this.mVueEch12500.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
-        MenuGeoxygene.this.getFrameMirage().getPanelVisu().setTaillePixel(
-            12500 * PanelVisu.getMETERS_PER_PIXEL());
+        MenuGeoxygene.this.getFrameMirage().getPanelVisu()
+            .setTaillePixel(12500 * PanelVisu.getMETERS_PER_PIXEL());
         MenuGeoxygene.this.getFrameMirage().getPanelVisu().repaint();
       }
     });
@@ -99,8 +102,8 @@ public class MenuGeoxygene extends JMenuBar {
 
     this.mVueEch25k.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
-        MenuGeoxygene.this.getFrameMirage().getPanelVisu().setTaillePixel(
-            25000 * PanelVisu.getMETERS_PER_PIXEL());
+        MenuGeoxygene.this.getFrameMirage().getPanelVisu()
+            .setTaillePixel(25000 * PanelVisu.getMETERS_PER_PIXEL());
         MenuGeoxygene.this.getFrameMirage().getPanelVisu().repaint();
       }
     });
@@ -109,8 +112,8 @@ public class MenuGeoxygene extends JMenuBar {
 
     this.mVueEch50k.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
-        MenuGeoxygene.this.getFrameMirage().getPanelVisu().setTaillePixel(
-            50000 * PanelVisu.getMETERS_PER_PIXEL());
+        MenuGeoxygene.this.getFrameMirage().getPanelVisu()
+            .setTaillePixel(50000 * PanelVisu.getMETERS_PER_PIXEL());
         MenuGeoxygene.this.getFrameMirage().getPanelVisu().repaint();
       }
     });
@@ -119,8 +122,8 @@ public class MenuGeoxygene extends JMenuBar {
 
     this.mVueEch100k.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
-        MenuGeoxygene.this.getFrameMirage().getPanelVisu().setTaillePixel(
-            100000 * PanelVisu.getMETERS_PER_PIXEL());
+        MenuGeoxygene.this.getFrameMirage().getPanelVisu()
+            .setTaillePixel(100000 * PanelVisu.getMETERS_PER_PIXEL());
         MenuGeoxygene.this.getFrameMirage().getPanelVisu().repaint();
       }
     });
@@ -142,8 +145,8 @@ public class MenuGeoxygene extends JMenuBar {
                 printJob.print(aset);
               }
             } catch (java.security.AccessControlException ace) {
-              JOptionPane.showMessageDialog(MenuGeoxygene.this.getFrameMirage()
-                  .getPanelVisu(),
+              JOptionPane.showMessageDialog(
+                  MenuGeoxygene.this.getFrameMirage().getPanelVisu(),
                   "Impossible d'imprimer; probleme de controle d'acces: "
                       + ace.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
@@ -171,8 +174,8 @@ public class MenuGeoxygene extends JMenuBar {
 
     this.mAntiAliasing.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        MenuGeoxygene.this.getFrameMirage().getPanelVisu().setAntiAliasing(
-            MenuGeoxygene.this.mAntiAliasing.isSelected());
+        MenuGeoxygene.this.getFrameMirage().getPanelVisu()
+            .setAntiAliasing(MenuGeoxygene.this.mAntiAliasing.isSelected());
         MenuGeoxygene.this.getFrameMirage().getPanelVisu().repaint();
       }
     });

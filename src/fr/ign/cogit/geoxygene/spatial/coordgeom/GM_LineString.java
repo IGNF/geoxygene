@@ -37,9 +37,10 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+
 /**
  * Polyligne. L'attribut "interpolation" est egal à "linear".
- *
+ * 
  * @author Thierry Badard
  * @author Arnaud Braun
  * @author Julien Perret
@@ -97,7 +98,7 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
   public GM_LineString() {
     this(new DirectPositionList());
   }
-  
+
   public GM_LineString(List<IDirectPosition> list) {
     this(new DirectPositionList(list));
   }
@@ -113,9 +114,8 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
     this.segment.add(this);
     this.controlPoint = new DirectPositionList();
     this.controlPoint.addAll(points);
-//    this.interpolation = "linear"; //$NON-NLS-1$
+    //    this.interpolation = "linear"; //$NON-NLS-1$
   }
-
 
   /**
    * TODO Renvoie null. Decompose une polyligne en une sequence de segments.
@@ -145,10 +145,9 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
     if (this.isEmpty()) {
       return false;
     }
-    return this.coord().get(0).equals2D(
-        this.coord().get(this.coord().size() - 1), tolerance);
+    return this.coord().get(0)
+        .equals2D(this.coord().get(this.coord().size() - 1), tolerance);
   }
-
 
   @Override
   public boolean isClosed() {
@@ -159,9 +158,11 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
   public Object clone() {
     return new GM_LineString((IDirectPositionList) this.controlPoint.clone());
   }
+
   @Override
   public GM_LineString getNegative() {
-    List<IDirectPosition> list = new ArrayList<IDirectPosition>(this.controlPoint.getList());
+    List<IDirectPosition> list = new ArrayList<IDirectPosition>(
+        this.controlPoint.getList());
     Collections.reverse(list);
     return new GM_LineString(new DirectPositionList(list));
   }

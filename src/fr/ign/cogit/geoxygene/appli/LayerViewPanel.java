@@ -84,6 +84,7 @@ public class LayerViewPanel extends JPanel implements Printable {
   public void addPaintListener(PaintListener listener) {
     this.overlayListeners.add(listener);
   }
+
   public void paintOverlays(final Graphics graphics) {
     for (PaintListener listener : this.overlayListeners) {
       listener.paint(this, graphics);
@@ -167,7 +168,7 @@ public class LayerViewPanel extends JPanel implements Printable {
    * @see #paintComponent(Graphics)
    */
   public final void superRepaint() {
-//    logger.info("superRepaint");
+    // logger.info("superRepaint");
     super.repaint();
   }
 
@@ -190,19 +191,20 @@ public class LayerViewPanel extends JPanel implements Printable {
       if (this.recording) {
         logger.trace("record"); //$NON-NLS-1$
         Color bg = this.getBackground();
-        BufferedImage image = new BufferedImage(this.getWidth(), this.getHeight(),
-            BufferedImage.TYPE_INT_ARGB);
+        BufferedImage image = new BufferedImage(this.getWidth(),
+            this.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = image.createGraphics();
         graphics.setColor(bg);
         graphics.fillRect(0, 0, this.getWidth(), this.getHeight());
         this.getRenderingManager().copyTo(graphics);
         this.recording = false;
-//        this.paintOverlays(graphics);
+        // this.paintOverlays(graphics);
         graphics.dispose();
         try {
           NumberFormat format = NumberFormat.getInstance();
           format.setMinimumIntegerDigits(3);
-          ImgUtil.saveImage(image, this.recordFileName + format.format(this.recordIndex) + ".png"); //$NON-NLS-1$
+          ImgUtil.saveImage(image,
+              this.recordFileName + format.format(this.recordIndex) + ".png"); //$NON-NLS-1$
           this.recordIndex++;
         } catch (IOException e1) {
           e1.printStackTrace();
@@ -235,8 +237,8 @@ public class LayerViewPanel extends JPanel implements Printable {
             points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
             if (points.size() > 2) {
               points.add(start);
-              RenderUtil.draw(new GM_Polygon(new GM_LineString(points)), this
-                  .getViewport(), (Graphics2D) g);
+              RenderUtil.draw(new GM_Polygon(new GM_LineString(points)),
+                  this.getViewport(), (Graphics2D) g);
             } else {
               if (points.size() == 2) {
                 points.add(start);
@@ -293,8 +295,7 @@ public class LayerViewPanel extends JPanel implements Printable {
     List<Layer> copy = new ArrayList<Layer>(this.getRenderingManager()
         .getLayers());
     Iterator<Layer> layerIterator = copy.iterator();
-    IEnvelope envelope = layerIterator.next().getFeatureCollection()
-        .envelope();
+    IEnvelope envelope = layerIterator.next().getFeatureCollection().envelope();
     while (layerIterator.hasNext()) {
       envelope.expand(layerIterator.next().getFeatureCollection().envelope());
     }
@@ -320,8 +321,8 @@ public class LayerViewPanel extends JPanel implements Printable {
     // translate to the upper left corner of the page format
     g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
     // translate to the middle of the page format
-    g2d.translate(pageFormat.getImageableWidth() / 2, pageFormat
-        .getImageableHeight() / 2);
+    g2d.translate(pageFormat.getImageableWidth() / 2,
+        pageFormat.getImageableHeight() / 2);
     Dimension d = this.getSize();
     double scale = Math.min(pageFormat.getImageableWidth() / d.width,
         pageFormat.getImageableHeight() / d.height);
@@ -358,20 +359,27 @@ public class LayerViewPanel extends JPanel implements Printable {
       e1.printStackTrace();
     }
   }
+
   private boolean recording = false;
+
   public boolean isRecording() {
     return this.recording;
   }
+
   public void setRecord(boolean b) {
     this.recording = b;
   }
+
   private String recordFileName = ""; //$NON-NLS-1$
+
   public String getRecordFileName() {
     return this.recordFileName;
   }
+
   public void setRecordFileName(String recordFileName) {
     this.recordFileName = recordFileName;
     this.recordIndex = 0;
   }
+
   private int recordIndex = 0;
 }

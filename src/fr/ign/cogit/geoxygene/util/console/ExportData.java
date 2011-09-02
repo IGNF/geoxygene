@@ -139,8 +139,8 @@ public class ExportData extends JPanel {
       // rafraichissement du repository d'OJB
       data.refreshRepository(fileMapping);
       // Metadata metadonnees = data.getMetadata(tableName);
-      ResultSet rs = data.getConnection().getMetaData().getColumns(null, null,
-          tableName, "*");
+      ResultSet rs = data.getConnection().getMetaData()
+          .getColumns(null, null, tableName, "*");
 
       int columnNameIndex = -1;
       int typeNameIndex = -1;
@@ -200,8 +200,8 @@ public class ExportData extends JPanel {
 
       ObjectViewer.flagWindowClosing = false;
       ObjectViewer viewer = new ObjectViewer(data);
-      viewer.addFeatureCollection(ftfc, I18N
-          .getString("ExportData.ExportedData")); //$NON-NLS-1$
+      viewer.addFeatureCollection(ftfc,
+          I18N.getString("ExportData.ExportedData")); //$NON-NLS-1$
 
       System.out.println(I18N.getString("ExportData.Finished")); //$NON-NLS-1$
 

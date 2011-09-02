@@ -45,152 +45,179 @@ public class LienSGBD extends FT_Feature {
    * Les objets de Reference pointés par le lien.
    */
   private String objetsRef;
+
   /**
    * @return reference object list
    */
   public final String getObjetsRef() {
     return this.objetsRef;
   }
+
   /**
    * @param liste reference object list
    */
   public final void setObjetsRef(final String liste) {
     this.objetsRef = liste;
   }
+
   /**
    * Les objets de Comparaison pointés par le lien.
    */
   private String objetsComp;
+
   /**
    * @return comparison object list
    */
   public final String getObjetsComp() {
     return this.objetsComp;
   }
+
   /**
    * @param liste comparison object list
    */
   public final void setObjetsComp(final String liste) {
     this.objetsComp = liste;
   }
+
   /**
    * Estimation de la qualité du lien d'appariement (mapping fait avec la table
    * Representation_Lien au besoin).
    */
   private double evaluation;
+
   /**
    * @return link evaluation
    */
   public final double getEvaluation() {
     return this.evaluation;
   }
+
   /**
    * @param theEvaluation link evaluation
    */
   public final void setEvaluation(final double theEvaluation) {
     this.evaluation = theEvaluation;
   }
+
   /**
    * Liste d'indicateurs temporaires utilisés pendant les calculs.
    * d'appariement.
    */
   private String indicateurs;
+
   /**
    * @return indicators
    */
   public final String getIndicateurs() {
     return this.indicateurs;
   }
+
   /**
    * @param indicators indicators
    */
   public final void setIndicateurs(final String indicators) {
     this.indicateurs = indicators;
   }
+
   /**
    * Texte libre. (mapping fait avec la table Representation_Lien au besoin)
    */
   private String commentaire = new String();
+
   /**
    * @return comment
    */
   public final String getCommentaire() {
     return this.commentaire;
   }
+
   /**
    * @param comment comment
    */
   public final void setCommentaire(final String comment) {
     this.commentaire = comment;
   }
+
   /**
    * Texte libre pour décrire le nom de l'appariement. (mapping fait avec la
    * table Representation_Lien au besoin)
    */
   private String nom = new String();
+
   /**
    * @return matching name
    */
   public final String getNom() {
     return this.nom;
   }
+
   /**
    * @param aNom matching name
    */
   public final void setNom(final String aNom) {
     this.nom = aNom;
   }
+
   /**
    * Texte libre pour décrire le type d'appariement (ex. "Noeud-Noeud").
    * (mapping fait avec la table Representation_Lien au besoin)
    */
   private String type = new String();
+
   /**
    * @return matching type
    */
   public final String getType() {
     return this.type;
   }
+
   /**
    * @param aType matching type
    */
   public final void setType(final String aType) {
     this.type = aType;
   }
+
   /**
    * Texte libre pour décrire les objets de référence pointés. (mapping fait
    * avec la table Representation_Lien au besoin).
    */
   private String reference = new String();
+
   /**
    * @return reference text
    */
   public final String getReference() {
     return this.reference;
   }
+
   /**
    * @param aReference reference text
    */
   public final void setReference(final String aReference) {
     this.reference = aReference;
   }
+
   /**
    * Texte libre pour décrire les objets de comparaison pointés. (mapping fait
    * avec la table Representation_Lien au besoin)
    */
   private String comparaison = new String();
+
   /**
    * @return comparison text
    */
   public final String getComparaison() {
     return this.comparaison;
   }
+
   /**
    * @param newComparaison comparison text
    */
   public final void setComparaison(final String newComparaison) {
     this.comparaison = newComparaison;
   }
+
   /**
    * Methode de conversion entre les liens d'appariement vers les liens SGBD.
    * @param lien matching link
@@ -226,8 +253,8 @@ public class LienSGBD extends FT_Feature {
       feature = (FT_Feature) itComp.next();
       classe = feature.getClass().getName();
       if (formatComp.contains(classe) && formatComp.length() != 0) {
-        formatComp = formatComp.replaceAll(classe, classe
-            + " " + feature.getId()); //$NON-NLS-1$
+        formatComp = formatComp.replaceAll(classe,
+            classe + " " + feature.getId()); //$NON-NLS-1$
       } else {
         formatComp = formatComp + classe + " " + feature.getId() + "|"; //$NON-NLS-1$ //$NON-NLS-2$
         this.getEnsembleLiensSGBD().getListePop().add(classe);
@@ -302,7 +329,8 @@ public class LienSGBD extends FT_Feature {
     StringTokenizer tokenRefId;
     Population<IFeature> populationCourante;
     IFeature feature;
-    List<Population<IFeature>> liste = this.getEnsembleLiensSGBD().getListePopulations();
+    List<Population<IFeature>> liste = this.getEnsembleLiensSGBD()
+        .getListePopulations();
     while (tokenRef.hasMoreElements()) {
       valeurRef = tokenRef.nextToken();
       valeurRefClass = valeurRef.substring(0, valeurRef.indexOf(" ")); //$NON-NLS-1$
@@ -392,11 +420,13 @@ public class LienSGBD extends FT_Feature {
 
     return lien;
   }
+
   // ////////////////////////////////////
   /**
    * The set of links.
    */
   private EnsembleDeLiensSGBD ensembleLiensSGBD;
+
   /**
    * Récupère l'objet en relation.
    * @return the set of links
@@ -404,6 +434,7 @@ public class LienSGBD extends FT_Feature {
   public final EnsembleDeLiensSGBD getEnsembleLiensSGBD() {
     return this.ensembleLiensSGBD;
   }
+
   /**
    * Define a set of links.
    * <p>

@@ -57,8 +57,8 @@ public class GeOxygeneApplication {
    * The icon of the icon, i.e. the GeOxygene icon by default. Also used by
    * {@link LayerViewPanel}
    */
-  private ImageIcon applicationIcon = new ImageIcon(GeOxygeneApplication.class
-      .getResource("/images/icone.gif")); //$NON-NLS-1$
+  private ImageIcon applicationIcon = new ImageIcon(
+      GeOxygeneApplication.class.getResource("/images/icone.gif")); //$NON-NLS-1$
 
   /**
    * 
@@ -131,7 +131,7 @@ public class GeOxygeneApplication {
 
   private GeOxygeneApplicationProperties properties = null;
   private URL propertiesFile = null;
-  
+
   /**
    * Initialize the application plugins.
    */
@@ -181,8 +181,8 @@ public class GeOxygeneApplication {
    * @param args arguments of the application
    */
   public static void main(final String[] args) {
-    SplashScreen splashScreen = new SplashScreen(GeOxygeneApplication
-        .splashImage(), "GeOxygene"); //$NON-NLS-1$
+    SplashScreen splashScreen = new SplashScreen(
+        GeOxygeneApplication.splashImage(), "GeOxygene"); //$NON-NLS-1$
     splashScreen.setVisible(true);
     GeOxygeneApplication application = new GeOxygeneApplication();
     application.getFrame().newProjectFrame();

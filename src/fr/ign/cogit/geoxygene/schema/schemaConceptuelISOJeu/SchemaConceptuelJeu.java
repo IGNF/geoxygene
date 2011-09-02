@@ -51,7 +51,7 @@ import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.SchemaConceptuel
  *         d'un jeu de données.
  */
 
-public class SchemaConceptuelJeu implements SchemaConceptuel <FeatureType> {
+public class SchemaConceptuelJeu implements SchemaConceptuel<FeatureType> {
 
   /**
    * Constructeur par défaut
@@ -131,11 +131,11 @@ public class SchemaConceptuelJeu implements SchemaConceptuel <FeatureType> {
 
     // on cree les SC_FeatureType d'après les
     // fr.ign.cogit.appli.commun.metadata.schemaConceptuel.schemaProduit.FeatureType
-    Iterator<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType> itFT = schemaProduit.getFeatureTypes().iterator();
+    Iterator<fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.FeatureType> itFT = schemaProduit
+        .getFeatureTypes().iterator();
     System.out.println("Les features..");
     while (itFT.hasNext()) {
-      currentFCFT = itFT
-          .next();
+      currentFCFT = itFT.next();
       // System.out.println("nom = "+ currentFCFT.getTypeName());
       currentSCFT = new FeatureType(currentFCFT);
       System.out.println("featureType : " + currentSCFT.getTypeName());
@@ -262,7 +262,7 @@ public class SchemaConceptuelJeu implements SchemaConceptuel <FeatureType> {
         System.out.println("ft connecté : " + currentFCFT.getTypeName());
         Iterator<FeatureType> itFTJ = listCreatedSCFT.iterator();
         while (itFTJ.hasNext()) {
-          currentSCFT =  itFTJ.next();
+          currentSCFT = itFTJ.next();
           if (currentSCFT.getElementSchemaProduitOrigine().equals(currentFCFT)) {
             // On a trouve le SC_FeatureType correspondant à ce role
             // Le role a donc sa place dans le schema conceptuel

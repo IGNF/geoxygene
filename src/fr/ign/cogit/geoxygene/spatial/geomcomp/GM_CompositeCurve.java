@@ -66,22 +66,27 @@ public class GM_CompositeCurve extends GM_OrientableCurve implements
   // Attribut "generator" et méthodes pour le traiter ////////////////////
   /** Les GM_OrientableCurve constituant self. */
   protected List<IOrientableCurve> generator;
+
   @Override
   public List<IOrientableCurve> getGenerator() {
     return this.generator;
   }
+
   @Override
   public IOrientableCurve getGenerator(int i) {
     return this.generator.get(i);
   }
+
   @Override
   public void setGenerator(int i, IOrientableCurve value) {
     this.generator.set(i, value);
   }
+
   @Override
   public void addGenerator(IOrientableCurve value) {
     this.generator.add(value);
   }
+
   @Override
   public void addGenerator(IOrientableCurve value, double tolerance)
       throws Exception {
@@ -102,6 +107,7 @@ public class GM_CompositeCurve extends GM_OrientableCurve implements
       this.generator.add(value);
     }
   }
+
   @Override
   public void addGeneratorTry(IOrientableCurve value, double tolerance)
       throws Exception {
@@ -116,10 +122,12 @@ public class GM_CompositeCurve extends GM_OrientableCurve implements
       }
     }
   }
+
   @Override
   public void addGenerator(int i, IOrientableCurve value) {
     this.generator.add(i, value);
   }
+
   @Override
   public void removeGenerator(IOrientableCurve value) throws Exception {
     if (this.generator.size() == 1) {
@@ -127,6 +135,7 @@ public class GM_CompositeCurve extends GM_OrientableCurve implements
     }
     this.generator.remove(value);
   }
+
   @Override
   public void removeGenerator(int i) throws Exception {
     if (this.generator.size() == 1) {
@@ -134,10 +143,12 @@ public class GM_CompositeCurve extends GM_OrientableCurve implements
     }
     this.generator.remove(i);
   }
+
   @Override
   public int sizeGenerator() {
     return this.generator.size();
   }
+
   /**
    * Constructeur par défaut.
    */
@@ -181,6 +192,7 @@ public class GM_CompositeCurve extends GM_OrientableCurve implements
    * dans getPrimitive().
    */
   protected ICurve primitive;
+
   @Override
   public ICurve getPrimitive() {
     this.simplifyPrimitive();
@@ -195,16 +207,20 @@ public class GM_CompositeCurve extends GM_OrientableCurve implements
   // protected GM_OrientableCurve[] proxy = new GM_OrientableCurve[2];
   @Override
   public GM_OrientableCurve getPositive() {
-    return (GM_OrientableCurve) this.getPrimitive(); // equivaut a return this.proxy[0]
+    return (GM_OrientableCurve) this.getPrimitive(); // equivaut a return
+                                                     // this.proxy[0]
   }
+
   @Override
   public GM_OrientableCurve getNegative() {
     return (GM_OrientableCurve) this.getPrimitive().getNegative();
   }
+
   @Override
   public GM_CurveBoundary boundary() {
     return (GM_CurveBoundary) this.getPrimitive().boundary();
   }
+
   /**
    * Vérifie le chaînage des composants. Renvoie TRUE s'ils sont chaînés, FALSE
    * sinon.
@@ -224,10 +240,12 @@ public class GM_CompositeCurve extends GM_OrientableCurve implements
     }
     return true;
   }
+
   @Override
   public IDirectPositionList coord() {
     return this.getPrimitive().coord();
   }
+
   /**
    * Calcule la primitive se self.
    */
@@ -248,36 +266,42 @@ public class GM_CompositeCurve extends GM_OrientableCurve implements
       }
     }
   }
+
   @Override
   public int getOrientation() {
     GM_CompositeCurve.logger.error("non implemented method");
     return 0;
   }
+
   @Override
   public Set<IComplex> getComplex() {
     GM_CompositeCurve.logger.error("non implemented method");
     return null;
   }
+
   @Override
   public int sizeComplex() {
     GM_CompositeCurve.logger.error("non implemented method");
     return 0;
   }
+
   /** Set de primitives constituant self. */
-//  protected Set<IGeometry> element = new HashSet<IGeometry>();
+  // protected Set<IGeometry> element = new HashSet<IGeometry>();
   @Override
   public void addElement(IPrimitive value) {
     this.getElement().add(value);
     value.getComplex().add(this);
   }
+
   @Override
   public void removeElement(IPrimitive value) {
     this.getElement().remove(value);
     value.getComplex().remove(this);
   }
+
   @Override
   public Set<IGeometry> getElement() {
-    return null; //    return this.element;
+    return null; // return this.element;
   }
 
   @Override
@@ -315,23 +339,27 @@ public class GM_CompositeCurve extends GM_OrientableCurve implements
   }
 
   /** Les super-complexes constituant self. */
-//  protected Set<IComplex> superComplex = new HashSet<IComplex>();
+  // protected Set<IComplex> superComplex = new HashSet<IComplex>();
   @Override
   public Set<IComplex> getSuperComplex() {
-    return null;//this.superComplex;
+    return null;// this.superComplex;
   }
+
   @Override
   public void addSuperComplex(IComplex value) {
     this.getSuperComplex().add(value);
   }
+
   @Override
   public void removeSuperComplex(IComplex value) {
     this.getSuperComplex().remove(value);
   }
+
   @Override
   public int sizeSuperComplex() {
     return this.getSuperComplex().size();
   }
+
   @Override
   public boolean isMaximal() {
     return (this.sizeSuperComplex() == 0);

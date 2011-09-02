@@ -125,7 +125,7 @@ public class CarteTopo extends DataSet {
   /** Population des arcs de la carte topo. */
   @SuppressWarnings("unchecked")
   public IPopulation<Arc> getPopArcs() {
-        return (IPopulation<Arc>) this.getPopulation(I18N
+    return (IPopulation<Arc>) this.getPopulation(I18N
         .getString("CarteTopo.Edge"));} //$NON-NLS-1$
 
   /** Population des noeuds de la carte topo. */
@@ -247,32 +247,30 @@ public class CarteTopo extends DataSet {
     // ojb
     this.setNom(nomLogique);
     this.setPersistant(false);
-    this
-        .addPopulation(new Population<Arc>(
-            false,
-            I18N.getString("CarteTopo.Edge"), fr.ign.cogit.geoxygene.contrib.cartetopo.Arc.class, true)); //$NON-NLS-1$
-    this
-        .addPopulation(new Population<Noeud>(
-            false,
-            I18N.getString("CarteTopo.Node"), fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud.class, true)); //$NON-NLS-1$
-    this
-        .addPopulation(new Population<Face>(
-            false,
-            I18N.getString("CarteTopo.Face"), fr.ign.cogit.geoxygene.contrib.cartetopo.Face.class, true)); //$NON-NLS-1$
-    this
-        .addPopulation(new Population<Groupe>(
-            false,
-            I18N.getString("CarteTopo.Group"), fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe.class, false)); //$NON-NLS-1$
+    this.addPopulation(new Population<Arc>(
+        false,
+        I18N.getString("CarteTopo.Edge"), fr.ign.cogit.geoxygene.contrib.cartetopo.Arc.class, true)); //$NON-NLS-1$
+    this.addPopulation(new Population<Noeud>(
+        false,
+        I18N.getString("CarteTopo.Node"), fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud.class, true)); //$NON-NLS-1$
+    this.addPopulation(new Population<Face>(
+        false,
+        I18N.getString("CarteTopo.Face"), fr.ign.cogit.geoxygene.contrib.cartetopo.Face.class, true)); //$NON-NLS-1$
+    this.addPopulation(new Population<Groupe>(
+        false,
+        I18N.getString("CarteTopo.Group"), fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe.class, false)); //$NON-NLS-1$
     /** créer un featuretype pour les arcs */
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType arcFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
-    AttributeType orientationType = new AttributeType("orient", "orientation", "Integer");
+    AttributeType orientationType = new AttributeType("orient", "orientation",
+        "Integer");
     arcFeatureType.addFeatureAttribute(orientationType);
     /** création d'un schéma associé au featureType */
     arcFeatureType.setGeometryType(GM_LineString.class);
     this.getPopArcs().setFeatureType(arcFeatureType);
     /** créer un featuretype pour les noeuds */
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType noeudFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
-    AttributeType distanceType = new AttributeType("distance", "distance", "Double");
+    AttributeType distanceType = new AttributeType("distance", "distance",
+        "Double");
     noeudFeatureType.addFeatureAttribute(distanceType);
     /** création d'un schéma associé au featureType */
     noeudFeatureType.setGeometryType(GM_Point.class);
@@ -565,11 +563,8 @@ public class CarteTopo extends DataSet {
         this.getPopNoeuds().initSpatialIndex(Tiling.class, true, enveloppe, nb);
       }
     }
-    this
-        .fireActionPerformed(new ActionEvent(
-            this,
-            0,
-            I18N.getString("CarteTopo.MissingNodesCreation"), this.getPopArcs().size())); //$NON-NLS-1$
+    this.fireActionPerformed(new ActionEvent(this, 0, I18N
+        .getString("CarteTopo.MissingNodesCreation"), this.getPopArcs().size())); //$NON-NLS-1$
     int index = 0;
     List<Arc> arcsVides = new ArrayList<Arc>(0);
     for (Arc arc : this.getPopArcs()) {
@@ -598,9 +593,10 @@ public class CarteTopo extends DataSet {
             new GM_Point(arc.getGeometrie().endPoint()));
       } else {
         noeud = selection.iterator().next();
-        arc.getGeometrie().coord().set(
-            arc.getGeometrie().sizeControlPoint() - 1,
-            noeud.getGeometrie().getPosition());
+        arc.getGeometrie()
+            .coord()
+            .set(arc.getGeometrie().sizeControlPoint() - 1,
+                noeud.getGeometrie().getPosition());
       }
       arc.setNoeudFin(noeud);
       this.fireActionPerformed(new ActionEvent(this, 1, I18N
@@ -893,8 +889,8 @@ public class CarteTopo extends DataSet {
           continue;
         }
         if (!arcj.getGeom().equals(arci.getGeom())) {
-          double dist = Distances.hausdorff(arci.getGeometrie(), arcj
-              .getGeometrie());
+          double dist = Distances.hausdorff(arci.getGeometrie(),
+              arcj.getGeometrie());
           if (dist > 0.5) {
             continue;
           }
@@ -1104,8 +1100,8 @@ public class CarteTopo extends DataSet {
           for (Arc arcSel : listeInter) {
             // on devrait mettre ==0 ci-dessous, mais pour gérer les
             // erreurs d'arrondi on met <0.01
-            if (Distances.premiereComposanteHausdorff(ligneDecoupe, arcSel
-                .getGeometrie()) < 0.01) {
+            if (Distances.premiereComposanteHausdorff(ligneDecoupe,
+                arcSel.getGeometrie()) < 0.01) {
               // on appartient à lui
               arcNouveau.addAllCorrespondants(arcSel.getCorrespondants());
               arcNouveau.setOrientation(arcSel.getOrientation());
@@ -1237,14 +1233,14 @@ public class CarteTopo extends DataSet {
         for (Arc arc : noeudProche.arcs()) {
           if (arc.getNoeudIni().equals(noeudProche)) {
             arc.setNoeudIni(nouveauNoeud);
-            arc.getGeometrie().coord().set(0,
-                nouveauNoeud.getGeometrie().getPosition());
+            arc.getGeometrie().coord()
+                .set(0, nouveauNoeud.getGeometrie().getPosition());
           }
           if (arc.getNoeudFin().equals(noeudProche)) {
             arc.setNoeudFin(nouveauNoeud);
             int fin = arc.getGeometrie().coord().size() - 1;
-            arc.getGeometrie().coord().set(fin,
-                nouveauNoeud.getGeometrie().getPosition());
+            arc.getGeometrie().coord()
+                .set(fin, nouveauNoeud.getGeometrie().getPosition());
           }
         }
         // On enlève les arcs qui n'ont plus lieu d'être
@@ -1253,8 +1249,8 @@ public class CarteTopo extends DataSet {
         for (Arc arc : noeudProche.arcs()) {
           if (arc.getNoeudIni() == nouveauNoeud
               && arc.getNoeudFin() == nouveauNoeud) {
-            if ((Distances.hausdorff(arc.getGeometrie(), noeudProche
-                .getGeometrie()) <= tolerance)
+            if ((Distances.hausdorff(arc.getGeometrie(),
+                noeudProche.getGeometrie()) <= tolerance)
                 || (arc.getGeometrie().length() < tolerance)) {
               nouveauNoeud.addAllCorrespondants(arc.getCorrespondants());
               arc.setCorrespondants(new ArrayList<IFeature>(0));
@@ -1431,12 +1427,12 @@ public class CarteTopo extends DataSet {
           .iterator();
       while (itArcs.hasNext()) {
         arc = itArcs.next();
-        if (arc.getGeometrie().startPoint().distance(
-            noeud.getGeometrie().getPosition()) < distanceMaxProjectionNoeud) {
+        if (arc.getGeometrie().startPoint()
+            .distance(noeud.getGeometrie().getPosition()) < distanceMaxProjectionNoeud) {
           continue;
         }
-        if (arc.getGeometrie().endPoint().distance(
-            noeud.getGeometrie().getPosition()) < distanceMaxProjectionNoeud) {
+        if (arc.getGeometrie().endPoint()
+            .distance(noeud.getGeometrie().getPosition()) < distanceMaxProjectionNoeud) {
           continue;
         }
         arc.projeteEtDecoupe(noeud.getGeometrie());
@@ -1702,8 +1698,8 @@ public class CarteTopo extends DataSet {
     for (Cycle cycle : cycles) {
       Face face = ((cycle.isAGauche() && cycle.getOrientationsArcs().get(0)
           .booleanValue()) || (!cycle.isAGauche() && !cycle
-          .getOrientationsArcs().get(0).booleanValue())) ? cycle.getArcs().get(
-          0).getFaceGauche() : cycle.getArcs().get(0).getFaceDroite();
+          .getOrientationsArcs().get(0).booleanValue())) ? cycle.getArcs()
+          .get(0).getFaceGauche() : cycle.getArcs().get(0).getFaceDroite();
       if (face == null) {
         Collection<Face> selection = this.getPopFaces().select(
             cycle.getGeometrie());
@@ -2009,10 +2005,10 @@ public class CarteTopo extends DataSet {
         }
       }
     }
-    List<Arc> arcsCycle = new ArrayList<Arc>(pileArcs.subList(0, pileArcs
-        .size()));
-    List<Boolean> orientationsCycle = new ArrayList<Boolean>(pileOrientations
-        .subList(0, pileOrientations.size()));
+    List<Arc> arcsCycle = new ArrayList<Arc>(pileArcs.subList(0,
+        pileArcs.size()));
+    List<Boolean> orientationsCycle = new ArrayList<Boolean>(
+        pileOrientations.subList(0, pileOrientations.size()));
     pointsCycle.add(pointsCycle.get(0));
     if (pointsCycle.size() <= 3 || dangle) {
       return listeCycles;
@@ -2126,10 +2122,10 @@ public class CarteTopo extends DataSet {
       for (Arc arc2 : arcsProches) {
         logger.trace("\t with edge " + arc2);
         // if both edges are in the same direction
-        if (arc2.getGeometrie().startPoint().equals2D(
-            arc.getGeometrie().startPoint(), 0.1)
-            && arc2.getGeometrie().endPoint().equals2D(
-                arc.getGeometrie().endPoint(), 0.1)) {
+        if (arc2.getGeometrie().startPoint()
+            .equals2D(arc.getGeometrie().startPoint(), 0.1)
+            && arc2.getGeometrie().endPoint()
+                .equals2D(arc.getGeometrie().endPoint(), 0.1)) {
           arcsAEnlever.add(arc2);
           arcsNonTraites.remove(arc2);
           if (arc2.getFaceDroite() != null) {
@@ -2161,10 +2157,10 @@ public class CarteTopo extends DataSet {
           logger.trace("same direction");
         }
         // if both edges are in opposite directions
-        if (arc2.getGeometrie().startPoint().equals2D(
-            arc.getGeometrie().endPoint(), 0.1)
-            && arc2.getGeometrie().endPoint().equals2D(
-                arc.getGeometrie().startPoint(), 0.1)) {
+        if (arc2.getGeometrie().startPoint()
+            .equals2D(arc.getGeometrie().endPoint(), 0.1)
+            && arc2.getGeometrie().endPoint()
+                .equals2D(arc.getGeometrie().startPoint(), 0.1)) {
           arcsAEnlever.add(arc2);
           arcsNonTraites.remove(arc2);
           if (arc2.getFaceDroite() != null) {
@@ -2218,7 +2214,7 @@ public class CarteTopo extends DataSet {
       }
     }
     for (Arc arc : arcsNonTraites) {
-        arc.getFeatureCollections().remove(arcsNonTraites);
+      arc.getFeatureCollections().remove(arcsNonTraites);
     }
     arcsNonTraites.clear();
     arcsAEnlever.clear();
@@ -2233,7 +2229,7 @@ public class CarteTopo extends DataSet {
     }
     runtime.runFinalization();
     runtime.gc();
-    long heap6 = runtime.totalMemory () - runtime.freeMemory ();
+    long heap6 = runtime.totalMemory() - runtime.freeMemory();
     logger.info("heap after creation of nodes " + heap6);
   }
 
@@ -2284,8 +2280,7 @@ public class CarteTopo extends DataSet {
    * @param listeFeatures liste des éléments à importer
    * @param is2d si vrai, alors convertir les géométries en 2d
    */
-  public void importClasseGeo(IFeatureCollection<?> listeFeatures,
-      boolean is2d) {
+  public void importClasseGeo(IFeatureCollection<?> listeFeatures, boolean is2d) {
     Chargeur.importClasseGeo(listeFeatures, this, is2d);
   }
 
@@ -2314,8 +2309,8 @@ public class CarteTopo extends DataSet {
    * @param face face à affecter aux arcs
    */
   public void marquerCycle(Cycle cycle, Face face) {
-    this.marquerCycle(cycle.getArcs(), cycle.getOrientationsArcs(), cycle
-        .isAGauche(), face, null, null);
+    this.marquerCycle(cycle.getArcs(), cycle.getOrientationsArcs(),
+        cycle.isAGauche(), face, null, null);
   }
 
   /**
@@ -2423,8 +2418,7 @@ public class CarteTopo extends DataSet {
               line = l;
             }
           }
-          ILineString nodedLine = Operateurs.projectionEtInsertion(point,
-              line);
+          ILineString nodedLine = Operateurs.projectionEtInsertion(point, line);
           IDirectPosition projectNode = null;
           min = Double.POSITIVE_INFINITY;
           for (IDirectPosition p : nodedLine.getControlPoint()) {
@@ -2510,15 +2504,16 @@ public class CarteTopo extends DataSet {
         .insertionIndex(p, a.getGeometrie().getControlPoint());
     int orientation = a.getOrientation();
     Noeud n = this.getPopNoeuds().nouvelElement(new GM_Point(p));
-    IDirectPositionList l1 = new DirectPositionList(new ArrayList<IDirectPosition>(a.getGeometrie()
-        .getControlPoint().getList().subList(0, index)));
+    IDirectPositionList l1 = new DirectPositionList(
+        new ArrayList<IDirectPosition>(a.getGeometrie().getControlPoint()
+            .getList().subList(0, index)));
     if (l1.isEmpty()) {
       logger.error(p + " empty " + index + " for " + a.getGeometrie());
     }
     l1.add(p);
-    IDirectPositionList l2 = new DirectPositionList(new ArrayList<IDirectPosition>(a.getGeometrie()
-        .getControlPoint().getList().subList(index,
-            a.getGeometrie().sizeControlPoint())));
+    IDirectPositionList l2 = new DirectPositionList(
+        new ArrayList<IDirectPosition>(a.getGeometrie().getControlPoint()
+            .getList().subList(index, a.getGeometrie().sizeControlPoint())));
     if (l2.isEmpty()) {
       logger.error(p + " empty " + index + " for " + a.getGeometrie());
     }
@@ -2580,7 +2575,8 @@ public class CarteTopo extends DataSet {
       Noeud n = n1;
       List<IDirectPosition> list = new ArrayList<IDirectPosition>(0);
       for (Arc a : path.getListeArcs()) {
-        List<IDirectPosition> points = a.getGeometrie().getControlPoint().getList();
+        List<IDirectPosition> points = a.getGeometrie().getControlPoint()
+            .getList();
         boolean direct = false;
         if (a.getNoeudIni() == n) {
           direct = true;
@@ -2607,9 +2603,9 @@ public class CarteTopo extends DataSet {
         }
       }
       if (list.size() < 2) {
-        logger.info(x1.toGM_Point() + " " +x2.toGM_Point());
-        logger.info(" " +a1.getGeometrie());
-        logger.info(" " +a2.getGeometrie());
+        logger.info(x1.toGM_Point() + " " + x2.toGM_Point());
+        logger.info(" " + a1.getGeometrie());
+        logger.info(" " + a2.getGeometrie());
       }
       path.setGeom(new GM_LineString(new DirectPositionList(list)));
     }

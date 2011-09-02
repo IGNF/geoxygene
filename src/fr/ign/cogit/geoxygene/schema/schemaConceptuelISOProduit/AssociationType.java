@@ -43,18 +43,22 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
    * de cardinalité n-m)
    */
   protected String nomClasseAsso;
+
   public String getNomClasseAsso() {
     return this.nomClasseAsso;
   }
+
   public void setNomClasseAsso(String value) {
     this.nomClasseAsso = value;
   }
 
   /** flag agregation : 1 si l'association est de type agregation */
   protected boolean isAggregation;
+
   public void setIsAggregation(boolean value) {
     this.isAggregation = value;
   }
+
   public boolean getIsAggregation() {
     return this.isAggregation;
   }
@@ -63,6 +67,7 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
   public List<GF_FeatureType> getLinkBetween() {
     return this.linkBetween;
   }
+
   /** Affecte une liste de feature types */
   @Override
   public void setLinkBetween(List<GF_FeatureType> L) {
@@ -80,11 +85,13 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
       scft.getMemberOf().add(this);
     }
   }
+
   /** Renvoie le nombre de feature types impliqués dans cette association. */
   @Override
   public int sizeLinkBetween() {
     return this.linkBetween.size();
   }
+
   /** Ajoute un feature type. Execute un "addMemberOf" sur GF_FeatureType. */
   @Override
   public void addLinkBetween(GF_FeatureType value) {
@@ -96,10 +103,12 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
       value.getMemberOf().add(this);
     }
   }
+
   @Override
   public GF_FeatureType getLinkBetweenI(int i) {
     return this.linkBetween.get(i);
   }
+
   @Override
   public void removeLinkBetwenn(GF_FeatureType value) {
     if (value == null) {
@@ -115,16 +124,19 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
   public List<GF_AssociationRole> getRoles() {
     return this.roles;
   }
+
   /** Affecte une liste de roles */
   @Override
   public void setRoles(List<GF_AssociationRole> L) {
     this.roles = L;
   }
+
   /** Renvoie le nombre de roles. */
   @Override
   public int sizeRoles() {
     return this.roles.size();
   }
+
   /** Ajoute un role. */
   @Override
   public void addRole(GF_AssociationRole role) {
@@ -136,10 +148,12 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
       this.addLinkBetween(role.getFeatureType());
     }
   }
+
   @Override
   public AssociationRole getRoleI(int i) {
     return (AssociationRole) this.roles.get(i);
   }
+
   @Override
   public AssociationRole getRoleByName(String nomRole) {
     List<GF_AssociationRole> listRoles = this.getRoles();
@@ -152,6 +166,7 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
         + " n'a pas été trouvé pour l'association " + this.getTypeName());
     return null;
   }
+
   @Override
   public void removeRole(GF_AssociationRole value) {
     if (value == null) {
@@ -165,18 +180,22 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
 
   /** boolean de valeur 1 si l'association est de nature spatiale */
   protected boolean isSpatial;
+
   public void setIsSpatial(boolean value) {
     this.isSpatial = value;
   }
+
   public boolean getIsSpatial() {
     return this.isSpatial;
   }
 
   /** boolean de valeur 1 si l'association est une aggregation */
   protected boolean isTopologic;
+
   public void setIsTopologic(boolean value) {
     this.isTopologic = value;
   }
+
   public boolean getIsTopologic() {
     return this.isTopologic;
   }

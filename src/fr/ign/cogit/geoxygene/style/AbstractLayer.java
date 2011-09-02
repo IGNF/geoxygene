@@ -74,7 +74,7 @@ public abstract class AbstractLayer implements Layer {
   // @XmlElement(name = "LayerFeatureConstraints")
   // protected LayerFeatureConstraints layerFeatureConstraints;
 
-  @XmlElements( { @XmlElement(name = "UserStyle", type = UserStyle.class),
+  @XmlElements({ @XmlElement(name = "UserStyle", type = UserStyle.class),
       @XmlElement(name = "NamedStyle", type = NamedStyle.class) })
   List<Style> styles = new ArrayList<Style>();
 
@@ -144,14 +144,14 @@ public abstract class AbstractLayer implements Layer {
   public BufferedImage getImage(RasterSymbolizer symbolizer) {
     return this.rasterImage.get(symbolizer);
   }
-  
+
   @XmlTransient
   private String activeGroup;
 
-  //XXX Maybe move the CRS in FeatureTypeStyle.
+  // XXX Maybe move the CRS in FeatureTypeStyle.
   @XmlTransient
   private CoordinateReferenceSystem ftscrs;
- 
+
   @Override
   public String getActiveGroup() {
     return activeGroup;
@@ -161,10 +161,11 @@ public abstract class AbstractLayer implements Layer {
   public void setActiveGroup(String activeGroup) {
     this.activeGroup = activeGroup;
   }
+
   @Override
   public Collection<String> getGroups() {
     Set<String> groups = new HashSet<String>(0);
-    for(Style style : this.getStyles()) {
+    for (Style style : this.getStyles()) {
       if (style.getGroup() != null) {
         groups.add(style.getGroup());
       }
@@ -176,24 +177,24 @@ public abstract class AbstractLayer implements Layer {
    * Affecte la valeur de l'attribut CRS
    */
   @Override
-public void setCRS(CoordinateReferenceSystem crs){
-	  this.ftscrs = crs;
+  public void setCRS(CoordinateReferenceSystem crs) {
+    this.ftscrs = crs;
   }
-  
+
   /**
    * Crée un CRS a partir d'un crs sous forme de chaine de caractère WKT.
    * @param scrs
    */
-  public void setCRSFromWKTString(String scrs){
-	  try{
-		  this.ftscrs = CRS.parseWKT(scrs);
-	  }catch (Exception e) {
-		  e.printStackTrace();
-	  }
+  public void setCRSFromWKTString(String scrs) {
+    try {
+      this.ftscrs = CRS.parseWKT(scrs);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
-  
+
   @Override
-  public CoordinateReferenceSystem getCRS(){
-	  return this.ftscrs;
+  public CoordinateReferenceSystem getCRS() {
+    return this.ftscrs;
   }
 }

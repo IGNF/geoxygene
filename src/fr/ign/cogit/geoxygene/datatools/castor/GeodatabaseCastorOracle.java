@@ -150,8 +150,8 @@ public class GeodatabaseCastorOracle/* implements Geodatabase */{
     try { // ceci est pour Windows
       String[] command = { "cmd.exe", "/c", "set" };
       Process pr = Runtime.getRuntime().exec(command);
-      BufferedReader br = new BufferedReader(new InputStreamReader(pr
-          .getInputStream()));
+      BufferedReader br = new BufferedReader(new InputStreamReader(
+          pr.getInputStream()));
       String ligne = br.readLine();
       while (ligne != null) {
         if ((ligne.length() >= 15)
@@ -165,8 +165,8 @@ public class GeodatabaseCastorOracle/* implements Geodatabase */{
       try { // ceci est pour Solaris / Linux
         String command = "env";
         Process pr = Runtime.getRuntime().exec(command);
-        BufferedReader br = new BufferedReader(new InputStreamReader(pr
-            .getInputStream()));
+        BufferedReader br = new BufferedReader(new InputStreamReader(
+            pr.getInputStream()));
         String ligne = br.readLine();
         while (ligne != null) {
           if ((ligne.length() >= 15)
@@ -180,8 +180,8 @@ public class GeodatabaseCastorOracle/* implements Geodatabase */{
         try { // ceci est pour Windows
           String[] command = { "command.com", "/c", "set" };
           Process pr = Runtime.getRuntime().exec(command);
-          BufferedReader br = new BufferedReader(new InputStreamReader(pr
-              .getInputStream()));
+          BufferedReader br = new BufferedReader(new InputStreamReader(
+              pr.getInputStream()));
           String ligne = br.readLine();
           while (ligne != null) {
             if ((ligne.length() >= 15)

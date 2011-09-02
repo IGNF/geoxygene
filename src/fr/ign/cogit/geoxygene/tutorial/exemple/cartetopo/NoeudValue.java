@@ -32,12 +32,14 @@ public class NoeudValue extends Noeud {
    * Degree.
    */
   private int degre;
+
   /**
    * @return the node degree
    */
   public int getDegre() {
     return this.degre;
   }
+
   /**
    * @param degree degree
    */

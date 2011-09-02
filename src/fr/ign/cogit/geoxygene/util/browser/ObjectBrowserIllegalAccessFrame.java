@@ -90,8 +90,8 @@ public class ObjectBrowserIllegalAccessFrame extends JFrame {
     try {
       URL imageUrl = this.getClass().getResource("images/stop.gif");
 
-      JLabel illegalAccessLabel = new JLabel(this.i18nLanguageFile
-          .getString("IllegalAccessFrameDefaultLabel"),
+      JLabel illegalAccessLabel = new JLabel(
+          this.i18nLanguageFile.getString("IllegalAccessFrameDefaultLabel"),
           new ImageIcon(imageUrl), SwingConstants.CENTER);
 
       this.getContentPane().add(illegalAccessLabel, BorderLayout.CENTER);

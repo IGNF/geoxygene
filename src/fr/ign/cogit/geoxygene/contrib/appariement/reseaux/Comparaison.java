@@ -155,14 +155,14 @@ public class Comparaison {
    * @return Liste (de 'double') contenant un ensemble d'indicateurs sur l'écart
    *         entre les réseaux :
    *         <p>
-   *         ESTIMATEURS SUR LES ARCS liste(0): longueur des
-   *         arcs du réseau "this" total liste(1): longueur des arcs du réseau
-   *         "this" pris en compte dans les calculs d'évaluation de l'écart
-   *         liste(2): longueur des arcs du réseau "reseau" liste(3): nombre
-   *         d'arcs du réseau "this" total liste(4): nombre d'arcs du réseau
-   *         "this" pris en compte dans les calculs d'évaluation de l'écart
-   *         liste(5): nombre d'arcs du réseau "reseau" liste(6): estimation du
-   *         biais systématique en X sur les arcs (valeur en X de la moyenne des
+   *         ESTIMATEURS SUR LES ARCS liste(0): longueur des arcs du réseau
+   *         "this" total liste(1): longueur des arcs du réseau "this" pris en
+   *         compte dans les calculs d'évaluation de l'écart liste(2): longueur
+   *         des arcs du réseau "reseau" liste(3): nombre d'arcs du réseau
+   *         "this" total liste(4): nombre d'arcs du réseau "this" pris en
+   *         compte dans les calculs d'évaluation de l'écart liste(5): nombre
+   *         d'arcs du réseau "reseau" liste(6): estimation du biais
+   *         systématique en X sur les arcs (valeur en X de la moyenne des
    *         vecteurs d'écart entre un point de "this" et son projeté sur
    *         "reseau") liste(7): estimation du biais systématique en Y sur les
    *         arcs (valeur en Y de la moyenne des vecteurs d'écart entre un point
@@ -177,25 +177,25 @@ public class Comparaison {
    *         histogramme de répartition des écarts sur tous les points (en nb de
    *         points intermédiaires sur les arcs).
    *         <p>
-   *         ESTIMATEURS SUR LES NOEUDS (si
-   *         ils existent) liste(12): nombre de noeuds du réseau "this" total
-   *         liste(13): nombre de noeuds du réseau "this" pris en compte dans
-   *         les calculs d'évaluation de l'écart liste(14): nombre de noeuds du
-   *         réseau "reseau" liste(15): estimation du biais systématique en X
-   *         sur les noeuds (valeur en X de la moyenne des vecteurs d'écart
-   *         entre un noeud de "this" et le noeud le plus proche de "reseau")
-   *         liste(16): estimation du biais systématique en Y sur les noeuds
-   *         (valeur en Y de la moyenne des vecteurs d'écart entre un noeud de
-   *         "this" et le noeud le plus proche de "reseau") liste(17):
-   *         estimation de l'écart moyen sur les noeuds (moyenne des longueurs
-   *         des vecteurs d'écart entre un noeud de "this" et le noeud le plus
-   *         proche de "reseau") liste(18): estimation de l'écart moyen
-   *         quadratique sur les arcs (moyenne quadratique des longueurs des
+   *         ESTIMATEURS SUR LES NOEUDS (si ils existent) liste(12): nombre de
+   *         noeuds du réseau "this" total liste(13): nombre de noeuds du réseau
+   *         "this" pris en compte dans les calculs d'évaluation de l'écart
+   *         liste(14): nombre de noeuds du réseau "reseau" liste(15):
+   *         estimation du biais systématique en X sur les noeuds (valeur en X
+   *         de la moyenne des vecteurs d'écart entre un noeud de "this" et le
+   *         noeud le plus proche de "reseau") liste(16): estimation du biais
+   *         systématique en Y sur les noeuds (valeur en Y de la moyenne des
    *         vecteurs d'écart entre un noeud de "this" et le noeud le plus
-   *         proche de "reseau") liste(19): estimation de l'écart type sur les
-   *         noeuds, i.e. précision une fois le biais corrigé ( racine(ecart
-   *         moyen quadratique^2 - biais^2) liste(20): histogramme de
-   *         répartition des écarts sur tous les noeuds (en nb de noeuds)
+   *         proche de "reseau") liste(17): estimation de l'écart moyen sur les
+   *         noeuds (moyenne des longueurs des vecteurs d'écart entre un noeud
+   *         de "this" et le noeud le plus proche de "reseau") liste(18):
+   *         estimation de l'écart moyen quadratique sur les arcs (moyenne
+   *         quadratique des longueurs des vecteurs d'écart entre un noeud de
+   *         "this" et le noeud le plus proche de "reseau") liste(19):
+   *         estimation de l'écart type sur les noeuds, i.e. précision une fois
+   *         le biais corrigé ( racine(ecart moyen quadratique^2 - biais^2)
+   *         liste(20): histogramme de répartition des écarts sur tous les
+   *         noeuds (en nb de noeuds)
    */
   public static List<?> evaluationEcartPosition(CarteTopo reseau1,
       CarteTopo reseau2, double distanceMax, boolean affichage) {

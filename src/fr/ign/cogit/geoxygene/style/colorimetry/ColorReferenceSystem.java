@@ -40,10 +40,10 @@ import org.apache.log4j.Logger;
 public class ColorReferenceSystem {
 
   static Logger logger = Logger.getLogger(ColorReferenceSystem.class.getName());
-  
+
   public final static ColorReferenceSystem COGITcrs = ColorReferenceSystem
-            .unmarshall(ColorReferenceSystem.class.getResource(
-                  "/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
+      .unmarshall(ColorReferenceSystem.class.getResource(
+          "/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
   /**
    * List of the Color Wheels of the COGIT Reference System.
    */
@@ -103,8 +103,8 @@ public class ColorReferenceSystem {
     try {
       return ColorReferenceSystem.unmarshall(new FileInputStream(fileName));
     } catch (FileNotFoundException e) {
-      ColorReferenceSystem.logger.error("File " + fileName  //$NON-NLS-1$
-          + " could not be read");                          //$NON-NLS-1$
+      ColorReferenceSystem.logger.error("File " + fileName //$NON-NLS-1$
+          + " could not be read"); //$NON-NLS-1$
       return new ColorReferenceSystem();
     }
   }
@@ -147,8 +147,8 @@ public class ColorReferenceSystem {
     try {
       this.marshall(new FileOutputStream(fileName));
     } catch (FileNotFoundException e) {
-      ColorReferenceSystem.logger.error("File " + fileName  //$NON-NLS-1$
-          + " could not be written to");                    //$NON-NLS-1$
+      ColorReferenceSystem.logger.error("File " + fileName //$NON-NLS-1$
+          + " could not be written to"); //$NON-NLS-1$
     }
   }
 
@@ -156,7 +156,7 @@ public class ColorReferenceSystem {
    * This method return a list of the slices of this ColorReferenceSystem.
    * @return A list of the slices of this ColorReferenceSystem.
    */
-  public List<ColorSlice> getSlices(){
+  public List<ColorSlice> getSlices() {
     List<ColorSlice> sliceList = new ArrayList<ColorSlice>();
     for (ColorWheel wheel : this.getWheels()) {
       for (ColorSlice colorSlice : wheel.getSlices()) {
@@ -165,7 +165,7 @@ public class ColorReferenceSystem {
     }
     return sliceList;
   }
-  
+
   /**
    * This method return a list of the colors of a slice.
    * @param saturationWheel Saturation level of the wheel of the slice.
@@ -257,33 +257,33 @@ public class ColorReferenceSystem {
   }
 
   /**
-   * Tests different methods dealing with colors.
-   * TODO : Create a unit testing method to do that
+   * Tests different methods dealing with colors. TODO : Create a unit testing
+   * method to do that
    * @param args
    */
   public static void main(String[] args) {
     // Test of the method getHueNeighborColors
-    ColorimetricColor c = new ColorimetricColor("JAUNE ORANGE", 5);         //$NON-NLS-1$
-    System.out.println("Couleur Origine : " + c.usualName);                 //$NON-NLS-1$
+    ColorimetricColor c = new ColorimetricColor("JAUNE ORANGE", 5); //$NON-NLS-1$
+    System.out.println("Couleur Origine : " + c.usualName); //$NON-NLS-1$
     System.out.println();
 
     ColorReferenceSystem crs = ColorReferenceSystem
         .unmarshall(ColorReferenceSystem.class.getResource(
-            "/color/ColorReferenceSystem.xml").getPath());                  //$NON-NLS-1$
+            "/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
     List<ColorimetricColor> voisins = crs.getHueNeighborColors(c);
 
-    System.out.println("Liste des voisins : ");                             //$NON-NLS-1$
+    System.out.println("Liste des voisins : "); //$NON-NLS-1$
     System.out.println(voisins.get(0).usualName);
     System.out.println(voisins.get(1).usualName);
     System.out.println();
 
     // Test of the method searchColor
     Color cJava = Color.yellow;
-    System.out.println("Couleur Origine : " + cJava.toString());            //$NON-NLS-1$
+    System.out.println("Couleur Origine : " + cJava.toString()); //$NON-NLS-1$
     System.out.println();
 
     // Test of the method getSliceColors
-    List<ColorimetricColor> sliceColors = crs.getSliceColors(0, "BLEU");    //$NON-NLS-1$
+    List<ColorimetricColor> sliceColors = crs.getSliceColors(0, "BLEU"); //$NON-NLS-1$
     System.out.println(sliceColors);
   }
 

@@ -314,7 +314,8 @@ public class EnsembleDeLiens extends Population<Lien> {
       final IFeatureCollection<? extends IFeature> popRef,
       final IFeatureCollection<? extends IFeature> popComp) {
     Iterator<IFeature> itNoeudsRef, itNoeudsComp;
-    List<IFeature> noeudsRef = new ArrayList<IFeature>(0), noeudsComp = new ArrayList<IFeature>(0);
+    List<IFeature> noeudsRef = new ArrayList<IFeature>(0), noeudsComp = new ArrayList<IFeature>(
+        0);
 
     Lien lien;
     CarteTopo grapheDesLiens = new CarteTopo("Carte de liens"); //$NON-NLS-1$
@@ -381,7 +382,8 @@ public class EnsembleDeLiens extends Population<Lien> {
   public final EnsembleDeLiens regroupeLiensCartoQuiPointentSurMemeTopo() {
     List<Lien> liens = this.getElements();
     List<Integer> remove = new ArrayList<Integer>();
-    List<IFeature> objetsRef = new ArrayList<IFeature>(0), objetsComp = new ArrayList<IFeature>(0);
+    List<IFeature> objetsRef = new ArrayList<IFeature>(0), objetsComp = new ArrayList<IFeature>(
+        0);
     Object objetTest;
     int i, j, k;
 
@@ -606,8 +608,9 @@ public class EnsembleDeLiens extends Population<Lien> {
             GM_Point centroideSurface = new GM_Point(comp.getGeom().centroid());
             double pointCentral = Math.floor(((GM_LineString) ref.getGeom())
                 .numPoints() / 2) - 1;
-            GM_Point pointMilieu = new GM_Point(((GM_LineString) ref.getGeom())
-                .getControlPoint((int) pointCentral));
+            GM_Point pointMilieu = new GM_Point(
+                ((GM_LineString) ref.getGeom())
+                    .getControlPoint((int) pointCentral));
             ligne.addControlPoint(centroideSurface.getPosition());
             ligne.addControlPoint(pointMilieu.getPosition());
             geom.add(ligne);
@@ -723,8 +726,7 @@ public class EnsembleDeLiens extends Population<Lien> {
     popCompNonAppariee.setElements(popComp);
     popRefNonAppariee.setElements(popRef);
 
-    Iterator<IFeature> itPopCompApp = popCompAppariee.getElements()
-        .iterator();
+    Iterator<IFeature> itPopCompApp = popCompAppariee.getElements().iterator();
     Iterator<IFeature> itPopRefApp = popRefAppariee.getElements().iterator();
 
     // élimination dans les populations non appariées des éléments appariés
@@ -740,7 +742,8 @@ public class EnsembleDeLiens extends Population<Lien> {
       popRefNonAppariee.remove(elementAOter);
     }
 
-    List<IPopulation<IFeature>> listPopulation = new ArrayList<IPopulation<IFeature>>(0);
+    List<IPopulation<IFeature>> listPopulation = new ArrayList<IPopulation<IFeature>>(
+        0);
     listPopulation.add(popRefAppariee);
     listPopulation.add(popCompAppariee);
     listPopulation.add(popRefNonAppariee);
@@ -775,6 +778,7 @@ public class EnsembleDeLiens extends Population<Lien> {
     }
     return liensClasses;
   }
+
   @Override
   public void clear() {
     super.clear();

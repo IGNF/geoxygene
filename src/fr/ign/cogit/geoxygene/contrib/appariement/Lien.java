@@ -54,12 +54,14 @@ public class Lien extends FT_Feature {
    * Les objets d'une BD pointés par le lien.
    */
   private List<IFeature> objetsRef = new ArrayList<IFeature>(0);
+
   /**
    * @return reference object list
    */
   public List<IFeature> getObjetsRef() {
     return this.objetsRef;
   }
+
   /**
    * @param liste reference object list
    */

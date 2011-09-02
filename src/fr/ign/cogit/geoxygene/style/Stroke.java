@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
 public class Stroke {
   static Logger logger = Logger.getLogger(Stroke.class.getName());
 
-  @XmlElements( { @XmlElement(name = "GraphicFill", type = GraphicFill.class),
+  @XmlElements({ @XmlElement(name = "GraphicFill", type = GraphicFill.class),
       @XmlElement(name = "GraphicStroke", type = GraphicStroke.class) })
   private GraphicType graphicType = null;
 
@@ -59,8 +59,7 @@ public class Stroke {
     this.graphicType = graphicType;
   }
 
-  @XmlElements( {
-      @XmlElement(name = "SvgParameter", type = SvgParameter.class),
+  @XmlElements({ @XmlElement(name = "SvgParameter", type = SvgParameter.class),
       @XmlElement(name = "CssParameter", type = SvgParameter.class) })
   private List<SvgParameter> svgParameters = new ArrayList<SvgParameter>(0);
 
@@ -82,7 +81,7 @@ public class Stroke {
   }
 
   private synchronized void updateValues() {
-//    this.setStrokeLineCap(BasicStroke.CAP_BUTT);
+    // this.setStrokeLineCap(BasicStroke.CAP_BUTT);
     synchronized (this.svgParameters) {
       for (SvgParameter parameter : this.svgParameters) {
         if (parameter.getName().equalsIgnoreCase("stroke")) { //$NON-NLS-1$
@@ -113,8 +112,8 @@ public class Stroke {
   private Color stroke = Color.black;
 
   /**
-   * Returns the raw color of the stroke, without opacity information.
-   * Renvoie la valeur de l'attribut stroke, sans considération de l'opacité.
+   * Returns the raw color of the stroke, without opacity information. Renvoie
+   * la valeur de l'attribut stroke, sans considération de l'opacité.
    * @return The raw color of the stroke, without opacity information.
    */
   public Color getStroke() {
@@ -295,9 +294,9 @@ public class Stroke {
    */
   private void setStrokeLineCap(String strokeLineCap) {
     if (strokeLineCap.equalsIgnoreCase("butt")) { //$NON-NLS-1$
-      this.strokeLineCap = BasicStroke.CAP_BUTT; 
+      this.strokeLineCap = BasicStroke.CAP_BUTT;
     } else if (strokeLineCap.equalsIgnoreCase("square")) { //$NON-NLS-1$
-      this.strokeLineCap = BasicStroke.CAP_SQUARE; 
+      this.strokeLineCap = BasicStroke.CAP_SQUARE;
     }
     // sinon, c'est la valeur par défaut
     // otherwise, setting the default value.
@@ -446,9 +445,9 @@ public class Stroke {
     if (this.awtStroke == null) {
       this.updateValues();
     }
-    this.awtStroke = new BasicStroke(this.getStrokeWidth() * scale, this
-        .getStrokeLineCap(), this.getStrokeLineJoin(), 10.0f, this
-        .getStrokeDashArray(scale), this.getStrokeDashOffset() * scale);
+    this.awtStroke = new BasicStroke(this.getStrokeWidth() * scale,
+        this.getStrokeLineCap(), this.getStrokeLineJoin(), 10.0f,
+        this.getStrokeDashArray(scale), this.getStrokeDashOffset() * scale);
     return this.awtStroke;
   }
 }

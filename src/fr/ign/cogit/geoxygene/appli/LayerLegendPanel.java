@@ -142,28 +142,28 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
       "/images/icons/16x16/minus.png"))); //$NON-NLS-1$
 
   JPopupMenu popupMenu = new JPopupMenu();
-  JMenuItem newLayerMenuItem = new JMenuItem(I18N
-      .getString("LayerLegendPanel.CreateLayer")); //$NON-NLS-1$
+  JMenuItem newLayerMenuItem = new JMenuItem(
+      I18N.getString("LayerLegendPanel.CreateLayer")); //$NON-NLS-1$
   JMenuItem selectMenuItem = new JMenuItem(I18N.getString("LayerLegendPanel." + //$NON-NLS-1$
       "SelectAllObjectsInLayer")); //$NON-NLS-1$
-  JMenuItem unselectMenuItem = new JMenuItem(I18N
-      .getString("LayerLegendPanel." + //$NON-NLS-1$
+  JMenuItem unselectMenuItem = new JMenuItem(
+      I18N.getString("LayerLegendPanel." + //$NON-NLS-1$
           "UnselectAllObjectsInLayer")); //$NON-NLS-1$
-  JMenuItem renameMenuItem = new JMenuItem(I18N
-      .getString("LayerLegendPanel.RenameLayer")); //$NON-NLS-1$
+  JMenuItem renameMenuItem = new JMenuItem(
+      I18N.getString("LayerLegendPanel.RenameLayer")); //$NON-NLS-1$
   JMenuItem editMenuItem = new JMenuItem(I18N.getString("LayerLegendPanel." + //$NON-NLS-1$
       "EditLayerAttributes"), //$NON-NLS-1$
       new ImageIcon(this.getClass().getResource(
           "/images/icons/16x16/editAttributes.png"))); //$NON-NLS-1$
-  JMenuItem deleteMenuItem = new JMenuItem(I18N
-      .getString("LayerLegendPanel.DeleteLayer")); //$NON-NLS-1$
-  JMenuItem editSldMenuItem = new JMenuItem(I18N
-      .getString("LayerLegendPanel.EditStyle"), //$NON-NLS-1$
+  JMenuItem deleteMenuItem = new JMenuItem(
+      I18N.getString("LayerLegendPanel.DeleteLayer")); //$NON-NLS-1$
+  JMenuItem editSldMenuItem = new JMenuItem(
+      I18N.getString("LayerLegendPanel.EditStyle"), //$NON-NLS-1$
       new ImageIcon(this.getClass().getResource(
           "/images/icons/16x16/editStyles.png"))); //$NON-NLS-1$
   JMenu changeStyleMenu = new JMenu("Change Style"); //$NON-NLS-1$
-  JMenuItem centerViewMenuItem = new JMenuItem(I18N
-      .getString("LayerLegendPanel." + //$NON-NLS-1$
+  JMenuItem centerViewMenuItem = new JMenuItem(
+      I18N.getString("LayerLegendPanel." + //$NON-NLS-1$
           "CenterViewOnLayer")); //$NON-NLS-1$
 
   ImageIcon[] images = new ImageIcon[21];
@@ -181,13 +181,15 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     this.layerViewPanel = theLayerViewPanel;
 
     for (int n = 0; n < 20; n++) {
-      ImageIcon image = new ImageIcon(LayerLegendPanel.class
-          .getResource("/images/icons/32x32/munsellcolorwheel_" //$NON-NLS-1$
-             + n + ".png")); //$NON-NLS-1$
+      ImageIcon image = new ImageIcon(
+          LayerLegendPanel.class
+              .getResource("/images/icons/32x32/munsellcolorwheel_" //$NON-NLS-1$
+                  + n + ".png")); //$NON-NLS-1$
       this.images[n] = image;
     }
-    ImageIcon image = new ImageIcon(LayerLegendPanel.class
-        .getResource("/images/icons/32x32/munsellcolorwheel.png")); //$NON-NLS-1$
+    ImageIcon image = new ImageIcon(
+        LayerLegendPanel.class
+            .getResource("/images/icons/32x32/munsellcolorwheel.png")); //$NON-NLS-1$
     this.images[20] = image;
 
     JPanel panel = new JPanel();
@@ -470,12 +472,13 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
       this.upButton.setEnabled(false);
       this.topButton.setEnabled(false);
     } else {
-      boolean containsTopRow = (Arrays.binarySearch(this.layersTable
-          .getSelectedRows(), 0) == 0);
+      boolean containsTopRow = (Arrays.binarySearch(
+          this.layersTable.getSelectedRows(), 0) == 0);
       this.upButton.setEnabled(!containsTopRow);
       this.topButton.setEnabled(!containsTopRow);
-      boolean containsBottomRow = (Arrays.binarySearch(this.layersTable
-          .getSelectedRows(), this.layersTable.getRowCount() - 1) >= 0);
+      boolean containsBottomRow = (Arrays.binarySearch(
+          this.layersTable.getSelectedRows(),
+          this.layersTable.getRowCount() - 1) >= 0);
       this.downButton.setEnabled(!containsBottomRow);
       this.bottomButton.setEnabled(!containsBottomRow);
     }
@@ -493,8 +496,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
       rowsToRemove.add(0, new Integer(row));
     }
     for (Integer row : rowsToRemove) {
-      this.layersTable.removeRowSelectionInterval(row.intValue(), row
-          .intValue());
+      this.layersTable.removeRowSelectionInterval(row.intValue(),
+          row.intValue());
     }
     this.sld.getLayers().removeAll(toRemove);
     for (Layer layer : toRemove) {
@@ -603,8 +606,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
    * @return the layer corresponding to the given row
    */
   public Layer getLayer(int row) {
-    return this.getSld().getLayers().get(
-        this.getSld().getLayers().size() - 1 - row);
+    return this.getSld().getLayers()
+        .get(this.getSld().getLayers().size() - 1 - row);
   }
 
   Map<Layer, ImageIcon> map = new HashMap<Layer, ImageIcon>();
@@ -859,8 +862,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
       StyleEditionFrame styleEditionFrame = new StyleEditionFrame(
           layerLegendPanel);
 
-      layerLegendPanel.getSelectedLayers().iterator().next().setStyles(
-          styleEditionFrame.getLayer().getStyles());
+      layerLegendPanel.getSelectedLayers().iterator().next()
+          .setStyles(styleEditionFrame.getLayer().getStyles());
 
       JPanel pan = new LayerStylesPanel(styleEditionFrame.getLayer());
 
@@ -971,7 +974,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
           LayerLegendPanel.this.changeStyleMenu.setEnabled(false);
           if (!LayerLegendPanel.this.getSelectedLayers().isEmpty()) {
             Layer layer = LayerLegendPanel.this.getSelectedLayers().iterator()
-            .next();
+                .next();
             if (layer.getGroups().size() > 1) {
               LayerLegendPanel.this.changeStyleMenu.setEnabled(true);
             }
@@ -981,10 +984,11 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
               item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                  Layer layer = LayerLegendPanel.this.getSelectedLayers().iterator()
-                  .next();
+                  Layer layer = LayerLegendPanel.this.getSelectedLayers()
+                      .iterator().next();
                   layer.setActiveGroup(group);
-                  LayerViewPanel lvPanel = LayerLegendPanel.this.getLayerViewPanel();
+                  LayerViewPanel lvPanel = LayerLegendPanel.this
+                      .getLayerViewPanel();
                   lvPanel.repaint();
                 }
               });
@@ -992,8 +996,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
           }
           LayerLegendPanel.this.layersTable.setRowSelectionInterval(
               selectedRow, selectedRow);
-          LayerLegendPanel.this.popupMenu.show(e.getComponent(), e.getX(), e
-              .getY());
+          LayerLegendPanel.this.popupMenu.show(e.getComponent(), e.getX(),
+              e.getY());
         } else {
           LayerLegendPanel.this.centerViewMenuItem.setEnabled(false);
           LayerLegendPanel.this.unselectMenuItem.setEnabled(false);
@@ -1002,8 +1006,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
           LayerLegendPanel.this.renameMenuItem.setEnabled(false);
           LayerLegendPanel.this.editSldMenuItem.setEnabled(false);
           LayerLegendPanel.this.deleteMenuItem.setEnabled(false);
-          LayerLegendPanel.this.popupMenu.show(e.getComponent(), e.getX(), e
-              .getY());
+          LayerLegendPanel.this.popupMenu.show(e.getComponent(), e.getX(),
+              e.getY());
         }
       } else {
         if (SwingUtilities.isLeftMouseButton(e)) {

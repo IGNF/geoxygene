@@ -29,21 +29,27 @@ import javax.xml.bind.annotation.XmlElement;
 public class ColorMap {
   @XmlElement(name = "PropertyName")
   String propertyName = null;
+
   @Transient
   public String getPropertyName() {
     return this.propertyName;
   }
+
   public void setPropertyName(String propertyName) {
     this.propertyName = propertyName;
   }
+
   @XmlElement(name = "Interpolate")
   Interpolate interpolate = null;
+
   public Interpolate getInterpolate() {
     return this.interpolate;
   }
+
   public void setInterpolate(Interpolate interpolate) {
     this.interpolate = interpolate;
   }
+
   public int getColor(double value) {
     if (this.interpolate != null) {
       InterpolationPoint previous = null;

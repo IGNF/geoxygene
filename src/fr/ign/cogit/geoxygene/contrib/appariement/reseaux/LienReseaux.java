@@ -57,124 +57,148 @@ public class LienReseaux extends Lien {
   static Logger logger = Logger.getLogger(LienReseaux.class.getName());
   /** Les Arc1 pointés par le lien */
   private List<Arc> arcs1 = new ArrayList<Arc>(0);
+
   /**
    * @return Les Arc1 pointés par le lien
    */
   public List<Arc> getArcs1() {
     return this.arcs1;
   }
+
   /**
    * @param arcs Les Arc1 pointés par le lien
    */
   public void setArcs1(List<Arc> arcs) {
     this.arcs1 = arcs;
   }
+
   /**
    * @param arc Arc1 pointé par le lien
    */
   public void addArcs1(Arc arc) {
     this.arcs1.add(arc);
   }
+
   /** Les Noeud1 pointés par le lien */
   private List<Noeud> noeuds1 = new ArrayList<Noeud>(0);
+
   /**
    * @return Les Noeud1 pointés par le lien
    */
   public List<Noeud> getNoeuds1() {
     return this.noeuds1;
   }
+
   /**
    * @param noeuds Les Noeud1 pointés par le lien
    */
   public void setNoeuds1(List<Noeud> noeuds) {
     this.noeuds1 = noeuds;
   }
+
   /**
    * @param noeud Noeud1 pointé par le lien
    */
   public void addNoeuds1(Noeud noeud) {
     this.noeuds1.add(noeud);
   }
+
   /** Les Groupe1 pointés par le lien */
   private List<Groupe> groupes1 = new ArrayList<Groupe>(0);
+
   /**
    * @return Les Groupe1 pointés par le lien
    */
   public List<Groupe> getGroupes1() {
     return this.groupes1;
   }
+
   /**
    * @param groupes Les Groupe1 pointés par le lien
    */
   public void setGroupes1(List<Groupe> groupes) {
     this.groupes1 = groupes;
   }
+
   /**
    * @param groupe Groupe1 pointé par le lien
    */
   public void addGroupes1(Groupe groupe) {
     this.groupes1.add(groupe);
   }
+
   /** Les Arc2 pointés par le lien */
   private List<Arc> arcs2 = new ArrayList<Arc>(0);
+
   /**
    * @return Les Arc2 pointés par le lien
    */
   public List<Arc> getArcs2() {
     return this.arcs2;
   }
+
   /**
    * @param arcs Les Arc2 pointés par le lien
    */
   public void setArcs2(List<Arc> arcs) {
     this.arcs2 = arcs;
   }
+
   /**
    * @param arc Arc2 pointé par le lien
    */
   public void addArcs2(Arc arc) {
     this.arcs2.add(arc);
   }
+
   /** Les Noeud2 pointés par le lien */
   private List<Noeud> noeuds2 = new ArrayList<Noeud>(0);
+
   /**
    * @return Les Noeud2 pointés par le lien
    */
   public List<Noeud> getNoeuds2() {
     return this.noeuds2;
   }
+
   /**
    * @param noeuds Les Noeud2 pointés par le lien
    */
   public void setNoeuds2(List<Noeud> noeuds) {
     this.noeuds2 = noeuds;
   }
+
   /**
    * @param noeud Noeud2 pointé par le lien
    */
   public void addNoeuds2(Noeud noeud) {
     this.noeuds2.add(noeud);
   }
+
   /** Les Groupe2 pointés par le lien */
   private List<Groupe> groupes2 = new ArrayList<Groupe>(0);
+
   /**
    * @return Les Groupe2 pointés par le lien
    */
   public List<Groupe> getGroupes2() {
     return this.groupes2;
   }
+
   /**
    * @param groupes Les Groupe2 pointés par le lien
    */
   public void setGroupes2(List<Groupe> groupes) {
     this.groupes2 = groupes;
   }
+
   /**
    * @param groupe Groupe2 pointé par le lien
    */
   public void addGroupes2(Groupe groupe) {
     this.groupes2.add(groupe);
   }
+
   /**
    * Methode qui affecte la valeur 'eval' comme évaluation du lien et le
    * commentaire 'commentaire' à tous les objets liés par ce lien.
@@ -230,18 +254,19 @@ public class LienReseaux extends Lien {
     liensGeneriques = new EnsembleDeLiens();
     liensGeneriques.setNom(liensReseaux.getNom());
     // On compile toutes les populations du reseau 1 [resp. 2] dans une liste
-    List<IFeatureCollection<IFeature>> pops1 = 
-        new ArrayList<IFeatureCollection<IFeature>>(param.populationsArcs1);
+    List<IFeatureCollection<IFeature>> pops1 = new ArrayList<IFeatureCollection<IFeature>>(
+        param.populationsArcs1);
     pops1.addAll(param.populationsNoeuds1);
-    List<IFeatureCollection<IFeature>> pops2 = 
-        new ArrayList<IFeatureCollection<IFeature>>(param.populationsArcs2);
+    List<IFeatureCollection<IFeature>> pops2 = new ArrayList<IFeatureCollection<IFeature>>(
+        param.populationsArcs2);
     pops2.addAll(param.populationsNoeuds2);
     // boucle sur les liens entre cartes topo
     Iterator<Lien> itLiensReseaux = liensReseaux.iterator();
     while (itLiensReseaux.hasNext()) {
       LienReseaux lienReseau = (LienReseaux) itLiensReseaux.next();
       // on récupère tous les objets des carte topo concernés
-      Set<IFeature> objetsCT1PourUnLien = new HashSet<IFeature>(lienReseau.getArcs1());
+      Set<IFeature> objetsCT1PourUnLien = new HashSet<IFeature>(
+          lienReseau.getArcs1());
       objetsCT1PourUnLien.addAll(lienReseau.getNoeuds1());
       Iterator<Groupe> itGroupes1 = lienReseau.getGroupes1().iterator();
       while (itGroupes1.hasNext()) {
@@ -249,7 +274,8 @@ public class LienReseaux extends Lien {
         objetsCT1PourUnLien.addAll(groupe1.getListeArcs());
         objetsCT1PourUnLien.addAll(groupe1.getListeNoeuds());
       }
-      Set<IFeature> objetsCT2PourUnLien = new HashSet<IFeature>(lienReseau.getArcs2());
+      Set<IFeature> objetsCT2PourUnLien = new HashSet<IFeature>(
+          lienReseau.getArcs2());
       objetsCT2PourUnLien.addAll(lienReseau.getNoeuds2());
       Iterator<Groupe> itGroupes2 = lienReseau.getGroupes2().iterator();
       while (itGroupes2.hasNext()) {
@@ -261,7 +287,8 @@ public class LienReseaux extends Lien {
       Iterator<IFeature> itObjetsCT1PourUnLien = objetsCT1PourUnLien.iterator();
       while (itObjetsCT1PourUnLien.hasNext()) {
         IFeature objetCT1 = itObjetsCT1PourUnLien.next();
-        Iterator<IFeature> itObjetsCT2PourUnLien = objetsCT2PourUnLien.iterator();
+        Iterator<IFeature> itObjetsCT2PourUnLien = objetsCT2PourUnLien
+            .iterator();
         List<IFeature> objets1 = LienReseaux.getCorrespondants(objetCT1, pops1);
         while (itObjetsCT2PourUnLien.hasNext()) {
           IFeature objetCT2 = itObjetsCT2PourUnLien.next();
@@ -513,19 +540,19 @@ public class LienReseaux extends Lien {
   /**
    * Methode créant une géométrie pour les liens de réseau.
    * <ul>
-   * <li>1/ Pour chaque noeud du réseau 1 apparié, cette géométrie est constituée
+   * <li>1/ Pour chaque noeud du réseau 1 apparié, cette géométrie est
+   * constituée
    * <ul>
-   * <li> - d'un buffer entourant les objets homolgues dans le réseau,
-   * <li> - d'un trait reliant le noeud à ce buffer.
+   * <li>- d'un buffer entourant les objets homolgues dans le réseau,
+   * <li>- d'un trait reliant le noeud à ce buffer.
    * </ul>
-   * <li>2/ Pour chaque arc du réseau 1 apparié, cette géométrie
-   * est constituée
+   * <li>2/ Pour chaque arc du réseau 1 apparié, cette géométrie est constituée
    * <ul>
-   * <li> - d'un ensemble de tirets reliant les arcs homologues de
-   * manière régulière (intervalle entre les tirets en paramètre),
-   * <li> - ou alors d'un ensemble de traits reliant le milieu des arcs appariés.
+   * <li>- d'un ensemble de tirets reliant les arcs homologues de manière
+   * régulière (intervalle entre les tirets en paramètre),
+   * <li>- ou alors d'un ensemble de traits reliant le milieu des arcs appariés.
    * </ul>
-   *</ul>
+   * </ul>
    * @param tirets spécifie si on veut une géométrie faite de tirets (true), ou
    *          plutôt d'un unique trait pour chaque couple d'arcs (false)
    * 
@@ -613,11 +640,11 @@ public class LienReseaux extends Lien {
       while (itNoeuds.hasNext()) {
         noeudComp = (NoeudApp) itNoeuds.next();
         if (tirets) {
-          geomLien.add(Lien.tirets(arcRef.getGeometrie(), noeudComp
-              .getGeometrie(), pasTirets));
+          geomLien.add(Lien.tirets(arcRef.getGeometrie(),
+              noeudComp.getGeometrie(), pasTirets));
         } else {
-          geomLien.add(Lien.tiret(arcRef.getGeometrie(), noeudComp
-              .getGeometrie()));
+          geomLien.add(Lien.tiret(arcRef.getGeometrie(),
+              noeudComp.getGeometrie()));
         }
       }
       // 1 arc ref vers des groupes comp (groupes en parrallèle) --> plusieurs
@@ -641,11 +668,11 @@ public class LienReseaux extends Lien {
       while (itArcs.hasNext()) {
         arcComp = (ArcApp) itArcs.next();
         if (tirets) {
-          geomLien.add(Lien.tirets(arcRef.getGeometrie(), arcComp
-              .getGeometrie(), 25));
+          geomLien.add(Lien.tirets(arcRef.getGeometrie(),
+              arcComp.getGeometrie(), 25));
         } else {
-          geomLien.add(Lien
-              .tiret(arcRef.getGeometrie(), arcComp.getGeometrie()));
+          geomLien
+              .add(Lien.tiret(arcRef.getGeometrie(), arcComp.getGeometrie()));
         }
       }
 
@@ -660,6 +687,7 @@ public class LienReseaux extends Lien {
     LienReseaux.logger.info(I18N.getString("LienReseaux.EdgeLinkNotCreated")); //$NON-NLS-1$
     return null;
   }
+
   public void clear() {
     this.arcs1.clear();
     this.arcs2.clear();

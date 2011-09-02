@@ -23,8 +23,8 @@ public class TestShapefileReader {
         System.out.println(file.getAbsolutePath());
         IPopulation<IFeature> pop = ShapefileReader
             .read(file.getAbsolutePath());
-        vwr.addFeatureCollection(pop, file.getName().substring(0,
-            file.getName().lastIndexOf(".")));
+        vwr.addFeatureCollection(pop,
+            file.getName().substring(0, file.getName().lastIndexOf(".")));
       }
     }
   }

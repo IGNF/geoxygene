@@ -91,10 +91,11 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     MouseListener, ChangeListener {
 
   private static final long serialVersionUID = 1L;
-  
+
   @SuppressWarnings("unused")
-  private static Logger logger = Logger.getLogger(StyleEditionFrame.class.getName());
-  
+  private static Logger logger = Logger.getLogger(StyleEditionFrame.class
+      .getName());
+
   // Main GeOxygene application elements
   private LayerLegendPanel layerLegendPanel;
   private LayerViewPanel layerViewPanel;
@@ -195,8 +196,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       I18N.getString("StyleEditionFrame.hline"), //$NON-NLS-1$
       I18N.getString("StyleEditionFrame.vline") //$NON-NLS-1$
   };
-  private String[] symbols = {
-      "square", //$NON-NLS-1$
+  private String[] symbols = { "square", //$NON-NLS-1$
       "circle", //$NON-NLS-1$
       "triangle", //$NON-NLS-1$
       "star", //$NON-NLS-1$
@@ -220,13 +220,13 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       this.layer = layerLegendPanel.getSelectedLayers().iterator().next();
     }
 
-    //Saving the initial SLD
+    // Saving the initial SLD
     this.setInitialSLD(new StyledLayerDescriptor());
     CharArrayWriter writer = new CharArrayWriter();
     layerLegendPanel.getSld().marshall(writer);
     Reader reader = new CharArrayReader(writer.toCharArray());
     this.setInitialSLD(StyledLayerDescriptor.unmarshall(reader));
-    
+
     if (this.layer.getSymbolizer().isPolygonSymbolizer()) {
       this.init_Polygon();
     } else if (this.layer.getSymbolizer().isLineSymbolizer()) {
@@ -246,8 +246,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.visuPanel = this.createVisuPanel();
     this.add(this.visuPanel, BorderLayout.WEST);
 
-    JLabel titleLabel = new JLabel(I18N
-        .getString("StyleEditionFrame.PolygonNewStyle")); //$NON-NLS-1$
+    JLabel titleLabel = new JLabel(
+        I18N.getString("StyleEditionFrame.PolygonNewStyle")); //$NON-NLS-1$
     titleLabel.setFont(new Font("Verdana", Font.ROMAN_BASELINE, 24)); //$NON-NLS-1$
 
     this.fillPanel = new JPanel();
@@ -315,8 +315,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.visuPanel = this.createVisuPanel();
     this.add(this.visuPanel, BorderLayout.WEST);
 
-    JLabel titleLabel = new JLabel(I18N
-        .getString("StyleEditionFrame.LineNewStyle")); //$NON-NLS-1$
+    JLabel titleLabel = new JLabel(
+        I18N.getString("StyleEditionFrame.LineNewStyle")); //$NON-NLS-1$
     titleLabel.setFont(new Font("Verdana", Font.ROMAN_BASELINE, 24)); //$NON-NLS-1$
 
     this.strokePanel = new JPanel();
@@ -342,7 +342,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
         this.strokeOpacity));
     this.strokePanel.add(this.createWidthPanel(this.strokeWidth, this.unit));
 
-    this.addColorMapButton = new JButton(I18N.getString("StyleEditionFrame.AddColorMap")); //$NON-NLS-1$
+    this.addColorMapButton = new JButton(
+        I18N.getString("StyleEditionFrame.AddColorMap")); //$NON-NLS-1$
     this.addColorMapButton.addActionListener(this);
     this.strokePanel.add(this.addColorMapButton);
 
@@ -374,8 +375,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       this.strokePanel2.setVisible(false);
     }
 
-    this.btnAddStyle = new JButton(I18N
-        .getString("StyleEditionFrame.AddAStyle")); //$NON-NLS-1$
+    this.btnAddStyle = new JButton(
+        I18N.getString("StyleEditionFrame.AddAStyle")); //$NON-NLS-1$
     this.btnAddStyle.addActionListener(this);
     this.btnAddStyle.setBounds(50, 50, 100, 20);
 
@@ -411,8 +412,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.visuPanel = this.createVisuPanel();
     this.add(this.visuPanel, BorderLayout.WEST);
 
-    JLabel titleLabel = new JLabel(I18N
-        .getString("StyleEditionFrame.PointNewStyle")); //$NON-NLS-1$
+    JLabel titleLabel = new JLabel(
+        I18N.getString("StyleEditionFrame.PointNewStyle")); //$NON-NLS-1$
     titleLabel.setFont(new Font("Verdana", Font.ROMAN_BASELINE, 24)); //$NON-NLS-1$
 
     this.fillPanel = new JPanel();
@@ -584,8 +585,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
    */
   public JPanel createFinalColorPanel(Color c) {
     JPanel finalColorPanel = new JPanel();
-    JTextArea lblColor = new JTextArea(I18N
-        .getString("StyleEditionFrame.ColorPreview")); //$NON-NLS-1$
+    JTextArea lblColor = new JTextArea(
+        I18N.getString("StyleEditionFrame.ColorPreview")); //$NON-NLS-1$
     lblColor.setBackground(finalColorPanel.getBackground());
     lblColor.setFont(new Font("Arial", Font.BOLD, 12)); //$NON-NLS-1$
 
@@ -612,8 +613,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
    * @return the panel of the opacity.
    */
   public JPanel createOpacityPanel(int opacity) {
-    JLabel lblTransparency = new JLabel(I18N
-        .getString("StyleEditionFrame.Opacity")); //$NON-NLS-1$
+    JLabel lblTransparency = new JLabel(
+        I18N.getString("StyleEditionFrame.Opacity")); //$NON-NLS-1$
 
     JSlider slider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, opacity);
     slider.addChangeListener(this);
@@ -729,13 +730,13 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
   public JPanel createUnitPanel(String unit) {
     JLabel lblDist = new JLabel(I18N.getString("StyleEditionFrame.Unit")); //$NON-NLS-1$
 
-    JRadioButton meter = new JRadioButton(I18N
-        .getString("StyleEditionFrame.meter")); //$NON-NLS-1$
+    JRadioButton meter = new JRadioButton(
+        I18N.getString("StyleEditionFrame.meter")); //$NON-NLS-1$
     meter.setActionCommand("meter"); //$NON-NLS-1$
     meter.addActionListener(this);
 
-    JRadioButton pixel = new JRadioButton(I18N
-        .getString("StyleEditionFrame.pixel")); //$NON-NLS-1$
+    JRadioButton pixel = new JRadioButton(
+        I18N.getString("StyleEditionFrame.pixel")); //$NON-NLS-1$
     pixel.setActionCommand("pixel"); //$NON-NLS-1$
     pixel.addActionListener(this);
 
@@ -870,8 +871,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
         }
         Object[] possibilities = attributes.toArray();
         String attributeName = ((GF_AttributeType) JOptionPane.showInputDialog(
-            this,
-            I18N.getString("StyleEditionFrame.ChooseAttribute"), //$NON-NLS-1$
+            this, I18N.getString("StyleEditionFrame.ChooseAttribute"), //$NON-NLS-1$
             I18N.getString("StyleEditionFrame.ChooseAttributeWindowTitle"), //$NON-NLS-1$
             JOptionPane.PLAIN_MESSAGE, null, possibilities, attributes.get(0)
                 .toString())).getMemberName();
@@ -1050,26 +1050,26 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
         this.updateLayer();
       }
     }
-    
+
     // When the user apply style modifications to the map and the legend
     if (e.getSource() == this.btnApply) {
       this.layerLegendPanel.getSld().fireActionPerformed(null);
       this.layerLegendPanel.repaint();
       this.layerViewPanel.repaint();
-      
+
       this.updateLayer();
     }
-    
+
     // When the user cancel style modifications in the main interface
     if (e.getSource() == this.btnCancel) {
       this.reset();
       this.updateLayer();
       this.layerLegendPanel.repaint();
       this.layerViewPanel.repaint();
-      
-      ((JFrame)StyleEditionFrame.this).dispose();
+
+      ((JFrame) StyleEditionFrame.this).dispose();
     }
-    
+
     // When the user validate style modifications
     if (e.getSource() == this.btnValid) {
       this.layerLegendPanel.getSld().fireActionPerformed(null);
@@ -1087,31 +1087,25 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     if (arg0.getSource() == this.fillColorLabel) {
       this.fillColorChooser = new JColorChooser();
       this.fillColorChooser.addChooserPanel(new COGITColorChooserPanel());
-      this.fillDialog = JColorChooser
-          .createDialog(
-              this,
-              I18N.getString("StyleEditionFrame.PickAColor"), //$NON-NLS-1$
-              true, this.fillColorChooser, this, null);
+      this.fillDialog = JColorChooser.createDialog(this,
+          I18N.getString("StyleEditionFrame.PickAColor"), //$NON-NLS-1$
+          true, this.fillColorChooser, this, null);
       this.fillDialog.setVisible(true);
     }
     if (arg0.getSource() == this.strokeColorLabel) {
       this.strokeColorChooser = new JColorChooser();
       this.strokeColorChooser.addChooserPanel(new COGITColorChooserPanel());
-      this.strokeDialog = JColorChooser
-          .createDialog(
-              this,
-              I18N.getString("StyleEditionFrame.PickAColor"), //$NON-NLS-1$
-              true, this.strokeColorChooser, this, null);
+      this.strokeDialog = JColorChooser.createDialog(this,
+          I18N.getString("StyleEditionFrame.PickAColor"), //$NON-NLS-1$
+          true, this.strokeColorChooser, this, null);
       this.strokeDialog.setVisible(true);
     }
     if (arg0.getSource() == this.strokeColorLabel2) {
       this.strokeColorChooser2 = new JColorChooser();
       this.strokeColorChooser2.addChooserPanel(new COGITColorChooserPanel());
-      this.strokeDialog2 = JColorChooser
-          .createDialog(
-              this,
-              I18N.getString("StyleEditionFrame.PickAColor"), //$NON-NLS-1$
-              true, this.strokeColorChooser2, this, null);
+      this.strokeDialog2 = JColorChooser.createDialog(this,
+          I18N.getString("StyleEditionFrame.PickAColor"), //$NON-NLS-1$
+          true, this.strokeColorChooser2, this, null);
       this.strokeDialog2.setVisible(true);
     }
   }
@@ -1214,37 +1208,37 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
 
     // Updating the layer style
     if (symbolizer.isPolygonSymbolizer()) {
-      PolygonSymbolizer polygonSymbolizer =
-        (PolygonSymbolizer) this.layer.getStyles().get(0).getSymbolizer();
-      
+      PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this.layer
+          .getStyles().get(0).getSymbolizer();
+
       polygonSymbolizer.getFill().setColor(this.fillColor);
       polygonSymbolizer.getFill().setFillOpacity(this.fillOpacity);
       polygonSymbolizer.getStroke().setColor(this.strokeColor);
       polygonSymbolizer.getStroke().setStrokeOpacity(this.strokeOpacity);
       polygonSymbolizer.getStroke().setStrokeWidth((float) this.strokeWidth);
       polygonSymbolizer.setUnitOfMeasure(this.unit);
-      
+
     } else if (symbolizer.isLineSymbolizer()) {
-      LineSymbolizer lineSymbolizer =
-        (LineSymbolizer) this.layer.getStyles().get(0).getSymbolizer();
-      
+      LineSymbolizer lineSymbolizer = (LineSymbolizer) this.layer.getStyles()
+          .get(0).getSymbolizer();
+
       lineSymbolizer.getStroke().setColor(this.strokeColor);
       lineSymbolizer.getStroke().setStrokeOpacity(this.strokeOpacity);
       lineSymbolizer.getStroke().setStrokeWidth((float) this.strokeWidth);
       lineSymbolizer.setUnitOfMeasure(this.unit);
 
       if (this.layer.getStyles().size() == 2) {
-        LineSymbolizer lineSymbolizer2 =
-          (LineSymbolizer) this.layer.getStyles().get(1).getSymbolizer();
-        
+        LineSymbolizer lineSymbolizer2 = (LineSymbolizer) this.layer
+            .getStyles().get(1).getSymbolizer();
+
         lineSymbolizer2.getStroke().setColor(this.strokeColor2);
         lineSymbolizer2.getStroke().setStrokeOpacity(this.strokeOpacity2);
         lineSymbolizer2.getStroke().setStrokeWidth((float) this.strokeWidth2);
         lineSymbolizer2.setUnitOfMeasure(this.unit);
       }
     } else if (symbolizer.isPointSymbolizer()) {
-      PointSymbolizer pointSymbolizer =
-        (PointSymbolizer) this.layer.getStyles().get(0).getSymbolizer();
+      PointSymbolizer pointSymbolizer = (PointSymbolizer) this.layer
+          .getStyles().get(0).getSymbolizer();
       Mark mark = pointSymbolizer.getGraphic().getMarks().get(0);
       mark.getFill().setColor(this.fillColor);
       mark.getFill().setFillOpacity(this.fillOpacity);
@@ -1262,49 +1256,49 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
 
   public void reset() {
     Symbolizer symbolizer = this.layer.getStyles().get(0).getSymbolizer();
-    
+
     // Reset style modifications using the initialSLD.
     if (symbolizer.isPolygonSymbolizer()) {
       PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this.initialSLD
-            .getLayer(this.layer.getName()).getStyles().get(0).getSymbolizer();
-      
+          .getLayer(this.layer.getName()).getStyles().get(0).getSymbolizer();
+
       this.fillColor = polygonSymbolizer.getFill().getColor();
       this.fillOpacity = polygonSymbolizer.getFill().getFillOpacity();
       this.strokeColor = polygonSymbolizer.getStroke().getColor();
       this.strokeOpacity = polygonSymbolizer.getStroke().getStrokeOpacity();
       this.strokeWidth = polygonSymbolizer.getStroke().getStrokeWidth();
       this.unit = polygonSymbolizer.getUnitOfMeasure();
-      
+
     } else if (symbolizer.isLineSymbolizer()) {
       LineSymbolizer lineSymbolizer = (LineSymbolizer) this.getInitialSLD()
-            .getLayer(this.layer.getName()).getStyles().get(0).getSymbolizer();
-      
+          .getLayer(this.layer.getName()).getStyles().get(0).getSymbolizer();
+
       this.strokeColor = lineSymbolizer.getStroke().getColor();
       this.strokeOpacity = lineSymbolizer.getStroke().getStrokeOpacity();
       this.strokeWidth = lineSymbolizer.getStroke().getStrokeWidth();
       this.unit = lineSymbolizer.getUnitOfMeasure();
 
       if (this.layer.getStyles().size() == 2) {
-          LineSymbolizer lineSymbolizer2 = (LineSymbolizer) this.getInitialSLD()
+        LineSymbolizer lineSymbolizer2 = (LineSymbolizer) this.getInitialSLD()
             .getLayer(this.layer.getName()).getStyles().get(1).getSymbolizer();
 
-          this.strokeColor2 = lineSymbolizer2.getStroke().getColor();
-          this.strokeOpacity2 = lineSymbolizer2.getStroke().getStrokeOpacity();
-          this.strokeOpacitySlider2.setValue((int)this.strokeOpacity2 * 100);
-          this.strokeWidth2 = lineSymbolizer2.getStroke().getStrokeWidth();
-          this.strokeWidthSpinner2.setValue(this.strokeWidth2);
-          this.unit = lineSymbolizer2.getUnitOfMeasure();
+        this.strokeColor2 = lineSymbolizer2.getStroke().getColor();
+        this.strokeOpacity2 = lineSymbolizer2.getStroke().getStrokeOpacity();
+        this.strokeOpacitySlider2.setValue((int) this.strokeOpacity2 * 100);
+        this.strokeWidth2 = lineSymbolizer2.getStroke().getStrokeWidth();
+        this.strokeWidthSpinner2.setValue(this.strokeWidth2);
+        this.unit = lineSymbolizer2.getUnitOfMeasure();
       }
     } else if (symbolizer.isPointSymbolizer()) {
       PointSymbolizer pointSymbolizer = (PointSymbolizer) this.getInitialSLD()
-            .getLayer(this.layer.getName()).getStyles().get(0).getSymbolizer();
+          .getLayer(this.layer.getName()).getStyles().get(0).getSymbolizer();
       Mark mark = pointSymbolizer.getGraphic().getMarks().get(0);
       this.fillColor = mark.getFill().getColor();
       this.fillOpacity = mark.getFill().getFillOpacity();
-      this.fillOpacitySlider.setValue((int)this.fillOpacity * 100);
+      this.fillOpacitySlider.setValue((int) this.fillOpacity * 100);
       this.strokeColor = mark.getStroke().getColor();
       this.strokeOpacity = mark.getStroke().getStrokeOpacity();
-      this.strokeOpacitySlider.setValue((int)this.strokeOpacity * 100);
+      this.strokeOpacitySlider.setValue((int) this.strokeOpacity * 100);
       this.strokeWidth = mark.getStroke().getStrokeWidth();
       this.strokeWidthSpinner.setValue(this.strokeWidth);
       this.symbolShape = mark.getWellKnownName();
@@ -1315,7 +1309,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     // Updating the preview style panel
     this.stylePanel.paintComponent(this.stylePanel.getGraphics());
   }
-  
+
   public void getDialogElements() {
     if (this.layer.getStyles().get(0).getSymbolizer().isPolygonSymbolizer()
         || this.layer.getStyles().get(0).getSymbolizer().isLineSymbolizer()

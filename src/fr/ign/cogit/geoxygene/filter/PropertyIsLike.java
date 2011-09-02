@@ -28,54 +28,60 @@ import org.apache.log4j.Logger;
  * 
  */
 public class PropertyIsLike extends BinaryComparisonOpsType {
-	static Logger logger = Logger.getLogger(PropertyIsLike.class.getName());
-	@XmlAttribute(required = true)
-	private String wildCard;
-	@XmlAttribute(required = true)
-	private String singleChar;
-	@XmlAttribute(name = "escape", required = true)
-	private String escapeChar;
+  static Logger logger = Logger.getLogger(PropertyIsLike.class.getName());
+  @XmlAttribute(required = true)
+  private String wildCard;
+  @XmlAttribute(required = true)
+  private String singleChar;
+  @XmlAttribute(name = "escape", required = true)
+  private String escapeChar;
 
-	public String getWildCard() {
-		return this.wildCard;
-	}
-	public void setWildCard(String wildCard) {
-		this.wildCard = wildCard;
-	}
-	public String getSingleChar() {
-		return this.singleChar;
-	}
-	public void setSingleChar(String singleChar) {
-		this.singleChar = singleChar;
-	}
-	public String getEscapeChar() {
-		return this.escapeChar;
-	}
-	public void setEscapeChar(String escapeChar) {
-		this.escapeChar = escapeChar;
-	}
-	@Override
-	public boolean evaluate(Object object) {
-		Object property = this.getPropertyName().evaluate(object);
-		if (property == null) {
-			return false;
-		}
-		String regex = this.getLiteral().getValue();
-		regex.replace(this.getSingleChar(), "."); //$NON-NLS-1$
-		regex.replace(this.getWildCard(), ".*"); //$NON-NLS-1$
-		regex.replace(this.getEscapeChar(), "\\"); //$NON-NLS-1$
-		if (property instanceof String) {
-			// FIXME voir influence sensibilité à la casse
-			return ((String) property).matches(regex);
-		}
-		if (property instanceof Number) {
-			return ((Number) property).toString().matches(regex);
-		}
-		return false;
-	}
+  public String getWildCard() {
+    return this.wildCard;
+  }
 
-	@Override
-	public String toString() {
-		return this.getPropertyName() + " is like " + this.getLiteral().toString(); //$NON-NLS-1$
-	}
+  public void setWildCard(String wildCard) {
+    this.wildCard = wildCard;
+  }
+
+  public String getSingleChar() {
+    return this.singleChar;
+  }
+
+  public void setSingleChar(String singleChar) {
+    this.singleChar = singleChar;
+  }
+
+  public String getEscapeChar() {
+    return this.escapeChar;
+  }
+
+  public void setEscapeChar(String escapeChar) {
+    this.escapeChar = escapeChar;
+  }
+
+  @Override
+  public boolean evaluate(Object object) {
+    Object property = this.getPropertyName().evaluate(object);
+    if (property == null) {
+      return false;
+    }
+    String regex = this.getLiteral().getValue();
+    regex.replace(this.getSingleChar(), "."); //$NON-NLS-1$
+    regex.replace(this.getWildCard(), ".*"); //$NON-NLS-1$
+    regex.replace(this.getEscapeChar(), "\\"); //$NON-NLS-1$
+    if (property instanceof String) {
+      // FIXME voir influence sensibilité à la casse
+      return ((String) property).matches(regex);
+    }
+    if (property instanceof Number) {
+      return ((Number) property).toString().matches(regex);
+    }
+    return false;
+  }
+
+  @Override
+  public String toString() {
+    return this.getPropertyName() + " is like " + this.getLiteral().toString(); //$NON-NLS-1$
+  }
 }

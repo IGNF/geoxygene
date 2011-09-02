@@ -116,12 +116,10 @@ public final class AppariementIO {
     if (AppariementIO.LOGGER.isDebugEnabled()) {
       AppariementIO.LOGGER.debug(I18N
           .getString("AppariementIO.StructuringStart" //$NON-NLS-1$
-          )
-          + (new Time(System.currentTimeMillis())).toString());
+          ) + (new Time(System.currentTimeMillis())).toString());
       AppariementIO.LOGGER.debug(I18N
           .getString("AppariementIO.Network1Creation" //$NON-NLS-1$
-          )
-          + (new Time(System.currentTimeMillis())).toString());
+          ) + (new Time(System.currentTimeMillis())).toString());
     }
     ReseauApp reseauRef = AppariementIO.importData(paramApp, true);
     if (cartesTopo != null) {
@@ -130,8 +128,7 @@ public final class AppariementIO {
     if (AppariementIO.LOGGER.isDebugEnabled()) {
       AppariementIO.LOGGER.debug(I18N
           .getString("AppariementIO.Network2Creation" //$NON-NLS-1$
-          )
-          + (new Time(System.currentTimeMillis())).toString());
+          ) + (new Time(System.currentTimeMillis())).toString());
     }
     ReseauApp reseauComp = AppariementIO.importData(paramApp, false);
     if (cartesTopo != null) {
@@ -143,8 +140,7 @@ public final class AppariementIO {
       if (AppariementIO.LOGGER.isDebugEnabled()) {
         AppariementIO.LOGGER.debug(I18N
             .getString("AppariementIO.ProjectionOfNetwork2OnNetwork1" //$NON-NLS-1$
-            )
-            + (new Time(System.currentTimeMillis())).toString());
+            ) + (new Time(System.currentTimeMillis())).toString());
       }
       reseauRef.projete(reseauComp,
           paramApp.projeteNoeuds2SurReseau1DistanceNoeudArc,
@@ -155,8 +151,7 @@ public final class AppariementIO {
       if (AppariementIO.LOGGER.isDebugEnabled()) {
         AppariementIO.LOGGER.debug(I18N
             .getString("AppariementIO.ProjectionOfNetwork1OnNetwork2" //$NON-NLS-1$
-            )
-            + (new Time(System.currentTimeMillis())).toString());
+            ) + (new Time(System.currentTimeMillis())).toString());
       }
       reseauComp.projete(reseauRef,
           paramApp.projeteNoeuds1SurReseau2DistanceNoeudArc,
@@ -166,8 +161,7 @@ public final class AppariementIO {
     if (AppariementIO.LOGGER.isDebugEnabled()) {
       AppariementIO.LOGGER.debug(I18N
           .getString("AppariementIO.AttributeFilling" //$NON-NLS-1$
-          )
-          + (new Time(System.currentTimeMillis())).toString());
+          ) + (new Time(System.currentTimeMillis())).toString());
     }
     reseauRef.instancieAttributsNuls(paramApp);
     reseauComp.initialisePoids();
@@ -296,13 +290,15 @@ public final class AppariementIO {
         if (paramApp.populationsArcsAvecOrientationDouble) {
           arc.setOrientation(2);
         } else {
-          String attribute = (ref) ? paramApp.attributOrientation1 : paramApp.attributOrientation2;
-          Map<Object, Integer> orientationMap = (ref) ? paramApp.orientationMap1 : paramApp.orientationMap2;
+          String attribute = (ref) ? paramApp.attributOrientation1
+              : paramApp.attributOrientation2;
+          Map<Object, Integer> orientationMap = (ref) ? paramApp.orientationMap1
+              : paramApp.orientationMap2;
           if (attribute.isEmpty()) {
             arc.setOrientation(1);
           } else {
             Object value = element.getAttribute(attribute);
-//            System.out.println(attribute + " = " + value);
+            // System.out.println(attribute + " = " + value);
             if (orientationMap != null) {
               Integer orientation = orientationMap.get(value);
               if (orientation != null) {
@@ -331,8 +327,10 @@ public final class AppariementIO {
                     }
                   }
                 } else {
-                  LOGGER.error("Attribute " + attribute
-                      + " is neither Number nor String. It can't be used as an orientation");
+                  LOGGER
+                      .error("Attribute "
+                          + attribute
+                          + " is neither Number nor String. It can't be used as an orientation");
                 }
               }
             }
@@ -430,7 +428,6 @@ public final class AppariementIO {
       reseau.filtreDoublons(0);
       reseau.creeTopologieArcsNoeuds(0);
     }
-    
 
     // 2- On fusionne les noeuds proches
     if (ref) {
@@ -486,7 +483,6 @@ public final class AppariementIO {
       reseau.filtreNoeudsSimples();
     }
 
-    
     // 5- On fusionne des arcs en double
     if (ref && paramApp.topologieFusionArcsDoubles1) {
       if (AppariementIO.LOGGER.isDebugEnabled()) {

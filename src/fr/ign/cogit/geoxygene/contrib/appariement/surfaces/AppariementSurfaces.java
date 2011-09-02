@@ -169,18 +169,20 @@ public abstract class AppariementSurfaces {
    * 2 surfaces sont pré-appariées si elles respectent le "test d'association"
    * défini par Atef Bel Hadj Ali (2001). C'est-à-dire si :
    * <ul>
-   * <li>1/ l'intersection des surfaces a une taille supérieure au seuil "surface_min" ET
-   * <li> 2/ l'intersection fait au moins la taille d'une des surfaces multipliée par le
-   * paramètre "pourcentage_min".
+   * <li>1/ l'intersection des surfaces a une taille supérieure au seuil
+   * "surface_min" ET
+   * <li>2/ l'intersection fait au moins la taille d'une des surfaces multipliée
+   * par le paramètre "pourcentage_min".
    * </ul>
    * NB:
    * <ul>
-   * <li> NB 1 : Par construction : chaque lien pointe vers UN SEUL objet de la
+   * <li>NB 1 : Par construction : chaque lien pointe vers UN SEUL objet de la
    * population de référence et vers UN SEUL objet de la population de
    * comparaison.
-   * <li> NB 2 : Aucune géométrie n'est instanciée pour les liens créés.
-   * <li> NB 3 : l'appariement est symétrique.
-   * <li> NB 4 : la population de comparaison est indexée si elle ne l'était pas avant
+   * <li>NB 2 : Aucune géométrie n'est instanciée pour les liens créés.
+   * <li>NB 3 : l'appariement est symétrique.
+   * <li>NB 4 : la population de comparaison est indexée si elle ne l'était pas
+   * avant
    * </ul>
    * 
    * @param popRef : population des objets de référence.

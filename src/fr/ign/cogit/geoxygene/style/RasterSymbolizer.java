@@ -123,9 +123,9 @@ public class RasterSymbolizer extends AbstractSymbolizer {
                 this.addNeighbour(positions[x][y], triangle);
                 this.addNeighbour(positions[x][y - 1], triangle);
                 multi.add(triangle);
-                Vecteur v1 = new Vecteur(triangle.getCorners(0).getDirect(), 
+                Vecteur v1 = new Vecteur(triangle.getCorners(0).getDirect(),
                     triangle.getCorners(1).getDirect());
-                Vecteur v2 = new Vecteur(triangle.getCorners(0).getDirect(), 
+                Vecteur v2 = new Vecteur(triangle.getCorners(0).getDirect(),
                     triangle.getCorners(2).getDirect());
                 Vecteur normal = v1.prodVectoriel(v2);
                 normal.normalise();
@@ -135,10 +135,10 @@ public class RasterSymbolizer extends AbstractSymbolizer {
                 this.addNeighbour(positions[x - 1][y - 1], triangle2);
                 this.addNeighbour(positions[x - 1][y], triangle2);
                 this.addNeighbour(positions[x][y], triangle2);
-                Vecteur v3 = new Vecteur(triangle2.getCorners(0).getDirect(), triangle2
-                    .getCorners(1).getDirect());
-                Vecteur v4 = new Vecteur(triangle2.getCorners(0).getDirect(), triangle2
-                    .getCorners(2).getDirect());
+                Vecteur v3 = new Vecteur(triangle2.getCorners(0).getDirect(),
+                    triangle2.getCorners(1).getDirect());
+                Vecteur v4 = new Vecteur(triangle2.getCorners(0).getDirect(),
+                    triangle2.getCorners(2).getDirect());
                 Vecteur normal2 = v3.prodVectoriel(v4);
                 normal2.normalise();
                 this.normalMap.put(triangle2, normal2);
@@ -209,9 +209,9 @@ public class RasterSymbolizer extends AbstractSymbolizer {
       Color color2 = this.getColor(normal2);
 
       graphics.setPaint(new TriColorGradientPaint(viewport.toViewPoint(triangle
-          .getCorners(0).getDirect()), color0,
-          viewport.toViewPoint(triangle.getCorners(1).getDirect()), color1, viewport
-              .toViewPoint(triangle.getCorners(2).getDirect()), color2));
+          .getCorners(0).getDirect()), color0, viewport.toViewPoint(triangle
+          .getCorners(1).getDirect()), color1, viewport.toViewPoint(triangle
+          .getCorners(2).getDirect()), color2));
       /*
        * graphics.setColor(new Color( (color0.getRed() + color1.getRed() +
        * color2.getRed() )/3, (color0.getGreen() + color1.getGreen() +

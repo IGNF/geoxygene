@@ -61,103 +61,137 @@ public class EnsembleDeLiensSGBD extends Population {
    * "Appariement des routes par la méthode XX")
    */
   private String nom;
+
   @Override
   public final String getNom() {
     return this.nom;
   }
+
   @Override
   public final void setNom(final String nom) {
     this.nom = nom;
   }
+
   /**
    * Description textuelle des paramètres utilisés pour l'appariement.
    */
   private String parametrage;
+
   public final String getParametrage() {
     return this.parametrage;
   }
+
   public final void setParametrage(final String parametrage) {
     this.parametrage = parametrage;
   }
+
   /**
    * Description textuelle du résultat de l'auto-évaluation des liens.
    */
   private String evaluationInterne;
+
   public final String getEvaluationInterne() {
     return this.evaluationInterne;
   }
+
   public final void setEvaluationInterne(final String evaluation) {
     this.evaluationInterne = evaluation;
   }
+
   /**
    * Description textuelle du résultat de l'évaluation globale des liens.
    */
   private String evaluationGlobale;
+
   public final String getEvaluationGlobale() {
     return this.evaluationGlobale;
   }
+
   public final void setEvaluationGlobale(final String evaluation) {
     this.evaluationGlobale = evaluation;
   }
+
   /**
    * Liste des populations auxquelles les objets ref et comp des liens sont
    * attachés sous forme de string.
    */
   private String populations;
+
   public final String getPopulations() {
     return this.populations;
   }
+
   public final void setPopulations(final String populations) {
     this.populations = populations;
   }
+
   /** Liste aidant à instancier la variable populations */
   private HashSet<String> listePop;
+
   public final HashSet<String> getListePop() {
     return this.listePop;
   }
+
   public final void setListePop(final HashSet<String> listePop) {
     this.listePop = listePop;
   }
+
   /** Liste des populations réelles */
   private List<Population<IFeature>> listePopulations;
+
   public final List<Population<IFeature>> getListePopulations() {
     return this.listePopulations;
   }
-  public final void setListePopulations(final List<Population<IFeature>> listePopulations) {
+
+  public final void setListePopulations(
+      final List<Population<IFeature>> listePopulations) {
     this.listePopulations = listePopulations;
   }
+
   /** Date de l'enregistrement */
   private String date;
+
   public final String getDate() {
     return this.date;
   }
+
   public final void setDate(final String date) {
     this.date = date;
   }
+
   /** Couleur du lien : rouge */
   private int rouge;
+
   public final int getRouge() {
     return this.rouge;
   }
+
   public final void setRouge(final int rouge) {
     this.rouge = rouge;
   }
+
   /** Couleur du lien : vert */
   private int vert;
+
   public final int getVert() {
     return this.vert;
   }
+
   public final void setVert(final int vert) {
     this.vert = vert;
   }
+
   /** Couleur du lien : bleu */
   private int bleu;
+
   public final int getBleu() {
     return this.bleu;
   }
+
   public final void setBleu(final int bleu) {
     this.bleu = bleu;
   }
+
   // ////////////////////////////////////////////////////////////////////////
   // relation BIDIRECTIONNELLE 1-n ////////////////////////
   // ////////////////////////////////////////////////////////////////////////
@@ -178,12 +212,14 @@ public class EnsembleDeLiensSGBD extends Population {
    * ou emptyListe().
    */
   private List<LienSGBD> liensSGBD = this.getElements();
+
   /**
    * Récupère la liste des objets en relation.
    */
   public final List<LienSGBD> getLiensSGBD() {
     return this.liensSGBD;
   }
+
   /**
    * Définit la liste des objets en relation, et met à jour la relation inverse.
    */
@@ -196,12 +232,14 @@ public class EnsembleDeLiensSGBD extends Population {
       lien.setEnsembleLiensSGBD(this);
     }
   }
+
   /**
    * Récupère le ième élément de la liste des objets en relation.
    */
   public final LienSGBD getLienSGBD(final int i) {
     return this.liensSGBD.get(i);
   }
+
   /**
    * Ajoute un objet à la liste des objets en relation, et met à jour la
    * relation inverse.
@@ -213,6 +251,7 @@ public class EnsembleDeLiensSGBD extends Population {
     this.liensSGBD.add(lien);
     lien.setEnsembleLiensSGBD(this);
   }
+
   /**
    * Enlève un élément de la liste des objets en relation, et met à jour la
    * relation inverse.
@@ -224,6 +263,7 @@ public class EnsembleDeLiensSGBD extends Population {
     this.liensSGBD.remove(lien);
     lien.setEnsembleLiensSGBD(null);
   }
+
   /**
    * Vide la liste des objets en relation, et met à jour la relation inverse.
    */
@@ -249,6 +289,7 @@ public class EnsembleDeLiensSGBD extends Population {
     }
     geodatabase.deletePersistent(this);
   }
+
   // ////////////////////////////////////////////////////////////////////////
   // //////// CONVERSION ENTRE ENSEMBLE DE LIENS ET ENSEMBLE DE LIENS SGBD
   // ////////////////////////////////////////////////////////////////////////
@@ -315,6 +356,7 @@ public class EnsembleDeLiensSGBD extends Population {
     this.setPopulations(pop.substring(0, pop.length() - 1));
     return this;
   }
+
   /**
    * Methode de conversion entre les ensembles de liens SGBD vers les ensembles
    * de liens d'appariement
@@ -342,8 +384,8 @@ public class EnsembleDeLiensSGBD extends Population {
       pop = token.nextToken();
       try {
         Class classe = Class.forName(pop);
-        Population population = new Population(false, I18N
-            .getString("EnsembleDeLiensSGBD.Population" //$NON-NLS-1$
+        Population population = new Population(false,
+            I18N.getString("EnsembleDeLiensSGBD.Population" //$NON-NLS-1$
             ), classe, true);
         population.addCollection(geodb.loadAllFeatures(classe));
         this.getListePopulations().add(population);

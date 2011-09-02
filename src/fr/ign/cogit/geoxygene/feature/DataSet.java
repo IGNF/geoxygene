@@ -503,11 +503,13 @@ public class DataSet implements IDataSet {
    * ou emptyListe().
    */
   protected List<IDataSet> composants = new ArrayList<IDataSet>(0);
+
   @Override
   @OneToMany
   public List<IDataSet> getComposants() {
     return this.composants;
   }
+
   @Override
   public void setComposants(List<IDataSet> L) {
     this.emptyComposants();
@@ -515,10 +517,12 @@ public class DataSet implements IDataSet {
       dataset.setAppartientA(this);
     }
   }
+
   @Override
   public IDataSet getComposant(int i) {
     return this.composants.get(i);
   }
+
   @Override
   public void addComposant(IDataSet O) {
     if (O == null) {
@@ -527,6 +531,7 @@ public class DataSet implements IDataSet {
     this.composants.add(O);
     O.setAppartientA(this);
   }
+
   @Override
   public void removeComposant(IDataSet O) {
     if (O == null) {
@@ -535,6 +540,7 @@ public class DataSet implements IDataSet {
     this.composants.remove(O);
     O.setAppartientA(null);
   }
+
   @Override
   public void emptyComposants() {
     List<IDataSet> old = new ArrayList<IDataSet>(this.composants);
@@ -543,6 +549,7 @@ public class DataSet implements IDataSet {
     }
     this.composants.clear();
   }
+
   @Override
   public IDataSet getComposant(String nomComposant) {
     for (IDataSet dataset : this.getComposants()) {
@@ -557,11 +564,13 @@ public class DataSet implements IDataSet {
 
   /** Relation inverse à Composants */
   private IDataSet appartientA;
+
   @Override
   @ManyToOne
   public IDataSet getAppartientA() {
     return this.appartientA;
   }
+
   @Override
   public void setAppartientA(IDataSet O) {
     IDataSet old = this.appartientA;
@@ -580,10 +589,12 @@ public class DataSet implements IDataSet {
   }
 
   private int appartientAID;
+
   @Override
   public void setAppartientAID(int I) {
     this.appartientAID = I;
   }
+
   @Override
   @Transient
   public int getAppartientAID() {
@@ -602,12 +613,15 @@ public class DataSet implements IDataSet {
    * n'est pas "null". Pour casser toutes les relations, faire setListe(new
    * ArrayList()) ou emptyListe().
    */
-  protected List<IPopulation<? extends IFeature>> populations = new ArrayList<IPopulation<? extends IFeature>>(0);
+  protected List<IPopulation<? extends IFeature>> populations = new ArrayList<IPopulation<? extends IFeature>>(
+      0);
+
   @Override
   @OneToMany
   public List<IPopulation<? extends IFeature>> getPopulations() {
     return this.populations;
   }
+
   @Override
   public void setPopulations(List<IPopulation<? extends IFeature>> L) {
     List<IPopulation<? extends IFeature>> old = new ArrayList<IPopulation<? extends IFeature>>(
@@ -619,10 +633,12 @@ public class DataSet implements IDataSet {
       pop.setDataSet(this);
     }
   }
+
   @Override
   public IPopulation<? extends IFeature> getPopulation(int i) {
     return this.populations.get(i);
   }
+
   @Override
   public void addPopulation(IPopulation<? extends IFeature> O) {
     if (O == null) {
@@ -631,6 +647,7 @@ public class DataSet implements IDataSet {
     this.populations.add(O);
     O.setDataSet(this);
   }
+
   @Override
   public void removePopulation(IPopulation<? extends IFeature> O) {
     if (O == null) {
@@ -639,6 +656,7 @@ public class DataSet implements IDataSet {
     this.populations.remove(O);
     O.setDataSet(null);
   }
+
   @Override
   public void emptyPopulations() {
     List<IPopulation<? extends IFeature>> old = new ArrayList<IPopulation<? extends IFeature>>(
@@ -648,6 +666,7 @@ public class DataSet implements IDataSet {
     }
     this.populations.clear();
   }
+
   @Override
   public IPopulation<? extends IFeature> getPopulation(String nomPopulation) {
     for (IPopulation<? extends IFeature> pop : this.getPopulations()) {
@@ -663,16 +682,19 @@ public class DataSet implements IDataSet {
 
   /** Liste des zones d'extraction définies pour ce DataSt */
   protected List<IExtraction> extractions = new ArrayList<IExtraction>();
+
   @Override
   // @OneToMany
   @Transient
   public List<IExtraction> getExtractions() {
     return this.extractions;
   }
+
   @Override
   public void setExtractions(List<IExtraction> L) {
     this.extractions = L;
   }
+
   @Override
   public void addExtraction(IExtraction O) {
     this.extractions.add(O);
@@ -700,12 +722,14 @@ public class DataSet implements IDataSet {
    * Partie Description du DataSet : produit et schéma de données
    **************************************************************************/
   protected Produit produit;
+
   @Override
   // @OneToOne
   @Transient
   public Produit getProduit() {
     return this.produit;
   }
+
   @Override
   public void setProduit(Produit produit) {
     this.produit = produit;
@@ -715,10 +739,12 @@ public class DataSet implements IDataSet {
    * Schema conceptuel correspondant au jeu de donnees
    */
   protected SchemaConceptuelJeu schemaConceptuel;
+
   @Override
   public void setSchemaConceptuel(SchemaConceptuelJeu schema) {
     this.schemaConceptuel = schema;
   }
+
   @Override
   // @OneToOne
   @Transient
@@ -730,32 +756,35 @@ public class DataSet implements IDataSet {
    * Liste des contraintes (intégrité) s'appliquant à ce jeu
    */
   public List<GF_Constraint> contraintes;
+
   @Override
   // @OneToMany
   @Transient
   public List<GF_Constraint> getContraintes() {
     return this.contraintes;
   }
+
   @Override
   public void setContraintes(List<GF_Constraint> contraintes) {
     this.contraintes = contraintes;
   }
+
   @Override
   public void initPopulations() {
     SchemaConceptuelJeu schema = this.getSchemaConceptuel();
     List<IPopulation<? extends IFeature>> listPop = new ArrayList<IPopulation<? extends IFeature>>();
     for (int i = 0; i < schema.getFeatureTypes().size(); i++) {
-      listPop.add(new Population<IFeature>(schema
-          .getFeatureTypeI(i)));
+      listPop.add(new Population<IFeature>(schema.getFeatureTypeI(i)));
     }
     this.setPopulations(listPop);
   }
+
   @Override
   public IPopulation<? extends IFeature> getPopulationByFeatureTypeName(
       String nomFeatureType) {
     for (int i = 0; i < this.getPopulations().size(); i++) {
-      if (this.getPopulations().get(i).getFeatureType().getTypeName().equals(
-          nomFeatureType)) {
+      if (this.getPopulations().get(i).getFeatureType().getTypeName()
+          .equals(nomFeatureType)) {
         return this.getPopulations().get(i);
       }
     }

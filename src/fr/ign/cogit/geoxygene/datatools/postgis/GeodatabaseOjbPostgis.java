@@ -225,8 +225,8 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
                 feature.getGeom().setCRS(srid);
               }
               result.getClass()
-                  .getMethod("add", new Class[] { IFeature.class }).invoke(
-                      result, new Object[] { feature });
+                  .getMethod("add", new Class[] { IFeature.class })
+                  .invoke(result, new Object[] { feature });
             }
           }
           while (iter.hasNext()) {
@@ -363,8 +363,8 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
                 feature.getGeom().setCRS(srid);
               }
               result.getClass()
-                  .getMethod("add", new Class[] { IFeature.class }).invoke(
-                      result, new Object[] { feature });
+                  .getMethod("add", new Class[] { IFeature.class })
+                  .invoke(result, new Object[] { feature });
             }
           }
           while (iter.hasNext()) {

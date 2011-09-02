@@ -131,10 +131,12 @@ public class ParserSchemaConceptuel {
               featureAttribute = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType();
               featureAttribute.setId(new Integer(aType.getAttribute("id"))
                   .intValue());
-              featureAttribute.setMemberName(aType.getElementsByTagName(
-                  "memberName").item(0).getFirstChild().getNodeValue());
-              featureAttribute.setValueType(aType.getElementsByTagName(
-                  "valueType").item(0).getFirstChild().getNodeValue());
+              featureAttribute.setMemberName(aType
+                  .getElementsByTagName("memberName").item(0).getFirstChild()
+                  .getNodeValue());
+              featureAttribute.setValueType(aType
+                  .getElementsByTagName("valueType").item(0).getFirstChild()
+                  .getNodeValue());
               featureAttribute.setFeatureType(featureType);
               featureType.addFeatureAttribute(featureAttribute);
 
@@ -153,8 +155,9 @@ public class ParserSchemaConceptuel {
 
             featureAssociation.setId(new Integer(asType.getAttribute("id"))
                 .intValue());
-            featureAssociation.setTypeName(asType.getElementsByTagName(
-                "typeName").item(0).getFirstChild().getNodeValue());
+            featureAssociation.setTypeName(asType
+                .getElementsByTagName("typeName").item(0).getFirstChild()
+                .getNodeValue());
             // System.out.println("nom at : "+featureAssociation.getTypeName());
             schemaCible.getFeatureAssociations().add(featureAssociation);
 
@@ -165,11 +168,13 @@ public class ParserSchemaConceptuel {
               featureAttribute = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType();
               featureAttribute.setId(new Integer(aType.getAttribute("id"))
                   .intValue());
-              featureAttribute.setMemberName(aType.getElementsByTagName(
-                  "memberName").item(0).getFirstChild().getNodeValue());
+              featureAttribute.setMemberName(aType
+                  .getElementsByTagName("memberName").item(0).getFirstChild()
+                  .getNodeValue());
               // System.out.println("nom = "+featureAttribute.getMemberName());
-              featureAttribute.setValueType(aType.getElementsByTagName(
-                  "valueType").item(0).getFirstChild().getNodeValue());
+              featureAttribute.setValueType(aType
+                  .getElementsByTagName("valueType").item(0).getFirstChild()
+                  .getNodeValue());
               featureAttribute.setFeatureType(featureAssociation);
               featureAssociation.addFeatureAttribute(featureAttribute);
             }
@@ -186,8 +191,9 @@ public class ParserSchemaConceptuel {
               // System.out.println("id role = "+eRole.getAttribute("id"));
               associationRole.setId(new Integer(eRole.getAttribute("id"))
                   .intValue());
-              associationRole.setMemberName(eRole.getElementsByTagName(
-                  "memberName").item(0).getFirstChild().getNodeValue());
+              associationRole.setMemberName(eRole
+                  .getElementsByTagName("memberName").item(0).getFirstChild()
+                  .getNodeValue());
               // System.out.println("nom role = "+associationRole.getMemberName());
               associationRole.setCardMin(eRole.getElementsByTagName("cardMin")
                   .item(0).getFirstChild().getNodeValue());
@@ -291,10 +297,12 @@ public class ParserSchemaConceptuel {
               featureAttribute = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType();
               featureAttribute.setId(new Integer(aType.getAttribute("id"))
                   .intValue());
-              featureAttribute.setMemberName(aType.getElementsByTagName(
-                  "memberName").item(0).getFirstChild().getNodeValue());
-              featureAttribute.setValueType(aType.getElementsByTagName(
-                  "valueType").item(0).getFirstChild().getNodeValue());
+              featureAttribute.setMemberName(aType
+                  .getElementsByTagName("memberName").item(0).getFirstChild()
+                  .getNodeValue());
+              featureAttribute.setValueType(aType
+                  .getElementsByTagName("valueType").item(0).getFirstChild()
+                  .getNodeValue());
               featureAttribute.setFeatureType(featureType);
               featureType.addFeatureAttribute(featureAttribute);
 
@@ -313,8 +321,9 @@ public class ParserSchemaConceptuel {
 
             featureAssociation.setId(new Integer(asType.getAttribute("id"))
                 .intValue());
-            featureAssociation.setTypeName(asType.getElementsByTagName(
-                "typeName").item(0).getFirstChild().getNodeValue());
+            featureAssociation.setTypeName(asType
+                .getElementsByTagName("typeName").item(0).getFirstChild()
+                .getNodeValue());
             // System.out.println("nom at : "+featureAssociation.getTypeName());
             schemaCible.getFeatureAssociations().add(featureAssociation);
 
@@ -325,11 +334,13 @@ public class ParserSchemaConceptuel {
               featureAttribute = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.AttributeType();
               featureAttribute.setId(new Integer(aType.getAttribute("id"))
                   .intValue());
-              featureAttribute.setMemberName(aType.getElementsByTagName(
-                  "memberName").item(0).getFirstChild().getNodeValue());
+              featureAttribute.setMemberName(aType
+                  .getElementsByTagName("memberName").item(0).getFirstChild()
+                  .getNodeValue());
               // System.out.println("nom = "+featureAttribute.getMemberName());
-              featureAttribute.setValueType(aType.getElementsByTagName(
-                  "valueType").item(0).getFirstChild().getNodeValue());
+              featureAttribute.setValueType(aType
+                  .getElementsByTagName("valueType").item(0).getFirstChild()
+                  .getNodeValue());
               featureAttribute.setFeatureType(featureAssociation);
               featureAssociation.addFeatureAttribute(featureAttribute);
             }
@@ -346,8 +357,9 @@ public class ParserSchemaConceptuel {
               // System.out.println("id role = "+eRole.getAttribute("id"));
               associationRole.setId(new Integer(eRole.getAttribute("id"))
                   .intValue());
-              associationRole.setMemberName(eRole.getElementsByTagName(
-                  "memberName").item(0).getFirstChild().getNodeValue());
+              associationRole.setMemberName(eRole
+                  .getElementsByTagName("memberName").item(0).getFirstChild()
+                  .getNodeValue());
               // System.out.println("nom role = "+associationRole.getMemberName());
               associationRole.setCardMin(eRole.getElementsByTagName("cardMin")
                   .item(0).getFirstChild().getNodeValue());
@@ -452,10 +464,12 @@ public class ParserSchemaConceptuel {
               featureAttribute = new AttributeType();
               featureAttribute.setId(new Integer(aType.getAttribute("id"))
                   .intValue());
-              featureAttribute.setMemberName(aType.getElementsByTagName(
-                  "memberName").item(0).getFirstChild().getNodeValue());
-              featureAttribute.setValueType(aType.getElementsByTagName(
-                  "valueType").item(0).getFirstChild().getNodeValue());
+              featureAttribute.setMemberName(aType
+                  .getElementsByTagName("memberName").item(0).getFirstChild()
+                  .getNodeValue());
+              featureAttribute.setValueType(aType
+                  .getElementsByTagName("valueType").item(0).getFirstChild()
+                  .getNodeValue());
               featureAttribute.setFeatureType(featureType);
               featureType.addFeatureAttribute(featureAttribute);
 
@@ -474,8 +488,9 @@ public class ParserSchemaConceptuel {
 
             featureAssociation.setId(new Integer(asType.getAttribute("id"))
                 .intValue());
-            featureAssociation.setTypeName(asType.getElementsByTagName(
-                "typeName").item(0).getFirstChild().getNodeValue());
+            featureAssociation.setTypeName(asType
+                .getElementsByTagName("typeName").item(0).getFirstChild()
+                .getNodeValue());
             // System.out.println("nom at : "+featureAssociation.getTypeName());
             (schemaCible).getFeatureAssociations().add(featureAssociation);
 
@@ -486,11 +501,13 @@ public class ParserSchemaConceptuel {
               featureAttribute = new AttributeType();
               featureAttribute.setId(new Integer(aType.getAttribute("id"))
                   .intValue());
-              featureAttribute.setMemberName(aType.getElementsByTagName(
-                  "memberName").item(0).getFirstChild().getNodeValue());
+              featureAttribute.setMemberName(aType
+                  .getElementsByTagName("memberName").item(0).getFirstChild()
+                  .getNodeValue());
               // System.out.println("nom = "+featureAttribute.getMemberName());
-              featureAttribute.setValueType(aType.getElementsByTagName(
-                  "valueType").item(0).getFirstChild().getNodeValue());
+              featureAttribute.setValueType(aType
+                  .getElementsByTagName("valueType").item(0).getFirstChild()
+                  .getNodeValue());
               featureAttribute.setFeatureType(featureAssociation);
               featureAssociation.addFeatureAttribute(featureAttribute);
             }
@@ -507,8 +524,9 @@ public class ParserSchemaConceptuel {
               // System.out.println("id role = "+eRole.getAttribute("id"));
               associationRole.setId(new Integer(eRole.getAttribute("id"))
                   .intValue());
-              associationRole.setMemberName(eRole.getElementsByTagName(
-                  "memberName").item(0).getFirstChild().getNodeValue());
+              associationRole.setMemberName(eRole
+                  .getElementsByTagName("memberName").item(0).getFirstChild()
+                  .getNodeValue());
               // System.out.println("nom role = "+associationRole.getMemberName());
               associationRole.setCardMin(eRole.getElementsByTagName("cardMin")
                   .item(0).getFirstChild().getNodeValue());
@@ -607,10 +625,12 @@ public class ParserSchemaConceptuel {
               featureAttribute = new AttributeType();
               featureAttribute.setId(new Integer(aType.getAttribute("id"))
                   .intValue());
-              featureAttribute.setMemberName(aType.getElementsByTagName(
-                  "memberName").item(0).getFirstChild().getNodeValue());
-              featureAttribute.setValueType(aType.getElementsByTagName(
-                  "valueType").item(0).getFirstChild().getNodeValue());
+              featureAttribute.setMemberName(aType
+                  .getElementsByTagName("memberName").item(0).getFirstChild()
+                  .getNodeValue());
+              featureAttribute.setValueType(aType
+                  .getElementsByTagName("valueType").item(0).getFirstChild()
+                  .getNodeValue());
               featureAttribute.setFeatureType(featureType);
               featureType.addFeatureAttribute(featureAttribute);
 
@@ -629,8 +649,9 @@ public class ParserSchemaConceptuel {
 
             featureAssociation.setId(new Integer(asType.getAttribute("id"))
                 .intValue());
-            featureAssociation.setTypeName(asType.getElementsByTagName(
-                "typeName").item(0).getFirstChild().getNodeValue());
+            featureAssociation.setTypeName(asType
+                .getElementsByTagName("typeName").item(0).getFirstChild()
+                .getNodeValue());
             // System.out.println("nom at : "+featureAssociation.getTypeName());
             (schemaCible).getFeatureAssociations().add(featureAssociation);
 
@@ -641,11 +662,13 @@ public class ParserSchemaConceptuel {
               featureAttribute = new AttributeType();
               featureAttribute.setId(new Integer(aType.getAttribute("id"))
                   .intValue());
-              featureAttribute.setMemberName(aType.getElementsByTagName(
-                  "memberName").item(0).getFirstChild().getNodeValue());
+              featureAttribute.setMemberName(aType
+                  .getElementsByTagName("memberName").item(0).getFirstChild()
+                  .getNodeValue());
               // System.out.println("nom = "+featureAttribute.getMemberName());
-              featureAttribute.setValueType(aType.getElementsByTagName(
-                  "valueType").item(0).getFirstChild().getNodeValue());
+              featureAttribute.setValueType(aType
+                  .getElementsByTagName("valueType").item(0).getFirstChild()
+                  .getNodeValue());
               featureAttribute.setFeatureType(featureAssociation);
               featureAssociation.addFeatureAttribute(featureAttribute);
             }
@@ -662,8 +685,9 @@ public class ParserSchemaConceptuel {
               // System.out.println("id role = "+eRole.getAttribute("id"));
               associationRole.setId(new Integer(eRole.getAttribute("id"))
                   .intValue());
-              associationRole.setMemberName(eRole.getElementsByTagName(
-                  "memberName").item(0).getFirstChild().getNodeValue());
+              associationRole.setMemberName(eRole
+                  .getElementsByTagName("memberName").item(0).getFirstChild()
+                  .getNodeValue());
               // System.out.println("nom role = "+associationRole.getMemberName());
               associationRole.setCardMin(eRole.getElementsByTagName("cardMin")
                   .item(0).getFirstChild().getNodeValue());
@@ -730,12 +754,12 @@ public class ParserSchemaConceptuel {
       schema.appendChild(elementAttributeNode);
 
       if ((sc).getDataset() != null) {
-        schema.setAttribute("dataset", String
-            .valueOf((sc).getDataset().getId()));
+        schema.setAttribute("dataset",
+            String.valueOf((sc).getDataset().getId()));
       }
       if ((sc).getSchemaProduitOrigine() != null) {
-        schema.setAttribute("schemaProduitOrigine", String.valueOf((sc)
-            .getSchemaProduitOrigine().getId()));
+        schema.setAttribute("schemaProduitOrigine",
+            String.valueOf((sc).getSchemaProduitOrigine().getId()));
       }
 
       // ecriture des featureTypes
@@ -776,8 +800,8 @@ public class ParserSchemaConceptuel {
           attributeType.appendChild(elementAttributeNode);
 
           elementAttributeNode = doc.createElement("valueType");
-          elementAttributeNode.setTextContent(String
-              .valueOf(att.getValueType()));
+          elementAttributeNode
+              .setTextContent(String.valueOf(att.getValueType()));
           attributeType.appendChild(elementAttributeNode);
 
           elementAttributeNode = doc.createElement("valueDomainType");
@@ -859,8 +883,8 @@ public class ParserSchemaConceptuel {
           attributeType.appendChild(elementAttributeNode);
 
           elementAttributeNode = doc.createElement("valueType");
-          elementAttributeNode.setTextContent(String
-              .valueOf(att.getValueType()));
+          elementAttributeNode
+              .setTextContent(String.valueOf(att.getValueType()));
           attributeType.appendChild(elementAttributeNode);
 
           elementAttributeNode = doc.createElement("valueDomainType");
@@ -904,8 +928,8 @@ public class ParserSchemaConceptuel {
           associationRole.setAttribute("id", String.valueOf(ar.getId()));
 
           elementAttributeNode = doc.createElement("memberName");
-          elementAttributeNode.setTextContent(String
-              .valueOf(ar.getMemberName()));
+          elementAttributeNode
+              .setTextContent(String.valueOf(ar.getMemberName()));
           associationRole.appendChild(elementAttributeNode);
 
           elementAttributeNode = doc.createElement("definition");
@@ -1046,8 +1070,8 @@ public class ParserSchemaConceptuel {
           attributeType.appendChild(elementAttributeNode);
 
           elementAttributeNode = doc.createElement("valueType");
-          elementAttributeNode.setTextContent(String
-              .valueOf(att.getValueType()));
+          elementAttributeNode
+              .setTextContent(String.valueOf(att.getValueType()));
           attributeType.appendChild(elementAttributeNode);
 
           elementAttributeNode = doc.createElement("valueDomainType");
@@ -1126,8 +1150,8 @@ public class ParserSchemaConceptuel {
           attributeType.appendChild(elementAttributeNode);
 
           elementAttributeNode = doc.createElement("valueType");
-          elementAttributeNode.setTextContent(String
-              .valueOf(att.getValueType()));
+          elementAttributeNode
+              .setTextContent(String.valueOf(att.getValueType()));
           attributeType.appendChild(elementAttributeNode);
 
           elementAttributeNode = doc.createElement("valueDomainType");
@@ -1172,8 +1196,8 @@ public class ParserSchemaConceptuel {
           associationRole.setAttribute("id", String.valueOf(ar.getId()));
 
           elementAttributeNode = doc.createElement("memberName");
-          elementAttributeNode.setTextContent(String
-              .valueOf(ar.getMemberName()));
+          elementAttributeNode
+              .setTextContent(String.valueOf(ar.getMemberName()));
           associationRole.appendChild(elementAttributeNode);
 
           elementAttributeNode = doc.createElement("definition");

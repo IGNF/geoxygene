@@ -125,8 +125,9 @@ public class GUISelectionGeometrie extends JDialog {
     this.panneauType.setPreferredSize(new Dimension(820, 300));
     this.panneauType.setMaximumSize(new Dimension(820, 300));
     this.panneauType.setBackground(Color.white);
-    this.panneauType.setBorder(BorderFactory.createTitledBorder(BorderFactory
-        .createEtchedBorder(this.bluegray, this.bluegray), this.titreType));
+    this.panneauType.setBorder(BorderFactory.createTitledBorder(
+        BorderFactory.createEtchedBorder(this.bluegray, this.bluegray),
+        this.titreType));
     this.panneauType.add(this.boxType);
   }
 

@@ -33,6 +33,7 @@ public class SwingingArmNonConvexHull {
    * Swinging arm radius
    */
   private double radius = 0.0;
+
   /**
    * Constructor
    */
@@ -40,6 +41,7 @@ public class SwingingArmNonConvexHull {
     this.points = list;
     this.radius = radius;
   }
+
   /**
    * Method launch The idea is to compute two non-convex hulls using swinging
    * arm algorithm, one clockwise and one anticlockwise, and then to return the
@@ -159,8 +161,8 @@ public class SwingingArmNonConvexHull {
       while (true) {
         // Initialisation of parameters
         IDirectPosition nextPoint = new DirectPosition();
-        IDirectPosition lastPoint = this.points.get(absPos
-            .get(absPos.size() - 1).intValue());
+        IDirectPosition lastPoint = this.points.get(absPos.get(
+            absPos.size() - 1).intValue());
         double alphaMin = Double.POSITIVE_INFINITY;
         double ptRadius = this.radius;
         ptPos = 0;

@@ -36,8 +36,8 @@ public class GeodatabaseHibernatePostgis extends GeodatabaseHibernate implements
   @Override
   public void initMetadata() {
     super.initMetadata();
-    PostgisSpatialQuery.initGeomMetadata(this.getMetadata(), this.session
-        .connection());
+    PostgisSpatialQuery.initGeomMetadata(this.getMetadata(),
+        this.session.connection());
   }
 
   @Override

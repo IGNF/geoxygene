@@ -40,10 +40,12 @@ public class AssociationRole implements GF_AssociationRole {
 
   /** Identifiant d'un objet */
   protected int id;
+
   @Override
   public int getId() {
     return this.id;
   }
+
   @Override
   public void setId(int id) {
     this.id = id;
@@ -51,10 +53,12 @@ public class AssociationRole implements GF_AssociationRole {
 
   /** nom du role */
   protected String memberName;
+
   @Override
   public String getMemberName() {
     return this.memberName;
   }
+
   @Override
   public void setMemberName(String memberName) {
     this.memberName = memberName;
@@ -62,10 +66,12 @@ public class AssociationRole implements GF_AssociationRole {
 
   /** definition du role */
   protected String definition;
+
   @Override
   public String getDefinition() {
     return this.definition;
   }
+
   @Override
   public void setDefinition(String Definition) {
     this.definition = Definition;
@@ -73,10 +79,12 @@ public class AssociationRole implements GF_AssociationRole {
 
   /** lien vers le featureType concerné */
   protected FeatureType featureType;
+
   @Override
   public GF_FeatureType getFeatureType() {
     return this.featureType;
   }
+
   @Override
   public void setFeatureType(GF_FeatureType featureType) {
     this.featureType = (FeatureType) featureType;
@@ -89,30 +97,36 @@ public class AssociationRole implements GF_AssociationRole {
 
   /** lien vers le featureAssociation concerné */
   protected AssociationType associationType;
+
   @Override
   public GF_AssociationType getAssociationType() {
     return this.associationType;
   }
+
   @Override
   public void setAssociationType(GF_AssociationType associationType) {
     this.associationType = (AssociationType) associationType;
   }
 
   protected String cardMin;
+
   @Override
   public String getCardMin() {
     return this.cardMin;
   }
+
   @Override
   public void setCardMin(String CardMin) {
     this.cardMin = CardMin;
   }
 
   protected String cardMax;
+
   @Override
   public String getCardMax() {
     return this.cardMax;
   }
+
   @Override
   public void setCardMax(String CardMax) {
     this.cardMax = CardMax;
@@ -123,10 +137,12 @@ public class AssociationRole implements GF_AssociationRole {
    * agregation
    */
   protected boolean isComponent;
+
   @Override
   public boolean getIsComponent() {
     return this.isComponent;
   }
+
   @Override
   public void setIsComponent(boolean value) {
     this.isComponent = value;
@@ -137,10 +153,12 @@ public class AssociationRole implements GF_AssociationRole {
    * agregation
    */
   protected boolean isComposite;
+
   @Override
   public boolean getIsComposite() {
     return this.isComposite;
   }
+
   @Override
   public void setIsComposite(boolean value) {
     this.isComposite = value;
@@ -148,6 +166,7 @@ public class AssociationRole implements GF_AssociationRole {
 
   /** nom du champ Java representant le role dans la classe Java correspondante */
   protected String nomFieldClasse;
+
   public String getNomFieldClasse() {
     return this.nomFieldClasse;
   }
@@ -204,12 +223,15 @@ public class AssociationRole implements GF_AssociationRole {
   public List<GF_Constraint> getConstraint() {
     return null;
   }
+
   @Override
   public void setConstraint(List<GF_Constraint> L) {
   }
+
   @Override
   public void addConstraint(GF_Constraint value) {
   }
+
   @Override
   public int sizeConstraint() {
     return 0;

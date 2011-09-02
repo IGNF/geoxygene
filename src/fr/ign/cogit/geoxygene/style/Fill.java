@@ -60,8 +60,7 @@ public class Fill {
     this.graphicFill = graphicFill;
   }
 
-  @XmlElements( {
-      @XmlElement(name = "SvgParameter", type = SvgParameter.class),
+  @XmlElements({ @XmlElement(name = "SvgParameter", type = SvgParameter.class),
       @XmlElement(name = "CssParameter", type = SvgParameter.class) })
   private List<SvgParameter> svgParameters = new ArrayList<SvgParameter>();
 

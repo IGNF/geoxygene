@@ -280,12 +280,11 @@ public interface Geodatabase {
    * Execute une requete et met les resultats dans une liste de tableau
    * d'objets. Les tableaux ont la taille du nombre d'objets demandes dans le
    * SELECT. Exemple d'utilisation du resultat : <tt>
-     * List edges = db.exeSQLQuery("SELECT edgeID FROM tableName WHERE ...").
-     * </tt> Pour recuperer le premier
-   * resultat : <tt>
-     * edgeId = ( (BigDecimal) ((Object[]) (edges.get(0)) )[0] ).intValue();
-     * </tt> Utile uniquement pour debugger : on ne doit pas utiliser
-   * de SQL direct avec GeOxygene !
+   * List edges = db.exeSQLQuery("SELECT edgeID FROM tableName WHERE ...").
+   * </tt> Pour recuperer le premier resultat : <tt>
+   * edgeId = ( (BigDecimal) ((Object[]) (edges.get(0)) )[0] ).intValue();
+   * </tt> Utile uniquement pour debugger : on ne doit pas utiliser de SQL
+   * direct avec GeOxygene !
    * @param query requete SQL à exécuter
    * @return liste contenant le resultat de la requête SQL
    */

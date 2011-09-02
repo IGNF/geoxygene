@@ -53,39 +53,47 @@ public class GM_MultiSurface<GeomType extends IOrientableSurface> extends
     }
     return area;
   }
+
   @Override
   public double perimeter() {
     return this.length();
   }
+
   @Override
   @SuppressWarnings("unchecked")
   public IMultiSurface<GeomType> homogeneise() {
     return (IMultiSurface<GeomType>) this.buffer(0);
   }
+
   /** Constructeur par défaut. */
   public GM_MultiSurface() {
     this.element = new ArrayList<GeomType>(0);
   }
+
   /** Constructeur à partir d'un GM_CompositeSurface. */
   @SuppressWarnings("unchecked")
   public GM_MultiSurface(ICompositeSurface compSurf) {
     this.element = new ArrayList<GeomType>(compSurf.getGenerator().size());
     this.addAll((List<GeomType>) compSurf.getGenerator());
   }
+
   /** Constructeur à partir d'une liste de GM_OrientableSurface. */
   @SuppressWarnings("unchecked")
   public GM_MultiSurface(List<IOrientableSurface> lOS) {
     this.element = new ArrayList<GeomType>();
     this.element.addAll((Collection<? extends GeomType>) lOS);
   }
+
   /** Constructeur par copie. */
   public GM_MultiSurface(GM_MultiSurface<GeomType> multiSurface) {
     this((ICompositeSurface) multiSurface.getList());
   }
+
   @Override
   public boolean isMultiSurface() {
     return true;
   }
+
   @SuppressWarnings("unchecked")
   @Override
   public Object clone() {

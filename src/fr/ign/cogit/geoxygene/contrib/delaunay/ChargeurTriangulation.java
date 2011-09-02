@@ -145,8 +145,8 @@ public class ChargeurTriangulation extends Chargeur {
     }
   }
 
-  public static void importSegments(String nomClasseGeo, AbstractTriangulation carte)
-      throws Exception {
+  public static void importSegments(String nomClasseGeo,
+      AbstractTriangulation carte) throws Exception {
     Class<?> clGeo = Class.forName(nomClasseGeo);
 
     NoeudDelaunay noeud1;
@@ -236,8 +236,9 @@ public class ChargeurTriangulation extends Chargeur {
     }
   }
 
-  public static void importSegments(Collection<? extends IFeature> listeFeatures,
-      AbstractTriangulation carte) throws Exception {
+  public static void importSegments(
+      Collection<? extends IFeature> listeFeatures, AbstractTriangulation carte)
+      throws Exception {
     Class<?>[] signaturea = { carte.getPopNoeuds().getClasse(),
         carte.getPopNoeuds().getClasse() };
     Object[] parama = new Object[2];
@@ -344,8 +345,9 @@ public class ChargeurTriangulation extends Chargeur {
    * @param carte
    * @throws Exception
    */
-  public static void importPolygoneEnPoints(IFeatureCollection<IFeature> listeFeatures,
-      AbstractTriangulation carte) throws Exception {
+  public static void importPolygoneEnPoints(
+      IFeatureCollection<IFeature> listeFeatures, AbstractTriangulation carte)
+      throws Exception {
     NoeudDelaunay noeud;
     IDirectPositionList listePoints;
     int i, j;
@@ -406,15 +408,15 @@ public class ChargeurTriangulation extends Chargeur {
               .getString("ChargeurTriangulation.ImportedCentroid") + p); //$NON-NLS-1$
         }
       } else {
-          if (objGeo.getGeom() instanceof IMultiSurface<?>) {
-              IPoint p = new GM_Point(objGeo.getGeom().centroid());
-              noeud = (NoeudDelaunay) carte.getPopNoeuds().nouvelElement(p);
-              noeud.addCorrespondant(objGeo);
-              if (ChargeurTriangulation.logger.isTraceEnabled()) {
-                ChargeurTriangulation.logger.trace(I18N
-                    .getString("ChargeurTriangulation.ImportedCentroid") + p); //$NON-NLS-1$
-              }
-            }
+        if (objGeo.getGeom() instanceof IMultiSurface<?>) {
+          IPoint p = new GM_Point(objGeo.getGeom().centroid());
+          noeud = (NoeudDelaunay) carte.getPopNoeuds().nouvelElement(p);
+          noeud.addCorrespondant(objGeo);
+          if (ChargeurTriangulation.logger.isTraceEnabled()) {
+            ChargeurTriangulation.logger.trace(I18N
+                .getString("ChargeurTriangulation.ImportedCentroid") + p); //$NON-NLS-1$
+          }
+        }
       }
     }
     if (ChargeurTriangulation.logger.isTraceEnabled()) {

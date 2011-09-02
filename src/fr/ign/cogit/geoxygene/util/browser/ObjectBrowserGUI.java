@@ -376,8 +376,9 @@ public class ObjectBrowserGUI extends JFrame {
    */
   public void addAttributeList(Vector<Object> attrib_values) {
     // addAttributeList(i18nLanguageFile.getString("DefaultCollectionClassesContentLabel"),attrib_values);
-    this.addObjectAttributeList(this.i18nLanguageFile
-        .getString("DefaultCollectionClassesContentLabel"), attrib_values);
+    this.addObjectAttributeList(
+        this.i18nLanguageFile.getString("DefaultCollectionClassesContentLabel"),
+        attrib_values);
   }
 
   /**
@@ -403,9 +404,9 @@ public class ObjectBrowserGUI extends JFrame {
    *          l'objet de type tableau ou collection.
    */
   public void addObjectAttributeList(Vector<Object> attrib_objects) {
-    this.addObjectAttributeList(this.i18nLanguageFile
-        .getString("DefaultCollectionClassesContentLabel"), attrib_objects, 1,
-        "");
+    this.addObjectAttributeList(
+        this.i18nLanguageFile.getString("DefaultCollectionClassesContentLabel"),
+        attrib_objects, 1, "");
   }
 
   /**

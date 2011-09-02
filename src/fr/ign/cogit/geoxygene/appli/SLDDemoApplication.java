@@ -53,8 +53,8 @@ public class SLDDemoApplication extends GeOxygeneApplication {
    * @param args arguments of the application
    */
   public static void main(final String[] args) {
-    SplashScreen splashScreen = new SplashScreen(GeOxygeneApplication
-        .splashImage(), "GeOxygene"); //$NON-NLS-1$
+    SplashScreen splashScreen = new SplashScreen(
+        GeOxygeneApplication.splashImage(), "GeOxygene"); //$NON-NLS-1$
     splashScreen.setVisible(true);
     SLDDemoApplication application = new SLDDemoApplication();
     ProjectFrame projectFrame = application.getFrame().newProjectFrame();
@@ -77,8 +77,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     symbolizer.getFill().setGraphicFill(graphicFill);
     Population<DefaultFeature> pop = new Population<DefaultFeature>(
         "Vegetation"); //$NON-NLS-1$
-    pop
-        .add(new DefaultFeature(new GM_Polygon(new GM_Envelope(0, 100, 0, 100))));
+    pop.add(new DefaultFeature(new GM_Polygon(new GM_Envelope(0, 100, 0, 100))));
     DataSet.getInstance().addPopulation(pop);
     projectFrame.addLayer(layer);
 
@@ -128,8 +127,9 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     symbolizer3.getStroke().setGraphicType(graphicStroke);
 
     Population<DefaultFeature> pop3 = new Population<DefaultFeature>("Route"); //$NON-NLS-1$
-    pop3.add(new DefaultFeature(new GM_LineString(new DirectPositionList(new DirectPosition(110, 0), new DirectPosition(110, 100),
-            new DirectPosition(200, 100)))));
+    pop3.add(new DefaultFeature(new GM_LineString(new DirectPositionList(
+        new DirectPosition(110, 0), new DirectPosition(110, 100),
+        new DirectPosition(200, 100)))));
     DataSet.getInstance().addPopulation(pop3);
     projectFrame.addLayer(layer3);
 
@@ -158,8 +158,9 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     symbolizer4.getStroke().setGraphicType(graphicFill2);
 
     Population<DefaultFeature> pop4 = new Population<DefaultFeature>("Chemin"); //$NON-NLS-1$
-    pop4.add(new DefaultFeature(new GM_LineString(new DirectPositionList(new DirectPosition(0, 110), new DirectPosition(100, 110),
-            new DirectPosition(100, 200)))));
+    pop4.add(new DefaultFeature(new GM_LineString(new DirectPositionList(
+        new DirectPosition(0, 110), new DirectPosition(100, 110),
+        new DirectPosition(100, 200)))));
     DataSet.getInstance().addPopulation(pop4);
     projectFrame.addLayer(layer4);
 

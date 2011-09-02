@@ -59,11 +59,10 @@ public class Arc extends ElementCarteTopo {
   }
 
   public Arc(Noeud ini, Noeud fin) {
-    super();
+    super(new GM_LineString(new DirectPositionList(Arrays.asList(ini
+        .getGeometrie().getPosition(), fin.getGeometrie().getPosition()))));
     this.setNoeudIni(ini);
     this.setNoeudFin(fin);
-    this.setGeometrie(new GM_LineString(new DirectPositionList(Arrays.asList(
-        ini.getGeometrie().getPosition(), fin.getGeometrie().getPosition()))));
   }
 
   // ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -247,7 +246,7 @@ public class Arc extends ElementCarteTopo {
     this.setNoeudIni(null);
     this.setNoeudFin(null);
     popArcs.enleveElement(this);
-    
+
     List<Arc> news = new ArrayList<Arc>(2);
     news.add(arcAvant);
     news.add(arcApres);
@@ -260,7 +259,7 @@ public class Arc extends ElementCarteTopo {
    * ATTENTION : il reste du nettoyage à faire !!!
    * @param n noeud projeté sur l'arc this afin de le découper
    */
-  public  List<Arc> projeteEtDecoupe(Noeud n) {
+  public List<Arc> projeteEtDecoupe(Noeud n) {
     IDirectPositionList listePoints = this.getGeometrie().coord();
     IDirectPositionList ptsAvant, ptsApres;
     Arc arcAvant, arcApres;
@@ -278,12 +277,12 @@ public class Arc extends ElementCarteTopo {
     if (listePoints.size() < 2) {
       return null;
     }
-    ptmin = Operateurs.projection(n.getGeometrie().getPosition(), listePoints
-        .get(0), listePoints.get(1));
+    ptmin = Operateurs.projection(n.getGeometrie().getPosition(),
+        listePoints.get(0), listePoints.get(1));
     dmin = n.getGeometrie().getPosition().distance(ptmin);
     for (i = 1; i < listePoints.size() - 1; i++) {
-      pt = Operateurs.projection(n.getGeometrie().getPosition(), listePoints
-          .get(i), listePoints.get(i + 1));
+      pt = Operateurs.projection(n.getGeometrie().getPosition(),
+          listePoints.get(i), listePoints.get(i + 1));
       d = n.getGeometrie().getPosition().distance(pt);
       if (d < dmin) {
         ptmin = pt;
@@ -300,8 +299,8 @@ public class Arc extends ElementCarteTopo {
 
     // modification de la géométrie du noeud et de ses arcs
     for (Arc arc : n.arcs()) {
-      if (arc.getGeometrie().getControlPoint(0).equals(
-          n.getGeometrie().getPosition())) {
+      if (arc.getGeometrie().getControlPoint(0)
+          .equals(n.getGeometrie().getPosition())) {
         arc.getGeometrie().setControlPoint(0, ptmin);
       } else {
         arc.getGeometrie().setControlPoint(
@@ -347,7 +346,7 @@ public class Arc extends ElementCarteTopo {
     this.setNoeudIni(null);
     this.setNoeudFin(null);
     popArcs.enleveElement(this);
-    
+
     List<Arc> news = new ArrayList<Arc>(2);
     news.add(arcAvant);
     news.add(arcApres);
@@ -971,8 +970,8 @@ public class Arc extends ElementCarteTopo {
    * profondeur
    */
   public double premiereComposanteHausdorff(Arc arc) {
-    return (Distances.premiereComposanteHausdorff(this.getGeometrie(), arc
-        .getGeometrie()));
+    return (Distances.premiereComposanteHausdorff(this.getGeometrie(),
+        arc.getGeometrie()));
   }
 
   /**

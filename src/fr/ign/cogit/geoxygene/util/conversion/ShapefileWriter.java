@@ -46,17 +46,16 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.GeometryFactory;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
-import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
-import fr.ign.cogit.geoxygene.I18N;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 
 /**
  * Classe permettant d'écrire des shapefiles à partir d'une collection de
  * Features.
+ * 
  * @author Julien Perret
  * @author Bertrand Dumenieu
  */
@@ -66,7 +65,7 @@ public class ShapefileWriter {
 
   /**
    * Sauve une collection de features dans un fichier.
-   *
+   * 
    * @param <Feature> type des features contenu dans la collection
    * @param featureCollection collection de features à sauver dans le fichier
    *          shape
@@ -75,11 +74,12 @@ public class ShapefileWriter {
    */
   public static <Feature extends IFeature> void write(
       IFeatureCollection<Feature> featureCollection, String shapefileName) {
-      ShapefileWriter.write(featureCollection, shapefileName, null);
+    ShapefileWriter.write(featureCollection, shapefileName, null);
   }
+
   /**
    * Sauve une collection de features dans un fichier.
-   *
+   * 
    * @param <Feature> type des features contenu dans la collection
    * @param featureCollection collection de features à sauver dans le fichier
    *          shape
@@ -105,12 +105,14 @@ public class ShapefileWriter {
         if (ShapefileWriter.logger.isDebugEnabled()) {
           ShapefileWriter.logger.debug("Using the collection's featureType"); //$NON-NLS-1$
         }
-        specs += AdapterFactory.toJTSGeometryType(
-            featureType.getGeometryType())
-            .getSimpleName();
-        for (GF_AttributeType attributeType : featureType.getFeatureAttributes()) {
-          Class<?> attributeClass = ShapefileWriter.valueType2Class(attributeType.getValueType());
-          //ShapefileWriter.logger.info("Class = " + attributeClass.getName());
+        specs += AdapterFactory
+            .toJTSGeometryType(featureType.getGeometryType()).getSimpleName();
+        for (GF_AttributeType attributeType : featureType
+            .getFeatureAttributes()) {
+          Class<?> attributeClass = ShapefileWriter
+              .valueType2Class(attributeType.getValueType());
+          // ShapefileWriter.logger.info("Class = " +
+          // attributeClass.getName());
           specs += "," + attributeType.getMemberName() //$NON-NLS-1$
               + ":" //$NON-NLS-1$
               + attributeClass.getName();
@@ -122,13 +124,15 @@ public class ShapefileWriter {
         specs += AdapterFactory.toJTSGeometryType(
             featureCollection.get(0).getGeom().getClass()).getSimpleName();
         if (featureCollection.get(0).getFeatureType() != null) {
-          featureType = (FeatureType) featureCollection.get(0).getFeatureType();
-          for (GF_AttributeType attributeType : featureType.getFeatureAttributes()) {
-            Class<?> attributeClass = ShapefileWriter.valueType2Class(attributeType.getValueType());
-            //ShapefileWriter.logger.info("Class = " + attributeClass.getName());
+          featureType = featureCollection.get(0).getFeatureType();
+          for (GF_AttributeType attributeType : featureType
+              .getFeatureAttributes()) {
+            Class<?> attributeClass = ShapefileWriter
+                .valueType2Class(attributeType.getValueType());
+            // ShapefileWriter.logger.info("Class = " +
+            // attributeClass.getName());
             specs += "," //$NON-NLS-1$
-                + attributeType.getMemberName()
-                + ":" //$NON-NLS-1$
+                + attributeType.getMemberName() + ":" //$NON-NLS-1$
                 + attributeClass.getName();
           }
         }
@@ -136,8 +140,8 @@ public class ShapefileWriter {
       if (ShapefileWriter.logger.isDebugEnabled()) {
         ShapefileWriter.logger.debug("Specs = " + specs); //$NON-NLS-1$
       }
-      String featureTypeName = shapefileName.substring(shapefileName
-          .lastIndexOf("/") + 1, //$NON-NLS-1$
+      String featureTypeName = shapefileName.substring(
+          shapefileName.lastIndexOf("/") + 1, //$NON-NLS-1$
           shapefileName.lastIndexOf(".")); //$NON-NLS-1$
       featureTypeName = featureTypeName.replace('.', '_');
       SimpleFeatureType type = DataUtilities.createType(featureTypeName, specs);
@@ -149,8 +153,8 @@ public class ShapefileWriter {
       int i = 1;
       for (Feature feature : featureCollection) {
         List<Object> liste = new ArrayList<Object>(0);
-        liste.add(AdapterFactory.toGeometry(new GeometryFactory(), feature
-            .getGeom()));
+        liste.add(AdapterFactory.toGeometry(new GeometryFactory(),
+            feature.getGeom()));
         if (featureType != null) {
           for (GF_AttributeType attributeType : featureType
               .getFeatureAttributes()) {
@@ -162,13 +166,13 @@ public class ShapefileWriter {
             }
           }
         }
-        SimpleFeature simpleFeature = SimpleFeatureBuilder.build(type, liste
-            .toArray(), String.valueOf(i++));
+        SimpleFeature simpleFeature = SimpleFeatureBuilder.build(type,
+            liste.toArray(), String.valueOf(i++));
         collection.add(simpleFeature);
       }
       featureStore.addFeatures(collection);
-      if(crs != null)
-    	  store.forceSchemaCRS(crs);
+      if (crs != null)
+        store.forceSchemaCRS(crs);
       t.commit();
       t.close();
       store.dispose();
@@ -197,6 +201,7 @@ public class ShapefileWriter {
   /**
    * Renvoie la classe correspondant au nom d'un type primitif, null si le
    * paramètre ne correspond pas à un type primitif ou s'il n'est pas géré.
+   * 
    * @param valueType nom d'un type primitif
    * @return la classe correspondant au nom d'un type primitif ou null si le
    *         paramètre ne correspond pas à un type primitif ou s'il n'est pas
@@ -232,23 +237,27 @@ public class ShapefileWriter {
    * Ouvre une fenêtre permettant à l'utilisateur de choisir le fichier dans
    * lequel il souhaite sauver ses features. TODO faire en sorte que
    * l'utilisateur puisse récupérer des fichiers sans extensions fichier shape.
+   * 
    * @param <Feature> type des features contenu dans la collection
    * @param featureCollection collection de features à sauver dans un
    */
-  public static <Feature extends FT_Feature> void chooseAndWriteShapefile(
+  public static <Feature extends IFeature> void chooseAndWriteShapefile(
       IFeatureCollection<Feature> featureCollection) {
-      ShapefileWriter.chooseAndWriteShapefile(featureCollection, null);
+    ShapefileWriter.chooseAndWriteShapefile(featureCollection, null);
   }
+
   /**
    * Ouvre une fenêtre permettant à l'utilisateur de choisir le fichier dans
    * lequel il souhaite sauver ses features. TODO faire en sorte que
    * l'utilisateur puisse récupérer des fichiers sans extensions fichier shape.
+   * 
    * @param <Feature> type des features contenu dans la collection
    * @param featureCollection collection de features à sauver dans un
    * @param crs système de coordonnées
    */
-  public static <Feature extends FT_Feature> void chooseAndWriteShapefile(
-      IFeatureCollection<Feature> featureCollection, CoordinateReferenceSystem crs) {
+  public static <Feature extends IFeature> void chooseAndWriteShapefile(
+      IFeatureCollection<Feature> featureCollection,
+      CoordinateReferenceSystem crs) {
     JFileChooser choixFichierShape = new JFileChooser();
     choixFichierShape.setFileFilter(new FileFilter() {
       @Override

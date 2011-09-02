@@ -60,4 +60,18 @@ public abstract class FT_Feature extends AbstractFeature {
     super();
     this.geom = geom;
   }
+  
+  @Override
+  public AbstractFeature cloneGeom() throws CloneNotSupportedException {
+    
+  
+      FT_Feature result = (FT_Feature) this.clone();
+      result.setGeom((IGeometry) this.getGeom().clone());
+      return result;
+      
+
+  
+  }
+
+
 }

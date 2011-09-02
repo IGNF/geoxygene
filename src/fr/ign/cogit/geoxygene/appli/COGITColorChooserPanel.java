@@ -79,15 +79,15 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel implements
 
     this.tCodesCouleur.setValueAt("COGIT", 0, 0); //$NON-NLS-1$
 
-    this.tCodesCouleur.setValueAt(I18N
-        .getString("COGITColorChooserPanel.UsualColor"), 1, 0); //$NON-NLS-1$
-    this.tCodesCouleur.setValueAt(I18N
-        .getString("COGITColorChooserPanel.Lightness"), 2, 0); //$NON-NLS-1$
-    this.tCodesCouleur.setValueAt(I18N
-        .getString("COGITColorChooserPanel.ColorKey"), 3, 0); //$NON-NLS-1$
+    this.tCodesCouleur.setValueAt(
+        I18N.getString("COGITColorChooserPanel.UsualColor"), 1, 0); //$NON-NLS-1$
+    this.tCodesCouleur.setValueAt(
+        I18N.getString("COGITColorChooserPanel.Lightness"), 2, 0); //$NON-NLS-1$
+    this.tCodesCouleur.setValueAt(
+        I18N.getString("COGITColorChooserPanel.ColorKey"), 3, 0); //$NON-NLS-1$
 
-    this.tCodesCouleur.setValueAt(I18N
-        .getString("COGITColorChooserPanel.Others"), 0, 2); //$NON-NLS-1$
+    this.tCodesCouleur.setValueAt(
+        I18N.getString("COGITColorChooserPanel.Others"), 0, 2); //$NON-NLS-1$
     this.tCodesCouleur.setValueAt(
         I18N.getString("COGITColorChooserPanel.Hexa"), 1, 2); //$NON-NLS-1$
     this.tCodesCouleur.setValueAt("sRGB", 2, 2); //$NON-NLS-1$
@@ -95,8 +95,8 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel implements
     this.tCodesCouleur.setValueAt("RGB", 0, 4); //$NON-NLS-1$
     this.tCodesCouleur.setValueAt(
         I18N.getString("COGITColorChooserPanel.Red"), 1, 4); //$NON-NLS-1$
-    this.tCodesCouleur.setValueAt(I18N
-        .getString("COGITColorChooserPanel.Green"), 2, 4); //$NON-NLS-1$
+    this.tCodesCouleur.setValueAt(
+        I18N.getString("COGITColorChooserPanel.Green"), 2, 4); //$NON-NLS-1$
     this.tCodesCouleur.setValueAt(
         I18N.getString("COGITColorChooserPanel.Blue"), 3, 4); //$NON-NLS-1$
 
@@ -475,8 +475,8 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel implements
    * @param args
    */
   public static void main(String[] args) {
-    Color c = COGITColorChooserPanel.showDialog(new JButton(), I18N
-        .getString("StyleEditionFrame.PickAColor"), Color.BLUE); //$NON-NLS-1$
+    Color c = COGITColorChooserPanel.showDialog(new JButton(),
+        I18N.getString("StyleEditionFrame.PickAColor"), Color.BLUE); //$NON-NLS-1$
     System.out.println("Selected Color : " + c); //$NON-NLS-1$
   }
 
@@ -535,8 +535,9 @@ public class COGITColorChooserPanel extends AbstractColorChooserPanel implements
         .getComponent(0)).getComponent(0);
 
     for (ColorimetricColor c : colors) {
-      COGITColorChooserPanel.displayColor((Graphics2D) ((ImageIcon) label
-          .getIcon()).getImage().getGraphics(), c);
+      COGITColorChooserPanel.displayColor(
+          (Graphics2D) ((ImageIcon) label.getIcon()).getImage().getGraphics(),
+          c);
       if (c.getLightness() > 5) {
         cogitChooser.circleColor(c, Color.WHITE, 0.8f);
       } else {

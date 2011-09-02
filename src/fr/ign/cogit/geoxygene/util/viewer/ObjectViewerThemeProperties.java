@@ -97,16 +97,11 @@ class ObjectViewerThemeProperties {
     this.setFillInThemeColor(randomShaderColor);
 
     // default color
-    this
-        .setOutlineThemeColor(ObjectViewerThemeProperties.DEFAULT_OUTLINE_THEME_COLOR);
-    this
-        .setFillInHighlightColor(ObjectViewerThemeProperties.DEFAULT_HIGHLIGHT_COLOR);
-    this
-        .setOutlineHighlightColor(ObjectViewerThemeProperties.DEFAULT_HIGHLIGHT_COLOR);
-    this
-        .setFillInSelectionColor(ObjectViewerThemeProperties.DEFAULT_SELECTION_COLOR);
-    this
-        .setOutlineSelectionColor(ObjectViewerThemeProperties.DEFAULT_SELECTION_COLOR);
+    this.setOutlineThemeColor(ObjectViewerThemeProperties.DEFAULT_OUTLINE_THEME_COLOR);
+    this.setFillInHighlightColor(ObjectViewerThemeProperties.DEFAULT_HIGHLIGHT_COLOR);
+    this.setOutlineHighlightColor(ObjectViewerThemeProperties.DEFAULT_HIGHLIGHT_COLOR);
+    this.setFillInSelectionColor(ObjectViewerThemeProperties.DEFAULT_SELECTION_COLOR);
+    this.setOutlineSelectionColor(ObjectViewerThemeProperties.DEFAULT_SELECTION_COLOR);
 
   }
 

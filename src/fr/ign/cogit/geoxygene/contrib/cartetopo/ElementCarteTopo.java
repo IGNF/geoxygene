@@ -20,6 +20,7 @@
 package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.AbstractFeature;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 
@@ -27,6 +28,14 @@ import fr.ign.cogit.geoxygene.feature.FT_Feature;
  * Topological map element.
  */
 public class ElementCarteTopo extends AbstractFeature {
+
+  public ElementCarteTopo() {
+    super();
+  }
+
+  public ElementCarteTopo(IGeometry geometry) {
+    super(geometry);
+  }
 
   /**
    * @return la carte topologique à laquelle appartient cet élément
@@ -38,5 +47,11 @@ public class ElementCarteTopo extends AbstractFeature {
       return null;
     }
     return (CarteTopo) this.getPopulation().getDataSet();
+  }
+
+  @Override
+  public ElementCarteTopo cloneGeom() throws CloneNotSupportedException {
+
+    return new ElementCarteTopo((IGeometry) this.getGeom().clone());
   }
 }

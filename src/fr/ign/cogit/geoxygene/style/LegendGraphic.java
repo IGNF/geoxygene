@@ -8,9 +8,11 @@ import javax.xml.bind.annotation.XmlElement;
 public class LegendGraphic {
   @XmlElement(name = "Graphic")
   private Graphic graphic = null;
+
   public void setGraphic(Graphic graphic) {
     this.graphic = graphic;
   }
+
   public Graphic getGraphic() {
     return this.graphic;
   }

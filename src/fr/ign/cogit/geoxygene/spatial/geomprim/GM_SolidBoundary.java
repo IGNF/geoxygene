@@ -51,14 +51,17 @@ public class GM_SolidBoundary extends GM_PrimitiveBoundary implements
     ISolidBoundary {
   /** Shell extérieur. */
   protected IShell exterior;
+
   @Override
   public IShell getExterior() {
     return this.exterior;
   }
+
   /** Affecte un shell extérieur. */
   protected void setExterior(IShell value) {
     this.exterior = value;
   }
+
   @Override
   public int sizeExterior() {
     if (this.exterior == null) {
@@ -66,40 +69,50 @@ public class GM_SolidBoundary extends GM_PrimitiveBoundary implements
     }
     return 1;
   }
+
   /** Liste des shells intérieurs. */
   protected List<IShell> interior = new ArrayList<IShell>(0);
+
   @Override
   public List<IShell> getInterior() {
     return this.interior;
   }
+
   @Override
   public IShell getInterior(int i) {
     return this.interior.get(i);
   }
+
   /** Affecte une valeur au shell intérieur de rang i. */
   protected void setInterior(int i, IShell value) {
     this.interior.set(i, value);
   }
+
   /** Ajoute un shell intérieur en fin de liste. */
   protected void addInterior(IShell value) {
     this.interior.add(value);
   }
+
   /** Ajoute un shell intérieur au rang i. */
   protected void addInterior(int i, IShell value) {
     this.interior.add(i, value);
   }
+
   /** Efface le shell intérieur de valeur "value". */
   protected void removeInterior(IShell value) {
     this.interior.remove(value);
   }
+
   /** Efface le shell intérieur de rang i. */
   protected void removeInterior(int i) {
     this.interior.remove(i);
   }
+
   @Override
   public int sizeInterior() {
     return this.interior.size();
   }
+
   /**
    * Permet de créer un GM_SolidBoundary ne possédant pas de trous
    */

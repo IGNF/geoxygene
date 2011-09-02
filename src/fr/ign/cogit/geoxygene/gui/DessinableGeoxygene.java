@@ -319,8 +319,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
       return;
     }
     double debut = System.currentTimeMillis();
-    this.cachedFeatures.put(layer, layer.getFeatureCollection().select(
-        this.enveloppeAffichage));
+    this.cachedFeatures.put(layer,
+        layer.getFeatureCollection().select(this.enveloppeAffichage));
     double fin = System.currentTimeMillis();
     if (DessinableGeoxygene.logger.isTraceEnabled()) {
       DessinableGeoxygene.logger
@@ -340,8 +340,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
   }
 
   public void dessiner(Graphics2D g, Layer layer,
-      Collection<? extends IFeature> features)
-      throws InterruptedException {
+      Collection<? extends IFeature> features) throws InterruptedException {
     if (DessinableGeoxygene.logger.isTraceEnabled()) {
       DessinableGeoxygene.logger.trace("dessiner()");
     }
@@ -366,8 +365,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @throws InterruptedException
    */
   public void dessiner(Graphics2D g, Style style,
-      Collection<? extends IFeature> features)
-      throws InterruptedException {
+      Collection<? extends IFeature> features) throws InterruptedException {
     if (style.isUserStyle()) {
       UserStyle userStyle = (UserStyle) style;
       for (FeatureTypeStyle featureTypeStyle : userStyle.getFeatureTypeStyles()) {
@@ -415,8 +413,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    */
   @SuppressWarnings("unchecked")
   public void dessiner(Graphics2D g, Symbolizer symbolizer,
-      Collection<? extends IFeature> features)
-      throws InterruptedException {
+      Collection<? extends IFeature> features) throws InterruptedException {
     if (symbolizer.isRasterSymbolizer()) {
       RasterSymbolizer rasterSymbolizer = (RasterSymbolizer) symbolizer;
       this.dessiner(rasterSymbolizer);
@@ -476,8 +473,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
       PointSymbolizer pointSymbolizer = (PointSymbolizer) symbolizer;
       for (IFeature feature : features) {
         if (feature.getGeom() instanceof IPoint) {
-          this.dessiner(g, pointSymbolizer, ((IPoint) feature.getGeom())
-              .getPosition());
+          this.dessiner(g, pointSymbolizer,
+              ((IPoint) feature.getGeom()).getPosition());
         } else {
           this.dessiner(g, pointSymbolizer, (feature.getGeom()).centroid());
         }
@@ -498,8 +495,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
           if (symbolizer.getStroke() != null) {
             if (symbolizer.getStroke().getGraphicType() == null) {
               // Solid color
-              this.dessiner(g, symbolizer.getStroke(), (IPolygon) feature
-                  .getGeom());
+              this.dessiner(g, symbolizer.getStroke(),
+                  (IPolygon) feature.getGeom());
             }
           }
         } else if (feature.getGeom().isMultiSurface()) {
@@ -526,8 +523,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
           // Solid color
           for (IFeature feature : features) {
             if (feature.getGeom().isLineString()) {
-              this.dessiner(g, symbolizer.getStroke(), (ILineString) feature
-                  .getGeom());
+              this.dessiner(g, symbolizer.getStroke(),
+                  (ILineString) feature.getGeom());
             } else if (feature.getGeom().isMultiCurve()) {
               for (ILineString element : ((IMultiCurve<ILineString>) feature
                   .getGeom()).getList()) {
@@ -718,8 +715,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
    * @param radius le rayon du cercle
    */
   public void dessinerCercle(Graphics2D g, IDirectPosition position, int radius) {
-    this
-        .dessinerCercle(g, (int) position.getX(), (int) position.getY(), radius);
+    this.dessinerCercle(g, (int) position.getX(), (int) position.getY(), radius);
   }
 
   /**
@@ -767,8 +763,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
     for (Mark mark : pointSymbolizer.getGraphic().getMarks()) {
       Shape shape = mark.toShape();
       float size = pointSymbolizer.getGraphic().getSize();
-      AffineTransform at = AffineTransform.getTranslateInstance(this
-          .coordToPixX(position.getX()), this.coordToPixY(position.getY()));
+      AffineTransform at = AffineTransform.getTranslateInstance(
+          this.coordToPixX(position.getX()), this.coordToPixY(position.getY()));
       at.rotate(pointSymbolizer.getGraphic().getRotation());
       at.scale(size, size);
       shape = at.createTransformedShape(shape);
@@ -782,9 +778,9 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
     for (ExternalGraphic graphic : pointSymbolizer.getGraphic()
         .getExternalGraphics()) {
       Image image = graphic.getOnlineResource();
-      g.drawImage(image, this.coordToPixX(position.getX())
-          - image.getWidth(null) / 2, this.coordToPixY(position.getY())
-          - image.getHeight(null) / 2, null);
+      g.drawImage(image,
+          this.coordToPixX(position.getX()) - image.getWidth(null) / 2,
+          this.coordToPixY(position.getY()) - image.getHeight(null) / 2, null);
     }
     // fireObjectChange();
   }
@@ -1386,8 +1382,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
   public void dessinerTexte(Graphics2D g, Color couleur, Font font,
       IGeometry geom, String texte) {
     if (geom instanceof IPoint) {
-      this.dessinerText(g, couleur, null, 0, font, texte, ((IPoint) geom)
-          .getPosition());
+      this.dessinerText(g, couleur, null, 0, font, texte,
+          ((IPoint) geom).getPosition());
     } else if (geom instanceof ILineString) {
       this.dessinerText(g, couleur, null, 0, font, texte, (ILineString) geom);
     } else {
@@ -1444,8 +1440,8 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
       IDirectPosition coord2, int taille) {
     g.setStroke(new BasicStroke(taille));
     g.drawLine(this.coordToPixX(coord1.getX()),
-        this.coordToPixY(coord1.getY()), this.coordToPixX(coord2.getX()), this
-            .coordToPixY(coord2.getY()));
+        this.coordToPixY(coord1.getY()), this.coordToPixX(coord2.getX()),
+        this.coordToPixY(coord2.getY()));
   }
 
   /**
@@ -1478,8 +1474,9 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
   public void dessinerRect(Graphics2D g, Color couleur, double x, double y,
       int largeur) {
     g.setColor(couleur);
-    g.fillRect(this.coordToPixX(x - largeur / 2), this.coordToPixY(y + largeur
-        / 2), (int) Math.round(largeur / this.taillePixel + 0.5), (int) Math
-        .round(largeur / this.taillePixel + 0.5));
+    g.fillRect(this.coordToPixX(x - largeur / 2),
+        this.coordToPixY(y + largeur / 2),
+        (int) Math.round(largeur / this.taillePixel + 0.5),
+        (int) Math.round(largeur / this.taillePixel + 0.5));
   }
 }

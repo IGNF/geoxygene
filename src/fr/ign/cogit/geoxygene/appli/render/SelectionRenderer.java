@@ -235,8 +235,9 @@ public class SelectionRenderer implements Renderer {
         graphics.setColor(SelectionRenderer.this.getFillColor());
         RenderUtil.fill(feature.getGeom(), viewport, graphics);
       }
-      java.awt.Stroke bs = new BasicStroke(SelectionRenderer.this
-          .getStrokeWidth(), BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
+      java.awt.Stroke bs = new BasicStroke(
+          SelectionRenderer.this.getStrokeWidth(), BasicStroke.CAP_SQUARE,
+          BasicStroke.JOIN_MITER);
       graphics.setColor(SelectionRenderer.this.getStrokeColor());
       graphics.setStroke(bs);
       RenderUtil.draw(feature.getGeom(), viewport, graphics);
@@ -246,21 +247,21 @@ public class SelectionRenderer implements Renderer {
         for (IDirectPosition position : viewport
             .toViewDirectPositionList(feature.getGeom().coord())) {
           GeneralPath shape = new GeneralPath();
-          shape.moveTo(position.getX()
-              - SelectionRenderer.this.getPointRadius(), position.getY()
-              - SelectionRenderer.this.getPointRadius());
-          shape.lineTo(position.getX()
-              + SelectionRenderer.this.getPointRadius(), position.getY()
-              - SelectionRenderer.this.getPointRadius());
-          shape.lineTo(position.getX()
-              + SelectionRenderer.this.getPointRadius(), position.getY()
-              + SelectionRenderer.this.getPointRadius());
-          shape.lineTo(position.getX()
-              - SelectionRenderer.this.getPointRadius(), position.getY()
-              + SelectionRenderer.this.getPointRadius());
-          shape.lineTo(position.getX()
-              - SelectionRenderer.this.getPointRadius(), position.getY()
-              - SelectionRenderer.this.getPointRadius());
+          shape.moveTo(
+              position.getX() - SelectionRenderer.this.getPointRadius(),
+              position.getY() - SelectionRenderer.this.getPointRadius());
+          shape.lineTo(
+              position.getX() + SelectionRenderer.this.getPointRadius(),
+              position.getY() - SelectionRenderer.this.getPointRadius());
+          shape.lineTo(
+              position.getX() + SelectionRenderer.this.getPointRadius(),
+              position.getY() + SelectionRenderer.this.getPointRadius());
+          shape.lineTo(
+              position.getX() - SelectionRenderer.this.getPointRadius(),
+              position.getY() + SelectionRenderer.this.getPointRadius());
+          shape.lineTo(
+              position.getX() - SelectionRenderer.this.getPointRadius(),
+              position.getY() - SelectionRenderer.this.getPointRadius());
           graphics.setColor(SelectionRenderer.this.getStrokeColor());
           graphics.fill(shape);
           graphics.setColor(Color.black);

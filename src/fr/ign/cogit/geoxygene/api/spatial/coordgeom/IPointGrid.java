@@ -9,6 +9,7 @@ public interface IPointGrid {
    * @return row with the given index
    */
   public abstract IDirectPositionList getRow(int i);
+
   /**
    * Number of rows.
    * <p>

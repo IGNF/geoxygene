@@ -59,13 +59,14 @@ public class CubicSplinePlugin implements GeOxygeneApplicationPlugin,
    * @param application the application
    */
   @Override
-public final void initialize(final GeOxygeneApplication application) {
+  public final void initialize(final GeOxygeneApplication application) {
     this.application = application;
     JMenu menu = null;
     for (Component c : application.getFrame().getJMenuBar().getComponents()) {
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Curve")) { //$NON-NLS-1$
+        if (aMenu.getText() != null
+            && aMenu.getText().equalsIgnoreCase("Curve")) { //$NON-NLS-1$
           menu = aMenu;
         }
       }
@@ -77,8 +78,8 @@ public final void initialize(final GeOxygeneApplication application) {
     );
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    application.getFrame().getJMenuBar().add(menu,
-        application.getFrame().getJMenuBar().getMenuCount() - 2);
+    application.getFrame().getJMenuBar()
+        .add(menu, application.getFrame().getJMenuBar().getMenuCount() - 2);
   }
 
   @SuppressWarnings("deprecation")
@@ -94,12 +95,13 @@ public final void initialize(final GeOxygeneApplication application) {
       return;
     }
     Layer layer = selectedLayers.iterator().next();
-    String tangentMethod = (String) JOptionPane.showInputDialog(
-        CubicSplinePlugin.this.application.getFrame(),
-        "Choose a Tangent Method", //$NON-NLS-1$
-        "Tangent Method", JOptionPane.QUESTION_MESSAGE, null, //$NON-NLS-1$
-        new String[]{"finiteDifference","cardinalSpline","kochanekBartels"}, //$NON-NLS-1$ //$NON-NLS-2$
-        "kochanekBartels"); //$NON-NLS-1$
+    String tangentMethod = (String) JOptionPane
+        .showInputDialog(CubicSplinePlugin.this.application.getFrame(),
+            "Choose a Tangent Method", //$NON-NLS-1$
+            "Tangent Method", JOptionPane.QUESTION_MESSAGE, null, //$NON-NLS-1$
+            new String[] {
+                "finiteDifference", "cardinalSpline", "kochanekBartels" }, //$NON-NLS-1$ //$NON-NLS-2$
+            "kochanekBartels"); //$NON-NLS-1$
     double tension = 0.0;
     double bias = 0.0;
     double continuity = 0.0;
@@ -109,7 +111,8 @@ public final void initialize(final GeOxygeneApplication application) {
     if (tangentMethod.equalsIgnoreCase("kochanekBartels")) {
       tension = Double.parseDouble(JOptionPane.showInputDialog("tension")); //$NON-NLS-1$
       bias = Double.parseDouble(JOptionPane.showInputDialog("bias")); //$NON-NLS-1$
-      continuity = Double.parseDouble(JOptionPane.showInputDialog("continuity")); //$NON-NLS-1$
+      continuity = Double
+          .parseDouble(JOptionPane.showInputDialog("continuity")); //$NON-NLS-1$
     }
     Population<DefaultFeature> popHermite = new Population<DefaultFeature>(
         "Hermite " + tangentMethod + " " + tension + " " + bias + " " + continuity); //$NON-NLS-1$

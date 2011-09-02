@@ -83,7 +83,7 @@ public class GeodatabaseOjb {
   // ///////////////////////////////////////////////////////////////////////////////////////
   // /// attributs
   // /////////////////////////////////////////////////////////////////////////
- 
+
   /**
    * connection JDBC.
    */
@@ -220,7 +220,7 @@ public class GeodatabaseOjb {
   // /// gestion des transactions
   // //////////////////////////////////////////////////////////
   // ///////////////////////////////////////////////////////////////////////////////////////
-   /**
+  /**
    * Ouvre une transaction.
    */
   public void begin() {
@@ -506,8 +506,8 @@ public class GeodatabaseOjb {
               feature.getGeom().setCRS(srid);
             }
             result.getClass()
-                .getMethod("add", new Class[] { FT_Feature.class }).invoke(
-                    result, new Object[] { feature });
+                .getMethod("add", new Class[] { FT_Feature.class })
+                .invoke(result, new Object[] { feature });
           }
         }
         while (iter.hasNext()) {
@@ -577,8 +577,8 @@ public class GeodatabaseOjb {
               feature.getGeom().setCRS(srid);
             }
             result.getClass()
-                .getMethod("add", new Class[] { FT_Feature.class }).invoke(
-                    result, new Object[] { feature });
+                .getMethod("add", new Class[] { FT_Feature.class })
+                .invoke(result, new Object[] { feature });
           }
         }
         while (iter.hasNext()) {
@@ -770,8 +770,8 @@ public class GeodatabaseOjb {
 
   public boolean tableExists(String tableName) {
     try {
-      return this.getConnection().getMetaData().getTables(null, null,
-          tableName, null).next();
+      return this.getConnection().getMetaData()
+          .getTables(null, null, tableName, null).next();
     } catch (SQLException e) {
       e.printStackTrace();
     }

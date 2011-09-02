@@ -57,7 +57,7 @@ public class Triangulation extends AbstractTriangulation {
    * Constructor.
    */
   public Triangulation() {
-      super("Triangulation"); //$NON-NLS-1$
+    super("Triangulation"); //$NON-NLS-1$
   }
 
   /**
@@ -92,10 +92,8 @@ public class Triangulation extends AbstractTriangulation {
    * Convert the edges into an array.
    */
   private void convertJinSegments() {
-    ArrayList<IFeature> noeuds = new ArrayList<IFeature>(this
-        .getListeNoeuds());
-    ArrayList<IFeature> aretes = new ArrayList<IFeature>(this
-        .getListeArcs());
+    ArrayList<IFeature> noeuds = new ArrayList<IFeature>(this.getListeNoeuds());
+    ArrayList<IFeature> aretes = new ArrayList<IFeature>(this.getListeArcs());
     this.jin.numberofsegments = aretes.size();
     this.jin.segmentlist = new int[2 * this.jin.numberofsegments];
     for (int i = 0; i < this.jin.numberofsegments; i++) {
@@ -111,26 +109,26 @@ public class Triangulation extends AbstractTriangulation {
    */
   private void convertJout() {
     if (CarteTopo.logger.isDebugEnabled()) {
-        CarteTopo.logger.debug(I18N.getString("Triangulation.ExportStart")); //$NON-NLS-1$
+      CarteTopo.logger.debug(I18N.getString("Triangulation.ExportStart")); //$NON-NLS-1$
     }
     try {
       if (CarteTopo.logger.isDebugEnabled()) {
-          CarteTopo.logger.debug(I18N
-            .getString("Triangulation.NodeExportStart")); //$NON-NLS-1$
+        CarteTopo.logger.debug(I18N.getString("Triangulation.NodeExportStart")); //$NON-NLS-1$
       }
       for (int i = this.jin.numberofpoints; i < this.jout.numberofpoints; i++) {
-        this.getPopNoeuds().nouvelElement().setCoord(
-            new DirectPosition(this.jout.pointlist[2 * i],
-                this.jout.pointlist[2 * i + 1]));
+        this.getPopNoeuds()
+            .nouvelElement()
+            .setCoord(
+                new DirectPosition(this.jout.pointlist[2 * i],
+                    this.jout.pointlist[2 * i + 1]));
       }
-      ArrayList<IFeature> noeuds = new ArrayList<IFeature>(this
-          .getListeNoeuds());
+      ArrayList<IFeature> noeuds = new ArrayList<IFeature>(
+          this.getListeNoeuds());
       Class<?>[] signaturea = { this.getPopNoeuds().getClasse(),
           this.getPopNoeuds().getClasse() };
       Object[] parama = new Object[2];
       if (CarteTopo.logger.isDebugEnabled()) {
-          CarteTopo.logger.debug(I18N
-            .getString("Triangulation.EdgeExportStart")); //$NON-NLS-1$
+        CarteTopo.logger.debug(I18N.getString("Triangulation.EdgeExportStart")); //$NON-NLS-1$
       }
       for (int i = 0; i < this.jout.numberofedges; i++) {
         parama[0] = noeuds.get(this.jout.edgelist[2 * i]);
@@ -152,16 +150,18 @@ public class Triangulation extends AbstractTriangulation {
       }
       if (this.getOptions().indexOf('v') != -1) {
         if (CarteTopo.logger.isDebugEnabled()) {
-            CarteTopo.logger.debug(I18N
+          CarteTopo.logger.debug(I18N
               .getString("Triangulation.VoronoiDiagramExportStart")); //$NON-NLS-1$
         }
         IEnvelope envelope = this.getPopNoeuds().envelope();
         envelope.expandBy(100);
-        this.getPopVoronoiVertices().initSpatialIndex(Tiling.class, true, envelope, 10);
+        this.getPopVoronoiVertices().initSpatialIndex(Tiling.class, true,
+            envelope, 10);
         // l'export du diagramme de voronoi
         for (int i = 0; i < this.jvorout.numberofpoints; i++) {
-          this.getPopVoronoiVertices().add(new Noeud(
-              new GM_Point(new DirectPosition(this.jvorout.pointlist[2 * i],
+          this.getPopVoronoiVertices().add(
+              new Noeud(new GM_Point(new DirectPosition(
+                  this.jvorout.pointlist[2 * i],
                   this.jvorout.pointlist[2 * i + 1]))));
         }
         for (int i = 0; i < this.jvorout.numberofedges; i++) {
@@ -189,15 +189,16 @@ public class Triangulation extends AbstractTriangulation {
             indexFin = this.getPopVoronoiVertices().size();
             this.getPopVoronoiVertices().add(c2);
           }
-          this.getPopVoronoiEdges().add(new Arc(this.getPopVoronoiVertices().getElements().get(
-              indexIni), this.getPopVoronoiVertices().getElements().get(indexFin)));
+          this.getPopVoronoiEdges().add(
+              new Arc(this.getPopVoronoiVertices().getElements().get(indexIni),
+                  this.getPopVoronoiVertices().getElements().get(indexFin)));
         }
       }
     } catch (Exception e) {
       e.printStackTrace();
     }
     if (CarteTopo.logger.isDebugEnabled()) {
-        CarteTopo.logger.debug(I18N.getString("Triangulation.ExportEnd")); //$NON-NLS-1$
+      CarteTopo.logger.debug(I18N.getString("Triangulation.ExportEnd")); //$NON-NLS-1$
     }
   }
 
@@ -247,7 +248,7 @@ public class Triangulation extends AbstractTriangulation {
   public static GM_Polygon getCharacteristicShape(
       Collection<? extends IFeature> featureCollection, double alpha) {
     if (CarteTopo.logger.isDebugEnabled()) {
-        CarteTopo.logger.debug("Creating the triangulation");
+      CarteTopo.logger.debug("Creating the triangulation");
     }
     Triangulation t = new Triangulation("Triangulation");
     t.importAsNodes(featureCollection);
@@ -257,7 +258,7 @@ public class Triangulation extends AbstractTriangulation {
       exception.printStackTrace();
     }
     if (CarteTopo.logger.isDebugEnabled()) {
-        CarteTopo.logger.debug("Creation of the triangulation finished");
+      CarteTopo.logger.debug("Creation of the triangulation finished");
     }
     GM_Polygon shape = t.getCharacteristicShape(alpha);
     // cleaning up

@@ -134,8 +134,7 @@ public class Cycle {
       boolean orientation = this.getOrientationsArcs().get(index)
           .booleanValue();
       if (((orientation && !this.isAGauche()) || (!orientation && this
-          .isAGauche()))
-          && (arc.getFaceGauche() != null)) {
+          .isAGauche())) && (arc.getFaceGauche() != null)) {
         listeFacesInterieuresDuCycle.add(arc.getFaceGauche());
       } else if (arc.getFaceDroite() != null) {
         listeFacesInterieuresDuCycle.add(arc.getFaceDroite());

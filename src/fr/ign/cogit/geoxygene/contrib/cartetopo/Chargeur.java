@@ -99,8 +99,8 @@ public class Chargeur {
    * @param listeFeatures éléments
    * @param carte carte topo
    */
-  public static void importClasseGeo(
-      final IFeatureCollection<?> listeFeatures, final CarteTopo carte) {
+  public static void importClasseGeo(final IFeatureCollection<?> listeFeatures,
+      final CarteTopo carte) {
     Chargeur.importClasseGeo(listeFeatures, carte, false);
   }
 
@@ -111,16 +111,15 @@ public class Chargeur {
    * @param carte carte topo
    * @param convert2d si vrai, alors convertir les géométries en 2d
    */
-  public static void importClasseGeo(
-      final IFeatureCollection<?> listeFeatures, final CarteTopo carte,
-      final boolean convert2d) {
+  public static void importClasseGeo(final IFeatureCollection<?> listeFeatures,
+      final CarteTopo carte, final boolean convert2d) {
     if (listeFeatures.isEmpty()) {
       Chargeur.logger.warn(I18N.getString("Chargeur.NothingImported")); //$NON-NLS-1$
       return;
     }
     if (listeFeatures.get(0).getGeom() instanceof GM_Point) {
-      int nbElements = Chargeur.importClasseGeo(listeFeatures, carte
-          .getPopNoeuds(), convert2d);
+      int nbElements = Chargeur.importClasseGeo(listeFeatures,
+          carte.getPopNoeuds(), convert2d);
       if (Chargeur.logger.isDebugEnabled()) {
         Chargeur.logger
             .debug(I18N.getString("Chargeur.NumberOfImportedNodes") + nbElements); //$NON-NLS-1$
@@ -129,8 +128,8 @@ public class Chargeur {
     }
     if ((listeFeatures.get(0).getGeom() instanceof GM_LineString)
         || (listeFeatures.get(0).getGeom() instanceof GM_MultiCurve<?>)) {
-      int nbElements = Chargeur.importClasseGeo(listeFeatures, carte
-          .getPopArcs(), convert2d);
+      int nbElements = Chargeur.importClasseGeo(listeFeatures,
+          carte.getPopArcs(), convert2d);
       if (Chargeur.logger.isDebugEnabled()) {
         Chargeur.logger
             .debug(I18N.getString("Chargeur.NumberOfImportedEdges") + nbElements); //$NON-NLS-1$
@@ -139,8 +138,8 @@ public class Chargeur {
     }
     if ((listeFeatures.get(0).getGeom() instanceof GM_Polygon)
         || (listeFeatures.get(0).getGeom() instanceof GM_MultiSurface<?>)) {
-      int nbElements = Chargeur.importClasseGeo(listeFeatures, carte
-          .getPopFaces(), convert2d);
+      int nbElements = Chargeur.importClasseGeo(listeFeatures,
+          carte.getPopFaces(), convert2d);
       if (Chargeur.logger.isDebugEnabled()) {
         Chargeur.logger
             .debug(I18N.getString("Chargeur.NumberOfImportedFaces") + nbElements); //$NON-NLS-1$
@@ -159,8 +158,7 @@ public class Chargeur {
    * @param convert2d si vrai, alors convertir les géométries en 2d
    */
   @SuppressWarnings("unchecked")
-  private static int importClasseGeo(
-      final IFeatureCollection<?> listeFeatures,
+  private static int importClasseGeo(final IFeatureCollection<?> listeFeatures,
       final IPopulation<?> population, final boolean convert2d) {
     int nbElements = 0;
     for (IFeature feature : listeFeatures) {
@@ -192,9 +190,8 @@ public class Chargeur {
    * @param convert2d si vrai alors la géométrie du nouvel élément est convertie
    *          en 2d
    */
-  private static void creeElement(final IFeature feature,
-      final IGeometry geom, final IPopulation<?> population,
-      final boolean convert2d) {
+  private static void creeElement(final IFeature feature, final IGeometry geom,
+      final IPopulation<?> population, final boolean convert2d) {
     IFeature nouvelElement;
     try {
       nouvelElement = population.nouvelElement(convert2d ? AdapterFactory
@@ -278,10 +275,10 @@ public class Chargeur {
    * @param groundPositionAttribute
    * @param tolerance
    */
-  public static void importAsEdges(IFeatureCollection<? extends IFeature> edges,
-      CarteTopo map, String orientationAttribute,
-      Map<Object, Integer> orientationMap, String groundPositionAttribute,
-      double tolerance) {
+  public static void importAsEdges(
+      IFeatureCollection<? extends IFeature> edges, CarteTopo map,
+      String orientationAttribute, Map<Object, Integer> orientationMap,
+      String groundPositionAttribute, double tolerance) {
     // import des arcs
     for (IFeature element : edges) {
       Arc arc = map.getPopArcs().nouvelElement();

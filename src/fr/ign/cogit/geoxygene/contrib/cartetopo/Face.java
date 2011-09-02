@@ -385,7 +385,7 @@ public class Face extends ElementCarteTopo {
 
   @Override
   public String toString() {
-    return "Face" + " " + this.getId() + " - "  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+    return "Face" + " " + this.getId() + " - " //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
         + this.getGeometrie();
   }
 }

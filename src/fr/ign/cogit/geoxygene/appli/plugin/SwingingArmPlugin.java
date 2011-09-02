@@ -68,13 +68,14 @@ public class SwingingArmPlugin implements GeOxygeneApplicationPlugin,
    * @param application the application
    */
   @Override
-public final void initialize(final GeOxygeneApplication application) {
+  public final void initialize(final GeOxygeneApplication application) {
     this.application = application;
     JMenu menu = null;
     for (Component c : application.getFrame().getJMenuBar().getComponents()) {
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Triangulation")) {
+        if (aMenu.getText() != null
+            && aMenu.getText().equalsIgnoreCase("Triangulation")) {
           menu = aMenu;
         }
       }
@@ -86,8 +87,8 @@ public final void initialize(final GeOxygeneApplication application) {
     );
     menuItem.addActionListener(this);
     menu.add(menuItem);
-    application.getFrame().getJMenuBar().add(menu,
-        application.getFrame().getJMenuBar().getMenuCount() - 2);
+    application.getFrame().getJMenuBar()
+        .add(menu, application.getFrame().getJMenuBar().getMenuCount() - 2);
   }
 
   @Override
@@ -114,10 +115,12 @@ public final void initialize(final GeOxygeneApplication application) {
     }
     logger.error("Points added : " + list.size());
     SwingingArmNonConvexHull.logger.setLevel(Level.TRACE);
-    SwingingArmNonConvexHull swinging = new SwingingArmNonConvexHull(list, radius);
+    SwingingArmNonConvexHull swinging = new SwingingArmNonConvexHull(list,
+        radius);
     IGeometry characteristicShape = swinging.compute();
-//    logger.error("Shape : " + characteristicShape.getClass());
-    Population<Face> popTriangles = new Population<Face>("NonConvexHull_"+radius); //$NON-NLS-1$
+    // logger.error("Shape : " + characteristicShape.getClass());
+    Population<Face> popTriangles = new Population<Face>(
+        "NonConvexHull_" + radius); //$NON-NLS-1$
     popTriangles.setClasse(Face.class);
     popTriangles.setPersistant(false);
     popTriangles.nouvelElement(characteristicShape);

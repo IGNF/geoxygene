@@ -62,8 +62,7 @@ import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
  *          {@link Tiling#select(IGeometry, double)}
  */
 
-public class Tiling<Feat extends IFeature> implements 
-	SpatialIndex<Feat> {
+public class Tiling<Feat extends IFeature> implements SpatialIndex<Feat> {
   static Logger logger = Logger.getLogger(Tiling.class.getName());
 
   // ===============================================
@@ -258,6 +257,7 @@ public class Tiling<Feat extends IFeature> implements
   public Collection<Feat> select(int i, int j) {
     return new HashSet<Feat>(this.index[i][j]);
   }
+
   @Override
   public Collection<Feat> select(IEnvelope env) {
     Collection<Feat> result = new HashSet<Feat>();
@@ -320,9 +320,9 @@ public class Tiling<Feat extends IFeature> implements
     }
     return result;
   }
-   @Override
-  public Collection<Feat> select(IGeometry geometry,
-      boolean strictlyCrosses) {
+
+  @Override
+  public Collection<Feat> select(IGeometry geometry, boolean strictlyCrosses) {
     int tab[];
     Collection<Feat> result = new HashSet<Feat>(0);
     IEnvelope envGeometry = geometry.envelope();
@@ -346,6 +346,7 @@ public class Tiling<Feat extends IFeature> implements
     }
     return result;
   }
+
   @Override
   public Collection<Feat> select(IGeometry geometry, double distance) {
     if (distance == 0) {

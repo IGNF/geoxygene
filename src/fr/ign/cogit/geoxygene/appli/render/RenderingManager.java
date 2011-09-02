@@ -149,7 +149,7 @@ public class RenderingManager {
           if (RenderingManager.getLogger().isTraceEnabled()) {
             RenderingManager.getLogger().trace("Deamon thread finished"); //$NON-NLS-1$
           }
-          //RenderingManager.this.getLayerViewPanel().superRepaint();
+          // RenderingManager.this.getLayerViewPanel().superRepaint();
         }
       }
     };
@@ -209,8 +209,8 @@ public class RenderingManager {
    */
   public final void addLayer(final Layer layer) {
     if (this.rendererMap.get(layer) == null) {
-      LayerRenderer renderer = new LayerRenderer(layer, this
-          .getLayerViewPanel());
+      LayerRenderer renderer = new LayerRenderer(layer,
+          this.getLayerViewPanel());
       this.rendererMap.put(layer, renderer);
       // Adding the layer legend panel to the listeners of the renderer
       renderer.addActionListener(this.getLayerViewPanel().getProjectFrame()
@@ -348,6 +348,7 @@ public class RenderingManager {
     // nothing is being rendered, we can actually repaint the panel
     RenderingManager.this.getLayerViewPanel().superRepaint();
   }
+
   public boolean isRendering() {
     // we check if there is still something being rendererd
     // the fastest way is to check for renderers in the queue

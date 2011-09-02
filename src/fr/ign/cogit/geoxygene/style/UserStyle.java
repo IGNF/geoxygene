@@ -61,9 +61,11 @@ public class UserStyle extends AbstractStyle {
   public String getTitle() {
     return title;
   }
+
   public void setTitle(String title) {
     this.title = title;
   }
+
   /**
    * Abstract description of the style.
    */
@@ -83,6 +85,7 @@ public class UserStyle extends AbstractStyle {
    */
   @XmlElement(name = "IsDefault", required = false)
   private boolean defaultStyle = false;
+
   public boolean isDefaultStyle() {
     return defaultStyle;
   }

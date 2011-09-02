@@ -44,10 +44,12 @@ class GM_Clothoid extends GM_CurveSegment implements IClothoid {
   public IDirectPositionList coord() {
     return null;
   }
+
   @Override
   public ICurveSegment reverse() {
     return null;
   }
+
   @Override
   public String getInterpolation() {
     return "clothoid"; //$NON-NLS-1$

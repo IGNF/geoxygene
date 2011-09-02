@@ -4,15 +4,19 @@ public class GM_Knot {
   double value;
   double weight;
   int multiplicity;
+
   public double getValue() {
     return value;
   }
+
   public double getWeight() {
     return weight;
   }
+
   public int getMultiplicity() {
     return multiplicity;
   }
+
   public GM_Knot(double value, double weight, int multiplicity) {
     super();
     this.value = value;

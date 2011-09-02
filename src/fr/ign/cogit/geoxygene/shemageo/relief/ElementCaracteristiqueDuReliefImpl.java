@@ -9,7 +9,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.shemageo.support.champContinu.ElementCaracteristiqueImpl;
 
 /**
- *ligne orographique, oronyme, point cote, talus, etc.
+ * ligne orographique, oronyme, point cote, talus, etc.
  * 
  * @author julien Gaffuri 26 juin 2009
  * 

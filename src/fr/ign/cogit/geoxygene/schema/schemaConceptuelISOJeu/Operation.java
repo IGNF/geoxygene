@@ -24,7 +24,7 @@ import fr.ign.cogit.geoxygene.api.feature.type.GF_Operation;
 
 /**
  * @author Sandrine Balley
- *
+ * 
  */
 public class Operation implements GF_Operation {
 
@@ -47,6 +47,7 @@ public class Operation implements GF_Operation {
 
   /** Identifiant */
   protected int id;
+
   /** Renvoie l'identifiant. */
   public int getId() {
     return this.id;

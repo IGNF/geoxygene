@@ -53,8 +53,8 @@ public class GeodatabaseOjbFactory {
     GeodatabaseOjb ojb = new GeodatabaseOjb(jcdAlias);
     Constructor<?> geodatabaseConstructor = null;
     try {
-      if (ojb._conn.getMetaData().getDatabaseProductName().compareToIgnoreCase(
-          GeodatabaseOjbFactory.ORACLE_PRODUCT_NAME) == 0) {
+      if (ojb._conn.getMetaData().getDatabaseProductName()
+          .compareToIgnoreCase(GeodatabaseOjbFactory.ORACLE_PRODUCT_NAME) == 0) {
         try {
           Class<?> geodatabaseClass = Class
               .forName(GeodatabaseOjbFactory.GEODATABASE_OJB_ORACLE_CLASS_NAME);

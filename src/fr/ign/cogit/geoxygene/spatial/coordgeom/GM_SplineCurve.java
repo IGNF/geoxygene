@@ -42,15 +42,18 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ISplineCurve;
 
 abstract class GM_SplineCurve extends GM_CurveSegment implements ISplineCurve {
 
-	IDirectPositionList controlPoints;
+  IDirectPositionList controlPoints;
 
   // implemente une methode de GM_CurveSegment
   @Override
   public IDirectPositionList coord() {
     return this.controlPoints;
   }
+
   abstract public int getDegree();
+
   List<GM_Knot> knot = null;
+
   public List<GM_Knot> getKnot() {
     return this.knot;
   }

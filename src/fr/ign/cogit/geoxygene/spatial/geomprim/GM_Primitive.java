@@ -61,6 +61,7 @@ abstract public class GM_Primitive extends GM_Object implements IPrimitive {
   public Set<IComplex> getComplex() {
     return null;// this.complex;
   }
+
   @Override
   public int sizeComplex() {
     return 0;// this.complex.size();

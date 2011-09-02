@@ -88,7 +88,7 @@ public class StyleLibrary {
   /**
    * The styles the library holds.
    */
-  @XmlElements( { @XmlElement(name = "UserStyle", type = UserStyle.class),
+  @XmlElements({ @XmlElement(name = "UserStyle", type = UserStyle.class),
       @XmlElement(name = "NamedStyle", type = NamedStyle.class) })
   List<Style> styles = new ArrayList<Style>();
 

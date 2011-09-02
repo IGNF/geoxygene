@@ -34,7 +34,7 @@ import fr.ign.cogit.geoxygene.feature.FT_Feature;
 
 /**
  * @author Julien Perret
- *
+ * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "PropertyName")

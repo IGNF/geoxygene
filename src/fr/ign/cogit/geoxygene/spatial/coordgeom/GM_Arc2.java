@@ -57,66 +57,81 @@ public class GM_Arc2 extends GM_ArcString implements IArc2 {
    * the center of the arc
    */
   private IDirectPosition center;
+
   @Override
   public IDirectPosition getCenter() {
     return this.center;
   }
+
   @Override
   public void setCenter(IDirectPosition center) {
     this.center = center;
   }
+
   /**
    * the radius of the arc
    */
   private double radius;
+
   @Override
   public double getRadius() {
     return this.radius;
   }
+
   @Override
   public void setRadius(double radius) {
     this.radius = radius;
   }
+
   /**
    * the start angle of the arc, in radian, within ]-Pi, Pi], between the [O, x]
    * axis and the line [O, startpoint]
    * 
    */
   private double startOfArc;
+
   @Override
   public double getStartOfArc() {
     return this.startOfArc;
   }
+
   @Override
   public void setStartOfArc(double startOfArc) {
     this.startOfArc = startOfArc;
   }
+
   /**
    * the end angle of the arc, in radian, within ]-Pi, Pi], between the [O, x]
    * axis and the line [O, endpoint]
    * 
    */
   private double endOfArc;
+
   @Override
   public double getEndOfArc() {
     return this.endOfArc;
   }
+
   @Override
   public void setEndOfArc(double endOfArc) {
     this.endOfArc = endOfArc;
   }
+
   public enum ArcDirection {
     DIRECT, INDIRECT, NONE, UNKNOWN
   }
+
   /**
    * the direction of the arc
    * 
    */
   private ArcDirection direction;
+
   @Override
   public ArcDirection getDirection() {
     return this.direction;
   }
+
   @Override
   public void setEndOfArc(ArcDirection direction) {
     this.direction = direction;
@@ -216,8 +231,7 @@ public class GM_Arc2 extends GM_ArcString implements IArc2 {
   public IPosition getStartPoint() {
     return new GM_Position(new DirectPosition(this.getCenter().getX()
         + this.getRadius() * Math.cos(this.getStartOfArc()), this.getCenter()
-        .getY()
-        + this.getRadius() * Math.sin(this.getStartOfArc())));
+        .getY() + this.getRadius() * Math.sin(this.getStartOfArc())));
   }
 
   @Override
@@ -232,8 +246,7 @@ public class GM_Arc2 extends GM_ArcString implements IArc2 {
   public IPosition getEndPoint() {
     return new GM_Position(new DirectPosition(this.getCenter().getX()
         + this.getRadius() * Math.cos(this.getEndOfArc()), this.getCenter()
-        .getY()
-        + this.getRadius() * Math.sin(this.getEndOfArc())));
+        .getY() + this.getRadius() * Math.sin(this.getEndOfArc())));
   }
 
   @Override
@@ -367,13 +380,13 @@ public class GM_Arc2 extends GM_ArcString implements IArc2 {
         GM_Arc2.logger.error(" * pt s1 " + this.getStartPoint().getDirect());
         GM_Arc2.logger.error(" * pt e1 " + this.getEndPoint().getDirect());
         GM_Arc2.logger.error(" * pt e1s1 "
-            + this.getEndPoint().getDirect().distance(
-                this.getStartPoint().getDirect()));
+            + this.getEndPoint().getDirect()
+                .distance(this.getStartPoint().getDirect()));
         GM_Arc2.logger.error(" * pt s2 " + arc.getStartPoint().getDirect());
         GM_Arc2.logger.error(" * pt e2 " + arc.getEndPoint().getDirect());
         GM_Arc2.logger.error(" * pt e2s2 "
-            + arc.getEndPoint().getDirect().distance(
-                arc.getStartPoint().getDirect()));
+            + arc.getEndPoint().getDirect()
+                .distance(arc.getStartPoint().getDirect()));
         GM_Arc2.logger.error("");
         GM_Arc2.logger.error(" * a s1 " + this.getStartOfArc() * 180 / Math.PI);
         GM_Arc2.logger.error(" * a e1 " + this.getEndOfArc() * 180 / Math.PI);

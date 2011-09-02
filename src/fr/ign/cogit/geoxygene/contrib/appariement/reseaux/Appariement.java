@@ -136,13 +136,15 @@ public abstract class Appariement {
     // Indexation spatiale si cela n'a pas déjà été fait :
     // dallage régulier avec en moyenne 20 objets par case.
     if (!reseau1.getPopArcs().hasSpatialIndex()) {
-      int nb = Math.max((int) Math.sqrt(reseau1.getPopArcs().size()
-          / Appariement.DEFAULT_TILE_SIZE), 1);
+      int nb = Math.max(
+          (int) Math.sqrt(reseau1.getPopArcs().size()
+              / Appariement.DEFAULT_TILE_SIZE), 1);
       reseau1.getPopArcs().initSpatialIndex(Tiling.class, true, nb);
     }
     if (!reseau2.getPopNoeuds().hasSpatialIndex()) {
-      int nb = Math.max((int) Math.sqrt(reseau2.getPopNoeuds().size()
-          / Appariement.DEFAULT_TILE_SIZE), 1);
+      int nb = Math.max(
+          (int) Math.sqrt(reseau2.getPopNoeuds().size()
+              / Appariement.DEFAULT_TILE_SIZE), 1);
       reseau2.getPopNoeuds().initSpatialIndex(Tiling.class, true, nb);
     }
     // /////////// APPARIEMENT
@@ -552,8 +554,8 @@ public abstract class Appariement {
         nbNonTraite++;
         continue;
       }
-      List<LienReseaux> liensDuNoeudRef = new ArrayList<LienReseaux>(noeudRef
-          .getLiens(liensPreAppNN.getElements()));
+      List<LienReseaux> liensDuNoeudRef = new ArrayList<LienReseaux>(
+          noeudRef.getLiens(liensPreAppNN.getElements()));
       // Noeud ref qui n'a aucun noeud comp candidat
       // dans le pré-appariement
       if (liensDuNoeudRef.size() == 0) {
@@ -1684,8 +1686,8 @@ public abstract class Appariement {
       // param.coefficentPoidsLongueurDistance*
       // Operateurs.premiere_composante_hausdorff
       // (arcComp.getGeometrie(),arcRef.getGeometrie()); ancienne version
-      double poids = Distances.ecartSurface(arcComp.getGeometrie(), arcRef
-          .getGeometrie());
+      double poids = Distances.ecartSurface(arcComp.getGeometrie(),
+          arcRef.getGeometrie());
       arcComp.setPoids(poids);
     }
   }
@@ -1809,8 +1811,8 @@ public abstract class Appariement {
       Iterator<?> itLiens = liensObjet.iterator();
       while (itLiens.hasNext()) {
         LienReseaux lien = (LienReseaux) itLiens.next();
-        lien.affecteEvaluationAuxObjetsLies(Appariement.ZERO_POINT_FIVE, I18N
-            .getString("Appariement." + //$NON-NLS-1$
+        lien.affecteEvaluationAuxObjetsLies(Appariement.ZERO_POINT_FIVE,
+            I18N.getString("Appariement." + //$NON-NLS-1$
                 "UncertainCompEdgeMatched" + //$NON-NLS-1$
                 "WithSeveralRefObjects")); //$NON-NLS-1$
         arcComp.setResultatAppariement(I18N.getString("Appariement." + //$NON-NLS-1$
@@ -1898,8 +1900,8 @@ public abstract class Appariement {
         itLiens = liensObjet.iterator();
         while (itLiens.hasNext()) {
           LienReseaux lien = (LienReseaux) itLiens.next();
-          lien.affecteEvaluationAuxObjetsLies(Appariement.ZERO_POINT_FIVE, I18N
-              .getString("Appariement." + //$NON-NLS-1$
+          lien.affecteEvaluationAuxObjetsLies(Appariement.ZERO_POINT_FIVE,
+              I18N.getString("Appariement." + //$NON-NLS-1$
                   "UncertainCompNode" + //$NON-NLS-1$
                   "Matched" + //$NON-NLS-1$
                   "WithSeveralRefObjects")); //$NON-NLS-1$
@@ -1974,8 +1976,7 @@ public abstract class Appariement {
           Math.round(longOK * Appariement.HUNDRED / longTotal) + "%long)"); //$NON-NLS-1$
       Appariement.LOGGER.debug(I18N
           .getString("Appariement.UncertainMatchedEdges" //$NON-NLS-1$
-          )
-          + nbDouteux + " (" + (nbDouteux * Appariement.HUNDRED / nb) //$NON-NLS-1$
+          ) + nbDouteux + " (" + (nbDouteux * Appariement.HUNDRED / nb) //$NON-NLS-1$
           + "%, " + //$NON-NLS-1$
           Math.round(longDouteux * Appariement.HUNDRED / longTotal) + "%long)"); //$NON-NLS-1$
       Appariement.LOGGER.debug(I18N.getString("Appariement.UnmatchedEdges") //$NON-NLS-1$
@@ -2142,8 +2143,8 @@ public abstract class Appariement {
               // arcADecouper.getGeometrie());
               // pointsDeDecoupage.add(new GM_Point(ptDecoupage));
               IDirectPosition ptDecoupage = Operateurs.projection(
-                  lineStringDecoupant.getControlPoint(i - 1), arcADecouper
-                      .getGeometrie());
+                  lineStringDecoupant.getControlPoint(i - 1),
+                  arcADecouper.getGeometrie());
               pointsDeDecoupage.add(new GM_Point(ptDecoupage));
               continue;
             }

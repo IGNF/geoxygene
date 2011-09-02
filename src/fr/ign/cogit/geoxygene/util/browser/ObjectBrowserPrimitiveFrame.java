@@ -92,8 +92,8 @@ public class ObjectBrowserPrimitiveFrame extends JFrame {
     returnedValue.setSize(returnedValue.getPreferredSize());
     this.getContentPane().add(returnedValue, BorderLayout.CENTER);
 
-    JLabel returnedValueLabel = new JLabel(this.i18nLanguageFile
-        .getString("PrimitiveFrameDefaultLabel"));
+    JLabel returnedValueLabel = new JLabel(
+        this.i18nLanguageFile.getString("PrimitiveFrameDefaultLabel"));
     returnedValueLabel.setSize(returnedValueLabel.getPreferredSize());
     this.getContentPane().add(returnedValueLabel, BorderLayout.WEST);
     this.getContentPane().setSize(this.getContentPane().getPreferredSize());

@@ -190,12 +190,13 @@ public class JtsAlgorithms implements GeomAlgorithms {
       return null;
     }
   }
-  
+
   public IGeometry buffer(IGeometry geom, double distance, int nSegments,
       int cap, int join) {
     try {
       Geometry jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
-      BufferParameters bufferParam = new BufferParameters(nSegments, cap, join, BufferParameters.DEFAULT_MITRE_LIMIT);
+      BufferParameters bufferParam = new BufferParameters(nSegments, cap, join,
+          BufferParameters.DEFAULT_MITRE_LIMIT);
       Geometry jtsBuffer = BufferOp.bufferOp(jtsGeom, distance, bufferParam);
       return JtsGeOxygene.makeGeOxygeneGeom(jtsBuffer);
     } catch (Exception e) {
@@ -815,8 +816,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
     try {
       line = (LineString) AdapterFactory.toGeometry(new GeometryFactory(), l);
       Coordinate[] cp = (new DistanceOp(line, point)).nearestPoints();
-      return AdapterFactory.toDirectPosition(line.getFactory().createPoint(
-          cp[0]).getCoordinate());
+      return AdapterFactory.toDirectPosition(line.getFactory()
+          .createPoint(cp[0]).getCoordinate());
     } catch (Exception e) {
     }
     return null;
@@ -829,8 +830,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
    * @param base la ligne de comparaison, the base line
    * @param l une ligne, a line
    */
-  public static IDirectPosition getFurthestPoint(ILineString base,
-      ILineString l) {
+  public static IDirectPosition getFurthestPoint(ILineString base, ILineString l) {
     try {
       LineString baseLine = (LineString) AdapterFactory.toGeometry(
           new GeometryFactory(), base);
@@ -1224,8 +1224,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
    * @param poly un polygone, a polygon
    */
   public static Polygon supprimeTrous(Polygon poly) {
-    return new Polygon((LinearRing) poly.getExteriorRing(), null, poly
-        .getFactory());
+    return new Polygon((LinearRing) poly.getExteriorRing(), null,
+        poly.getFactory());
   }
 
   /**
@@ -1243,8 +1243,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   /**
-   * Builds on offset curve for the given {@link ILineString}. A positive
-   * offset builds an offset curve on the left-hand side of the reference
+   * Builds on offset curve for the given {@link ILineString}. A positive offset
+   * builds an offset curve on the left-hand side of the reference
    * {@link ILineString}. Negative means right.
    * @param line reference {@link ILineString}
    * @param distance offset distance
@@ -1271,8 +1271,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
         polygon = (Polygon) buffer;
         IMultiCurve<ILineString> result = new GM_MultiCurve<ILineString>();
         // build the offset curve for the exterior ring
-        ILineString r = JtsAlgorithms.getOffsetCurveFromRing(polygon
-            .getExteriorRing(), lineString, orientationIndex, d);
+        ILineString r = JtsAlgorithms.getOffsetCurveFromRing(
+            polygon.getExteriorRing(), lineString, orientationIndex, d);
         if ((r != null) && !r.isEmpty() && (r.coord().size() != 1)) {
           result.add(r);
         } // modif JFG
@@ -1453,8 +1453,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
         && coordinateList.get(0).equals2D(coordinateList.get(1))) {
       return null;
     }
-    ILineString result = new GM_LineString(AdapterFactory
-        .toDirectPositionList(coordinateList
+    ILineString result = new GM_LineString(
+        AdapterFactory.toDirectPositionList(coordinateList
             .toArray(new Coordinate[coordinateList.size()])));
     return result;
   }
@@ -1545,8 +1545,8 @@ public class JtsAlgorithms implements GeomAlgorithms {
       }
     }
     if (orientations.isEmpty()) {
-      //JtsAlgorithms.logger.info("orientations empty for "
-          //+ line.getFactory().createPoint(c));
+      // JtsAlgorithms.logger.info("orientations empty for "
+      // + line.getFactory().createPoint(c));
       return 0;
     }
     Iterator<Integer> orientationIterator = orientations.iterator();
@@ -1560,8 +1560,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
     return orientationIndex;
   }
 
-  public static ILineString cap(ILineString line, double distance,
-      boolean start) {
+  public static ILineString cap(ILineString line, double distance, boolean start) {
     double d = Math.abs(distance);
     try {
       // removing duplicate coordinates from the input linestring.
@@ -1635,12 +1634,11 @@ public class JtsAlgorithms implements GeomAlgorithms {
         && coordinateList.get(0).equals2D(coordinateList.get(1))) {
       return null;
     }
-    GM_LineString result = new GM_LineString(AdapterFactory
-        .toDirectPositionList(coordinateList
+    GM_LineString result = new GM_LineString(
+        AdapterFactory.toDirectPositionList(coordinateList
             .toArray(new Coordinate[coordinateList.size()])));
     return result;
   }
-  
 
   /**
    * Plus Petit Rectangle Englobant d'une géométrie préservant son aire.
@@ -1649,11 +1647,10 @@ public class JtsAlgorithms implements GeomAlgorithms {
    * @param geom une géométrie, a geometry
    * @return le Plus Petit Rectangle Englobant, the Smallest Enclosing Rectangle
    */
-  public static Polygon MBRAirePreservee(Geometry geom){
-      Polygon out=MBR(geom);
-      return homothetie(out, (float) Math.sqrt(geom.getArea()/out.getArea()));
+  public static Polygon MBRAirePreservee(Geometry geom) {
+    Polygon out = MBR(geom);
+    return homothetie(out, (float) Math.sqrt(geom.getArea() / out.getArea()));
   }
-
 
   /**
    * Plus Petit Rectangle Englobant d'une géométrie respectant un aire donnée.
@@ -1663,55 +1660,59 @@ public class JtsAlgorithms implements GeomAlgorithms {
    * @param aireCible aire visée, target area
    * @return le Plus Petit Rectangle Englobant, the Smallest Enclosing Rectangle
    */
-  public static Polygon MBRAireCible(Geometry geom, double aireCible){
-      Polygon out=MBR(geom);
-      return homothetie(out, (float) Math.sqrt(aireCible/out.getArea()));
+  public static Polygon MBRAireCible(Geometry geom, double aireCible) {
+    Polygon out = MBR(geom);
+    return homothetie(out, (float) Math.sqrt(aireCible / out.getArea()));
   }
 
   /**
-   * Minimum Bounding Rectangle of a geometry.
-   * Plus Petit Rectangle Englobant d'une géométrie.
+   * Minimum Bounding Rectangle of a geometry. Plus Petit Rectangle Englobant
+   * d'une géométrie.
    * 
    * 
    * @param geom a geometry, une géométrie.
    * @return the Minimum Bounding Rectangle, le Plus Petit Rectangle Englobant.
    */
-  public static Polygon MBR(Geometry geom){
-      //recupere l'enveloppe convexe
-      Geometry convexHull=geom.convexHull();
-      //si ce n'est pas un polygone, le MBR n'est pas defini: on renvoit null
-      if (!(convexHull instanceof Polygon)) {
-          logger.error("Le PPRE calculé n'est pas un polygone. " + //$NON-NLS-1$
-          		"Son type est " + convexHull.getGeometryType()); //$NON-NLS-1$
-          return null;
+  public static Polygon MBR(Geometry geom) {
+    // recupere l'enveloppe convexe
+    Geometry convexHull = geom.convexHull();
+    // si ce n'est pas un polygone, le MBR n'est pas defini: on renvoit null
+    if (!(convexHull instanceof Polygon)) {
+      logger.error("Le PPRE calculé n'est pas un polygone. " + //$NON-NLS-1$
+          "Son type est " + convexHull.getGeometryType()); //$NON-NLS-1$
+      return null;
+    }
+    Polygon env = (Polygon) convexHull;
+    // prend les coordonnees de l'enveloppe convexe
+    Coordinate[] coord = env.getExteriorRing().getCoordinates();
+    Coordinate centre = geom.getCentroid().getCoordinate();
+    // parcours les segments
+    double aire_min = Double.MAX_VALUE, angle_ = 0.0;
+    Polygon ppre = null;
+    for (int i = 0; i < coord.length - 1; i++) {
+      // calcul de la rotation de l'enveloppe convexe
+      double angle = Math.atan2(coord[i + 1].y - coord[i].y, coord[i + 1].x
+          - coord[i].x);
+      try {
+        Polygon rot = (Polygon) rotation(env, centre, -1.0 * angle)
+            .getEnvelope();
+        // calcul l'aire de l'enveloppe rectangulaire
+        double aire = rot.getArea();
+        // verifie si elle est minimum
+        if (aire < aire_min) {
+          aire_min = aire;
+          ppre = rot;
+          angle_ = angle;
+        }
+      } catch (ClassCastException e) {
+        logger.error(geom);
+        logger.error(env);
+        logger.error(rotation(env, centre, -1.0 * angle).getEnvelope());
       }
-      Polygon env=(Polygon)convexHull;
-      //prend les coordonnees de l'enveloppe convexe
-      Coordinate[] coord=env.getExteriorRing().getCoordinates();
-      Coordinate centre=geom.getCentroid().getCoordinate();
-      //parcours les segments
-      double aire_min=Double.MAX_VALUE, angle_=0.0;
-      Polygon ppre=null;
-      for(int i=0;i<coord.length-1;i++){
-          //calcul de la rotation de l'enveloppe convexe
-          double angle=Math.atan2(
-              coord[i+1].y-coord[i].y,
-              coord[i+1].x-coord[i].x);
-          try {
-          Polygon rot=(Polygon)rotation(env, centre, -1.0*angle).getEnvelope();
-          //calcul l'aire de l'enveloppe rectangulaire
-          double aire=rot.getArea();
-          //verifie si elle est minimum
-          if (aire<aire_min) {aire_min=aire; ppre=rot; angle_=angle; }
-          } catch (ClassCastException e) {
-              logger.error(geom);
-              logger.error(env);
-              logger.error(rotation(env, centre, -1.0*angle).getEnvelope());
-          }
-      }
-      return rotation(ppre, centre, angle_);
+    }
+    return rotation(ppre, centre, angle_);
   }
-  
+
   /**
    * Minimum bounding square of a rectangle envelope.
    * 
@@ -1721,99 +1722,99 @@ public class JtsAlgorithms implements GeomAlgorithms {
   public static Polygon squareEnveloppe(Envelope env) {
     Polygon square = null;
     GeometryFactory factory = new GeometryFactory();
-    
+
     double height = env.getHeight();
     double width = env.getWidth();
-    
+
     if (height > width) {
       double diff = height - width;
       Coordinate[] coord = {
-          new Coordinate(env.getMinX() - diff/2, env.getMinY()),
-          new Coordinate(env.getMaxX() + diff/2, env.getMinY()),
-          new Coordinate(env.getMaxX() + diff/2, env.getMaxY()),
-          new Coordinate(env.getMinX() - diff/2, env.getMaxY()),
-          new Coordinate(env.getMinX() - diff/2, env.getMinY())
-      };
-      
+          new Coordinate(env.getMinX() - diff / 2, env.getMinY()),
+          new Coordinate(env.getMaxX() + diff / 2, env.getMinY()),
+          new Coordinate(env.getMaxX() + diff / 2, env.getMaxY()),
+          new Coordinate(env.getMinX() - diff / 2, env.getMaxY()),
+          new Coordinate(env.getMinX() - diff / 2, env.getMinY()) };
+
       LinearRing lr = factory.createLinearRing(coord);
       square = factory.createPolygon(lr, null);
     } else {
       double diff = width - height;
       Coordinate[] coord = {
-          new Coordinate(env.getMinX(), env.getMinY() - diff/2),
-          new Coordinate(env.getMaxX(), env.getMinY() - diff/2),
-          new Coordinate(env.getMaxX(), env.getMaxY() + diff/2),
-          new Coordinate(env.getMinX(), env.getMaxY() + diff/2),
-          new Coordinate(env.getMinX(), env.getMinY() - diff/2)
-      };
-      
+          new Coordinate(env.getMinX(), env.getMinY() - diff / 2),
+          new Coordinate(env.getMaxX(), env.getMinY() - diff / 2),
+          new Coordinate(env.getMaxX(), env.getMaxY() + diff / 2),
+          new Coordinate(env.getMinX(), env.getMaxY() + diff / 2),
+          new Coordinate(env.getMinX(), env.getMinY() - diff / 2) };
+
       LinearRing lr = factory.createLinearRing(coord);
       square = factory.createPolygon(lr, null);
     }
-    
+
     return square;
   }
-  
+
   /**
-   * Minimum Bounding Square of a geometry.
-   * Plus Petit Carré Englobant d'une géométrie.
+   * Minimum Bounding Square of a geometry. Plus Petit Carré Englobant d'une
+   * géométrie.
    * 
    * 
    * @param geom a geometry, une géométrie.
    * @return the Minimum Bounding Square, le Plus Petit Carré Englobant.
    */
-  public static Polygon MBS(Geometry geom){
-      //recupere l'enveloppe convexe
-      Geometry convexHull=geom.convexHull();
-      //si ce n'est pas un polygone, le MBR n'est pas defini: on renvoit null
-      if (!(convexHull instanceof Polygon)) {
-          logger.error("Le PPRE calculé n'est pas un polygone. " + //$NON-NLS-1$
-                "Son type est " + convexHull.getGeometryType()); //$NON-NLS-1$
-          return null;
+  public static Polygon MBS(Geometry geom) {
+    // recupere l'enveloppe convexe
+    Geometry convexHull = geom.convexHull();
+    // si ce n'est pas un polygone, le MBR n'est pas defini: on renvoit null
+    if (!(convexHull instanceof Polygon)) {
+      logger.error("Le PPRE calculé n'est pas un polygone. " + //$NON-NLS-1$
+          "Son type est " + convexHull.getGeometryType()); //$NON-NLS-1$
+      return null;
+    }
+    Polygon env = (Polygon) convexHull;
+    // prend les coordonnees de l'enveloppe convexe
+    Coordinate[] coord = env.getExteriorRing().getCoordinates();
+    Coordinate centre = geom.getCentroid().getCoordinate();
+    // parcours les segments
+    double aire_min = Double.MAX_VALUE, angle_ = 0.0;
+    Polygon ppre = null;
+    for (int i = 0; i < coord.length - 1; i++) {
+      // calcul de la rotation de l'enveloppe convexe
+      double angle = Math.atan2(coord[i + 1].y - coord[i].y, coord[i + 1].x
+          - coord[i].x);
+      try {
+        Polygon rot = JtsAlgorithms.squareEnveloppe(rotation(env, centre,
+            -1.0 * angle).getEnvelopeInternal());
+        // calcul l'aire de l'enveloppe carrée
+        double aire = rot.getArea();
+        // verifie si elle est minimum
+        if (aire < aire_min) {
+          aire_min = aire;
+          ppre = rot;
+          angle_ = angle;
+        }
+      } catch (ClassCastException e) {
+        logger.error(geom);
+        logger.error(env);
+        logger.error(rotation(env, centre, -1.0 * angle).getEnvelope());
       }
-      Polygon env=(Polygon)convexHull;
-      //prend les coordonnees de l'enveloppe convexe
-      Coordinate[] coord=env.getExteriorRing().getCoordinates();
-      Coordinate centre=geom.getCentroid().getCoordinate();
-      //parcours les segments
-      double aire_min=Double.MAX_VALUE, angle_=0.0;
-      Polygon ppre=null;
-      for(int i=0;i<coord.length-1;i++){
-          //calcul de la rotation de l'enveloppe convexe
-          double angle=Math.atan2(
-              coord[i+1].y-coord[i].y,
-              coord[i+1].x-coord[i].x);
-          try {
-          Polygon rot=JtsAlgorithms.squareEnveloppe(
-              rotation(env, centre, -1.0*angle).getEnvelopeInternal());
-          //calcul l'aire de l'enveloppe carrée
-          double aire=rot.getArea();
-          //verifie si elle est minimum
-          if (aire<aire_min) {aire_min=aire; ppre=rot; angle_=angle; }
-          } catch (ClassCastException e) {
-              logger.error(geom);
-              logger.error(env);
-              logger.error(rotation(env, centre, -1.0*angle).getEnvelope());
-          }
-      }
-      return rotation(ppre, centre, angle_);
+    }
+    return rotation(ppre, centre, angle_);
   }
-  
+
   /**
-   * Plus Petit Carré Englobant d'une géométrie préservant son aire.
-   * Smallest Enclosing Suare of a geometry preserving its area.
+   * Plus Petit Carré Englobant d'une géométrie préservant son aire. Smallest
+   * Enclosing Suare of a geometry preserving its area.
    * 
    * @param geom une géométrie, a geometry
    * @return le Plus Petit Carré Englobant, the Smallest Enclosing Square
    */
-  public static Polygon MBSAirePreservee(Geometry geom){
-      Polygon out=MBS(geom);
-      return homothetie(out, (float) Math.sqrt(geom.getArea()/out.getArea()));
+  public static Polygon MBSAirePreservee(Geometry geom) {
+    Polygon out = MBS(geom);
+    return homothetie(out, (float) Math.sqrt(geom.getArea() / out.getArea()));
   }
-  
+
   /**
-   * Rotate a geometry.
-   * Effectue une rotation sur une géométrie.
+   * Rotate a geometry. Effectue une rotation sur une géométrie.
    * 
    * 
    * @param geom une géométrie, a geometry
@@ -1821,86 +1822,98 @@ public class JtsAlgorithms implements GeomAlgorithms {
    * @param angle angle de rotation, angle of rotation
    * @return polygone résultant de la rotation, resulting polygon.
    */
-  public static Polygon rotation(Polygon geom, Coordinate c, double angle){
-      double cos=Math.cos(angle), sin=Math.sin(angle);
-      //rotation de l'enveloppe
-      Coordinate[] coord=geom.getExteriorRing().getCoordinates();
-      Coordinate[] coord_=new Coordinate[coord.length];
-      for(int i=0;i<coord.length;i++){
-          double x=coord[i].x, y=coord[i].y;
-          coord_[i]=new Coordinate(
-              c.x+cos*(x-c.x)-sin*(y-c.y),
-              c.y+sin*(x-c.x)+cos*(y-c.y));
-      }
-      LinearRing shell=geom.getFactory().createLinearRing(coord_);
+  public static Polygon rotation(Polygon geom, Coordinate c, double angle) {
+    double cos = Math.cos(angle), sin = Math.sin(angle);
+    // rotation de l'enveloppe
+    Coordinate[] coord = geom.getExteriorRing().getCoordinates();
+    Coordinate[] coord_ = new Coordinate[coord.length];
+    for (int i = 0; i < coord.length; i++) {
+      double x = coord[i].x, y = coord[i].y;
+      coord_[i] = new Coordinate(c.x + cos * (x - c.x) - sin * (y - c.y), c.y
+          + sin * (x - c.x) + cos * (y - c.y));
+    }
+    LinearRing shell = geom.getFactory().createLinearRing(coord_);
 
-      //rotation des trous
-      LinearRing[] trous=new LinearRing[geom.getNumInteriorRing()];
-      for(int j=0;j<geom.getNumInteriorRing();j++){
-          Coordinate[] coord2=geom.getInteriorRingN(j).getCoordinates();
-          Coordinate[] coord2_=new Coordinate[coord2.length];
-          for(int i=0;i<coord2.length;i++){
-              double x=coord2[i].x, y=coord2[i].y;
-              coord2_[i]=new Coordinate(
-                  c.x+cos*(x-c.x)-sin*(y-c.y),
-                  c.y+sin*(x-c.x)+cos*(y-c.y));
-          }
-          trous[j]=geom.getFactory().createLinearRing(coord2);
+    // rotation des trous
+    LinearRing[] trous = new LinearRing[geom.getNumInteriorRing()];
+    for (int j = 0; j < geom.getNumInteriorRing(); j++) {
+      Coordinate[] coord2 = geom.getInteriorRingN(j).getCoordinates();
+      Coordinate[] coord2_ = new Coordinate[coord2.length];
+      for (int i = 0; i < coord2.length; i++) {
+        double x = coord2[i].x, y = coord2[i].y;
+        coord2_[i] = new Coordinate(c.x + cos * (x - c.x) - sin * (y - c.y),
+            c.y + sin * (x - c.x) + cos * (y - c.y));
       }
-      return geom.getFactory().createPolygon(shell, trous);
+      trous[j] = geom.getFactory().createLinearRing(coord2);
+    }
+    return geom.getFactory().createPolygon(shell, trous);
   }
 
   /**
    * Calcule l'homothétie d'une géométrie.
    * @param geom géométrie, geometry
-   * @param x0 position en X du centre de l'homothétie, X position of the center of the operation
-   * @param y0 position en Y du centre de l'homothétie, Y position of the center of the operation
+   * @param x0 position en X du centre de l'homothétie, X position of the center
+   *          of the operation
+   * @param y0 position en Y du centre de l'homothétie, Y position of the center
+   *          of the operation
    * @param scale facteur d'échelle, scale factor
    * @return polygon résultant de l'homothétie, resulting polygon
    */
-  public static Polygon homothetie(Polygon geom, double x0, double y0, double scale){
-      //le contour externe
-      Coordinate[] coord=geom.getExteriorRing().getCoordinates();
-      Coordinate[] coord_=new Coordinate[coord.length];
-      for(int i=0;i<coord.length;i++) coord_[i]=new Coordinate(x0+scale*(coord[i].x-x0), y0+scale*(coord[i].y-y0));
-      LinearRing lr=geom.getFactory().createLinearRing(coord_);
+  public static Polygon homothetie(Polygon geom, double x0, double y0,
+      double scale) {
+    // le contour externe
+    Coordinate[] coord = geom.getExteriorRing().getCoordinates();
+    Coordinate[] coord_ = new Coordinate[coord.length];
+    for (int i = 0; i < coord.length; i++)
+      coord_[i] = new Coordinate(x0 + scale * (coord[i].x - x0), y0 + scale
+          * (coord[i].y - y0));
+    LinearRing lr = geom.getFactory().createLinearRing(coord_);
 
-      //les trous
-      LinearRing[] trous=new LinearRing[geom.getNumInteriorRing()];
-      for(int j=0;j<geom.getNumInteriorRing();j++){
-          Coordinate[] hole_coord=geom.getInteriorRingN(j).getCoordinates();
-          Coordinate[] hole_coord_=new Coordinate[hole_coord.length];
-          for(int i=0;i<hole_coord.length;i++) hole_coord_[i]=new Coordinate(x0+scale*(hole_coord[i].x-x0), y0+scale*(hole_coord[i].y-y0));
-          trous[j]=geom.getFactory().createLinearRing(hole_coord_);
-      }
-      return geom.getFactory().createPolygon(lr,trous);
+    // les trous
+    LinearRing[] trous = new LinearRing[geom.getNumInteriorRing()];
+    for (int j = 0; j < geom.getNumInteriorRing(); j++) {
+      Coordinate[] hole_coord = geom.getInteriorRingN(j).getCoordinates();
+      Coordinate[] hole_coord_ = new Coordinate[hole_coord.length];
+      for (int i = 0; i < hole_coord.length; i++)
+        hole_coord_[i] = new Coordinate(x0 + scale * (hole_coord[i].x - x0), y0
+            + scale * (hole_coord[i].y - y0));
+      trous[j] = geom.getFactory().createLinearRing(hole_coord_);
+    }
+    return geom.getFactory().createPolygon(lr, trous);
   }
 
-     /**
+  /**
    * Calcule l'homothétie d'une géométrie.
    * @param geom géométrie, geometry
-   * @param x0 position en X du centre de l'homothétie, X position of the center of the operation
-   * @param y0 position en Y du centre de l'homothétie, Y position of the center of the operation
+   * @param x0 position en X du centre de l'homothétie, X position of the center
+   *          of the operation
+   * @param y0 position en Y du centre de l'homothétie, Y position of the center
+   *          of the operation
    * @param scaleX facteur d'échelle en X, X scale factor
    * @param scaleY facteur d'échelle en Y, Y scale factor
    * @return polygon résultant de l'homothétie, resulting polygon
    */
-  public static Polygon homothetie(Polygon geom, double x0, double y0, double scaleX, double scaleY){
-      //le contour externe
-      Coordinate[] coord=geom.getExteriorRing().getCoordinates();
-      Coordinate[] coord_=new Coordinate[coord.length];
-      for(int i=0;i<coord.length;i++) coord_[i]=new Coordinate(x0+scaleX*(coord[i].x-x0), y0+scaleY*(coord[i].y-y0));
-      LinearRing lr=geom.getFactory().createLinearRing(coord_);
+  public static Polygon homothetie(Polygon geom, double x0, double y0,
+      double scaleX, double scaleY) {
+    // le contour externe
+    Coordinate[] coord = geom.getExteriorRing().getCoordinates();
+    Coordinate[] coord_ = new Coordinate[coord.length];
+    for (int i = 0; i < coord.length; i++)
+      coord_[i] = new Coordinate(x0 + scaleX * (coord[i].x - x0), y0 + scaleY
+          * (coord[i].y - y0));
+    LinearRing lr = geom.getFactory().createLinearRing(coord_);
 
-      //les trous
-      LinearRing[] trous=new LinearRing[geom.getNumInteriorRing()];
-      for(int j=0;j<geom.getNumInteriorRing();j++){
-          Coordinate[] hole_coord=geom.getInteriorRingN(j).getCoordinates();
-          Coordinate[] hole_coord_=new Coordinate[hole_coord.length];
-          for(int i=0;i<hole_coord.length;i++) hole_coord_[i]=new Coordinate(x0+scaleY*(hole_coord[i].x-x0), y0+scaleY*(hole_coord[i].y-y0));
-          trous[j]=geom.getFactory().createLinearRing(hole_coord_);
-      }
-      return geom.getFactory().createPolygon(lr,trous);
+    // les trous
+    LinearRing[] trous = new LinearRing[geom.getNumInteriorRing()];
+    for (int j = 0; j < geom.getNumInteriorRing(); j++) {
+      Coordinate[] hole_coord = geom.getInteriorRingN(j).getCoordinates();
+      Coordinate[] hole_coord_ = new Coordinate[hole_coord.length];
+      for (int i = 0; i < hole_coord.length; i++)
+        hole_coord_[i] = new Coordinate(x0 + scaleY * (hole_coord[i].x - x0),
+            y0 + scaleY * (hole_coord[i].y - y0));
+      trous[j] = geom.getFactory().createLinearRing(hole_coord_);
+    }
+    return geom.getFactory().createPolygon(lr, trous);
   }
 
   /**
@@ -1910,8 +1923,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
    * @param scaleY facteur d'échelle en Y, Y scale factor
    * @return polygon résultant de l'homothétie, resulting polygon
    */
-  public static Polygon homothetie(Polygon geom, double scaleX, double scaleY){
-      return homothetie(geom, geom.getCentroid().getX(), geom.getCentroid().getY(), scaleX, scaleY);
+  public static Polygon homothetie(Polygon geom, double scaleX, double scaleY) {
+    return homothetie(geom, geom.getCentroid().getX(), geom.getCentroid()
+        .getY(), scaleX, scaleY);
   }
 
   /**
@@ -1920,8 +1934,9 @@ public class JtsAlgorithms implements GeomAlgorithms {
    * @param scale facteur d'échelle, scale factor
    * @return polygon résultant de l'homothétie, resulting polygon
    */
-  public static Polygon homothetie(Polygon geom, double scale){
-      return homothetie(geom, geom.getCentroid().getX(), geom.getCentroid().getY(), scale);
+  public static Polygon homothetie(Polygon geom, double scale) {
+    return homothetie(geom, geom.getCentroid().getX(), geom.getCentroid()
+        .getY(), scale);
   }
 
 } // class

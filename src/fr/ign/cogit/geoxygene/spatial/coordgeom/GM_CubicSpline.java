@@ -47,7 +47,8 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 public class GM_CubicSpline extends GM_PolynomialSpline implements ICubicSpline {
   @Override
   public GM_CubicSpline reverse() {
-    return new GM_CubicSpline(((DirectPositionList) this.controlPoints).reverse(),
+    return new GM_CubicSpline(
+        ((DirectPositionList) this.controlPoints).reverse(),
         this.vectorAtEnd[0], this.vectorAtStart[0]);
   }
 
@@ -130,10 +131,10 @@ public class GM_CubicSpline extends GM_PolynomialSpline implements ICubicSpline 
       List<IDirectPosition> l = new ArrayList<IDirectPosition>(4);
       l.add(p0);
       IDirectPosition pt0 = new DirectPosition(p0.getCoordinate());
-      ((DirectPosition)pt0).move(m0, 1.0d / 3.0d);
+      ((DirectPosition) pt0).move(m0, 1.0d / 3.0d);
       l.add(pt0);
       IDirectPosition pt1 = new DirectPosition(p1.getCoordinate());
-      ((DirectPosition)pt1).move(m1, -1.0d / 3.0d);
+      ((DirectPosition) pt1).move(m1, -1.0d / 3.0d);
       l.add(pt1);
       l.add(p1);
       GM_Bezier bezier = new GM_Bezier(new DirectPositionList(l));
@@ -197,20 +198,22 @@ public class GM_CubicSpline extends GM_PolynomialSpline implements ICubicSpline 
     }
     return null;
   }
+
   private double[] incomingTangent(int i) {
     if (!this.tangentMethod.equalsIgnoreCase("kochanekBartels")) { //$NON-NLS-1$
       return this.outgoingTangent(i);
     }
     double[] v1 = this.twoPointsDifference(i + 1, i);
     double numerator = (1.0d - this.tension) * (1.0d - this.bias)
-    * (1.0d + this.continuity);
+        * (1.0d + this.continuity);
     v1 = mul(v1, numerator);
     double[] v2 = this.twoPointsDifference(i, i - 1);
     numerator = (1.0d - this.tension) * (1.0d + this.bias)
-    * (1.0d - this.continuity);
+        * (1.0d - this.continuity);
     v2 = mul(v2, numerator);
     return avg(v1, v2);
   }
+
   private double[] twoPointsDifference(int i1, int i2) {
     if (i2 < 0 || i1 > this.controlPoints.size() - 1) {
       return null;
@@ -223,6 +226,7 @@ public class GM_CubicSpline extends GM_PolynomialSpline implements ICubicSpline 
     }
     return ((DirectPosition) p1).minus(p2, 1.0d / denominator);
   }
+
   private double[] mul(double[] v, double d) {
     if (v == null) {
       return v;
@@ -232,6 +236,7 @@ public class GM_CubicSpline extends GM_PolynomialSpline implements ICubicSpline 
     }
     return v;
   }
+
   private double[] avg(double[] v1, double[] v2) {
     if (v1 == null) {
       return v2;

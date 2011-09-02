@@ -182,11 +182,11 @@ public class LayerStylesPanel extends JPanel {
     for (ExternalGraphic theGraphic : symbolizer.getGraphic()
         .getExternalGraphics()) {
       Image onlineImage = theGraphic.getOnlineResource();
-      g2.drawImage(onlineImage, this.margin + currentColumn
-          * (columnsWidth + this.margin) + columnsWidth / 2
-          - onlineImage.getWidth(null) / 2, this.margin + currentRow
-          * (rowHeight + this.margin) + rowHeight / 2
-          - onlineImage.getHeight(null) / 2, null);
+      g2.drawImage(onlineImage,
+          this.margin + currentColumn * (columnsWidth + this.margin)
+              + columnsWidth / 2 - onlineImage.getWidth(null) / 2, this.margin
+              + currentRow * (rowHeight + this.margin) + rowHeight / 2
+              - onlineImage.getHeight(null) / 2, null);
     }
   }
 

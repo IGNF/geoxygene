@@ -94,7 +94,7 @@ public class ShapefileReader implements Runnable {
   FeatureSource<SimpleFeatureType, SimpleFeature> source;
   IPopulation<IFeature> population;
   Reader reader = null;
-  
+
   public Reader getReader() {
     return this.reader;
   }
@@ -403,8 +403,7 @@ public class ShapefileReader implements Runnable {
   /**
    * Lit la collection de features GeoTools <code> source </code> et crée des
    * default features correspondant en utilisant le schéma <code> schema
-     * </code> et les ajoute
-   * à la population <code> population </code>.
+   * </code> et les ajoute à la population <code> population </code>.
    * @param schema schéma des features à créer
    * @param population population à laquelle ajouter les features créés
    * @throws IOException renvoie une exception en cas d'erreur de lecture
@@ -459,7 +458,8 @@ public class ShapefileReader implements Runnable {
             + I18N.getString("ShapefileReader.ObjectIgnored")); //$NON-NLS-1$
       }
     }
-    logger.debug(population.size() + " features created for " + reader.getNbFeatures());
+    logger.debug(population.size() + " features created for "
+        + reader.getNbFeatures());
     ShapefileReader.fireActionPerformed(new ActionEvent(population, 2,
         "Finished", reader.getNbFeatures())); //$NON-NLS-1$
   }
@@ -495,9 +495,9 @@ public class ShapefileReader implements Runnable {
   public double getMinY() {
     return this.reader.getMinY();
   }
-  
-  public CoordinateReferenceSystem getCRS(){
-	  return this.crs;
+
+  public CoordinateReferenceSystem getCRS() {
+    return this.crs;
   }
 
 }
@@ -530,7 +530,8 @@ class Reader {
     ShpFiles shpf;
     shpf = new ShpFiles(shapefileName);
     try {
-      shapefileReader = new org.geotools.data.shapefile.shp.ShapefileReader(shpf, true, false, new GeometryFactory());
+      shapefileReader = new org.geotools.data.shapefile.shp.ShapefileReader(
+          shpf, true, false, new GeometryFactory());
       dbaseFileReader = new org.geotools.data.shapefile.dbf.DbaseFileReader(
           shpf, true, Charset.forName("ISO-8859-1")); //$NON-NLS-1$
     } catch (FileNotFoundException e) {
@@ -572,7 +573,7 @@ class Reader {
             + shapefileName);
       }
     }
-    
+
     this.minX = shapefileReader.getHeader().minX();
     this.maxX = shapefileReader.getHeader().maxX();
     this.minY = shapefileReader.getHeader().minY();
@@ -588,33 +589,30 @@ class Reader {
       this.fieldNames[i] = dbaseFileReader.getHeader().getFieldName(i);
       this.fieldClasses[i] = dbaseFileReader.getHeader().getFieldClass(i);
       logger.debug("field " + i + " = " + this.fieldNames[i]);
-    }    
+    }
     /*
-    // FIXME gère le SRID
-    String wkt = "PROJCS[\"unnamed\",GEOGCS[\"DHDN\",DATUM[\"Deutsches_Hauptdreiecksnetz\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],TOWGS84[606,23,413,0,0,0,0],AUTHORITY[\"EPSG\",\"6314\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4314\"]],PROJECTION[\"Cassini_Soldner\"],PARAMETER[\"latitude_of_origin\",52.41864827777778],PARAMETER[\"central_meridian\",13.62720366666667],PARAMETER[\"false_easting\",40000],PARAMETER[\"false_northing\",10000],UNIT[\"Meter\",1]]";
-    // String wkt ="PROJCS[\"NAD_1983_StatePlane_Massachusetts_Mainland_FIPS_2001\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\", 6378137.0, 298.257222101]],PRIMEM[\"Greenwich\", 0.0], UNIT[\"degree\", 0.017453292519943295],AXIS[\"Longitude\", EAST],AXIS[\"Latitude\", NORTH]],PROJECTION[\"Lambert_Conformal_Conic\"], PARAMETER[\"central_meridian\", -71.5],PARAMETER[\"latitude_of_origin\", 41.0],PARAMETER[\"standard_parallel_1\", 41.71666666666667],PARAMETER[\"scale_factor\", 1.0],PARAMETER[\"false_easting\", 200000.0],PARAMETER[\"false_northing\", 750000.0],PARAMETER[\"standard_parallel_2\", 42.68333333333334],UNIT[\"m\", 1.0],AXIS[\"x\", EAST],AXIS[\"y\", NORTH]] ";
-    	CoordinateReferenceSystem example;
-		try {
-			System.out.println(GeoTools.getVersion());
-			example = CRS.parseWKT(wkt);
-		} catch (FactoryException e3) {
-			// TODO Auto-generated catch block
-			e3.printStackTrace();
-		}
-  System.out.println(prjFileReader.getCoodinateSystem());
-    System.out.println("code = "
-     + prjFileReader.getCoodinateSystem().getName().getCode());
-     System.out.println("SRS="
-     + CRS.toSRS(prjFileReader.getCoodinateSystem()));
-
-      try { System.out.println("SRS="+CRS.lookupIdentifier(prjFileReader
-      .getCoodinateSystem(),true));
-      System.out.println("SRS="+CRS.lookupEpsgCode(prjFileReader
-      .getCoodinateSystem(),true)); } catch (FactoryException e1) {
-      e1.printStackTrace(); }
-      */
-    if(prjFileReader != null)
-    	this.localCRS = prjFileReader.getCoodinateSystem();
+     * // FIXME gère le SRID String wkt =
+     * "PROJCS[\"unnamed\",GEOGCS[\"DHDN\",DATUM[\"Deutsches_Hauptdreiecksnetz\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],TOWGS84[606,23,413,0,0,0,0],AUTHORITY[\"EPSG\",\"6314\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4314\"]],PROJECTION[\"Cassini_Soldner\"],PARAMETER[\"latitude_of_origin\",52.41864827777778],PARAMETER[\"central_meridian\",13.62720366666667],PARAMETER[\"false_easting\",40000],PARAMETER[\"false_northing\",10000],UNIT[\"Meter\",1]]"
+     * ; // String wkt =
+     * "PROJCS[\"NAD_1983_StatePlane_Massachusetts_Mainland_FIPS_2001\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\", 6378137.0, 298.257222101]],PRIMEM[\"Greenwich\", 0.0], UNIT[\"degree\", 0.017453292519943295],AXIS[\"Longitude\", EAST],AXIS[\"Latitude\", NORTH]],PROJECTION[\"Lambert_Conformal_Conic\"], PARAMETER[\"central_meridian\", -71.5],PARAMETER[\"latitude_of_origin\", 41.0],PARAMETER[\"standard_parallel_1\", 41.71666666666667],PARAMETER[\"scale_factor\", 1.0],PARAMETER[\"false_easting\", 200000.0],PARAMETER[\"false_northing\", 750000.0],PARAMETER[\"standard_parallel_2\", 42.68333333333334],UNIT[\"m\", 1.0],AXIS[\"x\", EAST],AXIS[\"y\", NORTH]] "
+     * ; CoordinateReferenceSystem example; try {
+     * System.out.println(GeoTools.getVersion()); example = CRS.parseWKT(wkt); }
+     * catch (FactoryException e3) { // TODO Auto-generated catch block
+     * e3.printStackTrace(); }
+     * System.out.println(prjFileReader.getCoodinateSystem());
+     * System.out.println("code = " +
+     * prjFileReader.getCoodinateSystem().getName().getCode());
+     * System.out.println("SRS=" +
+     * CRS.toSRS(prjFileReader.getCoodinateSystem()));
+     * 
+     * try { System.out.println("SRS="+CRS.lookupIdentifier(prjFileReader
+     * .getCoodinateSystem(),true));
+     * System.out.println("SRS="+CRS.lookupEpsgCode(prjFileReader
+     * .getCoodinateSystem(),true)); } catch (FactoryException e1) {
+     * e1.printStackTrace(); }
+     */
+    if (prjFileReader != null)
+      this.localCRS = prjFileReader.getCoodinateSystem();
     this.geometries = new Geometry[this.nbFeatures];
     int indexFeatures = 0;
     try {
@@ -624,7 +622,7 @@ class Reader {
         try {
           this.geometries[indexFeatures] = (Geometry) record.shape();
         } catch (Exception e) {
-          //logger.error("Error for geometry of object " + entry[2]);
+          // logger.error("Error for geometry of object " + entry[2]);
           this.geometries[indexFeatures] = null;
         }
         for (int index = 0; index < this.nbFields; index++) {
@@ -632,7 +630,8 @@ class Reader {
         }
         indexFeatures++;
       }
-      logger.debug("Stopped at index " + indexFeatures + " with " + shapefileReader.hasNext() + " and " + dbaseFileReader.hasNext());
+      logger.debug("Stopped at index " + indexFeatures + " with "
+          + shapefileReader.hasNext() + " and " + dbaseFileReader.hasNext());
       shapefileReader.close();
       dbaseFileReader.close();
       if (prjFileReader != null) {
@@ -733,7 +732,8 @@ class Reader {
     }
     return GM_MultiSurface.class;
   }
-  public CoordinateReferenceSystem getCRS(){
-	  return this.localCRS;
+
+  public CoordinateReferenceSystem getCRS() {
+    return this.localCRS;
   }
 }

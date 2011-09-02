@@ -166,7 +166,7 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
 
   /**
    * Le nom du schéma
-   *
+   * 
    * @return Le nom du schéma
    */
   public String getNom() {
@@ -175,7 +175,7 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
 
   /**
    * Affecte le nom du schéma.
-   *
+   * 
    * @param nom le nom du schéma
    */
   public void setNom(String nom) {
@@ -184,7 +184,7 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
 
   /**
    * Renvoie le type de Base de données.
-   *
+   * 
    * @return le type de Base de données
    */
   public int getTypeBD() {
@@ -193,7 +193,7 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
 
   /**
    * Affecte le type de Base de données.
-   *
+   * 
    * @param typeBD le type de Base de données
    */
   public void setTypeBD(int typeBD) {
@@ -202,7 +202,7 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
 
   /**
    * Le feature type.
-   *
+   * 
    * @return le feature type
    */
   public FeatureType getFeatureType() {
@@ -211,7 +211,7 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
 
   /**
    * Affecte le feature type.
-   *
+   * 
    * @param featureType le feature type
    */
   public void setFeatureType(FeatureType featureType) {

@@ -49,57 +49,71 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 public class DirectPositionList implements IDirectPositionList {
   /** La liste des DirectPosition. */
   protected List<IDirectPosition> list = new ArrayList<IDirectPosition>(0);
+
   @Override
   public void setList(List<IDirectPosition> theList) {
     this.list = theList;
   }
+
   @Override
   public List<IDirectPosition> getList() {
     return this.list;
   }
+
   @Override
   public IDirectPosition get(int i) {
     return this.list.get(i);
   }
+
   @Override
   public void set(int i, IDirectPosition value) {
     this.list.set(i, value);
   }
+
   @Override
   public boolean add(IDirectPosition value) {
     return this.list.add(value);
   }
+
   @Override
   public void add(int i, IDirectPosition value) {
     this.list.add(i, value);
   }
+
   @Override
   public boolean addAll(IDirectPositionList theList) {
     return this.list.addAll(theList.getList());
   }
+
   @Override
   public void remove(IDirectPosition value) {
     this.list.remove(value);
   }
+
   @Override
   public void remove(int i) {
     this.list.remove(i);
   }
+
   @Override
   public void removeAll(IDirectPositionList theList) {
     this.list.removeAll(theList.getList());
   }
+
   @Override
   public void clear() {
     this.list.clear();
   }
+
   @Override
   public int size() {
     return this.list.size();
   }
+
   /** Constructeur par défaut. */
   public DirectPositionList() {
   }
+
   /**
    * Constructeur à partir d'une liste de DirectPosition. Attention, ne vérifie
    * pas que la liste passée en paramètre ne contient que des DirectPosition. Ne
@@ -108,9 +122,11 @@ public class DirectPositionList implements IDirectPositionList {
   public DirectPositionList(List<IDirectPosition> theList) {
     this.setList(theList);
   }
+
   public DirectPositionList(IDirectPosition... list) {
     this(new ArrayList<IDirectPosition>(Arrays.asList(list)));
   }
+
   @Override
   public DirectPositionList clone() {
     DirectPositionList dpl = new DirectPositionList();
@@ -119,6 +135,7 @@ public class DirectPositionList implements IDirectPositionList {
     }
     return dpl;
   }
+
   @Override
   public double[] toArray2D() {
     double[] array = new double[this.list.size() * 2];
@@ -129,6 +146,7 @@ public class DirectPositionList implements IDirectPositionList {
     }
     return array;
   }
+
   @Override
   public double[] toArray3D() {
     double[] array = new double[this.list.size() * 3];
@@ -140,6 +158,7 @@ public class DirectPositionList implements IDirectPositionList {
     }
     return array;
   }
+
   @Override
   public double[] toArrayX() {
     double[] array = new double[this.list.size()];
@@ -149,6 +168,7 @@ public class DirectPositionList implements IDirectPositionList {
     }
     return array;
   }
+
   @Override
   public double[] toArrayY() {
     double[] array = new double[this.list.size()];
@@ -158,6 +178,7 @@ public class DirectPositionList implements IDirectPositionList {
     }
     return array;
   }
+
   @Override
   public double[] toArrayZ() {
     double[] array = new double[this.list.size()];
@@ -167,6 +188,7 @@ public class DirectPositionList implements IDirectPositionList {
     }
     return array;
   }
+
   @Override
   public String toString() {
     String result = new String();
@@ -179,50 +201,62 @@ public class DirectPositionList implements IDirectPositionList {
     }
     return result.substring(0, result.length() - 1); // without the last "\n"
   }
+
   @Override
   public Iterator<IDirectPosition> iterator() {
     return this.list.iterator();
   }
+
   @Override
   public ListIterator<IDirectPosition> listIterator() {
     return this.list.listIterator();
   }
+
   @Override
   public boolean addAll(Collection<? extends IDirectPosition> c) {
     return this.addAll((DirectPositionList) c);
   }
+
   @Override
   public boolean contains(Object o) {
     return this.list.contains(o);
   }
+
   @Override
   public boolean containsAll(Collection<?> c) {
     return this.list.containsAll(c);
   }
+
   @Override
   public boolean isEmpty() {
     return this.list.isEmpty();
   }
+
   @Override
   public boolean remove(Object o) {
     return this.list.remove(o);
   }
+
   @Override
   public boolean removeAll(Collection<?> c) {
     return this.list.removeAll(c);
   }
+
   @Override
   public boolean retainAll(Collection<?> c) {
     return this.list.retainAll(c);
   }
+
   @Override
   public Object[] toArray() {
     return this.list.toArray();
   }
+
   @Override
   public <T> T[] toArray(T[] a) {
     return this.list.toArray(a);
   }
+
   @Override
   public void permuter(int i, int j) {
     if (i == j) {
@@ -238,6 +272,7 @@ public class DirectPositionList implements IDirectPositionList {
     this.remove(j);
     this.add(j, dpi);
   }
+
   @Override
   public void inverseOrdre() {
     int nb = this.size();
@@ -245,6 +280,7 @@ public class DirectPositionList implements IDirectPositionList {
       this.permuter(i, nb - 1 - i);
     }
   }
+
   @Override
   public IDirectPositionList reverse() {
     IDirectPositionList list = this.clone();

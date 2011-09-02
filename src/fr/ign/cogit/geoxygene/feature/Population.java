@@ -79,11 +79,13 @@ public class Population<Feat extends IFeature> extends
     FT_FeatureCollection<Feat> implements IPopulation<Feat> {
   /** Identifiant. Correspond au "cogitID" des tables du SGBD. */
   protected int id;
+
   @Override
   @Id
   public int getId() {
     return this.id;
   }
+
   @Override
   public void setId(int I) {
     this.id = I;
@@ -186,6 +188,7 @@ public class Population<Feat extends IFeature> extends
       DataSet.db.makePersistent(this);
     }
   }
+
   @Override
   public void chargeElements() {
     if (FT_FeatureCollection.logger.isInfoEnabled()) {
@@ -214,6 +217,7 @@ public class Population<Feat extends IFeature> extends
           .info("-- " + this.size() + " instances chargees dans la population"); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
+
   @Override
   public void chargeElementsPartie(IGeometry geom) {
     if (FT_FeatureCollection.logger.isInfoEnabled()) {
@@ -251,6 +255,7 @@ public class Population<Feat extends IFeature> extends
           .info("   " + this.size() + " instances chargees dans la population"); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
+
   @Override
   public void chargeElementsProches(IPopulation<Feat> pop, double dist) {
     if (FT_FeatureCollection.logger.isInfoEnabled()) {
@@ -289,6 +294,7 @@ public class Population<Feat extends IFeature> extends
           .info("-- " + this.size() + " instances chargees dans la population"); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
+
   @Override
   public IPopulation<Feat> selectionElementsProchesGenerale(
       IPopulation<Feat> pop, double dist) {
@@ -358,10 +364,12 @@ public class Population<Feat extends IFeature> extends
     }
     return popResultat;
   }
+
   @Override
   public void chargeElementsPartie(IExtraction zoneExtraction) {
     this.chargeElementsPartie(zoneExtraction.getGeom());
   }
+
   @Override
   public void detruitPopulation() {
     if (!this.getPersistant()) {
@@ -373,6 +381,7 @@ public class Population<Feat extends IFeature> extends
     }
     DataSet.db.deletePersistent(this);
   }
+
   // /////////////////////////////////////////////////////
   // Attributs décrivant la population
   // /////////////////////////////////////////////////////
@@ -383,10 +392,12 @@ public class Population<Feat extends IFeature> extends
    * "Tronçon de route"
    */
   protected String nom;
+
   @Override
   public String getNom() {
     return this.nom;
   }
+
   @Override
   public void setNom(String S) {
     this.nom = S;
@@ -400,10 +411,12 @@ public class Population<Feat extends IFeature> extends
   // Sinon, cela pose des problèmes au chargement (un thème persistant chargé a
   // son attribut persistant à false).
   protected boolean persistant = true;
+
   @Override
   public boolean getPersistant() {
     return this.persistant;
   }
+
   @Override
   public void setPersistant(boolean b) {
     this.persistant = b;
@@ -417,11 +430,13 @@ public class Population<Feat extends IFeature> extends
    * DataSet).
    */
   protected IDataSet dataSet;
+
   @Override
   @ManyToOne
   public IDataSet getDataSet() {
     return this.dataSet;
   }
+
   @Override
   public void setDataSet(IDataSet O) {
     IDataSet old = this.dataSet;
@@ -440,10 +455,12 @@ public class Population<Feat extends IFeature> extends
   }
 
   private int dataSetID;
+
   @Override
   public void setDataSetID(int I) {
     this.dataSetID = I;
   }
+
   @Override
   @Transient
   public int getDataSetID() {
@@ -462,10 +479,12 @@ public class Population<Feat extends IFeature> extends
   }
 
   private static int idNouvelElement = 0;
+
   @Override
   public Feat nouvelElement() {
     return this.nouvelElement(null);
   }
+
   @Override
   public Feat nouvelElement(IGeometry geom) {
     try {
@@ -493,6 +512,7 @@ public class Population<Feat extends IFeature> extends
       return null;
     }
   }
+
   @Override
   public Feat nouvelElement(Class<?>[] signature, Object[] param) {
     try {

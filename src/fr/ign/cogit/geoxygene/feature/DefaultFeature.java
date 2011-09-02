@@ -27,6 +27,7 @@
 
 package fr.ign.cogit.geoxygene.feature;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
@@ -271,4 +272,15 @@ public class DefaultFeature extends AbstractFeature {
        */
     }
   }
+
+  @Override
+  public IFeature cloneGeom() throws CloneNotSupportedException {
+    DefaultFeature clone = new DefaultFeature((IGeometry)this.getGeom().clone());
+    clone.setSchema(this.getSchema());
+    clone.setAttributes(this.getAttributes());
+    clone.setFeatureType(this.getFeatureType());
+    
+    return clone;
+  }
+
 }

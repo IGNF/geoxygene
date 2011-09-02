@@ -30,7 +30,7 @@ import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
 
 /**
  * @author Sandrine Balley
- *
+ * 
  */
 public class AttributeType implements GF_AttributeType {
 
@@ -363,18 +363,22 @@ public class AttributeType implements GF_AttributeType {
   public int sizeConstraint() {
     return 0;
   }
-  
-  /** Renvoie une valeur énumérée appelée par son nom.*/
-  public FC_FeatureAttributeValue getFeatureAttributeValueByName(String name){
+
+  /** Renvoie une valeur énumérée appelée par son nom. */
+  public FC_FeatureAttributeValue getFeatureAttributeValueByName(String name) {
     FC_FeatureAttributeValue result = null;
-    if (this.getValueDomainType()){
+    if (this.getValueDomainType()) {
       List<FC_FeatureAttributeValue> mesValeurs = this.getValuesDomain();
       for (FC_FeatureAttributeValue fav : mesValeurs) {
-        if(fav.getLabel().equalsIgnoreCase(name)){result=fav;return result;}
-        else{continue;}
+        if (fav.getLabel().equalsIgnoreCase(name)) {
+          result = fav;
+          return result;
+        } else {
+          continue;
+        }
       }
     }
     return result;
-    
+
   }
 }

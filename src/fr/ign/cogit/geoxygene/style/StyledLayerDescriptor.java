@@ -99,7 +99,7 @@ public class StyledLayerDescriptor {
     super();
   }
 
-  @XmlElements( { @XmlElement(name = "NamedLayer", type = NamedLayer.class),
+  @XmlElements({ @XmlElement(name = "NamedLayer", type = NamedLayer.class),
       @XmlElement(name = "UserLayer", type = UserLayer.class) })
   private List<Layer> layers = new ArrayList<Layer>(0);
 
@@ -266,7 +266,8 @@ public class StyledLayerDescriptor {
     t.getFill().setFill(Color.blue);
     d.getThematicClass().add(t);
     s.getSymbolizers().add(d);
-    layer.getStyles().get(0).getFeatureTypeStyles().get(0).getRules().get(0).getSymbolizers().add(s);
+    layer.getStyles().get(0).getFeatureTypeStyles().get(0).getRules().get(0)
+        .getSymbolizers().add(s);
     sld.add(layer);
     System.out.println(sld);
   }
@@ -438,38 +439,38 @@ public class StyledLayerDescriptor {
       Class<? extends IGeometry> geometryType) {
 
     // Selection of suitables colors from the COGIT reference colors.
-//      ColorReferenceSystem crs = ColorReferenceSystem
-//          .unmarshall(ColorReferenceSystem.class.getResource(
-//              "/ColorReferenceSystem.xml").getFile());
+    // ColorReferenceSystem crs = ColorReferenceSystem
+    // .unmarshall(ColorReferenceSystem.class.getResource(
+    // "/ColorReferenceSystem.xml").getFile());
     ColorReferenceSystem crs = ColorReferenceSystem
         .unmarshall(ColorReferenceSystem.class.getResource(
             "/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
 
-      List<ColorimetricColor> colors = new ArrayList<ColorimetricColor>(0);
-      for (int i = 0; i < 12; i++) {
-        for (ColorimetricColor c : crs.getSlice(0, i)) {
-          if (c.getLightness() != 1) {
-            colors.add(c);
-          }
+    List<ColorimetricColor> colors = new ArrayList<ColorimetricColor>(0);
+    for (int i = 0; i < 12; i++) {
+      for (ColorimetricColor c : crs.getSlice(0, i)) {
+        if (c.getLightness() != 1) {
+          colors.add(c);
         }
       }
-      for (int i = 0; i < 7; i++) {
-        for (ColorimetricColor c : crs.getSlice(1, i)) {
-          if (c.getLightness() != 1) {
-            colors.add(c);
-          }
+    }
+    for (int i = 0; i < 7; i++) {
+      for (ColorimetricColor c : crs.getSlice(1, i)) {
+        if (c.getLightness() != 1) {
+          colors.add(c);
         }
       }
+    }
 
-      // The color will differ from the colors of the existing layers.
-      List<Integer> randoms = new ArrayList<Integer>(0);
+    // The color will differ from the colors of the existing layers.
+    List<Integer> randoms = new ArrayList<Integer>(0);
+    randoms.add((int) (colors.size() * Math.random()));
+    while (this.existColor(colors.get(randoms.size() - 1))) {
       randoms.add((int) (colors.size() * Math.random()));
-      while (this.existColor(colors.get(randoms.size() - 1))) {
-        randoms.add((int) (colors.size() * Math.random()));
-      }
+    }
 
-      return this.createLayer(layerName, geometryType, colors.get(
-          randoms.get(randoms.size() - 1)).toColor());
+    return this.createLayer(layerName, geometryType,
+        colors.get(randoms.get(randoms.size() - 1)).toColor());
   }
 
   /**
@@ -521,7 +522,7 @@ public class StyledLayerDescriptor {
     return this.createLayer(layerName, geometryType, strokeColor, fillColor,
         opacity, 1.0f);
   }
- 
+
   /**
    * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de
    * trait, la couleur de remplissage, l'opacité et la largeur de trait donnés
@@ -579,7 +580,7 @@ public class StyledLayerDescriptor {
     style.getFeatureTypeStyles().add(fts);
     return style;
   }
-  
+
   public Rule createRule(Class<? extends IGeometry> geometryType,
       Color strokeColor, Color fillColor, float strokeOpacity,
       float fillOpacity, float strokeWidth) {
@@ -646,8 +647,8 @@ public class StyledLayerDescriptor {
   public Layer createLayerWithBorder(String layerName, Color mainStrokeColor,
       Color borderStrokeColor, float mainStrokeWidth, float borderStrokeWidth) {
     if (mainStrokeWidth > borderStrokeWidth) {
-      System.out.println("Le layer n'a pas été créé: "                  //$NON-NLS-1$
-          + "La largeur du trait central ne peut "                      //$NON-NLS-1$
+      System.out.println("Le layer n'a pas été créé: " //$NON-NLS-1$
+          + "La largeur du trait central ne peut " //$NON-NLS-1$
           + "pas être plus grande que celle du " + "trait de bordure"); //$NON-NLS-1$ //$NON-NLS-2$
       return null;
     }
