@@ -14,5 +14,6 @@ public interface ICompositePoint extends IComposite, IPoint {
   public abstract int sizeGenerator();
 
   /** Renvoie le DirectPosition du point. */
+  @Override
   public abstract IDirectPosition getPosition();
 }

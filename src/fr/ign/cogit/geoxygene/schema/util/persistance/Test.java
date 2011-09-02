@@ -355,18 +355,16 @@ public class Test {
     // le champ java d'implémentation :
 
     // création d'une assoication
-    schemaJeu.createFeatureAssociation("acces",
-        (FeatureType) schemaJeu.getFeatureTypeI(0),
-        (FeatureType) schemaJeu.getFeatureTypeI(1), "donne acces à",
-        "est accedé par");
+    schemaJeu.createFeatureAssociation("acces", schemaJeu.getFeatureTypeI(0),
+        schemaJeu.getFeatureTypeI(1), "donne acces à", "est accedé par");
 
     // renseignement des classes et champs java d'implémentation
-    ((FeatureType) schemaJeu.getFeatureTypeByName("Tronçon de route"))
+    (schemaJeu.getFeatureTypeByName("Tronçon de route"))
         .setNomClasse("donnees.bdcarto.TronconRoute");
-    ((FeatureType) schemaJeu.getFeatureTypeByName("batiment"))
+    (schemaJeu.getFeatureTypeByName("batiment"))
         .setNomClasse("donnees.bdcarto.Batiment");
-    ((FeatureType) schemaJeu.getFeatureTypeByName("batiment"))
-        .getFeatureAttributeByName("utilisation").setNomField("fonction");
+    (schemaJeu.getFeatureTypeByName("batiment")).getFeatureAttributeByName(
+        "utilisation").setNomField("fonction");
 
     // lecture du schéma créé
     System.out.println("ft dans ce schema : " + schemaJeu.getFeatureTypes());

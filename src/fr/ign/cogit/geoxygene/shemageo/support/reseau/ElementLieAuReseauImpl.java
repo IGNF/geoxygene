@@ -41,6 +41,7 @@ public class ElementLieAuReseauImpl extends DefaultFeature implements
    */
   Collection<ElementDuReseau> elementsDuReseau = new FT_FeatureCollection<ElementDuReseau>();
 
+  @Override
   public Collection<ElementDuReseau> getElementsDuReseau() {
     return this.elementsDuReseau;
   }

@@ -54,6 +54,7 @@ public class TriangulationPlugin implements GeOxygeneApplicationPlugin,
    * Initialize the plugin.
    * @param application the application
    */
+  @Override
   public final void initialize(final GeOxygeneApplication application) {
     this.application = application;
     JMenu menu = new JMenu("Triangulation" //$NON-NLS-1$

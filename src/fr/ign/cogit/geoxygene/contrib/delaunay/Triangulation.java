@@ -138,8 +138,8 @@ public class Triangulation extends AbstractTriangulation {
       Class<?>[] signaturef = { this.getPopNoeuds().getClasse(),
           this.getPopNoeuds().getClasse(), this.getPopNoeuds().getClasse() };
       Object[] paramf = new Object[3];
-      if (Triangulation.logger.isDebugEnabled()) {
-        Triangulation.logger.debug(I18N
+      if (CarteTopo.logger.isDebugEnabled()) {
+        CarteTopo.logger.debug(I18N
             .getString("Triangulation.TriangleExportStart")); //$NON-NLS-1$
       }
       for (int i = 0; i < this.jout.numberoftriangles; i++) {

@@ -48,12 +48,12 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IDataSet;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
@@ -421,7 +421,8 @@ public class ShapefileReader implements Runnable {
           .getGeometryType();
       try {
         if (reader.geometries[indexFeature] == null) {
-          logger.error("null geometry for object " + indexFeature);
+          ShapefileReader.logger.error("null geometry for object "
+              + indexFeature);
           ShapefileReader.logger.error(I18N.getString("ShapefileReader" + //$NON-NLS-1$
               ".NullGeometryObjectIGnored")); //$NON-NLS-1$
         } else {
@@ -458,7 +459,7 @@ public class ShapefileReader implements Runnable {
             + I18N.getString("ShapefileReader.ObjectIgnored")); //$NON-NLS-1$
       }
     }
-    logger.debug(population.size() + " features created for "
+    ShapefileReader.logger.debug(population.size() + " features created for "
         + reader.getNbFeatures());
     ShapefileReader.fireActionPerformed(new ActionEvent(population, 2,
         "Finished", reader.getNbFeatures())); //$NON-NLS-1$
@@ -588,7 +589,7 @@ class Reader {
     for (int i = 0; i < this.nbFields; i++) {
       this.fieldNames[i] = dbaseFileReader.getHeader().getFieldName(i);
       this.fieldClasses[i] = dbaseFileReader.getHeader().getFieldClass(i);
-      logger.debug("field " + i + " = " + this.fieldNames[i]);
+      Reader.logger.debug("field " + i + " = " + this.fieldNames[i]);
     }
     /*
      * // FIXME gère le SRID String wkt =
@@ -611,8 +612,9 @@ class Reader {
      * .getCoodinateSystem(),true)); } catch (FactoryException e1) {
      * e1.printStackTrace(); }
      */
-    if (prjFileReader != null)
+    if (prjFileReader != null) {
       this.localCRS = prjFileReader.getCoodinateSystem();
+    }
     this.geometries = new Geometry[this.nbFeatures];
     int indexFeatures = 0;
     try {
@@ -630,7 +632,7 @@ class Reader {
         }
         indexFeatures++;
       }
-      logger.debug("Stopped at index " + indexFeatures + " with "
+      Reader.logger.debug("Stopped at index " + indexFeatures + " with "
           + shapefileReader.hasNext() + " and " + dbaseFileReader.hasNext());
       shapefileReader.close();
       dbaseFileReader.close();

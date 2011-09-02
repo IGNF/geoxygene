@@ -65,11 +65,13 @@ public class ChampContinuImpl implements ChampContinu {
   private Collection<ElementCaracteristique> elementsCaracteristiques = new FT_FeatureCollection<ElementCaracteristique>();
 
   // @Override
+  @Override
   @Transient
   public Collection<ElementCaracteristique> getElementsCaracteristiques() {
     return this.elementsCaracteristiques;
   }
 
+  @Override
   public void setElementsCaracteristiques(
       Collection<ElementCaracteristique> elementsCaracteristiques) {
     this.elementsCaracteristiques = elementsCaracteristiques;
@@ -80,11 +82,13 @@ public class ChampContinuImpl implements ChampContinu {
    */
   private Collection<Isoligne> isolignes = new FT_FeatureCollection<Isoligne>();
 
+  @Override
   @OneToMany(mappedBy = "champContinu", targetEntity = IsoligneImpl.class)
   public Collection<Isoligne> getIsolignes() {
     return this.isolignes;
   }
 
+  @Override
   public void setIsolignes(Collection<Isoligne> isolignes) {
     this.isolignes = isolignes;
   }

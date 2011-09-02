@@ -982,6 +982,7 @@ public class SchemaConceptuelProduit implements SchemaConceptuel<FeatureType> {
    * Cette méthode s'utilise au chargement d'un schéma ISO: elle met à jour les
    * listes non persistentes memberOf et linkBetween.
    */
+  @Override
   public void initNM() {
 
     Iterator<AssociationRole> iTrol = this.getAssociationRoles().iterator();

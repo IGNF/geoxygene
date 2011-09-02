@@ -30,6 +30,7 @@ public abstract class ElementDuReseauImpl extends DefaultFeature implements
    */
   private Collection<ElementDuReseau> elementsLies = new FT_FeatureCollection<ElementDuReseau>();
 
+  @Override
   public Collection<ElementDuReseau> getElementsLies() {
     return this.elementsLies;
   }
@@ -39,6 +40,7 @@ public abstract class ElementDuReseauImpl extends DefaultFeature implements
    */
   private Collection<AgregatReseau> agregats = new ArrayList<AgregatReseau>();
 
+  @Override
   public Collection<AgregatReseau> getAgregats() {
     return this.agregats;
   }
@@ -48,10 +50,12 @@ public abstract class ElementDuReseauImpl extends DefaultFeature implements
    */
   private Reseau reseau;
 
+  @Override
   public Reseau getReseau() {
     return this.reseau;
   }
 
+  @Override
   public void setReseau(Reseau reseau) {
     this.reseau = reseau;
   }
@@ -61,6 +65,7 @@ public abstract class ElementDuReseauImpl extends DefaultFeature implements
    */
   private Collection<ElementLieAuReseau> elementLieAuReseau;
 
+  @Override
   public Collection<ElementLieAuReseau> getElementsLiesAuReseau() {
     return this.elementLieAuReseau;
   }

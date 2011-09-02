@@ -113,7 +113,7 @@ public class GUIConfigOJBXMLJava extends JFrame {
     this.selectedValues[4] = this.mappingFileName;
     this.selectedValues[5] = this.motherClasseMappingFileName;
     if (this.selectedValues[5].trim().equals("")) {
-      this.selectedValues[5] = null; //$NON-NLS-1$
+      this.selectedValues[5] = null;
     }
   }
 
@@ -131,6 +131,7 @@ public class GUIConfigOJBXMLJava extends JFrame {
     final JTextField dataDirectoryTextField = new JTextField(this.dataDirectory);
     JButton dataDirectoryChoiceButton = new JButton("..."); //$NON-NLS-1$
     dataDirectoryChoiceButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         dataDirectoryTextField.setText(GUIConfigOJBXMLJava.selectRepertoire());
       }
@@ -147,6 +148,7 @@ public class GUIConfigOJBXMLJava extends JFrame {
         this.mappingDirectory);
     JButton mappingDirectoryChoiceButton = new JButton("..."); //$NON-NLS-1$
     mappingDirectoryChoiceButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         mappingDirectoryTextField.setText(GUIConfigOJBXMLJava
             .selectRepertoire());
@@ -189,6 +191,7 @@ public class GUIConfigOJBXMLJava extends JFrame {
     JButton okButton = new JButton("Ok");
     okButton.setActionCommand("Ok");
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         GUIConfigOJBXMLJava.this.packageName = packageNameTextField.getText();
         GUIConfigOJBXMLJava.this.dataDirectory = dataDirectoryTextField
@@ -207,6 +210,7 @@ public class GUIConfigOJBXMLJava extends JFrame {
 
     JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         GUIConfigOJBXMLJava.this.selectedValues[2] = null; // package name
         dialog.dispose();

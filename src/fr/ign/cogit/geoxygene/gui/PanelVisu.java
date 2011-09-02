@@ -62,7 +62,6 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IDataSet;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionEvent;
 import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionListener;
@@ -443,6 +442,7 @@ public class PanelVisu extends JPanel implements Printable, ChangeListener,
                                                            // millisecondes
   protected Timer repaintTimer = new Timer(
       PanelVisu.tempsRafraichissementAutomatique, new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           if (PanelVisu.logger.isTraceEnabled()) {
             PanelVisu.logger.trace("repaintTimer activé");
@@ -1131,6 +1131,7 @@ class MouseListenerGeox implements MouseListener {
   private final static Logger logger = Logger.getLogger(PanelVisu.class
       .getName());
 
+  @Override
   public void mousePressed(MouseEvent e) {
     if (e.getButton() == 0) {
       return;
@@ -1198,6 +1199,7 @@ class MouseListenerGeox implements MouseListener {
     }
   }
 
+  @Override
   public void mouseReleased(MouseEvent e) {
     if (e.getButton() == 0) {
       return;
@@ -1220,6 +1222,7 @@ class MouseListenerGeox implements MouseListener {
     }
   }
 
+  @Override
   public void mouseClicked(MouseEvent e) {
     PanelVisu pv = (PanelVisu) e.getSource();
 
@@ -1247,9 +1250,11 @@ class MouseListenerGeox implements MouseListener {
     }
   }
 
+  @Override
   public void mouseEntered(MouseEvent e) {
   }
 
+  @Override
   public void mouseExited(MouseEvent e) {
     this.mouseReleased(e);
   }
@@ -1279,6 +1284,7 @@ class MouseWheelListenerGeox implements MouseWheelListener {
  */
 class MouseMotionListenerGeox implements MouseMotionListener {
 
+  @Override
   public void mouseMoved(MouseEvent e) {
     PanelVisu pv = (PanelVisu) e.getSource();
     if (pv.suivrePositionCurseur) {
@@ -1290,6 +1296,7 @@ class MouseMotionListenerGeox implements MouseMotionListener {
     }
   }
 
+  @Override
   public void mouseDragged(MouseEvent e) {
   }
 }
@@ -1302,6 +1309,7 @@ class KeyListenerGeox implements KeyListener {
   private final static Logger logger = Logger.getLogger(PanelVisu.class
       .getName());
 
+  @Override
   public void keyPressed(KeyEvent e) {
     if (KeyListenerGeox.logger.isTraceEnabled()) {
       KeyListenerGeox.logger.trace("appui sur touche du clavier "
@@ -1364,9 +1372,11 @@ class KeyListenerGeox implements KeyListener {
     }
   }
 
+  @Override
   public void keyReleased(KeyEvent e) {
   }
 
+  @Override
   public void keyTyped(KeyEvent e) {
   }
 }

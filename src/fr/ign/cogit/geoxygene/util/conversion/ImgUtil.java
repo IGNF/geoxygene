@@ -375,7 +375,7 @@ public class ImgUtil {
       return ImgUtil.isEmpty((IPolygon) geom);
     }
     if (geom instanceof ILineString) {
-      return ImgUtil.isEmpty((ILineString) geom);
+      return ImgUtil.isEmpty(geom);
     }
     if (geom instanceof IAggregate) {
       return ImgUtil.isEmpty((IAggregate) geom);

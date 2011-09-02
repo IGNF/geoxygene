@@ -114,8 +114,8 @@ public class CharacteristicShapeJTSPlugin implements
     newFeatureTypeExterieurs.setGeometryType(GM_Polygon.class);
     popTriangles.setFeatureType(newFeatureTypeExterieurs);
     DataSet.getInstance().addPopulation(popTriangles);
-    logger.info(popTriangles.size());
-    logger.info(characteristicShape);
+    CharacteristicShapeJTSPlugin.logger.info(popTriangles.size());
+    CharacteristicShapeJTSPlugin.logger.info(characteristicShape);
     project.addFeatureCollection(popTriangles, popTriangles.getNom());
   }
 }

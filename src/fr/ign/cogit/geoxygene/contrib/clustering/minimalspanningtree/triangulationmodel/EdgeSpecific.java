@@ -21,9 +21,9 @@ public class EdgeSpecific extends ArcDelaunay {
     DirectPositionList dpl = new DirectPositionList();
     dpl.add(node.getCoord());
     dpl.add(node2.getCoord());
-    setCoord(dpl);
-    setNoeudIni(node);
-    setNoeudFin(node2);
+    this.setCoord(dpl);
+    this.setNoeudIni(node);
+    this.setNoeudFin(node2);
   }
 
 }

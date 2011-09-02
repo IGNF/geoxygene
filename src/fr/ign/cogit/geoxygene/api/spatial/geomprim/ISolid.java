@@ -9,8 +9,10 @@ public interface ISolid extends IPrimitive {
    * NON IMPLEMENTE (renvoie 0.0). Aire. Dans la norme, le résultat est de type
    * Area.
    * */
+  @Override
   public abstract double area();
 
+  @Override
   public abstract IDirectPositionList coord();
 
   /**
@@ -24,6 +26,7 @@ public interface ISolid extends IPrimitive {
    * GM_SolidBoundary, c'est-à-dire un shell extérieur et éventuellement un
    * (des) shell(s) intérieur(s).
    */
+  @Override
   public abstract ISolidBoundary boundary();
 
   /**
@@ -36,5 +39,6 @@ public interface ISolid extends IPrimitive {
   /**
    * Permet de renvoyer une chaine de caractère décrivant un solide
    */
+  @Override
   public abstract String toString();
 }

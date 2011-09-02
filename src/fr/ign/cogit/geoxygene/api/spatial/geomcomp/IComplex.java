@@ -50,5 +50,6 @@ public interface IComplex extends IGeometry {
   public abstract boolean isMaximal();
 
   /** Marche pas. Renvoie null. */
+  @Override
   public abstract IDirectPositionList coord();
 }

@@ -87,7 +87,7 @@ public class FileChooser {
   private JFileChooser fileChooser;
 
   public JFileChooser getFileChooser() {
-    return fileChooser;
+    return this.fileChooser;
   }
 
   public File getFile(Component parent) {

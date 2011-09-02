@@ -201,6 +201,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
     return sfc;
   }
 
+  @Override
   public void closeResources(Statement stmt, ResultSet rs) {
     try {
       this.m_platform.beforeStatementClose(stmt, rs);
@@ -232,6 +233,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   /**
    * binds the Identities Primary key values to the statement
    */
+  @Override
   public void bindDelete(PreparedStatement stmt, Identity oid,
       ClassDescriptor cld) throws SQLException {
     Object[] pkValues = oid.getPrimaryKeyValues();
@@ -253,6 +255,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   /**
    * binds the objects primary key and locking values to the statement, BRJ
    */
+  @Override
   public void bindDelete(PreparedStatement stmt, ClassDescriptor cld, Object obj)
       throws SQLException {
     if (cld.getDeleteProcedure() != null) {
@@ -500,6 +503,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   /**
    * bind a Query based Select Statement
    */
+  @Override
   public int bindStatement(PreparedStatement stmt, Query query,
       ClassDescriptor cld, int param) throws SQLException {
     int result;
@@ -566,6 +570,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   /**
    * binds the values of the object obj to the statements parameters
    */
+  @Override
   public void bindInsert(PreparedStatement stmt, ClassDescriptor cld, Object obj)
       throws java.sql.SQLException {
     ValueContainer[] values;
@@ -613,6 +618,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   /**
    * binds the Identities Primary key values to the statement
    */
+  @Override
   public void bindSelect(PreparedStatement stmt, Identity oid,
       ClassDescriptor cld) throws SQLException {
     ValueContainer[] values = null;
@@ -643,6 +649,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   /**
    * binds the values of the object obj to the statements parameters
    */
+  @Override
   public void bindUpdate(PreparedStatement stmt, ClassDescriptor cld, Object obj)
       throws java.sql.SQLException {
     if (cld.getUpdateProcedure() != null) {
@@ -729,6 +736,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
    * parameter index
    * @return the next parameter index
    */
+  @Override
   public int bindValues(PreparedStatement stmt, ValueContainer[] values,
       int index) throws SQLException {
     if (values != null) {
@@ -744,6 +752,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   /**
    * return a prepared DELETE Statement fitting for the given ClassDescriptor
    */
+  @Override
   public PreparedStatement getDeleteStatement(ClassDescriptor cld)
       throws PersistenceBrokerSQLException, PersistenceBrokerException {
     try {
@@ -762,6 +771,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
    * return a generic Statement for the given ClassDescriptor. Never use this
    * method for UPDATE/INSERT/DELETE if you want to use the batch mode.
    */
+  @Override
   public Statement getGenericStatement(ClassDescriptor cds, boolean scrollable)
       throws PersistenceBrokerException {
     try {
@@ -776,6 +786,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   /**
    * return a prepared Insert Statement fitting for the given ClassDescriptor
    */
+  @Override
   public PreparedStatement getInsertStatement(ClassDescriptor cds)
       throws PersistenceBrokerSQLException, PersistenceBrokerException {
     try {
@@ -793,6 +804,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   /**
    * return a generic Statement for the given ClassDescriptor
    */
+  @Override
   public PreparedStatement getPreparedStatement(ClassDescriptor cds,
       String sql, boolean scrollable) throws PersistenceBrokerException {
     try {
@@ -807,6 +819,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   /**
    * return a prepared Select Statement for the given ClassDescriptor
    */
+  @Override
   public PreparedStatement getSelectByPKStatement(ClassDescriptor cds)
       throws PersistenceBrokerSQLException, PersistenceBrokerException {
     try {
@@ -824,6 +837,7 @@ public class GeOxygeneStatementManager implements StatementManagerIF {
   /**
    * return a prepared Update Statement fitting to the given ClassDescriptor
    */
+  @Override
   public PreparedStatement getUpdateStatement(ClassDescriptor cds)
       throws PersistenceBrokerSQLException, PersistenceBrokerException {
     try {

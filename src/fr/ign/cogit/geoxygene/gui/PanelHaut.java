@@ -39,6 +39,7 @@ public final class PanelHaut extends JPanel {
     this.setFont(new Font("Arial", Font.PLAIN, 9));
 
     this.bRafraichir.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent arg0) { /*
                                                        * getFrameMirage().
                                                        * getPanelVisu
@@ -51,6 +52,7 @@ public final class PanelHaut extends JPanel {
     this.add(this.bRafraichir);
 
     this.cRafraichir.addItemListener(new ItemListener() {
+      @Override
       public void itemStateChanged(ItemEvent e) {
         if (PanelHaut.this.cRafraichir.isSelected()) {
           // activer le rafraichissement

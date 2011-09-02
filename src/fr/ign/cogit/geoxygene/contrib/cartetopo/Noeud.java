@@ -507,15 +507,17 @@ public class Noeud extends ElementCarteTopo {
     double dist;
     try {
       if (this.getCarteTopo() == null) {
-        logger.error("ATTENTION : le noeud " + this
+        Noeud.logger.error("ATTENTION : le noeud " + this
             + " ne fait pas partie d'une carte topo");
-        logger.error("            Impossible de calculer un plus court chemin");
+        Noeud.logger
+            .error("            Impossible de calculer un plus court chemin");
         return null;
       }
       if (this.getCarteTopo().getPopGroupes() == null) {
-        logger.error("ATTENTION : le noeud " + this
+        Noeud.logger.error("ATTENTION : le noeud " + this
             + " fait partie d'une carte topo sans population de groupes");
-        logger.error("            Impossible de calculer un plus court chemin");
+        Noeud.logger
+            .error("            Impossible de calculer un plus court chemin");
         return null;
       }
       Groupe plusCourtChemin = this.getCarteTopo().getPopGroupes()
@@ -616,7 +618,7 @@ public class Noeud extends ElementCarteTopo {
       plusCourtChemin.setListeNoeuds(noeudsFinaux);
       return plusCourtChemin;
     } catch (Exception e) {
-      logger.error("----- ERREUR dans calcul de plus court chemin.");
+      Noeud.logger.error("----- ERREUR dans calcul de plus court chemin.");
       e.printStackTrace();
       return null;
     }
@@ -987,7 +989,7 @@ public class Noeud extends ElementCarteTopo {
    * @return the distance
    */
   public double getDistance() {
-    return distance;
+    return this.distance;
   }
 
   /**
@@ -1002,10 +1004,11 @@ public class Noeud extends ElementCarteTopo {
    * @param arc
    */
   public void enleveArc(Arc arc) {
-    if (this.entrants.contains(arc))
+    if (this.entrants.contains(arc)) {
       this.entrants.remove(arc);
-    else
+    } else {
       this.sortants.remove(arc);
+    }
   }
 
   /**
@@ -1014,10 +1017,12 @@ public class Noeud extends ElementCarteTopo {
    */
   public Noeud copy() {
     Noeud noeud = new Noeud(this.getCoord());
-    for (Arc a : this.getEntrants())
+    for (Arc a : this.getEntrants()) {
       noeud.addEntrant(a);
-    for (Arc a : this.getSortants())
+    }
+    for (Arc a : this.getSortants()) {
       noeud.addSortant(a);
+    }
     noeud.setGeometrie(new GM_Point(this.getCoord()));
     return noeud;
   }

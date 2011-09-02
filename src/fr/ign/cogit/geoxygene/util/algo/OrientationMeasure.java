@@ -291,15 +291,16 @@ public class OrientationMeasure {
     DirectPosition v2 = null;
     // if nbVert > 2, get the second vertex in geometry
     if (nbVert > 2) {
-      if (coordIni.equals(point))
+      if (coordIni.equals(point)) {
         v2 = (DirectPosition) line.coord().get(2);
-      else
+      } else {
         v2 = (DirectPosition) line.coord().get(nbVert - 3);
+      }
     } else {
       // get the first vertex on geometry
-      if (coordIni.equals(point))
+      if (coordIni.equals(point)) {
         v2 = (DirectPosition) line.coord().get(1);
-      else {
+      } else {
         v2 = (DirectPosition) line.coord().get(nbVert - 2);
       }
     }

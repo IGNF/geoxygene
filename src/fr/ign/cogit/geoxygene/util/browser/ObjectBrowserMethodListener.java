@@ -69,6 +69,7 @@ public class ObjectBrowserMethodListener implements ActionListener {
    * ActionListener, afin de déclencher l'affichage de l'argument de retour de
    * la méthode (instance de la classe ObjectBrowserPrimitiveFrame).
    */
+  @Override
   @SuppressWarnings("unused")
   public void actionPerformed(ActionEvent e) {
 

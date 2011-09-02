@@ -161,6 +161,7 @@ public class GUIChargementDonnees extends JPanel {
       if (this.previousPanel() != null) {
         final JButton previousButton = new JButton("Précédent");
         previousButton.addActionListener(new ActionListener() {
+          @Override
           public void actionPerformed(ActionEvent e) {
             GUIChargementDonnees.this.previousDialog();
           }
@@ -171,6 +172,7 @@ public class GUIChargementDonnees extends JPanel {
         c.anchor = GridBagConstraints.EAST;
         this.finishButton = new JButton("Finir");
         this.finishButton.addActionListener(new ActionListener() {
+          @Override
           public void actionPerformed(ActionEvent e) {
             GUIChargementDonnees.this.finish();
           }
@@ -202,6 +204,7 @@ public class GUIChargementDonnees extends JPanel {
         c.anchor = GridBagConstraints.EAST;
         this.nextButton = new JButton("Suivant");
         this.nextButton.addActionListener(new ActionListener() {
+          @Override
           public void actionPerformed(ActionEvent e) {
             GUIChargementDonnees.this.nextDialog(GeoPanel.this.nextPanel());
           }
@@ -388,6 +391,7 @@ public class GUIChargementDonnees extends JPanel {
     });
 
     choixFichierButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (choixFichier.showOpenDialog(GUIChargementDonnees.this) == JFileChooser.APPROVE_OPTION) {
           chargementText.setText(choixFichier.getSelectedFile().getName());
@@ -559,6 +563,7 @@ public class GUIChargementDonnees extends JPanel {
     final JButton nextButton = new JButton("Suite");
 
     nextButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         String command = group.getSelection().getActionCommand();
         if (command == rechargerCommand) {
@@ -588,6 +593,7 @@ public class GUIChargementDonnees extends JPanel {
     c.anchor = GridBagConstraints.LINE_START;
     final JButton previousButton = new JButton("Précédent");
     previousButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         GUIChargementDonnees.this.previousDialog();
       }
@@ -608,6 +614,7 @@ public class GUIChargementDonnees extends JPanel {
     final JButton nextButton = new JButton("Suite");
 
     nextButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         GUIChargementDonnees.this
             .nextDialog(GUIChargementDonnees.this.exportPanel);
@@ -629,6 +636,7 @@ public class GUIChargementDonnees extends JPanel {
     c.anchor = GridBagConstraints.LINE_START;
     final JButton previousButton = new JButton("Précédent");
     previousButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         GUIChargementDonnees.this.previousDialog();
       }
@@ -668,10 +676,12 @@ public class GUIChargementDonnees extends JPanel {
     final JButton nextButton = new JButton("Suite");
 
     nextButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
       }
     });
     choixFichierButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (choixFichier.showOpenDialog(GUIChargementDonnees.this) == JFileChooser.APPROVE_OPTION) {
           chargementText.setText(choixFichier.getSelectedFile().getName());
@@ -708,6 +718,7 @@ public class GUIChargementDonnees extends JPanel {
     c.anchor = GridBagConstraints.LINE_START;
     final JButton previousButton = new JButton("Précédent");
     previousButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         GUIChargementDonnees.this.previousDialog();
       }
@@ -794,6 +805,7 @@ public class GUIChargementDonnees extends JPanel {
     // Schedule a job for the event-dispatching thread:
     // creating and showing this application's GUI.
     javax.swing.SwingUtilities.invokeLater(new Runnable() {
+      @Override
       public void run() {
         GUIChargementDonnees.createAndShowGUI();
       }

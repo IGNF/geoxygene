@@ -66,18 +66,22 @@ public interface ICompositeCurve extends IComposite, IOrientableCurve {
 
   /** Renvoie la primitive de self. */
   // le calcul est fait en dynamique dans la methode privee simplifyPrimitve.
+  @Override
   public abstract ICurve getPrimitive();
 
   /** Renvoie la primitive orientée positivement. */
+  @Override
   public abstract IOrientableCurve getPositive();
 
   /** Renvoie la primitive orientée négativement. */
+  @Override
   public abstract IOrientableCurve getNegative();
 
   /**
    * Redéfinition de l'opérateur "boundary" sur GM_OrientableCurve. Renvoie une
    * GM_CurveBoundary, c'est-à-dire deux GM_Point.
    */
+  @Override
   public abstract ICurveBoundary boundary();
 
   // //////////////////////////////////////////////////////////////////////
@@ -93,5 +97,6 @@ public interface ICompositeCurve extends IComposite, IOrientableCurve {
   public abstract boolean validate(double tolerance);
 
   /** Renvoie les coordonnees de la primitive. */
+  @Override
   public abstract IDirectPositionList coord();
 }

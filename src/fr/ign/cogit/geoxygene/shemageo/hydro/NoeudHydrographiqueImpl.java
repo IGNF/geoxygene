@@ -21,10 +21,12 @@ public class NoeudHydrographiqueImpl extends NoeudReseauImpl implements
    */
   private String nom = "";
 
+  @Override
   public String getNom() {
     return this.nom;
   }
 
+  @Override
   public void setNom(String nom) {
     this.nom = nom;
   }
@@ -47,10 +49,12 @@ public class NoeudHydrographiqueImpl extends NoeudReseauImpl implements
    */
   private double cote = 0;
 
+  @Override
   public double getCote() {
     return this.cote;
   }
 
+  @Override
   public void setCote(double cote) {
     this.cote = cote;
   }

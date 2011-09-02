@@ -33,19 +33,25 @@ public interface GF_AssociationType extends GF_FeatureType {
   public void removeLinkBetwenn(GF_FeatureType value);
 
   /** Renvoie les roles de cette association. */
+  @Override
   public List<GF_AssociationRole> getRoles();
 
   /** Affecte une liste de roles */
+  @Override
   public void setRoles(List<GF_AssociationRole> L);
 
   /** Renvoie le nombre de roles. */
+  @Override
   public int sizeRoles();
 
   /** Ajoute un role. */
+  @Override
   public void addRole(GF_AssociationRole Role);
 
+  @Override
   public GF_AssociationRole getRoleI(int i);
 
+  @Override
   public void removeRole(GF_AssociationRole value);
 
 }

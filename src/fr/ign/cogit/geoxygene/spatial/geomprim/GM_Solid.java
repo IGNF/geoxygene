@@ -117,7 +117,7 @@ public class GM_Solid extends GM_Primitive implements ISolid {
   private ISolidBoundary boundary = null;
 
   public ISolidBoundary getBoundary() {
-    return boundary;
+    return this.boundary;
   }
 
   public void setBoundary(ISolidBoundary boundary) {

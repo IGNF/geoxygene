@@ -63,6 +63,7 @@ public class ObjectBrowserAttributeListener implements ActionListener {
     this.obj = obj;
   }
 
+  @Override
   public void actionPerformed(ActionEvent e) {
     ObjectBrowser.browse(this.obj);
   }

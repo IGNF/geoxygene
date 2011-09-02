@@ -50,6 +50,7 @@ class GeOxygeneViewerOpenFileAction implements ActionListener {
     this.objectViewerInterface = objViewerInterface;
   }
 
+  @Override
   public void actionPerformed(ActionEvent e) {
     final JFileChooser fc = new JFileChooser();
     fc.addChoosableFileFilter(new ShapefileFileFilter());

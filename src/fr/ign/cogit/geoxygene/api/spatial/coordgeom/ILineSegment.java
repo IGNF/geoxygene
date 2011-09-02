@@ -8,5 +8,6 @@ public interface ILineSegment extends ILineString {
 
   public IDirectPosition getEndPoint();
 
+  @Override
   public IGeometry intersection(IGeometry geom);
 }

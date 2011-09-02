@@ -26,10 +26,12 @@ public class PasseParImpl extends ElementDuReseauImpl implements PassePar {
    */
   private ArcReseau arc = null;
 
+  @Override
   public ArcReseau getArc() {
     return this.arc;
   }
 
+  @Override
   public void setArc(ArcReseau arc) {
     this.arc = arc;
   }
@@ -39,10 +41,12 @@ public class PasseParImpl extends ElementDuReseauImpl implements PassePar {
    */
   private Franchissement franchissement = null;
 
+  @Override
   public Franchissement getFranchissement() {
     return this.franchissement;
   }
 
+  @Override
   public void setFranchissement(Franchissement franchissement) {
     this.franchissement = franchissement;
   }
@@ -52,10 +56,12 @@ public class PasseParImpl extends ElementDuReseauImpl implements PassePar {
    */
   private int niveau = 0;
 
+  @Override
   public int getNiveau() {
     return this.niveau;
   }
 
+  @Override
   public void setNiveau(int niveau) {
     this.niveau = niveau;
   }

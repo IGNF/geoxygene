@@ -16,8 +16,6 @@ import org.geotools.data.DataSourceException;
 import org.opengis.geometry.Envelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import fr.ign.cogit.geoxygene.appli.ProjectFrame;
-
 /**
  * GeoTiff reader.
  * @author Julien Perret
@@ -52,10 +50,10 @@ public class GeoTiffReader {
     org.geotools.gce.geotiff.GeoTiffReader reader;
     try {
       // This function always allocates about 23Mb, both for 2Mb and 225Mb
-      logger.info("Start reading " + fileName); //$NON-NLS-1$
+      GeoTiffReader.logger.info("Start reading " + fileName); //$NON-NLS-1$
       ImageIO.setUseCache(false);
       reader = new org.geotools.gce.geotiff.GeoTiffReader(fc);
-      logger.info("Done reading"); //$NON-NLS-1$
+      GeoTiffReader.logger.info("Done reading"); //$NON-NLS-1$
     } catch (DataSourceException ex) {
       ex.printStackTrace();
       return null;
@@ -64,7 +62,7 @@ public class GeoTiffReader {
     // Get the image properties
     GridCoverage2D coverage;
     try {
-      coverage = (GridCoverage2D) reader.read(null);
+      coverage = reader.read(null);
     } catch (IOException ex) {
       ex.printStackTrace();
       return null;

@@ -24,70 +24,84 @@ public class TronconDeRouteImpl extends ArcReseauImpl implements TronconDeRoute 
 
   private int nombreDeVoies = 0;
 
+  @Override
   public int getNombreDeVoies() {
     return this.nombreDeVoies;
   }
 
+  @Override
   public void setNombreDeVoies(int nombreDeVoies) {
     this.nombreDeVoies = nombreDeVoies;
   }
 
   private Date dateMiseEnService = null;
 
+  @Override
   public Date getDateMiseEnService() {
     return this.dateMiseEnService;
   }
 
+  @Override
   public void setDateMiseEnService(Date dateMiseEnService) {
     this.dateMiseEnService = dateMiseEnService;
   }
 
   private String etatPhysique = "";
 
+  @Override
   public String getEtatPhysique() {
     return this.etatPhysique;
   }
 
+  @Override
   public void setEtatPhysique(String etatPhysique) {
     this.etatPhysique = etatPhysique;
   }
 
   private String acces = "";
 
+  @Override
   public String getAcces() {
     return this.acces;
   }
 
+  @Override
   public void setAcces(String acces) {
     this.acces = acces;
   }
 
   private double zIni = 0;
 
+  @Override
   public double getzIni() {
     return this.zIni;
   }
 
+  @Override
   public void setzIni(double zIni) {
     this.zIni = zIni;
   }
 
   private double zFin = 0;
 
+  @Override
   public double getzFin() {
     return this.zFin;
   }
 
+  @Override
   public void setzFin(double zFin) {
     this.zFin = zFin;
   }
 
   private String nomItineraire = "";
 
+  @Override
   public String getNomItineraire() {
     return this.nomItineraire;
   }
 
+  @Override
   public void setNomItineraire(String nomItineraire) {
     this.nomItineraire = nomItineraire;
   }

@@ -60,6 +60,7 @@ public final class PanelGauche extends JPanel {
 
     // symbolisation
     this.cSymbole.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (PanelGauche.this.cSymbole.isSelected()) {
           PanelGauche.this.getFrame().getPanelVisu().affichageSymbolisation = true;

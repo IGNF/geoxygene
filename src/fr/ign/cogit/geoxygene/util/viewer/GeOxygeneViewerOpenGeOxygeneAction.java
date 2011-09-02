@@ -58,6 +58,7 @@ class GeOxygeneViewerOpenGeOxygeneAction implements ActionListener {
     this.db = data;
   }
 
+  @Override
   public void actionPerformed(ActionEvent e) {
     String user = null;
     try {

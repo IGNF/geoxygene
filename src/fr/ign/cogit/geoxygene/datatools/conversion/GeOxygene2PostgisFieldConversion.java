@@ -40,6 +40,7 @@ public class GeOxygene2PostgisFieldConversion implements FieldConversion {
    */
   private static final long serialVersionUID = 1L;
 
+  @Override
   public Object javaToSql(Object source) throws ConversionException {
     if (source instanceof GM_Object) {
       try {
@@ -52,6 +53,7 @@ public class GeOxygene2PostgisFieldConversion implements FieldConversion {
     return null;
   }
 
+  @Override
   public Object sqlToJava(Object source) throws ConversionException {
     if (source instanceof PGgeometry) {
       PGgeometry geom = (PGgeometry) source;

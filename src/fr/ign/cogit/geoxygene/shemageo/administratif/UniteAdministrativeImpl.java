@@ -19,10 +19,12 @@ public class UniteAdministrativeImpl extends ZoneImpl implements
    */
   private ChefLieu chefLieu = null;
 
+  @Override
   public ChefLieu getChefLieu() {
     return this.chefLieu;
   }
 
+  @Override
   public void setChefLieu(ChefLieu chefLieu) {
     this.chefLieu = chefLieu;
   }
@@ -32,10 +34,12 @@ public class UniteAdministrativeImpl extends ZoneImpl implements
    */
   private String code = null;
 
+  @Override
   public String getCode() {
     return this.code;
   }
 
+  @Override
   public void setCode(String code) {
     this.code = code;
   }
@@ -45,10 +49,12 @@ public class UniteAdministrativeImpl extends ZoneImpl implements
    */
   private String nom = null;
 
+  @Override
   public String getNom() {
     return this.nom;
   }
 
+  @Override
   public void setNom(String nom) {
     this.nom = nom;
   }

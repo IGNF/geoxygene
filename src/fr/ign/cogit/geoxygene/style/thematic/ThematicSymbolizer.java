@@ -16,7 +16,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Chargeur;
@@ -25,7 +24,6 @@ import fr.ign.cogit.geoxygene.contrib.delaunay.TriangulationJTS;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
@@ -60,14 +58,14 @@ public class ThematicSymbolizer extends AbstractSymbolizer {
     }
     for (DiagramSymbolizer s : this.getSymbolizers()) {
       if (s.getDiagramType().equalsIgnoreCase("piechart")) { //$NON-NLS-1$
-      // double size = 1.0;
-      // for (DiagramSizeElement element : s.getDiagramSize()) {
-      // if (element instanceof DiagramRadius) {
-      // size = element.getValue();
-      // }
-      // }
-        IDirectPosition position = points.get(feature);
-        Double size = radius.get(feature);
+        // double size = 1.0;
+        // for (DiagramSizeElement element : s.getDiagramSize()) {
+        // if (element instanceof DiagramRadius) {
+        // size = element.getValue();
+        // }
+        // }
+        IDirectPosition position = this.points.get(feature);
+        Double size = this.radius.get(feature);
         if (position == null || size == null) {
           TriangulationJTS t = new TriangulationJTS("TRIANGLE");
           Chargeur.importAsNodes(feature, t);
@@ -108,12 +106,12 @@ public class ThematicSymbolizer extends AbstractSymbolizer {
           }
           size = maxDistance;
           if (maxNode == null) {
-            logger.info(feature.getGeom());
+            AbstractSymbolizer.logger.info(feature.getGeom());
             return;
           }
           position = maxNode.getGeometrie().getPosition();
-          points.put(feature, position);
-          radius.put(feature, maxDistance);
+          this.points.put(feature, position);
+          this.radius.put(feature, maxDistance);
         }
         Point2D point = null;
         try {

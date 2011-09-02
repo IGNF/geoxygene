@@ -81,6 +81,7 @@ public class GUICompileMessage extends JFrame {
 
     JButton okButton = new JButton("OK");
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         dialog.dispose();
       }

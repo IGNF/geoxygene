@@ -54,10 +54,12 @@ public class ArcReseauImpl extends ElementDuReseauImpl implements ArcReseau {
    */
   private boolean fictif = false;
 
+  @Override
   public boolean isFictif() {
     return this.fictif;
   }
 
+  @Override
   public void setFictif(boolean fictif) {
     this.fictif = fictif;
   }
@@ -67,10 +69,12 @@ public class ArcReseauImpl extends ElementDuReseauImpl implements ArcReseau {
    */
   private Direction direction = Direction.INCONNU;
 
+  @Override
   public Direction getDirection() {
     return this.direction;
   }
 
+  @Override
   public void setDirection(Direction direction) {
     this.direction = direction;
   }
@@ -80,10 +84,12 @@ public class ArcReseauImpl extends ElementDuReseauImpl implements ArcReseau {
    */
   private NoeudReseau noeudFinal = null;
 
+  @Override
   public NoeudReseau getNoeudFinal() {
     return this.noeudFinal;
   }
 
+  @Override
   public void setNoeudFinal(NoeudReseau noeudFinal) {
     this.noeudFinal = noeudFinal;
   }
@@ -93,10 +99,12 @@ public class ArcReseauImpl extends ElementDuReseauImpl implements ArcReseau {
    */
   private NoeudReseau noeudInitial = null;
 
+  @Override
   public NoeudReseau getNoeudInitial() {
     return this.noeudInitial;
   }
 
+  @Override
   public void setNoeudInitial(NoeudReseau noeudInitial) {
     this.noeudInitial = noeudInitial;
   }
@@ -106,6 +114,7 @@ public class ArcReseauImpl extends ElementDuReseauImpl implements ArcReseau {
 	 */
   private Collection<PassePar> passePar = new FT_FeatureCollection<PassePar>();
 
+  @Override
   public Collection<PassePar> getPassePar() {
     return this.passePar;
   }

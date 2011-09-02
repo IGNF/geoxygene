@@ -43,8 +43,10 @@ public interface IArc2 extends IArcString {
 
   public abstract IPosition getEndPoint();
 
+  @Override
   public abstract IGeometry intersection(IGeometry geom);
 
+  @Override
   public abstract boolean contains(IGeometry geom);
 
   public abstract boolean contains2(IDirectPosition pt);

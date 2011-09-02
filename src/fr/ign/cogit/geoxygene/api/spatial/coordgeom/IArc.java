@@ -25,7 +25,9 @@ public interface IArc extends IArcString {
 
   public double delta();
 
+  @Override
   public IGeometry intersection(IGeometry geom);
 
+  @Override
   public boolean contains(IGeometry geom);
 }

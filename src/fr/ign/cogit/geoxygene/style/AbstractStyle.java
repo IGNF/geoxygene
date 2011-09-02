@@ -50,10 +50,12 @@ public abstract class AbstractStyle implements Style {
   @XmlElement(name = "Group", required = false)
   private String group;
 
+  @Override
   public String getGroup() {
-    return group;
+    return this.group;
   }
 
+  @Override
   public void setGroup(String group) {
     this.group = group;
   }

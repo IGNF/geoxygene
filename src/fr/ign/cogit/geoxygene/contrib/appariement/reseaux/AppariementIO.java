@@ -327,7 +327,7 @@ public final class AppariementIO {
                     }
                   }
                 } else {
-                  LOGGER
+                  AppariementIO.LOGGER
                       .error("Attribute "
                           + attribute
                           + " is neither Number nor String. It can't be used as an orientation");

@@ -52,10 +52,10 @@ import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
-import fr.ign.cogit.geoxygene.appli.event.CoordPaintListener;
-import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.appli.event.CoordPaintListener;
+import fr.ign.cogit.geoxygene.appli.mode.ModeSelector;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.style.Layer;
 
@@ -230,7 +230,7 @@ public class MainFrame extends JFrame {
         Set<Layer> selectedLayers = project.getLayerLegendPanel()
             .getSelectedLayers();
         if (selectedLayers.size() != 1) {
-          logger.error("You must select one (and only one) layer."); //$NON-NLS-1$
+          MainFrame.logger.error("You must select one (and only one) layer."); //$NON-NLS-1$
           return;
         }
         Layer layer = selectedLayers.iterator().next();
@@ -238,7 +238,8 @@ public class MainFrame extends JFrame {
         IFeatureCollection<? extends IFeature> layerfeatures = layer
             .getFeatureCollection();
         if (layerfeatures == null) {
-          logger.error("The layer selected does not contain any feature."); //$NON-NLS-1$
+          MainFrame.logger
+              .error("The layer selected does not contain any feature."); //$NON-NLS-1$
           return;
         }
         JFileChooser chooser = new JFileChooser(MainFrame.fc

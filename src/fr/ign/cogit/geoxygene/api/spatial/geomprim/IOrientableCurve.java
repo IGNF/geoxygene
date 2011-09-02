@@ -16,8 +16,10 @@ public interface IOrientableCurve extends IOrientablePrimitive {
    * Redéfinition de l'opérateur "boundary" sur GM_Object. Renvoie une
    * GM_CurveBoundary, c'est-à-dire deux GM_Point.
    */
+  @Override
   public abstract ICurveBoundary boundary();
 
   /** Renvoie les coordonnees de la primitive. */
+  @Override
   public abstract IDirectPositionList coord();
 }

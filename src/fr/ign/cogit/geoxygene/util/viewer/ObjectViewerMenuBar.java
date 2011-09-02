@@ -79,6 +79,7 @@ class ObjectViewerMenuBar extends JMenuBar {
     // Item "Close"
     item = new JMenuItem("Close");
     item.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         // System.out.println("On ferme la fenetre !!! ;-))");
         ObjectViewerMenuBar.this.getObjectViewerInterface().dispose();
@@ -89,6 +90,7 @@ class ObjectViewerMenuBar extends JMenuBar {
     // Item "Exit"
     item = new JMenuItem("Exit");
     item.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         // System.out.println("On ferme la fenetre !!! ;-))");
         ObjectViewerMenuBar.this.getObjectViewerInterface().dispose();

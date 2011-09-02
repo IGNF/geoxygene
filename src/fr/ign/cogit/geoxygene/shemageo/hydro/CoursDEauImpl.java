@@ -17,10 +17,12 @@ public class CoursDEauImpl extends AgregatReseauImpl implements CoursDEau {
    */
   private String nom = "";
 
+  @Override
   public String getNom() {
     return this.nom;
   }
 
+  @Override
   public void setNom(String nom) {
     this.nom = nom;
   }

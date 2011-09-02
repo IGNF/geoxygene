@@ -113,7 +113,7 @@ public class SwingingArmPlugin implements GeOxygeneApplicationPlugin,
         list.addAll(line.coord().getList());
       }
     }
-    logger.error("Points added : " + list.size());
+    SwingingArmPlugin.logger.error("Points added : " + list.size());
     SwingingArmNonConvexHull.logger.setLevel(Level.TRACE);
     SwingingArmNonConvexHull swinging = new SwingingArmNonConvexHull(list,
         radius);
@@ -129,8 +129,8 @@ public class SwingingArmPlugin implements GeOxygeneApplicationPlugin,
     newFeatureTypeExterieurs.setGeometryType(GM_Polygon.class);
     popTriangles.setFeatureType(newFeatureTypeExterieurs);
     DataSet.getInstance().addPopulation(popTriangles);
-    logger.info(popTriangles.size());
-    logger.info(characteristicShape);
+    SwingingArmPlugin.logger.info(popTriangles.size());
+    SwingingArmPlugin.logger.info(characteristicShape);
     project.addFeatureCollection(popTriangles, popTriangles.getNom());
   }
 }

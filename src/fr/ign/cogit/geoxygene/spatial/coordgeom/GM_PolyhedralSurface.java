@@ -24,32 +24,99 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  */
-
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolyhedralSurface;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ISurfacePatch;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
 
 /**
- * NON IMPLEMENTE, A FAIRE. GM_Surface composée de surfaces polygonales
- * (GM_Polygon) connectées.
+ * GM_Surface composée de surfaces polygonales (GM_Polygon) connectées.
  * 
- * @author Thierry Badard & Arnaud Braun
+ * @author Mickaël Brasebin
  * @version 1.0
  * 
  */
-class GM_PolyhedralSurface extends GM_Surface implements IPolyhedralSurface {
+public class GM_PolyhedralSurface extends GM_Surface implements
+    IPolyhedralSurface {
+
+  private List<IPolygon> lPolygons = null;
+
+  protected static Logger logger = Logger.getLogger(GM_PolyhedralSurface.class
+      .getName());
+
+  public List<IPolygon> getlPolygons() {
+    if (this.lPolygons == null) {
+      this.lPolygons = new ArrayList<IPolygon>();
+    }
+    return this.lPolygons;
+  }
 
   /** Constructeur par défaut. */
   public GM_PolyhedralSurface() {
+    super();
   }
 
   /**
-   * Constructeur à partir d'une liste de tuiles.
-   * @param tiles
+   * Construit une Polyhedral surface à partir d'une liste de polygones
+   * @param lPolygons
    */
-  public GM_PolyhedralSurface(List<?> tiles) {
+  public GM_PolyhedralSurface(List<IPolygon> lPolygons) {
+    super();
+    this.lPolygons.addAll(lPolygons);
   }
+
+  @Override
+  public List<ISurfacePatch> getPatch() {
+    List<ISurfacePatch> lPatch = new ArrayList<ISurfacePatch>();
+    lPatch.addAll(this.lPolygons);
+    return lPatch;
+  }
+
+  @Override
+  public void setPatch(int i, ISurfacePatch value) {
+
+    if (!(value instanceof IPolygon)) {
+
+      GM_PolyhedralSurface.logger.warn(I18N
+          .getString("GMPolyhedralSurface.NOTPolygon")); //$NON-NLS-1$
+      return;
+
+    }
+
+    super.setPatch(i, value);
+  }
+
+  @Override
+  public void addPatch(ISurfacePatch value) {
+    if (!(value instanceof IPolygon)) {
+
+      GM_PolyhedralSurface.logger.warn(I18N
+          .getString("GMPolyhedralSurface.NOTPolygon")); //$NON-NLS-1$
+      return;
+
+    }
+
+    super.addPatch(value);
+  }
+
+  @Override
+  public void addPatch(int i, ISurfacePatch value) {
+    if (!(value instanceof IPolygon)) {
+
+      GM_PolyhedralSurface.logger.warn(I18N
+          .getString("GMPolyhedralSurface.NOTPolygon")); //$NON-NLS-1$
+      return;
+
+    }
+    super.addPatch(i, value);
+  }
+
 }

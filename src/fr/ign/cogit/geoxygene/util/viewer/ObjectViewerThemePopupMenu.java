@@ -90,6 +90,7 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
     }
     rbGroup.add(rbMenuItem);
     rbMenuItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (ObjectViewerThemePopupMenu.this.getObjectViewerThemeButton()
             .getIcon().toString().equals(unchecked.toString())) {
@@ -112,6 +113,7 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
     }
     rbGroup.add(rbMenuItem);
     rbMenuItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (ObjectViewerThemePopupMenu.this.getObjectViewerThemeButton()
             .getIcon().toString().equals(checked.toString())) {
@@ -130,6 +132,7 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
 
     JMenuItem menuItem = new JMenuItem("Up");
     menuItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         Theme t = ObjectViewerThemePopupMenu.this
             .getObjectViewerThemeProperties().getObjectViewerTheme();
@@ -140,6 +143,7 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
 
     menuItem = new JMenuItem("Down");
     menuItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         Theme t = ObjectViewerThemePopupMenu.this
             .getObjectViewerThemeProperties().getObjectViewerTheme();
@@ -150,6 +154,7 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
 
     menuItem = new JMenuItem("Remove");
     menuItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         ObjectViewerThemePopupMenu.this.getObjectViewerInterface().removeTheme(
             ObjectViewerThemePopupMenu.this.getObjectViewerThemeProperties());
@@ -159,6 +164,7 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
 
     menuItem = new JMenuItem("Show attributes");
     menuItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         System.out.println("Showing theme attributes ...");
 
@@ -186,6 +192,7 @@ class ObjectViewerThemePopupMenu extends JPopupMenu {
 
     menuItem = new JMenuItem("Properties");
     menuItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         // final JFrame ccframe = new ObjectViewerColorChooser();
         // final ObjectViewerThemePropertiesFrame themePropertiesFrame = new

@@ -29,6 +29,7 @@ public class FranchissementImpl extends ElementDuReseauImpl implements
    */
   Collection<PassePar> passePar = new FT_FeatureCollection<PassePar>();
 
+  @Override
   public Collection<PassePar> getPassePar() {
     return this.passePar;
   }

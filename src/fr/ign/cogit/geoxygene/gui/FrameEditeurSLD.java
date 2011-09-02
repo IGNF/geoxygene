@@ -66,7 +66,6 @@ import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
-import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -209,8 +208,8 @@ public class FrameEditeurSLD extends JFrame implements TreeSelectionListener,
            * On parcours le schéma et on affecte à tous les attributs de type
            * texte une valeur "texte"
            */
-          for (AttributeType attribute : ((FeatureType) feature
-              .getFeatureType()).getSchema().getFeatureAttributes()) {
+          for (AttributeType attribute : (feature.getFeatureType()).getSchema()
+              .getFeatureAttributes()) {
             if (attribute.getValueType().equalsIgnoreCase("String")) {
               if (FrameEditeurSLD.logger.isTraceEnabled()) {
                 FrameEditeurSLD.logger.trace("affecte la valeur de l'attribut "

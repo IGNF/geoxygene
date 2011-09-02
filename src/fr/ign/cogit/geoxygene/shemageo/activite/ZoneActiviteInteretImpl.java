@@ -27,10 +27,12 @@ public class ZoneActiviteInteretImpl extends MicroImpl implements
    */
   private String nom = null;
 
+  @Override
   public String getNom() {
     return this.nom;
   }
 
+  @Override
   public void setNom(String nom) {
     this.nom = nom;
   }

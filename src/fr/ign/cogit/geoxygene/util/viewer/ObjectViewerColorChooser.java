@@ -83,6 +83,7 @@ class ObjectViewerColorChooser extends JFrame {
     // final JColorChooser tcc = new JColorChooser(banner.getForeground());
     final JColorChooser tcc = new JColorChooser(presetColor);
     tcc.getSelectionModel().addChangeListener(new ChangeListener() {
+      @Override
       public void stateChanged(ChangeEvent e) {
         ObjectViewerColorChooser.this.selectedColor = tcc.getColor();
         // Color newColor = tcc.getColor();
@@ -97,6 +98,7 @@ class ObjectViewerColorChooser extends JFrame {
 
     JButton okButton = new JButton("Ok");
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         // Set the choosen color here !!!
         ObjectViewerColorChooser.this.frameButton.setIcon(new RectIcon(
@@ -107,6 +109,7 @@ class ObjectViewerColorChooser extends JFrame {
 
     JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         ObjectViewerColorChooser.this.dispose();
       }

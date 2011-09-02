@@ -8,7 +8,9 @@ public interface IRing extends ICompositeCurve {
    * égal au point final. Surcharge de la méthode validate sur
    * GM_CompositeCurve. Renvoie TRUE si c'est le cas, FALSE sinon.
    */
+  @Override
   public abstract boolean validate(double tolerance);
 
+  @Override
   public abstract Object clone();
 }

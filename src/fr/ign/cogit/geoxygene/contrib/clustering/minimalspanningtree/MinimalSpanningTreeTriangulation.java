@@ -73,7 +73,8 @@ public class MinimalSpanningTreeTriangulation {
   public <F extends IFeature> List<Cluster> creationMST(
       Population<F> populationPoints, double threshold) {
 
-    this.triangulationModel = triangle(populationPoints);
+    this.triangulationModel = MinimalSpanningTreeTriangulation
+        .triangle(populationPoints);
 
     // computation of the square of the threshold to optimise the
     // implementation the euclidian distance computation
@@ -100,13 +101,15 @@ public class MinimalSpanningTreeTriangulation {
       // if the node has already be fully tested, then process the next
       // node
       if (!node.isFullyTested()) {
-        adjacentNodes = getAdjacentNodes(this.triangulationModel, node);
+        adjacentNodes = MinimalSpanningTreeTriangulation.getAdjacentNodes(
+            this.triangulationModel, node);
 
         flag = false;
         // test with the closest neighbors
         for (NodeSpecific adjacentNode : adjacentNodes) {
           if (!adjacentNode.isFullyTested()) {
-            distance = distanceSquared(node, adjacentNode);
+            distance = MinimalSpanningTreeTriangulation.distanceSquared(node,
+                adjacentNode);
 
             if (distance < thresholdSquare) {
 
@@ -136,12 +139,13 @@ public class MinimalSpanningTreeTriangulation {
 
             for (NodeSpecific nodeCluster : clusterNodes) {
               if (!nodeCluster.isFullyTested()) {
-                adjacentNodesCluster = getAdjacentNodes(triangulationModel,
-                    nodeCluster);
+                adjacentNodesCluster = MinimalSpanningTreeTriangulation
+                    .getAdjacentNodes(this.triangulationModel, nodeCluster);
 
                 for (NodeSpecific adjacentNode : adjacentNodesCluster) {
                   if (!adjacentNode.isFullyTested()) {
-                    distance = distanceSquared(nodeCluster, adjacentNode);
+                    distance = MinimalSpanningTreeTriangulation
+                        .distanceSquared(nodeCluster, adjacentNode);
 
                     if (distance < thresholdSquare) { // creation
                       // of
@@ -179,11 +183,15 @@ public class MinimalSpanningTreeTriangulation {
       }
     }
 
-    logger.info("--------------------------------------------------"); //$NON-NLS-1$
-    logger.info("Summary of the clustering:"); //$NON-NLS-1$
-    logger.info(" - " + clusters.size() + " clusters have been created,"); //$NON-NLS-1$ //$NON-NLS-2$
-    logger.info(" - " + k + " clusters contain a single node."); //$NON-NLS-1$ //$NON-NLS-2$
-    logger.info("--------------------------------------------------"); //$NON-NLS-1$
+    MinimalSpanningTreeTriangulation.logger
+        .info("--------------------------------------------------"); //$NON-NLS-1$
+    MinimalSpanningTreeTriangulation.logger.info("Summary of the clustering:"); //$NON-NLS-1$
+    MinimalSpanningTreeTriangulation.logger
+        .info(" - " + clusters.size() + " clusters have been created,"); //$NON-NLS-1$ //$NON-NLS-2$
+    MinimalSpanningTreeTriangulation.logger
+        .info(" - " + k + " clusters contain a single node."); //$NON-NLS-1$ //$NON-NLS-2$
+    MinimalSpanningTreeTriangulation.logger
+        .info("--------------------------------------------------"); //$NON-NLS-1$
 
     return clusters;
   }
@@ -286,7 +294,7 @@ public class MinimalSpanningTreeTriangulation {
       FT_FeatureCollection<F> collectionPoints, double threshold) {
     Population<F> populationPoints = new Population<F>();
     populationPoints.addUniqueCollection(collectionPoints);
-    List<Cluster> clusters = creationMST(populationPoints, threshold);
+    List<Cluster> clusters = this.creationMST(populationPoints, threshold);
     return clusters;
   }
 

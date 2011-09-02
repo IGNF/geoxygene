@@ -91,6 +91,7 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
     }
   }
 
+  @Override
   public Object sqlToJava(Object geom) {
     if (geom == null) {
       return null;
@@ -126,6 +127,7 @@ public class GeomGeOxygene2Dbms implements FieldConversion {
 
   // Les méthodes relatives à Oracle ou Postgis sont appelée directement
   // dans "GeOxygeneStatementManager"
+  @Override
   public Object javaToSql(Object geom) {
     GeomGeOxygene2Dbms.logger.error("Should not be reached: returning null"); //$NON-NLS-1$
     return null;

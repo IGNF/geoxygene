@@ -50,8 +50,8 @@ public class Cluster {
    * Default constructor.
    */
   public Cluster() {
-    nbClusters++;
-    this.clusterId = new Integer(nbClusters);
+    Cluster.nbClusters++;
+    this.clusterId = new Integer(Cluster.nbClusters);
   }
 
   /**
@@ -85,7 +85,7 @@ public class Cluster {
       if (clusterSize > 2) {
         // case where the cluster geometry is reduced to a point
         // or is a straight line
-        if (isStraightLine(line) || isReducedToAPoint(line)) {
+        if (this.isStraightLine(line) || this.isReducedToAPoint(line)) {
           return (GM_Polygon) line.buffer(4);
         }
         return (GM_Polygon) line.convexHull();
@@ -127,9 +127,9 @@ public class Cluster {
    * @return the general orientation of the cluster computed using a PCA method
    */
   public Angle getOrientation() {
-    if (orientation == null) {
+    if (this.orientation == null) {
       // TODO: compute orientation using principal component analysis
-      setOrientation(new Angle());
+      this.setOrientation(new Angle());
     }
 
     return this.orientation;
@@ -277,7 +277,7 @@ public class Cluster {
       return;
     }
 
-    nodes.remove(node);
+    this.nodes.remove(node);
     node.setCluster(null);
   }
 

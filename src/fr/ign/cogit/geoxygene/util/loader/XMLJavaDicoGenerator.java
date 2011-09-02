@@ -198,7 +198,7 @@ public class XMLJavaDicoGenerator {
 
           // Gestion exception
           if (javaType.compareTo("") == 0) {
-            continue; //$NON-NLS-1$
+            continue;
           }
 
           // Le nom Java

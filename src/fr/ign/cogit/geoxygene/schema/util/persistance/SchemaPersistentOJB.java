@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AssociationRole;
@@ -125,7 +124,7 @@ public abstract class SchemaPersistentOJB {
       ftList = schema.getFeatureTypes();
       Iterator<FeatureType> iTft = ftList.iterator();
       while (iTft.hasNext()) {
-        FeatureType ft = (FeatureType) iTft.next();
+        FeatureType ft = iTft.next();
         DataSet.db.deletePersistent(ft);
         ftListLocal.add(ft);
       }

@@ -579,7 +579,8 @@ public class ProjectFrame extends JInternalFrame implements
       ShapefileWriter.write(layer.getFeatureCollection(), fileName,
           layer.getCRS());
     } catch (Exception e) {
-      logger.error("Shapefile export failed! See stack trace below : "); //$NON-NLS-1$
+      ProjectFrame.logger
+          .error("Shapefile export failed! See stack trace below : "); //$NON-NLS-1$
       e.printStackTrace();
     }
   }

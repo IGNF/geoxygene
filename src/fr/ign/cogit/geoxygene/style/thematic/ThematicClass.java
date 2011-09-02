@@ -43,7 +43,7 @@ public class ThematicClass {
   }
 
   public Fill getFill() {
-    return fill;
+    return this.fill;
   }
 
   public void setFill(Fill fill) {

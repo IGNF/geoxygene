@@ -46,9 +46,12 @@ public interface IPolygon extends ISurfacePatch {
    * Renvoie un GM_Polygon en "retournant" la frontière (inverse l'ordre du
    * trace des points).
    */
+  @Override
   public abstract ISurfacePatch reverse();
 
+  @Override
   public abstract Object clone();
 
+  @Override
   public abstract boolean isPolygon();
 }

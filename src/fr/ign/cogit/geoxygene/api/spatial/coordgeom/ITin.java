@@ -11,7 +11,7 @@ public interface ITin extends ITriangulatedSurface {
 
   public abstract double getMaxLength();
 
-  public abstract IPosition getControlPoint(int i);
+  public abstract IDirectPosition getControlPoint(int i);
 
   public abstract int sizeControlPoint();
 }

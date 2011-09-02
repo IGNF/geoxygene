@@ -27,6 +27,7 @@ public class NoeudReseauImpl extends ElementDuReseauImpl implements NoeudReseau 
    */
   private Collection<ArcReseau> arcsEntrants = new FT_FeatureCollection<ArcReseau>();
 
+  @Override
   public Collection<ArcReseau> getArcsEntrants() {
     return this.arcsEntrants;
   }
@@ -36,6 +37,7 @@ public class NoeudReseauImpl extends ElementDuReseauImpl implements NoeudReseau 
    */
   private Collection<ArcReseau> arcsSortants = new FT_FeatureCollection<ArcReseau>();
 
+  @Override
   public Collection<ArcReseau> getArcsSortants() {
     return this.arcsSortants;
   }

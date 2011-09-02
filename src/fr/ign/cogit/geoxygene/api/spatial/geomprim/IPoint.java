@@ -18,9 +18,12 @@ public interface IPoint extends IPrimitive {
    * Renvoie la liste des coordonnées, qui est constituée d'un seul
    * DirectPosition.
    */
+  @Override
   public abstract IDirectPositionList coord();
 
+  @Override
   public abstract Object clone();
 
+  @Override
   public abstract boolean isPoint();
 }

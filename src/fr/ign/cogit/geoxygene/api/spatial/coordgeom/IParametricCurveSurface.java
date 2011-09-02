@@ -27,5 +27,6 @@ public interface IParametricCurveSurface extends ISurfacePatch {
   public abstract IDirectPosition surface(double s, double t);
 
   // Implémentation d'une méthode abstraite de GM_SurfacePatch.
+  @Override
   public abstract ISurfacePatch reverse();
 }

@@ -71,11 +71,13 @@ public class FeatureAttributeValue implements FC_FeatureAttributeValue {
   protected AttributeType featureAttribute;
 
   /** Renvoie le feature attribute auquel s'applique cette valeur. */
+  @Override
   public GF_AttributeType getFeatureAttribute() {
     return this.featureAttribute;
   }
 
   /** Affecte un feature attribute auquel s'applique cette valeur. */
+  @Override
   public void setFeatureAttribute(GF_AttributeType FeatureAttribute) {
     AttributeType old = this.featureAttribute;
     this.featureAttribute = (AttributeType) FeatureAttribute;
@@ -95,11 +97,13 @@ public class FeatureAttributeValue implements FC_FeatureAttributeValue {
   protected String label;
 
   /** Renvoie la valeur d'attribut */
+  @Override
   public String getLabel() {
     return this.label;
   }
 
   /** Affecte la valeur d'attribut */
+  @Override
   public void setLabel(String Label) {
     this.label = Label;
   }
@@ -108,11 +112,13 @@ public class FeatureAttributeValue implements FC_FeatureAttributeValue {
   protected int code;
 
   /** Renvoie la valeur d'attribut */
+  @Override
   public int getcode() {
     return this.code;
   }
 
   /** Affecte la valeur d'attribut */
+  @Override
   public void setCode(int value) {
     this.code = value;
   }
@@ -121,11 +127,13 @@ public class FeatureAttributeValue implements FC_FeatureAttributeValue {
   protected String definition;
 
   /** Renvoie la définition. */
+  @Override
   public String getDefinition() {
     return this.definition;
   }
 
   /** Affecte une définition. */
+  @Override
   public void setDefinition(String Definition) {
     this.definition = Definition;
   }
@@ -140,6 +148,7 @@ public class FeatureAttributeValue implements FC_FeatureAttributeValue {
   /**
    * @return the definitionReference
    */
+  @Override
   public Object getDefinitionReference() {
     return this.definitionReference;
   }
@@ -147,6 +156,7 @@ public class FeatureAttributeValue implements FC_FeatureAttributeValue {
   /**
    * @param definitionReference the definitionReference to set
    */
+  @Override
   public void setDefinitionReference(Object definitionReference) {
     this.definitionReference = definitionReference;
   }

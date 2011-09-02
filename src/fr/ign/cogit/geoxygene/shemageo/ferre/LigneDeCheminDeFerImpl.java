@@ -21,10 +21,12 @@ public class LigneDeCheminDeFerImpl extends AgregatReseauImpl implements
    */
   private String nom = "";
 
+  @Override
   public String getNom() {
     return this.nom;
   }
 
+  @Override
   public void setNom(String nom) {
     this.nom = nom;
   }
@@ -34,10 +36,12 @@ public class LigneDeCheminDeFerImpl extends AgregatReseauImpl implements
    */
   private boolean touristique = false;
 
+  @Override
   public boolean isTouristique() {
     return this.touristique;
   }
 
+  @Override
   public void setTouristique(boolean touristique) {
     this.touristique = touristique;
   }

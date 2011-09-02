@@ -20,10 +20,12 @@ public class PartitionImpl implements Partition {
    */
   private int id = 0;
 
+  @Override
   public int getId() {
     return this.id;
   }
 
+  @Override
   public void setId(int id) {
     this.id = id;
   }
@@ -33,10 +35,12 @@ public class PartitionImpl implements Partition {
    */
   private String nom = "";
 
+  @Override
   public String getNom() {
     return this.nom;
   }
 
+  @Override
   public void setNom(String nom) {
     this.nom = nom;
   }
@@ -46,6 +50,7 @@ public class PartitionImpl implements Partition {
    */
   private Collection<Zone> zones = new FT_FeatureCollection<Zone>();
 
+  @Override
   public Collection<Zone> getZones() {
     return this.zones;
   }

@@ -177,24 +177,24 @@ public class GM_CubicSpline extends GM_PolynomialSpline implements ICubicSpline 
     if (this.tangentMethod.equalsIgnoreCase("finiteDifference")) { //$NON-NLS-1$
       double[] v1 = this.twoPointsDifference(i + 1, i);
       double[] v2 = this.twoPointsDifference(i, i - 1);
-      return avg(v1, v2);
+      return this.avg(v1, v2);
     }
     if (this.tangentMethod.equalsIgnoreCase("cardinalSpline")) { //$NON-NLS-1$
       int i1 = Math.min(this.controlPoints.size() - 1, i + 1);
       int i2 = Math.max(0, i - 1);
       double[] v = this.twoPointsDifference(i1, i2);
-      return mul(v, (1 - this.tension));
+      return this.mul(v, (1 - this.tension));
     }
     if (this.tangentMethod.equalsIgnoreCase("kochanekBartels")) { //$NON-NLS-1$
       double[] v1 = this.twoPointsDifference(i + 1, i);
       double numerator = (1.0d - this.tension) * (1.0d - this.bias)
           * (1.0d - this.continuity);
-      v1 = mul(v1, numerator);
+      v1 = this.mul(v1, numerator);
       double[] v2 = this.twoPointsDifference(i, i - 1);
       numerator = (1.0d - this.tension) * (1.0d + this.bias)
           * (1.0d + this.continuity);
-      v2 = mul(v2, numerator);
-      return avg(v1, v2);
+      v2 = this.mul(v2, numerator);
+      return this.avg(v1, v2);
     }
     return null;
   }
@@ -206,12 +206,12 @@ public class GM_CubicSpline extends GM_PolynomialSpline implements ICubicSpline 
     double[] v1 = this.twoPointsDifference(i + 1, i);
     double numerator = (1.0d - this.tension) * (1.0d - this.bias)
         * (1.0d + this.continuity);
-    v1 = mul(v1, numerator);
+    v1 = this.mul(v1, numerator);
     double[] v2 = this.twoPointsDifference(i, i - 1);
     numerator = (1.0d - this.tension) * (1.0d + this.bias)
         * (1.0d - this.continuity);
-    v2 = mul(v2, numerator);
-    return avg(v1, v2);
+    v2 = this.mul(v2, numerator);
+    return this.avg(v1, v2);
   }
 
   private double[] twoPointsDifference(int i1, int i2) {

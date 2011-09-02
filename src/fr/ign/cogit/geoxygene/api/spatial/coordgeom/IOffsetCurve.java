@@ -15,8 +15,10 @@ public interface IOffsetCurve extends ICurveSegment {
    * this.refDirection; }
    */
   /** NON IMPLEMENTE. */
+  @Override
   public abstract IDirectPositionList coord();
 
   /** NON IMPLEMENTE. */
+  @Override
   public abstract ICurveSegment reverse();
 }

@@ -14,5 +14,6 @@ public interface IMultiSolid<SolidType extends ISolid> extends
   /**
    * NON IMPLEMENTE (renvoie 0.0). Aire totale.
    */
+  @Override
   public abstract double area();
 }

@@ -115,6 +115,7 @@ class ObjectViewerToolBar extends JToolBar {
       final JToggleButton zoomintbutton = new JToggleButton(zoominicon, false);
       zoomintbutton.setToolTipText("Zoom in");
       zoomintbutton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           ObjectViewerToolBar.this.setToolBarButtonsUnselected(zoomintbutton);
 
@@ -136,6 +137,7 @@ class ObjectViewerToolBar extends JToolBar {
       final JToggleButton zoomouttbutton = new JToggleButton(zoomouticon, false);
       zoomouttbutton.setToolTipText("Zoom out");
       zoomouttbutton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           ObjectViewerToolBar.this.setToolBarButtonsUnselected(zoomouttbutton);
 
@@ -160,6 +162,7 @@ class ObjectViewerToolBar extends JToolBar {
           true);
       zoomextenttbutton.setToolTipText("Zoom in/out to extent");
       zoomextenttbutton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           ObjectViewerToolBar.this
               .setToolBarButtonsUnselected(zoomextenttbutton);
@@ -182,6 +185,7 @@ class ObjectViewerToolBar extends JToolBar {
       final JToggleButton pantbutton = new JToggleButton(panicon, false);
       pantbutton.setToolTipText("Pan");
       pantbutton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           ObjectViewerToolBar.this.setToolBarButtonsUnselected(pantbutton);
 
@@ -203,6 +207,7 @@ class ObjectViewerToolBar extends JToolBar {
       final JToggleButton resettbutton = new JToggleButton(reseticon, false);
       resettbutton.setToolTipText("Zoom to full extent");
       resettbutton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           ObjectViewerToolBar.this.setToolBarButtonsUnselected(resettbutton);
 
@@ -226,6 +231,7 @@ class ObjectViewerToolBar extends JToolBar {
       final JToggleButton selecttbutton = new JToggleButton(selecticon, false);
       selecttbutton.setToolTipText("Select feature");
       selecttbutton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           ObjectViewerToolBar.this.setToolBarButtonsUnselected(selecttbutton);
 
@@ -245,6 +251,7 @@ class ObjectViewerToolBar extends JToolBar {
       final JToggleButton selectIDtbutton = new JToggleButton("Id?", false);
       selectIDtbutton.setToolTipText("Show attributes");
       selectIDtbutton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           ObjectViewerToolBar.this.setToolBarButtonsUnselected(selectIDtbutton);
 

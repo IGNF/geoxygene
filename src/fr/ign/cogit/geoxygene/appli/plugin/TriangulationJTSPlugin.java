@@ -56,6 +56,7 @@ public class TriangulationJTSPlugin implements GeOxygeneApplicationPlugin,
    * Initialize the plugin.
    * @param application the application
    */
+  @Override
   public final void initialize(final GeOxygeneApplication application) {
     this.application = application;
     JMenu menu = null;
@@ -105,7 +106,7 @@ public class TriangulationJTSPlugin implements GeOxygeneApplicationPlugin,
     newFeatureTypeExterieurs.setGeometryType(GM_Polygon.class);
     popTriangles.setFeatureType(newFeatureTypeExterieurs);
     DataSet.getInstance().addPopulation(popTriangles);
-    logger.info(popTriangles);
+    TriangulationJTSPlugin.logger.info(popTriangles);
     project.addFeatureCollection(popTriangles, popTriangles.getNom());
   }
 }

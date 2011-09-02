@@ -492,7 +492,7 @@ public class CommonAlgorithms {
     IDirectPosition centreHull = mbr.centroid();
     double norm = poly.perimeter();
     Vecteur vectHoriz = new Vecteur(norm, 0.0, 0.0);
-    Vecteur vect = rotateVector(vectHoriz, orientation);
+    Vecteur vect = CommonAlgorithms.rotateVector(vectHoriz, orientation);
     IDirectPosition mid = Operateurs.milieu(poly.centroid(),
         vect.translate(poly.centroid()));
 
@@ -507,8 +507,9 @@ public class CommonAlgorithms {
     // combine the segment with the intersection of the two geometries
     IGeometry inter2 = segment.intersection(mbr);
 
-    if (inter2.isEmpty())
+    if (inter2.isEmpty()) {
       return 0.0;
+    }
 
     // the length of the intersection represents the length of overlap
     return inter2.length();

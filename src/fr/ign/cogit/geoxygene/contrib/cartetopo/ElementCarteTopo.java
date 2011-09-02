@@ -22,7 +22,6 @@ package fr.ign.cogit.geoxygene.contrib.cartetopo;
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.AbstractFeature;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
 
 /**
  * Topological map element.
@@ -42,7 +41,7 @@ public class ElementCarteTopo extends AbstractFeature {
    */
   public CarteTopo getCarteTopo() {
     if (this.getPopulation() == null) {
-      FT_Feature.getLogger().error(
+      AbstractFeature.getLogger().error(
           I18N.getString("ElementCarteTopo.NoPopulation") + this); //$NON-NLS-1$
       return null;
     }

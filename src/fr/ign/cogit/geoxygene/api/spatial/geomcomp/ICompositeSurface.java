@@ -73,19 +73,23 @@ public interface ICompositeSurface extends IComposite, IOrientableSurface {
   int sizeGenerator();
 
   /** Renvoie la primitive de self. */
+  @Override
   // le calcul est fait en dynamique dans la methode privee simplifyPrimitve.
   ISurface getPrimitive();
 
   /** Renvoie la primitive orientÃ©e positivement. */
+  @Override
   IOrientableSurface getPositive();
 
   /** Renvoie la primitive orientÃ©e nÃ©gativement. */
+  @Override
   IOrientableSurface getNegative();
 
   /**
    * Redéfinition de l'opérateur "boundary" sur GM_OrientableSurface. Renvoie
    * une GM_SurfaceBoundary.
    */
+  @Override
   ISurfaceBoundary boundary();
 
   // //////////////////////////////////////////////////////////////////////

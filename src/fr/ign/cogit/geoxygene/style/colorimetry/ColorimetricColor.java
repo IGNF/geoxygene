@@ -418,43 +418,43 @@ public class ColorimetricColor {
 
   public static void main(String[] args) {
     ColorimetricColor c = new ColorimetricColor("RoUge", 0); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
+    ColorimetricColor.logger.info(c.getCleCoul());
     c = new ColorimetricColor("RoUge", 1); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
+    ColorimetricColor.logger.info(c.getCleCoul());
     c = new ColorimetricColor("Rouge", 7); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
+    ColorimetricColor.logger.info(c.getCleCoul());
     c = new ColorimetricColor("Rouge", 8); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
-    logger.info(""); //$NON-NLS-1$
+    ColorimetricColor.logger.info(c.getCleCoul());
+    ColorimetricColor.logger.info(""); //$NON-NLS-1$
 
     c = new ColorimetricColor("Gris", 0); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
+    ColorimetricColor.logger.info(c.getCleCoul());
     c = new ColorimetricColor("Gris", 1); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
+    ColorimetricColor.logger.info(c.getCleCoul());
     c = new ColorimetricColor("Gris", 7); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
+    ColorimetricColor.logger.info(c.getCleCoul());
     c = new ColorimetricColor("Gris", 8); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
-    logger.info(""); //$NON-NLS-1$
+    ColorimetricColor.logger.info(c.getCleCoul());
+    ColorimetricColor.logger.info(""); //$NON-NLS-1$
 
     c = new ColorimetricColor("Noir", 0); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
+    ColorimetricColor.logger.info(c.getCleCoul());
     c = new ColorimetricColor("Noir", 1); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
+    ColorimetricColor.logger.info(c.getCleCoul());
     c = new ColorimetricColor("Noir", 7); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
+    ColorimetricColor.logger.info(c.getCleCoul());
     c = new ColorimetricColor("Noir", 8); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
-    logger.info(""); //$NON-NLS-1$
+    ColorimetricColor.logger.info(c.getCleCoul());
+    ColorimetricColor.logger.info(""); //$NON-NLS-1$
 
     c = new ColorimetricColor("Blanc", 0); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
+    ColorimetricColor.logger.info(c.getCleCoul());
     c = new ColorimetricColor("Blanc", 1); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
+    ColorimetricColor.logger.info(c.getCleCoul());
     c = new ColorimetricColor("Blanc", 7); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
+    ColorimetricColor.logger.info(c.getCleCoul());
     c = new ColorimetricColor("Blanc", 8); //$NON-NLS-1$
-    logger.info(c.getCleCoul());
+    ColorimetricColor.logger.info(c.getCleCoul());
   }
 
   /**

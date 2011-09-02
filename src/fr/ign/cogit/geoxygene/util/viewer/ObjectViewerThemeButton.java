@@ -78,6 +78,7 @@ class ObjectViewerThemeButton extends JToggleButton {
     this.setHorizontalAlignment(SwingConstants.LEFT);
 
     this.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (ObjectViewerThemeButton.this.getThemeProperties().isActive()) {
           // System.out.println("Theme unpressed !");

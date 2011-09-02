@@ -21,9 +21,6 @@ package fr.ign.cogit.geoxygene.appli.render;
 
 import java.awt.Graphics2D;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-
 /**
  * Renderer interface.
  * @author Julien Perret

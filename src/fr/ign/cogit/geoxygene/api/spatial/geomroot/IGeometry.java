@@ -5,7 +5,6 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IBoundary;
-import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 
 public interface IGeometry {
   /** Renvoie l' identifiant du système de coordonnées de référence. */

@@ -45,7 +45,6 @@ import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 
 /**
  * @author Julien Perret
@@ -191,7 +190,7 @@ public class PolygonSymbolizer extends AbstractSymbolizer {
       } else if (this.getStroke().getStrokeLineJoin() == BasicStroke.JOIN_ROUND) {
         this.getStroke().setStrokeLineCap(BasicStroke.CAP_ROUND);
       } else {
-        logger.error("Stroke Line Join undefined."); //$NON-NLS-1$
+        AbstractSymbolizer.logger.error("Stroke Line Join undefined."); //$NON-NLS-1$
       }
       float strokeOpacity = this.getStroke().getStrokeOpacity();
       if (this.getStroke().getGraphicType() == null && strokeOpacity > 0f) {

@@ -5,6 +5,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 public interface IMultiSurface<GeomType extends IOrientableSurface> extends
     IMultiPrimitive<GeomType> {
   /** Aire totale. */
+  @Override
   public abstract double area();
 
   /** Périmètre totale. */
@@ -15,5 +16,6 @@ public interface IMultiSurface<GeomType extends IOrientableSurface> extends
   /** a expliquer **/
   public abstract IMultiSurface<GeomType> homogeneise();
 
+  @Override
   public abstract boolean isMultiSurface();
 }

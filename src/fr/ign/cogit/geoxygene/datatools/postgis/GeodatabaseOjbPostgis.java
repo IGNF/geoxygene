@@ -119,6 +119,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
    * transaction ouverte. La classe theClass doit etre une sous-classe de
    * FT_Feature, sinon renvoie une liste vide.
    */
+  @Override
   @SuppressWarnings("unchecked")
   public <T extends IFeature> IFeatureCollection<T> loadAllFeatures(
       Class<T> featureClass, IGeometry geom) {
@@ -256,6 +257,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
    * theClass doit etre une sous-classe de FT_Feature, sinon renvoie une liste
    * vide.
    */
+  @Override
   @SuppressWarnings("unchecked")
   public <T extends IFeature> IFeatureCollection<T> loadAllFeatures(
       Class<T> featureClass, IGeometry geom, double dist) {
@@ -406,6 +408,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
   }
 
   /** Ne fonctionne pas sous POSTGIS. */
+  @Override
   public void mbr(Class<?> clazz) {
     GeodatabaseOjbPostgis.logger
         .warn("GeodatabaseOjbPostgis::mbr() : inutile sous Postgis !");
@@ -415,6 +418,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
    * Calcule un index spatial sur la table mappee avec la classe (R-Tree). La
    * classe doit heriter de FT_Feature, la table doit contenir une geometrie.
    */
+  @Override
   public void spatialIndex(Class<?> clazz) {
     PostgisSpatialQuery.spatialIndex(this, clazz);
   }
@@ -423,6 +427,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
    * Renvoie le nombre d'objets persistants de la classe theClass. A appeler a
    * l'interieur d'une transaction ouverte.
    */
+  @Override
   public int countObjects(Class<?> theClass) {
     String tableName = this.getMetadata(theClass).getTableName();
     String query = "select count(*) from " + tableName;
@@ -449,6 +454,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
    * passee en parametre doit avoir un champ "id" de type int (marche pour les
    * FT_Feature). A appeler a l'interieur d'une transaction ouverte.
    */
+  @Override
   public int maxId(Class<?> theClass) {
     String idColumnName = this.getMetadata(theClass).getIdColumnName();
     String tableName = this.getMetadata(theClass).getTableName();
@@ -476,6 +482,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
    * passee en parametre doit avoir un champ "id" de type int (marche pour les
    * FT_Feature). A appeler a l'interieur d'une transaction ouverte.
    */
+  @Override
   public int minId(Class<?> theClass) {
     String idColumnName = this.getMetadata(theClass).getIdColumnName();
     String tableName = this.getMetadata(theClass).getTableName();
@@ -499,6 +506,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
   }
 
   /** renvoie le type de SGBD associe. */
+  @Override
   public int getDBMS() {
     return Geodatabase.POSTGIS;
   }
@@ -507,6 +515,7 @@ public class GeodatabaseOjbPostgis extends GeodatabaseOjb implements
    * Utilise par EsayLoader pour recharger un fichier de mapping qui a ete
    * modifie.
    */
+  @Override
   public void refreshRepository(File newRepository) throws Exception {
     MetadataManager mm = MetadataManager.getInstance();
     DescriptorRepository rd = mm.readDescriptorRepository(newRepository

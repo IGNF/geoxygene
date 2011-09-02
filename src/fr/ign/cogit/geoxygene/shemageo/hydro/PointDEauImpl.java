@@ -21,10 +21,12 @@ public class PointDEauImpl extends ElementPonctuelReseauImpl implements
    */
   private String nom = "";
 
+  @Override
   public String getNom() {
     return this.nom;
   }
 
+  @Override
   public void setNom(String nom) {
     this.nom = nom;
   }
@@ -47,10 +49,12 @@ public class PointDEauImpl extends ElementPonctuelReseauImpl implements
    */
   private double zMax;
 
+  @Override
   public double getZMax() {
     return this.zMax;
   }
 
+  @Override
   public void setZMax(double zMax) {
     this.zMax = zMax;
   }
@@ -60,10 +64,12 @@ public class PointDEauImpl extends ElementPonctuelReseauImpl implements
    */
   private double zMin;
 
+  @Override
   public double getZMin() {
     return this.zMin;
   }
 
+  @Override
   public void setZMin(double zMin) {
     this.zMin = zMin;
   }
@@ -73,10 +79,12 @@ public class PointDEauImpl extends ElementPonctuelReseauImpl implements
    */
   private double hauteur;
 
+  @Override
   public double getHauteur() {
     return this.hauteur;
   }
 
+  @Override
   public void setHauteur(double hauteur) {
     this.hauteur = hauteur;
   }

@@ -23,35 +23,41 @@ public interface ISurfacePatch extends ISurface {
    * Renvoie le patch de rang i. Passer nécessairement 0 en paramètre car un
    * GM_SurfacePatch ne contient qu'un patch qui est lui-meme.
    */
+  @Override
   public abstract ISurfacePatch getPatch(int i);
 
   /**
    * Ne fait rien car un GM_SurfacePatch ne contient qu'un patch qui est
    * lui-meme.
    */
+  @Override
   public abstract void setPatch(int i, ISurfacePatch value);
 
   /**
    * Ne fait rien car un GM_SurfacePatch ne contient qu'un patch qui est
    * lui-meme.
    */
+  @Override
   public abstract void addPatch(ISurfacePatch value);
 
   /**
    * Ne fait rien car un GM_SurfacePatch ne contient qu'un patch qui est
    * lui-meme.
    */
+  @Override
   public abstract void addPatch(int i, ISurfacePatch value);
 
   /**
    * Ne fait rien car un GM_SurfacePatch ne contient qu'un patch qui est
    * lui-meme.
    */
+  @Override
   public abstract void removePatch(ISurfacePatch value);
 
   /**
    * Ne fait rien car un GM_SurfacePatch ne contient qu'un patch qui est
    * lui-meme.
    */
+  @Override
   public abstract void removePatch(int i);
 }

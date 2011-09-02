@@ -179,7 +179,7 @@ public class SQLXMLGenerator {
 
           // Si c'est le champ COGITID : on passe
           if (sqlColumnName.compareToIgnoreCase("COGITID") == 0) {
-            continue; //$NON-NLS-1$
+            continue;
           }
 
           // Le nom Java

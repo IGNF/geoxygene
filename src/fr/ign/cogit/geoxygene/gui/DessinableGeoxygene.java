@@ -1129,6 +1129,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
       DessinableGeoxygene.logger.trace("run()");
     }
     final Runnable doFinished = new Runnable() {
+      @Override
       public void run() {
         DessinableGeoxygene.this.finishedMaj();
       }

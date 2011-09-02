@@ -188,19 +188,19 @@ class OjbXMLGenerator {
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////
   private String oracleType2JdbcType(String oracle) throws Exception {
     if (oracle.compareToIgnoreCase("VARCHAR2") == 0) {
-      return "VARCHAR"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "VARCHAR"; //$NON-NLS-1$ 
     } else if (oracle.compareToIgnoreCase("VARCHAR") == 0) {
-      return "VARCHAR"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "VARCHAR"; //$NON-NLS-1$ 
     } else if (oracle.compareToIgnoreCase("CHAR") == 0) {
-      return "VARCHAR"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "VARCHAR"; //$NON-NLS-1$ 
     } else if (oracle.compareToIgnoreCase("NUMBER") == 0) {
-      return "DOUBLE"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "DOUBLE"; //$NON-NLS-1$ 
     } else if (oracle.compareToIgnoreCase("FLOAT") == 0) {
-      return "DOUBLE"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "DOUBLE"; //$NON-NLS-1$ 
     } else if (oracle.compareToIgnoreCase("INTEGER") == 0) {
-      return "INTEGER"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "INTEGER"; //$NON-NLS-1$ 
     } else if (oracle.compareToIgnoreCase("BOOLEAN") == 0) {
-      return "BIT"; //$NON-NLS-1$ //$NON-NLS-2$
+      return "BIT"; //$NON-NLS-1$ 
     } else if (oracle.compareToIgnoreCase("SDO_GEOMETRY") == 0) {
       return "STRUCT\" conversion=\"fr.ign.cogit.geoxygene.datatools.ojb.GeomGeOxygene2Dbms"; //$NON-NLS-1$
     } else {
@@ -233,7 +233,7 @@ class OjbXMLGenerator {
   }
 
   public int getI() {
-    return i;
+    return this.i;
   }
 
   public void setI(int i) {

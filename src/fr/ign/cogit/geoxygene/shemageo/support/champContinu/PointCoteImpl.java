@@ -35,10 +35,12 @@ public class PointCoteImpl extends DefaultFeature implements PointCote {
    */
   private ChampContinu champContinu = null;
 
+  @Override
   public ChampContinu getChampContinu() {
     return this.champContinu;
   }
 
+  @Override
   public void setChampContinu(ChampContinu champContinu) {
     this.champContinu = champContinu;
   }
@@ -48,10 +50,12 @@ public class PointCoteImpl extends DefaultFeature implements PointCote {
    */
   private double valeur = 0;
 
+  @Override
   public double getValeur() {
     return this.valeur;
   }
 
+  @Override
   public void setValeur(double valeur) {
     this.valeur = valeur;
   }

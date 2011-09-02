@@ -18,11 +18,13 @@ public interface ICompositeSolid extends IComposite, ISolid {
   /**
    * NON IMPLEMETE (renvoie 0.0). Aire.
    */
+  @Override
   public abstract double area();
 
   /**
    * NON IMPLEMETE (renvoie 0.0). Volume.
    */
   // Dans la norme, le résultat est de type Volume.
+  @Override
   public abstract double volume();
 }

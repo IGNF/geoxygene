@@ -41,6 +41,6 @@ public class DiagramSymbolizer {
   }
 
   public List<ThematicClass> getThematicClass() {
-    return thematicClass;
+    return this.thematicClass;
   }
 }

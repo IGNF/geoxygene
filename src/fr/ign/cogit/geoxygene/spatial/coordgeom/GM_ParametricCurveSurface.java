@@ -45,12 +45,14 @@ class GM_ParametricCurveSurface extends GM_SurfacePatch implements
 
   protected String horizontalCurveType;
 
+  @Override
   public String getHorizontalCurveType() {
     return this.horizontalCurveType;
   }
 
   protected String verticalCurveType;
 
+  @Override
   public String getVerticalCurveType() {
     return this.verticalCurveType;
   }
@@ -59,6 +61,7 @@ class GM_ParametricCurveSurface extends GM_SurfacePatch implements
    * @param t
    * @return horizontal curve
    */
+  @Override
   public ICurve horizontalCurve(double t) {
     return null;
   }
@@ -67,6 +70,7 @@ class GM_ParametricCurveSurface extends GM_SurfacePatch implements
    * @param s
    * @return vertical curve
    */
+  @Override
   public ICurve verticalCurve(double s) {
     return null;
   }
@@ -76,6 +80,7 @@ class GM_ParametricCurveSurface extends GM_SurfacePatch implements
    * @param t
    * @return surface of the curve surface
    */
+  @Override
   public IDirectPosition surface(double s, double t) {
     return null;
   }

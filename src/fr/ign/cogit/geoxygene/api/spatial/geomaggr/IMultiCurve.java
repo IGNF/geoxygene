@@ -9,6 +9,7 @@ public interface IMultiCurve<CurveType extends IOrientableCurve> extends
   // Dans la norme, cet attribut est de type Length et non double
   public abstract double perimeter();
 
+  @Override
   public abstract boolean isMultiCurve();
   /** Longueur totale. */
   // Dans la norme, ceci est un attribut et non une méthode.

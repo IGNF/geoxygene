@@ -38,12 +38,6 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.DataSet;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
-import fr.ign.cogit.geoxygene.feature.Population;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
@@ -51,7 +45,6 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Primitive;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
@@ -295,7 +288,7 @@ public class Chargeur {
             // LOGGER.debug(value + " -> " + orientation);
             arc.setOrientation(orientation.intValue());
           } else {
-            logger.error(value + " not found in map");
+            Chargeur.logger.error(value + " not found in map");
           }
         } else {
           if (value instanceof Number) {
@@ -310,7 +303,7 @@ public class Chargeur {
                 e.printStackTrace();
               }
             } else {
-              logger
+              Chargeur.logger
                   .error("Attribute "
                       + orientationAttribute
                       + " is neither Number nor String. It can't be used as an orientation");

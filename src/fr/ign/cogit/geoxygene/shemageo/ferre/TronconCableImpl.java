@@ -19,10 +19,12 @@ public class TronconCableImpl extends ArcReseauImpl implements TronconCable {
    */
   private double zMax;
 
+  @Override
   public double getZMax() {
     return this.zMax;
   }
 
+  @Override
   public void setZMax(double zMax) {
     this.zMax = zMax;
   }
@@ -32,30 +34,36 @@ public class TronconCableImpl extends ArcReseauImpl implements TronconCable {
    */
   private double zMin;
 
+  @Override
   public double getZMin() {
     return this.zMin;
   }
 
+  @Override
   public void setZMin(double zMin) {
     this.zMin = zMin;
   }
 
   private double zIni = 0;
 
+  @Override
   public double getZIni() {
     return this.zIni;
   }
 
+  @Override
   public void setZIni(double zIni) {
     this.zIni = zIni;
   }
 
   private double zFin = 0;
 
+  @Override
   public double getZFin() {
     return this.zFin;
   }
 
+  @Override
   public void setZFin(double zFin) {
     this.zFin = zFin;
   }

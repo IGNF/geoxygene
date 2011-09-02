@@ -23,8 +23,6 @@ import org.hibernate.persister.entity.AbstractEntityPersister;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.odmg.OQLQuery;
 
-import com.vividsolutions.jts.geom.GeometryFactory;
-
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;

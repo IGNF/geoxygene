@@ -56,12 +56,12 @@ public class GeoTiffWriter {
     // Open the GeoTiff writer
     try {
       // This function always allocates about 23Mb, both for 2Mb and 225Mb
-      logger.info("Start writing " + fileName); //$NON-NLS-1$
+      GeoTiffWriter.logger.info("Start writing " + fileName); //$NON-NLS-1$
       ImageIO.setUseCache(false);
       org.geotools.gce.geotiff.GeoTiffWriter writer = new org.geotools.gce.geotiff.GeoTiffWriter(
           fileName);
       writer.write(coverage, null);
-      logger.info("Done writing"); //$NON-NLS-1$
+      GeoTiffWriter.logger.info("Done writing"); //$NON-NLS-1$
     } catch (IOException e) {
       e.printStackTrace();
     }

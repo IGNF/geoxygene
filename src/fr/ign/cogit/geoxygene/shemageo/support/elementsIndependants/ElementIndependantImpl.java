@@ -19,10 +19,12 @@ public abstract class ElementIndependantImpl extends DefaultFeature implements
    */
   private Meso meso = null;
 
+  @Override
   public Meso getMeso() {
     return this.meso;
   }
 
+  @Override
   public void setMeso(Meso meso) {
     this.meso = meso;
   }

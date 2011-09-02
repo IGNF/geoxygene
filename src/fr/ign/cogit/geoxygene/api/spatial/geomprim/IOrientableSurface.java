@@ -22,8 +22,10 @@ public interface IOrientableSurface extends IOrientablePrimitive {
    * fonctionne que pour les surfaces composées d'un seul patch, qui est un
    * polygone.
    */
+  @Override
   public abstract ISurfaceBoundary boundary();
 
   /** Renvoie les coordonnees de la primitive. */
+  @Override
   public abstract IDirectPositionList coord();
 }

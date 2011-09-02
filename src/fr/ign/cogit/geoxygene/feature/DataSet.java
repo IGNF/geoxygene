@@ -40,7 +40,6 @@ import fr.ign.cogit.geoxygene.api.feature.type.GF_Constraint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.datatools.Geodatabase;
 import fr.ign.cogit.geoxygene.schema.Produit;
-import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.SchemaConceptuelJeu;
 
 /**
@@ -152,6 +151,7 @@ public class DataSet implements IDataSet {
    * 
    * @param geom géométrie utilisée pour l'extraction géométrique.
    */
+  @Override
   public void chargeElementsPartie(IGeometry geom) {
     if (!this.getPersistant()) {
       DataSet.LOGGER
@@ -185,6 +185,7 @@ public class DataSet implements IDataSet {
    * 
    * @param zoneExtraction zone utilisée pour l'extraction géométrique
    */
+  @Override
   public void chargeElementsPartie(IExtraction zoneExtraction) {
     this.chargeElementsPartie(zoneExtraction.getGeom());
   }
@@ -228,6 +229,7 @@ public class DataSet implements IDataSet {
    *          <li>liste3 = {"ferré"}.
    *          </ul
    */
+  @Override
   public void chargeExtractionThematiqueEtSpatiale(IGeometry geom,
       List<List<String>> themes) {
     if (!this.getPersistant()) {

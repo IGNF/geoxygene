@@ -154,7 +154,7 @@ public abstract class AbstractLayer implements Layer {
 
   @Override
   public String getActiveGroup() {
-    return activeGroup;
+    return this.activeGroup;
   }
 
   @Override

@@ -129,14 +129,17 @@ public class FrameChargement extends JFrame {
     this.dataModel = new AbstractTableModel() {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public int getColumnCount() {
         return 2;
       }
 
+      @Override
       public int getRowCount() {
         return FrameChargement.this.shapeFiles.size();
       }
 
+      @Override
       public Object getValueAt(int row, int col) {
         return (col == 0) ? FrameChargement.this.shapeFiles.get(row).getName()
             : FrameChargement.this.shapeFileLayers.get(row);
@@ -292,6 +295,7 @@ public class FrameChargement extends JFrame {
     JButton okButton = new JButton("Ok");
     okButton.setActionCommand("Ok");
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         FrameChargement.this.validated = true;
         dialog.dispose();
@@ -300,6 +304,7 @@ public class FrameChargement extends JFrame {
 
     JButton cancelButton = new JButton("Annuler");
     cancelButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         dialog.dispose();
       }
@@ -309,6 +314,7 @@ public class FrameChargement extends JFrame {
     JButton addButton = new JButton("Ajouter des Shapefiles", iconAddButton);
     addButton.setToolTipText("Ajouter des Shapefiles");
     addButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         FrameChargement.this.addShapeFiles();
       }
@@ -320,6 +326,7 @@ public class FrameChargement extends JFrame {
     addDirectoryButton
         .setToolTipText("Ajouter des répertoires contenant des Shapefiles");
     addDirectoryButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         FrameChargement.this.addDirectories();
       }
@@ -368,6 +375,7 @@ public class FrameChargement extends JFrame {
       this.setVerticalAlignment(SwingConstants.CENTER);
     }
 
+    @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
         boolean isSelected, boolean hasFocus, int row, int col) {
       if (isSelected) {
@@ -404,6 +412,7 @@ public class FrameChargement extends JFrame {
       super(items);
     }
 
+    @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
         boolean isSelected, boolean hasFocus, int row, int column) {
       if (isSelected) {

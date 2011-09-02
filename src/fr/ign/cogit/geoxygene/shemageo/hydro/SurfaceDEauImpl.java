@@ -47,10 +47,12 @@ public class SurfaceDEauImpl extends ElementZonalReseauImpl implements
    */
   private String nom = "";
 
+  @Override
   public String getNom() {
     return this.nom;
   }
 
+  @Override
   public void setNom(String nom) {
     this.nom = nom;
   }
@@ -60,10 +62,12 @@ public class SurfaceDEauImpl extends ElementZonalReseauImpl implements
    */
   private double zMoy;
 
+  @Override
   public double getZMoy() {
     return this.zMoy;
   }
 
+  @Override
   public void setZMoy(double zMoy) {
     this.zMoy = zMoy;
   }
@@ -73,10 +77,12 @@ public class SurfaceDEauImpl extends ElementZonalReseauImpl implements
    */
   private Regime regime;
 
+  @Override
   public Regime getRegime() {
     return this.regime;
   }
 
+  @Override
   public void setRegime(Regime regime) {
     this.regime = regime;
   }

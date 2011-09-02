@@ -31,10 +31,12 @@ public class ElementCaracteristiqueImpl extends DefaultFeature implements
    */
   private ChampContinu champContinu = null;
 
+  @Override
   public ChampContinu getChampContinu() {
     return this.champContinu;
   }
 
+  @Override
   public void setChampContinu(ChampContinu champContinu) {
     this.champContinu = champContinu;
   }

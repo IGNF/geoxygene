@@ -35,6 +35,7 @@ public class IntegerList2VarCharFieldConversion implements FieldConversion {
    */
   private static final long serialVersionUID = 1L;
 
+  @Override
   @SuppressWarnings("unchecked")
   public Object javaToSql(Object source) throws ConversionException {
     if (source instanceof List) {
@@ -52,6 +53,7 @@ public class IntegerList2VarCharFieldConversion implements FieldConversion {
     return null;
   }
 
+  @Override
   public Object sqlToJava(Object source) throws ConversionException {
     if (source instanceof String) {
       String s = (String) source;

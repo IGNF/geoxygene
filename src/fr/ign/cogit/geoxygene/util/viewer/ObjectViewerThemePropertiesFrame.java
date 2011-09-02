@@ -98,6 +98,7 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
         .getObjectViewerThemeProperties().getFillInThemeColor());
     final JButton fillThemeColorButton = new JButton(fillThemeColorButtonIcon);
     fillThemeColorButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         final JFrame ccframe = new ObjectViewerColorChooser(
             ((RectIcon) (fillThemeColorButton.getIcon())).getColor(),
@@ -120,6 +121,7 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
     final JButton outlineThemeColorButton = new JButton(
         outlineThemeColorButtonIcon);
     outlineThemeColorButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         final JFrame ccframe = new ObjectViewerColorChooser(
             ((RectIcon) (outlineThemeColorButton.getIcon())).getColor(),
@@ -142,6 +144,7 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
     final JButton fillHighlightColorButton = new JButton(
         fillHighlightColorButtonIcon);
     fillHighlightColorButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         final JFrame ccframe = new ObjectViewerColorChooser(
             ((RectIcon) (fillHighlightColorButton.getIcon())).getColor(),
@@ -164,6 +167,7 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
     final JButton outlineHighlightColorButton = new JButton(
         outlineHighlightColorButtonIcon);
     outlineHighlightColorButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         final JFrame ccframe = new ObjectViewerColorChooser(
             ((RectIcon) (outlineHighlightColorButton.getIcon())).getColor(),
@@ -186,6 +190,7 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
     final JButton fillSelectionColorButton = new JButton(
         fillSelectionColorButtonIcon);
     fillSelectionColorButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         final JFrame ccframe = new ObjectViewerColorChooser(
             ((RectIcon) (fillSelectionColorButton.getIcon())).getColor(),
@@ -208,6 +213,7 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
     final JButton outlineSelectionColorButton = new JButton(
         outlineSelectionColorButtonIcon);
     outlineSelectionColorButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         final JFrame ccframe = new ObjectViewerColorChooser(
             ((RectIcon) (outlineSelectionColorButton.getIcon())).getColor(),
@@ -302,6 +308,7 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
       attributeStringComboBox.setEnabled(false);
 
       shaderTypeComboBox.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           if (shaderTypeComboBox.getSelectedItem().equals("Continuous")) {
             attributeDoubleLabel.setEnabled(true);
@@ -333,6 +340,7 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
         20, 10));
     JButton okButton = new JButton("Ok");
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         ObjectViewerThemePropertiesFrame.this.dispose();
         ObjectViewerThemePropertiesFrame.this.getObjectViewerThemeProperties()
@@ -390,6 +398,7 @@ class ObjectViewerThemePropertiesFrame extends JFrame {
     });
     JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         ObjectViewerThemePropertiesFrame.this.dispose();
       }

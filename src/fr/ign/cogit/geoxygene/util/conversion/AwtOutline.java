@@ -43,10 +43,12 @@ public class AwtOutline implements AwtShape {
     this.shape = shape;
   }
 
+  @Override
   public Rectangle2D getBounds() {
     return this.shape.getBounds();
   }
 
+  @Override
   public void draw(Graphics2D g) {
     g.draw(this.shape);
   }

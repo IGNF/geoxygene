@@ -156,6 +156,7 @@ public class GUISelectionGeometrie extends JDialog {
         this.setTypeGeometrie(0);
       }
       checkBox.addItemListener(new ItemListener() {
+        @Override
         public void itemStateChanged(ItemEvent e) {
           if (e.getStateChange() == 1) {
             Object source = e.getItemSelectable();
@@ -186,6 +187,7 @@ public class GUISelectionGeometrie extends JDialog {
         this.setDimensionGeometrie(2);
       }
       checkBox.addItemListener(new ItemListener() {
+        @Override
         public void itemStateChanged(ItemEvent e) {
           if (e.getStateChange() == 1) {
             Object source = e.getItemSelectable();
@@ -222,6 +224,7 @@ public class GUISelectionGeometrie extends JDialog {
     this.jButtonOK.setVisible(true);
 
     this.jButtonOK.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         GUISelectionGeometrie.this.selectionGeometrie.dispose();
       }

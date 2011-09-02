@@ -33,7 +33,6 @@ import java.util.List;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IBezier;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
-
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 
 /**
@@ -68,8 +67,8 @@ public class GM_Bezier extends GM_BSplineCurve implements IBezier {
       return null;
     }
     if (this.controlPoints.size() > 1) {
-      IDirectPositionList list = piecewiseBezier(this.controlPoints.getList(),
-          spacing);
+      IDirectPositionList list = this.piecewiseBezier(
+          this.controlPoints.getList(), spacing);
       return new GM_LineString(list);
     }
     return new GM_LineString(this.controlPoints);
@@ -95,8 +94,8 @@ public class GM_Bezier extends GM_BSplineCurve implements IBezier {
         left.add(T[i][0]);
         right.add(T[p.size() - 1 - i][i]);
       }
-      IDirectPositionList leftList = piecewiseBezier(left, spacing);
-      IDirectPositionList rightList = piecewiseBezier(right, spacing);
+      IDirectPositionList leftList = this.piecewiseBezier(left, spacing);
+      IDirectPositionList rightList = this.piecewiseBezier(right, spacing);
       IDirectPositionList list = new DirectPositionList();
       list.addAll(leftList);
       list.remove(list.size() - 1);
@@ -107,8 +106,8 @@ public class GM_Bezier extends GM_BSplineCurve implements IBezier {
 
   public GM_LineString asLineString(int numberOfPoints) {
     if (this.controlPoints.size() > 1) {
-      IDirectPositionList list = piecewiseBezier(this.controlPoints.getList(),
-          numberOfPoints);
+      IDirectPositionList list = this.piecewiseBezier(
+          this.controlPoints.getList(), numberOfPoints);
       return new GM_LineString(list);
     }
     return new GM_LineString(this.controlPoints);
@@ -133,9 +132,9 @@ public class GM_Bezier extends GM_BSplineCurve implements IBezier {
         left.add(T[i][0]);
         right.add(T[p.size() - 1 - i][i]);
       }
-      DirectPositionList leftList = piecewiseBezier(left,
+      DirectPositionList leftList = this.piecewiseBezier(left,
           (numberOfPoints + 1) / 2);
-      DirectPositionList rightList = piecewiseBezier(right,
+      DirectPositionList rightList = this.piecewiseBezier(right,
           (numberOfPoints + 1) / 2);
       DirectPositionList list = new DirectPositionList();
       list.addAll(leftList);

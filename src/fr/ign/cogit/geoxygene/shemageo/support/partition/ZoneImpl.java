@@ -24,10 +24,12 @@ public abstract class ZoneImpl extends DefaultFeature implements Zone {
    */
   private Partition partition = null;
 
+  @Override
   public Partition getPartition() {
     return this.partition;
   }
 
+  @Override
   public void setPartition(Partition partition) {
     this.partition = partition;
   }
@@ -37,10 +39,12 @@ public abstract class ZoneImpl extends DefaultFeature implements Zone {
    */
   Collection<Limite> limites = new FT_FeatureCollection<Limite>();
 
+  @Override
   public Collection<Limite> getLimites() {
     return this.limites;
   }
 
+  @Override
   public void setLimites(Collection<Limite> limites) {
     this.limites = limites;
   }
@@ -50,10 +54,12 @@ public abstract class ZoneImpl extends DefaultFeature implements Zone {
    */
   private Collection<ZoneComposite> zonesComposees = new FT_FeatureCollection<ZoneComposite>();
 
+  @Override
   public Collection<ZoneComposite> getZonesComposees() {
     return this.zonesComposees;
   }
 
+  @Override
   public void setZonesComposees(Collection<ZoneComposite> zonesComposees) {
     this.zonesComposees = zonesComposees;
   }

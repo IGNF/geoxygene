@@ -348,9 +348,8 @@ public class SchemaConceptuelJeu implements SchemaConceptuel<FeatureType> {
 
     for (int i = 0; i < this.featureTypes.size(); i++) {
       System.out.println("featureType "
-          + ((FeatureType) this.featureTypes.get(i)).getTypeName() + " a "
-          + ((FeatureType) this.featureTypes.get(i)).getMemberOf().size()
-          + " assos");
+          + (this.featureTypes.get(i)).getTypeName() + " a "
+          + (this.featureTypes.get(i)).getMemberOf().size() + " assos");
 
     }
 
@@ -1229,6 +1228,7 @@ public class SchemaConceptuelJeu implements SchemaConceptuel<FeatureType> {
    * Cette méthode s'utilise au chargement d'un schéma ISO: elle met à jour les
    * listes non persistentes memberOf et linkBetween.
    */
+  @Override
   public void initNM() {
 
     Iterator<AssociationRole> iTrol = this.getAssociationRoles().iterator();

@@ -61,7 +61,7 @@ public class ArcGridReader {
     // Get the image properties
     GridCoverage2D coverage;
     try {
-      coverage = (GridCoverage2D) reader.read(null);
+      coverage = reader.read(null);
     } catch (IOException ex) {
       ex.printStackTrace();
       return null;

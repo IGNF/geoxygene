@@ -110,6 +110,7 @@ public class GUIConfigSqlOJBXML extends JFrame {
     final JTextField javaFilePathTextField = new JTextField(this.javaFilePath);
     JButton javaFilePathChoiceButton = new JButton("..."); //$NON-NLS-1$
     javaFilePathChoiceButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         javaFilePathTextField.setText(GUIConfigSqlOJBXML
             .selectRepertoire(GUIConfigSqlOJBXML.this.javaFilePath));
@@ -132,6 +133,7 @@ public class GUIConfigSqlOJBXML extends JFrame {
         this.mappingDirectory);
     JButton mappingDirectoryChoiceButton = new JButton("..."); //$NON-NLS-1$
     mappingDirectoryChoiceButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         mappingDirectoryTextField.setText(GUIConfigSqlOJBXML
             .selectRepertoire(GUIConfigSqlOJBXML.this.mappingDirectory));
@@ -154,6 +156,7 @@ public class GUIConfigSqlOJBXML extends JFrame {
     JButton okButton = new JButton("Ok");
     okButton.setActionCommand("Ok");
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         GUIConfigSqlOJBXML.this.tableName = tableNameTextField.getText();
         GUIConfigSqlOJBXML.this.javaFilePath = javaFilePathTextField.getText()
@@ -171,6 +174,7 @@ public class GUIConfigSqlOJBXML extends JFrame {
 
     JButton cancelButton = new JButton("Annuler");
     cancelButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         GUIConfigSqlOJBXML.this.selectedValues[0] = null; // file java path
         dialog.dispose();

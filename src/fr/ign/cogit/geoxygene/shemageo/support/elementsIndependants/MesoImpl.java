@@ -39,10 +39,12 @@ public class MesoImpl extends ElementIndependantImpl implements Meso {
    */
   private Collection<ElementIndependant> composants = null;
 
+  @Override
   public Collection<ElementIndependant> getComposants() {
     return this.composants;
   }
 
+  @Override
   public void setComposants(Collection<ElementIndependant> composants) {
     this.composants = composants;
   }

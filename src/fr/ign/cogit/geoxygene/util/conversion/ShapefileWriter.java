@@ -171,8 +171,9 @@ public class ShapefileWriter {
         collection.add(simpleFeature);
       }
       featureStore.addFeatures(collection);
-      if (crs != null)
+      if (crs != null) {
         store.forceSchemaCRS(crs);
+      }
       t.commit();
       t.close();
       store.dispose();

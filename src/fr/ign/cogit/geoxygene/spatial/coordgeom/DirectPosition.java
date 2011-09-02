@@ -291,7 +291,7 @@ public class DirectPosition implements IDirectPosition {
       double dz = this.getZ() - d.getZ();
       return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
-    return distance2D(d);
+    return this.distance2D(d);
   }
 
   @Override

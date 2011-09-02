@@ -22,7 +22,7 @@ public class SchemaGeoxygene {
       SchemaGeoxygene.schGeox.setNomSchema("Schema GeOxygene");
 
       SchemaGeoxygene.schGeox.createFeatureType("TronconDeRoute");
-      FeatureType tronconDeRoute = (FeatureType) (SchemaGeoxygene.schGeox
+      FeatureType tronconDeRoute = (SchemaGeoxygene.schGeox
           .getFeatureTypeByName("TronconDeRoute"));
       tronconDeRoute
           .setDefinition("Portion de voie de communication destinée aux automobiles, homogène pour l'ensemble des attributs et des relations qui la concernent. Représente uniquement la chaussée, délimitée par les bas-côtés ou les trottoirs.");

@@ -230,6 +230,7 @@ public class ObjectBrowserGUI extends JFrame {
     file.add(item = new JMenuItem(this.i18nLanguageFile
         .getString("MenuFileCloseItemLabel")));
     item.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         ObjectBrowserGUI.this.dispose();
       }
@@ -240,6 +241,7 @@ public class ObjectBrowserGUI extends JFrame {
     file.add(item = new JMenuItem(this.i18nLanguageFile
         .getString("MenuFileExitItemLabel")));
     item.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         ObjectBrowserGUI.this.dispose();
         System.exit(0);
@@ -252,6 +254,7 @@ public class ObjectBrowserGUI extends JFrame {
     edit.add(item = new JMenuItem(this.i18nLanguageFile
         .getString("MenuEditRefreshItemLabel")));
     item.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         ObjectBrowser.refresh(ObjectBrowserGUI.this.getBrowsedObject(),
             ObjectBrowser.HIDE_WHEN_REFRESH,

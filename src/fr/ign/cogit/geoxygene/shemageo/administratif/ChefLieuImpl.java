@@ -21,10 +21,12 @@ public class ChefLieuImpl extends DefaultFeature implements ChefLieu {
    */
   private String nom = null;
 
+  @Override
   public String getNom() {
     return this.nom;
   }
 
+  @Override
   public void setNom(String nom) {
     this.nom = nom;
   }
@@ -34,10 +36,12 @@ public class ChefLieuImpl extends DefaultFeature implements ChefLieu {
    */
   private UniteAdministrative uniteAdministrative = null;
 
+  @Override
   public UniteAdministrative getUniteAdministrative() {
     return this.uniteAdministrative;
   }
 
+  @Override
   public void setUniteAdministrative(UniteAdministrative uniteAdministrative) {
     this.uniteAdministrative = uniteAdministrative;
   }

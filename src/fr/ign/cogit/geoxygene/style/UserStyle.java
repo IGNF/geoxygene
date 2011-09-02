@@ -59,7 +59,7 @@ public class UserStyle extends AbstractStyle {
   private String title;
 
   public String getTitle() {
-    return title;
+    return this.title;
   }
 
   public void setTitle(String title) {
@@ -73,7 +73,7 @@ public class UserStyle extends AbstractStyle {
   private String abstractDescription;
 
   public String getAbstractDescription() {
-    return abstractDescription;
+    return this.abstractDescription;
   }
 
   public void setAbstractDescription(String abstractDescription) {
@@ -87,7 +87,7 @@ public class UserStyle extends AbstractStyle {
   private boolean defaultStyle = false;
 
   public boolean isDefaultStyle() {
-    return defaultStyle;
+    return this.defaultStyle;
   }
 
   public void setDefaultStyle(boolean defaultStyle) {

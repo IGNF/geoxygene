@@ -25,10 +25,12 @@ public class ReseauImpl extends AgregatReseauImpl implements Reseau {
    */
   String nom = "";
 
+  @Override
   public String getNom() {
     return this.nom;
   }
 
+  @Override
   public void setNom(String nom) {
     this.nom = nom;
   }

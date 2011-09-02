@@ -124,6 +124,7 @@ public class GUIManageData extends JFrame {
     contentPane.add(panel);
 
     genereIdsCheckBox.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (genereIdsCheckBox.isSelected()) {
           typeGenere.setEnabled(true);
@@ -150,6 +151,7 @@ public class GUIManageData extends JFrame {
     JButton okButton = new JButton("Ok");
     okButton.setActionCommand("Ok");
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         GUIManageData.this.genereIds = genereIdsCheckBox.isSelected();
         GUIManageData.this.homogeneise = homogeneiseCheckBox.isSelected();
@@ -172,6 +174,7 @@ public class GUIManageData extends JFrame {
 
     JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         GUIManageData.this.genereIds = false;
         GUIManageData.this.genereSimple = false;

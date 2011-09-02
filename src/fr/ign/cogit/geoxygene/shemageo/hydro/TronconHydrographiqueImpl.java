@@ -38,70 +38,84 @@ public class TronconHydrographiqueImpl extends ArcReseauImpl implements
    */
   private String nom = "";
 
+  @Override
   public String getNom() {
     return this.nom;
   }
 
+  @Override
   public void setNom(String nom) {
     this.nom = nom;
   }
 
   private boolean artificiel = false;
 
+  @Override
   public boolean isArtificiel() {
     return this.artificiel;
   }
 
+  @Override
   public void setArtificiel(boolean artificiel) {
     this.artificiel = artificiel;
   }
 
   private int positionParRapportAuSol = 0;
 
+  @Override
   public int getPositionParRapportAuSol() {
     return this.positionParRapportAuSol;
   }
 
+  @Override
   public void setPositionParRapportAuSol(int positionParRapportAuSol) {
     this.positionParRapportAuSol = positionParRapportAuSol;
   }
 
   private Regime regime;
 
+  @Override
   public Regime getRegime() {
     return this.regime;
   }
 
+  @Override
   public void setRegime(Regime regime) {
     this.regime = regime;
   }
 
   private double zIni = 0;
 
+  @Override
   public double getZIni() {
     return this.zIni;
   }
 
+  @Override
   public void setZIni(double zIni) {
     this.zIni = zIni;
   }
 
   private double zFin = 0;
 
+  @Override
   public double getZFin() {
     return this.zFin;
   }
 
+  @Override
   public void setZFin(double zFin) {
     this.zFin = zFin;
   }
 
   private double largeur = 0;
 
+  @Override
   public double getLargeur() {
     return this.largeur;
   }
 
+  @Override
   public void setLargeur(double largeur) {
     this.largeur = largeur;
   }

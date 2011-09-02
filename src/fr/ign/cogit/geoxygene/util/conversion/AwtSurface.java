@@ -51,6 +51,7 @@ public class AwtSurface implements AwtShape {
     this(new GeneralPath(shape));
   }
 
+  @Override
   public Rectangle2D getBounds() {
     return this.path.getBounds();
   }
@@ -59,6 +60,7 @@ public class AwtSurface implements AwtShape {
     this.path.append(shape, false);
   }
 
+  @Override
   public void draw(Graphics2D g) {
     if (AwtSurface.drawFilled) {
       g.fill(this.path);

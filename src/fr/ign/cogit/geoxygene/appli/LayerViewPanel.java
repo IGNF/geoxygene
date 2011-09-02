@@ -175,7 +175,7 @@ public class LayerViewPanel extends JPanel implements Printable {
   @Override
   public final void paintComponent(final Graphics g) {
     try {
-      logger.trace("paintComponent"); //$NON-NLS-1$
+      LayerViewPanel.logger.trace("paintComponent"); //$NON-NLS-1$
       ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
           RenderingHints.VALUE_ANTIALIAS_ON);
       // super.paintComponent(g);
@@ -189,7 +189,7 @@ public class LayerViewPanel extends JPanel implements Printable {
       this.paintOverlays(g);
 
       if (this.recording) {
-        logger.trace("record"); //$NON-NLS-1$
+        LayerViewPanel.logger.trace("record"); //$NON-NLS-1$
         Color bg = this.getBackground();
         BufferedImage image = new BufferedImage(this.getWidth(),
             this.getHeight(), BufferedImage.TYPE_INT_ARGB);

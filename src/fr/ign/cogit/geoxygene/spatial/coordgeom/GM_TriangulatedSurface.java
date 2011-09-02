@@ -27,17 +27,115 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ISurfacePatch;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangle;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangulatedSurface;
 
 /**
- * NON IMPLEMENTE, A FAIRE. Surface polyhédeique composée exclusivement de
- * triangles.
+ * Same as PolyhedralSurface with Triangles
  * 
- * @author Thierry Badard & Arnaud Braun
+ * 
+ * @author Mickaël Brasebin
+ * 
  * @version 1.0
  * 
  */
 
 public class GM_TriangulatedSurface extends GM_PolyhedralSurface implements
     ITriangulatedSurface {
+
+  private List<ITriangle> lTriangles = null;
+  protected static Logger logger = Logger.getLogger(ITriangulatedSurface.class
+      .getName());
+
+  /**
+   * Constructeur par défaut
+   */
+  public GM_TriangulatedSurface() {
+    super();
+  }
+
+  /**
+   * Crée une GM_TriangulatedSurface à partir d'une liste de triangles
+   * @param lTriangles
+   */
+  public GM_TriangulatedSurface(List<ITriangle> lTriangles) {
+    super();
+    this.getlTriangles().addAll(lTriangles);
+
+  }
+
+  /**
+   * Retourne la liste des triangles utilisés
+   * @return
+   */
+  public List<ITriangle> getlTriangles() {
+    if (this.lTriangles == null) {
+      this.lTriangles = new ArrayList<ITriangle>();
+    }
+    return this.lTriangles;
+  }
+
+  @Override
+  public List<IPolygon> getlPolygons() {
+
+    List<IPolygon> lPolygons = new ArrayList<IPolygon>();
+    lPolygons.addAll(this.lTriangles);
+
+    return lPolygons;
+  }
+
+  @Override
+  public List<ISurfacePatch> getPatch() {
+    List<ISurfacePatch> lPatch = new ArrayList<ISurfacePatch>();
+    lPatch.addAll(this.lTriangles);
+    return lPatch;
+  }
+
+  @Override
+  public void setPatch(int i, ISurfacePatch value) {
+
+    if (!(value instanceof ITriangle)) {
+
+      GM_TriangulatedSurface.logger.warn(I18N
+          .getString("GMTriangulatedSurface.NOTtriangle")); //$NON-NLS-1$
+      return;
+
+    }
+
+    super.setPatch(i, value);
+  }
+
+  @Override
+  public void addPatch(ISurfacePatch value) {
+    if (!(value instanceof ITriangle)) {
+
+      GM_TriangulatedSurface.logger.warn(I18N
+          .getString("GMTriangulatedSurface.NOTtriangle")); //$NON-NLS-1$
+      return;
+
+    }
+
+    super.addPatch(value);
+  }
+
+  @Override
+  public void addPatch(int i, ISurfacePatch value) {
+    if (!(value instanceof ITriangle)) {
+
+      GM_TriangulatedSurface.logger.warn(I18N
+          .getString("GMTriangulatedSurface.NOTtriangle")); //$NON-NLS-1$
+      return;
+
+    }
+    super.addPatch(i, value);
+  }
+
 }

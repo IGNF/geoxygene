@@ -66,6 +66,7 @@ public final class PanelDroit extends JPanel {
     this.pSelection.add(this.cVoirSelection, c);
 
     this.bViderSelection.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent arg0) {
         PanelDroit.this.getFrame().getPanelVisu().objetsSelectionnes.clear();
         PanelDroit.this.lNbSelection.setText("Nb=0");

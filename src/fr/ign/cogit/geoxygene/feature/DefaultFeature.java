@@ -275,11 +275,12 @@ public class DefaultFeature extends AbstractFeature {
 
   @Override
   public IFeature cloneGeom() throws CloneNotSupportedException {
-    DefaultFeature clone = new DefaultFeature((IGeometry)this.getGeom().clone());
+    DefaultFeature clone = new DefaultFeature((IGeometry) this.getGeom()
+        .clone());
     clone.setSchema(this.getSchema());
     clone.setAttributes(this.getAttributes());
     clone.setFeatureType(this.getFeatureType());
-    
+
     return clone;
   }
 

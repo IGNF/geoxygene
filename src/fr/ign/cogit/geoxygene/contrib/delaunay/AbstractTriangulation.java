@@ -289,7 +289,7 @@ public abstract class AbstractTriangulation extends CarteTopo {
    */
   public GM_Polygon getCharacteristicShape(double alpha) {
     // initilize the nodes as not belonging to the boundary
-    logger.info(this.getPopArcs().size() + " edges");
+    CarteTopo.logger.info(this.getPopArcs().size() + " edges");
     for (Noeud n : this.getPopNoeuds()) {
       this.boundaryNodes.put(n, Boolean.FALSE);
     }
@@ -368,7 +368,7 @@ public abstract class AbstractTriangulation extends CarteTopo {
     // logger.info(" l = " + l);
     // }
     ILineString union = Operateurs.union(list);
-    logger.info("union " + union);
+    CarteTopo.logger.info("union " + union);
     return new GM_Polygon(union);
   }
 }

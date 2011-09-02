@@ -20,10 +20,12 @@ public class SurfaceRouteImpl extends ElementZonalReseauImpl implements
    */
   private String nom = "";
 
+  @Override
   public String getNom() {
     return this.nom;
   }
 
+  @Override
   public void setNom(String nom) {
     this.nom = nom;
   }

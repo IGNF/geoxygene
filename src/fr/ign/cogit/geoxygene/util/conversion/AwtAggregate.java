@@ -52,6 +52,7 @@ public class AwtAggregate implements AwtShape {
     this.path.append(shape.getBounds(), false);
   }
 
+  @Override
   public void draw(Graphics2D g) {
     Iterator<AwtShape> i = this.awtShapeList.iterator();
     while (i.hasNext()) {
@@ -60,6 +61,7 @@ public class AwtAggregate implements AwtShape {
     }
   }
 
+  @Override
   public Rectangle2D getBounds() {
     return this.path.getBounds();
   }

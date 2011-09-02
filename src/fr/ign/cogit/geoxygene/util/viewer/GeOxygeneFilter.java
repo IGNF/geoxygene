@@ -97,6 +97,7 @@ class GeOxygeneFilter {
     JButton okButton = new JButton("Ok");
     okButton.setActionCommand("Ok");
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         GeOxygeneFilter.this.getSelectedValues();
         dialog.dispose();
@@ -105,6 +106,7 @@ class GeOxygeneFilter {
 
     JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         dialog.dispose();
       }

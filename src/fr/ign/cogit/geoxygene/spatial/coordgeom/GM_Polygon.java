@@ -33,7 +33,6 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISurfaceBoundary;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Surface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_SurfaceBoundary;
 
 /**

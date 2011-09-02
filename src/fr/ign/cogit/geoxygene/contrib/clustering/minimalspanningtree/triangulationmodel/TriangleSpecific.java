@@ -29,7 +29,7 @@ public class TriangleSpecific extends TriangleDelaunay {
     dpl.add(n2.getCoord());
     dpl.add(n3.getCoord());
     dpl.add(n1.getCoord());
-    setCoord(dpl);
+    this.setCoord(dpl);
 
     Arc edge;
     List<Arc> edges = n1.arcs();

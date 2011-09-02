@@ -20,10 +20,12 @@ public class ZoneCompositeImpl extends ZoneImpl implements ZoneComposite {
    */
   private Collection<Zone> zones = new FT_FeatureCollection<Zone>();
 
+  @Override
   public Collection<Zone> getZones() {
     return this.zones;
   }
 
+  @Override
   public void setZones(Collection<Zone> zones) {
     this.zones = zones;
   }

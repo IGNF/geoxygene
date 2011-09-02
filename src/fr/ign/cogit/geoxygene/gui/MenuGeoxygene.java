@@ -65,6 +65,7 @@ public class MenuGeoxygene extends JMenuBar {
     // menu vue
 
     this.mVueEch.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent arg0) {
         MenuGeoxygene.this
             .getFrameMirage()
@@ -81,6 +82,7 @@ public class MenuGeoxygene extends JMenuBar {
     this.menuVue.addSeparator();
 
     this.mVueEch6250.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent arg0) {
         MenuGeoxygene.this.getFrameMirage().getPanelVisu()
             .setTaillePixel(6250 * PanelVisu.getMETERS_PER_PIXEL());
@@ -91,6 +93,7 @@ public class MenuGeoxygene extends JMenuBar {
     this.menuVue.add(this.mVueEch6250);
 
     this.mVueEch12500.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent arg0) {
         MenuGeoxygene.this.getFrameMirage().getPanelVisu()
             .setTaillePixel(12500 * PanelVisu.getMETERS_PER_PIXEL());
@@ -101,6 +104,7 @@ public class MenuGeoxygene extends JMenuBar {
     this.menuVue.add(this.mVueEch12500);
 
     this.mVueEch25k.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent arg0) {
         MenuGeoxygene.this.getFrameMirage().getPanelVisu()
             .setTaillePixel(25000 * PanelVisu.getMETERS_PER_PIXEL());
@@ -111,6 +115,7 @@ public class MenuGeoxygene extends JMenuBar {
     this.menuVue.add(this.mVueEch25k);
 
     this.mVueEch50k.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent arg0) {
         MenuGeoxygene.this.getFrameMirage().getPanelVisu()
             .setTaillePixel(50000 * PanelVisu.getMETERS_PER_PIXEL());
@@ -121,6 +126,7 @@ public class MenuGeoxygene extends JMenuBar {
     this.menuVue.add(this.mVueEch50k);
 
     this.mVueEch100k.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent arg0) {
         MenuGeoxygene.this.getFrameMirage().getPanelVisu()
             .setTaillePixel(100000 * PanelVisu.getMETERS_PER_PIXEL());
@@ -133,8 +139,10 @@ public class MenuGeoxygene extends JMenuBar {
     this.menuVue.addSeparator();
 
     this.mImprimer.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent arg0) {
         Thread th = new Thread(new Runnable() {
+          @Override
           public void run() {
             try {
               PrinterJob printJob = PrinterJob.getPrinterJob();
@@ -173,6 +181,7 @@ public class MenuGeoxygene extends JMenuBar {
     // menu config
 
     this.mAntiAliasing.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         MenuGeoxygene.this.getFrameMirage().getPanelVisu()
             .setAntiAliasing(MenuGeoxygene.this.mAntiAliasing.isSelected());
@@ -185,6 +194,7 @@ public class MenuGeoxygene extends JMenuBar {
     this.menuConfig.add(this.mAntiAliasing);
 
     this.mRechargerConfigurationLogger.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         MenuGeoxygene.logger.info("Rechargement configuration log");
         PropertyConfigurator.configure("log4j.properties");
@@ -195,6 +205,7 @@ public class MenuGeoxygene extends JMenuBar {
 
     // menu infos
     this.mAPropos.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent arg0) {
         String message = "<html><b>GéOxygène</b><br />http://oxygene-project.sourceforge.net/<br /><br />Laboratoire COGIT<br />http://recherche.ign.fr/labos/cogit<br /><br />Institut Géographique National<br />http://www.ign.fr</html>";
         String titre = "A propos de MiraGe";

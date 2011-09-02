@@ -13,7 +13,6 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.Collection;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -177,6 +176,7 @@ public class InterfaceGeoxygene extends JFrame {
     splitPaneGauche.setDividerLocation(10000);
     splitPaneGauche.addPropertyChangeListener("dividerLocation",
         new PropertyChangeListener() {
+          @Override
           public void propertyChange(PropertyChangeEvent arg0) {
             InterfaceGeoxygene.this.getPanelVisu().repaint();
           }
@@ -418,7 +418,7 @@ public class InterfaceGeoxygene extends JFrame {
     }
     Population<FT_Feature> population = new Population<FT_Feature>(
         populationName);
-    population.setElements((Collection<FT_Feature>) collection.getElements());
+    population.setElements(collection.getElements());
     this.getPanelVisu().getDataset().addPopulation(population);
     /**
      * Ajoute un layer au SLD du panel de visualisation. On essaye de récupérer

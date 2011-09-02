@@ -83,5 +83,6 @@ public interface ISurface extends IOrientableSurface {
    * sous forme d'une DirectPositionList. Toutes les coordonnees sont
    * concatenees.
    */
+  @Override
   public abstract IDirectPositionList coord();
 }

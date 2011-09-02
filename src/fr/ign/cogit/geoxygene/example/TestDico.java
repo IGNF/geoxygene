@@ -33,7 +33,6 @@ import java.util.List;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AssociationRole;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AssociationType;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
-import fr.ign.cogit.geoxygene.api.feature.type.GF_Constraint;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_InheritanceRelation;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_Operation;

@@ -14,6 +14,6 @@ public class DiagramSizeElement {
   }
 
   public double getValue() {
-    return value;
+    return this.value;
   }
 }

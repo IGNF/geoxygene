@@ -56,6 +56,7 @@ public class VoronoiDiagramJTSPlugin implements GeOxygeneApplicationPlugin,
    * Initialize the plugin.
    * @param application the application
    */
+  @Override
   public final void initialize(final GeOxygeneApplication application) {
     this.application = application;
     JMenu menu = null;
@@ -105,7 +106,7 @@ public class VoronoiDiagramJTSPlugin implements GeOxygeneApplicationPlugin,
     newFeatureTypeExterieurs.setGeometryType(GM_Polygon.class);
     popVoronoi.setFeatureType(newFeatureTypeExterieurs);
     DataSet.getInstance().addPopulation(popVoronoi);
-    logger.info(popVoronoi);
+    VoronoiDiagramJTSPlugin.logger.info(popVoronoi);
     project.addFeatureCollection(popVoronoi, popVoronoi.getNom());
   }
 }

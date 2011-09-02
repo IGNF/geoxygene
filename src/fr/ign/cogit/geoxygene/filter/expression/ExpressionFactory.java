@@ -35,22 +35,22 @@ public class ExpressionFactory {
    */
   public static Expression createExpression(String type) {
     if (type.equalsIgnoreCase("add")) {
-      return new Add(); //$NON-NLS-1$
+      return new Add();
     }
     if (type.equalsIgnoreCase("sub")) {
-      return new Subtract(); //$NON-NLS-1$
+      return new Subtract();
     }
     if (type.equalsIgnoreCase("mul")) {
-      return new Multiply(); //$NON-NLS-1$
+      return new Multiply();
     }
     if (type.equalsIgnoreCase("div")) {
-      return new Divide(); //$NON-NLS-1$
+      return new Divide();
     }
     if (type.equalsIgnoreCase("literal")) {
-      return new Literal(); //$NON-NLS-1$
+      return new Literal();
     }
     if (type.equalsIgnoreCase("propertyName")) {
-      return new PropertyName(); //$NON-NLS-1$
+      return new PropertyName();
     }
     return null;
   }

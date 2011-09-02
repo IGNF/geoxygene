@@ -287,7 +287,8 @@ public class SwingingArmNonConvexHull {
             }
           }
           if (!connexComponent.isValid()) {
-            logger.error("non valid connex component: " + connexComponent);
+            SwingingArmNonConvexHull.logger
+                .error("non valid connex component: " + connexComponent);
           }
           nbConnexComponents++;
           // Addition of all interior points to unavailable points

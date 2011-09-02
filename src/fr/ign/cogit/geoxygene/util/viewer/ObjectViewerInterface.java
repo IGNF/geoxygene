@@ -125,6 +125,7 @@ class ObjectViewerInterface extends JFrame implements Observer {
     this.InterfaceInit(db);
   }
 
+  @Override
   public void update(Observable o, Object rect) {
 
   }
@@ -165,10 +166,12 @@ class ObjectViewerInterface extends JFrame implements Observer {
 
     // Mouse listener for view
     this.view.addMouseMotionListener(new MouseMotionListener() {
+      @Override
       public void mouseDragged(MouseEvent e) {
 
       }
 
+      @Override
       public void mouseMoved(MouseEvent e) {
         double x = ObjectViewerInterface.this.view.getMapGeoPoint().getX();
         double y = ObjectViewerInterface.this.view.getMapGeoPoint().getY();
@@ -267,6 +270,7 @@ class ObjectViewerInterface extends JFrame implements Observer {
     t.setSelectionStyle(themeSelectShadeStyle);
 
     themeSelectMgr.addSelectionChangedListener(new SelectionChangedListener() {
+      @Override
       public void selectionChanged(SelectionChangedEvent hce) {
         System.out.println("Selection sur un theme ...");
         ObjectViewerInterface.this.selectedObjects = new Vector<ObjectsIDAndSource>();

@@ -41,6 +41,7 @@ public final class PanelBas extends JPanel {
     this.setFont(new Font("Arial", Font.PLAIN, 9));
 
     this.b_.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent arg0) {
         System.out.println("");
         System.out.println("=============================================");
@@ -53,6 +54,7 @@ public final class PanelBas extends JPanel {
 
     this.cAffichageEchelle.setFont(this.getFont());
     this.cAffichageEchelle.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         PanelBas.this.getFrameMirage().getPanelVisu()
             .setAffichageEchelle(PanelBas.this.cAffichageEchelle.isSelected());
@@ -63,6 +65,7 @@ public final class PanelBas extends JPanel {
 
     this.cVoirPositionCurseur.setFont(this.getFont());
     this.cVoirPositionCurseur.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (PanelBas.this.cVoirPositionCurseur.isSelected()) {
           PanelBas.this.getFrameMirage().getPanelVisu().suivrePositionCurseur = true;

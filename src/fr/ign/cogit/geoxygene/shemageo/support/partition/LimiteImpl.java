@@ -22,6 +22,7 @@ public class LimiteImpl extends DefaultFeature implements Limite {
    */
   private Collection<Zone> zones = new FT_FeatureCollection<Zone>();
 
+  @Override
   public Collection<Zone> getZones() {
     return this.zones;
   }

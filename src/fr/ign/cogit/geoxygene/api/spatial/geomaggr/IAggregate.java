@@ -22,6 +22,7 @@ public interface IAggregate<GeomType extends IGeometry> extends IGeometry,
   public abstract GeomType set(int i, GeomType value);
 
   /** Ajoute un élément en fin de liste */
+  @Override
   public abstract boolean add(GeomType value);
 
   /** Ajoute une liste d'éléments en fin de liste */
@@ -37,32 +38,45 @@ public interface IAggregate<GeomType extends IGeometry> extends IGeometry,
   public abstract void remove(int i);
 
   /** Efface toute la liste */
+  @Override
   public abstract void clear();
 
   /** Renvoie le nombre de éléments */
+  @Override
   public abstract int size();
 
   /** Convertit l'agrégat en un tableau de GM_Obect. */
+  @Override
   public abstract IGeometry[] toArray();
 
   /** Renvoie une DirectPositionList de tous les points de l'objet. */
+  @Override
   public abstract IDirectPositionList coord();
 
+  @Override
   public abstract boolean addAll(Collection<? extends GeomType> c);
 
+  @Override
   public abstract boolean contains(Object o);
 
+  @Override
   public abstract boolean containsAll(Collection<?> c);
 
+  @Override
   public abstract Iterator<GeomType> iterator();
 
+  @Override
   public abstract boolean remove(Object o);
 
+  @Override
   public abstract boolean removeAll(Collection<?> c);
 
+  @Override
   public abstract boolean retainAll(Collection<?> c);
 
+  @Override
   public abstract <T> T[] toArray(T[] a);
 
+  @Override
   public abstract Object clone();
 }

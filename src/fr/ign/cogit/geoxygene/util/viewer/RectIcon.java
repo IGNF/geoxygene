@@ -47,15 +47,18 @@ class RectIcon implements Icon {
     this.color = c;
   }
 
+  @Override
   public void paintIcon(Component c, Graphics g, int x, int y) {
     g.setColor(this.color);
     g.fillRect(x, y, this.getIconWidth(), this.getIconHeight());
   }
 
+  @Override
   public int getIconWidth() {
     return 40;
   }
 
+  @Override
   public int getIconHeight() {
     return 10;
   }
