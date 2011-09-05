@@ -45,6 +45,7 @@ import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.feature.Representation;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AssociationRole;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AssociationRole;
@@ -752,17 +753,33 @@ public abstract class AbstractFeature implements IFeature {
     return this.getClass().getName() + " " + this.getGeom(); //$NON-NLS-1$
   }
 
-  /*
-   * @Override public boolean equals(Object obj) { IFeature other = (IFeature)
-   * obj; if (!other.getClass().equals(this.getClass())) { return false; } if
-   * (other.getId() != this.getId()) { return false; } if (other.getGeom() ==
-   * null) { return false; } if (!other.getGeom().equals(this.getGeom())) {
-   * return false; } return true; }
-   */
+
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    AbstractFeature other = (AbstractFeature) obj;
+    if (id != other.id)
+      return false;
+    if(other.getGeom()!=null) {
+      if(this.getGeom().coord().size()!=other.getGeom().coord().size())
+        return false;
+      for(int i=0;i<this.getGeom().coord().size();i++){
+        if(this.getGeom().coord().get(i)!=other.getGeom().coord().get(i))
+          return false;
+      }
+    }
+    return true;
+  }
 
   @Override
   public int hashCode() {
-    return this.getId();
+    return getId();
   }
 
   /**
