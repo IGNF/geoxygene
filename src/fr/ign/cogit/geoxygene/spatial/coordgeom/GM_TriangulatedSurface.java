@@ -33,6 +33,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ISurfacePatch;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITriangle;
@@ -136,6 +137,18 @@ public class GM_TriangulatedSurface extends GM_PolyhedralSurface implements
 
     }
     super.addPatch(i, value);
+  }
+  
+  @Override
+  public IDirectPositionList coord() {
+      int nbElem = this.getlTriangles().size();
+    
+      IDirectPositionList dpl = new DirectPositionList();
+      for (int i = 0; i < nbElem; i++) {
+        dpl.addAll(this.getlTriangles().get(i).coord());
+      }
+      return dpl;
+  
   }
 
 }

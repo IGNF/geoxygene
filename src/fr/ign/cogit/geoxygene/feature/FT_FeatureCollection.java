@@ -267,7 +267,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
     }
 
     this.fireActionPerformed(new FeatureCollectionEvent(this, null,
-        FeatureCollectionEvent.Type.REMOVED, envelope.getGeom()));
+        FeatureCollectionEvent.Type.REMOVED,  this.getEnvelope().getGeom()));
         return result;
     }
 
