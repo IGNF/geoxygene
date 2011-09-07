@@ -73,7 +73,7 @@ import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
  * @author Thierry Badard & Arnaud Braun
  * 
  */
-abstract public class GM_Object implements Cloneable, IGeometry {
+public abstract class GM_Object implements Cloneable, IGeometry {
   /**
    * Identifiant de l'objet géométrique, dans la table du SGBD. Cet identifiant
    * n'est pas spécifié dans la norme ISO. Non utilise a ce jour.
@@ -382,6 +382,22 @@ abstract public class GM_Object implements Cloneable, IGeometry {
   @Override
   public double length() {
     return new JtsAlgorithms().length(this);
+  }
+
+  @Override
+  public int coordinateDimension() {
+    IDirectPositionList dpl = this.coord();
+
+    if (dpl == null || dpl.size() == 0) {
+      return -1;
+    }
+
+    if (Double.isNaN(dpl.get(0).getZ())) {
+
+      return 2;
+    }
+
+    return 3;
   }
 
   @Override

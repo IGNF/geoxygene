@@ -61,7 +61,6 @@ public interface IGeometry {
    * serait possible : le but serait de supporter des méthodes d'indexation qui
    * n'utilisent pas les rectangles minimaux englobants.
    * 
-   * @param data
    * @return
    */
   public abstract IPolygon mbRegion();
@@ -296,4 +295,6 @@ public interface IGeometry {
   public abstract boolean isMultiSurface();
 
   public abstract boolean isPoint();
+    
+  public abstract int coordinateDimension();
 }

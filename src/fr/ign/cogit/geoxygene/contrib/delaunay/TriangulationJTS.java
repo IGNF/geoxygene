@@ -38,7 +38,7 @@ public class TriangulationJTS extends AbstractTriangulation {
     Geometry geomSites = AdapterFactory.toGeometry(geomFact, sites);
     Geometry lineConstraints = AdapterFactory.toGeometry(geomFact,
         linesConstraints);
-    tb.setTolerance(1.0);
+    tb.setTolerance(0.0);
     tb.setSites(geomSites);
     tb.setConstraints(lineConstraints);
 
@@ -49,8 +49,9 @@ public class TriangulationJTS extends AbstractTriangulation {
       this.getPopFaces().nouvelElement(AdapterFactory.toGM_Object(triangle));
     }
     // logger.info(this.getPopFaces().size() + " triangles créés");
-    this.ajouteArcsEtNoeudsAuxFaces(true);
+  
     if (this.getOptions().indexOf('v') != -1) {
+      this.ajouteArcsEtNoeudsAuxFaces(true);
       GeometryCollection diagram = (GeometryCollection) tb.getSubdivision()
           .getVoronoiDiagram(geomFact);
       for (int i = 0; i < diagram.getNumGeometries(); i++) {

@@ -3,12 +3,12 @@
  * 
  * GeOxygene aims at providing an open framework which implements OGC/ISO specifications for 
  * the development and deployment of geographic (GIS) applications. It is a open source 
- * contribution of the COGIT laboratory at the Institut G�ographique National (the French 
+ * contribution of the COGIT laboratory at the Institut Gï¿½ographique National (the French 
  * National Mapping Agency).
  * 
  * See: http://oxygene-project.sourceforge.net 
  *  
- * Copyright (C) 2005 Institut G�ographique National
+ * Copyright (C) 2005 Institut Gï¿½ographique National
  *
  * This library is free software; you can redistribute it and/or modify it under the terms
  * of the GNU Lesser General Public License as published by the Free Software Foundation; 
@@ -69,6 +69,7 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 
+
 @SuppressWarnings("unchecked")
 public class WktGeOxygene
 {
@@ -119,7 +120,7 @@ public class WktGeOxygene
         return result.toString();
     }
 
-    /*- IMultiCurve -------------------------------------*/
+    /*- GM_MultiCurve -------------------------------------*/
 
     static String multiLineStringTaggedText(IMultiCurve multiCurve) 
     {
@@ -237,7 +238,7 @@ public class WktGeOxygene
 
     /*- IPoint ------------------------------------------*/
 
-//TODO d�terminer la dimension de la g�om�trie attendue par postgis
+//TODO déterminer la dimension de la géométrie attendue par postgis
     static String point(IPoint point)
     {
         IDirectPosition position=point.getPosition();
@@ -463,7 +464,7 @@ TOKEN:
             |<INTEGER>("."<INTEGER>)?
             |"."<INTEGER>
     >
-    | <#INTEGER: (<DIGIT>)+>
+    | <INTEGER: (<DIGIT>)+>
     | <#DIGIT: ["0" - "9"]>
 }
 
@@ -494,7 +495,7 @@ IDirectPosition point():
         String xStr=tkz.nextToken();
         String yStr=tkz.nextToken();
         if (tkz.hasMoreTokens()) {
-        	// récupération de la 3ème coordonnée si elle existe
+        	// récupération de la 3eme coordonnée si elle existe
         	String zStr=tkz.nextToken();
         	if (tkz.hasMoreTokens()) {
         		// si il y en a une 4ème, alors on est en XYZM et on prend Z
@@ -502,6 +503,8 @@ IDirectPosition point():
         		p=new DirectPosition(Double.parseDouble(xStr), Double.parseDouble(yStr), Double.parseDouble(zStr));
 				return p;
 			}
+        	p=new DirectPosition(Double.parseDouble(xStr), Double.parseDouble(yStr), Double.parseDouble(zStr));
+            return p;
 		}        
         p=new DirectPosition(
             Double.parseDouble(xStr), Double.parseDouble(yStr));
@@ -687,9 +690,8 @@ int sridText():
 }
 
 IGeometry geometryTaggedText():
-{IGeometry o;}
 {
-GM_Object o;
+IGeometry o;
 int srid = -1;
 }
 {
@@ -703,7 +705,10 @@ int srid = -1;
     | o=multipolygonTaggedText()
     | o=geometrycollectionTaggedText()
     )
-    {try {return o;} catch (Exception e) {System.out.println(e);}}
+    {try {
+    	if (srid != -1) { o.setCRS(srid); }
+    	return o;
+    } catch (Exception e) {System.out.println(e);}}
 }
 
 IGeometry parseOneLine() throws EmptyLine,EndOfFile:
