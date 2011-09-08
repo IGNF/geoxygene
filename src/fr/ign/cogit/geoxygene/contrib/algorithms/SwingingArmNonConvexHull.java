@@ -51,28 +51,28 @@ public class SwingingArmNonConvexHull {
     if (this.points.isEmpty()) {
       if (SwingingArmNonConvexHull.logger.isTraceEnabled()) {
         SwingingArmNonConvexHull.logger
-            .trace("No points to construct the hull");
+            .trace("No points to construct the hull"); //$NON-NLS-1$
       }
       return null;
     }
     if (SwingingArmNonConvexHull.logger.isTraceEnabled()) {
       SwingingArmNonConvexHull.logger
-          .trace("Computation of the non-convex hull using Swinging Arm method with radius="
+          .trace("Computation of the non-convex hull using Swinging Arm method with radius=" //$NON-NLS-1$
               + this.radius);
     }
     // Swinging arm clockwise
     if (SwingingArmNonConvexHull.logger.isTraceEnabled()) {
-      SwingingArmNonConvexHull.logger.trace("clockwise");
+      SwingingArmNonConvexHull.logger.trace("clockwise"); //$NON-NLS-1$
     }
     IGeometry clockWise = this.swingingArmCompute(-1.0);
     // Swinging arm anticlockwise
     if (SwingingArmNonConvexHull.logger.isTraceEnabled()) {
-      SwingingArmNonConvexHull.logger.trace("anticlockwise");
+      SwingingArmNonConvexHull.logger.trace("anticlockwise"); //$NON-NLS-1$
     }
     IGeometry antiClockWise = this.swingingArmCompute(1.0);
     // Union of the two geometries
     if (SwingingArmNonConvexHull.logger.isTraceEnabled()) {
-      SwingingArmNonConvexHull.logger.trace("union of the two hulls");
+      SwingingArmNonConvexHull.logger.trace("union of the two hulls"); //$NON-NLS-1$
     }
     if (!clockWise.isValid() || !antiClockWise.isValid()) {
       return null;
@@ -97,7 +97,7 @@ public class SwingingArmNonConvexHull {
     if (this.points.isEmpty()) {
       if (SwingingArmNonConvexHull.logger.isTraceEnabled()) {
         SwingingArmNonConvexHull.logger
-            .trace("No points to construct the hull");
+            .trace("No points to construct the hull"); //$NON-NLS-1$
       }
       return null;
     }
@@ -278,7 +278,7 @@ public class SwingingArmNonConvexHull {
           // Addition of the component connex
           GM_Object connexComponent = new GM_Polygon(new GM_LineString(
               hullPoints));
-          if (hull == null || hull.isEmpty() || !hull.isValid()) {
+          if (hull == null || hull.coord().size()==0 || !hull.isValid()) {
             hull = connexComponent;
           } else {
             IGeometry union = hull.union(connexComponent);
@@ -288,7 +288,7 @@ public class SwingingArmNonConvexHull {
           }
           if (!connexComponent.isValid()) {
             SwingingArmNonConvexHull.logger
-                .error("non valid connex component: " + connexComponent);
+                .error("non valid connex component: " + connexComponent); //$NON-NLS-1$
           }
           nbConnexComponents++;
           // Addition of all interior points to unavailable points
@@ -305,8 +305,8 @@ public class SwingingArmNonConvexHull {
       }
     }
     if (SwingingArmNonConvexHull.logger.isTraceEnabled()) {
-      SwingingArmNonConvexHull.logger.trace("non-convex-hull containing "
-          + nbConnexComponents + " connex components");
+      SwingingArmNonConvexHull.logger.trace("non-convex-hull containing " //$NON-NLS-1$
+          + nbConnexComponents + " connex components"); //$NON-NLS-1$
     }
     return hull;
   }
