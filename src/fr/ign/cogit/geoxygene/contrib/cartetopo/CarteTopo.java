@@ -468,19 +468,28 @@ public class CarteTopo extends DataSet {
     Iterator<Arc> itArcs;
     Face face;
     Arc arc;
+    List<Arc> arcsDirects = new ArrayList<Arc>();
+    List<Arc> arcsIndirects = new ArrayList<Arc>();
+    
     while (itFaces.hasNext()) {
-      face = itFaces.next();
-      this.getPopFaces().remove(face);
-      itArcs = face.getArcsDirects().iterator();
-      while (itArcs.hasNext()) {
-        arc = itArcs.next();
-        arc.setFaceGauche(null);
-      }
-      itArcs = face.getArcsIndirects().iterator();
-      while (itArcs.hasNext()) {
-        arc = itArcs.next();
-        arc.setFaceDroite(null);
-      }
+    	face = itFaces.next();
+    	this.getPopFaces().remove(face);
+    	itArcs = face.getArcsDirects().iterator();
+    	while (itArcs.hasNext()) {
+    		arc = itArcs.next();
+    		arcsDirects.add(arc);
+    	}
+    	itArcs = face.getArcsIndirects().iterator();
+    	while (itArcs.hasNext()) {
+    		arc = itArcs.next();
+    		arcsIndirects.add(arc);
+    	}
+    }
+    for (Arc arcDirect: arcsDirects) {
+    	arcDirect.setFaceGauche(null);
+    }
+    for (Arc arcIndirect: arcsIndirects) {
+    	arcIndirect.setFaceDroite(null);
     }
   }
 
