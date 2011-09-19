@@ -20,6 +20,7 @@
 package fr.ign.cogit.geoxygene.contrib.appariement;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -314,8 +315,7 @@ public class EnsembleDeLiens extends Population<Lien> {
       final IFeatureCollection<? extends IFeature> popRef,
       final IFeatureCollection<? extends IFeature> popComp) {
     Iterator<IFeature> itNoeudsRef, itNoeudsComp;
-    List<IFeature> noeudsRef = new ArrayList<IFeature>(0), noeudsComp = new ArrayList<IFeature>(
-        0);
+    List<IFeature> noeudsRef = new ArrayList<IFeature>(0), noeudsComp = new ArrayList<IFeature>(0);
 
     Lien lien;
     CarteTopo grapheDesLiens = new CarteTopo("Carte de liens"); //$NON-NLS-1$
@@ -346,15 +346,15 @@ public class EnsembleDeLiens extends Population<Lien> {
       noeudsRef.clear();
       while (itObjetsRef.hasNext()) {
         objetRef = itObjetsRef.next();
-        noeudsRef.add(objetRef.getCorrespondants(grapheDesLiens.getPopNoeuds())
-            .get(0));
+        Collection<IFeature> correspondants = objetRef.getCorrespondants(grapheDesLiens.getPopNoeuds());
+        noeudsRef.add(correspondants.iterator().next());
       }
       itObjetsComp = lien.getObjetsComp().iterator();
       noeudsComp.clear();
       while (itObjetsComp.hasNext()) {
         objetComp = itObjetsComp.next();
-        noeudsComp.add(objetComp.getCorrespondants(
-            grapheDesLiens.getPopNoeuds()).get(0));
+        Collection<IFeature> correspondants = objetComp.getCorrespondants(grapheDesLiens.getPopNoeuds());
+        noeudsComp.add(correspondants.iterator().next());
       }
 
       // instanciation des arcs
@@ -382,8 +382,7 @@ public class EnsembleDeLiens extends Population<Lien> {
   public final EnsembleDeLiens regroupeLiensCartoQuiPointentSurMemeTopo() {
     List<Lien> liens = this.getElements();
     List<Integer> remove = new ArrayList<Integer>();
-    List<IFeature> objetsRef = new ArrayList<IFeature>(0), objetsComp = new ArrayList<IFeature>(
-        0);
+    List<IFeature> objetsRef = new ArrayList<IFeature>(0), objetsComp = new ArrayList<IFeature>(0);
     Object objetTest;
     int i, j, k;
 
@@ -742,8 +741,7 @@ public class EnsembleDeLiens extends Population<Lien> {
       popRefNonAppariee.remove(elementAOter);
     }
 
-    List<IPopulation<IFeature>> listPopulation = new ArrayList<IPopulation<IFeature>>(
-        0);
+    List<IPopulation<IFeature>> listPopulation = new ArrayList<IPopulation<IFeature>>(0);
     listPopulation.add(popRefAppariee);
     listPopulation.add(popCompAppariee);
     listPopulation.add(popRefNonAppariee);

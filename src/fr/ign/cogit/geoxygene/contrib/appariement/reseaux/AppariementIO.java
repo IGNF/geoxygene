@@ -273,7 +273,7 @@ public final class AppariementIO {
     IPopulation<? extends IFeature> popNoeudApp = reseau.getPopNoeuds();
     // /////////////////////////
     // import des arcs
-    Iterator<IFeatureCollection<IFeature>> itPopArcs = null;
+    Iterator<IFeatureCollection<? extends IFeature>> itPopArcs = null;
     if (ref) {
       itPopArcs = paramApp.populationsArcs1.iterator();
     } else {

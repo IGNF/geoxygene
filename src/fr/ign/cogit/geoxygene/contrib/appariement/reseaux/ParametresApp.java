@@ -51,25 +51,25 @@ public class ParametresApp implements Cloneable {
    * Liste des classes d'arcs de la BD 1 (la moins détaillée) concernés par
    * l'appariement
    */
-  public List<IFeatureCollection<IFeature>> populationsArcs1 = new ArrayList<IFeatureCollection<IFeature>>();
+  public List<IFeatureCollection<? extends IFeature>> populationsArcs1 = new ArrayList<IFeatureCollection<? extends IFeature>>();
 
   /**
    * Liste des classes de noeuds de la BD 1 (la moins détaillée) concernés par
    * l'appariement
    */
-  public List<IFeatureCollection<IFeature>> populationsNoeuds1 = new ArrayList<IFeatureCollection<IFeature>>();
+  public List<IFeatureCollection<? extends IFeature>> populationsNoeuds1 = new ArrayList<IFeatureCollection<? extends IFeature>>();
 
   /**
    * Liste des classes d'arcs de la BD 2 (la plus détaillée) concernés par
    * l'appariement
    */
-  public List<IFeatureCollection<IFeature>> populationsArcs2 = new ArrayList<IFeatureCollection<IFeature>>();
+  public List<IFeatureCollection<? extends IFeature>> populationsArcs2 = new ArrayList<IFeatureCollection<? extends IFeature>>();
 
   /**
    * Liste des classes de noeuds de la BD 2 (la plus détaillée) concernés par
    * l'appariement
    */
-  public List<IFeatureCollection<IFeature>> populationsNoeuds2 = new ArrayList<IFeatureCollection<IFeature>>();
+  public List<IFeatureCollection<? extends IFeature>> populationsNoeuds2 = new ArrayList<IFeatureCollection<? extends IFeature>>();
 
   /**
    * Prise en compte de l'orientation des arcs sur le terrain (sens de

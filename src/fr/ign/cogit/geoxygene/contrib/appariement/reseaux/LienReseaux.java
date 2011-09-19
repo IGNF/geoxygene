@@ -20,6 +20,7 @@
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -254,11 +255,11 @@ public class LienReseaux extends Lien {
     liensGeneriques = new EnsembleDeLiens();
     liensGeneriques.setNom(liensReseaux.getNom());
     // On compile toutes les populations du reseau 1 [resp. 2] dans une liste
-    List<IFeatureCollection<IFeature>> pops1 = new ArrayList<IFeatureCollection<IFeature>>(
-        param.populationsArcs1);
+    List<IFeatureCollection<? extends IFeature>> pops1 = 
+        new ArrayList<IFeatureCollection<? extends IFeature>>(param.populationsArcs1);
     pops1.addAll(param.populationsNoeuds1);
-    List<IFeatureCollection<IFeature>> pops2 = new ArrayList<IFeatureCollection<IFeature>>(
-        param.populationsArcs2);
+    List<IFeatureCollection<? extends IFeature>> pops2 = 
+        new ArrayList<IFeatureCollection<? extends IFeature>>(param.populationsArcs2);
     pops2.addAll(param.populationsNoeuds2);
     // boucle sur les liens entre cartes topo
     Iterator<Lien> itLiensReseaux = liensReseaux.iterator();
@@ -289,10 +290,10 @@ public class LienReseaux extends Lien {
         IFeature objetCT1 = itObjetsCT1PourUnLien.next();
         Iterator<IFeature> itObjetsCT2PourUnLien = objetsCT2PourUnLien
             .iterator();
-        List<IFeature> objets1 = LienReseaux.getCorrespondants(objetCT1, pops1);
+        Collection<IFeature> objets1 = LienReseaux.getCorrespondants(objetCT1, pops1);
         while (itObjetsCT2PourUnLien.hasNext()) {
           IFeature objetCT2 = itObjetsCT2PourUnLien.next();
-          List<IFeature> objets2 = LienReseaux.getCorrespondants(objetCT2,
+          Collection<IFeature> objets2 = LienReseaux.getCorrespondants(objetCT2,
               pops2);
           if (objets1.isEmpty() && objets2.isEmpty()) {
             // cas où il n'y a pas de correspondant dans les données de départ
@@ -312,7 +313,7 @@ public class LienReseaux extends Lien {
           }
           if (objets1.isEmpty()) {
             // cas où il n'y a pas de correspondant dans les données de BD1
-            Iterator<IFeature> itObjets2 = objets2.iterator();
+            Iterator<? extends IFeature> itObjets2 = objets2.iterator();
             while (itObjets2.hasNext()) {
               IFeature objet2 = itObjets2.next();
               Lien lienG = liensGeneriques.nouvelElement();
@@ -332,7 +333,7 @@ public class LienReseaux extends Lien {
           }
           if (objets2.isEmpty()) {
             // cas où il n'y a pas de correspondant dans les données de BD2
-            Iterator<IFeature> itObjets1 = objets1.iterator();
+            Iterator<? extends IFeature> itObjets1 = objets1.iterator();
             while (itObjets1.hasNext()) {
               IFeature objet1 = itObjets1.next();
               Lien lienG = liensGeneriques.nouvelElement();
@@ -351,10 +352,10 @@ public class LienReseaux extends Lien {
             continue;
           }
           // cas où il y a des correspondants dans les deux BD
-          Iterator<IFeature> itObjets1 = objets1.iterator();
+          Iterator<? extends IFeature> itObjets1 = objets1.iterator();
           while (itObjets1.hasNext()) {
             IFeature objet1 = itObjets1.next();
-            Iterator<IFeature> itObjets2 = objets2.iterator();
+            Iterator<? extends IFeature> itObjets2 = objets2.iterator();
             while (itObjets2.hasNext()) {
               IFeature objet2 = itObjets2.next();
               Lien lienG = liensGeneriques.nouvelElement();
@@ -386,10 +387,10 @@ public class LienReseaux extends Lien {
    * Renvoie les correspondants appartenant à une des FT_FeatureCollection de la
    * liste passée en parametre.
    */
-  private static List<IFeature> getCorrespondants(IFeature ft,
-      List<IFeatureCollection<IFeature>> populations) {
+  private static Collection<IFeature> getCorrespondants(IFeature ft,
+      List<IFeatureCollection<? extends IFeature>> populations) {
     List<IFeature> resultats = new ArrayList<IFeature>();
-    for (IFeatureCollection<IFeature> pop : populations) {
+    for (IFeatureCollection<? extends IFeature> pop : populations) {
       resultats.addAll(ft.getCorrespondants(pop));
     }
     return resultats;

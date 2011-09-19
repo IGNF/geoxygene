@@ -345,9 +345,9 @@ public class ChargeurTriangulation extends Chargeur {
    * @param carte
    * @throws Exception
    */
-  public static void importPolygoneEnPoints(
-      IFeatureCollection<IFeature> listeFeatures, AbstractTriangulation carte)
-      throws Exception {
+    public static void importPolygoneEnPoints(
+            IFeatureCollection<? extends IFeature> listeFeatures,
+            AbstractTriangulation carte) throws Exception {
     NoeudDelaunay noeud;
     IDirectPositionList listePoints;
     int i, j;

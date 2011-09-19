@@ -103,7 +103,7 @@ public interface IFeature {
    * Renvoie les correspondants appartenant a la FT_FeatureCollection passee en
    * parametre.
    */
-  public abstract List<IFeature> getCorrespondants(
+  public abstract Collection<IFeature> getCorrespondants(
       IFeatureCollection<? extends IFeature> pop);
 
   /**
