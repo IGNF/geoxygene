@@ -319,7 +319,15 @@ public class LayerViewPanel extends JPanel implements Printable, SldListener{
   public final Set<IFeature> getSelectedFeatures() {
     return this.selectedFeatures;
   }
-
+  
+  public final Set<IFeature> getFeatures() {
+    Set<IFeature> features = new HashSet<IFeature>();
+    for (Layer layer : this.getProjectFrame().getLayers()) {
+      features.addAll(layer.getFeatureCollection());
+    }
+    return features;
+  }
+  
   @Override
   public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
       throws PrinterException {

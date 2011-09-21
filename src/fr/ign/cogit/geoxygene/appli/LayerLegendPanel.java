@@ -65,6 +65,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
@@ -84,6 +86,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,ActionLis
    */
   private static final long serialVersionUID = -6860364246334166387L;
 
+  static Logger logger = Logger.getLogger(LayerLegendPanel.class.getName());
   
   /**
    * Model for the layerlegendpanel
@@ -416,7 +419,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,ActionLis
         AttributeTable ta = new AttributeTable(LayerLegendPanel.this
             .getLayerViewPanel().getProjectFrame(), I18N
             .getString("LayerLegendPanel.EditAttributes"), //$NON-NLS-1$
-            LayerLegendPanel.this.getLayerViewPanel().getSelectedFeatures());
+            LayerLegendPanel.this.getLayerViewPanel().getFeatures());
         ta.setVisible(true);
       }
     });
@@ -967,21 +970,21 @@ public StyledLayerDescriptor getModel() {
     public void layerOrderChanged(int oldIndex, int newIndex) {
         this.repaint();
         this.layersTable.getSelectionModel().clearSelection();
-        System.out.println("layer moved from " + oldIndex + "to " + newIndex
-                + " caught by LayerLegendPane");
+        logger.info("layer moved from " + oldIndex + "to " + newIndex //$NON-NLS-1$ //$NON-NLS-2$
+                + " caught by LayerLegendPane"); //$NON-NLS-1$
     }
 
     @Override
     public void layerAdded(Layer l) {
         this.repaint();
-        System.out.println("layer addition caught by LayerLegendPane");
+        logger.info("layer addition caught by LayerLegendPane"); //$NON-NLS-1$
 
     }
 
     @Override
     public void layersRemoved(Collection<Layer> layers) {
         this.repaint();
-        System.out.println("layers deletion caught by LayerLegendPane");
+        logger.info("layers deletion caught by LayerLegendPane"); //$NON-NLS-1$
 
     }
 

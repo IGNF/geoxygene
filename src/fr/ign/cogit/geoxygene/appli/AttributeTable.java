@@ -808,6 +808,26 @@ class AttributeTable extends JDialog {
     this.add(this.tabPane);
     // Panel de controle
     JPanel control = new JPanel();
+    JCheckBox displaySelectedFeatures = new JCheckBox(
+        I18N.getString("AttributeTable.DisplaySelected")); //$NON-NLS-1$
+    displaySelectedFeatures.addActionListener(new ActionListener(){
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        LayerViewPanel layerViewPanel = AttributeTable.this.frame
+            .getLayerLegendPanel().getLayerViewPanel();
+        if (((JCheckBox)e.getSource()).isSelected()) {
+          AttributeTable.this.objectsToDraw = layerViewPanel.getSelectedFeatures();
+          AttributeTable.this.tabPane.removeAll();
+          AttributeTable.this.initJDialog();
+        } else {
+          AttributeTable.this.objectsToDraw = layerViewPanel.getFeatures();
+          AttributeTable.this.tabPane.removeAll();
+          AttributeTable.this.initJDialog();
+        }
+        
+      }
+    });
+    control.add(displaySelectedFeatures);
     JButton centrer = new JButton(
         I18N.getString("AttributeTable.CenterViewOnObject")); //$NON-NLS-1$
     centrer.addActionListener(new ActionListener() {
