@@ -202,9 +202,11 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
     synchronized (this.elements) {
       result = this.elements.add(value);
     }
-    result = value.getFeatureCollections().add(
-        (IFeatureCollection<IFeature>) this)
-        && result;
+    if (value.getFeatureCollections() != null) {
+    	result = value.getFeatureCollections().add(
+    			(IFeatureCollection<IFeature>) this)
+    			&& result;
+    }
     if (this.isIndexed && this.spatialindex.hasAutomaticUpdate()) {
       this.spatialindex.update(value, +1);
     }
