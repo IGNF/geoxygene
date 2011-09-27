@@ -395,10 +395,21 @@ public class Tiling<Feat extends IFeature> implements SpatialIndex<Feat> {
     }
 
     // xmin, xmax, ymin, ymax
-    this.xmin = envelope.minX();
-    this.xmax = envelope.maxX();
-    this.ymin = envelope.minY();
-    this.ymax = envelope.maxY();
+    
+    if(envelope != null){
+      this.xmin = envelope.minX();
+      this.xmax = envelope.maxX();
+      this.ymin = envelope.minY();
+      this.ymax = envelope.maxY();
+      
+    }else{
+      
+      this.xmin = 0;
+      this.xmax = 0;
+      this.ymin = 0;
+      this.ymax = 0;
+    }
+
 
     if (Tiling.logger.isTraceEnabled()) {
       Tiling.logger.trace("envelope = " + this.xmin + "," + this.xmax + "," //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
