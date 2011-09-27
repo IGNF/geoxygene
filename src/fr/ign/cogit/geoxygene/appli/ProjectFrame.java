@@ -41,7 +41,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
-import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.LayerFactory.LayerType;
 import fr.ign.cogit.geoxygene.appli.plugin.GeometryToolBar;
 import fr.ign.cogit.geoxygene.feature.DataSet;
@@ -110,7 +109,7 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
     /**
      * The project styled layer descriptor.
      */
-    private StyledLayerDescriptor sld = new StyledLayerDescriptor();
+    private StyledLayerDescriptor sld = new StyledLayerDescriptor(DataSet.getInstance());
 
     public void setSld(StyledLayerDescriptor sld) {
         this.sld = sld;
@@ -190,7 +189,7 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
             String fileName = file.getAbsolutePath();
             String extention = fileName
                     .substring(fileName.lastIndexOf('.') + 1);
-            LayerFactory factory = new LayerFactory();
+            LayerFactory factory = new LayerFactory(this.getSld());
             Layer l = null;
             if (extention.equalsIgnoreCase("shp")) { //$NON-NLS-1$
                 l = factory.createLayer(fileName, LayerType.SHAPEFILE);
@@ -222,7 +221,8 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
     public final Layer addFeatureCollection(
             final IPopulation<? extends IFeature> population,
             final String name, CoordinateReferenceSystem crs) {
-        Layer layer = LayerFactory.createLayer(name, population
+      LayerFactory factory = new LayerFactory(this.getSld());
+        Layer layer = factory.createLayer(name, population
                 .getFeatureType().getGeometryType());
         layer.setCRS(crs);
         this.sld.add(layer);
@@ -240,11 +240,6 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
             final String name) {
         return this.addFeatureCollection(population, name, null);
     }
-
-    /**
-     * The map from feature collection to layer.
-     */
-    private Map<IFeatureCollection<? extends IFeature>, Layer> featureCollectionToLayerMap = new HashMap<IFeatureCollection<? extends IFeature>, Layer>();
 
     /**
      * Dispose of the frame an its {@link LayerViewPanel}.
@@ -293,40 +288,6 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
         this.getLayerViewPanel().getRenderingManager().getSelectionRenderer()
                 .clearImageCache();
         this.getLayerViewPanel().superRepaint();
-    }
-
-    public String checkLayerName(String layerName) {
-        if (this.getLayer(layerName) != null) {
-            /** Il existe déjà une population avec ce nom */
-            int n = 2;
-            while (this.getLayer(layerName + " (" + n //$NON-NLS-1$
-                    + ")") != null) {n++;} //$NON-NLS-1$
-            layerName = layerName + " (" + n + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        return layerName;
-    }
-
-    /**
-     * Créer une nouvelle population en fonction du nom et du type de géométrie
-     * envoyés en paramètre.
-     * <p>
-     * Initialise l'index spatial, ajoute le PanelVisu comme ChangeListener et
-     * met à jour le FeatureType de la population.
-     * 
-     * @param popName
-     *            Le nom de la population à créer
-     * @param geomType
-     *            Le type de géométrie de la population
-     * @return Une nouvelle population à partir du nom et du type de géométrie
-     *         envoyés en paramètre.
-     */
-    public IPopulation<IFeature> generateNewPopulation(String popName,
-            Class<? extends IGeometry> geomType) {
-        IPopulation<IFeature> newPop = new Population<IFeature>(popName);
-        FeatureType type = new FeatureType();
-        type.setGeometryType(geomType);
-        newPop.setFeatureType(type);
-        return newPop;
     }
 
     /**
@@ -395,8 +356,9 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
         Population<DefaultFeature> population = new Population<DefaultFeature>(
                 name);
         population.add(feature);
-        DataSet.getInstance().addPopulation(population);
-        Layer layer = LayerFactory.createLayer(name);
+        this.getDataSet().addPopulation(population);
+        LayerFactory factory = new LayerFactory(this.getSld());
+        Layer layer = factory.createLayer(name);
         this.sld.add(layer);
     }
 
@@ -447,5 +409,7 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
             this.layerViewPanel.getRenderingManager().removeLayer(layer);
         }
     }
-
+    public DataSet getDataSet() {
+      return this.sld.getDataSet();
+    }
 }

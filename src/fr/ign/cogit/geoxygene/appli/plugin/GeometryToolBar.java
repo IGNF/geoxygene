@@ -69,8 +69,6 @@ import fr.ign.cogit.geoxygene.appli.mode.SelectionMode;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
@@ -946,7 +944,8 @@ public class GeometryToolBar extends JToolBar {
 
   @SuppressWarnings("unchecked")
   public void createPolygonNewLayer(GM_Polygon newPoly) {
-      Layer newlayer = LayerFactory.createLayer(this.newLayerNameText.getText(), GM_MultiSurface.class);
+    LayerFactory factory = new LayerFactory(this.getFrame().getSld());
+    Layer newlayer = factory.createPopulationAndLayer(this.newLayerNameText.getText(), GM_MultiSurface.class);
     this.cBoxCoucheAModifier.setSelectedIndex(this.cBoxCoucheAModifier
         .getItemCount() - 1);
     if (newlayer != null) {
@@ -955,7 +954,7 @@ public class GeometryToolBar extends JToolBar {
       newSurface.add(newPoly);
       DefaultFeature newFeature = new DefaultFeature(newSurface);
       // Remplie la population
-      FT_FeatureCollection<DefaultFeature> features = (FT_FeatureCollection<DefaultFeature>) this
+      IFeatureCollection<DefaultFeature> features = (IFeatureCollection<DefaultFeature>) this
           .getFrame().getLayer(newLayerName).getFeatureCollection();
       features.add(newFeature);
       this.getFrame().getLayerViewPanel().repaint();
@@ -970,7 +969,7 @@ public class GeometryToolBar extends JToolBar {
     if (this.cBoxCoucheAModifier.getSelectedIndex() != 0) {
       Layer layer = this.frame.getLayer(this.layerName);
       if (this.canAddObjectToLayer(newLine, layer)) {
-        this.creerLineStringCoucheExistante(layer, newLine);
+        this.createLineStringExistingLayer(layer, newLine);
       } else {
         String message = "Attention! Vous essayez d'ajouter une ligne dans une couche qui ne contient que des objets de même type. "
             + "\nVoulez-vous malgré tout insérer la nouvelle géométrie ?";
@@ -981,19 +980,19 @@ public class GeometryToolBar extends JToolBar {
         if (reponse == JOptionPane.YES_OPTION) {
           this.getFrame().getSld()
               .addSymbolizer(layer.getName(), GM_LineString.class);
-          this.creerLineStringCoucheExistante(layer, newLine);
+          this.createLineStringExistingLayer(layer, newLine);
         } else {
           // TODO
           // getFrame().getPanelVisu().stopEditing();
         }
       }
     } else {
-      this.creerLineStringNouvelleCouche(newLine);
+      this.createLineStringNewLayer(newLine);
     }
   }
 
   @SuppressWarnings("unchecked")
-  public void creerLineStringCoucheExistante(Layer layer, GM_LineString newLine) {
+  public void createLineStringExistingLayer(Layer layer, GM_LineString newLine) {
     IFeatureCollection<IFeature> features = (IFeatureCollection<IFeature>) layer
         .getFeatureCollection();
     if (features.getFeatureType().getGeometryType() == GM_LineString.class) {
@@ -1014,9 +1013,10 @@ public class GeometryToolBar extends JToolBar {
   }
 
   @SuppressWarnings("unchecked")
-  public void creerLineStringNouvelleCouche(GM_LineString newLine) {
+  public void createLineStringNewLayer(GM_LineString newLine) {
     if (newLine.isValid()) {
-        Layer newlayer = LayerFactory.createLayer(
+      LayerFactory factory = new LayerFactory(this.getFrame().getSld());
+        Layer newlayer = factory.createPopulationAndLayer(
                 this.newLayerNameText.getText(), GM_MultiCurve.class);
 
         this.cBoxCoucheAModifier.setSelectedIndex(this.cBoxCoucheAModifier
@@ -1027,7 +1027,7 @@ public class GeometryToolBar extends JToolBar {
         newCurve.add(newLine);
         DefaultFeature newFeature = new DefaultFeature(newCurve);
         // Remplie la population
-        FT_FeatureCollection<DefaultFeature> features = (FT_FeatureCollection<DefaultFeature>) this
+        IFeatureCollection<DefaultFeature> features = (IFeatureCollection<DefaultFeature>) this
             .getFrame().getLayer(newLayerName).getFeatureCollection();
         features.add(newFeature);
         this.getFrame().getLayerViewPanel().repaint();
@@ -1040,7 +1040,7 @@ public class GeometryToolBar extends JToolBar {
     if (this.cBoxCoucheAModifier.getSelectedIndex() != 0) {
       Layer layer = this.frame.getLayer(this.layerName);
       if (this.canAddObjectToLayer(newPoint, layer)) {
-        this.creerPointCoucheExistante(layer, newPoint);
+        this.createPointExistingLayer(layer, newPoint);
       } else {
         String message = "Attention! Vous essayez d'ajouter un point dans une couche qui ne contient que des objets de même type. "
             + "\nVoulez-vous malgré tout insérer la nouvelle géométrie ?";
@@ -1051,19 +1051,19 @@ public class GeometryToolBar extends JToolBar {
         if (reponse == JOptionPane.YES_OPTION) {
           this.getFrame().getSld()
               .addSymbolizer(layer.getName(), GM_Point.class);
-          this.creerPointCoucheExistante(layer, newPoint);
+          this.createPointExistingLayer(layer, newPoint);
         } else {
           // TODO
           // getFrame().getPanelVisu().stopEditing();
         }
       }
     } else {
-      this.creerPointNouvelleCouche(newPoint);
+      this.createPointNewLayer(newPoint);
     }
   }
 
   @SuppressWarnings("unchecked")
-  public void creerPointCoucheExistante(Layer layer, GM_Point newPoint) {
+  public void createPointExistingLayer(Layer layer, GM_Point newPoint) {
     IFeatureCollection<IFeature> features = (IFeatureCollection<IFeature>) layer
         .getFeatureCollection();
     if (features.getFeatureType().getGeometryType() == GM_Point.class) {
@@ -1086,19 +1086,20 @@ public class GeometryToolBar extends JToolBar {
   }
 
   @SuppressWarnings("unchecked")
-  public void creerPointNouvelleCouche(GM_Point newPoint) {
+  public void createPointNewLayer(GM_Point newPoint) {
     if (newPoint.isValid()) {
-      Layer newLayer = LayerFactory.createLayer(this.newLayerNameText.getText(), GM_MultiPoint.class);
+      String newLayerName = this.newLayerNameText.getText();
+      LayerFactory factory = new LayerFactory(this.getFrame().getSld());
+      Layer newLayer = factory.createPopulationAndLayer(newLayerName, GM_MultiPoint.class);
       this.cBoxCoucheAModifier.setSelectedIndex(this.cBoxCoucheAModifier
           .getItemCount() - 1);
       if (newLayer != null) {
-        String newLayerName = newLayer.getName();
         GM_MultiPoint newMultiPoint = new GM_MultiPoint();
         newMultiPoint.add(newPoint);
         DefaultFeature newFeature = new DefaultFeature(newMultiPoint);
 
         // Remplie la population
-        FT_FeatureCollection<DefaultFeature> features = (FT_FeatureCollection<DefaultFeature>) this
+        IFeatureCollection<DefaultFeature> features = (IFeatureCollection<DefaultFeature>) this
             .getFrame().getLayer(newLayerName).getFeatureCollection();
         features.add(newFeature);
         this.getFrame().repaint();
@@ -1120,7 +1121,7 @@ public class GeometryToolBar extends JToolBar {
       GM_CompositeCurve curve = new GM_CompositeCurve(curveSegment);
       GM_Ring newInteriorRing = new GM_Ring(curve);
       Layer layer = this.frame.getLayer(this.layerName);
-      FT_FeatureCollection<FT_Feature> features = (FT_FeatureCollection<FT_Feature>) layer
+      IFeatureCollection<IFeature> features = (IFeatureCollection<IFeature>) layer
           .getFeatureCollection();
       int i = 0;
       int j = 0;
@@ -1202,7 +1203,7 @@ public class GeometryToolBar extends JToolBar {
    */
   @SuppressWarnings("unchecked")
   public boolean canAddObjectToLayer(GM_Object obj, Layer layer) {
-    FT_FeatureCollection<FT_Feature> features = (FT_FeatureCollection<FT_Feature>) layer
+    IFeatureCollection<IFeature> features = (IFeatureCollection<IFeature>) layer
         .getFeatureCollection();
     boolean canAdd = true;
     if (!features.isEmpty()) {
@@ -1242,7 +1243,7 @@ public class GeometryToolBar extends JToolBar {
    */
   @SuppressWarnings("unchecked")
   public boolean mixedGeomType(Layer layer) {
-    FT_FeatureCollection<FT_Feature> features = (FT_FeatureCollection<FT_Feature>) layer
+    IFeatureCollection<IFeature> features = (IFeatureCollection<IFeature>) layer
         .getFeatureCollection();
     return this.mixedGeomType(features);
   }
@@ -1253,13 +1254,13 @@ public class GeometryToolBar extends JToolBar {
    * @param features les features que l'ont veut tester
    * @return true si le layer contient des géométries de type différents
    */
-  public boolean mixedGeomType(FT_FeatureCollection<FT_Feature> features) {
+  public boolean mixedGeomType(IFeatureCollection<IFeature> features) {
     boolean mixedGeomType = false;
     int i = 0;
     IGeometry firstGeom = null;
     Class<? extends IGeometry> firstClass = null;
     while (i < features.size() - 1 && !mixedGeomType) {
-      FT_Feature ft = features.get(i);
+      IFeature ft = features.get(i);
       if (i == 0) {
         if (ft.getGeom() != null) {
           firstClass = ft.getGeom().getClass();

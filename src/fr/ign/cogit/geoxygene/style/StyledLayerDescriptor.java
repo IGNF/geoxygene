@@ -35,6 +35,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Transient;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.xml.bind.JAXBContext;
@@ -52,6 +53,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionEvent;
 import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionListener;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
@@ -99,11 +101,21 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
   @XmlAttribute(required = true)
   protected String version;
 
+  @Transient
+  private DataSet dataSet = null;
   /**
    * Constructeur vide.
    */
   public StyledLayerDescriptor() {
     super();
+    this.dataSet = DataSet.getInstance();
+  }
+  /**
+   * @param dataSet 
+   */
+  public StyledLayerDescriptor(DataSet dataSet) {
+    super();
+    this.dataSet = dataSet;
   }
 
   @XmlElements({ @XmlElement(name = "NamedLayer", type = NamedLayer.class),
@@ -559,7 +571,7 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
       Class<? extends IGeometry> geometryType, Color strokeColor,
       Color fillColor, float opacity, float strokeWidth) {
     // if(this.getLayer(layerName)==null){
-    Layer layer = new NamedLayer(layerName);
+    Layer layer = new NamedLayer(this, layerName);
     UserStyle style = new UserStyle();
     style.setName("Style créé pour le layer " + layerName);//$NON-NLS-1$
     FeatureTypeStyle fts = new FeatureTypeStyle();
@@ -671,7 +683,7 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
           + "pas être plus grande que celle du " + "trait de bordure"); //$NON-NLS-1$ //$NON-NLS-2$
       return null;
     }
-    Layer layer = new NamedLayer(layerName);
+    Layer layer = new NamedLayer(this, layerName);
 
     // Creation de la ligne de bord
     FeatureTypeStyle borderFts = new FeatureTypeStyle();
@@ -714,7 +726,7 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
    */
   public Layer createPointLayer(String layerName, String wellKnownText,
       Color strokeColor, Color fillColor) {
-    Layer layer = new NamedLayer(layerName);
+    Layer layer = new NamedLayer(this, layerName);
     UserStyle style = new UserStyle();
     style.setName("Style créé pour le layer " + layerName); //$NON-NLS-1$
     FeatureTypeStyle fts = new FeatureTypeStyle();
@@ -736,6 +748,13 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
     style.getFeatureTypeStyles().add(fts);
     layer.getStyles().add(style);
     return layer;
+  }
+
+  public void setDataSet(DataSet dataset) {
+    this.dataSet = dataset;
+  }
+  public DataSet getDataSet() {
+    return this.dataSet;
   }
 
   public int layersCount() {

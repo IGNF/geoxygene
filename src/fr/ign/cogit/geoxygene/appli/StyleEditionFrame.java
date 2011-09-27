@@ -68,6 +68,7 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
+import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
@@ -219,14 +220,14 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     if (layerLegendPanel.getSelectedLayers().size() == 1) {
       this.layer = layerLegendPanel.getSelectedLayers().iterator().next();
     }
-
+    DataSet dataset = layerLegendPanel.getLayerViewPanel().getProjectFrame().getDataSet();
     // Saving the initial SLD
-    this.setInitialSLD(new StyledLayerDescriptor());
+    this.setInitialSLD(new StyledLayerDescriptor(dataset));
     CharArrayWriter writer = new CharArrayWriter();
     layerLegendPanel.getModel().marshall(writer);
     Reader reader = new CharArrayReader(writer.toCharArray());
     this.setInitialSLD(StyledLayerDescriptor.unmarshall(reader));
-
+    this.getInitialSLD().setDataSet(dataset);
     if (this.layer.getSymbolizer().isPolygonSymbolizer()) {
       this.init_Polygon();
     } else if (this.layer.getSymbolizer().isLineSymbolizer()) {
@@ -832,20 +833,21 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
         .unmarshall(StyleEditionFrame.class
             .getResource("/sld/BasicStyles.xml").getPath()); //$NON-NLS-1$
     GeOxygeneApplication geoxAppli = new GeOxygeneApplication();
-    geoxAppli.getFrame().newProjectFrame();
-    Layer layerPoly = LayerFactory.createLayer("Polygon", GM_Polygon.class); //$NON-NLS-1$
+    ProjectFrame frame = geoxAppli.getFrame().newProjectFrame();
+    LayerFactory factory = new LayerFactory(frame.getSld());
+    Layer layerPoly = factory.createLayer("Polygon", GM_Polygon.class); //$NON-NLS-1$
     layerPoly.setStyles(sld.getLayer("Polygon").getStyles()); //$NON-NLS-1$
 
-    Layer layerLine = LayerFactory.createLayer("Simple Line", GM_LineString.class); //$NON-NLS-1$
+    Layer layerLine = factory.createLayer("Simple Line", GM_LineString.class); //$NON-NLS-1$
     layerLine.setStyles(sld.getLayer("Basic Line").getStyles()); //$NON-NLS-1$
 
-    Layer layerLine2 = LayerFactory.createLayer("Double Line", GM_LineString.class); //$NON-NLS-1$
+    Layer layerLine2 = factory.createLayer("Double Line", GM_LineString.class); //$NON-NLS-1$
     layerLine2.setStyles(sld.getLayer("Line with contour").getStyles()); //$NON-NLS-1$
 
-    Layer layerLine3 = LayerFactory.createLayer("Dasharay Line", GM_LineString.class); //$NON-NLS-1$
+    Layer layerLine3 = factory.createLayer("Dasharay Line", GM_LineString.class); //$NON-NLS-1$
     layerLine3.setStyles(sld.getLayer("Line Dasharray").getStyles()); //$NON-NLS-1$
 
-    Layer layerPoint = LayerFactory.createLayer("Point", GM_Point.class); //$NON-NLS-1$
+    Layer layerPoint = factory.createLayer("Point", GM_Point.class); //$NON-NLS-1$
     layerPoint.setStyles(sld.getLayer("Point").getStyles()); //$NON-NLS-1$
   }
 

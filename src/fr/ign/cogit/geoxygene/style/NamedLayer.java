@@ -20,6 +20,7 @@
 package fr.ign.cogit.geoxygene.style;
 
 
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -42,6 +43,8 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
  */
 @XmlRootElement(name = "NamedLayer")
 public class NamedLayer extends AbstractLayer {
+  @Transient
+  StyledLayerDescriptor sld = null;
   /**
 	 */
   public NamedLayer() {
@@ -51,8 +54,9 @@ public class NamedLayer extends AbstractLayer {
   /**
    * @param layerName
    */
-  public NamedLayer(String layerName) {
+  public NamedLayer(StyledLayerDescriptor sld, String layerName) {
     super();
+    this.sld = sld;
     this.setName(layerName);
   }
 
@@ -64,11 +68,11 @@ public class NamedLayer extends AbstractLayer {
      * on utilise un singleton de DataSet qu'il faut donc avoir remplit au
      * préalable...
      */
-    IFeatureCollection<IFeature> pop = (IFeatureCollection<IFeature>) DataSet
-        .getInstance().getPopulation(this.getName());
+    DataSet dataset = this.sld.getDataSet();
+    IFeatureCollection<IFeature> pop = (IFeatureCollection<IFeature>) dataset.getPopulation(this.getName());
     if (pop == null) {
       pop = new FT_FeatureCollection<IFeature>();
-      IDataSet dataSet = DataSet.getInstance().getComposant(this.getName());
+      IDataSet dataSet = dataset.getComposant(this.getName());
       for (IPopulation<? extends IFeature> population : dataSet
           .getPopulations()) {
         pop.addCollection((FT_FeatureCollection<IFeature>) population);

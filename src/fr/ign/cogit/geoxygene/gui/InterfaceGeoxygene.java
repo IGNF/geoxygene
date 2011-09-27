@@ -308,7 +308,8 @@ public class InterfaceGeoxygene extends JFrame {
           InterfaceGeoxygene.logger.debug("Layer " + populationName
               + " non trouvé dans le sld par défaut");
         }
-        layer = LayerFactory.createLayer(populationName,
+        LayerFactory factory = new LayerFactory(this.getPanelVisu().getSld());
+        layer = factory.createLayer(populationName,
                 reader.getPopulation().getFeatureType().getGeometryType());
       }
       this.getPanelVisu().getSld().getLayers().add(layer);

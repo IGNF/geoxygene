@@ -70,7 +70,6 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
-import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 
@@ -291,7 +290,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,ActionLis
           Layer layer = LayerLegendPanel.this.getSelectedLayers().iterator()
               .next();
           String newName = ((JTextField) e.getSource()).getText();
-          DataSet.getInstance().getPopulation(layer.getName()).setNom(newName);
+          LayerLegendPanel.this.parent.getDataSet().getPopulation(layer.getName())
+          .setNom(newName);
           layer.setName(newName);
         }
       }
@@ -392,7 +392,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,ActionLis
           if( newName == null || newName.isEmpty()){
               return;
           }
-          DataSet.getInstance().getPopulation(layer.getName()).setNom(newName);
+          LayerLegendPanel.this.parent.getDataSet().getPopulation(
+              layer.getName()).setNom(newName);
           layer.setName(newName);
 
           LayerLegendPanel.this.repaint();
