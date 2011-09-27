@@ -109,7 +109,7 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
     /**
      * The project styled layer descriptor.
      */
-    private StyledLayerDescriptor sld = new StyledLayerDescriptor(DataSet.getInstance());
+    private StyledLayerDescriptor sld = new StyledLayerDescriptor(new DataSet());
 
     public void setSld(StyledLayerDescriptor sld) {
         this.sld = sld;
