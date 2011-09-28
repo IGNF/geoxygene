@@ -20,11 +20,15 @@
 package fr.ign.cogit.geoxygene.appli.mode;
 
 import java.awt.Cursor;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.NoninvertibleTransformException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.SwingUtilities;
+
+import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
@@ -32,10 +36,17 @@ import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 
 /**
  * @author Julien Perret
+ * @author Charlotte Hoarau
  * 
  */
 public class MoveMode extends AbstractMode {
-
+  @SuppressWarnings("unused")
+  private static Logger logger = Logger.getLogger(MoveMode.class
+      .getName());
+  
+  private Point initialPointView = null;
+  private Point currentPointView = null;
+  
   /**
    * Constructor.
    * @param theMainFrame the main frame
@@ -59,6 +70,54 @@ public class MoveMode extends AbstractMode {
       frame.getLayerViewPanel().getViewport().moveTo(e.getPoint());
     } catch (NoninvertibleTransformException e1) {
       e1.printStackTrace();
+    }
+  }
+  
+  @Override
+  public void mousePressed(final MouseEvent e) {
+    if ((SwingUtilities.isLeftMouseButton(e))) {
+      this.initialPointView = e.getPoint();
+    }
+  }
+  
+  @Override
+  public void mouseDragged(final MouseEvent e) {
+    ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
+    if ((SwingUtilities.isLeftMouseButton(e))) {
+      try {
+        this.currentPointView = e.getPoint();
+        
+        double xMove = this.initialPointView.getX() - this.currentPointView.getX();
+        double yMove = this.currentPointView.getY() - this.initialPointView.getY();
+        
+        frame.getLayerViewPanel().getViewport().moveOf(xMove, yMove);
+        
+        this.initialPointView = this.currentPointView;
+        this.currentPointView = null;
+        
+      } catch (NoninvertibleTransformException e1) {
+        e1.printStackTrace();
+      }
+    }
+  }
+  
+  @Override
+  public void mouseReleased(final MouseEvent e) {
+    ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
+    if ((SwingUtilities.isLeftMouseButton(e))) {
+      try {
+        this.currentPointView = e.getPoint();
+        
+        double xMove = this.initialPointView.getX() - this.currentPointView.getX();
+        double yMove = this.currentPointView.getY() - this.initialPointView.getY();
+        
+        frame.getLayerViewPanel().getViewport().moveOf(xMove, yMove);
+        
+        this.initialPointView = null;
+        this.currentPointView = null;
+      } catch (NoninvertibleTransformException e1) {
+        e1.printStackTrace();
+      }
     }
   }
 

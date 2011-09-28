@@ -755,8 +755,9 @@ public class Viewport {
    */
   public final void moveOf(final double x, final double y)
       throws NoninvertibleTransformException {
-    this.viewOrigin.setLocation(this.viewOrigin.getX() + x,
-        this.viewOrigin.getY() + y);
+    logger.info(getMETERS_PER_PIXEL());
+    this.viewOrigin.setLocation(this.viewOrigin.getX() + x / this.scale,
+        this.viewOrigin.getY() + y / this.scale);
     this.update();
   }
 
