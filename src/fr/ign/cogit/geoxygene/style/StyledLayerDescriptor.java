@@ -101,7 +101,7 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
   @XmlAttribute(required = true)
   protected String version;
 
-  @Transient
+  @XmlTransient
   private DataSet dataSet = null;
   /**
    * Constructeur vide.
