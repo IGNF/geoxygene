@@ -20,10 +20,10 @@
 package fr.ign.cogit.geoxygene.style;
 
 
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import fr.ign.cogit.geoxygene.api.feature.IDataSet;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -43,7 +43,7 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
  */
 @XmlRootElement(name = "NamedLayer")
 public class NamedLayer extends AbstractLayer {
-  @Transient
+  @XmlTransient
   StyledLayerDescriptor sld = null;
   /**
 	 */

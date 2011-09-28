@@ -20,17 +20,17 @@ package fr.ign.cogit.geoxygene.style;
 
 import java.awt.Color;
 
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ColorMap {
   @XmlElement(name = "PropertyName")
   String propertyName = null;
 
-  @Transient
+  @XmlTransient
   public String getPropertyName() {
     return this.propertyName;
   }
