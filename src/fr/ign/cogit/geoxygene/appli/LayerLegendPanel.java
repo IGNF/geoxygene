@@ -127,7 +127,9 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,ActionLis
       "/images/icons/16x16/bottom.png"))); //$NON-NLS-1$
   JButton minusButton = new JButton(new ImageIcon(this.getClass().getResource(
       "/images/icons/16x16/minus.png"))); //$NON-NLS-1$
-
+  JButton attributeButton = new JButton(new ImageIcon(this.getClass().getResource(
+      "/images/icons/16x16/editAttributes.png"))); //$NON-NLS-1$
+  
   JPopupMenu popupMenu = new JPopupMenu();
   JMenuItem newLayerMenuItem = new JMenuItem(
       I18N.getString("LayerLegendPanel.CreateLayer")); //$NON-NLS-1$
@@ -182,6 +184,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,ActionLis
     this.downButton.setMargin(new Insets(0, 0, 0, 0));
     this.bottomButton.setMargin(new Insets(0, 0, 0, 0));
     this.minusButton.setMargin(new Insets(0, 0, 0, 0));
+    this.attributeButton.setMargin(new Insets(0, 0, 0, 0));
     panel.add(Box.createHorizontalGlue());
     panel.add(this.plusButton);
     panel.add(Box.createHorizontalGlue());
@@ -194,6 +197,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,ActionLis
     panel.add(this.bottomButton);
     panel.add(Box.createHorizontalGlue());
     panel.add(this.minusButton);
+    panel.add(Box.createHorizontalGlue());
+    panel.add(this.attributeButton);
     panel.add(Box.createHorizontalGlue());
     this.add(panel);
     this.minusButton.addActionListener(this);
@@ -208,6 +213,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,ActionLis
     this.upButton.setActionCommand("up"); //$NON-NLS-1$
     this.downButton.addActionListener(this);
     this.downButton.setActionCommand("down"); //$NON-NLS-1$
+    this.attributeButton.addActionListener(this);
+    this.attributeButton.setActionCommand("attributes"); //$NON-NLS-1$
 
     this.tablemodel = new LayersTableModel();
     this.layersTable = new JTable(this.tablemodel);
@@ -417,11 +424,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,ActionLis
     this.editMenuItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        AttributeTable ta = new AttributeTable(LayerLegendPanel.this
-            .getLayerViewPanel().getProjectFrame(), I18N
-            .getString("LayerLegendPanel.EditAttributes"), //$NON-NLS-1$
-            LayerLegendPanel.this.getLayerViewPanel().getFeatures());
-        ta.setVisible(true);
+        displayAttrbuteTable();
       }
     });
     this.update();
@@ -554,6 +557,14 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,ActionLis
         }
     }
 
+  private void displayAttrbuteTable() {
+    AttributeTable ta = new AttributeTable(LayerLegendPanel.this
+        .getLayerViewPanel().getProjectFrame(), I18N
+        .getString("LayerLegendPanel.EditAttributes"), //$NON-NLS-1$
+        LayerLegendPanel.this.getLayerViewPanel().getFeatures());
+    ta.setVisible(true);
+  }
+  
   /**
    * Return the layer corresponding to the given row.
    * @param row row of the layer
@@ -852,6 +863,10 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,ActionLis
     }
     if (e.getActionCommand().equals("bottom")) { //$NON-NLS-1$
       this.moveSelectedLayersToBottom();
+      return;
+    }
+    if (e.getActionCommand().equals("attributes")) { //$NON-NLS-1$
+      this.displayAttrbuteTable();
       return;
     }
     if (e.getID() == 3) { // rendering starts
