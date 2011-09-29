@@ -34,6 +34,7 @@ import org.geotools.gce.arcgrid.ArcGridReader;
 import org.geotools.gce.geotiff.GeoTiffReader;
 
 
+import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
@@ -99,6 +100,12 @@ public class LayerFactory{
         ShapefileReader.addActionListener(listener);
     }
     
+    public Layer createLayer(String filename, LayerType layertype, String styleName) {
+      Layer layer = createLayer(filename, layertype);
+      layer.setStyles(this.model.getLayer(styleName).getStyles());
+      return layer;
+    }
+    
     public Layer createLayer(String filename, LayerType layertype) {
         File f = new File(filename);
         try {
@@ -140,6 +147,7 @@ public class LayerFactory{
         String populationName = popNameFromFile(file.getPath());
         
         GeoTiffReader reader = new GeoTiffReader(file);
+        @SuppressWarnings("cast")
         GridCoverage2D coverage = (GridCoverage2D) reader.read(null);
         Population<FT_Coverage> population = new Population<FT_Coverage>(populationName);
         org.opengis.geometry.Envelope envelope =coverage.getEnvelope();
@@ -159,6 +167,7 @@ public class LayerFactory{
         //double[][] range = new double[2][2];
         //BufferedImage grid = ArcGridReader.loadAsc(file.getPath(), range);
         ArcGridReader reader = new ArcGridReader(file);
+        @SuppressWarnings("cast")
         GridCoverage2D coverage = (GridCoverage2D) reader.read(null);
         /*
         DefaultFeature feature = new DefaultFeature(new GM_Envelope(
@@ -213,11 +222,12 @@ public class LayerFactory{
     /**
      * Cette méthode génère un nom de couche du type: "Nouvelle couche ('n') où n
      * indique le nombre de couche portant déjà ce nom.
-     * @return Le nom de la nouvelle couche TODO create I18N text
+     * @return Le nom de la nouvelle couche
      */
     public String generateNewLayerName() {
-      return this.checkLayerName("Nouvelle couche"); //$NON-NLS-1$
+      return this.checkLayerName(I18N.getString("LayerFactory.NewLayer")); //$NON-NLS-1$
     }
+    
     public String checkLayerName(String layerName) {
       if (this.model.getLayer(layerName) != null) {
         /** Il existe déjà une population avec ce nom */
@@ -302,8 +312,8 @@ public class LayerFactory{
      * adapté au type de géométrie en paramètre.
      * <p>
      * Les couleurs associées au symbolizer du layer sont créées aléatoirement.
-     * TODO choisir les couleur de la nouvelle couche dans une palette ou à partir
-     * de la couche la plus proche
+     * Elles sont choisies dans le cercle chromatique COGIT et
+     * sont différentes des couleurs existantes.
      * @param layerName nom du layer cherché
      * @param geometryType type de géométrie porté par le layer
      * @return layer portant le nom et la géométrie en paramètre
@@ -466,7 +476,6 @@ public class LayerFactory{
     
 
     /**
-     * TODO
      * @param layerName
      * @param wellKnownText
      * @param strokeColor
