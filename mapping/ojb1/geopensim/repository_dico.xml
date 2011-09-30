@@ -1,0 +1,176 @@
+<!-- fichier de mapping OJB pour GeOxygene : dictionnaire -->
+
+
+<!-- Mapping de la classe GF_FeatureType  -->
+<class-descriptor class="fr.ign.cogit.geoxygene.dico.GF_FeatureType" table="GF_FEATURETYPE" >
+	<extent-class class-ref="fr.ign.cogit.geoxygene.dico.GF_AssociationType" />
+    <field-descriptor name="id" column="GF_FeatureTypeID" jdbc-type="INTEGER" primarykey="true" autoincrement="true"  />
+    <field-descriptor name="typeName" column="typeName" jdbc-type="VARCHAR" />
+    <field-descriptor name="definition" column="definition" jdbc-type="VARCHAR" />
+    <field-descriptor name="isAbstract" column="isAbstract" jdbc-type="BIT"     />      
+    <!-- lien 1-N avec les proprietes -->
+    <collection-descriptor name="properties" element-class-ref="fr.ign.cogit.geoxygene.dico.GF_PropertyType" >
+        <inverse-foreignkey field-ref="featureTypeID" />
+    </collection-descriptor>    
+    <!-- lien 1-N avec les relations d'héritage, pour la généralisation -->  
+    <collection-descriptor name="generalization" element-class-ref="fr.ign.cogit.geoxygene.dico.GF_InheritanceRelation" >
+        <inverse-foreignkey field-ref="subTypeID" />
+    </collection-descriptor>            
+    <!-- lien 1-N avec les relations d'héritage, pour la spécialisation -->
+    <collection-descriptor name="specialization" element-class-ref="fr.ign.cogit.geoxygene.dico.GF_InheritanceRelation" >
+        <inverse-foreignkey field-ref="superTypeID" />
+    </collection-descriptor>     
+    <!-- lien 1-N avec les contraintes -->
+    <collection-descriptor name="constraint" element-class-ref="fr.ign.cogit.geoxygene.dico.GF_Constraint" >
+        <inverse-foreignkey field-ref="featureTypeID" />
+    </collection-descriptor>    
+    <!-- lien N-N avec les associations -->  
+    <collection-descriptor name="memberOf" element-class-ref="fr.ign.cogit.geoxygene.dico.GF_AssociationType" indirection-table="GF_ASSOCIATION_FEATURE" >
+        <fk-pointing-to-this-class column="GF_FeatureTypeID" />
+        <fk-pointing-to-element-class column="GF_AssociationTypeID" />        
+    </collection-descriptor>                    
+</class-descriptor>       
+
+
+<!-- Mapping de la classe GF_AssociationType -->
+<class-descriptor class="fr.ign.cogit.geoxygene.dico.GF_AssociationType" table="GF_ASSOCIATIONTYPE" >
+    <!--champs hérités de GF_FeatureType -->
+    <field-descriptor name="id" column="GF_AssociationTypeID" jdbc-type="INTEGER" primarykey="true" autoincrement="true"  />
+    <field-descriptor name="typeName" column="typeName" jdbc-type="VARCHAR" />
+    <field-descriptor name="definition" column="definition" jdbc-type="VARCHAR" />
+    <field-descriptor name="isAbstract" column="isAbstract" jdbc-type="BIT"     />  
+    <!-- lien 1-N avec les proprietes -->
+    <collection-descriptor name="properties" element-class-ref="fr.ign.cogit.geoxygene.dico.GF_PropertyType" >
+        <inverse-foreignkey field-ref="featureTypeID" />
+    </collection-descriptor>            
+    <!-- lien 1-N avec les roles -->      
+    <collection-descriptor name="roles" element-class-ref="fr.ign.cogit.geoxygene.dico.GF_AssociationRole" >
+        <inverse-foreignkey field-ref="associationTypeID" />
+    </collection-descriptor>        
+     <!-- lien 1-N avec les relations d'héritage, pour la généralisation -->  
+    <collection-descriptor name="generalization" element-class-ref="fr.ign.cogit.geoxygene.dico.GF_InheritanceRelation" >
+        <inverse-foreignkey field-ref="subTypeID" />
+    </collection-descriptor>            
+    <!-- lien 1-N avec les relations d'héritage, pour la spécialisation -->
+    <collection-descriptor name="specialization" element-class-ref="fr.ign.cogit.geoxygene.dico.GF_InheritanceRelation" >
+        <inverse-foreignkey field-ref="superTypeID" />
+    </collection-descriptor>   
+    <!-- lien 1-N avec les contraintes -->
+    <collection-descriptor name="constraint" element-class-ref="fr.ign.cogit.geoxygene.dico.GF_Constraint" >
+        <inverse-foreignkey field-ref="featureTypeID" />
+    </collection-descriptor>    
+    <!-- lien N-N avec les features : inutile car la bidirection est geree dans le code --> 
+    <!--collection-descriptor name="linkBetween" element-class-ref="fr.ign.cogit.geoxygene.dico.GF_AssociationType" indirection-table="GF_ASSOCIATION_FEATURE" >
+        <fk-pointing-to-this-class column="GF_AssociationTypeID" />
+        <fk-pointing-to-element-class column="GF_FeatureTypeID" />        
+    </collection-descriptor-->                    
+</class-descriptor> 
+
+
+<!-- Mapping de la classe GF_InheritanceRelation -->
+<class-descriptor class="fr.ign.cogit.geoxygene.dico.GF_InheritanceRelation" table="GF_INHERITANCERELATION" >
+    <field-descriptor name="id" column="GF_InheritanceRelationID" jdbc-type="INTEGER" primarykey="true" autoincrement="true"  />
+    <field-descriptor name="name" column="name" jdbc-type="VARCHAR" />
+    <field-descriptor name="description" column="description" jdbc-type="VARCHAR" />
+    <field-descriptor name="uniqueInstance" column="uniqueInstance" jdbc-type="BIT" />      
+    <!-- clés étrangères sur GF_FeatureType -->
+    <field-descriptor name="superTypeID" column="superType" jdbc-type="INTEGER"  access="anonymous"/>        
+    <field-descriptor name="subTypeID" column="subType" jdbc-type="INTEGER"  access="anonymous"/>
+    <reference-descriptor name="subType" class-ref="fr.ign.cogit.geoxygene.dico.GF_FeatureType" >
+        <foreignkey field-ref="subTypeID" />
+    </reference-descriptor>               
+</class-descriptor> 
+
+
+<!-- Mapping de la classe GF_PropertyType -->
+<class-descriptor class="fr.ign.cogit.geoxygene.dico.GF_PropertyType" >
+	  <extent-class class-ref="fr.ign.cogit.geoxygene.dico.GF_AttributeType" />
+	  <extent-class class-ref="fr.ign.cogit.geoxygene.dico.GF_Operation" />	
+	  <extent-class class-ref="fr.ign.cogit.geoxygene.dico.GF_AssociationRole" />	
+</class-descriptor>
+
+
+<!-- Mapping de la classe GF_AttributeType -->
+<class-descriptor class="fr.ign.cogit.geoxygene.dico.GF_AttributeType" table="GF_ATTRIBUTETYPE" >
+    <field-descriptor name="id" column="GF_PropertyTypeID" jdbc-type="INTEGER" primarykey="true" autoincrement="true"  />
+    <!-- champs hérités de GF_PropertyType -->
+    <field-descriptor name="memberName" column="memberName" jdbc-type="VARCHAR" />
+    <field-descriptor name="definition" column="definition" jdbc-type="VARCHAR" />
+    <!-- champs propres à cette classe -->
+    <field-descriptor name="valueType" column="valueType" jdbc-type="VARCHAR" />
+    <field-descriptor name="domainOfValues" column="domainOfValues" jdbc-type="VARCHAR" />    
+    <field-descriptor name="cardMin" column="cardMin" jdbc-type="INTEGER" />   
+    <field-descriptor name="cardMax" column="cardMax" jdbc-type="INTEGER" />  
+    <!-- lien 1-N avec GF_FeatureType -->                   
+    <field-descriptor name="featureTypeID" column="GF_FeatureTypeID" jdbc-type="INTEGER" access="anonymous"/>    
+       <reference-descriptor name="featureType" class-ref="fr.ign.cogit.geoxygene.dico.GF_FeatureType"  >
+        <foreignkey field-ref="featureTypeID" />
+    </reference-descriptor>  
+    <!-- lien 1-N avec GF_AttributeType -->             
+    <field-descriptor name="characterizeID" column="characterizeID" jdbc-type="INTEGER" access="anonymous"/>       
+    <reference-descriptor name="characterize" class-ref="fr.ign.cogit.geoxygene.dico.GF_AttributeType"  >
+        <foreignkey field-ref="characterizeID" />
+    </reference-descriptor>                                
+    <!-- lien 1-N avec les contraintes -->
+    <collection-descriptor name="constraint" element-class-ref="fr.ign.cogit.geoxygene.dico.GF_Constraint" >
+        <inverse-foreignkey field-ref="propertyTypeID" />
+    </collection-descriptor>  
+</class-descriptor> 
+
+
+<!-- Mapping de la classe GF_Operation -->
+<class-descriptor class="fr.ign.cogit.geoxygene.dico.GF_Operation" table="GF_OPERATION" >
+    <field-descriptor name="id" column="GF_PropertyTypeID" jdbc-type="INTEGER" primarykey="true" autoincrement="true"  />
+    <!-- champs hérités de GF_PropertyType -->
+    <field-descriptor name="memberName" column="memberName" jdbc-type="VARCHAR" />
+    <field-descriptor name="definition" column="definition" jdbc-type="VARCHAR" />
+    <!-- champs propres à cette classe -->
+    <field-descriptor name="signature" column="signature" jdbc-type="VARCHAR" />  
+     <!-- lien 1-N avec GF_FeatureType -->                   
+    <field-descriptor name="featureTypeID" column="GF_FeatureTypeID" jdbc-type="INTEGER" access="anonymous"/>    
+       <reference-descriptor name="featureType" class-ref="fr.ign.cogit.geoxygene.dico.GF_FeatureType"  >
+        <foreignkey field-ref="featureTypeID" />
+    </reference-descriptor>                                 
+    <!-- lien 1-N avec les contraintes -->
+    <collection-descriptor name="constraint" element-class-ref="fr.ign.cogit.geoxygene.dico.GF_Constraint" >
+        <inverse-foreignkey field-ref="propertyTypeID" />
+    </collection-descriptor>  
+</class-descriptor> 
+
+
+<!-- Mapping de la classe GF_AssociationRole -->
+<class-descriptor class="fr.ign.cogit.geoxygene.dico.GF_AssociationRole" table="GF_ASSOCIATIONROLE" >
+    <field-descriptor name="id" column="GF_PropertyTypeID" jdbc-type="INTEGER" primarykey="true" autoincrement="true"  />
+    <!-- champs hérités de GF_PropertyType -->
+    <field-descriptor name="memberName" column="memberName" jdbc-type="VARCHAR" />
+    <field-descriptor name="definition" column="definition" jdbc-type="VARCHAR" />
+    <!-- champs propres à cette classe -->
+    <field-descriptor name="valueType" column="valueType" jdbc-type="VARCHAR" /> 
+    <field-descriptor name="cardMin" column="cardMin" jdbc-type="INTEGER" />   
+    <field-descriptor name="cardMax" column="cardMax" jdbc-type="INTEGER" />                    
+     <!-- lien 1-N avec GF_FeatureType -->                   
+    <field-descriptor name="featureTypeID" column="GF_FeatureTypeID" jdbc-type="INTEGER" access="anonymous"/>    
+       <reference-descriptor name="featureType" class-ref="fr.ign.cogit.geoxygene.dico.GF_FeatureType"  >
+        <foreignkey field-ref="featureTypeID" />
+    </reference-descriptor>
+     <!-- lien 1-N avec GF_AssociationType -->                   
+    <field-descriptor name="associationTypeID" column="GF_AssociationTypeID" jdbc-type="INTEGER" access="anonymous"/>    
+    <reference-descriptor name="associationType" class-ref="fr.ign.cogit.geoxygene.dico.GF_AssociationType"  >
+        <foreignkey field-ref="associationTypeID" />
+    </reference-descriptor>             
+    <!-- lien 1-N avec les contraintes -->
+    <collection-descriptor name="constraint" element-class-ref="fr.ign.cogit.geoxygene.dico.GF_Constraint" >
+        <inverse-foreignkey field-ref="propertyTypeID" />
+    </collection-descriptor>  
+</class-descriptor>
+
+   
+<!-- Mapping de la classe GF_Constraint -->
+<!-- les liens sont ici uni-directionnels -->
+<class-descriptor class="fr.ign.cogit.geoxygene.dico.GF_Constraint" table="GF_CONSTRAINT" >
+    <field-descriptor name="id" column="GF_ConstraintID" jdbc-type="INTEGER" primarykey="true" autoincrement="true"  />
+    <field-descriptor name="description" column="description" jdbc-type="VARCHAR" />
+    <!-- cles etrangeres -->    
+    <field-descriptor name="featureTypeID" column="GF_FeatureTypeID" jdbc-type="INTEGER" access="anonymous"/>       
+    <field-descriptor name="propertyTypeID" column="GF_PropertyTypeID" jdbc-type="INTEGER" access="anonymous"/>                           
+</class-descriptor>    

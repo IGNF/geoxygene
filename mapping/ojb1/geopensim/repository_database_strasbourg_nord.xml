@@ -1,0 +1,21 @@
+<!-- DEFINIR ICI LES PARAMETRES DE CONNECTION AU SGBD -->
+
+<jdbc-connection-descriptor
+   		jcd-alias="postgres"
+   		default-connection="true"
+   		platform="PostgreSQL"
+   		jdbc-level="3.0"
+   		driver="org.postgresql.Driver"
+   		protocol="jdbc"
+   		subprotocol="postgresql"
+   		dbalias="//localhost:5432/geopensim_strasbourg_nord"
+   		username="postgres"
+   		password="postgres"
+        eager-release="false"
+   		batch-mode="true"
+        useAutoCommit="2"
+        ignoreAutoCommitExceptions="false"  >
+    <connection-pool maxActive="21" validationQuery="" />
+	<sequence-manager className="org.apache.ojb.broker.util.sequence.SequenceManagerInMemoryImpl" />
+</jdbc-connection-descriptor>
+

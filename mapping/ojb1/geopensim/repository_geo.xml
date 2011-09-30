@@ -1,0 +1,5 @@
+<class-descriptor class="fr.ign.cogit.appli.geopensim.feature.ElementGeo" table="ELEMENTGEO" >
+  <field-descriptor name="id"  column="COGITID" jdbc-type="INTEGER" primarykey="true" autoincrement="true"/>
+  <field-descriptor name="idgeo" column="idgeo" jdbc-type="INTEGER" />
+</class-descriptor>
+

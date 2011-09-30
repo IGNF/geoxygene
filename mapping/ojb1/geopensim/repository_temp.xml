@@ -1,0 +1,4 @@
+<class-descriptor class="fr.ign.cogit.appli.geopensim.feature.basic.BasicBatiment" table="BATIMENT" >
+  <field-descriptor name="id"  column="COGITID" jdbc-type="INTEGER" primarykey="true" autoincrement="true"/>
+</class-descriptor>
+
