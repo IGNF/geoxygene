@@ -40,9 +40,11 @@ import java.io.Reader;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -54,6 +56,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerModel;
@@ -93,7 +96,6 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
 
   private static final long serialVersionUID = 1L;
 
-  @SuppressWarnings("unused")
   private static Logger logger = Logger.getLogger(StyleEditionFrame.class
       .getName());
 
@@ -142,7 +144,11 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
   private JButton btnApply;
   private JButton btnValid;
   private JButton btnCancel;
-  private JPanel mainPanel;
+  private JCheckBox toponymBtn;
+  private JTabbedPane tabPane;
+  private JPanel textStylePanel;
+  private JPanel mainStylePanel;
+  private JPanel graphicStylePanel;
 
   // Work variables
   private Color fillColor;
@@ -217,6 +223,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.layerLegendPanel = layerLegendPanel;
     this.layerViewPanel = this.layerLegendPanel.getLayerViewPanel();
 
+    this.graphicStylePanel = new JPanel();
+    
     if (layerLegendPanel.getSelectedLayers().size() == 1) {
       this.layer = layerLegendPanel.getSelectedLayers().iterator().next();
     }
@@ -236,16 +244,47 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       this.init_Point();
     }
 
+    this.textStylePanel = new JPanel();
+    this.init_textStylePanel();
+    this.tabPane = new JTabbedPane();
+    this.tabPane.add(I18N.getString("StyleEditionFrame.Symbology"), this.graphicStylePanel); //$NON-NLS-1$
+    this.tabPane.add(I18N.getString("StyleEditionFrame.Toponyms"), this.textStylePanel); //$NON-NLS-1$
+    this.add(this.tabPane);
+    
     this.setTitle(I18N.getString("StyleEditionFrame.StyleEdition")); //$NON-NLS-1$
-    this.setSize(600, 700);
+    this.graphicStylePanel.setSize(600, 700);
+    this.setSize(650, 750);
     this.setLocation(200, 200);
     this.setAlwaysOnTop(true);
   }
 
+  public void init_textStylePanel() {
+    logger.info(this.layer);
+    logger.info(this.layer.getFeatureCollection());
+    logger.info(this.layer.getFeatureCollection().getFeatureType());
+    logger.info(this.layer.getFeatureCollection().getFeatureType().getFeatureAttributes());
+    logger.info(this.layer.getFeatureCollection().getFeatureType().getFeatureAttributes().size());
+    String[] fieldsStr = new String[this.layer.getFeatureCollection().getFeatureType().getFeatureAttributes().size()];
+    for (int i = 0; i < fieldsStr.length; i++) {
+      fieldsStr[i] = this.layer.getFeatureCollection().getFeatureType().getFeatureAttributes().get(i).getMemberName(); 
+    }
+    
+    JComboBox fields = new JComboBox(fieldsStr);
+    fields.setPreferredSize(fields.getPreferredSize());
+    this.textStylePanel.add(fields);
+    
+    JLabel label = new JLabel(I18N.getString("StyleEditionFrame.DisplayField")); //$NON-NLS-1$
+    this.textStylePanel.add(label);
+    
+    this.toponymBtn = new JCheckBox(I18N.getString("StyleEditionFrame.DisplayToponyms")); //$NON-NLS-1$
+    this.toponymBtn.addActionListener(this);
+    this.textStylePanel.add(this.toponymBtn);
+  }
+
   public void init_Polygon() {
-    this.setLayout(new BorderLayout());
+    this.graphicStylePanel.setLayout(new BorderLayout());
     this.visuPanel = this.createVisuPanel();
-    this.add(this.visuPanel, BorderLayout.WEST);
+    this.graphicStylePanel.add(this.visuPanel, BorderLayout.WEST);
 
     JLabel titleLabel = new JLabel(
         I18N.getString("StyleEditionFrame.PolygonNewStyle")); //$NON-NLS-1$
@@ -289,15 +328,31 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
         this.strokeOpacity));
     this.strokePanel.add(this.createWidthPanel(this.strokeWidth, this.unit));
 
-    this.mainPanel = new JPanel();
-    this.mainPanel.add(titleLabel);
-    this.mainPanel.add(this.fillPanel);
-    this.mainPanel.add(this.strokePanel);
-    this.mainPanel.add(this.createButtonApply());
-    this.mainPanel.add(this.createButtonValid());
-    this.mainPanel.add(this.createButtonCancel());
-    this.add(this.mainPanel, BorderLayout.CENTER);
+    this.mainStylePanel = new JPanel();
+    this.mainStylePanel.setLayout(new BoxLayout(this.mainStylePanel, BoxLayout.Y_AXIS));
+    
+    titleLabel.setAlignmentX(LEFT_ALIGNMENT);
+    this.mainStylePanel.add(titleLabel);
+    
+    this.fillPanel.setAlignmentX(LEFT_ALIGNMENT);
+    this.mainStylePanel.add(this.fillPanel);
+    
+    this.strokePanel.setAlignmentX(LEFT_ALIGNMENT);
+    this.mainStylePanel.add(this.strokePanel);
+    
+    JButton buttonApply = this.createButtonApply();
+    JButton buttonValid = this.createButtonValid();
+    JButton buttonCancel = this.createButtonCancel();
+    JPanel buttonPanel = new JPanel();
+    buttonPanel.add(buttonApply);
+    buttonPanel.add(buttonValid);
+    buttonPanel.add(buttonCancel);
 
+    buttonPanel.setAlignmentX(LEFT_ALIGNMENT);
+    this.mainStylePanel.add(buttonPanel);
+
+    this.graphicStylePanel.add(this.mainStylePanel, BorderLayout.CENTER);
+    
     this.pack();
     this.pack();
     this.repaint();
@@ -312,9 +367,9 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
   }
 
   public void init_Line() {
-    this.setLayout(new BorderLayout());
+    this.graphicStylePanel.setLayout(new BorderLayout());
     this.visuPanel = this.createVisuPanel();
-    this.add(this.visuPanel, BorderLayout.WEST);
+    this.graphicStylePanel.add(this.visuPanel, BorderLayout.WEST);
 
     JLabel titleLabel = new JLabel(
         I18N.getString("StyleEditionFrame.LineNewStyle")); //$NON-NLS-1$
@@ -381,20 +436,36 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.btnAddStyle.addActionListener(this);
     this.btnAddStyle.setBounds(50, 50, 100, 20);
 
-    this.mainPanel = new JPanel();
-    this.mainPanel.add(titleLabel);
-    this.mainPanel.add(this.strokePanel2);
-    this.mainPanel.add(this.strokePanel);
-    this.mainPanel.add(this.btnAddStyle);
+    this.mainStylePanel = new JPanel();
+    this.mainStylePanel.setLayout(new BoxLayout(this.mainStylePanel, BoxLayout.Y_AXIS));
+
+    titleLabel.setAlignmentX(LEFT_ALIGNMENT);
+    this.mainStylePanel.add(titleLabel);
+    
+    this.strokePanel2.setAlignmentX(LEFT_ALIGNMENT);
+    this.mainStylePanel.add(this.strokePanel2);
+
+    this.strokePanel.setAlignmentX(LEFT_ALIGNMENT);
+    this.mainStylePanel.add(this.strokePanel);
+    
+    JButton buttonApply = this.createButtonApply();
+    JButton buttonValid = this.createButtonValid();
+    JButton buttonCancel = this.createButtonCancel();
+   
+    JPanel buttonPanel = new JPanel();
+    buttonPanel.add(this.btnAddStyle);
     if (this.layer.getStyles().size() == 2) {
       this.btnAddStyle.setEnabled(false);
     }
-
-    this.mainPanel.add(this.createButtonApply());
-    this.mainPanel.add(this.createButtonValid());
-    this.mainPanel.add(this.createButtonCancel());
-    this.add(this.mainPanel, BorderLayout.CENTER);
-
+    buttonPanel.add(buttonApply);
+    buttonPanel.add(buttonValid);
+    buttonPanel.add(buttonCancel);
+    
+    buttonPanel.setAlignmentX(LEFT_ALIGNMENT);
+    this.mainStylePanel.add(buttonPanel);
+    
+    this.graphicStylePanel.add(this.mainStylePanel, BorderLayout.CENTER);
+    
     this.pack();
     this.pack();
     this.repaint();
@@ -411,7 +482,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
   public void init_Point() {
     this.setLayout(new BorderLayout());
     this.visuPanel = this.createVisuPanel();
-    this.add(this.visuPanel, BorderLayout.WEST);
+    this.graphicStylePanel.add(this.visuPanel, BorderLayout.WEST);
 
     JLabel titleLabel = new JLabel(
         I18N.getString("StyleEditionFrame.PointNewStyle")); //$NON-NLS-1$
@@ -474,15 +545,33 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.symbolPanel.add(this.createSymbolPanel(this.symbolShape));
     this.symbolPanel.add(this.createSizePanel(this.symbolSize));
 
-    this.mainPanel = new JPanel();
-    this.mainPanel.add(titleLabel);
-    this.mainPanel.add(this.fillPanel);
-    this.mainPanel.add(this.strokePanel);
-    this.mainPanel.add(this.symbolPanel);
-    this.mainPanel.add(this.createButtonApply());
-    this.mainPanel.add(this.createButtonValid());
-    this.mainPanel.add(this.createButtonCancel());
-    this.add(this.mainPanel, BorderLayout.CENTER);
+    this.mainStylePanel = new JPanel();
+    this.mainStylePanel.setLayout(new BoxLayout(this.mainStylePanel, BoxLayout.Y_AXIS));
+    
+    titleLabel.setAlignmentX(LEFT_ALIGNMENT);
+    this.mainStylePanel.add(titleLabel);
+    
+    this.fillPanel.setAlignmentX(LEFT_ALIGNMENT);
+    this.mainStylePanel.add(this.fillPanel);
+    
+    this.strokePanel.setAlignmentX(LEFT_ALIGNMENT);
+    this.mainStylePanel.add(this.strokePanel);
+    
+    this.symbolPanel.setAlignmentX(LEFT_ALIGNMENT);
+    this.mainStylePanel.add(this.symbolPanel);
+    
+    JButton buttonApply = this.createButtonApply();
+    JButton buttonValid = this.createButtonValid();
+    JButton buttonCancel = this.createButtonCancel();
+    JPanel buttonPanel = new JPanel();
+    buttonPanel.add(buttonApply);
+    buttonPanel.add(buttonValid);
+    buttonPanel.add(buttonCancel);
+
+    buttonPanel.setAlignmentX(LEFT_ALIGNMENT);
+    this.mainStylePanel.add(buttonPanel);
+    
+    this.graphicStylePanel.add(this.mainStylePanel, BorderLayout.CENTER);
 
     this.pack();
     this.pack();
@@ -958,7 +1047,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
 
     // When the user validate a color in the Color Chooser interface
     if (e.getSource().getClass() != JComboBox.class
-        && e.getSource().getClass() != JRadioButton.class) {
+        && e.getSource().getClass() != JRadioButton.class
+        && e.getSource().getClass() != JCheckBox.class) {
       if (((JButton) e.getSource()).getActionCommand() == "OK") { //$NON-NLS-1$
 
         JDialog dialog = (JDialog) ((JButton) e.getSource()).getParent()
@@ -1071,6 +1161,15 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       this.layerViewPanel.repaint();
       this.updateLayer();
       ((JFrame) StyleEditionFrame.this).dispose();
+    }
+    
+    //When the user add/remove toponyms
+    if (e.getSource() == this.toponymBtn) {
+      if (this.toponymBtn.isSelected()){
+        logger.info("Add Toponyms");
+      } else {
+        logger.info("remove toponyms");
+      }
     }
   }
 
