@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="fr.ign.cogit.appli.geopensim.feature.meso">
+  <class name="ZoneAgregee" table="ZoneAgregee">
+    <id name="id" column="id"><generator class="native"/></id>
+    <discriminator column="zoneagregee_type" type="string"/>
+    <property name="geom" type="fr.ign.cogit.geoxygene.datatools.hibernate.GeOxygeneGeometryUserType"/>
+   	<list name="zonesElementaires" lazy="false">
+    	<key column="id"/>
+    	<index column="posn"/>
+       	<one-to-many class="ZoneElementaire"/>
+    </list>
+
+    <subclass name="ZoneAgregeeUrbaine" extends="ZoneAgregee" discriminator-value="ZAU">
+    </subclass>
+	<subclass name="ZoneAgregeePeriUrbaine" extends="ZoneAgregee" discriminator-value="ZAP">
+	</subclass>
+  </class>
+</hibernate-mapping>

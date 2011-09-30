@@ -1,0 +1,1436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StyledLayerDescriptor version="1.0.20">
+	<NamedLayer>
+		<Name>ZoneElementaireBatie</Name>
+        <UserStyle>
+            <Title>Îlots</Title>
+            <Group>type</Group>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Name>HabitatContinuDenseTypeCentrevilleCentrebourg</Name>
+                    <Title>Centre Ville</Title>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Size>10.0</Size>
+                            <Mark>
+                                <WellKnownName>square</WellKnownName>
+                                <Fill>
+                                    <CssParameter name="fill">#ff0000</CssParameter>
+                                    <CssParameter name="fill-opacity">1.0</CssParameter>
+                                </Fill>
+                            </Mark>
+                        </Graphic>
+                    </LegendGraphic>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo>
+                                <PropertyName>infinite</PropertyName>
+                                <Literal>false</Literal>
+                            </PropertyIsEqualTo>
+                        <PropertyIsEqualTo>
+                            <PropertyName>classificationFonctionnelle</PropertyName>
+                            <Literal>1</Literal>
+                        </PropertyIsEqualTo>
+                        </And>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ff0000</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>HabitatDiscontinuTypeCollectifGrandeEnsemble</Name>
+                    <Title>Habitat collectif</Title>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Size>10.0</Size>
+                            <Mark>
+                                <WellKnownName>square</WellKnownName>
+                                <Fill>
+                                    <CssParameter name="fill">#ff642d</CssParameter>
+                                    <CssParameter name="fill-opacity">1.0</CssParameter>
+                                </Fill>
+                            </Mark>
+                        </Graphic>
+                    </LegendGraphic>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo>
+                                <PropertyName>infinite</PropertyName>
+                                <Literal>false</Literal>
+                            </PropertyIsEqualTo>
+                        <PropertyIsEqualTo>
+                            <PropertyName>classificationFonctionnelle</PropertyName>
+                            <Literal>2</Literal>
+                        </PropertyIsEqualTo>
+                        </And>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ff642d</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>HabitatDiscontinuTypePavillonnaireIndividuel</Name>
+                    <Title>Habitat pavillonnaire</Title>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Size>10.0</Size>
+                            <Mark>
+                                <WellKnownName>square</WellKnownName>
+                                <Fill>
+                                    <CssParameter name="fill">#ffff5a</CssParameter>
+                                    <CssParameter name="fill-opacity">1.0</CssParameter>
+                                </Fill>
+                            </Mark>
+                        </Graphic>
+                    </LegendGraphic>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo>
+                                <PropertyName>infinite</PropertyName>
+                                <Literal>false</Literal>
+                            </PropertyIsEqualTo>
+                        <PropertyIsEqualTo>
+                            <PropertyName>classificationFonctionnelle</PropertyName>
+                            <Literal>0</Literal>
+                        </PropertyIsEqualTo>
+                        </And>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <CssParameter name="fill">#ffff5a</CssParameter>
+                        </Fill>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>EmpriseSpecialiseeBatie</Name>
+                    <Title>Emprise Spécialisée bâtie</Title>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Size>10.0</Size>
+                            <Mark>
+                                <WellKnownName>square</WellKnownName>
+                                <Fill>
+                                    <CssParameter name="fill">#cc4df2</CssParameter>
+                                    <CssParameter name="fill-opacity">1.0</CssParameter>
+                                </Fill>
+                            </Mark>
+                        </Graphic>
+                    </LegendGraphic>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo>
+                                <PropertyName>infinite</PropertyName>
+                                <Literal>false</Literal>
+                            </PropertyIsEqualTo>
+                        <PropertyIsEqualTo>
+                            <PropertyName>classificationFonctionnelle</PropertyName>
+                            <Literal>3</Literal>
+                        </PropertyIsEqualTo>
+                        </And>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#da2484</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#cc4df2</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>EmpriseSpecialiseePeuBatie</Name>
+                    <Title>Emprise Spécialisée peu bâtie</Title>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Size>10.0</Size>
+                            <Mark>
+                                <WellKnownName>square</WellKnownName>
+                                <Fill>
+                                    <CssParameter name="fill">#d9a9ca</CssParameter>
+                                    <CssParameter name="fill-opacity">1.0</CssParameter>
+                                </Fill>
+                            </Mark>
+                        </Graphic>
+                    </LegendGraphic>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo>
+                                <PropertyName>infinite</PropertyName>
+                                <Literal>false</Literal>
+                            </PropertyIsEqualTo>
+                        <PropertyIsEqualTo>
+                            <PropertyName>classificationFonctionnelle</PropertyName>
+                            <Literal>8</Literal>
+                        </PropertyIsEqualTo>
+                        </And>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#d9a9ca</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>HabitatDiscontinuMixte</Name>
+                    <Title>Habitat mixte</Title>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Size>10.0</Size>
+                            <Mark>
+                                <WellKnownName>square</WellKnownName>
+                                <Fill>
+                                    <CssParameter name="fill">#a16631</CssParameter>
+                                    <CssParameter name="fill-opacity">1.0</CssParameter>
+                                </Fill>
+                            </Mark>
+                        </Graphic>
+                    </LegendGraphic>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo>
+                                <PropertyName>infinite</PropertyName>
+                                <Literal>false</Literal>
+                            </PropertyIsEqualTo>
+                        <Or>
+                            <PropertyIsEqualTo>
+                                <PropertyName>classificationFonctionnelle</PropertyName>
+                                <Literal>5</Literal>
+                            </PropertyIsEqualTo>
+                            <PropertyIsEqualTo>
+                                <PropertyName>classificationFonctionnelle</PropertyName>
+                                <Literal>6</Literal>
+                            </PropertyIsEqualTo>
+                        </Or>
+                        </And>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <CssParameter name="fill">#a16631</CssParameter>
+                        </Fill>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>TissuUrbainMixte</Name>
+                    <Title>Tissu Mixte</Title>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Size>10.0</Size>
+                            <Mark>
+                                <WellKnownName>square</WellKnownName>
+                                <Fill>
+                                    <CssParameter name="fill">#5e2cff</CssParameter>
+                                    <CssParameter name="fill-opacity">1.0</CssParameter>
+                                </Fill>
+                            </Mark>
+                        </Graphic>
+                    </LegendGraphic>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo>
+                                <PropertyName>infinite</PropertyName>
+                                <Literal>false</Literal>
+                            </PropertyIsEqualTo>
+                        <Or>
+                            <PropertyIsEqualTo>
+                                <PropertyName>classificationFonctionnelle</PropertyName>
+                                <Literal>4</Literal>
+                            </PropertyIsEqualTo>
+                            <PropertyIsEqualTo>
+                                <PropertyName>classificationFonctionnelle</PropertyName>
+                                <Literal>7</Literal>
+                            </PropertyIsEqualTo>
+                        </Or>
+                        </And>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#5e2cff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Reseau?</Name>
+                    <ElseFilter>
+                    </ElseFilter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <Fill>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+        <UserStyle>
+            <Group>type objectif</Group>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Name>HabitatContinuDenseTypeCentrevilleCentrebourg</Name>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo>
+                                <PropertyName>infinite</PropertyName>
+                                <Literal>false</Literal>
+                            </PropertyIsEqualTo>
+                        <PropertyIsEqualTo>
+                            <PropertyName>classificationFonctionnelleBut</PropertyName>
+                            <Literal>1</Literal>
+                        </PropertyIsEqualTo>
+                        </And>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ff0000</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>EmpriseSpecialiseeBatie</Name>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo>
+                                <PropertyName>infinite</PropertyName>
+                                <Literal>false</Literal>
+                            </PropertyIsEqualTo>
+                        <PropertyIsEqualTo>
+                            <PropertyName>classificationFonctionnelleBut</PropertyName>
+                            <Literal>3</Literal>
+                        </PropertyIsEqualTo>
+                        </And>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#cc4df2</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>EmpriseSpecialiseePeuBatie</Name>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo>
+                                <PropertyName>infinite</PropertyName>
+                                <Literal>false</Literal>
+                            </PropertyIsEqualTo>
+                        <PropertyIsEqualTo>
+                            <PropertyName>classificationFonctionnelleBut</PropertyName>
+                            <Literal>8</Literal>
+                        </PropertyIsEqualTo>
+                        </And>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#d9a9ca</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>TissuUrbainMixte</Name>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo>
+                                <PropertyName>infinite</PropertyName>
+                                <Literal>false</Literal>
+                            </PropertyIsEqualTo>
+                        <Or>
+                            <PropertyIsEqualTo>
+                                <PropertyName>classificationFonctionnelleBut</PropertyName>
+                                <Literal>4</Literal>
+                            </PropertyIsEqualTo>
+                            <PropertyIsEqualTo>
+                                <PropertyName>classificationFonctionnelleBut</PropertyName>
+                                <Literal>7</Literal>
+                            </PropertyIsEqualTo>
+                        </Or>
+                        </And>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#5e2cff</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>HabitatDiscontinuTypeCollectifGrandeEnsemble</Name>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo>
+                                <PropertyName>infinite</PropertyName>
+                                <Literal>false</Literal>
+                            </PropertyIsEqualTo>
+                        <PropertyIsEqualTo>
+                            <PropertyName>classificationFonctionnelleBut</PropertyName>
+                            <Literal>2</Literal>
+                        </PropertyIsEqualTo>
+                        </And>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <GeometryPropertyName>geom</GeometryPropertyName>
+                        <Fill>
+                            <CssParameter name="fill">#ff642d</CssParameter>
+                            <CssParameter name="fill-opacity">1.0</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>HabitatDiscontinuMixte</Name>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo>
+                                <PropertyName>infinite</PropertyName>
+                                <Literal>false</Literal>
+                            </PropertyIsEqualTo>
+                        <Or>
+                            <PropertyIsEqualTo>
+                                <PropertyName>classificationFonctionnelleBut</PropertyName>
+                                <Literal>5</Literal>
+                            </PropertyIsEqualTo>
+                            <PropertyIsEqualTo>
+                                <PropertyName>classificationFonctionnelleBut</PropertyName>
+                                <Literal>6</Literal>
+                            </PropertyIsEqualTo>
+                        </Or>
+                        </And>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <CssParameter name="fill">#a16631</CssParameter>
+                        </Fill>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>HabitatDiscontinuTypePavillonaireIndividuel</Name>
+                    <Filter>
+                        <And>
+                            <PropertyIsEqualTo>
+                                <PropertyName>infinite</PropertyName>
+                                <Literal>false</Literal>
+                            </PropertyIsEqualTo>
+                        <PropertyIsEqualTo>
+                            <PropertyName>classificationFonctionnelleBut</PropertyName>
+                            <Literal>0</Literal>
+                        </PropertyIsEqualTo>
+                        </And>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <CssParameter name="fill">#ffff5a</CssParameter>
+                        </Fill>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Reseau?</Name>
+                    <ElseFilter>
+                    </ElseFilter>
+                    <PolygonSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-opacity">0.0</CssParameter>
+                            <CssParameter name="stroke-width">0.0</CssParameter>
+                        </Stroke>
+                        <Fill>
+                            <CssParameter name="fill">#ffffff</CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+        <UserStyle>
+            <Group>méthode de densification</Group>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo>
+                            <PropertyName>infinite</PropertyName>
+                            <Literal>false</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <ThematicSymbolizer>
+                        <DiagramSymbolizer>
+                            <DiagramType>piechart</DiagramType>
+                            <DiagramSize>
+                                <DiagramRadius>50.0</DiagramRadius>
+                            </DiagramSize>
+                            <ThematicClass>
+                                <ClassLabel>IndividuelSpontanne</ClassLabel>
+                                <ClassValue>
+                                    <PropertyName>IndividuelSpontanne</PropertyName>
+                                </ClassValue>
+                                <Fill>
+                                    <CssParameter name="fill">#ebfe40</CssParameter>
+                                </Fill>
+                            </ThematicClass>
+                            <ThematicClass>
+                                <ClassLabel>IndividuelProgramme</ClassLabel>
+                                <ClassValue>
+                                    <PropertyName>IndividuelProgramme</PropertyName>
+                                </ClassValue>
+                                <Fill>
+                                    <CssParameter name="fill">#edfe59</CssParameter>
+                                </Fill>
+                            </ThematicClass>
+                            <ThematicClass>
+                                <ClassLabel>MaisonQuartierOuvrier</ClassLabel>
+                                <ClassValue>
+                                    <PropertyName>MaisonQuartierOuvrier</PropertyName>
+                                </ClassValue>
+                                <Fill>
+                                    <CssParameter name="fill">#f0fe72</CssParameter>
+                                </Fill>
+                            </ThematicClass>
+                            <ThematicClass>
+                                <ClassLabel>MaisonQuartierClasseMoyenne</ClassLabel>
+                                <ClassValue>
+                                    <PropertyName>MaisonQuartierClasseMoyenne</PropertyName>
+                                </ClassValue>
+                                <Fill>
+                                    <CssParameter name="fill">#f3fe8c</CssParameter>
+                                </Fill>
+                            </ThematicClass>
+                            <ThematicClass>
+                                <ClassLabel>MaisonQuartierClasseIntermediaire</ClassLabel>
+                                <ClassValue>
+                                    <PropertyName>MaisonQuartierClasseIntermediaire</PropertyName>
+                                </ClassValue>
+                                <Fill>
+                                    <CssParameter name="fill">#f5fea5</CssParameter>
+                                </Fill>
+                            </ThematicClass>
+                            <ThematicClass>
+                                <ClassLabel>MaisonQuartierAise</ClassLabel>
+                                <ClassValue>
+                                    <PropertyName>MaisonQuartierAise</PropertyName>
+                                </ClassValue>
+                                <Fill>
+                                    <CssParameter name="fill">#f8febf</CssParameter>
+                                </Fill>
+                            </ThematicClass>
+                            <ThematicClass>
+                                <ClassLabel>PetitCollectif</ClassLabel>
+                                <ClassValue>
+                                    <PropertyName>PetitCollectif</PropertyName>
+                                </ClassValue>
+                                <Fill>
+                                    <CssParameter name="fill">#ff4631</CssParameter>
+                                </Fill>
+                            </ThematicClass>
+                            <ThematicClass>
+                                <ClassLabel>Barre</ClassLabel>
+                                <ClassValue>
+                                    <PropertyName>Barre</PropertyName>
+                                </ClassValue>
+                                <Fill>
+                                    <CssParameter name="fill">#ff4631</CssParameter>
+                                </Fill>
+                            </ThematicClass>
+                            <ThematicClass>
+                                <ClassLabel>GrandEnsemble</ClassLabel>
+                                <ClassValue>
+                                    <PropertyName>GrandEnsemble</PropertyName>
+                                </ClassValue>
+                                <Fill>
+                                    <CssParameter name="fill">#ff4631</CssParameter>
+                                </Fill>
+                            </ThematicClass>
+                            <ThematicClass>
+                                <ClassLabel>ZoneIndustrielle</ClassLabel>
+                                <ClassValue>
+                                    <PropertyName>ZoneIndustrielle</PropertyName>
+                                </ClassValue>
+                                <Fill>
+                                    <CssParameter name="fill">#ed15ff</CssParameter>
+                                </Fill>
+                            </ThematicClass>
+                            <ThematicClass>
+                                <ClassLabel>ZoneIndustrielleAnnabelle</ClassLabel>
+                                <ClassValue>
+                                    <PropertyName>ZoneIndustrielleAnnabelle</PropertyName>
+                                </ClassValue>
+                                <Fill>
+                                    <CssParameter name="fill">#f580ff</CssParameter>
+                                </Fill>
+                            </ThematicClass>
+                            <ThematicClass>
+                                <ClassLabel>SansInformation</ClassLabel>
+                                <ClassValue>
+                                    <PropertyName>SansInformation</PropertyName>
+                                </ClassValue>
+                                <Fill>
+                                    <CssParameter name="fill">#000000</CssParameter>
+                                </Fill>
+                            </ThematicClass>
+                        </DiagramSymbolizer>
+                    </ThematicSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+        <UserStyle>
+            <Group>différence de densité</Group>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo>
+                            <PropertyName>infinite</PropertyName>
+                            <Literal>false</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <ColorMap>
+                            <Interpolate>
+                                <LookupValue>differenceDensite</LookupValue>
+                                <InterpolationPoint>
+                                    <Data>0</Data>
+                                    <Value>#ffffff</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>0.1</Data>
+                                    <Value>#808080</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>1</Data>
+                                    <Value>#000000</Value>
+                                </InterpolationPoint>
+                            </Interpolate>
+                        </ColorMap>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+        <UserStyle>
+            <Group>densité</Group>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo>
+                            <PropertyName>infinite</PropertyName>
+                            <Literal>false</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <ColorMap>
+                            <Interpolate>
+                                <LookupValue>densite</LookupValue>
+                                <InterpolationPoint>
+                                    <Data>0</Data>
+                                    <Value>#ffffff</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>0.1</Data>
+                                    <Value>#ffffbf</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>0.5</Data>
+                                    <Value>#fdae61</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>0.8</Data>
+                                    <Value>#d73027</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>1</Data>
+                                    <Value>#76021d</Value>
+                                </InterpolationPoint>
+                            </Interpolate>
+                        </ColorMap>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+        <UserStyle>
+            <Group>densité objectif</Group>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo>
+                            <PropertyName>infinite</PropertyName>
+                            <Literal>false</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <ColorMap>
+                            <Interpolate>
+                                <LookupValue>densiteBut</LookupValue>
+                                <InterpolationPoint>
+                                    <Data>0</Data>
+                                    <Value>#ffffff</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>0.1</Data>
+                                    <Value>#ffffbf</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>0.5</Data>
+                                    <Value>#fdae61</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>0.8</Data>
+                                    <Value>#d73027</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>1</Data>
+                                    <Value>#76021d</Value>
+                                </InterpolationPoint>
+                            </Interpolate>
+                        </ColorMap>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+        <UserStyle>
+            <Group>satisfaction</Group>
+            <FeatureTypeStyle>
+                <Rule>
+                    <Filter>
+                        <PropertyIsEqualTo>
+                            <PropertyName>infinite</PropertyName>
+                            <Literal>false</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+                    <PolygonSymbolizer>
+                        <ColorMap>
+                            <Interpolate>
+                                <LookupValue>satisfaction</LookupValue>
+                                <InterpolationPoint>
+                                    <Data>0</Data>
+                                    <Value>#800000</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>30</Data>
+                                    <Value>#ff0000</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>60</Data>
+                                    <Value>#ff8000</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>70</Data>
+                                    <Value>#ffff00</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>75</Data>
+                                    <Value>#ffff80</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>80</Data>
+                                    <Value>#c0ff80</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>85</Data>
+                                    <Value>#40ff40</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>90</Data>
+                                    <Value>#00ff00</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>95</Data>
+                                    <Value>#00c000</Value>
+                                </InterpolationPoint>
+                                <InterpolationPoint>
+                                    <Data>100</Data>
+                                    <Value>#008000</Value>
+                                </InterpolationPoint>                                
+                            </Interpolate>
+                        </ColorMap>
+                    </PolygonSymbolizer>
+                </Rule>
+            </FeatureTypeStyle>
+        </UserStyle>
+	</NamedLayer>
+
+	<NamedLayer>
+		<Name>GroupeBatiments</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>GroupeBatiments</Name>
+					<Filter>
+						<PropertyIsEqualTo>
+							<PropertyName>deleted</PropertyName>
+							<Literal>false</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<PolygonSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Fill>
+							<CssParameter name="fill">#6542e4</CssParameter>
+						</Fill>
+						<Stroke>
+							<CssParameter name="stroke">#291b5c</CssParameter>
+							<CssParameter name="stroke-width">2.0</CssParameter>
+						</Stroke>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+
+	<NamedLayer>
+		<Name>SurfaceEau</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>SurfaceEau</Name>
+					<PolygonSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Fill>
+							<CssParameter name="fill">#0000ff</CssParameter>
+						</Fill>
+						<Stroke>
+							<CssParameter name="stroke">#0000aa</CssParameter>
+							<CssParameter name="stroke-width">1.0</CssParameter>
+						</Stroke>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>TronconCoursEau</Name>
+		<UserStyle>
+		    <Title>Cours d'eau</Title>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>TronconCoursEau</Name>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Size>10.0</Size>
+                            <Mark>
+                                <WellKnownName>-</WellKnownName>
+                                <Stroke>
+                                    <CssParameter name="stroke">#0000aa</CssParameter>
+                                    <CssParameter name="stroke-width">3.0</CssParameter>
+                                </Stroke>
+                            </Mark>
+                        </Graphic>
+                    </LegendGraphic>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#0000aa</CssParameter>
+							<CssParameter name="stroke-width">3.0</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>PointEau</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>PointEau</Name>
+					<PointSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Graphic>
+							<Mark>
+								<Fill>
+									<CssParameter name="fill">#0000aa</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#000000</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+						</Graphic>
+					</PointSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>Vegetation</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Vegetation</Name>
+					<PolygonSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Fill>
+							<CssParameter name="fill">#00ff00</CssParameter>
+						</Fill>
+						<Stroke>
+							<CssParameter name="stroke">#00aa00</CssParameter>
+							<CssParameter name="stroke-width">1.0</CssParameter>
+						</Stroke>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>TronconVoieFerree</Name>
+		<UserStyle>
+            <Title>Voies ferrées</Title>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>TronconVoieFerree axe</Name>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Size>10.0</Size>
+                            <ExternalGraphic>
+                                <Format>image/png</Format>
+                                <href>/images/rail.png</href>
+                            </ExternalGraphic>
+                        </Graphic>
+                    </LegendGraphic>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">3.0</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>TronconVoieFerree barreaux</Name>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">10.0</CssParameter>
+							<CssParameter name="stroke-dasharray">2 10</CssParameter>
+							<CssParameter name="stroke-linecap">butt</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>TronconChemin</Name>
+		<UserStyle>
+            <Title>Chemins</Title>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>TronconChemin fond</Name>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Size>10.0</Size>
+                            <Mark>
+                                <WellKnownName>-</WellKnownName>
+                                <Stroke>
+                                    <CssParameter name="stroke">#000000</CssParameter>
+                                    <CssParameter name="stroke-width">4.0</CssParameter>
+                                </Stroke>
+                            </Mark>
+                            <Mark>
+                                <WellKnownName>-</WellKnownName>
+                                <Stroke>
+                                    <CssParameter name="stroke">#ffff00</CssParameter>
+                                    <CssParameter name="stroke-width">2.0</CssParameter>
+                                </Stroke>
+                            </Mark>
+                        </Graphic>
+                    </LegendGraphic>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">4.0</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>TronconChemin bande</Name>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#ffff00</CssParameter>
+							<CssParameter name="stroke-width">2.0</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>TronconRoute</Name>
+		<UserStyle>
+            <Title>Routes</Title>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>TronconRoute fond</Name>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Size>10.0</Size>
+                            <Mark>
+                                <WellKnownName>-</WellKnownName>
+                                <Stroke>
+                                    <CssParameter name="stroke">#000000</CssParameter>
+                                    <CssParameter name="stroke-width">4.0</CssParameter>
+                                </Stroke>
+                            </Mark>
+                            <Mark>
+                                <WellKnownName>-</WellKnownName>
+                                <Stroke>
+                                    <CssParameter name="stroke">#ff0000</CssParameter>
+                                    <CssParameter name="stroke-width">2.0</CssParameter>
+                                </Stroke>
+                            </Mark>
+                        </Graphic>
+                    </LegendGraphic>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">4.0</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>TronconRoute bande</Name>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#ff0000</CssParameter>
+							<CssParameter name="stroke-width">2.0</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>Cimetiere</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Cimetiere</Name>
+					<PolygonSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Fill>
+							<CssParameter name="fill">#333333</CssParameter>
+						</Fill>
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">1.0</CssParameter>
+						</Stroke>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>TerrainSport</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>TerrainSport</Name>
+					<PolygonSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Fill>
+							<CssParameter name="fill">#c3723c</CssParameter>
+						</Fill>
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">1.0</CssParameter>
+						</Stroke>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>Alignement</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Alignement</Name>
+					<PolygonSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Fill>
+							<CssParameter name="fill">#cc66cc</CssParameter>
+						</Fill>
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">1.0</CssParameter>
+						</Stroke>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>Batiment</Name>
+		<UserStyle>
+            <Title>Bâtiments</Title>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Batiment Public</Name>
+                    <LegendGraphic>
+                        <Graphic>
+                            <Size>10.0</Size>
+                            <Mark>
+                                <WellKnownName>square</WellKnownName>
+                                <Fill>
+                                    <CssParameter name="fill">#000000</CssParameter>
+                                </Fill>
+                            </Mark>
+                        </Graphic>
+                    </LegendGraphic>
+                    <Filter>
+                        <PropertyIsEqualTo>
+                            <PropertyName>deleted</PropertyName>
+                            <Literal>false</Literal>
+                        </PropertyIsEqualTo>
+                    </Filter>
+					<PolygonSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Fill>
+							<CssParameter name="fill">#000000</CssParameter>
+						</Fill>
+						<Stroke>
+							<CssParameter name="stroke">#000000</CssParameter>
+							<CssParameter name="stroke-width">0.0</CssParameter>
+						</Stroke>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>Pylone</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Pylone</Name>
+					<PointSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Graphic>
+							<Mark>
+								<WellKnownName>star</WellKnownName>
+								<Fill>
+									<CssParameter name="fill">#afe949</CssParameter>
+								</Fill>
+								<Stroke>
+									<CssParameter name="stroke">#000000</CssParameter>
+									<CssParameter name="stroke-width">1.0</CssParameter>
+								</Stroke>
+							</Mark>
+						</Graphic>
+					</PointSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>LigneElectrique</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>LigneElectrique</Name>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#afe949</CssParameter>
+							<CssParameter name="stroke-width">1.0</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>LigneOrographique</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>LigneOrographique</Name>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#947662</CssParameter>
+							<CssParameter name="stroke-width">1.0</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>CentreVille</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Centre Ville</Name>
+					<Filter>
+						<PropertyIsEqualTo>
+							<PropertyName>distcentre</PropertyName>
+							<Literal>0</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<PolygonSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Fill>
+							<CssParameter name="fill">#7A6765</CssParameter>
+						</Fill>
+						<Stroke>
+							<CssParameter name="stroke">#aaaaaa</CssParameter>
+							<CssParameter name="stroke-width">2.0</CssParameter>
+						</Stroke>
+					</PolygonSymbolizer>
+				</Rule>
+				<Rule>
+					<Name>Niveau 1</Name>
+					<Filter>
+						<PropertyIsEqualTo>
+							<PropertyName>distcentre</PropertyName>
+							<Literal>1</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<PolygonSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Fill>
+							<CssParameter name="fill">#454C54</CssParameter>
+						</Fill>
+						<Stroke>
+							<CssParameter name="stroke">#aaaaaa</CssParameter>
+							<CssParameter name="stroke-width">2.0</CssParameter>
+						</Stroke>
+					</PolygonSymbolizer>
+				</Rule>
+				<Rule>
+					<Name>Niveau 2</Name>
+					<Filter>
+						<PropertyIsEqualTo>
+							<PropertyName>distcentre</PropertyName>
+							<Literal>2</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<PolygonSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Fill>
+							<CssParameter name="fill">#95A37F</CssParameter>
+						</Fill>
+						<Stroke>
+							<CssParameter name="stroke">#aaaaaa</CssParameter>
+							<CssParameter name="stroke-width">2.0</CssParameter>
+						</Stroke>
+					</PolygonSymbolizer>
+				</Rule>
+				<Rule>
+					<Name>Niveau 3 : Pri-urbain</Name>
+					<Filter>
+						<PropertyIsEqualTo>
+							<PropertyName>distcentre</PropertyName>
+							<Literal>3</Literal>
+						</PropertyIsEqualTo>
+					</Filter>
+					<PolygonSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Fill>
+							<CssParameter name="fill">#F2E5AE</CssParameter>
+						</Fill>
+						<Stroke>
+							<CssParameter name="stroke">#aaaaaa</CssParameter>
+							<CssParameter name="stroke-width">2.0</CssParameter>
+						</Stroke>
+					</PolygonSymbolizer>
+				</Rule>
+				<Rule>
+					<Name>Toute autre valeur</Name>
+					<PolygonSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Fill>
+							<CssParameter name="fill">#eeeeee</CssParameter>
+						</Fill>
+						<Stroke>
+							<CssParameter name="stroke">#aaaaaa</CssParameter>
+							<CssParameter name="stroke-width">2.0</CssParameter>
+						</Stroke>
+					</PolygonSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>Triangulation</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<Name>Triangulation Edge</Name>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#5889a9</CssParameter>
+							<CssParameter name="stroke-width">2.0</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+	<NamedLayer>
+		<Name>MedialAxis</Name>
+		<UserStyle>
+			<FeatureTypeStyle>
+				<Rule>
+					<LineSymbolizer>
+						<Geometry>
+							<PropertyName>geom</PropertyName>
+						</Geometry>
+						<Stroke>
+							<CssParameter name="stroke">#9d00a3</CssParameter>
+							<CssParameter name="stroke-width">2.0</CssParameter>
+						</Stroke>
+					</LineSymbolizer>
+				</Rule>
+			</FeatureTypeStyle>
+		</UserStyle>
+	</NamedLayer>
+</StyledLayerDescriptor>
