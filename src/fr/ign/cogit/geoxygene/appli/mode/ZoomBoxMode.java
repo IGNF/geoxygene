@@ -58,10 +58,7 @@ public class ZoomBoxMode extends AbstractMode implements PaintListener {
   public void mouseDragged(final MouseEvent e) {
     if ((SwingUtilities.isLeftMouseButton(e))) {
       Point currentPoint = e.getPoint();
-      if (this.currentPointView != null) {
-      }
       this.currentPointView = currentPoint;
-      
       ProjectFrame frame = this.mainFrame.getSelectedProjectFrame();
       frame.getLayerViewPanel().superRepaint();
     }

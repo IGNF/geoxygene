@@ -23,6 +23,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.HashMap;
@@ -39,17 +40,17 @@ import org.apache.log4j.Logger;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.appli.LayerFactory.LayerType;
 import fr.ign.cogit.geoxygene.appli.plugin.GeometryToolBar;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
-import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
+import fr.ign.cogit.geoxygene.util.conversion.GPSTextfileReader;
+import fr.ign.cogit.geoxygene.util.conversion.RoadNetworkTextfileReader;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 
@@ -197,6 +198,8 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
                 l = factory.createLayer(fileName, LayerType.GEOTIFF);
             } else if (extention.equalsIgnoreCase("asc")) { //$NON-NLS-1$
                 l = factory.createLayer(fileName, LayerType.ASC);
+            } else if (extention.equalsIgnoreCase("txt")) { //$NON-NLS-1$
+                l = factory.createLayer(fileName, LayerType.TXT);
             }
             if (l != null) {
                 this.sld.add(l);
@@ -209,6 +212,44 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
         File file = MainFrame.getFilechooser().getFile(this.getMainFrame());
         this.addLayer(file);
     }
+  public void addGpsTxtLayer(String fileName) {
+    int lastIndexOfSeparator = fileName.lastIndexOf(File.separatorChar);
+    String populationName = fileName.substring(lastIndexOfSeparator + 1,
+        fileName.lastIndexOf(".")); //$NON-NLS-1$
+    logger.info(populationName);
+    Population<DefaultFeature> population = GPSTextfileReader.read(fileName, populationName, DataSet.getInstance(), true);
+    logger.info(population.size());
+
+    if (population != null) {
+      this.addFeatureCollection(population, population.getNom());
+      if (this.getLayers().size() == 1) {
+        try {
+          this.layerViewPanel.getViewport().zoom(population.envelope());
+        } catch (NoninvertibleTransformException e1) {
+          e1.printStackTrace();
+        }
+      }    
+    }
+  }
+  public void addRoadNetworkTxtLayer(String fileName) {
+    int lastIndexOfSeparator = fileName.lastIndexOf(File.separatorChar);
+    String populationName = fileName.substring(lastIndexOfSeparator + 1,
+        fileName.lastIndexOf(".")); //$NON-NLS-1$
+    logger.info(populationName);
+    Population<DefaultFeature> population = RoadNetworkTextfileReader.read(fileName, populationName, DataSet.getInstance(), true);
+    logger.info(population.size());
+
+    if (population != null) {
+      this.addFeatureCollection(population, population.getNom());
+      if (this.getLayers().size() == 1) {
+        try {
+          this.layerViewPanel.getViewport().zoom(population.envelope());
+        } catch (NoninvertibleTransformException e1) {
+          e1.printStackTrace();
+        }
+      }    
+    }
+  }
 
     /**
      * Add a feature collection to the project.
@@ -290,37 +331,6 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
         this.getLayerViewPanel().superRepaint();
     }
 
-    /**
-     * Créer une nouvelle population en fonction du layer et d'une collection de
-     * features envoyés en paramètre.
-     * <p>
-     * Initialise l'index spatial, ajoute le PanelVisu comme ChangeListener et
-     * met à jour le FeatureType de la population.
-     * 
-     * @param layer
-     *            Le layer à partir duquel on souhaite créer la population
-     * @param features
-     *            Les features que l'on souhaite ajouter à la population
-     * @return Une nouvelle population à partir du layer et des features envoyés
-     *         en paramètre.
-     */
-    public IPopulation<IFeature> generateNewPopulation(
-            IFeatureCollection<? extends IFeature> features, Layer layer) {
-        IPopulation<IFeature> newPop = new Population<IFeature>(layer.getName());
-        if (features == null || features.isEmpty()) {
-            return null;
-        }
-        newPop.addAll(features);
-        if (features.getFeatureType() == null) {
-            FeatureType type = new FeatureType();
-            type.setGeometryType(features.get(0).getGeom().getClass());
-            newPop.setFeatureType(type);
-        } else {
-            newPop.setFeatureType(features.getFeatureType());
-        }
-        return newPop;
-    }
-
     public Layer getLayerFromFeature(IFeature ft) {
         for (Layer layer : this.getSld().getLayers()) {
             if (layer.getFeatureCollection().contains(ft)) {
@@ -363,7 +373,7 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
     }
 
     public BufferedImage getImage(IFeature feature) {
-        logger.error(this.featureToImageMap.size() + " elements in map");
+        logger.error(this.featureToImageMap.size() + " elements in map"); //$NON-NLS-1$
         if (feature == null) {
             if (this.featureToImageMap.isEmpty()) {
                 return null;
@@ -403,7 +413,7 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
     }
 
     public void removeLayers(List<Layer> toRemove) {
-        System.out.println("removing +" + toRemove.size() + "+layers"); //$NON-NLS-1$
+        System.out.println("removing +" + toRemove.size() + "+layers"); //$NON-NLS-1$ //$NON-NLS-2$
         this.sld.remove(toRemove);
         for (Layer layer : toRemove) {
             this.layerViewPanel.getRenderingManager().removeLayer(layer);

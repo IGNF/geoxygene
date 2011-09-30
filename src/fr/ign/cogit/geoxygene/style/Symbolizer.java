@@ -19,10 +19,6 @@
 
 package fr.ign.cogit.geoxygene.style;
 
-import java.awt.Graphics2D;
-
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.appli.Viewport;
 
 /**
  * @author Julien Perret
@@ -89,11 +85,11 @@ public interface Symbolizer {
   public static String FOOT = "http://www.opengeospatial.org/se/units/foot"; //$NON-NLS-1$
   public static String PIXEL = "http://www.opengeospatial.org/se/units/pixel"; //$NON-NLS-1$
 
-  /**
-   * Paint a feature using a viewport and a graphics.
-   * @param feature the feature to paint
-   * @param viewport the viewport in which to paint
-   * @param graphics the graphics used to paint into
-   */
-  public void paint(IFeature feature, Viewport viewport, Graphics2D graphics);
+//  /**
+//   * Paint a feature using a viewport and a graphics.
+//   * @param feature the feature to paint
+//   * @param viewport the viewport in which to paint
+//   * @param graphics the graphics used to paint into
+//   */
+//  public void paint(IFeature feature, Viewport viewport, Graphics2D graphics);
 }

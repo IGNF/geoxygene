@@ -19,16 +19,6 @@
 
 package fr.ign.cogit.geoxygene.style;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.font.FontRenderContext;
-import java.awt.font.GlyphVector;
-import java.awt.geom.NoninvertibleTransformException;
-
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.appli.Viewport;
 
 /**
  * @author Julien Perret
@@ -129,67 +119,67 @@ public class TextSymbolizer extends AbstractSymbolizer {
     this.fill = fill;
   }
 
-  @Override
-  public void paint(IFeature feature, Viewport viewport, Graphics2D graphics) {
-    if (this.getLabel() == null) {
-      return;
-    }
-    try {
-      Shape shape = viewport.toShape(feature.getGeom());
-      if (shape == null) {
-        return;
-      }
-      String text = (String) feature.getAttribute(this.getLabel());
-      this.paint(text, shape, graphics);
-    } catch (NoninvertibleTransformException e) {
-      e.printStackTrace();
-    }
-  }
-
-  public void paint(String text, Shape shape, Graphics2D graphics) {
-    Color fillColor = Color.black;
-    if (this.getFill() != null) {
-      fillColor = this.getFill().getColor();
-    }
-    java.awt.Font awtFont = null;
-    if (this.getFont() != null) {
-      awtFont = this.getFont().toAwfFont();
-    }
-    if (awtFont == null) {
-      awtFont = new java.awt.Font("Default", java.awt.Font.PLAIN, 10); //$NON-NLS-1$
-    }
-    Color haloColor = null;
-    float haloRadius = 1.0f;
-    if (this.getHalo() != null) {
-      if (this.getHalo().getFill() != null) {
-        haloColor = this.getHalo().getFill().getColor();
-      } else {
-        haloColor = Color.white;
-      }
-      haloRadius = this.getHalo().getRadius();
-    }
-    if (text == null) {
-      return;
-    }
-    // Find the size of string s in font f in the current Graphics context g.
-    graphics.setFont(awtFont);
-    // Center text horizontally and vertically
-
-    FontRenderContext frc = graphics.getFontRenderContext();
-    GlyphVector gv = awtFont.createGlyphVector(frc, text);
-    // halo
-    if (haloColor != null) {
-      Shape textShape = gv.getOutline();// TODO reposition on the shape
-      graphics.setColor(haloColor);
-      graphics.setStroke(new BasicStroke(haloRadius, BasicStroke.CAP_ROUND,
-          BasicStroke.JOIN_ROUND));
-      graphics.draw(textShape);
-    }
-    graphics.setColor(fillColor);
-    graphics
-        .drawGlyphVector(gv, (float) (shape.getBounds2D().getMinX() + shape
-            .getBounds2D().getMaxX()) / 2, (float) (shape.getBounds2D()
-            .getMinY() + shape.getBounds2D().getMaxY()) / 2);// TODO reposition
-                                                             // on the shape
-  }
+//  @Override
+//  public void paint(IFeature feature, Viewport viewport, Graphics2D graphics) {
+//    if (this.getLabel() == null) {
+//      return;
+//    }
+//    try {
+//      Shape shape = viewport.toShape(feature.getGeom());
+//      if (shape == null) {
+//        return;
+//      }
+//      String text = (String) feature.getAttribute(this.getLabel());
+//      this.paint(text, shape, graphics);
+//    } catch (NoninvertibleTransformException e) {
+//      e.printStackTrace();
+//    }
+//  }
+//
+//  public void paint(String text, Shape shape, Graphics2D graphics) {
+//    Color fillColor = Color.black;
+//    if (this.getFill() != null) {
+//      fillColor = this.getFill().getColor();
+//    }
+//    java.awt.Font awtFont = null;
+//    if (this.getFont() != null) {
+//      awtFont = this.getFont().toAwfFont();
+//    }
+//    if (awtFont == null) {
+//      awtFont = new java.awt.Font("Default", java.awt.Font.PLAIN, 10); //$NON-NLS-1$
+//    }
+//    Color haloColor = null;
+//    float haloRadius = 1.0f;
+//    if (this.getHalo() != null) {
+//      if (this.getHalo().getFill() != null) {
+//        haloColor = this.getHalo().getFill().getColor();
+//      } else {
+//        haloColor = Color.white;
+//      }
+//      haloRadius = this.getHalo().getRadius();
+//    }
+//    if (text == null) {
+//      return;
+//    }
+//    // Find the size of string s in font f in the current Graphics context g.
+//    graphics.setFont(awtFont);
+//    // Center text horizontally and vertically
+//
+//    FontRenderContext frc = graphics.getFontRenderContext();
+//    GlyphVector gv = awtFont.createGlyphVector(frc, text);
+//    // halo
+//    if (haloColor != null) {
+//      Shape textShape = gv.getOutline();// TODO reposition on the shape
+//      graphics.setColor(haloColor);
+//      graphics.setStroke(new BasicStroke(haloRadius, BasicStroke.CAP_ROUND,
+//          BasicStroke.JOIN_ROUND));
+//      graphics.draw(textShape);
+//    }
+//    graphics.setColor(fillColor);
+//    graphics
+//        .drawGlyphVector(gv, (float) (shape.getBounds2D().getMinX() + shape
+//            .getBounds2D().getMaxX()) / 2, (float) (shape.getBounds2D()
+//            .getMinY() + shape.getBounds2D().getMaxY()) / 2);// TODO reposition
+//                                                             // on the shape
+//  }
 }

@@ -21,7 +21,7 @@ package fr.ign.cogit.geoxygene.schema;
 
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.feature.DataSet;
+import fr.ign.cogit.geoxygene.api.feature.IDataSet;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.SchemaConceptuelProduit;
 
 /**
@@ -148,19 +148,19 @@ public class Produit {
   /**
    * la liste des jeux de données dont on dispose pour ce produit
    */
-  protected List<DataSet> jeuxDisponibles;
+  protected List<IDataSet> jeuxDisponibles;
 
   /**
    * @return the jeuxDisponibles
    */
-  public List<DataSet> getJeuxDisponibles() {
+  public List<IDataSet> getJeuxDisponibles() {
     return this.jeuxDisponibles;
   }
 
   /**
    * @param jeuxDisponibles the jeuxDisponibles to set
    */
-  public void setJeuxDisponibles(List<DataSet> jeuxDisponibles) {
+  public void setJeuxDisponibles(List<IDataSet> jeuxDisponibles) {
     this.jeuxDisponibles = jeuxDisponibles;
   }
 

@@ -35,7 +35,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Transient;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.xml.bind.JAXBContext;
@@ -50,14 +49,17 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionEvent;
 import fr.ign.cogit.geoxygene.api.feature.event.FeatureCollectionListener;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.appli.SldListener;
+import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
@@ -100,7 +102,6 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
   // protected List<UseSLDLibrary> useSLDLibrary;
   @XmlAttribute(required = true)
   protected String version;
-
   @XmlTransient
   private DataSet dataSet = null;
   /**
@@ -111,13 +112,12 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
     this.dataSet = DataSet.getInstance();
   }
   /**
-   * @param dataSet 
+   * @param dataSet
    */
   public StyledLayerDescriptor(DataSet dataSet) {
-    super();
-    this.dataSet = dataSet;
+      super();
+      this.dataSet = dataSet;
   }
-
   @XmlElements({ @XmlElement(name = "NamedLayer", type = NamedLayer.class),
       @XmlElement(name = "UserLayer", type = UserLayer.class) })
   private LinkedList<Layer> layers = new LinkedList<Layer>();
@@ -346,10 +346,18 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
     try {
       JAXBContext context = JAXBContext.newInstance(
           StyledLayerDescriptor.class, NamedLayer.class, NamedStyle.class);
+      final XMLStreamWriter xmlStreamWriter = XMLOutputFactory
+      .newInstance().createXMLStreamWriter(writer);
+      xmlStreamWriter.setPrefix("sld",
+      "http://www.example.com/myPO1");
       Marshaller m = context.createMarshaller();
       m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-      m.marshal(this, writer);
+      m.marshal(this, xmlStreamWriter);
     } catch (JAXBException e) {
+      e.printStackTrace();
+    } catch (XMLStreamException e) {
+      e.printStackTrace();
+    } catch (FactoryConfigurationError e) {
       e.printStackTrace();
     }
   }
@@ -751,10 +759,11 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
   }
 
   public void setDataSet(DataSet dataset) {
-    this.dataSet = dataset;
+      this.dataSet = dataset;
   }
+
   public DataSet getDataSet() {
-    return this.dataSet;
+      return this.dataSet;
   }
 
   public int layersCount() {

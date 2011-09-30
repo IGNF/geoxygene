@@ -6,10 +6,10 @@ import java.util.List;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.api.spatial.toporoot.ITopology;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AssociationRole;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
-import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
 
 /**
  * @author julien Gaffuri 25 juin 2009
@@ -52,13 +52,13 @@ public interface IFeature {
    * Renvoie la topologie de l'objet.
    * @return la topologie de l'objet
    */
-  public abstract TP_Object getTopo();
+  public abstract ITopology getTopo();
 
   /**
    * Affecte la topologie de l'objet.
    * @param t la topologie de l'objet
    */
-  public abstract void setTopo(TP_Object t);
+  public abstract void setTopo(ITopology t);
 
   /**
    * Renvoie true si une topologie existe, false sinon.

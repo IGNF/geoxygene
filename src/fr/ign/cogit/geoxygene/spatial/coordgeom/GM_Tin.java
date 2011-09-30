@@ -27,22 +27,25 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.triangulate.ConformingDelaunayTriangulationBuilder;
+
 import fr.ign.cogit.geoxygene.I18N;
-import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ITin;
-import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
-import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
-import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
-import fr.ign.cogit.geoxygene.contrib.delaunay.TriangulationJTS;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
+import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 
 /**
  * Surface triangulée avec la méthode de Delaunay ou un algorithme similaire, et
@@ -129,94 +132,60 @@ public class GM_Tin extends GM_TriangulatedSurface implements ITin {
   }
 
   /**
-   * 
-   * @param post
-   * @param stopLines not used
-   * @param breakLines
-   * @param maxLength not used
+   * Constructor using a set of points, a set of stop lines and break lines.
+   * @param post points
+   * @param stopLines stop lines
+   * @param breakLines break lines
+   * @param maxLength maximum edge length
    */
   public GM_Tin(IDirectPositionList post, List<ILineString> stopLines,
-      List<ILineString> breakLines, float maxLength) {
-
+          List<ILineString> breakLines, float maxLength) {
     super();
-
     this.stopLines = stopLines;
     this.controlPoint = post;
     this.breakLines = breakLines;
     this.maxLength = maxLength;
 
-    List<Noeud> lNodes = new ArrayList<Noeud>();
-
-    if (post != null) {
-      int nbPos = post.size();
-
-      for (int i = 0; i < nbPos; i++) {
-        lNodes.add(new Noeud(post.get(i)));
-      }
-
+    ConformingDelaunayTriangulationBuilder tb = new ConformingDelaunayTriangulationBuilder();
+    GM_MultiPoint sites = new GM_MultiPoint();
+    for (IDirectPosition n : post) {
+      sites.add(n.toGM_Point());
     }
-    List<Arc> lArcStoplines = new ArrayList<Arc>();
-
-    if (stopLines != null) {
-      int nbArc = stopLines.size();
-
-      for (int i = 0; i < nbArc; i++) {
-
-        Arc a = new Arc();
-        a.setGeom(stopLines.get(i));
-        lArcStoplines.add(a);
-      }
+    IMultiCurve<ILineString> linesConstraints = new GM_MultiCurve<ILineString>();
+    for (ILineString l : breakLines) {
+      linesConstraints.add(l);
     }
-
-    List<Arc> lArcBreakLines = new ArrayList<Arc>();
-
-    if (breakLines != null) {
-      int nbBreakLines = breakLines.size();
-
-      for (int i = 0; i < nbBreakLines; i++) {
-
-        Arc a = new Arc();
-        a.setGeom(breakLines.get(i));
-        lArcBreakLines.add(a);
-      }
-
+    IMultiCurve<ILineString> stopLinesAggregate = new GM_MultiCurve<ILineString>();
+    for (ILineString l : stopLines) {
+      stopLinesAggregate.add(l);
     }
-
-    TriangulationJTS triJTS = new TriangulationJTS("TriangulationJTS"); //$NON-NLS-1$
-    triJTS.getPopNoeuds().addAll(lNodes);
-    triJTS.getPopArcs().addAll(lArcBreakLines);
-
+    GeometryFactory geomFact = new GeometryFactory();
     try {
-      triJTS.triangule(""); //$NON-NLS-1$
+        Geometry geomSites = AdapterFactory.toGeometry(geomFact, sites);
+        Geometry lineConstraints = AdapterFactory.toGeometry(geomFact,
+                linesConstraints);
+        tb.setTolerance(0.01); // FIXME added tolerance to prevent from having ghost triangles
+        tb.setSites(geomSites);
+        tb.setConstraints(lineConstraints);
+        GeometryCollection triangles = (GeometryCollection) tb
+        .getTriangles(geomFact);
+        for (int i = 0; i < triangles.getNumGeometries(); i++) {
+            Polygon triangle = (Polygon) triangles.getGeometryN(i);
+            IDirectPositionList list = AdapterFactory.toDirectPositionList(triangle.getCoordinates());
+            double dmax = list.get(0).distance(list.get(1));
+            dmax = Math.max(dmax, list.get(1).distance(list.get(2)));
+            dmax = Math.max(dmax, list.get(2).distance(list.get(0)));
+            if (dmax <= maxLength) {
+                GM_Triangle t = new GM_Triangle(list);
+                // go through stop lines to prevent from adding triangles that intersect them
+                if (!t.intersects(stopLinesAggregate)) {
+                    this.getlTriangles().add(t);
+                }
+            }
+        }
     } catch (Exception e) {
+      GM_Tin.logger.error(I18N.getString("GMTIN.Error")); //$NON-NLS-1$
       e.printStackTrace();
-
     }
-
-    IPopulation<Face> popFaces = triJTS.getPopFaces();
-
-    int nbFace = popFaces.size();
-
-    // On traite chaque triangle
-    for (int i = 0; i < nbFace; i++) {
-
-      GM_OrientableSurface geom = (GM_OrientableSurface) popFaces.get(i)
-          .getGeometrie();
-
-      // Is this a Triangle ?
-      if (geom.coord().size() == 4 || geom.coord().size() == 3) {
-
-        this.getlTriangles().add(
-            new GM_Triangle(geom.coord().get(0), geom.coord().get(1), geom
-                .coord().get(2)));
-
-      } else {
-
-        GM_Tin.logger.error(I18N.getString("GMTIN.Error")); //$NON-NLS-1$
-
-      }
-
-    }
-
   }
 }

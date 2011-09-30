@@ -71,6 +71,7 @@ import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.render.LayerRenderer;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.SldListener;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 
 /**
@@ -79,7 +80,7 @@ import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
  * @author Sylvain Becuwe
  * @author Charlotte Hoarau
  */
-public class LayerLegendPanel extends JPanel implements ChangeListener,ActionListener, SldListener{
+public class LayerLegendPanel extends JPanel implements ChangeListener,ActionListener, SldListener {
   /**
    * serial version uid.
    */
@@ -129,7 +130,6 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,ActionLis
       "/images/icons/16x16/minus.png"))); //$NON-NLS-1$
   JButton attributeButton = new JButton(new ImageIcon(this.getClass().getResource(
       "/images/icons/16x16/editAttributes.png"))); //$NON-NLS-1$
-  
   JPopupMenu popupMenu = new JPopupMenu();
   JMenuItem newLayerMenuItem = new JMenuItem(
       I18N.getString("LayerLegendPanel.CreateLayer")); //$NON-NLS-1$

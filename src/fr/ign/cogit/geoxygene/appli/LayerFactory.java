@@ -33,12 +33,10 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.gce.arcgrid.ArcGridReader;
 import org.geotools.gce.geotiff.GeoTiffReader;
 
-
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.FT_Coverage;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
@@ -88,9 +86,9 @@ public class LayerFactory{
     private static  Logger logger = Logger.getLogger(LayerFactory.class.getName());
 
     public enum LayerType {
-        SHAPEFILE, GEOTIFF, ASC;
-
+        SHAPEFILE, GEOTIFF, ASC, TXT;
     };
+
     private StyledLayerDescriptor model;
     public LayerFactory(StyledLayerDescriptor sld) {
       this.model = sld;
@@ -105,7 +103,7 @@ public class LayerFactory{
       layer.setStyles(this.model.getLayer(styleName).getStyles());
       return layer;
     }
-    
+
     public Layer createLayer(String filename, LayerType layertype) {
         File f = new File(filename);
         try {
@@ -157,7 +155,7 @@ public class LayerFactory{
                         .getLowerCorner().getCoordinate()[1], envelope
                         .getUpperCorner().getCoordinate()[1]));
         population.add(new FT_Coverage(coverage));
-        DataSet.getInstance().addPopulation(population);
+        this.model.getDataSet().addPopulation(population);
         Layer layer = this.createLayer(populationName);
         return layer;
     }
@@ -227,7 +225,6 @@ public class LayerFactory{
     public String generateNewLayerName() {
       return this.checkLayerName(I18N.getString("LayerFactory.NewLayer")); //$NON-NLS-1$
     }
-    
     public String checkLayerName(String layerName) {
       if (this.model.getLayer(layerName) != null) {
         /** Il existe déjà une population avec ce nom */
@@ -321,21 +318,18 @@ public class LayerFactory{
     public Layer createLayerRandomColor(String layerName,
         Class<? extends IGeometry> geometryType, Collection<ColorimetricColor> undesirableColors) {
         ColorReferenceSystem crs = ColorReferenceSystem.defaultColorRS();
-       
         ColorimetricColor theColor = null;
         for(ColorimetricColor color : ColorReferenceSystem.getCOGITColors()){
             if(!undesirableColors.contains(color)){
                 theColor = color;
             }
         }
-        
         // Dans le cas où on a pas trouvé de couleur unique on en prend une au
         // hasard, tant pis si elle existe deja
         if(theColor == null){
             List<ColorimetricColor> colors = crs.getAllColors();
             theColor = colors.get(new Random().nextInt(colors.size()));
         }
-
         return this.createLayer(layerName, geometryType, theColor.toColor());
     }
    
@@ -416,11 +410,8 @@ public class LayerFactory{
       style.getFeatureTypeStyles().add(fts);
       layer.getStyles().add(style);
       return layer;
-      // }else{
-      // return this.getLayer(layerName);
-      // }
     }
-    
+
     /**
      * Créer un layer pour représenter une ligne utilisant deux styles: le premier
      * pour la bordure de la ligne, le deuxième pour le trait central
@@ -440,7 +431,6 @@ public class LayerFactory{
         return null;
       }
       Layer layer = new NamedLayer(this.model, layerName);
-
       // Creation de la ligne de bord
       FeatureTypeStyle borderFts = new FeatureTypeStyle();
       Rule borderRule = new Rule();
@@ -455,7 +445,6 @@ public class LayerFactory{
       borderFts.getRules().add(borderRule);
       borderStyle.getFeatureTypeStyles().add(borderFts);
       layer.getStyles().add(borderStyle);
-
       // Creation de la ligne centrale
       FeatureTypeStyle mainFts = new FeatureTypeStyle();
       Rule mainRule = new Rule();
@@ -472,8 +461,6 @@ public class LayerFactory{
       layer.getStyles().add(mainStyle);
       return layer;
     }
-    
-    
 
     /**
      * @param layerName
@@ -506,11 +493,6 @@ public class LayerFactory{
       layer.getStyles().add(style);
       return layer;
     }
-
-    /**
-
-     */
-    
 
     /**
      * Crée un nouveau layer portant le nom, le type de géométrie, la couleur de

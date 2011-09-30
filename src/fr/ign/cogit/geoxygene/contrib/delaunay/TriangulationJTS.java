@@ -38,7 +38,7 @@ public class TriangulationJTS extends AbstractTriangulation {
     Geometry geomSites = AdapterFactory.toGeometry(geomFact, sites);
     Geometry lineConstraints = AdapterFactory.toGeometry(geomFact,
         linesConstraints);
-    tb.setTolerance(0.0);
+    tb.setTolerance(0.01);
     tb.setSites(geomSites);
     tb.setConstraints(lineConstraints);
 
@@ -52,15 +52,19 @@ public class TriangulationJTS extends AbstractTriangulation {
   
     if (this.getOptions().indexOf('v') != -1) {
       this.ajouteArcsEtNoeudsAuxFaces(true);
-      GeometryCollection diagram = (GeometryCollection) tb.getSubdivision()
+      try {
+          GeometryCollection diagram = (GeometryCollection) tb.getSubdivision()
           .getVoronoiDiagram(geomFact);
-      for (int i = 0; i < diagram.getNumGeometries(); i++) {
-        Polygon cell = (Polygon) diagram.getGeometryN(i);
-        this.getPopVoronoiFaces().nouvelElement(
-            AdapterFactory.toGM_Object(cell));
+          for (int i = 0; i < diagram.getNumGeometries(); i++) {
+              Polygon cell = (Polygon) diagram.getGeometryN(i);
+              this.getPopVoronoiFaces().nouvelElement(
+                      AdapterFactory.toGM_Object(cell));
+          }
+          // logger.info(this.getPopVoronoiFaces().size() + " cellules créés");
+          this.voronoiDiagram.ajouteArcsEtNoeudsAuxFaces(true);
+      } catch (Exception e) {
+          e.printStackTrace();
       }
-      // logger.info(this.getPopVoronoiFaces().size() + " cellules créés");
-      this.voronoiDiagram.ajouteArcsEtNoeudsAuxFaces(true);
     }
   }
 

@@ -74,9 +74,37 @@ public class FileChooser {
         return "Arc/Info ASCII Grids"; //$NON-NLS-1$
       }
     };
+    FileFilter gpsTextFilter = new FileFilter() {
+      @Override
+      public boolean accept(final File f) {
+        return (f.isFile() && (f.getAbsolutePath().endsWith(".txt") //$NON-NLS-1$
+            || f.getAbsolutePath().endsWith(".TXT") //$NON-NLS-1$
+            ) || f.isDirectory());
+      }
+
+      @Override
+      public String getDescription() {
+        return "GPS Text Files"; //$NON-NLS-1$
+      }
+    };
+    FileFilter roadNetworkTextFilter = new FileFilter() {
+      @Override
+      public boolean accept(final File f) {
+        return (f.isFile() && (f.getAbsolutePath().endsWith(".txt") //$NON-NLS-1$
+            || f.getAbsolutePath().endsWith(".TXT") //$NON-NLS-1$
+            ) || f.isDirectory());
+      }
+
+      @Override
+      public String getDescription() {
+        return "Road Network Text Files"; //$NON-NLS-1$
+      }
+    };
     this.fileChooser.addChoosableFileFilter(shapefileFilter);
     this.fileChooser.addChoosableFileFilter(geotiffFilter);
     this.fileChooser.addChoosableFileFilter(ascFilter);
+    this.fileChooser.addChoosableFileFilter(gpsTextFilter);
+    this.fileChooser.addChoosableFileFilter(roadNetworkTextFilter);
     this.fileChooser.setFileFilter(shapefileFilter);
     this.fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     this.fileChooser.setMultiSelectionEnabled(false);
@@ -99,5 +127,9 @@ public class FileChooser {
       return this.fileChooser.getSelectedFile();
     }
     return null;
+  }
+  
+  public String getDescription() {
+    return this.fileChooser.getFileFilter().getDescription();
   }
 }

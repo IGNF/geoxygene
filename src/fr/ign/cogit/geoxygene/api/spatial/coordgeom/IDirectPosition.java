@@ -1,7 +1,6 @@
 package fr.ign.cogit.geoxygene.api.spatial.coordgeom;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 
 public interface IDirectPosition {
   /** Renvoie l' identifiant du système de coordonnées de référence. */
@@ -90,7 +89,7 @@ public interface IDirectPosition {
    */
   public abstract double orientation(IDirectPosition dp);
 
-  public abstract double[] minus(DirectPosition p);
+  public abstract double[] minus(IDirectPosition p);
 
   public abstract double[] minus(IDirectPosition p2, double factor);
 

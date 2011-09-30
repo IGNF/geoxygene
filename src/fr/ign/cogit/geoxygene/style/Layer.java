@@ -66,6 +66,8 @@ public interface Layer {
    */
   public void setStyles(List<Style> styles);
 
+  public List<Style> getActiveStyles();
+
   /**
    * @return les features de la couche
    */
@@ -117,8 +119,8 @@ public interface Layer {
   public CoordinateReferenceSystem getCRS();
 
   void destroy();
-    
-    public ImageIcon getIcon();
-    
-    public void setIcon(ImageIcon image);
+
+  public ImageIcon getIcon();
+
+  public void setIcon(ImageIcon image);
 }

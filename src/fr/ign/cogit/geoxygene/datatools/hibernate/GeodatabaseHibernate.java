@@ -492,11 +492,11 @@ public class GeodatabaseHibernate implements Geodatabase {
     return 0;
   }
 
-  @Override
-  public OQLQuery newOQLQuery() {
-    GeodatabaseHibernate.logger.warn("non implemente");
-    return null;
-  }
+//  @Override
+//  public OQLQuery newOQLQuery() {
+//    GeodatabaseHibernate.logger.warn("non implemente");
+//    return null;
+//  }
 
   @Override
   public void refreshRepository(File newRepository) throws Exception {

@@ -332,7 +332,7 @@ public class DirectPosition implements IDirectPosition {
   }
 
   @Override
-  public double[] minus(DirectPosition p) {
+  public double[] minus(IDirectPosition p) {
     return this.minus(p, 1.0d);
   }
 

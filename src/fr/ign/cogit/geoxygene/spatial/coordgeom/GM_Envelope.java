@@ -231,13 +231,7 @@ public class GM_Envelope implements IEnvelope {
 
   @Override
   public boolean contains(IEnvelope env) {
-    if (!this.contains(env.getLowerCorner())) {
-      return false;
-    }
-    if (!this.contains(env.getUpperCorner())) {
-      return false;
-    }
-    return true;
+    return env != null && this.contains(env.getLowerCorner()) && this.contains(env.getUpperCorner());
   }
 
   @Override
@@ -332,7 +326,7 @@ public class GM_Envelope implements IEnvelope {
 
   @Override
   public void expand(IEnvelope env) {
-    if (!this.contains(env)) {
+    if (env != null && !this.contains(env)) {
       this.expand(env.getUpperCorner());
       this.expand(env.getLowerCorner());
     }

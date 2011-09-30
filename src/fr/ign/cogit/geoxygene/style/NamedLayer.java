@@ -45,6 +45,7 @@ import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 public class NamedLayer extends AbstractLayer {
   @XmlTransient
   StyledLayerDescriptor sld = null;
+
   /**
 	 */
   public NamedLayer() {
@@ -68,8 +69,9 @@ public class NamedLayer extends AbstractLayer {
      * on utilise un singleton de DataSet qu'il faut donc avoir remplit au
      * préalable...
      */
-    DataSet dataset = this.sld.getDataSet();
-    IFeatureCollection<IFeature> pop = (IFeatureCollection<IFeature>) dataset.getPopulation(this.getName());
+    DataSet dataset = (this.sld != null) ? this.sld.getDataSet() : DataSet.getInstance();
+    IFeatureCollection<IFeature> pop = (IFeatureCollection<IFeature>) dataset
+      .getPopulation(this.getName());
     if (pop == null) {
       pop = new FT_FeatureCollection<IFeature>();
       IDataSet dataSet = dataset.getComposant(this.getName());
@@ -89,23 +91,23 @@ public class NamedLayer extends AbstractLayer {
     }
     return result;
   }
-@SuppressWarnings("nls")
-@Override
-public void destroy() {
-    
-    System.out.println("Destroying "+this.getName());
-    if(this.getFeatureCollection().hasSpatialIndex())
-        this.getFeatureCollection().getSpatialIndex().clear();
-    for(IFeature feat : this.getFeatureCollection()){
-        if(feat instanceof FT_Coverage){
-            ((FT_Coverage)feat).coverage().dispose(true);
-        }
-        feat.setPopulation(null);
-        feat.setGeom(null);
-        feat.setFeatureType(null);
-    }
-    DataSet.getInstance().removePopulation(DataSet.getInstance().getPopulation(this.getName()));
-    System.out.println("Layer " +this.getName()+" destroyed");
-}
-
+  @SuppressWarnings("nls")
+  @Override
+  public void destroy() {
+      System.out.println("Destroying "+this.getName());
+      if(this.getFeatureCollection().hasSpatialIndex())
+          this.getFeatureCollection().getSpatialIndex().clear();
+      for(IFeature feat : this.getFeatureCollection()){
+          if(feat instanceof FT_Coverage){
+              ((FT_Coverage)feat).coverage().dispose(true);
+          }
+          feat.setPopulation(null);
+          feat.setGeom(null);
+          feat.setFeatureType(null);
+      }
+      DataSet dataset = (this.sld != null) ? this.sld.getDataSet() : DataSet.getInstance();
+      dataset.removePopulation(dataset.getPopulation(this.getName()));
+      this.sld = null;
+      System.out.println("Layer " +this.getName()+" destroyed");
+  }
 }

@@ -74,7 +74,7 @@ public abstract class AbstractLayer implements Layer {
 
     @XmlElements({ @XmlElement(name = "UserStyle", type = UserStyle.class),
             @XmlElement(name = "NamedStyle", type = NamedStyle.class) })
-    List<Style> styles = new ArrayList<Style>();
+    List<Style> styles = new ArrayList<Style>(0);
 
     @Override
     public List<Style> getStyles() {
@@ -132,7 +132,7 @@ public abstract class AbstractLayer implements Layer {
     }
 
     @XmlTransient
-    private String activeGroup;
+    private String activeGroup = null;
 
     // XXX Maybe move the CRS in FeatureTypeStyle.
     @XmlTransient
@@ -140,12 +140,36 @@ public abstract class AbstractLayer implements Layer {
 
     @Override
     public String getActiveGroup() {
-        return activeGroup;
+        return this.activeGroup;
     }
 
     @Override
     public void setActiveGroup(String activeGroup) {
         this.activeGroup = activeGroup;
+    }
+
+    public List<Style> getActiveStyles() {
+        Collection<String> groups = this.getGroups();
+        if (groups.isEmpty()) {
+            return this.getStyles();
+        }
+        String group = this.getActiveGroup();
+        if (group == null || group.isEmpty()) {
+            group = groups.iterator().next();
+        }
+        return this.getStyles(group);
+    }
+    public List<Style> getStyles(String group) {
+        if (group == null || group.isEmpty()) {
+            return this.getStyles();
+        }
+        List<Style> groupStyles = new ArrayList<Style>(0);
+        for (Style style : this.getStyles()) {
+            if (style.getGroup().equalsIgnoreCase(group)) {
+                groupStyles.add(style);
+            }
+        }
+        return groupStyles;
     }
 
     @Override
@@ -202,10 +226,8 @@ public abstract class AbstractLayer implements Layer {
         return this.icon;
     }
 
-
     @Override
     public void setIcon(ImageIcon _icon) {
         this.icon = _icon;
     }
-
 }

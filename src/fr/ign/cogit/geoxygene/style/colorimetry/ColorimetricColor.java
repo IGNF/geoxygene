@@ -3,6 +3,7 @@ package fr.ign.cogit.geoxygene.style.colorimetry;
 import java.awt.Color;
 import java.awt.color.ColorSpace;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -11,8 +12,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-
-import fr.ign.cogit.geoxygene.util.algo.MathUtil;
 
 /**
  * The ColorimetricColor class represent a color by different colorimetric
@@ -810,13 +809,11 @@ public class ColorimetricColor {
    * @return The maximal RGB color component of this color.
    */
   public float maxRGB() {
-
     List<Double> pComposantes = new ArrayList<Double>();
     pComposantes.add((double) this.getRedRGB());
     pComposantes.add((double) this.getGreenRGB());
     pComposantes.add((double) this.getBlueRGB());
-
-    return (int) MathUtil.max(pComposantes);
+    return Collections.max(pComposantes).intValue();
   }
 
   /**
@@ -828,7 +825,7 @@ public class ColorimetricColor {
   public static float distanceCIElab(ColorimetricColor c1, ColorimetricColor c2) {
     float[] lab1 = c1.getLab();
     float[] lab2 = c2.getLab();
-    return MathUtil.distEucl(lab1, lab2);
+    return euclideanDistance(lab1, lab2);
   }
 
   /**
@@ -840,7 +837,16 @@ public class ColorimetricColor {
   public static float distanceRVB(ColorimetricColor c1, ColorimetricColor c2) {
     float[] rgb1 = { c1.getRedRGB(), c1.getGreenRGB(), c1.getBlueRGB() };
     float[] rgb2 = { c2.getRedRGB(), c2.getGreenRGB(), c2.getBlueRGB() };
-    return MathUtil.distEucl(rgb1, rgb2);
+    return euclideanDistance(rgb1, rgb2);
+  }
+
+  public static float euclideanDistance(float[] a, float[] b) {
+      float sum = 0;
+      for (int i = 0; i < a.length && i < b.length; i++) {
+          float difference = a[i] - b[i];
+          sum += difference * difference;
+      }
+      return (float) Math.sqrt(sum);
   }
 
   /**

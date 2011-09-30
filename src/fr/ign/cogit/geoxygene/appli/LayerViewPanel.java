@@ -64,6 +64,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.SldListener;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.util.conversion.ImgUtil;
 
@@ -72,7 +73,7 @@ import fr.ign.cogit.geoxygene.util.conversion.ImgUtil;
  * 
  * @author Julien Perret
  */
-public class LayerViewPanel extends JPanel implements Printable, SldListener{
+public class LayerViewPanel extends JPanel implements Printable, SldListener {
   /**
    * logger.
    */

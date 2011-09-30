@@ -67,6 +67,10 @@ public class GM_Triangle extends GM_Polygon implements ITriangle {
     this(new GM_LineString(new DirectPositionList(dp1, dp2, dp3, dp1)));
   }
 
+  public GM_Triangle(IDirectPositionList list) {
+    this(list.get(0), list.get(1), list.get(2));
+  }
+
   public GM_Triangle(GM_LineString ls) {
     super(ls);
   }

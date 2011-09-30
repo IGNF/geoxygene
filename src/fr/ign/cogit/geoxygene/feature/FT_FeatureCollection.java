@@ -230,6 +230,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
   @Override
   public boolean remove(Feat value) {
     if (value == null) {
+      logger.error("null feature"); //$NON-NLS-1$
       return false;
     }
     boolean result = false;
@@ -255,7 +256,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
       return false;
     }
     boolean result = true;
-//  IEnvelope envelope = this.envelope();
+    //  IEnvelope envelope = this.envelope();
     // List<GM_Object> removedCollectionGeometry = new ArrayList<GM_Object>();
     synchronized (this.elements) {
       for (Object o : coll) {
@@ -267,7 +268,6 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
          */
       }
     }
-
     this.fireActionPerformed(new FeatureCollectionEvent(this, null,
         FeatureCollectionEvent.Type.REMOVED,  this.getEnvelope().getGeom()));
         return result;
@@ -350,15 +350,15 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
         GM_Aggregate<IGeometry> aggr = new GM_Aggregate<IGeometry>(list);
         return aggr;
       }
-      if (geomType.equals(GM_LineString.class)) {
+      if (GM_LineString.class.isAssignableFrom(geomType)) {
         GM_MultiCurve<?> aggr = new GM_MultiCurve(list);
         return aggr;
       }
-      if (geomType.equals(GM_Polygon.class)) {
+      if (GM_Polygon.class.isAssignableFrom(geomType)) {
         GM_MultiSurface<?> aggr = new GM_MultiSurface(list);
         return aggr;
       }
-      if (geomType.equals(GM_Point.class)) {
+      if (GM_Point.class.isAssignableFrom(geomType)) {
         GM_MultiPoint aggr = new GM_MultiPoint();
         for (IGeometry geom : list) {
           aggr.add((GM_Point) geom);
@@ -713,7 +713,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
 
   @Override
   public boolean retainAll(Collection<?> coll) {
-    List<Feat> toRemove = new ArrayList<Feat>();
+    List<Feat> toRemove = new ArrayList<Feat>(0);
     synchronized (this.elements) {
       for (Feat feature : this.elements) {
         if (!coll.contains(feature)) {

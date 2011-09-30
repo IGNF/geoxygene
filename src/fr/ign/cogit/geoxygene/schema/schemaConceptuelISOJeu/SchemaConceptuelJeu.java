@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import fr.ign.cogit.geoxygene.api.feature.IDataSet;
 import fr.ign.cogit.geoxygene.api.feature.type.FC_FeatureAttributeValue;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AssociationRole;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AssociationType;
@@ -32,7 +33,6 @@ import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_InheritanceRelation;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_Operation;
-import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.schema.SchemaConceptuel;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.SchemaConceptuelProduit;
 
@@ -63,7 +63,7 @@ public class SchemaConceptuelJeu implements SchemaConceptuel<FeatureType> {
   /**
    * Constructeur
    */
-  public SchemaConceptuelJeu(String nom, DataSet ds) {
+  public SchemaConceptuelJeu(String nom, IDataSet ds) {
     this.nomSchema = nom;
     this.featureTypes = new ArrayList<FeatureType>(0);
     this.dataset = ds;
@@ -441,19 +441,19 @@ public class SchemaConceptuelJeu implements SchemaConceptuel<FeatureType> {
   /**
    * jeu de données caractérisée par ce schémaJeu
    */
-  protected DataSet dataset;
+  protected IDataSet dataset;
 
   /**
    * @return the dataset
    */
-  public DataSet getDataset() {
+  public IDataSet getDataset() {
     return this.dataset;
   }
 
   /**
    * @param dataset the dataset to set
    */
-  public void setDataset(DataSet dataset) {
+  public void setDataset(IDataSet dataset) {
     this.dataset = dataset;
   }
 

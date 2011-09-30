@@ -9,6 +9,8 @@ import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
 import fr.ign.cogit.geoxygene.style.ExternalGraphic;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
@@ -21,6 +23,7 @@ import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.UserStyle;
 
 public class LegendPaintListener implements PaintListener {
+  protected static Logger LOGGER = Logger.getLogger(LegendPaintListener.class.getName());
 
   @Override
   public void paint(final LayerViewPanel layerViewPanel, Graphics graphics) {
@@ -190,8 +193,12 @@ public class LegendPaintListener implements PaintListener {
     }
     for (ExternalGraphic theGraphic : graphic.getExternalGraphics()) {
       Image onlineImage = theGraphic.getOnlineResource();
-      g2.drawImage(onlineImage, x - onlineImage.getWidth(null) / 2, y
-          - onlineImage.getHeight(null) / 2, null);
+      if (onlineImage != null) {
+          g2.drawImage(onlineImage, x - onlineImage.getWidth(null) / 2, y
+                  - onlineImage.getHeight(null) / 2, null);
+      } else {
+          LOGGER.error("null online image " + theGraphic.getHref());
+      }
     }
     if (graphic.getMarks().isEmpty() && graphic.getExternalGraphics().isEmpty()) {
       int size = (int) graphic.getSize();

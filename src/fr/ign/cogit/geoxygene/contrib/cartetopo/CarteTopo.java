@@ -2239,8 +2239,8 @@ public class CarteTopo extends DataSet {
     }
     runtime.runFinalization();
     runtime.gc();
-    long heap6 = runtime.totalMemory() - runtime.freeMemory();
-    CarteTopo.logger.info("heap after creation of nodes " + heap6);
+//    long heap6 = runtime.totalMemory() - runtime.freeMemory();
+//    CarteTopo.logger.info("heap after creation of nodes " + heap6);
   }
 
   // ///////////////////////////////////////////////////////////////////////////////////////////

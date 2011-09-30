@@ -1,9 +1,11 @@
 package fr.ign.cogit.geoxygene.api.spatial.coordgeom;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Arc2.ArcDirection;
 
 public interface IArc2 extends IArcString {
+  public enum ArcDirection {
+      DIRECT, INDIRECT, NONE, UNKNOWN
+  }
 
   public abstract IDirectPosition getCenter();
 

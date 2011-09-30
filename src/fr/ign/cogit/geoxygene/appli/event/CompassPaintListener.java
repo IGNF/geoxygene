@@ -27,7 +27,7 @@ public class CompassPaintListener implements PaintListener {
     Font font = Font.decode("arial-bold-20"); //$NON-NLS-1$
     graphics.setFont(font);
     int charWidth = graphics.getFontMetrics().charWidth('N');
-    int lineHeight = graphics.getFontMetrics().getHeight();
+//    int lineHeight = graphics.getFontMetrics().getHeight();
     graphics.drawImage(CompassPaintListener.compass.getImage(),
         layerViewPanel.getWidth() - size - shift, layerViewPanel.getHeight()
             - shift - size,// shift +

@@ -328,17 +328,7 @@ public class LayerRenderer implements Renderer {
     Collection<? extends IFeature> collection = this.layer
         .getFeatureCollection().select(envelope);
     int numberOfFeatureTypeStyle = 0;
-    Collection<Style> activeStyles = this.layer.getStyles();
-    if (!(this.layer.getActiveGroup() == null || this.layer.getActiveGroup()
-        .isEmpty())) {
-      activeStyles = new ArrayList<Style>(0);
-      for (Style style : this.layer.getStyles()) {
-        if (style.getGroup() == null
-            || style.getGroup().equalsIgnoreCase(this.layer.getActiveGroup())) {
-          activeStyles.add(style);
-        }
-      }
-    }
+    Collection<Style> activeStyles = this.layer.getActiveStyles();
     for (Style style : activeStyles) {
       if (style.isUserStyle()) {
         numberOfFeatureTypeStyle += ((UserStyle) style).getFeatureTypeStyles()
@@ -479,7 +469,7 @@ public class LayerRenderer implements Renderer {
     Graphics2D graphics = theImage.createGraphics();
     graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
         RenderingHints.VALUE_ANTIALIAS_ON);
-    symbolizer.paint(feature, this.getLayerViewPanel().getViewport(), graphics);
+    RenderUtil.paint(symbolizer, feature, this.getLayerViewPanel().getViewport(), graphics);
   }
 
   /**

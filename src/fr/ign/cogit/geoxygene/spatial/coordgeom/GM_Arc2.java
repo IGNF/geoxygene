@@ -117,10 +117,6 @@ public class GM_Arc2 extends GM_ArcString implements IArc2 {
     this.endOfArc = endOfArc;
   }
 
-  public enum ArcDirection {
-    DIRECT, INDIRECT, NONE, UNKNOWN
-  }
-
   /**
    * the direction of the arc
    * 

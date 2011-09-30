@@ -753,7 +753,7 @@ public class ParserSchemaConceptuel {
       elementAttributeNode.setTextContent(sc.getDefinition());
       schema.appendChild(elementAttributeNode);
 
-      if ((sc).getDataset() != null) {
+      if (sc.getDataset() != null) {
         schema.setAttribute("dataset",
             String.valueOf((sc).getDataset().getId()));
       }

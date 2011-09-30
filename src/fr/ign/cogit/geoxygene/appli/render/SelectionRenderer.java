@@ -19,20 +19,15 @@
 
 package fr.ign.cogit.geoxygene.appli.render;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Transparency;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
-import fr.ign.cogit.geoxygene.appli.Viewport;
 import fr.ign.cogit.geoxygene.style.Shadow;
 import fr.ign.cogit.geoxygene.style.Stroke;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
@@ -222,53 +217,53 @@ public class SelectionRenderer implements Renderer {
     public boolean isTextSymbolizer() {
       return false;
     }
-
-    @Override
-    public void paint(final IFeature feature, final Viewport viewport,
-        final Graphics2D graphics) {
-      if (feature.getGeom() == null) {
-        return;
-      }
-      if (feature.getGeom().isPolygon() || feature.getGeom().isMultiSurface()) {
-        graphics.setColor(SelectionRenderer.this.getFillColor());
-        RenderUtil.fill(feature.getGeom(), viewport, graphics);
-      }
-      java.awt.Stroke bs = new BasicStroke(
-          SelectionRenderer.this.getStrokeWidth(), BasicStroke.CAP_SQUARE,
-          BasicStroke.JOIN_MITER);
-      graphics.setColor(SelectionRenderer.this.getStrokeColor());
-      graphics.setStroke(bs);
-      RenderUtil.draw(feature.getGeom(), viewport, graphics);
-      try {
-        graphics.setStroke(new BasicStroke(1, BasicStroke.CAP_SQUARE,
-            BasicStroke.JOIN_MITER));
-        for (IDirectPosition position : viewport
-            .toViewDirectPositionList(feature.getGeom().coord())) {
-          GeneralPath shape = new GeneralPath();
-          shape.moveTo(
-              position.getX() - SelectionRenderer.this.getPointRadius(),
-              position.getY() - SelectionRenderer.this.getPointRadius());
-          shape.lineTo(
-              position.getX() + SelectionRenderer.this.getPointRadius(),
-              position.getY() - SelectionRenderer.this.getPointRadius());
-          shape.lineTo(
-              position.getX() + SelectionRenderer.this.getPointRadius(),
-              position.getY() + SelectionRenderer.this.getPointRadius());
-          shape.lineTo(
-              position.getX() - SelectionRenderer.this.getPointRadius(),
-              position.getY() + SelectionRenderer.this.getPointRadius());
-          shape.lineTo(
-              position.getX() - SelectionRenderer.this.getPointRadius(),
-              position.getY() - SelectionRenderer.this.getPointRadius());
-          graphics.setColor(SelectionRenderer.this.getStrokeColor());
-          graphics.fill(shape);
-          graphics.setColor(Color.black);
-          graphics.draw(shape);
-        }
-      } catch (NoninvertibleTransformException e) {
-        e.printStackTrace();
-      }
-    }
+//
+//    @Override
+//    public void paint(final IFeature feature, final Viewport viewport,
+//        final Graphics2D graphics) {
+//      if (feature.getGeom() == null) {
+//        return;
+//      }
+//      if (feature.getGeom().isPolygon() || feature.getGeom().isMultiSurface()) {
+//        graphics.setColor(SelectionRenderer.this.getFillColor());
+//        RenderUtil.fill(feature.getGeom(), viewport, graphics);
+//      }
+//      java.awt.Stroke bs = new BasicStroke(
+//          SelectionRenderer.this.getStrokeWidth(), BasicStroke.CAP_SQUARE,
+//          BasicStroke.JOIN_MITER);
+//      graphics.setColor(SelectionRenderer.this.getStrokeColor());
+//      graphics.setStroke(bs);
+//      RenderUtil.draw(feature.getGeom(), viewport, graphics);
+//      try {
+//        graphics.setStroke(new BasicStroke(1, BasicStroke.CAP_SQUARE,
+//            BasicStroke.JOIN_MITER));
+//        for (IDirectPosition position : viewport
+//            .toViewDirectPositionList(feature.getGeom().coord())) {
+//          GeneralPath shape = new GeneralPath();
+//          shape.moveTo(
+//              position.getX() - SelectionRenderer.this.getPointRadius(),
+//              position.getY() - SelectionRenderer.this.getPointRadius());
+//          shape.lineTo(
+//              position.getX() + SelectionRenderer.this.getPointRadius(),
+//              position.getY() - SelectionRenderer.this.getPointRadius());
+//          shape.lineTo(
+//              position.getX() + SelectionRenderer.this.getPointRadius(),
+//              position.getY() + SelectionRenderer.this.getPointRadius());
+//          shape.lineTo(
+//              position.getX() - SelectionRenderer.this.getPointRadius(),
+//              position.getY() + SelectionRenderer.this.getPointRadius());
+//          shape.lineTo(
+//              position.getX() - SelectionRenderer.this.getPointRadius(),
+//              position.getY() - SelectionRenderer.this.getPointRadius());
+//          graphics.setColor(SelectionRenderer.this.getStrokeColor());
+//          graphics.fill(shape);
+//          graphics.setColor(Color.black);
+//          graphics.draw(shape);
+//        }
+//      } catch (NoninvertibleTransformException e) {
+//        e.printStackTrace();
+//      }
+//    }
 
     @Override
     public void setGeometryPropertyName(final String geometryPropertyName) {
@@ -425,7 +420,7 @@ public class SelectionRenderer implements Renderer {
    * @param theImage the image to render into
    */
   private void render(final IFeature feature, final BufferedImage theImage) {
-    this.symbolizer.paint(feature, this.getLayerViewPanel().getViewport(),
+      RenderUtil.paint(this.symbolizer, feature, this.getLayerViewPanel().getViewport(),
         (Graphics2D) theImage.getGraphics());
   }
 

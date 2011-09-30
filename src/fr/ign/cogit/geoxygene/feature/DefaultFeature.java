@@ -29,8 +29,8 @@ package fr.ign.cogit.geoxygene.feature;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.api.spatial.toporoot.ITopology;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
-import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
 
 /**
  * 
@@ -250,7 +250,7 @@ public class DefaultFeature extends AbstractFeature {
           .warn(
               "WARNING : Pour affecter la primitive topologique par défaut, veuillez utiliser " //$NON-NLS-1$
                   + "la méthode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
-      this.setTopo((TP_Object) valeur);
+      this.setTopo((ITopology) valeur);
     } else {
       this.setAttribute(attribute.getMemberName(), valeur);
       /*

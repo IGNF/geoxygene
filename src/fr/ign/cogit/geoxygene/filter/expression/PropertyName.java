@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 
 /**
  * @author Julien Perret
@@ -74,8 +74,8 @@ public class PropertyName extends Expression {
   @Override
   public Object evaluate(Object object) {
     String getterName = "get" + this.getPropertyName().substring(0, 1).toUpperCase() + this.getPropertyName().substring(1); //$NON-NLS-1$
-    if (object instanceof FT_Feature) {
-      FT_Feature feature = (FT_Feature) object;
+    if (object instanceof IFeature) {
+        IFeature feature = (IFeature) object;
       Object resultat = feature.getAttribute(this.getPropertyName());
       if (resultat instanceof Number) {
         return new BigDecimal(((Number) resultat).doubleValue());

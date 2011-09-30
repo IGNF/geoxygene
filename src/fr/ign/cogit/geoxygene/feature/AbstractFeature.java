@@ -45,14 +45,13 @@ import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.feature.Representation;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AssociationRole;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.api.spatial.toporoot.ITopology;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AssociationRole;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AssociationType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
-import fr.ign.cogit.geoxygene.spatial.toporoot.TP_Object;
 
 /**
  * @author julien Gaffuri 6 juil. 2009
@@ -138,15 +137,15 @@ public abstract class AbstractFeature implements IFeature {
     return (this.geom != null);
   }
 
-  protected TP_Object topo = null;
+  protected ITopology topo = null;
 
   @Override
-  public TP_Object getTopo() {
+  public ITopology getTopo() {
     return this.topo;
   }
 
   @Override
-  public void setTopo(TP_Object t) {
+  public void setTopo(ITopology t) {
     this.topo = t;
   }
 
@@ -155,7 +154,7 @@ public abstract class AbstractFeature implements IFeature {
     return (this.topo != null);
   }
 
-  /** Lien n-m bidirectionnel vers FT_FeatureCollection. */
+  /** Lien n-m bidirectionnel vers IFeatureCollection. */
   private List<WeakReference<IFeatureCollection<IFeature>>> featurecollections = new ArrayList<WeakReference<IFeatureCollection<IFeature>>>(0);
  
   @Override
@@ -273,7 +272,7 @@ public abstract class AbstractFeature implements IFeature {
     IFeature feature = null;
     try {
       Class<?> theClass = Class.forName(featureType.getNomClasse());
-      feature = (FT_Feature) theClass.newInstance();
+      feature = (IFeature) theClass.newInstance();
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
     } catch (InstantiationException e) {
@@ -311,7 +310,7 @@ public abstract class AbstractFeature implements IFeature {
   public void setPopulation(IPopulation<IFeature> population) {
     this.population = new WeakReference<IPopulation<IFeature>>(population);
     // Refuse d'écrire dans ma population car ne peut pas pas vérifier si
-    // this hérite bien de FT_Feature...
+    // this hérite bien de IFeature...
     // this.population.addUnique(this);
   }
 
@@ -338,13 +337,13 @@ public abstract class AbstractFeature implements IFeature {
     if (attribute.getMemberName().equals("geom")) { //$NON-NLS-1$
       AbstractFeature.logger
           .warn("WARNING : Pour Récupèrer la primitive géométrique par défaut, veuillez utiliser " //$NON-NLS-1$
-              + "la méthode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
+              + "la méthode IFeature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
       return this.getGeom();
     }
     if (attribute.getMemberName().equals("topo")) { //$NON-NLS-1$
       AbstractFeature.logger
           .warn("WARNING : Pour Récupèrer la primitive topologique par défaut, veuillez utiliser " //$NON-NLS-1$
-              + "la méthode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
+              + "la méthode IFeature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
       return this.getTopo();
     }
     Object valeur = null;
@@ -442,49 +441,54 @@ public abstract class AbstractFeature implements IFeature {
     if (attribute.getMemberName().equals("geom")) { //$NON-NLS-1$
       AbstractFeature.logger
           .warn("WARNING : Pour affecter la primitive géométrique par défaut, veuillez utiliser " //$NON-NLS-1$
-              + "la méthode FT_Feature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
+              + "la méthode IFeature.getGeom() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
       this.setGeom((IGeometry) valeur);
     } else if (attribute.getMemberName().equals("topo")) { //$NON-NLS-1$
       AbstractFeature.logger
           .warn("WARNING : Pour affecter la primitive topologique par défaut, veuillez utiliser " //$NON-NLS-1$
-              + "la méthode FT_Feature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
-      this.setTopo((TP_Object) valeur);
+              + "la méthode IFeature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
+      this.setTopo((ITopology) valeur);
     } else {
-      try {
         String nomFieldMaj2;
-        if (attribute.getNomField().length() == 0) {
-          nomFieldMaj2 = attribute.getNomField();
+        if (attribute.getNomField().isEmpty()) {
+            AbstractFeature.logger
+            .warn("Empty Attribute Name");
+            return;
         } else {
           nomFieldMaj2 = Character.toUpperCase(attribute.getNomField()
               .charAt(0)) + attribute.getNomField().substring(1);
         }
         String nomSetFieldMethod = "set" + nomFieldMaj2; //$NON-NLS-1$
-        Method methodSetter = this.getClass().getDeclaredMethod(
-            nomSetFieldMethod, valeur.getClass());
-        // Method methodGetter =
-        // this.getClass().getSuperclass().getDeclaredMethod(
-        // nomGetFieldMethod,
-        // null);
-        valeur = methodSetter.invoke(this, valeur);
-      } catch (SecurityException e) {
-        e.printStackTrace();
-      } catch (IllegalArgumentException e) {
-        e.printStackTrace();
-      } catch (NoSuchMethodException e) {
-        e.printStackTrace();
-      } catch (IllegalAccessException e) {
-        e.printStackTrace();
-      } catch (InvocationTargetException e) {
-        e.printStackTrace();
-      }
+        try {
+            Method methodSetter = this.getClass().getDeclaredMethod(
+                    nomSetFieldMethod, valeur.getClass());
+            valeur = methodSetter.invoke(this, valeur);
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            try {     
+                Method methodSetter = this.getClass().getDeclaredMethod(      
+                        nomSetFieldMethod,    
+                        AbstractFeature.class2PrimitiveClass(valeur.getClass()));      
+                methodSetter.invoke(this, valeur);    
+            } catch (Exception e1) {    
+                e1.printStackTrace();     
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<? extends FT_Feature> getRelatedFeatures(GF_FeatureType ftt,
+  public List<? extends IFeature> getRelatedFeatures(GF_FeatureType ftt,
       AssociationRole role) {
-    List<FT_Feature> listResult = new ArrayList<FT_Feature>();
+    List<IFeature> listResult = new ArrayList<IFeature>();
     if (AbstractFeature.logger.isDebugEnabled()) {
       AbstractFeature.logger.debug("\n**recherche des features en relation**");
     }
@@ -509,10 +513,10 @@ public abstract class AbstractFeature implements IFeature {
         // nomGetFieldMethod,
         // null);
         Object objResult = methodGetter.invoke(this, (Object[]) null);
-        if (objResult instanceof FT_Feature) {
-          listResult.add((FT_Feature) objResult);
+        if (objResult instanceof IFeature) {
+          listResult.add((IFeature) objResult);
         } else if (objResult instanceof List) {
-          listResult.addAll((List<FT_Feature>) objResult);
+          listResult.addAll((List<IFeature>) objResult);
         }
       }
       // cas ou il y a une classe association
@@ -521,7 +525,7 @@ public abstract class AbstractFeature implements IFeature {
           AbstractFeature.logger.debug("classe association : "
               + role.getAssociationType().getTypeName());
         }
-        List<FT_Feature> listInstancesAsso = new ArrayList<FT_Feature>();
+        List<IFeature> listInstancesAsso = new ArrayList<IFeature>();
         // je vais chercher les instances de classe-association
         String nomFieldClasseMaj;
         if (role.getNomFieldClasse().length() == 0) {
@@ -545,14 +549,14 @@ public abstract class AbstractFeature implements IFeature {
             AbstractFeature.logger.debug("invocation de "
                 + methodGetter.getName() + " sur le feature " + this.getId());
           }
-          listInstancesAsso.addAll((List<FT_Feature>) methodGetter.invoke(this,
+          listInstancesAsso.addAll((List<IFeature>) methodGetter.invoke(this,
               (Object[]) null));
           if (AbstractFeature.logger.isDebugEnabled()) {
             AbstractFeature.logger.debug("nb instances d'association = "
                 + listInstancesAsso.size());
           }
         } else {
-          listInstancesAsso.add((FT_Feature) methodGetter.invoke(this,
+          listInstancesAsso.add((IFeature) methodGetter.invoke(this,
               (Object[]) null));
           if (AbstractFeature.logger.isDebugEnabled()) {
             AbstractFeature.logger.debug("nb instances d'association = "
@@ -620,10 +624,10 @@ public abstract class AbstractFeature implements IFeature {
             }
             Object objResult = methodGetter.invoke(listInstancesAsso.get(j),
                 (Object[]) null);
-            if (objResult instanceof FT_Feature) {
-              listResult.add((FT_Feature) objResult);
+            if (objResult instanceof IFeature) {
+              listResult.add((IFeature) objResult);
             } else if (objResult instanceof List) {
-              listResult.addAll((List<FT_Feature>) objResult);
+              listResult.addAll((List<IFeature>) objResult);
             }
           }
         }
@@ -671,7 +675,7 @@ public abstract class AbstractFeature implements IFeature {
       type.setMemberName(nomAttribut);
       // FIXME c'est un peu une bidouille
       return this.getAttribute(type);
-      // logger.error("Le FeatureType correspondant à ce FT_Feature est
+      // logger.error("Le FeatureType correspondant à ce IFeature est
       // introuvable: Impossible de remonter au AttributeType à partir de
       // son nom.");
       // return null;
@@ -680,10 +684,10 @@ public abstract class AbstractFeature implements IFeature {
   }
 
   @Override
-  public List<? extends FT_Feature> getRelatedFeatures(String nomFeatureType,
+  public List<? extends IFeature> getRelatedFeatures(String nomFeatureType,
       String nomRole) {
     // Initialisation de la liste des résultats
-    List<? extends FT_Feature> listResultats = null;
+    List<? extends IFeature> listResultats = null;
     // On récupère le featuretype nommé nomFeatureType
     FeatureType ftt = this.getFeatureType().getSchema()
         .getFeatureTypeByName(nomFeatureType);
@@ -703,7 +707,7 @@ public abstract class AbstractFeature implements IFeature {
               + nomFeatureType
               + " ou l'AssociationRole "
               + nomRole
-              + " est introuvable. Impossible de calculer les FT_Feature en relation!");
+              + " est introuvable. Impossible de calculer les IFeature en relation!");
       return null;
     }
     listResultats = this.getRelatedFeatures(ftt, role);
@@ -757,22 +761,26 @@ public abstract class AbstractFeature implements IFeature {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null || getClass() != obj.getClass()) {
       return false;
-    if (getClass() != obj.getClass())
-      return false;
+    }
     AbstractFeature other = (AbstractFeature) obj;
-    if (id != other.id)
+    if (this.getId() != other.getId()) {
       return false;
-    if(other.getGeom()!=null) {
-      if(this.getGeom().coord().size()!=other.getGeom().coord().size())
-        return false;
-      for(int i=0;i<this.getGeom().coord().size();i++){
-        if(this.getGeom().coord().get(i)!=other.getGeom().coord().get(i))
-          return false;
-      }
+    }
+    if (this.getGeom() != null && other.getGeom() != null) {
+        if (this.getGeom().coord().size() != other.getGeom().coord().size()) {
+            return false;
+        }
+        for (int i = 0; i < this.getGeom().coord().size(); i++) {
+            if (this.getGeom().coord().get(i) != other.getGeom().coord()
+                    .get(i)) {
+                return false;
+            }
+        }
     }
     return true;
   }

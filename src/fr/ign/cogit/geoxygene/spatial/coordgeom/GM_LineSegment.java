@@ -27,8 +27,6 @@
 
 package fr.ign.cogit.geoxygene.spatial.coordgeom;
 
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IArc;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IArc2;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;

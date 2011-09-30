@@ -4,5 +4,8 @@
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.TriangulationJTSPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.CharacteristicShapeJTSPlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.VoronoiDiagramJTSPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.BezierCurvePlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.CubicSplinePlugin</plugin>
     <plugin>fr.ign.cogit.geoxygene.appli.plugin.SwingingArmPlugin</plugin>
+    <plugin>fr.ign.cogit.geoxygene.appli.plugin.TINPlugin</plugin>
 </GeOxygeneApplicationProperties>

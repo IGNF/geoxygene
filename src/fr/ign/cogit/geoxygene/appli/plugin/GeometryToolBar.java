@@ -70,8 +70,6 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_CurveSegment;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
@@ -1035,7 +1033,7 @@ public class GeometryToolBar extends JToolBar {
     }
   }
 
-  public void creerPoint(DirectPosition point) {
+  public void creerPoint(IDirectPosition point) {
     GM_Point newPoint = new GM_Point(point);
     if (this.cBoxCoucheAModifier.getSelectedIndex() != 0) {
       Layer layer = this.frame.getLayer(this.layerName);
@@ -1113,7 +1111,7 @@ public class GeometryToolBar extends JToolBar {
    * @param points La liste de point qui forment l'anneau intérieur
    */
   @SuppressWarnings("unchecked")
-  public void creerInteriorRing(DirectPositionList points) {
+  public void creerInteriorRing(IDirectPositionList points) {
     if (this.cBoxCoucheAModifier.getSelectedIndex() != 0) {
       boolean isInside = false;
       boolean isAggregate = false;

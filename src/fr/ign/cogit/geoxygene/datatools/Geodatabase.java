@@ -23,8 +23,6 @@ import java.io.File;
 import java.sql.Connection;
 import java.util.List;
 
-import org.odmg.OQLQuery;
-
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
@@ -205,7 +203,7 @@ public interface Geodatabase {
   // /// OQL ///////////////////////////////////////////////////////
   // ///////////////////////////////////////////////////////////////
   /** Cree une une nouvelle requete OQL (ODMG). */
-  public OQLQuery newOQLQuery();
+//  public OQLQuery newOQLQuery();
 
   // ///////////////////////////////////////////////////////////////
   // /// Gestion de l'information spatiale /////////////////////////
