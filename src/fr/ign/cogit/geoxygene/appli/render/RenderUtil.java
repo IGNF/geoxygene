@@ -50,6 +50,7 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
@@ -71,7 +72,6 @@ import fr.ign.cogit.geoxygene.feature.FT_Coverage;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
@@ -687,17 +687,14 @@ public final class RenderUtil {
         }
       } else {
         if (GM_MultiSurface.class.isAssignableFrom(feature.getGeom().getClass())) {
-          for (IOrientableSurface surface : ((GM_MultiSurface<?>) feature
-              .getGeom())) {
-            try {
-              Shape shape = viewport.toShape(surface.translate(translate_x,
-                  translate_y, 0));
-              if (shape != null) {
-                shapes.add(shape);
-              }
-            } catch (NoninvertibleTransformException e) {
-              e.printStackTrace();
+          try {
+            Shape shape = viewport.toShape(feature.getGeom().translate(
+                translate_x, translate_y, 0));
+            if (shape != null) {
+              shapes.add(shape);
             }
+          } catch (NoninvertibleTransformException e) {
+            e.printStackTrace();
           }
         }
       }
@@ -931,7 +928,7 @@ public final class RenderUtil {
       FT_Coverage fcoverage = (FT_Coverage) obj;
       try {
           GridCoverage2D coverage = fcoverage.coverage();
-          GM_Envelope view = viewport.getEnvelopeInModelCoordinates();
+          IEnvelope view = viewport.getEnvelopeInModelCoordinates();
           Envelope renderEnvelope = new Envelope(view.minX(), view.maxX(),
                   view.minY(), view.maxY());
           GridCoverageRenderer renderer = new GridCoverageRenderer(

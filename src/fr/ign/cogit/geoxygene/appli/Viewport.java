@@ -37,15 +37,18 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IAggregate;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Ring;
 
 /**
  * Viewport associated with a {@link LayerViewPanel}. This class is responsible
@@ -220,7 +223,7 @@ public class Viewport {
   /**
    * @return The envelope of the panel in model coordinates.
    */
-  public final GM_Envelope getEnvelopeInModelCoordinates() {
+  public final IEnvelope getEnvelopeInModelCoordinates() {
     LayerViewPanel lvp = this.layerViewPanels.iterator().next();
     double widthAsPerceivedByModel = lvp.getWidth() / this.scale;
     double heightAsPerceivedByModel = lvp.getHeight() / this.scale;
@@ -237,7 +240,7 @@ public class Viewport {
    * @param height height of the envelope
    * @return The envelope of the panel in model coordinates
    */
-  public final GM_Envelope getEnvelopeInModelCoordinates(final int x,
+  public final IEnvelope getEnvelopeInModelCoordinates(final int x,
       final int y, final int width, final int height) {
     double xAsPerceivedByModel = x / this.scale;
     double yAsPerceivedByModel = y / this.scale;
@@ -261,16 +264,8 @@ public class Viewport {
       return null;
     }
     IEnvelope envelope = this.getEnvelopeInModelCoordinates();
-    /*
-     * if (logger.isTraceEnabled()) {
-     * logger.trace("model envelope = "+envelope); //$NON-NLS-1$ }
-     */
     try {
       IEnvelope geometryEnvelope = geometry.envelope();
-      /*
-       * if (logger.isTraceEnabled()) {
-       * logger.trace("geometry envelope = "+geometryEnvelope); //$NON-NLS-1$ }
-       */
       // if the geometry does not intersect the envelope of
       // the view, return a null shape
       if (!envelope.intersects(geometryEnvelope)) {
@@ -280,24 +275,24 @@ public class Viewport {
         return null;
       }
       if (geometry.isPolygon()) {
-        return this.toShape((GM_Polygon) geometry);
+        return this.toShape((IPolygon) geometry);
       }
       if (geometry.isMultiSurface()) {
-        return null;
+        return this.toShape((IMultiSurface<?>) geometry);
       }
       if (geometry.isLineString()) {
-        return this.toShape((GM_LineString) geometry);
+        return this.toShape((ILineString) geometry);
       }
-      if (geometry instanceof GM_Ring) {
-        return this.toShape(new GM_Polygon((GM_Ring) geometry));
+      if (geometry instanceof IRing) {
+        return this.toShape(new GM_Polygon((IRing) geometry));
       }
       if (geometry.isMultiCurve()) {
         return null;
       }
       if (geometry.isPoint()) {
-        return this.toShape((GM_Point) geometry);
+        return this.toShape((IPoint) geometry);
       }
-      if (geometry instanceof GM_Aggregate<?>) {
+      if (geometry instanceof IAggregate<?>) {
         return null;
       }
       throw new IllegalArgumentException(
@@ -312,13 +307,52 @@ public class Viewport {
   }
 
   /**
+   * Transform a multi polygon to an awt shape.
+   * @param geometry a multi polygon
+   * @return A shape representing the multi polygon in view coordinates
+   * @throws NoninvertibleTransformException throws an exception when the
+   *           transformation fails
+   *  @see #toViewDirectPositionList(IPolygon p)
+   */
+  private Shape toShape(final IMultiSurface<?> geometry)
+      throws NoninvertibleTransformException {
+    IDirectPositionList viewDirectPositionList = null;
+    IDirectPosition lastPosition = null;
+    for (IOrientableSurface surface : geometry) {
+      if (IPolygon.class.isAssignableFrom(surface.getClass())) {
+        IDirectPositionList list = this.toViewDirectPositionList((IPolygon) surface);
+        if (viewDirectPositionList == null) {
+          viewDirectPositionList = list;
+          lastPosition = list.get(list.size() - 1);
+        } else {
+          viewDirectPositionList.addAll(list);
+          viewDirectPositionList.add(lastPosition);
+        }
+      }
+    }
+    return this.toPolygonShape(viewDirectPositionList);
+  }
+
+  /**
    * Transform a polygon to an awt shape.
    * @param p a polygon
    * @return A shape representing the polygon in view coordinates
    * @throws NoninvertibleTransformException throws an exception when the
    *           transformation fails
+   *  @see #toViewDirectPositionList(IPolygon p)
    */
-  private Shape toShape(final GM_Polygon p)
+  private Shape toShape(final IPolygon p)
+      throws NoninvertibleTransformException {
+    return this.toPolygonShape(this.toViewDirectPositionList(p));
+  }
+
+  /**
+   * Transform a polygon to a directpositionlist in view coordinates.
+   * @param p a polygon
+   * @return a directpositionlist representing the polygon in view coordinates.
+   * @throws NoninvertibleTransformException
+   */
+  public final IDirectPositionList toViewDirectPositionList(final IPolygon p)
       throws NoninvertibleTransformException {
     IDirectPositionList viewDirectPositionList = this
         .toViewDirectPositionList(p.getExterior().coord());
@@ -332,14 +366,8 @@ public class Viewport {
           .getInterior(i).coord()));
       viewDirectPositionList.add(lastExteriorRingDirectPosition);
     }
-    /*
-     * if (logger.isTraceEnabled()) {
-     * logger.trace("geometry points = "+viewDirectPositionList); //$NON-NLS-1$
-     * }
-     */
-    return this.toPolygonShape(viewDirectPositionList);
+    return viewDirectPositionList;
   }
-
   /**
    * Transform a direct position list in view coordinates to an awt shape.
    * @param viewDirectPositionList a direct position list in view coordinates
@@ -431,7 +459,7 @@ public class Viewport {
    * @throws NoninvertibleTransformException throws an exception when the
    *           transformation fails
    */
-  private GeneralPath toShape(final GM_LineString lineString)
+  private GeneralPath toShape(final ILineString lineString)
       throws NoninvertibleTransformException {
     return this.toShape(lineString.coord());
   }
@@ -463,7 +491,7 @@ public class Viewport {
    * @throws NoninvertibleTransformException throws an exception when the
    *           transformation fails
    */
-  private GeneralPath toShape(final GM_Point point)
+  private GeneralPath toShape(final IPoint point)
       throws NoninvertibleTransformException {
     Point2D p = this.toViewPoint(point.getPosition());
     GeneralPath shape = new GeneralPath();
@@ -549,13 +577,13 @@ public class Viewport {
   public final void zoom(final Point2D p, final double factor)
       throws NoninvertibleTransformException {
     Point2D zoomPoint = this.toModelPoint(p);
-    GM_Envelope modelEnvelope = this.getEnvelopeInModelCoordinates();
+    IEnvelope modelEnvelope = this.getEnvelopeInModelCoordinates();
     IDirectPosition centre = modelEnvelope.center();
     double width = modelEnvelope.width();
     double height = modelEnvelope.length();
     double dx = (zoomPoint.getX() - centre.getX()) / factor;
     double dy = (zoomPoint.getY() - centre.getY()) / factor;
-    GM_Envelope zoomModelEnvelope = new GM_Envelope(zoomPoint.getX()
+    IEnvelope zoomModelEnvelope = new GM_Envelope(zoomPoint.getX()
         - (Viewport.ZERO_POINT_FIVE * (width / factor)) - dx, zoomPoint.getX()
         + (Viewport.ZERO_POINT_FIVE * (width / factor)) - dx, zoomPoint.getY()
         - (Viewport.ZERO_POINT_FIVE * (height / factor)) - dy, zoomPoint.getY()
@@ -579,7 +607,7 @@ public class Viewport {
         lvp.getHeight() / heightOfNewView);
     double realWidthOfNewView = lvp.getWidth() / zoomFactor;
     double realHeightOfNewView = lvp.getHeight() / zoomFactor;
-    GM_Envelope zoomEnvelope;
+    IEnvelope zoomEnvelope;
     try {
       zoomEnvelope = this.toModelEnvelope(x
           - (Viewport.ZERO_POINT_FIVE * realWidthOfNewView), x
@@ -605,7 +633,7 @@ public class Viewport {
    * @throws NoninvertibleTransformException throws an exception when the
    *           transformation fails
    */
-  private GM_Envelope toModelEnvelope(final double xMin, final double xMax,
+  private IEnvelope toModelEnvelope(final double xMin, final double xMax,
       final double yMin, final double yMax)
       throws NoninvertibleTransformException {
     return new GM_Envelope(this.toModelDirectPosition(new Point2D.Double(xMax,
@@ -660,7 +688,7 @@ public class Viewport {
    *           transformation fails
    */
   public final void zoomIn() throws NoninvertibleTransformException {
-    GM_Envelope envelope = this.getEnvelopeInModelCoordinates();
+    IEnvelope envelope = this.getEnvelopeInModelCoordinates();
     envelope.expandBy(1 / Viewport.ZOOM_FACTOR, 1 / Viewport.ZOOM_FACTOR);
     this.zoom(envelope);
   }
@@ -671,7 +699,7 @@ public class Viewport {
    *           transformation fails
    */
   public final void zoomOut() throws NoninvertibleTransformException {
-    GM_Envelope envelope = this.getEnvelopeInModelCoordinates();
+    IEnvelope envelope = this.getEnvelopeInModelCoordinates();
     envelope.expandBy(Viewport.ZOOM_FACTOR, Viewport.ZOOM_FACTOR);
     this.zoom(envelope);
   }
