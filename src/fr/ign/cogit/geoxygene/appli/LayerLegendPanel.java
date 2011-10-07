@@ -993,17 +993,11 @@ public StyledLayerDescriptor getModel() {
     @Override
     public void layerAdded(Layer l) {
         this.repaint();
-        logger.info("layer addition caught by LayerLegendPane"); //$NON-NLS-1$
-
     }
 
     @Override
     public void layersRemoved(Collection<Layer> layers) {
         this.repaint();
         logger.info("layers deletion caught by LayerLegendPane"); //$NON-NLS-1$
-
     }
-
-
-
 }

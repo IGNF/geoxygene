@@ -146,4 +146,32 @@ public class Font {
         | this.getFontWeight(), this.getFontSize());
     // new java.awt.Font("Default",java.awt.Font.PLAIN,10);
   }
+  
+  public Font() {
+  }
+  
+  public Font(java.awt.Font font) {
+    this.setFontFamily(font.getFamily());
+    
+    switch (font.getStyle()) {
+      case java.awt.Font.PLAIN:
+        this.setFontStyle(java.awt.Font.PLAIN);
+        this.setFontWeight(java.awt.Font.PLAIN);
+        break;
+      case java.awt.Font.ITALIC:
+        this.setFontStyle(java.awt.Font.ITALIC);
+        this.setFontWeight(java.awt.Font.PLAIN);
+        break;
+      case java.awt.Font.BOLD:
+        this.setFontStyle(java.awt.Font.PLAIN);
+        this.setFontWeight(java.awt.Font.BOLD);
+        break;
+      case java.awt.Font.BOLD|java.awt.Font.ITALIC:
+        this.setFontStyle(java.awt.Font.ITALIC);
+        this.setFontWeight(java.awt.Font.BOLD);
+        break;
+    }
+    
+    this.setFontSize(font.getSize());
+  }
 }

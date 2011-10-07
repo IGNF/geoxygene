@@ -76,8 +76,10 @@ import fr.ign.cogit.geoxygene.style.thematic.ThematicSymbolizer;
 
 /**
  * Descripteur de couches stylisées. Implémente la norme OGC 02-070 sur les
- * StyledLayerDescriptors. TODO revoir les userLayer TODO voir les
- * rasterSymbolizers FIXME passer à la geoapi
+ * StyledLayerDescriptors.
+ * TODO revoir les userLayer
+ * TODO voir les rasterSymbolizers
+ * FIXME passer à la geoapi
  * @author Julien Perret
  */
 
@@ -279,16 +281,16 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
 
   public static void main(String[] args) {
     StyledLayerDescriptor sld = new StyledLayerDescriptor();
-    Layer layer = sld.createLayerRandomColor("Test", GM_Polygon.class);
+    Layer layer = sld.createLayerRandomColor("Test", GM_Polygon.class); //$NON-NLS-1$
     ThematicSymbolizer s = new ThematicSymbolizer();
     DiagramSymbolizer d = new DiagramSymbolizer();
     DiagramRadius r = new DiagramRadius();
     r.setValue(15.0);
     d.getDiagramSize().add(r);
-    d.setDiagramType("piechart");
+    d.setDiagramType("piechart"); //$NON-NLS-1$
     ThematicClass t = new ThematicClass();
-    t.setClassLabel("sold");
-    t.setClassValue(new PropertyName("sold"));
+    t.setClassLabel("sold"); //$NON-NLS-1$
+    t.setClassValue(new PropertyName("sold")); //$NON-NLS-1$
     t.setFill(new Fill());
     t.getFill().setFill(Color.blue);
     d.getThematicClass().add(t);
@@ -348,8 +350,8 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
           StyledLayerDescriptor.class, NamedLayer.class, NamedStyle.class);
       final XMLStreamWriter xmlStreamWriter = XMLOutputFactory
       .newInstance().createXMLStreamWriter(writer);
-      xmlStreamWriter.setPrefix("sld",
-      "http://www.example.com/myPO1");
+      xmlStreamWriter.setPrefix("sld", //$NON-NLS-1$
+      "http://www.example.com/myPO1"); //$NON-NLS-1$
       Marshaller m = context.createMarshaller();
       m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
       m.marshal(this, xmlStreamWriter);
@@ -467,9 +469,10 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
    * Crée un nouveau layer portant le nom donné en paramètre et un symbolizer
    * adapté au type de géométrie en paramètre.
    * <p>
-   * Les couleurs associées au symbolizer du layer sont créées aléatoirement.
-   * TODO choisir les couleur de la nouvelle couche dans une palette ou à partir
-   * de la couche la plus proche
+   * Les couleurs associées au symbolizer sont choisies parmi celles
+   * du système de référence de couleurs du COGIT. Elles sont différentes
+   * les unes des autres.
+   * 
    * @param layerName nom du layer cherché
    * @param geometryType type de géométrie porté par le layer
    * @return layer portant le nom et la géométrie en paramètre
@@ -478,9 +481,6 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
       Class<? extends IGeometry> geometryType) {
 
     // Selection of suitables colors from the COGIT reference colors.
-    // ColorReferenceSystem crs = ColorReferenceSystem
-    // .unmarshall(ColorReferenceSystem.class.getResource(
-    // "/ColorReferenceSystem.xml").getFile());
     ColorReferenceSystem crs = ColorReferenceSystem
         .unmarshall(ColorReferenceSystem.class.getResource(
             "/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$

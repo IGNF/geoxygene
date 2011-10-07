@@ -27,6 +27,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -76,6 +77,8 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.style.ColorMap;
+import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
+import fr.ign.cogit.geoxygene.style.Fill;
 import fr.ign.cogit.geoxygene.style.Interpolate;
 import fr.ign.cogit.geoxygene.style.InterpolationPoint;
 import fr.ign.cogit.geoxygene.style.Layer;
@@ -83,8 +86,11 @@ import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Mark;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
+import fr.ign.cogit.geoxygene.style.Rule;
+import fr.ign.cogit.geoxygene.style.Style;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.style.Symbolizer;
+import fr.ign.cogit.geoxygene.style.TextSymbolizer;
 
 /**
  * Style Edition Main Frame.
@@ -139,17 +145,18 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
   private JPanel strokePanel;
   private JPanel strokePanel2;
   private JPanel symbolPanel;
+  private JPanel toponymPanel;
+  private JPanel fontPanel;
 
   private JButton btnAddStyle;
   private JButton btnApply;
   private JButton btnValid;
   private JButton btnCancel;
-  private JCheckBox toponymBtn;
   private JTabbedPane tabPane;
   private JPanel textStylePanel;
   private JPanel mainStylePanel;
   private JPanel graphicStylePanel;
-
+   
   // Work variables
   private Color fillColor;
   private float fillOpacity;
@@ -165,6 +172,9 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
 
   private String symbolShape;
   private float symbolSize;
+  
+  private TextSymbolizer symbolizer;
+  private FeatureTypeStyle featureTypeStyle;
 
   // Dialog Elements
   private JColorChooser fillColorChooser;
@@ -214,7 +224,11 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
   };
 
   private JButton addColorMapButton;
-
+  
+  private JCheckBox toponymBtn;
+  private JComboBox fields;
+  private JLabel textPreviewLabel;
+  
   /**
    * Style Edition Main Frame.
    * @param layerLegendPanel the layerLegendPanel of the style to be modified.
@@ -245,6 +259,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     }
 
     this.textStylePanel = new JPanel();
+    this.textStylePanel.setLayout(new BorderLayout());
+
     this.init_textStylePanel();
     this.tabPane = new JTabbedPane();
     this.tabPane.add(I18N.getString("StyleEditionFrame.Symbology"), this.graphicStylePanel); //$NON-NLS-1$
@@ -252,35 +268,303 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.add(this.tabPane);
     
     this.setTitle(I18N.getString("StyleEditionFrame.StyleEdition")); //$NON-NLS-1$
+    this.pack();
+    this.pack();
+    this.textStylePanel.setSize(600, 500);
     this.graphicStylePanel.setSize(600, 700);
     this.setSize(650, 750);
+    
     this.setLocation(200, 200);
     this.setAlwaysOnTop(true);
   }
 
   public void init_textStylePanel() {
-    logger.info(this.layer);
-    logger.info(this.layer.getFeatureCollection());
-    logger.info(this.layer.getFeatureCollection().getFeatureType());
-    logger.info(this.layer.getFeatureCollection().getFeatureType().getFeatureAttributes());
-    logger.info(this.layer.getFeatureCollection().getFeatureType().getFeatureAttributes().size());
+    //Initialisation du symboliser s'il y a lieu
+    Style lastStyle = this.layer.getStyles().get(layer.getStyles().size() - 1);
+    if (lastStyle.getFeatureTypeStyles()
+        .get(lastStyle.getFeatureTypeStyles().size() - 1)
+        .getSymbolizer().isTextSymbolizer()) {
+      if (this.symbolizer == null) {
+        this.symbolizer = (TextSymbolizer) lastStyle.getFeatureTypeStyles()
+            .get(lastStyle.getFeatureTypeStyles().size() - 1).getSymbolizer();
+      }
+    }
+    
+    this.toponymPanel = createToponymPanel();
+    this.toponymPanel.setAlignmentX(LEFT_ALIGNMENT);
+    this.fontPanel = createFontPanel();
+    this.fontPanel.setAlignmentX(LEFT_ALIGNMENT);
+    
+    this.textStylePanel.add(this.toponymPanel, BorderLayout.NORTH);
+    this.textStylePanel.add(this.fontPanel, BorderLayout.CENTER);
+    //TODO Ajouter un panel pour paramétrer le placement des toponymes
+    //TODO Coupler avec WinPat ??
+    
+    JButton closeBtn = new JButton(I18N.getString("AttributeTable.Close")); //$NON-NLS-1$
+    closeBtn.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        ((JFrame) StyleEditionFrame.this).dispose();
+      }
+    });
+    closeBtn.setSize(150,20);
+    this.textStylePanel.add(closeBtn, BorderLayout.SOUTH);
+  }
+
+  public JPanel createToponymPanel() {
+    JPanel toponymPanel = new JPanel();
+    toponymPanel.setLayout(new BoxLayout(toponymPanel, BoxLayout.Y_AXIS));
+
+    TitledBorder fillTitleBorder = BorderFactory.createTitledBorder(""); //$NON-NLS-1$
+    fillTitleBorder.setTitleColor(Color.blue);
+    fillTitleBorder.setTitleFont(new Font("Verdana", Font.BOLD, 16)); //$NON-NLS-1$
+    fillTitleBorder.setTitle("Toponyms"); //$NON-NLS-1$
+    toponymPanel.setBorder(fillTitleBorder);
+    toponymPanel.setPreferredSize(new Dimension(400, 100));
+    
     String[] fieldsStr = new String[this.layer.getFeatureCollection().getFeatureType().getFeatureAttributes().size()];
     for (int i = 0; i < fieldsStr.length; i++) {
       fieldsStr[i] = this.layer.getFeatureCollection().getFeatureType().getFeatureAttributes().get(i).getMemberName(); 
     }
     
-    JComboBox fields = new JComboBox(fieldsStr);
-    fields.setPreferredSize(fields.getPreferredSize());
-    this.textStylePanel.add(fields);
-    
     JLabel label = new JLabel(I18N.getString("StyleEditionFrame.DisplayField")); //$NON-NLS-1$
-    this.textStylePanel.add(label);
+    this.fields = new JComboBox(fieldsStr);
+    this.fields.setPreferredSize(fields.getPreferredSize());
+    this.fields.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {        
+        if (StyleEditionFrame.this.symbolizer != null) {
+          StyleEditionFrame.this.symbolizer.setLabel(
+            ((JComboBox)e.getSource()).getSelectedItem().toString());
+        }
+        StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
+        StyleEditionFrame.this.layerLegendPanel.repaint();
+        StyleEditionFrame.this.layerViewPanel.repaint();
+      }
+    });
     
+    JPanel fieldsPanel = new JPanel();
+    fieldsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+    fieldsPanel.add(label);
+    fieldsPanel.add(this.fields);
+    
+    JPanel topoBtnPanel = new JPanel();
+    topoBtnPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
     this.toponymBtn = new JCheckBox(I18N.getString("StyleEditionFrame.DisplayToponyms")); //$NON-NLS-1$
-    this.toponymBtn.addActionListener(this);
-    this.textStylePanel.add(this.toponymBtn);
+    this.toponymBtn.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        if (StyleEditionFrame.this.toponymBtn.isSelected()){
+          Layer layer = StyleEditionFrame.this.layer;
+          
+          if (StyleEditionFrame.this.featureTypeStyle == null) {
+            Style lastStyle = layer.getStyles().get(layer.getStyles().size() - 1);
+            StyleEditionFrame.this.featureTypeStyle = new FeatureTypeStyle();
+            Rule rule = new Rule();
+            StyleEditionFrame.this.featureTypeStyle.getRules().add(rule);
+            lastStyle.getFeatureTypeStyles().add(StyleEditionFrame.this.featureTypeStyle);
+          }
+          
+          if (StyleEditionFrame.this.symbolizer == null) {
+            StyleEditionFrame.this.symbolizer = new TextSymbolizer();
+          }
+          
+          StyleEditionFrame.this.symbolizer.setFont(new fr.ign.cogit.geoxygene.style.Font(
+              StyleEditionFrame.this.textPreviewLabel.getFont()));
+          StyleEditionFrame.this.symbolizer.setLabel(
+              StyleEditionFrame.this.fields.getSelectedItem().toString());
+          StyleEditionFrame.this.symbolizer.setFill(new Fill());
+          StyleEditionFrame.this.symbolizer.getFill().setFill(
+              StyleEditionFrame.this.textPreviewLabel.getForeground());
+          
+          StyleEditionFrame.this.featureTypeStyle
+            .getRules().get(0).getSymbolizers().add(0,StyleEditionFrame.this.symbolizer);
+          
+          StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
+          StyleEditionFrame.this.layerLegendPanel.repaint();
+          StyleEditionFrame.this.layerViewPanel.repaint();
+        } else {
+          StyleEditionFrame.this.featureTypeStyle
+                .getRules().get(0).getSymbolizers().remove(
+                    StyleEditionFrame.this.symbolizer);
+          StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
+          StyleEditionFrame.this.layerLegendPanel.repaint();
+          StyleEditionFrame.this.layerViewPanel.repaint();
+        }
+      }
+      
+    });
+    topoBtnPanel.add(this.toponymBtn);
+    
+    if (this.symbolizer != null) {
+      this.fields.setSelectedItem(this.symbolizer.getLabel());
+      this.toponymBtn.setSelected(true);
+    }
+    
+    fieldsPanel.setAlignmentX(LEFT_ALIGNMENT);
+    toponymPanel.add(fieldsPanel);
+    topoBtnPanel.setAlignmentX(LEFT_ALIGNMENT);
+    toponymPanel.add(topoBtnPanel);
+    
+    return toponymPanel;
   }
+  
+  public JPanel createFontPanel() {
 
+    //TODO ajouter le soulignement et l'ombrage
+    this.textPreviewLabel = new JLabel(I18N.getString("StyleEditionFrame.TextPreview")); //$NON-NLS-1$
+    
+    if (this.symbolizer != null) {
+      this.textPreviewLabel.setFont(this.symbolizer.getFont().toAwfFont());
+      this.textPreviewLabel.setForeground(this.symbolizer.getFill().getFill());
+    } else {
+      this.textPreviewLabel.setFont(new Font("Verdana", Font.BOLD, 12)); //$NON-NLS-1$
+    }
+    
+    JPanel textPreviewPanel = new JPanel();
+    textPreviewPanel.add(this.textPreviewLabel);
+    textPreviewPanel.setAlignmentX(LEFT_ALIGNMENT);
+
+    JPanel fontPanel = new JPanel();
+    fontPanel.setLayout(new BoxLayout(fontPanel, BoxLayout.Y_AXIS));
+
+    TitledBorder fillTitleBorder = BorderFactory.createTitledBorder(""); //$NON-NLS-1$
+    fillTitleBorder = BorderFactory.createTitledBorder(""); //$NON-NLS-1$
+    fillTitleBorder.setTitleColor(Color.blue);
+    fillTitleBorder.setTitleFont(new Font("Verdana", Font.BOLD, 16)); //$NON-NLS-1$
+    fillTitleBorder.setTitle("Font"); //$NON-NLS-1$
+    fontPanel.setBorder(fillTitleBorder);
+    fontPanel.setPreferredSize(new Dimension(400, 100));
+    
+    JLabel policeLabel = new JLabel("   Police                                    " + //$NON-NLS-1$
+    		"                           Style                       Taille"); //$NON-NLS-1$
+    policeLabel.setAlignmentX(LEFT_ALIGNMENT);
+    
+    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    String[] familyFonts = ge.getAvailableFontFamilyNames();
+    JComboBox familyFontCombo = new JComboBox(familyFonts);
+    familyFontCombo.setSelectedItem(this.textPreviewLabel.getFont().getFamily());
+    familyFontCombo.setSize(familyFontCombo.getPreferredSize());
+    familyFontCombo.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        Font newFont = new Font(
+            ((JComboBox)e.getSource()).getSelectedItem().toString(),
+            StyleEditionFrame.this.textPreviewLabel.getFont().getStyle(),
+            StyleEditionFrame.this.textPreviewLabel.getFont().getSize());
+        StyleEditionFrame.this.textPreviewLabel.setFont(newFont);
+        if (StyleEditionFrame.this.symbolizer != null) {
+          StyleEditionFrame.this.symbolizer.setFont(
+            new fr.ign.cogit.geoxygene.style.Font(newFont));
+        }
+        StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
+        StyleEditionFrame.this.layerLegendPanel.repaint();
+        StyleEditionFrame.this.layerViewPanel.repaint();
+      }
+    });
+    
+    String[] typeFont = {
+      "regular", //$NON-NLS-1$
+      "bold", //$NON-NLS-1$
+      "italic", //$NON-NLS-1$
+      "bold & italic" //$NON-NLS-1$
+    };
+    JComboBox styleFontCombo = new JComboBox(typeFont);
+    styleFontCombo.setSelectedIndex(this.textPreviewLabel.getFont().getStyle());
+    styleFontCombo.setPreferredSize(styleFontCombo.getPreferredSize());
+    styleFontCombo.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        Font newFont = new Font(
+            StyleEditionFrame.this.textPreviewLabel.getFont().getFamily(),
+            ((JComboBox)e.getSource()).getSelectedIndex(),
+            StyleEditionFrame.this.textPreviewLabel.getFont().getSize());
+        StyleEditionFrame.this.textPreviewLabel.setFont(newFont);
+        if (StyleEditionFrame.this.symbolizer != null) {
+          StyleEditionFrame.this.symbolizer.setFont(
+            new fr.ign.cogit.geoxygene.style.Font(newFont));
+        }
+        StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
+        StyleEditionFrame.this.layerLegendPanel.repaint();
+        StyleEditionFrame.this.layerViewPanel.repaint();
+      }
+    });
+    
+    String[] sizeFont = {
+        "6", "7", "8", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        "9", "10", "11", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        "12", "14", "16", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        "18", "20", "22", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        "24", "26", "28", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        "36", "48", "76"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    JComboBox sizeFontCombo = new JComboBox(sizeFont);
+    sizeFontCombo.setSelectedItem(((Integer)this.textPreviewLabel.getFont().getSize()).toString());
+    sizeFontCombo.setPreferredSize(styleFontCombo.getPreferredSize());
+    sizeFontCombo.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        Font newFont = new Font(
+            StyleEditionFrame.this.textPreviewLabel.getFont().getFamily(),
+            StyleEditionFrame.this.textPreviewLabel.getFont().getStyle(),
+            Integer.parseInt(((JComboBox)e.getSource()).getSelectedItem().toString())
+        );
+        StyleEditionFrame.this.textPreviewLabel.setFont(newFont);
+        if (StyleEditionFrame.this.symbolizer != null) {
+          StyleEditionFrame.this.symbolizer.setFont(
+            new fr.ign.cogit.geoxygene.style.Font(newFont));
+        }
+        StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
+        StyleEditionFrame.this.layerLegendPanel.repaint();
+        StyleEditionFrame.this.layerViewPanel.repaint();
+      }
+    });
+    
+    JButton colorButton = new JButton(I18N.getString("StyleEditionFrame.Color")); //$NON-NLS-1$
+    colorButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        Color c = COGITColorChooserPanel.showDialog(
+            new JButton(),
+            I18N.getString("StyleEditionFrame.PickAColor"), //$NON-NLS-1$
+            StyleEditionFrame.this.textPreviewLabel.getForeground());
+        StyleEditionFrame.this.textPreviewLabel.setForeground(c);
+        logger.info(c);
+        if (StyleEditionFrame.this.symbolizer != null) {
+          logger.info(StyleEditionFrame.this.symbolizer.getFill().getFill());
+          StyleEditionFrame.this.symbolizer.setFont(
+              new fr.ign.cogit.geoxygene.style.Font(
+                  StyleEditionFrame.this.textPreviewLabel.getFont()));
+          StyleEditionFrame.this.symbolizer.getFill().setFill(c);
+          logger.info(StyleEditionFrame.this.symbolizer.getFill().getFill());
+        }
+        
+        StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
+        StyleEditionFrame.this.layerLegendPanel.repaint();
+        StyleEditionFrame.this.layerViewPanel.repaint();
+        StyleEditionFrame.this.layerViewPanel.updateUI();
+        StyleEditionFrame.this.layerViewPanel.superRepaint();
+        StyleEditionFrame.this.layerViewPanel.getProjectFrame().repaint();
+        //FIXME Faire rafraichir l'affichage !!!!
+        //Pour l'instant, j'ai tenté tout les repaint, sans succès...
+      }
+    });
+    
+    JPanel comboPanel = new JPanel();
+    comboPanel.setLayout(new FlowLayout());
+    ((FlowLayout)comboPanel.getLayout()).setAlignment(FlowLayout.LEFT);
+    comboPanel.add(familyFontCombo);
+    comboPanel.add(styleFontCombo);
+    comboPanel.add(sizeFontCombo);
+    comboPanel.add(colorButton);
+    comboPanel.setAlignmentX(LEFT_ALIGNMENT);
+
+    fontPanel.add(policeLabel);
+    fontPanel.add(comboPanel);
+    fontPanel.add(textPreviewPanel);
+    
+    return fontPanel;
+  }
+  
   public void init_Polygon() {
     this.graphicStylePanel.setLayout(new BorderLayout());
     this.visuPanel = this.createVisuPanel();
@@ -1161,15 +1445,6 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       this.layerViewPanel.repaint();
       this.updateLayer();
       ((JFrame) StyleEditionFrame.this).dispose();
-    }
-    
-    //When the user add/remove toponyms
-    if (e.getSource() == this.toponymBtn) {
-      if (this.toponymBtn.isSelected()){
-        logger.info("Add Toponyms");
-      } else {
-        logger.info("remove toponyms");
-      }
     }
   }
 

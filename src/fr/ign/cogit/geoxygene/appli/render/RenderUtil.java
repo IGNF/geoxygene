@@ -104,9 +104,8 @@ public final class RenderUtil {
    * Private constructor. Should not be used.
    */
   private RenderUtil() {
-
   }
-
+  
   /**
    * Draw a geometry on the given graphics.
    * @param geometry the geometry
@@ -953,7 +952,7 @@ public final class RenderUtil {
       if (shape == null) {
         return;
       }
-      String text = (String) feature.getAttribute(symbolizer.getLabel());
+      String text = feature.getAttribute(symbolizer.getLabel()).toString();
       paint(symbolizer, text, shape, graphics);
     } catch (NoninvertibleTransformException e) {
       e.printStackTrace();
@@ -1022,10 +1021,10 @@ public final class RenderUtil {
         IDirectPosition position = symbolizer.getPoints().get(feature);
         Double size = symbolizer.getRadius().get(feature);
         if (position == null || size == null) {
-          TriangulationJTS t = new TriangulationJTS("TRIANGLE");
+          TriangulationJTS t = new TriangulationJTS("TRIANGLE"); //$NON-NLS-1$
           Chargeur.importAsNodes(feature, t);
           try {
-            t.triangule("v");
+            t.triangule("v"); //$NON-NLS-1$
           } catch (Exception e1) {
             e1.printStackTrace();
           }
