@@ -999,10 +999,12 @@ public final class RenderUtil {
       graphics.draw(textShape);
     }
     graphics.setColor(fillColor);
+    double width = graphics.getFontMetrics().getStringBounds(text, graphics).getWidth();
+    double xcoords = (shape.getBounds2D().getMinX() + shape
+            .getBounds2D().getMaxX()) / 2 ;
     graphics
-        .drawGlyphVector(gv, (float) (shape.getBounds2D().getMinX() + shape
-            .getBounds2D().getMaxX()) / 2, (float) (shape.getBounds2D()
-            .getMinY() + shape.getBounds2D().getMaxY()) / 2);// TODO reposition
+        .drawGlyphVector(gv, (float)(xcoords - width/2),(float)(shape.getBounds2D()
+                .getMinY() + shape.getBounds2D().getMaxY()) / 2);// TODO reposition
                                                              // on the shape
   }
   
