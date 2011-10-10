@@ -491,7 +491,7 @@ public class Population<Feat extends IFeature> extends
       Feat elem = this.getClasse().newInstance();
       elem.setId(++Population.idNouvelElement);
       elem.setGeom(geom);
-      // elem.setPopulation(this);
+      elem.setPopulation(this);
       super.add(elem);
       if (this.getPersistant()) {
         DataSet.db.makePersistent(elem);

@@ -109,12 +109,12 @@ public interface IFeature {
   /**
    * @return the population
    */
-  public abstract IPopulation<IFeature> getPopulation();
+  public abstract IPopulation<? extends IFeature> getPopulation();
 
   /**
    * @param population the population to set
    */
-  public abstract void setPopulation(IPopulation<IFeature> population);
+  public abstract void setPopulation(IPopulation<? extends IFeature> population);
 
   /**
    * Affecte le feature type de l'objet

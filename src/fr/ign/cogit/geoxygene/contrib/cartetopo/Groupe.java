@@ -426,6 +426,11 @@ public class Groupe extends ElementCarteTopo {
     }
   }
 
+  @Override
+  public IPopulation<Groupe> getPopulation() {
+    return (IPopulation<Groupe>) super.getPopulation();
+  }
+
   // Methode nécessaire à DecomposeConnexe
   // ajoute le noeud au groupe connexe, cherche ses voisins, puis l'enlève du
   // goupe total

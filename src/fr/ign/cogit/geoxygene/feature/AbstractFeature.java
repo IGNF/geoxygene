@@ -286,11 +286,11 @@ public abstract class AbstractFeature implements IFeature {
   /**
    * L'unique population à laquelle appartient cet objet.
    */
-  protected WeakReference<IPopulation<IFeature>> population;
+  protected WeakReference<IPopulation<? extends IFeature>> population;
 
   @Override
   @SuppressWarnings("unchecked")
-  public IPopulation<IFeature> getPopulation() {
+  public IPopulation<? extends IFeature> getPopulation() {
     if (this.population != null) {
       return this.population.get();
     }
@@ -307,8 +307,8 @@ public abstract class AbstractFeature implements IFeature {
   }
 
   @Override
-  public void setPopulation(IPopulation<IFeature> population) {
-    this.population = new WeakReference<IPopulation<IFeature>>(population);
+  public void setPopulation(IPopulation<? extends IFeature> population) {
+    this.population = new WeakReference<IPopulation<? extends IFeature>>(population);
     // Refuse d'écrire dans ma population car ne peut pas pas vérifier si
     // this hérite bien de IFeature...
     // this.population.addUnique(this);
