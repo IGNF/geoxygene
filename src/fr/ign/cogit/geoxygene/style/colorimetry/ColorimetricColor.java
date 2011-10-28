@@ -695,7 +695,20 @@ public class ColorimetricColor {
     this.blueRGB = c.getBlueRGB();
   }
 
-  /**
+  public ColorimetricColor(ColorimetricColor colorimetricColor) {
+	  this.blueRGB = colorimetricColor.blueRGB;
+	  this.cleCoul = colorimetricColor.cleCoul;
+	  this.greenRGB = colorimetricColor.greenRGB;
+	  this.hue = colorimetricColor.hue;
+	  this.idColor = colorimetricColor.idColor;
+	  this.lightness =colorimetricColor.lightness;
+	  this.redRGB  = colorimetricColor.redRGB;
+	  this.usualName = colorimetricColor.usualName;
+	  this.xScreen = colorimetricColor.xScreen;
+	  this.yScreen = colorimetricColor.yScreen;
+  }
+
+/**
    * This method test if this CIELab coordinates describe an existing color.
    * @param l The lightness in the CIELab color reference system.
    * @param a First chromatic component in the CIELab color reference system.
