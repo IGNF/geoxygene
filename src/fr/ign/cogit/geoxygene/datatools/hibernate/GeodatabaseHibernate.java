@@ -16,12 +16,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.persister.entity.AbstractEntityPersister;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
-import org.odmg.OQLQuery;
+import org.hibernatespatial.criterion.SpatialRestrictions;
+
+import com.vividsolutions.jts.geom.GeometryFactory;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -32,6 +35,7 @@ import fr.ign.cogit.geoxygene.datatools.postgis.PostgisSpatialQuery;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
+import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 
 /**
  * @author Julien Perret
@@ -279,7 +283,14 @@ public class GeodatabaseHibernate implements Geodatabase {
   @Override
   public <T extends IFeature> FT_FeatureCollection<T> loadAllFeatures(
       Class<?> featureClass) {
-    return this.loadAll(featureClass, FT_FeatureCollection.class);
+    List<?> list = this.session.createQuery("from " //$NON-NLS-1$
+        + featureClass.getSimpleName()).list();
+    FT_FeatureCollection<T> result = new FT_FeatureCollection<T>();
+    for (Object o : list) {
+      result.add((T) o);
+    }
+    return result;
+//    return this.loadAll(featureClass, FT_FeatureCollection.class);
   }
 
   @Override
@@ -299,7 +310,18 @@ public class GeodatabaseHibernate implements Geodatabase {
   @Override
   public <T extends IFeature> IFeatureCollection<T> loadAllFeatures(
       Class<T> featureClass, IGeometry geom) {
-    GeodatabaseHibernate.logger.warn("non implemente");
+    Criteria criteria = session.createCriteria(featureClass);
+    try {
+      criteria.add(SpatialRestrictions.intersects("geom", AdapterFactory.toGeometry(new GeometryFactory(), geom))); //$NON-NLS-1$
+      FT_FeatureCollection<T> result = new FT_FeatureCollection<T>();
+      List<?> list = criteria.list();
+      for (Object o : list) {
+        result.add((T) o);
+      }
+      return result;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     return null;
   }
 

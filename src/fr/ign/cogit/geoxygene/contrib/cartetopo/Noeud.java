@@ -616,6 +616,7 @@ public class Noeud extends ElementCarteTopo {
       arrivee.addGroupe(plusCourtChemin);
       plusCourtChemin.setListeArcs(arcsFinaux);
       plusCourtChemin.setListeNoeuds(noeudsFinaux);
+      plusCourtChemin.setLength(arrivee.distance);
       return plusCourtChemin;
     } catch (Exception e) {
       Noeud.logger.error("----- ERREUR dans calcul de plus court chemin.");
