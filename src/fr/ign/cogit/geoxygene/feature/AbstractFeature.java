@@ -781,8 +781,14 @@ public abstract class AbstractFeature implements IFeature {
                 return false;
             }
         }
+        
+        
+        //les tests ont été passés avec succès
+        return true;
     }
-    return true;
+    
+    //Une des 2 géométries est nulle a priori faux ....
+    return false;
   }
 
   @Override
