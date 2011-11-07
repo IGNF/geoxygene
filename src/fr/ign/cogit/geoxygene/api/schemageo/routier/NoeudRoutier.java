@@ -3,6 +3,8 @@
  */
 package fr.ign.cogit.geoxygene.api.schemageo.routier;
 
+import java.util.Set;
+
 import fr.ign.cogit.geoxygene.api.schemageo.support.reseau.NoeudReseau;
 
 /**
@@ -11,4 +13,7 @@ import fr.ign.cogit.geoxygene.api.schemageo.support.reseau.NoeudReseau;
  */
 public interface NoeudRoutier extends NoeudReseau {
 
+  public int getDegre();
+  
+  public Set<TronconDeRoute> getRoutes();
 }
