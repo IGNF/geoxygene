@@ -272,6 +272,9 @@ public class CarteTopo extends DataSet {
     AttributeType distanceType = new AttributeType("distance", "distance",
         "Double");
     noeudFeatureType.addFeatureAttribute(distanceType);
+    AttributeType idType = new AttributeType("id", "id",
+    "Integer");
+    noeudFeatureType.addFeatureAttribute(idType);
     /** création d'un schéma associé au featureType */
     noeudFeatureType.setGeometryType(GM_Point.class);
     this.getPopNoeuds().setFeatureType(noeudFeatureType);
