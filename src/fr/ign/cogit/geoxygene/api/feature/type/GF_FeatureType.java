@@ -179,4 +179,7 @@ public interface GF_FeatureType {
 
   /** enleve un role */
   public void removeRole(GF_AssociationRole value);
+  
+  /** renvoie un attribut*/
+  public GF_AttributeType getFeatureAttributeByName(String nomAttribut);
 }
