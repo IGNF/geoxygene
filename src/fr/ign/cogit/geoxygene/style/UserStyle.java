@@ -25,20 +25,32 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author Julien Perret
  */
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(propOrder = {"name","title","abstractDescription","defaultStyle","featureTypeStyles"})
 public class UserStyle extends AbstractStyle {
 
-  @XmlElement(name = "FeatureTypeStyle")
+  @XmlElement(name = "Name")
+  @Override
+  public String getName() {
+    return super.getName();
+  }
+  @Override
+  public void setName(String newName) {
+    super.setName(newName);
+  }
+
   private List<FeatureTypeStyle> featureTypeStyles = new ArrayList<FeatureTypeStyle>();
 
   /**
    * Renvoie la valeur de l'attribut featureTypeStyles.
    * @return la valeur de l'attribut featureTypeStyles
    */
+  @XmlElement(name = "FeatureTypeStyle")
   @Override
   public List<FeatureTypeStyle> getFeatureTypeStyles() {
     return this.featureTypeStyles;
@@ -55,9 +67,9 @@ public class UserStyle extends AbstractStyle {
   /**
    * Title of the style.
    */
-  @XmlElement(name = "Title", required = false)
   private String title;
 
+  @XmlElement(name = "Title", required = false)
   public String getTitle() {
     return this.title;
   }
@@ -69,9 +81,9 @@ public class UserStyle extends AbstractStyle {
   /**
    * Abstract description of the style.
    */
-  @XmlElement(name = "Abstract", required = false)
   private String abstractDescription;
 
+  @XmlElement(name = "Abstract", required = false)
   public String getAbstractDescription() {
     return this.abstractDescription;
   }
@@ -83,9 +95,9 @@ public class UserStyle extends AbstractStyle {
   /**
    * True if the style is the default style of the layer.
    */
-  @XmlElement(name = "IsDefault", required = false)
   private boolean defaultStyle = false;
 
+  @XmlElement(name = "IsDefault", required = false)
   public boolean isDefaultStyle() {
     return this.defaultStyle;
   }

@@ -418,7 +418,7 @@ public class GeodatabaseOjb {
   public <T extends IFeature> IFeatureCollection<T> loadAllFeatures(
       Class<?> featureClass) {
     FT_FeatureCollection<T> result = new FT_FeatureCollection<T>();
-    if ((FT_Feature.class).isAssignableFrom(featureClass)) {
+    if ((IFeature.class).isAssignableFrom(featureClass)) {
       try {
         OQLQuery query = this._odmg.newOQLQuery();
         query.create("select x from " + featureClass.getName());
@@ -481,7 +481,7 @@ public class GeodatabaseOjb {
       e.printStackTrace();
       return null;
     }
-    if ((FT_Feature.class).isAssignableFrom(featureClass)) {
+    if ((IFeature.class).isAssignableFrom(featureClass)) {
       try {
         OQLQuery query = this._odmg.newOQLQuery();
         query.create("select x from " + featureClass.getName());
@@ -497,7 +497,7 @@ public class GeodatabaseOjb {
           // classe mère de la classe stockée dans le SGBD
           // on récupère le premier élément (s'il existe) et ses métadonnées.
           if (iter.hasNext()) {
-            FT_Feature feature = (FT_Feature) iter.next();
+            IFeature feature = (IFeature) iter.next();
             metadata = this.getMetadata(feature.getClass());
             if (metadata != null) {
               srid = metadata.getSRID();
@@ -506,7 +506,7 @@ public class GeodatabaseOjb {
               feature.getGeom().setCRS(srid);
             }
             result.getClass()
-                .getMethod("add", new Class[] { FT_Feature.class })
+                .getMethod("add", new Class[] { IFeature.class })
                 .invoke(result, new Object[] { feature });
           }
         }
@@ -515,7 +515,7 @@ public class GeodatabaseOjb {
           if (feature.getGeom() != null) {
             feature.getGeom().setCRS(srid);
           }
-          result.getClass().getMethod("add", new Class[] { FT_Feature.class })
+          result.getClass().getMethod("add", new Class[] { IFeature.class })
               .invoke(result, new Object[] { feature });
         }
       } catch (Exception e) {
@@ -551,7 +551,7 @@ public class GeodatabaseOjb {
       e.printStackTrace();
       return null;
     }
-    if ((FT_Feature.class).isAssignableFrom(featureClass)) {
+    if ((IFeature.class).isAssignableFrom(featureClass)) {
       try {
         OQLQuery query = this._odmg.newOQLQuery();
         query.create("select x from " + featureClass.getName() + " where "
@@ -568,7 +568,7 @@ public class GeodatabaseOjb {
           // classe mère de la classe stockée dans le SGBD
           // on récupère le premier élément (s'il existe) et ses métadonnées.
           if (iter.hasNext()) {
-            FT_Feature feature = (FT_Feature) iter.next();
+            IFeature feature = (IFeature) iter.next();
             metadata = this.getMetadata(feature.getClass());
             if (metadata != null) {
               srid = metadata.getSRID();
@@ -577,16 +577,16 @@ public class GeodatabaseOjb {
               feature.getGeom().setCRS(srid);
             }
             result.getClass()
-                .getMethod("add", new Class[] { FT_Feature.class })
+                .getMethod("add", new Class[] { IFeature.class })
                 .invoke(result, new Object[] { feature });
           }
         }
         while (iter.hasNext()) {
-          FT_Feature feature = (FT_Feature) iter.next();
+          IFeature feature = (IFeature) iter.next();
           if (feature.getGeom() != null) {
             feature.getGeom().setCRS(srid);
           }
-          result.getClass().getMethod("add", new Class[] { FT_Feature.class })
+          result.getClass().getMethod("add", new Class[] { IFeature.class })
               .invoke(result, new Object[] { feature });
         }
       } catch (Exception e) {
@@ -901,7 +901,7 @@ public class GeodatabaseOjb {
    * d'implémentation) TODO Si ce sont des FT_Features, il faut récupérere les
    * srids
    */
-  public FT_Feature load(FeatureType featureType, Object id) {
+  public IFeature load(FeatureType featureType, Object id) {
     String nomClasseChargee = featureType.getNomClasse();
     Class<?> theClass = null;
     try {
@@ -909,7 +909,7 @@ public class GeodatabaseOjb {
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
     }
-    return (FT_Feature) this.load(theClass, id);
+    return (IFeature) this.load(theClass, id);
 
   }
 
