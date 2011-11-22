@@ -130,11 +130,11 @@ public class AdapterFactory {
         result.setSRID(geom.getCRS());
         return result;
       }
-      logger.error(sequence.size() + " " + sequence.getCoordinate(0).equals(
-              sequence.getCoordinate(sequence.size() - 1)));
-      logger.error(sequence.getCoordinate(0));
-      logger.error(sequence.getCoordinate(sequence.size() - 1));
-      System.exit(0);
+//      logger.error(sequence.size() + " " + sequence.getCoordinate(0).equals(
+//              sequence.getCoordinate(sequence.size() - 1)));
+//      logger.error(sequence.getCoordinate(0));
+//      logger.error(sequence.getCoordinate(sequence.size() - 1));
+//      System.exit(0);
       throw new Exception(I18N
               .getString("AdapterFactory.RingNotClosed")); //$NON-NLS-1$
     }
