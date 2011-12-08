@@ -63,7 +63,6 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
 
@@ -76,6 +75,7 @@ import fr.ign.cogit.geoxygene.util.conversion.JtsGeOxygene;
  * @author Christophe Pele
  * @author Jean-François Girres
  * @author Charlotte Hoarau
+ * @author Mickaël Brasebin
  * @version 1.0
  * 
  */
@@ -124,7 +124,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 
   @Override
   public IGeometry buffer(IGeometry geom, double distance) {
-    if ((distance == 0) && (geom instanceof GM_Point)) {
+    if (distance == 0) {
       return geom;
     }
     Geometry jtsGeom = null;
@@ -214,11 +214,6 @@ public class JtsAlgorithms implements GeomAlgorithms {
       e.printStackTrace();
       return null;
     }
-  }
-
-  @Override
-  public IGeometry buffer10(IGeometry geom) {
-    return this.buffer(geom, 10);
   }
 
   public IGeometry boundary(IGeometry geom) {

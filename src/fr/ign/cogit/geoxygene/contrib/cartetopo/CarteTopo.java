@@ -272,8 +272,7 @@ public class CarteTopo extends DataSet {
     AttributeType distanceType = new AttributeType("distance", "distance",
         "Double");
     noeudFeatureType.addFeatureAttribute(distanceType);
-    AttributeType idType = new AttributeType("id", "id",
-    "Integer");
+    AttributeType idType = new AttributeType("id", "id", "Integer");
     noeudFeatureType.addFeatureAttribute(idType);
     /** création d'un schéma associé au featureType */
     noeudFeatureType.setGeometryType(GM_Point.class);
@@ -473,26 +472,26 @@ public class CarteTopo extends DataSet {
     Arc arc;
     List<Arc> arcsDirects = new ArrayList<Arc>();
     List<Arc> arcsIndirects = new ArrayList<Arc>();
-    
+
     while (itFaces.hasNext()) {
-    	face = itFaces.next();
-    	this.getPopFaces().remove(face);
-    	itArcs = face.getArcsDirects().iterator();
-    	while (itArcs.hasNext()) {
-    		arc = itArcs.next();
-    		arcsDirects.add(arc);
-    	}
-    	itArcs = face.getArcsIndirects().iterator();
-    	while (itArcs.hasNext()) {
-    		arc = itArcs.next();
-    		arcsIndirects.add(arc);
-    	}
+      face = itFaces.next();
+      this.getPopFaces().remove(face);
+      itArcs = face.getArcsDirects().iterator();
+      while (itArcs.hasNext()) {
+        arc = itArcs.next();
+        arcsDirects.add(arc);
+      }
+      itArcs = face.getArcsIndirects().iterator();
+      while (itArcs.hasNext()) {
+        arc = itArcs.next();
+        arcsIndirects.add(arc);
+      }
     }
-    for (Arc arcDirect: arcsDirects) {
-    	arcDirect.setFaceGauche(null);
+    for (Arc arcDirect : arcsDirects) {
+      arcDirect.setFaceGauche(null);
     }
-    for (Arc arcIndirect: arcsIndirects) {
-    	arcIndirect.setFaceDroite(null);
+    for (Arc arcIndirect : arcsIndirects) {
+      arcIndirect.setFaceDroite(null);
     }
   }
 
@@ -534,12 +533,32 @@ public class CarteTopo extends DataSet {
       selection = this.getPopNoeuds().select(arc.getGeometrie().startPoint(),
           tolerance);
       if (!selection.isEmpty()) {
-        arc.setNoeudIni(selection.iterator().next());
+        Iterator<Noeud> it = selection.iterator();
+        while (it.hasNext()) {
+          Noeud n = it.next();
+          double distance = arc.getGeometrie().startPoint()
+              .distance(n.getGeometrie().getPosition());
+          if (distance < tolerance) {
+
+            arc.setNoeudIni(n);
+            break;
+          }
+        }
       }
       selection = this.getPopNoeuds().select(arc.getGeometrie().endPoint(),
           tolerance);
       if (!selection.isEmpty()) {
-        arc.setNoeudFin(selection.iterator().next());
+        Iterator<Noeud> it = selection.iterator();
+        while (it.hasNext()) {
+          Noeud n = it.next();
+          double distance = arc.getGeometrie().endPoint()
+              .distance(n.getGeometrie().getPosition());
+          if (distance < tolerance) {
+
+            arc.setNoeudFin(n);
+            break;
+          }
+        }
       }
     }
   }
@@ -2242,8 +2261,8 @@ public class CarteTopo extends DataSet {
     }
     runtime.runFinalization();
     runtime.gc();
-//    long heap6 = runtime.totalMemory() - runtime.freeMemory();
-//    CarteTopo.logger.info("heap after creation of nodes " + heap6);
+    // long heap6 = runtime.totalMemory() - runtime.freeMemory();
+    // CarteTopo.logger.info("heap after creation of nodes " + heap6);
   }
 
   // ///////////////////////////////////////////////////////////////////////////////////////////

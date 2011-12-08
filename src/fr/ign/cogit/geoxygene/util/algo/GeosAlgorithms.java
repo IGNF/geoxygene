@@ -121,11 +121,6 @@ public class GeosAlgorithms implements GeomAlgorithms {
     }
   }
 
-  @Override
-  public IGeometry buffer10(IGeometry geOxyGeom) {
-    return this.buffer(geOxyGeom, 10);
-  }
-
   private native String convexHull(String wkt);
 
   @Override

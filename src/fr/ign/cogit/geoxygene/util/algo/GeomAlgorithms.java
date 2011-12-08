@@ -55,15 +55,6 @@ public interface GeomAlgorithms {
    */
   public IGeometry buffer(IGeometry geOxyGeom, double distance);
 
-  /**
-   * Calcule de buffer sur l'objet passé en paramètre (avec JTS). Le nombre de
-   * segments utilisés pour approximer les parties courbes du buffer est celui
-   * par défaut de JTS, i.e. 8. La forme du "chapeau" (cap) utilsée est celle
-   * par défaut de JTS, i.e. CAP_ROUND : une courbe.
-   * @param geOxyGeom objet autour duquel est construit le buffer
-   * @return buffer de 10 autour de l'objet passé en paramètre
-   */
-  public IGeometry buffer10(IGeometry geOxyGeom);
 
   /**
    * Calcule la différence entre les deux géométries passées en paramètre. Si la
