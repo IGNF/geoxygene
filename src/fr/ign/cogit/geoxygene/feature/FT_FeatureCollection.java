@@ -528,6 +528,9 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
     if (env.width() == 0 || env.length() == 0 || env.isEmpty()) {
       return new HashSet<Feat>(0);
     }
+    if (env.contains(this.getEnvelope())) {
+    	return new HashSet<Feat>(this.getElements());
+    }
     IPolygon envGeom = env.getGeom();
     if (!this.isIndexed) {
       Collection<Feat> selectedFeatures = new HashSet<Feat>(0);

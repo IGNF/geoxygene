@@ -438,4 +438,14 @@ public class GM_Envelope implements IEnvelope {
     dpl.add(dp);
     return dpl;
   }
+
+  @Override
+  public boolean equals(Object env) {
+	  if (! (env instanceof GM_Envelope)) {
+		  return false;
+	  }
+	  GM_Envelope envelope = (GM_Envelope) env;
+	  return this.lowerCorner.equals(envelope.getLowerCorner())
+	  && this.upperCorner.equals(envelope.getUpperCorner());
+  }
 }

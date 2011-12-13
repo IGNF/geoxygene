@@ -354,21 +354,25 @@ public class LayerRenderer implements Renderer {
           // corresponding features (filtered in)
           Map<Rule, Set<IFeature>> filteredFeatures = new HashMap<Rule, Set<IFeature>>(
               0);
-          for (Rule rule : featureTypeStyle.getRules()) {
-            filteredFeatures.put(rule, new HashSet<IFeature>(0));
-          }
-          IFeature[] list = new IFeature[0];
-          synchronized (collection) {
-            list = collection.toArray(list);
-          }
-          for (IFeature feature : list) {
-            for (Rule rule : featureTypeStyle.getRules()) {
-              if ((rule.getFilter() == null)
-                  || rule.getFilter().evaluate(feature)) {
-                filteredFeatures.get(rule).add(feature);
-                break;
+          if (featureTypeStyle.getRules().size() == 1) {
+        	  filteredFeatures.put(featureTypeStyle.getRules().get(0), new HashSet<IFeature>(collection));
+          } else {
+              for (Rule rule : featureTypeStyle.getRules()) {
+                  filteredFeatures.put(rule, new HashSet<IFeature>(0));
+                }
+              IFeature[] list = new IFeature[0];
+              synchronized (collection) {
+                list = collection.toArray(list);
               }
-            }
+        	  for (IFeature feature : list) {
+        		  for (Rule rule : featureTypeStyle.getRules()) {
+        			  if ((rule.getFilter() == null)
+        					  || rule.getFilter().evaluate(feature)) {
+        				  filteredFeatures.get(rule).add(feature);
+        				  break;
+        			  }
+        		  }
+        	  }
           }
           for (int indexRule = featureTypeStyle.getRules().size() - 1; indexRule >= 0; indexRule--) {
             if (this.isCancelled()) {
