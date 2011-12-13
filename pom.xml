@@ -142,6 +142,10 @@
   		<name>Sylvain Becuwe</name>
   		<email>sylvainbounty(at)msn.com</email>
   	</contributor>
+  	<contributor>
+  		<name>Lucille Ricaud</name>
+  		<email>lucille.ricaud(at)ign.fr</email>
+  	</contributor>
   </contributors>
   <build>
   	<sourceDirectory>src</sourceDirectory>
