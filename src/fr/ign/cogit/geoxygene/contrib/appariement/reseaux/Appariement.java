@@ -141,12 +141,14 @@ public abstract class Appariement {
               / Appariement.DEFAULT_TILE_SIZE), 1);
       reseau1.getPopArcs().initSpatialIndex(Tiling.class, true, nb);
     }
-    if (!reseau2.getPopNoeuds().hasSpatialIndex()) {
-      int nb = Math.max(
-          (int) Math.sqrt(reseau2.getPopNoeuds().size()
-              / Appariement.DEFAULT_TILE_SIZE), 1);
-      reseau2.getPopNoeuds().initSpatialIndex(Tiling.class, true, nb);
-    }
+    int nb = Math.max(
+        (int) Math.sqrt(reseau2.getPopNoeuds().size()
+            / Appariement.DEFAULT_TILE_SIZE), 1);
+    reseau2.getPopNoeuds().initSpatialIndex(Tiling.class, true, nb);
+    nb = Math.max(
+        (int) Math.sqrt(reseau1.getPopNoeuds().size()
+            / Appariement.DEFAULT_TILE_SIZE), 1);
+    reseau1.getPopNoeuds().initSpatialIndex(Tiling.class, true, nb);
     // /////////// APPARIEMENT
     // Pre-matching using nodes.
     // Préappariement de noeuds à noeuds.
@@ -606,6 +608,7 @@ public abstract class Appariement {
         lien.addNoeuds2(noeudComp);
         noeudComp.addLiens(lien);
         lien.setEvaluation(1);
+        lien.setCommentaire(noeudRef.getResultatAppariement());
         continue;
       }
       // Cas où plusieurs noeuds comp candidats sont complets.
@@ -629,6 +632,7 @@ public abstract class Appariement {
           lien.addNoeuds2(noeudComp);
           noeudComp.addLiens(lien);
           lien.setEvaluation(Appariement.ZERO_POINT_FIVE);
+          lien.setCommentaire(noeudRef.getResultatAppariement());
           continue;
         }
         // Si il reste plusieurs noeuds complets après le filtrage
@@ -648,6 +652,7 @@ public abstract class Appariement {
           noeudComp.addLiens(lien);
         }
         lien.setEvaluation(0);
+        lien.setCommentaire(noeudRef.getResultatAppariement());
         continue;
       }
       // Cas où il n'y a pas de noeud comp complet, mais un seul
@@ -667,6 +672,7 @@ public abstract class Appariement {
         lien.addNoeuds2(noeudComp);
         noeudComp.addLiens(lien);
         lien.setEvaluation(Appariement.ZERO_POINT_FIVE);
+        lien.setCommentaire(noeudRef.getResultatAppariement());
         continue;
       }
       // Le noeud ref n'a que des noeuds comp candidats impossibles
@@ -696,6 +702,7 @@ public abstract class Appariement {
         lien.addNoeuds2(noeudComp);
         noeudComp.addLiens(lien);
         lien.setEvaluation(Appariement.ZERO_POINT_FIVE);
+        lien.setCommentaire(noeudRef.getResultatAppariement());
         continue;
       }
       // DEBUT TRAITEMENT DES CARREFOURS COMPLEXES :
@@ -784,6 +791,7 @@ public abstract class Appariement {
           lien.addNoeuds2(noeudComp);
           noeudComp.addLiens(lien);
           lien.setEvaluation(Appariement.ZERO_POINT_FIVE);
+          lien.setCommentaire(noeudRef.getResultatAppariement());
           continue;
         }
         noeudRef.setResultatAppariement(I18N
@@ -808,6 +816,7 @@ public abstract class Appariement {
         lien.addGroupes2(groupeComp);
         groupeComp.addLiens(lien);
         lien.setEvaluation(1);
+        lien.setCommentaire(noeudRef.getResultatAppariement());
         continue;
       }
       // plusieurs groupes sont bien appariés (complets) avec un
@@ -860,6 +869,7 @@ public abstract class Appariement {
                     "InTheOnlyCompleteGroup")); //$NON-NLS-1$
           }
           lien.setEvaluation(Appariement.ZERO_POINT_FIVE);
+          lien.setCommentaire(noeudRef.getResultatAppariement());
           lien.addGroupes2(groupeComp);
           groupeComp.addLiens(lien);
           lien.addNoeuds1(noeudRef);
@@ -894,6 +904,7 @@ public abstract class Appariement {
           groupeComp.addLiens(lien);
         }
         lien.setEvaluation(0);
+        lien.setCommentaire(noeudRef.getResultatAppariement());
         lien.addNoeuds1(noeudRef);
         noeudRef.addLiens(lien);
         continue;
@@ -927,6 +938,7 @@ public abstract class Appariement {
           lien.addNoeuds2(noeudComp);
           noeudComp.addLiens(lien);
           lien.setEvaluation(Appariement.ZERO_POINT_FIVE);
+          lien.setCommentaire(noeudRef.getResultatAppariement());
           continue;
         }
         noeudRef.setResultatAppariement(I18N.getString("Appariement." + //$NON-NLS-1$
@@ -948,6 +960,7 @@ public abstract class Appariement {
         LienReseaux lien = new LienReseaux();
         liens.add(lien);
         lien.setEvaluation(Appariement.ZERO_POINT_FIVE);
+        lien.setCommentaire(noeudRef.getResultatAppariement());
         lien.addNoeuds1(noeudRef);
         noeudRef.addLiens(lien);
         lien.addGroupes2(groupeComp);
@@ -1003,6 +1016,7 @@ public abstract class Appariement {
           lien.addNoeuds1(noeudRef);
           noeudRef.addLiens(lien);
           lien.setEvaluation(Appariement.ZERO_POINT_FIVE);
+          lien.setCommentaire(noeudRef.getResultatAppariement());
           continue;
         }
         // plusieurs goupes incomplets restant après les filtrages
@@ -1034,6 +1048,7 @@ public abstract class Appariement {
         lien.addNoeuds1(noeudRef);
         noeudRef.addLiens(lien);
         lien.setEvaluation(0);
+        lien.setCommentaire(noeudRef.getResultatAppariement());
         continue;
       }
       if (incomplets.size() == 0) { // ajout Seb 31/05/05
@@ -1045,6 +1060,7 @@ public abstract class Appariement {
         lien.addNoeuds1(noeudRef);
         noeudRef.addLiens(lien);
         lien.setEvaluation(Appariement.ZERO_POINT_FIVE);
+        lien.setCommentaire(noeudRef.getResultatAppariement());
         for (int j = 0; j < noeudsIncomplets.size(); j++) {
           NoeudApp noeudComp = (NoeudApp) noeudsIncomplets.get(j);
           noeudComp.setResultatAppariement(I18N.getString("Appariement." + //$NON-NLS-1$

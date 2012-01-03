@@ -328,9 +328,9 @@ public final class AppariementIO {
                   }
                 } else {
                   AppariementIO.LOGGER
-                      .error("Attribute "
+                      .error("Attribute " //$NON-NLS-1$
                           + attribute
-                          + " is neither Number nor String. It can't be used as an orientation");
+                          + " is neither Number nor String. It can't be used as an orientation"); //$NON-NLS-1$
                 }
               }
             }
@@ -410,13 +410,13 @@ public final class AppariementIO {
             + new Time(System.currentTimeMillis()).toString());
       }
       // Debut Ajout
-      reseau.creeTopologieArcsNoeuds(0);
-      reseau.creeNoeudsManquants(0);
-      reseau.filtreDoublons(0);
+      reseau.creeTopologieArcsNoeuds(0.1);
+      reseau.creeNoeudsManquants(0.1);
+      reseau.filtreDoublons(0.1);
       reseau.filtreArcsDoublons();
       // Fin Ajout
-      reseau.rendPlanaire(0);
-      reseau.filtreDoublons(0);
+      reseau.rendPlanaire(0.1);
+      reseau.filtreDoublons(0.1);
     } else {
       // cas où on ne veut pas nécessairement rendre planaire la
       // topologie
@@ -424,9 +424,9 @@ public final class AppariementIO {
         AppariementIO.LOGGER.debug(I18N.getString("AppariementIO.Topology") //$NON-NLS-1$
             + new Time(System.currentTimeMillis()).toString());
       }
-      reseau.creeNoeudsManquants(0);
-      reseau.filtreDoublons(0);
-      reseau.creeTopologieArcsNoeuds(0);
+      reseau.creeNoeudsManquants(0.1);
+      reseau.filtreDoublons(0.1);
+      reseau.creeTopologieArcsNoeuds(0.1);
     }
 
     // 2- On fusionne les noeuds proches
