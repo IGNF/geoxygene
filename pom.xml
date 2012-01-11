@@ -633,6 +633,10 @@
   </dependencies>
   <distributionManagement>
   	<downloadUrl>http://sourceforge.net/projects/oxygene-project/files/</downloadUrl>
+  <repository>
+    <id>releases</id>
+    <url>https://dionysos2/nexus-webapp-1.4.1/content/repositories/releases</url>
+  </repository>
   	<snapshotRepository>
   		<id>snapshots</id>
   		<name>Nexus Snapshots Repository</name>
