@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.util.algo.MathUtil;
+
 /**
  * The ColorimetricColor class represent a color by different colorimetric
  * systems. It aims to deal with the RGB, CIELab, CIEXYZ, Java and COGIT
@@ -28,7 +30,6 @@ import org.apache.log4j.Logger;
     "lightness", "usualName", "cleCoul", "redRGB", "greenRGB", "blueRGB",
     "xScreen", "yScreen" })
 public class ColorimetricColor {
-  private static final long serialVersionUID = 1L;
   static Logger logger = Logger.getLogger(ColorimetricColor.class);
 
   /**
@@ -623,8 +624,8 @@ public class ColorimetricColor {
   }
 
   /**
-   * Colorimetric function of the CIELab system. Used to calculate the CIELab
-   * system color components from CIEXYZ components.
+   * Colorimetric function of the CIE 1976 Lab color space.
+   * Used to calculate the CIE 1976 Lab color space components from CIEXYZ components.
    * @param t a CIEXYZ component.
    * @return The result of the function
    */
@@ -640,28 +641,45 @@ public class ColorimetricColor {
   }
 
   /**
-   * Return the lightness in the CIELab color reference system.
-   * @return The lightness in the CIELab color reference system.
+   * Return the lightness in the CIE 1976 Lab color space.
+   * @return The lightness in the CIE 1976 Lab color space.
    */
   public float getCIELabL() {
     return this.getLab()[0];
   }
 
   /**
-   * Return the first chromatic component in the CIELab color reference system.
-   * @return The first chromatic component in the CIELab color reference system.
+   * Return the red-green chromatic component in the CIE 1976 Lab color space.
+   * @return The red-green chromatic component in the CIE 1976 Lab color space.
    */
   public float getCIELabA() {
     return this.getLab()[1];
   }
 
   /**
-   * Return the second chromatic component in the CIELab color reference system.
-   * @return The second chromatic component in the CIELab color reference
-   *         system.
+   * Return the yellow-blue chromatic component in the CIE 1976 Lab color space.
+   * @return The yellow-blue chromatic component in the CIE 1976 Lab color space.
    */
   public float getCIELabB() {
     return this.getLab()[2];
+  }
+  
+  /**
+   * Return the chroma (saturation) in the CIE 1976 LCh color space.
+   * @return The chroma (saturation) in the CIE 1976 LCh color space.
+   */
+  public double getCIEChroma(){
+    double chroma = Math.sqrt(this.getCIELabA() * this.getCIELabA() + this.getCIELabB() * this.getCIELabB());
+    return chroma;
+  }
+  
+  /**
+   * Return the hue angle in the CIE 1976 LCh color space.
+   * @return The hue angle in the CIE 1976 LCh color space.
+   */
+  public double getCIEHue(){
+    double hue = Math.atan(this.getCIELabB() / this.getCIELabA());
+    return hue;
   }
 
   /**
@@ -830,51 +848,52 @@ public class ColorimetricColor {
   }
 
   /**
-   * Calculate an euclidien distance between 2 colors in the CIELab system.
+   * Calculate an euclidien distance between 2 colors in the CIE 1976 color space.
+   * Ie is usually called "deltaE" and refers to the total color difference.
    * @param c1 First {@link ColorimetricColor}.
    * @param c2 Second {@link ColorimetricColor}.
-   * @return the distance between 2 colors in the CIELab system.
+   * @return the distance between 2 colors in the CIE 1976 color space.
    */
   public static float distanceCIElab(ColorimetricColor c1, ColorimetricColor c2) {
     float[] lab1 = c1.getLab();
     float[] lab2 = c2.getLab();
-    return euclideanDistance(lab1, lab2);
+    return MathUtil.distEucl(lab1, lab2);
   }
 
   /**
-   * Calculate an euclidien distance between 2 colors in the RGB system.
+   * Calculate an euclidien distance between 2 colors in the RGB color space.
    * @param c1 First {@link ColorimetricColor}.
    * @param c2 Second {@link ColorimetricColor}.
-   * @return the distance between 2 colors in the RGB system.
+   * @return the distance between 2 colors in the RGB color space.
    */
   public static float distanceRVB(ColorimetricColor c1, ColorimetricColor c2) {
     float[] rgb1 = { c1.getRedRGB(), c1.getGreenRGB(), c1.getBlueRGB() };
     float[] rgb2 = { c2.getRedRGB(), c2.getGreenRGB(), c2.getBlueRGB() };
-    return euclideanDistance(rgb1, rgb2);
-  }
-
-  public static float euclideanDistance(float[] a, float[] b) {
-      float sum = 0;
-      for (int i = 0; i < a.length && i < b.length; i++) {
-          float difference = a[i] - b[i];
-          sum += difference * difference;
-      }
-      return (float) Math.sqrt(sum);
+    return MathUtil.distEucl(rgb1, rgb2);
   }
 
   /**
-   * Calculate the lightness contrast between 2 colors in the CIELab system.
+   * Calculate the lightness difference between 2 colors in the CIE 1976 color space.
    * @param c1 First {@link ColorimetricColor}.
    * @param c2 Second {@link ColorimetricColor}.
-   * @return The lightness contrast between 2 colors in the CIELab system.
+   * @return The lightness difference between 2 colors in the CIE 1976 color space.
    */
-  public static float contrastLightnessCIELab(ColorimetricColor c1,
+  public static float CIELab_Lightness_Difference(ColorimetricColor c1,
       ColorimetricColor c2) {
-    float[] c1Lab = c1.getLab();
-    float[] c2Lab = c2.getLab();
-
-    float contrasteClarte = Math.abs(c1Lab[0] - c2Lab[0]);
-    return contrasteClarte;
+    float deltaL = c1.getCIELabA() - c2.getCIELabL();
+    return deltaL;
+  }
+  
+  /**
+   * Calculate the chroma difference between 2 colors in the CIELab system.
+   * @param c1 First {@link ColorimetricColor}.
+   * @param c2 Second {@link ColorimetricColor}.
+   * @return The chroma difference between 2 colors in the CIELab system.
+   */
+  public static double CIELCh_Chroma_Difference(ColorimetricColor c1,
+      ColorimetricColor c2) {
+    double deltaC = c1.getCIEChroma() - c2.getCIEChroma();
+    return deltaC;
   }
 
   /**
@@ -883,11 +902,16 @@ public class ColorimetricColor {
    * @param c2 Second {@link ColorimetricColor}.
    * @return The hue contrast between 2 colors in the CIELab system.
    */
-  public static float contrastHueCIELab(ColorimetricColor c1,
+  public static double CIELCh_Hue_Difference(ColorimetricColor c1,
       ColorimetricColor c2) {
-    float contrasteTeinte = 0f;
-    // TODO generates this method with the different difference formulas.
-    return contrasteTeinte;
+    double deltaE = distanceCIElab(c1, c2);
+    double deltaL = CIELab_Lightness_Difference(c1, c2);
+    double deltaC = CIELCh_Chroma_Difference(c1, c2);
+    
+    double deltaH = Math.pow(
+        (deltaE*deltaE) - (deltaL*deltaL) - (deltaC*deltaC)
+        , 0.5);
+    return deltaH;
   }
 
   @Override
