@@ -5,7 +5,7 @@
   <!-- ==================================================== -->
   <groupId>fr.ign.cogit</groupId>
   <artifactId>geoxygene</artifactId>
-  <version>1.5</version>
+  <version>1.5-SNAPSHOT</version>
   <name>GeOxygene</name>
   <url>http://oxygene-project.sourceforge.net/</url>
 
