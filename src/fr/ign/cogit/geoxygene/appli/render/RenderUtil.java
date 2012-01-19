@@ -933,7 +933,7 @@ public final class RenderUtil {
           GridCoverageRenderer renderer = new GridCoverageRenderer(
                   coverage.getCoordinateReferenceSystem(),
                   renderEnvelope,
-                  viewport.getLayerViewPanels().iterator().next().getBounds(),
+                  viewport.getLayerViewPanels().iterator().next().getVisibleRect(),
                   null);
           renderer.paint(graphics, coverage,
                   new StyleBuilder().createRasterSymbolizer());
