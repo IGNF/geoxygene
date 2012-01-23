@@ -880,7 +880,7 @@ public class ColorimetricColor {
    */
   public static float CIELab_Lightness_Difference(ColorimetricColor c1,
       ColorimetricColor c2) {
-    float deltaL = c1.getCIELabA() - c2.getCIELabL();
+    float deltaL = c1.getCIELabL() - c2.getCIELabL();
     return deltaL;
   }
   
