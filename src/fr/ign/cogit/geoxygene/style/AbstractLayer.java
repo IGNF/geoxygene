@@ -148,6 +148,7 @@ public abstract class AbstractLayer implements Layer {
         this.activeGroup = activeGroup;
     }
 
+    @Override
     public List<Style> getActiveStyles() {
         Collection<String> groups = this.getGroups();
         if (groups.isEmpty()) {
