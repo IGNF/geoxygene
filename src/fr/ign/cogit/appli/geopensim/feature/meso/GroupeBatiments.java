@@ -170,6 +170,9 @@ public class GroupeBatiments extends ZoneSurfaciqueUrbaine {
 	public void setBatiments(Collection<Batiment> batiments) {
 		this.batiments = batiments;
 		nombreBatiments=batiments.size();
+		for (Batiment b : batiments) {
+		  b.setGroupeBatiments(this);
+		}
 	}
 
 	/**

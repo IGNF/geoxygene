@@ -486,8 +486,7 @@ public class ZoneElementaireUrbaine extends ZoneSurfaciqueUrbaine implements
       logger.debug("Début construireGroupes sur " + this.getGeom());
     }
     double seuilBuffer = 15.0;
-    if (batiments.size() != 0) {// Si il y a des batiments dans la
-                                          // zone élémentaire
+    if (!batiments.isEmpty()) {// Si il y a des batiments
       IGeometry resultat = JtsUtil.bufferPolygones(batiments,
           seuilBuffer);
       if (resultat instanceof GM_Polygon) {// on a un seul groupe de bâtiments

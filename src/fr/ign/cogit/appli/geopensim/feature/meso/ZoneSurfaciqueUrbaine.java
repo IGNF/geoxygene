@@ -360,7 +360,11 @@ public abstract class ZoneSurfaciqueUrbaine extends ZoneSurfacique {
 				listeOrientationsBatiment.add(bat.getOrientationGenerale());
 				listeOrientationsMurs.add(bat.getOrientationCotes());
 			}
-			catch (Exception e) {logger.error("Erreur dans la construction de la géométrie "+e.getMessage());}
+			catch (Exception e) {
+			  logger.error("Erreur dans la construction de la géométrie "
+			      + e.getMessage());
+			  e.printStackTrace();
+			}
 		}
 		minAiresBatiments = MathUtil.min(listeAires);
 		maxAiresBatiments = MathUtil.max(listeAires);
