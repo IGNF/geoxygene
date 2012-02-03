@@ -77,7 +77,6 @@ import fr.ign.cogit.geoxygene.util.index.Tiling;
  * @author Olivier Bonin
  * @author Julien Perret
  */
-
 public class CarteTopo extends DataSet {
   protected static Logger logger = Logger.getLogger(CarteTopo.class.getName());
 
@@ -420,7 +419,6 @@ public class CarteTopo extends DataSet {
     arcAEnlever.setNoeudIni(null);
     arcAEnlever.setFaceDroite(null);
     arcAEnlever.setFaceGauche(null);
-
   }
 
   /**
@@ -878,13 +876,13 @@ public class CarteTopo extends DataSet {
       while (iterator.hasNext()) {
         IDirectPosition current = iterator.next();
         if (current.distance(previous) < 0.01) {
-          CarteTopo.logger.info(new GM_Point(current));
-          CarteTopo.logger.info(new GM_Point(previous));
+          CarteTopo.logger.trace(new GM_Point(current));
+          CarteTopo.logger.trace(new GM_Point(previous));
           if (iterator.hasNext()) {
             // this is not the last point
             iterator.remove();
           } else {
-            CarteTopo.logger.info("last");
+            CarteTopo.logger.trace("last"); //$NON-NLS-1$
             // go back and remove the point before
             iterator.previous();
             previous = iterator.previous();
@@ -900,8 +898,8 @@ public class CarteTopo extends DataSet {
         }
       }
       if (numberOfPointsRemoved > 0) {
-        CarteTopo.logger.info(numberOfPointsRemoved + " points removed");
-        CarteTopo.logger.info(line);
+        CarteTopo.logger.trace(numberOfPointsRemoved + " points removed");
+        CarteTopo.logger.trace(line);
       }
     }
     for (int i = 0; i < arcs.size() - 1; i++) {
@@ -2432,15 +2430,15 @@ public class CarteTopo extends DataSet {
       intersectedNodes.remove(arc.getNoeudIni());
       intersectedNodes.remove(arc.getNoeudFin());
       if (!intersectedNodes.isEmpty()) {
-        CarteTopo.logger.error("Remaing " + intersectedNodes.size() + " nodes"); //$NON-NLS-1$ //$NON-NLS-2$
-        CarteTopo.logger.error("edge " + arc.getGeometrie()); //$NON-NLS-1$
+        CarteTopo.logger.trace("Remaing " + intersectedNodes.size() + " nodes"); //$NON-NLS-1$ //$NON-NLS-2$
+        CarteTopo.logger.trace("edge " + arc.getGeometrie()); //$NON-NLS-1$
         List<ILineString> lines = new ArrayList<ILineString>(0);
         lines.add(arc.getGeometrie());
         for (Noeud node : intersectedNodes) {
           IDirectPosition point = node.getGeometrie().getPosition();
           // force the node to be 2d
           point.setCoordinate(2, Double.NaN);
-          CarteTopo.logger.error("node " + node.getGeometrie()); //$NON-NLS-1$
+          CarteTopo.logger.trace("node " + node.getGeometrie()); //$NON-NLS-1$
           ILineString line = null;
           double min = Double.POSITIVE_INFINITY;
           for (ILineString l : lines) {
@@ -2460,13 +2458,13 @@ public class CarteTopo extends DataSet {
               projectNode = p;
             }
           }
-          CarteTopo.logger.error("projectNode = " + new GM_Point(projectNode)); //$NON-NLS-1$
+          CarteTopo.logger.trace("projectNode = " + new GM_Point(projectNode)); //$NON-NLS-1$
           if (projectNode == null) {
             continue;
           }
           projectNode.setCoordinate(point.getCoordinate());
-          CarteTopo.logger.error("projectNode = " + new GM_Point(projectNode)); //$NON-NLS-1$
-          CarteTopo.logger.error("nodedLine = " + nodedLine); //$NON-NLS-1$
+          CarteTopo.logger.trace("projectNode = " + new GM_Point(projectNode)); //$NON-NLS-1$
+          CarteTopo.logger.trace("nodedLine = " + nodedLine); //$NON-NLS-1$
           DirectPositionList list1 = new DirectPositionList();
           DirectPositionList list2 = new DirectPositionList();
           boolean found = false;
@@ -2489,10 +2487,10 @@ public class CarteTopo extends DataSet {
             lines.add(new GM_LineString(list2));
           }
         }
-        CarteTopo.logger.error("Decomposed into " + lines.size() + " lines"); //$NON-NLS-1$ //$NON-NLS-2$
+        CarteTopo.logger.trace("Decomposed into " + lines.size() + " lines"); //$NON-NLS-1$ //$NON-NLS-2$
         edgesToRemove.add(arc);
         for (ILineString l : lines) {
-          CarteTopo.logger.error(l);
+          CarteTopo.logger.trace(l);
           Arc edge = new Arc();// this.getPopArcs().nouvelElement(l);
           edge.setGeometrie(l);
           Collection<Noeud> nodes = this.getPopNoeuds().select(

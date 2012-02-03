@@ -494,6 +494,7 @@ public class Noeud extends ElementCarteTopo {
    *         contient le noeud de départ et le noeud d'arrivée.
    */
   public Groupe plusCourtChemin(Noeud arrivee, double maxLongueur) {
+    logger.debug("shortest path between " + this.getCoord() + " - " + arrivee.getCoord());
     List<Noeud> noeudsFinaux = new ArrayList<Noeud>(0);
     List<Arc> arcsFinaux = new ArrayList<Arc>(0);
     List<Noeud> noeudsVoisins = new ArrayList<Noeud>(0);
@@ -524,7 +525,7 @@ public class Noeud extends ElementCarteTopo {
           .nouvelElement();
 
       if (this == arrivee) {
-        // logger.info("node is arrival");
+        logger.debug("node is arrival");
         plusCourtChemin.addNoeud(this);
         this.addGroupe(plusCourtChemin);
         return plusCourtChemin;
@@ -562,7 +563,7 @@ public class Noeud extends ElementCarteTopo {
         }
         if (maxLongueur != 0) {
           if (plusProche.distance > maxLongueur) {
-            // logger.info("Trop long, on s'arrête");
+             logger.debug("Trop long, on s'arrête");
             return null; // heuristique pour stopper la recherche
           }
         }
@@ -596,7 +597,7 @@ public class Noeud extends ElementCarteTopo {
 
       // Phase "arriere"
       if (!traites.contains(arrivee)) {
-        // logger.info("couldn't reach it");
+        logger.debug("couldn't reach it");
         return null;
       }
       suivant = arrivee;
