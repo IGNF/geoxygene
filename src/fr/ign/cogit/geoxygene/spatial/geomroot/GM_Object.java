@@ -228,6 +228,15 @@ public abstract class GM_Object implements Cloneable, IGeometry {
     return new GM_Envelope(xmin, xmax, ymin, ymax);
   }
 
+  IEnvelope envelope = null;
+  @Override
+  public IEnvelope getEnvelope() {
+    if (this.envelope == null) {
+      this.envelope = this.envelope();
+    }
+    return this.envelope;
+  }
+
   @Override
   public IPolygon mbRegion() {
     return new GM_Polygon(this.envelope());
