@@ -76,7 +76,7 @@ public class GM_MultiCurve<CurveType extends IOrientableCurve> extends
    * @param geom geometrie à copier
    */
   public GM_MultiCurve(GM_MultiCurve<CurveType> geom) {
-    this((ICompositeCurve) geom.getList());
+    this(geom.getList());
   }
 
   @Override
