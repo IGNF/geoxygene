@@ -39,7 +39,6 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
  * @version 1.0
  * 
  */
-
 class GM_ArcString extends GM_CurveSegment implements IArcString {
 
   @Override

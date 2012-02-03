@@ -52,6 +52,11 @@ public class GM_Bezier extends GM_BSplineCurve implements IBezier {
     this.degree = this.controlPoints.size() - 1;
   }
 
+  @Override
+  public GM_LineString asLineString(double spacing, double offset, double tolerance) {
+    return this.asLineString(spacing, offset);
+  }
+
   /**
    * Use De Casteljau's algorithm.
    * <p>
@@ -62,6 +67,7 @@ public class GM_Bezier extends GM_BSplineCurve implements IBezier {
    * @param offset distance between the linestring and the curve
    * @return a linestring representing the curve
    */
+  @Override
   public GM_LineString asLineString(double spacing, double offset) {
     if (offset != 0) {
       return null;
