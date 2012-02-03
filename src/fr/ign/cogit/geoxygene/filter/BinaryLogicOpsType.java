@@ -74,4 +74,13 @@ public abstract class BinaryLogicOpsType extends LogicOpsType {
     return this.ops.get(0).toString() + this.getClass().getSimpleName()
         + this.ops.get(1).toString();
   }
+  @Override
+  public boolean equals(Object o) {
+    if (! BinaryLogicOpsType.class.isAssignableFrom(o.getClass())) {
+      return false;
+    }
+    BinaryLogicOpsType f = (BinaryLogicOpsType) o;
+    return f.getClass().equals(this.getClass())
+        && f.getOps().equals(this.getOps());
+  }
 }

@@ -72,4 +72,12 @@ public class Literal extends Expression {
   public String toString() {
     return this.getValue();
   }
+  @Override
+  public boolean equals(Object o) {
+    if (!Literal.class.isAssignableFrom(o.getClass())) {
+      return false;
+    }
+    Literal l = (Literal) o;
+    return l.getValue().equals(this.getValue());
+  }
 }

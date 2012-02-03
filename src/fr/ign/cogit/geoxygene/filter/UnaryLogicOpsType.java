@@ -57,4 +57,17 @@ public abstract class UnaryLogicOpsType extends LogicOpsType {
   public void setOp(Filter op) {
     this.op = op;
   }
+  @Override
+  public String toString() {
+    return this.getClass().getSimpleName() + " " + this.op.toString(); //$NON-NLS-1$
+  }
+  @Override
+  public boolean equals(Object o) {
+    if (! UnaryLogicOpsType.class.isAssignableFrom(o.getClass())) {
+      return false;
+    }
+    UnaryLogicOpsType f = (UnaryLogicOpsType) o;
+    return f.getClass().equals(this.getClass())
+        && f.getOp().equals(this.getOp());
+  }
 }

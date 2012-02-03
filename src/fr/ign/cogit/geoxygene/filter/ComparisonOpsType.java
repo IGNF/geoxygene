@@ -74,4 +74,14 @@ public abstract class ComparisonOpsType extends Filter {
     return this.getClass().getSimpleName() + " " + this.getPropertyName() //$NON-NLS-1$
         + " " + this.getLiteral().toString(); //$NON-NLS-1$
   }
+  @Override
+  public boolean equals(Object o) {
+    if (! ComparisonOpsType.class.isAssignableFrom(o.getClass())) {
+      return false;
+    }
+    ComparisonOpsType f = (ComparisonOpsType) o;
+    return f.getClass().equals(this.getClass())
+        && f.getLiteral().equals(this.getLiteral())
+        && f.getPropertyName().equals(this.propertyName);
+  }
 }
