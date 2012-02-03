@@ -46,6 +46,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IAggregate;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
@@ -143,6 +144,15 @@ public class AdapterFactory {
       result.setSRID(geom.getCRS());
       return result;
     }
+    if (geom instanceof ICurve) {
+      // other than linestring
+      ILineString line = ((ICurve) geom).asLineString(1 / AdapterFactory.getScale(), 0);
+//      logger.error("ICURVE " + line);
+      result = AdapterFactory.toLineString(factory, line);
+//      logger.error("ICURVE " + result);
+      result.setSRID(geom.getCRS());
+      return result;
+    }
     if (geom instanceof IPolygon) {
       result = factory.createPolygon(
           (LinearRing) AdapterFactory.toGeometry(factory,
@@ -213,8 +223,16 @@ public class AdapterFactory {
         I18N.getString("AdapterFactory.Type") + geom.getClass() + I18N.getString("AdapterFactory.Unhandled")); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  private static double SCALE = 1.0;
+  public static void setScale(double s) {
+    AdapterFactory.SCALE = s;
+  }
+  public static double getScale() {
+    return AdapterFactory.SCALE;
+  }
+
   public static LineString toLineString(GeometryFactory factory,
-      GM_LineString line) {
+      ILineString line) {
     return factory.createLineString(AdapterFactory.toCoordinateSequence(
         factory, line.coord()));
   }
