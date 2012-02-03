@@ -1290,6 +1290,33 @@ public class JtsAlgorithms implements GeomAlgorithms {
   }
 
   /**
+   * Builds on offset curve for the given {@link IGeometry}. A positive offset
+   * builds an offset curve on the left-hand side of the reference
+   * {@link IGeometry}. Negative means right.
+   * @param geometry reference {@link IGeometry}
+   * @param distance offset distance
+   * @return a {@link IMultiCurve} at the given offset of the reference
+   *         {@link IGeometry}
+   */
+  @SuppressWarnings("unchecked")
+  public static IMultiCurve<ILineString> offsetCurve(IGeometry geometry,
+      double distance) {
+    if (ILineString.class.isAssignableFrom(geometry.getClass())) {
+      return JtsAlgorithms.offsetCurve((ILineString) geometry, distance);
+    }
+    if (IMultiCurve.class.isAssignableFrom(geometry.getClass())) {
+      IMultiCurve<ILineString> multiCurve = (IMultiCurve<ILineString>) geometry;
+      IMultiCurve<ILineString> result = new GM_MultiCurve<ILineString>();
+      for (ILineString curve : multiCurve) {
+        IMultiCurve<ILineString> offset = JtsAlgorithms.offsetCurve(curve, distance);
+        result.addAll(offset.getList());
+      }
+      return result;
+    }
+    return null;
+  }
+
+  /**
    * Remove duplicate coordinates from the input {@link GM_LineString}.
    * @param lineString input {@link GM_LineString}
    * @return a {@link GM_LineString} without duplicated coordinates
