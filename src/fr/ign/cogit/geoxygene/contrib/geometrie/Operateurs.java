@@ -1291,30 +1291,52 @@ public abstract class Operateurs {
    * Méthode pour rééchantillonner une GM_LineString.
    * <p>
    * English: Resampling of a line.
+   * @param ls a linestring
+   * @param maxDistance maximum distance between 2 consecutive points
+   * @return
    */
-  public static ILineString resampling(ILineString ls, double pas) {
-    IDirectPositionList listePoints = ls.coord();
+  public static ILineString resampling(ILineString ls, double maxDistance) {
+    IDirectPositionList list = ls.coord();
+    return new GM_LineString(Operateurs.resampling(list, maxDistance));
+  }
+  /**
+   * Méthode pour rééchantillonner une {@code IDirectPositionList}.
+   * <p>
+   * English: Resampling of a line.
+   * @param list a IDirectPositionList
+   * @param maxDistance maximum distance between 2 consecutive points
+   * @return a resampled IDirectPositionList
+   * @see IDirectPositionList
+   */
+  public static IDirectPositionList resampling(IDirectPositionList list, double maxDistance) {
     IDirectPositionList resampledList = new DirectPositionList();
-    IDirectPosition prevPoint = listePoints.get(0);
+    IDirectPosition prevPoint = list.get(0);
     resampledList.add(prevPoint);
-    for (int j = 1; j < listePoints.size(); j++) {
-      IDirectPosition curPoint = listePoints.get(j);
-      double distance = prevPoint.distance(curPoint);
-      Double fseg = new Double(distance / pas);
+    for (int j = 1; j < list.size(); j++) {
+      IDirectPosition curPoint = list.get(j);
+      double length = prevPoint.distance(curPoint);
+      Double fseg = new Double(length / maxDistance);
       int nseg = fseg.intValue();
+      // make sure the distance between the resulting points is smaller than
+      // maxDistance
+      if (fseg.doubleValue() > nseg) {
+        nseg++;
+      }
+      // compute the actual distance between the resampled points
+      double d = length / nseg;
       if (nseg >= 1) {
         Vecteur u1 = new Vecteur(prevPoint, curPoint);
         for (int i = 0; i < nseg; i++) {
-          curPoint = new DirectPosition(prevPoint.getX() + (i + 1) * pas
-              * u1.vectNorme().getX(), prevPoint.getY() + (i + 1) * pas
-              * u1.vectNorme().getY(), prevPoint.getZ() + (i + 1) * pas
+          curPoint = new DirectPosition(prevPoint.getX() + (i + 1) * d
+              * u1.vectNorme().getX(), prevPoint.getY() + (i + 1) * d
+              * u1.vectNorme().getY(), prevPoint.getZ() + (i + 1) * d
               * u1.vectNorme().getZ());
           resampledList.add(curPoint);
         }
         prevPoint = curPoint;
       }
     }
-    resampledList.add(listePoints.get(listePoints.size() - 1));
-    return new GM_LineString(resampledList);
+    resampledList.add(list.get(list.size() - 1));
+    return resampledList;
   }
 }
