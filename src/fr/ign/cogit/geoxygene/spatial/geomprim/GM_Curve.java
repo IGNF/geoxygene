@@ -38,6 +38,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
+import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 
@@ -291,6 +292,25 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
             theLineString.getControlPoint().add(pt1);
           }
         }
+      }
+    }
+    return theLineString;
+  }
+
+  @Override
+  public ILineString asLineString(double spacing, double offset) {
+    if (offset != 0.0) {
+      GM_Curve.logger
+          .error("GM_Curve::asLineString() : Offset non implémenté."); //$NON-NLS-1$
+      return null;
+    }
+    GM_LineString theLineString = new GM_LineString();
+    synchronized (this.segment) {
+      for (ICurveSegment theSegment : this.segment) {
+        IDirectPositionList aListOfPoints = theSegment.coord();
+        IDirectPositionList resampledPoints = Operateurs.resampling(
+            aListOfPoints, spacing);
+        theLineString.getControlPoint().addAll(resampledPoints);
       }
     }
     return theLineString;
