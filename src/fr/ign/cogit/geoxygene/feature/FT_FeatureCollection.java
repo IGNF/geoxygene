@@ -38,10 +38,10 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IAggregate;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.api.util.index.SpatialIndex;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
@@ -241,7 +241,6 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
     if (this.isIndexed && this.spatialindex.hasAutomaticUpdate()) {
       this.spatialindex.update(value, -1);
     }
-
     this.fireActionPerformed(new FeatureCollectionEvent(this, value,
         FeatureCollectionEvent.Type.REMOVED, value.getGeom()));
     return result;
@@ -256,7 +255,8 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
       return false;
     }
     boolean result = true;
-    //  IEnvelope envelope = this.envelope();
+    IEnvelope envelope = this.getEnvelope();
+    IGeometry envelopeGeometry = (envelope == null) ? null : envelope.getGeom();
     // List<GM_Object> removedCollectionGeometry = new ArrayList<GM_Object>();
     synchronized (this.elements) {
       for (Object o : coll) {
@@ -269,7 +269,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
       }
     }
     this.fireActionPerformed(new FeatureCollectionEvent(this, null,
-        FeatureCollectionEvent.Type.REMOVED,  this.getEnvelope().getGeom()));
+        FeatureCollectionEvent.Type.REMOVED,  envelopeGeometry));
         return result;
     }
 
@@ -350,7 +350,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
         GM_Aggregate<IGeometry> aggr = new GM_Aggregate<IGeometry>(list);
         return aggr;
       }
-      if (GM_LineString.class.isAssignableFrom(geomType)) {
+      if (IOrientableCurve.class.isAssignableFrom(geomType)) {
         GM_MultiCurve<?> aggr = new GM_MultiCurve(list);
         return aggr;
       }
@@ -500,6 +500,7 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
 
   @Override
   public void removeSpatialIndex() {
+    this.spatialindex.clear();
     this.spatialindex = null;
     this.isIndexed = false;
   }
