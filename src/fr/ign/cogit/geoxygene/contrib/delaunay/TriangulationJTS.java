@@ -31,7 +31,6 @@ public class TriangulationJTS extends AbstractTriangulation {
     IMultiCurve<ICurve> linesConstraints = new GM_MultiCurve<ICurve>();
     for (Arc a : this.getPopArcs()) {
       linesConstraints.add(a.getGeometrie());
-
     }
 
     GeometryFactory geomFact = new GeometryFactory();
@@ -49,6 +48,17 @@ public class TriangulationJTS extends AbstractTriangulation {
       this.getPopFaces().nouvelElement(AdapterFactory.toGM_Object(triangle));
     }
     // logger.info(this.getPopFaces().size() + " triangles créés");
+    if (this.getOptions().indexOf('e') != -1) {
+//      GeometryCollection edges = (GeometryCollection) tb
+//      .getEdges(geomFact);
+//      for (int i = 0; i < edges.getNumGeometries(); i++) {
+//        LineString edge = (LineString) edges.getGeometryN(i);
+//        this.getPopArcs().nouvelElement(AdapterFactory.toGM_Object(edge));
+//      }
+//      this.creeNoeudsManquants(0.1);
+//      this.creeTopologieArcsNoeuds(0.1);
+      this.ajouteArcsEtNoeudsAuxFaces(true);
+    }
   
     if (this.getOptions().indexOf('v') != -1) {
       this.ajouteArcsEtNoeudsAuxFaces(true);
