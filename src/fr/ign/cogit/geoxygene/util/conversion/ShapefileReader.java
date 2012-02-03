@@ -28,14 +28,14 @@ import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.event.EventListenerList;
 import javax.swing.filechooser.FileFilter;
 
-import org.apache.log4j.Logger;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.shapefile.ShpFiles;
 import org.geotools.data.shapefile.prj.PrjFileReader;
@@ -153,9 +153,7 @@ public class ShapefileReader implements Runnable {
    * @see #ShapefileReader(String, String, DataSet, boolean)
    */
   public void read() {
-
     new Thread(this).start();
-
   }
 
   /**
@@ -238,12 +236,12 @@ public class ShapefileReader implements Runnable {
        */
       ShapefileReader.read(reader, schemaDefaultFeature, population);
     } catch (MalformedURLException e1) {
-      ShapefileReader.logger.error(I18N.getString("ShapefileReader.FileURL") //$NON-NLS-1$
+      ShapefileReader.logger.log(Level.SEVERE, I18N.getString("ShapefileReader.FileURL") //$NON-NLS-1$
           + shapefileName
           + I18N.getString("ShapefileReader.MalformedNullResult")); //$NON-NLS-1$
       return null;
     } catch (IOException e) {
-      ShapefileReader.logger.error(I18N
+      ShapefileReader.logger.log(Level.SEVERE, I18N
           .getString("ShapefileReader.ProblemReadingFile") //$NON-NLS-1$
           + shapefileName + I18N.getString("ShapefileReader.FileNotLoaded")); //$NON-NLS-1$
       return null;
@@ -287,11 +285,9 @@ public class ShapefileReader implements Runnable {
     int returnVal = choixFichierShape.showOpenDialog(frame);
     frame.dispose();
     if (returnVal == JFileChooser.APPROVE_OPTION) {
-      if (ShapefileReader.logger.isDebugEnabled()) {
-        ShapefileReader.logger.debug(I18N
-            .getString("ShapefileReader.YouChoseThisFile") //$NON-NLS-1$
-            + choixFichierShape.getSelectedFile().getAbsolutePath());
-      }
+      ShapefileReader.logger.log(Level.FINE, I18N
+          .getString("ShapefileReader.YouChoseThisFile") //$NON-NLS-1$
+          + choixFichierShape.getSelectedFile().getAbsolutePath());
       return ShapefileReader.read(choixFichierShape.getSelectedFile()
           .getAbsolutePath());
     }
@@ -311,10 +307,11 @@ public class ShapefileReader implements Runnable {
       SchemaDefaultFeature schemaDefaultFeature,
       IPopulation<IFeature> population, boolean initSpatialIndex) {
     Reader reader = null;
+    ShapefileReader.logger.log(Level.FINE, "INIT SCHEMA"); //$NON-NLS-1$
     try {
       reader = new Reader(shapefileName);
     } catch (MalformedURLException e) {
-      ShapefileReader.logger.error("URL " + shapefileName //$NON-NLS-1$
+      ShapefileReader.logger.log(Level.SEVERE, "URL " + shapefileName //$NON-NLS-1$
           + I18N.getString("ShapefileReader.Malformed")); //$NON-NLS-1$
       return null;
     }
@@ -328,12 +325,10 @@ public class ShapefileReader implements Runnable {
     }
     population.setCenter(new DirectPosition((maxX + minX) / 2,
         (maxY + minY) / 2));
-    if (ShapefileReader.logger.isTraceEnabled()) {
-      ShapefileReader.logger.trace(I18N
-          .getString("ShapefileReader.SpatialIndexInitialised") //$NON-NLS-1$
-          + minX + "," + maxX + "," //$NON-NLS-1$ //$NON-NLS-2$
-          + minY + "," + maxY); //$NON-NLS-1$
-    }
+    ShapefileReader.logger.log(Level.FINE, I18N
+        .getString("ShapefileReader.SpatialIndexInitialised") //$NON-NLS-1$
+        + minX + "," + maxX + "," //$NON-NLS-1$ //$NON-NLS-2$
+        + minY + "," + maxY); //$NON-NLS-1$
     /** Créer un featuretype de jeu correspondant */
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
     newFeatureType.setTypeName(population.getNom());
@@ -349,30 +344,24 @@ public class ShapefileReader implements Runnable {
       type.setValueType(valueType);
       newFeatureType.addFeatureAttribute(type);
       attLookup.put(new Integer(i), new String[] { nomField, memberName });
-      if (ShapefileReader.logger.isDebugEnabled()) {
-        ShapefileReader.logger.debug(I18N
-            .getString("ShapefileReader.AddingAttribute") + i //$NON-NLS-1$
-            + " = " + nomField); //$NON-NLS-1$
-      }
+      ShapefileReader.logger.log(Level.FINE, I18N
+          .getString("ShapefileReader.AddingAttribute") + i //$NON-NLS-1$
+          + " = " + nomField); //$NON-NLS-1$
     }
     /** Création d'un schéma associé au featureType */
     newFeatureType
         .setGeometryType((reader.getShapeType() == null) ? GM_Object.class
             : reader.getShapeType());
-    if (ShapefileReader.logger.isDebugEnabled()) {
-      ShapefileReader.logger.debug("shapeType = " + reader.getShapeType() //$NON-NLS-1$
-          + I18N.getString("ShapefileReader.GeometryType") //$NON-NLS-1$
-          + newFeatureType.getGeometryType());
-    }
+    ShapefileReader.logger.log(Level.FINE, "shapeType = " + reader.getShapeType() //$NON-NLS-1$
+        + I18N.getString("ShapefileReader.GeometryType") //$NON-NLS-1$
+        + newFeatureType.getGeometryType());
     schemaDefaultFeature.setFeatureType(newFeatureType);
     newFeatureType.setSchema(schemaDefaultFeature);
     schemaDefaultFeature.setAttLookup(attLookup);
     population.setFeatureType(newFeatureType);
-    if (ShapefileReader.logger.isDebugEnabled()) {
-      for (GF_AttributeType fa : newFeatureType.getFeatureAttributes()) {
-        ShapefileReader.logger.debug("FeatureAttibute = " //$NON-NLS-1$
-            + fa.getMemberName() + "-" + fa.getValueType()); //$NON-NLS-1$
-      }
+    for (GF_AttributeType fa : newFeatureType.getFeatureAttributes()) {
+      ShapefileReader.logger.log(Level.FINE, "FeatureAttibute = " //$NON-NLS-1$
+          + fa.getMemberName() + "-" + fa.getValueType()); //$NON-NLS-1$
     }
     return reader;
   }
@@ -426,19 +415,17 @@ public class ShapefileReader implements Runnable {
           .getGeometryType();
       try {
         if (reader.geometries[indexFeature] == null) {
-          ShapefileReader.logger.error("null geometry for object "
+          ShapefileReader.logger.log(Level.WARNING, "null geometry for object " //$NON-NLS-1$
               + indexFeature);
-          ShapefileReader.logger.error(I18N.getString("ShapefileReader" + //$NON-NLS-1$
+          ShapefileReader.logger.log(Level.WARNING, I18N.getString("ShapefileReader" + //$NON-NLS-1$
               ".NullGeometryObjectIGnored")); //$NON-NLS-1$
         } else {
           IGeometry geometry = AdapterFactory
               .toGM_Object(reader.geometries[indexFeature]);
           if (!geometryType.isAssignableFrom(geometry.getClass())) {
-            if (ShapefileReader.logger.isDebugEnabled()) {
-              ShapefileReader.logger.debug("Geometry of type " //$NON-NLS-1$
-                  + geometry.getClass().getSimpleName() + " instead of " //$NON-NLS-1$
-                  + geometryType.getSimpleName());
-            }
+            ShapefileReader.logger.log(Level.FINE, "Geometry of type " //$NON-NLS-1$
+                + geometry.getClass().getSimpleName() + " instead of " //$NON-NLS-1$
+                + geometryType.getSimpleName());
             // TODO make it more robust: a lot of assumptions here
             if (geometry instanceof GM_MultiSurface<?>) {
               geometry = ((GM_MultiSurface<?>) geometry).get(0);
@@ -459,12 +446,12 @@ public class ShapefileReader implements Runnable {
               "Read", indexFeature)); //$NON-NLS-1$
         }
       } catch (Exception e) {
-        ShapefileReader.logger.error(I18N.getString("ShapefileReader" + //$NON-NLS-1$
+        ShapefileReader.logger.log(Level.SEVERE, I18N.getString("ShapefileReader" + //$NON-NLS-1$
             ".ProblemWhileConvertingGeometry") //$NON-NLS-1$
             + I18N.getString("ShapefileReader.ObjectIgnored")); //$NON-NLS-1$
       }
     }
-    ShapefileReader.logger.debug(population.size() + " features created for "
+    ShapefileReader.logger.log(Level.FINE, population.size() + " features created for " //$NON-NLS-1$
         + reader.getNbFeatures());
     ShapefileReader.fireActionPerformed(new ActionEvent(population, 2,
         "Finished", reader.getNbFeatures())); //$NON-NLS-1$
@@ -476,7 +463,7 @@ public class ShapefileReader implements Runnable {
       ShapefileReader.read(this.reader, this.schemaDefaultFeature,
           this.population);
     } catch (IOException e) {
-      ShapefileReader.logger.error(I18N
+      ShapefileReader.logger.log(Level.SEVERE, I18N
           .getString("ShapefileReader.ProblemReadingFile") //$NON-NLS-1$
           + this.shapefileName
           + I18N.getString("ShapefileReader.FileNotLoaded")); //$NON-NLS-1$
@@ -541,19 +528,17 @@ class Reader {
       dbaseFileReader = new org.geotools.data.shapefile.dbf.DbaseFileReader(
           shpf, true, Charset.forName("ISO-8859-1")); //$NON-NLS-1$
     } catch (FileNotFoundException e) {
-      if (Reader.logger.isDebugEnabled()) {
-        Reader.logger
-            .debug(I18N.getString("ShapefileReader.File") + shapefileName //$NON-NLS-1$
-                + I18N.getString("ShapefileReader.NotFound")); //$NON-NLS-1$
-      }
+      Reader.logger
+      .log(Level.FINE, I18N.getString("ShapefileReader.File") + shapefileName //$NON-NLS-1$
+          + I18N.getString("ShapefileReader.NotFound")); //$NON-NLS-1$
       return;
     } catch (ShapefileException e) {
-      Reader.logger.error(I18N
+      Reader.logger.log(Level.SEVERE, I18N
           .getString("ShapefileReader.ErrorReadingShapefile") //$NON-NLS-1$
           + shapefileName);
       return;
     } catch (IOException e) {
-      Reader.logger.error(I18N.getString("ShapefileReader.ErrorReadingFile") //$NON-NLS-1$
+      Reader.logger.log(Level.SEVERE, I18N.getString("ShapefileReader.ErrorReadingFile") //$NON-NLS-1$
           + shapefileName);
       e.printStackTrace();
       return;
@@ -561,23 +546,17 @@ class Reader {
     try {
       prjFileReader = new PrjFileReader(shpf);
     } catch (FileNotFoundException e) {
-      if (Reader.logger.isDebugEnabled()) {
-        Reader.logger
-            .debug(I18N.getString("ShapefileReader.PrjFile") + shapefileName //$NON-NLS-1$
-                + I18N.getString("ShapefileReader.NotFound")); //$NON-NLS-1$
-      }
+      Reader.logger
+      .log(Level.FINE, I18N.getString("ShapefileReader.PrjFile") + shapefileName //$NON-NLS-1$
+          + I18N.getString("ShapefileReader.NotFound")); //$NON-NLS-1$
     } catch (ShapefileException e) {
-      if (Reader.logger.isDebugEnabled()) {
-        Reader.logger.debug(I18N
-            .getString("ShapefileReader.ErrorReadingPrjFile") //$NON-NLS-1$
-            + shapefileName);
-      }
+      Reader.logger.log(Level.FINE, I18N
+          .getString("ShapefileReader.ErrorReadingPrjFile") //$NON-NLS-1$
+          + shapefileName);
     } catch (IOException e) {
-      if (Reader.logger.isDebugEnabled()) {
-        Reader.logger.debug(I18N
-            .getString("ShapefileReader.ErrorReadingPrjFile") //$NON-NLS-1$
-            + shapefileName);
-      }
+      Reader.logger.log(Level.FINE, I18N
+          .getString("ShapefileReader.ErrorReadingPrjFile") //$NON-NLS-1$
+          + shapefileName);
     }
 
     this.minX = shapefileReader.getHeader().minX();
@@ -594,7 +573,7 @@ class Reader {
     for (int i = 0; i < this.nbFields; i++) {
       this.fieldNames[i] = dbaseFileReader.getHeader().getFieldName(i);
       this.fieldClasses[i] = dbaseFileReader.getHeader().getFieldClass(i);
-      Reader.logger.debug("field " + i + " = " + this.fieldNames[i]);
+      Reader.logger.log(Level.FINE, "field " + i + " = " + this.fieldNames[i]); //$NON-NLS-1$ //$NON-NLS-2$
     }
     /*
      * // FIXME gère le SRID String wkt =
@@ -637,8 +616,6 @@ class Reader {
         }
         indexFeatures++;
       }
-      Reader.logger.debug("Stopped at index " + indexFeatures + " with "
-          + shapefileReader.hasNext() + " and " + dbaseFileReader.hasNext());
       shapefileReader.close();
       dbaseFileReader.close();
       if (prjFileReader != null) {
@@ -722,9 +699,7 @@ class Reader {
    * @return the class of the given geometry type
    */
   private static Class<? extends GM_Object> geometryType(ShapeType type) {
-    if (Reader.logger.isDebugEnabled()) {
-      Reader.logger.debug("shapeType = " + type); //$NON-NLS-1$
-    }
+    Reader.logger.log(Level.FINE, "shapeType = " + type); //$NON-NLS-1$
     if (type.isPointType()) {
       return GM_Point.class;
     }

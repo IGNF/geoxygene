@@ -25,12 +25,13 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 
-import org.apache.log4j.Logger;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureStore;
@@ -50,6 +51,7 @@ import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 
 /**
@@ -86,7 +88,7 @@ public class ShapefileWriter {
    * @param shapefileName nom du fichier dans lequel sauver les shapes
    * @param crs système de coordonnées
    */
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @SuppressWarnings({ "unchecked" })
   public static <Feature extends IFeature> void write(
       IFeatureCollection<Feature> featureCollection, String shapefileName,
       CoordinateReferenceSystem crs) {
@@ -102,25 +104,23 @@ public class ShapefileWriter {
       String specs = "geom:"; //$NON-NLS-1$
       FeatureType featureType = featureCollection.getFeatureType();
       if (featureType != null) {
-        if (ShapefileWriter.logger.isDebugEnabled()) {
-          ShapefileWriter.logger.debug("Using the collection's featureType"); //$NON-NLS-1$
-        }
+        ShapefileWriter.logger.log(Level.FINE, "Using the collection's featureType"); //$NON-NLS-1$
         specs += AdapterFactory
             .toJTSGeometryType(featureType.getGeometryType()).getSimpleName();
         for (GF_AttributeType attributeType : featureType
             .getFeatureAttributes()) {
           Class<?> attributeClass = ShapefileWriter
               .valueType2Class(attributeType.getValueType());
-          // ShapefileWriter.logger.info("Class = " +
-          // attributeClass.getName());
-          specs += "," + attributeType.getMemberName() //$NON-NLS-1$
+          String attributeName = attributeType.getMemberName();
+          if (AttributeType.class.isAssignableFrom(attributeType.getClass())) {
+            attributeName = ((AttributeType) attributeType).getNomField(); 
+          }
+          specs += "," + attributeName //$NON-NLS-1$
               + ":" //$NON-NLS-1$
               + attributeClass.getName();
         }
       } else {
-        if (ShapefileWriter.logger.isDebugEnabled()) {
-          ShapefileWriter.logger.debug("Using the features' featureType"); //$NON-NLS-1$
-        }
+        ShapefileWriter.logger.log(Level.FINE, "Using the features' featureType"); //$NON-NLS-1$
         specs += AdapterFactory.toJTSGeometryType(
             featureCollection.get(0).getGeom().getClass()).getSimpleName();
         if (featureCollection.get(0).getFeatureType() != null) {
@@ -129,17 +129,17 @@ public class ShapefileWriter {
               .getFeatureAttributes()) {
             Class<?> attributeClass = ShapefileWriter
                 .valueType2Class(attributeType.getValueType());
-            // ShapefileWriter.logger.info("Class = " +
-            // attributeClass.getName());
+            String attributeName = attributeType.getMemberName();
+            if (AttributeType.class.isAssignableFrom(attributeType.getClass())) {
+              attributeName = ((AttributeType) attributeType).getNomField(); 
+            }
             specs += "," //$NON-NLS-1$
-                + attributeType.getMemberName() + ":" //$NON-NLS-1$
+                + attributeName + ":" //$NON-NLS-1$
                 + attributeClass.getName();
           }
         }
       }
-      if (ShapefileWriter.logger.isDebugEnabled()) {
-        ShapefileWriter.logger.debug("Specs = " + specs); //$NON-NLS-1$
-      }
+      ShapefileWriter.logger.log(Level.FINE, "Specs = " + specs); //$NON-NLS-1$
       String featureTypeName = shapefileName.substring(
           shapefileName.lastIndexOf("/") + 1, //$NON-NLS-1$
           shapefileName.lastIndexOf(".")); //$NON-NLS-1$
@@ -159,11 +159,9 @@ public class ShapefileWriter {
           for (GF_AttributeType attributeType : featureType
               .getFeatureAttributes()) {
             liste.add(feature.getAttribute(attributeType.getMemberName()));
-            if (ShapefileWriter.logger.isTraceEnabled()) {
-              ShapefileWriter.logger.trace("Attribute " //$NON-NLS-1$
-                  + attributeType.getMemberName() + " = " //$NON-NLS-1$
-                  + feature.getAttribute(attributeType.getMemberName()));
-            }
+            ShapefileWriter.logger.log(Level.FINE, "Attribute " //$NON-NLS-1$
+                + attributeType.getMemberName() + " = " //$NON-NLS-1$
+                + feature.getAttribute(attributeType.getMemberName()));
           }
         }
         SimpleFeature simpleFeature = SimpleFeatureBuilder.build(type,
@@ -178,21 +176,21 @@ public class ShapefileWriter {
       t.close();
       store.dispose();
     } catch (MalformedURLException e) {
-      ShapefileWriter.logger.error(I18N.getString("ShapefileWriter.FileName") //$NON-NLS-1$
+      ShapefileWriter.logger.log(Level.SEVERE, I18N.getString("ShapefileWriter.FileName") //$NON-NLS-1$
           + shapefileName + I18N.getString("ShapefileWriter.Malformed")); //$NON-NLS-1$
       e.printStackTrace();
     } catch (IOException e) {
-      ShapefileWriter.logger.error(I18N
+      ShapefileWriter.logger.log(Level.SEVERE, I18N
           .getString("ShapefileWriter.ErrorWritingFile") //$NON-NLS-1$
           + shapefileName);
       e.printStackTrace();
     } catch (SchemaException e) {
-      ShapefileWriter.logger.error(I18N
+      ShapefileWriter.logger.log(Level.SEVERE, I18N
           .getString("ShapefileWriter.SchemeUsedForWritingFile") //$NON-NLS-1$
           + shapefileName + I18N.getString("ShapefileWriter.Incorrect")); //$NON-NLS-1$
       e.printStackTrace();
     } catch (Exception e) {
-      ShapefileWriter.logger.error(I18N
+      ShapefileWriter.logger.log(Level.SEVERE, I18N
           .getString("ShapefileWriter.ErrorWritingFile") //$NON-NLS-1$
           + shapefileName);
       e.printStackTrace();
@@ -284,11 +282,9 @@ public class ShapefileWriter {
       if (!shapefileName.contains(".shp")) { //$NON-NLS-1$
         shapefileName = shapefileName + ".shp"; //$NON-NLS-1$
       }
-      if (ShapefileWriter.logger.isDebugEnabled()) {
-        ShapefileWriter.logger.debug(I18N
-            .getString("ShapefileWriter.YouChoseToSaveThisFile") //$NON-NLS-1$
-            + shapefileName);
-      }
+      ShapefileWriter.logger.log(Level.FINE, I18N
+          .getString("ShapefileWriter.YouChoseToSaveThisFile") //$NON-NLS-1$
+          + shapefileName);
       ShapefileWriter.write(featureCollection, shapefileName, crs);
     }
   }
