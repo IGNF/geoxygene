@@ -139,8 +139,10 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
         for (Rule rule : style.getFeatureTypeStyles().get(0).getRules()) {
           Symbolizer symbolizer = rule.getSymbolizers().get(0);
           if (symbolizer.isLineSymbolizer()) {
-            colors
-                .add(new ColorimetricColor(symbolizer.getStroke().getStroke()));
+            if (symbolizer.getStroke() != null) {
+              colors
+              .add(new ColorimetricColor(symbolizer.getStroke().getStroke()));
+            }
           } else if (symbolizer.isPolygonSymbolizer()) {
             colors.add(new ColorimetricColor(((PolygonSymbolizer) symbolizer)
                 .getFill().getFill()));

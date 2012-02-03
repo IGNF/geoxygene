@@ -44,6 +44,18 @@ public class PointSymbolizer extends AbstractSymbolizer {
     this.graphic = graphic;
   }
 
+
+  @XmlElement(name = "ColorMap")
+  ColorMap colorMap = null;
+
+  public ColorMap getColorMap() {
+    return this.colorMap;
+  }
+
+  public void setColorMap(ColorMap colorMap) {
+    this.colorMap = colorMap;
+  }
+
 //  @Override
 //  public void paint(IFeature feature, Viewport viewport, Graphics2D graphics) {
 //    if (this.getGraphic() == null) {
