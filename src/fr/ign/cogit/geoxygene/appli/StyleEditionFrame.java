@@ -72,6 +72,9 @@ import org.apache.log4j.Logger;
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
@@ -81,9 +84,12 @@ import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Fill;
 import fr.ign.cogit.geoxygene.style.Interpolate;
 import fr.ign.cogit.geoxygene.style.InterpolationPoint;
+import fr.ign.cogit.geoxygene.style.LabelPlacement;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.LinePlacement;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Mark;
+import fr.ign.cogit.geoxygene.style.PointPlacement;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.Rule;
@@ -322,32 +328,33 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     toponymPanel.setBorder(fillTitleBorder);
     toponymPanel.setPreferredSize(new Dimension(400, 100));
     
-    String[] fieldsStr = new String[this.layer.getFeatureCollection().getFeatureType().getFeatureAttributes().size()];
-    for (int i = 0; i < fieldsStr.length; i++) {
-      fieldsStr[i] = this.layer.getFeatureCollection().getFeatureType().getFeatureAttributes().get(i).getMemberName(); 
-    }
-    
     JLabel label = new JLabel(I18N.getString("StyleEditionFrame.DisplayField")); //$NON-NLS-1$
-    this.fields = new JComboBox(fieldsStr);
-    this.fields.setPreferredSize(fields.getPreferredSize());
-    this.fields.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {        
-        if (StyleEditionFrame.this.symbolizer != null) {
-          StyleEditionFrame.this.symbolizer.setLabel(
-            ((JComboBox)e.getSource()).getSelectedItem().toString());
-        }
-        StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
-        StyleEditionFrame.this.layerLegendPanel.repaint();
-        StyleEditionFrame.this.layerViewPanel.repaint();
-      }
-    });
     
     JPanel fieldsPanel = new JPanel();
     fieldsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
     fieldsPanel.add(label);
-    fieldsPanel.add(this.fields);
-    
+
+    if (this.layer.getFeatureCollection().getFeatureType() != null) {
+      String[] fieldsStr = new String[this.layer.getFeatureCollection().getFeatureType().getFeatureAttributes().size()];
+      for (int i = 0; i < fieldsStr.length; i++) {
+        fieldsStr[i] = this.layer.getFeatureCollection().getFeatureType().getFeatureAttributes().get(i).getMemberName(); 
+      }
+      this.fields = new JComboBox(fieldsStr);
+      this.fields.setPreferredSize(fields.getPreferredSize());
+      this.fields.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {        
+          if (StyleEditionFrame.this.symbolizer != null) {
+            StyleEditionFrame.this.symbolizer.setLabel(
+              ((JComboBox)e.getSource()).getSelectedItem().toString());
+          }
+          StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
+          StyleEditionFrame.this.layerLegendPanel.repaint();
+          StyleEditionFrame.this.layerViewPanel.repaint();
+        }
+      });
+      fieldsPanel.add(this.fields);
+    }
     JPanel topoBtnPanel = new JPanel();
     topoBtnPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
     this.toponymBtn = new JCheckBox(I18N.getString("StyleEditionFrame.DisplayToponyms")); //$NON-NLS-1$
@@ -367,6 +374,25 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
           
           if (StyleEditionFrame.this.symbolizer == null) {
             StyleEditionFrame.this.symbolizer = new TextSymbolizer();
+            TextSymbolizer textSymbolizer = StyleEditionFrame.this.symbolizer;
+            LabelPlacement labelPlacement = new LabelPlacement();
+            boolean usePointPlacement = true;
+            if (layer.getFeatureCollection().getFeatureType() != null) {
+              Class<? extends IGeometry> geomType = layer
+                  .getFeatureCollection().getFeatureType().getGeometryType();
+              if (IOrientableCurve.class.isAssignableFrom(geomType)
+                  || IMultiCurve.class.isAssignableFrom(geomType)) {
+                usePointPlacement = false;
+              }
+            }
+            if (usePointPlacement) {
+              PointPlacement pointPlacement = new PointPlacement();
+              labelPlacement.setPlacement(pointPlacement);
+            } else {
+              LinePlacement linePlacement = new LinePlacement();
+              labelPlacement.setPlacement(linePlacement);
+            }
+            textSymbolizer.setLabelPlacement(labelPlacement);
           }
           
           StyleEditionFrame.this.symbolizer.setFont(new fr.ign.cogit.geoxygene.style.Font(
@@ -1245,12 +1271,15 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
 
         // If a string was returned, say so.
         if ((attributeName != null) && (attributeName.length() > 0)) {
-          double min = Double.MAX_VALUE;
-          double max = Double.MIN_VALUE;
+          double min = Double.POSITIVE_INFINITY;
+          double max = Double.NEGATIVE_INFINITY;
           for (IFeature f : this.layer.getFeatureCollection()) {
-            Double v = (Double) f.getAttribute(attributeName);
-            min = Math.min(min, v);
-            max = Math.max(max, v);
+            try {
+              Double v = Double.parseDouble(f.getAttribute(attributeName).toString());
+              min = Math.min(min, v);
+              max = Math.max(max, v);
+            } catch (NumberFormatException exception) {
+            }
           }
           double diff = max - min;
           double range = diff / 5;
