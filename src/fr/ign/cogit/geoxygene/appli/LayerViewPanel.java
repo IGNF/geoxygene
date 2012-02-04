@@ -46,6 +46,7 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
@@ -307,7 +308,15 @@ public class LayerViewPanel extends JPanel implements Printable, SldListener {
     Iterator<Layer> layerIterator = copy.iterator();
     IEnvelope envelope = layerIterator.next().getFeatureCollection().envelope();
     while (layerIterator.hasNext()) {
-      envelope.expand(layerIterator.next().getFeatureCollection().envelope());
+      IFeatureCollection<? extends IFeature> collection = layerIterator.next().getFeatureCollection();
+      if (collection != null) {
+        IEnvelope env = collection.getEnvelope();
+        if (envelope == null) {
+          envelope = env;
+        } else {
+          envelope.expand(env);
+        }
+      }
     }
     return envelope;
   }
@@ -404,7 +413,6 @@ public class LayerViewPanel extends JPanel implements Printable, SldListener {
 public void setModel(StyledLayerDescriptor sld) {
     this.sldmodel = sld;
     this.sldmodel.addSldListener(this);
-
 }
 
     /**
@@ -432,12 +440,10 @@ public void setModel(StyledLayerDescriptor sld) {
     @Override
     public void layerOrderChanged(int oldIndex, int newIndex) {
         this.repaint();
-
     }
 
     @Override
     public void layersRemoved(Collection<Layer> layers) {
         this.repaint();
-
     }
 }
