@@ -124,13 +124,13 @@ public class CubicSplinePlugin implements GeOxygeneApplicationPlugin,
       s.setTension(tension);
       s.setBias(bias);
       s.setContinuity(continuity);
-      popHermite.nouvelElement(s.asLineString(1, 0));
+      popHermite.nouvelElement(s);
     }
     /** créer un featuretype de jeu correspondant */
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureTypeHermite = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
     newFeatureTypeHermite.setGeometryType(GM_LineString.class);
     popHermite.setFeatureType(newFeatureTypeHermite);
-    DataSet.getInstance().addPopulation(popHermite);
+    project.getDataSet().addPopulation(popHermite);
     project.addFeatureCollection(popHermite, popHermite.getNom(), null);
   }
 }

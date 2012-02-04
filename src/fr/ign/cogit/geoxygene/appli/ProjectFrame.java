@@ -217,7 +217,7 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
     String populationName = fileName.substring(lastIndexOfSeparator + 1,
         fileName.lastIndexOf(".")); //$NON-NLS-1$
     logger.info(populationName);
-    Population<DefaultFeature> population = GPSTextfileReader.read(fileName, populationName, DataSet.getInstance(), true);
+    Population<DefaultFeature> population = GPSTextfileReader.read(fileName, populationName, this.getDataSet(), true);
     logger.info(population.size());
 
     if (population != null) {
@@ -236,7 +236,7 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
     String populationName = fileName.substring(lastIndexOfSeparator + 1,
         fileName.lastIndexOf(".")); //$NON-NLS-1$
     logger.info(populationName);
-    Population<DefaultFeature> population = RoadNetworkTextfileReader.read(fileName, populationName, DataSet.getInstance(), true);
+    Population<DefaultFeature> population = RoadNetworkTextfileReader.read(fileName, populationName, this.getDataSet(), true);
     logger.info(population.size());
 
     if (population != null) {

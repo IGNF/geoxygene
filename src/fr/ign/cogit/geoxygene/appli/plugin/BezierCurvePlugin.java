@@ -33,11 +33,9 @@ import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 import fr.ign.cogit.geoxygene.contrib.delaunay.Triangulation;
-import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Bezier;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.style.Layer;
 
 /**
@@ -99,13 +97,14 @@ public class BezierCurvePlugin implements GeOxygeneApplicationPlugin,
     popBezier.setPersistant(false);
     for (IFeature f : layer.getFeatureCollection()) {
       GM_Bezier b = new GM_Bezier(f.getGeom().coord());
-      popBezier.nouvelElement(b.asLineString(1, 0));
+      popBezier.nouvelElement(b);
     }
+    logger.error("bezier " + popBezier.size());
     /** créer un featuretype de jeu correspondant */
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureTypeBezier = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
-    newFeatureTypeBezier.setGeometryType(GM_LineString.class);
+    newFeatureTypeBezier.setGeometryType(GM_Bezier.class);
     popBezier.setFeatureType(newFeatureTypeBezier);
-    DataSet.getInstance().addPopulation(popBezier);
+    project.getDataSet().addPopulation(popBezier);
     project.addFeatureCollection(popBezier, popBezier.getNom(), null);
   }
 }
