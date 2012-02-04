@@ -54,6 +54,7 @@ public interface IGeometry {
    * Rectangle englobant minimum de l'objet (en 2D) sous forme de GM_Envelope.
    */
   public abstract IEnvelope envelope();
+  public abstract IEnvelope getEnvelope();
 
   /**
    * Rectangle englobant minimum de l'objet (en 2D) sous forme de GM_Polygon. Le
