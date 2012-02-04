@@ -34,6 +34,7 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IBezier;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
@@ -41,6 +42,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IAggregate;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
@@ -49,6 +51,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 
 /**
  * Viewport associated with a {@link LayerViewPanel}. This class is responsible
@@ -76,13 +79,32 @@ public class Viewport {
    * coordinates.
    */
   private Point2D viewOrigin = new Point2D.Double(0, 0);
-
   /**
    * The layer view panels.
    */
   private Collection<LayerViewPanel> layerViewPanels = new ArrayList<LayerViewPanel>(
       0);
-
+  /**
+   * The number of pixels used to approximate a curve. It is used both when
+   * transforming a curve to a linestring (especially for rendering).
+   */
+  private double spacingInPixels = 10;
+  /**
+   * @return The number of pixels used to approximate a curve. It is used both
+   *         when transforming a curve to a linestring (especially for
+   *         rendering).
+   */
+  public double getSpacingInPixels() {
+    return this.spacingInPixels;
+  }
+  /**
+   * Set the number of pixels used to approximate a curve. It is used both when
+   * transforming a curve to a linestring (especially for rendering).
+   * @param spacingInPixels The number of pixels used to approximate a curve.
+   */
+  public void setSpacingInixels(double spacingInPixels) {
+    this.spacingInPixels = spacingInPixels;
+  }
   /**
    * @return The {@link LayerViewPanel} associated with the viewport
    */
@@ -265,7 +287,7 @@ public class Viewport {
     }
     IEnvelope envelope = this.getEnvelopeInModelCoordinates();
     try {
-      IEnvelope geometryEnvelope = geometry.envelope();
+      IEnvelope geometryEnvelope = geometry.getEnvelope();
       // if the geometry does not intersect the envelope of
       // the view, return a null shape
       if (!envelope.intersects(geometryEnvelope)) {
@@ -282,6 +304,10 @@ public class Viewport {
       }
       if (geometry.isLineString()) {
         return this.toShape((ILineString) geometry);
+      }
+      if (ICurve.class.isAssignableFrom(geometry.getClass())) {
+        // Curve other than linestring
+        return this.toShape((ICurve) geometry);
       }
       if (geometry instanceof IRing) {
         return this.toShape(new GM_Polygon((IRing) geometry));
@@ -450,6 +476,39 @@ public class Viewport {
     Point2D.Double pt = new Point2D.Double(modelDirectPosition.getX(),
         modelDirectPosition.getY());
     return this.getModelToViewTransform().transform(pt, pt);
+  }
+  /**
+   * Transform a curve to an awt shape.
+   * @param curve a curve
+   * @return a Shape representing the given curve as an AWT shape
+   * @throws NoninvertibleTransformException throws an exception when the
+   *           transformation fails
+   */
+  private Shape toShape(final ICurve curve)
+      throws NoninvertibleTransformException {
+    if (IBezier.class.isAssignableFrom(curve.getClass())) {
+      IBezier b = (IBezier) curve;
+      if (b.getDegree() == 2) {
+        IDirectPositionList list = this.toViewDirectPositionList(curve.coord());
+        java.awt.geom.QuadCurve2D.Double quadratic = new java.awt.geom.QuadCurve2D.Double(
+            list.get(0).getX(), list.get(0).getY(), list.get(1).getX(), list
+                .get(1).getY(), list.get(2).getX(), list.get(2).getY());
+        return quadratic;
+      }
+      if (b.getDegree() == 3) {
+        IDirectPositionList list = this.toViewDirectPositionList(curve.coord());
+        java.awt.geom.CubicCurve2D.Double cubic = new java.awt.geom.CubicCurve2D.Double(
+            list.get(0).getX(), list.get(0).getY(), list.get(1).getX(), list
+                .get(1).getY(), list.get(2).getX(), list.get(2).getY(), list
+                .get(3).getX(), list.get(3).getY());
+        return cubic;
+      }
+    }
+    // sample the curve using the current scale of the viewport to compute the
+    // spacing for the approximation
+    ILineString linestring = curve.asLineString(this.getSpacingInPixels()
+        / this.getScale(), 0);
+    return this.toShape(linestring);
   }
 
   /**
@@ -783,7 +842,7 @@ public class Viewport {
    */
   public final void moveOf(final double x, final double y)
       throws NoninvertibleTransformException {
-    logger.info(getMETERS_PER_PIXEL());
+    logger.debug(getMETERS_PER_PIXEL());
     this.viewOrigin.setLocation(this.viewOrigin.getX() + x / this.scale,
         this.viewOrigin.getY() + y / this.scale);
     this.update();
@@ -813,6 +872,9 @@ public class Viewport {
   public final void setScale(double newScale) {
     IDirectPosition center = this.getEnvelopeInModelCoordinates().center();
     this.scale = newScale;
+    // update the spacing in the adapter factory (used to approximate curves
+    // such as bezier)
+    AdapterFactory.setSpacing(this.getSpacingInPixels() / this.getScale());
     Point2D modelPoint = new Point2D.Double(center.getX(), center.getY());
     LayerViewPanel lvp = this.layerViewPanels.iterator().next();
     modelPoint.setLocation(modelPoint.getX() - lvp.getWidth()
