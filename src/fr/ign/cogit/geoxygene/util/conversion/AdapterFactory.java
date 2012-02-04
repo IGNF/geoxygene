@@ -146,7 +146,7 @@ public class AdapterFactory {
     }
     if (geom instanceof ICurve) {
       // other than linestring
-      ILineString line = ((ICurve) geom).asLineString(1 / AdapterFactory.getScale(), 0);
+      ILineString line = ((ICurve) geom).asLineString(AdapterFactory.getSpacing(), 0);
 //      logger.error("ICURVE " + line);
       result = AdapterFactory.toLineString(factory, line);
 //      logger.error("ICURVE " + result);
@@ -223,12 +223,12 @@ public class AdapterFactory {
         I18N.getString("AdapterFactory.Type") + geom.getClass() + I18N.getString("AdapterFactory.Unhandled")); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
-  private static double SCALE = 1.0;
-  public static void setScale(double s) {
-    AdapterFactory.SCALE = s;
+  private static double SPACING = 1.0;
+  public static void setSpacing(double s) {
+    AdapterFactory.SPACING = s;
   }
-  public static double getScale() {
-    return AdapterFactory.SCALE;
+  public static double getSpacing() {
+    return AdapterFactory.SPACING;
   }
 
   public static LineString toLineString(GeometryFactory factory,
