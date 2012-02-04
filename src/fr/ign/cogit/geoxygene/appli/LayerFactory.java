@@ -36,17 +36,17 @@ import org.geotools.gce.geotiff.GeoTiffReader;
 import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.FT_Coverage;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
-import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
-import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.style.ColorMap;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Fill;
@@ -546,8 +546,8 @@ public class LayerFactory{
         rule.getSymbolizers().add(rasterSymbolizer);
         return rule;
       }
-      if (geometryType.equals(GM_Polygon.class)
-          || geometryType.equals(GM_MultiSurface.class)) {
+      if (IPolygon.class.isAssignableFrom(geometryType)
+          || IMultiSurface.class.isAssignableFrom(geometryType)) {
         /** Ajoute un polygone symbolizer */
         PolygonSymbolizer polygonSymbolizer = new PolygonSymbolizer();
         polygonSymbolizer.setStroke(stroke);
@@ -555,16 +555,16 @@ public class LayerFactory{
         rule.getSymbolizers().add(polygonSymbolizer);
         return rule;
       }
-      if (geometryType.equals(GM_LineString.class)
-          || geometryType.equals(GM_MultiCurve.class)) {
+      if (ICurve.class.isAssignableFrom(geometryType)
+          || IMultiCurve.class.isAssignableFrom(geometryType)) {
         /** Ajoute un line symbolizer */
         LineSymbolizer lineSymbolizer = new LineSymbolizer();
         lineSymbolizer.setStroke(stroke);
         rule.getSymbolizers().add(lineSymbolizer);
         return rule;
       }
-      if (geometryType.equals(GM_Point.class)
-          || geometryType.equals(GM_MultiPoint.class)) {
+      if (IPoint.class.isAssignableFrom(geometryType)
+          || IMultiPoint.class.isAssignableFrom(geometryType)) {
         /** Ajoute un point symbolizer */
         PointSymbolizer pointSymbolizer = new PointSymbolizer();
         Graphic graphic = new Graphic();
