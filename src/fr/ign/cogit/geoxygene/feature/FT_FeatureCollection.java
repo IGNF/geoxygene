@@ -530,7 +530,11 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
       return new HashSet<Feat>(0);
     }
     if (env.contains(this.getEnvelope())) {
-    	return new HashSet<Feat>(this.getElements());
+      Collection<Feat> result = null;
+      synchronized (this.elements) {
+        result = new HashSet<Feat>(this.elements);
+      }
+      return result;
     }
     IPolygon envGeom = env.getGeom();
     if (!this.isIndexed) {
