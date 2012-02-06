@@ -30,6 +30,8 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
@@ -73,7 +75,7 @@ import fr.ign.cogit.geoxygene.I18N;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
-import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -89,6 +91,7 @@ import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.LinePlacement;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Mark;
+import fr.ign.cogit.geoxygene.style.Placement;
 import fr.ign.cogit.geoxygene.style.PointPlacement;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
@@ -104,7 +107,7 @@ import fr.ign.cogit.geoxygene.style.TextSymbolizer;
  * @author Charlotte Hoarau
  */
 public class StyleEditionFrame extends JFrame implements ActionListener,
-    MouseListener, ChangeListener {
+    MouseListener, ChangeListener, ItemListener {
 
   private static final long serialVersionUID = 1L;
 
@@ -152,6 +155,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
   private JPanel strokePanel2;
   private JPanel symbolPanel;
   private JPanel toponymPanel;
+  private JPanel placementPanel;
   private JPanel fontPanel;
 
   private JButton btnAddStyle;
@@ -234,7 +238,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
   private JCheckBox toponymBtn;
   private JComboBox fields;
   private JLabel textPreviewLabel;
-  
+  private JComboBox placements;
+  private JCheckBox repeatBtn;
   /**
    * Style Edition Main Frame.
    * @param layerLegendPanel the layerLegendPanel of the style to be modified.
@@ -257,17 +262,17 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.setInitialSLD(StyledLayerDescriptor.unmarshall(reader));
     this.getInitialSLD().setDataSet(dataset);
     if (this.layer.getSymbolizer().isPolygonSymbolizer()) {
-      this.init_Polygon();
+      this.initPolygon();
     } else if (this.layer.getSymbolizer().isLineSymbolizer()) {
-      this.init_Line();
+      this.initLine();
     } else if (this.layer.getSymbolizer().isPointSymbolizer()) {
-      this.init_Point();
+      this.initPoint();
     }
 
     this.textStylePanel = new JPanel();
-    this.textStylePanel.setLayout(new BorderLayout());
+    this.textStylePanel.setLayout(new BoxLayout(this.textStylePanel, BoxLayout.Y_AXIS));
 
-    this.init_textStylePanel();
+    this.initTextStylePanel();
     this.tabPane = new JTabbedPane();
     this.tabPane.add(I18N.getString("StyleEditionFrame.Symbology"), this.graphicStylePanel); //$NON-NLS-1$
     this.tabPane.add(I18N.getString("StyleEditionFrame.Toponyms"), this.textStylePanel); //$NON-NLS-1$
@@ -284,28 +289,29 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.setAlwaysOnTop(true);
   }
 
-  public void init_textStylePanel() {
+  public void initTextStylePanel() {
     //Initialisation du symboliser s'il y a lieu
     Style lastStyle = this.layer.getStyles().get(layer.getStyles().size() - 1);
     if (lastStyle.getFeatureTypeStyles()
         .get(lastStyle.getFeatureTypeStyles().size() - 1)
-        .getSymbolizer().isTextSymbolizer()) {
-      if (this.symbolizer == null) {
+        .getSymbolizer().isTextSymbolizer() && this.symbolizer == null) {
         this.symbolizer = (TextSymbolizer) lastStyle.getFeatureTypeStyles()
             .get(lastStyle.getFeatureTypeStyles().size() - 1).getSymbolizer();
-      }
     }
-    
+    if (this.symbolizer == null) {
+      this.createTextSymbolizer();
+    }
     this.toponymPanel = createToponymPanel();
     this.toponymPanel.setAlignmentX(LEFT_ALIGNMENT);
+    this.placementPanel = createPlacementPanel();
+    this.placementPanel.setAlignmentX(LEFT_ALIGNMENT);
     this.fontPanel = createFontPanel();
     this.fontPanel.setAlignmentX(LEFT_ALIGNMENT);
     
-    this.textStylePanel.add(this.toponymPanel, BorderLayout.NORTH);
-    this.textStylePanel.add(this.fontPanel, BorderLayout.CENTER);
+    this.textStylePanel.add(this.toponymPanel);
+    this.textStylePanel.add(this.placementPanel);
+    this.textStylePanel.add(this.fontPanel);
     //TODO Ajouter un panel pour paramétrer le placement des toponymes
-    //TODO Coupler avec WinPat ??
-    
     JButton closeBtn = new JButton(I18N.getString("AttributeTable.Close")); //$NON-NLS-1$
     closeBtn.addActionListener(new ActionListener() {
       @Override
@@ -314,7 +320,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       }
     });
     closeBtn.setSize(150,20);
-    this.textStylePanel.add(closeBtn, BorderLayout.SOUTH);
+    this.textStylePanel.add(closeBtn);
   }
 
   public JPanel createToponymPanel() {
@@ -343,14 +349,13 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       this.fields.setPreferredSize(fields.getPreferredSize());
       this.fields.addActionListener(new ActionListener() {
         @Override
-        public void actionPerformed(ActionEvent e) {        
-          if (StyleEditionFrame.this.symbolizer != null) {
+        public void actionPerformed(ActionEvent e) {
+          logger.error(e.getActionCommand());
+          if (StyleEditionFrame.this.symbolizer != null && ((JComboBox)e.getSource()).getSelectedItem() != null) {
             StyleEditionFrame.this.symbolizer.setLabel(
               ((JComboBox)e.getSource()).getSelectedItem().toString());
           }
-          StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
-          StyleEditionFrame.this.layerLegendPanel.repaint();
-          StyleEditionFrame.this.layerViewPanel.repaint();
+          StyleEditionFrame.this.update();
         }
       });
       fieldsPanel.add(this.fields);
@@ -358,75 +363,12 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     JPanel topoBtnPanel = new JPanel();
     topoBtnPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
     this.toponymBtn = new JCheckBox(I18N.getString("StyleEditionFrame.DisplayToponyms")); //$NON-NLS-1$
-    this.toponymBtn.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (StyleEditionFrame.this.toponymBtn.isSelected()){
-          Layer layer = StyleEditionFrame.this.layer;
-          
-          if (StyleEditionFrame.this.featureTypeStyle == null) {
-            Style lastStyle = layer.getStyles().get(layer.getStyles().size() - 1);
-            StyleEditionFrame.this.featureTypeStyle = new FeatureTypeStyle();
-            Rule rule = new Rule();
-            StyleEditionFrame.this.featureTypeStyle.getRules().add(rule);
-            lastStyle.getFeatureTypeStyles().add(StyleEditionFrame.this.featureTypeStyle);
-          }
-          
-          if (StyleEditionFrame.this.symbolizer == null) {
-            StyleEditionFrame.this.symbolizer = new TextSymbolizer();
-            TextSymbolizer textSymbolizer = StyleEditionFrame.this.symbolizer;
-            LabelPlacement labelPlacement = new LabelPlacement();
-            boolean usePointPlacement = true;
-            if (layer.getFeatureCollection().getFeatureType() != null) {
-              Class<? extends IGeometry> geomType = layer
-                  .getFeatureCollection().getFeatureType().getGeometryType();
-              if (IOrientableCurve.class.isAssignableFrom(geomType)
-                  || IMultiCurve.class.isAssignableFrom(geomType)) {
-                usePointPlacement = false;
-              }
-            }
-            if (usePointPlacement) {
-              PointPlacement pointPlacement = new PointPlacement();
-              labelPlacement.setPlacement(pointPlacement);
-            } else {
-              LinePlacement linePlacement = new LinePlacement();
-              labelPlacement.setPlacement(linePlacement);
-            }
-            textSymbolizer.setLabelPlacement(labelPlacement);
-          }
-          
-          StyleEditionFrame.this.symbolizer.setFont(new fr.ign.cogit.geoxygene.style.Font(
-              StyleEditionFrame.this.textPreviewLabel.getFont()));
-          StyleEditionFrame.this.symbolizer.setLabel(
-              StyleEditionFrame.this.fields.getSelectedItem().toString());
-          StyleEditionFrame.this.symbolizer.setFill(new Fill());
-          StyleEditionFrame.this.symbolizer.getFill().setFill(
-              StyleEditionFrame.this.textPreviewLabel.getForeground());
-          
-          StyleEditionFrame.this.featureTypeStyle
-            .getRules().get(0).getSymbolizers().add(0,StyleEditionFrame.this.symbolizer);
-          
-          StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
-          StyleEditionFrame.this.layerLegendPanel.repaint();
-          StyleEditionFrame.this.layerViewPanel.repaint();
-        } else {
-          StyleEditionFrame.this.featureTypeStyle
-                .getRules().get(0).getSymbolizers().remove(
-                    StyleEditionFrame.this.symbolizer);
-          StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
-          StyleEditionFrame.this.layerLegendPanel.repaint();
-          StyleEditionFrame.this.layerViewPanel.repaint();
-        }
-      }
-      
-    });
+    this.toponymBtn.addItemListener(this);
     topoBtnPanel.add(this.toponymBtn);
-    
-    if (this.symbolizer != null) {
+    if (this.symbolizer != null && this.symbolizer.getLabel() != null) {
       this.fields.setSelectedItem(this.symbolizer.getLabel());
       this.toponymBtn.setSelected(true);
     }
-    
     fieldsPanel.setAlignmentX(LEFT_ALIGNMENT);
     toponymPanel.add(fieldsPanel);
     topoBtnPanel.setAlignmentX(LEFT_ALIGNMENT);
@@ -434,12 +376,107 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     
     return toponymPanel;
   }
-  
-  public JPanel createFontPanel() {
+  /**
+   * Enable toponyms display.
+   */
+  protected void enableToponyms() {
+    Layer layer = StyleEditionFrame.this.layer;
+    if (StyleEditionFrame.this.featureTypeStyle == null) {
+      Style lastStyle = layer.getStyles().get(layer.getStyles().size() - 1);
+      StyleEditionFrame.this.featureTypeStyle = new FeatureTypeStyle();
+      Rule rule = new Rule();
+      StyleEditionFrame.this.featureTypeStyle.getRules().add(rule);
+      lastStyle.getFeatureTypeStyles().add(StyleEditionFrame.this.featureTypeStyle);
+    }
+    if (StyleEditionFrame.this.symbolizer == null) {
+      this.createTextSymbolizer();
+    }
+    this.symbolizer.setFont(new fr.ign.cogit.geoxygene.style.Font(
+        this.textPreviewLabel.getFont()));
+    this.symbolizer.setLabel(this.fields.getSelectedItem().toString());
+    this.symbolizer.setFill(new Fill());
+    this.symbolizer.getFill().setFill(this.textPreviewLabel.getForeground());
+    this.featureTypeStyle.getRules().get(0).getSymbolizers().add(0,
+        this.symbolizer);
+  }
+  private void createTextSymbolizer() {
+    logger.info("create text symbolizer");
+    this.symbolizer = new TextSymbolizer();
+    this.pointPlacement = new PointPlacement();
+    this.linePlacement = new LinePlacement();
+    boolean usePointPlacement = true;
+    if (layer.getFeatureCollection().getFeatureType() != null) {
+      Class<? extends IGeometry> geomType = layer
+          .getFeatureCollection().getFeatureType().getGeometryType();
+      if (ICurve.class.isAssignableFrom(geomType)
+          || IMultiCurve.class.isAssignableFrom(geomType)) {
+        usePointPlacement = false;
+      }
+    }
+    LabelPlacement labelPlacement = new LabelPlacement();
+    Placement selectedPlacement = usePointPlacement ? this.pointPlacement
+        : this.linePlacement;
+    labelPlacement.setPlacement(selectedPlacement);
+    this.symbolizer.setLabelPlacement(labelPlacement);
+    this.symbolizer.setFont(new fr.ign.cogit.geoxygene.style.Font(new Font(
+        "Verdana", Font.BOLD, 12))); //$NON-NLS-1$
+    this.symbolizer.setFill(new Fill());
+    this.symbolizer.getFill().setFill(Color.BLACK);
+  }
 
+  /**
+   * Disable toponyms display.
+   */
+  protected void disableToponyms() {
+    StyleEditionFrame.this.featureTypeStyle
+    .getRules().get(0).getSymbolizers().remove(
+        this.symbolizer);
+  }
+  /**
+   * Update the display (layer legend and layer view).
+   */
+  public void update() {
+    this.layerLegendPanel.getModel().fireActionPerformed(null);
+    this.layerLegendPanel.repaint();
+    this.layerViewPanel.repaint();
+  }
+  public JPanel createPlacementPanel() {
+    JPanel placementPanel = new JPanel();
+    placementPanel.setLayout(new BoxLayout(placementPanel, BoxLayout.Y_AXIS));
+    // create the title
+    TitledBorder fillTitleBorder = BorderFactory.createTitledBorder(""); //$NON-NLS-1$
+    fillTitleBorder.setTitleColor(Color.blue);
+    fillTitleBorder.setTitleFont(new Font("Verdana", Font.BOLD, 16)); //$NON-NLS-1$
+    fillTitleBorder.setTitle("Placement"); //$NON-NLS-1$
+    placementPanel.setBorder(fillTitleBorder);
+    placementPanel.setPreferredSize(new Dimension(400, 100));
+    // create a panel for the placement type
+    JPanel placementTypePanel = new JPanel();
+    placementTypePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+    placementTypePanel.setAlignmentX(LEFT_ALIGNMENT);
+    // create a label to ask for the type of placement
+    JLabel label = new JLabel(I18N.getString("StyleEditionFrame.PlacementType")); //$NON-NLS-1$
+    placementTypePanel.add(label);
+    this.placements = new JComboBox(new String[] {
+        PointPlacement.class.getSimpleName(),
+        LinePlacement.class.getSimpleName() });
+    this.placements.setPreferredSize(this.placements.getPreferredSize());
+    Placement currentPlacement = this.symbolizer.getLabelPlacement().getPlacement();
+    if (currentPlacement != null) {
+      this.placements.setSelectedItem(currentPlacement.getClass().getSimpleName());
+    }
+    this.placements.addItemListener(this);
+    placementTypePanel.add(this.placements);
+    this.repeatBtn = new JCheckBox(I18N.getString("StyleEditionFrame.Repeat")); //$NON-NLS-1$
+    this.repeatBtn.addItemListener(this);
+    placementPanel.add(placementTypePanel);
+    placementPanel.add(this.repeatBtn);
+    return placementPanel;
+  }
+
+  public JPanel createFontPanel() {
     //TODO ajouter le soulignement et l'ombrage
     this.textPreviewLabel = new JLabel(I18N.getString("StyleEditionFrame.TextPreview")); //$NON-NLS-1$
-    
     if (this.symbolizer != null) {
       this.textPreviewLabel.setFont(this.symbolizer.getFont().toAwfFont());
       this.textPreviewLabel.setForeground(this.symbolizer.getFill().getFill());
@@ -483,9 +520,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
           StyleEditionFrame.this.symbolizer.setFont(
             new fr.ign.cogit.geoxygene.style.Font(newFont));
         }
-        StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
-        StyleEditionFrame.this.layerLegendPanel.repaint();
-        StyleEditionFrame.this.layerViewPanel.repaint();
+        StyleEditionFrame.this.update();
       }
     });
     
@@ -591,7 +626,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     return fontPanel;
   }
   
-  public void init_Polygon() {
+  public void initPolygon() {
     this.graphicStylePanel.setLayout(new BorderLayout());
     this.visuPanel = this.createVisuPanel();
     this.graphicStylePanel.add(this.visuPanel, BorderLayout.WEST);
@@ -676,7 +711,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     });
   }
 
-  public void init_Line() {
+  public void initLine() {
     this.graphicStylePanel.setLayout(new BorderLayout());
     this.visuPanel = this.createVisuPanel();
     this.graphicStylePanel.add(this.visuPanel, BorderLayout.WEST);
@@ -789,7 +824,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     });
   }
 
-  public void init_Point() {
+  public void initPoint() {
     this.setLayout(new BorderLayout());
     this.visuPanel = this.createVisuPanel();
     this.graphicStylePanel.add(this.visuPanel, BorderLayout.WEST);
@@ -1750,5 +1785,34 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       this.symbolSizeSpinner = (JSpinner) ((JPanel) this.symbolPanel
           .getComponent(1)).getComponent(1);
     }
+  }
+
+  PointPlacement pointPlacement;
+  LinePlacement linePlacement;
+  @Override
+  public void itemStateChanged(ItemEvent e) {
+    if (e.getSource() == this.toponymBtn) {
+      logger.info("toponymBtn");
+      if (e.getStateChange() == ItemEvent.SELECTED){
+        StyleEditionFrame.this.enableToponyms();
+      } else {
+        StyleEditionFrame.this.disableToponyms();
+      }
+    }
+    if (e.getSource() == this.placements) {
+      logger.info("placements");
+      this.symbolizer.getLabelPlacement().setPlacement(
+          this.placements.getSelectedIndex() == 0 ? this.pointPlacement
+              : this.linePlacement);
+      this.showPlacementParameters(this.placements.getSelectedIndex());
+    }
+    if (e.getSource() == this.repeatBtn) {
+      logger.info("repeatBtn " + e.getStateChange());
+      this.linePlacement.setRepeated(this.repeatBtn.isSelected());
+    }
+    this.update();
+  }
+
+  private void showPlacementParameters(int selectedIndex) {
   }
 }
