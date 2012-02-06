@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
@@ -31,6 +32,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.renderable.ParameterBlock;
 import java.util.ArrayList;
@@ -55,11 +57,13 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.appli.Viewport;
+import fr.ign.cogit.geoxygene.appli.render.stroke.TextStroke;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Chargeur;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
@@ -78,13 +82,18 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableCurve;
-import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
+import fr.ign.cogit.geoxygene.style.AnchorPoint;
+import fr.ign.cogit.geoxygene.style.Displacement;
 import fr.ign.cogit.geoxygene.style.ExternalGraphic;
 import fr.ign.cogit.geoxygene.style.Graphic;
 import fr.ign.cogit.geoxygene.style.GraphicFill;
 import fr.ign.cogit.geoxygene.style.GraphicStroke;
+import fr.ign.cogit.geoxygene.style.LabelPlacement;
+import fr.ign.cogit.geoxygene.style.LinePlacement;
 import fr.ign.cogit.geoxygene.style.LineSymbolizer;
 import fr.ign.cogit.geoxygene.style.Mark;
+import fr.ign.cogit.geoxygene.style.Placement;
+import fr.ign.cogit.geoxygene.style.PointPlacement;
 import fr.ign.cogit.geoxygene.style.PointSymbolizer;
 import fr.ign.cogit.geoxygene.style.PolygonSymbolizer;
 import fr.ign.cogit.geoxygene.style.RasterSymbolizer;
@@ -137,8 +146,8 @@ public final class RenderUtil {
       }
     } else {
       if (geometry.isMultiSurface() || geometry.isMultiCurve()) {
-        GM_Aggregate<GM_Object> aggregate = (GM_Aggregate<GM_Object>) geometry;
-        for (GM_Object element : aggregate) {
+        GM_Aggregate<IGeometry> aggregate = (GM_Aggregate<IGeometry>) geometry;
+        for (IGeometry element : aggregate) {
           RenderUtil.draw(element, viewport, graphics);
         }
       } else {
@@ -289,8 +298,17 @@ public final class RenderUtil {
         at.scale(size, size);
         markShape = at.createTransformedShape(markShape);
 
-        graphics.setColor((mark.getFill() == null) ? Color.gray : mark.getFill()
-            .getColor());
+        if (symbolizer.getColorMap() != null) {
+          try {
+            graphics.setColor(new Color(symbolizer.getColorMap().getColor(
+                (Double.parseDouble(feature.getAttribute(
+                    symbolizer.getColorMap().getPropertyName()).toString())))));
+          } catch (NumberFormatException e) {
+          }
+        } else {
+          graphics.setColor((mark.getFill() == null) ? Color.gray : mark.getFill()
+              .getColor());
+        }
         graphics.fill(markShape);
         graphics.setStroke(mark.getStroke().toAwtStroke((float) scale));
         graphics.setColor((mark.getStroke() == null) ? Color.black : mark
@@ -329,16 +347,20 @@ public final class RenderUtil {
     paintShadow(symbolizer, geometry, viewport, graphics);
     if (symbolizer.getStroke().getGraphicType() == null) {
       List<Shape> shapes = getShapeList(symbolizer, geometry, viewport, false);
-      if (symbolizer.getColorMap() != null) {
-        graphics.setColor(new Color(symbolizer.getColorMap().getColor(
-            ((Double) feature
-                .getAttribute(symbolizer.getColorMap().getPropertyName()))
-                .doubleValue())));
-      } else {
-        graphics.setColor(symbolizer.getStroke().getColor());
-      }
-      for (Shape shape : shapes) {
-        graphics.draw(shape);
+      if (shapes != null) {
+        if (symbolizer.getColorMap() != null) {
+          try {
+            graphics.setColor(new Color(symbolizer.getColorMap().getColor(
+                (Double.parseDouble(feature.getAttribute(
+                    symbolizer.getColorMap().getPropertyName()).toString())))));
+          } catch (NumberFormatException e) {
+          }
+        } else {
+          graphics.setColor(symbolizer.getStroke().getColor());
+        }
+        for (Shape shape : shapes) {
+          graphics.draw(shape);
+        }
       }
     } else {
       if (symbolizer.getStroke().getGraphicType().getClass()
@@ -355,11 +377,13 @@ public final class RenderUtil {
       } else {
         // GraphicStroke
         List<Shape> shapes = getShapeList(symbolizer, geometry, viewport, false);
-        List<Graphic> graphicList = ((GraphicStroke) symbolizer.getStroke()
-            .getGraphicType()).getGraphics();
-        for (Graphic graphic : graphicList) {
-          for (Shape shape : shapes) {
-            graphicStrokeLineString(symbolizer, shape, graphic, viewport, graphics);
+        if (shapes != null) {
+          List<Graphic> graphicList = ((GraphicStroke) symbolizer.getStroke()
+              .getGraphicType()).getGraphics();
+          for (Graphic graphic : graphicList) {
+            for (Shape shape : shapes) {
+              graphicStrokeLineString(symbolizer, shape, graphic, viewport, graphics);
+            }
           }
         }
       }
@@ -374,11 +398,14 @@ public final class RenderUtil {
   @SuppressWarnings("unchecked")
   private static List<Shape> getShapeList(LineSymbolizer symbolizer, IGeometry geometry, Viewport viewport,
       boolean fill) {
-    if (geometry.isLineString() || geometry.isPolygon()) {
-      ILineString line = (ILineString) ((geometry.isLineString()) ? geometry
+//    System.out.println("getShapeList " + geometry.getClass().getSimpleName());
+    if (ICurve.class.isAssignableFrom(geometry.getClass())
+        || IPolygon.class.isAssignableFrom(geometry.getClass())) {
+      ICurve curve = ((ICurve.class.isAssignableFrom(geometry
+          .getClass())) ? ((ICurve) geometry)
           : ((IPolygon) geometry).exteriorLineString());
       if (symbolizer.getPerpendicularOffset() != 0) {
-        IMultiCurve<ILineString> offsetCurve = JtsAlgorithms.offsetCurve(line,
+        IMultiCurve<ILineString> offsetCurve = JtsAlgorithms.offsetCurve(curve,
             symbolizer.getPerpendicularOffset());
         List<Shape> shapes = new ArrayList<Shape>();
         for (ILineString l : offsetCurve) {
@@ -386,11 +413,11 @@ public final class RenderUtil {
         }
         return shapes;
       }
-      return getLineStringShapeList(symbolizer, line, viewport, fill);
+      return getLineStringShapeList(symbolizer, curve, viewport, fill);
     }
     if (geometry.isMultiCurve()) {
       List<Shape> shapes = new ArrayList<Shape>();
-      for (GM_OrientableCurve line : (GM_MultiCurve<GM_OrientableCurve>) geometry) {
+      for (IOrientableCurve line : (IMultiCurve<IOrientableCurve>) geometry) {
         if (symbolizer.getPerpendicularOffset() != 0) {
           IMultiCurve<ILineString> offsetCurve = JtsAlgorithms.offsetCurve(
               (ILineString) line, symbolizer.getPerpendicularOffset());
@@ -500,7 +527,7 @@ public final class RenderUtil {
       }
       return;
     }
-    List<Shape> shapes = new ArrayList<Shape>();
+    List<Shape> shapes = new ArrayList<Shape>(graphic.getMarks().size());
     for (Mark mark : graphic.getMarks()) {
       shapes.add(mark.toShape());
       graphics.setColor(mark.getFill().getColor());
@@ -947,23 +974,26 @@ public final class RenderUtil {
     if (symbolizer.getLabel() == null) {
       return;
     }
-    try {
-      Shape shape = viewport.toShape(feature.getGeom());
-      if (shape == null) {
-        return;
-      }
-      String text = feature.getAttribute(symbolizer.getLabel()).toString();
-      paint(symbolizer, text, shape, graphics);
-    } catch (NoninvertibleTransformException e) {
-      e.printStackTrace();
+    String text = feature.getAttribute(symbolizer.getLabel()).toString();
+    if (text != null) {
+      paint(symbolizer, text, feature.getGeom(), viewport, graphics);
     }
   }
 
-  public static void paint(TextSymbolizer symbolizer, String text, Shape shape, Graphics2D graphics) {
+  /**
+   * @param symbolizer a text symbolizer
+   * @param text non null text
+   * @param geometry the geometry of the feature
+   * @param viewport the viewport to paint in
+   * @param graphics the graphics to paint with
+   */
+  public static void paint(TextSymbolizer symbolizer, String text, IGeometry geometry, Viewport viewport, Graphics2D graphics) {
+    // Initialize the color with which to actually paint the text
     Color fillColor = Color.black;
     if (symbolizer.getFill() != null) {
       fillColor = symbolizer.getFill().getColor();
     }
+    // Initialize the font
     java.awt.Font awtFont = null;
     if (symbolizer.getFont() != null) {
       awtFont = symbolizer.getFont().toAwfFont();
@@ -971,6 +1001,8 @@ public final class RenderUtil {
     if (awtFont == null) {
       awtFont = new java.awt.Font("Default", java.awt.Font.PLAIN, 10); //$NON-NLS-1$
     }
+    graphics.setFont(awtFont);
+    // Initialize the color for the halo around the text
     Color haloColor = null;
     float haloRadius = 1.0f;
     if (symbolizer.getHalo() != null) {
@@ -981,33 +1013,115 @@ public final class RenderUtil {
       }
       haloRadius = symbolizer.getHalo().getRadius();
     }
-    if (text == null) {
+    LabelPlacement labelPlacement = symbolizer.getLabelPlacement();
+    if (labelPlacement != null && labelPlacement.getPlacement() != null) {
+      Placement placement = labelPlacement.getPlacement();
+      if (PointPlacement.class.isAssignableFrom(placement.getClass())) {
+        PointPlacement pointPlacement = (PointPlacement) placement;
+        try {
+          paint(pointPlacement, text, fillColor, haloColor, haloRadius, geometry.centroid(), viewport, graphics);
+        } catch (NoninvertibleTransformException e) {
+          e.printStackTrace();
+        }
+      } else {
+        if (LinePlacement.class.isAssignableFrom(placement.getClass())) {
+          LinePlacement linePlacement = (LinePlacement) placement;
+          float offset = linePlacement.getPerpendicularOffset();
+          IGeometry g = geometry;
+          if (offset != 0.0f) {
+            g = JtsAlgorithms.offsetCurve(geometry, offset);
+          }
+          if (IMultiCurve.class.isAssignableFrom(g.getClass())) {
+            IMultiCurve<IOrientableCurve> multiCurve = (IMultiCurve<IOrientableCurve>) g;
+            for (IOrientableCurve curve : multiCurve) {
+              try {
+                paint(linePlacement, text, fillColor, haloColor, haloRadius, curve, viewport, graphics);
+              } catch (NoninvertibleTransformException e) {
+                e.printStackTrace();
+              }              
+            }
+          } else {
+            try {
+              paint(linePlacement, text, fillColor, haloColor, haloRadius, g, viewport, graphics);
+            } catch (NoninvertibleTransformException e) {
+              e.printStackTrace();
+            }            
+          }
+        }
+      }
+    }
+  }
+
+  private static void paint(LinePlacement linePlacement, String text,
+      Color fillColor, Color haloColor, float haloRadius, IGeometry geometry,
+      Viewport viewport, Graphics2D graphics) throws NoninvertibleTransformException {
+//    FontRenderContext frc = graphics.getFontRenderContext();
+//    GlyphVector gv = graphics.getFont().createGlyphVector(frc, text);
+//    Shape textShape = gv.getOutline();
+//    Rectangle2D bounds = textShape.getBounds2D();
+//    double width = bounds.getWidth();
+//    double height = bounds.getHeight();
+//    Point2D p = viewport.toViewPoint(position);
+//    float tx = (float) (p.getX() + displacementX - width * anchorPointX);    
+//    float ty = (float) (p.getY() - displacementY + height * anchorPointY);
+//    AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
+//    AffineTransform translationTransform = AffineTransform.getTranslateInstance(- width / 2, - height / 2);    
+//    t.concatenate(translationTransform);
+//    textShape = t.createTransformedShape(textShape);
+    Shape lineShape = viewport.toShape(geometry);
+    if (lineShape == null) {
       return;
     }
-    // Find the size of string s in font f in the current Graphics context g.
-    graphics.setFont(awtFont);
-    // Center text horizontally and vertically
-
-    FontRenderContext frc = graphics.getFontRenderContext();
-    GlyphVector gv = awtFont.createGlyphVector(frc, text);
+    Stroke s = new TextStroke(text, graphics.getFont(), false, linePlacement.isRepeated(), false);
+    Shape textShape = s.createStrokedShape(lineShape);
     // halo
     if (haloColor != null) {
-      Shape textShape = gv.getOutline();// TODO reposition on the shape
       graphics.setColor(haloColor);
       graphics.setStroke(new BasicStroke(haloRadius, BasicStroke.CAP_ROUND,
           BasicStroke.JOIN_ROUND));
       graphics.draw(textShape);
     }
     graphics.setColor(fillColor);
-    double width = graphics.getFontMetrics().getStringBounds(text, graphics).getWidth();
-    double xcoords = (shape.getBounds2D().getMinX() + shape
-            .getBounds2D().getMaxX()) / 2 ;
-    graphics
-        .drawGlyphVector(gv, (float)(xcoords - width/2),(float)(shape.getBounds2D()
-                .getMinY() + shape.getBounds2D().getMaxY()) / 2);// TODO reposition
-                                                             // on the shape
+    graphics.fill(textShape);
   }
-  
+
+  private static void paint(PointPlacement pointPlacement, String text,
+      Color fillColor, Color haloColor, float haloRadius,
+      IDirectPosition position, Viewport viewport, Graphics2D graphics)
+      throws NoninvertibleTransformException {
+    FontRenderContext frc = graphics.getFontRenderContext();
+    float rotation = pointPlacement.getRotation();
+    GlyphVector gv = graphics.getFont().createGlyphVector(frc, text);
+    Shape textShape = gv.getOutline();
+    Rectangle2D bounds = textShape.getBounds2D();
+    double width = bounds.getWidth();
+    double height = bounds.getHeight();
+    Point2D p = viewport.toViewPoint(position);
+    AnchorPoint anchorPoint = pointPlacement.getAnchorPoint();
+    float anchorPointX = (anchorPoint == null) ? 0.5f : anchorPoint.getAnchorPointX();
+    float anchorPointY = (anchorPoint == null) ? 0.5f : anchorPoint.getAnchorPointY();
+    Displacement displacement = pointPlacement.getDisplacement();
+    float displacementX = (displacement == null) ?0f : displacement.getDisplacementX();
+    float displacementY = (displacement == null) ?0f : displacement.getDisplacementY();
+    float tx = (float) (p.getX() + displacementX - width * anchorPointX);    
+    float ty = (float) (p.getY() - displacementY + height * anchorPointY);
+    AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
+    AffineTransform rotationTransform = AffineTransform.getRotateInstance(rotation);
+    t.concatenate(rotationTransform);
+    AffineTransform translationTransform = AffineTransform.getTranslateInstance(- width / 2, - height / 2);    
+    t.concatenate(translationTransform);
+    textShape = t.createTransformedShape(textShape);
+    // halo
+    if (haloColor != null) {
+      graphics.setColor(haloColor);
+      graphics.setStroke(new BasicStroke(haloRadius, BasicStroke.CAP_ROUND,
+          BasicStroke.JOIN_ROUND));
+      graphics.draw(textShape);
+    }
+    graphics.setColor(fillColor);
+    graphics.fill(textShape);
+  }
+
   public static void paint(ThematicSymbolizer symbolizer, IFeature feature, Viewport viewport, Graphics2D graphics) {
     if (feature.getGeom() == null || viewport == null) {
       return;
