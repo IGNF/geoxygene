@@ -77,4 +77,8 @@ public class PointPlacement implements Placement {
   public void setRotation(float rotation) {
     this.rotation = rotation;
   }
+  @Override
+  public String toString() {
+    return this.getClass().getSimpleName();
+  }
 }

@@ -41,4 +41,26 @@ public class LinePlacement implements Placement {
   public void setPerpendicularOffset(float perpendicularOffset) {
     this.perpendicularOffset = perpendicularOffset;
   }
+  public boolean isAligned() {
+    return aligned;
+  }
+
+  public void setAligned(boolean aligned) {
+    this.aligned = aligned;
+  }
+
+  public boolean isRepeated() {
+    return repeated;
+  }
+
+  public void setRepeated(boolean repeated) {
+    this.repeated = repeated;
+  }
+  private boolean aligned;
+  private boolean repeated;
+
+  @Override
+  public String toString() {
+    return this.getClass().getSimpleName();
+  }
 }
