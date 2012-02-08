@@ -28,7 +28,9 @@
 package fr.ign.cogit.geoxygene.contrib.operateurs;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -39,6 +41,7 @@ import org.apache.log4j.Logger;
  */
 public class Ensemble {
   final static Logger logger = Logger.getLogger(Ensemble.class.getName());
+
   /**
    * Renvoie une liste de liste contenant l'ensemble des combinaisons des
    * éléments de la liste en entrée. Exemple : si la liste contient A, B, C en
@@ -152,4 +155,24 @@ public class Ensemble {
     // logger.info(combinations2(list).size());
     Ensemble.logger.info(Ensemble.combinations3(list).size());
   }
+
+  /**
+   * Retourne l'intersection de deux ensembles, un ensemble vide si
+   * l'intersection est vide.
+   * 
+   * @param <T>
+   * @param E
+   * @param F
+   * @return
+   */
+  public static <T> Set<T> intersection(Set<T> E, Set<T> F) {
+    Set<T> result = new HashSet<T>();
+    for (T element : E) {
+      if (F.contains(element)) {
+        result.add(element);
+      }
+    }
+    return result;
+  }
+
 }

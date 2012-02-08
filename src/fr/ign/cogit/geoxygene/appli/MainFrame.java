@@ -24,6 +24,8 @@ import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -49,6 +51,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import org.apache.fop.cli.Main;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
@@ -174,30 +177,30 @@ public class MainFrame extends JFrame {
     JMenu helpMenu = new JMenu(I18N.getString("MainFrame.Help")); //$NON-NLS-1$
     JMenuItem openFileMenuItem = new JMenuItem(
         I18N.getString("MainFrame.OpenFile")); //$NON-NLS-1$
-        openFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                ProjectFrame projectFrame = (ProjectFrame) MainFrame.this
-                        .getDesktopPane().getSelectedFrame();
-                if (projectFrame == null) {
-                    if (MainFrame.this.getDesktopPane().getAllFrames().length != 0) {
-                        // TODO ask the user in which frame (s)he
-                        // wants to load into?
-                        projectFrame = (ProjectFrame) MainFrame.this
-                                .getDesktopPane().getAllFrames()[0];
-                    } else {
-                        // TODO create a new project frame?
-                        MainFrame.getLogger().info(
-                                I18N.getString("MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
-                        return;
-                    }
-                }
-                File file = MainFrame.fc.getFile(MainFrame.this);
-                if (file != null) {
-                    projectFrame.addLayer(file);
-                }
-            }
-        });
+    openFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        ProjectFrame projectFrame = (ProjectFrame) MainFrame.this
+            .getDesktopPane().getSelectedFrame();
+        if (projectFrame == null) {
+          if (MainFrame.this.getDesktopPane().getAllFrames().length != 0) {
+            // TODO ask the user in which frame (s)he
+            // wants to load into?
+            projectFrame = (ProjectFrame) MainFrame.this.getDesktopPane()
+                .getAllFrames()[0];
+          } else {
+            // TODO create a new project frame?
+            MainFrame.getLogger().info(
+                I18N.getString("MainFrame.NoFrameToLoadInto")); //$NON-NLS-1$
+            return;
+          }
+        }
+        File file = MainFrame.fc.getFile(MainFrame.this);
+        if (file != null) {
+          projectFrame.addLayer(file);
+        }
+      }
+    });
     JMenuItem newProjectFrameMenuItem = new JMenuItem(
         I18N.getString("MainFrame.NewProject")); //$NON-NLS-1$
     newProjectFrameMenuItem
@@ -459,6 +462,7 @@ public class MainFrame extends JFrame {
       }
     });
     this.modeSelector = new ModeSelector(this);
+    this.desktopPane.addContainerListener(modeSelector);
     JMenuItem organizeMenuItem = new JMenuItem("Organize"); //$NON-NLS-1$
     organizeMenuItem.addActionListener(new java.awt.event.ActionListener() {
       @Override

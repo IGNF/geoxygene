@@ -96,12 +96,12 @@ public class MovePointMode extends AbstractGeometryEditMode {
         if (this.dragCount > 0) {
           RenderUtil.draw(new GM_LineString(new DirectPositionList(
               this.previousPoint, this.currentPoint, this.nextPoint)), frame
-              .getLayerViewPanel().getViewport(), graphics2D);
+              .getLayerViewPanel().getViewport(), graphics2D, 1.0f);// FIXME OPACITY FIX
         }
         this.currentPoint = p;
         RenderUtil.draw(new GM_LineString(new DirectPositionList(
             this.previousPoint, this.currentPoint, this.nextPoint)), frame
-            .getLayerViewPanel().getViewport(), graphics2D);
+            .getLayerViewPanel().getViewport(), graphics2D, 1.0f);// FIXME OPACITY FIX
         this.dragCount++;
       } catch (NoninvertibleTransformException e1) {
         e1.printStackTrace();

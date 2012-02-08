@@ -473,7 +473,8 @@ public class LayerRenderer implements Renderer {
     Graphics2D graphics = theImage.createGraphics();
     graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
         RenderingHints.VALUE_ANTIALIAS_ON);
-    RenderUtil.paint(symbolizer, feature, this.getLayerViewPanel().getViewport(), graphics);
+    RenderUtil.paint(symbolizer, feature, this.getLayerViewPanel()
+        .getViewport(), graphics, this.getLayer().getOpacity());// FIXME                                                         // FIX
   }
 
   /**

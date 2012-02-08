@@ -166,7 +166,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
   private JPanel textStylePanel;
   private JPanel mainStylePanel;
   private JPanel graphicStylePanel;
-   
+
   // Work variables
   private Color fillColor;
   private float fillOpacity;
@@ -182,7 +182,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
 
   private String symbolShape;
   private float symbolSize;
-  
+
   private TextSymbolizer symbolizer;
   private FeatureTypeStyle featureTypeStyle;
 
@@ -234,12 +234,13 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
   };
 
   private JButton addColorMapButton;
-  
+
   private JCheckBox toponymBtn;
   private JComboBox fields;
   private JLabel textPreviewLabel;
   private JComboBox placements;
   private JCheckBox repeatBtn;
+
   /**
    * Style Edition Main Frame.
    * @param layerLegendPanel the layerLegendPanel of the style to be modified.
@@ -249,11 +250,12 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.layerViewPanel = this.layerLegendPanel.getLayerViewPanel();
 
     this.graphicStylePanel = new JPanel();
-    
+
     if (layerLegendPanel.getSelectedLayers().size() == 1) {
       this.layer = layerLegendPanel.getSelectedLayers().iterator().next();
     }
-    DataSet dataset = layerLegendPanel.getLayerViewPanel().getProjectFrame().getDataSet();
+    DataSet dataset = layerLegendPanel.getLayerViewPanel().getProjectFrame()
+        .getDataSet();
     // Saving the initial SLD
     this.setInitialSLD(new StyledLayerDescriptor(dataset));
     CharArrayWriter writer = new CharArrayWriter();
@@ -270,48 +272,54 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     }
 
     this.textStylePanel = new JPanel();
-    this.textStylePanel.setLayout(new BoxLayout(this.textStylePanel, BoxLayout.Y_AXIS));
+    this.textStylePanel.setLayout(new BoxLayout(this.textStylePanel,
+        BoxLayout.Y_AXIS));
 
     this.initTextStylePanel();
     this.tabPane = new JTabbedPane();
-    this.tabPane.add(I18N.getString("StyleEditionFrame.Symbology"), this.graphicStylePanel); //$NON-NLS-1$
-    this.tabPane.add(I18N.getString("StyleEditionFrame.Toponyms"), this.textStylePanel); //$NON-NLS-1$
+    this.tabPane.add(
+        I18N.getString("StyleEditionFrame.Symbology"), this.graphicStylePanel); //$NON-NLS-1$
+    this.tabPane.add(
+        I18N.getString("StyleEditionFrame.Toponyms"), this.textStylePanel); //$NON-NLS-1$
     this.add(this.tabPane);
-    
+
     this.setTitle(I18N.getString("StyleEditionFrame.StyleEdition")); //$NON-NLS-1$
     this.pack();
     this.pack();
     this.textStylePanel.setSize(600, 500);
     this.graphicStylePanel.setSize(600, 700);
     this.setSize(650, 750);
-    
+
     this.setLocation(200, 200);
     this.setAlwaysOnTop(true);
   }
 
   public void initTextStylePanel() {
-    //Initialisation du symboliser s'il y a lieu
+    // Initialisation du symboliser s'il y a lieu
     Style lastStyle = this.layer.getStyles().get(layer.getStyles().size() - 1);
     if (lastStyle.getFeatureTypeStyles()
-        .get(lastStyle.getFeatureTypeStyles().size() - 1)
-        .getSymbolizer().isTextSymbolizer() && this.symbolizer == null) {
-        this.symbolizer = (TextSymbolizer) lastStyle.getFeatureTypeStyles()
-            .get(lastStyle.getFeatureTypeStyles().size() - 1).getSymbolizer();
+        .get(lastStyle.getFeatureTypeStyles().size() - 1).getSymbolizer()
+        .isTextSymbolizer()
+        && this.symbolizer == null) {
+      this.symbolizer = (TextSymbolizer) lastStyle.getFeatureTypeStyles()
+          .get(lastStyle.getFeatureTypeStyles().size() - 1).getSymbolizer();
     }
     if (this.symbolizer == null) {
       this.createTextSymbolizer();
     }
-    this.toponymPanel = createToponymPanel();
-    this.toponymPanel.setAlignmentX(LEFT_ALIGNMENT);
+    if (this.layer.getFeatureCollection().getFeatureType() != null) {
+      this.toponymPanel = createToponymPanel();
+      this.toponymPanel.setAlignmentX(LEFT_ALIGNMENT);
+      this.textStylePanel.add(this.toponymPanel, BorderLayout.NORTH);
+    }
     this.placementPanel = createPlacementPanel();
     this.placementPanel.setAlignmentX(LEFT_ALIGNMENT);
     this.fontPanel = createFontPanel();
     this.fontPanel.setAlignmentX(LEFT_ALIGNMENT);
-    
-    this.textStylePanel.add(this.toponymPanel);
+
     this.textStylePanel.add(this.placementPanel);
     this.textStylePanel.add(this.fontPanel);
-    //TODO Ajouter un panel pour paramétrer le placement des toponymes
+    // TODO Ajouter un panel pour paramétrer le placement des toponymes
     JButton closeBtn = new JButton(I18N.getString("AttributeTable.Close")); //$NON-NLS-1$
     closeBtn.addActionListener(new ActionListener() {
       @Override
@@ -319,11 +327,12 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
         ((JFrame) StyleEditionFrame.this).dispose();
       }
     });
-    closeBtn.setSize(150,20);
+    closeBtn.setSize(150, 20);
     this.textStylePanel.add(closeBtn);
   }
 
   public JPanel createToponymPanel() {
+
     JPanel toponymPanel = new JPanel();
     toponymPanel.setLayout(new BoxLayout(toponymPanel, BoxLayout.Y_AXIS));
 
@@ -333,17 +342,19 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     fillTitleBorder.setTitle("Toponyms"); //$NON-NLS-1$
     toponymPanel.setBorder(fillTitleBorder);
     toponymPanel.setPreferredSize(new Dimension(400, 100));
-    
+
     JLabel label = new JLabel(I18N.getString("StyleEditionFrame.DisplayField")); //$NON-NLS-1$
-    
+
     JPanel fieldsPanel = new JPanel();
     fieldsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
     fieldsPanel.add(label);
 
     if (this.layer.getFeatureCollection().getFeatureType() != null) {
-      String[] fieldsStr = new String[this.layer.getFeatureCollection().getFeatureType().getFeatureAttributes().size()];
+      String[] fieldsStr = new String[this.layer.getFeatureCollection()
+          .getFeatureType().getFeatureAttributes().size()];
       for (int i = 0; i < fieldsStr.length; i++) {
-        fieldsStr[i] = this.layer.getFeatureCollection().getFeatureType().getFeatureAttributes().get(i).getMemberName(); 
+        fieldsStr[i] = this.layer.getFeatureCollection().getFeatureType()
+            .getFeatureAttributes().get(i).getMemberName();
       }
       this.fields = new JComboBox(fieldsStr);
       this.fields.setPreferredSize(fields.getPreferredSize());
@@ -351,9 +362,10 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
         @Override
         public void actionPerformed(ActionEvent e) {
           logger.error(e.getActionCommand());
-          if (StyleEditionFrame.this.symbolizer != null && ((JComboBox)e.getSource()).getSelectedItem() != null) {
-            StyleEditionFrame.this.symbolizer.setLabel(
-              ((JComboBox)e.getSource()).getSelectedItem().toString());
+          if (StyleEditionFrame.this.symbolizer != null
+              && ((JComboBox) e.getSource()).getSelectedItem() != null) {
+            StyleEditionFrame.this.symbolizer.setLabel(((JComboBox) e
+                .getSource()).getSelectedItem().toString());
           }
           StyleEditionFrame.this.update();
         }
@@ -362,7 +374,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     }
     JPanel topoBtnPanel = new JPanel();
     topoBtnPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    this.toponymBtn = new JCheckBox(I18N.getString("StyleEditionFrame.DisplayToponyms")); //$NON-NLS-1$
+    this.toponymBtn = new JCheckBox(
+        I18N.getString("StyleEditionFrame.DisplayToponyms")); //$NON-NLS-1$
     this.toponymBtn.addItemListener(this);
     topoBtnPanel.add(this.toponymBtn);
     if (this.symbolizer != null && this.symbolizer.getLabel() != null) {
@@ -373,9 +386,10 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     toponymPanel.add(fieldsPanel);
     topoBtnPanel.setAlignmentX(LEFT_ALIGNMENT);
     toponymPanel.add(topoBtnPanel);
-    
+
     return toponymPanel;
   }
+
   /**
    * Enable toponyms display.
    */
@@ -386,7 +400,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       StyleEditionFrame.this.featureTypeStyle = new FeatureTypeStyle();
       Rule rule = new Rule();
       StyleEditionFrame.this.featureTypeStyle.getRules().add(rule);
-      lastStyle.getFeatureTypeStyles().add(StyleEditionFrame.this.featureTypeStyle);
+      lastStyle.getFeatureTypeStyles().add(
+          StyleEditionFrame.this.featureTypeStyle);
     }
     if (StyleEditionFrame.this.symbolizer == null) {
       this.createTextSymbolizer();
@@ -396,9 +411,10 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.symbolizer.setLabel(this.fields.getSelectedItem().toString());
     this.symbolizer.setFill(new Fill());
     this.symbolizer.getFill().setFill(this.textPreviewLabel.getForeground());
-    this.featureTypeStyle.getRules().get(0).getSymbolizers().add(0,
-        this.symbolizer);
+    this.featureTypeStyle.getRules().get(0).getSymbolizers()
+        .add(0, this.symbolizer);
   }
+
   private void createTextSymbolizer() {
     logger.info("create text symbolizer");
     this.symbolizer = new TextSymbolizer();
@@ -406,8 +422,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.linePlacement = new LinePlacement();
     boolean usePointPlacement = true;
     if (layer.getFeatureCollection().getFeatureType() != null) {
-      Class<? extends IGeometry> geomType = layer
-          .getFeatureCollection().getFeatureType().getGeometryType();
+      Class<? extends IGeometry> geomType = layer.getFeatureCollection()
+          .getFeatureType().getGeometryType();
       if (ICurve.class.isAssignableFrom(geomType)
           || IMultiCurve.class.isAssignableFrom(geomType)) {
         usePointPlacement = false;
@@ -428,10 +444,10 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
    * Disable toponyms display.
    */
   protected void disableToponyms() {
-    StyleEditionFrame.this.featureTypeStyle
-    .getRules().get(0).getSymbolizers().remove(
-        this.symbolizer);
+    StyleEditionFrame.this.featureTypeStyle.getRules().get(0).getSymbolizers()
+        .remove(this.symbolizer);
   }
+
   /**
    * Update the display (layer legend and layer view).
    */
@@ -440,6 +456,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.layerLegendPanel.repaint();
     this.layerViewPanel.repaint();
   }
+
   public JPanel createPlacementPanel() {
     JPanel placementPanel = new JPanel();
     placementPanel.setLayout(new BoxLayout(placementPanel, BoxLayout.Y_AXIS));
@@ -461,9 +478,11 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
         PointPlacement.class.getSimpleName(),
         LinePlacement.class.getSimpleName() });
     this.placements.setPreferredSize(this.placements.getPreferredSize());
-    Placement currentPlacement = this.symbolizer.getLabelPlacement().getPlacement();
+    Placement currentPlacement = this.symbolizer.getLabelPlacement()
+        .getPlacement();
     if (currentPlacement != null) {
-      this.placements.setSelectedItem(currentPlacement.getClass().getSimpleName());
+      this.placements.setSelectedItem(currentPlacement.getClass()
+          .getSimpleName());
     }
     this.placements.addItemListener(this);
     placementTypePanel.add(this.placements);
@@ -475,15 +494,16 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
   }
 
   public JPanel createFontPanel() {
-    //TODO ajouter le soulignement et l'ombrage
-    this.textPreviewLabel = new JLabel(I18N.getString("StyleEditionFrame.TextPreview")); //$NON-NLS-1$
+    // TODO ajouter le soulignement et l'ombrage
+    this.textPreviewLabel = new JLabel(
+        I18N.getString("StyleEditionFrame.TextPreview")); //$NON-NLS-1$
     if (this.symbolizer != null) {
       this.textPreviewLabel.setFont(this.symbolizer.getFont().toAwfFont());
       this.textPreviewLabel.setForeground(this.symbolizer.getFill().getFill());
     } else {
       this.textPreviewLabel.setFont(new Font("Verdana", Font.BOLD, 12)); //$NON-NLS-1$
     }
-    
+
     JPanel textPreviewPanel = new JPanel();
     textPreviewPanel.add(this.textPreviewLabel);
     textPreviewPanel.setAlignmentX(LEFT_ALIGNMENT);
@@ -498,37 +518,38 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     fillTitleBorder.setTitle("Font"); //$NON-NLS-1$
     fontPanel.setBorder(fillTitleBorder);
     fontPanel.setPreferredSize(new Dimension(400, 100));
-    
-    JLabel policeLabel = new JLabel("   Police                                    " + //$NON-NLS-1$
-    		"                           Style                       Taille"); //$NON-NLS-1$
+
+    JLabel policeLabel = new JLabel(
+        "   Police                                    " + //$NON-NLS-1$
+            "                           Style                       Taille"); //$NON-NLS-1$
     policeLabel.setAlignmentX(LEFT_ALIGNMENT);
-    
+
     GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     String[] familyFonts = ge.getAvailableFontFamilyNames();
     JComboBox familyFontCombo = new JComboBox(familyFonts);
-    familyFontCombo.setSelectedItem(this.textPreviewLabel.getFont().getFamily());
+    familyFontCombo
+        .setSelectedItem(this.textPreviewLabel.getFont().getFamily());
     familyFontCombo.setSize(familyFontCombo.getPreferredSize());
     familyFontCombo.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        Font newFont = new Font(
-            ((JComboBox)e.getSource()).getSelectedItem().toString(),
-            StyleEditionFrame.this.textPreviewLabel.getFont().getStyle(),
-            StyleEditionFrame.this.textPreviewLabel.getFont().getSize());
+        Font newFont = new Font(((JComboBox) e.getSource()).getSelectedItem()
+            .toString(), StyleEditionFrame.this.textPreviewLabel.getFont()
+            .getStyle(), StyleEditionFrame.this.textPreviewLabel.getFont()
+            .getSize());
         StyleEditionFrame.this.textPreviewLabel.setFont(newFont);
         if (StyleEditionFrame.this.symbolizer != null) {
-          StyleEditionFrame.this.symbolizer.setFont(
-            new fr.ign.cogit.geoxygene.style.Font(newFont));
+          StyleEditionFrame.this.symbolizer
+              .setFont(new fr.ign.cogit.geoxygene.style.Font(newFont));
         }
         StyleEditionFrame.this.update();
       }
     });
-    
-    String[] typeFont = {
-      "regular", //$NON-NLS-1$
-      "bold", //$NON-NLS-1$
-      "italic", //$NON-NLS-1$
-      "bold & italic" //$NON-NLS-1$
+
+    String[] typeFont = { "regular", //$NON-NLS-1$
+        "bold", //$NON-NLS-1$
+        "italic", //$NON-NLS-1$
+        "bold & italic" //$NON-NLS-1$
     };
     JComboBox styleFontCombo = new JComboBox(typeFont);
     styleFontCombo.setSelectedIndex(this.textPreviewLabel.getFont().getStyle());
@@ -536,83 +557,86 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     styleFontCombo.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        Font newFont = new Font(
-            StyleEditionFrame.this.textPreviewLabel.getFont().getFamily(),
-            ((JComboBox)e.getSource()).getSelectedIndex(),
-            StyleEditionFrame.this.textPreviewLabel.getFont().getSize());
+        Font newFont = new Font(StyleEditionFrame.this.textPreviewLabel
+            .getFont().getFamily(), ((JComboBox) e.getSource())
+            .getSelectedIndex(), StyleEditionFrame.this.textPreviewLabel
+            .getFont().getSize());
         StyleEditionFrame.this.textPreviewLabel.setFont(newFont);
         if (StyleEditionFrame.this.symbolizer != null) {
-          StyleEditionFrame.this.symbolizer.setFont(
-            new fr.ign.cogit.geoxygene.style.Font(newFont));
+          StyleEditionFrame.this.symbolizer
+              .setFont(new fr.ign.cogit.geoxygene.style.Font(newFont));
         }
-        StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
+        StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(
+            null);
         StyleEditionFrame.this.layerLegendPanel.repaint();
         StyleEditionFrame.this.layerViewPanel.repaint();
       }
     });
-    
-    String[] sizeFont = {
-        "6", "7", "8", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+    String[] sizeFont = { "6", "7", "8", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         "9", "10", "11", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         "12", "14", "16", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         "18", "20", "22", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         "24", "26", "28", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        "36", "48", "76"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        "36", "48", "76" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     JComboBox sizeFontCombo = new JComboBox(sizeFont);
-    sizeFontCombo.setSelectedItem(((Integer)this.textPreviewLabel.getFont().getSize()).toString());
+    sizeFontCombo.setSelectedItem(((Integer) this.textPreviewLabel.getFont()
+        .getSize()).toString());
     sizeFontCombo.setPreferredSize(styleFontCombo.getPreferredSize());
     sizeFontCombo.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        Font newFont = new Font(
-            StyleEditionFrame.this.textPreviewLabel.getFont().getFamily(),
-            StyleEditionFrame.this.textPreviewLabel.getFont().getStyle(),
-            Integer.parseInt(((JComboBox)e.getSource()).getSelectedItem().toString())
-        );
+        Font newFont = new Font(StyleEditionFrame.this.textPreviewLabel
+            .getFont().getFamily(), StyleEditionFrame.this.textPreviewLabel
+            .getFont().getStyle(), Integer.parseInt(((JComboBox) e.getSource())
+            .getSelectedItem().toString()));
         StyleEditionFrame.this.textPreviewLabel.setFont(newFont);
         if (StyleEditionFrame.this.symbolizer != null) {
-          StyleEditionFrame.this.symbolizer.setFont(
-            new fr.ign.cogit.geoxygene.style.Font(newFont));
+          StyleEditionFrame.this.symbolizer
+              .setFont(new fr.ign.cogit.geoxygene.style.Font(newFont));
         }
-        StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
+        StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(
+            null);
         StyleEditionFrame.this.layerLegendPanel.repaint();
         StyleEditionFrame.this.layerViewPanel.repaint();
       }
     });
-    
+
     JButton colorButton = new JButton(I18N.getString("StyleEditionFrame.Color")); //$NON-NLS-1$
     colorButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        Color c = COGITColorChooserPanel.showDialog(
-            new JButton(),
+        Color c = COGITColorChooserPanel.showDialog(new JButton(),
             I18N.getString("StyleEditionFrame.PickAColor"), //$NON-NLS-1$
             StyleEditionFrame.this.textPreviewLabel.getForeground());
         StyleEditionFrame.this.textPreviewLabel.setForeground(c);
         logger.info(c);
         if (StyleEditionFrame.this.symbolizer != null) {
           logger.info(StyleEditionFrame.this.symbolizer.getFill().getFill());
-          StyleEditionFrame.this.symbolizer.setFont(
-              new fr.ign.cogit.geoxygene.style.Font(
+          StyleEditionFrame.this.symbolizer
+              .setFont(new fr.ign.cogit.geoxygene.style.Font(
                   StyleEditionFrame.this.textPreviewLabel.getFont()));
           StyleEditionFrame.this.symbolizer.getFill().setFill(c);
           logger.info(StyleEditionFrame.this.symbolizer.getFill().getFill());
         }
-        
-        StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(null);
+
+        StyleEditionFrame.this.layerLegendPanel.getModel().fireActionPerformed(
+            null);
         StyleEditionFrame.this.layerLegendPanel.repaint();
         StyleEditionFrame.this.layerViewPanel.repaint();
         StyleEditionFrame.this.layerViewPanel.updateUI();
         StyleEditionFrame.this.layerViewPanel.superRepaint();
         StyleEditionFrame.this.layerViewPanel.getProjectFrame().repaint();
-        //FIXME Faire rafraichir l'affichage !!!!
-        //Pour l'instant, j'ai tenté tout les repaint, sans succès...
+
+        // FIXME Faire rafraichir l'affichage !!!!
+        // Pour l'instant, j'ai tenté tout les repaint, sans succès...
+
       }
     });
-    
+
     JPanel comboPanel = new JPanel();
     comboPanel.setLayout(new FlowLayout());
-    ((FlowLayout)comboPanel.getLayout()).setAlignment(FlowLayout.LEFT);
+    ((FlowLayout) comboPanel.getLayout()).setAlignment(FlowLayout.LEFT);
     comboPanel.add(familyFontCombo);
     comboPanel.add(styleFontCombo);
     comboPanel.add(sizeFontCombo);
@@ -622,10 +646,10 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     fontPanel.add(policeLabel);
     fontPanel.add(comboPanel);
     fontPanel.add(textPreviewPanel);
-    
+
     return fontPanel;
   }
-  
+
   public void initPolygon() {
     this.graphicStylePanel.setLayout(new BorderLayout());
     this.visuPanel = this.createVisuPanel();
@@ -674,17 +698,18 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.strokePanel.add(this.createWidthPanel(this.strokeWidth, this.unit));
 
     this.mainStylePanel = new JPanel();
-    this.mainStylePanel.setLayout(new BoxLayout(this.mainStylePanel, BoxLayout.Y_AXIS));
-    
+    this.mainStylePanel.setLayout(new BoxLayout(this.mainStylePanel,
+        BoxLayout.Y_AXIS));
+
     titleLabel.setAlignmentX(LEFT_ALIGNMENT);
     this.mainStylePanel.add(titleLabel);
-    
+
     this.fillPanel.setAlignmentX(LEFT_ALIGNMENT);
     this.mainStylePanel.add(this.fillPanel);
-    
+
     this.strokePanel.setAlignmentX(LEFT_ALIGNMENT);
     this.mainStylePanel.add(this.strokePanel);
-    
+
     JButton buttonApply = this.createButtonApply();
     JButton buttonValid = this.createButtonValid();
     JButton buttonCancel = this.createButtonCancel();
@@ -697,7 +722,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.mainStylePanel.add(buttonPanel);
 
     this.graphicStylePanel.add(this.mainStylePanel, BorderLayout.CENTER);
-    
+
     this.pack();
     this.pack();
     this.repaint();
@@ -782,21 +807,22 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.btnAddStyle.setBounds(50, 50, 100, 20);
 
     this.mainStylePanel = new JPanel();
-    this.mainStylePanel.setLayout(new BoxLayout(this.mainStylePanel, BoxLayout.Y_AXIS));
+    this.mainStylePanel.setLayout(new BoxLayout(this.mainStylePanel,
+        BoxLayout.Y_AXIS));
 
     titleLabel.setAlignmentX(LEFT_ALIGNMENT);
     this.mainStylePanel.add(titleLabel);
-    
+
     this.strokePanel2.setAlignmentX(LEFT_ALIGNMENT);
     this.mainStylePanel.add(this.strokePanel2);
 
     this.strokePanel.setAlignmentX(LEFT_ALIGNMENT);
     this.mainStylePanel.add(this.strokePanel);
-    
+
     JButton buttonApply = this.createButtonApply();
     JButton buttonValid = this.createButtonValid();
     JButton buttonCancel = this.createButtonCancel();
-   
+
     JPanel buttonPanel = new JPanel();
     buttonPanel.add(this.btnAddStyle);
     if (this.layer.getStyles().size() == 2) {
@@ -805,12 +831,12 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     buttonPanel.add(buttonApply);
     buttonPanel.add(buttonValid);
     buttonPanel.add(buttonCancel);
-    
+
     buttonPanel.setAlignmentX(LEFT_ALIGNMENT);
     this.mainStylePanel.add(buttonPanel);
-    
+
     this.graphicStylePanel.add(this.mainStylePanel, BorderLayout.CENTER);
-    
+
     this.pack();
     this.pack();
     this.repaint();
@@ -891,20 +917,21 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.symbolPanel.add(this.createSizePanel(this.symbolSize));
 
     this.mainStylePanel = new JPanel();
-    this.mainStylePanel.setLayout(new BoxLayout(this.mainStylePanel, BoxLayout.Y_AXIS));
-    
+    this.mainStylePanel.setLayout(new BoxLayout(this.mainStylePanel,
+        BoxLayout.Y_AXIS));
+
     titleLabel.setAlignmentX(LEFT_ALIGNMENT);
     this.mainStylePanel.add(titleLabel);
-    
+
     this.fillPanel.setAlignmentX(LEFT_ALIGNMENT);
     this.mainStylePanel.add(this.fillPanel);
-    
+
     this.strokePanel.setAlignmentX(LEFT_ALIGNMENT);
     this.mainStylePanel.add(this.strokePanel);
-    
+
     this.symbolPanel.setAlignmentX(LEFT_ALIGNMENT);
     this.mainStylePanel.add(this.symbolPanel);
-    
+
     JButton buttonApply = this.createButtonApply();
     JButton buttonValid = this.createButtonValid();
     JButton buttonCancel = this.createButtonCancel();
@@ -915,7 +942,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
 
     buttonPanel.setAlignmentX(LEFT_ALIGNMENT);
     this.mainStylePanel.add(buttonPanel);
-    
+
     this.graphicStylePanel.add(this.mainStylePanel, BorderLayout.CENTER);
 
     this.pack();
@@ -1278,7 +1305,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     Layer layerLine2 = factory.createLayer("Double Line", GM_LineString.class); //$NON-NLS-1$
     layerLine2.setStyles(sld.getLayer("Line with contour").getStyles()); //$NON-NLS-1$
 
-    Layer layerLine3 = factory.createLayer("Dasharay Line", GM_LineString.class); //$NON-NLS-1$
+    Layer layerLine3 = factory
+        .createLayer("Dasharay Line", GM_LineString.class); //$NON-NLS-1$
     layerLine3.setStyles(sld.getLayer("Line Dasharray").getStyles()); //$NON-NLS-1$
 
     Layer layerPoint = factory.createLayer("Point", GM_Point.class); //$NON-NLS-1$
@@ -1310,7 +1338,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
           double max = Double.NEGATIVE_INFINITY;
           for (IFeature f : this.layer.getFeatureCollection()) {
             try {
-              Double v = Double.parseDouble(f.getAttribute(attributeName).toString());
+              Double v = Double.parseDouble(f.getAttribute(attributeName)
+                  .toString());
               min = Math.min(min, v);
               max = Math.max(max, v);
             } catch (NumberFormatException exception) {
@@ -1789,11 +1818,12 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
 
   PointPlacement pointPlacement;
   LinePlacement linePlacement;
+
   @Override
   public void itemStateChanged(ItemEvent e) {
     if (e.getSource() == this.toponymBtn) {
       logger.info("toponymBtn");
-      if (e.getStateChange() == ItemEvent.SELECTED){
+      if (e.getStateChange() == ItemEvent.SELECTED) {
         StyleEditionFrame.this.enableToponyms();
       } else {
         StyleEditionFrame.this.disableToponyms();

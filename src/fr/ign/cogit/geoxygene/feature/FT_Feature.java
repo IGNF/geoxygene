@@ -27,6 +27,7 @@
 
 package fr.ign.cogit.geoxygene.feature;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
 /**
@@ -59,6 +60,15 @@ public abstract class FT_Feature extends AbstractFeature {
   public FT_Feature(IGeometry geom) {
     super();
     this.geom = geom;
+  }
+
+  /**
+   * Constructeur par copie
+   * @param feature
+   */
+  public FT_Feature(IFeature feature) {
+    super(feature);
+    this.geom = feature.getGeom();
   }
 
   @Override

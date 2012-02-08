@@ -31,6 +31,7 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.I18N;
+import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
 import fr.ign.cogit.geoxygene.appli.MainFrame;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
 
@@ -72,13 +73,13 @@ public class MoveMode extends AbstractMode {
       e1.printStackTrace();
     }
   }
-  
-  @Override
-  public void mousePressed(final MouseEvent e) {
-    if ((SwingUtilities.isLeftMouseButton(e))) {
-      this.initialPointView = e.getPoint();
+
+    @Override
+    public void mousePressed(final MouseEvent e) {
+        if ((SwingUtilities.isLeftMouseButton(e))) {
+            this.initialPointView = e.getPoint();
+        }
     }
-  }
   
   @Override
   public void mouseDragged(final MouseEvent e) {

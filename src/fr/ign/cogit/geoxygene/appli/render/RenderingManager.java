@@ -295,7 +295,7 @@ public class RenderingManager {
   public final void copyTo(final Graphics2D destination) {
     for (Layer layer : this.getLayerViewPanel().getProjectFrame().getSld()
         .getLayers()) {
-      if (layer.isVisible()) {
+      if (layer.getOpacity() > 0.0d && this.rendererMap.get(layer) != null) {
         this.rendererMap.get(layer).copyTo(destination);
       }
     }
@@ -303,6 +303,7 @@ public class RenderingManager {
   }
 
   /**
+   * 
    * Dispose of the manager. Cleans up all threads, renderers, daemons, etc.
    */
   public final void dispose() {

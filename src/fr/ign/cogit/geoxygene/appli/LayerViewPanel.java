@@ -66,7 +66,6 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.SldListener;
-import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.util.conversion.ImgUtil;
 
 /**
@@ -96,10 +95,11 @@ public class LayerViewPanel extends JPanel implements Printable, SldListener {
       listener.paint(this, graphics);
     }
   }
+
   /**
    * Model
    */
-  private StyledLayerDescriptor sldmodel;
+  // private StyledLayerDescriptor sldmodel;
 
   /**
    * Rendering manager.
@@ -154,7 +154,6 @@ public class LayerViewPanel extends JPanel implements Printable, SldListener {
    */
   public LayerViewPanel(final ProjectFrame frame) {
     super();
-    this.sldmodel = null;
     this.projectFrame = frame;
     this.viewport = new Viewport(this);
     this.addPaintListener(new ScalePaintListener());
@@ -239,7 +238,7 @@ public class LayerViewPanel extends JPanel implements Printable, SldListener {
         if (!points.isEmpty()) {
           points.add(((AbstractGeometryEditMode) mode).getCurrentPoint());
           RenderUtil.draw(new GM_LineString(points), this.getViewport(),
-              (Graphics2D) g);
+              (Graphics2D) g, 1.0f);// FIXME OPACITY FIX
         }
       } else {
         if (mode instanceof CreatePolygonMode) {
@@ -249,12 +248,12 @@ public class LayerViewPanel extends JPanel implements Printable, SldListener {
             if (points.size() > 2) {
               points.add(start);
               RenderUtil.draw(new GM_Polygon(new GM_LineString(points)),
-                  this.getViewport(), (Graphics2D) g);
+                  this.getViewport(), (Graphics2D) g, 1.0f);// FIXME OPACITY FIX
             } else {
               if (points.size() == 2) {
                 points.add(start);
                 RenderUtil.draw(new GM_LineString(points), this.getViewport(),
-                    (Graphics2D) g);
+                    (Graphics2D) g, 1.0f);// FIXME OPACITY FIX
               }
             }
           }
@@ -308,7 +307,8 @@ public class LayerViewPanel extends JPanel implements Printable, SldListener {
     Iterator<Layer> layerIterator = copy.iterator();
     IEnvelope envelope = layerIterator.next().getFeatureCollection().envelope();
     while (layerIterator.hasNext()) {
-      IFeatureCollection<? extends IFeature> collection = layerIterator.next().getFeatureCollection();
+      IFeatureCollection<? extends IFeature> collection = layerIterator.next()
+          .getFeatureCollection();
       if (collection != null) {
         IEnvelope env = collection.getEnvelope();
         if (envelope == null) {
@@ -329,7 +329,7 @@ public class LayerViewPanel extends JPanel implements Printable, SldListener {
   public final Set<IFeature> getSelectedFeatures() {
     return this.selectedFeatures;
   }
-  
+
   public final Set<IFeature> getFeatures() {
     Set<IFeature> features = new HashSet<IFeature>();
     for (Layer layer : this.getProjectFrame().getLayers()) {
@@ -337,7 +337,7 @@ public class LayerViewPanel extends JPanel implements Printable, SldListener {
     }
     return features;
   }
-  
+
   @Override
   public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
       throws PrinterException {
@@ -410,40 +410,41 @@ public class LayerViewPanel extends JPanel implements Printable, SldListener {
 
   private int recordIndex = 0;
 
-public void setModel(StyledLayerDescriptor sld) {
-    this.sldmodel = sld;
-    this.sldmodel.addSldListener(this);
-}
+  // public void setModel(StyledLayerDescriptor sld) {
+  // this.sldmodel = sld;
+  // this.sldmodel.addSldListener(this);
+  //
+  // }
 
-    /**
-     * Evenements SLD
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        this.repaint();
-    }
+  /**
+   * Evenements SLD
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    this.repaint();
+  }
 
-    @Override
-    public synchronized void layerAdded(Layer l) {
-        this.renderingManager.addLayer(l);
-        try {
-            IEnvelope env = l.getFeatureCollection().getEnvelope();
-            if (env == null) {
-                env = l.getFeatureCollection().envelope();
-            }
-            this.viewport.zoom(env);
-        } catch (NoninvertibleTransformException e1) {
-            e1.printStackTrace();
-        }
+  @Override
+  public synchronized void layerAdded(Layer l) {
+    this.renderingManager.addLayer(l);
+    try {
+      IEnvelope env = l.getFeatureCollection().getEnvelope();
+      if (env == null) {
+        env = l.getFeatureCollection().envelope();
+      }
+      this.viewport.zoom(env);
+    } catch (NoninvertibleTransformException e1) {
+      e1.printStackTrace();
     }
+  }
 
-    @Override
-    public void layerOrderChanged(int oldIndex, int newIndex) {
-        this.repaint();
-    }
+  @Override
+  public void layerOrderChanged(int oldIndex, int newIndex) {
+    this.repaint();
+  }
 
-    @Override
-    public void layersRemoved(Collection<Layer> layers) {
-        this.repaint();
-    }
+  @Override
+  public void layersRemoved(Collection<Layer> layers) {
+    this.repaint();
+  }
 }

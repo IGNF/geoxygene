@@ -60,164 +60,168 @@ import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
  * @author Julien Perret
  */
 public class ProjectFrame extends JInternalFrame implements ActionListener {
-    /**
-     * Logger of the application.
-     */
-    private static Logger logger = Logger.getLogger(ProjectFrame.class
-            .getName());
+  /**
+   * Logger of the application.
+   */
+  private static Logger logger = Logger.getLogger(ProjectFrame.class.getName());
 
-    /**
-     * Serial version id.
-     */
-    private static final long serialVersionUID = 1L;
+  /**
+   * Serial version id.
+   */
+  private static final long serialVersionUID = 1L;
 
-    /**
-     * The layer view panel.
-     */
-    private LayerViewPanel layerViewPanel = null;
+  /**
+   * The layer view panel.
+   */
+  private LayerViewPanel layerViewPanel = null;
 
-    /**
-     * @return The {@link LayerViewPanel}
-     */
-    public final LayerViewPanel getLayerViewPanel() {
-        return this.layerViewPanel;
+  /**
+   * @return The {@link LayerViewPanel}
+   */
+  public final LayerViewPanel getLayerViewPanel() {
+    return this.layerViewPanel;
+  }
+
+  /**
+   * The layer legend panel.
+   */
+  private LayerLegendPanel layerLegendPanel = null;
+
+  /**
+   * @return The layer legend panel.
+   */
+  public LayerLegendPanel getLayerLegendPanel() {
+    return this.layerLegendPanel;
+  }
+
+  /**
+   * The split pane.
+   */
+  private JSplitPane splitPane = new JSplitPane();
+
+  /**
+   * @return The split pane
+   */
+  public JSplitPane getSplitPane() {
+    return this.splitPane;
+  }
+
+  /**
+   * The project styled layer descriptor.
+   */
+  private StyledLayerDescriptor sld = null;
+
+  public void setSld(StyledLayerDescriptor sld) {
+    this.sld = sld;
+    this.sld.addSldListener(this.layerViewPanel);
+    this.sld.addSldListener(this.layerLegendPanel);
+  }
+
+  /**
+   * @return The project styled layer descriptor
+   */
+  public StyledLayerDescriptor getSld() {
+    return this.sld;
+  }
+
+  /**
+   * The default frame width.
+   */
+  private static final int DEFAULT_WIDTH = 600;
+  /**
+   * The default frame height.
+   */
+  private static final int DEFAULT_HEIGHT = 400;
+  /**
+   * The default frame divider location.
+   */
+  private static final int DEFAULT_DIVIDER_LOCATION = 200;
+
+  private MainFrame mainFrame = null;
+
+  public MainFrame getMainFrame() {
+    return this.mainFrame;
+  }
+
+  private static int PFID = 1;
+
+  /**
+   * Constructor.
+   * 
+   * @param iconImage the project icon image
+   */
+  public ProjectFrame(final MainFrame frame, final ImageIcon iconImage) {
+    super("ProjectFrame " + ProjectFrame.PFID++, true, true, true, true); //$NON-NLS-1$
+    // Setting the tool tip text to the frame and its sub components
+    this.setToolTipText(this.getTitle());
+    this.getDesktopIcon().setToolTipText(this.getTitle());
+    for (Component c : this.getDesktopIcon().getComponents()) {
+      if (c instanceof JComponent) {
+        ((JComponent) c).setToolTipText(this.getTitle());
+      }
     }
+    this.setSize(ProjectFrame.DEFAULT_WIDTH, ProjectFrame.DEFAULT_HEIGHT);
+    this.setFrameIcon(iconImage);
+    this.mainFrame = frame;
+    this.sld = new StyledLayerDescriptor(new DataSet());
+    this.layerViewPanel = new LayerViewPanel(this);
+    // this.layerViewPanel.setModel(this.sld);
+    this.layerLegendPanel = new LayerLegendPanel(this);
+    // this.layerLegendPanel.setModel(this.sld);
+    this.sld.addSldListener(this.layerViewPanel);
+    this.sld.addSldListener(this.layerLegendPanel);
 
-    /**
-     * The layer legend panel.
-     */
-    private LayerLegendPanel layerLegendPanel = null;
+    this.getContentPane().setLayout(new BorderLayout());
+    this.splitPane.setBorder(null);
+    this.layerLegendPanel.setLayout(new BoxLayout(this.layerLegendPanel,
+        BoxLayout.PAGE_AXIS));
+    this.getContentPane().add(this.splitPane, BorderLayout.CENTER);
+    this.splitPane.add(this.layerLegendPanel, JSplitPane.LEFT);
+    this.splitPane.add(this.layerViewPanel, JSplitPane.RIGHT);
+    this.splitPane.setDividerLocation(ProjectFrame.DEFAULT_DIVIDER_LOCATION);
+    this.splitPane.setOneTouchExpandable(true);
+    this.pack();
+    ShapefileReader.addActionListener(this);
+  }
 
-    /**
-     * @return The layer legend panel.
-     */
-    public LayerLegendPanel getLayerLegendPanel() {
-        return this.layerLegendPanel;
-    }
+  public void addLayer(Layer l) {
+    this.sld.add(l);
+  }
 
-    /**
-     * The split pane.
-     */
-    private JSplitPane splitPane = new JSplitPane();
-
-    /**
-     * @return The split pane
-     */
-    public JSplitPane getSplitPane() {
-        return this.splitPane;
-    }
-
-    /**
-     * The project styled layer descriptor.
-     */
-    private StyledLayerDescriptor sld = new StyledLayerDescriptor(new DataSet());
-
-    public void setSld(StyledLayerDescriptor sld) {
-        this.sld = sld;
-    }
-
-    /**
-     * @return The project styled layer descriptor
-     */
-    public StyledLayerDescriptor getSld() {
-        return this.sld;
-    }
-
-    /**
-     * The default frame width.
-     */
-    private static final int DEFAULT_WIDTH = 600;
-    /**
-     * The default frame height.
-     */
-    private static final int DEFAULT_HEIGHT = 400;
-    /**
-     * The default frame divider location.
-     */
-    private static final int DEFAULT_DIVIDER_LOCATION = 200;
-
-    private MainFrame mainFrame = null;
-
-    public MainFrame getMainFrame() {
-        return this.mainFrame;
-    }
-
-    private static int PFID = 1;
-
-    /**
-     * Constructor.
-     * 
-     * @param iconImage
-     *            the project icon image
-     */
-    public ProjectFrame(final MainFrame frame, final ImageIcon iconImage) {
-        super("ProjectFrame " + ProjectFrame.PFID++, true, true, true, true); //$NON-NLS-1$
-        // Setting the tool tip text to the frame and its sub components
-        this.setToolTipText(this.getTitle());
-        this.getDesktopIcon().setToolTipText(this.getTitle());
-        for (Component c : this.getDesktopIcon().getComponents()) {
-            if (c instanceof JComponent) {
-                ((JComponent) c).setToolTipText(this.getTitle());
-            }
-        }
-        this.setSize(ProjectFrame.DEFAULT_WIDTH, ProjectFrame.DEFAULT_HEIGHT);
-        this.setFrameIcon(iconImage);
-        this.mainFrame = frame;
-        this.layerViewPanel = new LayerViewPanel(this);
-        this.layerViewPanel.setModel(this.sld);
-        this.layerLegendPanel = new LayerLegendPanel(this);
-        this.layerLegendPanel.setModel(this.sld);
-        this.getContentPane().setLayout(new BorderLayout());
-        this.splitPane.setBorder(null);
-        this.layerLegendPanel.setLayout(new BoxLayout(this.layerLegendPanel,
-                BoxLayout.PAGE_AXIS));
-        this.getContentPane().add(this.splitPane, BorderLayout.CENTER);
-        this.splitPane.add(this.layerLegendPanel, JSplitPane.LEFT);
-        this.splitPane.add(this.layerViewPanel, JSplitPane.RIGHT);
-        this.splitPane
-                .setDividerLocation(ProjectFrame.DEFAULT_DIVIDER_LOCATION);
-        this.splitPane.setOneTouchExpandable(true);
-        this.pack();
-        ShapefileReader.addActionListener(this);
-    }
-
-    public void addLayer(Layer l) {
+  public void addLayer(File file) {
+    if (file != null) {
+      String fileName = file.getAbsolutePath();
+      String extention = fileName.substring(fileName.lastIndexOf('.') + 1);
+      LayerFactory factory = new LayerFactory(this.getSld());
+      Layer l = null;
+      if (extention.equalsIgnoreCase("shp")) { //$NON-NLS-1$
+        l = factory.createLayer(fileName, LayerType.SHAPEFILE);
+      } else if (extention.equalsIgnoreCase("tif")) { //$NON-NLS-1$
+        l = factory.createLayer(fileName, LayerType.GEOTIFF);
+      } else if (extention.equalsIgnoreCase("asc")) { //$NON-NLS-1$
+        l = factory.createLayer(fileName, LayerType.ASC);
+      } else if (extention.equalsIgnoreCase("txt")) { //$NON-NLS-1$
+        l = factory.createLayer(fileName, LayerType.TXT);
+      }
+      if (l != null) {
         this.sld.add(l);
+      }
+      return;
     }
+  }
 
-    public void addLayer(File file) {
-        if (file != null) {
-            String fileName = file.getAbsolutePath();
-            String extention = fileName
-                    .substring(fileName.lastIndexOf('.') + 1);
-            LayerFactory factory = new LayerFactory(this.getSld());
-            Layer l = null;
-            if (extention.equalsIgnoreCase("shp")) { //$NON-NLS-1$
-                l = factory.createLayer(fileName, LayerType.SHAPEFILE);
-            } else if (extention.equalsIgnoreCase("tif")) { //$NON-NLS-1$
-                l = factory.createLayer(fileName, LayerType.GEOTIFF);
-            } else if (extention.equalsIgnoreCase("asc")) { //$NON-NLS-1$
-                l = factory.createLayer(fileName, LayerType.ASC);
-            } else if (extention.equalsIgnoreCase("txt")) { //$NON-NLS-1$
-                l = factory.createLayer(fileName, LayerType.TXT);
-            }
-            if (l != null) {
-                this.sld.add(l);
-            }
-            return;
-        }
-    }
+  public void askAndAddNewLayer() {
+    File file = MainFrame.getFilechooser().getFile(this.getMainFrame());
+    this.addLayer(file);
+  }
 
-    public void askAndAddNewLayer() {
-        File file = MainFrame.getFilechooser().getFile(this.getMainFrame());
-        this.addLayer(file);
-    }
   public void addGpsTxtLayer(String fileName) {
     int lastIndexOfSeparator = fileName.lastIndexOf(File.separatorChar);
     String populationName = fileName.substring(lastIndexOfSeparator + 1,
         fileName.lastIndexOf(".")); //$NON-NLS-1$
     logger.info(populationName);
-    Population<DefaultFeature> population = GPSTextfileReader.read(fileName, populationName, this.getDataSet(), true);
+    Population<DefaultFeature> population = GPSTextfileReader.read(fileName,
+        populationName, this.getDataSet(), true);
     logger.info(population.size());
 
     if (population != null) {
@@ -228,15 +232,17 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
         } catch (NoninvertibleTransformException e1) {
           e1.printStackTrace();
         }
-      }    
+      }
     }
   }
+
   public void addRoadNetworkTxtLayer(String fileName) {
     int lastIndexOfSeparator = fileName.lastIndexOf(File.separatorChar);
     String populationName = fileName.substring(lastIndexOfSeparator + 1,
         fileName.lastIndexOf(".")); //$NON-NLS-1$
     logger.info(populationName);
-    Population<DefaultFeature> population = RoadNetworkTextfileReader.read(fileName, populationName, this.getDataSet(), true);
+    Population<DefaultFeature> population = RoadNetworkTextfileReader.read(
+        fileName, populationName, this.getDataSet(), true);
     logger.info(population.size());
 
     if (population != null) {
@@ -247,179 +253,173 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
         } catch (NoninvertibleTransformException e1) {
           e1.printStackTrace();
         }
-      }    
+      }
     }
   }
 
-    /**
-     * Add a feature collection to the project.
-     * 
-     * @param population
-     *            the population to add
-     * @param name
-     *            the name of the population
-     */
-    public final Layer addFeatureCollection(
-            final IPopulation<? extends IFeature> population,
-            final String name, CoordinateReferenceSystem crs) {
-      LayerFactory factory = new LayerFactory(this.getSld());
-        Layer layer = factory.createLayer(name, population
-                .getFeatureType().getGeometryType());
-        layer.setCRS(crs);
-        this.sld.add(layer);
+  /**
+   * Add a feature collection to the project.
+   * 
+   * @param population the population to add
+   * @param name the name of the population
+   */
+  public final Layer addFeatureCollection(
+      final IPopulation<? extends IFeature> population, final String name,
+      CoordinateReferenceSystem crs) {
+    LayerFactory factory = new LayerFactory(this.getSld());
+    Layer layer = factory.createLayer(name, population.getFeatureType()
+        .getGeometryType());
+    layer.setCRS(crs);
+    this.sld.add(layer);
+    return layer;
+  }
+
+  /**
+   * @author Bertrand Dumenieu
+   * @deprecated This function should not be longer used since layers include
+   *             now a CRS. Only here to ensure backward compatibility
+   */
+
+  @Deprecated
+  public final Layer addFeatureCollection(final IPopulation<?> population,
+      final String name) {
+    return this.addFeatureCollection(population, name, null);
+  }
+
+  /**
+   * Dispose of the frame an its {@link LayerViewPanel}.
+   */
+  @Override
+  public final void dispose() {
+    this.layerViewPanel.dispose();
+    super.dispose();
+  }
+
+  /**
+   * @return The list of the project's layers
+   */
+  public final List<Layer> getLayers() {
+    return this.sld.getLayers();
+  }
+
+  /**
+   * @param name name of the layer
+   * @return The layer with the given name
+   */
+  public final Layer getLayer(String name) {
+    return this.sld.getLayer(name);
+  }
+
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    if (e.getID() == 2) {
+      // loading finished
+      IPopulation<?> p = (IPopulation<?>) e.getSource();
+      Layer l = this.getLayer(p.getNom());
+      this.getLayerViewPanel()
+          .getRenderingManager()
+          .render(this.getLayerViewPanel().getRenderingManager().getRenderer(l));
+      this.getLayerViewPanel().superRepaint();
+    }
+  }
+
+  /**
+   * Clear the selection.
+   */
+  public void clearSelection() {
+    this.getLayerViewPanel().getSelectedFeatures().clear();
+    this.getLayerViewPanel().getRenderingManager().getSelectionRenderer()
+        .clearImageCache();
+    this.getLayerViewPanel().superRepaint();
+  }
+
+  public Layer getLayerFromFeature(IFeature ft) {
+    for (Layer layer : this.getSld().getLayers()) {
+      if (layer.getFeatureCollection().contains(ft)) {
         return layer;
+      }
     }
+    return null;
+  }
 
-    /**
-     * @author Bertrand Dumenieu
-     * @deprecated This function should not be longer used since layers include
-     *             now a CRS. Only here to ensure backward compatibility
-     */
+  private GeometryToolBar geometryToolBar = null;
 
-    @Deprecated
-    public final Layer addFeatureCollection(final IPopulation<?> population,
-            final String name) {
-        return this.addFeatureCollection(population, name, null);
+  public void setGeometryToolsVisible(boolean b) {
+    if (b) {
+      if (this.geometryToolBar == null) {
+        this.geometryToolBar = new GeometryToolBar(this);
+        this.getContentPane().add(this.geometryToolBar, BorderLayout.EAST);
+      }
+      this.geometryToolBar.setVisible(true);
+      this.validate();
+    } else {
+      this.geometryToolBar.setVisible(false);
+      this.validate();
     }
+  }
 
-    /**
-     * Dispose of the frame an its {@link LayerViewPanel}.
-     */
-    @Override
-    public final void dispose() {
-        this.layerViewPanel.dispose();
-        super.dispose();
-    }
+  Map<IFeature, BufferedImage> featureToImageMap = new HashMap<IFeature, BufferedImage>();
 
-    /**
-     * @return The list of the project's layers
-     */
-    public final List<Layer> getLayers() {
-        return this.sld.getLayers();
-    }
+  public void addImage(String name, BufferedImage image, double[][] range) {
+    DefaultFeature feature = new DefaultFeature(new GM_Envelope(range[0][0],
+        range[0][1], range[1][0], range[1][1]).getGeom());
+    this.featureToImageMap.put(feature, image);
+    Population<DefaultFeature> population = new Population<DefaultFeature>(name);
+    population.add(feature);
+    this.getDataSet().addPopulation(population);
+    LayerFactory factory = new LayerFactory(this.getSld());
+    Layer layer = factory.createLayer(name);
+    this.sld.add(layer);
+  }
 
-    /**
-     * @param name
-     *            name of the layer
-     * @return The layer with the given name
-     */
-    public final Layer getLayer(String name) {
-        return this.sld.getLayer(name);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getID() == 2) {
-            // loading finished
-            IPopulation<?> p = (IPopulation<?>) e.getSource();
-            Layer l = this.getLayer(p.getNom());
-            this.getLayerViewPanel()
-                    .getRenderingManager()
-                    .render(this.getLayerViewPanel().getRenderingManager()
-                            .getRenderer(l));
-            this.getLayerViewPanel().superRepaint();
-        }
-    }
-
-    /**
-     * Clear the selection.
-     */
-    public void clearSelection() {
-        this.getLayerViewPanel().getSelectedFeatures().clear();
-        this.getLayerViewPanel().getRenderingManager().getSelectionRenderer()
-                .clearImageCache();
-        this.getLayerViewPanel().superRepaint();
-    }
-
-    public Layer getLayerFromFeature(IFeature ft) {
-        for (Layer layer : this.getSld().getLayers()) {
-            if (layer.getFeatureCollection().contains(ft)) {
-                return layer;
-            }
-        }
+  public BufferedImage getImage(IFeature feature) {
+    logger.error(this.featureToImageMap.size() + " elements in map"); //$NON-NLS-1$
+    if (feature == null) {
+      if (this.featureToImageMap.isEmpty()) {
         return null;
+      }
+      return this.featureToImageMap.values().iterator().next();
     }
+    return this.featureToImageMap.get(feature);
+  }
 
-    private GeometryToolBar geometryToolBar = null;
+  /**
+   * Save the map into an image file. The file format is determined by the given
+   * file extension. If there is none or if the given extension is unsupported,
+   * the image is saved in PNG format.
+   * 
+   * @param fileName the image file to save into.
+   */
+  public void saveAsImage(String fileName) {
+    this.getLayerViewPanel().saveAsImage(fileName);
+  }
 
-    public void setGeometryToolsVisible(boolean b) {
-        if (b) {
-            if (this.geometryToolBar == null) {
-                this.geometryToolBar = new GeometryToolBar(this);
-                this.getContentPane().add(this.geometryToolBar,
-                        BorderLayout.EAST);
-            }
-            this.geometryToolBar.setVisible(true);
-            this.validate();
-        } else {
-            this.geometryToolBar.setVisible(false);
-            this.validate();
-        }
+  /**
+   * Saves a layer into an ESRI Shapefile
+   * 
+   * @param fileName
+   * @param layer
+   */
+  public void saveAsShp(String fileName, Layer layer) {
+    try {
+      ShapefileWriter.write(layer.getFeatureCollection(), fileName,
+          layer.getCRS());
+    } catch (Exception e) {
+      ProjectFrame.logger
+          .error("Shapefile export failed! See stack trace below : "); //$NON-NLS-1$
+      e.printStackTrace();
     }
+  }
 
-    Map<IFeature, BufferedImage> featureToImageMap = new HashMap<IFeature, BufferedImage>();
+  public void removeLayers(List<Layer> toRemove) {
+    System.out.println("removing +" + toRemove.size() + "+layers"); //$NON-NLS-1$ //$NON-NLS-2$
+    this.sld.remove(toRemove);
+    for (Layer layer : toRemove) {
+      this.layerViewPanel.getRenderingManager().removeLayer(layer);
+    }
+  }
 
-    public void addImage(String name, BufferedImage image, double[][] range) {
-        DefaultFeature feature = new DefaultFeature(new GM_Envelope(
-                range[0][0], range[0][1], range[1][0], range[1][1]).getGeom());
-        this.featureToImageMap.put(feature, image);
-        Population<DefaultFeature> population = new Population<DefaultFeature>(
-                name);
-        population.add(feature);
-        this.getDataSet().addPopulation(population);
-        LayerFactory factory = new LayerFactory(this.getSld());
-        Layer layer = factory.createLayer(name);
-        this.sld.add(layer);
-    }
-
-    public BufferedImage getImage(IFeature feature) {
-        logger.error(this.featureToImageMap.size() + " elements in map"); //$NON-NLS-1$
-        if (feature == null) {
-            if (this.featureToImageMap.isEmpty()) {
-                return null;
-            }
-            return this.featureToImageMap.values().iterator().next();
-        }
-        return this.featureToImageMap.get(feature);
-    }
-
-    /**
-     * Save the map into an image file. The file format is determined by the
-     * given file extension. If there is none or if the given extension is
-     * unsupported, the image is saved in PNG format.
-     * 
-     * @param fileName
-     *            the image file to save into.
-     */
-    public void saveAsImage(String fileName) {
-        this.getLayerViewPanel().saveAsImage(fileName);
-    }
-
-    /**
-     * Saves a layer into an ESRI Shapefile
-     * 
-     * @param fileName
-     * @param layer
-     */
-    public void saveAsShp(String fileName, Layer layer) {
-        try {
-            ShapefileWriter.write(layer.getFeatureCollection(), fileName,
-                    layer.getCRS());
-        } catch (Exception e) {
-            ProjectFrame.logger
-                    .error("Shapefile export failed! See stack trace below : "); //$NON-NLS-1$
-            e.printStackTrace();
-        }
-    }
-
-    public void removeLayers(List<Layer> toRemove) {
-        System.out.println("removing +" + toRemove.size() + "+layers"); //$NON-NLS-1$ //$NON-NLS-2$
-        this.sld.remove(toRemove);
-        for (Layer layer : toRemove) {
-            this.layerViewPanel.getRenderingManager().removeLayer(layer);
-        }
-    }
-    public DataSet getDataSet() {
-      return this.sld.getDataSet();
-    }
+  public DataSet getDataSet() {
+    return this.sld.getDataSet();
+  }
 }

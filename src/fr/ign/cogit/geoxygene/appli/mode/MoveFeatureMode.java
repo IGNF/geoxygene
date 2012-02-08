@@ -98,7 +98,7 @@ public class MoveFeatureMode extends AbstractGeometryEditMode {
                 feature.getGeom().translate(
                     this.currentPoint.getX() - this.initialPoint.getX(),
                     this.currentPoint.getY() - this.initialPoint.getY(), 0),
-                frame.getLayerViewPanel().getViewport(), graphics2D);
+                frame.getLayerViewPanel().getViewport(), graphics2D, 1.0f);// FIXME OPACITY FIX
           }
         }
         this.currentPoint = p;
@@ -107,7 +107,7 @@ public class MoveFeatureMode extends AbstractGeometryEditMode {
               feature.getGeom().translate(
                   this.currentPoint.getX() - this.initialPoint.getX(),
                   this.currentPoint.getY() - this.initialPoint.getY(), 0),
-              frame.getLayerViewPanel().getViewport(), graphics2D);
+              frame.getLayerViewPanel().getViewport(), graphics2D, 1.0f);// FIXME OPACITY FIX
         }
         this.dragCount++;
       } catch (NoninvertibleTransformException e1) {

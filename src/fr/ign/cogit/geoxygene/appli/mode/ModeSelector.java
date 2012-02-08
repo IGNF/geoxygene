@@ -114,7 +114,7 @@ public class ModeSelector implements ContainerListener, KeyListener,
     this.setMainFrame(theMainFrame);
     this.getMainFrame().add(this.toolBar, BorderLayout.PAGE_START);
 
-    this.addComponent(this.getMainFrame());
+    //this.addComponent(this.getMainFrame());
 
     this.modes.add(new ZoomMode(this.getMainFrame(), this));
     this.modes.add(new ZoomBoxMode(this.getMainFrame(), this));
@@ -247,6 +247,9 @@ public class ModeSelector implements ContainerListener, KeyListener,
   public final void mouseMoved(final MouseEvent e) {
     this.currentMode.mouseMoved(e);
   }
+  public final List<Mode> getRegisteredModes(){
+      return this.modes;
+  }
 
   /**
    * Set the current mode.
@@ -269,31 +272,29 @@ public class ModeSelector implements ContainerListener, KeyListener,
 
   @Override
   public final void componentAdded(final ContainerEvent e) {
-    // System.out.println("added component " +
-    // e.getChild().getClass().getSimpleName());
-    this.addComponent(e.getChild());
+    this.addComponent(((ProjectFrame)e.getChild()).getLayerViewPanel());
   }
 
   /**
    * Add a component.
    * @param component the newly added component
    */
-  private void addComponent(final Component component) {
-    if (component instanceof AbstractButton) {
-      return;
+    private void addComponent(final Component component) {
+        if (component instanceof AbstractButton) {
+            return;
+        }
+        component.addKeyListener(this);
+        component.addMouseWheelListener(this);
+        component.addMouseListener(this);
+        component.addMouseMotionListener(this);
+//        if (component instanceof Container) {
+//            Container container = (Container) component;
+//            container.addContainerListener(this);
+//            for (Component child : container.getComponents()) {
+//                this.addComponent(child);
+//            }
+//        }
     }
-    component.addKeyListener(this);
-    component.addMouseWheelListener(this);
-    component.addMouseListener(this);
-    component.addMouseMotionListener(this);
-    if (component instanceof Container) {
-      Container container = (Container) component;
-      container.addContainerListener(this);
-      for (Component child : container.getComponents()) {
-        this.addComponent(child);
-      }
-    }
-  }
 
   @Override
   public final void componentRemoved(final ContainerEvent e) {

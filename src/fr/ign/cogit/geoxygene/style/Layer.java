@@ -79,6 +79,8 @@ public interface Layer {
    */
   public boolean isVisible();
 
+  public void setOpacity(double opacity);
+
   /**
    * @param visible
    */
@@ -107,7 +109,7 @@ public interface Layer {
   public void setSymbolized(boolean symbolized);
 
   public Symbolizer getSymbolizer();
-  
+
   public String getActiveGroup();
 
   public void setActiveGroup(String activeGroup);
@@ -123,4 +125,6 @@ public interface Layer {
   public ImageIcon getIcon();
 
   public void setIcon(ImageIcon image);
+
+  double getOpacity();
 }

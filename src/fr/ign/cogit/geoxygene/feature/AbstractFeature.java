@@ -78,6 +78,27 @@ public abstract class AbstractFeature implements IFeature {
     this.geom = geometry;
   }
 
+  /**
+   * Constructeur par défaut d'AbstractFeature Le nouveau feature n'appartient
+   * pas a la création aux mêmes featureCollections que son parent ni a la même
+   * population.
+   * 
+   * nb : La copie de la resprésentation et topologie est à faire.
+   * 
+   * @param feature
+   */
+  public AbstractFeature(IFeature feature) {
+    this.id = Integer.MAX_VALUE;
+    this.setCorrespondants(feature.getCorrespondants());
+    this.estSupprime = feature.isDeleted();
+    this.featurecollections = null;
+    this.representation = null;
+    this.featureType = feature.getFeatureType();
+    this.geom = (IGeometry) feature.getGeom().clone();
+    this.population = null;
+    this.topo = null;
+  }
+
   protected int id;
 
   @Override
@@ -102,9 +123,9 @@ public abstract class AbstractFeature implements IFeature {
   @Override
   @SuppressWarnings("unchecked")
   public void setGeom(IGeometry g) {
-    if(g == null){
-        this.geom = null;
-        return;
+    if (g == null) {
+      this.geom = null;
+      return;
     }
     IGeometry previousGeometry = this.geom;
     boolean hasPreviousGeometry = (previousGeometry != null);
@@ -155,13 +176,15 @@ public abstract class AbstractFeature implements IFeature {
   }
 
   /** Lien n-m bidirectionnel vers IFeatureCollection. */
-  private List<WeakReference<IFeatureCollection<IFeature>>> featurecollections = new ArrayList<WeakReference<IFeatureCollection<IFeature>>>(0);
- 
+  private List<WeakReference<IFeatureCollection<IFeature>>> featurecollections = new ArrayList<WeakReference<IFeatureCollection<IFeature>>>(
+      0);
+
   @Override
   public List<IFeatureCollection<IFeature>> getFeatureCollections() {
-    List<IFeatureCollection<IFeature>> liste = new ArrayList<IFeatureCollection<IFeature>>(this.featurecollections.size());
-    for(WeakReference<IFeatureCollection<IFeature>> ref : this.featurecollections){
-       liste.add(ref.get());
+    List<IFeatureCollection<IFeature>> liste = new ArrayList<IFeatureCollection<IFeature>>(
+        this.featurecollections.size());
+    for (WeakReference<IFeatureCollection<IFeature>> ref : this.featurecollections) {
+      liste.add(ref.get());
     }
     return liste;
   }
@@ -308,7 +331,8 @@ public abstract class AbstractFeature implements IFeature {
 
   @Override
   public void setPopulation(IPopulation<? extends IFeature> population) {
-    this.population = new WeakReference<IPopulation<? extends IFeature>>(population);
+    this.population = new WeakReference<IPopulation<? extends IFeature>>(
+        population);
     // Refuse d'écrire dans ma population car ne peut pas pas vérifier si
     // this hérite bien de IFeature...
     // this.population.addUnique(this);
@@ -446,38 +470,37 @@ public abstract class AbstractFeature implements IFeature {
               + "la méthode IFeature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
       this.setTopo((ITopology) valeur);
     } else {
-        String nomFieldMaj2;
-        if (attribute.getNomField().isEmpty()) {
-            AbstractFeature.logger
-            .warn("Empty Attribute Name");
-            return;
-        } else {
-          nomFieldMaj2 = Character.toUpperCase(attribute.getNomField()
-              .charAt(0)) + attribute.getNomField().substring(1);
-        }
-        String nomSetFieldMethod = "set" + nomFieldMaj2; //$NON-NLS-1$
+      String nomFieldMaj2;
+      if (attribute.getNomField().isEmpty()) {
+        AbstractFeature.logger.warn("Empty Attribute Name");
+        return;
+      } else {
+        nomFieldMaj2 = Character.toUpperCase(attribute.getNomField().charAt(0))
+            + attribute.getNomField().substring(1);
+      }
+      String nomSetFieldMethod = "set" + nomFieldMaj2; //$NON-NLS-1$
+      try {
+        Method methodSetter = this.getClass().getDeclaredMethod(
+            nomSetFieldMethod, valeur.getClass());
+        valeur = methodSetter.invoke(this, valeur);
+      } catch (SecurityException e) {
+        e.printStackTrace();
+      } catch (IllegalArgumentException e) {
+        e.printStackTrace();
+      } catch (NoSuchMethodException e) {
         try {
-            Method methodSetter = this.getClass().getDeclaredMethod(
-                    nomSetFieldMethod, valeur.getClass());
-            valeur = methodSetter.invoke(this, valeur);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            try {     
-                Method methodSetter = this.getClass().getDeclaredMethod(      
-                        nomSetFieldMethod,    
-                        AbstractFeature.class2PrimitiveClass(valeur.getClass()));      
-                methodSetter.invoke(this, valeur);    
-            } catch (Exception e1) {    
-                e1.printStackTrace();     
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+          Method methodSetter = this.getClass().getDeclaredMethod(
+              nomSetFieldMethod,
+              AbstractFeature.class2PrimitiveClass(valeur.getClass()));
+          methodSetter.invoke(this, valeur);
+        } catch (Exception e1) {
+          e1.printStackTrace();
         }
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+      } catch (InvocationTargetException e) {
+        e.printStackTrace();
+      }
     }
   }
 
@@ -754,8 +777,6 @@ public abstract class AbstractFeature implements IFeature {
     return this.getClass().getName() + " " + this.getGeom(); //$NON-NLS-1$
   }
 
-
-
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -769,22 +790,20 @@ public abstract class AbstractFeature implements IFeature {
       return false;
     }
     if (this.getGeom() != null && other.getGeom() != null) {
-        if (this.getGeom().coord().size() != other.getGeom().coord().size()) {
-            return false;
+      if (this.getGeom().coord().size() != other.getGeom().coord().size()) {
+        return false;
+      }
+      for (int i = 0; i < this.getGeom().coord().size(); i++) {
+        if (this.getGeom().coord().get(i) != other.getGeom().coord().get(i)) {
+          return false;
         }
-        for (int i = 0; i < this.getGeom().coord().size(); i++) {
-            if (this.getGeom().coord().get(i) != other.getGeom().coord()
-                    .get(i)) {
-                return false;
-            }
-        }
-        
-        
-        //les tests ont été passés avec succès
-        return true;
+      }
+
+      // les tests ont été passés avec succès
+      return true;
     }
-    
-    //Une des 2 géométries est nulle a priori faux ....
+
+    // Une des 2 géométries est nulle a priori faux ....
     return false;
   }
 

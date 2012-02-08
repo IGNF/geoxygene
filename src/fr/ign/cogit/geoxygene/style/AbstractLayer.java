@@ -221,6 +221,9 @@ public abstract class AbstractLayer implements Layer {
     // aux styles du layer et non à lui même.
     @XmlTransient
     protected ImageIcon icon;
+    
+    @XmlTransient
+    private double opacity = 1.0d;
 
     @Override
     public ImageIcon getIcon() {
@@ -230,5 +233,20 @@ public abstract class AbstractLayer implements Layer {
     @Override
     public void setIcon(ImageIcon _icon) {
         this.icon = _icon;
+    }
+    
+    @Override
+    public double getOpacity(){
+        return this.opacity;
+    }
+
+    @Override
+    public void setOpacity(double opacity){
+        if(opacity < 0.0d){
+            this.opacity= 0.0d;
+        }else if(opacity > 1.0d){
+            this.opacity= 1.0d;
+        }
+        this.opacity = opacity;
     }
 }
