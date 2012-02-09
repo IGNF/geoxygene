@@ -394,12 +394,12 @@ public class Tiling<Feat extends IFeature> implements SpatialIndex<Feat> {
       }
     }
     if (envelope != null) {
-        this.xmin = envelope.minX();
-        this.xmax = envelope.maxX();
-        this.ymin = envelope.minY();
-        this.ymax = envelope.maxY();
+      this.xmin = envelope.minX();
+      this.xmax = envelope.maxX();
+      this.ymin = envelope.minY();
+      this.ymax = envelope.maxY();
     } else {
-        this.xmin = this.xmax = this.ymin = this.ymax = 0;
+      this.xmin = this.xmax = this.ymin = this.ymax = 0;
     }
     if (Tiling.logger.isTraceEnabled()) {
       Tiling.logger.trace("envelope = " + this.xmin + "," + this.xmax + "," //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -545,24 +545,19 @@ public class Tiling<Feat extends IFeature> implements SpatialIndex<Feat> {
     } else if (cas == 0) {// modification : suppression puis ajout
       this.update(value, -1);
       this.update(value, +1);
-    } else {
-      System.out
-          .println("spatialIndex.update(value, cas) : \"cas\" doit valoir +1, -1 ou 0."); //$NON-NLS-1$
     }
   }
 
-@Override
-public void clear() {
-    for(int i=0 ; i < this.index.length;i++){
-        for(int j = 0; j < this.index[i].length;j++){
-            this.index[i][j] = null;
-        }
-        this.index[i] = null;
+  @Override
+  public void clear() {
+    for (int i = 0; i < this.index.length; i++) {
+      for (int j = 0; j < this.index[i].length; j++) {
+        this.index[i][j] = null;
+      }
+      this.index[i] = null;
     }
     this.index = null;
     this.dallage = null;
     this.dallesPolygones = null;
-    System.out.println("Index cleared");
-    
-}
+  }
 }
