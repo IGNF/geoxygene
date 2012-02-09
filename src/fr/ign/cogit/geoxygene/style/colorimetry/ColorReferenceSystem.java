@@ -295,7 +295,9 @@ public class ColorReferenceSystem {
    */
   public static List<ColorimetricColor> getCOGITColors() {
     List<ColorimetricColor> listCouleurs = new ArrayList<ColorimetricColor>();
-    ColorReferenceSystem crs = ColorReferenceSystem.defaultColorRS();
+    ColorReferenceSystem crs = ColorReferenceSystem
+        .unmarshall(ColorReferenceSystem.class.getResourceAsStream(
+            "/color/ColorReferenceSystem.xml")); //$NON-NLS-1$
     listCouleurs = crs.getAllColors();
 
     return listCouleurs;
