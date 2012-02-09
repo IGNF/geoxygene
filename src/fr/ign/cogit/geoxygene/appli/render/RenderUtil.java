@@ -1015,10 +1015,21 @@ private static Color getColorWithOpacity(Color color, double opacity) {
     if (symbolizer.getFill() != null) {
       fillColor = getColorWithOpacity(symbolizer.getFill().getColor(), opacity);
     }
+    
+    //The scale
+    double scale = 1;
+    if (!symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
+      try {
+        scale = viewport.getModelToViewTransform().getScaleX();
+      } catch (NoninvertibleTransformException e) {
+        e.printStackTrace();
+      }
+    }
+    
     // Initialize the font
     java.awt.Font awtFont = null;
     if (symbolizer.getFont() != null) {
-      awtFont = symbolizer.getFont().toAwfFont();
+      awtFont = symbolizer.getFont().toAwfFont((float)scale);
     }
     if (awtFont == null) {
       awtFont = new java.awt.Font("Default", java.awt.Font.PLAIN, 10); //$NON-NLS-1$

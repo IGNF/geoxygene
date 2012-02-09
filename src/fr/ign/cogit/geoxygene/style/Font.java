@@ -26,13 +26,14 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * @author Julien Perret
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Font {
-
+  @XmlTransient
   private String fontFamily = "Default"; //$NON-NLS-1$
 
   /**
@@ -51,6 +52,7 @@ public class Font {
     this.fontFamily = fontFamily;
   }
 
+  @XmlTransient
   private int fontStyle = java.awt.Font.PLAIN;
 
   /**
@@ -61,14 +63,25 @@ public class Font {
     return this.fontStyle;
   }
 
+  public void setFontStyle(int fontStyle) {
+    this.fontStyle = fontStyle;
+  }
   /**
    * Affecte la valeur de l'attribut fontStyle.
    * @param fontStyle l'attribut fontStyle à affecter
    */
-  public void setFontStyle(int fontStyle) {
-    this.fontStyle = fontStyle;
+  public void setFontStyle(String fontStyle) {
+    int style = java.awt.Font.PLAIN;
+    if (fontStyle.equalsIgnoreCase("italic")) { //$NON-NLS-1$
+      style = java.awt.Font.ITALIC;
+    }
+    else if (fontStyle.equalsIgnoreCase("bold")) { //$NON-NLS-1$
+      style = java.awt.Font.BOLD;
+    }
+    this.setFontStyle(style);
   }
 
+  @XmlTransient
   private int fontWeight = java.awt.Font.PLAIN;
 
   /**
@@ -86,7 +99,15 @@ public class Font {
   public void setFontWeight(int fontWeight) {
     this.fontWeight = fontWeight;
   }
+  public void setFontWeight(String fontWeight) {
+    int weight = java.awt.Font.PLAIN;
+    if (fontWeight.equalsIgnoreCase("bold")) { //$NON-NLS-1$
+      weight = java.awt.Font.BOLD;
+    }
+    this.setFontWeight(weight);
+  }
 
+  @XmlTransient
   private int fontSize = 10;
 
   /**
@@ -125,26 +146,45 @@ public class Font {
    */
   public void setSvgParameters(List<SvgParameter> svgParameters) {
     this.svgParameters = svgParameters;
-    for (SvgParameter parameter : svgParameters) {
-      if (parameter.getName().equalsIgnoreCase("font-family")) { //$NON-NLS-1$
-        this.setFontFamily(parameter.getValue());
-      } else if (parameter.getName().equalsIgnoreCase("font-style")) { //$NON-NLS-1$
-        this.setFontStyle(Integer.parseInt(parameter.getValue()));
-      } else if (parameter.getName().equalsIgnoreCase("font-weight")) { //$NON-NLS-1$
-        this.setFontWeight(Integer.parseInt(parameter.getValue()));
-      } else if (parameter.getName().equalsIgnoreCase("font-size")) { //$NON-NLS-1$
-        this.setFontSize(Integer.parseInt(parameter.getValue()));
-      }
-    }
+    this.updateValues();
   }
+  private synchronized void updateValues() {
+	  synchronized (this.svgParameters) {
+		  for (SvgParameter parameter : this.svgParameters) {
+			  if (parameter.getName().equalsIgnoreCase("font-family")) { //$NON-NLS-1$
+				  this.setFontFamily(parameter.getValue());
+			  } else if (parameter.getName().equalsIgnoreCase("font-style")) { //$NON-NLS-1$
+				  this.setFontStyle(parameter.getValue());
+			  } else if (parameter.getName().equalsIgnoreCase("font-weight")) { //$NON-NLS-1$
+				  this.setFontWeight(parameter.getValue());
+			  } else if (parameter.getName().equalsIgnoreCase("font-size")) { //$NON-NLS-1$
+				  this.setFontSize((int) (Double.parseDouble(parameter.getValue())));
+			  }
+		  }	  
 
+	  }
+  }
+  @XmlTransient
+  private java.awt.Font font = null;
   /**
    * @return une police AWT équivalent à la police courante
    */
+  public java.awt.Font toAwfFont(float scale) {
+    if (this.font == null) {
+      this.updateValues();
+    }
+    this.font = new java.awt.Font(this.getFontFamily(), this.getFontStyle()
+        | this.getFontWeight(),(int)(this.getFontSize() * scale));
+    return this.font;
+  }
+  
   public java.awt.Font toAwfFont() {
-    return new java.awt.Font(this.getFontFamily(), this.getFontStyle()
+    if (this.font == null) {
+      this.updateValues();
+    }
+    this.font = new java.awt.Font(this.getFontFamily(), this.getFontStyle()
         | this.getFontWeight(), this.getFontSize());
-    // new java.awt.Font("Default",java.awt.Font.PLAIN,10);
+    return this.font;
   }
   
   public Font() {
@@ -152,7 +192,6 @@ public class Font {
   
   public Font(java.awt.Font font) {
     this.setFontFamily(font.getFamily());
-    
     switch (font.getStyle()) {
       case java.awt.Font.PLAIN:
         this.setFontStyle(java.awt.Font.PLAIN);
@@ -171,7 +210,6 @@ public class Font {
         this.setFontWeight(java.awt.Font.BOLD);
         break;
     }
-    
     this.setFontSize(font.getSize());
   }
 }
