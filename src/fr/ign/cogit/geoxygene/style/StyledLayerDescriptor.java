@@ -483,10 +483,12 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
       Class<? extends IGeometry> geometryType) {
 
     // Selection of suitables colors from the COGIT reference colors.
+	  
+	  //Modification Lucille 12 / 08 / 2011
+	  // Pour le JAR, le getPath ne passe pas -> remplacé par 
     ColorReferenceSystem crs = ColorReferenceSystem
-        .unmarshall(ColorReferenceSystem.class.getResource(
-            "/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
-
+    .unmarshall(ColorReferenceSystem.class.getResourceAsStream(
+        "/color/ColorReferenceSystem.xml")); //$NON-NLS-1$
     List<ColorimetricColor> colors = new ArrayList<ColorimetricColor>(0);
     for (int i = 0; i < 12; i++) {
       for (ColorimetricColor c : crs.getSlice(0, i)) {
