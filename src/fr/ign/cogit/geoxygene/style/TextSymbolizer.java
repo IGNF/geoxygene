@@ -19,6 +19,10 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import javax.xml.bind.annotation.XmlElement;
+
+import fr.ign.cogit.geoxygene.filter.expression.PropertyName;
+
 
 /**
  * @author Julien Perret
@@ -29,14 +33,15 @@ public class TextSymbolizer extends AbstractSymbolizer {
     return true;
   }
 
-  private String label;
+  @XmlElement(name = "Label")
+  private Label label;
 
   /**
    * Renvoie la valeur de l'attribut label.
    * @return la valeur de l'attribut label
    */
   public String getLabel() {
-    return this.label;
+    return this.label == null ? null : this.label.getPropertyName().toString();
   }
 
   /**
@@ -44,9 +49,14 @@ public class TextSymbolizer extends AbstractSymbolizer {
    * @param label l'attribut label à affecter
    */
   public void setLabel(String label) {
-    this.label = label;
+    if (this.label == null) {
+      this.label = new Label();
+      this.label.setPropertyName(new PropertyName());
+    }
+    this.label.getPropertyName().setPropertyName(label);
   }
-
+  
+  @XmlElement(name = "Font")
   private Font font;
 
   /**
@@ -65,6 +75,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
     this.font = font;
   }
 
+  @XmlElement(name = "LabelPlacement")
   private LabelPlacement labelPlacement;
 
   /**
@@ -83,6 +94,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
     this.labelPlacement = labelPlacement;
   }
 
+  @XmlElement(name = "Halo")
   private Halo halo;
 
   /**
@@ -101,6 +113,7 @@ public class TextSymbolizer extends AbstractSymbolizer {
     this.halo = halo;
   }
 
+  @XmlElement(name = "Fill")
   private Fill fill;
 
   /**
