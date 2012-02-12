@@ -1297,7 +1297,7 @@ public abstract class Operateurs {
    */
   public static ILineString resampling(ILineString ls, double maxDistance) {
     IDirectPositionList list = ls.coord();
-    return new GM_LineString(Operateurs.resampling(list, maxDistance));
+    return new GM_LineString(Operateurs.resampling(list, maxDistance), false);
   }
   /**
    * Méthode pour rééchantillonner une {@code IDirectPositionList}.
@@ -1313,8 +1313,8 @@ public abstract class Operateurs {
     IDirectPosition prevPoint = list.get(0);
     resampledList.add(prevPoint);
     for (int j = 1; j < list.size(); j++) {
-      IDirectPosition curPoint = list.get(j);
-      double length = prevPoint.distance(curPoint);
+      IDirectPosition nextPoint = list.get(j);
+      double length = prevPoint.distance(nextPoint);
       Double fseg = new Double(length / maxDistance);
       int nseg = fseg.intValue();
       // make sure the distance between the resulting points is smaller than
@@ -1325,18 +1325,18 @@ public abstract class Operateurs {
       // compute the actual distance between the resampled points
       double d = length / nseg;
       if (nseg >= 1) {
-        Vecteur u1 = new Vecteur(prevPoint, curPoint);
-        for (int i = 0; i < nseg; i++) {
-          curPoint = new DirectPosition(prevPoint.getX() + (i + 1) * d
-              * u1.vectNorme().getX(), prevPoint.getY() + (i + 1) * d
-              * u1.vectNorme().getY(), prevPoint.getZ() + (i + 1) * d
-              * u1.vectNorme().getZ());
+        Vecteur v = new Vecteur(prevPoint, nextPoint).vectNorme();
+        for (int i = 0; i < nseg - 1; i++) {
+          IDirectPosition curPoint = new DirectPosition(prevPoint.getX() + (i + 1) * d
+              * v.getX(), prevPoint.getY() + (i + 1) * d * v.getY(), prevPoint
+              .getZ()
+              + (i + 1) * d * v.getZ());
           resampledList.add(curPoint);
         }
-        prevPoint = curPoint;
       }
+      resampledList.add(nextPoint);
+      prevPoint = nextPoint;
     }
-    resampledList.add(list.get(list.size() - 1));
     return resampledList;
   }
 }
