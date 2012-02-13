@@ -63,6 +63,14 @@ public class TextStroke implements Stroke {
    */
   private boolean partial = false;
   /**
+   * Initial gap at the beginning of the label when repeating the text.
+   */
+  private float initialGap = 0f;
+  /**
+   * Gap between labels when repeating the text.
+   */
+  private float gap = 0f;
+  /**
    * Construct a text stroke.
    * <p>
    * By default, stretch to fit and repeat are set to false.
@@ -70,8 +78,9 @@ public class TextStroke implements Stroke {
    * @param font the font used to draw the text
    */
   public TextStroke(String text, Font font) {
-    this(text, font, false, false, false);
+    this(text, font, false, false, false, 0f, 0f);
   }
+
   /**
    * Construct a text stroke.
    * @param text the text to draw
@@ -79,13 +88,21 @@ public class TextStroke implements Stroke {
    * @param stretchToFit true if the text should be stretched on the entire
    *          geometry
    * @param repeat true if the text should be repeat along the geometry
+   * @param partial true if partial text should be drawn, false if only the text
+   *          can only be drawn if there is enough room for the entire text
+   * @param initialGap initial gap at the beginning of the label when repeating
+   *          the text
+   * @param gap gap between labels when repeating the text
    */
-  public TextStroke(String text, Font font, boolean stretchToFit, boolean repeat, boolean partial) {
+  public TextStroke(String text, Font font, boolean stretchToFit,
+      boolean repeat, boolean partial, float initialGap, float gap) {
     this.text = text;
     this.font = font;
     this.stretchToFit = stretchToFit;
     this.repeat = repeat;
     this.partial = partial;
+    this.initialGap = initialGap;
+    this.gap = gap;
   }
   @Override
   public Shape createStrokedShape(Shape shape) {
@@ -102,13 +119,14 @@ public class TextStroke implements Stroke {
     int numberOfGlyphs = glyphVector.getNumGlyphs();
     if (numberOfGlyphs == 0) {
       // no glyph, nothing to draw, return an empty general path
-      // shouldn't happen since we already test if the text was empty
+      // shouldn't happen since we already tested if the text was empty
       return result;
     }
     GeneralPath currentShape = new GeneralPath();
     // the transform we will use for creating the transformed shapes
     AffineTransform transform = new AffineTransform();
     int currentCharIndex = 0;
+    boolean firstShape = true;
     // factor used to stretch the space between characters if stretch to fit is
     // true. It is computed using the actual length of the shape divided by the
     // width of the glyph vector.
@@ -130,6 +148,11 @@ public class TextStroke implements Stroke {
           // half the advance of the current glyph
           next = nextAdvance = glyphVector.getGlyphMetrics(currentCharIndex)
               .getAdvance() * 0.5f;
+          if (currentCharIndex == 0 && this.repeat) {
+            // If this is the first character of the first repeat, add the
+            // initial gap, otherwise add the gap
+            next += (firstShape) ? this.initialGap : this.gap;
+          }
           break;
         case PathIterator.SEG_CLOSE:
           // close the path: in this case, the coords is empty so we put the
@@ -182,9 +205,11 @@ public class TextStroke implements Stroke {
                 if (currentCharIndex >= numberOfGlyphs) {
                   result.append(currentShape, false);
                   currentShape = new GeneralPath();
+                  firstShape = false;
+                  next += this.gap;
+                  // if repeat, cycle over the length of the text/glyph vector
+                  currentCharIndex %= numberOfGlyphs;
                 }
-                // if repeat, cycle over the length of the text/glyph vector
-                currentCharIndex %= numberOfGlyphs;
               }
             }
           }

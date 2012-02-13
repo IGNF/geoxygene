@@ -75,6 +75,7 @@ import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_Coverage;
 import fr.ign.cogit.geoxygene.feature.Population;
+import fr.ign.cogit.geoxygene.generalisation.GaussianFilter;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -338,15 +339,15 @@ public final class RenderUtil {
     if (symbolizer.getStroke() == null) {
       return;
     }
-    double scale = 1;
+    double scaleUOMToPixels = 1;
     if (!symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
       try {
-        scale = viewport.getModelToViewTransform().getScaleX();
+        scaleUOMToPixels = viewport.getModelToViewTransform().getScaleX();
       } catch (NoninvertibleTransformException e) {
         e.printStackTrace();
       }
     }
-    graphics.setStroke(symbolizer.getStroke().toAwtStroke((float) scale));
+    graphics.setStroke(symbolizer.getStroke().toAwtStroke((float) scaleUOMToPixels));
     paintShadow(symbolizer, geometry, viewport, graphics, opacity);
     if (symbolizer.getStroke().getGraphicType() == null) {
       List<Shape> shapes = getShapeList(symbolizer, geometry, viewport, false);
@@ -396,12 +397,21 @@ public final class RenderUtil {
   /**
    * @param geometry a geometry
    * @param viewport the viewport in which to view it
+   * @param fill true if the stroke width should be used to build the shapes, ie
+   *          if they will be used for graphic fill
    * @return the list of awt shapes corresponding to the given geometry
    */
   @SuppressWarnings("unchecked")
   private static List<Shape> getShapeList(LineSymbolizer symbolizer, IGeometry geometry, Viewport viewport,
       boolean fill) {
-//    System.out.println("getShapeList " + geometry.getClass().getSimpleName());
+    double scaleSymbolizerUOMToDataUOM = 1;
+    if (symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
+      try {
+        scaleSymbolizerUOMToDataUOM = 1 / viewport.getModelToViewTransform().getScaleX();
+      } catch (NoninvertibleTransformException e) {
+        e.printStackTrace();
+      }
+    }
     if (ICurve.class.isAssignableFrom(geometry.getClass())
         || IPolygon.class.isAssignableFrom(geometry.getClass())) {
       ICurve curve = ((ICurve.class.isAssignableFrom(geometry
@@ -409,26 +419,26 @@ public final class RenderUtil {
           : ((IPolygon) geometry).exteriorLineString());
       if (symbolizer.getPerpendicularOffset() != 0) {
         IMultiCurve<ILineString> offsetCurve = JtsAlgorithms.offsetCurve(curve,
-            symbolizer.getPerpendicularOffset());
+            symbolizer.getPerpendicularOffset() * scaleSymbolizerUOMToDataUOM);
         List<Shape> shapes = new ArrayList<Shape>();
         for (ILineString l : offsetCurve) {
-          shapes.addAll(getLineStringShapeList(symbolizer, l, viewport, fill));
+          shapes.addAll(getLineStringShapeList(symbolizer, l, viewport, fill, scaleSymbolizerUOMToDataUOM));
         }
         return shapes;
       }
-      return getLineStringShapeList(symbolizer, curve, viewport, fill);
+      return getLineStringShapeList(symbolizer, curve, viewport, fill, scaleSymbolizerUOMToDataUOM);
     }
     if (geometry.isMultiCurve()) {
       List<Shape> shapes = new ArrayList<Shape>();
       for (IOrientableCurve line : (IMultiCurve<IOrientableCurve>) geometry) {
         if (symbolizer.getPerpendicularOffset() != 0) {
           IMultiCurve<ILineString> offsetCurve = JtsAlgorithms.offsetCurve(
-              (ILineString) line, symbolizer.getPerpendicularOffset());
+              (ILineString) line, symbolizer.getPerpendicularOffset() * scaleSymbolizerUOMToDataUOM);
           for (ILineString l : offsetCurve) {
-            shapes.addAll(getLineStringShapeList(symbolizer, l, viewport, fill));
+            shapes.addAll(getLineStringShapeList(symbolizer, l, viewport, fill, scaleSymbolizerUOMToDataUOM));
           }
         } else {
-          shapes.addAll(getLineStringShapeList(symbolizer, line, viewport, fill));
+          shapes.addAll(getLineStringShapeList(symbolizer, line, viewport, fill, scaleSymbolizerUOMToDataUOM));
         }
       }
       return shapes;
@@ -452,12 +462,21 @@ public final class RenderUtil {
     return null;
   }
 
+  /**
+   * @param symbolizer a line symbolizer
+   * @param line the geometry of the line
+   * @param viewport the viewport used for rendering
+   * @param fill true if the stroke width should be used to build the shapes, ie
+   *          if they will be used for graphic fill
+   * @param scale scale to go from the symbolizer's uom to the data uom
+   * @return
+   */
   private static List<Shape> getLineStringShapeList(LineSymbolizer symbolizer, IOrientableCurve line,
-      Viewport viewport, boolean fill) {
+      Viewport viewport, boolean fill, double scale) {
     List<Shape> shapes = new ArrayList<Shape>();
     try {
       Shape shape = viewport.toShape(fill ? line.buffer(symbolizer.getStroke()
-          .getStrokeWidth() / 2) : line);
+          .getStrokeWidth() * 0.5 * scale) : line);
       if (shape != null) {
         shapes.add(shape);
       }
@@ -1009,27 +1028,33 @@ private static Color getColorWithOpacity(Color color, double opacity) {
    * @param viewport the viewport to paint in
    * @param graphics the graphics to paint with
    */
+  @SuppressWarnings("unchecked")
   public static void paint(TextSymbolizer symbolizer, String text, IGeometry geometry, Viewport viewport, Graphics2D graphics, double opacity) {
     // Initialize the color with which to actually paint the text
     Color fillColor = getColorWithOpacity(Color.black, opacity);
     if (symbolizer.getFill() != null) {
       fillColor = getColorWithOpacity(symbolizer.getFill().getColor(), opacity);
     }
-    
     //The scale
-    double scale = 1;
+    double scaleUOMToPixels = 1;
+    double scaleSymbolizerUOMToDataUOM = 1;
     if (!symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
       try {
-        scale = viewport.getModelToViewTransform().getScaleX();
+        scaleUOMToPixels = viewport.getModelToViewTransform().getScaleX();
+      } catch (NoninvertibleTransformException e) {
+        e.printStackTrace();
+      }
+    } else {
+      try {
+        scaleSymbolizerUOMToDataUOM = 1 / viewport.getModelToViewTransform().getScaleX();
       } catch (NoninvertibleTransformException e) {
         e.printStackTrace();
       }
     }
-    
     // Initialize the font
     java.awt.Font awtFont = null;
     if (symbolizer.getFont() != null) {
-      awtFont = symbolizer.getFont().toAwfFont((float)scale);
+      awtFont = symbolizer.getFont().toAwfFont((float) scaleUOMToPixels);
     }
     if (awtFont == null) {
       awtFont = new java.awt.Font("Default", java.awt.Font.PLAIN, 10); //$NON-NLS-1$
@@ -1050,14 +1075,14 @@ private static Color getColorWithOpacity(Color color, double opacity) {
       if (PointPlacement.class.isAssignableFrom(placement.getClass())) {
         PointPlacement pointPlacement = (PointPlacement) placement;
         try {
-          paint(pointPlacement, text, fillColor, haloColor, haloRadius, geometry.centroid(), viewport, graphics);
+          paint(pointPlacement, text, fillColor, haloColor, haloRadius, geometry.centroid(), viewport, graphics, scaleUOMToPixels);
         } catch (NoninvertibleTransformException e) {
           e.printStackTrace();
         }
       } else {
         if (LinePlacement.class.isAssignableFrom(placement.getClass())) {
           LinePlacement linePlacement = (LinePlacement) placement;
-          float offset = linePlacement.getPerpendicularOffset();
+          float offset = linePlacement.getPerpendicularOffset() * (float) scaleSymbolizerUOMToDataUOM;
           IGeometry g = geometry;
           if (offset != 0.0f) {
             g = JtsAlgorithms.offsetCurve(geometry, offset);
@@ -1066,14 +1091,14 @@ private static Color getColorWithOpacity(Color color, double opacity) {
             IMultiCurve<IOrientableCurve> multiCurve = (IMultiCurve<IOrientableCurve>) g;
             for (IOrientableCurve curve : multiCurve) {
               try {
-                paint(linePlacement, text, fillColor, haloColor, haloRadius, curve, viewport, graphics);
+                paint(linePlacement, text, fillColor, haloColor, haloRadius, curve, viewport, graphics, scaleUOMToPixels);
               } catch (NoninvertibleTransformException e) {
                 e.printStackTrace();
               }              
             }
           } else {
             try {
-              paint(linePlacement, text, fillColor, haloColor, haloRadius, g, viewport, graphics);
+              paint(linePlacement, text, fillColor, haloColor, haloRadius, g, viewport, graphics, scaleUOMToPixels);
             } catch (NoninvertibleTransformException e) {
               e.printStackTrace();
             }            
@@ -1083,27 +1108,49 @@ private static Color getColorWithOpacity(Color color, double opacity) {
     }
   }
 
+  /**
+   * @param linePlacement
+   * @param text
+   * @param fillColor
+   * @param haloColor
+   * @param haloRadius
+   * @param geometry
+   * @param viewport
+   * @param graphics
+   * @param scale
+   * @throws NoninvertibleTransformException
+   */
   private static void paint(LinePlacement linePlacement, String text,
       Color fillColor, Color haloColor, float haloRadius, IGeometry geometry,
-      Viewport viewport, Graphics2D graphics) throws NoninvertibleTransformException {
-//    FontRenderContext frc = graphics.getFontRenderContext();
-//    GlyphVector gv = graphics.getFont().createGlyphVector(frc, text);
-//    Shape textShape = gv.getOutline();
-//    Rectangle2D bounds = textShape.getBounds2D();
-//    double width = bounds.getWidth();
-//    double height = bounds.getHeight();
-//    Point2D p = viewport.toViewPoint(position);
-//    float tx = (float) (p.getX() + displacementX - width * anchorPointX);    
-//    float ty = (float) (p.getY() - displacementY + height * anchorPointY);
-//    AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
-//    AffineTransform translationTransform = AffineTransform.getTranslateInstance(- width / 2, - height / 2);    
-//    t.concatenate(translationTransform);
-//    textShape = t.createTransformedShape(textShape);
-    Shape lineShape = viewport.toShape(geometry);
+      Viewport viewport, Graphics2D graphics, double scale) throws NoninvertibleTransformException {
+    if (linePlacement.isGeneralizeLine()) {
+      // we have to generalize the geometry first
+//      double sigma = 20;
+      double sigma = graphics.getFontMetrics().getMaxAdvance() / scale;
+      geometry = GaussianFilter.gaussianFilter(new GM_LineString(geometry.coord()), sigma, 1.0);
+    }
+    Shape lineShape = null;
+    if (linePlacement.isAligned()) {
+      // if the text should be aligned on the geometry
+      lineShape = viewport.toShape(geometry);
+    } else {
+      // the expected behaviour here is not well specified
+      // we decided to use the horizontal line cutting the envelope of the
+      // geometry as the support line and to treat it as a standard text
+      // symbolizer
+      IEnvelope envelope = geometry.getEnvelope();
+      double y = (envelope.minY() + envelope.maxY()) / 2;
+      IDirectPosition p1 = new DirectPosition(envelope.minX(), y);
+      IDirectPosition p2 = new DirectPosition(envelope.maxX(), y);
+      lineShape = viewport.toShape(new GM_LineString(p1, p2));
+    }
     if (lineShape == null) {
+      // if there is no geometry, return
       return;
     }
-    Stroke s = new TextStroke(text, graphics.getFont(), false, linePlacement.isRepeated(), false);
+    Stroke s = new TextStroke(text, graphics.getFont(), false, linePlacement
+        .isRepeated(), false, linePlacement.getInitialGap() * (float) scale, linePlacement
+        .getGap() * (float) scale);
     Shape textShape = s.createStrokedShape(lineShape);
     // halo
     if (haloColor != null) {
@@ -1115,13 +1162,25 @@ private static Color getColorWithOpacity(Color color, double opacity) {
     graphics.setColor(fillColor);
     graphics.fill(textShape);
   }
-
+  /**
+   * @param pointPlacement
+   * @param text
+   * @param fillColor
+   * @param haloColor
+   * @param haloRadius
+   * @param position
+   * @param viewport
+   * @param graphics
+   * @param scale
+   * @throws NoninvertibleTransformException
+   */
   private static void paint(PointPlacement pointPlacement, String text,
       Color fillColor, Color haloColor, float haloRadius,
-      IDirectPosition position, Viewport viewport, Graphics2D graphics)
+      IDirectPosition position, Viewport viewport, Graphics2D graphics,
+      double scale)
       throws NoninvertibleTransformException {
     FontRenderContext frc = graphics.getFontRenderContext();
-    float rotation = pointPlacement.getRotation();
+    float rotation = (float) (pointPlacement.getRotation() * Math.PI / 180);
     GlyphVector gv = graphics.getFont().createGlyphVector(frc, text);
     Shape textShape = gv.getOutline();
     Rectangle2D bounds = textShape.getBounds2D();
@@ -1132,15 +1191,13 @@ private static Color getColorWithOpacity(Color color, double opacity) {
     float anchorPointX = (anchorPoint == null) ? 0.5f : anchorPoint.getAnchorPointX();
     float anchorPointY = (anchorPoint == null) ? 0.5f : anchorPoint.getAnchorPointY();
     Displacement displacement = pointPlacement.getDisplacement();
-    float displacementX = (displacement == null) ?0f : displacement.getDisplacementX();
-    float displacementY = (displacement == null) ?0f : displacement.getDisplacementY();
-    float tx = (float) (p.getX() + displacementX - width * anchorPointX);    
-    float ty = (float) (p.getY() - displacementY + height * anchorPointY);
+    float displacementX = (displacement == null) ?0.0f : displacement.getDisplacementX();
+    float displacementY = (displacement == null) ?0.0f : displacement.getDisplacementY();
+    float tx = (float) (p.getX() + displacementX * scale);
+    float ty = (float) (p.getY() - displacementY * scale);
     AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
-    AffineTransform rotationTransform = AffineTransform.getRotateInstance(rotation);
-    t.concatenate(rotationTransform);
-    AffineTransform translationTransform = AffineTransform.getTranslateInstance(- width / 2, - height / 2);    
-    t.concatenate(translationTransform);
+    t.rotate(rotation);
+    t.translate(-width * anchorPointX, height * anchorPointY);
     textShape = t.createTransformedShape(textShape);
     // halo
     if (haloColor != null) {
@@ -1153,6 +1210,14 @@ private static Color getColorWithOpacity(Color color, double opacity) {
     graphics.fill(textShape);
   }
 
+    /**
+     * @param symbolizer
+     * @param feature
+     * @param viewport
+     * @param graphics
+     * @param opacity
+     */
+    @SuppressWarnings({ "unchecked" })
     public static void paint(ThematicSymbolizer symbolizer, IFeature feature,
             Viewport viewport, Graphics2D graphics, double opacity) {
     if (feature.getGeom() == null || viewport == null) {
@@ -1177,25 +1242,25 @@ private static Color getColorWithOpacity(Color color, double opacity) {
             e1.printStackTrace();
           }
           GM_MultiCurve<IOrientableCurve> contour = new GM_MultiCurve<IOrientableCurve>();
-          if (feature.getGeom() instanceof GM_Polygon) {
-            contour.add((GM_OrientableCurve) ((GM_Polygon) feature.getGeom())
+          if (feature.getGeom() instanceof IPolygon) {
+            contour.add(((IPolygon) feature.getGeom())
                 .exteriorLineString());
           } else {
-            for (IPolygon surface : (GM_MultiSurface<IPolygon>) feature
+            for (IPolygon surface : (IMultiSurface<IPolygon>) feature
                 .getGeom()) {
-              contour.add((IOrientableCurve) surface.exteriorLineString());
+              contour.add(surface.exteriorLineString());
             }
           }
           for (Arc a : t.getPopArcs()) {
             ((IPopulation<IFeature>) DataSet.getInstance().getPopulation(
-                "Triangulation")).add((IFeature) new DefaultFeature(a.getGeometrie()));
+                "Triangulation")).add(new DefaultFeature(a.getGeometrie())); //$NON-NLS-1$
           }
           double maxDistance = Double.MIN_VALUE;
           Noeud maxNode = null;
           for (Arc a : t.getPopVoronoiEdges().select(feature.getGeom())) {
             if (!a.getGeometrie().intersectsStrictement(feature.getGeom())) {
               ((Population<DefaultFeature>) DataSet.getInstance()
-                  .getPopulation("MedialAxis")).add(new DefaultFeature(a
+                  .getPopulation("MedialAxis")).add(new DefaultFeature(a //$NON-NLS-1$
                   .getGeometrie()));
             }
           }
