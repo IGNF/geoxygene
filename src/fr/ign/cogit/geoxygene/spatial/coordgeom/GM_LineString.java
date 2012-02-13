@@ -74,6 +74,20 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
     this.controlPoint.add(value);
   }
 
+  /**
+   * @param value a point to be added
+   * @param allowRepeated if true, only add the point if different than the
+   *          previous point in the linestring
+   */
+  public void addControlPoint(IDirectPosition value, boolean allowRepeated) {
+    if (!allowRepeated && this.sizeControlPoint() > 0) {
+      if (this.getControlPoint(this.sizeControlPoint() - 1).equals2D(value)) {
+        return;
+      }
+    }
+    this.controlPoint.add(value);
+  }
+
   @Override
   public void addControlPoint(int i, IDirectPosition value) {
     this.controlPoint.add(i, value);
@@ -115,6 +129,16 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
     this.controlPoint = new DirectPositionList();
     this.controlPoint.addAll(points);
     //    this.interpolation = "linear"; //$NON-NLS-1$
+  }
+
+  /** Constructeur à partir d'une liste de DirectPosition. */
+  public GM_LineString(IDirectPositionList points, boolean allowRepeated) {
+    super();
+    this.segment.add(this);
+    this.controlPoint = new DirectPositionList();
+    for (IDirectPosition p : points) {
+      this.addControlPoint(p, allowRepeated);
+    }
   }
 
   /**
