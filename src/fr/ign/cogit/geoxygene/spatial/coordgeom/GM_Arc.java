@@ -44,7 +44,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  * @author Thierry Badard
  * @author Arnaud Braun
  * @author Julien Gaffuri
- * 
+ * @author Julien Perret
  */
 public class GM_Arc extends GM_ArcString implements IArc {
   private static Logger logger = Logger.getLogger(GM_Arc.class.getName());
@@ -134,16 +134,18 @@ public class GM_Arc extends GM_ArcString implements IArc {
     double xc = this.getMidPoint().getDirect().getX();
     double yc = this.getMidPoint().getDirect().getY();
 
-    double q = ya + yb - 2 * yc;
-
-    // no circle center can be computed; 3 points are aligned
-    if (q == 0) {
+    double bx = xb - xa;
+    double by = yb - ya;
+    double cx = xc - xa;
+    double cy = yc - ya;
+    double d = 2 * (bx * cy - by * cx);
+    if (d == 0) {
+      logger.info("points aligned, no center"); //$NON-NLS-1$
       return null;
     }
-
-    double t = (xb - xa) / (2 * q);
-    return new DirectPosition((xa + xc) * 0.5 + t * (ya - yc), (ya + yc) * 0.5
-        + t * (xc - xa));
+    return new DirectPosition(xa
+        + (cy * (bx * bx + by * by) - by * (cx * cx + cy * cy)) / d, ya
+        + (bx * (cx * cx + cy * cy) - cx * (bx * bx + by * by)) / d);
   }
 
   @Override
@@ -157,10 +159,16 @@ public class GM_Arc extends GM_ArcString implements IArc {
     double xc = this.getEndPoint().getDirect().getX();
     double yc = this.getEndPoint().getDirect().getY();
 
-    double ab2 = (xa - xb) * (xa - xb) + (ya - yb) * (ya - yb);
-    double ac2 = (xa - xc) * (xa - xc) + (ya - yc) * (ya - yc);
-
-    return 0.5 * ab2 / Math.sqrt(ab2 - ac2 * 0.25);
+    double dx1 = xb - xa;
+    double dy1 = yb - ya;
+    double dx2 = xc - xb;
+    double dy2 = yc - yb;
+    double dx3 = xc - xa;
+    double dy3 = yc - ya;
+    double a = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+    double b = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+    double c = Math.sqrt(dx3 * dx3 + dy3 * dy3);
+    return a * b * c / Math.sqrt((a + b + c) * (-a + b + c) * (a - b + c) * (a + b - c));
   }
 
   /**
@@ -288,8 +296,8 @@ public class GM_Arc extends GM_ArcString implements IArc {
         return new GM_Point();
       }
     }
-    GM_Arc.logger.error("Error in intersection computation of " + this
-        + " and " + geom);
+    GM_Arc.logger.error("Error in intersection computation of " + this //$NON-NLS-1$
+        + " and " + geom); //$NON-NLS-1$
     return null;
   }
 
@@ -333,7 +341,7 @@ public class GM_Arc extends GM_ArcString implements IArc {
             .getY() == this.getStartPoint().getDirect().getY());
       }
     }
-    GM_Arc.logger.error("Error in contains computation of " + this + " and "
+    GM_Arc.logger.error("Error in contains computation of " + this + " and " //$NON-NLS-1$ //$NON-NLS-2$
         + geom);
     return true;
   }
