@@ -208,6 +208,14 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
     this.layers.addLast(layer);
     this.fireActionLayerAdded(layer);
   }
+  /**
+   * Add a layer at the end of the sld.
+   * @param layer the new layer
+   */
+  public void add(Layer layer, int index) {
+    this.layers.add(index, layer);
+    this.fireActionLayerAdded(layer);
+  }
 
   /**
    * Add a layer at position i of the sld.

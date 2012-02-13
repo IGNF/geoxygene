@@ -19,10 +19,16 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * @author Julien Perret
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Halo {
+  @XmlElement(name = "Radius")
   private float radius = 1.0f;
 
   /**
@@ -40,7 +46,7 @@ public class Halo {
   public void setRadius(float radius) {
     this.radius = radius;
   }
-
+  @XmlElement(name = "Fill")
   private Fill fill = null;
 
   /**

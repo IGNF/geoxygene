@@ -19,11 +19,17 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * @author Julien Perret
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class AnchorPoint {
-  private float x = 0.0f;
+  @XmlElement(name = "AnchorPointX")
+  private float x = 0.5f;
 
   /**
    * Renvoie la valeur de l'attribut x.
@@ -41,6 +47,7 @@ public class AnchorPoint {
     this.x = x;
   }
 
+  @XmlElement(name = "AnchorPointY")
   private float y = 0.5f;
 
   /**

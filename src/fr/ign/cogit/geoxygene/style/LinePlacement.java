@@ -19,13 +19,18 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * @author Julien Perret
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class LinePlacement implements Placement {
 
-  private float perpendicularOffset;
-
+  @XmlElement(name = "PerpendicularOffset")
+  private float perpendicularOffset = 0f;
   /**
    * Renvoie la valeur de l'attribut perpendicularOffset.
    * @return la valeur de l'attribut perpendicularOffset
@@ -41,24 +46,49 @@ public class LinePlacement implements Placement {
   public void setPerpendicularOffset(float perpendicularOffset) {
     this.perpendicularOffset = perpendicularOffset;
   }
+  @XmlElement(name = "IsAligned")
+  private boolean aligned = true;
   public boolean isAligned() {
-    return aligned;
+    return this.aligned;
   }
 
   public void setAligned(boolean aligned) {
     this.aligned = aligned;
   }
 
+  @XmlElement(name = "IsRepeated")
+  private boolean repeated = false;
   public boolean isRepeated() {
-    return repeated;
+    return this.repeated;
   }
 
   public void setRepeated(boolean repeated) {
     this.repeated = repeated;
   }
-  private boolean aligned;
-  private boolean repeated;
-
+  @XmlElement(name = "InitialGap")
+  private float initialGap = 0f;
+  public float getInitialGap() {
+    return this.initialGap;
+  }
+  public void setInitialGap(float initialGap) {
+    this.initialGap = initialGap;
+  }
+  @XmlElement(name = "Gap")
+  private float gap = 0f;
+  public float getGap() {
+    return this.gap;
+  }
+  public void setGap(float gap) {
+    this.gap = gap;
+  }
+  @XmlElement(name = "GeneralizeLine")
+  private boolean generalizeLine = false;
+  public boolean isGeneralizeLine() {
+    return this.generalizeLine;
+  }
+  public void setGeneralizeLine(boolean generalizeLine) {
+    this.generalizeLine = generalizeLine;
+  }
   @Override
   public String toString() {
     return this.getClass().getSimpleName();

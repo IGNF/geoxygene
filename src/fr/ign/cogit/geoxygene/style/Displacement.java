@@ -19,10 +19,16 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * @author Julien Perret
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Displacement {
+  @XmlElement(name = "DisplacementX")
   private float x = 0.0f;
 
   /**
@@ -41,6 +47,7 @@ public class Displacement {
     this.x = x;
   }
 
+  @XmlElement(name = "DisplacementY")
   private float y = 0.0f;
 
   /**

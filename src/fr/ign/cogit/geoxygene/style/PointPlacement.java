@@ -19,12 +19,18 @@
 
 package fr.ign.cogit.geoxygene.style;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * @author Julien Perret
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class PointPlacement implements Placement {
 
-  private AnchorPoint anchorPoint;
+  @XmlElement(name = "AnchorPoint")
+  private AnchorPoint anchorPoint = null;
 
   /**
    * Renvoie la valeur de l'attribut anchorPoint.
@@ -42,7 +48,8 @@ public class PointPlacement implements Placement {
     this.anchorPoint = anchorPoint;
   }
 
-  private Displacement displacement;
+  @XmlElement(name = "Displacement")
+  private Displacement displacement = null;
 
   /**
    * Renvoie la valeur de l'attribut displacement.
@@ -60,6 +67,7 @@ public class PointPlacement implements Placement {
     this.displacement = displacement;
   }
 
+  @XmlElement(name = "Rotation")
   private float rotation = 0.0f;
 
   /**
