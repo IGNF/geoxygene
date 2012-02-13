@@ -31,12 +31,14 @@ import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
-import fr.ign.cogit.geoxygene.contrib.delaunay.Triangulation;
+import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_CubicSpline;
+import fr.ign.cogit.geoxygene.generalisation.GaussianFilter;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.style.Layer;
 
@@ -44,12 +46,12 @@ import fr.ign.cogit.geoxygene.style.Layer;
  * Triangulation plugin.
  * @author Julien Perret
  */
-public class CubicSplinePlugin implements GeOxygeneApplicationPlugin,
+public class GaussianFilterPlugin implements GeOxygeneApplicationPlugin,
     ActionListener {
   /**
    * Logger.
    */
-  static Logger logger = Logger.getLogger(Triangulation.class.getName());
+  static Logger logger = Logger.getLogger(GaussianFilterPlugin.class.getName());
 
   private GeOxygeneApplication application = null;
 
@@ -64,8 +66,7 @@ public class CubicSplinePlugin implements GeOxygeneApplicationPlugin,
     for (Component c : application.getFrame().getJMenuBar().getComponents()) {
       if (c instanceof JMenu) {
         JMenu aMenu = (JMenu) c;
-        if (aMenu.getText() != null
-            && aMenu.getText().equalsIgnoreCase("Curve")) { //$NON-NLS-1$
+        if (aMenu.getText() != null && aMenu.getText().equalsIgnoreCase("Curve")) { //$NON-NLS-1$
           menu = aMenu;
         }
       }
@@ -73,7 +74,7 @@ public class CubicSplinePlugin implements GeOxygeneApplicationPlugin,
     if (menu == null) {
       menu = new JMenu("Curve");//$NON-NLS-1$
     }
-    JMenuItem menuItem = new JMenuItem("Cubic Spline" //$NON-NLS-1$
+    JMenuItem menuItem = new JMenuItem("Gaussian Filter" //$NON-NLS-1$
     );
     menuItem.addActionListener(this);
     menu.add(menuItem);
@@ -81,6 +82,7 @@ public class CubicSplinePlugin implements GeOxygeneApplicationPlugin,
         .add(menu, application.getFrame().getJMenuBar().getMenuCount() - 2);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void actionPerformed(final ActionEvent e) {
     ProjectFrame project = this.application.getFrame()
@@ -88,47 +90,33 @@ public class CubicSplinePlugin implements GeOxygeneApplicationPlugin,
     Set<Layer> selectedLayers = project.getLayerLegendPanel()
         .getSelectedLayers();
     if (selectedLayers.size() != 1) {
-      CubicSplinePlugin.logger
+      GaussianFilterPlugin.logger
           .error("You need to select one (and only one) layer."); //$NON-NLS-1$
       return;
     }
     Layer layer = selectedLayers.iterator().next();
-    String tangentMethod = (String) JOptionPane
-        .showInputDialog(CubicSplinePlugin.this.application.getFrame(),
-            "Choose a Tangent Method", //$NON-NLS-1$
-            "Tangent Method", JOptionPane.QUESTION_MESSAGE, null, //$NON-NLS-1$
-            new String[] {
-                "finiteDifference", "cardinalSpline", "kochanekBartels" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            "kochanekBartels"); //$NON-NLS-1$
-    double tension = 0.0;
-    double bias = 0.0;
-    double continuity = 0.0;
-    if (tangentMethod.equalsIgnoreCase("cardinalSpline")) { //$NON-NLS-1$
-      tension = Double.parseDouble(JOptionPane.showInputDialog("tension")); //$NON-NLS-1$
-    }
-    if (tangentMethod.equalsIgnoreCase("kochanekBartels")) { //$NON-NLS-1$
-      tension = Double.parseDouble(JOptionPane.showInputDialog("tension")); //$NON-NLS-1$
-      bias = Double.parseDouble(JOptionPane.showInputDialog("bias")); //$NON-NLS-1$
-      continuity = Double
-          .parseDouble(JOptionPane.showInputDialog("continuity")); //$NON-NLS-1$
-    }
-    Population<DefaultFeature> popHermite = new Population<DefaultFeature>(
-        "CubicSpline " + tangentMethod + " " + tension + " " + bias + " " + continuity); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    popHermite.setClasse(DefaultFeature.class);
-    popHermite.setPersistant(false);
+    double sigma = Double.parseDouble(JOptionPane.showInputDialog(
+        GaussianFilterPlugin.this.application.getFrame(), "Sigma")); //$NON-NLS-1$
+    Population<DefaultFeature> pop = new Population<DefaultFeature>(
+        "GaussianFilter " + layer.getName() + " " + sigma); //$NON-NLS-1$ //$NON-NLS-2$
+    pop.setClasse(DefaultFeature.class);
+    pop.setPersistant(false);
     for (IFeature f : layer.getFeatureCollection()) {
-      GM_CubicSpline s = new GM_CubicSpline(f.getGeom().coord());
-      s.setTangentMethod(tangentMethod);
-      s.setTension(tension);
-      s.setBias(bias);
-      s.setContinuity(continuity);
-      popHermite.nouvelElement(s);
+      ILineString line = null;
+      if (ILineString.class.isAssignableFrom(f.getGeom().getClass())) {
+        line = (ILineString) f.getGeom();
+      } else {
+        if (IMultiCurve.class.isAssignableFrom(f.getGeom().getClass())) {
+          line = ((IMultiCurve<ILineString>) f.getGeom()).get(0);
+        }
+      }
+      pop.nouvelElement(GaussianFilter.gaussianFilter(line, sigma, 1));
     }
     /** créer un featuretype de jeu correspondant */
-    fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureTypeHermite = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
-    newFeatureTypeHermite.setGeometryType(GM_LineString.class);
-    popHermite.setFeatureType(newFeatureTypeHermite);
-    project.getDataSet().addPopulation(popHermite);
-    project.addFeatureCollection(popHermite, popHermite.getNom(), null);
+    fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+    newFeatureType.setGeometryType(ILineString.class);
+    pop.setFeatureType(newFeatureType);
+    project.getDataSet().addPopulation(pop);
+    project.addFeatureCollection(pop, pop.getNom(), layer.getCRS());
   }
 }

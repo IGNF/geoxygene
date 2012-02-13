@@ -272,7 +272,9 @@ public class ModeSelector implements ContainerListener, KeyListener,
 
   @Override
   public final void componentAdded(final ContainerEvent e) {
-    this.addComponent(((ProjectFrame)e.getChild()).getLayerViewPanel());
+    if (ProjectFrame.class.isAssignableFrom(e.getChild().getClass())) {
+      this.addComponent(((ProjectFrame)e.getChild()).getLayerViewPanel());
+    }
   }
 
   /**

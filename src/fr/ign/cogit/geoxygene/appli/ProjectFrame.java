@@ -187,7 +187,9 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
   public void addLayer(Layer l) {
     this.sld.add(l);
   }
-
+  public void addLayer(Layer l, int index) {
+    this.sld.add(l, index);
+  }
   public void addLayer(File file) {
     if (file != null) {
       String fileName = file.getAbsolutePath();

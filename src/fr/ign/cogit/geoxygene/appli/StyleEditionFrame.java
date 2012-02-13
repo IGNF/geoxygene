@@ -376,12 +376,12 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     topoBtnPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
     this.toponymBtn = new JCheckBox(
         I18N.getString("StyleEditionFrame.DisplayToponyms")); //$NON-NLS-1$
-    this.toponymBtn.addItemListener(this);
     topoBtnPanel.add(this.toponymBtn);
     if (this.symbolizer != null && this.symbolizer.getLabel() != null) {
       this.fields.setSelectedItem(this.symbolizer.getLabel());
       this.toponymBtn.setSelected(true);
     }
+    this.toponymBtn.addItemListener(this);
     fieldsPanel.setAlignmentX(LEFT_ALIGNMENT);
     toponymPanel.add(fieldsPanel);
     topoBtnPanel.setAlignmentX(LEFT_ALIGNMENT);
