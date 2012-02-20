@@ -209,7 +209,9 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
     this.fireActionLayerAdded(layer);
   }
   /**
-   * Add a layer at the end of the sld.
+   * Inserts the specified layer at the specified position in the list of layers of this sld.
+   * Shifts the element currently at that position (if any)
+   * and any subsequent elements to the right (adds one to their indices). 
    * @param layer the new layer
    */
   public void add(Layer layer, int index) {

@@ -184,12 +184,23 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
     ShapefileReader.addActionListener(this);
   }
 
+  /**
+   * Add a layer at the end of the sld of this ProjectFrame.
+   * @param l the new layer
+   */
   public void addLayer(Layer l) {
     this.sld.add(l);
   }
+  
+  /**
+   * Inserts the specified layer at the specified position in this ProjectFrame.
+   * @param l the new layer
+   * @param index the position of the new layer
+   */
   public void addLayer(Layer l, int index) {
     this.sld.add(l, index);
   }
+
   public void addLayer(File file) {
     if (file != null) {
       String fileName = file.getAbsolutePath();
