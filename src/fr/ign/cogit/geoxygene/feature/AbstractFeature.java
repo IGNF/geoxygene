@@ -27,7 +27,6 @@
 
 package fr.ign.cogit.geoxygene.feature;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -176,22 +175,17 @@ public abstract class AbstractFeature implements IFeature {
   }
 
   /** Lien n-m bidirectionnel vers IFeatureCollection. */
-  private List<WeakReference<IFeatureCollection<IFeature>>> featurecollections = new ArrayList<WeakReference<IFeatureCollection<IFeature>>>(
+  private List<IFeatureCollection<IFeature>> featurecollections = new ArrayList<IFeatureCollection<IFeature>>(
       0);
 
   @Override
   public List<IFeatureCollection<IFeature>> getFeatureCollections() {
-    List<IFeatureCollection<IFeature>> liste = new ArrayList<IFeatureCollection<IFeature>>(
-        this.featurecollections.size());
-    for (WeakReference<IFeatureCollection<IFeature>> ref : this.featurecollections) {
-      liste.add(ref.get());
-    }
-    return liste;
+    return this.featurecollections;
   }
 
   @Override
   public IFeatureCollection<IFeature> getFeatureCollection(int i) {
-    return this.featurecollections.get(i).get();
+    return this.featurecollections.get(i);
   }
 
   /**
@@ -309,13 +303,13 @@ public abstract class AbstractFeature implements IFeature {
   /**
    * L'unique population à laquelle appartient cet objet.
    */
-  protected WeakReference<IPopulation<? extends IFeature>> population;
+  protected IPopulation<? extends IFeature> population;
 
   @Override
   @SuppressWarnings("unchecked")
   public IPopulation<? extends IFeature> getPopulation() {
     if (this.population != null) {
-      return this.population.get();
+      return this.population;
     }
     synchronized (this.featurecollections) {
       IFeatureCollection<IFeature>[] collections = this.featurecollections
@@ -331,8 +325,7 @@ public abstract class AbstractFeature implements IFeature {
 
   @Override
   public void setPopulation(IPopulation<? extends IFeature> population) {
-    this.population = new WeakReference<IPopulation<? extends IFeature>>(
-        population);
+    this.population = population;
     // Refuse d'écrire dans ma population car ne peut pas pas vérifier si
     // this hérite bien de IFeature...
     // this.population.addUnique(this);
@@ -782,7 +775,7 @@ public abstract class AbstractFeature implements IFeature {
     if (this == obj) {
       return true;
     }
-    if (obj == null || getClass() != obj.getClass()) {
+    if (obj == null || this.getClass() != obj.getClass()) {
       return false;
     }
     AbstractFeature other = (AbstractFeature) obj;
@@ -809,7 +802,7 @@ public abstract class AbstractFeature implements IFeature {
 
   @Override
   public int hashCode() {
-    return getId();
+    return this.getId();
   }
 
   /**
