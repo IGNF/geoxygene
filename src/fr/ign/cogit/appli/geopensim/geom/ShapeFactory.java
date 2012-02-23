@@ -27,8 +27,6 @@ package fr.ign.cogit.appli.geopensim.geom;
 
 import java.util.Arrays;
 
-import org.apache.log4j.Logger;
-
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
@@ -37,46 +35,41 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 
 /**
+ * A class used to generate geometric shapes.
+ * <p>
+ * Une classe pour générer des formes géométriques.
  * @author Julien Perret
- *
  */
 public class ShapeFactory {
-	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(ShapeFactory.class.getName());
-
 	/**
-	 * crée un carré
+	 * Crée un carré.
 	 * @param centre centre du carré
-	 * @param largeur largeur du carré
-	 * @param hauteur hauteur du carré
+	 * @param size largeur du carré
 	 * @return un carré centré sur le centre en paramètre
 	 */
-	public static IGeometry createCarre(IDirectPosition centre, double cote) {
-		return new GM_Polygon(new GM_LineString(new DirectPositionList(Arrays.asList(
-				(IDirectPosition) new DirectPosition(centre.getX()+cote/2,centre.getY()+cote/2),
-				(IDirectPosition) new DirectPosition(centre.getX()-cote/2,centre.getY()+cote/2),
-				(IDirectPosition) new DirectPosition(centre.getX()-cote/2,centre.getY()-cote/2),
-				(IDirectPosition) new DirectPosition(centre.getX()+cote/2,centre.getY()-cote/2),
-				(IDirectPosition) new DirectPosition(centre.getX()+cote/2,centre.getY()+cote/2)))));
+	public static IGeometry createCarre(IDirectPosition centre, double size) {
+	  return ShapeFactory.createRectangle(centre, size, size);
 	}
-	
 	/**
-	 * crée un rectangle
+	 * Crée un rectangle.
 	 * @param centre centre du rectangle
 	 * @param largeur largeur du rectangle
 	 * @param hauteur hauteur du rectangle
 	 * @return un rectangle centré sur le centre en paramètre
 	 */
 	public static IGeometry createRectangle(IDirectPosition centre, double largeur, double hauteur) {
-		return new GM_Polygon(new GM_LineString(new DirectPositionList(Arrays.asList(
-		        (IDirectPosition) new DirectPosition(centre.getX()+largeur/2,centre.getY()+hauteur/2),
-		        (IDirectPosition) new DirectPosition(centre.getX()-largeur/2,centre.getY()+hauteur/2),
-		        (IDirectPosition) new DirectPosition(centre.getX()-largeur/2,centre.getY()-hauteur/2),
-		        (IDirectPosition) new DirectPosition(centre.getX()+largeur/2,centre.getY()-hauteur/2),
-		        (IDirectPosition) new DirectPosition(centre.getX()+largeur/2,centre.getY()+hauteur/2)))));
+      double minx = centre.getX() - largeur / 2;
+      double maxx = centre.getX() + largeur / 2;
+      double miny = centre.getY() - hauteur / 2;
+      double maxy = centre.getY() + hauteur / 2;
+      IDirectPosition p1 = new DirectPosition(maxx, maxy);
+      IDirectPosition p2 = new DirectPosition(minx, maxy);
+      IDirectPosition p3 = new DirectPosition(minx, miny);
+      IDirectPosition p4 = new DirectPosition(maxx, miny);
+      return new GM_Polygon(new GM_LineString(new DirectPositionList(Arrays.asList(p1, p2, p3, p4, p1))));
 	}
 	/**
-	 * crée une forme de L
+	 * Crée une forme de L.
 	 * @param centre centre de la forme
 	 * @param largeur1 largeur totale de la forme
 	 * @param hauteur1 hauteur totale de la forme
@@ -95,7 +88,7 @@ public class ShapeFactory {
 		        (IDirectPosition) new DirectPosition(centre.getX()-largeur1/2+largeur2,centre.getY()-hauteur1/2+hauteur2)))));
 	}
 	/**
-	 * crée une forme de U
+	 * Crée une forme de U.
 	 * @param centre centre de la forme
 	 * @param largeur1 largeur totale de la forme
 	 * @param hauteur1 hauteur totale de la forme
@@ -116,7 +109,7 @@ public class ShapeFactory {
 		        (IDirectPosition) new DirectPosition(centre.getX()-largeur1/2+largeur2,centre.getY()-hauteur1/2+hauteur2)))));
 	}
 	/**
-	 * crée une forme de T
+	 * Crée une forme de T.
 	 * @param centre centre de la forme
 	 * @param largeur1 largeur totale de la forme
 	 * @param hauteur1 hauteur totale de la forme
@@ -137,7 +130,7 @@ public class ShapeFactory {
 		        (IDirectPosition) new DirectPosition(centre.getX()-largeur1/2,centre.getY()+hauteur1/2)))));
 	}
 	/**
-	 * crée une forme d'escalier
+	 * Crée une forme d'escalier.
 	 * @param centre centre de la forme
 	 * @param largeur largeur totale de la forme
 	 * @param hauteur hauteur totale de la forme
@@ -161,7 +154,7 @@ public class ShapeFactory {
 	}
 	
 	/**
-	 * crée une forme d'escalier
+	 * Crée une forme d'escalier.
 	 * @param centre centre de la forme
 	 * @param largeur largeur totale de la forme
 	 * @param hauteur hauteur totale de la forme
@@ -185,7 +178,7 @@ public class ShapeFactory {
 	}
 	
 	/**
-	 * crée une forme de cercle
+	 * Crée une forme de cercle.
 	 * @param centre centre de la forme
 	 * @param rayon du cercle
 	 * @param n nombre de segments par quart de cercle 
@@ -206,7 +199,7 @@ public class ShapeFactory {
 	}
 	
 	/**
-	 * crée un losange
+	 * Crée un losange.
 	 * @param centre centre du losange
 	 * @param largeur largeur du losange
 	 * @param hauteur hauteur du losange
@@ -222,7 +215,7 @@ public class ShapeFactory {
 	}
 	
 	/**
-	 * crée une barre avec indentation
+	 * Crée une barre avec indentation.
 	 * @param centre centre de la barre
 	 * @param largeur largeur totale de la barre
 	 * @param hauteur hauteur totale de la barre
@@ -275,7 +268,7 @@ public class ShapeFactory {
 	}
 	
 	/**
-	 * crée une barre en forme d'escalier
+	 * Crée une barre en forme d'escalier.
 	 * @param centre centre de la barre
 	 * @param largeur largeur totale de la barre
 	 * @param hauteur hauteur totale de la barre
@@ -284,19 +277,18 @@ public class ShapeFactory {
 	 * @return une barre en forme d'escalier centrée sur le centre en paramètre
 	 */
 	public static IGeometry createBarreEscalier(IDirectPosition centre, double largeur, double hauteur, double largeur1, double hauteur1) {
-		
 		double reste = largeur%largeur1;
-		System.out.println("reste : "+reste);
+//		System.out.println("reste : "+reste);
 		int nb = (int)((largeur-reste)/largeur1);
-		System.out.println("nb : "+nb);
+//		System.out.println("nb : "+nb);
 		// Calcul de la hauteur des barres verticales
-		int n = (int)((nb)/2);
+		int n = ((nb)/2);
 		if ((nb%2!=0)&&(reste>0)){
 			n = n+1;
 		}
 		double hauteurBarreV = (hauteur-((n+1)*hauteur1))/n;
-		System.out.println("hauteurBarreV : "+hauteurBarreV);
-		System.out.println(new DirectPosition(centre.getX()+largeur/2,centre.getY()+hauteur/2).toGM_Point());
+//		System.out.println("hauteurBarreV : "+hauteurBarreV);
+//		System.out.println(new DirectPosition(centre.getX()+largeur/2,centre.getY()+hauteur/2).toGM_Point());
 		DirectPositionList listePoints = new DirectPositionList();
 		// La partie inférieure
 		int compt = 0;
@@ -335,9 +327,7 @@ public class ShapeFactory {
 				listePoints.add(new DirectPosition(positionX2,positionY2));
 			}
 		}
-		
 		// La partie supérieure
-		
 		compt = 0;
 		compt2 = 0;
 		if ((nb%2!=0)&&(reste>0)){
@@ -356,17 +346,13 @@ public class ShapeFactory {
 				listePoints.add(new DirectPosition(positionX,positionY));
 				compt2++;
 			}
-
 		}
-		
-		for (IDirectPosition point:listePoints){
-			System.out.println(point.toGM_Point());
-		}
-		
+//		for (IDirectPosition point:listePoints){
+//			System.out.println(point.toGM_Point());
+//		}
 		// On ajoute les derniers points nécessaires
 		listePoints.add(new DirectPosition(centre.getX()-largeur/2,centre.getY()-hauteur/2+hauteur1));
-		listePoints.add(listePoints.get(0));
-				
+		listePoints.add(listePoints.get(0));		
 		return new GM_Polygon(new GM_LineString(listePoints));
 	}
 }
