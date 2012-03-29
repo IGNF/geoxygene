@@ -125,8 +125,8 @@ public class DataSet implements IDataSet {
     // populations
     for (IPopulation<? extends IFeature> p : DS.getPopulations()) {
       try {
-        IPopulation<? extends IFeature>f = p.getClass().getConstructor(p.getClass())
-        .newInstance(p);
+        IPopulation<? extends IFeature> f = p.getClass().getConstructor(
+            p.getClass()).newInstance(p);
         this.populations.add(f);
       } catch (Exception e) {
         e.printStackTrace();
@@ -690,7 +690,7 @@ public class DataSet implements IDataSet {
   @Override
   public IPopulation<? extends IFeature> getPopulation(String nomPopulation) {
     for (IPopulation<? extends IFeature> pop : this.getPopulations()) {
-      if (pop.getNom().equals(nomPopulation)) {
+      if (nomPopulation.equals(pop.getNom())) {
         return pop;
       }
     }
@@ -803,8 +803,8 @@ public class DataSet implements IDataSet {
   public IPopulation<? extends IFeature> getPopulationByFeatureTypeName(
       String nomFeatureType) {
     for (int i = 0; i < this.getPopulations().size(); i++) {
-      if (this.getPopulations().get(i).getFeatureType().getTypeName()
-          .equals(nomFeatureType)) {
+      if (this.getPopulations().get(i).getFeatureType().getTypeName().equals(
+          nomFeatureType)) {
         return this.getPopulations().get(i);
       }
     }
@@ -828,6 +828,7 @@ public class DataSet implements IDataSet {
     }
     return DataSet.dataSet;
   }
+
   @Override
   public String toString() {
     return "DataSet " + this.id;
