@@ -74,6 +74,40 @@ public class DefaultFeature extends AbstractFeature {
     this.setGeom(geometry);
   }
 
+  /**
+   * The Schema is not copied (so that when you copy a feature collection, each
+   * feature does not have a different schema.
+   * <p>
+   * Only a few attribute type are handled for now.
+   * <ul>
+   * <li>Double
+   * <li>Integer
+   * <li>String
+   * </ul>
+   * @param original the default feature to copy
+   */
+  public DefaultFeature(final DefaultFeature original) {
+    super();
+    this.setId(original.getId());
+    this.setGeom((IGeometry) original.getGeom().clone());
+    this.setAttributes(new Object[original.getAttributes().length]);
+    for (int i = 0; i < original.getAttributes().length; i++) {
+      Object attribute = original.getAttribute(i);
+      if (Double.class.isAssignableFrom(attribute.getClass())) {
+        Double n = (Double) attribute;
+        this.attributes[i] = new Double(n);
+      }
+      if (Integer.class.isAssignableFrom(attribute.getClass())) {
+        Integer n = (Integer) attribute;
+        this.attributes[i] = new Integer(n);
+      }
+      if (String.class.isAssignableFrom(attribute.getClass())) {
+        String n = (String) attribute;
+        this.attributes[i] = new String(n);
+      }
+    }
+  }
+
   // private FeatureType featureType;
   /**
    * nom table et colonnes. contient une "lookup table" reliant le numéro de

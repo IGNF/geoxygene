@@ -69,6 +69,7 @@ public class DataSet implements IDataSet {
     return DataSet.LOGGER;
   }
 
+  public static int STATICID = 0;
   /** l'identifiant */
   protected int id;
 
@@ -98,12 +99,17 @@ public class DataSet implements IDataSet {
   /** Constructeur par défaut. */
   public DataSet() {
     this.ojbConcreteClass = this.getClass().getName();
+    this.setId(STATICID++);
   }
 
   /**
    * Constructeur par défaut, recopiant les champs de métadonnées du DataSet en
-   * paramètre sur le nouveau
+   * paramètre sur le nouveau.
+   * <p>
+   * Seules les populations sont copiées (composants et extractions ignorés).
+   * @param DS dataset to copy
    */
+  @SuppressWarnings("unchecked")
   public DataSet(DataSet DS) {
     this.ojbConcreteClass = this.getClass().getName();
     if (DS == null) {
@@ -115,6 +121,18 @@ public class DataSet implements IDataSet {
     this.setZone(DS.getZone());
     this.setDate(DS.getDate());
     this.setCommentaire(DS.getCommentaire());
+    // composants
+    // populations
+    for (IPopulation<? extends IFeature> p : DS.getPopulations()) {
+      try {
+        IPopulation<? extends IFeature>f = p.getClass().getConstructor(p.getClass())
+        .newInstance(p);
+        this.populations.add(f);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    // extractions
   }
 
   /**
@@ -809,5 +827,9 @@ public class DataSet implements IDataSet {
       }
     }
     return DataSet.dataSet;
+  }
+  @Override
+  public String toString() {
+    return "DataSet " + this.id;
   }
 }

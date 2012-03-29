@@ -399,6 +399,7 @@ public class LayerFactory{
     public Layer createLayer(String layerName,
         Class<? extends IGeometry> geometryType, Color strokeColor,
         Color fillColor, float opacity, float strokeWidth) {
+      LayerFactory.logger.severe("create Layer " + layerName + " " + geometryType + " " + strokeColor + " " + fillColor + " " + opacity + " " + strokeWidth);
       // if(this.getLayer(layerName)==null){
       Layer layer = new NamedLayer(this.model, layerName);
       UserStyle style = new UserStyle();

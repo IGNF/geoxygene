@@ -77,6 +77,23 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
     this.attLookup = new HashMap<Integer, String[]>();
     this.colonnes = new ArrayList<String>();
   }
+  
+  /**
+   * Constructeur par copie... en gros.
+   * @param schema
+   */
+  public SchemaDefaultFeature(SchemaDefaultFeature schema) {
+    this.attLookup = new HashMap<Integer, String[]>(schema.getAttLookup());
+    this.colonnes = new ArrayList<String>(schema.getColonnes());
+    this.typeBD = schema.getTypeBD();
+    this.nom = new String(schema.getNom());
+    if (schema.getNomSchema() != null) {
+      this.nomSchema = new String(schema.getNomSchema());
+    }
+    if (schema.getDefinition() != null) {
+      this.definition = new String(schema.getDefinition());
+    }
+  }
 
   /**
    * Charge le schéma à partir d'une base de données
@@ -134,7 +151,7 @@ public class SchemaDefaultFeature extends SchemaConceptuelJeu {
   /**
    * lien avec le schéma conceptuel
    */
-  private FeatureType featureType;
+  private FeatureType featureType = null;
 
   /**
    * @return the colonnes

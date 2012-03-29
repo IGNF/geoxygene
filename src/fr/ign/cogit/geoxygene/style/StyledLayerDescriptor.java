@@ -119,6 +119,7 @@ public class StyledLayerDescriptor implements FeatureCollectionListener{
   public StyledLayerDescriptor(DataSet dataSet) {
       super();
       this.dataSet = dataSet;
+    System.out.println("DataSet of the sld " + dataSet);
   }
   @XmlElements({ @XmlElement(name = "NamedLayer", type = NamedLayer.class),
       @XmlElement(name = "UserLayer", type = UserLayer.class) })

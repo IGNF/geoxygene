@@ -60,6 +60,18 @@ public class FeatureType implements GF_FeatureType {
     ft.nomClasse = this.nomClasse;
     return ft;
   }
+  
+  /**
+   * Constructeur par copie
+   * @param ft
+   */
+  public FeatureType(final FeatureType ft) {    
+    this.setId(ft.getId());
+    this.setDefinition(ft.getDefinition());
+    this.setTypeName(ft.getTypeName());
+    this.setNomClasse(ft.getNomClasse());
+    this.setGeometryType(ft.getGeometryType());
+  }
 
   Class<? extends IGeometry> geometryType = IGeometry.class;
 

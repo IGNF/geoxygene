@@ -82,6 +82,7 @@ public class FeatureType implements GF_FeatureType {
     ft.definition = this.definition;
     ft.typeName = this.typeName;
     ft.nomClasse = this.nomClasse;
+    ft.geometryType = this.geometryType;
     return ft;
   }
 

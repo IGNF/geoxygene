@@ -102,6 +102,35 @@ public class Population<Feat extends IFeature> extends
     this.persistant = false;
   }
 
+  @SuppressWarnings("unchecked")
+  public Population(final Population<? extends IFeature> p) {
+    super();
+    this.setNom(p.getNom());
+    this.setNomClasse(p.getNom());
+    SchemaDefaultFeature schema = null;
+    if (p.getFeatureType() != null) {
+      this.setFeatureType(p.getFeatureType().copie());
+    }
+    for (int i = 0; i < p.size(); i++) {
+      if (DefaultFeature.class.isAssignableFrom(p.get(i).getClass())) {
+        DefaultFeature f = new DefaultFeature((DefaultFeature)p.get(i));
+        if (schema == null) {
+          schema = new SchemaDefaultFeature(((DefaultFeature)p.get(i)).getSchema());
+        }
+        f.setSchema(schema);
+        f.setFeatureType(this.featureType);
+        this.add((Feat) f);
+      } else {
+        try {
+          IFeature f = p.get(i).getClass().getConstructor(p.get(i).getClass())
+              .newInstance(p.get(i));
+          this.add((Feat) f);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    }
+  }
   /**
    * Constructeur à partir du nom de la population
    * @param nom nom de la population.

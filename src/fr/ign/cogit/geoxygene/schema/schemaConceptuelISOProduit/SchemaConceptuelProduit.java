@@ -81,6 +81,16 @@ public class SchemaConceptuelProduit implements SchemaConceptuel<FeatureType> {
     this.featureTypes = new ArrayList<FeatureType>(0);
   }
 
+  /**
+   * Constructeur par copie
+   * @param schema le schema à copier
+   */
+  public SchemaConceptuelProduit(final SchemaConceptuelProduit schema) {
+    this.setBD(schema.getBD());
+    this.setDefinition(schema.getDefinition());
+    this.setNomSchema(schema.getNomSchema());
+  }
+
   /** Identifiant d'un objet */
   protected int id;
 

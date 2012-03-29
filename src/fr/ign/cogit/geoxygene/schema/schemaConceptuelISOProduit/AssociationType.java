@@ -15,6 +15,32 @@ import fr.ign.cogit.geoxygene.api.feature.type.GF_Operation;
  * 
  */
 public class AssociationType extends FeatureType implements GF_AssociationType {
+
+  /**
+   * Copy constructor
+   * @param at
+   */
+  public AssociationType(final AssociationType at) {
+    super(at);
+    this.setNomClasseAsso(at.getNomClasseAsso());
+    this.setIsSpatial(at.getIsSpatial());
+    this.setIsAggregation(at.getIsAggregation());
+    this.setIsTopologic(at.getIsTopologic());
+    List<GF_FeatureType> fts = new ArrayList<GF_FeatureType>();
+    for (int i = 0; i < at.getLinkBetween().size(); i++) {
+      GF_FeatureType ft;
+      try {
+        ft = at.getLinkBetweenI(i).getClass().getConstructor(
+            at.getLinkBetweenI(i).getClass())
+            .newInstance(at.getLinkBetweenI(i));
+        fts.add(ft);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    this.setLinksBetween(fts);
+  }
+
   /**
    * attributs hérités de SC_FeatureType
    * 
@@ -66,6 +92,10 @@ public class AssociationType extends FeatureType implements GF_AssociationType {
   @Override
   public List<GF_FeatureType> getLinkBetween() {
     return this.linkBetween;
+  }
+
+  public void setLinksBetween(List<GF_FeatureType> L) {
+    this.linkBetween = L;
   }
 
   /** Affecte une liste de feature types */

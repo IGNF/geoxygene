@@ -334,7 +334,7 @@ public abstract class AbstractFeature implements IFeature {
   /**
    * L'unique featureType auquel appartient cet objet.
    */
-  protected FeatureType featureType;
+  protected FeatureType featureType = null;
 
   @Override
   public void setFeatureType(FeatureType featureType) {
