@@ -23,7 +23,6 @@ import java.awt.Color;
 import java.awt.geom.NoninvertibleTransformException;
 import java.net.URL;
 
-import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
