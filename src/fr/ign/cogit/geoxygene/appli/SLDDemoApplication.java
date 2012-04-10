@@ -78,7 +78,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     Population<DefaultFeature> pop = new Population<DefaultFeature>(
         "Vegetation"); //$NON-NLS-1$
     pop.add(new DefaultFeature(new GM_Polygon(new GM_Envelope(0, 100, 0, 100))));
-    DataSet.getInstance().addPopulation(pop);
+    projectFrame.getDataSet().addPopulation(pop);
     projectFrame.getSld().add(layer);
 
     Layer layer2 = projectFrame.getSld().createLayer("Batiment", //$NON-NLS-1$
@@ -99,7 +99,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     Population<DefaultFeature> pop2 = new Population<DefaultFeature>("Batiment"); //$NON-NLS-1$
     pop2.add(new DefaultFeature(new GM_Polygon(new GM_Envelope(110, 200, 110,
         200))));
-    DataSet.getInstance().addPopulation(pop2);
+    projectFrame.getDataSet().addPopulation(pop2);
     projectFrame.getSld().add(layer2);
 
     Layer layer3 = projectFrame.getSld().createLayer("Route", //$NON-NLS-1$
@@ -130,7 +130,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     pop3.add(new DefaultFeature(new GM_LineString(new DirectPositionList(
         new DirectPosition(110, 0), new DirectPosition(110, 100),
         new DirectPosition(200, 100)))));
-    DataSet.getInstance().addPopulation(pop3);
+    projectFrame.getDataSet().addPopulation(pop3);
     projectFrame.getSld().add(layer3);
 
     Layer layer4 = projectFrame.getSld().createLayer("Chemin", //$NON-NLS-1$
@@ -161,7 +161,7 @@ public class SLDDemoApplication extends GeOxygeneApplication {
     pop4.add(new DefaultFeature(new GM_LineString(new DirectPositionList(
         new DirectPosition(0, 110), new DirectPosition(100, 110),
         new DirectPosition(100, 200)))));
-    DataSet.getInstance().addPopulation(pop4);
+    projectFrame.getDataSet().addPopulation(pop4);
     projectFrame.getSld().add(layer4);
 
     try {
