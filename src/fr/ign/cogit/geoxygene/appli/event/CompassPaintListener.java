@@ -17,7 +17,7 @@ import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
 public class CompassPaintListener implements PaintListener {
 
   static private ImageIcon compass = new ImageIcon(CompassPaintListener.class
-      .getResource("/images/compass_rose.png").getFile()); //$NON-NLS-1$
+      .getResource("/images/compass_rose.png")); //$NON-NLS-1$
 
   @Override
   public void paint(LayerViewPanel layerViewPanel, Graphics graphics) {
