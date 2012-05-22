@@ -6,6 +6,7 @@
     <artifactId>geoxygene</artifactId>
     <groupId>fr.ign.cogit</groupId>
     <version>1.5-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <groupId>fr.ign.cogit</groupId>
   <artifactId>geoxygene-contrib</artifactId>
