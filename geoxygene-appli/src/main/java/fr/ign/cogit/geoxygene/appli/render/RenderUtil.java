@@ -1015,7 +1015,8 @@ private static Color getColorWithOpacity(Color color, double opacity) {
     if (symbolizer.getLabel() == null) {
       return;
     }
-    String text = feature.getAttribute(symbolizer.getLabel()).toString();
+    Object value = feature.getAttribute(symbolizer.getLabel());
+    String text = (value == null) ? null : value.toString();
     if (text != null) {
       paint(symbolizer, text, feature.getGeom(), viewport, graphics, opacity);
     }
