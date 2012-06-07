@@ -48,6 +48,7 @@ import org.hibernate.annotations.Type;
 import fr.ign.cogit.appli.geopensim.agent.AgentGeographique;
 import fr.ign.cogit.appli.geopensim.comportement.Comportement;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
 
 /**

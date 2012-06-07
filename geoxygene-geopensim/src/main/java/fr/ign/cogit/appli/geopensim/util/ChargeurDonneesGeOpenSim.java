@@ -59,6 +59,7 @@ import fr.ign.cogit.appli.geopensim.feature.micro.TronconVoieFerree;
 import fr.ign.cogit.appli.geopensim.feature.micro.Vegetation;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.datatools.hibernate.GeodatabaseHibernate;
 import fr.ign.cogit.geoxygene.datatools.postgis.GeodatabaseOjbPostgis;
 import fr.ign.cogit.geoxygene.feature.DataSet;
@@ -99,13 +100,13 @@ public class ChargeurDonneesGeOpenSim {
 			return null;
 		}
 		long time = System.currentTimeMillis();
-		DataSet.db=hibernate?new GeodatabaseHibernate():new GeodatabaseOjbPostgis();
+		DataSet.db=hibernate?new GeodatabaseHibernate(): new GeodatabaseOjbPostgis();
 		logger.info("Nettoyage de la base de données");
 		if (hibernate) ((GeodatabaseHibernate)DataSet.db).dropAndCreate();
 		else {
 			DataSet.db.begin();
-			// TODO c'est mal mais ça marche bien :)
-			DataSet.db.exeSQLFile("sql/postgis/geopensim/nettoyer_base_bdtopo.sql");
+			// TODO c'est mal mais ça marche bien :) ben non, ca ne marche pas :p
+			DataSet.db.exeSQLFile(ChargeurDonneesGeOpenSim.class.getResource("/sql/postgis/geopensim/nettoyer_base_bdtopo.sql").getFile());
 			DataSet.db.commit();
 			DataSet.db.begin();
 			DataSet.db.clearCache();
@@ -171,6 +172,27 @@ public class ChargeurDonneesGeOpenSim {
 		if (logger.isDebugEnabled()) logger.debug("Classe trouvée "+representation.getClass());
 		SortedSet<Integer> dates = new TreeSet<Integer>();
 		IPopulation<IFeature> population = ShapefileReader.read(fileName);
+		
+		int nbElem = population.size();
+		for(int i=0;i<nbElem;i++){
+		  
+		  IFeature feat = population.get(i);
+		  IGeometry geom = feat.getGeom();
+		  
+		  if(geom == null || geom.isEmpty()){
+		    
+		    population.remove(i);
+		    nbElem--;
+		    i--;
+		    
+		  }
+		  
+		  
+		  
+		}
+		
+		
+		
 		System.gc();
 		/*
 		for (GF_AttributeType attribute:population.getFeatureType().getFeatureAttributes()) {
@@ -332,6 +354,8 @@ public class ChargeurDonneesGeOpenSim {
 			}
 			if ((geo!=null)&&(elementRepresentation.getGeom()!=null)) {
 			    geo.add(elementRepresentation);
+			}else{
+			  System.out.println("Je ne passe pas là");
 			}
 		}
 	}

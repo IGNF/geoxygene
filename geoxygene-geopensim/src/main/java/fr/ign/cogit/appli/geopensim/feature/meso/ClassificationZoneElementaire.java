@@ -249,6 +249,7 @@ public abstract class ClassificationZoneElementaire {
     public static boolean containsAtLeastQuantileLessThanOrEqualTo(ZoneElementaireUrbaine zone, String attribute, int k, int q, double value) {
         int n = 0;
         for (Batiment b : zone.getBatiments()) {
+          System.out.println(attribute);
             if (((Number) b.getAttribute(attribute)).doubleValue() <= value) {
                 n++;
             }
