@@ -36,7 +36,6 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ICurveSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPosition;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -330,55 +329,69 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
 
   @Override
   public IDirectPosition constrParam(double cp) {
-    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
-    return null;
+    return this.param(this.startParam() + cp * (this.endParam() - this.startParam()));
   }
 
   @Override
   public double endConstrParam() {
-    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
-    return 0;
+    return (this.getOrientation() > 0) ? 1 : 0;
   }
 
   @Override
   public double endParam() {
-    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
-    return 0;
+    return this.length();
   }
 
   @Override
-  public double length(IPosition p1, IPosition p2) {
-    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
-    return 0;
+  public double length(IDirectPosition p1, IDirectPosition p2) {
+    return Math.abs(this.paramForPoint(p2)[0] - this.paramForPoint(p1)[0]);
   }
 
   @Override
   public double length(double cparam1, double cparam2) {
-    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
-    return 0;
+    return this.length(this.constrParam(cparam1), this.constrParam(cparam2));
   }
 
   @Override
   public IDirectPosition param(double s) {
-    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
+    double d = 0;
+    for (ICurveSegment segment : this.getSegment()) {
+      double length = segment.length();
+      if (s <= d + length) {
+        return segment.param(s - d);
+      } else {
+        d += length;
+      }
+    }
     return null;
   }
 
   @Override
-  public List<?> paramForPoint(IDirectPosition P) {
-    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
-    return null;
+  public double[] paramForPoint(IDirectPosition p) {
+    //    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
+    double minDistance = Double.POSITIVE_INFINITY;
+    double minParam = -1;
+    double d = 0;
+    for (ICurveSegment segment : this.getSegment()) {
+      double param = segment.paramForPoint(p)[0];
+      IDirectPosition point = segment.param(param);
+      double distance = p.distance(point);
+      if (distance < minDistance) {
+        minDistance = distance;
+        minParam = d + param;
+      }
+      d += segment.length();
+    }
+    return new double[] { minParam };
   }
 
   @Override
   public double startConstrParam() {
-    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
-    return 0;
+    return (this.getOrientation() > 0) ? 0 : 1;
   }
 
   @Override
   public double startParam() {
-    GM_Curve.logger.error("non implemented method"); //$NON-NLS-1$
     return 0;
   }
 }

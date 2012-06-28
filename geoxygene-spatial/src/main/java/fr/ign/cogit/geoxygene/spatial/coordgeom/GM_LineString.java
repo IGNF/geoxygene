@@ -37,6 +37,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 
 /**
  * Polyligne. L'attribut "interpolation" est egal à "linear".
@@ -199,5 +200,41 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
   @Override
   public String getInterpolation() {
     return "linear"; //$NON-NLS-1$
+  }
+  @Override
+  public IDirectPosition param(double s) {
+    double d = 0;
+    for (int i = 0; i < this.sizeControlPoint() - 1; i++) {
+      IDirectPosition p1 = this.getControlPoint(i);
+      IDirectPosition p2 = this.getControlPoint(i + 1);
+      double length = p1.distance(p2);
+      if (s <= d + length) {
+        IDirectPosition point = Operateurs.param(s - d, p1, p2);
+        return point;
+      } else {
+        d += length;
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public double[] paramForPoint(IDirectPosition p) {
+    double minDistance = Double.POSITIVE_INFINITY;
+    double minParam = -1;
+    double d = 0;
+    for (int i = 0; i < this.sizeControlPoint() - 1; i++) {
+      IDirectPosition p1 = this.getControlPoint(i);
+      IDirectPosition p2 = this.getControlPoint(i + 1);
+      double param = Operateurs.paramForPoint(p, p1, p2);
+      IDirectPosition point = Operateurs.param(param, p1, p2);
+      double distance = p.distance(point);
+      if (distance < minDistance) {
+        minDistance = distance;
+        minParam = d + param;
+      }
+      d += p1.distance(p2);
+    }
+    return new double[] { minParam };
   }
 }
