@@ -374,8 +374,11 @@ public abstract class Appariement {
    * selon le type du noeud de la BD de reférence (rond point, changement
    * d'attribut...).
    * <p>
-   * NB1: On préfére largement une taille de recherche sur-évaluée que
-   * sous-évaluée. NB2: On ne traite pas les noeuds isolés.
+   * <ul>
+   * <li>NB1: On préfére largement une taille de recherche sur-évaluée que
+   * sous-évaluée.
+   * <li>NB2: On ne traite pas les noeuds isolés.
+   * </ul>
    * @param reseau1 network 1
    * @param reseau2 network 2
    * @param param matching paramters
