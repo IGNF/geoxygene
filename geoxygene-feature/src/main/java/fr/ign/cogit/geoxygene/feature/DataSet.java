@@ -694,6 +694,12 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
         return pop;
       }
     }
+    for (IDataSet<?> comp : this.composants) {
+        IPopulation<? extends IFeature> pop = comp.getPopulation(nomPopulation);
+        if (pop != null) {
+            return pop;
+        }
+    }
     // if (logger.isDebugEnabled())
     // logger.debug("=============== ATTENTION : population '" + nom +
     // "' introuvable ==============");
