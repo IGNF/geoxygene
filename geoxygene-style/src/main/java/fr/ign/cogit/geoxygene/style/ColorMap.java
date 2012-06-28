@@ -63,6 +63,7 @@ public class ColorMap {
         }
         previous = point;
       }
+      return previous.getColor().getRGB();
     }
     return 0;
   }
