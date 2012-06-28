@@ -286,6 +286,8 @@ public class Face extends ElementCarteTopo {
     } else {
       Face.logger
           .error("Problème : incohérence dans la topologie arcs / faces");
+      Face.logger.error("edge " + arc0);
+      Face.logger.error("with faces " + arc0.getFaceDroite() + " " + arc0.getFaceGauche());
       return null;
     }
 

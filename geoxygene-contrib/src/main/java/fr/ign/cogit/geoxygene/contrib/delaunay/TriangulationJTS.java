@@ -57,7 +57,8 @@ public class TriangulationJTS extends AbstractTriangulation {
 //      }
 //      this.creeNoeudsManquants(0.1);
 //      this.creeTopologieArcsNoeuds(0.1);
-      this.ajouteArcsEtNoeudsAuxFaces(true);
+//      this.ajouteArcsEtNoeudsAuxFaces(true);
+        this.addMissingEdges(0.1);
     }
   
     if (this.getOptions().indexOf('v') != -1) {

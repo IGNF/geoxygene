@@ -22,7 +22,9 @@ package fr.ign.cogit.geoxygene.contrib.delaunay;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -122,7 +124,7 @@ public class Triangulation extends AbstractTriangulation {
                 new DirectPosition(this.jout.pointlist[2 * i],
                     this.jout.pointlist[2 * i + 1]));
       }
-      ArrayList<IFeature> noeuds = new ArrayList<IFeature>(
+      ArrayList<Noeud> noeuds = new ArrayList<Noeud>(
           this.getListeNoeuds());
       Class<?>[] signaturea = { this.getPopNoeuds().getClasse(),
           this.getPopNoeuds().getClasse() };
@@ -130,11 +132,25 @@ public class Triangulation extends AbstractTriangulation {
       if (CarteTopo.logger.isDebugEnabled()) {
         CarteTopo.logger.debug(I18N.getString("Triangulation.EdgeExportStart")); //$NON-NLS-1$
       }
-      for (int i = 0; i < this.jout.numberofedges; i++) {
-        parama[0] = noeuds.get(this.jout.edgelist[2 * i]);
-        parama[1] = noeuds.get(this.jout.edgelist[2 * i + 1]);
-        this.getPopArcs().nouvelElement(signaturea, parama);
+      for (Noeud n : this.getPopNoeuds()) {
+          n.getEntrants().clear();
+          n.getSortants().clear();
       }
+      CarteTopo.logger.error(this.getPopArcs().size() + " edges");
+      for (int i = 0; i < this.jout.numberofedges; i++) {
+        Noeud n1 = noeuds.get(this.jout.edgelist[2 * i]);
+        Noeud n2 = noeuds.get(this.jout.edgelist[2 * i + 1]);
+        parama[0] = n1;
+        parama[1] = n2;
+        Set<Arc> edges = new HashSet<Arc>(n1.arcs());
+        edges.retainAll(n2.arcs());
+        if (edges.isEmpty()) {
+            this.getPopArcs().nouvelElement(signaturea, parama).setId(i);
+        } else {
+            CarteTopo.logger.error("filtered edge " + i + " because of edge " + edges.iterator().next());
+        }
+      }
+      CarteTopo.logger.error(this.getPopArcs().size() + " edges created instead of " + this.jout.numberofedges);
       Class<?>[] signaturef = { this.getPopNoeuds().getClasse(),
           this.getPopNoeuds().getClasse(), this.getPopNoeuds().getClasse() };
       Object[] paramf = new Object[3];
@@ -144,8 +160,17 @@ public class Triangulation extends AbstractTriangulation {
       }
       for (int i = 0; i < this.jout.numberoftriangles; i++) {
         paramf[0] = noeuds.get(this.jout.trianglelist[3 * i]);
+        if (paramf[0] == null) {
+            CarteTopo.logger.error("null node " + this.jout.trianglelist[3 * i] + " for triangle " + i);
+        }
         paramf[1] = noeuds.get(this.jout.trianglelist[3 * i + 1]);
+        if (paramf[1] == null) {
+            CarteTopo.logger.error("null node " + this.jout.trianglelist[3 * i + 1] + " for triangle " + i);
+        }
         paramf[2] = noeuds.get(this.jout.trianglelist[3 * i + 2]);
+        if (paramf[2] == null) {
+            CarteTopo.logger.error("null node " + this.jout.trianglelist[3 * i + 2] + " for triangle " + i);
+        }
         this.getPopFaces().nouvelElement(signaturef, paramf).setId(i);
       }
       if (this.getOptions().indexOf('v') != -1) {
@@ -197,6 +222,7 @@ public class Triangulation extends AbstractTriangulation {
     } catch (Exception e) {
       e.printStackTrace();
     }
+    this.filtreArcsDoublons();
     if (CarteTopo.logger.isDebugEnabled()) {
       CarteTopo.logger.debug(I18N.getString("Triangulation.ExportEnd")); //$NON-NLS-1$
     }
