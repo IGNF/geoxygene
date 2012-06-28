@@ -352,10 +352,10 @@ public abstract class AbstractFeature implements IFeature {
 
   @Override
   public Object getAttribute(GF_AttributeType attribute) {
-    if (attribute.getMemberName().equals("geom")) { //$NON-NLS-1$
+    if (attribute.getMemberName() != null && attribute.getMemberName().equals("geom")) { //$NON-NLS-1$
       return this.getGeom();
     }
-    if (attribute.getMemberName().equals("topo")) { //$NON-NLS-1$
+    if (attribute.getMemberName() != null && attribute.getMemberName().equals("topo")) { //$NON-NLS-1$
       AbstractFeature.logger
           .warn("WARNING : Pour Récupèrer la primitive topologique par défaut, veuillez utiliser " //$NON-NLS-1$
               + "la méthode IFeature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
