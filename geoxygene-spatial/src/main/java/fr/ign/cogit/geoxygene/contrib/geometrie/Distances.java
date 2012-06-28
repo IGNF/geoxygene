@@ -41,9 +41,11 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 /**
  * Méthodes statiques de calcul de distance.
  * <p>
- * English: Computation of distances (static methods)
- * 
- * @author Mustière/Bonin
+ * English: Computation of distances (static methods).
+ *
+ * @author Sébastien Mustière
+ * @author Olivier Bonin
+ * @author Julien Perret
  * @version 1.0
  */
 
@@ -91,16 +93,9 @@ public abstract class Distances {
    */
   public static boolean proche(IDirectPosition dp1, IDirectPosition dp2,
       double distance) {
-    if (Math.abs(dp1.getX() - dp2.getX()) > distance) {
-      return false;
-    }
-    if (Math.abs(dp1.getY() - dp2.getY()) > distance) {
-      return false;
-    }
-    if (Distances.distance(dp1, dp2) > distance) {
-      return false;
-    }
-    return true;
+        return Math.abs(dp1.getX() - dp2.getX()) <= distance
+                && Math.abs(dp1.getY() - dp2.getY()) <= distance
+                && dp1.distance2D(dp2) <= distance;
   }
 
   // ////////////////////////////////////////////////////////////

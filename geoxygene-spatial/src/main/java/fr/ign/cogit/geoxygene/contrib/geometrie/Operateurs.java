@@ -63,15 +63,62 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_OrientableSurface;
  * @author Frédéric Rousseaux
  * @author Eric Grosso
  * @author Arnaud Lafragueta
+ * @author Julien Perret
  */
-
 public abstract class Operateurs {
   private static Logger logger = Logger.getLogger(Operateurs.class.getName());
 
   // ////////////////////////////////////////////////////////////////////
   // Projections d'un point
   // ////////////////////////////////////////////////////////////////////
-
+  /**
+   * Abscisse curviligne de M sur le segment [A,B].
+   * <p>
+   * English: Parameter of M on a [A,B].
+   */
+  public static double paramForPoint(IDirectPosition m,
+      IDirectPosition a, IDirectPosition b) {
+    Vecteur ab = new Vecteur(a, b);
+    boolean to2d = Double.isNaN(m.getZ()) || Double.isNaN(a.getZ())
+        || Double.isNaN(b.getZ());
+    if (to2d) {
+      ab.setZ(Double.NaN);
+    }
+    if (ab.norme() == 0) {
+      return 0; // cas ou A et B sont confondus
+    }
+    Vecteur u_ab = ab.vectNorme();
+    Vecteur am = new Vecteur(a, m);
+    if (to2d) {
+      am.setZ(Double.NaN);
+    }
+    double lambda = am.prodScalaire(u_ab);
+    if (lambda <= 0) {
+      return 0; // Cas ou M se projete en A sur le segment [AB]
+    }
+    double length = a.distance(b);
+    if (lambda >= length) {
+      return length; // Cas ou M se projete en B sur le segment [AB]
+    }
+    // Cas ou M se projete entre A et B
+    return lambda;
+  }
+  
+  public static IDirectPosition param(double param,
+          IDirectPosition a, IDirectPosition b) {
+      if (param == 0) {
+          return a;
+      }
+      double distance = a.distance(b);
+      if (param >= distance) {
+          return b;
+      }
+      double dx = b.getX() - a.getX();
+      double dy = b.getY() - a.getY();
+      double dz = b.getZ() - a.getZ();
+      double ratio = param / distance;
+      return new DirectPosition(a.getX() + ratio * dx, a.getY() + ratio * dy, a.getZ() + ratio * dz);
+  }
   /**
    * Projection de M sur le segment [A,B].
    * <p>
@@ -142,7 +189,7 @@ public abstract class Operateurs {
   public static ILineString projectionEtInsertion(IDirectPosition point,
       ILineString line) {
     IDirectPositionList points = line.coord();
-    Operateurs.projectAndInsert(point, points);
+    Operateurs.projectAndInsert(point, points.getList());
     GM_LineString newLine = new GM_LineString(points);
     return newLine;
   }
@@ -155,7 +202,7 @@ public abstract class Operateurs {
    * projected point inserted.
    */
   public static void projectAndInsert(IDirectPosition point,
-      IDirectPositionList points) {
+      List<IDirectPosition> points) {
     if (points.size() < 2) {
       return;
     }
@@ -174,6 +221,29 @@ public abstract class Operateurs {
       }
     }
     points.add(imin + 1, ptmin);
+  }
+
+  /**
+   * Projection du point sur la polyligne et insertion du point projeté dans la
+   * ligne.
+   * <p>
+   * English: Projects M on the lineString and return the line with the
+   * projected point inserted.
+   */
+  public static void projectAndInsertAll(IDirectPosition point,
+      List<IDirectPosition> points) {
+    if (points.size() < 2) {
+      return;
+    }
+    for (int i = 0; i < points.size() - 1; i++) {
+      IDirectPosition a = points.get(i);
+      IDirectPosition b = points.get(i + 1);
+      IDirectPosition pt = Operateurs.projection(point, a, b);
+      if (pt != a && pt != b) {
+        points.add(i + 1, pt);
+        i++;
+      }
+    }
   }
 
   /**
@@ -622,6 +692,9 @@ public abstract class Operateurs {
     } else {
       Operateurs.logger
           .error("ATTENTION. Erreur à la compilation de lignes (Operateurs) : les lignes ne se touchent pas");
+      for (ILineString l : geometries) {
+          Operateurs.logger.error(l);
+      }
       return null;
     }
     for (int i = 1; i < geometries.size(); i++) {
@@ -631,22 +704,23 @@ public abstract class Operateurs {
         // LSSuivante dans le bon sens
         lineCopy.removeControlPoint(lineCopy.startPoint());
         finalPoints.addAll(lineCopy.getControlPoint());
-        // quel intérêt à cette ligne???
         currentPoint = lineCopy.endPoint();
       } else if (Distances.proche(currentPoint, nextLine.endPoint(), 0)) {
         // LSSuivante dans le bon sens
         lineCopy.removeControlPoint(lineCopy.endPoint());
         finalPoints.addAll(((GM_LineString) lineCopy.reverse())
             .getControlPoint());
-        // quel intérêt à cette ligne???
         currentPoint = lineCopy.startPoint();
       } else {
-        System.out
-            .println("ATTENTION. Erreur à la compilation de lignes (Operateurs) : les lignes ne se touchent pas");
+        Operateurs.logger
+          .error("ATTENTION. Erreur à la compilation de lignes (Operateurs) : les lignes ne se touchent pas");
+        for (ILineString l : geometries) {
+            Operateurs.logger.error(l);
+        }
         return null;
       }
     }
-    return new GM_LineString(finalPoints);
+    return new GM_LineString(finalPoints, false);
   }
 
   /**
