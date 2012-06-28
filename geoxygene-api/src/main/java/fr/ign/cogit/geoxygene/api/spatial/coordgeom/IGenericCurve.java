@@ -1,6 +1,5 @@
 package fr.ign.cogit.geoxygene.api.spatial.coordgeom;
 
-import java.util.List;
 
 /**
  * NON UTILISE. Cette interface de la norme n'a plus de sens depuis qu'on a fait
@@ -60,7 +59,7 @@ public interface IGenericCurve {
    * n'est pas simple.
    */
   public abstract// NORME : le résultat est de type Distance.
-  List<?> paramForPoint(IDirectPosition P);
+  double[] paramForPoint(IDirectPosition P);
 
   /**
    * NON IMPLEMENTE. Représentation alternative d'une courbe comme l'image
@@ -87,7 +86,7 @@ public interface IGenericCurve {
    * NON IMPLEMENTE. Longueur entre 2 points.
    */
   public abstract// NORME : le résultat est de type Length.
-  double length(IPosition p1, IPosition p2);
+  double length(IDirectPosition p1, IDirectPosition p2);
 
   /**
    * NON IMPLEMENTE. Longueur d'une courbe paramétrée "entre 2 réels".
