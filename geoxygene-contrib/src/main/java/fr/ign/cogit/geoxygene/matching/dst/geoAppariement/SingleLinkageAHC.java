@@ -19,7 +19,6 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
-import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
 
 /**
  * @author Julien Perret
@@ -390,7 +389,7 @@ public class SingleLinkageAHC {
       IFeature feat = new DefaultFeature(geom.convexHull());
       clusters.add(feat);
     }
-    ShapefileWriter.write(clusters, "/home/BDumenieu/Bureau/temp/"+prefix+".shp");
+//    ShapefileWriter.write(clusters, "/home/BDumenieu/Bureau/temp/"+prefix+".shp");
   }
   
   public List<List<IFeature>> getClustersAsLists(){
