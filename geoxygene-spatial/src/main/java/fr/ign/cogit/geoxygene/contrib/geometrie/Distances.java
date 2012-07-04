@@ -37,6 +37,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
+import fr.ign.cogit.geoxygene.spatial.util.Resampler;
 
 /**
  * Méthodes statiques de calcul de distance.
@@ -107,7 +108,7 @@ public abstract class Distances {
   /** Distance euclidienne du point M au segment [A,B] */
   public static double distancePointSegment(IDirectPosition M,
       IDirectPosition A, IDirectPosition B) {
-    return Distances.distance(M, Operateurs.projection(M, A, B));
+    return M.distance(Operateurs.projection(M, A, B));
   }
 
   /**
@@ -148,7 +149,7 @@ public abstract class Distances {
    */
   public static double distance(IDirectPosition point,
       IDirectPositionList pointList) {
-    double distmin = Distances.distance(pointList.get(0), point);
+    double distmin = pointList.get(0).distance(point);
     for (int i = 0; i < pointList.size() - 1; i++) {
       double dist = Distances.distancePointSegment(point, pointList.get(i),
           pointList.get(i + 1));
@@ -170,18 +171,13 @@ public abstract class Distances {
    * autre. Elle est calculee comme le maximum des distances des points
    * intermédiaires de la première ligne L1 à l'autre ligne L2.
    */
-  public static double premiereComposanteHausdorff(ILineString l1,
-      ILineString l2) {
-    IDirectPositionList listePoints = l1.coord();
-    double dist, distmax = 0;
-
-    for (int i = 0; i < listePoints.size(); i++) {
-      dist = Distances.distance(listePoints.get(i), l2);
-      if (dist > distmax) {
-        distmax = dist;
-      }
+  public static double premiereComposanteHausdorff(ILineString l1, ILineString l2) {
+    double result = 0;
+    for (IDirectPosition p : l1.coord()) {
+      double dist = Distances.distance(p, l2);
+      result = Math.max(dist, result);
     }
-    return distmax;
+    return result;
   }
 
   /**
@@ -250,30 +246,48 @@ public abstract class Distances {
    * Mesure d'écart entre deux polylignes, défini comme une approximation de la
    * surface séparant les polylignes. Plus précisément, cet écart est égal à la
    * somme, pour chaque point P de L1, de (distance de P à L2) * (moyenne des
-   * longueurs des segments autour de P)
-   * 
+   * longueurs des segments autour de P).
+   * <p>
+   * NB: Ce n'est pas une distance au sens mathématique du terme, et en particulier cet écart n'est
+   * pas symétrique: ecart(L1,L2) != ecart(L2,L1).
+   * <p>
+   * NB2: Comme cet écart dépend beaucoup de l'échantillonage de la ligne 1, elle est échantillonée
+   * par défaut à 1.0m.
+   * @see #ecartSurface(ILineString, ILineString, double)
+   */
+  public static double ecartSurface(ILineString l1, ILineString l2) {
+    Distances.ecartSurface(l1, l2, 1.0);
+  }
+
+  /**
+   * Mesure d'écart entre deux polylignes, défini comme une approximation de la
+   * surface séparant les polylignes. Plus précisément, cet écart est égal à la
+   * somme, pour chaque point P de L1, de (distance de P à L2) * (moyenne des
+   * longueurs des segments autour de P).
+   * <p>
    * NB: Ce n'est pas une distance au sens mathématique du terme, et en
    * particulier cet écart n'est pas symétrique: ecart(L1,L2) != ecart(L2,L1)
+   * @param l1 line
+   * @param l2 line
+   * @param threshold threshold used to subsample l1
    */
-  public static double ecartSurface(ILineString L1, ILineString L2) {
-    double ecartTotal = 0, distPt, long1, long2;
-    IDirectPositionList pts = L1.coord();
+  public static double ecartSurface(ILineString l1, ILineString l2, double threshold) {
+    double ecartTotal = 0;
+    ILineString l = Resampler.resample(l1, threshold);
+    IDirectPositionList pts = l.getControlPoint();
     for (int i = 0; i < pts.size(); i++) {
-      distPt = Distances.distance(pts.get(i), L2);
-      if (i == 0) {
-        long1 = 0;
-      } else {
-        long1 = Distances.distance(pts.get(i), pts.get(i - 1));
+      double distPt = l2.distance(pts.get(i).toGM_Point());
+      double long1 = 0;
+      if (i != 0) {
+        long1 = pts.get(i).distance2D(pts.get(i - 1));
       }
-      if (i == pts.size() - 1) {
-        long2 = 0;
-      } else {
-        long2 = Distances.distance(pts.get(i), pts.get(i + 1));
+      double long2 = 0;
+      if (i != pts.size() - 1) {
+        long2 = pts.get(i).distance2D(pts.get(i + 1));
       }
-      ecartTotal = ecartTotal + distPt * (long1 + long2) / 2;
+      ecartTotal += distPt * (long1 + long2) / 2;
     }
     return ecartTotal;
-
   }
 
   // //////////////////////////////////////////////////////////
