@@ -33,6 +33,7 @@ import fr.ign.cogit.geoxygene.api.feature.type.GF_AttributeType;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_FeatureType;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_InheritanceRelation;
 import fr.ign.cogit.geoxygene.api.feature.type.GF_Operation;
+import fr.ign.cogit.geoxygene.api.schema.ConceptualSchema;
 import fr.ign.cogit.geoxygene.api.schema.dataset.DatasetConceptualSchema;
 import fr.ign.cogit.geoxygene.api.schema.product.ProductConceptualSchema;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.SchemaConceptuelProduit;
@@ -50,8 +51,9 @@ import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit.SchemaConceptuel
  */
 
 public class SchemaConceptuelJeu
-        implements
-        DatasetConceptualSchema<FeatureType, AttributeType, FeatureAttributeValue, AssociationType, AssociationRole, InheritanceRelation> {
+    implements
+    DatasetConceptualSchema<FeatureType, AttributeType, FeatureAttributeValue, AssociationType, AssociationRole, InheritanceRelation>,
+    ConceptualSchema<FeatureType, AttributeType, FeatureAttributeValue, AssociationType, AssociationRole, InheritanceRelation> {
 
     /**
      * Constructeur par défaut
