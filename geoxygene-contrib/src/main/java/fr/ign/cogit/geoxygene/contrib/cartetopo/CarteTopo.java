@@ -1383,36 +1383,27 @@ public class CarteTopo extends DataSet {
    *        noeud
    */
   public void fusionNoeuds(IPopulation<? extends IFeature> popSurfaces) {
-    Iterator<Noeud> itNoeudsProches;
-    Noeud noeud, nouveauNoeud, noeudProche;
     List<IFeature> aEnlever = new ArrayList<IFeature>();
-    Collection<Noeud> noeudsProches;
-    List<Arc> arcsModifies;
     if (!this.getPopNoeuds().hasSpatialIndex()) {
       this.getPopNoeuds().initSpatialIndex(Tiling.class, true);
     }
     for (IFeature surf : popSurfaces) {
-      noeudsProches = this.getPopNoeuds().select(surf.getGeom());
+      Collection<Noeud> noeudsProches = this.getPopNoeuds().select(surf.getGeom());
       noeudsProches.removeAll(aEnlever);
       if (noeudsProches.size() < 2) {
         continue;
       }
-      // Si il y a plusieurs noeuds dans la surface, on crée un nouveau
-      // noeud
+      // Si il y a plusieurs noeuds dans la surface, on crée un nouveau noeud
       GM_MultiPoint points = new GM_MultiPoint();
-      itNoeudsProches = noeudsProches.iterator();
-      while (itNoeudsProches.hasNext()) {
-        noeudProche = itNoeudsProches.next();
+      for (Noeud noeudProche : noeudsProches) {
         points.add(noeudProche.getGeometrie());
       }
       GM_Point centroide = new GM_Point(points.centroid());
-      nouveauNoeud = this.getPopNoeuds().nouvelElement();
+      Noeud nouveauNoeud = this.getPopNoeuds().nouvelElement();
       nouveauNoeud.setGeometrie(centroide);
       // On raccroche tous les arcs à ce nouveau noeud
-      arcsModifies = new ArrayList<Arc>();
-      itNoeudsProches = noeudsProches.iterator();
-      while (itNoeudsProches.hasNext()) {
-        noeudProche = itNoeudsProches.next();
+      List<Arc> arcsModifies = new ArrayList<Arc>();
+      for (Noeud noeudProche : noeudsProches) {
         nouveauNoeud.addAllCorrespondants(noeudProche.getCorrespondants());
         noeudProche.setCorrespondants(new ArrayList<IFeature>(0));
         aEnlever.add(noeudProche);
@@ -1484,6 +1475,7 @@ public class CarteTopo extends DataSet {
         }
         logger.debug("\t Splitting " + arc);
         List<Arc> splitEdges = arc.projeteEtDecoupe(noeud.getGeometrie());
+        // Test if there are other parts of the split edges where we could split
         for (Arc edge : splitEdges) {
           edge.projeteEtDecoupe(noeud.getGeometrie(), 1, edge.getGeometrie().sizeControlPoint() - 1);
         }
@@ -1543,14 +1535,9 @@ public class CarteTopo extends DataSet {
    */
   public void projete(List<IPoint> pts, double distanceMaxNoeudArc,
       double distanceMaxProjectionNoeud) {
-    Arc arc;
-    Iterator<IPoint> itPts = pts.iterator();
-    Iterator<Arc> itArcs;
-    while (itPts.hasNext()) {
-      IPoint point = itPts.next();
-      itArcs = this.getPopArcs().select(point, distanceMaxNoeudArc).iterator();
-      while (itArcs.hasNext()) {
-        arc = itArcs.next();
+    for (IPoint point : pts) {
+      Collection<Arc> arcs = this.getPopArcs().select(point, distanceMaxNoeudArc);
+      for (Arc arc : arcs) {
         if (arc.getGeometrie().startPoint().distance(point.getPosition()) < distanceMaxProjectionNoeud) {
           continue;
         }
@@ -1592,6 +1579,7 @@ public class CarteTopo extends DataSet {
    * plus un aller-retour sur les culs-de-sac. Les trous sont aussi ajoutés à la
    * géométrie des faces.
    */
+  @SuppressWarnings("unchecked")
   public void creeTopologieFaces() {
     List<Arc> arcsDejaTraitesADroite = new ArrayList<Arc>();
     List<Arc> arcsDejaTraitesAGauche = new ArrayList<Arc>();
