@@ -347,19 +347,16 @@ public class ArcApp extends Arc {
    * alors renvoie Double.MAX_VALUE, sans plus de précision.
    */
   public double premiereComposanteHausdorff(Arc arc, double dmax) {
-    double dist, hausdorff = 0;
-    Iterator<IDirectPosition> itPts = this.getGeometrie().coord().getList()
-        .iterator();
-    while (itPts.hasNext()) {
-      IDirectPosition pt = itPts.next();
-      dist = Distances.distance(pt, arc.getGeometrie());
+    double result = 0;
+    for (IDirectPosition pt : this.getGeometrie().coord()) {
+      double dist = Distances.distance(pt, arc.getGeometrie());
       if (dist > dmax) {
         return Double.MAX_VALUE;
       }
-      if (dist > hausdorff) {
-        hausdorff = dist;
+      if (dist > result) {
+        result = dist;
       }
     }
-    return hausdorff;
+    return result;
   }
 }

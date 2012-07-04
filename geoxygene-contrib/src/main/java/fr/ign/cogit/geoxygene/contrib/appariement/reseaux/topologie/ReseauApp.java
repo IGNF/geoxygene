@@ -33,6 +33,9 @@ import fr.ign.cogit.geoxygene.contrib.I18N;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.feature.Population;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
 /**
  * Réseau à apparier, spécialisation d'une carte topo, utile quasi-uniquement
@@ -63,12 +66,27 @@ public class ReseauApp extends CarteTopo {
     this.setPersistant(false);
     Population<ArcApp> arcs = new Population<ArcApp>(false,
         I18N.getString("CarteTopo.Edge"), ArcApp.class, true); //$NON-NLS-1$
+    /** créer un featuretype pour les arcs */
+    fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType featureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+    /** création d'un schéma associé au featureType */
+    featureType.setGeometryType(GM_LineString.class);
+    arcs.setFeatureType(featureType);
     this.addPopulation(arcs);
     Population<NoeudApp> noeuds = new Population<NoeudApp>(false,
         I18N.getString("CarteTopo.Node"), NoeudApp.class, true); //$NON-NLS-1$
+    /** créer un featuretype pour les noeuds */
+    featureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+    /** création d'un schéma associé au featureType */
+    featureType.setGeometryType(GM_Point.class);
+    noeuds.setFeatureType(featureType);
     this.addPopulation(noeuds);
     Population<FaceApp> faces = new Population<FaceApp>(false,
         I18N.getString("CarteTopo.Face"), FaceApp.class, true); //$NON-NLS-1$
+    /** créer un featuretype pour les faces */
+    featureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+    /** création d'un schéma associé au featureType */
+    featureType.setGeometryType(GM_Polygon.class);
+    faces.setFeatureType(featureType);
     this.addPopulation(faces);
     Population<GroupeApp> groupes = new Population<GroupeApp>(false,
         I18N.getString("CarteTopo.Group"), GroupeApp.class, false); //$NON-NLS-1$

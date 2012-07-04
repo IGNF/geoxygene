@@ -263,6 +263,9 @@ public class CarteTopo extends DataSet {
     AttributeType orientationType = new AttributeType("orient", "orientation",
         "Integer");
     arcFeatureType.addFeatureAttribute(orientationType);
+    AttributeType weightType = new AttributeType("poids", "poids",
+    "Double");
+    arcFeatureType.addFeatureAttribute(weightType);
     /** création d'un schéma associé au featureType */
     arcFeatureType.setGeometryType(GM_LineString.class);
     this.getPopArcs().setFeatureType(arcFeatureType);
@@ -1368,22 +1371,20 @@ public class CarteTopo extends DataSet {
   }
 
   /**
-   * Fusionne en un seul noeud, tous les noeuds contenu dans une même surface de
-   * la population de surfaces passée en paramètre. Les correspondants suivent,
-   * la topologie arcs/noeuds aussi. NB: les petits arcs qui n'ont plus de sens
-   * sont aussi éliminés. Plus précisément ce sont ceux qui partent et arrivent
-   * sur un même nouveau noeud créé, et restant dans la surface de fusion. Un
-   * index spatial (dallage) est créé si cela n'avait pas été fait avant, mais
-   * il est toujours conseillé de le faire en dehors de cette méthode, pour
-   * controler la taille du dallage.
-   * 
-   * @param popSurfaces population contenant les surface à fusionner en un seul
-   *          noeud
+   * Fusionne en un seul noeud, tous les noeuds contenu dans une même surface de la population de
+   * surfaces passée en paramètre. Les correspondants suivent, la topologie arcs/noeuds aussi.
+   * <p>
+   * NB: les petits arcs qui n'ont plus de sens sont aussi éliminés. Plus précisément ce sont ceux
+   * qui partent et arrivent sur un même nouveau noeud créé, et restant dans la surface de fusion.
+   * Un index spatial (dallage) est créé si cela n'avait pas été fait avant, mais il est toujours
+   * conseillé de le faire en dehors de cette méthode, pour controler la taille du dallage.
+   * @param popSurfaces
+   *        population contenant les surface à fusionner en un seul
+   *        noeud
    */
   public void fusionNoeuds(IPopulation<? extends IFeature> popSurfaces) {
     Iterator<Noeud> itNoeudsProches;
     Noeud noeud, nouveauNoeud, noeudProche;
-    Arc arc;
     List<IFeature> aEnlever = new ArrayList<IFeature>();
     Collection<Noeud> noeudsProches;
     List<Arc> arcsModifies;
@@ -1407,7 +1408,6 @@ public class CarteTopo extends DataSet {
       GM_Point centroide = new GM_Point(points.centroid());
       nouveauNoeud = this.getPopNoeuds().nouvelElement();
       nouveauNoeud.setGeometrie(centroide);
-
       // On raccroche tous les arcs à ce nouveau noeud
       arcsModifies = new ArrayList<Arc>();
       itNoeudsProches = noeudsProches.iterator();
@@ -1417,27 +1417,22 @@ public class CarteTopo extends DataSet {
         noeudProche.setCorrespondants(new ArrayList<IFeature>(0));
         aEnlever.add(noeudProche);
         // modification de chaque arc du noeud proche à bouger
-        for (Object a : noeudProche.arcs()) {
-          arc = (Arc) a;
+        for (Arc arc : noeudProche.arcs()) {
           arcsModifies.add(arc);
           if (arc.getNoeudIni() == noeudProche) {
             arc.setNoeudIni(nouveauNoeud);
-            arc.getGeometrie().setControlPoint(0,
-                nouveauNoeud.getGeometrie().getPosition());
+            arc.getGeometrie().setControlPoint(0, nouveauNoeud.getGeometrie().getPosition());
           }
           if (arc.getNoeudFin() == noeudProche) {
             arc.setNoeudFin(nouveauNoeud);
             int fin = arc.getGeometrie().coord().size() - 1;
-            arc.getGeometrie().setControlPoint(fin,
-                nouveauNoeud.getGeometrie().getPosition());
+            arc.getGeometrie().setControlPoint(fin, nouveauNoeud.getGeometrie().getPosition());
           }
         }
         // On enlève les arcs qui n'ont plus lieu d'être
         // (tout petit autour du nouveau noeud)
-        for (Object a : arcsModifies) {
-          arc = (Arc) a;
-          if (arc.getNoeudIni() == nouveauNoeud
-              && arc.getNoeudFin() == nouveauNoeud) {
+        for (Arc arc : arcsModifies) {
+          if (arc.getNoeudIni() == nouveauNoeud && arc.getNoeudFin() == nouveauNoeud) {
             if (surf.getGeom().contains(arc.getGeometrie())) {
               nouveauNoeud.addAllCorrespondants(arc.getCorrespondants());
               arc.setNoeudIni(null);
@@ -1449,31 +1444,24 @@ public class CarteTopo extends DataSet {
       }
     }
     // on enleve tous les anciens noeuds
-    Iterator<IFeature> itAEnlever = aEnlever.iterator();
-    while (itAEnlever.hasNext()) {
-      noeud = (Noeud) itAEnlever.next();
-      this.getPopNoeuds().remove(noeud);
+    for (IFeature n : aEnlever) {
+      this.getPopNoeuds().remove((Noeud) n);
     }
   }
-
   /**
-   * découpe la carte topo this en fonction des noeuds d'une autre carte topo
-   * (ct). En détail: Pour chaque noeud N de la carte topo en entrée, on prend
-   * chaque arc de this qui en est proche (c'est-à-dire à moins de
-   * distanceMaxNoeudArc). Si aucune des extrémités de cet arc est à moins de
-   * distanceMaxProjectionNoeud du noeud N, alors on découpe l'arc en y
-   * projetant le noeud N. Si impassesSeulement = true: seules les noeuds N
-   * extrémités d'impasse peuvent être projetées La topologie arcs/noeuds,
-   * l'orientation et les correspondants suivent. Les arcs de this sont indexés
-   * au passage si cela n'avait pas été fait avant.
+   * Découpe la carte topo this en fonction des noeuds d'une autre carte topo (ct).
+   * <p>
+   * En détail: Pour chaque noeud N de la carte topo en entrée, on prend chaque arc de this qui en
+   * est proche (c'est-à-dire à moins de distanceMaxNoeudArc). Si aucune des extrémités de cet arc
+   * est à moins de distanceMaxProjectionNoeud du noeud N, alors on découpe l'arc en y projetant le
+   * noeud N.
+   * <p>
+   * Si impassesSeulement = true: seules les noeuds N extrémités d'impasse peuvent être projetées La
+   * topologie arcs/noeuds, l'orientation et les correspondants suivent. Les arcs de this sont
+   * indexés au passage si cela n'avait pas été fait avant.
    */
-  public void projete(CarteTopo ct, double distanceMaxNoeudArc,
-      double distanceMaxProjectionNoeud, boolean impassesSeulement) {
-    Arc arc;
-    Noeud noeud;
-    Iterator<Noeud> itNoeuds = ct.getPopNoeuds().getElements().iterator();
-    Iterator<Arc> itArcs;
-
+  public void projete(CarteTopo ct, double distanceMaxNoeudArc, double distanceMaxProjectionNoeud,
+      boolean impassesSeulement) {
     if (!this.getPopArcs().hasSpatialIndex()) {
       int nb = (int) Math.sqrt(this.getPopArcs().size() / 20);
       if (nb == 0) {
@@ -1481,46 +1469,40 @@ public class CarteTopo extends DataSet {
       }
       this.getPopArcs().initSpatialIndex(Tiling.class, true, nb);
     }
-
-    while (itNoeuds.hasNext()) {
-      noeud = itNoeuds.next();
+    for (Noeud noeud : ct.getPopNoeuds()) {
       if (impassesSeulement && (noeud.arcs().size() != 1)) {
         continue;
       }
-      itArcs = this.getPopArcs().select(noeud.getGeom(), distanceMaxNoeudArc)
-          .iterator();
-      while (itArcs.hasNext()) {
-        arc = itArcs.next();
-        if (arc.getGeometrie().startPoint()
-            .distance(noeud.getGeometrie().getPosition()) < distanceMaxProjectionNoeud) {
+      Collection<Arc> closeEdges = this.getPopArcs().select(noeud.getGeom(), distanceMaxNoeudArc);
+      logger.debug("Project " + noeud.getGeometrie() + " selected " + closeEdges.size() + " edges");
+      for (Arc arc : closeEdges) {
+        if (arc.getGeometrie().startPoint().distance(noeud.getGeometrie().getPosition()) < distanceMaxProjectionNoeud) {
           continue;
         }
-        if (arc.getGeometrie().endPoint()
-            .distance(noeud.getGeometrie().getPosition()) < distanceMaxProjectionNoeud) {
+        if (arc.getGeometrie().endPoint().distance(noeud.getGeometrie().getPosition()) < distanceMaxProjectionNoeud) {
           continue;
         }
-        arc.projeteEtDecoupe(noeud.getGeometrie());
+        logger.debug("\t Splitting " + arc);
+        List<Arc> splitEdges = arc.projeteEtDecoupe(noeud.getGeometrie());
+        for (Arc edge : splitEdges) {
+          edge.projeteEtDecoupe(noeud.getGeometrie(), 1, edge.getGeometrie().sizeControlPoint() - 1);
+        }
       }
     }
   }
 
   /**
-   * découpe la carte topo this en fonction de tous les points (noeuds et points
-   * intermediaires) d'une autre carte topo (ct). En détail: Pour chaque point P
-   * de la carte topo en entrée, on prend chaque arc de this qui en est proche
-   * (c'est-à-dire à moins de distanceMaxNoeudArc). Si aucune des extrémités de
-   * cet arc est à moins de distanceMaxProjectionNoeud du noeud P, alors on
-   * découpe l'arc en y projetant le noeud P. La topologie arcs/noeuds,
-   * l'orientation et les correspondants suivent. Les arcs de this sont indexés
-   * au passage si cela n'avait pas été fait avant.
+   * Découpe la carte topo this en fonction de tous les points (noeuds et points intermediaires)
+   * d'une autre carte topo (ct).
+   * <p>
+   * En détail: Pour chaque point P de la carte topo en entrée, on prend chaque arc de this qui en
+   * est proche (c'est-à-dire à moins de distanceMaxNoeudArc). Si aucune des extrémités de cet arc
+   * est à moins de distanceMaxProjectionNoeud du noeud P, alors on découpe l'arc en y projetant le
+   * noeud P. La topologie arcs/noeuds, l'orientation et les correspondants suivent. Les arcs de
+   * this sont indexés au passage si cela n'avait pas été fait avant.
    */
   public void projeteTousLesPoints(CarteTopo ct, double distanceMaxNoeudArc,
       double distanceMaxProjectionNoeud) {
-    Arc arc, arcCT;
-    Iterator<Arc> itArcsCT = ct.getPopArcs().getElements().iterator();
-    Iterator<Arc> itArcs;
-    Iterator<IDirectPosition> itPointsCT;
-
     if (!this.getPopArcs().hasSpatialIndex()) {
       int nb = (int) Math.sqrt(this.getPopArcs().size() / 20);
       if (nb == 0) {
@@ -1528,21 +1510,16 @@ public class CarteTopo extends DataSet {
       }
       this.getPopArcs().initSpatialIndex(Tiling.class, true, nb);
     }
-
-    while (itArcsCT.hasNext()) {
-      arcCT = itArcsCT.next();
-      itPointsCT = arcCT.getGeometrie().coord().getList().iterator();
-      while (itPointsCT.hasNext()) {
-        IDirectPosition dp = itPointsCT.next();
+    for (Arc arcCT : ct.getPopArcs()) {
+      for (IDirectPosition dp : arcCT.getGeometrie().coord()) {
         if (arcCT.getGeometrie().startPoint().distance(dp) < distanceMaxProjectionNoeud) {
           continue;
         }
         if (arcCT.getGeometrie().endPoint().distance(dp) < distanceMaxProjectionNoeud) {
           continue;
         }
-        itArcs = this.getPopArcs().select(dp, distanceMaxNoeudArc).iterator();
-        while (itArcs.hasNext()) {
-          arc = itArcs.next();
+        Collection<Arc> edges = this.getPopArcs().select(dp, distanceMaxNoeudArc);
+        for (Arc arc : edges) {
           if (arc.getGeometrie().startPoint().distance(dp) < distanceMaxProjectionNoeud) {
             continue;
           }
@@ -1556,12 +1533,13 @@ public class CarteTopo extends DataSet {
   }
 
   /**
-   * découpe la carte topo this en fonction d'un ensemble de points (GM_Point).
-   * En détail: Pour chaque point en entrée, on prend chaque arc de this qui en
-   * est proche (c'est-à-dire à moins de distanceMaxNoeudArc). Si aucune des
-   * extrémités de cet arc est à moins de distanceMaxProjectionNoeud du noeud N,
-   * alors on découpe l'arc en y projetant le noeud N. La topologie arcs/noeuds,
-   * l'orientation et les correspondants suivent.
+   * Découpe la carte topo this en fonction d'un ensemble de points (GM_Point).
+   * <p>
+   * En détail: Pour chaque point en entrée, on prend chaque arc de this qui en est proche
+   * (c'est-à-dire à moins de distanceMaxNoeudArc). Si aucune des extrémités de cet arc est à moins
+   * de distanceMaxProjectionNoeud du noeud N, alors on découpe l'arc en y projetant le noeud N.
+   * <p>
+   * La topologie arcs/noeuds, l'orientation et les correspondants suivent.
    */
   public void projete(List<IPoint> pts, double distanceMaxNoeudArc,
       double distanceMaxProjectionNoeud) {
@@ -1588,7 +1566,7 @@ public class CarteTopo extends DataSet {
   // Instanciation de la topologie de faces
   // ///////////////////////////////////////////////////////////////////////////////////////////
   /**
-   * crée les faces à partir d'un graphe planaire et instancie la topologie face
+   * Crée les faces à partir d'un graphe planaire et instancie la topologie face
    * / arcs. Une face est délimitée par un cycle minimal du graphe.
    * <p>
    * Le paramètre persistant spécifie si les faces créées, ainsi que la
@@ -1622,7 +1600,6 @@ public class CarteTopo extends DataSet {
     ILineString geometrieDuCycle;
     IPopulation<Face> popFaces = this.getPopFaces();
     List<Cycle> cycles = new ArrayList<Cycle>();
-
     this.fireActionPerformed(new ActionEvent(this, 0, I18N
         .getString("CarteTopo.FaceTopologyEdges"), this.getPopArcs().size())); //$NON-NLS-1$
     int iteration = 0;
@@ -2868,9 +2845,9 @@ public class CarteTopo extends DataSet {
         }
       }
       if (list.size() < 2) {
-        CarteTopo.logger.info(x1.toGM_Point() + " " + x2.toGM_Point());
-        CarteTopo.logger.info(" " + a1.getGeometrie());
-        CarteTopo.logger.info(" " + a2.getGeometrie());
+        CarteTopo.logger.debug(x1.toGM_Point() + " " + x2.toGM_Point());
+        CarteTopo.logger.debug(" " + a1.getGeometrie());
+        CarteTopo.logger.debug(" " + a2.getGeometrie());
       }
       path.setGeom(new GM_LineString(new DirectPositionList(list)));
     }

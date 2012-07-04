@@ -182,11 +182,12 @@ public class GroupeApp extends Groupe {
   }
 
   /**
-   * Plus court chemin dans this pour relier les noeudsDepart aux noeudsArrivee,
+   * Plus court chemin dans this pour relier les noeudsDepart aux noeudsArrivee.
+   * <p>
    * NB: le pcc renvoyé ici NE CONTIENT PAS les noeuds initiaux et finaux
    */
-  public GroupeApp plusCourtChemin(List<Noeud> noeudsDepart,
-      List<Noeud> noeudsArrivee, double longMax) {
+  public GroupeApp plusCourtChemin(List<Noeud> noeudsDepart, List<Noeud> noeudsArrivee,
+      double longMax) {
     GroupeApp pccMin = null, pcc;
     double longueur, longMin = longMax + 1;
     Noeud iniComp, finComp;
