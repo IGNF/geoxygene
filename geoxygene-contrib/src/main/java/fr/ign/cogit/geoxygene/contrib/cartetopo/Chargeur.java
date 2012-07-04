@@ -269,50 +269,65 @@ public class Chargeur {
    * @param tolerance
    */
   public static void importAsEdges(
-      IFeatureCollection<? extends IFeature> edges, CarteTopo map,
+      Collection<? extends IFeature> edges, CarteTopo map,
       String orientationAttribute, Map<Object, Integer> orientationMap,
+      String filterAttribute, Map<Object, Boolean> filterMap,
       String groundPositionAttribute, double tolerance) {
     // import des arcs
     for (IFeature element : edges) {
-      Arc arc = map.getPopArcs().nouvelElement();
-      ILineString ligne = new GM_LineString((IDirectPositionList) element
-          .getGeom().coord().clone());
-      arc.setGeometrie(ligne);
-      if (orientationAttribute.isEmpty()) {
-        arc.setOrientation(2);
-      } else {
-        Object value = element.getAttribute(orientationAttribute);
-        if (orientationMap != null) {
-          Integer orientation = orientationMap.get(value);
-          if (orientation != null) {
-            // LOGGER.debug(value + " -> " + orientation);
-            arc.setOrientation(orientation.intValue());
-          } else {
-            Chargeur.logger.error(value + " not found in map");
-          }
-        } else {
-          if (value instanceof Number) {
-            Number v = (Number) value;
-            arc.setOrientation(v.intValue());
-          } else {
-            if (value instanceof String) {
-              String v = (String) value;
-              try {
-                arc.setOrientation(Integer.parseInt(v));
-              } catch (Exception e) {
-                e.printStackTrace();
+      boolean filter = true;
+      if (filterMap != null) {
+          Object value = element.getAttribute(filterAttribute);
+          if (value != null) {
+              Boolean filterValue = filterMap.get(value);
+              if (filterValue != null) {
+                  filter = filterValue.booleanValue();
+              } else {
+                  filter = false;
               }
-            } else {
-              Chargeur.logger
-                  .error("Attribute "
-                      + orientationAttribute
-                      + " is neither Number nor String. It can't be used as an orientation");
-            }
           }
-        }
       }
-      arc.addCorrespondant(element);
-      arc.setPoids(arc.getGeometrie().length());
+      if (filter) {
+          Arc arc = map.getPopArcs().nouvelElement();
+          ILineString ligne = new GM_LineString((IDirectPositionList) element
+                  .getGeom().coord().clone());
+          arc.setGeometrie(ligne);
+          if (orientationAttribute == null || orientationAttribute.isEmpty()) {
+              arc.setOrientation(2);
+          } else {
+              Object value = element.getAttribute(orientationAttribute);
+              if (orientationMap != null) {
+                  Integer orientation = orientationMap.get(value);
+                  if (orientation != null) {
+                      // LOGGER.debug(value + " -> " + orientation);
+                      arc.setOrientation(orientation.intValue());
+                  } else {
+                      Chargeur.logger.error(value + " not found in map for element " + element.getGeom());
+                  }
+              } else {
+                  if (value instanceof Number) {
+                      Number v = (Number) value;
+                      arc.setOrientation(v.intValue());
+                  } else {
+                      if (value instanceof String) {
+                          String v = (String) value;
+                          try {
+                              arc.setOrientation(Integer.parseInt(v));
+                          } catch (Exception e) {
+                              e.printStackTrace();
+                          }
+                      } else {
+                          Chargeur.logger
+                          .error("Attribute "
+                                  + orientationAttribute
+                                  + " is neither Number nor String. It can't be used as an orientation");
+                      }
+                  }
+              }
+          }
+          arc.addCorrespondant(element);
+          arc.setPoids(arc.getGeometrie().length());
+      }
     }
     // initialisation de l'index au besoin
     // si on peut, on prend les mêmes paramètres que le dallage des arcs
@@ -333,8 +348,10 @@ public class Chargeur {
       IDirectPosition p1 = arc.getGeometrie().getControlPoint(0);
       IDirectPosition p2 = arc.getGeometrie().getControlPoint(
           arc.getGeometrie().sizeControlPoint() - 1);
-      int posSol = ((Integer) arc.getCorrespondant(0).getAttribute(
-          groundPositionAttribute)).intValue();
+      int posSol = 0;
+      if (groundPositionAttribute != null) {
+        posSol = Integer.parseInt(arc.getCorrespondant(0).getAttribute(groundPositionAttribute).toString());
+      }
       Collection<Noeud> candidates = map.getPopNoeuds().select(p1, tolerance);
       if (candidates.isEmpty()) {
         Noeud n1 = map.getPopNoeuds().nouvelElement(p1.toGM_Point());
