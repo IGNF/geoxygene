@@ -256,7 +256,7 @@ public abstract class Distances {
    * @see #ecartSurface(ILineString, ILineString, double)
    */
   public static double ecartSurface(ILineString l1, ILineString l2) {
-    Distances.ecartSurface(l1, l2, 1.0);
+    return Distances.ecartSurface(l1, l2, 1.0);
   }
 
   /**
