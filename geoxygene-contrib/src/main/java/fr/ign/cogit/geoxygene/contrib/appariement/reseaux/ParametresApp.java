@@ -258,14 +258,14 @@ public class ParametresApp implements Cloneable {
    * cet arc pour créer un nouveau noeud sur le réseau 1. Utile uniquement si
    * projeteNoeuds2SurReseau1 = true.
    */
-  public double projeteNoeud2surReseau1DistanceProjectionNoeud = 0;
+  public double projeteNoeuds2SurReseau1DistanceProjectionNoeud = 0;
 
   /**
    * Si true: on ne projete que les impasses du réseau 2 sur le réseau 1 Si
    * false: on projete tous les noeuds du réseau 2 sur le réseau 1. Utile
    * uniquement si projeteNoeuds1SurReseau2 = true.
    */
-  public boolean projeteNoeud2surReseau1ImpassesSeulement = false;
+  public boolean projeteNoeuds2SurReseau1ImpassesSeulement = false;
 
   // ///////////////////////////////////////////////////////////////////////////////
   // /////////// VARIANTES DU PROCESSUS GENERAL //////////////////////

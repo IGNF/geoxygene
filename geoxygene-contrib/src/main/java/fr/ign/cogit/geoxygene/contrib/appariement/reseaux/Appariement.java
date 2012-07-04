@@ -49,6 +49,7 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.IndicesForme;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+import fr.ign.cogit.geoxygene.spatial.util.Resampler;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
 
 /**
@@ -452,13 +453,12 @@ public abstract class Appariement {
     List<Double> distances = new ArrayList<Double>();
     EnsembleDeLiens liens = new EnsembleDeLiens(LienReseaux.class);
     liens.setNom(I18N.getString("Appariement.EdgePrematching")); //$NON-NLS-1$
-    Iterator<Arc> itArcs = reseau2.getListeArcs().iterator();
-    while (itArcs.hasNext()) {
-      ArcApp arcComp = (ArcApp) itArcs.next();
+    for (Arc edge : reseau2.getListeArcs()) {
+      ArcApp arcComp = (ArcApp) edge;
       // On recherche les arcs dans l'entourage proche, grosso modo
-      Collection<Arc> arcsProches = reseau1.getPopArcs().select(
-          arcComp.getGeometrie(), param.distanceArcsMax);
-      if (arcsProches.size() == 0) {
+      Collection<Arc> arcsProches = reseau1.getPopArcs().select(arcComp.getGeometrie(),
+          param.distanceArcsMax);
+      if (arcsProches.isEmpty()) {
         continue;
       }
       // On calcule leur distance à arccomp et
@@ -466,21 +466,27 @@ public abstract class Appariement {
       distances.clear();
       Iterator<Arc> itArcsProches = arcsProches.iterator();
       ArcApp arcRef = (ArcApp) itArcsProches.next();
-      double dmin = arcComp.premiereComposanteHausdorff(arcRef,
-          param.distanceArcsMax);
+      ILineString resampled = Resampler.resample(arcComp.getGeometrie(), param.distanceArcsMax);
+      double dmin = Distances.premiereComposanteHausdorff(resampled, arcRef.getGeometrie());
+      if (dmin > param.distanceArcsMax) {
+        dmin = Double.MAX_VALUE;
+      }
+//      double dmin = arcComp.premiereComposanteHausdorff(arcRef, param.distanceArcsMax);
       distances.add(new Double(dmin));
       while (itArcsProches.hasNext()) {
         arcRef = (ArcApp) itArcsProches.next();
-        double d = arcComp.premiereComposanteHausdorff(arcRef,
-            param.distanceArcsMax);
+//        double d = arcComp.premiereComposanteHausdorff(arcRef, param.distanceArcsMax);
+        double d = Distances.premiereComposanteHausdorff(resampled, arcRef.getGeometrie());
+        if (d > param.distanceArcsMax) {
+          d = Double.MAX_VALUE;
+        }
         distances.add(new Double(d));
         if (d < dmin) {
           dmin = d;
         }
       }
       // On garde tous ceux assez proches
-      double dmax = Math.min(dmin + param.distanceArcsMin,
-          param.distanceArcsMax);
+      double dmax = Math.min(dmin + param.distanceArcsMin, param.distanceArcsMax);
       List<Arc> candidats = new ArrayList<Arc>();
       Iterator<Arc> itArc = arcsProches.iterator();
       Iterator<Double> itDistance = distances.iterator();
@@ -492,7 +498,7 @@ public abstract class Appariement {
         }
       }
       // Si pas de candidat pour l'arccomp, on s'arrête là
-      if (candidats.size() == 0) {
+      if (candidats.isEmpty()) {
         continue;
       }
       // Si il y a des candidats: on construit le lien de pré-appariement
@@ -1329,26 +1335,30 @@ public abstract class Appariement {
    * et sur un pré-appariement des arcs. S'appuie essentiellement sur la notion
    * de 'plus proche chemin d'un arc', défini comme le chemin minimisant la
    * surface entre le chemin et l'arc.
-   * @param reseau1 network 1
-   * @param reseau2 network 2
-   * @param liensPreAppAA prematching edge links
-   * @param liensAppNoeuds prematching node links
-   * @param param matching parameters
+   * @param reseau1
+   *        network 1
+   * @param reseau2
+   *        network 2
+   * @param liensPreAppAA
+   *        prematching edge links
+   * @param liensAppNoeuds
+   *        prematching node links
+   * @param param
+   *        matching parameters
    * @return resulting set of links
    */
-  public static EnsembleDeLiens appariementArcs(final CarteTopo reseau1,
-      final CarteTopo reseau2, final EnsembleDeLiens liensPreAppAA,
-      final EnsembleDeLiens liensAppNoeuds, final ParametresApp param) {
+  public static EnsembleDeLiens appariementArcs(final CarteTopo reseau1, final CarteTopo reseau2,
+      final EnsembleDeLiens liensPreAppAA, final EnsembleDeLiens liensAppNoeuds,
+      final ParametresApp param) {
     List<Arc> tousArcs = new ArrayList<Arc>();
     int nbSansHomologuePbNoeud = 0, nbSansHomologuePbPCC = 0, nbOkUneSerie = 0, nbOkPlusieursSeries = 0, nbDouteuxPbNoeud = 0, nbDouteuxPbSens = 0, nbTot = 0;
     double longSansHomologuePbNoeud = 0, longSansHomologuePbPCC = 0, longOkUneSerie = 0, longOkPlusieursSeries = 0, longDouteuxPbNoeud = 0, longDouteuxPbSens = 0, longTot = 0;
     EnsembleDeLiens liensArcsArcs = new EnsembleDeLiens(LienReseaux.class);
     liensArcsArcs.setNom(I18N.getString("Appariement.EdgeMatching")); //$NON-NLS-1$
-    // on étudie tous les arc ref, un par un, indépendamment les uns des
-    // autres
-    Iterator<?> itArcs = reseau1.getPopArcs().getElements().iterator();
-    while (itArcs.hasNext()) {
-      ArcApp arcRef = (ArcApp) itArcs.next();
+    // on étudie tous les arc ref, un par un, indépendamment les uns des autres
+    for (Arc edge : reseau1.getPopArcs()) {
+      LOGGER.debug("appariementArcs : Edge " + edge);
+      ArcApp arcRef = (ArcApp) edge;
       arcRef.setResultatAppariement(I18N.getString("Appariement.NA")); //$NON-NLS-1$
       // pour vérifier que tous les cas sont bien traités
       // /////// ETUDE DES EXTREMITES DE L'ARC /////////
@@ -1361,7 +1371,6 @@ public abstract class Appariement {
         longSansHomologuePbNoeud = longSansHomologuePbNoeud + arcRef.longueur();
         continue;
       }
-
       // On ne sait pas traiter les boucles
       // (CODE A AFFINER POUR FAIRE CELA)
       if (arcRef.getNoeudIni() == arcRef.getNoeudFin()) {
@@ -1371,7 +1380,6 @@ public abstract class Appariement {
         longSansHomologuePbPCC = longSansHomologuePbPCC + arcRef.longueur();
         continue;
       }
-
       // Recherche des noeuds en correspondance avec les extrémités de
       // l'arc, que ce soit en entree ou en sortie pour l'arc
       // (au sens de la circulation)
@@ -1381,9 +1389,8 @@ public abstract class Appariement {
       List<Noeud> noeudsDebutOut = noeudsInOut.get(1);
       List<Noeud> noeudsFinIn = noeudsInOut.get(2);
       List<Noeud> noeudsFinOut = noeudsInOut.get(3);
-
-      if (((noeudsFinIn.size() == 0) && (noeudsFinOut.size() == 0))
-          || ((noeudsDebutIn.size() == 0) && (noeudsDebutOut.size() == 0))) {
+      if (((noeudsFinIn.isEmpty()) && (noeudsFinOut.isEmpty()))
+          || ((noeudsDebutIn.isEmpty()) && (noeudsDebutOut.isEmpty()))) {
         // Cas 2 : un noeud extrémité n'est pas apparié
         arcRef.setResultatAppariement(I18N.getString("Appariement." + //$NON-NLS-1$
             "UnmatchedNodeUnmatched")); //$NON-NLS-1$
@@ -1391,39 +1398,37 @@ public abstract class Appariement {
         longSansHomologuePbNoeud = longSansHomologuePbNoeud + arcRef.longueur();
         continue;
       }
-
       // /////// CALCUL DES PLUS COURTS CHEMINS /////////
-      // creation d'un groupe "tousCandidats"
-      // avec tous les arcs candidats
-      // issus du pré-appariement
+      // creation d'un groupe "tousCandidats" avec tous les arcs candidats issus du pré-appariement
       tousArcs = arcRef.arcsCompEnCorrespondance(liensPreAppAA);
-      GroupeApp tousCandidats = (GroupeApp) reseau2.getPopGroupes()
-          .nouvelElement();
+      GroupeApp tousCandidats = (GroupeApp) reseau2.getPopGroupes().nouvelElement();
       tousCandidats.setListeArcs(new ArrayList<Arc>(tousArcs));
-      Iterator<Arc> itTousArcsComp = tousCandidats.getListeArcs().iterator();
-      while (itTousArcsComp.hasNext()) {
-        ArcApp arcComp = (ArcApp) itTousArcsComp.next();
+      for (Arc arcComp : tousCandidats.getListeArcs()) {
         arcComp.addGroupe(tousCandidats);
       }
       tousCandidats.ajouteNoeuds();
-      // Pour éviter les débordements, on ne cherche que les pcc pas
-      // trop grands.
-      // longMaxRecherche = arcRef.getGeometrie().length()*5*
-      // param.coefficentPoidsLongueurDistance;
-      double longMaxRecherche = arcRef.getGeometrie().length()
-          * param.distanceArcsMax;
+      // Pour éviter les débordements, on ne cherche que les pcc pas trop grands.
+      // longMaxRecherche = arcRef.getGeometrie().length()*5* param.coefficentPoidsLongueurDistance;
+      double longMaxRecherche = arcRef.getGeometrie().length() * param.distanceArcsMax;
       // calcul du poids des arcs
       Appariement.calculePoids(arcRef, tousCandidats, param);
-      // Recherche du PCC dans un sens, et dans l'autre si
-      // l'arc est en double sens.
-      GroupeApp pccMin1 = tousCandidats.plusCourtChemin(noeudsDebutOut,
-          noeudsFinIn, longMaxRecherche);
-      GroupeApp pccMin2 = tousCandidats.plusCourtChemin(noeudsFinOut,
-          noeudsDebutIn, longMaxRecherche);
+      LOGGER.debug("Shortest Path between ");
+      for (Noeud n : noeudsDebutOut) {
+        LOGGER.debug("\tStart : " + n.getGeometrie());
+      }
+      for (Noeud n : noeudsFinIn) {
+        LOGGER.debug("\tEnd : " + n.getGeometrie());
+      }
+      // Recherche du PCC dans un sens, et dans l'autre si l'arc est en double sens.
+      GroupeApp pccMin1 = tousCandidats.plusCourtChemin(noeudsDebutOut, noeudsFinIn,
+          longMaxRecherche);
+      GroupeApp pccMin2 = tousCandidats.plusCourtChemin(noeudsFinOut, noeudsDebutIn,
+          longMaxRecherche);
       tousCandidats.videEtDetache();
       // /////// ANALYSE DES PLUS COURTS CHEMINS /////////
       // cas 3 : on n'a trouvé aucun plus court chemin, dans aucun sens
       if ((pccMin1 == null) && (pccMin2 == null)) {
+        LOGGER.debug("\t cas 3 : on n'a trouvé aucun plus court chemin, dans aucun sens");
         arcRef.setResultatAppariement(I18N.getString("Appariement." + //$NON-NLS-1$
             "UnmatchedNoShortestPath")); //$NON-NLS-1$
         nbSansHomologuePbPCC++;
@@ -1432,6 +1437,7 @@ public abstract class Appariement {
       }
       // cas 4 : on a trouvé un pcc dans un seul sens: celui direct
       if (pccMin1 == null) {
+        LOGGER.debug("\t cas 4 : on a trouvé un pcc dans un seul sens: celui direct");
         LienReseaux lien = (LienReseaux) liensArcsArcs.nouvelElement();
         lien.addArcs1(arcRef);
         arcRef.addLiens(lien);
@@ -1480,10 +1486,11 @@ public abstract class Appariement {
       }
       // cas 4 : on a trouvé un pcc dans un seul sens: celui indirect
       if (pccMin2 == null) {
+        LOGGER.debug("\t cas 4 : on a trouvé un pcc dans un seul sens: celui indirect");
         LienReseaux lien = (LienReseaux) liensArcsArcs.nouvelElement();
         lien.addArcs1(arcRef);
         arcRef.addLiens(lien);
-        if (pccMin1.getListeArcs().size() == 0) {
+        if (pccMin1.getListeArcs().isEmpty()) {
           // cas 4a : on a trouvé un pcc
           // mais il est réduit à un point
           NoeudApp noeudComp = (NoeudApp) pccMin1.getListeNoeuds().get(0);
@@ -1529,16 +1536,16 @@ public abstract class Appariement {
         }
         continue;
       }
-
       // cas 5 : on a trouvé un pcc dans les 2 sens, et c'est le même
       if (pccMin1.contientMemesArcs(pccMin2)) {
+        LOGGER.debug("\t cas 5 : on a trouvé un pcc dans les 2 sens, et c'est le même");
         pccMin2.videEtDetache();
         LienReseaux lien = (LienReseaux) liensArcsArcs.nouvelElement();
         lien.addArcs1(arcRef);
         arcRef.addLiens(lien);
-        if (pccMin1.getListeArcs().size() == 0) {
-          // cas 5a : on a trouvé un pcc
-          // mais il est réduit à un point
+        if (pccMin1.getListeArcs().isEmpty()) {
+          // cas 5a : on a trouvé un pcc mais il est réduit à un point
+          LOGGER.debug("\t \t cas 5a : on a trouvé un pcc mais il est réduit à un point");
           NoeudApp noeudComp = (NoeudApp) pccMin1.getListeNoeuds().get(0);
           lien.addNoeuds2(noeudComp);
           lien.setEvaluation(Appariement.ZERO_POINT_FIVE);
@@ -1555,30 +1562,30 @@ public abstract class Appariement {
           continue;
         }
         pccMin1.enleveExtremites();
-        // cas 5b : on a trouvé un pcc dans les 2 sens,
-        // non réduit à un point
+        // cas 5b : on a trouvé un pcc dans les 2 sens, non réduit à un point
+        LOGGER.debug("\t \t cas 5b : on a trouvé un pcc dans les 2 sens, non réduit à un point");
+        LOGGER.debug("\t \t Shortest Path");
+        for (Arc a : pccMin1.getListeArcs()) {
+          LOGGER.debug(a.getGeometrie());
+        }
         lien.addGroupes2(pccMin1);
         lien.setEvaluation(1);
         pccMin1.addLiens(lien);
-        arcRef.setResultatAppariement(I18N
-            .getString("Appariement.MatchedWithAnEdge" //$NON-NLS-1$
-            ));
-        pccMin1.setResultatAppariementGlobal(I18N
-            .getString("Appariement.MatchedWithAnEdge" //$NON-NLS-1$
-            ));
+        arcRef.setResultatAppariement(I18N.getString("Appariement.MatchedWithAnEdge")); //$NON-NLS-1$
+        pccMin1.setResultatAppariementGlobal(I18N.getString("Appariement.MatchedWithAnEdge")); //$NON-NLS-1$
         nbOkUneSerie++;
         longOkUneSerie = longOkUneSerie + arcRef.longueur();
         continue;
       }
-
-      // cas 6 : on a trouvé un pcc dans les 2 sens,
-      // mais ce n'est pas le même
+      // cas 6 : on a trouvé un pcc dans les 2 sens, mais ce n'est pas le même.
       // cas d'arcs en parralèle
+      LOGGER.debug("\t cas 6 : on a trouvé un pcc dans les 2 sens, mais ce n'est pas le même.");
       LienReseaux lien = (LienReseaux) liensArcsArcs.nouvelElement();
       lien.addArcs1(arcRef);
       arcRef.addLiens(lien);
-      if (pccMin1.getListeArcs().size() == 0) {
+      if (pccMin1.getListeArcs().isEmpty()) {
         // cas 6a : on a trouvé un pcc mais il est réduit à un point
+        LOGGER.debug("\t \t cas 6a : on a trouvé un pcc mais il est réduit à un point.");
         NoeudApp noeudComp = (NoeudApp) pccMin1.getListeNoeuds().get(0);
         lien.addNoeuds2(noeudComp);
         lien.setEvaluation(Appariement.ZERO_POINT_FIVE);
@@ -1591,6 +1598,7 @@ public abstract class Appariement {
         pccMin1.videEtDetache();
       } else {
         // cas 6b : on a trouvé un pcc non réduit à un point
+        LOGGER.debug("\t \t cas 6b : on a trouvé un pcc non réduit à un point.");
         pccMin1.enleveExtremites();
         lien.setEvaluation(1);
         lien.addGroupes2(pccMin1);
@@ -1600,8 +1608,9 @@ public abstract class Appariement {
         pccMin1.setResultatAppariementGlobal(I18N.getString("Appariement." + //$NON-NLS-1$
             "MatchedWithAnEdge")); //$NON-NLS-1$
       }
-      if (pccMin2.getListeArcs().size() == 0) {
+      if (pccMin2.getListeArcs().isEmpty()) {
         // cas 6a : on a trouvé un pcc mais il est réduit à un point
+        LOGGER.debug("\t \t cas 6a : on a trouvé un pcc mais il est réduit à un point.");
         NoeudApp noeudComp = (NoeudApp) pccMin2.getListeNoeuds().get(0);
         lien.addNoeuds2(noeudComp);
         lien.setEvaluation(Appariement.ZERO_POINT_FIVE);
@@ -1616,6 +1625,7 @@ public abstract class Appariement {
         longDouteuxPbNoeud = longDouteuxPbNoeud + arcRef.longueur();
       } else {
         // cas 6b : on a trouvé un pcc non réduit à un point
+        LOGGER.debug("\t \t cas 6b : on a trouvé un pcc non réduit à un point.");
         pccMin2.enleveExtremites();
         lien.addGroupes2(pccMin2);
         pccMin2.addLiens(lien);
@@ -1691,26 +1701,25 @@ public abstract class Appariement {
   }
 
   /**
-   * Affectation des poids au arcs pour le calcul de 'plus proche chemin'.
+   * Affectation des poids aux arcs pour le calcul de 'plus proche chemin'.
    * @param arcRef reference edge
    * @param tousCandidats candidates
    * @param param matching parameters
    */
-  private static void calculePoids(final ArcApp arcRef,
-      final GroupeApp tousCandidats, final ParametresApp param) {
-    Iterator<Arc> itCandidats = tousCandidats.getListeArcs().iterator();
-    while (itCandidats.hasNext()) {
-      ArcApp arcComp = (ArcApp) itCandidats.next();
-      // poids = arcComp.longueur() +
-      // param.coefficentPoidsLongueurDistance*
-      // Operateurs.premiere_composante_hausdorff
-      // (arcComp.getGeometrie(),arcRef.getGeometrie()); ancienne version
-      double poids = Distances.ecartSurface(arcComp.getGeometrie(),
-          arcRef.getGeometrie());
+  private static void calculePoids(final ArcApp arcRef, final GroupeApp tousCandidats,
+      final ParametresApp param) {
+    for (Arc arcComp : tousCandidats.getListeArcs()) {
+      // poids = arcComp.longueur() + param.coefficentPoidsLongueurDistance*
+      // Operateurs.premiere_composante_hausdorff(arcComp.getGeometrie(),arcRef.getGeometrie());
+      // ancienne version
+      double poids = Distances.ecartSurface(arcComp.getGeometrie(), arcRef.getGeometrie());
       arcComp.setPoids(poids);
+      LOGGER.debug("ecartSurface");
+      LOGGER.debug(arcComp.getGeometrie());
+      LOGGER.debug(arcRef.getGeometrie());
+      LOGGER.debug("Poids = " + poids);
     }
   }
-
   /**
    * Controle de l'enemble des appariements (et non plus un à un) : recherche
    * des arcs ou noeuds du réseau 2 appariés avec plusieurs objets du réseau 1.
@@ -1766,10 +1775,9 @@ public abstract class Appariement {
           // est-il petit?
           // est-il une impasse au début?
           Noeud iniComp = arcComp.getNoeudIni();
-          Iterator<?> itArcsIncidents = iniComp.arcs().iterator();
           boolean impasse = true;
-          while (itArcsIncidents.hasNext()) {
-            ArcApp arc = (ArcApp) itArcsIncidents.next();
+          for (Arc edge : iniComp.arcs()) {
+            ArcApp arc = (ArcApp) edge;
             if (arc == arcComp) {
               continue;
             }
@@ -1786,7 +1794,7 @@ public abstract class Appariement {
               GroupeApp groupe = (GroupeApp) itGroupes.next();
               groupe.getListeArcs().remove(arcComp);
               groupe.getListeNoeuds().remove(arcComp.getNoeudIni());
-              if (groupe.getListeArcs().size() == 0) {
+              if (groupe.getListeArcs().isEmpty()) {
                 liens.removeAll(groupe.getLiens(liens.getElements()));
               }
             }
@@ -1795,10 +1803,9 @@ public abstract class Appariement {
           }
           // est-il une impasse à la fin?
           Noeud finComp = arcComp.getNoeudFin();
-          itArcsIncidents = finComp.arcs().iterator();
           impasse = true;
-          while (itArcsIncidents.hasNext()) {
-            ArcApp arc = (ArcApp) itArcsIncidents.next();
+          for (Arc edge : finComp.arcs()) {
+            ArcApp arc = (ArcApp) edge;
             if (arc == arcComp) {
               continue;
             }
@@ -1815,7 +1822,7 @@ public abstract class Appariement {
               GroupeApp groupe = (GroupeApp) itGroupes.next();
               groupe.getListeArcs().remove(arcComp);
               groupe.getListeNoeuds().remove(arcComp.getNoeudFin());
-              if (groupe.getListeArcs().size() == 0) {
+              if (groupe.getListeArcs().isEmpty()) {
                 liens.removeAll(groupe.getLiens(liens.getElements()));
               }
             }
@@ -2086,14 +2093,16 @@ public abstract class Appariement {
    * Découpe les arcs du reseau1 'reseauADecouper' non appariés par les 'liens'
    * de manière à introduire un noeud dans le reseauADecouper aux endroits où il
    * s'éloigne du réseau2 'reseauDecoupant'.
-   * 
-   * Remarque: utilisé pour les GR par exemple pour traiter le cas des GR hors
-   * sentier.
-   * 
-   * @param reseauADecouper network to split
-   * @param reseauDecoupant splitting network
-   * @param liens links
-   * @param param matching parameters
+   * <p>
+   * Remarque: utilisé pour les GR par exemple pour traiter le cas des GR hors sentier.
+   * @param reseauADecouper
+   *        network to split
+   * @param reseauDecoupant
+   *        splitting network
+   * @param liens
+   *        links
+   * @param param
+   *        matching parameters
    */
   public static void decoupeNonApparies(final ReseauApp reseauADecouper,
       final ReseauApp reseauDecoupant, final EnsembleDeLiens liens,
@@ -2189,10 +2198,8 @@ public abstract class Appariement {
       }
     }
     // découpage effectif du réseau à découper.
-    reseauADecouper.projete(pointsDeDecoupage, distanceMaxNoeudArc,
-        distanceMaxNoeudArc);
+    reseauADecouper.projete(pointsDeDecoupage, distanceMaxNoeudArc, distanceMaxNoeudArc);
     reseauADecouper.instancieAttributsNuls(param);
-    reseauDecoupant.projete(pointsDeDecoupage, distanceMaxNoeudArc,
-        distanceMaxNoeudArc);
+    reseauDecoupant.projete(pointsDeDecoupage, distanceMaxNoeudArc, distanceMaxNoeudArc);
   }
 }

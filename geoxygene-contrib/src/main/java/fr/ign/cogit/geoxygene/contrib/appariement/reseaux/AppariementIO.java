@@ -144,8 +144,8 @@ public final class AppariementIO {
       }
       reseauRef.projete(reseauComp,
           paramApp.projeteNoeuds2SurReseau1DistanceNoeudArc,
-          paramApp.projeteNoeud2surReseau1DistanceProjectionNoeud,
-          paramApp.projeteNoeud2surReseau1ImpassesSeulement);
+          paramApp.projeteNoeuds2SurReseau1DistanceProjectionNoeud,
+          paramApp.projeteNoeuds2SurReseau1ImpassesSeulement);
     }
     if (paramApp.projeteNoeuds1SurReseau2) {
       if (AppariementIO.LOGGER.isDebugEnabled()) {
