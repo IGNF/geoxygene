@@ -778,7 +778,9 @@ public class FT_FeatureCollection<Feat extends IFeature> implements
   @Override
   public void setClasse(Class<Feat> C) {
     this.classe = C;
-    this.nomClasse = this.classe.getName();
+    if (C != null) {
+      this.nomClasse = this.classe.getName();
+    }
   }
 
   /**
