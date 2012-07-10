@@ -101,8 +101,8 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
     param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = 20; // 50
     param.projeteNoeuds2SurReseau1 = true;
     param.projeteNoeuds2SurReseau1DistanceNoeudArc = 8; // 25
-    param.projeteNoeud2surReseau1DistanceProjectionNoeud = 20; // 50
-    param.projeteNoeud2surReseau1ImpassesSeulement = false;
+    param.projeteNoeuds2SurReseau1DistanceProjectionNoeud = 20; // 50
+    param.projeteNoeuds2SurReseau1ImpassesSeulement = false;
     param.varianteForceAppariementSimple = true;
     param.distanceArcsMax = 20; // 50
     param.distanceArcsMin = 8; // 30

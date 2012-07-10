@@ -503,7 +503,7 @@ public class GeometryToolBar extends JToolBar {
       }
     }
     IDirectPositionList points = ringMin.coord();
-    Operateurs.projectAndInsert(point, points);
+    Operateurs.projectAndInsert(point, points.getList());
     if (indexRingMin == -1) {
       polygon.setExterior(new GM_Ring(new GM_CompositeCurve(new GM_LineString(
           points))));
@@ -518,7 +518,7 @@ public class GeometryToolBar extends JToolBar {
    * @param line
    */
   private void addPoint(IDirectPosition point, GM_LineString line) {
-    Operateurs.projectAndInsert(point, line.getControlPoint());
+    Operateurs.projectAndInsert(point, line.getControlPoint().getList());
   }
 
   /**
