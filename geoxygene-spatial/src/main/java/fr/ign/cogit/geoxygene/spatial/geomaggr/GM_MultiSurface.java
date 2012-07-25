@@ -79,7 +79,7 @@ public class GM_MultiSurface<GeomType extends IOrientableSurface> extends
 
   /** Constructeur à partir d'une liste de GM_OrientableSurface. */
   @SuppressWarnings("unchecked")
-  public GM_MultiSurface(List<IOrientableSurface> lOS) {
+  public GM_MultiSurface(List<? extends IOrientableSurface> lOS) {
     this.element = new ArrayList<GeomType>();
     this.element.addAll((Collection<? extends GeomType>) lOS);
   }
