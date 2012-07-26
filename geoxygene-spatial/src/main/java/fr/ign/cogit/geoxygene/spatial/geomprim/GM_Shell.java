@@ -47,7 +47,7 @@ public class GM_Shell extends GM_CompositeSurface implements IShell {
    * pas de vérifier qu'il s'agit d'un objet fermé
    * @param lOS la liste des facettes composant la surface
    */
-  public GM_Shell(List<IOrientableSurface> lOS) {
+  public GM_Shell(List<? extends IOrientableSurface> lOS) {
     super();
     this.setListeFaces(lOS);
   }
@@ -66,7 +66,7 @@ public class GM_Shell extends GM_CompositeSurface implements IShell {
    * Renseigne la liste des facettes composant la surface
    * @param lOS la liste des facettes composant la surface
    */
-  private void setListeFaces(List<IOrientableSurface> lOS) {
+  private void setListeFaces(List<? extends IOrientableSurface> lOS) {
     this.generator.clear();
     this.generator.addAll(lOS);
   }

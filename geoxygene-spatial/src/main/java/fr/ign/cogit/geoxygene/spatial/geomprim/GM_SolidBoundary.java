@@ -116,7 +116,7 @@ public class GM_SolidBoundary extends GM_PrimitiveBoundary implements
   /**
    * Permet de créer un GM_SolidBoundary ne possédant pas de trous
    */
-  public GM_SolidBoundary(List<IOrientableSurface> lOS) {
+  public GM_SolidBoundary(List<? extends IOrientableSurface> lOS) {
     GM_Shell inShell = new GM_Shell(lOS);
     this.exterior = inShell;
   }

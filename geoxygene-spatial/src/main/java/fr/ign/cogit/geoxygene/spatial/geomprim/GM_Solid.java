@@ -128,7 +128,7 @@ public class GM_Solid extends GM_Primitive implements ISolid {
    * Constructeur à partir d'une liste de faces extérieures
    * @param lOS une liste de faces extérieures
    */
-  public GM_Solid(List<IOrientableSurface> lOS) {
+  public GM_Solid(List<? extends IOrientableSurface> lOS) {
     this.boundary = new GM_SolidBoundary(lOS);
   }
 

@@ -55,11 +55,16 @@ public class GM_Triangle extends GM_Polygon implements ITriangle {
 
   public GM_Triangle(IRing gmRing) {
     super(gmRing);
+    corners[0] = new GM_Position(gmRing.coord().get(0));
+    corners[1] = new GM_Position(gmRing.coord().get(1));
+    corners[2] =  new GM_Position(gmRing.coord().get(2));
+    
   }
 
   public GM_Triangle(IDirectPosition dp1, IDirectPosition dp2,
       IDirectPosition dp3) {
     this(new GM_LineString(new DirectPositionList(dp1, dp2, dp3, dp1)));
+
   }
 
   public GM_Triangle(IDirectPositionList list) {
@@ -68,6 +73,9 @@ public class GM_Triangle extends GM_Polygon implements ITriangle {
 
   public GM_Triangle(GM_LineString ls) {
     super(ls);
+    corners[0] = new GM_Position(ls.coord().get(0));
+    corners[1] = new GM_Position(ls.coord().get(1));
+    corners[2] =  new GM_Position(ls.coord().get(2));
   }
 
   public GM_Triangle() {
