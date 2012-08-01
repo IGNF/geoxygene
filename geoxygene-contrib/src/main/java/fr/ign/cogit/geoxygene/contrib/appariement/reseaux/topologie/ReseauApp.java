@@ -27,11 +27,10 @@
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie;
 
-import java.util.Iterator;
-
 import fr.ign.cogit.geoxygene.contrib.I18N;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
@@ -93,15 +92,19 @@ public class ReseauApp extends CarteTopo {
     this.addPopulation(groupes);
   }
 
+  /**
+   * Set the default size of the nodes to param.distanceNoeudsMax.
+   * <p>
+   * On affecte une taille par défaut à tous nouveaux sans taille.
+   * La valeur affectée est param.distanceNoeudsMax.
+   * @param param matching parameters
+   */
   public void instancieAttributsNuls(ParametresApp param) {
-    // On affecte une taille par défaut à tous nouveaux sans taille
-    Iterator<?> itNoeuds = this.getPopNoeuds().getElements().iterator();
-    while (itNoeuds.hasNext()) {
-      NoeudApp noeud = (NoeudApp) itNoeuds.next();
+    for (Noeud node : this.getPopNoeuds()) {
+      NoeudApp noeud = (NoeudApp) node;
       if (noeud.getTaille() == 0) {
         noeud.setTaille(param.distanceNoeudsMax);
       }
     }
   }
-
 }
