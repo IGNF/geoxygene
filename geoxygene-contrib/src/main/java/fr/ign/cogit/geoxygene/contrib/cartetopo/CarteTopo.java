@@ -1475,9 +1475,14 @@ public class CarteTopo extends DataSet {
         }
         logger.debug("\t Splitting " + arc);
         List<Arc> splitEdges = arc.projeteEtDecoupe(noeud.getGeometrie());
-        // Test if there are other parts of the split edges where we could split
-        for (Arc edge : splitEdges) {
-          edge.projeteEtDecoupe(noeud.getGeometrie(), 1, edge.getGeometrie().sizeControlPoint() - 1);
+        if (splitEdges == null) {
+          logger.error("ARC = " + arc);
+          logger.error("NOEUD = " + noeud); 
+        } else {
+          // Test if there are other parts of the split edges where we could split
+          for (Arc edge : splitEdges) {
+            edge.projeteEtDecoupe(noeud.getGeometrie(), 1, edge.getGeometrie().sizeControlPoint() - 1);
+          }
         }
       }
     }
@@ -1533,8 +1538,7 @@ public class CarteTopo extends DataSet {
    * <p>
    * La topologie arcs/noeuds, l'orientation et les correspondants suivent.
    */
-  public void projete(List<IPoint> pts, double distanceMaxNoeudArc,
-      double distanceMaxProjectionNoeud) {
+  public void projete(List<IPoint> pts, double distanceMaxNoeudArc, double distanceMaxProjectionNoeud) {
     for (IPoint point : pts) {
       Collection<Arc> arcs = this.getPopArcs().select(point, distanceMaxNoeudArc);
       for (Arc arc : arcs) {

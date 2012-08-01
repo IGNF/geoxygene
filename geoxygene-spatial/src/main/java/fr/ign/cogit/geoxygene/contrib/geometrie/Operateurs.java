@@ -144,7 +144,7 @@ public abstract class Operateurs {
     if (lambda <= 0) {
       return a; // Cas ou M se projete en A sur le segment [AB]
     }
-    if (lambda >= a.distance(b)) {
+    if (lambda >= (to2d ? a.distance2D(b) : a.distance(b))) {
       return b; // Cas ou M se projete en B sur le segment [AB]
     }
     // Cas ou M se projete entre A et B
@@ -186,11 +186,10 @@ public abstract class Operateurs {
    * English: Projects M on the lineString and return the line with the
    * projected point inserted.
    */
-  public static ILineString projectionEtInsertion(IDirectPosition point,
-      ILineString line) {
+  public static ILineString projectionEtInsertion(IDirectPosition point, ILineString line) {
     IDirectPositionList points = line.coord();
     Operateurs.projectAndInsert(point, points.getList());
-    GM_LineString newLine = new GM_LineString(points);
+    GM_LineString newLine = new GM_LineString(points, false);
     return newLine;
   }
 
@@ -201,18 +200,15 @@ public abstract class Operateurs {
    * English: Projects M on the lineString and return the line with the
    * projected point inserted.
    */
-  public static void projectAndInsert(IDirectPosition point,
-      List<IDirectPosition> points) {
+  public static void projectAndInsert(IDirectPosition point, List<IDirectPosition> points) {
     if (points.size() < 2) {
       return;
     }
-    IDirectPosition ptmin = Operateurs.projection(point, points.get(0),
-        points.get(1));
+    IDirectPosition ptmin = Operateurs.projection(point, points.get(0), points.get(1));
     double dmin = point.distance(ptmin);
     int imin = 0;
-    for (int i = 0; i < points.size() - 1; i++) {
-      IDirectPosition pt = Operateurs.projection(point, points.get(i),
-          points.get(i + 1));
+    for (int i = 1; i < points.size() - 1; i++) {
+      IDirectPosition pt = Operateurs.projection(point, points.get(i), points.get(i + 1));
       double d = point.distance(pt);
       if (d < dmin) {
         ptmin = pt;

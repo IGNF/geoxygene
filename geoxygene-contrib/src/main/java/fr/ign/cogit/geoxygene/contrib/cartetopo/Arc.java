@@ -174,6 +174,8 @@ public class Arc extends ElementCarteTopo {
     if (points.size() < 2) {
       return null;
     }
+    // make sure to remove duplicates
+    this.setGeometrie(new GM_LineString(this.getGeometrie().getControlPoint(), false));
     IPopulation<Noeud> popNoeuds = this.getCarteTopo().getPopNoeuds();
     IPopulation<Arc> popArcs = this.getCarteTopo().getPopArcs();
     IDirectPosition ptmin = null;
@@ -181,7 +183,7 @@ public class Arc extends ElementCarteTopo {
     int positionMin = -1;
     for (int i = first; i < last - 1; i++) {
       IDirectPosition pt = Operateurs.projection(p.getPosition(), points.get(i), points.get(i + 1));
-      double d = p.getPosition().distance(pt);
+      double d = p.getPosition().distance2D(pt);
       if (d < dmin) {
         ptmin = pt;
         dmin = d;
@@ -192,13 +194,15 @@ public class Arc extends ElementCarteTopo {
       return null;
     }
     // if the closest point is the first, we don't have to split
-    if (ptmin.distance(points.get(first)) == 0) {
+    if (ptmin == points.get(first)) {
       return null;
     }
     // if the closest point is the last, we don't have to split
-    if (ptmin.distance(points.get(last - 1)) == 0) {
+    if (ptmin == points.get(last - 1)) {
       return null;
     }
+    logger.info("Splitting edge " + this);
+    logger.info("With " + p + " At " + ptmin.toGM_Point() + " " + positionMin);
     // création du nouveau noeud
     Noeud nouveauNoeud = popNoeuds.nouvelElement(new GM_Point(ptmin));
     // création des nouveaux arcs
