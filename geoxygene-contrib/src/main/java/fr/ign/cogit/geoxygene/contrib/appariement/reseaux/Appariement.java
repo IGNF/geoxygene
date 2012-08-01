@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -48,6 +47,7 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.IndicesForme;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.util.Resampler;
 import fr.ign.cogit.geoxygene.util.index.Tiling;
@@ -2073,10 +2073,9 @@ public abstract class Appariement {
       final ReseauApp comp, final EnsembleDeLiens liens,
       final ParametresApp param) {
     List<IPoint> noeudsNonApparies = new ArrayList<IPoint>(0);
-    Iterator<?> itNoeuds = ref.getPopNoeuds().getElements().iterator();
-    while (itNoeuds.hasNext()) {
-      NoeudApp noeud = (NoeudApp) itNoeuds.next();
-      if (noeud.getLiens(liens.getElements()).size() == 0) {
+    for (Noeud node : ref.getPopNoeuds()) {
+      NoeudApp noeud = (NoeudApp) node;
+      if (noeud.getLiens(liens.getElements()).isEmpty()) {
         noeudsNonApparies.add(noeud.getGeometrie());
       }
     }
@@ -2109,44 +2108,32 @@ public abstract class Appariement {
       final ParametresApp param) {
     double distanceMaxNoeudArc = param.projeteNoeuds2SurReseau1DistanceNoeudArc;
     // param.distanceArcsMax;
-    double distancePtCourantVersArcADecoupe;
-    ArcApp arcDecoupant, arcADecouper;
-    Iterator<?> itArcsDecoupes, itArcsDecoupants;
-    Collection<? extends IFeature> arcsDecoupantsRes2;
-    List<IPoint> pointsDeDecoupage;
-    int indiceDernierPtProche;
-
-    itArcsDecoupes = reseauADecouper.getPopArcs().getElements().iterator();
-    pointsDeDecoupage = new ArrayList<IPoint>();
+    List<IPoint> pointsDeDecoupage = new ArrayList<IPoint>();
     // recherche des points de découpage pour chaque arc à découper
-    while (itArcsDecoupes.hasNext()) {
-      arcADecouper = (ArcApp) itArcsDecoupes.next();
+    for (Arc edge : reseauADecouper.getPopArcs()) {
+      ArcApp arcADecouper = (ArcApp) edge;
       // on ne traite que les arcs non appariés auparavant
-      if (arcADecouper.getLiens(liens.getElements()).size() != 0) {
+      if (!arcADecouper.getLiens(liens.getElements()).isEmpty()) {
         continue;
       }
       // on découpe chaque arc non apparié en fonction des arcs de
       // l'autre réseau assez proches
       // (seuil choisi = diantanceMaxNoeudArc)
-      arcsDecoupantsRes2 = reseauDecoupant.getPopArcs().select(
+      Collection<? extends Arc> arcsDecoupantsRes2 = reseauDecoupant.getPopArcs().select(
           arcADecouper.getGeometrie(), distanceMaxNoeudArc);
-      if (arcsDecoupantsRes2.size() == 0) {
+      if (arcsDecoupantsRes2.isEmpty()) {
         continue;
       }
       // on traite chaque arc découpant à son tour
-      itArcsDecoupants = arcsDecoupantsRes2.iterator();
-      while (itArcsDecoupants.hasNext()) {
-        arcDecoupant = (ArcApp) itArcsDecoupants.next();
-        // ré échantillonage de la géométrie de l'arc découpant à
-        // environ 1m
-
-        ILineString lineStringDecoupant = arcDecoupant.getGeometrie();
+      for (Arc cuttingEdge : arcsDecoupantsRes2) {
+        ArcApp arcDecoupant = (ArcApp) cuttingEdge;
+        // ré échantillonage de la géométrie de l'arc découpant à environ 1m
+        ILineString lineStringDecoupant = new GM_LineString(arcDecoupant.getGeometrie().getControlPoint(), false);
         for (IDirectPosition dp : arcADecouper.getGeometrie().coord().getList()) {
-          lineStringDecoupant = Operateurs.projectionEtInsertion(dp,
-              lineStringDecoupant);
+          lineStringDecoupant = Operateurs.projectionEtInsertion(dp, lineStringDecoupant);
         }
         // initalisation des compteurs
-        indiceDernierPtProche = 0;
+        int indiceDernierPtProche = 0;
         boolean proche = false;
         if (Distances.distance(lineStringDecoupant.getControlPoint(0),
             arcADecouper.getGeometrie()) <= distanceMaxNoeudArc) {
@@ -2156,14 +2143,12 @@ public abstract class Appariement {
         for (int i = 1; i < lineStringDecoupant.getControlPoint().size(); i++) {
           IDirectPosition ptCourantArcDecoupant = lineStringDecoupant
               .getControlPoint(i);
-          distancePtCourantVersArcADecoupe = Distances.distance(
+          double distancePtCourantVersArcADecoupe = Distances.distance(
               ptCourantArcDecoupant, arcADecouper.getGeometrie());
           if (proche) {
             if (distancePtCourantVersArcADecoupe > distanceMaxNoeudArc) {
-              // on était proche et on s'éloigne à partir de
-              // ce point
-              // --> on rajoute deux points de découpage,
-              // entourant la partie proche,
+              // on était proche et on s'éloigne à partir de ce point
+              // --> on rajoute deux points de découpage, entourant la partie proche,
               proche = false;
               // ptDecoupage = Operateurs.projection(
               // arcDecoupant.getGeometrie().getControlPoint(
