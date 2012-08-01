@@ -666,10 +666,10 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.fillPanel.setBorder(fillTitleBorder);
     this.fillPanel.setPreferredSize(new Dimension(420, 200));
 
-    this.fillColor = ((PolygonSymbolizer) this.layer.getStyles().get(0)
-        .getSymbolizer()).getFill().getFill();
-    this.fillOpacity = ((PolygonSymbolizer) this.layer.getStyles().get(0)
-        .getSymbolizer()).getFill().getFillOpacity();
+    PolygonSymbolizer symbolizer = (PolygonSymbolizer) this.layer
+        .getStyles().get(0).getSymbolizer();
+    this.fillColor = (symbolizer != null) ? symbolizer.getFill().getFill() : Color.BLACK;
+    this.fillOpacity = (symbolizer != null) ? symbolizer.getFill().getFillOpacity() : 0.0f;
     this.fillPanel.add(this.createColorPreviewPanel(this.fillColor,
         this.fillOpacity));
 
