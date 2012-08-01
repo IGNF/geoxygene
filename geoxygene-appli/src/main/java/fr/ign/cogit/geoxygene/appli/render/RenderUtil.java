@@ -760,6 +760,7 @@ public final class RenderUtil {
         && symbolizer.getColorMap().getInterpolate() != null) {
       double value = ((Number) feature.getAttribute(symbolizer.getColorMap()
           .getInterpolate().getLookupvalue())).doubleValue();
+//      System.out.println("colormap " + value);
       int rgb = symbolizer.getColorMap().getColor(value);
       fillColor = getColorWithOpacity(new Color(rgb), opacity);
     }
@@ -926,12 +927,14 @@ public final class RenderUtil {
     if (shape == null || viewport == null) {
       return;
     }
-    float[] symbolizerColorComponenents = symbolizer.getFill().getColor().getComponents(null);
-    Color color = new Color(symbolizerColorComponenents[0],
-            symbolizerColorComponenents[1],
-            symbolizerColorComponenents[2],
-            symbolizerColorComponenents[3] * (float) opacity);
-    graphics.setColor(color);
+    if (symbolizer.getFill() != null) {
+        float[] symbolizerColorComponenents = symbolizer.getFill().getColor().getComponents(null);
+        Color color = new Color(symbolizerColorComponenents[0],
+                symbolizerColorComponenents[1],
+                symbolizerColorComponenents[2],
+                symbolizerColorComponenents[3] * (float) opacity);
+        graphics.setColor(color);
+    }
     graphics.fill(shape);
    
   }
