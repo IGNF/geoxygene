@@ -190,4 +190,8 @@ public class GeOxygeneApplication {
     splashScreen.setVisible(false);
     splashScreen.dispose();
   }
+
+  public GeOxygeneApplicationProperties getProperties() {
+    return this.properties;
+  }
 }
