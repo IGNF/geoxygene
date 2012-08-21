@@ -43,13 +43,13 @@ import fr.ign.cogit.geoxygene.schema.Produit;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.SchemaConceptuelJeu;
 
 /**
- * Classe mÃ¨re pour tout jeu de donnÃ©es. Un DataSet peut par exemple
- * correspondre Ã  une zone d'une BD, ou seulement un thÃ¨me. Un DataSet est
- * constituÃ© de maniÃ¨re rÃ©cursive d'un ensemble de jeux de donnÃ©es, et d'un
- * ensemble de populations, elles mÃªmes constituÃ©es d'un ensemble d'Ã©lÃ©ments.
+ * Classe mère pour tout jeu de données. Un DataSet peut par exemple
+ * correspondre à une zone d'une BD, ou seulement un thème. Un DataSet est
+ * constitué de manière récursive d'un ensemble de jeux de données, et d'un
+ * ensemble de populations, elles mêmes constituées d'un ensemble d'éléments.
  * TODO Finir les annotations pour la persistance
  * 
- * @author SÃ©bastien MustiÃ¨re
+ * @author Sébastien Mustière
  * @author Eric Grosso
  * @author Sandrine Balley
  * @author Julien Perret
@@ -85,10 +85,10 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
   }
 
   /**
-   * paramÃ¨tre statique de connexion Ã  la BD.
+   * paramètre statique de connexion à la BD.
    * <p>
-   * Ce paramÃ¨tre est trÃ¨s utilisÃ© dans GeOxygene TODO Remplacer cet attribut
-   * statique non protÃ©tÃ© par un singleton
+   * Ce paramètre est très utilisé dans GeOxygene TODO Remplacer cet attribut
+   * statique non protété par un singleton
    */
   public static Geodatabase db;
 
@@ -96,17 +96,17 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
   // Constructeurs / Chargement / persistance
   // /////////////////////////////////////////////////////
 
-  /** Constructeur par dÃ©faut. */
+  /** Constructeur par défaut. */
   public DataSet() {
     this.ojbConcreteClass = this.getClass().getName();
     this.setId(STATICID++);
   }
 
   /**
-   * Constructeur par dÃ©faut, recopiant les champs de mÃ©tadonnÃ©es du DataSet en
-   * paramÃ¨tre sur le nouveau.
+   * Constructeur par défaut, recopiant les champs de métadonnées du DataSet en
+   * paramètre sur le nouveau.
    * <p>
-   * Seules les populations sont copiÃ©es (composants et extractions ignorÃ©s).
+   * Seules les populations sont copiées (composants et extractions ignorés).
    * @param DS dataset to copy
    */
   @SuppressWarnings("unchecked")
@@ -164,10 +164,10 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
   }
 
   /**
-   * Chargement des instances des populations persistantes d'un jeu de donnÃ©es
-   * qui intersectent une gÃ©omÃ©trie donnÃ©e (extraction gÃ©omÃ©trique).
+   * Chargement des instances des populations persistantes d'un jeu de données
+   * qui intersectent une géométrie donnée (extraction géométrique).
    * 
-   * @param geom gÃ©omÃ©trie utilisÃ©e pour l'extraction gÃ©omÃ©trique.
+   * @param geom géométrie utilisée pour l'extraction géométrique.
    */
   @Override
   public void chargeElementsPartie(IGeometry geom) {
@@ -196,12 +196,12 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
   }
 
   /**
-   * Chargement des instances des populations persistantes d'un jeu de donnÃ©es
-   * qui intersectent une gÃ©omÃ©trie donnÃ©e. ATTENTION: les tables qui stockent
-   * les Ã©lÃ©ments doivent avoir Ã©tÃ© indexÃ©es dans Oracle. ATTENTION AGAIN:
-   * seules les populations avec une gÃ©omÃ©trie sont chargÃ©es.
+   * Chargement des instances des populations persistantes d'un jeu de données
+   * qui intersectent une géométrie donnée. ATTENTION: les tables qui stockent
+   * les éléments doivent avoir été indexées dans Oracle. ATTENTION AGAIN:
+   * seules les populations avec une géométrie sont chargées.
    * 
-   * @param zoneExtraction zone utilisÃ©e pour l'extraction gÃ©omÃ©trique
+   * @param zoneExtraction zone utilisée pour l'extraction géométrique
    */
   @Override
   public void chargeElementsPartie(IExtraction zoneExtraction) {
@@ -209,23 +209,23 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
   }
 
   /**
-   * mÃ©thode de chargement pour les test. Elle est un peu tordue dans le
-   * paramÃ¨trage mais permet de ne charger que ce qu'on veut. Elle permet de
+   * méthode de chargement pour les test. Elle est un peu tordue dans le
+   * paramètrage mais permet de ne charger que ce qu'on veut. Elle permet de
    * charger les instances des populations persistantes d'un jeu de donnÃ©es qui
-   * : - intersectent une gÃ©omÃ©trie donnÃ©e (extraction gÃ©omÃ©trique), - ET qui
-   * appartiennent Ã  certains thÃ¨mes et populations prÃ©cisÃ©s en entrÃ©e.
+   * : - intersectent une gÃ©ométrie donnée (extraction géométrique), - ET qui
+   * appartiennent à certains thèmes et populations précisés en entrée.
    * 
-   * @param geom dÃ©finit la zone d'extraction.
-   * @param themes dÃ©finit les sous-DS du DS Ã  charger. Pour le DS lui-mÃªme, et
-   *          pour chaque sous-DS, on prÃ©cise Ã©galement quelles populations sont
-   *          chargÃ©es. Ce paramÃ¨tre est une liste de liste de String composÃ©e
+   * @param geom définit la zone d'extraction.
+   * @param themes définit les sous-DS du DS à charger. Pour le DS lui-même, et
+   *          pour chaque sous-DS, on précise également quelles populations sont
+   *          chargées. Ce paramètre est une liste de liste de String composée
    *          comme suit (si la liste est nulle on charge tout) :
    *          <ul>
-   *          <li>1/ Le premier Ã©lÃ©ment est soit null (on charge alors toutes
+   *          <li>1/ Le premier élément est soit null (on charge alors toutes
    *          les populations directement sous le DS), soit une liste contenant
    *          les noms des populations directement sous le DS que l'on charge
    *          (si la liste est vide, on ne charge rien).
-   *          <li>2/ Tous les autres Ã©lÃ©ments sont des listes (une pour chaque
+   *          <li>2/ Tous les autres éléments sont des listes (une pour chaque
    *          sous-DS) qui contiennent chacune d'abord le nom d'un sous-DS que
    *          l'on veut charger, puis soit rien d'autre si on charge toutes les
    *          populations du sous-DS, soit le nom des populations du sous-DS que
@@ -233,10 +233,10 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
    *          </ul>
    *          <b>NB :</b> Attention aux majuscules et aux accents.
    *          <p>
-   *          <b>EXEMPLE</b> de parametre themes pour un DS reprÃ©sentant la
-   *          BDCarto, et spÃ©cifiant qu'on ne veut charger que les troncon et
-   *          les noeud du thÃ¨me routier, et les troncons du thÃ¨me hydro, mais
-   *          tout le thÃ¨me ferrÃ©.
+   *          <b>EXEMPLE</b> de parametre themes pour un DS représentant la
+   *          BDCarto, et spécifiant qu'on ne veut charger que les troncon et
+   *          les noeud du thème routier, et les troncons du thème hydro, mais
+   *          tout le thème ferré.
    *          <p>
    *          <b>theme = {null, liste1, liste2, liste3}</b>, avec :
    *          <ul>
@@ -244,7 +244,7 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
    *          BDCarto,
    *          <li>liste1 = {"Routier","TronÃ§ons de route", "Noeuds routier"},
    *          <li>liste2 = {"Hydrographie","TronÃ§ons de cours d'eau"},
-   *          <li>liste3 = {"ferrÃ©"}.
+   *          <li>liste3 = {"ferré"}.
    *          </ul
    */
   @Override
@@ -333,18 +333,18 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
   }
 
   /**
-   * Pour un jeu de donnÃ©es persistant, dÃ©truit le jeu de donnÃ©es, ses thÃ¨mes et
+   * Pour un jeu de données persistant, détruit le jeu de données, ses thèmes et
    * ses objets populations.
    * <p>
-   * <b>ATTENTION :</b> ne dÃ©truit pas les Ã©lÃ©ments des populations (pour cela
+   * <b>ATTENTION :</b> ne détruit pas les éléments des populations (pour cela
    * vider les tables Oracle).
    */
   @Override
   public void detruitJeu() {
     if (!this.getPersistant()) {
       DataSet.LOGGER
-          .warn("----- ATTENTION : Probleme Ã  la destruction du jeu de donnees " + this.getNom()); //$NON-NLS-1$
-      DataSet.LOGGER.warn("----- Le jeu de donnÃ©es n'est pas persistant"); //$NON-NLS-1$
+          .warn("----- ATTENTION : Probleme à la destruction du jeu de donnees " + this.getNom()); //$NON-NLS-1$
+      DataSet.LOGGER.warn("----- Le jeu de données n'est pas persistant"); //$NON-NLS-1$
       return;
     }
     // destruction des populations de this
@@ -359,7 +359,7 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
         DS.detruitJeu();
       }
     }
-    // destruction des zones d'extraction associÃ©es Ã  this
+    // destruction des zones d'extraction associées à this
     for (IExtraction ex : this.getExtractions()) {
       DataSet.LOGGER.info("###### Destruction de la zone d'extraction "
           + ex.getNom());
@@ -371,24 +371,24 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
   }
 
   /**
-   * NB pour codeurs : laisser 'true' par dÃ©faut. Sinon, comme cet attribut
-   * n'est pas persistant, cela pose des problÃ¨mes au chargement (un thÃ¨me
-   * persistant chargÃ© a son attribut persistant Ã  false.
+   * NB pour codeurs : laisser 'true' par défaut. Sinon, comme cet attribut
+   * n'est pas persistant, cela pose des problèmes au chargement (un thème
+   * persistant chargé a son attribut persistant à false.
    */
   protected boolean persistant = true;
 
   /**
-   * BoolÃ©en spÃ©cifiant si le thÃ¨me est persistant ou non (vrai par dÃ©faut).
+   * Booléen spécifiant si le thème est persistant ou non (vrai par défaut).
    * <p>
-   * <b>NB :</b> si un jeu de donnÃ©es est non persistant, tous ses thÃ¨mes sont
-   * non persistants. Mais si un jeu de donnÃ©es est persistant, certains de ses
-   * thÃ¨mes peuvent ne pas l'Ãªtre.
+   * <b>NB :</b> si un jeu de données est non persistant, tous ses thèmes sont
+   * non persistants. Mais si un jeu de données est persistant, certains de ses
+   * thèmes peuvent ne pas l'être.
    * <p>
-   * <b>ATTENTION :</b> pour des raisons propres Ã  OJB, mÃªme si la classe
-   * DataSet est concrÃ¨te, il n'est pas possible de crÃ©er un objet PERSISTANT de
+   * <b>ATTENTION :</b> pour des raisons propres à OJB, même si la classe
+   * DataSet est concrète, il n'est pas possible de créer un objet PERSISTANT de
    * cette classe, il faut utiliser les sous-classes.
    * 
-   * @return vrai si le jeu de donnÃ© est persistant, faux sinon
+   * @return vrai si le jeu de donné est persistant, faux sinon
    */
   @Override
   public boolean getPersistant() {
@@ -396,17 +396,17 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
   }
 
   /**
-   * BoolÃ©en spÃ©cifiant si le thÃ¨me est persistant ou non (vrai par dÃ©faut).
+   * Booléen spécifiant si le thème est persistant ou non (vrai par défaut).
    * <p>
-   * <b>NB :</b> si un jeu de donnÃ©es est non persistant, tous ses thÃ¨mes sont
-   * non persistants. Mais si un jeu de donnÃ©es est persistant, certains de ses
-   * thÃ¨mes peuvent ne pas l'Ãªtre.
+   * <b>NB :</b> si un jeu de données est non persistant, tous ses thèmes sont
+   * non persistants. Mais si un jeu de données est persistant, certains de ses
+   * thèmes peuvent ne pas l'être.
    * <p>
-   * <b>ATTENTION :</b> pour des raisons propres Ã  OJB, mÃªme si la classe
-   * DataSet est concrÃ¨te, il n'est pas possible de crÃ©er un objet PERSISTANT de
+   * <b>ATTENTION :</b> pour des raisons propres à OJB, même si la classe
+   * DataSet est concrète, il n'est pas possible de créer un objet PERSISTANT de
    * cette classe, il faut utiliser les sous-classes.
    * 
-   * @param b vrai si le jeu de donnÃ© est persistant, faux sinon
+   * @param b vrai si le jeu de donné est persistant, faux sinon
    */
   @Override
   public void setPersistant(boolean b) {
@@ -414,10 +414,10 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
   }
 
   // /////////////////////////////////////////////////////
-  // MetadonnÃ©es
+  // Metadonnées
   // /////////////////////////////////////////////////////
   /**
-   * Nom de la classe concrÃ¨te de this : pour OJB, ne pas manipuler directement
+   * Nom de la classe concrète de this : pour OJB, ne pas manipuler directement
    */
   protected String ojbConcreteClass;
 
@@ -431,7 +431,7 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
     this.ojbConcreteClass = S;
   }
 
-  /** Nom du jeu de donnÃ©es */
+  /** Nom du jeu de données */
   protected String nom = ""; //$NON-NLS-1$
 
   @Override
@@ -457,7 +457,7 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
     this.typeBD = S;
   }
 
-  /** ModÃ¨le utilisÃ© (format shape, structurÃ©...). */
+  /** Modèle utilisé (format shape, structuré...). */
   protected String modele = ""; //$NON-NLS-1$
 
   @Override
@@ -470,7 +470,7 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
     this.modele = S;
   }
 
-  /** Zone GÃ©ographique couverte. */
+  /** Zone Géographique couverte. */
   protected String zone = ""; //$NON-NLS-1$
 
   @Override
@@ -483,7 +483,7 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
     this.zone = S;
   }
 
-  /** Date des donnÃ©es. */
+  /** Date des données. */
   protected String date = ""; //$NON-NLS-1$
 
   @Override
@@ -510,12 +510,12 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
   }
 
   // /////////////////////////////////////////////////////
-  // thÃ¨mes du jeu de donnÃ©es
+  // thèmes du jeu de données
   // /////////////////////////////////////////////////////
   /**
-   * Un DataSet se dÃ©compose rÃ©cursivement en un ensemble de DataSet. Le lien de
-   * DataSet vers lui-mÃªme est un lien 1-n. Les mÃ©thodes get (sans indice) et
-   * set sont nÃ©cessaires au mapping. Les autres mÃ©thodes sont lÃ  seulement pour
+   * Un DataSet se décompose récursivement en un ensemble de DataSet. Le lien de
+   * DataSet vers lui-même est un lien 1-n. Les méthodes get (sans indice) et
+   * set sont nécessaires au mapping. Les autres méthodes sont là seulement pour
    * faciliter l'utilisation de la relation. ATTENTION: Pour assurer la
    * bidirection, il faut modifier les listes uniquement avec ces methodes. NB:
    * si il n'y a pas d'objet en relation, la liste est vide mais n'est pas
@@ -582,7 +582,7 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
     return null;
   }
 
-  /** Relation inverse Ã  Composants */
+  /** Relation inverse à Composants */
   private IDataSet<?> appartientA;
 
   @Override
@@ -622,8 +622,8 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
   }
 
   /**
-   * Liste des population du DataSet. Les mÃ©thodes get (sans indice) et set sont
-   * nÃ©cessaires au mapping. Les autres mÃ©thodes sont lÃ  seulement pour
+   * Liste des population du DataSet. Les méthodes get (sans indice) et set sont
+   * nécessaires au mapping. Les autres méthodes sont là seulement pour
    * faciliter l'utilisation de la relation.
    * <p>
    * <b>ATTENTION :</b> Pour assurer la bidirection, il faut modifier les listes
@@ -706,7 +706,7 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
     return null;
   }
 
-  /** Liste des zones d'extraction dÃ©finies pour ce DataSt */
+  /** Liste des zones d'extraction définies pour ce DataSt */
   protected List<IExtraction> extractions = new ArrayList<IExtraction>();
 
   @Override
@@ -728,24 +728,24 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
 
   // ////////////////////////////////////////////////////////////////////////////////////////////
   /**
-   * mÃ©thodes permettant de crÃ©er un jeu de donnÃ©es:
+   * méthodes permettant de créer un jeu de données:
    * <ul>
-   * <li>reliÃ© Ã  un produit, donc potentiellement Ã  de nombreuses mÃ©tadonnÃ©es</li>
-   * <li>reliÃ© Ã  0 ou 1 schÃ©maConceptuelJeu (un schÃ©maConceptuelJeu est associÃ©
-   * Ã  0 ou 1 jeu)</li>
-   * <li>composÃ© de Populations dotÃ©es de mÃ©tadonnÃ©es</li>
+   * <li>relié à un produit, donc potentiellement à de nombreuses métadonnées</li>
+   * <li>relié à 0 ou 1 schémaConceptuelJeu (un schémaConceptuelJeu est associé
+   * à 0 ou 1 jeu)</li>
+   * <li>composé de Populations dotées de métadonnées</li>
    * </ul>
-   * Comme indiquÃ© dans la classe Population, les populations d'un DataSet ne
-   * sont pas destinÃ©es Ã  Ãªtre persistantes. Elles peuvent Ãªtre initialisÃ©es Ã 
-   * partir du schÃ©ma conceptuel, qui lui est persitent, grÃ¢ce Ã  la mÃ©thode
+   * Comme indiqué dans la classe Population, les populations d'un DataSet ne
+   * sont pas destinées à être persistantes. Elles peuvent être initialisées à
+   * partir du schéma conceptuel, qui lui est persitent, grÃ¢ce à la méthode
    * DataSet.initPopulations()
    */
   // //////////////////////////////////////////////////////////////////////////////////////////////
 
   /** *reference statique au repository OJB */
-//  public static MetadataManager metadataManager;
+  // public static MetadataManager metadataManager;
   /***************************************************************************
-   * Partie Description du DataSet : produit et schÃ©ma de donnÃ©es
+   * Partie Description du DataSet : produit et schéma de données
    **************************************************************************/
   protected Produit produit;
 
@@ -777,7 +777,7 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
   }
 
   /**
-   * Liste des contraintes (intÃ©gritÃ©) s'appliquant Ã  ce jeu
+   * Liste des contraintes (intégrité) s'appliquant à ce jeu
    */
   public List<GF_Constraint> contraintes;
 
@@ -807,13 +807,15 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
   public IPopulation<? extends IFeature> getPopulationByFeatureTypeName(
       String nomFeatureType) {
     for (int i = 0; i < this.getPopulations().size(); i++) {
+      if (this.getPopulations().get(i).getFeatureType() == null)
+        continue;
       if (this.getPopulations().get(i).getFeatureType().getTypeName().equals(
           nomFeatureType)) {
         return this.getPopulations().get(i);
       }
     }
     DataSet.LOGGER
-        .error("La Population " + nomFeatureType + " n'a pas Ã©tÃ© trouvÃ©e."); //$NON-NLS-1$//$NON-NLS-2$
+        .error("La Population " + nomFeatureType + " n'a pas été trouvée."); //$NON-NLS-1$//$NON-NLS-2$
     return null;
   }
 
