@@ -1,9 +1,13 @@
 package fr.ign.cogit.geoxygene.distance;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.Id;
+
+import org.apache.xerces.impl.dtd.models.DFAContentModel;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -118,66 +122,146 @@ public class Frechet {
    * Compute the discrete partial Frechet distance between two polygonal curves.
    * This algorithm is taken from (Devogele 2002), A New Merging Process for
    * Data Integration Based on the Discrete Fréchet Distance. <br>
+   * The algorithm search for the distance between <b>a part of</b> p and <b>
+   * the whole</b> line q. Thus, p must be shorter than q.
    * 
    * <br>
    * This is a non optimal algorithm running in O(n²).
    * <p>
-   * @param p a linestring
+   * @param p a linestring shorter than q
    * @param q a linestring
    * @return the partial discrete Frechet distance between the two curves.
    * **/
   public static double partialDiscreteFrechetDistance(ILineString p,
       ILineString q) {
-    double dpf = Double.POSITIVE_INFINITY;
-    List<IDirectPosition> pPoints = new ArrayList<IDirectPosition>(p.coord());
-    List<IDirectPosition> qPoints = new ArrayList<IDirectPosition>(q.coord());
-    for (int i = 0; i < pPoints.size() - 1; i++) {
-      if (qPoints.get(0).distance2D(pPoints.get(i)) < dpf) {
-        for (int j = pPoints.size() - 1; j > 0; j--) {
-          if (i <= j
-              && qPoints.get(qPoints.size() - 1).distance2D(pPoints.get(j)) < dpf) {
-            GM_LineString shortp = new GM_LineString(pPoints.subList(i, j + 1));
-            double df = Frechet.discreteFrechet(q, shortp);
-            if (df < dpf) {
-              dpf = df;
+    final List<IDirectPosition> pp = new ArrayList<IDirectPosition>(p.coord());
+    final List<IDirectPosition> qp = new ArrayList<IDirectPosition>(q.coord());
+    List<IDirectPosition> b = new ArrayList<IDirectPosition>(qp);
+    List<IDirectPosition> e = new ArrayList<IDirectPosition>(qp);
+    b.remove(b.size() - 1);
+    Collections.reverse(e);
+    e.remove(e.size() - 1);
+    double dfdp = Double.POSITIVE_INFINITY;
+    for (int j = 0; j < b.size(); j++) {
+      if (pp.get(0).distance(b.get(j)) < dfdp) {
+        for (int jj = 0; jj < e.size(); jj++) {
+          if (j <= jj && pp.get(pp.size() - 1).distance(e.get(jj)) < dfdp) {
+            try {
+              int from = qp.indexOf(b.get(j));
+              int to = qp.indexOf(e.get(jj));
+
+              GM_LineString subcurve = from <= to ? new GM_LineString(
+                  qp.subList(from, to)) : new GM_LineString(
+                  qp.subList(to, from));
+              double dfd = Frechet.discreteFrechet(p, subcurve);
+              if (dfd < dfdp) {
+                dfdp = dfd;
+              }
+            } catch (Exception e1) {
+              System.out.println("error");
+              e1.printStackTrace();
             }
           }
         }
       }
     }
-    return dpf;
+
+    return dfdp;
+  }
+
+  static public double partialFrechet(final GM_LineString p,
+      final GM_LineString q) {
+    
+    List<IDirectPosition> pp = new ArrayList<IDirectPosition>(p.coord());
+    List<IDirectPosition> qp = new ArrayList<IDirectPosition>(q.coord());
+
+    for (IDirectPosition point : p.getControlPoint()) {
+      Operateurs.projectAndInsert(point, qp);
+    }
+    for (IDirectPosition point : q.getControlPoint()) {
+      Operateurs.projectAndInsert(point, pp);
+    }
+    List<IDirectPosition> lcb = new ArrayList<IDirectPosition>(qp);
+    List<IDirectPosition> lce = new ArrayList<IDirectPosition>(qp);
+
+    // On ordonne les points
+    Collections.sort(lcb, new Comparator<IDirectPosition>() {
+      @Override
+      public int compare(IDirectPosition o1, IDirectPosition o2) {
+        double delta = o1.distance(p.coord().get(0))
+            - o2.distance(p.coord().get(0));
+        if (delta == 0.0)
+          return 0;
+        if (delta < 0.0)
+          return 1;
+        return -1;
+      }
+    });
+    Collections.sort(lce, new Comparator<IDirectPosition>() {
+      @Override
+      public int compare(IDirectPosition o1, IDirectPosition o2) {
+        double delta = o1.distance(p.coord().get(p.coord().size()-1))
+            - o2.distance(p.coord().get(p.coord().size()-1));
+        if (delta == 0.0)
+          return 0;
+        if (delta < 0.0)
+          return 1;
+        return -1;
+      }
+    });
+
+    double pf = Double.POSITIVE_INFINITY;
+    for (IDirectPosition l2j : lcb) {
+      if (l2j.distance(pp.get(0)) < pf) {
+        for (IDirectPosition l2jj : lce) {
+          if (qp.indexOf(l2j) < qp.indexOf(l2jj)
+              && pp.get(pp.size() - 1).distance(l2jj) < pf) {
+            GM_LineString subcurve = new GM_LineString(l2j, l2jj);
+            double df = Frechet.discreteFrechet(p, subcurve);
+            if (df < pf) {
+              pf = df;
+            }
+          }
+        }
+      }
+    }
+    return pf;
   }
 
   /**
    * 
    * Compute the free space cell as an ellipse intersecting the unit square.<br/>
    * Its inequation is giver by Ax² + Bxy + Cy² + Dx + Ey + F < epsilon²
-   * Reference <a href=" http://curve.carleton.ca/system/files/theses/27259.pdf">Frechet Distance on Convex Polyhedron</a> 
+   * Reference <a
+   * href=" http://curve.carleton.ca/system/files/theses/27259.pdf">Frechet
+   * Distance on Convex Polyhedron</a>
    * @param p1
    * @param p2
    * @param q1
    * @param q2
    * @return
    */
-  public static double[] freeCellEllipse(IDirectPosition p1, IDirectPosition p2 , IDirectPosition q1, IDirectPosition q2 ){
-    //Direct inequation of the ellipse in the unit square.
+  public static double[] freeCellEllipse(IDirectPosition p1,
+      IDirectPosition p2, IDirectPosition q1, IDirectPosition q2) {
+    // Direct inequation of the ellipse in the unit square.
     double[] coef = new double[6];
-    
-    coef[0] = p1.distance(p2) *p1.distance(p2);
-    coef[1] = q1.distance(q2)*q1.distance(q2);
+
+    coef[0] = p1.distance(p2) * p1.distance(p2);
+    coef[1] = q1.distance(q2) * q1.distance(q2);
     coef[2] = -2
         * ((p2.getX() - p1.getX()) * (q2.getX() - q1.getX()) + (p2.getY() - p1
             .getY()) * (q2.getY() - q1.getY()));
-    coef[3] = 2 * ((p1.getX() - q1.getX()) * (p2.getX() - p1.getX()) + (p1.getY() - q1
-        .getY()) * (p2.getY() - p1.getY()));
-    coef[4] = 2 * ((p1.getX() - q1.getX()) * (q2.getX() - q1.getX()) + (p1.getY() - q1
-        .getY()) * (q2.getY() - q1.getY()));
+    coef[3] = 2 * ((p1.getX() - q1.getX()) * (p2.getX() - p1.getX()) + (p1
+        .getY() - q1.getY()) * (p2.getY() - p1.getY()));
+    coef[4] = 2 * ((p1.getX() - q1.getX()) * (q2.getX() - q1.getX()) + (p1
+        .getY() - q1.getY()) * (q2.getY() - q1.getY()));
     coef[5] = ((p1.getX() - q1.getX()) * (p1.getX() - q1.getX()))
         + ((p1.getY() - q1.getY()) * (p1.getY() - q1.getY()));
-    
-    return coef; 
+
+    return coef;
 
   }
+
   public static IPolygon[][] freeSpaceDiagram(IDirectPositionList p,
       IDirectPositionList q, double sigma) {
 
@@ -188,20 +272,24 @@ public class Frechet {
         IDirectPositionList polygon = new DirectPositionList();
 
         for (int k = 0; k < localfsd[i][j][0].length; k++) {
-          polygon.add(new DirectPosition(j + localfsd[i][j][0][k], q.size()-1-i));
+          polygon.add(new DirectPosition(j + localfsd[i][j][0][k], q.size() - 1
+              - i));
         }
         for (int k = localfsd[i][j][1].length - 1; k >= 0; k--) {
-          polygon.add(new DirectPosition(j,q.size()-1-i+ localfsd[i][j][1][k]));
+          polygon.add(new DirectPosition(j, q.size() - 1 - i
+              + localfsd[i][j][1][k]));
         }
         for (int k = localfsd[i][j][2].length - 1; k >= 0; k--) {
-          polygon.add(new DirectPosition(localfsd[i][j][2][k], q.size()-1-i));
+          polygon
+              .add(new DirectPosition(localfsd[i][j][2][k], q.size() - 1 - i));
         }
         for (int k = 0; k < localfsd[i][j][3].length; k++) {
-          polygon.add(new DirectPosition(j - 1, q.size()-1-i+localfsd[i][j][3][k]));
+          polygon.add(new DirectPosition(j - 1, q.size() - 1 - i
+              + localfsd[i][j][3][k]));
         }
         polygon.add(polygon.get(0));
         fsd[i][j] = new GM_Polygon(new GM_LineString(polygon));
-        
+
       }
     }
     return fsd;
@@ -266,8 +354,8 @@ public class Frechet {
             intersection[0].getX(), intersection[0].getY());
         int pos2 = pointOnSegment(q1.getX(), q1.getY(), q2.getX(), q2.getY(),
             intersection[1].getX(), intersection[1].getY());
-        if(pos1 == pos2 && pos1 != 0){
-            return null;
+        if (pos1 == pos2 && pos1 != 0) {
+          return null;
         }
         if (pos1 < 0) {
           result[0] = 0.0;
@@ -333,7 +421,7 @@ public class Frechet {
     }
     return result;
   }
-  
+
   public static int pointOnSegment(double x1, double y1, double x2, double y2,
       double x3, double y3) {
     double d = (distance(x1, y1, x3, y3) + distance(x3, y3, x2, y2) - distance(
