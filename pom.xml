@@ -30,12 +30,18 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-
+    
+    <!-- =========================================================== -->
+    <!--  Revision control -->
+    <!-- =========================================================== -->
 	<scm>
 		<connection>scm:svn:http://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project/main/trunk/geoxygene/</connection>
 		<url>http://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project/main/trunk/geoxygene/</url>
 	</scm>
 	
+	<!-- =========================================================== -->
+	<!--  Properties : encoding -->
+	<!-- =========================================================== -->
 	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -334,7 +340,7 @@
                     </reportSet>
                 </reportSets>
                 <configuration>
-                    <reportOutputDirectory>javadoc</reportOutputDirectory>
+                    <!-- <reportOutputDirectory>javadoc</reportOutputDirectory> -->
                     <source>1.6</source>             <!-- Enables javadoc to handle assertions present in J2SE 1.4. -->
                     <encoding>UTF-8</encoding>       <!-- The encoding of the source files. -->
                     <docencoding>UTF-8</docencoding> <!-- The encoding of the generated HTML files. -->
@@ -381,9 +387,22 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
                 <version>2.0.1</version>
+                <configuration>
+                    <findbugsXmlOutput>true</findbugsXmlOutput>
+                    <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+                    <xmlOutput>true</xmlOutput>
+                </configuration>
             </plugin>
-
-		</plugins>
+            
+            <!-- ==================================================== -->
+            <!-- PMD -->
+            <!-- ==================================================== -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+            </plugin>
+            
+        </plugins>
 	</reporting>
 
 	<!-- <reporting> <outputDirectory>target/reports</outputDirectory> <plugins> 
@@ -403,8 +422,8 @@
 		</plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-javadoc-plugin</artifactId> 
 		<version>2.6.1</version> <reportSets> <reportSet> <reports> <report>javadoc</report> 
 		We want API javadoc only, not tests javadoc. </reports> </reportSet> </reportSets> 
-		</plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-checkstyle-plugin</artifactId> 
-		<version>2.4</version> </plugin> </plugins> </reporting> -->
+		</plugin> 
+		 </plugins> </reporting> -->
 
 	<repositories>
 		<repository>
