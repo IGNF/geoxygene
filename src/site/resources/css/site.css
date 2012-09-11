@@ -1,0 +1,14 @@
+
+
+#banner {
+    height: 106px;
+    background: url(../images/fond_carte_ign.jpg);
+    /* background-repeat:no-repeat; */
+    width: 100%;
+}
+
+#bannerImageLogo {
+    border: 0;
+    width: 100%;
+    vertical-align:bottom
+}
