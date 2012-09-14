@@ -95,8 +95,8 @@ public class CommonAlgorithms {
       coord_[i] = new Coordinate(c.x + coef * (coord[i].x - c.x), coord[i].y);
     }
 
-    return CommonAlgorithms.rotation(
-        new GeometryFactory().createLineString(coord_), c, angle);
+    return CommonAlgorithms.rotation(new GeometryFactory()
+        .createLineString(coord_), c, angle);
   }
 
   // angle: angle de la direction de l'affinite, a partir de l'axe des x
@@ -207,14 +207,14 @@ public class CommonAlgorithms {
   public static Polygon translation(Polygon geom, double dx, double dy) {
 
     // le contour externe
-    LinearRing lr = CommonAlgorithms.translation(
-        (LinearRing) geom.getExteriorRing(), dx, dy);
+    LinearRing lr = CommonAlgorithms.translation((LinearRing) geom
+        .getExteriorRing(), dx, dy);
 
     // les trous
     LinearRing[] trous = new LinearRing[geom.getNumInteriorRing()];
     for (int j = 0; j < geom.getNumInteriorRing(); j++) {
-      trous[j] = CommonAlgorithms.translation(
-          (LinearRing) geom.getInteriorRingN(j), dx, dy);
+      trous[j] = CommonAlgorithms.translation((LinearRing) geom
+          .getInteriorRingN(j), dx, dy);
     }
 
     return new GeometryFactory().createPolygon(lr, trous);
@@ -256,20 +256,21 @@ public class CommonAlgorithms {
   public static IPolygon translation(IPolygon geom, double dx, double dy) {
 
     // le contour externe
-    GM_Polygon poly = new GM_Polygon(CommonAlgorithms.translation(
-        geom.getExterior(), dx, dy));
+    GM_Polygon poly = new GM_Polygon(CommonAlgorithms.translation(geom
+        .getExterior(), dx, dy));
 
     // les trous
     for (int j = 0; j < geom.getInterior().size(); j++) {
-      poly.addInterior(CommonAlgorithms.translation(geom.getInterior(j), dx, dy));
+      poly.addInterior(CommonAlgorithms
+          .translation(geom.getInterior(j), dx, dy));
     }
 
     return poly;
   }
 
   public static IRing translation(IRing ring, double dx, double dy) {
-    return new GM_Ring(new GM_LineString(CommonAlgorithms.translation(
-        ring.coord(), dx, dy)));
+    return new GM_Ring(new GM_LineString(CommonAlgorithms.translation(ring
+        .coord(), dx, dy)));
   }
 
   public static ILineString translation(ILineString ls, double dx, double dy) {
@@ -281,7 +282,8 @@ public class CommonAlgorithms {
     IDirectPositionList coords_ = new DirectPositionList();
     for (int i = 0; i < coords.size(); i++) {
       coords_.add(new DirectPosition(coords.get(i).getX() + dx, coords.get(i)
-          .getY() + dy));
+          .getY()
+          + dy));
     }
     return coords_;
   }
@@ -297,6 +299,23 @@ public class CommonAlgorithms {
           + sin * (x - c.x) + cos * (y - c.y));
     }
     return new GeometryFactory().createLineString(coord_);
+  }
+
+  /**
+   * Même chose que rotation(LineString ls, Coordinate c, double angle) mais
+   * encapsulé avec des objets GeOx.
+   * @param ls
+   * @param c
+   * @param angle
+   * @return
+   * @throws Exception
+   */
+  public static ILineString rotation(ILineString ls, IDirectPosition c,
+      double angle) throws Exception {
+    LineString jtsLine = AdapterFactory.toLineString(new GeometryFactory(), ls);
+    LineString rotatedLine = rotation(jtsLine, new Coordinate(c.getX(), c
+        .getY()), angle);
+    return (ILineString) AdapterFactory.toGM_Object(rotatedLine);
   }
 
   // angle en radian, rotation dans le sens direct de centre c
@@ -428,8 +447,8 @@ public class CommonAlgorithms {
         mitre));
     IGeometry geom_ = null;
     try {
-      geom_ = AdapterFactory.toGM_Object(bb.buffer(
-          AdapterFactory.toGeometry(new GeometryFactory(), geom), distance));
+      geom_ = AdapterFactory.toGM_Object(bb.buffer(AdapterFactory.toGeometry(
+          new GeometryFactory(), geom), distance));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -493,8 +512,8 @@ public class CommonAlgorithms {
     double norm = poly.perimeter();
     Vecteur vectHoriz = new Vecteur(norm, 0.0, 0.0);
     Vecteur vect = CommonAlgorithms.rotateVector(vectHoriz, orientation);
-    IDirectPosition mid = Operateurs.milieu(poly.centroid(),
-        vect.translate(poly.centroid()));
+    IDirectPosition mid = Operateurs.milieu(poly.centroid(), vect
+        .translate(poly.centroid()));
 
     // build a small segment between the two centres of gravity
     DirectPositionList list = new DirectPositionList();
