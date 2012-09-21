@@ -167,7 +167,7 @@ public class TextureManager {
 
     List<Texture2D> formatsDisponibles = new ArrayList<Texture2D>();
 
-    File directoryToScan = new File("./ext/texture");
+    File directoryToScan = new File("./src/main/resources/texture");
 
     File[] lf = directoryToScan.listFiles();
 
