@@ -117,6 +117,20 @@ public class Frechet {
         qPoints));
   }
 
+  public static double partialFrechet(final GM_LineString p, final GM_LineString q) {
+    GM_LineString pprim = new GM_LineString(p.coord());
+    GM_LineString qprim = new GM_LineString(q.coord());
+    pprim = (GM_LineString) Operateurs.echantillone(pprim, 5);
+    qprim = (GM_LineString) Operateurs.echantillone(qprim, 5);
+    List<IDirectPosition> pp = new ArrayList<IDirectPosition>(pprim.coord());
+    List<IDirectPosition> qp = new ArrayList<IDirectPosition>(qprim.coord());
+
+    double d1 = Frechet.partialDiscreteFrechet(pprim, qprim);
+    GM_LineString qr = (GM_LineString) qprim.reverse();
+    double d2 = Frechet.partialDiscreteFrechet(pprim, qr);
+    return Math.min(d1, d2);
+  }
+
   /**
    * <p>
    * Compute the discrete partial Frechet distance between two polygonal curves.
@@ -132,55 +146,12 @@ public class Frechet {
    * @param q a linestring
    * @return the partial discrete Frechet distance between the two curves.
    * **/
-  public static double partialDiscreteFrechetDistance(ILineString p,
-      ILineString q) {
-    final List<IDirectPosition> pp = new ArrayList<IDirectPosition>(p.coord());
-    final List<IDirectPosition> qp = new ArrayList<IDirectPosition>(q.coord());
-    List<IDirectPosition> b = new ArrayList<IDirectPosition>(qp);
-    List<IDirectPosition> e = new ArrayList<IDirectPosition>(qp);
-    b.remove(b.size() - 1);
-    Collections.reverse(e);
-    e.remove(e.size() - 1);
-    double dfdp = Double.POSITIVE_INFINITY;
-    for (int j = 0; j < b.size(); j++) {
-      if (pp.get(0).distance(b.get(j)) < dfdp) {
-        for (int jj = 0; jj < e.size(); jj++) {
-          if (j <= jj && pp.get(pp.size() - 1).distance(e.get(jj)) < dfdp) {
-            try {
-              int from = qp.indexOf(b.get(j));
-              int to = qp.indexOf(e.get(jj));
-
-              GM_LineString subcurve = from <= to ? new GM_LineString(
-                  qp.subList(from, to)) : new GM_LineString(
-                  qp.subList(to, from));
-              double dfd = Frechet.discreteFrechet(p, subcurve);
-              if (dfd < dfdp) {
-                dfdp = dfd;
-              }
-            } catch (Exception e1) {
-              System.out.println("error");
-              e1.printStackTrace();
-            }
-          }
-        }
-      }
-    }
-
-    return dfdp;
-  }
-
-  static public double partialFrechet(final GM_LineString p,
+  static public double partialDiscreteFrechet(final GM_LineString p,
       final GM_LineString q) {
-    
+
     List<IDirectPosition> pp = new ArrayList<IDirectPosition>(p.coord());
     List<IDirectPosition> qp = new ArrayList<IDirectPosition>(q.coord());
 
-    for (IDirectPosition point : p.getControlPoint()) {
-      Operateurs.projectAndInsert(point, qp);
-    }
-    for (IDirectPosition point : q.getControlPoint()) {
-      Operateurs.projectAndInsert(point, pp);
-    }
     List<IDirectPosition> lcb = new ArrayList<IDirectPosition>(qp);
     List<IDirectPosition> lce = new ArrayList<IDirectPosition>(qp);
 
@@ -200,8 +171,8 @@ public class Frechet {
     Collections.sort(lce, new Comparator<IDirectPosition>() {
       @Override
       public int compare(IDirectPosition o1, IDirectPosition o2) {
-        double delta = o1.distance(p.coord().get(p.coord().size()-1))
-            - o2.distance(p.coord().get(p.coord().size()-1));
+        double delta = o1.distance(p.coord().get(p.coord().size() - 1))
+            - o2.distance(p.coord().get(p.coord().size() - 1));
         if (delta == 0.0)
           return 0;
         if (delta < 0.0)
