@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project name="GeOxygene">
+  
   <bannerLeft>
     <name>GeOxygene</name>
-    <src>../images/geoxygene-logo.png</src>
+    <src>images/geoxygene-logo-neutre.png</src>
     <href>http://oxygene-project.sourceforge.net/</href>
   </bannerLeft>
   <bannerRight>
@@ -20,7 +21,7 @@
     <menu name="GeOxygene Liens Rapides">
       <item name="Introduction" href="index.html"/>
       <item name="Documentation" href="documentation.html"></item>
-      <item name="Téléchargement" href="download.html"/>
+      <item name="TÃ©lÃ©chargement" href="download.html"/>
       <item name="FAQ" href="faq.html" />
       <item name="Changements" href="release-notes.html" />
     </menu>
@@ -33,7 +34,7 @@
     </menu>
 
     <menu name="Applications">
-      <item name="Sémiologie Graphique" href="semiology.html"/>
+      <item name="SÃ©miologie Graphique" href="semiology.html"/>
       <item name="Appariement" href="data-matching.html"/>
     </menu>
 
