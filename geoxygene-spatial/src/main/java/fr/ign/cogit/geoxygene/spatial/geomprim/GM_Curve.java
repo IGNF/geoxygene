@@ -276,24 +276,23 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
           .error("GM_Curve::asLineString() : Spacing et Offset ne sont pas implémentés. Passer (0.0, 0.0, tolerance) en paramètres"); //$NON-NLS-1$
       return null;
     }
-    GM_LineString theLineString = new GM_LineString();
+    List<IDirectPosition> points = new ArrayList<IDirectPosition>();
     synchronized (this.segment) {
       for (ICurveSegment theSegment : this.segment) {
         IDirectPositionList aListOfPoints = theSegment.coord();
         for (IDirectPosition pt1 : aListOfPoints) {
-          if (theLineString.sizeControlPoint() > 0) {
-            IDirectPosition pt2 = theLineString.getControlPoint().get(
-                theLineString.getControlPoint().size() - 1);
+          if (points.size() > 0) {
+            IDirectPosition pt2 = points.get(points.size() - 1);
             if (!pt1.equals(pt2, tolerance)) {
-              theLineString.getControlPoint().add(pt1);
+              points.add(pt1);
             }
           } else {
-            theLineString.getControlPoint().add(pt1);
+            points.add(pt1);
           }
         }
       }
     }
-    return theLineString;
+    return new GM_LineString(points);
   }
 
   @Override
@@ -303,16 +302,16 @@ public class GM_Curve extends GM_OrientableCurve implements ICurve {
           .error("GM_Curve::asLineString() : Offset non implémenté."); //$NON-NLS-1$
       return null;
     }
-    GM_LineString theLineString = new GM_LineString();
+    List<IDirectPosition> points = new ArrayList<IDirectPosition>();
     synchronized (this.segment) {
       for (ICurveSegment theSegment : this.segment) {
         IDirectPositionList aListOfPoints = theSegment.coord();
         IDirectPositionList resampledPoints = Resampler.resample(
             aListOfPoints, spacing);
-        theLineString.getControlPoint().addAll(resampledPoints);
+        points.addAll(resampledPoints);
       }
     }
-    return theLineString;
+    return new GM_LineString(points);
   }
 
   @Override

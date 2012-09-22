@@ -463,13 +463,13 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
   }
 
   final public ILineString linestringText() throws ParseException {
-    ILineString lineString=new GM_LineString();
+    List<IDirectPosition> points = new ArrayList<IDirectPosition>();
     IDirectPosition p;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 9:
       jj_consume_token(9);
       p = point();
-               lineString.addControlPoint(p);
+               points.add(p);
       label_1:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -482,7 +482,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
         }
         jj_consume_token(12);
         p = point();
-                    lineString.addControlPoint(p);
+                    points.add(p);
       }
       jj_consume_token(10);
       break;
@@ -494,7 +494,7 @@ public class WktGeOxygene implements WktGeOxygeneConstants {
       jj_consume_token(-1);
       throw new ParseException();
     }
-     try {{if (true) return lineString;}} catch (Exception e) {System.out.println(e);}
+     try {{if (true) return new GM_LineString(points);}} catch (Exception e) {System.out.println(e);}
     throw new Error("Missing return statement in function");
   }
 

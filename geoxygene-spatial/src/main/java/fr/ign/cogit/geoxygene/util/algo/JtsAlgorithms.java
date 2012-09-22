@@ -1251,14 +1251,27 @@ public class JtsAlgorithms implements GeomAlgorithms {
   public static IMultiCurve<ILineString> offsetCurve(ILineString line,
       double distance) {
     double d = Math.abs(distance);
+    if (d == 0) {
+        IMultiCurve<ILineString> result = new GM_MultiCurve<ILineString>();
+        result.add(line);
+        return result;
+    }
+    
     int orientationIndex = (int) (d / distance);
     try {
       // removing duplicate coordinates from the input linestring.
       LineString lineString = JtsAlgorithms
-          .getLineStringWithoutDuplicates((LineString) JtsGeOxygene
-              .makeJtsGeom(line));
+      .getLineStringWithoutDuplicates((LineString) JtsGeOxygene
+          .makeJtsGeom(line));
+      BufferParameters bufParams = new BufferParameters();
+      bufParams.setSingleSided(true);
+//      bufParams.setEndCapStyle(BufferParameters.CAP_SQUARE);
+      Geometry buffer = BufferOp.bufferOp(lineString, distance, bufParams);
+//        lineString.buffer(distance, 4, BufferParameters.CAP_SQUARE);
+//      System.out.println("SS " + buffer);
       if (lineString != null) {
-        Geometry buffer = lineString.buffer(d, 4, BufferParameters.CAP_ROUND);
+        buffer = lineString.buffer(d, 4, BufferParameters.CAP_ROUND);
+        System.out.println(buffer);
         Polygon polygon = null;
         if (!(buffer instanceof Polygon)) {
           JtsAlgorithms.logger.error("Can't compute offsetcurve of " + //$NON-NLS-1$
