@@ -625,7 +625,7 @@ public class ConstructionBatiment {
 	 */
 	private static IGeometry createBarre(IDirectPosition centre, double width, double length) {
 		int nb = Math.min(1, (int) GenerateurValeur.genererValeurAleatoire(length / 5, length / 10));
-		GM_LineString exterior = new GM_LineString();
+		IDirectPositionList exterior = new DirectPositionList();
         double x = centre.getX() - length / 2;
         double y = centre.getY();
         double aggrLength = 0;
@@ -638,20 +638,20 @@ public class ConstructionBatiment {
             double rectWidth = GenerateurValeur.genererValeurAleatoire(5, width);
             double deviation = (width - rectWidth) / 2;
             deviation = GenerateurValeur.genererValeurAleatoire(-deviation, deviation);
-            exterior.addControlPoint(2 * i, new DirectPosition(x, y + deviation - rectWidth / 2));
-            exterior.addControlPoint(2 * i, new DirectPosition(x + rectLength, y + deviation - rectWidth / 2));
-            exterior.addControlPoint(2 * i, new DirectPosition(x + rectLength, y + deviation + rectWidth / 2));
-            exterior.addControlPoint(2 * i, new DirectPosition(x, y + deviation + rectWidth / 2));
+            exterior.add(2 * i, new DirectPosition(x, y + deviation - rectWidth / 2));
+            exterior.add(2 * i, new DirectPosition(x + rectLength, y + deviation - rectWidth / 2));
+            exterior.add(2 * i, new DirectPosition(x + rectLength, y + deviation + rectWidth / 2));
+            exterior.add(2 * i, new DirectPosition(x, y + deviation + rectWidth / 2));
 			aggrLength += rectLength;
 			x += rectLength;
 		}
-        exterior = (GM_LineString) Filtering.DouglasPeucker(exterior, 1.0);
-        if (exterior.sizeControlPoint() == 0) {
-            System.out.println("Error " + width + " - " + length);
-            return ShapeFactory.createRectangle(centre, length, width);
-        }
-        exterior.addControlPoint(exterior.getControlPoint(0));
-		return new GM_Polygon(exterior);
+		exterior = Filtering.DouglasPeuckerList(exterior, 1.0);
+		if (exterior.isEmpty()) {
+		  System.out.println("Error " + width + " - " + length);
+		  return ShapeFactory.createRectangle(centre, length, width);
+		}
+		exterior.add(exterior.get(0));
+		return new GM_Polygon(new GM_LineString(exterior));
 	}
 
 //	/**

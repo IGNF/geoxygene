@@ -35,7 +35,6 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
-import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
@@ -419,7 +418,7 @@ public class DetectionAlignement {
 			IDirectPosition point1 = listeDP.get(j);
 			for (int k=j+1;k<listeDP.size();k++){
 				IDirectPosition point2 = listeDP.get(k);
-				double dist = Distances.distance(point1, point2);
+				double dist = point1.distance(point2);
 				if(dist>dMax){
 					dMax = dist;
 					bout = point1;
@@ -448,7 +447,7 @@ public class DetectionAlignement {
 		IDirectPosition bout = listeDPTri.get(0);
 		double dist = bout.distance(point);
 		for (int k=1;k<listeDPTri.size();k++){
-			double distComp = Distances.distance(bout, listeDPTri.get(k));
+			double distComp = bout.distance(listeDPTri.get(k));
 			if (dist>distComp){compt=k+1;}
 		}
 		listeDPTri.add(compt,point);
@@ -904,40 +903,39 @@ public class DetectionAlignement {
 	private double distanceMoyenne(ILineString gmLigne1, ILineString gmLigne2){
 
 		GM_Polygon poly;
-		GM_LineString perimetre;
 		Iterator<IDirectPosition> itPts;
 
 		//fabrication de la surface délimitée par les lignes
-		perimetre = new GM_LineString();
+		List<IDirectPosition> perimetre = new ArrayList<IDirectPosition>();
 
-		double somDist1 = Distances.distance(gmLigne1.startPoint(), gmLigne2.startPoint()) +
-		Distances.distance(gmLigne1.endPoint(), gmLigne2.endPoint());
+    double somDist1 = gmLigne1.startPoint().distance(gmLigne2.startPoint())
+        + gmLigne1.endPoint().distance(gmLigne2.endPoint());
 
-		double somDist2 = Distances.distance(gmLigne1.startPoint(), gmLigne2.endPoint()) +
-		Distances.distance(gmLigne1.endPoint(), gmLigne2.startPoint());
+    double somDist2 = gmLigne1.startPoint().distance(gmLigne2.endPoint())
+        + gmLigne1.endPoint().distance(gmLigne2.startPoint());
 
 		itPts=gmLigne1.coord().getList().iterator();
 		while (itPts.hasNext()) {
 			IDirectPosition pt = itPts.next();
-			perimetre.addControlPoint(pt);
+			perimetre.add(pt);
 		}
 
 		itPts=gmLigne2.coord().getList().iterator();
 		while (itPts.hasNext()) {
 			IDirectPosition pt = itPts.next();
 			if (somDist1<somDist2){
-				perimetre.addControlPoint(0,pt);
+				perimetre.add(0,pt);
 			}
 			else{
-				perimetre.addControlPoint(pt);
+				perimetre.add(pt);
 			}
 		}
-		perimetre.addControlPoint(perimetre.startPoint());
-		if (perimetre.sizeControlPoint() < 4) {
+		perimetre.add(perimetre.get(0));
+		if (perimetre.size() < 4) {
 		    logger.error("Not enough control points");
 		    return 0;
 		}
-		poly = new GM_Polygon(perimetre);
+		poly = new GM_Polygon(new GM_LineString(perimetre));
 
 		double area = poly.area();
 		if (area == 0) {
