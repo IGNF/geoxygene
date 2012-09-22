@@ -361,6 +361,9 @@ public abstract class AbstractFeature implements IFeature {
               + "la méthode IFeature.getTopo() et non pas MdFeature.getAttribute(AttributeType attribute)"); //$NON-NLS-1$
       return this.getTopo();
     }
+    if (attribute.getMemberName() != null && attribute.getMemberName().equals("id")) { //$NON-NLS-1$
+      return this.getId();
+    }
     Object valeur = null;
     String nomFieldMaj = null;
     if (((AttributeType) attribute).getNomField().length() == 0) {
