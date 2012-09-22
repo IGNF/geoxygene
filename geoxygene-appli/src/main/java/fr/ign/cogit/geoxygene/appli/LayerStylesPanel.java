@@ -41,6 +41,8 @@ import javax.swing.JPanel;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.feature.FT_Coverage;
 import fr.ign.cogit.geoxygene.filter.Filter;
+import fr.ign.cogit.geoxygene.filter.expression.Expression;
+import fr.ign.cogit.geoxygene.filter.expression.Literal;
 import fr.ign.cogit.geoxygene.style.ExternalGraphic;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Layer;
@@ -187,7 +189,11 @@ public class LayerStylesPanel extends JPanel {
       AffineTransform at = AffineTransform.getTranslateInstance(this.margin
           + currentColumn * (columnsWidth + this.margin) + columnsWidth / 2,
           this.margin + currentRow * (rowHeight + this.margin) + rowHeight / 2);
-      at.rotate(symbolizer.getGraphic().getRotation());
+      Expression rotation = symbolizer.getGraphic().getRotation();
+      if (rotation instanceof Literal) {
+        // if this is a literal, we can evaluate it
+        at.rotate(-Double.parseDouble(rotation.evaluate(null).toString()) * Math.PI / 180.0); 
+      }
       at.scale(3 * size, 3 * size);
       markShape = at.createTransformedShape(markShape);
       g2.setColor((mark.getFill() == null) ? Color.gray : mark.getFill()

@@ -12,6 +12,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.LayerViewPanel;
+import fr.ign.cogit.geoxygene.filter.expression.Expression;
+import fr.ign.cogit.geoxygene.filter.expression.Literal;
 import fr.ign.cogit.geoxygene.style.ExternalGraphic;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Graphic;
@@ -178,7 +180,11 @@ public class LegendPaintListener implements PaintListener {
       Shape markShape = mark.toShape();
       float size = graphic.getSize();
       AffineTransform at = AffineTransform.getTranslateInstance(x, y);
-      at.rotate(graphic.getRotation());
+      Expression rotation = graphic.getRotation();
+      if (rotation instanceof Literal) {
+        // if this is a literal, we can evaluate it
+        at.rotate(-Double.parseDouble(rotation.evaluate(null).toString()) * Math.PI / 180.0); 
+      }
       at.scale(size, size);
       markShape = at.createTransformedShape(markShape);
       if (mark.getFill() != null) {

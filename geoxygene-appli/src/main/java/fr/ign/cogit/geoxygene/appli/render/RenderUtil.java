@@ -267,12 +267,13 @@ public final class RenderUtil {
         return;
       }
       Point2D point;
-      IGeometry geometry = feature.getGeom();
-      if (symbolizer.getGeometryPropertyName() != null
-          && !symbolizer.getGeometryPropertyName().equalsIgnoreCase("geom")) { //$NON-NLS-1$
-        geometry = (IGeometry) feature.getAttribute(symbolizer
-            .getGeometryPropertyName());
-      }
+//      IGeometry geometry = feature.getGeom();
+//      if (symbolizer.getGeometryPropertyName() != null
+//          && !symbolizer.getGeometryPropertyName().equalsIgnoreCase("geom")) { //$NON-NLS-1$
+//        geometry = (IGeometry) feature.getAttribute(symbolizer
+//            .getGeometryPropertyName());
+//      }
+      IGeometry geometry = getGeometry(symbolizer.getGeometryPropertyName(), feature);
       if (geometry == null) {
         return;
       }
@@ -296,7 +297,7 @@ public final class RenderUtil {
         size *= scale;
         AffineTransform at = AffineTransform.getTranslateInstance(point.getX(),
             point.getY());
-        at.rotate(symbolizer.getGraphic().getRotation());
+        at.rotate(-Double.parseDouble(symbolizer.getGraphic().getRotation().evaluate(feature).toString()) * Math.PI / 180.0);
         at.scale(size, size);
         markShape = at.createTransformedShape(markShape);
 
@@ -326,13 +327,34 @@ public final class RenderUtil {
             (int) point.getY() - onlineImage.getHeight(null) / 2, null);
       }
     }
-  public static void paint(LineSymbolizer symbolizer, IFeature feature, Viewport viewport, Graphics2D graphics, double opacity) {
-    IGeometry geometry = feature.getGeom();
-    if (symbolizer.getGeometryPropertyName() != null
-        && !symbolizer.getGeometryPropertyName().equalsIgnoreCase("geom")) { //$NON-NLS-1$
-      geometry = (IGeometry) feature.getAttribute(symbolizer
-          .getGeometryPropertyName());
+  
+  public static IGeometry getGeometry(String propertyName, IFeature feature) {
+    IGeometry result = feature.getGeom();
+    if (propertyName == null || propertyName.equalsIgnoreCase("geom")) {
+      return result;
     }
+    if (propertyName.equalsIgnoreCase("centroid")) {
+      if (result != null) {
+        result = result.centroid().toGM_Point();
+      }
+      return result;
+    }
+    if (propertyName.equalsIgnoreCase("startPoint")) {
+      return result.coord().get(0).toGM_Point();
+    }
+    if (propertyName.equalsIgnoreCase("endPoint")) {
+      return result.coord().get(result.numPoints() - 1).toGM_Point();
+    }
+    return (IGeometry) feature.getAttribute(propertyName);
+  }
+  public static void paint(LineSymbolizer symbolizer, IFeature feature, Viewport viewport, Graphics2D graphics, double opacity) {
+//    IGeometry geometry = feature.getGeom();
+//    if (symbolizer.getGeometryPropertyName() != null
+//        && !symbolizer.getGeometryPropertyName().equalsIgnoreCase("geom")) { //$NON-NLS-1$
+//      geometry = (IGeometry) feature.getAttribute(symbolizer
+//          .getGeometryPropertyName());
+//    }
+    IGeometry geometry = getGeometry(symbolizer.getGeometryPropertyName(), feature);
     if (geometry == null) {
       return;
     }
@@ -798,7 +820,8 @@ public final class RenderUtil {
           List<Graphic> graphicList = symbolizer.getFill().getGraphicFill()
               .getGraphics();
           for (Graphic graphic : graphicList) {
-            graphicFillPolygon(symbolizer, shape, graphic, viewport, graphics, opacity);
+            double rotation = Double.parseDouble(graphic.getRotation().evaluate(feature).toString());
+            graphicFillPolygon(symbolizer, shape, graphic, viewport, graphics, opacity, rotation);
           }
         }
       }
@@ -844,7 +867,7 @@ public final class RenderUtil {
   }
 
   private static void graphicFillPolygon(PolygonSymbolizer symbolizer, Shape shape, Graphic graphic,
-      Viewport viewport, Graphics2D graphics, double opacity) {
+      Viewport viewport, Graphics2D graphics, double opacity, double rotation) {
     if (shape == null || viewport == null || graphic == null) {
       return;
     }
@@ -867,9 +890,9 @@ public final class RenderUtil {
       Shape markShape = mark.toShape();
       AffineTransform translate = AffineTransform.getTranslateInstance(
           markShapeSize / 2, markShapeSize / 2);
-      if (graphic.getRotation() != 0) {
+      if (graphic.getRotation() != null) {
         AffineTransform rotate = AffineTransform.getRotateInstance(Math.PI
-            * graphic.getRotation() / 180.0);
+            * rotation / 180.0);
         translate.concatenate(rotate);
       }
       AffineTransform scaleTransform = AffineTransform.getScaleInstance(

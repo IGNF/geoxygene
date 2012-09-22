@@ -40,6 +40,7 @@ import org.apache.log4j.Logger;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.appli.LayerFactory.LayerType;
 import fr.ign.cogit.geoxygene.appli.plugin.GeometryToolBar;
@@ -49,6 +50,7 @@ import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Envelope;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
+import fr.ign.cogit.geoxygene.style.UserLayerFactory;
 import fr.ign.cogit.geoxygene.util.conversion.GPSTextfileReader;
 import fr.ign.cogit.geoxygene.util.conversion.RoadNetworkTextfileReader;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
@@ -282,6 +284,26 @@ public class ProjectFrame extends JInternalFrame implements ActionListener {
     LayerFactory factory = new LayerFactory(this.getSld());
     Layer layer = factory.createLayer(name, population.getFeatureType()
         .getGeometryType());
+    layer.setCRS(crs);
+    this.sld.add(layer);
+    return layer;
+  }
+
+  /**
+   * Add a feature collection to the project.
+   * 
+   * @param population the population to add
+   * @param name the name of the population
+   */
+  public final Layer addUserLayer(
+      final IFeatureCollection<? extends IFeature> collection, final String name,
+      CoordinateReferenceSystem crs) {
+    UserLayerFactory factory = new UserLayerFactory();
+    factory.setModel(this.getSld());
+    factory.setName(name);
+    factory.setGeometryType(collection.getFeatureType().getGeometryType());
+    factory.setCollection(collection);
+    Layer layer = factory.createLayer();
     layer.setCRS(crs);
     this.sld.add(layer);
     return layer;
