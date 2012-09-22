@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
@@ -76,12 +77,12 @@ public class Cluster {
     if (clusterSize == 1) {
       return (GM_Polygon) new GM_Point(nodes.get(0).getCoord()).buffer(4);
     } else {
-      GM_LineString line = new GM_LineString();
+      List<IDirectPosition> points = new ArrayList<IDirectPosition>();
 
       for (NodeSpecific node : nodes) {
-        line.addControlPoint(node.getCoord());
+        points.add(node.getCoord());
       }
-
+      GM_LineString line = new GM_LineString(points);
       if (clusterSize > 2) {
         // case where the cluster geometry is reduced to a point
         // or is a straight line

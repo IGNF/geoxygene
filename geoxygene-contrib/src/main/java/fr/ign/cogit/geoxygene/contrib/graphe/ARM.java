@@ -124,12 +124,10 @@ public class ARM {
       arc = arm.getPopArcs().nouvelElement();
       arc.setNoeudIni(noeud);
       arc.setNoeudFin(nouveauNoeud);
-      trait = new GM_LineString();
-      trait.addControlPoint(arc.getNoeudIni().getGeometrie().getPosition());
-      trait.addControlPoint(arc.getNoeudFin().getGeometrie().getPosition());
+      trait = new GM_LineString(arc.getNoeudIni().getGeometrie().getPosition(), arc.getNoeudFin()
+          .getGeometrie().getPosition());
       arc.setGeometrie(trait);
     }
-
     return arm;
 
   }
