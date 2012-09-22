@@ -24,7 +24,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import fr.ign.cogit.geoxygene.feature.FT_Feature;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 
 /**
@@ -38,7 +39,7 @@ public class UserLayer extends AbstractLayer {
      * TODO revoir cette implémentation des userLayers...
      */
     @XmlTransient
-    FT_FeatureCollection<? extends FT_Feature> features = null;
+    IFeatureCollection<? extends IFeature> features = null;
 
     /**
      * Affecte la valeur de l'attribut features.
@@ -46,28 +47,29 @@ public class UserLayer extends AbstractLayer {
      * @param features
      *            l'attribut features à affecter
      */
-    public void setFeatures(FT_FeatureCollection<? extends FT_Feature> features) {
+    public void setFeatures(IFeatureCollection<? extends IFeature> features) {
         this.features = features;
     }
 
     @Override
-    public FT_FeatureCollection<? extends FT_Feature> getFeatureCollection() {
+    public IFeatureCollection<? extends IFeature> getFeatureCollection() {
         return this.features;
     }
 
     public UserLayer() {
-        this.setFeatures(new FT_FeatureCollection<FT_Feature>());
+        this.setFeatures(new FT_FeatureCollection<IFeature>());
     }
-
     public UserLayer(Layer layer) {
         this();
         this.setName(layer.getName());
         this.setStyles(layer.getStyles());
     }
-
+    public UserLayer(IFeatureCollection<? extends IFeature> collection, String name) {
+      this.setName(name);
+      this.setFeatures(collection);
+    }
     @Override
     public void destroy() {
         this.features.clear();
     }
-
 }

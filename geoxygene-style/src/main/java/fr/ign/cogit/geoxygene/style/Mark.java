@@ -149,7 +149,8 @@ public class Mark {
   private static Shape vLine = new Polygon2D(new float[] { 0.1f, -0.1f, -0.1f,
       0.1f }, new float[] { -0.5f, -0.5f, 0.5f, 0.5f }, 4);
   private static Shape minus = new Line2D.Float(-0.5f, 0.0f, 0.5f, 0.0f);
-
+  private static Shape carrow = new Polygon2D(new float[] {-0.5f, 0f, -0.5f, -0.5f}, new float[] {-0.25f, 0f, 0.25f, -0.25f}, 4);
+  
   /**
    * @return the AWT shape used to draw this Mark
    */
@@ -181,6 +182,9 @@ public class Mark {
     }
     if (this.wellKnownName.equalsIgnoreCase("-")) {//$NON-NLS-1$
       return Mark.minus;
+    }
+    if (this.wellKnownName.equalsIgnoreCase("shape://carrow")) {//$NON-NLS-1$
+      return Mark.carrow;
     }
     return null;
   }

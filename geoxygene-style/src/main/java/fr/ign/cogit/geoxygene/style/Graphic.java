@@ -25,7 +25,13 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlElementRefs;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
+
+import fr.ign.cogit.geoxygene.filter.expression.Expression;
+import fr.ign.cogit.geoxygene.filter.expression.Literal;
 
 /**
  * @author Julien Perret
@@ -111,22 +117,24 @@ public class Graphic {
     this.size = size;
   }
 
-  private float rotation = 0.0f;
+  @XmlElementRefs( { @XmlElementRef })
+  @XmlElementWrapper(name="Rotation")
+  private Expression[] rotation = new Expression[] {new Literal("0")};
 
   /**
    * Renvoie la valeur de l'attribut rotation.
    * @return la valeur de l'attribut rotation
    */
-  public float getRotation() {
-    return this.rotation;
+  public Expression getRotation() {
+    return this.rotation[0];
   }
 
   /**
    * Affecte la valeur de l'attribut rotation.
    * @param rotation l'attribut rotation à affecter
    */
-  public void setRotation(float rotation) {
-    this.rotation = rotation;
+  public void setRotation(Expression rotation) {
+    this.rotation[0] = rotation;
   }
 
   public float getWidth() {
