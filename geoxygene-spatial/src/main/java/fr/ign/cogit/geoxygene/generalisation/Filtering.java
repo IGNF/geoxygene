@@ -201,7 +201,6 @@ public class Filtering {
       douglasVector.add(PtIni);
       douglasVector.add(PtFin);
     }
-
     /* elimination des doublons */
     IDirectPosition ptmul = douglasVector.get(0);
     filtreVector.add(ptmul);
@@ -212,7 +211,6 @@ public class Filtering {
         ptmul = Pt;
       }
     }
-
     return filtreVector;
   }
 

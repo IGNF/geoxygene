@@ -1,5 +1,8 @@
 package fr.ign.cogit.geoxygene.generalisation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
@@ -79,25 +82,25 @@ public class GaussianFilter {
   public static ILineString extend(ILineString line, int k) {
     IDirectPosition first = line.getControlPoint(0);
     IDirectPosition last = line.getControlPoint(line.sizeControlPoint() - 1);
-    ILineString result = new GM_LineString();
+    List<IDirectPosition> points = new ArrayList<IDirectPosition>();
     for (int index = 0; index < line.sizeControlPoint() + 2 * k; index++) {
       int position = index - k;
       if (index < k) {
         IDirectPosition p = line.getControlPoint(-position);
-        result.addControlPoint(GaussianFilter.centralInversion(first, p));
+        points.add(GaussianFilter.centralInversion(first, p));
       } else {
         if (position >= line.sizeControlPoint()) {
           int beyond = position - line.sizeControlPoint() + 1;
           IDirectPosition p = line.getControlPoint(line.sizeControlPoint() - 1
               - beyond);
-          result.addControlPoint(GaussianFilter.centralInversion(last, p));
+          points.add(GaussianFilter.centralInversion(last, p));
         } else {
           IDirectPosition p = line.getControlPoint(position);
-          result.addControlPoint(p);
+          points.add(p);
         }
       }
     }
-    return result;
+    return new GM_LineString(points);
   }
 
   /**
