@@ -765,7 +765,7 @@ public class DessinableGeoxygene implements Dessinable, Runnable {
       float size = pointSymbolizer.getGraphic().getSize();
       AffineTransform at = AffineTransform.getTranslateInstance(
           this.coordToPixX(position.getX()), this.coordToPixY(position.getY()));
-      at.rotate(pointSymbolizer.getGraphic().getRotation());
+//      at.rotate(pointSymbolizer.getGraphic().getRotation());
       at.scale(size, size);
       shape = at.createTransformedShape(shape);
       g.setColor((mark.getFill() == null) ? Color.gray : mark.getFill()
