@@ -531,9 +531,8 @@ public class EnsembleDeLiens extends Population<Lien> {
         itComp = lien.getObjetsComp().iterator();
         while (itComp.hasNext()) {
           comp = itComp.next();
-          GM_LineString ligne = new GM_LineString();
-          ligne.addControlPoint(ref.getGeom().centroid());
-          ligne.addControlPoint(comp.getGeom().centroid());
+          GM_LineString ligne = new GM_LineString(ref.getGeom().centroid(), comp.getGeom()
+              .centroid());
           geom.add(ligne);
         }
       }
@@ -561,9 +560,7 @@ public class EnsembleDeLiens extends Population<Lien> {
         itComp = lien.getObjetsComp().iterator();
         while (itComp.hasNext()) {
           comp = itComp.next();
-          lineStringLien = new GM_LineString();
-          lineStringLien.addControlPoint(dpRef);
-          lineStringLien.addControlPoint(Operateurs.milieu((GM_LineString) comp
+          lineStringLien = new GM_LineString(dpRef, Operateurs.milieu((GM_LineString) comp
               .getGeom()));
           geom.add(lineStringLien);
         }
@@ -591,7 +588,7 @@ public class EnsembleDeLiens extends Population<Lien> {
         itComp = lien.getObjetsComp().iterator();
         while (itComp.hasNext()) {
           comp = itComp.next();
-          GM_LineString ligne = new GM_LineString();
+          List<IDirectPosition> points = new ArrayList<IDirectPosition>();
           if (comparaison) {
             GM_Point centroideSurface = new GM_Point(ref.getGeom().centroid());
             double pointCentral = Math.floor(((GM_LineString) comp.getGeom())
@@ -599,9 +596,9 @@ public class EnsembleDeLiens extends Population<Lien> {
             GM_Point pointMilieu = new GM_Point(
                 ((GM_LineString) comp.getGeom())
                     .getControlPoint((int) pointCentral));
-            ligne.addControlPoint(centroideSurface.getPosition());
-            ligne.addControlPoint(pointMilieu.getPosition());
-            geom.add(ligne);
+            points.add(centroideSurface.getPosition());
+            points.add(pointMilieu.getPosition());
+            geom.add(new GM_LineString(points));
           } else {
             GM_Point centroideSurface = new GM_Point(comp.getGeom().centroid());
             double pointCentral = Math.floor(((GM_LineString) ref.getGeom())
@@ -609,17 +606,15 @@ public class EnsembleDeLiens extends Population<Lien> {
             GM_Point pointMilieu = new GM_Point(
                 ((GM_LineString) ref.getGeom())
                     .getControlPoint((int) pointCentral));
-            ligne.addControlPoint(centroideSurface.getPosition());
-            ligne.addControlPoint(pointMilieu.getPosition());
-            geom.add(ligne);
+            points.add(centroideSurface.getPosition());
+            points.add(pointMilieu.getPosition());
+            geom.add(new GM_LineString(points));
           }
-
         }
       }
       lien.setGeom(geom);
     }
   }
-
   /**
    * Affecte une géométrie à l'ensemble des liens, cette géométrie relie le
    * centroïde d'une surface à un point.
@@ -642,19 +637,18 @@ public class EnsembleDeLiens extends Population<Lien> {
         itComp = lien.getObjetsComp().iterator();
         while (itComp.hasNext()) {
           comp = itComp.next();
-          GM_LineString ligne = new GM_LineString();
+          List<IDirectPosition> points = new ArrayList<IDirectPosition>();
           if (comparaison) {
             GM_Point centroideSurface = new GM_Point(ref.getGeom().centroid());
-            ligne.addControlPoint(centroideSurface.getPosition());
-            ligne.addControlPoint(((GM_Point) comp.getGeom()).getPosition());
-            geom.add(ligne);
+            points.add(centroideSurface.getPosition());
+            points.add(((GM_Point) comp.getGeom()).getPosition());
+            geom.add(new GM_LineString(points));
           } else {
             GM_Point centroideSurface = new GM_Point(comp.getGeom().centroid());
-            ligne.addControlPoint(centroideSurface.getPosition());
-            ligne.addControlPoint(((GM_Point) ref.getGeom()).getPosition());
-            geom.add(ligne);
+            points.add(centroideSurface.getPosition());
+            points.add(((GM_Point) ref.getGeom()).getPosition());
+            geom.add(new GM_LineString(points));
           }
-
         }
       }
       lien.setGeom(geom);

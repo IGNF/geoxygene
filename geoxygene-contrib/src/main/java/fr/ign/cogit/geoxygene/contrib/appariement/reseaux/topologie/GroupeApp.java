@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.LienReseaux;
@@ -654,23 +656,17 @@ public class GroupeApp extends Groupe {
   public GM_LineString compileArcs(Arc arcRef) {
     Arc arc, premierArc;
     Noeud premierNoeud;
-    GM_LineString chemin = new GM_LineString();
-    GM_LineString chemin2 = new GM_LineString();
+    List<IDirectPosition> points1 = new ArrayList<IDirectPosition>();
+    List<IDirectPosition> points2 = new ArrayList<IDirectPosition>();
     Iterator<Arc> itArcs = this.getListeArcs().iterator();
-    double d1, d2;
-    int i;
-
     if (!(itArcs.hasNext())) {
-      if (this.getListeNoeuds().size() == 0) {
+      if (this.getListeNoeuds().isEmpty()) {
         return null;
       }
-      chemin.addControlPoint(((NoeudApp) this.getListeNoeuds().get(0))
-          .getCoord());
-      chemin.addControlPoint(((NoeudApp) this.getListeNoeuds().get(0))
-          .getCoord());
-      return chemin;
+      points1.add(((NoeudApp) this.getListeNoeuds().get(0)).getCoord());
+      points1.add(((NoeudApp) this.getListeNoeuds().get(0)).getCoord());
+      return new GM_LineString(points1);
     }
-
     // on met bout à bout les arcs
     premierArc = this.getListeArcs().get(0);
     if (this.getListeNoeuds().contains(premierArc.getNoeudIni())) {
@@ -678,38 +674,34 @@ public class GroupeApp extends Groupe {
     } else {
       premierNoeud = premierArc.getNoeudIni();
     }
-
     while (itArcs.hasNext()) {
       arc = itArcs.next();
       if (arc.getNoeudIni() == premierNoeud) {
-        for (i = 0; i < arc.getCoord().size(); i++) {
-          chemin.addControlPoint(arc.getCoord().get(i));
+        for (int i = 0; i < arc.getCoord().size(); i++) {
+          points1.add(arc.getCoord().get(i));
           premierNoeud = arc.getNoeudFin();
         }
       } else {
-        for (i = 0; i < arc.getCoord().size(); i++) {
-          chemin.addControlPoint(arc.getCoord().get(
-              arc.getCoord().size() - i - 1));
+        for (int i = 0; i < arc.getCoord().size(); i++) {
+          points1.add(arc.getCoord().get(arc.getCoord().size() - i - 1));
           premierNoeud = arc.getNoeudIni();
         }
       }
     }
-
+    GM_LineString chemin = new GM_LineString(points1);
     // on inverse l'arc au besoin.
-    d1 = chemin.startPoint().distance(arcRef.getGeometrie().startPoint())
+    double d1 = chemin.startPoint().distance(arcRef.getGeometrie().startPoint())
         + chemin.endPoint().distance(arcRef.getGeometrie().endPoint());
-    d2 = chemin.startPoint().distance(arcRef.getGeometrie().endPoint())
+    double d2 = chemin.startPoint().distance(arcRef.getGeometrie().endPoint())
         + chemin.endPoint().distance(arcRef.getGeometrie().startPoint());
     if (d1 < d2) {
-      chemin2 = chemin;
+      return chemin;
     } else {
-      for (i = 0; i < chemin.sizeControlPoint(); i++) {
-        chemin2.addControlPoint(chemin.getControlPoint(chemin
-            .sizeControlPoint() - i - 1));
+      for (int i = 0; i < points1.size(); i++) {
+        points2.add(points1.get(points1.size() - i - 1));
       }
     }
-
-    return chemin2;
+    return new GM_LineString(points2);
   }
 
 }

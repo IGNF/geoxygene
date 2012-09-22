@@ -404,26 +404,27 @@ public class LienReseaux extends Lien {
     if (LienReseaux.logger.isDebugEnabled()) {
       LienReseaux.logger.debug(obj1 + " - " + obj2); //$NON-NLS-1$		
     }
-    GM_LineString ligne = new GM_LineString();
+    List<IDirectPosition> points = new ArrayList<IDirectPosition>();
     IDirectPosition DP2 = null;
     if (obj2.getGeom() instanceof IPoint) {
       IPoint point2 = (IPoint) obj2.getGeom();
       DP2 = point2.getPosition();
-      ligne.addControlPoint(DP2);
+      points.add(DP2);
     }
     if (obj2.getGeom() instanceof ILineString) {
       ILineString ligne2 = (ILineString) obj2.getGeom();
       DP2 = Operateurs.milieu(ligne2);
-      ligne.addControlPoint(DP2);
+      points.add(DP2);
     }
     if (obj1.getGeom() instanceof IPoint) {
       IPoint point1 = (IPoint) obj1.getGeom();
-      ligne.addControlPoint(point1.getPosition());
+      points.add(point1.getPosition());
     }
     if (obj1.getGeom() instanceof ILineString) {
       ILineString ligne1 = (ILineString) obj1.getGeom();
-      ligne.addControlPoint(Operateurs.projection(DP2, ligne1));
+      points.add(Operateurs.projection(DP2, ligne1));
     }
+    ILineString ligne = new GM_LineString(points);
     if (LienReseaux.logger.isDebugEnabled()) {
       LienReseaux.logger.debug(ligne);
     }
@@ -591,9 +592,7 @@ public class LienReseaux extends Lien {
       itNoeuds = this.getNoeuds2().iterator();
       while (itNoeuds.hasNext()) {
         noeudComp = (NoeudApp) itNoeuds.next();
-        ligne = new GM_LineString();
-        ligne.addControlPoint(noeudRef.getCoord());
-        ligne.addControlPoint(noeudComp.getCoord());
+        ligne = new GM_LineString(noeudRef.getCoord(), noeudComp.getCoord());
         geomLien.add(ligne);
         if (buffer) {
           geomLien.add(noeudComp.getGeometrie().buffer(tailleBuffer));
@@ -615,10 +614,7 @@ public class LienReseaux extends Lien {
           geomLien.add(noeudComp.getGeometrie().buffer(tailleBuffer));
         }
         // on fait le trait entre le noeud ref et le groupe comp
-        ligne = new GM_LineString();
-        ligne.addControlPoint(noeudRef.getCoord());
-        ligne
-            .addControlPoint(noeudRef.noeudLePlusProche(groupeComp).getCoord());
+        ligne = new GM_LineString(noeudRef.getCoord(), noeudRef.noeudLePlusProche(groupeComp).getCoord());
         geomLien.add(ligne);
       }
       if (LienReseaux.logger.isDebugEnabled()) {
@@ -641,11 +637,9 @@ public class LienReseaux extends Lien {
       while (itNoeuds.hasNext()) {
         noeudComp = (NoeudApp) itNoeuds.next();
         if (tirets) {
-          geomLien.add(Lien.tirets(arcRef.getGeometrie(),
-              noeudComp.getGeometrie(), pasTirets));
+          geomLien.add(Lien.tirets(arcRef.getGeometrie(), noeudComp.getGeometrie(), pasTirets));
         } else {
-          geomLien.add(Lien.tiret(arcRef.getGeometrie(),
-              noeudComp.getGeometrie()));
+          geomLien.add(Lien.tiret(arcRef.getGeometrie(), noeudComp.getGeometrie()));
         }
       }
       // 1 arc ref vers des groupes comp (groupes en parrallèle) --> plusieurs

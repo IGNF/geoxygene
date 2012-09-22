@@ -500,7 +500,7 @@ public class Arc extends ElementCarteTopo {
     Arc arcEnCours;
     boolean sensEnCours;
     List<Object> arcOriente;
-    GM_LineString contour = new GM_LineString();
+    List<IDirectPosition> contourPoints = new ArrayList<IDirectPosition>();
     List<Arc> arcsDuCycle = new ArrayList<Arc>();
     List<Boolean> orientationsDuCycle = new ArrayList<Boolean>();
     int i;
@@ -521,12 +521,12 @@ public class Arc extends ElementCarteTopo {
 
       if (sensEnCours) { // arc dans le bon sens
         for (i = 0; i < arcEnCours.getGeometrie().sizeControlPoint() - 1; i++) {
-          contour.addControlPoint(arcEnCours.getGeometrie().getControlPoint(i));
+          contourPoints.add(arcEnCours.getGeometrie().getControlPoint(i));
         }
         arcOriente = arcEnCours.arcSuivantFin();
       } else { // arc dans le sens inverse
         for (i = arcEnCours.getGeometrie().sizeControlPoint() - 1; i > 0; i--) {
-          contour.addControlPoint(arcEnCours.getGeometrie().getControlPoint(i));
+          contourPoints.add(arcEnCours.getGeometrie().getControlPoint(i));
         }
         arcOriente = arcEnCours.arcSuivantDebut();
       }
@@ -549,8 +549,8 @@ public class Arc extends ElementCarteTopo {
     }
 
     // ajout du dernier point pour finir la boucle du polygone
-    contour.addControlPoint(contour.startPoint());
-    return new Cycle(arcsDuCycle, orientationsDuCycle, contour, false);
+    contourPoints.add(contourPoints.get(0));
+    return new Cycle(arcsDuCycle, orientationsDuCycle, new GM_LineString(contourPoints), false);
   }
 
   /**
@@ -578,7 +578,7 @@ public class Arc extends ElementCarteTopo {
     Arc arcEnCours;
     boolean sensEnCours;
     List<Object> arcOriente;
-    GM_LineString contour = new GM_LineString();
+    List<IDirectPosition> contourPoints = new ArrayList<IDirectPosition>();
     List<Arc> arcsDuCycle = new ArrayList<Arc>();
     List<Boolean> orientationsDuCycle = new ArrayList<Boolean>();
     int i;
@@ -596,12 +596,12 @@ public class Arc extends ElementCarteTopo {
       orientationsDuCycle.add(new Boolean(sensEnCours));
       if (sensEnCours) { // arc dans le bon sens
         for (i = 0; i < arcEnCours.getGeometrie().sizeControlPoint() - 1; i++) {
-          contour.addControlPoint(arcEnCours.getGeometrie().getControlPoint(i));
+          contourPoints.add(arcEnCours.getGeometrie().getControlPoint(i));
         }
         arcOriente = arcEnCours.arcPrecedentFin();
       } else { // arc dans le sens inverse
         for (i = arcEnCours.getGeometrie().sizeControlPoint() - 1; i > 0; i--) {
-          contour.addControlPoint(arcEnCours.getGeometrie().getControlPoint(i));
+          contourPoints.add(arcEnCours.getGeometrie().getControlPoint(i));
         }
         arcOriente = arcEnCours.arcPrecedentDebut();
       }
@@ -623,8 +623,8 @@ public class Arc extends ElementCarteTopo {
     }
 
     // ajout du dernier point pour finir la boucle du polygone
-    contour.addControlPoint(contour.startPoint());
-    return new Cycle(arcsDuCycle, orientationsDuCycle, contour, true);
+    contourPoints.add(contourPoints.get(0));
+    return new Cycle(arcsDuCycle, orientationsDuCycle, new GM_LineString(contourPoints), true);
   }
 
   /**
@@ -640,7 +640,7 @@ public class Arc extends ElementCarteTopo {
    */
   public Cycle cycle(boolean aGauche) {
     List<Object> arcOriente;
-    GM_LineString contour = new GM_LineString();
+    List<IDirectPosition> contourPoints = new ArrayList<IDirectPosition>();
     List<Arc> arcsDuCycle = new ArrayList<Arc>();
     List<Boolean> orientationsDuCycle = new ArrayList<Boolean>();
     // intialisation avec le premier arc du cycle (this) qui est par définition
@@ -657,13 +657,13 @@ public class Arc extends ElementCarteTopo {
       orientationsDuCycle.add(new Boolean(sensEnCours));
       if (sensEnCours) { // arc dans le bon sens
         for (int i = 0; i < arcEnCours.getGeometrie().sizeControlPoint() - 1; i++) {
-          contour.addControlPoint(arcEnCours.getGeometrie().getControlPoint(i));
+          contourPoints.add(arcEnCours.getGeometrie().getControlPoint(i));
         }
         arcOriente = (aGauche) ? arcEnCours.arcPrecedentFin() : arcEnCours
             .arcSuivantFin();
       } else { // arc dans le sens inverse
         for (int i = arcEnCours.getGeometrie().sizeControlPoint() - 1; i > 0; i--) {
-          contour.addControlPoint(arcEnCours.getGeometrie().getControlPoint(i));
+          contourPoints.add(arcEnCours.getGeometrie().getControlPoint(i));
         }
         arcOriente = (aGauche) ? arcEnCours.arcPrecedentDebut() : arcEnCours
             .arcSuivantDebut();
@@ -671,7 +671,6 @@ public class Arc extends ElementCarteTopo {
       if (arcOriente == null) {
         return null;
       }
-
       // au suivant...
       arcEnCours = (Arc) arcOriente.get(0); // l'arc
       sensEnCours = !((Boolean) arcOriente.get(1)).booleanValue(); // le sens de
@@ -684,10 +683,9 @@ public class Arc extends ElementCarteTopo {
         break;
       }
     }
-
     // ajout du dernier point pour finir la boucle du polygone
-    contour.addControlPoint(contour.startPoint());
-    return new Cycle(arcsDuCycle, orientationsDuCycle, contour, aGauche);
+    contourPoints.add(contourPoints.get(0));
+    return new Cycle(arcsDuCycle, orientationsDuCycle, new GM_LineString(contourPoints), aGauche);
   }
 
   // ///////////////////////////////////////////////////////////////////////////////////////////////

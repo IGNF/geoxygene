@@ -336,15 +336,13 @@ public class Lien extends FT_Feature {
     long2 = linestring2.length();
     nbTirets = (int) (long1 / pas);
     for (i = 0; i <= nbTirets; i++) {
-      tiret = new GM_LineString();
       pt1 = Operateurs.pointEnAbscisseCurviligne(linestring1, i * pas);
       pt2 = Operateurs.pointEnAbscisseCurviligne(linestring2, i * pas * long2
           / long1);
       if (pt1 == null || pt2 == null) {
         continue;
       }
-      tiret.addControlPoint(pt1);
-      tiret.addControlPoint(pt2);
+      tiret = new GM_LineString(pt1, pt2);
       tirets.add(tiret);
     }
     return tirets;
@@ -370,14 +368,12 @@ public class Lien extends FT_Feature {
     long1 = linestring.length();
     nbTirets = (int) (long1 / pas);
     for (i = 0; i <= nbTirets; i++) {
-      tiret = new GM_LineString();
       pt1 = Operateurs.pointEnAbscisseCurviligne(linestring, i * pas);
       pt2 = point.getPosition();
       if (pt1 == null || pt2 == null) {
         continue;
       }
-      tiret.addControlPoint(pt1);
-      tiret.addControlPoint(pt2);
+      tiret = new GM_LineString(pt1, pt2);
       tirets.add(tiret);
     }
     return tirets;
@@ -390,11 +386,9 @@ public class Lien extends FT_Feature {
    * @param linestring2 a linestring
    * @return link geometry
    */
-  public static ILineString tiret(final ILineString linestring1,
-      final ILineString linestring2) {
-    GM_LineString tiret = new GM_LineString();
-    tiret.addControlPoint(Operateurs.milieu(linestring1));
-    tiret.addControlPoint(Operateurs.milieu(linestring2));
+  public static ILineString tiret(final ILineString linestring1, final ILineString linestring2) {
+    GM_LineString tiret = new GM_LineString(Operateurs.milieu(linestring1), Operateurs
+        .milieu(linestring2));
     return tiret;
   }
 
@@ -405,11 +399,8 @@ public class Lien extends FT_Feature {
    * @param point a point
    * @return link geometry
    */
-  public static ILineString tiret(final ILineString linestring,
-      final IPoint point) {
-    GM_LineString tiret = new GM_LineString();
-    tiret.addControlPoint(Operateurs.milieu(linestring));
-    tiret.addControlPoint(point.getPosition());
+  public static ILineString tiret(final ILineString linestring, final IPoint point) {
+    GM_LineString tiret = new GM_LineString(Operateurs.milieu(linestring), point.getPosition());
     return tiret;
   }
 
@@ -435,14 +426,12 @@ public class Lien extends FT_Feature {
     long1 = linestring1.length();
     nbTirets = (int) (long1 / pas);
     for (i = 0; i <= nbTirets; i++) {
-      tiret = new GM_LineString();
       pt1 = Operateurs.pointEnAbscisseCurviligne(linestring1, i * pas);
       pt2 = Operateurs.projection(pt1, linestring2);
       if (pt1 == null || pt2 == null) {
         continue;
       }
-      tiret.addControlPoint(pt1);
-      tiret.addControlPoint(pt2);
+      tiret = new GM_LineString(pt1, pt2);
       tirets.add(tiret);
     }
     return tirets;
@@ -470,14 +459,12 @@ public class Lien extends FT_Feature {
     long1 = linestring.length();
     nbTirets = (int) (long1 / pas);
     for (i = 0; i <= nbTirets; i++) {
-      tiret = new GM_LineString();
       pt1 = Operateurs.pointEnAbscisseCurviligne(linestring, i * pas);
       pt2 = Operateurs.projection(pt1, aggregat);
       if (pt1 == null || pt2 == null) {
         continue;
       }
-      tiret.addControlPoint(pt1);
-      tiret.addControlPoint(pt2);
+      tiret = new GM_LineString(pt1, pt2);
       tirets.add(tiret);
     }
     return tirets;
@@ -494,9 +481,7 @@ public class Lien extends FT_Feature {
       final ILineString linestring2) {
     IDirectPosition milieu = Operateurs.milieu(linestring1);
     IDirectPosition projete = Operateurs.projection(milieu, linestring2);
-    GM_LineString tiret = new GM_LineString();
-    tiret.addControlPoint(milieu);
-    tiret.addControlPoint(projete);
+    GM_LineString tiret = new GM_LineString(milieu, projete);
     return tiret;
   }
 
@@ -511,9 +496,7 @@ public class Lien extends FT_Feature {
       final IAggregate<IGeometry> aggegat) {
     IDirectPosition milieu = Operateurs.milieu(linestring);
     IDirectPosition projete = Operateurs.projection(milieu, aggegat);
-    GM_LineString tiret = new GM_LineString();
-    tiret.addControlPoint(milieu);
-    tiret.addControlPoint(projete);
+    GM_LineString tiret = new GM_LineString(milieu, projete);
     return tiret;
   }
 
@@ -527,9 +510,7 @@ public class Lien extends FT_Feature {
       final ILineString linestring) {
     IDirectPosition pt = point.getPosition();
     IDirectPosition projete = Operateurs.projection(pt, linestring);
-    GM_LineString tiret = new GM_LineString();
-    tiret.addControlPoint(pt);
-    tiret.addControlPoint(projete);
+    GM_LineString tiret = new GM_LineString(pt, projete);
     return tiret;
   }
 
@@ -543,9 +524,7 @@ public class Lien extends FT_Feature {
       final IAggregate<IGeometry> aggregat) {
     IDirectPosition pt = point.getPosition();
     IDirectPosition projete = Operateurs.projection(pt, aggregat);
-    GM_LineString tiret = new GM_LineString();
-    tiret.addControlPoint(pt);
-    tiret.addControlPoint(projete);
+    GM_LineString tiret = new GM_LineString(pt, projete);
     return tiret;
   }
 
@@ -603,9 +582,7 @@ public class Lien extends FT_Feature {
         }
         buffer = groupe.buffer(this.bufferSize);
         centroide = new GM_Point(buffer.centroid());
-        ligne = new GM_LineString();
-        ligne.addControlPoint(centroide.getPosition());
-        ligne.addControlPoint(((IPoint) geomRef).getPosition());
+        ligne = new GM_LineString(centroide.getPosition(), ((IPoint) geomRef).getPosition());
         geomLien.add(buffer);
         geomLien.add(ligne);
         continue;

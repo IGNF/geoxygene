@@ -634,9 +634,8 @@ public abstract class AppariementSurfaces {
         GM_Point pointAccrocheComp = new GM_Point(objetComp.getGeom()
             .centroid());
         // if (pointAccrocheComp==null) continue;
-        GM_LineString trait = new GM_LineString();
-        trait.addControlPoint(pointAccrocheRef.getPosition());
-        trait.addControlPoint(pointAccrocheComp.getPosition());
+        GM_LineString trait = new GM_LineString(pointAccrocheRef.getPosition(), pointAccrocheComp
+            .getPosition());
         geomLien.add(trait);
         // pour faire joli :
         // Vecteur V = new Vecteur();

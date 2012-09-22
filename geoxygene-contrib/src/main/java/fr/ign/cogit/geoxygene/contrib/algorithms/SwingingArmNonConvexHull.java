@@ -118,7 +118,7 @@ public class SwingingArmNonConvexHull {
       // List of absolute positions of points of the current connex component
       ArrayList<Integer> absPos = new ArrayList<Integer>();
       // Line being constructed (to verify non self intersection)
-      GM_LineString provisoryLine = new GM_LineString();
+      List<IDirectPosition> provisoryPoints = new ArrayList<IDirectPosition>();
       // Boolean list for visited points
       List<Boolean> isVisited = new ArrayList<Boolean>(this.points.size());
       for (int i = 0; i < this.points.size(); i++) {
@@ -155,7 +155,7 @@ public class SwingingArmNonConvexHull {
        * Let L be a line-segment of length r anchored at Hi,0 parallel to the
        * positive y-axis.
        */
-      provisoryLine.addControlPoint(initialPoint);
+      provisoryPoints.add(initialPoint);
       absPos.add(new Integer(ptPos));
       // Following points of the current connex component
       while (true) {
@@ -207,15 +207,13 @@ public class SwingingArmNonConvexHull {
           // Particular case: the potential next segment intersects the line
           // being constructed
           if (absPos.size() > 2 && !absPos.contains(new Integer(pos))) {
-            GM_LineString potentialSegment = new GM_LineString();
-            potentialSegment.addControlPoint(lastPoint);
-            potentialSegment.addControlPoint(pt);
-            provisoryLine.removeControlPoint(absPos.size() - 1);
-            if (potentialSegment.intersects(provisoryLine)) {
-              provisoryLine.addControlPoint(lastPoint);
+            GM_LineString potentialSegment = new GM_LineString(lastPoint,pt);
+            provisoryPoints.remove(absPos.size() - 1);
+            if (potentialSegment.intersects(new GM_LineString(provisoryPoints))) {
+              provisoryPoints.add(lastPoint);
               continue;
             }
-            provisoryLine.addControlPoint(lastPoint);
+            provisoryPoints.add(lastPoint);
           }
           // Computation of the angle
           double alpha = Math.atan((pt.getY() - lastPoint.getY())
@@ -253,14 +251,13 @@ public class SwingingArmNonConvexHull {
           // else the last point is removed, and the algorithm keeps on
           // completing the connex component
           hullPoints.remove(hullPoints.size() - 1);
-          provisoryLine
-              .removeControlPoint(provisoryLine.sizeControlPoint() - 1);
+          provisoryPoints.remove(provisoryPoints.size() - 1);
           absPos.remove(absPos.size() - 1);
           continue;
         }
         // Addition of the next point to the current connex component
         hullPoints.add(nextPoint);
-        provisoryLine.addControlPoint(nextPoint);
+        provisoryPoints.add(nextPoint);
         absPos.add(new Integer(ptPos));
         isVisited.set(ptPos, Boolean.TRUE);
         // If the next point the initial point of the current connex component,
