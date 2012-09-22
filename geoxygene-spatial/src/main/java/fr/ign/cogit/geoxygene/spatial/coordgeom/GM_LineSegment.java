@@ -57,11 +57,9 @@ public class GM_LineSegment extends GM_LineString implements ILineSegment {
   };
 
   public GM_LineSegment(IDirectPosition startPoint, IDirectPosition endPoint) {
-    super();
+    super(startPoint, endPoint);
     this.startPoint = startPoint;
     this.endPoint = endPoint;
-    this.coord().add(startPoint);
-    this.coord().add(endPoint);
   }
 
   /**

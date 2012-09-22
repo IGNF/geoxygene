@@ -109,11 +109,6 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
     return this.controlPoint.size();
   }
 
-  /** Constructeur par défaut. */
-  public GM_LineString() {
-    this(new DirectPositionList());
-  }
-
   public GM_LineString(List<IDirectPosition> list) {
     this(new DirectPositionList(list));
   }
@@ -129,6 +124,10 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
     this.segment.add(this);
     this.controlPoint = new DirectPositionList();
     this.controlPoint.addAll(points);
+//    if (this.controlPoint.size() == 1) {
+//      System.out.println("CREATING A LINE WITH A SINGLE POINT " + points.size() + " = " + points.get(0));
+//      System.exit(0);
+//    }
     //    this.interpolation = "linear"; //$NON-NLS-1$
   }
 
@@ -139,6 +138,10 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
     this.controlPoint = new DirectPositionList();
     for (IDirectPosition p : points) {
       this.addControlPoint(p, allowRepeated);
+    }
+    if (this.controlPoint.size() == 1) {
+      System.out.println("CREATING A LINE WITH A SINGLE POINT " + points.get(0));
+      System.exit(0);
     }
   }
 
@@ -157,12 +160,12 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
 
   @Override
   public ICurveSegment reverse() {
-    GM_LineString result = new GM_LineString();
+    List<IDirectPosition> points = new ArrayList<IDirectPosition>();
     int n = this.controlPoint.size();
     for (int i = 0; i < n; i++) {
-      result.getControlPoint().add(this.controlPoint.get(n - 1 - i));
+      points.add(this.controlPoint.get(n - 1 - i));
     }
-    return result;
+    return new GM_LineString(points);
   }
 
   @Override

@@ -22,6 +22,7 @@ package fr.ign.cogit.geoxygene.spatial.coordgeom;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
@@ -234,13 +235,13 @@ public class GM_Polygon extends GM_SurfacePatch implements IPolygon {
     super();
     this.patch.add(this);
     this.interpolation = "planar"; //$NON-NLS-1$
-    GM_LineString ls = new GM_LineString();
+    List<IDirectPosition> points = new ArrayList<IDirectPosition>();
     boolean flag3D = true;
     Double D = new Double(env.getLowerCorner().getZ());
     if (D.isNaN()) {
       flag3D = false;
     }
-    ls.getControlPoint().add(env.getLowerCorner());
+    points.add(env.getLowerCorner());
     DirectPosition dp = null;
     if (flag3D) {
       dp = new DirectPosition(env.getUpperCorner().getX(), env.getLowerCorner()
@@ -249,8 +250,8 @@ public class GM_Polygon extends GM_SurfacePatch implements IPolygon {
       dp = new DirectPosition(env.getUpperCorner().getX(), env.getLowerCorner()
           .getY());
     }
-    ls.getControlPoint().add(dp);
-    ls.getControlPoint().add(env.getUpperCorner());
+    points.add(dp);
+    points.add(env.getUpperCorner());
     if (flag3D) {
       dp = new DirectPosition(env.getLowerCorner().getX(), env.getUpperCorner()
           .getY(), 0.0);
@@ -258,9 +259,9 @@ public class GM_Polygon extends GM_SurfacePatch implements IPolygon {
       dp = new DirectPosition(env.getLowerCorner().getX(), env.getUpperCorner()
           .getY());
     }
-    ls.getControlPoint().add(dp);
-    ls.getControlPoint().add(env.getLowerCorner());
-    GM_Ring ring = new GM_Ring(ls);
+    points.add(dp);
+    points.add(env.getLowerCorner());
+    GM_Ring ring = new GM_Ring(new GM_LineString(points));
     this.exterior = ring;
   }
 
