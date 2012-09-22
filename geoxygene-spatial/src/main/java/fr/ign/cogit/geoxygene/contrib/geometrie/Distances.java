@@ -225,19 +225,19 @@ public abstract class Distances {
     Iterator<IDirectPosition> itPts;
 
     // fabrication de la surface delimitée par les lignes
-    GM_LineString perimetre = new GM_LineString();
+    List<IDirectPosition> points = new ArrayList<IDirectPosition>();
     itPts = L1.coord().getList().iterator();
     while (itPts.hasNext()) {
       IDirectPosition pt = itPts.next();
-      perimetre.addControlPoint(0, pt);
+      points.add(0, pt);
     }
     itPts = L2.coord().getList().iterator();
     while (itPts.hasNext()) {
       IDirectPosition pt = itPts.next();
-      perimetre.addControlPoint(0, pt);
+      points.add(0, pt);
     }
-    perimetre.addControlPoint(L1.endPoint());
-    GM_Polygon poly = new GM_Polygon(perimetre);
+    points.add(L1.endPoint());
+    GM_Polygon poly = new GM_Polygon(new GM_LineString(points));
 
     return 2 * poly.area() / (L1.length() + L2.length());
   }

@@ -27,6 +27,9 @@
 
 package fr.ign.cogit.geoxygene.contrib.geometrie;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
@@ -212,12 +215,12 @@ public class Vecteur {
 
   /** Renvoie la ligne translatée de L par le vecteur this */
   public ILineString translate(ILineString line) {
-    GM_LineString L2 = new GM_LineString();
+    List<IDirectPosition> points = new ArrayList<IDirectPosition>();
     for (int i = 0; i < line.sizeControlPoint(); i++) {
       IDirectPosition pt = line.getControlPoint(i);
-      L2.addControlPoint(this.translate(pt));
+      points.add(this.translate(pt));
     }
-    return L2;
+    return new GM_LineString(points);
   }
 
   /**

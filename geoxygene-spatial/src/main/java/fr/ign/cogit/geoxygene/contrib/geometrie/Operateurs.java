@@ -464,13 +464,13 @@ public abstract class Operateurs {
     IDirectPositionList listePoints = ls.coord();
     IDirectPosition point, pointPrec, pointSuiv, pointRes;
     Vecteur u, v, n;
-    GM_LineString ligneResultat = new GM_LineString();
+    List<IDirectPosition> points = new ArrayList<IDirectPosition>();
     u = new Vecteur(listePoints.get(0), listePoints.get(1));
     u.setZ(0.0);
     pointRes = new DirectPosition(listePoints.get(0).getX() + offset
         * u.vectNorme().getY(), listePoints.get(0).getY() - offset
         * u.vectNorme().getX(), listePoints.get(0).getZ());
-    ligneResultat.addControlPoint(pointRes);
+    points.add(pointRes);
     for (int j = 1; j < listePoints.size() - 1; j++) {
       pointPrec = listePoints.get(j - 1);
       point = listePoints.get(j);
@@ -484,12 +484,12 @@ public abstract class Operateurs {
         pointRes = new DirectPosition(point.getX() + offset
             * n.vectNorme().getX(), point.getY() + offset
             * n.vectNorme().getY(), point.getZ());
-        ligneResultat.addControlPoint(pointRes);
+        points.add(pointRes);
       } else {
         pointRes = new DirectPosition(point.getX() - offset
             * n.vectNorme().getX(), point.getY() - offset
             * n.vectNorme().getY(), point.getZ());
-        ligneResultat.addControlPoint(pointRes);
+        points.add(pointRes);
       }
     }
     u = new Vecteur(listePoints.get(listePoints.size() - 2),
@@ -500,8 +500,8 @@ public abstract class Operateurs {
         listePoints.size() - 1).getY()
         - offset * u.vectNorme().getX(), listePoints
         .get(listePoints.size() - 1).getZ());
-    ligneResultat.addControlPoint(pointRes);
-    return ligneResultat;
+    points.add(pointRes);
+    return new GM_LineString(points);
   }
 
   /**
@@ -514,13 +514,13 @@ public abstract class Operateurs {
     IDirectPositionList listePoints = ls.coord();
     IDirectPosition point, pointPrec, pointSuiv, pointRes;
     Vecteur u, v, n;
-    GM_LineString ligneResultat = new GM_LineString();
+    List<IDirectPosition> points = new ArrayList<IDirectPosition>();
     u = new Vecteur(listePoints.get(0), listePoints.get(1));
     u.setZ(0);
     pointRes = new DirectPosition(listePoints.get(0).getX() - offset
         * u.vectNorme().getY(), listePoints.get(0).getY() + offset
         * u.vectNorme().getX(), listePoints.get(0).getZ());
-    ligneResultat.addControlPoint(pointRes);
+    points.add(pointRes);
     for (int j = 1; j < listePoints.size() - 1; j++) {
       pointPrec = listePoints.get(j - 1);
       point = listePoints.get(j);
@@ -534,12 +534,12 @@ public abstract class Operateurs {
         pointRes = new DirectPosition(point.getX() + offset
             * n.vectNorme().getX(), point.getY() + offset
             * n.vectNorme().getY(), point.getZ());
-        ligneResultat.addControlPoint(pointRes);
+        points.add(pointRes);
       } else {
         pointRes = new DirectPosition(point.getX() - offset
             * n.vectNorme().getX(), point.getY() - offset
             * n.vectNorme().getY(), point.getZ());
-        ligneResultat.addControlPoint(pointRes);
+        points.add(pointRes);
       }
     }
     u = new Vecteur(listePoints.get(listePoints.size() - 2),
@@ -550,8 +550,8 @@ public abstract class Operateurs {
         listePoints.size() - 1).getY()
         + offset * u.vectNorme().getX(), listePoints
         .get(listePoints.size() - 1).getZ());
-    ligneResultat.addControlPoint(pointRes);
-    return ligneResultat;
+    points.add(pointRes);
+    return new GM_LineString(points);
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -662,6 +662,10 @@ public abstract class Operateurs {
    * English: Combination of lines.
    */
   public static ILineString compileArcs(List<ILineString> geometries) {
+    Operateurs.logger.debug("compile geometries");
+    for (ILineString l : geometries) {
+      Operateurs.logger.debug("\t" + l);  
+    }
     IDirectPositionList finalPoints = new DirectPositionList();
     if (geometries.isEmpty()) {
       Operateurs.logger
@@ -693,8 +697,10 @@ public abstract class Operateurs {
       }
       return null;
     }
+    Operateurs.logger.debug("currentPoint = " + currentPoint.toGM_Point());
     for (int i = 1; i < geometries.size(); i++) {
       nextLine = geometries.get(i);
+      Operateurs.logger.debug("copying " + nextLine.getControlPoint().size() + " = " + nextLine);
       ILineString lineCopy = new GM_LineString(nextLine.getControlPoint());
       if (Distances.proche(currentPoint, nextLine.startPoint(), 0)) {
         // LSSuivante dans le bon sens
@@ -703,9 +709,10 @@ public abstract class Operateurs {
         currentPoint = lineCopy.endPoint();
       } else if (Distances.proche(currentPoint, nextLine.endPoint(), 0)) {
         // LSSuivante dans le bon sens
-        lineCopy.removeControlPoint(lineCopy.endPoint());
-        finalPoints.addAll(((GM_LineString) lineCopy.reverse())
-            .getControlPoint());
+        IDirectPosition toRemove = lineCopy.endPoint();
+        ILineString reverse = (ILineString) lineCopy.reverse();
+        reverse.removeControlPoint(toRemove);
+        finalPoints.addAll(reverse.getControlPoint());
         currentPoint = lineCopy.startPoint();
       } else {
         Operateurs.logger
@@ -716,6 +723,7 @@ public abstract class Operateurs {
         return null;
       }
     }
+    Operateurs.logger.debug("new line with " + finalPoints.size());
     return new GM_LineString(finalPoints, false);
   }
 
@@ -1178,7 +1186,7 @@ public abstract class Operateurs {
   public static IPolygon surfaceFromLineStrings(ILineString lineString1,
       ILineString lineString2) {
     // fabrication de la surface delimitée par les lignes
-    ILineString perimetre = new GM_LineString();
+    List<IDirectPosition> points = new ArrayList<IDirectPosition>();
     // Initialisation de Distance1 = Somme des côtés à créer
     double sommeDistance1 = lineString1.startPoint().distance(
         lineString2.startPoint())
@@ -1194,7 +1202,7 @@ public abstract class Operateurs {
         .iterator();
     while (itPoints.hasNext()) {
       IDirectPosition pt = itPoints.next();
-      perimetre.addControlPoint(pt);
+      points.add(pt);
     }
 
     // Construction du périmètre sur le JDD à comparer en passant par les côtés
@@ -1204,16 +1212,16 @@ public abstract class Operateurs {
     while (itPoints.hasNext()) {
       IDirectPosition pt = itPoints.next();
       if (sommeDistance1 < sommeDistance2) {
-        perimetre.addControlPoint(0, pt);
+        points.add(0, pt);
       } else {
-        perimetre.addControlPoint(pt);
+        points.add(pt);
       }
     }
 
     // Bouclage du périmètre
-    perimetre.addControlPoint(perimetre.startPoint());
+    points.add(points.get(0));
     // Création d'un polygone à partir du périmètre
-    IPolygon polygone = new GM_Polygon(perimetre);
+    IPolygon polygone = new GM_Polygon(new GM_LineString(points));
     return polygone;
   }
 
