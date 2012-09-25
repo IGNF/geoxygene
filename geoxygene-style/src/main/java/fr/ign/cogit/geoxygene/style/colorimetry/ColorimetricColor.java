@@ -176,15 +176,18 @@ public class ColorimetricColor {
   }
 
   /**
-   * Set the lightness level of the color.
-   * @param lightness The lightness level of the color.
+   * Set the saturation level of the color.
+   * Moving from a wheel to another.
+   * @param saturation The saturation level of the color.
    */
   public void setSaturation(int saturation) {
+    if( saturation<0 || saturation>4) return;
     
     //Retrieving the initial color in the COGIT ColorReferenceSystem
     ColorimetricColor initColor = ColorReferenceSystem.searchColor(this.toColor());
     //Retrieving the saturation of the initial color in the COGIT ColorReferenceSystem
     int initSaturation = initColor.getWheel(ColorReferenceSystem.COGITcrs).getidSaturation();
+    if (saturation==initSaturation) return;
     
     //Retrieving the hue of the initial color
     String hue = null;
