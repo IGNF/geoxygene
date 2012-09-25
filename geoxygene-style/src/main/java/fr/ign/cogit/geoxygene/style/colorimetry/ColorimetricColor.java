@@ -176,6 +176,50 @@ public class ColorimetricColor {
   }
 
   /**
+   * Set the lightness level of the color.
+   * @param lightness The lightness level of the color.
+   */
+  public void setSaturation(int saturation) {
+    
+    //Retrieving the initial color in the COGIT ColorReferenceSystem
+    ColorimetricColor initColor = ColorReferenceSystem.searchColor(this.toColor());
+    //Retrieving the saturation of the initial color in the COGIT ColorReferenceSystem
+    int initSaturation = initColor.getWheel(ColorReferenceSystem.COGITcrs).getidSaturation();
+    
+    //Retrieving the hue of the initial color
+    String hue = null;
+    if (initSaturation == 2) {
+      hue = this.getHue().split(" ")[1];
+    } else if (initSaturation == 1) {
+      hue = this.getHue().split(" ")[0];
+    } else if (initSaturation == 0) {
+      hue = this.getHue();
+    }
+    
+    //Building a new Color (~cloning)
+    ColorimetricColor color = new ColorimetricColor();
+    if (saturation == 0) {
+      color = new ColorimetricColor(hue, this.getLightness());
+    } else if (saturation == 1) {
+      color = new ColorimetricColor(hue + " GRIS", this.getLightness());
+    } else if (saturation == 2) {
+      color = new ColorimetricColor("GRIS " + hue, this.getLightness());
+    }
+    
+    //Setting the new values of the attributes
+    this.redRGB = color.getRedRGB();
+    this.greenRGB = color.getGreenRGB();
+    this.blueRGB = color.getBlueRGB();
+    this.idColor = color.getIdColor();
+    this.cleCoul = color.getCleCoul();
+    this.hue = color.getHue();
+    this.lightness = color.getLightness();
+    this.usualName = color.getUsualName();
+    this.xScreen = color.getXScreen();
+    this.yScreen = color.getYScreen();
+  }
+    
+  /**
    * Usual name of the color. It is made up of the hue of the corresponding
    * {@link ColorSlice} and a literal transcription of the lightness level. It
    * is expressed in French. For example: BLEU TRES FONCE
