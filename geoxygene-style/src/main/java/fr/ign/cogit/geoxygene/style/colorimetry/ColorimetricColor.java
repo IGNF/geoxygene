@@ -77,7 +77,18 @@ public class ColorimetricColor {
    * @param hue The common hue of the colors of a {@link ColorSlice}.
    */
   public void setHue(String hue) {
-    this.hue = hue;
+    ColorimetricColor color = new ColorimetricColor(hue, this.lightness);
+    
+    this.redRGB = color.getRedRGB();
+    this.greenRGB = color.getGreenRGB();
+    this.blueRGB = color.getBlueRGB();
+    this.idColor = color.getIdColor();
+    this.cleCoul = color.getCleCoul();
+    this.hue = color.getHue();
+    this.lightness = color.getLightness();
+    this.usualName = color.getUsualName();
+    this.xScreen = color.getXScreen();
+    this.yScreen = color.getYScreen();
   }
 
   /**
@@ -150,7 +161,18 @@ public class ColorimetricColor {
    * @param lightness The lightness level of the color.
    */
   public void setLightness(int lightness) {
-    this.lightness = lightness;
+    ColorimetricColor color = new ColorimetricColor(this.hue, lightness);
+    
+    this.redRGB = color.getRedRGB();
+    this.greenRGB = color.getGreenRGB();
+    this.blueRGB = color.getBlueRGB();
+    this.idColor = color.getIdColor();
+    this.cleCoul = color.getCleCoul();
+    this.hue = color.getHue();
+    this.lightness = color.getLightness();
+    this.usualName = color.getUsualName();
+    this.xScreen = color.getXScreen();
+    this.yScreen = color.getYScreen();
   }
 
   /**
@@ -363,7 +385,6 @@ public class ColorimetricColor {
    * @param hue The name of the hue of the corresponding {@link ColorSlice}
    * @param lightness The lightness level of the color
    **/
-  @SuppressWarnings("null")
   public ColorimetricColor(String hue, int lightness) {
     List<ColorimetricColor> cogitColors = ColorReferenceSystem.getCOGITColors();
     ColorimetricColor color = null;
@@ -383,7 +404,11 @@ public class ColorimetricColor {
           color = new ColorimetricColor(hue.toUpperCase(), 1);
         } else if (lightness == 8) {
           color = new ColorimetricColor(hue.toUpperCase(), 7);
-        }
+        } else {
+          color = new ColorimetricColor();
+          logger.error("This color doesn't exist !!!"); //$NON-NLS-1$
+          //TODO Ajout d'une "exception" ?
+       }
       } else if (hue.equalsIgnoreCase("GRIS")) { //$NON-NLS-1$
         if (lightness == 0) {
           color = new ColorimetricColor(85);
@@ -402,7 +427,7 @@ public class ColorimetricColor {
         } else {
           color = new ColorimetricColor("GRIS", lightness); //$NON-NLS-1$
         }
-      }
+      } 
     }
     this.redRGB = color.getRedRGB();
     this.greenRGB = color.getGreenRGB();
@@ -414,47 +439,6 @@ public class ColorimetricColor {
     this.usualName = color.getUsualName();
     this.xScreen = color.getXScreen();
     this.yScreen = color.getYScreen();
-  }
-
-  public static void main(String[] args) {
-    ColorimetricColor c = new ColorimetricColor("RoUge", 0); //$NON-NLS-1$
-    ColorimetricColor.logger.info(c.getCleCoul());
-    c = new ColorimetricColor("RoUge", 1); //$NON-NLS-1$
-    ColorimetricColor.logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Rouge", 7); //$NON-NLS-1$
-    ColorimetricColor.logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Rouge", 8); //$NON-NLS-1$
-    ColorimetricColor.logger.info(c.getCleCoul());
-    ColorimetricColor.logger.info(""); //$NON-NLS-1$
-
-    c = new ColorimetricColor("Gris", 0); //$NON-NLS-1$
-    ColorimetricColor.logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Gris", 1); //$NON-NLS-1$
-    ColorimetricColor.logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Gris", 7); //$NON-NLS-1$
-    ColorimetricColor.logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Gris", 8); //$NON-NLS-1$
-    ColorimetricColor.logger.info(c.getCleCoul());
-    ColorimetricColor.logger.info(""); //$NON-NLS-1$
-
-    c = new ColorimetricColor("Noir", 0); //$NON-NLS-1$
-    ColorimetricColor.logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Noir", 1); //$NON-NLS-1$
-    ColorimetricColor.logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Noir", 7); //$NON-NLS-1$
-    ColorimetricColor.logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Noir", 8); //$NON-NLS-1$
-    ColorimetricColor.logger.info(c.getCleCoul());
-    ColorimetricColor.logger.info(""); //$NON-NLS-1$
-
-    c = new ColorimetricColor("Blanc", 0); //$NON-NLS-1$
-    ColorimetricColor.logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Blanc", 1); //$NON-NLS-1$
-    ColorimetricColor.logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Blanc", 7); //$NON-NLS-1$
-    ColorimetricColor.logger.info(c.getCleCoul());
-    c = new ColorimetricColor("Blanc", 8); //$NON-NLS-1$
-    ColorimetricColor.logger.info(c.getCleCoul());
   }
 
   /**
@@ -708,22 +692,10 @@ public class ColorimetricColor {
 
   public ColorimetricColor(float[] lab) {
     ColorimetricColor c = new ColorimetricColor(lab[0], lab[1], lab[2]);
+    //FIXME Les trois lignes ci-dessous semblent inutiles...
     this.redRGB = c.getRedRGB();
     this.greenRGB = c.getGreenRGB();
     this.blueRGB = c.getBlueRGB();
-  }
-
-  public ColorimetricColor(ColorimetricColor colorimetricColor) {
-	  this.blueRGB = colorimetricColor.blueRGB;
-	  this.cleCoul = colorimetricColor.cleCoul;
-	  this.greenRGB = colorimetricColor.greenRGB;
-	  this.hue = colorimetricColor.hue;
-	  this.idColor = colorimetricColor.idColor;
-	  this.lightness =colorimetricColor.lightness;
-	  this.redRGB  = colorimetricColor.redRGB;
-	  this.usualName = colorimetricColor.usualName;
-	  this.xScreen = colorimetricColor.xScreen;
-	  this.yScreen = colorimetricColor.yScreen;
   }
 
 /**
@@ -928,8 +900,6 @@ public class ColorimetricColor {
     return txtColor;
   }
 
-  @SuppressWarnings("nls")
-  // TODO : Create a unit testing method to do that
   public static void basicColorsComponents() {
     ColorimetricColor rouge = new ColorimetricColor(255, 0, 0);
     ColorimetricColor vert = new ColorimetricColor(0, 255, 0);
@@ -940,33 +910,33 @@ public class ColorimetricColor {
     ColorimetricColor blanc = new ColorimetricColor(255, 255, 255);
     ColorimetricColor noir = new ColorimetricColor(0, 0, 0);
 
-    System.out.println("rouge\t" + rouge.getRedRGB() + "\t"
-        + rouge.getGreenRGB() + "\t" + rouge.getBlueRGB() + "\t"
-        + rouge.getCIELabL() + "\t" + rouge.getCIELabA() + "\t"
+    logger.info("rouge\t" + rouge.getRedRGB() + "\t"  //$NON-NLS-1$//$NON-NLS-2$
+        + rouge.getGreenRGB() + "\t" + rouge.getBlueRGB() + "\t" //$NON-NLS-1$ //$NON-NLS-2$
+        + rouge.getCIELabL() + "\t" + rouge.getCIELabA() + "\t" //$NON-NLS-1$ //$NON-NLS-2$
         + rouge.getCIELabB());
-    System.out.println("vert\t" + vert.getRedRGB() + "\t" + vert.getGreenRGB()
-        + "\t" + vert.getBlueRGB() + "\t" + vert.getCIELabL() + "\t"
-        + vert.getCIELabA() + "\t" + vert.getCIELabB());
-    System.out.println("bleu\t" + bleu.getRedRGB() + "\t" + bleu.getGreenRGB()
-        + "\t" + bleu.getBlueRGB() + "\t" + bleu.getCIELabL() + "\t"
-        + bleu.getCIELabA() + "\t" + bleu.getCIELabB());
-    System.out.println("jaune\t" + jaune.getRedRGB() + "\t"
-        + jaune.getGreenRGB() + "\t" + jaune.getBlueRGB() + "\t"
-        + jaune.getCIELabL() + "\t" + jaune.getCIELabA() + "\t"
+    logger.info("vert\t" + vert.getRedRGB() + "\t" + vert.getGreenRGB() //$NON-NLS-1$ //$NON-NLS-2$
+        + "\t" + vert.getBlueRGB() + "\t" + vert.getCIELabL() + "\t" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        + vert.getCIELabA() + "\t" + vert.getCIELabB()); //$NON-NLS-1$
+    logger.info("bleu\t" + bleu.getRedRGB() + "\t" + bleu.getGreenRGB() //$NON-NLS-1$ //$NON-NLS-2$
+        + "\t" + bleu.getBlueRGB() + "\t" + bleu.getCIELabL() + "\t" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        + bleu.getCIELabA() + "\t" + bleu.getCIELabB()); //$NON-NLS-1$
+    logger.info("jaune\t" + jaune.getRedRGB() + "\t" //$NON-NLS-1$ //$NON-NLS-2$
+        + jaune.getGreenRGB() + "\t" + jaune.getBlueRGB() + "\t" //$NON-NLS-1$ //$NON-NLS-2$
+        + jaune.getCIELabL() + "\t" + jaune.getCIELabA() + "\t" //$NON-NLS-1$ //$NON-NLS-2$
         + jaune.getCIELabB());
-    System.out.println("cyan\t" + cyan.getRedRGB() + "\t" + cyan.getGreenRGB()
-        + "\t" + cyan.getBlueRGB() + "\t" + cyan.getCIELabL() + "\t"
-        + cyan.getCIELabA() + "\t" + cyan.getCIELabB());
-    System.out.println("magenta\t" + magenta.getRedRGB() + "\t"
-        + magenta.getGreenRGB() + "\t" + magenta.getBlueRGB() + "\t"
-        + magenta.getCIELabL() + "\t" + magenta.getCIELabA() + "\t"
+    logger.info("cyan\t" + cyan.getRedRGB() + "\t" + cyan.getGreenRGB() //$NON-NLS-1$ //$NON-NLS-2$
+        + "\t" + cyan.getBlueRGB() + "\t" + cyan.getCIELabL() + "\t" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        + cyan.getCIELabA() + "\t" + cyan.getCIELabB()); //$NON-NLS-1$
+    logger.info("magenta\t" + magenta.getRedRGB() + "\t" //$NON-NLS-1$ //$NON-NLS-2$
+        + magenta.getGreenRGB() + "\t" + magenta.getBlueRGB() + "\t" //$NON-NLS-1$ //$NON-NLS-2$
+        + magenta.getCIELabL() + "\t" + magenta.getCIELabA() + "\t" //$NON-NLS-1$ //$NON-NLS-2$
         + magenta.getCIELabB());
-    System.out.println("blanc\t" + blanc.getRedRGB() + "\t"
-        + blanc.getGreenRGB() + "\t" + blanc.getBlueRGB() + "\t"
-        + blanc.getCIELabL() + "\t" + blanc.getCIELabA() + "\t"
-        + blanc.getCIELabB() + "\t");
-    System.out.println("noir\t" + noir.getRedRGB() + "\t" + noir.getGreenRGB()
-        + "\t" + noir.getBlueRGB() + "\t" + noir.getCIELabL() + "\t"
-        + noir.getCIELabA() + "\t" + noir.getCIELabB());
+    logger.info("blanc\t" + blanc.getRedRGB() + "\t" //$NON-NLS-1$ //$NON-NLS-2$
+        + blanc.getGreenRGB() + "\t" + blanc.getBlueRGB() + "\t" //$NON-NLS-1$ //$NON-NLS-2$
+        + blanc.getCIELabL() + "\t" + blanc.getCIELabA() + "\t" //$NON-NLS-1$ //$NON-NLS-2$
+        + blanc.getCIELabB() + "\t"); //$NON-NLS-1$
+    logger.info("noir\t" + noir.getRedRGB() + "\t" + noir.getGreenRGB() //$NON-NLS-1$ //$NON-NLS-2$
+        + "\t" + noir.getBlueRGB() + "\t" + noir.getCIELabL() + "\t" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        + noir.getCIELabA() + "\t" + noir.getCIELabB()); //$NON-NLS-1$
   }
 }
