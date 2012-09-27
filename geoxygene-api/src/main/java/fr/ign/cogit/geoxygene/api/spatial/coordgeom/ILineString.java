@@ -45,7 +45,7 @@ public interface ILineString extends ICurveSegment {
   public abstract IDirectPositionList coord();
 
   @Override
-  public abstract ICurveSegment reverse();
+  public abstract ILineString reverse();
 
   /**
    * Verifie si la ligne est fermee ou non. La ligne est fermee lorsque les deux

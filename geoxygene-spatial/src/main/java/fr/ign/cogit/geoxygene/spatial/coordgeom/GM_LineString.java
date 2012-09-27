@@ -32,7 +32,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ICurveSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
@@ -159,7 +158,7 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
   }
 
   @Override
-  public ICurveSegment reverse() {
+  public ILineString reverse() {
     List<IDirectPosition> points = new ArrayList<IDirectPosition>();
     int n = this.controlPoint.size();
     for (int i = 0; i < n; i++) {
