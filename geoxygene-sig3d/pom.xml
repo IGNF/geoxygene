@@ -95,12 +95,6 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>java3d</groupId>
 			<artifactId>j3d-core</artifactId>
 			<version>1.5.2</version>
