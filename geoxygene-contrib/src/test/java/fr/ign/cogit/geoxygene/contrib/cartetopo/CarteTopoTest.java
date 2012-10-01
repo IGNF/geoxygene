@@ -5,10 +5,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.contrib.algorithms.SwingingArmNonConvexHull;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
+import org.apache.log4j.Logger;
+
 public class CarteTopoTest {
+	
+  public final static Logger logger = Logger
+		      .getLogger(SwingingArmNonConvexHull.class.getName());
+	
   CarteTopo carte;
   Noeud n1;
   Noeud n2;
@@ -23,6 +30,7 @@ public class CarteTopoTest {
   Arc a45;
   Arc a16;
   Arc a67;
+ 
   @Before
   public void setUp() throws Exception {
     carte = new CarteTopo("Carte Test");
@@ -100,16 +108,16 @@ public class CarteTopoTest {
       }
     }
     for (Noeud n : carte.getPopNoeuds()) {
-      System.out.println(n);
+    	logger.debug(n);
       for (Arc a : n.getEntrants()) {
-        System.out.println("entrant " + a);
+        logger.debug("entrant " + a);
       }
       for (Arc a : n.getSortants()) {
-        System.out.println("sortant " + a);
+        logger.debug("sortant " + a);
       }
     }
     for (Arc a : carte.getPopArcs()) {
-      System.out.println(a);
+      logger.debug(a);
     }
   }
   
@@ -185,20 +193,20 @@ public class CarteTopoTest {
 
     carte.creeTopologieFaces();
     for (Face face : carte.getListeFaces()) {
-      System.out.println(face);
-      System.out.println("arcs directs : "); //$NON-NLS-1$
+      logger.debug(face);
+      logger.debug("arcs directs : "); //$NON-NLS-1$
       for (Arc arc : face.getArcsDirects()) {
-        System.out.println(arc);
+        logger.debug(arc);
       }
-      System.out.println("arcs indirects : "); //$NON-NLS-1$
+      logger.debug("arcs indirects : "); //$NON-NLS-1$
       for (Arc arc : face.getArcsIndirects()) {
-        System.out.println(arc);
+        logger.debug(arc);
       }
-      System.out.println("arcs pendants : "); //$NON-NLS-1$
+      logger.debug("arcs pendants : "); //$NON-NLS-1$
       for (Arc arc : face.getArcsPendants()) {
-        System.out.println(arc);
+        logger.debug(arc);
       }
-      System.out.println();
+      
     }
     assert (carte.getListeFaces().size() == 4);
     // fail("Not yet implemented");
