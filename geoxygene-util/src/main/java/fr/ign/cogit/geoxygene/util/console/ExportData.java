@@ -94,7 +94,7 @@ public class ExportData extends JPanel {
   /**
 	 * 
 	 */
-  protected void action() {
+  public void action() {
 
     System.out.println(I18N.getString("ExportData.ESRIShapefileExport")); //$NON-NLS-1$
 
@@ -138,8 +138,7 @@ public class ExportData extends JPanel {
       // rafraichissement du repository d'OJB
       data.refreshRepository(fileMapping);
       // Metadata metadonnees = data.getMetadata(tableName);
-      ResultSet rs = data.getConnection().getMetaData()
-          .getColumns(null, null, tableName, "*");
+      ResultSet rs = data.getConnection().getMetaData().getColumns(null, null, tableName, "*");
 
       int columnNameIndex = -1;
       int typeNameIndex = -1;
@@ -172,13 +171,11 @@ public class ExportData extends JPanel {
           + " - " + I18N.getString("ExportData.Class") + " " + javaClassName); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
       // lecture du fichier choisi
 
-      System.out
-          .println(I18N.getString("ExportData.ExportInFile") + shapefileName); //$NON-NLS-1$
+      System.out.println(I18N.getString("ExportData.ExportInFile") + shapefileName); //$NON-NLS-1$
 
       System.out.println(I18N.getString("ExportData.ReadingMetaData")); //$NON-NLS-1$
       data.begin();
-      PersistenceBroker broker = ((HasBroker) ((GeodatabaseOjb) data)
-          .getODMGTransaction()).getBroker();
+      PersistenceBroker broker = ((HasBroker) ((GeodatabaseOjb) data).getODMGTransaction()).getBroker();
       DescriptorRepository desc = broker.getDescriptorRepository();
       ClassDescriptor cd = desc.getDescriptorFor(javaClassName);
       System.out.println(javaClassName);
@@ -187,8 +184,7 @@ public class ExportData extends JPanel {
       Map<String, String> columnNames = new HashMap<String, String>();
       for (FieldDescriptor field : fields) {
         if (field != null) {
-          System.out.println("\t\t " + field.getAttributeName() + " -- "
-              + field.getColumnName());
+          System.out.println("\t\t " + field.getAttributeName() + " -- " + field.getColumnName());
           columnNames.put(field.getAttributeName(), field.getColumnName());
         }
       }
@@ -197,10 +193,10 @@ public class ExportData extends JPanel {
 
       ShapefileWriter.write(ftfc, shapefileName);
 
-//      ObjectViewer.flagWindowClosing = false;
-//      ObjectViewer viewer = new ObjectViewer(data);
-//      viewer.addFeatureCollection(ftfc,
-//          I18N.getString("ExportData.ExportedData")); //$NON-NLS-1$
+      // ObjectViewer.flagWindowClosing = false;
+      // ObjectViewer viewer = new ObjectViewer(data);
+      // viewer.addFeatureCollection(ftfc,
+      //          I18N.getString("ExportData.ExportedData")); //$NON-NLS-1$
 
       System.out.println(I18N.getString("ExportData.Finished")); //$NON-NLS-1$
 

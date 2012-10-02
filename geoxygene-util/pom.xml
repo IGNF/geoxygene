@@ -2,20 +2,23 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
+  
   <parent>
     <artifactId>geoxygene</artifactId>
     <groupId>fr.ign.cogit</groupId>
     <version>1.5-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
   </parent>
-  <groupId>fr.ign.cogit</groupId>
+  
+  <!-- <groupId>fr.ign.cogit</groupId> -->
   <artifactId>geoxygene-util</artifactId>
-  <version>1.5-SNAPSHOT</version>
+  <!-- <version>1.5-SNAPSHOT</version> -->
+  <packaging>jar</packaging>
   <name>geoxygene-util</name>
-  <url>http://maven.apache.org</url>
+  
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+  
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
     <testSourceDirectory>src/test/java</testSourceDirectory>
@@ -70,41 +73,20 @@
         </plugin>
     </plugins>
   </build>
+  
   <dependencies>
     <dependency>
-        <groupId>fr.ign.cogit</groupId>
-        <artifactId>geoxygene-api</artifactId>
-        <version>1.5-SNAPSHOT</version>
-        <type>jar</type>
-        <scope>compile</scope>
-    </dependency>
-    <dependency>
-        <groupId>fr.ign.cogit</groupId>
-        <artifactId>geoxygene-spatial</artifactId>
-        <version>1.5-SNAPSHOT</version>
-        <type>jar</type>
-        <scope>compile</scope>
-    </dependency>
-    <dependency>
-        <groupId>fr.ign.cogit</groupId>
-        <artifactId>geoxygene-feature</artifactId>
-        <version>1.5-SNAPSHOT</version>
-        <type>jar</type>
-        <scope>compile</scope>
-    </dependency>
-    <dependency>
-        <groupId>fr.ign.cogit</groupId>
-        <artifactId>geoxygene-contrib</artifactId>
-        <version>1.5-SNAPSHOT</version>
-        <type>jar</type>
-        <scope>compile</scope>
-    </dependency>
-    <dependency>
-    	<groupId>fr.ign.cogit</groupId>
+    	<groupId>${project.groupId}</groupId>
     	<artifactId>geoxygene-io</artifactId>
-    	<version>1.5-SNAPSHOT</version>
-    	<type>jar</type>
+    	<version>${project.version}</version>
+    	<scope>compile</scope>
+    </dependency>
+    <dependency>
+    	<groupId>${project.groupId}</groupId>
+    	<artifactId>geoxygene-database</artifactId>
+    	<version>${project.version}</version>
     	<scope>compile</scope>
     </dependency>
   </dependencies>
+
 </project>

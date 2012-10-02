@@ -49,7 +49,7 @@ import fr.ign.cogit.geoxygene.util.loader.gui.GUIManageData;
  * 
  */
 
-class ManageData extends JPanel {
+public class ManageData extends JPanel {
 
   /**
 	 * 
@@ -66,7 +66,7 @@ class ManageData extends JPanel {
   private static boolean spatialIndex = false;
   private static boolean emprise = false;
 
-  protected static void action() {
+  public static void action() {
 
     // initialisation
     Geodatabase data = GeodatabaseOjbFactory.newInstance();
@@ -78,8 +78,7 @@ class ManageData extends JPanel {
     try {
       data.refreshRepository(fileMapping);
     } catch (Exception ee) {
-      System.out
-          .println("## ATTENTION les fichiers de mapping sont incorrects");
+      System.out.println("## ATTENTION les fichiers de mapping sont incorrects");
       ee.printStackTrace();
     }
 
@@ -131,8 +130,7 @@ class ManageData extends JPanel {
       System.out.println("Generation des COGITID ...");
       for (int i = 0; i < ManageData.allTables.size(); i++) {
         String table = ManageData.allTables.get(i);
-        GenerateIds generator = new GenerateIds(data, table,
-            ManageData.genereUnique);
+        GenerateIds generator = new GenerateIds(data, table, ManageData.genereUnique);
         generator.genere();
       }
       System.out.println("Fin de la generation des COGITID ...");
@@ -161,11 +159,9 @@ class ManageData extends JPanel {
           System.out.println("OK");
         }
       } else {
-        System.out
-            .println("Le calcul de l'emprise des geometries dans le SGBD ne fonctionne que pour Oracle");
+        System.out.println("Le calcul de l'emprise des geometries dans le SGBD ne fonctionne que pour Oracle");
       }
-      System.out
-          .println("Fin du calcul de l'emprise des geometries dans le SGBD");
+      System.out.println("Fin du calcul de l'emprise des geometries dans le SGBD");
     }
 
     if (ManageData.spatialIndex) {

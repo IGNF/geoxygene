@@ -48,7 +48,7 @@ import fr.ign.cogit.geoxygene.util.loader.gui.GUIConfigSqlOJBXML;
  * 
  */
 
-class JavaToSql extends JPanel {
+public class JavaToSql extends JPanel {
 
   /**
 	 * 
@@ -61,10 +61,9 @@ class JavaToSql extends JPanel {
   // repertoire d'accueil des fichiers de mapping
   private static String geOxygeneMapping;
 
-  protected static void action() {
+  public static void action() {
 
-    System.out
-        .println("Generation de tables dans le SGBD et du mapping XML correspondant ... ");
+    System.out.println("Generation de tables dans le SGBD et du mapping XML correspondant ... ");
 
     try {
 
@@ -76,24 +75,19 @@ class JavaToSql extends JPanel {
       File fileMapping = new File(config.getRepositoryFilename());
 
       try {
-        File tryFileData = new File(fileMapping.getParentFile().getParentFile()
-            .getParentFile(), "data");
+        File tryFileData = new File(fileMapping.getParentFile().getParentFile().getParentFile(), "data");
         if (tryFileData.exists()) {
           JavaToSql.geoxygeneDirectory = tryFileData.getParentFile().getPath();
         } else {
-          tryFileData = new File(fileMapping.getParentFile().getParentFile()
-              .getParentFile().getParentFile(), "data");
+          tryFileData = new File(fileMapping.getParentFile().getParentFile().getParentFile().getParentFile(), "data");
           if (tryFileData.exists()) {
-            JavaToSql.geoxygeneDirectory = tryFileData.getParentFile()
-                .getPath();
+            JavaToSql.geoxygeneDirectory = tryFileData.getParentFile().getPath();
           }
         }
         if (!tryFileData.exists()) {
-          tryFileData = new File(fileMapping.getParentFile().getParentFile()
-              .getParentFile().getParentFile().getParentFile(), "data");
+          tryFileData = new File(fileMapping.getParentFile().getParentFile().getParentFile().getParentFile().getParentFile(), "data");
           if (tryFileData.exists()) {
-            JavaToSql.geoxygeneDirectory = tryFileData.getParentFile()
-                .getPath();
+            JavaToSql.geoxygeneDirectory = tryFileData.getParentFile().getPath();
           }
         }
       } catch (Exception e) {
@@ -102,9 +96,7 @@ class JavaToSql extends JPanel {
       // determine valeur par defaut de geoxygeneMapping
       JavaToSql.geOxygeneMapping = fileMapping.getParentFile().getPath();
 
-      GUIConfigSqlOJBXML configuration = new GUIConfigSqlOJBXML(
-          JavaToSql.geoxygeneDirectory, JavaToSql.geOxygeneMapping,
-          JavaToSql.mappingFileName);
+      GUIConfigSqlOJBXML configuration = new GUIConfigSqlOJBXML(JavaToSql.geoxygeneDirectory, JavaToSql.geOxygeneMapping, JavaToSql.mappingFileName);
       String[] selectedValues = configuration.showDialog();
 
       String javaFilePath = selectedValues[0];
@@ -112,12 +104,10 @@ class JavaToSql extends JPanel {
       String tableName = selectedValues[2];
       JavaToSql.mappingFileName = selectedValues[3];
 
-      if (javaFilePath == null || mappingDirectory == null || tableName == null
-          || JavaToSql.mappingFileName == null) {
+      if (javaFilePath == null || mappingDirectory == null || tableName == null || JavaToSql.mappingFileName == null) {
         return;
       }
-      SQLXMLGenerator generator = new SQLXMLGenerator(data, javaFilePath,
-          mappingDirectory, tableName, JavaToSql.mappingFileName);
+      SQLXMLGenerator generator = new SQLXMLGenerator(data, javaFilePath, mappingDirectory, tableName, JavaToSql.mappingFileName);
       generator.writeAll();
 
     } catch (Exception e) {

@@ -25,7 +25,7 @@
  * 02111-1307 USA
  */
 
-package fr.ign.cogit.geoxygene.util.console;
+package fr.ign.cogit.geoxygene.console;
 
 import javax.swing.JPanel;
 
@@ -50,8 +50,8 @@ class ViewData extends JPanel {
 
   protected static void action() {
     Geodatabase data = GeodatabaseOjbFactory.newInstance();
-//    ObjectViewer.flagWindowClosing = false;
-//    /* ObjectViewer vwr = */new ObjectViewer(data);
+    // ObjectViewer.flagWindowClosing = false;
+    // /* ObjectViewer vwr = */new ObjectViewer(data);
   }
 
 }

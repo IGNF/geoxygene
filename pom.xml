@@ -40,10 +40,12 @@
 	</scm>
 	
 	<!-- =========================================================== -->
-	<!--  Properties : encoding -->
+	<!--  Properties -->
 	<!-- =========================================================== -->
 	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jts.version>1.12</jts.version>
+    	<log4j.version>1.2.16</log4j.version>
     </properties>
 
 	<!-- =========================================================== -->
@@ -270,6 +272,14 @@
                     </reportPlugins>
                 </configuration>
             </plugin>
+            <plugin>
+              <groupId>org.fusesource.mvnplugins</groupId>
+              <artifactId>maven-graph-plugin</artifactId>
+              <version>1.0</version>
+              <configuration>
+                    <includes>fr.ign.cogit</includes>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 
@@ -359,6 +369,17 @@
                         <link>http://download.java.net/media/java3d/javadoc/1.5.1</link>
                         <link>http://www.geoapi.org/snapshot/pending</link>
                     </links>
+                    
+                    <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+                    <docletArtifact>
+                        <groupId>org.umlgraph</groupId>
+                        <artifactId>doclet</artifactId>
+                        <version>5.6</version>
+                    </docletArtifact>
+                    <additionalparam>
+                        -operations -visibility
+                    </additionalparam>
+                    <useStandardDocletOptions>true</useStandardDocletOptions>
                 </configuration>
             </plugin>
 
@@ -485,6 +506,26 @@
 			<url>http://repo1.maven.org/maven2</url>
 		</pluginRepository>
 	</pluginRepositories>
+	
+	
+	<!-- ================================================================
+           Centraliser la gestion des versions des dépendances 
+       sans ajouter de dépendances héritées par tous les projets fils
+       ============================================================ -->
+	<dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+      <dependency>
+			<groupId>com.vividsolutions</groupId>
+			<artifactId>jts</artifactId>
+			<version>${jts.version}</version>
+		</dependency>
+    </dependencies>
+  </dependencyManagement>
 
 	<dependencies>
 		<!-- <dependency> <groupId>org.opengis</groupId> <artifactId>geoapi-pending</artifactId> 

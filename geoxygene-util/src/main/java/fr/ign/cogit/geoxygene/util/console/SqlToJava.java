@@ -49,7 +49,7 @@ import fr.ign.cogit.geoxygene.util.loader.gui.GUIConfigOJBXMLJava;
  * 
  */
 
-class SqlToJava extends JPanel {
+public class SqlToJava extends JPanel {
 
   /**
 	 * 
@@ -72,11 +72,11 @@ class SqlToJava extends JPanel {
   // repertoire d'accueil des fichiers de mapping
   private static String geOxygeneMapping;
 
-  protected static void action(int mapping) {
+  public static void action(int mapping) {
 
     System.out.println("Generation de mapping XML  et de classes java ... ");
 
-    if (mapping == GeOxygeneConsole.CASTOR) {
+    if (mapping == MappingTool.MAPPING_CASTOR) {
       System.out.println("CASTOR : marche pas !");
       return;
     }
@@ -99,17 +99,14 @@ class SqlToJava extends JPanel {
         return;
       }
 
-      System.out
-          .println("Generation du mapping, des classes java et du dico ...");
+      System.out.println("Generation du mapping, des classes java et du dico ...");
 
       // determine valeur par defaut de geOxygeneData
-      File tryFileData = new File(fileMapping.getParentFile().getParentFile()
-          .getParentFile(), "data");
+      File tryFileData = new File(fileMapping.getParentFile().getParentFile().getParentFile(), "data");
       if (tryFileData.exists()) {
         SqlToJava.geOxygeneData = tryFileData.getPath();
       } else {
-        tryFileData = new File(fileMapping.getParentFile().getParentFile()
-            .getParentFile().getParentFile(), "data");
+        tryFileData = new File(fileMapping.getParentFile().getParentFile().getParentFile().getParentFile(), "data");
         if (tryFileData.exists()) {
           SqlToJava.geOxygeneData = tryFileData.getPath();
         }
@@ -118,10 +115,8 @@ class SqlToJava extends JPanel {
       // determine valeur par defaut de geOxygeneMapping
       SqlToJava.geOxygeneMapping = fileMapping.getParentFile().getPath();
 
-      GUIConfigOJBXMLJava configuration = new GUIConfigOJBXMLJava(
-          SqlToJava.packageName, SqlToJava.geOxygeneData,
-          SqlToJava.geOxygeneMapping, SqlToJava.extentClassName,
-          SqlToJava.mappingFileName, SqlToJava.extentMappingFileName);
+      GUIConfigOJBXMLJava configuration = new GUIConfigOJBXMLJava(SqlToJava.packageName, SqlToJava.geOxygeneData, SqlToJava.geOxygeneMapping,
+          SqlToJava.extentClassName, SqlToJava.mappingFileName, SqlToJava.extentMappingFileName);
       String[] selectedValues = configuration.showDialog();
 
       // ceci permet d'utiliser le cancel
@@ -129,10 +124,8 @@ class SqlToJava extends JPanel {
         return;
       }
 
-      XMLJavaDicoGenerator generator = new XMLJavaDicoGenerator(null, data,
-          false, SqlToJava.allTables, selectedValues[0], selectedValues[1],
-          selectedValues[2], selectedValues[3], selectedValues[4],
-          selectedValues[5]);
+      XMLJavaDicoGenerator generator = new XMLJavaDicoGenerator(null, data, false, SqlToJava.allTables, selectedValues[0], selectedValues[1],
+          selectedValues[2], selectedValues[3], selectedValues[4], selectedValues[5]);
       generator.writeAll();
 
       GUICompileMessage message = new GUICompileMessage();

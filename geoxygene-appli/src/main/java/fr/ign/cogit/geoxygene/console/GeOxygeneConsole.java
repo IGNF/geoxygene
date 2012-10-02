@@ -25,7 +25,7 @@
  * 02111-1307 USA
  */
 
-package fr.ign.cogit.geoxygene.util.console;
+package fr.ign.cogit.geoxygene.console;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -37,17 +37,13 @@ import fr.ign.cogit.geoxygene.util.I18N;
  * @author Thierry Badard & Arnaud Braun
  */
 public class GeOxygeneConsole {
-  public static final int CASTOR = 1;
-  public static final int OJB = 2;
 
-  private static final String CONSOLE_TITLE = I18N
-      .getString("GeOxygeneConsole.GeOxygeneConsole"); //$NON-NLS-1$
+  private static final String CONSOLE_TITLE = I18N.getString("GeOxygeneConsole.GeOxygeneConsole"); //$NON-NLS-1$
 
   public GeOxygeneConsoleInterface geOxygeneConsoleInterface;
 
   public GeOxygeneConsole() {
-    this.geOxygeneConsoleInterface = new GeOxygeneConsoleInterface(
-        GeOxygeneConsole.CONSOLE_TITLE);
+    this.geOxygeneConsoleInterface = new GeOxygeneConsoleInterface(GeOxygeneConsole.CONSOLE_TITLE);
     this.geOxygeneConsoleInterface.pack();
     this.geOxygeneConsoleInterface.setSize(300, 350);
     // geOxygeneConsoleInterface.show();

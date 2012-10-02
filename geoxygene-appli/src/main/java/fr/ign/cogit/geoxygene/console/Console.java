@@ -17,10 +17,7 @@
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package fr.ign.cogit.geoxygene.appli;
-
-import fr.ign.cogit.geoxygene.util.console.GeOxygeneConsole;
-
+package fr.ign.cogit.geoxygene.console;
 
 /**
  * Run the GeOxygene console.
