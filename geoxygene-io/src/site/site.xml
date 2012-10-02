@@ -6,7 +6,7 @@
     
     <bannerLeft>
         <name>GeOxygene</name>
-        <src>images/geoxygene-logo.png</src>
+        <src>../../maven/images/geoxygene-logo-neutre.png</src>
         <href>http://oxygene-project.sourceforge.net/</href>
     </bannerLeft>
     <bannerRight>

@@ -4,14 +4,9 @@
     <publishDate position="left" />
     <version position="left" />
     
-    <breadcrumbs>
-        <item name="Mes articles" href="http://baptiste-wicht.developpez.com/"/>
-        <item name="Article Maven" href="http://baptiste-wicht.developpez.com/tutoriel/java/maven/site"/>
-    </breadcrumbs>
-    
     <bannerLeft>
         <name>GeOxygene</name>
-        <src>images/geoxygene-logo.png</src>
+        <src>../../maven/images/geoxygene-logo-neutre.png</src>
         <href>http://oxygene-project.sourceforge.net/</href>
     </bannerLeft>
     <bannerRight>
