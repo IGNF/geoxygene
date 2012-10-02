@@ -83,6 +83,11 @@ public class OrientationMeasure {
   // Ox)
   // c'est l'orientation du PPRE
   // renvoit 999.9 si le PPRE n'est pas defini, ou s'il est carre
+  /**
+   * orientation d'une geometrie (en radian entre 0 et Pi, par rapport a l'axe
+   * Ox) c'est l'orientation du PPRE
+   * @return renvoit 999.9 si le PPRE n'est pas defini, ou s'il est carre
+   */
   public double getGeneralOrientation() {
 
     // calcul du PPRE
