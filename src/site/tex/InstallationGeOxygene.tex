@@ -1,0 +1,181 @@
+\documentclass[a4paper,10pt]{article}
+
+%\usepackage[iso 8859-1]{inputenc}
+\usepackage[latin1]{inputenc}
+\usepackage[pdftex]{hyperref}
+\usepackage{color}
+
+\title{Installation de GeOxygene pour les développeurs}
+\author{}
+\date{}
+
+\pdfinfo{%
+  /Title    (Installation de GeOxygene pour les développeurs)
+  /Author   (Julien Perret)
+  /Creator  (Julien Perret)
+  /Producer (Laboratoire COGIT, IGN)
+  /Subject  (Installation GeOxygene)
+  /Keywords (GeOxygene, Eclipse, Java, Maven, Subversion)
+}
+
+\definecolor{vertolive}{rgb}{0.5,0.5,0}
+\definecolor{gris}{rgb}{0.9,0.9,0.9}
+\definecolor{grisfonce}{rgb}{0.8,0.8,0.8}
+\definecolor{bleufonce}{rgb}{0,0,0.5}
+
+\definecolor{violeticc}{rgb}{0.6549,0,0.4588}
+\definecolor{orangeicc}{rgb}{0.9647,0.5059,0.1294}
+\definecolor{lightorangeicc}{rgb}{0.9647,0.851,0.7529}
+\definecolor{jauneicc}{rgb}{0.9922,0.7216,0.0745}
+\definecolor{grisicc}{rgb}{0.56,0.56,0.56}
+
+\usepackage{times}
+\usepackage{colortbl}
+\hypersetup{
+pdftitle={Installation de GeOxygene pour les développeurs},%
+pdfauthor={Julien Perret},%
+colorlinks=true,%
+plainpages=false,%
+hypertexnames=false,%
+urlcolor=violeticc,%
+linkcolor=violeticc%
+}
+
+\addtolength{\oddsidemargin}{-1in}
+\addtolength{\evensidemargin}{-1in}
+\addtolength{\textwidth}{2in}
+
+\addtolength{\topmargin}{-1in}
+\addtolength{\textheight}{2in}
+
+\pretolerance=-1
+\setlength{\emergencystretch}{3em}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\begin{tabular}[!t]{|l||l|l|l|}
+\hline
+\textbf{Version}&\textbf{Date}&\textbf{Auteur}&\textbf{Version d'Eclipse}\\
+\hline
+\hline
+0&17 mai 2010&Julien Perret&Eclipse Classic 3.5.2\\
+1&31 mai 2010&Julien Perret&Eclipse Classic 3.5.2\\
+2&13 janvier 2011&Cécile Duch\^ene&Eclipse Helios\\
+3&14 janvier 2011&Julien Perret&Eclipse Helios\\
+\hline
+\end{tabular} 
+\end{center}
+
+\section{Installation d'Eclipse}
+\subsection{Téléchargement}
+Vous pouvez télécharger Eclipse sur le 
+\href{http://www.eclipse.org/downloads/}{site de téléchargement d'Eclipse}. A priori, toutes les versions destinées au développement Java devraient fonctionner. Néanmoins, seule les versions Eclipse Classic 3.5.2 et Helios (Service Release 1) ont été testées dans le cadre de cette documentation. Le téléchargement de cette dernière version d'Eclipse pour les différentes plate-formes est directement accessible ici~:\\
+\begin{center}
+\begin{tabular}[!t]{lll}
+Windows&
+\href{http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/helios/SR1/eclipse-java-helios-SR1-win32.zip}{32bit}&
+\href{http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/helios/SR1/eclipse-java-helios-SR1-win32-x86_64.zip}{64bit}\\
+Mac OS X(Cocoa)&
+\href{http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/helios/SR1/eclipse-java-helios-SR1-macosx-cocoa.tar.gz}{32bit}&
+\href{http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/helios/SR1/eclipse-java-helios-SR1-macosx-cocoa-x86_64.tar.gz}{64bit}\\
+Linux&
+\href{http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/helios/SR1/eclipse-java-helios-SR1-linux-gtk.tar.gz}{32bit}&
+\href{http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/helios/SR1/eclipse-java-helios-SR1-linux-gtk-x86_64.tar.gz}{64bit}\\
+\end{tabular}
+\end{center}
+Pour installer Eclipse, il suffit de décompresser le fichier téléchargé.\\
+Si vous utilisez Eclipse derrière un proxy, il vous faut ensuite configurer Eclipse pour le prendre en compte. Pour ce faire, accéder au menu \emph{Window/Preferences/Network~Connection}. Vous pouvez alors séléctionner \emph{Manual} comme \emph{Active Provider} et configurer votre proxy (pour l'IGN par exemple, il s'agit de \emph{proxy.ign.fr} avec le port \emph{3128}).
+\subsection{Installation de plugins}
+Vous aurez besoin des plugin Maven (m2e) et subversion (subclipse). Pour des question de dépendance, il est préférable de commencer par installer subclipse.\\
+Pour installer un plugin pour Eclipse, allez dans le menu \emph{Help/Install~New~Software}. Dans la fen\^etre de dialogue qui s'affiche alors, vous pouvez ajouter des nouveaux sites de plugin en utilisant le bouton \emph{Add}. Une fois le site ajouté, vous pouvez le sélection dans le menu déroulant et la liste des plugins disponibles sur le site ajouté appara\^it.
+\subsubsection{Subclipse}
+Le site à ajouter est \href{http://subclipse.tigris.org/update_1.6.x}{http://subclipse.tigris.org/update\_1.6.x}.\\
+Tout n'est pas utile, mais installez au moins les packages marqués \emph{required} ainsi que \emph{SVNKit}.\\
+Une fois le plugin installé, dans le menu \emph{Window/Preferences/Team/SVN}, sélectionner l'interface SVN \emph{SVNKit}. En effet, celle-ci semble mieux fonctionner que celle par défaut (\emph{JavaHL}).
+\subsubsection{m2e}
+Le site à ajouter est \href{http://m2eclipse.sonatype.org/sites/m2e}{http://m2eclipse.sonatype.org/sites/m2e}.\\
+Il faut tout installer.\\
+Une fenêtre propose de redémarrer Eclipse, inutile de le faire à ce stade.
+\subsubsection{m2e-extras}
+Le site à ajouter est \href{http://m2eclipse.sonatype.org/sites/m2e-extras}{http://m2eclipse.sonatype.org/sites/m2e-extras}.\\
+Sélectionner au moins \emph{Maven SCM handler for Subclipse}.
+\subsection{Configuration d'Eclipse}
+Pour pouvoir utiliser toutes les fonctionalités de Maven sous Eclipse, il faut configurer Eclipse pour s'exécuter avec un JDK et non un JRE. Pour ce faire, il faut éditer le fichier \emph{eclipse.ini} situé à la racine du répertoire d'Eclipse. Rajoutez les lignes suivantes au début du fichier~:\\
+\begin{tabular}[!t]{l|l}
+sous Linux&sous Windows\\
+\verb|-vm|&\verb|-vm|\\
+\verb|<jdkXXXX>/bin/java|&\verb|<jdkXXXX>\bin\javaw.exe|\\
+\end{tabular}\\
+
+Où \verb|<jdkXXX>| désigne le répertoire du jdk que vous voulez utiliser, par exemple \\
+\verb|C:\Program Files\Java\jdk1.6.0_18|
+(pour conna\^itre la valeur par défaut, vous pouvez regarder la valeur de la variable d'environnement JAVA\_HOME).
+
+N'ESSAYEZ PAS d'utiliser \%JAVA\_HOME\% dans le eclipse.ini, ce n'est pas pris en charge.
+
+\subsection{Configuration de Maven}
+Si vous \^etes derrière un proxy, la dernière étape consiste à configurer Maven pour utiliser le proxy. Pour ce, il faut ajouter un fichier \emph{settings.xml} dans la racine de Maven. Ce répertoire est situé à l'endroit suivant~:\\
+\begin{tabular}[!t]{ll}
+sous Linux&\verb|~/.m2|\\
+sous Windows&\verb|C:\Documents and Settings\%USER%\.m2|
+\end{tabular}\\
+Voici un exemple de fichier settings que vous pouvez utiliser à l'IGN~:
+\begin{scriptsize}
+\begin{verbatim}
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <interactiveMode>true</interactiveMode>
+  <usePluginRegistry>false</usePluginRegistry>
+  <offline>false</offline>
+  <proxies>
+    <proxy>
+      <active>true</active>
+      <port>3128</port>
+      <host>proxy.ign.fr</host>
+      <nonProxyHosts>localhost</nonProxyHosts>
+    </proxy>
+  </proxies>
+  <profiles>
+    <profile>
+      <id>cogit</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <repositories>
+        <repository>
+          <id>central</id>
+          <name>Central Maven Repository</name>
+          <url>http://repo2.maven.org/maven2</url>
+        </repository>
+        <repository>
+          <id>releases</id>
+          <name>Nexus Releases Repository</name>
+          <url>https://dionysos2.ign.fr/nexus-webapp-1.4.1/content/repositories/releases/</url>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>cogit</activeProfile>
+  </activeProfiles>
+</settings>
+\end{verbatim}
+\end{scriptsize}
+\section{Installation de GeOxygene}
+Vous avez maintenant tout ce qu'il faut pour télécharger, gérer, compiler et exécuter GeOxygene.
+\subsection{Téléchargement}
+Pour installer un projet Maven depuis un SCM (svn, cvs, etc.), faire\\
+\emph{File/New/Other/Maven/Checkout~project~from~SCM}. Sélectionnez \emph{svn} et indiquer l'adresse du svn de GeOxygene~:\\
+\href{https://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project/main/trunk/geoxygene}{https://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project/main/trunk/geoxygene}, puis Next.\\
+Dans le panneau suivant, vous pouvez sélectionner le répertoire où sera stocké votre projet (par défaut dans le workspace courant), ajouter le projet à un working set (c'est à dire un groupe de projets) et modifier le nom du (ou des) projet(s) récupéré (s) (dans Advanced). Cette dernière option est utile si vous avez déjà des projets portant des noms identiques ou similaires ou si vous souhaitez ajouter à tous les projets récupérés un préfixe, un suffixe, ou utiliser un template de nom comme [groupId].[artifactId]-[version] qui vous créera, pour geoxygene, un projet nommé \emph{fr.ign.cogit.geoxygene-1.4}.
+Cliquez ensuite sur Finish.
+
+\subsection{Compilation}
+Si tout se passe bien, Maven devrait récupérer tous les jars nécessaires et configurer le projet pour la compilation. Si vous utilisez l'option de compilation automatique, vous n'avez rien à faire, sinon, faites un build.
+\subsection{Exécution des exemples}
+Une application exemple peut \^etre exécutée~: \emph{fr.ign.cogit.geoxygene.appli.GeOxygeneApplication}.
+\end{document}
