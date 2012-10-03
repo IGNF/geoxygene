@@ -89,40 +89,6 @@
 		</plugins>
 	</build>
 
-	<!-- ======================================================= -->
-	<!-- Rapport de documentation -->
-	<!-- ======================================================= -->
-	<reporting>
-		<plugins>
-			<!-- ==================================================== -->
-			<!-- Couverture des tests -->
-			<!-- ==================================================== -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.5.1</version>
-			</plugin>
-
-		    <!-- ==================================================== -->
-            <!-- Findbugs -->
-            <!-- ==================================================== -->
-		    <plugin>	
-			    <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-                <version>2.0.1</version>
-            </plugin>
-            
-			<!-- ==================================================== -->
-			<!-- TODO tags -->
-			<!-- ==================================================== -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>taglist-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</reporting>
-
-    
     <!-- ======================================================= -->
     <!-- Dépendances -->
     <!-- ======================================================= -->
