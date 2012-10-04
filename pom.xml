@@ -481,23 +481,16 @@
        sans ajouter de dépendances héritées par tous les projets fils
        ============================================================ -->
 	<dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>${log4j.version}</version>
-      </dependency>
-      <dependency>
-			<groupId>com.vividsolutions</groupId>
-			<artifactId>jts</artifactId>
-			<version>${jts.version}</version>
-		</dependency>
+      <dependencies>
+	    <dependency>
+		  <groupId>com.vividsolutions</groupId>
+		  <artifactId>jts</artifactId>
+		  <version>${jts.version}</version>
+	  </dependency>
     </dependencies>
   </dependencyManagement>
 
 	<dependencies>
-		<!-- <dependency> <groupId>org.opengis</groupId> <artifactId>geoapi-pending</artifactId> 
-			<version>2.3-SNAPSHOT</version> </dependency> -->
 		<dependency>
 			<groupId>jama</groupId>
 			<artifactId>jama</artifactId>
@@ -602,21 +595,21 @@
 		</site>
 	</distributionManagement>
 
-	<modules>
-		<module>geoxygene-api</module>
-		<module>geoxygene-spatial</module>
-		<module>geoxygene-feature</module>
-		<module>geoxygene-database</module>
-		<module>geoxygene-filter</module>
-		<module>geoxygene-style</module>
-		<module>geoxygene-appli</module>
-		<module>geoxygene-contrib</module>
-		<module>geoxygene-io</module>
-		<module>geoxygene-util</module>
-		<module>geoxygene-example</module>
-		<module>geoxygene-deprecated</module>
-		<module>geoxygene-schemageo</module>
-		<module>geoxygene-geopensim</module>
+  <modules>
+    <module>geoxygene-api</module>
+	<module>geoxygene-spatial</module>
+	<module>geoxygene-feature</module>
+	<module>geoxygene-database</module>
+	<module>geoxygene-filter</module>
+	<module>geoxygene-style</module>
+	<module>geoxygene-appli</module>
+	<module>geoxygene-contrib</module>
+	<module>geoxygene-io</module>
+	<module>geoxygene-util</module>
+	<module>geoxygene-example</module>
+	<module>geoxygene-deprecated</module>
+	<module>geoxygene-schemageo</module>
+	<module>geoxygene-geopensim</module>
     <module>geoxygene-sig3d</module>
   </modules>
 
