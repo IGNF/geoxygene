@@ -80,6 +80,7 @@ import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+import fr.ign.cogit.geoxygene.style.CategorizedMap;
 import fr.ign.cogit.geoxygene.style.ColorMap;
 import fr.ign.cogit.geoxygene.style.FeatureTypeStyle;
 import fr.ign.cogit.geoxygene.style.Fill;
@@ -233,6 +234,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
   };
 
   private JButton addColorMapButton;
+  private JButton addCategorizedMapButton;
 
   private JCheckBox toponymBtn;
   private JComboBox fields;
@@ -709,6 +711,10 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.strokePanel.setAlignmentX(LEFT_ALIGNMENT);
     this.mainStylePanel.add(this.strokePanel);
 
+    this.addCategorizedMapButton = new JButton("Valeur Unique"); //$NON-NLS-1$
+    this.addCategorizedMapButton.addActionListener(this);
+    this.strokePanel.add(this.addCategorizedMapButton);
+    
     JButton buttonApply = this.createButtonApply();
     JButton buttonValid = this.createButtonValid();
     JButton buttonCancel = this.createButtonCancel();
@@ -1369,6 +1375,36 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
           cm.setInterpolate(interpolate);
           cm.setPropertyName(attributeName);
           ls.setColorMap(cm);
+          return;
+        }
+      }
+      return;
+    }
+    if (e.getSource() == this.addCategorizedMapButton) {
+      if (this.layer.getSymbolizer().isPolygonSymbolizer()) {
+        PolygonSymbolizer ps = (PolygonSymbolizer) this.layer.getSymbolizer();
+        logger.info(this.layer);
+        List<GF_AttributeType> attributes = this.layer.getFeatureCollection()
+            .getFeatureType().getFeatureAttributes();
+        if (attributes.isEmpty()) {
+          return;
+        }
+        Object[] possibilities = attributes.toArray();
+        String attributeName = ((GF_AttributeType) JOptionPane.showInputDialog(
+            this, I18N.getString("StyleEditionFrame.ChooseAttribute"), //$NON-NLS-1$
+            I18N.getString("StyleEditionFrame.ChooseAttributeWindowTitle"), //$NON-NLS-1$
+            JOptionPane.PLAIN_MESSAGE, null, possibilities, attributes.get(0)
+                .toString())).getMemberName();
+
+        // If a string was returned, say so.
+        if ((attributeName != null) && (attributeName.length() > 0)) {
+          
+          CategorizedMap categorizedMap = new CategorizedMap();
+          categorizedMap.setPropertyName(attributeName);
+          
+          categorizedMap.setPropertyName(attributeName);
+          ps.setCategorizedMap(categorizedMap);
+          ps.setFill(null);
           return;
         }
       }

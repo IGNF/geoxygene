@@ -786,8 +786,16 @@ public final class RenderUtil {
       int rgb = symbolizer.getColorMap().getColor(value);
       fillColor = getColorWithOpacity(new Color(rgb), opacity);
     }
+    if (symbolizer.getCategorizedMap() != null) {
+      int rgb = symbolizer.getCategorizedMap().getColor(new String("test"));
+      System.out.println(rgb);
+      fillColor = getColorWithOpacity(new Color(rgb), opacity);
+      System.out.println("fillColor : " + fillColor);
+    }
+    System.out.println(fillColor);
     if (fillColor != null && fillOpacity > 0f) {
       graphics.setColor(fillColor);
+//      symbolizer.getFill().setFill(fillColor);
       List<Shape> shapes = new ArrayList<Shape>();
       if (feature.getGeom().isPolygon()) {
         try {
