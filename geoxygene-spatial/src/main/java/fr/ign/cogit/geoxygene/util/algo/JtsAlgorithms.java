@@ -1271,7 +1271,7 @@ public class JtsAlgorithms implements GeomAlgorithms {
 //      System.out.println("SS " + buffer);
       if (lineString != null) {
         buffer = lineString.buffer(d, 4, BufferParameters.CAP_ROUND);
-        System.out.println(buffer);
+//        System.out.println(buffer);
         Polygon polygon = null;
         if (!(buffer instanceof Polygon)) {
           JtsAlgorithms.logger.error("Can't compute offsetcurve of " + //$NON-NLS-1$

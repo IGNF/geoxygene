@@ -65,7 +65,7 @@ public class IsEmptyUtil {
   }
 
   public static boolean isEmpty(IPolygon poly) {
-    return poly.coord().size() == 0;
+    return poly.coord() == null || poly.coord().size() == 0;
   }
 
   public static boolean isEmpty(ILineString lineString) {

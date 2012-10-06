@@ -96,7 +96,7 @@ public abstract class Operateurs {
     if (lambda <= 0) {
       return 0; // Cas ou M se projete en A sur le segment [AB]
     }
-    double length = a.distance(b);
+    double length = (to2d) ? a.distance2D(b) : a.distance(b);
     if (lambda >= length) {
       return length; // Cas ou M se projete en B sur le segment [AB]
     }
@@ -1343,7 +1343,7 @@ public abstract class Operateurs {
   /**
    */
   public static int insertionIndex(IDirectPosition point,
-      IDirectPositionList points) {
+      List<IDirectPosition> points) {
     if (points.size() < 2) {
       return -1;
     }

@@ -172,6 +172,10 @@ public class GM_Polygon extends GM_SurfacePatch implements IPolygon {
     super();
     this.patch.add(this);
     this.interpolation = "planar"; //$NON-NLS-1$
+    if (!ls.isClosed() && !ls.getControlPoint().isEmpty()) {
+      ls = new GM_LineString(ls.getControlPoint());
+      ls.addControlPoint(ls.getControlPoint(0));
+    }
     GM_Ring ring = new GM_Ring(ls);
     this.exterior = ring;
   }

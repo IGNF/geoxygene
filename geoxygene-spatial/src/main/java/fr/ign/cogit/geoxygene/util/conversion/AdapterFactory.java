@@ -126,7 +126,7 @@ public class AdapterFactory {
           factory, coord);
       if (sequence.size() > 3
           && sequence.getCoordinate(0).equals(
-              sequence.getCoordinate(sequence.size() - 1))) {
+              sequence.getCoordinate(sequence.size() - 1)) || sequence.size() == 0) {
         result = factory.createLinearRing(sequence);
         result.setSRID(geom.getCRS());
         return result;

@@ -285,7 +285,7 @@ public class DirectPosition implements IDirectPosition {
 
   @Override
   public double distance(final IDirectPosition d) {
-    if (!Double.isNaN(this.getZ()) && !Double.isNaN(d.getZ())) {
+    if (!Double.isNaN(this.getZ()) && !Double.isNaN(d.getZ()) && !Double.isInfinite(this.getZ()) && !Double.isInfinite(d.getZ())) {
       double dx = this.getX() - d.getX();
       double dy = this.getY() - d.getY();
       double dz = this.getZ() - d.getZ();

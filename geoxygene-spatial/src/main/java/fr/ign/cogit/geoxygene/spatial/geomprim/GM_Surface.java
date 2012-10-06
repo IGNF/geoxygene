@@ -291,7 +291,7 @@ public class GM_Surface extends GM_OrientableSurface implements ISurface
   public IDirectPositionList coord() {
     if (this.sizePatch() == 1) {
       IPolygon poly = (IPolygon) this.getPatch(0);
-      IDirectPositionList dpl = this.exteriorCurve().coord();
+      IDirectPositionList dpl = this.exteriorCurve() == null ? new DirectPositionList() : this.exteriorCurve().coord();
       for (int i = 0; i < poly.sizeInterior(); i++) {
         dpl.addAll(this.interiorCurve(i).coord());
       }

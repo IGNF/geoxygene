@@ -121,11 +121,26 @@ public class LineStringSorterTest {
     List<ILineString> list = Arrays.asList(l1, l2, l3, l8, l4, l12, l5, l11, l10, l6, l9, l7, l13);
     Collections.shuffle(list);
     result = LineStringSorter.sort(l, list);
-    System.out.println(result.get(0).intersection(l));
-    System.out.println(result.get(result.size() - 1).intersection(l));
+//    System.out.println(result.get(0).intersection(l));
+//    System.out.println(result.get(result.size() - 1).intersection(l));
 //    for (ILineString l : result) {
 //      System.out.println(l);
 //    }
     Assert.assertEquals(Arrays.asList(l13, l12, l11, l10, l9, l8, l7, l6, l5, l4, l3, l2, l1), result);
+    ILineString ll = new GM_LineString(
+        new DirectPosition(651036.3, 6861368.800000001, Double.POSITIVE_INFINITY),
+        new DirectPosition(651039.4, 6861386.800000001, 0),
+        new DirectPosition(651047.7000000001, 6861432.800000001, 0),
+        new DirectPosition(651048.49003641, 6861442.991466861, 0),
+        new DirectPosition(651048.4900364373, 6861442.991470035, 0));
+    ILineString ll1 = new GM_LineString(
+        new DirectPosition(651044.082420469, 6861436.968906329),
+        new DirectPosition(651054.2437587668, 6861435.603961451));
+    ILineString ll2 = new GM_LineString(
+        new DirectPosition(651035.4940586238, 6861383.924357968),
+        new DirectPosition(651047.1717791874, 6861381.963138461));
+    list = Arrays.asList(ll1, ll2);
+    result = LineStringSorter.sort(ll, list);
+    Assert.assertEquals(Arrays.asList(ll2, ll1), result);    
   }
 }
