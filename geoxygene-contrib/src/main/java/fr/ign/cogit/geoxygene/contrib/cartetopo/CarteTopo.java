@@ -710,6 +710,9 @@ public class CarteTopo extends DataSet {
    * de lancer cette méthode</strong>
    */
   public void filtreNoeudsSimples() {
+    this.filtreNoeudsSimples(false);
+  }
+  public void filtreNoeudsSimples(boolean useWeight) {
     List<Noeud> noeudsElimines = new ArrayList<Noeud>();
     for (Noeud noeud : this.getPopNoeuds()) {
       List<Arc> arcsIncidents = noeud.arcs();
@@ -730,10 +733,13 @@ public class CarteTopo extends DataSet {
       if ((entrantsOrientes.size() + sortantsOrientes.size()) == 3) {
         continue; // incompatibilité d'orientation
       }
-      logger.debug("Filtering " + noeud);
-      Arc arcTotal = this.getPopArcs().nouvelElement();
       Arc arc1 = arcsIncidents.get(0);
       Arc arc2 = arcsIncidents.get(1);
+      if (arc1.getPoids() != arc2.getPoids()) {
+        continue;
+      }
+      logger.debug("Filtering " + noeud);
+      Arc arcTotal = this.getPopArcs().nouvelElement();
       List<ILineString> geometries = new ArrayList<ILineString>(2);
       geometries.add(arc1.getGeometrie());
       geometries.add(arc2.getGeometrie());
@@ -2735,7 +2741,7 @@ public class CarteTopo extends DataSet {
 
   public Noeud splitEdge(Arc a, IDirectPosition p) {
     int index = Operateurs
-        .insertionIndex(p, a.getGeometrie().getControlPoint());
+        .insertionIndex(p, a.getGeometrie().getControlPoint().getList());
     int orientation = a.getOrientation();
     Noeud n = this.getPopNoeuds().nouvelElement(new GM_Point(p));
     IDirectPositionList l1 = new DirectPositionList(
