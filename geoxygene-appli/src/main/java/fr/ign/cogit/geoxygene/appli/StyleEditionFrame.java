@@ -1706,9 +1706,10 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     if (symbolizer.isPolygonSymbolizer()) {
       PolygonSymbolizer polygonSymbolizer = (PolygonSymbolizer) this.layer
           .getStyles().get(0).getSymbolizer();
-
-      polygonSymbolizer.getFill().setColor(this.fillColor);
-      polygonSymbolizer.getFill().setFillOpacity(this.fillOpacity);
+      if (polygonSymbolizer.getFill() != null) {
+        polygonSymbolizer.getFill().setColor(this.fillColor);
+        polygonSymbolizer.getFill().setFillOpacity(this.fillOpacity);
+      }
       polygonSymbolizer.getStroke().setColor(this.strokeColor);
       polygonSymbolizer.getStroke().setStrokeOpacity(this.strokeOpacity);
       polygonSymbolizer.getStroke().setStrokeWidth((float) this.strokeWidth);

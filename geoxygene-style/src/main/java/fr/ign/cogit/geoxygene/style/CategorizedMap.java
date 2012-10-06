@@ -20,6 +20,7 @@ package fr.ign.cogit.geoxygene.style;
 
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -42,19 +43,19 @@ public class CategorizedMap {
   }
   
   @XmlTransient
-  private HashMap<Object, Color> usedColors;
+  private Map<Object, Color> usedColors = new HashMap<Object, Color>();
     
-  public int getColor(String value) {
-    System.out.println("function getColor()");
-    System.out.println(value);
-    Random randomGenerator = new Random();
-    int red = randomGenerator.nextInt(255);
-    int green = randomGenerator.nextInt(255);
-    int blue = randomGenerator.nextInt(255);
-
-    Color randomColor = new Color(red,green,blue);
-    
-    return randomColor.getRGB();
+  public int getColor(Object value) {
+    Color color = this.usedColors.get(value);
+    if (color == null) {
+      Random randomGenerator = new Random();
+      int red = randomGenerator.nextInt(255);
+      int green = randomGenerator.nextInt(255);
+      int blue = randomGenerator.nextInt(255);
+      color = new Color(red,green,blue);
+      this.usedColors.put(value, color);
+    }    
+    return color.getRGB();
     
   }
   

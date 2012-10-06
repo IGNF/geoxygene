@@ -782,17 +782,14 @@ public final class RenderUtil {
         && symbolizer.getColorMap().getInterpolate() != null) {
       double value = ((Number) feature.getAttribute(symbolizer.getColorMap()
           .getInterpolate().getLookupvalue())).doubleValue();
-//      System.out.println("colormap " + value);
       int rgb = symbolizer.getColorMap().getColor(value);
       fillColor = getColorWithOpacity(new Color(rgb), opacity);
     }
     if (symbolizer.getCategorizedMap() != null) {
-      int rgb = symbolizer.getCategorizedMap().getColor(new String("test"));
-      System.out.println(rgb);
+      Object value = feature.getAttribute(symbolizer.getCategorizedMap().getPropertyName());
+      int rgb = symbolizer.getCategorizedMap().getColor(value);
       fillColor = getColorWithOpacity(new Color(rgb), opacity);
-      System.out.println("fillColor : " + fillColor);
     }
-    System.out.println(fillColor);
     if (fillColor != null && fillOpacity > 0f) {
       graphics.setColor(fillColor);
 //      symbolizer.getFill().setFill(fillColor);
