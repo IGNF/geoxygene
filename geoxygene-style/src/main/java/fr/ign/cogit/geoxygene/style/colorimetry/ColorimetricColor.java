@@ -99,20 +99,20 @@ public class ColorimetricColor {
    */
   public ColorSlice getSlice(ColorReferenceSystem crs) {
     ColorSlice sliceColor = null;
-
-    List<ColorWheel> wheels = crs.getWheels();
-    for (ColorWheel wheel : wheels) {
-      List<ColorSlice> slices = wheel.getSlices();
-      for (ColorSlice slice : slices) {
-        List<ColorimetricColor> colors = slice.getColors();
-        for (ColorimetricColor color : colors) {
-          if (this.equals(color)) {
-            sliceColor = slice;
+    if (crs != null) {
+      List<ColorWheel> wheels = crs.getWheels();
+      for (ColorWheel wheel : wheels) {
+        List<ColorSlice> slices = wheel.getSlices();
+        for (ColorSlice slice : slices) {
+          List<ColorimetricColor> colors = slice.getColors();
+          for (ColorimetricColor color : colors) {
+            if (this.equals(color)) {
+              sliceColor = slice;
+            }
           }
         }
       }
     }
-
     return sliceColor;
   }
 
@@ -433,59 +433,68 @@ public class ColorimetricColor {
    * @param lightness The lightness level of the color
    **/
   public ColorimetricColor(String hue, int lightness) {
-    List<ColorimetricColor> cogitColors = ColorReferenceSystem.getCOGITColors();
-    ColorimetricColor color = null;
-
-    for (int i = 0; i < cogitColors.size(); i++) {
-      if (cogitColors.get(i).getHue().equalsIgnoreCase(hue)
-          && cogitColors.get(i).getLightness() == lightness) {
-        color = cogitColors.get(i);
+    
+    if (hue == null) {
+      logger.error ("This color " + usualName + " doesn't exist");
+    } else {
+      List<ColorimetricColor> cogitColors = ColorReferenceSystem.getCOGITColors();
+      ColorimetricColor color = null;
+  
+      for (int i = 0; i < cogitColors.size(); i++) {
+        if (cogitColors.get(i).getHue().equalsIgnoreCase(hue)
+            && cogitColors.get(i).getLightness() == lightness) {
+          color = cogitColors.get(i);
+        }
       }
+      if (color == null) {
+        if (!hue.equalsIgnoreCase("GRIS") //$NON-NLS-1$
+            && !hue.equalsIgnoreCase("NOIR") //$NON-NLS-1$
+            && !hue.equalsIgnoreCase("BLANC")) { //$NON-NLS-1$
+  
+          if (lightness == 0) {
+            color = new ColorimetricColor(hue.toUpperCase(), 1);
+          } else if (lightness == 8) {
+            color = new ColorimetricColor(hue.toUpperCase(), 7);
+          } else {
+            color = new ColorimetricColor();
+            logger.error("This color doesn't exist !!!"); //$NON-NLS-1$
+            // TODO Ajout d'une "exception" ?
+         }
+        } else if (hue.equalsIgnoreCase("GRIS")) { //$NON-NLS-1$
+          if (lightness == 0) {
+            color = new ColorimetricColor(85);
+          } else if (lightness == 8) {
+            color = new ColorimetricColor(86);
+          } else {
+            color = new ColorimetricColor();
+            logger.error("This color doesn't exist !!!"); //$NON-NLS-1$
+            // TODO Ajout d'une "exception" ?
+          }
+        } else if (hue.equalsIgnoreCase("NOIR")) { //$NON-NLS-1$
+          if (lightness == 0) {
+            color = new ColorimetricColor(85);
+          } else {
+            color = new ColorimetricColor("GRIS", lightness); //$NON-NLS-1$
+          }
+        } else if (hue.equalsIgnoreCase("BLANC")) { //$NON-NLS-1$
+          if (lightness == 8) {
+            color = new ColorimetricColor(86);
+          } else {
+            color = new ColorimetricColor("GRIS", lightness); //$NON-NLS-1$
+          }
+        } 
+      }
+      this.redRGB = color.getRedRGB();
+      this.greenRGB = color.getGreenRGB();
+      this.blueRGB = color.getBlueRGB();
+      this.idColor = color.getIdColor();
+      this.cleCoul = color.getCleCoul();
+      this.hue = color.getHue();
+      this.lightness = color.getLightness();
+      this.usualName = color.getUsualName();
+      this.xScreen = color.getXScreen();
+      this.yScreen = color.getYScreen();
     }
-    if (color == null) {
-      if (!hue.equalsIgnoreCase("GRIS") //$NON-NLS-1$
-          && !hue.equalsIgnoreCase("NOIR") //$NON-NLS-1$
-          && !hue.equalsIgnoreCase("BLANC")) { //$NON-NLS-1$
-
-        if (lightness == 0) {
-          color = new ColorimetricColor(hue.toUpperCase(), 1);
-        } else if (lightness == 8) {
-          color = new ColorimetricColor(hue.toUpperCase(), 7);
-        } else {
-          color = new ColorimetricColor();
-          logger.error("This color doesn't exist !!!"); //$NON-NLS-1$
-          //TODO Ajout d'une "exception" ?
-       }
-      } else if (hue.equalsIgnoreCase("GRIS")) { //$NON-NLS-1$
-        if (lightness == 0) {
-          color = new ColorimetricColor(85);
-        } else if (lightness == 8) {
-          color = new ColorimetricColor(86);
-        }
-      } else if (hue.equalsIgnoreCase("NOIR")) { //$NON-NLS-1$
-        if (lightness == 0) {
-          color = new ColorimetricColor(85);
-        } else {
-          color = new ColorimetricColor("GRIS", lightness); //$NON-NLS-1$
-        }
-      } else if (hue.equalsIgnoreCase("BLANC")) { //$NON-NLS-1$
-        if (lightness == 8) {
-          color = new ColorimetricColor(86);
-        } else {
-          color = new ColorimetricColor("GRIS", lightness); //$NON-NLS-1$
-        }
-      } 
-    }
-    this.redRGB = color.getRedRGB();
-    this.greenRGB = color.getGreenRGB();
-    this.blueRGB = color.getBlueRGB();
-    this.idColor = color.getIdColor();
-    this.cleCoul = color.getCleCoul();
-    this.hue = color.getHue();
-    this.lightness = color.getLightness();
-    this.usualName = color.getUsualName();
-    this.xScreen = color.getXScreen();
-    this.yScreen = color.getYScreen();
   }
 
   /**
@@ -494,20 +503,25 @@ public class ColorimetricColor {
    *          ColorReferenceSystem
    **/
   public ColorimetricColor(String usualName) {
-    List<ColorimetricColor> cogitColors = ColorReferenceSystem.getCOGITColors();
-
-    for (int i = 0; i < cogitColors.size(); i++) {
-      if (cogitColors.get(i).getUsualName().equalsIgnoreCase(usualName)) {
-        this.redRGB = cogitColors.get(i).getRedRGB();
-        this.greenRGB = cogitColors.get(i).getGreenRGB();
-        this.blueRGB = cogitColors.get(i).getBlueRGB();
-        this.idColor = cogitColors.get(i).getIdColor();
-        this.cleCoul = cogitColors.get(i).getCleCoul();
-        this.hue = cogitColors.get(i).getHue();
-        this.lightness = cogitColors.get(i).getLightness();
-        this.usualName = cogitColors.get(i).getUsualName();
-        this.xScreen = cogitColors.get(i).getXScreen();
-        this.yScreen = cogitColors.get(i).getYScreen();
+    
+    if (usualName == null) {
+      logger.error ("This color " + usualName + " doesn't exist");
+    } else {
+      List<ColorimetricColor> cogitColors = ColorReferenceSystem.getCOGITColors();
+  
+      for (int i = 0; i < cogitColors.size(); i++) {
+        if (cogitColors.get(i).getUsualName().equalsIgnoreCase(usualName)) {
+          this.redRGB = cogitColors.get(i).getRedRGB();
+          this.greenRGB = cogitColors.get(i).getGreenRGB();
+          this.blueRGB = cogitColors.get(i).getBlueRGB();
+          this.idColor = cogitColors.get(i).getIdColor();
+          this.cleCoul = cogitColors.get(i).getCleCoul();
+          this.hue = cogitColors.get(i).getHue();
+          this.lightness = cogitColors.get(i).getLightness();
+          this.usualName = cogitColors.get(i).getUsualName();
+          this.xScreen = cogitColors.get(i).getXScreen();
+          this.yScreen = cogitColors.get(i).getYScreen();
+        }
       }
     }
   }
