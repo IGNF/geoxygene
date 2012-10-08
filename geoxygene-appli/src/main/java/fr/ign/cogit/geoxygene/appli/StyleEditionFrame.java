@@ -675,7 +675,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.addColorMapButton.addActionListener(this);
     this.fillPanel.add(this.addColorMapButton);
     
-    this.addCategorizedMapButton = new JButton("Valeur Unique"); //$NON-NLS-1$
+    this.addCategorizedMapButton = new JButton(
+        I18N.getString("StyleEditionFrame.AddCategorizedMap")); //$NON-NLS-1$
     this.addCategorizedMapButton.addActionListener(this);
     this.fillPanel.add(this.addCategorizedMapButton);
     
@@ -778,7 +779,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.addColorMapButton.addActionListener(this);
     this.strokePanel.add(this.addColorMapButton);
 
-    this.addCategorizedMapButton = new JButton("Valeur Unique"); //$NON-NLS-1$
+    this.addCategorizedMapButton = new JButton(
+        I18N.getString("StyleEditionFrame.AddCategorizedMap")); //$NON-NLS-1$
     this.addCategorizedMapButton.addActionListener(this);
     this.strokePanel.add(this.addCategorizedMapButton);
     
@@ -889,7 +891,8 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.addColorMapButton.addActionListener(this);
     this.fillPanel.add(this.addColorMapButton);
     
-    this.addCategorizedMapButton = new JButton("Valeur Unique"); //$NON-NLS-1$
+    this.addCategorizedMapButton = new JButton(
+        I18N.getString("StyleEditionFrame.AddCategorizedMap")); //$NON-NLS-1$
     this.addCategorizedMapButton.addActionListener(this);
     this.fillPanel.add(this.addCategorizedMapButton);
     
