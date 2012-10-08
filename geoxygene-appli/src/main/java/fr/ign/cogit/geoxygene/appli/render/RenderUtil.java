@@ -381,6 +381,10 @@ public final class RenderUtil {
                     symbolizer.getColorMap().getPropertyName()).toString())))), opacity));
           } catch (NumberFormatException e) {
           }
+        } else if (symbolizer.getCategorizedMap() != null) {
+          Object value = feature.getAttribute(symbolizer.getCategorizedMap().getPropertyName());
+          int rgb = symbolizer.getCategorizedMap().getColor(value);
+          graphics.setColor(getColorWithOpacity(new Color(rgb), opacity));
         } else {
           graphics.setColor(getColorWithOpacity(symbolizer.getStroke().getColor(), opacity));
         }
@@ -789,10 +793,10 @@ public final class RenderUtil {
       Object value = feature.getAttribute(symbolizer.getCategorizedMap().getPropertyName());
       int rgb = symbolizer.getCategorizedMap().getColor(value);
       fillColor = getColorWithOpacity(new Color(rgb), opacity);
+      symbolizer.getStroke().setStroke(Color.BLACK);
     }
     if (fillColor != null && fillOpacity > 0f) {
       graphics.setColor(fillColor);
-//      symbolizer.getFill().setFill(fillColor);
       List<Shape> shapes = new ArrayList<Shape>();
       if (feature.getGeom().isPolygon()) {
         try {

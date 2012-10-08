@@ -43,6 +43,17 @@ public class LineSymbolizer extends AbstractSymbolizer {
   public void setColorMap(ColorMap colorMap) {
     this.colorMap = colorMap;
   }
+  
+  @XmlElement(name = "CategorizedMap")
+  CategorizedMap categorizedMap = null;
+
+  public CategorizedMap getCategorizedMap() {
+    return this.categorizedMap;
+  }
+
+  public void setCategorizedMap(CategorizedMap categorizedMap) {
+    this.categorizedMap = categorizedMap;
+  }
 
   @XmlElement(name = "PerpendicularOffset")
   double perpendicularOffset = 0;

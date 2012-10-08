@@ -320,7 +320,6 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
 
     this.textStylePanel.add(this.placementPanel);
     this.textStylePanel.add(this.fontPanel);
-    // TODO Ajouter un panel pour paramétrer le placement des toponymes
     JButton closeBtn = new JButton(I18N.getString("AttributeTable.Close")); //$NON-NLS-1$
     closeBtn.addActionListener(new ActionListener() {
       @Override
@@ -628,10 +627,6 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
         StyleEditionFrame.this.layerViewPanel.updateUI();
         StyleEditionFrame.this.layerViewPanel.superRepaint();
         StyleEditionFrame.this.layerViewPanel.getProjectFrame().repaint();
-
-        // FIXME Faire rafraichir l'affichage !!!!
-        // Pour l'instant, j'ai tenté tout les repaint, sans succès...
-
       }
     });
 
@@ -778,6 +773,10 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.addColorMapButton.addActionListener(this);
     this.strokePanel.add(this.addColorMapButton);
 
+    this.addCategorizedMapButton = new JButton("Valeur Unique"); //$NON-NLS-1$
+    this.addCategorizedMapButton.addActionListener(this);
+    this.strokePanel.add(this.addCategorizedMapButton);
+    
     if (this.layer.getStyles().size() == 2) {
       this.strokePanel2 = new JPanel();
       this.strokePanel2.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -1337,7 +1336,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
             JOptionPane.PLAIN_MESSAGE, null, possibilities, attributes.get(0)
                 .toString())).getMemberName();
 
-        // If a string was returned, say so.
+        // TODO If a string was returned, say so.
         if ((attributeName != null) && (attributeName.length() > 0)) {
           double min = Double.POSITIVE_INFINITY;
           double max = Double.NEGATIVE_INFINITY;
@@ -1381,30 +1380,31 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
       return;
     }
     if (e.getSource() == this.addCategorizedMapButton) {
-      if (this.layer.getSymbolizer().isPolygonSymbolizer()) {
-        PolygonSymbolizer ps = (PolygonSymbolizer) this.layer.getSymbolizer();
-        logger.info(this.layer);
-        List<GF_AttributeType> attributes = this.layer.getFeatureCollection()
-            .getFeatureType().getFeatureAttributes();
-        if (attributes.isEmpty()) {
-          return;
-        }
-        Object[] possibilities = attributes.toArray();
-        String attributeName = ((GF_AttributeType) JOptionPane.showInputDialog(
-            this, I18N.getString("StyleEditionFrame.ChooseAttribute"), //$NON-NLS-1$
-            I18N.getString("StyleEditionFrame.ChooseAttributeWindowTitle"), //$NON-NLS-1$
-            JOptionPane.PLAIN_MESSAGE, null, possibilities, attributes.get(0)
-                .toString())).getMemberName();
+      List<GF_AttributeType> attributes = this.layer.getFeatureCollection()
+          .getFeatureType().getFeatureAttributes();
+      if (attributes.isEmpty()) {
+        return;
+      }
+      Object[] possibilities = attributes.toArray();
+      String attributeName = ((GF_AttributeType) JOptionPane.showInputDialog(
+          this, I18N.getString("StyleEditionFrame.ChooseAttribute"), //$NON-NLS-1$
+          I18N.getString("StyleEditionFrame.ChooseAttributeWindowTitle"), //$NON-NLS-1$
+          JOptionPane.PLAIN_MESSAGE, null, possibilities, attributes.get(0)
+              .toString())).getMemberName();
 
-        // If a string was returned, say so.
-        if ((attributeName != null) && (attributeName.length() > 0)) {
-          
-          CategorizedMap categorizedMap = new CategorizedMap();
-          categorizedMap.setPropertyName(attributeName);
-          
-          categorizedMap.setPropertyName(attributeName);
+      if ((attributeName != null) && (attributeName.length() > 0)) {
+        CategorizedMap categorizedMap = new CategorizedMap();
+        categorizedMap.setPropertyName(attributeName);
+        
+        if (this.layer.getSymbolizer().isPolygonSymbolizer()) {
+          PolygonSymbolizer ps = (PolygonSymbolizer) this.layer.getSymbolizer();
           ps.setCategorizedMap(categorizedMap);
           ps.setFill(null);
+          return;
+        } else if (this.layer.getSymbolizer().isLineSymbolizer()) {
+          LineSymbolizer ls = (LineSymbolizer) this.layer.getSymbolizer();
+          ls.setCategorizedMap(categorizedMap);
+//          ls.setFill(null);
           return;
         }
       }
