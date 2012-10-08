@@ -10,7 +10,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 
 /**
@@ -21,6 +23,9 @@ import org.junit.Test;
 public class ColorimetricColorTest extends ColorimetryTest {
   
   private Logger logger = Logger.getLogger(ColorimetricColorTest.class);
+  
+  //@Rule
+  //public ExpectedException exception = ExpectedException.none();
   
   /** Default ColorimetricColor. */
   private ColorimetricColor defaultColorimetric;
@@ -48,7 +53,7 @@ public class ColorimetricColorTest extends ColorimetryTest {
   @Test
   public final void testColorimetricColor() {
     logger.info("--------------------------------------------------------------------------------------------------------------");
-    logger.info("Test method fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor#ColorimetricColor()");
+    logger.info("Test method ColorimetricColor#ColorimetricColor()");
     
     logger.info("  Test 1 : default ColorimetricColor");
     // ColorimetricColor construite par defaut 
@@ -67,7 +72,7 @@ public class ColorimetricColorTest extends ColorimetryTest {
   @Test
   public final void testColorimetricColorInt() {
     logger.info("--------------------------------------------------------------------------------------------------------------");
-    logger.info("Test method fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor#ColorimetricColor(int) ");
+    logger.info("Test method ColorimetricColor(int) ");
     
     // =====================================================
     logger.info("  Test 1 : existing color : 1");
@@ -112,7 +117,7 @@ public class ColorimetricColorTest extends ColorimetryTest {
   @Test
   public final void testColorimetricColorStringInt() {
     logger.info("--------------------------------------------------------------------------------------------------------------");
-    logger.info("Test method fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor#ColorimetricColor(java.lang.String, int)");
+    logger.info("Test method ColorimetricColor(String, int)");
     
     // =====================================================
     logger.info("  Test 1 : setting of all the attributes");
@@ -280,7 +285,7 @@ public class ColorimetricColorTest extends ColorimetryTest {
   @Test
   public final void testColorimetricColorString() {
     logger.info("--------------------------------------------------------------------------------------------------------------");
-    logger.info("Test method fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor#ColorimetricColor(java.lang.String)");
+    logger.info("Test method ColorimetricColor(String)");
  
     // =====================================================
     logger.info("  Test 1 : existing color");
@@ -336,20 +341,42 @@ public class ColorimetricColorTest extends ColorimetryTest {
     logger.info("  Test 1 : existing color");
     
     logger.info("  Test 1.1 : GRIS BLEU MOYEN CLAIR");
-    ColorimetricColor cResult = new ColorimetricColor(182, 190, 191); //$NON-NLS-1$
+    ColorimetricColor cResult = new ColorimetricColor(182, 190, 191);
     assertEquals("Compare redRGB. ", 182, cResult.getRedRGB());
     assertEquals("Compare greenRGB. ", 190, cResult.getGreenRGB());
     assertEquals("Compare blueRGB. ", 191, cResult.getBlueRGB());
+    assertEquals("Compare hue. ", null, cResult.getHue());
+    assertEquals("Compare lightness. ", 0, cResult.getLightness());
+    assertEquals("Compare usual name. ", null, cResult.getUsualName());
+    assertEquals("Compare idColor. ", 0, cResult.getIdColor());
+    assertEquals("Compare CleCoul. ", null, cResult.getCleCoul());
+    assertEquals("Compare xScreen. ", 0, cResult.getXScreen());
+    assertEquals("Compare yScreen. ", 0, cResult.getYScreen());
     
     logger.info("  Test 1.2 : MARRON TRES CLAIR");
     cResult = new ColorimetricColor(249, 244, 217); //$NON-NLS-1$
     assertEquals("Compare redRGB. ", 249, cResult.redRGB);
     assertEquals("Compare greenRGB. ", 244, cResult.greenRGB);
     assertEquals("Compare blueRGB. ", 217, cResult.blueRGB);
+    assertEquals("Compare hue. ", null, cResult.getHue());
+    assertEquals("Compare lightness. ", 0, cResult.getLightness());
+    assertEquals("Compare usual name. ", null, cResult.getUsualName());
+    assertEquals("Compare idColor. ", 0, cResult.getIdColor());
+    assertEquals("Compare CleCoul. ", null, cResult.getCleCoul());
+    assertEquals("Compare xScreen. ", 0, cResult.getXScreen());
+    assertEquals("Compare yScreen. ", 0, cResult.getYScreen());
     
     // =====================================================
-    logger.info("  Test 2 : test the value affected");
+    logger.info("  Test 1.3 : test 250-277-999");
     cResult = new ColorimetricColor(250, 277, 999);
+    
+    assertEquals("Compare hue. ", null, cResult.getHue());
+    assertEquals("Compare lightness. ", 0, cResult.getLightness());
+    assertEquals("Compare usual name. ", null, cResult.getUsualName());
+    assertEquals("Compare idColor. ", 0, cResult.getIdColor());
+    assertEquals("Compare CleCoul. ", null, cResult.getCleCoul());
+    assertEquals("Compare xScreen. ", 0, cResult.getXScreen());
+    assertEquals("Compare yScreen. ", 0, cResult.getYScreen());
     
     assertFalse("Compare redRGB. ", 249 == cResult.redRGB);
     assertFalse("Compare redRGB. ", 0 == cResult.redRGB);
@@ -366,51 +393,102 @@ public class ColorimetricColorTest extends ColorimetryTest {
     assertFalse("Compare blueRGB. ", 0 == cResult.blueRGB);
     assertFalse("Compare blueRGB. ", 998 == cResult.blueRGB);
     assertFalse("Compare blueRGB. ", 1000 == cResult.blueRGB);
-  }
 
+  }
+  
   /**
    * Test method for {@link fr.ign.cogit.geoxygene.style.colorimetry.ColorimetricColor#ColorimetricColor(int, int, int, boolean)}.
    */
   @Test
-  public final void testColorimetricColorIntIntIntBoolean() {
-   //fail("Not yet implemented"); // TODO //$NON-NLS-1$
+  public final void testColorimetricColorIntIntIntBoolean() throws Exception {
+    logger.info("--------------------------------------------------------------------------------------------------------------");
+    logger.info("Test method ColorimetricColor(int, int, int, boolean)");
     
-    /*ColorimetricColor cResult = new ColorimetricColor(182, 190, 191); //$NON-NLS-1$
-    ColorimetricColor cExpected = new ColorimetricColor();
-    cExpected.idColor = 15;
-    cExpected.hue = "GRIS BLEU";
-    cExpected.lightness = 3;
-    cExpected.usualName = "GRIS BLEU MOYEN CLAIR";
-    cExpected.cleCoul = "GB3";
-    cExpected.redRGB = 182;
-    cExpected.greenRGB = 190;
-    cExpected.blueRGB = 190;
-    cExpected.xScreen = 936;
-    cExpected.yScreen = 307;
-    compareColorimetricColor(cResult, cExpected);
-    compareColorimetricColor(cResult, new ColorimetricColor(15));
-    compareColorimetricColor(cResult, new ColorimetricColor("GRIS BLEU", 3));
-    compareColorimetricColor(cResult, new ColorimetricColor("Gris bleu Moyen clair"));
+    // =====================================================
+    logger.info("  Test 1 : without reference");
+    // On reprend les tests du test précedent
+    
+    logger.info("  Test 1.1 : GRIS BLEU MOYEN CLAIR");
+    ColorimetricColor cResult = new ColorimetricColor(182, 190, 191, false);
+    assertEquals("Compare redRGB. ", 182, cResult.getRedRGB());
+    assertEquals("Compare greenRGB. ", 190, cResult.getGreenRGB());
+    assertEquals("Compare blueRGB. ", 191, cResult.getBlueRGB());
+    assertEquals("Compare hue. ", null, cResult.getHue());
+    assertEquals("Compare lightness. ", 0, cResult.getLightness());
+    assertEquals("Compare usual name. ", null, cResult.getUsualName());
+    assertEquals("Compare idColor. ", 0, cResult.getIdColor());
+    assertEquals("Compare CleCoul. ", null, cResult.getCleCoul());
+    assertEquals("Compare xScreen. ", 0, cResult.getXScreen());
+    assertEquals("Compare yScreen. ", 0, cResult.getYScreen());
     
     logger.info("  Test 1.2 : MARRON TRES CLAIR");
-    cResult = new ColorimetricColor(249, 244, 217); //$NON-NLS-1$
-    cExpected = new ColorimetricColor();
-    cExpected.idColor = 94;
-    cExpected.hue = "MARRON";
-    cExpected.lightness = 1;
-    cExpected.usualName = "MARRON TRES CLAIR";
-    cExpected.cleCoul = "M1";
-    cExpected.redRGB = 249;
-    cExpected.greenRGB = 244;
-    cExpected.blueRGB = 217;
-    cExpected.xScreen = 480;
-    cExpected.yScreen = 412;
-    compareColorimetricColor(cResult, cExpected);
-    compareColorimetricColor(cResult, new ColorimetricColor(94));
-    compareColorimetricColor(cResult, new ColorimetricColor("MARRON", 1));
+    cResult = new ColorimetricColor(249, 244, 217, false); //$NON-NLS-1$
+    assertEquals("Compare redRGB. ", 249, cResult.redRGB);
+    assertEquals("Compare greenRGB. ", 244, cResult.greenRGB);
+    assertEquals("Compare blueRGB. ", 217, cResult.blueRGB);
+    assertEquals("Compare hue. ", null, cResult.getHue());
+    assertEquals("Compare lightness. ", 0, cResult.getLightness());
+    assertEquals("Compare usual name. ", null, cResult.getUsualName());
+    assertEquals("Compare idColor. ", 0, cResult.getIdColor());
+    assertEquals("Compare CleCoul. ", null, cResult.getCleCoul());
+    assertEquals("Compare xScreen. ", 0, cResult.getXScreen());
+    assertEquals("Compare yScreen. ", 0, cResult.getYScreen());
+    
+    logger.info("  Test 1.3 : 250-277-999");
+    cResult = new ColorimetricColor(250, 277, 999);
+    assertEquals("Compare hue. ", null, cResult.getHue());
+    assertEquals("Compare lightness. ", 0, cResult.getLightness());
+    assertEquals("Compare usual name. ", null, cResult.getUsualName());
+    assertEquals("Compare idColor. ", 0, cResult.getIdColor());
+    assertEquals("Compare CleCoul. ", null, cResult.getCleCoul());
+    assertEquals("Compare xScreen. ", 0, cResult.getXScreen());
+    assertEquals("Compare yScreen. ", 0, cResult.getYScreen());
+    
+    assertFalse("Compare redRGB. ", 249 == cResult.redRGB);
+    assertFalse("Compare redRGB. ", 0 == cResult.redRGB);
+    assertFalse("Compare redRGB. ", 277 == cResult.redRGB);
+    assertFalse("Compare redRGB. ", 999 == cResult.redRGB);
+    
+    assertFalse("Compare greenRGB. ", 250 == cResult.greenRGB);
+    assertFalse("Compare greenRGB. ", 999 == cResult.greenRGB);
+    assertFalse("Compare greenRGB. ", 0 == cResult.greenRGB);
+    assertFalse("Compare greenRGB. ", 278 == cResult.greenRGB);
+    
+    assertFalse("Compare blueRGB. ", 250 == cResult.blueRGB);
+    assertFalse("Compare blueRGB. ", 277 == cResult.blueRGB);
+    assertFalse("Compare blueRGB. ", 0 == cResult.blueRGB);
+    assertFalse("Compare blueRGB. ", 998 == cResult.blueRGB);
+    assertFalse("Compare blueRGB. ", 1000 == cResult.blueRGB);
+    
+    // =====================================================
+    logger.info("  Test 2 : with reference");
+    
+    logger.info("  Test 2.1 : existing color (GRIS BLEU MOYEN CLAIR)");
+    cResult = new ColorimetricColor(182, 190, 191, true);
+    compareColorimetricColor(cResult, new ColorimetricColor("GRIS BLEU MOYEN CLAIR"));
+    
+    logger.info("  Test 2.2 : existing color (MARRON TRES CLAIR)");
+    cResult = new ColorimetricColor(249, 244, 217, true);
     compareColorimetricColor(cResult, new ColorimetricColor("MARRON TRES CLAIR"));
     
-    */
+    logger.info("  Test 2.3 : approximate existing color (MARRON TRES CLAIR)");
+    cResult = new ColorimetricColor(249, 241, 216, true);
+    compareColorimetricColor(cResult, new ColorimetricColor("MARRON TRES CLAIR"));
+    
+    logger.info("  Test 2.4 : approximate existing color (GRIS BLEU MOYEN CLAIR)");
+    cResult = new ColorimetricColor(179, 192, 189, true);
+    compareColorimetricColor(cResult, new ColorimetricColor("GRIS BLEU MOYEN CLAIR"));
+    
+    logger.info("  Test 2.5 : approximate existing color (BLEU VIOLET TRES FONCE)");
+    cResult = new ColorimetricColor(0, 0, 80, true);
+    compareColorimetricColor(cResult, new ColorimetricColor("BLEU VIOLET TRES FONCE"));
+    
+    // =====================================================
+    logger.info("  Test 3 : non existing RGB");
+    // cResult = new ColorimetricColor(0, 999, 500, true);
+    // exception.expect(IllegalArgumentException.class);
+    // myMethod(input);
+    // exception.expectMessage("Color parameter outside of expected range: Green Blue");
     
   }
 
