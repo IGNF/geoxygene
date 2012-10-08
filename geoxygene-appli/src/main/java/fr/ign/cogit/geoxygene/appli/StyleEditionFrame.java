@@ -669,7 +669,16 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.fillOpacity = (symbolizer != null) ? symbolizer.getFill().getFillOpacity() : 0.0f;
     this.fillPanel.add(this.createColorPreviewPanel(this.fillColor,
         this.fillOpacity));
-
+    
+    this.addColorMapButton = new JButton(
+        I18N.getString("StyleEditionFrame.AddColorMap")); //$NON-NLS-1$
+    this.addColorMapButton.addActionListener(this);
+    this.fillPanel.add(this.addColorMapButton);
+    
+    this.addCategorizedMapButton = new JButton("Valeur Unique"); //$NON-NLS-1$
+    this.addCategorizedMapButton.addActionListener(this);
+    this.fillPanel.add(this.addCategorizedMapButton);
+    
     this.strokePanel = new JPanel();
     this.strokePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
     TitledBorder strokeTitleBorder = BorderFactory.createTitledBorder(""); //$NON-NLS-1$
@@ -705,10 +714,6 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
 
     this.strokePanel.setAlignmentX(LEFT_ALIGNMENT);
     this.mainStylePanel.add(this.strokePanel);
-
-    this.addCategorizedMapButton = new JButton("Valeur Unique"); //$NON-NLS-1$
-    this.addCategorizedMapButton.addActionListener(this);
-    this.strokePanel.add(this.addCategorizedMapButton);
     
     JButton buttonApply = this.createButtonApply();
     JButton buttonValid = this.createButtonValid();
@@ -879,6 +884,11 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.fillPanel.add(this.createColorPreviewPanel(this.fillColor,
         this.fillOpacity));
 
+    this.addColorMapButton = new JButton(
+        I18N.getString("StyleEditionFrame.AddColorMap")); //$NON-NLS-1$
+    this.addColorMapButton.addActionListener(this);
+    this.fillPanel.add(this.addColorMapButton);
+    
     this.addCategorizedMapButton = new JButton("Valeur Unique"); //$NON-NLS-1$
     this.addCategorizedMapButton.addActionListener(this);
     this.fillPanel.add(this.addCategorizedMapButton);
@@ -1326,8 +1336,7 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.getDialogElements();
 
     if (e.getSource() == this.addColorMapButton) {
-      if (this.layer.getSymbolizer().isLineSymbolizer()) {
-        LineSymbolizer ls = (LineSymbolizer) this.layer.getSymbolizer();
+      
         List<GF_AttributeType> attributes = this.layer.getFeatureCollection()
             .getFeatureType().getFeatureAttributes();
         if (attributes.isEmpty()) {
@@ -1377,9 +1386,20 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
               new InterpolationPoint(max, Color.white));
           cm.setInterpolate(interpolate);
           cm.setPropertyName(attributeName);
-          ls.setColorMap(cm);
-          return;
-        }
+          if (this.layer.getSymbolizer().isPolygonSymbolizer()) {
+            PolygonSymbolizer ps = (PolygonSymbolizer) this.layer.getSymbolizer();
+            ps.setColorMap(cm);
+            ps.setFill(null);
+            return;
+          } else if (this.layer.getSymbolizer().isLineSymbolizer()) {
+            LineSymbolizer ls = (LineSymbolizer) this.layer.getSymbolizer();
+            ls.setColorMap(cm);
+            return;
+          } else if (this.layer.getSymbolizer().isPointSymbolizer()) {
+            PointSymbolizer pts = (PointSymbolizer) this.layer.getSymbolizer();
+            pts.setColorMap(cm);
+            return;
+          }
       }
       return;
     }

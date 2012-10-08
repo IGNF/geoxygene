@@ -794,8 +794,8 @@ public final class RenderUtil {
     }
     if (symbolizer.getColorMap() != null
         && symbolizer.getColorMap().getInterpolate() != null) {
-      double value = ((Number) feature.getAttribute(symbolizer.getColorMap()
-          .getInterpolate().getLookupvalue())).doubleValue();
+      double value = Double.parseDouble(feature.getAttribute(
+          symbolizer.getColorMap().getPropertyName()).toString());
       int rgb = symbolizer.getColorMap().getColor(value);
       fillColor = getColorWithOpacity(new Color(rgb), opacity);
       symbolizer.getStroke().setStroke(Color.BLACK);
