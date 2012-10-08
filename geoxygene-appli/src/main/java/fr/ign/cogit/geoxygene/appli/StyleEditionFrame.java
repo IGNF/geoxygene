@@ -879,6 +879,10 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
     this.fillPanel.add(this.createColorPreviewPanel(this.fillColor,
         this.fillOpacity));
 
+    this.addCategorizedMapButton = new JButton("Valeur Unique"); //$NON-NLS-1$
+    this.addCategorizedMapButton.addActionListener(this);
+    this.fillPanel.add(this.addCategorizedMapButton);
+    
     this.strokePanel = new JPanel();
     this.strokePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
     TitledBorder strokeTitleBorder = BorderFactory.createTitledBorder(""); //$NON-NLS-1$
@@ -1404,7 +1408,10 @@ public class StyleEditionFrame extends JFrame implements ActionListener,
         } else if (this.layer.getSymbolizer().isLineSymbolizer()) {
           LineSymbolizer ls = (LineSymbolizer) this.layer.getSymbolizer();
           ls.setCategorizedMap(categorizedMap);
-//          ls.setFill(null);
+          return;
+        } else if (this.layer.getSymbolizer().isPointSymbolizer()) {
+          PointSymbolizer pts = (PointSymbolizer) this.layer.getSymbolizer();
+          pts.setCategorizedMap(categorizedMap);
           return;
         }
       }

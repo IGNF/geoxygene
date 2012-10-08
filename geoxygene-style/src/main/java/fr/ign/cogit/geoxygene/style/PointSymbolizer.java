@@ -55,6 +55,17 @@ public class PointSymbolizer extends AbstractSymbolizer {
   public void setColorMap(ColorMap colorMap) {
     this.colorMap = colorMap;
   }
+  
+  @XmlElement(name = "CategorizedMap")
+  CategorizedMap categorizedMap = null;
+
+  public CategorizedMap getCategorizedMap() {
+    return this.categorizedMap;
+  }
+
+  public void setCategorizedMap(CategorizedMap categorizedMap) {
+    this.categorizedMap = categorizedMap;
+  }
 
 //  @Override
 //  public void paint(IFeature feature, Viewport viewport, Graphics2D graphics) {

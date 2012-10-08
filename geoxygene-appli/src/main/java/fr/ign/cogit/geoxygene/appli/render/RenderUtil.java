@@ -308,16 +308,26 @@ public final class RenderUtil {
                     symbolizer.getColorMap().getPropertyName()).toString())))), opacity));
           } catch (NumberFormatException e) {
           }
+        } else if (symbolizer.getCategorizedMap() != null) {
+          Object value = feature.getAttribute(symbolizer.getCategorizedMap().getPropertyName());
+          int rgb = symbolizer.getCategorizedMap().getColor(value);
+          graphics.setColor(getColorWithOpacity(new Color(rgb), opacity));
         } else {
-            Color color = (mark.getFill() == null) ? Color.gray : mark.getFill()
+          Color color = (mark.getFill() == null) ? Color.gray : mark.getFill()
                     .getColor();
           graphics.setColor(getColorWithOpacity(color, opacity));
         }
         graphics.fill(markShape);
+        
         graphics.setStroke(mark.getStroke().toAwtStroke((float) scale));
-        Color color = (mark.getStroke() == null) ? Color.black : mark
+        if (symbolizer.getColorMap() != null || symbolizer.getCategorizedMap() != null) {
+          Color color = Color.black;
+          graphics.setColor(getColorWithOpacity(color, opacity));
+        } else {
+          Color color = (mark.getStroke() == null) ? Color.black : mark
                 .getStroke().getColor();
-        graphics.setColor(getColorWithOpacity(color, opacity));
+          graphics.setColor(getColorWithOpacity(color, opacity));
+        }
         graphics.draw(markShape);
       }
       for (ExternalGraphic theGraphic : symbolizer.getGraphic().getExternalGraphics()) {
@@ -788,6 +798,7 @@ public final class RenderUtil {
           .getInterpolate().getLookupvalue())).doubleValue();
       int rgb = symbolizer.getColorMap().getColor(value);
       fillColor = getColorWithOpacity(new Color(rgb), opacity);
+      symbolizer.getStroke().setStroke(Color.BLACK);
     }
     if (symbolizer.getCategorizedMap() != null) {
       Object value = feature.getAttribute(symbolizer.getCategorizedMap().getPropertyName());
@@ -847,8 +858,7 @@ public final class RenderUtil {
       }
       float strokeOpacity = symbolizer.getStroke().getStrokeOpacity();
       if (symbolizer.getStroke().getGraphicType() == null && strokeOpacity > 0f) {
-        // Solid color
-        Color color = getColorWithOpacity(symbolizer.getStroke().getColor(), opacity);
+        
         double scale = 1;
         if (!symbolizer.getUnitOfMeasure().equalsIgnoreCase(Symbolizer.PIXEL)) {
           try {
@@ -859,6 +869,8 @@ public final class RenderUtil {
         }
         BasicStroke bs = (BasicStroke) symbolizer.getStroke().toAwtStroke(
             (float) scale);
+        // Solid color
+        Color color = getColorWithOpacity(symbolizer.getStroke().getColor(), opacity);
         graphics.setColor(color);
         if (feature.getGeom().isPolygon()) {
           drawPolygon(symbolizer, (GM_Polygon) feature.getGeom(), viewport, graphics,
