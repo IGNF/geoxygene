@@ -10,9 +10,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 
 /**
@@ -23,9 +21,6 @@ import org.junit.rules.ExpectedException;
 public class ColorimetricColorTest extends ColorimetryTest {
   
   private Logger logger = Logger.getLogger(ColorimetricColorTest.class);
-  
-  //@Rule
-  //public ExpectedException exception = ExpectedException.none();
   
   /** Default ColorimetricColor. */
   private ColorimetricColor defaultColorimetric;
@@ -266,7 +261,7 @@ public class ColorimetricColorTest extends ColorimetryTest {
     compareColorimetricColor(cResult, cExpected);
     compareColorimetricColor(cResult, new ColorimetricColor(86));
     
-    logger.info("  Test 6.1 :  Blanc, Lightness = 0 => Default ColorimetricColor");
+    logger.info("  Test 6.2 :  Blanc, Lightness = 0 => Default ColorimetricColor");
     cResult = new ColorimetricColor("Blanc", 0); //$NON-NLS-1$
     cExpected = new ColorimetricColor("Gris", 0); //$NON-NLS-1$
     compareColorimetricColor(cResult, cExpected);
@@ -485,11 +480,14 @@ public class ColorimetricColorTest extends ColorimetryTest {
     
     // =====================================================
     logger.info("  Test 3 : non existing RGB");
-    // cResult = new ColorimetricColor(0, 999, 500, true);
-    // exception.expect(IllegalArgumentException.class);
-    // myMethod(input);
-    // exception.expectMessage("Color parameter outside of expected range: Green Blue");
+    try {
+      cResult = new ColorimetricColor(0, 999, 500, true);
+      fail("Color(0, 999, 500) existing !");
+    } catch (IllegalArgumentException eexpected) {
+      // exception.expectMessage("Color parameter outside of expected range: Green Blue");
+    }
     
+  
   }
 
   /**
