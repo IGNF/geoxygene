@@ -9,7 +9,7 @@ import java.util.List;
  * Common class with comparative methods.
  *
  */
-public class ColorimetryTest {
+public class ColorimetryAssert {
   
   /**
    * Compare 2 ColorimetricColor (compare each attributes, one by one).

@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
+// import org.junit.rules.Exception;
 
 
 /**
@@ -18,7 +19,7 @@ import org.junit.Test;
  * @author CHoarau
  *
  */
-public class ColorimetricColorTest extends ColorimetryTest {
+public class ColorimetricColorTest extends ColorimetryAssert {
   
   private Logger logger = Logger.getLogger(ColorimetricColorTest.class);
   
