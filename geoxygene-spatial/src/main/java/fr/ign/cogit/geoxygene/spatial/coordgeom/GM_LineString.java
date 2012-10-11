@@ -108,8 +108,12 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
     return this.controlPoint.size();
   }
 
+  public GM_LineString(List<IDirectPosition> list, boolean allowRepeated) {
+    this(new DirectPositionList(list), allowRepeated);
+  }
+
   public GM_LineString(List<IDirectPosition> list) {
-    this(new DirectPositionList(list));
+    this(list, true);
   }
 
   /** Constructeur par defaut. */
