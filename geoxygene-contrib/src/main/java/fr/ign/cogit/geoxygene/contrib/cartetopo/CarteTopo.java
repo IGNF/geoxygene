@@ -710,9 +710,9 @@ public class CarteTopo extends DataSet {
    * de lancer cette méthode</strong>
    */
   public void filtreNoeudsSimples() {
-    this.filtreNoeudsSimples(false);
+    this.filtreNoeudsSimples(false, null);
   }
-  public void filtreNoeudsSimples(boolean useWeight) {
+  public void filtreNoeudsSimples(boolean useWeight, IGeometry filteredArea) {
     List<Noeud> noeudsElimines = new ArrayList<Noeud>();
     for (Noeud noeud : this.getPopNoeuds()) {
       List<Arc> arcsIncidents = noeud.arcs();
@@ -735,8 +735,11 @@ public class CarteTopo extends DataSet {
       }
       Arc arc1 = arcsIncidents.get(0);
       Arc arc2 = arcsIncidents.get(1);
-      if (arc1.getPoids() != arc2.getPoids()) {
-        continue;
+      if (useWeight && arc1.getPoids() != arc2.getPoids()) {
+        continue; // different weights
+      }
+      if (filteredArea != null && !noeud.getGeometrie().intersects(filteredArea)) {
+        continue; //
       }
       logger.debug("Filtering " + noeud);
       Arc arcTotal = this.getPopArcs().nouvelElement();
@@ -873,6 +876,10 @@ public class CarteTopo extends DataSet {
           arcTotal.setGeom(arcTotal.getGeometrie().reverse());
           logger.debug("New geometry " + arcTotal.getGeometrie());
           logger.debug("Initial node was in " + arcTotal.getNoeudIni().getCoord().toGM_Point());
+      }
+      // if we're using the weights as a filter, we keep it in the new edge
+      if (useWeight) {
+        arcTotal.setPoids(arc1.getPoids());
       }
       // Elimination des arcs et du noeud inutile
       this.getPopArcs().enleveElement(arc1);
