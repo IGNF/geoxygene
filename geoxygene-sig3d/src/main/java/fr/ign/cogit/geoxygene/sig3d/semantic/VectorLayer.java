@@ -297,6 +297,11 @@ public class VectorLayer extends FT_FeatureCollection<IFeature> implements
 
     Box3D b = new Box3D(this.get(0).getGeom());
     for (int i = 1; i < nbElem; i++) {
+      if(this.get(i).getGeom() == null){
+        continue;
+      }
+      
+      
       b = b.union(new Box3D(this.get(i).getGeom()));
 
     }

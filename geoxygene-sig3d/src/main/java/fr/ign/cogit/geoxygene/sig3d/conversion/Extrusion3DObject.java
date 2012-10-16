@@ -12,6 +12,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.ICurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
@@ -33,11 +34,11 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -47,10 +48,11 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  * 
  * @version 0.1
  * 
- *
- * Classe permettant d'obtenir des geometries de dimension N +1 a partir
- * d'objets de dimension N et d'une hauteur. Tous les objets à utiliser doivent
- * avoir des geometries 3D Class to get an extrusion of 3D geometries
+ * 
+ *          Classe permettant d'obtenir des geometries de dimension N +1 a
+ *          partir d'objets de dimension N et d'une hauteur. Tous les objets à
+ *          utiliser doivent avoir des geometries 3D Class to get an extrusion
+ *          of 3D geometries
  * 
  */
 public class Extrusion3DObject {
@@ -250,6 +252,61 @@ public class Extrusion3DObject {
   /**
    * Renvoie l'extrusion d'un GM_LineString 3D suivant une hauteur hauteur. Le
    * résultat est soit un GM_MultiSurface soit un GM_LineString
+   * @TODO : faire cette méthode pour les autres géométries et trouver le moyen
+   *       de faire des méthodes plus génériques ....
+   * @param ls la geometrie que l'on souhaite extruder
+   * @param zMin le zMin que l'on rajoute a la geometrie. Si la hauteur est
+   *          nulle ou n'est pas un nombre, la geometrie initiale est renvoyee.
+   * @return renvoie un objet extrudé à partir d'un objet GM_LineString objet
+   *         qui sera de type GM_MultiSurface ou GM_LineString
+   */
+  public static IGeometry convertitFromLineUntilZMin(ICurve ls, double zMin) {
+    // On recupere les points extremes du solides
+
+    if (zMin == 0 || Double.isNaN(zMin)) {
+
+      return ls;
+    }
+
+    List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>();
+    IDirectPositionList lPoints = ls.coord();
+
+    int nbPoints = lPoints.size();
+    IDirectPosition pIni = lPoints.get(nbPoints - 1);
+
+    for (int j = 0; j < nbPoints; j++) {
+
+      DirectPositionList fTemp = new DirectPositionList();
+
+      IDirectPosition pSuiv = lPoints.get(j);
+
+      DirectPosition pSuivZmin = new DirectPosition(pSuiv.getX(), pSuiv.getY(),
+          zMin);
+      DirectPosition pIniZmin = new DirectPosition(pIni.getX(), pIni.getY(),
+          zMin);
+
+      fTemp.add(pSuiv);
+      fTemp.add(pSuivZmin);
+      fTemp.add(pIniZmin);
+
+      fTemp.add(pIni);
+
+      pIni = pSuiv;
+
+      GM_LineString lS = new GM_LineString(fTemp);
+      GM_Ring gmRing = new GM_Ring(lS);
+      GM_OrientableSurface oS = new GM_Polygon(gmRing);
+
+      lOS.add(oS);
+
+    }
+
+    return new GM_MultiSurface<IOrientableSurface>(lOS);
+  }
+
+  /**
+   * Renvoie l'extrusion d'un GM_LineString 3D suivant une hauteur hauteur. Le
+   * résultat est soit un GM_MultiSurface soit un GM_LineString
    * 
    * @param ls la geometrie que l'on souhaite extruder
    * @param heigth la hauteur que l'on rajoute a la geometrie. Si la hauteur est
@@ -257,7 +314,7 @@ public class Extrusion3DObject {
    * @return renvoie un objet extrudé à partir d'un objet GM_LineString objet
    *         qui sera de type GM_MultiSurface ou GM_LineString
    */
-  public static IGeometry convertitFromLine(ILineString ls, double heigth) {
+  public static IGeometry convertitFromLine(ICurve ls, double heigth) {
     // On recupere les points extremes du solides
 
     if (heigth == 0 || Double.isNaN(heigth)) {
@@ -393,9 +450,8 @@ public class Extrusion3DObject {
       }
 
       int nbPoints = lPoints.size();
-      
-      
-      if(! lPoints.get(0).equals(lPoints.get(nbPoints-1))){
+
+      if (!lPoints.get(0).equals(lPoints.get(nbPoints - 1))) {
         lPoints.add(lPoints.get(0));
       }
 
