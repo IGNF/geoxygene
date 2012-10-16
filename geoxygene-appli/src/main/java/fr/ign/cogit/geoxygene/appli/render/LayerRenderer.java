@@ -354,7 +354,7 @@ public class LayerRenderer implements Renderer {
           // corresponding features (filtered in)
           Map<Rule, Set<IFeature>> filteredFeatures = new HashMap<Rule, Set<IFeature>>(
               0);
-          if (featureTypeStyle.getRules().size() == 1) {
+          if (featureTypeStyle.getRules().size() == 1 && featureTypeStyle.getRules().get(0).getFilter() == null) {
         	  filteredFeatures.put(featureTypeStyle.getRules().get(0), new HashSet<IFeature>(collection));
           } else {
               for (Rule rule : featureTypeStyle.getRules()) {
