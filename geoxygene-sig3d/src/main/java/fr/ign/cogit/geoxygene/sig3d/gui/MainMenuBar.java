@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Vecteur;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
@@ -440,12 +441,12 @@ public class MainMenuBar extends JMenuBar implements ActionListener {
       }
 
       // La liste initiale
-      FT_FeatureCollection<IFeature> lObj = new FT_FeatureCollection<IFeature>();
+      IFeatureCollection<IFeature> lObj = new FT_FeatureCollection<IFeature>();
       lObj = this.getInterfaceMap3D().getSelection();
       int n = lObj.size();
 
       // Contient la liste des objets clonés
-      FT_FeatureCollection<IFeature> lObjClone = new FT_FeatureCollection<IFeature>();
+      IFeatureCollection<IFeature> lObjClone = new FT_FeatureCollection<IFeature>();
 
       for (int i = 0; i < n; i++) {
         IFeature objTemp = lObj.get(i);
@@ -558,7 +559,7 @@ public class MainMenuBar extends JMenuBar implements ActionListener {
     }
 
     // On utilise le premier objet sélecionné
-    FT_FeatureCollection<IFeature> featColl = this.getInterfaceMap3D()
+    IFeatureCollection<IFeature> featColl = this.getInterfaceMap3D()
         .getSelection();
     IFeature obj = featColl.get(0);
     int nbElem = featColl.size();

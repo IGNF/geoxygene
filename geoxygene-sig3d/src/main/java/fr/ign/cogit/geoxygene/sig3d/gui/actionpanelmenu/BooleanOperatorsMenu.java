@@ -14,6 +14,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.feature.DefaultFeature;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.Messages;
@@ -145,7 +146,7 @@ public class BooleanOperatorsMenu extends JPanel implements ActionListener {
 
     // récupère l'objet sélecionné dans la fenetre et l'affecte à objet1
     if (source.equals(this.sel1)) {
-      FT_FeatureCollection<IFeature> lObj = this.iMap3D.getSelection();
+      IFeatureCollection<IFeature> lObj = this.iMap3D.getSelection();
       if (lObj.size() == 0) {
         JOptionPane.showMessageDialog(this, "Pas d'objet sélectionné",
             "Selection", JOptionPane.INFORMATION_MESSAGE);
@@ -171,7 +172,7 @@ public class BooleanOperatorsMenu extends JPanel implements ActionListener {
 
     // récupère l'objet sélectionné dans la fentre et l'affecte à objet2
     if (source.equals(this.sel2)) {
-      FT_FeatureCollection<IFeature> lObj = this.iMap3D.getSelection();
+      IFeatureCollection<IFeature> lObj = this.iMap3D.getSelection();
       if (lObj.size() == 0) {
         JOptionPane.showMessageDialog(this,
             Messages.getString("3DGIS.NoSlection"),

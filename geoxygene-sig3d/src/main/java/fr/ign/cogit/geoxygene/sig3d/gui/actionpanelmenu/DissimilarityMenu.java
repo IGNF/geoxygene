@@ -20,8 +20,8 @@ import org.apache.log4j.Logger;
 import org.jfree.ui.RefineryUtilities;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.Messages;
 import fr.ign.cogit.geoxygene.sig3d.calculation.Calculation3D;
 import fr.ign.cogit.geoxygene.sig3d.calculation.Indicator;
@@ -33,11 +33,11 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
 
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -47,9 +47,10 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Solid;
  * 
  * @version 0.1
  * 
- * Fenetre permettant de calculer la distance (ressemblance entre 2 objets)
+ *          Fenetre permettant de calculer la distance (ressemblance entre 2
+ *          objets)
  * 
- * This windows enable to evaluate dissimilarity between 2 objects
+ *          This windows enable to evaluate dissimilarity between 2 objects
  */
 public class DissimilarityMenu extends JPanel implements ActionListener {
   // Formulaire permettant de choisir les 2 objets et le style de calcul
@@ -160,7 +161,7 @@ public class DissimilarityMenu extends JPanel implements ActionListener {
 
     // récupère l'objet sélecionné dans la fenetre et l'affecte à objet1
     if (source.equals(this.sel1)) {
-      FT_FeatureCollection<IFeature> lObj = this.iMap3D.getSelection();
+      IFeatureCollection<IFeature> lObj = this.iMap3D.getSelection();
       if (lObj.size() == 0) {
         JOptionPane.showMessageDialog(this,
             Messages.getString("3DGIS.NoSlection"), "Selection",
@@ -188,7 +189,7 @@ public class DissimilarityMenu extends JPanel implements ActionListener {
 
     // récupère l'objet sélectionné dans la fentre et l'affecte à objet2
     if (source.equals(this.sel2)) {
-      FT_FeatureCollection<IFeature> lObj = this.iMap3D.getSelection();
+      IFeatureCollection<IFeature> lObj = this.iMap3D.getSelection();
       if (lObj.size() == 0) {
         JOptionPane.showMessageDialog(this,
             Messages.getString("3DGIS.NoSlection"),

@@ -826,7 +826,7 @@ public class InterfaceMap3D extends JPanel {
    *         seul
    */
 
-  public FT_FeatureCollection<IFeature> getSelection() {
+  public IFeatureCollection<IFeature> getSelection() {
     if (this.selection == null) {
       this.selection = new FT_FeatureCollection<IFeature>();
 

@@ -14,19 +14,19 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.Messages;
 import fr.ign.cogit.geoxygene.sig3d.gui.InterfaceMap3D;
 import fr.ign.cogit.geoxygene.sig3d.gui.navigation3D.CameraAnimation;
 
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -36,9 +36,9 @@ import fr.ign.cogit.geoxygene.sig3d.gui.navigation3D.CameraAnimation;
  * 
  * @version 0.1
  * 
- * Fenetre permettant de créer une animation
+ *          Fenetre permettant de créer une animation
  * 
- * Window to create an animation
+ *          Window to create an animation
  * 
  * 
  */
@@ -145,7 +145,7 @@ public class AnimationCameraMenu extends JPanel implements ActionListener {
 
     if (source == this.ok) {
 
-      FT_FeatureCollection<IFeature> lSelect = this.iMap3D.getSelection();
+      IFeatureCollection<IFeature> lSelect = this.iMap3D.getSelection();
 
       if (lSelect.size() == 0) {
 

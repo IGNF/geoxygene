@@ -10,7 +10,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.sig3d.gui.InterfaceMap3D;
 import fr.ign.cogit.geoxygene.sig3d.gui.MainMenuBar;
 import fr.ign.cogit.geoxygene.sig3d.gui.MainWindow;
@@ -18,11 +18,11 @@ import fr.ign.cogit.geoxygene.sig3d.representation.sample.ObjectCartoon;
 
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -30,11 +30,11 @@ import fr.ign.cogit.geoxygene.sig3d.representation.sample.ObjectCartoon;
  * 
  * @author Brasebin Mickaël
  * 
- * @version 0.1
- * Cette classe montre comment modifier l’interface graphique de l’application
- * afin d’ajouter un bouton permettant d’activer le panneau droit afin
- * d’exécuter un morceau de code. L’outil proposé ici permet d’appliquer
- * automatiquement des textures sur le toit et les faces des bâtiments.
+ * @version 0.1 Cette classe montre comment modifier l’interface graphique de
+ *          l’application afin d’ajouter un bouton permettant d’activer le
+ *          panneau droit afin d’exécuter un morceau de code. L’outil proposé
+ *          ici permet d’appliquer automatiquement des textures sur le toit et
+ *          les faces des bâtiments.
  */
 public class AddMenu extends JPanel {
 
@@ -117,7 +117,7 @@ public class AddMenu extends JPanel {
    */
   public static void processStyle(InterfaceMap3D iCarte) {
     // On récupère la sélection
-    FT_FeatureCollection<IFeature> coll = iCarte.getSelection();
+    IFeatureCollection<IFeature> coll = iCarte.getSelection();
 
     // On parcourt les différents éléments
     int nbElem = coll.size();
