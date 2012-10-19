@@ -729,6 +729,12 @@ public class InterfaceMap3D extends JPanel {
    * @param feat
    */
   public void addToSelection(IFeature feat) {
+    
+    if(this.getSelection().contains(feat)){
+      return;
+    }
+    
+    
     if (feat == null) {
       return;
     }

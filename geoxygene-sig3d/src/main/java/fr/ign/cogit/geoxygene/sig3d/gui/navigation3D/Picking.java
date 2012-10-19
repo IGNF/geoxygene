@@ -2,6 +2,10 @@ package fr.ign.cogit.geoxygene.sig3d.gui.navigation3D;
 
 import java.awt.AWTEvent;
 import java.awt.Color;
+import java.awt.KeyEventPostProcessor;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Enumeration;
 
@@ -34,14 +38,13 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.util.browser.ObjectBrowser;
 
-
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -49,12 +52,12 @@ import fr.ign.cogit.geoxygene.util.browser.ObjectBrowser;
  * 
  * @author Brasebin Mickaël
  * @author benoitpoupeau
- *  
+ * 
  * @version 0.1
  * 
- * Classe permettant la sélection d'un objet dans un espace 3D et son affichage
- * dans l'espace local Elle gère àgalement la création de points lorsque l'on
- * clique sur un objet (clic droit)
+ *          Classe permettant la sélection d'un objet dans un espace 3D et son
+ *          affichage dans l'espace local Elle gère àgalement la création de
+ *          points lorsque l'on clique sur un objet (clic droit)
  * 
  */
 public class Picking extends Behavior {
@@ -81,6 +84,10 @@ public class Picking extends Behavior {
 
   // Critère de réveil
   private WakeupOnAWTEvent wakeupCriterion;
+  
+  
+  
+  private static boolean PICKING_IS_CTRL_PRESSED = false;
 
   /**
    * Crée un comportement de picking
@@ -99,6 +106,25 @@ public class Picking extends Behavior {
     this.pickCanvas.setTolerance(5f);
     // Pour avoir des infos à partir des frontières de l'objet intersecté
     this.pickCanvas.setMode(PickTool.GEOMETRY_INTERSECT_INFO);
+
+    
+    //Le bouton controle est il enfoncé ?
+    KeyboardFocusManager kbm = KeyboardFocusManager
+        .getCurrentKeyboardFocusManager();
+    kbm.addKeyEventPostProcessor(new KeyEventPostProcessor() {
+      @Override
+      public boolean postProcessKeyEvent(KeyEvent e) {
+        if (e.getModifiers() == InputEvent.CTRL_MASK) {
+          if (e.getID() == KeyEvent.KEY_PRESSED) {
+            Picking.PICKING_IS_CTRL_PRESSED = true;
+          }
+        }
+        if (e.getID() == KeyEvent.KEY_RELEASED) {
+           Picking.PICKING_IS_CTRL_PRESSED = false;
+        }
+        return false;
+      }
+    });
 
   }
 
@@ -198,8 +224,11 @@ public class Picking extends Behavior {
                   if (pickResult == null) {
 
                     Picking.logger.debug("aucun objet sélectionné");
-                    fenetre.getInterfaceMap3D().setSelection(
+                    
+                    if(!PICKING_IS_CTRL_PRESSED){
+                      fenetre.getInterfaceMap3D().setSelection(
                         new FT_FeatureCollection<IFeature>());
+                    }
 
                   } else {
 
@@ -219,8 +248,11 @@ public class Picking extends Behavior {
                     I3DRepresentation objRep = null;
 
                     if (userData == null) {
-                      fenetre.getInterfaceMap3D().setSelection(
-                          new FT_FeatureCollection<IFeature>());
+                      
+                      
+                      if(!PICKING_IS_CTRL_PRESSED){
+                        fenetre.getInterfaceMap3D().setSelection(new FT_FeatureCollection<IFeature>());
+                      }
                       // On ne trouve rien on vide la
                       // sélection
                       continue;
@@ -253,7 +285,15 @@ public class Picking extends Behavior {
                       }
                       // On indique l'objet comme
                       // sélectionné
-                      fenetre.getInterfaceMap3D().setSelection(feat);
+                      
+                      if(PICKING_IS_CTRL_PRESSED){
+                        fenetre.getInterfaceMap3D().addToSelection(feat);
+                      }else{
+                        fenetre.getInterfaceMap3D().setSelection(feat);
+                        
+                      }
+                      
+                   
 
                     }
 
