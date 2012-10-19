@@ -1,6 +1,6 @@
 package fr.ign.cogit.geoxygene.sig3d.gui.table.layerstable;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -11,22 +11,22 @@ import fr.ign.cogit.geoxygene.sig3d.semantic.Map3D;
 
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
  * @copyright IGN
  * 
  * @author Brasebin Mickaël
- *  
+ * 
  * @version 0.1
  * 
- * Modele de la table contenant la liste de couche Table Model for the table
- * containing the layer list
+ *          Modele de la table contenant la liste de couche Table Model for the
+ *          table containing the layer list
  */
 public class LayersListTableModel extends AbstractTableModel {
 
@@ -89,7 +89,7 @@ public class LayersListTableModel extends AbstractTableModel {
       return 0;
     }
 
-    ArrayList<Layer> lCouches = carte.getLayerList();
+    List<Layer> lCouches = carte.getLayerList();
 
     if (lCouches == null) {
       return 0;

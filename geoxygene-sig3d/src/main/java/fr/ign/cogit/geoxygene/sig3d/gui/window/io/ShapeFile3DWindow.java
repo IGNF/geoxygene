@@ -105,7 +105,7 @@ public class ShapeFile3DWindow extends JDialog implements ActionListener {
     ArrayList<String> lNomMNT = new ArrayList<String>();
 
     if (iMap3D != null) {
-      ArrayList<Layer> lCouches = iMap3D.getCurrent3DMap().getLayerList();
+      List<Layer> lCouches = iMap3D.getCurrent3DMap().getLayerList();
 
       int nbElem = lCouches.size();
 

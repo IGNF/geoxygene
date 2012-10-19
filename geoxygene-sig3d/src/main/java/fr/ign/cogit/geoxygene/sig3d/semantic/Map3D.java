@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.sig3d.semantic;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Group;
@@ -57,7 +58,7 @@ public class Map3D {
   // L'emprise de la carte
   private Box3D boundingBox = null;
 
-  private ArrayList<Layer> lLayers = new ArrayList<Layer>();
+  private List<Layer> lLayers = new ArrayList<Layer>();
 
   private final static Logger logger = Logger.getLogger(Map3D.class.getName());
 
@@ -205,7 +206,7 @@ public class Map3D {
   /**
    * @return la liste des couches dans la carte
    */
-  public ArrayList<Layer> getLayerList() {
+  public List<Layer> getLayerList() {
 
     return this.lLayers;
   }

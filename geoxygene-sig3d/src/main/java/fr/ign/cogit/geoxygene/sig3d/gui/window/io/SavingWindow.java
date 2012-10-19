@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.sig3d.gui.window.io;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -108,9 +109,9 @@ public final class SavingWindow {
    */
   private static VectorLayer chooseVectorialLayer(Map3D map3D) {
 
-    ArrayList<Layer> lCoucheTemp = map3D.getLayerList();
+    List<Layer> lCoucheTemp = map3D.getLayerList();
 
-    ArrayList<VectorLayer> lCoucheVecteur = new ArrayList<VectorLayer>();
+    List<VectorLayer> lCoucheVecteur = new ArrayList<VectorLayer>();
 
     int nbCouches = lCoucheTemp.size();
 

@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -29,11 +29,11 @@ import fr.ign.cogit.geoxygene.sig3d.semantic.VectorLayer;
 
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -43,11 +43,11 @@ import fr.ign.cogit.geoxygene.sig3d.semantic.VectorLayer;
  * 
  * @version 0.1
  * 
- * Fenetre gérant les paramètres de modification d'environnement. - Couleur de
- * fond - Couleur de sélection - Cull mode - Gestion de l'affichage des objets
- * proches ou éloignés
+ *          Fenetre gérant les paramètres de modification d'environnement. -
+ *          Couleur de fond - Couleur de sélection - Cull mode - Gestion de
+ *          l'affichage des objets proches ou éloignés
  * 
- * Window for global representation
+ *          Window for global representation
  */
 public class EnvironmentMenu extends JPanel implements ActionListener {
 
@@ -310,7 +310,7 @@ public class EnvironmentMenu extends JPanel implements ActionListener {
    * Cette fonction régénère l'affichage de chaque couche
    */
   private void refreshCull() {
-    ArrayList<Layer> alCouches = this.iMap3D.getCurrent3DMap().getLayerList();
+    List<Layer> alCouches = this.iMap3D.getCurrent3DMap().getLayerList();
 
     int nbCouches = alCouches.size();
 
