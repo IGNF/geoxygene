@@ -1,0 +1,35 @@
+\chapter{Installation de GeOxygene}
+
+
+%---------------------------------------------------------------------------------
+Vous avez maintenant tout ce qu'il faut pour télécharger, gérer, compiler et exécuter GeOxygene.
+
+
+%---------------------------------------------------------------------------------
+\section{Téléchargement}
+Pour installer un projet Maven depuis un SCM (svn, cvs, etc.), faire\\
+\emph{File/New/Other/Maven/Checkout~project~from~SCM}. Sélectionnez \emph{svn} et indiquer l'adresse du svn de GeOxygene~:\\
+\href{https://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project/main/trunk/geoxygene}{https://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project/main/trunk/geoxygene}, puis Next.\\
+Dans le panneau suivant, vous pouvez sélectionner le répertoire où sera stocké votre projet (par défaut dans le workspace courant), ajouter le projet à un working set (c'est à dire un groupe de projets) et modifier le nom du (ou des) projet(s) récupéré (s) (dans Advanced). Cette dernière option est utile si vous avez déjà des projets portant des noms identiques ou similaires ou si vous souhaitez ajouter à tous les projets récupérés un préfixe, un suffixe, ou utiliser un template de nom comme [groupId].[artifactId]-[version] qui vous créera, pour geoxygene, un projet nommé \emph{fr.ign.cogit.geoxygene-1.4}.
+Cliquez ensuite sur Finish.
+
+
+%---------------------------------------------------------------------------------
+\section{Compilation}
+Si tout se passe bien, Maven devrait récupérer tous les jars nécessaires et configurer le projet pour la compilation. Si vous utilisez l'option de compilation automatique, vous n'avez rien à faire, sinon, faites un build.
+
+
+
+%---------------------------------------------------------------------------------
+\section{Exécution des exemples}
+Une application exemple peut \^etre exécutée~: \emph{fr.ign.cogit.geoxygene.appli.GeOxygeneApplication}.
+
+
+\section{Configuration}
+
+\begin{itemize}[leftmargin=* ,parsep=0cm,itemsep=0cm,topsep=0cm]
+\item convention de codage
+\item accès aux bases de données
+\item journalisation
+\item encodage
+\end{itemize}
