@@ -25,6 +25,7 @@
 
 		<menu name="GeOxygene Quick links">
 			<item name="Introduction" href="index.html" />
+			<item name="Installation" href="guide_installation.html" />
 			<item name="Documentation" href="documentation.html"></item>
 			<item name="Download" href="download.html" />
 			<item name="FAQ" href="faq.html" />
@@ -47,13 +48,17 @@
 			<item name="Data Matching" href="data-matching.html" />
 		</menu>
 
-		<menu ref="reports" /> <!-- Replaced by menus for any configured reports (mailing lists, etc.) -->
+		<!-- Replaced by menus for any configured reports (mailing lists, etc.) -->
+		<menu ref="reports" /> 
+		
+		<!-- Afficher un sous-menu pour chaque sous-modules -->
+		<!-- <menu ref="modules"/> -->
 
-        <menu ref="modules"/>
-
+		<!-- 
         <menu name="Autres langues">
             <item name="Français" href="fr/index.html"/>
         </menu>
+         -->
 
 	</body>
 </project>

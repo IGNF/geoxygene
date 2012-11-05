@@ -85,10 +85,11 @@ a Maven build with parameters and more options.
 Une application exemple peut \^etre exécutée~: \emph{fr.ign.cogit.geoxygene.appli.GeOxygeneApplication}.
 
 
+%---------------------------------------------------------------------------------
 \section{Configuration}
 
-\begin{itemize}[leftmargin=* ,parsep=0cm,itemsep=0cm,topsep=0cm]
-\item Activation de la console Maven.
+
+\subsection{Activation de la console Maven}
 
 Ouvrer la fenêtre de la console en cliquant sur : {\emph{Window} $\Rightarrow$ \emph{Show View}  $\Rightarrow$ \emph{Console}}. Puis cliquer sur la petite flèche complètement à droite de la fenêtre "Open Console" et sélectionner "Maven Console" comme indiqué ci-dessous :
 
@@ -99,12 +100,36 @@ Ouvrer la fenêtre de la console en cliquant sur : {\emph{Window} $\Rightarrow$ 
 Il peut être utile de travailler avec la sortie de débogage Maven pour diagnostiquer les problèmes.
 
 
-\end{itemize}
+
+
+
+\subsection{Convention de codage}
+
+Parce qu'on passe plus de temps à lire du code qu’à en écrire, cette page présente la convention de programmation adoptée dans GeOxygène. Elle s'inspire avant tout de la convention de programmation recommandée pour tous les développements JAVA. Cette norme est dérivée de celle proposée par SUN à l’adresse :\\
+{\href{http://www.oracle.com/technetwork/java/codeconvtoc-136057.html}{http://www.oracle.com/technetwork/java/codeconvtoc-136057.html}}  
+
+Configurer dans Eclipse
+
+Le template de la convention de nommage du COGIT «java\_cogit\_formatting\_conventions\_v1.xml» se trouve dans le code source du projet GeOxygene :
+
+geoxygene >> src >> main >> resources >> java\_cogit\_formatting\_conventions\_v1.xml
+
+Aller dans "Preferences > Java > Code Style > Formatter" et cliquer sur "Import". 
+
+
+\begin{center}
+\includegraphics[width=0.5\linewidth]{../../resources/images/guide_installation/ConfigEclipseConventionCodage_1.png}
+\end{center}
+
+Importer le fichier que vous venez de télécharger et choisissez comme "Active profile" : "Java COGIT Formatting Conventions v1" 
+
+\begin{center}
+\includegraphics[width=0.5\linewidth]{../../resources/images/guide_installation/ConfigEclipseConventionCodage_2.png}
+\end{center}
 
 
 \begin{itemize}[leftmargin=* ,parsep=0cm,itemsep=0cm,topsep=0cm]
-\item convention de codage
+\item encodage
 \item accès aux bases de données
 \item journalisation
-\item encodage
 \end{itemize}
