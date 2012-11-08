@@ -2,109 +2,64 @@ package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
-import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
+import org.dbunit.DBTestCase;
+import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.PropertiesBasedJdbcDatabaseTester;
 
 /**
- * carte topo dataset. <br/>
- * 
- * 
+ * Carte Topo dataset. <br/>
+ * <ul>
+ * <li>ct1 : schema construit à la main</li>
+ * <li>ct2 : schema construit à partir d'un jeu de données en base.</li>
+ * </ul>
  */
-public class CarteTopoDataSet {
+public class CarteTopoDataSet extends DBTestCase {
 
-    // Logger
-    private static Logger logger = Logger.getLogger(CarteTopoDataSet.class);
+  // Logger
+  private static Logger logger = Logger.getLogger(CarteTopoDataSet.class);
 
-    // La carte topologique 1
-    protected CarteTopo ct1 = null;
+  public static final String TABLE_TRONCON_ROUTE = "contrib.troncon_route";
+  private FlatXmlDataSet loadedDataSet;
 
-    /**
-     * Carte : 4 noeuds + 5 arcs
-     */
-    protected void initCarteTopo1() {
-        logger.info("Set carte topo");
+  /**
+   * Initialisation des paramètres pour accéder à la base de données.
+   */
+  public CarteTopoDataSet() {
+    System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_DRIVER_CLASS,
+        "org.postgresql.Driver");
+    System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL,
+        "jdbc:postgresql://del1109s019:5432/dbunit");
+    System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_USERNAME,
+        "dbunit");
+    System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD,
+        "dbunit");
+  }
 
-        // On crée une carte topologique
-        ct1 = new CarteTopo("Carte topologique test avec 4 noeuds");
+  /** 
+   * Load the data which will be inserted for the test.
+   */
+  protected IDataSet getDataSet() throws Exception {
+    logger.info("Chargement des données en base");
+    loadedDataSet = new FlatXmlDataSet(this.getClass().getClassLoader()
+        .getResourceAsStream("dbunit/troncon_route.xml"));
+    return loadedDataSet;
+  }
 
-        // On ajoute à la carte ct des noeuds et des arcs
-        Noeud n1 = new Noeud();
-        n1.setCoord(new DirectPosition(0., 0., 0.));
-        ct1.addNoeud(n1);
-
-        Noeud n2 = new Noeud();
-        n2.setCoord(new DirectPosition(3., 1., 0.));
-        ct1.addNoeud(n2);
-
-        Noeud n3 = new Noeud();
-        n3.setCoord(new DirectPosition(1., 1., 0.));
-        ct1.addNoeud(n3);
-
-        Noeud n4 = new Noeud();
-        n4.setCoord(new DirectPosition(1., -1., 0.));
-        ct1.addNoeud(n4);
-
-        Arc a1 = new Arc();
-        DirectPositionList dpl1 = new DirectPositionList();
-        dpl1.add(new DirectPosition(1., -1., 0.));
-        dpl1.add(new DirectPosition(1., 1., 0.));
-        a1.setCoord(dpl1);
-        ct1.addArc(a1);
-
-        Arc a2 = new Arc();
-        DirectPositionList dpl2 = new DirectPositionList();
-        dpl2.add(new DirectPosition(0., 0., 0.));
-        dpl2.add(new DirectPosition(1., 1., 0.));
-        a2.setCoord(dpl2);
-        ct1.addArc(a2);
-
-        Arc a3 = new Arc();
-        DirectPositionList dpl3 = new DirectPositionList();
-        dpl3.add(new DirectPosition(1., 1., 0.));
-        dpl3.add(new DirectPosition(3., 1., 0.));
-        a3.setCoord(dpl3);
-        ct1.addArc(a3);
-
-        Arc a4 = new Arc();
-        DirectPositionList dpl4 = new DirectPositionList();
-        dpl4.add(new DirectPosition(3., 1., 0.));
-        dpl4.add(new DirectPosition(1., -1., 0.));
-        a4.setCoord(dpl4);
-        ct1.addArc(a4);
-
-        Arc a5 = new Arc();
-        DirectPositionList dpl5 = new DirectPositionList();
-        dpl5.add(new DirectPosition(1., -1., 0.));
-        dpl5.add(new DirectPosition(0., 0., 0.));
-        a5.setCoord(dpl5);
-        ct1.addArc(a5);
-
-        // Calcul de la topologie arc/noeuds (relations noeud initial/noeud
-        // final
-        // pour chaque arete) a l'aide de la géometrie.
-        ct1.creeTopologieArcsNoeuds(0.1);
-
-        // Calcul de la topologie de carte topologique (relations face gauche /
-        // face droite pour chaque arete) avec les faces définies comme des
-        // cycles du graphe.
-        ct1.creeTopologieFaces();
-
-        // Affichage du nombre de faces
-        logger.info("Nombre de faces de la carte : "
-                + ct1.getListeFaces().size());
-
-        // Affichage des coordonnees du noeud initial et du noeud final du
-        // premier
-        // arc
-        Arc arc = (Arc) ct1.getListeArcs().get(0);
-        logger.info("Noeud initial de a0 : " + arc.getNoeudIni().getCoord());
-        logger.info("Noeud final de a0   : " + arc.getNoeudFin().getCoord());
-
-        // Calcul de la superficie des deux faces
-        Face face = (Face) ct1.getListeFaces().get(0);
-        logger.info("Superficie de f0 : " + face.getGeom().area());
-        face = (Face) ct1.getListeFaces().get(1);
-        logger.info("Superficie de f1 : " + face.getGeom().area());
-    }
-
+  /**
+   * On charge une carte topo en base de données.
+   * @throws Exception
+   */
+  public void testCheckTronconDataLoaded() throws Exception {
+    
+    // On vérifie que le dataset n'est pas null.
+    assertNotNull(loadedDataSet);
+    
+    // On vérifie que les 61 lignes sont bien ajoutées
+    int rowCount = loadedDataSet.getTable(TABLE_TRONCON_ROUTE).getRowCount();
+    assertEquals(61, rowCount);
+    
+  }
+  
+  
 }
