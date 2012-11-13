@@ -24,9 +24,15 @@ import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
 import fr.ign.cogit.geoxygene.util.conversion.ParseException;
 import fr.ign.cogit.geoxygene.util.conversion.WktGeOxygene;
 
+/**
+ * 
+ * 
+ *
+ */
 public class GeOxygeneGeometryUserType implements UserType {
-  static Logger logger = Logger.getLogger(GeOxygeneGeometryUserType.class
-      .getName());
+  
+  static Logger logger = Logger.getLogger(GeOxygeneGeometryUserType.class.getName());
+  
   private static final int[] geometryTypes = new int[] { Types.STRUCT };
 
   @Override
@@ -43,6 +49,7 @@ public class GeOxygeneGeometryUserType implements UserType {
    */
   @SuppressWarnings("unchecked")
   public IGeometry convert2GM_Object(Object object) {
+    
     if (object == null) {
       return null;
     }
@@ -67,20 +74,27 @@ public class GeOxygeneGeometryUserType implements UserType {
       PGgeometry pgGeom = (PGgeometry) object;
 
       try {
+        
+        logger.info("pgGeom = " + pgGeom);
+        String geom = pgGeom.toString();
+        
         /*
          * In version 1.0.x of PostGIS, SRID is added to the beginning of the
          * pgGeom string
          */
-
-        String geom = pgGeom.toString();
-        // logger.info(geom);
-        String subString = geom.substring(
-            geom.indexOf("=") + 1, geom.indexOf(";")); //$NON-NLS-1$ //$NON-NLS-2$
-        // logger.info(subString);
-        int srid = Integer.parseInt(subString);
-        IGeometry geOxyGeom = WktGeOxygene.makeGeOxygene(pgGeom.toString()
-            .substring(pgGeom.toString().indexOf(";") + 1));
-
+        IGeometry geOxyGeom = null;
+        int srid = -1;
+        if (geom.indexOf("=") > -1) {
+          String subString = geom.substring(geom.indexOf("=") + 1, geom.indexOf(";")); //$NON-NLS-1$ //$NON-NLS-2$
+          srid = Integer.parseInt(subString);
+          geOxyGeom = WktGeOxygene.makeGeOxygene(pgGeom.toString().substring(geom.indexOf("=") + 1));
+        } else {
+          // 
+          geOxyGeom = WktGeOxygene.makeGeOxygene(pgGeom.toString());
+          // FIXME : il faut le trouver !!!
+          // srid = N;
+        }
+        
         if (geOxyGeom instanceof IMultiPoint) {
           IMultiPoint aggr = (IMultiPoint) geOxyGeom;
           if (aggr.size() == 1) {
@@ -107,6 +121,7 @@ public class GeOxygeneGeometryUserType implements UserType {
             return aggr;
           }
         }
+        
         geOxyGeom.setCRS(srid);
         return geOxyGeom;
 
