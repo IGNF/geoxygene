@@ -3,7 +3,7 @@
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="fr.ign.cogit.geoxygene.example.hibernate">
-  <subclass name="Rodent" extends="Mammal" discriminator-value="R">
+	<subclass name="Rodent" extends="Mammal" discriminator-value="R">
 
-  </subclass>
+	</subclass>
 </hibernate-mapping>

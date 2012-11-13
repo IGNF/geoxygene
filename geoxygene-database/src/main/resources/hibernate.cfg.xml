@@ -4,37 +4,46 @@
 		"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
+        
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-        <property name="hibernate.connection.password">postgres</property>
-        <property name="hibernate.connection.url">jdbc:postgresql:geoxygenehibernate</property>
-        <property name="hibernate.connection.username">postgres</property>
-        <!-- <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property> -->
+        <!-- <property name="hibernate.connection.url">jdbc:postgresql:geoxygenehibernate</property> -->
+        <property name="hibernate.connection.url">jdbc:postgresql://del1109s019:5432/dbunit</property>
+        <property name="hibernate.connection.username">dbunit</property>
+        <property name="hibernate.connection.password">dbunit</property>
+        
 		<!-- SPATIAL SQL dialect -->
         <property name="dialect">org.hibernatespatial.postgis.PostgisDialect</property>
+        <!-- <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property> -->
         
 		<!-- JDBC connection pool (use the built-in) -->
 		<property name="connection.pool_size">1</property>
         <property name="hibernate.current_session_context_class">org.hibernate.context.ThreadLocalSessionContext</property> 
         <!-- <property name="hbm2ddl.auto">create</property> -->
         
-        <mapping class="fr.ign.cogit.geoxygene.example.hibernate.Flight"/>
-        <mapping class="fr.ign.cogit.geoxygene.example.hibernate.ParisNewYork"/>
-        <mapping class="fr.ign.cogit.geoxygene.example.hibernate.ParisBarcelone"/>
-        <mapping class="fr.ign.cogit.geoxygene.example.hibernate.Plane"/>
-        <mapping class="fr.ign.cogit.geoxygene.example.hibernate.A320"/>
-        <mapping class="fr.ign.cogit.geoxygene.example.hibernate.Boeing747"/>
-        <mapping class="fr.ign.cogit.geoxygene.example.hibernate.Boat"/>
-        <mapping class="fr.ign.cogit.geoxygene.example.hibernate.Ferry"/>
-        <mapping class="fr.ign.cogit.geoxygene.example.hibernate.AmericaCupClass"/>
-        <mapping class="fr.ign.cogit.geoxygene.example.hibernate.Bird"/>
-        <mapping class="fr.ign.cogit.geoxygene.example.hibernate.Goose"/>
-        <mapping class="fr.ign.cogit.geoxygene.example.hibernate.Pigeon"/>
-        <mapping class="fr.ign.cogit.geoxygene.example.hibernate.Hunter"/>
+        <!-- Schema par defaut -->
+        <property name="hibernate.default_schema">database</property>
+
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.ParisNewYork"/>
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.ParisBarcelone"/>
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Flight"/>
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.A320"/>
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Boeing747"/>
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Boat"/>
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Ferry"/>
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.AmericaCupClass"/>
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Plane"/>
+        
+        <!-- 
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Bird"/>
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Goose"/>
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Pigeon"/>
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Hunter"/>
 		<mapping resource="fr/ign/cogit/geoxygene/example/hibernate/BirdInterface.hbm.xml"/>
 		<mapping resource="fr/ign/cogit/geoxygene/example/hibernate/Mammal.hbm.xml"/>
+		 -->
 
-        <mapping class="fr.ign.cogit.geoxygene.example.hibernate.Point_eau"/>
-        <mapping class="fr.ign.cogit.geoxygene.example.hibernate.Troncon_cours_eau"/>
-
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.data.Point_eau"/>
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.data.Troncon_cours_eau"/>
+ 		
     </session-factory>
 </hibernate-configuration>

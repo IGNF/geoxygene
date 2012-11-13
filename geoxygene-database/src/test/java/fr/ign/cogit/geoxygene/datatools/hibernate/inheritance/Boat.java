@@ -1,8 +1,5 @@
-package fr.ign.cogit.geoxygene.example.hibernate;
+package fr.ign.cogit.geoxygene.datatools.hibernate.inheritance;
 
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -14,10 +11,8 @@ import javax.persistence.InheritanceType;
  * 
  */
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "planetype", discriminatorType = DiscriminatorType.STRING)
-@DiscriminatorValue("Plane")
-public class Plane {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Boat {
   protected int id;
 
   @Id

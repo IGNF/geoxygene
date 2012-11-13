@@ -1,21 +1,36 @@
-package fr.ign.cogit.geoxygene.example.hibernate;
+package fr.ign.cogit.geoxygene.datatools.hibernate;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.junit.Assert;
+import org.junit.Test;
+
 import fr.ign.cogit.geoxygene.datatools.hibernate.GeodatabaseHibernate;
+import fr.ign.cogit.geoxygene.datatools.hibernate.data.Point_eau;
+import fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.ParisBarcelone;
+import fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.ParisNewYork;
+import fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Flight;
 
 /**
  * @author Julien Perret
  * 
  */
 public class TestInheritance {
+  
+  // Logger
+  private static Logger logger = Logger.getLogger(TestInheritance.class);
 
   /**
    * @param args
    */
-  public static void main(String[] args) {
+  @Test
+  public void testInheritance() {
+    
     GeodatabaseHibernate db = new GeodatabaseHibernate();
 
+    // ------------------------------------------------------------------------------
+    //    On ajoute 2 vols 
     db.begin();
     ParisBarcelone parisBarcelone = new ParisBarcelone();
     parisBarcelone.setName("ParisBarcelone");
@@ -24,7 +39,17 @@ public class TestInheritance {
     db.makePersistent(parisBarcelone);
     db.makePersistent(parisNewYork);
     db.commit();
+    
+    //   On vérifie qu'ils sont bien ajoutés
+    List<ParisBarcelone> resultParisBarcelone = db.loadAll(ParisBarcelone.class);
+    int nbResultParisBarcelone = resultParisBarcelone.size();
+    List<ParisNewYork> resultParisNewYork = db.loadAll(ParisNewYork.class);
+    int nbResultParisNewYork = resultParisNewYork.size();
+    // List<Flight> resultFlight = db.loadAll(Flight.class);
+    // int nbResultFlight = resultFlight.size();
+    // Assert.assertEquals("Nb d'occurence pour POINT_EAU : ", nbResultFlight, nbResultParisNewYork + nbResultParisBarcelone);
 
+    /*
     db.begin();
     A320 a320 = new A320();
     a320.setName("A320");
@@ -96,7 +121,10 @@ public class TestInheritance {
         System.out.println("prédator : " + p.getId() + " : " + p.getName());
       }
     }
-
+    */
+    
+    logger.info("fin du test TestInheritance.");
+    logger.info("==================================================================");
   }
 
 }

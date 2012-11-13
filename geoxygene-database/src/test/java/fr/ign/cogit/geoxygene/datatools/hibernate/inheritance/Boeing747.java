@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.example.hibernate;
+package fr.ign.cogit.geoxygene.datatools.hibernate.inheritance;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;

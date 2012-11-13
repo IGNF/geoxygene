@@ -1,15 +1,18 @@
-package fr.ign.cogit.geoxygene.example.hibernate;
+package fr.ign.cogit.geoxygene.datatools.hibernate.inheritance;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
 /**
  * @author Julien Perret
  * 
  */
-@MappedSuperclass
-public abstract class Flight {
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public abstract class Bird {
   protected int id;
 
   @Id
@@ -31,5 +34,4 @@ public abstract class Flight {
   public void setName(String name) {
     this.name = name;
   }
-
 }

@@ -1,7 +1,4 @@
-/**
- * 
- */
-package fr.ign.cogit.geoxygene.example.hibernate;
+package fr.ign.cogit.geoxygene.datatools.hibernate.inheritance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +15,7 @@ import javax.persistence.OneToMany;
  * 
  */
 @Entity
-public class Canine implements Mammal {
+public class Rodent implements Mammal {
 
   protected int id;
 

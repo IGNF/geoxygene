@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.example.hibernate;
+package fr.ign.cogit.geoxygene.datatools.hibernate.inheritance;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;

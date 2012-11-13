@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.example.hibernate;
+package fr.ign.cogit.geoxygene.datatools.hibernate.inheritance;
 
 import java.util.ArrayList;
 import java.util.List;

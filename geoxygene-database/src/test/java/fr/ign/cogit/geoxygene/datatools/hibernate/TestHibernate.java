@@ -81,7 +81,7 @@ public class TestHibernate {
     // On ferme la connexion
     db.close();
     
-    logger.info("fin du test.");
+    logger.info("fin du test TestHibernate.testPointEau.");
     logger.info("==================================================================");
   }
 
@@ -139,7 +139,7 @@ public class TestHibernate {
     // On ferme la connexion
     db.close();
 
-    logger.info("fin du test.");
+    logger.info("fin du test TestHibernate.testTronconCoursEau.");
     logger.info("==================================================================");
 
   }

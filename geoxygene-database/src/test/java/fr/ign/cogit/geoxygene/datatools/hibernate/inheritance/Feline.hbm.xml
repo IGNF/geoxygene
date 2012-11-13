@@ -3,10 +3,7 @@
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="fr.ign.cogit.geoxygene.example.hibernate">
-  <class name="BirdInterface">
-      <id name="id" column="id">
-    <generator class="native"/>
-    </id>
-    <property name="name" column="name"/>
-  </class>
+	<subclass name="Feline" extends="Mammal" discriminator-value="F">
+
+	</subclass>
 </hibernate-mapping>
