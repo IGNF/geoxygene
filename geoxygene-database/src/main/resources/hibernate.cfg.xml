@@ -21,18 +21,19 @@
         <!-- <property name="hbm2ddl.auto">create</property> -->
         
         <!-- Schema par defaut -->
-        <property name="hibernate.default_schema">database</property>
+        <property name="hibernate.default_schema">contrib</property>
 
-        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.ParisNewYork"/>
-        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.ParisBarcelone"/>
-        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Flight"/>
-        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.A320"/>
-        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Boeing747"/>
-        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Boat"/>
-        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Ferry"/>
-        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.AmericaCupClass"/>
-        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Plane"/>
-        
+<!-- 
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.ParisNewYork" />
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.ParisBarcelone" />
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Flight" />
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.A320" />
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Boeing747" />
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Boat" />
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Ferry" />
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.AmericaCupClass" />
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Plane" />
+ -->
         <!-- 
         <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Bird"/>
         <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.inheritance.Goose"/>
@@ -42,8 +43,10 @@
 		<mapping resource="fr/ign/cogit/geoxygene/example/hibernate/Mammal.hbm.xml"/>
 		 -->
 
-        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.data.Point_eau"/>
-        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.data.Troncon_cours_eau"/>
- 		
+		<mapping class="fr.ign.cogit.geoxygene.contrib.cartetopo.data.Roads" />
+<!--  
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.data.Point_eau" />
+        <mapping class="fr.ign.cogit.geoxygene.datatools.hibernate.data.Troncon_cours_eau" />
+-->
     </session-factory>
 </hibernate-configuration>

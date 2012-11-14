@@ -206,7 +206,6 @@ public class CarteTopoTest {
       for (Arc arc : face.getArcsPendants()) {
         logger.debug(arc);
       }
-      
     }
     assert (carte.getListeFaces().size() == 4);
     // fail("Not yet implemented");
