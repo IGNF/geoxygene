@@ -17,6 +17,7 @@ import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.PropertiesBasedJdbcDatabaseTester;
 
 import fr.ign.cogit.geoxygene.datatools.hibernate.GeodatabaseHibernate;
+import fr.ign.cogit.geoxygene.datatools.hibernate.HibernateUtil;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.data.Roads;
 
@@ -108,8 +109,8 @@ public class CompareCarteTopo extends DBTestCase {
     double tolerance = 0.1;
     
     CarteTopo networkMapTest = new CarteTopo("Network Map Test");
-    Chargeur.importAsEdges(roads, networkMapTest, attribute,
-        orientationMap, groundAttribute, null, groundAttribute, tolerance);
+    /*Chargeur.importAsEdges(roads, networkMapTest, attribute,
+        orientationMap, groundAttribute, null, groundAttribute, tolerance);*/
     
     
     // On calcule le plus court chemin
