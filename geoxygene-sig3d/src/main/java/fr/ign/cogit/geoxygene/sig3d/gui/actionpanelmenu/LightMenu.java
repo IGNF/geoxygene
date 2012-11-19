@@ -394,35 +394,17 @@ public class LightMenu extends JPanel implements ActionListener {
     }
 
     if (source == this.jbAdd) {
+      
+      double x = Double.valueOf(this.jTFX.getText())
+      + this.iMap3D.getTranslate().x;
+  double y = Double.valueOf(this.jTFY.getText())
+      + this.iMap3D.getTranslate().y;
+  double z = Double.valueOf(this.jTFZ.getText())
+      + this.iMap3D.getTranslate().z;
+  
+    Color couleur = this.jBCLightColor.getBackground();
 
-      // Lumiere attenuee (ex : source lumineuse en un point)
-      PointLight pointlight = new PointLight();
-      pointlight.setEnable(true);
-      pointlight.setColor(new Color3f(1f, 1f, 1f));
-      pointlight.setPosition(new Point3f(0f, 0f, 0f));
-      pointlight.setAttenuation(0f, 0f, 0f);
-      pointlight.setInfluencingBounds(new BoundingSphere(new Point3d(),
-          Double.POSITIVE_INFINITY));
-      pointlight.setCapability(Light.ALLOW_COLOR_READ);
-      pointlight.setCapability(Light.ALLOW_COLOR_WRITE);
-      pointlight.setCapability(Light.ALLOW_STATE_READ);
-      pointlight.setCapability(Light.ALLOW_STATE_WRITE);
-      pointlight.setCapability(PointLight.ALLOW_ATTENUATION_READ);
-      pointlight.setCapability(PointLight.ALLOW_ATTENUATION_WRITE);
-      pointlight.setCapability(PointLight.ALLOW_POSITION_READ);
-      pointlight.setCapability(PointLight.ALLOW_POSITION_WRITE);
-
-      BranchGroup bgTempL = new BranchGroup();
-      bgTempL.setCapability(Node.ALLOW_PICKABLE_READ);
-      bgTempL.setCapability(Node.ALLOW_PICKABLE_WRITE);
-      bgTempL.setCapability(Node.ENABLE_PICK_REPORTING);
-      bgTempL.setCapability(Group.ALLOW_CHILDREN_EXTEND);
-      bgTempL.setCapability(Group.ALLOW_CHILDREN_READ);
-      bgTempL.setCapability(Group.ALLOW_CHILDREN_WRITE);
-      bgTempL.setCapability(BranchGroup.ALLOW_DETACH);
-      bgTempL.addChild(pointlight);
-      this.iMap3D.getLights().add(pointlight);
-      this.iMap3D.getScene().addChild(bgTempL);
+      this.iMap3D.addLight(couleur, (float)x, (float)y, (float)z);
 
       ((LightsListTableModel) this.tbl.getModel()).fireTableDataChanged();
     }

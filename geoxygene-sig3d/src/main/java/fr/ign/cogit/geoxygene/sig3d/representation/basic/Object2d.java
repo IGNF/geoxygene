@@ -341,7 +341,7 @@ public class Object2d extends BasicRep3D {
   }
 
   /**
-   * Méthode permettant de créer l'apparence de la surface
+   * Génère l'apparence à appliquer à la géométrie
    * 
    * @param isClrd
    * @param color
@@ -370,16 +370,17 @@ public class Object2d extends BasicRep3D {
     pa.setCapability(PolygonAttributes.ALLOW_CULL_FACE_WRITE);
 
     if (isSolid) {
-
+      // Indique que l'on est en mode surfacique
       pa.setPolygonMode(PolygonAttributes.POLYGON_FILL);
 
+      // Indique que l'on n'affiche pas les faces cachées
       if (ConstantRepresentation.cullMode) {
         pa.setCullFace(PolygonAttributes.CULL_BACK);
 
       }
 
     } else {
-
+      // Indique que l'on est en mode filaire
       pa.setPolygonMode(PolygonAttributes.POLYGON_LINE);
 
     }
@@ -394,32 +395,28 @@ public class Object2d extends BasicRep3D {
       // Création du material (gestion des couleurs et de l'affichage)
       Material material = new Material();
 
-      material.setAmbientColor(couleur3F.x, couleur3F.y, couleur3F.z);
-      material.setEmissiveColor(couleur3F.x, couleur3F.y, couleur3F.z);
       material.setDiffuseColor(couleur3F);
-      material.setSpecularColor(couleur3F);
-
-      material.setShininess(1);
+      material.setSpecularColor(new Color3f(color.brighter()));
+      material.setAmbientColor(new Color3f(color.darker()));
+      material.setEmissiveColor(new Color3f(color.darker()));
+      material.setShininess(128);
+      
       apparenceFinale.setMaterial(material);
+
     }
 
     if (coefTransp != 1) {
 
-      TransparencyAttributes t_attr =
-
-      new TransparencyAttributes(TransparencyAttributes.BLENDED,
-          (float) coefTransp,
-
+      TransparencyAttributes t_attr = new TransparencyAttributes(
+          TransparencyAttributes.BLENDED, (float) coefTransp,
           TransparencyAttributes.BLEND_SRC_ALPHA,
-
           TransparencyAttributes.BLENDED);
-
       apparenceFinale.setTransparencyAttributes(t_attr);
     }
 
     return apparenceFinale;
-  }
 
+  }
   /**
    * Change l'attirbut Couleur de manière définitive ainsi que la couleur de
    * l'objet

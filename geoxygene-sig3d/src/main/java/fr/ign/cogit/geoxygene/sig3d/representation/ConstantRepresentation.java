@@ -61,5 +61,11 @@ public final class ConstantRepresentation {
    * Couleur de sélection des objets
    */
   public static Color selectionColor = new Color(0, 255, 255);
+  
+  
+  /**
+   * Couleur du fond de l'environnement 3D
+   */
+  public static Color backGroundColor = new Color(255, 255, 255);
 
 }

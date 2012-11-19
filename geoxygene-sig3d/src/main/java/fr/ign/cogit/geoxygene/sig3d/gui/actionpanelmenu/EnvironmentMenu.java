@@ -211,12 +211,11 @@ public class EnvironmentMenu extends JPanel implements ActionListener {
     }
 
     if (source == this.ok) {
-      Color couleur = this.jBBackgroundColor.getBackground();
-      Color3f couleur3f = new Color3f((float) couleur.getRed() / 255,
-          (float) couleur.getGreen() / 255, (float) couleur.getBlue() / 255);
+      ConstantRepresentation.backGroundColor = this.jBBackgroundColor.getBackground();
+      Color3f couleur3f = new Color3f(ConstantRepresentation.backGroundColor);
       this.iMap3D.getBackground3D().setColor(couleur3f);
 
-      couleur = this.jBSelectionColor.getBackground();
+      Color couleur = this.jBSelectionColor.getBackground();
 
       ConstantRepresentation.selectionColor = couleur;
 

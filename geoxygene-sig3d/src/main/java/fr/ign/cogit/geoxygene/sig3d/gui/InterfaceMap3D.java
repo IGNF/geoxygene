@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.sig3d.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -338,7 +339,7 @@ public class InterfaceMap3D extends JPanel {
     // Création d'un fond
     BoundingSphere schedulingBounds = new BoundingSphere(new Point3d(),
         Double.POSITIVE_INFINITY);// 0000.0);
-    this.background3D = new Background(new Color3f(1.0f, 1.0f, 1.0f));
+    this.background3D = new Background(new Color3f(ConstantRepresentation.backGroundColor));
     this.background3D.setApplicationBounds(schedulingBounds);
     this.background3D.setCapability(Background.ALLOW_COLOR_WRITE);
 
@@ -688,6 +689,63 @@ public class InterfaceMap3D extends JPanel {
     tEchelleZ.setScale(new Vector3d(1.0, 1.0,
         ConstantRepresentation.scaleFactorZ));
     InterfaceMap3D.tgScaleZ.setTransform(tEchelleZ);
+
+  }
+  
+  
+  
+  /**
+   * 
+   */
+  public void addLight(Color couleur, float x, float y, float z){
+    // Lumiere attenuee (ex : source lumineuse en un point)
+    PointLight pointlight = new PointLight();
+    pointlight.setEnable(true);
+    pointlight.setColor(new Color3f(couleur));
+    pointlight.setPosition(new Point3f(x, y, z));
+    pointlight.setAttenuation(0f, 0f, 0f);
+    pointlight.setInfluencingBounds(new BoundingSphere(new Point3d(),
+        Double.POSITIVE_INFINITY));
+    pointlight.setCapability(Light.ALLOW_COLOR_READ);
+    pointlight.setCapability(Light.ALLOW_COLOR_WRITE);
+    pointlight.setCapability(Light.ALLOW_STATE_READ);
+    pointlight.setCapability(Light.ALLOW_STATE_WRITE);
+    pointlight.setCapability(PointLight.ALLOW_ATTENUATION_READ);
+    pointlight.setCapability(PointLight.ALLOW_ATTENUATION_WRITE);
+    pointlight.setCapability(PointLight.ALLOW_POSITION_READ);
+    pointlight.setCapability(PointLight.ALLOW_POSITION_WRITE);
+
+    BranchGroup bgTempL = new BranchGroup();
+    bgTempL.setCapability(Node.ALLOW_PICKABLE_READ);
+    bgTempL.setCapability(Node.ALLOW_PICKABLE_WRITE);
+    bgTempL.setCapability(Node.ENABLE_PICK_REPORTING);
+    bgTempL.setCapability(Group.ALLOW_CHILDREN_EXTEND);
+    bgTempL.setCapability(Group.ALLOW_CHILDREN_READ);
+    bgTempL.setCapability(Group.ALLOW_CHILDREN_WRITE);
+    bgTempL.setCapability(BranchGroup.ALLOW_DETACH);
+    bgTempL.addChild(pointlight);
+    this.getLights().add(pointlight);
+    this.getScene().addChild(bgTempL);
+  }
+  
+  
+  
+  /**
+   * Suppression de la lumière
+   * @param i
+   * @return
+   */
+  public boolean removeLight(int i){
+    if(i >= this.getLights().size()){
+      return false;
+    }
+    
+    
+    
+    ((BranchGroup)  this.getLights().get(i).getParent()).detach();
+    this.getLights().remove(i);
+    
+    return true;
 
   }
 
@@ -1040,17 +1098,5 @@ public class InterfaceMap3D extends JPanel {
 
   }
   
-  public boolean removeLight(int i){
-    if(i >= this.getLights().size()){
-      return false;
-    }
-    
-    
-    
-    ((BranchGroup)  this.getLights().get(i).getParent()).detach();
-    this.getLights().remove(i);
-    
-    return true;
 
-  }
 }

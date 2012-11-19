@@ -248,7 +248,8 @@ public class ObjectCartoon extends Default3DRep {
 
     bg.addChild(s);
 
-    bg.addChild(new Shape3D(lStrips, this.generateAppearanceLine(true,
+  
+      bg.addChild(new Shape3D(lStrips, this.generateAppearanceLine(true,
         this.edgeColor, 1, true)));
 
     return bg;
@@ -498,5 +499,7 @@ public class ObjectCartoon extends Default3DRep {
     jb.setHorizontalAlignment(SwingConstants.HORIZONTAL);
     return jb;
   }
+  
+
 
 }
