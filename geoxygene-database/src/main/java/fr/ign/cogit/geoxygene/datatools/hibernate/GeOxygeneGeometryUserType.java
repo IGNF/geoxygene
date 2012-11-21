@@ -54,7 +54,7 @@ public class GeOxygeneGeometryUserType implements UserType {
     if (object == null) {
       return null;
     }
-    System.out.println("01--------------------------------------------------------------------");
+    
     if (object instanceof org.postgresql.util.PGobject) {
       try {
         object = new PGgeometry(object.toString());
@@ -62,7 +62,7 @@ public class GeOxygeneGeometryUserType implements UserType {
         e.printStackTrace();
       }
     }
-    System.out.println("02--------------------------------------------------------------------");
+    
     // in some cases, Postgis returns not PGgeometry objects
     // but org.postgis.Geometry instances.
     // This has been observed when retrieving GeometryCollections
@@ -70,11 +70,11 @@ public class GeOxygeneGeometryUserType implements UserType {
     if (object instanceof org.postgis.Geometry) {
       object = new PGgeometry((org.postgis.Geometry) object);
     }
-    System.out.println("1--------------------------------------------------------------------");
+    
     if (object instanceof PGgeometry) {
-      System.out.println("2--------------------------------------------------------------------");
+      
       PGgeometry pgGeom = (PGgeometry) object;
-      System.out.println("3--------------------------------------------------------------------");
+      
       try {
 
         logger.info("pgGeom = " + pgGeom);
@@ -87,11 +87,13 @@ public class GeOxygeneGeometryUserType implements UserType {
         IGeometry geOxyGeom = null;
         int srid = -1;
         if (geom.indexOf("=") > -1) {
+          
           String subString = geom.substring(
               geom.indexOf("=") + 1, geom.indexOf(";")); //$NON-NLS-1$ //$NON-NLS-2$
           srid = Integer.parseInt(subString);
           geOxyGeom = WktGeOxygene.makeGeOxygene(pgGeom.toString().substring(
               geom.indexOf("=") + 1));
+        
         } else {
           //
           geOxyGeom = WktGeOxygene.makeGeOxygene(pgGeom.toString());
