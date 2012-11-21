@@ -123,7 +123,7 @@ public class Roads extends FT_Feature {
   }
 
   @Override
-  @Column(name = "geom")
+  @Column(name = "the_geom")
   @Type(type = "fr.ign.cogit.geoxygene.datatools.hibernate.GeOxygeneGeometryUserType")
   public IGeometry getGeom() {
     return super.getGeom();

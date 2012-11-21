@@ -494,7 +494,9 @@ public class Noeud extends ElementCarteTopo {
    *         contient le noeud de départ et le noeud d'arrivée.
    */
   public Groupe plusCourtChemin(Noeud arrivee, double maxLongueur) {
+    
     logger.debug("shortest path between " + this.getCoord() + " - " + arrivee.getCoord());
+    
     List<Noeud> noeudsFinaux = new ArrayList<Noeud>(0);
     List<Arc> arcsFinaux = new ArrayList<Arc>(0);
     List<Noeud> noeudsVoisins = new ArrayList<Noeud>(0);
@@ -506,7 +508,9 @@ public class Noeud extends ElementCarteTopo {
     Arc arcVoisin;
     Noeud noeudVoisin, plusProche, suivant;
     double dist;
+    
     try {
+      
       if (this.getCarteTopo() == null) {
         Noeud.logger.error("ATTENTION : le noeud " + this
             + " ne fait pas partie d'une carte topo");
@@ -514,6 +518,7 @@ public class Noeud extends ElementCarteTopo {
             .error("            Impossible de calculer un plus court chemin");
         return null;
       }
+      
       if (this.getCarteTopo().getPopGroupes() == null) {
         Noeud.logger.error("ATTENTION : le noeud " + this
             + " fait partie d'une carte topo sans population de groupes");
@@ -521,8 +526,8 @@ public class Noeud extends ElementCarteTopo {
             .error("            Impossible de calculer un plus court chemin");
         return null;
       }
-      Groupe plusCourtChemin = this.getCarteTopo().getPopGroupes()
-          .nouvelElement();
+      
+      Groupe plusCourtChemin = this.getCarteTopo().getPopGroupes().nouvelElement();
 
       if (this == arrivee) {
         logger.debug("node is arrival");
@@ -530,10 +535,11 @@ public class Noeud extends ElementCarteTopo {
         this.addGroupe(plusCourtChemin);
         return plusCourtChemin;
       }
+      
       this.distance = 0;
-      this.chercheArcsNoeudsVoisins(noeudsVoisins, distancesVoisins,
-          arcsVoisins);
+      this.chercheArcsNoeudsVoisins(noeudsVoisins, distancesVoisins, arcsVoisins);
       // logger.info("voisins " + noeudsVoisins.size());
+      
       for (i = 0; i < noeudsVoisins.size(); i++) {
         noeudVoisin = noeudsVoisins.get(i);
         arcVoisin = arcsVoisins.get(i);

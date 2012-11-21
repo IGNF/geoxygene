@@ -2,6 +2,8 @@ package fr.ign.cogit.geoxygene.contrib.cartetopo;
 
 import org.apache.log4j.Logger;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -19,6 +21,8 @@ import org.dbunit.PropertiesBasedJdbcDatabaseTester;
 import fr.ign.cogit.geoxygene.datatools.hibernate.GeodatabaseHibernate;
 import fr.ign.cogit.geoxygene.datatools.hibernate.HibernateUtil;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.data.Roads;
 
 /**
@@ -33,7 +37,7 @@ public class CompareCarteTopo extends DBTestCase {
   // Logger
   private static Logger logger = Logger.getLogger(CompareCarteTopo.class);
 
-  public static final String TABLE_TRONCON_ROUTE = "contrib.troncon_route";
+  // public static final String TABLE_TRONCON_ROUTE = "contrib.troncon_route";
   public static final String TABLE_ROADS = "contrib.roads";
 
   private FlatXmlDataSet loadedDataSet;
@@ -45,7 +49,8 @@ public class CompareCarteTopo extends DBTestCase {
     System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_DRIVER_CLASS,
         "org.postgresql.Driver");
     System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL,
-        "jdbc:postgresql://del1109s019:5432/dbunit");
+        // "jdbc:postgresql://del1109s019:5432/dbunit");
+        "jdbc:postgresql://localhost:5433/dbunit");
     System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_USERNAME,
         "dbunit");
     System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD,
@@ -66,7 +71,7 @@ public class CompareCarteTopo extends DBTestCase {
    * On charge une carte topo en base de données.
    * @throws Exception
    */
-  public void testCheckTronconDataLoaded() throws Exception {
+  /*public void testCheckTronconDataLoaded() throws Exception {
 
     // On vérifie que le dataset n'est pas null.
     assertNotNull(loadedDataSet);
@@ -75,7 +80,7 @@ public class CompareCarteTopo extends DBTestCase {
     int rowCount = loadedDataSet.getTable(TABLE_TRONCON_ROUTE).getRowCount();
     assertEquals(61, rowCount);
 
-  }
+  }*/
 
   /**
    * Comparaison du calcul du chemin le plus court 26-39 : en base et dans GeOxygene.
@@ -99,7 +104,45 @@ public class CompareCarteTopo extends DBTestCase {
     GeodatabaseHibernate geoDB = new GeodatabaseHibernate();
     FT_FeatureCollection<Roads> roads = geoDB.loadAllFeatures(Roads.class);
     
-    String attribute = "sens";
+    // 
+    assertEquals(rowCount, roads.size());
+    
+    // On construit le noeud initial et le noeud final
+    // Noeud noeudSource = new Noeud();
+    CarteTopo carteTopo = new CarteTopo("Network Map Test");
+    Class<Noeud> nodeClass = carteTopo.getPopNoeuds().getClasse();
+    try {
+      Constructor<Noeud> constructor = nodeClass.getConstructor(IDirectPosition.class);
+      int cpt = 0;
+      for (IFeature f : roads) {
+        
+        System.out.println("geom " + cpt + " = " + f.getGeom());
+        
+        /*for (IDirectPosition p : f.getGeom().coord()) {
+          try {
+            Noeud n = constructor.newInstance(p);
+            carteTopo.getPopNoeuds().add(n);
+          } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+          } catch (InstantiationException e) {
+            e.printStackTrace();
+          } catch (IllegalAccessException e) {
+            e.printStackTrace();
+          } catch (InvocationTargetException e) {
+            e.printStackTrace();
+          }
+        }*/
+        
+        cpt++;
+      }
+    } catch (SecurityException e) {
+      e.printStackTrace();
+    } catch (NoSuchMethodException e) {
+      e.printStackTrace();
+    }
+    
+    
+    /*String attribute = "sens";
     Map<Object, Integer> orientationMap = new HashMap<Object, Integer>(2);
     orientationMap.put("Direct", new Integer(1));
     orientationMap.put("Inverse", new Integer(-1));
@@ -109,8 +152,8 @@ public class CompareCarteTopo extends DBTestCase {
     double tolerance = 0.1;
     
     CarteTopo networkMapTest = new CarteTopo("Network Map Test");
-    /*Chargeur.importAsEdges(roads, networkMapTest, attribute,
-        orientationMap, groundAttribute, null, groundAttribute, tolerance);*/
+    Chargeur.importAsEdges(roads, networkMapTest, attribute,
+        orientationMap, groundAttribute, null, groundAttribute, tolerance); */
     
     
     // On calcule le plus court chemin

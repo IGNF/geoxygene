@@ -208,7 +208,6 @@ public class CarteTopoTest {
       }
     }
     assert (carte.getListeFaces().size() == 4);
-    // fail("Not yet implemented");
   }
 
 }
