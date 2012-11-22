@@ -90,7 +90,7 @@ public class GeOxygeneGeometryUserType implements UserType {
           String subString = geom.substring(
               geom.indexOf("=") + 1, geom.indexOf(";")); //$NON-NLS-1$ //$NON-NLS-2$
           srid = Integer.parseInt(subString);
-          logger.info("SRID = " + srid);
+          // logger.info("SRID = " + srid);
           
           geOxyGeom = WktGeOxygene.makeGeOxygene(pgGeom.toString().substring(
               geom.indexOf(";") + 1));

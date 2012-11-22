@@ -95,7 +95,7 @@ public class Roads extends FT_Feature {
     this.reverse_Cost = Reverse_Cost;
   }
   
-  protected String oneway;
+  /*protected String oneway;
 
   public String getOneway() {
     return this.oneway;
@@ -113,6 +113,26 @@ public class Roads extends FT_Feature {
 
   public void setLength(Double Length) {
     this.length = Length;
+  }*/
+  
+  protected String sens;
+
+  public String getSens() {
+    return this.sens;
+  }
+
+  public void setSens(String Sens) {
+    this.sens = Sens;
+  }
+  
+  protected Integer edge_Id;
+
+  public Integer getEdge_Id() {
+    return this.edge_Id;
+  }
+
+  public void setEdge_Id(Integer Edge_Id) {
+    this.edge_Id = Edge_Id;
   }
   
   @Override

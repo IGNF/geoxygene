@@ -9,7 +9,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.dbunit.dataset.Column;
@@ -21,8 +24,13 @@ import org.dbunit.PropertiesBasedJdbcDatabaseTester;
 import fr.ign.cogit.geoxygene.datatools.hibernate.GeodatabaseHibernate;
 import fr.ign.cogit.geoxygene.datatools.hibernate.HibernateUtil;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
+import fr.ign.cogit.geoxygene.util.index.Tiling;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IEnvelope;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.data.Roads;
 
 /**
@@ -61,7 +69,7 @@ public class CompareCarteTopo extends DBTestCase {
    * Load the data which will be inserted for the test.
    */
   protected IDataSet getDataSet() throws Exception {
-    logger.info("Chargement des données en base");
+    // logger.info("Chargement des données en base");
     loadedDataSet = new FlatXmlDataSet(this.getClass().getClassLoader()
         .getResourceAsStream("dbunit/contrib.xml"));
     return loadedDataSet;
@@ -110,53 +118,113 @@ public class CompareCarteTopo extends DBTestCase {
     // On construit le noeud initial et le noeud final
     // Noeud noeudSource = new Noeud();
     CarteTopo carteTopo = new CarteTopo("Network Map Test");
-    Class<Noeud> nodeClass = carteTopo.getPopNoeuds().getClasse();
-    try {
-      Constructor<Noeud> constructor = nodeClass.getConstructor(IDirectPosition.class);
-      int cpt = 0;
-      for (IFeature f : roads) {
+    double tolerance = 0.1;
+    // Chargeur.importAsNodes(roads, carteTopo);
+    // logger.info("Nb de noeuds = " + carteTopo.getListeNoeuds().size());
+    // logger.info("Nb d'arcs = " + carteTopo.getListeArcs().size());
+    
+    // Arcs
+    for (IFeature element : roads) {
         
-        System.out.println("geom " + cpt + " = " + f.getGeom());
+        Arc arc = carteTopo.getPopArcs().nouvelElement();
+        ILineString ligne = new GM_LineString((IDirectPositionList) element.getGeom().coord().clone());
+        arc.setGeometrie(ligne);
         
-        /*for (IDirectPosition p : f.getGeom().coord()) {
-          try {
-            Noeud n = constructor.newInstance(p);
-            carteTopo.getPopNoeuds().add(n);
-          } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-          } catch (InstantiationException e) {
-            e.printStackTrace();
-          } catch (IllegalAccessException e) {
-            e.printStackTrace();
-          } catch (InvocationTargetException e) {
-            e.printStackTrace();
-          }
-        }*/
+        String oneway = element.getAttribute("sens").toString();
+        if (oneway.equals("Y")) {
+          arc.setOrientation(2);
+        } else {
+          arc.setOrientation(1);
+        }
         
-        cpt++;
-      }
-    } catch (SecurityException e) {
-      e.printStackTrace();
-    } catch (NoSuchMethodException e) {
-      e.printStackTrace();
+        // double length = Double.parseDouble(element.getAttribute("length").toString());
+        // arc.setPoids(length);
+        
+        // Noeuds
+        IDirectPosition p1 = arc.getGeometrie().getControlPoint(0);
+        IDirectPosition p2 = arc.getGeometrie().getControlPoint(arc.getGeometrie().sizeControlPoint() - 1);
+       
+        //
+        int source = Integer.parseInt(element.getAttribute("source").toString());
+        int target = Integer.parseInt(element.getAttribute("target").toString());
+        
+        // ???
+        Collection<Noeud> candidates = carteTopo.getPopNoeuds().select(p1, tolerance);
+        if (candidates.isEmpty()) {
+          Noeud n1 = carteTopo.getPopNoeuds().nouvelElement(p1.toGM_Point());
+          n1.setId(source);
+          arc.setNoeudIni(n1);
+        } 
+        candidates = carteTopo.getPopNoeuds().select(p2, tolerance);
+        if (candidates.isEmpty()) {
+          Noeud n2 = carteTopo.getPopNoeuds().nouvelElement(p2.toGM_Point());
+          n2.setId(target);
+          arc.setNoeudFin(n2);
+        } 
     }
     
+      
     
-    /*String attribute = "sens";
-    Map<Object, Integer> orientationMap = new HashMap<Object, Integer>(2);
-    orientationMap.put("Direct", new Integer(1));
-    orientationMap.put("Inverse", new Integer(-1));
-    orientationMap.put("Double", new Integer(2));
-    orientationMap.put("NC", new Integer(2));
-    String groundAttribute = "pos_sol";
-    double tolerance = 0.1;
+    List<Noeud> toRemove = new ArrayList<Noeud>(0);
+    // connect the single nodes
+    for (Noeud n : carteTopo.getPopNoeuds()) {
+      if (n.arcs().size() == 1) {
+        Collection<Noeud> candidates = carteTopo.getPopNoeuds().select(n.getCoord(),
+            tolerance);
+        candidates.remove(n);
+        candidates.removeAll(toRemove);
+        if (candidates.size() == 1) {
+          Noeud candidate = candidates.iterator().next();
+          // LOGGER.info("connecting node " + n + " (" + n.getDistance() +
+          // ") to node " + candidate + " (" + candidate.getDistance() + ")");
+          for (Arc a : new ArrayList<Arc>(n.getEntrants())) {
+            candidate.addEntrant(a);
+          }
+          for (Arc a : new ArrayList<Arc>(n.getSortants())) {
+            candidate.addSortant(a);
+          }
+          toRemove.add(n);
+        }
+      }
+    }
+    carteTopo.enleveNoeuds(toRemove);
     
-    CarteTopo networkMapTest = new CarteTopo("Network Map Test");
-    Chargeur.importAsEdges(roads, networkMapTest, attribute,
-        orientationMap, groundAttribute, null, groundAttribute, tolerance); */
     
+    logger.info("Nb d'arcs = " + carteTopo.getListeArcs().size());
+    logger.info("Nb de noeuds = " + carteTopo.getListeNoeuds().size());
+    
+    // Jeu de données pour le calcul du plus court chemin 
+    Groupe gpResult = null;
+    Noeud nDepart = carteTopo.getPopNoeuds().get(4);
+    Noeud nArrivee = carteTopo.getPopNoeuds().get(14);
+    logger.info("Noeud départ = " + nDepart.getId());
+    logger.info("Noeud arrivée = " + nArrivee.getId());
+    
+    logger.info("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    for (int i = 0; i < carteTopo.getListeNoeuds().size(); i++) {
+      logger.info("Noeud " + i + " = " + carteTopo.getListeNoeuds().get(i).getId());
+    }
+    
+    logger.info("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    
+    // Calcul de la topologie arc/noeuds (relations noeud initial/noeud
+    // final
+    // pour chaque arete) a l'aide de la géometrie.
+    carteTopo.creeTopologieArcsNoeuds(0.1);
+    logger.info("------------------------------------------------------------------------");
+    
+    // Calcul de la topologie de carte topologique (relations face gauche /
+    // face droite pour chaque arete) avec les faces définies comme des
+    // cycles du graphe.
+    carteTopo.creeTopologieFaces();
+    logger.info("Nombre de faces de la carte : " + carteTopo.getListeFaces().size());
+    logger.info("------------------------------------------------------------------------");
     
     // On calcule le plus court chemin
+    gpResult = nDepart.plusCourtChemin(nArrivee, 100);
+    logger.info(gpResult.toString());
+    
+    
     
     // Calcul du chemin le plus court 26-39 en base
     /*String sqlGetShortestPath = " SELECT * "
