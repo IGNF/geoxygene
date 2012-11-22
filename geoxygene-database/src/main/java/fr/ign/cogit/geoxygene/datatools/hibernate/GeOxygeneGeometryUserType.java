@@ -77,7 +77,6 @@ public class GeOxygeneGeometryUserType implements UserType {
       
       try {
 
-        logger.info("pgGeom = " + pgGeom);
         String geom = pgGeom.toString();
 
         /*
@@ -91,13 +90,15 @@ public class GeOxygeneGeometryUserType implements UserType {
           String subString = geom.substring(
               geom.indexOf("=") + 1, geom.indexOf(";")); //$NON-NLS-1$ //$NON-NLS-2$
           srid = Integer.parseInt(subString);
+          logger.info("SRID = " + srid);
+          
           geOxyGeom = WktGeOxygene.makeGeOxygene(pgGeom.toString().substring(
-              geom.indexOf("=") + 1));
+              geom.indexOf(";") + 1));
         
         } else {
           //
           geOxyGeom = WktGeOxygene.makeGeOxygene(pgGeom.toString());
-          // FIXME : il faut le trouver !!!
+          // FIXME : il faut encore trouver le SRID !!!
           // srid = N;
         }
 
