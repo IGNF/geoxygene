@@ -75,7 +75,7 @@
   <dependencies>
     <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>geoxygene-style</artifactId>
+        <artifactId>geoxygene-semio</artifactId>
         <version>${project.version}</version>
         <type>jar</type>
         <scope>compile</scope>
