@@ -619,6 +619,7 @@
 	<module>geoxygene-schemageo</module>
 	<module>geoxygene-geopensim</module>
     <module>geoxygene-sig3d</module>
+    <module>geoxygene-semio</module>
   </modules>
 
 </project>
