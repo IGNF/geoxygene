@@ -40,10 +40,10 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.data.Roads;
  * <li>ct2 : schema construit à partir d'un jeu de données en base.</li>
  * </ul>
  */
-public class CompareCarteTopo extends DBTestCase {
+public class CompareCarteTopoTest extends DBTestCase {
 
   // Logger
-  private static Logger logger = Logger.getLogger(CompareCarteTopo.class);
+  private static Logger logger = Logger.getLogger(CompareCarteTopoTest.class);
 
   // public static final String TABLE_TRONCON_ROUTE = "contrib.troncon_route";
   public static final String TABLE_ROADS = "contrib.roads";
@@ -53,7 +53,7 @@ public class CompareCarteTopo extends DBTestCase {
   /**
    * Initialisation des paramètres pour accéder à la base de données.
    */
-  public CompareCarteTopo() {
+  public CompareCarteTopoTest() {
     System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_DRIVER_CLASS,
         "org.postgresql.Driver");
     System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL,
@@ -101,28 +101,27 @@ public class CompareCarteTopo extends DBTestCase {
     // On vérifie que le dataset n'est pas null.
     assertNotNull(loadedDataSet);
 
-    // On vérifie que les 61 lignes sont bien ajoutées
+    // On vérifie que les 61 lignes sont bien ajoutées en base
     int rowCount = loadedDataSet.getTable(TABLE_ROADS).getRowCount();
     assertEquals(61, rowCount);
     
     // -----------------------------------------------------------------------------------------
-    // Calcul dans Geoxygene
+    // Chargement dans Geoxygene
     // 
     // On commence par charger le reseau dans Geoxygene
     GeodatabaseHibernate geoDB = new GeodatabaseHibernate();
     FT_FeatureCollection<Roads> roads = geoDB.loadAllFeatures(Roads.class);
     
-    // 
+    // On vérifie que les 61 lignes sont bien ajoutées dans la FT_FeatureCollection
     assertEquals(rowCount, roads.size());
     
-    // On construit le noeud initial et le noeud final
+    // Chargement de la topologie du reseau
+    // utiliser la classe Chargeur : Chargeur.importAsNodes(roads, carteTopo);
     // Noeud noeudSource = new Noeud();
     CarteTopo carteTopo = new CarteTopo("Network Map Test");
     double tolerance = 0.1;
-    // Chargeur.importAsNodes(roads, carteTopo);
-    // logger.info("Nb de noeuds = " + carteTopo.getListeNoeuds().size());
-    // logger.info("Nb d'arcs = " + carteTopo.getListeArcs().size());
-    
+
+    // A la main
     // Arcs
     for (IFeature element : roads) {
         
@@ -163,8 +162,6 @@ public class CompareCarteTopo extends DBTestCase {
         } 
     }
     
-      
-    
     List<Noeud> toRemove = new ArrayList<Noeud>(0);
     // connect the single nodes
     for (Noeud n : carteTopo.getPopNoeuds()) {
@@ -189,10 +186,10 @@ public class CompareCarteTopo extends DBTestCase {
     }
     carteTopo.enleveNoeuds(toRemove);
     
-    
     logger.info("Nb d'arcs = " + carteTopo.getListeArcs().size());
     logger.info("Nb de noeuds = " + carteTopo.getListeNoeuds().size());
     
+    // -----------------------------------------------------------------------------------------
     // Jeu de données pour le calcul du plus court chemin 
     Groupe gpResult = null;
     Noeud nDepart = carteTopo.getPopNoeuds().get(4);
@@ -200,26 +197,25 @@ public class CompareCarteTopo extends DBTestCase {
     logger.info("Noeud départ = " + nDepart.getId());
     logger.info("Noeud arrivée = " + nArrivee.getId());
     
-    logger.info("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-    for (int i = 0; i < carteTopo.getListeNoeuds().size(); i++) {
-      logger.info("Noeud " + i + " = " + carteTopo.getListeNoeuds().get(i).getId());
-    }
+    // logger.info("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    // for (int i = 0; i < carteTopo.getListeNoeuds().size(); i++) {
+      // logger.info("Noeud " + i + " = " + carteTopo.getListeNoeuds().get(i).getId());
+    // }
+    // logger.info("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     
-    logger.info("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-    
-    // Calcul de la topologie arc/noeuds (relations noeud initial/noeud
-    // final
+    // Calcul de la topologie arc/noeuds (relations noeud initial/noeud final
     // pour chaque arete) a l'aide de la géometrie.
-    carteTopo.creeTopologieArcsNoeuds(0.1);
-    logger.info("------------------------------------------------------------------------");
+    // carteTopo.creeTopologieArcsNoeuds(0.1);
+    
     
     // Calcul de la topologie de carte topologique (relations face gauche /
     // face droite pour chaque arete) avec les faces définies comme des
     // cycles du graphe.
-    carteTopo.creeTopologieFaces();
-    logger.info("Nombre de faces de la carte : " + carteTopo.getListeFaces().size());
-    logger.info("------------------------------------------------------------------------");
+    // carteTopo.creeTopologieFaces();
+    // logger.info("Nombre de faces de la carte : " + carteTopo.getListeFaces().size());
     
+    
+    logger.info("------------------------------------------------------------------------");
     // On calcule le plus court chemin
     gpResult = nDepart.plusCourtChemin(nArrivee, 100);
     logger.info(gpResult.toString());
