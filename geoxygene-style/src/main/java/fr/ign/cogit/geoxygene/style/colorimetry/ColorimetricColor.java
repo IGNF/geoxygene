@@ -612,6 +612,10 @@ public class ColorimetricColor {
   public Color toColor() {
     return new Color(this.getRedRGB(), this.getGreenRGB(), this.getBlueRGB());
   }
+  
+  //////////////////////////////////////////////////////////////////////////
+ // ------------------------- CIE XYZ ----------------------------//
+ // ////////////////////////////////////////////////////////////////////////
 
   /**
    * Conversion of a color to a CIEXYZ Color. The conversion is made from the
@@ -651,6 +655,10 @@ public class ColorimetricColor {
 
     return xyz;
   }
+  
+  //////////////////////////////////////////////////////////////////////////
+ // ------------------------- CIE LAB ----------------------------//
+ // ////////////////////////////////////////////////////////////////////////
 
   /**
    * Return the CIELab color components.
@@ -941,6 +949,7 @@ public class ColorimetricColor {
     double deltaL = CIELab_Lightness_Difference(c1, c2);
     double deltaC = CIELCh_Chroma_Difference(c1, c2);
     
+    // square root ()
     double deltaH = Math.pow(
         (deltaE*deltaE) - (deltaL*deltaL) - (deltaC*deltaC)
         , 0.5);
@@ -961,6 +970,7 @@ public class ColorimetricColor {
     return txtColor;
   }
 
+  
   public static void basicColorsComponents() {
     ColorimetricColor rouge = new ColorimetricColor(255, 0, 0);
     ColorimetricColor vert = new ColorimetricColor(0, 255, 0);
