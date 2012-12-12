@@ -189,7 +189,7 @@ public class ContrastCollection {
     //TODO Create a unit testing method to test this.
     public static void main(String[] args) {
 		ContrastCollection contrastCollection = ContrastCollection
-					.unmarshall(ContrastCollection.class.getResource("Contrast.xml").getPath());
+					.unmarshall(ContrastCollection.class.getResource("/symbol/color/Contrast.xml").getPath());
 		System.out.println(contrastCollection.name);
 		System.out.println(contrastCollection.nbContrasts);
 		System.out.println(contrastCollection.getContrasts().get(2));
