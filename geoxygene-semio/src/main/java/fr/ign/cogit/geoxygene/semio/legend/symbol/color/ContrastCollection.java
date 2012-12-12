@@ -186,26 +186,6 @@ public class ContrastCollection {
         }
     }
     
-    //TODO Create a unit testing method to test this.
-    public static void main(String[] args) {
-		ContrastCollection contrastCollection = ContrastCollection
-					.unmarshall(ContrastCollection.class.getResource("/symbol/color/Contrast.xml").getPath());
-		System.out.println(contrastCollection.name);
-		System.out.println(contrastCollection.nbContrasts);
-		System.out.println(contrastCollection.getContrasts().get(2));
-		
-		ColorimetricColor c1 = new ColorimetricColor(34);
-		ColorimetricColor c2 = new ColorimetricColor(125);
-		System.out.println(c1.getCleCoul());
-		System.out.println(c2.getCleCoul());
-
-		ContrastCollection.getCOGITContrast(c1,c2);
-		
-		System.out.println(ContrastCollection.getCOGITContrast(c1,c2).getContrasteClarte());
-		System.out.println(ContrastCollection.getCOGITContrast(c1,c2).getContrasteTeinte());
-
-	}
-    
     private static ContrastCollection cogitContrasts = null;
     
     public static Contrast getCOGITContrast(ColorimetricColor c1, ColorimetricColor c2) {
