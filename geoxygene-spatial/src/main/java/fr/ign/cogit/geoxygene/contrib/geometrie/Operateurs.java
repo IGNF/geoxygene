@@ -21,6 +21,7 @@ package fr.ign.cogit.geoxygene.contrib.geometrie;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -1303,8 +1304,9 @@ public abstract class Operateurs {
           lineStringSuivante.endPoint(), 0)) {
         pointsLiaison.addAll(lineStringCourante.getControlPoint());
         lineStringCopie.removeControlPoint(lineStringCopie.endPoint());
-        pointsLiaison.addAll(((GM_LineString) lineStringCopie.reverse())
-            .getControlPoint());
+        List<IDirectPosition> list = new ArrayList<IDirectPosition>(lineStringCopie.getControlPoint().getList());
+        Collections.reverse(list);
+        pointsLiaison.addAll(new DirectPositionList(list));
         lineStringCourante = new GM_LineString(pointsLiaison);
         pointsLiaison.removeAll(pointsLiaison);
         linestringList.remove(i);

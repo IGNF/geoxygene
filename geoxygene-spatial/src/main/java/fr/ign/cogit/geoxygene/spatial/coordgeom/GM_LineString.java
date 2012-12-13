@@ -144,7 +144,7 @@ public class GM_LineString extends GM_CurveSegment implements ILineString {
     }
     if (this.controlPoint.size() == 1) {
       System.out.println("CREATING A LINE WITH A SINGLE POINT " + points.get(0));
-      System.exit(0);
+     return;// System.exit(0);
     }
   }
 
