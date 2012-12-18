@@ -277,7 +277,7 @@ public class ConversionJava3DGeOxygene {
    * @return une géométrie Java3D
    */
   public static GeometryInfo fromOrientableSToTriangleArray(
-      List<IOrientableSurface> lFacettes) {
+      List<? extends IOrientableSurface> lFacettes) {
 
     // géométrie de l'objet
     GeometryInfo geometryInfo = new GeometryInfo(GeometryInfo.POLYGON_ARRAY);

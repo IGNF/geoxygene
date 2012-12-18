@@ -53,21 +53,35 @@ import fr.ign.cogit.geoxygene.sig3d.representation.texture.TextureManager;
  */
 public class Symbol2D extends Default3DRep {
 
-  private double width;
+  private double width, length;
   private Texture2D text = null;
   private Color color = null;
+  
+  
+  /**
+   * 
+   * @param feat
+   * @param width
+   * @param text
+   */
+  public Symbol2D(IFeature feat, double width, Texture2D text) {
+
+    this(feat, width, width, text);
+  }
 
   /**
    * Create square centered on the different points of the feature
    * 
    * @param feat entité à laquelle sera associée la représentation
    * @param width largeur du cube
+   * @param length largeur du rectangle
    * @param text la texture que l'on souhaite appliquer aux faces
    */
-  public Symbol2D(IFeature feat, double width, Texture2D text) {
+  public Symbol2D(IFeature feat, double width, double length, Texture2D text) {
     super();
     this.feat = feat;
     this.width = width;
+    this.length = length;
     this.text = text;
 
     List<BranchGroup> lShapes = this.generateAllCube();
@@ -94,7 +108,34 @@ public class Symbol2D extends Default3DRep {
    */
   public Symbol2D(IFeature feat, double width, String pathText) {
 
-    this(feat, width, TextureManager.textureLoading(pathText));
+    this(feat, width, width, TextureManager.textureLoading(pathText));
+
+  }
+  
+  
+  /**
+   * Create squares centered on the different points of the feature
+   * 
+   * @param feat entité à laquelle sera associée la représentation
+   * @param width largeur du cube
+   * @param length longueur du cube
+   * @param pathText le chemin de la texture que l'on souhaite appliquer aux
+   *          faces
+   */
+  public Symbol2D(IFeature feat, double width, double length, String pathText) {
+
+    this(feat, width, width, TextureManager.textureLoading(pathText));
+
+  }
+  
+  /**
+   * 
+   * @param feat
+   * @param width
+   * @param color
+   */
+  public Symbol2D(FT_Feature feat, double width , Color color) {
+    this(feat, width, width,  color);
 
   }
 
@@ -103,12 +144,14 @@ public class Symbol2D extends Default3DRep {
    * 
    * @param feat entité à laquelle sera associée la représentation
    * @param width largeur du cube
+   * @param length longueur du cube
    * @param color la couleur que l'on souhaite appliquer au cube
    */
-  public Symbol2D(FT_Feature feat, double width, Color color) {
+  public Symbol2D(FT_Feature feat, double width, double length, Color color) {
     super();
     this.feat = feat;
     this.width = width;
+    this.width = length;
     this.color = color;
 
     List<BranchGroup> lShapes = this.generateAllCube();
@@ -154,10 +197,10 @@ public class Symbol2D extends Default3DRep {
 
     double z = dp.getZ();
 
-    Point3d p1 = new Point3d(-this.width / 2, 0, -this.width / 2);
-    Point3d p2 = new Point3d(this.width / 2, 0, -this.width / 2);
-    Point3d p3 = new Point3d(this.width / 2, 0, this.width / 2);
-    Point3d p4 = new Point3d(-this.width / 2, 0, this.width / 2);
+    Point3d p1 = new Point3d(-this.width / 2, 0, -this.length / 2);
+    Point3d p2 = new Point3d(this.width / 2, 0, -this.length / 2);
+    Point3d p3 = new Point3d(this.width / 2, 0, this.length / 2);
+    Point3d p4 = new Point3d(-this.width / 2, 0, this.length / 2);
 
     // Construction de l'objet geometrique QuadArray constitue de 16
     // points
