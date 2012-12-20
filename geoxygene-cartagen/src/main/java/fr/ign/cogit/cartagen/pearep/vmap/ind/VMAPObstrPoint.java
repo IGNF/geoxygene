@@ -1,0 +1,177 @@
+/*******************************************************************************
+ * This software is released under the licence CeCILL
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
+ ******************************************************************************/
+package fr.ign.cogit.cartagen.pearep.vmap.ind;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.hibernate.annotations.Type;
+
+import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
+import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscPoint;
+import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
+import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.schemageo.api.activite.PointRepresentatifActiviteInteret;
+import fr.ign.cogit.geoxygene.schemageo.impl.activite.PointRepresentatifActiviteInteretImpl;
+
+public class VMAPObstrPoint extends GeneObjDefault implements IMiscPoint,
+    VMAPFeature {
+
+  private PointRepresentatifActiviteInteret geoxObj;
+
+  // VMAP attributes
+  private String fCode, voi;
+  private int acc, aoo, coe, cra, exs, hgt, len, loc, smc, wid, z;
+
+  public VMAPObstrPoint(IPoint point, HashMap<String, Object> attributes,
+      PeaRepDbType type) {
+    super();
+    this.geoxObj = new PointRepresentatifActiviteInteretImpl(point);
+    this.setInitialGeom(point);
+    this.setEliminated(false);
+    this.acc = (Integer) attributes.get("acc");
+    this.aoo = (Integer) attributes.get("aoo");
+    this.cra = (Integer) attributes.get("cra");
+    this.smc = (Integer) attributes.get("smc");
+    this.exs = (Integer) attributes.get("exs");
+    this.hgt = (Integer) attributes.get("hgt");
+    this.coe = (Integer) attributes.get("coe");
+    this.len = (Integer) attributes.get("len");
+    this.loc = (Integer) attributes.get("loc");
+    this.wid = (Integer) attributes.get("wid");
+    this.z = (Integer) attributes.get("zv2");
+    this.fCode = (String) attributes.get("f_code");
+    this.voi = (String) attributes.get("voi");
+  }
+
+  @Override
+  public IFeature getGeoxObj() {
+    return this.geoxObj;
+  }
+
+  @Override
+  @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
+  public IPoint getGeom() {
+    return (IPoint) super.getGeom();
+  }
+
+  public String getfCode() {
+    return fCode;
+  }
+
+  public void setfCode(String fCode) {
+    this.fCode = fCode;
+  }
+
+  public String getVoi() {
+    return voi;
+  }
+
+  public void setVoi(String voi) {
+    this.voi = voi;
+  }
+
+  public int getAcc() {
+    return acc;
+  }
+
+  public void setAcc(int acc) {
+    this.acc = acc;
+  }
+
+  public int getAoo() {
+    return aoo;
+  }
+
+  public void setAoo(int aoo) {
+    this.aoo = aoo;
+  }
+
+  public int getCoe() {
+    return coe;
+  }
+
+  public void setCoe(int coe) {
+    this.coe = coe;
+  }
+
+  public int getExs() {
+    return exs;
+  }
+
+  public void setExs(int exs) {
+    this.exs = exs;
+  }
+
+  public int getHgt() {
+    return hgt;
+  }
+
+  public void setHgt(int hgt) {
+    this.hgt = hgt;
+  }
+
+  public int getLen() {
+    return len;
+  }
+
+  public void setLen(int len) {
+    this.len = len;
+  }
+
+  public int getLoc() {
+    return loc;
+  }
+
+  public void setLoc(int loc) {
+    this.loc = loc;
+  }
+
+  public int getSmc() {
+    return smc;
+  }
+
+  public void setSmc(int smc) {
+    this.smc = smc;
+  }
+
+  public int getWid() {
+    return wid;
+  }
+
+  public void setWid(int wid) {
+    this.wid = wid;
+  }
+
+  public int getZ() {
+    return z;
+  }
+
+  public void setZ(int z) {
+    this.z = z;
+  }
+
+  public int getCra() {
+    return cra;
+  }
+
+  public void setCra(int cra) {
+    this.cra = cra;
+  }
+
+  @Override
+  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+}

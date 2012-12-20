@@ -1,0 +1,20 @@
+<Config-CartAGen-GUI-Components>
+	<Component>
+		<name>Guillaume</name>
+		<path>fr.ign.cogit.cartagen.software.interfaceCartagen.menus.perso.GuillaumeGUIComponent</path></Component>
+	<Component>
+		<name>Utilities</name>
+		<path>fr.ign.cogit.cartagen.software.interfaceCartagen.menus.UtilitiesGUIComponent</path></Component>
+	<Component>
+		<name>PEA REP</name>
+		<path>fr.ign.cogit.cartagen.software.interfaceCartagen.menus.pearep.PEAREPMenu</path></Component>
+	<Component>
+		<name>Least Squares</name>
+		<path>fr.ign.cogit.cartagen.software.interfaceCartagen.menus.process.LeastSquaresComponent</path></Component>
+	<Component>
+		<name>OSM</name>
+		<path>fr.ign.cogit.cartagen.software.interfaceCartagen.menus.other.OsmGUIComponent</path></Component>
+	<Component>
+		<name>CollaGen</name>
+		<path>fr.ign.cogit.cartagen.software.interfaceCartagen.menus.process.CollaGenComponent</path></Component>
+</Config-CartAGen-GUI-Components>

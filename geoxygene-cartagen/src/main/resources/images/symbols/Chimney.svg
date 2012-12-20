@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink" width="10" height="20">
+  <!-- Smoke -->
+  <path d="M 4,0 L 7,0 M 3,2 L 6,2 M 4,4 L 7,4"
+        style="stroke:black; stroke-width:1; fill:none"
+  />
+  <!-- Chimney -->
+  <path d="M 2,18 L 3,6 L 7,6 L 8,18"
+        style="stroke:black; stroke-width:1; fill:firebrick"
+  />
+  <!-- Base -->
+  <path d="M 1,18 L 9,18"
+        style="stroke:black; stroke-width:2; fill:none"
+  />
+
+</svg>
