@@ -1,0 +1,11 @@
+<configurationDonnees>
+  <cheminRepertoireDonneesSHP>loaded_data//bourg_oisans</cheminRepertoireDonneesSHP>
+  <resolutionMNT>25</resolutionMNT>
+  <enrichissementBati>true</enrichissementBati>
+  <enrichissementBatiAlign>false</enrichissementBatiAlign>
+  <enrichissementRoutier>true</enrichissementRoutier>
+  <enrichissementHydro>false</enrichissementHydro>
+  <enrichissementRelief>false</enrichissementRelief>
+  <enrichissementOccSol>false</enrichissementOccSol>
+  <construireFacesReseau>false</construireFacesReseau>
+</configurationDonnees>
