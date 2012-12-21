@@ -1,5 +1,5 @@
 <Config-CartAGen-GUI-Components>
 	<Component>
 		<name>Utilities</name>
-		<path>fr.ign.cogit.cartagen.software.interfaceCartagen.menus.UtilitiesGUIComponent</path></Component>
+		<path>fr.ign.cogit.cartagen.software.interfacecartagen.menus.UtilitiesGUIComponent</path></Component>
 </Config-CartAGen-GUI-Components>
