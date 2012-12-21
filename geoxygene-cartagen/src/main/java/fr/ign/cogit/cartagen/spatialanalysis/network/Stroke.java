@@ -183,8 +183,9 @@ public class Stroke extends AbstractFeature {
       // get the followers of 'best'
       followers.clear();
       NoeudReseau nextNode = best.getNoeudInitial();
-      if (node.equals(nextNode))
+      if (node.equals(nextNode)) {
         nextNode = best.getNoeudFinal();
+      }
       followers = Stroke.getFollowing(best, nextNode);
 
       // if there is no follower, break
@@ -261,7 +262,7 @@ public class Stroke extends AbstractFeature {
   }
 
   protected double goodContinuityDifference(ICurve tempGeom, ICurve geomFoll,
-      double deviatAngle, double deviatSum) {
+      double deviatAngle, @SuppressWarnings("unused") double deviatSum) {
     // first convert the parameters into radians
     double angleThresh = deviatAngle / 180.0 * Math.PI;
     double sumThresh = deviatAngle / 180.0 * Math.PI;
@@ -343,8 +344,9 @@ public class Stroke extends AbstractFeature {
     double interAngle = Angle.angleTroisPoints(v1g1, coordInter, v1g2)
         .getValeur();
     // put the angle between -Pi and Pi
-    if (interAngle > Math.PI)
+    if (interAngle > Math.PI) {
       interAngle = interAngle - 2 * Math.PI;
+    }
 
     // case where both geometries have only 2 vertices
     if ((v2g1 == null) && (v2g2 == null)) {
@@ -437,7 +439,7 @@ public class Stroke extends AbstractFeature {
   }
 
   private boolean isGoodContinuity(ICurve tempGeom, ICurve geomFoll,
-      double deviatAngle, double deviatSum) {
+      double deviatAngle, @SuppressWarnings("unused") double deviatSum) {
     // first convert the parameters into radians
     double angleThresh = deviatAngle / 180.0 * Math.PI;
     double sumThresh = deviatAngle / 180.0 * Math.PI;
@@ -519,8 +521,9 @@ public class Stroke extends AbstractFeature {
     double interAngle = Angle.angleTroisPoints(v1g1, coordInter, v1g2)
         .getValeur();
     // put the angle between -Pi and Pi
-    if (interAngle > Math.PI)
+    if (interAngle > Math.PI) {
       interAngle = interAngle - 2 * Math.PI;
+    }
 
     // case where both geometries have only 2 vertices
     if ((v2g1 == null) && (v2g2 == null)) {
@@ -621,10 +624,10 @@ public class Stroke extends AbstractFeature {
     // first, no stop case
     if (followers.size() == 1) {
       ArcReseau follower = followers.iterator().next();
-      if (!this.features.contains(follower))
+      if (!this.features.contains(follower)) {
         return follower;
-      else
-        return null;
+      }
+      return null;
     }
 
     // first, filter the followers
@@ -712,9 +715,9 @@ public class Stroke extends AbstractFeature {
 
   protected void filterByAttributeContinuity(ArcReseau arc,
       HashSet<ArcReseau> followers, HashSet<String> attributeNames) {
-    if (this.getNetwork().isAttributesDeclared())
+    if (this.getNetwork().isAttributesDeclared()) {
       try {
-        filterByAttributeContinuityDeclared(arc, followers, attributeNames);
+        this.filterByAttributeContinuityDeclared(arc, followers, attributeNames);
       } catch (SecurityException e) {
         e.printStackTrace();
       } catch (IllegalArgumentException e) {
@@ -726,8 +729,9 @@ public class Stroke extends AbstractFeature {
       } catch (InvocationTargetException e) {
         e.printStackTrace();
       }
-    else
-      filterByAttributeContinuityFT(arc, followers, attributeNames);
+    } else {
+      this.filterByAttributeContinuityFT(arc, followers, attributeNames);
+    }
   }
 
   /**
@@ -853,8 +857,8 @@ public class Stroke extends AbstractFeature {
 
     if (index != 0) {
       lineBefore = Operateurs.compileArcs(before);
-      if (Distances.proche(this.root.getGeom().startPoint(), lineBefore
-          .startPoint(), 0)) {
+      if (Distances.proche(this.root.getGeom().startPoint(),
+          lineBefore.startPoint(), 0)) {
         lineBefore.reverse();
       }
       pointsFinaux.addAll(lineBefore.getControlPoint());
@@ -887,8 +891,9 @@ public class Stroke extends AbstractFeature {
    */
   public double getLength() {
     double length = 0.0;
-    for (ArcReseau arc : getFeatures())
+    for (ArcReseau arc : this.getFeatures()) {
       length += arc.getGeom().length();
+    }
     return length;
   }
 }

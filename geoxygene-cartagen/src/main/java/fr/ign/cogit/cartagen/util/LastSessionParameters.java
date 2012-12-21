@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.util;
 
@@ -34,27 +34,31 @@ public class LastSessionParameters {
 
   protected LastSessionParameters() {
     // Exists only to defeat instantiation.
-    parseXML();
+    this.parseXML();
   }
 
   public static LastSessionParameters getInstance() {
-    if (instance == null) {
-      instance = new LastSessionParameters();
+    if (LastSessionParameters.instance == null) {
+      LastSessionParameters.instance = new LastSessionParameters();
     }
-    return instance;
+    return LastSessionParameters.instance;
   }
 
   private void parseXML() {
-    file = new File(filePath);
+    this.file = new File(LastSessionParameters.filePath);
     // le document XML
     Document docXML = null;
     try {
-      docXML = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
-          new FileInputStream(file));
+      docXML = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+          .parse(new FileInputStream(this.file));
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     } catch (Exception e) {
       e.printStackTrace();
+    }
+
+    if (docXML == null) {
+      return;
     }
 
     Element root = (Element) docXML.getElementsByTagName(
@@ -73,22 +77,22 @@ public class LastSessionParameters {
     // build the DOM document
     Document xmlDoc = new DocumentImpl();
     Element root = xmlDoc.createElement("cartagen-last-session-params");
-    for (String name : parameters.keySet()) {
+    for (String name : this.parameters.keySet()) {
       Element paramElem = xmlDoc.createElement("parameter");
-      Node n = xmlDoc.createTextNode(parameters.get(name).toString());
+      Node n = xmlDoc.createTextNode(this.parameters.get(name).toString());
       paramElem.appendChild(n);
       paramElem.setAttribute("name", name);
       root.appendChild(paramElem);
     }
     xmlDoc.appendChild(root);
     // write to XML file
-    XMLUtil.writeDocumentToXml(xmlDoc, file);
+    XMLUtil.writeDocumentToXml(xmlDoc, this.file);
   }
 
   public void setParameter(String name, Object value)
       throws TransformerException, IOException {
-    parameters.put(name, value);
-    writeToXml();
+    this.parameters.put(name, value);
+    this.writeToXml();
   }
 
   public Object getParameter(String name) {

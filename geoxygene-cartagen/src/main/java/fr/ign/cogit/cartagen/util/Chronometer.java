@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.util;
 
@@ -33,7 +33,7 @@ public class Chronometer {
   private long timeIni, timeFin;
 
   public boolean isRunning() {
-    return running;
+    return this.running;
   }
 
   public void setRunning(boolean running) {
@@ -41,45 +41,46 @@ public class Chronometer {
   }
 
   public Chronometer() {
-    running = false;
-    reset();
+    this.running = false;
+    this.reset();
   }
 
   public void start() {
-    cumulTime += (timeFin - timeIni);
-    timeIni = System.currentTimeMillis();
-    timeFin = 0;
-    running = true;
+    this.cumulTime += (this.timeFin - this.timeIni);
+    this.timeIni = System.currentTimeMillis();
+    this.timeFin = 0;
+    this.running = true;
   }
 
   public void pause() {
-    timeFin = System.currentTimeMillis();
-    running = false;
+    this.timeFin = System.currentTimeMillis();
+    this.running = false;
   }
 
   public void stop() {
-    timeFin = System.currentTimeMillis();
-    cumulTime += (timeFin - timeIni);
-    running = false;
-    reset();
+    this.timeFin = System.currentTimeMillis();
+    this.cumulTime += (this.timeFin - this.timeIni);
+    this.running = false;
+    this.reset();
   }
 
   public void reset() {
-    cumulTime = 0;
-    timeIni = 0;
-    timeFin = 0;
+    this.cumulTime = 0;
+    this.timeIni = 0;
+    this.timeFin = 0;
   }
 
   public long getTime() {
-    if (isRunning()) {
-      pause();
-      start();
-      return cumulTime;
+    if (this.isRunning()) {
+      this.pause();
+      this.start();
+      return this.cumulTime;
     }
-    return cumulTime + (timeFin - timeIni);
+    return this.cumulTime + (this.timeFin - this.timeIni);
   }
 
+  @Override
   public String toString() {
-    return String.valueOf(getTime());
+    return String.valueOf(this.getTime());
   }
 }

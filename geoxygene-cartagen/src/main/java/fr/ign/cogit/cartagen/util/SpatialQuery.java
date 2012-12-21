@@ -99,8 +99,8 @@ public class SpatialQuery {
     for (Class<?> classObj : classObjs) {
       String popName = (String) classObj.getDeclaredField("FEAT_TYPE_NAME")
           .get(null);
-      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset().getCartagenPop(
-          popName));
+      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset()
+          .getCartagenPop(popName));
     }
     return pop.select(line);
   }
@@ -127,8 +127,8 @@ public class SpatialQuery {
       Class<?> classObj = Class.forName(className);
       String popName = (String) classObj.getDeclaredField("FEAT_TYPE_NAME")
           .get(null);
-      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset().getCartagenPop(
-          popName));
+      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset()
+          .getCartagenPop(popName));
     }
     return pop.select(line);
   }
@@ -149,12 +149,14 @@ public class SpatialQuery {
       IDirectPosition point, Class<?> classObj)
       throws IllegalArgumentException, SecurityException,
       IllegalAccessException, NoSuchFieldException {
-    Collection<IGeneObj> crossLine = selectCrossing(line, classObj);
+    Collection<IGeneObj> crossLine = SpatialQuery
+        .selectCrossing(line, classObj);
 
     Set<IGeneObj> set = new HashSet<IGeneObj>();
     for (IGeneObj inter : crossLine) {
-      if (inter.getGeom().contains(point.toGM_Point()))
+      if (inter.getGeom().contains(point.toGM_Point())) {
         set.add(inter);
+      }
     }
 
     return set;
@@ -176,12 +178,14 @@ public class SpatialQuery {
       IDirectPosition point, Set<Class<?>> classObjs)
       throws IllegalArgumentException, SecurityException,
       IllegalAccessException, NoSuchFieldException {
-    Collection<IGeneObj> crossLine = selectCrossing(line, classObjs);
+    Collection<IGeneObj> crossLine = SpatialQuery.selectCrossing(line,
+        classObjs);
 
     Set<IGeneObj> set = new HashSet<IGeneObj>();
     for (IGeneObj inter : crossLine) {
-      if (inter.getGeom().contains(point.toGM_Point()))
+      if (inter.getGeom().contains(point.toGM_Point())) {
         set.add(inter);
+      }
     }
 
     return set;
@@ -204,12 +208,14 @@ public class SpatialQuery {
       ILineString line, IDirectPosition point, Set<String> classNames)
       throws IllegalArgumentException, SecurityException,
       IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
-    Collection<IGeneObj> crossLine = selectCrossingNames(line, classNames);
+    Collection<IGeneObj> crossLine = SpatialQuery.selectCrossingNames(line,
+        classNames);
 
     Set<IGeneObj> set = new HashSet<IGeneObj>();
     for (IGeneObj inter : crossLine) {
-      if (inter.getGeom().contains(point.toGM_Point()))
+      if (inter.getGeom().contains(point.toGM_Point())) {
         set.add(inter);
+      }
     }
 
     return set;
@@ -236,8 +242,8 @@ public class SpatialQuery {
       Class<?> classObj = Class.forName(className);
       String popName = (String) classObj.getDeclaredField("FEAT_TYPE_NAME")
           .get(null);
-      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset().getCartagenPop(
-          popName));
+      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset()
+          .getCartagenPop(popName));
     }
     return pop.select(polygon);
   }
@@ -247,16 +253,12 @@ public class SpatialQuery {
    * lie inside the given area.
    * @param polygon
    * @return
-   * @throws NoSuchFieldException
-   * @throws IllegalAccessException
    * @throws SecurityException
    * @throws IllegalArgumentException
-   * @throws ClassNotFoundException
    */
   @SuppressWarnings("unchecked")
   public static Collection<IGeneObj> selectInAreaAll(IPolygon polygon)
-      throws IllegalArgumentException, SecurityException,
-      IllegalAccessException, NoSuchFieldException, ClassNotFoundException {
+      throws IllegalArgumentException, SecurityException {
     IPopulation<IGeneObj> globalPop = new Population<IGeneObj>();
     for (IPopulation<? extends IFeature> pop : CartAGenDoc.getInstance()
         .getCurrentDataset().getPopulations()) {
@@ -276,8 +278,9 @@ public class SpatialQuery {
   public static IGeneObj selectNearest(IGeometry geom,
       IFeatureCollection<IGeneObj> features, double distanceMax) {
     Collection<IGeneObj> closeObjs = features.select(geom, distanceMax);
-    if (closeObjs.size() == 0)
+    if (closeObjs.size() == 0) {
       return null;
+    }
     IGeneObj nearest = null;
     double minDist = distanceMax;
     for (IGeneObj obj : closeObjs) {

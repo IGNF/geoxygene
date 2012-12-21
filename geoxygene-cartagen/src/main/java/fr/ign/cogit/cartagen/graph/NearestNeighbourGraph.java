@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.graph;
 
@@ -57,23 +57,29 @@ public class NearestNeighbourGraph extends Graph {
       IDirectPosition pt1 = node.getGeom().getPosition();
       // loop on the neighbours
       for (Node neigh : neighbours) {
-        if (neigh.equals(node))
+        if (neigh.equals(node)) {
           continue;
+        }
         // get the nearest neighbour position
         IDirectPosition pt2 = neigh.getGeom().getPosition();
         // test if a RNG edge has to be built between these two nodes
         double dist = pt1.distance2D(pt2);
-        if (dist >= minDist)
+        if (dist >= minDist) {
           continue;
+        }
         // update the information on the nearest neighbour
         nearest = neigh;
         minDist = dist;
       }
+      if (nearest == null) {
+        continue;
+      }
       // get the nearest neighbour position
       IDirectPosition pt2 = nearest.getGeom().getPosition();
       // test if the edge already exists
-      if (this.getEdgesConnectingNodes(node, nearest).size() > 0)
+      if (this.getEdgesConnectingNodes(node, nearest).size() > 0) {
         continue;
+      }
       // create the new edge
       IEdge edge = new Edge(this, node, nearest, null, new GM_LineString(pt1,
           pt2));
@@ -118,22 +124,28 @@ public class NearestNeighbourGraph extends Graph {
       Node nearest = null;
       double minDist = Double.MAX_VALUE;
       for (Node neigh : neighbours) {
-        if (neigh.equals(node))
+        if (neigh.equals(node)) {
           continue;
+        }
         // computes the smallest distance between both features
         IGeometry geom1 = node.getGeoObjects().iterator().next().getGeom();
         IGeometry geom2 = neigh.getGeoObjects().iterator().next().getGeom();
         GeometryProximity proxi = new GeometryProximity(geom1, geom2);
         // test if a RNG edge has to be built between these two nodes
-        if (proxi.getDistance() >= minDist)
+        if (proxi.getDistance() >= minDist) {
           continue;
+        }
         // update the information on the nearest neighbour
         nearest = neigh;
         minDist = proxi.getDistance();
       }
       // test if the edge already exists
-      if (this.getEdgesConnectingNodes(node, nearest).size() > 0)
+      if (this.getEdgesConnectingNodes(node, nearest).size() > 0) {
         continue;
+      }
+      if (nearest == null) {
+        continue;
+      }
       // create the new edge
       // get the neighbour position
       IDirectPosition pt2 = nearest.getGeom().getPosition();

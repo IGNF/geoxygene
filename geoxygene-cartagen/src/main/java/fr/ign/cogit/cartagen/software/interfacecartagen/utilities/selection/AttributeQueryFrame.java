@@ -121,16 +121,18 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
     this.classJList.addListSelectionListener(this);
     this.pClass.add(new JLabel(this.lblClasses + " : "));
     this.pClass.add(new JScrollPane(this.classJList));
-    Border titled = BorderFactory.createTitledBorder(BorderFactory
-        .createEtchedBorder(EtchedBorder.LOWERED), this.classTitle);
+    Border titled = BorderFactory
+        .createTitledBorder(
+            BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
+            this.classTitle);
     this.pClass.setBorder(BorderFactory.createCompoundBorder(titled,
         BorderFactory.createEmptyBorder(5, 5, 5, 5)));
     this.pClass.setLayout(new BoxLayout(this.pClass, BoxLayout.X_AXIS));
 
     // ***********************************
     // a panel to define the OGC Filter
-    this.pFilter = new OGCFilterPanel(this, (Class<?>) this.classJList
-        .getSelectedValue());
+    this.pFilter = new OGCFilterPanel(this,
+        (Class<?>) this.classJList.getSelectedValue());
 
     // ***********************************
     // a panel to define the extent of the query
@@ -205,8 +207,9 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
     this.pExtent.add(Box.createVerticalGlue());
     this.pExtent.add(pEnvelope);
     this.pExtent.add(Box.createVerticalGlue());
-    titled = BorderFactory.createTitledBorder(BorderFactory
-        .createEtchedBorder(EtchedBorder.LOWERED), this.extentTitle);
+    titled = BorderFactory.createTitledBorder(
+        BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
+        this.extentTitle);
     this.pExtent.setBorder(BorderFactory.createCompoundBorder(titled,
         BorderFactory.createEmptyBorder(5, 5, 5, 5)));
     this.pExtent.setLayout(new BoxLayout(this.pExtent, BoxLayout.Y_AXIS));
@@ -336,9 +339,9 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
             .getDisplayEnvelope().getGeom();
       }
       if (this.extentType == ExtentType.ENVELOPE) {
-        geom = new GM_Envelope(Double.valueOf(this.txtXMin.getText()), Double
-            .valueOf(this.txtXMax.getText()), Double.valueOf(this.txtYMin
-            .getText()), Double.valueOf(this.txtYMax.getText())).getGeom();
+        geom = new GM_Envelope(Double.valueOf(this.txtXMin.getText()),
+            Double.valueOf(this.txtXMax.getText()), Double.valueOf(this.txtYMin
+                .getText()), Double.valueOf(this.txtYMax.getText())).getGeom();
       }
       if (this.extentType == ExtentType.GEOMETRY) {
         geom = CartagenApplication.getInstance().getFrame().getVisuPanel().selectedObjects
@@ -369,6 +372,7 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
    * Get all the classes inheriting from IGeneObj in the project and set them as
    * the geo classes to be queried.
    */
+  @SuppressWarnings("unchecked")
   private void setGeoClasses() {
     this.geoClasses = new ArrayList<Class<?>>();
     // get the directory of the package of this class
@@ -395,8 +399,8 @@ public class AttributeQueryFrame extends JFrame implements ActionListener,
       if (!file.getName().endsWith(".class")) {
         continue;
       }
-      if (file.getName().substring(0, file.getName().length() - 6).equals(
-          "GothicObjectDiffusion")) {
+      if (file.getName().substring(0, file.getName().length() - 6)
+          .equals("GothicObjectDiffusion")) {
         continue;
       }
       String path = file.getPath().substring(file.getPath().indexOf("fr"));

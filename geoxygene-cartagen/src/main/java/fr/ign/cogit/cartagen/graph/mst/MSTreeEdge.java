@@ -32,10 +32,12 @@ public class MSTreeEdge extends Edge {
   // The ID of the edge
   private int id;
 
+  @Override
   public int getId() {
     return this.id;
   }
 
+  @Override
   public void setId(int id) {
     this.id = id;
   }
@@ -58,6 +60,7 @@ public class MSTreeEdge extends Edge {
   // The nodes at the edge extremities
   private MSTreeNode firstNode, secondNode;
 
+  @Override
   public Set<INode> getNodes() {
     Set<INode> nodes = new HashSet<INode>();
     nodes.add(this.firstNode);
@@ -80,6 +83,7 @@ public class MSTreeEdge extends Edge {
   // The geometry of the edge
   private ILineSegment geom;
 
+  @Override
   public ILineSegment getGeom() {
     return this.geom;
   }
@@ -162,6 +166,7 @@ public class MSTreeEdge extends Edge {
    * @return
    */
 
+  @Override
   public Set<IEdge> getNextArcs() {
     Set<IEdge> edges = new HashSet<IEdge>();
     edges.addAll(this.getNextArcs(this.firstNode));
@@ -176,7 +181,7 @@ public class MSTreeEdge extends Edge {
 
   @Override
   public IGraph getGraph() {
-    return spanningTree;
+    return this.spanningTree;
   }
 
   @Override
@@ -186,7 +191,7 @@ public class MSTreeEdge extends Edge {
 
   @Override
   public double getWeight() {
-    return weight;
+    return this.weight;
   }
 
   @Override

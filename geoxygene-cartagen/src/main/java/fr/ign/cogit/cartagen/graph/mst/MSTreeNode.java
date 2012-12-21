@@ -32,10 +32,12 @@ public class MSTreeNode extends Node {
   // The ID of the node
   private int id;
 
+  @Override
   public int getId() {
     return this.id;
   }
 
+  @Override
   public void setId(int id) {
     this.id = id;
   }
@@ -56,10 +58,11 @@ public class MSTreeNode extends Node {
   // The edges connecting the node
   private HashSet<MSTreeEdge> edges;
 
+  @Override
   public Set<IEdge> getEdges() {
     Set<IEdge> set = new HashSet<IEdge>();
-    set.addAll(edgesIn);
-    set.addAll(edgesOut);
+    set.addAll(this.edgesIn);
+    set.addAll(this.edgesOut);
     return set;
   }
 
@@ -128,6 +131,7 @@ public class MSTreeNode extends Node {
    * @return
    */
 
+  @Override
   public Set<INode> getNextNodes() {
     Set<INode> nodesNext = new HashSet<INode>();
 
@@ -145,6 +149,7 @@ public class MSTreeNode extends Node {
    * @return
    */
 
+  @Override
   public int getDegree() {
     return this.edges.size();
   }
@@ -157,23 +162,23 @@ public class MSTreeNode extends Node {
    */
 
   public double getDistance(MSTreeNode node) {
-    return this.getGeoObjects().iterator().next().getGeom().distance(
-        node.getGeoObjects().iterator().next().getGeom());
+    return this.getGeoObjects().iterator().next().getGeom()
+        .distance(node.getGeoObjects().iterator().next().getGeom());
   }
 
   @Override
   public Set<IEdge> getEdgesIn() {
-    return edgesIn;
+    return this.edgesIn;
   }
 
   @Override
   public Set<IEdge> getEdgesOut() {
-    return edgesOut;
+    return this.edgesOut;
   }
 
   @Override
   public IGraph getGraph() {
-    return spanningTree;
+    return this.spanningTree;
   }
 
 }

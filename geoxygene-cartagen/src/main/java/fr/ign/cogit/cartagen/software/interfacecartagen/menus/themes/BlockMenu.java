@@ -28,6 +28,7 @@ public class BlockMenu extends JMenu {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("unused")
   private Logger logger = Logger.getLogger(BlockMenu.class.getName());
 
   private JMenuItem mIlotSelectionnerTous = new JMenuItem(new SelectAction());
