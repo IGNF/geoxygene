@@ -674,8 +674,8 @@ public class CartAGenDataSet extends DataSet {
    */
   @SuppressWarnings("unchecked")
   public IPopulation<SpecialPoint> getSpecialPoints() {
-    return (IPopulation<SpecialPoint>) this.getCartagenPop(
-        CartAGenDataSet.SPECIAL_POINTS_POP, SpecialPoint.FEAT_TYPE_NAME);
+    return (IPopulation<SpecialPoint>) this
+        .getPopulation(CartAGenDataSet.SPECIAL_POINTS_POP);
   }
 
   /**
