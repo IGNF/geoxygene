@@ -9,7 +9,6 @@
  ******************************************************************************/
 package fr.ign.cogit.cartagen.spatialanalysis.urban;
 
-import java.util.Collection;
 import java.util.HashSet;
 
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
@@ -23,6 +22,7 @@ import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.Batiment;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.Ilot;
+import fr.ign.cogit.geoxygene.schemageo.api.support.elementsIndependants.ElementIndependant;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
@@ -30,10 +30,10 @@ import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFrom
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.GeometryFactory;
 
 /**
- * Implémentation de l'algorithme de P. Taillandier pour détecter les
- * bâtiments dans le coin d'un îlot (Annexe 1, p.379). Implementation of P.
- * Taillandier's algorithm to detect corner buildings in a block (see Annex 1,
- * p.379 of his PhD).
+ * Implémentation de l'algorithme de P. Taillandier pour détecter les bâtiments
+ * dans le coin d'un îlot (Annexe 1, p.379). Implementation of P. Taillandier's
+ * algorithm to detect corner buildings in a block (see Annex 1, p.379 of his
+ * PhD).
  * @author GTouya
  * 
  */
@@ -101,7 +101,6 @@ public class CornerBuildings {
   }
 
   // Other public methods //
-  @SuppressWarnings("unchecked")
   public void compute() {
     // first cut the roads at right angles
     HashSet<ILineString> roadParts = this.cutRoads();
@@ -152,7 +151,8 @@ public class CornerBuildings {
 
     // get the corner buildings from the triangles
     IFeatureCollection<Batiment> fc = new FT_FeatureCollection<Batiment>();
-    fc.addAll((Collection<? extends Batiment>) block.getComposants());
+    for (ElementIndependant component : block.getComposants())
+      fc.add((Batiment) component);
     for (IPolygon triangle : cornerAreas)
       this.cornerBuildings.addAll(fc.select(triangle));
   }

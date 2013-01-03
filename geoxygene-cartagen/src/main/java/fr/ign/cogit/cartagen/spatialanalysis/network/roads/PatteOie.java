@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 package fr.ign.cogit.cartagen.spatialanalysis.network.roads;
 
@@ -313,13 +313,13 @@ public class PatteOie extends CarrefourComplexeImpl {
     this.findMinorRoadExtern();
   }
 
-  @SuppressWarnings("unchecked")
   private void findMainRoadIntern() {
     // first, case with 4 nodes
     if (this.getNoeuds().size() == 4) {
       // get the middle node
       ArrayList<NoeudRoutier> list = new ArrayList<NoeudRoutier>();
-      list.addAll((Collection<? extends NoeudRoutier>) this.getNoeuds());
+      for (NoeudReseau noeudReseau : this.getNoeuds())
+        list.add((NoeudRoutier) noeudReseau);
       // sort the list so as to have consecutive nodes
       // check if 1 is connected to 0
       Set<TronconDeRoute> connected = list.get(1).getRoutes();
