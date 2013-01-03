@@ -3,22 +3,30 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<parent>
 		<artifactId>geoxygene</artifactId>
 		<groupId>fr.ign.cogit</groupId>
 		<version>1.5-SNAPSHOT</version>
 	</parent>
-	
+
 	<artifactId>geoxygene-sig3d</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>geoxygene-sig3d</name>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
+
+	<licenses>
+		<license>
+			<name>CeCILL C License</name>
+			<url>http://www.cecill.info/</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
@@ -81,7 +89,7 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
