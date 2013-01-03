@@ -15,6 +15,7 @@
 	<name>geoxygene-cartagen</name>
 
 	<url>http://maven.apache.org</url>
+	
 	<licenses>
 		<license>
 			<name>CeCILL C License</name>
@@ -22,9 +23,11 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
