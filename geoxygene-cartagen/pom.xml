@@ -14,8 +14,6 @@
 	<packaging>jar</packaging>
 	<name>geoxygene-cartagen</name>
 
-	<url>http://maven.apache.org</url>
-	
 	<licenses>
 		<license>
 			<name>CeCILL C License</name>

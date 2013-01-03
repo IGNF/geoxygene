@@ -9,9 +9,7 @@
     <version>1.5-SNAPSHOT</version>
   </parent>
   
-  <!-- <groupId>fr.ign.cogit</groupId> -->
   <artifactId>geoxygene-io</artifactId>
-  <!-- <version>1.5-SNAPSHOT</version> -->
   <packaging>jar</packaging>
   <name>geoxygene-io</name>
   
