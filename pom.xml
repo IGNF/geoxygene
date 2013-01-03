@@ -326,74 +326,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- ======================================================= -->
-			<!-- Reports configuration for the web site. -->
-			<!-- ======================================================= -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.1.2</version> <!-- Version 2.2 doesn't work. See http://www.mail-archive.com/users@maven.apache.org/msg109241.html -->
-				<configuration>
-					<outputDirectory>target/reports</outputDirectory>
-					<links>
-						<link>http://download.oracle.com/javase/6/docs/api/</link>
-					</links>
-					<webAccessUrl>http://oxygene-project.svn.sourceforge.net/viewvc/oxygene-project/main/trunk/geoxygene/</webAccessUrl>
-					<anonymousConnection>scm:svn:http://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project/main/trunk/geoxygene/</anonymousConnection>
-					<developerConnection>scm:svn:https://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project/main/trunk/geoxygene/</developerConnection>
-					<dependencyDetailsEnabled>false</dependencyDetailsEnabled>
-					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-				</configuration>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>javadoc</report>
-							<report>summary</report>
-							<report>project-team</report>
-							<report>mailing-list</report>
-							<report>license</report>
-							<report>scm</report>
-							<report>dependencies</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
-
-			<!-- ======================================================= -->
-			<!-- Javadoc generation. -->
-			<!-- ======================================================= -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>javadoc</report>     <!-- We want API javadoc only, not tests javadoc. -->
-						</reports>
-					</reportSet>
-				</reportSets>
-				<configuration>
-					<!-- <reportOutputDirectory>javadoc</reportOutputDirectory> -->
-					<source>1.6</source>             <!-- Enables javadoc to handle assertions present in J2SE 1.4. -->
-					<encoding>UTF-8</encoding>       <!-- The encoding of the source files. -->
-					<docencoding>UTF-8</docencoding> <!-- The encoding of the generated HTML files. -->
-					<charset>UTF-8</charset>
-					<locale>en</locale>              <!-- Locale that javadoc uses when generating documentation. -->
-					<noqualifier>all</noqualifier>   <!-- Omit qualifying package name before class names in output. -->
-					<aggregate>true</aggregate>      <!-- Build an aggregated report at the root. -->
-					<maxmemory>512M</maxmemory>      <!-- maximum Java heap size to be used when launching the tool. -->
-					<quiet>true</quiet>              <!-- Shuts off non-error and non-warning messages. -->
-					<keywords>true</keywords>        <!-- Adds HTML meta keyword tags to the generated files. -->
-					<breakiterator>true</breakiterator>
-					<links>
-						<link>http://download.oracle.com/javase/6/docs/api</link>
-						<link>http://download.java.net/media/jai/javadoc/1.1.3/jai-apidocs</link>
-						<link>http://download.java.net/media/jai-imageio/javadoc/1.1</link>
-						<link>http://download.java.net/media/java3d/javadoc/1.5.1</link>
-						<link>http://www.geoapi.org/snapshot/pending</link>
-					</links>
-				</configuration>
-			</plugin>
+			
 
 		</plugins>
 	</reporting>
@@ -627,6 +560,7 @@
 		<module>geoxygene-geopensim</module>
 		<module>geoxygene-sig3d</module>
 		<module>geoxygene-semio</module>
+		<module>geoxygene-cartagen</module>
 	</modules>
 
 </project>
