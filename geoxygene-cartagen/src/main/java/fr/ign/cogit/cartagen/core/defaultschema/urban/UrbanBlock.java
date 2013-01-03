@@ -648,7 +648,7 @@ public class UrbanBlock extends GeneObjSurfDefault implements IUrbanBlock {
   }
 
   @Override
-  @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
+  @Type(type = "fr.ign.cogit.cartagen.core.persistence.GeOxygeneGeometryUserType")
   public IPolygon getCityBlockGeom() {
     return this.cityBlockGeom;
   }

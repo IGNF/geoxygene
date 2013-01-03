@@ -69,7 +69,7 @@ public class MiscPoint extends GeneObjPointDefault implements IMiscPoint {
   }
 
   @Override
-  @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
+  @Type(type = "fr.ign.cogit.cartagen.core.persistence.GeOxygeneGeometryUserType")
   public IPoint getGeom() {
     return super.getGeom();
   }

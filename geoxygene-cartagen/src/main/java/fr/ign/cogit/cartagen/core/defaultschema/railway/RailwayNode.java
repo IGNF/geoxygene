@@ -33,8 +33,8 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 
 /*
- * ###### IGN / CartAGen ###### Title: RailwayNode Description: Noeuds du
- * réseau ferré Author: J. Renard Date: 18/09/2009
+ * ###### IGN / CartAGen ###### Title: RailwayNode Description: Noeuds du réseau
+ * ferré Author: J. Renard Date: 18/09/2009
  */
 @Entity
 @Access(AccessType.PROPERTY)
@@ -65,7 +65,7 @@ public class RailwayNode extends NetworkNode implements IRailwayNode {
   }
 
   @Override
-  @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
+  @Type(type = "fr.ign.cogit.cartagen.core.persistence.GeOxygeneGeometryUserType")
   public IPoint getGeom() {
     return super.getGeom();
   }

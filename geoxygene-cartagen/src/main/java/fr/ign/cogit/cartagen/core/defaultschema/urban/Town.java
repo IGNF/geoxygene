@@ -164,12 +164,12 @@ public class Town extends GeneObjSurfDefault implements ITown {
   }
 
   @Override
-  @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
+  @Type(type = "fr.ign.cogit.cartagen.core.persistence.GeOxygeneGeometryUserType")
   public IPolygon getGeom() {
     return super.getGeom();
   }
 
-  @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
+  @Type(type = "fr.ign.cogit.cartagen.core.persistence.GeOxygeneGeometryUserType")
   public ILineString getOutline() {
     return this.outline;
   }

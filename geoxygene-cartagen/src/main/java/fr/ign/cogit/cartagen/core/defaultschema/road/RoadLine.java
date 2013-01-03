@@ -262,7 +262,7 @@ public class RoadLine extends NetworkSection implements IRoadLine {
   }
 
   @Override
-  @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
+  @Type(type = "fr.ign.cogit.cartagen.core.persistence.GeOxygeneGeometryUserType")
   public ILineString getGeom() {
     return super.getGeom();
   }

@@ -164,7 +164,7 @@ public class UrbanAlignment extends GeneObjSurfDefault implements
   }
 
   @Override
-  @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
+  @Type(type = "fr.ign.cogit.cartagen.core.persistence.GeOxygeneGeometryUserType")
   public ILineString getShapeLine() {
     return this.shapeLine;
   }
@@ -175,7 +175,7 @@ public class UrbanAlignment extends GeneObjSurfDefault implements
   }
 
   @Override
-  @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
+  @Type(type = "fr.ign.cogit.cartagen.core.persistence.GeOxygeneGeometryUserType")
   public ILineString getInitialShapeLine() {
     return this.initialShapeLine;
   }

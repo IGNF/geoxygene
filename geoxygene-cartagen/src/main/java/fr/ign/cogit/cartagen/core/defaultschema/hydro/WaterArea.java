@@ -74,7 +74,7 @@ public class WaterArea extends GeneObjSurfDefault implements IWaterArea {
   }
 
   @Override
-  @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
+  @Type(type = "fr.ign.cogit.cartagen.core.persistence.GeOxygeneGeometryUserType")
   public IPolygon getGeom() {
     return super.getGeom();
   }

@@ -69,7 +69,7 @@ public class MiscLine extends GeneObjLinDefault implements IMiscLine {
   }
 
   @Override
-  @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
+  @Type(type = "fr.ign.cogit.cartagen.core.persistence.GeOxygeneGeometryUserType")
   public ILineString getGeom() {
     return super.getGeom();
   }

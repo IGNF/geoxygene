@@ -289,7 +289,7 @@ public class BranchingCrossRoad extends GeneObjSurfDefault implements
   }
 
   @Override
-  @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
+  @Type(type = "fr.ign.cogit.cartagen.core.persistence.GeOxygeneGeometryUserType")
   public IPolygon getGeom() {
     return super.getGeom();
   }

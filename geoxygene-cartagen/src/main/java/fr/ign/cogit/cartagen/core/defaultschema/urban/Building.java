@@ -79,7 +79,7 @@ public class Building extends UrbanElement implements IBuilding {
   }
 
   @Override
-  @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
+  @Type(type = "fr.ign.cogit.cartagen.core.persistence.GeOxygeneGeometryUserType")
   public IPolygon getGeom() {
     return (IPolygon) super.getGeom();
   }

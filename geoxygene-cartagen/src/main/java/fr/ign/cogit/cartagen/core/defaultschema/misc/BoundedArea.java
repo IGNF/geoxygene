@@ -26,8 +26,8 @@ import fr.ign.cogit.geoxygene.schemageo.api.activite.ZoneActiviteInteret;
 import fr.ign.cogit.geoxygene.schemageo.impl.activite.ZoneActiviteInteretImpl;
 
 /*
- * ###### IGN / CartAGen ###### Title: BoundedArea Description: Zones
- * d'activité et d'intérêt Author: J. Renard Date: 18/09/2009
+ * ###### IGN / CartAGen ###### Title: BoundedArea Description: Zones d'activité
+ * et d'intérêt Author: J. Renard Date: 18/09/2009
  */
 @Entity
 @Access(AccessType.PROPERTY)
@@ -69,7 +69,7 @@ public class BoundedArea extends GeneObjSurfDefault implements IBoundedArea {
   }
 
   @Override
-  @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
+  @Type(type = "fr.ign.cogit.cartagen.core.persistence.GeOxygeneGeometryUserType")
   public IPolygon getGeom() {
     return super.getGeom();
   }

@@ -69,7 +69,7 @@ public class LabelPoint extends GeneObjPointDefault implements ILabelPoint {
   }
 
   @Override
-  @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
+  @Type(type = "fr.ign.cogit.cartagen.core.persistence.GeOxygeneGeometryUserType")
   public IPoint getGeom() {
     return super.getGeom();
   }
