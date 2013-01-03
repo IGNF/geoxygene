@@ -20,13 +20,13 @@
  */
 package fr.ign.cogit.geoxygene.schemageo.impl.routier;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.schemageo.api.routier.NoeudRoutier;
 import fr.ign.cogit.geoxygene.schemageo.api.routier.TronconDeRoute;
+import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.Reseau;
 import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.NoeudReseauImpl;
 
@@ -50,14 +50,13 @@ public class NoeudRoutierImpl extends NoeudReseauImpl implements NoeudRoutier {
     return this.getArcsEntrants().size() + this.getArcsSortants().size();
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public Set<TronconDeRoute> getRoutes() {
     HashSet<TronconDeRoute> routes = new HashSet<TronconDeRoute>();
-    routes
-        .addAll((Collection<? extends TronconDeRoute>) this.getArcsEntrants());
-    routes
-        .addAll((Collection<? extends TronconDeRoute>) this.getArcsSortants());
+    for (ArcReseau troncon : this.getArcsEntrants())
+      routes.add((TronconDeRoute) troncon);
+    for (ArcReseau troncon : this.getArcsSortants())
+      routes.add((TronconDeRoute) troncon);
     return routes;
   }
 }
