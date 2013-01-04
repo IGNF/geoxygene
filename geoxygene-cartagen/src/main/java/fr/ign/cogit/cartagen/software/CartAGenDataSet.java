@@ -3676,6 +3676,8 @@ public class CartAGenDataSet extends DataSet {
     for (Layer lay : CartagenApplication.getInstance().getFrame()
         .getLayerManager().getLayers()) {
       if (lay instanceof LoadedLayer) {
+        if (((LoadedLayer) lay).getFeatures() == null)
+          continue;
         for (@SuppressWarnings("unused")
         IFeature feat : ((LoadedLayer) lay).getFeatures()) {
           feat = null;
