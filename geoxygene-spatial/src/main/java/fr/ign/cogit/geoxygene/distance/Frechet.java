@@ -123,8 +123,8 @@ public class Frechet {
    * @param q
    * @return
    */
-  public static double partialFrechet(final GM_LineString p,
-      final GM_LineString q) {
+  public static double partialFrechet(final ILineString p,
+      final ILineString q) {
     List<IDirectPosition> pPoints = new ArrayList<IDirectPosition>(p.coord());
     List<IDirectPosition> qPoints = new ArrayList<IDirectPosition>(q.coord());
     List<IDirectPosition> temp = null;
