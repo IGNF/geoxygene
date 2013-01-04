@@ -596,7 +596,6 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
    * @throws IllegalArgumentException
    * @throws NoSuchFieldException
    */
-  @SuppressWarnings("null")
   @Override
   public void updateRelationIds() throws SecurityException,
       NoSuchMethodException, IllegalArgumentException, IllegalAccessException,
@@ -657,7 +656,7 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
    * @throws NoSuchMethodException
    * 
    */
-  @SuppressWarnings( { "null", "unchecked" })
+  @SuppressWarnings( { "unchecked" })
   @Override
   public void fillRelationsFromIds() throws IllegalArgumentException,
       IllegalAccessException, InvocationTargetException, SecurityException,

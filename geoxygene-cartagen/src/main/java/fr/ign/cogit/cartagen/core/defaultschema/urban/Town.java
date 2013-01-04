@@ -94,6 +94,7 @@ public class Town extends GeneObjSurfDefault implements ITown {
    */
   public Town() {
     super();
+    this.townBlocks = new FT_FeatureCollection<IUrbanBlock>();
   }
 
   /**

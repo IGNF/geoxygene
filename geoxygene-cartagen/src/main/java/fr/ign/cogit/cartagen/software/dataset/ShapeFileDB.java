@@ -152,13 +152,15 @@ public class ShapeFileDB extends CartAGenDB {
     this.setPersistentClasses(new HashSet<Class<?>>());
     Element persistClassesElem = (Element) root.getElementsByTagName(
         "persistent-classes").item(0);
+    // get the class loader for the geoxygene-cartagen project
+    ClassLoader loader = IGeneObj.class.getClassLoader();
     for (int i = 0; i < persistClassesElem.getElementsByTagName(
         "persistent-class").getLength(); i++) {
       Element persistClassElem = (Element) persistClassesElem
           .getElementsByTagName("persistent-class").item(i);
       String className = persistClassElem.getChildNodes().item(0)
           .getNodeValue();
-      this.getPersistentClasses().add(Class.forName(className));
+      this.getPersistentClasses().add(Class.forName(className, true, loader));
     }
 
     this.setXmlFile(file);
