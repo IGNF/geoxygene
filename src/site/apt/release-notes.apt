@@ -1,4 +1,27 @@
+
+GeOxygene releases
+
+  The current development version is GeOxygene-1.6-SNAPSHOT.
+  The latest stable release is {{{./index.html}GeOxygene 1.5}}.
+
+  All releases can be obtained from the {{{http://sourceforge.net/projects/oxygene-project/files/?source=navbar}SourceForge download area}}.
+  Snapshots and releases are also available from the {{{./maven.html}Maven repositories}}.
+
+
 History of Changes
+
+
+* Version 1.5 (2013/01/31)
+  
+  * Added 3D module
+  
+  * Added semio module
+  
+  * Added geopensim modules
+  
+  * Added 
+  
+  * Added multi-module Maven architecture
 
 * Version 1.4 (2009/06/22)
 

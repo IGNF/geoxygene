@@ -31,13 +31,11 @@
 			<item name="Release Notes" href="release-notes.html" />
 		</menu>
 
-		<menu name="GeOxygene 1.4 Downloads">
-			<item name="Binary (jar)"
-				href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.4/geoxygene-1.4.jar/download" />
-			<item name="Source (zip)"
-				href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.4/geoxygene-1.4-src.zip/download" />
-			<item name="Javadoc (zip)"
-				href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.4/geoxygene-1.4-javadoc.zip/download" />
+		<menu name="GeOxygene 1.5 Downloads">
+			<item name="Binaries (jar)"
+				href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.5/" />
+			<item name="Sources (zip)"
+				href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.5/" />
 			<item name="Plugin for OpenJump"
 				href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene%20Plugin%20for%20OpenJUMP/0.1/geoxygene-plugin-0.1.zip/download" />
 		</menu>
