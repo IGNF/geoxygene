@@ -9,7 +9,7 @@
 	<!-- ==================================================== -->
 	<groupId>fr.ign.cogit</groupId>
 	<artifactId>geoxygene</artifactId>
-	<version>1.5-SNAPSHOT</version>
+	<version>1.5</version>
 	<packaging>pom</packaging>
 	<name>GeOxygene</name>
 	<url>http://oxygene-project.sourceforge.net/</url>
@@ -293,7 +293,7 @@
 				</executions>
 			</plugin>
 
-			<!-- Dependency Graph  -->
+			<!-- Dependency Graph -->
 			<plugin>
 				<groupId>org.fusesource.mvnplugins</groupId>
 				<artifactId>maven-graph-plugin</artifactId>
@@ -326,7 +326,7 @@
 				</configuration>
 			</plugin>
 
-			
+
 
 		</plugins>
 	</reporting>
@@ -419,9 +419,11 @@
 	</pluginRepositories>
 
 
-	<!-- ================================================================ Centraliser 
-		la gestion des versions des dépendances sans ajouter de dépendances héritées 
-		par tous les projets fils ============================================================ -->
+	<!-- ================================================= 
+		Centraliser la gestion des versions des dépendances 
+		sans ajouter de dépendances héritées 
+		par tous les projets fils 
+	=================================================== -->
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
