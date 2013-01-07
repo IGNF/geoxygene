@@ -541,7 +541,7 @@
 		<site>
 			<id>oxygene-project.sf.net</id>
 			<name>GeOxygene website</name>
-			<url>scp://shell.sourceforge.net/home/groups/o/ox/oxygene-project/htdocs/maven</url>
+			<url>scp://shell.sourceforge.net/home/groups/o/ox/oxygene-project/htdocs</url>
 		</site>
 	</distributionManagement>
 
