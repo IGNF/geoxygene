@@ -77,7 +77,7 @@ public class DTM extends AbstractDTM {
 
   public int echantillonage = 1;
 
-  public static double CONSTANT_OFFSET = 1;
+  public static double CONSTANT_OFFSET = 0;
 
   protected DTM() {
     super();

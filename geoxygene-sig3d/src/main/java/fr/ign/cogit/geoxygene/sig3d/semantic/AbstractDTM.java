@@ -313,6 +313,8 @@ public abstract class AbstractDTM extends DefaultLayer {
 
         } else if (geomTemp instanceof IMultiSurface<?>) {
           resultMS.addAll((IMultiSurface<?>) geomTemp);
+        }else if (geomTemp instanceof IPolygon){
+          resultMS.add((IPolygon) geomTemp);
         }
 
       }
@@ -329,7 +331,7 @@ public abstract class AbstractDTM extends DefaultLayer {
         return resultMSolid;
       }
 
-      if (resultMS.size() > 1 && resultMSolid.size() > 0) {
+      if (resultMS.size() > 1 && resultMSolid.size() == 0) {
         return resultMS;
       }
 
