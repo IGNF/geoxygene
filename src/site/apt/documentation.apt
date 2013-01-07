@@ -2,16 +2,10 @@ GeOxygene documentation
 
 * User guide
 
-** GeOxygene
-
-  The French version of the GeOxygene user guide can be downloaded
-  {{{doc/InstallationGeOxygene.pdf}here}},
-  in PDF file format. An english translation is available here, also in PDF file format.
-
 ** Installation
 
   The French version of the GeOxygene installation guide can be downloaded
-  {{{http://oxygene-project.sourceforge.net/geoxygene/docs/guide-installation/geoxygene-installation-1.0.pdf}here}},
+  {{{http://oxygene-project.sourceforge.net/geoxygene/docs/guide-installation/InstallationGeOxygene.pdf}here}},
   in PDF file format.
 
 ** Data matching
