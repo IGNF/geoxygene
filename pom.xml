@@ -36,8 +36,8 @@
 	<!-- Revision control -->
 	<!-- =========================================================== -->
 	<scm>
-		<connection>scm:svn:http://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project/main/trunk/geoxygene/</connection>
-		<url>http://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project/main/trunk/geoxygene/</url>
+		<connection>scm:svn:https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/</connection>
+		<url>https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/</url>
 	</scm>
 
 	<!-- =========================================================== -->
@@ -285,7 +285,7 @@
 								<outputDirectory>doc</outputDirectory>
 							</settings>
 						</configuration>
-						<phase>site</phase>
+						<!--  <phase>site</phase> -->
 						<goals>
 							<goal>latex</goal>
 						</goals>
@@ -541,7 +541,8 @@
 		<site>
 			<id>oxygene-project.sf.net</id>
 			<name>GeOxygene website</name>
-			<url>scp://shell.sourceforge.net/home/groups/o/ox/oxygene-project/htdocs</url>
+			<!-- <url>scp://shell.sourceforge.net/home/groups/o/ox/oxygene-project/htdocs</url>  -->
+			<url>scp://shell.sourceforge.net/home/project-web/oxygene-project/htdocs</url>
 		</site>
 	</distributionManagement>
 
