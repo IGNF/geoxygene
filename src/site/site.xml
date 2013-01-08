@@ -46,7 +46,7 @@
 		</menu>
 
 		<!-- Replaced by menus for any configured reports (mailing lists, etc.) -->
-		<menu ref="reports" /> 
+		<!-- <menu ref="reports" /> --> 
 		
 		<!-- Afficher un sous-menu pour chaque sous-modules -->
 		<!-- <menu ref="modules"/> -->

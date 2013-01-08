@@ -5,25 +5,25 @@ GeOxygene documentation
 ** Installation
 
   The French version of the GeOxygene installation guide can be downloaded
-  {{{doc/guide-installation/InstallationGeOxygene.pdf}here}},
+  {{{doctex/guide-installation/InstallationGeOxygene.pdf}here}},
   in PDF file format.
 
 ** Data matching
 
   The French version of the GeOxygene data matching tool guide can be downloaded
-  {{{http://oxygene-project.sourceforge.net/geoxygene/docs/geoxygene-appariement-1.0.pdf}here}},
+  {{{doc/geoxygene-appariement-1.0.pdf}here}},
   in PDF file format.
 
 ** Topological map
 
   The French version of the GeOxygene topolical map guide can be downloaded
-  {{{http://oxygene-project.sourceforge.net/geoxygene/docs/geoxygene-carte_topo-1.0.pdf}here}},
+  {{{doc/geoxygene-carte_topo-1.0.pdf}here}},
   in PDF file format.
 
 ** Semiology tools
 
   The French version of the GeOxygene semiology tools guide can be downloaded
-  {{{http://oxygene-project.sourceforge.net/geoxygene/docs/geoxygene-semiology-0.4.pdf}here}},
+  {{{doc/geoxygene-semiology-0.4.pdf}here}},
   in PDF file format.
 
 * Developper guide
