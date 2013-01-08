@@ -11,17 +11,17 @@ GeOxygene releases
 History of Changes
 
 
-* Version 1.5 (2013/01/31)
+* Version 1.5 (2013/01/07)
   
   * Added 3D module
   
-  * Added semio module
+  * Added semiology module
   
-  * Added geopensim modules
+  * Added generalization module
   
-  * Added 
+  * Added data matching process using theory of Evidence
   
-  * Added multi-module Maven architecture
+  * Adopted multi-module Maven architecture
 
 * Version 1.4 (2009/06/22)
 

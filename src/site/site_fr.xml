@@ -21,6 +21,7 @@
     <menu name="GeOxygene Liens Rapides">
       <item name="Introduction" href="index.html"/>
       <item name="Documentation" href="documentation.html"></item>
+      <item name="Architecture" href="architecture.html"></item>
       <item name="Téléchargement" href="download.html"/>
       <item name="FAQ" href="faq.html" />
       <item name="Changements" href="release-notes.html" />
@@ -38,7 +39,7 @@
       <item name="Appariement" href="data-matching.html"/>
     </menu>
 
-    <menu ref="reports"/> <!-- Replaced by menus for any configured reports (mailing lists, etc.) -->
+    
 
   </body>
 </project>

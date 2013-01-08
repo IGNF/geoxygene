@@ -22,6 +22,22 @@ Introduction
 
 News
 
+    * January, 2013 - <<Version 1.5 released>>
+    
+      This new version includes : 
+      
+      * a new semiology module with a legendary model detailed {{{./semiology.html}here}}
+      
+      * a new 3D module provides a dedicated GUI mapping tool that is optimized to manipulate 3D geometry, to import special format like CityGML, postgis 3D, ...,
+        to use objects and algorithms dedicated to 3D 
+
+      * a new generalization module provides generalization algorithms, spatial analysis api (Multi-criteria decision analysis, ...), 
+        methods for calculating compactness, curves, congestion
+        
+      * data matching process using theory of Evidence
+      
+    Technically, the project has adopted a new multi-module Maven architecture.
+
     * June 22, 2009 - <<Version 1.4 released>>
 
       This version provides an ISO1909 General Feature Model implementation, a SLD (Styled Layer Descriptor)

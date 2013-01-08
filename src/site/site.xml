@@ -9,6 +9,7 @@
 	    <src>images/geoxygene-logo-neutre.png</src>
 	    <href>http://oxygene-project.sourceforge.net/</href>
     </bannerLeft>
+	
 	<bannerRight>
 		<name>Hosted by SourceForge</name>
 		<src>http://sourceforge.net/sflogo.php?group_id=70002&amp;type=1</src>
@@ -26,6 +27,7 @@
 		<menu name="GeOxygene Quick links">
 			<item name="Introduction" href="index.html" />
 			<item name="Documentation" href="documentation.html"></item>
+			<item name="Architecture" href="architecture.html"></item>
 			<item name="Download" href="download.html" />
 			<item name="FAQ" href="faq.html" />
 			<item name="Release Notes" href="release-notes.html" />
@@ -46,16 +48,7 @@
 		</menu>
 
 		<!-- Replaced by menus for any configured reports (mailing lists, etc.) -->
-		<!-- <menu ref="reports" /> --> 
-		
-		<!-- Afficher un sous-menu pour chaque sous-modules -->
-		<!-- <menu ref="modules"/> -->
-
-		<!-- 
-        <menu name="Autres langues">
-            <item name="Français" href="fr/index.html"/>
-        </menu>
-         -->
+		<menu ref="reports" /> 
 
 	</body>
 </project>

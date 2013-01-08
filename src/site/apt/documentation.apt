@@ -5,7 +5,7 @@ GeOxygene documentation
 ** Installation
 
   The French version of the GeOxygene installation guide can be downloaded
-  {{{doctex/guide-installation/InstallationGeOxygene.pdf}here}},
+  {{{guide-installation/InstallationGeOxygene.pdf}here}},
   in PDF file format.
 
 ** Data matching
@@ -22,8 +22,14 @@ GeOxygene documentation
 
 ** Semiology tools
 
-  The French version of the GeOxygene semiology tools guide can be downloaded
+  The GeOxygene semiology tools guide can be downloaded
   {{{doc/geoxygene-semiology-0.4.pdf}here}},
+  in PDF file format.
+  
+** 3D module
+
+  The French version of the GeOyxgene 3D module guide can be downloaded
+  {{{doc/geoxygene3D-Utilisateur-V3.pdf}here}},
   in PDF file format.
 
 * Developper guide
