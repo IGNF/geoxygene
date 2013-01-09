@@ -9,7 +9,7 @@
 	<!-- ==================================================== -->
 	<groupId>fr.ign.cogit</groupId>
 	<artifactId>geoxygene</artifactId>
-	<version>1.5</version>
+	<version>1.6-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>GeOxygene</name>
 	<url>http://oxygene-project.sourceforge.net/</url>
@@ -539,6 +539,7 @@
 		<downloadUrl>http://sourceforge.net/projects/oxygene-project/files/</downloadUrl>
 		<repository>
 			<id>releases</id>
+			<name>Nexus Releases Repository</name>
 			<url>https://dionysos2/nexus-webapp-1.4.1/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>

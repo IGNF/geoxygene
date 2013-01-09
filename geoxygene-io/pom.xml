@@ -6,7 +6,7 @@
   <parent>
     <artifactId>geoxygene</artifactId>
     <groupId>fr.ign.cogit</groupId>
-    <version>1.5</version>
+    <version>1.6-SNAPSHOT</version>
   </parent>
   
   <artifactId>geoxygene-io</artifactId>
