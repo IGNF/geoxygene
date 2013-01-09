@@ -295,9 +295,15 @@
 					<links>
 						<link>http://download.oracle.com/javase/6/docs/api/</link>
 					</links>
+					<!-- Old URL, before upgraded 
 					<webAccessUrl>http://oxygene-project.svn.sourceforge.net/viewvc/oxygene-project/main/trunk/geoxygene/</webAccessUrl>
 					<anonymousConnection>scm:svn:http://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project/main/trunk/geoxygene/</anonymousConnection>
 					<developerConnection>scm:svn:https://oxygene-project.svn.sourceforge.net/svnroot/oxygene-project/main/trunk/geoxygene/</developerConnection>
+					 -->
+					 <!-- https://sourceforge.net/p/oxygene-project/code/commit_browser -->
+					<webAccessUrl>http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/</webAccessUrl>
+					<anonymousConnection>scm:svn:http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/</anonymousConnection>
+					<developerConnection>scm:svn:https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/</developerConnection>
 					<dependencyDetailsEnabled>false</dependencyDetailsEnabled>
 					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
 				</configuration>

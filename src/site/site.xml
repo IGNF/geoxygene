@@ -35,9 +35,9 @@
 
 		<menu name="GeOxygene 1.5 Downloads">
 			<item name="Binaries (jar)"
-				href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.5/" />
-			<item name="Sources (zip)"
-				href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.5/" />
+				href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.5/binaries/" />
+			<item name="Sources (jar)"
+				href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene/1.5/sources/" />
 			<item name="Plugin for OpenJump"
 				href="http://sourceforge.net/projects/oxygene-project/files/GeOxygene%20Plugin%20for%20OpenJUMP/0.1/geoxygene-plugin-0.1.zip/download" />
 		</menu>
