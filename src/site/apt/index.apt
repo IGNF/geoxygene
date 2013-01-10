@@ -26,7 +26,7 @@ News
     
       This new version includes : 
       
-      * a new semiology module with a legendary model detailed {{{./semiology.html}here}}
+      * a new semiology module with a legend model detailed {{{./semiology.html}here}}
       
       * a new 3D module provides a dedicated GUI mapping tool that is optimized to manipulate 3D geometry, to import special format like CityGML, postgis 3D, ...,
         to use objects and algorithms dedicated to 3D 
