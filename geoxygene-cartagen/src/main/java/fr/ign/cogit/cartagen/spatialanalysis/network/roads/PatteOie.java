@@ -33,6 +33,9 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
 
+/**
+ *
+ */
 public class PatteOie extends CarrefourComplexeImpl {
 
   private HashSet<ArcReseau> mainRoadIntern;
