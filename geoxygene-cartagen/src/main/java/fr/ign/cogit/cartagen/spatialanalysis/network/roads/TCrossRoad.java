@@ -18,10 +18,14 @@ import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
 
+/**
+ * @author Guillaume Touya
+ * 
+ */
 public class TCrossRoad extends SimpleCrossRoad {
 
-  public static final double FLAT_ANGLE = 12.5 * Math.PI / 180;
-  public static final double BIS_ANGLE = 20 * Math.PI / 180;
+  public static final double FLAT_ANGLE = 12.5 * Math.PI / 180.0;
+  public static final double BIS_ANGLE = 20 * Math.PI / 180.0;
 
   private TronconDeRoute minorRoad;
   private double angle, orientation;
