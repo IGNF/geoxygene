@@ -673,8 +673,7 @@ public abstract class AbstractDTM extends DefaultLayer {
       }
 
     }
-
-    if (lPoly.size() == 0) {
+    if (lPoly.isEmpty()) {
       return null;
     }
 
