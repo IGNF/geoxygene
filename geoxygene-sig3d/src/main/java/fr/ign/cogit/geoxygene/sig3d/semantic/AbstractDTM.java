@@ -644,6 +644,11 @@ public abstract class AbstractDTM extends DefaultLayer {
 
         com.vividsolutions.jts.geom.Geometry ob = multiP.getGeometryN(i)
             .intersection(poly);
+        
+        
+        if(ob == null || ob.getNumPoints() == 0){
+          continue;
+        }
 
         List<Polygon> p1 = this.returnIntersectionFromPolygon(ob);
 
@@ -653,9 +658,14 @@ public abstract class AbstractDTM extends DefaultLayer {
 
           LineString ls = this.mapCurve(p1.get(k).getExteriorRing(), altMax,
               isHeigth, false);
+          
+          
+          Polygon pNew = fac.createPolygon(
+              fac.createLinearRing(ls.getCoordinates()), null);
 
-          lPoly.add(fac.createPolygon(
-              fac.createLinearRing(ls.getCoordinates()), null));
+     
+          
+          lPoly.add(pNew);
         }
 
       } else {
