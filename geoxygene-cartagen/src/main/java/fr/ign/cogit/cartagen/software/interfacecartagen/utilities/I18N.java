@@ -33,7 +33,7 @@ public final class I18N {
    * @see #getString(String)
    */
   private static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(
-      I18N.BUNDLE_NAME, Locale.getDefault());
+      I18N.BUNDLE_NAME, Locale.getDefault(), I18N.class.getClassLoader());
 
   /**
    * Private Default Constructor.
