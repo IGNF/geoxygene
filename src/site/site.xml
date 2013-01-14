@@ -28,7 +28,7 @@
 			<item name="Introduction" href="index.html" />
 			<item name="Documentation" href="documentation.html"></item>
 			<item name="Architecture" href="architecture.html"></item>
-			<item name="Maven" href="maven.html" />
+			<item name="FAQ" href="faq.html" />
 			<item name="Release Notes" href="release-notes.html" />
 			<item name="Sourceforge Home" href="https://sourceforge.net/p/oxygene-project" />
 		</menu>
