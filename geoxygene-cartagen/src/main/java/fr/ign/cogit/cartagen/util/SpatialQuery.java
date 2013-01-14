@@ -9,8 +9,11 @@
  ******************************************************************************/
 package fr.ign.cogit.cartagen.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
@@ -99,8 +102,8 @@ public class SpatialQuery {
     for (Class<?> classObj : classObjs) {
       String popName = (String) classObj.getDeclaredField("FEAT_TYPE_NAME")
           .get(null);
-      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset()
-          .getCartagenPop(popName));
+      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset().getCartagenPop(
+          popName));
     }
     return pop.select(line);
   }
@@ -127,8 +130,8 @@ public class SpatialQuery {
       Class<?> classObj = Class.forName(className);
       String popName = (String) classObj.getDeclaredField("FEAT_TYPE_NAME")
           .get(null);
-      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset()
-          .getCartagenPop(popName));
+      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset().getCartagenPop(
+          popName));
     }
     return pop.select(line);
   }
@@ -242,8 +245,8 @@ public class SpatialQuery {
       Class<?> classObj = Class.forName(className);
       String popName = (String) classObj.getDeclaredField("FEAT_TYPE_NAME")
           .get(null);
-      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset()
-          .getCartagenPop(popName));
+      pop.addAll(CartAGenDoc.getInstance().getCurrentDataset().getCartagenPop(
+          popName));
     }
     return pop.select(polygon);
   }
@@ -292,6 +295,31 @@ public class SpatialQuery {
     }
 
     return nearest;
+  }
+
+  /**
+   * Get the nearest features of the geometry from the parameter collection. If
+   * no feature is close enough (distance under distanceMax), null is returned.
+   * @param geom
+   * @param features
+   * @param distanceMax
+   * @return
+   */
+  public static Set<IFeature> selectNearestN(IGeometry geom,
+      IFeatureCollection<? extends IFeature> features, int n, double step) {
+    List<IFeature> closeObjs = new ArrayList<IFeature>();
+    double radius = step;
+    while (closeObjs.size() < n) {
+      radius += step;
+      closeObjs.clear();
+      for (IFeature feat : features.select(geom, radius))
+        closeObjs.add(feat);
+    }
+    Set<IFeature> nearests = new HashSet<IFeature>();
+    Collections.sort(closeObjs, new DistanceFeatureComparator<IFeature>(geom));
+    for (int i = 0; i < n; i++)
+      nearests.add(closeObjs.get(i));
+    return nearests;
   }
 
   /**
