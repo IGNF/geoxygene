@@ -880,4 +880,20 @@ public class CommonAlgorithmsFromCartAGen {
   public static IPolygon removeHoles(IPolygon polygon) {
     return new GM_Polygon(polygon.getExterior());
   }
+
+  /**
+   * Returns a copy of the parameter polygon with its small holes (i.e. inner
+   * rings with area < given threshold) removed.
+   * @param polygon
+   * @return
+   */
+  public static IPolygon removeSmallHoles(IPolygon polygon, double area) {
+    IPolygon noHolePol = new GM_Polygon(polygon.getExterior());
+    for (IRing hole : polygon.getInterior()) {
+      if (hole.area() < area)
+        continue;
+      noHolePol.addInterior(hole);
+    }
+    return noHolePol;
+  }
 }
