@@ -655,6 +655,7 @@ public abstract class Operateurs {
         Double.NaN);
   }
 
+
   /**
    * Mise bout à bout de plusieurs GM_LineString pour constituer une nouvelle
    * GM_LineString La liste en entrée contient des GM_LineString. La polyligne
@@ -663,6 +664,19 @@ public abstract class Operateurs {
    * English: Combination of lines.
    */
   public static ILineString compileArcs(List<ILineString> geometries) {
+    return Operateurs.compileArcs(geometries, 0d);
+  }
+
+  /**
+   * Mise bout à bout de plusieurs GM_LineString pour constituer une nouvelle
+   * GM_LineString La liste en entrée contient des GM_LineString. La polyligne
+   * créée commence sur l'extrémité libre de la première polyligne de la liste.
+   * <p>
+   * English: Combination of lines.
+   * @param tolerance : minimal distance at wich we consider two points
+   *          superposed
+   */
+  public static ILineString compileArcs(List<ILineString> geometries, double tolerance) {
     Operateurs.logger.debug("compile geometries");
     for (ILineString l : geometries) {
       Operateurs.logger.debug("\t" + l);  
@@ -679,14 +693,14 @@ public abstract class Operateurs {
     }
     ILineString nextLine = geometries.get(1);
     IDirectPosition currentPoint = null;
-    if (Distances.proche(currentLine.startPoint(), nextLine.startPoint(), 0)
-        || Distances.proche(currentLine.startPoint(), nextLine.endPoint(), 0)) {
+    if (Distances.proche(currentLine.startPoint(), nextLine.startPoint(), tolerance)
+        || Distances.proche(currentLine.startPoint(), nextLine.endPoint(), tolerance)) {
       // premier point = point finale de la premiere ligne
       finalPoints.addAll(((ILineString) currentLine.reverse())
           .getControlPoint());
       currentPoint = currentLine.startPoint();
     } else if (Distances.proche(currentLine.endPoint(), nextLine.startPoint(),
-        0) || Distances.proche(currentLine.endPoint(), nextLine.endPoint(), 0)) {
+        tolerance) || Distances.proche(currentLine.endPoint(), nextLine.endPoint(), tolerance)) {
       // premier point = point initial de la premiere ligne
       finalPoints.addAll(currentLine.getControlPoint());
       currentPoint = currentLine.endPoint();
@@ -696,6 +710,7 @@ public abstract class Operateurs {
       for (ILineString l : geometries) {
           Operateurs.logger.error(l);
       }
+      
       return null;
     }
     Operateurs.logger.debug("currentPoint = " + currentPoint.toGM_Point());
@@ -703,12 +718,12 @@ public abstract class Operateurs {
       nextLine = geometries.get(i);
       Operateurs.logger.debug("copying " + nextLine.getControlPoint().size() + " = " + nextLine);
       ILineString lineCopy = new GM_LineString(nextLine.getControlPoint());
-      if (Distances.proche(currentPoint, nextLine.startPoint(), 0)) {
+      if (Distances.proche(currentPoint, nextLine.startPoint(), tolerance)) {
         // LSSuivante dans le bon sens
         lineCopy.removeControlPoint(lineCopy.startPoint());
         finalPoints.addAll(lineCopy.getControlPoint());
         currentPoint = lineCopy.endPoint();
-      } else if (Distances.proche(currentPoint, nextLine.endPoint(), 0)) {
+      } else if (Distances.proche(currentPoint, nextLine.endPoint(), tolerance)) {
         // LSSuivante dans le bon sens
         IDirectPosition toRemove = lineCopy.endPoint();
         ILineString reverse = (ILineString) lineCopy.reverse();
@@ -1249,7 +1264,21 @@ public abstract class Operateurs {
           + ((pt2.getX() - pt1.getX()) * (pt2.getY() + pt1.getY() - 2 * ymin));
       pt1 = pt2;
     }
+    
     return (surf <= 0);
+  }
+  
+  /** Fusionne bout à bout un ensemble de LineStrings en une seule.
+  * <p>
+  * Pour que l'algorithme fonctionne, il faut que, dans la liste, toutes les
+  * linestrings soient connexes. L'algorithme comment par remettre les
+  * linestrings dans l'ordre et dans le même sens.
+  * 
+  * @param linestringList ensemble de LineStrings
+  * @return fusion de LineStrings
+  */
+  public static ILineString union(List<ILineString> linestringList) {
+    return Operateurs.union(linestringList, 0d);
   }
 
   /**
@@ -1260,9 +1289,11 @@ public abstract class Operateurs {
    * linestrings dans l'ordre et dans le même sens.
    * 
    * @param linestringList ensemble de LineStrings
+   * @param tolerance la distance à laquelle on considère que deux points sont
+   *          superposés.
    * @return fusion de LineStrings
    */
-  public static ILineString union(List<ILineString> linestringList) {
+  public static ILineString union(List<ILineString> linestringList, double tolerance) {
     // Si il n'y a pas de polylignes dans la liste, arrêt de la procédure
     if (linestringList.isEmpty()) {
       return null;
@@ -1287,7 +1318,7 @@ public abstract class Operateurs {
       // Si le point de départ de la polyligne courante = point de départ
       // de la polyligne suivante
       if (lineStringCourante.startPoint().equals2D(
-          lineStringSuivante.startPoint(), 0)) {
+          lineStringSuivante.startPoint(), tolerance)) {
         pointsLiaison.addAll(((GM_LineString) lineStringCourante.reverse())
             .getControlPoint());
         lineStringCopie.removeControlPoint(lineStringCopie.startPoint());
@@ -1301,7 +1332,7 @@ public abstract class Operateurs {
       // Si le point d'arrivée de la polyligne courante = point d'arrivée
       // de la polyligne suivante
       else if (lineStringCourante.endPoint().equals2D(
-          lineStringSuivante.endPoint(), 0)) {
+          lineStringSuivante.endPoint(), tolerance)) {
         pointsLiaison.addAll(lineStringCourante.getControlPoint());
         lineStringCopie.removeControlPoint(lineStringCopie.endPoint());
         List<IDirectPosition> list = new ArrayList<IDirectPosition>(lineStringCopie.getControlPoint().getList());
@@ -1316,7 +1347,7 @@ public abstract class Operateurs {
       // Si le point d'arrivée de la polyligne courante = point de départ
       // de la polyligne suivante
       else if (lineStringCourante.endPoint().equals2D(
-          lineStringSuivante.startPoint(), 0)) {
+          lineStringSuivante.startPoint(), tolerance)) {
         pointsLiaison.addAll(lineStringCourante.getControlPoint());
         lineStringCopie.removeControlPoint(lineStringCopie.startPoint());
         pointsLiaison.addAll(lineStringCopie.getControlPoint());
@@ -1329,7 +1360,7 @@ public abstract class Operateurs {
       // Si le point de départ de la polyligne courant = point d'arrivée
       // de la polyligne suivante
       else if (lineStringCourante.startPoint().equals2D(
-          lineStringSuivante.endPoint(), 0)) {
+          lineStringSuivante.endPoint(), tolerance)) {
         lineStringCopie.removeControlPoint(lineStringCopie.endPoint());
         pointsLiaison.addAll(lineStringCopie.getControlPoint());
         pointsLiaison.addAll(lineStringCourante.getControlPoint());
