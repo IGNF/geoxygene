@@ -662,6 +662,7 @@ public abstract class Operateurs {
    * créée commence sur l'extrémité libre de la première polyligne de la liste.
    * <p>
    * English: Combination of lines.
+   * @param geometries : Linestrings à fusionner
    */
   public static ILineString compileArcs(List<ILineString> geometries) {
     return Operateurs.compileArcs(geometries, 0d);
@@ -673,8 +674,8 @@ public abstract class Operateurs {
    * créée commence sur l'extrémité libre de la première polyligne de la liste.
    * <p>
    * English: Combination of lines.
-   * @param tolerance : minimal distance at wich we consider two points
-   *          superposed
+   * @param geometries : Linestrings à fusionner
+   * @param tolerance :distance minimale à laquelle on considère 2 points superposés.
    */
   public static ILineString compileArcs(List<ILineString> geometries, double tolerance) {
     Operateurs.logger.debug("compile geometries");
