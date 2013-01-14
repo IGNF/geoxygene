@@ -83,6 +83,9 @@ public class OperateursTest {
     Assert.assertTrue(projection1.equals(new DirectPosition(2, 0)));
   }
 
+  /**
+   * Test de fusion d'une liste de Linestrings
+   */
   @Test
   public void testCompileArcs() {
     WKTReader reader = new WKTReader();
