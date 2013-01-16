@@ -39,6 +39,7 @@ import fr.ign.cogit.cartagen.core.genericschema.road.IPath;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.AbstractLayerGroup;
@@ -1646,4 +1647,18 @@ public class CartagenApplication {
 
   }
 
+  /**
+   * Get the standard {@link GeneObjImplementation} for {@code this}
+   * application.
+   * @return
+   */
+  private GeneObjImplementation geneObjImpl;
+
+  public GeneObjImplementation getStandardImplementation() {
+    return geneObjImpl;
+  }
+
+  public void setStandardImplementation(GeneObjImplementation impl) {
+    this.geneObjImpl = impl;
+  }
 }

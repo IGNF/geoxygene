@@ -535,6 +535,15 @@ public class DatasetGUIComponent extends JMenu {
        * 
        * 
        * 
+       * 
+       * 
+       * 
+       * 
+       * 
+       * 
+       * 
+       * 
+       * 
        * CartagenApplication.getInstance().loadAndEnrichData2(form.bdsource,form.
        * echelle); CartagenApplication.getInstance().initGeneralisation();
        */
@@ -777,7 +786,6 @@ public class DatasetGUIComponent extends JMenu {
           for (Class<?> c : superclasses) {
             if (c.isAnnotationPresent(Entity.class)
                 || c.isAnnotationPresent(MappedSuperclass.class)) {
-              System.out.println("classe ajoutee: " + c.toString());
               hibConfig.addAnnotatedClass(c);
             }
           }
@@ -944,7 +952,7 @@ public class DatasetGUIComponent extends JMenu {
     private JComboBox cbDatabases, cbClasses;
     private JList persistList;
     private CartAGenDB currentDb;
-    private Set<Class<? extends IGeneObj>> existingClasses;
+    private Set<Class<?>> existingClasses;
     private Set<Class<?>> additionalClasses;
     private Map<String, Class<? extends IFeature>> mapNameClass;
     private JCheckBox chkPersist;
@@ -1086,7 +1094,7 @@ public class DatasetGUIComponent extends JMenu {
 
     @SuppressWarnings("unchecked")
     private void getExistingClasses() {
-      this.existingClasses = new HashSet<Class<? extends IGeneObj>>();
+      this.existingClasses = new HashSet<Class<?>>();
       this.additionalClasses = new HashSet<Class<?>>();
       this.mapNameClass = new HashMap<String, Class<? extends IFeature>>();
       // get the directory of the package of this class
@@ -1148,6 +1156,61 @@ public class DatasetGUIComponent extends JMenu {
           cnfex.printStackTrace();
         }
       }
+
+      // now do the same for the Open Source CartAGen
+      pack = IGeneObj.class.getPackage();
+      name = pack.getName().replace('.', '/');
+      name.replaceAll("%20", " ");
+      if (!name.startsWith("/")) {
+        name = "/" + name;
+      }
+      pathName = IGeneObj.class.getResource(name);
+      directory = new File(pathName.getFile());
+      // get the parent directories to get fr.ign.cogit.cartagen package
+      while (!directory.getName().equals("cartagen")) {
+        directory = directory.getParentFile();
+      }
+      cleanDir = directory.toString().replaceAll("%20", " ");
+      directory = new File(cleanDir);
+      files = FileUtil.getAllFilesInDir(directory);
+      for (File file : files) {
+        if (!file.getName().endsWith(".class")) {
+          continue;
+        }
+        String path = file.getPath().substring(file.getPath().indexOf("fr"));
+        String classname = FileUtil.changeFileNameToClassName(path);
+        try {
+          // Try to create an instance of the object
+          Class<?> classObj = Class.forName(classname);
+          if (classObj.isInterface()) {
+            continue;
+          }
+          if (classObj.isLocalClass()) {
+            continue;
+          }
+          if (classObj.isMemberClass()) {
+            continue;
+          }
+          if (classObj.isEnum()) {
+            continue;
+          }
+          if (Modifier.isAbstract(classObj.getModifiers())) {
+            continue;
+          }
+          // test if the class inherits from IGeneObj
+          if (IGeneObj.class.isAssignableFrom(classObj)) {
+            Class<? extends IGeneObj> c = (Class<? extends IGeneObj>) classObj;
+            this.existingClasses.add(c);
+            this.mapNameClass.put(c.getSimpleName(), c);
+          } else if (classObj.isAnnotationPresent(Entity.class)) {
+            Class<? extends IFeature> c = (Class<? extends IGeneObj>) classObj;
+            this.additionalClasses.add(c);
+            this.mapNameClass.put(c.getSimpleName(), c);
+          }
+        } catch (ClassNotFoundException cnfex) {
+          cnfex.printStackTrace();
+        }
+      }
     }
 
     @Override
@@ -1158,7 +1221,11 @@ public class DatasetGUIComponent extends JMenu {
       this.currentDb.setPersistent(this.chkPersist.isSelected());
       if (this.chkPersist.isSelected()) {
         // fill the persistent classes with the existing IGeneObj classes
-        this.currentDb.getPersistentClasses().addAll(this.existingClasses);
+        this.currentDb.getPersistentClasses().clear();
+        this.currentDb.getPersistentClasses()
+            .addAll(
+                this.currentDb.getGeneObjImpl().filterClasses(
+                    this.existingClasses));
       } else {
         // remove the existing IGeneObj classes from the persistent classes
         this.currentDb.getPersistentClasses().removeAll(this.existingClasses);

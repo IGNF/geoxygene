@@ -31,8 +31,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
+import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 
 public abstract class CartAGenDB {
@@ -87,10 +89,16 @@ public abstract class CartAGenDB {
   private boolean persistent = false;
 
   /**
-   * Constructeur à partir d'un fichier XML détaillant les classes à
-   * intégrer au jeux de données ainsi que les détails de la zone. <en>
-   * Constructor from the XML file storing the classes to integrate to the
-   * dataset and the details of the zone.
+   * The {@link GeneObjImplementation} for {@code this} database. e. g. the
+   * default implementation, i.e. the classes extending {@link GeneObjDefault}.
+   */
+  private GeneObjImplementation geneObjImpl;
+
+  /**
+   * Constructeur à partir d'un fichier XML détaillant les classes à intégrer au
+   * jeux de données ainsi que les détails de la zone. <en> Constructor from the
+   * XML file storing the classes to integrate to the dataset and the details of
+   * the zone.
    * @param file
    * @throws ParserConfigurationException
    * @throws IOException
@@ -103,6 +111,8 @@ public abstract class CartAGenDB {
   }
 
   public CartAGenDB() {
+    this.geneObjImpl = CartagenApplication.getInstance()
+        .getStandardImplementation();
   }
 
   /**
@@ -407,6 +417,14 @@ public abstract class CartAGenDB {
   @Override
   public String toString() {
     return name;
+  }
+
+  public void setGeneObjImpl(GeneObjImplementation geneObjImpl) {
+    this.geneObjImpl = geneObjImpl;
+  }
+
+  public GeneObjImplementation getGeneObjImpl() {
+    return geneObjImpl;
   }
 
 }

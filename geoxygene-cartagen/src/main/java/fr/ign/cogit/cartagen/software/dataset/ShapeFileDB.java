@@ -144,6 +144,23 @@ public class ShapeFileDB extends CartAGenDB {
       this.enrichments.add(CartAGenEnrichment.valueOf(enrich));
     }
 
+    // the GeneObjImplementation
+    Element implElem = (Element) root.getElementsByTagName(
+        "geneobj-implementation").item(0);
+    Element implNameElem = (Element) implElem.getElementsByTagName(
+        "implementation-name").item(0);
+    String implName = implNameElem.getChildNodes().item(0).getNodeValue();
+    Element implPackElem = (Element) implElem.getElementsByTagName(
+        "implementation-package").item(0);
+    String packName = implPackElem.getChildNodes().item(0).getNodeValue();
+    Package rootPackage = Package.getPackage(packName);
+    Element implClassElem = (Element) implElem.getElementsByTagName(
+        "implementation-root-class").item(0);
+    String className = implClassElem.getChildNodes().item(0).getNodeValue();
+    Class<?> rootClass = Class.forName(className);
+    this.setGeneObjImpl(new GeneObjImplementation(implName, rootPackage,
+        rootClass));
+
     // the persistent classes
     Element persistElem = (Element) root.getElementsByTagName("persistent")
         .item(0);
@@ -158,10 +175,12 @@ public class ShapeFileDB extends CartAGenDB {
         "persistent-class").getLength(); i++) {
       Element persistClassElem = (Element) persistClassesElem
           .getElementsByTagName("persistent-class").item(i);
-      String className = persistClassElem.getChildNodes().item(0)
+      String className1 = persistClassElem.getChildNodes().item(0)
           .getNodeValue();
-      this.getPersistentClasses().add(Class.forName(className, true, loader));
+      this.getPersistentClasses().add(Class.forName(className1, true, loader));
     }
+    this.setPersistentClasses(this.getGeneObjImpl().filterClasses(
+        getPersistentClasses()));
 
     this.setXmlFile(file);
   }
@@ -234,6 +253,22 @@ public class ShapeFileDB extends CartAGenDB {
       enrichElem.appendChild(n);
       root.appendChild(enrichElem);
     }
+
+    // the GeneObj implementation
+    Element implElem = xmlDoc.createElement("geneobj-implementation");
+    root.appendChild(implElem);
+    Element implNameElem = xmlDoc.createElement("implementation-name");
+    n = xmlDoc.createTextNode(this.getGeneObjImpl().getName());
+    implNameElem.appendChild(n);
+    implElem.appendChild(implNameElem);
+    Element implPackElem = xmlDoc.createElement("implementation-package");
+    n = xmlDoc.createTextNode(this.getGeneObjImpl().getRootPackage().getName());
+    implPackElem.appendChild(n);
+    implElem.appendChild(implPackElem);
+    Element implClassElem = xmlDoc.createElement("implementation-root-class");
+    n = xmlDoc.createTextNode(this.getGeneObjImpl().getRootClass().getName());
+    implClassElem.appendChild(n);
+    implElem.appendChild(implClassElem);
 
     // the persistent classes
     Element persistElem = xmlDoc.createElement("persistent");

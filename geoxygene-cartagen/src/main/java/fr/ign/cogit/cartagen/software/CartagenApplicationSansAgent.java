@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.cartagen.core.defaultschema.DefaultCreationFactory;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 
 /**
  * class de l'application cartagen (contient LA methode main)
@@ -31,6 +32,8 @@ public class CartagenApplicationSansAgent {
     // Objects creation factory
     CartagenApplication.getInstance().setCreationFactory(
         new DefaultCreationFactory());
+    CartagenApplication.getInstance().setStandardImplementation(
+        GeneObjImplementation.getDefaultImplementation());
 
     // Application initialisation
     CartagenApplication.getInstance().initApplication();
