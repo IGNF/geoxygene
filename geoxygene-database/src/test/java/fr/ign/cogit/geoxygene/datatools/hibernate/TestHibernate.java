@@ -9,7 +9,6 @@ import org.junit.Test;
 import fr.ign.cogit.geoxygene.datatools.hibernate.GeodatabaseHibernate;
 import fr.ign.cogit.geoxygene.datatools.hibernate.data.Point_eau;
 import fr.ign.cogit.geoxygene.datatools.hibernate.data.Troncon_cours_eau;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
