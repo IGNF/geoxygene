@@ -9,6 +9,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IAggregate;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
@@ -23,6 +24,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiPoint;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSolid;
@@ -132,6 +134,16 @@ public class Extrusion3DObject {
 
       geomFinale = Extrusion3DObject.convertitFromMultiPoint(
           (GM_MultiPoint) geom, heigth);
+      
+    } else if (geom instanceof IAggregate<?>) {
+      IAggregate<IGeometry>  aggregate = ( IAggregate<IGeometry> )geom;
+      
+      IAggregate<IGeometry> agg = new GM_Aggregate<IGeometry>();
+      for(IGeometry g : aggregate){
+        agg.add(conversionFromGeom(g,heigth));
+      }
+      
+      return agg;
 
     } else {
 

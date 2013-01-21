@@ -274,7 +274,7 @@ public class Extrusion2DObject {
       // On boucle en sens inverse pour des questions d'orientation
       // On 'saute' un point car la géométrie est fermée
       // et cela ferait une face avec 2 points
-      System.out.println(nbpoints);
+ 
       for (int j = nbpoints - 2; j >= 0; j--) {
         DirectPositionList fTemp = new DirectPositionList();
         dpInit = dPL.get(j);
