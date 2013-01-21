@@ -46,14 +46,16 @@
 	</scm>
 
 	<!-- =========================================================== -->
-	<!-- Properties -->
+	<!--  Properties                                                 -->
+	<!--                                                             -->
 	<!-- =========================================================== -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jts.version>1.13</jts.version>
 		<log4j.version>1.2.16</log4j.version>
 	</properties>
-
+	
+	
 	<!-- =========================================================== -->
 	<!-- Developers and Contributors -->
 	<!-- =========================================================== -->

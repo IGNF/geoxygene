@@ -46,7 +46,26 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	
+	<profiles>
+		<!-- Profil pour tester avec une connexion à la base de données du COGIT -->
+		<profile>
+			<id>test</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>geoxygene-database</artifactId>
+						<version>${project.version}</version>
+						<configuration>
+							<includes>**/TestInheritance.java</includes>
+							<includes>**/TestHibernate.java</includes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>	
+		</profile>
+	</profiles>
+	
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>

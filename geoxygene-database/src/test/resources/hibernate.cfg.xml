@@ -7,7 +7,7 @@
         
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
         <!-- <property name="hibernate.connection.url">jdbc:postgresql:geoxygenehibernate</property> -->
-        <property name="hibernate.connection.url">jdbc:postgresql://del1109s019:5432/dbunit</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://del1109s019:5433/dbunit</property>
         <property name="hibernate.connection.username">dbunit</property>
         <property name="hibernate.connection.password">dbunit</property>
         
