@@ -88,29 +88,6 @@ public class ShapeFactory {
 		        (IDirectPosition) new DirectPosition(centre.getX()-largeur1/2+largeur2,centre.getY()-hauteur1/2+hauteur2)))));
 	}
 	
-	   /**
-     * Crée une forme de L inversé.
-     * @param centre centre de la forme
-     * @param largeur1 largeur totale de la forme
-     * @param hauteur1 hauteur totale de la forme
-     * @param largeur2 largeur de la barre du L
-     * @param hauteur2 hauteur de la base du L
-     * @return un L centré sur le centre en paramètre
-     */
-    public static IGeometry createLInverse(IDirectPosition centre, double largeur1, double hauteur1, double largeur2, double hauteur2) {
-        return new GM_Polygon(new GM_LineString(new DirectPositionList(Arrays.asList(
-
-           
-            (IDirectPosition) new DirectPosition(centre.getX()+largeur1/2,centre.getY()+hauteur1/2),
-            (IDirectPosition) new DirectPosition(centre.getX()+largeur1/2-largeur2,centre.getY()+hauteur1/2),
-            (IDirectPosition) new DirectPosition(centre.getX()+largeur1/2-largeur2,centre.getY()-hauteur1/2 +hauteur2),
-            (IDirectPosition) new DirectPosition(centre.getX()-largeur1/2,centre.getY()-hauteur1/2 +hauteur2),
-            (IDirectPosition) new DirectPosition(centre.getX()-largeur1/2,centre.getY()-hauteur1/2),
-            (IDirectPosition) new DirectPosition(centre.getX()+largeur1/2,centre.getY()-hauteur1/2),
-            (IDirectPosition) new DirectPosition(centre.getX()+largeur1/2,centre.getY()+hauteur1/2)))));
-    }
-	
-	
 	/**
 	 * Crée une forme de U.
 	 * @param centre centre de la forme
