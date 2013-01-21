@@ -123,7 +123,7 @@ public class Map3D {
 
         if (b.getLLDP().getZ() < -Map3D.EMPRISE_MAX
             || b.getURDP().getZ() > Map3D.EMPRISE_MAX) {
-          Map3D.logger.error(Messages.getString("3DGIS.Infinity") + " : Z");
+          Map3D.logger.error(Messages.getString("3DGIS.Infinity") + " : Z " + nomcouche);
 
           JOptionPane.showMessageDialog(null,
               Messages.getString("3DGIS.Infinity") + " : Z",
