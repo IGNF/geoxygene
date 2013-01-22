@@ -42,8 +42,8 @@ public class ColorReferenceSystem {
   static Logger logger = Logger.getLogger(ColorReferenceSystem.class.getName());
 
   public final static ColorReferenceSystem COGITcrs = ColorReferenceSystem
-      .unmarshall(ColorReferenceSystem.class.getResource(
-          "/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
+      .unmarshall(ColorReferenceSystem.class.getResourceAsStream(
+          "ColorReferenceSystem.xml")); //$NON-NLS-1$
   /**
    * List of the Color Wheels of the COGIT Reference System.
    */
@@ -268,8 +268,8 @@ public class ColorReferenceSystem {
     System.out.println();
 
     ColorReferenceSystem crs = ColorReferenceSystem
-        .unmarshall(ColorReferenceSystem.class.getResource(
-            "/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
+        .unmarshall(ColorReferenceSystem.class.getResourceAsStream(
+            "ColorReferenceSystem.xml")); //$NON-NLS-1$
     List<ColorimetricColor> voisins = crs.getHueNeighborColors(c);
 
     System.out.println("Liste des voisins : "); //$NON-NLS-1$
@@ -297,7 +297,7 @@ public class ColorReferenceSystem {
     List<ColorimetricColor> listCouleurs = new ArrayList<ColorimetricColor>();
     ColorReferenceSystem crs = ColorReferenceSystem
         .unmarshall(ColorReferenceSystem.class.getResourceAsStream(
-            "/color/ColorReferenceSystem.xml")); //$NON-NLS-1$
+            "ColorReferenceSystem.xml")); //$NON-NLS-1$
     listCouleurs = crs.getAllColors();
 
     return listCouleurs;
@@ -365,8 +365,8 @@ public class ColorReferenceSystem {
   public static List<ColorimetricColor> getPureColors() {
     List<ColorimetricColor> pureColors = new ArrayList<ColorimetricColor>();
     ColorReferenceSystem crs = ColorReferenceSystem
-        .unmarshall(ColorReferenceSystem.class.getResource(
-            "/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
+        .unmarshall(ColorReferenceSystem.class.getResourceAsStream(
+            "ColorReferenceSystem.xml")); //$NON-NLS-1$
     for (int j = 0; j < 12; j++) {
 
       List<ColorimetricColor> sliceCOGIT = crs.getSlice(0, j);
@@ -384,7 +384,7 @@ public class ColorReferenceSystem {
   
     public static ColorReferenceSystem defaultColorRS() {
         return ColorReferenceSystem.unmarshall(ColorReferenceSystem.class
-                .getResource("/color/ColorReferenceSystem.xml").getPath()); //$NON-NLS-1$
+                .getResourceAsStream("ColorReferenceSystem.xml")); //$NON-NLS-1$
 
     }
 

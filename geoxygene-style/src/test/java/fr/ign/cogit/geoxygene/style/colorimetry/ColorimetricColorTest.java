@@ -584,8 +584,8 @@ public class ColorimetricColorTest extends ColorimetryAssert {
     logger.info("  Test 3 : COGIT ColorReferenceSystem");
     // Loading COGIT Color reference system
     ColorReferenceSystem COGITcrs = ColorReferenceSystem
-        .unmarshall(ColorReferenceSystem.class.getResource(
-            "/color/ColorReferenceSystem.xml").getPath());
+        .unmarshall(ColorReferenceSystem.class.getResourceAsStream(
+            "ColorReferenceSystem.xml"));
     
     logger.info("  Test 3.1 : JAUNE");
     
