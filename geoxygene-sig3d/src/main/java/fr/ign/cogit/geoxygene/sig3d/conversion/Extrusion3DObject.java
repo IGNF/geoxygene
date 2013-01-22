@@ -134,15 +134,15 @@ public class Extrusion3DObject {
 
       geomFinale = Extrusion3DObject.convertitFromMultiPoint(
           (GM_MultiPoint) geom, heigth);
-      
+
     } else if (geom instanceof IAggregate<?>) {
-      IAggregate<IGeometry>  aggregate = ( IAggregate<IGeometry> )geom;
-      
+      IAggregate<IGeometry> aggregate = (IAggregate<IGeometry>) geom;
+
       IAggregate<IGeometry> agg = new GM_Aggregate<IGeometry>();
-      for(IGeometry g : aggregate){
-        agg.add(conversionFromGeom(g,heigth));
+      for (IGeometry g : aggregate) {
+        agg.add(conversionFromGeom(g, heigth));
       }
-      
+
       return agg;
 
     } else {
@@ -448,11 +448,11 @@ public class Extrusion3DObject {
     List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>();
 
     int nbContrib = 1 + polyIni.getInterior().size();
-    
+
     IPolygon poly = new GM_Polygon();
 
     for (int idContrib = 0; idContrib < nbContrib; idContrib++) {
-      
+
       IDirectPositionList lPExt = new DirectPositionList();
 
       IDirectPositionList lPoints;
@@ -469,7 +469,6 @@ public class Extrusion3DObject {
       }
 
       IDirectPosition pIni = lPoints.get(0);
-      
 
       for (int j = 1; j < nbPoints; j++) {
 
@@ -478,20 +477,16 @@ public class Extrusion3DObject {
         IDirectPosition pSuiv = lPoints.get(j);
 
         DirectPosition pSuivZmin = new DirectPosition(pSuiv.getX(),
-            pSuiv.getY(), pSuiv.getZ()+heigth);
+            pSuiv.getY(), pSuiv.getZ() + heigth);
         DirectPosition pIniZmin = new DirectPosition(pIni.getX(), pIni.getY(),
-            pIni.getZ()+heigth);
-        
+            pIni.getZ() + heigth);
+
         lPExt.add(pIniZmin);
-
-
 
         fTemp.add(pIni);
         fTemp.add(pSuiv);
         fTemp.add(pSuivZmin);
         fTemp.add(pIniZmin);
-
-    
 
         fTemp.add(pIni);
 
@@ -502,35 +497,30 @@ public class Extrusion3DObject {
         GM_OrientableSurface oS = new GM_Polygon(gmRing);
 
         lOS.add(oS);
-        
-        
-        if(j == (nbPoints-1)){
+
+        if (j == (nbPoints - 1)) {
           lPExt.add(pSuivZmin);
         }
 
       }
-      
-      if(idContrib == 0){
-          poly.setExterior(new GM_Ring(new GM_LineString(lPExt)));
-      }else{
-        poly.addInterior(new GM_Ring(new GM_LineString(lPExt)));
-        
-      }
-      
-      
-  //    GM_Polygon polyInf = (GM_Polygon) Extrusion2DObject.convertFromPolygon(
-  //        polyIni, zcons, zcons);
-  //    lOS.add(polyInf.reverse());
 
-    
+      if (idContrib == 0) {
+        poly.setExterior(new GM_Ring(new GM_LineString(lPExt)));
+      } else {
+        poly.addInterior(new GM_Ring(new GM_LineString(lPExt)));
+
+      }
+
+      // GM_Polygon polyInf = (GM_Polygon) Extrusion2DObject.convertFromPolygon(
+      // polyIni, zcons, zcons);
+      // lOS.add(polyInf.reverse());
 
     }
-    
+
     GM_Polygon surFHaut = (GM_Polygon) polyIni.clone();
 
     lOS.add(surFHaut);
     lOS.add(poly);
-    
 
     return new GM_Solid(lOS);
   }
