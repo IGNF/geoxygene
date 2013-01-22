@@ -68,11 +68,11 @@ import fr.ign.cogit.geoxygene.sig3d.semantic.VectorLayer;
 
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -80,12 +80,12 @@ import fr.ign.cogit.geoxygene.sig3d.semantic.VectorLayer;
  * 
  * @author Brasebin Mickaël
  * @author poupeau
- *  
+ * 
  * @version 0.1
  * 
- * Classe permettant de créer un environnement 3D et d'y representer une
- * instance de la classe Carte3D La sélection des objets est gérée dans cette
- * classe This is the 3D map of the application
+ *          Classe permettant de créer un environnement 3D et d'y representer
+ *          une instance de la classe Carte3D La sélection des objets est gérée
+ *          dans cette classe This is the 3D map of the application
  */
 
 public class InterfaceMap3D extends JPanel {
@@ -339,7 +339,8 @@ public class InterfaceMap3D extends JPanel {
     // Création d'un fond
     BoundingSphere schedulingBounds = new BoundingSphere(new Point3d(),
         Double.POSITIVE_INFINITY);// 0000.0);
-    this.background3D = new Background(new Color3f(ConstantRepresentation.backGroundColor));
+    this.background3D = new Background(new Color3f(
+        ConstantRepresentation.backGroundColor));
     this.background3D.setApplicationBounds(schedulingBounds);
     this.background3D.setCapability(Background.ALLOW_COLOR_WRITE);
 
@@ -691,18 +692,17 @@ public class InterfaceMap3D extends JPanel {
     InterfaceMap3D.tgScaleZ.setTransform(tEchelleZ);
 
   }
-  
-  
-  
+
   /**
    * 
    */
-  public void addLight(Color couleur, float x, float y, float z){
+  public void addLight(Color couleur, float x, float y, float z) {
     // Lumiere attenuee (ex : source lumineuse en un point)
     PointLight pointlight = new PointLight();
     pointlight.setEnable(true);
     pointlight.setColor(new Color3f(couleur));
-    pointlight.setPosition(new Point3f(x, y, z));
+    pointlight.setPosition(new Point3f(x + this.getTranslate().x, y
+        + +this.getTranslate().y, z + +this.getTranslate().z));
     pointlight.setAttenuation(0f, 0f, 0f);
     pointlight.setInfluencingBounds(new BoundingSphere(new Point3d(),
         Double.POSITIVE_INFINITY));
@@ -727,24 +727,20 @@ public class InterfaceMap3D extends JPanel {
     this.getLights().add(pointlight);
     this.getScene().addChild(bgTempL);
   }
-  
-  
-  
+
   /**
    * Suppression de la lumière
    * @param i
    * @return
    */
-  public boolean removeLight(int i){
-    if(i >= this.getLights().size()){
+  public boolean removeLight(int i) {
+    if (i >= this.getLights().size()) {
       return false;
     }
-    
-    
-    
-    ((BranchGroup)  this.getLights().get(i).getParent()).detach();
+
+    ((BranchGroup) this.getLights().get(i).getParent()).detach();
     this.getLights().remove(i);
-    
+
     return true;
 
   }
@@ -766,7 +762,7 @@ public class InterfaceMap3D extends JPanel {
     }
 
     this.lLights.get(ind).setPosition(
-        new Point3f((float) x, (float) y, (float) z));
+        new Point3f((float) x+this.getTranslate().x, (float) y + this.getTranslate().y, (float) z + this.getTranslate().z));
 
     return true;
   }
@@ -787,12 +783,11 @@ public class InterfaceMap3D extends JPanel {
    * @param feat
    */
   public void addToSelection(IFeature feat) {
-    
-    if(this.getSelection().contains(feat)){
+
+    if (this.getSelection().contains(feat)) {
       return;
     }
-    
-    
+
     if (feat == null) {
       return;
     }
@@ -825,7 +820,7 @@ public class InterfaceMap3D extends JPanel {
    * @param feats une liste d'entités que l'on souhaite sélectionner
    */
 
-  public void setSelection(FT_FeatureCollection<IFeature> feats) {
+  public void setSelection(IFeatureCollection<IFeature> feats) {
 
     // On enlève l'ancienne sélection
 
@@ -937,10 +932,8 @@ public class InterfaceMap3D extends JPanel {
 
       List<IFeatureCollection<IFeature>> lFeatC = objTemp
           .getFeatureCollections();
-   
 
-      
-      if(lFeatC != null &&  lFeatC.size() !=0 ){
+      if (lFeatC != null && lFeatC.size() != 0) {
         int nbColl = lFeatC.size();
 
         for (int j = 0; j < nbColl; j++) {
@@ -948,23 +941,20 @@ public class InterfaceMap3D extends JPanel {
           IFeatureCollection<IFeature> featCollTemp = lFeatC.get(0);
           featCollTemp.remove(objTemp);
         }
-        
-        
-      }else{
+
+      } else {
         int nbLayer = this.getCurrent3DMap().getLayerList().size();
-        for(int j=0;j<nbLayer;j++){
-          
+        for (int j = 0; j < nbLayer; j++) {
+
           Layer l = this.getCurrent3DMap().getLayerList().get(j);
-          
-          if(l instanceof VectorLayer){
+
+          if (l instanceof VectorLayer) {
             VectorLayer vL = (VectorLayer) l;
-            
+
             vL.remove(objTemp);
-            
-            
+
           }
-          
-          
+
         }
       }
 
@@ -1097,6 +1087,5 @@ public class InterfaceMap3D extends JPanel {
     this.locale.getVirtualUniverse().removeAllLocales();
 
   }
-  
 
 }

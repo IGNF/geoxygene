@@ -6,12 +6,6 @@ import java.awt.event.ActionListener;
 import java.util.logging.Logger;
 
 import javax.media.j3d.BoundingBox;
-import javax.media.j3d.BoundingSphere;
-import javax.media.j3d.BranchGroup;
-import javax.media.j3d.Group;
-import javax.media.j3d.Light;
-import javax.media.j3d.Node;
-import javax.media.j3d.PointLight;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -32,11 +26,11 @@ import fr.ign.cogit.geoxygene.sig3d.gui.table.lightstable.LightsListTableModel;
 
 /**
  * 
- *        This software is released under the licence CeCILL
+ * This software is released under the licence CeCILL
  * 
- *        see LICENSE.TXT
+ * see LICENSE.TXT
  * 
- *        see <http://www.cecill.info/ http://www.cecill.info/
+ * see <http://www.cecill.info/ http://www.cecill.info/
  * 
  * 
  * 
@@ -46,10 +40,10 @@ import fr.ign.cogit.geoxygene.sig3d.gui.table.lightstable.LightsListTableModel;
  * 
  * @version 0.1
  * 
- * Fenetre permettant de gérer la position et la couleur de la lumière. Propose
- * une interface sous forme de 9 boutons représentant la scène vue du dessus
- * afin de choisir plus facilement les coordonnées de la lumière Window for the
- * management of the position and color of light
+ *          Fenetre permettant de gérer la position et la couleur de la lumière.
+ *          Propose une interface sous forme de 9 boutons représentant la scène
+ *          vue du dessus afin de choisir plus facilement les coordonnées de la
+ *          lumière Window for the management of the position and color of light
  */
 public class LightMenu extends JPanel implements ActionListener {
 
@@ -367,12 +361,9 @@ public class LightMenu extends JPanel implements ActionListener {
 
     if (source == this.ok) {
 
-      double x = Double.valueOf(this.jTFX.getText())
-          + this.iMap3D.getTranslate().x;
-      double y = Double.valueOf(this.jTFY.getText())
-          + this.iMap3D.getTranslate().y;
-      double z = Double.valueOf(this.jTFZ.getText())
-          + this.iMap3D.getTranslate().z;
+      double x = Double.valueOf(this.jTFX.getText());
+      double y = Double.valueOf(this.jTFY.getText());
+      double z = Double.valueOf(this.jTFZ.getText());
 
       this.iMap3D.moveLight(x, y, z, LightMenu.index);
 
@@ -394,17 +385,14 @@ public class LightMenu extends JPanel implements ActionListener {
     }
 
     if (source == this.jbAdd) {
-      
-      double x = Double.valueOf(this.jTFX.getText())
-      + this.iMap3D.getTranslate().x;
-  double y = Double.valueOf(this.jTFY.getText())
-      + this.iMap3D.getTranslate().y;
-  double z = Double.valueOf(this.jTFZ.getText())
-      + this.iMap3D.getTranslate().z;
-  
-    Color couleur = this.jBCLightColor.getBackground();
 
-      this.iMap3D.addLight(couleur, (float)x, (float)y, (float)z);
+      double x = Double.valueOf(this.jTFX.getText());
+      double y = Double.valueOf(this.jTFY.getText());
+      double z = Double.valueOf(this.jTFZ.getText());
+
+      Color couleur = this.jBCLightColor.getBackground();
+
+      this.iMap3D.addLight(couleur, (float) x, (float) y, (float) z);
 
       ((LightsListTableModel) this.tbl.getModel()).fireTableDataChanged();
     }
@@ -414,7 +402,6 @@ public class LightMenu extends JPanel implements ActionListener {
         return;
       }
       this.iMap3D.removeLight(LightMenu.index);
-   
 
       LightMenu.index = 0;
       ((LightsListTableModel) this.tbl.getModel()).fireTableDataChanged();
