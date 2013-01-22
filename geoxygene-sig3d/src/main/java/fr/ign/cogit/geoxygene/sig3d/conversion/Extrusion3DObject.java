@@ -447,12 +447,13 @@ public class Extrusion3DObject {
 
     List<IOrientableSurface> lOS = new ArrayList<IOrientableSurface>();
 
-    IDirectPositionList lPFaceInf = new DirectPositionList();
-    IDirectPositionList lPFaceSup = new DirectPositionList();
-
     int nbContrib = 1 + polyIni.getInterior().size();
+    
+    IPolygon poly = new GM_Polygon();
 
     for (int idContrib = 0; idContrib < nbContrib; idContrib++) {
+      
+      IDirectPositionList lPExt = new DirectPositionList();
 
       IDirectPositionList lPoints;
       if (idContrib == 0) {
@@ -468,6 +469,7 @@ public class Extrusion3DObject {
       }
 
       IDirectPosition pIni = lPoints.get(0);
+      
 
       for (int j = 1; j < nbPoints; j++) {
 
@@ -476,19 +478,21 @@ public class Extrusion3DObject {
         IDirectPosition pSuiv = lPoints.get(j);
 
         DirectPosition pSuivZmin = new DirectPosition(pSuiv.getX(),
-            pSuiv.getY(), zcons);
+            pSuiv.getY(), pSuiv.getZ()+heigth);
         DirectPosition pIniZmin = new DirectPosition(pIni.getX(), pIni.getY(),
-            zcons);
+            pIni.getZ()+heigth);
+        
+        lPExt.add(pIniZmin);
 
-        lPFaceInf.add(pSuiv);
-        lPFaceSup.add(pSuiv);
+
 
         fTemp.add(pIni);
-
+        fTemp.add(pSuiv);
+        fTemp.add(pSuivZmin);
         fTemp.add(pIniZmin);
 
-        fTemp.add(pSuivZmin);
-        fTemp.add(pSuiv);
+    
+
         fTemp.add(pIni);
 
         pIni = pSuiv;
@@ -498,17 +502,35 @@ public class Extrusion3DObject {
         GM_OrientableSurface oS = new GM_Polygon(gmRing);
 
         lOS.add(oS);
+        
+        
+        if(j == (nbPoints-1)){
+          lPExt.add(pSuivZmin);
+        }
 
       }
-      GM_Polygon polyInf = (GM_Polygon) Extrusion2DObject.convertFromPolygon(
-          polyIni, zcons, zcons);
-      lOS.add(polyInf.reverse());
+      
+      if(idContrib == 0){
+          poly.setExterior(new GM_Ring(new GM_LineString(lPExt)));
+      }else{
+        poly.addInterior(new GM_Ring(new GM_LineString(lPExt)));
+        
+      }
+      
+      
+  //    GM_Polygon polyInf = (GM_Polygon) Extrusion2DObject.convertFromPolygon(
+  //        polyIni, zcons, zcons);
+  //    lOS.add(polyInf.reverse());
 
-      GM_Polygon surFHaut = (GM_Polygon) polyIni.clone();
-
-      lOS.add(surFHaut);
+    
 
     }
+    
+    GM_Polygon surFHaut = (GM_Polygon) polyIni.clone();
+
+    lOS.add(surFHaut);
+    lOS.add(poly);
+    
 
     return new GM_Solid(lOS);
   }
