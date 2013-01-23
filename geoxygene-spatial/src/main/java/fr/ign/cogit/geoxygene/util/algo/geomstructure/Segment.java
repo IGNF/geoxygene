@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.util.algo.geomstructure;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import Jama.Matrix;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -116,8 +117,8 @@ public class Segment extends GM_LineSegment {
    * @return the list of segments objects composing the line
    * @author GTouya
    */
-  public static ArrayList<Segment> getSegmentList(ILineString line) {
-    ArrayList<Segment> segments = new ArrayList<Segment>();
+  public static List<Segment> getSegmentList(ILineString line) {
+    List<Segment> segments = new ArrayList<Segment>();
     IDirectPositionList points = line.coord();
     for (int i = 1; i < points.size(); i++) {
       segments.add(new Segment(points.get(i - 1), points.get(i)));
@@ -133,9 +134,9 @@ public class Segment extends GM_LineSegment {
    * @return the list of segments objects composing the line
    * @author GTouya
    */
-  public static ArrayList<Segment> getSegmentList(IPolygon polygon,
+  public static List<Segment> getSegmentList(IPolygon polygon,
       IDirectPosition origin) {
-    ArrayList<Segment> segments = new ArrayList<Segment>();
+    List<Segment> segments = new ArrayList<Segment>();
     IDirectPositionList points = polygon.coord();
     int index = 0;
     for (int i = 1; i < points.size(); i++) {
@@ -164,9 +165,9 @@ public class Segment extends GM_LineSegment {
    * @return the list of segments objects composing the line
    * @author GTouya
    */
-  public static ArrayList<Segment> getReverseSegmentList(IPolygon polygon,
+  public static List<Segment> getReverseSegmentList(IPolygon polygon,
       IDirectPosition origin) {
-    ArrayList<Segment> segments = new ArrayList<Segment>();
+    List<Segment> segments = new ArrayList<Segment>();
     IDirectPositionList points = polygon.coord();
     int index = 0;
     for (int i = points.size() - 2; i > 0; i--) {
