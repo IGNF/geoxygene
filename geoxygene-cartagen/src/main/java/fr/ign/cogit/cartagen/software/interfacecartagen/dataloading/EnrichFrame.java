@@ -14,7 +14,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -26,13 +25,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import org.geotools.data.shapefile.shp.ShapefileException;
-
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenEnrichment;
-import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 
 public class EnrichFrame extends JDialog implements ActionListener {
   private static final long serialVersionUID = -6992190369890036500L;
@@ -66,8 +62,6 @@ public class EnrichFrame extends JDialog implements ActionListener {
   private JCheckBox buildNetworkFaces;
   private JLabel espace2;
   private JCheckBox reset;
-  private SourceDLM sourceDlm;
-  private int scale;
   private int version = 1;// version 1 pour l'ancien chargeur, version 2 pour le
 
   // nouveau chargeur
@@ -85,8 +79,6 @@ public class EnrichFrame extends JDialog implements ActionListener {
   public EnrichFrame() {
     super((JFrame) null, true);
     // super("Needed enrichments");
-    this.sourceDlm = ImportDataFrame.getInstance(false).getSourceDlm();
-    this.scale = ImportDataFrame.getInstance(false).getScale();
     this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
     this.initFrame();
@@ -234,15 +226,10 @@ public class EnrichFrame extends JDialog implements ActionListener {
 
       this.setVisible(false);
 
-      try {// computeDataLoading2=new charger computeDataLoading=old charger
-        // if(version==2)
-        LoaderUtil.computeDataLoading(this.sourceDlm, this.scale);
-        // else LoaderUtil.computeDataLoading(sourceDlm, scale);
-      } catch (ShapefileException e1) {
-        e1.printStackTrace();
-      } catch (IOException e1) {
-        e1.printStackTrace();
-      }
+      CartagenApplication.getInstance().enrichData(
+          CartAGenDoc.getInstance().getCurrentDataset());
+
+      this.dispose();
 
     }
 

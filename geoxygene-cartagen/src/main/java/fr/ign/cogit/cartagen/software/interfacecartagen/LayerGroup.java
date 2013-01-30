@@ -222,7 +222,7 @@ public class LayerGroup extends AbstractLayerGroup {
   @Override
   public LoadedLayer replaceOneLayer(LayerManager layerManager,
       CartAGenDataSet dataSet, String layerName) {
-    if (layerName.equals(LAYER_SPECIALPOINT)) {
+    if (layerName.equals(LayerGroup.LAYER_SPECIALPOINT)) {
       layerManager.removeLayer(this.layerSpecialPoint);
       this.layerSpecialPoint = new LoadedLayer(dataSet.getSpecialPoints());
       return this.layerSpecialPoint;
@@ -237,14 +237,14 @@ public class LayerGroup extends AbstractLayerGroup {
   public void loadInterfaceWithOneLayer(LayerManager layerManager,
       String layerName, AbstractButton b) {
 
-    if (layerName.equals(LAYER_SPECIALPOINT)) {
+    if (layerName.equals(LayerGroup.LAYER_SPECIALPOINT)) {
       this.layerSpecialPoint.emptyDisplayCache();
       layerManager.addLayer(this.layerSpecialPoint);
       AbstractButton accidentCheckbox = new JCheckBox();
       accidentCheckbox.setSelected(true);
 
-      layerManager.addSymbolisedLayer(this.layerSpecialPoint, Symbolisation
-          .specialPoint(this.symbolisationDisplay), b);
+      layerManager.addSymbolisedLayer(this.layerSpecialPoint,
+          Symbolisation.specialPoint(this.symbolisationDisplay), b);
 
     }
 
@@ -256,15 +256,15 @@ public class LayerGroup extends AbstractLayerGroup {
   public void loadInterfaceWithOneLayer(LayerManager layerManager,
       String layerName, AbstractButton b, LoadedLayer loadedLayer) {
 
-    if (layerName.equals(LAYER_SPECIALPOINT)) {
+    if (layerName.equals(LayerGroup.LAYER_SPECIALPOINT)) {
       loadedLayer.emptyDisplayCache();
 
       layerManager.addLayer(this.layerSpecialPoint);
       AbstractButton accidentCheckbox = new JCheckBox();
       accidentCheckbox.setSelected(true);
 
-      layerManager.addSymbolisedLayer(this.layerSpecialPoint, Symbolisation
-          .specialPoint(this.symbolisationDisplay), b);
+      layerManager.addSymbolisedLayer(this.layerSpecialPoint,
+          Symbolisation.specialPoint(this.symbolisationDisplay), b);
 
     }
 
@@ -278,8 +278,8 @@ public class LayerGroup extends AbstractLayerGroup {
     SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(
         SourceDLM.SPECIAL_CARTAGEN, Legend.getSYMBOLISATI0N_SCALE());
 
-    this.loadInterfaceWithLayers(layerManager, SymbolList
-        .getSymbolList(symbGroup));
+    this.loadInterfaceWithLayers(layerManager,
+        SymbolList.getSymbolList(symbGroup));
   }
 
   /**
@@ -347,8 +347,9 @@ public class LayerGroup extends AbstractLayerGroup {
 
     // dessin de l'occupation du sol
     layerManager
-        .addSymbolisedLayer(this.layerLandUseArea, GeneralisationSymbolisation
-            .zonesArboreesBDTopo(this), this.cVoirOccSol);
+        .addSymbolisedLayer(this.layerLandUseArea,
+            GeneralisationSymbolisation.zonesArboreesBDTopo(this),
+            this.cVoirOccSol);
 
     // ville
     layerManager.addSymbolisedLayer(this.layerTown, Symbolisation.surface(
@@ -562,9 +563,10 @@ public class LayerGroup extends AbstractLayerGroup {
           .getRoadNetMenu().mNoeudsResRoutierVoir);
 
       layerManager
-          .addSymbolisedLayer(this.layerRoadLine, GeneralisationSymbolisation
-              .tronconRouteDecale(), DataThemesGUIComponent.getInstance()
-              .getRoadNetMenu().mRoutierVoirRouteDecalee);
+          .addSymbolisedLayer(
+              this.layerRoadLine,
+              GeneralisationSymbolisation.tronconRouteDecale(),
+              DataThemesGUIComponent.getInstance().getRoadNetMenu().mRoutierVoirRouteDecalee);
     }
 
     // reseau ferroviaire
@@ -618,9 +620,11 @@ public class LayerGroup extends AbstractLayerGroup {
         .getBuildingMenu().mVoirAltitude);
 
     // orientation generale
-    layerManager.addSymbolisedLayer(this.layerBuilding, Symbolisation
-        .texte("getGeneralOrientationDegree"), DataThemesGUIComponent
-        .getInstance().getBuildingMenu().mVoirOrientationGenerale);
+    layerManager
+        .addSymbolisedLayer(
+            this.layerBuilding,
+            Symbolisation.texte("getGeneralOrientationDegree"),
+            DataThemesGUIComponent.getInstance().getBuildingMenu().mVoirOrientationGenerale);
 
     // rosace orientations murs
     layerManager.addSymbolisedLayer(this.layerBuilding,
@@ -629,14 +633,17 @@ public class LayerGroup extends AbstractLayerGroup {
 
     // rosace encombrement
     layerManager
-        .addSymbolisedLayer(this.layerBuilding, GeneralisationSymbolisation
-            .batimentRosaceEncombrement(), DataThemesGUIComponent.getInstance()
-            .getBuildingMenu().mVoirRosaceEncombrement);
+        .addSymbolisedLayer(
+            this.layerBuilding,
+            GeneralisationSymbolisation.batimentRosaceEncombrement(),
+            DataThemesGUIComponent.getInstance().getBuildingMenu().mVoirRosaceEncombrement);
 
     // valeur orientation murs
-    layerManager.addSymbolisedLayer(this.layerBuilding, Symbolisation
-        .texte("getSidesOrientationDegree"), DataThemesGUIComponent
-        .getInstance().getBuildingMenu().mVoirOrientationMurs);
+    layerManager
+        .addSymbolisedLayer(
+            this.layerBuilding,
+            Symbolisation.texte("getSidesOrientationDegree"),
+            DataThemesGUIComponent.getInstance().getBuildingMenu().mVoirOrientationMurs);
 
     // elongation
     layerManager.addSymbolisedLayer(this.layerBuilding, Symbolisation
@@ -670,15 +677,18 @@ public class LayerGroup extends AbstractLayerGroup {
         .getBlockMenu().mVoirDensiteSimulee);
 
     // moyenne taux superposition batiments
-    layerManager.addSymbolisedLayer(this.layerBlock, Symbolisation
-        .texte("getBuidlingsOverlappingRateMean"), DataThemesGUIComponent
-        .getInstance().getBlockMenu().mVoirTauxSuperpositionBatiments);
+    layerManager
+        .addSymbolisedLayer(
+            this.layerBlock,
+            Symbolisation.texte("getBuidlingsOverlappingRateMean"),
+            DataThemesGUIComponent.getInstance().getBlockMenu().mVoirTauxSuperpositionBatiments);
 
     // cout suppression batiments
     layerManager
-        .addSymbolisedLayer(this.layerBlock, GeneralisationSymbolisation
-            .ilotCoutsSuppressionBatiments(), DataThemesGUIComponent
-            .getInstance().getBlockMenu().mVoirCoutSuppressionBatiments);
+        .addSymbolisedLayer(
+            this.layerBlock,
+            GeneralisationSymbolisation.ilotCoutsSuppressionBatiments(),
+            DataThemesGUIComponent.getInstance().getBlockMenu().mVoirCoutSuppressionBatiments);
 
     // textes villes
     // id
@@ -711,9 +721,11 @@ public class LayerGroup extends AbstractLayerGroup {
 
     // taux superposition routier
 
-    layerManager.addSymbolisedLayer(this.layerWaterLine, Symbolisation
-        .texte("getTauxSuperpositionRoutier"), DataThemesGUIComponent
-        .getInstance().getHydroNetMenu().mVoirTauxSuperpositionRoutier);
+    layerManager
+        .addSymbolisedLayer(
+            this.layerWaterLine,
+            Symbolisation.texte("getTauxSuperpositionRoutier"),
+            DataThemesGUIComponent.getInstance().getHydroNetMenu().mVoirTauxSuperpositionRoutier);
 
     // voir textes pente des triangles
     layerManager.addSymbolisedLayer(this.layerReliefTriangle, Symbolisation
