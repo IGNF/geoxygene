@@ -69,7 +69,7 @@ public class MGCPRoadLine extends GeneObjDefault implements IRoadLine,
    * @param attributes
    */
   public MGCPRoadLine(ILineString line, HashMap<String, Object> attributes,
-      PeaRepDbType type) {
+      @SuppressWarnings("unused") PeaRepDbType type) {
     super();
     this.geoxObj = new TronconDeRouteImpl(new ReseauImpl(), false, line);
     this.setInitialGeom(line);
@@ -374,7 +374,7 @@ public class MGCPRoadLine extends GeneObjDefault implements IRoadLine,
   }
 
   public long getFun() {
-    return fun;
+    return this.fun;
   }
 
   public void setFun(long fun) {
@@ -382,7 +382,7 @@ public class MGCPRoadLine extends GeneObjDefault implements IRoadLine,
   }
 
   public long getMes() {
-    return mes;
+    return this.mes;
   }
 
   public void setMes(long mes) {
@@ -390,7 +390,7 @@ public class MGCPRoadLine extends GeneObjDefault implements IRoadLine,
   }
 
   public long getHct() {
-    return hct;
+    return this.hct;
   }
 
   public void setHct(long hct) {
@@ -398,7 +398,7 @@ public class MGCPRoadLine extends GeneObjDefault implements IRoadLine,
   }
 
   public long getTrs() {
-    return trs;
+    return this.trs;
   }
 
   public void setTrs(long trs) {
@@ -406,7 +406,7 @@ public class MGCPRoadLine extends GeneObjDefault implements IRoadLine,
   }
 
   public long getCaa() {
-    return caa;
+    return this.caa;
   }
 
   public void setCaa(long caa) {

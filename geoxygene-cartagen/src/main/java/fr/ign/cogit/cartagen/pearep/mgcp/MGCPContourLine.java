@@ -69,10 +69,10 @@ public class MGCPContourLine extends GeneObjDefault implements IContourLine,
   }
 
   public MGCPContourLine(ILineString line, HashMap<String, Object> attributes,
-      PeaRepDbType type) {
+      @SuppressWarnings("unused") PeaRepDbType type) {
     super();
-    this.geoxObj = new CourbeDeNiveauImpl(new ChampContinuImpl(), Integer
-        .valueOf((String) attributes.get("zv2")), line);
+    this.geoxObj = new CourbeDeNiveauImpl(new ChampContinuImpl(),
+        Integer.valueOf((String) attributes.get("zv2")), line);
     this.setInitialGeom(line);
     this.setEliminated(false);
     if ((int) (this.getAltitude() / GeneralisationLegend.CN_EQUIDISTANCE_MAITRESSE)
@@ -129,7 +129,7 @@ public class MGCPContourLine extends GeneObjDefault implements IContourLine,
   }
 
   public long getAcc() {
-    return acc;
+    return this.acc;
   }
 
   public void setAcc(long acc) {
@@ -137,7 +137,7 @@ public class MGCPContourLine extends GeneObjDefault implements IContourLine,
   }
 
   public long getHqc() {
-    return hqc;
+    return this.hqc;
   }
 
   public void setHqc(long hqc) {
@@ -155,11 +155,11 @@ public class MGCPContourLine extends GeneObjDefault implements IContourLine,
   }
 
   public String getZv2() {
-    return zv2;
+    return this.zv2;
   }
 
   public long getSmc() {
-    return smc;
+    return this.smc;
   }
 
   public void setSmc(long smc) {

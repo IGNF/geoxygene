@@ -88,7 +88,7 @@ public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
   }
 
   public MGCPWaterLine(ILineString line, HashMap<String, Object> attributes,
-      PeaRepDbType type) {
+      @SuppressWarnings("unused") PeaRepDbType type) {
     super();
     this.geoxObj = new TronconHydrographiqueImpl();
     this.geoxObj.setGeom(line);
@@ -206,7 +206,7 @@ public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
   }
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public void setName(String name) {
@@ -215,14 +215,14 @@ public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
 
   @Override
   public void restoreGeoxObjects() {
-    this.geoxObj = new TronconHydrographiqueImpl(new ReseauImpl(), false, this
-        .getGeom());
-    this.geoxObj.setNom(name);
+    this.geoxObj = new TronconHydrographiqueImpl(new ReseauImpl(), false,
+        this.getGeom());
+    this.geoxObj.setNom(this.name);
   }
 
   @Override
   public int getImportance() {
-    return importance;
+    return this.importance;
   }
 
   @Override
@@ -232,7 +232,7 @@ public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
 
   @Override
   public NetworkSectionType getNetworkSectionType() {
-    return type;
+    return this.type;
   }
 
   @Override
@@ -256,7 +256,7 @@ public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
   }
 
   public long getAcc() {
-    return acc;
+    return this.acc;
   }
 
   public void setAcc(long acc) {
@@ -264,7 +264,7 @@ public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
   }
 
   public long getDir() {
-    return dir;
+    return this.dir;
   }
 
   public void setDir(long dir) {
@@ -272,7 +272,7 @@ public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
   }
 
   public long getWcc() {
-    return wcc;
+    return this.wcc;
   }
 
   public void setWcc(long wcc) {
@@ -280,7 +280,7 @@ public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
   }
 
   public long getHyp() {
-    return hyp;
+    return this.hyp;
   }
 
   public void setHyp(long hyp) {
@@ -288,7 +288,7 @@ public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
   }
 
   public long getLoc() {
-    return loc;
+    return this.loc;
   }
 
   public void setLoc(long loc) {
@@ -296,7 +296,7 @@ public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
   }
 
   public long getPrc() {
-    return prc;
+    return this.prc;
   }
 
   public void setPrc(long prc) {
@@ -304,7 +304,7 @@ public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
   }
 
   public long getSmc() {
-    return smc;
+    return this.smc;
   }
 
   public void setSmc(long smc) {
@@ -312,7 +312,7 @@ public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
   }
 
   public long getTid() {
-    return tid;
+    return this.tid;
   }
 
   public void setTid(long tid) {
@@ -320,7 +320,7 @@ public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
   }
 
   public String getWid() {
-    return wid;
+    return this.wid;
   }
 
   public void setWid(String wid) {
@@ -328,7 +328,7 @@ public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
   }
 
   public String getNfi() {
-    return nfi;
+    return this.nfi;
   }
 
   public void setNfi(String nfi) {
@@ -336,7 +336,7 @@ public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
   }
 
   public String getNfn() {
-    return nfn;
+    return this.nfn;
   }
 
   public void setNfn(String nfn) {

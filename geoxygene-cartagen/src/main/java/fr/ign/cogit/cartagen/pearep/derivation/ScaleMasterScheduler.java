@@ -109,9 +109,9 @@ public class ScaleMasterScheduler {
   public ScaleMasterScheduler(File scaleMasterXml, File parameterXml)
       throws ParserConfigurationException, SAXException, IOException,
       DOMException, ClassNotFoundException {
-    initLoggers();
-    initThemes();
-    initProcesses();
+    this.initLoggers();
+    this.initThemes();
+    this.initProcesses();
     XMLParser smParser = new XMLParser(scaleMasterXml);
     XMLParser paramParser = new XMLParser(parameterXml);
     this.scaleMaster = smParser.parseScaleMaster(this);
@@ -124,14 +124,14 @@ public class ScaleMasterScheduler {
    * @param scale
    */
   public ScaleMasterScheduler(ScaleMaster scaleMaster, int scale) {
-    initThemes();
-    initProcesses();
+    this.initThemes();
+    this.initProcesses();
     this.scaleMaster = scaleMaster;
     this.scale = scale;
   }
 
   public int getScale() {
-    return scale;
+    return this.scale;
   }
 
   public void setScale(int scale) {
@@ -139,7 +139,7 @@ public class ScaleMasterScheduler {
   }
 
   public List<String> getListLayersVmap2i() {
-    return listLayersVmap2i;
+    return this.listLayersVmap2i;
   }
 
   public void setListLayersVmap2i(List<String> listLayersVmap2i) {
@@ -147,7 +147,7 @@ public class ScaleMasterScheduler {
   }
 
   public List<String> getListLayersVmap1() {
-    return listLayersVmap1;
+    return this.listLayersVmap1;
   }
 
   public void setListLayersVmap1(List<String> listLayersVmap1) {
@@ -155,7 +155,7 @@ public class ScaleMasterScheduler {
   }
 
   public List<String> getListLayersVmap0() {
-    return listLayersVmap0;
+    return this.listLayersVmap0;
   }
 
   public void setListLayersVmap0(List<String> listLayersVmap0) {
@@ -163,7 +163,7 @@ public class ScaleMasterScheduler {
   }
 
   public ScaleMaster getScaleMaster() {
-    return scaleMaster;
+    return this.scaleMaster;
   }
 
   public void setScaleMaster(ScaleMaster scaleMaster) {
@@ -171,7 +171,7 @@ public class ScaleMasterScheduler {
   }
 
   public String getVmap2iFolder() {
-    return vmap2iFolder;
+    return this.vmap2iFolder;
   }
 
   public void setVmap2iFolder(String vmap2iFolder) {
@@ -179,7 +179,7 @@ public class ScaleMasterScheduler {
   }
 
   public String getVmap1Folder() {
-    return vmap1Folder;
+    return this.vmap1Folder;
   }
 
   public void setVmap1Folder(String vmap1Folder) {
@@ -191,7 +191,7 @@ public class ScaleMasterScheduler {
   }
 
   public String getVmap0Folder() {
-    return vmap0Folder;
+    return this.vmap0Folder;
   }
 
   /**
@@ -227,15 +227,17 @@ public class ScaleMasterScheduler {
   }
 
   private void initLoggers() throws SecurityException, IOException {
-    for (Handler handler : traceLogger.getHandlers()) {
-      if (handler instanceof FileHandler)
+    for (Handler handler : this.traceLogger.getHandlers()) {
+      if (handler instanceof FileHandler) {
         handler = new FileHandler("/trace_" + this.scale + "_"
             + new Date().toString() + ".log", 5000000, 1, true);
+      }
     }
-    for (Handler handler : errorLogger.getHandlers()) {
-      if (handler instanceof FileHandler)
+    for (Handler handler : this.errorLogger.getHandlers()) {
+      if (handler instanceof FileHandler) {
         handler = new FileHandler("/log_erreurs_" + this.scale + "_"
             + new Date().toString() + ".log", 5000000, 1, true);
+      }
     }
   }
 
@@ -247,8 +249,9 @@ public class ScaleMasterScheduler {
    */
   public ScaleMasterTheme getThemeFromName(String name) {
     for (ScaleMasterTheme theme : this.themes) {
-      if (theme.getName().equals(name))
+      if (theme.getName().equals(name)) {
         return theme;
+      }
     }
     return null;
   }
@@ -262,13 +265,12 @@ public class ScaleMasterScheduler {
       // case with a scale master without rule for the current final scale and
       // current line. No need to delete features as the export of this line
       // will be skipped.
-      if (elem == null)
+      if (elem == null) {
         continue;
-      logger.fine(elem.toString());
-      traceLogger.info("début de la généralisation du thème "
+      }
+      this.logger.fine(elem.toString());
+      this.traceLogger.info("début de la généralisation du thème "
           + line.getTheme());
-      if (elem == null)
-        continue;
 
       // get the dataset related to the element
       CartAGenDataSet dataset = CartAGenDoc.getInstance().getDataset(
@@ -284,15 +286,15 @@ public class ScaleMasterScheduler {
         continue;
       }
       for (IGeneObj obj : pop) {
-        if (classObj.isInstance(obj))
+        if (classObj.isInstance(obj)) {
           features.add(obj);
+        }
       }
 
       // test if there are features for this theme in the dbs
-      if (features == null)
+      if (features.size() == 0) {
         continue;
-      if (features.size() == 0)
-        continue;
+      }
 
       // orders the processes and filter to apply
       List<OrderedProcess> procList = this.orderProcesses(elem);
@@ -302,9 +304,9 @@ public class ScaleMasterScheduler {
         // test if the current process is the filter
         if (orderedProc.isFilter()) {
           // apply the OGCFilter and mark deleted features
-          traceLogger.info("Application du filtre "
-              + filterToString((Filter) orderedProc.getProcess()) + " sur "
-              + elem.getClasses() + " de " + elem.getDbName());
+          this.traceLogger.info("Application du filtre "
+              + this.filterToString((Filter) orderedProc.getProcess())
+              + " sur " + elem.getClasses() + " de " + elem.getDbName());
           this.applyOGCFilter(elem, features);
           continue;
         }
@@ -313,20 +315,20 @@ public class ScaleMasterScheduler {
         // get the generalisation process name
         String procName = (String) orderedProc.getProcess();
         // get the generalisation process named procName
-        ScaleMasterGeneProcess process = getProcessFromName(procName);
+        ScaleMasterGeneProcess process = this.getProcessFromName(procName);
         // get the parameters
         Map<String, Object> parameters = elem.getParameters().get(
             elem.getProcessesToApply().indexOf(procName));
         for (String paramName : parameters.keySet()) {
           Object value = parameters.get(paramName);
-          ProcessParameter param = new ProcessParameter(paramName, value
-              .getClass(), value);
+          ProcessParameter param = new ProcessParameter(paramName,
+              value.getClass(), value);
           process.addParameter(param);
         }
 
         // parameterise the process
         process.parameterise();
-        traceLogger.info("Application du processus " + procName
+        this.traceLogger.info("Application du processus " + procName
             + " avec comme parametres " + parameters + " sur "
             + elem.getClasses() + " de " + elem.getDbName());
         // execute the process on the features
@@ -346,15 +348,17 @@ public class ScaleMasterScheduler {
   private void applyOGCFilter(ScaleMasterElement elem,
       IPopulation<IGeneObj> features) {
     for (IGeneObj obj : features) {
-      if (!elem.getOgcFilter().evaluate(obj))
+      if (!elem.getOgcFilter().evaluate(obj)) {
         obj.eliminateBatch();
+      }
     }
   }
 
   private ScaleMasterGeneProcess getProcessFromName(String procName) {
     for (ScaleMasterGeneProcess proc : this.availableProcesses) {
-      if (proc.getProcessName().equals(procName))
+      if (proc.getProcessName().equals(procName)) {
         return proc;
+      }
     }
     return null;
   }
@@ -366,9 +370,10 @@ public class ScaleMasterScheduler {
    */
   private List<OrderedProcess> orderProcesses(ScaleMasterElement elem) {
     List<OrderedProcess> procList = new ArrayList<OrderedProcess>();
-    if (elem.getOgcFilter() != null)
+    if (elem.getOgcFilter() != null) {
       procList.add(new OrderedProcess(elem.getFilterPriority(), elem
           .getOgcFilter()));
+    }
     for (int i = 0; i < elem.getProcessesToApply().size(); i++) {
       procList.add(new OrderedProcess(elem.getProcessPriorities().get(i), elem
           .getProcessesToApply().get(i)));
@@ -404,11 +409,11 @@ public class ScaleMasterScheduler {
   }
 
   public String getExportFolder() {
-    return exportFolder;
+    return this.exportFolder;
   }
 
   public String getMgcpPlusPlusFolder() {
-    return mgcpPlusPlusFolder;
+    return this.mgcpPlusPlusFolder;
   }
 
   public void setMgcpPlusPlusFolder(String mgcpPlusPlusFolder) {
@@ -416,7 +421,7 @@ public class ScaleMasterScheduler {
   }
 
   public List<String> getListLayersMgcpPlusPlus() {
-    return listLayersMgcpPlusPlus;
+    return this.listLayersMgcpPlusPlus;
   }
 
   public void setListLayersMgcpPlusPlus(List<String> listLayersMgcpPlusPlus) {

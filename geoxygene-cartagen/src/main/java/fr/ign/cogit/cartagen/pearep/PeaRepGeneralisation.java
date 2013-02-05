@@ -107,9 +107,11 @@ public class PeaRepGeneralisation implements PropertyChangeListener,
       task.execute();
     } catch (Exception e) {
       frame.setVisible(false);
-      errorLogger.severe(e.getMessage());
-      for (int i = 0; i < e.getStackTrace().length; i++)
-        errorLogger.severe(e.getStackTrace()[i].toString());
+      PeaRepGeneralisation.errorLogger.severe(e.getMessage());
+      for (int i = 0; i < e.getStackTrace().length; i++) {
+        PeaRepGeneralisation.errorLogger
+            .severe(e.getStackTrace()[i].toString());
+      }
     }
   }
 
@@ -117,9 +119,9 @@ public class PeaRepGeneralisation implements PropertyChangeListener,
   public void propertyChange(PropertyChangeEvent evt) {
     if ("progress" == evt.getPropertyName()) {
       int progress = (Integer) evt.getNewValue();
-      progressBar.setValue(progress);
+      this.progressBar.setValue(progress);
       if (progress == 100) {
-        frame.setVisible(false);
+        this.frame.setVisible(false);
         System.exit(0);
       }
     }
@@ -130,7 +132,7 @@ public class PeaRepGeneralisation implements PropertyChangeListener,
   }
 
   public boolean isStop() {
-    return stop;
+    return this.stop;
   }
 
   @Override
@@ -163,7 +165,7 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
   public Void doInBackground() {
     try {
       // Initialize progress property.
-      setProgress(0);
+      this.setProgress(0);
       int progress = 0;
 
       // ******************************************************
@@ -178,11 +180,12 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       doc.setName("PEA_REP");
       doc.setPostGisDb(PostgisDB.get("PEA_REP", true));
       progress += 5;
-      setProgress(progress);
+      this.setProgress(progress);
       // Sleep for up to one second.
       try {
-        if (main.isStop())
-          setProgress(100);
+        if (this.main.isStop()) {
+          this.setProgress(100);
+        }
         Thread.sleep(500);
       } catch (InterruptedException ignore) {
       }
@@ -192,8 +195,8 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       String jarPath = new File(PeaRepGeneralisation.class
           .getProtectionDomain().getCodeSource().getLocation().toURI()
           .getPath().substring(1)).getParent();
-      String pathScale = jarPath + "\\" + SCALE_MASTER_FILE;
-      String pathParams = jarPath + "\\" + PARAMETER_FILE;
+      String pathScale = jarPath + "\\" + GeneralisationTask.SCALE_MASTER_FILE;
+      String pathParams = jarPath + "\\" + GeneralisationTask.PARAMETER_FILE;
 
       // JOptionPane.showMessageDialog(null, jarPath);
 
@@ -203,26 +206,30 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       try {
         scheduler = new ScaleMasterScheduler(scaleMasterXml, parameterXml);
       } catch (DOMException e) {
-        logger.severe("Problem in creating the scheduler");
+        GeneralisationTask.logger.severe("Problem in creating the scheduler");
         e.printStackTrace();
       } catch (ParserConfigurationException e) {
-        logger.severe("Problem in creating the scheduler");
+        GeneralisationTask.logger.severe("Problem in creating the scheduler");
         e.printStackTrace();
       } catch (SAXException e) {
-        logger.severe("Problem in creating the scheduler");
+        GeneralisationTask.logger.severe("Problem in creating the scheduler");
         e.printStackTrace();
       } catch (IOException e) {
-        logger.severe("Problem in creating the scheduler");
+        GeneralisationTask.logger.severe("Problem in creating the scheduler");
         e.printStackTrace();
       } catch (ClassNotFoundException e) {
-        logger.severe("Problem in creating the scheduler");
+        GeneralisationTask.logger.severe("Problem in creating the scheduler");
         e.printStackTrace();
       }
-      setProgress(10);
+      if (scheduler == null) {
+        return null;
+      }
+      this.setProgress(10);
       // Sleep for up to one second.
       try {
-        if (main.isStop())
-          setProgress(100);
+        if (this.main.isStop()) {
+          this.setProgress(100);
+        }
         Thread.sleep(500);
       } catch (InterruptedException ignore) {
       }
@@ -238,39 +245,42 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       // first import the VMAP2i data in a new database
       if (scheduler.getVmap2iFolder() != null) {
         vmapDb = true;
-        VMAP2Loader vmap2Loader = new VMAP2Loader(symbGroup, VMAP2i_DATASET);
+        VMAP2Loader vmap2Loader = new VMAP2Loader(symbGroup,
+            GeneralisationTask.VMAP2i_DATASET);
         try {
-          vmap2Loader.loadData(new File(scheduler.getVmap2iFolder()), scheduler
-              .getListLayersVmap2i());
+          vmap2Loader.loadData(new File(scheduler.getVmap2iFolder()),
+              scheduler.getListLayersVmap2i());
         } catch (ShapefileException e1) {
-          logger.severe("Problem during VMAP2i loading");
+          GeneralisationTask.logger.severe("Problem during VMAP2i loading");
           e1.printStackTrace();
         } catch (IOException e1) {
-          logger.severe("Problem during VMAP2i loading");
+          GeneralisationTask.logger.severe("Problem during VMAP2i loading");
           e1.printStackTrace();
         }
       }
 
       if (scheduler.getMgcpPlusPlusFolder() != null) {
         mgcpDb = true;
-        MGCPLoader mgcpLoader = new MGCPLoader(symbGroup, MGCPPlusPlus_DATASET);
+        MGCPLoader mgcpLoader = new MGCPLoader(symbGroup,
+            GeneralisationTask.MGCPPlusPlus_DATASET);
         try {
           mgcpLoader.loadData(new File(scheduler.getMgcpPlusPlusFolder()),
               scheduler.getListLayersMgcpPlusPlus());
         } catch (ShapefileException e1) {
-          logger.severe("Problem during MGCP loading");
+          GeneralisationTask.logger.severe("Problem during MGCP loading");
           e1.printStackTrace();
         } catch (IOException e1) {
-          logger.severe("Problem during MGCP loading");
+          GeneralisationTask.logger.severe("Problem during MGCP loading");
           e1.printStackTrace();
         }
       }
 
-      setProgress(20);
+      this.setProgress(20);
       // Sleep for up to one second.
       try {
-        if (main.isStop())
-          setProgress(100);
+        if (this.main.isStop()) {
+          this.setProgress(100);
+        }
         Thread.sleep(500);
       } catch (InterruptedException ignore) {
       }
@@ -278,23 +288,25 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       // then, import the VMAP1 data
       if (scheduler.getVmap1Folder() != null) {
         vmapDb = true;
-        VMAP1Loader vmap1Loader = new VMAP1Loader(symbGroup, VMAP1_DATASET);
+        VMAP1Loader vmap1Loader = new VMAP1Loader(symbGroup,
+            GeneralisationTask.VMAP1_DATASET);
         try {
-          vmap1Loader.loadData(new File(scheduler.getVmap1Folder()), scheduler
-              .getListLayersVmap1());
+          vmap1Loader.loadData(new File(scheduler.getVmap1Folder()),
+              scheduler.getListLayersVmap1());
         } catch (ShapefileException e1) {
-          logger.severe("Problem during VMAP1 loading");
+          GeneralisationTask.logger.severe("Problem during VMAP1 loading");
           e1.printStackTrace();
         } catch (IOException e1) {
-          logger.severe("Problem during VMAP1 loading");
+          GeneralisationTask.logger.severe("Problem during VMAP1 loading");
           e1.printStackTrace();
         }
       }
-      setProgress(30);
+      this.setProgress(30);
       // Sleep for up to one second.
       try {
-        if (main.isStop())
-          setProgress(100);
+        if (this.main.isStop()) {
+          this.setProgress(100);
+        }
         Thread.sleep(500);
       } catch (InterruptedException ignore) {
       }
@@ -302,23 +314,25 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       // finally, import the VMAP0 data
       if (scheduler.getVmap0Folder() != null) {
         vmapDb = true;
-        VMAP0Loader vmap0Loader = new VMAP0Loader(symbGroup, VMAP0_DATASET);
+        VMAP0Loader vmap0Loader = new VMAP0Loader(symbGroup,
+            GeneralisationTask.VMAP0_DATASET);
         try {
-          vmap0Loader.loadData(new File(scheduler.getVmap0Folder()), scheduler
-              .getListLayersVmap0());
+          vmap0Loader.loadData(new File(scheduler.getVmap0Folder()),
+              scheduler.getListLayersVmap0());
         } catch (ShapefileException e1) {
-          logger.severe("Problem during VMAP0 loading");
+          GeneralisationTask.logger.severe("Problem during VMAP0 loading");
           e1.printStackTrace();
         } catch (IOException e1) {
-          logger.severe("Problem during VMAP0 loading");
+          GeneralisationTask.logger.severe("Problem during VMAP0 loading");
           e1.printStackTrace();
         }
       }
-      setProgress(40);
+      this.setProgress(40);
       // Sleep for up to one second.
       try {
-        if (main.isStop())
-          setProgress(100);
+        if (this.main.isStop()) {
+          this.setProgress(100);
+        }
         Thread.sleep(500);
       } catch (InterruptedException ignore) {
       }
@@ -327,15 +341,17 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       // define the current dataset according to final scale
       if (scheduler.getScale() < 250000) {
         CartAGenDataSet dataset = null;
-        if (doc.hasDataset(VMAP2i_DATASET))
-          dataset = doc.getDataset(VMAP2i_DATASET);
-        else if (doc.hasDataset(MGCPPlusPlus_DATASET))
-          dataset = doc.getDataset(MGCPPlusPlus_DATASET);
+        if (doc.hasDataset(GeneralisationTask.VMAP2i_DATASET)) {
+          dataset = doc.getDataset(GeneralisationTask.VMAP2i_DATASET);
+        } else if (doc.hasDataset(GeneralisationTask.MGCPPlusPlus_DATASET)) {
+          dataset = doc.getDataset(GeneralisationTask.MGCPPlusPlus_DATASET);
+        }
         doc.setCurrentDataset(dataset);
-      } else if (scheduler.getScale() < 1000000)
-        doc.setCurrentDataset(doc.getDataset(VMAP1_DATASET));
-      else
-        doc.setCurrentDataset(doc.getDataset(VMAP0_DATASET));
+      } else if (scheduler.getScale() < 1000000) {
+        doc.setCurrentDataset(doc.getDataset(GeneralisationTask.VMAP1_DATASET));
+      } else {
+        doc.setCurrentDataset(doc.getDataset(GeneralisationTask.VMAP0_DATASET));
+      }
 
       // *******************************************************
       // set the SchemaFactory to the VMAP one
@@ -356,11 +372,12 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       } catch (Exception e) {
         JOptionPane.showMessageDialog(null, e.getStackTrace());
       }
-      setProgress(70);
+      this.setProgress(70);
       // Sleep for up to one second.
       try {
-        if (main.isStop())
-          setProgress(100);
+        if (this.main.isStop()) {
+          this.setProgress(100);
+        }
         Thread.sleep(500);
       } catch (InterruptedException ignore) {
       }
@@ -368,13 +385,14 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       // *******************************************************
       // finally, export data
       String exportPath = scheduler.getExportFolder();
-      if (exportPath == null)
+      if (exportPath == null) {
         exportPath = jarPath;
+      }
       ShapeFileExport exportTool = new ShapeFileExport(new File(exportPath),
-          doc.getCurrentDataset(), scheduler.getScaleMaster(), scheduler
-              .getScale());
+          doc.getCurrentDataset(), scheduler.getScaleMaster(),
+          scheduler.getScale());
       exportTool.exportToShapefiles();
-      setProgress(100);
+      this.setProgress(100);
       // Sleep for up to one second.
       try {
         Thread.sleep(500);
@@ -382,7 +400,7 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
       }
     } catch (Exception e) {
       JOptionPane.showMessageDialog(null, e.getStackTrace());
-      main.frame.setVisible(false);
+      this.main.frame.setVisible(false);
     }
     return null;
   }

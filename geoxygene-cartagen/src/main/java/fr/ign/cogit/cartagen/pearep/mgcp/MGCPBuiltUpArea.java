@@ -35,7 +35,7 @@ public class MGCPBuiltUpArea extends GeneObjDefault implements
   }
 
   public MGCPBuiltUpArea(IPolygon poly, HashMap<String, Object> attributes,
-      PeaRepDbType type) {
+      @SuppressWarnings("unused") PeaRepDbType type) {
     this(poly);
 
     this.name = (String) attributes.get("nam");
@@ -76,7 +76,7 @@ public class MGCPBuiltUpArea extends GeneObjDefault implements
   }
 
   public Long getSmc() {
-    return smc;
+    return this.smc;
   }
 
   public void setSmc(Long smc) {
@@ -84,7 +84,7 @@ public class MGCPBuiltUpArea extends GeneObjDefault implements
   }
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public void setName(String name) {
@@ -92,7 +92,7 @@ public class MGCPBuiltUpArea extends GeneObjDefault implements
   }
 
   public Long getBac() {
-    return bac;
+    return this.bac;
   }
 
   public void setBac(Long bac) {
@@ -100,7 +100,7 @@ public class MGCPBuiltUpArea extends GeneObjDefault implements
   }
 
   public String getDmr() {
-    return dmr;
+    return this.dmr;
   }
 
   public void setDmr(String dmr) {
@@ -108,7 +108,7 @@ public class MGCPBuiltUpArea extends GeneObjDefault implements
   }
 
   public String getDms() {
-    return dms;
+    return this.dms;
   }
 
   public void setDms(String dms) {
@@ -116,7 +116,7 @@ public class MGCPBuiltUpArea extends GeneObjDefault implements
   }
 
   public Long getFuc() {
-    return fuc;
+    return this.fuc;
   }
 
   public void setFuc(Long fuc) {
@@ -124,7 +124,7 @@ public class MGCPBuiltUpArea extends GeneObjDefault implements
   }
 
   public Long getPpt() {
-    return ppt;
+    return this.ppt;
   }
 
   public void setPpt(Long ppt) {
@@ -132,7 +132,7 @@ public class MGCPBuiltUpArea extends GeneObjDefault implements
   }
 
   public String getNfi() {
-    return nfi;
+    return this.nfi;
   }
 
   public void setNfi(String nfi) {
@@ -140,7 +140,7 @@ public class MGCPBuiltUpArea extends GeneObjDefault implements
   }
 
   public String getNfn() {
-    return nfn;
+    return this.nfn;
   }
 
   public void setNfn(String nfn) {
@@ -154,7 +154,7 @@ public class MGCPBuiltUpArea extends GeneObjDefault implements
   }
 
   public double getArea() {
-    return area;
+    return this.area;
   }
 
   public void setArea(double area) {
@@ -162,7 +162,7 @@ public class MGCPBuiltUpArea extends GeneObjDefault implements
   }
 
   public String getHgt() {
-    return hgt;
+    return this.hgt;
   }
 
   public void setHgt(String hgt) {
@@ -170,7 +170,7 @@ public class MGCPBuiltUpArea extends GeneObjDefault implements
   }
 
   public Long getAcc() {
-    return acc;
+    return this.acc;
   }
 
   public void setAcc(Long acc) {
@@ -178,7 +178,7 @@ public class MGCPBuiltUpArea extends GeneObjDefault implements
   }
 
   public Long getFun() {
-    return fun;
+    return this.fun;
   }
 
   public void setFun(Long fun) {
@@ -186,7 +186,7 @@ public class MGCPBuiltUpArea extends GeneObjDefault implements
   }
 
   public Long getOrd() {
-    return ord;
+    return this.ord;
   }
 
   public void setOrd(Long ord) {

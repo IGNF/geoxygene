@@ -49,7 +49,7 @@ public class MGCPWaterArea extends GeneObjDefault implements IWaterArea,
    * Cosntructor from lakeresa class from VMAP2i model
    */
   public MGCPWaterArea(IPolygon poly, HashMap<String, Object> attributes,
-      PeaRepDbType type) {
+      @SuppressWarnings("unused") PeaRepDbType type) {
     super();
     this.geoxObj = new SurfaceDEauImpl();
     this.geoxObj.setGeom(poly);
@@ -74,6 +74,7 @@ public class MGCPWaterArea extends GeneObjDefault implements IWaterArea,
    * Compute the length of the water area using its skeleton and its width
    * divising the area by the computed length.
    */
+  @SuppressWarnings("unused")
   private void computeLengthWidth() {
     // TODO
   }
@@ -124,11 +125,11 @@ public class MGCPWaterArea extends GeneObjDefault implements IWaterArea,
   }
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public long getPrc() {
-    return prc;
+    return this.prc;
   }
 
   public void setPrc(long prc) {
@@ -136,7 +137,7 @@ public class MGCPWaterArea extends GeneObjDefault implements IWaterArea,
   }
 
   public long getSmc() {
-    return smc;
+    return this.smc;
   }
 
   public void setSmc(long smc) {
@@ -144,7 +145,7 @@ public class MGCPWaterArea extends GeneObjDefault implements IWaterArea,
   }
 
   public long getScc() {
-    return scc;
+    return this.scc;
   }
 
   public void setScc(long scc) {
@@ -152,7 +153,7 @@ public class MGCPWaterArea extends GeneObjDefault implements IWaterArea,
   }
 
   public String getNfi() {
-    return nfi;
+    return this.nfi;
   }
 
   public void setNfi(String nfi) {
@@ -160,7 +161,7 @@ public class MGCPWaterArea extends GeneObjDefault implements IWaterArea,
   }
 
   public String getNfn() {
-    return nfn;
+    return this.nfn;
   }
 
   public void setNfn(String nfn) {
@@ -170,7 +171,7 @@ public class MGCPWaterArea extends GeneObjDefault implements IWaterArea,
   @Override
   public void restoreGeoxObjects() {
     this.geoxObj = new SurfaceDEauImpl(new ReseauImpl(), this.getGeom());
-    this.geoxObj.setNom(name);
+    this.geoxObj.setNom(this.name);
   }
 
   @Override
@@ -184,7 +185,7 @@ public class MGCPWaterArea extends GeneObjDefault implements IWaterArea,
    * @return
    */
   public double getArea() {
-    return getGeom().area();
+    return this.getGeom().area();
   }
 
   public void setLength(double length) {
@@ -192,7 +193,7 @@ public class MGCPWaterArea extends GeneObjDefault implements IWaterArea,
   }
 
   public double getLength() {
-    return length;
+    return this.length;
   }
 
   public void setWidth(double width) {
@@ -200,11 +201,11 @@ public class MGCPWaterArea extends GeneObjDefault implements IWaterArea,
   }
 
   public double getWidth() {
-    return width;
+    return this.width;
   }
 
   public long getAcc() {
-    return acc;
+    return this.acc;
   }
 
   public void setAcc(long acc) {
@@ -212,7 +213,7 @@ public class MGCPWaterArea extends GeneObjDefault implements IWaterArea,
   }
 
   public long getHyp() {
-    return hyp;
+    return this.hyp;
   }
 
   public void setHyp(long hyp) {

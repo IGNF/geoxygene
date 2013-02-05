@@ -33,7 +33,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
       res, rfc, sfy, suc, tfc, uuc, coe, fun, hwt, smc, ssr, caa;
 
   public MGCPBuildPoint(IPoint point, HashMap<String, Object> attributes,
-      PeaRepDbType type) {
+      @SuppressWarnings("unused") PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(point);
     this.setInitialGeom(point);
@@ -89,7 +89,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public void setName(String name) {
@@ -97,7 +97,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public String getNfi() {
-    return nfi;
+    return this.nfi;
   }
 
   public void setNfi(String nfi) {
@@ -105,7 +105,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public String getNfn() {
-    return nfn;
+    return this.nfn;
   }
 
   public void setNfn(String nfn) {
@@ -113,7 +113,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public String getVoi() {
-    return voi;
+    return this.voi;
   }
 
   public void setVoi(String voi) {
@@ -121,7 +121,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getAcc() {
-    return acc;
+    return this.acc;
   }
 
   public void setAcc(long acc) {
@@ -129,7 +129,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public String getAoo() {
-    return aoo;
+    return this.aoo;
   }
 
   public void setAoo(String aoo) {
@@ -137,7 +137,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getCoe() {
-    return coe;
+    return this.coe;
   }
 
   public void setCoe(long coe) {
@@ -145,7 +145,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public String getHgt() {
-    return hgt;
+    return this.hgt;
   }
 
   public void setHgt(String hgt) {
@@ -153,7 +153,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getHwt() {
-    return hwt;
+    return this.hwt;
   }
 
   public void setHwt(long hwt) {
@@ -161,7 +161,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public String getLen() {
-    return len;
+    return this.len;
   }
 
   public void setLen(String len) {
@@ -169,7 +169,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getSmc() {
-    return smc;
+    return this.smc;
   }
 
   public void setSmc(long smc) {
@@ -177,7 +177,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getSsr() {
-    return ssr;
+    return this.ssr;
   }
 
   public void setSsr(long ssr) {
@@ -185,7 +185,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public String getWid() {
-    return wid;
+    return this.wid;
   }
 
   public void setWid(String wid) {
@@ -199,7 +199,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getAfc() {
-    return afc;
+    return this.afc;
   }
 
   public void setAfc(long afc) {
@@ -207,7 +207,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getCef() {
-    return cef;
+    return this.cef;
   }
 
   public void setCef(long cef) {
@@ -215,7 +215,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getCfc() {
-    return cfc;
+    return this.cfc;
   }
 
   public void setCfc(long cfc) {
@@ -223,7 +223,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getCit() {
-    return cit;
+    return this.cit;
   }
 
   public void setCit(long cit) {
@@ -231,7 +231,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getCus() {
-    return cus;
+    return this.cus;
   }
 
   public void setCus(long cus) {
@@ -239,7 +239,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getDdc() {
-    return ddc;
+    return this.ddc;
   }
 
   public void setDdc(long ddc) {
@@ -247,7 +247,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getEbt() {
-    return ebt;
+    return this.ebt;
   }
 
   public void setEbt(long ebt) {
@@ -255,7 +255,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getGfc() {
-    return gfc;
+    return this.gfc;
   }
 
   public void setGfc(long gfc) {
@@ -263,7 +263,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getIcf() {
-    return icf;
+    return this.icf;
   }
 
   public void setIcf(long icf) {
@@ -271,7 +271,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getMfc() {
-    return mfc;
+    return this.mfc;
   }
 
   public void setMfc(long mfc) {
@@ -279,7 +279,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getPaf() {
-    return paf;
+    return this.paf;
   }
 
   public void setPaf(long paf) {
@@ -287,7 +287,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getPsf() {
-    return psf;
+    return this.psf;
   }
 
   public void setPsf(long psf) {
@@ -295,7 +295,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getRes() {
-    return res;
+    return this.res;
   }
 
   public void setRes(long res) {
@@ -303,7 +303,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getRfc() {
-    return rfc;
+    return this.rfc;
   }
 
   public void setRfc(long rfc) {
@@ -311,7 +311,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getSfy() {
-    return sfy;
+    return this.sfy;
   }
 
   public void setSfy(long sfy) {
@@ -319,7 +319,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getSuc() {
-    return suc;
+    return this.suc;
   }
 
   public void setSuc(long suc) {
@@ -327,7 +327,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getTfc() {
-    return tfc;
+    return this.tfc;
   }
 
   public void setTfc(long tfc) {
@@ -335,7 +335,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getUuc() {
-    return uuc;
+    return this.uuc;
   }
 
   public void setUuc(long uuc) {
@@ -343,7 +343,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getFun() {
-    return fun;
+    return this.fun;
   }
 
   public void setFun(long fun) {
@@ -351,7 +351,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public long getCaa() {
-    return caa;
+    return this.caa;
   }
 
   public void setCaa(long caa) {
@@ -359,7 +359,7 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   }
 
   public String getZv2() {
-    return zv2;
+    return this.zv2;
   }
 
   public void setZv2(String zv2) {

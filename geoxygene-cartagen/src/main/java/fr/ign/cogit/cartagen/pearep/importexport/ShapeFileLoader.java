@@ -141,8 +141,8 @@ public abstract class ShapeFileLoader {
     // and compute the associated utm zone
     Record object1 = shr.nextRecord();
     Geometry geomJTS1 = (Geometry) object1.shape();
-    if (projEpsg == null) {
-      String zone = getZoneUtm(geomJTS1.getCentroid().getX(), geomJTS1
+    if (this.projEpsg == null) {
+      String zone = this.getZoneUtm(geomJTS1.getCentroid().getX(), geomJTS1
           .getCentroid().getY());
       this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
     }
@@ -159,7 +159,8 @@ public abstract class ShapeFileLoader {
       try {
         // coordinates transformation
         Geometry geomJTS = (Geometry) object.shape();
-        geom = CRSConversion.changeCRS(geomJTS, "4326", projEpsg, false, true);
+        geom = CRSConversion.changeCRS(geomJTS, "4326", this.projEpsg, false,
+            true);
       } catch (Exception e) {
         e.printStackTrace();
         return;
@@ -223,8 +224,8 @@ public abstract class ShapeFileLoader {
     // and compute the associated utm zone
     Record object1 = shr.nextRecord();
     Geometry geomJTS1 = (Geometry) object1.shape();
-    if (projEpsg == null) {
-      String zone = getZoneUtm(geomJTS1.getCentroid().getX(), geomJTS1
+    if (this.projEpsg == null) {
+      String zone = this.getZoneUtm(geomJTS1.getCentroid().getX(), geomJTS1
           .getCentroid().getY());
       this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
     }
@@ -241,7 +242,8 @@ public abstract class ShapeFileLoader {
       try {
         // coordinates transformation
         Geometry geomJTS = (Geometry) object.shape();
-        geom = CRSConversion.changeCRS(geomJTS, "4326", projEpsg, false, true);
+        geom = CRSConversion.changeCRS(geomJTS, "4326", this.projEpsg, false,
+            true);
       } catch (Exception e) {
         e.printStackTrace();
         return;
@@ -299,8 +301,8 @@ public abstract class ShapeFileLoader {
     // and compute the associated utm zone
     Record object1 = shr.nextRecord();
     Geometry geomJTS1 = (Geometry) object1.shape();
-    if (projEpsg == null) {
-      String zone = getZoneUtm(geomJTS1.getCentroid().getX(), geomJTS1
+    if (this.projEpsg == null) {
+      String zone = this.getZoneUtm(geomJTS1.getCentroid().getX(), geomJTS1
           .getCentroid().getY());
       this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
     }
@@ -318,7 +320,8 @@ public abstract class ShapeFileLoader {
         // coordinates transformation
         Geometry geomJTS = (Geometry) object.shape();
 
-        geom = CRSConversion.changeCRS(geomJTS, "4326", projEpsg, false, true);
+        geom = CRSConversion.changeCRS(geomJTS, "4326", this.projEpsg, false,
+            true);
       } catch (Exception e) {
         e.printStackTrace();
         return;
@@ -379,8 +382,8 @@ public abstract class ShapeFileLoader {
     // and compute the associated utm zone
     Record object1 = shr.nextRecord();
     Geometry geomJTS1 = (Geometry) object1.shape();
-    if (projEpsg == null) {
-      String zone = getZoneUtm(geomJTS1.getCentroid().getX(), geomJTS1
+    if (this.projEpsg == null) {
+      String zone = this.getZoneUtm(geomJTS1.getCentroid().getX(), geomJTS1
           .getCentroid().getY());
       this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
     }
@@ -397,7 +400,8 @@ public abstract class ShapeFileLoader {
       try {
         // coordinates transformation
         Geometry geomJTS = (Geometry) object.shape();
-        geom = CRSConversion.changeCRS(geomJTS, "4326", projEpsg, false, true);
+        geom = CRSConversion.changeCRS(geomJTS, "4326", this.projEpsg, false,
+            true);
       } catch (Exception e) {
         e.printStackTrace();
         return;
@@ -413,8 +417,8 @@ public abstract class ShapeFileLoader {
         pop.add(tr);
       } else {
         for (int i = 0; i < ((IMultiPoint) geom).size(); i++) {
-          IGeneObj tr = (IGeneObj) constructor.newInstance(((IMultiPoint) geom)
-              .get(i), attributes);
+          IGeneObj tr = (IGeneObj) constructor.newInstance(
+              ((IMultiPoint) geom).get(i), attributes);
 
           pop.add(tr);
         }
@@ -429,7 +433,7 @@ public abstract class ShapeFileLoader {
   }
 
   public String getProjEpsg() {
-    return projEpsg;
+    return this.projEpsg;
   }
 
   public String getZoneUtm(Double x, Double y) {
@@ -437,132 +441,137 @@ public abstract class ShapeFileLoader {
     String zone = null;
     String hemis = null;
 
-    if (x >= 0 && x < 6)
+    if (x >= 0 && x < 6) {
       zone = "31";
-    else if (x >= 6 && x < 12)
+    } else if (x >= 6 && x < 12) {
       zone = "32";
-    else if (x >= 12 && x < 18)
+    } else if (x >= 12 && x < 18) {
       zone = "33";
-    else if (x >= 18 && x < 24)
+    } else if (x >= 18 && x < 24) {
       zone = "34";
-    else if (x >= 24 && x < 30)
+    } else if (x >= 24 && x < 30) {
       zone = "35";
-    else if (x >= 30 && x < 36)
+    } else if (x >= 30 && x < 36) {
       zone = "36";
-    else if (x >= 36 && x < 42)
+    } else if (x >= 36 && x < 42) {
       zone = "37";
-    else if (x >= 42 && x < 48)
+    } else if (x >= 42 && x < 48) {
       zone = "38";
-    else if (x >= 48 && x < 54)
+    } else if (x >= 48 && x < 54) {
       zone = "39";
-    else if (x >= 54 && x < 60)
+    } else if (x >= 54 && x < 60) {
       zone = "40";
-    else if (x >= 60 && x < 66)
+    } else if (x >= 60 && x < 66) {
       zone = "41";
-    else if (x >= 66 && x < 72)
+    } else if (x >= 66 && x < 72) {
       zone = "42";
-    else if (x >= 72 && x < 78)
+    } else if (x >= 72 && x < 78) {
       zone = "43";
-    else if (x >= 78 && x < 84)
+    } else if (x >= 78 && x < 84) {
       zone = "44";
-    else if (x >= 84 && x < 90)
+    } else if (x >= 84 && x < 90) {
       zone = "45";
-    else if (x >= 90 && x < 96)
+    } else if (x >= 90 && x < 96) {
       zone = "46";
-    else if (x >= 96 && x < 102)
+    } else if (x >= 96 && x < 102) {
       zone = "47";
-    else if (x >= 102 && x < 108)
+    } else if (x >= 102 && x < 108) {
       zone = "48";
-    else if (x >= 108 && x < 114)
+    } else if (x >= 108 && x < 114) {
       zone = "49";
-    else if (x >= 114 && x < 120)
+    } else if (x >= 114 && x < 120) {
       zone = "50";
-    else if (x >= 120 && x < 126)
+    } else if (x >= 120 && x < 126) {
       zone = "51";
-    else if (x >= 126 && x < 132)
+    } else if (x >= 126 && x < 132) {
       zone = "52";
-    else if (x >= 132 && x < 138)
+    } else if (x >= 132 && x < 138) {
       zone = "53";
-    else if (x >= 138 && x < 144)
+    } else if (x >= 138 && x < 144) {
       zone = "54";
-    else if (x >= 144 && x < 150)
+    } else if (x >= 144 && x < 150) {
       zone = "55";
-    else if (x >= 150 && x < 156)
+    } else if (x >= 150 && x < 156) {
       zone = "56";
-    else if (x >= 156 && x < 162)
+    } else if (x >= 156 && x < 162) {
       zone = "57";
-    else if (x >= 162 && x < 168)
+    } else if (x >= 162 && x < 168) {
       zone = "58";
-    else if (x >= 168 && x < 174)
+    } else if (x >= 168 && x < 174) {
       zone = "59";
-    else if (x >= 174 && x < 180)
+    } else if (x >= 174 && x < 180) {
       zone = "60";
-
-    else if (x < 0 && x >= -6)
+    } else if (x < 0 && x >= -6) {
       zone = "30";
-    else if (x < -6 && x >= -12)
+    } else if (x < -6 && x >= -12) {
       zone = "29";
-    else if (x < -12 && x >= -18)
+    } else if (x < -12 && x >= -18) {
       zone = "28";
-    else if (x < -18 && x >= -24)
+    } else if (x < -18 && x >= -24) {
       zone = "27";
-    else if (x < -24 && x >= -30)
+    } else if (x < -24 && x >= -30) {
       zone = "26";
-    else if (x < -30 && x >= -36)
+    } else if (x < -30 && x >= -36) {
       zone = "25";
-    else if (x < -36 && x >= -42)
+    } else if (x < -36 && x >= -42) {
       zone = "24";
-    else if (x < -42 && x >= -48)
+    } else if (x < -42 && x >= -48) {
       zone = "23";
-    else if (x < -48 && x >= -54)
+    } else if (x < -48 && x >= -54) {
       zone = "22";
-    else if (x < -54 && x >= -60)
+    } else if (x < -54 && x >= -60) {
       zone = "21";
-    else if (x < -60 && x >= -66)
+    } else if (x < -60 && x >= -66) {
       zone = "20";
-    else if (x < -66 && x >= -72)
+    } else if (x < -66 && x >= -72) {
       zone = "19";
-    else if (x < -72 && x >= -78)
+    } else if (x < -72 && x >= -78) {
       zone = "18";
-    else if (x < -78 && x >= -84)
+    } else if (x < -78 && x >= -84) {
       zone = "17";
-    else if (x < -84 && x >= -90)
+    } else if (x < -84 && x >= -90) {
       zone = "16";
-    else if (x < -90 && x >= -96)
+    } else if (x < -90 && x >= -96) {
       zone = "15";
-    else if (x < -96 && x >= -102)
+    } else if (x < -96 && x >= -102) {
       zone = "14";
-    else if (x < -102 && x >= -108)
+    } else if (x < -102 && x >= -108) {
       zone = "13";
-    else if (x < -108 && x >= -114)
+    } else if (x < -108 && x >= -114) {
       zone = "12";
-    else if (x < -114 && x >= -120)
+    } else if (x < -114 && x >= -120) {
       zone = "11";
-    else if (x < -120 && x >= -126)
+    } else if (x < -120 && x >= -126) {
       zone = "10";
-    else if (x < -126 && x >= -132)
+    } else if (x < -126 && x >= -132) {
       zone = "9";
-    else if (x < -132 && x >= -138)
+    } else if (x < -132 && x >= -138) {
       zone = "8";
-    else if (x < -138 && x >= -144)
+    } else if (x < -138 && x >= -144) {
       zone = "7";
-    else if (x < -144 && x >= -150)
+    } else if (x < -144 && x >= -150) {
       zone = "6";
-    else if (x < -150 && x >= -156)
+    } else if (x < -150 && x >= -156) {
       zone = "5";
-    else if (x < -156 && x >= -162)
+    } else if (x < -156 && x >= -162) {
       zone = "4";
-    else if (x < -162 && x >= -168)
+    } else if (x < -162 && x >= -168) {
       zone = "3";
-    else if (x < -168 && x >= -174)
+    } else if (x < -168 && x >= -174) {
       zone = "2";
-    else if (x < -174 && x >= -180)
+    } else if (x < -174 && x >= -180) {
       zone = "1";
+    }
 
-    if (y >= 0)
+    if (zone == null) {
+      return null;
+    }
+
+    if (y >= 0) {
       hemis = "N";
-    else if (y < 0)
+    } else if (y < 0) {
       hemis = "S";
+    }
 
     zoneUtm = zone.concat(hemis);
     System.out.println("Zone UTM = " + zoneUtm);

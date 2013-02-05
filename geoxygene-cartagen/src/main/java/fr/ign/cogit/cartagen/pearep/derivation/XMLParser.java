@@ -76,7 +76,7 @@ public class XMLParser {
 
     db = dbf.newDocumentBuilder();
     org.w3c.dom.Document doc;
-    doc = db.parse(xmlFile);
+    doc = db.parse(this.xmlFile);
     doc.getDocumentElement().normalize();
     // get the root of the XML document
     Element root = (Element) doc.getElementsByTagName("pearep-scalemaster")
@@ -113,8 +113,8 @@ public class XMLParser {
         Element className = (Element) scaleIntervalElement
             .getElementsByTagName("class-name").item(0);
 
-        Interval<Integer> interval = new Interval<Integer>(Integer
-            .valueOf(intervalMin.getChildNodes().item(0).getNodeValue()),
+        Interval<Integer> interval = new Interval<Integer>(
+            Integer.valueOf(intervalMin.getChildNodes().item(0).getNodeValue()),
             Integer.valueOf(intervalMax.getChildNodes().item(0).getNodeValue()));
         List<ScaleMasterElement> listScaleMasterElements = new ArrayList<ScaleMasterElement>();
         mapScaleMasterElements.put(interval, listScaleMasterElements);
@@ -172,15 +172,18 @@ public class XMLParser {
                     .getElementsByTagName("parameter").item(itParameter);
 
                 Object valeur = null;
-                if (parameterElement.getAttribute("type").equals("Double"))
+                if (parameterElement.getAttribute("type").equals("Double")) {
                   valeur = Double.valueOf(parameterElement.getChildNodes()
                       .item(0).getNodeValue());
-                if (parameterElement.getAttribute("type").equals("Integer"))
+                }
+                if (parameterElement.getAttribute("type").equals("Integer")) {
                   valeur = Integer.valueOf(parameterElement.getChildNodes()
                       .item(0).getNodeValue());
-                if (parameterElement.getAttribute("type").equals("Boolean"))
+                }
+                if (parameterElement.getAttribute("type").equals("Boolean")) {
                   valeur = Boolean.valueOf(parameterElement.getChildNodes()
                       .item(0).getNodeValue());
+                }
                 // TODO autres cas à gérer
                 mapParamProcess.put(parameterElement.getAttribute("name"),
                     valeur);
@@ -221,20 +224,22 @@ public class XMLParser {
               if (attributeSelection.getChildNodes().item(i) instanceof Element) {
                 Element childElement = (Element) attributeSelection
                     .getChildNodes().item(i);
-                ogcPropertyComparison = getPropertyComparison(childElement);
+                ogcPropertyComparison = XMLParser
+                    .getPropertyComparison(childElement);
               }
             }
             scaleMasterElement.setOgcFilter(ogcPropertyComparison);
           }
 
           // for multiple queries
-          if (multipleQuery == true) {
+          if (ogcLogicComparison != null && ogcLogicElement != null
+              && multipleQuery == true) {
             List<Filter> listFilter = new ArrayList<Filter>();
             for (int i = 0; i < ogcLogicElement.getChildNodes().getLength(); i++) {
               if (ogcLogicElement.getChildNodes().item(i) instanceof Element) {
                 Element childElement = (Element) ogcLogicElement
                     .getChildNodes().item(i);
-                listFilter.add(getPropertyComparison(childElement));
+                listFilter.add(XMLParser.getPropertyComparison(childElement));
               }
             }
             ogcLogicComparison.setOps(listFilter);
@@ -244,8 +249,8 @@ public class XMLParser {
               .valueOf(attributeSelection.getAttribute("priority"))]);
         }
       }
-      ScaleLine scaleLine = new ScaleLine(scheduler
-          .getThemeFromName(scaleLineElement.getAttribute("theme")),
+      ScaleLine scaleLine = new ScaleLine(
+          scheduler.getThemeFromName(scaleLineElement.getAttribute("theme")),
           scaleMaster, mapScaleMasterElements);
 
       scaleMaster.getScaleLines().add(scaleLine);
@@ -305,7 +310,7 @@ public class XMLParser {
     DocumentBuilder db;
     db = dbf.newDocumentBuilder();
     org.w3c.dom.Document doc;
-    doc = db.parse(xmlFile);
+    doc = db.parse(this.xmlFile);
     doc.getDocumentElement().normalize();
     // get the root of the XML document
     Element root = (Element) doc.getElementsByTagName(

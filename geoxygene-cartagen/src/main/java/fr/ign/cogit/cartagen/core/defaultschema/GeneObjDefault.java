@@ -200,8 +200,8 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
 
   /**
    * Setter for antecedents. Also updates the reverse reference from each
-   * element of antecedents to {@code this}. To break the reference use {@code
-   * this.setAntecedents(new HashSet<IGeneObj>())}
+   * element of antecedents to {@code this}. To break the reference use
+   * {@code this.setAntecedents(new HashSet<IGeneObj>())}
    * @param antecedents the set of antecedents to set
    */
   @Override
@@ -369,10 +369,13 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
     String popName = CartAGenDoc.getInstance().getCurrentDataset()
         .getPopNameFromObj(this);
     try {
-      return CartAGenDoc.getInstance().getCurrentDataset().getCartagenPop(
-          popName,
-          (String) this.getClass().getDeclaredField(IGeneObj.FEAT_TYPE_NAME)
-              .get(null));
+      return CartAGenDoc
+          .getInstance()
+          .getCurrentDataset()
+          .getCartagenPop(
+              popName,
+              (String) this.getClass()
+                  .getDeclaredField(IGeneObj.FEAT_TYPE_NAME).get(null));
     } catch (IllegalArgumentException e) {
       e.printStackTrace();
     } catch (SecurityException e) {
@@ -614,6 +617,9 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
           break;
         }
       }
+      if (encodedAnnotation == null) {
+        continue;
+      }
       // get its values
       Class<? extends IGeneObj> targetEntity = encodedAnnotation.targetEntity();
       String methodName = "get" + encodedAnnotation.methodName();
@@ -633,8 +639,8 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
       GeneObjDefault.logger.finest(this.toString());
       GeneObjDefault.logger.finest(m.getName());
       GeneObjDefault.logger.finest("" + ids.size());
-      String fieldName = m.getName().substring(3, 4).toLowerCase().concat(
-          m.getName().substring(4));
+      String fieldName = m.getName().substring(3, 4).toLowerCase()
+          .concat(m.getName().substring(4));
       GeneObjDefault.logger.finest(fieldName);
       Field field = this.getClass().getDeclaredField(fieldName);
       if (!field.isAccessible()) {
@@ -656,7 +662,7 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
    * @throws NoSuchMethodException
    * 
    */
-  @SuppressWarnings( { "unchecked" })
+  @SuppressWarnings({ "unchecked" })
   @Override
   public void fillRelationsFromIds() throws IllegalArgumentException,
       IllegalAccessException, InvocationTargetException, SecurityException,
@@ -675,6 +681,9 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
           encodedAnnotation = (EncodedRelation) a;
           break;
         }
+      }
+      if (encodedAnnotation == null) {
+        continue;
       }
 
       if (m.isAnnotationPresent(EncodedRelation.class)) {
@@ -721,7 +730,8 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
           }
           objs.add(obj);
           // now set the inverse relation
-          if (!encodedAnnotation.nToM() && encodedAnnotation.inverse()) {
+          if (inverseMethod != null && !encodedAnnotation.nToM()
+              && encodedAnnotation.inverse()) {
             inverseMethod.invoke(obj, this);
           }
         }
@@ -766,7 +776,8 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
           }
           obj = object;
           // now set the inverse relation
-          if (!encodedAnnotation.nToM() && encodedAnnotation.inverse()) {
+          if (inverseMethod != null && !encodedAnnotation.nToM()
+              && encodedAnnotation.inverse()) {
             inverseMethod.invoke(obj, this);
           }
         }

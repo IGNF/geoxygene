@@ -120,28 +120,31 @@ public class ShapeFileExport {
 
       // get the element corresponding to final scale
       ScaleMasterElement elem = line.getElementFromScale(this.finalScale);
-      if (elem == null)
+      if (elem == null) {
         continue;
+      }
       Class<?> classObj = elem.getClasses().iterator().next();
       // get the features to export
       IPopulation<IGeneObj> features = new Population<IGeneObj>();
-      IPopulation<IGeneObj> pop = dataset.getCartagenPop(dataset
+      IPopulation<IGeneObj> pop = this.dataset.getCartagenPop(this.dataset
           .getPopNameFromClass(classObj));
       if (pop == null) {
         // these features have not been imported
         continue;
       }
       for (IGeneObj obj : pop) {
-        if (classObj.isInstance(obj))
+        if (classObj.isInstance(obj)) {
           features.add(obj);
+        }
       }
 
       // write the shapefile
       // FIXME coder la gestion des projections de manière plus propre!
       String projEpsg = "32631";
-      if (this.dataset.getCartAGenDB().getSourceDLM().equals(
-          SourceDLM.MGCPPlusPlus))
+      if (this.dataset.getCartAGenDB().getSourceDLM()
+          .equals(SourceDLM.MGCPPlusPlus)) {
         projEpsg = "32629";
+      }
       ShapeFileExport.write(features, line.getTheme().getGeometryType()
           .toGeomClass(), this.exportDir.getPath() + "\\" + shapeFileName,
           projEpsg, "4326");
@@ -151,12 +154,14 @@ public class ShapeFileExport {
   @SuppressWarnings("unchecked")
   public static <Feature extends IFeature> void write(
       IPopulation<Feature> featurePop, Class<? extends IGeometry> geomType,
-      String shapefileName, String epsgIni, String epsgFin) {
-    if (featurePop == null)
+      String shpName, String epsgIni, String epsgFin) {
+    if (featurePop == null) {
       return;
+    }
     if (featurePop.isEmpty()) {
       return;
     }
+    String shapefileName = shpName;
     try {
       if (!shapefileName.contains(".shp")) { //$NON-NLS-1$
         shapefileName = shapefileName + ".shp"; //$NON-NLS-1$
@@ -173,13 +178,13 @@ public class ShapeFileExport {
       List<String> getters = new ArrayList<String>();
       if (featurePop.size() != 0) {
         Class<?> classObj = featurePop.get(0).getClass();
-        Vector<Object> result = addAttributesToHeader(classObj);
+        Vector<Object> result = ShapeFileExport.addAttributesToHeader(classObj);
         getters = (List<String>) result.get(0);
         specs += result.get(1);
       }
 
-      String featureTypeName = shapefileName.substring(shapefileName
-          .lastIndexOf("/") + 1, //$NON-NLS-1$
+      String featureTypeName = shapefileName.substring(
+          shapefileName.lastIndexOf("/") + 1, //$NON-NLS-1$
           shapefileName.lastIndexOf(".")); //$NON-NLS-1$
       featureTypeName = featureTypeName.replace('.', '_');
       SimpleFeatureType type = DataUtilities.createType(featureTypeName, specs);
@@ -206,8 +211,8 @@ public class ShapeFileExport {
           Method m = feature.getClass().getDeclaredMethod(getter);
           liste.add(m.invoke(feature));
         }
-        SimpleFeature simpleFeature = SimpleFeatureBuilder.build(type, liste
-            .toArray(), String.valueOf(i++));
+        SimpleFeature simpleFeature = SimpleFeatureBuilder.build(type,
+            liste.toArray(), String.valueOf(i++));
         collection.add(simpleFeature);
       }
       featureStore.addFeatures(collection);
@@ -219,24 +224,24 @@ public class ShapeFileExport {
       t.close();
       store.dispose();
     } catch (MalformedURLException e) {
-      ShapeFileExport.logger.log(Level.SEVERE, I18N
-          .getString("ShapefileWriter.FileName") //$NON-NLS-1$
-          + shapefileName + I18N.getString("ShapefileWriter.Malformed")); //$NON-NLS-1$
+      ShapeFileExport.logger.log(Level.SEVERE,
+          I18N.getString("ShapefileWriter.FileName") //$NON-NLS-1$
+              + shapefileName + I18N.getString("ShapefileWriter.Malformed")); //$NON-NLS-1$
       e.printStackTrace();
     } catch (IOException e) {
-      ShapeFileExport.logger.log(Level.SEVERE, I18N
-          .getString("ShapefileWriter.ErrorWritingFile") //$NON-NLS-1$
-          + shapefileName);
+      ShapeFileExport.logger.log(Level.SEVERE,
+          I18N.getString("ShapefileWriter.ErrorWritingFile") //$NON-NLS-1$
+              + shapefileName);
       e.printStackTrace();
     } catch (SchemaException e) {
-      ShapeFileExport.logger.log(Level.SEVERE, I18N
-          .getString("ShapefileWriter.SchemeUsedForWritingFile") //$NON-NLS-1$
-          + shapefileName + I18N.getString("ShapefileWriter.Incorrect")); //$NON-NLS-1$
+      ShapeFileExport.logger.log(Level.SEVERE,
+          I18N.getString("ShapefileWriter.SchemeUsedForWritingFile") //$NON-NLS-1$
+              + shapefileName + I18N.getString("ShapefileWriter.Incorrect")); //$NON-NLS-1$
       e.printStackTrace();
     } catch (Exception e) {
-      ShapeFileExport.logger.log(Level.SEVERE, I18N
-          .getString("ShapefileWriter.ErrorWritingFile") //$NON-NLS-1$
-          + shapefileName);
+      ShapeFileExport.logger.log(Level.SEVERE,
+          I18N.getString("ShapefileWriter.ErrorWritingFile") //$NON-NLS-1$
+              + shapefileName);
       e.printStackTrace();
     }
   }
@@ -254,28 +259,37 @@ public class ShapeFileExport {
     acceptedTypes.add("boolean");
     String specs = "";
     for (Method m : featureClass.getDeclaredMethods()) {
-      if (!m.getName().startsWith("get"))
+      if (!m.getName().startsWith("get")) {
         continue;
-      if (m.getName().equals("getGeom"))
+      }
+      if (m.getName().equals("getGeom")) {
         continue;
-      if (m.getName().equals("getGeoxObj"))
+      }
+      if (m.getName().equals("getGeoxObj")) {
         continue;
-      if (m.getName().equals("getSymbolId"))
+      }
+      if (m.getName().equals("getSymbolId")) {
         continue;
-      if (m.getName().equals("getId"))
+      }
+      if (m.getName().equals("getId")) {
         continue;
-      if (m.getName().equals("getAttributeMap"))
+      }
+      if (m.getName().equals("getAttributeMap")) {
         continue;
-      if (m.getName().equals("getSymbolExtent"))
+      }
+      if (m.getName().equals("getSymbolExtent")) {
         continue;
+      }
       String returnType = m.getReturnType().getName();
-      if (!acceptedTypes.contains(returnType))
+      if (!acceptedTypes.contains(returnType)) {
         continue;
+      }
       attrNames.add(m.getName());
       String attributeName = m.getName().substring(3, 4).toLowerCase()
           + m.getName().substring(4);
-      if (returnType.equals(long.class.getName()))
+      if (returnType.equals(long.class.getName())) {
         returnType = Integer.class.getName();
+      }
       specs += "," + attributeName + ":" + returnType;
     }
     Vector<Object> vect = new Vector<Object>(2);

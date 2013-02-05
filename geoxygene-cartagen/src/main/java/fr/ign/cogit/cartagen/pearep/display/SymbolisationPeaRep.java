@@ -14,7 +14,6 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.awt.image.renderable.ParameterBlock;
 import java.net.URL;
@@ -89,18 +88,10 @@ public class SymbolisationPeaRep {
           SymbolisationPeaRep.builtUpSymbol(layerGroup, pv, obj);
         }
         if (obj instanceof VMAPCrop) {
-          try {
-            SymbolisationPeaRep.cropSymbol(layerGroup, pv, obj);
-          } catch (NoninvertibleTransformException e1) {
-            e1.printStackTrace();
-          }
+          SymbolisationPeaRep.cropSymbol(layerGroup, pv, obj);
         }
         if (obj instanceof VMAPSwamp) {
-          try {
-            SymbolisationPeaRep.swampSymbol(layerGroup, pv, obj);
-          } catch (NoninvertibleTransformException e) {
-            e.printStackTrace();
-          }
+          SymbolisationPeaRep.swampSymbol(layerGroup, pv, obj);
         }
         if (obj instanceof VMAPOrchard) {
           SymbolisationPeaRep.orchardSymbol(layerGroup, pv, obj);
@@ -109,28 +100,33 @@ public class SymbolisationPeaRep {
     };
   }
 
-  private static void groundSymbol(final AbstractLayerGroup layerGroup,
+  private static void groundSymbol(
+      @SuppressWarnings("unused") final AbstractLayerGroup layerGroup,
       VisuPanel pv, IFeature obj) {
     pv.draw(SymbolisationPeaRep.GROUND_COLOR, (IPolygon) obj.getGeom());
   }
 
-  private static void grassSymbol(final AbstractLayerGroup layerGroup,
+  private static void grassSymbol(
+      @SuppressWarnings("unused") final AbstractLayerGroup layerGroup,
       VisuPanel pv, IFeature obj) {
     pv.draw(SymbolisationPeaRep.GRASS_COLOR, (IPolygon) obj.getGeom());
   }
 
-  private static void builtUpSymbol(final AbstractLayerGroup layerGroup,
+  private static void builtUpSymbol(
+      @SuppressWarnings("unused") final AbstractLayerGroup layerGroup,
       VisuPanel pv, IFeature obj) {
     pv.draw(SymbolisationPeaRep.BUILTUP_COLOR, (IPolygon) obj.getGeom());
   }
 
-  private static void cropSymbol(final AbstractLayerGroup layerGroup,
-      VisuPanel pv, IFeature obj) throws NoninvertibleTransformException {
+  private static void cropSymbol(
+      @SuppressWarnings("unused") final AbstractLayerGroup layerGroup,
+      VisuPanel pv, IFeature obj) {
     pv.draw(SymbolisationPeaRep.CROP_COLOR, (IPolygon) obj.getGeom());
   }
 
-  private static void swampSymbol(final AbstractLayerGroup layerGroup,
-      VisuPanel pv, IFeature obj) throws NoninvertibleTransformException {
+  private static void swampSymbol(
+      @SuppressWarnings("unused") final AbstractLayerGroup layerGroup,
+      VisuPanel pv, IFeature obj) {
     ExternalGraphic tree = new ExternalGraphic();
     URL url = Symbolisation.class
         .getResource("/images/symbols/" + "swamp2.png"); //$NON-NLS-1$
@@ -148,8 +144,8 @@ public class SymbolisationPeaRep {
         .getBounds2D().getMinX(), shape.getBounds2D().getMinY());
     Image scaledImage = image.getScaledInstance(shapeWidth.intValue(),
         shapeHeight.intValue(), Image.SCALE_FAST);
-    BufferedImage buff = new BufferedImage(shapeWidth.intValue(), shapeHeight
-        .intValue(), BufferedImage.TYPE_INT_ARGB);
+    BufferedImage buff = new BufferedImage(shapeWidth.intValue(),
+        shapeHeight.intValue(), BufferedImage.TYPE_INT_ARGB);
     buff.getGraphics().drawImage(scaledImage, 0, 0, null);
     ParameterBlock p = new ParameterBlock();
     p.addSource(buff);
@@ -169,7 +165,8 @@ public class SymbolisationPeaRep {
         BasicStroke.JOIN_MITER);
   }
 
-  private static void orchardSymbol(final AbstractLayerGroup layerGroup,
+  private static void orchardSymbol(
+      @SuppressWarnings("unused") final AbstractLayerGroup layerGroup,
       VisuPanel pv, IFeature obj) {
     ExternalGraphic tree = new ExternalGraphic();
     URL url = Symbolisation.class
@@ -188,8 +185,8 @@ public class SymbolisationPeaRep {
         .getBounds2D().getMinX(), shape.getBounds2D().getMinY());
     Image scaledImage = image.getScaledInstance(shapeWidth.intValue(),
         shapeHeight.intValue(), Image.SCALE_FAST);
-    BufferedImage buff = new BufferedImage(shapeWidth.intValue(), shapeHeight
-        .intValue(), BufferedImage.TYPE_INT_ARGB);
+    BufferedImage buff = new BufferedImage(shapeWidth.intValue(),
+        shapeHeight.intValue(), BufferedImage.TYPE_INT_ARGB);
     buff.getGraphics().drawImage(scaledImage, 0, 0, null);
     ParameterBlock p = new ParameterBlock();
     p.addSource(buff);
@@ -250,24 +247,28 @@ public class SymbolisationPeaRep {
     };
   }
 
+  @SuppressWarnings("unused")
   private static void storagePtSymbol(AbstractLayerGroup layerGroup,
       VisuPanel pv, IFeature obj) {
     // TODO Auto-generated method stub
 
   }
 
+  @SuppressWarnings("unused")
   private static void obstrPtSymbol(AbstractLayerGroup layerGroup,
       VisuPanel pv, IFeature obj) {
     // TODO Auto-generated method stub
 
   }
 
+  @SuppressWarnings("unused")
   private static void towerSymbol(AbstractLayerGroup layerGroup, VisuPanel pv,
       IFeature obj) {
     // TODO Auto-generated method stub
 
   }
 
+  @SuppressWarnings("unused")
   private static void powerPtSymbol(AbstractLayerGroup layerGroup,
       VisuPanel pv, IFeature obj) {
     // TODO Auto-generated method stub

@@ -33,6 +33,7 @@ public class StrokeSelectionProcess extends ScaleMasterGeneProcess {
   private double lengthThreshold;
   private String attributeName = null;
   private static StrokeSelectionProcess instance = null;
+  @SuppressWarnings("unused")
   private boolean deleted = false;
 
   protected StrokeSelectionProcess() {
@@ -40,15 +41,15 @@ public class StrokeSelectionProcess extends ScaleMasterGeneProcess {
   }
 
   public static StrokeSelectionProcess getInstance() {
-    if (instance == null) {
-      instance = new StrokeSelectionProcess();
+    if (StrokeSelectionProcess.instance == null) {
+      StrokeSelectionProcess.instance = new StrokeSelectionProcess();
     }
-    return instance;
+    return StrokeSelectionProcess.instance;
   }
 
   @Override
   public void execute(IFeatureCollection<? extends IGeneObj> features) {
-    parameterise();
+    this.parameterise();
     // do the road enrichment
     NetworkEnrichment.enrichNetwork(CartAGenDoc.getInstance()
         .getCurrentDataset().getRoadNetwork(), true);
@@ -57,19 +58,21 @@ public class StrokeSelectionProcess extends ScaleMasterGeneProcess {
     // first get the road features not yet selected
     for (IGeneObj obj : features) {
       // FIXME gérer les cas sans sélection attributaire préalable
-      if (!obj.isDeleted())
+      if (!obj.isDeleted()) {
         continue;
+      }
       map.put((ArcReseau) obj.getGeoxObj(), (IRoadLine) obj);
     }
     // then compute the strokes
     RoadStrokesNetwork network = new RoadStrokesNetwork(map.keySet());
     HashSet<String> attributeNames = new HashSet<String>();
-    if (attributeName != null)
-      attributeNames.add(attributeName);
+    if (this.attributeName != null) {
+      attributeNames.add(this.attributeName);
+    }
     network.buildStrokes(attributeNames, 112.5, 45.0, true);
     // select the strokes big enough
     for (Stroke stroke : network.getStrokes()) {
-      if (stroke.getLength() > lengthThreshold) {
+      if (stroke.getLength() > this.lengthThreshold) {
         for (ArcReseau arc : stroke.getFeatures()) {
           IRoadLine road = map.get(arc);
           road.cancelElimination();
@@ -85,11 +88,14 @@ public class StrokeSelectionProcess extends ScaleMasterGeneProcess {
 
   @Override
   public void parameterise() {
-    this.lengthThreshold = (Double) getParamValueFromName("min_length");
-    if (this.hasParameter("name_attribute"))
-      this.attributeName = (String) getParamValueFromName("name_attribute");
-    if (this.hasParameter("deleted"))
-      this.deleted = (Boolean) getParamValueFromName("deleted");
+    this.lengthThreshold = (Double) this.getParamValueFromName("min_length");
+    if (this.hasParameter("name_attribute")) {
+      this.attributeName = (String) this
+          .getParamValueFromName("name_attribute");
+    }
+    if (this.hasParameter("deleted")) {
+      this.deleted = (Boolean) this.getParamValueFromName("deleted");
+    }
   }
 
 }

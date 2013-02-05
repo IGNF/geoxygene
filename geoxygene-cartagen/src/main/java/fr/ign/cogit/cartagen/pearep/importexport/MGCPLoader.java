@@ -45,7 +45,7 @@ public class MGCPLoader extends ShapeFileLoader {
    * @param dataset
    */
   public MGCPLoader(SymbolGroup symbGroup, String dbName) {
-    createNewDb(symbGroup, dbName);
+    this.createNewDb(symbGroup, dbName);
     this.setProjEpsg("32629");
   }
 
@@ -53,16 +53,16 @@ public class MGCPLoader extends ShapeFileLoader {
   public void loadData(File directory, List<String> listLayer)
       throws ShapefileException, IOException {
     try {
-      File shapePath;
 
       if (listLayer.size() == 0) {
         // ground transportation loading
 
         // shapePath = FileUtil.getNamedFileInDir(directory, "gtr");
-        loadLineStringClass(FileUtil.getNamedFileInDir(directory, "LAP030.shp")
-            .getAbsolutePath(), MGCPRoadLine.class, CartAGenDataSet.ROADS_POP,
-            IRoadLine.FEAT_TYPE_NAME, this.getDataset().getRoadNetwork(),
-            PeaRepDbType.MGCPPlusPlus);
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LAP030.shp")
+                .getAbsolutePath(), MGCPRoadLine.class,
+            CartAGenDataSet.ROADS_POP, IRoadLine.FEAT_TYPE_NAME, this
+                .getDataset().getRoadNetwork(), PeaRepDbType.MGCPPlusPlus);
 
         // loadLineStringClass(FileUtil.getNamedFileInDir(shapePath,
         // "trackl.shp")
@@ -81,8 +81,9 @@ public class MGCPLoader extends ShapeFileLoader {
         // hydro loading // shapePath =
         // FileUtil.getNamedFileInDir(directory,"iwa");
 
-        loadLineStringClass(FileUtil.getNamedFileInDir(directory, "LBH140.shp")
-            .getAbsolutePath(), MGCPWaterLine.class,
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LBH140.shp")
+                .getAbsolutePath(), MGCPWaterLine.class,
             CartAGenDataSet.WATER_LINES_POP, IWaterLine.FEAT_TYPE_NAME, this
                 .getDataset().getHydroNetwork(), PeaRepDbType.MGCPPlusPlus);
 
@@ -91,8 +92,9 @@ public class MGCPLoader extends ShapeFileLoader {
         // CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME, //
         // PeaRepDbType.VMAP2i);
 
-        loadPolygonClassUnionMulti(FileUtil.getNamedFileInDir(directory,
-            "ABH080.shp").getAbsolutePath(), MGCPWaterArea.class,
+        this.loadPolygonClassUnionMulti(
+            FileUtil.getNamedFileInDir(directory, "ABH080.shp")
+                .getAbsolutePath(), MGCPWaterArea.class,
             CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
 
@@ -108,8 +110,9 @@ public class MGCPLoader extends ShapeFileLoader {
         // elevation loading // shapePath =
         // FileUtil.getNamedFileInDir(directory, "ele");
 
-        loadLineStringClass(FileUtil.getNamedFileInDir(directory, "LCA010.shp")
-            .getAbsolutePath(), MGCPContourLine.class,
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LCA010.shp")
+                .getAbsolutePath(), MGCPContourLine.class,
             CartAGenDataSet.CONTOUR_LINES_POP, IContourLine.FEAT_TYPE_NAME,
             null, PeaRepDbType.MGCPPlusPlus);
 
@@ -201,7 +204,7 @@ public class MGCPLoader extends ShapeFileLoader {
         // CartAGenDataSet.BUILD_PT_POP, IBuildPoint.FEAT_TYPE_NAME,
         // DbType.VMAP2i);
 
-        loadPointClass(FileUtil.getNamedFileInDir(directory, "PAL015.shp")
+        this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAL015.shp")
             .getAbsolutePath(), MGCPBuildPoint.class,
             CartAGenDataSet.BUILD_PT_POP, IBuildPoint.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
@@ -214,8 +217,9 @@ public class MGCPLoader extends ShapeFileLoader {
         // .getAbsolutePath(), VMAPTower.class, CartAGenDataSet.MISC_PT_POP,
         // IMiscPoint.FEAT_TYPE_NAME, DbType.VMAP2i);
 
-        loadPolygonClass(FileUtil.getNamedFileInDir(directory, "AAL020.shp")
-            .getAbsolutePath(), MGCPBuiltUpArea.class,
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAL020.shp")
+                .getAbsolutePath(), MGCPBuiltUpArea.class,
             CartAGenDataSet.LANDUSE_AREAS_POP,
             ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus);
 
@@ -261,8 +265,9 @@ public class MGCPLoader extends ShapeFileLoader {
           if (layerName.equals("roadl")) {
             // ground transportation loading
             // shapePath = FileUtil.getNamedFileInDir(directory, "gtr");
-            loadLineStringClass(FileUtil.getNamedFileInDir(directory,
-                "LAP030.shp").getAbsolutePath(), MGCPRoadLine.class,
+            this.loadLineStringClass(
+                FileUtil.getNamedFileInDir(directory, "LAP030.shp")
+                    .getAbsolutePath(), MGCPRoadLine.class,
                 CartAGenDataSet.ROADS_POP, IRoadLine.FEAT_TYPE_NAME, this
                     .getDataset().getRoadNetwork(), PeaRepDbType.MGCPPlusPlus);
           }
@@ -270,16 +275,18 @@ public class MGCPLoader extends ShapeFileLoader {
           if (layerName.equals("waterl")) {
             // hydro loading
             // shapePath = FileUtil.getNamedFileInDir(directory, "iwa");
-            loadLineStringClass(FileUtil.getNamedFileInDir(directory,
-                "LBH140.shp").getAbsolutePath(), MGCPWaterLine.class,
+            this.loadLineStringClass(
+                FileUtil.getNamedFileInDir(directory, "LBH140.shp")
+                    .getAbsolutePath(), MGCPWaterLine.class,
                 CartAGenDataSet.WATER_LINES_POP, IWaterLine.FEAT_TYPE_NAME,
                 this.getDataset().getHydroNetwork(), PeaRepDbType.MGCPPlusPlus);
           }
 
           if (layerName.equals("lakea")) {
             // shapePath = FileUtil.getNamedFileInDir(directory, "iwa");
-            loadPolygonClassUnionMulti(FileUtil.getNamedFileInDir(directory,
-                "ABH080.shp").getAbsolutePath(), MGCPWaterArea.class,
+            this.loadPolygonClassUnionMulti(
+                FileUtil.getNamedFileInDir(directory, "ABH080.shp")
+                    .getAbsolutePath(), MGCPWaterArea.class,
                 CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
                 PeaRepDbType.MGCPPlusPlus);
           }
@@ -287,25 +294,28 @@ public class MGCPLoader extends ShapeFileLoader {
           if (layerName.equals("contourl")) {
             // elevation loading
             // shapePath = FileUtil.getNamedFileInDir(directory, "ele");
-            loadLineStringClass(FileUtil.getNamedFileInDir(directory,
-                "LCA010.shp").getAbsolutePath(), MGCPContourLine.class,
+            this.loadLineStringClass(
+                FileUtil.getNamedFileInDir(directory, "LCA010.shp")
+                    .getAbsolutePath(), MGCPContourLine.class,
                 CartAGenDataSet.CONTOUR_LINES_POP, IContourLine.FEAT_TYPE_NAME,
                 null, PeaRepDbType.MGCPPlusPlus);
           }
 
           if (layerName.equals("buildp")) {
             // shapePath = FileUtil.getNamedFileInDir(directory, "pop");
-            loadPointClass(FileUtil.getNamedFileInDir(directory, "PAL015.shp")
-                .getAbsolutePath(), MGCPBuildPoint.class,
+            this.loadPointClass(
+                FileUtil.getNamedFileInDir(directory, "PAL015.shp")
+                    .getAbsolutePath(), MGCPBuildPoint.class,
                 CartAGenDataSet.BUILD_PT_POP, IBuildPoint.FEAT_TYPE_NAME,
                 PeaRepDbType.MGCPPlusPlus);
           }
 
           if (layerName.equals("builtupa")) {
             // shapePath = FileUtil.getNamedFileInDir(directory, "pop");
-            loadPolygonClass(FileUtil
-                .getNamedFileInDir(directory, "AAL020.shp").getAbsolutePath(),
-                MGCPBuiltUpArea.class, CartAGenDataSet.LANDUSE_AREAS_POP,
+            this.loadPolygonClass(
+                FileUtil.getNamedFileInDir(directory, "AAL020.shp")
+                    .getAbsolutePath(), MGCPBuiltUpArea.class,
+                CartAGenDataSet.LANDUSE_AREAS_POP,
                 ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus);
           }
 
