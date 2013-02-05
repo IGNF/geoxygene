@@ -358,14 +358,11 @@ public class RoadNetworkMenu extends JMenu {
 
             INetworkSection road = (INetworkSection) sel;
             double symbolWidth = SectionSymbol.getUsedSymbolWidth(road) / 2;
-            double sigma = 150 * symbolWidth;
-            if (symbolWidth > 0.4) {
-              sigma = 215 * symbolWidth;
-            }
+            double sigma = 75.0 * symbolWidth;
 
-            ILineString filteredGeom = GaussianFilter
-                .gaussianFilter(road.getGeom(), sigma,
-                    GeneralisationSpecifications.getRESOLUTION());
+            ILineString filteredGeom = GaussianFilter.gaussianFilter(
+                road.getGeom(), sigma,
+                GeneralisationSpecifications.getRESOLUTION());
             road.setGeom(filteredGeom);
 
             if (RoadNetworkMenu.this.logger.isLoggable(Level.CONFIG)) {
