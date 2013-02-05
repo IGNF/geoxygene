@@ -14,7 +14,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -34,8 +33,6 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 import javax.swing.text.SimpleAttributeSet;
-
-import org.geotools.data.shapefile.shp.ShapefileException;
 
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
@@ -178,8 +175,8 @@ public class ImportDataFrame extends JFrame implements ActionListener {
     this.txtPath.setPreferredSize(new Dimension(170, 20));
     this.txtPath.setMaximumSize(new Dimension(170, 20));
     this.txtPath.setMinimumSize(new Dimension(170, 20));
-    ImageIcon icon = new ImageIcon(ImportDataFrame.class
-        .getResource("/images/browse.jpeg").getPath().replaceAll("%20", " "));
+    ImageIcon icon = new ImageIcon(ImportDataFrame.class.getResource(
+        "/images/browse.jpeg").getPath().replaceAll("%20", " "));
     this.btnBrowse = new JButton(icon);
     this.btnBrowse.addActionListener(this);
     this.btnBrowse.setActionCommand("Browse");
@@ -253,7 +250,7 @@ public class ImportDataFrame extends JFrame implements ActionListener {
 
     } else if (e.getActionCommand().equals("OK")) {
 
-      if (!this.isInitial) {
+      if (!isInitial) {
 
         this.sourceDlm = (SourceDLM) this.cbSourceDlm.getSelectedItem();
         this.setScale(Integer.valueOf(this.txtScale.getText()));
@@ -285,9 +282,9 @@ public class ImportDataFrame extends JFrame implements ActionListener {
 
         if (this.cbSourceDlm.getSelectedItem() == SourceDLM.SPECIAL_CARTAGEN) {
           SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(
-              SourceDLM.SPECIAL_CARTAGEN, this.scale);
-          CartAGenDoc.getInstance().getCurrentDataset()
-              .setSymbols(SymbolList.getSymbolList(symbGroup));
+              SourceDLM.SPECIAL_CARTAGEN, scale);
+          CartAGenDoc.getInstance().getCurrentDataset().setSymbols(
+              SymbolList.getSymbolList(symbGroup));
 
           LoadingFrame.cheminAbsolu = this.filePath;
           DataLoadingConfig ccd = new DataLoadingConfig();
@@ -310,18 +307,10 @@ public class ImportDataFrame extends JFrame implements ActionListener {
           CartagenApplication.getInstance().setCheminDonnees(this.filePath);
 
           this.setVisible(false);
+          // loadingFrameMultiBD.setVisible(true);
           EnrichFrame enrichFrame = EnrichFrame.getInstance();
           enrichFrame.setVersion(2);
           enrichFrame.setVisible(true);
-
-          try {
-            LoaderUtil.computeDataLoading(this.sourceDlm, this.scale);
-
-          } catch (ShapefileException e1) {
-            e1.printStackTrace();
-          } catch (IOException e1) {
-            e1.printStackTrace();
-          }
         }
 
         CartagenApplication
@@ -330,9 +319,7 @@ public class ImportDataFrame extends JFrame implements ActionListener {
             .loadLayers(
                 dataset,
                 CartagenApplication.getInstance().getLayerGroup().symbolisationDisplay);
-        CartagenApplication
-            .getInstance()
-            .getLayerGroup()
+        CartagenApplication.getInstance().getLayerGroup()
             .loadInterfaceWithLayers(
                 CartagenApplication.getInstance().getFrame().getLayerManager(),
                 dataset.getSymbols());
@@ -356,8 +343,8 @@ public class ImportDataFrame extends JFrame implements ActionListener {
         this.datasetName = this.txtDataset.getText();
         this.filePath = this.txtPath.getText();
         if (this.rbFile.isSelected()) {
-          ImportDataFrame.extentFile = true;
-          ImportDataFrame.extentClass = this.txtExtent.getText();
+          extentFile = true;
+          extentClass = this.txtExtent.getText();
         }
         // create the new CartAGen dataset
         ShapeFileDB database = new ShapeFileDB(this.datasetName);
@@ -366,8 +353,8 @@ public class ImportDataFrame extends JFrame implements ActionListener {
         database.setSystemPath(this.filePath);
         database.setDocument(CartAGenDoc.getInstance());
         CartAGenDataSet dataset = new CartAGenDataSet();
-        CartagenApplication.getInstance().getDocument()
-            .addDatabase(this.datasetName, database);
+        CartagenApplication.getInstance().getDocument().addDatabase(
+            this.datasetName, database);
         LoadingFrame.cheminAbsolu = this.filePath;
         database.setDataSet(dataset);
         if (this.cbType.getSelectedItem().equals("DLM")) {
@@ -377,20 +364,18 @@ public class ImportDataFrame extends JFrame implements ActionListener {
         }
 
         SymbolGroup symbGroup = SymbolsUtil.getSymbolGroup(
-            SourceDLM.BD_TOPO_V2, this.scale);
+            SourceDLM.BD_TOPO_V2, scale);
         dataset.setSymbols(SymbolList.getSymbolList(symbGroup));
 
-        CartagenApplication.getInstance().loadData(this.filePath,
-            this.sourceDlm, this.scale, dataset);
+        CartagenApplication.getInstance().loadData(this.filePath, sourceDlm,
+            scale, dataset);
         // CartagenApplication.getInstance().loadDat(sourceDlm, scale);
 
         CartAGenDoc.getInstance().setInitialDataset(dataset);
 
+        CartagenApplication.getInstance().getInitialLayerGroup().loadLayers(
+            dataset, true);
         CartagenApplication.getInstance().getInitialLayerGroup()
-            .loadLayers(dataset, true);
-        CartagenApplication
-            .getInstance()
-            .getInitialLayerGroup()
             .loadInterfaceWithLayers(
                 CartagenApplication.getInstance().getFrame().getLayerManager(),
                 CartagenApplication.getInstance().getDocument()
