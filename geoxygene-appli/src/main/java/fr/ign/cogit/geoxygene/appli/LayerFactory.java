@@ -398,7 +398,7 @@ public class LayerFactory{
     public Layer createLayer(String layerName,
         Class<? extends IGeometry> geometryType, Color strokeColor,
         Color fillColor, float opacity, float strokeWidth) {
-      LayerFactory.logger.severe("create Layer " + layerName + " " + geometryType + " " + strokeColor + " " + fillColor + " " + opacity + " " + strokeWidth);
+      LayerFactory.logger.trace("create Layer " + layerName + " " + geometryType + " " + strokeColor + " " + fillColor + " " + opacity + " " + strokeWidth);
       Layer layer = new NamedLayer(this.model, layerName);
       UserStyle style = new UserStyle();
       style.setName("Style créé pour le layer " + layerName);//$NON-NLS-1$
