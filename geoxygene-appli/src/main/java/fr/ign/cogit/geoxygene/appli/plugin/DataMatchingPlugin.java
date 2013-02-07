@@ -24,8 +24,11 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JTabbedPane;
 
 import org.apache.log4j.Logger;
 
@@ -45,21 +48,22 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.feature.DataSet;
+import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.style.Layer;
+import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 /**
  * Data matching plugin.
  * @author Julien Perret
  */
-public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
-    ActionListener {
-  private static Logger LOGGER = Logger.getLogger(DataMatchingPlugin.class
-      .getName());
-  private GeOxygeneApplication application;
+public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionListener {
+  
+    private static Logger logger = Logger.getLogger(DataMatchingPlugin.class.getName());
+    private GeOxygeneApplication application;
 
   /**
    * Initialize the plugin.
@@ -115,15 +119,15 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
     EnsembleDeLiens liens = AppariementIO.appariementDeJeuxGeo(param, reseaux);
     for (Lien feature : liens) {
       Lien lien = feature;
-      DataMatchingPlugin.LOGGER.info("Lien = " + lien); //$NON-NLS-1$
-      DataMatchingPlugin.LOGGER.info("Ref = " + lien.getObjetsRef()); //$NON-NLS-1$
-      DataMatchingPlugin.LOGGER.info("Comp = " + lien.getObjetsComp()); //$NON-NLS-1$
-      DataMatchingPlugin.LOGGER.info("Evaluation = " + lien.getEvaluation()); //$NON-NLS-1$
+      logger.info("Lien = " + lien); //$NON-NLS-1$
+      logger.info("Ref = " + lien.getObjetsRef()); //$NON-NLS-1$
+      logger.info("Comp = " + lien.getObjetsComp()); //$NON-NLS-1$
+      logger.info("Evaluation = " + lien.getEvaluation()); //$NON-NLS-1$
     }
     CarteTopo reseauRecale = Recalage.recalage(reseaux.get(0), reseaux.get(1),
         liens);
     IPopulation<Arc> arcs = reseauRecale.getPopArcs();
-    DataMatchingPlugin.LOGGER.info(arcs.getNom());
+    logger.info(arcs.getNom());
     for (Lien lien : liens) {
       IGeometry geom = lien.getGeom();
       if (geom instanceof GM_Aggregate<?>) {
@@ -132,43 +136,67 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
           if (lineGeom instanceof GM_LineString) {
             multiCurve.add((GM_LineString) lineGeom);
           } else {
-            DataMatchingPlugin.LOGGER
-                .error(lineGeom.getClass().getSimpleName());
+            logger.error(lineGeom.getClass().getSimpleName());
           }
         }
         lien.setGeom(multiCurve);
       } else {
-        DataMatchingPlugin.LOGGER.info(geom.getClass().getSimpleName());
+        logger.info(geom.getClass().getSimpleName());
       }
     }
     DataSet.getInstance().addPopulation(popRef);
     DataSet.getInstance().addPopulation(popComp);
-    DataMatchingPlugin.LOGGER.info(arcs.getNom());
+    logger.info(arcs.getNom());
     DataSet.getInstance().addPopulation(reseauRecale.getPopArcs());
-    DataMatchingPlugin.LOGGER.info(arcs.getNom());
+    logger.info(arcs.getNom());
     DataSet.getInstance().addPopulation(liens);
+    
+    logger.trace("----------------------------------------------------------");
+    logger.trace("Taille popRef = " + popRef.size());
+    logger.trace("Taille popComp = " + popComp.size());
+    logger.trace("Nom popRef = " + popRef.getNom());
+    logger.trace("----------------------------------------------------------");
+    
     ProjectFrame p1 = this.application.getFrame().newProjectFrame();
     p1.setTitle("Reference Pop"); //$NON-NLS-1$
-    p1.addFeatureCollection(popRef, popRef.getNom(),null);
+    p1.getDataSet().addPopulation(popRef);
+    p1.addFeatureCollection(popRef, popRef.getNom(), null);
+    
+    // StyledLayerDescriptor sld = StyledLayerDescriptor.unmarshall(DataMatchingPlugin.class.getResource("/sld/appariementSLD.xml").getPath());
+    // Layer layerLigneRef = sld.getLayer("bdtopo_route");
+    // p1.addLayer(layerLigneRef);
+    
     Viewport viewport = p1.getLayerViewPanel().getViewport();
+    
     ProjectFrame p2 = this.application.getFrame().newProjectFrame();
-    p2.setTitle("Comparison Pop"); //$NON-NLS-1$
-    p2.addFeatureCollection(popComp, popComp.getNom(),null);
+    p2.setTitle("Comparaison Pop"); //$NON-NLS-1$
+    p2.getDataSet().addPopulation(popComp);
+    p2.addFeatureCollection(popComp, popComp.getNom(), null);
     p2.getLayerViewPanel().setViewport(viewport);
     viewport.getLayerViewPanels().add(p2.getLayerViewPanel());
+    
     ProjectFrame p3 = this.application.getFrame().newProjectFrame();
     p3.setTitle("Corrected Pop"); //$NON-NLS-1$
-    p3.addFeatureCollection(arcs, arcs.getNom(),null);
+    p3.getDataSet().addPopulation(arcs);
+    p3.addFeatureCollection(arcs, arcs.getNom(), null);
     p3.getLayerViewPanel().setViewport(viewport);
     viewport.getLayerViewPanels().add(p3.getLayerViewPanel());
+    
     ProjectFrame p4 = this.application.getFrame().newProjectFrame();
     p4.getLayerViewPanel().setViewport(viewport);
     viewport.getLayerViewPanels().add(p4.getLayerViewPanel());
     p4.setTitle("Links"); //$NON-NLS-1$
-    p4.addFeatureCollection(popRef, popRef.getNom(),null);
-    p4.addFeatureCollection(popComp, popComp.getNom(),null);
-    Layer layer = p4.addFeatureCollection(liens, liens.getNom(),null);
+    p4.getDataSet().addPopulation(popRef);
+    p4.getDataSet().addPopulation(popComp);
+    p4.getDataSet().addPopulation(liens);
+    p4.addFeatureCollection(popRef, popRef.getNom(), null);
+    p4.addFeatureCollection(popComp, popComp.getNom(), null);
+    Layer layer = p4.addFeatureCollection(liens, liens.getNom(), null);
+    
     layer.getSymbolizer().getStroke().setStrokeWidth(2);
-    DataMatchingPlugin.LOGGER.info("Finished"); //$NON-NLS-1$
+    logger.info("Finished"); //$NON-NLS-1$
+    
+    
+    
   }
 }
