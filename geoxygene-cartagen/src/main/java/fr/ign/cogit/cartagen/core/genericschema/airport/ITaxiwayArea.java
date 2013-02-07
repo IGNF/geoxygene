@@ -7,15 +7,17 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.cartagen.core.genericschema.misc;
+package fr.ign.cogit.cartagen.core.genericschema.airport;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObjSurf;
 
-public interface IAirportArea extends IGeneObjSurf {
+public interface ITaxiwayArea extends IGeneObjSurf {
 
-  public static final String FEAT_TYPE_NAME = "AirportArea"; //$NON-NLS-1$
+  public enum TaxiwayType {
+    TAXIWAY, APRON
+  }
 
-  public String getName();
+  public static final String FEAT_TYPE_NAME = "TaxiwayArea"; //$NON-NLS-1$
 
-  public int getZ();
+  public TaxiwayType getType();
 }

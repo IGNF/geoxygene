@@ -290,7 +290,6 @@ public class ImportDataFrame extends JFrame implements ActionListener {
           DataLoadingConfig ccd = new DataLoadingConfig();
           this.filePath = this.filePath.replace("\\", "/");
           ccd.configuration(this.filePath);
-          System.out.println(this.filePath);
           CartagenApplication.getInstance().setCheminDonnees(this.filePath);
           this.setVisible(false);
           LoadingFrame loadingFrame = new LoadingFrame(new File(this.filePath));

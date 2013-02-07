@@ -10,7 +10,6 @@
 package fr.ign.cogit.cartagen.pearep.mgcp;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -18,7 +17,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkFace;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
@@ -37,8 +35,7 @@ import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
  * ###### IGN / CartAGen ###### Title: WaterLine Description: Tronçons
  * hydrographiques Author: J. Renard Date: 18/09/2009
  */
-public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
-    MGCPFeature {
+public class MGCPWaterLine extends MGCPFeature implements IWaterLine {
 
   /**
    * Associated Geoxygene schema object
@@ -87,6 +84,9 @@ public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
     this.nfn = nfn;
   }
 
+  /**
+   * @param type
+   */
   public MGCPWaterLine(ILineString line, HashMap<String, Object> attributes,
       @SuppressWarnings("unused") PeaRepDbType type) {
     super();
@@ -341,12 +341,6 @@ public class MGCPWaterLine extends GeneObjDefault implements IWaterLine,
 
   public void setNfn(String nfn) {
     this.nfn = nfn;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(MGCPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

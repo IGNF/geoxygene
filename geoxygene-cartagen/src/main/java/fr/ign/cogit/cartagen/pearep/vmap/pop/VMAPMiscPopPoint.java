@@ -10,11 +10,9 @@
 package fr.ign.cogit.cartagen.pearep.vmap.pop;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscPoint;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
@@ -23,8 +21,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.schemageo.api.activite.PointRepresentatifActiviteInteret;
 import fr.ign.cogit.geoxygene.schemageo.impl.activite.PointRepresentatifActiviteInteretImpl;
 
-public class VMAPMiscPopPoint extends GeneObjDefault implements IMiscPoint,
-    VMAPFeature {
+public class VMAPMiscPopPoint extends VMAPFeature implements IMiscPoint {
 
   private PointRepresentatifActiviteInteret geoxObj;
 
@@ -33,6 +30,9 @@ public class VMAPMiscPopPoint extends GeneObjDefault implements IMiscPoint,
   private int acc, fuc, exs, pfh, ppt, smc, stl;
   private long ara;
 
+  /**
+   * @param type
+   */
   public VMAPMiscPopPoint(IPoint point, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     super();
@@ -158,12 +158,6 @@ public class VMAPMiscPopPoint extends GeneObjDefault implements IMiscPoint,
 
   public void setStl(int stl) {
     this.stl = stl;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

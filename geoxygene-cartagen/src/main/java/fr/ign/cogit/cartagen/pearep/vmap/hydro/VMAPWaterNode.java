@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -26,7 +25,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.SymbolShape;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
@@ -48,8 +46,7 @@ import fr.ign.cogit.geoxygene.schemageo.impl.hydro.NoeudHydrographiqueImpl;
  * hydrographiques Author: J. Renard Date: 18/09/2009
  */
 @Access(AccessType.PROPERTY)
-public class VMAPWaterNode extends GeneObjDefault implements IWaterNode,
-    VMAPFeature {
+public class VMAPWaterNode extends VMAPFeature implements IWaterNode {
 
   private NoeudHydrographique geoxObj;
   private Collection<INetworkSection> inSections, outSections;
@@ -193,12 +190,6 @@ public class VMAPWaterNode extends GeneObjDefault implements IWaterNode,
   @EncodedRelation(targetEntity = VMAPWaterLine.class, invClass = INetworkNode.class, methodName = "OutSections", invMethodName = "InitialNode", nToM = false)
   public List<Integer> getOutSectionsIds() {
     return this.outSectionsIds;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO
-    return null;
   }
 
   @Override

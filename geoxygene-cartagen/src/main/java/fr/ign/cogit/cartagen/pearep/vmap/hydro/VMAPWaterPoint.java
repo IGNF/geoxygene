@@ -10,7 +10,6 @@
 package fr.ign.cogit.cartagen.pearep.vmap.hydro;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -20,7 +19,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterPoint;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
@@ -34,8 +32,7 @@ import fr.ign.cogit.geoxygene.schemageo.impl.hydro.PointDEauImpl;
  * Author: J. Renard Date: 18/09/2009
  */
 @Access(AccessType.PROPERTY)
-public class VMAPWaterPoint extends GeneObjDefault implements IWaterPoint,
-    VMAPFeature {
+public class VMAPWaterPoint extends VMAPFeature implements IWaterPoint {
 
   /**
    * Associated Geoxygene schema object
@@ -68,6 +65,7 @@ public class VMAPWaterPoint extends GeneObjDefault implements IWaterPoint,
 
   /**
    * Cosntructor from springp class from VMAP2i model
+   * @param type
    */
   public VMAPWaterPoint(IPoint point, HashMap<String, Object> attributes,
       PeaRepDbType type) {
@@ -196,12 +194,6 @@ public class VMAPWaterPoint extends GeneObjDefault implements IWaterPoint,
     this.geoxObj = new PointDEauImpl();
     this.geoxObj.setGeom(geom);
     this.geoxObj.setNom(name);
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

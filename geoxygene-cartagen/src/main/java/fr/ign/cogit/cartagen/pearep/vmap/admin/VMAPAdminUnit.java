@@ -10,23 +10,23 @@
 package fr.ign.cogit.cartagen.pearep.vmap.admin;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.admin.ISimpleAdminUnit;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 
-public class VMAPAdminUnit extends GeneObjDefault implements ISimpleAdminUnit,
-    VMAPFeature {
+public class VMAPAdminUnit extends VMAPFeature implements ISimpleAdminUnit {
 
   // VMAP2i attributes
   private String fCode, name;
   private int cod, use;
 
+  /**
+   * @param type
+   */
   public VMAPAdminUnit(IPolygon poly, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     super();
@@ -74,12 +74,6 @@ public class VMAPAdminUnit extends GeneObjDefault implements ISimpleAdminUnit,
 
   public void setUse(int use) {
     this.use = use;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

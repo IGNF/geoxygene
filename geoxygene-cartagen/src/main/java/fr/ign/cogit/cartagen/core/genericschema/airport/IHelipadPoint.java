@@ -7,15 +7,11 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.cartagen.core.genericschema.misc;
+package fr.ign.cogit.cartagen.core.genericschema.airport;
 
-import fr.ign.cogit.cartagen.core.genericschema.IGeneObjSurf;
+import fr.ign.cogit.cartagen.core.genericschema.IGeneObjPoint;
 
-public interface IRunwayArea extends IGeneObjSurf {
+public interface IHelipadPoint extends IGeneObjPoint {
 
-  public static final String FEAT_TYPE_NAME = "RunwayArea"; //$NON-NLS-1$
-
-  public IAirportArea getAirport();
-
-  public int getZ();
+  public static final String FEAT_TYPE_NAME = "HelipadPoint"; //$NON-NLS-1$
 }

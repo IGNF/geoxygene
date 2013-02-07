@@ -10,11 +10,9 @@
 package fr.ign.cogit.cartagen.pearep.vmap.elev;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
@@ -33,8 +31,7 @@ import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
  * niveau Author: J. Renard Date: 18/09/2009
  */
 
-public class VMAPContourLine extends GeneObjDefault implements IContourLine,
-    VMAPFeature {
+public class VMAPContourLine extends VMAPFeature implements IContourLine {
 
   /**
    * Associated Geoxygene schema object
@@ -173,12 +170,6 @@ public class VMAPContourLine extends GeneObjDefault implements IContourLine,
 
   public void setMcc(int mcc) {
     this.mcc = mcc;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   public int getTileId() {

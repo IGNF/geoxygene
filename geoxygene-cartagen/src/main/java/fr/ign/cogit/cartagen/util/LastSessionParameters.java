@@ -46,6 +46,17 @@ public class LastSessionParameters {
 
   private void parseXML() {
     this.file = new File(LastSessionParameters.filePath);
+    // case where the file does not exist
+    if (!file.exists())
+      try {
+        file.createNewFile();
+        writeToXml();
+        return;
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      } catch (TransformerException e) {
+        e.printStackTrace();
+      }
     // le document XML
     Document docXML = null;
     try {
@@ -97,5 +108,14 @@ public class LastSessionParameters {
 
   public Object getParameter(String name) {
     return this.parameters.get(name);
+  }
+
+  /**
+   * Checks if a given parameter has been stored in last session.
+   * @param name
+   * @return
+   */
+  public boolean hasParameter(String name) {
+    return this.parameters.containsKey(name);
   }
 }

@@ -10,11 +10,9 @@
 package fr.ign.cogit.cartagen.pearep.mgcp;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -22,8 +20,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.AutreConstruction;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.AutreConstructionImpl;
 
-public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
-    MGCPFeature {
+public class MGCPBuildPoint extends MGCPFeature implements IBuildPoint {
 
   private AutreConstruction geoxObj;
 
@@ -32,6 +29,9 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
   private long acc, afc, cef, cfc, cit, cus, ddc, ebt, gfc, icf, mfc, paf, psf,
       res, rfc, sfy, suc, tfc, uuc, coe, fun, hwt, smc, ssr, caa;
 
+  /**
+   * @param type
+   */
   public MGCPBuildPoint(IPoint point, HashMap<String, Object> attributes,
       @SuppressWarnings("unused") PeaRepDbType type) {
     super();
@@ -190,12 +190,6 @@ public class MGCPBuildPoint extends GeneObjDefault implements IBuildPoint,
 
   public void setWid(String wid) {
     this.wid = wid;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(MGCPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   public long getAfc() {

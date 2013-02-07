@@ -23,6 +23,10 @@ import javax.media.jai.RenderedOp;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea.TaxiwayType;
+import fr.ign.cogit.cartagen.core.genericschema.misc.IPointOfInterest;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuiltUpArea;
 import fr.ign.cogit.cartagen.pearep.vmap.ind.VMAPObstrPoint;
 import fr.ign.cogit.cartagen.pearep.vmap.ind.VMAPStoragePoint;
@@ -35,6 +39,7 @@ import fr.ign.cogit.cartagen.pearep.vmap.veg.VMAPCrop;
 import fr.ign.cogit.cartagen.pearep.vmap.veg.VMAPGrass;
 import fr.ign.cogit.cartagen.pearep.vmap.veg.VMAPOrchard;
 import fr.ign.cogit.cartagen.pearep.vmap.veg.VMAPSwamp;
+import fr.ign.cogit.cartagen.software.GeneralisationLegend;
 import fr.ign.cogit.cartagen.software.interfacecartagen.AbstractLayerGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.GeneralisationSymbolisation;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
@@ -43,6 +48,7 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.VisuPanel;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.style.ExternalGraphic;
 
 public class SymbolisationPeaRep {
@@ -95,6 +101,41 @@ public class SymbolisationPeaRep {
         }
         if (obj instanceof VMAPOrchard) {
           SymbolisationPeaRep.orchardSymbol(layerGroup, pv, obj);
+        }
+      }
+    };
+  }
+
+  /**
+   * symbolise the runways.
+   * @param layerGroup
+   * @return
+   */
+  public static Symbolisation runways(final AbstractLayerGroup layerGroup) {
+    return new Symbolisation() {
+      @Override
+      public void draw(VisuPanel pv, IFeature obj) {
+        if (obj.isDeleted()) {
+          return;
+        }
+
+        // verification
+        if (!(obj.getGeom() instanceof IPolygon)
+            && !(obj.getGeom() instanceof IMultiSurface<?>)) {
+          SymbolisationPeaRep.logger.warn("probleme dans le dessin de " + obj
+              + ". Mauvais type de geometrie: "
+              + obj.getGeom().getClass().getSimpleName());
+          return;
+        }
+
+        if (obj instanceof IRunwayArea) {
+          pv.draw(GeneralisationLegend.RUNWAY_SURFACE_COULEUR, obj.getGeom());
+        }
+        if (obj instanceof ITaxiwayArea) {
+          if (((ITaxiwayArea) obj).getType().equals(TaxiwayType.TAXIWAY))
+            pv.draw(new Color(210, 202, 236), (IPolygon) obj.getGeom());
+          else
+            pv.draw(new Color(187, 172, 172), (IPolygon) obj.getGeom());
         }
       }
     };
@@ -279,5 +320,33 @@ public class SymbolisationPeaRep {
       IFeature obj) {
     GeneralisationSymbolisation.drawPtSymbolRaster(layerGroup, pv, obj,
         "/images/symbols/mobilephonetower.png", 40, 40);
+  }
+
+  /**
+   * symbolise the OSM points of interest.
+   * @return
+   */
+  public static Symbolisation pointsOfInterest(
+      final AbstractLayerGroup layerGroup, final float symbolSize) {
+    return new Symbolisation() {
+      @Override
+      public void draw(VisuPanel pv, IFeature obj) {
+        if (obj.isDeleted()) {
+          return;
+        }
+
+        // verification
+        if (!(obj.getGeom() instanceof IPoint)
+            && !(obj.getGeom() instanceof IMultiSurface<?>)) {
+          logger.warn("probleme dans le dessin de " + obj
+              + ". Mauvais type de geometrie: "
+              + obj.getGeom().getClass().getSimpleName());
+          return;
+        }
+
+        GeneralisationSymbolisation.drawPtSymbolRaster(layerGroup, pv, obj,
+            ((IPointOfInterest) obj).getSymbol(), symbolSize);
+      }
+    };
   }
 }

@@ -21,6 +21,7 @@ import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.AbstractLayerGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.GeneralisationSymbolisation;
+import fr.ign.cogit.cartagen.software.interfacecartagen.LayerGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.LayerManager;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.LoadedLayer;
@@ -101,6 +102,9 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
   private LoadedLayer layerRunways;
   public static String LAYER_RUNWAY = "layerRunways";
 
+  protected LoadedLayer layerPOI;
+  public static String LAYER_POI = "layerPOI";
+
   // add a special points to correspondant layer
 
   /**
@@ -159,6 +163,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
       return this.layerAirports;
     } else if (layer.equals(PeaRepLayerGroup.LAYER_RUNWAY)) {
       return this.layerRunways;
+    } else if (layer.equals(LayerGroup.LAYER_POI)) {
+      return this.layerPOI;
     } else {
       return null;
     }
@@ -224,7 +230,7 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
 
     this.layerAirports = new LoadedLayer(dataSet.getAirports());
     this.layerRunways = new LoadedLayer(dataSet.getRunways());
-
+    this.layerPOI = new LoadedLayer(dataSet.getPOIs());
   }
 
   /**
@@ -266,7 +272,7 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
 
     this.layerAirports = new LoadedLayer(dataSet.getAirports());
     this.layerRunways = new LoadedLayer(dataSet.getRunways());
-
+    this.layerPOI = new LoadedLayer(dataSet.getPOIs());
   }
 
   /**
@@ -282,8 +288,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
       AbstractButton accidentCheckbox = new JCheckBox();
       accidentCheckbox.setSelected(true);
 
-      layerManager.addSymbolisedLayer(this.layerSpecialPoint, Symbolisation
-          .specialPoint(this.symbolisationDisplay), b);
+      layerManager.addSymbolisedLayer(this.layerSpecialPoint,
+          Symbolisation.specialPoint(this.symbolisationDisplay), b);
 
     }
 
@@ -334,6 +340,7 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
     layerManager.addLayer(this.layerSpecialPoint);
     layerManager.addLayer(this.layerAirports);
     layerManager.addLayer(this.layerRunways);
+    layerManager.addLayer(this.layerPOI);
 
     // LES COUCHES SYMBOLISEES
 
@@ -365,8 +372,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
 
     // dessin de l'occupation du sol
 
-    layerManager.addSymbolisedLayer(this.layerLandUseArea, SymbolisationPeaRep
-        .landuse(this), this.cVoirOccSol);
+    layerManager.addSymbolisedLayer(this.layerLandUseArea,
+        SymbolisationPeaRep.landuse(this), this.cVoirOccSol);
 
     // ville
     layerManager.addSymbolisedLayer(this.layerTown, Symbolisation.surface(
@@ -385,14 +392,12 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
         GeneralisationSymbolisation.ilotColore(), this.cVoirIlot);
 
     // Airports
-    layerManager.addSymbolisedLayer(this.layerAirports, Symbolisation.surface(
-        GeneralisationLegend.AIRPORT_SURFACE_COULEUR,
-        GeneralisationLegend.AIRPORT_CONTOUR_COULEUR,
-        GeneralisationLegend.AIRPORT_CONTOUR_LARGEUR, this), this.cVoirAirport);
-    layerManager.addSymbolisedLayer(this.layerRunways, Symbolisation.surface(
-        GeneralisationLegend.RUNWAY_SURFACE_COULEUR,
-        GeneralisationLegend.RUNWAY_CONTOUR_COULEUR,
-        GeneralisationLegend.RUNWAY_CONTOUR_LARGEUR, this), this.cVoirAirport);
+    layerManager.addSymbolisedLayer(this.layerAirports, Symbolisation
+        .lineOrSurfaceWidthColourTransparency(
+            GeneralisationLegend.AIRPORT_SURFACE_COULEUR, 120,
+            GeneralisationLegend.AIRPORT_CONTOUR_LARGEUR), this.cVoirAirport);
+    layerManager.addSymbolisedLayer(this.layerRunways,
+        SymbolisationPeaRep.runways(this), this.cVoirAirport);
 
     // ombrage transparent
     layerManager.addSymbolisedLayer(this.layerReliefTriangle,
@@ -579,9 +584,10 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
           .getRoadNetMenu().mNoeudsResRoutierVoir);
 
       layerManager
-          .addSymbolisedLayer(this.layerRoadLine, GeneralisationSymbolisation
-              .tronconRouteDecale(), DataThemesGUIComponent.getInstance()
-              .getRoadNetMenu().mRoutierVoirRouteDecalee);
+          .addSymbolisedLayer(
+              this.layerRoadLine,
+              GeneralisationSymbolisation.tronconRouteDecale(),
+              DataThemesGUIComponent.getInstance().getRoadNetMenu().mRoutierVoirRouteDecalee);
     }
 
     // reseau ferroviaire
@@ -599,6 +605,12 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
             GeneralisationLegend.ALIGNEMENT_CONTOUR_COULEUR,
             GeneralisationLegend.ALIGNEMENT_CONTOUR_LARGEUR, this),
         this.cVoirAlign);
+
+    // Points of Interest
+    layerManager
+        .addSymbolisedLayer(this.layerPOI,
+            SymbolisationPeaRep.pointsOfInterest(this, (float) 0.75),
+            this.cVoirPOI);
 
     // LES COUCHES D'OBJETS STRUCTURELS (POINTS, SEGMENTS)
 
@@ -635,9 +647,11 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
         .getBuildingMenu().mVoirAltitude);
 
     // orientation generale
-    layerManager.addSymbolisedLayer(this.layerBuilding, Symbolisation
-        .texte("getGeneralOrientationDegree"), DataThemesGUIComponent
-        .getInstance().getBuildingMenu().mVoirOrientationGenerale);
+    layerManager
+        .addSymbolisedLayer(
+            this.layerBuilding,
+            Symbolisation.texte("getGeneralOrientationDegree"),
+            DataThemesGUIComponent.getInstance().getBuildingMenu().mVoirOrientationGenerale);
 
     // rosace orientations murs
     layerManager.addSymbolisedLayer(this.layerBuilding,
@@ -646,14 +660,17 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
 
     // rosace encombrement
     layerManager
-        .addSymbolisedLayer(this.layerBuilding, GeneralisationSymbolisation
-            .batimentRosaceEncombrement(), DataThemesGUIComponent.getInstance()
-            .getBuildingMenu().mVoirRosaceEncombrement);
+        .addSymbolisedLayer(
+            this.layerBuilding,
+            GeneralisationSymbolisation.batimentRosaceEncombrement(),
+            DataThemesGUIComponent.getInstance().getBuildingMenu().mVoirRosaceEncombrement);
 
     // valeur orientation murs
-    layerManager.addSymbolisedLayer(this.layerBuilding, Symbolisation
-        .texte("getSidesOrientationDegree"), DataThemesGUIComponent
-        .getInstance().getBuildingMenu().mVoirOrientationMurs);
+    layerManager
+        .addSymbolisedLayer(
+            this.layerBuilding,
+            Symbolisation.texte("getSidesOrientationDegree"),
+            DataThemesGUIComponent.getInstance().getBuildingMenu().mVoirOrientationMurs);
 
     // elongation
     layerManager.addSymbolisedLayer(this.layerBuilding, Symbolisation
@@ -687,15 +704,18 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
         .getBlockMenu().mVoirDensiteSimulee);
 
     // moyenne taux superposition batiments
-    layerManager.addSymbolisedLayer(this.layerBlock, Symbolisation
-        .texte("getBuidlingsOverlappingRateMean"), DataThemesGUIComponent
-        .getInstance().getBlockMenu().mVoirTauxSuperpositionBatiments);
+    layerManager
+        .addSymbolisedLayer(
+            this.layerBlock,
+            Symbolisation.texte("getBuidlingsOverlappingRateMean"),
+            DataThemesGUIComponent.getInstance().getBlockMenu().mVoirTauxSuperpositionBatiments);
 
     // cout suppression batiments
     layerManager
-        .addSymbolisedLayer(this.layerBlock, GeneralisationSymbolisation
-            .ilotCoutsSuppressionBatiments(), DataThemesGUIComponent
-            .getInstance().getBlockMenu().mVoirCoutSuppressionBatiments);
+        .addSymbolisedLayer(
+            this.layerBlock,
+            GeneralisationSymbolisation.ilotCoutsSuppressionBatiments(),
+            DataThemesGUIComponent.getInstance().getBlockMenu().mVoirCoutSuppressionBatiments);
 
     // textes villes
     // id
@@ -728,9 +748,11 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
 
     // taux superposition routier
 
-    layerManager.addSymbolisedLayer(this.layerWaterLine, Symbolisation
-        .texte("getTauxSuperpositionRoutier"), DataThemesGUIComponent
-        .getInstance().getHydroNetMenu().mVoirTauxSuperpositionRoutier);
+    layerManager
+        .addSymbolisedLayer(
+            this.layerWaterLine,
+            Symbolisation.texte("getTauxSuperpositionRoutier"),
+            DataThemesGUIComponent.getInstance().getHydroNetMenu().mVoirTauxSuperpositionRoutier);
 
     // voir textes pente des triangles
     layerManager.addSymbolisedLayer(this.layerReliefTriangle, Symbolisation
@@ -761,8 +783,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
 
     // dessin de l'occupation du sol
 
-    layerManager.addSymbolisedLayer(this.layerLandUseArea, SymbolisationPeaRep
-        .landuse(this), this.cVoirOccSol);
+    layerManager.addSymbolisedLayer(this.layerLandUseArea,
+        SymbolisationPeaRep.landuse(this), this.cVoirOccSol);
 
     // ville
     layerManager.addSymbolisedLayer(this.layerTown, Symbolisation.surface(
@@ -775,8 +797,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
         GeneralisationSymbolisation.courbeDeNiveau(this), this.cVoirCN);
 
     // batiments (ponctuels)
-    layerManager.addSymbolisedLayer(this.layerBuilding, Symbolisation
-        .pointRond(Color.black, 4.0));
+    layerManager.addSymbolisedLayer(this.layerBuilding,
+        Symbolisation.pointRond(Color.black, 4.0));
 
     // reseau hydrographique
     // trace les troncons
@@ -872,9 +894,10 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
     // .getRoadNetMenu().mNoeudsResRoutierVoir);
 
     layerManager
-        .addSymbolisedLayer(this.layerRoadLine, GeneralisationSymbolisation
-            .tronconRouteDecale(), DataThemesGUIComponent.getInstance()
-            .getRoadNetMenu().mRoutierVoirRouteDecalee);
+        .addSymbolisedLayer(
+            this.layerRoadLine,
+            GeneralisationSymbolisation.tronconRouteDecale(),
+            DataThemesGUIComponent.getInstance().getRoadNetMenu().mRoutierVoirRouteDecalee);
 
     // LES COUCHES D'OBJETS STRUCTURELS (POINTS, SEGMENTS)
 

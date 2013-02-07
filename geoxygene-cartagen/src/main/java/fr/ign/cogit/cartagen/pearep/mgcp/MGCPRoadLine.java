@@ -11,11 +11,9 @@ package fr.ign.cogit.cartagen.pearep.mgcp;
 
 import java.awt.Color;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.persistence.Transient;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.SymbolShape;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkFace;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
@@ -32,8 +30,7 @@ import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.Direction;
 import fr.ign.cogit.geoxygene.schemageo.impl.routier.TronconDeRouteImpl;
 import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
 
-public class MGCPRoadLine extends GeneObjDefault implements IRoadLine,
-    MGCPFeature {
+public class MGCPRoadLine extends MGCPFeature implements IRoadLine {
 
   /**
    * Associated Geoxygene schema object
@@ -67,6 +64,7 @@ public class MGCPRoadLine extends GeneObjDefault implements IRoadLine,
    * The generic constructor used to import VMAP data.
    * @param line
    * @param attributes
+   * @param type
    */
   public MGCPRoadLine(ILineString line, HashMap<String, Object> attributes,
       @SuppressWarnings("unused") PeaRepDbType type) {
@@ -295,12 +293,6 @@ public class MGCPRoadLine extends GeneObjDefault implements IRoadLine,
   @Override
   public int getSymbolId() {
     return -1;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(MGCPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   public long getAcc() {

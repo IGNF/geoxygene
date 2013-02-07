@@ -10,11 +10,9 @@
 package fr.ign.cogit.cartagen.pearep.vmap.admin;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.admin.IAdminLimit;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
@@ -23,8 +21,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.schemageo.api.administratif.LimiteAdministrative;
 import fr.ign.cogit.geoxygene.schemageo.impl.administratif.LimiteAdministrativeImpl;
 
-public class VMAPAdminLimit extends GeneObjDefault implements IAdminLimit,
-    VMAPFeature {
+public class VMAPAdminLimit extends VMAPFeature implements IAdminLimit {
 
   /**
    * Associated Geoxygene schema object
@@ -35,6 +32,9 @@ public class VMAPAdminLimit extends GeneObjDefault implements IAdminLimit,
   private String fCode, nm3, nm4;
   private int acc, bst, use;
 
+  /**
+   * @param type
+   */
   public VMAPAdminLimit(ILineString line, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     super();
@@ -107,12 +107,6 @@ public class VMAPAdminLimit extends GeneObjDefault implements IAdminLimit,
 
   public void setUse(int use) {
     this.use = use;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

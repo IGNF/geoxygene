@@ -10,21 +10,21 @@
 package fr.ign.cogit.cartagen.pearep.vmap.pop;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscArea;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 
-public class VMAPMiscPopArea extends GeneObjDefault implements IMiscArea,
-    VMAPFeature {
+public class VMAPMiscPopArea extends VMAPFeature implements IMiscArea {
 
   // VMAP2i attributes
   private String fCode, name, nfi, nfn;
   private int cod, fuc, nas, pfh, ppt, smc, stl;
 
+  /**
+   * @param type
+   */
   public VMAPMiscPopArea(IPolygon poly, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     super();
@@ -135,12 +135,6 @@ public class VMAPMiscPopArea extends GeneObjDefault implements IMiscArea,
 
   public void setStl(int stl) {
     this.stl = stl;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

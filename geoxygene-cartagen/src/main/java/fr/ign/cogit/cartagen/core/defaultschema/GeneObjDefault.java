@@ -617,9 +617,6 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
           break;
         }
       }
-      if (encodedAnnotation == null) {
-        continue;
-      }
       // get its values
       Class<? extends IGeneObj> targetEntity = encodedAnnotation.targetEntity();
       String methodName = "get" + encodedAnnotation.methodName();
@@ -676,14 +673,16 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
       }
       // get the annotation
       EncodedRelation encodedAnnotation = null;
+      Encoded1To1Relation encoded1To1Annotation = null;
       for (Annotation a : m.getAnnotations()) {
         if (a instanceof EncodedRelation) {
           encodedAnnotation = (EncodedRelation) a;
           break;
         }
-      }
-      if (encodedAnnotation == null) {
-        continue;
+        if (a instanceof Encoded1To1Relation) {
+          encoded1To1Annotation = (Encoded1To1Relation) a;
+          break;
+        }
       }
 
       if (m.isAnnotationPresent(EncodedRelation.class)) {
@@ -730,8 +729,7 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
           }
           objs.add(obj);
           // now set the inverse relation
-          if (inverseMethod != null && !encodedAnnotation.nToM()
-              && encodedAnnotation.inverse()) {
+          if (!encodedAnnotation.nToM() && encodedAnnotation.inverse()) {
             inverseMethod.invoke(obj, this);
           }
         }
@@ -744,9 +742,9 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
       } else {
         // 1 to 1 relation case
         // get its value
-        Class<? extends IGeneObj> targetEntity = encodedAnnotation
+        Class<? extends IGeneObj> targetEntity = encoded1To1Annotation
             .targetEntity();
-        String methodName = "set" + encodedAnnotation.methodName();
+        String methodName = "set" + encoded1To1Annotation.methodName();
 
         // invoke m to get the collection of ids
         int id = (Integer) m.invoke(this);
@@ -761,12 +759,12 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
             .getInstance().getCurrentDataset()
             .getCartagenPop(popName, featType);
 
-        // get the inverse relation if not nToM
+        // get the inverse relation
         Method inverseMethod = null;
-        if (!encodedAnnotation.nToM() && encodedAnnotation.inverse()) {
-          String methName = "set" + encodedAnnotation.invMethodName();
+        if (encoded1To1Annotation.inverse()) {
+          String methName = "set" + encoded1To1Annotation.invName();
           inverseMethod = ReflectionUtil.getInheritedMethod(targetEntity,
-              methName, encodedAnnotation.invClass());
+              methName, encoded1To1Annotation.invClass());
         }
 
         // loop on the object population
@@ -776,15 +774,13 @@ public class GeneObjDefault extends FT_Feature implements IGeneObj {
           }
           obj = object;
           // now set the inverse relation
-          if (inverseMethod != null && !encodedAnnotation.nToM()
-              && encodedAnnotation.inverse()) {
+          if (encoded1To1Annotation.inverse()) {
             inverseMethod.invoke(obj, this);
           }
         }
 
         // invoke the setter to set the relation
-        Class<?> declaredClass = encodedAnnotation.invClass();
-
+        Class<?> declaredClass = encoded1To1Annotation.invClass();
         ReflectionUtil.getInheritedMethod(this.getClass(), methodName,
             declaredClass).invoke(this, obj);
       }

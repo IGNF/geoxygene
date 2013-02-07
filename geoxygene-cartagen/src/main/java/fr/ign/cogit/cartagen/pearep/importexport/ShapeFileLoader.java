@@ -229,6 +229,9 @@ public abstract class ShapeFileLoader {
           .getCentroid().getY());
       this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
     }
+    shr.close();
+    ShpFiles shpf = new ShpFiles(path);
+    shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
 
     // loop on the shapefile records
     while (shr.hasNext() && dbr.hasNext()) {

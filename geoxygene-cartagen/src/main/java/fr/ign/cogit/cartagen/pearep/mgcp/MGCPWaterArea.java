@@ -10,7 +10,6 @@
 package fr.ign.cogit.cartagen.pearep.mgcp;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -18,7 +17,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -31,8 +29,7 @@ import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
  * ###### IGN / CartAGen ###### Title: WaterArea Description: Surfaces d'eau
  * Author: J. Renard Date: 18/09/2009
  */
-public class MGCPWaterArea extends GeneObjDefault implements IWaterArea,
-    MGCPFeature {
+public class MGCPWaterArea extends MGCPFeature implements IWaterArea {
 
   /**
    * Associated Geoxygene schema object
@@ -47,6 +44,7 @@ public class MGCPWaterArea extends GeneObjDefault implements IWaterArea,
 
   /**
    * Cosntructor from lakeresa class from VMAP2i model
+   * @param type
    */
   public MGCPWaterArea(IPolygon poly, HashMap<String, Object> attributes,
       @SuppressWarnings("unused") PeaRepDbType type) {
@@ -172,12 +170,6 @@ public class MGCPWaterArea extends GeneObjDefault implements IWaterArea,
   public void restoreGeoxObjects() {
     this.geoxObj = new SurfaceDEauImpl(new ReseauImpl(), this.getGeom());
     this.geoxObj.setNom(this.name);
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(MGCPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   /**

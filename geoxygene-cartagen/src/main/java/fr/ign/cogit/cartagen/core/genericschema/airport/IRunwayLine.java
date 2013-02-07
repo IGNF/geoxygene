@@ -7,7 +7,7 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.cartagen.core.genericschema.misc;
+package fr.ign.cogit.cartagen.core.genericschema.airport;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObjLin;
 

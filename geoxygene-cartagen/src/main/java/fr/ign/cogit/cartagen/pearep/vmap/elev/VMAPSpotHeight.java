@@ -10,11 +10,9 @@
 package fr.ign.cogit.cartagen.pearep.vmap.elev;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.relief.ISpotHeight;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
@@ -29,8 +27,7 @@ import fr.ign.cogit.geoxygene.schemageo.impl.support.champContinu.PointCoteImpl;
  * cotés Author: J. Renard Date: 30/06/2010
  */
 
-public class VMAPSpotHeight extends GeneObjDefault implements ISpotHeight,
-    VMAPFeature {
+public class VMAPSpotHeight extends VMAPFeature implements ISpotHeight {
 
   /**
    * Associated Geoxygene schema object
@@ -57,6 +54,9 @@ public class VMAPSpotHeight extends GeneObjDefault implements ISpotHeight,
     this.setEliminated(false);
   }
 
+  /**
+   * @param type
+   */
   public VMAPSpotHeight(IPoint point, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     super();
@@ -123,12 +123,6 @@ public class VMAPSpotHeight extends GeneObjDefault implements ISpotHeight,
 
   public void setMcc(int mcc) {
     this.mcc = mcc;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   public void setZv2(int zv2) {

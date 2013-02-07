@@ -70,8 +70,10 @@ import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
 import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.CartAGenProgressBar;
 import fr.ign.cogit.cartagen.software.interfacecartagen.annexes.ExportFrame;
 import fr.ign.cogit.cartagen.software.interfacecartagen.dataloading.ImportDataFrame;
+import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
 import fr.ign.cogit.cartagen.util.FileUtil;
+import fr.ign.cogit.cartagen.util.LastSessionParameters;
 import fr.ign.cogit.cartagen.util.ReflectionUtil;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -89,12 +91,22 @@ public class DatasetGUIComponent extends JMenu {
    */
   private static final long serialVersionUID = 1L;
 
+  private List<File> recentDocs;
+  private String lblRecentDocs;
+
   public DatasetGUIComponent(String title) {
     super(title);
+    internationalisation();
+    loadRecentDocs();
 
     this.add(new JMenuItem(new NewDocumentAction()));
     this.add(new JMenuItem(new OpenDocumentAction()));
     this.add(new JMenuItem(new SaveDocumentAction()));
+    JMenu recentDocsMenu = new JMenu(lblRecentDocs);
+    for (File recentDoc : recentDocs) {
+      recentDocsMenu.add(new JMenuItem(new OpenDocumentAction(recentDoc)));
+    }
+    this.add(recentDocsMenu);
     this.addSeparator();
     this.add(new JMenuItem(new ImportDataShape1SimpleAction()));
     JMenu importDataMenu = new JMenu("Import Data");
@@ -116,6 +128,46 @@ public class DatasetGUIComponent extends JMenu {
     this.add(new JMenuItem(new CommitAction()));
     this.add(new JMenuItem(new BackTrackAction()));
     this.add(new JMenuItem(new EditPersistentClassesAction()));
+  }
+
+  /**
+   * Set the internationalised Strings of the component.
+   */
+  private void internationalisation() {
+    this.lblRecentDocs = I18N.getString("DatasetMenu.lblRecentDocs");
+  }
+
+  private void loadRecentDocs() {
+    this.recentDocs = new ArrayList<File>();
+    LastSessionParameters params = LastSessionParameters.getInstance();
+    if (params.hasParameter("Recent CartAGenDoc 1")) {
+      String path = (String) params.getParameter("Recent CartAGenDoc 1");
+      this.recentDocs.add(new File(path));
+    }
+    if (params.hasParameter("Recent CartAGenDoc 2")) {
+      String path = (String) params.getParameter("Recent CartAGenDoc 2");
+      this.recentDocs.add(new File(path));
+    }
+    if (params.hasParameter("Recent CartAGenDoc 3")) {
+      String path = (String) params.getParameter("Recent CartAGenDoc 3");
+      this.recentDocs.add(new File(path));
+    }
+    if (params.hasParameter("Recent CartAGenDoc 4")) {
+      String path = (String) params.getParameter("Recent CartAGenDoc 4");
+      this.recentDocs.add(new File(path));
+    }
+    if (params.hasParameter("Recent CartAGenDoc 5")) {
+      String path = (String) params.getParameter("Recent CartAGenDoc 5");
+      this.recentDocs.add(new File(path));
+    }
+  }
+
+  private void saveRecentDocs() throws TransformerException, IOException {
+    LastSessionParameters params = LastSessionParameters.getInstance();
+    for (int i = 1; i <= recentDocs.size(); i++) {
+      params.setParameter("Recent CartAGenDoc " + i, recentDocs.get(i - 1)
+          .getPath());
+    }
   }
 
   /**
@@ -160,17 +212,22 @@ public class DatasetGUIComponent extends JMenu {
      */
     private static final long serialVersionUID = 1L;
 
+    private File docFile;
+
     @Override
     public void actionPerformed(ActionEvent arg0) {
       CartagenApplication appl = CartagenApplication.getInstance();
-      JFileChooser fc = new JFileChooser();
-      fc.setCurrentDirectory(new File("src/main/resources/XML/"));
-      fc.setFileFilter(new XMLFileFilter());
-      int returnVal = fc.showOpenDialog(appl.getFrame());
-      if (returnVal != JFileChooser.APPROVE_OPTION) {
-        return;
+      File file = docFile;
+      if (docFile == null) {
+        JFileChooser fc = new JFileChooser();
+        fc.setCurrentDirectory(new File("src/main/resources/XML/"));
+        fc.setFileFilter(new XMLFileFilter());
+        int returnVal = fc.showOpenDialog(appl.getFrame());
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+          return;
+        }
+        file = fc.getSelectedFile();
       }
-      File file = fc.getSelectedFile();
 
       try {
         CartAGenDoc.loadDocFromXml(file);
@@ -182,7 +239,9 @@ public class DatasetGUIComponent extends JMenu {
             .loadLayers(
                 CartAGenDoc.getInstance().getCurrentDataset(),
                 CartagenApplication.getInstance().getLayerGroup().symbolisationDisplay);
-        CartagenApplication.getInstance().getLayerGroup()
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
             .loadInterfaceWithLayers(
                 CartagenApplication.getInstance().getFrame().getLayerManager(),
                 CartAGenDoc.getInstance().getCurrentDataset().getSymbols());
@@ -210,9 +269,13 @@ public class DatasetGUIComponent extends JMenu {
     }
 
     public OpenDocumentAction() {
-      this.putValue(Action.SHORT_DESCRIPTION,
-          "Create a new empty CartAGen document");
+      this.putValue(Action.SHORT_DESCRIPTION, "Open a saved CartAGen document");
       this.putValue(Action.NAME, "Open CartAGen Document");
+    }
+
+    public OpenDocumentAction(File file) {
+      this.putValue(Action.NAME, file.getPath());
+      this.docFile = file;
     }
   }
 
@@ -236,8 +299,9 @@ public class DatasetGUIComponent extends JMenu {
     public void actionPerformed(ActionEvent arg0) {
       this.appl = CartagenApplication.getInstance();
       JFileChooser fc = new JFileChooser();
-      fc.setCurrentDirectory(new File(DatasetGUIComponent.class.getResource(
-          "/src/main/resources/XML/").getPath().replaceAll("%20", " ")));
+      fc.setCurrentDirectory(new File(DatasetGUIComponent.class
+          .getResource("/src/main/resources/XML/").getPath()
+          .replaceAll("%20", " ")));
       fc.setFileFilter(new XMLFileFilter());
       int returnVal = fc.showOpenDialog(this.appl.getFrame());
       if (returnVal != JFileChooser.APPROVE_OPTION) {
@@ -366,6 +430,16 @@ public class DatasetGUIComponent extends JMenu {
 
       try {
         doc.saveToXml(file);
+        // update the recent docs list
+        if (recentDocs.contains(file)) {
+          recentDocs.remove(file);
+          recentDocs.add(0, file);
+        } else {
+          recentDocs.add(0, file);
+          if (recentDocs.size() == 6)
+            recentDocs.remove(5);
+        }
+        saveRecentDocs();
       } catch (IOException e) {
         e.printStackTrace();
       } catch (TransformerException e) {
@@ -683,10 +757,9 @@ public class DatasetGUIComponent extends JMenu {
     }
 
     public SetCurrentDatasetAction() {
-      this
-          .putValue(
-              Action.SHORT_DESCRIPTION,
-              "Set the current dataset from one of the datasets related to the databases of the document");
+      this.putValue(
+          Action.SHORT_DESCRIPTION,
+          "Set the current dataset from one of the datasets related to the databases of the document");
       this.putValue(Action.NAME, "Set current dataset");
     }
   }
@@ -740,8 +813,8 @@ public class DatasetGUIComponent extends JMenu {
       if (e.getActionCommand().equals("cancel")) {
         this.setVisible(false);
       } else if (e.getActionCommand().equals("ok")) {
-        this.current = CartAGenDoc.getInstance().getDatabases().get(
-            this.databases.getSelectedItem()).getDataSet();
+        this.current = CartAGenDoc.getInstance().getDatabases()
+            .get(this.databases.getSelectedItem()).getDataSet();
         CartAGenDoc.getInstance().setCurrentDataset(this.current);
         this.setVisible(false);
       }
@@ -803,9 +876,8 @@ public class DatasetGUIComponent extends JMenu {
     }
 
     public StartEditAction() {
-      this
-          .putValue(Action.SHORT_DESCRIPTION,
-              "Start an edit session on the PostGIS DB that stores persistent objects");
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Start an edit session on the PostGIS DB that stores persistent objects");
       this.putValue(Action.NAME, "Start Persistent Edit");
     }
   }
@@ -840,8 +912,8 @@ public class DatasetGUIComponent extends JMenu {
           continue;
         }
         // get all the features of classObj in the current dataset
-        IPopulation<? extends IGeneObj> pop = dataset.getCartagenPop(dataset
-            .getPopNameFromClass(classObj), "");
+        IPopulation<? extends IGeneObj> pop = dataset.getCartagenPop(
+            dataset.getPopNameFromClass(classObj), "");
         for (IGeneObj obj : pop) {
           try {
             obj.updateRelationIds();
@@ -900,9 +972,8 @@ public class DatasetGUIComponent extends JMenu {
     }
 
     public BackTrackAction() {
-      this
-          .putValue(Action.SHORT_DESCRIPTION,
-              "Backtrack the modifications on persistent objects and close the session");
+      this.putValue(Action.SHORT_DESCRIPTION,
+          "Backtrack the modifications on persistent objects and close the session");
       this.putValue(Action.NAME, "Backtrack Persistent Edits");
     }
   }
@@ -931,10 +1002,9 @@ public class DatasetGUIComponent extends JMenu {
     }
 
     public EditPersistentClassesAction() {
-      this
-          .putValue(
-              Action.SHORT_DESCRIPTION,
-              "Edit (add or remove) the persistent classes of a CartAGenDatabase of the current document");
+      this.putValue(
+          Action.SHORT_DESCRIPTION,
+          "Edit (add or remove) the persistent classes of a CartAGenDatabase of the current document");
       this.putValue(Action.NAME, "Edit Persistent Classes");
     }
   }
@@ -1118,8 +1188,8 @@ public class DatasetGUIComponent extends JMenu {
         if (!file.getName().endsWith(".class")) {
           continue;
         }
-        if (file.getName().substring(0, file.getName().length() - 6).equals(
-            "GothicObjectDiffusion")) {
+        if (file.getName().substring(0, file.getName().length() - 6)
+            .equals("GothicObjectDiffusion")) {
           continue;
         }
         String path = file.getPath().substring(file.getPath().indexOf("fr"));

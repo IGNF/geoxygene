@@ -10,14 +10,12 @@
 package fr.ign.cogit.cartagen.pearep.vmap.hydro;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
@@ -26,8 +24,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.schemageo.api.hydro.SurfaceDEau;
 import fr.ign.cogit.geoxygene.schemageo.impl.hydro.SurfaceDEauImpl;
 
-public class VMAPFloodArea extends GeneObjDefault implements IWaterArea,
-    VMAPFeature {
+public class VMAPFloodArea extends VMAPFeature implements IWaterArea {
 
   /**
    * Associated Geoxygene schema object
@@ -36,6 +33,9 @@ public class VMAPFloodArea extends GeneObjDefault implements IWaterArea,
   private String fCode;
   private int cod, exs;
 
+  /**
+   * @param type
+   */
   public VMAPFloodArea(IPolygon poly, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     this.geoxObj = new SurfaceDEauImpl();
@@ -87,12 +87,6 @@ public class VMAPFloodArea extends GeneObjDefault implements IWaterArea,
 
   public void setExs(int exs) {
     this.exs = exs;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

@@ -10,9 +10,7 @@
 package fr.ign.cogit.cartagen.pearep.vmap.ind;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildArea;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanElement;
@@ -23,8 +21,8 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.AutreConstruction;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.AutreConstructionImpl;
 
-public class VMAPStorageArea extends GeneObjDefault implements IBuildArea,
-    IUrbanElement, VMAPFeature {
+public class VMAPStorageArea extends VMAPFeature implements IBuildArea,
+    IUrbanElement {
 
   /**
    * Associated Geoxygene schema object
@@ -35,6 +33,9 @@ public class VMAPStorageArea extends GeneObjDefault implements IBuildArea,
   private String fCode, voi;
   private int cod, coe, exs, hgt, loc, pro, smc, ssc, use, z;
 
+  /**
+   * @param type
+   */
   public VMAPStorageArea(IPolygon poly, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     super();
@@ -174,12 +175,6 @@ public class VMAPStorageArea extends GeneObjDefault implements IBuildArea,
 
   public void setZ(int z) {
     this.z = z;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

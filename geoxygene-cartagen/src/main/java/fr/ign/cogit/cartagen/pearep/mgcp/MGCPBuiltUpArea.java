@@ -10,16 +10,13 @@
 package fr.ign.cogit.cartagen.pearep.mgcp;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
-public class MGCPBuiltUpArea extends GeneObjDefault implements
-    ISimpleLandUseArea, MGCPFeature {
+public class MGCPBuiltUpArea extends MGCPFeature implements ISimpleLandUseArea {
 
   // VMAP attributes
   private String dmr, dms, name, nfi, nfn, hgt;
@@ -34,6 +31,9 @@ public class MGCPBuiltUpArea extends GeneObjDefault implements
     this.setArea(poly.area());
   }
 
+  /**
+   * @param type
+   */
   public MGCPBuiltUpArea(IPolygon poly, HashMap<String, Object> attributes,
       @SuppressWarnings("unused") PeaRepDbType type) {
     this(poly);
@@ -145,12 +145,6 @@ public class MGCPBuiltUpArea extends GeneObjDefault implements
 
   public void setNfn(String nfn) {
     this.nfn = nfn;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(MGCPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   public double getArea() {

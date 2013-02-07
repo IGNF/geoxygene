@@ -12,10 +12,15 @@ package fr.ign.cogit.cartagen.pearep.importexport;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.List;
 
 import org.geotools.data.shapefile.shp.ShapefileException;
 
+import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
@@ -28,6 +33,9 @@ import fr.ign.cogit.cartagen.pearep.mgcp.MGCPContourLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPRoadLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPWaterArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPWaterLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirport;
+import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPTaxiwayArea;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -37,6 +45,7 @@ import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
 import fr.ign.cogit.cartagen.util.FileUtil;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 
 public class MGCPLoader extends ShapeFileLoader {
 
@@ -122,16 +131,7 @@ public class MGCPLoader extends ShapeFileLoader {
         // DbType.VMAP2i);
 
         // aero loading
-        // shapePath = FileUtil.getNamedFileInDir(directory, "aer");
-        // loadPolygonClass(FileUtil.getNamedFileInDir(shapePath, "runwaya.shp")
-        // .getAbsolutePath(), VMAPRunwayArea.class,
-        // CartAGenDataSet.RUNWAY_AREA_POP, IRunwayArea.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-        // loadPolygonClass(FileUtil.getNamedFileInDir(shapePath,
-        // "aerofaca.shp")
-        // .getAbsolutePath(), VMAPAirportArea.class,
-        // CartAGenDataSet.AIRPORT_AREA_POP, IAirportArea.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
+        loadAirports(directory);
 
         // administrative layers loading
         // shapePath = FileUtil.getNamedFileInDir(directory, "clb");
@@ -353,4 +353,54 @@ public class MGCPLoader extends ShapeFileLoader {
     this.setDataset(dataset);
   }
 
+  private void loadAirports(File directory) throws ShapefileException,
+      IllegalArgumentException, SecurityException, IOException,
+      InstantiationException, IllegalAccessException,
+      InvocationTargetException, NoSuchMethodException {
+    // first load airport areas
+    loadPolygonClass(FileUtil.getNamedFileInDir(directory, "AGB005.shp")
+        .getAbsolutePath(), MGCPAirport.class,
+        CartAGenDataSet.AIRPORT_AREA_POP, IAirportArea.FEAT_TYPE_NAME,
+        PeaRepDbType.MGCPPlusPlus);
+
+    // then load runways
+    loadPolygonClass(FileUtil.getNamedFileInDir(directory, "AGB055.shp")
+        .getAbsolutePath(), MGCPRunwayArea.class,
+        CartAGenDataSet.RUNWAY_AREA_POP, IRunwayArea.FEAT_TYPE_NAME,
+        PeaRepDbType.MGCPPlusPlus);
+    loadPolygonClass(FileUtil.getNamedFileInDir(directory, "AGB045.shp")
+        .getAbsolutePath(), MGCPRunwayArea.class,
+        CartAGenDataSet.RUNWAY_AREA_POP, IRunwayArea.FEAT_TYPE_NAME,
+        PeaRepDbType.MGCPPlusPlus);
+
+    // then load taxiways
+    loadPolygonClass(FileUtil.getNamedFileInDir(directory, "AGB075.shp")
+        .getAbsolutePath(), MGCPTaxiwayArea.class,
+        CartAGenDataSet.RUNWAY_AREA_POP, ITaxiwayArea.FEAT_TYPE_NAME,
+        PeaRepDbType.MGCPPlusPlus);
+    loadPolygonClass(FileUtil.getNamedFileInDir(directory, "AGB015.shp")
+        .getAbsolutePath(), MGCPTaxiwayArea.class,
+        CartAGenDataSet.RUNWAY_AREA_POP, ITaxiwayArea.FEAT_TYPE_NAME,
+        PeaRepDbType.MGCPPlusPlus);
+
+    // then load helipads
+    // TODO
+
+    // finally builds the airport complex object
+    IPopulation<IGeneObj> runPop = CartAGenDoc.getInstance()
+        .getCurrentDataset().getCartagenPop(CartAGenDataSet.RUNWAY_AREA_POP);
+    for (IGeneObj airport : CartAGenDoc.getInstance().getCurrentDataset()
+        .getCartagenPop(CartAGenDataSet.AIRPORT_AREA_POP)) {
+      Collection<IGeneObj> inside = runPop.select(airport.getGeom());
+      for (IGeneObj obj : inside) {
+        if (obj instanceof ITaxiwayArea) {
+          ((IAirportArea) airport).getTaxiwayAreas().add((ITaxiwayArea) obj);
+        }
+        if (obj instanceof IRunwayArea) {
+          ((IAirportArea) airport).getRunwayAreas().add((IRunwayArea) obj);
+        }
+      }
+    }
+
+  }
 }

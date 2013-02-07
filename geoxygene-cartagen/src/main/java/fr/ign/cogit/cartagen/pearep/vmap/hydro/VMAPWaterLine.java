@@ -10,7 +10,6 @@
 package fr.ign.cogit.cartagen.pearep.vmap.hydro;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -20,7 +19,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkFace;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
@@ -41,8 +39,7 @@ import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
  * hydrographiques Author: J. Renard Date: 18/09/2009
  */
 @Access(AccessType.PROPERTY)
-public class VMAPWaterLine extends GeneObjDefault implements IWaterLine,
-    VMAPFeature {
+public class VMAPWaterLine extends VMAPFeature implements IWaterLine {
 
   /**
    * Associated Geoxygene schema object
@@ -238,8 +235,8 @@ public class VMAPWaterLine extends GeneObjDefault implements IWaterLine,
 
   @Override
   public void restoreGeoxObjects() {
-    this.geoxObj = new TronconHydrographiqueImpl(new ReseauImpl(), false, this
-        .getGeom());
+    this.geoxObj = new TronconHydrographiqueImpl(new ReseauImpl(), false,
+        this.getGeom());
     this.geoxObj.setNom(name);
   }
 
@@ -380,12 +377,6 @@ public class VMAPWaterLine extends GeneObjDefault implements IWaterLine,
 
   public void setNfn(String nfn) {
     this.nfn = nfn;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   public Integer getTileId() {

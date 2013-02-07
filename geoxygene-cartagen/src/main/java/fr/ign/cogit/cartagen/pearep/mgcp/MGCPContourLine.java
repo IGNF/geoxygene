@@ -10,11 +10,9 @@
 package fr.ign.cogit.cartagen.pearep.mgcp;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
@@ -32,8 +30,7 @@ import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
  * niveau Author: J. Renard Date: 18/09/2009
  */
 
-public class MGCPContourLine extends GeneObjDefault implements IContourLine,
-    MGCPFeature {
+public class MGCPContourLine extends MGCPFeature implements IContourLine {
 
   /**
    * Associated Geoxygene schema object
@@ -68,6 +65,9 @@ public class MGCPContourLine extends GeneObjDefault implements IContourLine,
     }
   }
 
+  /**
+   * @param type
+   */
   public MGCPContourLine(ILineString line, HashMap<String, Object> attributes,
       @SuppressWarnings("unused") PeaRepDbType type) {
     super();
@@ -142,12 +142,6 @@ public class MGCPContourLine extends GeneObjDefault implements IContourLine,
 
   public void setHqc(long hqc) {
     this.hqc = hqc;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(MGCPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   public void setZv2(String zv2) {

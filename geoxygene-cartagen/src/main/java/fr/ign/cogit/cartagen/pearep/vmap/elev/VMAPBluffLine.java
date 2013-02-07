@@ -10,11 +10,9 @@
 package fr.ign.cogit.cartagen.pearep.vmap.elev;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefElementLine;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
@@ -29,8 +27,7 @@ import fr.ign.cogit.geoxygene.schemageo.impl.support.champContinu.ChampContinuIm
  * linéaires caractéristiques du relief Author: J. Renard Date: 18/09/2009
  */
 
-public class VMAPBluffLine extends GeneObjDefault implements
-    IReliefElementLine, VMAPFeature {
+public class VMAPBluffLine extends VMAPFeature implements IReliefElementLine {
 
   /**
    * Associated Geoxygene schema object
@@ -58,6 +55,9 @@ public class VMAPBluffLine extends GeneObjDefault implements
     this.setEliminated(false);
   }
 
+  /**
+   * @param type
+   */
   public VMAPBluffLine(ILineString line, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     super();
@@ -139,12 +139,6 @@ public class VMAPBluffLine extends GeneObjDefault implements
 
   public void setWid(int wid) {
     this.wid = wid;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

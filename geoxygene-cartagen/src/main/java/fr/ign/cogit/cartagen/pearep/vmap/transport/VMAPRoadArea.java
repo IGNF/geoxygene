@@ -10,9 +10,7 @@
 package fr.ign.cogit.cartagen.pearep.vmap.transport;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadArea;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
@@ -26,8 +24,7 @@ import fr.ign.cogit.geoxygene.schemageo.impl.routier.SurfaceRouteImpl;
  * @author GTouya
  * 
  */
-public class VMAPRoadArea extends GeneObjDefault implements IRoadArea,
-    VMAPFeature {
+public class VMAPRoadArea extends VMAPFeature implements IRoadArea {
 
   /**
    * Associated Geoxygene schema object
@@ -38,6 +35,9 @@ public class VMAPRoadArea extends GeneObjDefault implements IRoadArea,
   private String fCode;
   private int cod, tuc, exs, smc;
 
+  /**
+   * @param type
+   */
   public VMAPRoadArea(IPolygon poly, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     super();
@@ -103,12 +103,6 @@ public class VMAPRoadArea extends GeneObjDefault implements IRoadArea,
 
   public void setSmc(int smc) {
     this.smc = smc;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

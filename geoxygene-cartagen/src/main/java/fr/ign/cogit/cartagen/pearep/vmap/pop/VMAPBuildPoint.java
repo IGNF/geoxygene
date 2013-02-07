@@ -10,11 +10,9 @@
 package fr.ign.cogit.cartagen.pearep.vmap.pop;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
@@ -23,8 +21,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.AutreConstruction;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.AutreConstructionImpl;
 
-public class VMAPBuildPoint extends GeneObjDefault implements IBuildPoint,
-    VMAPFeature {
+public class VMAPBuildPoint extends VMAPFeature implements IBuildPoint {
 
   private AutreConstruction geoxObj;
 
@@ -223,12 +220,6 @@ public class VMAPBuildPoint extends GeneObjDefault implements IBuildPoint,
 
   public void setZ(int z) {
     this.z = z;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   public int getTileId() {

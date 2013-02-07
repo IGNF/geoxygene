@@ -10,9 +10,7 @@
 package fr.ign.cogit.cartagen.pearep.vmap.pop;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
@@ -22,8 +20,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.Batiment;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.BatimentImpl;
 
-public class VMAPSportsField extends GeneObjDefault implements ISportsField,
-    VMAPFeature {
+public class VMAPSportsField extends VMAPFeature implements ISportsField {
 
   /**
    * Associated Geoxygene schema object
@@ -34,6 +31,9 @@ public class VMAPSportsField extends GeneObjDefault implements ISportsField,
   private String fCode, name, nfi, nfn, voi;
   private int cod, coe, exs, hgt, smc, ssc, z;
 
+  /**
+   * @param type
+   */
   public VMAPSportsField(IPolygon poly, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     super();
@@ -172,12 +172,6 @@ public class VMAPSportsField extends GeneObjDefault implements ISportsField,
 
   public void setZ(int z) {
     this.z = z;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

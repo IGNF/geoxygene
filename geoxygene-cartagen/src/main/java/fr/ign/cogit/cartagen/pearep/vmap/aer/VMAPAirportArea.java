@@ -10,26 +10,41 @@
 package fr.ign.cogit.cartagen.pearep.vmap.aer;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
-import fr.ign.cogit.cartagen.core.genericschema.misc.IAirportArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.IHelipadArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.IHelipadPoint;
+import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 
-public class VMAPAirportArea extends GeneObjDefault implements IAirportArea,
-    VMAPFeature {
+public class VMAPAirportArea extends VMAPFeature implements IAirportArea {
 
   private String name;
   private int z;
+  private Set<IRunwayArea> runwayAreas;
+  private Set<IRunwayLine> runwayLines;
+  private Set<ITaxiwayArea> taxiwayAreas;
+  private Set<ITaxiwayLine> taxiwayLines;
+  private Set<IHelipadArea> helipadAreas;
+  private Set<IHelipadPoint> helipadPoint;
 
   // VMAP2i attributes
   private String fCode, iko;
   private int cod, fpt, exs, use, smc, zv2;
 
+  /**
+   * @param type
+   */
   public VMAPAirportArea(IPolygon poly, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     super();
@@ -46,6 +61,12 @@ public class VMAPAirportArea extends GeneObjDefault implements IAirportArea,
     this.smc = (Integer) attributes.get("smc");
     this.zv2 = (Integer) attributes.get("zv2");
     this.z = (Integer) attributes.get("zv3");
+    runwayAreas = new HashSet<IRunwayArea>();
+    runwayLines = new HashSet<IRunwayLine>();
+    taxiwayAreas = new HashSet<ITaxiwayArea>();
+    taxiwayLines = new HashSet<ITaxiwayLine>();
+    helipadAreas = new HashSet<IHelipadArea>();
+    helipadPoint = new HashSet<IHelipadPoint>();
   }
 
   @Override
@@ -129,9 +150,39 @@ public class VMAPAirportArea extends GeneObjDefault implements IAirportArea,
   }
 
   @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
+  public Map<String, Object> getAttributeMap() {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public Set<IRunwayLine> getRunwayLines() {
+    return runwayLines;
+  }
+
+  @Override
+  public Set<IRunwayArea> getRunwayAreas() {
+    return runwayAreas;
+  }
+
+  @Override
+  public Set<ITaxiwayArea> getTaxiwayAreas() {
+    return taxiwayAreas;
+  }
+
+  @Override
+  public Set<ITaxiwayLine> getTaxiwayLines() {
+    return taxiwayLines;
+  }
+
+  @Override
+  public Set<IHelipadArea> getHelipadAreas() {
+    return helipadAreas;
+  }
+
+  @Override
+  public Set<IHelipadPoint> getHelipadPoints() {
+    return helipadPoint;
   }
 
 }

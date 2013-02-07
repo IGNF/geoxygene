@@ -10,22 +10,22 @@
 package fr.ign.cogit.cartagen.pearep.vmap.phy;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPLandUseType;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 
-public class VMAPGround extends GeneObjDefault implements ISimpleLandUseArea,
-    VMAPFeature {
+public class VMAPGround extends VMAPFeature implements ISimpleLandUseArea {
 
   // VMAP attributes
   private String fCode;
   private int cod, smc, srd, swc;
 
+  /**
+   * @param type
+   */
   public VMAPGround(IPolygon poly, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     super();
@@ -91,12 +91,6 @@ public class VMAPGround extends GeneObjDefault implements ISimpleLandUseArea,
 
   public void setSwc(int swc) {
     this.swc = swc;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

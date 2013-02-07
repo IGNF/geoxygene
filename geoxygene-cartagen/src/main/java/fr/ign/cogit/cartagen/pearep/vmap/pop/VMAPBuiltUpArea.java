@@ -10,17 +10,14 @@
 package fr.ign.cogit.cartagen.pearep.vmap.pop;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPLandUseType;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 
-public class VMAPBuiltUpArea extends GeneObjDefault implements
-    ISimpleLandUseArea, VMAPFeature {
+public class VMAPBuiltUpArea extends VMAPFeature implements ISimpleLandUseArea {
 
   // VMAP attributes
   private String fCode, name, nfi, nfn;
@@ -193,12 +190,6 @@ public class VMAPBuiltUpArea extends GeneObjDefault implements
 
   public void setUse(int use) {
     this.use = use;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   public int getTileId() {

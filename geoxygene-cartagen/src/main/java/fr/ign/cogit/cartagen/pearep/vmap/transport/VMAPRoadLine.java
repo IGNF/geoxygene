@@ -11,11 +11,9 @@ package fr.ign.cogit.cartagen.pearep.vmap.transport;
 
 import java.awt.Color;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.persistence.Transient;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.SymbolShape;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkFace;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
@@ -33,8 +31,7 @@ import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.Direction;
 import fr.ign.cogit.geoxygene.schemageo.impl.routier.TronconDeRouteImpl;
 import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
 
-public class VMAPRoadLine extends GeneObjDefault implements IRoadLine,
-    VMAPFeature {
+public class VMAPRoadLine extends VMAPFeature implements IRoadLine {
 
   /**
    * Associated Geoxygene schema object
@@ -346,12 +343,6 @@ public class VMAPRoadLine extends GeneObjDefault implements IRoadLine,
   @Override
   public int getSymbolId() {
     return -1;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   public String getFcode() {

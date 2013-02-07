@@ -24,11 +24,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterNode;
-import fr.ign.cogit.cartagen.core.genericschema.misc.IAirportArea;
-import fr.ign.cogit.cartagen.core.genericschema.misc.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayNode;
 import fr.ign.cogit.cartagen.core.genericschema.railway.ITriageArea;

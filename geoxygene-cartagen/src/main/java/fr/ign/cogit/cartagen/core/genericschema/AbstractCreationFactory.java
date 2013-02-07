@@ -19,6 +19,12 @@ import fr.ign.cogit.cartagen.core.genericschema.admin.IAdminCapital;
 import fr.ign.cogit.cartagen.core.genericschema.admin.IAdminLimit;
 import fr.ign.cogit.cartagen.core.genericschema.admin.ICompositeAdminUnit;
 import fr.ign.cogit.cartagen.core.genericschema.admin.ISimpleAdminUnit;
+import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea.TaxiwayType;
+import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterCourse;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
@@ -28,14 +34,11 @@ import fr.ign.cogit.cartagen.core.genericschema.land.ICompositeLandUseArea;
 import fr.ign.cogit.cartagen.core.genericschema.land.ILandUseLine;
 import fr.ign.cogit.cartagen.core.genericschema.land.ILandUsePoint;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
-import fr.ign.cogit.cartagen.core.genericschema.misc.IAirportArea;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IBoundedArea;
 import fr.ign.cogit.cartagen.core.genericschema.misc.ILabelPoint;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscArea;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscLine;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscPoint;
-import fr.ign.cogit.cartagen.core.genericschema.misc.IRunwayArea;
-import fr.ign.cogit.cartagen.core.genericschema.misc.IRunwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkFace;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
@@ -1186,6 +1189,20 @@ public abstract class AbstractCreationFactory {
   public IRunwayLine createRunwayLine(ILineString geom) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for IRunwayLine");
+    return null;
+  }
+
+  @SuppressWarnings("unused")
+  public ITaxiwayArea createTaxiwayArea(IPolygon simple, TaxiwayType type) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for ITaxiwayArea");
+    return null;
+  }
+
+  @SuppressWarnings("unused")
+  public ITaxiwayLine createTaxiwayLine(ILineString geom, TaxiwayType type) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for ITaxiwayLine");
     return null;
   }
 

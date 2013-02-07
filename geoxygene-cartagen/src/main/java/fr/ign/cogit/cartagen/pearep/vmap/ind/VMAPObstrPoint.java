@@ -10,11 +10,9 @@
 package fr.ign.cogit.cartagen.pearep.vmap.ind;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscPoint;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
@@ -23,8 +21,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.schemageo.api.activite.PointRepresentatifActiviteInteret;
 import fr.ign.cogit.geoxygene.schemageo.impl.activite.PointRepresentatifActiviteInteretImpl;
 
-public class VMAPObstrPoint extends GeneObjDefault implements IMiscPoint,
-    VMAPFeature {
+public class VMAPObstrPoint extends VMAPFeature implements IMiscPoint {
 
   private PointRepresentatifActiviteInteret geoxObj;
 
@@ -32,6 +29,9 @@ public class VMAPObstrPoint extends GeneObjDefault implements IMiscPoint,
   private String fCode, voi;
   private int acc, aoo, coe, cra, exs, hgt, len, loc, smc, wid, z;
 
+  /**
+   * @param type
+   */
   public VMAPObstrPoint(IPoint point, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     super();
@@ -166,12 +166,6 @@ public class VMAPObstrPoint extends GeneObjDefault implements IMiscPoint,
 
   public void setCra(int cra) {
     this.cra = cra;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

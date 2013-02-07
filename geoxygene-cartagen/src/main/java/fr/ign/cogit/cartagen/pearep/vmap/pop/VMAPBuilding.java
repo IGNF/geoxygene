@@ -10,9 +10,7 @@
 package fr.ign.cogit.cartagen.pearep.vmap.pop;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
@@ -22,8 +20,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.Batiment;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.BatimentImpl;
 
-public class VMAPBuilding extends GeneObjDefault implements IBuilding,
-    VMAPFeature {
+public class VMAPBuilding extends VMAPFeature implements IBuilding {
 
   /**
    * Associated Geoxygene schema object
@@ -222,12 +219,6 @@ public class VMAPBuilding extends GeneObjDefault implements IBuilding,
 
   public void setZ(int z) {
     this.z = z;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   public int getHgt() {

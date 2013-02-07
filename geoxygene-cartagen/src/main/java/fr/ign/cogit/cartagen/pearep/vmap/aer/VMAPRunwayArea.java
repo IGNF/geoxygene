@@ -10,19 +10,16 @@
 package fr.ign.cogit.cartagen.pearep.vmap.aer;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
-import fr.ign.cogit.cartagen.core.genericschema.misc.IAirportArea;
-import fr.ign.cogit.cartagen.core.genericschema.misc.IRunwayArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
+import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 
-public class VMAPRunwayArea extends GeneObjDefault implements IRunwayArea,
-    VMAPFeature {
+public class VMAPRunwayArea extends VMAPFeature implements IRunwayArea {
 
   private IAirportArea airport;
   private int z;
@@ -31,6 +28,9 @@ public class VMAPRunwayArea extends GeneObjDefault implements IRunwayArea,
   private String fCode, name;
   private int cod, aoo, exs, len, rst, smc, wid;
 
+  /**
+   * @param type
+   */
   public VMAPRunwayArea(IPolygon poly, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     super();
@@ -143,12 +143,6 @@ public class VMAPRunwayArea extends GeneObjDefault implements IRunwayArea,
 
   public void setZ(int z) {
     this.z = z;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

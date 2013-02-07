@@ -10,11 +10,9 @@
 package fr.ign.cogit.cartagen.pearep.vmap.phy;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefElementPoint;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
@@ -23,8 +21,8 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.schemageo.api.relief.ElementCaracteristiqueDuRelief;
 import fr.ign.cogit.geoxygene.schemageo.impl.relief.ElementCaracteristiqueDuReliefImpl;
 
-public class VMAPLandFormPoint extends GeneObjDefault implements
-    IReliefElementPoint, VMAPFeature {
+public class VMAPLandFormPoint extends VMAPFeature implements
+    IReliefElementPoint {
 
   private ElementCaracteristiqueDuRelief geoxObj;
 
@@ -32,6 +30,9 @@ public class VMAPLandFormPoint extends GeneObjDefault implements
   private String fCode;
   private int acc, mcc, rkf, hgt;
 
+  /**
+   * @param type
+   */
   public VMAPLandFormPoint(IPoint point, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     super();
@@ -92,12 +93,6 @@ public class VMAPLandFormPoint extends GeneObjDefault implements
 
   public void setHgt(int hgt) {
     this.hgt = hgt;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

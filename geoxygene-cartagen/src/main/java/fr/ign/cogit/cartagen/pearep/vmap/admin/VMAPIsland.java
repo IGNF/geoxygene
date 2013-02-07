@@ -10,23 +10,23 @@
 package fr.ign.cogit.cartagen.pearep.vmap.admin;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IRiverSimpleIsland;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 
-public class VMAPIsland extends GeneObjDefault implements IRiverSimpleIsland,
-    VMAPFeature {
+public class VMAPIsland extends VMAPFeature implements IRiverSimpleIsland {
 
   // VMAP2i attributes
   private String fCode, name, nfi, nfn;
   private int cod, mcc, mcs, prc, smc;
 
+  /**
+   * @param type
+   */
   public VMAPIsland(IPolygon poly, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     super();
@@ -120,12 +120,6 @@ public class VMAPIsland extends GeneObjDefault implements IRiverSimpleIsland,
 
   public void setSmc(int smc) {
     this.smc = smc;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

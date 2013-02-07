@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -26,7 +25,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.defaultschema.GeneObjDefault;
 import fr.ign.cogit.cartagen.core.genericschema.SymbolShape;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
@@ -49,8 +47,7 @@ import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
  * Author: J. Renard Date: 18/09/2009
  */
 @Access(AccessType.PROPERTY)
-public class VMAPRoadNode extends GeneObjDefault implements IRoadNode,
-    VMAPFeature {
+public class VMAPRoadNode extends VMAPFeature implements IRoadNode {
   @Transient
   private NoeudRoutier geoxObj;
   private Collection<INetworkSection> inSections, outSections;
@@ -288,12 +285,6 @@ public class VMAPRoadNode extends GeneObjDefault implements IRoadNode,
   public int getSectionsMaxImportance() {
     // TODO Auto-generated method stub
     return 0;
-  }
-
-  @Override
-  public Map<String, Object> getAttributeMap(VMAPFeature feat) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }

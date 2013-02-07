@@ -358,7 +358,7 @@ public class UrbanAlignment extends GeneObjSurfDefault implements
     this.initialElementId = initialElementId;
   }
 
-  @Encoded1To1Relation(targetEntity = Building.class, inverse = false, methodName = "InitialElement")
+  @Encoded1To1Relation(targetEntity = Building.class, inverse = false, methodName = "InitialElement", invClass = IUrbanElement.class)
   public int getInitialElementId() {
     return this.initialElementId;
   }
@@ -369,7 +369,7 @@ public class UrbanAlignment extends GeneObjSurfDefault implements
     this.finalElementId = finalElementId;
   }
 
-  @Encoded1To1Relation(targetEntity = Building.class, inverse = false, methodName = "FinalElement")
+  @Encoded1To1Relation(targetEntity = Building.class, inverse = false, methodName = "FinalElement", invClass = IUrbanElement.class)
   public int getFinalElementId() {
     return this.finalElementId;
   }
