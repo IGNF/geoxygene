@@ -115,5 +115,11 @@
 			<version>2.1</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+      		<groupId>campskeleton</groupId>
+      		<artifactId>campskeleton</artifactId>
+      		<version>6.0</version>
+      		<scope>compile</scope>
+    	</dependency>
 	</dependencies>
 </project>
