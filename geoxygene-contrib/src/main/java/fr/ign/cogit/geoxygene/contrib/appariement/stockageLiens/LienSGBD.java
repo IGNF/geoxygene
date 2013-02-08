@@ -245,7 +245,9 @@ public class LienSGBD extends FT_Feature {
         this.getEnsembleLiensSGBD().getListePop().add(classe);
       }
     }
-    formatRef = formatRef.substring(0, formatRef.length() - 1);
+    if (formatRef.length() > 0) {
+        formatRef = formatRef.substring(0, formatRef.length() - 1);
+    }
     this.setObjetsRef(formatRef);
 
     // Comparaison
@@ -260,7 +262,9 @@ public class LienSGBD extends FT_Feature {
         this.getEnsembleLiensSGBD().getListePop().add(classe);
       }
     }
-    formatComp = formatComp.substring(0, formatComp.length() - 1);
+    if (formatRef.length() > 0) {
+        formatComp = formatComp.substring(0, formatComp.length() - 1);
+    }
     this.setObjetsComp(formatComp);
 
     // Indicateurs

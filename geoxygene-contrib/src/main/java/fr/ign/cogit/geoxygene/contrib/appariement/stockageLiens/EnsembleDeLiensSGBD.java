@@ -353,7 +353,9 @@ public class EnsembleDeLiensSGBD extends Population {
     while (itPop.hasNext()) {
       pop = pop.concat(itPop.next() + "|"); //$NON-NLS-1$
     }
-    this.setPopulations(pop.substring(0, pop.length() - 1));
+    if (pop.length() > 0) {
+        this.setPopulations(pop.substring(0, pop.length() - 1));
+    }
     return this;
   }
 
