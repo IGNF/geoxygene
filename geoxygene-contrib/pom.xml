@@ -74,17 +74,20 @@
   
   <dependencies>
     <dependency>
-    	<groupId>${project.groupId}</groupId>
-    	<artifactId>geoxygene-database</artifactId>
-    	<version>${project.version}</version>
-    	<type>jar</type>
-    	<scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>com.vividsolutions</groupId>
       <artifactId>jts</artifactId>
     </dependency>
-    
+    <dependency>
+    	<groupId>${project.groupId}</groupId>
+    	<artifactId>geoxygene-database</artifactId>
+    	<version>${project.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>geoxygene-io</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+
     <!-- Test avec DBUnit -->
     <dependency>
 		<groupId>org.dbunit</groupId>
@@ -93,7 +96,6 @@
 	    <scope>system</scope>
 	    <systemPath>${basedir}/lib/dbunit.jar</systemPath> 
    	</dependency>
-
   </dependencies>
 
 </project>

@@ -30,11 +30,10 @@ package fr.ign.cogit.geoxygene.contrib.appariement.surfaces;
 /**
  * Paramètres de l'appariement de surfaces.
  * 
- * @author Mustiere - IGN / Laboratoire COGIT
+ * @author Sébastien Mustière - IGN / Laboratoire COGIT
  * @version 1.0
  * 
  */
-
 public class ParametresAppSurfaces implements Cloneable {
 
   /**
@@ -56,19 +55,23 @@ public class ParametresAppSurfaces implements Cloneable {
    * multipliée par ce paramètre, on garde ce lien à coup sûr. Valeur par défaut
    * : 0.8
    */
-  public double pourcentage_intersection_sur = 0.8;
+  public double pourcentage_intersection_sur = 0.5;
 
   /**
    * Mesure de ressemblance entre surfaces (ou groupes de surfaces) à optimiser
-   * lors du choix final de l'appariement. 2 possibilités : TRUE : minimise la
-   * distance surfacique (conseillé par Atef en cas de données avec des niveaux
-   * de détail similaires). FALSE : minimise la somme Exactitude + Complétude.
-   * 
-   * Remarque : - Complétude = surf(Sref inter Scomp) / Sref - Exactitude =
-   * surf(Sref inter Scomp) / Scomp.
-   * 
+   * lors du choix final de l'appariement. 2 possibilités :
+   * <ul>
+   * <li>TRUE : minimise la distance surfacique (conseillé par Atef en cas de données avec des
+   * niveaux de détail similaires).
+   * <li>FALSE : minimise la somme Exactitude + Complétude.
+   * </ul>
+   * Remarque :
+   * <ul>
+   * <li>- Complétude = surf(Sref inter Scomp) / Sref
+   * <li>- Exactitude = surf(Sref inter Scomp) / Scomp
+   * </ul>
    */
-  public boolean minimiseDistanceSurfacique = true;
+  public boolean minimiseDistanceSurfacique = false;
 
   /**
    * Si on utilise le critère de Distance Surfacique (cf. parametre
@@ -116,8 +119,8 @@ public class ParametresAppSurfaces implements Cloneable {
   /**
    * Uniquement pour des problèmes de robustesse du code si les surfaces en
    * entrée ne sont pas propres (existence de mini-boucles). Si JTS plante à
-   * cuase de ces surfaces bizarres, celles-ci seront filtrées avec
-   * DouglasPeucker. On essaiera plusieurs forces de filtrage: entre
+   * cause de ces surfaces bizarres, celles-ci seront filtrées avec
+   * DouglasPeucker. On essaiera plusieurs forces de filtrage : entre
    * resolutionMin et resolutionMax.
    */
   public double resolutionMin = 1;
@@ -125,12 +128,17 @@ public class ParametresAppSurfaces implements Cloneable {
   /**
    * Uniquement pour des problèmes de robustesse du code si les surfaces en
    * entrée ne sont pas propres (existence de mini-boucles). Si JTS plante à
-   * cuase de ces surfaces bizarres, celles-ci seront filtrées avec
-   * DouglasPeucker. On essaiera plusieurs forces de filtrage: entre
+   * cause de ces surfaces bizarres, celles-ci seront filtrées avec
+   * DouglasPeucker. On essaiera plusieurs forces de filtrage : entre
    * resolutionMin et resolutionMax.
    */
   public double resolutionMax = 11;
 
+  public boolean useSemanticSimilarity = false;
+  public String semanticSimilarityAttributeRef = "";
+  public String semanticSimilarityAttributeComp = "";
+  public double semanticWeight = 0.5;
+  
   /** Clone l'objet. */
   @Override
   public Object clone() {
