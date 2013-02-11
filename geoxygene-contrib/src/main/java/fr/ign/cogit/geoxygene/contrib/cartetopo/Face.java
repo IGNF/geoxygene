@@ -338,9 +338,15 @@ public class Face extends ElementCarteTopo {
   // de la surface, ce qui est utile pour minimiser les erreurs de calcul
   // si on manipule de grandes coordonnées).
   public double surface() {
-    return Operateurs.surface(this.getGeometrie());
+    return this.getGeometrie().area();
   }
-
+  private double surface = -1;
+  public double getSurface() {
+    if (surface == -1) {
+      this.surface = this.surface();
+    }
+    return this.surface;
+  }
   protected String arcsUtilises = ""; //$NON-NLS-1$
   protected String arcsIgnores = ""; //$NON-NLS-1$
 

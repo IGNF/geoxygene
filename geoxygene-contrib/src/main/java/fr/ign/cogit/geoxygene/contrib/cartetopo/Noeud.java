@@ -26,8 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
@@ -41,20 +39,16 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  * Nodes of topological map.
  * <p>
  * Classe des noeuds de la carte topo. Les arcs ont pour géométrie un GM_Point.
- * 
- * @author Mustière
- * @author Bonin
+ * @author Sébastien Mustière
+ * @author Olivier Bonin
  * @version 1.0
  */
 public class Noeud extends ElementCarteTopo {
-  static Logger logger = Logger.getLogger(Noeud.class.getName());
-
   /**
    * Default Constructor.
    */
   public Noeud() {
   }
-
   /**
    * Constructor.
    * @param point a point
@@ -62,7 +56,6 @@ public class Noeud extends ElementCarteTopo {
   public Noeud(IPoint point) {
     this.setGeom(point);
   }
-
   /**
    * Constructor.
    * @param p a position
@@ -402,45 +395,35 @@ public class Noeud extends ElementCarteTopo {
    * vide si il n'y en a pas.
    */
   public List<Noeud> voisins(Groupe groupe) {
-    List<Arc> arcsDuGroupe = new ArrayList<Arc>();
-    List<Arc> arcsVoisins = new ArrayList<Arc>();
-    Arc arcVoisin;
-    List<Noeud> noeudsDuGroupe = new ArrayList<Noeud>();
     List<Noeud> noeudsVoisins = new ArrayList<Noeud>();
-    Noeud noeudVoisin;
-    int i;
-
-    noeudsDuGroupe = groupe.getListeNoeuds();
-    arcsDuGroupe = groupe.getListeArcs();
-
+    List<Noeud> noeudsDuGroupe = groupe.getListeNoeuds();
+    List<Arc> arcsDuGroupe = groupe.getListeArcs();
     // gestion des arcs entrants
-    arcsVoisins = this.getEntrants();
-    for (i = 0; i < arcsVoisins.size(); i++) {
-      arcVoisin = arcsVoisins.get(i);
-      if (arcsDuGroupe.contains(arcVoisin)) {
-        noeudVoisin = arcVoisin.getNoeudIni();
-        if (noeudVoisin == null) {
-          continue;
-        }
-        if (noeudsDuGroupe.contains(noeudVoisin)
-            && !noeudsVoisins.contains(noeudVoisin)) {
-          noeudsVoisins.add(noeudVoisin);
-        }
+    List<Arc> arcsVoisins = new ArrayList<Arc>(this.getEntrants());
+    arcsVoisins.retainAll(arcsDuGroupe);
+    for (int i = 0; i < arcsVoisins.size(); i++) {
+      Arc arcVoisin = arcsVoisins.get(i);
+      Noeud noeudVoisin = arcVoisin.getNoeudIni();
+      if (noeudVoisin == null) {
+        continue;
+      }
+      if (noeudsDuGroupe.contains(noeudVoisin)
+          && !noeudsVoisins.contains(noeudVoisin)) {
+        noeudsVoisins.add(noeudVoisin);
       }
     }
     // gestion des arcs sortants
-    arcsVoisins = this.getSortants();
-    for (i = 0; i < arcsVoisins.size(); i++) {
-      arcVoisin = arcsVoisins.get(i);
-      if (arcsDuGroupe.contains(arcVoisin)) {
-        noeudVoisin = arcVoisin.getNoeudFin();
-        if (noeudVoisin == null) {
-          continue;
-        }
-        if (noeudsDuGroupe.contains(noeudVoisin)
-            && !noeudsVoisins.contains(noeudVoisin)) {
-          noeudsVoisins.add(noeudVoisin);
-        }
+    arcsVoisins = new ArrayList<Arc>(this.getSortants());
+    arcsVoisins.retainAll(arcsDuGroupe);
+    for (int i = 0; i < arcsVoisins.size(); i++) {
+      Arc arcVoisin = arcsVoisins.get(i);
+      Noeud noeudVoisin = arcVoisin.getNoeudFin();
+      if (noeudVoisin == null) {
+        continue;
+      }
+      if (noeudsDuGroupe.contains(noeudVoisin)
+          && !noeudsVoisins.contains(noeudVoisin)) {
+        noeudsVoisins.add(noeudVoisin);
       }
     }
     return noeudsVoisins;
@@ -495,7 +478,7 @@ public class Noeud extends ElementCarteTopo {
    */
   public Groupe plusCourtChemin(Noeud arrivee, double maxLongueur) {
     
-    logger.debug("shortest path between " + this.getCoord() + " - " + arrivee.getCoord());
+    Noeud.LOGGER.debug("shortest path between " + this.getCoord() + " - " + arrivee.getCoord());
     
     List<Noeud> noeudsFinaux = new ArrayList<Noeud>(0);
     List<Arc> arcsFinaux = new ArrayList<Arc>(0);
@@ -512,17 +495,17 @@ public class Noeud extends ElementCarteTopo {
     try {
       
       if (this.getCarteTopo() == null) {
-        Noeud.logger.error("ATTENTION : le noeud " + this
+        Noeud.LOGGER.error("ATTENTION : le noeud " + this
             + " ne fait pas partie d'une carte topo");
-        Noeud.logger
+        Noeud.LOGGER
             .error("            Impossible de calculer un plus court chemin");
         return null;
       }
       
       if (this.getCarteTopo().getPopGroupes() == null) {
-        Noeud.logger.error("ATTENTION : le noeud " + this
+        Noeud.LOGGER.error("ATTENTION : le noeud " + this
             + " fait partie d'une carte topo sans population de groupes");
-        Noeud.logger
+        Noeud.LOGGER
             .error("            Impossible de calculer un plus court chemin");
         return null;
       }
@@ -530,7 +513,7 @@ public class Noeud extends ElementCarteTopo {
       Groupe plusCourtChemin = this.getCarteTopo().getPopGroupes().nouvelElement();
 
       if (this == arrivee) {
-        logger.debug("node is arrival");
+        Noeud.LOGGER.debug("node is arrival");
         plusCourtChemin.addNoeud(this);
         this.addGroupe(plusCourtChemin);
         return plusCourtChemin;
@@ -569,7 +552,7 @@ public class Noeud extends ElementCarteTopo {
         }
         if (maxLongueur != 0) {
           if (plusProche.distance > maxLongueur) {
-             logger.debug("Trop long, on s'arrête");
+            Noeud.LOGGER.debug("Trop long, on s'arrête");
             return null; // heuristique pour stopper la recherche
           }
         }
@@ -603,7 +586,7 @@ public class Noeud extends ElementCarteTopo {
 
       // Phase "arriere"
       if (!traites.contains(arrivee)) {
-        logger.debug("couldn't reach it");
+        Noeud.LOGGER.debug("couldn't reach it");
         return null;
       }
       suivant = arrivee;
@@ -626,7 +609,7 @@ public class Noeud extends ElementCarteTopo {
       plusCourtChemin.setLength(arrivee.distance);
       return plusCourtChemin;
     } catch (Exception e) {
-      Noeud.logger.error("----- ERREUR dans calcul de plus court chemin.");
+      Noeud.LOGGER.error("----- ERREUR dans calcul de plus court chemin.");
       e.printStackTrace();
       return null;
     }

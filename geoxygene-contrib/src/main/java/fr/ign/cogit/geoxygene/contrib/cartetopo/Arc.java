@@ -103,7 +103,9 @@ public class Arc extends ElementCarteTopo {
   public Noeud getNoeudIni() {
     return this.noeudIni;
   }
-
+  public int getIdNoeudIni() {
+    return (this.noeudIni == null) ? 0 : this.noeudIni.getId();
+  }
   /**
    * définit le noeud initial de self. NB: met à jour la relation inverse
    * "sortants" de noeud
@@ -127,6 +129,9 @@ public class Arc extends ElementCarteTopo {
   /** Renvoie le noeud final de self */
   public Noeud getNoeudFin() {
     return this.noeudFin;
+  }
+  public int getIdNoeudFin() {
+    return (this.noeudFin == null) ? 0 : this.noeudFin.getId();
   }
 
   /**
@@ -379,16 +384,14 @@ public class Arc extends ElementCarteTopo {
       ptsAvant.add(listePoints.get(i));
     }
     ptsAvant.add(ptmin);
-    arcAvant = popArcs.nouvelElement();
-    arcAvant.setGeometrie(new GM_LineString(ptsAvant, false));
+    arcAvant = popArcs.nouvelElement(new GM_LineString(ptsAvant, false));
     if (ptmin.distance(listePoints.get(positionMin + 1)) != 0) {
       ptsApres.add(ptmin);
     }
     for (i = positionMin + 1; i < listePoints.size(); i++) {
       ptsApres.add(listePoints.get(i));
     }
-    arcApres = popArcs.nouvelElement();
-    arcApres.setGeometrie(new GM_LineString(ptsApres, false));
+    arcApres = popArcs.nouvelElement(new GM_LineString(ptsApres, false));
     // instanciation de la topologie et des attributs
     this.getNoeudIni().getSortants().remove(this);
     arcAvant.setNoeudIni(this.getNoeudIni());
@@ -684,7 +687,9 @@ public class Arc extends ElementCarteTopo {
       }
     }
     // ajout du dernier point pour finir la boucle du polygone
-    contourPoints.add(contourPoints.get(0));
+    if (contourPoints.get(contourPoints.size() - 1).distance2D(contourPoints.get(0)) > 0) {
+      contourPoints.add(contourPoints.get(0));
+    }
     return new Cycle(arcsDuCycle, orientationsDuCycle, new GM_LineString(contourPoints), aGauche);
   }
 

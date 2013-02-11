@@ -158,4 +158,13 @@ public class Cycle {
         .get(0).getFaceGauche() : this.getArcs().get(0).getFaceDroite());
     return listeFacesExterieuresDuCycle;
   }
+  @Override
+  public String toString() {
+    String result = "Cycle " + (this.aGauche ? "(left) " : "(right) ") + this.arcs.size() + "\n";
+    for (Arc a : this.arcs) {
+      result += "\t " + a + "\n";
+    }
+    result += "\twith geom = " + this.geometrie;
+    return result;
+  }
 }

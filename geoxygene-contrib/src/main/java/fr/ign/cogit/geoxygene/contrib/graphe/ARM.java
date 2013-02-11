@@ -27,15 +27,17 @@
 
 package fr.ign.cogit.geoxygene.contrib.graphe;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.contrib.I18N;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
-import fr.ign.cogit.geoxygene.feature.FT_FeatureCollection;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 
@@ -63,7 +65,7 @@ public class ARM {
    *         chaque tronçon du ARM ("correspondant" est instancié pour relier
    *         les noeuds et les points).
    */
-  public static CarteTopo creeARM(IFeatureCollection<IFeature> points) {
+  public static CarteTopo creeARM(Collection<IFeature> points) {
     Noeud noeud, nouveauNoeud;
     Arc arc;
     IFeature point;
@@ -71,13 +73,10 @@ public class ARM {
     CarteTopo arm = new CarteTopo(I18N.getString("ARM.MST")); //$NON-NLS-1$
     int i, j, imin = 0, jmin = 0;
     GM_LineString trait;
-    FT_FeatureCollection<IFeature> pointsCopie = new FT_FeatureCollection<IFeature>(
-        points);
-
-    if (pointsCopie.size() == 0) {
+    List<IFeature> pointsCopie = new ArrayList<IFeature>(points);
+    if (pointsCopie.isEmpty()) {
       return null;
     }
-
     // Amorce, on prend un point au hasard: le premier
     point = pointsCopie.get(0);
     if (!(point.getGeom() instanceof GM_Point)) {
@@ -90,10 +89,9 @@ public class ARM {
     nouveauNoeud.addCorrespondant(point);
     // Ajout des points un à un
     while (true) {
-      if (pointsCopie.size() == 0) {
+      if (pointsCopie.isEmpty()) {
         break; // ça y est, on a relié tous les points
       }
-
       // on cherche le couple noeud-point le pus proche (TRES bourrin)
       distMin = Double.MAX_VALUE;
       for (i = 0; i < pointsCopie.size(); i++) {
@@ -102,7 +100,6 @@ public class ARM {
           System.out.println(I18N.getString("ARM.AnObjectIsNotAPoint")); //$NON-NLS-1$
           return null;
         }
-
         for (j = 0; j < arm.getPopNoeuds().size(); j++) {
           noeud = arm.getPopNoeuds().get(j);
           dist = noeud.getGeom().distance(point.getGeom());
@@ -115,7 +112,6 @@ public class ARM {
       }
       point = pointsCopie.get(imin);
       noeud = arm.getPopNoeuds().get(jmin);
-
       // on remplit l'ARM
       pointsCopie.remove(point);
       nouveauNoeud = arm.getPopNoeuds().nouvelElement();
@@ -144,10 +140,10 @@ public class ARM {
    * 
    */
   public static CarteTopo creeARMsurObjetsQuelconques(
-      IFeatureCollection<IFeature> objets) {
-    FT_FeatureCollection<IFeature> points = new FT_FeatureCollection<IFeature>();
+      Collection<IFeature> objets) {
+    Collection<IFeature> points = new HashSet<IFeature>();
 
-    Iterator<IFeature> itObjets = objets.getElements().iterator();
+    Iterator<IFeature> itObjets = objets.iterator();
     while (itObjets.hasNext()) {
       IFeature objet = itObjets.next();
       if (objet.getGeom() == null) {

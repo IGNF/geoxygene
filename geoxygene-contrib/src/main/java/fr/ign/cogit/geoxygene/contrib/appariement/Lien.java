@@ -28,11 +28,12 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IAggregate;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
-import fr.ign.cogit.geoxygene.api.spatial.geomprim.ISurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Distances;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.feature.FT_Feature;
@@ -41,6 +42,7 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiSurface;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+import fr.ign.cogit.geoxygene.util.algo.JtsAlgorithms;
 
 /**
  * Resultat de l'appariement : lien entre des objets homologues de deux bases de
@@ -270,6 +272,13 @@ public class Lien extends FT_Feature {
    */
   public final void setComparaison(final String comparison) {
     this.comparaison = comparison;
+  }
+  private List<Arc> arcs = null;
+  public List<Arc> getArcs() {
+    return this.arcs;
+  }
+  public void setArcs(List<Arc> arcs) {
+    this.arcs = arcs;
   }
 
   // ////////////////////////////////////////////////////
@@ -612,6 +621,22 @@ public class Lien extends FT_Feature {
   // ////////////////////////////////////////////////////
   // POUR LES LIENS VERS DES SURFACES
   // ////////////////////////////////////////////////////
+  private static IMultiSurface<IOrientableSurface> buildUnionGeometry(List<IFeature> list) {
+    List<IOrientableSurface> listRef = new ArrayList<IOrientableSurface>();
+    for (IFeature feat : list) {
+      listRef.add((IOrientableSurface) feat.getGeom());
+    }
+    IGeometry unionRef = JtsAlgorithms.union(listRef);
+    IMultiSurface<IOrientableSurface> geomRef = new GM_MultiSurface<IOrientableSurface>();
+    if (unionRef instanceof IMultiSurface) {
+      geomRef = (IMultiSurface<IOrientableSurface>) unionRef;
+    } else {
+      if (unionRef instanceof IOrientableSurface) {
+        geomRef.add((IOrientableSurface) unionRef);
+      }
+    }
+    return geomRef;
+  }
   /**
    * Distance surfacique entre les surfaces du lien. Methode UNIQUEMENT valable
    * pour des liens pointant vers 1 ou n objets ref et com avec une géométrie
@@ -619,34 +644,17 @@ public class Lien extends FT_Feature {
    * @return surface distance
    */
   public final double distanceSurfaciqueRobuste() {
-    GM_MultiSurface<IOrientableSurface> geomRef = new GM_MultiSurface<IOrientableSurface>();
-    GM_MultiSurface<IOrientableSurface> geomComp = new GM_MultiSurface<IOrientableSurface>();
-    IFeature obj;
-    IOrientableSurface geometrie;
-    Iterator<IFeature> it;
-
-    it = this.getObjetsRef().iterator();
-    while (it.hasNext()) {
-      obj = it.next();
-      geometrie = (IOrientableSurface) obj.getGeom();
-      if (!(geometrie instanceof ISurface)) {
-        return 2;
-      }
-      geomRef.add(geometrie);
-    }
-    it = this.getObjetsComp().iterator();
-    while (it.hasNext()) {
-      obj = it.next();
-      geometrie = (IOrientableSurface) obj.getGeom();
-      if (!(geometrie instanceof ISurface)) {
-        return 2;
-      }
-      geomComp.add(geometrie);
-    }
-
+    IMultiSurface<IOrientableSurface> geomRef = buildUnionGeometry(this.getObjetsRef());
+    IMultiSurface<IOrientableSurface> geomComp = buildUnionGeometry(this.getObjetsComp());
     return Distances.distanceSurfaciqueRobuste(geomRef, geomComp);
   }
-
+  private double distanceSurfacique = -1;
+  public final double getDistanceSurfacique() {
+    if (this.distanceSurfacique == -1) {
+      this.distanceSurfacique = this.distanceSurfaciqueRobuste();
+    }
+    return this.distanceSurfacique;
+  }
   /**
    * Exactitude (définie par Atef) entre les surfaces du lien. Methode
    * UNIQUEMENT valable pour des liens pointant vers 1 ou n objets ref et com
@@ -654,34 +662,17 @@ public class Lien extends FT_Feature {
    * @return exactitude
    */
   public final double exactitude() {
-    GM_MultiSurface<IOrientableSurface> geomRef = new GM_MultiSurface<IOrientableSurface>();
-    GM_MultiSurface<IOrientableSurface> geomComp = new GM_MultiSurface<IOrientableSurface>();
-    IFeature obj;
-    IOrientableSurface geometrie;
-    Iterator<IFeature> it;
-
-    it = this.getObjetsRef().iterator();
-    while (it.hasNext()) {
-      obj = it.next();
-      geometrie = (IOrientableSurface) obj.getGeom();
-      if (!(geometrie instanceof ISurface)) {
-        return 2;
-      }
-      geomRef.add(geometrie);
-    }
-    it = this.getObjetsComp().iterator();
-    while (it.hasNext()) {
-      obj = it.next();
-      geometrie = (IOrientableSurface) obj.getGeom();
-      if (!(geometrie instanceof ISurface)) {
-        return 2;
-      }
-      geomComp.add(geometrie);
-    }
-
+    IMultiSurface<IOrientableSurface> geomRef = buildUnionGeometry(this.getObjetsRef());
+    IMultiSurface<IOrientableSurface> geomComp = buildUnionGeometry(this.getObjetsComp());
     return Distances.exactitude(geomRef, geomComp);
   }
-
+  private double exactitude = -1;
+  public final double getExactitude() {
+    if (this.exactitude == -1) {
+      this.exactitude = this.exactitude();
+    }
+    return this.exactitude;
+  }
   /**
    * Exactitude (définie par Atef) entre les surfaces du lien. Methode
    * UNIQUEMENT valable pour des liens pointant vers 1 ou n objets ref et com
@@ -689,31 +680,15 @@ public class Lien extends FT_Feature {
    * @return completeness
    */
   public final double completude() {
-    GM_MultiSurface<IOrientableSurface> geomRef = new GM_MultiSurface<IOrientableSurface>();
-    GM_MultiSurface<IOrientableSurface> geomComp = new GM_MultiSurface<IOrientableSurface>();
-    IFeature obj;
-    IOrientableSurface geometrie;
-    Iterator<IFeature> it;
-
-    it = this.getObjetsRef().iterator();
-    while (it.hasNext()) {
-      obj = it.next();
-      geometrie = (IOrientableSurface) obj.getGeom();
-      if (!(geometrie instanceof ISurface)) {
-        return 2;
-      }
-      geomRef.add(geometrie);
+    IMultiSurface<IOrientableSurface> geomRef = buildUnionGeometry(this.getObjetsRef());
+    IMultiSurface<IOrientableSurface> geomComp = buildUnionGeometry(this.getObjetsComp());
+    return Distances.exactitude(geomComp, geomRef);
+  }
+  private double completude = -1;
+  public final double getCompletude() {
+    if (this.completude == -1) {
+      this.completude = this.completude();
     }
-    it = this.getObjetsComp().iterator();
-    while (it.hasNext()) {
-      obj = it.next();
-      geometrie = (IOrientableSurface) obj.getGeom();
-      if (!(geometrie instanceof ISurface)) {
-        return 2;
-      }
-      geomComp.add(geometrie);
-    }
-
-    return Distances.exactitude(geomRef, geomComp);
+    return this.completude;
   }
 }
