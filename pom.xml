@@ -174,8 +174,8 @@
 
 	<build>
 
-		<sourceDirectory>src</sourceDirectory>
-		<testSourceDirectory>test/java</testSourceDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<resources>
 			<resource>
 				<directory>src/resources</directory>
@@ -211,14 +211,13 @@
 					<source>1.6</source>
 					<complianceLevel>1.6</complianceLevel>
 					<target>1.6</target>
-					<includes>
-						<include>**/*</include>
-					</includes>
 					<excludes>
 						<exclude>fr/ign/cogit/geoxygene/datatools/oracle/*.java</exclude>
+						<!-- 
 						<exclude>resources/</exclude>
 						<exclude>site/</exclude>
-						<exclude>main/</exclude>
+						<exclude>main/</exclude> 
+						-->
 					</excludes>
 				</configuration>
 			</plugin>
