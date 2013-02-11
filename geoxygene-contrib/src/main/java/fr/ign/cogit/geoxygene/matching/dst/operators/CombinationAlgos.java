@@ -152,7 +152,6 @@ public final class CombinationAlgos {
       public int compare(Pair<byte[], Float> o1, Pair<byte[], Float> o2) {
         Comparator<byte[]> internalcomp = Utils.byteArrayComparator();
         return internalcomp.compare(o1.getFirst(), o2.getFirst());
-
       }
     };
     Collections.sort(kernel, comparator);
