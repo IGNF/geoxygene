@@ -98,19 +98,19 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
     param.topologieFusionArcsDoubles2 = true;
     param.topologieGraphePlanaire1 = true;
     param.topologieGraphePlanaire2 = true;
-    param.topologieSeuilFusionNoeuds2 = 1;
+    param.topologieSeuilFusionNoeuds2 = 0.1;
     param.varianteFiltrageImpassesParasites = false;
-    param.projeteNoeuds1SurReseau2 = true;
-    param.projeteNoeuds1SurReseau2DistanceNoeudArc = 8; // 25
-    param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = 20; // 50
-    param.projeteNoeuds2SurReseau1 = true;
-    param.projeteNoeuds2SurReseau1DistanceNoeudArc = 8; // 25
-    param.projeteNoeuds2SurReseau1DistanceProjectionNoeud = 20; // 50
+    param.projeteNoeuds1SurReseau2 = false;
+    param.projeteNoeuds1SurReseau2DistanceNoeudArc = 10; // 25
+    param.projeteNoeuds1SurReseau2DistanceProjectionNoeud = 25; // 50
+    param.projeteNoeuds2SurReseau1 = false;
+    param.projeteNoeuds2SurReseau1DistanceNoeudArc = 10; // 25
+    param.projeteNoeuds2SurReseau1DistanceProjectionNoeud = 25; // 50
     param.projeteNoeuds2SurReseau1ImpassesSeulement = false;
     param.varianteForceAppariementSimple = true;
-    param.distanceArcsMax = 20; // 50
-    param.distanceArcsMin = 8; // 30
-    param.distanceNoeudsMax = 20; // 50
+    param.distanceArcsMax = 25; // 50
+    param.distanceArcsMin = 10; // 30
+    param.distanceNoeudsMax = 25; // 50
     param.varianteRedecoupageArcsNonApparies = true;
     param.debugTirets = false;
     param.debugBilanSurObjetsGeo = false;
@@ -144,12 +144,7 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
         logger.info(geom.getClass().getSimpleName());
       }
     }
-    DataSet.getInstance().addPopulation(popRef);
-    DataSet.getInstance().addPopulation(popComp);
     logger.info(arcs.getNom());
-    DataSet.getInstance().addPopulation(reseauRecale.getPopArcs());
-    logger.info(arcs.getNom());
-    DataSet.getInstance().addPopulation(liens);
     
     logger.trace("----------------------------------------------------------");
     logger.trace("Taille popRef = " + popRef.size());
@@ -159,8 +154,7 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
     
     ProjectFrame p1 = this.application.getFrame().newProjectFrame();
     p1.setTitle("Reference Pop"); //$NON-NLS-1$
-    p1.getDataSet().addPopulation(popRef);
-    p1.addFeatureCollection(popRef, popRef.getNom(), null);
+    p1.addUserLayer(popRef, "Reference Network", null);
     
     // StyledLayerDescriptor sld = StyledLayerDescriptor.unmarshall(DataMatchingPlugin.class.getResource("/sld/appariementSLD.xml").getPath());
     // Layer layerLigneRef = sld.getLayer("bdtopo_route");
@@ -170,15 +164,14 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
     
     ProjectFrame p2 = this.application.getFrame().newProjectFrame();
     p2.setTitle("Comparaison Pop"); //$NON-NLS-1$
-    p2.getDataSet().addPopulation(popComp);
-    p2.addFeatureCollection(popComp, popComp.getNom(), null);
+    p2.addUserLayer(popComp, "Comparison Network", null);
     p2.getLayerViewPanel().setViewport(viewport);
     viewport.getLayerViewPanels().add(p2.getLayerViewPanel());
     
     ProjectFrame p3 = this.application.getFrame().newProjectFrame();
     p3.setTitle("Corrected Pop"); //$NON-NLS-1$
-    p3.getDataSet().addPopulation(arcs);
-    p3.addFeatureCollection(arcs, arcs.getNom(), null);
+    p3.addUserLayer(arcs, "Corrected network", null);
+    p3.addUserLayer(popComp, "Comparison Network", null);
     p3.getLayerViewPanel().setViewport(viewport);
     viewport.getLayerViewPanels().add(p3.getLayerViewPanel());
     
@@ -186,17 +179,11 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
     p4.getLayerViewPanel().setViewport(viewport);
     viewport.getLayerViewPanels().add(p4.getLayerViewPanel());
     p4.setTitle("Links"); //$NON-NLS-1$
-    p4.getDataSet().addPopulation(popRef);
-    p4.getDataSet().addPopulation(popComp);
-    p4.getDataSet().addPopulation(liens);
-    p4.addFeatureCollection(popRef, popRef.getNom(), null);
-    p4.addFeatureCollection(popComp, popComp.getNom(), null);
-    Layer layer = p4.addFeatureCollection(liens, liens.getNom(), null);
+    p4.addUserLayer(popRef, "Reference Network", null);
+    p4.addUserLayer(popComp, "Comparison Network", null);
+    Layer layer = p4.addUserLayer(liens, "Links", null);
     
     layer.getSymbolizer().getStroke().setStrokeWidth(2);
     logger.info("Finished"); //$NON-NLS-1$
-    
-    
-    
   }
 }

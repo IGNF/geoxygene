@@ -799,7 +799,7 @@ public class Viewport {
    */
   public final void moveUp() throws NoninvertibleTransformException {
     this.moveOf(0, this.layerViewPanels.iterator().next().getHeight()
-        * Viewport.MOVE_FACTOR / this.scale);
+        * Viewport.MOVE_FACTOR);
   }
 
   /**
@@ -809,7 +809,7 @@ public class Viewport {
    */
   public final void moveDown() throws NoninvertibleTransformException {
     this.moveOf(0, -this.layerViewPanels.iterator().next().getHeight()
-        * Viewport.MOVE_FACTOR / this.scale);
+        * Viewport.MOVE_FACTOR);
   }
 
   /**
@@ -819,7 +819,7 @@ public class Viewport {
    */
   public final void moveRight() throws NoninvertibleTransformException {
     this.moveOf(this.layerViewPanels.iterator().next().getWidth()
-        * Viewport.MOVE_FACTOR / this.scale, 0);
+        * Viewport.MOVE_FACTOR, 0);
   }
 
   /**
@@ -829,7 +829,7 @@ public class Viewport {
    */
   public final void moveLeft() throws NoninvertibleTransformException {
     this.moveOf(-this.layerViewPanels.iterator().next().getWidth()
-        * Viewport.MOVE_FACTOR / this.scale, 0);
+        * Viewport.MOVE_FACTOR, 0);
   }
 
   /**
@@ -841,7 +841,7 @@ public class Viewport {
    */
   public final void moveOf(final double x, final double y)
       throws NoninvertibleTransformException {
-    logger.debug(getMETERS_PER_PIXEL());
+//    logger.debug(getMETERS_PER_PIXEL());
     this.viewOrigin.setLocation(this.viewOrigin.getX() + x / this.scale,
         this.viewOrigin.getY() + y / this.scale);
     this.update();
