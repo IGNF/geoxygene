@@ -517,6 +517,13 @@ public class CarteTopo extends DataSet {
     }
     for (Object a : this.getPopArcs()) {
       arc = (Arc) a;
+      if (arc.getGeometrie().sizeControlPoint() < 2) {
+        CarteTopo.logger
+            .warn("Edge has only "
+                + arc.getGeometrie().sizeControlPoint()
+                + " points and was ignored during the construction of the topology between edges and nodes");
+        continue;// TODO should we remove it right now or let the user do it?
+      }
       selection = this.getPopNoeuds().select(arc.getGeometrie().startPoint(), tolerance);
       if (!selection.isEmpty()) {
         Iterator<Noeud> it = selection.iterator();
