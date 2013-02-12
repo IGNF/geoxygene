@@ -37,42 +37,52 @@ public abstract class AbstractLayerFactory implements LayerFactory {
     this.geometryType = newGeometryType;
   }
   protected Color fillColor = null;
+  @Override
   public void setFillColor(Color fillColor) {
     this.fillColor = fillColor;
   }
   protected float fillOpacity = 0.8f;
+  @Override
   public void setFillOpacity(float opacity) {
     this.fillOpacity = opacity;
   }
   protected Color strokeColor = null;
+  @Override
   public void setStrokeColor(Color strokeColor) {
     this.strokeColor = strokeColor;
   }
   protected float strokeWidth = 1.0f;
+  @Override
   public void setStrokeWidth(float strokeWidth) {
     this.strokeWidth = strokeWidth;
   }
   protected float strokeOpacity = 0.8f;
+  @Override
   public void setStrokeOpacity(float opacity) {
     this.strokeOpacity = opacity;
   }
   protected Color borderStrokeColor = null;
+  @Override
   public void setBorderStrokeColor(Color borderStrokeColor) {
     this.borderStrokeColor = borderStrokeColor;
   }
   protected float borderStrokeWidth = 2.0f;
+  @Override
   public void setBorderStrokeWidth(float borderStrokeWidth) {
     this.borderStrokeWidth = borderStrokeWidth;
   }
   protected float borderStrokeOpacity = 0.8f;
+  @Override
   public void setBorderStrokeOpacity(float opacity) {
     this.borderStrokeOpacity = opacity;
   }
   protected String mark = null;
+  @Override
   public void setMark(String wellKnownText) {
     this.mark = wellKnownText;
   }
   protected String name = null;
+  @Override
   public void setName(String layerName) {
     this.name = layerName;
   }
@@ -80,13 +90,16 @@ public abstract class AbstractLayerFactory implements LayerFactory {
   public String getUnitOfMeasure() {
     return this.unitOfMeasure;
   }
+  @Override
   public void setUnitOfMeasure(String unitOfMeasure) {
     this.unitOfMeasure = unitOfMeasure;
   }
   protected Collection<ColorimetricColor> undesirableColors = null;
+  @Override
   public void setUndesirableColors(Collection<ColorimetricColor> undesirableColors) {
     this.undesirableColors = undesirableColors;
   }
+  @Override
   public Style createStyle() {
     UserStyle style = new UserStyle();
     style.setName("Style créé pour le layer " + this.name);//$NON-NLS-1$
@@ -97,6 +110,7 @@ public abstract class AbstractLayerFactory implements LayerFactory {
     style.getFeatureTypeStyles().add(this.createFeatureTypeStyle());
     return style;
   }
+  @Override
   public FeatureTypeStyle createFeatureTypeStyle() {
     FeatureTypeStyle fts = new FeatureTypeStyle();
     fts.getRules().add(this.createRule());
@@ -107,6 +121,7 @@ public abstract class AbstractLayerFactory implements LayerFactory {
     fts.getRules().add(this.createBorderRule());
     return fts;
   }
+  @Override
   public Rule createRule() {
     Rule rule = new Rule();
     rule.setLegendGraphic(new LegendGraphic());
@@ -121,6 +136,7 @@ public abstract class AbstractLayerFactory implements LayerFactory {
     rule.getSymbolizers().add(this.createBorderSymbolizer());
     return rule;
   }
+  @Override
   public Stroke createStroke() {
     Stroke stroke = new Stroke();
     Color color = this.strokeColor;
@@ -139,6 +155,7 @@ public abstract class AbstractLayerFactory implements LayerFactory {
     stroke.setStrokeWidth(this.borderStrokeWidth);
     return stroke;
   }
+  @Override
   public Fill createFill() {
     Fill fill = new Fill();
     Color color = this.fillColor;
@@ -149,6 +166,7 @@ public abstract class AbstractLayerFactory implements LayerFactory {
     fill.setFillOpacity(this.fillOpacity);
     return fill;
   }
+  @Override
   public Symbolizer createSymbolizer() {
     if (this.geometryType == null) {
       /** Ajoute un raster symbolizer */
@@ -195,6 +213,7 @@ public abstract class AbstractLayerFactory implements LayerFactory {
     }
     return null;
   }
+  @Override
   public Mark createMark() {
     Mark mark = new Mark();
     mark.setWellKnownName(this.mark);
@@ -218,5 +237,6 @@ public abstract class AbstractLayerFactory implements LayerFactory {
     List<ColorimetricColor> colors = crs.getAllColors();
     return colors.get(new Random().nextInt(colors.size())).toColor();
   }
+  @Override
   public abstract Layer createLayer();
 }
