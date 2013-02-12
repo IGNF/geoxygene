@@ -361,6 +361,7 @@ public class FeatureType implements GF_FeatureType {
     return (AttributeType) this.featureAttributes.get(i);
   }
 
+  @Override
   public AttributeType getFeatureAttributeByName(String nomAttribut) {
     List<GF_AttributeType> listAttrib = this.getFeatureAttributes();
     for (int i = 0; i < listAttrib.size(); i++) {

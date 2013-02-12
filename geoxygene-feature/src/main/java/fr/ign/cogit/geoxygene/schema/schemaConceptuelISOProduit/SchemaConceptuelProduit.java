@@ -92,10 +92,12 @@ public class SchemaConceptuelProduit
     /** Identifiant d'un objet */
     protected int id;
 
+    @Override
     public int getId() {
         return this.id;
     }
 
+    @Override
     public void setId(int id) {
         this.id = id;
     }
@@ -105,6 +107,7 @@ public class SchemaConceptuelProduit
     /**
      * @return the sujet
      */
+    @Override
     public String getSujet() {
         return this.sujet;
     }
@@ -113,6 +116,7 @@ public class SchemaConceptuelProduit
      * @param sujet
      *            the sujet to set
      */
+    @Override
     public void setSujet(String sujet) {
         this.sujet = sujet;
     }
@@ -122,6 +126,7 @@ public class SchemaConceptuelProduit
     /**
      * @return the version
      */
+    @Override
     public String getVersion() {
         return this.version;
     }
@@ -130,6 +135,7 @@ public class SchemaConceptuelProduit
      * @param version
      *            the version to set
      */
+    @Override
     public void setVersion(String version) {
         this.version = version;
     }
@@ -139,6 +145,7 @@ public class SchemaConceptuelProduit
     /**
      * @return the date
      */
+    @Override
     public String getDate() {
         return this.date;
     }
@@ -147,6 +154,7 @@ public class SchemaConceptuelProduit
      * @param date
      *            the date to set
      */
+    @Override
     public void setDate(String date) {
         this.date = date;
     }
@@ -156,6 +164,7 @@ public class SchemaConceptuelProduit
     /**
      * @return the source
      */
+    @Override
     public String getSource() {
         return this.source;
     }
@@ -164,6 +173,7 @@ public class SchemaConceptuelProduit
      * @param source
      *            the source to set
      */
+    @Override
     public void setSource(String source) {
         this.source = source;
     }
@@ -173,10 +183,12 @@ public class SchemaConceptuelProduit
      */
     protected String BD;
 
+    @Override
     public void setBD(String nomBD) {
         this.BD = nomBD;
     }
 
+    @Override
     public String getBD() {
         return this.BD;
     }
@@ -186,10 +198,12 @@ public class SchemaConceptuelProduit
      */
     protected int tagBD;
 
+    @Override
     public void setTagBD(int ID) {
         this.tagBD = ID;
     }
 
+    @Override
     public int getTagBD() {
         return this.tagBD;
     }
@@ -288,6 +302,7 @@ public class SchemaConceptuelProduit
     /**
      * Ajoute une classe au schéma en cours
      */
+    @Override
     public void createFeatureType(String nomClasse) {
         // création d'un nouveau featuretype
         FeatureType ft = new FeatureType();
@@ -335,6 +350,7 @@ public class SchemaConceptuelProduit
      * toute trace des attributs de la classe, de leurs valeurs énumérées, des
      * associations, des roles, etc.
      */
+    @Override
     public void removeFeatureType(FeatureType ft) {
 
         /* Suppression des attributs de la classe */
@@ -488,6 +504,7 @@ public class SchemaConceptuelProduit
     /**
      * Ajoute un attribut à une classe
      */
+    @Override
     public void createFeatureAttribute(FeatureType ft, String nomAtt,
             String type, boolean valueDomainType) {
 
@@ -526,6 +543,7 @@ public class SchemaConceptuelProduit
     /**
      * Supprime un attribut dans une classe
      */
+    @Override
     public void removeFeatureAttribute(FeatureType ft, AttributeType att) {
         /*
          * Supression du lien attribut-feature
@@ -556,6 +574,7 @@ public class SchemaConceptuelProduit
     /**
      * Cree une valeur d'attribut pour les types enumeres
      */
+    @Override
     public void createFeatureAttributeValue(AttributeType attCorrespondant,
             String label) {
 
@@ -573,6 +592,7 @@ public class SchemaConceptuelProduit
     /**
      * Supprime une valeur d'attribut pour un type enumere
      */
+    @Override
     public void removeFeatureAttributeValue(FeatureAttributeValue valeurAtt) {
 
         // On Récupère l'attribut correspondant
@@ -587,6 +607,7 @@ public class SchemaConceptuelProduit
     /**
      * Ajoute une relation de généralisation entre classes
      */
+    @Override
     public void createGeneralisation(FeatureType classeCurr,
             FeatureType classeMere) {
         /*
@@ -641,6 +662,7 @@ public class SchemaConceptuelProduit
     /**
      * Supprime une relation de généralisation entre classes
      */
+    @Override
     public void removeGeneralisation(FeatureType classeCurr,
             FeatureType classeMere) {
         /*
@@ -668,6 +690,7 @@ public class SchemaConceptuelProduit
     /**
      * Ajoute une relation de spécialisation entre classes
      */
+    @Override
     public void createSpecialisation(FeatureType classeCurr,
             FeatureType classeFille) {
         // Pour être en relation, les deux classes doivent appartenir à la même
@@ -719,6 +742,7 @@ public class SchemaConceptuelProduit
     /**
      * Supprime une relation de spécialisation entre classes
      */
+    @Override
     public void removeSpecialisation(FeatureType classeCurr,
             FeatureType classeFille) {
         /*
@@ -745,6 +769,7 @@ public class SchemaConceptuelProduit
     /**
      * Ajoute une association entre classes
      */
+    @Override
     public void createFeatureAssociation(String nomAsso, FeatureType ft1,
             FeatureType ft2, String role1, String role2) {
         /* Il faut deux featuretypes du même schéma */
@@ -810,6 +835,7 @@ public class SchemaConceptuelProduit
     /**
      * Supprime une relation d'association entre classes
      */
+    @Override
     public void removeFeatureAssociation(AssociationType fa) {
 
         // Supression de l'association au niveau des FeatureTypes
@@ -839,6 +865,7 @@ public class SchemaConceptuelProduit
     /**
      * Supprime une relation d'association entre classes
      */
+    @Override
     public void removeFeatureAssociation(FeatureType ft1, FeatureType ft2) {
 
         AssociationType monAsso = null;
@@ -906,6 +933,7 @@ public class SchemaConceptuelProduit
     /**
      * @return La liste de tous les attributs du schéma
      */
+    @Override
     public List<AttributeType> getFeatureAttributes() {
         List<AttributeType> attList = new ArrayList<AttributeType>();
         Iterator<FeatureType> iT = this.featureTypes.iterator();
@@ -924,6 +952,7 @@ public class SchemaConceptuelProduit
     /**
      * @return La liste de toutes les valeurs d'attributs énumérés du schéma
      */
+    @Override
     public List<FeatureAttributeValue> getFeatureAttributeValues() {
         List<FeatureAttributeValue> valList = new ArrayList<FeatureAttributeValue>();
         Iterator<AttributeType> iT = this.getFeatureAttributes().iterator();
@@ -949,6 +978,7 @@ public class SchemaConceptuelProduit
     /**
      * @return La liste de toutes les associations du schéma
      */
+    @Override
     public List<AssociationType> getFeatureAssociations() {
         List<AssociationType> assoList = new ArrayList<AssociationType>();
         Iterator<FeatureType> iT = this.featureTypes.iterator();
@@ -973,6 +1003,7 @@ public class SchemaConceptuelProduit
     /**
      * @return La liste de tous les roles du schéma
      */
+    @Override
     public List<AssociationRole> getAssociationRoles() {
         List<AssociationRole> roleList = new ArrayList<AssociationRole>();
         Iterator<FeatureType> iT = this.featureTypes.iterator();
@@ -991,6 +1022,7 @@ public class SchemaConceptuelProduit
     /**
      * @return la liste de toutes les relations d'héritage du schéma
      */
+    @Override
     public List<InheritanceRelation> getInheritance() {
         List<InheritanceRelation> heritList = new ArrayList<InheritanceRelation>();
         Iterator<FeatureType> iT = this.featureTypes.iterator();

@@ -37,10 +37,12 @@ public class Produit implements IProduct<SchemaConceptuelProduit> {
   /** Identifiant d'un objet */
   protected int id;
 
+  @Override
   public int getId() {
     return this.id;
   }
 
+  @Override
   public void setId(int id) {
     this.id = id;
   }
@@ -50,6 +52,7 @@ public class Produit implements IProduct<SchemaConceptuelProduit> {
   /**
    * @return the nom
    */
+  @Override
   public String getNom() {
     return this.nom;
   }
@@ -57,6 +60,7 @@ public class Produit implements IProduct<SchemaConceptuelProduit> {
   /**
    * @param nom the nom to set
    */
+  @Override
   public void setNom(String nom) {
     this.nom = nom;
   }
@@ -69,6 +73,7 @@ public class Produit implements IProduct<SchemaConceptuelProduit> {
   /**
    * @return the type
    */
+  @Override
   public int getType() {
     return this.type;
   }
@@ -76,6 +81,7 @@ public class Produit implements IProduct<SchemaConceptuelProduit> {
   /**
    * @param type the type to set 1 = BD 2 = série de cartes
    */
+  @Override
   public void setType(int type) {
     this.type = type;
   }
@@ -85,6 +91,7 @@ public class Produit implements IProduct<SchemaConceptuelProduit> {
   /**
    * @return the producteur
    */
+  @Override
   public String getProducteur() {
     return this.producteur;
   }
@@ -92,6 +99,7 @@ public class Produit implements IProduct<SchemaConceptuelProduit> {
   /**
    * @param producteur the producteur to set
    */
+  @Override
   public void setProducteur(String producteur) {
     this.producteur = producteur;
   }
@@ -101,6 +109,7 @@ public class Produit implements IProduct<SchemaConceptuelProduit> {
   /**
    * @return the echelleMin
    */
+  @Override
   public double getEchelleMin() {
     return this.echelleMin;
   }
@@ -108,6 +117,7 @@ public class Produit implements IProduct<SchemaConceptuelProduit> {
   /**
    * @param echelleMin the echelleMin to set
    */
+  @Override
   public void setEchelleMin(double echelleMin) {
     this.echelleMin = echelleMin;
   }
@@ -117,6 +127,7 @@ public class Produit implements IProduct<SchemaConceptuelProduit> {
   /**
    * @return the echelleMax
    */
+  @Override
   public double getEchelleMax() {
     return this.echelleMax;
   }
@@ -124,6 +135,7 @@ public class Produit implements IProduct<SchemaConceptuelProduit> {
   /**
    * @param echelleMax the echelleMax to set
    */
+  @Override
   public void setEchelleMax(double echelleMax) {
     this.echelleMax = echelleMax;
   }
@@ -134,6 +146,7 @@ public class Produit implements IProduct<SchemaConceptuelProduit> {
    * @return the schemaConceptuel
    */
 
+  @Override
   public SchemaConceptuelProduit getSchemaConceptuel() {
     return this.schemaConceptuel;
   }
@@ -142,6 +155,7 @@ public class Produit implements IProduct<SchemaConceptuelProduit> {
    * @param schemaConceptuel the schemaConceptuel to set
    */
 
+  @Override
   public void setSchemaConceptuel(SchemaConceptuelProduit schemaConceptuel) {
     this.schemaConceptuel = schemaConceptuel;
   }
@@ -154,6 +168,7 @@ public class Produit implements IProduct<SchemaConceptuelProduit> {
   /**
    * @return the jeuxDisponibles
    */
+  @Override
   public List<IDataSet<?>> getJeuxDisponibles() {
     return this.jeuxDisponibles;
   }
@@ -161,6 +176,7 @@ public class Produit implements IProduct<SchemaConceptuelProduit> {
   /**
    * @param jeuxDisponibles the jeuxDisponibles to set
    */
+  @Override
   public void setJeuxDisponibles(List<IDataSet<?>> jeuxDisponibles) {
     this.jeuxDisponibles = jeuxDisponibles;
   }

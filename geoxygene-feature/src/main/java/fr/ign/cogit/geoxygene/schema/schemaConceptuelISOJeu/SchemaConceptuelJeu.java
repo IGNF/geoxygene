@@ -385,10 +385,12 @@ public class SchemaConceptuelJeu
     /** Identifiant d'un objet */
     protected int id;
 
+    @Override
     public int getId() {
         return this.id;
     }
 
+    @Override
     public void setId(int id) {
         this.id = id;
     }
@@ -401,11 +403,13 @@ public class SchemaConceptuelJeu
     protected int proprietaire;
 
     /** Renvoie le proprietaire */
+    @Override
     public int getProprietaire() {
         return this.proprietaire;
     }
 
     /** Affecte le proprietaire */
+    @Override
     public void setProprietaire(int value) {
         this.proprietaire = value;
     }
@@ -448,6 +452,7 @@ public class SchemaConceptuelJeu
     /**
      * @return le schéma de produit d'où est issu ce schéma de jeu
      */
+    @Override
     public SchemaConceptuelProduit getSchemaProduitOrigine() {
         return this.schemaProduitOrigine;
     }
@@ -467,6 +472,7 @@ public class SchemaConceptuelJeu
     /**
      * @return the dataset
      */
+    @Override
     public IDataSet<?> getDataset() {
         return this.dataset;
     }
@@ -475,6 +481,7 @@ public class SchemaConceptuelJeu
      * @param dataset
      *            the dataset to set
      */
+    @Override
     public void setDataset(IDataSet<?> dataset) {
         this.dataset = dataset;
     }
@@ -543,6 +550,7 @@ public class SchemaConceptuelJeu
     /**
      * Ajoute une classe au schéma en cours
      */
+    @Override
     public void createFeatureType(String nomClasse) {
         // création d'un nouveau featuretype
         FeatureType ft = new FeatureType();
@@ -590,6 +598,7 @@ public class SchemaConceptuelJeu
      * toute trace des attributs de la classe, de leurs valeurs énumérées, des
      * associations, des roles, etc.
      */
+    @Override
     public void removeFeatureType(FeatureType ft) {
 
         /* Suppression des attributs de la classe */
@@ -743,6 +752,7 @@ public class SchemaConceptuelJeu
     /**
      * Ajoute un attribut à une classe
      */
+    @Override
     public void createFeatureAttribute(FeatureType ft, String nomAtt,
             String type, boolean valueDomainType) {
 
@@ -781,6 +791,7 @@ public class SchemaConceptuelJeu
     /**
      * Supprime un attribut dans une classe
      */
+    @Override
     public void removeFeatureAttribute(FeatureType ft, AttributeType att) {
         /*
          * Supression du lien attribut-feature
@@ -811,6 +822,7 @@ public class SchemaConceptuelJeu
     /**
      * Cree une valeur d'attribut pour les types enumeres
      */
+    @Override
     public void createFeatureAttributeValue(AttributeType attCorrespondant,
             String label) {
 
@@ -828,6 +840,7 @@ public class SchemaConceptuelJeu
     /**
      * Supprime une valeur d'attribut pour un type enumere
      */
+    @Override
     public void removeFeatureAttributeValue(FeatureAttributeValue valeurAtt) {
 
         // On Récupère l'attribut correspondant
@@ -842,6 +855,7 @@ public class SchemaConceptuelJeu
     /**
      * Ajoute une relation de généralisation entre classes
      */
+    @Override
     public void createGeneralisation(FeatureType classeCurr,
             FeatureType classeMere) {
         /*
@@ -896,6 +910,7 @@ public class SchemaConceptuelJeu
     /**
      * Supprime une relation de généralisation entre classes
      */
+    @Override
     public void removeGeneralisation(FeatureType classeCurr,
             FeatureType classeMere) {
         /*
@@ -923,6 +938,7 @@ public class SchemaConceptuelJeu
     /**
      * Ajoute une relation de spécialisation entre classes
      */
+    @Override
     public void createSpecialisation(FeatureType classeCurr,
             FeatureType classeFille) {
         // Pour être en relation, les deux classes doivent appartenir à la même
@@ -974,6 +990,7 @@ public class SchemaConceptuelJeu
     /**
      * Supprime une relation de spécialisation entre classes
      */
+    @Override
     public void removeSpecialisation(FeatureType classeCurr,
             FeatureType classeFille) {
         /*
@@ -1001,6 +1018,7 @@ public class SchemaConceptuelJeu
     /**
      * Ajoute une association entre classes
      */
+    @Override
     public void createFeatureAssociation(String nomAsso, FeatureType ft1,
             FeatureType ft2, String role1, String role2) {
         /* Il faut deux featuretypes du même schéma */
@@ -1066,6 +1084,7 @@ public class SchemaConceptuelJeu
     /**
      * Supprime une relation d'association entre classes
      */
+    @Override
     public void removeFeatureAssociation(AssociationType fa) {
 
         // Supression de l'association au niveau des FeatureTypes
@@ -1095,6 +1114,7 @@ public class SchemaConceptuelJeu
     /**
      * Supprime une relation d'association entre classes
      */
+    @Override
     public void removeFeatureAssociation(FeatureType ft1, FeatureType ft2) {
 
         AssociationType monAsso = null;
@@ -1162,6 +1182,7 @@ public class SchemaConceptuelJeu
     /**
      * @return La liste de tous les attributs du schéma
      */
+    @Override
     public List<AttributeType> getFeatureAttributes() {
         List<AttributeType> attList = new ArrayList<AttributeType>();
         Iterator<FeatureType> iT = this.featureTypes.iterator();
@@ -1180,6 +1201,7 @@ public class SchemaConceptuelJeu
     /**
      * @return La liste de toutes les valeurs d'attributs énumérés du schéma
      */
+    @Override
     public List<FeatureAttributeValue> getFeatureAttributeValues() {
         List<FeatureAttributeValue> valList = new ArrayList<FeatureAttributeValue>();
 
@@ -1206,6 +1228,7 @@ public class SchemaConceptuelJeu
     /**
      * @return La liste de toutes les associations du schéma
      */
+    @Override
     public List<AssociationType> getFeatureAssociations() {
         // System.out.println("** debut getFeatureAssociations **");
         List<AssociationType> assoList = new ArrayList<AssociationType>();
@@ -1235,6 +1258,7 @@ public class SchemaConceptuelJeu
     /**
      * @return La liste de tous les roles du schéma
      */
+    @Override
     public List<AssociationRole> getAssociationRoles() {
         List<AssociationRole> roleList = new ArrayList<AssociationRole>();
         Iterator<FeatureType> iT = this.featureTypes.iterator();
@@ -1253,6 +1277,7 @@ public class SchemaConceptuelJeu
     /**
      * @return la liste de toutes les relations d'héritage du schéma
      */
+    @Override
     public List<InheritanceRelation> getInheritance() {
         List<InheritanceRelation> heritList = new ArrayList<InheritanceRelation>();
         Iterator<FeatureType> iT = this.featureTypes.iterator();

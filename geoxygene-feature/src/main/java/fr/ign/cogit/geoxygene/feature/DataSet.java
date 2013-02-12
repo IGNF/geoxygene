@@ -756,6 +756,7 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
     return this.produit;
   }
 
+  @Override
   public void setProduit(IProduct<?> produit) {
     this.produit = (Produit) produit;
   }
@@ -765,6 +766,7 @@ public class DataSet implements IDataSet<SchemaConceptuelJeu> {
    */
   protected SchemaConceptuelJeu schemaConceptuel;
 
+  @Override
   public void setSchemaConceptuel(SchemaConceptuelJeu schema) {
     this.schemaConceptuel = schema;
   }

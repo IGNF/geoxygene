@@ -38,6 +38,7 @@ public class TestInheritance extends TestCase {
    * Initialisation de la connexion à la base avant les tests.
    * @throws Exception
    */
+  @Override
   @Before
   public void setUp() throws Exception {
     try {
@@ -54,6 +55,7 @@ public class TestInheritance extends TestCase {
   /**
    * Nettoyage de fin de test.
    */
+  @Override
   @After
   public void tearDown() throws Exception {
       try {
