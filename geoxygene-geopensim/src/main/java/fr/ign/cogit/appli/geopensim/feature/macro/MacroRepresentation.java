@@ -93,6 +93,7 @@ public abstract class MacroRepresentation<Representation extends ElementRepresen
 	/* (non-Javadoc)
 	 * @see java.lang.Iterable#iterator()
 	 */
+	@Override
 	public Iterator<Representation> iterator() {
 		return elements.iterator();
 	}

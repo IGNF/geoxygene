@@ -422,11 +422,13 @@ public class UniteUrbaine extends ZoneSurfaciqueUrbaine implements Unite<ZoneEle
         }
     }
 
+    @Override
     @OneToMany(targetEntity = ZoneElementaireUrbaine.class)
     @org.hibernate.annotations.Cascade( { org.hibernate.annotations.CascadeType.ALL })
     public List<ZoneElementaireUrbaine> getZonesElementaires() {
         return this.uniteImpl.getZonesElementaires();
     }
+    @Override
     public void setZonesElementaires(
             List<ZoneElementaireUrbaine> zonesElementaires) {
         for (ZoneElementaireUrbaine zone : this.getZonesElementaires()) {
@@ -438,20 +440,24 @@ public class UniteUrbaine extends ZoneSurfaciqueUrbaine implements Unite<ZoneEle
         }
     }
 
+    @Override
     public void addZoneElementaire(ZoneElementaireUrbaine zone) {
         this.uniteImpl.addZoneElementaire(zone);
         zone.setUniteUrbaine(this);
     }
 
+    @Override
     public void removeZoneElementaire(ZoneElementaireUrbaine zone) {
         this.uniteImpl.removeZoneElementaire(zone);
         zone.setUniteUrbaine(null);
     }
 
+    @Override
     public void emptyZonesElementaires() {
         this.uniteImpl.emptyZonesElementaires();
     }
 
+    @Override
     public void setZonesAgregees(List<ZoneAgregeeUrbaine> agreg) {
         for (ZoneAgregeeUrbaine zone : this.getZonesAgregees()) {
             zone.setUniteUrbaine(null);
@@ -462,6 +468,7 @@ public class UniteUrbaine extends ZoneSurfaciqueUrbaine implements Unite<ZoneEle
         }
     }
 
+    @Override
     @OneToMany(targetEntity = ZoneAgregeeUrbaine.class)
     public List<ZoneAgregeeUrbaine> getZonesAgregees() {
         return this.uniteImpl.getZonesAgregees();

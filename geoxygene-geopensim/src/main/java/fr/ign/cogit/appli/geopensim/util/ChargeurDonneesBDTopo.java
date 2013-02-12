@@ -231,8 +231,9 @@ public class ChargeurDonneesBDTopo {
 			p.add(labelDetail);
 			p.add(progressBarIlots);
 			ActionListener progressBarActionListener = new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					switch(e.getID()) {
+			  @Override
+			  public void actionPerformed(ActionEvent e) {
+			    switch(e.getID()) {
 					case 0:
 						progressBar.setMaximum(e.getModifiers());
 						progressBar.setString("0 / "+e.getModifiers());
@@ -427,8 +428,9 @@ public class ChargeurDonneesBDTopo {
 		p.add(labelDetail);
 		p.add(progressBarIlots);
 		ActionListener progressBarActionListener = new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				switch(e.getID()) {
+		  @Override
+		  public void actionPerformed(ActionEvent e) {
+		    switch(e.getID()) {
 				case 0:
 					progressBar.setMaximum(e.getModifiers());
 					progressBar.setString("0 / "+e.getModifiers());

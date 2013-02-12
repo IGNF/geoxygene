@@ -330,6 +330,7 @@ public class CreationMethodePeuplementDialog extends JDialog implements ActionLi
         contenu.add(vBox,BorderLayout.CENTER);
 	}
 	
+	@Override
 	public void focusLost(FocusEvent e) {
 		if (e.getSource()==this.nomMethode){
 			// Le nom de la nouvelle Méthode de peuplement

@@ -89,6 +89,7 @@ public class FrameInfoAgent extends JFrame {
 			arbre.setToggleClickCount(2);
 
 			arbre.addTreeSelectionListener(new TreeSelectionListener(){
+				@Override
 				public void valueChanged(TreeSelectionEvent e) {
 					if (logger.isDebugEnabled()) {
 					  logger.debug("affichage de l'etat " + ((DefaultMutableTreeNode)getArbre().getLastSelectedPathComponent()).getUserObject());

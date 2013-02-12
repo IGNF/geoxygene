@@ -325,6 +325,7 @@ public class ChoixFichierFrame extends JFrame implements ActionListener,FocusLis
 		File baseDir = new File(".");
 		String nomFichierXSD = "";
 		public MySchemaOutputResolver(String nomFich) {nomFichierXSD = nomFich;}
+		@Override
 		public Result createOutput(String namespaceUri,String suggestedFileName) 
 		throws IOException {return new StreamResult(new File(baseDir, nomFichierXSD));}
 	}

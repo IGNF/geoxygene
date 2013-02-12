@@ -555,7 +555,8 @@ public class AgentGeographique extends FT_Feature implements /*Collection<Elemen
 	 * @param geom géométrie de l'agent
 	 */
 	//public void setGeom(GM_Object geom) {this.geom = geom;}
-	public void setGeom(IGeometry geom) {
+	@Override
+  public void setGeom(IGeometry geom) {
 		IGeometry geomPrecedente = this.geom;
 		super.setGeom(geom);
 		if (geomPrecedente!=this.geom){
@@ -681,6 +682,7 @@ public class AgentGeographique extends FT_Feature implements /*Collection<Elemen
 	
 	@Override
 	public void instancierContraintes() {contraintes = ConfigurationSimulation.getInstance().getContraintes(this.getRepresentationClass());}
+	@Override
 	@OneToMany
     @org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.ALL})
 	public List<Contrainte> getContraintes() {return contraintes;}
@@ -697,6 +699,7 @@ public class AgentGeographique extends FT_Feature implements /*Collection<Elemen
 	/**
 	 * Cycle de vie de l'agent.
 	 */
+	@Override
 	public void cycleDeVie() {
 	    if (logger.isDebugEnabled()) logger.debug("***** Activation de "+this+"  avec "+this.getContraintes().size()+" contrainte(s)");
 		if (this.isDeleted()) {
@@ -1255,21 +1258,23 @@ public class AgentGeographique extends FT_Feature implements /*Collection<Elemen
 		if (this.isDeleted()) return;
 
 		Comparator<Contrainte> PRIORITY_ORDER =
-			new Comparator<Contrainte>() {
-			public int compare(Contrainte e1, Contrainte e2) {
-				if (e1.getPriorite()< e2.getPriorite()) return -1;
-				return (e1.getPriorite()== e2.getPriorite())?0:1;
-			}
+		  new Comparator<Contrainte>() {
+		  @Override
+		  public int compare(Contrainte e1, Contrainte e2) {
+		    if (e1.getPriorite()< e2.getPriorite()) return -1;
+		    return (e1.getPriorite()== e2.getPriorite())?0:1;
+		  }
 		};
 		final AgentGeographique agent = this;
 		Comparator<Contrainte> SATISFACTION_ORDER =
-			new Comparator<Contrainte>() {
-			public int compare(Contrainte e1, Contrainte e2) {
-				double satisfaction1 = e1.getSatisfaction(agent);
-				double satisfaction2 = e2.getSatisfaction(agent);
-				if (satisfaction1<satisfaction2) return -1;
-				return (satisfaction1==satisfaction2)?0:1;
-			}
+		  new Comparator<Contrainte>() {
+		  @Override
+		  public int compare(Contrainte e1, Contrainte e2) {
+		    double satisfaction1 = e1.getSatisfaction(agent);
+		    double satisfaction2 = e2.getSatisfaction(agent);
+		    if (satisfaction1<satisfaction2) return -1;
+		    return (satisfaction1==satisfaction2)?0:1;
+		  }
 		};
 
 		List<Contrainte> contraintesNonSatisfaites = new ArrayList<Contrainte>();
@@ -1364,6 +1369,7 @@ public class AgentGeographique extends FT_Feature implements /*Collection<Elemen
 	 * Renvoie l'état de suppression de l'agent.
 	 * @return vrai si l'agent a été supprimé, faux sinon.
 	 */
+    @Override
 	@Transient
 	public boolean isDeleted() {return this.supprime;}
 	/**

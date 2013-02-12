@@ -215,16 +215,19 @@ public class GUIChargeurDonneesGeOpenSim extends JFrame {
 			 */
 			private static final long serialVersionUID = 1L;
 
+			@Override
 			public int getColumnCount() {
-				return 2;
+			  return 2;
 			}
 
+			@Override
 			public int getRowCount() {
-				return shapeFiles.size();
+			  return shapeFiles.size();
 			}
 
+			@Override
 			public Object getValueAt(int row, int col) {
-				return (col == 0)?shapeFiles.get(row).getName():getShapeFilesClasses().get(row);
+			  return (col == 0)?shapeFiles.get(row).getName():getShapeFilesClasses().get(row);
 			}
 
 			@Override
@@ -352,16 +355,18 @@ public class GUIChargeurDonneesGeOpenSim extends JFrame {
 		JButton addButton = new JButton("Ajouter des Shapefiles",iconAddButton);
 		addButton.setToolTipText("Ajouter des Shapefiles");
 		addButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				addShapeFiles();
-			}
+		  @Override
+		  public void actionPerformed(ActionEvent e) {
+		    addShapeFiles();
+		  }
 		});
 		Icon iconAddDirectoryButton = new ImageIcon("images/AjoutRepertoire.png");
 		JButton addDirectoryButton = new JButton("Ajouter des répertoires contenant des Shapefiles",iconAddDirectoryButton);
 		addDirectoryButton.setToolTipText("Ajouter des répertoires contenant des Shapefiles");
 		addDirectoryButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				addDirectories();
+		  @Override
+		  public void actionPerformed(ActionEvent e) {
+		    addDirectories();
 			}
 		});
 
@@ -388,16 +393,18 @@ public class GUIChargeurDonneesGeOpenSim extends JFrame {
 		JButton okButton = new JButton("Ok");
 		okButton.setActionCommand("Ok");
 		okButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				validated = true;
-				dialog.dispose();
-			}
+		  @Override
+		  public void actionPerformed(ActionEvent e) {
+		    validated = true;
+		    dialog.dispose();
+		  }
 		});
 
 		JButton cancelButton = new JButton("Annuler");
 		cancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				dialog.dispose();
+		  @Override
+		  public void actionPerformed(ActionEvent e) {
+		    dialog.dispose();
 			}
 		});
 		buttonPanel.add(okButton);

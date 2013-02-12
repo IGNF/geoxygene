@@ -153,6 +153,7 @@ public class PossibiliteCreationDialog extends JDialog implements ActionListener
 	}
 	
 	
+	@Override
 	public void focusLost(FocusEvent e) {
 		if (e.getSource()==this.proba){
 			// La probailité

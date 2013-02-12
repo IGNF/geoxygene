@@ -76,6 +76,7 @@ public class InterfaceGenereAttributs extends JFrame {
     boutonValider = new JButton("Valider");
     boutonValider.setActionCommand("Valider");
     boutonValider.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         try {
           valeurDateSaisie = Integer.parseInt(date.getText());
@@ -108,6 +109,7 @@ public class InterfaceGenereAttributs extends JFrame {
     boutonAnnuler = new JButton("Annuler");
     boutonAnnuler.setActionCommand("Annuler");
     boutonAnnuler.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         dialogueAttributDate.dispose();
       }
@@ -163,6 +165,7 @@ public class InterfaceGenereAttributs extends JFrame {
     panelOK.add(boutonAnnuler);
     conteneur.add(panelOK, BorderLayout.SOUTH);
     boutonValider.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         generationIdGeo = boutonCreationIDS.isSelected();
         generationDate = boutonCreationAttributDate.isSelected();
@@ -171,6 +174,7 @@ public class InterfaceGenereAttributs extends JFrame {
       }
     });
     boutonAnnuler.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent arg0) {
         interfaceDialogue.dispose();
       }
@@ -225,12 +229,14 @@ public class InterfaceGenereAttributs extends JFrame {
     panelOK.add(boutonAnnuler);
     conteneur.add(panelOK, BorderLayout.SOUTH);
     boutonValider.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         generationIDsEtDate = true;
         interfaceDialogue.dispose();
       }
     });
     boutonAnnuler.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent arg0) {
         generationIDsEtDate = false;
         interfaceDialogue.dispose();

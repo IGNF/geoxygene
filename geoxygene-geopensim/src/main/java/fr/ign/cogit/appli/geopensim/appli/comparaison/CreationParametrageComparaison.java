@@ -217,7 +217,8 @@ public class CreationParametrageComparaison extends JDialog implements ActionLis
 		Box hBoxRecap2 = Box.createHorizontalBox();
 		data = new Object[0][columnNames.length];
 		DefaultTableModel model = new DefaultTableModel(data,columnNames) {
-			public boolean isCellEditable(int row, int column) {return false;}
+		  @Override
+		  public boolean isCellEditable(int row, int column) {return false;}
 		};
 		table = new JTable(model);
 		scrollPane = new JScrollPane();

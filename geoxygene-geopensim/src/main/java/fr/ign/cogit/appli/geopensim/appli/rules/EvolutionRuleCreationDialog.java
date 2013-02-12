@@ -315,6 +315,7 @@ public class EvolutionRuleCreationDialog extends JDialog implements ActionListen
 		return strAff;
 	}
 	
+	@Override
 	public void focusLost(FocusEvent e) {
 		if (e.getSource()==this.dateDebut){
 			// La date de départ de cette Méthode

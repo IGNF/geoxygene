@@ -703,25 +703,30 @@ public class AgentGeographiqueCollection implements
     return elements.get(idGeo);
   }
 
+  @Override
   public boolean add(AgentGeographique e) {
     elements.put(e.getIdGeo(), e);
     return true;
   }
 
+  @Override
   public boolean addAll(Collection<? extends AgentGeographique> c) {
     for (AgentGeographique e : c)
       add(e);
     return true;
   }
 
+  @Override
   public void clear() {
     elements.clear();
   }
 
+  @Override
   public boolean contains(Object o) {
     return elements.get(o) != null;
   }
 
+  @Override
   public boolean containsAll(Collection<?> c) {
     for (Object o : c) {
       if (!contains(o))
@@ -730,18 +735,22 @@ public class AgentGeographiqueCollection implements
     return true;
   }
 
+  @Override
   public boolean isEmpty() {
     return elements.isEmpty();
   }
 
+  @Override
   public Iterator<AgentGeographique> iterator() {
     return elements.values().iterator();
   }
 
+  @Override
   public boolean remove(Object o) {
     return elements.remove(((AgentGeographique) o).getIdGeo()) != null;
   }
 
+  @Override
   public boolean removeAll(Collection<?> c) {
     boolean result = true;
     for (Object o : c) {
@@ -750,6 +759,7 @@ public class AgentGeographiqueCollection implements
     return result;
   }
 
+  @Override
   public boolean retainAll(Collection<?> c) {
     boolean result = false;
     for (AgentGeographique e : this) {
@@ -760,14 +770,17 @@ public class AgentGeographiqueCollection implements
     return result;
   }
 
+  @Override
   public int size() {
     return elements.size();
   }
 
+  @Override
   public Object[] toArray() {
     return elements.values().toArray();
   }
 
+  @Override
   public <T> T[] toArray(T[] a) {
     return elements.values().toArray(a);
   }

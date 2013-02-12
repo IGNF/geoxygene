@@ -209,6 +209,7 @@ public class CreationTypePeuplementDialog extends JDialog implements ActionListe
         contenu.add(vBox,BorderLayout.CENTER);
 	}
 	
+	@Override
 	public void focusLost(FocusEvent e) {
 		 if (e.getSource()==this.pourcentage){
 			// Le pourcentage associé à ce nouveau type

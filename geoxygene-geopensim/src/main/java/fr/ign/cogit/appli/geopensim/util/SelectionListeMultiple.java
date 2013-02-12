@@ -76,12 +76,13 @@ public class SelectionListeMultiple extends JFrame {
     selectionner = new JButton("sélectionner >>>");
     selectionner.addActionListener(new ActionListener() {
       // gérer les évènements de bouton
+      @Override
       public void actionPerformed(ActionEvent action) {
         // on place les éléments choisi dans la listeShapesSelectionnes
         listeShapesSelectionnes.setListData(listeShapes.getSelectedValues());
       }
     }// fin de
-        );// fin de l'appel addActionListener
+    );// fin de l'appel addActionListener
     // on rajoute le bouton au conteneur
     panelBouton.add(selectionner);
     panelBouton.setLayout(new GridLayout(5, 5, 2, 1));
@@ -90,6 +91,7 @@ public class SelectionListeMultiple extends JFrame {
     supprimer = new JButton("<<< Supprimer ");
     supprimer.addActionListener(new ActionListener() {
       // gérer les évènements de bouton
+      @Override
       public void actionPerformed(ActionEvent action) {
         // on place les éléments choisi dans la listeShapesSelectionnes
         listeShapesSelectionnes.setListData(listeShapesSelectionnes
@@ -147,6 +149,7 @@ public class SelectionListeMultiple extends JFrame {
     selectionner = new JButton("sélectionner >>>");
     selectionner.addActionListener(new ActionListener() {
       // gérer les évènements de bouton
+      @Override
       public void actionPerformed(ActionEvent action) {
         // on place les éléments choisi dans la listeShapesSelectionnes
         listeShapesSelectionnes.setListData(listeShapes.getSelectedValues());
@@ -161,6 +164,7 @@ public class SelectionListeMultiple extends JFrame {
     supprimer = new JButton("<<< Supprimer ");
     supprimer.addActionListener(new ActionListener() {
       // gérer les évènements de bouton
+      @Override
       public void actionPerformed(ActionEvent action) {
         // on place les éléments choisi dans la listeShapesSelectionnes
         listeShapesSelectionnes.setListData(listeShapesSelectionnes

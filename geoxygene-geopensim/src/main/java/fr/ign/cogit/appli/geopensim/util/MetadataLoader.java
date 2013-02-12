@@ -93,6 +93,7 @@ public class MetadataLoader extends JFrame implements ListDataListener {
     JButton addButton = new JButton("Add");
     addButton.setActionCommand("Add");
     addButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         DataBaseFrame newDBFrame = new DataBaseFrame();
         boolean valid = newDBFrame.showDialog();
@@ -106,6 +107,7 @@ public class MetadataLoader extends JFrame implements ListDataListener {
     JButton editButton = new JButton("Edit");
     editButton.setActionCommand("Edit");
     editButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         String jcdAlias = getSelectedItem().getJcdAlias();
         DataBaseFrame newDBFrame = new DataBaseFrame(getSelectedItem(), true);
@@ -125,6 +127,7 @@ public class MetadataLoader extends JFrame implements ListDataListener {
     JButton copyButton = new JButton("Copy");
     copyButton.setActionCommand("Copy");
     copyButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         DataBaseFrame newDBFrame = new DataBaseFrame(getSelectedItem(), false);
         boolean valid = newDBFrame.showDialog();
@@ -138,6 +141,7 @@ public class MetadataLoader extends JFrame implements ListDataListener {
     JButton deleteButton = new JButton("Delete");
     deleteButton.setActionCommand("Delete");
     deleteButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         listModel.remove(getSelectedItem());
       }
@@ -170,6 +174,7 @@ public class MetadataLoader extends JFrame implements ListDataListener {
     JButton okButton = new JButton("Ok");
     okButton.setActionCommand("Ok");
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         validated = true;
         dialog.dispose();
@@ -177,6 +182,7 @@ public class MetadataLoader extends JFrame implements ListDataListener {
     });
     JButton cancelButton = new JButton("Annuler");
     cancelButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         dialog.dispose();
       }
@@ -358,6 +364,7 @@ public class MetadataLoader extends JFrame implements ListDataListener {
       JButton okButton = new JButton("Ok");
       okButton.setActionCommand("Ok");
       okButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           validatedDB = true;
           // if (edit) {
@@ -387,6 +394,7 @@ public class MetadataLoader extends JFrame implements ListDataListener {
       });
       JButton cancelButton = new JButton("Annuler");
       cancelButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
           dialog.dispose();
         }
@@ -452,6 +460,7 @@ public class MetadataLoader extends JFrame implements ListDataListener {
      *
      * @param l the <code>ListDataListener</code> to be added
      */  
+    @Override
     public void addListDataListener(ListDataListener l) {
       this.listenerList.add(ListDataListener.class, l);
     }
@@ -461,6 +470,7 @@ public class MetadataLoader extends JFrame implements ListDataListener {
      *
      * @param l the <code>ListDataListener</code> to be removed
      */  
+    @Override
     public void removeListDataListener(ListDataListener l) {
       this.listenerList.remove(ListDataListener.class, l);
     }

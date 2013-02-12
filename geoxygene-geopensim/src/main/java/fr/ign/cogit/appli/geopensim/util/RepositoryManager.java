@@ -99,6 +99,7 @@ public class RepositoryManager extends JFrame {
         JButton okButton = new JButton("Ok");
         okButton.setActionCommand("Ok");
         okButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 validated = true;
                 dialog.dispose();
@@ -107,6 +108,7 @@ public class RepositoryManager extends JFrame {
 
         JButton cancelButton = new JButton("Annuler");
         cancelButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
             }

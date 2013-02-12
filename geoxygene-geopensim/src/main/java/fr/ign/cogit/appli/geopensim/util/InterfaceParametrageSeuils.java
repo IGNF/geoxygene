@@ -169,19 +169,21 @@ public class InterfaceParametrageSeuils extends JFrame implements ActionListener
 		panneauOK.add(boutonAnnuler);
 		// action sur le bouton valider
 		boutonOK.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				memeLOD = boutonMemeLOD.isSelected();
-				differentLOD = boutonDifferentLOD.isSelected();
-				donneesCrees = boutonDonneesCrees.isSelected();
-				getChoixSelectionne();
-				dialogueChoixDonnees.dispose();
-			}
+		  @Override
+		  public void actionPerformed(ActionEvent e) {
+		    memeLOD = boutonMemeLOD.isSelected();
+		    differentLOD = boutonDifferentLOD.isSelected();
+		    donneesCrees = boutonDonneesCrees.isSelected();
+		    getChoixSelectionne();
+		    dialogueChoixDonnees.dispose();
+		  }
 		});
 		boutonAnnuler.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				dialogueChoixDonnees.dispose();
-			}
+		  @Override
+		  public void actionPerformed(ActionEvent arg0) {
+		    // TODO Auto-generated method stub
+		    dialogueChoixDonnees.dispose();
+		  }
 		});
 		// panneauChoixDeDonnees.setPreferredSize(new Dimension(400,400));
 		panneauChoixDeDonnees.add(panneauBienvenue, BorderLayout.NORTH);

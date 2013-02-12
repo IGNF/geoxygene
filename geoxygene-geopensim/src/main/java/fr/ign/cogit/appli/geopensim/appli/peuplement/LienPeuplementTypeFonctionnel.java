@@ -151,10 +151,11 @@ public class LienPeuplementTypeFonctionnel extends JFrame implements ActionListe
 		// Création de la JTable
 		Object[][] data = null;
 		DefaultTableModel dm = new DefaultTableModel(data,columnNames) {
-			@SuppressWarnings("unchecked")
-			public Class getColumnClass(int columnIndex) {
-				return String.class;
-			}
+		  @Override
+		  @SuppressWarnings("unchecked")
+		  public Class getColumnClass(int columnIndex) {
+		    return String.class;
+		  }
 		};
 		table = new JTable(dm);
 	    table.setDefaultRenderer(String.class, new MultiLineCellRenderer());
@@ -387,8 +388,9 @@ public class LienPeuplementTypeFonctionnel extends JFrame implements ActionListe
 			setWrapStyleWord(true);
 			setOpaque(true);
 		}
+		@Override
 		public Component getTableCellRendererComponent(JTable table1, Object value,
-				boolean isSelected, boolean hasFocus, int row, int column) {
+		    boolean isSelected, boolean hasFocus, int row, int column) {
 			if (isSelected) {
 				setForeground(table1.getSelectionForeground());
 				setBackground(table1.getSelectionBackground());
