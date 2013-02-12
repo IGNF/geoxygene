@@ -435,6 +435,9 @@ public class Tiling<Feat extends IFeature> implements SpatialIndex<Feat> {
         continue;
       }
       IEnvelope envObjet = geom.envelope();
+      if (envObjet == null) {
+        continue;
+      }
       tab = this.dallesIntersectees(envObjet);
       for (int i = tab[0]; i <= tab[1]; i++) {
         for (int j = tab[2]; j <= tab[3]; j++) {
