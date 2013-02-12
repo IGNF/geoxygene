@@ -509,6 +509,14 @@ public class Population<Feat extends IFeature> extends
 
   private static int idNouvelElement = 0;
 
+  public static void setIdNouvelElement(int idNouvelElement) {
+    Population.idNouvelElement = idNouvelElement;
+  }
+
+  public static int getIdNouvelElement() {
+    return Population.idNouvelElement;
+  }
+
   @Override
   public Feat nouvelElement() {
     return this.nouvelElement(null);

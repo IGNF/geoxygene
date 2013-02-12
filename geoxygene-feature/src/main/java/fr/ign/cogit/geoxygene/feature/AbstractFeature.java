@@ -61,7 +61,7 @@ public abstract class AbstractFeature implements IFeature {
   /**
    * Logger.
    */
-  private static final Logger logger = Logger.getLogger(AbstractFeature.class
+  protected static final Logger logger = Logger.getLogger(AbstractFeature.class
       .getName());
 
   /**
@@ -203,6 +203,20 @@ public abstract class AbstractFeature implements IFeature {
   @Override
   public List<IFeature> getCorrespondants() {
     return this.correspondants;
+  }
+
+  public String getCorrespondantsAsString() {
+    String result = "";
+    for (IFeature f : this.correspondants) {
+      if (!result.isEmpty()) {
+        result += ",";
+      }
+      result += f.getId();
+    }
+    return result;
+  }
+  public int getSizeCorrespondants() {
+    return this.correspondants.size();
   }
 
   @Override

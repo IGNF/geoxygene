@@ -307,7 +307,7 @@ public class Tiling<Feat extends IFeature> implements SpatialIndex<Feat> {
             for (Feat feature : this.index[i][j]) {
               IGeometry geom = feature.getGeom();
               IEnvelope envCourante = geom.envelope();
-              if (envGeometry.overlaps(envCourante)
+              if (envCourante != null && envGeometry.overlaps(envCourante)
                   && geometry.intersects(geom)) {
                 result.add(feature);
               }
