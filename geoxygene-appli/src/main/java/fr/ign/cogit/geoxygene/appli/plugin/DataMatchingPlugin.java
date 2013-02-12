@@ -50,15 +50,25 @@ import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
+import fr.ign.cogit.geoxygene.appli.gui.ParamDataMatchingNetwork;
 
 /**
  * Data matching plugin.
  * @author Julien Perret
  */
-public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionListener {
-  
-    private static Logger logger = Logger.getLogger(DataMatchingPlugin.class.getName());
-    private GeOxygeneApplication application;
+public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
+    ActionListener {
+
+  private static Logger logger = Logger.getLogger(DataMatchingPlugin.class
+      .getName());
+  private GeOxygeneApplication application;
+
+  /** Reference Shape Filename. */
+  private String refShapeFilename = null;
+  /** Comparative Shape Filename. */
+  private String compShapeFilename = null;
+  /** Parameters XML filename. */
+  private String paramFilename = null;
 
   /**
    * Initialize the plugin.
@@ -82,14 +92,30 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    IPopulation<IFeature> popRef = ShapefileReader.chooseAndReadShapefile();
+
+    ParamDataMatchingNetwork dialogParamDataMatchingNetwork = new ParamDataMatchingNetwork(this);
+    if (refShapeFilename == null || compShapeFilename == null) {
+      return;
+    }
+
+    logger.info("Fichier de référence : " + refShapeFilename);
+    logger.info("Fichier de comparaison : " + compShapeFilename);
+
+    IPopulation<IFeature> popRef = ShapefileReader.read(refShapeFilename);
     popRef.setNom("popRef");
-    IPopulation<IFeature> popComp = ShapefileReader.chooseAndReadShapefile();
+    IPopulation<IFeature> popComp = ShapefileReader.read(compShapeFilename);
     popComp.setNom("popComp");
+
+    /*
+     * IPopulation<IFeature> popRef = ShapefileReader.chooseAndReadShapefile();
+     * popRef.setNom("popRef"); IPopulation<IFeature> popComp =
+     * ShapefileReader.chooseAndReadShapefile(); popComp.setNom("popComp");
+     */
+
     this.application.getFrame().getDesktopPane().removeAll();
-    
+
     List<ReseauApp> reseaux = new ArrayList<ReseauApp>();
-    
+
     ParametresApp param = new ParametresApp();
     param.populationsArcs1.add(popRef);
     param.populationsArcs2.add(popComp);
@@ -115,9 +141,9 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
     param.debugBilanSurObjetsGeo = false;
     param.varianteRedecoupageArcsNonApparies = true;
     param.debugAffichageCommentaires = 2;
-    
+
     EnsembleDeLiens liens = AppariementIO.appariementDeJeuxGeo(param, reseaux);
-    
+
     logger.info("Paramétrage = " + liens.getParametrage());
     logger.info("Evaluation interne = " + liens.getEvaluationInterne());
     logger.info("Evaluation globale = " + liens.getEvaluationGlobale());
@@ -128,11 +154,12 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
       logger.info("Comp = " + lien.getObjetsComp()); //$NON-NLS-1$
       logger.info("Evaluation = " + lien.getEvaluation()); //$NON-NLS-1$
     }
-    
-    CarteTopo reseauRecale = Recalage.recalage(reseaux.get(0), reseaux.get(1), liens);
+
+    CarteTopo reseauRecale = Recalage.recalage(reseaux.get(0), reseaux.get(1),
+        liens);
     IPopulation<Arc> arcs = reseauRecale.getPopArcs();
     logger.info(arcs.getNom());
-    
+
     for (Lien lien : liens) {
       IGeometry geom = lien.getGeom();
       if (geom instanceof GM_Aggregate<?>) {
@@ -150,35 +177,35 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
       }
     }
     logger.info(arcs.getNom());
-    
+
     logger.trace("----------------------------------------------------------");
     logger.trace("Taille popRef = " + popRef.size());
     logger.trace("Taille popComp = " + popComp.size());
     logger.trace("Nom    popRef = " + popRef.getNom());
     logger.trace("Nom    popComp = " + popComp.getNom());
     logger.trace("----------------------------------------------------------");
-    
+
     StockageLiens.stockageDesLiens(liens, 1, 2, 3);
-    
+
     ProjectFrame p1 = this.application.getFrame().newProjectFrame();
     p1.setTitle("Reference Pop"); //$NON-NLS-1$
     p1.addUserLayer(popRef, "Reference Network", null);
-    
+
     Viewport viewport = p1.getLayerViewPanel().getViewport();
-    
+
     ProjectFrame p2 = this.application.getFrame().newProjectFrame();
     p2.setTitle("Comparaison Pop"); //$NON-NLS-1$
     p2.addUserLayer(popComp, "Comparison Network", null);
     p2.getLayerViewPanel().setViewport(viewport);
     viewport.getLayerViewPanels().add(p2.getLayerViewPanel());
-    
+
     ProjectFrame p3 = this.application.getFrame().newProjectFrame();
     p3.setTitle("Corrected Pop"); //$NON-NLS-1$
     p3.addUserLayer(arcs, "Corrected network", null);
     p3.addUserLayer(popComp, "Comparison Network", null);
     p3.getLayerViewPanel().setViewport(viewport);
     viewport.getLayerViewPanels().add(p3.getLayerViewPanel());
-    
+
     ProjectFrame p4 = this.application.getFrame().newProjectFrame();
     p4.getLayerViewPanel().setViewport(viewport);
     viewport.getLayerViewPanels().add(p4.getLayerViewPanel());
@@ -186,8 +213,30 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
     p4.addUserLayer(popRef, "Reference Network", null);
     p4.addUserLayer(popComp, "Comparison Network", null);
     Layer layer = p4.addUserLayer(liens, "Links", null);
-    
+
     layer.getSymbolizer().getStroke().setStrokeWidth(2);
     logger.info("Finished"); //$NON-NLS-1$
   }
+
+  /**
+   * @param f The reference Shape Filename to set
+   */
+  public void setRefShapeFilename(String f) {
+    refShapeFilename = f;
+  }
+
+  /**
+   * @param f The comparative Shape Filename to set
+   */
+  public void setCompShapeFilename(String f) {
+    compShapeFilename = f;
+  }
+
+  /**
+   * @param f The parameters XML Filename to set
+   */
+  public void setParamFilename(String f) {
+    paramFilename = f;
+  }
+
 }
