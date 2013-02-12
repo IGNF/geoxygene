@@ -108,6 +108,7 @@ public class GM_CubicSpline extends GM_PolynomialSpline implements ICubicSpline 
    * @param offset distance between the linestring and the curve
    * @return a linestring representing the curve
    */
+  @Override
   public GM_LineString asLineString(double spacing, double offset) {
     // for each segment, generate tangents
     // if (this.knot == null) {

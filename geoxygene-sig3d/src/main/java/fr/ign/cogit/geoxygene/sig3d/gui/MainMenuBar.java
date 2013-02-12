@@ -290,6 +290,7 @@ public class MainMenuBar extends JMenuBar implements ActionListener {
    * Ecouteurs pour afficher, fermer et charger des donnees dans la vue globale
    */
 
+  @Override
   public void actionPerformed(ActionEvent actionevent) {
 
     Object source = actionevent.getSource();

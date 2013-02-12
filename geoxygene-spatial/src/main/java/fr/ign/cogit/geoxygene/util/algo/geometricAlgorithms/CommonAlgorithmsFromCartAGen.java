@@ -896,4 +896,9 @@ public class CommonAlgorithmsFromCartAGen {
     }
     return noHolePol;
   }
+
+  public static ILineString getLongestInsideSegment(IPolygon geom, double orient) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 }
