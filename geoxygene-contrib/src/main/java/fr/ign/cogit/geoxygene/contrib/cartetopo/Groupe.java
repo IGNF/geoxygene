@@ -462,8 +462,8 @@ public class Groupe extends ElementCarteTopo {
       }
       return groupesConnexes;
     } catch (Exception e) {
-      Groupe.LOGGER.error("----- ERREUR dans décomposition en groupes connxes: ");
-      Groupe.LOGGER.error("\tSource possible : Nom de la classe des groupes pas ou mal renseigné dans la carte topo");
+      Groupe.logger.error("----- ERREUR dans décomposition en groupes connxes: ");
+      Groupe.logger.error("\tSource possible : Nom de la classe des groupes pas ou mal renseigné dans la carte topo");
       e.printStackTrace();
       return null;
     }

@@ -478,7 +478,7 @@ public class Noeud extends ElementCarteTopo {
    */
   public Groupe plusCourtChemin(Noeud arrivee, double maxLongueur) {
     
-    Noeud.LOGGER.debug("shortest path between " + this.getCoord() + " - " + arrivee.getCoord());
+    Noeud.logger.debug("shortest path between " + this.getCoord() + " - " + arrivee.getCoord());
     
     List<Noeud> noeudsFinaux = new ArrayList<Noeud>(0);
     List<Arc> arcsFinaux = new ArrayList<Arc>(0);
@@ -495,17 +495,17 @@ public class Noeud extends ElementCarteTopo {
     try {
       
       if (this.getCarteTopo() == null) {
-        Noeud.LOGGER.error("ATTENTION : le noeud " + this
+        Noeud.logger.error("ATTENTION : le noeud " + this
             + " ne fait pas partie d'une carte topo");
-        Noeud.LOGGER
+        Noeud.logger
             .error("            Impossible de calculer un plus court chemin");
         return null;
       }
       
       if (this.getCarteTopo().getPopGroupes() == null) {
-        Noeud.LOGGER.error("ATTENTION : le noeud " + this
+        Noeud.logger.error("ATTENTION : le noeud " + this
             + " fait partie d'une carte topo sans population de groupes");
-        Noeud.LOGGER
+        Noeud.logger
             .error("            Impossible de calculer un plus court chemin");
         return null;
       }
@@ -513,7 +513,7 @@ public class Noeud extends ElementCarteTopo {
       Groupe plusCourtChemin = this.getCarteTopo().getPopGroupes().nouvelElement();
 
       if (this == arrivee) {
-        Noeud.LOGGER.debug("node is arrival");
+        Noeud.logger.debug("node is arrival");
         plusCourtChemin.addNoeud(this);
         this.addGroupe(plusCourtChemin);
         return plusCourtChemin;
@@ -552,7 +552,7 @@ public class Noeud extends ElementCarteTopo {
         }
         if (maxLongueur != 0) {
           if (plusProche.distance > maxLongueur) {
-            Noeud.LOGGER.debug("Trop long, on s'arrête");
+            Noeud.logger.debug("Trop long, on s'arrête");
             return null; // heuristique pour stopper la recherche
           }
         }
@@ -586,7 +586,7 @@ public class Noeud extends ElementCarteTopo {
 
       // Phase "arriere"
       if (!traites.contains(arrivee)) {
-        Noeud.LOGGER.debug("couldn't reach it");
+        Noeud.logger.debug("couldn't reach it");
         return null;
       }
       suivant = arrivee;
@@ -609,7 +609,7 @@ public class Noeud extends ElementCarteTopo {
       plusCourtChemin.setLength(arrivee.distance);
       return plusCourtChemin;
     } catch (Exception e) {
-      Noeud.LOGGER.error("----- ERREUR dans calcul de plus court chemin.");
+      Noeud.logger.error("----- ERREUR dans calcul de plus court chemin.");
       e.printStackTrace();
       return null;
     }
