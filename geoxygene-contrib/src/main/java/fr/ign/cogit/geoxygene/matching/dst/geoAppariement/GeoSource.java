@@ -26,7 +26,6 @@
 package fr.ign.cogit.geoxygene.matching.dst.geoAppariement;
 import java.util.List;
 
-import fr.ign.cogit.geoxygene.matching.dst.evidence.AppriouHyp;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.EvidenceCodec;
 import fr.ign.cogit.geoxygene.matching.dst.evidence.Source;
 import fr.ign.cogit.geoxygene.matching.dst.util.Pair;
@@ -46,6 +45,7 @@ public abstract class GeoSource implements Source<GeomHypothesis> {
    * Source name is used to identify hypothessi values.
    * @return
    */
+  @Override
   public String getName() {
     return "Default Source";
   }

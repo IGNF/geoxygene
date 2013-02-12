@@ -128,6 +128,7 @@ public class FuzzyInterval {
         return a * (x-this.derivativezeros[ppbs-1][0]) + b;
     }
     
+    @Override
     public String toString(){
          String str = "Fuzzy interval values :";
          for(float[] f: this.derivativezeros){

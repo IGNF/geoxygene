@@ -49,6 +49,7 @@ public class DefaultCodec implements EvidenceCodec{
     this.hypotheses = Collections.unmodifiableList(hyps);
   }
 
+  @Override
   public List<Hypothesis> decode(byte[] encoded) {
     List<Hypothesis> decoded = new ArrayList<Hypothesis>();
     for (int i = 0; i < encoded.length; i++) {
@@ -59,6 +60,7 @@ public class DefaultCodec implements EvidenceCodec{
     return hypotheses;
   }
 
+  @Override
   public byte[] encode(Hypothesis... hyps) {
 
     byte[] encoded = new byte[this.hypotheses.size()];
