@@ -24,11 +24,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JTabbedPane;
 
 import org.apache.log4j.Logger;
 
@@ -45,15 +42,13 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
+import fr.ign.cogit.geoxygene.contrib.appariement.stockageLiens.StockageLiens;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
-import fr.ign.cogit.geoxygene.feature.DataSet;
-import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.style.Layer;
-import fr.ign.cogit.geoxygene.style.StyledLayerDescriptor;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 /**
@@ -88,9 +83,13 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
   @Override
   public void actionPerformed(final ActionEvent e) {
     IPopulation<IFeature> popRef = ShapefileReader.chooseAndReadShapefile();
+    popRef.setNom("popRef");
     IPopulation<IFeature> popComp = ShapefileReader.chooseAndReadShapefile();
+    popComp.setNom("popComp");
     this.application.getFrame().getDesktopPane().removeAll();
+    
     List<ReseauApp> reseaux = new ArrayList<ReseauApp>();
+    
     ParametresApp param = new ParametresApp();
     param.populationsArcs1.add(popRef);
     param.populationsArcs2.add(popComp);
@@ -116,18 +115,24 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
     param.debugBilanSurObjetsGeo = false;
     param.varianteRedecoupageArcsNonApparies = true;
     param.debugAffichageCommentaires = 2;
+    
     EnsembleDeLiens liens = AppariementIO.appariementDeJeuxGeo(param, reseaux);
+    
+    logger.info("Paramétrage = " + liens.getParametrage());
+    logger.info("Evaluation interne = " + liens.getEvaluationInterne());
+    logger.info("Evaluation globale = " + liens.getEvaluationGlobale());
     for (Lien feature : liens) {
       Lien lien = feature;
       logger.info("Lien = " + lien); //$NON-NLS-1$
-      logger.info("Ref = " + lien.getObjetsRef()); //$NON-NLS-1$
+      logger.info("Ref = " + lien.getObjetsRef().toString()); //$NON-NLS-1$
       logger.info("Comp = " + lien.getObjetsComp()); //$NON-NLS-1$
       logger.info("Evaluation = " + lien.getEvaluation()); //$NON-NLS-1$
     }
-    CarteTopo reseauRecale = Recalage.recalage(reseaux.get(0), reseaux.get(1),
-        liens);
+    
+    CarteTopo reseauRecale = Recalage.recalage(reseaux.get(0), reseaux.get(1), liens);
     IPopulation<Arc> arcs = reseauRecale.getPopArcs();
     logger.info(arcs.getNom());
+    
     for (Lien lien : liens) {
       IGeometry geom = lien.getGeom();
       if (geom instanceof GM_Aggregate<?>) {
@@ -149,16 +154,15 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin, ActionLis
     logger.trace("----------------------------------------------------------");
     logger.trace("Taille popRef = " + popRef.size());
     logger.trace("Taille popComp = " + popComp.size());
-    logger.trace("Nom popRef = " + popRef.getNom());
+    logger.trace("Nom    popRef = " + popRef.getNom());
+    logger.trace("Nom    popComp = " + popComp.getNom());
     logger.trace("----------------------------------------------------------");
+    
+    StockageLiens.stockageDesLiens(liens, 1, 2, 3);
     
     ProjectFrame p1 = this.application.getFrame().newProjectFrame();
     p1.setTitle("Reference Pop"); //$NON-NLS-1$
     p1.addUserLayer(popRef, "Reference Network", null);
-    
-    // StyledLayerDescriptor sld = StyledLayerDescriptor.unmarshall(DataMatchingPlugin.class.getResource("/sld/appariementSLD.xml").getPath());
-    // Layer layerLigneRef = sld.getLayer("bdtopo_route");
-    // p1.addLayer(layerLigneRef);
     
     Viewport viewport = p1.getLayerViewPanel().getViewport();
     
