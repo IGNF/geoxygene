@@ -52,10 +52,10 @@
     <dependency>
 		<groupId>org.dbunit</groupId>
 	    <artifactId>dbunit</artifactId>
-	    <version>2.2</version>
-	    <scope>system</scope>
-	    <systemPath>${basedir}/lib/dbunit.jar</systemPath> 
+	    <version>0.0.1</version>
+	    <classifier>COGIT</classifier>
    	</dependency>
+   	
   </dependencies>
 
 </project>
