@@ -25,7 +25,7 @@
  * 02111-1307 USA
  */
 
-package fr.ign.cogit.geoxygene.contrib.cartetopo.exemple;
+package fr.ign.cogit.geoxygene.example.cartetopo;
 
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.feature.Population;
