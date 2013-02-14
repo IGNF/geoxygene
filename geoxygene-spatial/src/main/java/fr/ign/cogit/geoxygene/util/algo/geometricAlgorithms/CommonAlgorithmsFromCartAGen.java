@@ -17,8 +17,10 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IAggregate;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableCurve;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IOrientableSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
@@ -447,8 +449,8 @@ public class CommonAlgorithmsFromCartAGen {
         // get the following point
         middle = line.coord().get(i + 1);
         if (middle.equals(pt1) || middle.equals(pt2)) {
-          middle = new DirectPosition((pt1.getX() + pt2.getY()) / 2.0, (pt1
-              .getY() + pt2.getY()) / 2.0);
+          middle = new DirectPosition((pt1.getX() + pt2.getY()) / 2.0,
+              (pt1.getY() + pt2.getY()) / 2.0);
         }
         break;
       }
@@ -526,12 +528,12 @@ public class CommonAlgorithmsFromCartAGen {
     Vector2D vectHoriz = new Vector2D(norm, 0);
     Vector2D vect = CommonAlgorithmsFromCartAGen.rotateVector(vectHoriz,
         orientation);
-    IDirectPosition mid = Operateurs.milieu(poly.centroid(), vect
-        .translate(poly.centroid()));
+    IDirectPosition mid = Operateurs.milieu(poly.centroid(),
+        vect.translate(poly.centroid()));
 
     // build a small segment between the two centres of gravity
-    ILineSegment segment = new GM_LineSegment(poly.centroid(), vect
-        .translate(poly.centroid()));
+    ILineSegment segment = new GM_LineSegment(poly.centroid(),
+        vect.translate(poly.centroid()));
     segment = (ILineSegment) new Vector2D(centreHull.getX() - mid.getX(),
         centreHull.getY() - mid.getY()).translate(segment);
 
@@ -608,6 +610,24 @@ public class CommonAlgorithmsFromCartAGen {
       }
     }
     return bigger;
+  }
+
+  /**
+   * Return the simple line with the biggest length in a multi curve geometry.
+   * @param multi
+   * @return
+   */
+  public static ILineString getLongestFromMultiCurve(
+      IMultiCurve<IOrientableCurve> multi) {
+    double max = 0.0;
+    ILineString longest = null;
+    for (IOrientableCurve curve : multi.getList()) {
+      if (curve.length() > max) {
+        max = curve.length();
+        longest = (ILineString) curve;
+      }
+    }
+    return longest;
   }
 
   public static IPolygon getBiggerFromAggregate(IAggregate<IGeometry> aggr) {
@@ -824,7 +844,41 @@ public class CommonAlgorithmsFromCartAGen {
    * @return
    */
   public static Vector<Object> getPtMaxXFromLine(ILineString line) {
-    double xMax = 0.0;
+    double xMax = -Double.MAX_VALUE;
+    double yMin = Double.MAX_VALUE;
+    IDirectPosition ptMaxX = null;
+    int index = 0;
+    int i = 0;
+    for (IDirectPosition pt : line.coord()) {
+      if (pt.getX() > xMax) {
+        xMax = pt.getX();
+        yMin = pt.getY();
+        ptMaxX = pt;
+        index = i;
+      } else if (pt.getX() == xMax) {
+        if (pt.getY() < yMin) {
+          xMax = pt.getX();
+          yMin = pt.getY();
+          ptMaxX = pt;
+          index = i;
+        }
+      }
+      i++;
+    }
+    Vector<Object> vect = new Vector<Object>(2);
+    vect.add(ptMaxX);
+    vect.add(index);
+    return vect;
+  }
+
+  /**
+   * Cette fonction renvoie le point du polygone qui a le x le plus grand. S'il
+   * y en a plusieurs, le point choisi est celui qui a le plus petit y.
+   * @param line
+   * @return un vecteur avec le point (IDirectPosition) et son indice.
+   */
+  public static Vector<Object> getPtMaxXFromPolygon(IPolygon line) {
+    double xMax = -Double.MAX_VALUE;
     double yMin = Double.MAX_VALUE;
     IDirectPosition ptMaxX = null;
     int index = 0;
@@ -897,8 +951,42 @@ public class CommonAlgorithmsFromCartAGen {
     return noHolePol;
   }
 
-  public static ILineString getLongestInsideSegment(IPolygon geom, double orient) {
-    // TODO Auto-generated method stub
-    return null;
+  /**
+   * Get the longest segment that can be traced inside a polygon in a given
+   * orientation.
+   * @param polygon
+   * @param orientation
+   * @return
+   * @throws Exception
+   */
+  public static ILineString getLongestInsideSegment(IPolygon polygon,
+      double orientation) throws Exception {
+    double maxDist = 0.0;
+    ILineSegment longest = null;
+    // first rotate the polygon
+    IPolygon horiz = CommonAlgorithms.rotation(polygon, -orientation);
+    double maxX = ((IDirectPosition) getPtMaxXFromPolygon(horiz).get(0)).getX();
+    // then, find the longest segment by looping on the vertices
+    for (IDirectPosition vertex : horiz.coord()) {
+      ILineSegment seg = new GM_LineSegment(vertex, new DirectPosition(maxX,
+          vertex.getY()));
+      // the segment is intersected with the rotated polygon
+      IGeometry inter = horiz.intersection(seg);
+      if (inter instanceof ILineString) {
+        if (seg.length() < maxDist)
+          continue;
+        maxDist = seg.length();
+        longest = seg;
+      } else if (inter instanceof IMultiCurve) {
+        @SuppressWarnings("unchecked")
+        ILineString longestCurve = getLongestFromMultiCurve((IMultiCurve<IOrientableCurve>) inter);
+        if (longestCurve.length() < maxDist)
+          continue;
+        maxDist = seg.length();
+        longest = seg;
+      }
+    }
+
+    return CommonAlgorithms.rotation(longest, polygon.centroid(), orientation);
   }
 }
