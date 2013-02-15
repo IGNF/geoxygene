@@ -2,12 +2,12 @@
 <StyledLayerDescriptor version="1.0.0">
 
 	<NamedLayer>
-		<Name>bdtopo_route</Name>
+		<Name>popRef</Name>
 		<UserStyle>
-			<Title>bdtopo_route</Title>
+			<Title>popRef</Title>
 			<FeatureTypeStyle>
 				<Rule>
-					<Name>bdtopo_route</Name>
+					<Name>popRef</Name>
 					<MinScaleDenominator>4000</MinScaleDenominator>
 					<MaxScaleDenominator>36000</MaxScaleDenominator>
 					<LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
