@@ -62,6 +62,8 @@ public class GeomPoolFrame extends JFrame {
   // /////////////
 
   private static JTabbedPane themes;
+  private static JTabbedPane themesInitial;
+  private static JTabbedPane dataSets;
 
   private static JPanel pnlRoads;
   private static JPanel pnlBuildings;
@@ -75,6 +77,19 @@ public class GeomPoolFrame extends JFrame {
   private static JPanel pnlRoadStrokes;
   private static JPanel pnlRoundabouts;
   private static JPanel pnlBranchings;
+
+  private static JPanel pnlRoadsInitial;
+  private static JPanel pnlBuildingsInitial;
+  private static JPanel pnlHydroLinesInitial;
+  private static JPanel pnlHydroSurfacesInitial;
+  private static JPanel pnlRailwayLinesInitial;
+  private static JPanel pnlElectricityLinesInitial;
+  private static JPanel pnlContourLinesInitial;
+  private static JPanel pnlLandUseAreasInitial;
+  private static JPanel pnlAdminFieldsInitial;
+  private static JPanel pnlRoadStrokesInitial;
+  private static JPanel pnlRoundaboutsInitial;
+  private static JPanel pnlBranchingsInitial;
 
   private static JPanel panneauBoutons;
   public static JButton bValider;
@@ -111,8 +126,10 @@ public class GeomPoolFrame extends JFrame {
    */
   private void initComponents() {
 
-    // Tabbed panel for themes
+    // Tabbed panels for themes
     GeomPoolFrame.themes = new JTabbedPane();
+    GeomPoolFrame.themesInitial = new JTabbedPane();
+    GeomPoolFrame.dataSets = new JTabbedPane();
 
     // Themes tabs
     GeomPoolFrame.pnlRoads = new themeTabPanel(CartAGenDataSet.ROADS_POP);
@@ -141,6 +158,35 @@ public class GeomPoolFrame extends JFrame {
     GeomPoolFrame.pnlRoundabouts = new themeTabPanel(
         CartAGenDataSet.ROUNDABOUTS_POP);
     GeomPoolFrame.pnlBranchings = new themeTabPanel(
+        CartAGenDataSet.BRANCHINGS_POP);
+
+    // Initial themes tabs
+    GeomPoolFrame.pnlRoadsInitial = new themeTabPanel(CartAGenDataSet.ROADS_POP);
+    GeomPoolFrame.pnlBuildingsInitial = new themeTabPanel(
+        CartAGenDataSet.BUILDINGS_POP);
+    GeomPoolFrame.pnlHydroLinesInitial = new themeTabPanel(
+        CartAGenDataSet.WATER_LINES_POP);
+    GeomPoolFrame.pnlHydroSurfacesInitial = new themeTabPanel(
+        CartAGenDataSet.WATER_AREAS_POP);
+    GeomPoolFrame.pnlRailwayLinesInitial = new themeTabPanel(
+        CartAGenDataSet.RAILWAY_LINES_POP);
+    GeomPoolFrame.pnlElectricityLinesInitial = new themeTabPanel(
+        CartAGenDataSet.ELECTRICITY_LINES_POP);
+    GeomPoolFrame.pnlContourLinesInitial = new themeTabPanel(
+        CartAGenDataSet.CONTOUR_LINES_POP);
+    GeomPoolFrame.pnlHydroLinesInitial = new themeTabPanel(
+        CartAGenDataSet.WATER_LINES_POP);
+    GeomPoolFrame.pnlLandUseAreasInitial = new themeTabPanel(
+        CartAGenDataSet.LANDUSE_AREAS_POP);
+    GeomPoolFrame.pnlAdminFieldsInitial = new themeTabPanel(
+        CartAGenDataSet.ADMIN_FIELDS_POP);
+    GeomPoolFrame.pnlHydroLinesInitial = new themeTabPanel(
+        CartAGenDataSet.WATER_LINES_POP);
+    GeomPoolFrame.pnlRoadStrokesInitial = new themeTabPanel(
+        CartAGenDataSet.ROAD_STROKES_POP);
+    GeomPoolFrame.pnlRoundaboutsInitial = new themeTabPanel(
+        CartAGenDataSet.ROUNDABOUTS_POP);
+    GeomPoolFrame.pnlBranchingsInitial = new themeTabPanel(
         CartAGenDataSet.BRANCHINGS_POP);
 
     // Panel for buttons
@@ -181,6 +227,36 @@ public class GeomPoolFrame extends JFrame {
     GeomPoolFrame.themes.addTab("Roundabouts", GeomPoolFrame.pnlRoundabouts);
     GeomPoolFrame.themes.addTab("Branchings", GeomPoolFrame.pnlBranchings);
 
+    // Tabbed pane for initial dataset
+    GeomPoolFrame.themesInitial.addTab("Roads", GeomPoolFrame.pnlRoadsInitial);
+    GeomPoolFrame.themesInitial.addTab("Buildings",
+        GeomPoolFrame.pnlBuildingsInitial);
+    GeomPoolFrame.themesInitial.addTab("Linear rivers",
+        GeomPoolFrame.pnlHydroLinesInitial);
+    GeomPoolFrame.themesInitial.addTab("Surfacic rivers",
+        GeomPoolFrame.pnlHydroSurfacesInitial);
+    GeomPoolFrame.themesInitial.addTab("Railway",
+        GeomPoolFrame.pnlRailwayLinesInitial);
+    GeomPoolFrame.themesInitial.addTab("Electricity",
+        GeomPoolFrame.pnlElectricityLinesInitial);
+    GeomPoolFrame.themesInitial.addTab("Contour lines",
+        GeomPoolFrame.pnlContourLinesInitial);
+    GeomPoolFrame.themesInitial.addTab("Land use",
+        GeomPoolFrame.pnlLandUseAreasInitial);
+    GeomPoolFrame.themesInitial.addTab("Admin fields",
+        GeomPoolFrame.pnlAdminFieldsInitial);
+    GeomPoolFrame.themesInitial.addTab("Strokes",
+        GeomPoolFrame.pnlRoadStrokesInitial);
+    GeomPoolFrame.themesInitial.addTab("Roundabouts",
+        GeomPoolFrame.pnlRoundaboutsInitial);
+    GeomPoolFrame.themesInitial.addTab("Branchings",
+        GeomPoolFrame.pnlBranchingsInitial);
+
+    // Tabbed pane for both datasets
+    GeomPoolFrame.dataSets.addTab("Current dataset", GeomPoolFrame.themes);
+    GeomPoolFrame.dataSets.addTab("Initial dataset",
+        GeomPoolFrame.themesInitial);
+
     // Validation button
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.gridx = 1;
@@ -190,7 +266,7 @@ public class GeomPoolFrame extends JFrame {
 
     // Central panel for road symbolisation
     this.setLayout(new BorderLayout());
-    this.add(GeomPoolFrame.themes, BorderLayout.CENTER);
+    this.add(GeomPoolFrame.dataSets, BorderLayout.CENTER);
 
     // South panel for buttons
     this.add(GeomPoolFrame.panneauBoutons, BorderLayout.SOUTH);
@@ -205,11 +281,59 @@ public class GeomPoolFrame extends JFrame {
     CartagenApplication.getInstance().getFrame().getLayerManager()
         .emptyGeometriesPool();
 
+    // Current datasetThemes
     for (int i = 0; i < GeomPoolFrame.themes.getComponentCount(); i++) {
 
       // Treatment of each tab for each theme
       themeTabPanel tab = (themeTabPanel) GeomPoolFrame.themes.getComponent(i);
       for (IGeneObj obj : CartAGenDoc.getInstance().getCurrentDataset()
+          .getCartagenPop(tab.popName)) {
+
+        // Initial dataset features
+        if (tab.tabInitial.getSelectedColumn() != 0 && !obj.hasBeenCreated()) {
+          GeomPoolFrame.drawGeom(tab.tabInitial, obj.getInitialGeom());
+        }
+
+        // Current dataset features
+        if (tab.tabCurrent.getSelectedColumn() != 0 && !obj.isDeleted()) {
+          GeomPoolFrame.drawGeom(tab.tabCurrent, obj.getGeom());
+        }
+
+        // Unchanged features
+        if (tab.tabUnchanged.getSelectedColumn() != 0 && !obj.hasBeenCreated()
+            && !obj.isDeleted() && obj.getGeom().equals(obj.getInitialGeom())) {
+          GeomPoolFrame.drawGeom(tab.tabUnchanged, obj.getGeom());
+        }
+
+        // Modified features
+        if (tab.tabModified.getSelectedColumn() != 0 && !obj.hasBeenCreated()
+            && !obj.isDeleted() && !obj.getGeom().equals(obj.getInitialGeom())) {
+          GeomPoolFrame.drawGeom(tab.tabModified, obj.getGeom());
+        }
+
+        // Created features
+        if (tab.tabCreated.getSelectedColumn() != 0 && obj.hasBeenCreated()
+            && !obj.isDeleted()) {
+          GeomPoolFrame.drawGeom(tab.tabCreated, obj.getGeom());
+        }
+
+        // Created features
+        if (tab.tabDeleted.getSelectedColumn() != 0 && !obj.hasBeenCreated()
+            && obj.isDeleted()) {
+          GeomPoolFrame.drawGeom(tab.tabDeleted, obj.getInitialGeom());
+        }
+
+      }
+
+    }
+
+    // Initial datasetThemes
+    for (int i = 0; i < GeomPoolFrame.themesInitial.getComponentCount(); i++) {
+
+      // Treatment of each tab for each theme
+      themeTabPanel tab = (themeTabPanel) GeomPoolFrame.themesInitial
+          .getComponent(i);
+      for (IGeneObj obj : CartAGenDoc.getInstance().getInitialDataset()
           .getCartagenPop(tab.popName)) {
 
         // Initial dataset features
@@ -258,8 +382,8 @@ public class GeomPoolFrame extends JFrame {
    * @param geom
    */
   private static void drawGeom(JTable tab, IGeometry geom) {
-    Color col = ((ColourTableModel) tab.getModel()).getValueAt(1, tab
-        .getSelectedColumn());
+    Color col = ((ColourTableModel) tab.getModel()).getValueAt(1,
+        tab.getSelectedColumn());
     IGeometry gm;
     if (geom instanceof IPolygon) {
       gm = ((IPolygon) geom).exteriorLineString();
