@@ -256,6 +256,7 @@ public class CarteTopo extends DataSet {
             I18N.getString("CarteTopo.Group"), fr.ign.cogit.geoxygene.contrib.cartetopo.Groupe.class, false)); //$NON-NLS-1$
     /** créer un featuretype pour les arcs */
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType arcFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+    arcFeatureType.setTypeName(I18N.getString("CarteTopo.Edge"));
     AttributeType orientationType = new AttributeType("orient", "orientation", "Integer");
     arcFeatureType.addFeatureAttribute(orientationType);
     AttributeType weightType = new AttributeType("poids", "poids", "Double");
@@ -271,6 +272,7 @@ public class CarteTopo extends DataSet {
     this.getPopArcs().setFeatureType(arcFeatureType);
     /** créer un featuretype pour les noeuds */
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType noeudFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+    noeudFeatureType.setTypeName(I18N.getString("CarteTopo.Node"));
     AttributeType distanceType = new AttributeType("distance", "distance", "Double");
     noeudFeatureType.addFeatureAttribute(distanceType);
     noeudFeatureType.addFeatureAttribute(idType);
@@ -280,6 +282,7 @@ public class CarteTopo extends DataSet {
     /** créer un featuretype pour les faces */
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType faceFeatureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
     /** création d'un schéma associé au featureType */
+    faceFeatureType.setTypeName(I18N.getString("CarteTopo.Face"));
     AttributeType infiniteType = new AttributeType("infinite", "infinite", "Boolean");
     faceFeatureType.addFeatureAttribute(infiniteType);
     AttributeType correspondantsType = new AttributeType("corres", "correspondantsAsString",
