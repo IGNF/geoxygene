@@ -63,264 +63,58 @@ public class MGCPLoader extends ShapeFileLoader {
       throws ShapefileException, IOException {
     try {
 
-      if (listLayer.size() == 0) {
+      if ((listLayer.size() == 0) || (listLayer.contains("LAP030"))) {
         // ground transportation loading
-
-        // shapePath = FileUtil.getNamedFileInDir(directory, "gtr");
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LAP030.shp")
                 .getAbsolutePath(), MGCPRoadLine.class,
             CartAGenDataSet.ROADS_POP, IRoadLine.FEAT_TYPE_NAME, this
                 .getDataset().getRoadNetwork(), PeaRepDbType.MGCPPlusPlus);
+      }
 
-        // loadLineStringClass(FileUtil.getNamedFileInDir(shapePath,
-        // "trackl.shp")
-        // .getAbsolutePath(), VMAPPath.class, CartAGenDataSet.PATHS_POP,
-        // IPath.FEAT_TYPE_NAME, null, true);
-        // loadLineStringClass(FileUtil.getNamedFileInDir(shapePath,
-        // "traill.shp")
-        // .getAbsolutePath(), VMAPPath.class, CartAGenDataSet.PATHS_POP,
-        // IPath.FEAT_TYPE_NAME, null, true);
-        // loadPolygonClass(FileUtil.getNamedFileInDir(shapePath,
-        // "vehstora.shp")
-        // .getAbsolutePath(), VMAPRoadArea.class,
-        // CartAGenDataSet.ROAD_AREA_POP, IRoadArea.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-
-        // hydro loading // shapePath =
-        // FileUtil.getNamedFileInDir(directory,"iwa");
-
+      // hydro loading
+      if ((listLayer.size() == 0) || (listLayer.contains("LBH140"))) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LBH140.shp")
                 .getAbsolutePath(), MGCPWaterLine.class,
             CartAGenDataSet.WATER_LINES_POP, IWaterLine.FEAT_TYPE_NAME, this
                 .getDataset().getHydroNetwork(), PeaRepDbType.MGCPPlusPlus);
-
-        // loadPolygonClassUnionMulti( FileUtil.getNamedFileInDir(shapePath,
-        // "watrcrsa.shp") .getAbsolutePath(), VMAPWaterArea.class, //
-        // CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME, //
-        // PeaRepDbType.VMAP2i);
-
+      }
+      if ((listLayer.size() == 0) || (listLayer.contains("ABH080"))) {
         this.loadPolygonClassUnionMulti(
             FileUtil.getNamedFileInDir(directory, "ABH080.shp")
                 .getAbsolutePath(), MGCPWaterArea.class,
             CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
+      }
 
-        // loadPointClass(FileUtil.getNamedFileInDir(shapePath,
-        // "springp.shp").getAbsolutePath(),
-        // VMAPWaterPoint.class,CartAGenDataSet.WATER_PT_POP,
-        // IWaterPoint.FEAT_TYPE_NAME, DbType.VMAP2i);
-        // loadPolygonClass(FileUtil.getNamedFileInDir(shapePath,
-        // "inunda.shp").getAbsolutePath(),
-        // VMAPFloodArea.class,CartAGenDataSet.WATER_AREAS_POP,
-        // IWaterArea.FEAT_TYPE_NAME, DbType.VMAP2i);
-
-        // elevation loading // shapePath =
-        // FileUtil.getNamedFileInDir(directory, "ele");
-
+      // elevation loading
+      if ((listLayer.size() == 0) || (listLayer.contains("LCA010"))) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LCA010.shp")
                 .getAbsolutePath(), MGCPContourLine.class,
             CartAGenDataSet.CONTOUR_LINES_POP, IContourLine.FEAT_TYPE_NAME,
             null, PeaRepDbType.MGCPPlusPlus);
+      }
 
-        // loadPointClass(FileUtil.getNamedFileInDir(shapePath, "elevp.shp")
-        // .getAbsolutePath(), VMAPSpotHeight.class,
-        // CartAGenDataSet.SPOT_HEIGHTS_POP, ISpotHeight.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-
-        // aero loading
+      // aero loading
+      if ((listLayer.size() == 0) || (listLayer.contains("AGB005")))
         loadAirports(directory);
 
-        // administrative layers loading
-        // shapePath = FileUtil.getNamedFileInDir(directory, "clb");
-        // loadPolygonClass(FileUtil.getNamedFileInDir(shapePath, "coasta.shp")
-        // .getAbsolutePath(), VMAPIsland.class,
-        // CartAGenDataSet.WATER_ISLAND_POP, IRiverSimpleIsland.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-        // loadPolygonClass(FileUtil.getNamedFileInDir(shapePath, "polbnda.shp")
-        // .getAbsolutePath(), VMAPAdminUnit.class,
-        // CartAGenDataSet.ADMIN_UNIT_POP, ISimpleAdminUnit.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-        // loadLineStringClass(FileUtil.getNamedFileInDir(shapePath,
-        // "polbndl.shp")
-        // .getAbsolutePath(), VMAPAdminLimit.class,
-        // CartAGenDataSet.ADMIN_LIMIT_POP, IAdminLimit.FEAT_TYPE_NAME, null,
-        // DbType.VMAP2i);
-
-        // gob package loading
-        // shapePath = FileUtil.getNamedFileInDir(directory, "gob");
-        // loadLineStringClass(FileUtil.getNamedFileInDir(shapePath,
-        // "bluffl.shp")
-        // .getAbsolutePath(), VMAPBluffLine.class,
-        // CartAGenDataSet.RELIEF_LINES_POP, IReliefElementLine.FEAT_TYPE_NAME,
-        // null, DbType.VMAP2i);
-
-        // ind package loading
-        // shapePath = FileUtil.getNamedFileInDir(directory, "ind");
-        // loadPolygonClass(FileUtil.getNamedFileInDir(shapePath,
-        // "storagea.shp")
-        // .getAbsolutePath(), VMAPStorageArea.class,
-        // CartAGenDataSet.BUILD_AREA_POP, IBuildArea.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-        // loadPolygonClass(FileUtil.getNamedFileInDir(shapePath,
-        // "processa.shp")
-        // .getAbsolutePath(), VMAPProcessArea.class,
-        // CartAGenDataSet.BUILD_AREA_POP, IBuildArea.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-        // loadPointClass(FileUtil.getNamedFileInDir(shapePath, "storagep.shp")
-        // .getAbsolutePath(), VMAPStoragePoint.class,
-        // CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-        // loadPointClass(FileUtil.getNamedFileInDir(shapePath, "obstrp.shp")
-        // .getAbsolutePath(), VMAPObstrPoint.class,
-        // CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-
-        // geology loading
-        // shapePath = FileUtil.getNamedFileInDir(directory, "phy");
-        // loadPolygonClass(FileUtil.getNamedFileInDir(shapePath, "grounda.shp")
-        // .getAbsolutePath(), VMAPGround.class,
-        // CartAGenDataSet.LANDUSE_AREAS_POP, ISimpleLandUseArea.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-        // loadPointClass(FileUtil.getNamedFileInDir(shapePath, "lndfrmp.shp")
-        // .getAbsolutePath(), VMAPLandFormPoint.class,
-        // CartAGenDataSet.RELIEF_PTS_POP, IReliefElementPoint.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-
-        // population loading
-        // shapePath = FileUtil.getNamedFileInDir(directory, "pop");
-        // loadPolygonClass(FileUtil.getNamedFileInDir(shapePath, "builda.shp")
-        // .getAbsolutePath(), VMAPBuilding.class,
-        // CartAGenDataSet.BUILDINGS_POP, IBuilding.FEAT_TYPE_NAME,
-        // PeaRepDbType.VMAP2i);
-        // loadPolygonClass(FileUtil.getNamedFileInDir(shapePath, "sporta.shp")
-        // .getAbsolutePath(), VMAPSportsField.class,
-        // CartAGenDataSet.SPORTS_FIELDS_POP, ISportsField.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-        // loadPointClass(FileUtil.getNamedFileInDir(shapePath, "sportp.shp")
-        // .getAbsolutePath(), VMAPSportPoint.class,
-        // CartAGenDataSet.BUILD_PT_POP, IBuildPoint.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-
+      // population loading
+      if ((listLayer.size() == 0) || (listLayer.contains("PAL015"))) {
         this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAL015.shp")
             .getAbsolutePath(), MGCPBuildPoint.class,
             CartAGenDataSet.BUILD_PT_POP, IBuildPoint.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
+      }
 
-        // loadPointClass(FileUtil.getNamedFileInDir(shapePath, "mispopp.shp")
-        // .getAbsolutePath(), VMAPMiscPopPoint.class,
-        // CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-        // loadPointClass(FileUtil.getNamedFileInDir(shapePath, "towerp.shp")
-        // .getAbsolutePath(), VMAPTower.class, CartAGenDataSet.MISC_PT_POP,
-        // IMiscPoint.FEAT_TYPE_NAME, DbType.VMAP2i);
-
+      if ((listLayer.size() == 0) || (listLayer.contains("AAL020"))) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAL020.shp")
                 .getAbsolutePath(), MGCPBuiltUpArea.class,
             CartAGenDataSet.LANDUSE_AREAS_POP,
             ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus);
-
-        // loadPolygonClass(FileUtil.getNamedFileInDir(shapePath, "mispopa.shp")
-        // .getAbsolutePath(), VMAPMiscPopArea.class,
-        // CartAGenDataSet.MISC_AREA_POP, IMiscArea.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-
-        // uti package loading
-        // shapePath = FileUtil.getNamedFileInDir(directory, "uti");
-        // loadPointClass(FileUtil.getNamedFileInDir(shapePath, "powerp.shp")
-        // .getAbsolutePath(), VMAPPowerPoint.class,
-        // CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-        // loadPointClass(FileUtil.getNamedFileInDir(shapePath, "transevp.shp")
-        // .getAbsolutePath(), VMAPCommPoint.class, CartAGenDataSet.MISC_PT_POP,
-        // IMiscPoint.FEAT_TYPE_NAME, DbType.VMAP2i);
-
-        // vegetation loading
-        // shapePath = FileUtil.getNamedFileInDir(directory, "veg");
-        // loadPolygonClass(FileUtil.getNamedFileInDir(shapePath, "cropa.shp")
-        // .getAbsolutePath(), VMAPCrop.class,
-        // CartAGenDataSet.LANDUSE_AREAS_POP, ISimpleLandUseArea.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-        // loadPolygonClass(FileUtil.getNamedFileInDir(shapePath, "grassa.shp")
-        // .getAbsolutePath(), VMAPGrass.class,
-        // CartAGenDataSet.LANDUSE_AREAS_POP, ISimpleLandUseArea.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-        // loadPolygonClass(FileUtil.getNamedFileInDir(shapePath,
-        // "orcharda.shp")
-        // .getAbsolutePath(), VMAPOrchard.class,
-        // CartAGenDataSet.LANDUSE_AREAS_POP, ISimpleLandUseArea.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-        // loadPolygonClass(FileUtil.getNamedFileInDir(shapePath, "swampa.shp")
-        // .getAbsolutePath(), VMAPSwamp.class,
-        // CartAGenDataSet.LANDUSE_AREAS_POP, ISimpleLandUseArea.FEAT_TYPE_NAME,
-        // DbType.VMAP2i);
-
-      } else {
-
-        for (String layerName : listLayer) {
-
-          if (layerName.equals("roadl")) {
-            // ground transportation loading
-            // shapePath = FileUtil.getNamedFileInDir(directory, "gtr");
-            this.loadLineStringClass(
-                FileUtil.getNamedFileInDir(directory, "LAP030.shp")
-                    .getAbsolutePath(), MGCPRoadLine.class,
-                CartAGenDataSet.ROADS_POP, IRoadLine.FEAT_TYPE_NAME, this
-                    .getDataset().getRoadNetwork(), PeaRepDbType.MGCPPlusPlus);
-          }
-
-          if (layerName.equals("waterl")) {
-            // hydro loading
-            // shapePath = FileUtil.getNamedFileInDir(directory, "iwa");
-            this.loadLineStringClass(
-                FileUtil.getNamedFileInDir(directory, "LBH140.shp")
-                    .getAbsolutePath(), MGCPWaterLine.class,
-                CartAGenDataSet.WATER_LINES_POP, IWaterLine.FEAT_TYPE_NAME,
-                this.getDataset().getHydroNetwork(), PeaRepDbType.MGCPPlusPlus);
-          }
-
-          if (layerName.equals("lakea")) {
-            // shapePath = FileUtil.getNamedFileInDir(directory, "iwa");
-            this.loadPolygonClassUnionMulti(
-                FileUtil.getNamedFileInDir(directory, "ABH080.shp")
-                    .getAbsolutePath(), MGCPWaterArea.class,
-                CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
-                PeaRepDbType.MGCPPlusPlus);
-          }
-
-          if (layerName.equals("contourl")) {
-            // elevation loading
-            // shapePath = FileUtil.getNamedFileInDir(directory, "ele");
-            this.loadLineStringClass(
-                FileUtil.getNamedFileInDir(directory, "LCA010.shp")
-                    .getAbsolutePath(), MGCPContourLine.class,
-                CartAGenDataSet.CONTOUR_LINES_POP, IContourLine.FEAT_TYPE_NAME,
-                null, PeaRepDbType.MGCPPlusPlus);
-          }
-
-          if (layerName.equals("buildp")) {
-            // shapePath = FileUtil.getNamedFileInDir(directory, "pop");
-            this.loadPointClass(
-                FileUtil.getNamedFileInDir(directory, "PAL015.shp")
-                    .getAbsolutePath(), MGCPBuildPoint.class,
-                CartAGenDataSet.BUILD_PT_POP, IBuildPoint.FEAT_TYPE_NAME,
-                PeaRepDbType.MGCPPlusPlus);
-          }
-
-          if (layerName.equals("builtupa")) {
-            // shapePath = FileUtil.getNamedFileInDir(directory, "pop");
-            this.loadPolygonClass(
-                FileUtil.getNamedFileInDir(directory, "AAL020.shp")
-                    .getAbsolutePath(), MGCPBuiltUpArea.class,
-                CartAGenDataSet.LANDUSE_AREAS_POP,
-                ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus);
-          }
-
-        }
-
       }
 
     } catch (IllegalArgumentException e) {
