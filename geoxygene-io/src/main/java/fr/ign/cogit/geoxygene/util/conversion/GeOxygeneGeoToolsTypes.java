@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.geotools.data.DataUtilities;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.FeatureCollections;
@@ -83,7 +82,8 @@ public class GeOxygeneGeoToolsTypes {
       defaultFeature.setFeatureType(schemaDefaultFeature.getFeatureType());
       defaultFeature.setSchema(schemaDefaultFeature);
       try {
-        IGeometry geometry = AdapterFactory.toGM_Object((Geometry) feature.getDefaultGeometry());
+        Geometry geom = (Geometry) feature.getDefaultGeometry();
+        IGeometry geometry = AdapterFactory.toGM_Object(geom);
         defaultFeature.setGeom(geometry);
       } catch (Exception e) {
         e.printStackTrace();
@@ -150,9 +150,9 @@ public class GeOxygeneGeoToolsTypes {
         builder.add(attributeName, attributeClass);
       }
     } else {
-      builder.add("geom", AdapterFactory.toJTSGeometryType(featureType.getGeometryType()), crs);
       if (featureCollection.get(0).getFeatureType() != null) {
         featureType = featureCollection.get(0).getFeatureType();
+        builder.add("geom", AdapterFactory.toJTSGeometryType(featureType.getGeometryType()), crs);
         for (GF_AttributeType attributeType : featureType.getFeatureAttributes()) {
           Class<?> attributeClass = ShapefileWriter.valueType2Class(attributeType.getValueType());
           String attributeName = attributeType.getMemberName();
