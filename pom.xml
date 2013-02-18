@@ -587,7 +587,6 @@
 		<module>geoxygene-sig3d</module>
 		<module>geoxygene-semio</module>
 		<module>geoxygene-cartagen</module>
-        <module>geoxygene-wps</module>
 	</modules>
 
 </project>
