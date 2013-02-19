@@ -6,10 +6,18 @@ import org.geotools.process.factory.DescribeResult;
 import org.geotools.process.gs.GSProcess;
 
 /**
- * Test a simple WPS case : Hello World.
- * 
- * @author MDVan-Damme
- */
+*
+*        This software is released under the licence CeCILL
+* 
+*        see Licence_CeCILL-C_fr.html
+*        see Licence_CeCILL-C_en.html
+* 
+*        see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+* 
+* 
+* @copyright IGN
+* 
+*/
 @DescribeProcess(title="helloWPS", description="Hello WPS Sample")
 public class HelloWPS implements GSProcess {
 

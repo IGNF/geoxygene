@@ -13,6 +13,22 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Chargeur;
 import fr.ign.cogit.geoxygene.util.conversion.GeOxygeneGeoToolsTypes;
 
+/**
+*
+*        This software is released under the licence CeCILL
+* 
+*        see Licence_CeCILL-C_fr.html
+*        see Licence_CeCILL-C_en.html
+* 
+*        see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+* 
+* 
+* @copyright IGN
+* 
+* @author Julien Perret
+* 
+* 
+*/
 @DescribeProcess(title = "CreateFaces", description = "Create Faces from a Feature Collection representing a Network")
 public class CreateFaces implements GeoServerProcess {
   
