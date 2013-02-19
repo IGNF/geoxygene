@@ -19,6 +19,7 @@
 
 package fr.ign.cogit.geoxygene.appli.plugin;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ import fr.ign.cogit.geoxygene.appli.gui.ParamDataMatchingNetwork;
 public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
     ActionListener {
 
-  private static Logger logger = Logger.getLogger(DataMatchingPlugin.class
+  private static Logger LOGGER = Logger.getLogger(DataMatchingPlugin.class
       .getName());
   private GeOxygeneApplication application;
 
@@ -98,8 +99,8 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
       return;
     }
 
-    logger.info("Fichier de référence : " + refShapeFilename);
-    logger.info("Fichier de comparaison : " + compShapeFilename);
+    LOGGER.info("Fichier de référence : " + refShapeFilename);
+    LOGGER.info("Fichier de comparaison : " + compShapeFilename);
 
     IPopulation<IFeature> popRef = ShapefileReader.read(refShapeFilename);
     popRef.setNom("popRef");
@@ -144,21 +145,21 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
 
     EnsembleDeLiens liens = AppariementIO.appariementDeJeuxGeo(param, reseaux);
 
-    logger.info("Paramétrage = " + liens.getParametrage());
-    logger.info("Evaluation interne = " + liens.getEvaluationInterne());
-    logger.info("Evaluation globale = " + liens.getEvaluationGlobale());
+    LOGGER.info("Paramétrage = " + liens.getParametrage());
+    LOGGER.info("Evaluation interne = " + liens.getEvaluationInterne());
+    LOGGER.info("Evaluation globale = " + liens.getEvaluationGlobale());
     for (Lien feature : liens) {
       Lien lien = feature;
-      logger.info("Lien = " + lien); //$NON-NLS-1$
-      logger.info("Ref = " + lien.getObjetsRef().toString()); //$NON-NLS-1$
-      logger.info("Comp = " + lien.getObjetsComp()); //$NON-NLS-1$
-      logger.info("Evaluation = " + lien.getEvaluation()); //$NON-NLS-1$
+      LOGGER.info("Lien = " + lien); //$NON-NLS-1$
+      LOGGER.info("Ref = " + lien.getObjetsRef().toString()); //$NON-NLS-1$
+      LOGGER.info("Comp = " + lien.getObjetsComp()); //$NON-NLS-1$
+      LOGGER.info("Evaluation = " + lien.getEvaluation()); //$NON-NLS-1$
     }
 
     CarteTopo reseauRecale = Recalage.recalage(reseaux.get(0), reseaux.get(1),
         liens);
     IPopulation<Arc> arcs = reseauRecale.getPopArcs();
-    logger.info(arcs.getNom());
+    LOGGER.info(arcs.getNom());
 
     for (Lien lien : liens) {
       IGeometry geom = lien.getGeom();
@@ -168,34 +169,42 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
           if (lineGeom instanceof GM_LineString) {
             multiCurve.add((GM_LineString) lineGeom);
           } else {
-            logger.error(lineGeom.getClass().getSimpleName());
+            LOGGER.error(lineGeom.getClass().getSimpleName());
           }
         }
         lien.setGeom(multiCurve);
       } else {
-        logger.info(geom.getClass().getSimpleName());
+        LOGGER.info(geom.getClass().getSimpleName());
       }
     }
-    logger.info(arcs.getNom());
+    LOGGER.info(arcs.getNom());
 
-    logger.trace("----------------------------------------------------------");
-    logger.trace("Taille popRef = " + popRef.size());
-    logger.trace("Taille popComp = " + popComp.size());
-    logger.trace("Nom    popRef = " + popRef.getNom());
-    logger.trace("Nom    popComp = " + popComp.getNom());
-    logger.trace("----------------------------------------------------------");
+    LOGGER.trace("----------------------------------------------------------");
+    LOGGER.trace("Taille popRef = " + popRef.size());
+    LOGGER.trace("Taille popComp = " + popComp.size());
+    LOGGER.trace("Nom    popRef = " + popRef.getNom());
+    LOGGER.trace("Nom    popComp = " + popComp.getNom());
+    LOGGER.trace("----------------------------------------------------------");
 
-    StockageLiens.stockageDesLiens(liens, 1, 2, 3);
+    // StockageLiens.stockageDesLiens(liens, 1, 2, 3);
+    
+    Dimension desktopSize = this.application.getFrame().getDesktopPane().getSize();
+    int widthProjectFrame = desktopSize.width / 2;
+    int heightProjectFrame = desktopSize.height / 2;
 
     ProjectFrame p1 = this.application.getFrame().newProjectFrame();
     p1.setTitle("Reference Pop"); //$NON-NLS-1$
     p1.addUserLayer(popRef, "Reference Network", null);
+    p1.setSize(widthProjectFrame, heightProjectFrame);
+    p1.setLocation(0, 0);
 
     Viewport viewport = p1.getLayerViewPanel().getViewport();
 
     ProjectFrame p2 = this.application.getFrame().newProjectFrame();
     p2.setTitle("Comparaison Pop"); //$NON-NLS-1$
     p2.addUserLayer(popComp, "Comparison Network", null);
+    p2.setSize(widthProjectFrame, heightProjectFrame);
+    p2.setLocation(widthProjectFrame, 0);
     p2.getLayerViewPanel().setViewport(viewport);
     viewport.getLayerViewPanels().add(p2.getLayerViewPanel());
 
@@ -203,6 +212,8 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
     p3.setTitle("Corrected Pop"); //$NON-NLS-1$
     p3.addUserLayer(arcs, "Corrected network", null);
     p3.addUserLayer(popComp, "Comparison Network", null);
+    p3.setSize(widthProjectFrame, heightProjectFrame);
+    p3.setLocation(0, heightProjectFrame);
     p3.getLayerViewPanel().setViewport(viewport);
     viewport.getLayerViewPanels().add(p3.getLayerViewPanel());
 
@@ -213,9 +224,11 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
     p4.addUserLayer(popRef, "Reference Network", null);
     p4.addUserLayer(popComp, "Comparison Network", null);
     Layer layer = p4.addUserLayer(liens, "Links", null);
+    p4.setSize(widthProjectFrame, heightProjectFrame);
+    p4.setLocation(widthProjectFrame, heightProjectFrame);
 
     layer.getSymbolizer().getStroke().setStrokeWidth(2);
-    logger.info("Finished"); //$NON-NLS-1$
+    LOGGER.info("Finished"); //$NON-NLS-1$
   }
 
   /**

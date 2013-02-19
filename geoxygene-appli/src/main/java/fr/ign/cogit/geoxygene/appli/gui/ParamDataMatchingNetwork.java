@@ -27,6 +27,7 @@
 
 package fr.ign.cogit.geoxygene.appli.gui;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Logger;
@@ -39,8 +40,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.Box;
 import javax.swing.filechooser.FileFilter;
+
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.plugin.DataMatchingPlugin;
@@ -51,6 +54,9 @@ import fr.ign.cogit.geoxygene.appli.plugin.DataMatchingPlugin;
  */
 public class ParamDataMatchingNetwork extends JDialog implements ActionListener {
 
+  /** . */
+  private static final long serialVersionUID = 1L;
+
   /** A classic logger. */
   private Logger logger = Logger.getLogger(ParamDataMatchingNetwork.class
       .getName());
@@ -59,8 +65,10 @@ public class ParamDataMatchingNetwork extends JDialog implements ActionListener 
   DataMatchingPlugin dataMatchingPlugin;
 
   /** 2 buttons : launch and cancel. */
-  JButton launch = new JButton(I18N.getString("DataMatchingPlugin.Launch"));
-  JButton cancel = new JButton(I18N.getString("DataMatchingPlugin.Cancel"));
+  JButton launchButton = new JButton(
+      I18N.getString("DataMatchingPlugin.Launch"));
+  JButton cancelButton = new JButton(
+      I18N.getString("DataMatchingPlugin.Cancel"));
 
   /** FileUploads Field for uploading Reference shape . */
   JButton buttonRefShape = new JButton(
@@ -83,121 +91,162 @@ public class ParamDataMatchingNetwork extends JDialog implements ActionListener 
    */
   public ParamDataMatchingNetwork(DataMatchingPlugin dmp) {
 
+    logger.info("ParamDataMatchingNetwork Constructor");
     dataMatchingPlugin = dmp;
 
-    Box boite = Box.createVerticalBox();
     setModal(true);
     setTitle(I18N.getString("DataMatchingPlugin.InputDialogTitle"));
 
-    // First Line
-    JPanel line = new JPanel();
     buttonRefShape.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        doUpload("1");
+        doUpload(buttonRefShape);
       }
     });
-
-    line = new JPanel();
-    line.add(new JLabel("Réseau moins détaillé : "));
-    line.add(filenameRefShape);
-    line.add(buttonRefShape);
-    line.add(new JLabel("(.shp)"));
-    boite.add(line);
-
-    // Second line
-    line = new JPanel();
     buttonCompShape.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        doUpload("2");
+        doUpload(buttonCompShape);
       }
     });
-    line.add(new JLabel("Réseau plus détaillé : "));
-    line.add(filenameCompShape);
-    line.add(buttonCompShape);
-    line.add(new JLabel("(.shp)"));
-    boite.add(line);
-
-    // Third line
-    line = new JPanel();
     buttonParamFile.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        doUpload("3");
+        doUpload(buttonParamFile);
       }
     });
-    line.add(new JLabel("Paramètres de l'appariement : "));
-    line.add(filenameParamFile);
-    line.add(buttonParamFile);
-    line.add(new JLabel("(.xml)"));
-    boite.add(line);
 
-    // Buttons line
-    line = new JPanel();
-    line.add(launch);
-    line.add(cancel);
-    boite.add(line);
+    JLabel labelRef = new JLabel(
+        I18N.getString("DataMatchingPlugin.LabelImportReferenceNetwork"));
+    JLabel labelComp = new JLabel(
+        I18N.getString("DataMatchingPlugin.LabelImportComparativeNetwork"));
+    JLabel labelParam = new JLabel(
+        I18N.getString("DataMatchingPlugin.LabelImportParameter"));
+    JLabel labelShpExt1 = new JLabel("(.shp)");
+    JLabel labelShpExt2 = new JLabel("(.shp)");
+    JLabel labelXmlExt = new JLabel("(.xml)");
 
-    add(boite);
+    // fill:pref:grow
+    FormLayout layout = new FormLayout(
+        "20dlu, pref, 5dlu, pref, 5dlu, pref, 5dlu, pref, 5dlu, pref, 20dlu",
+        "20dlu, pref, pref, pref, 20dlu, pref, 20dlu");
 
-    launch.addActionListener(this);
-    cancel.addActionListener(this);
+    CellConstraints cc = new CellConstraints();
+    JPanel formPanel = new JPanel();
+    formPanel.setLayout(layout);
+
+    // First Line : filenameRefShape
+    formPanel.add(labelRef, cc.xy(2, 2));
+    formPanel.add(filenameRefShape, cc.xyw(4, 2, 3));
+    formPanel.add(buttonRefShape, cc.xy(8, 2));
+    formPanel.add(labelShpExt1, cc.xy(10, 2));
+
+    // Second Line
+    formPanel.add(labelComp, cc.xy(2, 3));
+    formPanel.add(filenameCompShape, cc.xyw(4, 3, 3));
+    formPanel.add(buttonCompShape, cc.xy(8, 3));
+    formPanel.add(labelShpExt2, cc.xy(10, 3));
+
+    // Third Line
+    formPanel.add(labelParam, cc.xy(2, 4));
+    formPanel.add(filenameParamFile, cc.xyw(4, 4, 3));
+    formPanel.add(buttonParamFile, cc.xy(8, 4));
+    formPanel.add(labelXmlExt, cc.xy(10, 4));
+
+    // Fourth Line
+    formPanel.add(launchButton, cc.xy(4, 6));
+    formPanel.add(cancelButton, cc.xy(6, 6));
+
+    getContentPane().setLayout(new BorderLayout());
+    getContentPane().add(formPanel, BorderLayout.CENTER);
+
+    launchButton.addActionListener(this);
+    cancelButton.addActionListener(this);
+
     pack();
-    setLocation(400, 200);
+    setLocation(200, 200);
     setVisible(true);
+
   }
 
+  /**
+   * Actions : launch and cancel.
+   */
   public void actionPerformed(ActionEvent evt) {
     Object source = evt.getSource();
-    if (source == launch) {
+    if (source == launchButton) {
       // Set 3 filenames to dataMatching plugins
       dataMatchingPlugin.setRefShapeFilename(filenameRefShape.getText());
       dataMatchingPlugin.setCompShapeFilename(filenameCompShape.getText());
+      dataMatchingPlugin.setParamFilename(filenameParamFile.getText());
       dispose();
-    } else if (source == cancel) {
+    } else if (source == cancelButton) {
       // do nothing
       dispose();
     }
   }
 
-  private void doUpload(String type) {
-    JFileChooser choixFichierRefShape = new JFileChooser();
-    choixFichierRefShape.setCurrentDirectory(new File(
+  /**
+   * Upload file. 
+   * @param typeButton 
+   */
+  private void doUpload(JButton typeButton) {
+
+    JFileChooser jFileChooser = new JFileChooser();
+    // FIXME : utiliser le dernier répertoire ouvert par l'interface. 
+    jFileChooser.setCurrentDirectory(new File(
         "D:\\Data\\Appariement\\MesTests\\T3"));
 
     // Crée un filtre qui n'accepte que les fichier shp ou les répertoires
-    choixFichierRefShape.setFileFilter(new FileFilter() {
-      @Override
-      public boolean accept(File f) {
-        return (f.isFile()
-            && (f.getAbsolutePath().endsWith(".shp") || f.getAbsolutePath()
-                .endsWith(".SHP")) || f.isDirectory());
-      }
+    if (typeButton.equals(buttonRefShape) || typeButton.equals(buttonCompShape)) {
+      jFileChooser.setFileFilter(new FileFilter() {
+        @Override
+        public boolean accept(File f) {
+          return (f.isFile()
+              && (f.getAbsolutePath().endsWith(".shp") || f.getAbsolutePath()
+                  .endsWith(".SHP")) || f.isDirectory());
+        }
+        @Override
+        public String getDescription() {
+          return "ShapefileReader.ESRIShapefiles";
+        }
+      });
+    } else if (typeButton.equals(buttonParamFile)) {
+      // Crée un filtre qui n'accepte que les fichiers xml ou les répertoires
+      jFileChooser.setFileFilter(new FileFilter() {
+        @Override
+        public boolean accept(File f) {
+          return (f.isFile()
+              && (f.getAbsolutePath().endsWith(".xml") || f.getAbsolutePath()
+                  .endsWith(".XML")) || f.isDirectory());
+        }
+        @Override
+        public String getDescription() {
+          return "XMLFiles";
+        }
+      });
+    }
 
-      @Override
-      public String getDescription() {
-        return "ShapefileReader.ESRIShapefiles";
-      }
+    jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    jFileChooser.setMultiSelectionEnabled(false);
 
-    });
-
-    choixFichierRefShape.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    choixFichierRefShape.setMultiSelectionEnabled(false);
-
-    int returnVal = choixFichierRefShape.showOpenDialog(this);
+    // Show file dialog
+    int returnVal = jFileChooser.showOpenDialog(this);
+    
+    // Initialize textField with the selectedFile
     if (returnVal == JFileChooser.APPROVE_OPTION) {
-      if (type.equals("1")) {
-        filenameRefShape.setText(choixFichierRefShape.getSelectedFile()
+      if (typeButton.equals(buttonRefShape)) {
+        filenameRefShape.setText(jFileChooser.getSelectedFile()
             .getAbsolutePath());
-      } else if (type.equals("2")) {
-        filenameCompShape.setText(choixFichierRefShape.getSelectedFile()
+      } else if (typeButton.equals(buttonCompShape)) {
+        filenameCompShape.setText(jFileChooser.getSelectedFile()
             .getAbsolutePath());
-      } else if (type.equals("3")) {
-        filenameParamFile.setText(choixFichierRefShape.getSelectedFile()
+      } else if (typeButton.equals(buttonParamFile)) {
+        filenameParamFile.setText(jFileChooser.getSelectedFile()
             .getAbsolutePath());
       }
     }
 
-  }
+  } // end doUpload method
+
 }

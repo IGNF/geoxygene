@@ -81,13 +81,6 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>geoxygene-semio</artifactId>
-			<version>${project.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-contrib</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
@@ -96,6 +89,13 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-util</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>geoxygene-semio</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
