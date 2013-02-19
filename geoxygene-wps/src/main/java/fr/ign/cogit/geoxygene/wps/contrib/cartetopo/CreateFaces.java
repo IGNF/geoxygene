@@ -17,10 +17,10 @@ import fr.ign.cogit.geoxygene.util.conversion.GeOxygeneGeoToolsTypes;
 *
 *        This software is released under the licence CeCILL
 * 
-*        see Licence_CeCILL-C_fr.html
-*        see Licence_CeCILL-C_en.html
+*        see Licence_CeCILL_V2-fr.txt
+*        see Licence_CeCILL_V2-en.txt
 * 
-*        see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+*        see <a href="http://www.cecill.info/">http://www.cecill.info</a>
 * 
 * 
 * @copyright IGN

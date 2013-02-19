@@ -17,7 +17,7 @@
 	
 	<licenses>
 		<license>
-			<name>CeCILL C License</name>
+			<name>CeCILL License</name>
 			<url>http://www.cecill.info/</url>
 		</license>
 	</licenses>
@@ -48,6 +48,7 @@
 			<artifactId>wps-core</artifactId>
 			<version>2.2.2</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
 			<artifactId>jts</artifactId>
@@ -56,15 +57,11 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-io</artifactId>
 			<version>${project.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-contrib</artifactId>
 			<version>${project.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 

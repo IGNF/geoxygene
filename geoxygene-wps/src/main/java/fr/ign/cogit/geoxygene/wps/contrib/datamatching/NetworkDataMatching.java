@@ -7,6 +7,9 @@ import org.apache.log4j.Logger;
 
 import org.geoserver.wps.gs.GeoServerProcess;
 import org.geotools.data.simple.SimpleFeatureCollection;
+// import org.geoserver.wps.jts.DescribeParameter;
+// import org.geoserver.wps.jts.DescribeProcess;
+// import org.geoserver.wps.jts.DescribeResult;
 import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
@@ -26,10 +29,10 @@ import fr.ign.cogit.geoxygene.util.conversion.GeOxygeneGeoToolsTypes;
 *
 *        This software is released under the licence CeCILL
 * 
-*        see Licence_CeCILL-C_fr.html
-*        see Licence_CeCILL-C_en.html
+*        see Licence_CeCILL_V2-fr.txt
+*        see Licence_CeCILL_V2-en.txt
 * 
-*        see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+*        see <a href="http://www.cecill.info/">http://www.cecill.info</a>
 * 
 * 
 * @copyright IGN
