@@ -31,6 +31,11 @@
 			<distribution>repo</distribution>
 		</license>
 		<license>
+			<name>CeCILL License</name>
+			<url>http://www.cecill.info/</url>
+			<distribution>repo</distribution>
+		</license>
+		<license>
 			<name>GNU Lesser General Public License</name>
 			<url>http://www.fsf.org/licensing/licenses/lgpl.html</url>
 			<distribution>repo</distribution>
