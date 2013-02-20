@@ -57,6 +57,26 @@ public class Segment extends GM_LineSegment {
     return this.coefC;
   }
 
+  public Segment getPerpendicularSegment(boolean start) {
+    // computes the equation of the perpendicular line y = ax+b
+    double aPrime = (getEndPoint().getY() - getStartPoint().getY())
+        / (getEndPoint().getX() - getStartPoint().getX());
+    double a = -1.0 / aPrime;
+    if (start) {
+      double b = getStartPoint().getY() - getStartPoint().getX() * a;
+      double perpX = getStartPoint().getX() + 1.0;
+      double perpY = a * perpX + b;
+      IDirectPosition perp = new DirectPosition(perpX, perpY);
+      return new Segment(getStartPoint(), perp);
+    } else {
+      double b = getEndPoint().getY() - getEndPoint().getX() * a;
+      double perpX = getStartPoint().getX() + 1.0;
+      double perpY = a * perpX + b;
+      IDirectPosition perp = new DirectPosition(perpX, perpY);
+      return new Segment(perp, getEndPoint());
+    }
+  }
+
   /**
    * Computes the intersection between two segments using the straight line
    * equations.
@@ -97,8 +117,8 @@ public class Segment extends GM_LineSegment {
     double xc = centre.getX();
     double yc = centre.getY();
     // cela revient à résoudre Ax²+Bx+C=0.0 avec
-    double a = coefB / coefA;
-    double b = coefC / coefA;
+    double a = -coefA / coefB;
+    double b = -coefC / coefB;
     double A = 1 + a * a;
     double B = 2.0 * (a * (b - yc) - xc);
     double C = (xc * xc + (b - yc) * (b - yc) - radius * radius);
