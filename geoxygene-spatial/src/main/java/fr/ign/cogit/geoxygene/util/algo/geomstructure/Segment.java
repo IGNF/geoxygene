@@ -8,6 +8,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineSegment;
@@ -159,6 +160,37 @@ public class Segment extends GM_LineSegment {
   }
 
   /**
+   * Gets the list of Segments composing a IRing geometry starting from an
+   * origin vertex. If origin is null, the first vertex is used.
+   * 
+   * @param line the line to decompose into segments
+   * @return the list of segments objects composing the line
+   * @author GTouya
+   */
+  public static List<Segment> getSegmentList(IRing ring, IDirectPosition origin) {
+    List<Segment> segments = new ArrayList<Segment>();
+    IDirectPositionList points = ring.coord();
+    int index = 0;
+    for (int i = 1; i < points.size(); i++) {
+      segments.add(new Segment(points.get(i - 1), points.get(i)));
+      if (points.get(i - 1).equals(origin))
+        index = i - 1;
+    }
+    if (origin == null)
+      return segments;
+    if (origin.equals(points.get(0)))
+      return segments;
+
+    // swap the segments to fit with correct order
+    ArrayList<Segment> swappedSegments = new ArrayList<Segment>();
+    for (int i = index; i < segments.size(); i++)
+      swappedSegments.add(segments.get(i));
+    for (int i = 0; i < index; i++)
+      swappedSegments.add(segments.get(i));
+    return swappedSegments;
+  }
+
+  /**
    * Like getSegmentList but in the reverse order.
    * 
    * @param line the line to decompose into segments
@@ -169,6 +201,37 @@ public class Segment extends GM_LineSegment {
       IDirectPosition origin) {
     List<Segment> segments = new ArrayList<Segment>();
     IDirectPositionList points = polygon.coord();
+    int index = 0;
+    for (int i = points.size() - 2; i > 0; i--) {
+      segments.add(new Segment(points.get(i), points.get(i - 1)));
+      if (points.get(i).equals(origin))
+        index = i;
+    }
+    if (origin == null)
+      return segments;
+    if (origin.equals(points.get(0)))
+      return segments;
+
+    // swap the segments to fit with correct order
+    ArrayList<Segment> swappedSegments = new ArrayList<Segment>();
+    for (int i = index; i > 0; i--)
+      swappedSegments.add(segments.get(i));
+    for (int i = 0; i < index; i++)
+      swappedSegments.add(segments.get(i));
+    return swappedSegments;
+  }
+
+  /**
+   * Like getSegmentList but in the reverse order.
+   * 
+   * @param line the line to decompose into segments
+   * @return the list of segments objects composing the line
+   * @author GTouya
+   */
+  public static List<Segment> getReverseSegmentList(IRing ring,
+      IDirectPosition origin) {
+    List<Segment> segments = new ArrayList<Segment>();
+    IDirectPositionList points = ring.coord();
     int index = 0;
     for (int i = points.size() - 2; i > 0; i--) {
       segments.add(new Segment(points.get(i), points.get(i - 1)));
