@@ -1,7 +1,9 @@
 package fr.ign.cogit.geoxygene.util.algo.geomstructure;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import Jama.Matrix;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -80,6 +82,44 @@ public class Segment extends GM_LineSegment {
     double yInter = -inverse.get(1, 0) * this.coefC - inverse.get(1, 1)
         * other.coefC;
     return new DirectPosition(xInter, yInter);
+  }
+
+  /**
+   * Computes the intersection between the line prolonging the segment and a
+   * given circle.
+   * @param centre
+   * @param radius
+   * @return
+   */
+  public Set<IDirectPosition> intersectionWithCircle(IDirectPosition centre,
+      double radius) {
+    Set<IDirectPosition> intersections = new HashSet<IDirectPosition>();
+    double xc = centre.getX();
+    double yc = centre.getY();
+    // cela revient à résoudre Ax²+Bx+C=0.0 avec
+    double a = coefB / coefA;
+    double b = coefC / coefA;
+    double A = 1 + a * a;
+    double B = 2.0 * (a * (b - yc) - xc);
+    double C = (xc * xc + (b - yc) * (b - yc) - radius * radius);
+    // on calcule le déterminant
+    double delta = B * B - 4.0 * A * C;
+    if (delta > 0.0) {
+      double x1 = -(B + Math.sqrt(delta)) / (2.0 * A);
+      double x2 = -(B - Math.sqrt(delta)) / (2.0 * A);
+      // on calcule les coordonnées en y à partir de l'équation de droite
+      double y1 = a * x1 + b;
+      double y2 = a * x2 + b;
+      intersections.add(new DirectPosition(x1, y1));
+      intersections.add(new DirectPosition(x2, y2));
+    } else if (delta == 0.0) {
+      double x = -B / (2.0 * A);
+      double y = a * x + b;
+      intersections.add(new DirectPosition(x, y));
+    }
+
+    return intersections;
+
   }
 
   public double distanceToPoint(IDirectPosition point) {
