@@ -18,7 +18,7 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
  * @author GTouya
  * 
  */
-public interface IPath extends INetworkSection {
+public interface IPathLine extends INetworkSection {
 
   @Override
   public int getImportance();

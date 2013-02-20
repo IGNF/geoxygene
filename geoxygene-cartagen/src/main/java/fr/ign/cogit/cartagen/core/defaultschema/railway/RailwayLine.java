@@ -44,6 +44,7 @@ public class RailwayLine extends NetworkSection implements IRailwayLine {
   private RailwayNode initialNode, finalNode;
   private Direction direction;
   private boolean deadEnd = false;
+  private boolean sidetrack = false;
 
   /**
    * Constructor
@@ -163,5 +164,14 @@ public class RailwayLine extends NetworkSection implements IRailwayLine {
   @Override
   public boolean isEliminated() {
     return super.isEliminated();
+  }
+
+  public void setSidetrack(boolean sidetrack) {
+    this.sidetrack = sidetrack;
+  }
+
+  @Override
+  public boolean isSideTrack() {
+    return sidetrack;
   }
 }

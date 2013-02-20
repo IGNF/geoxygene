@@ -23,16 +23,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import fr.ign.cogit.cartagen.core.genericschema.AbstractCreationFactory;
+import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.core.genericschema.partition.IMask;
-import fr.ign.cogit.cartagen.core.genericschema.railway.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefElementLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.ISpotHeight;
-import fr.ign.cogit.cartagen.core.genericschema.road.IPath;
+import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -858,7 +858,7 @@ public class CartagenApplication {
           + "/A_RESEAU_ROUTIER/CHEMIN", SourceDLM.BD_TOPO_V2,
           dataSet.getSymbols())) {
         ((ShapeFileDB) dataSet.getCartAGenDB()).addShapeFile(absolutePath
-            + "/A_RESEAU_ROUTIER/CHEMIN", IPath.FEAT_TYPE_NAME);
+            + "/A_RESEAU_ROUTIER/CHEMIN", IPathLine.FEAT_TYPE_NAME);
       }
 
       progressFrame.setTextAndValue("Loading buildings", 20);

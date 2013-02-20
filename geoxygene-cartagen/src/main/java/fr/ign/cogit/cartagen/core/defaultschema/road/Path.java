@@ -19,7 +19,7 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkFace;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.network.NetworkSectionType;
-import fr.ign.cogit.cartagen.core.genericschema.road.IPath;
+import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -28,7 +28,7 @@ import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.ArcReseau;
 import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.Direction;
 import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ArcReseauImpl;
 
-public class Path extends GeneObjLinDefault implements IPath {
+public class Path extends GeneObjLinDefault implements IPathLine {
 
   private int importance;
   private Direction direction;

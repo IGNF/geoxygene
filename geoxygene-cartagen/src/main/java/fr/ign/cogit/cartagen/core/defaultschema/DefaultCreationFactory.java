@@ -72,6 +72,7 @@ import fr.ign.cogit.cartagen.core.genericschema.admin.IAdminCapital;
 import fr.ign.cogit.cartagen.core.genericschema.admin.IAdminLimit;
 import fr.ign.cogit.cartagen.core.genericschema.admin.ICompositeAdminUnit;
 import fr.ign.cogit.cartagen.core.genericschema.admin.ISimpleAdminUnit;
+import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterCourse;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
@@ -92,7 +93,6 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.partition.IMask;
 import fr.ign.cogit.cartagen.core.genericschema.railway.ICable;
-import fr.ign.cogit.cartagen.core.genericschema.railway.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayNode;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayRoute;
@@ -107,7 +107,7 @@ import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefTriangle;
 import fr.ign.cogit.cartagen.core.genericschema.relief.ISpotHeight;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
 import fr.ign.cogit.cartagen.core.genericschema.road.IInterchange;
-import fr.ign.cogit.cartagen.core.genericschema.road.IPath;
+import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadArea;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadFacilityPoint;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
@@ -497,12 +497,12 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   // Path
 
   @Override
-  public IPath createPath(ILineString line, int importance, int symbolId) {
+  public IPathLine createPath(ILineString line, int importance, int symbolId) {
     return new Path(line, importance, symbolId);
   }
 
   @Override
-  public IPath createPath(ILineString line, int importance) {
+  public IPathLine createPath(ILineString line, int importance) {
     return new Path(line, importance);
   }
 

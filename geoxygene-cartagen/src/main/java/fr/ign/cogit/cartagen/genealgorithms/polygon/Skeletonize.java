@@ -25,6 +25,7 @@ import straightskeleton.Skeleton;
 import utils.Loop;
 import utils.LoopL;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -35,7 +36,6 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineSegment;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
-import fr.ign.cogit.geoxygene.util.algo.geomstructure.Segment;
 import fr.ign.cogit.geoxygene.util.algo.geomstructure.Vector2D;
 
 /**
@@ -94,60 +94,33 @@ public class Skeletonize {
       geom = (IPolygon) Filtering.DouglasPeucker(polygon, 10.0);
     }
 
-    LoopL<Edge> loopL = new LoopL<Edge>();
-    Loop<Edge> loop = new Loop<Edge>();
-    Corner cFirst = null, c1, c2 = null;
-    boolean first = true;
-    int i = 0;
-    List<Segment> segmentList = Segment.getReverseSegmentList(
-        geom.getExterior(), geom.coord().get(0));
-    for (ILineSegment seg : segmentList) {
-      if (first) {
-        c1 = new Corner(seg.getStartPoint().getX(), seg.getStartPoint().getY());
-        cFirst = c1;
-        first = false;
-      } else
-        c1 = c2;
-      if (i < segmentList.size() - 1)
-        c2 = new Corner(seg.getEndPoint().getX(), seg.getEndPoint().getY());
-      else
-        c2 = cFirst;
-      Edge edge = new Edge(c1, c2);
-      edge.machine = directionMachine;
-      loop.append(edge);
-      i++;
-    }
-    loopL.add(loop);
+    IPolygon p = (IPolygon) geom.reverse();
+    LoopL<Edge> input = new LoopL<Edge>();
 
-    // add inner rings
-    for (IRing inner : geom.getInterior()) {
-      Loop<Edge> loopInner = new Loop<Edge>();
-      cFirst = null;
-      c1 = null;
-      c2 = null;
-      first = true;
-      i = 0;
-      segmentList = Segment.getSegmentList(inner, geom.coord().get(0));
-      for (ILineSegment seg : segmentList) {
-        if (first) {
-          c1 = new Corner(seg.getStartPoint().getX(), seg.getStartPoint()
-              .getY());
-          cFirst = c1;
-          first = false;
-        } else
-          c1 = c2;
-        if (i < segmentList.size() - 1)
-          c2 = new Corner(seg.getEndPoint().getX(), seg.getEndPoint().getY());
-        else
-          c2 = cFirst;
-        Edge edge = new Edge(c1, c2);
-        edge.machine = directionMachine;
-        loopInner.append(edge);
-        i++;
-      }
-      loopL.add(loopInner);
+    IRing rExt = p.getExterior();
+
+    Loop<Edge> loop = new Loop<Edge>();
+    List<Edge> lEExt = fromDPLToEdges(rExt.coord());
+    for (Edge e : lEExt)
+      loop.append(e);
+    for (Edge e : lEExt)
+      e.machine = directionMachine;
+
+    input.add(loop);
+
+    for (IRing rInt : p.getInterior()) {
+
+      Loop<Edge> loopIn = new Loop<Edge>();
+      input.add(loopIn);
+      List<Edge> lInt = fromDPLToEdges(rInt.coord());
+      for (Edge e : lInt)
+        loop.append(e);
+
+      for (Edge e : lInt)
+        e.machine = directionMachine;
     }
-    Skeleton ske = new Skeleton(loopL, true);
+
+    Skeleton ske = new Skeleton(input, true);
     ske.skeleton();
 
     for (SharedEdge edge : ske.output.edges.map.keySet()) {
@@ -157,12 +130,47 @@ public class Skeletonize {
           new DirectPosition(edge.getEnd(edge.left).x, edge.getEnd(edge.left).y));
       if (segment.intersects(polygon.getExterior().getPrimitive()))
         continue;
+      for (IRing hole : polygon.getInterior()) {
+        if (segment.intersects(hole.getPrimitive()))
+          continue;
+      }
       if (polygon.disjoint(segment))
         continue;
       skeletonSegments.add(segment);
     }
 
     return skeletonSegments;
+  }
+
+  /**
+   * Convertit un positon en corner
+   * @param dp
+   * @return
+   */
+  private static Corner fromPositionToCorner(IDirectPosition dp) {
+    return new Corner(dp.getX(), dp.getY(), 0);
+  }
+
+  /**
+   * Convertit une liste de sommets formant un cycle en arrêtes
+   * @param dpl
+   * @return
+   */
+  private static List<Edge> fromDPLToEdges(IDirectPositionList dpl) {
+
+    int nbPoints = dpl.size();
+    List<Edge> lEOut = new ArrayList<Edge>();
+    List<Corner> lC = new ArrayList<Corner>();
+
+    for (int i = 0; i < nbPoints - 1; i++)
+      lC.add(fromPositionToCorner(dpl.get(i)));
+
+    lC.add(lC.get(0));
+
+    for (int i = 0; i < nbPoints - 1; i++)
+      lEOut.add(new Edge(lC.get(i), lC.get(i + 1)));
+
+    return lEOut;
   }
 
   /**

@@ -7,7 +7,7 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.cartagen.core.genericschema.railway;
+package fr.ign.cogit.cartagen.core.genericschema.energy;
 
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 

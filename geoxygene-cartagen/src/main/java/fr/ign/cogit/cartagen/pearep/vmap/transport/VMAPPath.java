@@ -17,7 +17,7 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkFace;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.network.NetworkSectionType;
-import fr.ign.cogit.cartagen.core.genericschema.road.IPath;
+import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
@@ -30,7 +30,7 @@ import fr.ign.cogit.geoxygene.schemageo.api.support.reseau.Direction;
 import fr.ign.cogit.geoxygene.schemageo.impl.routier.TronconDeRouteImpl;
 import fr.ign.cogit.geoxygene.schemageo.impl.support.reseau.ReseauImpl;
 
-public class VMAPPath extends VMAPFeature implements IPath {
+public class VMAPPath extends VMAPFeature implements IPathLine {
 
   /**
    * Associated Geoxygene schema object

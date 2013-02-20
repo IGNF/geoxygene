@@ -38,6 +38,7 @@ import fr.ign.cogit.cartagen.core.genericschema.admin.ISimpleAdminUnit;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IRiverSimpleIsland;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
@@ -55,7 +56,6 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkFace;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.partition.IMask;
 import fr.ign.cogit.cartagen.core.genericschema.railway.ICable;
-import fr.ign.cogit.cartagen.core.genericschema.railway.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayNode;
 import fr.ign.cogit.cartagen.core.genericschema.railway.ITriageArea;
@@ -66,7 +66,7 @@ import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefElementPoint;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefField;
 import fr.ign.cogit.cartagen.core.genericschema.relief.ISpotHeight;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
-import fr.ign.cogit.cartagen.core.genericschema.road.IPath;
+import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadArea;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadFacilityPoint;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
@@ -261,7 +261,7 @@ public class CartAGenDataSet extends DataSet {
       return CartAGenDataSet.ROADS_POP;
     } else if (obj instanceof IRoadNode) {
       return CartAGenDataSet.ROAD_NODES_POP;
-    } else if (obj instanceof IPath) {
+    } else if (obj instanceof IPathLine) {
       return CartAGenDataSet.PATHS_POP;
     } else if (obj instanceof IWaterLine) {
       return CartAGenDataSet.WATER_LINES_POP;
@@ -359,7 +359,7 @@ public class CartAGenDataSet extends DataSet {
       return CartAGenDataSet.URBAN_ALIGNMENTS_POP;
     } else if (IRoadLine.class.isAssignableFrom(classObj)) {
       return CartAGenDataSet.ROADS_POP;
-    } else if (IPath.class.isAssignableFrom(classObj)) {
+    } else if (IPathLine.class.isAssignableFrom(classObj)) {
       return CartAGenDataSet.PATHS_POP;
     } else if (IRoadNode.class.isAssignableFrom(classObj)) {
       return CartAGenDataSet.ROAD_NODES_POP;
@@ -543,9 +543,9 @@ public class CartAGenDataSet extends DataSet {
    * @return
    */
   @SuppressWarnings("unchecked")
-  public IPopulation<IPath> getPaths() {
-    return (IPopulation<IPath>) this.getCartagenPop(CartAGenDataSet.PATHS_POP,
-        IPath.FEAT_TYPE_NAME);
+  public IPopulation<IPathLine> getPaths() {
+    return (IPopulation<IPathLine>) this.getCartagenPop(CartAGenDataSet.PATHS_POP,
+        IPathLine.FEAT_TYPE_NAME);
   }
 
   /**
@@ -1594,7 +1594,7 @@ public class CartAGenDataSet extends DataSet {
       fieldClasses[i] = dbr.getHeader().getFieldClass(i);
     }
 
-    IPopulation<IPath> popPaths = this.getPaths();
+    IPopulation<IPathLine> popPaths = this.getPaths();
 
     while (shr.hasNext() && dbr.hasNext()) {
 
@@ -1628,14 +1628,14 @@ public class CartAGenDataSet extends DataSet {
       }
 
       if (geom instanceof ILineString) {
-        IPath tr = CartagenApplication.getInstance().getCreationFactory()
+        IPathLine tr = CartagenApplication.getInstance().getCreationFactory()
             .createPath((ILineString) geom, result.importance, result.symbolId);
 
         popPaths.add(tr);
 
       } else if (geom instanceof IMultiCurve<?>) {
         for (int i = 0; i < ((IMultiCurve<?>) geom).size(); i++) {
-          IPath tr = CartagenApplication.getInstance().getCreationFactory()
+          IPathLine tr = CartagenApplication.getInstance().getCreationFactory()
               .createPath((ILineString) ((IMultiCurve<?>) geom).get(i),
                   result.importance, result.symbolId);
 

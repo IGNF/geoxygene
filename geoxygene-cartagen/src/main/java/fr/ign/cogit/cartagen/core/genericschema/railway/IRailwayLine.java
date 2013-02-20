@@ -12,10 +12,12 @@ package fr.ign.cogit.cartagen.core.genericschema.railway;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 
 /*
- * ###### IGN / CartAGen ###### Title: RailwayLine Description: Tronçons
- * ferrés Author: J. Renard Date: 16/09/2009
+ * ###### IGN / CartAGen ###### Title: RailwayLine Description: Tronçons ferrés
+ * Author: J. Renard Date: 16/09/2009
  */
 
 public interface IRailwayLine extends INetworkSection {
   public static final String FEAT_TYPE_NAME = "RailwayLine"; //$NON-NLS-1$
+
+  public boolean isSideTrack();
 }

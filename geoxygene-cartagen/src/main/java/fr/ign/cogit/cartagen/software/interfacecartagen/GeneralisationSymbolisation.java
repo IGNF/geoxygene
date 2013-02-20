@@ -28,7 +28,7 @@ import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IDEMPixel;
-import fr.ign.cogit.cartagen.core.genericschema.road.IPath;
+import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IUrbanBlock;
@@ -572,12 +572,12 @@ public abstract class GeneralisationSymbolisation extends Symbolisation {
           return;
         }
 
-        if (!(obj instanceof IPath)) {
+        if (!(obj instanceof IPathLine)) {
           GeneralisationSymbolisation.logger.warn("probleme dans le dessin de "
               + obj + ". Mauvais type!");
           return;
         }
-        IPath tr = (IPath) obj;
+        IPathLine tr = (IPathLine) obj;
 
         pv.draw(col, tr.getGeom(), tr.getWidth()
             * Legend.getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_BUTT,

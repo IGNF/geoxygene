@@ -19,8 +19,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Type;
 
 import fr.ign.cogit.cartagen.core.defaultschema.network.NetworkSection;
+import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
-import fr.ign.cogit.cartagen.core.genericschema.railway.IElectricityLine;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;

@@ -25,6 +25,7 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea.TaxiwayType;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
+import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterCourse;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
@@ -45,7 +46,6 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.partition.IMask;
 import fr.ign.cogit.cartagen.core.genericschema.railway.ICable;
-import fr.ign.cogit.cartagen.core.genericschema.railway.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayNode;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayRoute;
@@ -60,7 +60,7 @@ import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefTriangle;
 import fr.ign.cogit.cartagen.core.genericschema.relief.ISpotHeight;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
 import fr.ign.cogit.cartagen.core.genericschema.road.IInterchange;
-import fr.ign.cogit.cartagen.core.genericschema.road.IPath;
+import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadArea;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadFacilityPoint;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
@@ -550,14 +550,14 @@ public abstract class AbstractCreationFactory {
   // Path
 
   @SuppressWarnings("unused")
-  public IPath createPath(ILineString line, int importance) {
+  public IPathLine createPath(ILineString line, int importance) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for IPath");
     return null;
   }
 
   @SuppressWarnings("unused")
-  public IPath createPath(ILineString line, int importance, int symbolId) {
+  public IPathLine createPath(ILineString line, int importance, int symbolId) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for IPath");
     return null;
