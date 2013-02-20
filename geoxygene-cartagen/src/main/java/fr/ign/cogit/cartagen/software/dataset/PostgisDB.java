@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 /**
  * 
@@ -153,8 +153,8 @@ public class PostgisDB {
     }
 
     // charge le pilote
-    if (PostgisDB.logger.isTraceEnabled()) {
-      PostgisDB.logger.trace("chargement du pilote JDBC");
+    if (PostgisDB.logger.isInfoEnabled()) {
+      PostgisDB.logger.info("chargement du pilote JDBC");
     }
     try {
       Class.forName("org.postgresql.Driver");
@@ -164,11 +164,10 @@ public class PostgisDB {
       e.printStackTrace();
     }
 
-    if (PostgisDB.logger.isTraceEnabled()) {
-      PostgisDB.logger.trace("Tentative de connection: ("
-          + PostgisDB.serverName + ", " + PostgisDB.portNumber + ", "
-          + PostgisDB.dbName + ", " + PostgisDB.userName + ", "
-          + PostgisDB.motDePasse + ")");
+    if (PostgisDB.logger.isInfoEnabled()) {
+      PostgisDB.logger.info("Tentative de connection: (" + PostgisDB.serverName
+          + ", " + PostgisDB.portNumber + ", " + PostgisDB.dbName + ", "
+          + PostgisDB.userName + ", " + PostgisDB.motDePasse + ")");
     }
     try {
       PostgisDB.connection = DriverManager.getConnection("jdbc:postgresql://"
@@ -198,8 +197,8 @@ public class PostgisDB {
     }
 
     // charge le pilote
-    if (PostgisDB.logger.isTraceEnabled()) {
-      PostgisDB.logger.trace("chargement du pilote JDBC");
+    if (PostgisDB.logger.isInfoEnabled()) {
+      PostgisDB.logger.info("chargement du pilote JDBC");
     }
     try {
       Class.forName("org.postgresql.Driver");
@@ -209,11 +208,10 @@ public class PostgisDB {
       e.printStackTrace();
     }
 
-    if (PostgisDB.logger.isTraceEnabled()) {
-      PostgisDB.logger.trace("Tentative de connection: ("
-          + PostgisDB.serverName + ", " + PostgisDB.portNumber + ", "
-          + PostgisDB.dbName + ", " + PostgisDB.userName + ", "
-          + PostgisDB.motDePasse + ")");
+    if (PostgisDB.logger.isInfoEnabled()) {
+      PostgisDB.logger.info("Tentative de connection: (" + PostgisDB.serverName
+          + ", " + PostgisDB.portNumber + ", " + PostgisDB.dbName + ", "
+          + PostgisDB.userName + ", " + PostgisDB.motDePasse + ")");
     }
     // try to connect to the database
     try {

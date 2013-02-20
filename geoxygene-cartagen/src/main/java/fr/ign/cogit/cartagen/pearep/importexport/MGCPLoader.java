@@ -87,6 +87,13 @@ public class MGCPLoader extends ShapeFileLoader {
             CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
+      if ((listLayer.size() == 0) || (listLayer.contains("ABH140"))) {
+        this.loadPolygonClassUnionMulti(
+            FileUtil.getNamedFileInDir(directory, "ABH140.shp")
+                .getAbsolutePath(), MGCPWaterArea.class,
+            CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
 
       // elevation loading
       if ((listLayer.size() == 0) || (listLayer.contains("LCA010"))) {

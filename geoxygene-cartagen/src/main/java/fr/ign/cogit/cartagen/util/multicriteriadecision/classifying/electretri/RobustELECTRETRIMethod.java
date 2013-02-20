@@ -23,10 +23,10 @@ import fr.ign.cogit.cartagen.util.multicriteriadecision.Criterion;
 import fr.ign.cogit.cartagen.util.multicriteriadecision.classifying.ConclusionIntervals;
 
 /**
- * @author PTaillandier Permet de prendre une d�cision � l'aide de la
- *         m�thode ELECTRE TRI en faisant varier les valeurs des param�tres
- *         Impl�mentation tr�s moche (presque honteuse... mais bon j'�tais
- *         un peu press�)
+ * @author PTaillandier Permet de prendre une d�cision � l'aide de la m�thode
+ *         ELECTRE TRI en faisant varier les valeurs des param�tres
+ *         Impl�mentation tr�s moche (presque honteuse... mais bon j'�tais un
+ *         peu press�)
  */
 public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
 
@@ -84,16 +84,16 @@ public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
   }
 
   /**
-   * variation du seuil de coupe et test de la m�thode ELCTRE TRI avec les
-   * deux types de proc�dures (optimiste et pessimiste)
+   * variation du seuil de coupe et test de la m�thode ELCTRE TRI avec les deux
+   * types de proc�dures (optimiste et pessimiste)
    * @param votes : ensemble des conclusions obtenus apr�s d�cisions avec
    *          l'ensemble des jeux de param�tres
-   * @param criteres : ensemble de Critere : crit�res utilis�s pour la
-   *          d�cision multicrit�re
+   * @param criteres : ensemble de Critere : crit�res utilis�s pour la d�cision
+   *          multicrit�re
    * @param valeursCourantes : vecteur de valeurs courant : Clef : String : nom
    *          crit�re -> Valeur : Double : valeur du crit�re
-   * @param conclusion : les intervalles auxquels il faut rattach� le vecteur
-   *          de valeurs courant
+   * @param conclusion : les intervalles auxquels il faut rattach� le vecteur de
+   *          valeurs courant
    */
   private void decision(Map<String, Double> votes, Set<Criterion> criteres,
       Map<String, Double> valeursCourantes, ConclusionIntervals conclusion) {
@@ -122,8 +122,8 @@ public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
   /**
    * Modifie l'ensemble la valeur de indiff�rence des crit�res donn�s en
    * param�tre
-   * @param criteres : crit�res desquels nous cherchons � modifier la valeur
-   *          de indiff�rence
+   * @param criteres : crit�res desquels nous cherchons � modifier la valeur de
+   *          indiff�rence
    * @param val : nouvelle valeur de indiff�rence
    */
   private void setPreference(Set<Criterion> criteres, double val) {
@@ -133,10 +133,9 @@ public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
   }
 
   /**
-   * Modifie l'ensemble la valeur de pr�f�rence des crit�res donn�s en
-   * param�tre
-   * @param criteres : crit�res desquels nous cherchons � modifier la valeur
-   *          de pr�f�rence
+   * Modifie l'ensemble la valeur de pr�f�rence des crit�res donn�s en param�tre
+   * @param criteres : crit�res desquels nous cherchons � modifier la valeur de
+   *          pr�f�rence
    * @param val : nouvelle valeur de pr�f�rence
    */
   private void setIndifference(Set<Criterion> criteres, double val) {
@@ -146,10 +145,9 @@ public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
   }
 
   /**
-   * Modifie l'ensemble la valeur de poids des crit�res donn�s en
-   * param�tre
-   * @param criteres : crit�res desquels nous cherchons � modifier la valeur
-   *          de poids
+   * Modifie l'ensemble la valeur de poids des crit�res donn�s en param�tre
+   * @param criteres : crit�res desquels nous cherchons � modifier la valeur de
+   *          poids
    * @param val : nouvelle valeur de poids
    */
   private void setPoids(Set<Criterion> criteres, double val) {
@@ -159,10 +157,9 @@ public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
   }
 
   /**
-   * Modifie l'ensemble la valeur de v�to des crit�res donn�s en
-   * param�tre
-   * @param criteres : crit�res desquels nous cherchons � modifier la valeur
-   *          de v�to
+   * Modifie l'ensemble la valeur de v�to des crit�res donn�s en param�tre
+   * @param criteres : crit�res desquels nous cherchons � modifier la valeur de
+   *          v�to
    * @param val : nouvelle valeur de v�to
    */
   private void setVeto(Set<Criterion> criteres, double val) {
@@ -175,12 +172,12 @@ public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
    * variation des valeurs de pr�f�rence
    * @param votes : ensemble des conclusions obtenus apr�s d�cisions avec
    *          l'ensemble des jeux de param�tres
-   * @param criteres : ensemble de Critere : crit�res utilis�s pour la
-   *          d�cision multicrit�re
+   * @param criteres : ensemble de Critere : crit�res utilis�s pour la d�cision
+   *          multicrit�re
    * @param valeursCourantes : vecteur de valeurs courant : Clef : String : nom
    *          crit�re -> Valeur : Double : valeur du crit�re
-   * @param conclusion : les intervalles auxquels il faut rattach� le vecteur
-   *          de valeurs courant
+   * @param conclusion : les intervalles auxquels il faut rattach� le vecteur de
+   *          valeurs courant
    */
   private void decisionPref(Map<String, Double> votes, Set<Criterion> criteres,
       Map<String, Double> valeursCourantes, ConclusionIntervals conclusion) {
@@ -192,12 +189,12 @@ public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
    * variation des valeurs d'indiff�rence
    * @param votes : ensemble des conclusions obtenus apr�s d�cisions avec
    *          l'ensemble des jeux de param�tres
-   * @param criteres : ensemble de Critere : crit�res utilis�s pour la
-   *          d�cision multicrit�re
+   * @param criteres : ensemble de Critere : crit�res utilis�s pour la d�cision
+   *          multicrit�re
    * @param valeursCourantes : vecteur de valeurs courant : Clef : String : nom
    *          crit�re -> Valeur : Double : valeur du crit�re
-   * @param conclusion : les intervalles auxquels il faut rattach� le vecteur
-   *          de valeurs courant
+   * @param conclusion : les intervalles auxquels il faut rattach� le vecteur de
+   *          valeurs courant
    */
   private void decisionInd(Map<String, Double> votes, Set<Criterion> criteres,
       Map<String, Double> valeursCourantes, ConclusionIntervals conclusion) {
@@ -209,12 +206,12 @@ public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
    * variation des valeurs de v�to
    * @param votes : ensemble des conclusions obtenus apr�s d�cisions avec
    *          l'ensemble des jeux de param�tres
-   * @param criteres : ensemble de Critere : crit�res utilis�s pour la
-   *          d�cision multicrit�re
+   * @param criteres : ensemble de Critere : crit�res utilis�s pour la d�cision
+   *          multicrit�re
    * @param valeursCourantes : vecteur de valeurs courant : Clef : String : nom
    *          crit�re -> Valeur : Double : valeur du crit�re
-   * @param conclusion : les intervalles auxquels il faut rattach� le vecteur
-   *          de valeurs courant
+   * @param conclusion : les intervalles auxquels il faut rattach� le vecteur de
+   *          valeurs courant
    */
   private void decisionVeto(Map<String, Double> votes, Set<Criterion> criteres,
       Map<String, Double> valeursCourantes, ConclusionIntervals conclusion) {
@@ -253,12 +250,12 @@ public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
    * variation des valeurs des poids
    * @param votes : ensemble des conclusions obtenus apr�s d�cisions avec
    *          l'ensemble des jeux de param�tres
-   * @param criteres : ensemble de Critere : crit�res utilis�s pour la
-   *          d�cision multicrit�re
+   * @param criteres : ensemble de Critere : crit�res utilis�s pour la d�cision
+   *          multicrit�re
    * @param valeursCourantes : vecteur de valeurs courant : Clef : String : nom
    *          crit�re -> Valeur : Double : valeur du crit�re
-   * @param conclusion : les intervalles auxquels il faut rattach� le vecteur
-   *          de valeurs courant
+   * @param conclusion : les intervalles auxquels il faut rattach� le vecteur de
+   *          valeurs courant
    */
   private void decisionWeight(Map<String, Double> votes,
       Set<Criterion> criteres, Map<String, Double> valeursCourantes,
@@ -307,14 +304,14 @@ public class RobustELECTRETRIMethod extends ELECTRETRIMethod {
   }
 
   /**
-   * M�thode qui vise � tenir compte de l'�loignement des diff�rentes
-   * cat�gories : typiquement un d�cision jeu de K = mauvais est plus proche
-   * de jeu de K = moyen que de jeu de K = tr�s bon Pour cela on va simplement
-   * pour chaque hypoth�se d'affectation du jeu de K � une cat�gorie de
-   * qualit� soustraire les valeurs des autres hypoth�ses d'affectation en
-   * tenant compte de leur �loignement
-   * @param votes : ensemble des conclusions obtenus apr�s d�cisions avec
-   *          l'ensemble des jeux de param�tres
+   * Méthode qui vise à tenir compte de l'éloignement des différentes catégories
+   * : typiquement un décision jeu de K = mauvais est plus proche de jeu de K =
+   * moyen que de jeu de K = très bon Pour cela on va simplement pour chaque
+   * hypothèse d'affectation du jeu de K à une catégorie de qualité soustraire
+   * les valeurs des autres hypothèses d'affectation en tenant compte de leur
+   * éloignement
+   * @param votes : ensemble des conclusions obtenus après décisions avec
+   *          l'ensemble des jeux de paramètres
    */
   private void harmonisation(Map<String, Double> votes) {
     // tableau qui va nous servir � sauvegarder temporairement la valeur

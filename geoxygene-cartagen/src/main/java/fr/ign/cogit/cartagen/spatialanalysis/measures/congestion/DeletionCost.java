@@ -87,13 +87,13 @@ public class DeletionCost {
     double cout = Math.sqrt((Math.pow(surf, 0.5) + Math.pow(tDirEnc, 2.0)
         + Math.pow(enc, 2.0) + Math.pow(typeLiens, 2.0)) / 4);
 
-    if (DeletionCost.logger.isTraceEnabled()) {
-      DeletionCost.logger.trace("facteurs de suppression de " + feature);
-      DeletionCost.logger.trace("   surf=" + surf);
-      DeletionCost.logger.trace("   tDirEnc=" + tDirEnc);
-      DeletionCost.logger.trace("   enc=" + enc);
-      DeletionCost.logger.trace("   typeLiens=" + typeLiens);
-      DeletionCost.logger.trace("   TOTAL=" + cout);
+    if (DeletionCost.logger.isInfoEnabled()) {
+      DeletionCost.logger.info("facteurs de suppression de " + feature);
+      DeletionCost.logger.info("   surf=" + surf);
+      DeletionCost.logger.info("   tDirEnc=" + tDirEnc);
+      DeletionCost.logger.info("   enc=" + enc);
+      DeletionCost.logger.info("   typeLiens=" + typeLiens);
+      DeletionCost.logger.info("   TOTAL=" + cout);
     }
 
     return cout;
@@ -160,13 +160,13 @@ public class DeletionCost {
       cost = 0.0;
     }
 
-    if (DeletionCost.logger.isTraceEnabled()) {
-      DeletionCost.logger.trace("facteurs de suppression de " + feature);
-      DeletionCost.logger.trace("   surf=" + area);
-      DeletionCost.logger.trace("   tDirEnc=" + tDirEnc);
-      DeletionCost.logger.trace("   enc=" + enc);
-      DeletionCost.logger.trace("   typeLiens=" + linksType);
-      DeletionCost.logger.trace("   TOTAL=" + cost);
+    if (DeletionCost.logger.isInfoEnabled()) {
+      DeletionCost.logger.info("facteurs de suppression de " + feature);
+      DeletionCost.logger.info("   surf=" + area);
+      DeletionCost.logger.info("   tDirEnc=" + tDirEnc);
+      DeletionCost.logger.info("   enc=" + enc);
+      DeletionCost.logger.info("   typeLiens=" + linksType);
+      DeletionCost.logger.info("   TOTAL=" + cost);
     }
 
     return cost;

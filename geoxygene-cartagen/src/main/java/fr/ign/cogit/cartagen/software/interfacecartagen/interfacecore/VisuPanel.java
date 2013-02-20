@@ -389,8 +389,7 @@ public class VisuPanel extends JPanel implements Runnable, Printable {
    * Move down.
    */
   public final void moveDown() {
-    this
-        .panVector(0, (int) Math.round(-this.getPanFactor() * this.getHeight()));
+    this.panVector(0, (int) Math.round(-this.getPanFactor() * this.getHeight()));
   }
 
   /**
@@ -556,8 +555,8 @@ public class VisuPanel extends JPanel implements Runnable, Printable {
 
   protected synchronized BufferedImage getImage() {
     if (this.image == null) {
-      this.image = (BufferedImage) this.createImage(this.getWidth(), this
-          .getHeight());
+      this.image = (BufferedImage) this.createImage(this.getWidth(),
+          this.getHeight());
       this.g2D = (Graphics2D) this.getImage().getGraphics();
       if (this.antiAliasing) {
         this.g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -571,8 +570,8 @@ public class VisuPanel extends JPanel implements Runnable, Printable {
       if (this.g2D != null) {
         this.g2D.dispose();
       }
-      this.image = (BufferedImage) this.createImage(this.getWidth(), this
-          .getHeight());
+      this.image = (BufferedImage) this.createImage(this.getWidth(),
+          this.getHeight());
       this.g2D = (Graphics2D) this.getImage().getGraphics();
       if (this.antiAliasing) {
         this.g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -678,8 +677,8 @@ public class VisuPanel extends JPanel implements Runnable, Printable {
    * @return
    */
   public IDirectPosition toModelDirectPosition(Point point) {
-    return new DirectPosition(this.pixToCoordX(point.x), this
-        .pixToCoordY(point.y));
+    return new DirectPosition(this.pixToCoordX(point.x),
+        this.pixToCoordY(point.y));
   }
 
   /**
@@ -928,9 +927,8 @@ public class VisuPanel extends JPanel implements Runnable, Printable {
     g2d.translate(pf.getImageableWidth() / 2, pf.getImageableHeight() / 2);
     Dimension d = this.getSize();
 
-    double scale = Math.min(pf.getImageableWidth() / d.width, pf
-        .getImageableHeight()
-        / d.height);
+    double scale = Math.min(pf.getImageableWidth() / d.width,
+        pf.getImageableHeight() / d.height);
     if (scale < 1.0) {
       g2d.scale(scale, scale);
     }
@@ -1005,9 +1003,9 @@ public class VisuPanel extends JPanel implements Runnable, Printable {
   public synchronized void drawLimitCircle(Graphics2D g2, Color col,
       IPoint point, int largeur) {
     g2.setColor(col);
-    g2.drawOval(this.coordToPixX(point.getPosition().getX()) - largeur, this
-        .coordToPixY(point.getPosition().getY())
-        - largeur, 2 * largeur, 2 * largeur);
+    g2.drawOval(this.coordToPixX(point.getPosition().getX()) - largeur,
+        this.coordToPixY(point.getPosition().getY()) - largeur, 2 * largeur,
+        2 * largeur);
   }
 
   // dessine limite de point avec symbole carre
@@ -1892,8 +1890,8 @@ class KeyListenerGeox implements KeyListener {
 
   @Override
   public void keyPressed(KeyEvent e) {
-    if (KeyListenerGeox.logger.isTraceEnabled()) {
-      KeyListenerGeox.logger.trace("appui sur touche du clavier "
+    if (KeyListenerGeox.logger.isInfoEnabled()) {
+      KeyListenerGeox.logger.info("appui sur touche du clavier "
           + e.getKeyCode());
       // System.out.println(e.getKeyCode());
     }
@@ -1929,20 +1927,20 @@ class KeyListenerGeox implements KeyListener {
         pv.zoom(pv.getZoomFactor());
         break;
       case 37: // gauche
-        pv.pan((int) (pv.getWidth() * (0.5 - pv.getPanFactor())), (int) (pv
-            .getHeight() * 0.5));
+        pv.pan((int) (pv.getWidth() * (0.5 - pv.getPanFactor())),
+            (int) (pv.getHeight() * 0.5));
         break;
       case 38: // haut
-        pv.pan((int) (pv.getWidth() * 0.5), (int) (pv.getHeight() * (0.5 - pv
-            .getPanFactor())));
+        pv.pan((int) (pv.getWidth() * 0.5),
+            (int) (pv.getHeight() * (0.5 - pv.getPanFactor())));
         break;
       case 39: // droite
-        pv.pan((int) (pv.getWidth() * (0.5 + pv.getPanFactor())), (int) (pv
-            .getHeight() * 0.5));
+        pv.pan((int) (pv.getWidth() * (0.5 + pv.getPanFactor())),
+            (int) (pv.getHeight() * 0.5));
         break;
       case 40: // bas
-        pv.pan((int) (pv.getWidth() * 0.5), (int) (pv.getHeight() * (0.5 + pv
-            .getPanFactor())));
+        pv.pan((int) (pv.getWidth() * 0.5),
+            (int) (pv.getHeight() * (0.5 + pv.getPanFactor())));
         break;
       default:
     }

@@ -93,16 +93,16 @@ public class LineGaussianSmoothing {
     // Geometry line
     IGeometry geomStart = this.geneObj.getGeom();
     if (!(geomStart instanceof ILineString)) {
-      if (LineGaussianSmoothing.logger.isTraceEnabled()) {
+      if (LineGaussianSmoothing.logger.isInfoEnabled()) {
         LineGaussianSmoothing.logger
-            .trace("Impossible to perform Gaussian smoothing - non linear geometry");
+            .info("Impossible to perform Gaussian smoothing - non linear geometry");
       }
       return;
     }
     if (geomStart.coord().size() < 3) {
-      if (LineGaussianSmoothing.logger.isTraceEnabled()) {
+      if (LineGaussianSmoothing.logger.isInfoEnabled()) {
         LineGaussianSmoothing.logger
-            .trace("Impossible to perform Gaussian smoothing - not enough points on geometry");
+            .info("Impossible to perform Gaussian smoothing - not enough points on geometry");
       }
       return;
     }
@@ -121,8 +121,8 @@ public class LineGaussianSmoothing {
       if (isPersistantObject) {
         this.geneObj.registerDisplacement();
       }
-      if (LineGaussianSmoothing.logger.isTraceEnabled()) {
-        LineGaussianSmoothing.logger.trace("Gaussian smoothing performed on "
+      if (LineGaussianSmoothing.logger.isInfoEnabled()) {
+        LineGaussianSmoothing.logger.info("Gaussian smoothing performed on "
             + this.geneObj);
       }
     }
@@ -207,8 +207,8 @@ public class LineGaussianSmoothing {
 
     // les premier et dernier point
     IDirectPosition lastCoordsDens = coordsDens.get(coordsDens.size() - 1);
-    coordsRes[nbPoints] = new Coordinate(lastCoordsDens.getX(), lastCoordsDens
-        .getY());
+    coordsRes[nbPoints] = new Coordinate(lastCoordsDens.getX(),
+        lastCoordsDens.getY());
 
     // filtrage
     DouglasPeuckerSimplifier dp = new DouglasPeuckerSimplifier(

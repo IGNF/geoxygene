@@ -11,8 +11,10 @@
 package fr.ign.cogit.cartagen.genealgorithms.polygon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import straightskeleton.Corner;
@@ -26,6 +28,8 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.generalisation.Filtering;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineSegment;
@@ -76,7 +80,7 @@ public class Skeletonize {
    * Raw Straight Skeleton algorithm using the campskeleton project
    * implementation. Returns all the skeleton segments that do not touch the
    * polygon outline. Be careful, the computation time may be extremely long
-   * with very large polygons.
+   * with very large polygons. Does not work with holes.
    * @param polygon
    * @return
    */
@@ -95,8 +99,8 @@ public class Skeletonize {
     Corner cFirst = null, c1, c2 = null;
     boolean first = true;
     int i = 0;
-    List<Segment> segmentList = Segment.getReverseSegmentList(geom, geom
-        .coord().get(0));
+    List<Segment> segmentList = Segment.getReverseSegmentList(
+        geom.getExterior(), geom.coord().get(0));
     for (ILineSegment seg : segmentList) {
       if (first) {
         c1 = new Corner(seg.getStartPoint().getX(), seg.getStartPoint().getY());
@@ -114,6 +118,35 @@ public class Skeletonize {
       i++;
     }
     loopL.add(loop);
+
+    // add inner rings
+    for (IRing inner : geom.getInterior()) {
+      Loop<Edge> loopInner = new Loop<Edge>();
+      cFirst = null;
+      c1 = null;
+      c2 = null;
+      first = true;
+      i = 0;
+      segmentList = Segment.getSegmentList(inner, geom.coord().get(0));
+      for (ILineSegment seg : segmentList) {
+        if (first) {
+          c1 = new Corner(seg.getStartPoint().getX(), seg.getStartPoint()
+              .getY());
+          cFirst = c1;
+          first = false;
+        } else
+          c1 = c2;
+        if (i < segmentList.size() - 1)
+          c2 = new Corner(seg.getEndPoint().getX(), seg.getEndPoint().getY());
+        else
+          c2 = cFirst;
+        Edge edge = new Edge(c1, c2);
+        edge.machine = directionMachine;
+        loopInner.append(edge);
+        i++;
+      }
+      loopL.add(loopInner);
+    }
     Skeleton ske = new Skeleton(loopL, true);
     ske.skeleton();
 
@@ -181,6 +214,87 @@ public class Skeletonize {
       }
       extendedSkeleton.add(line);
     }
+    return extendedSkeleton;
+  }
+
+  /**
+   * Connect a skeleton computed by any method to the nearest edges of the given
+   * linear network. If no network edge can be found at a skeleton extremity,
+   * it's extended to polygon's outline.
+   * @param skeleton
+   * @param polygon
+   */
+  public static Set<ILineString> connectSkeletonToNetwork(
+      Set<ILineSegment> skeleton, Set<ILineString> network, IPolygon polygon) {
+    Set<ILineString> extendedSkeleton = new HashSet<ILineString>();
+    // first, find the intersection between the network and the polygon
+    Set<IPoint> intersections = new HashSet<IPoint>();
+    for (ILineString line : network) {
+      if (line.intersects(polygon))
+        intersections.add((IPoint) line.intersection(polygon));
+    }
+    // then get the skeleton extremities
+    Map<IDirectPosition, ILineString> skeIni = new HashMap<IDirectPosition, ILineString>();
+    Map<IDirectPosition, ILineString> skeFin = new HashMap<IDirectPosition, ILineString>();
+    // loop on the skeleton edges to find possible extensions
+    for (ILineSegment skeSeg : skeleton) {
+      ILineString line = new GM_LineString(skeSeg.coord());
+      // first check if the start node has to be extended
+      boolean extend = true;
+      for (ILineSegment other : skeleton) {
+        if (other.equals(skeSeg))
+          continue;
+        if (other.coord().contains(skeSeg.coord().get(0))) {
+          extend = false;
+          break;
+        }
+      }
+      // extend it if necessary
+      if (extend)
+        skeIni.put(skeSeg.coord().get(0), line);
+
+      extend = true;
+      for (ILineSegment other : skeleton) {
+        if (other.equals(skeSeg))
+          continue;
+        if (other.coord().contains(skeSeg.coord().get(1))) {
+          extend = false;
+          break;
+        }
+      }
+      // then, extend the last node
+      if (extend)
+        skeFin.put(skeSeg.coord().get(1), line);
+
+      extendedSkeleton.add(line);
+    }
+
+    // now, loop on the intersection points to get the nearest skeleton
+    // extremity
+    for (IPoint pt : intersections) {
+      IDirectPosition nearest = null;
+      double maxDist = polygon.perimeter();
+      for (IDirectPosition ptIni : skeIni.keySet()) {
+        if (pt.getPosition().distance2D(ptIni) < maxDist) {
+          nearest = ptIni;
+          maxDist = pt.getPosition().distance2D(ptIni);
+        }
+      }
+      for (IDirectPosition ptIni : skeFin.keySet()) {
+        if (pt.getPosition().distance2D(ptIni) < maxDist) {
+          nearest = ptIni;
+          maxDist = pt.getPosition().distance2D(ptIni);
+        }
+      }
+
+      // now modify the line that has to be extended
+      if (skeIni.containsKey(nearest)) {
+        skeIni.get(nearest).addControlPoint(0, pt.getPosition());
+      } else {
+        skeFin.get(nearest).addControlPoint(pt.getPosition());
+      }
+    }
+
     return extendedSkeleton;
   }
 }

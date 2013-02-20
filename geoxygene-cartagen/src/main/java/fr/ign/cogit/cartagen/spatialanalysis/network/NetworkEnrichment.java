@@ -109,13 +109,13 @@ public class NetworkEnrichment {
     else
       net.getCarteTopo().importClasseGeo(net.getNonDeletedSections(), true);
 
-    if (NetworkEnrichment.logger.isTraceEnabled()) {
-      NetworkEnrichment.logger.trace("Nodes creation");
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("Nodes creation");
     }
     net.getCarteTopo().creeNoeudsManquants(1.0);
 
-    if (NetworkEnrichment.logger.isTraceEnabled()) {
-      NetworkEnrichment.logger.trace("nodes merging");
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("nodes merging");
     }
     net.getCarteTopo().fusionNoeuds(1.0);
 
@@ -130,8 +130,8 @@ public class NetworkEnrichment {
         IPopulation<IRoadNode> popRoad = CartAGenDoc.getInstance()
             .getCurrentDataset().getRoadNodes();
         popRoad.add(roadNode);
-        CartAGenDoc.getInstance().getCurrentDataset().getRoadNetwork().addNode(
-            roadNode);
+        CartAGenDoc.getInstance().getCurrentDataset().getRoadNetwork()
+            .addNode(roadNode);
       }
 
       if (net.getSections().get(0) instanceof IWaterLine) {
@@ -258,32 +258,32 @@ public class NetworkEnrichment {
 
     // Creates Nodes, etc. and makes the topological map planar, create
     // faces
-    if (NetworkEnrichment.logger.isTraceEnabled()) {
-      NetworkEnrichment.logger.trace("creating nodes");
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("creating nodes");
     }
     carteTopo.creeNoeudsManquants(1.0);
-    if (NetworkEnrichment.logger.isTraceEnabled()) {
-      NetworkEnrichment.logger.trace("merging nodes");
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("merging nodes");
     }
     carteTopo.fusionNoeuds(1.0);
-    if (NetworkEnrichment.logger.isTraceEnabled()) {
-      NetworkEnrichment.logger.trace("filtering duplicated edges");
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("filtering duplicated edges");
     }
     carteTopo.filtreArcsDoublons();
-    if (NetworkEnrichment.logger.isTraceEnabled()) {
-      NetworkEnrichment.logger.trace("making planar");
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("making planar");
     }
     carteTopo.rendPlanaire(1.0);
-    if (NetworkEnrichment.logger.isTraceEnabled()) {
-      NetworkEnrichment.logger.trace("merging duplicated nodes");
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("merging duplicated nodes");
     }
     carteTopo.fusionNoeuds(1.0);
-    if (NetworkEnrichment.logger.isTraceEnabled()) {
-      NetworkEnrichment.logger.trace("filtering duplicated edges");
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("filtering duplicated edges");
     }
     carteTopo.filtreArcsDoublons();
-    if (NetworkEnrichment.logger.isTraceEnabled()) {
-      NetworkEnrichment.logger.trace("creating topological faces");
+    if (NetworkEnrichment.logger.isInfoEnabled()) {
+      NetworkEnrichment.logger.info("creating topological faces");
     }
     carteTopo.creeTopologieFaces();
     if (NetworkEnrichment.logger.isDebugEnabled()) {
@@ -317,10 +317,10 @@ public class NetworkEnrichment {
       at0 = ats.get(0);
       at1 = ats.get(1);
 
-      if (NetworkEnrichment.logger.isTraceEnabled()) {
-        NetworkEnrichment.logger.trace("raccordement de");
-        NetworkEnrichment.logger.trace(" geom at0 " + at0.getGeom());
-        NetworkEnrichment.logger.trace(" geom at1 " + at1.getGeom());
+      if (NetworkEnrichment.logger.isInfoEnabled()) {
+        NetworkEnrichment.logger.info("raccordement de");
+        NetworkEnrichment.logger.info(" geom at0 " + at0.getGeom());
+        NetworkEnrichment.logger.info(" geom at1 " + at1.getGeom());
       }
 
       // change la geometrie de at0
@@ -353,8 +353,8 @@ public class NetworkEnrichment {
 
       GM_LineString ls = new GM_LineString(coords0);
 
-      if (NetworkEnrichment.logger.isTraceEnabled()) {
-        NetworkEnrichment.logger.trace("union: " + ls);
+      if (NetworkEnrichment.logger.isInfoEnabled()) {
+        NetworkEnrichment.logger.info("union: " + ls);
       }
 
       // affecte la nouvelle geometrie
@@ -472,8 +472,8 @@ public class NetworkEnrichment {
 
       // Affectation of the new geometry to the first section and elimination of
       // the second section
-      sections.get(0).getGeom().coord().addAll(
-          sections.get(1).getGeom().coord());
+      sections.get(0).getGeom().coord()
+          .addAll(sections.get(1).getGeom().coord());
       sections.get(0).setInitialGeom(
           (ILineString) sections.get(0).getGeom().clone());
       sectionsToRemove.add(sections.get(1));
@@ -577,7 +577,7 @@ public class NetworkEnrichment {
     // supprime les impasses tant qu'il y en a
     while (impasses.size() > 0) {
 
-      NetworkEnrichment.logger.trace(impasses.size() + " impasses a supprimer");
+      NetworkEnrichment.logger.info(impasses.size() + " impasses a supprimer");
 
       for (INetworkSection obj : impasses) {
 
@@ -593,7 +593,7 @@ public class NetworkEnrichment {
         }
       }
       impasses = NetworkEnrichment.getImpasses(net, longueurMin);
-      NetworkEnrichment.logger.trace(impasses.size()
+      NetworkEnrichment.logger.info(impasses.size()
           + " impasses a supprimer *******");
     }
 

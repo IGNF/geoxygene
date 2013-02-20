@@ -1,11 +1,11 @@
 /*******************************************************************************
  * This software is released under the licence CeCILL
- *  
- *  see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
- *  
- *  see <a href="http://www.cecill.info/">http://www.cecill.info/a>
- *  
- *  @copyright IGN
+ * 
+ * see Licence_CeCILL-C_fr.html see Licence_CeCILL-C_en.html
+ * 
+ * see <a href="http://www.cecill.info/">http://www.cecill.info/a>
+ * 
+ * @copyright IGN
  ******************************************************************************/
 /**
  * 
@@ -47,9 +47,9 @@ public class UrbanAreaComputationJTS {
           + " buffers");
     }
     for (IGeometry geom : geoms) {
-      if (UrbanAreaComputationJTS.logger.isTraceEnabled()) {
-        UrbanAreaComputationJTS.logger.trace("   buffers des objets: " + i
-            + "/" + geoms.size());
+      if (UrbanAreaComputationJTS.logger.isInfoEnabled()) {
+        UrbanAreaComputationJTS.logger.info("   buffers des objets: " + i + "/"
+            + geoms.size());
       }
       try {
         bufferGeoms[i++] = AdapterFactory.toGeometry(gf, geom).buffer(

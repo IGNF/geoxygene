@@ -47,7 +47,7 @@ public class MGCPWaterArea extends MGCPFeature implements IWaterArea {
    * @param type
    */
   public MGCPWaterArea(IPolygon poly, HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      PeaRepDbType type) {
     super();
     this.geoxObj = new SurfaceDEauImpl();
     this.geoxObj.setGeom(poly);
@@ -59,7 +59,8 @@ public class MGCPWaterArea extends MGCPFeature implements IWaterArea {
     this.acc = (Long) attributes.get("acc");
     this.hyp = (Long) attributes.get("hyp");
     this.prc = (Long) attributes.get("prc");
-    this.scc = (Long) attributes.get("scc");
+    if (attributes.containsKey("scc"))
+      this.scc = (Long) attributes.get("scc");
     this.smc = (Long) attributes.get("smc");
 
     this.nfi = (String) attributes.get("nfi");

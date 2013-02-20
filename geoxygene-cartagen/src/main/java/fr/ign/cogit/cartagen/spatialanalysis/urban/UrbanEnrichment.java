@@ -201,15 +201,14 @@ public class UrbanEnrichment {
     }
     if (union instanceof IPolygon) {
       dataset.getTowns().add(
-          CartagenApplication.getInstance().getCreationFactory().createTown(
-              (IPolygon) union));
+          CartagenApplication.getInstance().getCreationFactory()
+              .createTown((IPolygon) union));
     } else if (union instanceof IMultiSurface<?>) {
       IMultiSurface<?> mp = (IMultiSurface<?>) union;
       int nb = mp.size();
       for (int i = 0; i < nb; i++) {
-        if (UrbanEnrichment.logger.isTraceEnabled()) {
-          UrbanEnrichment.logger
-              .trace("   construction ville: " + i + "/" + nb);
+        if (UrbanEnrichment.logger.isInfoEnabled()) {
+          UrbanEnrichment.logger.info("   construction ville: " + i + "/" + nb);
         }
         ITown town = CartagenApplication.getInstance().getCreationFactory()
             .createTown((IPolygon) mp.get(i));
@@ -242,38 +241,38 @@ public class UrbanEnrichment {
     }
     carteTopo.importClasseGeo(contours, true);
 
-    if (UrbanEnrichment.logger.isTraceEnabled()) {
-      UrbanEnrichment.logger.trace("creating nodes");
+    if (UrbanEnrichment.logger.isInfoEnabled()) {
+      UrbanEnrichment.logger.info("creating nodes");
     }
     carteTopo.creeNoeudsManquants(1.0);
 
-    if (UrbanEnrichment.logger.isTraceEnabled()) {
-      UrbanEnrichment.logger.trace("merging nodes");
+    if (UrbanEnrichment.logger.isInfoEnabled()) {
+      UrbanEnrichment.logger.info("merging nodes");
     }
     carteTopo.fusionNoeuds(1.0);
 
-    if (UrbanEnrichment.logger.isTraceEnabled()) {
-      UrbanEnrichment.logger.trace("filtering duplicated edges");
+    if (UrbanEnrichment.logger.isInfoEnabled()) {
+      UrbanEnrichment.logger.info("filtering duplicated edges");
     }
     carteTopo.filtreArcsDoublons();
 
-    if (UrbanEnrichment.logger.isTraceEnabled()) {
-      UrbanEnrichment.logger.trace("making planar");
+    if (UrbanEnrichment.logger.isInfoEnabled()) {
+      UrbanEnrichment.logger.info("making planar");
     }
     carteTopo.rendPlanaire(1.0);
 
-    if (UrbanEnrichment.logger.isTraceEnabled()) {
-      UrbanEnrichment.logger.trace("merging duplicated nodes");
+    if (UrbanEnrichment.logger.isInfoEnabled()) {
+      UrbanEnrichment.logger.info("merging duplicated nodes");
     }
     carteTopo.fusionNoeuds(1.0);
 
-    if (UrbanEnrichment.logger.isTraceEnabled()) {
-      UrbanEnrichment.logger.trace("filtering duplicated edges");
+    if (UrbanEnrichment.logger.isInfoEnabled()) {
+      UrbanEnrichment.logger.info("filtering duplicated edges");
     }
     carteTopo.filtreArcsDoublons();
 
-    if (UrbanEnrichment.logger.isTraceEnabled()) {
-      UrbanEnrichment.logger.trace("creating topological faces");
+    if (UrbanEnrichment.logger.isInfoEnabled()) {
+      UrbanEnrichment.logger.info("creating topological faces");
     }
     carteTopo.creeTopologieFaces();
 
@@ -340,16 +339,16 @@ public class UrbanEnrichment {
       ville.setStreetNetwork(net);
 
       // Construction des ilots
-      if (UrbanEnrichment.logger.isTraceEnabled()) {
-        UrbanEnrichment.logger.trace("construction des ilots de " + ville);
+      if (UrbanEnrichment.logger.isInfoEnabled()) {
+        UrbanEnrichment.logger.info("construction des ilots de " + ville);
       }
       // ville.construireIlotsPolygonizerJTS();
       // ville.construireIlotsCarteTopoGeoxygene();
       UrbanEnrichment.buildBlocksInTown(ville, carteTopo, buildUrbanAlignments);
 
       // Lien de la ville avec ses impasses
-      HashSet<DeadEndGroup> deadEnds = DeadEndGroup.buildFromRoads(roads, ville
-          .getGeom());
+      HashSet<DeadEndGroup> deadEnds = DeadEndGroup.buildFromRoads(roads,
+          ville.getGeom());
       IFeatureCollection<DeadEndGroup> deadEndColl = new FT_FeatureCollection<DeadEndGroup>();
       for (DeadEndGroup deadEnd : deadEnds) {
         deadEndColl.add(deadEnd);
@@ -400,8 +399,6 @@ public class UrbanEnrichment {
    */
   public static void buildBlocksInTown(ITown town, CarteTopo carteTopo,
       boolean buildUrbanAlignments) {
-    int compteur = 0;
-
     HashSet<IUrbanBlock> cityBlocks = new HashSet<IUrbanBlock>();
 
     // parcours des faces de la carte topo
@@ -475,17 +472,17 @@ public class UrbanEnrichment {
         }
       }
 
-      IUrbanBlock block = CartagenApplication.getInstance()
-          .getCreationFactory().createUrbanBlock(polygone, town, urbanElements,
-              troncons, null, town.getStreetNetwork());
+      IUrbanBlock block = CartagenApplication
+          .getInstance()
+          .getCreationFactory()
+          .createUrbanBlock(polygone, town, urbanElements, troncons, null,
+              town.getStreetNetwork());
       // TODO vérifier la paternité de ce code qui crée des ilots avec un
       // même
       // identifiant sur une même zone
       // block.setId(2 ^ town.getId() * 3 ^ compteur);
       cityBlocks.add(block);
       CartAGenDoc.getInstance().getCurrentDataset().getBlocks().add(block);
-      compteur++;
-
       if (!(buildUrbanAlignments)) {
         continue;
       }
@@ -536,8 +533,8 @@ public class UrbanEnrichment {
     // Splitting of heterogeneous alignments based on distance and size criteria
     List<IUrbanAlignment> structuresAfterSplit = new ArrayList<IUrbanAlignment>();
     for (IUrbanAlignment structure : structures) {
-      structuresAfterSplit.addAll(UrbanEnrichment.split(structure, 2.0 * Legend
-          .getSYMBOLISATI0N_SCALE() / 1000.0, Math.PI / 3.0));
+      structuresAfterSplit.addAll(UrbanEnrichment.split(structure,
+          2.0 * Legend.getSYMBOLISATI0N_SCALE() / 1000.0, Math.PI / 3.0));
     }
 
     // Alignments mustn't intersect sections
@@ -603,14 +600,15 @@ public class UrbanEnrichment {
           if (commonBuilds.get(0).equals(structure.getInitialElement())) {
             pt1 = structure.getUrbanElements().get(1).getGeom().centroid();
           } else if (commonBuilds.get(0).equals(structure.getFinalElement())) {
-            pt1 = structure.getUrbanElements().get(
-                structure.getUrbanElements().size() - 2).getGeom().centroid();
+            pt1 = structure.getUrbanElements()
+                .get(structure.getUrbanElements().size() - 2).getGeom()
+                .centroid();
           }
           if (commonBuilds.get(0).equals(structureBis.getInitialElement())) {
             pt3 = structureBis.getUrbanElements().get(1).getGeom().centroid();
           } else if (commonBuilds.get(0).equals(structureBis.getFinalElement())) {
-            pt3 = structureBis.getUrbanElements().get(
-                structureBis.getUrbanElements().size() - 2).getGeom()
+            pt3 = structureBis.getUrbanElements()
+                .get(structureBis.getUrbanElements().size() - 2).getGeom()
                 .centroid();
           }
           // Angle test
@@ -643,8 +641,8 @@ public class UrbanEnrichment {
 
     // Destroy of the second alignment
     align2.getUrbanElements().clear();
-    CartAGenDoc.getInstance().getCurrentDataset().getUrbanAlignments().remove(
-        align2);
+    CartAGenDoc.getInstance().getCurrentDataset().getUrbanAlignments()
+        .remove(align2);
 
     // Computation of the characteristics
     align1.computeInitialAndFinalElements();
@@ -694,8 +692,8 @@ public class UrbanEnrichment {
 
       // Distance between current buildings is too high
       else if (i > 0
-          && align.getUrbanElements().get(i - 1).getGeom().distance(
-              align.getUrbanElements().get(i).getGeom()) > distance) {
+          && align.getUrbanElements().get(i - 1).getGeom()
+              .distance(align.getUrbanElements().get(i).getGeom()) > distance) {
         if (currentPart.size() > 2) {
           aligns.add(CartagenApplication.getInstance().getCreationFactory()
               .createUrbanAlignment(currentPart));
@@ -733,8 +731,8 @@ public class UrbanEnrichment {
     }
 
     align.getUrbanElements().clear();
-    CartAGenDoc.getInstance().getCurrentDataset().getUrbanAlignments().remove(
-        align);
+    CartAGenDoc.getInstance().getCurrentDataset().getUrbanAlignments()
+        .remove(align);
 
     return aligns;
 

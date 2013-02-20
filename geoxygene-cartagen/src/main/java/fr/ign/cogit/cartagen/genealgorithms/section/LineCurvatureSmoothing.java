@@ -77,16 +77,16 @@ public class LineCurvatureSmoothing {
     // Geometry conversion
     IGeometry geomStart = this.geneObj.getGeom();
     if (!(geomStart instanceof ILineString)) {
-      if (LineCurvatureSmoothing.logger.isTraceEnabled()) {
+      if (LineCurvatureSmoothing.logger.isInfoEnabled()) {
         LineCurvatureSmoothing.logger
-            .trace("Impossible to perform Curvature smoothing - non linear geometry");
+            .info("Impossible to perform Curvature smoothing - non linear geometry");
       }
       return;
     }
     if (geomStart.coord().size() < 3) {
-      if (LineCurvatureSmoothing.logger.isTraceEnabled()) {
+      if (LineCurvatureSmoothing.logger.isInfoEnabled()) {
         LineCurvatureSmoothing.logger
-            .trace("Impossible to perform Curvature smoothing - not enough points on geometry");
+            .info("Impossible to perform Curvature smoothing - not enough points on geometry");
       }
       return;
     }
@@ -105,8 +105,8 @@ public class LineCurvatureSmoothing {
       if (isPersistantObject) {
         this.geneObj.registerDisplacement();
       }
-      if (LineCurvatureSmoothing.logger.isTraceEnabled()) {
-        LineCurvatureSmoothing.logger.trace("Curvature smoothing performed on "
+      if (LineCurvatureSmoothing.logger.isInfoEnabled()) {
+        LineCurvatureSmoothing.logger.info("Curvature smoothing performed on "
             + this.geneObj);
       }
     }
@@ -187,8 +187,8 @@ public class LineCurvatureSmoothing {
       double dAngle = LineCurvatureSmoothing.deviationLissee(absCurv,
           deviations, i - 1, symbolWidth);
       angle += dAngle;
-      if (LineCurvatureSmoothing.logger.isTraceEnabled()) {
-        LineCurvatureSmoothing.logger.trace("angle=" + angle * 180 / Math.PI);
+      if (LineCurvatureSmoothing.logger.isInfoEnabled()) {
+        LineCurvatureSmoothing.logger.info("angle=" + angle * 180 / Math.PI);
       }
 
       // construit nouveau point
@@ -224,8 +224,8 @@ public class LineCurvatureSmoothing {
 
     // affinite
     coordsRes = lsRes.getCoordinates();
-    double coef = ls.coord().get(ls.coord().size() - 1).distance(
-        ls.coord().get(0))
+    double coef = ls.coord().get(ls.coord().size() - 1)
+        .distance(ls.coord().get(0))
         / coordsRes[coordsRes.length - 1].distance(coordsRes[0]);
     Coordinate[] coordLineJTS = CommonAlgorithms.affinite(lsRes,
         new Coordinate(ls.coord().get(0).getX(), ls.coord().get(0).getY()),
