@@ -51,6 +51,7 @@ import fr.ign.cogit.geoxygene.util.algo.CommonAlgorithms;
  */
 public class GeneObjDefault extends FT_Feature implements IGeneObj {
 
+  @SuppressWarnings("hiding")
   private static Logger logger = Logger.getLogger(GeneObjDefault.class
       .getName());
 

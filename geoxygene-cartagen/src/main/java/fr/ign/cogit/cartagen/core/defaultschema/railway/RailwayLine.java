@@ -166,12 +166,13 @@ public class RailwayLine extends NetworkSection implements IRailwayLine {
     return super.isEliminated();
   }
 
+  @Override
   public void setSidetrack(boolean sidetrack) {
     this.sidetrack = sidetrack;
   }
 
   @Override
   public boolean isSideTrack() {
-    return sidetrack;
+    return this.sidetrack;
   }
 }
