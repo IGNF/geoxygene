@@ -108,9 +108,9 @@ public class GUIShapefileChoice extends JFrame {
     if (returnVal == JFileChooser.APPROVE_OPTION) {
       File[] files = chooser.getSelectedFiles();
 
-      if (GUIShapefileChoice.logger.isTraceEnabled()) {
+      if (GUIShapefileChoice.logger.isInfoEnabled()) {
         for (File file : files) {
-          GUIShapefileChoice.logger.trace("You chose this "
+          GUIShapefileChoice.logger.info("You chose this "
               + (selectFiles ? "file :" : " directory ") + file.getName());
         }
       }
