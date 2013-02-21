@@ -3,6 +3,7 @@ package fr.ign.cogit.geoxygene.wps.contrib.datamatching;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import org.geoserver.wps.gs.GeoServerProcess;
@@ -60,7 +61,25 @@ public class NetworkDataMatching implements GeoServerProcess {
       		"pour divers arcs du réseaux comp (distance vers les arcs du réseau ref) n'a plus aucun sens.") float distanceArcsMin,
       // defaultValue = 25
       @DescribeParameter(name = "distanceArcsMax", description = "Distance maximum autorisée entre les arcs des deux réseaux") float distanceArcsMax) {
+    
+    /** Variables for debug. */
+    Runtime runtime = null;
+    long maxMemory;
+    long allocatedMemory;
+    long freeMemory;
 
+    if (LOGGER.isEnabledFor(Level.DEBUG)) {
+      runtime = Runtime.getRuntime();
+      maxMemory = runtime.maxMemory();
+      allocatedMemory = runtime.totalMemory();
+      freeMemory = runtime.freeMemory();
+      LOGGER.debug("free memory: " + freeMemory / 1024);
+      LOGGER.debug("allocated memory: " + allocatedMemory / 1024);
+      LOGGER.debug("max memory: " + maxMemory / 1024);
+      LOGGER.debug("total free memory: " + (freeMemory + (maxMemory - allocatedMemory)) / 1024);
+    }
+    
+    
     LOGGER.info("Start Converting");
     IFeatureCollection<?> gPopRef = GeOxygeneGeoToolsTypes.convert2IFeatureCollection(popRef);
     IFeatureCollection<?> gPopComp = GeOxygeneGeoToolsTypes.convert2IFeatureCollection(popComp);
@@ -110,9 +129,22 @@ public class NetworkDataMatching implements GeoServerProcess {
       IPopulation<Arc> arcs = reseauRecale.getPopArcs();
 
       // Convert to geoserver object
+      LOGGER.info("Start Converting");
       SimpleFeatureCollection correctedNetwork = GeOxygeneGeoToolsTypes.convert2FeatureCollection(arcs, popRef.getSchema()
         .getCoordinateReferenceSystem());
-        
+      LOGGER.info("End Converting");
+      
+      if (LOGGER.isEnabledFor(Level.DEBUG)) {
+        runtime = Runtime.getRuntime();
+        maxMemory = runtime.maxMemory();
+        allocatedMemory = runtime.totalMemory();
+        freeMemory = runtime.freeMemory();
+        LOGGER.debug("free memory: " + freeMemory / 1024);
+        LOGGER.debug("allocated memory: " + allocatedMemory / 1024);
+        LOGGER.debug("max memory: " + maxMemory / 1024);
+        LOGGER.debug("total free memory: " + (freeMemory + (maxMemory - allocatedMemory)) / 1024);
+      }
+      
       return correctedNetwork;
 
     } catch (Exception e) {

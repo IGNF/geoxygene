@@ -77,7 +77,7 @@
 	
 	<profiles>
 		<profile>
-			<id>localMD</id>
+			<id>local</id>
 			<build>
 				<plugins>
 					<plugin>
