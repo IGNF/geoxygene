@@ -69,8 +69,9 @@ public class VMAP1Loader extends ShapeFileLoader {
 
         // hydro loading
         shapePath = FileUtil.getNamedFileInDir(directory, "hydro");
-        loadLineStringClass(FileUtil.getNamedFileInDir(shapePath,
-            "watrcrsl.shp").getAbsolutePath(), VMAPWaterLine.class,
+        loadLineStringClass(
+            FileUtil.getNamedFileInDir(shapePath, "watrcrsl.shp")
+                .getAbsolutePath(), VMAPWaterLine.class,
             CartAGenDataSet.WATER_LINES_POP, IWaterLine.FEAT_TYPE_NAME, this
                 .getDataset().getHydroNetwork(), PeaRepDbType.VMAP1);
         loadPolygonClass(FileUtil.getNamedFileInDir(shapePath, "watrcrsa.shp")
@@ -84,8 +85,9 @@ public class VMAP1Loader extends ShapeFileLoader {
 
         // elevation loading
         shapePath = FileUtil.getNamedFileInDir(directory, "elev");
-        loadLineStringClass(FileUtil.getNamedFileInDir(shapePath,
-            "contourl.shp").getAbsolutePath(), VMAPContourLine.class,
+        loadLineStringClass(
+            FileUtil.getNamedFileInDir(shapePath, "contourl.shp")
+                .getAbsolutePath(), VMAPContourLine.class,
             CartAGenDataSet.CONTOUR_LINES_POP, IContourLine.FEAT_TYPE_NAME,
             null, PeaRepDbType.VMAP1);
 
@@ -113,8 +115,9 @@ public class VMAP1Loader extends ShapeFileLoader {
           if (layerName.equals("roadl")) {
             // ground transportation loading
             shapePath = FileUtil.getNamedFileInDir(directory, "trans");
-            loadLineStringClass(FileUtil.getNamedFileInDir(shapePath,
-                "roadl.shp").getAbsolutePath(), VMAPRoadLine.class,
+            loadLineStringClass(
+                FileUtil.getNamedFileInDir(shapePath, "roadl.shp")
+                    .getAbsolutePath(), VMAPRoadLine.class,
                 CartAGenDataSet.ROADS_POP, IRoadLine.FEAT_TYPE_NAME, this
                     .getDataset().getRoadNetwork(), PeaRepDbType.VMAP1);
           }
@@ -122,24 +125,27 @@ public class VMAP1Loader extends ShapeFileLoader {
           if (layerName.equals("watrcrsl")) {
             // hydro loading
             shapePath = FileUtil.getNamedFileInDir(directory, "hydro");
-            loadLineStringClass(FileUtil.getNamedFileInDir(shapePath,
-                "watrcrsl.shp").getAbsolutePath(), VMAPWaterLine.class,
+            loadLineStringClass(
+                FileUtil.getNamedFileInDir(shapePath, "watrcrsl.shp")
+                    .getAbsolutePath(), VMAPWaterLine.class,
                 CartAGenDataSet.WATER_LINES_POP, IWaterLine.FEAT_TYPE_NAME,
                 this.getDataset().getHydroNetwork(), PeaRepDbType.VMAP1);
           }
 
           if (layerName.equals("watrcrsa")) {
             shapePath = FileUtil.getNamedFileInDir(directory, "hydro");
-            loadPolygonClass(FileUtil.getNamedFileInDir(shapePath,
-                "watrcrsa.shp").getAbsolutePath(), VMAPWaterArea.class,
+            loadPolygonClass(
+                FileUtil.getNamedFileInDir(shapePath, "watrcrsa.shp")
+                    .getAbsolutePath(), VMAPWaterArea.class,
                 CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
                 PeaRepDbType.VMAP1);
           }
 
           if (layerName.equals("lakeresa")) {
             shapePath = FileUtil.getNamedFileInDir(directory, "hydro");
-            loadPolygonClass(FileUtil.getNamedFileInDir(shapePath,
-                "lakeresa.shp").getAbsolutePath(), VMAPWaterArea.class,
+            loadPolygonClass(
+                FileUtil.getNamedFileInDir(shapePath, "lakeresa.shp")
+                    .getAbsolutePath(), VMAPWaterArea.class,
                 CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
                 PeaRepDbType.VMAP1);
           }
@@ -147,8 +153,9 @@ public class VMAP1Loader extends ShapeFileLoader {
           if (layerName.equals("contourl")) {
             // elevation loading
             shapePath = FileUtil.getNamedFileInDir(directory, "elev");
-            loadLineStringClass(FileUtil.getNamedFileInDir(shapePath,
-                "contourl.shp").getAbsolutePath(), VMAPContourLine.class,
+            loadLineStringClass(
+                FileUtil.getNamedFileInDir(shapePath, "contourl.shp")
+                    .getAbsolutePath(), VMAPContourLine.class,
                 CartAGenDataSet.CONTOUR_LINES_POP, IContourLine.FEAT_TYPE_NAME,
                 null, PeaRepDbType.VMAP1);
           }
@@ -173,8 +180,9 @@ public class VMAP1Loader extends ShapeFileLoader {
           // builtuparea loading
           if (layerName.equals("builtupa")) {
             shapePath = FileUtil.getNamedFileInDir(directory, "pop");
-            loadPolygonClass(FileUtil.getNamedFileInDir(shapePath,
-                "builtupa.shp").getAbsolutePath(), VMAPBuiltUpArea.class,
+            loadPolygonClass(
+                FileUtil.getNamedFileInDir(shapePath, "builtupa.shp")
+                    .getAbsolutePath(), VMAPBuiltUpArea.class,
                 CartAGenDataSet.LANDUSE_AREAS_POP,
                 ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.VMAP1);
           }
@@ -204,7 +212,7 @@ public class VMAP1Loader extends ShapeFileLoader {
     database.setSourceDLM(SourceDLM.VMAP1);
     database.setSymboScale(500000);
     database.setDocument(CartAGenDoc.getInstance());
-    CartAGenDataSet dataset = new CartAGenDataSet();
+    CartAGenDataSet dataset = new PeaRepDataset();
     dataset.setSymbols(SymbolList.getSymbolList(group));
     CartAGenDoc.getInstance().addDatabase(name, database);
     CartAGenDoc.getInstance().setCurrentDataset(dataset);

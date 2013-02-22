@@ -64,15 +64,17 @@ public class VMAP0Loader extends ShapeFileLoader {
 
         // hydro loading
         shapePath = FileUtil.getNamedFileInDir(directory, "hydro");
-        loadLineStringClass(FileUtil.getNamedFileInDir(shapePath,
-            "watrcrsl.shp").getAbsolutePath(), VMAPWaterLine.class,
+        loadLineStringClass(
+            FileUtil.getNamedFileInDir(shapePath, "watrcrsl.shp")
+                .getAbsolutePath(), VMAPWaterLine.class,
             CartAGenDataSet.WATER_LINES_POP, IWaterLine.FEAT_TYPE_NAME, this
                 .getDataset().getHydroNetwork(), PeaRepDbType.VMAP0);
 
         // elevation loading
         shapePath = FileUtil.getNamedFileInDir(directory, "elev");
-        loadLineStringClass(FileUtil.getNamedFileInDir(shapePath,
-            "contourl.shp").getAbsolutePath(), VMAPContourLine.class,
+        loadLineStringClass(
+            FileUtil.getNamedFileInDir(shapePath, "contourl.shp")
+                .getAbsolutePath(), VMAPContourLine.class,
             CartAGenDataSet.CONTOUR_LINES_POP, IContourLine.FEAT_TYPE_NAME,
             null, PeaRepDbType.VMAP0);
 
@@ -93,8 +95,9 @@ public class VMAP0Loader extends ShapeFileLoader {
           if (layerName.equals("roadl")) {
             // ground transportation loading
             shapePath = FileUtil.getNamedFileInDir(directory, "trans");
-            loadLineStringClass(FileUtil.getNamedFileInDir(shapePath,
-                "roadl.shp").getAbsolutePath(), VMAPRoadLine.class,
+            loadLineStringClass(
+                FileUtil.getNamedFileInDir(shapePath, "roadl.shp")
+                    .getAbsolutePath(), VMAPRoadLine.class,
                 CartAGenDataSet.ROADS_POP, IRoadLine.FEAT_TYPE_NAME, this
                     .getDataset().getRoadNetwork(), PeaRepDbType.VMAP0);
           }
@@ -102,8 +105,9 @@ public class VMAP0Loader extends ShapeFileLoader {
           if (layerName.equals("watrcrsl")) {
             // hydro loading
             shapePath = FileUtil.getNamedFileInDir(directory, "hydro");
-            loadLineStringClass(FileUtil.getNamedFileInDir(shapePath,
-                "watrcrsl.shp").getAbsolutePath(), VMAPWaterLine.class,
+            loadLineStringClass(
+                FileUtil.getNamedFileInDir(shapePath, "watrcrsl.shp")
+                    .getAbsolutePath(), VMAPWaterLine.class,
                 CartAGenDataSet.WATER_LINES_POP, IWaterLine.FEAT_TYPE_NAME,
                 this.getDataset().getHydroNetwork(), PeaRepDbType.VMAP0);
           }
@@ -111,8 +115,9 @@ public class VMAP0Loader extends ShapeFileLoader {
           if (layerName.equals("contourl")) {
             // elevation loading
             shapePath = FileUtil.getNamedFileInDir(directory, "elev");
-            loadLineStringClass(FileUtil.getNamedFileInDir(shapePath,
-                "contourl.shp").getAbsolutePath(), VMAPContourLine.class,
+            loadLineStringClass(
+                FileUtil.getNamedFileInDir(shapePath, "contourl.shp")
+                    .getAbsolutePath(), VMAPContourLine.class,
                 CartAGenDataSet.CONTOUR_LINES_POP, IContourLine.FEAT_TYPE_NAME,
                 null, PeaRepDbType.VMAP0);
           }
@@ -125,8 +130,9 @@ public class VMAP0Loader extends ShapeFileLoader {
             // .getAbsolutePath(), VMAPBuildPoint.class,
             // CartAGenDataSet.BUILD_PT_POP, IBuildPoint.FEAT_TYPE_NAME,
             // PeaRepDbType.VMAP2i);
-            loadPolygonClass(FileUtil.getNamedFileInDir(shapePath,
-                "builtupa.shp").getAbsolutePath(), VMAPBuiltUpArea.class,
+            loadPolygonClass(
+                FileUtil.getNamedFileInDir(shapePath, "builtupa.shp")
+                    .getAbsolutePath(), VMAPBuiltUpArea.class,
                 CartAGenDataSet.LANDUSE_AREAS_POP,
                 ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.VMAP0);
           }
@@ -162,7 +168,7 @@ public class VMAP0Loader extends ShapeFileLoader {
     database.setSourceDLM(SourceDLM.VMAP0);
     database.setSymboScale(500000);
     database.setDocument(CartAGenDoc.getInstance());
-    CartAGenDataSet dataset = new CartAGenDataSet();
+    CartAGenDataSet dataset = new PeaRepDataset();
     dataset.setSymbols(SymbolList.getSymbolList(group));
     CartAGenDoc.getInstance().addDatabase(name, database);
     CartAGenDoc.getInstance().setCurrentDataset(dataset);

@@ -22,6 +22,7 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
+import fr.ign.cogit.cartagen.core.genericschema.energy.IPipeLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
@@ -39,6 +40,7 @@ import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirport;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPTaxiwayArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.energy.MGCPElectricityLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.energy.MGCPPipeLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPPathLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRailwayLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadLine;
@@ -139,6 +141,13 @@ public class MGCPLoader extends ShapeFileLoader {
             IElectricityLine.FEAT_TYPE_NAME, this.getDataset()
                 .getElectricityNetwork(), PeaRepDbType.MGCPPlusPlus);
       }
+      if ((listLayer.size() == 0) || (listLayer.contains("LAQ113"))) {
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LAQ113.shp")
+                .getAbsolutePath(), MGCPPipeLine.class,
+            PeaRepDataset.PIPELINES_POP, IPipeLine.FEAT_TYPE_NAME, null,
+            PeaRepDbType.MGCPPlusPlus);
+      }
 
       // population loading
       if ((listLayer.size() == 0) || (listLayer.contains("PAL015"))) {
@@ -186,7 +195,7 @@ public class MGCPLoader extends ShapeFileLoader {
     database.setSourceDLM(SourceDLM.MGCPPlusPlus);
     database.setSymboScale(100000);
     database.setDocument(CartAGenDoc.getInstance());
-    CartAGenDataSet dataset = new CartAGenDataSet();
+    CartAGenDataSet dataset = new PeaRepDataset();
     dataset.setSymbols(SymbolList.getSymbolList(symbGroup));
     CartAGenDoc.getInstance().addDatabase(name, database);
     CartAGenDoc.getInstance().setCurrentDataset(dataset);

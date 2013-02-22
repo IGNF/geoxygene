@@ -15,6 +15,7 @@ import java.awt.Color;
 import javax.swing.AbstractButton;
 import javax.swing.JCheckBox;
 
+import fr.ign.cogit.cartagen.pearep.importexport.PeaRepDataset;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -68,6 +69,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
 
   private LoadedLayer layerElectricityLine;
   public static String LAYER_ELECRICITY_LINE = "layerElectricityLine";
+  private LoadedLayer layerPipeLine;
+  public static String LAYER_PIPE_LINE = "layerPipeLine";
 
   private LoadedLayer layerContourLine;
   public static String LAYER_CONTOUR_LINE = "layerContourLine";
@@ -137,6 +140,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
       return this.layerRailwayLine;
     } else if (layer.equals(PeaRepLayerGroup.LAYER_ELECRICITY_LINE)) {
       return this.layerElectricityLine;
+    } else if (layer.equals(PeaRepLayerGroup.LAYER_PIPE_LINE)) {
+      return this.layerPipeLine;
     } else if (layer.equals(PeaRepLayerGroup.LAYER_CONTOUR_LINE)) {
       return this.layerContourLine;
     } else if (layer.equals(PeaRepLayerGroup.LAYER_SPOT_HEIGHT)) {
@@ -210,6 +215,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
     this.layerRailwayLine = new LoadedLayer(dataSet.getRailwayLines());
 
     this.layerElectricityLine = new LoadedLayer(dataSet.getElectricityLines());
+    this.layerPipeLine = new LoadedLayer(
+        ((PeaRepDataset) dataSet).getPipelines());
 
     this.layerContourLine = new LoadedLayer(dataSet.getContourLines());
     this.layerSpotHeight = new LoadedLayer(dataSet.getSpotHeights());
@@ -252,6 +259,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
     this.layerRailwayLine = new LoadedLayer(dataSet.getRailwayLines());
 
     this.layerElectricityLine = new LoadedLayer(dataSet.getElectricityLines());
+    this.layerPipeLine = new LoadedLayer(
+        ((PeaRepDataset) dataSet).getPipelines());
 
     this.layerContourLine = new LoadedLayer(dataSet.getContourLines());
     this.layerSpotHeight = new LoadedLayer(dataSet.getSpotHeights());
@@ -327,6 +336,7 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
     layerManager.addLayer(this.layerIslands);
     layerManager.addLayer(this.layerRailwayLine);
     layerManager.addLayer(this.layerElectricityLine);
+    layerManager.addLayer(this.layerPipeLine);
     layerManager.addLayer(this.layerContourLine);
     layerManager.addLayer(this.layerSpotHeight);
     layerManager.addLayer(this.layerDEMPixel);
@@ -593,10 +603,16 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
     // reseau ferroviaire
     layerManager.addSymbolisedLayer(this.layerRailwayLine,
         SymbolisationPeaRep.railway(this), this.cVoirRF);
+
     // reseau electrique
     layerManager.addSymbolisedLayer(this.layerElectricityLine, Symbolisation
         .ligne(GeneralisationLegend.RES_ELEC_COULEUR,
             GeneralisationLegend.RES_ELEC_LARGEUR, this), this.cVoirRE);
+
+    // pipelines
+    layerManager.addSymbolisedLayer(this.layerPipeLine, Symbolisation.ligne(
+        GeneralisationLegend.RES_ELEC_COULEUR,
+        GeneralisationLegend.RES_ELEC_LARGEUR, this), this.cVoirRE);
 
     // alignements urbains
     layerManager.addSymbolisedLayer(this.layerUrbanAlignment, Symbolisation
