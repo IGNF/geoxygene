@@ -16,6 +16,7 @@ import javax.swing.AbstractButton;
 import javax.swing.JCheckBox;
 
 import fr.ign.cogit.cartagen.pearep.importexport.PeaRepDataset;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLandUseType;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -382,8 +383,16 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
 
     // dessin de l'occupation du sol
 
-    layerManager.addSymbolisedLayer(this.layerLandUseArea,
-        SymbolisationPeaRep.landuse(this), this.cVoirOccSol);
+    /*
+     * layerManager.addSymbolisedLayer(this.layerLandUseArea,
+     * SymbolisationPeaRep.landuse(this), this.cVoirOccSol);
+     */
+    // dessin de l'occupation du sol
+    layerManager.addSymbolisedLayer(
+        this.layerLandUseArea,
+        GeneralisationSymbolisation.defaultLandUse(this,
+            MGCPLandUseType.getFillColors(), MGCPLandUseType.getFillColors()),
+        this.cVoirOccSol);
 
     // ville
     layerManager.addSymbolisedLayer(this.layerTown, Symbolisation.surface(

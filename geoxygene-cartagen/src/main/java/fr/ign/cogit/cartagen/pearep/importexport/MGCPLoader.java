@@ -23,19 +23,52 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IPipeLine;
+import fr.ign.cogit.cartagen.core.genericschema.energy.IPowerStation;
+import fr.ign.cogit.cartagen.core.genericschema.harbour.IBerthingArea;
+import fr.ign.cogit.cartagen.core.genericschema.harbour.IDryDockArea;
+import fr.ign.cogit.cartagen.core.genericschema.harbour.ITrainingWallArea;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.IInundationArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterBasin;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
+import fr.ign.cogit.cartagen.core.genericschema.misc.IBoundedArea;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildArea;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ISquareArea;
+import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBerthingArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuildPoint;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuiltUpArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuilding;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPCemetery;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPCommunicationStation;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPContourLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPDryDockArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFortification;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPInundationArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLandUse;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLandUseType;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPMineralPile;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPPowerStation;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPProcessingFacility;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPPumpingStation;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPRailwayYard;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSettlement;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSettlingPond;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSquare;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPStadium;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPStorageDepot;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPTrainingWallArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPVehicleLot;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPWaterArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPWaterLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPWaterTreatmentBed;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirport;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPTaxiwayArea;
@@ -70,6 +103,8 @@ public class MGCPLoader extends ShapeFileLoader {
   public void loadData(File directory, List<String> listLayer)
       throws ShapefileException, IOException {
     try {
+
+      // Chargement dans l'ordre alphabétique (JFG)
 
       if ((listLayer.size() == 0) || (listLayer.contains("LAP030"))) {
         // ground transportation loading
@@ -132,6 +167,8 @@ public class MGCPLoader extends ShapeFileLoader {
       if ((listLayer.size() == 0) || (listLayer.contains("AGB005")))
         loadAirports(directory);
 
+      // population loading
+
       // energy
       if ((listLayer.size() == 0) || (listLayer.contains("LAT030"))) {
         this.loadLineStringClass(
@@ -157,12 +194,311 @@ public class MGCPLoader extends ShapeFileLoader {
             PeaRepDbType.MGCPPlusPlus);
       }
 
-      if ((listLayer.size() == 0) || (listLayer.contains("AAL020"))) {
+      // Building Loading
+      if ((listLayer.size() == 0) || (listLayer.contains("AAL015"))) {
         this.loadPolygonClass(
-            FileUtil.getNamedFileInDir(directory, "AAL020.shp")
-                .getAbsolutePath(), MGCPBuiltUpArea.class,
+            FileUtil.getNamedFileInDir(directory, "AAL015.shp")
+                .getAbsolutePath(), MGCPBuilding.class,
+            CartAGenDataSet.BUILD_AREA_POP, IBuilding.FEAT_TYPE_NAME,
+
+            PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // PowerStation loading
+      if ((listLayer.size() == 0) || (listLayer.contains("AAD010"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAD010.shp")
+                .getAbsolutePath(), MGCPPowerStation.class,
+            CartAGenDataSet.BUILD_AREA_POP, IPowerStation.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      if ((listLayer.size() == 0) || (listLayer.contains("AAD030"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAD030.shp")
+                .getAbsolutePath(), MGCPPowerStation.class,
+            CartAGenDataSet.BUILD_AREA_POP, IPowerStation.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // Cemetery Loading
+      if ((listLayer.size() == 0) || (listLayer.contains("AAL030"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAL030.shp")
+                .getAbsolutePath(), MGCPCemetery.class,
+            CartAGenDataSet.BOUNDED_AREA_POP, IBoundedArea.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // Fortification Loading
+      if ((listLayer.size() == 0) || (listLayer.contains("AAH050"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAH050.shp")
+                .getAbsolutePath(), MGCPFortification.class,
+            CartAGenDataSet.BUILD_AREA_POP, IBuildArea.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // Processing Facility Loading
+      if ((listLayer.size() == 0) || (listLayer.contains("AAC000"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAC000.shp")
+                .getAbsolutePath(), MGCPProcessingFacility.class,
+            CartAGenDataSet.BOUNDED_AREA_POP, IBoundedArea.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // StorageDepot Loading
+      if ((listLayer.size() == 0) || (listLayer.contains("AAM010"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAM010.shp")
+                .getAbsolutePath(), MGCPStorageDepot.class,
+            CartAGenDataSet.BOUNDED_AREA_POP, IBoundedArea.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // MineralPile Loading
+      if ((listLayer.size() == 0) || (listLayer.contains("AAM040"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAM040.shp")
+                .getAbsolutePath(), MGCPMineralPile.class,
+            CartAGenDataSet.BOUNDED_AREA_POP, IBoundedArea.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // Pumping Station Loading
+      if ((listLayer.size() == 0) || (listLayer.contains("AAQ116"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAQ116.shp")
+                .getAbsolutePath(), MGCPPumpingStation.class,
+            CartAGenDataSet.BOUNDED_AREA_POP, IBoundedArea.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // Vehicle Lot (Parking) Loading
+      if ((listLayer.size() == 0) || (listLayer.contains("AAQ140"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAQ140.shp")
+                .getAbsolutePath(), MGCPVehicleLot.class,
+            CartAGenDataSet.BOUNDED_AREA_POP, IBoundedArea.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // Communication Station (?) Loading
+      if ((listLayer.size() == 0) || (listLayer.contains("AAT050"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAT050.shp")
+                .getAbsolutePath(), MGCPCommunicationStation.class,
+            CartAGenDataSet.BOUNDED_AREA_POP, IBoundedArea.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // RailwayYard Loading
+      if ((listLayer.size() == 0) || (listLayer.contains("AAN060"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAN060.shp")
+                .getAbsolutePath(), MGCPRailwayYard.class,
+            CartAGenDataSet.BOUNDED_AREA_POP, IBoundedArea.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // Square Loading
+      if ((listLayer.size() == 0) || (listLayer.contains("AAL170"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAL170.shp")
+                .getAbsolutePath(), MGCPSquare.class, PeaRepDataset.SQUARE_POP,
+            ISquareArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // Stadium Loading
+      if ((listLayer.size() == 0) || (listLayer.contains("AAK160"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAK160.shp")
+                .getAbsolutePath(), MGCPStadium.class,
+            CartAGenDataSet.BUILD_PT_POP, ISportsField.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // Settlement Loading
+      if ((listLayer.size() == 0) || (listLayer.contains("AAL105"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAL105.shp")
+                .getAbsolutePath(), MGCPSettlement.class,
+            CartAGenDataSet.TOWNS_POP, ITown.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // Harbour loading
+      // Dry Dock
+      if ((listLayer.size() == 0) || (listLayer.contains("ABB090"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "ABB090.shp")
+                .getAbsolutePath(), MGCPDryDockArea.class,
+            CartAGenDataSet.BUILD_AREA_POP, IDryDockArea.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      // Training Wall Area
+      if ((listLayer.size() == 0) || (listLayer.contains("ABB140"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "ABB140.shp")
+                .getAbsolutePath(), MGCPTrainingWallArea.class,
+            CartAGenDataSet.BUILD_AREA_POP, ITrainingWallArea.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      // Berthing Area
+      if ((listLayer.size() == 0) || (listLayer.contains("ABB190"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "ABB190.shp")
+                .getAbsolutePath(), MGCPBerthingArea.class,
+            CartAGenDataSet.BUILD_AREA_POP, IBerthingArea.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // Water Treatment loading
+      // Settling Pond
+      if ((listLayer.size() == 0) || (listLayer.contains("AAC030"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAC030.shp")
+                .getAbsolutePath(), MGCPSettlingPond.class,
+            CartAGenDataSet.WATER_AREAS_POP, IWaterBasin.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      // Water Treatment Bed
+      if ((listLayer.size() == 0) || (listLayer.contains("ABH040"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "ABH040.shp")
+                .getAbsolutePath(), MGCPWaterTreatmentBed.class,
+            CartAGenDataSet.WATER_AREAS_POP, IWaterBasin.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // Inundation Area loading
+      if ((listLayer.size() == 0) || (listLayer.contains("ABH090"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "ABH090.shp")
+                .getAbsolutePath(), MGCPInundationArea.class,
+            CartAGenDataSet.WATER_AREAS_POP, IInundationArea.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // landcover loading
+      // quarry areas
+      if ((listLayer.size() == 0) || (listLayer.contains("AAA012"))) {
+        this.loadLandUseClass(
+            FileUtil.getNamedFileInDir(directory, "AAA012.shp")
+                .getAbsolutePath(), MGCPLandUse.class,
             CartAGenDataSet.LANDUSE_AREAS_POP,
-            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus);
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
+            MGCPLandUseType.QUARRY);
+      }
+
+      // built-up areas
+      if ((listLayer.size() == 0) || (listLayer.contains("AAL020"))) {
+        this.loadLandUseClass(
+            FileUtil.getNamedFileInDir(directory, "AAL020.shp")
+                .getAbsolutePath(), MGCPLandUse.class,
+            CartAGenDataSet.LANDUSE_AREAS_POP,
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
+            MGCPLandUseType.BUILT_UP);
+      }
+
+      // lake areas
+      if ((listLayer.size() == 0) || (listLayer.contains("ABH080"))) {
+        this.loadLandUseClass(
+            FileUtil.getNamedFileInDir(directory, "ABH080.shp")
+                .getAbsolutePath(), MGCPLandUse.class,
+            CartAGenDataSet.LANDUSE_AREAS_POP,
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
+            MGCPLandUseType.LAKE);
+      }
+
+      // reservoir areas
+      if ((listLayer.size() == 0) || (listLayer.contains("ABH130"))) {
+        this.loadLandUseClass(
+            FileUtil.getNamedFileInDir(directory, "ABH130.shp")
+                .getAbsolutePath(), MGCPLandUse.class,
+            CartAGenDataSet.LANDUSE_AREAS_POP,
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
+            MGCPLandUseType.RESERVOIR);
+      }
+
+      // river areas
+      if ((listLayer.size() == 0) || (listLayer.contains("ABH140"))) {
+        this.loadLandUseClass(
+            FileUtil.getNamedFileInDir(directory, "ABH140.shp")
+                .getAbsolutePath(), MGCPLandUse.class,
+            CartAGenDataSet.LANDUSE_AREAS_POP,
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
+            MGCPLandUseType.RIVER);
+      }
+
+      // soil surface areas
+      if ((listLayer.size() == 0) || (listLayer.contains("ADA010"))) {
+        this.loadLandUseClass(
+            FileUtil.getNamedFileInDir(directory, "ADA010.shp")
+                .getAbsolutePath(), MGCPLandUse.class,
+            CartAGenDataSet.LANDUSE_AREAS_POP,
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
+            MGCPLandUseType.SOIL_SURFACE);
+      }
+
+      // crop areas
+      if ((listLayer.size() == 0) || (listLayer.contains("AEA010"))) {
+        this.loadLandUseClass(
+            FileUtil.getNamedFileInDir(directory, "AEA010.shp")
+                .getAbsolutePath(), MGCPLandUse.class,
+            CartAGenDataSet.LANDUSE_AREAS_POP,
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
+            MGCPLandUseType.CROP);
+      }
+
+      // grassland areas
+      if ((listLayer.size() == 0) || (listLayer.contains("AEB010"))) {
+        this.loadLandUseClass(
+            FileUtil.getNamedFileInDir(directory, "AEB010.shp")
+                .getAbsolutePath(), MGCPLandUse.class,
+            CartAGenDataSet.LANDUSE_AREAS_POP,
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
+            MGCPLandUseType.GRASSLAND);
+      }
+
+      // thicket areas
+      if ((listLayer.size() == 0) || (listLayer.contains("AEB020"))) {
+        this.loadLandUseClass(
+            FileUtil.getNamedFileInDir(directory, "AEB020.shp")
+                .getAbsolutePath(), MGCPLandUse.class,
+            CartAGenDataSet.LANDUSE_AREAS_POP,
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
+            MGCPLandUseType.THICKET);
+      }
+
+      // wooded areas
+      if ((listLayer.size() == 0) || (listLayer.contains("AEC030"))) {
+        this.loadLandUseClass(
+            FileUtil.getNamedFileInDir(directory, "AEC030.shp")
+                .getAbsolutePath(), MGCPLandUse.class,
+            CartAGenDataSet.LANDUSE_AREAS_POP,
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
+            MGCPLandUseType.WOODED);
+      }
+
+      // marsh areas
+      if ((listLayer.size() == 0) || (listLayer.contains("AED010"))) {
+        this.loadLandUseClass(
+            FileUtil.getNamedFileInDir(directory, "AED010.shp")
+                .getAbsolutePath(), MGCPLandUse.class,
+            CartAGenDataSet.LANDUSE_AREAS_POP,
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
+            MGCPLandUseType.MARSH);
+      }
+
+      // swamp areas
+      if ((listLayer.size() == 0) || (listLayer.contains("AED020"))) {
+        this.loadLandUseClass(
+            FileUtil.getNamedFileInDir(directory, "AED020.shp")
+                .getAbsolutePath(), MGCPLandUse.class,
+            CartAGenDataSet.LANDUSE_AREAS_POP,
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
+            MGCPLandUseType.SWAMP);
       }
 
       // railway

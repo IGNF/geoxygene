@@ -35,6 +35,8 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetwork;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLandUse;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLandUseType;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.util.CRSConversion;
@@ -265,6 +267,86 @@ public abstract class ShapeFileLoader {
           IGeneObj tr = (IGeneObj) constructor.newInstance(
               ((IMultiSurface<?>) geom).get(i), attributes, type);
 
+          pop.add(tr);
+        }
+      }
+    }
+    shr.close();
+    dbr.close();
+  }
+
+  @SuppressWarnings("unchecked")
+  public void loadLandUseClass(String path, Class<?> geneObjClass,
+      String nomPopulation, String featureTypeName, PeaRepDbType type,
+      MGCPLandUseType landUseType) throws ShapefileException, IOException,
+      IllegalArgumentException, InstantiationException, IllegalAccessException,
+      InvocationTargetException, SecurityException, NoSuchMethodException {
+    ShapefileReader shr = null;
+    DbaseFileReader dbr = null;
+    try {
+      ShpFiles shpf = new ShpFiles(path);
+      shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+      dbr = new DbaseFileReader(shpf, true, Charset.forName("ISO-8859-1"));
+    } catch (FileNotFoundException e) {
+      if (ShapeFileLoader.logger.isLoggable(Level.FINEST)) {
+        ShapeFileLoader.logger.finest("fichier " + path + " non trouve.");
+      }
+      return;
+    }
+
+    if (ShapeFileLoader.logger.isLoggable(Level.INFO)) {
+      ShapeFileLoader.logger.info("Loading: " + path);
+    }
+
+    // get the road population of the dataset
+    IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) this.getDataset()
+        .getCartagenPop(nomPopulation, featureTypeName);
+
+    // Get the Lat/Long coordinates of the first object of the population
+    // and compute the associated utm zone
+    Record object1 = shr.nextRecord();
+    Geometry geomJTS1 = (Geometry) object1.shape();
+    if (this.projEpsg == null) {
+      String zone = this.getZoneUtm(geomJTS1.getCentroid().getX(), geomJTS1
+          .getCentroid().getY());
+      this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
+    }
+    shr.close();
+    ShpFiles shpf = new ShpFiles(path);
+    shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
+
+    // loop on the shapefile records
+    while (shr.hasNext() && dbr.hasNext()) {
+      Record object = shr.nextRecord();
+
+      // get the record attributes
+      Map<String, Object> attributes = this.getShapeFileFields(dbr);
+
+      // get the record geometry
+      IGeometry geom = null;
+      try {
+        // coordinates transformation
+        Geometry geomJTS = (Geometry) object.shape();
+        geom = CRSConversion.changeCRS(geomJTS, "4326", this.projEpsg, false,
+            true);
+      } catch (Exception e) {
+        e.printStackTrace();
+        return;
+      }
+
+      // build the line string object
+      Constructor<?> constructor = geneObjClass.getConstructor(IPolygon.class,
+          HashMap.class, PeaRepDbType.class);
+      if (geom instanceof IPolygon) {
+        IGeneObj tr = (IGeneObj) constructor
+            .newInstance(geom, attributes, type);
+        ((MGCPLandUse) tr).setLandUseType(landUseType);
+        pop.add(tr);
+      } else {
+        for (int i = 0; i < ((IMultiSurface<?>) geom).size(); i++) {
+          IGeneObj tr = (IGeneObj) constructor.newInstance(
+              ((IMultiSurface<?>) geom).get(i), attributes, type);
+          ((MGCPLandUse) tr).setLandUseType(landUseType);
           pop.add(tr);
         }
       }

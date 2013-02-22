@@ -436,4 +436,10 @@ public class MGCPRailwayLine extends MGCPFeature implements IRailwayLine {
     this.upd_info = upd_info;
   }
 
+  @Override
+  public void setSidetrack(boolean sidetrack) {
+    // TODO Auto-generated method stub
+
+  }
+
 }
