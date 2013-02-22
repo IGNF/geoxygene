@@ -7,13 +7,14 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.cartagen.pearep.mgcp;
+package fr.ign.cogit.cartagen.pearep.mgcp.hydro;
 
 import java.util.HashMap;
 
 import org.hibernate.annotations.Type;
 
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterBasin;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFeature;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;

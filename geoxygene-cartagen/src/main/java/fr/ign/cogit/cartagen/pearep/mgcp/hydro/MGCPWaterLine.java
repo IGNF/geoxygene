@@ -7,7 +7,7 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.cartagen.pearep.mgcp;
+package fr.ign.cogit.cartagen.pearep.mgcp.hydro;
 
 import java.util.HashMap;
 
@@ -22,6 +22,7 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkFace;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.network.NetworkSectionType;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFeature;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -48,12 +49,12 @@ public class MGCPWaterLine extends MGCPFeature implements IWaterLine {
   private INetworkNode finalNode;
   private Direction direction;
   private boolean deadEnd = false;
-  private String name = "";
+  private String nam = "";
   private int importance;
   private NetworkSectionType type;
 
-  private long acc, dir, wcc, hyp, loc, prc, smc, tid;
-  private String nfi, nfn, wid;
+  private long acc, dir, wcc, hyp, loc, prc, smc, tid, nvs;
+  private String nfi, nfn, wid, lbv, rbv;
 
   /**
    * Empty constructor used by EJB to load features from PostGIS
@@ -62,33 +63,11 @@ public class MGCPWaterLine extends MGCPFeature implements IWaterLine {
     super();
   }
 
-  public MGCPWaterLine(ILineString line, String name, int acc, int dir,
-      int wcc, int hyp, int loc, int prc, int smc, int tid, String wid,
-      String nfi, String nfn) {
-    super();
-    this.geoxObj = new TronconHydrographiqueImpl();
-    this.geoxObj.setGeom(line);
-    this.setInitialGeom(line);
-    this.setEliminated(false);
-    this.name = name;
-    this.acc = acc;
-    this.dir = dir;
-    this.wcc = wcc;
-    this.hyp = hyp;
-    this.loc = loc;
-    this.prc = prc;
-    this.smc = smc;
-    this.tid = tid;
-    this.wid = wid;
-    this.nfi = nfi;
-    this.nfn = nfn;
-  }
-
   /**
    * @param type
    */
   public MGCPWaterLine(ILineString line, HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      PeaRepDbType type) {
     super();
     this.geoxObj = new TronconHydrographiqueImpl();
     this.geoxObj.setGeom(line);
@@ -101,13 +80,19 @@ public class MGCPWaterLine extends MGCPFeature implements IWaterLine {
     this.wcc = (Long) attributes.get("wcc");
     this.hyp = (Long) attributes.get("hyp");
     this.loc = (Long) attributes.get("loc");
-    this.name = (String) attributes.get("nam");
+    if (attributes.containsKey("nvs"))
+      this.nvs = (Long) attributes.get("nvs");
+    this.nam = (String) attributes.get("nam");
     this.nfi = (String) attributes.get("nfi");
     this.nfn = (String) attributes.get("nfn");
     this.prc = (Long) attributes.get("prc");
     this.smc = (Long) attributes.get("smc");
     this.tid = (Long) attributes.get("tid");
     this.wid = (String) attributes.get("wid");
+    if (attributes.containsKey("lbv"))
+      this.lbv = (String) attributes.get("lbv");
+    if (attributes.containsKey("rbv"))
+      this.rbv = (String) attributes.get("rbv");
 
   }
 
@@ -205,19 +190,19 @@ public class MGCPWaterLine extends MGCPFeature implements IWaterLine {
     return super.isEliminated();
   }
 
-  public String getName() {
-    return this.name;
+  public String getNam() {
+    return this.nam;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setNam(String name) {
+    this.nam = name;
   }
 
   @Override
   public void restoreGeoxObjects() {
     this.geoxObj = new TronconHydrographiqueImpl(new ReseauImpl(), false,
         this.getGeom());
-    this.geoxObj.setNom(this.name);
+    this.geoxObj.setNom(this.nam);
   }
 
   @Override
@@ -341,6 +326,38 @@ public class MGCPWaterLine extends MGCPFeature implements IWaterLine {
 
   public void setNfn(String nfn) {
     this.nfn = nfn;
+  }
+
+  public NetworkSectionType getType() {
+    return type;
+  }
+
+  public void setType(NetworkSectionType type) {
+    this.type = type;
+  }
+
+  public long getNvs() {
+    return nvs;
+  }
+
+  public void setNvs(long nvs) {
+    this.nvs = nvs;
+  }
+
+  public String getLbv() {
+    return lbv;
+  }
+
+  public void setLbv(String lbv) {
+    this.lbv = lbv;
+  }
+
+  public String getRbv() {
+    return rbv;
+  }
+
+  public void setRbv(String rbv) {
+    this.rbv = rbv;
   }
 
 }

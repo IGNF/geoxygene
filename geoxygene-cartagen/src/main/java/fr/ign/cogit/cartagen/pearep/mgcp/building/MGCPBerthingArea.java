@@ -7,34 +7,35 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.cartagen.pearep.mgcp;
+package fr.ign.cogit.cartagen.pearep.mgcp.building;
 
 import java.util.HashMap;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.genericschema.hydro.IInundationArea;
+import fr.ign.cogit.cartagen.core.genericschema.harbour.IBerthingArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFeature;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.AutreConstruction;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.AutreConstructionImpl;
 
-public class MGCPInundationArea extends MGCPFeature implements IInundationArea {
+public class MGCPBerthingArea extends MGCPFeature implements IBerthingArea {
 
   private AutreConstruction geoxObj;
 
   // VMAP attributes
-  private String ace, ale, cpyrt_note, src_date, src_info, tier_note, txt, uid,
-      upd_date, upd_info;
-  private long acc, ace_eval, ale_eval, asc, cns, src_name, upd_name,
+  private String ace, ale, cpyrt_note, len, nam, nfi, nfn, src_date, src_info,
+      tier_note, txt, uid, upd_date, upd_info, wid;
+  private long acc, ace_eval, ale_eval, fac, pwc, src_name, upd_name, wle,
       zval_type;
 
   /**
    * @param type
    */
-  public MGCPInundationArea(IPolygon polygon,
-      HashMap<String, Object> attributes, PeaRepDbType type) {
+  public MGCPBerthingArea(IPolygon polygon, HashMap<String, Object> attributes,
+      PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(polygon);
     this.setInitialGeom(polygon);
@@ -43,15 +44,22 @@ public class MGCPInundationArea extends MGCPFeature implements IInundationArea {
     this.acc = (Long) attributes.get("acc");
     this.ace_eval = (Long) attributes.get("ace_eval");
     this.ale_eval = (Long) attributes.get("ale_eval");
-    this.asc = (Long) attributes.get("zval_type");
-    this.cns = (Long) attributes.get("zval_type");
+    this.fac = (Long) attributes.get("fac");
+    this.pwc = (Long) attributes.get("pwc");
     this.src_name = (Long) attributes.get("src_name");
     this.upd_name = (Long) attributes.get("upd_name");
+    this.wle = (Long) attributes.get("wle");
     this.zval_type = (Long) attributes.get("zval_type");
 
     this.ace = (String) attributes.get("ace");
     this.ale = (String) attributes.get("ale");
     this.cpyrt_note = (String) attributes.get("cpyrt_note");
+
+    this.len = (String) attributes.get("len");
+    this.nam = (String) attributes.get("nam");
+    this.nfi = (String) attributes.get("nfi");
+    this.nfn = (String) attributes.get("nfn");
+
     this.src_date = (String) attributes.get("src_date");
     this.src_info = (String) attributes.get("src_info");
     this.tier_note = (String) attributes.get("tier_note");
@@ -59,6 +67,7 @@ public class MGCPInundationArea extends MGCPFeature implements IInundationArea {
     this.uid = (String) attributes.get("uid");
     this.upd_date = (String) attributes.get("upd_date");
     this.upd_info = (String) attributes.get("upd_info");
+    this.wid = (String) attributes.get("wid");
 
   }
 
@@ -206,20 +215,68 @@ public class MGCPInundationArea extends MGCPFeature implements IInundationArea {
     this.zval_type = zval_type;
   }
 
-  public long getAsc() {
-    return asc;
+  public String getLen() {
+    return len;
   }
 
-  public void setAsc(long asc) {
-    this.asc = asc;
+  public void setLen(String len) {
+    this.len = len;
   }
 
-  public long getCns() {
-    return cns;
+  public String getWid() {
+    return wid;
   }
 
-  public void setCns(long cns) {
-    this.cns = cns;
+  public void setWid(String wid) {
+    this.wid = wid;
+  }
+
+  public String getNam() {
+    return nam;
+  }
+
+  public void setNam(String nam) {
+    this.nam = nam;
+  }
+
+  public String getNfi() {
+    return nfi;
+  }
+
+  public void setNfi(String nfi) {
+    this.nfi = nfi;
+  }
+
+  public String getNfn() {
+    return nfn;
+  }
+
+  public void setNfn(String nfn) {
+    this.nfn = nfn;
+  }
+
+  public long getFac() {
+    return fac;
+  }
+
+  public void setFac(long fac) {
+    this.fac = fac;
+  }
+
+  public long getPwc() {
+    return pwc;
+  }
+
+  public void setPwc(long pwc) {
+    this.pwc = pwc;
+  }
+
+  public long getWle() {
+    return wle;
+  }
+
+  public void setWle(long wle) {
+    this.wle = wle;
   }
 
 }

@@ -7,13 +7,14 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.cartagen.pearep.mgcp;
+package fr.ign.cogit.cartagen.pearep.mgcp.relief;
 
 import java.util.HashMap;
 
 import org.hibernate.annotations.Type;
 
 import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFeature;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;

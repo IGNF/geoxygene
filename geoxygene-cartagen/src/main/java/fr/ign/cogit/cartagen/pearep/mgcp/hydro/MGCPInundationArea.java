@@ -7,33 +7,35 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.cartagen.pearep.mgcp;
+package fr.ign.cogit.cartagen.pearep.mgcp.hydro;
 
 import java.util.HashMap;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.genericschema.misc.IBoundedArea;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.IInundationArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFeature;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.AutreConstruction;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.AutreConstructionImpl;
 
-public class MGCPCemetery extends MGCPFeature implements IBoundedArea {
+public class MGCPInundationArea extends MGCPFeature implements IInundationArea {
 
   private AutreConstruction geoxObj;
 
   // VMAP attributes
-  private String ace, ale, cpyrt_note, nam, nfi, nfn, src_date, src_info,
-      tier_note, txt, uid, upd_date, upd_info;
-  private long acc, ace_eval, ale_eval, rel, src_name, upd_name, zval_type;
+  private String ace, ale, cpyrt_note, src_date, src_info, tier_note, txt, uid,
+      upd_date, upd_info;
+  private long acc, ace_eval, ale_eval, asc, cns, src_name, upd_name,
+      zval_type;
 
   /**
    * @param type
    */
-  public MGCPCemetery(IPolygon polygon, HashMap<String, Object> attributes,
-      PeaRepDbType type) {
+  public MGCPInundationArea(IPolygon polygon,
+      HashMap<String, Object> attributes, PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(polygon);
     this.setInitialGeom(polygon);
@@ -42,7 +44,8 @@ public class MGCPCemetery extends MGCPFeature implements IBoundedArea {
     this.acc = (Long) attributes.get("acc");
     this.ace_eval = (Long) attributes.get("ace_eval");
     this.ale_eval = (Long) attributes.get("ale_eval");
-    this.rel = (Long) attributes.get("rel");
+    this.asc = (Long) attributes.get("zval_type");
+    this.cns = (Long) attributes.get("zval_type");
     this.src_name = (Long) attributes.get("src_name");
     this.upd_name = (Long) attributes.get("upd_name");
     this.zval_type = (Long) attributes.get("zval_type");
@@ -50,9 +53,6 @@ public class MGCPCemetery extends MGCPFeature implements IBoundedArea {
     this.ace = (String) attributes.get("ace");
     this.ale = (String) attributes.get("ale");
     this.cpyrt_note = (String) attributes.get("cpyrt_note");
-    this.nam = (String) attributes.get("nam");
-    this.nfi = (String) attributes.get("nfi");
-    this.nfn = (String) attributes.get("nfn");
     this.src_date = (String) attributes.get("src_date");
     this.src_info = (String) attributes.get("src_info");
     this.tier_note = (String) attributes.get("tier_note");
@@ -60,6 +60,7 @@ public class MGCPCemetery extends MGCPFeature implements IBoundedArea {
     this.uid = (String) attributes.get("uid");
     this.upd_date = (String) attributes.get("upd_date");
     this.upd_info = (String) attributes.get("upd_info");
+
   }
 
   @Override
@@ -71,22 +72,6 @@ public class MGCPCemetery extends MGCPFeature implements IBoundedArea {
   @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
   public IPolygon getGeom() {
     return (IPolygon) super.getGeom();
-  }
-
-  public String getNfi() {
-    return this.nfi;
-  }
-
-  public void setNfi(String nfi) {
-    this.nfi = nfi;
-  }
-
-  public String getNfn() {
-    return this.nfn;
-  }
-
-  public void setNfn(String nfn) {
-    this.nfn = nfn;
   }
 
   public long getAcc() {
@@ -124,14 +109,6 @@ public class MGCPCemetery extends MGCPFeature implements IBoundedArea {
 
   public void setCpyrt_note(String cpyrt_note) {
     this.cpyrt_note = cpyrt_note;
-  }
-
-  public String getNam() {
-    return nam;
-  }
-
-  public void setNam(String nam) {
-    this.nam = nam;
   }
 
   public String getSrc_date() {
@@ -230,12 +207,20 @@ public class MGCPCemetery extends MGCPFeature implements IBoundedArea {
     this.zval_type = zval_type;
   }
 
-  public long getRel() {
-    return rel;
+  public long getAsc() {
+    return asc;
   }
 
-  public void setRel(long rel) {
-    this.rel = rel;
+  public void setAsc(long asc) {
+    this.asc = asc;
+  }
+
+  public long getCns() {
+    return cns;
+  }
+
+  public void setCns(long cns) {
+    this.cns = cns;
   }
 
 }

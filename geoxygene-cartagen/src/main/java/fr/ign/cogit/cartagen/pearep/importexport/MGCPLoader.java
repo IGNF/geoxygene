@@ -25,33 +25,36 @@ import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IPipeLine;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IPowerStation;
 import fr.ign.cogit.cartagen.core.genericschema.harbour.IBerthingArea;
+import fr.ign.cogit.cartagen.core.genericschema.harbour.IBerthingLine;
 import fr.ign.cogit.cartagen.core.genericschema.harbour.IDryDockArea;
 import fr.ign.cogit.cartagen.core.genericschema.harbour.ITrainingWallArea;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.ICoastLine;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.IDitchLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IInundationArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterBasin;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
+import fr.ign.cogit.cartagen.core.genericschema.land.IWoodLine;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IBoundedArea;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
+import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefElementLine;
+import fr.ign.cogit.cartagen.core.genericschema.road.IBridgeLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildArea;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISportsField;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISquareArea;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBerthingArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuildPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuilding;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPCemetery;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPCommunicationStation;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPContourLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPDryDockArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFortification;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPInundationArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLandUse;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLandUseType;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPMineralPile;
@@ -66,14 +69,25 @@ import fr.ign.cogit.cartagen.pearep.mgcp.MGCPStadium;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPStorageDepot;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPTrainingWallArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPVehicleLot;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPWaterArea;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPWaterLine;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPWaterTreatmentBed;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirport;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPTaxiwayArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.building.MGCPBerthingArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.building.MGCPBerthingLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.building.MGCPBuildLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.building.MGCPCemetery;
 import fr.ign.cogit.cartagen.pearep.mgcp.energy.MGCPElectricityLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.energy.MGCPPipeLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPCoastLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPDitchLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPInundationArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterTreatmentBed;
+import fr.ign.cogit.cartagen.pearep.mgcp.land.MGCPWoodLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.relief.MGCPContourLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.relief.MGCPReliefElementLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPBridgeLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPPathLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRailwayLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadLine;
@@ -115,7 +129,6 @@ public class MGCPLoader extends ShapeFileLoader {
                 .getDataset().getRoadNetwork(), PeaRepDbType.MGCPPlusPlus);
       }
       if ((listLayer.size() == 0) || (listLayer.contains("LAP010"))) {
-        // ground transportation loading
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LAP010.shp")
                 .getAbsolutePath(), MGCPPathLine.class,
@@ -123,11 +136,24 @@ public class MGCPLoader extends ShapeFileLoader {
             PeaRepDbType.MGCPPlusPlus);
       }
       if ((listLayer.size() == 0) || (listLayer.contains("LAP050"))) {
-        // ground transportation loading
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LAP050.shp")
                 .getAbsolutePath(), MGCPPathLine.class,
             CartAGenDataSet.PATHS_POP, IPathLine.FEAT_TYPE_NAME, null,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      if ((listLayer.size() == 0) || (listLayer.contains("LAQ040"))) {
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LAQ040.shp")
+                .getAbsolutePath(), MGCPBridgeLine.class,
+            PeaRepDataset.BRIDGE_LINE_POP, IBridgeLine.FEAT_TYPE_NAME, null,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      if ((listLayer.size() == 0) || (listLayer.contains("LBH070"))) {
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LBH070.shp")
+                .getAbsolutePath(), MGCPBridgeLine.class,
+            PeaRepDataset.BRIDGE_LINE_POP, IBridgeLine.FEAT_TYPE_NAME, null,
             PeaRepDbType.MGCPPlusPlus);
       }
 
@@ -153,6 +179,27 @@ public class MGCPLoader extends ShapeFileLoader {
             CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
+      if ((listLayer.size() == 0) || (listLayer.contains("LBH030"))) {
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LBH030.shp")
+                .getAbsolutePath(), MGCPDitchLine.class,
+            PeaRepDataset.DITCH_LINE_POP, IDitchLine.FEAT_TYPE_NAME, null,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      if ((listLayer.size() == 0) || (listLayer.contains("LBA010"))) {
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LBA010.shp")
+                .getAbsolutePath(), MGCPCoastLine.class,
+            PeaRepDataset.COAST_LINE_POP, ICoastLine.FEAT_TYPE_NAME, null,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      if ((listLayer.size() == 0) || (listLayer.contains("LBH020"))) {
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LBH020.shp")
+                .getAbsolutePath(), MGCPWaterLine.class,
+            CartAGenDataSet.WATER_LINES_POP, IWaterLine.FEAT_TYPE_NAME, this
+                .getDataset().getHydroNetwork(), PeaRepDbType.MGCPPlusPlus);
+      }
 
       // elevation loading
       if ((listLayer.size() == 0) || (listLayer.contains("LCA010"))) {
@@ -162,12 +209,17 @@ public class MGCPLoader extends ShapeFileLoader {
             CartAGenDataSet.CONTOUR_LINES_POP, IContourLine.FEAT_TYPE_NAME,
             null, PeaRepDbType.MGCPPlusPlus);
       }
+      if ((listLayer.size() == 0) || (listLayer.contains("LDB010"))) {
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LDB010.shp")
+                .getAbsolutePath(), MGCPReliefElementLine.class,
+            CartAGenDataSet.RELIEF_LINES_POP,
+            IReliefElementLine.FEAT_TYPE_NAME, null, PeaRepDbType.MGCPPlusPlus);
+      }
 
       // aero loading
       if ((listLayer.size() == 0) || (listLayer.contains("AGB005")))
         loadAirports(directory);
-
-      // population loading
 
       // energy
       if ((listLayer.size() == 0) || (listLayer.contains("LAT030"))) {
@@ -201,6 +253,27 @@ public class MGCPLoader extends ShapeFileLoader {
                 .getAbsolutePath(), MGCPBuilding.class,
             CartAGenDataSet.BUILD_AREA_POP, IBuilding.FEAT_TYPE_NAME,
 
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      if ((listLayer.size() == 0) || (listLayer.contains("LBB041"))) {
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LBB041.shp")
+                .getAbsolutePath(), MGCPBuildLine.class,
+            PeaRepDataset.BUILD_LINE_POP, IBuildLine.FEAT_TYPE_NAME, null,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      if ((listLayer.size() == 0) || (listLayer.contains("LBB230"))) {
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LBB230.shp")
+                .getAbsolutePath(), MGCPBuildLine.class,
+            PeaRepDataset.BUILD_LINE_POP, IBuildLine.FEAT_TYPE_NAME, null,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      if ((listLayer.size() == 0) || (listLayer.contains("LBB190"))) {
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LBB190.shp")
+                .getAbsolutePath(), MGCPBerthingLine.class,
+            PeaRepDataset.BERTHING_LINES, IBerthingLine.FEAT_TYPE_NAME, null,
             PeaRepDbType.MGCPPlusPlus);
       }
 
@@ -499,6 +572,15 @@ public class MGCPLoader extends ShapeFileLoader {
             CartAGenDataSet.LANDUSE_AREAS_POP,
             ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus,
             MGCPLandUseType.SWAMP);
+      }
+
+      // wood lines
+      if ((listLayer.size() == 0) || (listLayer.contains("LEC030"))) {
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LEC030.shp")
+                .getAbsolutePath(), MGCPWoodLine.class,
+            PeaRepDataset.WOODLINES_POP, IWoodLine.FEAT_TYPE_NAME, null,
+            PeaRepDbType.MGCPPlusPlus);
       }
 
       // railway
