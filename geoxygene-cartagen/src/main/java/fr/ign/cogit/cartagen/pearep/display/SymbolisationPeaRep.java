@@ -17,6 +17,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.renderable.ParameterBlock;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
@@ -27,6 +29,7 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea.TaxiwayType;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IPointOfInterest;
+import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuiltUpArea;
 import fr.ign.cogit.cartagen.pearep.vmap.ind.VMAPObstrPoint;
 import fr.ign.cogit.cartagen.pearep.vmap.ind.VMAPStoragePoint;
@@ -46,10 +49,17 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Symbolisation;
 import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.VisuPanel;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
+import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineSegment;
 import fr.ign.cogit.geoxygene.style.ExternalGraphic;
+import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
+import fr.ign.cogit.geoxygene.util.algo.geomstructure.Segment;
 
 public class SymbolisationPeaRep {
 
@@ -136,6 +146,59 @@ public class SymbolisationPeaRep {
             pv.draw(new Color(210, 202, 236), (IPolygon) obj.getGeom());
           else
             pv.draw(new Color(187, 172, 172), (IPolygon) obj.getGeom());
+        }
+      }
+    };
+  }
+
+  /**
+   * symbolise the runways.
+   * @param layerGroup
+   * @return
+   */
+  public static Symbolisation railway(final AbstractLayerGroup layerGroup) {
+    return new Symbolisation() {
+      @Override
+      public void draw(VisuPanel pv, IFeature obj) {
+        if (obj.isDeleted()) {
+          return;
+        }
+
+        // verification
+        if (!(obj.getGeom() instanceof ILineString)) {
+          SymbolisationPeaRep.logger.warn("probleme dans le dessin de " + obj
+              + ". Mauvais type de geometrie: "
+              + obj.getGeom().getClass().getSimpleName());
+          return;
+        }
+
+        pv.draw(GeneralisationLegend.RES_FER_COULEUR,
+            (ILineString) obj.getGeom(), ((IRailwayLine) obj).getWidth(),
+            BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, null);
+
+        // put a 1 mm step between perpendicular symbols
+        double step = 1.0 * Legend.getSYMBOLISATI0N_SCALE() / 1000.0;
+        double radius = 0.1 * Legend.getSYMBOLISATI0N_SCALE() / 1000.0;
+        double abscurv = step;
+        ILineString line = (ILineString) obj.getGeom();
+        while (abscurv < line.length()) {
+          IDirectPosition pt = Operateurs.pointEnAbscisseCurviligne(line,
+              abscurv);
+          IDirectPosition nearest = CommonAlgorithmsFromCartAGen
+              .getNearestOtherVertexFromPoint(line, pt);
+          // compute the line equation
+          Segment segment = new Segment(pt, nearest)
+              .getPerpendicularSegment(true);
+          Set<IDirectPosition> inter = segment.intersectionWithCircle(pt,
+              radius);
+          if (inter.size() != 2) {
+            abscurv += step;
+            continue;
+          }
+          Iterator<IDirectPosition> iter = inter.iterator();
+          ILineSegment seg = new GM_LineSegment(iter.next(), iter.next());
+          pv.draw(GeneralisationLegend.RES_FER_COULEUR, seg);
+          abscurv += step;
         }
       }
     };

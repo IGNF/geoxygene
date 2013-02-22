@@ -7,7 +7,7 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.cartagen.pearep.mgcp;
+package fr.ign.cogit.cartagen.pearep.mgcp.transport;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -21,6 +21,7 @@ import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
 import fr.ign.cogit.cartagen.core.genericschema.network.NetworkSectionType;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFeature;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.software.GeneralisationLegend;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -67,7 +68,7 @@ public class MGCPRoadLine extends MGCPFeature implements IRoadLine {
    * @param type
    */
   public MGCPRoadLine(ILineString line, HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      PeaRepDbType type) {
     super();
     this.geoxObj = new TronconDeRouteImpl(new ReseauImpl(), false, line);
     this.setInitialGeom(line);

@@ -591,9 +591,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
     }
 
     // reseau ferroviaire
-    layerManager.addSymbolisedLayer(this.layerRailwayLine, Symbolisation.ligne(
-        GeneralisationLegend.RES_FER_COULEUR,
-        GeneralisationLegend.RES_FER_LARGEUR, this), this.cVoirRF);
+    layerManager.addSymbolisedLayer(this.layerRailwayLine,
+        SymbolisationPeaRep.railway(this), this.cVoirRF);
     // reseau electrique
     layerManager.addSymbolisedLayer(this.layerElectricityLine, Symbolisation
         .ligne(GeneralisationLegend.RES_ELEC_COULEUR,

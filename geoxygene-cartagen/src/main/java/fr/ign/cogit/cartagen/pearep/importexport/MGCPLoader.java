@@ -21,21 +21,27 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
+import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterArea;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
+import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
+import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuildPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuiltUpArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPContourLine;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPRoadLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPWaterArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPWaterLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirport;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPTaxiwayArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.energy.MGCPElectricityLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPPathLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRailwayLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadLine;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -70,6 +76,22 @@ public class MGCPLoader extends ShapeFileLoader {
                 .getAbsolutePath(), MGCPRoadLine.class,
             CartAGenDataSet.ROADS_POP, IRoadLine.FEAT_TYPE_NAME, this
                 .getDataset().getRoadNetwork(), PeaRepDbType.MGCPPlusPlus);
+      }
+      if ((listLayer.size() == 0) || (listLayer.contains("LAP010"))) {
+        // ground transportation loading
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LAP010.shp")
+                .getAbsolutePath(), MGCPPathLine.class,
+            CartAGenDataSet.PATHS_POP, IPathLine.FEAT_TYPE_NAME, null,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      if ((listLayer.size() == 0) || (listLayer.contains("LAP050"))) {
+        // ground transportation loading
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LAP050.shp")
+                .getAbsolutePath(), MGCPPathLine.class,
+            CartAGenDataSet.PATHS_POP, IPathLine.FEAT_TYPE_NAME, null,
+            PeaRepDbType.MGCPPlusPlus);
       }
 
       // hydro loading
@@ -108,6 +130,16 @@ public class MGCPLoader extends ShapeFileLoader {
       if ((listLayer.size() == 0) || (listLayer.contains("AGB005")))
         loadAirports(directory);
 
+      // energy
+      if ((listLayer.size() == 0) || (listLayer.contains("LAT030"))) {
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LAT030.shp")
+                .getAbsolutePath(), MGCPElectricityLine.class,
+            CartAGenDataSet.ELECTRICITY_LINES_POP,
+            IElectricityLine.FEAT_TYPE_NAME, this.getDataset()
+                .getElectricityNetwork(), PeaRepDbType.MGCPPlusPlus);
+      }
+
       // population loading
       if ((listLayer.size() == 0) || (listLayer.contains("PAL015"))) {
         this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAL015.shp")
@@ -122,6 +154,15 @@ public class MGCPLoader extends ShapeFileLoader {
                 .getAbsolutePath(), MGCPBuiltUpArea.class,
             CartAGenDataSet.LANDUSE_AREAS_POP,
             ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // railway
+      if ((listLayer.size() == 0) || (listLayer.contains("LAN010"))) {
+        this.loadLineStringClass(
+            FileUtil.getNamedFileInDir(directory, "LAN010.shp")
+                .getAbsolutePath(), MGCPRailwayLine.class,
+            CartAGenDataSet.RAILWAY_LINES_POP, IRailwayLine.FEAT_TYPE_NAME,
+            this.getDataset().getRailwayNetwork(), PeaRepDbType.MGCPPlusPlus);
       }
 
     } catch (IllegalArgumentException e) {

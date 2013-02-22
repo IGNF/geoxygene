@@ -27,6 +27,7 @@ import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPTaxiwayArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPTaxiwayLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadNode;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
