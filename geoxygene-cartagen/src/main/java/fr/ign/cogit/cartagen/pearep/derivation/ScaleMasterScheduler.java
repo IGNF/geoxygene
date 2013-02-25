@@ -350,6 +350,12 @@ public class ScaleMasterScheduler {
         // execute the process on the features
         try {
           process.execute(features);
+          // update features
+          for (IGeneObj objPop : dataset.getCartagenPop(dataset
+              .getPopNameFromClass(classObj))) {
+            if (!features.contains(objPop))
+              features.add(objPop);
+          }
         } catch (Exception e) {
           JOptionPane.showMessageDialog(null, e.getStackTrace());
         }

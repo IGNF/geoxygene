@@ -95,7 +95,7 @@
 		</scale-interval>
 		
 	</scale-line>
-		<scale-line theme="river_area">
+	<scale-line theme="river_area">
 	
 		<scale-interval>
 			<interval-min>25000</interval-min>

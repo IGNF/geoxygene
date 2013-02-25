@@ -56,7 +56,7 @@ public class UnionProcess extends ScaleMasterGeneProcess {
     List<Geometry> list = new ArrayList<Geometry>();
     try {
       // Detection of invalid polygons
-      for (IGeneObj obj : features) {
+      for (IGeneObj obj : new ArrayList<IGeneObj>(features)) {
         IGeometry geom = obj.getGeom();
         Geometry jtsGeom;
         jtsGeom = JtsGeOxygene.makeJtsGeom(geom);
@@ -85,7 +85,9 @@ public class UnionProcess extends ScaleMasterGeneProcess {
       IGeometry union = JtsGeOxygene.makeGeOxygeneGeom(jtsUnion);
 
       // Get the object population
-      IPopulation<IGeneObj> pop = CartAGenDoc.getInstance().getCurrentDataset()
+      IPopulation<IGeneObj> pop = CartAGenDoc
+          .getInstance()
+          .getCurrentDataset()
           .getCartagenPop(
               CartAGenDoc.getInstance().getCurrentDataset()
                   .getPopNameFromClass(features.get(0).getClass()));
@@ -104,11 +106,13 @@ public class UnionProcess extends ScaleMasterGeneProcess {
         IMultiSurface<IPolygon> multiPoly = (IMultiSurface<IPolygon>) union;
         for (IPolygon polygon : multiPoly.getList()) {
           IGeometry unionGeom = polygon;
-          pop.add(constructor.newInstance(unionGeom));
+          IGeneObj newInstance = constructor.newInstance(unionGeom);
+          pop.add(newInstance);
         }
       } else if (union.isPolygon()) {
         IGeometry unionGeom = union;
-        pop.add(constructor.newInstance(unionGeom));
+        IGeneObj newInstance = constructor.newInstance(unionGeom);
+        pop.add(newInstance);
       }
     }
 
