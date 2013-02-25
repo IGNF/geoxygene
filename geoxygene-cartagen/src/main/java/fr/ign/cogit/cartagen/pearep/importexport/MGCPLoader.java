@@ -54,6 +54,7 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.ISquareArea;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuildPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuilding;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuiltUpArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPCommunicationStation;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPCommunicationStationPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPControlTowerPoint;
@@ -464,6 +465,15 @@ public class MGCPLoader extends ShapeFileLoader {
                 .getAbsolutePath(), MGCPInundationArea.class,
             CartAGenDataSet.WATER_AREAS_POP, IInundationArea.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // built-up areas loading
+      if ((listLayer.size() == 0) || (listLayer.contains("AAL020"))) {
+        this.loadPolygonClass(
+            FileUtil.getNamedFileInDir(directory, "AAL020.shp")
+                .getAbsolutePath(), MGCPBuiltUpArea.class,
+            CartAGenDataSet.LANDUSE_AREAS_POP,
+            ISimpleLandUseArea.FEAT_TYPE_NAME, PeaRepDbType.MGCPPlusPlus);
       }
 
       // landcover loading
