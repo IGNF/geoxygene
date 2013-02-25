@@ -25,7 +25,9 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea.TaxiwayType
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayLine;
 import fr.ign.cogit.cartagen.genealgorithms.polygon.Skeletonize;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
+import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.spatialanalysis.clustering.AdjacencyClustering;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -58,6 +60,8 @@ public class AirportTypification {
    * @throws Exception
    */
   public void collapseRunways() throws Exception {
+    IPopulation<IRunwayLine> pop = CartAGenDoc.getInstance()
+        .getCurrentDataset().getRunwayLines();
     for (IRunwayArea runway : airport.getRunwayAreas()) {
       // first find the runway orientation
       double orient = new OrientationMeasure(runway.getGeom())
@@ -72,6 +76,7 @@ public class AirportTypification {
       // build a new runway line
       IRunwayLine line = CartagenApplication.getInstance().getCreationFactory()
           .createRunwayLine(seg);
+      pop.add(line);
       airport.getRunwayLines().add(line);
       // TODO add to a population ?
     }

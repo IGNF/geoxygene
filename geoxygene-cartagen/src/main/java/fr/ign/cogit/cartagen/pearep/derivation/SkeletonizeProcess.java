@@ -74,7 +74,8 @@ public class SkeletonizeProcess extends ScaleMasterGeneProcess {
         network.add((ILineString) objInter.getGeom());
       // compute the straight skeleton
       Set<ILineString> skeleton = Skeletonize.connectSkeletonToNetwork(
-          Skeletonize.skeletonizeStraightSkeleton(geom), network, geom);
+          Skeletonize.skeletonizeStraightSkeleton(geom), network,
+          (IPolygon) obj.getGeom());
       double length = 0.0;
       for (ILineString line : skeleton)
         length += line.length();

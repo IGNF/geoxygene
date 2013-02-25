@@ -762,6 +762,7 @@ public class MGCPLoader extends ShapeFileLoader {
         }
         if (obj instanceof IRunwayArea) {
           ((IAirportArea) airport).getRunwayAreas().add((IRunwayArea) obj);
+          ((IRunwayArea) obj).setAirport((IAirportArea) airport);
         }
       }
     }

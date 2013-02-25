@@ -237,6 +237,9 @@ public class ScaleMasterScheduler {
     this.availableProcesses.add(ContourSelectionProcess.getInstance());
     this.availableProcesses.add(PolygonSimplification.getInstance());
     this.availableProcesses.add(StrokeSelectionProcess.getInstance());
+    this.availableProcesses.add(CollapseToPointProcess.getInstance());
+    this.availableProcesses.add(RunwaySimplificationProcess.getInstance());
+    this.availableProcesses.add(SkeletonizeProcess.getInstance());
   }
 
   private void initLoggers() throws SecurityException, IOException {

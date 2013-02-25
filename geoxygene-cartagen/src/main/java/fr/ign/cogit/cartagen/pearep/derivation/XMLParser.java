@@ -184,6 +184,10 @@ public class XMLParser {
                   valeur = Boolean.valueOf(parameterElement.getChildNodes()
                       .item(0).getNodeValue());
                 }
+                if (parameterElement.getAttribute("type").equals("String")) {
+                  valeur = parameterElement.getChildNodes().item(0)
+                      .getNodeValue();
+                }
                 // TODO autres cas à gérer
                 mapParamProcess.put(parameterElement.getAttribute("name"),
                     valeur);

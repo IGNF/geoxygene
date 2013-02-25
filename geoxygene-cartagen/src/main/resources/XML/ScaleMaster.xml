@@ -17,8 +17,8 @@
 			<class-name>fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadLine</class-name>								
 			<attribute-selection priority="4">
 				<ogc:PropertyIsNotEqualTo>
-					<ogc:PropertyName>tuc</ogc:PropertyName>
-					<ogc:Literal>6</ogc:Literal>
+					<ogc:PropertyName>trs</ogc:PropertyName>
+					<ogc:Literal>26</ogc:Literal>
 				</ogc:PropertyIsNotEqualTo>
 			</attribute-selection>
 			<generalisation-processes>
@@ -38,8 +38,8 @@
 			<class-name>fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadLine</class-name>		
 			<attribute-selection priority="4">
 				<ogc:PropertyIsNotEqualTo>
-					<ogc:PropertyName>tuc</ogc:PropertyName>
-					<ogc:Literal>6</ogc:Literal>
+					<ogc:PropertyName>trs</ogc:PropertyName>
+					<ogc:Literal>26</ogc:Literal>
 				</ogc:PropertyIsNotEqualTo>
 			</attribute-selection>
 			<generalisation-processes>
@@ -59,8 +59,8 @@
 			<class-name>fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadLine</class-name>		
 			<attribute-selection priority="4">
 				<ogc:PropertyIsNotEqualTo>
-					<ogc:PropertyName>tuc</ogc:PropertyName>
-					<ogc:Literal>6</ogc:Literal>
+					<ogc:PropertyName>trs</ogc:PropertyName>
+					<ogc:Literal>26</ogc:Literal>
 				</ogc:PropertyIsNotEqualTo>
 			</attribute-selection>
 			<generalisation-processes>
@@ -80,8 +80,8 @@
 			<class-name>fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadLine</class-name>
 			<attribute-selection priority="4">
 				<ogc:PropertyIsNotEqualTo>
-					<ogc:PropertyName>tuc</ogc:PropertyName>
-					<ogc:Literal>6</ogc:Literal>
+					<ogc:PropertyName>trs</ogc:PropertyName>
+					<ogc:Literal>26</ogc:Literal>
 				</ogc:PropertyIsNotEqualTo>
 			</attribute-selection>
 			<generalisation-processes>
@@ -94,6 +94,49 @@
 			</generalisation-processes>	
 		</scale-interval>
 		
+	</scale-line>
+		<scale-line theme="river_area">
+	
+		<scale-interval>
+			<interval-min>25000</interval-min>
+			<interval-max>50000</interval-max>
+			<db-name>MGCPPlusPlus</db-name>
+			<class-name>fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPRiverArea</class-name>
+		</scale-interval>		
+		<scale-interval>
+			<interval-min>50000</interval-min>
+			<interval-max>150000</interval-max>
+			<db-name>MGCPPlusPlus</db-name>
+			<class-name>fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPRiverArea</class-name>
+			<generalisation-processes>
+				<process priority="0">
+					<name>skeletonize</name>
+					<params>
+						<parameter name="linear_class" type="String">fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterLine</parameter>
+						<parameter name="remove_holes" type="Boolean">false</parameter>
+						<parameter name="width_min" type="Double">65.0</parameter>
+						<parameter name="size_min" type="Double">400000.0</parameter>
+					</params>
+				</process>
+			</generalisation-processes>	
+		</scale-interval>
+		<scale-interval>
+			<interval-min>150000</interval-min>
+			<interval-max>250000</interval-max>
+			<db-name>MGCPPlusPlus</db-name>
+			<class-name>fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPRiverArea</class-name>
+			<generalisation-processes>
+				<process priority="0">
+					<name>skeletonize</name>
+					<params>
+						<parameter name="linear_class" type="String">fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterLine</parameter>
+						<parameter name="remove_holes" type="Boolean">false</parameter>
+						<parameter name="width_min" type="Double">125.0</parameter>
+						<parameter name="size_min" type="Double">400000.0</parameter>
+					</params>
+				</process>
+			</generalisation-processes>	
+		</scale-interval>		
 	</scale-line>
 	
 	<scale-line theme="waterl">
@@ -355,6 +398,7 @@
 			<interval-max>80000</interval-max>
 			<db-name>MGCPPlusPlus</db-name>
 			<class-name>fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayArea</class-name>
+			<generalisation-processes>
 			<process priority="0">
 				<name>RunwaySimplification</name>
 				<params>
@@ -362,12 +406,14 @@
 					<parameter name="collapse" type="Boolean">false</parameter>
 				</params>
 			</process>
+			</generalisation-processes>
 		</scale-interval>
 		<scale-interval>
 			<interval-min>80000</interval-min>
 			<interval-max>3000000</interval-max>
 			<db-name>MGCPPlusPlus</db-name>
 			<class-name>fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayArea</class-name>
+			<generalisation-processes>
 			<process priority="0">
 				<name>RunwaySimplification</name>
 				<params>
@@ -375,8 +421,19 @@
 					<parameter name="collapse" type="Boolean">true</parameter>
 				</params>
 			</process>
+			</generalisation-processes>
 		</scale-interval>
 	</scale-line>
+	
+	<scale-line theme="runway_line">
+		<scale-interval>
+			<interval-min>80000</interval-min>
+			<interval-max>3000000</interval-max>
+			<db-name>MGCPPlusPlus</db-name>
+			<class-name>fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayLine</class-name>
+		</scale-interval>
+	</scale-line>
+	
 	<scale-line theme="lake_area">
 	
 		<scale-interval>
@@ -387,14 +444,5 @@
 		</scale-interval>		
 		
 	</scale-line>
-	<scale-line theme="river_area">
-	
-		<scale-interval>
-			<interval-min>25000</interval-min>
-			<interval-max>50000</interval-max>
-			<db-name>MGCPPlusPlus</db-name>
-			<class-name>fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPRiverArea</class-name>
-		</scale-interval>		
-		
-	</scale-line>
+
 </pearep-scalemaster>

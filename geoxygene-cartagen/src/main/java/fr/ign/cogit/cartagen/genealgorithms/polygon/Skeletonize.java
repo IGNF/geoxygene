@@ -29,6 +29,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IRing;
 import fr.ign.cogit.geoxygene.generalisation.Filtering;
@@ -241,8 +242,16 @@ public class Skeletonize {
     // first, find the intersection between the network and the polygon
     Set<IPoint> intersections = new HashSet<IPoint>();
     for (ILineString line : network) {
-      if (line.intersects(polygon))
-        intersections.add((IPoint) line.intersection(polygon));
+      if (line.intersects(polygon)) {
+        if (line.intersection(polygon) instanceof IPoint)
+          intersections.add((IPoint) line.intersection(polygon));
+        else if (line.intersection(polygon) instanceof IMultiPoint) {
+          IMultiPoint inter = (IMultiPoint) line.intersection(polygon);
+          for (int i = 0; i < inter.getList().size(); i++) {
+            intersections.add(inter.get(i));
+          }
+        }
+      }
     }
     // then get the skeleton extremities
     Map<IDirectPosition, ILineString> skeIni = new HashMap<IDirectPosition, ILineString>();

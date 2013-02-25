@@ -17,5 +17,7 @@ public interface IRunwayArea extends IGeneObjSurf {
 
   public IAirportArea getAirport();
 
+  public void setAirport(IAirportArea airport);
+
   public int getZ();
 }

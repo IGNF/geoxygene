@@ -48,4 +48,9 @@ public class MGCPRunwayArea extends MGCPFeature implements IRunwayArea {
     return (IPolygon) this.geom;
   }
 
+  @Override
+  public void setAirport(IAirportArea airport) {
+    this.airport = (MGCPAirport) airport;
+  }
+
 }
