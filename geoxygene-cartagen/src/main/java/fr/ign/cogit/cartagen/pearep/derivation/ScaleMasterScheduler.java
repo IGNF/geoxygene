@@ -38,6 +38,11 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuildPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuiltUpArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirport;
+import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirportPoint;
+import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPLakeArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPRiverArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.relief.MGCPContourLine;
@@ -201,7 +206,7 @@ public class ScaleMasterScheduler {
     this.themes = new HashSet<ScaleMasterTheme>();
     this.themes.add(new ScaleMasterTheme("roadl", new Class[] {
         VMAPRoadLine.class, MGCPRoadLine.class }, GeometryType.LINE));
-    this.themes.add(new ScaleMasterTheme("builtupa", new Class[] {
+    this.themes.add(new ScaleMasterTheme("built_up_area", new Class[] {
         VMAPBuiltUpArea.class, MGCPBuiltUpArea.class }, GeometryType.POLYGON));
     this.themes.add(new ScaleMasterTheme("waterl", new Class[] {
         VMAPWaterLine.class, MGCPWaterLine.class }, GeometryType.LINE));
@@ -209,10 +214,18 @@ public class ScaleMasterScheduler {
         VMAPBuildPoint.class, MGCPBuildPoint.class }, GeometryType.POINT));
     this.themes.add(new ScaleMasterTheme("contourl", new Class[] {
         VMAPContourLine.class, MGCPContourLine.class }, GeometryType.LINE));
-    this.themes.add(new ScaleMasterTheme("lakeresa", new Class[] {
-        VMAPWaterArea.class, MGCPRiverArea.class }, GeometryType.POLYGON));
-    // this.themes.add(new ScaleMasterTheme("buildinga",
-    // new Class[] { MGCPBuilding.class }, GeometryType.POLYGON));
+    this.themes.add(new ScaleMasterTheme("lake_area", new Class[] {
+        VMAPWaterArea.class, MGCPLakeArea.class }, GeometryType.POLYGON));
+    this.themes.add(new ScaleMasterTheme("river_area",
+        new Class[] { MGCPRiverArea.class }, GeometryType.POLYGON));
+    this.themes.add(new ScaleMasterTheme("airport_area",
+        new Class[] { MGCPAirport.class }, GeometryType.POLYGON));
+    this.themes.add(new ScaleMasterTheme("airport_point",
+        new Class[] { MGCPAirportPoint.class }, GeometryType.POINT));
+    this.themes.add(new ScaleMasterTheme("runway_area",
+        new Class[] { MGCPRunwayArea.class }, GeometryType.POLYGON));
+    this.themes.add(new ScaleMasterTheme("runway_line",
+        new Class[] { MGCPRunwayLine.class }, GeometryType.LINE));
     // TODO
   }
 
