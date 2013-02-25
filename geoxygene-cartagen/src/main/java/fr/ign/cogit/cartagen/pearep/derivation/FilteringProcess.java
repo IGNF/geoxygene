@@ -12,6 +12,8 @@ package fr.ign.cogit.cartagen.pearep.derivation;
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.generalisation.Filtering;
 
@@ -45,7 +47,10 @@ public class FilteringProcess extends ScaleMasterGeneProcess {
       IGeometry geom = obj.getGeom();
       IGeometry newGeom = geom;
       try {
-        newGeom = Filtering.DouglasPeucker(geom, dpThreshold);
+        if (newGeom instanceof IPolygon)
+          newGeom = Filtering.DouglasPeuckerPoly((IPolygon) geom, dpThreshold);
+        else if (newGeom instanceof ILineString)
+          newGeom = Filtering.DouglasPeucker(geom, dpThreshold);
       } catch (Exception e) {
         // let initial geom if D&P fails
       }
