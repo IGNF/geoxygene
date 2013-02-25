@@ -81,7 +81,8 @@ import fr.ign.cogit.cartagen.pearep.mgcp.energy.MGCPPipeLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPCoastLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPDitchLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPInundationArea;
-import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPLakeArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPRiverArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterTreatmentBed;
 import fr.ign.cogit.cartagen.pearep.mgcp.land.MGCPWoodLine;
@@ -168,14 +169,14 @@ public class MGCPLoader extends ShapeFileLoader {
       if ((listLayer.size() == 0) || (listLayer.contains("ABH080"))) {
         this.loadPolygonClassUnionMulti(
             FileUtil.getNamedFileInDir(directory, "ABH080.shp")
-                .getAbsolutePath(), MGCPWaterArea.class,
+                .getAbsolutePath(), MGCPLakeArea.class,
             CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
       if ((listLayer.size() == 0) || (listLayer.contains("ABH140"))) {
         this.loadPolygonClassUnionMulti(
             FileUtil.getNamedFileInDir(directory, "ABH140.shp")
-                .getAbsolutePath(), MGCPWaterArea.class,
+                .getAbsolutePath(), MGCPRiverArea.class,
             CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }

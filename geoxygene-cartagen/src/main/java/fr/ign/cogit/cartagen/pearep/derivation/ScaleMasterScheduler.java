@@ -38,7 +38,7 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuildPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuiltUpArea;
-import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPRiverArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.relief.MGCPContourLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadLine;
@@ -210,7 +210,7 @@ public class ScaleMasterScheduler {
     this.themes.add(new ScaleMasterTheme("contourl", new Class[] {
         VMAPContourLine.class, MGCPContourLine.class }, GeometryType.LINE));
     this.themes.add(new ScaleMasterTheme("lakeresa", new Class[] {
-        VMAPWaterArea.class, MGCPWaterArea.class }, GeometryType.POLYGON));
+        VMAPWaterArea.class, MGCPRiverArea.class }, GeometryType.POLYGON));
     // this.themes.add(new ScaleMasterTheme("buildinga",
     // new Class[] { MGCPBuilding.class }, GeometryType.POLYGON));
     // TODO

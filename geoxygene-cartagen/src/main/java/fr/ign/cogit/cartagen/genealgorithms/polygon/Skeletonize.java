@@ -91,7 +91,10 @@ public class Skeletonize {
     // when the geometry is too big, it needs to be simplified first
     IPolygon geom = polygon;
     if (polygon.numPoints() > 500) {
-      geom = (IPolygon) Filtering.DouglasPeucker(polygon, 10.0);
+      geom = (IPolygon) Filtering.DouglasPeucker(polygon, 15.0);
+    }
+    if (polygon.numPoints() > 1000) {
+      geom = (IPolygon) Filtering.DouglasPeucker(polygon, 30.0);
     }
 
     IPolygon p = (IPolygon) geom.reverse();

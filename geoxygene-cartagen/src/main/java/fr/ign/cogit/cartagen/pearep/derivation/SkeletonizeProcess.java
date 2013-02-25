@@ -20,7 +20,7 @@ public class SkeletonizeProcess extends ScaleMasterGeneProcess {
 
   private Class<?> newClass;
   private boolean removeHoles;
-  private double widthMin;
+  private double widthMin, sizeMin;
   private static SkeletonizeProcess instance = null;
 
   protected SkeletonizeProcess() {
@@ -44,7 +44,7 @@ public class SkeletonizeProcess extends ScaleMasterGeneProcess {
     }
     this.removeHoles = (Boolean) getParamValueFromName("remove_holes");
     this.widthMin = (Double) getParamValueFromName("width_min");
-    // TODO Auto-generated method stub
+    this.sizeMin = (Double) getParamValueFromName("size_min");
   }
 
   @Override
@@ -60,6 +60,8 @@ public class SkeletonizeProcess extends ScaleMasterGeneProcess {
       if (obj.isDeleted())
         continue;
       if (!(obj.getGeom() instanceof IPolygon))
+        continue;
+      if (obj.getGeom().area() > this.sizeMin)
         continue;
       IPolygon geom = (IPolygon) Filtering.DouglasPeucker(
           (IPolygon) obj.getGeom(), 5.0);
