@@ -13,38 +13,40 @@ import java.util.HashMap;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.genericschema.energy.IPowerStation;
+import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscPoint;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.AutreConstruction;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.AutreConstructionImpl;
 
-public class MGCPPowerStation extends MGCPFeature implements IPowerStation {
+public class MGCPNonCommunicationTowerPoint extends MGCPFeature implements
+    IMiscPoint {
 
   private AutreConstruction geoxObj;
 
   // VMAP attributes
-  private String ace, ale, cpyrt_note, hgt, nam, nfi, nfn, len, pfh, src_date,
+  private String ace, ale, cpyrt_note, hgt, len, nam, nfi, nfn, src_date,
       src_info, tier_note, txt, uid, upd_date, upd_info, wid, voi;
-  private long acc, ace_eval, ale_eval, fun, ppc, src_name, smc, upd_name,
+  private long acc, ace_eval, ale_eval, awp, src_name, smc, ttc, upd_name,
       zval_type;
 
   /**
    * @param type
    */
-  public MGCPPowerStation(IPolygon polygon, HashMap<String, Object> attributes,
-      PeaRepDbType type) {
+  public MGCPNonCommunicationTowerPoint(IPoint point,
+      HashMap<String, Object> attributes, PeaRepDbType type) {
     super();
-    this.geoxObj = new AutreConstructionImpl(polygon);
-    this.setInitialGeom(polygon);
+    this.geoxObj = new AutreConstructionImpl(point);
+    this.setInitialGeom(point);
     this.setEliminated(false);
 
     this.acc = (Long) attributes.get("acc");
     this.ace_eval = (Long) attributes.get("ace_eval");
     this.ale_eval = (Long) attributes.get("ale_eval");
-    this.fun = (Long) attributes.get("fun");
+    this.awp = (Long) attributes.get("awp");
     this.src_name = (Long) attributes.get("src_name");
+    this.ttc = (Long) attributes.get("ttc");
     this.upd_name = (Long) attributes.get("upd_name");
     this.zval_type = (Long) attributes.get("zval_type");
 
@@ -52,6 +54,7 @@ public class MGCPPowerStation extends MGCPFeature implements IPowerStation {
     this.ale = (String) attributes.get("ale");
     this.cpyrt_note = (String) attributes.get("cpyrt_note");
     this.hgt = (String) attributes.get("hgt");
+    this.len = (String) attributes.get("len");
     this.nam = (String) attributes.get("nam");
     this.nfi = (String) attributes.get("nfi");
     this.nfn = (String) attributes.get("nfn");
@@ -65,13 +68,6 @@ public class MGCPPowerStation extends MGCPFeature implements IPowerStation {
     this.cpyrt_note = (String) attributes.get("cpyrt_note");
     this.voi = (String) attributes.get("voi");
 
-    if (attributes.containsKey("pfh"))
-      this.pfh = (String) attributes.get("pfh");
-    ;
-    if (attributes.containsKey("ppc"))
-      this.ppc = (Long) attributes.get("ppc");
-    ;
-
   }
 
   @Override
@@ -81,8 +77,8 @@ public class MGCPPowerStation extends MGCPFeature implements IPowerStation {
 
   @Override
   @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
-  public IPolygon getGeom() {
-    return (IPolygon) super.getGeom();
+  public IPoint getGeom() {
+    return (IPoint) super.getGeom();
   }
 
   public String getNfi() {
@@ -123,19 +119,6 @@ public class MGCPPowerStation extends MGCPFeature implements IPowerStation {
 
   public void setHgt(String hgt) {
     this.hgt = hgt;
-  }
-
-  public long getFun() {
-    return this.fun;
-  }
-
-  public void setFun(long fun) {
-    this.fun = fun;
-  }
-
-  @Override
-  public IPolygon getSymbolGeom() {
-    return (IPolygon) super.getGeom();
   }
 
   public String getAce() {
@@ -274,14 +257,6 @@ public class MGCPPowerStation extends MGCPFeature implements IPowerStation {
     this.len = len;
   }
 
-  public String getPfh() {
-    return pfh;
-  }
-
-  public void setPfh(String pfh) {
-    this.pfh = pfh;
-  }
-
   public String getWid() {
     return wid;
   }
@@ -290,20 +265,28 @@ public class MGCPPowerStation extends MGCPFeature implements IPowerStation {
     this.wid = wid;
   }
 
-  public long getPpc() {
-    return ppc;
-  }
-
-  public void setPpc(long ppc) {
-    this.ppc = ppc;
-  }
-
   public long getSmc() {
     return smc;
   }
 
   public void setSmc(long smc) {
     this.smc = smc;
+  }
+
+  public long getAwp() {
+    return awp;
+  }
+
+  public void setAwp(long awp) {
+    this.awp = awp;
+  }
+
+  public long getTtc() {
+    return ttc;
+  }
+
+  public void setTtc(long ttc) {
+    this.ttc = ttc;
   }
 
 }

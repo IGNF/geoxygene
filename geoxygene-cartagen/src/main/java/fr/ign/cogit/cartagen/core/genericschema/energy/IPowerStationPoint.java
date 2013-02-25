@@ -9,13 +9,13 @@
  ******************************************************************************/
 package fr.ign.cogit.cartagen.core.genericschema.energy;
 
-import fr.ign.cogit.cartagen.core.genericschema.IGeneObjSurf;
+import fr.ign.cogit.cartagen.core.genericschema.IGeneObjPoint;
 
 /*
  * ###### IGN / CartAGen ###### Title: ElectricityLine Description: Centrale
  * Electrique Author: J. Renard Date: 30/09/2010
  */
 
-public interface IPowerStation extends IGeneObjSurf {
-  public static final String FEAT_TYPE_NAME = "PowerStation"; //$NON-NLS-1$
+public interface IPowerStationPoint extends IGeneObjPoint {
+  public static final String FEAT_TYPE_NAME = "PowerStationPoint"; //$NON-NLS-1$
 }

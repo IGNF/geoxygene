@@ -23,7 +23,8 @@ import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.ITaxiwayArea;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IElectricityLine;
 import fr.ign.cogit.cartagen.core.genericschema.energy.IPipeLine;
-import fr.ign.cogit.cartagen.core.genericschema.energy.IPowerStation;
+import fr.ign.cogit.cartagen.core.genericschema.energy.IPowerStationArea;
+import fr.ign.cogit.cartagen.core.genericschema.energy.IPowerStationPoint;
 import fr.ign.cogit.cartagen.core.genericschema.harbour.IBerthingArea;
 import fr.ign.cogit.cartagen.core.genericschema.harbour.IBerthingLine;
 import fr.ign.cogit.cartagen.core.genericschema.harbour.IDryDockArea;
@@ -37,6 +38,7 @@ import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.core.genericschema.land.IWoodLine;
 import fr.ign.cogit.cartagen.core.genericschema.misc.IBoundedArea;
+import fr.ign.cogit.cartagen.core.genericschema.misc.IMiscPoint;
 import fr.ign.cogit.cartagen.core.genericschema.railway.IRailwayLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefElementLine;
@@ -53,17 +55,27 @@ import fr.ign.cogit.cartagen.core.genericschema.urban.ITown;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuildPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuilding;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPCommunicationStation;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPCommunicationStationPoint;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPControlTowerPoint;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPCranePoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPDryDockArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFlarePipePoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFortification;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLandUse;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLandUseType;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLighthousePoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPMineralPile;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPPowerStation;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPNonCommunicationTowerPoint;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPPowerStationArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPPowerStationPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPProcessingFacility;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPPumpingStation;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPRailwayYard;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSeaPlaneBasePoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSettlement;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSettlementPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSettlingPond;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSmockestackPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSquare;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPStadium;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPStorageDepot;
@@ -282,15 +294,15 @@ public class MGCPLoader extends ShapeFileLoader {
       if ((listLayer.size() == 0) || (listLayer.contains("AAD010"))) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAD010.shp")
-                .getAbsolutePath(), MGCPPowerStation.class,
-            CartAGenDataSet.BUILD_AREA_POP, IPowerStation.FEAT_TYPE_NAME,
+                .getAbsolutePath(), MGCPPowerStationArea.class,
+            CartAGenDataSet.BUILD_AREA_POP, IPowerStationArea.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
       if ((listLayer.size() == 0) || (listLayer.contains("AAD030"))) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAD030.shp")
-                .getAbsolutePath(), MGCPPowerStation.class,
-            CartAGenDataSet.BUILD_AREA_POP, IPowerStation.FEAT_TYPE_NAME,
+                .getAbsolutePath(), MGCPPowerStationArea.class,
+            CartAGenDataSet.BUILD_AREA_POP, IPowerStationArea.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
 
@@ -591,6 +603,78 @@ public class MGCPLoader extends ShapeFileLoader {
                 .getAbsolutePath(), MGCPRailwayLine.class,
             CartAGenDataSet.RAILWAY_LINES_POP, IRailwayLine.FEAT_TYPE_NAME,
             this.getDataset().getRailwayNetwork(), PeaRepDbType.MGCPPlusPlus);
+      }
+
+      // point loading
+      // PowerSubstation
+      if ((listLayer.size() == 0) || (listLayer.contains("PAD030"))) {
+        this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAD030.shp")
+            .getAbsolutePath(), MGCPPowerStationPoint.class,
+            CartAGenDataSet.BUILD_PT_POP, IPowerStationPoint.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      // Smockstack
+      if ((listLayer.size() == 0) || (listLayer.contains("PAF010"))) {
+        this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAF010.shp")
+            .getAbsolutePath(), MGCPSmockestackPoint.class,
+            CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      // Crane
+      if ((listLayer.size() == 0) || (listLayer.contains("PAF040"))) {
+        this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAF040.shp")
+            .getAbsolutePath(), MGCPCranePoint.class,
+            CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      // FlarePipe
+      if ((listLayer.size() == 0) || (listLayer.contains("PAF070"))) {
+        this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAF070.shp")
+            .getAbsolutePath(), MGCPFlarePipePoint.class,
+            CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      // Settlement
+      if ((listLayer.size() == 0) || (listLayer.contains("PAL105"))) {
+        this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAL105.shp")
+            .getAbsolutePath(), MGCPSettlementPoint.class,
+            CartAGenDataSet.BUILD_PT_POP, IBuildPoint.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      // Non-Communication Tower Point
+      if ((listLayer.size() == 0) || (listLayer.contains("PAL240"))) {
+        this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAL240.shp")
+            .getAbsolutePath(), MGCPNonCommunicationTowerPoint.class,
+            CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      // Control Tower Point
+      if ((listLayer.size() == 0) || (listLayer.contains("PAQ060"))) {
+        this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAQ060.shp")
+            .getAbsolutePath(), MGCPControlTowerPoint.class,
+            CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      // Communication Station Point
+      if ((listLayer.size() == 0) || (listLayer.contains("PAT080"))) {
+        this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAT080.shp")
+            .getAbsolutePath(), MGCPCommunicationStationPoint.class,
+            CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      // Lighthouse Point
+      if ((listLayer.size() == 0) || (listLayer.contains("PBC050"))) {
+        this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PBC050.shp")
+            .getAbsolutePath(), MGCPLighthousePoint.class,
+            CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
+      }
+      // Seaplane Base Point
+      if ((listLayer.size() == 0) || (listLayer.contains("PGB065"))) {
+        this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PGB065.shp")
+            .getAbsolutePath(), MGCPSeaPlaneBasePoint.class,
+            CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
+            PeaRepDbType.MGCPPlusPlus);
       }
 
     } catch (IllegalArgumentException e) {

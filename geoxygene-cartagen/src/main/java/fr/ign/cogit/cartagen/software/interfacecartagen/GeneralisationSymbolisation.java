@@ -156,8 +156,8 @@ public abstract class GeneralisationSymbolisation extends Symbolisation {
                 0.07 * 25000.0 / 1000.0, BasicStroke.CAP_ROUND,
                 BasicStroke.JOIN_ROUND);
           } else {
-            pv.draw(Symbolisation.couleurDefaut, ((IGeneObj) obj)
-                .getInitialGeom());
+            pv.draw(Symbolisation.couleurDefaut,
+                ((IGeneObj) obj).getInitialGeom());
           }
         }
       };
@@ -228,8 +228,8 @@ public abstract class GeneralisationSymbolisation extends Symbolisation {
             .getNB_ORIENTATIONS_TESTEES();
 
         // calcule et recupere la table des contributions
-        double[] contributionsCotesOrientation = new OrientationMeasure(bat
-            .getGeom()).getContributionsCotesOrientation();
+        double[] contributionsCotesOrientation = new OrientationMeasure(
+            bat.getGeom()).getContributionsCotesOrientation();
 
         //
         IDirectPosition c = bat.getGeom().centroid();
@@ -243,8 +243,9 @@ public abstract class GeneralisationSymbolisation extends Symbolisation {
           double lg = facteur * contributionsCotesOrientation[i];
 
           // dessin
-          pv.drawSegment(Color.BLUE, c.getX(), c.getY(), c.getX() + lg
-              * Math.cos(angle), c.getY() + lg * Math.sin(angle), taille);
+          pv.drawSegment(Color.BLUE, c.getX(), c.getY(),
+              c.getX() + lg * Math.cos(angle), c.getY() + lg * Math.sin(angle),
+              taille);
         }
       }
     };
@@ -291,8 +292,9 @@ public abstract class GeneralisationSymbolisation extends Symbolisation {
           double lg = facteur * enc.getEncombrements()[i];
 
           // dessin
-          pv.drawSegment(Color.BLUE, c.getX(), c.getY(), c.getX() + lg
-              * Math.cos(angle), c.getY() + lg * Math.sin(angle), taille);
+          pv.drawSegment(Color.BLUE, c.getX(), c.getY(),
+              c.getX() + lg * Math.cos(angle), c.getY() + lg * Math.sin(angle),
+              taille);
         }
 
       }
@@ -389,14 +391,16 @@ public abstract class GeneralisationSymbolisation extends Symbolisation {
             pv.draw(GeneralisationLegend.ZA_COULEUR_VIDE, obj.getGeom());
           } else if (parcelle.getType() == 1) {
             pv.draw(GeneralisationLegend.ZA_COULEUR_FORET, obj.getGeom());
-            pv.drawLimit(GeneralisationLegend.ZA_COULEUR_CONTOUR_FORET,
+            pv.drawLimit(
+                GeneralisationLegend.ZA_COULEUR_CONTOUR_FORET,
                 parcelle.getGeom(),
                 GeneralisationLegend.ZA_LARGEUR_CONTOUR_FORET
                     * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
                 BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);
           } else if (parcelle.getType() == 2) {
             pv.draw(GeneralisationLegend.ZA_COULEUR_ACTIVITE, obj.getGeom());
-            pv.drawLimit(GeneralisationLegend.ZA_COULEUR_CONTOUR_ACTIVITE,
+            pv.drawLimit(
+                GeneralisationLegend.ZA_COULEUR_CONTOUR_ACTIVITE,
                 parcelle.getGeom(),
                 GeneralisationLegend.ZA_LARGEUR_CONTOUR_ACTIVITE
                     * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
@@ -447,14 +451,19 @@ public abstract class GeneralisationSymbolisation extends Symbolisation {
         }
         ISimpleLandUseArea parcelle = (ISimpleLandUseArea) obj;
 
+        if (fillColors.get(parcelle.getType()) == null)
+          return;
+
         if (layerGroup.symbolisationDisplay) {
           if (parcelle.getType() >= fillColors.size()) {
             pv.draw(GeneralisationLegend.ZA_COULEUR_VIDE, obj.getGeom());
           } else {
             pv.draw(fillColors.get(parcelle.getType()), obj.getGeom());
-            pv.drawLimit(limitColors.get(parcelle.getType()), parcelle
-                .getGeom(), GeneralisationLegend.ZA_LARGEUR_CONTOUR_FORET
-                * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+            pv.drawLimit(
+                limitColors.get(parcelle.getType()),
+                parcelle.getGeom(),
+                GeneralisationLegend.ZA_LARGEUR_CONTOUR_FORET
+                    * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
                 BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);
           }
         } else if (parcelle.getType() == 0) {
@@ -532,9 +541,9 @@ public abstract class GeneralisationSymbolisation extends Symbolisation {
 
         if (layerGroup.symbolisationDisplay) {
 
-          pv.draw(col, tr.getGeom(), tr.getWidth()
-              * Legend.getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_BUTT,
-              BasicStroke.CAP_ROUND);
+          pv.draw(col, tr.getGeom(),
+              tr.getWidth() * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+              BasicStroke.CAP_BUTT, BasicStroke.CAP_ROUND);
 
         } else {
           if (tr.getImportance() == 4) {
@@ -579,9 +588,9 @@ public abstract class GeneralisationSymbolisation extends Symbolisation {
         }
         IPathLine tr = (IPathLine) obj;
 
-        pv.draw(col, tr.getGeom(), tr.getWidth()
-            * Legend.getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_BUTT,
-            BasicStroke.CAP_ROUND);
+        pv.draw(col, tr.getGeom(),
+            tr.getWidth() * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+            BasicStroke.CAP_BUTT, BasicStroke.CAP_ROUND);
       }
     };
   }
@@ -608,9 +617,8 @@ public abstract class GeneralisationSymbolisation extends Symbolisation {
         if (n.getDegree() <= 1) {
           return;
         }
-        pv.drawCircle(col, n.getPosition().getX(), n.getPosition().getY(), n
-            .getWidth()
-            * Legend.getSYMBOLISATI0N_SCALE() / 1000.0);
+        pv.drawCircle(col, n.getPosition().getX(), n.getPosition().getY(),
+            n.getWidth() * Legend.getSYMBOLISATI0N_SCALE() / 1000.0);
       }
     };
   }
@@ -651,9 +659,9 @@ public abstract class GeneralisationSymbolisation extends Symbolisation {
         if (tr.getImportance() != importance) {
           return;
         }
-        pv.draw(couleurDessus, tr.getGeom(), largeurDessusmm
-            * Legend.getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_BUTT,
-            BasicStroke.CAP_ROUND);
+        pv.draw(couleurDessus, tr.getGeom(),
+            largeurDessusmm * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+            BasicStroke.CAP_BUTT, BasicStroke.CAP_ROUND);
       }
     };
   }
@@ -1005,14 +1013,14 @@ public abstract class GeneralisationSymbolisation extends Symbolisation {
         SymbolShape shape = symbols.getSymbolShapeBySymbolID(tr.getSymbolId());
         if (tr.getSymbolId() == -1) {
 
-          pv.draw(Color.black, tr.getGeom(), tr.getWidth()
-              * Legend.getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_BUTT,
-              BasicStroke.CAP_ROUND);
+          pv.draw(Color.black, tr.getGeom(),
+              tr.getWidth() * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+              BasicStroke.CAP_BUTT, BasicStroke.CAP_ROUND);
 
         } else if (shape.ext_width != 0 && shape.ext_priority == priority) {
-          pv.draw(shape.ext_colour, tr.getGeom(), shape.ext_width
-              * Legend.getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_BUTT,
-              BasicStroke.CAP_ROUND);
+          pv.draw(shape.ext_colour, tr.getGeom(),
+              shape.ext_width * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+              BasicStroke.CAP_BUTT, BasicStroke.CAP_ROUND);
         }
 
       }
@@ -1054,9 +1062,9 @@ public abstract class GeneralisationSymbolisation extends Symbolisation {
           * Legend.getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_BUTT,
               BasicStroke.CAP_ROUND);
         } else if (shape.int_priority == priority) {
-          pv.draw(shape.int_colour, tr.getGeom(), shape.int_width
-              * Legend.getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_BUTT,
-              BasicStroke.CAP_ROUND);
+          pv.draw(shape.int_colour, tr.getGeom(),
+              shape.int_width * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+              BasicStroke.CAP_BUTT, BasicStroke.CAP_ROUND);
         }
 
       }
@@ -1098,9 +1106,9 @@ public abstract class GeneralisationSymbolisation extends Symbolisation {
           * Legend.getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_BUTT,
               BasicStroke.CAP_ROUND);
         } else if (shape.sep_width != 0) {
-          pv.draw(shape.sep_colour, tr.getGeom(), shape.sep_width
-              * Legend.getSYMBOLISATI0N_SCALE() / 1000.0, BasicStroke.CAP_BUTT,
-              BasicStroke.CAP_ROUND);
+          pv.draw(shape.sep_colour, tr.getGeom(),
+              shape.sep_width * Legend.getSYMBOLISATI0N_SCALE() / 1000.0,
+              BasicStroke.CAP_BUTT, BasicStroke.CAP_ROUND);
         }
 
       }
@@ -1138,10 +1146,8 @@ public abstract class GeneralisationSymbolisation extends Symbolisation {
             || priority != shape.int_priority) {
           return;// )return;
         }
-        pv
-            .drawCircle(shape.int_colour, n.getPosition().getX(), n
-                .getPosition().getY(), shape.int_width
-                * Legend.getSYMBOLISATI0N_SCALE() / 1000.0);
+        pv.drawCircle(shape.int_colour, n.getPosition().getX(), n.getPosition()
+            .getY(), shape.int_width * Legend.getSYMBOLISATI0N_SCALE() / 1000.0);
 
       }
     };
