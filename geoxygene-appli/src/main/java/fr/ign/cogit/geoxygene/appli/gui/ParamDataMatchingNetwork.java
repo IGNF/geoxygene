@@ -49,6 +49,7 @@ import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.plugin.DataMatchingPlugin;
 
 /**
+ * GUI to load data and parameters for launching network data matching.
  * 
  * @author M.-D. Van Damme
  */

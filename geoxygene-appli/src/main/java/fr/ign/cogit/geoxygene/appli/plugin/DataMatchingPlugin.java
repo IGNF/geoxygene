@@ -28,6 +28,7 @@ import java.util.List;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -41,9 +42,10 @@ import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresAppData;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
-import fr.ign.cogit.geoxygene.contrib.appariement.stockageLiens.StockageLiens;
+// import fr.ign.cogit.geoxygene.contrib.appariement.stockageLiens.StockageLiens;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
@@ -95,31 +97,43 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
   public void actionPerformed(final ActionEvent e) {
 
     ParamDataMatchingNetwork dialogParamDataMatchingNetwork = new ParamDataMatchingNetwork(this);
-    if (refShapeFilename == null || compShapeFilename == null) {
+    if (refShapeFilename == null || compShapeFilename == null || paramFilename == null) {
       return;
     }
 
-    LOGGER.info("Fichier de référence : " + refShapeFilename);
-    LOGGER.info("Fichier de comparaison : " + compShapeFilename);
-
-    IPopulation<IFeature> popRef = ShapefileReader.read(refShapeFilename);
-    popRef.setNom("popRef");
-    IPopulation<IFeature> popComp = ShapefileReader.read(compShapeFilename);
-    popComp.setNom("popComp");
+    if (LOGGER.isEnabledFor(Level.INFO)) {
+      LOGGER.info("Fichier de référence : " + refShapeFilename);
+      LOGGER.info("Fichier de comparaison : " + compShapeFilename);
+      LOGGER.info("Fichier paramètres : " + paramFilename);
+    }
 
     /*
      * IPopulation<IFeature> popRef = ShapefileReader.chooseAndReadShapefile();
      * popRef.setNom("popRef"); IPopulation<IFeature> popComp =
      * ShapefileReader.chooseAndReadShapefile(); popComp.setNom("popComp");
      */
+    IPopulation<IFeature> popRef = ShapefileReader.read(refShapeFilename);
+    popRef.setNom("popRef");
+    IPopulation<IFeature> popComp = ShapefileReader.read(compShapeFilename);
+    popComp.setNom("popComp");
 
-    this.application.getFrame().getDesktopPane().removeAll();
-
-    List<ReseauApp> reseaux = new ArrayList<ReseauApp>();
+    // On charge
+    ParametresAppData paramAppData = null;
+    paramAppData = ParametresAppData.unmarshall(paramFilename);
+    if (LOGGER.isEnabledFor(Level.INFO)) {
+      LOGGER.info("Paramètres chargés");
+    }
 
     ParametresApp param = new ParametresApp();
+    // Population
     param.populationsArcs1.add(popRef);
     param.populationsArcs2.add(popComp);
+    // Ecarts de distance autorisés
+    param.distanceArcsMax = paramAppData.getNoeudsMax();
+    param.distanceArcsMin = paramAppData.getArcsMin();
+    param.distanceNoeudsMax = paramAppData.getArcsMax();
+    param.distanceNoeudsImpassesMax = paramAppData.getNoeudsImpassesMax();
+    // 
     param.topologieFusionArcsDoubles1 = true;
     param.topologieFusionArcsDoubles2 = true;
     param.topologieGraphePlanaire1 = true;
@@ -134,15 +148,13 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
     param.projeteNoeuds2SurReseau1DistanceProjectionNoeud = 25; // 50
     param.projeteNoeuds2SurReseau1ImpassesSeulement = false;
     param.varianteForceAppariementSimple = true;
-    param.distanceArcsMax = 25; // 50
-    param.distanceArcsMin = 10; // 30
-    param.distanceNoeudsMax = 25; // 50
     param.varianteRedecoupageArcsNonApparies = true;
     param.debugTirets = false;
     param.debugBilanSurObjetsGeo = false;
     param.varianteRedecoupageArcsNonApparies = true;
     param.debugAffichageCommentaires = 2;
 
+    List<ReseauApp> reseaux = new ArrayList<ReseauApp>();
     EnsembleDeLiens liens = AppariementIO.appariementDeJeuxGeo(param, reseaux);
 
     LOGGER.info("Paramétrage = " + liens.getParametrage());
@@ -188,6 +200,8 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
 
     // StockageLiens.stockageDesLiens(liens, 1, 2, 3);
     
+    this.application.getFrame().getDesktopPane().removeAll();
+    
     Dimension desktopSize = this.application.getFrame().getDesktopPane().getSize();
     int widthProjectFrame = desktopSize.width / 2;
     int heightProjectFrame = desktopSize.height / 2;
@@ -229,6 +243,7 @@ public class DataMatchingPlugin implements GeOxygeneApplicationPlugin,
 
     layer.getSymbolizer().getStroke().setStrokeWidth(2);
     LOGGER.info("Finished"); //$NON-NLS-1$
+    
   }
 
   /**
