@@ -29,13 +29,18 @@ import javax.swing.JMenuItem;
 
 import org.apache.log4j.Logger;
 
+import fr.ign.cogit.geoxygene.api.feature.IFeature;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
+import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiCurve;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Face;
 import fr.ign.cogit.geoxygene.contrib.delaunay.Triangulation;
 import fr.ign.cogit.geoxygene.contrib.delaunay.TriangulationJTS;
 import fr.ign.cogit.geoxygene.feature.DataSet;
 import fr.ign.cogit.geoxygene.feature.Population;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.style.Layer;
 
@@ -93,7 +98,19 @@ public class VoronoiDiagramJTSPlugin implements GeOxygeneApplicationPlugin,
     }
     Layer layer = selectedLayers.iterator().next();
     TriangulationJTS triangulation = new TriangulationJTS("VoronoiDiagramJTS");
-    triangulation.importAsNodes(layer.getFeatureCollection());
+    for (IFeature feature : layer.getFeatureCollection()) {
+      ILineString line = ((IMultiCurve<ILineString>) feature.getGeom()).get(0);
+      line = line.asLineString(10, 0);
+      for (int i = 0; i < line.sizeControlPoint() - 1; i++) {
+        ILineString newline = new GM_LineString(line.getControlPoint(i),
+            line.getControlPoint(i + 1));
+        triangulation.getPopArcs().nouvelElement(newline);
+      }
+    }
+    triangulation.importClasseGeo(layer.getFeatureCollection());
+    triangulation.addMissingEdges(0.1);
+    triangulation.fusionNoeuds(0.1);
+    // triangulation.importAsNodes(layer.getFeatureCollection());
     try {
       triangulation.triangule("v");
     } catch (Exception e1) {
@@ -105,8 +122,23 @@ public class VoronoiDiagramJTSPlugin implements GeOxygeneApplicationPlugin,
     fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureTypeExterieurs = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
     newFeatureTypeExterieurs.setGeometryType(GM_Polygon.class);
     popVoronoi.setFeatureType(newFeatureTypeExterieurs);
-    DataSet.getInstance().addPopulation(popVoronoi);
     VoronoiDiagramJTSPlugin.logger.info(popVoronoi);
-    project.addFeatureCollection(popVoronoi, popVoronoi.getNom(),null);
+
+    Population<Arc> popEdgeVoronoi = new Population<Arc>("Edges");
+    popEdgeVoronoi
+        .setElements(triangulation.getPopVoronoiEdges().getElements());
+    /** créer un featuretype de jeu correspondant */
+    fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureTypeEdges = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+    newFeatureTypeEdges.setGeometryType(GM_LineString.class);
+    popEdgeVoronoi.setFeatureType(newFeatureTypeEdges);
+    VoronoiDiagramJTSPlugin.logger.info(popEdgeVoronoi);
+    project.addUserLayer(popVoronoi, "Faces", null);
+    project.addUserLayer(popEdgeVoronoi, "Edges", null);
+
+    fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType newFeatureTypeFaces = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+    newFeatureTypeFaces.setGeometryType(GM_Polygon.class);
+    triangulation.getPopFaces().setFeatureType(newFeatureTypeFaces);
+
+    project.addUserLayer(triangulation.getPopFaces(), "Triangles", null);
   }
 }
