@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import org.geoserver.wps.gs.GeoServerProcess;
 import org.geotools.data.simple.SimpleFeatureCollection;
+// import org.geotools.data.
 // import org.geoserver.wps.jts.DescribeParameter;
 // import org.geoserver.wps.jts.DescribeProcess;
 // import org.geoserver.wps.jts.DescribeResult;
@@ -22,6 +23,7 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
+// import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresAppData;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.util.conversion.GeOxygeneGeoToolsTypes;
@@ -53,14 +55,17 @@ public class NetworkDataMatching implements GeoServerProcess {
   public SimpleFeatureCollection execute(
       @DescribeParameter(name = "popRef", description = "Less detailed network") SimpleFeatureCollection popRef,
       @DescribeParameter(name = "popComp", description = "Comparison network") SimpleFeatureCollection popComp,
-
+      // @DescribeParameter(name = "paramFilename", description = "XML Parameters") String paramFilename)
+      
       // defaultValue = 50
-      @DescribeParameter(name = "distanceNoeudsMax", description = "Distance maximale autorisée entre deux noeuds appariés") float distanceNoeudsMax,
+       @DescribeParameter(name = "distanceNoeudsMax", description = "Distance maximale autorisée entre deux noeuds appariés") float distanceNoeudsMax)
       // defaultValue = 10
-      @DescribeParameter(name = "distanceArcsMin", description = "Distance minimum sous laquelle l'écart de distance " +
-      		"pour divers arcs du réseaux comp (distance vers les arcs du réseau ref) n'a plus aucun sens.") float distanceArcsMin,
+      // @DescribeParameter(name = "distanceArcsMin", description = "Distance minimum sous laquelle l'écart de distance " +
+      // 		"pour divers arcs du réseaux comp (distance vers les arcs du réseau ref) n'a plus aucun sens.") float distanceArcsMin,
       // defaultValue = 25
-      @DescribeParameter(name = "distanceArcsMax", description = "Distance maximum autorisée entre les arcs des deux réseaux") float distanceArcsMax) {
+      // @DescribeParameter(name = "distanceArcsMax", description = "Distance maximum autorisée entre les arcs des deux réseaux") float distanceArcsMax) 
+    
+      {
     
     /** Variables for debug. */
     Runtime runtime = null;
@@ -79,11 +84,16 @@ public class NetworkDataMatching implements GeoServerProcess {
       LOGGER.debug("total free memory: " + (freeMemory + (maxMemory - allocatedMemory)) / 1024);
     }
     
-    
-    LOGGER.info("Start Converting");
+    // Converting networks
+    LOGGER.info("Start Converting networks : reference and comparative");
     IFeatureCollection<?> gPopRef = GeOxygeneGeoToolsTypes.convert2IFeatureCollection(popRef);
     IFeatureCollection<?> gPopComp = GeOxygeneGeoToolsTypes.convert2IFeatureCollection(popComp);
-    LOGGER.info("End Converting");
+    LOGGER.info("End Converting networks");
+    
+    // Set parameters
+    LOGGER.info("Start setting parameters");
+    // ParametresAppData paramAppData = null;
+    // paramAppData = ParametresAppData.unmarshall(paramFilename);
 
     ParametresApp param = new ParametresApp();
 
@@ -104,14 +114,15 @@ public class NetworkDataMatching implements GeoServerProcess {
     param.projeteNoeuds2SurReseau1DistanceProjectionNoeud = 25; // 50
     param.projeteNoeuds2SurReseau1ImpassesSeulement = false;
     param.varianteForceAppariementSimple = true;
-    param.distanceArcsMax = distanceArcsMax; // 50
-    param.distanceArcsMin = distanceArcsMin; // 30
-    param.distanceNoeudsMax = distanceNoeudsMax;
+    param.distanceArcsMax = 50;
+    param.distanceArcsMin = 30;
+    param.distanceNoeudsMax = 10;
     param.varianteRedecoupageArcsNonApparies = true;
-    param.debugTirets = false;
+    param.debugTirets = true;
     param.debugBilanSurObjetsGeo = false;
     param.varianteRedecoupageArcsNonApparies = true;
     param.debugAffichageCommentaires = 2;
+    LOGGER.info("End setting parameters");
 
     try {
 
