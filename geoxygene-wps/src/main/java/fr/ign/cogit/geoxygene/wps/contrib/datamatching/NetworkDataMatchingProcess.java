@@ -1,3 +1,16 @@
+/**
+*
+*        This software is released under the licence CeCILL
+* 
+*        see Licence_CeCILL_V2-fr.txt
+*        see Licence_CeCILL_V2-en.txt
+* 
+*        see <a href="http://www.cecill.info/">http://www.cecill.info</a>
+* 
+* 
+* @copyright IGN
+*
+*/
 package fr.ign.cogit.geoxygene.wps.contrib.datamatching;
 
 import java.util.ArrayList;
@@ -22,6 +35,7 @@ import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ResultatAppariement;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresAppData;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
@@ -29,39 +43,40 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
 import fr.ign.cogit.geoxygene.util.conversion.GeOxygeneGeoToolsTypes;
 
 /**
-*
-*        This software is released under the licence CeCILL
+ * Network data matching process.
 * 
-*        see Licence_CeCILL_V2-fr.txt
-*        see Licence_CeCILL_V2-en.txt
-* 
-*        see <a href="http://www.cecill.info/">http://www.cecill.info</a>
-* 
-* 
-* @copyright IGN
-* 
-* @author M-D Van Damme
-* 
-* Network data matching process.
-* return 
+* @author M.-D. Van Damme
 */
 @DescribeProcess(title = "NetworkDataMatching", description = "Do network data matching")
-public class NetworkDataMatching implements GeoServerProcess {
+public class NetworkDataMatchingProcess implements GeoServerProcess {
 
+  /** LOGGER. */
   private final static Logger LOGGER = Logger
-      .getLogger(NetworkDataMatching.class.getName());
+      .getLogger(NetworkDataMatchingProcess.class.getName());
 
+  /**
+   * 
+   * 
+   * 
+   * @param popRef
+   * @param popComp
+   * @param distanceNoeudsMax
+   * @return Results SimpleFeatureCollection
+   */
   @DescribeResult(name = "popApp", description = "network Matched")
-  public SimpleFeatureCollection execute(
+  public ResultatAppariement execute(
       @DescribeParameter(name = "popRef", description = "Less detailed network") SimpleFeatureCollection popRef,
-      @DescribeParameter(name = "popComp", description = "Comparison network") SimpleFeatureCollection popComp,
+      @DescribeParameter(name = "popComp", description = "Comparison network") SimpleFeatureCollection popComp)
+      
       // @DescribeParameter(name = "paramFilename", description = "XML Parameters") String paramFilename)
       
       // defaultValue = 50
-       @DescribeParameter(name = "distanceNoeudsMax", description = "Distance maximale autorisée entre deux noeuds appariés") float distanceNoeudsMax)
+      // @DescribeParameter(name = "distanceNoeudsMax", description = "Distance maximale autorisée entre deux noeuds appariés") float distanceNoeudsMax)
+      
       // defaultValue = 10
       // @DescribeParameter(name = "distanceArcsMin", description = "Distance minimum sous laquelle l'écart de distance " +
       // 		"pour divers arcs du réseaux comp (distance vers les arcs du réseau ref) n'a plus aucun sens.") float distanceArcsMin,
+      
       // defaultValue = 25
       // @DescribeParameter(name = "distanceArcsMax", description = "Distance maximum autorisée entre les arcs des deux réseaux") float distanceArcsMax) 
     
@@ -156,14 +171,25 @@ public class NetworkDataMatching implements GeoServerProcess {
         LOGGER.debug("total free memory: " + (freeMemory + (maxMemory - allocatedMemory)) / 1024);
       }
       
-      return correctedNetwork;
+      // Create result
+      ResultatAppariement result = new ResultatAppariement(correctedNetwork);
+      
+      // Return result
+      return result;
+      // return correctedNetwork;
 
     } catch (Exception e) {
       e.printStackTrace();
     }
+    
+    /*
+    throw new ProcessException("Could not find attribute " +
+        "[" + aggAttribute + "] "
+        + " the valid values are " + attNames(atts));
+    */
 
     LOGGER.info("Failed data matching");
     return null;
   }
-
+  
 }

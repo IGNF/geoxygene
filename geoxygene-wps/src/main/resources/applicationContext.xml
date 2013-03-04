@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
+	
+	<!-- ========================================================================== -->
+	<!-- 	WPS Service -->
+	<!-- ========================================================================== -->
 	<!-- Hello World example -->
 	<bean id="helloWPS" class="org.geoserver.wps.gs.HelloWPS" />
 
@@ -8,6 +12,12 @@
 	<bean id="CreateFaces" class="fr.ign.cogit.geoxygene.wps.contrib.cartetopo.CreateFaces" />
 	
 	<!-- DataMatching WPS -->
-	<bean id="NetworkDataMatching" class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.NetworkDataMatching" />
+	<bean id="networkDataMatchingProcess" class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.NetworkDataMatchingProcess" />
+
+	<!-- ========================================================================== -->
+	<!-- 	The PPIO -->
+	<!-- ========================================================================== -->
+	<bean id="networkDataMatchingResultPPIO" 
+			class="fr.ign.cogit.geoxygene.wps.contrib.datamatching.ppio.NetworkDataMatchingResultPPIO" />
 
 </beans>
