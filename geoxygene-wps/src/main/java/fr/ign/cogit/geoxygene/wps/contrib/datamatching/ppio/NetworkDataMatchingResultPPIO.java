@@ -23,6 +23,7 @@ import org.geotools.xml.Configuration;
 import org.geotools.xml.Encoder;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ResultatAppariement;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ResultatStatAppariement;
 import fr.ign.cogit.geoxygene.wps.contrib.datamatching.NetworkDataMatchingProcess;
 
 /**
@@ -43,7 +44,46 @@ public class NetworkDataMatchingResultPPIO extends XStreamPPIO {
     super(ResultatAppariement.class);
   }
   
-  @Override
+  /*@Override
+  public void encode(Object obj, ContentHandler handler) throws Exception {
+
+    LOGGER.info("Start encoding the result for output.");
+    
+    StringBuffer result = new StringBuffer();
+
+    // Start
+    // result.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
+    result.append("<NetworkDataMatchingResult>");
+    
+    // Stats
+    ResultatStatAppariement resultatStatAppariement = ((ResultatAppariement)obj).getResultStat();
+    
+    result.append("<NbArcRef>");
+    result.append(resultatStatAppariement.getNbArcRef());
+    result.append("</NbArcRef>");
+    result.append("<NbArcComp>");
+    result.append("0");
+    result.append("</NbArcComp>");
+    
+    // GML Network Matched
+    result.append("<NetworkMatched>");
+    //     Configuration xml = new GMLConfiguration();
+    //     Encoder e = new Encoder(xml);
+    //     e.encode(((ResultatAppariement)obj).getNetworkMatched(), element, handler);
+    result.append("</NetworkMatched>");
+    
+    // End 
+    result.append("</NetworkDataMatchingResult>");
+    
+    SaxWriter writer = new SaxWriter();
+    writer.setContentHandler(handler);
+    // write out xml
+    XStream xstream = new XStream();
+    xstream.marshal(result.toString(), writer);
+    
+  }*/
+  
+ /* @Override
   public void encode(Object obj, ContentHandler handler) throws Exception {
     
     LOGGER.info("Start encoding the result for output.");
@@ -55,18 +95,19 @@ public class NetworkDataMatchingResultPPIO extends XStreamPPIO {
     result.append("<NetworkDataMatchingResult>");
     
     // Stats
+    ResultatStatAppariement resultatStatAppariement = ((ResultatAppariement)obj).getResultStat();
     result.append("<NbArcRef>");
-    result.append(((ResultatAppariement)obj).getNbArcRef());
+    result.append(resultatStatAppariement.getNbArcRef());
     result.append("</NbArcRef>");
     result.append("<NbArcComp>");
-    result.append(((ResultatAppariement)obj).getNbArcComp());
+    result.append(resultatStatAppariement.getNbArcComp());
     result.append("</NbArcComp>");
     
     // GML Network Matched
     result.append("<NetworkMatched>");
-    /*Configuration xml = new GMLConfiguration();
-    Encoder e = new Encoder(xml);
-    e.encode(((ResultatAppariement)obj).getNetworkMatched(), element, handler);*/
+    // Configuration xml = new GMLConfiguration();
+    // Encoder e = new Encoder(xml);
+    // e.encode(((ResultatAppariement)obj).getNetworkMatched(), element, handler);
     result.append("</NetworkMatched>");
     
     // End 
@@ -76,7 +117,7 @@ public class NetworkDataMatchingResultPPIO extends XStreamPPIO {
     writer.setContentHandler(handler);
     // write out xml
     XStream xstream = new XStream();
-    xstream.marshal(result, writer);
+    xstream.marshal(result, writer);*/
       
     /*    
       Encode de XStreamPPIO
@@ -92,12 +133,11 @@ public class NetworkDataMatchingResultPPIO extends XStreamPPIO {
       xstream.marshal(object, writer);
       */
     
-  }
+  /*}*/
   
-  /*@Override
+  @Override
   protected XStream buildXStream() {
-    
-    System.out.println("******   buildXStream ********");
+    System.out.println("******   buildXStream   ********");
     XStream xstream = new XStream() {
       protected MapperWrapper wrapMapper(MapperWrapper next) {
         return new UppercaseTagMapper(next);
@@ -105,7 +145,7 @@ public class NetworkDataMatchingResultPPIO extends XStreamPPIO {
     };
     xstream.alias("NetworkDataMatchingResult", ResultatAppariement.class);
     return xstream;
-  }*/
+  }
   
   
 }

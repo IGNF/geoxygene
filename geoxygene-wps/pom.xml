@@ -14,7 +14,7 @@
 	<packaging>jar</packaging>
 	<name>GeOxygene Web Processing Services</name>
 	<description></description>
-	
+
 	<licenses>
 		<license>
 			<name>CeCILL License</name>
@@ -40,6 +40,27 @@
 				<directory>src/test/resources</directory>
 			</testResource>
 		</testResources>
+		<plugins>
+			<plugin>
+				<groupId>org.geotools.maven</groupId>
+				<artifactId>xmlcodegen</artifactId>
+				<version>10-SNAPSHOT</version>
+				<configuration>
+					<schemaLocation>NetworkDataMatchingResult.xsd</schemaLocation>
+					<schemaSourceDirectory>${basedir}/src/main/resources</schemaSourceDirectory>
+					<destinationPackage>org.geotools.po.bindings</destinationPackage>
+					<generateConfiguration>true</generateConfiguration>
+					<generateBindingInterface>true</generateBindingInterface>
+					<generateSchemaLocationResolver>true</generateSchemaLocationResolver>
+					<bindingConstructorArguments>
+						<bindingConstructorArgument>
+							<name>factory</name>
+							<type>org.geotools.po.ObjectFactory</type>
+						</bindingConstructorArgument>
+					</bindingConstructorArguments>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 
 	<dependencies>
@@ -48,12 +69,12 @@
 			<artifactId>wps-core</artifactId>
 			<version>2.2.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
 			<artifactId>jts</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>geoxygene-io</artifactId>
@@ -75,7 +96,7 @@
 			</snapshots>
 		</repository>
 	</repositories>
-	
+
 	<profiles>
 		<profile>
 			<id>local</id>
@@ -89,13 +110,22 @@
 								<phase>install</phase>
 								<configuration>
 									<tasks>
+
+										<!-- echo>Stop geoserver</echo> <exec executable="D:\MesProgrammes\GeoServer\GeoServer2.2.3\bin\shutdown.bat" 
+											/ -->
+
 										<echo>Delete GeOxygene libraries</echo>
-										<delete file="${path.geoserver}geoxygene-wps-${project.version}.jar" />
-										<delete file="${path.geoserver}geoxygene-api-${project.version}.jar" />
-										<delete file="${path.geoserver}geoxygene-feature-${project.version}.jar" />
-										<delete file="${path.geoserver}geoxygene-contrib-${project.version}.jar" />
+										<delete
+											file="${path.geoserver}geoxygene-wps-${project.version}.jar" />
+										<delete
+											file="${path.geoserver}geoxygene-api-${project.version}.jar" />
+										<delete
+											file="${path.geoserver}geoxygene-feature-${project.version}.jar" />
+										<delete
+											file="${path.geoserver}geoxygene-contrib-${project.version}.jar" />
 										<delete file="${path.geoserver}geoxygene-io-${project.version}.jar" />
-										<delete file="${path.geoserver}geoxygene-spatial-${project.version}.jar" />
+										<delete
+											file="${path.geoserver}geoxygene-spatial-${project.version}.jar" />
 
 										<echo>Copy GeOxygene libraries into GeoServer WEB-INF\lib</echo>
 										<copy file="${basedir}/target/geoxygene-wps-${project.version}.jar"
@@ -120,6 +150,9 @@
 										<copy
 											file="${basedir}/../geoxygene-spatial\target\geoxygene-spatial-${project.version}.jar"
 											todir="${path.geoserver}" />
+
+										<!-- echo>Start geoserver</echo> <exec executable="D:\MesProgrammes\GeoServer\GeoServer2.2.3\bin\startup.bat" 
+											/ -->
 									</tasks>
 								</configuration>
 								<goals>

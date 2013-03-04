@@ -16,72 +16,63 @@
  * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
 
-import org.geotools.data.simple.SimpleFeatureCollection;
-
-import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
-
 /**
- * Network data matching results.<ul>
- *   <li>- Network matched</li>
- *   <li>- Statistics results</li>
- *   </ul>
+ *  Statistics results. Like : <ul>
+ *  <li>- Number of arcs of the less detailled network </li>
+ *  <li>- Number of arcs of the comparison network</li>
+ *  </ul>
  * 
  * @author M.-D. Van Damme
  * @version 1.6
  */
-public class ResultatAppariement {
+public class ResultatStatAppariement {
   
-  /** EnsembleDeLiens. */
-  // private EnsembleDeLiens liens;
+  /** Number of arcs of the less detailled network. */
+  int nbArcRef;
   
-  /** Network matched. */
-  private SimpleFeatureCollection networkMatched;
+  /** Number of arcs of the comparison network. */
+  int nbArcComp;
   
-  /** Stat result. */
-  private ResultatStatAppariement resultStat;
-    
   /**
-   * Constructor.
-   * @param sfc  
+   * Default constructor.
    */
-  public ResultatAppariement(SimpleFeatureCollection sfc) {
-    networkMatched = sfc;
-    resultStat = new ResultatStatAppariement();
+  public ResultatStatAppariement () {
+    nbArcRef = 0;
+    nbArcComp = 0;
   }
   
   /**
-   * Return Network matched.
-   * @return SimpleFeatureCollection
+   * Return number of arcs of the less detailled network.
+   * @return int
    */
-  public SimpleFeatureCollection getNetworkMatched() {
-    return networkMatched;
+  public int getNbArcRef() {
+    return nbArcRef;
   }
   
   /**
-   * @param SimpleFeatureCollection
-   *          Network matched to set.
+   * @param n
+   *          Number of arcs of the less detailled network to set.
    */
-  public void setNetworkMatched(SimpleFeatureCollection sfc) {
-    networkMatched = sfc;
+  public void setNbArcRef(int n) {
+    nbArcRef = n;
   }
   
   /**
-   * Return statistics results.
-   * @return resultStat
+   * Return number of arcs of the comparison network.
+   * @return int
    */
-  public ResultatStatAppariement getResultStat() {
-    return resultStat;
+  public int getNbArcComp() {
+    return nbArcComp;
   }
   
   /**
-   * @param rsa
-   *          Stat result to set.
+   * @param n
+   *          Number of arcs of the comparison network to set.
    */
-  public void setResultStat (ResultatStatAppariement rsa) {
-    resultStat = rsa;
+  public void setNbArcComp(int n) {
+    nbArcComp = n;
   }
 
 }
