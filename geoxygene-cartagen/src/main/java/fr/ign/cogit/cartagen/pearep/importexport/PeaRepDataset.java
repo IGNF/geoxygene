@@ -6,6 +6,7 @@ import fr.ign.cogit.cartagen.core.genericschema.hydro.ICoastLine;
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IDitchLine;
 import fr.ign.cogit.cartagen.core.genericschema.land.IWoodLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgeLine;
+import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.ISquareArea;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
@@ -23,6 +24,7 @@ public class PeaRepDataset extends CartAGenDataSet {
   public static final String SQUARE_POP = "squares";
   public static final String DITCH_LINE_POP = "ditchLines";
   public static final String BRIDGE_LINE_POP = "bridgeLines";
+  public static final String BRIDGE_POINT_POP = "bridgePoints";
   public static final String COAST_LINE_POP = "coastLines";
   public static final String BUILD_LINE_POP = "buildLines";
   public static final String BERTHING_LINES = "berthingLines";
@@ -39,6 +41,8 @@ public class PeaRepDataset extends CartAGenDataSet {
       return PeaRepDataset.DITCH_LINE_POP;
     } else if (obj instanceof IBridgeLine) {
       return PeaRepDataset.BRIDGE_LINE_POP;
+    } else if (obj instanceof IBridgePoint) {
+      return PeaRepDataset.BRIDGE_POINT_POP;
     } else if (obj instanceof ICoastLine) {
       return PeaRepDataset.COAST_LINE_POP;
     } else if (obj instanceof IBuildLine) {
@@ -61,6 +65,8 @@ public class PeaRepDataset extends CartAGenDataSet {
       return PeaRepDataset.DITCH_LINE_POP;
     } else if (IBridgeLine.class.isAssignableFrom(classObj)) {
       return PeaRepDataset.BRIDGE_LINE_POP;
+    } else if (IBridgePoint.class.isAssignableFrom(classObj)) {
+      return PeaRepDataset.BRIDGE_POINT_POP;
     } else if (ICoastLine.class.isAssignableFrom(classObj)) {
       return PeaRepDataset.COAST_LINE_POP;
     } else if (IBuildLine.class.isAssignableFrom(classObj)) {
@@ -119,6 +125,16 @@ public class PeaRepDataset extends CartAGenDataSet {
   public IPopulation<IBridgeLine> getBridgeLines() {
     return (IPopulation<IBridgeLine>) this.getCartagenPop(
         PeaRepDataset.BRIDGE_LINE_POP, IBridgeLine.FEAT_TYPE_NAME);
+  }
+
+  /**
+   * Gets the bridge lines of the dataset
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public IPopulation<IBridgePoint> getBridgePoints() {
+    return (IPopulation<IBridgePoint>) this.getCartagenPop(
+        PeaRepDataset.BRIDGE_POINT_POP, IBridgePoint.FEAT_TYPE_NAME);
   }
 
   /**
