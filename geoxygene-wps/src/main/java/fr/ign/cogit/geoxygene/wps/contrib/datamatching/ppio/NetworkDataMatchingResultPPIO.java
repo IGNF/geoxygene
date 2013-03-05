@@ -11,15 +11,18 @@
 */
 package fr.ign.cogit.geoxygene.wps.contrib.datamatching.ppio;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 import org.apache.log4j.Logger;
+
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.StringWriter;
+import java.io.Writer;
+
 import org.xml.sax.ContentHandler;
 import com.thoughtworks.xstream.io.xml.SaxWriter;
 import com.thoughtworks.xstream.XStream;
-import com.vividsolutions.jts.io.gml2.GMLWriter;
 
 import org.geoserver.wps.ppio.XStreamPPIO;
 import org.geotools.GML;
@@ -39,7 +42,7 @@ public class NetworkDataMatchingResultPPIO extends XStreamPPIO {
   
   /** LOGGER. */
   private final static Logger LOGGER = Logger.getLogger(NetworkDataMatchingResultPPIO.class.getName());
-
+  
   /**
    * Default constructor.
    */
@@ -53,14 +56,10 @@ public class NetworkDataMatchingResultPPIO extends XStreamPPIO {
     LOGGER.info("------------------------------------------------------------------------");
     LOGGER.info("Start encoding the result for output.");
     
-    SaxWriter writer = new SaxWriter();
-    GMLWriter gmlWriter = new GMLWriter();
-    writer.setContentHandler(handler);
-    
     StringBuffer result = new StringBuffer();
 
     // Start document
-    // result.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
+    result.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
     result.append("<NetworkDataMatchingResult>");
     
     // Stats
@@ -75,13 +74,19 @@ public class NetworkDataMatchingResultPPIO extends XStreamPPIO {
     // GML Network Matched
     result.append("<NetworkMatched>");
     try {
-      System.out.println("------------------------------------------------------------------------");
+      
       ByteArrayOutputStream output = new ByteArrayOutputStream();
       GML encode = new GML(Version.WFS1_0);
       encode.setNamespace("geotools", "http://geotools.org");
       encode.encode(output, ((ResultatAppariement)obj).getNetworkMatched());
-      result.append(output.toString());
-      System.out.println("------------------------------------------------------------------------");
+      
+      String buffer = output.toString();
+      int begin = buffer.indexOf("wfs:FeatureCollection");
+      buffer = buffer.substring(begin - 1, buffer.length() - 1);
+          
+      // Add to the document
+      result.append(buffer);
+    
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -90,10 +95,12 @@ public class NetworkDataMatchingResultPPIO extends XStreamPPIO {
     // End document
     result.append("</NetworkDataMatchingResult>");
     
-    // write out xml
+    // Write out xml
+    SaxWriter writer = new SaxWriter();
+    writer.setContentHandler(handler);
     XStream xstream = new XStream();
-    xstream.marshal(result.toString(), writer);
-    System.out.println("------------------------------------------------------------------------");
+    xstream.marshal((Object)result.toString(), writer);
+    
   }
   
 }
