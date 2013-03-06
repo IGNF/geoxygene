@@ -35,17 +35,31 @@ import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
  */
 public class ResultatAppariement {
   
+  /** Carte topo 1. */
+  
+  /** Carte topo 2. */
+  
   /** EnsembleDeLiens. */
   private EnsembleDeLiens linkDataSet;
   
-  /** Network matched. */
-  private SimpleFeatureCollection networkMatched;
-  
   /** Stat result. */
   private ResultatStatAppariement resultStat;
+  
+  /** Network matched. */
+  private SimpleFeatureCollection networkMatched;
     
   /**
+   * Default constructor.
+   */
+  public ResultatAppariement() {
+    linkDataSet = null;
+    networkMatched = null;
+    resultStat = new ResultatStatAppariement();
+  }
+  
+  /**
    * Constructor.
+   * @param edl
    * @param sfc  
    */
   public ResultatAppariement(EnsembleDeLiens edl, SimpleFeatureCollection sfc) {

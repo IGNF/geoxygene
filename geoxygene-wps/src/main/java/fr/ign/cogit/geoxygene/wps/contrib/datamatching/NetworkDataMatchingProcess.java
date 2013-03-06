@@ -31,7 +31,6 @@ import org.geotools.process.factory.DescribeResult;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
-import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
@@ -143,11 +142,11 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
       List<ReseauApp> reseaux = new ArrayList<ReseauApp>();
 
       LOGGER.info("Start network data matching");
-      EnsembleDeLiens liens = AppariementIO.appariementDeJeuxGeo(param, reseaux);
+      ResultatAppariement resultatAppariement = AppariementIO.networkDataMatching(param, reseaux);
       LOGGER.info("End network data matching");
 
       LOGGER.info("Start recalage");
-      CarteTopo reseauRecale = Recalage.recalage(reseaux.get(0), reseaux.get(1), liens);
+      CarteTopo reseauRecale = Recalage.recalage(reseaux.get(0), reseaux.get(1), resultatAppariement.getLinkDataSet());
       LOGGER.info("End recalage");
 
       // Get links
@@ -157,6 +156,7 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
       LOGGER.info("Start Converting");
       SimpleFeatureCollection correctedNetwork = GeOxygeneGeoToolsTypes.convert2FeatureCollection(arcs, popRef.getSchema()
         .getCoordinateReferenceSystem());
+      resultatAppariement.setNetworkMatched(correctedNetwork);
       LOGGER.info("End Converting");
       
       if (LOGGER.isEnabledFor(Level.DEBUG)) {
@@ -171,11 +171,12 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
       }
       
       // Create result
-      ResultatAppariement result = new ResultatAppariement(liens, correctedNetwork);
-      
+      // ResultatAppariement result = new ResultatAppariement(resultatAppariement, correctedNetwork);
       // Return result
-      return result;
+      // return result;
       // return correctedNetwork;
+      
+      return resultatAppariement;
 
     } catch (Exception e) {
       e.printStackTrace();

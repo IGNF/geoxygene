@@ -64,36 +64,36 @@ public class ResultatAppariementParser {
     result.append("<EdgesEvaluationRef>");
     ResultatStatEvaluationAppariement edgesEvaluationRef = resultatStatAppariement.getEdgesEvaluationRef();
     result.append("<TotalNumber>" + edgesEvaluationRef.getTotalNumber() + "</TotalNumber>");
-    result.append("<OkNumber>" + edgesEvaluationRef.getTotalNumber() + "</OkNumber>");
-    result.append("<KoNumber>" + edgesEvaluationRef.getTotalNumber() + "</KoNumber>");
-    result.append("<DoubtfulNumber>" + edgesEvaluationRef.getTotalNumber() + "</DoubtfulNumber>");
+    result.append("<OkNumber>" + edgesEvaluationRef.getOkNumber() + "</OkNumber>");
+    result.append("<KoNumber>" + edgesEvaluationRef.getKoNumber() + "</KoNumber>");
+    result.append("<DoubtfulNumber>" + edgesEvaluationRef.getDoubtfulNumber() + "</DoubtfulNumber>");
     result.append("</EdgesEvaluationRef>");
     
     // Nodes evaluation of the less detailed network
     result.append("<NodesEvaluationRef>");
     ResultatStatEvaluationAppariement nodesEvaluationRef = resultatStatAppariement.getNodesEvaluationRef();
     result.append("<TotalNumber>" + nodesEvaluationRef.getTotalNumber() + "</TotalNumber>");
-    result.append("<OkNumber>" + nodesEvaluationRef.getTotalNumber() + "</OkNumber>");
-    result.append("<KoNumber>" + nodesEvaluationRef.getTotalNumber() + "</KoNumber>");
-    result.append("<DoubtfulNumber>" + nodesEvaluationRef.getTotalNumber() + "</DoubtfulNumber>");
+    result.append("<OkNumber>" + nodesEvaluationRef.getOkNumber() + "</OkNumber>");
+    result.append("<KoNumber>" + nodesEvaluationRef.getKoNumber() + "</KoNumber>");
+    result.append("<DoubtfulNumber>" + nodesEvaluationRef.getDoubtfulNumber() + "</DoubtfulNumber>");
     result.append("</NodesEvaluationRef>");
     
     // Edges evaluation of the less detailed network
     result.append("<EdgesEvaluationComp>");
     ResultatStatEvaluationAppariement edgesEvaluationComp = resultatStatAppariement.getEdgesEvaluationComp();
     result.append("<TotalNumber>" + edgesEvaluationComp.getTotalNumber() + "</TotalNumber>");
-    result.append("<OkNumber>" + edgesEvaluationComp.getTotalNumber() + "</OkNumber>");
-    result.append("<KoNumber>" + edgesEvaluationComp.getTotalNumber() + "</KoNumber>");
-    result.append("<DoubtfulNumber>" + edgesEvaluationComp.getTotalNumber() + "</DoubtfulNumber>");
+    result.append("<OkNumber>" + edgesEvaluationComp.getOkNumber() + "</OkNumber>");
+    result.append("<KoNumber>" + edgesEvaluationComp.getKoNumber() + "</KoNumber>");
+    result.append("<DoubtfulNumber>" + edgesEvaluationComp.getDoubtfulNumber() + "</DoubtfulNumber>");
     result.append("</EdgesEvaluationComp>");
     
     // Nodes evaluation of the less detailed network
     result.append("<NodesEvaluationComp>");
     ResultatStatEvaluationAppariement nodesEvaluationComp = resultatStatAppariement.getNodesEvaluationComp();
     result.append("<TotalNumber>" + nodesEvaluationComp.getTotalNumber() + "</TotalNumber>");
-    result.append("<OkNumber>" + nodesEvaluationComp.getTotalNumber() + "</OkNumber>");
-    result.append("<KoNumber>" + nodesEvaluationComp.getTotalNumber() + "</KoNumber>");
-    result.append("<DoubtfulNumber>" + nodesEvaluationComp.getTotalNumber() + "</DoubtfulNumber>");
+    result.append("<OkNumber>" + nodesEvaluationComp.getOkNumber() + "</OkNumber>");
+    result.append("<KoNumber>" + nodesEvaluationComp.getKoNumber() + "</KoNumber>");
+    result.append("<DoubtfulNumber>" + nodesEvaluationComp.getDoubtfulNumber() + "</DoubtfulNumber>");
     result.append("</NodesEvaluationComp>");
     
     // GML Network Matched

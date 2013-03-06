@@ -118,4 +118,16 @@ public class ResultatStatEvaluationAppariement {
     doubtfulNumber = n;
   }
   
+  /**
+   * Returns a string representation of the statistic evaluation.
+   * @return String
+   */
+  public String toString() {
+    return "[" + "Total = " + this.totalNumber + ", "
+        + "Appariés = " + this.okNumber + ", "
+        + "Non appariés = " + this.koNumber + ", "
+        + "Incertains = " + this.doubtfulNumber
+        + "]";
+  }
+  
 }
