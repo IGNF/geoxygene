@@ -30,6 +30,7 @@ import org.geotools.GML.Version;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ResultatAppariement;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ResultatStatAppariement;
+import fr.ign.cogit.geoxygene.wps.contrib.datamatching.xml.ResultatAppariementParser;
 
 
 /**
@@ -56,50 +57,18 @@ public class NetworkDataMatchingResultPPIO extends XStreamPPIO {
     LOGGER.info("------------------------------------------------------------------------");
     LOGGER.info("Start encoding the result for output.");
     
-    StringBuffer result = new StringBuffer();
-
-    // Start document
-    result.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
-    result.append("<NetworkDataMatchingResult>");
-    
-    // Stats
-    ResultatStatAppariement resultatStatAppariement = ((ResultatAppariement)obj).getResultStat();
-    result.append("<NbArcRef>");
-    result.append(resultatStatAppariement.getNbArcRef());
-    result.append("</NbArcRef>");
-    result.append("<NbArcComp>");
-    result.append(resultatStatAppariement.getNbArcComp());
-    result.append("</NbArcComp>");
-    
-    // GML Network Matched
-    result.append("<NetworkMatched>");
-    try {
-      
-      ByteArrayOutputStream output = new ByteArrayOutputStream();
-      GML encode = new GML(Version.WFS1_0);
-      encode.setNamespace("geotools", "http://geotools.org");
-      encode.encode(output, ((ResultatAppariement)obj).getNetworkMatched());
-      
-      String buffer = output.toString();
-      int begin = buffer.indexOf("wfs:FeatureCollection");
-      buffer = buffer.substring(begin - 1, buffer.length() - 1);
-          
-      // Add to the document
-      result.append(buffer);
-    
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    result.append("</NetworkMatched>");
-    
-    // End document
-    result.append("</NetworkDataMatchingResult>");
+    // Get XML format for resultatAppariement
+    ResultatAppariementParser resultatAppariementParser = new ResultatAppariementParser();
+    String result = resultatAppariementParser.generateXMLResponse(((ResultatAppariement)obj));
     
     // Write out xml
     SaxWriter writer = new SaxWriter();
     writer.setContentHandler(handler);
     XStream xstream = new XStream();
-    xstream.marshal((Object)result.toString(), writer);
+    xstream.marshal(result, writer);
+    
+    LOGGER.info("End encoding the result for output.");
+    LOGGER.info("------------------------------------------------------------------------");
     
   }
   

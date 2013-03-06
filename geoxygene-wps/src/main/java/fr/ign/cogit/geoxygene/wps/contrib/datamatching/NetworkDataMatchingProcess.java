@@ -60,8 +60,7 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
    * 
    * @param popRef
    * @param popComp
-   * @param distanceNoeudsMax
-   * @return Results SimpleFeatureCollection
+   * @return Results ResultatAppariement
    */
   @DescribeResult(name = "popApp", description = "network Matched")
   public ResultatAppariement execute(
