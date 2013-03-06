@@ -171,7 +171,7 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
       }
       
       // Create result
-      ResultatAppariement result = new ResultatAppariement(correctedNetwork);
+      ResultatAppariement result = new ResultatAppariement(liens, correctedNetwork);
       
       // Return result
       return result;

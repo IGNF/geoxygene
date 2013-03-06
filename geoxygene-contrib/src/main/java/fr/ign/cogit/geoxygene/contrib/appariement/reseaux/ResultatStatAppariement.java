@@ -20,8 +20,10 @@ package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
 
 /**
  *  Statistics results. Like : <ul>
- *  <li>- Number of arcs of the less detailled network </li>
- *  <li>- Number of arcs of the comparison network</li>
+ *  <li>- Edges evaluation of the less detailed network </li>
+ *  <li>- Nodes evaluation of the less detailed network</li>
+ *  <li>- Edges evaluation of the comparison network</li>
+ *  <li>- Nodes evaluation of the comparison network</li>
  *  </ul>
  * 
  * @author M.-D. Van Damme
@@ -29,50 +31,90 @@ package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
  */
 public class ResultatStatAppariement {
   
-  /** Number of arcs of the less detailled network. */
-  int nbArcRef;
+  /** Edges evaluation of the less detailed network. */
+  ResultatStatEvaluationAppariement edgesEvaluationRef;
   
-  /** Number of arcs of the comparison network. */
-  int nbArcComp;
+  /** Nodes evaluation of the less detailed network. */
+  ResultatStatEvaluationAppariement nodesEvaluationRef;
+  
+  /** Edges evaluation of the comparison network. */
+  ResultatStatEvaluationAppariement edgesEvaluationComp;
+  
+  /** Nodes evaluation of the comparison network. */
+  ResultatStatEvaluationAppariement nodesEvaluationComp;
   
   /**
    * Default constructor.
    */
   public ResultatStatAppariement () {
-    nbArcRef = 0;
-    nbArcComp = 0;
+    edgesEvaluationRef = new ResultatStatEvaluationAppariement();
+    nodesEvaluationRef = new ResultatStatEvaluationAppariement();
+    edgesEvaluationComp = new ResultatStatEvaluationAppariement();
+    nodesEvaluationComp = new ResultatStatEvaluationAppariement();
   }
   
   /**
-   * Return number of arcs of the less detailled network.
-   * @return int
+   * Return edges evaluation of the less detailed network.
+   * @return ResultatStatEvaluationAppariement
    */
-  public int getNbArcRef() {
-    return nbArcRef;
+  public ResultatStatEvaluationAppariement getEdgesEvaluationRef() {
+    return edgesEvaluationRef;
   }
   
   /**
-   * @param n
-   *          Number of arcs of the less detailled network to set.
+   * @param rsea
+   *          Edges evaluation of the less detailed network to set.
    */
-  public void setNbArcRef(int n) {
-    nbArcRef = n;
+  public void setEdgesEvaluationRef(ResultatStatEvaluationAppariement rsea) {
+    edgesEvaluationRef = rsea;
   }
   
   /**
-   * Return number of arcs of the comparison network.
-   * @return int
+   * Return nodes evaluation of the less detailed network.
+   * @return ResultatStatEvaluationAppariement
    */
-  public int getNbArcComp() {
-    return nbArcComp;
+  public ResultatStatEvaluationAppariement getNodesEvaluationRef() {
+    return nodesEvaluationRef;
   }
   
   /**
-   * @param n
-   *          Number of arcs of the comparison network to set.
+   * @param rsea
+   *          Nodes evaluation of the less detailed network to set.
    */
-  public void setNbArcComp(int n) {
-    nbArcComp = n;
+  public void setNodesEvaluationRef(ResultatStatEvaluationAppariement rsea) {
+    nodesEvaluationRef = rsea;
+  }
+  
+  /**
+   * Return edges evaluation of the comparison network.
+   * @return ResultatStatEvaluationAppariement
+   */
+  public ResultatStatEvaluationAppariement getEdgesEvaluationComp() {
+    return edgesEvaluationComp;
+  }
+  
+  /**
+   * @param rsea
+   *          Edges evaluation of the comparison network to set.
+   */
+  public void setEdgesEvaluationComp(ResultatStatEvaluationAppariement rsea) {
+    edgesEvaluationComp = rsea;
+  }
+  
+  /**
+   * Return nodes evaluation of the comparison network.
+   * @return ResultatStatEvaluationAppariement
+   */
+  public ResultatStatEvaluationAppariement getNodesEvaluationComp() {
+    return nodesEvaluationComp;
+  }
+  
+  /**
+   * @param rsea
+   *          Nodes evaluation of the comparison network to set.
+   */
+  public void setNodesEvaluationComp(ResultatStatEvaluationAppariement rsea) {
+    nodesEvaluationComp = rsea;
   }
 
 }

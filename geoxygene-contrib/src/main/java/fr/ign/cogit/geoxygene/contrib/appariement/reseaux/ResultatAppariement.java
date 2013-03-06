@@ -25,8 +25,9 @@ import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 
 /**
  * Network data matching results.<ul>
- *   <li>- Network matched</li>
+ *   <li>- Link data set</li>
  *   <li>- Statistics results</li>
+ *   <li>- Network matched</li>   
  *   </ul>
  * 
  * @author M.-D. Van Damme
@@ -35,7 +36,7 @@ import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 public class ResultatAppariement {
   
   /** EnsembleDeLiens. */
-  // private EnsembleDeLiens liens;
+  private EnsembleDeLiens linkDataSet;
   
   /** Network matched. */
   private SimpleFeatureCollection networkMatched;
@@ -47,25 +48,26 @@ public class ResultatAppariement {
    * Constructor.
    * @param sfc  
    */
-  public ResultatAppariement(SimpleFeatureCollection sfc) {
+  public ResultatAppariement(EnsembleDeLiens edl, SimpleFeatureCollection sfc) {
+    linkDataSet = edl;
     networkMatched = sfc;
     resultStat = new ResultatStatAppariement();
   }
   
   /**
-   * Return Network matched.
-   * @return SimpleFeatureCollection
+   * Return link data set.
+   * @return EnsembleDeLiens
    */
-  public SimpleFeatureCollection getNetworkMatched() {
-    return networkMatched;
+  public EnsembleDeLiens getLinkDataSet() {
+    return linkDataSet;
   }
   
   /**
-   * @param SimpleFeatureCollection
-   *          Network matched to set.
+   * @param EnsembleDeLiens
+   *          link data set to set.
    */
-  public void setNetworkMatched(SimpleFeatureCollection sfc) {
-    networkMatched = sfc;
+  public void setLinkDataSet(EnsembleDeLiens edl) {
+    linkDataSet = edl;
   }
   
   /**
@@ -82,6 +84,22 @@ public class ResultatAppariement {
    */
   public void setResultStat (ResultatStatAppariement rsa) {
     resultStat = rsa;
+  }
+  
+  /**
+   * Return Network matched.
+   * @return SimpleFeatureCollection
+   */
+  public SimpleFeatureCollection getNetworkMatched() {
+    return networkMatched;
+  }
+  
+  /**
+   * @param SimpleFeatureCollection
+   *          Network matched to set.
+   */
+  public void setNetworkMatched(SimpleFeatureCollection sfc) {
+    networkMatched = sfc;
   }
 
 }
