@@ -152,7 +152,7 @@ public class SymbolisationPeaRep {
   }
 
   /**
-   * symbolise the runways.
+   * symbolise the railways.
    * @param layerGroup
    * @return
    */

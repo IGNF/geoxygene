@@ -15,9 +15,13 @@ package fr.ign.cogit.cartagen.software.interfacecartagen;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -28,6 +32,7 @@ import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.core.genericschema.network.INetworkNode;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IDEMPixel;
+import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
 import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.core.genericschema.urban.IBuilding;
@@ -50,15 +55,25 @@ import fr.ign.cogit.cartagen.spatialanalysis.measures.congestion.CongestionCompu
 import fr.ign.cogit.cartagen.spatialanalysis.measures.congestion.DeletionCost;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineSegment;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.api.spatial.geomaggr.IMultiSurface;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+import fr.ign.cogit.geoxygene.contrib.geometrie.Angle;
+import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
+import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineSegment;
 import fr.ign.cogit.geoxygene.style.ExternalGraphic;
 import fr.ign.cogit.geoxygene.util.algo.OrientationMeasure;
+import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.CommonAlgorithmsFromCartAGen;
+import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths.BufferComputing;
+import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths.Side;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths.lineoffset.LineOffsetBuilder;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths.lineoffset.OffsetSegment;
 import fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths.lineoffset.OffsetSegmentIntersection;
+import fr.ign.cogit.geoxygene.util.algo.geomstructure.Segment;
+import fr.ign.cogit.geoxygene.util.algo.geomstructure.Vector2D;
 
 /**
  * une symbolisation de couche. une instance de cette classe fournit une methode
@@ -1266,4 +1281,247 @@ public abstract class GeneralisationSymbolisation extends Symbolisation {
     pv.getG2D().drawImage(image, x, y, null, pv);
   }
 
+  /**
+   * symbolise the bridges with the IGN way : two chevron symbols apart from the
+   * road symbol.
+   * @return
+   */
+  public static Symbolisation symboliseBridge(
+      final AbstractLayerGroup layerGroup, final float symbolSize) {
+    return new Symbolisation() {
+      @Override
+      public void draw(VisuPanel pv, IFeature obj) {
+        if (obj.isDeleted()) {
+          return;
+        }
+        if (!layerGroup.symbolisationDisplay) {
+          return;
+        }
+
+        // verification
+        if (!(obj.getGeom() instanceof IPoint)) {
+          logger.warn("probleme dans le dessin de " + obj
+              + ". Mauvais type de geometrie: "
+              + obj.getGeom().getClass().getSimpleName());
+          return;
+        }
+        if (!(obj instanceof IBridgePoint))
+          return;
+
+        // compute the road orientation
+        double theta = CommonAlgorithmsFromCartAGen.lineAbsoluteOrientation(
+            ((IBridgePoint) obj).getRoad().getGeom(), obj.getGeom().centroid())
+            .getValeur();
+        if (theta > Math.PI)
+          theta = theta - Math.PI;
+        double roadWidth = (((IBridgePoint) obj).getRoad().getInternWidth() + 0.1)
+            * Legend.getSYMBOLISATI0N_SCALE() / 2000;
+        Vector2D vect = new Vector2D(new Angle(theta), roadWidth);
+        Vector2D vect1 = vect.rotate(Math.PI / 2);
+        Vector2D vect2 = vect.rotate(-Math.PI / 2);
+
+        // get the image
+        ExternalGraphic tree = new ExternalGraphic();
+        URL url = Symbolisation.class.getResource("/images/symbols/pont.png");
+        tree.setHref(url.toString());
+        Image image = tree.getOnlineResource();
+
+        // compute symbol size according to symbolisation scale and symbolSize
+        // factor : 3 mm on the map for width and half for height
+        double imageSize = 3 * symbolSize * Legend.getSYMBOLISATI0N_SCALE()
+            / 1000;
+        Double shapeHeight = new Double(0.3 * imageSize / pv.getPixelSize());
+        Double shapeWidth = new Double(imageSize / pv.getPixelSize());
+        // if the symbol is too small, do not display it
+        if (shapeWidth.intValue() < 3)
+          return;
+        Image scaledImage = image.getScaledInstance(shapeWidth.intValue(),
+            shapeHeight.intValue(), Image.SCALE_FAST);
+        BufferedImage buff = new BufferedImage(shapeWidth.intValue(),
+            shapeHeight.intValue(), BufferedImage.TYPE_INT_ARGB);
+        buff.getGraphics().drawImage(scaledImage, 0, 0, null);
+
+        // symbolise the right symbol
+        // compute its affine transform
+        IDirectPosition p1 = vect1.translate(obj.getGeom().centroid());
+        int anchorx = pv.coordToPixX(p1.getX());
+        int anchory = pv.coordToPixY(p1.getY());
+        // drawPtSymbolRaster(layerGroup, pv, obj, buff, symbolSize);
+        AffineTransform affTransform = AffineTransform.getTranslateInstance(
+            anchorx, anchory);
+        affTransform.rotate(-theta);
+        affTransform.translate(-shapeWidth.intValue() / 2,
+            -shapeHeight.intValue());
+        pv.getG2D().drawImage(buff, affTransform, pv);
+
+        // symbolise the right symbol
+        // compute its affine transform
+        IDirectPosition p2 = vect2.translate(obj.getGeom().centroid());
+        anchorx = pv.coordToPixX(p2.getX());
+        anchory = pv.coordToPixY(p2.getY());
+        affTransform = AffineTransform.getTranslateInstance(anchorx, anchory);
+        affTransform.rotate(Math.PI - theta);
+        affTransform.translate(-shapeWidth.intValue() / 2,
+            -shapeHeight.intValue());
+        pv.getG2D().drawImage(buff, affTransform, pv);
+
+      }
+    };
+  }
+
+  /**
+   * symbolise the lines with regular crossbars on both sides of the line (e.g.
+   * railways in IGN maps).
+   * @param layerGroup
+   * @return
+   */
+  public static Symbolisation lineWithCrossBars(
+      final AbstractLayerGroup layerGroup, final Color lineColor,
+      final int lineWidth, final double spaceBetweenBars,
+      final double barHeight, final int barWidth, final Color barColor) {
+    return new Symbolisation() {
+      @Override
+      public void draw(VisuPanel pv, IFeature obj) {
+        if (obj.isDeleted()) {
+          return;
+        }
+
+        // verification
+        if (!(obj.getGeom() instanceof ILineString)) {
+          logger.warn("probleme dans le dessin de " + obj
+              + ". Mauvais type de geometrie: "
+              + obj.getGeom().getClass().getSimpleName());
+          return;
+        }
+
+        pv.draw(lineColor, (ILineString) obj.getGeom(), lineWidth,
+            BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, null);
+
+        // put a 1 mm step between perpendicular symbols
+        double step = spaceBetweenBars * Legend.getSYMBOLISATI0N_SCALE()
+            / 1000.0;
+        double radius = barHeight * Legend.getSYMBOLISATI0N_SCALE() / 1000.0;
+        double abscurv = step;
+        ILineString line = (ILineString) obj.getGeom();
+        while (abscurv < line.length()) {
+          IDirectPosition pt = Operateurs.pointEnAbscisseCurviligne(line,
+              abscurv);
+          IDirectPosition nearest = CommonAlgorithmsFromCartAGen
+              .getNearestOtherVertexFromPoint(line, pt);
+          // compute the line equation
+          Segment segment = new Segment(pt, nearest)
+              .getPerpendicularSegment(true);
+          Set<IDirectPosition> inter = segment.intersectionWithCircle(pt,
+              radius);
+          if (inter.size() != 2) {
+            abscurv += step;
+            continue;
+          }
+          Iterator<IDirectPosition> iter = inter.iterator();
+          ILineSegment seg = new GM_LineSegment(iter.next(), iter.next());
+          pv.draw(pv.getG2D(), barColor, seg, barWidth);
+          abscurv += step;
+        }
+      }
+    };
+  }
+
+  /**
+   * symbolise the lines with regular crossbars on one side of the line (e.g.
+   * embankments in IGN maps).
+   * @param layerGroup
+   * @param lineColor
+   * @param lineWidth
+   * @param spaceBetweenBars
+   * @param barHeight
+   * @param barWidth
+   * @param barColor
+   * @param side the side of the line on which bars are drawn
+   * @param start true if a bar is drawn at the start (and end) of the line.
+   * @return
+   */
+  public static Symbolisation lineWithCrossBarsOneSide(
+      final AbstractLayerGroup layerGroup, final Color lineColor,
+      final int lineWidth, final double spaceBetweenBars,
+      final double barHeight, final int barWidth, final Color barColor,
+      final Side side, final boolean start) {
+    return new Symbolisation() {
+      @Override
+      public void draw(VisuPanel pv, IFeature obj) {
+        if (obj.isDeleted()) {
+          return;
+        }
+
+        // verification
+        if (!(obj.getGeom() instanceof ILineString)) {
+          logger.warn("probleme dans le dessin de " + obj
+              + ". Mauvais type de geometrie: "
+              + obj.getGeom().getClass().getSimpleName());
+          return;
+        }
+
+        pv.draw(lineColor, (ILineString) obj.getGeom(), lineWidth,
+            BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, null);
+
+        // put a 1 mm step between perpendicular symbols
+        double step = spaceBetweenBars * Legend.getSYMBOLISATI0N_SCALE()
+            / 1000.0;
+        double radius = barHeight * Legend.getSYMBOLISATI0N_SCALE() / 1000.0;
+        double abscurv = step;
+        if (start)
+          abscurv = 0.0;
+        ILineString line = (ILineString) obj.getGeom();
+        while (abscurv < line.length()) {
+          if (start) {
+            // test if the abscurv is not too close from the end of the line
+            if (line.length() - abscurv < step / 2) {
+              break;
+            }
+          }
+          IDirectPosition pt = Operateurs.pointEnAbscisseCurviligne(line,
+              abscurv);
+          IDirectPosition nearest = CommonAlgorithmsFromCartAGen
+              .getNearestOtherVertexFromPoint(line, pt);
+          // compute the line equation
+          Segment segment = new Segment(pt, nearest)
+              .getPerpendicularSegment(true);
+          Set<IDirectPosition> inter = segment.intersectionWithCircle(pt,
+              radius);
+          if (inter.size() != 2) {
+            abscurv += step;
+            continue;
+          }
+          // now find the one on the right side
+          Iterator<IDirectPosition> iter = inter.iterator();
+          IGeometry buff = BufferComputing.buildSegmentHalfBuffer(segment,
+              barHeight * 2, side);
+          IDirectPosition endPt = iter.next();
+          if (!buff.contains(endPt.toGM_Point()))
+            endPt = iter.next();
+          ILineSegment seg = new GM_LineSegment(pt, endPt);
+          pv.draw(pv.getG2D(), barColor, seg, barWidth);
+          abscurv += step;
+        }
+
+        // draw the end bar if necessary
+        if (start) {
+          IDirectPosition pt = line.coord().get(line.coord().size() - 1);
+          Segment segment = new Segment(line.coord().get(
+              line.coord().size() - 2), pt).getPerpendicularSegment(true);
+          Set<IDirectPosition> inter = segment.intersectionWithCircle(pt,
+              radius);
+          if (inter.size() == 2) {
+            Iterator<IDirectPosition> iter = inter.iterator();
+            IGeometry buff = BufferComputing.buildSegmentHalfBuffer(segment,
+                barHeight * 2, side);
+            IDirectPosition endPt = iter.next();
+            if (!buff.contains(endPt.toGM_Point()))
+              endPt = iter.next();
+            ILineSegment seg = new GM_LineSegment(pt, endPt);
+            pv.draw(pv.getG2D(), barColor, seg, barWidth);
+          }
+        }
+      }
+    };
+  }
 }

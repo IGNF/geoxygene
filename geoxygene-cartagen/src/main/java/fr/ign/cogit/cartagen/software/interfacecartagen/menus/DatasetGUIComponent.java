@@ -233,6 +233,8 @@ public class DatasetGUIComponent extends JMenu {
         CartAGenDoc.loadDocFromXml(file);
         CartagenApplication.getInstance().getFrame().getVisuPanel()
             .centerAndZoom(CartAGenDoc.getInstance().getDisplayEnvelope());
+        CartagenApplication.getInstance().setLayerGroup(
+            CartAGenDoc.getInstance().getLayerGroup());
         CartagenApplication
             .getInstance()
             .getLayerGroup()

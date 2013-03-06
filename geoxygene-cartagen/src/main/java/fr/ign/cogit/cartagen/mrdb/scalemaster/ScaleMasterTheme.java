@@ -12,7 +12,10 @@ package fr.ign.cogit.cartagen.mrdb.scalemaster;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.semanticweb.owlapi.model.OWLClass;
+
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.geoxygene.filter.Filter;
 
 public class ScaleMasterTheme {
 
@@ -23,6 +26,15 @@ public class ScaleMasterTheme {
   private Set<Class<? extends IGeneObj>> relatedClasses;
 
   private GeometryType geometryType;
+
+  /**
+   * The attribute query that selects the objects from the CartAGen Geo classes
+   * related to {@code this} scale master theme when the class contains objects
+   * from several themes. May be null if not relevant.
+   */
+  private Filter filter;
+
+  private OWLClass geoConcept;
 
   public String getName() {
     return name;
@@ -104,6 +116,22 @@ public class ScaleMasterTheme {
       if (c instanceof Class)
         this.relatedClasses.add((Class<? extends IGeneObj>) c);
     }
+  }
+
+  public Filter getFilter() {
+    return filter;
+  }
+
+  public void setFilter(Filter filter) {
+    this.filter = filter;
+  }
+
+  public OWLClass getGeoConcept() {
+    return geoConcept;
+  }
+
+  public void setGeoConcept(OWLClass geoConcept) {
+    this.geoConcept = geoConcept;
   }
 
 }

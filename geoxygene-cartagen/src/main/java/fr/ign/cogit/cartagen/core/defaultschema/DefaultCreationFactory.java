@@ -51,6 +51,7 @@ import fr.ign.cogit.cartagen.core.defaultschema.relief.ReliefField;
 import fr.ign.cogit.cartagen.core.defaultschema.relief.ReliefTriangle;
 import fr.ign.cogit.cartagen.core.defaultschema.relief.SpotHeight;
 import fr.ign.cogit.cartagen.core.defaultschema.road.BranchingCrossRoad;
+import fr.ign.cogit.cartagen.core.defaultschema.road.BridgePoint;
 import fr.ign.cogit.cartagen.core.defaultschema.road.Interchange;
 import fr.ign.cogit.cartagen.core.defaultschema.road.Path;
 import fr.ign.cogit.cartagen.core.defaultschema.road.RoadArea;
@@ -106,6 +107,7 @@ import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefField;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefTriangle;
 import fr.ign.cogit.cartagen.core.genericschema.relief.ISpotHeight;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
+import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
 import fr.ign.cogit.cartagen.core.genericschema.road.IInterchange;
 import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadArea;
@@ -504,6 +506,12 @@ public class DefaultCreationFactory extends AbstractCreationFactory {
   @Override
   public IPathLine createPath(ILineString line, int importance) {
     return new Path(line, importance);
+  }
+
+  // Bridges
+  @Override
+  public IBridgePoint createBridgePoint(IPoint point) {
+    return new BridgePoint(point);
   }
 
   // /////////////////

@@ -60,6 +60,7 @@ import fr.ign.cogit.cartagen.pearep.mgcp.MGCPCommunicationStationPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPControlTowerPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPCranePoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPDryDockArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFeature;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFlarePipePoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFortification;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLandUse;
@@ -109,6 +110,7 @@ import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.DigitalLandscapeModel;
+import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolGroup;
@@ -124,6 +126,13 @@ public class MGCPLoader extends ShapeFileLoader {
    */
   public MGCPLoader(SymbolGroup symbGroup, String dbName) {
     this.createNewDb(symbGroup, dbName);
+    this.setProjEpsg("32629");
+  }
+
+  /**
+   * Default constructor
+   */
+  public MGCPLoader() {
     this.setProjEpsg("32629");
   }
 
@@ -715,6 +724,8 @@ public class MGCPLoader extends ShapeFileLoader {
     database.setDataSet(dataset);
     database.setType(new DigitalLandscapeModel());
     this.setDataset(dataset);
+    database.setGeneObjImpl(new GeneObjImplementation("mgcp++",
+        MGCPFeature.class.getPackage(), MGCPFeature.class));
   }
 
   private void loadAirports(File directory) throws ShapefileException,

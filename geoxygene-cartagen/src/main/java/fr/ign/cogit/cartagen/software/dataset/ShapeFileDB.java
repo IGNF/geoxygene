@@ -216,6 +216,11 @@ public class ShapeFileDB extends CartAGenDB {
     n = xmlDoc.createTextNode(this.getClass().getName());
     typeElem.appendChild(n);
     root.appendChild(typeElem);
+    // The DataSet type
+    Element datasetTypeElem = xmlDoc.createElement("dataset-type");
+    n = xmlDoc.createTextNode(this.getDataSet().getClass().getName());
+    datasetTypeElem.appendChild(n);
+    root.appendChild(datasetTypeElem);
     // The symbolisation scale
     Element scaleElem = xmlDoc.createElement("scale");
     n = xmlDoc.createTextNode(String.valueOf(this.getSymboScale()));
@@ -303,8 +308,8 @@ public class ShapeFileDB extends CartAGenDB {
   @Override
   public void populateDataset(int scale) {
 
-    CartagenApplication.getInstance().getFrame().setCursor(
-        Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+    CartagenApplication.getInstance().getFrame()
+        .setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
     this.task = new OpenDatasetTask(scale, this);
     this.task.addPropertyChangeListener(CartAGenProgressBar.getInstance());
     this.task.execute();
@@ -541,8 +546,8 @@ public class ShapeFileDB extends CartAGenDB {
     @Override
     protected void done() {
       CartAGenProgressBar.getInstance().setVisible(false);
-      CartagenApplication.getInstance().getFrame().setCursor(
-          Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+      CartagenApplication.getInstance().getFrame()
+          .setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     OpenDatasetTask(int scale, ShapeFileDB dataset) {

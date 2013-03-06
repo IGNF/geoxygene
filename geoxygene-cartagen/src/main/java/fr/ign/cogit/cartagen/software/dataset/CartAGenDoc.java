@@ -30,6 +30,8 @@ import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
+import fr.ign.cogit.cartagen.software.interfacecartagen.AbstractLayerGroup;
+import fr.ign.cogit.cartagen.software.interfacecartagen.LayerGroup;
 import fr.ign.cogit.cartagen.util.XMLUtil;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -64,8 +66,8 @@ public class CartAGenDoc {
   }
 
   /**
-   * Constructeur redéfini comme étant privé pour interdire son appel et
-   * forcer à passer par la méthode getInstance()
+   * Constructeur redéfini comme étant privé pour interdire son appel et forcer
+   * à passer par la méthode getInstance()
    */
   private CartAGenDoc() {
     // open a Cartagen doc file
@@ -131,6 +133,11 @@ public class CartAGenDoc {
    * persistent.
    */
   private Session postGisSession = null;
+
+  /**
+   * The {@link LayerGroup} used in this document.
+   */
+  private AbstractLayerGroup layerGroup = new LayerGroup();
 
   public void setPostGisDb(PostgisDB postGisDb) {
     this.postGisDb = postGisDb;
@@ -218,6 +225,14 @@ public class CartAGenDoc {
     return postGisSession;
   }
 
+  public AbstractLayerGroup getLayerGroup() {
+    return layerGroup;
+  }
+
+  public void setLayerGroup(AbstractLayerGroup layerGroup) {
+    this.layerGroup = layerGroup;
+  }
+
   /**
    * Saves the document as an XML file in order to be able to load the same
    * document in another session
@@ -284,17 +299,19 @@ public class CartAGenDoc {
     n = xmlDoc.createTextNode(this.getZone().getName());
     zoneNameElem.appendChild(n);
     zoneElem.appendChild(zoneNameElem);
-    Element extentElem = xmlDoc.createElement("extent");
-    zoneElem.appendChild(extentElem);
-    for (IDirectPosition pt : this.getZone().getExtent().coord()) {
-      Element xExtentElem = xmlDoc.createElement("x");
-      n = xmlDoc.createTextNode(String.valueOf(pt.getX()));
-      xExtentElem.appendChild(n);
-      extentElem.appendChild(xExtentElem);
-      Element yExtentElem = xmlDoc.createElement("y");
-      n = xmlDoc.createTextNode(String.valueOf(pt.getY()));
-      yExtentElem.appendChild(n);
-      extentElem.appendChild(yExtentElem);
+    if (this.getZone().getExtent() != null) {
+      Element extentElem = xmlDoc.createElement("extent");
+      zoneElem.appendChild(extentElem);
+      for (IDirectPosition pt : this.getZone().getExtent().coord()) {
+        Element xExtentElem = xmlDoc.createElement("x");
+        n = xmlDoc.createTextNode(String.valueOf(pt.getX()));
+        xExtentElem.appendChild(n);
+        extentElem.appendChild(xExtentElem);
+        Element yExtentElem = xmlDoc.createElement("y");
+        n = xmlDoc.createTextNode(String.valueOf(pt.getY()));
+        yExtentElem.appendChild(n);
+        extentElem.appendChild(yExtentElem);
+      }
     }
 
     // Databases
@@ -319,6 +336,12 @@ public class CartAGenDoc {
       dbElem.appendChild(n);
       dbsElem.appendChild(dbElem);
     }
+
+    // The Document LayerGroup
+    Element layerGroupElem = xmlDoc.createElement("layer-group");
+    n = xmlDoc.createTextNode(this.getLayerGroup().getClass().getName());
+    layerGroupElem.appendChild(n);
+    root.appendChild(layerGroupElem);
 
     // File writing
     xmlDoc.appendChild(root);
@@ -403,17 +426,20 @@ public class CartAGenDoc {
     Element zoneNameElem = (Element) zoneElem.getElementsByTagName("name")
         .item(0);
     String zoneName = zoneNameElem.getChildNodes().item(0).getNodeValue();
-    Element extentElem = (Element) zoneElem.getElementsByTagName("extent")
-        .item(0);
-    IDirectPositionList coords = new DirectPositionList();
-    for (int i = 0; i < extentElem.getElementsByTagName("x").getLength(); i++) {
-      Element xElem = (Element) extentElem.getElementsByTagName("x").item(i);
-      Element yElem = (Element) extentElem.getElementsByTagName("y").item(i);
-      double x = Double.valueOf(xElem.getChildNodes().item(0).getNodeValue());
-      double y = Double.valueOf(yElem.getChildNodes().item(0).getNodeValue());
-      coords.add(new DirectPosition(x, y));
+    IPolygon extent = null;
+    if (zoneElem.getElementsByTagName("extent").getLength() > 0) {
+      Element extentElem = (Element) zoneElem.getElementsByTagName("extent")
+          .item(0);
+      IDirectPositionList coords = new DirectPositionList();
+      for (int i = 0; i < extentElem.getElementsByTagName("x").getLength(); i++) {
+        Element xElem = (Element) extentElem.getElementsByTagName("x").item(i);
+        Element yElem = (Element) extentElem.getElementsByTagName("y").item(i);
+        double x = Double.valueOf(xElem.getChildNodes().item(0).getNodeValue());
+        double y = Double.valueOf(yElem.getChildNodes().item(0).getNodeValue());
+        coords.add(new DirectPosition(x, y));
+      }
+      extent = new GM_Polygon(new GM_LineString(coords));
     }
-    IPolygon extent = new GM_Polygon(new GM_LineString(coords));
     instance.setZone(new DataSetZone(zoneName, extent));
 
     // load databases
@@ -429,10 +455,21 @@ public class CartAGenDoc {
       CartAGenDB database = construct.newInstance(dbFile);
       instance.databases.put(database.getName(), database);
       // populate the dataset of the loaded database
-      CartAGenDataSet dataset = new CartAGenDataSet();
+      Class<?> datasetClass = CartAGenDB.readDatasetType(dbFile);
+      CartAGenDataSet dataset = (CartAGenDataSet) datasetClass.getConstructor()
+          .newInstance();
       database.setDataSet(dataset);
       instance.currentDataset = dataset;
       database.populateDataset(database.getSymboScale());
+    }
+    if (root.getElementsByTagName("layer-group").getLength() != 0) {
+      Element layerGroupElem = (Element) root.getElementsByTagName(
+          "layer-group").item(0);
+      String layerGroupName = layerGroupElem.getChildNodes().item(0)
+          .getNodeValue();
+      AbstractLayerGroup layerGroup = (AbstractLayerGroup) Class
+          .forName(layerGroupName).getConstructor().newInstance();
+      instance.setLayerGroup(layerGroup);
     }
 
     return instance;

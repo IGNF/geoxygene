@@ -59,6 +59,7 @@ import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefField;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefTriangle;
 import fr.ign.cogit.cartagen.core.genericschema.relief.ISpotHeight;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
+import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
 import fr.ign.cogit.cartagen.core.genericschema.road.IInterchange;
 import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadArea;
@@ -560,6 +561,14 @@ public abstract class AbstractCreationFactory {
   public IPathLine createPath(ILineString line, int importance, int symbolId) {
     AbstractCreationFactory.logger
         .error("Non implemented creation factory method for IPath");
+    return null;
+  }
+
+  // Bridge Point
+  @SuppressWarnings("unused")
+  public IBridgePoint createBridgePoint(IPoint point) {
+    AbstractCreationFactory.logger
+        .error("Non implemented creation factory method for IBridgePoint");
     return null;
   }
 

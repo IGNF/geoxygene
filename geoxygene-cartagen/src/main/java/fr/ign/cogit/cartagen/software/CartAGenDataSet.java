@@ -66,6 +66,7 @@ import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefElementPoint;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IReliefField;
 import fr.ign.cogit.cartagen.core.genericschema.relief.ISpotHeight;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBranchingCrossroad;
+import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
 import fr.ign.cogit.cartagen.core.genericschema.road.IPathLine;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadArea;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadFacilityPoint;
@@ -194,6 +195,7 @@ public class CartAGenDataSet extends DataSet {
   public static final String ROAD_FACILITY_PT_POP = "roadFacilityPoints";
   public static final String ROAD_AREA_POP = "roadAreas";
   public static final String PATHS_POP = "paths";
+  public static final String BRIDGE_PT_POP = "bridgePoints";
 
   public static final String WATER_LINES_POP = "waterLines";
   public static final String WATER_NODES_POP = "waterNodes";
@@ -339,6 +341,8 @@ public class CartAGenDataSet extends DataSet {
       return CartAGenDataSet.BUILD_AREA_POP;
     } else if (obj instanceof IPointOfInterest) {
       return CartAGenDataSet.POI_POP;
+    } else if (obj instanceof IBridgePoint) {
+      return CartAGenDataSet.BRIDGE_PT_POP;
     }
     return null;
   }
@@ -439,6 +443,8 @@ public class CartAGenDataSet extends DataSet {
       return CartAGenDataSet.BUILD_AREA_POP;
     } else if (IPointOfInterest.class.isAssignableFrom(classObj)) {
       return CartAGenDataSet.POI_POP;
+    } else if (IBridgePoint.class.isAssignableFrom(classObj)) {
+      return CartAGenDataSet.BRIDGE_PT_POP;
     }
     return null;
   }
@@ -826,6 +832,16 @@ public class CartAGenDataSet extends DataSet {
   public IPopulation<IPointOfInterest> getPOIs() {
     return (IPopulation<IPointOfInterest>) this.getCartagenPop(
         CartAGenDataSet.POI_POP, IPointOfInterest.FEAT_TYPE_NAME);
+  }
+
+  /**
+   * Gets the bridge points of the dataset
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public IPopulation<IBridgePoint> getBridgePoints() {
+    return (IPopulation<IBridgePoint>) this.getCartagenPop(
+        CartAGenDataSet.BRIDGE_PT_POP, IBridgePoint.FEAT_TYPE_NAME);
   }
 
   /**

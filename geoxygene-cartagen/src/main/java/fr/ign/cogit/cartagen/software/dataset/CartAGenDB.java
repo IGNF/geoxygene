@@ -397,6 +397,37 @@ public abstract class CartAGenDB {
     return (Class<? extends CartAGenDB>) Class.forName(type);
   }
 
+  /**
+   * Give the Class of a CartAGenDataSet stored in the input XML file.
+   * @param file
+   * @return
+   * @throws ParserConfigurationException
+   * @throws IOException
+   * @throws SAXException
+   * @throws ClassNotFoundException
+   */
+  public static Class<?> readDatasetType(File file)
+      throws ParserConfigurationException, SAXException, IOException,
+      ClassNotFoundException {
+    // first open the XML document in order to parse it
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    DocumentBuilder db;
+    db = dbf.newDocumentBuilder();
+    Document doc;
+    doc = db.parse(file);
+    doc.getDocumentElement().normalize();
+    // then read the document to fill the fields
+    Element root = (Element) doc.getElementsByTagName("cartagen-dataset").item(
+        0);
+    // The DataSet type
+    if (root.getElementsByTagName("dataset-type").getLength() == 0)
+      return CartAGenDataSet.class;
+    Element typeElem = (Element) root.getElementsByTagName("dataset-type")
+        .item(0);
+    String type = typeElem.getChildNodes().item(0).getNodeValue();
+    return (Class<?>) Class.forName(type);
+  }
+
   public static int readScale(File file) throws ParserConfigurationException,
       SAXException, IOException {
     // first open the XML document in order to parse it

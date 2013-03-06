@@ -61,11 +61,13 @@ public class GeneralisationLeftPanelComplement extends JPanel {
       GeneralisationLeftPanelComplement.class
           .getResource("/images/iconSee.png").getPath().replaceAll("%20", " ")));
   private JLabel iconSelect = new JLabel(new ImageIcon(
-      GeneralisationLeftPanelComplement.class.getResource(
-          "/images/iconSelect.png").getPath().replaceAll("%20", " ")));
+      GeneralisationLeftPanelComplement.class
+          .getResource("/images/iconSelect.png").getPath()
+          .replaceAll("%20", " ")));
   private JLabel iconSeeInit = new JLabel(new ImageIcon(
-      GeneralisationLeftPanelComplement.class.getResource(
-          "/images/iconSeeInit.png").getPath().replaceAll("%20", " ")));
+      GeneralisationLeftPanelComplement.class
+          .getResource("/images/iconSeeInit.png").getPath()
+          .replaceAll("%20", " ")));
 
   // URBAN
   private JLabel lUrban = new JLabel("URBAN");
@@ -297,9 +299,12 @@ public class GeneralisationLeftPanelComplement extends JPanel {
     this.cSelectBati.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_BUILDING).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectBati.isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_BUILDING)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectBati.isSelected());
       }
     });
 
@@ -343,9 +348,13 @@ public class GeneralisationLeftPanelComplement extends JPanel {
     this.cSelectVille.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_TOWN).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectVille.isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_TOWN)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectVille
+                    .isSelected());
       }
     });
 
@@ -389,9 +398,12 @@ public class GeneralisationLeftPanelComplement extends JPanel {
     this.cSelectIlot.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_BLOCK).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectIlot.isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_BLOCK)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectIlot.isSelected());
       }
     });
 
@@ -435,9 +447,13 @@ public class GeneralisationLeftPanelComplement extends JPanel {
     this.cSelectAlign.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_URBAN_ALIGNMENT).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectAlign.isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_URBAN_ALIGNMENT)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectAlign
+                    .isSelected());
       }
     });
 
@@ -491,15 +507,30 @@ public class GeneralisationLeftPanelComplement extends JPanel {
     this.cSelectRR.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_ROAD_LINE).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectRR.isSelected());
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_ROAD_NODE).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectRR.isSelected());
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_PATH).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectRR.isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_ROAD_LINE)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectRR.isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_ROAD_NODE)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectRR.isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_PATH)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectRR.isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_BRIDGE_PT)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectRR.isSelected());
       }
     });
 
@@ -543,9 +574,12 @@ public class GeneralisationLeftPanelComplement extends JPanel {
     this.cSelectRF.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_RAILWAY_LINE).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectRF.isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_RAILWAY_LINE)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectRF.isSelected());
       }
     });
 
@@ -589,12 +623,18 @@ public class GeneralisationLeftPanelComplement extends JPanel {
     this.cSelectRH.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_WATER_LINE).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectRH.isSelected());
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_WATER_AREA).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectRH.isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_WATER_LINE)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectRH.isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_WATER_AREA)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectRH.isSelected());
       }
     });
 
@@ -638,9 +678,12 @@ public class GeneralisationLeftPanelComplement extends JPanel {
     this.cSelectRE.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_ELECRICITY_LINE).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectRE.isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_ELECRICITY_LINE)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectRE.isSelected());
       }
     });
 
@@ -694,9 +737,12 @@ public class GeneralisationLeftPanelComplement extends JPanel {
     this.cSelectCN.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_CONTOUR_LINE).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectCN.isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_CONTOUR_LINE)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectCN.isSelected());
       }
     });
 
@@ -740,10 +786,13 @@ public class GeneralisationLeftPanelComplement extends JPanel {
     this.cSelectPointCote.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_SPOT_HEIGHT).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectPointCote
-                .isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_SPOT_HEIGHT)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectPointCote
+                    .isSelected());
       }
     });
 
@@ -898,10 +947,13 @@ public class GeneralisationLeftPanelComplement extends JPanel {
     this.cSelectReliefElem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_RELIEF_ELEM_LINE).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectReliefElem
-                .isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_RELIEF_ELEM_LINE)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectReliefElem
+                    .isSelected());
       }
     });
 
@@ -955,9 +1007,13 @@ public class GeneralisationLeftPanelComplement extends JPanel {
     this.cSelectOccSol.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_LAND_USE_AREA).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectOccSol.isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_LAND_USE_AREA)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectOccSol
+                    .isSelected());
       }
     });
 
@@ -1001,9 +1057,13 @@ public class GeneralisationLeftPanelComplement extends JPanel {
     this.cSelectAdmin.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_ADMIN_UNIT).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectAdmin.isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_ADMIN_UNIT)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectAdmin
+                    .isSelected());
       }
     });
 
@@ -1050,10 +1110,13 @@ public class GeneralisationLeftPanelComplement extends JPanel {
     this.cSelectNetworkFaces.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_NETWORK_FACE).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectNetworkFaces
-                .isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_NETWORK_FACE)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectNetworkFaces
+                    .isSelected());
       }
     });
 
@@ -1098,13 +1161,17 @@ public class GeneralisationLeftPanelComplement extends JPanel {
     this.cSelectAirports.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_AIRPORT)
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_AIRPORT)
             .setSelectable(
                 GeneralisationLeftPanelComplement.this.cSelectAirports
                     .isSelected());
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_RUNWAY)
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_RUNWAY)
             .setSelectable(
                 GeneralisationLeftPanelComplement.this.cSelectAirports
                     .isSelected());
@@ -1174,9 +1241,12 @@ public class GeneralisationLeftPanelComplement extends JPanel {
     this.cSelectPOI.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        CartagenApplication.getInstance().getLayerGroup().getLayer(
-            LayerGroup.LAYER_POI).setSelectable(
-            GeneralisationLeftPanelComplement.this.cSelectPOI.isSelected());
+        CartagenApplication
+            .getInstance()
+            .getLayerGroup()
+            .getLayer(LayerGroup.LAYER_POI)
+            .setSelectable(
+                GeneralisationLeftPanelComplement.this.cSelectPOI.isSelected());
       }
     });
 
