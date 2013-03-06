@@ -14,22 +14,13 @@ package fr.ign.cogit.geoxygene.wps.contrib.datamatching.ppio;
 
 import org.apache.log4j.Logger;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.StringWriter;
-import java.io.Writer;
-
 import org.xml.sax.ContentHandler;
 import com.thoughtworks.xstream.io.xml.SaxWriter;
 import com.thoughtworks.xstream.XStream;
 
 import org.geoserver.wps.ppio.XStreamPPIO;
-import org.geotools.GML;
-import org.geotools.GML.Version;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ResultatAppariement;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ResultatStatAppariement;
 import fr.ign.cogit.geoxygene.wps.contrib.datamatching.xml.ResultatAppariementParser;
 
 

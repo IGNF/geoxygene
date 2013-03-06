@@ -45,7 +45,7 @@ public class ResultatAppariementParser {
   public String generateXMLResponse(ResultatAppariement resultatAppariement) throws Exception {
     
     LOGGER.info("------------------------------------------------------------------------");
-    LOGGER.info("Start encoding the result for output.");
+    LOGGER.info("Start generating resultat appariement xml response.");
     
     StringBuffer result = new StringBuffer();
 
@@ -86,7 +86,7 @@ public class ResultatAppariementParser {
     // End document
     result.append("</NetworkDataMatchingResult>");
     
-    LOGGER.info("Start encoding the result for output.");
+    LOGGER.info("End generating resultat appariement xml response.");
     LOGGER.info("------------------------------------------------------------------------");
     
     // Return the document
