@@ -352,7 +352,7 @@ public class CommonAlgorithmsFromCartAGen {
    * @return an Angle object corresponding to the absolute orientation [0,2Pi]
    * @author GTouya
    */
-  public static Angle lineAbsoluteOrientation(GM_LineString line,
+  public static Angle lineAbsoluteOrientation(ILineString line,
       IDirectPosition point) {
 
     // the first point of the angle is the central point staggered in the
@@ -360,27 +360,13 @@ public class CommonAlgorithmsFromCartAGen {
     DirectPosition v1 = new DirectPosition(point.getX() + 20.0, point.getY());
 
     // then get the third point in the line geometry
-    int nbVert = line.numPoints();
-    DirectPosition coordIni = (DirectPosition) line.startPoint();
-    DirectPosition v2 = null;
-    // if nbVert > 2, get the second vertex in geometry
-    if (nbVert > 2) {
-      if (coordIni.equals(point)) {
-        v2 = (DirectPosition) line.coord().get(2);
-      } else {
-        v2 = (DirectPosition) line.coord().get(nbVert - 3);
-      }
-    } else {
-      // get the first vertex on geometry
-      if (coordIni.equals(point)) {
-        v2 = (DirectPosition) line.coord().get(1);
-      } else {
-        v2 = (DirectPosition) line.coord().get(nbVert - 2);
-      }
-    }
+    IDirectPosition v2 = getNearestOtherVertexFromPoint(line, point);
 
     // now, compute interAngle between geom and geomFoll
-    return Angle.angleTroisPoints(v1, point, v2);
+    Angle interAngle = Angle.angleTroisPoints(v1, point, v2);
+    if (interAngle.getValeur() < 0)
+      interAngle = new Angle(interAngle.getValeur() + Math.PI);
+    return interAngle;
   }
 
   /**

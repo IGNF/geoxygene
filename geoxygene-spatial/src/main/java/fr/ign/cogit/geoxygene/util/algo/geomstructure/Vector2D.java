@@ -63,7 +63,7 @@ public class Vector2D extends Vecteur {
     double y = norm * Math.sin(angle.getValeur());
     this.coord = new DirectPosition(x, y);
   }
-  
+
   public Vector2D add(Vector2D v) {
     return new Vector2D(this.ajoute(v).getCoord());
   }
@@ -137,18 +137,31 @@ public class Vector2D extends Vecteur {
   public boolean isNull() {
     return this.equals(new Vector2D(0.0, 0.0));
   }
-  
+
   /**
    * Gets a new vector similar to this but with a new norm value.
-   *  
+   * 
    * @param newNorm
    * @return
    * @author GTouya
    */
-  public Vector2D changeNorm(double newNorm){
-    Vector2D vect = new Vector2D(this.getX(),this.getY());
+  public Vector2D changeNorm(double newNorm) {
+    Vector2D vect = new Vector2D(this.getX(), this.getY());
     vect.normalise();
     vect.scalarMultiplication(newNorm);
     return vect;
+  }
+
+  /**
+   * Gets a rotated version of {@code this} vector.
+   * @param angle
+   * @return
+   */
+  public Vector2D rotate(double angle) {
+    double cos = Math.cos(angle);
+    double sin = Math.sin(angle);
+    double newX = this.getX() * cos - this.getY() * sin;
+    double newY = this.getX() * sin + this.getY() * cos;
+    return new Vector2D(newX, newY);
   }
 }
