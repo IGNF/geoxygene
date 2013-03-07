@@ -139,6 +139,13 @@ public abstract class ShapeFileLoader {
     IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) this.getDataset()
         .getCartagenPop(nomPopulation, featureTypeName);
 
+    // case of an empty shapefile: return!
+    if (!shr.hasNext()) {
+      shr.close();
+      dbr.close();
+      return;
+    }
+
     // Get the Lat/Long coordinates of the first object of the population
     // and compute the associated utm zone
     Record object1 = shr.nextRecord();
