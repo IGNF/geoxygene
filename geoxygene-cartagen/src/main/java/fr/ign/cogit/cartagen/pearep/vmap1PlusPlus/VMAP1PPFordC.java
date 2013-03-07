@@ -13,39 +13,39 @@ import java.util.HashMap;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
+import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
+import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.AutreConstruction;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.AutreConstructionImpl;
 
-public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
+public class VMAP1PPFordC extends VMAPFeature implements IBridgePoint {
 
   private AutreConstruction geoxObj;
 
   // VMAP1PlusPlus attributes
   private String date_bdi, f_code, gfid_v2i, src_date, src_info, txt, uid_,
-      upd_date, upd_info, v2i_f_code, valid_date, valid_info, zv2;
-  private long clc, fcsubtype, keep, obj_rmq, src_dim, src_name, upd_name,
-      valid_stat, originform, targetscal;
+      upd_date, upd_info, v2i_f_code, valid_date, valid_info, nam;
+  private long fcsubtype, keep, obj_rmq, src_dim, src_name, upd_name,
+      valid_stat, originform, targetscal, v2i_acc, v2i_exs;
 
   /**
    * @param type
    */
-  public VMAP1PPContourL(ILineString lineString,
-      HashMap<String, Object> attributes,
+  public VMAP1PPFordC(IPoint point, HashMap<String, Object> attributes,
       @SuppressWarnings("unused") PeaRepDbType type) {
     super();
-    this.geoxObj = new AutreConstructionImpl(lineString);
-    this.setInitialGeom(lineString);
+    this.geoxObj = new AutreConstructionImpl(point);
+    this.setInitialGeom(point);
     this.setEliminated(false);
 
     this.date_bdi = (String) attributes.get("date_bdi");
     this.f_code = (String) attributes.get("f_code");
     this.gfid_v2i = (String) attributes.get("gfid_v2i");
+    this.nam = (String) attributes.get("nam");
     this.src_date = (String) attributes.get("src_date");
     this.src_info = (String) attributes.get("src_info");
     this.txt = (String) attributes.get("txt");
@@ -56,7 +56,6 @@ public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
     this.valid_date = (String) attributes.get("valid_date");
     this.valid_info = (String) attributes.get("valid_info");
     this.src_info = (String) attributes.get("src_info");
-    this.zv2 = (String) attributes.get("zv2");
 
     this.fcsubtype = (Integer) attributes.get("fcsubtype");
     this.keep = (Integer) attributes.get("keep");
@@ -65,7 +64,8 @@ public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
     this.src_name = (Integer) attributes.get("src_name");
     this.valid_stat = (Integer) attributes.get("valid_stat");
     this.targetscal = (Integer) attributes.get("targetscal");
-    this.clc = (Integer) attributes.get("clc");
+    this.v2i_acc = (Integer) attributes.get("v2i_acc");
+    this.v2i_exs = (Integer) attributes.get("v2i_exs");
 
   }
 
@@ -76,8 +76,8 @@ public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
 
   @Override
   @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
-  public ILineString getGeom() {
-    return (ILineString) super.getGeom();
+  public IPoint getGeom() {
+    return (IPoint) super.getGeom();
   }
 
   public String getDate_bdi() {
@@ -102,6 +102,14 @@ public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
 
   public void setGfid_v2i(String gfid_v2i) {
     this.gfid_v2i = gfid_v2i;
+  }
+
+  public String getNam() {
+    return nam;
+  }
+
+  public void setNam(String nam) {
+    this.nam = nam;
   }
 
   public String getSrc_date() {
@@ -249,49 +257,31 @@ public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
   }
 
   @Override
-  public double getAltitude() {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-  @Override
-  public void setAltitude(double z) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public boolean isMaster() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public double getWidth() {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-  @Override
-  public IPolygon getSymbolExtent() {
+  public BridgeType getType() {
     // TODO Auto-generated method stub
     return null;
   }
 
-  public long getClc() {
-    return clc;
+  @Override
+  public IWaterLine getCrossedLine() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
-  public void setClc(long clc) {
-    this.clc = clc;
+  public long getV2i_acc() {
+    return v2i_acc;
   }
 
-  public String getZv2() {
-    return zv2;
+  public void setV2i_acc(long v2i_acc) {
+    this.v2i_acc = v2i_acc;
   }
 
-  public void setZv2(String zv2) {
-    this.zv2 = zv2;
+  public long getV2i_exs() {
+    return v2i_exs;
+  }
+
+  public void setV2i_exs(long v2i_exs) {
+    this.v2i_exs = v2i_exs;
   }
 
 }

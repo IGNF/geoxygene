@@ -9,38 +9,40 @@
  ******************************************************************************/
 package fr.ign.cogit.cartagen.pearep.vmap1PlusPlus;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
+import fr.ign.cogit.cartagen.core.genericschema.SymbolShape;
+import fr.ign.cogit.cartagen.core.genericschema.network.INetworkSection;
+import fr.ign.cogit.cartagen.core.genericschema.road.IRoadNode;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.AutreConstruction;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.AutreConstructionImpl;
 
-public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
+public class VMAP1PPInterC extends VMAPFeature implements IRoadNode {
 
   private AutreConstruction geoxObj;
 
   // VMAP1PlusPlus attributes
   private String date_bdi, f_code, gfid_v2i, src_date, src_info, txt, uid_,
-      upd_date, upd_info, v2i_f_code, valid_date, valid_info, zv2;
-  private long clc, fcsubtype, keep, obj_rmq, src_dim, src_name, upd_name,
-      valid_stat, originform, targetscal;
+      upd_date, upd_info, v2i_f_code, valid_date, valid_info;
+  private long fcsubtype, keep, loc, rit, obj_rmq, src_dim, src_name, upd_name,
+      valid_stat, originform, targetscal, use_;
 
   /**
    * @param type
    */
-  public VMAP1PPContourL(ILineString lineString,
-      HashMap<String, Object> attributes,
+  public VMAP1PPInterC(IPoint point, HashMap<String, Object> attributes,
       @SuppressWarnings("unused") PeaRepDbType type) {
     super();
-    this.geoxObj = new AutreConstructionImpl(lineString);
-    this.setInitialGeom(lineString);
+    this.geoxObj = new AutreConstructionImpl(point);
+    this.setInitialGeom(point);
     this.setEliminated(false);
 
     this.date_bdi = (String) attributes.get("date_bdi");
@@ -56,7 +58,6 @@ public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
     this.valid_date = (String) attributes.get("valid_date");
     this.valid_info = (String) attributes.get("valid_info");
     this.src_info = (String) attributes.get("src_info");
-    this.zv2 = (String) attributes.get("zv2");
 
     this.fcsubtype = (Integer) attributes.get("fcsubtype");
     this.keep = (Integer) attributes.get("keep");
@@ -65,7 +66,9 @@ public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
     this.src_name = (Integer) attributes.get("src_name");
     this.valid_stat = (Integer) attributes.get("valid_stat");
     this.targetscal = (Integer) attributes.get("targetscal");
-    this.clc = (Integer) attributes.get("clc");
+    this.loc = (Integer) attributes.get("loc");
+    this.rit = (Integer) attributes.get("rit");
+    this.use_ = (Integer) attributes.get("use_");
 
   }
 
@@ -76,8 +79,8 @@ public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
 
   @Override
   @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
-  public ILineString getGeom() {
-    return (ILineString) super.getGeom();
+  public IPoint getGeom() {
+    return (IPoint) super.getGeom();
   }
 
   public String getDate_bdi() {
@@ -249,21 +252,9 @@ public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
   }
 
   @Override
-  public double getAltitude() {
+  public IDirectPosition getPosition() {
     // TODO Auto-generated method stub
-    return 0;
-  }
-
-  @Override
-  public void setAltitude(double z) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public boolean isMaster() {
-    // TODO Auto-generated method stub
-    return false;
+    return null;
   }
 
   @Override
@@ -273,25 +264,69 @@ public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
   }
 
   @Override
-  public IPolygon getSymbolExtent() {
+  public Collection<INetworkSection> getInSections() {
     // TODO Auto-generated method stub
     return null;
   }
 
-  public long getClc() {
-    return clc;
+  @Override
+  public void setInSections(Collection<INetworkSection> inSections) {
+    // TODO Auto-generated method stub
+
   }
 
-  public void setClc(long clc) {
-    this.clc = clc;
+  @Override
+  public Collection<INetworkSection> getOutSections() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
-  public String getZv2() {
-    return zv2;
+  @Override
+  public void setOutSections(Collection<INetworkSection> outSections) {
+    // TODO Auto-generated method stub
+
   }
 
-  public void setZv2(String zv2) {
-    this.zv2 = zv2;
+  @Override
+  public int getDegree() {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public int getSectionsMaxImportance() {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public SymbolShape getMaxWidthSymbol() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public long getUse_() {
+    return use_;
+  }
+
+  public void setUse_(long use_) {
+    this.use_ = use_;
+  }
+
+  public long getLoc() {
+    return loc;
+  }
+
+  public void setLoc(long loc) {
+    this.loc = loc;
+  }
+
+  public long getRit() {
+    return rit;
+  }
+
+  public void setRit(long rit) {
+    this.rit = rit;
   }
 
 }

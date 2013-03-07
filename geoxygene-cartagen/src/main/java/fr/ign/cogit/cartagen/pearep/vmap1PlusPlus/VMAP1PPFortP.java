@@ -13,39 +13,39 @@ import java.util.HashMap;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildPoint;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
-import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
+import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.AutreConstruction;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.AutreConstructionImpl;
 
-public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
+public class VMAP1PPFortP extends VMAPFeature implements IBuildPoint {
 
   private AutreConstruction geoxObj;
 
   // VMAP1PlusPlus attributes
   private String date_bdi, f_code, gfid_v2i, src_date, src_info, txt, uid_,
-      upd_date, upd_info, v2i_f_code, valid_date, valid_info, zv2;
-  private long clc, fcsubtype, keep, obj_rmq, src_dim, src_name, upd_name,
-      valid_stat, originform, targetscal;
+      upd_date, upd_info, v2i_f_code, valid_date, valid_info, nam, catfor,
+      natcon;
+  private long exs, fcsubtype, hgt, keep, obj_rmq, src_dim, src_name, upd_name,
+      valid_stat, scamax, scamin, originform, targetscal;
 
   /**
    * @param type
    */
-  public VMAP1PPContourL(ILineString lineString,
-      HashMap<String, Object> attributes,
+  public VMAP1PPFortP(IPoint point, HashMap<String, Object> attributes,
       @SuppressWarnings("unused") PeaRepDbType type) {
     super();
-    this.geoxObj = new AutreConstructionImpl(lineString);
-    this.setInitialGeom(lineString);
+    this.geoxObj = new AutreConstructionImpl(point);
+    this.setInitialGeom(point);
     this.setEliminated(false);
 
     this.date_bdi = (String) attributes.get("date_bdi");
     this.f_code = (String) attributes.get("f_code");
     this.gfid_v2i = (String) attributes.get("gfid_v2i");
+    this.nam = (String) attributes.get("nam");
     this.src_date = (String) attributes.get("src_date");
     this.src_info = (String) attributes.get("src_info");
     this.txt = (String) attributes.get("txt");
@@ -56,16 +56,19 @@ public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
     this.valid_date = (String) attributes.get("valid_date");
     this.valid_info = (String) attributes.get("valid_info");
     this.src_info = (String) attributes.get("src_info");
-    this.zv2 = (String) attributes.get("zv2");
+    this.catfor = (String) attributes.get("catfor");
 
+    this.exs = (Integer) attributes.get("exs");
     this.fcsubtype = (Integer) attributes.get("fcsubtype");
     this.keep = (Integer) attributes.get("keep");
     this.obj_rmq = (Integer) attributes.get("obj_rmq");
     this.src_dim = (Integer) attributes.get("src_dim");
     this.src_name = (Integer) attributes.get("src_name");
     this.valid_stat = (Integer) attributes.get("valid_stat");
+    this.scamax = (Integer) attributes.get("scamax");
+    this.scamin = (Integer) attributes.get("scamin");
     this.targetscal = (Integer) attributes.get("targetscal");
-    this.clc = (Integer) attributes.get("clc");
+    this.hgt = (Integer) attributes.get("hgt");
 
   }
 
@@ -76,8 +79,8 @@ public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
 
   @Override
   @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
-  public ILineString getGeom() {
-    return (ILineString) super.getGeom();
+  public IPoint getGeom() {
+    return (IPoint) super.getGeom();
   }
 
   public String getDate_bdi() {
@@ -102,6 +105,14 @@ public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
 
   public void setGfid_v2i(String gfid_v2i) {
     this.gfid_v2i = gfid_v2i;
+  }
+
+  public String getNam() {
+    return nam;
+  }
+
+  public void setNam(String nam) {
+    this.nam = nam;
   }
 
   public String getSrc_date() {
@@ -176,6 +187,14 @@ public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
     this.valid_info = valid_info;
   }
 
+  public long getExs() {
+    return exs;
+  }
+
+  public void setExs(long exs) {
+    this.exs = exs;
+  }
+
   public long getFcsubtype() {
     return fcsubtype;
   }
@@ -224,12 +243,36 @@ public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
     this.valid_stat = valid_stat;
   }
 
+  public long getScamax() {
+    return scamax;
+  }
+
+  public void setScamax(long scamax) {
+    this.scamax = scamax;
+  }
+
+  public long getScamin() {
+    return scamin;
+  }
+
+  public void setScamin(long scamin) {
+    this.scamin = scamin;
+  }
+
   public long getTargetscale() {
     return targetscal;
   }
 
   public void setTargetscale(long targetscale) {
     this.targetscal = targetscale;
+  }
+
+  public String getNatcon() {
+    return natcon;
+  }
+
+  public void setNatcon(String natcon) {
+    this.natcon = natcon;
   }
 
   public long getUpd_name() {
@@ -248,50 +291,20 @@ public class VMAP1PPContourL extends VMAPFeature implements IContourLine {
     this.originform = originform;
   }
 
-  @Override
-  public double getAltitude() {
-    // TODO Auto-generated method stub
-    return 0;
+  public long getHgt() {
+    return hgt;
   }
 
-  @Override
-  public void setAltitude(double z) {
-    // TODO Auto-generated method stub
-
+  public void setHgt(long hgt) {
+    this.hgt = hgt;
   }
 
-  @Override
-  public boolean isMaster() {
-    // TODO Auto-generated method stub
-    return false;
+  public String getCatfor() {
+    return catfor;
   }
 
-  @Override
-  public double getWidth() {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-  @Override
-  public IPolygon getSymbolExtent() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  public long getClc() {
-    return clc;
-  }
-
-  public void setClc(long clc) {
-    this.clc = clc;
-  }
-
-  public String getZv2() {
-    return zv2;
-  }
-
-  public void setZv2(String zv2) {
-    this.zv2 = zv2;
+  public void setCatfor(String catfor) {
+    this.catfor = catfor;
   }
 
 }
