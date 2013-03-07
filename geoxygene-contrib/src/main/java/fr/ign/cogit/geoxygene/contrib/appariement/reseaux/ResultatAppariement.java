@@ -52,7 +52,7 @@ public class ResultatAppariement {
    * Default constructor.
    */
   public ResultatAppariement() {
-    linkDataSet = null;
+    // linkDataSet = null;
     networkMatched = null;
     resultStat = new ResultatStatAppariement();
   }
@@ -63,7 +63,7 @@ public class ResultatAppariement {
    * @param sfc  
    */
   public ResultatAppariement(EnsembleDeLiens edl, SimpleFeatureCollection sfc) {
-    linkDataSet = edl;
+    // linkDataSet = edl;
     networkMatched = sfc;
     resultStat = new ResultatStatAppariement();
   }

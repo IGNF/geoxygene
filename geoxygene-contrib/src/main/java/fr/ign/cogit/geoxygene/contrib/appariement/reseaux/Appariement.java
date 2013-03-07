@@ -130,8 +130,9 @@ public abstract class Appariement {
    * @see ReseauApp
    * @see ParametresApp
    */
-  public static EnsembleDeLiens appariementReseaux(final ReseauApp reseau1,
+  public static ResultatAppariement appariementReseaux(final ReseauApp reseau1,
       final ReseauApp reseau2, final ParametresApp param) {
+    
     // build a spatial index (regular tiling with an average of 20 objets
     // per tile) if the network do not have one already.
     // Indexation spatiale si cela n'a pas déjà été fait :
@@ -291,10 +292,16 @@ public abstract class Appariement {
       Appariement.LOGGER.debug(I18N.getString("Appariement.GlobalControl") + //$NON-NLS-1$
           (new Time(System.currentTimeMillis())).toString());
     }
-    Appariement.controleGlobal(reseau1, reseau2, tousLiens, param);
+    
+    // --------------------------------------------------------------------------------------
+    ResultatStatAppariement resStat = Appariement.controleGlobal(reseau1, reseau2, tousLiens, param);
 
     // return liens_AppArcs;
-    return tousLiens;
+    ResultatAppariement resultatAppariement = new ResultatAppariement();
+    resultatAppariement.setLinkDataSet(tousLiens);
+    resultatAppariement.setResultStat(resStat);
+    
+    return resultatAppariement;
   }
 
   /**
@@ -1727,10 +1734,14 @@ public abstract class Appariement {
    * @param reseau2 network 2
    * @param liens links
    * @param param matching parameters
+   * @return resultatStatAppariement, tableau de stats sur les résultats
    */
-  private static void controleGlobal(final CarteTopo reseau1,
+  private static ResultatStatAppariement controleGlobal(final CarteTopo reseau1,
       final CarteTopo reseau2, final EnsembleDeLiens liens,
       final ParametresApp param) {
+    
+    ResultatStatAppariement resultatStatAppariement = new ResultatStatAppariement();
+    
     // ///////////////////////////////////////////////////////
     // ////////// Controle global des arcs comp //////////////
     // on recherche les arcs comp appariés avec plusieurs objets ref
@@ -1871,6 +1882,15 @@ public abstract class Appariement {
           + Math.round(longSansCorresp * Appariement.HUNDRED / longTotal)
           + "%long)"); //$NON-NLS-1$
     }
+    // On ajoute les stats dans l'objet même si on n'est pas en mode debug
+    ResultatStatEvaluationAppariement resNetwork2Edges = new ResultatStatEvaluationAppariement();
+    resNetwork2Edges.setTotalNumber(nb);
+    resNetwork2Edges.setOkNumber(nbOK);
+    resNetwork2Edges.setKoNumber(nbSansCorresp);
+    resNetwork2Edges.setDoubtfulNumber(nbDouteux);
+    Appariement.LOGGER.info("Resultat Network2Edges = " + resNetwork2Edges.toString());
+    resultatStatAppariement.setEdgesEvaluationComp(resNetwork2Edges);
+    
     // ////////// Controle global des noeuds comp //////////////
     // on recherche les noeuds comp appariés avec plusieurs objets ref
     // pour les marquer comme douteux
@@ -1953,6 +1973,15 @@ public abstract class Appariement {
           + nbSansCorresp + " (" + (nbSansCorresp * Appariement.HUNDRED / nb) //$NON-NLS-1$
           + "%)"); //$NON-NLS-1$
     }
+    // On ajoute les stats dans l'objet même si on n'est pas en mode debug
+    ResultatStatEvaluationAppariement resNetwork2Nodes = new ResultatStatEvaluationAppariement();
+    resNetwork2Nodes.setTotalNumber(nb);
+    resNetwork2Nodes.setOkNumber(nbOK);
+    resNetwork2Nodes.setKoNumber(nbSansCorresp);
+    resNetwork2Nodes.setDoubtfulNumber(nbDouteux);
+    Appariement.LOGGER.info("Resultat Network2Nodes = " + resNetwork2Nodes.toString());
+    resultatStatAppariement.setEdgesEvaluationComp(resNetwork2Nodes);
+    
     // //////////////////////////////////////////////////////
     // ////////// Controle global des arcs ref //////////////
     // On ne fait que compter pour évaluer le résultat
@@ -2011,6 +2040,14 @@ public abstract class Appariement {
           + Math.round(longSansCorresp * Appariement.HUNDRED / longTotal)
           + "%long)"); //$NON-NLS-1$
     }
+    // On ajoute les stats dans l'objet même si on n'est pas en mode debug
+    ResultatStatEvaluationAppariement resNetwork1Edges = new ResultatStatEvaluationAppariement();
+    resNetwork1Edges.setTotalNumber(nb);
+    resNetwork1Edges.setOkNumber(nbOK);
+    resNetwork1Edges.setKoNumber(nbSansCorresp);
+    resNetwork1Edges.setDoubtfulNumber(nbDouteux);
+    Appariement.LOGGER.info("Resultat Network1Edges = " + resNetwork1Edges.toString());
+    resultatStatAppariement.setEdgesEvaluationRef(resNetwork1Edges);
 
     // ///////////////////////////////////////////
     // ////////// cas des noeudss ref ////////////
@@ -2058,6 +2095,18 @@ public abstract class Appariement {
           + nbSansCorresp + " (" //$NON-NLS-1$
           + (nbSansCorresp * Appariement.HUNDRED / nb) + "%)"); //$NON-NLS-1$
     }
+    // On ajoute les stats dans l'objet même si on n'est pas en mode debug
+    ResultatStatEvaluationAppariement resNetwork1Nodes = new ResultatStatEvaluationAppariement();
+    resNetwork1Nodes.setTotalNumber(nb);
+    resNetwork1Nodes.setOkNumber(nbOK);
+    resNetwork1Nodes.setKoNumber(nbSansCorresp);
+    resNetwork1Nodes.setDoubtfulNumber(nbDouteux);
+    Appariement.LOGGER.info("Resultat Network1Nodes = " + resNetwork1Nodes.toString());
+    resultatStatAppariement.setNodesEvaluationRef(resNetwork1Nodes);
+    
+    // Return stats appariement
+    return resultatStatAppariement;
+    
   }
 
   /**
