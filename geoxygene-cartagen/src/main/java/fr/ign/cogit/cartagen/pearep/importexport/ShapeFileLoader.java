@@ -229,6 +229,13 @@ public abstract class ShapeFileLoader {
     IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) this.getDataset()
         .getCartagenPop(nomPopulation, featureTypeName);
 
+    // case of an empty shapefile: return!
+    if (!shr.hasNext()) {
+      shr.close();
+      dbr.close();
+      return;
+    }
+
     // Get the Lat/Long coordinates of the first object of the population
     // and compute the associated utm zone
     Record object1 = shr.nextRecord();
@@ -303,6 +310,13 @@ public abstract class ShapeFileLoader {
 
     if (ShapeFileLoader.logger.isLoggable(Level.INFO)) {
       ShapeFileLoader.logger.info("Loading: " + path);
+    }
+
+    // case of an empty shapefile: return!
+    if (!shr.hasNext()) {
+      shr.close();
+      dbr.close();
+      return;
     }
 
     // get the road population of the dataset
@@ -385,6 +399,13 @@ public abstract class ShapeFileLoader {
       ShapeFileLoader.logger.info("Loading: " + path);
     }
 
+    // case of an empty shapefile: return!
+    if (!shr.hasNext()) {
+      shr.close();
+      dbr.close();
+      return;
+    }
+
     // get the road population of the dataset
     IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) this.getDataset()
         .getCartagenPop(nomPopulation, featureTypeName);
@@ -464,6 +485,13 @@ public abstract class ShapeFileLoader {
 
     if (ShapeFileLoader.logger.isLoggable(Level.INFO)) {
       ShapeFileLoader.logger.info("Loading: " + path);
+    }
+
+    // case of an empty shapefile: return!
+    if (!shr.hasNext()) {
+      shr.close();
+      dbr.close();
+      return;
     }
 
     // get the road population of the dataset
