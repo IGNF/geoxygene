@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 
 import org.geoserver.wps.gs.GeoServerProcess;
 import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.process.ProcessException;
 // import org.geotools.data.
 // import org.geoserver.wps.jts.DescribeParameter;
 // import org.geoserver.wps.jts.DescribeProcess;
@@ -64,33 +65,20 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
   @DescribeResult(name = "popApp", description = "network Matched")
   public ResultatAppariement execute(
       @DescribeParameter(name = "popRef", description = "Less detailed network") SimpleFeatureCollection popRef,
-      @DescribeParameter(name = "popComp", description = "Comparison network") SimpleFeatureCollection popComp)
+      @DescribeParameter(name = "popComp", description = "Comparison network") SimpleFeatureCollection popComp) {
       
+      // defaultValue = 50    
       // @DescribeParameter(name = "paramFilename", description = "XML Parameters") String paramFilename)
-      
-      // defaultValue = 50
-      // @DescribeParameter(name = "distanceNoeudsMax", description = "Distance maximale autorisée entre deux noeuds appariés") float distanceNoeudsMax)
-      
-      // defaultValue = 10
-      // @DescribeParameter(name = "distanceArcsMin", description = "Distance minimum sous laquelle l'écart de distance " +
-      // 		"pour divers arcs du réseaux comp (distance vers les arcs du réseau ref) n'a plus aucun sens.") float distanceArcsMin,
-      
-      // defaultValue = 25
-      // @DescribeParameter(name = "distanceArcsMax", description = "Distance maximum autorisée entre les arcs des deux réseaux") float distanceArcsMax) 
     
-      {
+    System.out.println("----------------------------------------------------------------------------------------");
+    System.out.println("Start Network Data Matching Process");
     
-    /** Variables for debug. */
-    Runtime runtime = null;
-    long maxMemory;
-    long allocatedMemory;
-    long freeMemory;
-
+    /** Log memory status. */
     if (LOGGER.isEnabledFor(Level.DEBUG)) {
-      runtime = Runtime.getRuntime();
-      maxMemory = runtime.maxMemory();
-      allocatedMemory = runtime.totalMemory();
-      freeMemory = runtime.freeMemory();
+      Runtime runtime = Runtime.getRuntime();
+      long maxMemory = runtime.maxMemory();
+      long allocatedMemory = runtime.totalMemory();
+      long freeMemory = runtime.freeMemory();
       LOGGER.debug("free memory: " + freeMemory / 1024);
       LOGGER.debug("allocated memory: " + allocatedMemory / 1024);
       LOGGER.debug("max memory: " + maxMemory / 1024);
@@ -160,10 +148,10 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
       LOGGER.info("End Converting");
       
       if (LOGGER.isEnabledFor(Level.DEBUG)) {
-        runtime = Runtime.getRuntime();
-        maxMemory = runtime.maxMemory();
-        allocatedMemory = runtime.totalMemory();
-        freeMemory = runtime.freeMemory();
+        Runtime runtime = Runtime.getRuntime();
+        long maxMemory = runtime.maxMemory();
+        long allocatedMemory = runtime.totalMemory();
+        long freeMemory = runtime.freeMemory();
         LOGGER.debug("free memory: " + freeMemory / 1024);
         LOGGER.debug("allocated memory: " + allocatedMemory / 1024);
         LOGGER.debug("max memory: " + maxMemory / 1024);
@@ -180,16 +168,9 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
 
     } catch (Exception e) {
       e.printStackTrace();
+      throw new ProcessException("Error during network data matching process");
     }
     
-    /*
-    throw new ProcessException("Could not find attribute " +
-        "[" + aggAttribute + "] "
-        + " the valid values are " + attNames(atts));
-    */
-
-    LOGGER.info("Failed data matching");
-    return null;
   }
   
 }

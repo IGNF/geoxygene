@@ -40,27 +40,6 @@
 				<directory>src/test/resources</directory>
 			</testResource>
 		</testResources>
-		<plugins>
-			<plugin>
-				<groupId>org.geotools.maven</groupId>
-				<artifactId>xmlcodegen</artifactId>
-				<version>10-SNAPSHOT</version>
-				<configuration>
-					<schemaLocation>NetworkDataMatchingResult.xsd</schemaLocation>
-					<schemaSourceDirectory>${basedir}/src/main/resources</schemaSourceDirectory>
-					<destinationPackage>org.geotools.po.bindings</destinationPackage>
-					<generateConfiguration>true</generateConfiguration>
-					<generateBindingInterface>true</generateBindingInterface>
-					<generateSchemaLocationResolver>true</generateSchemaLocationResolver>
-					<bindingConstructorArguments>
-						<bindingConstructorArgument>
-							<name>factory</name>
-							<type>org.geotools.po.ObjectFactory</type>
-						</bindingConstructorArgument>
-					</bindingConstructorArguments>
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
 
 	<dependencies>
