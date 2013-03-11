@@ -14,7 +14,9 @@ import java.util.HashMap;
 import org.hibernate.annotations.Type;
 
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
+import fr.ign.cogit.cartagen.core.genericschema.road.IBridgeLine.BridgeType;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
+import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -304,7 +306,7 @@ public class VMAP1PPDamC extends VMAPFeature implements IBridgePoint {
   }
 
   @Override
-  public IWaterLine getCrossedLine() {
+  public IWaterLine getCrossedNetwork() {
     // TODO Auto-generated method stub
     return null;
   }
@@ -363,6 +365,12 @@ public class VMAP1PPDamC extends VMAPFeature implements IBridgePoint {
 
   public void setMcc(long mcc) {
     this.mcc = mcc;
+  }
+
+  @Override
+  public IRoadLine getRoad() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

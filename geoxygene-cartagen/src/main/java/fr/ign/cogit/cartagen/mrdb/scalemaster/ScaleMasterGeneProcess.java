@@ -54,6 +54,12 @@ public abstract class ScaleMasterGeneProcess {
   public abstract String getProcessName();
 
   /**
+   * Get all the parameters of a process with their default value.
+   * @return
+   */
+  public abstract Set<ProcessParameter> getDefaultParameters();
+
+  /**
    * Get the parameter value from its name.
    * @param paramName
    * @return
@@ -75,7 +81,15 @@ public abstract class ScaleMasterGeneProcess {
   }
 
   public void addParameter(ProcessParameter parameter) {
-    this.parameters.add(parameter);
+    boolean contain = false;
+    for (ProcessParameter param : this.parameters) {
+      if (param.getName().equals(parameter.getName())) {
+        param.setValue(parameter.getValue());
+        contain = true;
+      }
+    }
+    if (!contain)
+      this.parameters.add(parameter);
   }
 
   @Override

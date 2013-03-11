@@ -13,11 +13,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.relief.IContourLine;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 
@@ -134,6 +137,15 @@ public class ContourSelectionProcess extends ScaleMasterGeneProcess {
     this.csThreshold = (Integer) getParamValueFromName("contour_selection");
     if (this.hasParameter("start_zero"))
       this.startZero = (Boolean) getParamValueFromName("start_zero");
+  }
+
+  @Override
+  public Set<ProcessParameter> getDefaultParameters() {
+    Set<ProcessParameter> params = new HashSet<ProcessParameter>();
+    params.add(new ProcessParameter("contour_selection", Integer.class, 2));
+    params.add(new ProcessParameter("start_zero", Boolean.class, false));
+
+    return params;
   }
 
 }

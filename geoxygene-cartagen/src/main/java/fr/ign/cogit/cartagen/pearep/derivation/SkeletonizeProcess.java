@@ -6,6 +6,7 @@ import java.util.Set;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.genealgorithms.polygon.Skeletonize;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -96,6 +97,16 @@ public class SkeletonizeProcess extends ScaleMasterGeneProcess {
   @Override
   public String getProcessName() {
     return "skeletonize";
+  }
+
+  @Override
+  public Set<ProcessParameter> getDefaultParameters() {
+    Set<ProcessParameter> params = new HashSet<ProcessParameter>();
+    params.add(new ProcessParameter("linear_class", String.class, ""));
+    params.add(new ProcessParameter("remove_holes", Boolean.class, false));
+    params.add(new ProcessParameter("width_min", Double.class, 20.0));
+    params.add(new ProcessParameter("size_min", Double.class, 50000.0));
+    return params;
   }
 
 }

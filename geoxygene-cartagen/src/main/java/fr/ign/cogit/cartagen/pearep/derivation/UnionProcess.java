@@ -12,13 +12,16 @@ package fr.ign.cogit.cartagen.pearep.derivation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
@@ -136,6 +139,12 @@ public class UnionProcess extends ScaleMasterGeneProcess {
 
   @Override
   public void parameterise() {
+  }
+
+  @Override
+  public Set<ProcessParameter> getDefaultParameters() {
+    Set<ProcessParameter> params = new HashSet<ProcessParameter>();
+    return params;
   }
 
 }

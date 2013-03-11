@@ -14,7 +14,9 @@ import java.util.HashMap;
 import org.hibernate.annotations.Type;
 
 import fr.ign.cogit.cartagen.core.genericschema.hydro.IWaterLine;
+import fr.ign.cogit.cartagen.core.genericschema.road.IBridgeLine.BridgeType;
 import fr.ign.cogit.cartagen.core.genericschema.road.IBridgePoint;
+import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -36,7 +38,7 @@ public class VMAP1PPFordC extends VMAPFeature implements IBridgePoint {
    * @param type
    */
   public VMAP1PPFordC(IPoint point, HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(point);
     this.setInitialGeom(point);
@@ -263,7 +265,7 @@ public class VMAP1PPFordC extends VMAPFeature implements IBridgePoint {
   }
 
   @Override
-  public IWaterLine getCrossedLine() {
+  public IWaterLine getCrossedNetwork() {
     // TODO Auto-generated method stub
     return null;
   }
@@ -282,6 +284,12 @@ public class VMAP1PPFordC extends VMAPFeature implements IBridgePoint {
 
   public void setV2i_exs(long v2i_exs) {
     this.v2i_exs = v2i_exs;
+  }
+
+  @Override
+  public IRoadLine getRoad() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

@@ -11,8 +11,11 @@ package fr.ign.cogit.cartagen.pearep.derivation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -93,6 +96,14 @@ public class CollapseToPointProcess extends ScaleMasterGeneProcess {
   @Override
   public void parameterise() {
     this.className = (String) getParamValueFromName("class_name");
+  }
+
+  @Override
+  public Set<ProcessParameter> getDefaultParameters() {
+    Set<ProcessParameter> params = new HashSet<ProcessParameter>();
+    params.add(new ProcessParameter("class_name", String.class, ""));
+
+    return params;
   }
 
 }

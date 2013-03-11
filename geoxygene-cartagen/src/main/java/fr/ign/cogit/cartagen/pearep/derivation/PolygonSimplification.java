@@ -9,7 +9,11 @@
  ******************************************************************************/
 package fr.ign.cogit.cartagen.pearep.derivation;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
@@ -51,6 +55,13 @@ public class PolygonSimplification extends ScaleMasterGeneProcess {
   @Override
   public void parameterise() {
     this.segLength = (Double) getParamValueFromName("segment_length");
+  }
+
+  @Override
+  public Set<ProcessParameter> getDefaultParameters() {
+    Set<ProcessParameter> params = new HashSet<ProcessParameter>();
+    params.add(new ProcessParameter("segment_length", Double.class, 5.0));
+    return params;
   }
 
 }

@@ -11,9 +11,11 @@ package fr.ign.cogit.cartagen.pearep.derivation;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.road.IRoadLine;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.spatialanalysis.network.NetworkEnrichment;
@@ -96,6 +98,15 @@ public class StrokeSelectionProcess extends ScaleMasterGeneProcess {
     if (this.hasParameter("deleted")) {
       this.deleted = (Boolean) this.getParamValueFromName("deleted");
     }
+  }
+
+  @Override
+  public Set<ProcessParameter> getDefaultParameters() {
+    Set<ProcessParameter> params = new HashSet<ProcessParameter>();
+    params.add(new ProcessParameter("name_attribute", String.class, ""));
+    params.add(new ProcessParameter("deleted", Boolean.class, false));
+    params.add(new ProcessParameter("min_length", Double.class, 2000.0));
+    return params;
   }
 
 }

@@ -11,6 +11,7 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -50,7 +52,8 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.mrdb.REPPointOfView;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMaster;
-import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterElement;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterEnrichment;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
@@ -58,7 +61,6 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.component.ScaleRulerPanel;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.ClassComparator;
 import fr.ign.cogit.cartagen.util.FileUtil;
-import fr.ign.cogit.cartagen.util.Interval;
 import fr.ign.cogit.cartagen.util.ontologies.OntologyUtil;
 
 public class EditScaleMasterFrame extends JFrame implements ActionListener,
@@ -73,6 +75,8 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
   private Set<ScaleMasterTheme> existingThemes = new HashSet<ScaleMasterTheme>();
   private List<Class<?>> geoClasses;
   private Map<String, Color> dbHues;
+  private Set<ScaleMasterEnrichment> enrichProcs;
+  private Set<ScaleMasterGeneProcess> genProcs;
 
   private JButton btnOk, btnCancel, btnApply, btnAddLine, btnAddElement,
       btnEditElement;
@@ -243,22 +247,10 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       if (this.selectedLine == null) {
         return;
       }
-      /*
-       * AddScaleMasterEltFrame frame = new AddScaleMasterEltFrame(this,
-       * selectedLine); frame.setVisible(true);
-       */
-      ScaleMasterElement elt1 = new ScaleMasterElement(this.selectedLine,
-          new Interval<Integer>(20000, 60000), "filtrage");
-      ScaleMasterElement elt2 = new ScaleMasterElement(this.selectedLine,
-          new Interval<Integer>(80000, 200000), "lissage");
-      ScaleMasterElement elt3 = new ScaleMasterElement(this.selectedLine,
-          new Interval<Integer>(500000, 750000), "structuration");
-      this.selectedLine.addElement(elt1);
-      this.selectedLine.addElement(elt2);
-      this.selectedLine.addElement(elt3);
-      ScaleLineDisplayPanel panel = this.linePanels.get(this.selectedLine
-          .getTheme().getName());
-      panel.updateElements();
+
+      AddScaleMasterEltFrame frame = new AddScaleMasterEltFrame(this,
+          selectedLine);
+      frame.setVisible(true);
       this.pack();
     }
   }
@@ -338,6 +330,14 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     return this.linePanels;
   }
 
+  public Set<ScaleMasterGeneProcess> getGenProcs() {
+    return genProcs;
+  }
+
+  public void setGenProcs(Set<ScaleMasterGeneProcess> genProcs) {
+    this.genProcs = genProcs;
+  }
+
   /**
    * Reset all the selected toggle buttons of the scale lines except the new
    * selected one.
@@ -375,7 +375,8 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
    * the geo classes to be queried.
    */
   private void setGeoClasses() {
-
+    this.enrichProcs = new HashSet<ScaleMasterEnrichment>();
+    this.genProcs = new HashSet<ScaleMasterGeneProcess>();
     this.geoClasses = new ArrayList<Class<?>>();
     // get the directory of the package of this class
     Package pack = this.getClass().getPackage();
@@ -424,8 +425,22 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
         if (Modifier.isAbstract(classObj.getModifiers())) {
           continue;
         }
+        // test if it's an available generalisation process class
+        if (ScaleMasterGeneProcess.class.isAssignableFrom(classObj)) {
+          ScaleMasterGeneProcess instance = (ScaleMasterGeneProcess) classObj
+              .getMethod("getInstance").invoke(null);
+          this.genProcs.add(instance);
+        }
+
+        // test if it's an enrichment process class
+        if (ScaleMasterEnrichment.class.isAssignableFrom(classObj)) {
+          ScaleMasterEnrichment instance = (ScaleMasterEnrichment) classObj
+              .getMethod("getInstance").invoke(null);
+          this.enrichProcs.add(instance);
+        }
+
         // test if the class inherits from IGeneObj
-        if (IGeneObj.class.isAssignableFrom(classObj))
+        if (!IGeneObj.class.isAssignableFrom(classObj))
           continue;
 
         // test if it is an implementation used in one of the opened DBs
@@ -443,6 +458,16 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
 
       } catch (ClassNotFoundException cnfex) {
         cnfex.printStackTrace();
+      } catch (IllegalArgumentException e) {
+        e.printStackTrace();
+      } catch (SecurityException e) {
+        e.printStackTrace();
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+      } catch (InvocationTargetException e) {
+        e.printStackTrace();
+      } catch (NoSuchMethodException e) {
+        e.printStackTrace();
       }
     }
     Collections.sort(this.geoClasses, new ClassComparator());
@@ -493,6 +518,46 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
 
   public ScaleMaster getCurrent() {
     return this.current;
+  }
+
+  public JSpinner getSpMin() {
+    return spMin;
+  }
+
+  public void setSpMin(JSpinner spMin) {
+    this.spMin = spMin;
+  }
+
+  public JSpinner getSpMax() {
+    return spMax;
+  }
+
+  public void setSpMax(JSpinner spMax) {
+    this.spMax = spMax;
+  }
+
+  /**
+   * Put the available enrichment processes in a combo box model.
+   * @return
+   */
+  public ComboBoxModel getEnrichComboModel() {
+    DefaultComboBoxModel model = new DefaultComboBoxModel();
+    for (ScaleMasterEnrichment enrich : this.enrichProcs) {
+      model.addElement(enrich);
+    }
+    return model;
+  }
+
+  /**
+   * Put the available generalisation processes in a combo box model.
+   * @return
+   */
+  public ComboBoxModel getProcComboModel() {
+    DefaultComboBoxModel model = new DefaultComboBoxModel();
+    for (ScaleMasterGeneProcess enrich : this.genProcs) {
+      model.addElement(enrich);
+    }
+    return model;
   }
 
 }

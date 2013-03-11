@@ -16,6 +16,7 @@ import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IAirportArea;
 import fr.ign.cogit.cartagen.core.genericschema.airport.IRunwayArea;
 import fr.ign.cogit.cartagen.genealgorithms.facilities.AirportTypification;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 
@@ -79,6 +80,14 @@ public class RunwaySimplificationProcess extends ScaleMasterGeneProcess {
   public void parameterise() {
     this.merge = (Boolean) getParamValueFromName("fusion");
     this.collapse = (Boolean) getParamValueFromName("collapse");
+  }
+
+  @Override
+  public Set<ProcessParameter> getDefaultParameters() {
+    Set<ProcessParameter> params = new HashSet<ProcessParameter>();
+    params.add(new ProcessParameter("fusion", Boolean.class, true));
+    params.add(new ProcessParameter("collapse", Boolean.class, false));
+    return params;
   }
 
 }
