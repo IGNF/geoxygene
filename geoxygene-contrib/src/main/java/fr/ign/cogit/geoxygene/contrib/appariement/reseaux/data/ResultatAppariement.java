@@ -17,22 +17,33 @@
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
+package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 
 /**
- * Network data matching results.<ul>
+ * Network data matching results.
+ * <ul>
  *   <li>- Link data set</li>
  *   <li>- Statistics results</li>
  *   <li>- Network matched</li>   
- *   </ul>
+ * </ul>
  * 
- * @author M.-D. Van Damme
  * @version 1.6
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "resultStat"
+})
+@XmlRootElement(name = "NetworkDataMatchingResult")
 public class ResultatAppariement {
   
   /** Carte topo 1. */
@@ -43,7 +54,8 @@ public class ResultatAppariement {
   private EnsembleDeLiens linkDataSet;
   
   /** Stat result. */
-  private ResultatStatAppariement resultStat;
+  @XmlElement(required = true)
+  private ResultNetwork resultStat;
   
   /** Network matched. */
   private SimpleFeatureCollection networkMatched;
@@ -52,9 +64,9 @@ public class ResultatAppariement {
    * Default constructor.
    */
   public ResultatAppariement() {
-    // linkDataSet = null;
+    linkDataSet = null;
     networkMatched = null;
-    resultStat = new ResultatStatAppariement();
+    resultStat = new ResultNetwork();
   }
   
   /**
@@ -63,9 +75,9 @@ public class ResultatAppariement {
    * @param sfc  
    */
   public ResultatAppariement(EnsembleDeLiens edl, SimpleFeatureCollection sfc) {
-    // linkDataSet = edl;
+    linkDataSet = edl;
     networkMatched = sfc;
-    resultStat = new ResultatStatAppariement();
+    resultStat = new ResultNetwork();
   }
   
   /**
@@ -88,7 +100,7 @@ public class ResultatAppariement {
    * Return statistics results.
    * @return resultStat
    */
-  public ResultatStatAppariement getResultStat() {
+  public ResultNetwork getResultStat() {
     return resultStat;
   }
   
@@ -96,7 +108,7 @@ public class ResultatAppariement {
    * @param rsa
    *          Stat result to set.
    */
-  public void setResultStat (ResultatStatAppariement rsa) {
+  public void setResultStat (ResultNetwork rsa) {
     resultStat = rsa;
   }
   

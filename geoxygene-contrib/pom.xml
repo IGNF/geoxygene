@@ -1,78 +1,97 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  
-  <parent>
-    <artifactId>geoxygene</artifactId>
-    <groupId>fr.ign.cogit</groupId>
-    <version>1.6-SNAPSHOT</version>
-  </parent>
-  
-  <artifactId>geoxygene-contrib</artifactId>
-  <packaging>jar</packaging>
-  <name>geoxygene-contrib</name>
-  
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-  
-  <build>
-    <sourceDirectory>src/main/java</sourceDirectory>
-    <testSourceDirectory>src/test/java</testSourceDirectory>
-    <resources>
-        <resource>
-            <directory>src/main/resources</directory>
-        </resource>
-    </resources>
-    <testResources>
-      <testResource>
-            <directory>src/test/resources</directory>
-      </testResource>
-    </testResources>
-	<plugins>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>geoxygene</artifactId>
+		<groupId>fr.ign.cogit</groupId>
+		<version>1.6-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>geoxygene-contrib</artifactId>
+	<packaging>jar</packaging>
+	<name>geoxygene-contrib</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+		</testResources>
+		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<!-- Test à exécuter avec un profil spécial -->
+					<!-- Test Ã  exÃ©cuter avec un profil spÃ©cial -->
 					<excludes>
 						<exclude>**/GeomTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
 		</plugins>
-  </build>
-  
-  <dependencies>
-  	<dependency>
+	</build>
+
+	<dependencies>
+		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>${log4j.version}</version>
 		</dependency>
-    <dependency>
-      <groupId>com.vividsolutions</groupId>
-      <artifactId>jts</artifactId>
-    </dependency>
-    <dependency>
-    	<groupId>${project.groupId}</groupId>
-    	<artifactId>geoxygene-database</artifactId>
-    	<version>${project.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>geoxygene-io</artifactId>
-        <version>${project.version}</version>
-    </dependency>
+		<dependency>
+			<groupId>com.vividsolutions</groupId>
+			<artifactId>jts</artifactId>
+		</dependency>
+		
+		<!-- GeOxygene -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>geoxygene-database</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>geoxygene-io</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
-    <!-- Test avec DBUnit -->
-    <dependency>
-		<groupId>org.dbunit</groupId>
-	    <artifactId>dbunit</artifactId>
-	    <version>0.0.1</version>
-	    <classifier>COGIT</classifier>
-   	</dependency>
-   	
-  </dependencies>
+		<dependency>
+			<groupId>org.geoserver.extension</groupId>
+			<artifactId>wps-core</artifactId>
+			<version>2.2.2</version>
+		</dependency>
+
+		<!-- Test avec DBUnit -->
+		<dependency>
+			<groupId>org.dbunit</groupId>
+			<artifactId>dbunit</artifactId>
+			<version>0.0.1</version>
+			<classifier>COGIT</classifier>
+		</dependency>
+
+	</dependencies>
+	
+	<repositories>
+		<repository>
+			<id>opengeo</id>
+			<url>http://repo.opengeo.org</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
 </project>

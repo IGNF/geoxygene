@@ -11,7 +11,7 @@
 * @copyright IGN
 *
 */
-package fr.ign.cogit.geoxygene.wps.contrib.datamatching.xml;
+package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml;
 
 import java.io.ByteArrayOutputStream;
 
@@ -19,16 +19,14 @@ import org.apache.log4j.Logger;
 import org.geotools.GML;
 import org.geotools.GML.Version;
 
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ResultatAppariement;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ResultatStatAppariement;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ResultatStatEvaluationAppariement;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultatAppariement;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElement;
 
 
 /**
  * Parser for the ResultatAppariement object.
  * 
- * 
- * @author M.-D. Van Damme
  * @version 1.6
  */
 public class ResultatAppariementParser {
@@ -58,42 +56,42 @@ public class ResultatAppariementParser {
     result.append("<NetworkDataMatchingResult>");
     
     // Stats results.
-    ResultatStatAppariement resultatStatAppariement = resultatAppariement.getResultStat();
+    ResultNetwork resultatStatAppariement = resultatAppariement.getResultStat();
     
     // Edges evaluation of the less detailed network
     result.append("<EdgesEvaluationRef>");
-    ResultatStatEvaluationAppariement edgesEvaluationRef = resultatStatAppariement.getEdgesEvaluationRef();
-    result.append("<TotalNumber>" + edgesEvaluationRef.getTotalNumber() + "</TotalNumber>");
-    result.append("<OkNumber>" + edgesEvaluationRef.getOkNumber() + "</OkNumber>");
-    result.append("<KoNumber>" + edgesEvaluationRef.getKoNumber() + "</KoNumber>");
-    result.append("<DoubtfulNumber>" + edgesEvaluationRef.getDoubtfulNumber() + "</DoubtfulNumber>");
+    ResultNetworkElement edgesEvaluationRef = resultatStatAppariement.getEdgesEvaluationRef();
+    result.append("<TotalNumber>" + edgesEvaluationRef.getTotalNetworkElementNumber() + "</TotalNumber>");
+    result.append("<OkNumber>" + edgesEvaluationRef.getCorrectMatchingNetworkElementNumber() + "</OkNumber>");
+    result.append("<KoNumber>" + edgesEvaluationRef.getNoMatchingNetworkElementNumber() + "</KoNumber>");
+    result.append("<DoubtfulNumber>" + edgesEvaluationRef.getDoubtfulNetworkElementNumber() + "</DoubtfulNumber>");
     result.append("</EdgesEvaluationRef>");
     
     // Nodes evaluation of the less detailed network
     result.append("<NodesEvaluationRef>");
-    ResultatStatEvaluationAppariement nodesEvaluationRef = resultatStatAppariement.getNodesEvaluationRef();
-    result.append("<TotalNumber>" + nodesEvaluationRef.getTotalNumber() + "</TotalNumber>");
-    result.append("<OkNumber>" + nodesEvaluationRef.getOkNumber() + "</OkNumber>");
-    result.append("<KoNumber>" + nodesEvaluationRef.getKoNumber() + "</KoNumber>");
-    result.append("<DoubtfulNumber>" + nodesEvaluationRef.getDoubtfulNumber() + "</DoubtfulNumber>");
+    ResultNetworkElement nodesEvaluationRef = resultatStatAppariement.getNodesEvaluationRef();
+    result.append("<TotalNumber>" + nodesEvaluationRef.getTotalNetworkElementNumber() + "</TotalNumber>");
+    result.append("<OkNumber>" + nodesEvaluationRef.getCorrectMatchingNetworkElementNumber() + "</OkNumber>");
+    result.append("<KoNumber>" + nodesEvaluationRef.getNoMatchingNetworkElementNumber() + "</KoNumber>");
+    result.append("<DoubtfulNumber>" + nodesEvaluationRef.getDoubtfulNetworkElementNumber() + "</DoubtfulNumber>");
     result.append("</NodesEvaluationRef>");
     
     // Edges evaluation of the less detailed network
     result.append("<EdgesEvaluationComp>");
-    ResultatStatEvaluationAppariement edgesEvaluationComp = resultatStatAppariement.getEdgesEvaluationComp();
-    result.append("<TotalNumber>" + edgesEvaluationComp.getTotalNumber() + "</TotalNumber>");
-    result.append("<OkNumber>" + edgesEvaluationComp.getOkNumber() + "</OkNumber>");
-    result.append("<KoNumber>" + edgesEvaluationComp.getKoNumber() + "</KoNumber>");
-    result.append("<DoubtfulNumber>" + edgesEvaluationComp.getDoubtfulNumber() + "</DoubtfulNumber>");
+    ResultNetworkElement edgesEvaluationComp = resultatStatAppariement.getEdgesEvaluationComp();
+    result.append("<TotalNumber>" + edgesEvaluationComp.getTotalNetworkElementNumber() + "</TotalNumber>");
+    result.append("<OkNumber>" + edgesEvaluationComp.getCorrectMatchingNetworkElementNumber() + "</OkNumber>");
+    result.append("<KoNumber>" + edgesEvaluationComp.getNoMatchingNetworkElementNumber() + "</KoNumber>");
+    result.append("<DoubtfulNumber>" + edgesEvaluationComp.getDoubtfulNetworkElementNumber() + "</DoubtfulNumber>");
     result.append("</EdgesEvaluationComp>");
     
     // Nodes evaluation of the less detailed network
     result.append("<NodesEvaluationComp>");
-    ResultatStatEvaluationAppariement nodesEvaluationComp = resultatStatAppariement.getNodesEvaluationComp();
-    result.append("<TotalNumber>" + nodesEvaluationComp.getTotalNumber() + "</TotalNumber>");
-    result.append("<OkNumber>" + nodesEvaluationComp.getOkNumber() + "</OkNumber>");
-    result.append("<KoNumber>" + nodesEvaluationComp.getKoNumber() + "</KoNumber>");
-    result.append("<DoubtfulNumber>" + nodesEvaluationComp.getDoubtfulNumber() + "</DoubtfulNumber>");
+    ResultNetworkElement nodesEvaluationComp = resultatStatAppariement.getNodesEvaluationComp();
+    result.append("<TotalNumber>" + nodesEvaluationComp.getTotalNetworkElementNumber() + "</TotalNumber>");
+    result.append("<OkNumber>" + nodesEvaluationComp.getCorrectMatchingNetworkElementNumber() + "</OkNumber>");
+    result.append("<KoNumber>" + nodesEvaluationComp.getNoMatchingNetworkElementNumber() + "</KoNumber>");
+    result.append("<DoubtfulNumber>" + nodesEvaluationComp.getDoubtfulNetworkElementNumber() + "</DoubtfulNumber>");
     result.append("</NodesEvaluationComp>");
     
     // GML Network Matched

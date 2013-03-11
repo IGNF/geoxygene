@@ -35,7 +35,10 @@ import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ResultatAppariement;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElement;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultatAppariement;
+
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresAppData;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
@@ -45,7 +48,7 @@ import fr.ign.cogit.geoxygene.util.conversion.GeOxygeneGeoToolsTypes;
 /**
  * Network data matching process.
 * 
-* @author M.-D. Van Damme
+* @version 1.6
 */
 @DescribeProcess(title = "NetworkDataMatching", description = "Do network data matching")
 public class NetworkDataMatchingProcess implements GeoServerProcess {

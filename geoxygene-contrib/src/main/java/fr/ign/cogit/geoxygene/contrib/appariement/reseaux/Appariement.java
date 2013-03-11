@@ -34,6 +34,10 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.contrib.I18N;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.NetworkElementInterface;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultatAppariement;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElement;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.GroupeApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.NoeudApp;
@@ -294,7 +298,7 @@ public abstract class Appariement {
     }
     
     // --------------------------------------------------------------------------------------
-    ResultatStatAppariement resStat = Appariement.controleGlobal(reseau1, reseau2, tousLiens, param);
+    ResultNetwork resStat = Appariement.controleGlobal(reseau1, reseau2, tousLiens, param);
 
     // return liens_AppArcs;
     ResultatAppariement resultatAppariement = new ResultatAppariement();
@@ -1736,11 +1740,11 @@ public abstract class Appariement {
    * @param param matching parameters
    * @return resultatStatAppariement, tableau de stats sur les résultats
    */
-  private static ResultatStatAppariement controleGlobal(final CarteTopo reseau1,
+  private static ResultNetwork controleGlobal(final CarteTopo reseau1,
       final CarteTopo reseau2, final EnsembleDeLiens liens,
       final ParametresApp param) {
     
-    ResultatStatAppariement resultatStatAppariement = new ResultatStatAppariement();
+    ResultNetwork resultatStatAppariement = new ResultNetwork();
     
     // ///////////////////////////////////////////////////////
     // ////////// Controle global des arcs comp //////////////
@@ -1883,12 +1887,12 @@ public abstract class Appariement {
           + "%long)"); //$NON-NLS-1$
     }
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
-    ResultatStatEvaluationAppariement resNetwork2Edges = new ResultatStatEvaluationAppariement();
-    resNetwork2Edges.setTotalNumber(nb);
-    resNetwork2Edges.setOkNumber(nbOK);
-    resNetwork2Edges.setKoNumber(nbSansCorresp);
-    resNetwork2Edges.setDoubtfulNumber(nbDouteux);
-    Appariement.LOGGER.info("Resultat Network2Edges = " + resNetwork2Edges.toString());
+    ResultNetworkElement resNetwork2Edges = new ResultNetworkElement(NetworkElementInterface.EDGES_COMPARISON_NETWORK);
+    resNetwork2Edges.setTotalNetworkElementNumber(nb);
+    resNetwork2Edges.setCorrectMatchingNetworkElementNumber(nbOK);
+    resNetwork2Edges.setNoMatchingNetworkElementNumber(nbSansCorresp);
+    resNetwork2Edges.setDoubtfulNetworkElementNumber(nbDouteux);
+    Appariement.LOGGER.info(resNetwork2Edges.toString());
     resultatStatAppariement.setEdgesEvaluationComp(resNetwork2Edges);
     
     // ////////// Controle global des noeuds comp //////////////
@@ -1974,12 +1978,12 @@ public abstract class Appariement {
           + "%)"); //$NON-NLS-1$
     }
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
-    ResultatStatEvaluationAppariement resNetwork2Nodes = new ResultatStatEvaluationAppariement();
-    resNetwork2Nodes.setTotalNumber(nb);
-    resNetwork2Nodes.setOkNumber(nbOK);
-    resNetwork2Nodes.setKoNumber(nbSansCorresp);
-    resNetwork2Nodes.setDoubtfulNumber(nbDouteux);
-    Appariement.LOGGER.info("Resultat Network2Nodes = " + resNetwork2Nodes.toString());
+    ResultNetworkElement resNetwork2Nodes = new ResultNetworkElement(NetworkElementInterface.NODES_COMPARISON_NETWORK);
+    resNetwork2Nodes.setTotalNetworkElementNumber(nb);
+    resNetwork2Nodes.setCorrectMatchingNetworkElementNumber(nbOK);
+    resNetwork2Nodes.setNoMatchingNetworkElementNumber(nbSansCorresp);
+    resNetwork2Nodes.setDoubtfulNetworkElementNumber(nbDouteux);
+    Appariement.LOGGER.info(resNetwork2Nodes.toString());
     resultatStatAppariement.setEdgesEvaluationComp(resNetwork2Nodes);
     
     // //////////////////////////////////////////////////////
@@ -2041,12 +2045,12 @@ public abstract class Appariement {
           + "%long)"); //$NON-NLS-1$
     }
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
-    ResultatStatEvaluationAppariement resNetwork1Edges = new ResultatStatEvaluationAppariement();
-    resNetwork1Edges.setTotalNumber(nb);
-    resNetwork1Edges.setOkNumber(nbOK);
-    resNetwork1Edges.setKoNumber(nbSansCorresp);
-    resNetwork1Edges.setDoubtfulNumber(nbDouteux);
-    Appariement.LOGGER.info("Resultat Network1Edges = " + resNetwork1Edges.toString());
+    ResultNetworkElement resNetwork1Edges = new ResultNetworkElement(NetworkElementInterface.EDGES_LESS_DETAILED_NETWORK);
+    resNetwork1Edges.setTotalNetworkElementNumber(nb);
+    resNetwork1Edges.setCorrectMatchingNetworkElementNumber(nbOK);
+    resNetwork1Edges.setNoMatchingNetworkElementNumber(nbSansCorresp);
+    resNetwork1Edges.setDoubtfulNetworkElementNumber(nbDouteux);
+    Appariement.LOGGER.info(resNetwork1Edges.toString());
     resultatStatAppariement.setEdgesEvaluationRef(resNetwork1Edges);
 
     // ///////////////////////////////////////////
@@ -2096,12 +2100,12 @@ public abstract class Appariement {
           + (nbSansCorresp * Appariement.HUNDRED / nb) + "%)"); //$NON-NLS-1$
     }
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
-    ResultatStatEvaluationAppariement resNetwork1Nodes = new ResultatStatEvaluationAppariement();
-    resNetwork1Nodes.setTotalNumber(nb);
-    resNetwork1Nodes.setOkNumber(nbOK);
-    resNetwork1Nodes.setKoNumber(nbSansCorresp);
-    resNetwork1Nodes.setDoubtfulNumber(nbDouteux);
-    Appariement.LOGGER.info("Resultat Network1Nodes = " + resNetwork1Nodes.toString());
+    ResultNetworkElement resNetwork1Nodes = new ResultNetworkElement(NetworkElementInterface.NODES_LESS_DETAILED_NETWORK);
+    resNetwork1Nodes.setTotalNetworkElementNumber(nb);
+    resNetwork1Nodes.setCorrectMatchingNetworkElementNumber(nbOK);
+    resNetwork1Nodes.setNoMatchingNetworkElementNumber(nbSansCorresp);
+    resNetwork1Nodes.setDoubtfulNetworkElementNumber(nbDouteux);
+    Appariement.LOGGER.info(resNetwork1Nodes.toString());
     resultatStatAppariement.setNodesEvaluationRef(resNetwork1Nodes);
     
     // Return stats appariement
