@@ -440,8 +440,12 @@ public class Groupe extends ElementCarteTopo {
 //        return null;
 //      }
       while (!this.getListeNoeuds().isEmpty()) {
-        Groupe groupeConnexe = new Groupe();
-//        Groupe groupeConnexe = (Groupe) this.getPopulation().nouvelElement();
+        Groupe groupeConnexe = null;
+        if (this.getPopulation() == null) {
+          groupeConnexe = new Groupe();
+        } else {
+          groupeConnexe = (Groupe) this.getPopulation().nouvelElement();
+        }
         groupesConnexes.add(groupeConnexe);
         // le premier noeud de la liste des noeuds, vidée au fur et à mesure,
         // est l'amorce d'un nouveau groupe connexe
