@@ -33,7 +33,12 @@ Comme décrits dans les deux captures d’écran ci-dessous, cliquer :
 
 \noindent
 Ensuite comme l'indique la figure suivante, sélectionner \emph{svn} dans la première liste comme SCM URL et indiquer l'adresse du svn de GeOxygene~:\\
+\begin{itemize}[label=--, leftmargin=* ,parsep=0cm,itemsep=0cm,topsep=0cm]
+\item Si vous êtes enregistré sur Sourceforge\footnote{http://sourceforge.net//} et vous avez des droits en tant que développeur ou administrateur sur le projet geoxygene : \\
 \href{https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene}{https://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene}, 
+\item Sinon \\
+\href{http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/}{http://svn.code.sf.net/p/oxygene-project/code/main/trunk/geoxygene/}, 
+\end{itemize}
 
 \begin{center}
 \includegraphics[width=0.5\linewidth]{geoxygeneEtape3}
@@ -208,7 +213,14 @@ Importer ce fichier et choisissez comme "Active profile" : "Java COGIT Formattin
 
 
 %---
-%\subsection{Encodage}
+\subsection{Encodage}
+
+Tous les modules de GeOxygène doivent être encodés en UTF-8. \\
+
+\noindent
+Pour ce faire, dans Eclipse :
+
+Aller dans "Preferences $\Rightarrow$ Workspace $\Rightarrow$ Text file encoding $\Rightarrow$ Other"  et choisir UTF-8. 
 
 
 %\subsection{ Accès aux bases de données}
