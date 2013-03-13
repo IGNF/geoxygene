@@ -50,7 +50,11 @@ public class MGCPPathLine extends MGCPFeature implements IPathLine {
     this.finalNode = null;
 
     // attributes present in Mgcp++
-    this.acc = (Long) attributes.get("acc");
+    Object accAttr = attributes.get("acc");
+    if (accAttr instanceof Long)
+      this.acc = (Long) accAttr;
+    else
+      this.acc = new Long((Integer) accAttr);
     this.ace_eval = (Long) attributes.get("ace_eval");
     this.ale_eval = (Long) attributes.get("ale_eval");
     if (attributes.containsKey("uid"))

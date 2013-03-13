@@ -79,22 +79,62 @@ public class MGCPRoadLine extends MGCPFeature implements IRoadLine {
     this.finalNode = null;
 
     // attributes present in Mgcp++
-    this.acc = (Long) attributes.get("acc");
+    Object accAttr = attributes.get("acc");
+    if (accAttr instanceof Long)
+      this.acc = (Long) accAttr;
+    else
+      this.acc = new Long((Integer) accAttr);
     // this.coe = (Integer) attributes.get("coe");
-    this.fun = (Long) attributes.get("fun");
-    this.loc = (Long) attributes.get("loc");
+    Object funAttr = attributes.get("fun");
+    if (funAttr instanceof Long)
+      this.fun = (Long) funAttr;
+    else
+      this.fun = new Long((Integer) funAttr);
+    Object locAttr = attributes.get("loc");
+    if (locAttr instanceof Long)
+      this.loc = (Long) locAttr;
+    else
+      this.loc = new Long((Integer) locAttr);
     this.ltn = (String) attributes.get("ltn");
-    this.mes = (Long) attributes.get("mes");
+    Object mesAttr = attributes.get("mes");
+    if (mesAttr instanceof Long)
+      this.mes = (Long) mesAttr;
+    else
+      this.mes = new Long((Integer) mesAttr);
     this.name = (String) attributes.get("nam");
     this.nfi = (String) attributes.get("nfi");
     this.nfn = (String) attributes.get("nfn");
-    this.rst = (Long) attributes.get("rst");
-    this.hct = (Long) attributes.get("hct");
-    this.smc = (Long) attributes.get("smc");
-    this.trs = (Long) attributes.get("trs");
-    this.caa = (Long) attributes.get("caa");
+    Object rstAttr = attributes.get("rst");
+    if (rstAttr instanceof Long)
+      this.rst = (Long) rstAttr;
+    else
+      this.rst = new Long((Integer) rstAttr);
+    Object hctAttr = attributes.get("hct");
+    if (hctAttr instanceof Long)
+      this.hct = (Long) hctAttr;
+    else
+      this.hct = new Long((Integer) hctAttr);
+    Object smcAttr = attributes.get("smc");
+    if (smcAttr instanceof Long)
+      this.smc = (Long) smcAttr;
+    else
+      this.smc = new Long((Integer) smcAttr);
+    Object trsAttr = attributes.get("trs");
+    if (trsAttr instanceof Long)
+      this.trs = (Long) trsAttr;
+    else
+      this.trs = new Long((Integer) trsAttr);
+    Object caaAttr = attributes.get("caa");
+    if (caaAttr instanceof Long)
+      this.caa = (Long) caaAttr;
+    else
+      this.caa = new Long((Integer) caaAttr);
     this.wd1 = (String) attributes.get("wd1");
-    this.wtc = (Long) attributes.get("wtc");
+    Object wtcAttr = attributes.get("wtc");
+    if (wtcAttr instanceof Long)
+      this.wtc = (Long) wtcAttr;
+    else
+      this.wtc = new Long((Integer) wtcAttr);
   }
 
   @Override
