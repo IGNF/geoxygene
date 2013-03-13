@@ -40,18 +40,19 @@ public class MGCPCommunicationStationPoint extends MGCPFeature implements
     this.geoxObj = new AutreConstructionImpl(point);
     this.setInitialGeom(point);
     this.setEliminated(false);
+    this.setAttributeMap(attributes);//
 
-    this.acc = (Long) attributes.get("acc");
-    this.ace_eval = (Long) attributes.get("ace_eval");
-    this.ale_eval = (Long) attributes.get("ale_eval");
-    this.awp = (Long) attributes.get("awp");
-    this.fun = (Long) attributes.get("fun");
-    this.loc = (Long) attributes.get("loc");
-    this.nst = (Long) attributes.get("loc");
-    this.src_name = (Long) attributes.get("src_name");
-    this.tos = (Long) attributes.get("tos");
-    this.upd_name = (Long) attributes.get("upd_name");
-    this.zval_type = (Long) attributes.get("zval_type");
+    this.acc = getLongAttribute("acc");
+    this.ace_eval = getLongAttribute("ace_eval");
+    this.ale_eval = getLongAttribute("ale_eval");
+    this.awp = getLongAttribute("awp");
+    this.fun = getLongAttribute("fun");
+    this.loc = getLongAttribute("loc");
+    this.nst = getLongAttribute("loc");
+    this.src_name = getLongAttribute("src_name");
+    this.tos = getLongAttribute("tos");
+    this.upd_name = getLongAttribute("upd_name");
+    this.zval_type = getLongAttribute("zval_type");
 
     this.ace = (String) attributes.get("ace");
     this.ale = (String) attributes.get("ale");

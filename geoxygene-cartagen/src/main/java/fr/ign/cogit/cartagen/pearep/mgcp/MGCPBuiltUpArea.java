@@ -29,6 +29,7 @@ public class MGCPBuiltUpArea extends MGCPFeature implements ISimpleLandUseArea {
     this.setInitialGeom(poly);
     this.setEliminated(false);
     this.setArea(poly.area());
+
   }
 
   /**
@@ -37,21 +38,22 @@ public class MGCPBuiltUpArea extends MGCPFeature implements ISimpleLandUseArea {
   public MGCPBuiltUpArea(IPolygon poly, HashMap<String, Object> attributes,
       @SuppressWarnings("unused") PeaRepDbType type) {
     this(poly);
+    this.setAttributeMap(attributes);//
 
     this.name = (String) attributes.get("nam");
 
-    this.bac = (Long) attributes.get("bac");
-    this.acc = (Long) attributes.get("acc");
+    this.bac = getLongAttribute("bac");
+    this.acc = getLongAttribute("acc");
     this.dmr = (String) attributes.get("dmr");
     this.dms = (String) attributes.get("dms");
-    this.fun = (Long) attributes.get("fun");
-    this.fuc = (Long) attributes.get("fuc");
+    this.fun = getLongAttribute("fun");
+    this.fuc = getLongAttribute("fuc");
     this.nfi = (String) attributes.get("nfi");
     this.nfn = (String) attributes.get("nfn");
     this.hgt = (String) attributes.get("hgt");
-    this.ppt = (Long) attributes.get("ppt");
-    this.smc = (Long) attributes.get("smc");
-    this.ord = (Long) attributes.get("ord");
+    this.ppt = getLongAttribute("ppt");
+    this.smc = getLongAttribute("smc");
+    this.ord = getLongAttribute("ord");
 
   }
 

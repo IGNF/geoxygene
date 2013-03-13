@@ -76,13 +76,14 @@ public class MGCPContourLine extends MGCPFeature implements IContourLine {
         Integer.valueOf((String) attributes.get("zv2")), line);
     this.setInitialGeom(line);
     this.setEliminated(false);
+    this.setAttributeMap(attributes);//
     if ((int) (this.getAltitude() / GeneralisationLegend.CN_EQUIDISTANCE_MAITRESSE)
         * GeneralisationLegend.CN_EQUIDISTANCE_MAITRESSE == this.getAltitude()) {
       this.isMaster = true;
     }
 
-    this.acc = (Long) attributes.get("acc");
-    this.hqc = (Long) attributes.get("hqc");
+    this.acc = getLongAttribute("acc");
+    this.hqc = getLongAttribute("hqc");
     this.zv2 = (String) attributes.get("zv2");
 
   }

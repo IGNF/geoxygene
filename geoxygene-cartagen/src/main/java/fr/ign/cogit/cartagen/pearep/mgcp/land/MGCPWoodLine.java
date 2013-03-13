@@ -29,25 +29,26 @@ public class MGCPWoodLine extends MGCPFeature implements IWoodLine {
     this.getGeoxObj().setGeom(line);
     this.setInitialGeom(line);
     this.setEliminated(false);
+    this.setAttributeMap(attributes);//
 
     // attributes present in Mgcp++
-    this.acc = (Long) attributes.get("acc");
-    this.ace_eval = (Long) attributes.get("ace_eval");
-    this.ale_eval = (Long) attributes.get("ale_eval");
+    this.acc = getLongAttribute("acc");
+    this.ace_eval = getLongAttribute("ace_eval");
+    this.ale_eval = getLongAttribute("ale_eval");
     if (attributes.containsKey("uid"))
-      this.uid = (Long) attributes.get("uid");
-    this.src_name = (Long) attributes.get("src_name");
-    this.zval_type = (Long) attributes.get("zval_type");
+      this.uid = getLongAttribute("uid");
+    this.src_name = getLongAttribute("src_name");
+    this.zval_type = getLongAttribute("zval_type");
     this.dmb = (String) attributes.get("dmb");
-    this.iss = (Long) attributes.get("iss");
+    this.iss = getLongAttribute("iss");
     this.dmt = (String) attributes.get("dmt");
     this.pfh = (String) attributes.get("pfh");
-    this.vsp = (Long) attributes.get("vsp");
-    this.tre = (Long) attributes.get("tre");
+    this.vsp = getLongAttribute("vsp");
+    this.tre = getLongAttribute("tre");
     this.upd_date = (String) attributes.get("upd_date");
     this.upd_info = (String) attributes.get("upd_info");
     this.cpyrt_note = (String) attributes.get("cpyrt_note");
-    this.upd_name = (Long) attributes.get("upd_name");
+    this.upd_name = getLongAttribute("upd_name");
     this.src_info = (String) attributes.get("src_info");
     this.txt = (String) attributes.get("txt");
     this.nfi = (String) attributes.get("nfi");

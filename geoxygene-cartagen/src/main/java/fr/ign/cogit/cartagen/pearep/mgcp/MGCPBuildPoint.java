@@ -38,32 +38,33 @@ public class MGCPBuildPoint extends MGCPFeature implements IBuildPoint {
     this.geoxObj = new AutreConstructionImpl(point);
     this.setInitialGeom(point);
     this.setEliminated(false);
+    this.setAttributeMap(attributes);//
 
-    this.acc = (Long) attributes.get("acc");
-    this.afc = (Long) attributes.get("afc");
-    this.cef = (Long) attributes.get("cef");
-    this.cfc = (Long) attributes.get("cfc");
-    this.cit = (Long) attributes.get("cit");
-    this.cus = (Long) attributes.get("cus");
-    this.ddc = (Long) attributes.get("ddc");
-    this.ebt = (Long) attributes.get("ebt");
-    this.gfc = (Long) attributes.get("gfc");
-    this.icf = (Long) attributes.get("icf");
-    this.mfc = (Long) attributes.get("mfc");
-    this.paf = (Long) attributes.get("paf");
-    this.psf = (Long) attributes.get("psf");
-    this.res = (Long) attributes.get("res");
-    this.rfc = (Long) attributes.get("rfc");
-    this.sfy = (Long) attributes.get("sfy");
-    this.suc = (Long) attributes.get("suc");
-    this.tfc = (Long) attributes.get("tfc");
+    this.acc = getLongAttribute("acc");
+    this.afc = getLongAttribute("afc");
+    this.cef = getLongAttribute("cef");
+    this.cfc = getLongAttribute("cfc");
+    this.cit = getLongAttribute("cit");
+    this.cus = getLongAttribute("cus");
+    this.ddc = getLongAttribute("ddc");
+    this.ebt = getLongAttribute("ebt");
+    this.gfc = getLongAttribute("gfc");
+    this.icf = getLongAttribute("icf");
+    this.mfc = getLongAttribute("mfc");
+    this.paf = getLongAttribute("paf");
+    this.psf = getLongAttribute("psf");
+    this.res = getLongAttribute("res");
+    this.rfc = getLongAttribute("rfc");
+    this.sfy = getLongAttribute("sfy");
+    this.suc = getLongAttribute("suc");
+    this.tfc = getLongAttribute("tfc");
 
-    this.coe = (Long) attributes.get("coe");
-    this.fun = (Long) attributes.get("fun");
-    this.hwt = (Long) attributes.get("hwt");
-    this.smc = (Long) attributes.get("smc");
-    this.ssr = (Long) attributes.get("ssr");
-    this.caa = (Long) attributes.get("caa");
+    this.coe = getLongAttribute("coe");
+    this.fun = getLongAttribute("fun");
+    this.hwt = getLongAttribute("hwt");
+    this.smc = getLongAttribute("smc");
+    this.ssr = getLongAttribute("ssr");
+    this.caa = getLongAttribute("caa");
 
     this.aoo = (String) attributes.get("aoo");
     this.name = (String) attributes.get("nam");

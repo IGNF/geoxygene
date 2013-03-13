@@ -20,7 +20,8 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.AutreConstruction;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.AutreConstructionImpl;
 
-public class MGCPPowerStationArea extends MGCPFeature implements IPowerStationArea {
+public class MGCPPowerStationArea extends MGCPFeature implements
+    IPowerStationArea {
 
   private AutreConstruction geoxObj;
 
@@ -33,20 +34,21 @@ public class MGCPPowerStationArea extends MGCPFeature implements IPowerStationAr
   /**
    * @param type
    */
-  public MGCPPowerStationArea(IPolygon polygon, HashMap<String, Object> attributes,
-      PeaRepDbType type) {
+  public MGCPPowerStationArea(IPolygon polygon,
+      HashMap<String, Object> attributes, PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(polygon);
     this.setInitialGeom(polygon);
     this.setEliminated(false);
+    this.setAttributeMap(attributes);//
 
-    this.acc = (Long) attributes.get("acc");
-    this.ace_eval = (Long) attributes.get("ace_eval");
-    this.ale_eval = (Long) attributes.get("ale_eval");
-    this.fun = (Long) attributes.get("fun");
-    this.src_name = (Long) attributes.get("src_name");
-    this.upd_name = (Long) attributes.get("upd_name");
-    this.zval_type = (Long) attributes.get("zval_type");
+    this.acc = getLongAttribute("acc");
+    this.ace_eval = getLongAttribute("ace_eval");
+    this.ale_eval = getLongAttribute("ale_eval");
+    this.fun = getLongAttribute("fun");
+    this.src_name = getLongAttribute("src_name");
+    this.upd_name = getLongAttribute("upd_name");
+    this.zval_type = getLongAttribute("zval_type");
 
     this.ace = (String) attributes.get("ace");
     this.ale = (String) attributes.get("ale");
@@ -69,7 +71,7 @@ public class MGCPPowerStationArea extends MGCPFeature implements IPowerStationAr
       this.pfh = (String) attributes.get("pfh");
     ;
     if (attributes.containsKey("ppc"))
-      this.ppc = (Long) attributes.get("ppc");
+      this.ppc = getLongAttribute("ppc");
     ;
 
   }

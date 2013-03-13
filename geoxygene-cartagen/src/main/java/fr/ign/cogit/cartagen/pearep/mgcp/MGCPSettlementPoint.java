@@ -39,14 +39,15 @@ public class MGCPSettlementPoint extends MGCPFeature implements IBuildPoint {
     this.geoxObj = new AutreConstructionImpl(point);
     this.setInitialGeom(point);
     this.setEliminated(false);
+    this.setAttributeMap(attributes);//
 
-    this.acc = (Long) attributes.get("acc");
-    this.ace_eval = (Long) attributes.get("ace_eval");
-    this.ale_eval = (Long) attributes.get("ale_eval");
-    this.fuc = (Long) attributes.get("fuc");
-    this.src_name = (Long) attributes.get("src_name");
-    this.upd_name = (Long) attributes.get("upd_name");
-    this.zval_type = (Long) attributes.get("zval_type");
+    this.acc = getLongAttribute("acc");
+    this.ace_eval = getLongAttribute("ace_eval");
+    this.ale_eval = getLongAttribute("ale_eval");
+    this.fuc = getLongAttribute("fuc");
+    this.src_name = getLongAttribute("src_name");
+    this.upd_name = getLongAttribute("upd_name");
+    this.zval_type = getLongAttribute("zval_type");
 
     this.ace = (String) attributes.get("ace");
     this.ale = (String) attributes.get("ale");

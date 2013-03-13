@@ -51,15 +51,16 @@ public class MGCPRailwayLine extends MGCPFeature implements IRailwayLine {
     this.deadEnd = false;
     this.initialNode = null;
     this.finalNode = null;
+    this.setAttributeMap(attributes);//
 
     // attributes present in Mgcp++
-    this.acc = (Long) attributes.get("acc");
-    this.fun = (Long) attributes.get("fun");
+    this.acc = getLongAttribute("acc");
+    this.fun = getLongAttribute("fun");
     if (attributes.containsKey("loc"))
-      this.loc = (Long) attributes.get("loc");
+      this.loc = getLongAttribute("loc");
     this.ltn = (String) attributes.get("ltn");
     if (attributes.containsKey("rir"))
-      this.rir = (Long) attributes.get("rir");
+      this.rir = getLongAttribute("rir");
     this.nam = (String) attributes.get("nam");
     this.nfi = (String) attributes.get("nfi");
     this.nfn = (String) attributes.get("nfn");
@@ -70,25 +71,25 @@ public class MGCPRailwayLine extends MGCPFeature implements IRailwayLine {
     this.upd_date = (String) attributes.get("upd_date");
     this.upd_info = (String) attributes.get("upd_info");
     this.txt = (String) attributes.get("txt");
-    this.src_name = (Long) attributes.get("src_name");
+    this.src_name = getLongAttribute("src_name");
     if (attributes.containsKey("uid"))
-      this.uid = (Long) attributes.get("uid");
-    this.ale_eval = (Long) attributes.get("ale_eval");
-    this.ace_eval = (Long) attributes.get("ace_eval");
+      this.uid = getLongAttribute("uid");
+    this.ale_eval = getLongAttribute("ale_eval");
+    this.ace_eval = getLongAttribute("ace_eval");
     this.ale = (String) attributes.get("ale");
-    this.zval_type = (Long) attributes.get("zval_type");
+    this.zval_type = getLongAttribute("zval_type");
     this.gaw = (String) attributes.get("gaw");
     if (attributes.containsKey("rta"))
-      this.rta = (Long) attributes.get("rta");
+      this.rta = getLongAttribute("rta");
     this.ace = (String) attributes.get("ace");
-    this.rgc = (Long) attributes.get("rgc");
-    this.rra = (Long) attributes.get("rra");
+    this.rgc = getLongAttribute("rgc");
+    this.rra = getLongAttribute("rra");
     if (attributes.containsKey("rrc"))
-      this.rrc = (Long) attributes.get("rrc");
+      this.rrc = getLongAttribute("rrc");
     if (attributes.containsKey("ctl"))
-      this.ctl = (Long) attributes.get("ctl");
+      this.ctl = getLongAttribute("ctl");
     if (attributes.containsKey("rsa"))
-      this.rsa = (Long) attributes.get("rsa");
+      this.rsa = getLongAttribute("rsa");
   }
 
   @Override

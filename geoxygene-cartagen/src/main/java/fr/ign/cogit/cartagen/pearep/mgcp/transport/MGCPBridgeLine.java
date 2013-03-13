@@ -29,36 +29,37 @@ public class MGCPBridgeLine extends MGCPFeature implements IBridgeLine {
     this.setGeom(line);
     this.setInitialGeom(line);
     this.setEliminated(false);
+    this.setAttributeMap(attributes);//
 
     // attributes present in Mgcp++
-    this.acc = (Long) attributes.get("acc");
-    this.ace_eval = (Long) attributes.get("ace_eval");
-    this.ale_eval = (Long) attributes.get("ale_eval");
+    this.acc = getLongAttribute("acc");
+    this.ace_eval = getLongAttribute("ace_eval");
+    this.ale_eval = getLongAttribute("ale_eval");
     if (attributes.containsKey("uid"))
-      this.uid = (Long) attributes.get("uid");
-    this.src_name = (Long) attributes.get("src_name");
-    this.zval_type = (Long) attributes.get("zval_type");
-    this.trs = (Long) attributes.get("trs");
+      this.uid = getLongAttribute("uid");
+    this.src_name = getLongAttribute("src_name");
+    this.zval_type = getLongAttribute("zval_type");
+    this.trs = getLongAttribute("trs");
     if (attributes.containsKey("nos")) {
       this.nos = (String) attributes.get("nos");
       this.type = BridgeType.BRIDGE;
     }
     if (attributes.containsKey("rst")) {
-      this.rst = (Long) attributes.get("rst");
+      this.rst = getLongAttribute("rst");
       this.type = BridgeType.FORD;
     }
     if (attributes.containsKey("bsc"))
-      this.bsc = (Long) attributes.get("bsc");
+      this.bsc = getLongAttribute("bsc");
     if (attributes.containsKey("bot"))
-      this.bot = (Long) attributes.get("bot");
+      this.bot = getLongAttribute("bot");
     if (attributes.containsKey("smc"))
-      this.smc = (Long) attributes.get("smc");
+      this.smc = getLongAttribute("smc");
     if (attributes.containsKey("fun"))
-      this.fun = (Long) attributes.get("fun");
+      this.fun = getLongAttribute("fun");
     this.upd_date = (String) attributes.get("upd_date");
     this.upd_info = (String) attributes.get("upd_info");
     this.cpyrt_note = (String) attributes.get("cpyrt_note");
-    this.upd_name = (Long) attributes.get("upd_name");
+    this.upd_name = getLongAttribute("upd_name");
     this.src_info = (String) attributes.get("src_info");
     this.txt = (String) attributes.get("txt");
     this.nfi = (String) attributes.get("nfi");

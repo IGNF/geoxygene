@@ -77,6 +77,7 @@ public class MGCPRoadLine extends MGCPFeature implements IRoadLine {
     this.deadEnd = false;
     this.initialNode = null;
     this.finalNode = null;
+    this.setAttributeMap(attributes);//
 
     // attributes present in Mgcp++
     Object accAttr = attributes.get("acc");

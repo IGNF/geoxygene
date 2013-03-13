@@ -43,35 +43,36 @@ public class MGCPLandUse extends MGCPFeature implements ISimpleLandUseArea {
   public MGCPLandUse(IPolygon poly, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     this(poly);
+    this.setAttributeMap(attributes);//
 
-    this.acc = (Long) attributes.get("acc");
+    this.acc = getLongAttribute("acc");
     this.ace = (String) attributes.get("ace");
-    this.ace_eval = (Long) attributes.get("ace_eval");
+    this.ace_eval = getLongAttribute("ace_eval");
     this.ale = (String) attributes.get("ale");
-    this.ale_eval = (Long) attributes.get("ale_eval");
+    this.ale_eval = getLongAttribute("ale_eval");
     this.nfi = (String) attributes.get("nfi");
     this.cpyrt_note = (String) attributes.get("cpyrt_note");
     this.nfn = (String) attributes.get("nfn");
     this.nam = (String) attributes.get("nam");
     this.src_date = (String) attributes.get("src_date");
     this.src_info = (String) attributes.get("src_info");
-    this.src_name = (Long) attributes.get("src_name");
+    this.src_name = getLongAttribute("src_name");
     this.txt = (String) attributes.get("txt");
     this.tier_note = (String) attributes.get("tier_note");
     this.uid = (String) attributes.get("uid");
     this.upd_date = (String) attributes.get("upd_date");
-    this.upd_name = (Long) attributes.get("upd_name");
+    this.upd_name = getLongAttribute("upd_name");
     this.upd_info = (String) attributes.get("upd_info");
-    this.zval_type = (Long) attributes.get("zval_type");
+    this.zval_type = getLongAttribute("zval_type");
 
     if (attributes.containsKey("bac"))
-      this.bac = (Long) attributes.get("bac");
+      this.bac = getLongAttribute("bac");
     ;
     if (attributes.containsKey("cda"))
-      this.cda = (Long) attributes.get("cda");
+      this.cda = getLongAttribute("cda");
     ;
     if (attributes.containsKey("csp"))
-      this.csp = (Long) attributes.get("csp");
+      this.csp = getLongAttribute("csp");
     ;
     if (attributes.containsKey("dmb"))
       this.dmb = (String) attributes.get("dmb");
@@ -80,28 +81,28 @@ public class MGCPLandUse extends MGCPFeature implements ISimpleLandUseArea {
       this.dmt = (String) attributes.get("dmt");
     ;
     if (attributes.containsKey("ffp"))
-      this.ffp = (Long) attributes.get("ffp");
+      this.ffp = getLongAttribute("ffp");
     ;
     if (attributes.containsKey("fmm"))
-      this.fmm = (Long) attributes.get("fmm");
+      this.fmm = getLongAttribute("fmm");
     ;
     if (attributes.containsKey("fuc"))
-      this.fuc = (Long) attributes.get("fuc");
+      this.fuc = getLongAttribute("fuc");
     ;
     if (attributes.containsKey("fun"))
-      this.fun = (Long) attributes.get("fun");
+      this.fun = getLongAttribute("fun");
     ;
     if (attributes.containsKey("hgt"))
       this.hgt = (String) attributes.get("hgt");
     ;
     if (attributes.containsKey("hyp"))
-      this.hyp = (Long) attributes.get("hyp");
+      this.hyp = getLongAttribute("hyp");
     ;
     if (attributes.containsKey("irg"))
-      this.irg = (Long) attributes.get("irg");
+      this.irg = getLongAttribute("irg");
     ;
     if (attributes.containsKey("iss"))
-      this.iss = (Long) attributes.get("iss");
+      this.iss = getLongAttribute("iss");
     ;
     if (attributes.containsKey("lbv"))
       this.lbv = (String) attributes.get("lbv");
@@ -110,52 +111,52 @@ public class MGCPLandUse extends MGCPFeature implements ISimpleLandUseArea {
       this.na2 = (String) attributes.get("na2");
     ;
     if (attributes.containsKey("ord"))
-      this.ord = (Long) attributes.get("ord");
+      this.ord = getLongAttribute("ord");
     ;
     if (attributes.containsKey("pfh"))
       this.pfh = (String) attributes.get("pfh");
     ;
     if (attributes.containsKey("ppo"))
-      this.ppo = (Long) attributes.get("ppo");
+      this.ppo = getLongAttribute("ppo");
     ;
     if (attributes.containsKey("rbv"))
       this.rbv = (String) attributes.get("rbv");
     ;
     if (attributes.containsKey("scc"))
-      this.scc = (Long) attributes.get("scc");
+      this.scc = getLongAttribute("scc");
     ;
     if (attributes.containsKey("shl"))
-      this.shl = (Long) attributes.get("shl");
+      this.shl = getLongAttribute("shl");
     ;
     if (attributes.containsKey("shr"))
-      this.shr = (Long) attributes.get("shr");
+      this.shr = getLongAttribute("shr");
     ;
     if (attributes.containsKey("smc"))
-      this.smc = (Long) attributes.get("smc");
+      this.smc = getLongAttribute("smc");
     ;
     if (attributes.containsKey("tid"))
-      this.tid = (Long) attributes.get("tid");
+      this.tid = getLongAttribute("tid");
     ;
     if (attributes.containsKey("tre"))
-      this.tre = (Long) attributes.get("tre");
+      this.tre = getLongAttribute("tre");
 
     if (attributes.containsKey("veg"))
-      this.veg = (Long) attributes.get("veg");
+      this.veg = getLongAttribute("veg");
 
     if (attributes.containsKey("vsp"))
-      this.vsp = (Long) attributes.get("vsp");
+      this.vsp = getLongAttribute("vsp");
 
     if (attributes.containsKey("wcc"))
-      this.wcc = (Long) attributes.get("wcc");
+      this.wcc = getLongAttribute("wcc");
 
     if (attributes.containsKey("wid"))
       this.wid = (String) attributes.get("wid");
 
     if (attributes.containsKey("wle"))
-      this.wle = (Long) attributes.get("wle");
+      this.wle = getLongAttribute("wle");
 
     if (attributes.containsKey("wst"))
-      this.wst = (Long) attributes.get("wst");
+      this.wst = getLongAttribute("wst");
 
   }
 

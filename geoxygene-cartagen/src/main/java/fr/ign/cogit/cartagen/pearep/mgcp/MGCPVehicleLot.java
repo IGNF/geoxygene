@@ -38,14 +38,15 @@ public class MGCPVehicleLot extends MGCPFeature implements IBoundedArea {
     this.geoxObj = new AutreConstructionImpl(polygon);
     this.setInitialGeom(polygon);
     this.setEliminated(false);
+    this.setAttributeMap(attributes);//
 
-    this.acc = (Long) attributes.get("acc");
-    this.ace_eval = (Long) attributes.get("ace_eval");
-    this.ale_eval = (Long) attributes.get("ale_eval");
-    this.rst = (Long) attributes.get("rst");
-    this.src_name = (Long) attributes.get("src_name");
-    this.upd_name = (Long) attributes.get("upd_name");
-    this.zval_type = (Long) attributes.get("zval_type");
+    this.acc = getLongAttribute("acc");
+    this.ace_eval = getLongAttribute("ace_eval");
+    this.ale_eval = getLongAttribute("ale_eval");
+    this.rst = getLongAttribute("rst");
+    this.src_name = getLongAttribute("src_name");
+    this.upd_name = getLongAttribute("upd_name");
+    this.zval_type = getLongAttribute("zval_type");
 
     this.ace = (String) attributes.get("ace");
     this.ale = (String) attributes.get("ale");

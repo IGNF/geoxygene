@@ -39,26 +39,27 @@ public class MGCPSquare extends MGCPFeature implements ISquareArea {
   public MGCPSquare(IPolygon poly, HashMap<String, Object> attributes,
       PeaRepDbType type) {
     this(poly);
+    this.setAttributeMap(attributes);//
 
-    this.acc = (Long) attributes.get("acc");
+    this.acc = getLongAttribute("acc");
     this.ace = (String) attributes.get("ace");
-    this.ace_eval = (Long) attributes.get("ace_eval");
+    this.ace_eval = getLongAttribute("ace_eval");
     this.ale = (String) attributes.get("ale");
-    this.ale_eval = (Long) attributes.get("ale_eval");
+    this.ale_eval = getLongAttribute("ale_eval");
     this.nfi = (String) attributes.get("nfi");
     this.cpyrt_note = (String) attributes.get("cpyrt_note");
     this.nfn = (String) attributes.get("nfn");
     this.nam = (String) attributes.get("nam");
     this.src_date = (String) attributes.get("src_date");
     this.src_info = (String) attributes.get("src_info");
-    this.src_name = (Long) attributes.get("src_name");
+    this.src_name = getLongAttribute("src_name");
     this.txt = (String) attributes.get("txt");
     this.tier_note = (String) attributes.get("tier_note");
     this.uid = (String) attributes.get("uid");
     this.upd_date = (String) attributes.get("upd_date");
-    this.upd_name = (Long) attributes.get("upd_name");
+    this.upd_name = getLongAttribute("upd_name");
     this.upd_info = (String) attributes.get("upd_info");
-    this.zval_type = (Long) attributes.get("zval_type");
+    this.zval_type = getLongAttribute("zval_type");
 
   }
 

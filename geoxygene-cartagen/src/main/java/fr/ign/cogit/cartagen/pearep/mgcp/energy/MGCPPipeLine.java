@@ -43,26 +43,27 @@ public class MGCPPipeLine extends MGCPFeature implements IElectricityLine {
     this.deadEnd = false;
     this.initialNode = null;
     this.finalNode = null;
+    this.setAttributeMap(attributes);//
 
     // attributes present in Mgcp++
-    this.acc = (Long) attributes.get("acc");
-    this.ace_eval = (Long) attributes.get("ace_eval");
-    this.ale_eval = (Long) attributes.get("ale_eval");
+    this.acc = getLongAttribute("acc");
+    this.ace_eval = getLongAttribute("ace_eval");
+    this.ale_eval = getLongAttribute("ale_eval");
     if (attributes.containsKey("uid"))
-      this.uid = (Long) attributes.get("uid");
-    this.src_name = (Long) attributes.get("src_name");
-    this.zval_type = (Long) attributes.get("zval_type");
+      this.uid = getLongAttribute("uid");
+    this.src_name = getLongAttribute("src_name");
+    this.zval_type = getLongAttribute("zval_type");
     this.hgt = (String) attributes.get("hgt");
-    this.ppo = (Long) attributes.get("ppo");
+    this.ppo = getLongAttribute("ppo");
     this.voi = (String) attributes.get("voi");
-    this.owo = (Long) attributes.get("owo");
-    this.loc = (Long) attributes.get("loc");
-    this.rta = (Long) attributes.get("rta");
+    this.owo = getLongAttribute("owo");
+    this.loc = getLongAttribute("loc");
+    this.rta = getLongAttribute("rta");
     this.upd_date = (String) attributes.get("upd_date");
     this.upd_info = (String) attributes.get("upd_info");
-    this.fun = (Long) attributes.get("fun");
+    this.fun = getLongAttribute("fun");
     this.cpyrt_note = (String) attributes.get("cpyrt_note");
-    this.upd_name = (Long) attributes.get("upd_name");
+    this.upd_name = getLongAttribute("upd_name");
     this.src_info = (String) attributes.get("src_info");
     this.txt = (String) attributes.get("txt");
     this.nfi = (String) attributes.get("nfi");

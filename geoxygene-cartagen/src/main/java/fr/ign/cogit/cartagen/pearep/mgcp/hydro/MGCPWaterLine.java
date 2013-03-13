@@ -82,21 +82,22 @@ public class MGCPWaterLine extends MGCPFeature implements IWaterLine {
     this.geoxObj.setGeom(line);
     this.setInitialGeom(line);
     this.setEliminated(false);
+    this.setAttributeMap(attributes);//
 
     // attributes present in Mgcp++
-    this.acc = (Long) attributes.get("acc");
-    this.dir = (Long) attributes.get("dir");
-    this.wcc = (Long) attributes.get("wcc");
-    this.hyp = (Long) attributes.get("hyp");
-    this.loc = (Long) attributes.get("loc");
+    this.acc = getLongAttribute("acc");
+    this.dir = getLongAttribute("dir");
+    this.wcc = getLongAttribute("wcc");
+    this.hyp = getLongAttribute("hyp");
+    this.loc = getLongAttribute("loc");
     if (attributes.containsKey("nvs"))
-      this.nvs = (Long) attributes.get("nvs");
+      this.nvs = getLongAttribute("nvs");
     this.nam = (String) attributes.get("nam");
     this.nfi = (String) attributes.get("nfi");
     this.nfn = (String) attributes.get("nfn");
-    this.prc = (Long) attributes.get("prc");
-    this.smc = (Long) attributes.get("smc");
-    this.tid = (Long) attributes.get("tid");
+    this.prc = getLongAttribute("prc");
+    this.smc = getLongAttribute("smc");
+    this.tid = getLongAttribute("tid");
     this.wid = (String) attributes.get("wid");
     if (attributes.containsKey("lbv"))
       this.lbv = (String) attributes.get("lbv");

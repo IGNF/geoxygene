@@ -59,17 +59,18 @@ public class MGCPRiverArea extends MGCPFeature implements IWaterArea {
     this.geoxObj.setGeom(poly);
     this.setInitialGeom(poly);
     this.setEliminated(false);
+    this.setAttributeMap(attributes);//
 
     // attributes present in Mgcp++
     this.name = (String) attributes.get("nam");
-    this.acc = (Long) attributes.get("acc");
-    this.hyp = (Long) attributes.get("hyp");
-    this.prc = (Long) attributes.get("prc");
+    this.acc = getLongAttribute("acc");
+    this.hyp = getLongAttribute("hyp");
+    this.prc = getLongAttribute("prc");
     if (attributes.containsKey("scc")) {
-      this.scc = (Long) attributes.get("scc");
+      this.scc = getLongAttribute("scc");
       this.setType(WaterAreaType.LAKE);
     }
-    this.smc = (Long) attributes.get("smc");
+    this.smc = getLongAttribute("smc");
 
     this.nfi = (String) attributes.get("nfi");
     this.nfn = (String) attributes.get("nfn");

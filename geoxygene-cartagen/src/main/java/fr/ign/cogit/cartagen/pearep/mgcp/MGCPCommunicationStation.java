@@ -40,16 +40,17 @@ public class MGCPCommunicationStation extends MGCPFeature implements
     this.geoxObj = new AutreConstructionImpl(polygon);
     this.setInitialGeom(polygon);
     this.setEliminated(false);
+    this.setAttributeMap(attributes);//
 
-    this.acc = (Long) attributes.get("acc");
-    this.ace_eval = (Long) attributes.get("ace_eval");
-    this.ale_eval = (Long) attributes.get("ale_eval");
-    this.fun = (Long) attributes.get("fun");
-    this.nst = (Long) attributes.get("nst");
-    this.smc = (Long) attributes.get("smc");
-    this.src_name = (Long) attributes.get("src_name");
-    this.upd_name = (Long) attributes.get("upd_name");
-    this.zval_type = (Long) attributes.get("zval_type");
+    this.acc = getLongAttribute("acc");
+    this.ace_eval = getLongAttribute("ace_eval");
+    this.ale_eval = getLongAttribute("ale_eval");
+    this.fun = getLongAttribute("fun");
+    this.nst = getLongAttribute("nst");
+    this.smc = getLongAttribute("smc");
+    this.src_name = getLongAttribute("src_name");
+    this.upd_name = getLongAttribute("upd_name");
+    this.zval_type = getLongAttribute("zval_type");
 
     this.ace = (String) attributes.get("ace");
     this.ale = (String) attributes.get("ale");
