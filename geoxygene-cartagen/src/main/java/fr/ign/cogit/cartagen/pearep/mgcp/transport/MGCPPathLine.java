@@ -48,6 +48,7 @@ public class MGCPPathLine extends MGCPFeature implements IPathLine {
     this.deadEnd = false;
     this.initialNode = null;
     this.finalNode = null;
+    this.setAttributeMap(attributes);
 
     // attributes present in Mgcp++
     Object accAttr = attributes.get("acc");
@@ -55,19 +56,23 @@ public class MGCPPathLine extends MGCPFeature implements IPathLine {
       this.acc = (Long) accAttr;
     else
       this.acc = new Long((Integer) accAttr);
-    this.ace_eval = (Long) attributes.get("ace_eval");
-    this.ale_eval = (Long) attributes.get("ale_eval");
+    Object ace_evalAttr = attributes.get("ace_eval");
+    if (ace_evalAttr instanceof Long)
+      this.ace_eval = (Long) ace_evalAttr;
+    else
+      this.ace_eval = new Long((Integer) ace_evalAttr);
+    this.ale_eval = getLongAttribute("ale_eval");
     if (attributes.containsKey("uid"))
-      this.uid = (Long) attributes.get("uid");
-    this.src_name = (Long) attributes.get("src_name");
-    this.zval_type = (Long) attributes.get("zval_type");
+      this.uid = getLongAttribute("uid");
+    this.src_name = getLongAttribute("src_name");
+    this.zval_type = getLongAttribute("zval_type");
     if (attributes.containsKey("wd1"))
       this.wd1 = (String) attributes.get("wd1");
     this.upd_date = (String) attributes.get("upd_date");
     this.upd_info = (String) attributes.get("upd_info");
-    this.wtc = (Long) attributes.get("wtc");
+    this.wtc = getLongAttribute("wtc");
     this.cpyrt_note = (String) attributes.get("cpyrt_note");
-    this.upd_name = (Long) attributes.get("upd_name");
+    this.upd_name = getLongAttribute("upd_name");
     this.src_info = (String) attributes.get("src_info");
     this.txt = (String) attributes.get("txt");
     this.nfi = (String) attributes.get("nfi");

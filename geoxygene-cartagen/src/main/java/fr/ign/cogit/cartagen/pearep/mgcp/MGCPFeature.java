@@ -24,4 +24,12 @@ public abstract class MGCPFeature extends GeneObjDefault {
   public Map<String, Object> getAttributeMap() {
     return attributeMap;
   }
+
+  public long getLongAttribute(String attrName) {
+    Object val = getAttributeMap().get(attrName);
+    if (val instanceof Long)
+      return (Long) val;
+    else
+      return new Long((Integer) val);
+  }
 }
