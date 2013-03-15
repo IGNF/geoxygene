@@ -65,7 +65,7 @@ public class MGCPSettlementPoint extends MGCPFeature implements IBuildPoint {
     this.upd_date = (String) attributes.get("upd_date");
     this.upd_info = (String) attributes.get("upd_info");
     this.cpyrt_note = (String) attributes.get("cpyrt_note");
-
+    this.setAttributeMap(null);
   }
 
   @Override

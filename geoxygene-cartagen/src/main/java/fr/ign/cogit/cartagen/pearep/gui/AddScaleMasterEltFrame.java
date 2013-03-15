@@ -5,14 +5,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -33,8 +37,8 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterElement.ProcessPriority
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterEnrichment;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
+import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
-import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.component.RangeSlider;
 import fr.ign.cogit.cartagen.util.Interval;
 import fr.ign.cogit.geoxygene.filter.Filter;
 
@@ -46,7 +50,6 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
   private EditScaleMasterFrame parent;
   private ScaleLine line;
   private JSpinner spinMin, spinMax;
-  private RangeSlider rangeSlider;
   private JButton btnOk, btnCancel;
   private JButton btnAddEnrich, btnRemoveEnrich, btnAddFilter, btnRemoveFilter,
       btnAddProcess, btnRemoveProcess;
@@ -58,7 +61,8 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
   private Filter filter;
   private JTextField filterTxt;
   private JSlider slideFilter, slideProcess;
-  private JPanel pClasses, pParameters;
+  private JPanel pClasses;
+  private ProcessParameterPanel pParameters;
   private Set<ProcessParameter> parameters;
   private List<ProcessPriority> processPriorities;
 
@@ -71,17 +75,23 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
   public void actionPerformed(ActionEvent e) {
     if (e.getActionCommand().equals("ok")) {
       Interval<Integer> interval = new Interval<Integer>(
-          this.rangeSlider.getValue(), this.rangeSlider.getUpperValue());
+          (Integer) this.spinMin.getValue(), (Integer) this.spinMax.getValue());
       ScaleMasterElement element = new ScaleMasterElement(this.line, interval,
           (String) this.comboDbs.getSelectedItem());
+      element.setClasses(this.classes);
       // add the filter to the element
       if (this.filter != null) {
         element.setOgcFilter(this.filter);
         element.setFilterPriority(ProcessPriority.values()[this.slideFilter
             .getValue() - 1]);
       }
-      // TODO build element from swing components (add the enrichments and the
+      // build element from swing components (add the enrichments and the
       // processes)
+      element.getEnrichments().addAll(this.enrichments);
+      for (ScaleMasterGeneProcess proc : this.processes)
+        element.getProcessesToApply().add(proc.getProcessName());
+      element.getProcessPriorities().addAll(this.processPriorities);
+
       this.line.addElement(element);
       ScaleLineDisplayPanel panel = this.parent.getLinePanels().get(
           this.line.getTheme().getName());
@@ -105,7 +115,9 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
       comboProc.setSelectedItem(null);
       updateJList(jlistProcess);
     } else if (e.getActionCommand().equals("addFilter")) {
-      // TODO open a frame to define the filter
+      // open a frame to define the filter
+      AddFilterToElementFrame frame = new AddFilterToElementFrame(this);
+      frame.setVisible(true);
     } else if (e.getActionCommand().equals("removeFilter")) {
       this.filter = null;
       this.filterTxt.setEditable(true);
@@ -127,18 +139,30 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     this.setTitle(this.frameTitle + line.getTheme().getName());
     this.parent = frame;
     this.line = line;
+    this.parameters = new HashSet<ProcessParameter>();
+    this.classes = new HashSet<Class<? extends IGeneObj>>();
+    this.processes = new ArrayList<ScaleMasterGeneProcess>();
+    this.processPriorities = new ArrayList<ScaleMasterElement.ProcessPriority>();
 
     // a panel for the definition of the interval
     JPanel pInterval = new JPanel();
     this.spinMin = new JSpinner(new SpinnerNumberModel(25000,
         ((Integer) this.parent.getSpMin().getValue()).intValue(),
         ((Integer) this.parent.getSpMax().getValue()).intValue(), 1000));
+    spinMin.setPreferredSize(new Dimension(80, 20));
+    spinMin.setMaximumSize(new Dimension(80, 20));
+    spinMin.setMinimumSize(new Dimension(80, 20));
     this.spinMax = new JSpinner(new SpinnerNumberModel(250000,
         ((Integer) this.parent.getSpMin().getValue()).intValue(),
         ((Integer) this.parent.getSpMax().getValue()).intValue(), 1000));
+    spinMax.setPreferredSize(new Dimension(80, 20));
+    spinMax.setMaximumSize(new Dimension(80, 20));
+    spinMax.setMinimumSize(new Dimension(80, 20));
     pInterval.add(new JLabel(this.lblInterval));
+    pInterval.add(Box.createHorizontalGlue());
     pInterval.add(new JLabel(this.lblMinScale));
     pInterval.add(this.spinMin);
+    pInterval.add(Box.createHorizontalGlue());
     pInterval.add(new JLabel(this.lblMaxScale));
     pInterval.add(this.spinMax);
     pInterval.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -149,11 +173,15 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     this.comboDbs = new JComboBox(CartAGenDoc.getInstance().getDatabases()
         .keySet().toArray());
     this.comboDbs.addItemListener(this);
+    comboDbs.setPreferredSize(new Dimension(80, 20));
+    comboDbs.setMaximumSize(new Dimension(80, 20));
+    comboDbs.setMinimumSize(new Dimension(80, 20));
     pClasses = new JPanel();
     pClasses.setLayout(new BoxLayout(pClasses, BoxLayout.X_AXIS));
     updateClassPanelContent();
     pData.add(new JLabel(lblDb));
     pData.add(this.comboDbs);
+    pInterval.add(Box.createHorizontalGlue());
     pData.add(new JLabel("Classes: "));
     pData.add(pClasses);
     pData.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -169,6 +197,9 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     this.btnRemoveEnrich.addActionListener(this);
     this.btnRemoveEnrich.setActionCommand("removeEnrich");
     this.comboEnrich = new JComboBox(this.parent.getEnrichComboModel());
+    comboEnrich.setPreferredSize(new Dimension(100, 20));
+    comboEnrich.setMaximumSize(new Dimension(100, 20));
+    comboEnrich.setMinimumSize(new Dimension(100, 20));
     jlistEnrichs = new JList();
     jlistEnrichs
         .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -180,8 +211,11 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     scroll.setMaximumSize(new Dimension(120, 120));
     scroll.setMinimumSize(new Dimension(120, 120));
     pEnrich.add(scroll);
+    pInterval.add(Box.createHorizontalGlue());
     pEnrich.add(comboEnrich);
+    pInterval.add(Box.createHorizontalGlue());
     pEnrich.add(btnAddEnrich);
+    pInterval.add(Box.createHorizontalStrut(4));
     pEnrich.add(btnRemoveEnrich);
     pEnrich.setBorder(BorderFactory.createTitledBorder(lblEnrichments));
     pEnrich.setLayout(new BoxLayout(pEnrich, BoxLayout.X_AXIS));
@@ -206,9 +240,12 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     this.slideFilter.setMaximumSize(new Dimension(120, 50));
     this.slideFilter.setMinimumSize(new Dimension(120, 50));
     pFilter.add(filterTxt);
+    pInterval.add(Box.createHorizontalGlue());
     pFilter.add(new JLabel(this.lblPriority));
     pFilter.add(slideFilter);
+    pInterval.add(Box.createHorizontalGlue());
     pFilter.add(btnAddFilter);
+    pInterval.add(Box.createHorizontalStrut(4));
     pFilter.add(btnRemoveFilter);
     pFilter.setBorder(BorderFactory.createTitledBorder(lblFilter));
     pFilter.setLayout(new BoxLayout(pFilter, BoxLayout.X_AXIS));
@@ -252,12 +289,18 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     pDescProc.add(comboProc);
     pDescProc.add(slideProcess);
     pDescProc.setLayout(new BoxLayout(pDescProc, BoxLayout.Y_AXIS));
-    // TODO pParameters panel
+    // pParameters panel
+    this.pParameters = new ProcessParameterPanel();
+    this.comboProc.setSelectedIndex(0);
+    this.updateParametersPanel();
+    this.pParameters.setLayout(new BoxLayout(pParameters, BoxLayout.Y_AXIS));
     pCurrentProc.add(pDescProc);
     pCurrentProc.add(pParameters);
     pCurrentProc.setLayout(new BoxLayout(pCurrentProc, BoxLayout.X_AXIS));
     pProc.add(scroll2);
+    pInterval.add(Box.createHorizontalGlue());
     pProc.add(pBtns);
+    pInterval.add(Box.createHorizontalGlue());
     pProc.add(pCurrentProc);
     pProc.setBorder(BorderFactory.createTitledBorder(lblProcesses));
     pProc.setLayout(new BoxLayout(pProc, BoxLayout.X_AXIS));
@@ -287,14 +330,59 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
     this.pack();
   }
 
-  private void updateClassPanelContent() {
-    // TODO Auto-generated method stub
-
+  public AddScaleMasterEltFrame(EditScaleMasterFrame frame, ScaleLine line,
+      ScaleMasterElement elem) {
+    this(frame, line);
+    this.comboDbs.setSelectedItem(elem.getDbName());
+    this.enrichments = elem.getEnrichments();
+    this.filter = elem.getOgcFilter();
+    this.filterTxt.setEditable(true);
+    this.filterTxt.setText(filter.toString());
+    this.filterTxt.setEditable(false);
+    for (String procName : elem.getProcessesToApply()) {
+      ScaleMasterGeneProcess proc = null;
+      for (int i = 0; i < comboProc.getModel().getSize(); i++) {
+        ScaleMasterGeneProcess procI = (ScaleMasterGeneProcess) comboProc
+            .getModel().getElementAt(i);
+        if (procName.equals(procI.getProcessName())) {
+          proc = procI;
+          break;
+        }
+      }
+      this.processes.add(proc);
+    }
+    this.processPriorities = elem.getProcessPriorities();
+    this.updateClassPanelContent();
+    this.updateJList(jlistEnrichs);
+    this.updateJList(jlistProcess);
+    this.pack();
   }
 
-  private void fillParametersValues() {
-    // TODO Auto-generated method stub
+  private void updateClassPanelContent() {
+    classes.clear();
+    this.pClasses.removeAll();
+    // get the implementation corresponding to the current DB (the one selected
+    // in the combo box).
+    GeneObjImplementation impl = CartAGenDoc.getInstance().getDatabases()
+        .get((String) this.comboDbs.getSelectedItem()).getGeneObjImpl();
+    for (Class<? extends IGeneObj> classObj : this.line.getTheme()
+        .getRelatedClasses()) {
+      if (impl.containsClass(classObj)) {
+        // add a checkBox in the classes panel for this class
+        JCheckBox check = new JCheckBox(classObj.getSimpleName());
+        classes.add(classObj);
+        this.pClasses.add(check);
+      }
+    }
+  }
 
+  /**
+   * Fill the parameter values from the frame for the parameters of the current
+   * process.
+   */
+  private void fillParametersValues() {
+    for (ProcessParameter param : this.parameters)
+      param.setValue(this.pParameters.getValue(param));
   }
 
   /**
@@ -302,8 +390,9 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
    * parameters of the current generalisation process in the combo box.
    */
   private void updateParametersPanel() {
-    this.pParameters.removeAll();
-
+    this.pParameters.clear();
+    this.pParameters.update(this.parameters);
+    this.pack();
   }
 
   /**
@@ -328,12 +417,38 @@ public class AddScaleMasterEltFrame extends JFrame implements ActionListener,
   public void itemStateChanged(ItemEvent e) {
     if (e.getSource().equals(this.comboProc)) {
       this.parameters.clear();
-      this.parameters.addAll(((ScaleMasterGeneProcess) this.comboProc
-          .getSelectedItem()).getDefaultParameters());
+      if (this.comboProc.getSelectedItem() != null) {
+        this.parameters.addAll(((ScaleMasterGeneProcess) this.comboProc
+            .getSelectedItem()).getDefaultParameters());
+      }
       updateParametersPanel();
     } else if (e.getSource().equals(this.comboDbs)) {
       updateClassPanelContent();
     }
+  }
+
+  public Set<Class<? extends IGeneObj>> getClasses() {
+    return classes;
+  }
+
+  public void setClasses(Set<Class<? extends IGeneObj>> classes) {
+    this.classes = classes;
+  }
+
+  public Filter getFilter() {
+    return filter;
+  }
+
+  public void setFilter(Filter filter) {
+    this.filter = filter;
+  }
+
+  public JTextField getFilterTxt() {
+    return filterTxt;
+  }
+
+  public void setFilterTxt(JTextField filterTxt) {
+    this.filterTxt = filterTxt;
   }
 
   /**

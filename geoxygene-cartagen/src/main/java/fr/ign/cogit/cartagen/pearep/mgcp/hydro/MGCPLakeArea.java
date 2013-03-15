@@ -74,7 +74,7 @@ public class MGCPLakeArea extends MGCPFeature implements IWaterArea {
 
     this.nfi = (String) attributes.get("nfi");
     this.nfn = (String) attributes.get("nfn");
-
+    this.setAttributeMap(null);
     // computeLengthWidth();
   }
 

@@ -157,7 +157,7 @@ public class MGCPLandUse extends MGCPFeature implements ISimpleLandUseArea {
 
     if (attributes.containsKey("wst"))
       this.wst = getLongAttribute("wst");
-
+    this.setAttributeMap(null);
   }
 
   public MGCPLandUseType getLandUseType() {

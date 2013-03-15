@@ -90,7 +90,7 @@ public class MGCPBuilding extends MGCPFeature implements IBuilding {
     this.upd_info = (String) attributes.get("upd_info");
     this.voi = (String) attributes.get("voi");
     this.wid = (String) attributes.get("wid");
-
+    this.setAttributeMap(null);
   }
 
   @Override

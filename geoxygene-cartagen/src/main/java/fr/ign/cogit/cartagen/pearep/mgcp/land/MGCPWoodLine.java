@@ -58,6 +58,7 @@ public class MGCPWoodLine extends MGCPFeature implements IWoodLine {
     this.src_date = (String) attributes.get("src_date");
     this.ace = (String) attributes.get("ace");
     this.ale = (String) attributes.get("ale");
+    this.setAttributeMap(null);
   }
 
   private void setGeoxObj(ElementIsole feature) {

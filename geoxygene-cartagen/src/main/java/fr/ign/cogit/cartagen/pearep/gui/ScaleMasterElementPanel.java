@@ -20,7 +20,6 @@ import org.jdesktop.swingx.painter.MattePainter;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterElement;
-import fr.ign.cogit.cartagen.util.ontologies.OntologyUtil;
 
 public class ScaleMasterElementPanel extends JXPanel implements MouseListener {
 
@@ -65,12 +64,14 @@ public class ScaleMasterElementPanel extends JXPanel implements MouseListener {
     if (element.getOgcFilter() != null) {
       generalisationScore++;
     }
-    for (String process : element.getProcessesToApply()) {
-      if (OntologyUtil.isA(this.parent.getOntology(), process, "algorithme")) {
-        generalisationScore++;
-      } else {
-        generalisationScore += 2;
-      }
+    for (@SuppressWarnings("unused")
+    String process : element.getProcessesToApply()) {
+      generalisationScore++;
+      // TODO utilisation d'une ontologie de processus
+      /*
+       * if (OntologyUtil.isA(this.parent.getOntology(), process, "algorithme"))
+       * { generalisationScore++; } else { generalisationScore += 2; }
+       */
     }
     // decreases lightness according to the generalisation score
     Color color = dbHue;

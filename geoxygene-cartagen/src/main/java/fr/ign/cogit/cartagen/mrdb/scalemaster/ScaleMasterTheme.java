@@ -19,7 +19,7 @@ import fr.ign.cogit.geoxygene.filter.Filter;
 
 public class ScaleMasterTheme {
 
-  private String name;
+  private String name, description;
   /**
    * The CartAGen Geo classes related to {@code this} scale master theme.
    */
@@ -132,6 +132,14 @@ public class ScaleMasterTheme {
 
   public void setGeoConcept(OWLClass geoConcept) {
     this.geoConcept = geoConcept;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 
 }

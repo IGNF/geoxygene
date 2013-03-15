@@ -103,7 +103,7 @@ public class MGCPWaterLine extends MGCPFeature implements IWaterLine {
       this.lbv = (String) attributes.get("lbv");
     if (attributes.containsKey("rbv"))
       this.rbv = (String) attributes.get("rbv");
-
+    this.setAttributeMap(null);
   }
 
   @Override

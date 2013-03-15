@@ -62,6 +62,7 @@ public class MGCPMineralPile extends MGCPFeature implements IBoundedArea {
     this.upd_date = (String) attributes.get("upd_date");
     this.upd_info = (String) attributes.get("upd_info");
     this.voi = (String) attributes.get("voi");
+    this.setAttributeMap(null);
   }
 
   @Override

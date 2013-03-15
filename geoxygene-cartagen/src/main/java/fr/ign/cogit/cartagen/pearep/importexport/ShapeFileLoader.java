@@ -197,6 +197,7 @@ public abstract class ShapeFileLoader {
           }
         }
       }
+      attributes.clear();
     }
     shr.close();
     dbr.close();
@@ -284,6 +285,7 @@ public abstract class ShapeFileLoader {
           pop.add(tr);
         }
       }
+      attributes.clear();
     }
     shr.close();
     dbr.close();
@@ -371,6 +373,7 @@ public abstract class ShapeFileLoader {
           pop.add(tr);
         }
       }
+      attributes.clear();
     }
     shr.close();
     dbr.close();
@@ -458,6 +461,7 @@ public abstract class ShapeFileLoader {
 
         pop.add(tr);
       }
+      attributes.clear();
     }
 
     shr.close();
@@ -543,6 +547,7 @@ public abstract class ShapeFileLoader {
           pop.add(tr);
         }
       }
+      attributes.clear();
     }
     shr.close();
     dbr.close();

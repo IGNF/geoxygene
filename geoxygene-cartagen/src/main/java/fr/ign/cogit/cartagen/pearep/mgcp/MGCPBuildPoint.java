@@ -33,7 +33,7 @@ public class MGCPBuildPoint extends MGCPFeature implements IBuildPoint {
    * @param type
    */
   public MGCPBuildPoint(IPoint point, HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(point);
     this.setInitialGeom(point);
@@ -75,7 +75,7 @@ public class MGCPBuildPoint extends MGCPFeature implements IBuildPoint {
     this.voi = (String) attributes.get("voi");
     this.wid = (String) attributes.get("wid");
     this.zv2 = (String) attributes.get("zv2");
-
+    this.setAttributeMap(null);
   }
 
   @Override

@@ -69,11 +69,11 @@ public class MGCPPowerStationArea extends MGCPFeature implements
 
     if (attributes.containsKey("pfh"))
       this.pfh = (String) attributes.get("pfh");
-    ;
+
     if (attributes.containsKey("ppc"))
       this.ppc = getLongAttribute("ppc");
-    ;
 
+    this.setAttributeMap(null);
   }
 
   @Override

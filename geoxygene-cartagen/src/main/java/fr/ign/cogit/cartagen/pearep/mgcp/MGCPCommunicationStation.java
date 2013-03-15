@@ -69,7 +69,7 @@ public class MGCPCommunicationStation extends MGCPFeature implements
     this.uid = (String) attributes.get("uid");
     this.upd_date = (String) attributes.get("upd_date");
     this.upd_info = (String) attributes.get("upd_info");
-
+    this.setAttributeMap(null);
   }
 
   @Override

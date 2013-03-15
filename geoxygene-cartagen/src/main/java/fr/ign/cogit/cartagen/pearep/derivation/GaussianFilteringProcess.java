@@ -65,7 +65,7 @@ public class GaussianFilteringProcess extends ScaleMasterGeneProcess {
   @Override
   public Set<ProcessParameter> getDefaultParameters() {
     Set<ProcessParameter> params = new HashSet<ProcessParameter>();
-    params.add(new ProcessParameter("gaussian_threshold", Double.class, 0.0));
+    params.add(new ProcessParameter("gaussian_threshold", Double.class, 1.0));
     params.add(new ProcessParameter("gaussian_sigma", Double.class, 0.0));
     return params;
   }

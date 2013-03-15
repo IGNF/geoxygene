@@ -60,7 +60,7 @@ public class MGCPSquare extends MGCPFeature implements ISquareArea {
     this.upd_name = getLongAttribute("upd_name");
     this.upd_info = (String) attributes.get("upd_info");
     this.zval_type = getLongAttribute("zval_type");
-
+    this.setAttributeMap(null);
   }
 
   public String getNam() {

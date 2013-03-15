@@ -136,6 +136,7 @@ public class MGCPRoadLine extends MGCPFeature implements IRoadLine {
       this.wtc = (Long) wtcAttr;
     else
       this.wtc = new Long((Integer) wtcAttr);
+    this.setAttributeMap(null);
   }
 
   @Override

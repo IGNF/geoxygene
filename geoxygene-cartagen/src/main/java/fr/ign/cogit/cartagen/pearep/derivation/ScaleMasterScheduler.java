@@ -29,30 +29,13 @@ import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
-import fr.ign.cogit.cartagen.mrdb.scalemaster.GeometryType;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ProcessParameter;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMaster;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterElement;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuildPoint;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuiltUpArea;
-import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirport;
-import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirportPoint;
-import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayArea;
-import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayLine;
-import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPLakeArea;
-import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPRiverArea;
-import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterLine;
-import fr.ign.cogit.cartagen.pearep.mgcp.relief.MGCPContourLine;
-import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadLine;
-import fr.ign.cogit.cartagen.pearep.vmap.elev.VMAPContourLine;
-import fr.ign.cogit.cartagen.pearep.vmap.hydro.VMAPWaterArea;
-import fr.ign.cogit.cartagen.pearep.vmap.hydro.VMAPWaterLine;
-import fr.ign.cogit.cartagen.pearep.vmap.pop.VMAPBuildPoint;
-import fr.ign.cogit.cartagen.pearep.vmap.pop.VMAPBuiltUpArea;
-import fr.ign.cogit.cartagen.pearep.vmap.transport.VMAPRoadLine;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterXMLParser;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -111,11 +94,11 @@ public class ScaleMasterScheduler {
    * @throws ClassNotFoundException
    * @throws DOMException
    */
-  public ScaleMasterScheduler(File scaleMasterXml, File parameterXml)
-      throws ParserConfigurationException, SAXException, IOException,
-      DOMException, ClassNotFoundException {
+  public ScaleMasterScheduler(File scaleMasterXml, File parameterXml,
+      File themesFile) throws ParserConfigurationException, SAXException,
+      IOException, DOMException, ClassNotFoundException {
     this.initLoggers();
-    this.initThemes();
+    this.initThemes(themesFile);
     this.initProcesses();
     XMLParser smParser = new XMLParser(scaleMasterXml);
     XMLParser paramParser = new XMLParser(parameterXml);
@@ -128,8 +111,9 @@ public class ScaleMasterScheduler {
    * @param scaleMaster
    * @param scale
    */
-  public ScaleMasterScheduler(ScaleMaster scaleMaster, int scale) {
-    this.initThemes();
+  public ScaleMasterScheduler(ScaleMaster scaleMaster,
+      Set<ScaleMasterTheme> themes, int scale) {
+    this.themes = themes;
     this.initProcesses();
     this.scaleMaster = scaleMaster;
     this.scale = scale;
@@ -199,34 +183,27 @@ public class ScaleMasterScheduler {
     return this.vmap0Folder;
   }
 
+  public Set<ScaleMasterTheme> getThemes() {
+    return themes;
+  }
+
+  public void setThemes(Set<ScaleMasterTheme> themes) {
+    this.themes = themes;
+  }
+
   /**
    * Initialise the {@link ScaleMasterTheme} objects known by {@code this}.
+   * @throws ClassNotFoundException
+   * @throws IOException
+   * @throws SAXException
+   * @throws ParserConfigurationException
+   * @throws DOMException
    */
-  private void initThemes() {
-    this.themes = new HashSet<ScaleMasterTheme>();
-    this.themes.add(new ScaleMasterTheme("roadl", new Class[] {
-        VMAPRoadLine.class, MGCPRoadLine.class }, GeometryType.LINE));
-    this.themes.add(new ScaleMasterTheme("built_up_area", new Class[] {
-        VMAPBuiltUpArea.class, MGCPBuiltUpArea.class }, GeometryType.POLYGON));
-    this.themes.add(new ScaleMasterTheme("waterl", new Class[] {
-        VMAPWaterLine.class, MGCPWaterLine.class }, GeometryType.LINE));
-    this.themes.add(new ScaleMasterTheme("buildingp", new Class[] {
-        VMAPBuildPoint.class, MGCPBuildPoint.class }, GeometryType.POINT));
-    this.themes.add(new ScaleMasterTheme("contourl", new Class[] {
-        VMAPContourLine.class, MGCPContourLine.class }, GeometryType.LINE));
-    this.themes.add(new ScaleMasterTheme("lake_area", new Class[] {
-        VMAPWaterArea.class, MGCPLakeArea.class }, GeometryType.POLYGON));
-    this.themes.add(new ScaleMasterTheme("river_area",
-        new Class[] { MGCPRiverArea.class }, GeometryType.POLYGON));
-    this.themes.add(new ScaleMasterTheme("airport_area",
-        new Class[] { MGCPAirport.class }, GeometryType.POLYGON));
-    this.themes.add(new ScaleMasterTheme("airport_point",
-        new Class[] { MGCPAirportPoint.class }, GeometryType.POINT));
-    this.themes.add(new ScaleMasterTheme("runway_area",
-        new Class[] { MGCPRunwayArea.class }, GeometryType.POLYGON));
-    this.themes.add(new ScaleMasterTheme("runway_line",
-        new Class[] { MGCPRunwayLine.class }, GeometryType.LINE));
-    // TODO
+  private void initThemes(File themeFile) throws DOMException,
+      ParserConfigurationException, SAXException, IOException,
+      ClassNotFoundException {
+    ScaleMasterXMLParser parser = new ScaleMasterXMLParser(null);
+    this.themes = parser.parseScaleMasterThemes(themeFile);
   }
 
   private void initProcesses() {

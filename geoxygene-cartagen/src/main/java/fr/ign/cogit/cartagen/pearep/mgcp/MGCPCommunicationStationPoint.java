@@ -70,7 +70,7 @@ public class MGCPCommunicationStationPoint extends MGCPFeature implements
     this.upd_info = (String) attributes.get("upd_info");
     this.cpyrt_note = (String) attributes.get("cpyrt_note");
     this.voi = (String) attributes.get("voi");
-
+    this.setAttributeMap(null);
   }
 
   @Override

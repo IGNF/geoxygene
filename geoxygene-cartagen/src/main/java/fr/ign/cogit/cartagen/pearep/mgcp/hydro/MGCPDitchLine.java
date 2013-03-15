@@ -60,6 +60,7 @@ public class MGCPDitchLine extends MGCPFeature implements IDitchLine {
     this.rbv = (String) attributes.get("rbv");
     this.lbv = (String) attributes.get("lbv");
     this.wid = (String) attributes.get("wid");
+    this.setAttributeMap(null);
   }
 
   private void setGeoxObj(ElementIsole elementIsole) {

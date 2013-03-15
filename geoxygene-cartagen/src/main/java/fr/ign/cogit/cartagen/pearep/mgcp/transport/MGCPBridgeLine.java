@@ -89,6 +89,7 @@ public class MGCPBridgeLine extends MGCPFeature implements IBridgeLine {
       this.mvc = (String) attributes.get("mvc");
     if (attributes.containsKey("ohb"))
       this.ohb = (String) attributes.get("ohb");
+    this.setAttributeMap(null);
   }
 
   @Override

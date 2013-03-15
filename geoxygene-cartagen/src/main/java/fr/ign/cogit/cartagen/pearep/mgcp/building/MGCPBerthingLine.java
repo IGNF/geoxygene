@@ -59,6 +59,7 @@ public class MGCPBerthingLine extends MGCPFeature implements IBuildLine {
     this.wid = (String) attributes.get("wid");
     this.len = (String) attributes.get("len");
     this.wle = getLongAttribute("wle");
+    this.setAttributeMap(null);
   }
 
   private void setGeoxObj(AutreConstruction elementIsole) {

@@ -90,6 +90,7 @@ public class MGCPRailwayLine extends MGCPFeature implements IRailwayLine {
       this.ctl = getLongAttribute("ctl");
     if (attributes.containsKey("rsa"))
       this.rsa = getLongAttribute("rsa");
+    this.setAttributeMap(null);
   }
 
   @Override

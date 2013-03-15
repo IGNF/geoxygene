@@ -84,6 +84,7 @@ public class MGCPPathLine extends MGCPFeature implements IPathLine {
     this.ale = (String) attributes.get("ale");
 
     this.computeImportance();
+    this.setAttributeMap(null);
   }
 
   private void computeImportance() {

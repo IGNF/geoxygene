@@ -1,7 +1,9 @@
 package fr.ign.cogit.cartagen.pearep.gui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -11,6 +13,7 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -32,8 +35,12 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -43,23 +50,47 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.jdesktop.swingx.JXColorSelectionButton;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.w3c.dom.DOMException;
+import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.mrdb.REPPointOfView;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.GeometryType;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMaster;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterElement;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterEnrichment;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterXMLParser;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuildPoint;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuiltUpArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirport;
+import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirportPoint;
+import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPLakeArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPRiverArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.relief.MGCPContourLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadLine;
+import fr.ign.cogit.cartagen.pearep.vmap.elev.VMAPContourLine;
+import fr.ign.cogit.cartagen.pearep.vmap.hydro.VMAPWaterArea;
+import fr.ign.cogit.cartagen.pearep.vmap.hydro.VMAPWaterLine;
+import fr.ign.cogit.cartagen.pearep.vmap.pop.VMAPBuildPoint;
+import fr.ign.cogit.cartagen.pearep.vmap.pop.VMAPBuiltUpArea;
+import fr.ign.cogit.cartagen.pearep.vmap.transport.VMAPRoadLine;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.component.ScaleRulerPanel;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.ClassComparator;
+import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.swingcomponents.filter.XMLFileFilter;
 import fr.ign.cogit.cartagen.util.FileUtil;
 import fr.ign.cogit.cartagen.util.ontologies.OntologyUtil;
 
@@ -105,10 +136,13 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
         .getOntologyFromName("MapGeneralisationProcesses"));
     this.setGeoClasses();
     this.dbHues = new HashMap<String, Color>();
+    DefaultComboBoxModel cbModel = new DefaultComboBoxModel();
     for (CartAGenDB db : CartAGenDoc.getInstance().getDatabases().values()) {
-      this.dbHues.put(db.getName(), Color.RED);
+      this.dbHues.put(db.getSourceDLM().name(), Color.RED);
+      cbModel.addElement(db.getSourceDLM().name());
     }
     this.current = new ScaleMaster();
+    initThemes();
 
     // a panel to define the scale master
     JPanel pDefinition = new JPanel();
@@ -132,8 +166,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     this.spMax.setMinimumSize(new Dimension(80, 20));
     this.spMax.setMaximumSize(new Dimension(80, 20));
     this.spMax.addChangeListener(this);
-    this.cbDbs = new JComboBox(CartAGenDoc.getInstance().getDatabases()
-        .values().toArray());
+    this.cbDbs = new JComboBox(cbModel);
     this.cbDbs.setPreferredSize(new Dimension(80, 20));
     this.cbDbs.setMinimumSize(new Dimension(80, 20));
     this.cbDbs.setMaximumSize(new Dimension(80, 20));
@@ -215,6 +248,26 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     pButtons.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     pButtons.setLayout(new BoxLayout(pButtons, BoxLayout.X_AXIS));
 
+    // the frame menu
+    JMenuBar menuBar = new JMenuBar();
+    // un menu Fichier
+    JMenu menuFichier = new JMenu(I18N.getString("MainLabels.lblFile"));
+    JMenuItem load = new JMenuItem(I18N.getString("MainLabels.lblLoad"));
+    load.setActionCommand("load");
+    load.addActionListener(this);
+    ImageIcon iconeAide = new ImageIcon(EditScaleMasterFrame.class
+        .getResource("/images/icons/16x16/help.png").getPath()
+        .replaceAll("%20", " "));
+    JMenuItem aide = new JMenuItem(I18N.getString("MainLabels.lblHelp"),
+        iconeAide);
+    aide.setActionCommand("help");
+    aide.addActionListener(this);
+    menuFichier.add(load);
+    menuFichier.add(aide);
+    menuBar.add(menuFichier);
+    menuBar.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+    this.setJMenuBar(menuBar);
     this.getContentPane().add(Box.createVerticalGlue());
     this.getContentPane().add(pDefinition);
     this.getContentPane().add(Box.createVerticalGlue());
@@ -234,12 +287,18 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       this.setVisible(false);
     } else if (e.getActionCommand().equals("ok")) {
       System.out.println(this.getRuler().getPixelAlign(75000));
-      // TODO
+      // TODO apply and export to xml the current ScaleMaster
       this.setVisible(false);
     } else if (e.getActionCommand().equals("apply")) {
-      // TODO
+      // TODO apply the lines to the current ScaleMaster
     } else if (e.getActionCommand().equals("edit")) {
-      // TODO
+      // edit a ScaleMasterElement in the selected line
+      if (this.selectedLine == null) {
+        return;
+      }
+      SelectElementFrame frame = new SelectElementFrame(this);
+      frame.setVisible(true);
+      this.pack();
     } else if (e.getActionCommand().equals("add-line")) {
       AddScaleLineFrame frame = new AddScaleLineFrame(this);
       frame.setVisible(true);
@@ -252,6 +311,47 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
           selectedLine);
       frame.setVisible(true);
       this.pack();
+    } else if (e.getActionCommand().equals("help")) {
+      // TODO launch the frame documentation
+    } else if (e.getActionCommand().equals("load")) {
+      // load a ScaleMaster previously stored in xml
+      JFileChooser fc = new JFileChooser();
+      fc.setFileFilter(new XMLFileFilter());
+      fc.setName("Choose the ScaleMaster2.0 XML file to open");
+      int returnVal = fc.showOpenDialog(this);
+      if (returnVal != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+      File xmlFile = fc.getSelectedFile();
+      try {
+        this.current = new ScaleMasterXMLParser(xmlFile)
+            .parseScaleMaster(existingThemes);
+        // now update the frame components
+        this.spMin.setValue(this.current.getGlobalRange().getMinimum());
+        this.spMax.setValue(this.current.getGlobalRange().getMaximum());
+        this.cbPtOfView.setSelectedItem(this.current.getPointOfView());
+        this.linePanels.clear();
+        this.getDisplayPanel().removeAll();
+        for (ScaleLine line : this.current.getScaleLines()) {
+          ScaleLineDisplayPanel linePanel = new ScaleLineDisplayPanel(line,
+              ruler, this);
+          linePanels.put(line.getTheme().getName(), linePanel);
+          JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
+          jp.add(linePanel);
+          this.getDisplayPanel().add(jp);
+        }
+        this.pack();
+      } catch (DOMException e1) {
+        e1.printStackTrace();
+      } catch (ParserConfigurationException e1) {
+        e1.printStackTrace();
+      } catch (SAXException e1) {
+        e1.printStackTrace();
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      } catch (ClassNotFoundException e1) {
+        e1.printStackTrace();
+      }
     }
   }
 
@@ -560,4 +660,67 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     return model;
   }
 
+  /**
+   * Initialise the {@link ScaleMasterTheme} objects known by {@code this}.
+   */
+  private void initThemes() {
+    this.existingThemes = new HashSet<ScaleMasterTheme>();
+    this.existingThemes.add(new ScaleMasterTheme("roadl", new Class[] {
+        VMAPRoadLine.class, MGCPRoadLine.class }, GeometryType.LINE));
+    this.existingThemes.add(new ScaleMasterTheme("built_up_area", new Class[] {
+        VMAPBuiltUpArea.class, MGCPBuiltUpArea.class }, GeometryType.POLYGON));
+    this.existingThemes.add(new ScaleMasterTheme("waterl", new Class[] {
+        VMAPWaterLine.class, MGCPWaterLine.class }, GeometryType.LINE));
+    this.existingThemes.add(new ScaleMasterTheme("buildingp", new Class[] {
+        VMAPBuildPoint.class, MGCPBuildPoint.class }, GeometryType.POINT));
+    this.existingThemes.add(new ScaleMasterTheme("contourl", new Class[] {
+        VMAPContourLine.class, MGCPContourLine.class }, GeometryType.LINE));
+    this.existingThemes.add(new ScaleMasterTheme("lake_area", new Class[] {
+        VMAPWaterArea.class, MGCPLakeArea.class }, GeometryType.POLYGON));
+    this.existingThemes.add(new ScaleMasterTheme("river_area",
+        new Class[] { MGCPRiverArea.class }, GeometryType.POLYGON));
+    this.existingThemes.add(new ScaleMasterTheme("airport_area",
+        new Class[] { MGCPAirport.class }, GeometryType.POLYGON));
+    this.existingThemes.add(new ScaleMasterTheme("airport_point",
+        new Class[] { MGCPAirportPoint.class }, GeometryType.POINT));
+    this.existingThemes.add(new ScaleMasterTheme("runway_area",
+        new Class[] { MGCPRunwayArea.class }, GeometryType.POLYGON));
+    this.existingThemes.add(new ScaleMasterTheme("runway_line",
+        new Class[] { MGCPRunwayLine.class }, GeometryType.LINE));
+    // TODO
+  }
+
+  class SelectElementFrame extends JFrame implements ActionListener {
+
+    /****/
+    private static final long serialVersionUID = 1L;
+    private JComboBox combo;
+    private EditScaleMasterFrame parent;
+
+    public SelectElementFrame(EditScaleMasterFrame parent) {
+      super(I18N.getString("EditScaleMasterFrame.lblEditElt"));
+      this.parent = parent;
+      combo = new JComboBox(selectedLine.getLine().values().toArray());
+      combo.setPreferredSize(new Dimension(140, 20));
+      combo.setPreferredSize(new Dimension(140, 20));
+      combo.setPreferredSize(new Dimension(140, 20));
+      JButton okButton = new JButton("OK");
+      okButton.addActionListener(this);
+      okButton.setActionCommand("ok");
+      this.add(combo);
+      this.add(okButton);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (e.getActionCommand().equals("ok")) {
+        AddScaleMasterEltFrame frame = new AddScaleMasterEltFrame(parent,
+            selectedLine, (ScaleMasterElement) combo.getSelectedItem());
+        frame.setVisible(true);
+        this.setVisible(false);
+      } else
+        this.setVisible(false);
+    }
+
+  }
 }

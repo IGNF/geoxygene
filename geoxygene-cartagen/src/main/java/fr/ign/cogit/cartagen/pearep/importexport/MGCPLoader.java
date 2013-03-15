@@ -62,7 +62,6 @@ import fr.ign.cogit.cartagen.pearep.mgcp.MGCPCranePoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPDryDockArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFeature;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFlarePipePoint;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFortification;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLandUse;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLandUseType;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPLighthousePoint;
@@ -72,7 +71,6 @@ import fr.ign.cogit.cartagen.pearep.mgcp.MGCPPowerStationArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPPowerStationPoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPProcessingFacility;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPPumpingStation;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPRailwayYard;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSeaPlaneBasePoint;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSettlement;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSettlementPoint;
@@ -90,6 +88,7 @@ import fr.ign.cogit.cartagen.pearep.mgcp.building.MGCPBerthingArea;
 import fr.ign.cogit.cartagen.pearep.mgcp.building.MGCPBerthingLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.building.MGCPBuildLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.building.MGCPCemetery;
+import fr.ign.cogit.cartagen.pearep.mgcp.building.MGCPFortification;
 import fr.ign.cogit.cartagen.pearep.mgcp.energy.MGCPElectricityLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.energy.MGCPPipeLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPCoastLine;
@@ -105,6 +104,7 @@ import fr.ign.cogit.cartagen.pearep.mgcp.relief.MGCPReliefElementLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPBridgeLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPPathLine;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRailwayLine;
+import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRailwayYard;
 import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadLine;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
@@ -143,7 +143,8 @@ public class MGCPLoader extends ShapeFileLoader {
 
       // Chargement dans l'ordre alphabétique (JFG)
 
-      if ((listLayer.size() == 0) || (listLayer.contains("LAP030"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LAP030")))
+          && (FileUtil.getNamedFileInDir(directory, "LAP030.shp") != null)) {
         // ground transportation loading
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LAP030.shp")
@@ -151,28 +152,32 @@ public class MGCPLoader extends ShapeFileLoader {
             CartAGenDataSet.ROADS_POP, IRoadLine.FEAT_TYPE_NAME, this
                 .getDataset().getRoadNetwork(), PeaRepDbType.MGCPPlusPlus);
       }
-      if ((listLayer.size() == 0) || (listLayer.contains("LAP010"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LAP010")))
+          && (FileUtil.getNamedFileInDir(directory, "LAP010.shp") != null)) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LAP010.shp")
                 .getAbsolutePath(), MGCPPathLine.class,
             CartAGenDataSet.PATHS_POP, IPathLine.FEAT_TYPE_NAME, null,
             PeaRepDbType.MGCPPlusPlus);
       }
-      if ((listLayer.size() == 0) || (listLayer.contains("LAP050"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LAP050")))
+          && (FileUtil.getNamedFileInDir(directory, "LAP050.shp") != null)) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LAP050.shp")
                 .getAbsolutePath(), MGCPPathLine.class,
             CartAGenDataSet.PATHS_POP, IPathLine.FEAT_TYPE_NAME, null,
             PeaRepDbType.MGCPPlusPlus);
       }
-      if ((listLayer.size() == 0) || (listLayer.contains("LAQ040"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LAQ040")))
+          && (FileUtil.getNamedFileInDir(directory, "LAQ040.shp") != null)) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LAQ040.shp")
                 .getAbsolutePath(), MGCPBridgeLine.class,
             PeaRepDataset.BRIDGE_LINE_POP, IBridgeLine.FEAT_TYPE_NAME, null,
             PeaRepDbType.MGCPPlusPlus);
       }
-      if ((listLayer.size() == 0) || (listLayer.contains("LBH070"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LBH070")))
+          && (FileUtil.getNamedFileInDir(directory, "LBH070.shp") != null)) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LBH070.shp")
                 .getAbsolutePath(), MGCPBridgeLine.class,
@@ -181,42 +186,48 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // hydro loading
-      if ((listLayer.size() == 0) || (listLayer.contains("LBH140"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LBH140")))
+          && (FileUtil.getNamedFileInDir(directory, "LBH140.shp") != null)) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LBH140.shp")
                 .getAbsolutePath(), MGCPWaterLine.class,
             CartAGenDataSet.WATER_LINES_POP, IWaterLine.FEAT_TYPE_NAME, this
                 .getDataset().getHydroNetwork(), PeaRepDbType.MGCPPlusPlus);
       }
-      if ((listLayer.size() == 0) || (listLayer.contains("ABH080"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("ABH080")))
+          && (FileUtil.getNamedFileInDir(directory, "ABH080.shp") != null)) {
         this.loadPolygonClassUnionMulti(
             FileUtil.getNamedFileInDir(directory, "ABH080.shp")
                 .getAbsolutePath(), MGCPLakeArea.class,
             CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
-      if ((listLayer.size() == 0) || (listLayer.contains("ABH140"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("ABH140")))
+          && (FileUtil.getNamedFileInDir(directory, "ABH140.shp") != null)) {
         this.loadPolygonClassUnionMulti(
             FileUtil.getNamedFileInDir(directory, "ABH140.shp")
                 .getAbsolutePath(), MGCPRiverArea.class,
             CartAGenDataSet.WATER_AREAS_POP, IWaterArea.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
-      if ((listLayer.size() == 0) || (listLayer.contains("LBH030"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LBH030")))
+          && (FileUtil.getNamedFileInDir(directory, "LBH030.shp") != null)) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LBH030.shp")
                 .getAbsolutePath(), MGCPDitchLine.class,
             PeaRepDataset.DITCH_LINE_POP, IDitchLine.FEAT_TYPE_NAME, null,
             PeaRepDbType.MGCPPlusPlus);
       }
-      if ((listLayer.size() == 0) || (listLayer.contains("LBA010"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LBA010")))
+          && (FileUtil.getNamedFileInDir(directory, "LBA010.shp") != null)) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LBA010.shp")
                 .getAbsolutePath(), MGCPCoastLine.class,
             PeaRepDataset.COAST_LINE_POP, ICoastLine.FEAT_TYPE_NAME, null,
             PeaRepDbType.MGCPPlusPlus);
       }
-      if ((listLayer.size() == 0) || (listLayer.contains("LBH020"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LBH020")))
+          && (FileUtil.getNamedFileInDir(directory, "LBH020.shp") != null)) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LBH020.shp")
                 .getAbsolutePath(), MGCPWaterLine.class,
@@ -225,14 +236,16 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // elevation loading
-      if ((listLayer.size() == 0) || (listLayer.contains("LCA010"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LCA010")))
+          && (FileUtil.getNamedFileInDir(directory, "LCA010.shp") != null)) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LCA010.shp")
                 .getAbsolutePath(), MGCPContourLine.class,
             CartAGenDataSet.CONTOUR_LINES_POP, IContourLine.FEAT_TYPE_NAME,
             null, PeaRepDbType.MGCPPlusPlus);
       }
-      if ((listLayer.size() == 0) || (listLayer.contains("LDB010"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LDB010")))
+          && (FileUtil.getNamedFileInDir(directory, "LDB010.shp") != null)) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LDB010.shp")
                 .getAbsolutePath(), MGCPReliefElementLine.class,
@@ -241,11 +254,13 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // aero loading
-      if ((listLayer.size() == 0) || (listLayer.contains("AGB005")))
+      if (((listLayer.size() == 0) || (listLayer.contains("AGB005")))
+          && (FileUtil.getNamedFileInDir(directory, "AGB005.shp") != null))
         loadAirports(directory);
 
       // energy
-      if ((listLayer.size() == 0) || (listLayer.contains("LAT030"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LAT030")))
+          && (FileUtil.getNamedFileInDir(directory, "LAT030.shp") != null)) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LAT030.shp")
                 .getAbsolutePath(), MGCPElectricityLine.class,
@@ -253,7 +268,8 @@ public class MGCPLoader extends ShapeFileLoader {
             IElectricityLine.FEAT_TYPE_NAME, this.getDataset()
                 .getElectricityNetwork(), PeaRepDbType.MGCPPlusPlus);
       }
-      if ((listLayer.size() == 0) || (listLayer.contains("LAQ113"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LAQ113")))
+          && (FileUtil.getNamedFileInDir(directory, "LAQ113.shp") != null)) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LAQ113.shp")
                 .getAbsolutePath(), MGCPPipeLine.class,
@@ -262,7 +278,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // population loading
-      if ((listLayer.size() == 0) || (listLayer.contains("PAL015"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("PAL015")))
+          && (FileUtil.getNamedFileInDir(directory, "PAL015.shp") != null)) {
         this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAL015.shp")
             .getAbsolutePath(), MGCPBuildPoint.class,
             CartAGenDataSet.BUILD_PT_POP, IBuildPoint.FEAT_TYPE_NAME,
@@ -270,7 +287,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // Building Loading
-      if ((listLayer.size() == 0) || (listLayer.contains("AAL015"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAL015")))
+          && (FileUtil.getNamedFileInDir(directory, "AAL015.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAL015.shp")
                 .getAbsolutePath(), MGCPBuilding.class,
@@ -278,21 +296,24 @@ public class MGCPLoader extends ShapeFileLoader {
 
             PeaRepDbType.MGCPPlusPlus);
       }
-      if ((listLayer.size() == 0) || (listLayer.contains("LBB041"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LBB041")))
+          && (FileUtil.getNamedFileInDir(directory, "LBB041.shp") != null)) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LBB041.shp")
                 .getAbsolutePath(), MGCPBuildLine.class,
             PeaRepDataset.BUILD_LINE_POP, IBuildLine.FEAT_TYPE_NAME, null,
             PeaRepDbType.MGCPPlusPlus);
       }
-      if ((listLayer.size() == 0) || (listLayer.contains("LBB230"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LBB230")))
+          && (FileUtil.getNamedFileInDir(directory, "LBB230.shp") != null)) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LBB230.shp")
                 .getAbsolutePath(), MGCPBuildLine.class,
             PeaRepDataset.BUILD_LINE_POP, IBuildLine.FEAT_TYPE_NAME, null,
             PeaRepDbType.MGCPPlusPlus);
       }
-      if ((listLayer.size() == 0) || (listLayer.contains("LBB190"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LBB190")))
+          && (FileUtil.getNamedFileInDir(directory, "LBB190.shp") != null)) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LBB190.shp")
                 .getAbsolutePath(), MGCPBerthingLine.class,
@@ -301,14 +322,16 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // PowerStation loading
-      if ((listLayer.size() == 0) || (listLayer.contains("AAD010"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAD010")))
+          && (FileUtil.getNamedFileInDir(directory, "AAD010.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAD010.shp")
                 .getAbsolutePath(), MGCPPowerStationArea.class,
             CartAGenDataSet.BUILD_AREA_POP, IPowerStationArea.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
-      if ((listLayer.size() == 0) || (listLayer.contains("AAD030"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAD030")))
+          && (FileUtil.getNamedFileInDir(directory, "AAD030.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAD030.shp")
                 .getAbsolutePath(), MGCPPowerStationArea.class,
@@ -317,7 +340,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // Cemetery Loading
-      if ((listLayer.size() == 0) || (listLayer.contains("AAL030"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAL030")))
+          && (FileUtil.getNamedFileInDir(directory, "AAL030.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAL030.shp")
                 .getAbsolutePath(), MGCPCemetery.class,
@@ -326,7 +350,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // Fortification Loading
-      if ((listLayer.size() == 0) || (listLayer.contains("AAH050"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAH050")))
+          && (FileUtil.getNamedFileInDir(directory, "AAH050.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAH050.shp")
                 .getAbsolutePath(), MGCPFortification.class,
@@ -335,7 +360,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // Processing Facility Loading
-      if ((listLayer.size() == 0) || (listLayer.contains("AAC000"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAC000")))
+          && (FileUtil.getNamedFileInDir(directory, "AAC000.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAC000.shp")
                 .getAbsolutePath(), MGCPProcessingFacility.class,
@@ -344,7 +370,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // StorageDepot Loading
-      if ((listLayer.size() == 0) || (listLayer.contains("AAM010"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAM010")))
+          && (FileUtil.getNamedFileInDir(directory, "AAM010.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAM010.shp")
                 .getAbsolutePath(), MGCPStorageDepot.class,
@@ -353,7 +380,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // MineralPile Loading
-      if ((listLayer.size() == 0) || (listLayer.contains("AAM040"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAM040")))
+          && (FileUtil.getNamedFileInDir(directory, "AAM040.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAM040.shp")
                 .getAbsolutePath(), MGCPMineralPile.class,
@@ -362,7 +390,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // Pumping Station Loading
-      if ((listLayer.size() == 0) || (listLayer.contains("AAQ116"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAQ116")))
+          && (FileUtil.getNamedFileInDir(directory, "AAQ116.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAQ116.shp")
                 .getAbsolutePath(), MGCPPumpingStation.class,
@@ -371,7 +400,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // Vehicle Lot (Parking) Loading
-      if ((listLayer.size() == 0) || (listLayer.contains("AAQ140"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAQ140")))
+          && (FileUtil.getNamedFileInDir(directory, "AAQ140.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAQ140.shp")
                 .getAbsolutePath(), MGCPVehicleLot.class,
@@ -380,7 +410,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // Communication Station (?) Loading
-      if ((listLayer.size() == 0) || (listLayer.contains("AAT050"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAT050")))
+          && (FileUtil.getNamedFileInDir(directory, "AAT050.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAT050.shp")
                 .getAbsolutePath(), MGCPCommunicationStation.class,
@@ -389,7 +420,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // RailwayYard Loading
-      if ((listLayer.size() == 0) || (listLayer.contains("AAN060"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAN060")))
+          && (FileUtil.getNamedFileInDir(directory, "AAN060.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAN060.shp")
                 .getAbsolutePath(), MGCPRailwayYard.class,
@@ -398,7 +430,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // Square Loading
-      if ((listLayer.size() == 0) || (listLayer.contains("AAL170"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAL170")))
+          && (FileUtil.getNamedFileInDir(directory, "AAL170.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAL170.shp")
                 .getAbsolutePath(), MGCPSquare.class, PeaRepDataset.SQUARE_POP,
@@ -406,7 +439,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // Stadium Loading
-      if ((listLayer.size() == 0) || (listLayer.contains("AAK160"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAK160")))
+          && (FileUtil.getNamedFileInDir(directory, "AAK160.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAK160.shp")
                 .getAbsolutePath(), MGCPStadium.class,
@@ -415,7 +449,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // Settlement Loading
-      if ((listLayer.size() == 0) || (listLayer.contains("AAL105"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAL105")))
+          && (FileUtil.getNamedFileInDir(directory, "AAL105.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAL105.shp")
                 .getAbsolutePath(), MGCPSettlement.class,
@@ -425,7 +460,8 @@ public class MGCPLoader extends ShapeFileLoader {
 
       // Harbour loading
       // Dry Dock
-      if ((listLayer.size() == 0) || (listLayer.contains("ABB090"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("ABB090")))
+          && (FileUtil.getNamedFileInDir(directory, "ABB090.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "ABB090.shp")
                 .getAbsolutePath(), MGCPDryDockArea.class,
@@ -433,7 +469,8 @@ public class MGCPLoader extends ShapeFileLoader {
             PeaRepDbType.MGCPPlusPlus);
       }
       // Training Wall Area
-      if ((listLayer.size() == 0) || (listLayer.contains("ABB140"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("ABB140")))
+          && (FileUtil.getNamedFileInDir(directory, "ABB140.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "ABB140.shp")
                 .getAbsolutePath(), MGCPTrainingWallArea.class,
@@ -441,7 +478,8 @@ public class MGCPLoader extends ShapeFileLoader {
             PeaRepDbType.MGCPPlusPlus);
       }
       // Berthing Area
-      if ((listLayer.size() == 0) || (listLayer.contains("ABB190"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("ABB190")))
+          && (FileUtil.getNamedFileInDir(directory, "ABB190.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "ABB190.shp")
                 .getAbsolutePath(), MGCPBerthingArea.class,
@@ -451,7 +489,8 @@ public class MGCPLoader extends ShapeFileLoader {
 
       // Water Treatment loading
       // Settling Pond
-      if ((listLayer.size() == 0) || (listLayer.contains("AAC030"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAC030")))
+          && (FileUtil.getNamedFileInDir(directory, "AAC030.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAC030.shp")
                 .getAbsolutePath(), MGCPSettlingPond.class,
@@ -459,7 +498,8 @@ public class MGCPLoader extends ShapeFileLoader {
             PeaRepDbType.MGCPPlusPlus);
       }
       // Water Treatment Bed
-      if ((listLayer.size() == 0) || (listLayer.contains("ABH040"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("ABH040")))
+          && (FileUtil.getNamedFileInDir(directory, "ABH040.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "ABH040.shp")
                 .getAbsolutePath(), MGCPWaterTreatmentBed.class,
@@ -468,7 +508,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // Inundation Area loading
-      if ((listLayer.size() == 0) || (listLayer.contains("ABH090"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("ABH090")))
+          && (FileUtil.getNamedFileInDir(directory, "ABH090.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "ABH090.shp")
                 .getAbsolutePath(), MGCPInundationArea.class,
@@ -477,7 +518,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // built-up areas loading
-      if ((listLayer.size() == 0) || (listLayer.contains("AAL020"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAL020")))
+          && (FileUtil.getNamedFileInDir(directory, "AAL020.shp") != null)) {
         this.loadPolygonClass(
             FileUtil.getNamedFileInDir(directory, "AAL020.shp")
                 .getAbsolutePath(), MGCPBuiltUpArea.class,
@@ -487,7 +529,8 @@ public class MGCPLoader extends ShapeFileLoader {
 
       // landcover loading
       // quarry areas
-      if ((listLayer.size() == 0) || (listLayer.contains("AAA012"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAA012")))
+          && (FileUtil.getNamedFileInDir(directory, "AAA012.shp") != null)) {
         this.loadLandUseClass(
             FileUtil.getNamedFileInDir(directory, "AAA012.shp")
                 .getAbsolutePath(), MGCPLandUse.class,
@@ -497,7 +540,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // built-up areas
-      if ((listLayer.size() == 0) || (listLayer.contains("AAL020"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AAL020")))
+          && (FileUtil.getNamedFileInDir(directory, "AAL020.shp") != null)) {
         this.loadLandUseClass(
             FileUtil.getNamedFileInDir(directory, "AAL020.shp")
                 .getAbsolutePath(), MGCPLandUse.class,
@@ -507,7 +551,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // lake areas
-      if ((listLayer.size() == 0) || (listLayer.contains("ABH080"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("ABH080")))
+          && (FileUtil.getNamedFileInDir(directory, "ABH080.shp") != null)) {
         this.loadLandUseClass(
             FileUtil.getNamedFileInDir(directory, "ABH080.shp")
                 .getAbsolutePath(), MGCPLandUse.class,
@@ -517,7 +562,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // reservoir areas
-      if ((listLayer.size() == 0) || (listLayer.contains("ABH130"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("ABH130")))
+          && (FileUtil.getNamedFileInDir(directory, "ABH130.shp") != null)) {
         this.loadLandUseClass(
             FileUtil.getNamedFileInDir(directory, "ABH130.shp")
                 .getAbsolutePath(), MGCPLandUse.class,
@@ -527,7 +573,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // river areas
-      if ((listLayer.size() == 0) || (listLayer.contains("ABH140"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("ABH140")))
+          && (FileUtil.getNamedFileInDir(directory, "ABH140.shp") != null)) {
         this.loadLandUseClass(
             FileUtil.getNamedFileInDir(directory, "ABH140.shp")
                 .getAbsolutePath(), MGCPLandUse.class,
@@ -537,7 +584,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // soil surface areas
-      if ((listLayer.size() == 0) || (listLayer.contains("ADA010"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("ADA010")))
+          && (FileUtil.getNamedFileInDir(directory, "ADA010.shp") != null)) {
         this.loadLandUseClass(
             FileUtil.getNamedFileInDir(directory, "ADA010.shp")
                 .getAbsolutePath(), MGCPLandUse.class,
@@ -547,7 +595,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // crop areas
-      if ((listLayer.size() == 0) || (listLayer.contains("AEA010"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AEA010")))
+          && (FileUtil.getNamedFileInDir(directory, "AEA010.shp") != null)) {
         this.loadLandUseClass(
             FileUtil.getNamedFileInDir(directory, "AEA010.shp")
                 .getAbsolutePath(), MGCPLandUse.class,
@@ -557,7 +606,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // grassland areas
-      if ((listLayer.size() == 0) || (listLayer.contains("AEB010"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AEB010")))
+          && (FileUtil.getNamedFileInDir(directory, "AEB010.shp") != null)) {
         this.loadLandUseClass(
             FileUtil.getNamedFileInDir(directory, "AEB010.shp")
                 .getAbsolutePath(), MGCPLandUse.class,
@@ -567,7 +617,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // thicket areas
-      if ((listLayer.size() == 0) || (listLayer.contains("AEB020"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AEB020")))
+          && (FileUtil.getNamedFileInDir(directory, "AEB020.shp") != null)) {
         this.loadLandUseClass(
             FileUtil.getNamedFileInDir(directory, "AEB020.shp")
                 .getAbsolutePath(), MGCPLandUse.class,
@@ -577,7 +628,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // wooded areas
-      if ((listLayer.size() == 0) || (listLayer.contains("AEC030"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AEC030")))
+          && (FileUtil.getNamedFileInDir(directory, "AEC030.shp") != null)) {
         this.loadLandUseClass(
             FileUtil.getNamedFileInDir(directory, "AEC030.shp")
                 .getAbsolutePath(), MGCPLandUse.class,
@@ -587,7 +639,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // marsh areas
-      if ((listLayer.size() == 0) || (listLayer.contains("AED010"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AED010")))
+          && (FileUtil.getNamedFileInDir(directory, "AED010.shp") != null)) {
         this.loadLandUseClass(
             FileUtil.getNamedFileInDir(directory, "AED010.shp")
                 .getAbsolutePath(), MGCPLandUse.class,
@@ -597,7 +650,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // swamp areas
-      if ((listLayer.size() == 0) || (listLayer.contains("AED020"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("AED020")))
+          && (FileUtil.getNamedFileInDir(directory, "AED020.shp") != null)) {
         this.loadLandUseClass(
             FileUtil.getNamedFileInDir(directory, "AED020.shp")
                 .getAbsolutePath(), MGCPLandUse.class,
@@ -607,7 +661,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // wood lines
-      if ((listLayer.size() == 0) || (listLayer.contains("LEC030"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LEC030")))
+          && (FileUtil.getNamedFileInDir(directory, "LEC030.shp") != null)) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LEC030.shp")
                 .getAbsolutePath(), MGCPWoodLine.class,
@@ -616,7 +671,8 @@ public class MGCPLoader extends ShapeFileLoader {
       }
 
       // railway
-      if ((listLayer.size() == 0) || (listLayer.contains("LAN010"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LAN010")))
+          && (FileUtil.getNamedFileInDir(directory, "LAN010.shp") != null)) {
         this.loadLineStringClass(
             FileUtil.getNamedFileInDir(directory, "LAN010.shp")
                 .getAbsolutePath(), MGCPRailwayLine.class,
@@ -626,70 +682,80 @@ public class MGCPLoader extends ShapeFileLoader {
 
       // point loading
       // PowerSubstation
-      if ((listLayer.size() == 0) || (listLayer.contains("PAD030"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("PAD030")))
+          && (FileUtil.getNamedFileInDir(directory, "PAD030.shp") != null)) {
         this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAD030.shp")
             .getAbsolutePath(), MGCPPowerStationPoint.class,
             CartAGenDataSet.BUILD_PT_POP, IPowerStationPoint.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
       // Smockstack
-      if ((listLayer.size() == 0) || (listLayer.contains("PAF010"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("PAF010")))
+          && (FileUtil.getNamedFileInDir(directory, "PAF010.shp") != null)) {
         this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAF010.shp")
             .getAbsolutePath(), MGCPSmockestackPoint.class,
             CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
       // Crane
-      if ((listLayer.size() == 0) || (listLayer.contains("PAF040"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("PAF040")))
+          && (FileUtil.getNamedFileInDir(directory, "PAF040.shp") != null)) {
         this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAF040.shp")
             .getAbsolutePath(), MGCPCranePoint.class,
             CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
       // FlarePipe
-      if ((listLayer.size() == 0) || (listLayer.contains("PAF070"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("PAF070")))
+          && (FileUtil.getNamedFileInDir(directory, "PAF070.shp") != null)) {
         this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAF070.shp")
             .getAbsolutePath(), MGCPFlarePipePoint.class,
             CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
       // Settlement
-      if ((listLayer.size() == 0) || (listLayer.contains("PAL105"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("PAL105")))
+          && (FileUtil.getNamedFileInDir(directory, "PAL105.shp") != null)) {
         this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAL105.shp")
             .getAbsolutePath(), MGCPSettlementPoint.class,
             CartAGenDataSet.BUILD_PT_POP, IBuildPoint.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
       // Non-Communication Tower Point
-      if ((listLayer.size() == 0) || (listLayer.contains("PAL240"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("PAL240")))
+          && (FileUtil.getNamedFileInDir(directory, "PAL240.shp") != null)) {
         this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAL240.shp")
             .getAbsolutePath(), MGCPNonCommunicationTowerPoint.class,
             CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
       // Control Tower Point
-      if ((listLayer.size() == 0) || (listLayer.contains("PAQ060"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("PAQ060")))
+          && (FileUtil.getNamedFileInDir(directory, "PAQ060.shp") != null)) {
         this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAQ060.shp")
             .getAbsolutePath(), MGCPControlTowerPoint.class,
             CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
       // Communication Station Point
-      if ((listLayer.size() == 0) || (listLayer.contains("PAT080"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("PAT080")))
+          && (FileUtil.getNamedFileInDir(directory, "PAT080.shp") != null)) {
         this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PAT080.shp")
             .getAbsolutePath(), MGCPCommunicationStationPoint.class,
             CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
       // Lighthouse Point
-      if ((listLayer.size() == 0) || (listLayer.contains("PBC050"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("PBC050")))
+          && (FileUtil.getNamedFileInDir(directory, "PBC050.shp") != null)) {
         this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PBC050.shp")
             .getAbsolutePath(), MGCPLighthousePoint.class,
             CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
             PeaRepDbType.MGCPPlusPlus);
       }
       // Seaplane Base Point
-      if ((listLayer.size() == 0) || (listLayer.contains("PGB065"))) {
+      if (((listLayer.size() == 0) || (listLayer.contains("LBH070")))
+          && (FileUtil.getNamedFileInDir(directory, "LBH070.shp") != null)) {
         this.loadPointClass(FileUtil.getNamedFileInDir(directory, "PGB065.shp")
             .getAbsolutePath(), MGCPSeaPlaneBasePoint.class,
             CartAGenDataSet.MISC_PT_POP, IMiscPoint.FEAT_TYPE_NAME,
@@ -733,30 +799,39 @@ public class MGCPLoader extends ShapeFileLoader {
       InstantiationException, IllegalAccessException,
       InvocationTargetException, NoSuchMethodException {
     // first load airport areas
-    loadPolygonClass(FileUtil.getNamedFileInDir(directory, "AGB005.shp")
-        .getAbsolutePath(), MGCPAirport.class,
-        CartAGenDataSet.AIRPORT_AREA_POP, IAirportArea.FEAT_TYPE_NAME,
-        PeaRepDbType.MGCPPlusPlus);
-
+    if (FileUtil.getNamedFileInDir(directory, "AGB005.shp") != null) {
+      loadPolygonClass(FileUtil.getNamedFileInDir(directory, "AGB005.shp")
+          .getAbsolutePath(), MGCPAirport.class,
+          CartAGenDataSet.AIRPORT_AREA_POP, IAirportArea.FEAT_TYPE_NAME,
+          PeaRepDbType.MGCPPlusPlus);
+    }
     // then load runways
-    loadPolygonClass(FileUtil.getNamedFileInDir(directory, "AGB055.shp")
-        .getAbsolutePath(), MGCPRunwayArea.class,
-        CartAGenDataSet.RUNWAY_AREA_POP, IRunwayArea.FEAT_TYPE_NAME,
-        PeaRepDbType.MGCPPlusPlus);
-    loadPolygonClass(FileUtil.getNamedFileInDir(directory, "AGB045.shp")
-        .getAbsolutePath(), MGCPRunwayArea.class,
-        CartAGenDataSet.RUNWAY_AREA_POP, IRunwayArea.FEAT_TYPE_NAME,
-        PeaRepDbType.MGCPPlusPlus);
+    if (FileUtil.getNamedFileInDir(directory, "AGB055.shp") != null) {
+      loadPolygonClass(FileUtil.getNamedFileInDir(directory, "AGB055.shp")
+          .getAbsolutePath(), MGCPRunwayArea.class,
+          CartAGenDataSet.RUNWAY_AREA_POP, IRunwayArea.FEAT_TYPE_NAME,
+          PeaRepDbType.MGCPPlusPlus);
+    }
+    if (FileUtil.getNamedFileInDir(directory, "AGB045.shp") != null) {
+      loadPolygonClass(FileUtil.getNamedFileInDir(directory, "AGB045.shp")
+          .getAbsolutePath(), MGCPRunwayArea.class,
+          CartAGenDataSet.RUNWAY_AREA_POP, IRunwayArea.FEAT_TYPE_NAME,
+          PeaRepDbType.MGCPPlusPlus);
+    }
 
     // then load taxiways
-    loadPolygonClass(FileUtil.getNamedFileInDir(directory, "AGB075.shp")
-        .getAbsolutePath(), MGCPTaxiwayArea.class,
-        CartAGenDataSet.RUNWAY_AREA_POP, ITaxiwayArea.FEAT_TYPE_NAME,
-        PeaRepDbType.MGCPPlusPlus);
-    loadPolygonClass(FileUtil.getNamedFileInDir(directory, "AGB015.shp")
-        .getAbsolutePath(), MGCPTaxiwayArea.class,
-        CartAGenDataSet.RUNWAY_AREA_POP, ITaxiwayArea.FEAT_TYPE_NAME,
-        PeaRepDbType.MGCPPlusPlus);
+    if (FileUtil.getNamedFileInDir(directory, "AGB075.shp") != null) {
+      loadPolygonClass(FileUtil.getNamedFileInDir(directory, "AGB075.shp")
+          .getAbsolutePath(), MGCPTaxiwayArea.class,
+          CartAGenDataSet.RUNWAY_AREA_POP, ITaxiwayArea.FEAT_TYPE_NAME,
+          PeaRepDbType.MGCPPlusPlus);
+    }
+    if (FileUtil.getNamedFileInDir(directory, "AGB015.shp") != null) {
+      loadPolygonClass(FileUtil.getNamedFileInDir(directory, "AGB015.shp")
+          .getAbsolutePath(), MGCPTaxiwayArea.class,
+          CartAGenDataSet.RUNWAY_AREA_POP, ITaxiwayArea.FEAT_TYPE_NAME,
+          PeaRepDbType.MGCPPlusPlus);
+    }
 
     // then load helipads
     // TODO

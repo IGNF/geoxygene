@@ -73,6 +73,7 @@ public class MGCPPipeLine extends MGCPFeature implements IElectricityLine {
     this.src_date = (String) attributes.get("src_date");
     this.ace = (String) attributes.get("ace");
     this.ale = (String) attributes.get("ale");
+    this.setAttributeMap(null);
   }
 
   private void setGeoxObj(ArcReseau arcReseau) {

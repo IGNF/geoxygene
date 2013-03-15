@@ -7,33 +7,35 @@
  * 
  * @copyright IGN
  ******************************************************************************/
-package fr.ign.cogit.cartagen.pearep.mgcp;
+package fr.ign.cogit.cartagen.pearep.mgcp.building;
 
 import java.util.HashMap;
 
 import org.hibernate.annotations.Type;
 
-import fr.ign.cogit.cartagen.core.genericschema.misc.IBoundedArea;
+import fr.ign.cogit.cartagen.core.genericschema.urban.IBuildArea;
+import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFeature;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.AutreConstruction;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.AutreConstructionImpl;
 
-public class MGCPRailwayYard extends MGCPFeature implements IBoundedArea {
+public class MGCPFortification extends MGCPFeature implements IBuildArea {
 
   private AutreConstruction geoxObj;
 
   // VMAP attributes
-  private String ace, ale, cpyrt_note, ctl, nam, nfi, nfn, src_date, src_info,
-      tier_note, txt, uid, upd_date, upd_info;
-  private long acc, ace_eval, ale_eval, fun, src_name, upd_name, zval_type;
+  private String ace, ale, cpyrt_note, hgt, nam, nfi, nfn, src_date, src_info,
+      tier_note, txt, uid, upd_date, upd_info, wid;
+  private long acc, ace_eval, ale_eval, fun, smc, src_name, upd_name,
+      zval_type;
 
   /**
    * @param type
    */
-  public MGCPRailwayYard(IPolygon polygon, HashMap<String, Object> attributes,
-      PeaRepDbType type) {
+  public MGCPFortification(IPolygon polygon,
+      HashMap<String, Object> attributes, PeaRepDbType type) {
     super();
     this.geoxObj = new AutreConstructionImpl(polygon);
     this.setInitialGeom(polygon);
@@ -44,6 +46,7 @@ public class MGCPRailwayYard extends MGCPFeature implements IBoundedArea {
     this.ace_eval = getLongAttribute("ace_eval");
     this.ale_eval = getLongAttribute("ale_eval");
     this.fun = getLongAttribute("fun");
+    this.smc = getLongAttribute("smc");
     this.src_name = getLongAttribute("src_name");
     this.upd_name = getLongAttribute("upd_name");
     this.zval_type = getLongAttribute("zval_type");
@@ -51,10 +54,11 @@ public class MGCPRailwayYard extends MGCPFeature implements IBoundedArea {
     this.ace = (String) attributes.get("ace");
     this.ale = (String) attributes.get("ale");
     this.cpyrt_note = (String) attributes.get("cpyrt_note");
-    this.ctl = (String) attributes.get("ctl");
     this.nam = (String) attributes.get("nam");
     this.nfi = (String) attributes.get("nfi");
     this.nfn = (String) attributes.get("nfn");
+    this.hgt = (String) attributes.get("hgt");
+
     this.src_date = (String) attributes.get("src_date");
     this.src_info = (String) attributes.get("src_info");
     this.tier_note = (String) attributes.get("tier_note");
@@ -62,6 +66,8 @@ public class MGCPRailwayYard extends MGCPFeature implements IBoundedArea {
     this.uid = (String) attributes.get("uid");
     this.upd_date = (String) attributes.get("upd_date");
     this.upd_info = (String) attributes.get("upd_info");
+    this.wid = (String) attributes.get("wid");
+    this.setAttributeMap(null);
   }
 
   @Override
@@ -73,22 +79,6 @@ public class MGCPRailwayYard extends MGCPFeature implements IBoundedArea {
   @Type(type = "fr.ign.cogit.cartagen.software.interfaceCartagen.hibernate.GeOxygeneGeometryUserType")
   public IPolygon getGeom() {
     return (IPolygon) super.getGeom();
-  }
-
-  public String getNfi() {
-    return this.nfi;
-  }
-
-  public void setNfi(String nfi) {
-    this.nfi = nfi;
-  }
-
-  public String getNfn() {
-    return this.nfn;
-  }
-
-  public void setNfn(String nfn) {
-    this.nfn = nfn;
   }
 
   public long getAcc() {
@@ -232,12 +222,36 @@ public class MGCPRailwayYard extends MGCPFeature implements IBoundedArea {
     this.zval_type = zval_type;
   }
 
-  public String getCtl() {
-    return ctl;
+  public String getHgt() {
+    return hgt;
   }
 
-  public void setCtl(String ctl) {
-    this.ctl = ctl;
+  public void setHgt(String hgt) {
+    this.hgt = hgt;
+  }
+
+  public String getNfi() {
+    return nfi;
+  }
+
+  public void setNfi(String nfi) {
+    this.nfi = nfi;
+  }
+
+  public String getNfn() {
+    return nfn;
+  }
+
+  public void setNfn(String nfn) {
+    this.nfn = nfn;
+  }
+
+  public String getWid() {
+    return wid;
+  }
+
+  public void setWid(String wid) {
+    this.wid = wid;
   }
 
   public long getFun() {
@@ -246,6 +260,14 @@ public class MGCPRailwayYard extends MGCPFeature implements IBoundedArea {
 
   public void setFun(long fun) {
     this.fun = fun;
+  }
+
+  public long getSmc() {
+    return smc;
+  }
+
+  public void setSmc(long smc) {
+    this.smc = smc;
   }
 
 }

@@ -69,7 +69,7 @@ public class MGCPBerthingArea extends MGCPFeature implements IBerthingArea {
     this.upd_date = (String) attributes.get("upd_date");
     this.upd_info = (String) attributes.get("upd_info");
     this.wid = (String) attributes.get("wid");
-
+    this.setAttributeMap(null);
   }
 
   @Override

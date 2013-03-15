@@ -60,6 +60,7 @@ public class MGCPBuildLine extends MGCPFeature implements IBuildLine {
       this.len = (String) attributes.get("len");
     if (attributes.containsKey("fun"))
       this.fun = getLongAttribute("fun");
+    this.setAttributeMap(null);
   }
 
   private void setGeoxObj(AutreConstruction elementIsole) {

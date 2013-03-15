@@ -70,7 +70,7 @@ public class MGCPContourLine extends MGCPFeature implements IContourLine {
    * @param type
    */
   public MGCPContourLine(ILineString line, HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      PeaRepDbType type) {
     super();
     this.geoxObj = new CourbeDeNiveauImpl(new ChampContinuImpl(),
         Integer.valueOf((String) attributes.get("zv2")), line);
@@ -85,6 +85,7 @@ public class MGCPContourLine extends MGCPFeature implements IContourLine {
     this.acc = getLongAttribute("acc");
     this.hqc = getLongAttribute("hqc");
     this.zv2 = (String) attributes.get("zv2");
+    this.setAttributeMap(null);
 
   }
 

@@ -146,6 +146,7 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
   private PeaRepGeneralisation main;
   private static String SCALE_MASTER_FILE = "ScaleMaster.xml";
   private static String PARAMETER_FILE = "PeaRepParameters.xml";
+  private static String THEMES_FILE = "ScaleMasterThemes.xml";
   private static String VMAP0_DATASET = "VMAP0";
   private static String VMAP1_DATASET = "VMAP1";
   private static String VMAP2i_DATASET = "VMAP2i";
@@ -197,14 +198,17 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
           .getPath().substring(1)).getParent();
       String pathScale = jarPath + "\\" + GeneralisationTask.SCALE_MASTER_FILE;
       String pathParams = jarPath + "\\" + GeneralisationTask.PARAMETER_FILE;
+      String pathThemes = jarPath + "\\" + GeneralisationTask.THEMES_FILE;
 
       // JOptionPane.showMessageDialog(null, jarPath);
 
       File scaleMasterXml = new File(pathScale);
       File parameterXml = new File(pathParams);
+      File themesFile = new File(pathThemes);
       ScaleMasterScheduler scheduler = null;
       try {
-        scheduler = new ScaleMasterScheduler(scaleMasterXml, parameterXml);
+        scheduler = new ScaleMasterScheduler(scaleMasterXml, parameterXml,
+            themesFile);
       } catch (DOMException e) {
         GeneralisationTask.logger.severe("Problem in creating the scheduler");
         e.printStackTrace();

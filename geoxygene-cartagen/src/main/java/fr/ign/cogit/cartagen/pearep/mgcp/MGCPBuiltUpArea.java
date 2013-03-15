@@ -36,7 +36,7 @@ public class MGCPBuiltUpArea extends MGCPFeature implements ISimpleLandUseArea {
    * @param type
    */
   public MGCPBuiltUpArea(IPolygon poly, HashMap<String, Object> attributes,
-      @SuppressWarnings("unused") PeaRepDbType type) {
+      PeaRepDbType type) {
     this(poly);
     this.setAttributeMap(attributes);//
 
@@ -54,7 +54,7 @@ public class MGCPBuiltUpArea extends MGCPFeature implements ISimpleLandUseArea {
     this.ppt = getLongAttribute("ppt");
     this.smc = getLongAttribute("smc");
     this.ord = getLongAttribute("ord");
-
+    this.setAttributeMap(null);
   }
 
   @Override
