@@ -1,4 +1,4 @@
-package fr.ign.cogit.geoxygene.example.appariement.data;;
+package fr.ign.cogit.geoxygene.example.appariement.data;
 
 /**
  * 

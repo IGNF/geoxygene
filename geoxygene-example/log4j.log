@@ -1,0 +1,66 @@
+19:12:45,074 TRACE (RenderingManager.java:run:133) - 0 runnables in the queue
+19:12:45,074 TRACE (SelectionRenderer.java:run:389) - Selection Renderer finished
+19:12:45,074 TRACE (RenderingManager.java:repaint:321) - 0 renderers
+19:12:45,074 TRACE (RenderingManager.java:repaint:347) - Repaint
+19:12:45,136 TRACE (RenderingManager.java:run:126) - 
+19:12:45,136 TRACE (RenderingManager.java:run:133) - 0 runnables in the queue
+19:12:45,136 TRACE (RenderingManager.java:run:150) - Deamon thread finished
+19:12:45,136 TRACE (RenderingManager.java:run:133) - 0 runnables in the queue
+19:12:45,136 TRACE (SelectionRenderer.java:run:389) - Selection Renderer finished
+19:12:45,136 TRACE (RenderingManager.java:repaint:321) - 0 renderers
+19:12:45,136 TRACE (RenderingManager.java:repaint:347) - Repaint
+19:12:45,152 TRACE (LayerViewPanel.java:paintComponent:187) - paintComponent
+19:12:45,183 TRACE (LayerViewPanel.java:paintComponent:187) - paintComponent
+19:12:46,899  INFO (TestAppariement.java:actionPerformed:65) - On charge le réseau de référence (topo)
+19:12:46,915 TRACE (RenderingManager.java:run:133) - 0 runnables in the queue
+19:12:46,915 TRACE (SelectionRenderer.java:run:389) - Selection Renderer finished
+19:12:46,915 TRACE (RenderingManager.java:repaint:321) - 0 renderers
+19:12:46,915 TRACE (RenderingManager.java:repaint:347) - Repaint
+19:12:46,916 TRACE (RenderingManager.java:run:126) - 
+19:12:46,916 TRACE (RenderingManager.java:run:133) - 0 runnables in the queue
+19:12:46,916 TRACE (RenderingManager.java:run:150) - Deamon thread finished
+19:12:46,916 TRACE (RenderingManager.java:run:133) - 0 runnables in the queue
+19:12:46,916 TRACE (SelectionRenderer.java:run:389) - Selection Renderer finished
+19:12:46,916 TRACE (RenderingManager.java:repaint:321) - 0 renderers
+19:12:46,916 TRACE (RenderingManager.java:repaint:347) - Repaint
+19:12:47,744 TRACE (RenderingManager.java:run:126) - 
+19:12:47,744 TRACE (RenderingManager.java:run:133) - 0 runnables in the queue
+19:12:47,744 TRACE (RenderingManager.java:run:150) - Deamon thread finished
+19:12:47,744 TRACE (RenderingManager.java:run:133) - 1 runnables in the queue
+19:12:47,744 TRACE (RenderingManager.java:run:133) - 0 runnables in the queue
+19:12:47,744 TRACE (SelectionRenderer.java:run:389) - Selection Renderer finished
+19:12:47,744 TRACE (RenderingManager.java:repaint:321) - 0 renderers
+19:12:47,744 TRACE (RenderingManager.java:repaint:347) - Repaint
+19:12:47,775 TRACE (RenderingManager.java:run:126) - 
+19:12:47,775 TRACE (RenderingManager.java:run:133) - 0 runnables in the queue
+19:12:47,775 TRACE (RenderingManager.java:run:150) - Deamon thread finished
+19:12:47,775 TRACE (RenderingManager.java:run:133) - 0 runnables in the queue
+19:12:47,775 TRACE (SelectionRenderer.java:run:389) - Selection Renderer finished
+19:12:47,775 TRACE (RenderingManager.java:repaint:321) - 0 renderers
+19:12:47,775 TRACE (RenderingManager.java:repaint:347) - Repaint
+19:12:47,806 TRACE (RenderingManager.java:run:126) - 
+19:12:47,806 TRACE (RenderingManager.java:run:133) - 0 runnables in the queue
+19:12:47,806 TRACE (RenderingManager.java:run:150) - Deamon thread finished
+19:12:47,806 TRACE (RenderingManager.java:run:133) - 1 runnables in the queue
+19:12:47,806 TRACE (LayerViewPanel.java:paintComponent:187) - paintComponent
+19:12:47,822 TRACE (LayerRenderer.java:run:305) - Renderer Carto route finished
+19:12:47,822 TRACE (RenderingManager.java:repaint:321) - 1 renderers
+19:12:47,822 TRACE (RenderingManager.java:run:133) - 0 runnables in the queue
+19:12:47,822 TRACE (SelectionRenderer.java:run:389) - Selection Renderer finished
+19:12:47,822 TRACE (RenderingManager.java:repaint:321) - 1 renderers
+19:12:47,822 TRACE (RenderingManager.java:repaint:347) - Repaint
+19:12:47,900 TRACE (LayerViewPanel.java:paintComponent:187) - paintComponent
+19:12:47,931 TRACE (LayerRenderer.java:run:305) - Renderer Topo route finished
+19:12:47,931 TRACE (RenderingManager.java:repaint:321) - 1 renderers
+19:12:47,931 TRACE (RenderingManager.java:run:133) - 0 runnables in the queue
+19:12:47,931 TRACE (SelectionRenderer.java:run:389) - Selection Renderer finished
+19:12:47,931 TRACE (RenderingManager.java:repaint:321) - 1 renderers
+19:12:47,931 TRACE (RenderingManager.java:repaint:347) - Repaint
+19:12:50,147 TRACE (RenderingManager.java:run:133) - 0 runnables in the queue
+19:12:50,147 TRACE (RenderingManager.java:run:150) - Deamon thread finished
+19:12:52,831 TRACE (RenderingManager.java:run:133) - 0 runnables in the queue
+19:12:52,831 TRACE (RenderingManager.java:run:150) - Deamon thread finished
+19:12:52,940 TRACE (RenderingManager.java:run:133) - 0 runnables in the queue
+19:12:52,940 TRACE (RenderingManager.java:run:150) - Deamon thread finished
+19:12:55,592  INFO (StyleEditionFrame.java:createTextSymbolizer:419) - create text symbolizer
+19:13:04,861 TRACE (LayerViewPanel.java:paintComponent:187) - paintComponent

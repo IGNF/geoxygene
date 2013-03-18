@@ -32,6 +32,8 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
 import fr.ign.cogit.geoxygene.spatial.geomroot.GM_Object;
 
+// import fr.ign.cogit.geoxygene.style.Layer;
+
 /**
  * Mon premier test sur un appariement d'un reseau topo et d'un reseau carto d'un canton du 68
  * @author MDVan-Damme
@@ -73,8 +75,9 @@ public class TestAppariement extends GeOxygeneApplication {
              viewport.getLayerViewPanels().add(p2.getLayerViewPanel());
              
              // Paramètres par défaut
-             ParametresApp param = new ParametresApp();
-             /*param.populationsArcs1.add(popRef);
+             /* ParametresApp param = new ParametresApp();
+             
+             param.populationsArcs1.add(popRef);
              param.populationsArcs2.add(popComp);
              param.topologieFusionArcsDoubles1 = true;
              param.topologieFusionArcsDoubles2 = true;
@@ -97,11 +100,11 @@ public class TestAppariement extends GeOxygeneApplication {
              param.debugTirets = false;
              param.debugBilanSurObjetsGeo = false;
              param.varianteRedecoupageArcsNonApparies = true;
-             param.debugAffichageCommentaires = 2;*/
+             param.debugAffichageCommentaires = 2;
              
              // Appariement
              List<ReseauApp> reseaux = new ArrayList<ReseauApp>();
-             EnsembleDeLiens liens = AppariementIO.appariementDeJeuxGeo(param, reseaux);
+             EnsembleDeLiens liens = AppariementIO.appariementDeJeuxGeo(param, reseaux); */
            
          }
          
@@ -148,7 +151,7 @@ public class TestAppariement extends GeOxygeneApplication {
         pop.setFeatureType(ft);
         cartoframe.getDataSet().addPopulation(pop);
         cartoframe.addFeatureCollection(pop, pop.getNom(), null);
-        
+
     }
 
     
