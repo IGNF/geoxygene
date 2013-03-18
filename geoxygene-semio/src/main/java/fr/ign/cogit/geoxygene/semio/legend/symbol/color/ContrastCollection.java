@@ -71,7 +71,8 @@ public class ContrastCollection {
 		this.nbContrasts = contrasts.size();
 	}
 
-	@XmlElement(name = "NbContrasts")
+	@SuppressWarnings("unused")
+    @XmlElement(name = "NbContrasts")
 	private int nbContrasts;
 	
 	public int getNbContrasts(){
