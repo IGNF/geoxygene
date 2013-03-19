@@ -401,9 +401,9 @@ public class LienReseaux extends Lien {
    * concerné par un simple trait.
    */
   private static IGeometry creeGeometrieLienSimple(IFeature obj1, IFeature obj2) {
-    if (LienReseaux.logger.isDebugEnabled()) {
+    /*if (LienReseaux.logger.isDebugEnabled()) {
       LienReseaux.logger.debug(obj1 + " - " + obj2); //$NON-NLS-1$		
-    }
+    }*/
     List<IDirectPosition> points = new ArrayList<IDirectPosition>();
     IDirectPosition DP2 = null;
     if (obj2.getGeom() instanceof IPoint) {
@@ -425,9 +425,9 @@ public class LienReseaux extends Lien {
       points.add(Operateurs.projection(DP2, ligne1));
     }
     ILineString ligne = new GM_LineString(points);
-    if (LienReseaux.logger.isDebugEnabled()) {
+    /*if (LienReseaux.logger.isDebugEnabled()) {
       LienReseaux.logger.debug(ligne);
-    }
+    }*/
     return ligne;
   }
 

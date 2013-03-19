@@ -13,8 +13,8 @@
 */
 package fr.ign.cogit.geoxygene.wps.contrib.datamatching;
 
-import java.util.ArrayList;
-import java.util.List;
+// import java.util.ArrayList;
+// import java.util.List;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -32,14 +32,14 @@ import org.geotools.process.factory.DescribeResult;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.NetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElement;
+// import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
+// import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElement;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultatAppariement;
 
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
+// import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresAppData;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
@@ -130,14 +130,13 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
 
     try {
 
-      List<ReseauApp> reseaux = new ArrayList<ReseauApp>();
-
       LOGGER.info("Start network data matching");
-      ResultatAppariement resultatAppariement = AppariementIO.networkDataMatching(param, reseaux);
+      ResultatAppariement resultatAppariement = NetworkDataMatching.networkDataMatching(param);
       LOGGER.info("End network data matching");
 
       LOGGER.info("Start recalage");
-      CarteTopo reseauRecale = Recalage.recalage(reseaux.get(0), reseaux.get(1), resultatAppariement.getLinkDataSet());
+      CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseauRef(), 
+          resultatAppariement.getReseauComp(), resultatAppariement.getLinkDataSet());
       LOGGER.info("End recalage");
 
       // Get links

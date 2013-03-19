@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.geotools.data.simple.SimpleFeatureCollection;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 
 /**
  * Network data matching results.
@@ -46,9 +47,9 @@ import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 @XmlRootElement(name = "NetworkDataMatchingResult")
 public class ResultatAppariement {
   
-  /** Carte topo 1. */
-  
-  /** Carte topo 2. */
+  /** Cartes topo */
+  private ReseauApp reseauRef;
+  private ReseauApp reseauComp;
   
   /** EnsembleDeLiens. */
   private EnsembleDeLiens linkDataSet;
@@ -126,6 +127,24 @@ public class ResultatAppariement {
    */
   public void setNetworkMatched(SimpleFeatureCollection sfc) {
     networkMatched = sfc;
+  }
+  
+  
+  
+  public void setReseauRef(ReseauApp res) {
+    reseauRef = res;
+  }
+  
+  public ReseauApp getReseauRef() {
+    return reseauRef;
+  }
+  
+  public void setReseauComp(ReseauApp res) {
+    reseauComp = res;
+  }
+  
+  public ReseauApp getReseauComp() {
+    return reseauComp;
   }
 
 }

@@ -75,7 +75,7 @@ public class ResultNetworkElement {
     correctMatchingNetworkElementNumber = 0;
     noMatchingNetworkElementNumber = 0;
     doubtfulNetworkElementNumber = 0;
-    networkElement = NetworkElementInterface.NONE;
+    networkElement = ResultNetworkElementInterface.NONE;
   }
   
   /**

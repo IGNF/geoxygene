@@ -4,7 +4,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.NetworkElementInterface;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElementInterface;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElement;
 
@@ -19,7 +19,7 @@ public class TestParser {
       m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     
       ResultNetwork resnet = new ResultNetwork();
-      ResultNetworkElement res = new ResultNetworkElement(NetworkElementInterface.NONE);
+      ResultNetworkElement res = new ResultNetworkElement(ResultNetworkElementInterface.NONE);
       res.setTotalNetworkElementNumber(-10);
       res.setCorrectMatchingNetworkElementNumber(-100);
       res.setNoMatchingNetworkElementNumber(-1000);

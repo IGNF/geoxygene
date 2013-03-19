@@ -69,10 +69,10 @@ public class ResultNetwork {
    * Default constructor.
    */
   public ResultNetwork () {
-    edgesEvaluationRef = new ResultNetworkElement(NetworkElementInterface.EDGES_LESS_DETAILED_NETWORK);
-    nodesEvaluationRef = new ResultNetworkElement(NetworkElementInterface.NODES_LESS_DETAILED_NETWORK);
-    edgesEvaluationComp = new ResultNetworkElement(NetworkElementInterface.EDGES_COMPARISON_NETWORK);
-    nodesEvaluationComp = new ResultNetworkElement(NetworkElementInterface.NODES_COMPARISON_NETWORK);
+    edgesEvaluationRef = new ResultNetworkElement(ResultNetworkElementInterface.EDGES_LESS_DETAILED_NETWORK);
+    nodesEvaluationRef = new ResultNetworkElement(ResultNetworkElementInterface.NODES_LESS_DETAILED_NETWORK);
+    edgesEvaluationComp = new ResultNetworkElement(ResultNetworkElementInterface.EDGES_COMPARISON_NETWORK);
+    nodesEvaluationComp = new ResultNetworkElement(ResultNetworkElementInterface.NODES_COMPARISON_NETWORK);
   }
   
   /**

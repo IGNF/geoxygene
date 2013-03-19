@@ -34,7 +34,7 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.contrib.I18N;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.NetworkElementInterface;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElementInterface;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultatAppariement;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElement;
@@ -1887,7 +1887,7 @@ public abstract class Appariement {
           + "%long)"); //$NON-NLS-1$
     }
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
-    ResultNetworkElement resNetwork2Edges = new ResultNetworkElement(NetworkElementInterface.EDGES_COMPARISON_NETWORK);
+    ResultNetworkElement resNetwork2Edges = new ResultNetworkElement(ResultNetworkElementInterface.EDGES_COMPARISON_NETWORK);
     resNetwork2Edges.setTotalNetworkElementNumber(nb);
     resNetwork2Edges.setCorrectMatchingNetworkElementNumber(nbOK);
     resNetwork2Edges.setNoMatchingNetworkElementNumber(nbSansCorresp);
@@ -1978,7 +1978,7 @@ public abstract class Appariement {
           + "%)"); //$NON-NLS-1$
     }
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
-    ResultNetworkElement resNetwork2Nodes = new ResultNetworkElement(NetworkElementInterface.NODES_COMPARISON_NETWORK);
+    ResultNetworkElement resNetwork2Nodes = new ResultNetworkElement(ResultNetworkElementInterface.NODES_COMPARISON_NETWORK);
     resNetwork2Nodes.setTotalNetworkElementNumber(nb);
     resNetwork2Nodes.setCorrectMatchingNetworkElementNumber(nbOK);
     resNetwork2Nodes.setNoMatchingNetworkElementNumber(nbSansCorresp);
@@ -2045,7 +2045,7 @@ public abstract class Appariement {
           + "%long)"); //$NON-NLS-1$
     }
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
-    ResultNetworkElement resNetwork1Edges = new ResultNetworkElement(NetworkElementInterface.EDGES_LESS_DETAILED_NETWORK);
+    ResultNetworkElement resNetwork1Edges = new ResultNetworkElement(ResultNetworkElementInterface.EDGES_LESS_DETAILED_NETWORK);
     resNetwork1Edges.setTotalNetworkElementNumber(nb);
     resNetwork1Edges.setCorrectMatchingNetworkElementNumber(nbOK);
     resNetwork1Edges.setNoMatchingNetworkElementNumber(nbSansCorresp);
@@ -2100,7 +2100,7 @@ public abstract class Appariement {
           + (nbSansCorresp * Appariement.HUNDRED / nb) + "%)"); //$NON-NLS-1$
     }
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
-    ResultNetworkElement resNetwork1Nodes = new ResultNetworkElement(NetworkElementInterface.NODES_LESS_DETAILED_NETWORK);
+    ResultNetworkElement resNetwork1Nodes = new ResultNetworkElement(ResultNetworkElementInterface.NODES_LESS_DETAILED_NETWORK);
     resNetwork1Nodes.setTotalNetworkElementNumber(nb);
     resNetwork1Nodes.setCorrectMatchingNetworkElementNumber(nbOK);
     resNetwork1Nodes.setNoMatchingNetworkElementNumber(nbSansCorresp);

@@ -2,7 +2,7 @@ package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.NetworkElementInterface;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElementInterface;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElement;
 
 /**
@@ -14,7 +14,7 @@ public class EvaluationAdapter extends XmlAdapter<String, ResultNetworkElement> 
    * TODO : implementation
    */
   public ResultNetworkElement unmarshal(String toto) throws Exception {
-    ResultNetworkElement res = new ResultNetworkElement(NetworkElementInterface.NONE);
+    ResultNetworkElement res = new ResultNetworkElement(ResultNetworkElementInterface.NONE);
     res.setTotalNetworkElementNumber(-1);
     res.setCorrectMatchingNetworkElementNumber(-1);
     res.setNoMatchingNetworkElementNumber(-1);

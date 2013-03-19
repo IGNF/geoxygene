@@ -922,7 +922,7 @@ public class CarteTopo extends DataSet {
     Set<Arc> arcsAEnlever = new HashSet<Arc>();
     for (int i = 0; i < arcs.size() - 1; i++) {
       Arc arci = arcs.get(i);
-      CarteTopo.logger.debug("Handling Edge " + i + " / " + arcs.size() + " - " + arci);
+      // CarteTopo.logger.debug("Handling Edge " + i + " / " + arcs.size() + " - " + arci);
       if (arci.getNoeudIni() == null || arci.getNoeudFin() == null) {
         continue;// soit la topologie est mal instanciée, soit on a décidé de supprimer l'arc
       }
@@ -1081,11 +1081,11 @@ public class CarteTopo extends DataSet {
     for (int indexArc = 0; indexArc < this.getPopArcs().size(); indexArc++) {
       Arc currentEdge = this.getPopArcs().get(indexArc);
       if (CarteTopo.logger.isDebugEnabled()) {
-        CarteTopo.logger.debug(indexArc + " / " + (this.getPopArcs().size() - 1));
-        CarteTopo.logger.debug(I18N.getString("CarteTopo.Handling") + currentEdge); //$NON-NLS-1$
+        //CarteTopo.logger.debug(indexArc + " / " + (this.getPopArcs().size() - 1));
+        //CarteTopo.logger.debug(I18N.getString("CarteTopo.Handling") + currentEdge); //$NON-NLS-1$
       }
       if (arcsEnleves.contains(currentEdge) || dejaTraites.contains(currentEdge)) {
-        CarteTopo.logger.trace("Already handled or removed");
+        //CarteTopo.logger.trace("Already handled or removed");
         // si on a déjà traité l'arc ou qu'on l'a déjà découpé, passer au suivant
         continue;
       }

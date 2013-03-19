@@ -247,168 +247,7 @@ public final class AppariementIO {
     return resultatAppariement.getLinkDataSet();
   }
   
-  /**
-   * Appariement de réseaux.
-   * @param paramApp, les paramètres de l'appariement
-   * @param cartesTopo
-   * @return
-   */
-  public static ResultatAppariement networkDataMatching(final ParametresApp paramApp, final List<ReseauApp> cartesTopo) {
-    
-    ResultatAppariement resultatAppariement = new ResultatAppariement();
-    
-    if (AppariementIO.LOGGER.isEnabledFor(Level.INFO)) {
-      AppariementIO.LOGGER.info("");
-      AppariementIO.LOGGER.info("NETWORK MATCHING START");
-      AppariementIO.LOGGER.info("1 = least detailled data; 2 = most detailled data");
-      AppariementIO.LOGGER.info("");
-    }
-    
-    // //////////////////////////////////////////////
-    // STRUCTURATION
-    if (AppariementIO.LOGGER.isInfoEnabled()) {
-      AppariementIO.LOGGER
-          .info(I18N.getString("AppariementIO.DataStructuring")); //$NON-NLS-1$
-      AppariementIO.LOGGER.info(I18N
-          .getString("AppariementIO.TopologicalStructuing")); //$NON-NLS-1$
-    }
-    if (AppariementIO.LOGGER.isDebugEnabled()) {
-      AppariementIO.LOGGER.debug(I18N
-          .getString("AppariementIO.StructuringStart" //$NON-NLS-1$
-          ) + (new Time(System.currentTimeMillis())).toString());
-      AppariementIO.LOGGER.debug(I18N
-          .getString("AppariementIO.Network1Creation" //$NON-NLS-1$
-          ) + (new Time(System.currentTimeMillis())).toString());
-    }
-    ReseauApp reseauRef = AppariementIO.importData(paramApp, true);
-    if (cartesTopo != null) {
-      cartesTopo.add(reseauRef);
-    }
-    if (AppariementIO.LOGGER.isDebugEnabled()) {
-      AppariementIO.LOGGER.debug(I18N
-          .getString("AppariementIO.Network2Creation" //$NON-NLS-1$
-          ) + (new Time(System.currentTimeMillis())).toString());
-    }
-    ReseauApp reseauComp = AppariementIO.importData(paramApp, false);
-    if (cartesTopo != null) {
-      cartesTopo.add(reseauComp);
-    }
-
-    // NB: l'ordre dans lequel les projections sont faites n'est pas neutre
-    if (paramApp.projeteNoeuds2SurReseau1) {
-      if (AppariementIO.LOGGER.isDebugEnabled()) {
-        AppariementIO.LOGGER.debug(I18N
-            .getString("AppariementIO.ProjectionOfNetwork2OnNetwork1" //$NON-NLS-1$
-            ) + (new Time(System.currentTimeMillis())).toString());
-      }
-      reseauRef.projete(reseauComp,
-          paramApp.projeteNoeuds2SurReseau1DistanceNoeudArc,
-          paramApp.projeteNoeuds2SurReseau1DistanceProjectionNoeud,
-          paramApp.projeteNoeuds2SurReseau1ImpassesSeulement);
-    }
-    if (paramApp.projeteNoeuds1SurReseau2) {
-      if (AppariementIO.LOGGER.isDebugEnabled()) {
-        AppariementIO.LOGGER.debug(I18N
-            .getString("AppariementIO.ProjectionOfNetwork1OnNetwork2" //$NON-NLS-1$
-            ) + (new Time(System.currentTimeMillis())).toString());
-      }
-      reseauComp.projete(reseauRef,
-          paramApp.projeteNoeuds1SurReseau2DistanceNoeudArc,
-          paramApp.projeteNoeuds1SurReseau2DistanceProjectionNoeud,
-          paramApp.projeteNoeuds1SurReseau2ImpassesSeulement);
-    }
-    if (AppariementIO.LOGGER.isDebugEnabled()) {
-      AppariementIO.LOGGER.debug(I18N
-          .getString("AppariementIO.AttributeFilling" //$NON-NLS-1$
-          ) + (new Time(System.currentTimeMillis())).toString());
-    }
-    reseauRef.instancieAttributsNuls(paramApp);
-    reseauComp.initialisePoids();
-    if (AppariementIO.LOGGER.isInfoEnabled()) {
-      AppariementIO.LOGGER.info(I18N
-          .getString("AppariementIO.StructuringFinished")); //$NON-NLS-1$
-      AppariementIO.LOGGER.info(I18N.getString("AppariementIO.Network1") //$NON-NLS-1$
-          + reseauRef.getPopArcs().size()
-          + I18N.getString("AppariementIO.Edges") //$NON-NLS-1$
-          + reseauRef.getPopNoeuds().size()
-          + I18N.getString("AppariementIO.Nodes")); //$NON-NLS-1$
-      AppariementIO.LOGGER.info(I18N.getString("AppariementIO.Network2") //$NON-NLS-1$
-          + reseauComp.getPopArcs().size()
-          + I18N.getString("AppariementIO.Edges") //$NON-NLS-1$
-          + reseauComp.getPopNoeuds().size()
-          + I18N.getString("AppariementIO.Nodes")); //$NON-NLS-1$
-    }
-    if (AppariementIO.LOGGER.isDebugEnabled()) {
-      AppariementIO.LOGGER.debug(I18N.getString("AppariementIO.StructuringEnd") //$NON-NLS-1$
-          + new Time(System.currentTimeMillis()).toString());
-    }
-    
-    // --------------------------------------------------------------------------------------
-    // APPARIEMENT
-    // --------------------------------------------------------------------------------------
-    if (AppariementIO.LOGGER.isInfoEnabled()) {
-      AppariementIO.LOGGER.info(""); //$NON-NLS-1$
-      AppariementIO.LOGGER
-          .info(I18N.getString("AppariementIO.NetworkMatching")); //$NON-NLS-1$
-    }
-    if (AppariementIO.LOGGER.isDebugEnabled()) {
-      AppariementIO.LOGGER.debug(I18N
-          .getString("AppariementIO.NetworkMatchingStart") //$NON-NLS-1$
-          + new Time(System.currentTimeMillis()).toString());
-    }
-    resultatAppariement = Appariement.appariementReseaux(reseauRef, reseauComp, paramApp);
-    if (AppariementIO.LOGGER.isInfoEnabled()) {
-      AppariementIO.LOGGER.info(I18N
-          .getString("AppariementIO.NetworkMatchingFinished")); //$NON-NLS-1$
-      AppariementIO.LOGGER.info("  " + resultatAppariement.getLinkDataSet().size() + I18N.getString(//$NON-NLS-1$
-          "AppariementIO.MatchingLinksFound")); //$NON-NLS-1$
-    }
-    if (AppariementIO.LOGGER.isDebugEnabled()) {
-      AppariementIO.LOGGER.debug(I18N
-          .getString("AppariementIO.NetworkMatchingEnd") //$NON-NLS-1$
-          + new Time(System.currentTimeMillis()).toString());
-    }
-    
-    // --------------------------------------------------------------------------------------
-    // EXPORT
-    // --------------------------------------------------------------------------------------
-    if (AppariementIO.LOGGER.isInfoEnabled()) {
-      AppariementIO.LOGGER.info(""); //$NON-NLS-1$
-      AppariementIO.LOGGER.info(I18N.getString("AppariementIO.Conclusion")); //$NON-NLS-1$
-    }
-    if (AppariementIO.LOGGER.isDebugEnabled()) {
-      AppariementIO.LOGGER.debug(I18N.getString("AppariementIO.ExportStart") //$NON-NLS-1$
-          + new Time(System.currentTimeMillis()).toString());
-    }
-    if (paramApp.debugBilanSurObjetsGeo) {
-      // FIXME : perturbations liées au nouveau output non maitrisées ici.
-      if (AppariementIO.LOGGER.isDebugEnabled()) {
-        AppariementIO.LOGGER.debug(I18N
-            .getString("AppariementIO.LinkTransformation") //$NON-NLS-1$
-            + new Time(System.currentTimeMillis()).toString());
-      }
-      EnsembleDeLiens liensGeneriques = LienReseaux.exportLiensAppariement(
-          resultatAppariement.getLinkDataSet(), reseauRef, paramApp);
-      Appariement.nettoyageLiens(reseauRef, reseauComp);
-      if (AppariementIO.LOGGER.isInfoEnabled()) {
-        AppariementIO.LOGGER.info(I18N.getString("AppariementIO.MatchingEnd")); //$NON-NLS-1$
-      }
-      resultatAppariement.setLinkDataSet(liensGeneriques);
-      // FIXME : stats dans ce cas sont-elles les mêmes ?
-      return resultatAppariement;
-    }
-    if (AppariementIO.LOGGER.isDebugEnabled()) {
-      AppariementIO.LOGGER.debug(I18N.getString("AppariementIO.LinkGeometry") //$NON-NLS-1$
-          + new Time(System.currentTimeMillis()).toString());
-    }
-    LienReseaux.exportAppCarteTopo(resultatAppariement.getLinkDataSet(), paramApp);
-    if (AppariementIO.LOGGER.isInfoEnabled()) {
-      AppariementIO.LOGGER.info(I18N.getString("AppariementIO.MatchingEnd")); //$NON-NLS-1$
-    }
-    
-    // return liens;
-    return resultatAppariement;
-  }
+  
   
   
 
@@ -421,7 +260,7 @@ public final class AppariementIO {
    *          réseau de comparaison
    * @return Le réseau créé
    */
-  private static ReseauApp importData(final ParametresApp paramApp,
+  public static ReseauApp importData(final ParametresApp paramApp,
       final boolean ref) {
     switch (paramApp.debugAffichageCommentaires) {
       case 0:
@@ -436,24 +275,31 @@ public final class AppariementIO {
     }
     ReseauApp reseau = null;
     if (ref) {
+      LOGGER.info(I18N.getString("AppariementIO.ReferenceNetwork"));
       reseau = new ReseauApp(I18N.getString("AppariementIO.ReferenceNetwork")); //$NON-NLS-1$
     } else {
+      LOGGER.info(I18N.getString("AppariementIO.ComparisonNetwork"));
       reseau = new ReseauApp(I18N.getString("AppariementIO.ComparisonNetwork")); //$NON-NLS-1$
     }
     IPopulation<? extends IFeature> popArcApp = reseau.getPopArcs();
     IPopulation<? extends IFeature> popNoeudApp = reseau.getPopNoeuds();
+    LOGGER.info(popArcApp.size() + " arcs");
+    LOGGER.info(popNoeudApp.size() + " noeuds");
     // /////////////////////////
     // import des arcs
     Iterator<IFeatureCollection<? extends IFeature>> itPopArcs = null;
     if (ref) {
       itPopArcs = paramApp.populationsArcs1.iterator();
+      LOGGER.info(paramApp.populationsArcs1.size() + " pops");
     } else {
       itPopArcs = paramApp.populationsArcs2.iterator();
+      LOGGER.info(paramApp.populationsArcs2.size() + " pops");
     }
     while (itPopArcs.hasNext()) {
       IFeatureCollection<? extends IFeature> popGeo = itPopArcs.next();
+      LOGGER.info(popGeo.size() + " objects");
       // import d'une population d'arcs
-      for (IFeature element : popGeo.getElements()) {
+      for (IFeature element : popGeo) {
         ArcApp arc = (ArcApp) popArcApp.nouvelElement();
         ILineString ligne = new GM_LineString((IDirectPositionList) element
             .getGeom().coord().clone());
@@ -531,6 +377,7 @@ public final class AppariementIO {
         // arc.addCorrespondant(element);
       }
     }
+//    if (true) return reseau;
     // import des noeuds
     Iterator<?> itPopNoeuds = null;
     if (ref) {

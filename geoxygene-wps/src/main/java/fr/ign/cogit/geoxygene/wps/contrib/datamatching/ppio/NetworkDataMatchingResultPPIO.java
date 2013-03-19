@@ -10,11 +10,11 @@
  */
 package fr.ign.cogit.geoxygene.wps.contrib.datamatching.ppio;
 
-import java.io.CharArrayWriter;
-import java.io.OutputStreamWriter;
+// import java.io.CharArrayWriter;
+// import java.io.OutputStreamWriter;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
+// import javax.xml.bind.JAXBContext;
+// import javax.xml.bind.Marshaller;
 
 import org.apache.log4j.Logger;
 import com.thoughtworks.xstream.XStream;
@@ -22,12 +22,12 @@ import org.xml.sax.ContentHandler;
 import org.geoserver.wps.ppio.XStreamPPIO;
 
 import com.thoughtworks.xstream.io.xml.SaxWriter;
-import com.thoughtworks.xstream.mapper.MapperWrapper;
+// import com.thoughtworks.xstream.mapper.MapperWrapper;
 // import com.thoughtworks.xstream.mapper.MapperWrapper;
 
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.NetworkElementInterface;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElement;
+// import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElementInterface;
+// import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
+// import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElement;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultatAppariement;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml.ResultatAppariementParser;
 
