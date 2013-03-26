@@ -13,7 +13,6 @@
 package fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore;
 
 import java.awt.Font;
-import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.PrinterJob;
@@ -28,10 +27,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
+import fr.ign.cogit.cartagen.software.interfacecartagen.menus.ConfigMenuComponent;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.geompool.GeomPoolFrame;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -84,14 +83,7 @@ public class GeoxygeneMenu extends JMenuBar {
   // config
   /**
      */
-  private JMenu menuConfig = new JMenu("Config");
-  /**
-     */
-  public JCheckBoxMenuItem mAntiAliasing = new JCheckBoxMenuItem("AntiAliasing");
-  /**
-     */
-  private JMenuItem mRechargerConfigurationLogger = new JMenuItem(
-      "Reload logger configuration");
+  public ConfigMenuComponent menuConfig = new ConfigMenuComponent("Config");
 
   // Geometries pool
   /**
@@ -134,8 +126,12 @@ public class GeoxygeneMenu extends JMenuBar {
     this.mVueEch.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        GeoxygeneMenu.this.getFrame().getVisuPanel().setPixelSize(
-            Legend.getSYMBOLISATI0N_SCALE() * VisuPanel.getMETERS_PER_PIXEL());
+        GeoxygeneMenu.this
+            .getFrame()
+            .getVisuPanel()
+            .setPixelSize(
+                Legend.getSYMBOLISATI0N_SCALE()
+                    * VisuPanel.getMETERS_PER_PIXEL());
         GeoxygeneMenu.this.getFrame().getVisuPanel().repaint();
       }
     });
@@ -147,8 +143,8 @@ public class GeoxygeneMenu extends JMenuBar {
     this.mVueEch6250.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        GeoxygeneMenu.this.getFrame().getVisuPanel().setPixelSize(
-            6250 * VisuPanel.getMETERS_PER_PIXEL());
+        GeoxygeneMenu.this.getFrame().getVisuPanel()
+            .setPixelSize(6250 * VisuPanel.getMETERS_PER_PIXEL());
         GeoxygeneMenu.this.getFrame().getVisuPanel().repaint();
       }
     });
@@ -158,8 +154,8 @@ public class GeoxygeneMenu extends JMenuBar {
     this.mVueEch12500.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        GeoxygeneMenu.this.getFrame().getVisuPanel().setPixelSize(
-            12500 * VisuPanel.getMETERS_PER_PIXEL());
+        GeoxygeneMenu.this.getFrame().getVisuPanel()
+            .setPixelSize(12500 * VisuPanel.getMETERS_PER_PIXEL());
         GeoxygeneMenu.this.getFrame().getVisuPanel().repaint();
       }
     });
@@ -169,8 +165,8 @@ public class GeoxygeneMenu extends JMenuBar {
     this.mVueEch25k.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        GeoxygeneMenu.this.getFrame().getVisuPanel().setPixelSize(
-            25000 * VisuPanel.getMETERS_PER_PIXEL());
+        GeoxygeneMenu.this.getFrame().getVisuPanel()
+            .setPixelSize(25000 * VisuPanel.getMETERS_PER_PIXEL());
         GeoxygeneMenu.this.getFrame().getVisuPanel().repaint();
       }
     });
@@ -180,8 +176,8 @@ public class GeoxygeneMenu extends JMenuBar {
     this.mVueEch50k.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        GeoxygeneMenu.this.getFrame().getVisuPanel().setPixelSize(
-            50000 * VisuPanel.getMETERS_PER_PIXEL());
+        GeoxygeneMenu.this.getFrame().getVisuPanel()
+            .setPixelSize(50000 * VisuPanel.getMETERS_PER_PIXEL());
         GeoxygeneMenu.this.getFrame().getVisuPanel().repaint();
       }
     });
@@ -191,8 +187,8 @@ public class GeoxygeneMenu extends JMenuBar {
     this.mVueEch100k.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        GeoxygeneMenu.this.getFrame().getVisuPanel().setPixelSize(
-            100000 * VisuPanel.getMETERS_PER_PIXEL());
+        GeoxygeneMenu.this.getFrame().getVisuPanel()
+            .setPixelSize(100000 * VisuPanel.getMETERS_PER_PIXEL());
         GeoxygeneMenu.this.getFrame().getVisuPanel().repaint();
       }
     });
@@ -216,8 +212,8 @@ public class GeoxygeneMenu extends JMenuBar {
                 printJob.print(aset);
               }
             } catch (java.security.AccessControlException ace) {
-              JOptionPane.showMessageDialog(GeoxygeneMenu.this.getFrame()
-                  .getVisuPanel(),
+              JOptionPane.showMessageDialog(
+                  GeoxygeneMenu.this.getFrame().getVisuPanel(),
                   "Impossible d'imprimer; probleme de controle d'acces: "
                       + ace.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
@@ -230,40 +226,6 @@ public class GeoxygeneMenu extends JMenuBar {
     });
     this.mImprimer.setFont(this.getFont());
     this.menuView.add(this.mImprimer);
-
-    // menu config
-
-    this.mAntiAliasing.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (GeoxygeneMenu.this.mAntiAliasing.isSelected()) {
-          // activer l'antialiasing
-          GeoxygeneMenu.this.getFrame().getVisuPanel().antiAliasing = true;
-          GeoxygeneMenu.this.getFrame().getVisuPanel().getG2D()
-              .setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                  RenderingHints.VALUE_ANTIALIAS_ON);
-        } else {
-          // desactiver l'antialiasing
-          GeoxygeneMenu.this.getFrame().getVisuPanel().antiAliasing = false;
-          GeoxygeneMenu.this.getFrame().getVisuPanel().getG2D()
-              .setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                  RenderingHints.VALUE_ANTIALIAS_OFF);
-        }
-      }
-    });
-    this.mAntiAliasing.setSelected(this.getFrame().getVisuPanel().antiAliasing);
-    this.mAntiAliasing.setFont(this.getFont());
-    this.menuConfig.add(this.mAntiAliasing);
-
-    this.mRechargerConfigurationLogger.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        GeoxygeneMenu.logger.info("Rechargement configuration log");
-        PropertyConfigurator.configure("log4j.properties");
-      }
-    });
-    this.mRechargerConfigurationLogger.setFont(this.getFont());
-    this.menuConfig.add(this.mRechargerConfigurationLogger);
 
     // geometries pool menu
     this.menuGeomPool
@@ -314,9 +276,9 @@ public class GeoxygeneMenu extends JMenuBar {
         String message = "<html><b>GéOxygène</b><br />http://oxygene-project.sourceforge.net/<br /><br />Laboratoire COGIT<br />http://recherche.ign.fr/labos/cogit<br /><br />Institut Géographique National<br />http://www.ign.fr</html>";
         String titre = "A propos de MiraGe";
         JOptionPane.showMessageDialog(null, message, titre,
-            JOptionPane.INFORMATION_MESSAGE, new ImageIcon(GeoxygeneMenu.class
-                .getResource("images/splash.png").getPath().replaceAll("%20",
-                    " ")));
+            JOptionPane.INFORMATION_MESSAGE,
+            new ImageIcon(GeoxygeneMenu.class.getResource("images/splash.png")
+                .getPath().replaceAll("%20", " ")));
       }
     });
     this.mAPropos.setFont(this.getFont());

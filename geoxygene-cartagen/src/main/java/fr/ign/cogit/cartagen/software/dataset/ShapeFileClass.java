@@ -73,8 +73,8 @@ public class ShapeFileClass implements GeographicClass {
   public void addCartAGenId() {
     try {
       ShpFiles shpf = new ShpFiles(this.path + ".shp");
-      DbaseFileReader dbr = new DbaseFileReader(shpf, true, Charset
-          .defaultCharset());
+      DbaseFileReader dbr = new DbaseFileReader(shpf, true,
+          Charset.defaultCharset());
       if (this.isIdFieldPresent(dbr.getHeader())) {
         dbr.close();
         return;

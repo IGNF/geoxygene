@@ -12,8 +12,10 @@
  */
 package fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -203,6 +205,23 @@ public class VisuPanel extends JPanel implements Runnable, Printable {
    * la couleur des objets selectionnes
    */
   private Color SELECTION_COLOR = new Color(255, 0, 0, 100);
+  private boolean transparentSelection = true;
+
+  public Color getSelectionColor() {
+    return SELECTION_COLOR;
+  }
+
+  public void setSelectionColor(Color color) {
+    SELECTION_COLOR = color;
+  }
+
+  public boolean isTransparentSelection() {
+    return transparentSelection;
+  }
+
+  public void setTransparentSelection(boolean transparentSelection) {
+    this.transparentSelection = transparentSelection;
+  }
 
   // distance en m pour la selection
   private double selectionDistance = 1;
@@ -614,7 +633,13 @@ public class VisuPanel extends JPanel implements Runnable, Printable {
         if (obj.isDeleted()) {
           continue;
         }
-        this.draw(g2, this.SELECTION_COLOR, obj.getGeom());
+        if (!this.transparentSelection) {
+          Composite defaultComp = g2.getComposite();
+          g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 1.0f));
+          this.draw(g2, this.SELECTION_COLOR, obj.getGeom());
+          g2.setComposite(defaultComp);
+        } else
+          this.draw(g2, this.SELECTION_COLOR, obj.getGeom());
       }
     }
 

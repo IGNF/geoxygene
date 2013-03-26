@@ -668,10 +668,8 @@ public class CartAGenDataSet extends DataSet {
    * Gets the network faces of the dataset
    * @return
    */
-  @SuppressWarnings("unchecked")
   public IPopulation<INetworkFace> getNetworkFaces() {
-    return (IPopulation<INetworkFace>) this.getCartagenPop(
-        CartAGenDataSet.NETWORK_FACES_POP, INetworkFace.FEAT_TYPE_NAME);
+    return this.listeFacesReseau;
   }
 
   /**

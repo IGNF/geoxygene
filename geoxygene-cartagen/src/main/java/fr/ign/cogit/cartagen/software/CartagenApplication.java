@@ -1589,7 +1589,7 @@ public class CartagenApplication {
         .setSelected(true);
 
     // antialiasing
-    CartagenApplication.cartagenApplication.getFrame().getMenu().mAntiAliasing
+    CartagenApplication.cartagenApplication.getFrame().getMenu().menuConfig.mAntiAliasing
         .setSelected(true);
     CartagenApplication.cartagenApplication.getFrame().getVisuPanel().antiAliasing = true;
 
