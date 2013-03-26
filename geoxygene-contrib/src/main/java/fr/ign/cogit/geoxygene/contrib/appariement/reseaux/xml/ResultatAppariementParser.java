@@ -19,9 +19,9 @@ import org.apache.log4j.Logger;
 import org.geotools.GML;
 import org.geotools.GML.Version;
 
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultatAppariement;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElement;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStatElement;
 
 
 /**
@@ -41,7 +41,7 @@ public class ResultatAppariementParser {
    *            L'objet résultat de l'appariement
    * @return Le XML correspondant
    */
-  public String generateXMLResponse(ResultatAppariement resultatAppariement) throws Exception {
+  public String generateXMLResponse(ResultNetworkDataMatching resultatAppariement) throws Exception {
     
     LOGGER.info("------------------------------------------------------------------------");
     LOGGER.info("Start generating resultat appariement xml response.");
@@ -56,11 +56,11 @@ public class ResultatAppariementParser {
     result.append("<NetworkDataMatchingResult>");
     
     // Stats results.
-    ResultNetwork resultatStatAppariement = resultatAppariement.getResultStat();
+    ResultNetworkStat resultatStatAppariement = resultatAppariement.getResultStat();
     
     // Edges evaluation of the less detailed network
     result.append("<EdgesEvaluationRef>");
-    ResultNetworkElement edgesEvaluationRef = resultatStatAppariement.getEdgesEvaluationRef();
+    ResultNetworkStatElement edgesEvaluationRef = resultatStatAppariement.getEdgesStatNetwork1();
     result.append("<TotalNumber>" + edgesEvaluationRef.getTotalNetworkElementNumber() + "</TotalNumber>");
     result.append("<OkNumber>" + edgesEvaluationRef.getCorrectMatchingNetworkElementNumber() + "</OkNumber>");
     result.append("<KoNumber>" + edgesEvaluationRef.getNoMatchingNetworkElementNumber() + "</KoNumber>");
@@ -69,7 +69,7 @@ public class ResultatAppariementParser {
     
     // Nodes evaluation of the less detailed network
     result.append("<NodesEvaluationRef>");
-    ResultNetworkElement nodesEvaluationRef = resultatStatAppariement.getNodesEvaluationRef();
+    ResultNetworkStatElement nodesEvaluationRef = resultatStatAppariement.getNodesEvaluationRef();
     result.append("<TotalNumber>" + nodesEvaluationRef.getTotalNetworkElementNumber() + "</TotalNumber>");
     result.append("<OkNumber>" + nodesEvaluationRef.getCorrectMatchingNetworkElementNumber() + "</OkNumber>");
     result.append("<KoNumber>" + nodesEvaluationRef.getNoMatchingNetworkElementNumber() + "</KoNumber>");
@@ -78,7 +78,7 @@ public class ResultatAppariementParser {
     
     // Edges evaluation of the less detailed network
     result.append("<EdgesEvaluationComp>");
-    ResultNetworkElement edgesEvaluationComp = resultatStatAppariement.getEdgesEvaluationComp();
+    ResultNetworkStatElement edgesEvaluationComp = resultatStatAppariement.getEdgesEvaluationComp();
     result.append("<TotalNumber>" + edgesEvaluationComp.getTotalNetworkElementNumber() + "</TotalNumber>");
     result.append("<OkNumber>" + edgesEvaluationComp.getCorrectMatchingNetworkElementNumber() + "</OkNumber>");
     result.append("<KoNumber>" + edgesEvaluationComp.getNoMatchingNetworkElementNumber() + "</KoNumber>");
@@ -87,7 +87,7 @@ public class ResultatAppariementParser {
     
     // Nodes evaluation of the less detailed network
     result.append("<NodesEvaluationComp>");
-    ResultNetworkElement nodesEvaluationComp = resultatStatAppariement.getNodesEvaluationComp();
+    ResultNetworkStatElement nodesEvaluationComp = resultatStatAppariement.getNodesEvaluationComp();
     result.append("<TotalNumber>" + nodesEvaluationComp.getTotalNetworkElementNumber() + "</TotalNumber>");
     result.append("<OkNumber>" + nodesEvaluationComp.getCorrectMatchingNetworkElementNumber() + "</OkNumber>");
     result.append("<KoNumber>" + nodesEvaluationComp.getNoMatchingNetworkElementNumber() + "</KoNumber>");

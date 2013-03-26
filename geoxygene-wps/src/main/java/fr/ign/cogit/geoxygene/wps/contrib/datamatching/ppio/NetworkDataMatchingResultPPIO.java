@@ -25,10 +25,10 @@ import com.thoughtworks.xstream.io.xml.SaxWriter;
 // import com.thoughtworks.xstream.mapper.MapperWrapper;
 // import com.thoughtworks.xstream.mapper.MapperWrapper;
 
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElementInterface;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElement;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultatAppariement;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml.ResultatAppariementParser;
 
 /**
@@ -46,7 +46,7 @@ public class NetworkDataMatchingResultPPIO extends XStreamPPIO {
    * Default constructor.
    */
   protected NetworkDataMatchingResultPPIO() {
-    super(ResultatAppariement.class);
+    super(ResultNetworkDataMatching.class);
   }
 
   @Override
@@ -57,7 +57,7 @@ public class NetworkDataMatchingResultPPIO extends XStreamPPIO {
     
     // Prepare xml encoding
     /*XStream xstream = new XStream();
-    xstream.alias("ResultNetwork", ResultNetwork.class);
+    xstream.alias("ResultNetworkDataMatching", ResultNetworkDataMatching.class);
     
     // Write out xml
     SaxWriter writer = new SaxWriter();
@@ -66,13 +66,23 @@ public class NetworkDataMatchingResultPPIO extends XStreamPPIO {
     
     // Get XML format for resultatAppariement
     ResultatAppariementParser resultatAppariementParser = new ResultatAppariementParser();
-    String result = resultatAppariementParser.generateXMLResponse(((ResultatAppariement)obj));
+    String result = resultatAppariementParser.generateXMLResponse(((ResultNetworkDataMatching)obj));
     
     // Write out xml
     SaxWriter writer = new SaxWriter();
     writer.setContentHandler(handler);
     XStream xstream = new XStream();
     xstream.marshal(result, writer);
+    
+    // Get XML format for resultatAppariement
+    /*ResultatAppariementParser resultatAppariementParser = new ResultatAppariementParser();
+    String result = resultatAppariementParser.generateXMLResponse(((ResultNetworkDataMatching)obj));
+    
+    // Write out xml
+    SaxWriter writer = new SaxWriter();
+    writer.setContentHandler(handler);
+    XStream xstream = new XStream();
+    xstream.marshal(result, writer);*/
     
     /*JAXBContext context = JAXBContext.newInstance(ResultNetwork.class);
     Marshaller m = context.createMarshaller();

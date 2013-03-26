@@ -45,9 +45,10 @@ import javax.xml.bind.annotation.XmlType;
     "doubtfulNetworkElementNumber"
 })
 @XmlRootElement(name = "ResultNetworkElement")
-public class ResultNetworkElement {
+public class ResultNetworkStatElement {
   
   /** Total network element number. */
+  //@XmlJavaTypeAdapter(EvaluationAdapter.class)
   @XmlElement(name = "TotalNetworkElementNumber")
   private int totalNetworkElementNumber;
   
@@ -70,18 +71,18 @@ public class ResultNetworkElement {
   /**
    * Default constructor.
    */
-  public ResultNetworkElement() {
+  public ResultNetworkStatElement() {
     totalNetworkElementNumber = 0;
     correctMatchingNetworkElementNumber = 0;
     noMatchingNetworkElementNumber = 0;
     doubtfulNetworkElementNumber = 0;
-    networkElement = ResultNetworkElementInterface.NONE;
+    networkElement = ResultNetworkStatElementInterface.NONE;
   }
   
   /**
    * Default constructor.
    */
-  public ResultNetworkElement(String networkElt) {
+  public ResultNetworkStatElement(String networkElt) {
     totalNetworkElementNumber = 0;
     correctMatchingNetworkElementNumber = 0;
     noMatchingNetworkElementNumber = 0;

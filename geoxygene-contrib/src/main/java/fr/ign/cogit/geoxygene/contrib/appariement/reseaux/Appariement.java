@@ -34,10 +34,10 @@ import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.contrib.I18N;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElementInterface;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultatAppariement;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElement;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStatElementInterface;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStatElement;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.GroupeApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.NoeudApp;
@@ -134,7 +134,7 @@ public abstract class Appariement {
    * @see ReseauApp
    * @see ParametresApp
    */
-  public static ResultatAppariement appariementReseaux(final ReseauApp reseau1,
+  public static ResultNetworkDataMatching appariementReseaux(final ReseauApp reseau1,
       final ReseauApp reseau2, final ParametresApp param) {
     
     // build a spatial index (regular tiling with an average of 20 objets
@@ -298,10 +298,10 @@ public abstract class Appariement {
     }
     
     // --------------------------------------------------------------------------------------
-    ResultNetwork resStat = Appariement.controleGlobal(reseau1, reseau2, tousLiens, param);
+    ResultNetworkStat resStat = Appariement.controleGlobal(reseau1, reseau2, tousLiens, param);
 
     // return liens_AppArcs;
-    ResultatAppariement resultatAppariement = new ResultatAppariement();
+    ResultNetworkDataMatching resultatAppariement = new ResultNetworkDataMatching();
     resultatAppariement.setLinkDataSet(tousLiens);
     resultatAppariement.setResultStat(resStat);
     
@@ -1731,6 +1731,7 @@ public abstract class Appariement {
       LOGGER.debug("Poids = " + poids);
     }
   }
+  
   /**
    * Controle de l'enemble des appariements (et non plus un à un) : recherche
    * des arcs ou noeuds du réseau 2 appariés avec plusieurs objets du réseau 1.
@@ -1740,11 +1741,11 @@ public abstract class Appariement {
    * @param param matching parameters
    * @return resultatStatAppariement, tableau de stats sur les résultats
    */
-  private static ResultNetwork controleGlobal(final CarteTopo reseau1,
+  private static ResultNetworkStat controleGlobal(final CarteTopo reseau1,
       final CarteTopo reseau2, final EnsembleDeLiens liens,
       final ParametresApp param) {
     
-    ResultNetwork resultatStatAppariement = new ResultNetwork();
+    ResultNetworkStat resultatStatAppariement = new ResultNetworkStat();
     
     // ///////////////////////////////////////////////////////
     // ////////// Controle global des arcs comp //////////////
@@ -1752,6 +1753,8 @@ public abstract class Appariement {
     // pour les marquer comme douteux
     int nbSansCorresp = 0, nbDouteux = 0, nbOK = 0;
     double longSansCorresp = 0, longDouteux = 0, longOK = 0;
+    
+    
     Iterator<?> itArcs = reseau2.getPopArcs().getElements().iterator();
     while (itArcs.hasNext()) {
       ArcApp arcComp = (ArcApp) itArcs.next();
@@ -1887,12 +1890,14 @@ public abstract class Appariement {
           + "%long)"); //$NON-NLS-1$
     }
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
-    ResultNetworkElement resNetwork2Edges = new ResultNetworkElement(ResultNetworkElementInterface.EDGES_COMPARISON_NETWORK);
+    ResultNetworkStatElement resNetwork2Edges = new ResultNetworkStatElement(ResultNetworkStatElementInterface.EDGES_COMPARISON_NETWORK);
     resNetwork2Edges.setTotalNetworkElementNumber(nb);
     resNetwork2Edges.setCorrectMatchingNetworkElementNumber(nbOK);
     resNetwork2Edges.setNoMatchingNetworkElementNumber(nbSansCorresp);
     resNetwork2Edges.setDoubtfulNetworkElementNumber(nbDouteux);
-    Appariement.LOGGER.info(resNetwork2Edges.toString());
+    System.out.println("-------------------------------------------------");
+    System.out.println(resNetwork2Edges.toString());
+    System.out.println("-------------------------------------------------");
     resultatStatAppariement.setEdgesEvaluationComp(resNetwork2Edges);
     
     // ////////// Controle global des noeuds comp //////////////
@@ -1978,7 +1983,7 @@ public abstract class Appariement {
           + "%)"); //$NON-NLS-1$
     }
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
-    ResultNetworkElement resNetwork2Nodes = new ResultNetworkElement(ResultNetworkElementInterface.NODES_COMPARISON_NETWORK);
+    ResultNetworkStatElement resNetwork2Nodes = new ResultNetworkStatElement(ResultNetworkStatElementInterface.NODES_COMPARISON_NETWORK);
     resNetwork2Nodes.setTotalNetworkElementNumber(nb);
     resNetwork2Nodes.setCorrectMatchingNetworkElementNumber(nbOK);
     resNetwork2Nodes.setNoMatchingNetworkElementNumber(nbSansCorresp);
@@ -2045,13 +2050,13 @@ public abstract class Appariement {
           + "%long)"); //$NON-NLS-1$
     }
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
-    ResultNetworkElement resNetwork1Edges = new ResultNetworkElement(ResultNetworkElementInterface.EDGES_LESS_DETAILED_NETWORK);
+    ResultNetworkStatElement resNetwork1Edges = new ResultNetworkStatElement(ResultNetworkStatElementInterface.EDGES_LESS_DETAILED_NETWORK);
     resNetwork1Edges.setTotalNetworkElementNumber(nb);
     resNetwork1Edges.setCorrectMatchingNetworkElementNumber(nbOK);
     resNetwork1Edges.setNoMatchingNetworkElementNumber(nbSansCorresp);
     resNetwork1Edges.setDoubtfulNetworkElementNumber(nbDouteux);
     Appariement.LOGGER.info(resNetwork1Edges.toString());
-    resultatStatAppariement.setEdgesEvaluationRef(resNetwork1Edges);
+    resultatStatAppariement.setEdgesStatNetwork1(resNetwork1Edges);
 
     // ///////////////////////////////////////////
     // ////////// cas des noeudss ref ////////////
@@ -2100,7 +2105,7 @@ public abstract class Appariement {
           + (nbSansCorresp * Appariement.HUNDRED / nb) + "%)"); //$NON-NLS-1$
     }
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
-    ResultNetworkElement resNetwork1Nodes = new ResultNetworkElement(ResultNetworkElementInterface.NODES_LESS_DETAILED_NETWORK);
+    ResultNetworkStatElement resNetwork1Nodes = new ResultNetworkStatElement(ResultNetworkStatElementInterface.NODES_LESS_DETAILED_NETWORK);
     resNetwork1Nodes.setTotalNetworkElementNumber(nb);
     resNetwork1Nodes.setCorrectMatchingNetworkElementNumber(nbOK);
     resNetwork1Nodes.setNoMatchingNetworkElementNumber(nbSansCorresp);

@@ -18,31 +18,37 @@
  */
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStatElementInterface;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStatElement;
 
-/**
- *
- */
-public class EvaluationAdapter extends XmlAdapter<String, ResultNetworkStatElement> {
+public class TestParser {
   
-  /**
-   * TODO : implementation
-   */
-  public ResultNetworkStatElement unmarshal(String toto) throws Exception {
-    ResultNetworkStatElement res = new ResultNetworkStatElement(ResultNetworkStatElementInterface.NONE);
-    res.setTotalNetworkElementNumber(-1);
-    res.setCorrectMatchingNetworkElementNumber(-1);
-    res.setNoMatchingNetworkElementNumber(-1);
-    res.setDoubtfulNetworkElementNumber(-1);
-    return res;
+  public static void main(String[] args) {
+    
+    try {
+      
+      JAXBContext context = JAXBContext.newInstance(ResultNetworkStat.class);
+      Marshaller m = context.createMarshaller();
+      m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+    
+      ResultNetworkStat resnet = new ResultNetworkStat();
+      ResultNetworkStatElement res = new ResultNetworkStatElement(ResultNetworkStatElementInterface.NONE);
+      res.setTotalNetworkElementNumber(-10);
+      res.setCorrectMatchingNetworkElementNumber(-100);
+      res.setNoMatchingNetworkElementNumber(-1000);
+      res.setDoubtfulNetworkElementNumber(-10000);
+      resnet.setEdgesEvaluationComp(res);
+      
+      m.marshal(resnet, System.out);
+    
+    } catch (JAXBException ex) {
+      ex.printStackTrace();
+    }
   }
-  
-  
-  public String marshal(ResultNetworkStatElement res) throws Exception {
-    String chaine_a_retourner = "toto s'en va en guerre";
-    return chaine_a_retourner;
-  }
+
 }

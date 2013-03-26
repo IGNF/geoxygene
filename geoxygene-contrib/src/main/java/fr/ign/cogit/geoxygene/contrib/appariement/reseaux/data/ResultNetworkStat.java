@@ -40,62 +40,62 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml.EvaluationAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "edgesEvaluationRef",
+    "edgesStatNetwork1",
     "nodesEvaluationRef",
     "edgesEvaluationComp",
     "nodesEvaluationComp"
 })
-@XmlRootElement(name = "ResultNetwork")
-public class ResultNetwork {
+@XmlRootElement(name = "ResultStatNetwork")
+public class ResultNetworkStat {
   
   /** Edges evaluation of the less detailed network. */
-  @XmlJavaTypeAdapter(EvaluationAdapter.class)
-  @XmlElement(name = "EdgesEvaluationRef")
-  ResultNetworkElement edgesEvaluationRef;
+  // @XmlJavaTypeAdapter(EvaluationAdapter.class)
+  @XmlElement(name = "EdgesStatNetwork1")
+  ResultNetworkStatElement edgesStatNetwork1;
   
   /** Nodes evaluation of the less detailed network. */
   @XmlElement(name = "NodesEvaluationRef", required = true)
-  ResultNetworkElement nodesEvaluationRef;
+  ResultNetworkStatElement nodesEvaluationRef;
   
   /** Edges evaluation of the comparison network. */
   @XmlElement(name = "EdgesEvaluationComp", required = true)
-  ResultNetworkElement edgesEvaluationComp;
+  ResultNetworkStatElement edgesEvaluationComp;
   
   /** Nodes evaluation of the comparison network. */
   @XmlElement(name = "NodesEvaluationComp", required = true)
-  ResultNetworkElement nodesEvaluationComp;
+  ResultNetworkStatElement nodesEvaluationComp;
   
   /**
    * Default constructor.
    */
-  public ResultNetwork () {
-    edgesEvaluationRef = new ResultNetworkElement(ResultNetworkElementInterface.EDGES_LESS_DETAILED_NETWORK);
-    nodesEvaluationRef = new ResultNetworkElement(ResultNetworkElementInterface.NODES_LESS_DETAILED_NETWORK);
-    edgesEvaluationComp = new ResultNetworkElement(ResultNetworkElementInterface.EDGES_COMPARISON_NETWORK);
-    nodesEvaluationComp = new ResultNetworkElement(ResultNetworkElementInterface.NODES_COMPARISON_NETWORK);
+  public ResultNetworkStat () {
+    edgesStatNetwork1 = new ResultNetworkStatElement(ResultNetworkStatElementInterface.EDGES_LESS_DETAILED_NETWORK);
+    nodesEvaluationRef = new ResultNetworkStatElement(ResultNetworkStatElementInterface.NODES_LESS_DETAILED_NETWORK);
+    edgesEvaluationComp = new ResultNetworkStatElement(ResultNetworkStatElementInterface.EDGES_COMPARISON_NETWORK);
+    nodesEvaluationComp = new ResultNetworkStatElement(ResultNetworkStatElementInterface.NODES_COMPARISON_NETWORK);
   }
   
   /**
    * Return edges evaluation of the less detailed network.
    * @return ResultatStatEvaluationAppariement
    */
-  public ResultNetworkElement getEdgesEvaluationRef() {
-    return edgesEvaluationRef;
+  public ResultNetworkStatElement getEdgesStatNetwork1() {
+    return edgesStatNetwork1;
   }
   
   /**
    * @param rsea
    *          Edges evaluation of the less detailed network to set.
    */
-  public void setEdgesEvaluationRef(ResultNetworkElement rsea) {
-    edgesEvaluationRef = rsea;
+  public void setEdgesStatNetwork1(ResultNetworkStatElement rsea) {
+    edgesStatNetwork1 = rsea;
   }
   
   /**
    * Return nodes evaluation of the less detailed network.
    * @return ResultatStatEvaluationAppariement
    */
-  public ResultNetworkElement getNodesEvaluationRef() {
+  public ResultNetworkStatElement getNodesEvaluationRef() {
     return nodesEvaluationRef;
   }
   
@@ -103,7 +103,7 @@ public class ResultNetwork {
    * @param rsea
    *          Nodes evaluation of the less detailed network to set.
    */
-  public void setNodesEvaluationRef(ResultNetworkElement rsea) {
+  public void setNodesEvaluationRef(ResultNetworkStatElement rsea) {
     nodesEvaluationRef = rsea;
   }
   
@@ -111,7 +111,7 @@ public class ResultNetwork {
    * Return edges evaluation of the comparison network.
    * @return ResultatStatEvaluationAppariement
    */
-  public ResultNetworkElement getEdgesEvaluationComp() {
+  public ResultNetworkStatElement getEdgesEvaluationComp() {
     return edgesEvaluationComp;
   }
   
@@ -119,7 +119,7 @@ public class ResultNetwork {
    * @param rsea
    *          Edges evaluation of the comparison network to set.
    */
-  public void setEdgesEvaluationComp(ResultNetworkElement rsea) {
+  public void setEdgesEvaluationComp(ResultNetworkStatElement rsea) {
     edgesEvaluationComp = rsea;
   }
   
@@ -127,7 +127,7 @@ public class ResultNetwork {
    * Return nodes evaluation of the comparison network.
    * @return ResultatStatEvaluationAppariement
    */
-  public ResultNetworkElement getNodesEvaluationComp() {
+  public ResultNetworkStatElement getNodesEvaluationComp() {
     return nodesEvaluationComp;
   }
   
@@ -135,7 +135,7 @@ public class ResultNetwork {
    * @param rsea
    *          Nodes evaluation of the comparison network to set.
    */
-  public void setNodesEvaluationComp(ResultNetworkElement rsea) {
+  public void setNodesEvaluationComp(ResultNetworkStatElement rsea) {
     nodesEvaluationComp = rsea;
   }
 

@@ -16,33 +16,36 @@
  * LICENSE if present); if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml;
-
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStatElementInterface;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStatElement;
+package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data;
 
 /**
+ * 
  *
  */
-public class EvaluationAdapter extends XmlAdapter<String, ResultNetworkStatElement> {
+public interface ResultNetworkStatElementInterface {
   
   /**
-   * TODO : implementation
+   * NONE.
    */
-  public ResultNetworkStatElement unmarshal(String toto) throws Exception {
-    ResultNetworkStatElement res = new ResultNetworkStatElement(ResultNetworkStatElementInterface.NONE);
-    res.setTotalNetworkElementNumber(-1);
-    res.setCorrectMatchingNetworkElementNumber(-1);
-    res.setNoMatchingNetworkElementNumber(-1);
-    res.setDoubtfulNetworkElementNumber(-1);
-    return res;
-  }
+  String NONE = "None";
   
+  /**
+   * Edges of the less detailed network.
+   */
+  String EDGES_LESS_DETAILED_NETWORK = "EdgesRef";
+
+  /**
+   * Nodes of the less detailed network.
+   */
+  String NODES_LESS_DETAILED_NETWORK = "NodesRef";
   
-  public String marshal(ResultNetworkStatElement res) throws Exception {
-    String chaine_a_retourner = "toto s'en va en guerre";
-    return chaine_a_retourner;
-  }
+  /**
+   * Edges of the comparison network.
+   */
+  String EDGES_COMPARISON_NETWORK = "EdgesComp";
+  
+  /**
+   * Nodes of the comparison network.
+   */
+  String NODES_COMPARISON_NETWORK = "NodesComp";
 }

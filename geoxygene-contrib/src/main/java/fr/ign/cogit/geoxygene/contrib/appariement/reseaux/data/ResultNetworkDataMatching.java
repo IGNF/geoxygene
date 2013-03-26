@@ -19,6 +19,13 @@
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -29,6 +36,8 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
+
+import org.apache.log4j.Logger;
 
 /**
  * Network data matching results.
@@ -44,30 +53,33 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 @XmlType(name = "", propOrder = {
     "resultStat"
 })
-@XmlRootElement(name = "NetworkDataMatchingResult")
-public class ResultatAppariement {
+@XmlRootElement(name = "ResultNetworkDataMatching")
+public class ResultNetworkDataMatching {
   
   /** Cartes topo */
-  private ReseauApp reseauRef;
-  private ReseauApp reseauComp;
+  private ReseauApp reseau1;
+  private ReseauApp reseau2;
   
   /** EnsembleDeLiens. */
   private EnsembleDeLiens linkDataSet;
   
   /** Stat result. */
   @XmlElement(required = true)
-  private ResultNetwork resultStat;
+  private ResultNetworkStat resultStat;
   
   /** Network matched. */
   private SimpleFeatureCollection networkMatched;
+  
+  /** A classic logger. */
+  static Logger logger = Logger.getLogger(ResultNetworkDataMatching.class.getName());
     
   /**
    * Default constructor.
    */
-  public ResultatAppariement() {
+  public ResultNetworkDataMatching() {
     linkDataSet = null;
     networkMatched = null;
-    resultStat = new ResultNetwork();
+    resultStat = new ResultNetworkStat();
   }
   
   /**
@@ -75,10 +87,10 @@ public class ResultatAppariement {
    * @param edl
    * @param sfc  
    */
-  public ResultatAppariement(EnsembleDeLiens edl, SimpleFeatureCollection sfc) {
+  public ResultNetworkDataMatching(EnsembleDeLiens edl, SimpleFeatureCollection sfc) {
     linkDataSet = edl;
     networkMatched = sfc;
-    resultStat = new ResultNetwork();
+    resultStat = new ResultNetworkStat();
   }
   
   /**
@@ -101,7 +113,7 @@ public class ResultatAppariement {
    * Return statistics results.
    * @return resultStat
    */
-  public ResultNetwork getResultStat() {
+  public ResultNetworkStat getResultStat() {
     return resultStat;
   }
   
@@ -109,7 +121,7 @@ public class ResultatAppariement {
    * @param rsa
    *          Stat result to set.
    */
-  public void setResultStat (ResultNetwork rsa) {
+  public void setResultStat (ResultNetworkStat rsa) {
     resultStat = rsa;
   }
   
@@ -131,20 +143,55 @@ public class ResultatAppariement {
   
   
   
-  public void setReseauRef(ReseauApp res) {
-    reseauRef = res;
+  public void setReseau1(ReseauApp res) {
+    reseau1 = res;
   }
   
-  public ReseauApp getReseauRef() {
-    return reseauRef;
+  public ReseauApp getReseau1() {
+    return reseau1;
   }
   
-  public void setReseauComp(ReseauApp res) {
-    reseauComp = res;
+  public void setReseau2(ReseauApp res) {
+    reseau2 = res;
   }
   
-  public ReseauApp getReseauComp() {
-    return reseauComp;
+  public ReseauApp getReseau2() {
+    return reseau2;
+  }
+  
+  /**
+   * Load the parameters from the specified stream.
+   * 
+   * @param stream stream to load the parameters from
+   * @return the parameters loaded from the specified stream
+   */
+  public static ResultNetworkDataMatching unmarshall(InputStream stream) {
+    try {
+      JAXBContext context = JAXBContext.newInstance(ResultNetworkDataMatching.class);
+      Unmarshaller m = context.createUnmarshaller();
+      ResultNetworkDataMatching parametresAppData = (ResultNetworkDataMatching) m.unmarshal(stream);
+      return parametresAppData;
+    } catch (JAXBException e) {
+      e.printStackTrace();
+    }
+    return new ResultNetworkDataMatching();
+  }
+  
+  /**
+   * Load the parameters. 
+   * If file does not exist, create new empty XML.
+   * 
+   * @param fileName XML parameter file to load
+   * @return ParametresAppData loaded
+   */
+  public static ResultNetworkDataMatching unmarshall(String fileName) {
+    try {
+      return ResultNetworkDataMatching.unmarshall(new FileInputStream(fileName));
+    } catch (FileNotFoundException e) {
+      /*ResultNetworkDataMatching.LOGGER
+          .error("File " + fileName + " could not be read");*/
+      return new ResultNetworkDataMatching();
+    }
   }
 
 }

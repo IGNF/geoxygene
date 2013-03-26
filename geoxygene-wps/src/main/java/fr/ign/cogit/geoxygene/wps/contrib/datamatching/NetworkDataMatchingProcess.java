@@ -35,10 +35,9 @@ import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.NetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkElement;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultatAppariement;
-
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 // import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresAppData;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
@@ -66,7 +65,7 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
    * @return Results ResultatAppariement
    */
   @DescribeResult(name = "popApp", description = "network Matched")
-  public ResultatAppariement execute(
+  public ResultNetworkDataMatching execute(
       @DescribeParameter(name = "popRef", description = "Less detailed network") SimpleFeatureCollection popRef,
       @DescribeParameter(name = "popComp", description = "Comparison network") SimpleFeatureCollection popComp) {
       
@@ -131,12 +130,13 @@ public class NetworkDataMatchingProcess implements GeoServerProcess {
     try {
 
       LOGGER.info("Start network data matching");
-      ResultatAppariement resultatAppariement = NetworkDataMatching.networkDataMatching(param);
+      NetworkDataMatching networkDataMatching = new NetworkDataMatching(param);
+      ResultNetworkDataMatching resultatAppariement = networkDataMatching.networkDataMatching();
       LOGGER.info("End network data matching");
 
       LOGGER.info("Start recalage");
-      CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseauRef(), 
-          resultatAppariement.getReseauComp(), resultatAppariement.getLinkDataSet());
+      CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseau1(), 
+          resultatAppariement.getReseau2(), resultatAppariement.getLinkDataSet());
       LOGGER.info("End recalage");
 
       // Get links

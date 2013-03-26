@@ -1,3 +1,29 @@
+/*******************************************************************************
+ * This file is part of the GeOxygene project source files.
+ * 
+ * GeOxygene aims at providing an open framework which implements OGC/ISO
+ * specifications for the development and deployment of geographic (GIS)
+ * applications. It is a open source contribution of the COGIT laboratory at the
+ * Institut Géographique National (the French National Mapping Agency).
+ * 
+ * See: http://oxygene-project.sourceforge.net
+ * 
+ * Copyright (C) 2005 Institut Géographique National
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library (see file LICENSE if present); if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
+ *******************************************************************************/
 package fr.ign.cogit.geoxygene.appli.plugin.datamatching.network;
 
 import java.awt.BorderLayout;
@@ -12,8 +38,8 @@ import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetwork;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat;
 
 /**
  * Button 1 : see parameters
@@ -36,18 +62,19 @@ public class DisplayToolBarNetworkDataMatching extends JToolBar implements Actio
   private DisplayStatResultPanel tableauResultat = null;
   private DisplayParamPanel parameterPanel = null;
   
-  private ResultNetwork resultNetwork = null;
-  private ParametresApp parameterApp = null;
+  private ResultNetworkStat resultNetwork = null;
+  private ParamNetworkDataMatching paramNetworkDataMatching = null;
 
   /**
    * Constructor.
    * 
    * @param projectFrame The ProjectFrame object which contains the Menu Bar.
    */
-  public DisplayToolBarNetworkDataMatching(ProjectFrame projectFrame, ResultNetwork resultNetwork, ParametresApp parameterApp) {
+  public DisplayToolBarNetworkDataMatching(ProjectFrame projectFrame, ResultNetworkStat resultNetwork, 
+      ParamNetworkDataMatching paramNetworkDataMatching) {
     this.projectFrame = projectFrame;
     this.resultNetwork = resultNetwork;
-    this.parameterApp = parameterApp;
+    this.paramNetworkDataMatching = paramNetworkDataMatching;
     
     init();
   }
@@ -74,7 +101,7 @@ public class DisplayToolBarNetworkDataMatching extends JToolBar implements Actio
     btnLinks.setToolTipText("Bientôt disponible");
     add(btnLinks);
     
-    parameterPanel = new DisplayParamPanel(parameterApp);
+    parameterPanel = new DisplayParamPanel(paramNetworkDataMatching);
     tableauResultat = new DisplayStatResultPanel(resultNetwork);
     
   }

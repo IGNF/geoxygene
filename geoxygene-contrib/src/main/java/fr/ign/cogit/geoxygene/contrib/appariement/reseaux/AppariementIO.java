@@ -36,7 +36,7 @@ import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.contrib.I18N;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultatAppariement;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.NoeudApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
@@ -92,7 +92,7 @@ public final class AppariementIO {
   public static EnsembleDeLiens appariementDeJeuxGeo(
       final ParametresApp paramApp, final List<ReseauApp> cartesTopo) {
     
-    ResultatAppariement resultatAppariement = new ResultatAppariement();
+    ResultNetworkDataMatching resultatAppariement = new ResultNetworkDataMatching();
 
     switch (paramApp.debugAffichageCommentaires) {
       case 0:
@@ -111,13 +111,12 @@ public final class AppariementIO {
       AppariementIO.LOGGER.info(I18N.getString("AppariementIO.MatchingInfo")); //$NON-NLS-1$
       AppariementIO.LOGGER.info(""); //$NON-NLS-1$
     }
-    // //////////////////////////////////////////////
-    // STRUCTURATION
-    if (AppariementIO.LOGGER.isInfoEnabled()) {
-      AppariementIO.LOGGER
-          .info(I18N.getString("AppariementIO.DataStructuring")); //$NON-NLS-1$
-      AppariementIO.LOGGER.info(I18N
-          .getString("AppariementIO.TopologicalStructuing")); //$NON-NLS-1$
+    
+    // ---------------------------------------------------------------------
+    // Organisation des données en réseau et prétraitements topologiques
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("DATA STRUCTURING");
+      LOGGER.info("Topological structuring");
     }
     if (AppariementIO.LOGGER.isDebugEnabled()) {
       AppariementIO.LOGGER.debug(I18N
