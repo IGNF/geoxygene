@@ -244,8 +244,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       this.application.getFrame().getDesktopPane().removeAll();
       
       Dimension desktopSize = this.application.getFrame().getDesktopPane().getSize();
-      int widthProjectFrame = desktopSize.width;
-      int heightProjectFrame = desktopSize.height;
+      int widthProjectFrame = desktopSize.width / 2;
+      int heightProjectFrame = desktopSize.height / 2;
       
       // SLD
       // StyledLayerDescriptor sld = StyledLayerDescriptor
