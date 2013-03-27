@@ -11,7 +11,7 @@
  * @copyright IGN
  *
  */
-package fr.ign.cogit.geoxygene.wps.contrib.datamatching;
+package fr.ign.cogit.geoxygene.client;
 
 import fr.ign.cogit.geoxygene.http.SimpleHttpClient;
 
@@ -20,7 +20,7 @@ import fr.ign.cogit.geoxygene.http.SimpleHttpClient;
  * 
  *
  */
-public class TestCallService {
+public class TestAppelServiceHttp {
   
   
   /**
@@ -241,7 +241,7 @@ public class TestCallService {
     
     try {
       
-      TestCallService test = new TestCallService();
+      TestAppelServiceHttp test = new TestAppelServiceHttp();
       
       // Test appel en GET
       // test.testGET();
