@@ -152,6 +152,7 @@ public class MGCPLoader extends ShapeFileLoader {
             CartAGenDataSet.ROADS_POP, IRoadLine.FEAT_TYPE_NAME, this
                 .getDataset().getRoadNetwork(), PeaRepDbType.MGCPPlusPlus);
       }
+
       if (((listLayer.size() == 0) || (listLayer.contains("LAP010")))
           && (FileUtil.getNamedFileInDir(directory, "LAP010.shp") != null)) {
         this.loadLineStringClass(
