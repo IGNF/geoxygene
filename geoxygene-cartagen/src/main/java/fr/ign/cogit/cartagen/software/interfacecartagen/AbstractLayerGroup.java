@@ -50,6 +50,7 @@ public abstract class AbstractLayerGroup {
   public AbstractButton cVoirAirport = new JCheckBox();
   public AbstractButton cVoirMasque = new JCheckBox();
   public AbstractButton cVoirPOI = new JCheckBox();
+  public AbstractButton cVoirNetworkFaces = new JCheckBox();
 
   /**
    * Getter for the interface layers

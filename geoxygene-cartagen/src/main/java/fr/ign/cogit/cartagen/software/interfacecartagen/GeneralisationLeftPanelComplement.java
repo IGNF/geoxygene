@@ -1107,6 +1107,14 @@ public class GeneralisationLeftPanelComplement extends JPanel {
     this.lNetworkFaces.setFont(font);
     panneau.add(this.lNetworkFaces, c);
 
+    this.cVoirNetworkFaces.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        CartagenApplication.getInstance().getLayerGroup().cVoirNetworkFaces
+            .setSelected(GeneralisationLeftPanelComplement.getInstance().cVoirNetworkFaces
+                .isSelected());
+      }
+    });
     this.cSelectNetworkFaces.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent arg0) {
