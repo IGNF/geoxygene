@@ -12,6 +12,7 @@ import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPosition;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.DirectPositionList;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
+import fr.ign.cogit.geoxygene.util.algo.geomstructure.Vector2D;
 
 /**
  * A class to compute the Fréchet distance.
@@ -116,56 +117,76 @@ public class Frechet {
    * @param q
    * @return
    */
-  public static double partialFrechet(final ILineString p,
-      final ILineString q) {
+  public static double partialFrechet(final ILineString a, final ILineString b) {
+    ILineString p = a;
+    ILineString q = b;
+    Vector2D v1 = new Vector2D(a.startPoint(), a.endPoint());
+    Vector2D v2 = new Vector2D(q.startPoint(), q.endPoint());
+    if (v1.angleVecteur(v2).getValeur() > Math.PI / 2) {
+      q = q.reverse();
+    }
+    if (a.length() > b.length()) {
+      p = b;
+      q = a;
+    }
     List<IDirectPosition> pPoints = new ArrayList<IDirectPosition>(p.coord());
     List<IDirectPosition> qPoints = new ArrayList<IDirectPosition>(q.coord());
-    List<IDirectPosition> temp = null;
-
+    // List<IDirectPosition> temp = null;
+    //
     for (IDirectPosition point : p.getControlPoint()) {
       Operateurs.projectAndInsert(point, qPoints);
     }
     for (IDirectPosition point : q.getControlPoint()) {
       Operateurs.projectAndInsert(point, pPoints);
     }
-    if(pPoints.size() < qPoints.size()){
-      temp = qPoints;
-      qPoints = pPoints;
-      pPoints = temp;
-    }
+    // if (pPoints.size() < qPoints.size()) {
+    // temp = qPoints;
+    // qPoints = pPoints;
+    // pPoints = temp;
+    // }
     double d1 = Frechet.orientedPartialFrechet(pPoints, qPoints);
-    GM_LineString qr = (GM_LineString) new GM_LineString(qPoints);
-    qr = (GM_LineString) qr.reverse();
-    ArrayList<IDirectPosition> qrPoints = new ArrayList<IDirectPosition>(
-        qr.coord());
-    double d2 = Frechet.orientedPartialFrechet(pPoints, qrPoints);
-    return Math.min(d1, d2);
+    // GM_LineString qr = (GM_LineString) new GM_LineString(qPoints);
+    // qr = (GM_LineString) qr.reverse();
+    // ArrayList<IDirectPosition> qrPoints = new ArrayList<IDirectPosition>(
+    // qr.coord());
+    // double d2 = Frechet.orientedPartialFrechet(pPoints, qrPoints);
+    // return Math.min(d1, d2);
+    return d1;
   }
 
   private static double orientedPartialFrechet(List<IDirectPosition> pPoints,
       List<IDirectPosition> qPoints) {
+    // M C'est le nombre de noeuds de L2
+    // N C'est le nombre de noeuds de L1
+
     ArrayList<IDirectPosition> b = new ArrayList<IDirectPosition>();
     ArrayList<IDirectPosition> e = new ArrayList<IDirectPosition>();
-    double dfdp = Double.POSITIVE_INFINITY;
-    for (int i = 0; i < qPoints.size(); i++) {
+
+    for (int i = 0; i < qPoints.size() - 1; i++) {
       b.add(qPoints.get(i));
-      if (i > 0) {
-        e.add(qPoints.get(qPoints.size() - i));
-      }
     }
+    for (int i = qPoints.size() - 1; i > 0; i--) {
+      e.add(qPoints.get(i));
+    }
+
+    double dfdp = Double.POSITIVE_INFINITY;
+    int j = 0;
     for (IDirectPosition l2j : b) {
       if (pPoints.get(0).distance(l2j) < dfdp) {
+        int jj = qPoints.size() - 1;
         for (IDirectPosition l2jj : e) {
-          int j = qPoints.indexOf(l2j);
-          int jj = qPoints.indexOf(l2jj);
           if (j <= jj && pPoints.get(qPoints.size() - 1).distance(l2jj) < dfdp) {
-            List<IDirectPosition> substring = qPoints.subList(j, jj + 1);
-            double df = Frechet.discreteFrechet(new GM_LineString(pPoints),
-                new GM_LineString(substring));
-            dfdp = df;
+            GM_LineString l11l1n = new GM_LineString(pPoints);
+            GM_LineString l2jl2jj = new GM_LineString(qPoints.subList(j, jj));
+            double dfrechet = discreteFrechet(l11l1n, l2jl2jj);
+            if (dfrechet < dfdp) {
+              dfdp = dfrechet;
+            }
           }
         }
+        jj--;
       }
+      j++;
     }
     return dfdp;
   }
