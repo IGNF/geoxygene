@@ -117,45 +117,31 @@ public class Frechet {
    * @param q
    * @return
    */
-  public static double partialFrechet(final ILineString a, final ILineString b) {
-    ILineString p = a;
-    ILineString q = b;
-    Vector2D v1 = new Vector2D(a.startPoint(), a.endPoint());
+  public static double partialFrechet(final ILineString l1, final ILineString l2) {
+    ILineString p = l1;
+    ILineString q = l2;
+
+    Vector2D v1 = new Vector2D(p.startPoint(), p.endPoint());
     Vector2D v2 = new Vector2D(q.startPoint(), q.endPoint());
     if (v1.angleVecteur(v2).getValeur() > Math.PI / 2) {
       q = q.reverse();
     }
-    if (a.length() > b.length()) {
-      p = b;
-      q = a;
+
+    if (p.length() > q.length()) {
+      p = q;
+      q = l1;
     }
+
     List<IDirectPosition> pPoints = new ArrayList<IDirectPosition>(p.coord());
     List<IDirectPosition> qPoints = new ArrayList<IDirectPosition>(q.coord());
-    // List<IDirectPosition> temp = null;
-    //
+
     for (IDirectPosition point : p.getControlPoint()) {
       Operateurs.projectAndInsert(point, qPoints);
     }
     for (IDirectPosition point : q.getControlPoint()) {
       Operateurs.projectAndInsert(point, pPoints);
     }
-    // if (pPoints.size() < qPoints.size()) {
-    // temp = qPoints;
-    // qPoints = pPoints;
-    // pPoints = temp;
-    // }
-    double d1 = Frechet.orientedPartialFrechet(pPoints, qPoints);
-    // GM_LineString qr = (GM_LineString) new GM_LineString(qPoints);
-    // qr = (GM_LineString) qr.reverse();
-    // ArrayList<IDirectPosition> qrPoints = new ArrayList<IDirectPosition>(
-    // qr.coord());
-    // double d2 = Frechet.orientedPartialFrechet(pPoints, qrPoints);
-    // return Math.min(d1, d2);
-    return d1;
-  }
 
-  private static double orientedPartialFrechet(List<IDirectPosition> pPoints,
-      List<IDirectPosition> qPoints) {
     // M C'est le nombre de noeuds de L2
     // N C'est le nombre de noeuds de L1
 
@@ -168,23 +154,25 @@ public class Frechet {
     for (int i = qPoints.size() - 1; i > 0; i--) {
       e.add(qPoints.get(i));
     }
+    GM_LineString res = null;
 
     double dfdp = Double.POSITIVE_INFINITY;
-    int j = 0;
+    int j = 1;
     for (IDirectPosition l2j : b) {
       if (pPoints.get(0).distance(l2j) < dfdp) {
         int jj = qPoints.size() - 1;
         for (IDirectPosition l2jj : e) {
-          if (j <= jj && pPoints.get(qPoints.size() - 1).distance(l2jj) < dfdp) {
+          if (j < jj && pPoints.get(qPoints.size() - 1).distance(l2jj) < dfdp) {
             GM_LineString l11l1n = new GM_LineString(pPoints);
             GM_LineString l2jl2jj = new GM_LineString(qPoints.subList(j, jj));
             double dfrechet = discreteFrechet(l11l1n, l2jl2jj);
             if (dfrechet < dfdp) {
+              res = l2jl2jj;
               dfdp = dfrechet;
             }
           }
+          jj--;
         }
-        jj--;
       }
       j++;
     }
