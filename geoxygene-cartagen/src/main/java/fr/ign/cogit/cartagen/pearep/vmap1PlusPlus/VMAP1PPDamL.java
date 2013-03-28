@@ -44,6 +44,7 @@ public class VMAP1PPDamL extends VMAPFeature implements IBridgeLine {
     this.geoxObj = new AutreConstructionImpl(lineString);
     this.setInitialGeom(lineString);
     this.setEliminated(false);
+    this.setAttributeMap(attributes);//
 
     this.date_bdi = (String) attributes.get("date_bdi");
     this.f_code = (String) attributes.get("f_code");
@@ -63,20 +64,22 @@ public class VMAP1PPDamL extends VMAPFeature implements IBridgeLine {
     this.ohb = (String) attributes.get("ohb");
     this.catdam = (String) attributes.get("catdam");
 
-    this.exs = (Integer) attributes.get("exs");
-    this.fcsubtype = (Integer) attributes.get("fcsubtype");
-    this.keep = (Integer) attributes.get("keep");
-    this.obj_rmq = (Integer) attributes.get("obj_rmq");
-    this.src_dim = (Integer) attributes.get("src_dim");
-    this.src_name = (Integer) attributes.get("src_name");
-    this.valid_stat = (Integer) attributes.get("valid_stat");
-    this.scamax = (Integer) attributes.get("scamax");
-    this.scamin = (Integer) attributes.get("scamin");
-    this.targetscal = (Integer) attributes.get("targetscal");
-    this.mcc = (Integer) attributes.get("mcc");
-    this.hgt = (Integer) attributes.get("hgt");
-    this.tuc = (Integer) attributes.get("tuc");
-    this.len_ = (Integer) attributes.get("len_");
+    this.exs = getLongAttribute("exs");
+    this.fcsubtype = getLongAttribute("fcsubtype");
+    this.keep = getLongAttribute("keep");
+    this.obj_rmq = getLongAttribute("obj_rmq");
+    this.src_dim = getLongAttribute("src_dim");
+    this.src_name = getLongAttribute("src_name");
+    this.valid_stat = getLongAttribute("valid_stat");
+    this.scamax = getLongAttribute("scamax");
+    this.scamin = getLongAttribute("scamin");
+    this.targetscal = getLongAttribute("targetscal");
+    this.mcc = getLongAttribute("mcc");
+    this.hgt = getLongAttribute("hgt");
+    this.tuc = getLongAttribute("tuc");
+    this.len_ = getLongAttribute("len_");
+
+    this.setAttributeMap(null);//
 
   }
 

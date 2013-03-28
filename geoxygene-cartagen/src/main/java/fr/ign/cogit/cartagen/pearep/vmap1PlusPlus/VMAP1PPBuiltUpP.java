@@ -40,6 +40,7 @@ public class VMAP1PPBuiltUpP extends VMAPFeature implements IBuildPoint {
     this.geoxObj = new AutreConstructionImpl(point);
     this.setInitialGeom(point);
     this.setEliminated(false);
+    this.setAttributeMap(attributes);//
 
     this.date_bdi = (String) attributes.get("date_bdi");
     this.f_code = (String) attributes.get("f_code");
@@ -57,18 +58,20 @@ public class VMAP1PPBuiltUpP extends VMAPFeature implements IBuildPoint {
     this.src_info = (String) attributes.get("src_info");
     this.catbua = (String) attributes.get("catbua");
 
-    this.exs = (Integer) attributes.get("exs");
-    this.fcsubtype = (Integer) attributes.get("fcsubtype");
-    this.keep = (Integer) attributes.get("keep");
-    this.obj_rmq = (Integer) attributes.get("obj_rmq");
-    this.src_dim = (Integer) attributes.get("src_dim");
-    this.src_name = (Integer) attributes.get("src_name");
-    this.valid_stat = (Integer) attributes.get("valid_stat");
-    this.scamax = (Integer) attributes.get("scamax");
-    this.scamin = (Integer) attributes.get("scamin");
-    this.targetscal = (Integer) attributes.get("targetscal");
-    this.hgt = (Integer) attributes.get("hgt");
-    this.arh = (Integer) attributes.get("arh");
+    this.exs = getLongAttribute("exs");
+    this.fcsubtype = getLongAttribute("fcsubtype");
+    this.keep = getLongAttribute("keep");
+    this.obj_rmq = getLongAttribute("obj_rmq");
+    this.src_dim = getLongAttribute("src_dim");
+    this.src_name = getLongAttribute("src_name");
+    this.valid_stat = getLongAttribute("valid_stat");
+    this.scamax = getLongAttribute("scamax");
+    this.scamin = getLongAttribute("scamin");
+    this.targetscal = getLongAttribute("targetscal");
+    this.hgt = getLongAttribute("hgt");
+    this.arh = getLongAttribute("arh");
+
+    this.setAttributeMap(null);//
 
   }
 

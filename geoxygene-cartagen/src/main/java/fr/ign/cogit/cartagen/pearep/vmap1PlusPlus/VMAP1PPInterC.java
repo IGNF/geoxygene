@@ -44,6 +44,7 @@ public class VMAP1PPInterC extends VMAPFeature implements IRoadNode {
     this.geoxObj = new AutreConstructionImpl(point);
     this.setInitialGeom(point);
     this.setEliminated(false);
+    this.setAttributeMap(attributes);//
 
     this.date_bdi = (String) attributes.get("date_bdi");
     this.f_code = (String) attributes.get("f_code");
@@ -59,16 +60,18 @@ public class VMAP1PPInterC extends VMAPFeature implements IRoadNode {
     this.valid_info = (String) attributes.get("valid_info");
     this.src_info = (String) attributes.get("src_info");
 
-    this.fcsubtype = (Integer) attributes.get("fcsubtype");
-    this.keep = (Integer) attributes.get("keep");
-    this.obj_rmq = (Integer) attributes.get("obj_rmq");
-    this.src_dim = (Integer) attributes.get("src_dim");
-    this.src_name = (Integer) attributes.get("src_name");
-    this.valid_stat = (Integer) attributes.get("valid_stat");
-    this.targetscal = (Integer) attributes.get("targetscal");
-    this.loc = (Integer) attributes.get("loc");
-    this.rit = (Integer) attributes.get("rit");
-    this.use_ = (Integer) attributes.get("use_");
+    this.fcsubtype = getLongAttribute("fcsubtype");
+    this.keep = getLongAttribute("keep");
+    this.obj_rmq = getLongAttribute("obj_rmq");
+    this.src_dim = getLongAttribute("src_dim");
+    this.src_name = getLongAttribute("src_name");
+    this.valid_stat = getLongAttribute("valid_stat");
+    this.targetscal = getLongAttribute("targetscal");
+    this.loc = getLongAttribute("loc");
+    this.rit = getLongAttribute("rit");
+    this.use_ = getLongAttribute("use_");
+
+    this.setAttributeMap(null);//
 
   }
 
