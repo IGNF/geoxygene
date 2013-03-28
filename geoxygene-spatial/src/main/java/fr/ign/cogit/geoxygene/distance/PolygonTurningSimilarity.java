@@ -1,22 +1,28 @@
 package fr.ign.cogit.geoxygene.distance;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 
 /**
- * Implementation of "An Efficiently Computable Metric for Comparing Polygonal Shapes," by Arkin, Chew, Huttenlocher,
- * Kedem, and Mitchel (undated). This expands a little on the cited reference to achieve O(n) space and O(mn log n) run
+ * Implementation of "An Efficiently Computable Metric for Comparing Polygonal Shapes," by Arkin,
+ * Chew, Huttenlocher,
+ * Kedem, and Mitchel (undated). This expands a little on the cited reference to achieve O(n) space
+ * and O(mn log n) run
  * time.
  * <p>
- * This could be improved to O(min m,n) and O(mn log min m,n) by selecting the smallest of the 2 polys to create the
- * initial event heap. See init_events().
+ * This could be improved to O(min m,n) and O(mn log min m,n) by selecting the smallest of the 2
+ * polys to create the initial event heap. See init_events().
  * <p>
  * Variable names match the article.
  * <p>
- * Implementation (c) Eugene K. Ressler 91, 92 This source may be freely distributed and used for non-commercial
- * purposes, so long as this comment is attached to any code copied or derived from it.
+ * Implementation (c) Eugene K. Ressler 91, 92 This source may be freely distributed and used for
+ * non-commercial purposes, so long as this comment is attached to any code copied or derived from
+ * it.
  */
 public class PolygonTurningSimilarity {
   /**
@@ -46,7 +52,7 @@ public class PolygonTurningSimilarity {
    * Return angle a, adjusted by +-2kPI so that it is within [base-PI, base+PI).
    */
   private static double turn(double a, double base) {
-    double result = a; 
+    double result = a;
     while (result - base < -Math.PI) {
       result += 2 * Math.PI;
     }
@@ -57,10 +63,13 @@ public class PolygonTurningSimilarity {
   }
 
   /**
-   * Convert a polygon to a turning rep. This computes the absolute angle of each leg wrt the x-axis, then adjusts this
-   * to within PI of the last leg to form the turning angle. Finally, the total length of all legs is used to compute
+   * Convert a polygon to a turning rep. This computes the absolute angle of each leg wrt the
+   * x-axis, then adjusts this
+   * to within PI of the last leg to form the turning angle. Finally, the total length of all legs
+   * is used to compute
    * the cumulative normalized arc length of each discontinuity, s.
-   * @param p a polygon
+   * @param p
+   *        a polygon
    * @return a turning rep representing the given polygon
    */
   public static TurnRep poly_to_turn_rep(IPolygon p) {
@@ -91,11 +100,15 @@ public class PolygonTurningSimilarity {
   }
 
   /**
-   * Fill in a turn rep with a rotated version of an original. Normalized arc lengths start at 0 in the new
+   * Fill in a turn rep with a rotated version of an original. Normalized arc lengths start at 0 in
+   * the new
    * representation.
-   * @param t input turn rep
-   * @param to rotation / start angle
-   * @param r rotated turnrep
+   * @param t
+   *        input turn rep
+   * @param to
+   *        rotation / start angle
+   * @param r
+   *        rotated turnrep
    */
   private static void rotate_turn_rep(TurnRep t, int to, TurnRep r) {
     int n = t.leg.size();
@@ -115,10 +128,13 @@ public class PolygonTurningSimilarity {
   }
 
   /**
-   * In one O(m + n) pass over the turning reps of the polygons to be matched, this computes all the terms needed to
+   * In one O(m + n) pass over the turning reps of the polygons to be matched, this computes all the
+   * terms needed to
    * incrementally compute the metric. See the paper.
-   * @param f turning rep of the first polygon
-   * @param g turning rep of the second polygon
+   * @param f
+   *        turning rep of the first polygon
+   * @param g
+   *        turning rep of the second polygon
    * @return Initialized values
    */
   public static InitVals init_vals(TurnRep f, TurnRep g) {
@@ -159,7 +175,8 @@ public class PolygonTurningSimilarity {
         a += ds * dtheta;
         ht0 += ds * dtheta * dtheta;
         /*
-         * Determine flavor of next strip. We know it's ff or fg. In latter case, bump accumulator. Note we've skipped
+         * Determine flavor of next strip. We know it's ff or fg. In latter case, bump accumulator.
+         * Note we've skipped
          * the first strip. It's added as the "next" of the last strip.
          */
         if (tr_s(f, fi + 1) > tr_s(g, gi))
@@ -193,14 +210,21 @@ public class PolygonTurningSimilarity {
   }
 
   /**
-   * Recompute ht0 and slope for the current event. Renormalize the turning reps so that the event discontinuities are
-   * first in each. This keeps all s values within [0,1) while recomputing so that all are represented with the same
-   * precision. If we check that no other events are pending within machine epsilon of t for (fi,gi) before calling
+   * Recompute ht0 and slope for the current event. Renormalize the turning reps so that the event
+   * discontinuities are
+   * first in each. This keeps all s values within [0,1) while recomputing so that all are
+   * represented with the same
+   * precision. If we check that no other events are pending within machine epsilon of t for (fi,gi)
+   * before calling
    * this, numerical stability is guaranteed (unlike the first two ways I tried).
-   * @param f turning rep of the first polygon
-   * @param g turning rep of the second polygon
-   * @param fi rotation for the first polygon
-   * @param gi rotation for the second polygon
+   * @param f
+   *        turning rep of the first polygon
+   * @param g
+   *        turning rep of the second polygon
+   * @param fi
+   *        rotation for the first polygon
+   * @param gi
+   *        rotation for the second polygon
    * @return Initialized values
    */
   private static InitVals reinit_vals(TurnRep f, TurnRep g, int fi, int gi) {
@@ -211,31 +235,41 @@ public class PolygonTurningSimilarity {
   }
 
   /**
-   * Compute number of events between successive reinits that will not blow the asymptotice complexity bound.
-   * @param f turning rep of the first polygon
-   * @param g turning rep of the second polygon
+   * Compute number of events between successive reinits that will not blow the asymptotice
+   * complexity bound.
+   * @param f
+   *        turning rep of the first polygon
+   * @param g
+   *        turning rep of the second polygon
    * @return number of events
    */
   public static int reinit_interval(TurnRep f, TurnRep g) {
-    return f.leg.size() * g.leg.size() / (Math.min(f.leg.size(), g.leg.size()) * ilog2(g.leg.size()));
+    return f.leg.size() * g.leg.size()
+        / (Math.min(f.leg.size(), g.leg.size()) * ilog2(g.leg.size()));
   }
 
   /**
-   * Following are routines to maintian the event heap. This is initialized with one event per g discontinuity, namely,
-   * the one due to the f discontinuity closest to the right. The sort key is the "f shift" parameter t. As the
-   * algorithm runs, it draws an event (of min t) from the heap, handles it, then inserts the event due to the *next* f
+   * Following are routines to maintian the event heap. This is initialized with one event per g
+   * discontinuity, namely,
+   * the one due to the f discontinuity closest to the right. The sort key is the "f shift"
+   * parameter t. As the
+   * algorithm runs, it draws an event (of min t) from the heap, handles it, then inserts the event
+   * due to the *next* f
    * discontinuity associated with the same g discontinuity (unless this event would have t>1).
-   * <p>
-   * The heap insert and delete are minor modifications of pseudo-code from Horowitz and Sahni, Computer Algorithms.
    */
-//  private Event[] event = new Event[1000];
-  private List<Event> event = new ArrayList<Event>();
-//  private int n_events = 0;
+  private Queue<Event> event = new PriorityQueue<Event>(1000, new Comparator<Event>() {
+    @Override
+    public int compare(Event o1, Event o2) {
+      return Double.compare(o1.t, o2.t);
+    }
+  });
 
   /**
    * Insert a new event in the heap.
-   * @param f turning rep of the first polygon
-   * @param g turning rep of the second polygon
+   * @param f
+   *        turning rep of the first polygon
+   * @param g
+   *        turning rep of the second polygon
    * @param fi
    * @param gi
    */
@@ -244,25 +278,7 @@ public class PolygonTurningSimilarity {
     if (t > 1) {
       return;
     }
-//    int j = ++this.n_events;
-    int j = this.event.size();
-    int i = this.event.size() / 2;
-    while (i > 0 && this.event.get(i).t > t) {
-      if (j == this.event.size()) {
-        this.event.add(this.event.get(i));
-      } else {
-        this.event.set(j, this.event.get(i));
-      }
-      j = i;
-      i = i / 2;
-    }
-    if (j == this.event.size()) {
-      this.event.add(new Event());
-    }
-    Event e = this.event.get(j);
-    e.t = t;
-    e.fi = fi;
-    e.gi = gi;
+    this.event.add(new Event(t, fi, gi));
   }
 
   /**
@@ -270,23 +286,7 @@ public class PolygonTurningSimilarity {
    * @return the event of min t from the heap
    */
   Event next_event() {
-//    Event next = this.event[1]; /* remember event to return */
-    Event next = this.event.get(0); /* remember event to return */
-//    Event e = this.event[this.n_events]; /* new root (before adjust) */
-    Event e = this.event.get(this.event.size() - 1); /* new root (before adjust) */
-//    --this.n_events;
-    int i = 1;
-    while (i < this.event.size()) {
-      if (i < this.event.size() - 1 && this.event.get(i).t > this.event.get(i + 1).t) {
-        ++i;
-      }
-      if (e.t <= this.event.get(i).t) {
-        break;
-      }
-      this.event.set(i / 2, this.event.get(i));
-      i *= 2;
-    }
-    this.event.set(i / 2, e);
+    Event next = this.event.poll();
     return next;
   }
 
@@ -295,21 +295,18 @@ public class PolygonTurningSimilarity {
    * @return t of the next event from the heap
    */
   private double next_t() {
-    return this.event.get(0).t;
+    return this.event.peek().t;
   }
 
   /**
    * Scan the turning reps to create the initial events in the heap as described above.
-   * @param f turning rep of the first polygon
-   * @param g turning rep of the second polygon
+   * @param f
+   *        turning rep of the first polygon
+   * @param g
+   *        turning rep of the second polygon
    */
   void init_events(TurnRep f, TurnRep g) {
     int fi, gi;
-//     for (int i = 0; i < 1000; i++) {
-//     event[i] = new Event();
-//     }
-//    this.event = new Event[1000];
-//    this.n_events = 0;
     this.event.clear();
     /*
      * Cycle through all g discontinuities, including the one at s = 1. This takes care of s = 0.
@@ -325,18 +322,23 @@ public class PolygonTurningSimilarity {
   }
 
   /**
-   * The heart of the algorithm: Compute the minimum value of the integral term of the metric by considering all
+   * The heart of the algorithm: Compute the minimum value of the integral term of the metric by
+   * considering all
    * critical events. This also returns the theta* and event associated with the minimum.
-   * @param f turning rep of the first polygon
-   * @param g turning rep of the second polygon
+   * @param f
+   *        turning rep of the first polygon
+   * @param g
+   *        turning rep of the second polygon
    * @param hc0_init
    * @param slope_init
    * @param alpha
    * @param d_update
-   * @return a set of result values including the minimum value of the integral term of the metric, the theta* and the
+   * @return a set of result values including the minimum value of the integral term of the metric,
+   *         the theta* and the
    *         event associated with the minimum
    */
-  Result h_t0min(TurnRep f, TurnRep g, double hc0_init, double slope_init, double alpha, int d_update) {
+  Result h_t0min(TurnRep f, TurnRep g, double hc0_init, double slope_init, double alpha,
+      int d_update) {
     int left_to_update; /* # disconts left until update */
     double metric2, min_metric2; /* d^2 and d^2_min thus far */
     double theta_star, min_theta_star; /* theta* and theta*_min thus far */
@@ -346,12 +348,10 @@ public class PolygonTurningSimilarity {
     double slope = slope_init;
     Event e; /* current event */
     Event min_e; /* event of d^2_min thus far */
-    Event init_min_e = new Event();
-    init_min_e.fi = 0;
-    init_min_e.gi = 0;
-    init_min_e.t = 0.0;/* implicit first event */
+    Event init_min_e = new Event(0.0, 0, 0);/* implicit first event */
     /*
-     * At t = 0, theta_star is just alpha, and the min metric2 seen so far is hc0 - min_theta_star^2. Also, no error has
+     * At t = 0, theta_star is just alpha, and the min metric2 seen so far is hc0 -
+     * min_theta_star^2. Also, no error has
      * been seen.
      */
     min_theta_star = alpha;
@@ -359,7 +359,8 @@ public class PolygonTurningSimilarity {
     min_e = init_min_e;
     last_t = hc0_err = slope_err = 0.0d;
     /*
-     * Compute successive hc_i0's by incremental update at critical events as described in the paper.
+     * Compute successive hc_i0's by incremental update at critical events as described in the
+     * paper.
      */
     left_to_update = d_update;
     while (!this.event.isEmpty()) {
@@ -375,15 +376,20 @@ public class PolygonTurningSimilarity {
       /*
        * Update slope, last t, and put next event for this g discontinuity in the heap.
        */
-      slope += 2 * (tr_theta(f, e.fi - 1) - tr_theta(f, e.fi)) * (tr_theta(g, e.gi - 1) - tr_theta(g, e.gi));
+      slope += 2 * (tr_theta(f, e.fi - 1) - tr_theta(f, e.fi))
+          * (tr_theta(g, e.gi - 1) - tr_theta(g, e.gi));
       last_t = e.t;
       add_event(f, g, e.fi + 1, e.gi);
       /*
-       * Re-establish hc0 and slope now and then to reduce numerical error. If d_update is 0, do nothing. Note we don't
-       * update if an event is close, as this causes numerical ambiguity. The test number could be much smaller, but why
+       * Re-establish hc0 and slope now and then to reduce numerical error. If d_update is 0, do
+       * nothing. Note we don't
+       * update if an event is close, as this causes numerical ambiguity. The test number could be
+       * much smaller, but why
        * tempt Murphey? We force an update on last event so there's always at least one.
        */
-      if (d_update != 0 && (this.event.isEmpty() || --left_to_update <= 0 && e.t - last_t > 0.001 && next_t() - e.t > 0.001)) {
+      if (d_update != 0
+          && (this.event.isEmpty() || --left_to_update <= 0 && e.t - last_t > 0.001
+              && next_t() - e.t > 0.001)) {
         InitVals newVals = reinit_vals(f, g, e.fi, e.gi);
         double rihc0 = newVals.ht0;
         double rislope = newVals.slope;
@@ -410,9 +416,9 @@ public class PolygonTurningSimilarity {
     TurnRep turnRep2 = PolygonTurningSimilarity.poly_to_turn_rep(p2);
     InitVals vals = PolygonTurningSimilarity.init_vals(turnRep1, turnRep2);
     pts.init_events(turnRep1, turnRep2);
-    Result result = pts.h_t0min(turnRep1, turnRep2, vals.ht0, vals.slope, vals.alpha, PolygonTurningSimilarity.reinit_interval(turnRep1, turnRep2));
+    Result result = pts.h_t0min(turnRep1, turnRep2, vals.ht0, vals.slope, vals.alpha,
+        PolygonTurningSimilarity.reinit_interval(turnRep1, turnRep2));
     double metric = result.h_t0min;
-//    return metric < 0 ? 0.0 : Math.sqrt(metric);
     return Math.sqrt(metric);
   }
 
@@ -425,9 +431,7 @@ class Leg { /* single leg of a turning rep polygon */
 }
 
 class TurnRep { /* polygon in turning rep */
-  // int n;
   double total_len;
-  // LEG leg[MAX_PTS];
   List<Leg> leg = new ArrayList<Leg>();
 }
 
@@ -435,10 +439,15 @@ class Event { /* critical event */
   double t; /* "f shift" parameter of the event */
   int fi, gi; /* pointers into turn reps f and g */
 
-  void copy(Event e) {
-    this.t = e.t;
-    this.fi = e.fi;
-    this.gi = e.gi;
+  public Event(double t_, int fi_, int gi_) {
+    this.t = t_;
+    this.fi = fi_;
+    this.gi = gi_;
+  }
+
+  @Override
+  public String toString() {
+    return "Event " + this.t + ", " + this.fi + ", " + this.gi;
   }
 }
 
@@ -448,6 +457,7 @@ class InitVals {
     this.slope = slope_;
     this.alpha = alpha_;
   }
+
   double ht0;
   double slope;
   double alpha;

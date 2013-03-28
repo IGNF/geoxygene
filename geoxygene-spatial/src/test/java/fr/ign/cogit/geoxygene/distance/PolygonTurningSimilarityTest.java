@@ -24,7 +24,7 @@ public class PolygonTurningSimilarityTest {
     pts.init_events(turnRep1, turnRep2);
     Result result = pts.h_t0min(turnRep1, turnRep2, vals.ht0, vals.slope, vals.alpha, 0);
     double metric = Math.sqrt(result.h_t0min);
-//    System.out.println("Metric " + metric);
+    System.out.println("Metric " + metric);
     double expected = 0.103296672227;
     double tolerance = Math.pow(10, -12);
     Assert.assertTrue("Metric is not inside the tolerance", metric >= expected - tolerance && metric <= expected + tolerance);
@@ -37,7 +37,7 @@ public class PolygonTurningSimilarityTest {
     pts.init_events(turnRep3, turnRep4);
     result = pts.h_t0min(turnRep3, turnRep4, vals.ht0, vals.slope, vals.alpha, PolygonTurningSimilarity.reinit_interval(turnRep3, turnRep4));
     metric = Math.sqrt(result.h_t0min);
-//    System.out.println("Metric " + metric);
+    System.out.println("Metric " + metric);
     expected = 0.4592845355155;
     Assert.assertTrue("Metric is not inside the tolerance", metric >= expected - tolerance && metric <= expected + tolerance);
     
@@ -51,7 +51,7 @@ public class PolygonTurningSimilarityTest {
     result = pts.h_t0min(turnRep5, turnRep6, vals.ht0, vals.slope, vals.alpha, PolygonTurningSimilarity.reinit_interval(turnRep5, turnRep6));
     metric = Math.sqrt(result.h_t0min);
     expected = 1.278248716738;
-//    System.out.println("Metric " + Math.sqrt(result.h_t0min));
+    System.out.println("Metric " + metric);
     Assert.assertTrue("Metric is not inside the tolerance", metric >= expected - tolerance && metric <= expected + tolerance);
     
     IPolygon p7 = (IPolygon) WktGeOxygene.makeGeOxygene("POLYGON (( 601375.7482019763 129283.48234950138, 601369.1620646537 129286.51648838643, 601376.2186011001 129304.63799717242, 601378.0643056133 129309.46918286277, 601372.800554859 129311.21419152388, 601375.414268838 129319.61966037631, 601382.1762540007 129316.85177062867, 601384.6962961367 129315.89667672024, 601384.8286702893 129316.00382642982, 601386.3668135327 129320.95173580002, 601398.411903976 129316.8685373252, 601398.6188268135 129316.72399517294, 601396.8618044513 129311.8308628431, 601396.6576899149 129311.18512429588, 601395.8512504939 129309.52220777777, 601392.9821959463 129303.63299270101, 601384.6982688423 129306.79410423039, 601382.7212681291 129301.44563115918, 601379.8741273369 129293.80545235297, 601375.7482019763 129283.48234950138 ))");
@@ -61,7 +61,7 @@ public class PolygonTurningSimilarityTest {
     pts.init_events(turnRep5, turnRep7);
     result = pts.h_t0min(turnRep5, turnRep7, vals.ht0, vals.slope, vals.alpha, PolygonTurningSimilarity.reinit_interval(turnRep5, turnRep7));
     metric = Math.sqrt(result.h_t0min);
-//    System.out.println("Metric " + Math.sqrt(result.h_t0min));
+    System.out.println("Metric " + metric);
     expected = 1.278248716738;
     Assert.assertTrue("Metric is not inside the tolerance", metric >= expected - tolerance && metric <= expected + tolerance);
     
@@ -72,7 +72,7 @@ public class PolygonTurningSimilarityTest {
     pts.init_events(turnRep5, turnRep8);
     result = pts.h_t0min(turnRep5, turnRep8, vals.ht0, vals.slope, vals.alpha, 1);
     metric = Math.sqrt(result.h_t0min);
-//    System.out.println("Metric " + Math.sqrt(result.h_t0min));
+    System.out.println("Metric " + metric);
     expected = 1.278248716738;
     Assert.assertTrue("Metric is not inside the tolerance", metric >= expected - tolerance && metric <= expected + tolerance);
     
@@ -82,7 +82,7 @@ public class PolygonTurningSimilarityTest {
     pts.init_events(turnRep5, turnRep9);
     result = pts.h_t0min(turnRep5, turnRep9, vals.ht0, vals.slope, vals.alpha, 0);
     metric = Math.sqrt(result.h_t0min);
-    System.out.println("Metric " + Math.sqrt(result.h_t0min));
+    System.out.println("Metric " + metric);
     expected = 0;
     Assert.assertTrue("Metric is not inside the tolerance", metric >= expected - tolerance && metric <= expected + tolerance);
 
@@ -92,7 +92,7 @@ public class PolygonTurningSimilarityTest {
     pts.init_events(turnRep5, turnRep3);
     result = pts.h_t0min(turnRep5, turnRep3, vals.ht0, vals.slope, vals.alpha, PolygonTurningSimilarity.reinit_interval(turnRep5, turnRep3));
     metric = Math.sqrt(result.h_t0min);
-//    System.out.println("Metric " + Math.sqrt(result.h_t0min));
+    System.out.println("Metric " + metric);
     expected = 1.114847311262;
     Assert.assertTrue("Metric is not inside the tolerance", metric >= expected - tolerance && metric <= expected + tolerance);
 
@@ -124,6 +124,6 @@ public class PolygonTurningSimilarityTest {
     Assert.assertTrue("Metric is not inside the tolerance", metric >= expected - tolerance && metric <= expected + tolerance);
     metric = PolygonTurningSimilarity.getTurningSimilarity(p11, p12);
     System.out.println("Metric " + metric);
-    
+    Assert.assertTrue("Metric is not inside the tolerance", metric >= expected - tolerance && metric <= expected + tolerance);
   }
 }
