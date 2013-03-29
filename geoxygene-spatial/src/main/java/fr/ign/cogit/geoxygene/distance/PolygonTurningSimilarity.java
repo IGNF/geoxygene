@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.distance;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -30,22 +31,6 @@ public class PolygonTurningSimilarity {
    */
   static int ilog2(int x) {
     return new Double(Math.floor(Math.log10(x) / Math.log10(2.0))).intValue();
-  }
-
-  private static int tr_i(TurnRep tr, int i) {
-    return i % tr.leg.size();
-  }
-
-  private static double tr_len(TurnRep tr, int i) {
-    return tr.leg.get(tr_i(tr, i)).len;
-  }
-
-  private static double tr_s(TurnRep tr, int i) {
-    return tr.leg.get(i % tr.leg.size()).s + i / tr.leg.size();
-  }
-
-  private static double tr_theta(TurnRep tr, int i) {
-    return tr.leg.get(i % tr.leg.size()).theta + i / tr.leg.size() * 2 * Math.PI;
   }
 
   /**
@@ -116,9 +101,9 @@ public class PolygonTurningSimilarity {
     for (int ti = to, ri = 0; ri < n; ++ti, ++ri) {
       Leg l = new Leg();
       r.leg.add(l);
-      l.theta = tr_theta(t, ti);
-      l.len = tr_len(t, ti);
-      l.s = tr_s(t, ti);
+      l.theta = t.theta(ti);
+      l.len = t.len(ti);
+      l.s = t.s(ti);
     }
     double len = 0.0;
     for (int ri = 0; ri < n; ++ri) {
@@ -129,8 +114,7 @@ public class PolygonTurningSimilarity {
 
   /**
    * In one O(m + n) pass over the turning reps of the polygons to be matched, this computes all the
-   * terms needed to
-   * incrementally compute the metric. See the paper.
+   * terms needed to incrementally compute the metric. See the paper.
    * @param f
    *        turning rep of the first polygon
    * @param g
@@ -155,7 +139,8 @@ public class PolygonTurningSimilarity {
      * Zero accumulators and compute initial slope.
      */
     ht0 = a = 0;
-    slope = (tr_s(g, 1) < tr_s(f, 1)) ? 0 : -Math.pow(tr_theta(g, 0) - tr_theta(f, 0), 2);
+    // slope = (tr_s(g, 1) < tr_s(f, 1)) ? 0 : -Math.pow(tr_theta(g, 0) - tr_theta(f, 0), 2);
+    slope = (g.s(1) < f.s(1)) ? 0 : -Math.pow(g.theta(0) - f.theta(0), 2);
     /*
      * Count all the strips
      */
@@ -163,15 +148,15 @@ public class PolygonTurningSimilarity {
       /*
        * Compute height of current strip.
        */
-      dtheta = tr_theta(g, gi - 1) - tr_theta(f, fi - 1);
+      dtheta = g.theta(gi - 1) - f.theta(fi - 1);
       /*
        * Determine flavor of discontinuity on right.
        */
-      if (tr_s(f, fi) <= tr_s(g, gi)) {
+      if (f.s(fi) <= g.s(gi)) {
         /*
          * It's f. Compute width of current strip, then bump area accumulators.
          */
-        ds = tr_s(f, fi) - last_s;
+        ds = f.s(fi) - last_s;
         a += ds * dtheta;
         ht0 += ds * dtheta * dtheta;
         /*
@@ -179,28 +164,28 @@ public class PolygonTurningSimilarity {
          * Note we've skipped
          * the first strip. It's added as the "next" of the last strip.
          */
-        if (tr_s(f, fi + 1) > tr_s(g, gi))
-          slope += Math.pow(tr_theta(f, fi) - tr_theta(g, gi - 1), 2);
+        if (f.s(fi + 1) > g.s(gi))
+          slope += Math.pow(f.theta(fi) - g.theta(gi - 1), 2);
         /*
          * Go to next f discontinuity.
          */
-        last_s = tr_s(f, fi++);
+        last_s = f.s(fi++);
       } else {
         /*
          * Else it's g ...
          */
-        ds = tr_s(g, gi) - last_s;
+        ds = g.s(gi) - last_s;
         a += ds * dtheta;
         ht0 += ds * dtheta * dtheta;
         /*
          * ... and next strip is gg or gf, and again we're interested in the latter case.
          */
-        if (tr_s(g, gi + 1) >= tr_s(f, fi))
-          slope -= Math.pow(tr_theta(g, gi) - tr_theta(f, fi - 1), 2);
+        if (g.s(gi + 1) >= f.s(fi))
+          slope -= Math.pow(g.theta(gi) - f.theta(fi - 1), 2);
         /*
          * Go to next g discontinuity.
          */
-        last_s = tr_s(g, gi++);
+        last_s = g.s(gi++);
       }
     }
     /*
@@ -250,12 +235,10 @@ public class PolygonTurningSimilarity {
 
   /**
    * Following are routines to maintian the event heap. This is initialized with one event per g
-   * discontinuity, namely,
-   * the one due to the f discontinuity closest to the right. The sort key is the "f shift"
-   * parameter t. As the
-   * algorithm runs, it draws an event (of min t) from the heap, handles it, then inserts the event
-   * due to the *next* f
-   * discontinuity associated with the same g discontinuity (unless this event would have t>1).
+   * discontinuity, namely, the one due to the f discontinuity closest to the right. The sort key is
+   * the "f shift" parameter t. As the algorithm runs, it draws an event (of min t) from the heap,
+   * handles it, then inserts the event due to the *next* f discontinuity associated with the same g
+   * discontinuity (unless this event would have t>1).
    */
   private Queue<Event> event = new PriorityQueue<Event>(1000, new Comparator<Event>() {
     @Override
@@ -274,10 +257,11 @@ public class PolygonTurningSimilarity {
    * @param gi
    */
   void add_event(TurnRep f, TurnRep g, int fi, int gi) {
-    double t = tr_s(f, fi) - tr_s(g, gi);
+    double t = f.s(fi) - g.s(gi);
     if (t > 1) {
       return;
     }
+//    System.out.println("ADD " + new Event(t, fi, gi));
     this.event.add(new Event(t, fi, gi));
   }
 
@@ -308,6 +292,7 @@ public class PolygonTurningSimilarity {
   void init_events(TurnRep f, TurnRep g) {
     int fi, gi;
     this.event.clear();
+//    System.out.println("Init events");
     /*
      * Cycle through all g discontinuities, including the one at s = 1. This takes care of s = 0.
      */
@@ -315,16 +300,19 @@ public class PolygonTurningSimilarity {
       /*
        * Look for the first f discontinuity to the right of this g discontinuity.
        */
-      while (tr_s(f, fi) <= tr_s(g, gi))
+//      System.out.println("fi = " + fi + ", gi = " + gi);
+      while (f.s(fi) <= g.s(gi)) {
         ++fi;
+      }
+//      System.out.println("fi = " + fi + ", gi = " + gi);
       add_event(f, g, fi, gi);
     }
   }
 
   /**
    * The heart of the algorithm: Compute the minimum value of the integral term of the metric by
-   * considering all
-   * critical events. This also returns the theta* and event associated with the minimum.
+   * considering all critical events. This also returns the theta* and event associated with the
+   * minimum.
    * @param f
    *        turning rep of the first polygon
    * @param g
@@ -376,16 +364,14 @@ public class PolygonTurningSimilarity {
       /*
        * Update slope, last t, and put next event for this g discontinuity in the heap.
        */
-      slope += 2 * (tr_theta(f, e.fi - 1) - tr_theta(f, e.fi))
-          * (tr_theta(g, e.gi - 1) - tr_theta(g, e.gi));
+      slope += 2 * (f.theta(e.fi - 1) - f.theta(e.fi)) * (g.theta(e.gi - 1) - g.theta(e.gi));
       last_t = e.t;
       add_event(f, g, e.fi + 1, e.gi);
       /*
        * Re-establish hc0 and slope now and then to reduce numerical error. If d_update is 0, do
-       * nothing. Note we don't
-       * update if an event is close, as this causes numerical ambiguity. The test number could be
-       * much smaller, but why
-       * tempt Murphey? We force an update on last event so there's always at least one.
+       * nothing. Note we don't update if an event is close, as this causes numerical ambiguity. The
+       * test number could be much smaller, but why tempt Murphey? We force an update on last event
+       * so there's always at least one.
        */
       if (d_update != 0
           && (this.event.isEmpty() || --left_to_update <= 0 && e.t - last_t > 0.001
@@ -410,32 +396,97 @@ public class PolygonTurningSimilarity {
     return new Result(min_metric2, min_theta_star, min_e, hc0_err, slope_err);
   }
 
+  /**
+   * Compute the minimum value of the integral term of the metric by considering all critical
+   * events.
+   * @param p1
+   *        first polygon
+   * @param p2
+   *        second polygon
+   * @return the minimum value of the integral term of the metric
+   */
   public static double getTurningSimilarity(IPolygon p1, IPolygon p2) {
     PolygonTurningSimilarity pts = new PolygonTurningSimilarity();
     TurnRep turnRep1 = PolygonTurningSimilarity.poly_to_turn_rep(p1);
     TurnRep turnRep2 = PolygonTurningSimilarity.poly_to_turn_rep(p2);
+//    System.out.println(turnRep1);
+//    System.out.println(turnRep2);
     InitVals vals = PolygonTurningSimilarity.init_vals(turnRep1, turnRep2);
+//    System.out.println("Init values = " + vals.ht0 + ", " + vals.slope + ", " + vals.alpha);
     pts.init_events(turnRep1, turnRep2);
+//    System.out.println("EVENTS ");
+//    Event[] array = pts.event.toArray(new Event[pts.event.size()]);
+//    Arrays.sort(array, new Comparator<Event>() {
+//      @Override
+//      public int compare(Event o1, Event o2) {
+//        return Double.compare(o1.t, o2.t);
+//      }
+//    });
+//    for (Event e : array) {
+//      System.out.println("\t" + e);
+//    }
     Result result = pts.h_t0min(turnRep1, turnRep2, vals.ht0, vals.slope, vals.alpha,
         PolygonTurningSimilarity.reinit_interval(turnRep1, turnRep2));
+//    System.out.println("Result = " + result.h_t0min + ", " + result.e);
+    TurnRep t1 = new TurnRep();
+    rotate_turn_rep(turnRep1, result.e.fi, t1);
+    TurnRep t2 = new TurnRep();
+    rotate_turn_rep(turnRep2, result.e.gi, t2);
+//    System.out.println("Turned F = " + t1);
+//    System.out.println("Turned G = " + t2);
     double metric = result.h_t0min;
     return Math.sqrt(metric);
   }
 
 }
 
-class Leg { /* single leg of a turning rep polygon */
+/**
+ * Single leg of a turning rep polygon.
+ */
+class Leg {
   double theta; /* heading of the leg */
   double len; /* length in original coordinates */
   double s; /* cumulative arc length in [0,1] of start */
+
+  @Override
+  public String toString() {
+    return "[" + this.theta + ", " + this.len + ", " + this.s + "]";
+  }
 }
 
-class TurnRep { /* polygon in turning rep */
+/**
+ * Polygon in turning rep.
+ */
+class TurnRep {
   double total_len;
   List<Leg> leg = new ArrayList<Leg>();
+
+  double len(int i) {
+    return this.leg.get(i % this.leg.size()).len;
+  }
+
+  double s(int i) {
+    return this.leg.get(i % this.leg.size()).s + i / this.leg.size();
+  }
+
+  double theta(int i) {
+    return this.leg.get(i % this.leg.size()).theta + i / this.leg.size() * 2 * Math.PI;
+  }
+
+  @Override
+  public String toString() {
+    String result = "TurnRep " + this.total_len + ", (";
+    for (Leg l : this.leg) {
+      result += l + ", ";
+    }
+    return result.substring(0, result.length() - 2) + ")";
+  }
 }
 
-class Event { /* critical event */
+/**
+ * Critical event.
+ */
+class Event {
   double t; /* "f shift" parameter of the event */
   int fi, gi; /* pointers into turn reps f and g */
 
@@ -465,7 +516,6 @@ class InitVals {
 
 class Result {
   public Result(double h_t0min1, double theta_star1, Event e1, double hc0_err1, double slope_err1) {
-    super();
     this.h_t0min = h_t0min1;
     this.theta_star = theta_star1;
     this.e = e1;
