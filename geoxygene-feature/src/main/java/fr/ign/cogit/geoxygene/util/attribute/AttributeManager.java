@@ -36,7 +36,7 @@ import fr.ign.cogit.geoxygene.feature.SchemaDefaultFeature;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.AttributeType;
 import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 
-public class AddAttribute {
+public class AttributeManager {
   /**
    * 
    * @author mickaelbrasebin
