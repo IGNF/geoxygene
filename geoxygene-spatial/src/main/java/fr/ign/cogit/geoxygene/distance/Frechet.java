@@ -1,6 +1,7 @@
 package fr.ign.cogit.geoxygene.distance;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -111,27 +112,14 @@ public class Frechet {
         qPoints));
   }
 
-  /**
-   * Partial discrete Frechet Distance
-   * @param p
-   * @param q
-   * @return
-   */
   public static double partialFrechet(final ILineString l1, final ILineString l2) {
     ILineString p = l1;
     ILineString q = l2;
 
-    Vector2D v1 = new Vector2D(p.startPoint(), p.endPoint());
-    Vector2D v2 = new Vector2D(q.startPoint(), q.endPoint());
-    if (v1.angleVecteur(v2).getValeur() > Math.PI / 2) {
-      q = q.reverse();
+    if (q.length() < p.length()) {
+      q = p;
+      p = l2;
     }
-
-    if (p.length() > q.length()) {
-      p = q;
-      q = l1;
-    }
-
     List<IDirectPosition> pPoints = new ArrayList<IDirectPosition>(p.coord());
     List<IDirectPosition> qPoints = new ArrayList<IDirectPosition>(q.coord());
 
@@ -141,6 +129,21 @@ public class Frechet {
     for (IDirectPosition point : q.getControlPoint()) {
       Operateurs.projectAndInsert(point, pPoints);
     }
+    double d1 = partialFrechet2(pPoints, qPoints);
+    Collections.reverse(qPoints);
+    double d2 = partialFrechet2(pPoints, qPoints);
+    return Math.min(d1, d2);
+
+  }
+
+  /**
+   * Partial discrete Frechet Distance
+   * @param p
+   * @param q
+   * @return
+   */
+  private static double partialFrechet2(final List<IDirectPosition> pPoints,
+      final List<IDirectPosition> qPoints) {
 
     // M C'est le nombre de noeuds de L2
     // N C'est le nombre de noeuds de L1
@@ -154,21 +157,21 @@ public class Frechet {
     for (int i = qPoints.size() - 1; i > 0; i--) {
       e.add(qPoints.get(i));
     }
-    GM_LineString res = null;
-
     double dfdp = Double.POSITIVE_INFINITY;
+    GM_LineString res = null;
     int j = 1;
     for (IDirectPosition l2j : b) {
       if (pPoints.get(0).distance(l2j) < dfdp) {
         int jj = qPoints.size() - 1;
         for (IDirectPosition l2jj : e) {
-          if (j < jj && pPoints.get(qPoints.size() - 1).distance(l2jj) < dfdp) {
+          if (j <= jj && pPoints.get(pPoints.size() - 1).distance(l2jj) < dfdp) {
             GM_LineString l11l1n = new GM_LineString(pPoints);
-            GM_LineString l2jl2jj = new GM_LineString(qPoints.subList(j, jj));
+            GM_LineString l2jl2jj = new GM_LineString(
+                qPoints.subList(j, jj + 1));
             double dfrechet = discreteFrechet(l11l1n, l2jl2jj);
             if (dfrechet < dfdp) {
-              res = l2jl2jj;
               dfdp = dfrechet;
+              res = l2jl2jj;
             }
           }
           jj--;
