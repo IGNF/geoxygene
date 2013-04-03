@@ -57,6 +57,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
   public static String LAYER_ROAD_NODE = "layerRoadNode";
   private LoadedLayer layerPath;
   public static String LAYER_PATH = "layerPath";
+  protected LoadedLayer layerBridgePoint;
+  public static String LAYER_BRIDGE_PT = "bridgePoint";
 
   private LoadedLayer layerWaterLine;
   public static String LAYER_WATER_LINE = "layerWaterLine";
@@ -171,6 +173,8 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
       return this.layerRunways;
     } else if (layer.equals(LayerGroup.LAYER_POI)) {
       return this.layerPOI;
+    } else if (layer.equals(LayerGroup.LAYER_BRIDGE_PT)) {
+      return this.layerBridgePoint;
     } else {
       return null;
     }
@@ -208,6 +212,7 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
     this.layerRoadLine = new LoadedLayer(dataSet.getRoads());
     this.layerRoadNode = new LoadedLayer(dataSet.getRoadNodes());
     this.layerPath = new LoadedLayer(dataSet.getPaths());
+    this.layerBridgePoint = new LoadedLayer(dataSet.getBridgePoints());
 
     this.layerWaterLine = new LoadedLayer(dataSet.getWaterLines());
     this.layerWaterArea = new LoadedLayer(dataSet.getWaterAreas());
@@ -254,7 +259,7 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
     this.layerTown = new LoadedLayer(dataSet.getTowns());
 
     this.layerRoadLine = new LoadedLayer(dataSet.getRoads());
-
+    this.layerBridgePoint = new LoadedLayer(dataSet.getBridgePoints());
     this.layerWaterLine = new LoadedLayer(dataSet.getWaterLines());
 
     this.layerRailwayLine = new LoadedLayer(dataSet.getRailwayLines());
@@ -332,6 +337,7 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
     layerManager.addLayer(this.layerRoadLine);
     layerManager.addLayer(this.layerRoadNode);
     layerManager.addLayer(this.layerPath);
+    layerManager.addLayer(this.layerBridgePoint);
     layerManager.addLayer(this.layerWaterLine);
     layerManager.addLayer(this.layerWaterArea);
     layerManager.addLayer(this.layerIslands);
@@ -608,6 +614,10 @@ public class PeaRepLayerGroup extends AbstractLayerGroup {
               GeneralisationSymbolisation.tronconRouteDecale(),
               DataThemesGUIComponent.getInstance().getRoadNetMenu().mRoutierVoirRouteDecalee);
     }
+    // bridge points
+    layerManager.addSymbolisedLayer(this.layerBridgePoint,
+        GeneralisationSymbolisation.symboliseBridge(this, (float) 0.2),
+        this.cVoirRR);
 
     // reseau ferroviaire
     layerManager.addSymbolisedLayer(this.layerRailwayLine,

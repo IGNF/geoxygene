@@ -111,7 +111,6 @@ import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.DigitalLandscapeModel;
 import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
-import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
@@ -126,14 +125,12 @@ public class MGCPLoader extends ShapeFileLoader {
    */
   public MGCPLoader(SymbolGroup symbGroup, String dbName) {
     this.createNewDb(symbGroup, dbName);
-    this.setProjEpsg("32629");
   }
 
   /**
    * Default constructor
    */
   public MGCPLoader() {
-    this.setProjEpsg("32629");
   }
 
   @Override
@@ -780,7 +777,7 @@ public class MGCPLoader extends ShapeFileLoader {
 
   public void createNewDb(SymbolGroup symbGroup, String name) {
     // create the new CartAGen dataset
-    ShapeFileDB database = new ShapeFileDB(name);
+    MGCPPlusPlusDB database = new MGCPPlusPlusDB(name);
     database.setSourceDLM(SourceDLM.MGCPPlusPlus);
     database.setSymboScale(100000);
     database.setDocument(CartAGenDoc.getInstance());

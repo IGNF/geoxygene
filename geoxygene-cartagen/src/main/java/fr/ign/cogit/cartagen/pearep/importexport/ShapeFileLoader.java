@@ -151,10 +151,18 @@ public abstract class ShapeFileLoader {
     Record object1 = shr.nextRecord();
     Geometry geomJTS1 = (Geometry) object1.shape();
     if (this.projEpsg == null) {
-      String zone = this.getZoneUtm(geomJTS1.getCentroid().getX(), geomJTS1
-          .getCentroid().getY());
+      String zone = ShapeFileLoader.getZoneUtm(geomJTS1.getCentroid().getX(),
+          geomJTS1.getCentroid().getY());
       this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
+      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
+          .setProjEpsg(this.getProjEpsg());
+    } else {
+      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
+          .setProjEpsg(this.getProjEpsg());
     }
+    shr.close();
+    ShpFiles shpf = new ShpFiles(path);
+    shr = new ShapefileReader(shpf, true, false, new GeometryFactory());
 
     // loop on the shapefile records
     while (shr.hasNext() && dbr.hasNext()) {
@@ -242,9 +250,14 @@ public abstract class ShapeFileLoader {
     Record object1 = shr.nextRecord();
     Geometry geomJTS1 = (Geometry) object1.shape();
     if (this.projEpsg == null) {
-      String zone = this.getZoneUtm(geomJTS1.getCentroid().getX(), geomJTS1
-          .getCentroid().getY());
+      String zone = ShapeFileLoader.getZoneUtm(geomJTS1.getCentroid().getX(),
+          geomJTS1.getCentroid().getY());
       this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
+      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
+          .setProjEpsg(this.getProjEpsg());
+    } else {
+      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
+          .setProjEpsg(this.getProjEpsg());
     }
     shr.close();
     ShpFiles shpf = new ShpFiles(path);
@@ -330,9 +343,14 @@ public abstract class ShapeFileLoader {
     Record object1 = shr.nextRecord();
     Geometry geomJTS1 = (Geometry) object1.shape();
     if (this.projEpsg == null) {
-      String zone = this.getZoneUtm(geomJTS1.getCentroid().getX(), geomJTS1
-          .getCentroid().getY());
+      String zone = ShapeFileLoader.getZoneUtm(geomJTS1.getCentroid().getX(),
+          geomJTS1.getCentroid().getY());
       this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
+      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
+          .setProjEpsg(this.getProjEpsg());
+    } else {
+      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
+          .setProjEpsg(this.getProjEpsg());
     }
     shr.close();
     ShpFiles shpf = new ShpFiles(path);
@@ -418,9 +436,14 @@ public abstract class ShapeFileLoader {
     Record object1 = shr.nextRecord();
     Geometry geomJTS1 = (Geometry) object1.shape();
     if (this.projEpsg == null) {
-      String zone = this.getZoneUtm(geomJTS1.getCentroid().getX(), geomJTS1
-          .getCentroid().getY());
+      String zone = ShapeFileLoader.getZoneUtm(geomJTS1.getCentroid().getX(),
+          geomJTS1.getCentroid().getY());
       this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
+      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
+          .setProjEpsg(this.getProjEpsg());
+    } else {
+      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
+          .setProjEpsg(this.getProjEpsg());
     }
 
     // loop on the shapefile records
@@ -507,9 +530,14 @@ public abstract class ShapeFileLoader {
     Record object1 = shr.nextRecord();
     Geometry geomJTS1 = (Geometry) object1.shape();
     if (this.projEpsg == null) {
-      String zone = this.getZoneUtm(geomJTS1.getCentroid().getX(), geomJTS1
-          .getCentroid().getY());
+      String zone = ShapeFileLoader.getZoneUtm(geomJTS1.getCentroid().getX(),
+          geomJTS1.getCentroid().getY());
       this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
+      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
+          .setProjEpsg(this.getProjEpsg());
+    } else {
+      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
+          .setProjEpsg(this.getProjEpsg());
     }
 
     // loop on the shapefile records
@@ -561,7 +589,7 @@ public abstract class ShapeFileLoader {
     return this.projEpsg;
   }
 
-  public String getZoneUtm(Double x, Double y) {
+  public static String getZoneUtm(Double x, Double y) {
     String zoneUtm = null;
     String zone = null;
     String hemis = null;

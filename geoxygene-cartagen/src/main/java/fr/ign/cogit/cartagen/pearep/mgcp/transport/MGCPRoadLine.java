@@ -50,7 +50,7 @@ public class MGCPRoadLine extends MGCPFeature implements IRoadLine {
   private long loc;
   private String ltn;
   private long mes;
-  private String name;
+  private String nam;
   private String nfi;
   private String nfn;
   private long rst;
@@ -102,7 +102,7 @@ public class MGCPRoadLine extends MGCPFeature implements IRoadLine {
       this.mes = (Long) mesAttr;
     else
       this.mes = new Long((Integer) mesAttr);
-    this.name = (String) attributes.get("nam");
+    this.nam = (String) attributes.get("nam");
     this.nfi = (String) attributes.get("nfi");
     this.nfn = (String) attributes.get("nfn");
     Object rstAttr = attributes.get("rst");
@@ -137,6 +137,23 @@ public class MGCPRoadLine extends MGCPFeature implements IRoadLine {
     else
       this.wtc = new Long((Integer) wtcAttr);
     this.setAttributeMap(null);
+  }
+
+  /**
+   * The generic constructor used to correct road data.
+   * @param line
+   * @param attributes
+   * @param type
+   */
+  public MGCPRoadLine(ILineString line) {
+    super();
+    this.geoxObj = new TronconDeRouteImpl(new ReseauImpl(), false, line);
+    this.setInitialGeom(line);
+    this.setEliminated(false);
+    this.computeImportance();
+    this.deadEnd = false;
+    this.initialNode = null;
+    this.finalNode = null;
   }
 
   @Override
@@ -369,11 +386,11 @@ public class MGCPRoadLine extends MGCPFeature implements IRoadLine {
   }
 
   public String getNam() {
-    return this.name;
+    return this.nam;
   }
 
   public void setNam(String nam) {
-    this.name = nam;
+    this.nam = nam;
   }
 
   public String getNfi() {

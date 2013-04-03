@@ -64,6 +64,10 @@ public class MGCPAirport extends MGCPFeature implements IAirportArea {
     return (IPolygon) this.geom;
   }
 
+  public double getArea() {
+    return this.geom.area();
+  }
+
   @Override
   public String getName() {
     return name;

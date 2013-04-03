@@ -36,6 +36,8 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterElement;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterXMLParser;
+import fr.ign.cogit.cartagen.pearep.enrichment.MakeNetworkPlanar;
+import fr.ign.cogit.cartagen.pearep.enrichment.ScaleMasterPreProcess;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
@@ -77,6 +79,7 @@ public class ScaleMasterScheduler {
   private Set<ScaleMasterTheme> themes;
 
   private Set<ScaleMasterGeneProcess> availableProcesses;
+  private Set<ScaleMasterPreProcess> availablePreProcesses;
 
   private List<String> listLayersVmap2i;
   private List<String> listLayersVmap1;
@@ -100,6 +103,7 @@ public class ScaleMasterScheduler {
     this.initLoggers();
     this.initThemes(themesFile);
     this.initProcesses();
+    this.initPreProcesses();
     XMLParser smParser = new XMLParser(scaleMasterXml);
     XMLParser paramParser = new XMLParser(parameterXml);
     this.scaleMaster = smParser.parseScaleMaster(this);
@@ -115,6 +119,7 @@ public class ScaleMasterScheduler {
       Set<ScaleMasterTheme> themes, int scale) {
     this.themes = themes;
     this.initProcesses();
+    this.initPreProcesses();
     this.scaleMaster = scaleMaster;
     this.scale = scale;
   }
@@ -217,6 +222,14 @@ public class ScaleMasterScheduler {
     this.availableProcesses.add(CollapseToPointProcess.getInstance());
     this.availableProcesses.add(RunwaySimplificationProcess.getInstance());
     this.availableProcesses.add(SkeletonizeProcess.getInstance());
+  }
+
+  /**
+   * Initialise the available pre-processes for the scheduler.
+   */
+  private void initPreProcesses() {
+    this.availablePreProcesses = new HashSet<ScaleMasterPreProcess>();
+    this.availablePreProcesses.add(MakeNetworkPlanar.getInstance());
   }
 
   private void initLoggers() throws SecurityException, IOException {
@@ -425,5 +438,14 @@ public class ScaleMasterScheduler {
 
   public void setListLayersMgcpPlusPlus(List<String> listLayersMgcpPlusPlus) {
     this.listLayersMgcpPlusPlus = listLayersMgcpPlusPlus;
+  }
+
+  public Set<ScaleMasterPreProcess> getAvailablePreProcesses() {
+    return availablePreProcesses;
+  }
+
+  public void setAvailablePreProcesses(
+      Set<ScaleMasterPreProcess> availablePreProcesses) {
+    this.availablePreProcesses = availablePreProcesses;
   }
 }

@@ -20,6 +20,7 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 
@@ -69,17 +70,24 @@ public class CollapseToPointProcess extends ScaleMasterGeneProcess {
               IGeneObj newObj = (IGeneObj) meth.invoke(CartagenApplication
                   .getInstance().getCreationFactory(), centroid);
               // add object to its dataset population
-              CartAGenDoc
+              String ft = classObj.getField("FEAT_TYPE_NAME").getName();
+              @SuppressWarnings("unchecked")
+              IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDoc
                   .getInstance()
                   .getCurrentDataset()
                   .getCartagenPop(
                       CartAGenDoc.getInstance().getCurrentDataset()
-                          .getPopNameFromClass(classObj)).add(newObj);
+                          .getPopNameFromClass(classObj), ft);
+              pop.add(newObj);
             } catch (IllegalArgumentException e) {
               e.printStackTrace();
             } catch (IllegalAccessException e) {
               e.printStackTrace();
             } catch (InvocationTargetException e) {
+              e.printStackTrace();
+            } catch (SecurityException e) {
+              e.printStackTrace();
+            } catch (NoSuchFieldException e) {
               e.printStackTrace();
             }
           }

@@ -42,10 +42,10 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMaster;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterElement;
 import fr.ign.cogit.cartagen.software.CartAGenDataSet;
-import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
 import fr.ign.cogit.cartagen.util.CRSConversion;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
 import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.util.conversion.AdapterFactory;
@@ -133,18 +133,17 @@ public class ShapeFileExport {
         continue;
       }
       for (IGeneObj obj : pop) {
-        if (classObj.isInstance(obj)) {
+        if (classObj.isInstance(obj) && (!obj.isEliminated())) {
           features.add(obj);
         }
       }
+      if (features.isEmpty()) {
+        continue;
+      }
 
       // write the shapefile
-      // FIXME coder la gestion des projections de manière plus propre!
-      String projEpsg = "32631";
-      if (this.dataset.getCartAGenDB().getSourceDLM()
-          .equals(SourceDLM.MGCPPlusPlus)) {
-        projEpsg = "32629";
-      }
+      String projEpsg = ((MGCPPlusPlusDB) this.dataset.getCartAGenDB())
+          .getProjEpsg();
       ShapeFileExport.write(features, line.getTheme().getGeometryType()
           .toGeomClass(), this.exportDir.getPath() + "\\" + shapeFileName,
           projEpsg, "4326");
@@ -201,6 +200,8 @@ public class ShapeFileExport {
         List<Object> liste = new ArrayList<Object>(0);
         // change the CRS if needed
         IGeometry geom = feature.getGeom();
+        if ((geom instanceof ILineString) && (geom.coord().size() < 2))
+          continue;
         if (!epsgIni.equals(epsgFin)) {
           geom = CRSConversion.changeCRS(geom, epsgIni, epsgFin, true, false);
         }

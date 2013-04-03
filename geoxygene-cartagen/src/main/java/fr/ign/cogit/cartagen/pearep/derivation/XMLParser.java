@@ -12,7 +12,9 @@ package fr.ign.cogit.cartagen.pearep.derivation;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,7 +24,10 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.GeometryType;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMaster;
+import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterXMLParser;
 
 public class XMLParser {
@@ -160,5 +165,65 @@ public class XMLParser {
         scheduler.setListLayersMgcpPlusPlus(listLayer);
       }
     }
+  }
+
+  /**
+   * Parse the xml file that contains existing themes and put them into the
+   * parameter collection.
+   * @param existingThemes
+   * @throws ParserConfigurationException
+   * @throws IOException
+   * @throws SAXException
+   * @throws ClassNotFoundException
+   */
+  @SuppressWarnings("unchecked")
+  public Set<ScaleMasterTheme> parseExistingThemes()
+      throws ParserConfigurationException, SAXException, IOException,
+      ClassNotFoundException {
+    Set<ScaleMasterTheme> existingThemes = new HashSet<ScaleMasterTheme>();
+    // open the xml file
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    DocumentBuilder db;
+    db = dbf.newDocumentBuilder();
+    org.w3c.dom.Document doc;
+    doc = db.parse(this.xmlFile);
+    doc.getDocumentElement().normalize();
+    // get the root of the XML document
+    Element root = (Element) doc.getElementsByTagName("scale-master-theme")
+        .item(0);
+    for (int i = 0; i < root.getElementsByTagName("theme").getLength(); i++) {
+      Element themeElem = (Element) root.getElementsByTagName("theme").item(i);
+      Element nameElem = (Element) themeElem.getElementsByTagName("name").item(
+          0);
+      String name = nameElem.getChildNodes().item(0).getNodeValue();
+      Element conceptElem = (Element) themeElem.getElementsByTagName("concept")
+          .item(0);
+      @SuppressWarnings("unused")
+      String conceptName = conceptElem.getChildNodes().item(0).getNodeValue();
+      // TODO add the ontology
+      Element descrElem = (Element) themeElem.getElementsByTagName(
+          "description").item(0);
+      String description = descrElem.getChildNodes().item(0).getNodeValue();
+      Element geomElem = (Element) themeElem.getElementsByTagName(
+          "geometry-type").item(0);
+      GeometryType geometryType = GeometryType.valueOf(geomElem.getChildNodes()
+          .item(0).getNodeValue());
+      Set<Class<? extends IGeneObj>> relatedClasses = new HashSet<Class<? extends IGeneObj>>();
+      Element classesElem = (Element) themeElem.getElementsByTagName(
+          "cartagen-classes").item(0);
+      for (int j = 0; j < classesElem.getElementsByTagName("class").getLength(); j++) {
+        Element classElem = (Element) classesElem.getElementsByTagName("class")
+            .item(j);
+        String className = classElem.getChildNodes().item(0).getNodeValue();
+        relatedClasses
+            .add((Class<? extends IGeneObj>) Class.forName(className));
+      }
+      ScaleMasterTheme theme = new ScaleMasterTheme(name, relatedClasses,
+          geometryType);
+      theme.setDescription(description);
+      existingThemes.add(theme);
+    }
+
+    return existingThemes;
   }
 }

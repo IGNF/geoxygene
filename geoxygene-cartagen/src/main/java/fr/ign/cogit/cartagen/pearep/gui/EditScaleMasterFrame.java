@@ -60,7 +60,6 @@ import org.xml.sax.SAXException;
 
 import fr.ign.cogit.cartagen.core.genericschema.IGeneObj;
 import fr.ign.cogit.cartagen.mrdb.REPPointOfView;
-import fr.ign.cogit.cartagen.mrdb.scalemaster.GeometryType;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleLine;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMaster;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterElement;
@@ -68,23 +67,8 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterEnrichment;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterGeneProcess;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterTheme;
 import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterXMLParser;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuildPoint;
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPBuiltUpArea;
-import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirport;
-import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPAirportPoint;
-import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayArea;
-import fr.ign.cogit.cartagen.pearep.mgcp.aer.MGCPRunwayLine;
-import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPLakeArea;
-import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPRiverArea;
-import fr.ign.cogit.cartagen.pearep.mgcp.hydro.MGCPWaterLine;
-import fr.ign.cogit.cartagen.pearep.mgcp.relief.MGCPContourLine;
-import fr.ign.cogit.cartagen.pearep.mgcp.transport.MGCPRoadLine;
-import fr.ign.cogit.cartagen.pearep.vmap.elev.VMAPContourLine;
-import fr.ign.cogit.cartagen.pearep.vmap.hydro.VMAPWaterArea;
-import fr.ign.cogit.cartagen.pearep.vmap.hydro.VMAPWaterLine;
-import fr.ign.cogit.cartagen.pearep.vmap.pop.VMAPBuildPoint;
-import fr.ign.cogit.cartagen.pearep.vmap.pop.VMAPBuiltUpArea;
-import fr.ign.cogit.cartagen.pearep.vmap.transport.VMAPRoadLine;
+import fr.ign.cogit.cartagen.pearep.derivation.XMLParser;
+import fr.ign.cogit.cartagen.pearep.enrichment.ScaleMasterPreProcess;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDB;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.interfacecartagen.utilities.I18N;
@@ -108,6 +92,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
   private Map<String, Color> dbHues;
   private Set<ScaleMasterEnrichment> enrichProcs;
   private Set<ScaleMasterGeneProcess> genProcs;
+  private Set<ScaleMasterPreProcess> preProcs;
 
   private JButton btnOk, btnCancel, btnApply, btnAddLine, btnAddElement,
       btnEditElement;
@@ -124,7 +109,9 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       lblAddElement, lblEditElement, lblName, lblPtOfView, lblMin, lblMax,
       lblDbs;
 
-  public EditScaleMasterFrame() throws OWLOntologyCreationException {
+  public EditScaleMasterFrame() throws OWLOntologyCreationException,
+      ParserConfigurationException, SAXException, IOException,
+      ClassNotFoundException {
     super();
     this.internationalisation();
     this.setTitle(this.frameTitle);
@@ -215,8 +202,8 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
 
     // a panel to display the scale master
     this.pDisplay = new JPanel();
-    this.pDisplay.setPreferredSize(new Dimension(1200, 200));
-    this.pDisplay.setMinimumSize(new Dimension(1200, 200));
+    this.pDisplay.setPreferredSize(new Dimension(1200, 800));
+    this.pDisplay.setMinimumSize(new Dimension(1200, 600));
     this.ruler = new ScaleRulerPanel(5);
     this.ruler.addMouseListener(this);
     JPanel pRuler = new JPanel();
@@ -230,6 +217,8 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
         BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
         BorderFactory.createEmptyBorder(5, 5, 5, 5)));
     this.pDisplay.setLayout(new BoxLayout(this.pDisplay, BoxLayout.Y_AXIS));
+    JScrollPane scrollDisplay = new JScrollPane(this.pDisplay);
+    scrollDisplay.setPreferredSize(new Dimension(1200, 400));
 
     // a panel for the buttons
     JPanel pButtons = new JPanel();
@@ -273,7 +262,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     this.getContentPane().add(Box.createVerticalGlue());
     this.getContentPane().add(pEdition);
     this.getContentPane().add(Box.createVerticalGlue());
-    this.getContentPane().add(new JScrollPane(this.pDisplay));
+    this.getContentPane().add(scrollDisplay);
     this.getContentPane().add(Box.createVerticalGlue());
     this.getContentPane().add(pButtons);
     this.getContentPane().setLayout(
@@ -451,6 +440,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       ScaleLineDisplayPanel panel = this.linePanels.get(name);
       panel.getToggle().setSelected(false);
       panel.setOpaque(false);
+      panel.repaint();
     }
   }
 
@@ -478,6 +468,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     this.enrichProcs = new HashSet<ScaleMasterEnrichment>();
     this.genProcs = new HashSet<ScaleMasterGeneProcess>();
     this.geoClasses = new ArrayList<Class<?>>();
+    this.preProcs = new HashSet<ScaleMasterPreProcess>();
     // get the directory of the package of this class
     Package pack = this.getClass().getPackage();
     String name = pack.getName();
@@ -537,6 +528,13 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
           ScaleMasterEnrichment instance = (ScaleMasterEnrichment) classObj
               .getMethod("getInstance").invoke(null);
           this.enrichProcs.add(instance);
+        }
+
+        // test if it's a pre-process class
+        if (ScaleMasterPreProcess.class.isAssignableFrom(classObj)) {
+          ScaleMasterPreProcess instance = (ScaleMasterPreProcess) classObj
+              .getMethod("getInstance").invoke(null);
+          this.preProcs.add(instance);
         }
 
         // test if the class inherits from IGeneObj
@@ -662,32 +660,25 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
 
   /**
    * Initialise the {@link ScaleMasterTheme} objects known by {@code this}.
+   * @throws ClassNotFoundException
+   * @throws IOException
+   * @throws SAXException
+   * @throws ParserConfigurationException
    */
-  private void initThemes() {
-    this.existingThemes = new HashSet<ScaleMasterTheme>();
-    this.existingThemes.add(new ScaleMasterTheme("roadl", new Class[] {
-        VMAPRoadLine.class, MGCPRoadLine.class }, GeometryType.LINE));
-    this.existingThemes.add(new ScaleMasterTheme("built_up_area", new Class[] {
-        VMAPBuiltUpArea.class, MGCPBuiltUpArea.class }, GeometryType.POLYGON));
-    this.existingThemes.add(new ScaleMasterTheme("waterl", new Class[] {
-        VMAPWaterLine.class, MGCPWaterLine.class }, GeometryType.LINE));
-    this.existingThemes.add(new ScaleMasterTheme("buildingp", new Class[] {
-        VMAPBuildPoint.class, MGCPBuildPoint.class }, GeometryType.POINT));
-    this.existingThemes.add(new ScaleMasterTheme("contourl", new Class[] {
-        VMAPContourLine.class, MGCPContourLine.class }, GeometryType.LINE));
-    this.existingThemes.add(new ScaleMasterTheme("lake_area", new Class[] {
-        VMAPWaterArea.class, MGCPLakeArea.class }, GeometryType.POLYGON));
-    this.existingThemes.add(new ScaleMasterTheme("river_area",
-        new Class[] { MGCPRiverArea.class }, GeometryType.POLYGON));
-    this.existingThemes.add(new ScaleMasterTheme("airport_area",
-        new Class[] { MGCPAirport.class }, GeometryType.POLYGON));
-    this.existingThemes.add(new ScaleMasterTheme("airport_point",
-        new Class[] { MGCPAirportPoint.class }, GeometryType.POINT));
-    this.existingThemes.add(new ScaleMasterTheme("runway_area",
-        new Class[] { MGCPRunwayArea.class }, GeometryType.POLYGON));
-    this.existingThemes.add(new ScaleMasterTheme("runway_line",
-        new Class[] { MGCPRunwayLine.class }, GeometryType.LINE));
-    // TODO
+  private void initThemes() throws ParserConfigurationException, SAXException,
+      IOException, ClassNotFoundException {
+    // load a xml file in which existing themes have been stored
+    JFileChooser fc = new JFileChooser();
+    fc.setFileFilter(new XMLFileFilter());
+    fc.setName("Choose the themes XML file to open");
+    int returnVal = fc.showOpenDialog(this);
+    if (returnVal != JFileChooser.APPROVE_OPTION) {
+      return;
+    }
+    File xmlFile = fc.getSelectedFile();
+    // now parse the xml file
+    XMLParser parser = new XMLParser(xmlFile);
+    this.existingThemes.addAll(parser.parseExistingThemes());
   }
 
   class SelectElementFrame extends JFrame implements ActionListener {

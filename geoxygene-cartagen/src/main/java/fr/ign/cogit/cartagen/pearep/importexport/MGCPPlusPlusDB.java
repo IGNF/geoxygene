@@ -29,6 +29,7 @@ import fr.ign.cogit.cartagen.util.XMLUtil;
 public class MGCPPlusPlusDB extends ShapeFileDB {
 
   private List<String> classes;
+  private String projEpsg;
 
   public MGCPPlusPlusDB(File file) throws ParserConfigurationException,
       SAXException, IOException, ClassNotFoundException {
@@ -84,6 +85,11 @@ public class MGCPPlusPlusDB extends ShapeFileDB {
     SourceDLM source = SourceDLM.valueOf(sourceElem.getChildNodes().item(0)
         .getNodeValue());
     this.setSourceDLM(source);
+
+    // The projection EPSG
+    Element projElem = (Element) root.getElementsByTagName("projection-epsg")
+        .item(0);
+    this.setProjEpsg(projElem.getChildNodes().item(0).getNodeValue());
 
     // the list of classes
     this.classes = new ArrayList<String>();
@@ -268,6 +274,14 @@ public class MGCPPlusPlusDB extends ShapeFileDB {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  public String getProjEpsg() {
+    return projEpsg;
+  }
+
+  public void setProjEpsg(String projEpsg) {
+    this.projEpsg = projEpsg;
   }
 
 }

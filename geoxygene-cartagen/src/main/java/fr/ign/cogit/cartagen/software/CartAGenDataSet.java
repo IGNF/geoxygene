@@ -4258,4 +4258,22 @@ public class CartAGenDataSet extends DataSet {
 
   }
 
+  /**
+   * Get the good network feature (e.g. road network, river network) from a
+   * class instance.
+   * @param classObj
+   * @return
+   */
+  public INetwork getNetworkFromClass(Class<? extends IGeneObj> classObj) {
+    if (IRoadLine.class.isAssignableFrom(classObj))
+      return getRoadNetwork();
+    if (IWaterLine.class.isAssignableFrom(classObj))
+      return getHydroNetwork();
+    if (IRailwayLine.class.isAssignableFrom(classObj))
+      return getRailwayNetwork();
+    if (IElectricityLine.class.isAssignableFrom(classObj))
+      return getElectricityNetwork();
+    return null;
+  }
+
 }
