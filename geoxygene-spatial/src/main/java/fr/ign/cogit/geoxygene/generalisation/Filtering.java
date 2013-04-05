@@ -19,6 +19,9 @@
 
 package fr.ign.cogit.geoxygene.generalisation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
@@ -165,12 +168,25 @@ public class Filtering {
    */
   public static IDirectPositionList DouglasPeuckerList(
       IDirectPositionList PtList, double seuil) {
+    return new DirectPositionList(Filtering.DouglasPeuckerList(PtList.getList(), seuil));
+  }
 
-    IDirectPositionList douglasVector = new DirectPositionList();
+  /**
+   * Douglas-Peucker sur une liste de points.
+   * <p>
+   * On applique l'algo en utilisant la récursivité.
+   * @param PtList liste de points
+   * @param seuil seuil utilisé
+   * @return la liste de points filtrée
+   */
+  public static List<IDirectPosition> DouglasPeuckerList(
+      List<IDirectPosition> PtList, double seuil) {
+
+    List<IDirectPosition> douglasVector = new ArrayList<IDirectPosition>();
     if (PtList.isEmpty()) {
       return douglasVector;
     }
-    IDirectPositionList filtreVector = new DirectPositionList();
+    List<IDirectPosition> filtreVector = new ArrayList<IDirectPosition>();
 
     int i = 0;
     int k = 0;
@@ -194,9 +210,9 @@ public class Filtering {
 
     if (i != 0) {
       douglasVector.addAll(Filtering.DouglasPeuckerList(new DirectPositionList(
-          PtList.getList().subList(0, i + 1)), seuil));
+          PtList.subList(0, i + 1)), seuil));
       douglasVector.addAll(Filtering.DouglasPeuckerList(new DirectPositionList(
-          PtList.getList().subList(i, nbpts)), seuil));
+          PtList.subList(i, nbpts)), seuil));
     } else {
       douglasVector.add(PtIni);
       douglasVector.add(PtFin);

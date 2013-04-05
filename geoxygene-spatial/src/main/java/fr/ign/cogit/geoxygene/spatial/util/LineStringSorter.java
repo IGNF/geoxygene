@@ -30,6 +30,9 @@ public class LineStringSorter {
     for (ILineString l : collection) {
       if (line.intersects(l)) {
         IGeometry intersection = line.intersection(l);
+        if (intersection == null) {
+          continue;
+        }
         double minParam = Double.POSITIVE_INFINITY;
         for (IDirectPosition p : intersection.coord()) {
           double param = line.paramForPoint(p)[0];
