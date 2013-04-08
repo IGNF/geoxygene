@@ -19,6 +19,83 @@
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data;
 
+import fr.ign.cogit.geoxygene.api.feature.IPopulation;
+
+/**
+ * Traitements topologiques à l'import.
+ * 
+ *
+ */
 public class ParamTopoTreatmentNetworkDataMatching {
+  
+  private double topologieSeuilFusionNoeuds1 = -1;
+  private double topologieSeuilFusionNoeuds2 = -1;
+  private IPopulation<?> topologieSurfacesFusionNoeuds1;
+  private IPopulation<?> topologieSurfacesFusionNoeuds2;
+  private boolean topologieElimineNoeudsAvecDeuxArcs1;
+  private boolean topologieElimineNoeudsAvecDeuxArcs2;
+  private boolean topologieGraphePlanaire1;
+  private boolean topologieGraphePlanaire2;
+  private boolean topologieFusionArcsDoubles1;
+  private boolean topologieFusionArcsDoubles2;
+  
+  /**
+   * Constructor.
+   */
+  public ParamTopoTreatmentNetworkDataMatching() {
+    topologieSeuilFusionNoeuds1 = -1;
+    topologieSeuilFusionNoeuds2 = -1;
+    topologieSurfacesFusionNoeuds1 = null;
+    topologieSurfacesFusionNoeuds2 = null;
+    
+    topologieElimineNoeudsAvecDeuxArcs1 = false;
+    topologieElimineNoeudsAvecDeuxArcs2 = false;
+    topologieGraphePlanaire1 = false;
+    topologieGraphePlanaire2 = false;
+    
+    topologieFusionArcsDoubles1 = false;
+    topologieFusionArcsDoubles2 = false;
+  }
+  
+  
+  public double getTopologieSeuilFusionNoeuds1() {
+    return topologieSeuilFusionNoeuds1;
+  }
+  
+  public double getTopologieSeuilFusionNoeuds2() {
+    return topologieSeuilFusionNoeuds2;
+  }
+  
+  public IPopulation<?> getTopologieSurfacesFusionNoeuds1() {
+    return topologieSurfacesFusionNoeuds1;
+  }
+  
+  public IPopulation<?> getTopologieSurfacesFusionNoeuds2() {
+    return topologieSurfacesFusionNoeuds2;
+  }
+  
+  public boolean getTopologieElimineNoeudsAvecDeuxArcs1() {
+    return topologieElimineNoeudsAvecDeuxArcs1;
+  }
+  
+  public boolean getTopologieElimineNoeudsAvecDeuxArcs2() {
+    return topologieElimineNoeudsAvecDeuxArcs2;
+  }
+  
+  public boolean getTopologieGraphePlanaire1() {
+    return topologieGraphePlanaire1;
+  }
+  
+  public boolean getTopologieGraphePlanaire2() {
+    return topologieGraphePlanaire2;
+  }
+  
+  public boolean getTopologieFusionArcsDoubles1() {
+    return topologieFusionArcsDoubles1;
+  }
+  
+  public boolean getTopologieFusionArcsDoubles2() {
+    return topologieFusionArcsDoubles2;
+  }
 
 }

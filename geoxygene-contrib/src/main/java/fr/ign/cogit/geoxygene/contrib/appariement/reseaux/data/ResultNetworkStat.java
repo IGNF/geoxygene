@@ -23,9 +23,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml.EvaluationAdapter;
+// import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+// import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml.EvaluationAdapter;
 
 /**
  *  Statistics results. Like : <ul>
@@ -40,9 +39,9 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml.EvaluationAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "edgesStatNetwork1",
-    "nodesEvaluationRef",
-    "edgesEvaluationComp",
+    "statsEdgesOfNetwork1",
+    "statsNodesOfNetwork1",
+    "statsEdgesOfNetwork2",
     "nodesEvaluationComp"
 })
 @XmlRootElement(name = "ResultStatNetwork")
@@ -50,93 +49,93 @@ public class ResultNetworkStat {
   
   /** Edges evaluation of the less detailed network. */
   // @XmlJavaTypeAdapter(EvaluationAdapter.class)
-  @XmlElement(name = "EdgesStatNetwork1")
-  ResultNetworkStatElement edgesStatNetwork1;
+  @XmlElement(name = "StatsEdgesOfNetwork1")
+  ResultNetworkStatElement statsEdgesOfNetwork1;
   
   /** Nodes evaluation of the less detailed network. */
-  @XmlElement(name = "NodesEvaluationRef", required = true)
-  ResultNetworkStatElement nodesEvaluationRef;
+  @XmlElement(name = "StatsNodesOfNetwork1", required = true)
+  ResultNetworkStatElement statsNodesOfNetwork1;
   
   /** Edges evaluation of the comparison network. */
-  @XmlElement(name = "EdgesEvaluationComp", required = true)
-  ResultNetworkStatElement edgesEvaluationComp;
+  @XmlElement(name = "StatsEdgesOfNetwork2", required = true)
+  ResultNetworkStatElement statsEdgesOfNetwork2;
   
   /** Nodes evaluation of the comparison network. */
-  @XmlElement(name = "NodesEvaluationComp", required = true)
-  ResultNetworkStatElement nodesEvaluationComp;
+  @XmlElement(name = "StatsNodesOfNetwork2", required = true)
+  ResultNetworkStatElement statsNodesOfNetwork2;
   
   /**
    * Default constructor.
    */
   public ResultNetworkStat () {
-    edgesStatNetwork1 = new ResultNetworkStatElement(ResultNetworkStatElementInterface.EDGES_LESS_DETAILED_NETWORK);
-    nodesEvaluationRef = new ResultNetworkStatElement(ResultNetworkStatElementInterface.NODES_LESS_DETAILED_NETWORK);
-    edgesEvaluationComp = new ResultNetworkStatElement(ResultNetworkStatElementInterface.EDGES_COMPARISON_NETWORK);
-    nodesEvaluationComp = new ResultNetworkStatElement(ResultNetworkStatElementInterface.NODES_COMPARISON_NETWORK);
+    statsEdgesOfNetwork1 = new ResultNetworkStatElement(ResultNetworkStatElementInterface.EDGES_OF_NETWORK_1);
+    statsNodesOfNetwork1 = new ResultNetworkStatElement(ResultNetworkStatElementInterface.NODES_OF_NETWORK_1);
+    statsEdgesOfNetwork2 = new ResultNetworkStatElement(ResultNetworkStatElementInterface.EDGES_OF_NETWORK_2);
+    statsNodesOfNetwork2 = new ResultNetworkStatElement(ResultNetworkStatElementInterface.NODES_OF_NETWORK_2);
   }
   
   /**
    * Return edges evaluation of the less detailed network.
    * @return ResultatStatEvaluationAppariement
    */
-  public ResultNetworkStatElement getEdgesStatNetwork1() {
-    return edgesStatNetwork1;
+  public ResultNetworkStatElement getStatsEdgesOfNetwork1() {
+    return statsEdgesOfNetwork1;
   }
   
   /**
    * @param rsea
    *          Edges evaluation of the less detailed network to set.
    */
-  public void setEdgesStatNetwork1(ResultNetworkStatElement rsea) {
-    edgesStatNetwork1 = rsea;
+  public void setStatsEdgesOfNetwork1(ResultNetworkStatElement rsea) {
+    statsEdgesOfNetwork1 = rsea;
   }
   
   /**
    * Return nodes evaluation of the less detailed network.
    * @return ResultatStatEvaluationAppariement
    */
-  public ResultNetworkStatElement getNodesEvaluationRef() {
-    return nodesEvaluationRef;
+  public ResultNetworkStatElement getStatsNodesOfNetwork1() {
+    return statsNodesOfNetwork1;
   }
   
   /**
    * @param rsea
    *          Nodes evaluation of the less detailed network to set.
    */
-  public void setNodesEvaluationRef(ResultNetworkStatElement rsea) {
-    nodesEvaluationRef = rsea;
+  public void setStatsNodesOfNetwork1(ResultNetworkStatElement rsea) {
+    statsNodesOfNetwork1 = rsea;
   }
   
   /**
    * Return edges evaluation of the comparison network.
    * @return ResultatStatEvaluationAppariement
    */
-  public ResultNetworkStatElement getEdgesEvaluationComp() {
-    return edgesEvaluationComp;
+  public ResultNetworkStatElement getStatsEdgesOfNetwork2() {
+    return statsEdgesOfNetwork2;
   }
   
   /**
    * @param rsea
    *          Edges evaluation of the comparison network to set.
    */
-  public void setEdgesEvaluationComp(ResultNetworkStatElement rsea) {
-    edgesEvaluationComp = rsea;
+  public void setStatsEdgesOfNetwork2(ResultNetworkStatElement rsea) {
+    statsEdgesOfNetwork2 = rsea;
   }
   
   /**
    * Return nodes evaluation of the comparison network.
    * @return ResultatStatEvaluationAppariement
    */
-  public ResultNetworkStatElement getNodesEvaluationComp() {
-    return nodesEvaluationComp;
+  public ResultNetworkStatElement getStatsNodesOfNetwork2() {
+    return statsNodesOfNetwork2;
   }
   
   /**
    * @param rsea
    *          Nodes evaluation of the comparison network to set.
    */
-  public void setNodesEvaluationComp(ResultNetworkStatElement rsea) {
-    nodesEvaluationComp = rsea;
+  public void setStatsNodesOfNetwork2(ResultNetworkStatElement rsea) {
+    statsNodesOfNetwork2 = rsea;
   }
 
 }

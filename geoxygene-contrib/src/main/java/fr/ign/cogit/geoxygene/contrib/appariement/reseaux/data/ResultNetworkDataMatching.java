@@ -59,6 +59,8 @@ public class ResultNetworkDataMatching {
   /** Cartes topo */
   private ReseauApp reseau1;
   private ReseauApp reseau2;
+  private String logCreateTopologicalMap1;
+  
   
   /** EnsembleDeLiens. */
   private EnsembleDeLiens linkDataSet;
@@ -157,6 +159,14 @@ public class ResultNetworkDataMatching {
   
   public ReseauApp getReseau2() {
     return reseau2;
+  }
+  
+  public String getLogCreateTopologicalMap1() {
+    return logCreateTopologicalMap1;
+  }
+  
+  public void setLogCreateTopologicalMap1(String log) {
+    logCreateTopologicalMap1 = log;
   }
   
   /**

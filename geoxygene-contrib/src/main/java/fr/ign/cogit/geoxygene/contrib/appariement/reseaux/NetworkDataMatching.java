@@ -102,7 +102,9 @@ public class NetworkDataMatching {
     }
     ReseauApp reseau2 = importData(false);
     
-    // if (true) return resultatAppariement;
+//    resultatAppariement.setReseau1(reseau1);
+//    resultatAppariement.setReseau2(reseau2);
+//    if (true) return resultatAppariement;
     
     // ---------------------------------------------------------------------------------------------
     // NB: l'ordre dans lequel les projections sont faites n'est pas neutre
@@ -151,21 +153,15 @@ public class NetworkDataMatching {
       LOGGER.info("NETWORK MATCHING");
     }
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(I18N
-          .getString("AppariementIO.NetworkMatchingStart") //$NON-NLS-1$
-          + new Time(System.currentTimeMillis()).toString());
+      LOGGER.debug("    NETWORK MATCHING START");
     }
     resultatAppariement = Appariement.appariementReseaux(reseau1, reseau2, paramApp);
     if (LOGGER.isInfoEnabled()) {
-      LOGGER.info(I18N
-          .getString("AppariementIO.NetworkMatchingFinished")); //$NON-NLS-1$
-      LOGGER.info("  " + resultatAppariement.getLinkDataSet().size() + I18N.getString(//$NON-NLS-1$
-          "AppariementIO.MatchingLinksFound")); //$NON-NLS-1$
+      LOGGER.info("    Network Matching finished");
+      LOGGER.info("  " + resultatAppariement.getLinkDataSet().size() + "matching links found");
     }
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(I18N
-          .getString("AppariementIO.NetworkMatchingEnd") //$NON-NLS-1$
-          + new Time(System.currentTimeMillis()).toString());
+      LOGGER.debug("    END OF NETWORK MATCHING");
     }
     
     // --------------------------------------------------------------------------------------
@@ -176,36 +172,36 @@ public class NetworkDataMatching {
       LOGGER.info("ASSESSMENT AND RESULT EXPORT");
     }
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("START OF EXPORT " + new Time(System.currentTimeMillis()).toString());
+      LOGGER.debug("START OF EXPORT ");
     }
     if (paramApp.debugBilanSurObjetsGeo) {
       // FIXME : perturbations liées au nouveau output non maitrisées ici.
       if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(I18N
-            .getString("AppariementIO.LinkTransformation") //$NON-NLS-1$
-            + new Time(System.currentTimeMillis()).toString());
+        LOGGER.debug("Transformation of matching links to generic links");
       }
+      
       EnsembleDeLiens liensGeneriques = LienReseaux.exportLiensAppariement(
           resultatAppariement.getLinkDataSet(), reseau1, paramApp);
       Appariement.nettoyageLiens(reseau1, reseau2);
+      
       if (LOGGER.isInfoEnabled()) {
-        LOGGER.info(I18N.getString("AppariementIO.MatchingEnd")); //$NON-NLS-1$
+        LOGGER.info("######## NETWORK MATCHING END #########");
       }
       resultatAppariement.setLinkDataSet(liensGeneriques);
       
       resultatAppariement.setReseau1(reseau1);
       resultatAppariement.setReseau2(reseau2);
       
-      // FIXME : stats dans ce cas sont-elles les mêmes ?
+      // return resultat
       return resultatAppariement;
     }
+    
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(I18N.getString("AppariementIO.LinkGeometry") //$NON-NLS-1$
-          + new Time(System.currentTimeMillis()).toString());
+      LOGGER.debug("Link geometry assignment");
     }
     LienReseaux.exportAppCarteTopo(resultatAppariement.getLinkDataSet(), paramApp);
     if (LOGGER.isInfoEnabled()) {
-      LOGGER.info(I18N.getString("AppariementIO.MatchingEnd")); //$NON-NLS-1$
+      LOGGER.info("END OF NETWORK MATCHING");
     }
     
     resultatAppariement.setReseau1(reseau1);
@@ -221,7 +217,7 @@ public class NetworkDataMatching {
    * 
    * @version 1.6 : use chargeur class to load
    * 
-   * @param paramApp Les paramètres de l'appariement (seuls de distance,
+   * @param paramApp Les paramètres de l'appariement (seuils de distance,
    *          préparation topologique des données...)
    * @param ref true = on traite le réseau de référence false = on traite le
    *          réseau de comparaison
@@ -230,17 +226,19 @@ public class NetworkDataMatching {
   public ReseauApp importData(final boolean ref) {
     
     ReseauApp reseau = null;
+    String logNetwork;
+    
     if (ref) {
-      LOGGER.info(I18N.getString("AppariementIO.ReferenceNetwork"));
-      reseau = new ReseauApp(I18N.getString("AppariementIO.ReferenceNetwork")); //$NON-NLS-1$
+      LOGGER.info("Reseau 1");
+      reseau = new ReseauApp("Reseau 1");
     } else {
-      LOGGER.info(I18N.getString("AppariementIO.ComparisonNetwork"));
-      reseau = new ReseauApp(I18N.getString("AppariementIO.ComparisonNetwork")); //$NON-NLS-1$
+      LOGGER.info("Reseau 2");
+      reseau = new ReseauApp("Reseau 2");
     }
     IPopulation<? extends IFeature> popArcApp = reseau.getPopArcs();
     IPopulation<? extends IFeature> popNoeudApp = reseau.getPopNoeuds();
-    // LOGGER.info(popArcApp.size() + " arcs");
-    // LOGGER.info(popNoeudApp.size() + " noeuds");
+    LOGGER.info(popArcApp.size() + " arcs");
+    LOGGER.info(popNoeudApp.size() + " noeuds");
     
     // /////////////////////////
     // import des arcs
@@ -262,18 +260,20 @@ public class NetworkDataMatching {
           paramApp.orientationMap2, null, null, null, 0.1);*/
     }
     
-    
-    
+    logNetwork = "Import des " + itPopArcs + " arcs.\n";
     while (itPopArcs.hasNext()) {
+      
       IFeatureCollection<? extends IFeature> popGeo = itPopArcs.next();
       LOGGER.info(popGeo.size() + " objects");
       // import d'une population d'arcs
       for (IFeature element : popGeo) {
+        
         ArcApp arc = (ArcApp) popArcApp.nouvelElement();
-        ILineString ligne = new GM_LineString((IDirectPositionList) element
-            .getGeom().coord().clone());
+        ILineString ligne = new GM_LineString((IDirectPositionList) element.getGeom().coord().clone());
         arc.setGeometrie(ligne);
+        // LOGGER.info("Longueur = " + ligne.length());
         if (paramApp.populationsArcsAvecOrientationDouble) {
+          logNetwork = logNetwork + "Populations avec orientation double\n";
           arc.setOrientation(2);
         } else {
           String attribute = (ref) ? paramApp.attributOrientation1
@@ -282,6 +282,7 @@ public class NetworkDataMatching {
               : paramApp.orientationMap2;
           if (attribute.isEmpty()) {
             arc.setOrientation(1);
+            logNetwork = logNetwork + "Populations avec orientation simple\n";
           } else {
             Object value = element.getAttribute(attribute);
             // System.out.println(attribute + " = " + value);
@@ -302,10 +303,10 @@ public class NetworkDataMatching {
                   } catch (Exception e) {
                     // FIXME Pretty specfific to BDTOPO Schema... no time to
                     // make it better
-                    if (v.equalsIgnoreCase("direct")) { //$NON-NLS-1$
+                    if (v.equalsIgnoreCase("direct")) {
                       arc.setOrientation(1);
                     } else {
-                      if (v.equalsIgnoreCase("inverse")) { //$NON-NLS-1$
+                      if (v.equalsIgnoreCase("inverse")) {
                         arc.setOrientation(-1);
                       } else {
                         arc.setOrientation(2);
@@ -313,16 +314,15 @@ public class NetworkDataMatching {
                     }
                   }
                 } else {
-                  LOGGER
-                      .error("Attribute " //$NON-NLS-1$
-                          + attribute
-                          + " is neither Number nor String. It can't be used as an orientation"); //$NON-NLS-1$
+                  LOGGER.error("Attribute " + attribute
+                          + " is neither Number nor String. It can't be used as an orientation");
                 }
               }
             }
           }
         }
         arc.addCorrespondant(element);
+        //LOGGER.info("arc ajoute");
         // Le code ci-dessous permet un import plus fin mais a été
         // réalisé pour des données spécifiques et n'est pas encore
         // codé très générique.
@@ -376,14 +376,15 @@ public class NetworkDataMatching {
       }
     }
     
-    
+    logNetwork = logNetwork + "==================================";
+    logNetwork = logNetwork + popArcApp.size() + " arcs";
+    logNetwork = logNetwork + popNoeudApp.size() + " noeuds";
+    logNetwork = logNetwork + "==================================";
     
     // Indexation spatiale des arcs et noeuds
     // On crée un dallage régulier avec en moyenne 20 objets par case
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(I18N
-          .getString("AppariementIO.SpatialIndexing") //$NON-NLS-1$
-          + new Time(System.currentTimeMillis()).toString());
+      LOGGER.debug("    Spatial Index creation for nodes and edges");
     }
     int nb = (int) Math.sqrt(reseau.getPopArcs().size() / 20);
     if (nb == 0) {
@@ -393,6 +394,9 @@ public class NetworkDataMatching {
     reseau.getPopNoeuds().initSpatialIndex(
         reseau.getPopArcs().getSpatialIndex());
     
+    LOGGER.info(popArcApp.size() + " arcs");
+    LOGGER.info(popNoeudApp.size() + " noeuds");
+    LOGGER.info("**********************************");
     
     // Instanciation de la topologie
     // 1- création de la topologie arcs-noeuds, rendu du graphe planaire
@@ -400,8 +404,7 @@ public class NetworkDataMatching {
         || (!ref && paramApp.topologieGraphePlanaire2)) {
       // cas où on veut une topologie planaire
       if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(I18N.getString("AppariementIO.PlanarGraph") //$NON-NLS-1$
-            + new Time(System.currentTimeMillis()).toString());
+        LOGGER.debug("    Making the graph planar and instantiation of node-edge topology");
       }
       // Debut Ajout
       reseau.creeTopologieArcsNoeuds(0.1);
@@ -415,99 +418,108 @@ public class NetworkDataMatching {
       // cas où on ne veut pas nécessairement rendre planaire la
       // topologie
       if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(I18N.getString("AppariementIO.Topology") //$NON-NLS-1$
-            + new Time(System.currentTimeMillis()).toString());
+        LOGGER.debug("    Topology instanciation (not making the graph planar)");
       }
       reseau.creeNoeudsManquants(0.1);
       reseau.filtreDoublons(0.1);
       reseau.creeTopologieArcsNoeuds(0.1);
     }
+    
+    LOGGER.info(popArcApp.size() + " arcs");
+    LOGGER.info(popNoeudApp.size() + " noeuds");
+    LOGGER.info("**********************************");
 
     // 2- On fusionne les noeuds proches
     if (ref) {
       if (paramApp.topologieSeuilFusionNoeuds1 >= 0) {
         if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug(I18N
-              .getString("AppariementIO.NodesFusion") //$NON-NLS-1$
-              + new Time(System.currentTimeMillis()).toString());
+          LOGGER.debug("    Nodes Fusion");
         }
         reseau.fusionNoeuds(paramApp.topologieSeuilFusionNoeuds1);
       }
       if (paramApp.topologieSurfacesFusionNoeuds1 != null) {
         if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug(I18N
-              .getString("AppariementIO.NodesFusionInsideASurface") //$NON-NLS-1$
-              + (new Time(System.currentTimeMillis())).toString());
+          LOGGER.debug("    Nodes Fusion inside a surface");
         }
         reseau.fusionNoeuds(paramApp.topologieSurfacesFusionNoeuds1);
       }
     } else {
       if (paramApp.topologieSeuilFusionNoeuds2 >= 0) {
         if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug(I18N
-              .getString("AppariementIO.NodesFusion") //$NON-NLS-1$
-              + new Time(System.currentTimeMillis()).toString());
+          LOGGER.debug("    Nodes Fusion");
         }
         reseau.fusionNoeuds(paramApp.topologieSeuilFusionNoeuds2);
       }
       if (paramApp.topologieSurfacesFusionNoeuds2 != null) {
         if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug(I18N
-              .getString("AppariementIO.NodesFusionInsideASurface") //$NON-NLS-1$
-              + new Time(System.currentTimeMillis()).toString());
+          LOGGER.debug("    Nodes Fusion inside a surface");
         }
         reseau.fusionNoeuds(paramApp.topologieSurfacesFusionNoeuds2);
       }
     }
+    
+    LOGGER.info(popArcApp.size() + " arcs");
+    LOGGER.info(popNoeudApp.size() + " noeuds");
+    LOGGER.info("**********************************");
+    
     // 3- On enlève les noeuds isolés
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(I18N
-          .getString("AppariementIO.IsolatedNodesFiltering") //$NON-NLS-1$
-          + new Time(System.currentTimeMillis()).toString());
+      LOGGER.debug("    Isolated nodes filtering");
     }
     reseau.filtreNoeudsIsoles();
+    
+    LOGGER.info(popArcApp.size() + " arcs");
+    LOGGER.info(popNoeudApp.size() + " noeuds");
+    LOGGER.info("**********************************");
+    
     // 4- On filtre les noeuds simples (avec 2 arcs incidents)
     if ((ref && paramApp.topologieElimineNoeudsAvecDeuxArcs1)
         || (!ref && paramApp.topologieElimineNoeudsAvecDeuxArcs2)) {
       if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(I18N
-            .getString("AppariementIO.NodesFiltering") //$NON-NLS-1$
-            + new Time(System.currentTimeMillis()).toString());
+        LOGGER.debug("    Filtering of nodes with only 2 incoming edges");
       }
       reseau.filtreNoeudsSimples();
     }
+    
+    LOGGER.info(popArcApp.size() + " arcs");
+    LOGGER.info(popNoeudApp.size() + " noeuds");
+    LOGGER.info("**********************************");
 
     // 5- On fusionne des arcs en double
     if (ref && paramApp.topologieFusionArcsDoubles1) {
       if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(I18N
-            .getString("AppariementIO.EdgesFiltering") //$NON-NLS-1$
-            + new Time(System.currentTimeMillis()).toString());
+        LOGGER.debug("    Double edges filtering");
       }
       reseau.filtreArcsDoublons();
     }
     if (!ref && paramApp.topologieFusionArcsDoubles2) {
       if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(I18N
-            .getString("AppariementIO.EdgesFiltering") //$NON-NLS-1$
-            + new Time(System.currentTimeMillis()).toString());
+        LOGGER.debug("    Double edges filtering");
       }
       reseau.filtreArcsDoublons();
     }
+    
+    LOGGER.info(popArcApp.size() + " arcs");
+    LOGGER.info(popNoeudApp.size() + " noeuds");
+    LOGGER.info("**********************************");
+    
     // 6 - On crée la topologie de faces
     if (!ref && paramApp.varianteChercheRondsPoints) {
       if (LOGGER.isDebugEnabled()) {
-        LOGGER
-            .debug(I18N.getString("AppariementIO.FaceTopology")); //$NON-NLS-1$
+        LOGGER.debug("    Face topology creation");
       }
       reseau.creeTopologieFaces();
     }
+    
+    LOGGER.info(popArcApp.size() + " arcs");
+    LOGGER.info(popNoeudApp.size() + " noeuds");
+    LOGGER.info("**********************************");
+    
     // 7 - On double la taille de recherche pour les impasses
     if (paramApp.distanceNoeudsImpassesMax >= 0) {
       if (ref) {
         if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug(I18N
-              .getString("AppariementIO.DoublingOfSearchRadius")); //$NON-NLS-1$
+          LOGGER.debug("    Doubling of search radius for nodes around deadends");
         }
         Iterator<?> itNoeuds = reseau.getPopNoeuds().getElements().iterator();
         while (itNoeuds.hasNext()) {
@@ -518,6 +530,15 @@ public class NetworkDataMatching {
         }
       }
     }
+    
+    LOGGER.info(popArcApp.size() + " arcs");
+    LOGGER.info(popNoeudApp.size() + " noeuds");
+    LOGGER.info("**********************************");
+    
+    if (ref) {
+      // logNetwork
+    }
+    
     return reseau;
   }
 }

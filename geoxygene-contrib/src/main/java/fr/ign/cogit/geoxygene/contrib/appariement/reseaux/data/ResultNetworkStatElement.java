@@ -64,7 +64,7 @@ public class ResultNetworkStatElement {
   @XmlElement(name = "DoubtfulMatchingNumber")
   private int doubtfulNetworkElementNumber;
   
-  /** network element. Like NodeRef, EdgeRef, ...*/
+  /** network element. Like NodesOfNetwork1, EdgesOfNetwork2, ...*/
   @XmlAttribute(name = "NetworkElement", required = true)
   private String networkElement;
   

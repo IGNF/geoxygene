@@ -32,20 +32,21 @@ public interface ResultNetworkStatElementInterface {
   /**
    * Edges of the less detailed network.
    */
-  String EDGES_LESS_DETAILED_NETWORK = "EdgesRef";
+  String EDGES_OF_NETWORK_1 = "EdgesOfNetwork1";
 
   /**
    * Nodes of the less detailed network.
    */
-  String NODES_LESS_DETAILED_NETWORK = "NodesRef";
+  String NODES_OF_NETWORK_1 = "NodesOfNetwork1";
   
   /**
    * Edges of the comparison network.
    */
-  String EDGES_COMPARISON_NETWORK = "EdgesComp";
+  String EDGES_OF_NETWORK_2 = "EdgesOfNetwork2";
   
   /**
    * Nodes of the comparison network.
    */
-  String NODES_COMPARISON_NETWORK = "NodesComp";
+  String NODES_OF_NETWORK_2 = "NodesOfNetwork2";
+
 }

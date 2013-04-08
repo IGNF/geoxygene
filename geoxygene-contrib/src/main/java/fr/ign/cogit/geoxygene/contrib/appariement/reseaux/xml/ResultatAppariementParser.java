@@ -60,7 +60,7 @@ public class ResultatAppariementParser {
     
     // Edges evaluation of the less detailed network
     result.append("<EdgesEvaluationRef>");
-    ResultNetworkStatElement edgesEvaluationRef = resultatStatAppariement.getEdgesStatNetwork1();
+    ResultNetworkStatElement edgesEvaluationRef = resultatStatAppariement.getStatsEdgesOfNetwork1();
     result.append("<TotalNumber>" + edgesEvaluationRef.getTotalNetworkElementNumber() + "</TotalNumber>");
     result.append("<OkNumber>" + edgesEvaluationRef.getCorrectMatchingNetworkElementNumber() + "</OkNumber>");
     result.append("<KoNumber>" + edgesEvaluationRef.getNoMatchingNetworkElementNumber() + "</KoNumber>");
@@ -69,7 +69,7 @@ public class ResultatAppariementParser {
     
     // Nodes evaluation of the less detailed network
     result.append("<NodesEvaluationRef>");
-    ResultNetworkStatElement nodesEvaluationRef = resultatStatAppariement.getNodesEvaluationRef();
+    ResultNetworkStatElement nodesEvaluationRef = resultatStatAppariement.getStatsNodesOfNetwork1();
     result.append("<TotalNumber>" + nodesEvaluationRef.getTotalNetworkElementNumber() + "</TotalNumber>");
     result.append("<OkNumber>" + nodesEvaluationRef.getCorrectMatchingNetworkElementNumber() + "</OkNumber>");
     result.append("<KoNumber>" + nodesEvaluationRef.getNoMatchingNetworkElementNumber() + "</KoNumber>");
@@ -78,7 +78,7 @@ public class ResultatAppariementParser {
     
     // Edges evaluation of the less detailed network
     result.append("<EdgesEvaluationComp>");
-    ResultNetworkStatElement edgesEvaluationComp = resultatStatAppariement.getEdgesEvaluationComp();
+    ResultNetworkStatElement edgesEvaluationComp = resultatStatAppariement.getStatsEdgesOfNetwork2();
     result.append("<TotalNumber>" + edgesEvaluationComp.getTotalNetworkElementNumber() + "</TotalNumber>");
     result.append("<OkNumber>" + edgesEvaluationComp.getCorrectMatchingNetworkElementNumber() + "</OkNumber>");
     result.append("<KoNumber>" + edgesEvaluationComp.getNoMatchingNetworkElementNumber() + "</KoNumber>");
@@ -87,7 +87,7 @@ public class ResultatAppariementParser {
     
     // Nodes evaluation of the less detailed network
     result.append("<NodesEvaluationComp>");
-    ResultNetworkStatElement nodesEvaluationComp = resultatStatAppariement.getNodesEvaluationComp();
+    ResultNetworkStatElement nodesEvaluationComp = resultatStatAppariement.getStatsNodesOfNetwork2();
     result.append("<TotalNumber>" + nodesEvaluationComp.getTotalNetworkElementNumber() + "</TotalNumber>");
     result.append("<OkNumber>" + nodesEvaluationComp.getCorrectMatchingNetworkElementNumber() + "</OkNumber>");
     result.append("<KoNumber>" + nodesEvaluationComp.getNoMatchingNetworkElementNumber() + "</KoNumber>");

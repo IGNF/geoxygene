@@ -42,7 +42,7 @@ public class TestParser {
       res.setCorrectMatchingNetworkElementNumber(-100);
       res.setNoMatchingNetworkElementNumber(-1000);
       res.setDoubtfulNetworkElementNumber(-10000);
-      resnet.setEdgesEvaluationComp(res);
+      resnet.setStatsEdgesOfNetwork2(res);
       
       m.marshal(resnet, System.out);
     

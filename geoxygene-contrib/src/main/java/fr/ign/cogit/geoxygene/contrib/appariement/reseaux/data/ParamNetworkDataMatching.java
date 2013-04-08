@@ -19,6 +19,9 @@
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
@@ -36,7 +39,7 @@ public class ParamNetworkDataMatching {
   private ParamDatasetNetworkDataMatching paramDataset = null;
   private ParamDirectionNetworkDataMatching paramDirection = null;
   private ParamDistanceNetworkDataMatching paramDistance = null;
-  // private ParamTopoTreatmentNetworkDataMatching paramTopoTreatment = null;
+  private ParamTopoTreatmentNetworkDataMatching paramTopoTreatment = null;
   
 
   /** A classic logger. */
@@ -49,6 +52,7 @@ public class ParamNetworkDataMatching {
     paramDataset = new ParamDatasetNetworkDataMatching();
     paramDirection = new ParamDirectionNetworkDataMatching();
     paramDistance = new ParamDistanceNetworkDataMatching();
+    paramTopoTreatment = new ParamTopoTreatmentNetworkDataMatching();
   }
   
   public ParamDirectionNetworkDataMatching getParamDirection() {
@@ -75,6 +79,14 @@ public class ParamNetworkDataMatching {
     this.paramDistance = paramDistance;
   }
   
+  public ParamTopoTreatmentNetworkDataMatching getParamTopoTreatment() {
+    return paramTopoTreatment;
+  }
+  
+  public void setParamTopoTreatment(ParamTopoTreatmentNetworkDataMatching paramTopoTreatment) {
+    this.paramTopoTreatment = paramTopoTreatment;
+  }
+  
   /**
    * Transform new structure to old structure.
    * @return ParametresApp
@@ -96,8 +108,26 @@ public class ParamNetworkDataMatching {
     param.populationsArcsAvecOrientationDouble = paramDirection.getPopulationsArcsAvecOrientationDouble();
     param.attributOrientation1 = paramDirection.getAttributOrientation1();
     param.attributOrientation2 = paramDirection.getAttributOrientation2();
-    param.orientationMap1 = paramDirection.getOrientationMap1();
-    param.orientationMap2 = paramDirection.getOrientationMap2();
+    
+    
+    if (paramDirection.getOrientationMap1() != null) {
+      Map<Object, Integer> orientationMap1 = new HashMap<Object, Integer>();
+      orientationMap1.put(paramDirection.getOrientationMap1().get(1), 1);
+      orientationMap1.put(paramDirection.getOrientationMap1().get(2), 2);
+      orientationMap1.put(paramDirection.getOrientationMap1().get(-1), -1);
+      param.orientationMap1 = orientationMap1;
+    } else {
+      param.orientationMap1 = null;
+    }
+    if (paramDirection.getOrientationMap2() != null) {
+      Map<Object, Integer> orientationMap2 = new HashMap<Object, Integer>();
+      orientationMap2.put(paramDirection.getOrientationMap2().get(1), 1);
+      orientationMap2.put(paramDirection.getOrientationMap2().get(2), 2);
+      orientationMap2.put(paramDirection.getOrientationMap2().get(-1), -1);
+      param.orientationMap2 = orientationMap2;
+    } else {
+      param.orientationMap2 = null;
+    }
     
     // Ecarts de distance autorisés
     param.distanceArcsMax = paramDistance.getDistanceArcsMax(); 
@@ -111,6 +141,13 @@ public class ParamNetworkDataMatching {
     param.topologieFusionArcsDoubles1 = false;
     param.topologieFusionArcsDoubles2 = false;
     param.topologieSeuilFusionNoeuds2 = 0.1;
+    param.topologieSeuilFusionNoeuds1 = 0.1;
+    param.topologieSurfacesFusionNoeuds1 = null;
+    param.topologieSurfacesFusionNoeuds2 = null;
+    param.topologieElimineNoeudsAvecDeuxArcs1 = false;
+    param.topologieElimineNoeudsAvecDeuxArcs2 = false;
+    
+    // A trier encore
     param.varianteFiltrageImpassesParasites = false;
     param.projeteNoeuds1SurReseau2 = false;
     param.projeteNoeuds1SurReseau2DistanceNoeudArc = 10; // 25

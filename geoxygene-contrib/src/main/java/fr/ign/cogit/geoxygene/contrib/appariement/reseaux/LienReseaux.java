@@ -204,8 +204,8 @@ public class LienReseaux extends Lien {
    * Methode qui affecte la valeur 'eval' comme évaluation du lien et le
    * commentaire 'commentaire' à tous les objets liés par ce lien.
    */
-  public void affecteEvaluationAuxObjetsLies(double eval,
-      String commentaireEvaluation) {
+  public void affecteEvaluationAuxObjetsLies(double eval, String commentaireEvaluation) {
+    
     this.setEvaluation(eval);
     Iterator<?> itObj;
     itObj = this.getArcs2().iterator();

@@ -35,8 +35,8 @@ public class ParamDirectionNetworkDataMatching {
   private boolean populationsArcsAvecOrientationDouble;
   private String attributOrientation1;
   private String attributOrientation2;
-  private Map<Object, Integer> orientationMap1;
-  private Map<Object, Integer> orientationMap2;
+  private Map<Integer, String> orientationMap1;
+  private Map<Integer, String> orientationMap2;
 
   /**
    * Constructor
@@ -74,19 +74,19 @@ public class ParamDirectionNetworkDataMatching {
   }
   
   
-  public Map<Object, Integer> getOrientationMap1() {
+  public Map<Integer, String> getOrientationMap1() {
     return orientationMap1;
   }
   
-  public void setOrientationMap1 (Map<Object, Integer> mapOrientation) {
+  public void setOrientationMap1 (Map<Integer, String> mapOrientation) {
     orientationMap1 = mapOrientation;
   }
   
-  public Map<Object, Integer> getOrientationMap2() {
+  public Map<Integer, String> getOrientationMap2() {
     return orientationMap2;
   }
   
-  public void setOrientationMap2 (Map<Object, Integer> mapOrientation) {
+  public void setOrientationMap2 (Map<Integer, String> mapOrientation) {
     orientationMap2 = mapOrientation;
   }
 }

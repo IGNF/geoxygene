@@ -1890,7 +1890,7 @@ public abstract class Appariement {
           + "%long)"); //$NON-NLS-1$
     }
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
-    ResultNetworkStatElement resNetwork2Edges = new ResultNetworkStatElement(ResultNetworkStatElementInterface.EDGES_COMPARISON_NETWORK);
+    ResultNetworkStatElement resNetwork2Edges = new ResultNetworkStatElement(ResultNetworkStatElementInterface.EDGES_OF_NETWORK_2);
     resNetwork2Edges.setTotalNetworkElementNumber(nb);
     resNetwork2Edges.setCorrectMatchingNetworkElementNumber(nbOK);
     resNetwork2Edges.setNoMatchingNetworkElementNumber(nbSansCorresp);
@@ -1898,7 +1898,7 @@ public abstract class Appariement {
     System.out.println("-------------------------------------------------");
     System.out.println(resNetwork2Edges.toString());
     System.out.println("-------------------------------------------------");
-    resultatStatAppariement.setEdgesEvaluationComp(resNetwork2Edges);
+    resultatStatAppariement.setStatsEdgesOfNetwork2(resNetwork2Edges);
     
     // ////////// Controle global des noeuds comp //////////////
     // on recherche les noeuds comp appariés avec plusieurs objets ref
@@ -1983,13 +1983,13 @@ public abstract class Appariement {
           + "%)"); //$NON-NLS-1$
     }
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
-    ResultNetworkStatElement resNetwork2Nodes = new ResultNetworkStatElement(ResultNetworkStatElementInterface.NODES_COMPARISON_NETWORK);
+    ResultNetworkStatElement resNetwork2Nodes = new ResultNetworkStatElement(ResultNetworkStatElementInterface.NODES_OF_NETWORK_2);
     resNetwork2Nodes.setTotalNetworkElementNumber(nb);
     resNetwork2Nodes.setCorrectMatchingNetworkElementNumber(nbOK);
     resNetwork2Nodes.setNoMatchingNetworkElementNumber(nbSansCorresp);
     resNetwork2Nodes.setDoubtfulNetworkElementNumber(nbDouteux);
     Appariement.LOGGER.info(resNetwork2Nodes.toString());
-    resultatStatAppariement.setEdgesEvaluationComp(resNetwork2Nodes);
+    resultatStatAppariement.setStatsNodesOfNetwork2(resNetwork2Nodes);
     
     // //////////////////////////////////////////////////////
     // ////////// Controle global des arcs ref //////////////
@@ -2050,13 +2050,13 @@ public abstract class Appariement {
           + "%long)"); //$NON-NLS-1$
     }
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
-    ResultNetworkStatElement resNetwork1Edges = new ResultNetworkStatElement(ResultNetworkStatElementInterface.EDGES_LESS_DETAILED_NETWORK);
+    ResultNetworkStatElement resNetwork1Edges = new ResultNetworkStatElement(ResultNetworkStatElementInterface.EDGES_OF_NETWORK_1);
     resNetwork1Edges.setTotalNetworkElementNumber(nb);
     resNetwork1Edges.setCorrectMatchingNetworkElementNumber(nbOK);
     resNetwork1Edges.setNoMatchingNetworkElementNumber(nbSansCorresp);
     resNetwork1Edges.setDoubtfulNetworkElementNumber(nbDouteux);
     Appariement.LOGGER.info(resNetwork1Edges.toString());
-    resultatStatAppariement.setEdgesStatNetwork1(resNetwork1Edges);
+    resultatStatAppariement.setStatsEdgesOfNetwork1(resNetwork1Edges);
 
     // ///////////////////////////////////////////
     // ////////// cas des noeudss ref ////////////
@@ -2105,13 +2105,13 @@ public abstract class Appariement {
           + (nbSansCorresp * Appariement.HUNDRED / nb) + "%)"); //$NON-NLS-1$
     }
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
-    ResultNetworkStatElement resNetwork1Nodes = new ResultNetworkStatElement(ResultNetworkStatElementInterface.NODES_LESS_DETAILED_NETWORK);
+    ResultNetworkStatElement resNetwork1Nodes = new ResultNetworkStatElement(ResultNetworkStatElementInterface.NODES_OF_NETWORK_1);
     resNetwork1Nodes.setTotalNetworkElementNumber(nb);
     resNetwork1Nodes.setCorrectMatchingNetworkElementNumber(nbOK);
     resNetwork1Nodes.setNoMatchingNetworkElementNumber(nbSansCorresp);
     resNetwork1Nodes.setDoubtfulNetworkElementNumber(nbDouteux);
     Appariement.LOGGER.info(resNetwork1Nodes.toString());
-    resultatStatAppariement.setNodesEvaluationRef(resNetwork1Nodes);
+    resultatStatAppariement.setStatsNodesOfNetwork1(resNetwork1Nodes);
     
     // Return stats appariement
     return resultatStatAppariement;
