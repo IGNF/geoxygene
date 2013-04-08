@@ -39,6 +39,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamInterface;
 
 /**
  *
@@ -96,6 +97,7 @@ public class EditParamDirectionPanel extends JPanel {
    * 
    */
   private void initPanel() {
+    
     FormLayout layout = new FormLayout(
         "20dlu, pref, 20dlu, pref, pref, pref, pref, 20dlu", // colonnes
         "10dlu, pref, pref, pref, pref, pref, pref, pref, pref, 40dlu");  // lignes
@@ -156,10 +158,10 @@ public class EditParamDirectionPanel extends JPanel {
         paramDirection.setAttributOrientation1(null);
       } else if (rbEdgeDefineWayRef.isSelected()) {
         paramDirection.setAttributOrientation1(fieldAttributeRef.getText());
-        Map<Object, Integer> orientationMap1 = new HashMap<Object, Integer>();
-        orientationMap1.put(fieldValueDirectRef, 1);
-        orientationMap1.put(fieldValueInverseRef, -1);
-        orientationMap1.put(fieldValueDoubleSensRef, 2);
+        Map<Integer, String> orientationMap1 = new HashMap<Integer, String>();
+        orientationMap1.put(ParamInterface.SENS_DIRECT, fieldValueDirectRef.getText());
+        orientationMap1.put(ParamInterface.SENS_INVERSE, fieldValueInverseRef.getText());
+        orientationMap1.put(ParamInterface.DOUBLE_SENS, fieldValueDoubleSensRef.getText());
         paramDirection.setOrientationMap1(orientationMap1);
       }
     }

@@ -61,7 +61,7 @@ public class DisplayStatResultPanel extends JToolBar  {
     
     resultNetwork = res;
     setOrientation(1);
-    setPreferredSize(new Dimension(1800, 250));
+    setPreferredSize(new Dimension(1800, 350));
     setMaximumSize(getPreferredSize());
     setLayout(new FlowLayout());
     
@@ -87,16 +87,16 @@ public class DisplayStatResultPanel extends JToolBar  {
     formPanel.setLayout(layout);
     
     // Element Network 
-    ResultNetworkStatElement edgesRef = resultNetwork.getEdgesStatNetwork1();
-    ResultNetworkStatElement nodesRef = resultNetwork.getNodesEvaluationRef();
-    ResultNetworkStatElement edgesComp = resultNetwork.getNodesEvaluationComp();
-    ResultNetworkStatElement nodesComp = resultNetwork.getNodesEvaluationComp();
+    ResultNetworkStatElement edgesRef = resultNetwork.getStatsEdgesOfNetwork1();
+    ResultNetworkStatElement nodesRef = resultNetwork.getStatsNodesOfNetwork1();
+    ResultNetworkStatElement edgesComp = resultNetwork.getStatsEdgesOfNetwork2();
+    ResultNetworkStatElement nodesComp = resultNetwork.getStatsNodesOfNetwork2();
     
     // --------
     
     // Ligne 1 : 2 titres
-    formPanel.add(new JLabel("Réseau le moins détaillé"), cc.xyw(2, 2, 4));
-    formPanel.add(new JLabel("Réseau de comparaison"), cc.xyw(7, 2, 4));
+    formPanel.add(new JLabel("Réseau 1"), cc.xyw(2, 2, 4));
+    formPanel.add(new JLabel("Réseau 2"), cc.xyw(7, 2, 4));
     
     // --------
     

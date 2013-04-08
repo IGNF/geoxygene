@@ -143,7 +143,7 @@ public class EditParamDatasetPanel extends JPanel {
     JFileChooser jFileChooser = new JFileChooser();
     // FIXME : utiliser le dernier répertoire ouvert par l'interface. 
     jFileChooser.setCurrentDirectory(new File(
-        "D:\\Data\\Appariement\\SDET"));
+        "D:\\Data\\Appariement\\ESPON-DB"));
 
     // Crée un filtre qui n'accepte que les fichier shp ou les répertoires
     if (typeButton.equals(buttonRefShape) || typeButton.equals(buttonCompShape)) {
@@ -185,13 +185,17 @@ public class EditParamDatasetPanel extends JPanel {
     // 
     ParamDatasetNetworkDataMatching paramDataset = new ParamDatasetNetworkDataMatching();
     
-    IPopulation<IFeature> popArcs1 = ShapefileReader.read(filenameRefShape.getText());
-    popArcs1.setNom("popArcs1");
-    paramDataset.addPopulationsArcs1(popArcs1);
+    if (filenameRefShape.getText() != null && !filenameRefShape.getText().equals("")) {
+      IPopulation<IFeature> popArcs1 = ShapefileReader.read(filenameRefShape.getText());
+      popArcs1.setNom("popArcs1");
+      paramDataset.addPopulationsArcs1(popArcs1);
+    }
     
-    IPopulation<IFeature> popArcs2 = ShapefileReader.read(filenameCompShape.getText());
-    popArcs2.setNom("popArcs2");
-    paramDataset.addPopulationsArcs2(popArcs2);
+    if (filenameCompShape.getText() != null && !filenameCompShape.getText().equals("")) {
+      IPopulation<IFeature> popArcs2 = ShapefileReader.read(filenameCompShape.getText());
+      popArcs2.setNom("popArcs2");
+      paramDataset.addPopulationsArcs2(popArcs2);
+    }
     
     return paramDataset;
   }
