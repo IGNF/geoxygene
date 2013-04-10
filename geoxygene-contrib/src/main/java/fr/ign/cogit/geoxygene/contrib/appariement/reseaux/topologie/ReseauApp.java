@@ -35,6 +35,7 @@ import fr.ign.cogit.geoxygene.feature.Population;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_Polygon;
 import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
+import fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType;
 
 /**
  * Réseau à apparier, spécialisation d'une carte topo, utile quasi-uniquement
@@ -46,7 +47,7 @@ import fr.ign.cogit.geoxygene.spatial.geomprim.GM_Point;
  */
 
 public class ReseauApp extends CarteTopo {
-
+  
   /**
    * Constructeur par défaut : ATTENTION, constructeur à éviter car aucune
    * population n'est créée
@@ -68,8 +69,7 @@ public class ReseauApp extends CarteTopo {
         I18N.getString("CarteTopo.Edge"), ArcApp.class, true); //$NON-NLS-1$
     
     /** créer un featuretype pour les arcs */
-    fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType featureType 
-      = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+    FeatureType featureType = new FeatureType();
     
     /** création d'un schéma associé au featureType */
     featureType.setGeometryType(GM_LineString.class);
@@ -79,7 +79,7 @@ public class ReseauApp extends CarteTopo {
         I18N.getString("CarteTopo.Node"), NoeudApp.class, true); //$NON-NLS-1$
     
     /** créer un featuretype pour les noeuds */
-    featureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+    featureType = new FeatureType();
     
     /** création d'un schéma associé au featureType */
     featureType.setGeometryType(GM_Point.class);
@@ -89,7 +89,7 @@ public class ReseauApp extends CarteTopo {
         I18N.getString("CarteTopo.Face"), FaceApp.class, true); //$NON-NLS-1$
     
     /** créer un featuretype pour les faces */
-    featureType = new fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu.FeatureType();
+    featureType = new FeatureType();
     
     /** création d'un schéma associé au featureType */
     featureType.setGeometryType(GM_Polygon.class);

@@ -61,7 +61,6 @@ public class ResultNetworkDataMatching {
   private ReseauApp reseau2;
   private String logCreateTopologicalMap1;
   
-  
   /** EnsembleDeLiens. */
   private EnsembleDeLiens linkDataSet;
   
