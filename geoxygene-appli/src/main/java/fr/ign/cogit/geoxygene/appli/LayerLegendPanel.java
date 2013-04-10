@@ -246,6 +246,7 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     symbolizeLabel.setBorder(UIManager.getBorder("TableHeader.cellBorder")); //$NON-NLS-1$
     TableCellRenderer renderer = new JComponentTableCellRenderer();
 
+    // Case à cocher
     int width = this.getWidth();
     TableColumn col = this.layersTable.getColumnModel().getColumn(0);
     col.setMinWidth(22);
@@ -256,6 +257,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     col.setHeaderValue(selectionLabel);
     col.setCellRenderer(new CheckBoxCellRenderer());
     col.setCellEditor(new DefaultCellEditor(new JCheckBox()));
+    
+    // transparence du layer
     col = this.layersTable.getColumnModel().getColumn(1);
     col.setMinWidth(22);
     col.setMaxWidth(22);
@@ -265,6 +268,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     col.setHeaderValue(visibleLabel);
     col.setCellRenderer(new SliderRenderer());
     col.setCellEditor(new SliderEditor());
+    
+    // crayon
     col = this.layersTable.getColumnModel().getColumn(2);
     col.setMinWidth(22);
     col.setMaxWidth(22);
@@ -274,17 +279,24 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
     col.setHeaderValue(symbolizeLabel);
     col.setCellRenderer(new CheckBoxCellRenderer());
     col.setCellEditor(new DefaultCellEditor(new JCheckBox()));
+    
+    // Style
     col = this.layersTable.getColumnModel().getColumn(3);
-    col.setMinWidth(60);
-    col.setMaxWidth(60);
-    col.setWidth(60);
+    col.setMinWidth(40);
+    col.setMaxWidth(40);
+    col.setWidth(40);
     col.setResizable(false);
     col.setCellRenderer(new StyleRenderer());
     JTextField txtStyle = new JTextField();
     txtStyle.setEditable(false);
     col.setCellEditor(new StyleEditor(txtStyle));
+    
+    // Nom
     col = this.layersTable.getColumnModel().getColumn(4);
-    col.setWidth(width - 126);
+    col.setMinWidth(60);
+    col.setMaxWidth(60);
+    col.setWidth(60);
+    // col.setWidth(width - 106);
     col.setResizable(true);
     col.setCellRenderer(new LayersNameCellRenderer());
     JTextField txtName = new JTextField();
@@ -645,7 +657,8 @@ public class LayerLegendPanel extends JPanel implements ChangeListener,
         return I18N.getString("LayerLegendPanel.LayerName"); //$NON-NLS-1$
       }
       if (column == 5) {
-        return "Rendering Progress"; //$NON-NLS-1$
+        //return "Rendering Progress"; //$NON-NLS-1$
+        return "";
       }
       return I18N.getString("LayerLegendPanel.Styles"); //$NON-NLS-1$
     }

@@ -81,8 +81,7 @@ public class Viewport {
   /**
    * The layer view panels.
    */
-  private Collection<LayerViewPanel> layerViewPanels = new ArrayList<LayerViewPanel>(
-      0);
+  private Collection<LayerViewPanel> layerViewPanels = new ArrayList<LayerViewPanel>(0);
   /**
    * The number of pixels used to approximate a curve. It is used both when
    * transforming a curve to a linestring (especially for rendering).

@@ -34,6 +34,8 @@ import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -58,6 +60,7 @@ import fr.ign.cogit.geoxygene.appli.plugin.datamatching.network.EditParamPanel;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.LienReseaux;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.NetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
@@ -68,8 +71,10 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDistanceNetw
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
@@ -99,11 +104,20 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
   private ParamNetworkDataMatching newParam = null;
   
   /** Displayed colors. */
-  private final static Color linkColor = new Color(254, 107, 19);
+  private final static Color linkColorOk = new Color(77, 146, 33);
+  private final static Color linkColorNull = new Color(239, 59, 44);
+  private final static Color linkColorDoubtfull = new Color(240, 157, 18);
+  // private final static Color linkColor = new Color(254, 107, 19);
+  
   private final static Color network1Color = new Color(11, 73, 157);
-  private final static Color network2Color = new Color(35, 140, 69);
+  private final static Color network1DColor = new Color(67, 144, 193);
+  private final static Color network1NColor = new Color(111, 173, 209);
+  
+  // private final static Color network2Color = new Color(35, 140, 69);
+  private final static Color network2Color = new Color(145, 100, 10);
   private final static Color matchedNetworkColor = new Color(136, 64, 153);
   private final static int LINE_WIDTH = 3;
+  private final static int LINE_WIDTH_LINK = 1;
   
   /**
    * Initialize the plugin.
@@ -179,7 +193,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       
       // Distance
       ParamDistanceNetworkDataMatching paramDistance = new ParamDistanceNetworkDataMatching();
-      float distanceNoeudsMax = 50; //(float) 0.001;
+      float distanceNoeudsMax = 50; // (float) 0.001;
       paramDistance.setDistanceNoeudsMax(distanceNoeudsMax);
       paramDistance.setDistanceArcsMax(2 * distanceNoeudsMax);
       paramDistance.setDistanceArcsMin(distanceNoeudsMax);
@@ -315,7 +329,9 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       int widthProjectFrame = desktopSize.width / 2;
       int heightProjectFrame = desktopSize.height / 2;
   
+      // ---------------------------------------------------------------------------------
       // Frame n°1
+      // 
       ProjectFrame p1 = this.application.getFrame().newProjectFrame();
       p1.setTitle("Reseau 1 + reseau 2");
       Layer l1 = p1.addUserLayer(newParam.getParamDataset().getPopulationsArcs1().get(0), "Réseau 1", null);
@@ -328,13 +344,42 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       p1.setLocation(0, 0);
       Viewport viewport = p1.getLayerViewPanel().getViewport();
   
+      // ---------------------------------------------------------------------------------
+      // Frame n°2
+      //    
       ProjectFrame p2 = this.application.getFrame().newProjectFrame();
       p2.getLayerViewPanel().setViewport(viewport);
       viewport.getLayerViewPanels().add(p2.getLayerViewPanel());
       p2.setTitle("Reseau 1 après recalage");
-      l1 = p2.addUserLayer(newParam.getParamDataset().getPopulationsArcs1().get(0), "Réseau 1", null);
+      
+      List<String> valeursClassement = new ArrayList<String>();
+      valeursClassement.add(I18N.getString("Appariement.Matched"));
+      valeursClassement.add(I18N.getString("Appariement.Uncertain"));
+      valeursClassement.add(I18N.getString("Appariement.Unmatched"));
+
+      LOGGER.info("----");
+      LOGGER.info("Nombre d'arcs de la carte topo n°1 = " + resultatAppariement.getReseau1().getListeArcs().size());
+      LOGGER.info("Nombre de noeuds de la carte topo n°1 = " + resultatAppariement.getReseau1().getListeNoeuds().size());
+      
+      List<ReseauApp> cartesTopoReferenceValuees = AppariementIO
+          .scindeSelonValeursResultatsAppariement(resultatAppariement.getReseau1(), valeursClassement);
+      IPopulation<Arc> arcsReferenceApparies = cartesTopoReferenceValuees.get(0).getPopArcs();
+      IPopulation<Arc> arcsReferenceIncertains = cartesTopoReferenceValuees.get(1).getPopArcs();
+      IPopulation<Arc> arcsReferenceNonApparies = cartesTopoReferenceValuees.get(2).getPopArcs();
+      // IPopulation<Noeud> noeudsReferenceApparies = cartesTopoReferenceValuees.get(0).getPopNoeuds();
+      // IPopulation<Noeud> noeudsReferenceIncertains = cartesTopoReferenceValuees.get(1).getPopNoeuds();
+      // IPopulation<Noeud> noeudsReferenceNonApparies = cartesTopoReferenceValuees.get(2).getPopNoeuds();
+      
+      l1 = p2.addUserLayer(arcsReferenceApparies, "Arcs réseau 1 appariés", null);
       l1.getSymbolizer().getStroke().setColor(network1Color);
       l1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
+      Layer l1D = p2.addUserLayer(arcsReferenceIncertains, "Arcs réseau 1 incertains", null);
+      l1D.getSymbolizer().getStroke().setColor(network1DColor);
+      l1D.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
+      Layer l1N = p2.addUserLayer(arcsReferenceNonApparies, "Arcs réseau 1 non appariés", null);
+      l1N.getSymbolizer().getStroke().setColor(network1NColor);
+      l1N.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
+      
       l2 = p2.addUserLayer(newParam.getParamDataset().getPopulationsArcs2().get(0), "Réseau 2", null);
       l2.getSymbolizer().getStroke().setColor(network2Color);
       l2.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
@@ -344,6 +389,9 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       p2.setSize(widthProjectFrame, heightProjectFrame);
       p2.setLocation(0, heightProjectFrame); 
       
+      // ---------------------------------------------------------------------------------
+      // Frame n°3
+      //   
       ProjectFrame p3 = this.application.getFrame().newProjectFrame();
       p3.getLayerViewPanel().setViewport(viewport);
       viewport.getLayerViewPanels().add(p3.getLayerViewPanel());
@@ -354,9 +402,31 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       l2 = p3.addUserLayer(newParam.getParamDataset().getPopulationsArcs2().get(0), "Réseau 2", null);
       l2.getSymbolizer().getStroke().setColor(network2Color);
       l2.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
-      Layer l3 = p3.addUserLayer(liens, "Liens", null);
+      /*Layer l3 = p3.addUserLayer(liens, "Liens", null);
       l3.getSymbolizer().getStroke().setColor(linkColor);
-      l3.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
+      l3.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH_LINK);*/
+      
+      List<Double> valeursClassementL = new ArrayList<Double>();
+      valeursClassementL.add(new Double(0.5));
+      valeursClassementL.add(new Double(1));
+      
+      List<EnsembleDeLiens> liensClasses = liens.classeSelonSeuilEvaluation(valeursClassementL);
+      EnsembleDeLiens liensNuls = liensClasses.get(0);
+      EnsembleDeLiens liensIncertains = liensClasses.get(1);
+      EnsembleDeLiens liensSurs = liensClasses.get(2);
+      
+      Layer link_ok_layer = p3.addUserLayer(liensSurs, "Liens sûrs", null);
+      link_ok_layer.getSymbolizer().getStroke().setColor(linkColorOk);
+      link_ok_layer.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH_LINK);
+      
+      Layer link_null_layer = p3.addUserLayer(liensNuls, "Liens nulls", null);
+      link_null_layer.getSymbolizer().getStroke().setColor(linkColorNull);
+      link_null_layer.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH_LINK);
+      
+      Layer link_doubtfull_layer = p3.addUserLayer(liensIncertains, "Liens incertains", null);
+      link_doubtfull_layer.getSymbolizer().getStroke().setColor(linkColorDoubtfull);
+      link_doubtfull_layer.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH_LINK);
+      
       p3.setSize(widthProjectFrame, heightProjectFrame * 2);
       p3.setLocation(widthProjectFrame, 0);
       
