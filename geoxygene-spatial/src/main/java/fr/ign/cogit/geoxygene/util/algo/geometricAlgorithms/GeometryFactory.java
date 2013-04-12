@@ -118,10 +118,44 @@ public class GeometryFactory {
     points.add(new DirectPosition(upperLeftCorner.getX() + length,
         upperLeftCorner.getY() - width));
     points.add(new DirectPosition(upperLeftCorner.getX(), upperLeftCorner
-        .getY()
-        - width));
+        .getY() - width));
     points.add(upperLeftCorner);
     return new GM_Polygon(new GM_LineString(points));
   }
 
+  /**
+   * Creates a regular hexagon parallel to the X axis. Width being the
+   * perpendicular distances from one side to the side opposite.
+   * @param center
+   * @param width
+   * @return
+   */
+  public static IPolygon buildHexagon(IDirectPosition center, double width) {
+    if (width == 0.0)
+      return null;
+    IDirectPositionList points = new DirectPositionList();
+    // add first point
+    IDirectPosition first = new DirectPosition(center.getX() - (width / 2),
+        center.getY());
+    points.add(first);
+    // add second point
+    points.add(new DirectPosition(center.getX() - (width / 4), (Math.sqrt(3)
+        * width / 4)
+        + center.getY()));
+    // add third point
+    points.add(new DirectPosition(center.getX() + (width / 4), (Math.sqrt(3)
+        * width / 4)
+        + center.getY()));
+    // add fourth point
+    points.add(new DirectPosition(center.getX() + (width / 2), center.getY()));
+    // add fifth point
+    points.add(new DirectPosition(center.getX() + (width / 4), center.getY()
+        - (Math.sqrt(3) * width / 4)));
+    // add sixth point
+    points.add(new DirectPosition(center.getX() - (width / 4), center.getY()
+        - (Math.sqrt(3) * width / 4)));
+    // close the polygon
+    points.add(first);
+    return new GM_Polygon(new GM_LineString(points));
+  }
 }
