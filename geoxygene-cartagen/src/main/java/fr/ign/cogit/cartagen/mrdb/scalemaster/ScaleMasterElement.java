@@ -214,9 +214,11 @@ public class ScaleMasterElement {
         // display nothing
       }
     }
-    if (processesToApply == null)
+    if (processesToApply == null) {
+      if (strOgcFilter.equals(""))
+        strOgcFilter = "no process";
       return (strOgcFilter);
-    else if (processesToApply.size() == 1)
+    } else if (processesToApply.size() == 1)
       return (processesToApply.get(0) + strOgcFilter);
     else {
       StringBuffer strBuff = new StringBuffer();

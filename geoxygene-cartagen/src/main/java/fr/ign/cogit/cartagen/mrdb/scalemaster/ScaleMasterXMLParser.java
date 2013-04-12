@@ -80,6 +80,12 @@ public class ScaleMasterXMLParser {
     Element root = (Element) doc.getElementsByTagName("pearep-scalemaster")
         .item(0);
 
+    // the scale master name
+    if (root.getElementsByTagName("name").getLength() != 0) {
+      Element nameElem = (Element) root.getElementsByTagName("name").item(0);
+      scaleMaster.setName(nameElem.getChildNodes().item(0).getNodeValue());
+    }
+
     // the scale master point of view
     Element ptOfViewElem = (Element) root.getElementsByTagName("point-of-view")
         .item(0);
@@ -105,7 +111,12 @@ public class ScaleMasterXMLParser {
       Element scaleLineElement = (Element) root.getElementsByTagName(
           "scale-line").item(itScaleLine);
 
-      Map<Interval<Integer>, List<ScaleMasterElement>> mapScaleMasterElements = new HashMap<Interval<Integer>, List<ScaleMasterElement>>();
+      ScaleMasterTheme theme = null;
+      for (ScaleMasterTheme th : themes) {
+        if (scaleLineElement.getAttribute("theme").equals(th.getName()))
+          theme = th;
+      }
+      ScaleLine scaleLine = new ScaleLine(scaleMaster, theme);
 
       // get scale-intervals
       for (int itScaleInterval = 0; itScaleInterval < scaleLineElement
@@ -126,12 +137,9 @@ public class ScaleMasterXMLParser {
         Interval<Integer> interval = new Interval<Integer>(
             Integer.valueOf(intervalMin.getChildNodes().item(0).getNodeValue()),
             Integer.valueOf(intervalMax.getChildNodes().item(0).getNodeValue()));
-        List<ScaleMasterElement> listScaleMasterElements = new ArrayList<ScaleMasterElement>();
-        mapScaleMasterElements.put(interval, listScaleMasterElements);
 
         ScaleMasterElement scaleMasterElement = new ScaleMasterElement(null,
             interval, dbName.getChildNodes().item(0).getNodeValue());
-        listScaleMasterElements.add(scaleMasterElement);
 
         Set<Class<? extends IGeneObj>> classes = new HashSet<Class<? extends IGeneObj>>();
         classes.add((Class<? extends IGeneObj>) Class.forName(className
@@ -263,14 +271,8 @@ public class ScaleMasterXMLParser {
           scaleMasterElement.setFilterPriority(ProcessPriority.values()[Integer
               .valueOf(attributeSelection.getAttribute("priority"))]);
         }
+        scaleLine.addElement(scaleMasterElement);
       }
-      ScaleMasterTheme theme = null;
-      for (ScaleMasterTheme th : themes) {
-        if (scaleLineElement.getAttribute("theme").equals(th.getName()))
-          theme = th;
-      }
-      ScaleLine scaleLine = new ScaleLine(theme, scaleMaster,
-          mapScaleMasterElements);
 
       scaleMaster.getScaleLines().add(scaleLine);
     }

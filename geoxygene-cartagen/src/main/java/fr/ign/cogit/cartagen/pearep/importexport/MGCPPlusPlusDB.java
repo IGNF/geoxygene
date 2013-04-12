@@ -24,6 +24,7 @@ import fr.ign.cogit.cartagen.software.dataset.CartAGenEnrichment;
 import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 import fr.ign.cogit.cartagen.software.dataset.ShapeFileDB;
 import fr.ign.cogit.cartagen.software.dataset.SourceDLM;
+import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.cartagen.util.XMLUtil;
 
 public class MGCPPlusPlusDB extends ShapeFileDB {
@@ -190,9 +191,14 @@ public class MGCPPlusPlusDB extends ShapeFileDB {
     root.appendChild(datasetTypeElem);
     // The symbolisation scale
     Element scaleElem = xmlDoc.createElement("scale");
-    n = xmlDoc.createTextNode(String.valueOf(this.getSymboScale()));
+    n = xmlDoc.createTextNode(String.valueOf(Legend.getSYMBOLISATI0N_SCALE()));
     scaleElem.appendChild(n);
     root.appendChild(scaleElem);
+    // The symbolisation scale
+    Element projElem = xmlDoc.createElement("projection-epsg");
+    n = xmlDoc.createTextNode(String.valueOf(this.getProjEpsg()));
+    projElem.appendChild(n);
+    root.appendChild(projElem);
 
     // The source DLM
     Element dlmElem = xmlDoc.createElement("source-dlm");

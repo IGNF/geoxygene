@@ -99,8 +99,14 @@ public class ScaleLine {
     super();
     this.theme = theme;
     this.scaleMaster = scaleMaster;
-    this.line = line;
+    this.line = new HashMap<Interval<Integer>, List<ScaleMasterElement>>();
     this.id = scaleMaster.newLineId();
+    for (List<ScaleMasterElement> list : line.values()) {
+      for (ScaleMasterElement elem : list) {
+        elem.setScaleLine(this);
+        this.addElement(elem);
+      }
+    }
   }
 
   public ScaleLine(ScaleMaster scaleMaster, ScaleMasterTheme theme) {

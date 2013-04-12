@@ -316,18 +316,29 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
         this.current = new ScaleMasterXMLParser(xmlFile)
             .parseScaleMaster(existingThemes);
         // now update the frame components
+        this.txtName.setText(this.current.getName());
         this.spMin.setValue(this.current.getGlobalRange().getMinimum());
         this.spMax.setValue(this.current.getGlobalRange().getMaximum());
         this.cbPtOfView.setSelectedItem(this.current.getPointOfView());
         this.linePanels.clear();
-        this.getDisplayPanel().removeAll();
+        for (int i = 1; i < this.getDisplayPanel().getComponentCount(); i++)
+          this.getDisplayPanel().remove(i);
         for (ScaleLine line : this.current.getScaleLines()) {
+          List<ScaleMasterElement> elements = new ArrayList<ScaleMasterElement>();
+          for (List<ScaleMasterElement> list : line.getLine().values())
+            elements.addAll(list);
+          line.getLine().clear();
           ScaleLineDisplayPanel linePanel = new ScaleLineDisplayPanel(line,
               ruler, this);
           linePanels.put(line.getTheme().getName(), linePanel);
           JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
           jp.add(linePanel);
           this.getDisplayPanel().add(jp);
+          for (ScaleMasterElement elem : elements) {
+            line.addElement(elem);
+            linePanel.updateElements();
+            this.pack();
+          }
         }
         this.pack();
       } catch (DOMException e1) {
@@ -358,7 +369,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
     if (evt.getPropertyName().equals("background")) {
-      this.dbHues.put(((CartAGenDB) this.cbDbs.getSelectedItem()).getName(),
+      this.dbHues.put((String) this.cbDbs.getSelectedItem(),
           (Color) evt.getNewValue());
     }
   }
@@ -670,8 +681,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     // load a xml file in which existing themes have been stored
     JFileChooser fc = new JFileChooser();
     fc.setFileFilter(new XMLFileFilter());
-    fc.setName("Choose the themes XML file to open");
-    int returnVal = fc.showOpenDialog(this);
+    int returnVal = fc.showDialog(this, "Choose the themes XML file to open");
     if (returnVal != JFileChooser.APPROVE_OPTION) {
       return;
     }

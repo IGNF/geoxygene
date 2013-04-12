@@ -69,9 +69,10 @@ public class ScaleLineDisplayPanel extends JPanel implements ActionListener {
     this.toggle.setActionCommand("toggle");
     this.toggle.addActionListener(this);
     this.setAlignmentX(Component.LEFT_ALIGNMENT);
-    for (Interval<Integer> interval : scaleLine.getLine().keySet()) {
-      ScaleMasterElementPanel panel = new ScaleMasterElementPanel(scaleLine
-          .getLine().get(interval), frame);
+    this.intervals.clear();
+    for (Interval<Integer> interval : this.scaleLine.getLine().keySet()) {
+      ScaleMasterElementPanel panel = new ScaleMasterElementPanel(
+          this.scaleLine.getLine().get(interval), frame);
       this.eltPanels.put(interval, panel);
       this.intervals.add(interval);
     }
@@ -108,6 +109,9 @@ public class ScaleLineDisplayPanel extends JPanel implements ActionListener {
           .setMinimumSize(new Dimension(pixFin - pixIni, this.getHeight() - 2));
       panel
           .setMaximumSize(new Dimension(pixFin - pixIni, this.getHeight() - 2));
+      Dimension labelSize = panel.getLabel().getPreferredSize();
+      panel.getLabel().setPreferredSize(
+          new Dimension((pixFin - pixIni) / 2, labelSize.height));
       this.add(panel);
       lastEltPix = pixFin;
     }
@@ -130,6 +134,15 @@ public class ScaleLineDisplayPanel extends JPanel implements ActionListener {
   @Override
   public void setName(String name) {
     this.name = name;
+  }
+
+  public Map<Interval<Integer>, ScaleMasterElementPanel> getEltPanels() {
+    return eltPanels;
+  }
+
+  public void setEltPanels(
+      Map<Interval<Integer>, ScaleMasterElementPanel> eltPanels) {
+    this.eltPanels = eltPanels;
   }
 
   @Override

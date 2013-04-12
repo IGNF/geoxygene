@@ -32,6 +32,7 @@ import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.interfacecartagen.AbstractLayerGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.LayerGroup;
+import fr.ign.cogit.cartagen.software.interfacecartagen.interfacecore.Legend;
 import fr.ign.cogit.cartagen.util.XMLUtil;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
@@ -461,6 +462,7 @@ public class CartAGenDoc {
       database.setDataSet(dataset);
       instance.currentDataset = dataset;
       database.populateDataset(database.getSymboScale());
+      Legend.setSYMBOLISATI0N_SCALE(database.getSymboScale());
     }
     if (root.getElementsByTagName("layer-group").getLength() != 0) {
       Element layerGroupElem = (Element) root.getElementsByTagName(

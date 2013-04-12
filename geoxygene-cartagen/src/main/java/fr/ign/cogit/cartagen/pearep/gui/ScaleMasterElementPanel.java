@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.MattePainter;
@@ -31,7 +32,7 @@ public class ScaleMasterElementPanel extends JXPanel implements MouseListener {
   private List<ScaleMasterElement> elements;
   private List<JPanel> panels;
   private EditScaleMasterFrame parent;
-
+  private JLabel label;
   private Popup popup;
 
   public ScaleMasterElementPanel(List<ScaleMasterElement> elements,
@@ -43,12 +44,13 @@ public class ScaleMasterElementPanel extends JXPanel implements MouseListener {
 
     for (ScaleMasterElement element : elements) {
       JPanel panel = new JPanel();
-      MattePainter painter = new MattePainter(this.findElementColor(element));
+      Color color = this.findElementColor(element);
+      MattePainter painter = new MattePainter(color);
       this.setBackgroundPainter(painter);
-      Color dbHue = parent.getDbHues().get(element.getDbName());
-      panel.setBackground(dbHue);
+      panel.setBackground(color);
       panel.setOpaque(true);
-      panel.add(new JLabel(element.toString()));
+      label = new JLabel(element.toString());
+      panel.add(label);
       panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
       panel.addMouseListener(this);
       this.add(panel);
@@ -76,10 +78,31 @@ public class ScaleMasterElementPanel extends JXPanel implements MouseListener {
     // decreases lightness according to the generalisation score
     Color color = dbHue;
     for (int i = 0; i < generalisationScore; i++) {
-      color = color.brighter();
+      color = getBrighterColor(color);
     }
-
     return color;
+  }
+
+  /**
+   * Gives a brighter color even if it is Red, Green or Blue.
+   * @param color
+   * @return
+   */
+  private Color getBrighterColor(Color color) {
+    Color brighter = color.brighter().brighter();
+    if (brighter.equals(color)) {
+      int red = color.getRed();
+      int blue = color.getBlue();
+      int green = color.getGreen();
+      if (red == 0)
+        red = 50;
+      if (blue == 0)
+        blue = 50;
+      if (green == 0)
+        green = 50;
+      brighter = new Color(red, green, blue);
+    }
+    return brighter;
   }
 
   public void setElements(List<ScaleMasterElement> elements) {
@@ -90,12 +113,21 @@ public class ScaleMasterElementPanel extends JXPanel implements MouseListener {
     return this.elements;
   }
 
+  public JLabel getLabel() {
+    return label;
+  }
+
+  public void setLabel(JLabel label) {
+    this.label = label;
+  }
+
   @Override
   public void mouseClicked(MouseEvent e) {
     if (SwingUtilities.isRightMouseButton(e)) {
       PopupFactory factory = PopupFactory.getSharedInstance();
       JPanel contents = this.getPopupContent((JPanel) e.getSource());
-      this.popup = factory.getPopup(this, contents, e.getX(), e.getY());
+      this.popup = factory.getPopup(this.parent, contents, e.getX(), e.getY());
+      this.popup.show();
     } else {
       if (this.popup != null) {
         this.popup.hide();
@@ -155,6 +187,10 @@ public class ScaleMasterElementPanel extends JXPanel implements MouseListener {
       }
     }
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    Border insideBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+    Border outsideBorder = BorderFactory.createLineBorder(Color.BLUE, 3);
+    panel.setBorder(BorderFactory.createCompoundBorder(outsideBorder,
+        insideBorder));
     return panel;
   }
 
