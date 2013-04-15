@@ -160,23 +160,25 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
    */
   private void initializeParam() {
     
-    // Dataset  
-    ParamFilenameNetworkDataMatching paramFilename1 = new ParamFilenameNetworkDataMatching();
-    paramFilename1.setListNomFichiersPopArcs("D:\\DATA\\Appariement\\MesTests\\T3\\bdcarto_route.shp");
-    paramPlugin.setParamFilenameNetwork1(paramFilename1);
-    
-    ParamFilenameNetworkDataMatching paramFilename2 = new ParamFilenameNetworkDataMatching();
-    paramFilename2.setListNomFichiersPopArcs("D:\\DATA\\Appariement\\MesTests\\T3\\bdtopo_route.shp");
-    paramPlugin.setParamFilenameNetwork2(paramFilename2);
-    
+    String filename1 = "D:\\DATA\\Appariement\\MesTests\\T3\\bdcarto_route.shp";
+    String filename2 = "D:\\DATA\\Appariement\\MesTests\\T3\\bdtopo_route.shp";
+    // String filename1 = "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\reseau1.shp";
+    // String filename2 = "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\reseau2.shp";
     // "D:\\Data\\Appariement\\ESPON_DB\\1-RoadL_Paris_2000_extract.shp"
     // "D:\\Data\\Appariement\\ESPON_DB\\2-Streets_extract.shp"
-    // "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\reseau1.shp"
-    // "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\reseau2.shp"
     // "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\ERM\\RoadL_Paris_2000.shp"
     // "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\Navstreets\\Streets.shp"
     
-    // param
+    // Dataset  
+    ParamFilenameNetworkDataMatching paramFilename1 = new ParamFilenameNetworkDataMatching();
+    paramFilename1.setListNomFichiersPopArcs(filename1);
+    paramPlugin.setParamFilenameNetwork1(paramFilename1);
+    
+    ParamFilenameNetworkDataMatching paramFilename2 = new ParamFilenameNetworkDataMatching();
+    paramFilename2.setListNomFichiersPopArcs(filename2);
+    paramPlugin.setParamFilenameNetwork2(paramFilename2);
+    
+    // Param
     ParamNetworkDataMatching param = new ParamNetworkDataMatching();
     
     // Direction
@@ -247,8 +249,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       paramOld.varianteForceAppariementSimple = false;
       paramOld.varianteRedecoupageArcsNonApparies = false;
       
-      // paramOld.debugTirets = true;
-      paramOld.debugBilanSurObjetsGeo = false;
+      paramOld.debugTirets = true;
+      paramOld.debugBilanSurObjetsGeo = true;
       // paramOld.debugAffichageCommentaires = 1;
       
       // Log parameters
@@ -264,6 +266,10 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
           + " >= " + reseau2.size());
       
       EnsembleDeLiens liens = resultatAppariement.getLinkDataSet();
+      // if (paramOld.debugBilanSurObjetsGeo) {
+        // liens = resultatAppariement.getLiensGeneriques();
+      //}
+      
       ResultNetworkStat resultNetwork = resultatAppariement.getResultStat();
       
       // Debug
@@ -276,16 +282,11 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       LOGGER.info(resultNetwork.getStatsNodesOfNetwork2().toString());
       
       // Recalage
-      CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseau1(), 
-          resultatAppariement.getReseau2(), liens);
+      CarteTopo reseauRecale = Recalage.recalage(resultatAppariement.getReseau1(), resultatAppariement.getReseau2(), liens);
       IPopulation<Arc> arcs = reseauRecale.getPopArcs();
       LOGGER.info(arcs.getNom());
   
-      // Qu'est-ce que ca fait ??
-      int nb_1_1 = 0;
-      int nb_1_n = 0;
-      int nb_n_1 = 0;
-      int nb_0_0 = 0;
+      // Split les multi
       for (Lien lien : liens) {
         IGeometry geom = lien.getGeom();
         if (geom instanceof GM_Aggregate<?>) {
@@ -300,20 +301,6 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
             }
           }
           lien.setGeom(multiCurve);
-        }
-        
-        // On compte les types de liens
-        if (lien.getObjetsRef().size() < 1 && lien.getObjetsComp().size() < 1) {
-          nb_0_0++;
-        }
-        if (lien.getObjetsRef().size() == 1 && lien.getObjetsComp().size() == 1) {
-          nb_1_1++;
-        }
-        if (lien.getObjetsRef().size() == 1 && lien.getObjetsComp().size() > 1) {
-          nb_1_n++;
-        }
-        if (lien.getObjetsRef().size() == 1 && lien.getObjetsComp().size() > 1) {
-          nb_n_1++;
         }
       }
   
@@ -377,7 +364,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       LOGGER.info("Nombre d'arcs de la carte topo n°1 = " + resultatAppariement.getReseau1().getListeArcs().size());
       LOGGER.info("Nombre de noeuds de la carte topo n°1 = " + resultatAppariement.getReseau1().getListeNoeuds().size());
       
-      List<ReseauApp> cartesTopoReferenceValuees = AppariementIO
+      /*List<ReseauApp> cartesTopoReferenceValuees = AppariementIO
           .scindeSelonValeursResultatsAppariement(resultatAppariement.getReseau1(), valeursClassement);
       IPopulation<Arc> arcsReferenceApparies = cartesTopoReferenceValuees.get(0).getPopArcs();
       IPopulation<Arc> arcsReferenceIncertains = cartesTopoReferenceValuees.get(1).getPopArcs();
@@ -394,7 +381,10 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       l1D.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
       Layer l1N = p2.addUserLayer(arcsReferenceNonApparies, "Arcs réseau 1 non appariés", null);
       l1N.getSymbolizer().getStroke().setColor(network1NColor);
-      l1N.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
+      l1N.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);*/
+      l1 = p2.addUserLayer(datasetNetwork1.getPopulationsArcs().get(0), "Réseau 1", null);
+      l1.getSymbolizer().getStroke().setColor(network1Color);
+      l1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
       
       l2 = p2.addUserLayer(datasetNetwork2.getPopulationsArcs().get(0), "Réseau 2", null);
       l2.getSymbolizer().getStroke().setColor(network2Color);

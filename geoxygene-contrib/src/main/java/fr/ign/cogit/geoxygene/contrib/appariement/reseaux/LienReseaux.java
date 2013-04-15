@@ -47,6 +47,7 @@ import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.contrib.geometrie.Operateurs;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
+import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 
 /**
  * Resultats de l'appariement, qui sont des liens entre objets de BDref et
@@ -241,9 +242,10 @@ public class LienReseaux extends Lien {
   }
 
   /**
-   * Méthode qui renvoie en sortie des liens génériques (appariement.Lien, liens
-   * 1-1 uniquement) correspondant aux lienReseaux en entrée. Cette méthode crée
-   * une géoémtrie aux liens au passage.
+   * Méthode qui renvoie en sortie des liens génériques (appariement.Lien, liens 1-1 uniquement) 
+   *     correspondant aux lienReseaux en entrée. 
+   * Cette méthode crée une géoémtrie aux liens au passage.
+   * 
    * @param liensReseaux
    * @param ctRef
    * @param param
@@ -251,23 +253,25 @@ public class LienReseaux extends Lien {
    */
   public static EnsembleDeLiens exportLiensAppariement(
       EnsembleDeLiens liensReseaux, ReseauApp ctRef, ParametresApp param) {
+    
     EnsembleDeLiens liensGeneriques;
     liensGeneriques = new EnsembleDeLiens();
     liensGeneriques.setNom(liensReseaux.getNom());
+    
     // On compile toutes les populations du reseau 1 [resp. 2] dans une liste
-    List<IFeatureCollection<? extends IFeature>> pops1 = 
-        new ArrayList<IFeatureCollection<? extends IFeature>>(param.populationsArcs1);
+    List<IFeatureCollection<? extends IFeature>> pops1 = new ArrayList<IFeatureCollection<? extends IFeature>>(param.populationsArcs1);
     pops1.addAll(param.populationsNoeuds1);
-    List<IFeatureCollection<? extends IFeature>> pops2 = 
-        new ArrayList<IFeatureCollection<? extends IFeature>>(param.populationsArcs2);
+    List<IFeatureCollection<? extends IFeature>> pops2 = new ArrayList<IFeatureCollection<? extends IFeature>>(param.populationsArcs2);
     pops2.addAll(param.populationsNoeuds2);
-    // boucle sur les liens entre cartes topo
+    
+    // Boucle sur les liens entre cartes topo
     Iterator<Lien> itLiensReseaux = liensReseaux.iterator();
     while (itLiensReseaux.hasNext()) {
+      
       LienReseaux lienReseau = (LienReseaux) itLiensReseaux.next();
+      
       // on récupère tous les objets des carte topo concernés
-      Set<IFeature> objetsCT1PourUnLien = new HashSet<IFeature>(
-          lienReseau.getArcs1());
+      Set<IFeature> objetsCT1PourUnLien = new HashSet<IFeature>(lienReseau.getArcs1());
       objetsCT1PourUnLien.addAll(lienReseau.getNoeuds1());
       Iterator<Groupe> itGroupes1 = lienReseau.getGroupes1().iterator();
       while (itGroupes1.hasNext()) {
@@ -275,8 +279,8 @@ public class LienReseaux extends Lien {
         objetsCT1PourUnLien.addAll(groupe1.getListeArcs());
         objetsCT1PourUnLien.addAll(groupe1.getListeNoeuds());
       }
-      Set<IFeature> objetsCT2PourUnLien = new HashSet<IFeature>(
-          lienReseau.getArcs2());
+      
+      Set<IFeature> objetsCT2PourUnLien = new HashSet<IFeature>(lienReseau.getArcs2());
       objetsCT2PourUnLien.addAll(lienReseau.getNoeuds2());
       Iterator<Groupe> itGroupes2 = lienReseau.getGroupes2().iterator();
       while (itGroupes2.hasNext()) {
@@ -284,30 +288,26 @@ public class LienReseaux extends Lien {
         objetsCT2PourUnLien.addAll(groupe2.getListeArcs());
         objetsCT2PourUnLien.addAll(groupe2.getListeNoeuds());
       }
+      
       // On parcours chaque couple d'objets de cartes topos appariés
       Iterator<IFeature> itObjetsCT1PourUnLien = objetsCT1PourUnLien.iterator();
       while (itObjetsCT1PourUnLien.hasNext()) {
         IFeature objetCT1 = itObjetsCT1PourUnLien.next();
-        Iterator<IFeature> itObjetsCT2PourUnLien = objetsCT2PourUnLien
-            .iterator();
+        Iterator<IFeature> itObjetsCT2PourUnLien = objetsCT2PourUnLien.iterator();
         Collection<IFeature> objets1 = LienReseaux.getCorrespondants(objetCT1, pops1);
         while (itObjetsCT2PourUnLien.hasNext()) {
           IFeature objetCT2 = itObjetsCT2PourUnLien.next();
-          Collection<IFeature> objets2 = LienReseaux.getCorrespondants(objetCT2,
-              pops2);
+          Collection<IFeature> objets2 = LienReseaux.getCorrespondants(objetCT2, pops2);
           if (objets1.isEmpty() && objets2.isEmpty()) {
             // cas où il n'y a pas de correspondant dans les données de départ
             // des 2 côtés
             Lien lienG = liensGeneriques.nouvelElement();
             lienG.setEvaluation(lienReseau.getEvaluation());
-            lienG.setCommentaire(I18N
-                .getString("LienReseaux.NoCorrespondentInBothDatabases")); //$NON-NLS-1$
+            lienG.setCommentaire(I18N.getString("LienReseaux.NoCorrespondentInBothDatabases")); //$NON-NLS-1$
             if (param.exportGeometrieLiens2vers1) {
-              lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objetCT1,
-                  objetCT2));
+              lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objetCT1, objetCT2));
             } else {
-              lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objetCT2,
-                  objetCT1));
+              lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objetCT2, objetCT1));
             }
             continue;
           }
@@ -318,14 +318,11 @@ public class LienReseaux extends Lien {
               IFeature objet2 = itObjets2.next();
               Lien lienG = liensGeneriques.nouvelElement();
               lienG.setEvaluation(lienReseau.getEvaluation());
-              lienG.setCommentaire(I18N
-                  .getString("LienReseaux.NoCorrespondentInDB1")); //$NON-NLS-1$
+              lienG.setCommentaire(I18N.getString("LienReseaux.NoCorrespondentInDB1")); //$NON-NLS-1$
               if (param.exportGeometrieLiens2vers1) {
-                lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objetCT1,
-                    objet2));
+                lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objetCT1, objet2));
               } else {
-                lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objet2,
-                    objetCT1));
+                lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objet2, objetCT1));
               }
               lienG.addObjetComp(objet2);
             }
@@ -338,14 +335,11 @@ public class LienReseaux extends Lien {
               IFeature objet1 = itObjets1.next();
               Lien lienG = liensGeneriques.nouvelElement();
               lienG.setEvaluation(lienReseau.getEvaluation());
-              lienG.setCommentaire(I18N
-                  .getString("LienReseaux.NoCorrespondentInDB1")); //$NON-NLS-1$
+              lienG.setCommentaire(I18N.getString("LienReseaux.NoCorrespondentInDB1")); //$NON-NLS-1$
               if (param.exportGeometrieLiens2vers1) {
-                lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objet1,
-                    objetCT2));
+                lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objet1, objetCT2));
               } else {
-                lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objetCT2,
-                    objet1));
+                lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objetCT2, objet1));
               }
               lienG.addObjetRef(objet1);
             }
@@ -362,11 +356,9 @@ public class LienReseaux extends Lien {
               lienG.setEvaluation(lienReseau.getEvaluation());
               lienG.setCommentaire(""); //$NON-NLS-1$
               if (param.exportGeometrieLiens2vers1) {
-                lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objet1,
-                    objet2));
+                lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objet1, objet2));
               } else {
-                lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objet2,
-                    objet1));
+                lienG.setGeom(LienReseaux.creeGeometrieLienSimple(objet2, objet1));
               }
               lienG.addObjetRef(objet1);
               lienG.addObjetComp(objet2);
@@ -375,11 +367,11 @@ public class LienReseaux extends Lien {
         }
       }
     }
+    
     if (param.debugAffichageCommentaires > 1) {
-      LienReseaux.logger.info("  " + liensGeneriques.size() //$NON-NLS-1$
-          + I18N.getString("LienReseaux." + //$NON-NLS-1$
-              "Link1-1exported")); //$NON-NLS-1$
+      LienReseaux.logger.info("  " + liensGeneriques.size() + " liens 1-1 have been exported");
     }
+    //
     return liensGeneriques;
   }
 
@@ -395,7 +387,7 @@ public class LienReseaux extends Lien {
     }
     return resultats;
   }
-
+  
   /**
    * Methode créant une géométrie au lien 1-1 en reliant les deux objets
    * concerné par un simple trait.
@@ -447,14 +439,17 @@ public class LienReseaux extends Lien {
    * Méthode qui affecte une geometrie aux liens de réseau et remplit les
    * commentaires des liens. UTILE POUR CODE / DEBUG UNIQUEMENT
    */
-  public static void exportAppCarteTopo(EnsembleDeLiens liensReseaux,
-      ParametresApp param) {
+  public static void exportAppCarteTopo(EnsembleDeLiens liensReseaux, ParametresApp param) {
+    
     // création de la géométrie des liens
     for (Lien lien : liensReseaux) {
       LienReseaux lienR = (LienReseaux) lien;
+      
       lienR.setGeom(lienR.creeGeometrieLien(param.debugTirets,
           param.debugPasTirets, param.debugBuffer, param.debugTailleBuffer));
+      
     }
+    
     // if ( param.debugAffichageCommentaires > 1 )
     // System.out.println("BILAN de l'appariement sur le réseau 1");
     // if ( param.debugAffichageCommentaires > 1 )
@@ -565,6 +560,7 @@ public class LienReseaux extends Lien {
    */
   private IGeometry creeGeometrieLien(boolean tirets, double pasTirets,
       boolean buffer, double tailleBuffer) {
+    
     if (LienReseaux.logger.isDebugEnabled()) {
       LienReseaux.logger.debug(tirets
           + " - " + pasTirets + " - " + buffer + " - " + tailleBuffer); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -683,6 +679,9 @@ public class LienReseaux extends Lien {
     return null;
   }
 
+  /**
+   * 
+   */
   public void clear() {
     this.arcs1.clear();
     this.arcs2.clear();

@@ -49,18 +49,18 @@ public class EditParamDirectionPanel extends JPanel {
   private static final long serialVersionUID = 4791806011051504347L;
   
   /** */
-  private JRadioButton rbEdgeTwoWayRef = null;
-  private JRadioButton rbEdgeOneWayRef = null;
-  private JRadioButton rbEdgeDefineWayRef = null;
+  private JRadioButton rbDoubleSensArcReseau1 = null;
+  private JRadioButton rbSimpleSensArcReseau1 = null;
+  
   private JTextField fieldAttributeRef = null;
   private JTextField fieldValueDirectRef = null;
   private JTextField fieldValueInverseRef = null;
   private JTextField fieldValueDoubleSensRef = null;
   
-  private JTextField fieldAttributeComp = null;
+  /*private JTextField fieldAttributeComp = null;
   private JTextField fieldValueDirectComp = null;
   private JTextField fieldValueInverseComp = null;
-  private JTextField fieldValueDoubleSensComp = null;
+  private JTextField fieldValueDoubleSensComp = null;*/
   
   /**
    * Constructor.
@@ -81,15 +81,12 @@ public class EditParamDirectionPanel extends JPanel {
     
     ButtonGroup groupe = new ButtonGroup();
     
-    rbEdgeTwoWayRef = new JRadioButton("Tous les axes sont en double sens");
-    rbEdgeTwoWayRef.setSelected(true);
-    groupe.add(rbEdgeTwoWayRef);
+    rbDoubleSensArcReseau1 = new JRadioButton("Tous les axes sont en double sens");
+    rbDoubleSensArcReseau1.setSelected(true);
+    groupe.add(rbDoubleSensArcReseau1);
     
-    rbEdgeOneWayRef = new JRadioButton("Tous les axes sont en simple sens");
-    groupe.add(rbEdgeOneWayRef);
-    
-    rbEdgeDefineWayRef = new JRadioButton("Définir le sens de l'axe suivant la valeur d'un attribut");
-    groupe.add(rbEdgeDefineWayRef);
+    rbSimpleSensArcReseau1 = new JRadioButton("Définir le sens de l'axe suivant la valeur d'un attribut");
+    groupe.add(rbSimpleSensArcReseau1);
   }
   
   /**
@@ -99,51 +96,55 @@ public class EditParamDirectionPanel extends JPanel {
     
     FormLayout layout = new FormLayout(
         "20dlu, pref, 20dlu, pref, pref, pref, pref, 20dlu", // colonnes
-        "10dlu, pref, pref, pref, pref, pref, pref, pref, pref, 40dlu");  // lignes
+        "20dlu, pref, pref, pref, pref, pref, pref, pref, pref, pref, 40dlu");  // lignes
     CellConstraints cc = new CellConstraints();
     setLayout(layout);
     
-    // JLabel labelParam1 = new JLabel("Avec orientation double");
-    add(rbEdgeTwoWayRef, cc.xyw(2, 2, 4));
-    add(rbEdgeOneWayRef, cc.xyw(2, 3, 4));
-    add(rbEdgeDefineWayRef, cc.xyw(2, 4, 4));
+    // Line 1 : titles
+    add(new JLabel("Reseau 1"), cc.xy(2, 2));
+    add(new JLabel("Reseau 2"), cc.xy(7, 2));
     
-    add(new JLabel("Reseau 1"), cc.xy(5, 5));
-    add(new JLabel("Reseau 2"), cc.xy(6, 5));
+    // Line 2 : double sens
+    add(rbDoubleSensArcReseau1, cc.xyw(2, 3, 4));
     
+    // Line 3
+    add(rbSimpleSensArcReseau1, cc.xyw(2, 4, 4));
+    
+    // Line 4 : simple sens
     add(new JLabel("Nom de l'attribut : "), cc.xy(4, 6));
     fieldAttributeRef = new JTextField(20);
     fieldAttributeRef.setText("sens_de_circulation");
     add(fieldAttributeRef, cc.xy(5, 6));
-    fieldAttributeComp = new JTextField(20);
-    fieldAttributeComp.setText("");
-    add(fieldAttributeComp, cc.xy(6, 6));
+    //fieldAttributeComp = new JTextField(20);
+    //fieldAttributeComp.setText("");
+    //add(fieldAttributeComp, cc.xy(6, 6));
     
     add(new JLabel("Valeur de l'attribut pour 'Sens direct' : "), cc.xy(4, 7));
     fieldValueDirectRef = new JTextField(20);
     fieldValueDirectRef.setText("direct");
     add(fieldValueDirectRef, cc.xy(5, 7));
-    fieldValueDirectComp = new JTextField(20);
-    fieldValueDirectComp.setText("");
-    add(fieldValueDirectComp, cc.xy(6, 7));
+    //fieldValueDirectComp = new JTextField(20);
+    //fieldValueDirectComp.setText("");
+    //add(fieldValueDirectComp, cc.xy(6, 7));
     
     add(new JLabel("Valeur de l'attribut pour 'Sens inverse' : "), cc.xy(4, 8));
     fieldValueInverseRef = new JTextField(20);
     fieldValueInverseRef.setText("inverse");
     add(fieldValueInverseRef, cc.xy(5, 8));
-    fieldValueInverseComp = new JTextField(20);
-    fieldValueInverseComp.setText("");
-    add(fieldValueInverseComp, cc.xy(6, 8));
+    //fieldValueInverseComp = new JTextField(20);
+    //fieldValueInverseComp.setText("");
+    //add(fieldValueInverseComp, cc.xy(6, 8));
     
     add(new JLabel("Valeur de l'attribut pour 'Double sens' : "), cc.xy(4, 9));
     fieldValueDoubleSensRef = new JTextField(20);
     fieldValueDoubleSensRef.setText("double");
     add(fieldValueDoubleSensRef, cc.xy(5, 9));
-    fieldValueDoubleSensComp = new JTextField(20);
-    fieldValueDoubleSensComp.setText("");
-    add(fieldValueDoubleSensComp, cc.xy(6, 9));
+    //fieldValueDoubleSensComp = new JTextField(20);
+    //fieldValueDoubleSensComp.setText("");
+    //add(fieldValueDoubleSensComp, cc.xy(6, 9));
     
   }
+  
   
   public ParamDirectionNetworkDataMatching valideField() {
     ParamDirectionNetworkDataMatching paramDirection = new ParamDirectionNetworkDataMatching();

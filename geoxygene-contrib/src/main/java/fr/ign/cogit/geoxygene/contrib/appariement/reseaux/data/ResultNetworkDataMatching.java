@@ -63,6 +63,7 @@ public class ResultNetworkDataMatching {
   
   /** EnsembleDeLiens. */
   private EnsembleDeLiens linkDataSet;
+  private EnsembleDeLiens liensGeneriques;
   
   /** Stat result. */
   @XmlElement(required = true)
@@ -79,6 +80,7 @@ public class ResultNetworkDataMatching {
    */
   public ResultNetworkDataMatching() {
     linkDataSet = null;
+    liensGeneriques = null;
     networkMatched = null;
     resultStat = new ResultNetworkStat();
   }
@@ -108,6 +110,14 @@ public class ResultNetworkDataMatching {
    */
   public void setLinkDataSet(EnsembleDeLiens edl) {
     linkDataSet = edl;
+  }
+  
+  public EnsembleDeLiens getLiensGeneriques() {
+    return liensGeneriques;
+  }
+  
+  public void setLiensGeneriques(EnsembleDeLiens edl) {
+    liensGeneriques = edl;
   }
   
   /**

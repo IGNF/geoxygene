@@ -32,7 +32,6 @@ import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPosition;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IDirectPositionList;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
-import fr.ign.cogit.geoxygene.contrib.I18N;
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ArcApp;
@@ -187,8 +186,9 @@ public class NetworkDataMatching {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("START OF EXPORT ");
     }
+    
     if (paramApp.debugBilanSurObjetsGeo) {
-      // FIXME : perturbations liées au nouveau output non maitrisées ici.
+      
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Transformation of matching links to generic links");
       }
@@ -196,12 +196,13 @@ public class NetworkDataMatching {
       EnsembleDeLiens liensGeneriques = LienReseaux.exportLiensAppariement(
           resultatAppariement.getLinkDataSet(), reseau1, paramApp);
       Appariement.nettoyageLiens(reseau1, reseau2);
+      resultatAppariement.setLiensGeneriques(liensGeneriques);
       
       if (LOGGER.isInfoEnabled()) {
         LOGGER.info("######## NETWORK MATCHING END #########");
       }
-      resultatAppariement.setLinkDataSet(liensGeneriques);
-      
+
+      // 
       resultatAppariement.setReseau1(reseau1);
       resultatAppariement.setReseau2(reseau2);
       
@@ -213,8 +214,9 @@ public class NetworkDataMatching {
       LOGGER.debug("Link geometry assignment");
     }
     LienReseaux.exportAppCarteTopo(resultatAppariement.getLinkDataSet(), paramApp);
+    
     if (LOGGER.isInfoEnabled()) {
-      LOGGER.info("END OF NETWORK MATCHING");
+      LOGGER.info("######## NETWORK MATCHING END #########");
     }
     
     resultatAppariement.setReseau1(reseau1);
@@ -268,7 +270,6 @@ public class NetworkDataMatching {
         arc.setGeometrie(ligne);
         
         if (populationsArcsAvecOrientationDouble) {
-          LOGGER.info("Populations avec orientation double");
           arc.setOrientation(2);
         } else {
           String attribute = attributOrientation;

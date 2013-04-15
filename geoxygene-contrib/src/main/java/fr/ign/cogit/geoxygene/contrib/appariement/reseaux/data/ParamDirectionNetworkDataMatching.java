@@ -19,6 +19,7 @@
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -26,6 +27,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.xml.OrientationAdapter;
+import fr.ign.cogit.geoxygene.contrib.cartetopo.OrientationInterface;
 
 /**
  * Prise en compte de l'orientation des arcs sur le terrain (sens de circulation). 
@@ -56,6 +61,7 @@ public class ParamDirectionNetworkDataMatching {
   
   /** Table Attribute-Value for DIRECT, INVERSE, DOUBLE. */
   @XmlElement(name = "OrientationMap")
+  @XmlJavaTypeAdapter(OrientationAdapter.class) 
   private Map<Integer, String> orientationMap;
 
   /**
@@ -63,13 +69,13 @@ public class ParamDirectionNetworkDataMatching {
    */
   public ParamDirectionNetworkDataMatching() {
     orientationDouble = true;
-    attributOrientation = null; 
+    attributOrientation = null;
     orientationMap = null;
     /*"sens_de_circulation";
     orientationMap = new HashMap<Integer, String>();
-    orientationMap.put(ParamInterface.SENS_DIRECT, "direct");
-    orientationMap.put(ParamInterface.SENS_INVERSE, "inverse");
-    orientationMap.put(ParamInterface.DOUBLE_SENS, "double");*/
+    orientationMap.put(OrientationInterface.SENS_DIRECT, "direct");
+    orientationMap.put(OrientationInterface.SENS_INVERSE, "inverse");
+    orientationMap.put(OrientationInterface.DOUBLE_SENS, "double");*/
   }
   
   /**
