@@ -888,7 +888,7 @@ public class Arc extends ElementCarteTopo {
   // et l'orientation définie implicitement par le sens de stockage de la
   // géométrie
 
-  private int orientation = 2;
+  private int orientation = OrientationInterface.DOUBLE_SENS;
 
   /**
    * Renvoie l'orientation. L'orientation vaut 2 dans les deux sens, -1 en sens
