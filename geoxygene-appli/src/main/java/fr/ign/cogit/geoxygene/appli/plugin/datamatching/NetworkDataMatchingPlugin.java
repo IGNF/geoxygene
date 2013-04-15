@@ -31,9 +31,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileInputStream;
-import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,13 +39,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import org.apache.log4j.Logger;
-import org.geotools.data.shapefile.ShpFiles;
-
-import com.vividsolutions.jts.geom.Geometry;
 
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.api.spatial.geomroot.IGeometry;
+
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.ProjectFrame;
@@ -57,30 +52,29 @@ import fr.ign.cogit.geoxygene.appli.plugin.GeOxygeneApplicationPlugin;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.network.DisplayToolBarNetworkDataMatching;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.network.EditParamPanel;
 
-
 import fr.ign.cogit.geoxygene.contrib.appariement.EnsembleDeLiens;
 import fr.ign.cogit.geoxygene.contrib.appariement.Lien;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.AppariementIO;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.LienReseaux;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.NetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.Recalage;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDatasetNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.DatasetNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamFilenameNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDistanceNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamPluginNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkStat;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ResultNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.topologie.ReseauApp;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.Arc;
 import fr.ign.cogit.geoxygene.contrib.cartetopo.CarteTopo;
-import fr.ign.cogit.geoxygene.contrib.cartetopo.Noeud;
 import fr.ign.cogit.geoxygene.spatial.coordgeom.GM_LineString;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_Aggregate;
 import fr.ign.cogit.geoxygene.spatial.geomaggr.GM_MultiCurve;
 import fr.ign.cogit.geoxygene.style.Layer;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
-import fr.ign.cogit.geoxygene.util.conversion.ShapefileWriter;
+
 
 /**
  * Data matching plugin.
@@ -100,20 +94,20 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
   /** GeOxygeneApplication. */
   private GeOxygeneApplication application;
 
-  /** Parameters. */
-  private ParamNetworkDataMatching newParam = null;
+  /** Parameters and datasets. */
+  private ParamPluginNetworkDataMatching paramPlugin = new ParamPluginNetworkDataMatching();
+  private DatasetNetworkDataMatching datasetNetwork1 = new DatasetNetworkDataMatching();
+  private DatasetNetworkDataMatching datasetNetwork2 = new DatasetNetworkDataMatching();
   
   /** Displayed colors. */
   private final static Color linkColorOk = new Color(77, 146, 33);
   private final static Color linkColorNull = new Color(239, 59, 44);
   private final static Color linkColorDoubtfull = new Color(240, 157, 18);
-  // private final static Color linkColor = new Color(254, 107, 19);
   
   private final static Color network1Color = new Color(11, 73, 157);
   private final static Color network1DColor = new Color(67, 144, 193);
   private final static Color network1NColor = new Color(111, 173, 209);
   
-  // private final static Color network2Color = new Color(35, 140, 69);
   private final static Color network2Color = new Color(145, 100, 10);
   private final static Color matchedNetworkColor = new Color(136, 64, 153);
   private final static int LINE_WIDTH = 3;
@@ -151,11 +145,54 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     menuItem.addActionListener(this);
     menu.add(menuItem);
     
+    // initialize Param
+    initializeParam();
+    
     // Refresh menu of the application
     application
         .getFrame()
         .getJMenuBar()
         .add(menu, application.getFrame().getJMenuBar().getComponentCount() - 1);
+  }
+  
+  /**
+   * 
+   */
+  private void initializeParam() {
+    
+    // Dataset  
+    ParamFilenameNetworkDataMatching paramFilename1 = new ParamFilenameNetworkDataMatching();
+    paramFilename1.setListNomFichiersPopArcs("D:\\DATA\\Appariement\\MesTests\\T3\\bdcarto_route.shp");
+    paramPlugin.setParamFilenameNetwork1(paramFilename1);
+    
+    ParamFilenameNetworkDataMatching paramFilename2 = new ParamFilenameNetworkDataMatching();
+    paramFilename2.setListNomFichiersPopArcs("D:\\DATA\\Appariement\\MesTests\\T3\\bdtopo_route.shp");
+    paramPlugin.setParamFilenameNetwork2(paramFilename2);
+    
+    // "D:\\Data\\Appariement\\ESPON_DB\\1-RoadL_Paris_2000_extract.shp"
+    // "D:\\Data\\Appariement\\ESPON_DB\\2-Streets_extract.shp"
+    // "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\reseau1.shp"
+    // "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\reseau2.shp"
+    // "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\ERM\\RoadL_Paris_2000.shp"
+    // "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\Navstreets\\Streets.shp"
+    
+    // param
+    ParamNetworkDataMatching param = new ParamNetworkDataMatching();
+    
+    // Direction
+    ParamDirectionNetworkDataMatching paramDirection = new ParamDirectionNetworkDataMatching();
+    paramDirection.setOrientationDouble(true);
+    param.setParamDirectionNetwork1(paramDirection);
+    
+    // Distance
+    ParamDistanceNetworkDataMatching paramDistance = new ParamDistanceNetworkDataMatching();
+    float distanceNoeudsMax = 50;
+    paramDistance.setDistanceNoeudsMax(distanceNoeudsMax);
+    paramDistance.setDistanceArcsMax(2 * distanceNoeudsMax);
+    paramDistance.setDistanceArcsMin(distanceNoeudsMax);
+    param.setParamDistance(paramDistance);
+    
+    paramPlugin.setParamNetworkDataMatching(param);
   }
 
   /**
@@ -169,38 +206,20 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
     
     if (dialogParamDataMatchingNetwork.getAction().equals("LAUNCH")) {
       
-      // Replace parameters to demonstrateur parameters
+      // -------------------------------------------------------------------------------
+      // Dataset
+      IPopulation<IFeature> reseau1 = ShapefileReader.read(paramPlugin.getParamFilenameNetwork1().getListNomFichiersPopArcs());
+      datasetNetwork1.addPopulationsArcs(reseau1);
+      IPopulation<IFeature> reseau2 = ShapefileReader.read(paramPlugin.getParamFilenameNetwork2().getListNomFichiersPopArcs());
+      datasetNetwork2.addPopulationsArcs(reseau2);
       
-      // Dataset  
-      // IPopulation<IFeature> reseau1 = ShapefileReader.read("D:\\Data\\Appariement\\ESPON_DB\\1-RoadL_Paris_2000_extract.shp");
-      // IPopulation<IFeature> reseau2 = ShapefileReader.read("D:\\Data\\Appariement\\ESPON_DB\\2-Streets_extract.shp");
-      // IPopulation<IFeature> reseau1 = ShapefileReader.read("D:\\DATA\\Appariement\\MesTests\\T3\\bdcarto_route.shp");
-      // IPopulation<IFeature> reseau2 = ShapefileReader.read("D:\\DATA\\Appariement\\MesTests\\T3\\bdtopo_route.shp");
-      IPopulation<IFeature> reseau1 = ShapefileReader.read("D:\\Data\\Appariement\\ESPON_DB\\Reseau\\reseau1.shp");
-      IPopulation<IFeature> reseau2 = ShapefileReader.read("D:\\Data\\Appariement\\ESPON_DB\\Reseau\\reseau2.shp");
-      // IPopulation<IFeature> reseau1 = ShapefileReader.read("D:\\Data\\Appariement\\ESPON_DB\\Reseau\\ERM\\RoadL_Paris_2000.shp");
-      // IPopulation<IFeature> reseau2 = ShapefileReader.read("D:\\Data\\Appariement\\ESPON_DB\\Reseau\\Navstreets\\Streets.shp");
-      
-      ParamDatasetNetworkDataMatching paramDataset = new ParamDatasetNetworkDataMatching();
-      paramDataset.addPopulationsArcs1(reseau1);
-      paramDataset.addPopulationsArcs2(reseau2);
-      newParam.setParamDataset(paramDataset);
-      
-      // Direction
-      ParamDirectionNetworkDataMatching paramDirection = new ParamDirectionNetworkDataMatching();
-      paramDirection.setPopulationsArcsAvecOrientationDouble(true);
-      newParam.setParamDirection(paramDirection);
-      
-      // Distance
-      ParamDistanceNetworkDataMatching paramDistance = new ParamDistanceNetworkDataMatching();
-      float distanceNoeudsMax = 50; // (float) 0.001;
-      paramDistance.setDistanceNoeudsMax(distanceNoeudsMax);
-      paramDistance.setDistanceArcsMax(2 * distanceNoeudsMax);
-      paramDistance.setDistanceArcsMin(distanceNoeudsMax);
-      newParam.setParamDistance(paramDistance);
+      // -------------------------------------------------------------------------------
       
       // Parse new parameter object to old parameter
-      ParametresApp paramOld = newParam.paramNDMToParamApp();
+      ParametresApp paramOld = paramPlugin.getParamNetworkDataMatching().paramNDMToParamApp();
+      
+      paramOld.populationsArcs1 = datasetNetwork1.getPopulationsArcs();
+      paramOld.populationsArcs2 = datasetNetwork2.getPopulationsArcs();
       
       paramOld.topologieGraphePlanaire1 = false;  // true
       paramOld.topologieFusionArcsDoubles1 = true;  // true
@@ -211,6 +230,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       paramOld.topologieSeuilFusionNoeuds2 = 0.1;  // 0.1
       
       paramOld.varianteFiltrageImpassesParasites = false;
+      
+      float distanceNoeudsMax = 50;
       
       paramOld.projeteNoeuds1SurReseau2 = true;   // true
       paramOld.projeteNoeuds1SurReseau2DistanceNoeudArc = distanceNoeudsMax;
@@ -231,7 +252,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       // paramOld.debugAffichageCommentaires = 1;
       
       // Log parameters
-      LOGGER.info(newParam.toString());
+      LOGGER.info(paramPlugin.toString());
       
       NetworkDataMatching networkDataMatching = new NetworkDataMatching(paramOld);
       ResultNetworkDataMatching resultatAppariement = networkDataMatching.networkDataMatching();
@@ -297,13 +318,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       }
   
       LOGGER.trace("----------------------------------------------------------");
-      LOGGER.trace("Taille popRef = " + newParam.getParamDataset().getPopulationsArcs1().get(0).size());
-      LOGGER.trace("Taille popComp = " + newParam.getParamDataset().getPopulationsArcs2().get(0).size());
-      LOGGER.trace("----------------------------------------------------------");
-      LOGGER.info("Nb de liens 0-0 = " + nb_0_0);
-      LOGGER.info("Nb de liens 1-1 = " + nb_1_1);
-      LOGGER.info("Nb de liens 1-N = " + nb_1_n);
-      LOGGER.info("Nb de liens N-1 = " + nb_n_1);
+      LOGGER.trace("Taille popRef = " + datasetNetwork1.getPopulationsArcs().get(0).size());
+      LOGGER.trace("Taille popComp = " + datasetNetwork2.getPopulationsArcs().get(0).size());
       LOGGER.trace("----------------------------------------------------------");
   
       // StockageLiens.stockageDesLiens(liens, 1, 2, 3);
@@ -311,8 +327,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       LOGGER.trace("----------------------------------------------------------");
       LOGGER.trace("Enregistrement des résultats en fichier shape");
       
-      ShapefileWriter.write(arcs, "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\reseau1-Apparie.shp");
-      ShapefileWriter.write(liens, "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\liens.shp");
+      // ShapefileWriter.write(arcs, "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\reseau1-Apparie.shp");
+      // ShapefileWriter.write(liens, "D:\\Data\\Appariement\\ESPON_DB\\Reseau\\liens.shp");
       
       // ShapefileWriter.write(resultatAppariement.getReseau1().getPopArcs(), "D:\\Data\\Appariement\\SDET\\Res\\SDET-ArcTopo.shp");
       // ShapefileWriter.write(resultatAppariement.getReseau1().getPopNoeuds(), "D:\\Data\\Appariement\\SDET\\Res\\SDET-NoeudTopo.shp");
@@ -334,10 +350,10 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       // 
       ProjectFrame p1 = this.application.getFrame().newProjectFrame();
       p1.setTitle("Reseau 1 + reseau 2");
-      Layer l1 = p1.addUserLayer(newParam.getParamDataset().getPopulationsArcs1().get(0), "Réseau 1", null);
+      Layer l1 = p1.addUserLayer(datasetNetwork1.getPopulationsArcs().get(0), "Réseau 1", null);
       l1.getSymbolizer().getStroke().setColor(network1Color);
       l1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
-      Layer l2 = p1.addUserLayer(newParam.getParamDataset().getPopulationsArcs2().get(0), "Réseau 2", null);
+      Layer l2 = p1.addUserLayer(datasetNetwork2.getPopulationsArcs().get(0), "Réseau 2", null);
       l2.getSymbolizer().getStroke().setColor(network2Color);
       l2.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
       p1.setSize(widthProjectFrame, heightProjectFrame);
@@ -380,7 +396,7 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       l1N.getSymbolizer().getStroke().setColor(network1NColor);
       l1N.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
       
-      l2 = p2.addUserLayer(newParam.getParamDataset().getPopulationsArcs2().get(0), "Réseau 2", null);
+      l2 = p2.addUserLayer(datasetNetwork2.getPopulationsArcs().get(0), "Réseau 2", null);
       l2.getSymbolizer().getStroke().setColor(network2Color);
       l2.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
       Layer l1bis = p2.addUserLayer(arcs, "Reseau 1 recale", null);
@@ -396,10 +412,10 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       p3.getLayerViewPanel().setViewport(viewport);
       viewport.getLayerViewPanels().add(p3.getLayerViewPanel());
       p3.setTitle("Liens d'appariement");
-      l1 = p3.addUserLayer(newParam.getParamDataset().getPopulationsArcs1().get(0), "Réseau 1", null);
+      l1 = p3.addUserLayer(datasetNetwork1.getPopulationsArcs().get(0), "Réseau 1", null);
       l1.getSymbolizer().getStroke().setColor(network1Color);
       l1.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
-      l2 = p3.addUserLayer(newParam.getParamDataset().getPopulationsArcs2().get(0), "Réseau 2", null);
+      l2 = p3.addUserLayer(datasetNetwork2.getPopulationsArcs().get(0), "Réseau 2", null);
       l2.getSymbolizer().getStroke().setColor(network2Color);
       l2.getSymbolizer().getStroke().setStrokeWidth(LINE_WIDTH);
       /*Layer l3 = p3.addUserLayer(liens, "Liens", null);
@@ -430,7 +446,8 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
       p3.setSize(widthProjectFrame, heightProjectFrame * 2);
       p3.setLocation(widthProjectFrame, 0);
       
-      DisplayToolBarNetworkDataMatching resultToolBar = new DisplayToolBarNetworkDataMatching(p3, resultNetwork, newParam);
+      DisplayToolBarNetworkDataMatching resultToolBar = new DisplayToolBarNetworkDataMatching(p3, resultNetwork, 
+          paramPlugin.getParamNetworkDataMatching());
       JMenuBar menuBar = new JMenuBar();
       p3.setJMenuBar(menuBar);   
       p3.getJMenuBar().add(resultToolBar, 0);
@@ -443,8 +460,12 @@ public class NetworkDataMatchingPlugin implements GeOxygeneApplicationPlugin,
   /**
    * @param f The parameters XML Filename to set
    */
-  public void setNewParam(ParamNetworkDataMatching p) {
-    newParam = p;
+  public void setParamPlugin(ParamPluginNetworkDataMatching p) {
+    paramPlugin = p;
+  }
+  
+  public ParamPluginNetworkDataMatching getParamPlugin() {
+    return paramPlugin;
   }
 
 }

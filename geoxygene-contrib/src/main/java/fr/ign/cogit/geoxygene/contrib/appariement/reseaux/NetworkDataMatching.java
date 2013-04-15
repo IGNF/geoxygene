@@ -20,6 +20,7 @@ package fr.ign.cogit.geoxygene.contrib.appariement.reseaux;
 
 import java.sql.Time;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Level;
@@ -94,13 +95,25 @@ public class NetworkDataMatching {
     if (LOGGER.isEnabledFor(Level.DEBUG)) {
       LOGGER.debug("creation of network 1 " + (new Time(System.currentTimeMillis())).toString());
     }
-    ReseauApp reseau1 = importData(true);
+    ReseauApp reseau1 = importData("Réseau 1",
+        paramApp.populationsArcs1, paramApp.populationsNoeuds1,
+        paramApp.populationsArcsAvecOrientationDouble, paramApp.attributOrientation1,
+        paramApp.orientationMap1, paramApp.distanceNoeudsMax,
+        paramApp.topologieGraphePlanaire1, paramApp.topologieSeuilFusionNoeuds1,
+        paramApp.topologieSurfacesFusionNoeuds1, paramApp.topologieElimineNoeudsAvecDeuxArcs1,
+        paramApp.topologieFusionArcsDoubles1);
     
     // 
     if (LOGGER.isEnabledFor(Level.DEBUG)) {
       LOGGER.debug("creation of network 2 " + (new Time(System.currentTimeMillis())).toString());
     }
-    ReseauApp reseau2 = importData(false);
+    ReseauApp reseau2 = importData("Réseau 2",
+        paramApp.populationsArcs2, paramApp.populationsNoeuds2,
+        paramApp.populationsArcsAvecOrientationDouble, paramApp.attributOrientation2,
+        paramApp.orientationMap2, paramApp.distanceNoeudsMax,
+        paramApp.topologieGraphePlanaire2, paramApp.topologieSeuilFusionNoeuds2,
+        paramApp.topologieSurfacesFusionNoeuds2, paramApp.topologieElimineNoeudsAvecDeuxArcs2,
+        paramApp.topologieFusionArcsDoubles2);
     
 //    resultatAppariement.setReseau1(reseau1);
 //    resultatAppariement.setReseau2(reseau2);
@@ -215,26 +228,21 @@ public class NetworkDataMatching {
   /**
    * Création d'une carte topo à partir des objets Géographiques initiaux.
    * 
-   * @version 1.6 : use chargeur class to load
    * 
-   * @param paramApp Les paramètres de l'appariement (seuils de distance,
-   *          préparation topologique des données...)
-   * @param ref true = on traite le réseau de référence false = on traite le
-   *          réseau de comparaison
+   * 
+   * 
    * @return Le réseau créé
    */
-  public ReseauApp importData(final boolean ref) {
+  public static ReseauApp importData(String networkName,
+      List<IFeatureCollection<? extends IFeature>> populationsArcs,
+      List<IFeatureCollection<? extends IFeature>> populationsNoeuds,
+      boolean populationsArcsAvecOrientationDouble, String attributOrientation, 
+      Map<Object, Integer> orientationMap, float distanceNoeudsMax,
+      boolean topologieGraphePlanaire, double topologieSeuilFusionNoeuds,
+      IPopulation<?> topologieSurfacesFusionNoeuds, boolean topologieElimineNoeudsAvecDeuxArcs,
+      boolean topologieFusionArcsDoubles) {
     
-    ReseauApp reseau = null;
-    String logNetwork;
-    
-    if (ref) {
-      LOGGER.info("Reseau 1");
-      reseau = new ReseauApp("Reseau 1");
-    } else {
-      LOGGER.info("Reseau 2");
-      reseau = new ReseauApp("Reseau 2");
-    }
+    ReseauApp reseau = new ReseauApp(networkName);
     IPopulation<? extends IFeature> popArcApp = reseau.getPopArcs();
     IPopulation<? extends IFeature> popNoeudApp = reseau.getPopNoeuds();
     LOGGER.info(popArcApp.size() + " arcs");
@@ -243,24 +251,11 @@ public class NetworkDataMatching {
     // /////////////////////////
     // import des arcs
     Iterator<IFeatureCollection<? extends IFeature>> itPopArcs = null;
-    if (ref) {
-      
-      itPopArcs = paramApp.populationsArcs1.iterator();
-      LOGGER.info(paramApp.populationsArcs1.size() + " pops");
-      
-      /*Chargeur.importAsEdges(paramApp.populationsArcs1.get(0), reseau, paramApp.attributOrientation1,
-          paramApp.orientationMap1, null, null, null, 0.1);*/
+    itPopArcs = populationsArcs.iterator();
+    LOGGER.info(populationsArcs.size() + " pops");
     
-    } else {
-      
-      itPopArcs = paramApp.populationsArcs2.iterator();
-      LOGGER.info(paramApp.populationsArcs2.size() + " pops");
     
-      /*Chargeur.importAsEdges(paramApp.populationsArcs2.get(0), reseau, paramApp.attributOrientation2,
-          paramApp.orientationMap2, null, null, null, 0.1);*/
-    }
-    
-    logNetwork = "Import des " + itPopArcs + " arcs.\n";
+    LOGGER.info("Import des " + itPopArcs + " populations d'arcs.");
     while (itPopArcs.hasNext()) {
       
       IFeatureCollection<? extends IFeature> popGeo = itPopArcs.next();
@@ -271,18 +266,15 @@ public class NetworkDataMatching {
         ArcApp arc = (ArcApp) popArcApp.nouvelElement();
         ILineString ligne = new GM_LineString((IDirectPositionList) element.getGeom().coord().clone());
         arc.setGeometrie(ligne);
-        // LOGGER.info("Longueur = " + ligne.length());
-        if (paramApp.populationsArcsAvecOrientationDouble) {
-          logNetwork = logNetwork + "Populations avec orientation double\n";
+        
+        if (populationsArcsAvecOrientationDouble) {
+          LOGGER.info("Populations avec orientation double");
           arc.setOrientation(2);
         } else {
-          String attribute = (ref) ? paramApp.attributOrientation1
-              : paramApp.attributOrientation2;
-          Map<Object, Integer> orientationMap = (ref) ? paramApp.orientationMap1
-              : paramApp.orientationMap2;
+          String attribute = attributOrientation;
           if (attribute.isEmpty()) {
             arc.setOrientation(1);
-            logNetwork = logNetwork + "Populations avec orientation simple\n";
+            LOGGER.info("Populations avec orientation simple");
           } else {
             Object value = element.getAttribute(attribute);
             // System.out.println(attribute + " = " + value);
@@ -351,11 +343,7 @@ public class NetworkDataMatching {
     //    if (true) return reseau;
     // import des noeuds
     Iterator<?> itPopNoeuds = null;
-    if (ref) {
-      itPopNoeuds = paramApp.populationsNoeuds1.iterator();
-    } else {
-      itPopNoeuds = paramApp.populationsNoeuds2.iterator();
-    }
+    itPopNoeuds = populationsNoeuds.iterator();
     while (itPopNoeuds.hasNext()) {
       IFeatureCollection<?> popGeo = (IFeatureCollection<?>) itPopNoeuds.next();
       // import d'une population de noeuds
@@ -365,7 +353,7 @@ public class NetworkDataMatching {
         noeud.setGeometrie(new GM_Point((IDirectPosition) ((GM_Point) element
             .getGeom()).getPosition().clone()));
         noeud.addCorrespondant(element);
-        noeud.setTaille(paramApp.distanceNoeudsMax);
+        noeud.setTaille(distanceNoeudsMax);
         // Le code ci-dessous permet un import plus fin mais a été
         // réalisé pour des données spécifiques et n'est pas encore
         // codé très générique.
@@ -376,10 +364,10 @@ public class NetworkDataMatching {
       }
     }
     
-    logNetwork = logNetwork + "==================================";
-    logNetwork = logNetwork + popArcApp.size() + " arcs";
-    logNetwork = logNetwork + popNoeudApp.size() + " noeuds";
-    logNetwork = logNetwork + "==================================";
+    LOGGER.info("==================================");
+    LOGGER.info(popArcApp.size() + " arcs");
+    LOGGER.info(popNoeudApp.size() + " noeuds");
+    LOGGER.info("==================================");
     
     // Indexation spatiale des arcs et noeuds
     // On crée un dallage régulier avec en moyenne 20 objets par case
@@ -400,8 +388,7 @@ public class NetworkDataMatching {
     
     // Instanciation de la topologie
     // 1- création de la topologie arcs-noeuds, rendu du graphe planaire
-    if ((ref && paramApp.topologieGraphePlanaire1)
-        || (!ref && paramApp.topologieGraphePlanaire2)) {
+    if (topologieGraphePlanaire) {
       // cas où on veut une topologie planaire
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("    Making the graph planar and instantiation of node-edge topology");
@@ -430,32 +417,17 @@ public class NetworkDataMatching {
     LOGGER.info("**********************************");
 
     // 2- On fusionne les noeuds proches
-    if (ref) {
-      if (paramApp.topologieSeuilFusionNoeuds1 >= 0) {
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("    Nodes Fusion");
-        }
-        reseau.fusionNoeuds(paramApp.topologieSeuilFusionNoeuds1);
+    if (topologieSeuilFusionNoeuds >= 0) {
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("    Nodes Fusion");
       }
-      if (paramApp.topologieSurfacesFusionNoeuds1 != null) {
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("    Nodes Fusion inside a surface");
-        }
-        reseau.fusionNoeuds(paramApp.topologieSurfacesFusionNoeuds1);
+      reseau.fusionNoeuds(topologieSeuilFusionNoeuds);
+    }
+    if (topologieSurfacesFusionNoeuds != null) {
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("    Nodes Fusion inside a surface");
       }
-    } else {
-      if (paramApp.topologieSeuilFusionNoeuds2 >= 0) {
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("    Nodes Fusion");
-        }
-        reseau.fusionNoeuds(paramApp.topologieSeuilFusionNoeuds2);
-      }
-      if (paramApp.topologieSurfacesFusionNoeuds2 != null) {
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("    Nodes Fusion inside a surface");
-        }
-        reseau.fusionNoeuds(paramApp.topologieSurfacesFusionNoeuds2);
-      }
+      reseau.fusionNoeuds(topologieSurfacesFusionNoeuds);
     }
     
     LOGGER.info(popArcApp.size() + " arcs");
@@ -473,8 +445,7 @@ public class NetworkDataMatching {
     LOGGER.info("**********************************");
     
     // 4- On filtre les noeuds simples (avec 2 arcs incidents)
-    if ((ref && paramApp.topologieElimineNoeudsAvecDeuxArcs1)
-        || (!ref && paramApp.topologieElimineNoeudsAvecDeuxArcs2)) {
+    if (topologieElimineNoeudsAvecDeuxArcs) {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("    Filtering of nodes with only 2 incoming edges");
       }
@@ -486,13 +457,7 @@ public class NetworkDataMatching {
     LOGGER.info("**********************************");
 
     // 5- On fusionne des arcs en double
-    if (ref && paramApp.topologieFusionArcsDoubles1) {
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("    Double edges filtering");
-      }
-      reseau.filtreArcsDoublons();
-    }
-    if (!ref && paramApp.topologieFusionArcsDoubles2) {
+    if (topologieFusionArcsDoubles) {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("    Double edges filtering");
       }
@@ -504,7 +469,7 @@ public class NetworkDataMatching {
     LOGGER.info("**********************************");
     
     // 6 - On crée la topologie de faces
-    if (!ref && paramApp.varianteChercheRondsPoints) {
+    /*if (!ref && paramApp.varianteChercheRondsPoints) {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("    Face topology creation");
       }
@@ -529,15 +494,11 @@ public class NetworkDataMatching {
           }
         }
       }
-    }
+    }*/
     
     LOGGER.info(popArcApp.size() + " arcs");
     LOGGER.info(popNoeudApp.size() + " noeuds");
     LOGGER.info("**********************************");
-    
-    if (ref) {
-      // logNetwork
-    }
     
     return reseau;
   }

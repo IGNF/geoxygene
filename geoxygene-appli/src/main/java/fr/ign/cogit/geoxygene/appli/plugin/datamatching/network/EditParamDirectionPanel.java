@@ -39,7 +39,6 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamInterface;
 
 /**
  *
@@ -148,7 +147,7 @@ public class EditParamDirectionPanel extends JPanel {
   
   public ParamDirectionNetworkDataMatching valideField() {
     ParamDirectionNetworkDataMatching paramDirection = new ParamDirectionNetworkDataMatching();
-    if (rbEdgeTwoWayRef.isSelected()) {
+    /*if (rbEdgeTwoWayRef.isSelected()) {
       paramDirection.setPopulationsArcsAvecOrientationDouble(true);
       paramDirection.setAttributOrientation1(null);
       paramDirection.setAttributOrientation2(null);
@@ -164,7 +163,8 @@ public class EditParamDirectionPanel extends JPanel {
         orientationMap1.put(ParamInterface.DOUBLE_SENS, fieldValueDoubleSensRef.getText());
         paramDirection.setOrientationMap1(orientationMap1);
       }
-    }
+    }*/
     return paramDirection;
   }
+
 }

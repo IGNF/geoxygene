@@ -43,7 +43,9 @@ import javax.swing.JTabbedPane;
 import fr.ign.cogit.geoxygene.appli.GeOxygeneApplication;
 import fr.ign.cogit.geoxygene.appli.I18N;
 import fr.ign.cogit.geoxygene.appli.plugin.datamatching.NetworkDataMatchingPlugin;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamPluginNetworkDataMatching;
 
 /**
  * GUI to load data and parameters for launching network data matching.
@@ -59,12 +61,13 @@ public class EditParamPanel extends JDialog implements ActionListener {
   private Logger logger = Logger.getLogger(EditParamPanel.class.getName());
 
   /** Origin Frame. */
-  NetworkDataMatchingPlugin networkDataMatchingPlugin;
+  private NetworkDataMatchingPlugin networkDataMatchingPlugin;
   private String action;
 
-  /** 2 buttons : launch and cancel. */
-  JButton launchButton = null;
-  JButton cancelButton = null;
+  /** 4 buttons : launch, cancel, export and import XML parameters files. */
+  private JButton launchButton = null;
+  private JButton cancelButton = null;
+  private JButton exportXML = null;
 
   /** Tab Panels. */ 
   JPanel buttonPanel = null;
@@ -125,15 +128,20 @@ public class EditParamPanel extends JDialog implements ActionListener {
     
     buttonPanel = new JPanel(); 
     
+    exportXML = new JButton("export XML");
+    exportXML.setToolTipText("Export parameters in XML files");
     launchButton = new JButton(I18N.getString("DataMatchingPlugin.Launch"));
     cancelButton = new JButton(I18N.getString("DataMatchingPlugin.Cancel"));
     
     launchButton.addActionListener(this);
     cancelButton.addActionListener(this);
+    exportXML.addActionListener(this);
     
     buttonPanel.setLayout(new FlowLayout (FlowLayout.CENTER)); 
-    buttonPanel.add(launchButton); 
-    buttonPanel.add(cancelButton);  
+    buttonPanel.add(exportXML);
+    buttonPanel.add(cancelButton);
+    buttonPanel.add(launchButton);
+    
   }
   
   /**
@@ -151,21 +159,23 @@ public class EditParamPanel extends JDialog implements ActionListener {
       
       // Initialize all parameters
       // First, set default value to parameters
-      ParamNetworkDataMatching param = new ParamNetworkDataMatching();
+      // ParamPluginNetworkDataMatching paramPlugin = new ParamPluginNetworkDataMatching();
+      
+      // ParamNetworkDataMatching param = new ParamNetworkDataMatching();
       
       // Dataset
-      param.setParamDataset(datasetPanel.valideField());
+      // paramPlugin.setParamDataset(datasetPanel.valideField());
       
       // Direction
-      param.setParamDirection(directionPanel.valideField());
+      // param.setParamDirectionNetwork1(directionPanel.valideField());
       
       // Ecart de distance
-      param.setParamDistance(distancePanel.valideField());
+      // param.setParamDistance(distancePanel.valideField());
       
       // Topo treatment
       
       // Set parameters values to plugin
-      networkDataMatchingPlugin.setNewParam(param);
+      // networkDataMatchingPlugin.setParamPlugin(paramPlugin);
       
       dispose();
     
@@ -174,6 +184,8 @@ public class EditParamPanel extends JDialog implements ActionListener {
       action = "CANCEL";
       // do nothing
       dispose();
+    } else if (source == exportXML) {
+      exportXML();
     }
   
   }
@@ -182,5 +194,17 @@ public class EditParamPanel extends JDialog implements ActionListener {
     return action;
   }
   
+  /**
+   * Display parameters in XML format for export.
+   */
+  private void exportXML() {
+    try {
+      
+      ExportXMLWindow w = new ExportXMLWindow(networkDataMatchingPlugin.getParamPlugin());
+    
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
   
 }

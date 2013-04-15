@@ -43,7 +43,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.appli.I18N;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDatasetNetworkDataMatching;
+import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamFilenameNetworkDataMatching;
 import fr.ign.cogit.geoxygene.util.conversion.ShapefileReader;
 
 public class EditParamDatasetPanel extends JPanel {
@@ -130,7 +130,7 @@ public class EditParamDatasetPanel extends JPanel {
     add(labelShpExt2, cc.xy(8, 3));
     
     //
-    add(new JLabel("do Recalage"), cc.xy(4, 5));
+    add(new JLabel("Ajouter le Recalage"), cc.xy(4, 5));
     add(new JLabel("Enregistrer les résultats"), cc.xy(4, 6));
   }
   
@@ -142,8 +142,7 @@ public class EditParamDatasetPanel extends JPanel {
 
     JFileChooser jFileChooser = new JFileChooser();
     // FIXME : utiliser le dernier répertoire ouvert par l'interface. 
-    jFileChooser.setCurrentDirectory(new File(
-        "D:\\Data\\Appariement\\ESPON-DB"));
+    jFileChooser.setCurrentDirectory(new File("D:\\Data\\Appariement\\ESPON-DB"));
 
     // Crée un filtre qui n'accepte que les fichier shp ou les répertoires
     if (typeButton.equals(buttonRefShape) || typeButton.equals(buttonCompShape)) {
@@ -179,13 +178,16 @@ public class EditParamDatasetPanel extends JPanel {
 
   } // end doUpload method
   
-  
-  public ParamDatasetNetworkDataMatching valideField() {
+  /**
+   * Validation of all fields.
+   * @return
+   */
+  public ParamFilenameNetworkDataMatching valideField() {
     
     // 
-    ParamDatasetNetworkDataMatching paramDataset = new ParamDatasetNetworkDataMatching();
+    ParamFilenameNetworkDataMatching paramDataset = new ParamFilenameNetworkDataMatching();
     
-    if (filenameRefShape.getText() != null && !filenameRefShape.getText().equals("")) {
+    /*if (filenameRefShape.getText() != null && !filenameRefShape.getText().equals("")) {
       IPopulation<IFeature> popArcs1 = ShapefileReader.read(filenameRefShape.getText());
       popArcs1.setNom("popArcs1");
       paramDataset.addPopulationsArcs1(popArcs1);
@@ -195,7 +197,7 @@ public class EditParamDatasetPanel extends JPanel {
       IPopulation<IFeature> popArcs2 = ShapefileReader.read(filenameCompShape.getText());
       popArcs2.setNom("popArcs2");
       paramDataset.addPopulationsArcs2(popArcs2);
-    }
+    }*/
     
     return paramDataset;
   }

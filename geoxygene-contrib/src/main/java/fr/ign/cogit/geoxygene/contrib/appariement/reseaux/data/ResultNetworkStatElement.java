@@ -52,17 +52,33 @@ public class ResultNetworkStatElement {
   @XmlElement(name = "TotalNetworkElementNumber")
   private int totalNetworkElementNumber;
   
+  /** Total network element length. */
+  @XmlElement(name = "TotalNetworkElementLength")
+  private double totalNetworkElementLength;
+  
   /** Correct matching network element number. */ 
   @XmlElement(name = "CorrectMatchingNetworkElementNumber")
   private int correctMatchingNetworkElementNumber;
+  
+  /** Correct matching network element length. */
+  @XmlElement(name = "CorrectedMatchingNetworkElementLength")
+  private double correctedMatchingNetworkElementLength;
   
   /** No matching network element number. */
   @XmlElement(name = "NoMatchingNetworkElementNumber")
   private int noMatchingNetworkElementNumber;
   
+  /** No matching network element length. */
+  @XmlElement(name = "NoMatchingNetworkElementLength")
+  private double noMatchingNetworkElementLength;
+  
   /** Doubtful matching network element number. */
   @XmlElement(name = "DoubtfulMatchingNumber")
   private int doubtfulNetworkElementNumber;
+  
+  /** Doubtful matching network element length. */
+  @XmlElement(name = "DoubtfulNetworkElementLength")
+  private double doubtfulNetworkElementLength;
   
   /** network element. Like NodesOfNetwork1, EdgesOfNetwork2, ...*/
   @XmlAttribute(name = "NetworkElement", required = true)
@@ -107,6 +123,22 @@ public class ResultNetworkStatElement {
   }
   
   /**
+   * Return total network element length.
+   * @return double
+   */
+  public double getTotalNetworkElementLength() {
+    return totalNetworkElementLength;
+  }
+  
+  /**
+   * @param d
+   *      Total network element length to set.
+   */
+  public void setTotalNetworkElementLength(double d) {
+    totalNetworkElementLength = d;
+  }
+  
+  /**
    * Return correct matching network element number.
    * @return int
    */
@@ -120,6 +152,22 @@ public class ResultNetworkStatElement {
    */
   public void setCorrectMatchingNetworkElementNumber(int n) {
     correctMatchingNetworkElementNumber = n;
+  }
+  
+  /**
+   * Return correct matching network element length.
+   * @return double
+   */
+  public double getCorrectedMatchingNetworkElementLength() {
+    return correctedMatchingNetworkElementLength;
+  }
+  
+  /**
+   * @param d
+   *      Correct matching network element length to set.
+   */
+  public void setCorrectedMatchingNetworkElementLength(double d) {
+    correctedMatchingNetworkElementLength = d;
   }
   
   /**
@@ -139,6 +187,22 @@ public class ResultNetworkStatElement {
   }
   
   /**
+   * Return no matching network element length.
+   * @return double
+   */
+  public double getNoMatchingNetworkElementLength() {
+    return noMatchingNetworkElementLength;
+  }
+  
+  /**
+   * @param d
+   *      No matching network element length to set.
+   */
+  public void setNoMatchingNetworkElementLength(double d) {
+    noMatchingNetworkElementLength = d;
+  }
+  
+  /**
    * Return doubtful matching network element number.
    * @return int
    */
@@ -152,6 +216,22 @@ public class ResultNetworkStatElement {
    */
   public void setDoubtfulNetworkElementNumber(int n) {
     doubtfulNetworkElementNumber = n;
+  }
+  
+  /**
+   * Return doubtful matching network element length.
+   * @return double
+   */
+  public double getDoubtfulNetworkElementLength() {
+    return doubtfulNetworkElementLength;
+  }
+  
+  /**
+   * @param d
+   *      Doubtful matching network element length to set.
+   */
+  public void setDoubtfulNetworkElementLength(double d) {
+    doubtfulNetworkElementLength = d;
   }
   
   /**
@@ -175,11 +255,45 @@ public class ResultNetworkStatElement {
    * @return String
    */
   public String toString() {
-    return "Stat " + networkElement + " = [" + "Total : " + totalNetworkElementNumber + ", "
-        + "Appariés : " + correctMatchingNetworkElementNumber + ", "
-        + "Non appariés : " + noMatchingNetworkElementNumber + ", "
+    
+    String returnString = "";
+    returnString = "Stat " + networkElement + " = [" 
+        + "Total : " + totalNetworkElementNumber + ", ";
+
+    // Correct matched
+    returnString = returnString
+        + "Appariés : " + correctMatchingNetworkElementNumber 
+        + " (" + (correctMatchingNetworkElementNumber * 100 / totalNetworkElementNumber) + "%";
+    if (totalNetworkElementLength > 0) {
+      returnString = returnString + ", "
+        + Math.round(correctedMatchingNetworkElementLength * 100 / totalNetworkElementLength) + "%long";
+    }
+    returnString = returnString
+        + "), ";
+     
+    // Not matched
+    returnString = returnString
+        + "Non appariés : " + noMatchingNetworkElementNumber 
+        + " (" + (noMatchingNetworkElementNumber * 100 / totalNetworkElementNumber) + "%";
+    if (totalNetworkElementLength > 0) {
+      returnString = returnString + ", "
+          + Math.round(noMatchingNetworkElementLength * 100 / totalNetworkElementLength) + "%long";
+    }
+    returnString = returnString
+        + "), ";
+        
+    // Doubtful matched
+    returnString = returnString
         + "Incertains : " + doubtfulNetworkElementNumber
-        + "]";
+        + " (" + (doubtfulNetworkElementNumber * 100 / totalNetworkElementNumber) + "%";
+    if (totalNetworkElementLength > 0) {
+      returnString = returnString + ", "
+          + Math.round(doubtfulNetworkElementLength * 100 / totalNetworkElementLength) + "%long";
+    }
+    returnString = returnString
+        + ")]";
+    
+    return returnString;
   }
   
 }

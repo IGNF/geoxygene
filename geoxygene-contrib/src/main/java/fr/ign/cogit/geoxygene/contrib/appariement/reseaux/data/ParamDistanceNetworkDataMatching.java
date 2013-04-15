@@ -19,6 +19,12 @@
 
 package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 
 /**
  * Ecarts de distance autorisés.
@@ -26,11 +32,20 @@ package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data;
  * 
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "distanceNoeudsMax",
+    "distanceArcsMax",
+    "distanceArcsMin",
+    "distanceNoeudsImpassesMax"
+})
+@XmlRootElement(name = "ParamDistanceNetworkDataMatching")
 public class ParamDistanceNetworkDataMatching {
   
   /**
    * Distance maximale autorisée entre deux noeuds appariés.
    */
+  @XmlElement(name = "DistanceNoeudsMax")
   private float distanceNoeudsMax = 150;
 
   /**
@@ -44,6 +59,7 @@ public class ParamDistanceNetworkDataMatching {
    * pris en compte, et la distance maximale est la même pour tous les noeuds,
    * y-compris aux extrémités.
    */
+  @XmlElement(name = "DistanceNoeudsImpassesMax")
   private float distanceNoeudsImpassesMax = -1;
 
   /**
@@ -51,6 +67,7 @@ public class ParamDistanceNetworkDataMatching {
    * définie au sens de la "demi-distance de Hausdorf" des arcs du réseau 2 vers
    * les arcs du réseau 1.
    */
+  @XmlElement(name = "DistanceArcsMax")
   private float distanceArcsMax = 100;
 
   /**
@@ -59,9 +76,12 @@ public class ParamDistanceNetworkDataMatching {
    * distance est typiquement de l'ordre de la précision géométrique du réseau
    * le moins précis.
    */
+  @XmlElement(name = "DistanceArcsMin")
   private float distanceArcsMin = 30; 
   
-  
+  /**
+   * Default constructor.
+   */
   public ParamDistanceNetworkDataMatching() {
     distanceNoeudsMax = 150;
     distanceNoeudsImpassesMax = -1;

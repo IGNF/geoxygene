@@ -41,7 +41,6 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamDirectionNetworkDataMatching;
-import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamInterface;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamNetworkDataMatching;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data.ParamTopoTreatmentNetworkDataMatching;
 
@@ -68,8 +67,8 @@ public class DisplayParamPanel extends JToolBar {
     
     /** Initialize all parameters objects. */
     this.paramNetworkDataMatching = paramNetworkDataMatching;
-    paramDirection = this.paramNetworkDataMatching.getParamDirection();
-    paramTopo = this.paramNetworkDataMatching.getParamTopoTreatment();
+    paramDirection = this.paramNetworkDataMatching.getParamDirectionNetwork1();
+    // paramTopo = this.paramNetworkDataMatching.getParamTopoTreatment();
     
     /** Initialize and configure panel. */
     setOrientation(1);
@@ -99,8 +98,8 @@ public class DisplayParamPanel extends JToolBar {
     tabbedPane.addTab("Ecarts de distance", getDistanceParamTab());
     tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
     
-    tabbedPane.addTab("Traitements topologiques", getTraitementTopoParamTab());
-    tabbedPane.setMnemonicAt(3, KeyEvent.VK_4);
+    //tabbedPane.addTab("Traitements topologiques", getTraitementTopoParamTab());
+    //tabbedPane.setMnemonicAt(3, KeyEvent.VK_4);
     
     this.add(tabbedPane);
     
@@ -147,7 +146,7 @@ public class DisplayParamPanel extends JToolBar {
     formPanel.setLayout(layout);
     
     // Ligne 1 
-    if (paramDirection.getPopulationsArcsAvecOrientationDouble()) {
+    /*if (paramDirection.getPopulationsArcsAvecOrientationDouble()) {
       // Double
       JLabel labelDoubleSens = new JLabel("Tous les axes sont en double sens");
       labelDoubleSens.setFont(new Font(this.getFont().getName(), Font.BOLD, this.getFont().getSize() + 1));
@@ -208,7 +207,7 @@ public class DisplayParamPanel extends JToolBar {
       formPanel.add(new JLabel(paramDirection.getOrientationMap2().get(ParamInterface.SENS_DIRECT).toString()), cc.xy(8, 7));
       formPanel.add(new JLabel(paramDirection.getOrientationMap2().get(ParamInterface.SENS_INVERSE).toString()), cc.xy(8, 8));
       formPanel.add(new JLabel(paramDirection.getOrientationMap2().get(ParamInterface.DOUBLE_SENS).toString()), cc.xy(8, 9));
-    }
+    }*/
     
     return formPanel;
   }
@@ -234,7 +233,7 @@ public class DisplayParamPanel extends JToolBar {
    * 
    * @return
    */
-  private JPanel getTraitementTopoParamTab() {
+  /*private JPanel getTraitementTopoParamTab() {
     
     FormLayout layout = new FormLayout(
         "20dlu, pref, 20dlu, pref, 20dlu, pref, 20dlu", // colonnes
@@ -316,6 +315,6 @@ public class DisplayParamPanel extends JToolBar {
     }
     
     return formPanel;
-  }
+  }*/
 
 }

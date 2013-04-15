@@ -86,7 +86,7 @@ public final class AppariementIO {
    *          3eme élément: le graphe ref recalé sur comp si cela est demandé
    *          dans les paramètres. - Si on ne veut rien Récupèrer : passer Null
    *          
-   * @deprecated : utiliser de préférence la méthode "" qui retourne 
+   * bientot deprecated : utiliser de préférence la méthode "" qui retourne 
    *    un ResultatAppariement et non un ensemble de liens. La méthode n'a pas changé sinon         
    */
   public static EnsembleDeLiens appariementDeJeuxGeo(

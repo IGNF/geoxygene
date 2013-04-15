@@ -21,72 +21,103 @@ package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data;
 
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 /**
- * Prise en compte de l'orientation des arcs sur le terrain (sens de
- * circulation). Si true : on suppose tous les arcs en double sens. Si false:
- * on suppose tous les arcs en sens unique, celui défini par la géométrie. NB:
- * ne pas confondre cette orientation 'géographique réelle', avec
- * l'orientation de la géométrie.
+ * Prise en compte de l'orientation des arcs sur le terrain (sens de circulation). 
+ * Si true : on suppose tous les arcs en double sens. 
+ * Si false: on suppose tous les arcs en sens unique, celui défini par la géométrie. 
+ * 
+ * NB: ne pas confondre cette orientation 'géographique réelle', avec l'orientation de la géométrie.
  * 
  * Utile ensuite pour l'appariement des arcs.
+ * 
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "orientationDouble",
+    "attributOrientation",
+    "orientationMap"
+})
+@XmlRootElement(name = "ParamDirectionNetworkDataMatching")
 public class ParamDirectionNetworkDataMatching {
   
-  private boolean populationsArcsAvecOrientationDouble;
-  private String attributOrientation1;
-  private String attributOrientation2;
-  private Map<Integer, String> orientationMap1;
-  private Map<Integer, String> orientationMap2;
+  /** populationsArcsAvecOrientationDouble. */
+  @XmlElement(name = "OrientationDouble")
+  private boolean orientationDouble;
+  
+  /** Attribute of orientation. */
+  @XmlElement(name = "AttributOrientation")
+  private String attributOrientation;
+  
+  /** Table Attribute-Value for DIRECT, INVERSE, DOUBLE. */
+  @XmlElement(name = "OrientationMap")
+  private Map<Integer, String> orientationMap;
 
   /**
-   * Constructor
+   * Default constructor.
    */
   public ParamDirectionNetworkDataMatching() {
-    populationsArcsAvecOrientationDouble = true;
-    attributOrientation1 = "orientation";
-    attributOrientation2 = "orientation";
-    orientationMap1 = null;
-    orientationMap2 = null;
+    orientationDouble = true;
+    attributOrientation = null; 
+    orientationMap = null;
+    /*"sens_de_circulation";
+    orientationMap = new HashMap<Integer, String>();
+    orientationMap.put(ParamInterface.SENS_DIRECT, "direct");
+    orientationMap.put(ParamInterface.SENS_INVERSE, "inverse");
+    orientationMap.put(ParamInterface.DOUBLE_SENS, "double");*/
   }
   
-  public boolean getPopulationsArcsAvecOrientationDouble() {
-    return populationsArcsAvecOrientationDouble;
+  /**
+   * Return vrai si la population des arcs est à double sens.
+   * @return boolean
+   */
+  public boolean getOrientationDouble() {
+    return orientationDouble;
   }
   
-  public void setPopulationsArcsAvecOrientationDouble(boolean b) {
-    populationsArcsAvecOrientationDouble = b;
+  /**
+   * @param b
+   *          Is orientation double to set.
+   */
+  public void setOrientationDouble(boolean b) {
+    orientationDouble = b;
   }
   
-  public String getAttributOrientation1() {
-    return attributOrientation1;
+  /**
+   * Return attribut orientation.
+   * @return string
+   */
+  public String getAttributOrientation() {
+    return attributOrientation;
   }
   
-  public void setAttributOrientation1(String attributOrientation) {
-    attributOrientation1 = attributOrientation;
+  /**
+   * @param ao
+   *          Attribut orientation to set.
+   */
+  public void setAttributOrientation(String ao) {
+    attributOrientation = ao;
   }
   
-  public String getAttributOrientation2() {
-    return attributOrientation2;
+  /**
+   * Return table des valeurs de l'attribut orientation.
+   * @return Map<Integer, String>
+   */
+  public Map<Integer, String> getOrientationMap() {
+    return orientationMap;
   }
   
-  public void setAttributOrientation2(String attributOrientation) {
-    attributOrientation2 = attributOrientation;
+  /**
+   * @param mo
+   *          Table des valeurs de l'attribut orientation to set.
+   */
+  public void setOrientationMap (Map<Integer, String> mo) {
+    orientationMap = mo;
   }
   
-  
-  public Map<Integer, String> getOrientationMap1() {
-    return orientationMap1;
-  }
-  
-  public void setOrientationMap1 (Map<Integer, String> mapOrientation) {
-    orientationMap1 = mapOrientation;
-  }
-  
-  public Map<Integer, String> getOrientationMap2() {
-    return orientationMap2;
-  }
-  
-  public void setOrientationMap2 (Map<Integer, String> mapOrientation) {
-    orientationMap2 = mapOrientation;
-  }
 }

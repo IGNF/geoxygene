@@ -87,8 +87,7 @@ public abstract class Appariement {
   /**
    * Static logger for this class.
    */
-  private static final Logger LOGGER = Logger.getLogger(Appariement.class
-      .getName());
+  private static final Logger LOGGER = Logger.getLogger(Appariement.class.getName());
   /**
    * Default tile size.
    */
@@ -1892,9 +1891,13 @@ public abstract class Appariement {
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
     ResultNetworkStatElement resNetwork2Edges = new ResultNetworkStatElement(ResultNetworkStatElementInterface.EDGES_OF_NETWORK_2);
     resNetwork2Edges.setTotalNetworkElementNumber(nb);
+    resNetwork2Edges.setTotalNetworkElementLength(longTotal);
     resNetwork2Edges.setCorrectMatchingNetworkElementNumber(nbOK);
+    resNetwork2Edges.setCorrectedMatchingNetworkElementLength(longOK);
     resNetwork2Edges.setNoMatchingNetworkElementNumber(nbSansCorresp);
+    resNetwork2Edges.setNoMatchingNetworkElementLength(longSansCorresp);
     resNetwork2Edges.setDoubtfulNetworkElementNumber(nbDouteux);
+    resNetwork2Edges.setDoubtfulNetworkElementLength(longDouteux);
     System.out.println("-------------------------------------------------");
     System.out.println(resNetwork2Edges.toString());
     System.out.println("-------------------------------------------------");
@@ -2052,14 +2055,18 @@ public abstract class Appariement {
     // On ajoute les stats dans l'objet même si on n'est pas en mode debug
     ResultNetworkStatElement resNetwork1Edges = new ResultNetworkStatElement(ResultNetworkStatElementInterface.EDGES_OF_NETWORK_1);
     resNetwork1Edges.setTotalNetworkElementNumber(nb);
+    resNetwork1Edges.setTotalNetworkElementLength(longTotal);
     resNetwork1Edges.setCorrectMatchingNetworkElementNumber(nbOK);
+    resNetwork1Edges.setCorrectedMatchingNetworkElementLength(longOK);
     resNetwork1Edges.setNoMatchingNetworkElementNumber(nbSansCorresp);
+    resNetwork1Edges.setNoMatchingNetworkElementLength(longSansCorresp);
     resNetwork1Edges.setDoubtfulNetworkElementNumber(nbDouteux);
+    resNetwork1Edges.setDoubtfulNetworkElementLength(longDouteux);
     Appariement.LOGGER.info(resNetwork1Edges.toString());
     resultatStatAppariement.setStatsEdgesOfNetwork1(resNetwork1Edges);
 
     // ///////////////////////////////////////////
-    // ////////// cas des noeudss ref ////////////
+    // ////////// cas des noeuds ref ////////////
     // On ne fait que compter pour évaluer le résultat
     nbSansCorresp = 0;
     nbDouteux = 0;

@@ -22,11 +22,14 @@ package fr.ign.cogit.geoxygene.contrib.appariement.reseaux.data;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import org.apache.log4j.Logger;
 
-import fr.ign.cogit.geoxygene.api.feature.IFeature;
-import fr.ign.cogit.geoxygene.api.feature.IFeatureCollection;
-import fr.ign.cogit.geoxygene.api.feature.IPopulation;
 import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
 
 /**
@@ -34,12 +37,25 @@ import fr.ign.cogit.geoxygene.contrib.appariement.reseaux.ParametresApp;
  * 
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "paramDirectionNetwork1",
+    "paramDirectionNetwork2",
+    "paramDistance"
+})
+@XmlRootElement(name = "ParamNetworkDataMatching")
 public class ParamNetworkDataMatching {
   
-  private ParamDatasetNetworkDataMatching paramDataset = null;
-  private ParamDirectionNetworkDataMatching paramDirection = null;
+  @XmlElement(name = "ParamDirectionNetwork1")
+  private ParamDirectionNetworkDataMatching paramDirectionNetwork1 = null;
+  
+  @XmlElement(name = "ParamDirectionNetwork2")
+  private ParamDirectionNetworkDataMatching paramDirectionNetwork2 = null;
+  
+  @XmlElement(name = "ParamDistance")
   private ParamDistanceNetworkDataMatching paramDistance = null;
-  private ParamTopoTreatmentNetworkDataMatching paramTopoTreatment = null;
+  
+  // private ParamTopoTreatmentNetworkDataMatching paramTopoTreatment = null;
   
 
   /** A classic logger. */
@@ -49,27 +65,36 @@ public class ParamNetworkDataMatching {
    * Constructor.
    */
   public ParamNetworkDataMatching() {
-    paramDataset = new ParamDatasetNetworkDataMatching();
-    paramDirection = new ParamDirectionNetworkDataMatching();
+    
+    paramDirectionNetwork1 = new ParamDirectionNetworkDataMatching();
+    paramDirectionNetwork2 = new ParamDirectionNetworkDataMatching();
     paramDistance = new ParamDistanceNetworkDataMatching();
-    paramTopoTreatment = new ParamTopoTreatmentNetworkDataMatching();
+    // paramTopoTreatment = new ParamTopoTreatmentNetworkDataMatching();
   }
   
-  public ParamDirectionNetworkDataMatching getParamDirection() {
-    return paramDirection;
+  public ParamDirectionNetworkDataMatching getParamDirectionNetwork1() {
+    return paramDirectionNetwork1;
   }
   
-  public void setParamDirection(ParamDirectionNetworkDataMatching pdnm) {
-    paramDirection = pdnm;
+  public void setParamDirectionNetwork1(ParamDirectionNetworkDataMatching pdnm) {
+    paramDirectionNetwork1 = pdnm;
   }
   
-  public ParamDatasetNetworkDataMatching getParamDataset() {
+  public ParamDirectionNetworkDataMatching getParamDirectionNetwork2() {
+    return paramDirectionNetwork2;
+  }
+  
+  public void setParamDirectionNetwork2(ParamDirectionNetworkDataMatching pdnm) {
+    paramDirectionNetwork2 = pdnm;
+  }
+  
+  /*public ParamFilenameNetworkDataMatching getParamDataset() {
     return paramDataset;
   }
   
-  public void setParamDataset(ParamDatasetNetworkDataMatching paramDataset) {
+  public void setParamDataset(ParamFilenameNetworkDataMatching paramDataset) {
     this.paramDataset = paramDataset;
-  }
+  }*/
   
   public ParamDistanceNetworkDataMatching getParamDistance() {
     return paramDistance;
@@ -79,13 +104,13 @@ public class ParamNetworkDataMatching {
     this.paramDistance = paramDistance;
   }
   
-  public ParamTopoTreatmentNetworkDataMatching getParamTopoTreatment() {
+  /*public ParamTopoTreatmentNetworkDataMatching getParamTopoTreatment() {
     return paramTopoTreatment;
   }
   
   public void setParamTopoTreatment(ParamTopoTreatmentNetworkDataMatching paramTopoTreatment) {
     this.paramTopoTreatment = paramTopoTreatment;
-  }
+  }*/
   
   /**
    * Transform new structure to old structure.
@@ -99,31 +124,31 @@ public class ParamNetworkDataMatching {
     // Set parameters
     
     // Set dataset
-    param.populationsArcs1 = paramDataset.getPopulationsArcs1();
-    param.populationsArcs2 = paramDataset.getPopulationsArcs2();
+    //param.populationsArcs1 = paramDataset.getPopulationsArcs1();
+    //param.populationsArcs2 = paramDataset.getPopulationsArcs2();
     //param.populationsNoeuds1 = paramDataset.getPopulationsNoeuds1();
     //param.populationsNoeuds2 = paramDataset.getPopulationsNoeuds2();
     
     // Set direction param
-    param.populationsArcsAvecOrientationDouble = paramDirection.getPopulationsArcsAvecOrientationDouble();
-    param.attributOrientation1 = paramDirection.getAttributOrientation1();
-    param.attributOrientation2 = paramDirection.getAttributOrientation2();
+    param.populationsArcsAvecOrientationDouble = paramDirectionNetwork1.getOrientationDouble();
+    param.attributOrientation1 = paramDirectionNetwork1.getAttributOrientation();
+    param.attributOrientation2 = paramDirectionNetwork2.getAttributOrientation();
     
     
-    if (paramDirection.getOrientationMap1() != null) {
+    if (paramDirectionNetwork1.getOrientationMap() != null) {
       Map<Object, Integer> orientationMap1 = new HashMap<Object, Integer>();
-      orientationMap1.put(paramDirection.getOrientationMap1().get(1), 1);
-      orientationMap1.put(paramDirection.getOrientationMap1().get(2), 2);
-      orientationMap1.put(paramDirection.getOrientationMap1().get(-1), -1);
+      orientationMap1.put(paramDirectionNetwork1.getOrientationMap().get(1), 1);
+      orientationMap1.put(paramDirectionNetwork1.getOrientationMap().get(2), 2);
+      orientationMap1.put(paramDirectionNetwork1.getOrientationMap().get(-1), -1);
       param.orientationMap1 = orientationMap1;
     } else {
       param.orientationMap1 = null;
     }
-    if (paramDirection.getOrientationMap2() != null) {
+    if (paramDirectionNetwork2.getOrientationMap() != null) {
       Map<Object, Integer> orientationMap2 = new HashMap<Object, Integer>();
-      orientationMap2.put(paramDirection.getOrientationMap2().get(1), 1);
-      orientationMap2.put(paramDirection.getOrientationMap2().get(2), 2);
-      orientationMap2.put(paramDirection.getOrientationMap2().get(-1), -1);
+      orientationMap2.put(paramDirectionNetwork2.getOrientationMap().get(1), 1);
+      orientationMap2.put(paramDirectionNetwork2.getOrientationMap().get(2), 2);
+      orientationMap2.put(paramDirectionNetwork2.getOrientationMap().get(-1), -1);
       param.orientationMap2 = orientationMap2;
     } else {
       param.orientationMap2 = null;
@@ -180,7 +205,7 @@ public class ParamNetworkDataMatching {
     buffer.append("Parameters : " + "\n");
     
     // Dataset
-    buffer.append("Paramètres spécifiant quelles données sont traitées : " + "\n");
+    /*buffer.append("Paramètres spécifiant quelles données sont traitées : " + "\n");
     buffer.append("   - Nombre de collection dans le réseau 1 : " + paramDataset.getPopulationsArcs1().size() + "\n");
     for (int i = 0; i < paramDataset.getPopulationsArcs1().size(); i++) {
       buffer.append("   - Nombre d'arcs de la " + i + "-ème collection du réseau 1 = " + paramDataset.getPopulationsArcs1().get(i).size() + "\n");
@@ -188,23 +213,23 @@ public class ParamNetworkDataMatching {
     buffer.append("   - Nombre de collection dans le réseau 2 : " + paramDataset.getPopulationsArcs2().size() + "\n");
     for (int i = 0; i < paramDataset.getPopulationsArcs2().size(); i++) {
       buffer.append("   - Nombre d'arcs de la " + i + "-ème collection du réseau 2 = " + paramDataset.getPopulationsArcs2().get(i).size() + "\n");
-    }
+    }*/
     
     // Direction
     buffer.append("Paramètres de prise en compte de l'orientation des arcs sur le terrain : " + "\n");
-    buffer.append("   - orientation double = " + paramDirection.getPopulationsArcsAvecOrientationDouble() + "\n");
-    buffer.append("   - attribut de l'orientation simple du réseau 1 = " + paramDirection.getAttributOrientation1() + "\n");
-    buffer.append("   - attribut de l'orientation simple du réseau 2 = " + paramDirection.getAttributOrientation2() + "\n");
-    if (paramDirection.getOrientationMap1() != null) {
+    buffer.append("   - orientation double = " + paramDirectionNetwork1.getOrientationDouble() + "\n");
+    buffer.append("   - attribut de l'orientation simple du réseau 1 = " + paramDirectionNetwork1.getAttributOrientation() + "\n");
+    buffer.append("   - attribut de l'orientation simple du réseau 2 = " + paramDirectionNetwork2.getAttributOrientation() + "\n");
+    if (paramDirectionNetwork1.getOrientationMap() != null) {
       buffer.append("   - valeurs de l'attribut d'orientation du réseau 1 = " + "\n");
-      for (Object key : paramDirection.getOrientationMap1().keySet()) {
-        buffer.append("      " + key + ", " + paramDirection.getOrientationMap1().get(key) + "\n");
+      for (Object key : paramDirectionNetwork1.getOrientationMap().keySet()) {
+        buffer.append("      " + key + ", " + paramDirectionNetwork1.getOrientationMap().get(key) + "\n");
       }
     }
-    if (paramDirection.getOrientationMap2() != null) {
+    if (paramDirectionNetwork2.getOrientationMap() != null) {
       buffer.append("   - valeurs de l'attribut d'orientation du réseau 2 = " + "\n");
-      for (Object key : paramDirection.getOrientationMap2().keySet()) {
-        buffer.append("      " + key + ", " + paramDirection.getOrientationMap2().get(key) + "\n");
+      for (Object key : paramDirectionNetwork2.getOrientationMap().keySet()) {
+        buffer.append("      " + key + ", " + paramDirectionNetwork2.getOrientationMap().get(key) + "\n");
       }
     }
     
@@ -219,10 +244,44 @@ public class ParamNetworkDataMatching {
     
     // Topology treatment
     
-    
     buffer.append("-----------------------------------------------------------" + "\n");
     
     return buffer.toString();
   }
+  
+  /**
+   * Load the parameters from the specified stream.
+   * 
+   * @param stream stream to load the parameters from
+   * @return the parameters loaded from the specified stream
+   */
+  /*public static ResultNetworkDataMatching unmarshall(InputStream stream) {
+    try {
+      JAXBContext context = JAXBContext.newInstance(ResultNetworkDataMatching.class);
+      Unmarshaller m = context.createUnmarshaller();
+      ResultNetworkDataMatching parametresAppData = (ResultNetworkDataMatching) m.unmarshal(stream);
+      return parametresAppData;
+    } catch (JAXBException e) {
+      e.printStackTrace();
+    }
+    return new ResultNetworkDataMatching();
+  }*/
+  
+  /**
+   * Load the parameters. 
+   * If file does not exist, create new empty XML.
+   * 
+   * @param fileName XML parameter file to load
+   * @return ParametresAppData loaded
+   */
+  /*public static ResultNetworkDataMatching unmarshall(String fileName) {
+    try {
+      return ResultNetworkDataMatching.unmarshall(new FileInputStream(fileName));
+    } catch (FileNotFoundException e) {
+      //ResultNetworkDataMatching.LOGGER
+       //   .error("File " + fileName + " could not be read");
+      return new ResultNetworkDataMatching();
+    }
+  }*/
   
 }
