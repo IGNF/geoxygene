@@ -164,6 +164,24 @@ public class XMLParser {
         }
         scheduler.setListLayersMgcpPlusPlus(listLayer);
       }
+
+      else if (nom.equals("VMAP1PlusPlus")) {
+        Element folderElem = (Element) bdElem.getElementsByTagName("chemin")
+            .item(0);
+        scheduler.setVmap1PlusPlusFolder(folderElem.getChildNodes().item(0)
+            .getNodeValue());
+
+        // /Modif
+        List<String> listLayer = new ArrayList<String>();
+        for (int itLayer = 0; itLayer < bdElem.getElementsByTagName("layer")
+            .getLength(); itLayer++) {
+          Element layerElement = (Element) bdElem.getElementsByTagName("layer")
+              .item(itLayer);
+          listLayer.add(layerElement.getChildNodes().item(0).getNodeValue()
+              .toString());
+        }
+        scheduler.setListLayersVmap1PlusPlus(listLayer);
+      }
     }
   }
 
