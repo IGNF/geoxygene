@@ -251,11 +251,9 @@ public abstract class ShapeFileLoader {
       String zone = ShapeFileLoader.getZoneUtm(geomJTS1.getCentroid().getX(),
           geomJTS1.getCentroid().getY());
       this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
-      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
-          .setProjEpsg(this.getProjEpsg());
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
     } else {
-      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
-          .setProjEpsg(this.getProjEpsg());
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
     }
     shr.close();
     ShpFiles shpf = new ShpFiles(path);
@@ -344,11 +342,9 @@ public abstract class ShapeFileLoader {
       String zone = ShapeFileLoader.getZoneUtm(geomJTS1.getCentroid().getX(),
           geomJTS1.getCentroid().getY());
       this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
-      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
-          .setProjEpsg(this.getProjEpsg());
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
     } else {
-      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
-          .setProjEpsg(this.getProjEpsg());
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
     }
     shr.close();
     ShpFiles shpf = new ShpFiles(path);
@@ -437,11 +433,9 @@ public abstract class ShapeFileLoader {
       String zone = ShapeFileLoader.getZoneUtm(geomJTS1.getCentroid().getX(),
           geomJTS1.getCentroid().getY());
       this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
-      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
-          .setProjEpsg(this.getProjEpsg());
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
     } else {
-      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
-          .setProjEpsg(this.getProjEpsg());
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
     }
 
     // loop on the shapefile records
@@ -531,11 +525,9 @@ public abstract class ShapeFileLoader {
       String zone = ShapeFileLoader.getZoneUtm(geomJTS1.getCentroid().getX(),
           geomJTS1.getCentroid().getY());
       this.setProjEpsg(CRSConversion.getEPSGFromUTMZone(zone));
-      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
-          .setProjEpsg(this.getProjEpsg());
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
     } else {
-      ((MGCPPlusPlusDB) dataset.getCartAGenDB())
-          .setProjEpsg(this.getProjEpsg());
+      ((PeaRepDB) dataset.getCartAGenDB()).setProjEpsg(this.getProjEpsg());
     }
 
     // loop on the shapefile records
