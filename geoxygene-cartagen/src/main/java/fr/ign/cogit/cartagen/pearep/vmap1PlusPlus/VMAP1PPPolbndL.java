@@ -15,13 +15,12 @@ import org.hibernate.annotations.Type;
 
 import fr.ign.cogit.cartagen.core.genericschema.admin.IAdminLimit;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
-import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.ILineString;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.AutreConstruction;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.AutreConstructionImpl;
 
-public class VMAP1PPPolbndL extends VMAPFeature implements IAdminLimit {
+public class VMAP1PPPolbndL extends VMAP1PPFeature implements IAdminLimit {
 
   private AutreConstruction geoxObj;
 

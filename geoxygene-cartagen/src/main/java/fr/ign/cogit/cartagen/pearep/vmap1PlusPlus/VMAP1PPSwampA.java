@@ -15,13 +15,12 @@ import org.hibernate.annotations.Type;
 
 import fr.ign.cogit.cartagen.core.genericschema.land.ISimpleLandUseArea;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
-import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.coordgeom.IPolygon;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.AutreConstruction;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.AutreConstructionImpl;
 
-public class VMAP1PPSwampA extends VMAPFeature implements ISimpleLandUseArea {
+public class VMAP1PPSwampA extends VMAP1PPFeature implements ISimpleLandUseArea {
 
   private AutreConstruction geoxObj;
 

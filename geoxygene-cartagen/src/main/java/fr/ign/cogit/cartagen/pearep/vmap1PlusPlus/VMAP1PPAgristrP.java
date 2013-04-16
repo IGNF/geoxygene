@@ -16,13 +16,12 @@ import org.hibernate.annotations.Type;
 
 import fr.ign.cogit.cartagen.core.genericschema.misc.IPointOfInterest;
 import fr.ign.cogit.cartagen.pearep.vmap.PeaRepDbType;
-import fr.ign.cogit.cartagen.pearep.vmap.VMAPFeature;
 import fr.ign.cogit.geoxygene.api.feature.IFeature;
 import fr.ign.cogit.geoxygene.api.spatial.geomprim.IPoint;
 import fr.ign.cogit.geoxygene.schemageo.api.bati.AutreConstruction;
 import fr.ign.cogit.geoxygene.schemageo.impl.bati.AutreConstructionImpl;
 
-public class VMAP1PPAgristrP extends VMAPFeature implements IPointOfInterest {
+public class VMAP1PPAgristrP extends VMAP1PPFeature implements IPointOfInterest {
 
   private AutreConstruction geoxObj;
 
