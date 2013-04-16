@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jardesc>
+    <jar path="E:/Girres/PEAREP/Module/PeaRepv1.4.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/geoxygene-cartagen/pearepJar.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="false" mainClassHandleIdentifier="=geoxygene-cartagen/src\/main\/java&lt;fr.ign.cogit.cartagen.pearep{PeaRepGeneralisation.java[PeaRepGeneralisation" manifestLocation="/geoxygene-cartagen/MANIFEST.MF" manifestVersion="1.0" reuseManifest="false" saveManifest="true" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
+        <javaElement handleIdentifier="=geoxygene-semio/src\/main\/java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{UserLayerFactory.java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.spatial.geomroot"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{Font.java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo{JtsUtil.java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo.geomstructure"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{Graphic.java"/>
+        <javaElement handleIdentifier="=geoxygene-contrib/src\/test\/java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo{MesureOrientationV2.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{PointPlacement.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/test\/java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo{GeosAlgorithms.java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo{GeomAlgorithms.java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo{CommonAlgorithms.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{GraphicFill.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{Style.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{AbstractLayer.java"/>
+        <javaElement handleIdentifier="=geoxygene-schemageo/src\/main\/java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.spatial.util"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.spatial.geomprim"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{LinePlacement.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{Label.java"/>
+        <javaElement handleIdentifier="=geoxygene-semio/src\/main\/resources"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{LegendGraphic.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{LineSymbolizer.java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.spatial.topoprim"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style.thematic"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.conversion"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.hulls"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{InterpolationPoint.java"/>
+        <javaElement handleIdentifier="=geoxygene-feature/src\/main\/java&lt;fr.ign.cogit.geoxygene.datatools"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{Stroke.java"/>
+        <javaElement handleIdentifier="=geoxygene-api/src\/main\/java"/>
+        <javaElement handleIdentifier="=geoxygene-database/src\/main\/resources"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.contrib.geometrie"/>
+        <javaElement handleIdentifier="=geoxygene-contrib/src\/main\/java"/>
+        <javaElement handleIdentifier="=geoxygene-feature/src\/main\/java&lt;fr.ign.cogit.geoxygene.schema.util.persistance"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{UserLayer.java"/>
+        <javaElement handleIdentifier="=geoxygene-feature/src\/main\/java&lt;fr.ign.cogit.geoxygene.schema.schemaConceptuelISOJeu"/>
+        <javaElement handleIdentifier="=geoxygene-feature/src\/main\/java&lt;fr.ign.cogit.geoxygene.feature"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/test\/java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.measure.shape"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{Displacement.java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.measure.proximity"/>
+        <javaElement handleIdentifier="=geoxygene-feature/src\/main\/resources"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{Mark.java"/>
+        <javaElement handleIdentifier="=geoxygene-database/src\/main\/java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{GraphicStroke.java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.spatial.geomaggr"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{PointSymbolizer.java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths.lineoffset"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{RasterSymbolizer.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{LabelPlacement.java"/>
+        <folder path="/geoxygene-schemageo/.settings"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/resources"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style.colorimetry"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.generalisation.simplification"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.distance"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{NamedLayerFactory.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{NamedStyle.java"/>
+        <javaElement handleIdentifier="=geoxygene-schemageo/src\/test\/java"/>
+        <folder path="/geoxygene-filter/.settings"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/resources"/>
+        <javaElement handleIdentifier="=geoxygene-feature/src\/test\/java"/>
+        <file path="/geoxygene-feature/src/main/java/fr/ign/cogit/geoxygene/schema/readme.txt"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{FeatureTypeStyle.java"/>
+        <javaElement handleIdentifier="=geoxygene-util/src\/main\/java"/>
+        <javaElement handleIdentifier="=geoxygene-semio/src\/test\/java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{AbstractLayerFactory.java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo{MesureOrientation.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{AbstractSymbolizer.java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo{JtsAlgorithms.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{StyledLayerDescriptor.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{AbstractStyle.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{LayerFactory.java"/>
+        <javaElement handleIdentifier="=geoxygene-api/src\/test\/java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.spatial.topocomp"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{Shadow.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{ColorMap.java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.generalisation"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{SldListener.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style.gradient"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{Layer.java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo{StringOperation.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{Halo.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{UserStyle.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{Fill.java"/>
+        <javaElement handleIdentifier="=geoxygene-cartagen/src\/main\/resources"/>
+        <javaElement handleIdentifier="=geoxygene-cartagen/src\/main\/java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{ExternalGraphic.java"/>
+        <javaElement handleIdentifier="=geoxygene-feature/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.index"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.spatial"/>
+        <javaElement handleIdentifier="=geoxygene-io/src\/main\/java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{AnchorPoint.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{Interpolate.java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo{OrientationMeasure.java"/>
+        <javaElement handleIdentifier="=geoxygene-filter/src\/main\/java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo{MesureOrientationFeuille.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{NamedLayer.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{Symbolizer.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{Rule.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{SvgParameter.java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.spatial.toporoot"/>
+        <javaElement handleIdentifier="=geoxygene-contrib/src\/main\/resources"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{TextSymbolizer.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{Placement.java"/>
+        <javaElement handleIdentifier="=geoxygene-util/src\/test\/java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{GraphicType.java"/>
+        <javaElement handleIdentifier="=geoxygene-feature/src\/main\/java&lt;fr.ign.cogit.geoxygene.schema.schemaConceptuelISOProduit"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo.geometricAlgorithms.morphomaths"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{StyleLibrary.java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.spatial.coordgeom"/>
+        <javaElement handleIdentifier="=geoxygene-io/src\/test\/java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{ShadedRelief.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{PolygonSymbolizer.java"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo{MathUtil.java"/>
+        <javaElement handleIdentifier="=geoxygene-database/src\/test\/java"/>
+        <javaElement handleIdentifier="=geoxygene-util/src\/main\/resources"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.util.algo{SmallestSurroundingRectangleComputation.java"/>
+        <javaElement handleIdentifier="=geoxygene-filter/src\/test\/java"/>
+        <javaElement handleIdentifier="=geoxygene-feature/src\/main\/java&lt;fr.ign.cogit.geoxygene.schema{Produit.java"/>
+        <javaElement handleIdentifier="=geoxygene-style/src\/main\/java&lt;fr.ign.cogit.geoxygene.style{CategorizedMap.java"/>
+        <javaElement handleIdentifier="=geoxygene-io/src\/main\/resources"/>
+        <javaElement handleIdentifier="=geoxygene-spatial/src\/main\/java&lt;fr.ign.cogit.geoxygene.spatial.geomcomp"/>
+    </selectedElements>
+</jardesc>

@@ -37,6 +37,7 @@ import fr.ign.cogit.cartagen.pearep.importexport.MGCPLoader;
 import fr.ign.cogit.cartagen.pearep.importexport.ShapeFileExport;
 import fr.ign.cogit.cartagen.pearep.importexport.VMAP0Loader;
 import fr.ign.cogit.cartagen.pearep.importexport.VMAP1Loader;
+import fr.ign.cogit.cartagen.pearep.importexport.VMAP1PlusPlusLoader;
 import fr.ign.cogit.cartagen.pearep.importexport.VMAP2Loader;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSchemaFactory;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPSchemaFactory;
@@ -151,6 +152,7 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
   private static String VMAP1_DATASET = "VMAP1";
   private static String VMAP2i_DATASET = "VMAP2i";
   private static String MGCPPlusPlus_DATASET = "MGCPPlusPlus";
+  private static String VMAP1PlusPlus_DATASET = "VMAP1PlusPlus";
   private static Logger logger = Logger.getLogger(PeaRepGeneralisation.class
       .getName());
 
@@ -302,6 +304,23 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
           e1.printStackTrace();
         } catch (IOException e1) {
           GeneralisationTask.logger.severe("Problem during VMAP1 loading");
+          e1.printStackTrace();
+        }
+      }
+
+      if (scheduler.getVmap1PlusPlusFolder() != null) {
+        vmapDb = true;
+        VMAP1PlusPlusLoader vmap1PlusPlusLoader = new VMAP1PlusPlusLoader(
+            symbGroup, GeneralisationTask.VMAP1PlusPlus_DATASET);
+        try {
+          vmap1PlusPlusLoader.loadData(
+              new File(scheduler.getVmap1PlusPlusFolder()),
+              scheduler.getListLayersVmap1PlusPlus());
+        } catch (ShapefileException e1) {
+          GeneralisationTask.logger.severe("Problem during VMAP1++ loading");
+          e1.printStackTrace();
+        } catch (IOException e1) {
+          GeneralisationTask.logger.severe("Problem during VMAP1++ loading");
           e1.printStackTrace();
         }
       }

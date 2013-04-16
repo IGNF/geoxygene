@@ -66,7 +66,8 @@ public class ScaleMasterScheduler {
    * The folder where the initial data shapefiles are stored. This information
    * can be filled by the parameters XML file.
    */
-  private String vmap2iFolder, vmap1Folder, vmap0Folder, mgcpPlusPlusFolder;
+  private String vmap2iFolder, vmap1Folder, vmap0Folder, mgcpPlusPlusFolder,
+      vmap1PlusPlusFolder;
   /**
    * The folder where export shapefiles are generated. If null, export is made
    * in the root.
@@ -85,6 +86,7 @@ public class ScaleMasterScheduler {
   private List<String> listLayersVmap1;
   private List<String> listLayersVmap0;
   private List<String> listLayersMgcpPlusPlus;
+  private List<String> listLayersVmap1PlusPlus;
 
   /**
    * A constructor from the XML configuration files describing the ScaleMaster
@@ -447,5 +449,21 @@ public class ScaleMasterScheduler {
   public void setAvailablePreProcesses(
       Set<ScaleMasterPreProcess> availablePreProcesses) {
     this.availablePreProcesses = availablePreProcesses;
+  }
+
+  public String getVmap1PlusPlusFolder() {
+    return vmap1PlusPlusFolder;
+  }
+
+  public void setVmap1PlusPlusFolder(String vmap1PlusPlusFolder) {
+    this.vmap1PlusPlusFolder = vmap1PlusPlusFolder;
+  }
+
+  public List<String> getListLayersVmap1PlusPlus() {
+    return listLayersVmap1PlusPlus;
+  }
+
+  public void setListLayersVmap1PlusPlus(List<String> listLayersVmap1PlusPlus) {
+    this.listLayersVmap1PlusPlus = listLayersVmap1PlusPlus;
   }
 }

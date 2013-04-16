@@ -146,15 +146,20 @@ import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolGroup;
 import fr.ign.cogit.cartagen.software.interfacecartagen.symbols.SymbolList;
 import fr.ign.cogit.cartagen.util.FileUtil;
 
-public class VMAP1PPLoader extends ShapeFileLoader {
+public class VMAP1PlusPlusLoader extends ShapeFileLoader {
 
   /**
    * Default constructor
    * @param dataset
    */
-  public VMAP1PPLoader(SymbolGroup symbGroup, String dbName) {
+  public VMAP1PlusPlusLoader(SymbolGroup symbGroup, String dbName) {
     this.createNewDb(symbGroup, dbName);
-    this.setProjEpsg("32629");
+  }
+  
+  /**
+   * Default constructor
+   */
+  public VMAP1PlusPlusLoader() {
   }
 
   @Override
