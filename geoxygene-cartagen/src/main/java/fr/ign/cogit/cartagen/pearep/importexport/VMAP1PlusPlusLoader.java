@@ -155,7 +155,7 @@ public class VMAP1PlusPlusLoader extends ShapeFileLoader {
   public VMAP1PlusPlusLoader(SymbolGroup symbGroup, String dbName) {
     this.createNewDb(symbGroup, dbName);
   }
-  
+
   /**
    * Default constructor
    */
@@ -1059,5 +1059,8 @@ public class VMAP1PlusPlusLoader extends ShapeFileLoader {
     database.setDataSet(dataset);
     database.setType(new DigitalLandscapeModel());
     this.setDataset(dataset);
+    // database.setGeneObjImpl(new GeneObjImplementation("vmap1++",
+    // VMAP1PPFeature.javaFeature.class.getPackage(), VMAP1PPFeature.class));
+
   }
 }

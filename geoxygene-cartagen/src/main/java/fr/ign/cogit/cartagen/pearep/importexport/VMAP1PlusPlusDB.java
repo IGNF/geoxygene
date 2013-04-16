@@ -8,29 +8,29 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.geotools.data.shapefile.shp.ShapefileException;
 import org.xml.sax.SAXException;
 
-import fr.ign.cogit.cartagen.pearep.mgcp.MGCPFeature;
+import fr.ign.cogit.cartagen.pearep.vmap1PlusPlus.VMAP1PPFeature;
 import fr.ign.cogit.cartagen.software.dataset.GeneObjImplementation;
 
-public class MGCPPlusPlusDB extends PeaRepDB {
+public class VMAP1PlusPlusDB extends PeaRepDB {
 
-  public MGCPPlusPlusDB(File file) throws ParserConfigurationException,
+  public VMAP1PlusPlusDB(File file) throws ParserConfigurationException,
       SAXException, IOException, ClassNotFoundException {
     super(file);
-    this.setGeneObjImpl(new GeneObjImplementation("mgcp++", MGCPFeature.class
-        .getPackage(), MGCPFeature.class));
+    this.setGeneObjImpl(new GeneObjImplementation("vmap1++",
+        VMAP1PPFeature.class.getPackage(), VMAP1PPFeature.class));
   }
 
-  public MGCPPlusPlusDB(String name) {
+  public VMAP1PlusPlusDB(String name) {
     super(name);
-    this.setGeneObjImpl(new GeneObjImplementation("mgcp++", MGCPFeature.class
-        .getPackage(), MGCPFeature.class));
+    this.setGeneObjImpl(new GeneObjImplementation("vmap1++",
+        VMAP1PPFeature.class.getPackage(), VMAP1PPFeature.class));
   }
 
   @Override
   public void populateDataset(int scale) {
 
-    MGCPLoader loader = new MGCPLoader();
-    loader.setDataset(MGCPPlusPlusDB.this.getDataSet());
+    VMAP1PlusPlusLoader loader = new VMAP1PlusPlusLoader();
+    loader.setDataset(VMAP1PlusPlusDB.this.getDataSet());
     try {
       loader.loadData(new File(this.getSystemPath()), this.getLoadedClasses());
     } catch (ShapefileException e) {

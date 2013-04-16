@@ -41,7 +41,6 @@ import fr.ign.cogit.cartagen.pearep.importexport.VMAP1PlusPlusLoader;
 import fr.ign.cogit.cartagen.pearep.importexport.VMAP2Loader;
 import fr.ign.cogit.cartagen.pearep.mgcp.MGCPSchemaFactory;
 import fr.ign.cogit.cartagen.pearep.vmap.VMAPSchemaFactory;
-import fr.ign.cogit.cartagen.software.CartAGenDataSet;
 import fr.ign.cogit.cartagen.software.CartagenApplication;
 import fr.ign.cogit.cartagen.software.dataset.CartAGenDoc;
 import fr.ign.cogit.cartagen.software.dataset.PostgisDB;
@@ -358,22 +357,6 @@ class GeneralisationTask extends SwingWorker<Void, Void> {
         }
         Thread.sleep(500);
       } catch (InterruptedException ignore) {
-      }
-
-      // *******************************************************
-      // define the current dataset according to final scale
-      if (scheduler.getScale() < 250000) {
-        CartAGenDataSet dataset = null;
-        if (doc.hasDataset(GeneralisationTask.VMAP2i_DATASET)) {
-          dataset = doc.getDataset(GeneralisationTask.VMAP2i_DATASET);
-        } else if (doc.hasDataset(GeneralisationTask.MGCPPlusPlus_DATASET)) {
-          dataset = doc.getDataset(GeneralisationTask.MGCPPlusPlus_DATASET);
-        }
-        doc.setCurrentDataset(dataset);
-      } else if (scheduler.getScale() < 1000000) {
-        doc.setCurrentDataset(doc.getDataset(GeneralisationTask.VMAP1_DATASET));
-      } else {
-        doc.setCurrentDataset(doc.getDataset(GeneralisationTask.VMAP0_DATASET));
       }
 
       // *******************************************************

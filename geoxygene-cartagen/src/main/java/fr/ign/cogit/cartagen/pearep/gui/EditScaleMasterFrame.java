@@ -239,7 +239,7 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
 
     // the frame menu
     JMenuBar menuBar = new JMenuBar();
-    // un menu Fichier
+    // a File menu
     JMenu menuFichier = new JMenu(I18N.getString("MainLabels.lblFile"));
     JMenuItem load = new JMenuItem(I18N.getString("MainLabels.lblLoad"));
     load.setActionCommand("load");
@@ -253,7 +253,14 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
     aide.addActionListener(this);
     menuFichier.add(load);
     menuFichier.add(aide);
+    // a ScaleMasterParameters menu
+    JMenu menuParams = new JMenu("ScaleMasterParameters");
+    JMenuItem paramsMenuItem = new JMenuItem("Edition");
+    paramsMenuItem.setActionCommand("params");
+    paramsMenuItem.addActionListener(this);
+    // the menu bar
     menuBar.add(menuFichier);
+    menuBar.add(menuParams);
     menuBar.setAlignmentX(Component.LEFT_ALIGNMENT);
 
     this.setJMenuBar(menuBar);
@@ -280,6 +287,20 @@ public class EditScaleMasterFrame extends JFrame implements ActionListener,
       this.setVisible(false);
     } else if (e.getActionCommand().equals("apply")) {
       // TODO apply the lines to the current ScaleMaster
+    } else if (e.getActionCommand().equals("params")) {
+      EditPeaRepParamsFrame frame = new EditPeaRepParamsFrame();
+      frame.setVisible(true);
+    } else if (e.getActionCommand().equals("load-params")) {
+      // load a file previously stored in xml
+      JFileChooser fc = new JFileChooser();
+      fc.setFileFilter(new XMLFileFilter());
+      int returnVal = fc.showOpenDialog(this);
+      if (returnVal != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+      File xmlFile = fc.getSelectedFile();
+      EditPeaRepParamsFrame frame = new EditPeaRepParamsFrame(xmlFile);
+      frame.setVisible(true);
     } else if (e.getActionCommand().equals("edit")) {
       // edit a ScaleMasterElement in the selected line
       if (this.selectedLine == null) {

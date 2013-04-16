@@ -12,8 +12,10 @@ package fr.ign.cogit.cartagen.pearep.derivation;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -33,10 +35,16 @@ import fr.ign.cogit.cartagen.mrdb.scalemaster.ScaleMasterXMLParser;
 public class XMLParser {
 
   private File xmlFile;
+  private int scale;
+  private String exportFolder;
+  private Map<String, String> mapPath;
+  private Map<String, List<String>> mapLayers;
 
   public XMLParser(File xmlFile) {
     super();
     this.xmlFile = xmlFile;
+    this.mapLayers = new HashMap<String, List<String>>();
+    this.mapPath = new HashMap<String, String>();
   }
 
   /**
@@ -77,15 +85,22 @@ public class XMLParser {
         .item(0);
     Element scaleElem = (Element) scalesElem.getElementsByTagName("echelle")
         .item(0);
-    scheduler.setScale(Integer.valueOf(scaleElem.getChildNodes().item(0)
-        .getNodeValue()));
+    if (scheduler != null)
+      scheduler.setScale(Integer.valueOf(scaleElem.getChildNodes().item(0)
+          .getNodeValue()));
+    else
+      this.scale = Integer.valueOf(scaleElem.getChildNodes().item(0)
+          .getNodeValue());
 
     // get the export folder
     if (root.getElementsByTagName("dossier-export").getLength() != 0) {
       Element exportElem = (Element) root
           .getElementsByTagName("dossier-export").item(0);
-      scheduler.setExportFolder(exportElem.getChildNodes().item(0)
-          .getNodeValue());
+      if (scheduler != null)
+        scheduler.setExportFolder(exportElem.getChildNodes().item(0)
+            .getNodeValue());
+      else
+        this.exportFolder = exportElem.getChildNodes().item(0).getNodeValue();
     }
 
     // get the databases
@@ -150,8 +165,12 @@ public class XMLParser {
       else if (nom.equals("MGCPPlusPlus")) {
         Element folderElem = (Element) bdElem.getElementsByTagName("chemin")
             .item(0);
-        scheduler.setMgcpPlusPlusFolder(folderElem.getChildNodes().item(0)
-            .getNodeValue());
+        if (scheduler != null)
+          scheduler.setMgcpPlusPlusFolder(folderElem.getChildNodes().item(0)
+              .getNodeValue());
+        else
+          this.mapPath.put(nom, folderElem.getChildNodes().item(0)
+              .getNodeValue());
 
         // /Modif
         List<String> listLayer = new ArrayList<String>();
@@ -162,7 +181,10 @@ public class XMLParser {
           listLayer.add(layerElement.getChildNodes().item(0).getNodeValue()
               .toString());
         }
-        scheduler.setListLayersMgcpPlusPlus(listLayer);
+        if (scheduler != null)
+          scheduler.setListLayersMgcpPlusPlus(listLayer);
+        else
+          this.mapLayers.put(nom, listLayer);
       }
 
       else if (nom.equals("VMAP1PlusPlus")) {
@@ -244,4 +266,37 @@ public class XMLParser {
 
     return existingThemes;
   }
+
+  public int getScale() {
+    return scale;
+  }
+
+  public void setScale(int scale) {
+    this.scale = scale;
+  }
+
+  public String getExportFolder() {
+    return exportFolder;
+  }
+
+  public void setExportFolder(String exportFolder) {
+    this.exportFolder = exportFolder;
+  }
+
+  public Map<String, String> getMapPath() {
+    return mapPath;
+  }
+
+  public void setMapPath(Map<String, String> mapPath) {
+    this.mapPath = mapPath;
+  }
+
+  public Map<String, List<String>> getMapLayers() {
+    return mapLayers;
+  }
+
+  public void setMapLayers(Map<String, List<String>> mapLayers) {
+    this.mapLayers = mapLayers;
+  }
+
 }

@@ -70,7 +70,8 @@ public class CollapseToPointProcess extends ScaleMasterGeneProcess {
               IGeneObj newObj = (IGeneObj) meth.invoke(CartagenApplication
                   .getInstance().getCreationFactory(), centroid);
               // add object to its dataset population
-              String ft = classObj.getField("FEAT_TYPE_NAME").getName();
+              String ft = (String) classObj.getField("FEAT_TYPE_NAME")
+                  .get(null);
               @SuppressWarnings("unchecked")
               IPopulation<IGeneObj> pop = (IPopulation<IGeneObj>) CartAGenDoc
                   .getInstance()
@@ -79,6 +80,7 @@ public class CollapseToPointProcess extends ScaleMasterGeneProcess {
                       CartAGenDoc.getInstance().getCurrentDataset()
                           .getPopNameFromClass(classObj), ft);
               pop.add(newObj);
+
             } catch (IllegalArgumentException e) {
               e.printStackTrace();
             } catch (IllegalAccessException e) {

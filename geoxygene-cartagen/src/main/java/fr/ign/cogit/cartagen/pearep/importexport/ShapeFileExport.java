@@ -117,7 +117,6 @@ public class ShapeFileExport {
         ShapeFileExport.logger.fine(shapeFileName);
         ShapeFileExport.logger.fine(this.exportDir.getPath());
       }
-
       // get the element corresponding to final scale
       ScaleMasterElement elem = line.getElementFromScale(this.finalScale);
       if (elem == null) {
@@ -142,8 +141,7 @@ public class ShapeFileExport {
       }
 
       // write the shapefile
-      String projEpsg = ((MGCPPlusPlusDB) this.dataset.getCartAGenDB())
-          .getProjEpsg();
+      String projEpsg = ((PeaRepDB) this.dataset.getCartAGenDB()).getProjEpsg();
       ShapeFileExport.write(features, line.getTheme().getGeometryType()
           .toGeomClass(), this.exportDir.getPath() + "\\" + shapeFileName,
           projEpsg, "4326");
