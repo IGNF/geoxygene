@@ -280,6 +280,10 @@ public class ScaleMasterScheduler {
       this.traceLogger.info("début de la généralisation du thème "
           + line.getTheme());
 
+      // test if the element relates to an existing database
+      if (!CartAGenDoc.getInstance().getDatabases().keySet()
+          .contains(elem.getDbName()))
+        continue;
       // get the dataset related to the element
       CartAGenDataSet dataset = CartAGenDoc.getInstance().getDataset(
           elem.getDbName());
